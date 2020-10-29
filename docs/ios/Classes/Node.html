@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Node Class Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Class/Node" class="dashAnchor"></a>
+    <a title="Node Class Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html">Gomobile-IPFS - iOS Bridge</a> (86% documented)</p>
+        <p class="header-right"><a href="https://github.com/ipfs-shipyard/gomobile-ipfs"><img src="../img/gh.png"/>View on GitHub</a></p>
+        <p class="header-right">
+          <form role="search" action="../search.json">
+            <input type="text" placeholder="Search documentation" data-typeahead>
+          </form>
+        </p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">GomobileIPFS Reference</a>
+        <img id="carat" src="../img/carat.png" />
+        Node Class Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/Config.html">Config</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)ConfigError">ConfigError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/IPFS.html">IPFS</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/IPFSError.html">IPFSError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Node.html">Node</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)NodeError">NodeError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Repo.html">Repo</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)RepoError">RepoError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RequestBuilder.html">RequestBuilder</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)RequestBuilderError">RequestBuilderError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/SockManager.html">SockManager</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)SockManagerError">SockManagerError</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums/RequestBody.html">RequestBody</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/RequestOption.html">RequestOption</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Extensions/FileManager.html">FileManager</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>Node</h1>
+              <div class="declaration">
+                <div class="language">
+                  
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Node</span></code></pre>
+
+                </div>
+              </div>
+            <p>Node is a class that wraps a golang <code>node</code> object</p>
+
+<p><strong>Should not be used on its own</strong></p>
+
+              <div class="slightly-smaller">
+                <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/Node.swift#L28-L80">Show on GitHub</a>
+              </div>
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12GomobileIPFS4NodeCyAcA4RepoCKcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12GomobileIPFS4NodeCyAcA4RepoCKcfc">init(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Class constructor using repo passed as parameter as node repo</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    <code><a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)NodeError">NodeError</a></code>: If the creation of the node failed
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="n">_</span> <span class="nv">repo</span><span class="p">:</span> <span class="kt"><a href="../Classes/Repo.html">Repo</a></span><span class="p">)</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>repo</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The repo of the node</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/Node.swift#L34-L42">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12GomobileIPFS4NodeC5closeyyKF"></a>
+                    <a name="//apple_ref/swift/Method/close()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12GomobileIPFS4NodeC5closeyyKF">close()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Closes this node instance</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    <code><a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)NodeError">NodeError</a></code>: If the closing of the node failed
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">close</span><span class="p">()</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/Node.swift#L46-L52">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12GomobileIPFS4NodeC5serve5onUDSySS_tKF"></a>
+                    <a name="//apple_ref/swift/Method/serve(onUDS:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12GomobileIPFS4NodeC5serve5onUDSySS_tKF">serve(onUDS:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Serves node API over UDS</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    <code><a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)NodeError">NodeError</a></code>: If the node failed to serve
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">serve</span><span class="p">(</span><span class="nv">onUDS</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>onUDS</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The UDS path to serve on</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/Node.swift#L57-L63">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12GomobileIPFS4NodeC5serve9onTCPPortS2S_tKF"></a>
+                    <a name="//apple_ref/swift/Method/serve(onTCPPort:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12GomobileIPFS4NodeC5serve9onTCPPortS2S_tKF">serve(onTCPPort:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Serves node API over TCP</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    <code><a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)NodeError">NodeError</a></code>: If the node failed to serve
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">serve</span><span class="p">(</span><span class="nv">onTCPPort</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>onTCPPort</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The TCP port to serve on</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>The TCP/IP MultiAddr the node is serving on</p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/Node.swift#L69-L79">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-09-13)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.5</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

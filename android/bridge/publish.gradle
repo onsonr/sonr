@@ -1,0 +1,131 @@
+task javadoc(type: Javadoc) {
+    title = manifest.android_bridge.name
+    source = android.sourceSets.main.java.srcDirs
+    destinationDir = new File("$projectDir/javadoc")
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+afterEvaluate {
+    javadoc.classpath += files(android.libraryVariants.collect { variant ->
+        variant.javaCompileProvider.get().classpath.files
+    })
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.srcDirs
+}
+
+publishing {
+    publications {
+        Production(MavenPublication) {
+            artifacts = [
+                "$buildDir/outputs/aar/bridge-release.aar",
+                sourcesJar,
+                javadocJar
+            ]
+
+			groupId manifest.global.group_id
+			artifactId manifest.android_bridge.artifact_id
+			version rootProject.ext.version
+
+            pom {
+                name = manifest.android_bridge.name
+                url = manifest.global.github.url
+                description = manifest.android_bridge.description
+                packaging = manifest.global.android.packaging
+
+                scm {
+                    connection = manifest.global.android.scm.connection
+                    developerConnection = manifest.global.android.scm.developer_connection
+                    url = manifest.global.android.scm.url
+                }
+            }
+
+            pom.withXml {
+                def licensesNode = asNode().appendNode('licenses')
+                manifest.global.licenses.each {
+                    def licenseNode = licensesNode.appendNode('license')
+                    licenseNode.appendNode('name', it.name)
+                    licenseNode.appendNode('url', it.url)
+                    licenseNode.appendNode('distribution', it.distribution)
+                }
+
+                def developersNode = asNode().appendNode('developers')
+                manifest.global.developers.each {
+                    def developerNode = developersNode.appendNode('developer')
+                    developerNode.appendNode('id', it.id)
+                    developerNode.appendNode('name', it.name)
+                    developerNode.appendNode('email', it.email)
+                    developerNode.appendNode('organization', it.organization)
+                    developerNode.appendNode('organizationUrl', it.organization_url)
+                }
+
+                def dependenciesNode = asNode().appendNode('dependencies')
+                configurations.implementation.allDependencies.each {
+                    if (it.name != 'unspecified') {
+                        def dependencyNode = dependenciesNode.appendNode('dependency')
+                        dependencyNode.appendNode('groupId', it.group)
+                        dependencyNode.appendNode('artifactId', it.name)
+                        dependencyNode.appendNode('version', it.version)
+                    }
+                }
+            }
+        }
+    }
+}
+
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_KEY')
+    publications = ['Production']
+
+    pkg {
+		userOrg = manifest.global.bintray_orga
+        repo = manifest.global.android.repo
+        name = manifest.android_bridge.artifact_id
+        desc = manifest.android_bridge.description
+
+        override = manifest.android_bridge.override
+        publish = manifest.android_bridge.publish
+        publicDownloadNumbers = manifest.android_bridge.public_download_numbers
+
+        websiteUrl = manifest.global.github.url
+        vcsUrl = manifest.global.github.git_url
+        issueTrackerUrl = manifest.global.github.issues_url
+        githubRepo = manifest.global.github.repo
+        githubReleaseNotesFile = manifest.android_bridge.github_release_notes_file
+
+        licenses = new String[manifest.global.licenses.size()]
+        def i = 0
+        manifest.global.licenses.each {
+            licenses[i++] = it.short_name
+        }
+
+        version {
+            name = rootProject.ext.version
+            desc = "$manifest.global.android.repo-$manifest.android_bridge.artifact_id-$rootProject.ext.version"
+            released = new Date()
+            vcsTag = "v$rootProject.ext.version"
+
+            gpg {
+                sign = true
+                passphrase = System.getenv('BINTRAY_GPG_PASS')
+            }
+        }
+    }
+}
+
+bintrayUpload.onlyIf {
+    if (rootProject.ext.version == '0.0.42-dev') {
+        throw new GradleException("Can't publish a dev version")
+    }
+    return true
+}
+
+bintrayUpload.dependsOn build

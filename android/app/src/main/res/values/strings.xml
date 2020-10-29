@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">GomobileIPFSExample</string>
+    <string name="titleStarting">IPFS is starting</string>
+    <string name="titlePeerID">Your Peer ID is:</string>
+    <string name="titlePeerIDErr">Error:</string>
+    <string name="titlePeerCon">Peers connected: %1$d</string>
+    <string name="titleFetching">Fetching XKCD on IPFS</string>
+    <string name="titleFetchingErr">Fetching XKCD failed</string>
+    <string name="button">Random XKCD</string>
+</resources>

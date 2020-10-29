@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>IPFS Class Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Class/IPFS" class="dashAnchor"></a>
+    <a title="IPFS Class Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html">Gomobile-IPFS - iOS Bridge</a> (86% documented)</p>
+        <p class="header-right"><a href="https://github.com/ipfs-shipyard/gomobile-ipfs"><img src="../img/gh.png"/>View on GitHub</a></p>
+        <p class="header-right">
+          <form role="search" action="../search.json">
+            <input type="text" placeholder="Search documentation" data-typeahead>
+          </form>
+        </p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">GomobileIPFS Reference</a>
+        <img id="carat" src="../img/carat.png" />
+        IPFS Class Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/Config.html">Config</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)ConfigError">ConfigError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/IPFS.html">IPFS</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/IPFSError.html">IPFSError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Node.html">Node</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)NodeError">NodeError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Repo.html">Repo</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)RepoError">RepoError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RequestBuilder.html">RequestBuilder</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)RequestBuilderError">RequestBuilderError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/SockManager.html">SockManager</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)SockManagerError">SockManagerError</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums/RequestBody.html">RequestBody</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/RequestOption.html">RequestOption</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Extensions/FileManager.html">FileManager</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>IPFS</h1>
+              <div class="declaration">
+                <div class="language">
+                  
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">IPFS</span></code></pre>
+
+                </div>
+              </div>
+            <p>IPFS is a class that wraps a go-ipfs node and its shell over UDS</p>
+
+              <div class="slightly-smaller">
+                <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/IPFS.swift#L27-L236">Show on GitHub</a>
+              </div>
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12GomobileIPFS0B0C15defaultRepoPathSSvpZ"></a>
+                    <a name="//apple_ref/swift/Variable/defaultRepoPath" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12GomobileIPFS0B0C15defaultRepoPathSSvpZ">defaultRepoPath</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">defaultRepoPath</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/IPFS.swift#L">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12GomobileIPFS0B0CyACSSKcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12GomobileIPFS0B0CyACSSKcfc">init(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Class constructor using repoPath passed as parameter on internal storage</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    <ul>
+<li><code><a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)SockManagerError">SockManagerError</a></code>: If the initialization of SockManager failed</li>
+<li><code><a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)ConfigError">ConfigError</a></code>: If the creation of the config failed</li>
+<li><code><a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)RepoError">RepoError</a></code>: If the initialization of the repo failed</li>
+</ul>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="n">_</span> <span class="nv">repoPath</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="n"><a href="../Classes/IPFS.html#/s:12GomobileIPFS0B0C15defaultRepoPathSSvpZ">defaultRepoPath</a></span><span class="p">)</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>repoPath</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The path of the go-ipfs repo (default: <code>ipfs/repo</code>)</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/IPFS.swift#L45-L66">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12GomobileIPFS0B0C19getAbsoluteRepoPath10Foundation3URLVyF"></a>
+                    <a name="//apple_ref/swift/Method/getAbsoluteRepoPath()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12GomobileIPFS0B0C19getAbsoluteRepoPath10Foundation3URLVyF">getAbsoluteRepoPath()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the absolute repo path as an URL</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getAbsoluteRepoPath</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">URL</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>The absolute repo path</p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/IPFS.swift#L70-L72">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12GomobileIPFS0B0C9isStartedSbyF"></a>
+                    <a name="//apple_ref/swift/Method/isStarted()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12GomobileIPFS0B0C9isStartedSbyF">isStarted()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns True if this IPFS instance is started by checking if the underlying go-ipfs node is instantiated</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">isStarted</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>True, if this IPFS instance is started</p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/IPFS.swift#L76-L78">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12GomobileIPFS0B0C5startyyKF"></a>
+                    <a name="//apple_ref/swift/Method/start()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12GomobileIPFS0B0C5startyyKF">start()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Starts this IPFS instance</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    <ul>
+<li><code><a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)RepoError">RepoError</a></code>: If the opening of the repo failed</li>
+<li><code><a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)NodeError">NodeError</a></code>: If the node is already started or if its startup fails</li>
+</ul>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">start</span><span class="p">()</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/IPFS.swift#L84-L108">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12GomobileIPFS0B0C4stopyyKF"></a>
+                    <a name="//apple_ref/swift/Method/stop()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12GomobileIPFS0B0C4stopyyKF">stop()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Stops this IPFS instance</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    <code><a href="../Classes/IPFSError.html">IPFSError</a></code>: If the node is already stopped or if its stop fails
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">stop</span><span class="p">()</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/IPFS.swift#L112-L120">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12GomobileIPFS0B0C7restartyyKF"></a>
+                    <a name="//apple_ref/swift/Method/restart()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12GomobileIPFS0B0C7restartyyKF">restart()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Restarts this IPFS instance</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    <ul>
+<li><code><a href="../Classes/IPFSError.html">IPFSError</a></code>: If the node is already stopped or if its stop fails</li>
+<li><code><a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)RepoError">RepoError</a></code>: If the opening of the repo failed</li>
+</ul>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">restart</span><span class="p">()</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/IPFS.swift#L126-L129">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12GomobileIPFS0B0C22enablePubsubExperimentyyKF"></a>
+                    <a name="//apple_ref/swift/Method/enablePubsubExperiment()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12GomobileIPFS0B0C22enablePubsubExperimentyyKF">enablePubsubExperiment()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Enable PubSub experimental feature on an IPFS node instance.</p>
+<div class="aside aside-attention">
+    <p class="aside-title">Attention</p>
+    A started instance must be restarted for this feature to be enabled
+
+</div><div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    <ul>
+<li><code><a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)RepoError">RepoError</a></code>: If the opening of the repo failed</li>
+</ul>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">enablePubsubExperiment</span><span class="p">()</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/IPFS.swift#L135-L138">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12GomobileIPFS0B0C19enableNamesysPubsubyyKF"></a>
+                    <a name="//apple_ref/swift/Method/enableNamesysPubsub()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12GomobileIPFS0B0C19enableNamesysPubsubyyKF">enableNamesysPubsub()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Enable PubSub experimental feature and IPNS record distribution through PubSub.</p>
+<div class="aside aside-attention">
+    <p class="aside-title">Attention</p>
+    A started instance must be restarted for this feature to be enabled
+
+</div><div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    <ul>
+<li><code><a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)RepoError">RepoError</a></code>: If the opening of the repo failed</li>
+</ul>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">enableNamesysPubsub</span><span class="p">()</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/IPFS.swift#L144-L147">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12GomobileIPFS0B0C9getConfigSDySSypGyKF"></a>
+                    <a name="//apple_ref/swift/Method/getConfig()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12GomobileIPFS0B0C9getConfigSDySSypGyKF">getConfig()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Gets the IPFS instance config as a dict</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    <ul>
+<li><code><a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)RepoError">RepoError</a></code>: If the opening of the repo or the getting of its config failed</li>
+<li><code><a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)ConfigError">ConfigError</a></code>: If the getting of the config as a dict failed</li>
+</ul>
+
+</div><div class="aside aside-seealso">
+    <p class="aside-title">Seealso</p>
+    <a href="https://github.com/ipfs/go-ipfs/blob/master/docs/config.md">IPFS Config Doc</a>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getConfig</span><span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt">Any</span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>The IPFS instance config as a dict</p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/IPFS.swift#L155-L159">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12GomobileIPFS0B0C9setConfigyySDySSypGSgKF"></a>
+                    <a name="//apple_ref/swift/Method/setConfig(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12GomobileIPFS0B0C9setConfigyySDySSypGSgKF">setConfig(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Sets dict config passed as parameter as IPFS config or reset to default config (with a new identity)
+if the config parameter is nil</p>
+<div class="aside aside-attention">
+    <p class="aside-title">Attention</p>
+    A started IPFS instance must be restarted for its config to be applied
+
+</div><div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    <ul>
+<li><code><a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)RepoError">RepoError</a></code>: If the opening of the repo or the setting of its config failed</li>
+<li><code><a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)ConfigError">ConfigError</a></code>: If the setting of the config as a dict failed</li>
+</ul>
+
+</div><div class="aside aside-seealso">
+    <p class="aside-title">Seealso</p>
+    <a href="https://github.com/ipfs/go-ipfs/blob/master/docs/config.md">IPFS Config Doc</a>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setConfig</span><span class="p">(</span><span class="n">_</span> <span class="nv">config</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt">Any</span><span class="p">]?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>config</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The IPFS instance dict config to set (if nil, default config will be used)</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/IPFS.swift#L169-L177">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12GomobileIPFS0B0C12getConfigKeyySDySSypGSSKF"></a>
+                    <a name="//apple_ref/swift/Method/getConfigKey(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12GomobileIPFS0B0C12getConfigKeyySDySSypGSSKF">getConfigKey(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Gets the dict value associated to the key passed as parameter in the IPFS instance config</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    <ul>
+<li><code><a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)RepoError">RepoError</a></code>: If the opening of the repo or the getting of its config failed</li>
+<li><code><a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)ConfigError">ConfigError</a></code>: If the getting of the config value as a dict failed</li>
+</ul>
+
+</div><div class="aside aside-seealso">
+    <p class="aside-title">Seealso</p>
+    <a href="https://github.com/ipfs/go-ipfs/blob/master/docs/config.md">IPFS Config Doc</a>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getConfigKey</span><span class="p">(</span><span class="n">_</span> <span class="nv">key</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt">Any</span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>key</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The key associated to the value to get in the IPFS config</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>The dict value associated to the key passed as parameter in the IPFS instance config</p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/IPFS.swift#L186-L190">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12GomobileIPFS0B0C12setConfigKeyyySS_SDySSypGtKF"></a>
+                    <a name="//apple_ref/swift/Method/setConfigKey(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12GomobileIPFS0B0C12setConfigKeyyySS_SDySSypGtKF">setConfigKey(_:<wbr>_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Sets dict config value to the key passed as parameters in the IPFS instance config</p>
+<div class="aside aside-attention">
+    <p class="aside-title">Attention</p>
+    A started IPFS instance must be restarted for its config to be applied
+
+</div><div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    <ul>
+<li><code><a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)RepoError">RepoError</a></code>: If the opening of the repo or the getting/setting of its config failed</li>
+<li><code><a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)ConfigError">ConfigError</a></code>: If the setting of the config value as a dict failed</li>
+</ul>
+
+</div><div class="aside aside-seealso">
+    <p class="aside-title">Seealso</p>
+    <a href="https://github.com/ipfs/go-ipfs/blob/master/docs/config.md">IPFS Config Doc</a>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setConfigKey</span><span class="p">(</span><span class="n">_</span> <span class="nv">key</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="n">_</span> <span class="nv">value</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt">Any</span><span class="p">])</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>key</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The key associated to the value to set in the IPFS instance config</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>value</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The dict value associated to the key to set in the IPFS instance config</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/IPFS.swift#L201-L207">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12GomobileIPFS0B0C10newRequestyAA0D7BuilderCSSKF"></a>
+                    <a name="//apple_ref/swift/Method/newRequest(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12GomobileIPFS0B0C10newRequestyAA0D7BuilderCSSKF">newRequest(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Creates and returns a RequestBuilder associated to this IPFS instance shell</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    <code><a href="../Classes/IPFSError.html">IPFSError</a></code>: If the request creaton failed
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">newRequest</span><span class="p">(</span><span class="n">_</span> <span class="nv">command</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Classes/RequestBuilder.html">RequestBuilder</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>command</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The command of the request</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>A RequestBuilder based on the command passed as parameter</p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/IPFS.swift#L213-L219">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12GomobileIPFS0B0C10setDNSPairyySS_SStFZ"></a>
+                    <a name="//apple_ref/swift/Method/setDNSPair(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12GomobileIPFS0B0C10setDNSPairyySS_SStFZ">setDNSPair(_:<wbr>_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Sets the primary and secondary DNS for gomobile (hacky, will be removed in future version)</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kd">func</span> <span class="nf">setDNSPair</span><span class="p">(</span><span class="n">_</span> <span class="nv">primary</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="n">_</span> <span class="nv">secondary</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>primary</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The primary DNS address in the form <code>&lt;ip4&gt;:&lt;port&gt;</code></p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>secondary</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The secondary DNS address in the form <code>&lt;ip4&gt;:&lt;port&gt;</code></p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/IPFS.swift#L225-L227">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-09-13)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.5</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

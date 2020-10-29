@@ -1,0 +1,148 @@
+---
+global:
+  github:
+    repo: ipfs-shipyard/gomobile-ipfs
+    url: https://github.com/ipfs-shipyard/gomobile-ipfs
+    git_url: https://github.com/ipfs-shipyard/gomobile-ipfs.git
+    issues_url: https://github.com/ipfs-shipyard/gomobile-ipfs/issues
+
+  changelog: &global_changelog CHANGELOG.md
+
+  licenses:
+    - name: The Apache Software License, Version 2.0
+      short_name: Apache-2.0
+      url: http://www.apache.org/licenses/LICENSE-2.0.txt
+      distribution: repo
+    - name: MIT License
+      short_name: MIT
+      url: http://www.opensource.org/licenses/mit-license.php
+      distribution: repo
+
+  berty: &berty
+    - organization: Berty Technologies
+      organization_url: https://berty.tech
+
+  developers:
+    - id: aeddi
+      name: Antoine Eddi
+      email: antoine.e.b@gmail.com
+      <<: *berty
+    - id: gfanton
+      name: Guilhem Fanton
+      email: guilhem.fanton@gmail.com
+      <<: *berty
+
+  bintray_orga: berty
+
+  group_id: ipfs.gomobile
+
+  android:
+    compile_sdk_version: &compile_sdk_version 29
+    min_sdk_version: 21
+    target_sdk_version: *compile_sdk_version
+
+    bintray_url: https://dl.bintray.com/berty/gomobile-ipfs-android
+    repo: gomobile-ipfs-android
+    packaging: aar
+
+    scm:
+      connection: scm:git:git://github.com/ipfs-shipyard/gomobile-ipfs.git
+      developer_connection:
+        scm:git:ssh://github.com:ipfs-shipyard/gomobile-ipfs.git
+      url: https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master
+
+  ios:
+    platform: :ios, '10.0'
+
+    bintray_url: https://dl.bintray.com/berty/gomobile-ipfs-ios
+    repo: gomobile-ipfs-ios
+
+  demo_app:
+    application_id: example
+    bintray_url: https://dl.bintray.com/berty/gomobile-ipfs-demo
+    repo: gomobile-ipfs-demo
+
+go_core:
+  android:
+    artifact_id: core
+    name: Gomobile-IPFS - Android Core
+    description:
+      Android Gomobile package exposing go-ipfs methods required by
+      Gomobile-IPFS-Bridge
+
+    override: false
+    publish: true
+    public_download_numbers: true
+    github_release_notes_file: *global_changelog
+    readme_syntax:  # markdown || asciidoc || plain_text
+    readme_content:
+
+  ios:
+    package: core
+    name: Gomobile-IPFS-Core
+    summary:
+      iOS Gomobile package exposing go-ipfs methods required by
+      Gomobile-IPFS-Bridge
+
+    override: false
+    publish: true
+    public_download_numbers: true
+    github_release_notes_file: *global_changelog
+    readme_syntax:  # markdown || asciidoc || plain_text
+    readme_content:
+
+android_bridge:
+  artifact_id: bridge
+  name: Gomobile-IPFS - Android Bridge
+  description:
+    Java package offering a simple interface to the underlying
+    Gomobile-IPFS-Core objects
+
+  override: false
+  publish: true
+  public_download_numbers: true
+  github_release_notes_file: *global_changelog
+
+ios_bridge:
+  swift_version: 5.0
+
+  package: bridge
+  name: Gomobile-IPFS-Bridge
+  import_name: GomobileIPFS
+  summary:
+    Swift module offering a simple interface to the underlying
+    Gomobile-IPFS-Core objects
+
+  override: false
+  publish: true
+  public_download_numbers: true
+  github_release_notes_file: *global_changelog
+  readme_syntax:  # markdown || asciidoc || plain_text
+  readme_content:
+
+android_demo_app:
+  package: android
+  filename: android-demo
+  description:
+    Simple demo app for Android that fetches a random XKCD using Gomobile-IPFS
+
+  override: false
+  publish: true
+  public_download_numbers: true
+  github_release_notes_file: *global_changelog
+  readme_syntax:  # markdown || asciidoc || plain_text
+  readme_content:
+
+ios_demo_app:
+  name: GomobileIPFS Example
+  package: ios
+  filename: ios-demo
+  description:
+    Simple demo app for iOS that fetches a random XKCD using Gomobile-IPFS
+
+  override: false
+  publish: true
+  public_download_numbers: true
+  github_release_notes_file: *global_changelog
+  readme_syntax:  # markdown || asciidoc || plain_text
+  readme_content:

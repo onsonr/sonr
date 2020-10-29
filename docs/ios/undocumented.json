@@ -1,0 +1,61 @@
+{
+  "warnings": [
+    {
+      "file": "/Users/runner/work/gomobile-ipfs/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/Error.swift",
+      "line": 41,
+      "symbol": "IPFSError.localizedFullDescription",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/gomobile-ipfs/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/IPFS.swift",
+      "line": 12,
+      "symbol": "FileManager.compatTemporaryDirectory",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/gomobile-ipfs/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/IPFS.swift",
+      "line": 28,
+      "symbol": "IPFS.defaultRepoPath",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/gomobile-ipfs/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/RequestBuilder.swift",
+      "line": 13,
+      "symbol": "RequestOption.bool(_:)",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/gomobile-ipfs/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/RequestBuilder.swift",
+      "line": 14,
+      "symbol": "RequestOption.string(_:)",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/gomobile-ipfs/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/RequestBuilder.swift",
+      "line": 15,
+      "symbol": "RequestOption.bytes(_:)",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/gomobile-ipfs/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/RequestBuilder.swift",
+      "line": 20,
+      "symbol": "RequestBody.string(_:)",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/gomobile-ipfs/gomobile-ipfs/ios/Bridge/GomobileIPFS/Sources/RequestBuilder.swift",
+      "line": 21,
+      "symbol": "RequestBody.bytes(_:)",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    }
+  ],
+  "source_directory": "/Users/runner/work/gomobile-ipfs/gomobile-ipfs/ios/Bridge"
+}

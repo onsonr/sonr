@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Config Class Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Class/Config" class="dashAnchor"></a>
+    <a title="Config Class Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html">Gomobile-IPFS - iOS Bridge</a> (86% documented)</p>
+        <p class="header-right"><a href="https://github.com/ipfs-shipyard/gomobile-ipfs"><img src="../img/gh.png"/>View on GitHub</a></p>
+        <p class="header-right">
+          <form role="search" action="../search.json">
+            <input type="text" placeholder="Search documentation" data-typeahead>
+          </form>
+        </p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">GomobileIPFS Reference</a>
+        <img id="carat" src="../img/carat.png" />
+        Config Class Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/Config.html">Config</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)ConfigError">ConfigError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/IPFS.html">IPFS</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/IPFSError.html">IPFSError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Node.html">Node</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)NodeError">NodeError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Repo.html">Repo</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)RepoError">RepoError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RequestBuilder.html">RequestBuilder</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)RequestBuilderError">RequestBuilderError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/SockManager.html">SockManager</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)SockManagerError">SockManagerError</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums/RequestBody.html">RequestBody</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/RequestOption.html">RequestOption</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Extensions/FileManager.html">FileManager</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>Config</h1>
+              <div class="declaration">
+                <div class="language">
+                  
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Config</span></code></pre>
+
+                </div>
+              </div>
+            <p>Config is a class that wraps a golang <code>config</code> object</p>
+
+<p><strong>Should not be used on its own</strong></p>
+
+              <div class="slightly-smaller">
+                <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/Config.swift#L28-L119">Show on GitHub</a>
+              </div>
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12GomobileIPFS6ConfigCyACSo04CoreC0Ccfc"></a>
+                    <a name="//apple_ref/swift/Method/init(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12GomobileIPFS6ConfigCyACSo04CoreC0Ccfc">init(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Class constructor using a golang <code>config</code> object passed as parameter as config instance</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="n">_</span> <span class="nv">config</span><span class="p">:</span> <span class="kt">CoreConfig</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>config</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A golang <code>config</code> object</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/Config.swift#L33-L35">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12GomobileIPFS6ConfigC07defaultC0ACyKFZ"></a>
+                    <a name="//apple_ref/swift/Method/defaultConfig()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12GomobileIPFS6ConfigC07defaultC0ACyKFZ">defaultConfig()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns a default golang <code>config</code> object</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    <code><a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)ConfigError">ConfigError</a></code>: If the creation of the config failed
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kd">func</span> <span class="nf">defaultConfig</span><span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Config</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>A golang <code>config</code> object</p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/Config.swift#L40-L48">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12GomobileIPFS6ConfigC05emptyC0ACyKFZ"></a>
+                    <a name="//apple_ref/swift/Method/emptyConfig()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12GomobileIPFS6ConfigC05emptyC0ACyKFZ">emptyConfig()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns an empty golang <code>config</code> object</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    <code><a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)ConfigError">ConfigError</a></code>: If the creation of the config failed
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kd">func</span> <span class="nf">emptyConfig</span><span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Config</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>A golang <code>config</code> object</p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/Config.swift#L53-L61">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12GomobileIPFS6ConfigC14configFromDictyACSDySSypGKFZ"></a>
+                    <a name="//apple_ref/swift/Method/configFromDict(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12GomobileIPFS6ConfigC14configFromDictyACSDySSypGKFZ">configFromDict(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns a golang <code>config</code> object based on the dict passed as parameter</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    <code><a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)ConfigError">ConfigError</a></code>: If the creation of the config failed
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kd">func</span> <span class="nf">configFromDict</span><span class="p">(</span><span class="n">_</span> <span class="nv">dict</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt">Any</span><span class="p">])</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Config</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>dict</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The dict containing the config to create</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>A golang <code>config</code> object</p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/Config.swift#L67-L77">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12GomobileIPFS6ConfigC3getSDySSypGyKF"></a>
+                    <a name="//apple_ref/swift/Method/get()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12GomobileIPFS6ConfigC3getSDySSypGyKF">get()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Gets the config as a dict</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    <code><a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)ConfigError">ConfigError</a></code>: If the getting of the config failed
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">get</span><span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt">Any</span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>A dict containing the config</p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/Config.swift#L82-L90">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12GomobileIPFS6ConfigC6setKeyyySS_SDySSypGtKF"></a>
+                    <a name="//apple_ref/swift/Method/setKey(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12GomobileIPFS6ConfigC6setKeyyySS_SDySSypGtKF">setKey(_:<wbr>_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Sets a key and its value in the config</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    <code><a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)ConfigError">ConfigError</a></code>: If the setting of the key failed
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setKey</span><span class="p">(</span><span class="n">_</span> <span class="nv">key</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="n">_</span> <span class="nv">value</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt">Any</span><span class="p">])</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>key</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The key to set</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>value</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A dict containing the value to set</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/Config.swift#L97-L104">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:12GomobileIPFS6ConfigC6getKeyySDySSypGSSKF"></a>
+                    <a name="//apple_ref/swift/Method/getKey(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:12GomobileIPFS6ConfigC6getKeyySDySSypGSSKF">getKey(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Gets the value associated to the key passed as parameter in the config</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    <code><a href="../Classes.html#/c:@M@GomobileIPFS@objc(cs)ConfigError">ConfigError</a></code>: If the getting of the key failed
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getKey</span><span class="p">(</span><span class="n">_</span> <span class="nv">key</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt">Any</span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>key</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The key to get</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>A dict containing the value associated to the key passed as parameter</p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/ipfs-shipyard/gomobile-ipfs/tree/master/ios/Bridge/GomobileIPFS/Sources/Config.swift#L110-L118">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-09-13)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.5</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

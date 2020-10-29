@@ -1,0 +1,26 @@
+Pod::Spec.new do |spec|
+  spec.name                = '{{name}}'
+  spec.version             = '{{version}}'
+  spec.summary             = '{{summary}}'
+  spec.homepage            = '{{homepage}}'
+  {{#description}}
+  spec.description         = <<-DESC
+{{description}}
+                             DESC
+  {{/description}}
+
+  spec.license             = {{#license}}{ {{#type}}:type => '{{type}}'{{/type}}{{^text}} }{{/text}}{{#text}}, :text => <<-LICENSE
+{{text}}
+                               LICENSE
+                             }{{/text}}{{/license}}
+  spec.authors             = { {{#authors}}{{#.}}{{#has_comma}}, {{/has_comma}}{{#name}}'{{name}}'{{/name}}{{#email}} => '{{email}}'{{/email}}{{/.}}{{/authors}} }
+
+  spec.platform            = {{{platform}}}
+  spec.source              = { :http => '{{source}}' }
+  {{#swift_version}}spec.swift_version       = '{{swift_version}}'{{/swift_version}}
+  {{#static_framework}}spec.static_framework    = true{{/static_framework}}
+  {{#source_files}}spec.source_files        = '{{source_files}}'{{/source_files}}
+  {{#header_dir}}spec.header_dir          = '{{header_dir}}'{{/header_dir}}
+  {{#framework}}spec.vendored_frameworks = '{{framework}}'{{/framework}}
+  {{#dependency}}spec.dependency            {{{dependency}}}{{/dependency}}
+end

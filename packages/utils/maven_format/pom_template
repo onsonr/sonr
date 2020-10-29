@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>{{group_id}}</groupId>
+  <artifactId>{{artifact_id}}</artifactId>
+  <version>{{version}}</version>
+  <packaging>{{packaging}}</packaging>
+
+  <name>{{name}}</name>
+  <description>{{description}}</description>
+  {{#url}}
+  <url>{{url}}</url>
+  {{/url}}
+
+  {{#has_licenses}}
+  <licenses>
+    {{#licenses}}
+    {{#.}}
+    <license>
+      {{#name}}
+      <name>{{.}}</name>
+      {{/name}}
+      {{#url}}
+      <url>{{url}}</url>
+      {{/url}}
+      {{#distribution}}
+      <distribution>{{distribution}}</distribution>
+      {{/distribution}}
+    </license>
+    {{/.}}
+    {{/licenses}}
+  </licenses>
+  {{/has_licenses}}
+
+  {{#has_developers}}
+  <developers>
+    {{#developers}}
+    {{#.}}
+    <developer>
+      {{#id}}
+      <id>{{id}}</id>
+      {{/id}}
+      {{#name}}
+      <name>{{name}}</name>
+      {{/name}}
+      {{#email}}
+      <email>{{email}}</email>
+      {{/email}}
+      {{#organization}}
+      <organization>{{organization}}</organization>
+      {{/organization}}
+      {{#organization_url}}
+      <organizationUrl>{{organization_url}}</organizationUrl>
+      {{/organization_url}}
+    </developer>
+    {{/.}}
+    {{/developers}}
+  </developers>
+  {{/has_developers}}
+
+  {{#scm}}
+  <scm>
+    {{#connection}}
+    <connection>{{connection}}</connection>
+    {{/connection}}
+    {{#developer_connection}}
+    <developerConnection>{{developer_connection}}</developerConnection>
+    {{/developer_connection}}
+    {{#url}}
+    <url>{{url}}</url>
+    {{/url}}
+  </scm>
+  {{/scm}}
+</project>

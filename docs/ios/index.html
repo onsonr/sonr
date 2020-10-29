@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>GomobileIPFS  Reference</title>
+    <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="js/jquery.min.js" defer></script>
+    <script src="js/jazzy.js" defer></script>
+    
+    <script src="js/lunr.min.js" defer></script>
+    <script src="js/typeahead.jquery.js" defer></script>
+    <script src="js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+    <a title="GomobileIPFS  Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="index.html">Gomobile-IPFS - iOS Bridge</a> (86% documented)</p>
+        <p class="header-right"><a href="https://github.com/ipfs-shipyard/gomobile-ipfs"><img src="img/gh.png"/>View on GitHub</a></p>
+        <p class="header-right">
+          <form role="search" action="search.json">
+            <input type="text" placeholder="Search documentation" data-typeahead>
+          </form>
+        </p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="index.html">GomobileIPFS Reference</a>
+        <img id="carat" src="img/carat.png" />
+        GomobileIPFS  Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Classes/Config.html">Config</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes.html#/c:@M@GomobileIPFS@objc(cs)ConfigError">ConfigError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/IPFS.html">IPFS</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/IPFSError.html">IPFSError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Node.html">Node</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes.html#/c:@M@GomobileIPFS@objc(cs)NodeError">NodeError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Repo.html">Repo</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes.html#/c:@M@GomobileIPFS@objc(cs)RepoError">RepoError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/RequestBuilder.html">RequestBuilder</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes.html#/c:@M@GomobileIPFS@objc(cs)RequestBuilderError">RequestBuilderError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/SockManager.html">SockManager</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes.html#/c:@M@GomobileIPFS@objc(cs)SockManagerError">SockManagerError</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Enums/RequestBody.html">RequestBody</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Enums/RequestOption.html">RequestOption</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Extensions/FileManager.html">FileManager</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            
+            <h1 id='gomobile-ipfs' class='heading'>gomobile-ipfs</h1>
+
+<p>This repo aims to provide packages for Android, iOS and React-Native that
+allow one to run and use an IPFS node on mobile devices. It is also a place
+to discuss the constraints of running IPFS on mobile in order to find
+solutions and exchange tips.</p>
+
+<p>:warning: <em>this repo is still experimental, contributions are very welcome</em></p>
+
+<p>You can check the packages documentation <a href="https://ipfs-shipyard.github.io/gomobile-ipfs/">here</a>.</p>
+<h2 id='roadmap' class='heading'>Roadmap</h2>
+
+<ul>
+<li>[x] Basic Java/Swift &lt;-&gt; go-ipfs bindings</li>
+<li>[x] Packages built and published using CI</li>
+<li>[x] Unit tests using Android/iOS testing frameworks</li>
+<li>[x] Bind node config setters and getters</li>
+<li>[ ] InputStream as request body and request response (in progress)</li>
+<li>[ ] React-Native module (in progress)</li>
+<li>[ ] <code>SetStreamHandler(protocolID, handler)</code> and
+<code>NewStream(peerID, protocolID)</code> bindings</li>
+<li>[ ] Android/iOS lifecycle management</li>
+<li>[ ] Improve this README</li>
+</ul>
+<h2 id='build' class='heading'>Build</h2>
+
+<p>TODO</p>
+<h2 id='code-example' class='heading'>Code example</h2>
+
+<p>TODO</p>
+<h2 id='lead-maintainers' class='heading'>Lead Maintainers</h2>
+
+<ul>
+<li><a href="https://github.com/aeddi">Antoine Eddi</a></li>
+<li><a href="https://github.com/gfanton">Guilhem Fanton</a></li>
+<li><a href="https://github.com/glouvigny">Guillaume Louvigny</a></li>
+<li><a href="https://github.com/moul">Manfred Touron</a></li>
+</ul>
+<h2 id='license' class='heading'>License</h2>
+
+<p>Dual <a href="./LICENSE-MIT">MIT</a>/<a href="./LICENSE-APACHE">Apache-2.0</a> license</p>
+
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-09-13)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.5</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>
