@@ -1,4 +1,4 @@
-# Go Libp2p Implementation for Sonr.io
+# Libp2p Implementation for Sonr.io
 
 # Build
 Use make command in packages directory in reference_example to run example 
