@@ -2,6 +2,7 @@ package host
 
 import (
 	"context"
+	"fmt"
 
 	p2p "github.com/libp2p/go-libp2p"
 	p2p_connmgr "github.com/libp2p/go-libp2p-core/connmgr"
@@ -11,18 +12,38 @@ import (
 	p2p_peer "github.com/libp2p/go-libp2p-core/peer"
 	p2p_pstore "github.com/libp2p/go-libp2p-core/peerstore"
 	p2p_protocol "github.com/libp2p/go-libp2p-core/protocol"
+	p2p_config "github.com/libp2p/go-libp2p/config"
+
+	ipfs_p2p "github.com/ipfs/go-ipfs/core/node/libp2p"
+
 	ma "github.com/multiformats/go-multiaddr"
 )
 
 // MobileHost is an host
 var _ p2p_host.Host = (*MobileHost)(nil)
 
-// MobileHost is structure with p2p_host as value
 type MobileHost struct {
 	p2p_host.Host
 }
 
-// NewMobileHost creates and returns a Libp2p host node
+func NewMobileHostOption(mcfg *MobileConfig) ipfs_p2p.HostOption {
+	return func(ctx context.Context, id p2p_peer.ID, ps p2p_pstore.Peerstore, options ...p2p.Option) (p2p_host.Host, error) {
+		pkey := ps.PrivKey(id)
+		if pkey == nil {
+			return nil, fmt.Errorf("missing private key for node ID: %s", id.Pretty())
+		}
+
+		options = append([]p2p.Option{p2p.Identity(pkey), p2p.Peerstore(ps)}, options...)
+
+		cfg := &p2p_config.Config{}
+		if err := cfg.Apply(options...); err != nil {
+			return nil, err
+		}
+
+		return NewMobileHost(ctx, mcfg, cfg)
+	}
+}
+
 func NewMobileHost(ctx context.Context, _ *MobileConfig, cfg *p2p.Config) (p2p_host.Host, error) {
 	host, err := cfg.NewNode(ctx)
 	if err != nil {
@@ -46,12 +67,12 @@ func (mh *MobileHost) Peerstore() p2p_pstore.Peerstore {
 	return mh.Host.Peerstore()
 }
 
-// Addrs Returns the listen addresses of the Host
+// Returns the listen addresses of the Host
 func (mh *MobileHost) Addrs() []ma.Multiaddr {
 	return mh.Host.Addrs()
 }
 
-// Network returns the Network interface of the Host
+// Networks returns the Network interface of the Host
 func (mh *MobileHost) Network() p2p_network.Network {
 	return mh.Host.Network()
 }

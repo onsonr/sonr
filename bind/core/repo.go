@@ -3,10 +3,10 @@ package core
 import (
 	"path/filepath"
 
-	"github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/node"
 	ipfs_loader "github.com/ipfs/go-ipfs/plugin/loader"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
 	ipfs_fsrepo "github.com/ipfs/go-ipfs/repo/fsrepo"
+	"github.com/sonr-io/p2p/pkg/node"
 )
 
 var plugins *ipfs_loader.PluginLoader
