@@ -1,4 +1,7 @@
 # sonr_p2p
 
 ## Build
-use make command in packages directory
+Use make command in packages directory in reference_example to run example 
+
+## Purpose
+Completely replace sonr_match, Session Repo, TransferCubit
