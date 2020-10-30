@@ -1,2 +1,0 @@
-bintray-python==0.8.0
-PyYAML==5.3
