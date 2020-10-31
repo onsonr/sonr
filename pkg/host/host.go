@@ -1,4 +1,4 @@
-package core
+package host
 
 import (
 	"context"
@@ -18,11 +18,6 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/host"
 )
-
-// MobileHost implementation
-type MobileHost struct {
-	host.Host
-}
 
 // NewMobileHost is created
 func main() {
