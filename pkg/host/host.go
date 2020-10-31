@@ -19,8 +19,8 @@ import (
 	"github.com/libp2p/go-libp2p-core/host"
 )
 
-// NewMobileHost is created
-func start() host.Host {
+// Start new Host and return value
+func Start() host.Host {
 	ctx := context.Background()
 
 	// Set your own keypair

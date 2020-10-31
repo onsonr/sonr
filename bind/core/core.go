@@ -2,6 +2,7 @@ package core
 
 import (
 	"fmt"
+
 	sonrHost "github.com/sonr-io/p2p/pkg/host"
 )
 
@@ -11,8 +12,8 @@ type MobileHost struct {
 }
 
 func startHost() MobileHost {
-	h := sonrHost.start()
+	h := sonrHost.Start()
 	return MobileHost{
-		id: fmt.Printf("Hello World, my hosts ID is %s\n", h.ID()),
+		id: fmt.Sprintf("%s\n", h.ID()),
 	}
 }
