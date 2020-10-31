@@ -20,7 +20,7 @@ import (
 )
 
 // NewMobileHost is created
-func main() {
+func start() host.Host {
 	ctx := context.Background()
 
 	// Set your own keypair
@@ -109,4 +109,5 @@ func main() {
 	}
 
 	fmt.Printf("Hello World, my hosts ID is %s\n", h.ID())
+	return h
 }
