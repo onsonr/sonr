@@ -18,7 +18,8 @@ const ChatRoomBufSize = 128
 // messages are pushed to the Messages channel.
 type Lobby struct {
 	// Messages is a channel of messages received from other peers in the chat room
-	Messages chan *Message
+	Messages    chan *Message
+	LastMessage string
 
 	ctx   context.Context
 	ps    *pubsub.PubSub
@@ -56,6 +57,7 @@ func JoinLobby(ctx context.Context, h *host.Host, selfID peer.ID, olcCode string
 		panic(err)
 	}
 
+	// Create Lobby Type
 	cr := &Lobby{
 		ctx:      ctx,
 		ps:       ps,
@@ -72,16 +74,16 @@ func JoinLobby(ctx context.Context, h *host.Host, selfID peer.ID, olcCode string
 }
 
 // Publish sends a message to the pubsub topic.
-func (cr *Lobby) Publish(message string) error {
+func (cr *Lobby) Publish(message string) {
 	m := Message{
 		Message:  message,
 		SenderID: cr.self.Pretty(),
 	}
 	msgBytes, err := json.Marshal(m)
 	if err != nil {
-		return err
+		panic(err)
 	}
-	return cr.topic.Publish(cr.ctx, msgBytes)
+	cr.topic.Publish(cr.ctx, msgBytes)
 }
 
 // ListPeers returns peerids in room
@@ -97,6 +99,7 @@ func (cr *Lobby) readLoop() {
 			close(cr.Messages)
 			return
 		}
+		cr.LastMessage = msg.String()
 		// only forward messages delivered by others
 		if msg.ReceivedFrom == cr.self {
 			continue
@@ -112,5 +115,5 @@ func (cr *Lobby) readLoop() {
 }
 
 func olcName(roomName string) string {
-	return "chat-room:" + roomName
+	return "olc=" + roomName
 }

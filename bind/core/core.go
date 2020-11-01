@@ -2,7 +2,7 @@ package core
 
 import (
 	"context"
-	"encoding/json"
+	"fmt"
 
 	"github.com/libp2p/go-libp2p-core/host"
 	sonrHost "github.com/sonr-io/p2p/pkg/host"
@@ -26,6 +26,7 @@ func Start(olc string) string {
 
 	// Join Lobby with Given OLC
 	lobbyRef = sonrLobby.JoinLobby(ctx, &hostNode, hostNode.ID(), olc)
+	lobbyRef.Publish("Hello")
 
 	// Construct String
 	result := hostNode.ID().ShortString() + " in " + lobbyRef.ID
@@ -41,16 +42,8 @@ func Send(content string) {
 
 // GetMessages returns messages as
 func GetMessages() string {
-	// Convert messages to bytes of messages array
-	b, err := json.Marshal(lobbyRef.Messages)
-
-	// handle error
-	if err != nil {
-		panic(err)
-	}
-
 	// Return bytes as string
-	return string(b)
+	return lobbyRef.LastMessage
 }
 
 // ShutDown terminates host instance
@@ -62,6 +55,6 @@ func ShutDown() bool {
 	if e != nil {
 		panic(e)
 	}
-
+	fmt.Printf("Sonr P2P: Host ShutDown..")
 	return true
 }
