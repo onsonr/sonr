@@ -20,10 +20,8 @@ import (
 	libp2ptls "github.com/libp2p/go-libp2p-tls"
 )
 
-// NewHost creates new Host and return value
-func NewHost() host.Host {
-	ctx := context.Background()
-
+// CreateHost creates new host, sets it up, then returns it
+func CreateHost(ctx context.Context) host.Host {
 	// Set your own keypair
 	priv, _, err := crypto.GenerateKeyPair(
 		crypto.Ed25519, // Select your key type. Ed25519 are nice short
@@ -101,13 +99,12 @@ func NewHost() host.Host {
 	var wg sync.WaitGroup
 	for _, addr := range dht.DefaultBootstrapPeers {
 		pi, _ := peer.AddrInfoFromP2pAddr(addr)
-		fmt.Printf("I am %s\n", addr)
+		fmt.Printf("Sonr P2P: I am %s\n", addr)
 		// We ignore errors as some bootstrap peers may be down
 		// and that is fine.
 		h.Connect(ctx, *pi)
 	}
 	wg.Wait()
 
-	fmt.Printf("Hello World, my hosts ID is %s\n", h.ID())
 	return h
 }
