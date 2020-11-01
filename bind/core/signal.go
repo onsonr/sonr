@@ -1,11 +1,5 @@
 package core
 
-// Message gets converted to/from JSON and sent in the body of pubsub messages.
-type Message struct {
-	Message  string
-	SenderID string
-}
-
 // Update enters the room with given OLC(Open-Location-Code)
 func update(updateJSON string) string {
 	nodeProfile = updateJSON

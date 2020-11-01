@@ -34,12 +34,9 @@ func Start(olc string) string {
 	return result
 }
 
-// Send begins the mobile host
-func Send(subject string, content string) {
-	switch subject {
-	default:
-		lobbyRef.Publish(content)
-	}
+// Send publishes message to lobby
+func Send(content string) {
+	lobbyRef.Publish(content)
 }
 
 // GetMessages returns messages as
