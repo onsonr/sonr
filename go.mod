@@ -3,6 +3,7 @@ module github.com/sonr-io/p2p
 go 1.15
 
 require (
+	github.com/cheekybits/genny v1.0.0
 	github.com/ipfs/go-log v1.0.4
 	github.com/libp2p/go-libp2p v0.11.0
 	github.com/libp2p/go-libp2p-autonat-svc v0.2.0

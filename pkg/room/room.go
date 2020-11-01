@@ -110,7 +110,6 @@ func readData(rw *bufio.ReadWriter) {
 			// Reset console colour: 	\x1b[0m
 			fmt.Printf("\x1b[32m%s\x1b[0m> ", str)
 		}
-
 	}
 }
 
