@@ -2,7 +2,6 @@ package core
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/libp2p/go-libp2p-core/host"
 	sonrHost "github.com/sonr-io/p2p/pkg/host"
@@ -44,17 +43,4 @@ func Send(content string) {
 func GetMessages() string {
 	// Return bytes as string
 	return lobbyRef.LastMessage
-}
-
-// ShutDown terminates host instance
-func ShutDown() bool {
-	// Close node
-	e := hostNode.Close()
-
-	// Check for error
-	if e != nil {
-		panic(e)
-	}
-	fmt.Printf("Sonr P2P: Host ShutDown..")
-	return true
 }
