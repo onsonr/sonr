@@ -45,7 +45,7 @@ func JoinLobby(ctx context.Context, h *host.Host, selfID peer.ID, olcCode string
 	}
 
 	// join the pubsub topic
-	topic, err := ps.Join(topicName(olcCode))
+	topic, err := ps.Join(olcName(olcCode))
 	if err != nil {
 		panic(err)
 	}
@@ -86,7 +86,7 @@ func (cr *Lobby) Publish(message string) error {
 
 // ListPeers returns peerids in room
 func (cr *Lobby) ListPeers() []peer.ID {
-	return cr.ps.ListPeers(topicName(cr.ID))
+	return cr.ps.ListPeers(olcName(cr.ID))
 }
 
 // readLoop pulls messages from the pubsub topic and pushes them onto the Messages channel.
@@ -111,6 +111,6 @@ func (cr *Lobby) readLoop() {
 	}
 }
 
-func topicName(roomName string) string {
+func olcName(roomName string) string {
 	return "chat-room:" + roomName
 }
