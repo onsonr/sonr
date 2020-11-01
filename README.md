@@ -2,6 +2,10 @@
     <img src="logos/header.png" alt="Sonr-Temp-Header"/>
   <br>
 </div>
+
+# Description
+> Manages the Sonr Libp2p node in Go
+
 # Build
 Use make command in packages directory in reference_example to run example 
 
