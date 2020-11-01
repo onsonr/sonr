@@ -1,33 +1,26 @@
 package core
 
 import (
-	"context"
+	"bytes"
 
-	"github.com/libp2p/go-libp2p-core/host"
-	sonrHost "github.com/sonr-io/p2p/pkg/host"
 	sonrLobby "github.com/sonr-io/p2p/pkg/lobby"
 )
 
-// Implementation
-var hostNode = (host.Host)(nil)
-var nodeProfile string
+// Message gets converted to/from JSON and sent in the body of pubsub messages.
+type Message struct {
+	Message  string
+	SenderID string
+}
 
-// Reference
-var lobbyRef = (*sonrLobby.Lobby)(nil)
+// Publish Sends message to Lobby
+func Publish(lobby *sonrLobby.Lobby, testPublish string) {
+	lobby.Publish(testPublish)
+}
 
-// Start begins the mobile host
-func Start(olc string) string {
-	// Create Context
-	ctx := context.Background()
-
-	// Create Host
-	hostNode := sonrHost.CreateHost(ctx)
-
-	// Join Lobby with Given OLC
-	lobbyRef = sonrLobby.JoinLobby(ctx, &hostNode, hostNode.ID(), olc)
-
-	// Return HostID
-	return hostNode.ID().String()
+// GetMessages returns messages as
+func GetMessages(lobby *sonrLobby.Lobby) {
+	var buf bytes.Buffer
+	lobby.Messages
 }
 
 // Update enters the room with given OLC(Open-Location-Code)
