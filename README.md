@@ -4,13 +4,35 @@
 </div>
 
 # Description
-> Manages the Sonr Libp2p node in Go
+> Manages the Sonr Libp2p node in Go, Handles File Management, Connection to Peer, Pub-Sub for Lobby, and Graph Data Structure.
 
 # Build
-Use make command in packages directory in reference_example to run example 
+> Use `gomobile bind` command in `bind\core`
 
-# Purpose
-Completely replace sonr_match, Session Repo, TransferCubit
+### Compatible types
+- Signed integer and floating point types. 
+- `int` `uint` `int16` `int32` `uint32` `int64` `uint64` `uintptr`
+
+- String and boolean types. `bool` `string`
+
+- Byte slice types. Note that byte slices are passed by reference,
+  and support mutation. 
+  - `byte // alias for uint8`  `rune // alias for int32, represents a Unicode code point`
+  - `complex64` `complex128`
+
+**Any function type all of whose parameters and results have
+  supported types.** 
+  Functions must return either no results,
+  one result, or two results where the type of the second is
+  the built-in 'error' type.
+
+Any interface type, all of whose exported methods have
+  supported function types.
+
+Any struct type, all of whose exported methods have
+  supported function types and all of whose exported fields
+  have supported types.
+
 
 # Resources
 ### GoMobile
