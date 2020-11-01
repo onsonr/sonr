@@ -3,24 +3,25 @@ package host
 import (
 	"context"
 	"fmt"
+	"sync"
 	"time"
 
 	"github.com/libp2p/go-libp2p"
+	"github.com/libp2p/go-libp2p-core/crypto"
+	"github.com/libp2p/go-libp2p-core/host"
+	"github.com/libp2p/go-libp2p-core/peer"
+
 	autonat "github.com/libp2p/go-libp2p-autonat-svc"
 	connmgr "github.com/libp2p/go-libp2p-connmgr"
-	"github.com/libp2p/go-libp2p-core/crypto"
-	"github.com/libp2p/go-libp2p-core/peer"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	libp2pquic "github.com/libp2p/go-libp2p-quic-transport"
 	routing "github.com/libp2p/go-libp2p-routing"
 	secio "github.com/libp2p/go-libp2p-secio"
 	libp2ptls "github.com/libp2p/go-libp2p-tls"
-
-	"github.com/libp2p/go-libp2p-core/host"
 )
 
-// Start new Host and return value
-func Start() host.Host {
+// NewHost creates new Host and return value
+func NewHost() host.Host {
 	ctx := context.Background()
 
 	// Set your own keypair
@@ -34,8 +35,10 @@ func Start() host.Host {
 		panic(err)
 	}
 
+	// Reference IPFS DHT
 	var idht *dht.IpfsDHT
 
+	// Create Host
 	h, err := libp2p.New(ctx,
 		// Use the keypair we generated
 		libp2p.Identity(priv),
@@ -94,12 +97,8 @@ func Start() host.Host {
 		panic(err)
 	}
 
-	// The last step to get fully up and running would be to connect to
-	// bootstrap peers (or any other peers). We leave this commented as
-	// this is an example and the peer will die as soon as it finishes, so
-	// it is unnecessary to put strain on the network.
-
 	// This connects to public bootstrappers
+	var wg sync.WaitGroup
 	for _, addr := range dht.DefaultBootstrapPeers {
 		pi, _ := peer.AddrInfoFromP2pAddr(addr)
 		fmt.Printf("I am %s\n", addr)
@@ -107,6 +106,7 @@ func Start() host.Host {
 		// and that is fine.
 		h.Connect(ctx, *pi)
 	}
+	wg.Wait()
 
 	fmt.Printf("Hello World, my hosts ID is %s\n", h.ID())
 	return h
