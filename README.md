@@ -1,5 +1,7 @@
-# Libp2p Implementation for Sonr.io
-
+<div align="center">
+    <img src="logos/header.png" alt="Sonr-Temp-Header"/>
+  <br>
+</div>
 # Build
 Use make command in packages directory in reference_example to run example 
 
