@@ -24,7 +24,7 @@ func Start(olc string) string {
 	hostNode := sonrHost.CreateHost(ctx)
 
 	// Join Lobby with Given OLC
-	lobbyRef = sonrLobby.JoinLobby(ctx, &hostNode, hostNode.ID(), olc)
+	lobbyRef = sonrLobby.JoinLobby(ctx, &hostNode, hostNode.ID(), hostNode.Addrs(), olc)
 	lobbyRef.Publish("Hello")
 
 	// Return result
@@ -33,7 +33,7 @@ func Start(olc string) string {
 
 // Send publishes message to lobby
 func Send(content string) {
-	lobbyRef.Publish(content)
+	lobbyRef.Publish(string(content))
 }
 
 // GetLastMessage returns messages as
