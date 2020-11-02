@@ -6,6 +6,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/multiformats/go-multiaddr"
 
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 )
@@ -26,8 +27,9 @@ type Lobby struct {
 	topic *pubsub.Topic
 	sub   *pubsub.Subscription
 
-	ID   string
-	self peer.ID
+	ID          string
+	selfID      peer.ID
+	selfAddress []multiaddr.Multiaddr
 }
 
 // Message gets converted to/from JSON and sent in the body of pubsub messages.
@@ -39,7 +41,7 @@ type Message struct {
 
 // JoinLobby tries to subscribe to the PubSub topic for the room name, returning
 // a ChatRoom on success.
-func JoinLobby(ctx context.Context, h *host.Host, selfID peer.ID, olcCode string) *Lobby {
+func JoinLobby(ctx context.Context, h *host.Host, selfID peer.ID, selfAddress []multiaddr.Multiaddr, olcCode string) *Lobby {
 	// create a new PubSub service using the GossipSub router
 	ps, err := pubsub.NewGossipSub(ctx, *h)
 	if err != nil {
@@ -60,13 +62,14 @@ func JoinLobby(ctx context.Context, h *host.Host, selfID peer.ID, olcCode string
 
 	// Create Lobby Type
 	cr := &Lobby{
-		ctx:      ctx,
-		ps:       ps,
-		topic:    topic,
-		sub:      sub,
-		self:     selfID,
-		ID:       olcCode,
-		Messages: make(chan *Message, ChatRoomBufSize),
+		ctx:         ctx,
+		ps:          ps,
+		topic:       topic,
+		sub:         sub,
+		selfAddress: selfAddress,
+		selfID:      selfID,
+		ID:          olcCode,
+		Messages:    make(chan *Message, ChatRoomBufSize),
 	}
 
 	// start reading messages from the subscription in a loop
@@ -78,7 +81,7 @@ func JoinLobby(ctx context.Context, h *host.Host, selfID peer.ID, olcCode string
 func (cr *Lobby) Publish(message string) {
 	m := Message{
 		Value:    message,
-		SenderID: cr.self.Pretty(),
+		SenderID: cr.selfID.Pretty(),
 	}
 	msgBytes, err := json.Marshal(m)
 	if err != nil {
@@ -104,7 +107,7 @@ func (cr *Lobby) readLoop() {
 		cr.LastMessage = string(msg.Data)
 
 		// only forward messages delivered by others
-		if msg.ReceivedFrom == cr.self {
+		if msg.ReceivedFrom == cr.selfID {
 			continue
 		}
 		cm := new(Message)
