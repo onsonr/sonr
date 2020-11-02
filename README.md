@@ -49,4 +49,4 @@ Any struct type, all of whose exported methods have
 
 
 ### File Management
-- https://golangcode.com/get-the-content-type-of-file/
+- https://github.com/h2non/filetype 
