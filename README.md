@@ -46,3 +46,7 @@ Any struct type, all of whose exported methods have
 - https://github.com/libp2p/specs/blob/master/rendezvous/README.md
 - https://github.com/ipfs/go-ipfs/blob/master/core/bootstrap/bootstrap.go
 - **Complete Concept Reference**: https://simpleaswater.com/libp2p/
+
+
+### File Management
+- https://golangcode.com/get-the-content-type-of-file/
