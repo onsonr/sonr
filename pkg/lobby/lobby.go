@@ -32,7 +32,8 @@ type Lobby struct {
 
 // Message gets converted to/from JSON and sent in the body of pubsub messages.
 type Message struct {
-	Message  string
+	Value    string
+	Event    string
 	SenderID string
 }
 
@@ -76,7 +77,7 @@ func JoinLobby(ctx context.Context, h *host.Host, selfID peer.ID, olcCode string
 // Publish sends a message to the pubsub topic.
 func (cr *Lobby) Publish(message string) {
 	m := Message{
-		Message:  message,
+		Value:    message,
 		SenderID: cr.self.Pretty(),
 	}
 	msgBytes, err := json.Marshal(m)
