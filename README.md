@@ -38,6 +38,7 @@ Any struct type, all of whose exported methods have
 ### GoMobile
 - https://medium.com/@matryer/tutorial-calling-go-code-from-swift-on-ios-and-vice-versa-with-gomobile-7925620c17a4
 - https://divan.dev/talks/2019/gdgbcn/FlutterGomobile.pdf
+- https://talks.madriguera.me/2016/gomobile.slide#17
 
 ### Libp2p
 - https://github.com/libp2p/go-libp2p-pubsub
