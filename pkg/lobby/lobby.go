@@ -99,7 +99,9 @@ func (cr *Lobby) readLoop() {
 			close(cr.Messages)
 			return
 		}
-		cr.LastMessage = msg.String()
+		// Set Last message
+		cr.LastMessage = string(msg.Data)
+
 		// only forward messages delivered by others
 		if msg.ReceivedFrom == cr.self {
 			continue
