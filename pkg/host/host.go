@@ -3,43 +3,27 @@ package host
 import (
 	"context"
 	"fmt"
+
 	"sync"
 	"time"
 
 	"github.com/libp2p/go-libp2p"
-	"github.com/libp2p/go-libp2p-core/crypto"
-	"github.com/libp2p/go-libp2p-core/host"
-	"github.com/libp2p/go-libp2p-core/peer"
-
 	autonat "github.com/libp2p/go-libp2p-autonat-svc"
 	connmgr "github.com/libp2p/go-libp2p-connmgr"
+	"github.com/libp2p/go-libp2p-core/host"
+	"github.com/libp2p/go-libp2p-core/peer"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
+	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	libp2pquic "github.com/libp2p/go-libp2p-quic-transport"
 	routing "github.com/libp2p/go-libp2p-routing"
 	secio "github.com/libp2p/go-libp2p-secio"
 	libp2ptls "github.com/libp2p/go-libp2p-tls"
 )
 
-// CreateHost creates new host, sets it up, then returns it
-func CreateHost(ctx context.Context) host.Host {
-	// Set your own keypair
-	priv, _, err := crypto.GenerateKeyPair(
-		crypto.Ed25519, // Select your key type. Ed25519 are nice short
-		-1,             // Select key length when possible (i.e. RSA).
-	)
-
-	// Check for error
-	if err != nil {
-		panic(err)
-	}
-
-	// Reference IPFS DHT
-	var idht *dht.IpfsDHT
-
+// NewHost creates new host, sets it up, then returns it
+func NewHost(ctx context.Context) (host.Host, *pubsub.PubSub) {
 	// Create Host
 	h, err := libp2p.New(ctx,
-		// Use the keypair we generated
-		libp2p.Identity(priv),
 		// Multiple listen addresses
 		libp2p.ListenAddrStrings(
 			"/ip4/0.0.0.0/tcp/9000",      // regular tcp connections
@@ -64,6 +48,11 @@ func CreateHost(ctx context.Context) host.Host {
 		libp2p.NATPortMap(),
 		// Let this host use the DHT to find other hosts
 		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
+			// Reference IPFS DHT
+			var idht *dht.IpfsDHT
+			var err error
+
+			// Create DHT
 			idht, err = dht.New(ctx, h)
 			return idht, err
 		}),
@@ -95,7 +84,7 @@ func CreateHost(ctx context.Context) host.Host {
 		panic(err)
 	}
 
-	// This connects to public bootstrappers
+	// This connects to public bootstrappers TODO: Implement Later
 	var wg sync.WaitGroup
 	for _, addr := range dht.DefaultBootstrapPeers {
 		pi, _ := peer.AddrInfoFromP2pAddr(addr)
@@ -106,5 +95,21 @@ func CreateHost(ctx context.Context) host.Host {
 	}
 	wg.Wait()
 
-	return h
+	// create a new PubSub service using the GossipSub router
+	ps, err := pubsub.NewGossipSub(ctx, h)
+	if err != nil {
+		panic(err)
+	}
+
+	return h, ps
+}
+
+// NewBasicHost creates MDNS host
+func NewBasicHost(ctx context.Context) host.Host {
+	// create a new libp2p Host that listens on a random TCP port
+	h2, err := libp2p.New(ctx, libp2p.ListenAddrStrings("/ip4/0.0.0.0/tcp/0"))
+	if err != nil {
+		panic(err)
+	}
+	return h2
 }
