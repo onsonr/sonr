@@ -13,7 +13,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
-	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	libp2pquic "github.com/libp2p/go-libp2p-quic-transport"
 	routing "github.com/libp2p/go-libp2p-routing"
 	secio "github.com/libp2p/go-libp2p-secio"
@@ -21,9 +20,9 @@ import (
 )
 
 // NewHost creates new host, sets it up, then returns it
-func NewHost(ctx context.Context) (host.Host, *pubsub.PubSub) {
+func NewHost(ctx *context.Context) (host.Host, error) {
 	// Create Host
-	h, err := libp2p.New(ctx,
+	h, err := libp2p.New(*ctx,
 		// Multiple listen addresses
 		libp2p.ListenAddrStrings(
 			"/ip4/0.0.0.0/tcp/9000",      // regular tcp connections
@@ -53,7 +52,7 @@ func NewHost(ctx context.Context) (host.Host, *pubsub.PubSub) {
 			var err error
 
 			// Create DHT
-			idht, err = dht.New(ctx, h)
+			idht, err = dht.New(*ctx, h)
 			return idht, err
 		}),
 		// Let this host use relays and advertise itself on relays if
@@ -64,13 +63,13 @@ func NewHost(ctx context.Context) (host.Host, *pubsub.PubSub) {
 
 	// Check for error
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	// If you want to help other peers to figure out if they are behind
 	// NATs, you can launch the server-side of AutoNAT too (AutoRelay
 	// already runs the client)
-	_, err = autonat.NewAutoNATService(ctx, h, true,
+	_, err = autonat.NewAutoNATService(*ctx, h, true,
 		// Support same non default security and transport options as
 		// original host.
 		libp2p.Security(libp2ptls.ID, libp2ptls.New),
@@ -81,7 +80,7 @@ func NewHost(ctx context.Context) (host.Host, *pubsub.PubSub) {
 
 	// Check for error
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	// This connects to public bootstrappers TODO: Implement Later
@@ -91,25 +90,9 @@ func NewHost(ctx context.Context) (host.Host, *pubsub.PubSub) {
 		fmt.Printf("Sonr P2P: I am %s\n", addr)
 		// We ignore errors as some bootstrap peers may be down
 		// and that is fine.
-		h.Connect(ctx, *pi)
+		h.Connect(*ctx, *pi)
 	}
 	wg.Wait()
 
-	// create a new PubSub service using the GossipSub router
-	ps, err := pubsub.NewGossipSub(ctx, h)
-	if err != nil {
-		panic(err)
-	}
-
-	return h, ps
-}
-
-// NewBasicHost creates MDNS host
-func NewBasicHost(ctx context.Context) host.Host {
-	// create a new libp2p Host that listens on a random TCP port
-	h2, err := libp2p.New(ctx, libp2p.ListenAddrStrings("/ip4/0.0.0.0/tcp/0"))
-	if err != nil {
-		panic(err)
-	}
-	return h2
+	return h, nil
 }

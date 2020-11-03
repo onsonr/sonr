@@ -2,92 +2,94 @@ package core
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
+	"github.com/libp2p/go-libp2p"
+	connmgr "github.com/libp2p/go-libp2p-connmgr"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/libp2p/go-libp2p/p2p/discovery"
-	sonrHost "github.com/sonr-io/p2p/pkg/host"
+	sonrLobby "github.com/sonr-io/p2p/pkg/lobby"
 )
 
+// DiscoveryInterval is how often we re-publish our mDNS records.
+const discoveryInterval = time.Duration(10) * time.Second
+
+// DiscoveryServiceTag is used in our mDNS advertisements to discover other chat peers.
+const discoveryServiceTag = "sonr-mdns"
+
+// MessageCallback returns message from lobby
+type MessageCallback interface {
+	OnMessage(s string)
+}
+
 // Start begins the mobile host
-func Start(olc string) *SonrNode {
+func Start(olc string, call MessageCallback) *SonrNode {
 	// Create Context handle events
 	ctx := context.Background()
 
 	// Create Host
-	host := sonrHost.NewBasicHost(ctx)
-
-	// setup local mDNS discovery
-	err := setupMDNsDiscovery(ctx, host)
+	host, err := libp2p.New(ctx, libp2p.ListenAddrStrings("/ip4/0.0.0.0/tcp/0"),
+		libp2p.ConnectionManager(connmgr.NewConnManager(
+			100,         // Lowwater
+			400,         // HighWater,
+			time.Minute, // GracePeriod
+		)))
 	if err != nil {
 		panic(err)
 	}
+
+	// create a new PubSub service using the GossipSub router
+	ps, err := pubsub.NewGossipSub(ctx, host)
+	if err != nil {
+		panic(err)
+	}
+
+	// setup mDNS discovery to find local peers
+	disc, err := discovery.NewMdnsService(ctx, host, discoveryInterval, discoveryServiceTag)
+	if err != nil {
+		panic(err)
+	}
+
+	n := discoveryNotifee{h: host, ctx: ctx}
+	disc.RegisterNotifee(&n)
+
+	lob, err := sonrLobby.Enter(ctx, call, ps, host.ID(), olc)
 
 	return &SonrNode{
 		OLC:    olc,
 		PeerID: host.ID().String(),
 		Host:   host,
+		Lobby:  lob,
 	}
 }
 
-// Join makes Node join a lobby
-func (sn *SonrNode) Join(ctx context.Context, call MessageCallback) *Lobby {
-	// create a new PubSub service using the GossipSub router
-	ps, err := pubsub.NewGossipSub(ctx, sn.Host)
-	if err != nil {
-		panic(err)
-	}
-
-	// Join Lobby Create Copy
-	lob := JoinLobby(ctx, ps, sn.Host.ID(), sn.OLC)
-
-	return &Lobby{
-		ctx:      lob.ctx,
-		ps:       lob.ps,
-		topic:    lob.topic,
-		sub:      lob.sub,
-		selfID:   lob.selfID,
-		OLC:      lob.OLC,
-		Callback: call,
-		messages: lob.messages,
-	}
+// RefreshPeers returns peers as string
+func (sn *SonrNode) RefreshPeers() string {
+	peers := sn.Host.Peerstore().Peers()
+	// Create JSON from the instance data.
+	// ... Ignore errors.
+	b, _ := json.Marshal(peers)
+	// Convert bytes to string.
+	s := string(b)
+	return s
 }
-
-// DiscoveryInterval is how often we re-publish our mDNS records.
-const DiscoveryInterval = time.Hour
-
-// DiscoveryServiceTag is used in our mDNS advertisements to discover other chat peers.
-const DiscoveryServiceTag = "sonr-mdns"
 
 // discoveryNotifee gets notified when we find a new peer via mDNS discovery
 type discoveryNotifee struct {
-	h host.Host
+	h   host.Host
+	ctx context.Context
 }
 
 // HandlePeerFound connects to peers discovered via mDNS. Once they're connected,
 // the PubSub system will automatically start interacting with them if they also
 // support PubSub.
 func (n *discoveryNotifee) HandlePeerFound(pi peer.AddrInfo) {
-	fmt.Printf("discovered new peer %s\n", pi.ID.Pretty())
-	err := n.h.Connect(context.Background(), pi)
+	err := n.h.Connect(n.ctx, pi)
 	if err != nil {
 		fmt.Printf("error connecting to peer %s: %s\n", pi.ID.Pretty(), err)
 	}
-}
-
-// SetupMDNsDiscovery creates an mDNS discovery service and attaches it to the libp2p Host.
-// This lets us automatically discover peers on the same LAN and connect to them.
-func setupMDNsDiscovery(ctx context.Context, h host.Host) error {
-	// setup mDNS discovery to find local peers
-	disc, err := discovery.NewMdnsService(ctx, h, DiscoveryInterval, DiscoveryServiceTag)
-	if err != nil {
-		return err
-	}
-
-	n := discoveryNotifee{h: h}
-	disc.RegisterNotifee(&n)
-	return nil
 }

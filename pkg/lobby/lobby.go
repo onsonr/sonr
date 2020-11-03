@@ -40,35 +40,36 @@ type message struct {
 	SenderID string
 }
 
-// JoinLobby tries to subscribe to the PubSub topic for the room name, returning
+// Enter tries to subscribe to the PubSub topic for the room name, returning
 // a ChatRoom on success.
-func JoinLobby(ctx context.Context, ps *pubsub.PubSub, hostID peer.ID, olcCode string) Lobby {
+func Enter(ctx context.Context, call MessageCallback, ps *pubsub.PubSub, hostID peer.ID, olcCode string) (*Lobby, error) {
 	// join the pubsub topic
 	topic, err := ps.Join(olcName(olcCode))
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	// and subscribe to it
 	sub, err := topic.Subscribe()
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	// Create Lobby Type
-	lob := Lobby{
+	lob := &Lobby{
 		ctx:      ctx,
 		ps:       ps,
 		topic:    topic,
 		sub:      sub,
 		selfID:   hostID,
 		OLC:      olcCode,
+		Callback: call,
 		messages: make(chan *message, ChatRoomBufSize),
 	}
 
 	// start reading messages from the subscription in a loop
 	go lob.readLoop()
-	return lob
+	return lob, nil
 }
 
 // Publish sends a message to the pubsub topic.
@@ -98,7 +99,7 @@ func (lob *Lobby) readLoop() {
 			return
 		}
 
-		println(string(msg.Data))
+		//println(string(msg.Data))
 		lob.Callback.OnMessage(string(msg.Data))
 
 		// only forward messages delivered by others

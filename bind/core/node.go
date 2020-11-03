@@ -9,16 +9,17 @@ import (
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
-	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	sonrLobby "github.com/sonr-io/p2p/pkg/lobby"
 )
 
 // SonrNode contains all values for user
 type SonrNode struct {
 	PeerID  string
-	PubSub  *pubsub.PubSub
+	Lobby   *sonrLobby.Lobby
 	Host    host.Host
 	Profile string
 	OLC     string
+	ctx     context.Context
 }
 
 // Connect ensures there is a connection between this host and the peer with
