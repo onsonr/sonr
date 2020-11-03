@@ -2,10 +2,13 @@ package core
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"os"
 
 	"github.com/libp2p/go-libp2p-core/network"
+	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/libp2p/go-msgio"
 )
 
@@ -73,4 +76,26 @@ func writeData(rw *bufio.ReadWriter) {
 			panic(err)
 		}
 	}
+}
+
+// SetStreamHandler sets the protocol handler on the Host's Mux.
+func (sn *SonrNode) setStreamHandler(pid protocol.ID, handler network.StreamHandler) {
+	sn.Host.SetStreamHandler(pid, handler)
+}
+
+// SetStreamHandlerMatch sets the protocol handler on the Host's Mux
+// using a matching function for protocol selection.
+func (sn *SonrNode) setStreamHandlerMatch(pid protocol.ID, m func(string) bool, h network.StreamHandler) {
+	sn.Host.SetStreamHandlerMatch(pid, m, h)
+}
+
+// RemoveStreamHandler removes a handler on the mux that was set by
+// SetStreamHandler
+func (sn *SonrNode) removeStreamHandler(pid protocol.ID) {
+	sn.Host.RemoveStreamHandler(pid)
+}
+
+// NewStream opens a new stream to given peer p, and writes a p2p/protocol
+func (sn *SonrNode) newStream(ctx context.Context, p peer.ID, pids ...protocol.ID) (network.Stream, error) {
+	return sn.Host.NewStream(ctx, p, pids...)
 }

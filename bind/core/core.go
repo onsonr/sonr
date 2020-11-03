@@ -2,7 +2,6 @@ package core
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/libp2p/go-libp2p"
@@ -19,8 +18,10 @@ type SonrCallback interface {
 
 // Start begins the mobile host
 func Start(olc string, call SonrCallback) *SonrNode {
-	// Create Context handle events
+	// Create Context and Node - Begin Setuo
 	ctx := context.Background()
+	node := new(SonrNode)
+	node.OLC = olc
 
 	// Create Host
 	host, err := libp2p.New(ctx, libp2p.ListenAddrStrings("/ip4/0.0.0.0/tcp/0"),
@@ -32,45 +33,28 @@ func Start(olc string, call SonrCallback) *SonrNode {
 	if err != nil {
 		panic(err)
 	}
+	node.Host = host
+	node.PeerID = host.ID().String()
 
 	// setup local mDNS discovery
-	err = setupDiscovery(ctx, host, call)
+	err = setupDiscovery(ctx, *node, call)
 	if err != nil {
 		panic(err)
 	}
 
 	// create a new PubSub service using the GossipSub router
-	ps, err := pubsub.NewGossipSub(ctx, host)
+	ps, err := pubsub.NewGossipSub(ctx, node.Host)
 	if err != nil {
 		panic(err)
 	}
 
 	// Enter location lobby
-	lob, err := sonrLobby.Enter(ctx, call, ps, host.ID(), olc)
+	lob, err := sonrLobby.Enter(ctx, call, ps, node.Host.ID(), olc)
 	if err != nil {
 		panic(err)
 	}
+	node.Lobby = *lob
 
 	// Return Node
-	return &SonrNode{
-		OLC:    olc,
-		PeerID: host.ID().String(),
-		Host:   host,
-		Lobby:  lob,
-	}
-}
-
-// Send publishes a message to the SonrNode lobby
-func (sn *SonrNode) Send(message string, event string) bool {
-	// Publish to Lobby
-	err := sn.Lobby.Publish(message, event)
-
-	// Check for error
-	if err != nil {
-		fmt.Println("Sonr P2P Error: ", err)
-		return false
-	}
-
-	// Return Success
-	return true
+	return node
 }

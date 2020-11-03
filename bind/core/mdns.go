@@ -6,52 +6,51 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p/p2p/discovery"
 )
 
-// DiscoveryInterval is how often we re-publish our mDNS records.
-const DiscoveryInterval = time.Second
+// discoveryInterval is how often we re-publish our mDNS records.
+const discoveryInterval = time.Second
 
-// DiscoveryServiceTag is used in our mDNS advertisements to discover other chat peers.
-const DiscoveryServiceTag = "sonr-mdns"
+// discoveryServiceTag is used in our mDNS advertisements to discover other chat peers.
+const discoveryServiceTag = "sonr-mdns"
 
 // discoveryNotifee gets notified when we find a new peer via mDNS discovery
 type discoveryNotifee struct {
-	h    host.Host
+	sn   SonrNode
 	call SonrCallback
 }
 
 // setupDiscovery creates an mDNS discovery service and attaches it to the libp2p Host.
-func setupDiscovery(ctx context.Context, h host.Host, call SonrCallback) error {
+func setupDiscovery(ctx context.Context, sn SonrNode, call SonrCallback) error {
 	// setup mDNS discovery to find local peers
-	disc, err := discovery.NewMdnsService(ctx, h, DiscoveryInterval, DiscoveryServiceTag)
+	disc, err := discovery.NewMdnsService(ctx, sn.Host, discoveryInterval, discoveryServiceTag)
 	if err != nil {
 		return err
 	}
 
 	// Create Discovery Notifier
-	n := discoveryNotifee{h: h, call: call}
+	n := discoveryNotifee{sn: sn, call: call}
 	disc.RegisterNotifee(&n)
 	return nil
 }
 
 // Get Slice of Peers minus User
-func (n *discoveryNotifee) getPeersWithoutUser() peer.IDSlice {
+func (n *discoveryNotifee) getPeersAsSlice() peer.IDSlice {
 	// Get Peers as Slice
-	slice := n.h.Peerstore().Peers()
+	peers := n.sn.Host.Peerstore().Peers()
 
 	// Remove User Peer
-	removeFromSlice(slice, n.h.ID())
+	peers = removeIDFromSlice(peers, n.sn.Host.ID())
 
 	// Return Slice
-	return slice
+	return peers
 }
 
 // Get Slice of Peers minus User
-func removeFromSlice(slice peer.IDSlice, value peer.ID) peer.IDSlice {
+func removeIDFromSlice(slice peer.IDSlice, value peer.ID) peer.IDSlice {
 	// Remove User Peer
 	for i, v := range slice {
 		if v == value {
@@ -66,7 +65,7 @@ func removeFromSlice(slice peer.IDSlice, value peer.ID) peer.IDSlice {
 // HandlePeerFound connects to peers discovered via mDNS.
 func (n *discoveryNotifee) HandlePeerFound(pi peer.AddrInfo) {
 	// Connect to Peer
-	err := n.h.Connect(context.Background(), pi)
+	err := n.sn.Host.Connect(context.Background(), pi)
 
 	// Log Error
 	if err != nil {
@@ -74,20 +73,35 @@ func (n *discoveryNotifee) HandlePeerFound(pi peer.AddrInfo) {
 	}
 
 	// Get Peers as Slice
-	peers := n.getPeersWithoutUser()
+	peers := n.getPeersAsSlice()
 
 	// Remove Disconnected Peers
 	for _, peerID := range peers {
 		// Check State
-		status := n.h.Network().Connectedness(peerID)
+		status := n.sn.Host.Network().Connectedness(peerID)
+
+		// Remove From Store if NotConnected
+		if status == network.NotConnected {
+			// Disconnect
+			n.sn.Host.Network().ClosePeer(peerID)
+		}
+	}
+
+	// Callback to frontend
+	n.sendCallback(peers)
+}
+
+// updateStore checks if store has been updated with new values
+func (n *discoveryNotifee) sendCallback(peers peer.IDSlice) {
+	// Remove Disconnected Peers
+	for _, peerID := range peers {
+		// Check State
+		status := n.sn.Host.Network().Connectedness(peerID)
 
 		// Remove From Store if NotConnected
 		if status == network.NotConnected {
 			// Remove from List
-			removeFromSlice(peers, peerID)
-
-			// Close Connection
-			n.h.Network().ClosePeer(peerID)
+			peers = removeIDFromSlice(peers, peerID)
 		}
 	}
 

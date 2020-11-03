@@ -74,14 +74,7 @@ func Enter(ctx context.Context, call SonrCallback, ps *pubsub.PubSub, hostID pee
 }
 
 // Publish sends a message to the pubsub topic.
-func (lob *Lobby) Publish(value string, event string) error {
-	// Create Message
-	m := Message{
-		Event:    event,
-		Value:    value,
-		SenderID: lob.selfID.Pretty(),
-	}
-
+func (lob *Lobby) Publish(m Message) error {
 	// Convert to JSON
 	msgBytes, err := json.Marshal(m)
 	if err != nil {
