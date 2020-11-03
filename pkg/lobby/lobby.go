@@ -30,7 +30,7 @@ type Lobby struct {
 	topic *pubsub.Topic
 	sub   *pubsub.Subscription
 
-	OLC    string
+	Code   string
 	selfID peer.ID
 }
 
@@ -63,7 +63,7 @@ func Enter(ctx context.Context, call SonrCallback, ps *pubsub.PubSub, hostID pee
 		topic:    topic,
 		sub:      sub,
 		selfID:   hostID,
-		OLC:      olcCode,
+		Code:     olcCode,
 		Callback: call,
 		messages: make(chan *Message, ChatRoomBufSize),
 	}
@@ -74,21 +74,31 @@ func Enter(ctx context.Context, call SonrCallback, ps *pubsub.PubSub, hostID pee
 }
 
 // Publish sends a message to the pubsub topic.
-func (lob *Lobby) Publish(value string) {
+func (lob *Lobby) Publish(value string, event string) error {
+	// Create Message
 	m := Message{
+		Event:    event,
 		Value:    value,
 		SenderID: lob.selfID.Pretty(),
 	}
+
+	// Convert to JSON
 	msgBytes, err := json.Marshal(m)
 	if err != nil {
-		panic(err)
+		return err
 	}
-	lob.topic.Publish(lob.ctx, msgBytes)
+
+	// Publish to Topic
+	err = lob.topic.Publish(lob.ctx, msgBytes)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // ListPeers returns peerids in room
 func (lob *Lobby) ListPeers() []peer.ID {
-	return lob.ps.ListPeers(olcName(lob.OLC))
+	return lob.ps.ListPeers(olcName(lob.Code))
 }
 
 // readLoop pulls messages from the pubsub topic and pushes them onto the Messages channel.
@@ -118,6 +128,6 @@ func (lob *Lobby) readLoop() {
 	}
 }
 
-func olcName(roomName string) string {
-	return "olc=" + roomName
+func olcName(code string) string {
+	return "olc=" + code
 }

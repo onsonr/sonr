@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/host"
+	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p/p2p/discovery"
 )
@@ -24,7 +25,6 @@ type discoveryNotifee struct {
 }
 
 // setupDiscovery creates an mDNS discovery service and attaches it to the libp2p Host.
-// This lets us automatically discover peers on the same LAN and connect to them.
 func setupDiscovery(ctx context.Context, h host.Host, call SonrCallback) error {
 	// setup mDNS discovery to find local peers
 	disc, err := discovery.NewMdnsService(ctx, h, DiscoveryInterval, DiscoveryServiceTag)
@@ -32,14 +32,38 @@ func setupDiscovery(ctx context.Context, h host.Host, call SonrCallback) error {
 		return err
 	}
 
+	// Create Discovery Notifier
 	n := discoveryNotifee{h: h, call: call}
 	disc.RegisterNotifee(&n)
 	return nil
 }
 
-// HandlePeerFound connects to peers discovered via mDNS. Once they're connected,
-// the PubSub system will automatically start interacting with them if they also
-// support PubSub.
+// Get Slice of Peers minus User
+func (n *discoveryNotifee) getPeersWithoutUser() peer.IDSlice {
+	// Get Peers as Slice
+	slice := n.h.Peerstore().Peers()
+
+	// Remove User Peer
+	removeFromSlice(slice, n.h.ID())
+
+	// Return Slice
+	return slice
+}
+
+// Get Slice of Peers minus User
+func removeFromSlice(slice peer.IDSlice, value peer.ID) peer.IDSlice {
+	// Remove User Peer
+	for i, v := range slice {
+		if v == value {
+			slice = append(slice[:i], slice[i+1:]...)
+			break
+		}
+	}
+	// Return Slice
+	return slice
+}
+
+// HandlePeerFound connects to peers discovered via mDNS.
 func (n *discoveryNotifee) HandlePeerFound(pi peer.AddrInfo) {
 	// Connect to Peer
 	err := n.h.Connect(context.Background(), pi)
@@ -49,25 +73,29 @@ func (n *discoveryNotifee) HandlePeerFound(pi peer.AddrInfo) {
 		fmt.Printf("error connecting to peer %s: %s\n", pi.ID.Pretty(), err)
 	}
 
-	// Update Store with current peer count minus user peer
-	n.updateStore(pi, len(n.h.Peerstore().Peers())-1)
-}
-
-// updateStore checks if store has been updated with new values
-func (n *discoveryNotifee) updateStore(pi peer.AddrInfo, prevPeersCount int) {
 	// Get Peers as Slice
-	peers := n.h.Peerstore().Peers()
+	peers := n.getPeersWithoutUser()
 
-	// Remove User Peer
-	for i, v := range peers {
-		if v == n.h.ID() {
-			peers = append(peers[:i], peers[i+1:]...)
-			break
+	// Remove Disconnected Peers
+	for _, peerID := range peers {
+		// Check State
+		status := n.h.Network().Connectedness(peerID)
+
+		// Remove From Store if NotConnected
+		if status == network.NotConnected {
+			// Remove from List
+			removeFromSlice(peers, peerID)
+
+			// Close Connection
+			n.h.Network().ClosePeer(peerID)
 		}
 	}
 
 	// Create JSON from the instance data.
-	b, _ := json.Marshal(peers)
+	b, err := json.Marshal(peers)
+	if err != nil {
+		fmt.Printf("error formatting json")
+	}
 
 	// Callback to frontend
 	n.call.OnNewPeer(string(b))

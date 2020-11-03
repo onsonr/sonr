@@ -2,6 +2,7 @@ package core
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/libp2p/go-libp2p"
@@ -50,10 +51,26 @@ func Start(olc string, call SonrCallback) *SonrNode {
 		panic(err)
 	}
 
+	// Return Node
 	return &SonrNode{
 		OLC:    olc,
 		PeerID: host.ID().String(),
 		Host:   host,
 		Lobby:  lob,
 	}
+}
+
+// Send publishes a message to the SonrNode lobby
+func (sn *SonrNode) Send(message string, event string) bool {
+	// Publish to Lobby
+	err := sn.Lobby.Publish(message, event)
+
+	// Check for error
+	if err != nil {
+		fmt.Println("Sonr P2P Error: ", err)
+		return false
+	}
+
+	// Return Success
+	return true
 }
