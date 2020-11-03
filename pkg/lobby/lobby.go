@@ -1,4 +1,4 @@
-package core
+package lobby
 
 import (
 	"context"
@@ -11,9 +11,10 @@ import (
 // ChatRoomBufSize is the number of incoming messages to buffer for each topic.
 const ChatRoomBufSize = 128
 
-// MessageCallback returns message from lobby
-type MessageCallback interface {
+// SonrCallback returns message from lobby
+type SonrCallback interface {
 	OnMessage(s string)
+	OnNewPeer(s string)
 }
 
 // Lobby represents a subscription to a single PubSub topic. Messages
@@ -21,8 +22,8 @@ type MessageCallback interface {
 // messages are pushed to the Messages channel.
 type Lobby struct {
 	// Messages is a channel of messages received from other peers in the chat room
-	messages chan *message
-	Callback MessageCallback
+	messages chan *Message
+	Callback SonrCallback
 
 	ctx   context.Context
 	ps    *pubsub.PubSub
@@ -34,7 +35,7 @@ type Lobby struct {
 }
 
 // Message gets converted to/from JSON and sent in the body of pubsub messages.
-type message struct {
+type Message struct {
 	Value    string
 	Event    string
 	SenderID string
@@ -42,7 +43,7 @@ type message struct {
 
 // Enter tries to subscribe to the PubSub topic for the room name, returning
 // a ChatRoom on success.
-func Enter(ctx context.Context, call MessageCallback, ps *pubsub.PubSub, hostID peer.ID, olcCode string) (*Lobby, error) {
+func Enter(ctx context.Context, call SonrCallback, ps *pubsub.PubSub, hostID peer.ID, olcCode string) (*Lobby, error) {
 	// join the pubsub topic
 	topic, err := ps.Join(olcName(olcCode))
 	if err != nil {
@@ -64,7 +65,7 @@ func Enter(ctx context.Context, call MessageCallback, ps *pubsub.PubSub, hostID 
 		selfID:   hostID,
 		OLC:      olcCode,
 		Callback: call,
-		messages: make(chan *message, ChatRoomBufSize),
+		messages: make(chan *Message, ChatRoomBufSize),
 	}
 
 	// start reading messages from the subscription in a loop
@@ -74,7 +75,7 @@ func Enter(ctx context.Context, call MessageCallback, ps *pubsub.PubSub, hostID 
 
 // Publish sends a message to the pubsub topic.
 func (lob *Lobby) Publish(value string) {
-	m := message{
+	m := Message{
 		Value:    value,
 		SenderID: lob.selfID.Pretty(),
 	}
@@ -106,7 +107,7 @@ func (lob *Lobby) readLoop() {
 		if msg.ReceivedFrom == lob.selfID {
 			continue
 		}
-		cm := new(message)
+		cm := new(Message)
 		err = json.Unmarshal(msg.Data, cm)
 		if err != nil {
 			continue

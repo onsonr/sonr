@@ -14,6 +14,6 @@ require (
 	github.com/libp2p/go-libp2p-routing v0.1.0
 	github.com/libp2p/go-libp2p-secio v0.2.2
 	github.com/libp2p/go-libp2p-tls v0.1.3
-	golang.org/x/mobile v0.0.0-20200801112145-973feb4309de // indirect
+	github.com/libp2p/go-msgio v0.0.6
 	golang.org/x/tools v0.0.0-20200117012304-6edc0a871e69 // indirect
 )

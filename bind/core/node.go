@@ -8,6 +8,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-core/peerstore"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	sonrLobby "github.com/sonr-io/p2p/pkg/lobby"
 )
@@ -72,4 +73,9 @@ func (sn *SonrNode) connManager() connmgr.ConnManager {
 // EventBus returns the hosts eventbus
 func (sn *SonrNode) eventBus() event.Bus {
 	return sn.Host.EventBus()
+}
+
+// EventBus returns the hosts eventbus
+func (sn *SonrNode) peerstore() peerstore.Peerstore {
+	return sn.Host.Peerstore()
 }
