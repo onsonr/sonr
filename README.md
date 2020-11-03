@@ -41,6 +41,7 @@ Any struct type, all of whose exported methods have
 - https://talks.madriguera.me/2016/gomobile.slide#17
 
 ### Libp2p
+- https://liuzhenglai.com/post/5c32a370e390632833f5774b
 - https://github.com/libp2p/go-libp2p-pubsub
 - https://docs.libp2p.io/concepts/publish-subscribe/
 - https://github.com/libp2p/go-libp2p-examples/tree/master/pubsub/chat
