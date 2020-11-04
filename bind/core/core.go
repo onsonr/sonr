@@ -3,10 +3,7 @@ package core
 import (
 	"context"
 	"encoding/json"
-	"time"
 
-	"github.com/libp2p/go-libp2p"
-	connmgr "github.com/libp2p/go-libp2p-connmgr"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/p2p/pkg/lobby"
 	sonrLobby "github.com/sonr-io/p2p/pkg/lobby"
@@ -16,7 +13,7 @@ import (
 // SonrCallback returns updates from p2p
 type SonrCallback interface {
 	OnMessage(s string)
-	OnNewPeer(s string)
+	OnRefresh(s string)
 }
 
 // Start begins the mobile host
@@ -34,12 +31,7 @@ func Start(data string, call SonrCallback) *SonrNode {
 	}
 
 	// Create Host
-	host, err := libp2p.New(ctx, libp2p.ListenAddrStrings("/ip4/0.0.0.0/tcp/0"),
-		libp2p.ConnectionManager(connmgr.NewConnManager(
-			100,         // Lowwater
-			400,         // HighWater,
-			time.Minute, // GracePeriod
-		)))
+	host, err := initBasicHost(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -47,7 +39,7 @@ func Start(data string, call SonrCallback) *SonrNode {
 	node.PeerID = host.ID().String()
 
 	// setup local mDNS discovery
-	err = setupDiscovery(ctx, *node, call)
+	err = initMDNSDiscovery(ctx, *node, call)
 	if err != nil {
 		panic(err)
 	}

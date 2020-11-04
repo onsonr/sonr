@@ -14,7 +14,7 @@ const ChatRoomBufSize = 128
 // SonrCallback returns message from lobby
 type SonrCallback interface {
 	OnMessage(s string)
-	OnNewPeer(s string)
+	OnRefresh(s string)
 }
 
 // Lobby represents a subscription to a single PubSub topic. Messages
