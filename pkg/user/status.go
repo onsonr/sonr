@@ -1,4 +1,4 @@
-package status
+package user
 
 // Status is enum for Node State
 type Status int
@@ -30,8 +30,8 @@ func (st Status) String() string {
 	return statusNames[st]
 }
 
-// FromString converts a string to a status
-func FromString(s string) Status {
+// GetStatus converts a string to a status
+func GetStatus(s string) Status {
 	for i, v := range statusNames {
 		if v == s {
 			return Status(i)

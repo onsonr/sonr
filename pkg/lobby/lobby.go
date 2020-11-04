@@ -34,13 +34,6 @@ type Lobby struct {
 	selfID peer.ID
 }
 
-// Message gets converted to/from JSON and sent in the body of pubsub messages.
-type Message struct {
-	Value    string
-	Event    string
-	SenderID string
-}
-
 // Enter tries to subscribe to the PubSub topic for the room name, returning
 // a ChatRoom on success.
 func Enter(ctx context.Context, call SonrCallback, ps *pubsub.PubSub, hostID peer.ID, olcCode string) (*Lobby, error) {
@@ -75,14 +68,8 @@ func Enter(ctx context.Context, call SonrCallback, ps *pubsub.PubSub, hostID pee
 
 // Publish sends a message to the pubsub topic.
 func (lob *Lobby) Publish(m Message) error {
-	// Convert to JSON
-	msgBytes, err := json.Marshal(m)
-	if err != nil {
-		return err
-	}
-
 	// Publish to Topic
-	err = lob.topic.Publish(lob.ctx, msgBytes)
+	err := lob.topic.Publish(lob.ctx, m.Bytes())
 	if err != nil {
 		return err
 	}
@@ -97,24 +84,26 @@ func (lob *Lobby) ListPeers() []peer.ID {
 // readLoop pulls messages from the pubsub topic and pushes them onto the Messages channel.
 func (lob *Lobby) readLoop() {
 	for {
+		// get next msg from pub/sub
 		msg, err := lob.sub.Next(lob.ctx)
 		if err != nil {
 			close(lob.messages)
 			return
 		}
 
-		//println(string(msg.Data))
-		lob.Callback.OnMessage(string(msg.Data))
-
 		// only forward messages delivered by others
 		if msg.ReceivedFrom == lob.selfID {
 			continue
 		}
+
+		// construct message
 		cm := new(Message)
 		err = json.Unmarshal(msg.Data, cm)
 		if err != nil {
 			continue
 		}
+
+		lob.Callback.OnMessage(cm.String())
 
 		// send valid messages onto the Messages channel
 		lob.messages <- cm

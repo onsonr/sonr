@@ -1,22 +1,20 @@
 package core
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 
 	"github.com/libp2p/go-libp2p-core/host"
-	sonrLobby "github.com/sonr-io/p2p/pkg/lobby"
+	"github.com/sonr-io/p2p/pkg/lobby"
+	"github.com/sonr-io/p2p/pkg/user"
 )
 
 // SonrNode contains all values for user
 type SonrNode struct {
-	PeerID  string
-	Lobby   sonrLobby.Lobby
-	Host    host.Host
-	Profile string
-	OLC     string
-	ctx     context.Context
+	PeerID string
+	Host   host.Host
+	Lobby  lobby.Lobby
+	User   user.User
 }
 
 // Send publishes a message to the SonrNode lobby
@@ -25,7 +23,7 @@ func (sn *SonrNode) Send(data string) bool {
 	fmt.Println("Sonr P2P General-Send: ", data)
 
 	// Create Message Type
-	cm := new(sonrLobby.Message)
+	cm := new(lobby.Message)
 	err := json.Unmarshal([]byte(data), cm)
 	if err != nil {
 		fmt.Println("Sonr P2P Error: ", err)
@@ -43,12 +41,11 @@ func (sn *SonrNode) Send(data string) bool {
 	return true
 }
 
-// SetDirection updates the nodes compass direction
-func (sn *SonrNode) SetDirection(data int) {
+// Update occurs when status or direction changes
+func (sn *SonrNode) Update(data string) {
+	// Update User Values
+	sn.User.Update(data)
 
-}
-
-// SetStatus updates the nodes current status
-func (sn *SonrNode) SetStatus(data int) {
+	// Inform Lobby
 
 }
