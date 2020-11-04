@@ -94,6 +94,9 @@ func (lob *Lobby) readLoop() {
 		// only forward messages delivered by others
 		if msg.ReceivedFrom == lob.selfID {
 			continue
+		} else {
+			// callback new message
+			lob.Callback.OnMessage(string(msg.Data))
 		}
 
 		// construct message
@@ -102,8 +105,6 @@ func (lob *Lobby) readLoop() {
 		if err != nil {
 			continue
 		}
-
-		lob.Callback.OnMessage(cm.String())
 
 		// send valid messages onto the Messages channel
 		lob.messages <- cm

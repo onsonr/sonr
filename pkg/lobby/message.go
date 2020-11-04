@@ -4,6 +4,13 @@ import (
 	"encoding/json"
 )
 
+// ConnectRequest is message sent when user wants to join network
+type ConnectRequest struct {
+	OLC     string
+	Device  string
+	Contact string
+}
+
 // Message is a for Lobby Pub/Sub Messaging, Converted To/From Json
 type Message struct {
 	Value    string
@@ -31,15 +38,9 @@ func (msg *Message) String() string {
 	return string(msgBytes)
 }
 
-// ConnectMessage is message sent when user wants to join network
-type ConnectMessage struct {
-	OLC     string
-	Device  string
-	Profile string
-}
-
-// UpdateMessage is sent when device has state change
-type UpdateMessage struct {
+// UpdateNotification is sent when device has state change
+type UpdateNotification struct {
 	Direction float64
 	Status    string
+	ID        string
 }

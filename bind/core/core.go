@@ -14,6 +14,11 @@ import (
 type SonrCallback interface {
 	OnMessage(s string)
 	OnRefresh(s string)
+	OnRequested(s string)
+	OnAccepted(s string)
+	OnDenied(s string)
+	OnProgress(s string)
+	OnComplete(s string)
 }
 
 // Start begins the mobile host
@@ -23,7 +28,7 @@ func Start(data string, call SonrCallback) *SonrNode {
 	node := new(SonrNode)
 
 	// Retrieve Connection Request
-	cm := new(lobby.ConnectMessage)
+	cm := new(lobby.ConnectRequest)
 	err := json.Unmarshal([]byte(data), cm)
 	if err != nil {
 		println("Invalid Request")
@@ -58,8 +63,11 @@ func Start(data string, call SonrCallback) *SonrNode {
 	node.Lobby = *lob
 
 	// Set Node User
-	user := user.NewUser(node.Host.ID().String(), cm.OLC, cm.Device, cm.Profile)
-	node.User = user
+	println("Go Contact Result ", cm.Contact)
+	contact := user.NewContact(cm.Contact)
+	profile := user.NewProfile(node.Host.ID().String(), cm.OLC, cm.Device)
+	node.Contact = contact
+	node.Profile = profile
 
 	// Return Node
 	return node

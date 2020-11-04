@@ -11,10 +11,11 @@ import (
 
 // SonrNode contains all values for user
 type SonrNode struct {
-	PeerID string
-	Host   host.Host
-	Lobby  lobby.Lobby
-	User   user.User
+	PeerID  string
+	Host    host.Host
+	Lobby   lobby.Lobby
+	Profile user.Profile
+	Contact user.Contact
 }
 
 // Send publishes a message to the SonrNode lobby
@@ -41,11 +42,46 @@ func (sn *SonrNode) Send(data string) bool {
 	return true
 }
 
+// GetUser returns profile and contact in a map as string
+func (sn *SonrNode) GetUser() string {
+	// Initialize Map
+	m := make(map[string]string)
+	m["profile"] = sn.Profile.String()
+	m["contact"] = sn.Contact.String()
+	m["id"] = sn.PeerID
+
+	// Convert to JSON
+	msgBytes, err := json.Marshal(m)
+	if err != nil {
+		println(err)
+	}
+
+	// Return String
+	return string(msgBytes)
+}
+
 // Update occurs when status or direction changes
-func (sn *SonrNode) Update(data string) {
+func (sn *SonrNode) Update(data string) bool {
 	// Update User Values
-	sn.User.Update(data)
+	err := sn.Profile.Update(data)
+	if err != nil {
+		fmt.Println("Sonr P2P Error: ", err)
+		return false
+	}
+
+	// Create Message
+	cm := new(lobby.Message)
+	cm.Event = "Update"
+	cm.SenderID = sn.PeerID
+	cm.Value = sn.Profile.State()
 
 	// Inform Lobby
+	err = sn.Lobby.Publish(*cm)
+	if err != nil {
+		fmt.Println("Sonr P2P Error: ", err)
+		return false
+	}
 
+	// Return Success
+	return true
 }
