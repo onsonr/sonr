@@ -34,12 +34,6 @@ func Start(data string, call Callback) *Node {
 		panic(err)
 	}
 
-	// Set User data to node
-	err = node.SetUserData(*cm)
-	if err != nil {
-		println("Cannot unmarshal contact")
-	}
-
 	// Create Host
 	h, err := host.NewBasicHost(&ctx)
 	println("Host Created")
@@ -72,6 +66,12 @@ func Start(data string, call Callback) *Node {
 	}
 	println("Lobby Joined")
 	node.Lobby = *lob
+
+	// Set User data to node
+	err = node.SetUserData(*cm)
+	if err != nil {
+		println("Cannot unmarshal contact")
+	}
 
 	// Return Node
 	return node

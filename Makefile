@@ -26,13 +26,7 @@ ios:
 	mkdir -p $(IOS_BUILDDIR)
 	eval $(BUILD_IOS)
 	cd $(EXAMPLE_DIR) && $(FLUTCLEAN)
-
-ios-run:
-	rm -rf $(IOS_BUILDDIR) 2>/dev/null
-	mkdir -p $(IOS_BUILDDIR)
-	eval $(BUILD_IOS)
-	cd $(EXAMPLE_DIR) && $(FLUTCLEAN)
-	cd $(EXAMPLE_DIR) && $(FLUTRUN)
+	date
 
 # android:
 # 	rm -rf $(ANDROID_BUILDDIR) 2>/dev/null

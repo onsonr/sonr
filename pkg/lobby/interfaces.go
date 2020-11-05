@@ -13,9 +13,10 @@ type ConnectRequest struct {
 
 // Message is a for Lobby Pub/Sub Messaging, Converted To/From Json
 type Message struct {
-	Value    string
-	Event    string
-	SenderID string
+	FirstName string
+	Value     string
+	Event     string
+	SenderID  string
 }
 
 // Peer is a representative in the lobby for a device

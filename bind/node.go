@@ -56,16 +56,10 @@ func (sn *Node) SetUserData(cm lobby.ConnectRequest) error {
 	profile := user.NewProfile(sn.Host.ID().String(), cm.OLC, cm.Device)
 	sn.Profile = profile
 
-	// Create Contact
-	var contact *user.Contact
-	err := json.Unmarshal([]byte(cm.Contact), contact)
-	if err != nil {
-		return err
-	}
-	println("Node First Name ", sn.Contact.FirstName)
-
 	// Set Contact
-	sn.Contact = *contact
+	contact := user.NewContact(cm.Contact)
+	sn.Contact = contact
+
 	return nil
 }
 
@@ -81,7 +75,7 @@ func (sn *Node) Update(data string) bool {
 	// Create Update Map
 	v := make(map[string]string)
 	v["state"] = sn.Profile.State()
-	v["basic"] = sn.Contact.Basic()
+	v["info"] = sn.Contact.Basic()
 
 	// Convert to JSON
 	msgBytes, err := json.Marshal(v)
@@ -91,6 +85,7 @@ func (sn *Node) Update(data string) bool {
 
 	// Create Message
 	cm := new(lobby.Message)
+	cm.FirstName = sn.Contact.FirstName
 	cm.Event = "Update"
 	cm.SenderID = sn.PeerID
 	cm.Value = string(msgBytes)
