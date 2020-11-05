@@ -1,0 +1,10 @@
+{
+    "files.exclude": {
+        "**/.github": true,
+        "**/.gitignore": true,
+        "**/.idea": true,
+        "**/.meta": true,
+        "**/.vscode": true,
+        "**/go.sum": true
+    }
+}
