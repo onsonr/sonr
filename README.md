@@ -4,7 +4,7 @@
 </div>
 
 # Description
-> Manages the Sonr Libp2p node in Go, Handles File Management, Connection to Peer, Pub-Sub for Lobby, and Graph Data Structure.
+> Core Framework that manages the Sonr Libp2p node in Go, Handles File Management, Connection to Peer, Pub-Sub for Lobby, and Graph Data Structure.
 
 # Build
 > Use `gomobile bind` command in `\bind\core\` to build package
