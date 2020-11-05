@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="logos/header.png" alt="Sonr-Temp-Header"/>
+    <img src=".meta/header.png" alt="Sonr-Core-Header"/>
   <br>
 </div>
 
