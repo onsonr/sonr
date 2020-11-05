@@ -1,16 +1,16 @@
-package core
+package sonr
 
 import (
 	"encoding/json"
 	"fmt"
 
 	"github.com/libp2p/go-libp2p-core/host"
-	"github.com/sonr-io/p2p/pkg/lobby"
-	"github.com/sonr-io/p2p/pkg/user"
+	"github.com/sonr-io/core/pkg/lobby"
+	"github.com/sonr-io/core/pkg/user"
 )
 
-// SonrNode contains all values for user
-type SonrNode struct {
+// Node contains all values for user
+type Node struct {
 	PeerID  string
 	Host    host.Host
 	Lobby   lobby.Lobby
@@ -19,7 +19,7 @@ type SonrNode struct {
 }
 
 // Send publishes a message to the SonrNode lobby
-func (sn *SonrNode) Send(data string) bool {
+func (sn *Node) Send(data string) bool {
 	// Log Send
 	fmt.Println("Sonr P2P General-Send: ", data)
 
@@ -43,7 +43,7 @@ func (sn *SonrNode) Send(data string) bool {
 }
 
 // GetUser returns profile and contact in a map as string
-func (sn *SonrNode) GetUser() string {
+func (sn *Node) GetUser() string {
 	// Initialize Map
 	m := make(map[string]string)
 	m["profile"] = sn.Profile.String()
@@ -61,7 +61,7 @@ func (sn *SonrNode) GetUser() string {
 }
 
 // Update occurs when status or direction changes
-func (sn *SonrNode) Update(data string) bool {
+func (sn *Node) Update(data string) bool {
 	// Update User Values
 	err := sn.Profile.Update(data)
 	if err != nil {

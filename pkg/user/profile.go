@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/sonr-io/p2p/pkg/lobby"
+	"github.com/sonr-io/core/pkg/lobby"
 )
 
 // Profile is Model with device, location, profile information

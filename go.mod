@@ -1,4 +1,4 @@
-module github.com/sonr-io/p2p
+module github.com/sonr-io/core
 
 go 1.15
 

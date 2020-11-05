@@ -1,4 +1,4 @@
-package core
+package sonr
 
 import (
 	"bufio"
@@ -79,23 +79,23 @@ func writeData(rw *bufio.ReadWriter) {
 }
 
 // SetStreamHandler sets the protocol handler on the Host's Mux.
-func (sn *SonrNode) setStreamHandler(pid protocol.ID, handler network.StreamHandler) {
+func (sn *Node) setStreamHandler(pid protocol.ID, handler network.StreamHandler) {
 	sn.Host.SetStreamHandler(pid, handler)
 }
 
 // SetStreamHandlerMatch sets the protocol handler on the Host's Mux
 // using a matching function for protocol selection.
-func (sn *SonrNode) setStreamHandlerMatch(pid protocol.ID, m func(string) bool, h network.StreamHandler) {
+func (sn *Node) setStreamHandlerMatch(pid protocol.ID, m func(string) bool, h network.StreamHandler) {
 	sn.Host.SetStreamHandlerMatch(pid, m, h)
 }
 
 // RemoveStreamHandler removes a handler on the mux that was set by
 // SetStreamHandler
-func (sn *SonrNode) removeStreamHandler(pid protocol.ID) {
+func (sn *Node) removeStreamHandler(pid protocol.ID) {
 	sn.Host.RemoveStreamHandler(pid)
 }
 
 // NewStream opens a new stream to given peer p, and writes a p2p/protocol
-func (sn *SonrNode) newStream(ctx context.Context, p peer.ID, pids ...protocol.ID) (network.Stream, error) {
+func (sn *Node) newStream(ctx context.Context, p peer.ID, pids ...protocol.ID) (network.Stream, error) {
 	return sn.Host.NewStream(ctx, p, pids...)
 }

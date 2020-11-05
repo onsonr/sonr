@@ -1,4 +1,4 @@
-package core
+package sonr
 
 import (
 	"context"
@@ -8,6 +8,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p/p2p/discovery"
 )
 
 // discoveryInterval is how often we re-publish our mDNS records.
@@ -16,10 +17,24 @@ const discoveryInterval = time.Second
 // discoveryServiceTag is used in our mDNS advertisements to discover other chat peers.
 const discoveryServiceTag = "sonr-mdns"
 
+// initMDNSDiscovery creates an mDNS discovery service and attaches it to the libp2p Host.
+func initMDNSDiscovery(ctx context.Context, sn Node, call Callback) error {
+	// setup mDNS discovery to find local peers
+	disc, err := discovery.NewMdnsService(ctx, sn.Host, discoveryInterval, discoveryServiceTag)
+	if err != nil {
+		return err
+	}
+
+	// Create Discovery Notifier
+	n := discoveryNotifee{sn: sn, call: call}
+	disc.RegisterNotifee(&n)
+	return nil
+}
+
 // discoveryNotifee gets notified when we find a new peer via mDNS discovery
 type discoveryNotifee struct {
-	sn   SonrNode
-	call SonrCallback
+	sn   Node
+	call Callback
 }
 
 // Get Slice of Peers minus User
