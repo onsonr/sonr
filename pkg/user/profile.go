@@ -3,6 +3,7 @@ package user
 import (
 	"encoding/json"
 	"fmt"
+	"math"
 
 	"github.com/sonr-io/core/pkg/lobby"
 )
@@ -74,9 +75,24 @@ func (u *Profile) Update(data string) error {
 	}
 
 	// Set New Data
-	u.Direction = float64(up.Direction)
+	u.Direction = Round(up.Direction, .5, 2)
 	u.Status = GetStatus(up.Status)
 
 	// Return Notification
 	return nil
+}
+
+// Round converts a number to be rounded
+func Round(val float64, roundOn float64, places int) (newVal float64) {
+	var round float64
+	pow := math.Pow(10, float64(places))
+	digit := pow * val
+	_, div := math.Modf(digit)
+	if div >= roundOn {
+		round = math.Ceil(digit)
+	} else {
+		round = math.Floor(digit)
+	}
+	newVal = round / pow
+	return
 }

@@ -75,6 +75,7 @@ func Enter(ctx context.Context, call Callback, ps *pubsub.PubSub, hostID peer.ID
 
 	// start reading messages
 	go lob.handleMessages()
+	go lob.handleEvents()
 	return lob, nil
 }
 

@@ -50,8 +50,8 @@ func (sn *Node) GetUser() string {
 	return string(msgBytes)
 }
 
-// SetUserData from connection request
-func (sn *Node) SetUserData(cm lobby.ConnectRequest) error {
+// SetUser from connection request
+func (sn *Node) SetUser(cm lobby.ConnectRequest) error {
 	// Set Profile
 	profile := user.NewProfile(sn.Host.ID().String(), cm.OLC, cm.Device)
 	sn.Profile = profile
@@ -71,6 +71,10 @@ func (sn *Node) Update(data string) bool {
 		fmt.Println("Sonr P2P Error: ", err)
 		return false
 	}
+
+	// Log New Values
+	println("Direction: ", sn.Profile.Direction)
+	println("Status: ", sn.Profile.Status.String())
 
 	// Create Update Map
 	v := make(map[string]string)

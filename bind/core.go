@@ -68,7 +68,7 @@ func Start(data string, call Callback) *Node {
 	node.Lobby = *lob
 
 	// Set User data to node
-	err = node.SetUserData(*cm)
+	err = node.SetUser(*cm)
 	if err != nil {
 		println("Cannot unmarshal contact")
 	}
