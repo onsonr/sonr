@@ -1,19 +1,27 @@
 package user
 
-import "encoding/json"
+import (
+	"encoding/json"
+)
 
 // Contact is user contact info
 type Contact struct {
-	firstname  string
-	lastname   string
-	profilepic string
+	FirstName  string `json:"firstName"`
+	LastName   string `json:"lastName"`
+	ProfilePic string `json:"profilePic"`
 }
 
-// NewContact creates profile from string json
-func NewContact(ctactJSON string) Contact {
-	profile := new(Contact)
-	json.Unmarshal([]byte(ctactJSON), &profile)
-	return *profile
+// Basic returns user Basic information as string
+func (c *Contact) Basic() string {
+	slice := [3]string{c.FirstName, c.LastName, c.ProfilePic}
+	bytes, err := json.Marshal(slice)
+
+	// Check for Error
+	if err != nil {
+		println("Error creating update message")
+	}
+
+	return string(bytes)
 }
 
 // String returns user as json string

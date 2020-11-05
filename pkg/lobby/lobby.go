@@ -6,29 +6,37 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	graph "github.com/twmb/algoimpl/go/graph"
 )
 
 // ChatRoomBufSize is the number of incoming messages to buffer for each topic.
 const ChatRoomBufSize = 128
 
-// SonrCallback returns message from lobby
-type SonrCallback interface {
+// Callback returns message from lobby
+type Callback interface {
 	OnMessage(s string)
 	OnRefresh(s string)
+	OnRequested(s string)
+	OnAccepted(s string)
+	OnDenied(s string)
+	OnProgress(s string)
+	OnComplete(s string)
 }
 
 // Lobby represents a subscription to a single PubSub topic. Messages
 // can be published to the topic with Lobby.Publish, and received
 // messages are pushed to the Messages channel.
 type Lobby struct {
-	// Messages is a channel of messages received from other peers in the chat room
-	messages chan *Message
-	Callback SonrCallback
+	// Messages is a channel of Messages received from other peers in the chat room
+	Messages chan *Message
+	callback Callback
 
-	ctx   context.Context
-	ps    *pubsub.PubSub
-	topic *pubsub.Topic
-	sub   *pubsub.Subscription
+	graph  graph.Graph
+	ctx    context.Context
+	ps     *pubsub.PubSub
+	topic  *pubsub.Topic
+	sub    *pubsub.Subscription
+	doneCh chan struct{}
 
 	Code   string
 	selfID peer.ID
@@ -36,7 +44,7 @@ type Lobby struct {
 
 // Enter tries to subscribe to the PubSub topic for the room name, returning
 // a ChatRoom on success.
-func Enter(ctx context.Context, call SonrCallback, ps *pubsub.PubSub, hostID peer.ID, olcCode string) (*Lobby, error) {
+func Enter(ctx context.Context, call Callback, ps *pubsub.PubSub, hostID peer.ID, olcCode string) (*Lobby, error) {
 	// join the pubsub topic
 	topic, err := ps.Join(olcName(olcCode))
 	if err != nil {
@@ -52,17 +60,21 @@ func Enter(ctx context.Context, call SonrCallback, ps *pubsub.PubSub, hostID pee
 	// Create Lobby Type
 	lob := &Lobby{
 		ctx:      ctx,
+		doneCh:   make(chan struct{}, 1),
+		graph:    *graph.New(graph.Directed),
 		ps:       ps,
 		topic:    topic,
 		sub:      sub,
 		selfID:   hostID,
 		Code:     olcCode,
-		Callback: call,
-		messages: make(chan *Message, ChatRoomBufSize),
+		callback: call,
+		Messages: make(chan *Message, ChatRoomBufSize),
 	}
 
-	// start reading messages from the subscription in a loop
-	go lob.readLoop()
+	// Send Enter Message
+
+	// start reading messages
+	go lob.handleMessages()
 	return lob, nil
 }
 
@@ -76,18 +88,13 @@ func (lob *Lobby) Publish(m Message) error {
 	return nil
 }
 
-// ListPeers returns peerids in room
-func (lob *Lobby) ListPeers() []peer.ID {
-	return lob.ps.ListPeers(olcName(lob.Code))
-}
-
-// readLoop pulls messages from the pubsub topic and pushes them onto the Messages channel.
-func (lob *Lobby) readLoop() {
+// handleMessages pulls messages from the pubsub topic and pushes them onto the Messages channel.
+func (lob *Lobby) handleMessages() {
 	for {
 		// get next msg from pub/sub
 		msg, err := lob.sub.Next(lob.ctx)
 		if err != nil {
-			close(lob.messages)
+			close(lob.Messages)
 			return
 		}
 
@@ -96,7 +103,7 @@ func (lob *Lobby) readLoop() {
 			continue
 		} else {
 			// callback new message
-			lob.Callback.OnMessage(string(msg.Data))
+			lob.callback.OnMessage(string(msg.Data))
 		}
 
 		// construct message
@@ -107,7 +114,7 @@ func (lob *Lobby) readLoop() {
 		}
 
 		// send valid messages onto the Messages channel
-		lob.messages <- cm
+		lob.Messages <- cm
 	}
 }
 

@@ -33,7 +33,7 @@ func NewProfile(peerID string, olc string, device string) Profile {
 
 // State returns user State information as string
 func (u *Profile) State() string {
-	slice := [2]string{fmt.Sprintf("%f", u.Direction), string(u.Status)}
+	slice := [3]string{fmt.Sprintf("%f", u.Direction), u.Device, string(u.Status.String())}
 	bytes, err := json.Marshal(slice)
 
 	// Check for Error
@@ -66,7 +66,7 @@ func (u *Profile) String() string {
 // Update takes json and updates status/direction
 func (u *Profile) Update(data string) error {
 	// Get Update from Json
-	up := new(lobby.UpdateNotification)
+	up := new(lobby.Notification)
 	err := json.Unmarshal([]byte(data), up)
 	if err != nil {
 		fmt.Println("Sonr P2P Error: ", err)

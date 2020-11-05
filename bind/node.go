@@ -4,19 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/user"
 )
-
-// Node contains all values for user
-type Node struct {
-	PeerID  string
-	Host    host.Host
-	Lobby   lobby.Lobby
-	Profile user.Profile
-	Contact user.Contact
-}
 
 // Send publishes a message to the SonrNode lobby
 func (sn *Node) Send(data string) bool {
@@ -60,6 +50,25 @@ func (sn *Node) GetUser() string {
 	return string(msgBytes)
 }
 
+// SetUserData from connection request
+func (sn *Node) SetUserData(cm lobby.ConnectRequest) error {
+	// Set Profile
+	profile := user.NewProfile(sn.Host.ID().String(), cm.OLC, cm.Device)
+	sn.Profile = profile
+
+	// Create Contact
+	var contact *user.Contact
+	err := json.Unmarshal([]byte(cm.Contact), contact)
+	if err != nil {
+		return err
+	}
+	println("Node First Name ", sn.Contact.FirstName)
+
+	// Set Contact
+	sn.Contact = *contact
+	return nil
+}
+
 // Update occurs when status or direction changes
 func (sn *Node) Update(data string) bool {
 	// Update User Values
@@ -69,11 +78,22 @@ func (sn *Node) Update(data string) bool {
 		return false
 	}
 
+	// Create Update Map
+	v := make(map[string]string)
+	v["state"] = sn.Profile.State()
+	v["basic"] = sn.Contact.Basic()
+
+	// Convert to JSON
+	msgBytes, err := json.Marshal(v)
+	if err != nil {
+		println(err)
+	}
+
 	// Create Message
 	cm := new(lobby.Message)
 	cm.Event = "Update"
 	cm.SenderID = sn.PeerID
-	cm.Value = sn.Profile.State()
+	cm.Value = string(msgBytes)
 
 	// Inform Lobby
 	err = sn.Lobby.Publish(*cm)

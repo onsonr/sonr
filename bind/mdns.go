@@ -31,12 +31,6 @@ func initMDNSDiscovery(ctx context.Context, sn Node, call Callback) error {
 	return nil
 }
 
-// discoveryNotifee gets notified when we find a new peer via mDNS discovery
-type discoveryNotifee struct {
-	sn   Node
-	call Callback
-}
-
 // Get Slice of Peers minus User
 func (n *discoveryNotifee) getPeersAsSlice() peer.IDSlice {
 	// Get Peers as Slice

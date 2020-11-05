@@ -3,7 +3,6 @@ module github.com/sonr-io/core
 go 1.15
 
 require (
-	github.com/cheekybits/genny v1.0.0
 	github.com/libp2p/go-libp2p v0.11.0
 	github.com/libp2p/go-libp2p-autonat-svc v0.2.0
 	github.com/libp2p/go-libp2p-connmgr v0.2.4
@@ -15,6 +14,7 @@ require (
 	github.com/libp2p/go-libp2p-secio v0.2.2
 	github.com/libp2p/go-libp2p-tls v0.1.3
 	github.com/libp2p/go-msgio v0.0.6
+	github.com/twmb/algoimpl v0.0.0-20170717182524-076353e90b94
 	golang.org/x/mobile v0.0.0-20200801112145-973feb4309de // indirect
 	golang.org/x/tools v0.0.0-20200117012304-6edc0a871e69 // indirect
 )

@@ -18,6 +18,24 @@ type Message struct {
 	SenderID string
 }
 
+// Peer is a representative in the lobby for a device
+type Peer struct {
+	ID         string
+	Status     string
+	Device     string
+	Direction  float64
+	FirstName  string
+	LastName   string
+	ProfilePic string
+}
+
+// Notification is sent when device has state change
+type Notification struct {
+	Direction float64
+	Status    string
+	ID        string
+}
+
 // Bytes converts message struct to JSON bytes
 func (msg *Message) Bytes() []byte {
 	// Convert to JSON
@@ -36,11 +54,4 @@ func (msg *Message) String() string {
 		println(err)
 	}
 	return string(msgBytes)
-}
-
-// UpdateNotification is sent when device has state change
-type UpdateNotification struct {
-	Direction float64
-	Status    string
-	ID        string
 }

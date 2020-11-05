@@ -10,6 +10,12 @@ ANDROID_TARGET=android
 LDFLAGS='-s -w'
 IMPORT_PATH=github.com/sonr-io/core/bind
 
+# Plugin Vars
+FLUTTER=flutter
+FLUTRUN=$(FLUTTER) run
+FLUTCLEAN=$(FLUTTER) clean
+EXAMPLE_DIR=/Users/prad/Sonr/plugin/example
+
 BUILD_IOS="cd bind && $(GOBIND) -target=$(IOS_TARGET) -v -o $(IOS_ARTIFACT)"
 BUILD_ANDROID="cd bind && $(GOBIND) -target=$(ANDROID_TARGET) -v -o $(ANDROID_ARTIFACT)"
 
@@ -19,6 +25,14 @@ ios:
 	rm -rf $(IOS_BUILDDIR) 2>/dev/null
 	mkdir -p $(IOS_BUILDDIR)
 	eval $(BUILD_IOS)
+	cd $(EXAMPLE_DIR) && $(FLUTCLEAN)
+
+ios-run:
+	rm -rf $(IOS_BUILDDIR) 2>/dev/null
+	mkdir -p $(IOS_BUILDDIR)
+	eval $(BUILD_IOS)
+	cd $(EXAMPLE_DIR) && $(FLUTCLEAN)
+	cd $(EXAMPLE_DIR) && $(FLUTRUN)
 
 # android:
 # 	rm -rf $(ANDROID_BUILDDIR) 2>/dev/null
