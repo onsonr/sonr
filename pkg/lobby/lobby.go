@@ -32,7 +32,7 @@ type Lobby struct {
 	Messages chan *Message
 	callback Callback
 
-	circle simple.WeightedDirectedGraph
+	circle *simple.WeightedDirectedGraph
 	peers  []Peer
 	ctx    context.Context
 	ps     *pubsub.PubSub
@@ -41,7 +41,7 @@ type Lobby struct {
 	doneCh chan struct{}
 
 	Code string
-	Self Peer
+	Self *Peer
 }
 
 // Enter tries to subscribe to the PubSub topic for the room name, returning
@@ -75,18 +75,19 @@ func Enter(ctx context.Context, call Callback, ps *pubsub.PubSub, hostID peer.ID
 	peers = append(peers, peer)
 	graphID := circle.NewNode()
 	peer.GraphID = graphID.ID()
+	println("Peer GraphID in Lobby ", peer.GraphID)
 	circle.AddNode(graphID)
 
 	// Create Lobby Type
 	lob := &Lobby{
 		ctx:      ctx,
 		doneCh:   make(chan struct{}, 1),
-		circle:   *circle,
+		circle:   circle,
 		peers:    peers,
 		ps:       ps,
 		topic:    topic,
 		sub:      sub,
-		Self:     peer,
+		Self:     &peer,
 		Code:     olcCode,
 		callback: call,
 		Messages: make(chan *Message, ChatRoomBufSize),

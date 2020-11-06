@@ -67,21 +67,28 @@ func (sn *Node) SetUser(cm lobby.ConnectRequest) error {
 func (sn *Node) Update(data string) bool {
 	// Get Update from Json
 	notif := new(lobby.Notification)
+	notif.GraphID = sn.Lobby.Self.GraphID
 	err := json.Unmarshal([]byte(data), notif)
 	if err != nil {
 		fmt.Println("Sonr P2P Error: ", err)
 		return false
 	}
 
+	// Repackage with graph ID
+	renotif, err := json.Marshal(notif)
+	if err != nil {
+		fmt.Println("Sonr P2P Error: ", err)
+		return false
+	}
+
 	// Update User Values
-	notif.GraphID = sn.Lobby.Self.GraphID
 	sn.Profile.Update(notif.Direction, notif.Status)
 
 	// Create Message
 	cm := new(lobby.Message)
 	cm.Event = "Update"
 	cm.SenderID = sn.PeerID
-	cm.Value = data
+	cm.Value = string(renotif)
 
 	// Inform Lobby
 	err = sn.Lobby.Publish(*cm)
