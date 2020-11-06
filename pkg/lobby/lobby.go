@@ -3,9 +3,11 @@ package lobby
 import (
 	"context"
 	"encoding/json"
+	"math"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	"gonum.org/v1/gonum/graph/simple"
 )
 
 // ChatRoomBufSize is the number of incoming messages to buffer for each topic.
@@ -30,15 +32,16 @@ type Lobby struct {
 	Messages chan *Message
 	callback Callback
 
-	circle map[Peer]float64
+	circle simple.WeightedDirectedGraph
+	peers  []Peer
 	ctx    context.Context
 	ps     *pubsub.PubSub
 	topic  *pubsub.Topic
 	sub    *pubsub.Subscription
 	doneCh chan struct{}
 
-	Code   string
-	selfID peer.ID
+	Code string
+	Self Peer
 }
 
 // Enter tries to subscribe to the PubSub topic for the room name, returning
@@ -56,9 +59,6 @@ func Enter(ctx context.Context, call Callback, ps *pubsub.PubSub, hostID peer.ID
 		return nil, err
 	}
 
-	// Handle Graph
-	circle := make(map[Peer]float64)
-
 	// Set Peer Info
 	peer := Peer{
 		ID:         hostID.String(),
@@ -69,18 +69,24 @@ func Enter(ctx context.Context, call Callback, ps *pubsub.PubSub, hostID peer.ID
 		ProfilePic: profilePic,
 	}
 
-	// Set Circle Default Value: Should be direction
-	circle[peer] = -1
+	// Handle Graph
+	circle := simple.NewWeightedDirectedGraph(0, math.Inf(1))
+	var peers []Peer
+	peers = append(peers, peer)
+	graphID := circle.NewNode()
+	peer.GraphID = graphID.ID()
+	circle.AddNode(graphID)
 
 	// Create Lobby Type
 	lob := &Lobby{
 		ctx:      ctx,
 		doneCh:   make(chan struct{}, 1),
-		circle:   circle,
+		circle:   *circle,
+		peers:    peers,
 		ps:       ps,
 		topic:    topic,
 		sub:      sub,
-		selfID:   hostID,
+		Self:     peer,
 		Code:     olcCode,
 		callback: call,
 		Messages: make(chan *Message, ChatRoomBufSize),
@@ -126,7 +132,7 @@ func (lob *Lobby) handleMessages() {
 		}
 
 		// only forward messages delivered by others
-		if msg.ReceivedFrom == lob.selfID {
+		if msg.ReceivedFrom.String() == lob.Self.ID {
 			continue
 		} else {
 			// callback new message
@@ -139,13 +145,6 @@ func (lob *Lobby) handleMessages() {
 		err = json.Unmarshal(msg.Data, cm)
 		if err != nil {
 			continue
-		}
-
-		// Update Circle by event
-		if cm.Event == "Join" {
-			lob.joinPeer(cm.Value)
-		} else if cm.Event == "Update" {
-			lob.updatePeer(cm.Value)
 		}
 
 		// send valid messages onto the Messages channel

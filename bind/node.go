@@ -74,6 +74,7 @@ func (sn *Node) Update(data string) bool {
 	}
 
 	// Update User Values
+	notif.GraphID = sn.Lobby.Self.GraphID
 	sn.Profile.Update(notif.Direction, notif.Status)
 
 	// Create Message

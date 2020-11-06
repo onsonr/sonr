@@ -27,6 +27,7 @@ ios:
 	mkdir -p $(IOS_BUILDDIR)
 	eval $(BUILD_IOS)
 	cd $(EXAMPLE_DIR) && $(FLUTCLEAN)
+	cd /System/Library/Sounds && afplay Glass.aiff
 	date
 
 # android:
