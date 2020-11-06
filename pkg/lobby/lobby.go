@@ -6,7 +6,6 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	graph "github.com/twmb/algoimpl/go/graph"
 )
 
 // ChatRoomBufSize is the number of incoming messages to buffer for each topic.
@@ -31,7 +30,7 @@ type Lobby struct {
 	Messages chan *Message
 	callback Callback
 
-	graph  graph.Graph
+	circle map[Peer]float64
 	ctx    context.Context
 	ps     *pubsub.PubSub
 	topic  *pubsub.Topic
@@ -44,7 +43,7 @@ type Lobby struct {
 
 // Enter tries to subscribe to the PubSub topic for the room name, returning
 // a ChatRoom on success.
-func Enter(ctx context.Context, call Callback, ps *pubsub.PubSub, hostID peer.ID, olcCode string) (*Lobby, error) {
+func Enter(ctx context.Context, call Callback, ps *pubsub.PubSub, hostID peer.ID, firstName string, lastName string, device string, profilePic string, status string, olcCode string) (*Lobby, error) {
 	// join the pubsub topic
 	topic, err := ps.Join(olcName(olcCode))
 	if err != nil {
@@ -57,11 +56,27 @@ func Enter(ctx context.Context, call Callback, ps *pubsub.PubSub, hostID peer.ID
 		return nil, err
 	}
 
+	// Handle Graph
+	circle := make(map[Peer]float64)
+
+	// Set Peer Info
+	peer := Peer{
+		ID:         hostID.String(),
+		Status:     status,
+		Device:     device,
+		FirstName:  firstName,
+		LastName:   lastName,
+		ProfilePic: profilePic,
+	}
+
+	// Set Circle Default Value: Should be direction
+	circle[peer] = -1
+
 	// Create Lobby Type
 	lob := &Lobby{
 		ctx:      ctx,
 		doneCh:   make(chan struct{}, 1),
-		graph:    *graph.New(graph.Directed),
+		circle:   circle,
 		ps:       ps,
 		topic:    topic,
 		sub:      sub,
@@ -71,7 +86,13 @@ func Enter(ctx context.Context, call Callback, ps *pubsub.PubSub, hostID peer.ID
 		Messages: make(chan *Message, ChatRoomBufSize),
 	}
 
-	// Send Enter Message
+	// Publish Join Message
+	msg := Message{
+		Event:    "Join",
+		Value:    peer.String(),
+		SenderID: hostID.String(),
+	}
+	lob.Publish(msg)
 
 	// start reading messages
 	go lob.handleMessages()
@@ -87,6 +108,11 @@ func (lob *Lobby) Publish(m Message) error {
 		return err
 	}
 	return nil
+}
+
+// End terminates lobby loop
+func (lob *Lobby) End() {
+	lob.doneCh <- struct{}{}
 }
 
 // handleMessages pulls messages from the pubsub topic and pushes them onto the Messages channel.
@@ -105,6 +131,7 @@ func (lob *Lobby) handleMessages() {
 		} else {
 			// callback new message
 			lob.callback.OnMessage(string(msg.Data))
+			lob.callback.OnRefresh(lob.GetCircle())
 		}
 
 		// construct message
@@ -112,6 +139,13 @@ func (lob *Lobby) handleMessages() {
 		err = json.Unmarshal(msg.Data, cm)
 		if err != nil {
 			continue
+		}
+
+		// Update Circle by event
+		if cm.Event == "Join" {
+			lob.joinPeer(cm.Value)
+		} else if cm.Event == "Update" {
+			lob.updatePeer(cm.Value)
 		}
 
 		// send valid messages onto the Messages channel

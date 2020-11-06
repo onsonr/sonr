@@ -36,14 +36,19 @@ func Start(data string, call Callback) *Node {
 
 	// Create Host
 	h, err := host.NewBasicHost(&ctx)
-	println("Host Created")
-
 	// Check for Error
 	if err != nil {
 		panic(err)
 	}
+	println("Host Created")
 	node.Host = h
 	node.PeerID = h.ID().String()
+
+	// Set User data to node
+	err = node.SetUser(*cm)
+	if err != nil {
+		println("Cannot unmarshal contact")
+	}
 
 	// setup local mDNS discovery
 	err = initMDNSDiscovery(ctx, *node, call)
@@ -60,18 +65,12 @@ func Start(data string, call Callback) *Node {
 	println("GossipSub Created")
 
 	// Enter location lobby
-	lob, err := lobby.Enter(ctx, call, ps, node.Host.ID(), cm.OLC)
+	lob, err := lobby.Enter(ctx, call, ps, node.Host.ID(), node.Contact.FirstName, node.Contact.LastName, node.Profile.Device, node.Contact.ProfilePic, node.Profile.Status.String(), cm.OLC)
 	if err != nil {
 		panic(err)
 	}
 	println("Lobby Joined")
 	node.Lobby = *lob
-
-	// Set User data to node
-	err = node.SetUser(*cm)
-	if err != nil {
-		println("Cannot unmarshal contact")
-	}
 
 	// Return Node
 	return node

@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"math"
-
-	"github.com/sonr-io/core/pkg/lobby"
 )
 
 // Profile is Model with device, location, profile information
@@ -65,21 +63,11 @@ func (u *Profile) String() string {
 }
 
 // Update takes json and updates status/direction
-func (u *Profile) Update(data string) error {
-	// Get Update from Json
-	up := new(lobby.Notification)
-	err := json.Unmarshal([]byte(data), up)
-	if err != nil {
-		fmt.Println("Sonr P2P Error: ", err)
-		return err
-	}
+func (u *Profile) Update(direction float64, status string) {
 
 	// Set New Data
-	u.Direction = Round(up.Direction, .5, 2)
-	u.Status = GetStatus(up.Status)
-
-	// Return Notification
-	return nil
+	u.Direction = Round(direction, .5, 2)
+	u.Status = GetStatus(status)
 }
 
 // Round converts a number to be rounded

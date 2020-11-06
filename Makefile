@@ -1,5 +1,6 @@
 # Makefile that builds core and puts it into plugin repo
 GOMOBILE=gomobile
+GOCLEAN=$(GOMOBILE) clean
 GOBIND=$(GOMOBILE) bind
 IOS_BUILDDIR=/Users/prad/Sonr/plugin/ios/Frameworks
 IOS_ARTIFACT=$(IOS_BUILDDIR)/Core.framework
@@ -16,8 +17,8 @@ FLUTRUN=$(FLUTTER) run
 FLUTCLEAN=$(FLUTTER) clean
 EXAMPLE_DIR=/Users/prad/Sonr/plugin/example
 
-BUILD_IOS="cd bind && $(GOBIND) -target=$(IOS_TARGET) -v -o $(IOS_ARTIFACT)"
-BUILD_ANDROID="cd bind && $(GOBIND) -target=$(ANDROID_TARGET) -v -o $(ANDROID_ARTIFACT)"
+BUILD_IOS="cd bind && $(GOCLEAN) && $(GOBIND) -target=$(IOS_TARGET) -v -o $(IOS_ARTIFACT)"
+BUILD_ANDROID="cd bind && $(GOCLEAN) && $(GOBIND) -target=$(ANDROID_TARGET) -v -o $(ANDROID_ARTIFACT)"
 
 all: ios android
 

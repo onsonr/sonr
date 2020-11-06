@@ -65,34 +65,22 @@ func (sn *Node) SetUser(cm lobby.ConnectRequest) error {
 
 // Update occurs when status or direction changes
 func (sn *Node) Update(data string) bool {
-	// Update User Values
-	err := sn.Profile.Update(data)
+	// Get Update from Json
+	notif := new(lobby.Notification)
+	err := json.Unmarshal([]byte(data), notif)
 	if err != nil {
 		fmt.Println("Sonr P2P Error: ", err)
 		return false
 	}
 
-	// Log New Values
-	println("Direction: ", sn.Profile.Direction)
-	println("Status: ", sn.Profile.Status.String())
-
-	// Create Update Map
-	v := make(map[string]string)
-	v["state"] = sn.Profile.State()
-	v["info"] = sn.Contact.Basic()
-
-	// Convert to JSON
-	msgBytes, err := json.Marshal(v)
-	if err != nil {
-		println(err)
-	}
+	// Update User Values
+	sn.Profile.Update(notif.Direction, notif.Status)
 
 	// Create Message
 	cm := new(lobby.Message)
-	cm.FirstName = sn.Contact.FirstName
 	cm.Event = "Update"
 	cm.SenderID = sn.PeerID
-	cm.Value = string(msgBytes)
+	cm.Value = data
 
 	// Inform Lobby
 	err = sn.Lobby.Publish(*cm)
