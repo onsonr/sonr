@@ -4,19 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/user"
 )
-
-// Node contains all values for user
-type Node struct {
-	PeerID  string
-	Host    host.Host
-	Lobby   lobby.Lobby
-	Profile user.Profile
-	Contact user.Contact
-}
 
 // Send publishes a message to the SonrNode lobby
 func (sn *Node) Send(data string) bool {
@@ -60,20 +50,45 @@ func (sn *Node) GetUser() string {
 	return string(msgBytes)
 }
 
+// SetUser from connection request
+func (sn *Node) SetUser(cm lobby.ConnectRequest) error {
+	// Set Profile
+	profile := user.NewProfile(sn.Host.ID().String(), cm.OLC, cm.Device)
+	sn.Profile = profile
+
+	// Set Contact
+	contact := user.NewContact(cm.Contact)
+	sn.Contact = contact
+
+	return nil
+}
+
 // Update occurs when status or direction changes
 func (sn *Node) Update(data string) bool {
-	// Update User Values
-	err := sn.Profile.Update(data)
+	// Get Update from Json
+	notif := new(lobby.Notification)
+	notif.GraphID = sn.Lobby.Self.GraphID
+	err := json.Unmarshal([]byte(data), notif)
 	if err != nil {
 		fmt.Println("Sonr P2P Error: ", err)
 		return false
 	}
 
+	// Repackage with graph ID
+	renotif, err := json.Marshal(notif)
+	if err != nil {
+		fmt.Println("Sonr P2P Error: ", err)
+		return false
+	}
+
+	// Update User Values
+	sn.Profile.Update(notif.Direction, notif.Status)
+
 	// Create Message
 	cm := new(lobby.Message)
 	cm.Event = "Update"
 	cm.SenderID = sn.PeerID
-	cm.Value = sn.Profile.State()
+	cm.Value = string(renotif)
 
 	// Inform Lobby
 	err = sn.Lobby.Publish(*cm)

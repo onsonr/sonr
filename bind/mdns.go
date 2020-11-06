@@ -2,7 +2,6 @@ package sonr
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"time"
 
@@ -29,12 +28,6 @@ func initMDNSDiscovery(ctx context.Context, sn Node, call Callback) error {
 	n := discoveryNotifee{sn: sn, call: call}
 	disc.RegisterNotifee(&n)
 	return nil
-}
-
-// discoveryNotifee gets notified when we find a new peer via mDNS discovery
-type discoveryNotifee struct {
-	sn   Node
-	call Callback
 }
 
 // Get Slice of Peers minus User
@@ -106,11 +99,11 @@ func (n *discoveryNotifee) sendCallback(peers peer.IDSlice) {
 	}
 
 	// Create JSON from the instance data.
-	b, err := json.Marshal(peers)
-	if err != nil {
-		fmt.Printf("error formatting json")
-	}
+	// b, err := json.Marshal(peers)
+	// if err != nil {
+	// 	fmt.Printf("error formatting json")
+	// }
 
 	// Callback to frontend
-	n.call.OnRefresh(string(b))
+	//n.call.OnRefresh(string(b))
 }
