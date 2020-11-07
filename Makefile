@@ -1,5 +1,5 @@
 # Makefile that builds core and puts it into plugin repo
-GOMOBILE=gomobile
+GOMOBILE=/Users/prad/go/bin/gomobile
 GOCLEAN=$(GOMOBILE) clean
 GOBIND=$(GOMOBILE) bind
 IOS_BUILDDIR=/Users/prad/Sonr/plugin/ios/Frameworks
