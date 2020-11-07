@@ -96,14 +96,3 @@ func NewHost(ctx *context.Context) (host.Host, error) {
 
 	return h, nil
 }
-
-// NewBasicHost creates a host without any options
-func NewBasicHost(ctx *context.Context) (host.Host, error) {
-	host, err := libp2p.New(*ctx, libp2p.ListenAddrStrings("/ip4/0.0.0.0/tcp/0"),
-		libp2p.ConnectionManager(connmgr.NewConnManager(
-			100,         // Lowwater
-			400,         // HighWater,
-			time.Minute, // GracePeriod
-		)))
-	return host, err
-}
