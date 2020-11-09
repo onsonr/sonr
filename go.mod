@@ -15,6 +15,7 @@ require (
 	github.com/libp2p/go-libp2p-tls v0.1.3
 	github.com/libp2p/go-msgio v0.0.6
 	golang.org/x/exp v0.0.0-20190731235908-ec7cb31e5a56 // indirect
-	golang.org/x/tools v0.0.0-20200117012304-6edc0a871e69 // indirect
+	golang.org/x/mobile v0.0.0-20200801112145-973feb4309de // indirect
+	golang.org/x/tools v0.0.0-20201109182053-3db8fd265862 // indirect
 	gonum.org/v1/gonum v0.8.1
 )
