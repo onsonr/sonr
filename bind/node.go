@@ -98,7 +98,7 @@ func (sn *Node) Update(data string) bool {
 	cm := new(lobby.Message)
 	cm.Event = "Update"
 	cm.SenderID = sn.PeerID
-	cm.Value = string(renotif)
+	cm.Data = string(renotif)
 
 	// Inform Lobby
 	err = sn.Lobby.Publish(*cm)

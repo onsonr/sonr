@@ -13,19 +13,9 @@ type ConnectRequest struct {
 
 // Message is a for Lobby Pub/Sub Messaging, Converted To/From Json
 type Message struct {
-	Value    string
+	Data     string
 	Event    string
 	SenderID string
-}
-
-// Peer is a representative in the lobby for a device
-type Peer struct {
-	ID         string
-	Device     string
-	FirstName  string
-	LastName   string
-	ProfilePic string
-	Direction  float64
 }
 
 // Notification is sent when device has state change
@@ -52,14 +42,4 @@ func (msg *Message) String() string {
 		println(err)
 	}
 	return string(msgBytes)
-}
-
-// String converts message struct to JSON String
-func (p *Peer) String() string {
-	// Convert to JSON
-	peerBytes, err := json.Marshal(p)
-	if err != nil {
-		println(err)
-	}
-	return string(peerBytes)
 }
