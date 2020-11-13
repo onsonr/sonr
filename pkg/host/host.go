@@ -25,8 +25,11 @@ func NewHost(ctx *context.Context) (host.Host, error) {
 	h, err := libp2p.New(*ctx,
 		// Multiple listen addresses
 		libp2p.ListenAddrStrings(
-			"/ip4/0.0.0.0/tcp/9000",      // regular tcp connections
-			"/ip4/0.0.0.0/udp/9000/quic", // a UDP endpoint for the QUIC transport
+			"/ip4/0.0.0.0/tcp/0",
+			"/ip6/::/tcp/0",
+
+			"/ip4/0.0.0.0/udp/0/quic",
+			"/ip6/::/udp/0/quic", // a UDP endpoint for the QUIC transport
 		),
 		// support TLS connections
 		libp2p.Security(libp2ptls.ID, libp2ptls.New),
@@ -99,7 +102,12 @@ func NewHost(ctx *context.Context) (host.Host, error) {
 
 // NewBasicHost creates a host without any options
 func NewBasicHost(ctx *context.Context) (host.Host, error) {
-	host, err := libp2p.New(*ctx, libp2p.ListenAddrStrings("/ip4/0.0.0.0/tcp/0"),
+	host, err := libp2p.New(*ctx, libp2p.ListenAddrStrings(
+		"/ip4/0.0.0.0/tcp/0",
+		"/ip6/::/tcp/0",
+
+		"/ip4/0.0.0.0/udp/0/quic",
+		"/ip6/::/udp/0/quic"),
 		libp2p.ConnectionManager(connmgr.NewConnManager(
 			100,         // Lowwater
 			400,         // HighWater,

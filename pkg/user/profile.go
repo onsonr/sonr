@@ -12,7 +12,6 @@ type Profile struct {
 	ID     string
 	OLC    string
 	Device string
-	Status Status
 
 	// Sensory Variables
 	Direction float64
@@ -26,13 +25,12 @@ func NewProfile(peerID string, olc string, device string) Profile {
 		ID:     peerID,
 		OLC:    olc,
 		Device: device,
-		Status: Available,
 	}
 }
 
 // State returns user State information as string
 func (u *Profile) State() string {
-	slice := [3]string{fmt.Sprintf("%f", u.Direction), u.Device, string(u.Status.String())}
+	slice := [2]string{fmt.Sprintf("%f", u.Direction), u.Device}
 	bytes, err := json.Marshal(slice)
 
 	// Check for Error
@@ -50,7 +48,6 @@ func (u *Profile) String() string {
 	m["id"] = u.ID
 	m["olc"] = u.OLC
 	m["device"] = u.Device
-	m["status"] = u.Status.String()
 
 	// Convert to JSON
 	msgBytes, err := json.Marshal(m)
@@ -63,11 +60,10 @@ func (u *Profile) String() string {
 }
 
 // Update takes json and updates status/direction
-func (u *Profile) Update(direction float64, status string) {
+func (u *Profile) Update(direction float64) {
 
 	// Set New Data
 	u.Direction = Round(direction, .5, 2)
-	u.Status = GetStatus(status)
 }
 
 // Round converts a number to be rounded

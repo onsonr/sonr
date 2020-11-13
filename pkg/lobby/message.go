@@ -21,8 +21,6 @@ type Message struct {
 // Peer is a representative in the lobby for a device
 type Peer struct {
 	ID         string
-	GraphID    int64
-	Status     string
 	Device     string
 	FirstName  string
 	LastName   string
@@ -33,9 +31,7 @@ type Peer struct {
 // Notification is sent when device has state change
 type Notification struct {
 	Direction float64
-	Status    string
 	ID        string
-	GraphID   int64
 }
 
 // Bytes converts message struct to JSON bytes

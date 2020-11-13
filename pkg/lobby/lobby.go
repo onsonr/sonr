@@ -3,11 +3,9 @@ package lobby
 import (
 	"context"
 	"encoding/json"
-	"math"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	"gonum.org/v1/gonum/graph/simple"
 )
 
 // ChatRoomBufSize is the number of incoming messages to buffer for each topic.
@@ -32,7 +30,6 @@ type Lobby struct {
 	Messages chan *Message
 	callback Callback
 
-	circle *simple.WeightedDirectedGraph
 	peers  []Peer
 	ctx    context.Context
 	ps     *pubsub.PubSub
@@ -46,7 +43,7 @@ type Lobby struct {
 
 // Enter tries to subscribe to the PubSub topic for the room name, returning
 // a ChatRoom on success.
-func Enter(ctx context.Context, call Callback, ps *pubsub.PubSub, hostID peer.ID, firstName string, lastName string, device string, profilePic string, status string, olcCode string) (*Lobby, error) {
+func Enter(ctx context.Context, call Callback, ps *pubsub.PubSub, hostID peer.ID, firstName string, lastName string, device string, profilePic string, olcCode string) (*Lobby, error) {
 	// join the pubsub topic
 	topic, err := ps.Join(olcName(olcCode))
 	if err != nil {
@@ -62,7 +59,6 @@ func Enter(ctx context.Context, call Callback, ps *pubsub.PubSub, hostID peer.ID
 	// Set Peer Info
 	peer := Peer{
 		ID:         hostID.String(),
-		Status:     status,
 		Device:     device,
 		FirstName:  firstName,
 		LastName:   lastName,
@@ -70,19 +66,13 @@ func Enter(ctx context.Context, call Callback, ps *pubsub.PubSub, hostID peer.ID
 	}
 
 	// Handle Graph
-	circle := simple.NewWeightedDirectedGraph(0, math.Inf(1))
 	var peers []Peer
 	peers = append(peers, peer)
-	graphID := circle.NewNode()
-	peer.GraphID = graphID.ID()
-	println("Peer GraphID in Lobby ", peer.GraphID)
-	circle.AddNode(graphID)
 
 	// Create Lobby Type
 	lob := &Lobby{
 		ctx:      ctx,
 		doneCh:   make(chan struct{}, 1),
-		circle:   circle,
 		peers:    peers,
 		ps:       ps,
 		topic:    topic,
@@ -138,7 +128,6 @@ func (lob *Lobby) handleMessages() {
 		} else {
 			// callback new message
 			lob.callback.OnMessage(string(msg.Data))
-			lob.callback.OnRefresh(lob.GetCircle())
 		}
 
 		// construct message

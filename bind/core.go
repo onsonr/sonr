@@ -65,7 +65,7 @@ func Start(data string, call Callback) *Node {
 	println("GossipSub Created")
 
 	// Enter location lobby
-	lob, err := lobby.Enter(ctx, call, ps, node.Host.ID(), node.Contact.FirstName, node.Contact.LastName, node.Profile.Device, node.Contact.ProfilePic, node.Profile.Status.String(), cm.OLC)
+	lob, err := lobby.Enter(ctx, call, ps, node.Host.ID(), node.Contact.FirstName, node.Contact.LastName, node.Profile.Device, node.Contact.ProfilePic, cm.OLC)
 	if err != nil {
 		panic(err)
 	}

@@ -78,7 +78,6 @@ func (sn *Node) Update(data string) bool {
 	// Get Update from Json
 	notif := new(lobby.Notification)
 	notif.ID = sn.PeerID
-	notif.GraphID = sn.Lobby.Self.GraphID
 	err := json.Unmarshal([]byte(data), notif)
 	if err != nil {
 		fmt.Println("Sonr P2P Error: ", err)
@@ -93,7 +92,7 @@ func (sn *Node) Update(data string) bool {
 	}
 
 	// Update User Values
-	sn.Profile.Update(notif.Direction, notif.Status)
+	sn.Profile.Update(notif.Direction)
 
 	// Create Message
 	cm := new(lobby.Message)
