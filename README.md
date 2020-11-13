@@ -38,6 +38,8 @@ Any struct type, all of whose exported methods have
 
 # Resources
 
+> Helpful guides for Binding and Libp2p
+
 ## GoMobile
 
 - [Swift](https://medium.com/@matryer/tutorial-calling-go-code-from-swift-on-ios-and-vice-versa-with-gomobile-7925620c17a4)
