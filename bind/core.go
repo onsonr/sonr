@@ -35,7 +35,7 @@ func Start(data string, call Callback) *Node {
 	}
 
 	// Create Host
-	h, err := host.NewBasicHost(&ctx)
+	h, err := host.NewHost(&ctx)
 	// Check for Error
 	if err != nil {
 		panic(err)
