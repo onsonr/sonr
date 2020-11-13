@@ -2,7 +2,7 @@ module github.com/sonr-io/core
 
 go 1.15
 
-require(
+require (
 	github.com/libp2p/go-libp2p v0.11.0
 	github.com/libp2p/go-libp2p-autonat-svc v0.2.0
 	github.com/libp2p/go-libp2p-connmgr v0.2.4
