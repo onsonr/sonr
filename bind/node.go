@@ -67,6 +67,7 @@ func (sn *Node) SetUser(cm lobby.ConnectRequest) error {
 func (sn *Node) Update(data string) bool {
 	// Get Update from Json
 	notif := new(lobby.Notification)
+	notif.ID = sn.PeerID
 	notif.GraphID = sn.Lobby.Self.GraphID
 	err := json.Unmarshal([]byte(data), notif)
 	if err != nil {

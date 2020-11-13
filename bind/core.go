@@ -40,7 +40,6 @@ func Start(data string, call Callback) *Node {
 	if err != nil {
 		panic(err)
 	}
-	println("Host Created")
 	node.Host = h
 	node.PeerID = h.ID().String()
 
@@ -55,14 +54,13 @@ func Start(data string, call Callback) *Node {
 	if err != nil {
 		panic(err)
 	}
-	println("MDNS Started")
+	println("Host Created and MDNS Started")
 
 	// create a new PubSub service using the GossipSub router
 	ps, err := pubsub.NewGossipSub(ctx, node.Host)
 	if err != nil {
 		panic(err)
 	}
-	println("GossipSub Created")
 
 	// Enter location lobby
 	lob, err := lobby.Enter(ctx, call, ps, node.Host.ID(), node.Contact.FirstName, node.Contact.LastName, node.Profile.Device, node.Contact.ProfilePic, node.Profile.Status.String(), cm.OLC)
@@ -71,6 +69,9 @@ func Start(data string, call Callback) *Node {
 	}
 	println("Lobby Joined")
 	node.Lobby = *lob
+
+	// Log Multiaddr
+	println("Multi Address: ", h.Addrs())
 
 	// Return Node
 	return node

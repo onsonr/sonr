@@ -6,7 +6,7 @@ IOS_BUILDDIR=/Users/prad/Sonr/plugin/ios/Frameworks
 IOS_ARTIFACT=$(IOS_BUILDDIR)/Core.framework
 ANDROID_BUILDDIR=/Users/prad/Sonr/plugin/android/libs
 ANDROID_ARTIFACT=$(ANDROID_BUILDDIR)/io.sonr.core.aar
-IOS_TARGET=ios
+IOS_TARGET=ios/arm64
 ANDROID_TARGET=android
 LDFLAGS='-s -w'
 IMPORT_PATH=github.com/sonr-io/core/bind
@@ -39,5 +39,6 @@ android:
 	cd /System/Library/Sounds && afplay Glass.aiff
 
 clean:
+	cd bind && $(GOCLEAN)
 	rm -rf $(IOS_BUILDDIR)
 	rm -rf $(ANDROID_BUILDDIR)
