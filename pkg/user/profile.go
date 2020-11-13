@@ -3,8 +3,7 @@ package user
 import (
 	"encoding/json"
 	"fmt"
-
-	"github.com/sonr-io/core/pkg/lobby"
+	"math"
 )
 
 // Profile is Model with device, location, profile information
@@ -33,7 +32,7 @@ func NewProfile(peerID string, olc string, device string) Profile {
 
 // State returns user State information as string
 func (u *Profile) State() string {
-	slice := [2]string{fmt.Sprintf("%f", u.Direction), string(u.Status)}
+	slice := [3]string{fmt.Sprintf("%f", u.Direction), u.Device, string(u.Status.String())}
 	bytes, err := json.Marshal(slice)
 
 	// Check for Error
@@ -64,19 +63,24 @@ func (u *Profile) String() string {
 }
 
 // Update takes json and updates status/direction
-func (u *Profile) Update(data string) error {
-	// Get Update from Json
-	up := new(lobby.UpdateNotification)
-	err := json.Unmarshal([]byte(data), up)
-	if err != nil {
-		fmt.Println("Sonr P2P Error: ", err)
-		return err
-	}
+func (u *Profile) Update(direction float64, status string) {
 
 	// Set New Data
-	u.Direction = float64(up.Direction)
-	u.Status = GetStatus(up.Status)
+	u.Direction = Round(direction, .5, 2)
+	u.Status = GetStatus(status)
+}
 
-	// Return Notification
-	return nil
+// Round converts a number to be rounded
+func Round(val float64, roundOn float64, places int) (newVal float64) {
+	var round float64
+	pow := math.Pow(10, float64(places))
+	digit := pow * val
+	_, div := math.Modf(digit)
+	if div >= roundOn {
+		round = math.Ceil(digit)
+	} else {
+		round = math.Floor(digit)
+	}
+	newVal = round / pow
+	return
 }
