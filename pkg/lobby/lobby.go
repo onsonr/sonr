@@ -29,7 +29,7 @@ type Lobby struct {
 	// Public Vars
 	Messages chan *Message
 	Code     string
-	Self     *Peer
+	Self     Peer
 
 	// Private Vars
 	callback Callback
@@ -66,19 +66,15 @@ func Enter(ctx context.Context, call Callback, ps *pubsub.PubSub, hostID peer.ID
 		Direction:  0.0,
 	}
 
-	// Create Peer Dictionary
-	var peers map[string]Peer
-	peers = make(map[string]Peer)
-
 	// Create Lobby Type
 	lob := &Lobby{
 		ctx:      ctx,
 		doneCh:   make(chan struct{}, 1),
-		peers:    peers,
+		peers:    make(map[string]Peer),
 		ps:       ps,
 		topic:    topic,
 		sub:      sub,
-		Self:     &peer,
+		Self:     peer,
 		Code:     olcCode,
 		callback: call,
 		Messages: make(chan *Message, ChatRoomBufSize),
@@ -100,18 +96,20 @@ func Enter(ctx context.Context, call Callback, ps *pubsub.PubSub, hostID peer.ID
 
 // GetPeers returns peers list as string
 func (lob *Lobby) GetPeers() string {
-	// Initialize Variables
-	var peerSlice []Peer
-	peersRef := lob.peers
+	// // Initialize Variables
+	// var peerSlice []Peer
+	// peersRef := lob.peers
 
-	// Delete peer at id
-	delete(peersRef, lob.Self.ID)
+	// // Delete peer at id
+	// delete(peersRef, lob.Self.ID)
 
-	// Iterate through dictionary
-	for _, value := range peersRef {
-		// Add to slice
-		peerSlice = append(peerSlice, value)
-	}
+	// // Iterate through dictionary
+	// for _, value := range peersRef {
+	// 	// Add to slice
+	// 	peerSlice = append(peerSlice, value)
+	// }
+
+	peerSlice := lob.ps.ListPeers(lob.Code)
 
 	// Convert slice to bytes
 	bytes, err := json.Marshal(peerSlice)
