@@ -96,20 +96,15 @@ func Enter(ctx context.Context, call Callback, ps *pubsub.PubSub, hostID peer.ID
 
 // GetPeers returns peers list as string
 func (lob *Lobby) GetPeers() string {
-	// // Initialize Variables
-	// var peerSlice []Peer
-	// peersRef := lob.peers
+	// Initialize Variables
+	var peerSlice []Peer
+	peersRef := lob.peers
 
-	// // Delete peer at id
-	// delete(peersRef, lob.Self.ID)
-
-	// // Iterate through dictionary
-	// for _, value := range peersRef {
-	// 	// Add to slice
-	// 	peerSlice = append(peerSlice, value)
-	// }
-
-	peerSlice := lob.ps.ListPeers(lob.Code)
+	// Iterate through dictionary
+	for _, value := range peersRef {
+		// Add to slice
+		peerSlice = append(peerSlice, value)
+	}
 
 	// Convert slice to bytes
 	bytes, err := json.Marshal(peerSlice)

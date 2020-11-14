@@ -2,7 +2,6 @@ package lobby
 
 import (
 	"encoding/json"
-	"time"
 )
 
 // 1. handleMessages pulls messages from the pubsub topic and pushes them onto the Messages channel.
@@ -18,10 +17,6 @@ func (lob *Lobby) handleMessages() {
 		// only forward messages delivered by others
 		if msg.ReceivedFrom.String() == lob.Self.ID {
 			continue
-		} else {
-			// callback new message
-			// ! This is tempoorary
-			lob.callback.OnMessage(string(msg.Data))
 		}
 
 		// construct message
@@ -38,9 +33,6 @@ func (lob *Lobby) handleMessages() {
 
 // 2. handleEvents handles message content and ticker
 func (lob *Lobby) handleEvents() {
-	peerRefreshTicker := time.NewTicker(time.Second * 3)
-	defer peerRefreshTicker.Stop()
-
 	for {
 		select {
 		// ** when we receive a message from the lobby room **
@@ -53,12 +45,6 @@ func (lob *Lobby) handleEvents() {
 			} else if m.Event == "Leave" {
 				lob.removePeer(m.Data)
 			}
-
-		// ** refresh the list of peers in the chat room periodically **
-		case <-peerRefreshTicker.C:
-			// Check if Peer is in Lobby
-			lob.callback.OnRefresh(lob.GetPeers())
-			continue
 
 		case <-lob.ctx.Done():
 			return

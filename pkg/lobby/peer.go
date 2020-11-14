@@ -98,10 +98,14 @@ func (lob *Lobby) updatePeer(jsonString string) {
 		fmt.Println("Sonr P2P Error: ", err)
 	}
 
+	println("Update Message: ", jsonString)
+
 	// Update peer in Dictionary
 	peerRef := lob.peers[notif.ID]
 	peerRef.Direction = notif.Direction
 	lob.peers[notif.ID] = peerRef
+
+	println("Lobby Count: ", len(lob.peers))
 
 	// Send Callback with updated peers
 	lob.callback.OnRefresh(lob.GetPeers())
