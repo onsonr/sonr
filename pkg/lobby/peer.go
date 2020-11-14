@@ -92,8 +92,8 @@ func (lob *Lobby) removePeer(id string) {
 // updatePeer changes peer values in circle
 func (lob *Lobby) updatePeer(jsonString string) {
 	// Generate Map
-	notif := new(Notification)
-	err := json.Unmarshal([]byte(jsonString), notif)
+	peer := new(Peer)
+	err := json.Unmarshal([]byte(jsonString), peer)
 	if err != nil {
 		fmt.Println("Sonr P2P Error: ", err)
 	}
@@ -101,9 +101,7 @@ func (lob *Lobby) updatePeer(jsonString string) {
 	println("Update Message: ", jsonString)
 
 	// Update peer in Dictionary
-	peerRef := lob.peers[notif.ID]
-	peerRef.Direction = notif.Direction
-	lob.peers[notif.ID] = peerRef
+	lob.peers[peer.ID] = *peer
 
 	println("Lobby Count: ", len(lob.peers))
 

@@ -18,12 +18,6 @@ type Message struct {
 	SenderID string
 }
 
-// Notification is sent when device has state change
-type Notification struct {
-	Direction float64
-	ID        string
-}
-
 // Bytes converts message struct to JSON bytes
 func (msg *Message) Bytes() []byte {
 	// Convert to JSON
