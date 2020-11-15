@@ -2,6 +2,7 @@ module github.com/sonr-io/core
 
 go 1.15
 
+// Core Imports
 require (
 	github.com/davidlazar/go-crypto v0.0.0-20190912175916-7055855a373f // indirect
 	github.com/ipfs/go-datastore v0.4.5
