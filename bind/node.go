@@ -82,8 +82,6 @@ func (sn *Node) Update(data string) bool {
 	cm.SenderID = sn.PeerID
 	cm.Data = string(renotif)
 
-	println("Sending Data: ", string(renotif))
-
 	// Inform Lobby
 	err = sn.Lobby.Publish(*cm)
 	if err != nil {
