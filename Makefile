@@ -17,24 +17,37 @@ BUILD_ANDROID="cd bind && $(GOCLEAN) && $(GOBIND) -target=$(ANDROID_TARGET) -v -
 
 all: ios android 
 	cd /System/Library/Sounds && afplay Hero.aiff
-
+	@echo ""
+	@echo ""
+	@echo "**************************************************************"
+	@echo "************** FINISHED IOS/ANDROID BINDINGS *****************"
+	@echo "**************************************************************"
 ios:
-	$(info ************** BEGIN IOS BIND *****************)
+	@echo ""
+	@echo "***********************************************"
+	@echo "************** BEGIN IOS BIND *****************"
+	@echo "***********************************************"
 	rm -rf $(IOS_BUILDDIR) 2>/dev/null
 	mkdir -p $(IOS_BUILDDIR)
 	eval $(BUILD_IOS)
 	go mod tidy
 	cd /System/Library/Sounds && afplay Glass.aiff
+	@echo ""
 
 android:
-	$(info ************ BEGIN ANDROID BIND *******************)
+	@echo ""
+	@echo "***************************************************"
+	@echo "************** BEGIN ANDROID BIND *****************"
+	@echo "***************************************************"
 	rm -rf $(ANDROID_BUILDDIR) 2>/dev/null
 	mkdir -p $(ANDROID_BUILDDIR)
 	eval $(BUILD_ANDROID)
 	go mod tidy
 	cd /System/Library/Sounds && afplay Glass.aiff
+	@echo ""
 
 clean:
 	cd bind && $(GOCLEAN)
+	go mod tidy
 	rm -rf $(IOS_BUILDDIR)
 	rm -rf $(ANDROID_BUILDDIR)
