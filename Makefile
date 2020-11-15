@@ -18,10 +18,11 @@ BUILD_ANDROID="cd bind && $(GOCLEAN) && $(GOBIND) -target=$(ANDROID_TARGET) -v -
 all: ios android 
 	cd /System/Library/Sounds && afplay Hero.aiff
 	@echo ""
-	@echo ""
 	@echo "**************************************************************"
 	@echo "************** FINISHED IOS/ANDROID BINDINGS *****************"
 	@echo "**************************************************************"
+
+
 ios:
 	@echo ""
 	@echo "***********************************************"
