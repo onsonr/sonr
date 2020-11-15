@@ -3,8 +3,9 @@ package lobby
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 
-	//badger "github.com/dgraph-io/badger/v2"
+	badger "github.com/dgraph-io/badger/v2"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
@@ -37,11 +38,10 @@ type Lobby struct {
 	ctx      context.Context
 	callback Callback
 	doneCh   chan struct{}
-	peers    map[string]*Peer
-	//peerDB   *badger.DB
-	ps    *pubsub.PubSub
-	topic *pubsub.Topic
-	sub   *pubsub.Subscription
+	peerDB   *badger.DB
+	ps       *pubsub.PubSub
+	topic    *pubsub.Topic
+	sub      *pubsub.Subscription
 }
 
 // Enter Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby
@@ -68,20 +68,19 @@ func Enter(ctx context.Context, call Callback, ps *pubsub.PubSub, hostID peer.ID
 		return nil, err
 	}
 
-	// // Initialize Badger DB
-	//opt := badger.DefaultOptions("").WithInMemory(true)
-	// db, err := badger.Open(opt)
-	// if err != nil {
-	// 	return nil, err
-	// }
+	// Initialize Badger DB
+	opt := badger.DefaultOptions("").WithInMemory(true)
+	db, err := badger.Open(opt)
+	if err != nil {
+		return nil, err
+	}
 
 	// Create Lobby Type
 	lob := &Lobby{
 		ctx:      ctx,
 		callback: call,
 		doneCh:   make(chan struct{}, 1),
-		//peerDB:   db,
-		peers:    make(map[string]*Peer),
+		peerDB:   db,
 		ps:       ps,
 		topic:    topic,
 		sub:      sub,
@@ -92,7 +91,7 @@ func Enter(ctx context.Context, call Callback, ps *pubsub.PubSub, hostID peer.ID
 
 	// Publish Join Message
 	msg := Message{
-		Event:    "Join",
+		Event:    "Update",
 		Data:     peer.String(),
 		SenderID: hostID.String(),
 	}
@@ -106,23 +105,54 @@ func Enter(ctx context.Context, call Callback, ps *pubsub.PubSub, hostID peer.ID
 
 // GetPeers returns peers list as string
 func (lob *Lobby) GetPeers() string {
-	// Initialize Variables
+	// ** Initialize Variables ** //
 	var peerSlice []Peer
-	peersRef := lob.peers
 
-	// Iterate through dictionary
-	for id, peer := range peersRef {
-		// Find Peer in Topic
-		check := lob.searchPeer(id)
+	// ** Open Data Store Read Transaction ** //
+	err := lob.peerDB.View(func(txn *badger.Txn) error {
+		// @ Create Iterator
+		it := txn.NewIterator(badger.DefaultIteratorOptions)
+		defer it.Close()
 
-		// Manage Check
-		if check {
-			// Add to slice
-			peerSlice = append(peerSlice, *peer)
+		// @ Iterate over bucket
+		for it.Rewind(); it.Valid(); it.Next() {
+			// Get Item and Key
+			item := it.Item()
+			id := item.Key()
+
+			// Get Item Value
+			err := item.Value(func(peer []byte) error {
+				// Log Key/Value
+				fmt.Printf("id=%s, peer=%s\n", id, peer)
+
+				// Convert Value to String Add to Slice
+				cm := new(Peer)
+				err := json.Unmarshal(peer, cm)
+
+				// Check for Error
+				if err != nil {
+					fmt.Println(err)
+				} else {
+					// Add Item value to Slice
+					peerSlice = append(peerSlice, *cm)
+				}
+				return nil
+			})
+
+			// Check error
+			if err != nil {
+				return err
+			}
 		}
+		return nil
+	})
+
+	// Check for Error
+	if err != nil {
+		fmt.Println(err)
 	}
 
-	// Convert slice to bytes
+	// ** Convert slice to bytes ** //
 	bytes, err := json.Marshal(peerSlice)
 	if err != nil {
 		println("Error converting peers to json ", err)
@@ -149,6 +179,6 @@ func (lob *Lobby) Publish(m Message) error {
 
 // End terminates lobby loop
 func (lob *Lobby) End() {
-	//lob.peerDB.Close()
+	lob.peerDB.Close()
 	lob.doneCh <- struct{}{}
 }

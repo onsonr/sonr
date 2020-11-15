@@ -9,6 +9,7 @@ import (
 	"github.com/sonr-io/core/pkg/user"
 )
 
+// ^ Struct Management ^ //
 // Node contains all values for user
 type Node struct {
 	PeerID  string
@@ -49,6 +50,7 @@ func (sn *Node) SetUser(cm lobby.ConnectRequest) error {
 	return nil
 }
 
+// ^ Message Emitter ^ //
 // Update occurs when status or direction changes
 func (sn *Node) Update(data string) bool {
 	// Get Update from Json
@@ -84,6 +86,60 @@ func (sn *Node) Update(data string) bool {
 
 	// Inform Lobby
 	err = sn.Lobby.Publish(*cm)
+	if err != nil {
+		fmt.Println("Sonr P2P Error: ", err)
+		return false
+	}
+
+	// Return Success
+	return true
+}
+
+// Invite an available peer to transfer
+func (sn *Node) Invite(data string) bool {
+	// Create Message
+	cm := new(lobby.Message)
+	cm.Event = "Update"
+	cm.SenderID = sn.PeerID
+
+	// Inform Lobby
+	err := sn.Lobby.Publish(*cm)
+	if err != nil {
+		fmt.Println("Sonr P2P Error: ", err)
+		return false
+	}
+
+	// Return Success
+	return true
+}
+
+// Accept an Invite from a Peer
+func (sn *Node) Accept(data string) bool {
+	// Create Message
+	cm := new(lobby.Message)
+	cm.Event = "Update"
+	cm.SenderID = sn.PeerID
+
+	// Inform Lobby
+	err := sn.Lobby.Publish(*cm)
+	if err != nil {
+		fmt.Println("Sonr P2P Error: ", err)
+		return false
+	}
+
+	// Return Success
+	return true
+}
+
+// Decline an Invite from a Peer
+func (sn *Node) Decline(data string) bool {
+	// Create Message
+	cm := new(lobby.Message)
+	cm.Event = "Update"
+	cm.SenderID = sn.PeerID
+
+	// Inform Lobby
+	err := sn.Lobby.Publish(*cm)
 	if err != nil {
 		fmt.Println("Sonr P2P Error: ", err)
 		return false

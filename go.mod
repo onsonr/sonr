@@ -5,6 +5,7 @@ go 1.15
 // Core Imports
 require (
 	github.com/davidlazar/go-crypto v0.0.0-20190912175916-7055855a373f // indirect
+	github.com/dgraph-io/badger/v2 v2.0.3
 	github.com/ipfs/go-datastore v0.4.5
 	github.com/ipfs/go-ipfs-config v0.10.0
 	github.com/ipfs/go-ipns v0.0.2

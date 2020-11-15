@@ -3,6 +3,8 @@ package lobby
 import (
 	"encoding/json"
 	"fmt"
+
+	badger "github.com/dgraph-io/badger/v2"
 )
 
 // ^ Interface ^
@@ -37,39 +39,19 @@ func (p *Peer) String() string {
 	return string(peerBytes)
 }
 
-// ^ Manage Peers ^
-// joinPeer adds a peer to dictionary
-func (lob *Lobby) joinPeer(jsonString string) {
-	// Generate Map
-	byt := []byte(jsonString)
-	var data map[string]interface{}
-	err := json.Unmarshal(byt, &data)
-
-	// Check error
-	if err != nil {
-		panic(err)
-	}
-
-	// Set Values
-	peer := new(Peer)
-	peer.ID = data["ID"].(string)
-	peer.Device = data["Device"].(string)
-	peer.FirstName = data["FirstName"].(string)
-	peer.LastName = data["LastName"].(string)
-	peer.ProfilePic = data["ProfilePic"].(string)
-	peer.Direction = data["Direction"].(float64)
-
-	// Add Peer to dictionary
-	lob.peers[peer.ID] = peer
-
-	// Send Callback with updated peers
-	lob.callback.OnRefresh(lob.GetPeers())
-}
-
 // ^ removePeer deletes a peer from the circle ^
 func (lob *Lobby) removePeer(id string) {
-	// Delete peer at id
-	delete(lob.peers, id)
+	// Delete peer from datastore
+	key := []byte(id)
+	err := lob.peerDB.Update(func(txn *badger.Txn) error {
+		err := txn.Delete(key)
+		return err
+	})
+
+	// Check for Error
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	// Send Callback with updated peers
 	lob.callback.OnRefresh(lob.GetPeers())
@@ -98,8 +80,16 @@ func (lob *Lobby) updatePeer(jsonString string) {
 		fmt.Println("Sonr P2P Error: ", err)
 	}
 
-	// Update peer in Dictionary
-	lob.peers[peer.ID] = peer
+	// Create Key/Value as Bytes
+	key := []byte(peer.ID)
+	value := peer.Bytes()
+
+	// Update peer in DataStore
+	err = lob.peerDB.Update(func(txn *badger.Txn) error {
+		e := badger.NewEntry(key, value)
+		err := txn.SetEntry(e)
+		return err
+	})
 
 	// Send Callback with updated peers
 	lob.callback.OnRefresh(lob.GetPeers())

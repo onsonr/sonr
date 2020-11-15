@@ -43,9 +43,7 @@ func (lob *Lobby) handleEvents() {
 		// ** when we receive a message from the lobby room **
 		case m := <-lob.Messages:
 			// Update Circle by event
-			if m.Event == "Join" {
-				lob.joinPeer(m.Data)
-			} else if m.Event == "Update" {
+			if m.Event == "Update" {
 				lob.updatePeer(m.Data)
 			} else if m.Event == "Exit" {
 				lob.removePeer(m.Data)
@@ -54,9 +52,7 @@ func (lob *Lobby) handleEvents() {
 		// ** Refresh and Validate Lobby Peers Periodically ** //
 		case <-peerRefreshTicker.C:
 			// Verify Dict not nil
-			if len(lob.peers) > 0 {
-				lob.GetPeers()
-			}
+			lob.callback.OnRefresh(lob.GetPeers())
 
 		case <-lob.ctx.Done():
 			return
