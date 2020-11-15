@@ -42,8 +42,11 @@ func (p *Peer) String() string {
 
 // ^ Checks for Peer in Pub/Sub Topic ^ //
 func (lob *Lobby) isPeerInLobby(queryID string) bool {
+	// Get Lobby PeerID Slice
+	lobbyPeers := lob.ps.ListPeers(lob.Code)
+
 	// Get Pub/Sub Topic Peers and Iterate
-	for _, id := range lob.ListPeers() {
+	for _, id := range lobbyPeers {
 		// If Found
 		if id.String() == queryID {
 			return true
@@ -51,39 +54,6 @@ func (lob *Lobby) isPeerInLobby(queryID string) bool {
 	}
 	// If Not Found
 	return false
-}
-
-// ^ Returns Peer in Data Store ^ //
-func (lob *Lobby) GetPeer(queryID string) Peer {
-	// Initialize Object
-	var value []byte
-
-	// Create Transaction
-	err := lob.peerDB.View(func(txn *badger.Txn) error {
-		// Set Transaction Query
-		item, err := txn.Get([]byte(queryID))
-
-		// Find Item
-		err = item.Value(func(val []byte) error {
-			// Copying or parsing val is valid.
-			value = append([]byte{}, val...)
-			return nil
-		})
-
-		// Check for Error
-		if err != nil {
-			fmt.Println(err)
-		}
-		return nil
-	})
-
-	// Generate Map
-	peer := new(Peer)
-	err = json.Unmarshal(value, peer)
-	if err != nil {
-		fmt.Println("Marshal Error: ", err)
-	}
-	return *peer
 }
 
 // ^ removePeer deletes a peer from the circle ^
@@ -101,7 +71,7 @@ func (lob *Lobby) removePeer(id string) {
 	}
 
 	// Send Callback with updated peers
-	lob.callback.OnRefresh(lob.GetPeers())
+	lob.callback.OnRefresh(lob.GetAllPeers())
 	println("")
 }
 
@@ -126,5 +96,5 @@ func (lob *Lobby) updatePeer(jsonString string) {
 	})
 
 	// Send Callback with updated peers
-	lob.callback.OnRefresh(lob.GetPeers())
+	lob.callback.OnRefresh(lob.GetAllPeers())
 }

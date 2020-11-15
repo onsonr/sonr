@@ -52,7 +52,7 @@ func (lob *Lobby) handleEvents() {
 		// ** Refresh and Validate Lobby Peers Periodically ** //
 		case <-peerRefreshTicker.C:
 			// Verify Dict not nil
-			lob.callback.OnRefresh(lob.GetPeers())
+			lob.callback.OnRefresh(lob.GetAllPeers())
 
 		case <-lob.ctx.Done():
 			return

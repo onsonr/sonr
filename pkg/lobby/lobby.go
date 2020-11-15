@@ -103,8 +103,47 @@ func Enter(ctx context.Context, call Callback, ps *pubsub.PubSub, hostID peer.ID
 	return lob, nil
 }
 
-// GetPeers returns peers list as string
-func (lob *Lobby) GetPeers() string {
+// GetPeer returns ONE Peer in Datastore
+func (lob *Lobby) GetPeer(queryID string) Peer {
+	// Initialize Object
+	var peer Peer
+
+	// ** Create Transaction ** //
+	err := lob.peerDB.View(func(txn *badger.Txn) error {
+		// Set Transaction Query
+		item, err := txn.Get([]byte(queryID))
+
+		// @ Find Item
+		err = item.Value(func(val []byte) error {
+			// Convert Value to String Add to Slice
+			cm := new(Peer)
+			err := json.Unmarshal(val, cm)
+			// Check for Error
+			if err != nil {
+				fmt.Println("JSON Error ", err)
+			} else {
+				// @ Add Item value to Object
+				peer = *cm
+			}
+			return nil
+		})
+
+		// Check for Error
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+
+	// Check for Error
+	if err != nil {
+		fmt.Println("Search Error ", err)
+	}
+	return peer
+}
+
+// GetAllPeers returns ALL Peers in Datastore
+func (lob *Lobby) GetAllPeers() string {
 	// ** Initialize Variables ** //
 	var peerSlice []Peer
 
@@ -118,20 +157,16 @@ func (lob *Lobby) GetPeers() string {
 		for it.Rewind(); it.Valid(); it.Next() {
 			// Get Item and Key
 			item := it.Item()
-			id := item.Key()
 
 			// Get Item Value
 			err := item.Value(func(peer []byte) error {
-				// Log Key/Value
-				fmt.Printf("id=%s, peer=%s\n", id, peer)
-
 				// Convert Value to String Add to Slice
 				cm := new(Peer)
 				err := json.Unmarshal(peer, cm)
 
 				// Check for Error
 				if err != nil {
-					fmt.Println(err)
+					fmt.Println("JSON Error", err)
 				} else {
 					// Add Item value to Slice
 					peerSlice = append(peerSlice, *cm)
@@ -149,7 +184,7 @@ func (lob *Lobby) GetPeers() string {
 
 	// Check for Error
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("Transaction Erro ", err)
 	}
 
 	// ** Convert slice to bytes ** //
@@ -160,11 +195,6 @@ func (lob *Lobby) GetPeers() string {
 
 	// Return as string
 	return string(bytes)
-}
-
-// ListPeers returns Pub/Sub Topic Peers
-func (lob *Lobby) ListPeers() []peer.ID {
-	return lob.ps.ListPeers(lob.Code)
 }
 
 // Publish sends a message to the pubsub topic.
