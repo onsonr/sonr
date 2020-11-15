@@ -5,13 +5,14 @@ import (
 	"fmt"
 
 	badger "github.com/dgraph-io/badger/v2"
+	"github.com/libp2p/go-libp2p-core/peer"
 )
 
 // ^ Interface ^
 
 // Peer is a representative in the lobby for a device
 type Peer struct {
-	ID         string
+	ID         peer.ID
 	Device     string
 	FirstName  string
 	LastName   string
@@ -39,6 +40,52 @@ func (p *Peer) String() string {
 	return string(peerBytes)
 }
 
+// ^ Checks for Peer in Pub/Sub Topic ^ //
+func (lob *Lobby) isPeerInLobby(queryID string) bool {
+	// Get Pub/Sub Topic Peers and Iterate
+	for _, id := range lob.ListPeers() {
+		// If Found
+		if id.String() == queryID {
+			return true
+		}
+	}
+	// If Not Found
+	return false
+}
+
+// ^ Returns Peer in Data Store ^ //
+func (lob *Lobby) GetPeer(queryID string) Peer {
+	// Initialize Object
+	var value []byte
+
+	// Create Transaction
+	err := lob.peerDB.View(func(txn *badger.Txn) error {
+		// Set Transaction Query
+		item, err := txn.Get([]byte(queryID))
+
+		// Find Item
+		err = item.Value(func(val []byte) error {
+			// Copying or parsing val is valid.
+			value = append([]byte{}, val...)
+			return nil
+		})
+
+		// Check for Error
+		if err != nil {
+			fmt.Println(err)
+		}
+		return nil
+	})
+
+	// Generate Map
+	peer := new(Peer)
+	err = json.Unmarshal(value, peer)
+	if err != nil {
+		fmt.Println("Marshal Error: ", err)
+	}
+	return *peer
+}
+
 // ^ removePeer deletes a peer from the circle ^
 func (lob *Lobby) removePeer(id string) {
 	// Delete peer from datastore
@@ -56,19 +103,6 @@ func (lob *Lobby) removePeer(id string) {
 	// Send Callback with updated peers
 	lob.callback.OnRefresh(lob.GetPeers())
 	println("")
-}
-
-// ^ Search for Peer in Pub/Sub Topic ^ //
-func (lob *Lobby) searchPeer(queryID string) bool {
-	// Get Pub/Sub Topic Peers and Iterate
-	for _, id := range lob.ListPeers() {
-		// If Found
-		if id.String() == queryID {
-			return true
-		}
-	}
-	// If Not Found
-	return false
 }
 
 // ^ updatePeer changes peer values in circle ^

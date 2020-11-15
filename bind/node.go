@@ -1,10 +1,12 @@
 package sonr
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 
 	"github.com/libp2p/go-libp2p-core/host"
+	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/user"
 )
@@ -62,7 +64,7 @@ func (sn *Node) Update(data string) bool {
 	}
 
 	// Add Peer Data
-	peer.ID = sn.PeerID
+	peer.ID = sn.Host.ID()
 	peer.Device = sn.Profile.Device
 	peer.FirstName = sn.Contact.FirstName
 	peer.LastName = sn.Contact.LastName
@@ -96,17 +98,18 @@ func (sn *Node) Update(data string) bool {
 }
 
 // Invite an available peer to transfer
-func (sn *Node) Invite(data string) bool {
-	// Create Message
-	cm := new(lobby.Message)
-	cm.Event = "Update"
-	cm.SenderID = sn.PeerID
+func (sn *Node) Invite(id string) bool {
+	// Retrieve Peer and Create Protocol ID
+	peer := sn.Lobby.GetPeer(id)
+	pid := protocol.ID(fmt.Sprintf("/auth/%s+%s", sn.PeerID, id))
 
-	// Inform Lobby
-	err := sn.Lobby.Publish(*cm)
+	// Set Stream Handler
+	sn.Host.SetStreamHandler(pid, handleStream)
+
+	// Open a stream, this stream will be handled by handleStream other end
+	_, err := sn.Host.NewStream(context.Background(), peer.ID, pid)
 	if err != nil {
-		fmt.Println("Sonr P2P Error: ", err)
-		return false
+		fmt.Println("Stream open failed", err)
 	}
 
 	// Return Success
@@ -114,7 +117,7 @@ func (sn *Node) Invite(data string) bool {
 }
 
 // Accept an Invite from a Peer
-func (sn *Node) Accept(data string) bool {
+func (sn *Node) Accept(id string) bool {
 	// Create Message
 	cm := new(lobby.Message)
 	cm.Event = "Update"
@@ -132,7 +135,7 @@ func (sn *Node) Accept(data string) bool {
 }
 
 // Decline an Invite from a Peer
-func (sn *Node) Decline(data string) bool {
+func (sn *Node) Decline(id string) bool {
 	// Create Message
 	cm := new(lobby.Message)
 	cm.Event = "Update"

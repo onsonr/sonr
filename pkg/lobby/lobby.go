@@ -48,7 +48,7 @@ type Lobby struct {
 func Enter(ctx context.Context, call Callback, ps *pubsub.PubSub, hostID peer.ID, firstName string, lastName string, device string, profilePic string, olcCode string) (*Lobby, error) {
 	// Create Peer Struct
 	peer := Peer{
-		ID:         hostID.String(),
+		ID:         hostID,
 		Device:     device,
 		FirstName:  firstName,
 		LastName:   lastName,
