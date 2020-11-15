@@ -20,7 +20,7 @@ type Message struct {
 
 // Bytes converts message struct to JSON bytes
 func (msg *Message) Bytes() []byte {
-	// Convert to JSON
+	// Convert to Bytes
 	msgBytes, err := json.Marshal(msg)
 	if err != nil {
 		println(err)

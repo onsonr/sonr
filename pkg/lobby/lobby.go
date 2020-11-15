@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 
+	//badger "github.com/dgraph-io/badger/v2"
+
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 )
@@ -32,31 +34,19 @@ type Lobby struct {
 	Self     Peer
 
 	// Private Vars
-	callback Callback
-	peers    map[string]Peer
 	ctx      context.Context
-	ps       *pubsub.PubSub
-	topic    *pubsub.Topic
-	sub      *pubsub.Subscription
+	callback Callback
 	doneCh   chan struct{}
+	peers    map[string]*Peer
+	//peerDB   *badger.DB
+	ps    *pubsub.PubSub
+	topic *pubsub.Topic
+	sub   *pubsub.Subscription
 }
 
-// Enter tries to subscribe to the PubSub topic for the room name, returning
-// a ChatRoom on success.
+// Enter Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby
 func Enter(ctx context.Context, call Callback, ps *pubsub.PubSub, hostID peer.ID, firstName string, lastName string, device string, profilePic string, olcCode string) (*Lobby, error) {
-	// join the pubsub topic
-	topic, err := ps.Join(olcCode)
-	if err != nil {
-		return nil, err
-	}
-
-	// and subscribe to it
-	sub, err := topic.Subscribe()
-	if err != nil {
-		return nil, err
-	}
-
-	// Set Peer Info
+	// Create Peer Struct
 	peer := Peer{
 		ID:         hostID.String(),
 		Device:     device,
@@ -66,12 +56,32 @@ func Enter(ctx context.Context, call Callback, ps *pubsub.PubSub, hostID peer.ID
 		Direction:  0.0,
 	}
 
+	// Join the pubsub Topic
+	topic, err := ps.Join(olcCode)
+	if err != nil {
+		return nil, err
+	}
+
+	// Subscribe to Topic
+	sub, err := topic.Subscribe()
+	if err != nil {
+		return nil, err
+	}
+
+	// // Initialize Badger DB
+	//opt := badger.DefaultOptions("").WithInMemory(true)
+	// db, err := badger.Open(opt)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
 	// Create Lobby Type
 	lob := &Lobby{
 		ctx:      ctx,
 		callback: call,
 		doneCh:   make(chan struct{}, 1),
-		peers:    make(map[string]Peer),
+		//peerDB:   db,
+		peers:    make(map[string]*Peer),
 		ps:       ps,
 		topic:    topic,
 		sub:      sub,
@@ -101,9 +111,15 @@ func (lob *Lobby) GetPeers() string {
 	peersRef := lob.peers
 
 	// Iterate through dictionary
-	for _, value := range peersRef {
-		// Add to slice
-		peerSlice = append(peerSlice, value)
+	for id, peer := range peersRef {
+		// Find Peer in Topic
+		check := lob.searchPeer(id)
+
+		// Manage Check
+		if check {
+			// Add to slice
+			peerSlice = append(peerSlice, *peer)
+		}
 	}
 
 	// Convert slice to bytes
@@ -133,5 +149,6 @@ func (lob *Lobby) Publish(m Message) error {
 
 // End terminates lobby loop
 func (lob *Lobby) End() {
+	//lob.peerDB.Close()
 	lob.doneCh <- struct{}{}
 }
