@@ -18,30 +18,6 @@ type Node struct {
 	Contact user.Contact
 }
 
-// Send publishes a message to the SonrNode lobby
-func (sn *Node) Send(data string) bool {
-	// Log Send
-	fmt.Println("Sonr P2P General-Send: ", data)
-
-	// Create Message Type
-	cm := new(lobby.Message)
-	err := json.Unmarshal([]byte(data), cm)
-	if err != nil {
-		fmt.Println("Sonr P2P Error: ", err)
-		return false
-	}
-
-	// Publish to Lobby
-	err = sn.Lobby.Publish(*cm)
-	if err != nil {
-		fmt.Println("Sonr P2P Error: ", err)
-		return false
-	}
-
-	// Return Success
-	return true
-}
-
 // GetUser returns profile and contact in a map as string
 func (sn *Node) GetUser() string {
 	// Initialize Map

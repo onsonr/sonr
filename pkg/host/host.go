@@ -30,15 +30,33 @@ type SonrHost struct {
 
 // NewHost creates new host, sets it up, then returns it
 func NewHost(ctx *context.Context) (host.Host, error) {
+	// Find IPv4 Address
+	osHost, _ := os.Hostname()
+	addrs, _ := net.LookupIP(osHost)
+	var ipv4Ref string
+	for _, addr := range addrs {
+		// Find ipv4
+		if ipv4 := addr.To4(); ipv4 != nil {
+			fmt.Println("IPv4: ", ipv4)
+			ipv4Ref = ipv4.String()
+		}
+	}
+
+	// Create Multi Addresses
+	ip4TCPMultiAddr, _ := multiaddr.NewMultiaddr(fmt.Sprintf("/ip4/%s/tcp/%d", ipv4Ref, 0))
+	ip6TCPMultiAddr, _ := multiaddr.NewMultiaddr(fmt.Sprintf("/ip6/%s/tcp/%d", ipv4Ref, 0))
+	// @ a UDP endpoint for the QUIC transport
+	ip4UDPMultiAddr, _ := multiaddr.NewMultiaddr(fmt.Sprintf("/ip4/::/udp/%d/quic", 0))
+	ip6UDPMultiAddr, _ := multiaddr.NewMultiaddr(fmt.Sprintf("/ip6/::/udp/%d/quic", 0))
+
 	// Create Host
 	h, err := libp2p.New(*ctx,
 		// Multiple listen addresses
-		libp2p.ListenAddrStrings(
-			"/ip4/0.0.0.0/tcp/0",
-			"/ip6/::/tcp/0",
-
-			"/ip4/0.0.0.0/udp/0/quic",
-			"/ip6/::/udp/0/quic", // a UDP endpoint for the QUIC transport
+		libp2p.ListenAddrs(
+			ip4TCPMultiAddr,
+			ip6TCPMultiAddr,
+			ip4UDPMultiAddr,
+			ip6UDPMultiAddr,
 		),
 		// support TLS connections
 		libp2p.Security(libp2ptls.ID, libp2ptls.New),
@@ -124,7 +142,7 @@ func NewHost(ctx *context.Context) (host.Host, error) {
 		Channel: peerChan,
 	}
 
-	go sh.handlePeers()
+	go sh.managePeers()
 
 	return h, nil
 }
@@ -132,12 +150,14 @@ func NewHost(ctx *context.Context) (host.Host, error) {
 // NewBasicHost creates a host without any options
 func NewBasicHost(ctx *context.Context) (host.Host, error) {
 	// Find IPv4 Address
-	host, _ := os.Hostname()
-	addrs, _ := net.LookupIP(host)
+	osHost, _ := os.Hostname()
+	addrs, _ := net.LookupIP(osHost)
 	var ipv4Ref string
+
+	// Iterate through addresses
 	for _, addr := range addrs {
+		// @ Set IPv4
 		if ipv4 := addr.To4(); ipv4 != nil {
-			fmt.Println("IPv4: ", ipv4)
 			ipv4Ref = ipv4.String()
 		}
 	}
@@ -146,26 +166,6 @@ func NewBasicHost(ctx *context.Context) (host.Host, error) {
 	sourceMultiAddr, _ := multiaddr.NewMultiaddr(fmt.Sprintf("/ip4/%s/tcp/%d", ipv4Ref, 0))
 
 	// Create Libp2p Host
-	h, err := libp2p.New(*ctx, libp2p.ListenAddrs(
-		sourceMultiAddr),
-	)
+	h, err := libp2p.New(*ctx, libp2p.ListenAddrs(sourceMultiAddr))
 	return h, err
-}
-
-func (sh *SonrHost) handlePeers() {
-	for peer := range sh.Channel {
-		if peer.ID == sh.Host.ID() {
-			continue
-		}
-		println("Found peer:", peer.String())
-
-		err := sh.Host.Connect(context.Background(), peer)
-
-		if err != nil {
-			println("Error connecting to peer")
-			continue
-		} else {
-			println("Connected to:", peer.String())
-		}
-	}
 }

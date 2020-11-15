@@ -6,9 +6,7 @@ import (
 	"math"
 )
 
-// ******************************** //
-// ********** Interface  ********** //
-// ******************************** //
+// ^ Interface ^
 
 // Peer is a representative in the lobby for a device
 type Peer struct {
@@ -52,9 +50,7 @@ func getAntipodal(degrees float64) float64 {
 	return degrees + 180
 }
 
-// ******************************** //
-// ********** Manage Peers ******** //
-// ******************************** //
+// ^ Manage Peers ^
 // joinPeer adds a peer to dictionary
 func (lob *Lobby) joinPeer(jsonString string) {
 	// Generate Map
@@ -98,12 +94,8 @@ func (lob *Lobby) updatePeer(jsonString string) {
 		fmt.Println("Sonr P2P Error: ", err)
 	}
 
-	println("Update Message: ", jsonString)
-
 	// Update peer in Dictionary
 	lob.peers[peer.ID] = *peer
-
-	println("Lobby Count: ", len(lob.peers))
 
 	// Send Callback with updated peers
 	lob.callback.OnRefresh(lob.GetPeers())
