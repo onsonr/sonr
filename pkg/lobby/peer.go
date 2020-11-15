@@ -76,7 +76,7 @@ func (lob *Lobby) joinPeer(jsonString string) {
 	lob.peers[peer.ID] = *peer
 }
 
-// removePeer deletes a peer from the circle
+// ^ removePeer deletes a peer from the circle ^
 func (lob *Lobby) removePeer(id string) {
 	// Delete peer at id
 	delete(lob.peers, id)
@@ -86,7 +86,7 @@ func (lob *Lobby) removePeer(id string) {
 	println("")
 }
 
-// updatePeer changes peer values in circle
+// ^ updatePeer changes peer values in circle ^
 func (lob *Lobby) updatePeer(jsonString string) {
 	// Generate Map
 	peer := new(Peer)
@@ -100,4 +100,35 @@ func (lob *Lobby) updatePeer(jsonString string) {
 
 	// Send Callback with updated peers
 	lob.callback.OnRefresh(lob.GetPeers())
+}
+
+// ^ validatePeers checks if all peers in dictionary are still in lobby ^
+func (lob *Lobby) validatePeers() {
+	// Get Pub/Sub Topic Peers
+	inLobbyPeers := lob.ListPeers()
+	inDictNotLobbyPeers := lob.peers
+
+	// Temp Logging
+	fmt.Println("In Lobby Count: ", len(inLobbyPeers))
+	fmt.Println("In Dict Count: ", len(inDictNotLobbyPeers))
+
+	// Iterate through Slice:inLobbyPeers and remove from inDictNotLobbyPeers
+	for _, id := range inLobbyPeers {
+		// Remove Peers that are still in lobby
+		delete(inDictNotLobbyPeers, id.String())
+	}
+
+	// Temp Logging
+	fmt.Println("In Dict Not Lobby Count: ", len(inDictNotLobbyPeers))
+
+	// Check if Peers need to be disposed
+	if len(inDictNotLobbyPeers) > 0 {
+		// Iterate through Dict:inDictNotLobbyPeers and delete from actual dictionary
+		for id := range inDictNotLobbyPeers {
+			delete(lob.peers, id)
+		}
+
+		// Send Callback with updated peers after disposal
+		lob.callback.OnRefresh(lob.GetPeers())
+	}
 }

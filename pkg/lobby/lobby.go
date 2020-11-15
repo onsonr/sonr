@@ -69,6 +69,7 @@ func Enter(ctx context.Context, call Callback, ps *pubsub.PubSub, hostID peer.ID
 	// Create Lobby Type
 	lob := &Lobby{
 		ctx:      ctx,
+		callback: call,
 		doneCh:   make(chan struct{}, 1),
 		peers:    make(map[string]Peer),
 		ps:       ps,
@@ -76,7 +77,6 @@ func Enter(ctx context.Context, call Callback, ps *pubsub.PubSub, hostID peer.ID
 		sub:      sub,
 		Self:     peer,
 		Code:     olcCode,
-		callback: call,
 		Messages: make(chan *Message, ChatRoomBufSize),
 	}
 
@@ -114,6 +114,11 @@ func (lob *Lobby) GetPeers() string {
 
 	// Return as string
 	return string(bytes)
+}
+
+// ListPeers returns Pub/Sub Topic Peers
+func (lob *Lobby) ListPeers() []peer.ID {
+	return lob.ps.ListPeers(lob.Code)
 }
 
 // Publish sends a message to the pubsub topic.
