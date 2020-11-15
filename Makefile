@@ -1,5 +1,7 @@
+SHELL := /bin/zsh
 # Makefile that builds core and puts it into plugin repo
 GOMOBILE=gomobile
+GCMSG=git-commitmsg
 GOCLEAN=$(GOMOBILE) clean
 GOBIND=$(GOMOBILE) bind
 CORE_DIR=
@@ -15,14 +17,6 @@ BUILD_ANDROID="cd bind && $(GOCLEAN) && $(GOBIND) -target=$(ANDROID_TARGET) -v -
 
 all: ios android 
 	cd /System/Library/Sounds && afplay Hero.aiff
-	cd $(CORE_DIR) && git add .
-	git-commitmsg | pbcopy
-	git commit -m `pbpaste`
-
-git:
-	cd /Users/prad/Sonr/core && git add .
-	git-commitmsg | pbcopy
-	git commit -m = `pbpaste`
 
 ios:
 	$(info ************** BEGIN IOS BIND *****************)
