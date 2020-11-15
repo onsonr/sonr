@@ -83,6 +83,7 @@ func (lob *Lobby) removePeer(id string) {
 
 	// Send Callback with updated peers
 	lob.callback.OnRefresh(lob.GetPeers())
+	println("")
 }
 
 // updatePeer changes peer values in circle

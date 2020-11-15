@@ -2,6 +2,7 @@ module github.com/sonr-io/core
 
 go 1.15
 
+//nolint
 require (
 	github.com/davidlazar/go-crypto v0.0.0-20190912175916-7055855a373f // indirect
 	github.com/ipfs/go-datastore v0.4.5
@@ -21,8 +22,5 @@ require (
 	github.com/libp2p/go-msgio v0.0.6
 	github.com/libp2p/go-sockaddr v0.1.0 // indirect
 	github.com/multiformats/go-multiaddr v0.3.1
-	golang.org/x/mobile v0.0.0-20200801112145-973feb4309de // indirect
-	// golang.org/x/exp v0.0.0-20190731235908-ec7cb31e5a56 // indirect
-	// golang.org/x/mobile v0.0.0-20200801112145-973feb4309de // indirect
 	golang.org/x/tools v0.0.0-20201109182053-3db8fd265862 // indirect
 )
