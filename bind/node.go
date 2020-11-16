@@ -14,11 +14,14 @@ import (
 // ^ Struct Management ^ //
 // Node contains all values for user
 type Node struct {
-	PeerID  string
-	Host    host.Host
-	Lobby   lobby.Lobby
-	Profile user.Profile
-	Contact user.Contact
+	ctx        context.Context
+	PeerID     string
+	Host       host.Host
+	Lobby      lobby.Lobby
+	Profile    user.Profile
+	Contact    user.Contact
+	AuthStream AuthStreamConn
+	//DataStream DataStreamConn
 }
 
 // GetUser returns profile and contact in a map as string
@@ -99,21 +102,29 @@ func (sn *Node) Update(data string) bool {
 
 // Invite an available peer to transfer
 func (sn *Node) Invite(id string) bool {
-	// Retrieve Peer and Create Protocol ID
-	peer := sn.Lobby.GetPeer(id)
-	pid := protocol.ID(fmt.Sprintf("/auth/%s+%s", sn.PeerID, id))
+	// Retrieve Peer ID
+	peerID := sn.Lobby.GetPeerID(id)
 
-	// Set Stream Handler
-	sn.Host.SetStreamHandler(pid, handleStream)
+	// Validate then Initiate
+	if peerID != "" {
+		// open a stream, this stream will be handled by handleStream other end
+		stream, err := sn.Host.NewStream(sn.ctx, peerID, protocol.ID("/sonr/auth"))
 
-	// Open a stream, this stream will be handled by handleStream other end
-	_, err := sn.Host.NewStream(context.Background(), peer.ID, pid)
-	if err != nil {
-		fmt.Println("Stream open failed", err)
+		// Check Stream
+		if err != nil {
+			fmt.Println("Auth Stream Failed to Open ", err)
+		} else {
+			// Create New Auth Stream
+			sn.NewAuthStream(stream)
+		}
+
+		// Send Invite Message
+		sn.AuthStreamSend("Hello on new stream")
+
+		// Return Success
+		return true
 	}
-
-	// Return Success
-	return true
+	return false
 }
 
 // Accept an Invite from a Peer

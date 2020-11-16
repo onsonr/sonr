@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 
+	"github.com/libp2p/go-libp2p-core/protocol"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/core/pkg/host"
 	"github.com/sonr-io/core/pkg/lobby"
@@ -41,8 +42,12 @@ func Start(data string, call Callback) *Node {
 		panic(err)
 	}
 	println("Host Created")
+
+	// Set Host to Node
+	h.SetStreamHandler(protocol.ID("/sonr/auth"), node.handleStream)
 	node.Host = h
 	node.PeerID = h.ID().String()
+	node.ctx = ctx
 
 	// Set User data to node
 	err = node.SetUser(*cm)

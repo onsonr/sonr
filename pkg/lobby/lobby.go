@@ -95,11 +95,11 @@ func Enter(ctx context.Context, call Callback, ps *pubsub.PubSub, hostID peer.ID
 		Data:     peer.String(),
 		SenderID: hostID.String(),
 	}
-	lob.Publish(msg)
 
 	// start reading messages
 	go lob.handleMessages()
 	go lob.handleEvents()
+	lob.Publish(msg)
 	return lob, nil
 }
 
@@ -140,6 +140,21 @@ func (lob *Lobby) GetPeer(queryID string) Peer {
 		fmt.Println("Search Error ", err)
 	}
 	return peer
+}
+
+// GetPeer returns ONE Peer in Datastore
+func (lob *Lobby) GetPeerID(idStr string) peer.ID {
+	// Get Lobby PeerID Slice
+	lobbyPeers := lob.ps.ListPeers(lob.Code)
+
+	// Get Pub/Sub Topic Peers and Iterate
+	for _, id := range lobbyPeers {
+		// If Found
+		if id.String() == idStr {
+			return id
+		}
+	}
+	return ""
 }
 
 // GetAllPeers returns ALL Peers in Datastore

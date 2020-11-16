@@ -85,31 +85,4 @@ func (n *discoveryNotifee) HandlePeerFound(pi peer.AddrInfo) {
 			n.sn.Host.Network().ClosePeer(peerID)
 		}
 	}
-
-	// Callback to frontend
-	n.sendCallback(peers)
-}
-
-// updateStore checks if store has been updated with new values
-func (n *discoveryNotifee) sendCallback(peers peer.IDSlice) {
-	// Remove Disconnected Peers
-	for _, peerID := range peers {
-		// Check State
-		status := n.sn.Host.Network().Connectedness(peerID)
-
-		// Remove From Store if NotConnected
-		if status == network.NotConnected {
-			// Remove from List
-			peers = removeIDFromSlice(peers, peerID)
-		}
-	}
-
-	// Create JSON from the instance data.
-	// b, err := json.Marshal(peers)
-	// if err != nil {
-	// 	fmt.Printf("error formatting json")
-	// }
-
-	// Callback to frontend
-	//n.call.OnRefresh(string(b))
 }
