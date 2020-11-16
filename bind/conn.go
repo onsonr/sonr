@@ -2,20 +2,14 @@ package sonr
 
 import (
 	"bufio"
-	"encoding/binary"
 	"fmt"
 
-	"math/rand"
-
 	"github.com/libp2p/go-libp2p-core/network"
-	"github.com/libp2p/go-msgio"
 )
 
 // ^ Auth Stream Struct ^ //
 type AuthStreamConn struct {
 	readWriter *bufio.ReadWriter
-	writer     msgio.Writer
-	reader     msgio.Reader
 	stream     network.Stream
 }
 
@@ -25,14 +19,10 @@ func (sn *Node) HandleAuthStream(stream network.Stream) {
 
 	// Create a buffer stream for non blocking read and write.
 	buffrw := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream))
-	mwtr := msgio.NewWriter(buffrw)
-	mrdr := msgio.NewReader(buffrw)
 
 	// Create/Set Auth Stream
 	sn.AuthStream = AuthStreamConn{
 		readWriter: buffrw,
-		writer:     mwtr,
-		reader:     mrdr,
 		stream:     stream,
 	}
 	// Initialize Routine
@@ -47,14 +37,10 @@ func (sn *Node) NewAuthStream(stream network.Stream) {
 
 	// Create new Buffer
 	buffrw := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream))
-	mwtr := msgio.NewWriter(buffrw)
-	mrdr := msgio.NewReader(buffrw)
 
 	// Create/Set Auth Stream
 	sn.AuthStream = AuthStreamConn{
 		readWriter: buffrw,
-		writer:     mwtr,
-		reader:     mrdr,
 		stream:     stream,
 	}
 	// Initialize Routine
@@ -65,57 +51,37 @@ func (sn *Node) NewAuthStream(stream network.Stream) {
 
 // ^ Read Data from Msgio ^ //
 func (asc *AuthStreamConn) Read() {
-	readMsg(asc.readWriter)
-}
-
-func readMsg(rw *bufio.ReadWriter) {
 	for {
-		// read bytes until new line
-		msg, err := rw.ReadBytes('\n')
+		// Read the Buffer
+		str, err := asc.readWriter.ReadString('\n')
 		if err != nil {
 			fmt.Println("Error reading from buffer")
-			continue
+			panic(err)
 		}
 
-		// get the id
-		id := int64(binary.LittleEndian.Uint64(msg[0:8]))
+		// Empty String
+		if str == "" {
+			return
+		}
 
-		// get the content, last index is len(msg)-1 to remove the new line char
-		content := string(msg[8 : len(msg)-1])
-
-		if content != "" {
-			// we print [message ID] content
-			fmt.Printf("[%d] %s", id, content)
+		// Contains Data
+		if str != "\n" {
+			fmt.Println("Received Message: ", str)
 		}
 	}
 }
 
 // ^ Message on Stream ^ //
-func (asc *AuthStreamConn) Send(text string) {
-	content := []byte(text)
-	sendMsg(asc.readWriter, rand.Int63(), content)
-}
-
-func sendMsg(rw *bufio.ReadWriter, id int64, content []byte) error {
-	// allocate our slice of bytes with the correct size 4 + size of the message + 1
-	msg := make([]byte, 4+len(content)+1)
-
-	// write id
-	binary.LittleEndian.PutUint64(msg, uint64(id))
-
-	// add content to msg
-	copy(msg[13:], content)
-
-	// add new line at the end
-	msg[len(msg)-1] = '\n'
-
-	// write msg to stream
-	_, err := rw.Write(msg)
+func (asc *AuthStreamConn) Send(text string) error {
+	// Write Message with "Delimiter"=(Seperator for Message Values)
+	_, err := asc.readWriter.WriteString(fmt.Sprintf("%s\n", text))
 	if err != nil {
 		fmt.Println("Error writing to buffer")
 		return err
 	}
-	err = rw.Flush()
+
+	// Write buffered data
+	err = asc.readWriter.Flush()
 	if err != nil {
 		fmt.Println("Error flushing buffer")
 		return err
