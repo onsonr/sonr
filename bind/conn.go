@@ -28,6 +28,7 @@ func (sn *Node) HandleAuthStream(stream network.Stream) {
 		stream: stream,
 	}
 	sn.AuthStream = *asc
+	asc.Write("Third Message")
 
 	// Initialize Routine
 	go asc.Read()
@@ -47,6 +48,7 @@ func (sn *Node) NewAuthStream(stream network.Stream) {
 		stream: stream,
 	}
 	sn.AuthStream = *asc
+	asc.Write("First Message")
 
 	// Initialize Routine
 	go asc.Read()
@@ -61,6 +63,7 @@ func (asc *AuthStreamConn) Read() {
 		}
 
 		fmt.Println("Received: ", string(msg))
+		asc.Write("This is a Reply")
 	}
 }
 
