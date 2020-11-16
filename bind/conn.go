@@ -10,9 +10,9 @@ import (
 
 // ^ Auth Stream Struct ^ //
 type AuthStreamConn struct {
-	channel msgio.Chan
-	rw      msgio.ReadWriter
-	stream  network.Stream
+	writer msgio.Writer
+	reader msgio.Reader
+	stream network.Stream
 }
 
 // ^ Handle Incoming Stream ^ //
@@ -21,14 +21,14 @@ func (sn *Node) HandleAuthStream(stream network.Stream) {
 
 	// Create a buffer stream for non blocking read and write.
 	buffrw := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream))
-	mrw := msgio.NewReadWriter(buffrw)
-	chn := msgio.NewChan(128)
+	mwtr := msgio.NewWriter(buffrw)
+	mrdr := msgio.NewReader(buffrw)
 
 	// Create/Set Auth Stream
 	asc := &AuthStreamConn{
-		rw:      mrw,
-		stream:  stream,
-		channel: *chn,
+		reader: mrdr,
+		writer: mwtr,
+		stream: stream,
 	}
 	sn.AuthStream = *asc
 	asc.Write("Third Message")
@@ -43,11 +43,13 @@ func (sn *Node) NewAuthStream(stream network.Stream) {
 
 	// Create new Buffer
 	buffrw := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream))
-	mrw := msgio.NewReadWriter(buffrw)
+	mwtr := msgio.NewWriter(buffrw)
+	mrdr := msgio.NewReader(buffrw)
 
 	// Create/Set Auth Stream
 	asc := &AuthStreamConn{
-		rw:     mrw,
+		reader: mrdr,
+		writer: mwtr,
 		stream: stream,
 	}
 	sn.AuthStream = *asc
@@ -60,15 +62,20 @@ func (sn *Node) NewAuthStream(stream network.Stream) {
 // ^ Read Data from Msgio ^ //
 func (asc *AuthStreamConn) Read() {
 	for {
-		select {
-		case msg := <-asc.channel.MsgChan:
-			fmt.Println("Received: ", string(msg))
-			asc.Write("This is a Reply")
+		msg, err := asc.reader.ReadMsg()
+		if err != nil {
+			fmt.Println("Error: ", err)
 		}
+
+		fmt.Println("Received: ", string(msg))
+		asc.Write("This is a Reply")
 	}
 }
 
 // ^ Message on Stream ^ //
 func (asc *AuthStreamConn) Write(text string) {
-	asc.channel.MsgChan <- []byte(text)
+	err := asc.writer.WriteMsg([]byte(text))
+	if err != nil {
+		fmt.Println("Error: ", err)
+	}
 }
