@@ -113,13 +113,13 @@ func (sn *Node) Invite(id string) bool {
 		// Check Stream
 		if err != nil {
 			fmt.Println("Auth Stream Failed to Open ", err)
-		} else {
-			// Create New Auth Stream
-			sn.NewAuthStream(stream)
+			panic(err)
 		}
+		// Create New Auth Stream
+		sn.NewAuthStream(stream)
 
 		// Send Invite Message
-		sn.AuthStreamSend("Hello on new stream")
+		sn.AuthStream.Write("Hello on new stream")
 
 		// Return Success
 		return true

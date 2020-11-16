@@ -44,7 +44,7 @@ func Start(data string, call Callback) *Node {
 	println("Host Created")
 
 	// Set Host to Node
-	h.SetStreamHandler(protocol.ID("/sonr/auth"), node.handleStream)
+	h.SetStreamHandler(protocol.ID("/sonr/auth"), node.HandleAuthStream)
 	node.Host = h
 	node.PeerID = h.ID().String()
 	node.ctx = ctx
