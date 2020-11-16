@@ -119,7 +119,7 @@ func (sn *Node) Invite(id string) bool {
 		sn.NewAuthStream(stream)
 
 		// Send Invite Message
-		sn.AuthStream.Write("Hello on new stream")
+		sn.AuthStream.Send("Hello on new stream")
 
 		// Return Success
 		return true
