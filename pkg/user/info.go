@@ -9,6 +9,7 @@ type Info struct {
 	LastName   string
 	ProfilePic string
 	Device     string
+	Direction  float64
 }
 
 // Return User Info Given Profile/Contact
@@ -19,6 +20,7 @@ func GetInfo(p Profile, c Contact) Info {
 		LastName:   c.LastName,
 		ProfilePic: c.ProfilePic,
 		Device:     p.Device,
+		Direction:  p.Direction,
 	}
 }
 

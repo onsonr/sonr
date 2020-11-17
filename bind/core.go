@@ -8,6 +8,7 @@ import (
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/core/pkg/host"
 	"github.com/sonr-io/core/pkg/lobby"
+	"github.com/sonr-io/core/pkg/user"
 )
 
 // Callback returns updates from p2p
@@ -38,23 +39,25 @@ func Start(data string, call Callback) *Node {
 	}
 
 	// Create Host
-	h, err := host.NewBasicHost(&ctx)
-	// Check for Error
+	node.Host, err = host.NewBasicHost(&ctx)
 	if err != nil {
 		panic(err)
 	}
 	println("Host Created")
 
 	// Set Host to Node
-	h.SetStreamHandler(protocol.ID("/sonr/auth"), node.HandleAuthStream)
-	node.Host = h
-	node.PeerID = h.ID().String()
+	node.Host.SetStreamHandler(protocol.ID("/sonr/auth"), node.HandleAuthStream)
+	node.PeerID = node.Host.ID().String()
 
-	// Set User data to node
-	err = node.SetUser(*cm)
-	if err != nil {
-		println("Cannot unmarshal contact")
+	// Set Profile
+	node.Profile = user.Profile{
+		ID:     node.Host.ID().String(),
+		OLC:    cm.OLC,
+		Device: cm.Device,
 	}
+
+	// Set Contact
+	node.Contact = user.NewContact(cm.Contact)
 
 	// setup local mDNS discovery
 	err = initMDNSDiscovery(ctx, *node, call)

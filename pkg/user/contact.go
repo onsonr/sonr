@@ -24,11 +24,11 @@ func NewContact(jsonString string) Contact {
 	}
 
 	// Set Values
-	contact := new(Contact)
-	contact.FirstName = data["firstName"].(string)
-	contact.LastName = data["lastName"].(string)
-	contact.ProfilePic = data["profilePic"].(string)
-	return *contact
+	return Contact{
+		FirstName:  data["firstName"].(string),
+		LastName:   data["lastName"].(string),
+		ProfilePic: data["profilePic"].(string),
+	}
 }
 
 // Basic returns user Basic information as string

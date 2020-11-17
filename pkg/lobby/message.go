@@ -18,6 +18,12 @@ type Message struct {
 	SenderID string
 }
 
+type PeerNotification struct {
+	Data     string
+	Event    string
+	SenderID string
+}
+
 // Bytes converts message struct to JSON bytes
 func (msg *Message) Bytes() []byte {
 	// Convert to Bytes

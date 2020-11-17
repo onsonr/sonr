@@ -10,6 +10,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/user"
+	"github.com/sonr-io/core/pkg/util"
 )
 
 // ^ Struct Management ^ //
@@ -45,25 +46,15 @@ func (sn *Node) GetUser() string {
 
 // SetUser from connection request
 func (sn *Node) SetUser(cm lobby.ConnectRequest) error {
-	// Set Profile
-	profile := user.NewProfile(sn.Host.ID().String(), cm.OLC, cm.Device)
-	sn.Profile = profile
 
-	// Set Contact
-	contact := user.NewContact(cm.Contact)
-	sn.Contact = contact
 	return nil
 }
 
 // ^ Message Emitter ^ //
 // Update occurs when status or direction changes
-func (sn *Node) Update(data string) bool {
+func (sn *Node) Update(dir float64) bool {
 	// Get Update from Json
 	peer := new(lobby.Peer)
-	err := json.Unmarshal([]byte(data), peer)
-	if err != nil {
-		return false
-	}
 
 	// Add Peer Data
 	peer.ID = sn.Host.ID()
@@ -79,7 +70,7 @@ func (sn *Node) Update(data string) bool {
 	}
 
 	// Update User Values
-	sn.Profile.Update(peer.Direction)
+	sn.Profile.Direction = util.Round(dir, .5, 2)
 
 	// Create Message
 	cm := new(lobby.Message)
