@@ -30,8 +30,8 @@ type Metadata struct {
 	received  string // DateTime as string
 }
 
-// ^ newMetadata generates file metadata and creates thumbnail if necessary ^ //
-func newMetadata(ownr lobby.Peer, filePath string) (*Metadata, error) {
+// ^ GetMetadata generates file metadata and creates thumbnail if necessary ^ //
+func GetMetadata(ownr lobby.Peer, filePath string) (*Metadata, error) {
 	// Initialize
 	meta := new(Metadata)
 	meta.path = filePath

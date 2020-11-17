@@ -8,6 +8,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/protocol"
+	"github.com/sonr-io/core/pkg/file"
 	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/user"
 	"github.com/sonr-io/core/pkg/util"
@@ -95,7 +96,7 @@ func (sn *Node) Invite(id string, filePath string) bool {
 	info := sn.GetPeer()
 
 	// Create Metadata
-	meta, err := newMetadata(info, filePath)
+	meta, err := file.GetMetadata(info, filePath)
 	if err != nil {
 		fmt.Println("Error Getting Metadata", err)
 		return false
