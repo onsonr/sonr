@@ -8,26 +8,26 @@ import (
 // ^ 1. handleMessages pulls messages from the pubsub topic and pushes them onto the Messages channel. ^
 func (lob *Lobby) handleMessages() {
 	for {
-		// get next msg from pub/sub
+		// Get next msg from pub/sub
 		msg, err := lob.sub.Next(lob.ctx)
 		if err != nil {
 			close(lob.Messages)
 			return
 		}
 
-		// only forward messages delivered by others
+		// Only forward messages delivered by others
 		if msg.ReceivedFrom.String() == lob.Self.ID.String() {
 			continue
 		}
 
-		// construct message
+		// Construct message
 		cm := new(Message)
 		err = json.Unmarshal(msg.Data, cm)
 		if err != nil {
 			continue
 		}
 
-		// send valid messages onto the Messages channel
+		// Send valid messages onto the Messages channel
 		lob.Messages <- cm
 	}
 }

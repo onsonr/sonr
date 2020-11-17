@@ -6,11 +6,9 @@ import (
 
 // ConnectRequest is message sent when user wants to join network
 type ConnectRequest struct {
-	OLC           string
-	Device        string
-	Contact       string
-	DocumentPath  string
-	TemporaryPath string
+	OLC     string
+	Device  string
+	Contact string
 }
 
 // Message is a for Lobby Pub/Sub Messaging, Converted To/From Json
