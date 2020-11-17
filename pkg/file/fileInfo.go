@@ -1,5 +1,0 @@
-package file
-
-func NewFile() {
-
-}

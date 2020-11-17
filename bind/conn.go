@@ -16,13 +16,11 @@ type AuthStreamConn struct {
 
 // ^ Handle Incoming Stream ^ //
 func (sn *Node) HandleAuthStream(stream network.Stream) {
-	fmt.Println("Got a new stream!")
-
 	// Create a buffer stream for non blocking read and write.
 	buffrw := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream))
 
 	// Create/Set Auth Stream
-	sn.AuthStream = AuthStreamConn{
+	sn.AuthStream = &AuthStreamConn{
 		readWriter: buffrw,
 		stream:     stream,
 		callback:   sn.Callback,
@@ -33,13 +31,11 @@ func (sn *Node) HandleAuthStream(stream network.Stream) {
 
 // ^ Create New Stream ^ //
 func (sn *Node) NewAuthStream(stream network.Stream) {
-	fmt.Println("Creating New Stream")
-
 	// Create new Buffer
 	buffrw := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream))
 
 	// Create/Set Auth Stream
-	sn.AuthStream = AuthStreamConn{
+	sn.AuthStream = &AuthStreamConn{
 		readWriter: buffrw,
 		stream:     stream,
 		callback:   sn.Callback,

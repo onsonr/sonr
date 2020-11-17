@@ -22,5 +22,6 @@ require (
 	github.com/libp2p/go-libp2p-tls v0.1.3
 	github.com/libp2p/go-sockaddr v0.1.0 // indirect
 	github.com/multiformats/go-multiaddr v0.3.1
+	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	golang.org/x/tools v0.0.0-20201109182053-3db8fd265862 // indirect
 )

@@ -20,7 +20,7 @@ type Node struct {
 	Lobby      lobby.Lobby
 	Profile    user.Profile
 	Contact    user.Contact
-	AuthStream AuthStreamConn
+	AuthStream *AuthStreamConn
 	Callback   Callback
 }
 
