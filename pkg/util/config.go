@@ -1,4 +1,4 @@
-package sonr
+package util
 
 import (
 	_ "net"
@@ -62,6 +62,6 @@ func setDefaultNS(addrs []string, loadFromSystem bool) {
 	resolvConf.dnsConfig.servers = addrs
 }
 
-func init() {
-	//setDefaultNS([]string{"84.200.69.80:53", "84.200.70.40:53"}, false)
+func Initialize() {
+	setDefaultNS([]string{"84.200.69.80:53", "84.200.70.40:53"}, false)
 }
