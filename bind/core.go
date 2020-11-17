@@ -13,13 +13,19 @@ import (
 
 // Callback returns updates from p2p
 type Callback interface {
-	OnMessage(s string)
 	OnRefresh(s string)
 	OnInvited(s string)
 	OnAccepted(s string)
 	OnDenied(s string)
 	OnProgress(s string)
 	OnComplete(s string)
+}
+
+// connectionRequest is message sent when user wants to join network
+type connectionRequest struct {
+	OLC     string
+	Device  string
+	Contact string
 }
 
 // Start begins the mobile host
@@ -31,8 +37,8 @@ func Start(data string, call Callback) *Node {
 	node.Callback = call
 
 	// Retrieve Connection Request
-	cm := new(lobby.ConnectRequest)
-	err := json.Unmarshal([]byte(data), cm)
+	cr := new(connectionRequest)
+	err := json.Unmarshal([]byte(data), cr)
 	if err != nil {
 		println("Invalid Request")
 		panic(err)
@@ -52,12 +58,12 @@ func Start(data string, call Callback) *Node {
 	// Set Profile
 	node.Profile = user.Profile{
 		ID:     node.Host.ID().String(),
-		OLC:    cm.OLC,
-		Device: cm.Device,
+		OLC:    cr.OLC,
+		Device: cr.Device,
 	}
 
 	// Set Contact
-	node.Contact = user.NewContact(cm.Contact)
+	node.Contact = user.SetContact(cr.Contact)
 
 	// setup local mDNS discovery
 	err = initMDNSDiscovery(ctx, *node, call)
@@ -74,7 +80,7 @@ func Start(data string, call Callback) *Node {
 	println("GossipSub Created")
 
 	// Enter location lobby
-	lob, err := lobby.Enter(ctx, call, ps, node.Host.ID(), node.Contact.FirstName, node.Contact.LastName, node.Profile.Device, node.Contact.ProfilePic, cm.OLC)
+	lob, err := lobby.Enter(ctx, call, ps, node.Host.ID(), node.Contact.FirstName, node.Contact.LastName, node.Profile.Device, node.Contact.ProfilePic, cr.OLC)
 	if err != nil {
 		panic(err)
 	}

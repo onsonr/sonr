@@ -17,16 +17,6 @@ type Profile struct {
 	Distance  float64
 }
 
-// NewProfile returns user object
-func NewProfile(peerID string, olc string, device string) Profile {
-	// Create User
-	return Profile{
-		ID:     peerID,
-		OLC:    olc,
-		Device: device,
-	}
-}
-
 // State returns user State information as string
 func (u *Profile) State() string {
 	slice := [2]string{fmt.Sprintf("%f", u.Direction), u.Device}

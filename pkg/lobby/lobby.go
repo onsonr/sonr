@@ -12,15 +12,9 @@ import (
 // ChatRoomBufSize is the number of incoming messages to buffer for each topic.
 const ChatRoomBufSize = 128
 
-// Callback returns message from lobby
-type Callback interface {
-	OnMessage(s string)
+// LobbyCallback returns message from lobby
+type LobbyCallback interface {
 	OnRefresh(s string)
-	OnInvited(s string)
-	OnAccepted(s string)
-	OnDenied(s string)
-	OnProgress(s string)
-	OnComplete(s string)
 }
 
 // Lobby represents a subscription to a single PubSub topic. Messages
@@ -34,7 +28,7 @@ type Lobby struct {
 
 	// Private Vars
 	ctx      context.Context
-	callback Callback
+	callback LobbyCallback
 	doneCh   chan struct{}
 	peerDB   *badger.DB
 	ps       *pubsub.PubSub
@@ -43,7 +37,7 @@ type Lobby struct {
 }
 
 // Enter Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby
-func Enter(ctx context.Context, call Callback, ps *pubsub.PubSub, hostID peer.ID, firstName string, lastName string, device string, profilePic string, olcCode string) (*Lobby, error) {
+func Enter(ctx context.Context, call LobbyCallback, ps *pubsub.PubSub, hostID peer.ID, firstName string, lastName string, device string, profilePic string, olcCode string) (*Lobby, error) {
 	// Create Peer Struct
 	peer := Peer{
 		ID:         hostID,

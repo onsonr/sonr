@@ -26,6 +26,18 @@ type Node struct {
 	Callback   Callback
 }
 
+// GetPeer returns Lobby Peer object from SonrNode
+func (sn *Node) GetPeer() lobby.Peer {
+	return lobby.Peer{
+		ID:         sn.Host.ID(),
+		FirstName:  sn.Contact.FirstName,
+		LastName:   sn.Contact.LastName,
+		ProfilePic: sn.Contact.ProfilePic,
+		Device:     sn.Profile.Device,
+		Direction:  sn.Profile.Direction,
+	}
+}
+
 // GetUser returns profile and contact in a map as string
 func (sn *Node) GetUser() string {
 	// Initialize Map
@@ -44,15 +56,12 @@ func (sn *Node) GetUser() string {
 	return string(msgBytes)
 }
 
-// SetUser from connection request
-func (sn *Node) SetUser(cm lobby.ConnectRequest) error {
-
-	return nil
-}
-
 // ^ Message Emitter ^ //
 // Update occurs when status or direction changes
 func (sn *Node) Update(dir float64) bool {
+	// Update User Values
+	sn.Profile.Direction = util.Round(dir, .5, 2)
+
 	// Get Update from Json
 	peer := new(lobby.Peer)
 
@@ -68,9 +77,6 @@ func (sn *Node) Update(dir float64) bool {
 	if err != nil {
 		return false
 	}
-
-	// Update User Values
-	sn.Profile.Direction = util.Round(dir, .5, 2)
 
 	// Create Message
 	cm := new(lobby.Message)
@@ -97,7 +103,7 @@ func (sn *Node) Invite(id string, filePath string) bool {
 		fmt.Println("Search Error", err)
 		return false
 	}
-	info := user.GetInfo(sn.Profile, sn.Contact)
+	info := sn.GetPeer()
 
 	// Create Metadata
 	meta, err := newMetadata(info, filePath)

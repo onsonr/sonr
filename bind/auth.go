@@ -6,14 +6,14 @@ import (
 	"fmt"
 
 	"github.com/libp2p/go-libp2p-core/network"
-	"github.com/sonr-io/core/pkg/user"
+	"github.com/sonr-io/core/pkg/lobby"
 )
 
 // ^ AuthRequestMessage is for Auth Stream Request ^
 type AuthStreamMessage struct {
 	subject  string
 	decision bool
-	peerInfo user.Info
+	peerInfo lobby.Peer
 	metadata Metadata
 }
 

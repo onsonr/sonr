@@ -11,8 +11,8 @@ type Contact struct {
 	ProfilePic string
 }
 
-// NewContact creates profile from string json
-func NewContact(jsonString string) Contact {
+// SetContact creates profile from string json
+func SetContact(jsonString string) Contact {
 	// Generate Map
 	byt := []byte(jsonString)
 	var data map[string]interface{}
@@ -29,19 +29,6 @@ func NewContact(jsonString string) Contact {
 		LastName:   data["lastName"].(string),
 		ProfilePic: data["profilePic"].(string),
 	}
-}
-
-// Basic returns user Basic information as string
-func (c *Contact) Basic() string {
-	slice := [3]string{c.FirstName, c.LastName, c.ProfilePic}
-	bytes, err := json.Marshal(slice)
-
-	// Check for Error
-	if err != nil {
-		println("Error creating update message")
-	}
-
-	return string(bytes)
 }
 
 // String returns user as json string

@@ -13,7 +13,7 @@ import (
 
 	"github.com/h2non/filetype"
 	"github.com/nfnt/resize"
-	"github.com/sonr-io/core/pkg/user"
+	"github.com/sonr-io/core/pkg/lobby"
 )
 
 const DEFAULT_MAX_WIDTH float64 = 320
@@ -31,7 +31,7 @@ type Metadata struct {
 }
 
 // ^ newMetadata generates file metadata and creates thumbnail if necessary ^ //
-func newMetadata(ownr user.Info, filePath string) (*Metadata, error) {
+func newMetadata(ownr lobby.Peer, filePath string) (*Metadata, error) {
 	// Initialize
 	meta := new(Metadata)
 	meta.path = filePath
