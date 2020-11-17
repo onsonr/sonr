@@ -71,7 +71,7 @@ func (lob *Lobby) removePeer(peer Peer) {
 	}
 
 	// Send Callback with updated peers
-	lob.callback.OnRefresh(lob.GetAllPeers())
+	lob.callback.OnRefreshed(lob.GetAllPeers())
 	println("")
 }
 
@@ -94,5 +94,5 @@ func (lob *Lobby) updatePeer(peer Peer) {
 	}
 
 	// Send Callback with updated peers
-	lob.callback.OnRefresh(lob.GetAllPeers())
+	lob.callback.OnRefreshed(lob.GetAllPeers())
 }

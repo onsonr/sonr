@@ -35,6 +35,7 @@ func GetMetadata(ownr lobby.Peer, filePath string) (*Metadata, error) {
 	// Initialize
 	meta := new(Metadata)
 	meta.path = filePath
+	fmt.Println("FilePath: ", filePath)
 	file, _ := os.Open(filePath)
 
 	// Get Info
@@ -42,6 +43,7 @@ func GetMetadata(ownr lobby.Peer, filePath string) (*Metadata, error) {
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println("FileInfo: ", info)
 
 	// Set Info
 	meta.size = info.Size()

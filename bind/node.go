@@ -23,7 +23,7 @@ type Node struct {
 	Lobby      lobby.Lobby
 	Profile    user.Profile
 	Contact    user.Contact
-	AuthStream AuthStreamConn
+	AuthStream authStreamConn
 	Callback   Callback
 }
 
@@ -115,7 +115,7 @@ func (sn *Node) Invite(id string, filePath string) bool {
 	buffrw := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream))
 
 	// Create/Set Auth Stream
-	sn.AuthStream = AuthStreamConn{
+	sn.AuthStream = authStreamConn{
 		readWriter: buffrw,
 		stream:     stream,
 		callback:   sn.Callback,
@@ -125,7 +125,7 @@ func (sn *Node) Invite(id string, filePath string) bool {
 	go sn.AuthStream.Read()
 
 	// ** Send Invite Message **
-	err = sn.AuthStream.Write(AuthStreamMessage{
+	err = sn.AuthStream.Write(authStreamMessage{
 		subject:  "Request",
 		peerInfo: info,
 		metadata: *meta,
@@ -143,7 +143,7 @@ func (sn *Node) Invite(id string, filePath string) bool {
 // Accept an Invite from a Peer
 func (sn *Node) Accept() bool {
 	// Send Message
-	err := sn.AuthStream.Write(AuthStreamMessage{
+	err := sn.AuthStream.Write(authStreamMessage{
 		subject:  "Response",
 		decision: true,
 	})
@@ -160,7 +160,7 @@ func (sn *Node) Accept() bool {
 // Decline an Invite from a Peer
 func (sn *Node) Decline() bool {
 	// Send Message
-	err := sn.AuthStream.Write(AuthStreamMessage{
+	err := sn.AuthStream.Write(authStreamMessage{
 		subject:  "Response",
 		decision: false,
 	})

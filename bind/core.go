@@ -2,7 +2,6 @@ package sonr
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/libp2p/go-libp2p-core/protocol"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
@@ -13,38 +12,24 @@ import (
 
 // Callback returns updates from p2p
 type Callback interface {
-	OnRefresh(s string)
+	OnRefreshed(s string)
 	OnInvited(s string)
 	OnAccepted(s string)
 	OnDenied(s string)
-	OnProgress(s string)
-	OnComplete(s string)
-}
-
-// connectionRequest is message sent when user wants to join network
-type connectionRequest struct {
-	OLC     string
-	Device  string
-	Contact string
+	OnProgressed(s string)
+	OnCompleted(s string)
 }
 
 // Start begins the mobile host
-func Start(data string, call Callback) *Node {
+func Start(olc string, device string, contact string, call Callback) *Node {
 	// Create Context and Node - Begin Setuo
 	ctx := context.Background()
 	node := new(Node)
 	node.ctx = ctx
 	node.Callback = call
 
-	// Retrieve Connection Request
-	cr := new(connectionRequest)
-	err := json.Unmarshal([]byte(data), cr)
-	if err != nil {
-		println("Invalid Request")
-		panic(err)
-	}
-
 	// Create Host
+	var err error
 	node.Host, err = host.NewBasicHost(&ctx)
 	if err != nil {
 		panic(err)
@@ -58,12 +43,12 @@ func Start(data string, call Callback) *Node {
 	// Set Profile
 	node.Profile = user.Profile{
 		ID:     node.Host.ID().String(),
-		OLC:    cr.OLC,
-		Device: cr.Device,
+		OLC:    olc,
+		Device: device,
 	}
 
 	// Set Contact
-	node.Contact = user.SetContact(cr.Contact)
+	node.Contact = user.SetContact(contact)
 
 	// setup local mDNS discovery
 	err = initMDNSDiscovery(ctx, *node, call)
@@ -80,7 +65,7 @@ func Start(data string, call Callback) *Node {
 	println("GossipSub Created")
 
 	// Enter location lobby
-	lob, err := lobby.Enter(ctx, call, ps, node.GetPeer(), cr.OLC)
+	lob, err := lobby.Enter(ctx, call, ps, node.GetPeer(), olc)
 	if err != nil {
 		panic(err)
 	}

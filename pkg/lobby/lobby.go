@@ -13,7 +13,7 @@ const ChatRoomBufSize = 128
 
 // LobbyCallback returns message from lobby
 type LobbyCallback interface {
-	OnRefresh(s string)
+	OnRefreshed(s string)
 }
 
 // Lobby represents a subscription to a single PubSub topic. Messages
@@ -72,9 +72,9 @@ func Enter(ctx context.Context, call LobbyCallback, ps *pubsub.PubSub, p Peer, o
 
 	// Publish Join Message
 	msg := Notification{
-		Event:    "Update",
-		Peer:     p,
-		Data:     p.String(),
+		Event:  "Update",
+		Peer:   p,
+		Data:   p.String(),
 		Sender: p.ID.String(),
 	}
 

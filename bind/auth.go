@@ -10,8 +10,8 @@ import (
 	"github.com/sonr-io/core/pkg/lobby"
 )
 
-// ^ AuthRequestMessage is for Auth Stream Request ^
-type AuthStreamMessage struct {
+// ^ authStreamMessage is for Auth Stream Request ^
+type authStreamMessage struct {
 	subject  string
 	decision bool
 	peerInfo lobby.Peer
@@ -19,7 +19,7 @@ type AuthStreamMessage struct {
 }
 
 // ^ Auth Stream Struct ^ //
-type AuthStreamConn struct {
+type authStreamConn struct {
 	readWriter *bufio.ReadWriter
 	stream     network.Stream
 	callback   Callback
@@ -31,7 +31,7 @@ func (sn *Node) HandleAuthStream(stream network.Stream) {
 	buffrw := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream))
 
 	// Create/Set Auth Stream
-	sn.AuthStream = AuthStreamConn{
+	sn.AuthStream = authStreamConn{
 		readWriter: buffrw,
 		stream:     stream,
 		callback:   sn.Callback,
@@ -41,7 +41,7 @@ func (sn *Node) HandleAuthStream(stream network.Stream) {
 }
 
 // ^ Write Message on Stream ^ //
-func (asc *AuthStreamConn) Write(authMsg AuthStreamMessage) error {
+func (asc *authStreamConn) Write(authMsg authStreamMessage) error {
 	// Convert Request to JSON String
 	msgBytes, err := json.Marshal(authMsg)
 	if err != nil {
@@ -66,7 +66,7 @@ func (asc *AuthStreamConn) Write(authMsg AuthStreamMessage) error {
 }
 
 // ^ Read Data from Msgio ^ //
-func (asc *AuthStreamConn) Read() {
+func (asc *authStreamConn) Read() {
 	for {
 		// ** Read the Buffer **
 		str, err := asc.readWriter.ReadString('\n')
@@ -83,7 +83,7 @@ func (asc *AuthStreamConn) Read() {
 		// ** Contains Data **
 		if str != "\n" {
 			// Construct message
-			asm := new(AuthStreamMessage)
+			asm := new(authStreamMessage)
 			err := json.Unmarshal([]byte(str), asm)
 			if err != nil {
 				fmt.Println("Error Unmarshalling Auth Stream Message")
