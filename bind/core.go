@@ -2,6 +2,7 @@ package sonr
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/libp2p/go-libp2p-core/protocol"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
@@ -34,7 +35,7 @@ func Start(olc string, device string, contact string, call Callback) *Node {
 	if err != nil {
 		panic(err)
 	}
-	println("Host Created")
+	fmt.Println("Host Created")
 
 	// Set Host to Node
 	node.Host.SetStreamHandler(protocol.ID("/sonr/auth"), node.HandleAuthStream)
@@ -55,21 +56,21 @@ func Start(olc string, device string, contact string, call Callback) *Node {
 	if err != nil {
 		panic(err)
 	}
-	println("MDNS Started")
+	fmt.Println("MDNS Started")
 
 	// create a new PubSub service using the GossipSub router
 	ps, err := pubsub.NewGossipSub(ctx, node.Host)
 	if err != nil {
 		panic(err)
 	}
-	println("GossipSub Created")
+	fmt.Println("GossipSub Created")
 
 	// Enter location lobby
 	lob, err := lobby.Enter(ctx, call, ps, node.GetPeer(), olc)
 	if err != nil {
 		panic(err)
 	}
-	println("Lobby Joined")
+	fmt.Println("Lobby Joined")
 	node.Lobby = *lob
 
 	// Return Node

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"math"
 	"os"
+	"sync"
 
 	"fmt"
 	"image"
@@ -32,11 +33,17 @@ type Metadata struct {
 
 // ^ GetMetadata generates file metadata and creates thumbnail if necessary ^ //
 func GetMetadata(ownr lobby.Peer, filePath string) (*Metadata, error) {
+	// Start WaitGroup
+	var wg sync.WaitGroup
+
 	// Initialize
 	meta := new(Metadata)
 	meta.path = filePath
 	fmt.Println("FilePath: ", filePath)
-	file, _ := os.Open(filePath)
+	file, err := os.Open(filePath)
+	if err != nil {
+		return nil, err
+	}
 
 	// Get Info
 	info, err := file.Stat()
@@ -58,16 +65,20 @@ func GetMetadata(ownr lobby.Peer, filePath string) (*Metadata, error) {
 	// Check for Image
 	if filetype.IsImage(head) {
 		fmt.Println("File is an image, Creating Thumbnail")
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			// Generate Thumbnail
+			thum, err := createThumbnail(filePath)
+			// Check for error
+			if err != nil {
+				fmt.Println("Error Creating Thumbnail")
+			}
 
-		// Generate Thumbnail
-		thum, err := createThumbnail(filePath)
-		if err != nil {
-			return nil, err
-		}
-
-		// Set Thumbnail
-		meta.thumbnail = thum
-
+			// Set Thumbnail
+			meta.thumbnail = thum
+		}()
+		wg.Wait()
 	}
 	return meta, nil
 }
@@ -108,6 +119,7 @@ func createThumbnail(imagePath string) ([]byte, error) {
 
 	// Convert Image to Byte List
 	thumbnail := buf.Bytes()
+	fmt.Println()
 	return thumbnail, nil
 }
 
