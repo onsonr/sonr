@@ -5,7 +5,20 @@ import (
 	"fmt"
 
 	"github.com/libp2p/go-libp2p-core/network"
+	"github.com/sonr-io/core/pkg/user"
 )
+
+// ^ AuthRequestMessage is for Auth Stream Request ^
+type AuthRequestMessage struct {
+	PeerInfo user.Info
+	FileInfo Metadata
+}
+
+// ^ AuthInviteMessage is for Auth Stream Request ^
+type AuthResponseMessage struct {
+	decision bool
+	peerID   string
+}
 
 // ^ Auth Stream Struct ^ //
 type AuthStreamConn struct {
@@ -20,7 +33,7 @@ func (sn *Node) HandleAuthStream(stream network.Stream) {
 	buffrw := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream))
 
 	// Create/Set Auth Stream
-	sn.AuthStream = &AuthStreamConn{
+	sn.AuthStream = AuthStreamConn{
 		readWriter: buffrw,
 		stream:     stream,
 		callback:   sn.Callback,
@@ -35,7 +48,7 @@ func (sn *Node) NewAuthStream(stream network.Stream) {
 	buffrw := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream))
 
 	// Create/Set Auth Stream
-	sn.AuthStream = &AuthStreamConn{
+	sn.AuthStream = AuthStreamConn{
 		readWriter: buffrw,
 		stream:     stream,
 		callback:   sn.Callback,

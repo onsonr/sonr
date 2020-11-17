@@ -14,14 +14,16 @@ import (
 // ^ Struct Management ^ //
 // Node contains all values for user
 type Node struct {
-	ctx        context.Context
-	PeerID     string
-	Host       host.Host
-	Lobby      lobby.Lobby
-	Profile    user.Profile
-	Contact    user.Contact
-	AuthStream *AuthStreamConn
-	Callback   Callback
+	ctx           context.Context
+	PeerID        string
+	Host          host.Host
+	Lobby         lobby.Lobby
+	Profile       user.Profile
+	Contact       user.Contact
+	AuthStream    AuthStreamConn
+	Callback      Callback
+	DocumentPath  string
+	TemporaryPath string
 }
 
 // GetUser returns profile and contact in a map as string
@@ -52,6 +54,10 @@ func (sn *Node) SetUser(cm lobby.ConnectRequest) error {
 	contact := user.NewContact(cm.Contact)
 	sn.Contact = contact
 
+	// Set Paths
+	sn.DocumentPath = cm.DocumentPath
+	sn.TemporaryPath = cm.TemporaryPath
+
 	return nil
 }
 
@@ -62,7 +68,6 @@ func (sn *Node) Update(data string) bool {
 	peer := new(lobby.Peer)
 	err := json.Unmarshal([]byte(data), peer)
 	if err != nil {
-		fmt.Println("Sonr P2P Error: ", err)
 		return false
 	}
 
@@ -76,7 +81,6 @@ func (sn *Node) Update(data string) bool {
 	// Repackage with graph ID
 	renotif, err := json.Marshal(peer)
 	if err != nil {
-		fmt.Println("Sonr P2P Error: ", err)
 		return false
 	}
 
@@ -101,9 +105,20 @@ func (sn *Node) Update(data string) bool {
 }
 
 // Invite an available peer to transfer
-func (sn *Node) Invite(id string) bool {
-	// Retrieve Peer ID
+func (sn *Node) Invite(id string, filePath string) bool {
+	// Get Required Data
 	peerID := sn.Lobby.GetPeerID(id)
+	info := user.GetInfo(sn.Profile, sn.Contact)
+	meta, err := newMetadata(info, filePath)
+	if err != nil {
+		fmt.Println("Error Getting Metadata", err)
+	}
+
+	// Convert Meta to JSON String
+	msgBytes, err := json.Marshal(meta)
+	if err != nil {
+		println("Error Converting Meta to JSON", err)
+	}
 
 	// Validate then Initiate
 	if peerID != "" {
@@ -119,7 +134,7 @@ func (sn *Node) Invite(id string) bool {
 		sn.NewAuthStream(stream)
 
 		// Send Invite Message
-		sn.AuthStream.Send("Do you want to transfer lope?")
+		sn.AuthStream.Send(string(msgBytes))
 
 		// Return Success
 		return true
@@ -130,16 +145,7 @@ func (sn *Node) Invite(id string) bool {
 // Accept an Invite from a Peer
 func (sn *Node) Accept(id string) bool {
 	// Create Message
-	cm := new(lobby.Message)
-	cm.Event = "Update"
-	cm.SenderID = sn.PeerID
-
-	// Inform Lobby
-	err := sn.Lobby.Publish(*cm)
-	if err != nil {
-		fmt.Println("Sonr P2P Error: ", err)
-		return false
-	}
+	sn.AuthStream.Send("Damn G I do")
 
 	// Return Success
 	return true
@@ -148,16 +154,7 @@ func (sn *Node) Accept(id string) bool {
 // Decline an Invite from a Peer
 func (sn *Node) Decline(id string) bool {
 	// Create Message
-	cm := new(lobby.Message)
-	cm.Event = "Update"
-	cm.SenderID = sn.PeerID
-
-	// Inform Lobby
-	err := sn.Lobby.Publish(*cm)
-	if err != nil {
-		fmt.Println("Sonr P2P Error: ", err)
-		return false
-	}
+	sn.AuthStream.Send("Fuck off cunt")
 
 	// Return Success
 	return true

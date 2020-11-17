@@ -26,6 +26,7 @@ func Start(data string, call Callback) *Node {
 	// Create Context and Node - Begin Setuo
 	ctx := context.Background()
 	node := new(Node)
+	node.ctx = ctx
 	node.Callback = call
 
 	// Retrieve Connection Request
@@ -48,7 +49,6 @@ func Start(data string, call Callback) *Node {
 	h.SetStreamHandler(protocol.ID("/sonr/auth"), node.HandleAuthStream)
 	node.Host = h
 	node.PeerID = h.ID().String()
-	node.ctx = ctx
 
 	// Set User data to node
 	err = node.SetUser(*cm)
