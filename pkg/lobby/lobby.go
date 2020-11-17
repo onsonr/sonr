@@ -5,7 +5,6 @@ import (
 
 	badger "github.com/dgraph-io/badger/v2"
 
-	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 )
 
@@ -22,7 +21,7 @@ type LobbyCallback interface {
 // messages are pushed to the Messages channel.
 type Lobby struct {
 	// Public Vars
-	Messages chan *Message
+	Messages chan *Notification
 	Code     string
 	Self     Peer
 
@@ -37,17 +36,7 @@ type Lobby struct {
 }
 
 // Enter Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby
-func Enter(ctx context.Context, call LobbyCallback, ps *pubsub.PubSub, hostID peer.ID, firstName string, lastName string, device string, profilePic string, olcCode string) (*Lobby, error) {
-	// Create Peer Struct
-	peer := Peer{
-		ID:         hostID,
-		Device:     device,
-		FirstName:  firstName,
-		LastName:   lastName,
-		ProfilePic: profilePic,
-		Direction:  0.0,
-	}
-
+func Enter(ctx context.Context, call LobbyCallback, ps *pubsub.PubSub, p Peer, olcCode string) (*Lobby, error) {
 	// Join the pubsub Topic
 	topic, err := ps.Join(olcCode)
 	if err != nil {
@@ -76,16 +65,17 @@ func Enter(ctx context.Context, call LobbyCallback, ps *pubsub.PubSub, hostID pe
 		ps:       ps,
 		topic:    topic,
 		sub:      sub,
-		Self:     peer,
+		Self:     p,
 		Code:     olcCode,
-		Messages: make(chan *Message, ChatRoomBufSize),
+		Messages: make(chan *Notification, ChatRoomBufSize),
 	}
 
 	// Publish Join Message
-	msg := Message{
+	msg := Notification{
 		Event:    "Update",
-		Data:     peer.String(),
-		SenderID: hostID.String(),
+		Peer:     p,
+		Data:     p.String(),
+		Sender: p.ID.String(),
 	}
 
 	// start reading messages
@@ -96,7 +86,7 @@ func Enter(ctx context.Context, call LobbyCallback, ps *pubsub.PubSub, hostID pe
 }
 
 // Publish sends a message to the pubsub topic.
-func (lob *Lobby) Publish(m Message) error {
+func (lob *Lobby) Publish(m Notification) error {
 	// Publish to Topic
 	err := lob.topic.Publish(lob.ctx, m.Bytes())
 	if err != nil {

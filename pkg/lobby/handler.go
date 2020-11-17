@@ -21,7 +21,7 @@ func (lob *Lobby) handleMessages() {
 		}
 
 		// Construct message
-		cm := new(Message)
+		cm := new(Notification)
 		err = json.Unmarshal(msg.Data, cm)
 		if err != nil {
 			continue
@@ -44,9 +44,9 @@ func (lob *Lobby) handleEvents() {
 		case m := <-lob.Messages:
 			// Update Circle by event
 			if m.Event == "Update" {
-				lob.updatePeer(m.Data)
+				lob.updatePeer(m.Peer)
 			} else if m.Event == "Exit" {
-				lob.removePeer(m.Data)
+				lob.removePeer(m.Peer)
 			}
 
 		// ** Refresh and Validate Lobby Peers Periodically ** //

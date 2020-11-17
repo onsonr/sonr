@@ -62,32 +62,21 @@ func (sn *Node) Update(dir float64) bool {
 	// Update User Values
 	sn.Profile.Direction = util.Round(dir, .5, 2)
 
-	// Get Update from Json
-	peer := new(lobby.Peer)
-
-	// Add Peer Data
-	peer.ID = sn.Host.ID()
-	peer.Device = sn.Profile.Device
-	peer.FirstName = sn.Contact.FirstName
-	peer.LastName = sn.Contact.LastName
-	peer.ProfilePic = sn.Contact.ProfilePic
-
-	// Repackage with graph ID
-	renotif, err := json.Marshal(peer)
-	if err != nil {
-		return false
-	}
+	// Get Updated Info
+	info := sn.GetPeer()
 
 	// Create Message
-	cm := new(lobby.Message)
-	cm.Event = "Update"
-	cm.SenderID = sn.PeerID
-	cm.Data = string(renotif)
+	notif := lobby.Notification{
+		Event:  "Update",
+		Sender: sn.PeerID,
+		Data:   info.String(),
+		Peer:   info,
+	}
 
 	// Inform Lobby
-	err = sn.Lobby.Publish(*cm)
+	err := sn.Lobby.Publish(notif)
 	if err != nil {
-		fmt.Println("Sonr P2P Error: ", err)
+		fmt.Println("Error Posting NotifUpdate: ", err)
 		return false
 	}
 

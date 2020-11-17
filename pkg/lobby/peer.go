@@ -57,9 +57,9 @@ func (lob *Lobby) isPeerInLobby(queryID string) bool {
 }
 
 // ^ removePeer deletes a peer from the circle ^
-func (lob *Lobby) removePeer(id string) {
+func (lob *Lobby) removePeer(peer Peer) {
 	// Delete peer from datastore
-	key := []byte(id)
+	key := []byte(peer.ID)
 	err := lob.peerDB.Update(func(txn *badger.Txn) error {
 		err := txn.Delete(key)
 		return err
@@ -76,24 +76,22 @@ func (lob *Lobby) removePeer(id string) {
 }
 
 // ^ updatePeer changes peer values in circle ^
-func (lob *Lobby) updatePeer(jsonString string) {
-	// Generate Map
-	peer := new(Peer)
-	err := json.Unmarshal([]byte(jsonString), peer)
-	if err != nil {
-		fmt.Println("Sonr P2P Error: ", err)
-	}
-
+func (lob *Lobby) updatePeer(peer Peer) {
 	// Create Key/Value as Bytes
 	key := []byte(peer.ID)
 	value := peer.Bytes()
 
 	// Update peer in DataStore
-	err = lob.peerDB.Update(func(txn *badger.Txn) error {
+	err := lob.peerDB.Update(func(txn *badger.Txn) error {
 		e := badger.NewEntry(key, value)
 		err := txn.SetEntry(e)
 		return err
 	})
+
+	// Check Error
+	if err != nil {
+		fmt.Println("Error Updating Peer in Badger", err)
+	}
 
 	// Send Callback with updated peers
 	lob.callback.OnRefresh(lob.GetAllPeers())
