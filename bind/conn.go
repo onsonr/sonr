@@ -9,15 +9,11 @@ import (
 )
 
 // ^ AuthRequestMessage is for Auth Stream Request ^
-type AuthRequestMessage struct {
-	PeerInfo user.Info
-	FileInfo Metadata
-}
-
-// ^ AuthInviteMessage is for Auth Stream Request ^
-type AuthResponseMessage struct {
+type AuthStreamMessage struct {
+	subject  string
+	peerInfo user.Info
+	metadata Metadata
 	decision bool
-	peerID   string
 }
 
 // ^ Auth Stream Struct ^ //

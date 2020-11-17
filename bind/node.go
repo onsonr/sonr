@@ -109,15 +109,26 @@ func (sn *Node) Invite(id string, filePath string) bool {
 	// Get Required Data
 	peerID := sn.Lobby.GetPeerID(id)
 	info := user.GetInfo(sn.Profile, sn.Contact)
+
+	// Create Metadata
 	meta, err := newMetadata(info, filePath)
 	if err != nil {
 		fmt.Println("Error Getting Metadata", err)
+		return false
 	}
 
-	// Convert Meta to JSON String
-	msgBytes, err := json.Marshal(meta)
+	// Create Request
+	request := AuthStreamMessage{
+		subject:  "Request",
+		peerInfo: info,
+		metadata: *meta,
+	}
+
+	// Convert Request to JSON String
+	msgBytes, err := json.Marshal(request)
 	if err != nil {
 		println("Error Converting Meta to JSON", err)
+		return false
 	}
 
 	// Validate then Initiate
@@ -128,7 +139,7 @@ func (sn *Node) Invite(id string, filePath string) bool {
 		// Check Stream
 		if err != nil {
 			fmt.Println("Auth Stream Failed to Open ", err)
-			panic(err)
+			return false
 		}
 		// Create New Auth Stream
 		sn.NewAuthStream(stream)
@@ -143,18 +154,44 @@ func (sn *Node) Invite(id string, filePath string) bool {
 }
 
 // Accept an Invite from a Peer
-func (sn *Node) Accept(id string) bool {
-	// Create Message
-	sn.AuthStream.Send("Damn G I do")
+func (sn *Node) Accept() bool {
+	// Create Response
+	resp := AuthStreamMessage{
+		subject:  "Response",
+		decision: true,
+	}
+
+	// Convert Response to JSON String
+	msgBytes, err := json.Marshal(resp)
+	if err != nil {
+		println("Error Converting Meta to JSON", err)
+		return false
+	}
+
+	// Send Message
+	sn.AuthStream.Send(string(msgBytes))
 
 	// Return Success
 	return true
 }
 
 // Decline an Invite from a Peer
-func (sn *Node) Decline(id string) bool {
-	// Create Message
-	sn.AuthStream.Send("Fuck off cunt")
+func (sn *Node) Decline() bool {
+	// Create Response
+	resp := AuthStreamMessage{
+		subject:  "Response",
+		decision: false,
+	}
+
+	// Convert Response to JSON String
+	msgBytes, err := json.Marshal(resp)
+	if err != nil {
+		println("Error Converting Meta to JSON", err)
+		return false
+	}
+
+	// Send Message
+	sn.AuthStream.Send(string(msgBytes))
 
 	// Return Success
 	return true
