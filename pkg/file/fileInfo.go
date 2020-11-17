@@ -1,0 +1,5 @@
+package file
+
+func NewFile() {
+
+}

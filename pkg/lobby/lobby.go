@@ -18,7 +18,7 @@ const ChatRoomBufSize = 128
 type Callback interface {
 	OnMessage(s string)
 	OnRefresh(s string)
-	OnRequested(s string)
+	OnInvited(s string)
 	OnAccepted(s string)
 	OnDenied(s string)
 	OnProgress(s string)

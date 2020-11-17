@@ -18,6 +18,19 @@ type Message struct {
 	SenderID string
 }
 
+// AuthRequestMessage is for Auth Stream Request
+type AuthRequestMessage struct {
+	PeerInfo  string
+	FileInfo  string
+	Thumbnail []byte
+}
+
+// AuthInviteMessage is for Auth Stream Request
+type AuthResponseMessage struct {
+	decision bool
+	peerID   string
+}
+
 // Bytes converts message struct to JSON bytes
 func (msg *Message) Bytes() []byte {
 	// Convert to Bytes

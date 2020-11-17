@@ -21,7 +21,7 @@ type Node struct {
 	Profile    user.Profile
 	Contact    user.Contact
 	AuthStream AuthStreamConn
-	//DataStream DataStreamConn
+	Callback   Callback
 }
 
 // GetUser returns profile and contact in a map as string
@@ -119,7 +119,7 @@ func (sn *Node) Invite(id string) bool {
 		sn.NewAuthStream(stream)
 
 		// Send Invite Message
-		sn.AuthStream.Send("Hello on new stream")
+		sn.AuthStream.Send("Do you want to transfer lope?")
 
 		// Return Success
 		return true

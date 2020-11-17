@@ -14,7 +14,7 @@ import (
 type Callback interface {
 	OnMessage(s string)
 	OnRefresh(s string)
-	OnRequested(s string)
+	OnInvited(s string)
 	OnAccepted(s string)
 	OnDenied(s string)
 	OnProgress(s string)
@@ -26,6 +26,7 @@ func Start(data string, call Callback) *Node {
 	// Create Context and Node - Begin Setuo
 	ctx := context.Background()
 	node := new(Node)
+	node.Callback = call
 
 	// Retrieve Connection Request
 	cm := new(lobby.ConnectRequest)

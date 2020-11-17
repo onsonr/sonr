@@ -11,6 +11,7 @@ import (
 type AuthStreamConn struct {
 	readWriter *bufio.ReadWriter
 	stream     network.Stream
+	callback   Callback
 }
 
 // ^ Handle Incoming Stream ^ //
@@ -24,11 +25,10 @@ func (sn *Node) HandleAuthStream(stream network.Stream) {
 	sn.AuthStream = AuthStreamConn{
 		readWriter: buffrw,
 		stream:     stream,
+		callback:   sn.Callback,
 	}
 	// Initialize Routine
 	go sn.AuthStream.Read()
-
-	sn.AuthStream.Send("Third Message")
 }
 
 // ^ Create New Stream ^ //
@@ -42,11 +42,10 @@ func (sn *Node) NewAuthStream(stream network.Stream) {
 	sn.AuthStream = AuthStreamConn{
 		readWriter: buffrw,
 		stream:     stream,
+		callback:   sn.Callback,
 	}
 	// Initialize Routine
 	go sn.AuthStream.Read()
-
-	sn.AuthStream.Send("First Message")
 }
 
 // ^ Read Data from Msgio ^ //
@@ -66,7 +65,9 @@ func (asc *AuthStreamConn) Read() {
 
 		// Contains Data
 		if str != "\n" {
-			fmt.Println("Received Message: ", str)
+			//fmt.Println("Received Message: ", str)
+			// Callback the Message
+			asc.callback.OnInvited(str)
 		}
 	}
 }
