@@ -22,7 +22,7 @@ type Callback interface {
 }
 
 // Start begins the mobile host
-func Start(olc string, device string, contact string, call Callback) *Node {
+func Start(olc string, device string, contact string, tempDir string, call Callback) *Node {
 	// Create Context and Node - Begin Setuo
 	ctx := context.Background()
 	node := new(Node)
@@ -31,25 +31,25 @@ func Start(olc string, device string, contact string, call Callback) *Node {
 
 	// Create Host
 	var err error
-	node.Host, err = host.NewBasicHost(&ctx)
+	node.host, err = host.NewBasicHost(&ctx)
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println("Host Created")
 
 	// Set Host to Node
-	node.Host.SetStreamHandler(protocol.ID("/sonr/auth"), node.HandleAuthStream)
-	node.PeerID = node.Host.ID().String()
+	node.host.SetStreamHandler(protocol.ID("/sonr/auth"), node.HandleAuthStream)
+	node.peerID = node.host.ID().String()
 
 	// Set Profile
-	node.Profile = user.Profile{
-		ID:     node.Host.ID().String(),
+	node.profile = user.Profile{
+		ID:     node.host.ID().String(),
 		OLC:    olc,
 		Device: device,
 	}
 
 	// Set Contact
-	node.Contact = user.SetContact(contact)
+	node.contact = user.SetContact(contact)
 
 	// setup local mDNS discovery
 	err = initMDNSDiscovery(ctx, *node, call)
@@ -59,7 +59,7 @@ func Start(olc string, device string, contact string, call Callback) *Node {
 	fmt.Println("MDNS Started")
 
 	// create a new PubSub service using the GossipSub router
-	ps, err := pubsub.NewGossipSub(ctx, node.Host)
+	ps, err := pubsub.NewGossipSub(ctx, node.host)
 	if err != nil {
 		panic(err)
 	}
@@ -71,7 +71,7 @@ func Start(olc string, device string, contact string, call Callback) *Node {
 		panic(err)
 	}
 	fmt.Println("Lobby Joined")
-	node.Lobby = *lob
+	node.lobby = *lob
 
 	// Return Node
 	return node

@@ -101,7 +101,7 @@ func (asc *authStreamConn) Read() {
 				// Check peer decision
 				if asm.decision {
 					// User Accepted
-					asc.callback.OnAccepted("Greate")
+					asc.callback.OnAccepted("Great")
 				} else {
 					// User Declined
 					asc.callback.OnDenied("Unlucky")

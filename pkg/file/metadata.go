@@ -1,7 +1,6 @@
 package file
 
 import (
-	"bytes"
 	"math"
 	"os"
 	"sync"
@@ -11,6 +10,9 @@ import (
 	_ "image/gif"
 	"image/jpeg"
 	_ "image/jpeg"
+
+	"path/filepath"
+	"strings"
 
 	"github.com/h2non/filetype"
 	"github.com/nfnt/resize"
@@ -25,14 +27,14 @@ type Metadata struct {
 	name      string
 	owner     string // Profile JSON String
 	size      int64
-	thumbnail []byte
+	thumbPath string
 	kind      string
 	path      string
 	received  string // DateTime as string
 }
 
 // ^ GetMetadata generates file metadata and creates thumbnail if necessary ^ //
-func GetMetadata(ownr lobby.Peer, filePath string) (*Metadata, error) {
+func GetMetadata(ownr lobby.Peer, filePath string, cacheDir string) (*Metadata, error) {
 	// Start WaitGroup
 	var wg sync.WaitGroup
 
@@ -65,26 +67,32 @@ func GetMetadata(ownr lobby.Peer, filePath string) (*Metadata, error) {
 	// Check for Image
 	if filetype.IsImage(head) {
 		fmt.Println("File is an image, Creating Thumbnail")
+		// Get Save Path
+		savePath := fileThumbnailPath(filePath, cacheDir)
+
+		// Begin Wait Group
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
 			// Generate Thumbnail
-			thum, err := createThumbnail(filePath)
+			err := createThumbnail(filePath, savePath)
 			// Check for error
 			if err != nil {
 				fmt.Println("Error Creating Thumbnail")
 			}
 
 			// Set Thumbnail
-			meta.thumbnail = thum
+			meta.thumbPath = savePath
 		}()
 		wg.Wait()
+		fmt.Println("Thumbnail created")
 	}
+	fmt.Println("Metadata: ", meta)
 	return meta, nil
 }
 
 // ^ createThumbnail generates thumbnail for path and provided save path ^ //
-func createThumbnail(imagePath string) ([]byte, error) {
+func createThumbnail(imagePath string, savePath string) error {
 	// Open File Path
 	file, _ := os.Open(imagePath)
 	defer file.Close()
@@ -92,7 +100,7 @@ func createThumbnail(imagePath string) ([]byte, error) {
 	// Convert to Image Object
 	img, _, err := image.Decode(file)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// Find Image Bounds
@@ -108,23 +116,35 @@ func createThumbnail(imagePath string) ([]byte, error) {
 	// Call the resize library for image scaling
 	m := resize.Resize(uint(w), uint(h), img, resize.Lanczos3)
 
-	// Create Buffer
-	buf := new(bytes.Buffer)
+	// files that need to be saved
+	imgfile, _ := os.Create(savePath)
+	defer imgfile.Close()
 
 	// Encode to JPEG
-	err = jpeg.Encode(buf, m, nil)
+	err = jpeg.Encode(imgfile, m, nil)
 	if err != nil {
-		return nil, err
+		return err
 	}
-
-	// Convert Image to Byte List
-	thumbnail := buf.Bytes()
-	fmt.Println()
-	return thumbnail, nil
+	return nil
 }
 
 // Calculate the size of the image after scaling
 func calculateRatioFit(srcWidth, srcHeight int) (int, int) {
 	ratio := math.Min(DEFAULT_MAX_WIDTH/float64(srcWidth), DEFAULT_MAX_HEIGHT/float64(srcHeight))
 	return int(math.Ceil(float64(srcWidth) * ratio)), int(math.Ceil(float64(srcHeight) * ratio))
+}
+
+// Get FileName without Extension
+func fileNameWithoutExtension(fileName string) string {
+	return strings.TrimSuffix(fileName, filepath.Ext(fileName))
+}
+
+// Get Path for Thumbnail
+func fileThumbnailPath(filePath string, cacheDir string) string {
+	// Create Save Path
+	fileBase := filepath.Base(filePath)
+	fileExt := filepath.Ext(filePath)
+	fileName := fileNameWithoutExtension(fileBase)
+	fmt.Println("File Name: ", fileName)
+	return cacheDir + "/" + fileName + "_thumb" + fileExt
 }

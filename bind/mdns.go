@@ -25,7 +25,7 @@ type discoveryNotifee struct {
 // initMDNSDiscovery creates an mDNS discovery service and attaches it to the libp2p Host.
 func initMDNSDiscovery(ctx context.Context, sn Node, call Callback) error {
 	// setup mDNS discovery to find local peers
-	disc, err := discovery.NewMdnsService(ctx, sn.Host, discoveryInterval, discoveryServiceTag)
+	disc, err := discovery.NewMdnsService(ctx, sn.host, discoveryInterval, discoveryServiceTag)
 	if err != nil {
 		return err
 	}
@@ -39,10 +39,10 @@ func initMDNSDiscovery(ctx context.Context, sn Node, call Callback) error {
 // Get Slice of Peers minus User
 func (n *discoveryNotifee) getPeersAsSlice() peer.IDSlice {
 	// Get Peers as Slice
-	peers := n.sn.Host.Peerstore().Peers()
+	peers := n.sn.host.Peerstore().Peers()
 
 	// Remove User Peer
-	peers = removeIDFromSlice(peers, n.sn.Host.ID())
+	peers = removeIDFromSlice(peers, n.sn.host.ID())
 
 	// Return Slice
 	return peers
@@ -64,7 +64,7 @@ func removeIDFromSlice(slice peer.IDSlice, value peer.ID) peer.IDSlice {
 // HandlePeerFound connects to peers discovered via mDNS.
 func (n *discoveryNotifee) HandlePeerFound(pi peer.AddrInfo) {
 	// Connect to Peer
-	err := n.sn.Host.Connect(context.Background(), pi)
+	err := n.sn.host.Connect(context.Background(), pi)
 
 	// Log Error
 	if err != nil {
@@ -77,12 +77,12 @@ func (n *discoveryNotifee) HandlePeerFound(pi peer.AddrInfo) {
 	// Remove Disconnected Peers
 	for _, peerID := range peers {
 		// Check State
-		status := n.sn.Host.Network().Connectedness(peerID)
+		status := n.sn.host.Network().Connectedness(peerID)
 
 		// Remove From Store if NotConnected
 		if status == network.NotConnected {
 			// Disconnect
-			n.sn.Host.Network().ClosePeer(peerID)
+			n.sn.host.Network().ClosePeer(peerID)
 		}
 	}
 }

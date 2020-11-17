@@ -17,25 +17,26 @@ import (
 // ^ Struct Management ^ //
 // Node contains all values for user
 type Node struct {
-	ctx        context.Context
-	PeerID     string
-	Host       host.Host
-	Lobby      lobby.Lobby
-	Profile    user.Profile
-	Contact    user.Contact
-	AuthStream authStreamConn
-	Callback   Callback
+	ctx                context.Context
+	temporaryDirectory string
+	peerID             string
+	host               host.Host
+	lobby              lobby.Lobby
+	profile            user.Profile
+	contact            user.Contact
+	AuthStream         authStreamConn
+	Callback           Callback
 }
 
 // GetPeer returns Lobby Peer object from SonrNode
 func (sn *Node) GetPeer() lobby.Peer {
 	return lobby.Peer{
-		ID:         sn.Host.ID(),
-		FirstName:  sn.Contact.FirstName,
-		LastName:   sn.Contact.LastName,
-		ProfilePic: sn.Contact.ProfilePic,
-		Device:     sn.Profile.Device,
-		Direction:  sn.Profile.Direction,
+		ID:         sn.host.ID(),
+		FirstName:  sn.contact.FirstName,
+		LastName:   sn.contact.LastName,
+		ProfilePic: sn.contact.ProfilePic,
+		Device:     sn.profile.Device,
+		Direction:  sn.profile.Direction,
 	}
 }
 
@@ -43,9 +44,9 @@ func (sn *Node) GetPeer() lobby.Peer {
 func (sn *Node) GetUser() string {
 	// Initialize Map
 	m := make(map[string]string)
-	m["profile"] = sn.Profile.String()
-	m["contact"] = sn.Contact.String()
-	m["id"] = sn.PeerID
+	m["profile"] = sn.profile.String()
+	m["contact"] = sn.contact.String()
+	m["id"] = sn.peerID
 
 	// Convert to JSON
 	msgBytes, err := json.Marshal(m)
@@ -61,7 +62,7 @@ func (sn *Node) GetUser() string {
 // Update occurs when status or direction changes
 func (sn *Node) Update(dir float64) bool {
 	// Update User Values
-	sn.Profile.Direction = util.Round(dir, .5, 2)
+	sn.profile.Direction = util.Round(dir, .5, 2)
 
 	// Get Updated Info
 	info := sn.GetPeer()
@@ -69,13 +70,13 @@ func (sn *Node) Update(dir float64) bool {
 	// Create Message
 	notif := lobby.Notification{
 		Event:  "Update",
-		Sender: sn.PeerID,
+		Sender: sn.peerID,
 		Data:   info.String(),
 		Peer:   info,
 	}
 
 	// Inform Lobby
-	err := sn.Lobby.Publish(notif)
+	err := sn.lobby.Publish(notif)
 	if err != nil {
 		fmt.Println("Error Posting NotifUpdate: ", err)
 		return false
@@ -88,7 +89,7 @@ func (sn *Node) Update(dir float64) bool {
 // Invite an available peer to transfer
 func (sn *Node) Invite(id string, filePath string) bool {
 	// ** Get Required Data **
-	peerID, err := sn.Lobby.GetPeerID(id)
+	peerID, err := sn.lobby.GetPeerID(id)
 	if err != nil {
 		fmt.Println("Search Error", err)
 		return false
@@ -96,14 +97,14 @@ func (sn *Node) Invite(id string, filePath string) bool {
 	info := sn.GetPeer()
 
 	// Create Metadata
-	meta, err := file.GetMetadata(info, filePath)
+	meta, err := file.GetMetadata(info, filePath, sn.temporaryDirectory)
 	if err != nil {
 		fmt.Println("Error Getting Metadata", err)
 		return false
 	}
 
 	// ** Open a stream **
-	stream, err := sn.Host.NewStream(sn.ctx, peerID, protocol.ID("/sonr/auth"))
+	stream, err := sn.host.NewStream(sn.ctx, peerID, protocol.ID("/sonr/auth"))
 
 	// Check Stream
 	if err != nil {
