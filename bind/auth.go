@@ -6,18 +6,21 @@ import (
 	"fmt"
 
 	"github.com/libp2p/go-libp2p-core/network"
+	"github.com/sonr-io/core/pkg/file"
+	"github.com/sonr-io/core/pkg/lobby"
 )
 
 // ^ authStreamMessage is for Auth Stream Request ^
 type authStreamMessage struct {
-	subject  string
-	decision bool
-	peerInfo string
-	metadata string
+	Subject  string
+	Decision bool
+	PeerInfo lobby.Peer
+	Metadata file.Metadata
 }
 
 // ^ Auth Stream Struct ^ //
 type authStreamConn struct {
+	self       *Node
 	readWriter *bufio.ReadWriter
 	stream     network.Stream
 	callback   Callback
@@ -33,6 +36,7 @@ func (sn *Node) HandleAuthStream(stream network.Stream) {
 		readWriter: buffrw,
 		stream:     stream,
 		callback:   sn.Callback,
+		self:       sn,
 	}
 	// Initialize Routine
 	go sn.AuthStream.Read()
@@ -48,15 +52,28 @@ func (sn *Node) NewAuthStream(stream network.Stream) {
 		readWriter: buffrw,
 		stream:     stream,
 		callback:   sn.Callback,
+		self:       sn,
 	}
 	// Initialize Routine
 	go sn.AuthStream.Read()
 }
 
 // ^ Write Message on Stream ^ //
-func (asc *authStreamConn) Write(msg string) error {
+func (asc *authStreamConn) Write(authMsg authStreamMessage) error {
+	fmt.Println("Auth Msg Struct: ", authMsg)
+
+	// Convert Request to JSON String
+	var jsonData []byte
+	jsonData, err := json.Marshal(authMsg)
+	if err != nil {
+		fmt.Println("Error Converting Meta to JSON", err)
+		return err
+	}
+	println("Auth Msg Bytes: ", jsonData)
+	fmt.Println("Auth Msg String: ", string(jsonData))
+
 	// Write Message with "Delimiter"=(Seperator for Message Values)
-	_, err := asc.readWriter.WriteString(fmt.Sprintf("%s\n", msg))
+	_, err = asc.readWriter.WriteString(fmt.Sprintf("%s\n", string(jsonData)))
 	if err != nil {
 		fmt.Println("Error writing to buffer")
 		return err
@@ -96,30 +113,40 @@ func (asc *authStreamConn) Read() {
 			}
 
 			// Check Message Subject
-			switch asm.subject {
+			switch asm.Subject {
 			// @ Request to Invite
 			case "Request":
 				fmt.Println("Auth Invited: ", str)
 				// Callback the Invitation
-				asc.callback.OnInvited(asm.peerInfo, asm.metadata)
+				asc.callback.OnInvited(asm.PeerInfo.String(), asm.Metadata.String())
 
 			// @ Response to Invite
 			case "Response":
+				// Handle the Decision
+				asc.self.handleAuthResponse(asm.Decision)
+
 				// Check peer decision
-				if asm.decision {
-					fmt.Println("Auth Accepted: ", str)
+				if asm.Decision {
 					// User Accepted
 					asc.callback.OnAccepted("Great")
 				} else {
-					fmt.Println("Auth Declined: ", str)
 					// User Declined
 					asc.callback.OnDenied("Unlucky")
 				}
 
 			// ! Invalid Subject
 			default:
-				fmt.Printf("%s.\n", asm.subject)
+				fmt.Printf("%s.\n", asm.Subject)
 			}
 		}
+	}
+}
+
+// ^ Handle the Peers decision from request ^
+func (sn *Node) handleAuthResponse(decsion bool) {
+	if decsion {
+		fmt.Println("Auth Accepted")
+	} else {
+		fmt.Println("Auth Declined")
 	}
 }
