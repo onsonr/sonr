@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/protocol"
@@ -11,6 +12,8 @@ import (
 	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/user"
 	"github.com/sonr-io/core/pkg/util"
+	spb "github.com/sonr-io/core/proto"
+	"google.golang.org/protobuf/proto"
 )
 
 // ^ Struct Management ^ //
@@ -113,14 +116,38 @@ func (sn *Node) Invite(id string, filePath string) bool {
 	sn.NewAuthStream(stream)
 
 	// Create Request Message
-	authMsg := authStreamMessage{
-		Subject:  "Request",
-		PeerInfo: info,
-		Metadata: meta,
+	authPbf := &spb.AuthMessage{
+		Subject: "Request",
+		PeerInfo: *spb.PeerInfo{
+			Id:         info.ID,
+			Device:     info.Device,
+			FirstName:  info.FirstName,
+			LastName:   info.LastName,
+			ProfilePic: info.ProfilePic,
+			Direction:  info.Direction,
+		},
+		//Metadata: meta,
+	}
+
+	data, err := proto.Marshal(authPbf)
+	if err != nil {
+		log.Fatal("marshaling error: ", err)
+	}
+
+	// printing out our raw protobuf object
+	fmt.Println("Raw data", data)
+
+	// let's go the other way and unmarshal
+	// our byte array into an object we can modify
+	// and use
+	addresssBook := spb.AuthMessage{}
+	err = proto.Unmarshal(data, &addresssBook)
+	if err != nil {
+		log.Fatal("unmarshaling error: ", err)
 	}
 
 	// ** Send Invite Message **
-	err = sn.AuthStream.Write(authMsg)
+	//err = sn.AuthStream.Write(authPbf)
 	if err != nil {
 		return false
 	}

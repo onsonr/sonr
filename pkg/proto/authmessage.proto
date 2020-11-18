@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+// Define Package
+package sonr;
+
+// Require Go Package
+option go_package = ".;proto";
+
+// Create AuthMessage
+message AuthMessage {
+  // Define Root Message
+    Subject subject = 1;
+    bool decision = 2;
+    Metadata metadata = 3;
+    PeerInfo peerInfo = 4;
+
+  // Define Subject
+  enum Subject {
+    REQUEST = 0;
+    RESPONSE = 1;
+    NONE = 2;
+  }
+}
+
+// Define Metadata Type
+message Metadata {
+    string id = 1;
+    string name = 2;
+    string path = 3;
+    int64 size = 4;
+    string kind = 5;
+  }
+
+// Define PeerInfo Type
+message PeerInfo {
+    string id = 1;
+    string device = 2;
+    string firstName = 3;
+    string lastName = 4;
+    string profilePic = 5;
+    double direction = 6;
+  }

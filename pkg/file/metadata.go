@@ -23,13 +23,11 @@ const DEFAULT_MAX_WIDTH float64 = 320
 const DEFAULT_MAX_HEIGHT float64 = 240
 
 type Metadata struct {
-	id        string
-	name      string
-	size      string
-	thumbPath string
-	kind      string
-	path      string
-	received  string // DateTime as string
+	id   string
+	name string
+	size string
+	kind string
+	path string
 }
 
 // String converts Metadata struct to JSON String
