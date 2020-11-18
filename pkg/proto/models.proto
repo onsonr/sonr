@@ -27,6 +27,13 @@ message AuthMessage {
   }
 }
 
+message Notification {
+  string data = 1;
+  string event = 2;
+  string sender = 3;
+  PeerInfo peer = 4;
+}
+
   // Define Metadata Type
 message Metadata {
     string id = 1;
@@ -46,12 +53,11 @@ message PeerInfo {
     double direction = 6;
   }
 
-// Define PeerInfo Type
-message Profile {
-    string id = 1;
-    string olc = 2;
-    string device = 3;
-    double distance = 5;
-    double direction = 6;
+  // Define Contact Type, 
+  // ** Profile needs to be object but Contact can be buffer **
+  message Contact {
+    string firstName = 1;
+    string lastName = 2;
+    string profilePic = 3;
   }
 

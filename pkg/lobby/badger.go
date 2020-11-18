@@ -13,7 +13,7 @@ import (
 )
 
 // GetPeer returns ONE Peer in Datastore
-func (lob *Lobby) GetPeer(queryID string) (pb.PeerInfo, error) {
+func (lob *Lobby) GetPeer(queryID string) (*pb.PeerInfo, error) {
 	// Initialize Object
 	peer := pb.PeerInfo{}
 
@@ -42,7 +42,7 @@ func (lob *Lobby) GetPeer(queryID string) (pb.PeerInfo, error) {
 	if err != nil {
 		fmt.Println("Search Error ", err)
 	}
-	return peer, nil
+	return &peer, nil
 }
 
 // GetPeer returns ONE Peer in Datastore
@@ -85,6 +85,7 @@ func (lob *Lobby) GetAllPeers() string {
 				err := proto.Unmarshal(data, &peer)
 				if err != nil {
 					log.Fatal("unmarshaling error: ", err)
+					return err
 				} else {
 					// Add Item value to Slice
 					peerSlice = append(peerSlice, &peer)
@@ -132,9 +133,9 @@ func (lob *Lobby) isPeerInLobby(queryID string) bool {
 }
 
 // ^ removePeer deletes a peer from the circle ^
-func (lob *Lobby) removePeer(peer *pb.PeerInfo) {
+func (lob *Lobby) removePeer(id string) {
 	// Delete peer from datastore
-	key := []byte(peer.GetId())
+	key := []byte(id)
 	err := lob.peerDB.Update(func(txn *badger.Txn) error {
 		err := txn.Delete(key)
 		return err
@@ -151,18 +152,12 @@ func (lob *Lobby) removePeer(peer *pb.PeerInfo) {
 }
 
 // ^ updatePeer changes peer values in circle ^
-func (lob *Lobby) updatePeer(peer *pb.PeerInfo) {
+func (lob *Lobby) updatePeer(id string, value []byte) {
 	// Create Key/Value as Bytes
-	key := []byte(peer.GetId())
-
-	// Convert Request to Proto Binary
-	value, err := proto.Marshal(peer)
-	if err != nil {
-		log.Fatal("marshaling error: ", err)
-	}
+	key := []byte(id)
 
 	// Update peer in DataStore
-	err = lob.peerDB.Update(func(txn *badger.Txn) error {
+	err := lob.peerDB.Update(func(txn *badger.Txn) error {
 		e := badger.NewEntry(key, value)
 		err := txn.SetEntry(e)
 		return err

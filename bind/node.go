@@ -69,11 +69,11 @@ func (sn *Node) Update(dir float64) bool {
 	info := sn.GetPeerInfo()
 
 	// Create Message
-	notif := lobby.Notification{
+	notif := &pb.Notification{
 		Event:  "Update",
 		Sender: sn.peerID,
-		Data:   info.String(),
 		Peer:   info,
+		Data:   info.String(),
 	}
 
 	// Inform Lobby
@@ -117,9 +117,10 @@ func (sn *Node) Invite(id string, filePath string) bool {
 	authPbf := &pb.AuthMessage{
 		Subject:  0,
 		PeerInfo: sn.GetPeerInfo(),
-		//Metadata: meta,
+		Metadata: meta,
 	}
 
+	// Marshal to Bytes
 	data, err := proto.Marshal(authPbf)
 	if err != nil {
 		log.Fatal("marshaling error: ", err)
@@ -128,17 +129,8 @@ func (sn *Node) Invite(id string, filePath string) bool {
 	// printing out our raw protobuf object
 	fmt.Println("Raw data", data)
 
-	// let's go the other way and unmarshal
-	// our byte array into an object we can modify
-	// and use
-	message := pb.AuthMessage{}
-	err = proto.Unmarshal(data, &message)
-	if err != nil {
-		log.Fatal("unmarshaling error: ", err)
-	}
-
 	// ** Send Invite Message **
-	//err = sn.AuthStream.Write(authPbf)
+	err = sn.AuthStream.Write(authPbf)
 	if err != nil {
 		return false
 	}

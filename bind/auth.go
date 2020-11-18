@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"io/ioutil"
-	"log"
 
 	"github.com/libp2p/go-libp2p-core/network"
 	pb "github.com/sonr-io/core/pkg/proto"
@@ -58,7 +57,7 @@ func (asc *authStreamConn) Write(authMsg *pb.AuthMessage) error {
 	// Convert Request to Proto Binary
 	data, err := proto.Marshal(authMsg)
 	if err != nil {
-		log.Fatal("marshaling error: ", err)
+		fmt.Println("marshaling error: ", err)
 	}
 
 	// Write Protobuf
@@ -85,7 +84,7 @@ func (asc *authStreamConn) Read() {
 		d, _ := ioutil.ReadAll(asc.readWriter)
 		err := proto.Unmarshal(d, &authMsg)
 		if err != nil {
-			log.Fatal("unmarshaling error: ", err)
+			fmt.Println("unmarshaling error: ", err)
 		}
 
 		// ** Contains Data **
@@ -96,13 +95,20 @@ func (asc *authStreamConn) Read() {
 			switch authMsg.Subject {
 			// @ Request to Invite
 			case pb.AuthMessage_REQUEST:
+				// Retreive Values
+				info := authMsg.GetPeerInfo()
+				meta := authMsg.GetMetadata()
+
 				// Callback the Invitation
-				asc.callback.OnInvited(authMsg.PeerInfo.String(), authMsg.Metadata.String())
+				asc.callback.OnInvited(info.String(), meta.String())
 
 			// @ Response to Invite
 			case pb.AuthMessage_RESPONSE:
+				// Retreive Values
+				decs := authMsg.GetDecision()
+
 				// Callback to Proxies
-				asc.callback.OnResponded(authMsg.Decision)
+				asc.callback.OnResponded(decs)
 
 				// Handle Decision
 				if authMsg.Decision {

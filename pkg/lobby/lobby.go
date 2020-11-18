@@ -2,10 +2,12 @@ package lobby
 
 import (
 	"context"
+	"log"
 
 	badger "github.com/dgraph-io/badger/v2"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	pb "github.com/sonr-io/core/pkg/proto"
+	"google.golang.org/protobuf/proto"
 )
 
 // ChatRoomBufSize is the number of incoming messages to buffer for each topic.
@@ -21,7 +23,7 @@ type LobbyCallback interface {
 // messages are pushed to the Messages channel.
 type Lobby struct {
 	// Public Vars
-	Messages chan *Notification
+	Messages chan *pb.Notification
 	Code     string
 	Self     *pb.PeerInfo
 
@@ -67,11 +69,11 @@ func Enter(ctx context.Context, call LobbyCallback, ps *pubsub.PubSub, p *pb.Pee
 		sub:      sub,
 		Self:     p,
 		Code:     olcCode,
-		Messages: make(chan *Notification, ChatRoomBufSize),
+		Messages: make(chan *pb.Notification, ChatRoomBufSize),
 	}
 
 	// Publish Join Message
-	msg := Notification{
+	msg := &pb.Notification{
 		Event:  "Update",
 		Peer:   p,
 		Data:   p.String(),
@@ -86,9 +88,15 @@ func Enter(ctx context.Context, call LobbyCallback, ps *pubsub.PubSub, p *pb.Pee
 }
 
 // Publish sends a message to the pubsub topic.
-func (lob *Lobby) Publish(m Notification) error {
+func (lob *Lobby) Publish(m *pb.Notification) error {
+	// Convert Request to Proto Binary
+	data, err := proto.Marshal(m)
+	if err != nil {
+		log.Fatal("marshaling error: ", err)
+	}
+
 	// Publish to Topic
-	err := lob.topic.Publish(lob.ctx, m.Bytes())
+	err = lob.topic.Publish(lob.ctx, data)
 	if err != nil {
 		return err
 	}

@@ -1,8 +1,11 @@
 package lobby
 
 import (
-	"encoding/json"
+	"fmt"
 	"time"
+
+	pb "github.com/sonr-io/core/pkg/proto"
+	"google.golang.org/protobuf/proto"
 )
 
 // ^ 1. handleMessages pulls messages from the pubsub topic and pushes them onto the Messages channel. ^
@@ -21,14 +24,14 @@ func (lob *Lobby) handleMessages() {
 		}
 
 		// Construct message
-		cm := new(Notification)
-		err = json.Unmarshal(msg.Data, cm)
+		notif := pb.Notification{}
+		err = proto.Unmarshal(msg.Data, &notif)
 		if err != nil {
 			continue
 		}
 
 		// Send valid messages onto the Messages channel
-		lob.Messages <- cm
+		lob.Messages <- &notif
 	}
 }
 
@@ -44,9 +47,16 @@ func (lob *Lobby) handleEvents() {
 		case m := <-lob.Messages:
 			// Update Circle by event
 			if m.Event == "Update" {
-				lob.updatePeer(m.Peer)
+				// Convert Request to Proto Binary
+				value, err := proto.Marshal(m.Peer)
+				if err != nil {
+					fmt.Println("marshaling error: ", err)
+				}
+
+				// Call Update
+				lob.updatePeer(m.Peer.GetId(), value)
 			} else if m.Event == "Exit" {
-				lob.removePeer(m.Peer)
+				lob.removePeer(m.Peer.GetId())
 			}
 
 		// ** Refresh and Validate Lobby Peers Periodically ** //
