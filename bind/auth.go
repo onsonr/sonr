@@ -116,7 +116,6 @@ func (asc *authStreamConn) Read() {
 			switch asm.Subject {
 			// @ Request to Invite
 			case "Request":
-				fmt.Println("Auth Invited: ", str)
 				// Callback the Invitation
 				asc.callback.OnInvited(asm.PeerInfo.String(), asm.Metadata.String())
 
@@ -147,6 +146,8 @@ func (sn *Node) handleAuthResponse(decsion bool) {
 	if decsion {
 		fmt.Println("Auth Accepted")
 	} else {
+		// Reset
+		sn.AuthStream.stream.Reset()
 		fmt.Println("Auth Declined")
 	}
 }

@@ -78,3 +78,10 @@ func Start(olc string, device string, contact string, tempDir string, call Callb
 	// Return Node
 	return node
 }
+
+// Exit Ends Communication
+func (sn *Node) Exit() {
+	sn.AuthStream.stream.Close()
+	sn.lobby.End()
+	sn.host.Close()
+}
