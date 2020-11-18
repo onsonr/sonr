@@ -66,7 +66,7 @@ func Start(olc string, device string, contact string, tempDir string, call Callb
 	fmt.Println("GossipSub Created")
 
 	// Enter location lobby
-	lob, err := lobby.Enter(ctx, call, ps, node.GetPeer(), olc)
+	lob, err := lobby.Enter(ctx, call, ps, node.GetPeerInfo(), olc)
 	if err != nil {
 		panic(err)
 	}

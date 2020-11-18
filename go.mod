@@ -7,6 +7,7 @@ require (
 	github.com/davidlazar/go-crypto v0.0.0-20190912175916-7055855a373f // indirect
 	github.com/dgraph-io/badger/v2 v2.0.3
 	github.com/golang/protobuf v1.4.3
+	github.com/google/uuid v1.1.1
 	github.com/h2non/filetype v1.1.0
 	github.com/ipfs/go-datastore v0.4.5
 	github.com/ipfs/go-ipfs-config v0.10.0

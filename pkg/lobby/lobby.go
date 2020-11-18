@@ -4,8 +4,8 @@ import (
 	"context"
 
 	badger "github.com/dgraph-io/badger/v2"
-
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	pb "github.com/sonr-io/core/pkg/proto"
 )
 
 // ChatRoomBufSize is the number of incoming messages to buffer for each topic.
@@ -23,7 +23,7 @@ type Lobby struct {
 	// Public Vars
 	Messages chan *Notification
 	Code     string
-	Self     Peer
+	Self     *pb.PeerInfo
 
 	// Private Vars
 	ctx      context.Context
@@ -36,7 +36,7 @@ type Lobby struct {
 }
 
 // Enter Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby
-func Enter(ctx context.Context, call LobbyCallback, ps *pubsub.PubSub, p Peer, olcCode string) (*Lobby, error) {
+func Enter(ctx context.Context, call LobbyCallback, ps *pubsub.PubSub, p *pb.PeerInfo, olcCode string) (*Lobby, error) {
 	// Join the pubsub Topic
 	topic, err := ps.Join(olcCode)
 	if err != nil {
@@ -75,7 +75,7 @@ func Enter(ctx context.Context, call LobbyCallback, ps *pubsub.PubSub, p Peer, o
 		Event:  "Update",
 		Peer:   p,
 		Data:   p.String(),
-		Sender: p.ID.String(),
+		Sender: p.GetId(),
 	}
 
 	// start reading messages

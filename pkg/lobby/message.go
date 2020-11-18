@@ -2,6 +2,8 @@ package lobby
 
 import (
 	"encoding/json"
+
+	pb "github.com/sonr-io/core/pkg/proto"
 )
 
 // Notification is a for Lobby Pub/Sub Messaging, Converted To/From Json
@@ -9,7 +11,7 @@ type Notification struct {
 	Data   string
 	Event  string
 	Sender string
-	Peer   Peer
+	Peer   *pb.PeerInfo
 }
 
 // Bytes converts message struct to JSON bytes

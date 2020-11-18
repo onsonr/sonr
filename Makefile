@@ -15,16 +15,12 @@ ANDROID_TARGET=android
 BUILD_IOS="cd bind && $(GOCLEAN) &&  $(GOBIND) -target=$(IOS_TARGET) -v -o $(IOS_ARTIFACT)"
 BUILD_ANDROID="cd bind && $(GOCLEAN) && $(GOBIND) -target=$(ANDROID_TARGET) -v -o $(ANDROID_ARTIFACT)"
 
-all: ios android 
+all: proto ios android 
 	cd /System/Library/Sounds && afplay Hero.aiff
 	@echo ""
 	@echo "**************************************************************"
 	@echo "************** FINISHED IOS/ANDROID BINDINGS *****************"
 	@echo "**************************************************************"
-
-
-proto:
-	cd pkg/proto && protoc -I=. --go_out=. ./models.proto
 
 ios:
 	@echo ""
@@ -49,6 +45,10 @@ android:
 	go mod tidy
 	cd /System/Library/Sounds && afplay Glass.aiff
 	@echo ""
+
+proto:
+	cd pkg/proto && protoc -I=. --go_out=. ./models.proto
+	cd pkg/proto && protoc -I=. --dart_out=/Users/prad/Sonr/plugin/lib/proto ./models.proto
 
 clean:
 	cd bind && $(GOCLEAN)

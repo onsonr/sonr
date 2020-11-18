@@ -2,21 +2,14 @@ package sonr
 
 import (
 	"bufio"
-	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"log"
 
 	"github.com/libp2p/go-libp2p-core/network"
-	"github.com/sonr-io/core/pkg/file"
-	"github.com/sonr-io/core/pkg/lobby"
+	pb "github.com/sonr-io/core/pkg/proto"
+	"google.golang.org/protobuf/proto"
 )
-
-// ^ authStreamMessage is for Auth Stream Request ^
-type authStreamMessage struct {
-	Subject  string        `json:"Subject"`
-	Decision bool          `json:"Decision"`
-	PeerInfo lobby.Peer    `json:"PeerInfo,omitempty"`
-	Metadata file.Metadata `json:"Metadata,omitempty"`
-}
 
 // ^ Auth Stream Struct ^ //
 type authStreamConn struct {
@@ -59,21 +52,17 @@ func (sn *Node) NewAuthStream(stream network.Stream) {
 }
 
 // ^ Write Message on Stream ^ //
-func (asc *authStreamConn) Write(authMsg authStreamMessage) error {
+func (asc *authStreamConn) Write(authMsg *pb.AuthMessage) error {
 	fmt.Println("Auth Msg Struct: ", authMsg)
 
-	// Convert Request to JSON String
-	var jsonData []byte
-	jsonData, err := json.Marshal(authMsg)
+	// Convert Request to Proto Binary
+	data, err := proto.Marshal(authMsg)
 	if err != nil {
-		fmt.Println("Error Converting Meta to JSON", err)
-		return err
+		log.Fatal("marshaling error: ", err)
 	}
-	println("Auth Msg Bytes: ", jsonData)
-	fmt.Println("Auth Msg String: ", string(jsonData))
 
-	// Write Message with "Delimiter"=(Seperator for Message Values)
-	_, err = asc.readWriter.WriteString(fmt.Sprintf("%s\n", string(jsonData)))
+	// Write Protobuf
+	_, err = asc.readWriter.Write(data)
 	if err != nil {
 		fmt.Println("Error writing to buffer")
 		return err
@@ -92,51 +81,39 @@ func (asc *authStreamConn) Write(authMsg authStreamMessage) error {
 func (asc *authStreamConn) Read() {
 	for {
 		// ** Read the Buffer **
-		str, err := asc.readWriter.ReadString('\n')
+		authMsg := pb.AuthMessage{}
+		d, _ := ioutil.ReadAll(asc.readWriter)
+		err := proto.Unmarshal(d, &authMsg)
 		if err != nil {
-			fmt.Println("Error reading from buffer")
-			panic(err)
-		}
-
-		// ** Empty String **
-		if str == "" {
-			return
+			log.Fatal("unmarshaling error: ", err)
 		}
 
 		// ** Contains Data **
 		// Construct message
-		fmt.Println("Received String Message:", str)
-		if str != "\n" {
-			asm := new(authStreamMessage)
-			err := json.Unmarshal([]byte(str), asm)
-			if err != nil {
-				fmt.Println("Error Unmarshalling Auth Stream Message ", err)
-			}
-
+		fmt.Println("Received String Message:", authMsg.String())
+		if authMsg.Subject != pb.AuthMessage_NONE {
 			// Check Message Subject
-			switch asm.Subject {
+			switch authMsg.Subject {
 			// @ Request to Invite
-			case "Request":
+			case pb.AuthMessage_REQUEST:
 				// Callback the Invitation
-				asc.callback.OnInvited(asm.PeerInfo.String(), asm.Metadata.String())
+				asc.callback.OnInvited(authMsg.PeerInfo.String(), authMsg.Metadata.String())
 
 			// @ Response to Invite
-			case "Response":
+			case pb.AuthMessage_RESPONSE:
 				// Callback to Proxies
-				asc.callback.OnResponded(asm.Decision)
+				asc.callback.OnResponded(authMsg.Decision)
 
 				// Handle Decision
-				if asm.Decision {
+				if authMsg.Decision {
 					fmt.Println("Auth Accepted")
 				} else {
 					// Reset
 					fmt.Println("Auth Declined")
 				}
-
-			// ! Invalid Subject
-			default:
-				fmt.Printf("%s.\n", asm.Subject)
 			}
 		}
+		// ! Invalid Subject
+		fmt.Printf("%s.\n", authMsg.Subject)
 	}
 }

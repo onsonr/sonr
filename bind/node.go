@@ -10,7 +10,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/sonr-io/core/pkg/file"
 	"github.com/sonr-io/core/pkg/lobby"
-	spb "github.com/sonr-io/core/pkg/proto"
+	pb "github.com/sonr-io/core/pkg/proto"
 	"github.com/sonr-io/core/pkg/user"
 	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/proto"
@@ -30,14 +30,13 @@ type Node struct {
 	Callback           Callback
 }
 
-// GetPeer returns Lobby Peer object from SonrNode
-func (sn *Node) GetPeer() lobby.Peer {
-	return lobby.Peer{
-		ID:         sn.host.ID(),
+func (sn *Node) GetPeerInfo() *pb.PeerInfo {
+	return &pb.PeerInfo{
+		Id:         sn.host.ID().String(),
+		Device:     sn.profile.Device,
 		FirstName:  sn.contact.FirstName,
 		LastName:   sn.contact.LastName,
 		ProfilePic: sn.contact.ProfilePic,
-		Device:     sn.profile.Device,
 		Direction:  sn.profile.Direction,
 	}
 }
@@ -67,7 +66,7 @@ func (sn *Node) Update(dir float64) bool {
 	sn.profile.Direction = util.Round(dir, .5, 2)
 
 	// Get Updated Info
-	info := sn.GetPeer()
+	info := sn.GetPeerInfo()
 
 	// Create Message
 	notif := lobby.Notification{
@@ -96,15 +95,14 @@ func (sn *Node) Invite(id string, filePath string) bool {
 		fmt.Println("Search Error", err)
 		return false
 	}
-	info := sn.GetPeer()
 
 	// Create Metadata
-	meta := file.GetMetadata(filePath, sn.temporaryDirectory)
+	meta := file.GetMetadata(filePath)
 	if err != nil {
 		fmt.Println("Error Getting Metadata", err)
 		return false
 	}
-	fmt.Println("Metadata: ", meta)
+	fmt.Println("Metadata: ", meta.String())
 
 	// ** Create New Auth Stream **
 	stream, err := sn.host.NewStream(sn.ctx, peerID, protocol.ID("/sonr/auth"))
@@ -116,16 +114,9 @@ func (sn *Node) Invite(id string, filePath string) bool {
 	sn.NewAuthStream(stream)
 
 	// Create Request Message
-	authPbf := &spb.AuthMessage{
-		Subject: 0,
-		PeerInfo: &spb.PeerInfo{
-			Id:         info.ID.String(),
-			Device:     info.Device,
-			FirstName:  info.FirstName,
-			LastName:   info.LastName,
-			ProfilePic: info.ProfilePic,
-			Direction:  info.Direction,
-		},
+	authPbf := &pb.AuthMessage{
+		Subject:  0,
+		PeerInfo: sn.GetPeerInfo(),
 		//Metadata: meta,
 	}
 
@@ -140,8 +131,8 @@ func (sn *Node) Invite(id string, filePath string) bool {
 	// let's go the other way and unmarshal
 	// our byte array into an object we can modify
 	// and use
-	addresssBook := spb.AuthMessage{}
-	err = proto.Unmarshal(data, &addresssBook)
+	message := pb.AuthMessage{}
+	err = proto.Unmarshal(data, &message)
 	if err != nil {
 		log.Fatal("unmarshaling error: ", err)
 	}
@@ -158,9 +149,9 @@ func (sn *Node) Invite(id string, filePath string) bool {
 
 // Accept an Invite from a Peer
 func (sn *Node) Accept() bool {
-	// Create Positive Response
-	authMsg := authStreamMessage{
-		Subject:  "Response",
+	// Create Request Message
+	authMsg := &pb.AuthMessage{
+		Subject:  1,
 		Decision: true,
 	}
 
@@ -178,11 +169,12 @@ func (sn *Node) Accept() bool {
 
 // Decline an Invite from a Peer
 func (sn *Node) Decline() bool {
-	// Create Negative Response
-	authMsg := authStreamMessage{
-		Subject:  "Response",
+	// Create Request Message
+	authMsg := &pb.AuthMessage{
+		Subject:  1,
 		Decision: false,
 	}
+
 	// Send Message
 	err := sn.AuthStream.Write(authMsg)
 
