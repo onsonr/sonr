@@ -12,10 +12,10 @@ import (
 
 // ^ authStreamMessage is for Auth Stream Request ^
 type authStreamMessage struct {
-	Subject  string
-	Decision bool
-	PeerInfo lobby.Peer
-	Metadata file.Metadata
+	Subject  string        `json:"Subject"`
+	Decision bool          `json:"Decision"`
+	PeerInfo lobby.Peer    `json:"PeerInfo,omitempty"`
+	Metadata file.Metadata `json:"Metadata,omitempty"`
 }
 
 // ^ Auth Stream Struct ^ //
@@ -104,12 +104,13 @@ func (asc *authStreamConn) Read() {
 		}
 
 		// ** Contains Data **
+		// Construct message
+		fmt.Println("Received String Message:", str)
 		if str != "\n" {
-			// Construct message
 			asm := new(authStreamMessage)
 			err := json.Unmarshal([]byte(str), asm)
 			if err != nil {
-				fmt.Println("Error Unmarshalling Auth Stream Message")
+				fmt.Println("Error Unmarshalling Auth Stream Message ", err)
 			}
 
 			// Check Message Subject
@@ -121,27 +122,21 @@ func (asc *authStreamConn) Read() {
 
 			// @ Response to Invite
 			case "Response":
-				// Handle the Decision
-				asc.self.handleAuthResponse(asm.Decision)
-
 				// Callback to Proxies
 				asc.callback.OnResponded(asm.Decision)
+
+				// Handle Decision
+				if asm.Decision {
+					fmt.Println("Auth Accepted")
+				} else {
+					// Reset
+					fmt.Println("Auth Declined")
+				}
 
 			// ! Invalid Subject
 			default:
 				fmt.Printf("%s.\n", asm.Subject)
 			}
 		}
-	}
-}
-
-// ^ Handle the Peers decision from request ^
-func (sn *Node) handleAuthResponse(decsion bool) {
-	if decsion {
-		fmt.Println("Auth Accepted")
-	} else {
-		// Reset
-		sn.AuthStream.stream.Reset()
-		fmt.Println("Auth Declined")
 	}
 }
