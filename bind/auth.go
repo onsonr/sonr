@@ -54,21 +54,9 @@ func (sn *Node) NewAuthStream(stream network.Stream) {
 }
 
 // ^ Write Message on Stream ^ //
-func (asc *authStreamConn) Write(authMsg authStreamMessage) error {
-	// Check Message
-	fmt.Println("Auth Message being passed: ", authMsg)
-
-	// Convert Request to JSON String
-	bytes, err := json.Marshal(authMsg)
-	if err != nil {
-		println("Error Converting Meta to JSON", err)
-		return err
-	}
-	msg := string(bytes)
-	fmt.Println("Auth Request: ", msg)
-
+func (asc *authStreamConn) Write(msg string) error {
 	// Write Message with "Delimiter"=(Seperator for Message Values)
-	_, err = asc.readWriter.WriteString(fmt.Sprintf("%s\n", msg))
+	_, err := asc.readWriter.WriteString(fmt.Sprintf("%s\n", msg))
 	if err != nil {
 		fmt.Println("Error writing to buffer")
 		return err

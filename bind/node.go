@@ -112,12 +112,22 @@ func (sn *Node) Invite(id string, filePath string) bool {
 	// Set New Stream
 	sn.NewAuthStream(stream)
 
-	// ** Send Invite Message **
-	err = sn.AuthStream.Write(authStreamMessage{
+	// Create Request Message
+	authMsg := authStreamMessage{
 		subject:  "Request",
 		peerInfo: info.String(),
 		metadata: meta.String(),
-	})
+	}
+
+	// Convert Request to JSON String
+	bytes, err := json.Marshal(authMsg)
+	if err != nil {
+		println("Error Converting Meta to JSON", err)
+		return false
+	}
+
+	// ** Send Invite Message **
+	err = sn.AuthStream.Write(string(bytes))
 	if err != nil {
 		return false
 	}
@@ -128,11 +138,20 @@ func (sn *Node) Invite(id string, filePath string) bool {
 
 // Accept an Invite from a Peer
 func (sn *Node) Accept() bool {
-	// Send Message
-	err := sn.AuthStream.Write(authStreamMessage{
+	// Create Positive Response
+	authMsg := authStreamMessage{
 		subject:  "Response",
 		decision: true,
-	})
+	}
+
+	// Convert Request to JSON String
+	bytes, err := json.Marshal(authMsg)
+	if err != nil {
+		println("Error Converting Meta to JSON", err)
+		return false
+	}
+	// Send Message
+	err = sn.AuthStream.Write(string(bytes))
 
 	// Check Error
 	if err != nil {
@@ -145,11 +164,20 @@ func (sn *Node) Accept() bool {
 
 // Decline an Invite from a Peer
 func (sn *Node) Decline() bool {
-	// Send Message
-	err := sn.AuthStream.Write(authStreamMessage{
+	// Create Negative Response
+	authMsg := authStreamMessage{
 		subject:  "Response",
 		decision: false,
-	})
+	}
+
+	// Convert Request to JSON String
+	bytes, err := json.Marshal(authMsg)
+	if err != nil {
+		println("Error Converting Meta to JSON", err)
+		return false
+	}
+	// Send Message
+	err = sn.AuthStream.Write(string(bytes))
 
 	// Check Error
 	if err != nil {
