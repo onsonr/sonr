@@ -34,23 +34,25 @@ type Metadata struct {
 }
 
 // ^ GetMetadata generates file metadata and creates thumbnail if necessary ^ //
-func GetMetadata(ownr lobby.Peer, filePath string, cacheDir string) (*Metadata, error) {
+func GetMetadata(ownr lobby.Peer, filePath string, cacheDir string) Metadata {
 	// Start WaitGroup
 	var wg sync.WaitGroup
 
 	// Initialize
-	meta := new(Metadata)
+	var meta Metadata
 	meta.path = filePath
 	fmt.Println("FilePath: ", filePath)
 	file, err := os.Open(filePath)
 	if err != nil {
-		return nil, err
+		fmt.Println(err)
+		return *new(Metadata)
 	}
 
 	// Get Info
 	info, err := file.Stat()
 	if err != nil {
-		return nil, err
+		fmt.Println(err)
+		return *new(Metadata)
 	}
 	fmt.Println("FileInfo: ", info)
 
@@ -87,8 +89,7 @@ func GetMetadata(ownr lobby.Peer, filePath string, cacheDir string) (*Metadata, 
 		wg.Wait()
 		fmt.Println("Thumbnail created")
 	}
-	fmt.Println("Metadata: ", meta)
-	return meta, nil
+	return meta
 }
 
 // ^ createThumbnail generates thumbnail for path and provided save path ^ //

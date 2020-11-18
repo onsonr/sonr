@@ -40,6 +40,21 @@ func (sn *Node) HandleAuthStream(stream network.Stream) {
 	go sn.AuthStream.Read()
 }
 
+// ^ Create New Stream ^ //
+func (sn *Node) NewAuthStream(stream network.Stream) {
+	// Create new Buffer
+	buffrw := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream))
+
+	// Create/Set Auth Stream
+	sn.AuthStream = authStreamConn{
+		readWriter: buffrw,
+		stream:     stream,
+		callback:   sn.Callback,
+	}
+	// Initialize Routine
+	go sn.AuthStream.Read()
+}
+
 // ^ Write Message on Stream ^ //
 func (asc *authStreamConn) Write(authMsg authStreamMessage) error {
 	// Convert Request to JSON String
@@ -48,6 +63,7 @@ func (asc *authStreamConn) Write(authMsg authStreamMessage) error {
 		println("Error Converting Meta to JSON", err)
 		return err
 	}
+	fmt.Println("Auth Request: ", string(msgBytes))
 
 	// Write Message with "Delimiter"=(Seperator for Message Values)
 	_, err = asc.readWriter.WriteString(fmt.Sprintf("%s\n", string(msgBytes)))
@@ -93,6 +109,7 @@ func (asc *authStreamConn) Read() {
 			switch asm.subject {
 			// @ Request to Invite
 			case "Request":
+				fmt.Println("Auth Invited: ", str)
 				// Callback the Invitation
 				asc.callback.OnInvited(str)
 
@@ -100,9 +117,11 @@ func (asc *authStreamConn) Read() {
 			case "Response":
 				// Check peer decision
 				if asm.decision {
+					fmt.Println("Auth Accepted: ", str)
 					// User Accepted
 					asc.callback.OnAccepted("Great")
 				} else {
+					fmt.Println("Auth Declined: ", str)
 					// User Declined
 					asc.callback.OnDenied("Unlucky")
 				}

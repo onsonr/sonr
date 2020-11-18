@@ -1,7 +1,6 @@
 package sonr
 
 import (
-	"bufio"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -97,11 +96,12 @@ func (sn *Node) Invite(id string, filePath string) bool {
 	info := sn.GetPeer()
 
 	// Create Metadata
-	meta, err := file.GetMetadata(info, filePath, sn.temporaryDirectory)
+	meta := file.GetMetadata(info, filePath, sn.temporaryDirectory)
 	if err != nil {
 		fmt.Println("Error Getting Metadata", err)
 		return false
 	}
+	fmt.Println("Metadata: ", meta)
 
 	// ** Open a stream **
 	stream, err := sn.host.NewStream(sn.ctx, peerID, protocol.ID("/sonr/auth"))
@@ -112,24 +112,14 @@ func (sn *Node) Invite(id string, filePath string) bool {
 		return false
 	}
 	// ** Create New Auth Stream **
-	// Create new Buffer
-	buffrw := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream))
-
-	// Create/Set Auth Stream
-	sn.AuthStream = authStreamConn{
-		readWriter: buffrw,
-		stream:     stream,
-		callback:   sn.Callback,
-	}
-
-	// Initialize Routine
-	go sn.AuthStream.Read()
+	// Set New Stream
+	sn.NewAuthStream(stream)
 
 	// ** Send Invite Message **
 	err = sn.AuthStream.Write(authStreamMessage{
 		subject:  "Request",
 		peerInfo: info,
-		metadata: *meta,
+		metadata: meta,
 	})
 
 	// Check Error
