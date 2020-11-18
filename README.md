@@ -35,21 +35,3 @@ Any interface type, all of whose exported methods have
 Any struct type, all of whose exported methods have
   supported function types and all of whose exported fields
   have supported types.
-
-# Resources
-
-> Helpful guides for Binding and Libp2p
-
-## GoMobile
-
-- [Swift](https://medium.com/@matryer/tutorial-calling-go-code-from-swift-on-ios-and-vice-versa-with-gomobile-7925620c17a4)
-- [Kotlin](https://divan.dev/talks/2019/gdgbcn/FlutterGomobile.pdf)
-- [Java](https://talks.madriguera.me/2016/gomobile.slide#17)
-
-### Libp2p
-
-- [Complete Concept Reference](https://simpleaswater.com/libp2p/)
-
-### File Management
-
-- [FileType](https://github.com/h2non/filetype)
