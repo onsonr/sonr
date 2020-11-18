@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/gogo/protobuf/jsonpb"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/core/pkg/host"
@@ -49,10 +50,13 @@ func Start(olc string, device string, contact string, tempDir string, call Callb
 	}
 
 	// Set Contact
-	node.contact = user.SetContact(contact)
+	err = jsonpb.UnmarshalString(contact, &node.contact)
+	if err != nil {
+		fmt.Println("Error Unmarshalling Contact Data into Buffer: ", err)
+	}
 
 	// setup local mDNS discovery
-	err = initMDNSDiscovery(ctx, *node, call)
+	err = initMDNSDiscovery(ctx, node, call)
 	if err != nil {
 		panic(err)
 	}

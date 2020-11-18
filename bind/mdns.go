@@ -18,12 +18,12 @@ const discoveryServiceTag = "sonr-mdns"
 
 // discoveryNotifee gets notified when we find a new peer via mDNS discovery
 type discoveryNotifee struct {
-	sn   Node
+	sn   *Node
 	call Callback
 }
 
 // initMDNSDiscovery creates an mDNS discovery service and attaches it to the libp2p Host.
-func initMDNSDiscovery(ctx context.Context, sn Node, call Callback) error {
+func initMDNSDiscovery(ctx context.Context, sn *Node, call Callback) error {
 	// setup mDNS discovery to find local peers
 	disc, err := discovery.NewMdnsService(ctx, sn.host, discoveryInterval, discoveryServiceTag)
 	if err != nil {

@@ -25,7 +25,7 @@ type Node struct {
 	host               host.Host
 	lobby              lobby.Lobby
 	profile            user.Profile
-	contact            user.Contact
+	contact            pb.Contact
 	AuthStream         authStreamConn
 	Callback           Callback
 }
