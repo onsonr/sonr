@@ -16,8 +16,6 @@ type Callback interface {
 	OnRefreshed(s string)
 	OnInvited(info string, meta string) //TODO add thumbnail
 	OnResponded(decison bool)
-	OnAccepted(s string)
-	OnDenied(s string)
 	OnProgressed(s string)
 	OnCompleted(s string)
 }

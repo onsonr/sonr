@@ -124,14 +124,8 @@ func (asc *authStreamConn) Read() {
 				// Handle the Decision
 				asc.self.handleAuthResponse(asm.Decision)
 
-				// Check peer decision
-				if asm.Decision {
-					// User Accepted
-					asc.callback.OnAccepted("Great")
-				} else {
-					// User Declined
-					asc.callback.OnDenied("Unlucky")
-				}
+				// Callback to Proxies
+				asc.callback.OnResponded(asm.Decision)
 
 			// ! Invalid Subject
 			default:
