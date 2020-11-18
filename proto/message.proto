@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+import "data.proto";
+import "user.proto";
+
+// Require Go Package
+option go_package = ".;proto";
+
+// Create AuthMessage
+message AuthMessage {
+  // Define Root Message
+  Subject subject = 1;
+  bool decision = 2;
+  Metadata metadata = 3;
+  PeerInfo peerInfo = 4;
+  bytes thumbnail = 5;
+
+  // Define Subject
+  enum Subject {
+    NONE = 0;
+    REQUEST = 1;
+    RESPONSE = 2;
+    ACCEPT = 3;
+    DECLINE = 4;
+  }
+}
+
+// Message Sent to Lobby
+message Notification {
+  string data = 1;
+  string event = 2;
+  string sender = 3;
+  PeerInfo peer = 4;
+}

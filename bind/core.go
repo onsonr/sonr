@@ -9,7 +9,7 @@ import (
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/core/pkg/host"
 	"github.com/sonr-io/core/pkg/lobby"
-	"github.com/sonr-io/core/pkg/user"
+	pb "github.com/sonr-io/core/pkg/models"
 )
 
 // Callback returns updates from p2p
@@ -43,9 +43,9 @@ func Start(olc string, device string, contact string, call Callback) *Node {
 	node.ID = node.host.ID().String()
 
 	// Set Profile
-	node.profile = user.Profile{
-		ID:     node.host.ID().String(),
-		OLC:    olc,
+	node.profile = pb.Profile{
+		Id:     node.host.ID().String(),
+		Olc:    olc,
 		Device: device,
 	}
 

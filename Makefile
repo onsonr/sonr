@@ -1,4 +1,5 @@
-SHELL := /bin/zsh
+SHELL := /bin/zsh # Set Shell
+
 # GoMobile Commands
 GOMOBILE=gomobile
 GCMSG=git-commitmsg
@@ -9,28 +10,33 @@ GOBIND=$(GOMOBILE) bind
 IOS_BUILDDIR=/Users/prad/Sonr/plugin/ios/Frameworks
 ANDROID_BUILDDIR=/Users/prad/Sonr/plugin/android/libs
 
-# Proto Directories
-CORE_PROTO_DIR="/Users/prad/Sonr/core/pkg/models"
-PLUGIN_PROTO_DIR="/Users/prad/Sonr/plugin/lib/models"
-
 # Platform Specific Parameters
 IOS_ARTIFACT=$(IOS_BUILDDIR)/Core.framework
-ANDROID_ARTIFACT=$(ANDROID_BUILDDIR)/io.sonr.core.aar
 IOS_TARGET=ios/arm64
+ANDROID_ARTIFACT=$(ANDROID_BUILDDIR)/io.sonr.core.aar
 ANDROID_TARGET=android
 
-# Gomobile Bind Commands
+# Gomobile Build Commands
 BUILD_IOS="cd bind && $(GOCLEAN) &&  $(GOBIND) -target=$(IOS_TARGET) -v -o $(IOS_ARTIFACT)"
 BUILD_ANDROID="cd bind && $(GOCLEAN) && $(GOBIND) -target=$(ANDROID_TARGET) -v -o $(ANDROID_ARTIFACT)"
 
-all: proto ios android 
+# Proto Directories
+PB_PATH="/Users/prad/Sonr/core/proto"
+CORE_PB_DIR="/Users/prad/Sonr/core/pkg/models"
+PLUGIN_PB_DIR="/Users/prad/Sonr/plugin/lib/models"
+
+# Proto Build Commands
+PB_FOR_GO="--go_out=$(CORE_PB_DIR)"
+PB_FOR_DART="--dart_out=$(PLUGIN_PB_DIR)"
+
+all: protoc ios android 
 	cd /System/Library/Sounds && afplay Hero.aiff
 	@echo ""
 	@echo "**************************************************************"
 	@echo "************** FINISHED IOS/ANDROID BINDINGS *****************"
 	@echo "**************************************************************"
 
-ios:
+ios: protoc
 	@echo ""
 	@echo "***********************************************"
 	@echo "************** BEGIN IOS BIND *****************"
@@ -42,7 +48,7 @@ ios:
 	cd /System/Library/Sounds && afplay Glass.aiff
 	@echo ""
 
-android:
+android: protoc
 	@echo ""
 	@echo "***************************************************"
 	@echo "************** BEGIN ANDROID BIND *****************"
@@ -54,9 +60,9 @@ android:
 	cd /System/Library/Sounds && afplay Glass.aiff
 	@echo ""
 
-proto:
-	cd protobuf && protoc -I=. --go_out=$(CORE_PROTO_DIR) ./models.proto
-	cd protobuf && protoc -I=. --dart_out=$(PLUGIN_PROTO_DIR) ./models.proto
+protoc:
+	cd proto && protoc -I. --proto_path=$(PB_PATH) $(PB_FOR_GO) data.proto message.proto user.proto
+	cd proto && protoc -I. --proto_path=$(PB_PATH) $(PB_FOR_DART) data.proto message.proto user.proto
 
 clean:
 	cd bind && $(GOCLEAN)

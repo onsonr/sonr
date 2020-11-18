@@ -2,7 +2,6 @@ package sonr
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"log"
 
@@ -11,7 +10,6 @@ import (
 	"github.com/sonr-io/core/pkg/file"
 	"github.com/sonr-io/core/pkg/lobby"
 	pb "github.com/sonr-io/core/pkg/models"
-	"github.com/sonr-io/core/pkg/user"
 	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/proto"
 )
@@ -23,7 +21,7 @@ type Node struct {
 	ID         string
 	host       host.Host
 	lobby      lobby.Lobby
-	profile    user.Profile
+	profile    pb.Profile
 	contact    pb.Contact
 	AuthStream authStreamConn
 	Callback   Callback
@@ -42,20 +40,15 @@ func (sn *Node) GetPeerInfo() *pb.PeerInfo {
 
 // GetUser returns profile and contact in a map as string
 func (sn *Node) GetUser() string {
-	// Initialize Map
-	m := make(map[string]string)
-	m["profile"] = sn.profile.String()
-	m["contact"] = sn.contact.String()
-	m["id"] = sn.ID
-
-	// Convert to JSON
-	msgBytes, err := json.Marshal(m)
-	if err != nil {
-		println(err)
+	// Create User Object
+	user := &pb.User{
+		Id:      sn.ID,
+		Profile: &sn.profile,
+		Contact: &sn.contact,
 	}
 
 	// Return String
-	return string(msgBytes)
+	return user.String()
 }
 
 // ^ Message Emitter ^ //
