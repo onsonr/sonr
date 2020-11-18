@@ -96,33 +96,28 @@ func (sn *Node) Invite(id string, filePath string) bool {
 	info := sn.GetPeer()
 
 	// Create Metadata
-	meta := file.GetMetadata(info, filePath, sn.temporaryDirectory)
+	meta := file.GetMetadata(filePath, sn.temporaryDirectory)
 	if err != nil {
 		fmt.Println("Error Getting Metadata", err)
 		return false
 	}
 	fmt.Println("Metadata: ", meta)
 
-	// ** Open a stream **
+	// ** Create New Auth Stream **
 	stream, err := sn.host.NewStream(sn.ctx, peerID, protocol.ID("/sonr/auth"))
-
-	// Check Stream
 	if err != nil {
 		fmt.Println("Auth Stream Failed to Open ", err)
 		return false
 	}
-	// ** Create New Auth Stream **
 	// Set New Stream
 	sn.NewAuthStream(stream)
 
 	// ** Send Invite Message **
 	err = sn.AuthStream.Write(authStreamMessage{
 		subject:  "Request",
-		peerInfo: info,
-		metadata: meta,
+		peerInfo: info.String(),
+		metadata: meta.String(),
 	})
-
-	// Check Error
 	if err != nil {
 		return false
 	}

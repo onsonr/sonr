@@ -1,6 +1,7 @@
 package file
 
 import (
+	"encoding/json"
 	"math"
 	"os"
 	"sync"
@@ -16,25 +17,43 @@ import (
 
 	"github.com/h2non/filetype"
 	"github.com/nfnt/resize"
-	"github.com/sonr-io/core/pkg/lobby"
 )
 
 const DEFAULT_MAX_WIDTH float64 = 320
 const DEFAULT_MAX_HEIGHT float64 = 240
 
 type Metadata struct {
-	id        int
+	id        string
 	name      string
-	owner     string // Profile JSON String
-	size      int64
+	size      string
 	thumbPath string
 	kind      string
 	path      string
 	received  string // DateTime as string
 }
 
+// String converts Metadata struct to JSON String
+func (m *Metadata) String() string {
+	// Convert to JSON
+	metaBytes, err := json.Marshal(m)
+	if err != nil {
+		println(err)
+	}
+	return string(metaBytes)
+}
+
+// Convert String to a Peer
+func MetaFromString(data string) Metadata {
+	meta := new(Metadata)
+	err := json.Unmarshal([]byte(data), meta)
+	if err != nil {
+		fmt.Println("Error Unmarshaling into Metadata", err)
+	}
+	return *meta
+}
+
 // ^ GetMetadata generates file metadata and creates thumbnail if necessary ^ //
-func GetMetadata(ownr lobby.Peer, filePath string, cacheDir string) Metadata {
+func GetMetadata(filePath string, cacheDir string) Metadata {
 	// Start WaitGroup
 	var wg sync.WaitGroup
 
@@ -57,8 +76,7 @@ func GetMetadata(ownr lobby.Peer, filePath string, cacheDir string) Metadata {
 	fmt.Println("FileInfo: ", info)
 
 	// Set Info
-	meta.size = info.Size()
-	meta.owner = ownr.String()
+	meta.size = fmt.Sprint(info.Size())
 
 	// Get File Type
 	head := make([]byte, 261)
@@ -67,28 +85,34 @@ func GetMetadata(ownr lobby.Peer, filePath string, cacheDir string) Metadata {
 	meta.kind = kind.Extension
 
 	// Check for Image
-	if filetype.IsImage(head) {
-		fmt.Println("File is an image, Creating Thumbnail")
-		// Get Save Path
-		savePath := fileThumbnailPath(filePath, cacheDir)
+	// if filetype.IsImage(head) {
+	// 	fmt.Println("File is an image, Creating Thumbnail")
+	// 	// Get Save Path
+	// 	savePath := fileThumbnailPath(filePath, cacheDir)
 
-		// Begin Wait Group
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			// Generate Thumbnail
-			err := createThumbnail(filePath, savePath)
-			// Check for error
-			if err != nil {
-				fmt.Println("Error Creating Thumbnail")
-			}
+	// 	var config = thumbnail.Generator{
+	// 		DestinationPath:   savePath,
+	// 		DestinationPrefix: "thumb_",
+	// 		Scaler:            "CatmullRom",
+	// 	}
+	// 	// Begin Wait Group
+	// 	wg.Add(1)
+	// 	go func() {
+	// 		defer wg.Done()
+	// 		// Generate Thumbnail
+	// 		err := createThumbnailWithLib(config, filePath, savePath)
+	// 		// Check for error
+	// 		if err != nil {
+	// 			fmt.Println("Error Creating Thumbnail")
+	// 		}
 
-			// Set Thumbnail
-			meta.thumbPath = savePath
-		}()
-		wg.Wait()
-		fmt.Println("Thumbnail created")
-	}
+	// 		// Set Thumbnail
+	// 		meta.thumbPath = savePath
+	// 	}()
+	// 	fmt.Println("Thumbnail created")
+	// }
+	wg.Wait()
+	file.Close()
 	return meta
 }
 

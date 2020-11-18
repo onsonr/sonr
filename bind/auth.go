@@ -6,16 +6,14 @@ import (
 	"fmt"
 
 	"github.com/libp2p/go-libp2p-core/network"
-	"github.com/sonr-io/core/pkg/file"
-	"github.com/sonr-io/core/pkg/lobby"
 )
 
 // ^ authStreamMessage is for Auth Stream Request ^
 type authStreamMessage struct {
 	subject  string
 	decision bool
-	peerInfo lobby.Peer
-	metadata file.Metadata
+	peerInfo string
+	metadata string
 }
 
 // ^ Auth Stream Struct ^ //
@@ -57,16 +55,20 @@ func (sn *Node) NewAuthStream(stream network.Stream) {
 
 // ^ Write Message on Stream ^ //
 func (asc *authStreamConn) Write(authMsg authStreamMessage) error {
+	// Check Message
+	fmt.Println("Auth Message being passed: ", authMsg)
+
 	// Convert Request to JSON String
-	msgBytes, err := json.Marshal(authMsg)
+	bytes, err := json.Marshal(authMsg)
 	if err != nil {
 		println("Error Converting Meta to JSON", err)
 		return err
 	}
-	fmt.Println("Auth Request: ", string(msgBytes))
+	msg := string(bytes)
+	fmt.Println("Auth Request: ", msg)
 
 	// Write Message with "Delimiter"=(Seperator for Message Values)
-	_, err = asc.readWriter.WriteString(fmt.Sprintf("%s\n", string(msgBytes)))
+	_, err = asc.readWriter.WriteString(fmt.Sprintf("%s\n", msg))
 	if err != nil {
 		fmt.Println("Error writing to buffer")
 		return err
@@ -111,7 +113,7 @@ func (asc *authStreamConn) Read() {
 			case "Request":
 				fmt.Println("Auth Invited: ", str)
 				// Callback the Invitation
-				asc.callback.OnInvited(str)
+				asc.callback.OnInvited(asm.peerInfo, asm.metadata)
 
 			// @ Response to Invite
 			case "Response":

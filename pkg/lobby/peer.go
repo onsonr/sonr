@@ -30,7 +30,7 @@ func (p *Peer) Bytes() []byte {
 	return msgBytes
 }
 
-// String converts message struct to JSON String
+// String converts Peer struct to JSON String
 func (p *Peer) String() string {
 	// Convert to JSON
 	peerBytes, err := json.Marshal(p)
@@ -38,6 +38,16 @@ func (p *Peer) String() string {
 		println(err)
 	}
 	return string(peerBytes)
+}
+
+// Convert String to a Peer
+func PeerFromString(data string) Peer {
+	p := new(Peer)
+	err := json.Unmarshal([]byte(data), p)
+	if err != nil {
+		fmt.Println("Error Unmarshaling into Peer", err)
+	}
+	return *p
 }
 
 // ^ Checks for Peer in Pub/Sub Topic ^ //

@@ -14,7 +14,7 @@ import (
 // Callback returns updates from p2p
 type Callback interface {
 	OnRefreshed(s string)
-	OnInvited(s string)
+	OnInvited(info string, meta string) //TODO add thumbnail
 	OnAccepted(s string)
 	OnDenied(s string)
 	OnProgressed(s string)
@@ -33,7 +33,8 @@ func Start(olc string, device string, contact string, tempDir string, call Callb
 	var err error
 	node.host, err = host.NewBasicHost(&ctx)
 	if err != nil {
-		panic(err)
+		fmt.Println("Error Creating Host: ", err)
+		return nil
 	}
 	fmt.Println("Host Created")
 
