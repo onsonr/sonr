@@ -40,7 +40,6 @@ func Start(olc string, device string, contact string, call Callback) *Node {
 
 	// Set Host to Node
 	node.host.SetStreamHandler(protocol.ID("/sonr/auth"), node.HandleAuthStream)
-	node.ID = node.host.ID().String()
 
 	// Set Profile
 	node.profile = pb.Profile{

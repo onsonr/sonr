@@ -25,10 +25,16 @@ message AuthMessage {
   }
 }
 
-// Message Sent to Lobby
-message Notification {
-  string data = 1;
-  string event = 2;
-  string sender = 3;
-  PeerInfo peer = 4;
+// Message Sent when User is connected and calls GetUser()
+message ConnectedMessage {
+  string id = 1;
+  Profile profile = 2;
+  Contact contact = 3;
+}
+
+// Message Sent when peer has direction update to Lobby Topic
+message LobbyMessage {
+  string event = 1;
+  string sender = 2;
+  PeerInfo data = 3;
 }

@@ -24,7 +24,7 @@ func (lob *Lobby) handleMessages() {
 		}
 
 		// Construct message
-		notif := pb.Notification{}
+		notif := pb.LobbyMessage{}
 		err = proto.Unmarshal(msg.Data, &notif)
 		if err != nil {
 			continue
@@ -48,15 +48,15 @@ func (lob *Lobby) handleEvents() {
 			// Update Circle by event
 			if m.Event == "Update" {
 				// Convert Request to Proto Binary
-				value, err := proto.Marshal(m.Peer)
+				value, err := proto.Marshal(m.Data)
 				if err != nil {
 					fmt.Println("marshaling error: ", err)
 				}
 
 				// Call Update
-				lob.updatePeer(m.Peer.GetId(), value)
+				lob.updatePeer(m.Data.GetId(), value)
 			} else if m.Event == "Exit" {
-				lob.removePeer(m.Peer.GetId())
+				lob.removePeer(m.Data.GetId())
 			}
 
 		// ** Refresh and Validate Lobby Peers Periodically ** //

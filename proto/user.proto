@@ -34,10 +34,3 @@ message Profile {
   string device = 3;
   double direction = 4;
 }
-
-// Define User Type: To Return to Frontend
-message User {
-  string id = 1;
-  Profile profile = 2;
-  Contact contact = 3;
-}

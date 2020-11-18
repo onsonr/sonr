@@ -11,6 +11,7 @@ import (
 	"github.com/sonr-io/core/pkg/lobby"
 	pb "github.com/sonr-io/core/pkg/models"
 	"github.com/sonr-io/core/pkg/util"
+	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -18,7 +19,6 @@ import (
 // Node contains all values for user
 type Node struct {
 	ctx        context.Context
-	ID         string
 	host       host.Host
 	lobby      lobby.Lobby
 	profile    pb.Profile
@@ -41,14 +41,17 @@ func (sn *Node) GetPeerInfo() *pb.PeerInfo {
 // GetUser returns profile and contact in a map as string
 func (sn *Node) GetUser() string {
 	// Create User Object
-	user := &pb.User{
-		Id:      sn.ID,
+	user := &pb.ConnectedMessage{
+		Id:      sn.profile.Id,
 		Profile: &sn.profile,
 		Contact: &sn.contact,
 	}
 
+	// Format to String
+	json := protojson.Format(user)
+
 	// Return String
-	return user.String()
+	return json
 }
 
 // ^ Message Emitter ^ //
@@ -57,15 +60,11 @@ func (sn *Node) Update(dir float64) bool {
 	// Update User Values
 	sn.profile.Direction = util.Round(dir, .5, 2)
 
-	// Get Updated Info
-	info := sn.GetPeerInfo()
-
-	// Create Message
-	notif := &pb.Notification{
+	// Create Message with Updated Info
+	notif := &pb.LobbyMessage{
 		Event:  "Update",
-		Sender: sn.ID,
-		Peer:   info,
-		Data:   info.String(),
+		Sender: sn.profile.Id,
+		Data:   sn.GetPeerInfo(),
 	}
 
 	// Inform Lobby

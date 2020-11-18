@@ -23,7 +23,7 @@ type LobbyCallback interface {
 // messages are pushed to the Messages channel.
 type Lobby struct {
 	// Public Vars
-	Messages chan *pb.Notification
+	Messages chan *pb.LobbyMessage
 	Code     string
 	Self     *pb.PeerInfo
 
@@ -69,14 +69,13 @@ func Enter(ctx context.Context, call LobbyCallback, ps *pubsub.PubSub, p *pb.Pee
 		sub:      sub,
 		Self:     p,
 		Code:     olcCode,
-		Messages: make(chan *pb.Notification, ChatRoomBufSize),
+		Messages: make(chan *pb.LobbyMessage, ChatRoomBufSize),
 	}
 
 	// Publish Join Message
-	msg := &pb.Notification{
+	msg := &pb.LobbyMessage{
 		Event:  "Update",
-		Peer:   p,
-		Data:   p.String(),
+		Data:   p,
 		Sender: p.GetId(),
 	}
 
@@ -88,7 +87,7 @@ func Enter(ctx context.Context, call LobbyCallback, ps *pubsub.PubSub, p *pb.Pee
 }
 
 // Publish sends a message to the pubsub topic.
-func (lob *Lobby) Publish(m *pb.Notification) error {
+func (lob *Lobby) Publish(m *pb.LobbyMessage) error {
 	// Convert Request to Proto Binary
 	data, err := proto.Marshal(m)
 	if err != nil {
