@@ -24,6 +24,8 @@ message AuthMessage {
     NONE = 0;
     REQUEST = 1;
     RESPONSE = 2;
+    ACCEPT = 3;
+    DECLINE = 4;
   }
 }
 

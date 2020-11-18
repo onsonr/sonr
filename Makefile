@@ -12,7 +12,6 @@ ANDROID_BUILDDIR=/Users/prad/Sonr/plugin/android/libs
 # Proto Directories
 CORE_PROTO_DIR="/Users/prad/Sonr/core/pkg/models"
 PLUGIN_PROTO_DIR="/Users/prad/Sonr/plugin/lib/models"
-PROTO_BUILD_SRC="proto"
 
 # Platform Specific Parameters
 IOS_ARTIFACT=$(IOS_BUILDDIR)/Core.framework
@@ -56,8 +55,8 @@ android:
 	@echo ""
 
 proto:
-	cd pkg/proto && protoc -I=. --go_out=. ./models.proto
-	cd pkg/proto && protoc -I=. --dart_out=/Users/prad/Sonr/plugin/lib/models ./models.proto
+	cd protobuf && protoc -I=. --go_out=$(CORE_PROTO_DIR) ./models.proto
+	cd protobuf && protoc -I=. --dart_out=$(PLUGIN_PROTO_DIR) ./models.proto
 
 clean:
 	cd bind && $(GOCLEAN)
