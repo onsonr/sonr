@@ -10,9 +10,9 @@ import (
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/sonr-io/core/pkg/file"
 	"github.com/sonr-io/core/pkg/lobby"
+	spb "github.com/sonr-io/core/pkg/proto"
 	"github.com/sonr-io/core/pkg/user"
 	"github.com/sonr-io/core/pkg/util"
-	spb "github.com/sonr-io/core/proto"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -117,9 +117,9 @@ func (sn *Node) Invite(id string, filePath string) bool {
 
 	// Create Request Message
 	authPbf := &spb.AuthMessage{
-		Subject: "Request",
-		PeerInfo: *spb.PeerInfo{
-			Id:         info.ID,
+		Subject: 0,
+		PeerInfo: &spb.PeerInfo{
+			Id:         info.ID.String(),
 			Device:     info.Device,
 			FirstName:  info.FirstName,
 			LastName:   info.LastName,

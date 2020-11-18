@@ -7,7 +7,6 @@ require (
 	github.com/davidlazar/go-crypto v0.0.0-20190912175916-7055855a373f // indirect
 	github.com/dgraph-io/badger/v2 v2.0.3
 	github.com/golang/protobuf v1.4.3
-	github.com/gufranmirza/go-pb v0.0.0-20200802132617-c7690fb9afd1 // indirect
 	github.com/h2non/filetype v1.1.0
 	github.com/ipfs/go-datastore v0.4.5
 	github.com/ipfs/go-ipfs-config v0.10.0
@@ -26,7 +25,6 @@ require (
 	github.com/libp2p/go-sockaddr v0.1.0 // indirect
 	github.com/multiformats/go-multiaddr v0.3.1
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
-	golang.org/x/mobile v0.0.0-20200801112145-973feb4309de // indirect
 	golang.org/x/tools v0.0.0-20201109182053-3db8fd265862 // indirect
 	google.golang.org/protobuf v1.23.0
 )

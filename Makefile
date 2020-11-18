@@ -23,6 +23,9 @@ all: ios android
 	@echo "**************************************************************"
 
 
+proto:
+	cd pkg/proto && protoc -I=. --go_out=. ./models.proto
+
 ios:
 	@echo ""
 	@echo "***********************************************"

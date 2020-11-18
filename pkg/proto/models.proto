@@ -22,7 +22,7 @@ message AuthMessage {
   }
 }
 
-// Define Metadata Type
+  // Define Metadata Type
 message Metadata {
     string id = 1;
     string name = 2;
