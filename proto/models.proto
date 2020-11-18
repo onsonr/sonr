@@ -13,11 +13,11 @@ option go_package = ".;proto";
 // Create AuthMessage
 message AuthMessage {
   // Define Root Message
-    Subject subject = 1;
-    bool decision = 2;
-    Metadata metadata = 3;
-    PeerInfo peerInfo = 4;
-    bytes thumbnail = 5;
+  Subject subject = 1;
+  bool decision = 2;
+  Metadata metadata = 3;
+  PeerInfo peerInfo = 4;
+  bytes thumbnail = 5;
 
   // Define Subject
   enum Subject {
@@ -27,6 +27,7 @@ message AuthMessage {
   }
 }
 
+// Message Sent to Lobby
 message Notification {
   string data = 1;
   string event = 2;
@@ -34,7 +35,7 @@ message Notification {
   PeerInfo peer = 4;
 }
 
-  // Define Metadata Type
+// Define Metadata Type: For File Transfer
 message Metadata {
     string id = 1;
     string name = 2;
@@ -43,7 +44,7 @@ message Metadata {
     string kind = 5;
   }
 
-// Define PeerInfo Type
+// Define PeerInfo: Basic Info Sent to Peers
 message PeerInfo {
     string id = 1;
     string device = 2;
@@ -51,13 +52,22 @@ message PeerInfo {
     string lastName = 4;
     string profilePic = 5;
     double direction = 6;
+    double difference = 7;
+    double distance = 8;
   }
 
-  // Define Contact Type, 
-  // ** Profile needs to be object but Contact can be buffer **
+// Define Contact Type: Will be CSV in Future
   message Contact {
     string firstName = 1;
     string lastName = 2;
     string profilePic = 3;
+  }
+
+// Define Profile Type: Reference for Node
+  message Profile {
+    string id = 1;
+    string olc = 2;
+    string device = 3;
+    double direction = 4;
   }
 

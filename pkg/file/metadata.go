@@ -10,7 +10,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/h2non/filetype"
-	pb "github.com/sonr-io/core/pkg/proto"
+	pb "github.com/sonr-io/core/pkg/models"
 )
 
 const DEFAULT_MAX_WIDTH float64 = 320

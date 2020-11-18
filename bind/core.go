@@ -22,7 +22,7 @@ type Callback interface {
 }
 
 // Start begins the mobile host
-func Start(olc string, device string, contact string, tempDir string, call Callback) *Node {
+func Start(olc string, device string, contact string, call Callback) *Node {
 	// Create Context and Node - Begin Setuo
 	ctx := context.Background()
 	node := new(Node)
@@ -40,7 +40,7 @@ func Start(olc string, device string, contact string, tempDir string, call Callb
 
 	// Set Host to Node
 	node.host.SetStreamHandler(protocol.ID("/sonr/auth"), node.HandleAuthStream)
-	node.peerID = node.host.ID().String()
+	node.ID = node.host.ID().String()
 
 	// Set Profile
 	node.profile = user.Profile{

@@ -10,7 +10,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/sonr-io/core/pkg/file"
 	"github.com/sonr-io/core/pkg/lobby"
-	pb "github.com/sonr-io/core/pkg/proto"
+	pb "github.com/sonr-io/core/pkg/models"
 	"github.com/sonr-io/core/pkg/user"
 	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/proto"
@@ -19,15 +19,14 @@ import (
 // ^ Struct Management ^ //
 // Node contains all values for user
 type Node struct {
-	ctx                context.Context
-	temporaryDirectory string
-	peerID             string
-	host               host.Host
-	lobby              lobby.Lobby
-	profile            user.Profile
-	contact            pb.Contact
-	AuthStream         authStreamConn
-	Callback           Callback
+	ctx        context.Context
+	ID         string
+	host       host.Host
+	lobby      lobby.Lobby
+	profile    user.Profile
+	contact    pb.Contact
+	AuthStream authStreamConn
+	Callback   Callback
 }
 
 func (sn *Node) GetPeerInfo() *pb.PeerInfo {
@@ -47,7 +46,7 @@ func (sn *Node) GetUser() string {
 	m := make(map[string]string)
 	m["profile"] = sn.profile.String()
 	m["contact"] = sn.contact.String()
-	m["id"] = sn.peerID
+	m["id"] = sn.ID
 
 	// Convert to JSON
 	msgBytes, err := json.Marshal(m)
@@ -71,7 +70,7 @@ func (sn *Node) Update(dir float64) bool {
 	// Create Message
 	notif := &pb.Notification{
 		Event:  "Update",
-		Sender: sn.peerID,
+		Sender: sn.ID,
 		Peer:   info,
 		Data:   info.String(),
 	}

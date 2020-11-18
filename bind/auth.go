@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 
 	"github.com/libp2p/go-libp2p-core/network"
-	pb "github.com/sonr-io/core/pkg/proto"
+	pb "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
 )
 

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	pb "github.com/sonr-io/core/pkg/proto"
+	pb "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
 )
 

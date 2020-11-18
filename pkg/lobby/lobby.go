@@ -6,7 +6,7 @@ import (
 
 	badger "github.com/dgraph-io/badger/v2"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	pb "github.com/sonr-io/core/pkg/proto"
+	pb "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
 )
 
