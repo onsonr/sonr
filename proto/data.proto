@@ -10,7 +10,7 @@ option go_package = ".;proto";
 
 // Define Metadata Type: For File Transfer
 message Metadata {
-  string id = 1;
+  string fileId = 1;
   string name = 2;
   string path = 3;
   int64 size = 4;

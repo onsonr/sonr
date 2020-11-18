@@ -19,7 +19,7 @@ func (lob *Lobby) handleMessages() {
 		}
 
 		// Only forward messages delivered by others
-		if msg.ReceivedFrom.String() == lob.Self.GetId() {
+		if msg.ReceivedFrom.String() == lob.Self.GetPeerId() {
 			continue
 		}
 
@@ -54,9 +54,9 @@ func (lob *Lobby) handleEvents() {
 				}
 
 				// Call Update
-				lob.updatePeer(m.Data.GetId(), value)
+				lob.updatePeer(m.Data.GetPeerId(), value)
 			} else if m.Event == "Exit" {
-				lob.removePeer(m.Data.GetId())
+				lob.removePeer(m.Data.GetPeerId())
 			}
 
 		// ** Refresh and Validate Lobby Peers Periodically ** //

@@ -17,7 +17,7 @@ message Contact {
 
 // Define PeerInfo: Basic Info Sent to Peers
 message PeerInfo {
-  string id = 1;
+  string peerId = 1;
   string device = 2;
   string firstName = 3;
   string lastName = 4;
@@ -29,7 +29,7 @@ message PeerInfo {
 
 // Define Profile Type: Reference for Node
 message Profile {
-  string id = 1;
+  string hostId = 1;
   string olc = 2;
   string device = 3;
   double direction = 4;

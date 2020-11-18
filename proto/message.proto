@@ -27,7 +27,7 @@ message AuthMessage {
 
 // Message Sent when User is connected and calls GetUser()
 message ConnectedMessage {
-  string id = 1;
+  string hostId = 1;
   Profile profile = 2;
   Contact contact = 3;
 }

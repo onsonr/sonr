@@ -37,11 +37,11 @@ func GetMetadata(filePath string) *pb.Metadata {
 	kind, _ := filetype.Match(head)
 	file.Close()
 	return &pb.Metadata{
-		Id:   uuid.New().String(),
-		Name: fileName(filePath),
-		Path: filePath,
-		Size: info.Size(),
-		Kind: kind.MIME.Type,
+		FileId: uuid.New().String(),
+		Name:   fileName(filePath),
+		Path:   filePath,
+		Size:   info.Size(),
+		Kind:   kind.MIME.Type,
 	}
 }
 

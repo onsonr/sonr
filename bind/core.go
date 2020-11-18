@@ -26,12 +26,12 @@ func Start(olc string, device string, contact string, call Callback) *Node {
 	// Create Context and Node - Begin Setuo
 	ctx := context.Background()
 	node := new(Node)
-	node.ctx = ctx
+	node.CTX = ctx
 	node.Callback = call
 
 	// Create Host
 	var err error
-	node.host, err = host.NewBasicHost(&ctx)
+	node.Host, err = host.NewBasicHost(&ctx)
 	if err != nil {
 		fmt.Println("Error Creating Host: ", err)
 		return nil
@@ -39,17 +39,17 @@ func Start(olc string, device string, contact string, call Callback) *Node {
 	fmt.Println("Host Created")
 
 	// Set Host to Node
-	node.host.SetStreamHandler(protocol.ID("/sonr/auth"), node.HandleAuthStream)
+	node.Host.SetStreamHandler(protocol.ID("/sonr/auth"), node.HandleAuthStream)
 
 	// Set Profile
-	node.profile = pb.Profile{
-		Id:     node.host.ID().String(),
+	node.Profile = pb.Profile{
+		HostId: node.Host.ID().String(),
 		Olc:    olc,
 		Device: device,
 	}
 
 	// Set Contact
-	err = jsonpb.UnmarshalString(contact, &node.contact)
+	err = jsonpb.UnmarshalString(contact, &node.Contact)
 	if err != nil {
 		fmt.Println("Error Unmarshalling Contact Data into Buffer: ", err)
 	}
@@ -62,7 +62,7 @@ func Start(olc string, device string, contact string, call Callback) *Node {
 	fmt.Println("MDNS Started")
 
 	// create a new PubSub service using the GossipSub router
-	ps, err := pubsub.NewGossipSub(ctx, node.host)
+	ps, err := pubsub.NewGossipSub(ctx, node.Host)
 	if err != nil {
 		panic(err)
 	}
@@ -74,7 +74,7 @@ func Start(olc string, device string, contact string, call Callback) *Node {
 		panic(err)
 	}
 	fmt.Println("Lobby Joined")
-	node.lobby = *lob
+	node.Lobby = *lob
 
 	// Return Node
 	return node
@@ -83,6 +83,6 @@ func Start(olc string, device string, contact string, call Callback) *Node {
 // Exit Ends Communication
 func (sn *Node) Exit() {
 	sn.AuthStream.stream.Close()
-	sn.lobby.End()
-	sn.host.Close()
+	sn.Lobby.End()
+	sn.Host.Close()
 }

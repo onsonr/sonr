@@ -4,13 +4,13 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"math"
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/sonr-io/core/pkg/file"
 	"github.com/sonr-io/core/pkg/lobby"
 	pb "github.com/sonr-io/core/pkg/models"
-	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )
@@ -18,23 +18,23 @@ import (
 // ^ Struct Management ^ //
 // Node contains all values for user
 type Node struct {
-	ctx        context.Context
-	host       host.Host
-	lobby      lobby.Lobby
-	profile    pb.Profile
-	contact    pb.Contact
+	CTX        context.Context
+	Host       host.Host
+	Lobby      lobby.Lobby
+	Profile    pb.Profile
+	Contact    pb.Contact
 	AuthStream authStreamConn
 	Callback   Callback
 }
 
 func (sn *Node) GetPeerInfo() *pb.PeerInfo {
 	return &pb.PeerInfo{
-		Id:         sn.host.ID().String(),
-		Device:     sn.profile.Device,
-		FirstName:  sn.contact.FirstName,
-		LastName:   sn.contact.LastName,
-		ProfilePic: sn.contact.ProfilePic,
-		Direction:  sn.profile.Direction,
+		PeerId:     sn.Host.ID().String(),
+		Device:     sn.Profile.Device,
+		FirstName:  sn.Contact.FirstName,
+		LastName:   sn.Contact.LastName,
+		ProfilePic: sn.Contact.ProfilePic,
+		Direction:  sn.Profile.Direction,
 	}
 }
 
@@ -42,9 +42,9 @@ func (sn *Node) GetPeerInfo() *pb.PeerInfo {
 func (sn *Node) GetUser() string {
 	// Create User Object
 	user := &pb.ConnectedMessage{
-		Id:      sn.profile.Id,
-		Profile: &sn.profile,
-		Contact: &sn.contact,
+		HostId:  sn.Profile.HostId,
+		Profile: &sn.Profile,
+		Contact: &sn.Contact,
 	}
 
 	// Format to String
@@ -58,17 +58,17 @@ func (sn *Node) GetUser() string {
 // Update occurs when status or direction changes
 func (sn *Node) Update(dir float64) bool {
 	// Update User Values
-	sn.profile.Direction = util.Round(dir, .5, 2)
+	sn.Profile.Direction = math.Round(dir*100) / 100
 
 	// Create Message with Updated Info
 	notif := &pb.LobbyMessage{
 		Event:  "Update",
-		Sender: sn.profile.Id,
+		Sender: sn.Profile.HostId,
 		Data:   sn.GetPeerInfo(),
 	}
 
 	// Inform Lobby
-	err := sn.lobby.Publish(notif)
+	err := sn.Lobby.Publish(notif)
 	if err != nil {
 		fmt.Println("Error Posting NotifUpdate: ", err)
 		return false
@@ -81,7 +81,7 @@ func (sn *Node) Update(dir float64) bool {
 // Invite an available peer to transfer
 func (sn *Node) Invite(id string, filePath string) bool {
 	// ** Get Required Data **
-	peerID, err := sn.lobby.GetPeerID(id)
+	peerID, err := sn.Lobby.GetPeerID(id)
 	if err != nil {
 		fmt.Println("Search Error", err)
 		return false
@@ -96,7 +96,7 @@ func (sn *Node) Invite(id string, filePath string) bool {
 	fmt.Println("Metadata: ", meta.String())
 
 	// ** Create New Auth Stream **
-	stream, err := sn.host.NewStream(sn.ctx, peerID, protocol.ID("/sonr/auth"))
+	stream, err := sn.Host.NewStream(sn.CTX, peerID, protocol.ID("/sonr/auth"))
 	if err != nil {
 		fmt.Println("Auth Stream Failed to Open ", err)
 		return false

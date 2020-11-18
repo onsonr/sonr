@@ -76,7 +76,7 @@ func Enter(ctx context.Context, call LobbyCallback, ps *pubsub.PubSub, p *pb.Pee
 	msg := &pb.LobbyMessage{
 		Event:  "Update",
 		Data:   p,
-		Sender: p.GetId(),
+		Sender: p.GetPeerId(),
 	}
 
 	// start reading messages
