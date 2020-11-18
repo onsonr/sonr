@@ -22,12 +22,6 @@ import (
 	"github.com/multiformats/go-multiaddr"
 )
 
-// SonrHost packages peer channel and host ref
-type SonrHost struct {
-	Host    host.Host
-	Channel <-chan peer.AddrInfo
-}
-
 // NewHost creates new host, sets it up, then returns it
 func NewHost(ctx *context.Context) (host.Host, error) {
 	// Find IPv4 Address
@@ -131,19 +125,6 @@ func NewHost(ctx *context.Context) (host.Host, error) {
 
 	routingDiscovery := discovery.NewRoutingDiscovery(kademliaDHT)
 	discovery.Advertise(*ctx, routingDiscovery, "sonr-dht")
-
-	peerChan, err := routingDiscovery.FindPeers(*ctx, "sonr-dht")
-	if err != nil {
-		panic(err)
-	}
-
-	sh := &SonrHost{
-		Host:    h,
-		Channel: peerChan,
-	}
-
-	go sh.managePeers()
-
 	return h, nil
 }
 
@@ -163,7 +144,7 @@ func NewBasicHost(ctx *context.Context) (host.Host, error) {
 	}
 
 	// Create Multi Address
-	sourceMultiAddr, _ := multiaddr.NewMultiaddr(fmt.Sprintf("/ip4/%s/tcp/%d", ipv4Ref, 0))
+	sourceMultiAddr, _ := multiaddr.NewMultiaddr(fmt.Sprintf("/ip4/%s/tcp/0", ipv4Ref))
 
 	// Create Libp2p Host
 	h, err := libp2p.New(*ctx, libp2p.ListenAddrs(sourceMultiAddr))
