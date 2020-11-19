@@ -38,9 +38,9 @@ type Lobby struct {
 }
 
 // Enter Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby
-func Enter(ctx context.Context, call LobbyCallback, ps *pubsub.PubSub, p *pb.PeerInfo, olcCode string) (*Lobby, error) {
+func Enter(ctx context.Context, call LobbyCallback, ps *pubsub.PubSub, joinEvent *pb.JoinEvent) (*Lobby, error) {
 	// Join the pubsub Topic
-	topic, err := ps.Join(olcCode)
+	topic, err := ps.Join(joinEvent.Olc)
 	if err != nil {
 		return nil, err
 	}
@@ -66,22 +66,24 @@ func Enter(ctx context.Context, call LobbyCallback, ps *pubsub.PubSub, p *pb.Pee
 		ps:       ps,
 		topic:    topic,
 		sub:      sub,
-		Self:     p,
-		Code:     olcCode,
+		Self:     joinEvent.Peer,
+		Code:     joinEvent.Olc,
 		Messages: make(chan *pb.LobbyMessage, ChatRoomBufSize),
 	}
 
 	// Publish Join Message
 	msg := &pb.LobbyMessage{
-		Event:  "Update",
-		Data:   p,
-		Sender: p.GetPeerId(),
+		Event:  "Join",
+		Data:   joinEvent.Peer,
+		Sender: joinEvent.Peer.GetPeerId(),
 	}
+
+	// Send Join Message
+	lob.Publish(msg)
 
 	// start reading messages
 	go lob.handleMessages()
 	go lob.handleEvents()
-	lob.Publish(msg)
 	return lob, nil
 }
 

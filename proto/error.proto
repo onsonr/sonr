@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+// ! you must not change the tag numbers of any existing fields.
+// ! you may delete fields.
+// ! you may add new fields but you must use fresh tag numbers (i.e. tag numbers
+// that were never used in this protocol buffer, not even by deleted fields).
+
+// Require Go Package
+option go_package = ".;proto";
+
+// Define Error Occurance
+message Error {
+  string kind = 1;
+  string message = 2;
+  ErrorLevel level = 3;
+
+  // Level of Error Issue
+  enum ErrorLevel {
+    MINOR = 0;
+    WARNING = 1;
+    CRITICAL = 2;
+    PANIC = 3;
+  }
+}

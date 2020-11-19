@@ -27,7 +27,7 @@ type Node struct {
 	Profile    pb.Profile
 	Contact    pb.Contact
 	AuthStream authStreamConn
-	Callback   Callback
+	Call       Callback
 }
 
 // ^ Sends new proximity/direction update ^ //
@@ -73,7 +73,7 @@ func (sn *Node) Queue(data []byte) bool {
 	err := proto.Unmarshal(data, &queuedFile)
 	if err != nil {
 		fmt.Println("unmarshaling error: ", err)
-		sn.Callback.OnProcessed(nil)
+		sn.Call.OnProcessed(nil)
 		return false
 	}
 
@@ -81,7 +81,7 @@ func (sn *Node) Queue(data []byte) bool {
 	meta := file.GetMetadata(queuedFile.FilePath)
 	if err != nil {
 		fmt.Println("Error Getting Metadata", err)
-		sn.Callback.OnProcessed(nil)
+		sn.Call.OnProcessed(nil)
 		return false
 	}
 
@@ -109,7 +109,7 @@ func (sn *Node) Queue(data []byte) bool {
 		raw, err := proto.Marshal(processedFile)
 		if err != nil {
 			fmt.Println("Error Marshalling Processed File", err)
-			sn.Callback.OnProcessed(nil)
+			sn.Call.OnProcessed(nil)
 		}
 
 		// ** Add to Badger Store ** //
@@ -123,7 +123,7 @@ func (sn *Node) Queue(data []byte) bool {
 		// Check Error
 		if err != nil {
 			fmt.Println("Error Updating Peer in Badger", err)
-			sn.Callback.OnProcessed(nil)
+			sn.Call.OnProcessed(nil)
 		}
 		wg.Done()
 	}()
@@ -135,11 +135,11 @@ func (sn *Node) Queue(data []byte) bool {
 	metaRaw, err := proto.Marshal(meta)
 	if err != nil {
 		fmt.Println("Error Marshalling Processed File", err)
-		sn.Callback.OnProcessed(nil)
+		sn.Call.OnProcessed(nil)
 	}
 
 	// Send bytes
-	sn.Callback.OnProcessed(metaRaw)
+	sn.Call.OnProcessed(metaRaw)
 	return true
 }
 

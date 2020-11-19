@@ -22,7 +22,7 @@ func (sn *Node) HandleAuthStream(stream network.Stream) {
 	// Create/Set Auth Stream
 	sn.AuthStream = authStreamConn{
 		stream:   stream,
-		callback: sn.Callback,
+		callback: sn.Call,
 	}
 	// Print Stream Info
 	info := stream.Stat()
@@ -37,7 +37,7 @@ func (sn *Node) NewAuthStream(stream network.Stream) {
 	// Create/Set Auth Stream
 	sn.AuthStream = authStreamConn{
 		stream:   stream,
-		callback: sn.Callback,
+		callback: sn.Call,
 	}
 
 	// Print Stream Info

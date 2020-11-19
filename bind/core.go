@@ -5,9 +5,7 @@ import (
 	"fmt"
 
 	"github.com/libp2p/go-libp2p-core/protocol"
-	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/core/pkg/host"
-	"github.com/sonr-io/core/pkg/lobby"
 	pb "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -21,15 +19,15 @@ type Callback interface {
 	OnResponded(data []byte)
 	OnTransferring(data []byte)
 	OnCompleted(data []byte)
+	OnError(data []byte)
 }
 
 // Start begins the mobile host
 func Start(data []byte, call Callback) *Node {
 	// Create Context and Node - Begin Setuo
-	ctx := context.Background()
 	node := new(Node)
-	node.CTX = ctx
-	node.Callback = call
+	node.CTX = context.Background()
+	node.Call = call
 
 	// Unmarshal Connection Event
 	connEvent := pb.ConnectEvent{}
@@ -38,52 +36,43 @@ func Start(data []byte, call Callback) *Node {
 		fmt.Println("unmarshaling error: ", err)
 	}
 
-	// Create Host
-	node.Host, err = host.NewHost(&ctx)
+	// @1. Create Host
+	node.Host, err = host.NewHost(&node.CTX)
 	if err != nil {
 		fmt.Println("Error Creating Host: ", err)
 		return nil
 	}
 	fmt.Println("Host Created: ", node.Host.Addrs())
 
-	// Set Handler
+	// @2. Set Stream Handlers
 	node.Host.SetStreamHandler(protocol.ID("/sonr/auth"), node.HandleAuthStream)
 
-	// Set Contact
+	// @3. Set Node User Information
 	err = node.setUser(&connEvent)
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	// Initialize Datastore for File Queue
+	// @4. Initialize Datastore for File Queue
 	err = node.setStore()
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	// setup local mDNS discovery
-	err = initMDNSDiscovery(ctx, node, call)
+	// @5. Setup Discovery
+	err = node.setDiscovery()
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
-	fmt.Println("MDNS Started")
 
-	// create a new PubSub service using the GossipSub router
-	ps, err := pubsub.NewGossipSub(ctx, node.Host)
+	// @6. Enter Lobby
+	err = node.setLobby(&connEvent)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
-	fmt.Println("GossipSub Created")
 
-	// Enter location lobby
-	lob, err := lobby.Enter(ctx, call, ps, node.getPeerInfo(), connEvent.Olc)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("Lobby Joined")
-	node.Lobby = *lob
-
-	// Return Node
+	// ** Callback Node User Information ** //
+	call.OnConnected(node.getUser())
 	return node
 }
 

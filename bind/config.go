@@ -5,6 +5,8 @@ import (
 	"fmt"
 
 	badger "github.com/dgraph-io/badger/v2"
+	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	"github.com/sonr-io/core/pkg/lobby"
 	pb "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -38,6 +40,42 @@ func (sn *Node) getUser() []byte {
 
 	// Return as JSON String
 	return data
+}
+
+// ^ SetDiscovery initializes discovery protocols and creates pubsub service ^ //
+func (sn *Node) setDiscovery() error {
+	// setup local mDNS discovery
+	err := initMDNSDiscovery(sn.CTX, sn, sn.Call)
+	if err != nil {
+		return err
+	}
+	fmt.Println("MDNS Started")
+
+	// create a new PubSub service using the GossipSub router
+	sn.PubSub, err = pubsub.NewGossipSub(sn.CTX, sn.Host)
+	if err != nil {
+		return err
+	}
+	fmt.Println("GossipSub Created")
+	return nil
+}
+
+// ^ SetStore initializes memory store for file queue ^ //
+func (sn *Node) setLobby(connEvent *pb.ConnectEvent) error {
+	// Create Join Event
+	joinEvent := &pb.JoinEvent{
+		Peer: sn.getPeerInfo(),
+		Olc:  connEvent.Olc,
+	}
+
+	// Enter Lobby for Olc
+	lob, err := lobby.Enter(sn.CTX, sn.Call, sn.PubSub, joinEvent)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Lobby Joined")
+	sn.Lobby = *lob
+	return nil
 }
 
 // ^ SetStore initializes memory store for file queue ^ //
