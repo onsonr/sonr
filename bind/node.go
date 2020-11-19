@@ -111,9 +111,17 @@ func (sn *Node) Invite(data []byte) bool {
 		return false
 	}
 
+	// Initialize
+	var thumb []byte
+	wg.Add(1)
+
 	// Create Thumb Nail
-	thumb := file.GetThumbnail(&wg, meta)
-	wg.Wait()
+	go func(thumb []byte) {
+		defer wg.Done()
+		thumb = file.GetThumbnail(&wg, meta)
+		wg.Wait()
+		fmt.Println("Raw Thumbnail: ", thumb)
+	}(thumb)
 
 	// ** Create New Auth Stream **
 	stream, err := sn.Host.NewStream(sn.CTX, peerID, protocol.ID("/sonr/auth"))
@@ -129,7 +137,7 @@ func (sn *Node) Invite(data []byte) bool {
 		Subject:   pb.AuthMessage_REQUEST,
 		PeerInfo:  sn.GetPeerInfo(),
 		Metadata:  meta,
-		Thumbnail: *thumb,
+		Thumbnail: thumb,
 	}
 
 	// ** Send Invite Message **
