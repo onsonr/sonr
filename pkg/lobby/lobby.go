@@ -2,26 +2,20 @@ package lobby
 
 import (
 	"context"
-	"encoding/json"
+	"log"
 
-	//badger "github.com/dgraph-io/badger/v2"
-
-	"github.com/libp2p/go-libp2p-core/peer"
+	badger "github.com/dgraph-io/badger/v2"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	pb "github.com/sonr-io/core/pkg/models"
+	"google.golang.org/protobuf/proto"
 )
 
 // ChatRoomBufSize is the number of incoming messages to buffer for each topic.
 const ChatRoomBufSize = 128
 
-// Callback returns message from lobby
-type Callback interface {
-	OnMessage(s string)
-	OnRefresh(s string)
-	OnRequested(s string)
-	OnAccepted(s string)
-	OnDenied(s string)
-	OnProgress(s string)
-	OnComplete(s string)
+// LobbyCallback returns message from lobby
+type LobbyCallback interface {
+	OnRefreshed([]byte)
 }
 
 // Lobby represents a subscription to a single PubSub topic. Messages
@@ -29,33 +23,22 @@ type Callback interface {
 // messages are pushed to the Messages channel.
 type Lobby struct {
 	// Public Vars
-	Messages chan *Message
+	Messages chan *pb.LobbyMessage
 	Code     string
-	Self     Peer
+	Self     *pb.PeerInfo
 
 	// Private Vars
 	ctx      context.Context
-	callback Callback
+	callback LobbyCallback
 	doneCh   chan struct{}
-	peers    map[string]*Peer
-	//peerDB   *badger.DB
-	ps    *pubsub.PubSub
-	topic *pubsub.Topic
-	sub   *pubsub.Subscription
+	peerDB   *badger.DB
+	ps       *pubsub.PubSub
+	topic    *pubsub.Topic
+	sub      *pubsub.Subscription
 }
 
 // Enter Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby
-func Enter(ctx context.Context, call Callback, ps *pubsub.PubSub, hostID peer.ID, firstName string, lastName string, device string, profilePic string, olcCode string) (*Lobby, error) {
-	// Create Peer Struct
-	peer := Peer{
-		ID:         hostID.String(),
-		Device:     device,
-		FirstName:  firstName,
-		LastName:   lastName,
-		ProfilePic: profilePic,
-		Direction:  0.0,
-	}
-
+func Enter(ctx context.Context, call LobbyCallback, ps *pubsub.PubSub, p *pb.PeerInfo, olcCode string) (*Lobby, error) {
 	// Join the pubsub Topic
 	topic, err := ps.Join(olcCode)
 	if err != nil {
@@ -68,79 +51,50 @@ func Enter(ctx context.Context, call Callback, ps *pubsub.PubSub, hostID peer.ID
 		return nil, err
 	}
 
-	// // Initialize Badger DB
-	//opt := badger.DefaultOptions("").WithInMemory(true)
-	// db, err := badger.Open(opt)
-	// if err != nil {
-	// 	return nil, err
-	// }
+	// Initialize Datastore for Peers
+	db, err := badger.Open(badger.DefaultOptions("").WithInMemory(true))
+	if err != nil {
+		return nil, err
+	}
 
 	// Create Lobby Type
 	lob := &Lobby{
 		ctx:      ctx,
 		callback: call,
 		doneCh:   make(chan struct{}, 1),
-		//peerDB:   db,
-		peers:    make(map[string]*Peer),
+		peerDB:   db,
 		ps:       ps,
 		topic:    topic,
 		sub:      sub,
-		Self:     peer,
+		Self:     p,
 		Code:     olcCode,
-		Messages: make(chan *Message, ChatRoomBufSize),
+		Messages: make(chan *pb.LobbyMessage, ChatRoomBufSize),
 	}
 
 	// Publish Join Message
-	msg := Message{
-		Event:    "Join",
-		Data:     peer.String(),
-		SenderID: hostID.String(),
+	msg := &pb.LobbyMessage{
+		Event:  "Update",
+		Data:   p,
+		Sender: p.GetPeerId(),
 	}
-	lob.Publish(msg)
 
 	// start reading messages
 	go lob.handleMessages()
 	go lob.handleEvents()
+	lob.Publish(msg)
 	return lob, nil
 }
 
-// GetPeers returns peers list as string
-func (lob *Lobby) GetPeers() string {
-	// Initialize Variables
-	var peerSlice []Peer
-	peersRef := lob.peers
-
-	// Iterate through dictionary
-	for id, peer := range peersRef {
-		// Find Peer in Topic
-		check := lob.searchPeer(id)
-
-		// Manage Check
-		if check {
-			// Add to slice
-			peerSlice = append(peerSlice, *peer)
-		}
-	}
-
-	// Convert slice to bytes
-	bytes, err := json.Marshal(peerSlice)
-	if err != nil {
-		println("Error converting peers to json ", err)
-	}
-
-	// Return as string
-	return string(bytes)
-}
-
-// ListPeers returns Pub/Sub Topic Peers
-func (lob *Lobby) ListPeers() []peer.ID {
-	return lob.ps.ListPeers(lob.Code)
-}
-
 // Publish sends a message to the pubsub topic.
-func (lob *Lobby) Publish(m Message) error {
+func (lob *Lobby) Publish(m *pb.LobbyMessage) error {
+	// Convert Request to Proto Binary
+	data, err := proto.Marshal(m)
+	if err != nil {
+		log.Fatal("marshaling error: ", err)
+	}
+
 	// Publish to Topic
-	err := lob.topic.Publish(lob.ctx, m.Bytes())
+	err = lob.topic.Publish(lob.ctx, data)
 	if err != nil {
 		return err
 	}
@@ -149,6 +103,6 @@ func (lob *Lobby) Publish(m Message) error {
 
 // End terminates lobby loop
 func (lob *Lobby) End() {
-	//lob.peerDB.Close()
+	lob.peerDB.Close()
 	lob.doneCh <- struct{}{}
 }

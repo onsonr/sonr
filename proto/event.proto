@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+import "user.proto";
+
+// Require Go Package
+option go_package = ".;proto";
+
+// [PLUGIN]
+// Initial Connect Request
+message ConnectEvent {
+  string olc = 1;
+  string device = 2;
+  Contact contact = 3;
+}
+
+// [PLUGIN]
+// Authorization being sent from
+message QueueEvent {
+  string filePath = 2;
+}
+
+// [PLUGIN]
+// Authorization being sent from
+message InviteEvent {
+  string peerId = 1;
+  string filePath = 2;
+}

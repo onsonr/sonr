@@ -18,12 +18,12 @@ const discoveryServiceTag = "sonr-mdns"
 
 // discoveryNotifee gets notified when we find a new peer via mDNS discovery
 type discoveryNotifee struct {
-	sn   Node
+	sn   *Node
 	call Callback
 }
 
 // initMDNSDiscovery creates an mDNS discovery service and attaches it to the libp2p Host.
-func initMDNSDiscovery(ctx context.Context, sn Node, call Callback) error {
+func initMDNSDiscovery(ctx context.Context, sn *Node, call Callback) error {
 	// setup mDNS discovery to find local peers
 	disc, err := discovery.NewMdnsService(ctx, sn.Host, discoveryInterval, discoveryServiceTag)
 	if err != nil {
@@ -85,31 +85,4 @@ func (n *discoveryNotifee) HandlePeerFound(pi peer.AddrInfo) {
 			n.sn.Host.Network().ClosePeer(peerID)
 		}
 	}
-
-	// Callback to frontend
-	n.sendCallback(peers)
-}
-
-// updateStore checks if store has been updated with new values
-func (n *discoveryNotifee) sendCallback(peers peer.IDSlice) {
-	// Remove Disconnected Peers
-	for _, peerID := range peers {
-		// Check State
-		status := n.sn.Host.Network().Connectedness(peerID)
-
-		// Remove From Store if NotConnected
-		if status == network.NotConnected {
-			// Remove from List
-			peers = removeIDFromSlice(peers, peerID)
-		}
-	}
-
-	// Create JSON from the instance data.
-	// b, err := json.Marshal(peers)
-	// if err != nil {
-	// 	fmt.Printf("error formatting json")
-	// }
-
-	// Callback to frontend
-	//n.call.OnRefresh(string(b))
 }

@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+import "data.proto";
+import "user.proto";
+
+// Require Go Package
+option go_package = ".;proto";
+
+// Message Sent when User is connected and calls GetUser()
+message ConnectedMessage {
+  string hostId = 1;
+  Profile profile = 2;
+  Contact contact = 3;
+}
+
+// [CORE]
+// Message Sent when peer has direction update to Lobby Topic
+message LobbyMessage {
+  string event = 1;
+  string sender = 2;
+  PeerInfo data = 3;
+}
+
+// Message Sent when peers returned from lobby
+message RefreshMessage {
+  int32 count = 1;
+  string olc = 2;
+  repeated PeerInfo availablePeers = 3;
+}
+
+// [CORE]
+// Authorization being sent from
+message AuthMessage {
+  // Define Root Message
+  Subject subject = 1;
+  Metadata metadata = 3;
+  PeerInfo peerInfo = 4;
+  bytes thumbnail = 5;
+
+  // Define Subject
+  enum Subject {
+    NONE = 0;
+    REQUEST = 1;
+    ACCEPT = 2;
+    DECLINE = 3;
+  }
+}

@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+// ! you must not change the tag numbers of any existing fields.
+// ! you may delete fields.
+// ! you may add new fields but you must use fresh tag numbers (i.e. tag numbers
+// that were never used in this protocol buffer, not even by deleted fields).
+
+// Require Go Package
+option go_package = ".;proto";
+
+// Define Metadata Type: For File Transfer
+message Metadata {
+  string fileId = 1;
+  string name = 2;
+  string path = 3;
+  int64 size = 4;
+  string kind = 5;
+}
+
+// Processed File to be stored in Badger Store
+message Processed {
+  Metadata metadata = 1;
+  bytes thumbnail = 2;
+}

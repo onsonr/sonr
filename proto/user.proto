@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+// ! you must not change the tag numbers of any existing fields.
+// ! you may delete fields.
+// ! you may add new fields but you must use fresh tag numbers (i.e. tag numbers
+// that were never used in this protocol buffer, not even by deleted fields).
+
+// Require Go Package
+option go_package = ".;proto";
+
+// Define Contact Type: Will be CSV in Future
+message Contact {
+  string firstName = 1;
+  string lastName = 2;
+  string profilePic = 3;
+}
+
+// Define PeerInfo: Basic Info Sent to Peers
+message PeerInfo {
+  string peerId = 1;
+  string device = 2;
+  string firstName = 3;
+  string lastName = 4;
+  string profilePic = 5;
+  double direction = 6;
+  double difference = 7;
+  double distance = 8;
+}
+
+// Define Profile Type: Reference for Node
+message Profile {
+  string hostId = 1;
+  string olc = 2;
+  string device = 3;
+  double direction = 4;
+}

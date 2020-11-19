@@ -1,34 +1,37 @@
 package lobby
 
 import (
-	"encoding/json"
+	"fmt"
 	"time"
+
+	"google.golang.org/protobuf/proto"
+	pb "github.com/sonr-io/core/pkg/models"
 )
 
 // ^ 1. handleMessages pulls messages from the pubsub topic and pushes them onto the Messages channel. ^
 func (lob *Lobby) handleMessages() {
 	for {
-		// get next msg from pub/sub
+		// Get next msg from pub/sub
 		msg, err := lob.sub.Next(lob.ctx)
 		if err != nil {
 			close(lob.Messages)
 			return
 		}
 
-		// only forward messages delivered by others
-		if msg.ReceivedFrom.String() == lob.Self.ID {
+		// Only forward messages delivered by others
+		if msg.ReceivedFrom.String() == lob.Self.GetPeerId() {
 			continue
 		}
 
-		// construct message
-		cm := new(Message)
-		err = json.Unmarshal(msg.Data, cm)
+		// Construct message
+		notif := pb.LobbyMessage{}
+		err = proto.Unmarshal(msg.Data, &notif)
 		if err != nil {
 			continue
 		}
 
-		// send valid messages onto the Messages channel
-		lob.Messages <- cm
+		// Send valid messages onto the Messages channel
+		lob.Messages <- &notif
 	}
 }
 
@@ -43,20 +46,23 @@ func (lob *Lobby) handleEvents() {
 		// ** when we receive a message from the lobby room **
 		case m := <-lob.Messages:
 			// Update Circle by event
-			if m.Event == "Join" {
-				lob.joinPeer(m.Data)
-			} else if m.Event == "Update" {
-				lob.updatePeer(m.Data)
+			if m.Event == "Update" {
+				// Convert Request to Proto Binary
+				value, err := proto.Marshal(m.Data)
+				if err != nil {
+					fmt.Println("marshaling error: ", err)
+				}
+
+				// Call Update
+				lob.updatePeer(m.Data.GetPeerId(), value)
 			} else if m.Event == "Exit" {
-				lob.removePeer(m.Data)
+				lob.removePeer(m.Data.GetPeerId())
 			}
 
 		// ** Refresh and Validate Lobby Peers Periodically ** //
 		case <-peerRefreshTicker.C:
 			// Verify Dict not nil
-			if len(lob.peers) > 0 {
-				lob.GetPeers()
-			}
+			// TODO: lob.callback.OnRefresh(lob.GetAllPeers())
 
 		case <-lob.ctx.Done():
 			return

@@ -36,20 +36,22 @@ Any struct type, all of whose exported methods have
   supported function types and all of whose exported fields
   have supported types.
 
-# Resources
+## ProtoBuf Types
 
-> Helpful guides for Binding and Libp2p
-
-## GoMobile
-
-- [Swift](https://medium.com/@matryer/tutorial-calling-go-code-from-swift-on-ios-and-vice-versa-with-gomobile-7925620c17a4)
-- [Kotlin](https://divan.dev/talks/2019/gdgbcn/FlutterGomobile.pdf)
-- [Java](https://talks.madriguera.me/2016/gomobile.slide#17)
-
-### Libp2p
-
-- [Complete Concept Reference](https://simpleaswater.com/libp2p/)
-
-### File Management
-
-- [FileType](https://github.com/h2non/filetype)
+| .proto Type | Notes                                                                                                                                           | Java Type  | Go Type | Dart Type |
+|-------------|-------------------------------------------------------------------------------------------------------------------------------------------------|------------|---------|-----------|
+| double      |                                                                                                                                                 | double     | float64 | double    |
+| float       |                                                                                                                                                 | float      | float32 | double    |
+| int32       | Uses variable-length encoding. Inefficient for encoding negative numbers – if your field is likely to have negative values, use sint32 instead. | int        | int32   | int       |
+| int64       | Uses variable-length encoding. Inefficient for encoding negative numbers – if your field is likely to have negative values, use sint64 instead. | long       | int64   | Int64     |
+| uint32      | Uses variable-length encoding.                                                                                                                  | int[1]     | uint32  | int       |
+| uint64      | Uses variable-length encoding.                                                                                                                  | long[1]    | uint64  | Int64     |
+| sint32      | Uses variable-length encoding. Signed int value. These more efficiently encode negative numbers than regular int32s.                            | int        | int32   | int       |
+| sint64      | Uses variable-length encoding. Signed int value. These more efficiently encode negative numbers than regular int64s.                            | long       | int64   | Int64     |
+| fixed32     | Always four bytes. More efficient than uint32 if values are often greater than 228.                                                             | int[1]     | uint32  | int       |
+| fixed64     | Always eight bytes. More efficient than uint64 if values are often greater than 256.                                                            | long[1]    | uint64  | Int64     |
+| sfixed32    | Always four bytes.                                                                                                                              | int        | int32   | int       |
+| sfixed64    | Always eight bytes.                                                                                                                             | long       | int64   | Int64     |
+| bool        |                                                                                                                                                 | boolean    | bool    | bool      |
+| string      | A string must always contain UTF-8 encoded or 7-bit ASCII text, and cannot be longer than 232.                                                  | String     | string  | String    |
+| bytes       | May contain any arbitrary sequence of bytes no longer than 232.                                                                                 | ByteString | []byte  | List      |
