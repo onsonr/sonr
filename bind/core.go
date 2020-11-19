@@ -37,12 +37,12 @@ func Start(data []byte, call Callback) *Node {
 	}
 
 	// Create Host
-	node.Host, err = host.NewBasicHost(&ctx)
+	node.Host, err = host.NewHost(&ctx)
 	if err != nil {
 		fmt.Println("Error Creating Host: ", err)
 		return nil
 	}
-	fmt.Println("Host Created")
+	fmt.Println("Host Created: ", node.Host.Addrs())
 
 	// Set Handler
 	node.Host.SetStreamHandler(protocol.ID("/sonr/auth"), node.HandleAuthStream)
