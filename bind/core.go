@@ -7,7 +7,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/protocol"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/core/pkg/host"
-	sh "github.com/sonr-io/core/pkg/host"
 	"github.com/sonr-io/core/pkg/lobby"
 	pb "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
@@ -45,13 +44,8 @@ func Start(data []byte, call Callback) *Node {
 	}
 	fmt.Println("Host Created")
 
-	// Handle Auth Stream
-	node.AuthStream = sh.AuthStreamConn{
-		Call: node.Callback,
-	}
-
 	// Set Handler
-	node.Host.SetStreamHandler(protocol.ID("/sonr/auth"), node.AuthStream.HandleAuthStream)
+	node.Host.SetStreamHandler(protocol.ID("/sonr/auth"), node.HandleAuthStream)
 
 	// Set Contact
 	node.Contact = pb.Contact{

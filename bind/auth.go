@@ -1,4 +1,4 @@
-package host
+package sonr
 
 import (
 	"bufio"
@@ -11,35 +11,36 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// Callback returns updates from p2p
-type Callback interface {
-	OnInvited([]byte) //TODO add thumbnail
-	OnResponded(decison bool)
-}
-
 // ^ Auth Stream Struct ^ //
-type AuthStreamConn struct {
-	stream network.Stream
-	Call   Callback
+type authStreamConn struct {
+	stream   network.Stream
+	callback Callback
 }
 
 // ^ Handle Incoming Stream ^ //
-func (asc *AuthStreamConn) HandleAuthStream(stream network.Stream) {
+func (sn *Node) HandleAuthStream(stream network.Stream) {
+	// Create/Set Auth Stream
+	sn.AuthStream = authStreamConn{
+		stream:   stream,
+		callback: sn.Callback,
+	}
 	// Initialize Routine
-	go asc.Read()
+	go sn.AuthStream.Read()
 }
 
 // ^ Create New Stream ^ //
-func (asc *AuthStreamConn) InitAuthStream(stream network.Stream) {
-	// Set Stream
-	asc.stream = stream
-
+func (sn *Node) NewAuthStream(stream network.Stream) {
+	// Create/Set Auth Stream
+	sn.AuthStream = authStreamConn{
+		stream:   stream,
+		callback: sn.Callback,
+	}
 	// Initialize Routine
-	go asc.Read()
+	go sn.AuthStream.Read()
 }
 
 // ^ Write Message on Stream ^ //
-func (asc *AuthStreamConn) Write(authMsg *pb.AuthMessage) error {
+func (asc *authStreamConn) Write(authMsg *pb.AuthMessage) error {
 	// Initialize Writer
 	writer := bufio.NewWriter(asc.stream)
 	fmt.Println("Auth Msg Struct: ", authMsg)
@@ -67,7 +68,7 @@ func (asc *AuthStreamConn) Write(authMsg *pb.AuthMessage) error {
 }
 
 // ^ Read Data from Msgio ^ //
-func (asc *AuthStreamConn) Read() error {
+func (asc *authStreamConn) Read() error {
 	for {
 		// ** Read the Buffer **
 		data, err := bufio.NewReader(asc.stream).ReadString('\n')
@@ -97,7 +98,7 @@ func (asc *AuthStreamConn) Read() error {
 }
 
 // ^ Handle Received Message ^ //
-func (asc *AuthStreamConn) handleMessage(data string) {
+func (asc *authStreamConn) handleMessage(data string) {
 	// Convert Bytes to Json
 	fmt.Println("Json String: ", data)
 	authMsg := pb.AuthMessage{}
@@ -118,19 +119,19 @@ func (asc *AuthStreamConn) handleMessage(data string) {
 		}
 
 		// Callback the Invitation
-		asc.Call.OnInvited(data)
+		asc.callback.OnInvited(data)
 
 	// @ Peer Accepted Response to Invite
 	case pb.AuthMessage_ACCEPT:
 		fmt.Println("Auth Accepted")
 		// Callback to Proxies
-		asc.Call.OnResponded(true)
+		asc.callback.OnResponded(true)
 
 	// @ Peer Accepted Response to Invite
 	case pb.AuthMessage_DECLINE:
 		fmt.Println("Auth Declined")
 		// Callback to Proxies
-		asc.Call.OnResponded(false)
+		asc.callback.OnResponded(false)
 
 	// ! Invalid Subject
 	default:

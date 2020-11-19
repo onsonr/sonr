@@ -10,7 +10,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/sonr-io/core/pkg/file"
-	sh "github.com/sonr-io/core/pkg/host"
 	"github.com/sonr-io/core/pkg/lobby"
 	pb "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
@@ -24,7 +23,7 @@ type Node struct {
 	Lobby      lobby.Lobby
 	Profile    pb.Profile
 	Contact    pb.Contact
-	AuthStream sh.AuthStreamConn
+	AuthStream authStreamConn
 	Callback   Callback
 }
 
@@ -117,10 +116,7 @@ func (sn *Node) Invite(data []byte) bool {
 		return false
 	}
 	// Establish Auth Stream
-	sn.AuthStream = sh.AuthStreamConn{
-		Call: sn.Callback,
-	}
-	sn.AuthStream.InitAuthStream(stream)
+	sn.NewAuthStream(stream)
 
 	// Create Request Message
 	authPbf := &pb.AuthMessage{
