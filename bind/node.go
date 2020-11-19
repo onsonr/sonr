@@ -101,7 +101,9 @@ func (sn *Node) Invite(data []byte) bool {
 		fmt.Println("Error Getting Metadata", err)
 		return false
 	}
-	fmt.Println("Metadata: ", meta.String())
+
+	// Create Thumb Nail
+	thumb := file.GetThumbnail(meta)
 
 	// ** Create New Auth Stream **
 	stream, err := sn.Host.NewStream(sn.CTX, peerID, protocol.ID("/sonr/auth"))
@@ -114,9 +116,10 @@ func (sn *Node) Invite(data []byte) bool {
 
 	// Create Request Message
 	authPbf := &pb.AuthMessage{
-		Subject:  0,
-		PeerInfo: sn.GetPeerInfo(),
-		Metadata: meta,
+		Subject:   0,
+		PeerInfo:  sn.GetPeerInfo(),
+		Metadata:  meta,
+		Thumbnail: thumb,
 	}
 
 	// Marshal to Bytes
@@ -124,9 +127,6 @@ func (sn *Node) Invite(data []byte) bool {
 	if err != nil {
 		log.Fatal("marshaling error: ", err)
 	}
-
-	// printing out our raw protobuf object
-	fmt.Println("Raw data", data)
 
 	// ** Send Invite Message **
 	err = sn.AuthStream.Write(authPbf)

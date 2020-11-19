@@ -1,10 +1,9 @@
 package sonr
 
 import (
-	"bufio"
 	"fmt"
-	"io/ioutil"
 
+	io "github.com/gogo/protobuf/io"
 	"github.com/libp2p/go-libp2p-core/network"
 	pb "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
@@ -12,23 +11,26 @@ import (
 
 // ^ Auth Stream Struct ^ //
 type authStreamConn struct {
-	self       *Node
-	readWriter *bufio.ReadWriter
-	stream     network.Stream
-	callback   Callback
+	self     *Node
+	writer   io.WriteCloser
+	reader   io.ReadCloser
+	stream   network.Stream
+	callback Callback
 }
 
 // ^ Handle Incoming Stream ^ //
 func (sn *Node) HandleAuthStream(stream network.Stream) {
 	// Create a buffer stream for non blocking read and write.
-	buffrw := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream))
+	protow := io.NewDelimitedWriter(stream)
+	protor := io.NewDelimitedReader(stream, 16000)
 
 	// Create/Set Auth Stream
 	sn.AuthStream = authStreamConn{
-		readWriter: buffrw,
-		stream:     stream,
-		callback:   sn.Callback,
-		self:       sn,
+		reader:   protor,
+		writer:   protow,
+		stream:   stream,
+		callback: sn.Callback,
+		self:     sn,
 	}
 	// Initialize Routine
 	go sn.AuthStream.Read()
@@ -36,15 +38,17 @@ func (sn *Node) HandleAuthStream(stream network.Stream) {
 
 // ^ Create New Stream ^ //
 func (sn *Node) NewAuthStream(stream network.Stream) {
-	// Create new Buffer
-	buffrw := bufio.NewReadWriter(bufio.NewReader(stream), bufio.NewWriter(stream))
+	// Create a buffer stream for non blocking read and write.
+	protow := io.NewDelimitedWriter(stream)
+	protor := io.NewDelimitedReader(stream, 16000)
 
 	// Create/Set Auth Stream
 	sn.AuthStream = authStreamConn{
-		readWriter: buffrw,
-		stream:     stream,
-		callback:   sn.Callback,
-		self:       sn,
+		reader:   protor,
+		writer:   protow,
+		stream:   stream,
+		callback: sn.Callback,
+		self:     sn,
 	}
 	// Initialize Routine
 	go sn.AuthStream.Read()
@@ -53,22 +57,15 @@ func (sn *Node) NewAuthStream(stream network.Stream) {
 // ^ Write Message on Stream ^ //
 func (asc *authStreamConn) Write(authMsg *pb.AuthMessage) error {
 	fmt.Println("Auth Msg Struct: ", authMsg)
-
-	// Convert Request to Proto Binary
-	data, err := proto.Marshal(authMsg)
-	if err != nil {
-		fmt.Println("marshaling error: ", err)
-	}
-
 	// Write Protobuf
-	_, err = asc.readWriter.Write(data)
+	err := asc.writer.WriteMsg(authMsg)
 	if err != nil {
 		fmt.Println("Error writing to buffer")
 		return err
 	}
 
 	// Write buffered data
-	err = asc.readWriter.Flush()
+	err = asc.writer.Close()
 	if err != nil {
 		fmt.Println("Error flushing buffer")
 		return err
@@ -80,9 +77,8 @@ func (asc *authStreamConn) Write(authMsg *pb.AuthMessage) error {
 func (asc *authStreamConn) Read() {
 	for {
 		// ** Read the Buffer **
-		authMsg := pb.AuthMessage{}
-		data, _ := ioutil.ReadAll(asc.readWriter)
-		err := proto.Unmarshal(data, &authMsg)
+		authMsg := &pb.AuthMessage{}
+		err := asc.reader.ReadMsg(authMsg)
 		if err != nil {
 			fmt.Println("unmarshaling error: ", err)
 		}
@@ -96,7 +92,7 @@ func (asc *authStreamConn) Read() {
 			// @ Request to Invite
 			case pb.AuthMessage_REQUEST:
 				// Retreive Values
-				data, err := proto.Marshal(&authMsg)
+				data, err := proto.Marshal(authMsg)
 				if err != nil {
 					fmt.Println("Error Marshaling RefreshMessage ", err)
 				}
