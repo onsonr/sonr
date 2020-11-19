@@ -32,38 +32,51 @@ PB_FOR_DART="--dart_out=$(PLUGIN_PB_DIR)"
 all: protoc ios android 
 	cd /System/Library/Sounds && afplay Hero.aiff
 	@echo ""
-	@echo "**************************************************************"
-	@echo "************** FINISHED IOS/ANDROID BINDINGS *****************"
-	@echo "**************************************************************"
+	@echo "--------------------------------------------------------------"
+	@echo "-------------- FINISHED IOS/ANDROID BINDINGS -----------------"
+	@echo "--------------------------------------------------------------"
 
-ios: protoc
+ios:
 	@echo ""
-	@echo "***********************************************"
-	@echo "************** BEGIN IOS BIND *****************"
-	@echo "***********************************************"
+	@echo "--------------------------------------------------------------"
+	@echo "-------------- BEGIN IOS BIND --------------------------------"
+	@echo "--------------------------------------------------------------"
 	rm -rf $(IOS_BUILDDIR) 2>/dev/null
 	mkdir -p $(IOS_BUILDDIR)
 	eval $(BUILD_IOS)
 	go mod tidy
 	cd /System/Library/Sounds && afplay Glass.aiff
+	@echo "--------------------------------------------------------------"
+	@echo "-------------- COMPLETE IOS BIND -----------------------------"
+	@echo "--------------------------------------------------------------"
 	@echo ""
 
-android: protoc
+android:
 	@echo ""
-	@echo "***************************************************"
-	@echo "************** BEGIN ANDROID BIND *****************"
-	@echo "***************************************************"
+	@echo "--------------------------------------------------------------"
+	@echo "-------------- BEGIN ANDROID BIND ----------------------------"
+	@echo "--------------------------------------------------------------"
 	rm -rf $(ANDROID_BUILDDIR) 2>/dev/null
 	mkdir -p $(ANDROID_BUILDDIR)
 	eval $(BUILD_ANDROID)
 	go mod tidy
 	cd /System/Library/Sounds && afplay Glass.aiff
+	@echo "--------------------------------------------------------------"
+	@echo "-------------- COMPLETE ANDROID BIND -------------------------"
+	@echo "--------------------------------------------------------------"
 	@echo ""
 
 protoc:
+	@echo ""
+	@echo "--------------------------------------------------------------"
+	@echo "-------------- START PROTOBUFS COMPILE -----------------------"
+	@echo "--------------------------------------------------------------"
 	cd proto && protoc -I. --proto_path=$(PB_PATH) $(PB_FOR_GO) data.proto event.proto message.proto user.proto
 	cd proto && protoc -I. --proto_path=$(PB_PATH) $(PB_FOR_DART) data.proto event.proto message.proto user.proto
-	@echo "************** Completed Compiling All ProtoBufs *****************"
+	@echo "--------------------------------------------------------------"
+	@echo "-------------- COMPILED ALL PROTOBUFS ------------------------"
+	@echo "--------------------------------------------------------------"
+	@echo ""
 
 clean:
 	cd bind && $(GOCLEAN)

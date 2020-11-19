@@ -4,12 +4,12 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/golang/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/core/pkg/host"
 	"github.com/sonr-io/core/pkg/lobby"
 	pb "github.com/sonr-io/core/pkg/models"
-	"google.golang.org/protobuf/proto"
 )
 
 // Callback returns updates from p2p

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/golang/protobuf/proto"
 	pb "github.com/sonr-io/core/pkg/models"
-	"google.golang.org/protobuf/proto"
 )
 
 // ^ 1. handleMessages pulls messages from the pubsub topic and pushes them onto the Messages channel. ^

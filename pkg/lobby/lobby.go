@@ -5,9 +5,9 @@ import (
 	"log"
 
 	badger "github.com/dgraph-io/badger/v2"
+	"github.com/golang/protobuf/proto"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	pb "github.com/sonr-io/core/pkg/models"
-	"google.golang.org/protobuf/proto"
 )
 
 // ChatRoomBufSize is the number of incoming messages to buffer for each topic.

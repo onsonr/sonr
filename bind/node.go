@@ -6,12 +6,12 @@ import (
 	"log"
 	"math"
 
+	"github.com/golang/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/sonr-io/core/pkg/file"
 	"github.com/sonr-io/core/pkg/lobby"
 	pb "github.com/sonr-io/core/pkg/models"
-	"google.golang.org/protobuf/proto"
 )
 
 // ^ Struct Management ^ //
