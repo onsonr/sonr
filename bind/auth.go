@@ -108,33 +108,33 @@ func (asc *authStreamConn) handleMessage(data string) {
 	}
 
 	// ** Contains Data **
-	if authMsg.Subject != pb.AuthMessage_NONE {
-		// Check Message Subject
-		switch authMsg.Subject {
-		// @ Request to Invite
-		case pb.AuthMessage_REQUEST:
-			// Retreive Values
-			data, err := proto.Marshal(&authMsg)
-			if err != nil {
-				fmt.Println("Error Marshaling RefreshMessage ", err)
-			}
-
-			// Callback the Invitation
-			asc.callback.OnInvited(data)
-
-		// @ Peer Accepted Response to Invite
-		case pb.AuthMessage_ACCEPT:
-			fmt.Println("Auth Accepted")
-			// Callback to Proxies
-			asc.callback.OnResponded(true)
-
-		// @ Peer Accepted Response to Invite
-		case pb.AuthMessage_DECLINE:
-			fmt.Println("Auth Declined")
-			// Callback to Proxies
-			asc.callback.OnResponded(false)
+	// Check Message Subject
+	switch authMsg.Subject {
+	// @ Request to Invite
+	case pb.AuthMessage_REQUEST:
+		// Retreive Values
+		data, err := proto.Marshal(&authMsg)
+		if err != nil {
+			fmt.Println("Error Marshaling RefreshMessage ", err)
 		}
-	}
+
+		// Callback the Invitation
+		asc.callback.OnInvited(data)
+
+	// @ Peer Accepted Response to Invite
+	case pb.AuthMessage_ACCEPT:
+		fmt.Println("Auth Accepted")
+		// Callback to Proxies
+		asc.callback.OnResponded(true)
+
+	// @ Peer Accepted Response to Invite
+	case pb.AuthMessage_DECLINE:
+		fmt.Println("Auth Declined")
+		// Callback to Proxies
+		asc.callback.OnResponded(false)
+
 	// ! Invalid Subject
-	fmt.Println("Not a subject", authMsg.Subject)
+	default:
+		fmt.Println("Not a subject", authMsg.Subject)
+	}
 }

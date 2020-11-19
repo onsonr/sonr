@@ -123,13 +123,7 @@ func (sn *Node) Invite(data []byte) bool {
 		Subject:   pb.AuthMessage_REQUEST,
 		PeerInfo:  sn.GetPeerInfo(),
 		Metadata:  meta,
-		Thumbnail: thumb,
-	}
-
-	// Marshal to Bytes
-	data, err = proto.Marshal(authPbf)
-	if err != nil {
-		log.Fatal("marshaling error: ", err)
+		Thumbnail: *thumb,
 	}
 
 	// ** Send Invite Message **
