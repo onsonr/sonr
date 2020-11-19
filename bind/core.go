@@ -4,12 +4,13 @@ import (
 	"context"
 	"fmt"
 
-	"google.golang.org/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/core/pkg/host"
+	sh "github.com/sonr-io/core/pkg/host"
 	"github.com/sonr-io/core/pkg/lobby"
 	pb "github.com/sonr-io/core/pkg/models"
+	"google.golang.org/protobuf/proto"
 )
 
 // Callback returns updates from p2p
@@ -44,8 +45,13 @@ func Start(data []byte, call Callback) *Node {
 	}
 	fmt.Println("Host Created")
 
-	// Set Host to Node
-	node.Host.SetStreamHandler(protocol.ID("/sonr/auth"), node.HandleAuthStream)
+	// Handle Auth Stream
+	node.AuthStream = sh.AuthStreamConn{
+		Call: node.Callback,
+	}
+
+	// Set Handler
+	node.Host.SetStreamHandler(protocol.ID("/sonr/auth"), node.AuthStream.HandleAuthStream)
 
 	// Set Contact
 	node.Contact = pb.Contact{
@@ -89,7 +95,6 @@ func Start(data []byte, call Callback) *Node {
 
 // Exit Ends Communication
 func (sn *Node) Exit() {
-	sn.AuthStream.stream.Close()
 	sn.Lobby.End()
 	sn.Host.Close()
 }
