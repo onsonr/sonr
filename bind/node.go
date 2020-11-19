@@ -7,12 +7,12 @@ import (
 	"math"
 	"sync"
 
-	"google.golang.org/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/sonr-io/core/pkg/file"
 	"github.com/sonr-io/core/pkg/lobby"
 	pb "github.com/sonr-io/core/pkg/models"
+	"google.golang.org/protobuf/proto"
 )
 
 // ^ Struct Management ^ //
@@ -120,7 +120,7 @@ func (sn *Node) Invite(data []byte) bool {
 
 	// Create Request Message
 	authPbf := &pb.AuthMessage{
-		Subject:   0,
+		Subject:   pb.AuthMessage_REQUEST,
 		PeerInfo:  sn.GetPeerInfo(),
 		Metadata:  meta,
 		Thumbnail: thumb,
@@ -146,7 +146,7 @@ func (sn *Node) Invite(data []byte) bool {
 func (sn *Node) Accept() bool {
 	// Create Request Message
 	authMsg := &pb.AuthMessage{
-		Subject: 2,
+		Subject: pb.AuthMessage_ACCEPT,
 	}
 
 	// Send Message
@@ -165,7 +165,7 @@ func (sn *Node) Accept() bool {
 func (sn *Node) Decline() bool {
 	// Create Request Message
 	authMsg := &pb.AuthMessage{
-		Subject: 3,
+		Subject: pb.AuthMessage_DECLINE,
 	}
 
 	// Send Message

@@ -33,48 +33,51 @@ all: protoc ios android
 	cd /System/Library/Sounds && afplay Hero.aiff
 	@echo ""
 	@echo "--------------------------------------------------------------"
-	@echo "-------------- FINISHED IOS/ANDROID BINDINGS -----------------"
+	@echo "-------- ✅ ✅ ✅   FINISHED ALL TASKS  ✅ ✅ ✅  --------------"
 	@echo "--------------------------------------------------------------"
 
 ios:
 	@echo ""
 	@echo "--------------------------------------------------------------"
-	@echo "-------------- BEGIN IOS BIND --------------------------------"
+	@echo "-------------- 🎬 BEGIN IOS BIND 🎬 ---------------------------"
 	@echo "--------------------------------------------------------------"
 	rm -rf $(IOS_BUILDDIR) 2>/dev/null
 	mkdir -p $(IOS_BUILDDIR)
 	eval $(BUILD_IOS)
 	go mod tidy
 	cd /System/Library/Sounds && afplay Glass.aiff
+	@echo "Finished Binding" && date
 	@echo "--------------------------------------------------------------"
-	@echo "-------------- COMPLETE IOS BIND -----------------------------"
+	@echo "-------------- 📱 COMPLETE IOS BIND 📱 ------------------------"
 	@echo "--------------------------------------------------------------"
 	@echo ""
 
 android:
 	@echo ""
 	@echo "--------------------------------------------------------------"
-	@echo "-------------- BEGIN ANDROID BIND ----------------------------"
+	@echo "--------------- 🎬 BEGIN ANDROID BIND 🎬 ----------------------"
 	@echo "--------------------------------------------------------------"
 	rm -rf $(ANDROID_BUILDDIR) 2>/dev/null
 	mkdir -p $(ANDROID_BUILDDIR)
 	eval $(BUILD_ANDROID)
 	go mod tidy
 	cd /System/Library/Sounds && afplay Glass.aiff
+	@echo "Finished Binding" && date
 	@echo "--------------------------------------------------------------"
-	@echo "-------------- COMPLETE ANDROID BIND -------------------------"
+	@echo "------------- 🤖  COMPLETE ANDROID BIND 🤖  -------------------"
 	@echo "--------------------------------------------------------------"
 	@echo ""
 
 protoc:
 	@echo ""
 	@echo "--------------------------------------------------------------"
-	@echo "-------------- START PROTOBUFS COMPILE -----------------------"
+	@echo "------------- 🎬 START PROTOBUFS COMPILE 🎬 -------------------"
 	@echo "--------------------------------------------------------------"
 	cd proto && protoc -I. --proto_path=$(PB_PATH) $(PB_FOR_GO) data.proto event.proto message.proto user.proto
 	cd proto && protoc -I. --proto_path=$(PB_PATH) $(PB_FOR_DART) data.proto event.proto message.proto user.proto
+	@echo "Finished Compiling" && date
 	@echo "--------------------------------------------------------------"
-	@echo "-------------- COMPILED ALL PROTOBUFS ------------------------"
+	@echo "------------- 🛸 COMPILED ALL PROTOBUFS 🛸 --------------------"
 	@echo "--------------------------------------------------------------"
 	@echo ""
 
