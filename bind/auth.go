@@ -51,19 +51,13 @@ func (asc *authStreamConn) Write(authMsg *pb.AuthMessage) error {
 		fmt.Println("Error Marshalling json: ", err)
 	}
 
-	// Log Conversion
-	println("Auth Msg Bytes: ", json)
-	fmt.Println("Auth Msg String: ", string(json))
-
 	// Write Message with "Delimiter"=(Seperator for Message Values)
-	bytesWritten, err := writer.WriteString(fmt.Sprintf("%s\n", string(json)))
+	_, err = writer.WriteString(fmt.Sprintf("%s\n", string(json)))
 	if err != nil {
 		fmt.Println("Error writing to buffer")
 		return err
 	}
 
-	// Log Bytes Written
-	fmt.Println("Number of bytes written: ", bytesWritten)
 	// Write buffered data
 	err = writer.Flush()
 	if err != nil {
