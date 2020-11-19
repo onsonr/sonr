@@ -15,12 +15,13 @@ import (
 
 // Callback returns updates from p2p
 type Callback interface {
-	OnRefreshed(s []byte)
-	OnProcessed(fileId string)
-	OnInvited([]byte)
-	OnResponded(decison bool)
-	OnProgressed([]byte)
-	OnCompleted([]byte)
+	OnConnected(data []byte)
+	OnRefreshed(data []byte)
+	OnProcessed(data []byte)
+	OnInvited(data []byte)
+	OnResponded(data []byte)
+	OnTransferring(data []byte)
+	OnCompleted(data []byte)
 }
 
 // Start begins the mobile host

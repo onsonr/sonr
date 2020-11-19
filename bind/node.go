@@ -62,9 +62,17 @@ func (sn *Node) GetUser() []byte {
 
 // ^ Sends new proximity/direction update ^ //
 // Update occurs when status or direction changes
-func (sn *Node) Update(dir float64) bool {
+func (sn *Node) Update(data []byte) bool {
+	// ** Initialize ** //
+	updateEvent := pb.UpdateEvent{}
+	err := proto.Unmarshal(data, &updateEvent)
+	if err != nil {
+		fmt.Println("unmarshaling error: ", err)
+		return false
+	}
+
 	// Update User Values
-	sn.Profile.Direction = math.Round(dir*100) / 100
+	sn.Profile.Direction = math.Round(updateEvent.NewDirection*100) / 100
 
 	// Create Message with Updated Info
 	notif := &pb.LobbyMessage{
@@ -74,7 +82,7 @@ func (sn *Node) Update(dir float64) bool {
 	}
 
 	// Inform Lobby
-	err := sn.Lobby.Publish(notif)
+	err = sn.Lobby.Publish(notif)
 	if err != nil {
 		fmt.Println("Error Posting NotifUpdate: ", err)
 		return false
@@ -89,20 +97,22 @@ func (sn *Node) Update(dir float64) bool {
 
 // ^ Queue adds a file to Process for Transfer, returns key ^ //
 // TODO: Implement an Error Schema with proto
-func (sn *Node) Queue(data []byte) {
+func (sn *Node) Queue(data []byte) bool {
 	// ** Initialize ** //
 	queuedFile := pb.QueueEvent{}
 	err := proto.Unmarshal(data, &queuedFile)
 	if err != nil {
 		fmt.Println("unmarshaling error: ", err)
-		sn.Callback.OnProcessed("")
+		sn.Callback.OnProcessed(nil)
+		return false
 	}
 
 	// ** Create Metadata ** //
 	meta := file.GetMetadata(queuedFile.FilePath)
 	if err != nil {
 		fmt.Println("Error Getting Metadata", err)
-		sn.Callback.OnProcessed("")
+		sn.Callback.OnProcessed(nil)
+		return false
 	}
 
 	// ** Create Thumbnail ** //
@@ -129,7 +139,7 @@ func (sn *Node) Queue(data []byte) {
 		raw, err := proto.Marshal(processedFile)
 		if err != nil {
 			fmt.Println("Error Marshalling Processed File", err)
-			sn.Callback.OnProcessed("")
+			sn.Callback.OnProcessed(nil)
 		}
 
 		// ** Add to Badger Store ** //
@@ -143,14 +153,24 @@ func (sn *Node) Queue(data []byte) {
 		// Check Error
 		if err != nil {
 			fmt.Println("Error Updating Peer in Badger", err)
-			sn.Callback.OnProcessed("")
+			sn.Callback.OnProcessed(nil)
 		}
 		wg.Done()
 	}()
 
 	// Send Callback with file ID after both tasks finish
 	wg.Wait()
-	sn.Callback.OnProcessed(meta.FileId)
+
+	// Convert to bytes
+	metaRaw, err := proto.Marshal(meta)
+	if err != nil {
+		fmt.Println("Error Marshalling Processed File", err)
+		sn.Callback.OnProcessed(nil)
+	}
+
+	// Send bytes
+	sn.Callback.OnProcessed(metaRaw)
+	return true
 }
 
 // ^ Invite an available peer to transfer ^ //

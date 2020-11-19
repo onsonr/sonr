@@ -92,6 +92,55 @@ func (x *ConnectEvent) GetContact() *Contact {
 
 // [PLUGIN]
 // Authorization being sent from
+type UpdateEvent struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	NewDirection float64 `protobuf:"fixed64,1,opt,name=newDirection,proto3" json:"newDirection,omitempty"`
+}
+
+func (x *UpdateEvent) Reset() {
+	*x = UpdateEvent{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_event_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UpdateEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateEvent) ProtoMessage() {}
+
+func (x *UpdateEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_event_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateEvent.ProtoReflect.Descriptor instead.
+func (*UpdateEvent) Descriptor() ([]byte, []int) {
+	return file_event_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *UpdateEvent) GetNewDirection() float64 {
+	if x != nil {
+		return x.NewDirection
+	}
+	return 0
+}
+
+// [PLUGIN]
+// Authorization being sent from
 type QueueEvent struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -103,7 +152,7 @@ type QueueEvent struct {
 func (x *QueueEvent) Reset() {
 	*x = QueueEvent{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_event_proto_msgTypes[1]
+		mi := &file_event_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -116,7 +165,7 @@ func (x *QueueEvent) String() string {
 func (*QueueEvent) ProtoMessage() {}
 
 func (x *QueueEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_event_proto_msgTypes[1]
+	mi := &file_event_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -129,7 +178,7 @@ func (x *QueueEvent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueueEvent.ProtoReflect.Descriptor instead.
 func (*QueueEvent) Descriptor() ([]byte, []int) {
-	return file_event_proto_rawDescGZIP(), []int{1}
+	return file_event_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *QueueEvent) GetFilePath() string {
@@ -153,7 +202,7 @@ type InviteEvent struct {
 func (x *InviteEvent) Reset() {
 	*x = InviteEvent{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_event_proto_msgTypes[2]
+		mi := &file_event_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -166,7 +215,7 @@ func (x *InviteEvent) String() string {
 func (*InviteEvent) ProtoMessage() {}
 
 func (x *InviteEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_event_proto_msgTypes[2]
+	mi := &file_event_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -179,7 +228,7 @@ func (x *InviteEvent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use InviteEvent.ProtoReflect.Descriptor instead.
 func (*InviteEvent) Descriptor() ([]byte, []int) {
-	return file_event_proto_rawDescGZIP(), []int{2}
+	return file_event_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *InviteEvent) GetPeerId() string {
@@ -196,6 +245,63 @@ func (x *InviteEvent) GetFileId() string {
 	return ""
 }
 
+// [PLUGIN]
+// Authorization being sent from
+type RespondEvent struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	PeerId   string `protobuf:"bytes,1,opt,name=peerId,proto3" json:"peerId,omitempty"`
+	Decision bool   `protobuf:"varint,2,opt,name=decision,proto3" json:"decision,omitempty"`
+}
+
+func (x *RespondEvent) Reset() {
+	*x = RespondEvent{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_event_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RespondEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RespondEvent) ProtoMessage() {}
+
+func (x *RespondEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_event_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RespondEvent.ProtoReflect.Descriptor instead.
+func (*RespondEvent) Descriptor() ([]byte, []int) {
+	return file_event_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *RespondEvent) GetPeerId() string {
+	if x != nil {
+		return x.PeerId
+	}
+	return ""
+}
+
+func (x *RespondEvent) GetDecision() bool {
+	if x != nil {
+		return x.Decision
+	}
+	return false
+}
+
 var File_event_proto protoreflect.FileDescriptor
 
 var file_event_proto_rawDesc = []byte{
@@ -206,15 +312,22 @@ var file_event_proto_rawDesc = []byte{
 	0x65, 0x76, 0x69, 0x63, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x64, 0x65, 0x76,
 	0x69, 0x63, 0x65, 0x12, 0x22, 0x0a, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x18, 0x03,
 	0x20, 0x01, 0x28, 0x0b, 0x32, 0x08, 0x2e, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x52, 0x07,
-	0x63, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x22, 0x28, 0x0a, 0x0a, 0x51, 0x75, 0x65, 0x75, 0x65,
-	0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x1a, 0x0a, 0x08, 0x66, 0x69, 0x6c, 0x65, 0x50, 0x61, 0x74,
-	0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x66, 0x69, 0x6c, 0x65, 0x50, 0x61, 0x74,
-	0x68, 0x22, 0x3d, 0x0a, 0x0b, 0x49, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x45, 0x76, 0x65, 0x6e, 0x74,
-	0x12, 0x16, 0x0a, 0x06, 0x70, 0x65, 0x65, 0x72, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x06, 0x70, 0x65, 0x65, 0x72, 0x49, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x66, 0x69, 0x6c, 0x65,
-	0x49, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x66, 0x69, 0x6c, 0x65, 0x49, 0x64,
-	0x42, 0x09, 0x5a, 0x07, 0x2e, 0x3b, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x33,
+	0x63, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x22, 0x31, 0x0a, 0x0b, 0x55, 0x70, 0x64, 0x61, 0x74,
+	0x65, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x22, 0x0a, 0x0c, 0x6e, 0x65, 0x77, 0x44, 0x69, 0x72,
+	0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x01, 0x52, 0x0c, 0x6e, 0x65,
+	0x77, 0x44, 0x69, 0x72, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x28, 0x0a, 0x0a, 0x51, 0x75,
+	0x65, 0x75, 0x65, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x1a, 0x0a, 0x08, 0x66, 0x69, 0x6c, 0x65,
+	0x50, 0x61, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x66, 0x69, 0x6c, 0x65,
+	0x50, 0x61, 0x74, 0x68, 0x22, 0x3d, 0x0a, 0x0b, 0x49, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x45, 0x76,
+	0x65, 0x6e, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x70, 0x65, 0x65, 0x72, 0x49, 0x64, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x06, 0x70, 0x65, 0x65, 0x72, 0x49, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x66,
+	0x69, 0x6c, 0x65, 0x49, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x66, 0x69, 0x6c,
+	0x65, 0x49, 0x64, 0x22, 0x42, 0x0a, 0x0c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x64, 0x45, 0x76,
+	0x65, 0x6e, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x70, 0x65, 0x65, 0x72, 0x49, 0x64, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x06, 0x70, 0x65, 0x65, 0x72, 0x49, 0x64, 0x12, 0x1a, 0x0a, 0x08, 0x64,
+	0x65, 0x63, 0x69, 0x73, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x52, 0x08, 0x64,
+	0x65, 0x63, 0x69, 0x73, 0x69, 0x6f, 0x6e, 0x42, 0x09, 0x5a, 0x07, 0x2e, 0x3b, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -229,15 +342,17 @@ func file_event_proto_rawDescGZIP() []byte {
 	return file_event_proto_rawDescData
 }
 
-var file_event_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_event_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_event_proto_goTypes = []interface{}{
 	(*ConnectEvent)(nil), // 0: ConnectEvent
-	(*QueueEvent)(nil),   // 1: QueueEvent
-	(*InviteEvent)(nil),  // 2: InviteEvent
-	(*Contact)(nil),      // 3: Contact
+	(*UpdateEvent)(nil),  // 1: UpdateEvent
+	(*QueueEvent)(nil),   // 2: QueueEvent
+	(*InviteEvent)(nil),  // 3: InviteEvent
+	(*RespondEvent)(nil), // 4: RespondEvent
+	(*Contact)(nil),      // 5: Contact
 }
 var file_event_proto_depIdxs = []int32{
-	3, // 0: ConnectEvent.contact:type_name -> Contact
+	5, // 0: ConnectEvent.contact:type_name -> Contact
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
@@ -265,7 +380,7 @@ func file_event_proto_init() {
 			}
 		}
 		file_event_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueueEvent); i {
+			switch v := v.(*UpdateEvent); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -277,7 +392,31 @@ func file_event_proto_init() {
 			}
 		}
 		file_event_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueueEvent); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_event_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*InviteEvent); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_event_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*RespondEvent); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -295,7 +434,7 @@ func file_event_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_event_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

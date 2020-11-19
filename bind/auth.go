@@ -108,12 +108,18 @@ func (asc *authStreamConn) Read() error {
 
 // ^ Handle Received Message ^ //
 func (asc *authStreamConn) handleMessage(data string) {
-	// Convert Bytes to Json
+	// Convert Json to Protobuf
 	fmt.Println("Json String: ", data)
 	authMsg := pb.AuthMessage{}
 	err := protojson.Unmarshal([]byte(data), &authMsg)
 	if err != nil {
 		fmt.Println("Error unmarshaling msg into json: ", err)
+	}
+
+	// Convert Protobuf to bytes
+	authRaw, err := proto.Marshal(&authMsg)
+	if err != nil {
+		fmt.Println("Error Marshalling Processed File", err)
 	}
 
 	// ** Contains Data **
@@ -134,13 +140,13 @@ func (asc *authStreamConn) handleMessage(data string) {
 	case pb.AuthMessage_ACCEPT:
 		fmt.Println("Auth Accepted")
 		// Callback to Proxies
-		asc.callback.OnResponded(true)
+		asc.callback.OnResponded(authRaw)
 
 	// @ Peer Accepted Response to Invite
 	case pb.AuthMessage_DECLINE:
 		fmt.Println("Auth Declined")
 		// Callback to Proxies
-		asc.callback.OnResponded(false)
+		asc.callback.OnResponded(authRaw)
 
 	// ! Invalid Subject
 	default:

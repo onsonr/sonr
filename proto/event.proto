@@ -15,6 +15,12 @@ message ConnectEvent {
 
 // [PLUGIN]
 // Authorization being sent from
+message UpdateEvent { 
+  double newDirection = 1;
+}
+
+// [PLUGIN]
+// Authorization being sent from
 message QueueEvent {
   string filePath = 1;
 }
@@ -24,4 +30,11 @@ message QueueEvent {
 message InviteEvent {
   string peerId = 1;
   string fileId = 2;
+}
+
+// [PLUGIN]
+// Authorization being sent from
+message RespondEvent {
+  string peerId = 1;
+  bool decision = 2;
 }
