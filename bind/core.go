@@ -2,7 +2,6 @@ package sonr
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/sonr-io/core/pkg/host"
@@ -33,16 +32,16 @@ func Start(data []byte, call Callback) *Node {
 	connEvent := pb.ConnectEvent{}
 	err := proto.Unmarshal(data, &connEvent)
 	if err != nil {
-		fmt.Println("unmarshaling error: ", err)
+		node.NewError(err, pb.Error_CRITICAL, pb.Error_PROTO)
+		return nil
 	}
 
 	// @1. Create Host
 	node.Host, err = host.NewHost(&node.CTX)
 	if err != nil {
-		fmt.Println("Error Creating Host: ", err)
+		node.NewError(err, pb.Error_PANIC, pb.Error_NETWORK)
 		return nil
 	}
-	fmt.Println("Host Created: ", node.Host.Addrs())
 
 	// @2. Set Stream Handlers
 	node.Host.SetStreamHandler(protocol.ID("/sonr/auth"), node.HandleAuthStream)
@@ -50,25 +49,25 @@ func Start(data []byte, call Callback) *Node {
 	// @3. Set Node User Information
 	err = node.setUser(&connEvent)
 	if err != nil {
-		fmt.Println(err)
+		node.NewError(err, pb.Error_WARNING, pb.Error_INFO)
 	}
 
 	// @4. Initialize Datastore for File Queue
 	err = node.setStore()
 	if err != nil {
-		fmt.Println(err)
+		node.NewError(err, pb.Error_WARNING, pb.Error_INFO)
 	}
 
 	// @5. Setup Discovery
 	err = node.setDiscovery()
 	if err != nil {
-		fmt.Println(err)
+		node.NewError(err, pb.Error_CRITICAL, pb.Error_NETWORK)
 	}
 
 	// @6. Enter Lobby
 	err = node.setLobby(&connEvent)
 	if err != nil {
-		fmt.Println(err)
+		node.NewError(err, pb.Error_CRITICAL, pb.Error_LOBBY)
 	}
 
 	// ** Callback Node User Information ** //
