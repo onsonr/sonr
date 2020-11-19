@@ -5,9 +5,9 @@ import (
 	"fmt"
 
 	badger "github.com/dgraph-io/badger/v2"
-	"google.golang.org/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/peer"
 	pb "github.com/sonr-io/core/pkg/models"
+	"google.golang.org/protobuf/proto"
 )
 
 // GetPeer returns ONE Peer in Datastore
@@ -64,6 +64,8 @@ func (lob *Lobby) GetPeerID(idStr string) (peer.ID, error) {
 func (lob *Lobby) GetAllPeers() []byte {
 	// ** Initialize Variables ** //
 	var peers pb.RefreshMessage
+	var peerCount int32
+	peerCount = 0
 
 	// ** Open Data Store Read Transaction ** //
 	err := lob.peerDB.View(func(txn *badger.Txn) error {
@@ -75,6 +77,7 @@ func (lob *Lobby) GetAllPeers() []byte {
 		for it.Rewind(); it.Valid(); it.Next() {
 			// Get Item and Key
 			item := it.Item()
+			peerCount += 1
 
 			// Get Item Value
 			err := item.Value(func(data []byte) error {
@@ -103,6 +106,10 @@ func (lob *Lobby) GetAllPeers() []byte {
 	if err != nil {
 		fmt.Println("Transaction Error ", err)
 	}
+
+	// Add additional data
+	peers.Count = peerCount
+	peers.Olc = lob.Code
 
 	// Convert to bytes
 	data, err := proto.Marshal(&peers)
