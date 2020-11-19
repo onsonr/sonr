@@ -14,11 +14,11 @@ import (
 
 // Callback returns updates from p2p
 type Callback interface {
-	OnRefreshed(s string)
-	OnInvited(info string, meta string) //TODO add thumbnail
+	OnRefreshed(s []byte)
+	OnInvited([]byte) //TODO add thumbnail
 	OnResponded(decison bool)
-	OnProgressed(s string)
-	OnCompleted(s string)
+	OnProgressed([]byte)
+	OnCompleted([]byte)
 }
 
 // Start begins the mobile host

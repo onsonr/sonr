@@ -61,8 +61,9 @@ android: protoc
 	@echo ""
 
 protoc:
-	cd proto && protoc -I. --proto_path=$(PB_PATH) $(PB_FOR_GO) data.proto message.proto user.proto
-	cd proto && protoc -I. --proto_path=$(PB_PATH) $(PB_FOR_DART) data.proto message.proto user.proto
+	cd proto && protoc -I. --proto_path=$(PB_PATH) $(PB_FOR_GO) data.proto event.proto message.proto user.proto
+	cd proto && protoc -I. --proto_path=$(PB_PATH) $(PB_FOR_DART) data.proto event.proto message.proto user.proto
+	@echo "************** Completed Compiling All ProtoBufs *****************"
 
 clean:
 	cd bind && $(GOCLEAN)

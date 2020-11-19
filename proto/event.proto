@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+// Require Go Package
+option go_package = ".;proto";
+
+// [PLUGIN]
+// Authorization being sent from
+message InviteEvent {
+  string peerId = 1;
+  string filePath = 2;
+}
+
+// [PLUGIN]
+// Authorization being sent from
+message RespondEvent {
+  bool decision = 1;
+}
+
+// [PLUGIN]
+// When Direction gets updated
+message UpdateEvent { 
+    double newDirection = 1; 
+}

@@ -15,7 +15,7 @@ const ChatRoomBufSize = 128
 
 // LobbyCallback returns message from lobby
 type LobbyCallback interface {
-	OnRefreshed(s string)
+	OnRefreshed([]byte)
 }
 
 // Lobby represents a subscription to a single PubSub topic. Messages

@@ -11,7 +11,6 @@ import (
 	"github.com/sonr-io/core/pkg/file"
 	"github.com/sonr-io/core/pkg/lobby"
 	pb "github.com/sonr-io/core/pkg/models"
-	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -39,7 +38,7 @@ func (sn *Node) GetPeerInfo() *pb.PeerInfo {
 }
 
 // GetUser returns profile and contact in a map as string
-func (sn *Node) GetUser() string {
+func (sn *Node) GetUser() []byte {
 	// Create User Object
 	user := &pb.ConnectedMessage{
 		HostId:  sn.Profile.HostId,
@@ -47,11 +46,14 @@ func (sn *Node) GetUser() string {
 		Contact: &sn.Contact,
 	}
 
-	// Format to String
-	json := protojson.Format(user)
+	// Marshal to Bytes
+	data, err := proto.Marshal(user)
+	if err != nil {
+		log.Fatal("marshaling error: ", err)
+	}
 
-	// Return String
-	return json
+	// Return as JSON String
+	return data
 }
 
 // ^ Message Emitter ^ //

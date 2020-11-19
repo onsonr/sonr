@@ -96,11 +96,13 @@ func (asc *authStreamConn) Read() {
 			// @ Request to Invite
 			case pb.AuthMessage_REQUEST:
 				// Retreive Values
-				info := authMsg.GetPeerInfo()
-				meta := authMsg.GetMetadata()
+				data, err := proto.Marshal(&authMsg)
+				if err != nil {
+					fmt.Println("Error Marshaling RefreshMessage ", err)
+				}
 
 				// Callback the Invitation
-				asc.callback.OnInvited(info.String(), meta.String())
+				asc.callback.OnInvited(data)
 
 			// @ Response to Invite
 			case pb.AuthMessage_RESPONSE:

@@ -1,10 +1,8 @@
 package lobby
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
 
 	badger "github.com/dgraph-io/badger/v2"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -26,7 +24,7 @@ func (lob *Lobby) GetPeer(queryID string) (*pb.PeerInfo, error) {
 		err = item.Value(func(val []byte) error {
 			err := proto.Unmarshal(val, &peer)
 			if err != nil {
-				log.Fatal("unmarshaling error: ", err)
+				fmt.Println("unmarshaling error: ", err)
 			}
 			return nil
 		})
@@ -63,9 +61,9 @@ func (lob *Lobby) GetPeerID(idStr string) (peer.ID, error) {
 }
 
 // GetAllPeers returns ALL Peers in Datastore
-func (lob *Lobby) GetAllPeers() string {
+func (lob *Lobby) GetAllPeers() []byte {
 	// ** Initialize Variables ** //
-	var peerSlice []*pb.PeerInfo
+	var peers pb.RefreshMessage
 
 	// ** Open Data Store Read Transaction ** //
 	err := lob.peerDB.View(func(txn *badger.Txn) error {
@@ -84,11 +82,11 @@ func (lob *Lobby) GetAllPeers() string {
 				peer := pb.PeerInfo{}
 				err := proto.Unmarshal(data, &peer)
 				if err != nil {
-					log.Fatal("unmarshaling error: ", err)
+					fmt.Println("unmarshaling error: ", err)
 					return err
 				} else {
 					// Add Item value to Slice
-					peerSlice = append(peerSlice, &peer)
+					peers.AvailablePeers = append(peers.AvailablePeers, &peer)
 				}
 				return nil
 			})
@@ -106,14 +104,14 @@ func (lob *Lobby) GetAllPeers() string {
 		fmt.Println("Transaction Error ", err)
 	}
 
-	// ** Convert slice to bytes ** //
-	bytes, err := json.Marshal(peerSlice)
+	// Convert to bytes
+	data, err := proto.Marshal(&peers)
 	if err != nil {
-		println("Error converting peers to json ", err)
+		fmt.Println("Error Marshaling RefreshMessage ", err)
 	}
 
-	// Return as string
-	return string(bytes)
+	// Return as JSON String
+	return data
 }
 
 // ^ Checks for Peer in Pub/Sub Topic ^ //
