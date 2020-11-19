@@ -3,13 +3,13 @@ package sonr
 import (
 	"context"
 	"fmt"
-	"log"
 	"math"
 	"sync"
 
 	badger "github.com/dgraph-io/badger/v2"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/protocol"
+	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/core/pkg/file"
 	"github.com/sonr-io/core/pkg/lobby"
 	pb "github.com/sonr-io/core/pkg/models"
@@ -21,43 +21,13 @@ import (
 type Node struct {
 	CTX        context.Context
 	Host       host.Host
+	PubSub     *pubsub.PubSub
 	Lobby      lobby.Lobby
 	FileQueue  *badger.DB
 	Profile    pb.Profile
 	Contact    pb.Contact
 	AuthStream authStreamConn
 	Callback   Callback
-}
-
-// ^ Returns public data info ^ //
-func (sn *Node) GetPeerInfo() *pb.PeerInfo {
-	return &pb.PeerInfo{
-		PeerId:     sn.Host.ID().String(),
-		Device:     sn.Profile.Device,
-		FirstName:  sn.Contact.FirstName,
-		LastName:   sn.Contact.LastName,
-		ProfilePic: sn.Contact.ProfilePic,
-		Direction:  sn.Profile.Direction,
-	}
-}
-
-// ^ GetUser returns profile and contact in a map as string ^ //
-func (sn *Node) GetUser() []byte {
-	// Create User Object
-	user := &pb.ConnectedMessage{
-		HostId:  sn.Profile.HostId,
-		Profile: &sn.Profile,
-		Contact: &sn.Contact,
-	}
-
-	// Marshal to Bytes
-	data, err := proto.Marshal(user)
-	if err != nil {
-		log.Fatal("marshaling error: ", err)
-	}
-
-	// Return as JSON String
-	return data
 }
 
 // ^ Sends new proximity/direction update ^ //
@@ -78,7 +48,7 @@ func (sn *Node) Update(data []byte) bool {
 	notif := &pb.LobbyMessage{
 		Event:  "Update",
 		Sender: sn.Profile.HostId,
-		Data:   sn.GetPeerInfo(),
+		Data:   sn.getPeerInfo(),
 	}
 
 	// Inform Lobby
@@ -180,6 +150,7 @@ func (sn *Node) Invite(data []byte) bool {
 	err := proto.Unmarshal(data, &invite)
 	if err != nil {
 		fmt.Println("unmarshaling error: ", err)
+		return false
 	}
 
 	// ** Get Required Data **
@@ -212,6 +183,7 @@ func (sn *Node) Invite(data []byte) bool {
 	err = proto.Unmarshal(fileInfoRaw, &fileInfo)
 	if err != nil {
 		fmt.Println("Error unmarshaling msg into json: ", err)
+		return false
 	}
 
 	// ** Create New Auth Stream **
@@ -226,7 +198,7 @@ func (sn *Node) Invite(data []byte) bool {
 	// Create Request Message
 	authPbf := &pb.AuthMessage{
 		Subject:   pb.AuthMessage_REQUEST,
-		PeerInfo:  sn.GetPeerInfo(),
+		PeerInfo:  sn.getPeerInfo(),
 		Metadata:  fileInfo.Metadata,
 		Thumbnail: fileInfo.Thumbnail,
 	}
@@ -241,40 +213,40 @@ func (sn *Node) Invite(data []byte) bool {
 	return true
 }
 
-// ^ Accept an Invite from a Peer ^ //
-func (sn *Node) Accept() bool {
-	// Create Request Message
-	authMsg := &pb.AuthMessage{
-		Subject: pb.AuthMessage_ACCEPT,
+// ^ Respond to an Invitation ^ //
+func (sn *Node) Respond(data []byte) bool {
+	// Initialize Event
+	response := pb.RespondEvent{}
+	err := proto.Unmarshal(data, &response)
+	if err != nil {
+		fmt.Println("unmarshaling error: ", err)
+		return false
+	}
+
+	// Initialize Response
+	authMsg := new(pb.AuthMessage)
+
+	// Check Decision
+	if response.Decision == true {
+		// Set as Accept
+		authMsg = &pb.AuthMessage{
+			Subject:  pb.AuthMessage_ACCEPT,
+			PeerInfo: sn.getPeerInfo(),
+		}
+	} else {
+		// Set as Decline
+		authMsg = &pb.AuthMessage{
+			Subject:  pb.AuthMessage_DECLINE,
+			PeerInfo: sn.getPeerInfo(),
+		}
 	}
 
 	// Send Message
-	err := sn.AuthStream.Write(authMsg)
-
-	// Check Error
+	err = sn.AuthStream.Write(authMsg)
 	if err != nil {
 		return false
 	}
 
-	// Return Success
-	return true
-}
-
-// Decline an Invite from a Peer
-func (sn *Node) Decline() bool {
-	// Create Request Message
-	authMsg := &pb.AuthMessage{
-		Subject: pb.AuthMessage_DECLINE,
-	}
-
-	// Send Message
-	err := sn.AuthStream.Write(authMsg)
-
-	// Check Error
-	if err != nil {
-		return false
-	}
-
-	// Return Success
+	// Succesful
 	return true
 }

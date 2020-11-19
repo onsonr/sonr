@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	badger "github.com/dgraph-io/badger/v2"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/core/pkg/host"
@@ -51,25 +50,16 @@ func Start(data []byte, call Callback) *Node {
 	node.Host.SetStreamHandler(protocol.ID("/sonr/auth"), node.HandleAuthStream)
 
 	// Set Contact
-	node.Contact = pb.Contact{
-		FirstName:  connEvent.Contact.FirstName,
-		LastName:   connEvent.Contact.LastName,
-		ProfilePic: connEvent.Contact.ProfilePic,
-	}
-
-	// Set Profile
-	node.Profile = pb.Profile{
-		HostId: node.Host.ID().String(),
-		Olc:    connEvent.Olc,
-		Device: connEvent.Device,
+	err = node.setUser(&connEvent)
+	if err != nil {
+		fmt.Println(err)
 	}
 
 	// Initialize Datastore for File Queue
-	db, err := badger.Open(badger.DefaultOptions("").WithInMemory(true))
+	err = node.setStore()
 	if err != nil {
-		fmt.Println("Failed to create file queue")
+		fmt.Println(err)
 	}
-	node.FileQueue = db
 
 	// setup local mDNS discovery
 	err = initMDNSDiscovery(ctx, node, call)
@@ -86,7 +76,7 @@ func Start(data []byte, call Callback) *Node {
 	fmt.Println("GossipSub Created")
 
 	// Enter location lobby
-	lob, err := lobby.Enter(ctx, call, ps, node.GetPeerInfo(), connEvent.Olc)
+	lob, err := lobby.Enter(ctx, call, ps, node.getPeerInfo(), connEvent.Olc)
 	if err != nil {
 		panic(err)
 	}

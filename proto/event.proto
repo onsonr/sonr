@@ -13,27 +13,34 @@ message ConnectEvent {
   Contact contact = 3;
 }
 
+// [CORE]
+// User Joining Lobby
+message JoinEvent { 
+  PeerInfo peer = 1;
+  string olc = 2;
+}
+
 // [PLUGIN]
-// Authorization being sent from
+// Direction on Device Changed
 message UpdateEvent { 
   double newDirection = 1;
 }
 
 // [PLUGIN]
-// Authorization being sent from
+// User queued file
 message QueueEvent {
   string filePath = 1;
 }
 
 // [PLUGIN]
-// Authorization being sent from
+// User sent invite
 message InviteEvent {
   string peerId = 1;
   string fileId = 2;
 }
 
 // [PLUGIN]
-// Authorization being sent from
+// User responded invite
 message RespondEvent {
   string peerId = 1;
   bool decision = 2;
