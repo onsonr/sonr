@@ -15,6 +15,12 @@ message ConnectEvent {
 
 // [PLUGIN]
 // Authorization being sent from
+message QueueEvent {
+  string filePath = 2;
+}
+
+// [PLUGIN]
+// Authorization being sent from
 message InviteEvent {
   string peerId = 1;
   string filePath = 2;

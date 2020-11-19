@@ -7,6 +7,7 @@ import (
 	"math"
 	"sync"
 
+	badger "github.com/dgraph-io/badger/v2"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/sonr-io/core/pkg/file"
@@ -21,12 +22,14 @@ type Node struct {
 	CTX        context.Context
 	Host       host.Host
 	Lobby      lobby.Lobby
+	FileQueue  *badger.DB
 	Profile    pb.Profile
 	Contact    pb.Contact
 	AuthStream authStreamConn
 	Callback   Callback
 }
 
+// ^ Returns public data info ^ //
 func (sn *Node) GetPeerInfo() *pb.PeerInfo {
 	return &pb.PeerInfo{
 		PeerId:     sn.Host.ID().String(),
@@ -38,7 +41,7 @@ func (sn *Node) GetPeerInfo() *pb.PeerInfo {
 	}
 }
 
-// GetUser returns profile and contact in a map as string
+// ^ GetUser returns profile and contact in a map as string ^ //
 func (sn *Node) GetUser() []byte {
 	// Create User Object
 	user := &pb.ConnectedMessage{
@@ -53,14 +56,11 @@ func (sn *Node) GetUser() []byte {
 		log.Fatal("marshaling error: ", err)
 	}
 
-	// Send Callback with Available Peers
-	sn.Callback.OnRefreshed(sn.Lobby.GetAllPeers())
-
 	// Return as JSON String
 	return data
 }
 
-// ^ Message Emitter ^ //
+// ^ Sends new proximity/direction update ^ //
 // Update occurs when status or direction changes
 func (sn *Node) Update(dir float64) bool {
 	// Update User Values
@@ -81,16 +81,84 @@ func (sn *Node) Update(dir float64) bool {
 	}
 
 	// Send Callback with Available Peers
-	sn.Callback.OnRefreshed(sn.Lobby.GetAllPeers())
+	// sn.Callback.OnRefreshed(sn.Lobby.GetAllPeers())
 
 	// Return Success
 	return true
 }
 
-// Invite an available peer to transfer
+// ^ Queue adds a file to Process for Transfer, returns key ^ //
+// TODO: Implement an Error Schema with proto
+func (sn *Node) Queue(data []byte) {
+	// ** Initialize ** //
+	queuedFile := pb.QueueEvent{}
+	err := proto.Unmarshal(data, &queuedFile)
+	if err != nil {
+		fmt.Println("unmarshaling error: ", err)
+		sn.Callback.OnProcessed(false)
+	}
+
+	// ** Create Metadata ** //
+	meta := file.GetMetadata(queuedFile.FilePath)
+	if err != nil {
+		fmt.Println("Error Getting Metadata", err)
+		sn.Callback.OnProcessed(false)
+	}
+
+	// ** Create Thumbnail ** //
+	var wg sync.WaitGroup
+	wg.Add(2)
+
+	// Run Routine
+	var thumb []byte
+	go func(tn []byte) {
+		tn = file.GetThumbnail(meta)
+		fmt.Println("Raw Thumbnail: ", thumb)
+		wg.Done()
+	}(thumb)
+
+	// ** Create Processed File ** //
+	go func() {
+		// Create Type
+		processedFile := &pb.Processed{
+			Metadata:  meta,
+			Thumbnail: thumb,
+		}
+
+		// Convert to bytes
+		raw, err := proto.Marshal(processedFile)
+		if err != nil {
+			fmt.Println("Error Marshalling Processed File", err)
+			sn.Callback.OnProcessed(false)
+		}
+
+		// ** Add to Badger Store ** //
+		// Create Key/Value as Bytes
+		key := []byte(meta.FileId)
+
+		// Update peer in DataStore
+		err = sn.FileQueue.Update(func(txn *badger.Txn) error {
+			e := badger.NewEntry(key, raw)
+			err := txn.SetEntry(e)
+			return err
+		})
+
+		// Check Error
+		if err != nil {
+			fmt.Println("Error Updating Peer in Badger", err)
+			sn.Callback.OnProcessed(false)
+		}
+		wg.Done()
+	}()
+
+	// Send Callback with file ID after both tasks finish
+	wg.Wait()
+	sn.Callback.OnProcessed(true)
+}
+
+// ^ Invite an available peer to transfer ^ //
 func (sn *Node) Invite(data []byte) bool {
 	// Initialize
-	var wg sync.WaitGroup
 	invite := pb.InviteEvent{}
 	err := proto.Unmarshal(data, &invite)
 	if err != nil {
@@ -111,18 +179,6 @@ func (sn *Node) Invite(data []byte) bool {
 		return false
 	}
 
-	// Initialize
-	var thumb []byte
-	wg.Add(1)
-
-	// Create Thumb Nail
-	go func(thumb []byte) {
-		defer wg.Done()
-		thumb = file.GetThumbnail(&wg, meta)
-		wg.Wait()
-		fmt.Println("Raw Thumbnail: ", thumb)
-	}(thumb)
-
 	// ** Create New Auth Stream **
 	stream, err := sn.Host.NewStream(sn.CTX, peerID, protocol.ID("/sonr/auth"))
 	if err != nil {
@@ -134,10 +190,9 @@ func (sn *Node) Invite(data []byte) bool {
 
 	// Create Request Message
 	authPbf := &pb.AuthMessage{
-		Subject:   pb.AuthMessage_REQUEST,
-		PeerInfo:  sn.GetPeerInfo(),
-		Metadata:  meta,
-		Thumbnail: thumb,
+		Subject:  pb.AuthMessage_REQUEST,
+		PeerInfo: sn.GetPeerInfo(),
+		Metadata: meta,
 	}
 
 	// ** Send Invite Message **
@@ -150,7 +205,7 @@ func (sn *Node) Invite(data []byte) bool {
 	return true
 }
 
-// Accept an Invite from a Peer
+// ^ Accept an Invite from a Peer ^ //
 func (sn *Node) Accept() bool {
 	// Create Request Message
 	authMsg := &pb.AuthMessage{

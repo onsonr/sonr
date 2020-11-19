@@ -24,6 +24,10 @@ func (sn *Node) HandleAuthStream(stream network.Stream) {
 		stream:   stream,
 		callback: sn.Callback,
 	}
+	// Print Stream Info
+	info := stream.Stat()
+	fmt.Println("Stream Info: ", info)
+
 	// Initialize Routine
 	go sn.AuthStream.Read()
 }
@@ -35,6 +39,11 @@ func (sn *Node) NewAuthStream(stream network.Stream) {
 		stream:   stream,
 		callback: sn.Callback,
 	}
+
+	// Print Stream Info
+	info := stream.Stat()
+	fmt.Println("Stream Info: ", info)
+
 	// Initialize Routine
 	go sn.AuthStream.Read()
 }

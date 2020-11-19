@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	badger "github.com/dgraph-io/badger/v2"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/core/pkg/host"
@@ -15,7 +16,8 @@ import (
 // Callback returns updates from p2p
 type Callback interface {
 	OnRefreshed(s []byte)
-	OnInvited([]byte) //TODO add thumbnail
+	OnProcessed(result bool)
+	OnInvited([]byte)
 	OnResponded(decison bool)
 	OnProgressed([]byte)
 	OnCompleted([]byte)
@@ -60,6 +62,13 @@ func Start(data []byte, call Callback) *Node {
 		Olc:    connEvent.Olc,
 		Device: connEvent.Device,
 	}
+
+	// Initialize Datastore for File Queue
+	db, err := badger.Open(badger.DefaultOptions("").WithInMemory(true))
+	if err != nil {
+		fmt.Println("Failed to create file queue")
+	}
+	node.FileQueue = db
 
 	// setup local mDNS discovery
 	err = initMDNSDiscovery(ctx, node, call)

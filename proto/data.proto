@@ -16,3 +16,9 @@ message Metadata {
   int64 size = 4;
   string kind = 5;
 }
+
+// Processed File to be stored in Badger Store
+message Processed {
+  Metadata metadata = 1;
+  bytes thumbnail = 2;
+}

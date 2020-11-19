@@ -2,7 +2,6 @@ package file
 
 import (
 	"os"
-	"sync"
 
 	"fmt"
 	_ "image/gif"
@@ -46,7 +45,7 @@ func GetMetadata(filePath string) *pb.Metadata {
 }
 
 // ^ GetThumbnail creates thumbnail if necessary ^ //
-func GetThumbnail(wg *sync.WaitGroup, meta *pb.Metadata) []byte {
+func GetThumbnail(meta *pb.Metadata) []byte {
 	fmt.Println("Metadata type: " + meta.GetKind())
 	// Check for Image
 	if meta.GetKind() == "image" {

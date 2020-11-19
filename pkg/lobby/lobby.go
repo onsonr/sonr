@@ -51,9 +51,8 @@ func Enter(ctx context.Context, call LobbyCallback, ps *pubsub.PubSub, p *pb.Pee
 		return nil, err
 	}
 
-	// Initialize Badger DB
-	opt := badger.DefaultOptions("").WithInMemory(true)
-	db, err := badger.Open(opt)
+	// Initialize Datastore for Peers
+	db, err := badger.Open(badger.DefaultOptions("").WithInMemory(true))
 	if err != nil {
 		return nil, err
 	}
