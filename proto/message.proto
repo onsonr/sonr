@@ -33,7 +33,6 @@ message RefreshMessage {
 message AuthMessage {
   // Define Root Message
   Subject subject = 1;
-  bool decision = 2;
   Metadata metadata = 3;
   PeerInfo peerInfo = 4;
   bytes thumbnail = 5;
@@ -42,8 +41,7 @@ message AuthMessage {
   enum Subject {
     NONE = 0;
     REQUEST = 1;
-    RESPONSE = 2;
-    ACCEPT = 3;
-    DECLINE = 4;
+    ACCEPT = 2;
+    DECLINE = 3;
   }
 }

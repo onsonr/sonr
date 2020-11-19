@@ -81,8 +81,8 @@ func (asc *authStreamConn) Read() {
 	for {
 		// ** Read the Buffer **
 		authMsg := pb.AuthMessage{}
-		d, _ := ioutil.ReadAll(asc.readWriter)
-		err := proto.Unmarshal(d, &authMsg)
+		data, _ := ioutil.ReadAll(asc.readWriter)
+		err := proto.Unmarshal(data, &authMsg)
 		if err != nil {
 			fmt.Println("unmarshaling error: ", err)
 		}

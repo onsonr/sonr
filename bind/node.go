@@ -81,16 +81,22 @@ func (sn *Node) Update(dir float64) bool {
 }
 
 // Invite an available peer to transfer
-func (sn *Node) Invite(id string, filePath string) bool {
+func (sn *Node) Invite(data []byte) bool {
+	invite := pb.InviteEvent{}
+	err := proto.Unmarshal(data, &invite)
+	if err != nil {
+		fmt.Println("unmarshaling error: ", err)
+	}
+
 	// ** Get Required Data **
-	peerID, err := sn.Lobby.GetPeerID(id)
+	peerID, err := sn.Lobby.GetPeerID(invite.PeerId)
 	if err != nil {
 		fmt.Println("Search Error", err)
 		return false
 	}
 
 	// Create Metadata
-	meta := file.GetMetadata(filePath)
+	meta := file.GetMetadata(invite.FilePath)
 	if err != nil {
 		fmt.Println("Error Getting Metadata", err)
 		return false
@@ -114,7 +120,7 @@ func (sn *Node) Invite(id string, filePath string) bool {
 	}
 
 	// Marshal to Bytes
-	data, err := proto.Marshal(authPbf)
+	data, err = proto.Marshal(authPbf)
 	if err != nil {
 		log.Fatal("marshaling error: ", err)
 	}
