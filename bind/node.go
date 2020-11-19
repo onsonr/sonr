@@ -53,6 +53,9 @@ func (sn *Node) GetUser() []byte {
 		log.Fatal("marshaling error: ", err)
 	}
 
+	// Send Callback with Available Peers
+	sn.Callback.OnRefreshed(sn.Lobby.GetAllPeers())
+
 	// Return as JSON String
 	return data
 }
@@ -76,6 +79,9 @@ func (sn *Node) Update(dir float64) bool {
 		fmt.Println("Error Posting NotifUpdate: ", err)
 		return false
 	}
+
+	// Send Callback with Available Peers
+	sn.Callback.OnRefreshed(sn.Lobby.GetAllPeers())
 
 	// Return Success
 	return true

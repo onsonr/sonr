@@ -32,14 +32,16 @@ PB_FOR_DART="--dart_out=$(PLUGIN_PB_DIR)"
 all: protoc ios android 
 	@cd /System/Library/Sounds && afplay Hero.aiff
 	@echo ""
+	@echo ""
 	@echo "--------------------------------------------------------------"
 	@echo "-------- ✅ ✅ ✅   FINISHED ALL TASKS  ✅ ✅ ✅  --------------"
 	@echo "--------------------------------------------------------------"
 
 ios:
 	@echo ""
+	@echo ""
 	@echo "--------------------------------------------------------------"
-	@echo "-------------- 🎬 BEGIN IOS BIND 🎬 ---------------------------"
+	@echo "-------------- 📱 BEGIN IOS BIND 📱 ---------------------------"
 	@echo "--------------------------------------------------------------"
 	@rm -rf $(IOS_BUILDDIR) 2>/dev/null
 	@mkdir -p $(IOS_BUILDDIR)
@@ -54,8 +56,9 @@ ios:
 
 android:
 	@echo ""
+	@echo ""
 	@echo "--------------------------------------------------------------"
-	@echo "--------------- 🎬 BEGIN ANDROID BIND 🎬 ----------------------"
+	@echo "--------------- 🤖 BEGIN ANDROID BIND 🤖 ----------------------"
 	@echo "--------------------------------------------------------------"
 	@rm -rf $(ANDROID_BUILDDIR) 2>/dev/null
 	@mkdir -p $(ANDROID_BUILDDIR)
@@ -70,8 +73,9 @@ android:
 
 protoc:
 	@echo ""
+	@echo ""
 	@echo "--------------------------------------------------------------"
-	@echo "------------- 🎬 START PROTOBUFS COMPILE 🎬 -------------------"
+	@echo "------------- 🛸 START PROTOBUFS COMPILE 🛸 -------------------"
 	@echo "--------------------------------------------------------------"
 	@cd proto && protoc -I. --proto_path=$(PB_PATH) $(PB_FOR_GO) data.proto event.proto message.proto user.proto
 	@cd proto && protoc -I. --proto_path=$(PB_PATH) $(PB_FOR_DART) data.proto event.proto message.proto user.proto
