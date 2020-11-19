@@ -95,14 +95,14 @@ func (sn *Node) Queue(data []byte) {
 	err := proto.Unmarshal(data, &queuedFile)
 	if err != nil {
 		fmt.Println("unmarshaling error: ", err)
-		sn.Callback.OnProcessed(false)
+		sn.Callback.OnProcessed("")
 	}
 
 	// ** Create Metadata ** //
 	meta := file.GetMetadata(queuedFile.FilePath)
 	if err != nil {
 		fmt.Println("Error Getting Metadata", err)
-		sn.Callback.OnProcessed(false)
+		sn.Callback.OnProcessed("")
 	}
 
 	// ** Create Thumbnail ** //
@@ -129,16 +129,13 @@ func (sn *Node) Queue(data []byte) {
 		raw, err := proto.Marshal(processedFile)
 		if err != nil {
 			fmt.Println("Error Marshalling Processed File", err)
-			sn.Callback.OnProcessed(false)
+			sn.Callback.OnProcessed("")
 		}
 
 		// ** Add to Badger Store ** //
-		// Create Key/Value as Bytes
-		key := []byte(meta.FileId)
-
 		// Update peer in DataStore
 		err = sn.FileQueue.Update(func(txn *badger.Txn) error {
-			e := badger.NewEntry(key, raw)
+			e := badger.NewEntry([]byte(meta.FileId), raw)
 			err := txn.SetEntry(e)
 			return err
 		})
@@ -146,14 +143,14 @@ func (sn *Node) Queue(data []byte) {
 		// Check Error
 		if err != nil {
 			fmt.Println("Error Updating Peer in Badger", err)
-			sn.Callback.OnProcessed(false)
+			sn.Callback.OnProcessed("")
 		}
 		wg.Done()
 	}()
 
 	// Send Callback with file ID after both tasks finish
 	wg.Wait()
-	sn.Callback.OnProcessed(true)
+	sn.Callback.OnProcessed(meta.FileId)
 }
 
 // ^ Invite an available peer to transfer ^ //

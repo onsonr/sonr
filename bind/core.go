@@ -16,7 +16,7 @@ import (
 // Callback returns updates from p2p
 type Callback interface {
 	OnRefreshed(s []byte)
-	OnProcessed(result bool)
+	OnProcessed(fileId string)
 	OnInvited([]byte)
 	OnResponded(decison bool)
 	OnProgressed([]byte)
