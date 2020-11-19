@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	badger "github.com/dgraph-io/badger/v2"
-	"github.com/golang/protobuf/proto"
+	"google.golang.org/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/peer"
 	pb "github.com/sonr-io/core/pkg/models"
 )
