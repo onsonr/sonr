@@ -169,11 +169,29 @@ func (sn *Node) Invite(data []byte) bool {
 		return false
 	}
 
-	// Create Metadata
-	meta := file.GetMetadata(invite.FilePath)
+	// Retreive File Info from Memory Store
+	var fileInfoRaw []byte
+	err = sn.FileQueue.View(func(txn *badger.Txn) error {
+		item, err := txn.Get([]byte(invite.FileId))
+		err = item.Value(func(val []byte) error {
+			// Accessing val here is valid.
+			fmt.Printf("The Metadata is: %s\n", val)
+			return nil
+		})
+		if err != nil {
+			fmt.Println("Error retreiving file ", err)
+		}
+
+		// Alternatively, you could also use item.ValueCopy().
+		fileInfoRaw, err = item.ValueCopy(nil)
+		return nil
+	})
+
+	// Unmarshal into Protobuf
+	fileInfo := pb.Processed{}
+	err = proto.Unmarshal(fileInfoRaw, &fileInfo)
 	if err != nil {
-		fmt.Println("Error Getting Metadata", err)
-		return false
+		fmt.Println("Error unmarshaling msg into json: ", err)
 	}
 
 	// ** Create New Auth Stream **
@@ -187,9 +205,10 @@ func (sn *Node) Invite(data []byte) bool {
 
 	// Create Request Message
 	authPbf := &pb.AuthMessage{
-		Subject:  pb.AuthMessage_REQUEST,
-		PeerInfo: sn.GetPeerInfo(),
-		Metadata: meta,
+		Subject:   pb.AuthMessage_REQUEST,
+		PeerInfo:  sn.GetPeerInfo(),
+		Metadata:  fileInfo.Metadata,
+		Thumbnail: fileInfo.Thumbnail,
 	}
 
 	// ** Send Invite Message **

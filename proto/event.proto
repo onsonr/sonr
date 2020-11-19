@@ -16,12 +16,12 @@ message ConnectEvent {
 // [PLUGIN]
 // Authorization being sent from
 message QueueEvent {
-  string filePath = 2;
+  string filePath = 1;
 }
 
 // [PLUGIN]
 // Authorization being sent from
 message InviteEvent {
   string peerId = 1;
-  string filePath = 2;
+  string fileId = 2;
 }
