@@ -38,3 +38,7 @@ message LobbyMessage {
   string sender = 2;
   PeerInfo data = 3;
 }
+
+message LobbyRefresh {
+  repeated PeerInfo peer = 1;
+}
