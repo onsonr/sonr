@@ -104,21 +104,17 @@ func (asc *authStreamConn) Read() {
 				// Callback the Invitation
 				asc.callback.OnInvited(data)
 
-			// @ Response to Invite
-			case pb.AuthMessage_RESPONSE:
-				// Retreive Values
-				decs := authMsg.GetDecision()
-
+			// @ Peer Accepted Response to Invite
+			case pb.AuthMessage_ACCEPT:
+				fmt.Println("Auth Accepted")
 				// Callback to Proxies
-				asc.callback.OnResponded(decs)
+				asc.callback.OnResponded(true)
 
-				// Handle Decision
-				if authMsg.Decision {
-					fmt.Println("Auth Accepted")
-				} else {
-					// Reset
-					fmt.Println("Auth Declined")
-				}
+			// @ Peer Accepted Response to Invite
+			case pb.AuthMessage_DECLINE:
+				fmt.Println("Auth Declined")
+				// Callback to Proxies
+				asc.callback.OnResponded(false)
 			}
 		}
 		// ! Invalid Subject

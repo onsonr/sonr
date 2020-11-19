@@ -142,8 +142,7 @@ func (sn *Node) Invite(data []byte) bool {
 func (sn *Node) Accept() bool {
 	// Create Request Message
 	authMsg := &pb.AuthMessage{
-		Subject:  1,
-		Decision: true,
+		Subject: 2,
 	}
 
 	// Send Message
@@ -162,8 +161,7 @@ func (sn *Node) Accept() bool {
 func (sn *Node) Decline() bool {
 	// Create Request Message
 	authMsg := &pb.AuthMessage{
-		Subject:  1,
-		Decision: false,
+		Subject: 3,
 	}
 
 	// Send Message
