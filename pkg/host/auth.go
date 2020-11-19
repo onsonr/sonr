@@ -1,4 +1,4 @@
-package sonr
+package host
 
 import (
 	"bufio"
@@ -11,36 +11,44 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+// Callback returns updates from p2p
+type Callback interface {
+	OnInvited([]byte) //TODO add thumbnail
+	OnResponded(decison bool)
+}
+
 // ^ Auth Stream Struct ^ //
-type authStreamConn struct {
+type AuthStreamConn struct {
 	stream   network.Stream
 	callback Callback
 }
 
 // ^ Handle Incoming Stream ^ //
-func (sn *Node) HandleAuthStream(stream network.Stream) {
+func HandleAuthStream(stream network.Stream, call Callback) *AuthStreamConn {
 	// Create/Set Auth Stream
-	sn.AuthStream = authStreamConn{
+	asc := AuthStreamConn{
 		stream:   stream,
-		callback: sn.Callback,
+		callback: call,
 	}
 	// Initialize Routine
-	go sn.AuthStream.Read()
+	go asc.Read()
+	return &asc
 }
 
 // ^ Create New Stream ^ //
-func (sn *Node) NewAuthStream(stream network.Stream) {
+func NewAuthStream(stream network.Stream, call Callback) *AuthStreamConn {
 	// Create/Set Auth Stream
-	sn.AuthStream = authStreamConn{
+	asc := AuthStreamConn{
 		stream:   stream,
-		callback: sn.Callback,
+		callback: call,
 	}
 	// Initialize Routine
-	go sn.AuthStream.Read()
+	go asc.Read()
+	return &asc
 }
 
 // ^ Write Message on Stream ^ //
-func (asc *authStreamConn) Write(authMsg *pb.AuthMessage) error {
+func (asc *AuthStreamConn) Write(authMsg *pb.AuthMessage) error {
 	// Initialize
 	writer := bufio.NewWriter(asc.stream)
 	fmt.Println("Auth Msg Struct: ", authMsg)
@@ -60,7 +68,7 @@ func (asc *authStreamConn) Write(authMsg *pb.AuthMessage) error {
 }
 
 // ^ Read Data from Msgio ^ //
-func (asc *authStreamConn) Read() {
+func (asc *AuthStreamConn) Read() {
 	bufReader := bufio.NewReader(asc.stream)
 	for {
 		// ** Read the Buffer **

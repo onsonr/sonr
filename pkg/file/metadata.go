@@ -46,14 +46,13 @@ func GetMetadata(filePath string) *pb.Metadata {
 }
 
 // ^ GetThumbnail creates thumbnail if necessary ^ //
-func GetThumbnail(meta *pb.Metadata) []byte {
+func GetThumbnail(wg *sync.WaitGroup, meta *pb.Metadata) []byte {
 	fmt.Println("Metadata type: " + meta.GetKind())
 	// Check for Image
 	if meta.GetKind() == "image" {
 		fmt.Println("File is an image, Create a thumbnail")
 
 		// Initialize
-		var wg sync.WaitGroup
 		var thumb []byte
 
 		// Begin Wait Group
@@ -71,7 +70,6 @@ func GetThumbnail(meta *pb.Metadata) []byte {
 
 		// Log And Wait for Group
 		fmt.Println("Thumbnail created")
-		wg.Wait()
 		return thumb
 	}
 	fmt.Println("Not an image returning nil")

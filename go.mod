@@ -22,7 +22,6 @@ require (
 	github.com/libp2p/go-sockaddr v0.1.0 // indirect
 	github.com/multiformats/go-multiaddr v0.3.1
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
-	github.com/tessellator/protoio v0.3.0
 	golang.org/x/tools v0.0.0-20201109182053-3db8fd265862 // indirect
 	google.golang.org/protobuf v1.23.0
 )

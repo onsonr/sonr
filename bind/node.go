@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"sync"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/host"
@@ -82,6 +83,8 @@ func (sn *Node) Update(dir float64) bool {
 
 // Invite an available peer to transfer
 func (sn *Node) Invite(data []byte) bool {
+	// Initialize
+	var wg sync.WaitGroup
 	invite := pb.InviteEvent{}
 	err := proto.Unmarshal(data, &invite)
 	if err != nil {
@@ -103,7 +106,8 @@ func (sn *Node) Invite(data []byte) bool {
 	}
 
 	// Create Thumb Nail
-	thumb := file.GetThumbnail(meta)
+	thumb := file.GetThumbnail(&wg, meta)
+	wg.Wait()
 
 	// ** Create New Auth Stream **
 	stream, err := sn.Host.NewStream(sn.CTX, peerID, protocol.ID("/sonr/auth"))
