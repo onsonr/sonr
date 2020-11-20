@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	sh "github.com/sonr-io/core/pkg/host"
 	"github.com/sonr-io/core/pkg/lobby"
 	pb "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
@@ -45,7 +44,7 @@ func (sn *Node) GetUser() []byte {
 // ^ SetDiscovery initializes discovery protocols and creates pubsub service ^ //
 func (sn *Node) setDiscovery() {
 	// setup local mDNS discovery
-	err := sh.InitMDNSDiscovery(sn.CTX, sn.Host, sn.Call)
+	err := initMDNSDiscovery(sn.CTX, sn.Host, sn.Call)
 	if err != nil {
 		fmt.Printf("Error: %s, %s", err, pb.Error_NETWORK)
 	}

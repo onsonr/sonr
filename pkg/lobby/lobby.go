@@ -2,7 +2,6 @@ package lobby
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	badger "github.com/dgraph-io/badger/v2"
@@ -17,6 +16,7 @@ const ChatRoomBufSize = 128
 // LobbyCallback returns message from lobby
 type LobbyCallback interface {
 	OnEvent(data []byte)
+	OnRefreshed(data []byte)
 	OnError(data []byte)
 }
 
@@ -37,24 +37,6 @@ type Lobby struct {
 	ps     *pubsub.PubSub
 	topic  *pubsub.Topic
 	sub    *pubsub.Subscription
-}
-
-// ^ Sends generic protobuf with subject ^
-func (lob *Lobby) Callback(event pb.Callback_Event, providedData []byte) {
-	// Create Callback Protobuf
-	callback := &pb.Callback{
-		On:   event,
-		Data: providedData,
-	}
-
-	// Convert to bytes
-	raw, err := proto.Marshal(callback)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	// Send Generic callback
-	lob.call.OnEvent(raw)
 }
 
 // ^ Enter Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
@@ -98,12 +80,12 @@ func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, joinE
 		Sender: joinEvent.Peer.GetId(),
 	}
 
-	// Send Join Message
-	lob.Publish(msg)
-
 	// start reading messages
 	go lob.handleMessages()
 	go lob.handleEvents()
+
+	// Send Join Message
+	lob.Publish(msg)
 	return lob, nil
 }
 

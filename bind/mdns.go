@@ -1,4 +1,4 @@
-package host
+package sonr
 
 import (
 	"context"
@@ -29,7 +29,7 @@ type discoveryNotifee struct {
 }
 
 // initMDNSDiscovery creates an mDNS discovery service and attaches it to the libp2p Host.
-func InitMDNSDiscovery(ctx context.Context, h host.Host, call HostCallback) error {
+func initMDNSDiscovery(ctx context.Context, h host.Host, call HostCallback) error {
 	// setup mDNS discovery to find local peers
 	disc, err := discovery.NewMdnsService(ctx, h, discoveryInterval, discoveryServiceTag)
 	if err != nil {
