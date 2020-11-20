@@ -47,14 +47,14 @@ func (sn *Node) setDiscovery() {
 	// setup local mDNS discovery
 	err := sh.InitMDNSDiscovery(sn.CTX, sn.Host, sn.Call)
 	if err != nil {
-		LogError(err, 4, pb.Error_NETWORK)
+		fmt.Printf("Error: %s, %s", err, pb.Error_NETWORK)
 	}
 	fmt.Println("MDNS Started")
 
 	// create a new PubSub service using the GossipSub router
 	sn.PubSub, err = pubsub.NewGossipSub(sn.CTX, sn.Host)
 	if err != nil {
-		LogError(err, 4, pb.Error_NETWORK)
+		fmt.Printf("Error: %s, %s", err, pb.Error_NETWORK)
 	}
 	fmt.Println("GossipSub Created")
 }
@@ -70,7 +70,7 @@ func (sn *Node) setLobby(connEvent *pb.ConnectEvent) {
 	// Enter Lobby for Olc
 	lob, err := lobby.Enter(sn.CTX, sn.Call, sn.PubSub, joinEvent)
 	if err != nil {
-		LogError(err, 5, pb.Error_LOBBY)
+		fmt.Printf("Error: %s, %s", err, pb.Error_LOBBY)
 	}
 	fmt.Println("Lobby Joined")
 	sn.Lobby = *lob
@@ -88,7 +88,7 @@ func (sn *Node) setUser(connEvent *pb.ConnectEvent) {
 	// Check for Host
 	if sn.Host == nil {
 		err := errors.New("setUser: Host has not been called")
-		LogError(err, 3, pb.Error_INFO)
+		fmt.Printf("Error: %s, %s", err, pb.Error_INFO)
 	}
 
 	// Set Profile

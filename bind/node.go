@@ -120,7 +120,7 @@ func (sn *Node) Invite(data []byte) bool {
 	// ** Get Current File ** //
 	cachedFile := sn.Profile.GetCurrentFile()
 	if cachedFile == nil {
-		LogError(nil, 4, pb.Error_PEER)
+		fmt.Printf("Error: %s, %s", err, pb.Error_PEER)
 		return false
 	}
 

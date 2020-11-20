@@ -2,6 +2,7 @@ package sonr
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/libp2p/go-libp2p-core/protocol"
 	sh "github.com/sonr-io/core/pkg/host"
@@ -28,13 +29,13 @@ func Start(data []byte, call Callback) *Node {
 	connEvent := pb.ConnectEvent{}
 	err := proto.Unmarshal(data, &connEvent)
 	if err != nil {
-		LogError(err, 4, pb.Error_PROTO)
+		fmt.Printf("Error: %s, %s", err, pb.Error_PROTO)
 	}
 
 	// @1. Create Host
 	node.Host, err = sh.NewHost(&node.CTX)
 	if err != nil {
-		LogError(err, 5, pb.Error_NETWORK)
+		fmt.Printf("Error: %s, %s", err, pb.Error_NETWORK)
 		return nil
 	}
 
@@ -65,7 +66,7 @@ func (sn *Node) Callback(event pb.Callback_Event, providedData []byte) {
 	// Convert to bytes
 	raw, err := proto.Marshal(callback)
 	if err != nil {
-		LogError(err, 4, pb.Error_BYTES)
+		fmt.Printf("Error: %s, %s", err, pb.Error_BYTES)
 	}
 
 	// Send Generic callback
