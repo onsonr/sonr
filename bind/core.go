@@ -24,8 +24,9 @@ type Callback interface {
 // Start begins the mobile host
 func Start(data []byte, call Callback) *Node {
 	// Create Context and Node - Begin Setuo
+	ctx := context.Background()
 	node := new(Node)
-	node.CTX = context.Background()
+	node.CTX = ctx
 	node.Call = call
 
 	// Unmarshal Connection Event

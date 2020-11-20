@@ -75,7 +75,7 @@ func Enter(ctx context.Context, call LobbyCallback, ps *pubsub.PubSub, joinEvent
 	msg := &pb.LobbyMessage{
 		Event:  "Join",
 		Data:   joinEvent.Peer,
-		Sender: joinEvent.Peer.GetPeerId(),
+		Sender: joinEvent.Peer.GetId(),
 	}
 
 	// Send Join Message

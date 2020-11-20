@@ -28,14 +28,20 @@ message RefreshMessage {
   repeated PeerInfo availablePeers = 3;
 }
 
+// Processed File to be stored in Badger Store
+message ProcessedMessage {
+  Metadata metadata = 1;
+  bytes thumbnail = 2;
+}
+
 // [CORE]
 // Authorization being sent from
 message AuthMessage {
   // Define Root Message
-  Subject subject = 1;
+  PeerInfo peer = 1;
+  Subject subject = 2;
   Metadata metadata = 3;
-  PeerInfo peerInfo = 4;
-  bytes thumbnail = 5;
+  bytes thumbnail = 4;
 
   // Define Subject
   enum Subject {
@@ -43,5 +49,64 @@ message AuthMessage {
     REQUEST = 1;
     ACCEPT = 2;
     DECLINE = 3;
+  }
+}
+
+// Define Error Occurance
+message ErrorMessage {
+  Kind kind = 1;
+  string message = 2;
+  Level level = 3;
+
+  // Level of Error Issue
+  enum Level {
+    NONE = 0;
+    MINOR = 1;
+    WARNING = 2;
+    MAJOR = 3;
+    CRITICAL = 4;
+    PANIC = 5;
+  }
+
+  // Kind of Error Issue
+  enum Kind {
+    NETWORK = 0;
+    LOBBY = 1;
+    DISCOVERY = 2;
+    PROTO = 3;
+    BYTES = 4;
+    JSON = 5;
+    PEER = 6;
+    BADGER = 7;
+    INFO = 8;
+    BUFFER = 9;
+  }
+}
+
+// Defining Callback structure for Uniform Handling
+message Callback {
+  Type callbackType = 1;
+  oneof type {
+    ConnectedMessage connected = 2;
+    RefreshMessage refreshed = 3;
+    ProcessedMessage processed = 4;
+    AuthMessage invited = 5;
+    AuthMessage responded = 6;
+    bytes transferring = 7; // TODO
+    bytes completed = 8;    // TODO
+    ErrorMessage error = 9;
+  }
+
+  // Define Subject
+  enum Type {
+    NONE = 0;
+    CONNECTED = 1;
+    REFRESHED = 2;
+    PROCESSED = 3;
+    INVITED = 4;
+    RESPONDED = 5;
+    TRANFERRING = 6;
+    COMPLETED = 7;
+    ERROR = 8;
   }
 }

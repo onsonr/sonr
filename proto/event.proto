@@ -35,13 +35,13 @@ message QueueEvent {
 // [PLUGIN]
 // User sent invite
 message InviteEvent {
-  string peerId = 1;
+  PeerInfo peer = 1;
   string fileId = 2;
 }
 
 // [PLUGIN]
 // User responded invite
 message RespondEvent {
-  string peerId = 1;
+  PeerInfo peer = 1;
   bool decision = 2;
 }

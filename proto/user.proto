@@ -17,7 +17,7 @@ message Contact {
 
 // Define PeerInfo: Basic Info Sent to Peers
 message PeerInfo {
-  string peerId = 1;
+  string id = 1;
   string device = 2;
   string firstName = 3;
   string lastName = 4;

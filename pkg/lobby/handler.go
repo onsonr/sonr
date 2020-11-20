@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"google.golang.org/protobuf/proto"
 	pb "github.com/sonr-io/core/pkg/models"
+	"google.golang.org/protobuf/proto"
 )
 
 // ^ 1. handleMessages pulls messages from the pubsub topic and pushes them onto the Messages channel. ^
@@ -19,7 +19,7 @@ func (lob *Lobby) handleMessages() {
 		}
 
 		// Only forward messages delivered by others
-		if msg.ReceivedFrom.String() == lob.Self.GetPeerId() {
+		if msg.ReceivedFrom.String() == lob.Self.GetId() {
 			continue
 		}
 
@@ -54,9 +54,9 @@ func (lob *Lobby) handleEvents() {
 				}
 
 				// Call Update
-				lob.updatePeer(m.Data.GetPeerId(), value)
+				lob.updatePeer(m.Data.GetId(), value)
 			} else if m.Event == "Exit" {
-				lob.removePeer(m.Data.GetPeerId())
+				lob.removePeer(m.Data.GetId())
 			}
 
 		// ** Refresh and Validate Lobby Peers Periodically ** //

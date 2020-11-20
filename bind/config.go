@@ -14,7 +14,7 @@ import (
 // ^ Returns public data info ^ //
 func (sn *Node) getPeerInfo() *pb.PeerInfo {
 	return &pb.PeerInfo{
-		PeerId:     sn.Host.ID().String(),
+		Id:         sn.Host.ID().String(),
 		Device:     sn.Profile.Device,
 		FirstName:  sn.Contact.FirstName,
 		LastName:   sn.Contact.LastName,

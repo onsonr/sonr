@@ -95,7 +95,7 @@ func (sn *Node) Queue(data []byte) bool {
 	// ** Create Processed File ** //
 	go func() {
 		// Create Type
-		processedFile := &pb.Processed{
+		processedFile := &pb.ProcessedMessage{
 			Metadata:  meta,
 			Thumbnail: thumb,
 		}
@@ -149,7 +149,7 @@ func (sn *Node) Invite(data []byte) bool {
 	}
 
 	// ** Get Required Data **
-	peerID, err := sn.Lobby.GetPeerID(invite.PeerId)
+	peerID, err := sn.Lobby.GetPeerID(invite.Peer.Id)
 	if err != nil {
 		fmt.Println("Search Error", err)
 		return false
@@ -177,7 +177,7 @@ func (sn *Node) Invite(data []byte) bool {
 	}
 
 	// Unmarshal into Protobuf
-	fileInfo := pb.Processed{}
+	fileInfo := pb.ProcessedMessage{}
 	err = proto.Unmarshal(fileInfoRaw, &fileInfo)
 	if err != nil {
 		fmt.Println("Error unmarshaling msg into json: ", err)
@@ -196,7 +196,7 @@ func (sn *Node) Invite(data []byte) bool {
 	// Create Request Message
 	authPbf := &pb.AuthMessage{
 		Subject:   pb.AuthMessage_REQUEST,
-		PeerInfo:  sn.getPeerInfo(),
+		Peer:      sn.getPeerInfo(),
 		Metadata:  fileInfo.Metadata,
 		Thumbnail: fileInfo.Thumbnail,
 	}
@@ -228,14 +228,14 @@ func (sn *Node) Respond(data []byte) bool {
 	if response.Decision == true {
 		// Set as Accept
 		authMsg = &pb.AuthMessage{
-			Subject:  pb.AuthMessage_ACCEPT,
-			PeerInfo: sn.getPeerInfo(),
+			Subject: pb.AuthMessage_ACCEPT,
+			Peer:    sn.getPeerInfo(),
 		}
 	} else {
 		// Set as Decline
 		authMsg = &pb.AuthMessage{
-			Subject:  pb.AuthMessage_DECLINE,
-			PeerInfo: sn.getPeerInfo(),
+			Subject: pb.AuthMessage_DECLINE,
+			Peer:    sn.getPeerInfo(),
 		}
 	}
 
