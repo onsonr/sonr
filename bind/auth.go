@@ -15,6 +15,7 @@ import (
 type authStreamConn struct {
 	stream   network.Stream
 	callback Callback
+	self     *Node
 }
 
 // ^ Handle Incoming Stream ^ //
@@ -23,6 +24,7 @@ func (sn *Node) HandleAuthStream(stream network.Stream) {
 	sn.AuthStream = authStreamConn{
 		stream:   stream,
 		callback: sn.Call,
+		self:     sn,
 	}
 	// Print Stream Info
 	info := stream.Stat()
@@ -38,6 +40,7 @@ func (sn *Node) NewAuthStream(stream network.Stream) {
 	sn.AuthStream = authStreamConn{
 		stream:   stream,
 		callback: sn.Call,
+		self:     sn,
 	}
 
 	// Print Stream Info
@@ -58,19 +61,20 @@ func (asc *authStreamConn) Write(authMsg *pb.AuthMessage) error {
 	json, err := protojson.Marshal(authMsg)
 	if err != nil {
 		fmt.Println("Error Marshalling json: ", err)
+		asc.self.NewError(err, pb.Error_MINOR, pb.Error_JSON, json)
 	}
 
 	// Write Message with "Delimiter"=(Seperator for Message Values)
 	_, err = writer.WriteString(fmt.Sprintf("%s\n", string(json)))
 	if err != nil {
-		fmt.Println("Error writing to buffer")
+		asc.self.NewError(err, pb.Error_CRITICAL, pb.Error_BUFFER, writer)
 		return err
 	}
 
 	// Write buffered data
 	err = writer.Flush()
 	if err != nil {
-		fmt.Println("Error flushing buffer")
+		asc.self.NewError(err, pb.Error_CRITICAL, pb.Error_BUFFER, writer)
 		return err
 	}
 	return nil
@@ -87,7 +91,7 @@ func (asc *authStreamConn) Read() error {
 		}
 		// Buffer Error
 		if err != nil {
-			fmt.Println("Error reading from buffer")
+			asc.self.NewError(err, pb.Error_CRITICAL, pb.Error_BUFFER)
 			return err
 		}
 
@@ -113,13 +117,13 @@ func (asc *authStreamConn) handleMessage(data string) {
 	authMsg := pb.AuthMessage{}
 	err := protojson.Unmarshal([]byte(data), &authMsg)
 	if err != nil {
-		fmt.Println("Error unmarshaling msg into json: ", err)
+		asc.self.NewError(err, pb.Error_CRITICAL, pb.Error_PROTO, &authMsg)
 	}
 
 	// Convert Protobuf to bytes
 	authRaw, err := proto.Marshal(&authMsg)
 	if err != nil {
-		fmt.Println("Error Marshalling Processed File", err)
+		asc.self.NewError(err, pb.Error_CRITICAL, pb.Error_BYTES, &authRaw)
 	}
 
 	// ** Contains Data **
@@ -130,7 +134,7 @@ func (asc *authStreamConn) handleMessage(data string) {
 		// Retreive Values
 		data, err := proto.Marshal(&authMsg)
 		if err != nil {
-			fmt.Println("Error Marshaling RefreshMessage ", err)
+			asc.self.NewError(err, pb.Error_CRITICAL, pb.Error_PROTO, data)
 		}
 
 		// Callback the Invitation
@@ -151,5 +155,6 @@ func (asc *authStreamConn) handleMessage(data string) {
 	// ! Invalid Subject
 	default:
 		fmt.Println("Not a subject", authMsg.Subject)
+		asc.self.NewError(err, pb.Error_MINOR, pb.Error_PEER, authMsg.Subject)
 	}
 }

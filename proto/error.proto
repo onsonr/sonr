@@ -33,5 +33,6 @@ message Error {
     PEER = 6;
     BADGER = 7;
     INFO = 8;
+    BUFFER = 9;
   }
 }

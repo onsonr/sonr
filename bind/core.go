@@ -32,14 +32,14 @@ func Start(data []byte, call Callback) *Node {
 	connEvent := pb.ConnectEvent{}
 	err := proto.Unmarshal(data, &connEvent)
 	if err != nil {
-		node.NewError(err, pb.Error_CRITICAL, pb.Error_PROTO)
+		node.NewError(err, pb.Error_CRITICAL, pb.Error_PROTO, connEvent)
 		return nil
 	}
 
 	// @1. Create Host
 	node.Host, err = host.NewHost(&node.CTX)
 	if err != nil {
-		node.NewError(err, pb.Error_PANIC, pb.Error_NETWORK)
+		node.NewError(err, pb.Error_PANIC, pb.Error_NETWORK, node.Host)
 		return nil
 	}
 
@@ -49,13 +49,13 @@ func Start(data []byte, call Callback) *Node {
 	// @3. Set Node User Information
 	err = node.setUser(&connEvent)
 	if err != nil {
-		node.NewError(err, pb.Error_WARNING, pb.Error_INFO)
+		node.NewError(err, pb.Error_WARNING, pb.Error_INFO, node.Profile)
 	}
 
 	// @4. Initialize Datastore for File Queue
 	err = node.setStore()
 	if err != nil {
-		node.NewError(err, pb.Error_WARNING, pb.Error_INFO)
+		node.NewError(err, pb.Error_WARNING, pb.Error_INFO, node.FileQueue)
 	}
 
 	// @5. Setup Discovery
