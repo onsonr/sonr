@@ -16,10 +16,12 @@ message Error {
 
   // Level of Error Issue
   enum Level {
-    MINOR = 0;
-    WARNING = 1;
-    CRITICAL = 2;
-    PANIC = 3;
+    NONE = 0;
+    MINOR = 1;
+    WARNING = 2;
+    MAJOR = 3;
+    CRITICAL = 4;
+    PANIC = 5;
   }
 
   // Kind of Error Issue

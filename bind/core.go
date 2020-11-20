@@ -32,14 +32,14 @@ func Start(data []byte, call Callback) *Node {
 	connEvent := pb.ConnectEvent{}
 	err := proto.Unmarshal(data, &connEvent)
 	if err != nil {
-		node.NewError(err, pb.Error_CRITICAL, pb.Error_PROTO, connEvent)
+		node.NewError(err, 4, pb.Error_PROTO)
 		return nil
 	}
 
 	// @1. Create Host
 	node.Host, err = host.NewHost(&node.CTX)
 	if err != nil {
-		node.NewError(err, pb.Error_PANIC, pb.Error_NETWORK, node.Host)
+		node.NewError(err, 5, pb.Error_NETWORK)
 		return nil
 	}
 
@@ -49,25 +49,25 @@ func Start(data []byte, call Callback) *Node {
 	// @3. Set Node User Information
 	err = node.setUser(&connEvent)
 	if err != nil {
-		node.NewError(err, pb.Error_WARNING, pb.Error_INFO, node.Profile)
+		node.NewError(err, 3, pb.Error_INFO)
 	}
 
 	// @4. Initialize Datastore for File Queue
 	err = node.setStore()
 	if err != nil {
-		node.NewError(err, pb.Error_WARNING, pb.Error_INFO, node.FileQueue)
+		node.NewError(err, 4, pb.Error_INFO)
 	}
 
 	// @5. Setup Discovery
 	err = node.setDiscovery()
 	if err != nil {
-		node.NewError(err, pb.Error_CRITICAL, pb.Error_NETWORK)
+		node.NewError(err, 4, pb.Error_NETWORK)
 	}
 
 	// @6. Enter Lobby
 	err = node.setLobby(&connEvent)
 	if err != nil {
-		node.NewError(err, pb.Error_CRITICAL, pb.Error_LOBBY)
+		node.NewError(err, 5, pb.Error_LOBBY)
 	}
 
 	// ** Callback Node User Information ** //

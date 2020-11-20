@@ -61,20 +61,20 @@ func (asc *authStreamConn) Write(authMsg *pb.AuthMessage) error {
 	json, err := protojson.Marshal(authMsg)
 	if err != nil {
 		fmt.Println("Error Marshalling json: ", err)
-		asc.self.NewError(err, pb.Error_MINOR, pb.Error_JSON, json)
+		asc.self.NewError(err, 4, pb.Error_JSON)
 	}
 
 	// Write Message with "Delimiter"=(Seperator for Message Values)
 	_, err = writer.WriteString(fmt.Sprintf("%s\n", string(json)))
 	if err != nil {
-		asc.self.NewError(err, pb.Error_CRITICAL, pb.Error_BUFFER, writer)
+		asc.self.NewError(err, 4, pb.Error_BUFFER)
 		return err
 	}
 
 	// Write buffered data
 	err = writer.Flush()
 	if err != nil {
-		asc.self.NewError(err, pb.Error_CRITICAL, pb.Error_BUFFER, writer)
+		asc.self.NewError(err, 4, pb.Error_BUFFER)
 		return err
 	}
 	return nil
@@ -91,7 +91,7 @@ func (asc *authStreamConn) Read() error {
 		}
 		// Buffer Error
 		if err != nil {
-			asc.self.NewError(err, pb.Error_CRITICAL, pb.Error_BUFFER)
+			asc.self.NewError(err, 4, pb.Error_BUFFER)
 			return err
 		}
 
@@ -117,13 +117,13 @@ func (asc *authStreamConn) handleMessage(data string) {
 	authMsg := pb.AuthMessage{}
 	err := protojson.Unmarshal([]byte(data), &authMsg)
 	if err != nil {
-		asc.self.NewError(err, pb.Error_CRITICAL, pb.Error_PROTO, &authMsg)
+		asc.self.NewError(err, 4, pb.Error_PROTO)
 	}
 
 	// Convert Protobuf to bytes
 	authRaw, err := proto.Marshal(&authMsg)
 	if err != nil {
-		asc.self.NewError(err, pb.Error_CRITICAL, pb.Error_BYTES, &authRaw)
+		asc.self.NewError(err, 3, pb.Error_BYTES)
 	}
 
 	// ** Contains Data **
@@ -134,7 +134,7 @@ func (asc *authStreamConn) handleMessage(data string) {
 		// Retreive Values
 		data, err := proto.Marshal(&authMsg)
 		if err != nil {
-			asc.self.NewError(err, pb.Error_CRITICAL, pb.Error_PROTO, data)
+			asc.self.NewError(err, 4, pb.Error_PROTO)
 		}
 
 		// Callback the Invitation
@@ -155,6 +155,6 @@ func (asc *authStreamConn) handleMessage(data string) {
 	// ! Invalid Subject
 	default:
 		fmt.Println("Not a subject", authMsg.Subject)
-		asc.self.NewError(err, pb.Error_MINOR, pb.Error_PEER, authMsg.Subject)
+		asc.self.NewError(err, 1, pb.Error_PEER)
 	}
 }

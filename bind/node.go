@@ -57,11 +57,6 @@ func (sn *Node) Update(data []byte) bool {
 		fmt.Println("Error Posting NotifUpdate: ", err)
 		return false
 	}
-
-	// Send Callback with Available Peers
-	// sn.Callback.OnRefreshed(sn.Lobby.GetAllPeers())
-
-	// Return Success
 	return true
 }
 
@@ -167,16 +162,19 @@ func (sn *Node) Invite(data []byte) bool {
 		err = item.Value(func(val []byte) error {
 			// Accessing val here is valid.
 			fmt.Printf("The Metadata is: %s\n", val)
+			fileInfoRaw = append([]byte{}, val...)
 			return nil
 		})
 		if err != nil {
-			fmt.Println("Error retreiving file ", err)
+			return err
 		}
-
-		// Alternatively, you could also use item.ValueCopy().
-		fileInfoRaw, err = item.ValueCopy(nil)
 		return nil
 	})
+
+	// Send Error
+	if err != nil {
+		sn.NewError(err, 4, pb.Error_BADGER)
+	}
 
 	// Unmarshal into Protobuf
 	fileInfo := pb.Processed{}
