@@ -48,14 +48,14 @@ func (sn *Node) setDiscovery() {
 	// setup local mDNS discovery
 	err := sh.InitMDNSDiscovery(sn.CTX, sn.Host, sn.Call)
 	if err != nil {
-		sn.NewError(err, 4, pb.Error_NETWORK)
+		LogError(err, 4, pb.Error_NETWORK)
 	}
 	fmt.Println("MDNS Started")
 
 	// create a new PubSub service using the GossipSub router
 	sn.PubSub, err = pubsub.NewGossipSub(sn.CTX, sn.Host)
 	if err != nil {
-		sn.NewError(err, 4, pb.Error_NETWORK)
+		LogError(err, 4, pb.Error_NETWORK)
 	}
 	fmt.Println("GossipSub Created")
 }
@@ -71,7 +71,7 @@ func (sn *Node) setLobby(connEvent *pb.ConnectEvent) {
 	// Enter Lobby for Olc
 	lob, err := lobby.Enter(sn.CTX, sn.Call, sn.PubSub, joinEvent)
 	if err != nil {
-		sn.NewError(err, 5, pb.Error_LOBBY)
+		LogError(err, 5, pb.Error_LOBBY)
 	}
 	fmt.Println("Lobby Joined")
 	sn.Lobby = *lob
@@ -83,7 +83,7 @@ func (sn *Node) setStore() {
 	store, err := badger.Open(badger.DefaultOptions("").WithInMemory(true))
 	if err != nil {
 		fmt.Println("Failed to create file queue")
-		sn.NewError(err, 4, pb.Error_INFO)
+		LogError(err, 4, pb.Error_INFO)
 	}
 
 	// Set Store
@@ -102,7 +102,7 @@ func (sn *Node) setUser(connEvent *pb.ConnectEvent) {
 	// Check for Host
 	if sn.Host == nil {
 		err := errors.New("setUser: Host has not been called")
-		sn.NewError(err, 3, pb.Error_INFO)
+		LogError(err, 3, pb.Error_INFO)
 	}
 
 	// Set Profile

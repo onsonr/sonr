@@ -173,7 +173,7 @@ func (sn *Node) Invite(data []byte) bool {
 
 	// Send Error
 	if err != nil {
-		sn.NewError(err, 4, pb.Error_BADGER)
+		LogError(err, 4, pb.Error_BADGER)
 	}
 
 	// Unmarshal into Protobuf

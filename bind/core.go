@@ -26,13 +26,15 @@ func Start(data []byte, call Callback) *Node {
 
 	// Unmarshal Connection Event
 	connEvent := pb.ConnectEvent{}
-	node.BytesToProto(data, &connEvent)
+	err := proto.Unmarshal(data, &connEvent)
+	if err != nil {
+		LogError(err, 4, pb.Error_PROTO)
+	}
 
 	// @1. Create Host
-	var err error
 	node.Host, err = sh.NewHost(&node.CTX)
 	if err != nil {
-		node.NewError(err, 5, pb.Error_NETWORK)
+		LogError(err, 5, pb.Error_NETWORK)
 		return nil
 	}
 
@@ -52,7 +54,6 @@ func Start(data []byte, call Callback) *Node {
 	node.setLobby(&connEvent)
 
 	// ** Callback Node User Information ** //
-	node.Callback(pb.Callback_CONNECTED, node.GetUser())
 	return node
 }
 
@@ -67,7 +68,7 @@ func (sn *Node) Callback(event pb.Callback_Event, providedData []byte) {
 	// Convert to bytes
 	raw, err := proto.Marshal(callback)
 	if err != nil {
-		sn.NewError(err, 4, pb.Error_BYTES)
+		LogError(err, 4, pb.Error_BYTES)
 	}
 
 	// Send Generic callback

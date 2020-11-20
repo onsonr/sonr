@@ -61,20 +61,20 @@ func (asc *authStreamConn) Write(authMsg *pb.AuthMessage) error {
 	json, err := protojson.Marshal(authMsg)
 	if err != nil {
 		fmt.Println("Error Marshalling json: ", err)
-		asc.self.NewError(err, 4, pb.Error_JSON)
+		LogError(err, 4, pb.Error_JSON)
 	}
 
 	// Write Message with "Delimiter"=(Seperator for Message Values)
 	_, err = writer.WriteString(fmt.Sprintf("%s\n", string(json)))
 	if err != nil {
-		asc.self.NewError(err, 4, pb.Error_BUFFER)
+		LogError(err, 4, pb.Error_BUFFER)
 		return err
 	}
 
 	// Write buffered data
 	err = writer.Flush()
 	if err != nil {
-		asc.self.NewError(err, 4, pb.Error_BUFFER)
+		LogError(err, 4, pb.Error_BUFFER)
 		return err
 	}
 	return nil
@@ -91,7 +91,7 @@ func (asc *authStreamConn) Read() error {
 		}
 		// Buffer Error
 		if err != nil {
-			asc.self.NewError(err, 4, pb.Error_BUFFER)
+			LogError(err, 4, pb.Error_BUFFER)
 			return err
 		}
 
@@ -117,13 +117,13 @@ func (asc *authStreamConn) handleMessage(data string) {
 	authMsg := pb.AuthMessage{}
 	err := protojson.Unmarshal([]byte(data), &authMsg)
 	if err != nil {
-		asc.self.NewError(err, 4, pb.Error_PROTO)
+		LogError(err, 4, pb.Error_PROTO)
 	}
 
 	// Convert Protobuf to bytes
 	authRaw, err := proto.Marshal(&authMsg)
 	if err != nil {
-		asc.self.NewError(err, 3, pb.Error_BYTES)
+		LogError(err, 3, pb.Error_BYTES)
 	}
 
 	// ** Contains Data **
@@ -149,6 +149,6 @@ func (asc *authStreamConn) handleMessage(data string) {
 	// ! Invalid Subject
 	default:
 		fmt.Println("Not a subject", authMsg.Subject)
-		asc.self.NewError(err, 1, pb.Error_PEER)
+		LogError(err, 1, pb.Error_PEER)
 	}
 }
