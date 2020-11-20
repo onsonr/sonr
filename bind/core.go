@@ -71,7 +71,7 @@ func Start(data []byte, call Callback) *Node {
 	}
 
 	// ** Callback Node User Information ** //
-	call.OnConnected(node.getUser())
+	call.OnConnected(node.GetUser())
 	return node
 }
 

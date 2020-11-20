@@ -24,7 +24,7 @@ func (sn *Node) getPeerInfo() *pb.PeerInfo {
 }
 
 // ^ GetUser returns profile and contact in a map as string ^ //
-func (sn *Node) getUser() []byte {
+func (sn *Node) GetUser() []byte {
 	// Create User Object
 	user := &pb.ConnectedMessage{
 		HostId:  sn.Profile.HostId,
