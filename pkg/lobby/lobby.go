@@ -2,6 +2,7 @@ package lobby
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	badger "github.com/dgraph-io/badger/v2"
@@ -15,7 +16,8 @@ const ChatRoomBufSize = 128
 
 // LobbyCallback returns message from lobby
 type LobbyCallback interface {
-	OnRefreshed([]byte)
+	OnEvent(data []byte)
+	OnError(data []byte)
 }
 
 // Lobby represents a subscription to a single PubSub topic. Messages
@@ -28,17 +30,35 @@ type Lobby struct {
 	Self     *pb.PeerInfo
 
 	// Private Vars
-	ctx      context.Context
-	callback LobbyCallback
-	doneCh   chan struct{}
-	peerDB   *badger.DB
-	ps       *pubsub.PubSub
-	topic    *pubsub.Topic
-	sub      *pubsub.Subscription
+	ctx    context.Context
+	call   LobbyCallback
+	doneCh chan struct{}
+	peerDB *badger.DB
+	ps     *pubsub.PubSub
+	topic  *pubsub.Topic
+	sub    *pubsub.Subscription
 }
 
-// Enter Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby
-func Enter(ctx context.Context, call LobbyCallback, ps *pubsub.PubSub, joinEvent *pb.JoinEvent) (*Lobby, error) {
+// ^ Sends generic protobuf with subject ^
+func (lob *Lobby) Callback(event pb.Callback_Event, providedData []byte) {
+	// Create Callback Protobuf
+	callback := &pb.Callback{
+		On:   event,
+		Data: providedData,
+	}
+
+	// Convert to bytes
+	raw, err := proto.Marshal(callback)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// Send Generic callback
+	lob.call.OnEvent(raw)
+}
+
+// ^ Enter Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
+func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, joinEvent *pb.JoinEvent) (*Lobby, error) {
 	// Join the pubsub Topic
 	topic, err := ps.Join(joinEvent.Olc)
 	if err != nil {
@@ -60,7 +80,7 @@ func Enter(ctx context.Context, call LobbyCallback, ps *pubsub.PubSub, joinEvent
 	// Create Lobby Type
 	lob := &Lobby{
 		ctx:      ctx,
-		callback: call,
+		call:     callback,
 		doneCh:   make(chan struct{}, 1),
 		peerDB:   db,
 		ps:       ps,

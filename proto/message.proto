@@ -72,33 +72,25 @@ message ErrorMessage {
   enum Kind {
     NETWORK = 0;
     LOBBY = 1;
-    DISCOVERY = 2;
-    PROTO = 3;
-    BYTES = 4;
-    JSON = 5;
-    PEER = 6;
-    BADGER = 7;
-    INFO = 8;
-    BUFFER = 9;
+    AUTH = 2;
+    PEER = 3;
+    BADGER = 4;
+    DATA = 5;
+    STREAM = 6;
+    EXPERIMENTAL = 7;
+    PROTO = 8;
+    BYTES = 9;
+    JSON = 10;
   }
 }
 
 // Defining Callback structure for Uniform Handling
 message Callback {
-  Type callbackType = 1;
-  oneof type {
-    ConnectedMessage connected = 2;
-    RefreshMessage refreshed = 3;
-    ProcessedMessage processed = 4;
-    AuthMessage invited = 5;
-    AuthMessage responded = 6;
-    bytes transferring = 7; // TODO
-    bytes completed = 8;    // TODO
-    ErrorMessage error = 9;
-  }
+  Event on = 1;
+  bytes data = 2;
 
   // Define Subject
-  enum Type {
+  enum Event {
     NONE = 0;
     CONNECTED = 1;
     REFRESHED = 2;

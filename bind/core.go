@@ -4,20 +4,15 @@ import (
 	"context"
 
 	"github.com/libp2p/go-libp2p-core/protocol"
-	"github.com/sonr-io/core/pkg/host"
+	sh "github.com/sonr-io/core/pkg/host"
 	pb "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
 )
 
 // Callback returns updates from p2p
 type Callback interface {
-	OnConnected(data []byte)
-	OnRefreshed(data []byte)
-	OnProcessed(data []byte)
-	OnInvited(data []byte)
-	OnResponded(data []byte)
-	OnTransferring(data []byte)
-	OnCompleted(data []byte)
+	OnEvent(data []byte)
+	OnProgress(data []byte)
 	OnError(data []byte)
 }
 
@@ -31,14 +26,11 @@ func Start(data []byte, call Callback) *Node {
 
 	// Unmarshal Connection Event
 	connEvent := pb.ConnectEvent{}
-	err := proto.Unmarshal(data, &connEvent)
-	if err != nil {
-		node.NewError(err, 4, pb.Error_PROTO)
-		return nil
-	}
+	node.BytesToProto(data, &connEvent)
 
 	// @1. Create Host
-	node.Host, err = host.NewHost(&node.CTX)
+	var err error
+	node.Host, err = sh.NewHost(&node.CTX)
 	if err != nil {
 		node.NewError(err, 5, pb.Error_NETWORK)
 		return nil
@@ -48,35 +40,41 @@ func Start(data []byte, call Callback) *Node {
 	node.Host.SetStreamHandler(protocol.ID("/sonr/auth"), node.HandleAuthStream)
 
 	// @3. Set Node User Information
-	err = node.setUser(&connEvent)
-	if err != nil {
-		node.NewError(err, 3, pb.Error_INFO)
-	}
+	node.setUser(&connEvent)
 
 	// @4. Initialize Datastore for File Queue
-	err = node.setStore()
-	if err != nil {
-		node.NewError(err, 4, pb.Error_INFO)
-	}
+	node.setStore()
 
 	// @5. Setup Discovery
-	err = node.setDiscovery()
-	if err != nil {
-		node.NewError(err, 4, pb.Error_NETWORK)
-	}
+	node.setDiscovery()
 
 	// @6. Enter Lobby
-	err = node.setLobby(&connEvent)
-	if err != nil {
-		node.NewError(err, 5, pb.Error_LOBBY)
-	}
+	node.setLobby(&connEvent)
 
 	// ** Callback Node User Information ** //
-	call.OnConnected(node.GetUser())
+	node.Callback(pb.Callback_CONNECTED, node.GetUser())
 	return node
 }
 
-// Exit Ends Communication
+// ^ Sends generic protobuf with subject ^
+func (sn *Node) Callback(event pb.Callback_Event, providedData []byte) {
+	// Create Callback Protobuf
+	callback := &pb.Callback{
+		On:   event,
+		Data: providedData,
+	}
+
+	// Convert to bytes
+	raw, err := proto.Marshal(callback)
+	if err != nil {
+		sn.NewError(err, 4, pb.Error_BYTES)
+	}
+
+	// Send Generic callback
+	sn.Call.OnEvent(raw)
+}
+
+// ^ Exit Ends Communication ^
 func (sn *Node) Exit() {
 	sn.Lobby.End()
 	sn.Host.Close()

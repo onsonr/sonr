@@ -131,26 +131,20 @@ func (asc *authStreamConn) handleMessage(data string) {
 	switch authMsg.Subject {
 	// @ Request to Invite
 	case pb.AuthMessage_REQUEST:
-		// Retreive Values
-		data, err := proto.Marshal(&authMsg)
-		if err != nil {
-			asc.self.NewError(err, 4, pb.Error_PROTO)
-		}
-
 		// Callback the Invitation
-		asc.callback.OnInvited(data)
+		asc.self.Callback(pb.Callback_INVITED, authRaw)
 
 	// @ Peer Accepted Response to Invite
 	case pb.AuthMessage_ACCEPT:
 		fmt.Println("Auth Accepted")
 		// Callback to Proxies
-		asc.callback.OnResponded(authRaw)
+		asc.self.Callback(pb.Callback_RESPONDED, authRaw)
 
 	// @ Peer Accepted Response to Invite
 	case pb.AuthMessage_DECLINE:
 		fmt.Println("Auth Declined")
 		// Callback to Proxies
-		asc.callback.OnResponded(authRaw)
+		asc.self.Callback(pb.Callback_RESPONDED, authRaw)
 
 	// ! Invalid Subject
 	default:

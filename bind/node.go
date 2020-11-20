@@ -68,7 +68,7 @@ func (sn *Node) Queue(data []byte) bool {
 	err := proto.Unmarshal(data, &queuedFile)
 	if err != nil {
 		fmt.Println("unmarshaling error: ", err)
-		sn.Call.OnProcessed(nil)
+		sn.Callback(pb.Callback_PROCESSED, nil)
 		return false
 	}
 
@@ -76,7 +76,7 @@ func (sn *Node) Queue(data []byte) bool {
 	meta := file.GetMetadata(queuedFile.FilePath)
 	if err != nil {
 		fmt.Println("Error Getting Metadata", err)
-		sn.Call.OnProcessed(nil)
+		sn.Callback(pb.Callback_PROCESSED, nil)
 		return false
 	}
 
@@ -104,7 +104,7 @@ func (sn *Node) Queue(data []byte) bool {
 		raw, err := proto.Marshal(processedFile)
 		if err != nil {
 			fmt.Println("Error Marshalling Processed File", err)
-			sn.Call.OnProcessed(nil)
+			sn.Callback(pb.Callback_PROCESSED, nil)
 		}
 
 		// ** Add to Badger Store ** //
@@ -118,7 +118,7 @@ func (sn *Node) Queue(data []byte) bool {
 		// Check Error
 		if err != nil {
 			fmt.Println("Error Updating Peer in Badger", err)
-			sn.Call.OnProcessed(nil)
+			sn.Callback(pb.Callback_PROCESSED, nil)
 		}
 		wg.Done()
 	}()
@@ -130,11 +130,11 @@ func (sn *Node) Queue(data []byte) bool {
 	metaRaw, err := proto.Marshal(meta)
 	if err != nil {
 		fmt.Println("Error Marshalling Processed File", err)
-		sn.Call.OnProcessed(nil)
+		sn.Callback(pb.Callback_PROCESSED, nil)
 	}
 
 	// Send bytes
-	sn.Call.OnProcessed(metaRaw)
+	sn.Callback(pb.Callback_PROCESSED, metaRaw)
 	return true
 }
 

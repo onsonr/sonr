@@ -152,8 +152,7 @@ func (lob *Lobby) removePeer(id string) {
 	}
 
 	// Send Callback with updated peers
-	lob.callback.OnRefreshed(lob.GetAllPeers())
-	println("")
+	lob.Callback(pb.Callback_REFRESHED, lob.GetAllPeers())
 }
 
 // ^ updatePeer changes peer values in circle ^
@@ -174,5 +173,5 @@ func (lob *Lobby) updatePeer(id string, value []byte) {
 	}
 
 	// Send Callback with updated peers
-	lob.callback.OnRefreshed(lob.GetAllPeers())
+	lob.Callback(pb.Callback_REFRESHED, lob.GetAllPeers())
 }
