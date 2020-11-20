@@ -6,7 +6,6 @@ import (
 	"math"
 	"sync"
 
-	badger "github.com/dgraph-io/badger/v2"
 	"github.com/libp2p/go-libp2p-core/host"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/core/pkg/file"
@@ -18,15 +17,15 @@ import (
 // ^ Struct Management ^ //
 // Node contains all values for user
 type Node struct {
-	CTX        context.Context
-	Host       host.Host
-	PubSub     *pubsub.PubSub
-	Lobby      lobby.Lobby
-	FileQueue  *badger.DB
-	Profile    pb.Profile
-	Contact    pb.Contact
-	AuthStream authStreamConn
-	Call       Callback
+	CTX            context.Context
+	Host           host.Host
+	PubSub         *pubsub.PubSub
+	Lobby          *lobby.Lobby
+	Profile        pb.Profile
+	Contact        pb.Contact
+	AuthStream     authStreamConn
+	TransferStream transferStreamConn
+	Callback       Callback
 }
 
 // ^ Sends new proximity/direction update ^ //
@@ -61,22 +60,20 @@ func (sn *Node) Update(data []byte) bool {
 
 // ^ Queue adds a file to Process for Transfer, returns key ^ //
 // TODO: Implement an Error Schema with proto
-func (sn *Node) Queue(data []byte) bool {
+func (sn *Node) Queue(data []byte) []byte {
 	// ** Initialize ** //
 	queuedFile := pb.QueueEvent{}
 	err := proto.Unmarshal(data, &queuedFile)
 	if err != nil {
 		fmt.Println("unmarshaling error: ", err)
-		sn.Callback(pb.Callback_PROCESSED, nil)
-		return false
+		return nil
 	}
 
 	// ** Create Metadata ** //
 	meta := file.GetMetadata(queuedFile.FilePath)
 	if err != nil {
 		fmt.Println("Error Getting Metadata", err)
-		sn.Callback(pb.Callback_PROCESSED, nil)
-		return false
+		return nil
 	}
 
 	// ** Create Thumbnail ** //
@@ -87,17 +84,26 @@ func (sn *Node) Queue(data []byte) bool {
 	var thumb []byte
 	go file.GetThumbnail(&wg, meta, thumb)
 	wg.Wait()
-	print("Thumbnail Size: ", len(thumb))
+	print("Thumbnail Size: ")
 
-	// Store in Protobuf
+	// Check Size
+	if len(thumb) == 0 {
+		return nil
+	}
+
+	// Store in Profile
 	sn.Profile.CurrentFile = &pb.CachedFile{
 		Metadata:  meta,
 		Thumbnail: thumb,
 	}
 
-	// Send bytes
-	sn.Callback(pb.Callback_PROCESSED, nil)
-	return true
+	// Convert to Bytes
+	bytes, err := proto.Marshal(sn.Profile.CurrentFile)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return bytes
 }
 
 // ^ Invite an available peer to transfer ^ //
@@ -120,7 +126,7 @@ func (sn *Node) Invite(data []byte) bool {
 	// ** Get Current File ** //
 	cachedFile := sn.Profile.GetCurrentFile()
 	if cachedFile == nil {
-		fmt.Printf("Error: %s, %s", err, pb.Error_PEER)
+		fmt.Println(err)
 		return false
 	}
 

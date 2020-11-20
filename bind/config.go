@@ -42,52 +42,43 @@ func (sn *Node) GetUser() []byte {
 }
 
 // ^ SetDiscovery initializes discovery protocols and creates pubsub service ^ //
-func (sn *Node) setDiscovery() {
+func (sn *Node) setDiscovery(connEvent *pb.ConnectEvent) error {
 	// setup local mDNS discovery
-	err := initMDNSDiscovery(sn.CTX, sn.Host, sn.Call)
+	err := initMDNSDiscovery(sn.CTX, sn.Host, sn.Callback)
 	if err != nil {
-		fmt.Printf("Error: %s, %s", err, pb.Error_NETWORK)
+		return err
 	}
 	fmt.Println("MDNS Started")
 
 	// create a new PubSub service using the GossipSub router
 	sn.PubSub, err = pubsub.NewGossipSub(sn.CTX, sn.Host)
 	if err != nil {
-		fmt.Printf("Error: %s, %s", err, pb.Error_NETWORK)
+		return err
 	}
 	fmt.Println("GossipSub Created")
-}
-
-// ^ SetStore initializes memory store for file queue ^ //
-func (sn *Node) setLobby(connEvent *pb.ConnectEvent) {
-	// Create Join Event
-	joinEvent := &pb.JoinEvent{
-		Peer: sn.getPeerInfo(),
-		Olc:  connEvent.Olc,
-	}
 
 	// Enter Lobby for Olc
-	lob, err := lobby.Enter(sn.CTX, sn.Call, sn.PubSub, joinEvent)
+	sn.Lobby, err = lobby.Enter(sn.CTX, sn.Callback, sn.PubSub, sn.getPeerInfo(), connEvent.Olc)
 	if err != nil {
-		fmt.Printf("Error: %s, %s", err, pb.Error_LOBBY)
+		return err
 	}
 	fmt.Println("Lobby Joined")
-	sn.Lobby = *lob
+	return nil
 }
 
 // ^ SetUser sets node info from connEvent and host ^ //
-func (sn *Node) setUser(connEvent *pb.ConnectEvent) {
+func (sn *Node) setUser(connEvent *pb.ConnectEvent) error {
+	// Check for Host
+	if sn.Host == nil {
+		err := errors.New("setUser: Host has not been called")
+		return err
+	}
+
 	// Set Contact
 	sn.Contact = pb.Contact{
 		FirstName:  connEvent.Contact.FirstName,
 		LastName:   connEvent.Contact.LastName,
 		ProfilePic: connEvent.Contact.ProfilePic,
-	}
-
-	// Check for Host
-	if sn.Host == nil {
-		err := errors.New("setUser: Host has not been called")
-		fmt.Printf("Error: %s, %s", err, pb.Error_INFO)
 	}
 
 	// Set Profile
@@ -96,4 +87,5 @@ func (sn *Node) setUser(connEvent *pb.ConnectEvent) {
 		Olc:    connEvent.Olc,
 		Device: connEvent.Device,
 	}
+	return nil
 }

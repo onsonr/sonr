@@ -15,7 +15,6 @@ const ChatRoomBufSize = 128
 
 // LobbyCallback returns message from lobby
 type LobbyCallback interface {
-	OnEvent(data []byte)
 	OnRefreshed(data []byte)
 	OnError(data []byte)
 }
@@ -40,9 +39,9 @@ type Lobby struct {
 }
 
 // ^ Enter Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
-func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, joinEvent *pb.JoinEvent) (*Lobby, error) {
+func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, peer *pb.PeerInfo, olc string) (*Lobby, error) {
 	// Join the pubsub Topic
-	topic, err := ps.Join(joinEvent.Olc)
+	topic, err := ps.Join(olc)
 	if err != nil {
 		return nil, err
 	}
@@ -68,16 +67,16 @@ func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, joinE
 		ps:       ps,
 		topic:    topic,
 		sub:      sub,
-		Self:     joinEvent.Peer,
-		Code:     joinEvent.Olc,
+		Self:     peer,
+		Code:     olc,
 		Messages: make(chan *pb.LobbyMessage, ChatRoomBufSize),
 	}
 
 	// Publish Join Message
 	msg := &pb.LobbyMessage{
 		Event:  "Join",
-		Data:   joinEvent.Peer,
-		Sender: joinEvent.Peer.GetId(),
+		Data:   peer,
+		Sender: peer.GetId(),
 	}
 
 	// start reading messages

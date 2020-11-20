@@ -28,6 +28,12 @@ message RefreshMessage {
   repeated PeerInfo availablePeers = 3;
 }
 
+// Message Sent when peers returned from lobby
+message ProcessedMessage {
+  bool status = 1;
+  Metadata metadata = 2;
+}
+
 // [CORE]
 // Authorization being sent from
 message AuthMessage {
@@ -43,56 +49,5 @@ message AuthMessage {
     REQUEST = 1;
     ACCEPT = 2;
     DECLINE = 3;
-  }
-}
-
-// Define Error Occurance
-message ErrorMessage {
-  Kind kind = 1;
-  string message = 2;
-  Level level = 3;
-
-  // Level of Error Issue
-  enum Level {
-    NONE = 0;
-    MINOR = 1;
-    WARNING = 2;
-    MAJOR = 3;
-    CRITICAL = 4;
-    PANIC = 5;
-  }
-
-  // Kind of Error Issue
-  enum Kind {
-    NETWORK = 0;
-    LOBBY = 1;
-    AUTH = 2;
-    PEER = 3;
-    BADGER = 4;
-    DATA = 5;
-    STREAM = 6;
-    EXPERIMENTAL = 7;
-    PROTO = 8;
-    BYTES = 9;
-    JSON = 10;
-  }
-}
-
-// Defining Callback structure for Uniform Handling
-message Callback {
-  Event on = 1;
-  bytes data = 2;
-
-  // Define Subject
-  enum Event {
-    NONE = 0;
-    CONNECTED = 1;
-    REFRESHED = 2;
-    PROCESSED = 3;
-    INVITED = 4;
-    RESPONDED = 5;
-    TRANFERRING = 6;
-    COMPLETED = 7;
-    ERROR = 8;
   }
 }

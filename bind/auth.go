@@ -25,7 +25,7 @@ func (sn *Node) HandleAuthStream(stream network.Stream) {
 	// Create/Set Auth Stream
 	sn.AuthStream = authStreamConn{
 		stream:   stream,
-		callback: sn.Call,
+		callback: sn.Callback,
 		self:     sn,
 	}
 	// Print Stream Info
@@ -47,7 +47,7 @@ func (sn *Node) NewAuthStream(id peer.ID) error {
 	// Create/Set Auth Stream
 	sn.AuthStream = authStreamConn{
 		stream:   stream,
-		callback: sn.Call,
+		callback: sn.Callback,
 		self:     sn,
 	}
 
@@ -69,20 +69,20 @@ func (asc *authStreamConn) Write(authMsg *pb.AuthMessage) error {
 	// Convert to String
 	json, err := protojson.Marshal(authMsg)
 	if err != nil {
-		fmt.Printf("Error: %s, %s", err, pb.Error_JSON)
+		fmt.Println(err)
 	}
 
 	// Write Message with "Delimiter"=(Seperator for Message Values)
 	_, err = writer.WriteString(fmt.Sprintf("%s\n", string(json)))
 	if err != nil {
-		fmt.Printf("Error: %s, %s", err, pb.Error_BUFFER)
+		fmt.Println(err)
 		return err
 	}
 
 	// Write buffered data
 	err = writer.Flush()
 	if err != nil {
-		fmt.Printf("Error: %s, %s", err, pb.Error_BUFFER)
+		fmt.Println(err)
 		return err
 	}
 	return nil
@@ -99,7 +99,7 @@ func (asc *authStreamConn) Read() error {
 		}
 		// Buffer Error
 		if err != nil {
-			fmt.Printf("Error: %s, %s", err, pb.Error_BUFFER)
+			fmt.Println(err)
 			return err
 		}
 
@@ -125,13 +125,13 @@ func (asc *authStreamConn) handleMessage(data string) {
 	authMsg := pb.AuthMessage{}
 	err := protojson.Unmarshal([]byte(data), &authMsg)
 	if err != nil {
-		fmt.Printf("Error: %s, %s", err, pb.Error_PROTO)
+		fmt.Println(err)
 	}
 
 	// Convert Protobuf to bytes
 	authRaw, err := proto.Marshal(&authMsg)
 	if err != nil {
-		fmt.Printf("Error: %s, %s", err, pb.Error_BYTES)
+		fmt.Println(err)
 	}
 
 	// ** Contains Data **
@@ -140,23 +140,22 @@ func (asc *authStreamConn) handleMessage(data string) {
 	// @ Request to Invite
 	case pb.AuthMessage_REQUEST:
 		// Callback the Invitation
-		asc.self.Callback(pb.Callback_INVITED, authRaw)
+		asc.self.Callback.OnInvited(authRaw)
 
 	// @ Peer Accepted Response to Invite
 	case pb.AuthMessage_ACCEPT:
 		fmt.Println("Auth Accepted")
 		// Callback to Proxies
-		asc.self.Callback(pb.Callback_RESPONDED, authRaw)
+		asc.self.Callback.OnResponded(authRaw)
 
 	// @ Peer Accepted Response to Invite
 	case pb.AuthMessage_DECLINE:
 		fmt.Println("Auth Declined")
 		// Callback to Proxies
-		asc.self.Callback(pb.Callback_RESPONDED, authRaw)
+		asc.self.Callback.OnResponded(authRaw)
 
 	// ! Invalid Subject
 	default:
 		fmt.Println("Not a subject", authMsg.Subject)
-		fmt.Printf("Error: %s, %s", err, pb.Error_PEER)
 	}
 }
