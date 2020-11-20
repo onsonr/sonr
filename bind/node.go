@@ -30,17 +30,10 @@ type Node struct {
 
 // ^ Sends new proximity/direction update ^ //
 // Update occurs when status or direction changes
-func (sn *Node) Update(data []byte) bool {
+func (sn *Node) Update(direction float64) bool {
 	// ** Initialize ** //
-	updateEvent := pb.UpdateEvent{}
-	err := proto.Unmarshal(data, &updateEvent)
-	if err != nil {
-		fmt.Println("unmarshaling error: ", err)
-		return false
-	}
-
 	// Update User Values
-	sn.Profile.Direction = math.Round(updateEvent.NewDirection*100) / 100
+	sn.Profile.Direction = math.Round(direction*100) / 100
 
 	// Create Message with Updated Info
 	notif := &pb.LobbyMessage{
@@ -50,7 +43,7 @@ func (sn *Node) Update(data []byte) bool {
 	}
 
 	// Inform Lobby
-	err = sn.Lobby.Publish(notif)
+	err := sn.Lobby.Publish(notif)
 	if err != nil {
 		fmt.Println("Error Posting NotifUpdate: ", err)
 		return false
@@ -60,21 +53,9 @@ func (sn *Node) Update(data []byte) bool {
 
 // ^ Queue adds a file to Process for Transfer, returns key ^ //
 // TODO: Implement an Error Schema with proto
-func (sn *Node) Queue(data []byte) []byte {
-	// ** Initialize ** //
-	queuedFile := pb.QueueEvent{}
-	err := proto.Unmarshal(data, &queuedFile)
-	if err != nil {
-		fmt.Println("unmarshaling error: ", err)
-		return nil
-	}
-
-	// ** Create Metadata ** //
-	meta := file.GetMetadata(queuedFile.FilePath)
-	if err != nil {
-		fmt.Println("Error Getting Metadata", err)
-		return nil
-	}
+func (sn *Node) Queue(path string) bool {
+	// ** Get File Metadata ** //
+	meta := file.GetMetadata(path)
 
 	// ** Create Thumbnail ** //
 	wg := sync.WaitGroup{}
@@ -88,7 +69,7 @@ func (sn *Node) Queue(data []byte) []byte {
 
 	// Check Size
 	if len(thumb) == 0 {
-		return nil
+		return false
 	}
 
 	// Store in Profile
@@ -96,14 +77,7 @@ func (sn *Node) Queue(data []byte) []byte {
 		Metadata:  meta,
 		Thumbnail: thumb,
 	}
-
-	// Convert to Bytes
-	bytes, err := proto.Marshal(sn.Profile.CurrentFile)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	return bytes
+	return true
 }
 
 // ^ Invite an available peer to transfer ^ //

@@ -13,7 +13,6 @@ import (
 // Callback returns updates from p2p
 type Callback interface {
 	OnRefreshed(data []byte)
-	OnQueued(data []byte)
 	OnInvited(data []byte)
 	OnResponded(data []byte)
 	OnProgress(data []byte)
