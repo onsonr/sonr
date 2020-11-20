@@ -1,9 +1,6 @@
 syntax = "proto3";
 
-// ! you must not change the tag numbers of any existing fields.
-// ! you may delete fields.
-// ! you may add new fields but you must use fresh tag numbers (i.e. tag numbers
-// that were never used in this protocol buffer, not even by deleted fields).
+import "data.proto";
 
 // Require Go Package
 option go_package = ".;proto";
@@ -33,4 +30,5 @@ message Profile {
   string olc = 2;
   string device = 3;
   double direction = 4;
+  CachedFile currentFile = 5;
 }

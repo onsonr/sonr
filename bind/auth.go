@@ -6,6 +6,8 @@ import (
 	"io"
 
 	"github.com/libp2p/go-libp2p-core/network"
+	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-core/protocol"
 	pb "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
@@ -35,7 +37,13 @@ func (sn *Node) HandleAuthStream(stream network.Stream) {
 }
 
 // ^ Create New Stream ^ //
-func (sn *Node) NewAuthStream(stream network.Stream) {
+func (sn *Node) NewAuthStream(id peer.ID) error {
+	// Start New Auth Stream
+	stream, err := sn.Host.NewStream(sn.CTX, id, protocol.ID("/sonr/auth"))
+	if err != nil {
+		return err
+	}
+
 	// Create/Set Auth Stream
 	sn.AuthStream = authStreamConn{
 		stream:   stream,
@@ -49,6 +57,7 @@ func (sn *Node) NewAuthStream(stream network.Stream) {
 
 	// Initialize Routine
 	go sn.AuthStream.Read()
+	return nil
 }
 
 // ^ Write Message on Stream ^ //

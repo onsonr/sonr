@@ -44,13 +44,10 @@ func Start(data []byte, call Callback) *Node {
 	// @3. Set Node User Information
 	node.setUser(&connEvent)
 
-	// @4. Initialize Datastore for File Queue
-	node.setStore()
-
-	// @5. Setup Discovery
+	// @4. Setup Discovery
 	node.setDiscovery()
 
-	// @6. Enter Lobby
+	// @5. Enter Lobby
 	node.setLobby(&connEvent)
 
 	// ** Callback Node User Information ** //

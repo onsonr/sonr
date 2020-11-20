@@ -28,12 +28,6 @@ message RefreshMessage {
   repeated PeerInfo availablePeers = 3;
 }
 
-// Processed File to be stored in Badger Store
-message ProcessedMessage {
-  Metadata metadata = 1;
-  bytes thumbnail = 2;
-}
-
 // [CORE]
 // Authorization being sent from
 message AuthMessage {

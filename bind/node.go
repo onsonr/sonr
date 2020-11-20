@@ -8,7 +8,6 @@ import (
 
 	badger "github.com/dgraph-io/badger/v2"
 	"github.com/libp2p/go-libp2p-core/host"
-	"github.com/libp2p/go-libp2p-core/protocol"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/core/pkg/file"
 	"github.com/sonr-io/core/pkg/lobby"
@@ -81,66 +80,29 @@ func (sn *Node) Queue(data []byte) bool {
 	}
 
 	// ** Create Thumbnail ** //
-	var wg sync.WaitGroup
-	wg.Add(2)
+	wg := sync.WaitGroup{}
+	wg.Add(1)
 
 	// Run Routine
 	var thumb []byte
-	go func(tn []byte) {
-		tn = file.GetThumbnail(meta)
-		fmt.Println("Raw Thumbnail: ", thumb)
-		wg.Done()
-	}(thumb)
-
-	// ** Create Processed File ** //
-	go func() {
-		// Create Type
-		processedFile := &pb.ProcessedMessage{
-			Metadata:  meta,
-			Thumbnail: thumb,
-		}
-
-		// Convert to bytes
-		raw, err := proto.Marshal(processedFile)
-		if err != nil {
-			fmt.Println("Error Marshalling Processed File", err)
-			sn.Callback(pb.Callback_PROCESSED, nil)
-		}
-
-		// ** Add to Badger Store ** //
-		// Update peer in DataStore
-		err = sn.FileQueue.Update(func(txn *badger.Txn) error {
-			e := badger.NewEntry([]byte(meta.FileId), raw)
-			err := txn.SetEntry(e)
-			return err
-		})
-
-		// Check Error
-		if err != nil {
-			fmt.Println("Error Updating Peer in Badger", err)
-			sn.Callback(pb.Callback_PROCESSED, nil)
-		}
-		wg.Done()
-	}()
-
-	// Send Callback with file ID after both tasks finish
+	go file.GetThumbnail(&wg, meta, thumb)
 	wg.Wait()
+	print("Thumbnail Size: ", len(thumb))
 
-	// Convert to bytes
-	metaRaw, err := proto.Marshal(meta)
-	if err != nil {
-		fmt.Println("Error Marshalling Processed File", err)
-		sn.Callback(pb.Callback_PROCESSED, nil)
+	// Store in Protobuf
+	sn.Profile.CurrentFile = &pb.CachedFile{
+		Metadata:  meta,
+		Thumbnail: thumb,
 	}
 
 	// Send bytes
-	sn.Callback(pb.Callback_PROCESSED, metaRaw)
+	sn.Callback(pb.Callback_PROCESSED, nil)
 	return true
 }
 
 // ^ Invite an available peer to transfer ^ //
 func (sn *Node) Invite(data []byte) bool {
-	// Initialize
+	// ** Initialize **
 	invite := pb.InviteEvent{}
 	err := proto.Unmarshal(data, &invite)
 	if err != nil {
@@ -155,50 +117,26 @@ func (sn *Node) Invite(data []byte) bool {
 		return false
 	}
 
-	// Retreive File Info from Memory Store
-	var fileInfoRaw []byte
-	err = sn.FileQueue.View(func(txn *badger.Txn) error {
-		item, err := txn.Get([]byte(invite.FileId))
-		err = item.Value(func(val []byte) error {
-			// Accessing val here is valid.
-			fmt.Printf("The Metadata is: %s\n", val)
-			fileInfoRaw = append([]byte{}, val...)
-			return nil
-		})
-		if err != nil {
-			return err
-		}
-		return nil
-	})
-
-	// Send Error
-	if err != nil {
-		LogError(err, 4, pb.Error_BADGER)
-	}
-
-	// Unmarshal into Protobuf
-	fileInfo := pb.ProcessedMessage{}
-	err = proto.Unmarshal(fileInfoRaw, &fileInfo)
-	if err != nil {
-		fmt.Println("Error unmarshaling msg into json: ", err)
+	// ** Get Current File ** //
+	cachedFile := sn.Profile.GetCurrentFile()
+	if cachedFile == nil {
+		LogError(nil, 4, pb.Error_PEER)
 		return false
 	}
 
 	// ** Create New Auth Stream **
-	stream, err := sn.Host.NewStream(sn.CTX, peerID, protocol.ID("/sonr/auth"))
+	err = sn.NewAuthStream(peerID)
 	if err != nil {
 		fmt.Println("Auth Stream Failed to Open ", err)
 		return false
 	}
-	// Establish Auth Stream
-	sn.NewAuthStream(stream)
 
 	// Create Request Message
 	authPbf := &pb.AuthMessage{
 		Subject:   pb.AuthMessage_REQUEST,
 		Peer:      sn.getPeerInfo(),
-		Metadata:  fileInfo.Metadata,
-		Thumbnail: fileInfo.Thumbnail,
+		Metadata:  sn.Profile.CurrentFile.GetMetadata(),
+		Thumbnail: sn.Profile.CurrentFile.GetThumbnail(),
 	}
 
 	// ** Send Invite Message **

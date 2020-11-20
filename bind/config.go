@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 
-	badger "github.com/dgraph-io/badger/v2"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	sh "github.com/sonr-io/core/pkg/host"
 	"github.com/sonr-io/core/pkg/lobby"
@@ -75,19 +74,6 @@ func (sn *Node) setLobby(connEvent *pb.ConnectEvent) {
 	}
 	fmt.Println("Lobby Joined")
 	sn.Lobby = *lob
-}
-
-// ^ SetStore initializes memory store for file queue ^ //
-func (sn *Node) setStore() {
-	// Initialize Datastore for File Queue
-	store, err := badger.Open(badger.DefaultOptions("").WithInMemory(true))
-	if err != nil {
-		fmt.Println("Failed to create file queue")
-		LogError(err, 4, pb.Error_INFO)
-	}
-
-	// Set Store
-	sn.FileQueue = store
 }
 
 // ^ SetUser sets node info from connEvent and host ^ //
