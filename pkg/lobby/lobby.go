@@ -17,7 +17,7 @@ const ChatRoomBufSize = 128
 type OnRefreshed func(data []byte)
 type OnError func(data []byte)
 
-// Create Callback Struct to Implement Node Callback Methods
+// Struct to Implement Node Callback Methods
 type LobbyCallback struct {
 	Refreshed OnRefreshed
 	Error     OnError
@@ -76,19 +76,9 @@ func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, peer 
 		Messages: make(chan *pb.LobbyMessage, ChatRoomBufSize),
 	}
 
-	// Publish Join Message
-	msg := &pb.LobbyMessage{
-		Event:  "Join",
-		Data:   peer,
-		Sender: peer.GetId(),
-	}
-
 	// start reading messages
 	go lob.handleMessages()
 	go lob.handleEvents()
-
-	// Send Join Message
-	lob.Publish(msg)
 	return lob, nil
 }
 

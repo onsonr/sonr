@@ -2,15 +2,16 @@ package sonr
 
 import (
 	"bufio"
+	"bytes"
 	"context"
 	"fmt"
 	"io"
+	"log"
 
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	pb "github.com/sonr-io/core/pkg/models"
-	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -23,7 +24,7 @@ type authStreamConn struct {
 // ^ Handle Incoming Stream ^ //
 func (sn *Node) HandleAuthStream(stream network.Stream) {
 	// Create/Set Auth Stream
-	sn.AuthStream = authStreamConn{
+	sn.authStream = authStreamConn{
 		stream: stream,
 		self:   sn,
 	}
@@ -32,20 +33,20 @@ func (sn *Node) HandleAuthStream(stream network.Stream) {
 	fmt.Println("Stream Info: ", info)
 
 	// Initialize Routine
-	go sn.AuthStream.Read()
+	go sn.authStream.readLoop()
 }
 
 // ^ Create New Stream ^ //
 func (sn *Node) NewAuthStream(id peer.ID) error {
 	// Start New Auth Stream
 	ctx := context.Background()
-	stream, err := sn.Host.NewStream(ctx, id, protocol.ID("/sonr/auth"))
+	stream, err := sn.host.NewStream(ctx, id, protocol.ID("/sonr/auth"))
 	if err != nil {
 		return err
 	}
 
 	// Create/Set Auth Stream
-	sn.AuthStream = authStreamConn{
+	sn.authStream = authStreamConn{
 		stream: stream,
 		self:   sn,
 	}
@@ -55,87 +56,74 @@ func (sn *Node) NewAuthStream(id peer.ID) error {
 	fmt.Println("Stream Info: ", info)
 
 	// Initialize Routine
-	go sn.AuthStream.Read()
+	go sn.authStream.readLoop()
 	return nil
 }
 
-// ^ Write Message on Stream ^ //
-func (asc *authStreamConn) Write(authMsg *pb.AuthMessage) error {
+// ^ write Message on Stream ^ //
+func (asc *authStreamConn) write(authMsg *pb.AuthMessage) error {
 	// Initialize Writer
 	writer := bufio.NewWriter(asc.stream)
 	fmt.Println("Auth Msg Struct: ", authMsg)
 
-	// Convert to String
-	json, err := protojson.Marshal(authMsg)
+	// Convert to Bytes
+	bytes, err := proto.Marshal(authMsg)
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	// Write Message with "Delimiter"=(Seperator for Message Values)
-	_, err = writer.WriteString(fmt.Sprintf("%s\n", string(json)))
+	// Write to Stram
+	_, err = writer.Write(bytes)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("Auth Stream Outgoing Write Error: ", err)
 		return err
 	}
 
 	// Write buffered data
 	err = writer.Flush()
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("Auth Stream Outgoing Flush Error: ", err)
 		return err
 	}
 	return nil
 }
 
-// ^ Read Data from Msgio ^ //
-func (asc *authStreamConn) Read() error {
+// ^ read Data from Msgio ^ //
+func (asc *authStreamConn) readLoop() error {
 	for {
-		// ** Read the Buffer **
-		data, err := bufio.NewReader(asc.stream).ReadString('\n')
-		// Connection closed, deregister client
-		if err == io.EOF {
-			return nil
-		}
-		// Buffer Error
-		if err != nil {
-			fmt.Println(err)
+		// Create Source Reader and Dest Writer
+		source := bufio.NewReader(asc.stream)
+		buffer := new(bytes.Buffer)
+
+		// Copy Bytes from reader to writer
+		if _, err := io.Copy(buffer, source); err != nil {
+			fmt.Println("Auth Stream Incoming Copy Error: ", err)
 			return err
 		}
 
-		// Empty String
-		if data == "" {
-			return nil
+		// Create Message from Buffer
+		message := &pb.AuthMessage{}
+		if err := proto.Unmarshal(buffer.Bytes(), message); err != nil {
+			log.Fatalln("Failed to parse auth message:", err)
+			return err
 		}
 
-		// End of Message
-		if data == "\n" {
-			return nil
-		}
-
-		// @ Handle it
-		asc.handleMessage(data)
+		// Handle Messages Struct
+		asc.handleMessage(message)
 	}
 }
 
 // ^ Handle Received Message ^ //
-func (asc *authStreamConn) handleMessage(data string) {
-	// Convert Json to Protobuf
-	fmt.Println("Json String: ", data)
-	authMsg := pb.AuthMessage{}
-	err := protojson.Unmarshal([]byte(data), &authMsg)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	// Convert Protobuf to bytes
-	authRaw, err := proto.Marshal(&authMsg)
-	if err != nil {
-		fmt.Println(err)
-	}
-
+func (asc *authStreamConn) handleMessage(message *pb.AuthMessage) {
 	// ** Contains Data **
+	// Convert Protobuf to bytes
+	authRaw, err := proto.Marshal(message)
+	if err != nil {
+		fmt.Println(err)
+	}
+
 	// Check Message Subject
-	switch authMsg.Subject {
+	switch message.Subject {
 	// @ Request to Invite
 	case pb.AuthMessage_REQUEST:
 		// Callback the Invitation
@@ -158,6 +146,6 @@ func (asc *authStreamConn) handleMessage(data string) {
 
 	// ! Invalid Subject
 	default:
-		fmt.Println("Not a subject", authMsg.Subject)
+		fmt.Println("Not a subject", message.Subject)
 	}
 }

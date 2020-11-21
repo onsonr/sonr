@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-import "data.proto";
-
 // Require Go Package
 option go_package = ".;proto";
 
@@ -30,5 +28,5 @@ message Profile {
   string olc = 2;
   string device = 3;
   double direction = 4;
-  CachedFile currentFile = 5;
+  repeated PeerInfo peers = 5;
 }

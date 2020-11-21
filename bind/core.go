@@ -25,9 +25,10 @@ func Start(data []byte, call *Callback) *Node {
 	ctx := context.Background()
 	node := new(Node)
 	node.Callback = call
+	node.files = make([]pb.Metadata, maxFileBufferSize)
 
 	// @I. Unmarshal Connection Event
-	connEvent := pb.ConnectEvent{}
+	connEvent := pb.RequestMessage{}
 	err := proto.Unmarshal(data, &connEvent)
 	if err != nil {
 		fmt.Println(err)
@@ -35,15 +36,15 @@ func Start(data []byte, call *Callback) *Node {
 	}
 
 	// @1. Create Host
-	node.Host, err = sh.NewHost(&ctx)
+	node.host, err = sh.NewHost(ctx)
 	if err != nil {
 		fmt.Println(err)
 		return nil
 	}
 
 	// @2. Set Stream Handlers
-	node.Host.SetStreamHandler(protocol.ID("/sonr/auth"), node.HandleAuthStream)
-	node.Host.SetStreamHandler(protocol.ID("/sonr/transfer"), node.HandleTransferStream)
+	node.host.SetStreamHandler(protocol.ID("/sonr/auth"), node.HandleAuthStream)
+	node.host.SetStreamHandler(protocol.ID("/sonr/transfer"), node.HandleTransferStream)
 
 	// @3. Set Node User Information
 	err = node.setUser(&connEvent)
@@ -66,5 +67,5 @@ func Start(data []byte, call *Callback) *Node {
 // ^ Exit Ends Communication ^
 func (sn *Node) Exit() {
 	sn.Lobby.End()
-	sn.Host.Close()
+	sn.host.Close()
 }

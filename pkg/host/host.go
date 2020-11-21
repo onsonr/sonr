@@ -14,7 +14,7 @@ import (
 )
 
 // NewBasicHost creates a host without any options
-func NewHost(ctx *context.Context) (host.Host, error) {
+func NewHost(ctx context.Context) (host.Host, error) {
 	// Find IPv4 Address
 	osHost, _ := os.Hostname()
 	addrs, _ := net.LookupIP(osHost)
@@ -29,7 +29,7 @@ func NewHost(ctx *context.Context) (host.Host, error) {
 	}
 
 	// Create Libp2p Host
-	h, err := libp2p.New(*ctx,
+	h, err := libp2p.New(ctx,
 		// Add listening Addresses
 		libp2p.ListenAddrStrings(
 			fmt.Sprintf("/ip4/%s/tcp/0", ipv4Ref),

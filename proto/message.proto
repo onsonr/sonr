@@ -6,6 +6,14 @@ import "user.proto";
 // Require Go Package
 option go_package = ".;proto";
 
+// [PLUGIN]
+// Initial Request Message
+message RequestMessage {
+  string olc = 1;
+  string device = 2;
+  Contact contact = 3;
+}
+
 // Message Sent when User is connected and calls GetUser()
 message ConnectedMessage {
   string hostId = 1;
@@ -28,20 +36,13 @@ message RefreshMessage {
   repeated PeerInfo availablePeers = 3;
 }
 
-// Message Sent when peers returned from lobby
-message ProcessedMessage {
-  bool status = 1;
-  Metadata metadata = 2;
-}
-
 // [CORE]
-// Authorization being sent from
+// Authorization message sent in stream
 message AuthMessage {
   // Define Root Message
   PeerInfo peer = 1;
   Subject subject = 2;
   Metadata metadata = 3;
-  bytes thumbnail = 4;
 
   // Define Subject
   enum Subject {

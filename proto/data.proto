@@ -15,11 +15,5 @@ message Metadata {
   string path = 3;
   int64 size = 4;
   string kind = 5;
-}
-
-// CachedFile to be stored in Badger Store
-message CachedFile {
-  string id = 1;
-  Metadata metadata = 2;
-  bytes thumbnail = 3;
+  bytes thumbnail = 6;
 }

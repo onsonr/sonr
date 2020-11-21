@@ -6,24 +6,30 @@ import (
 	"sync"
 
 	"github.com/libp2p/go-libp2p-core/host"
-	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/core/pkg/file"
 	"github.com/sonr-io/core/pkg/lobby"
 	pb "github.com/sonr-io/core/pkg/models"
-	"google.golang.org/protobuf/proto"
 )
+
+const maxFileBufferSize = 5
 
 // ^ Struct Management ^ //
 // Node contains all values for user
 type Node struct {
-	Host           host.Host
-	PubSub         *pubsub.PubSub
-	Lobby          *lobby.Lobby
-	Profile        pb.Profile
-	Contact        pb.Contact
-	AuthStream     authStreamConn
-	TransferStream transferStreamConn
-	Callback       *Callback
+	// Public Properties
+	Profile pb.Profile
+	Contact pb.Contact
+
+	// Private Properties
+	host       host.Host
+	authStream authStreamConn
+	dataStream dataStreamConn
+	files      []pb.Metadata
+	mutex      sync.Mutex
+
+	// References
+	Callback *Callback
+	Lobby    *lobby.Lobby
 }
 
 // ^ Sends new proximity/direction update ^ //
@@ -51,31 +57,16 @@ func (sn *Node) Update(direction float64) bool {
 
 // ^ Queue adds a file to Process for Transfer, returns key ^ //
 // TODO: Implement an Error Schema with proto
-func (sn *Node) Queue(path string) bool {
+func (sn *Node) Queue(path string) {
+	sn.mutex.Lock()
 	// ** Get File Metadata ** //
 	meta := file.GetMetadata(path)
 
-	// ** Create Thumbnail ** //
-	wg := sync.WaitGroup{}
-	wg.Add(1)
-
-	// Run Routine
-	var thumb []byte
-	go file.GetThumbnail(&wg, meta, thumb)
-	wg.Wait()
-	print("Thumbnail Size: ")
+	// ** Create Thumbnail if Available ** //
+	err := file.SetMetadataThumbnail(&meta)
 
 	// Check Size
-	if len(thumb) == 0 {
-		return false
-	}
-
-	// Store in Profile
-	sn.Profile.CurrentFile = &pb.CachedFile{
-		Metadata:  meta,
-		Thumbnail: thumb,
-	}
-	return true
+	sn.mutex.Unlock()
 }
 
 // ^ Invite an available peer to transfer ^ //
@@ -88,11 +79,11 @@ func (sn *Node) Invite(peerId string) bool {
 	}
 
 	// ** Get Current File ** //
-	cachedFile := sn.Profile.GetCurrentFile()
-	if cachedFile == nil {
-		fmt.Println(err)
-		return false
-	}
+	// cachedFile := sn.Profile.GetCurrentFile()
+	// if cachedFile == nil {
+	// 	fmt.Println(err)
+	// 	return false
+	// }
 
 	// ** Create New Auth Stream **
 	err = sn.NewAuthStream(peerID)
@@ -102,15 +93,15 @@ func (sn *Node) Invite(peerId string) bool {
 	}
 
 	// Create Request Message
-	authPbf := &pb.AuthMessage{
-		Subject:   pb.AuthMessage_REQUEST,
-		Peer:      sn.getPeerInfo(),
-		Metadata:  sn.Profile.CurrentFile.GetMetadata(),
-		Thumbnail: sn.Profile.CurrentFile.GetThumbnail(),
+	authMsg := &pb.AuthMessage{
+		Subject: pb.AuthMessage_REQUEST,
+		Peer:    sn.getPeerInfo(),
+		// Metadata:  sn.Profile.CurrentFile.GetMetadata(),
+		// Thumbnail: sn.Profile.CurrentFile.GetThumbnail(),
 	}
 
 	// ** Send Invite Message **
-	err = sn.AuthStream.Write(authPbf)
+	err = sn.authStream.write(authMsg)
 	if err != nil {
 		return false
 	}
@@ -120,36 +111,30 @@ func (sn *Node) Invite(peerId string) bool {
 }
 
 // ^ Respond to an Invitation ^ //
-func (sn *Node) Respond(data []byte) bool {
-	// Initialize Event
-	response := pb.RespondEvent{}
-	err := proto.Unmarshal(data, &response)
-	if err != nil {
-		fmt.Println("unmarshaling error: ", err)
-		return false
-	}
-
-	// Initialize Response
-	authMsg := new(pb.AuthMessage)
-
-	// Check Decision
-	if response.Decision == true {
-		// Set as Accept
-		authMsg = &pb.AuthMessage{
+func (sn *Node) Respond(decision bool) bool {
+	// @ User Accepted
+	if decision == true {
+		// Create Protobuf
+		acceptMsg := &pb.AuthMessage{
 			Subject: pb.AuthMessage_ACCEPT,
 			Peer:    sn.getPeerInfo(),
 		}
-	} else {
-		// Set as Decline
-		authMsg = &pb.AuthMessage{
-			Subject: pb.AuthMessage_DECLINE,
-			Peer:    sn.getPeerInfo(),
+
+		// Send Message
+		if err := sn.authStream.write(acceptMsg); err != nil {
+			return false
 		}
+		return true
+	}
+	// @ User Declined
+	// Create Protobuf
+	declineMsg := &pb.AuthMessage{
+		Subject: pb.AuthMessage_DECLINE,
+		Peer:    sn.getPeerInfo(),
 	}
 
 	// Send Message
-	err = sn.AuthStream.Write(authMsg)
-	if err != nil {
+	if err := sn.authStream.write(declineMsg); err != nil {
 		return false
 	}
 

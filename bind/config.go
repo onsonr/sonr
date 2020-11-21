@@ -14,7 +14,7 @@ import (
 // ^ Returns public data info ^ //
 func (sn *Node) getPeerInfo() *pb.PeerInfo {
 	return &pb.PeerInfo{
-		Id:         sn.Host.ID().String(),
+		Id:         sn.host.ID().String(),
 		Device:     sn.Profile.Device,
 		FirstName:  sn.Contact.FirstName,
 		LastName:   sn.Contact.LastName,
@@ -43,16 +43,16 @@ func (sn *Node) GetUser() []byte {
 }
 
 // ^ SetDiscovery initializes discovery protocols and creates pubsub service ^ //
-func (sn *Node) setDiscovery(ctx context.Context, connEvent *pb.ConnectEvent) error {
+func (sn *Node) setDiscovery(ctx context.Context, connEvent *pb.RequestMessage) error {
 	// setup local mDNS discovery
-	err := initMDNSDiscovery(ctx, sn.Host)
+	err := initMDNSDiscovery(ctx, sn.host)
 	if err != nil {
 		return err
 	}
 	fmt.Println("MDNS Started")
 
 	// create a new PubSub service using the GossipSub router
-	sn.PubSub, err = pubsub.NewGossipSub(ctx, sn.Host)
+	ps, err := pubsub.NewGossipSub(ctx, sn.host)
 	if err != nil {
 		return err
 	}
@@ -65,19 +65,33 @@ func (sn *Node) setDiscovery(ctx context.Context, connEvent *pb.ConnectEvent) er
 		Error:     callbackRef.OnError,
 	}
 
+	// Get Peer Info
+	peer := sn.getPeerInfo()
+
 	// Enter Lobby
-	sn.Lobby, err = lobby.Enter(ctx, lobbyCallbackRef, sn.PubSub, sn.getPeerInfo(), connEvent.Olc)
+	sn.Lobby, err = lobby.Enter(ctx, lobbyCallbackRef, ps, peer, connEvent.Olc)
 	if err != nil {
 		return err
 	}
-	fmt.Println("Lobby Joined")
+	fmt.Println("Lobby Entered")
+
+	// Send Join Message
+	err = sn.Lobby.Publish(&pb.LobbyMessage{
+		Event:  "Join",
+		Data:   peer,
+		Sender: peer.GetId(),
+	})
+	if err != nil {
+		return err
+	}
+	fmt.Println("Sent Joined")
 	return nil
 }
 
 // ^ SetUser sets node info from connEvent and host ^ //
-func (sn *Node) setUser(connEvent *pb.ConnectEvent) error {
+func (sn *Node) setUser(connEvent *pb.RequestMessage) error {
 	// Check for Host
-	if sn.Host == nil {
+	if sn.host == nil {
 		err := errors.New("setUser: Host has not been called")
 		return err
 	}
@@ -91,7 +105,7 @@ func (sn *Node) setUser(connEvent *pb.ConnectEvent) error {
 
 	// Set Profile
 	sn.Profile = pb.Profile{
-		HostId: sn.Host.ID().String(),
+		HostId: sn.host.ID().String(),
 		Olc:    connEvent.Olc,
 		Device: connEvent.Device,
 	}

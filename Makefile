@@ -77,8 +77,12 @@ protoc:
 	@echo "--------------------------------------------------------------"
 	@echo "------------- 🛸 START PROTOBUFS COMPILE 🛸 -------------------"
 	@echo "--------------------------------------------------------------"
-	@cd proto && protoc -I. --proto_path=$(PB_PATH) $(PB_FOR_GO) data.proto event.proto message.proto user.proto
-	@cd proto && protoc -I. --proto_path=$(PB_PATH) $(PB_FOR_DART) data.proto event.proto message.proto user.proto
+	@rm -rf $(CORE_PB_DIR) 2>/dev/null
+	@mkdir -p $(CORE_PB_DIR)
+	@cd proto && protoc -I. --proto_path=$(PB_PATH) $(PB_FOR_GO) data.proto message.proto user.proto
+	@rm -rf $(PLUGIN_PB_DIR) 2>/dev/null
+	@mkdir -p $(PLUGIN_PB_DIR)
+	@cd proto && protoc -I. --proto_path=$(PB_PATH) $(PB_FOR_DART) data.proto message.proto user.proto
 	@echo "Finished Compiling ➡ " && date
 	@echo "--------------------------------------------------------------"
 	@echo "------------- 🛸 COMPILED ALL PROTOBUFS 🛸 --------------------"
@@ -90,3 +94,5 @@ clean:
 	go mod tidy
 	rm -rf $(IOS_BUILDDIR)
 	rm -rf $(ANDROID_BUILDDIR)
+	rm -rf $(CORE_PB_DIR) 2>/dev/null
+	rm -rf $(PLUGIN_PB_DIR) 2>/dev/null

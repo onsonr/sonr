@@ -14,7 +14,7 @@ import (
 )
 
 // ^ Data Stream Struct ^ //
-type transferStreamConn struct {
+type dataStreamConn struct {
 	stream network.Stream
 	self   *Node
 }
@@ -22,7 +22,7 @@ type transferStreamConn struct {
 // ^ Handle Incoming File Buffer ^ //
 func (sn *Node) HandleTransferStream(stream network.Stream) {
 	// Create/Set Transfer Stream
-	sn.TransferStream = transferStreamConn{
+	sn.tranStream = dataStreamConn{
 		stream: stream,
 		self:   sn,
 	}
@@ -31,19 +31,19 @@ func (sn *Node) HandleTransferStream(stream network.Stream) {
 	fmt.Println("Stream Info: ", info)
 
 	// Initialize Routine
-	go sn.TransferStream.Read()
+	go sn.tranStream.Read()
 }
 
 // ^ Create New Stream ^ //
 func (sn *Node) NewTransferStream(ctx context.Context, id peer.ID) error {
 	// Start New Transfer Stream
-	stream, err := sn.Host.NewStream(ctx, id, protocol.ID("/sonr/transfer"))
+	stream, err := sn.host.NewStream(ctx, id, protocol.ID("/sonr/transfer"))
 	if err != nil {
 		return err
 	}
 
 	// Create/Set Transfer Stream
-	sn.TransferStream = transferStreamConn{
+	sn.tranStream = dataStreamConn{
 		stream: stream,
 		self:   sn,
 	}
@@ -53,12 +53,12 @@ func (sn *Node) NewTransferStream(ctx context.Context, id peer.ID) error {
 	fmt.Println("Stream Info: ", info)
 
 	// Initialize Routine
-	go sn.TransferStream.Read()
+	go sn.tranStream.Read()
 	return nil
 }
 
 // ^ Write Message on Stream ^ //
-func (tsc *transferStreamConn) Write(authMsg *pb.AuthMessage) error {
+func (tsc *dataStreamConn) Write(authMsg *pb.AuthMessage) error {
 	// Initialize Writer
 	writer := bufio.NewWriter(tsc.stream)
 	fmt.Println("Auth Msg Struct: ", authMsg)
@@ -85,7 +85,7 @@ func (tsc *transferStreamConn) Write(authMsg *pb.AuthMessage) error {
 }
 
 // ^ Read Data from Msgio ^ //
-func (tsc *transferStreamConn) Read() error {
+func (tsc *dataStreamConn) Read() error {
 	for {
 		// ** Read the Buffer **
 		data, err := bufio.NewReader(tsc.stream).ReadString('\n')
@@ -115,7 +115,7 @@ func (tsc *transferStreamConn) Read() error {
 }
 
 // ^ Handle Received Message ^ //
-func (tsc *transferStreamConn) handleMessage(data string) {
+func (tsc *dataStreamConn) handleMessage(data string) {
 	// Convert Json to Protobuf
 	fmt.Println("Json String: ", data)
 }
