@@ -28,7 +28,7 @@ func (sn *Node) HandleAuthStream(stream network.Stream) {
 	fmt.Println("Stream Info: ", info)
 
 	// Initialize Routine
-	go sn.authStream.readLoop()
+	go sn.authStream.readAuthStreamLoop()
 }
 
 // ^ Create New Stream ^ //
@@ -51,12 +51,12 @@ func (sn *Node) NewAuthStream(peerId peer.ID) error {
 	fmt.Println("Stream Info: ", info)
 
 	// Initialize Routine
-	go sn.authStream.readLoop()
+	go sn.authStream.readAuthStreamLoop()
 	return nil
 }
 
-// ^ write Message on Stream ^ //
-func (asc *authStreamConn) write(authMsg *pb.AuthMessage) error {
+// ^ writeAuthMessage Message on Stream ^ //
+func (asc *authStreamConn) writeAuthMessage(authMsg *pb.AuthMessage) error {
 	// Initialize Writer
 	writer := bufio.NewWriter(asc.stream)
 	fmt.Println("Auth Msg Struct: ", authMsg)
@@ -84,7 +84,7 @@ func (asc *authStreamConn) write(authMsg *pb.AuthMessage) error {
 }
 
 // ^ read Data from Msgio ^ //
-func (asc *authStreamConn) readLoop() error {
+func (asc *authStreamConn) readAuthStreamLoop() error {
 	for {
 		// Create Source Reader and Dest Writer
 		source := bufio.NewReader(asc.stream)
@@ -104,12 +104,12 @@ func (asc *authStreamConn) readLoop() error {
 		}
 
 		// Handle Messages Struct
-		asc.handleMessage(message)
+		asc.handleAuthMessage(message)
 	}
 }
 
 // ^ Handle Received Message ^ //
-func (asc *authStreamConn) handleMessage(msg *pb.AuthMessage) {
+func (asc *authStreamConn) handleAuthMessage(msg *pb.AuthMessage) {
 	// ** Contains Data **
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(msg)

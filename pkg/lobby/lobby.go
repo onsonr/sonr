@@ -58,9 +58,10 @@ func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, peer 
 	}
 
 	// Initialize Lobby for Peers
-	lobInfo := pb.Lobby{
+	lobInfo := &pb.Lobby{
 		Code:  olc,
 		Count: 1,
+		Peers: make(map[string]*pb.Peer),
 	}
 
 	// Create Lobby Type
@@ -73,7 +74,7 @@ func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, peer 
 		sub:    sub,
 
 		Self:     peer,
-		Data:     &lobInfo,
+		Data:     lobInfo,
 		Messages: make(chan *pb.LobbyMessage, ChatRoomBufSize),
 	}
 
@@ -84,22 +85,9 @@ func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, peer 
 }
 
 // ^ Send publishes a message to the pubsub topic OLC ^
-func (lob *Lobby) Send(p *pb.Peer) error {
-	// Create Proto Lobby Message
-	msg := &pb.LobbyMessage{
-		Subject: pb.LobbyMessage_UPDATE,
-		Peer:    p,
-		Id:      p.GetId(),
-	}
-
-	// Convert Request to Proto Binary
-	data, err := proto.Marshal(msg)
-	if err != nil {
-		lob.call.Error(err, "Lobby.Update()")
-	}
-
+func (lob *Lobby) Send(data []byte) error {
 	// Publish to Topic
-	err = lob.topic.Publish(lob.ctx, data)
+	err := lob.topic.Publish(lob.ctx, data)
 	if err != nil {
 		return err
 	}
@@ -109,8 +97,8 @@ func (lob *Lobby) Send(p *pb.Peer) error {
 // ^ Find returns Pointer to Peer.ID and Peer ^
 func (lob *Lobby) Find(q string) (peer.ID, *pb.Peer) {
 	// Retreive Data
-	peer := lob.getPeer(q)
-	id := lob.getID(q)
+	peer := lob.Peer(q)
+	id := lob.ID(q)
 
 	return id, peer
 }

@@ -36,7 +36,6 @@ func (sf *SafeFile) Create() {
 	// @ 1. Get File Information
 	// Open File at Path
 	file, err := os.Open(sf.Path)
-	defer file.Close()
 	if err != nil {
 		fmt.Println("Error opening File", err)
 	}
@@ -50,11 +49,22 @@ func (sf *SafeFile) Create() {
 	// Get File Type
 	head := make([]byte, 261)
 	file.Read(head)
-	kind, _ := filetype.Match(head)
+	kind, err := filetype.Match(head)
+	if err != nil {
+		fmt.Println(err)
+	}
+	file.Close()
 
 	// @ 2. Create Thumbnail
 	thumbBuffer := new(bytes.Buffer)
 	if filetype.IsImage(head) {
+		// New File for ThumbNail
+		file, err := os.Open(sf.Path)
+		if err != nil {
+			fmt.Println(err)
+		}
+		defer file.Close()
+
 		// Convert to Image Object
 		img, _, err := image.Decode(file)
 		if err != nil {
@@ -84,18 +94,13 @@ func (sf *SafeFile) Create() {
 
 	// @ 3. Set Metadata Protobuf Values
 	sf.metadata = pb.Metadata{
-		FileId: uuid.New().String(),
-		Name:   fileName(sf.Path),
-		Path:   sf.Path,
-		Size:   info.Size(),
-		Kind:   kind.MIME.Type,
+		FileId:    uuid.New().String(),
+		Name:      fileName(sf.Path),
+		Path:      sf.Path,
+		Size:      info.Size(),
+		Kind:      kind.MIME.Type,
+		Thumbnail: thumbBuffer.Bytes(),
 	}
-
-	// @ 3. Set Thumbnail if it exists
-	if thumbBuffer.Len() > 0 {
-		sf.metadata.Thumbnail = thumbBuffer.Bytes()
-	}
-
 	// ** Unlock ** //
 	sf.mutex.Unlock()
 }

@@ -48,9 +48,10 @@ message LobbyMessage {
 // Authorization message sent in stream
 message AuthMessage {
   // Define Root Message
-  Peer peer = 1;
-  Subject subject = 2;
-  Metadata metadata = 3;
+  Subject subject = 1;
+  Peer from = 2;
+  Peer to = 3;
+  Metadata metadata = 4;
 
   // Define Subject
   enum Subject {

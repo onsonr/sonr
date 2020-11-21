@@ -6,6 +6,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
+	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/sonr-io/core/pkg/lobby"
 	pb "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
@@ -46,12 +47,14 @@ type Node struct {
 type authStreamConn struct {
 	stream network.Stream
 	self   *Node
+	pid    protocol.ID
 }
 
 // ^ Struct: Holds/Handles Stream for Data Transfer  ^ //
 type dataStreamConn struct {
 	stream network.Stream
 	self   *Node
+	pid    protocol.ID
 }
 
 // ** Error Callback to Plugin with error **

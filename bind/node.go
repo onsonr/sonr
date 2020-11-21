@@ -56,22 +56,34 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	return node
 }
 
-// ^ Sends new proximity/direction update ^ //
-// Update occurs when status or direction changes
+// ^ Update proximity/direction and Notify Lobby ^ //
 func (sn *Node) Update(direction float64) {
 	// ** Initialize ** //
 	// Update User Values
 	sn.Profile.Direction = math.Round(direction*100) / 100
 
+	// Create Proto Lobby Message
+	info := sn.getPeerInfo()
+	msg := pb.LobbyMessage{
+		Subject: pb.LobbyMessage_UPDATE,
+		Peer:    info,
+		Id:      info.Id,
+	}
+
+	// Convert Request to Proto Binary
+	msgBytes, err := proto.Marshal(&msg)
+	if err != nil {
+		sn.Error(err, "Lobby.Update()")
+	}
+
 	// Inform Lobby
-	err := sn.lobby.Send(sn.getPeerInfo())
+	err = sn.lobby.Send(msgBytes)
 	if err != nil {
 		sn.Error(err, "Update")
 	}
 }
 
 // ^ AddFile adds generates metadata and thumbnail from filepath to Process for Transfer, returns key ^ //
-// TODO: Implement an Error Schema with proto
 func (sn *Node) AddFile(path string) {
 	// @ 1. Initialize SafeFile, Callback Ref
 	safeFile := file.SafeFile{Path: path}
@@ -95,8 +107,7 @@ func (sn *Node) Invite(peerId string) {
 	// Get Required Data
 	id, peer := sn.lobby.Find(peerId)
 	if peer == nil {
-		err := errors.New("Search Error, peer was not found in map.")
-		sn.Error(err, "Invite")
+		sn.Error(errors.New("Search Error, peer was not found in map."), "Invite")
 	}
 
 	// Create New Auth Stream
@@ -106,39 +117,40 @@ func (sn *Node) Invite(peerId string) {
 	}
 
 	// Create Request Message
+	currFile := sn.files[len(sn.files)-1]
 	authMessage := &pb.AuthMessage{
 		Subject:  pb.AuthMessage_REQUEST,
-		Peer:     sn.getPeerInfo(),
-		Metadata: sn.files[len(sn.files)-1],
+		From:     sn.getPeerInfo(),
+		To:       sn.lobby.Peer(peerId),
+		Metadata: currFile,
 	}
 
 	// Send Invite Message
-	err = sn.authStream.write(authMessage)
+	err = sn.authStream.writeAuthMessage(authMessage)
 	if err != nil {
 		sn.Error(err, "Invite")
 	}
 }
 
 // ^ Respond to an Invitation ^ //
-func (sn *Node) Respond(decision bool) {
+func (sn *Node) Respond(peerId string, decision bool) {
 	// ** Initialize Protobuf **
 	respMsg := &pb.AuthMessage{
-		Peer: sn.getPeerInfo(),
+		From: sn.getPeerInfo(),
+		To:   sn.lobby.Peer(peerId),
 	}
 
 	// ** Check Decision ** //
 	if decision == true {
 		// @ User Accepted
-		// Set Subject
-		respMsg.Subject = pb.AuthMessage_ACCEPT
+		respMsg.Subject = pb.AuthMessage_ACCEPT // Set Subject
 	} else {
 		// @ User Declined
-		// Set Subject
-		respMsg.Subject = pb.AuthMessage_DECLINE
+		respMsg.Subject = pb.AuthMessage_DECLINE // Set Subject
 	}
 
 	// ** Send Message ** //
-	if err := sn.authStream.write(respMsg); err != nil {
+	if err := sn.authStream.writeAuthMessage(respMsg); err != nil {
 		sn.Error(err, "Respond")
 	}
 }
