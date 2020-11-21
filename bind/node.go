@@ -2,6 +2,7 @@ package sonr
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"math"
 
@@ -12,25 +13,26 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// ^ Start Initializes Node with a host and default properties ^
-func Start(reqBytes []byte, call *Callback) *Node {
+// ^ NewNode Initializes Node with a host and default properties ^
+func NewNode(reqBytes []byte, call Callback) *Node {
 	// ** Create Context and Node - Begin Setup **
-	ctx := context.Background()
 	node := new(Node)
-	node.callback, node.files = call, make([]*pb.Metadata, maxFileBufferSize)
+	node.ctx = context.Background()
+	node.call, node.files = call, make([]*pb.Metadata, maxFileBufferSize)
 
-	// @I. Unmarshal Connection Event
-	connEvent := pb.RequestMessage{}
-	err := proto.Unmarshal(reqBytes, &connEvent)
+	// ** Unmarshal Request **
+	reqMsg := pb.RequestMessage{}
+	err := proto.Unmarshal(reqBytes, &reqMsg)
 	if err != nil {
 		fmt.Println(err)
+		node.Error(err, "NewNode")
 		return nil
 	}
 
 	// @1. Create Host
-	node.host, err = sh.NewHost(ctx)
+	node.host, err = sh.NewHost(node.ctx)
 	if err != nil {
-		fmt.Println(err)
+		node.Error(err, "NewNode")
 		return nil
 	}
 
@@ -39,14 +41,14 @@ func Start(reqBytes []byte, call *Callback) *Node {
 	node.host.SetStreamHandler(protocol.ID("/sonr/transfer"), node.HandleTransferStream)
 
 	// @3. Set Node User Information
-	if err = node.setUser(&connEvent); err != nil {
-		fmt.Println(err)
+	if err = node.setUser(&reqMsg); err != nil {
+		node.Error(err, "NewNode")
 		return nil
 	}
 
 	// @4. Setup Discovery w/ Lobby
-	if err = node.setDiscovery(ctx, &connEvent); err != nil {
-		fmt.Println(err)
+	if err = node.setDiscovery(node.ctx, &reqMsg); err != nil {
+		node.Error(err, "NewNode")
 		return nil
 	}
 
@@ -56,7 +58,7 @@ func Start(reqBytes []byte, call *Callback) *Node {
 
 // ^ Sends new proximity/direction update ^ //
 // Update occurs when status or direction changes
-func (sn *Node) Update(direction float64) bool {
+func (sn *Node) Update(direction float64) {
 	// ** Initialize ** //
 	// Update User Values
 	sn.Profile.Direction = math.Round(direction*100) / 100
@@ -64,10 +66,8 @@ func (sn *Node) Update(direction float64) bool {
 	// Inform Lobby
 	err := sn.lobby.Send(sn.getPeerInfo())
 	if err != nil {
-		fmt.Println("Error Posting NotifUpdate: ", err)
-		return false
+		sn.Error(err, "Update")
 	}
-	return true
 }
 
 // ^ AddFile adds generates metadata and thumbnail from filepath to Process for Transfer, returns key ^ //
@@ -81,31 +81,28 @@ func (sn *Node) AddFile(path string) {
 	meta, err := safeFile.Metadata()
 	if err != nil {
 		// Call Error
-		sn.sendError(err, "AddFile")
-		callRef := *sn.callback
-		callRef.OnQueued(true)
+		sn.Error(err, "AddFile")
+		sn.call.OnQueued(true)
 	} else {
 		// Call Success
 		sn.files = append(sn.files, meta)
-		callRef := *sn.callback
-		callRef.OnQueued(false)
+		sn.call.OnQueued(false)
 	}
 }
 
 // ^ Invite an available peer to transfer ^ //
-func (sn *Node) Invite(peerId string) bool {
+func (sn *Node) Invite(peerId string) {
 	// Get Required Data
 	id, peer := sn.lobby.Find(peerId)
 	if peer == nil {
-		fmt.Println("Search Error, peer was not found in map.")
-		return false
+		err := errors.New("Search Error, peer was not found in map.")
+		sn.Error(err, "Invite")
 	}
 
 	// Create New Auth Stream
 	err := sn.NewAuthStream(id)
 	if err != nil {
-		fmt.Println("Auth Stream Failed to Open ", err)
-		return false
+		sn.Error(err, "Invite")
 	}
 
 	// Create Request Message
@@ -118,15 +115,12 @@ func (sn *Node) Invite(peerId string) bool {
 	// Send Invite Message
 	err = sn.authStream.write(authMessage)
 	if err != nil {
-		return false
+		sn.Error(err, "Invite")
 	}
-
-	// Return Success
-	return true
 }
 
 // ^ Respond to an Invitation ^ //
-func (sn *Node) Respond(decision bool) bool {
+func (sn *Node) Respond(decision bool) {
 	// @ User Accepted
 	if decision == true {
 		// Create Protobuf
@@ -137,9 +131,8 @@ func (sn *Node) Respond(decision bool) bool {
 
 		// Send Message
 		if err := sn.authStream.write(acceptMsg); err != nil {
-			return false
+			sn.Error(err, "Respond")
 		}
-		return true
 	}
 	// @ User Declined
 	// Create Protobuf
@@ -150,11 +143,8 @@ func (sn *Node) Respond(decision bool) bool {
 
 	// Send Message
 	if err := sn.authStream.write(declineMsg); err != nil {
-		return false
+		sn.Error(err, "Respond")
 	}
-
-	// Succesful
-	return true
 }
 
 // ^ Close Ends All Network Communication ^

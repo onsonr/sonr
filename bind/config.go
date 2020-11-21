@@ -52,10 +52,9 @@ func (sn *Node) setDiscovery(ctx context.Context, connEvent *pb.RequestMessage) 
 	fmt.Println("GossipSub Created")
 
 	// Assign Callbacks from Node to Lobby
-	callbackRef := *sn.callback
 	lobbyCallbackRef := lobby.LobbyCallback{
-		Refreshed: callbackRef.OnRefreshed,
-		Error:     sn.sendError,
+		Refreshed: sn.call.OnRefreshed,
+		Error:     sn.Error,
 	}
 
 	// Enter Lobby

@@ -1,6 +1,7 @@
 package sonr
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/libp2p/go-libp2p-core/host"
@@ -30,14 +31,15 @@ type Node struct {
 	Contact pb.Contact
 
 	// Networking Properties
+	ctx        context.Context
 	host       host.Host
 	authStream authStreamConn
 	dataStream dataStreamConn
 
 	// References
-	callback *Callback
-	lobby    *lobby.Lobby
-	files    []*pb.Metadata
+	call  Callback
+	lobby *lobby.Lobby
+	files []*pb.Metadata
 }
 
 // ^ Struct: Holds/Handles Stream for Authentication  ^ //
@@ -53,8 +55,11 @@ type dataStreamConn struct {
 }
 
 // ** Error Callback to Plugin with error **
-func (sn *Node) sendError(err error, method string) {
-	// Create Error Struct
+func (sn *Node) Error(err error, method string) {
+	// Log In Core
+	fmt.Println(fmt.Sprintf("[Error] At Method %s : %s", err.Error(), method))
+
+	// Create Error ProtoBuf
 	errorMsg := pb.ErrorMessage{
 		Message: err.Error(),
 		Method:  method,
@@ -63,13 +68,12 @@ func (sn *Node) sendError(err error, method string) {
 	// Convert Message to bytes
 	bytes, err := proto.Marshal(&errorMsg)
 	if err != nil {
-		fmt.Println("ERROR CALLBACK ERROR: ", err)
+		fmt.Println("Cannot Marshal Error Protobuf: ", err)
 	}
 
 	// Check and callback
-	if sn.callback != nil {
+	if sn.call != nil {
 		// Reference
-		callRef := *sn.callback
-		callRef.OnError(bytes)
+		sn.call.OnError(bytes)
 	}
 }
