@@ -80,8 +80,6 @@ protoc:
 	@rm -rf $(CORE_PB_DIR) 2>/dev/null
 	@mkdir -p $(CORE_PB_DIR)
 	@cd proto && protoc -I. --proto_path=$(PB_PATH) $(PB_FOR_GO) data.proto message.proto user.proto
-	@rm -rf $(PLUGIN_PB_DIR) 2>/dev/null
-	@mkdir -p $(PLUGIN_PB_DIR)
 	@cd proto && protoc -I. --proto_path=$(PB_PATH) $(PB_FOR_DART) data.proto message.proto user.proto
 	@echo "Finished Compiling ➡ " && date
 	@echo "--------------------------------------------------------------"
