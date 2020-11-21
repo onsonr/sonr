@@ -90,169 +90,6 @@ func (x *ConnectEvent) GetContact() *Contact {
 	return nil
 }
 
-// [CORE]
-// User Joining Lobby
-type JoinEvent struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Peer *PeerInfo `protobuf:"bytes,1,opt,name=peer,proto3" json:"peer,omitempty"`
-	Olc  string    `protobuf:"bytes,2,opt,name=olc,proto3" json:"olc,omitempty"`
-}
-
-func (x *JoinEvent) Reset() {
-	*x = JoinEvent{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_event_proto_msgTypes[1]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *JoinEvent) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*JoinEvent) ProtoMessage() {}
-
-func (x *JoinEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_event_proto_msgTypes[1]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use JoinEvent.ProtoReflect.Descriptor instead.
-func (*JoinEvent) Descriptor() ([]byte, []int) {
-	return file_event_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *JoinEvent) GetPeer() *PeerInfo {
-	if x != nil {
-		return x.Peer
-	}
-	return nil
-}
-
-func (x *JoinEvent) GetOlc() string {
-	if x != nil {
-		return x.Olc
-	}
-	return ""
-}
-
-// [PLUGIN]
-// Direction on Device Changed
-type UpdateEvent struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	NewDirection float64 `protobuf:"fixed64,1,opt,name=newDirection,proto3" json:"newDirection,omitempty"`
-}
-
-func (x *UpdateEvent) Reset() {
-	*x = UpdateEvent{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_event_proto_msgTypes[2]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *UpdateEvent) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*UpdateEvent) ProtoMessage() {}
-
-func (x *UpdateEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_event_proto_msgTypes[2]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use UpdateEvent.ProtoReflect.Descriptor instead.
-func (*UpdateEvent) Descriptor() ([]byte, []int) {
-	return file_event_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *UpdateEvent) GetNewDirection() float64 {
-	if x != nil {
-		return x.NewDirection
-	}
-	return 0
-}
-
-// [PLUGIN]
-// User sent invite
-type InviteEvent struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Peer   *PeerInfo `protobuf:"bytes,1,opt,name=peer,proto3" json:"peer,omitempty"`
-	FileId string    `protobuf:"bytes,2,opt,name=fileId,proto3" json:"fileId,omitempty"`
-}
-
-func (x *InviteEvent) Reset() {
-	*x = InviteEvent{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_event_proto_msgTypes[3]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *InviteEvent) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*InviteEvent) ProtoMessage() {}
-
-func (x *InviteEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_event_proto_msgTypes[3]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use InviteEvent.ProtoReflect.Descriptor instead.
-func (*InviteEvent) Descriptor() ([]byte, []int) {
-	return file_event_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *InviteEvent) GetPeer() *PeerInfo {
-	if x != nil {
-		return x.Peer
-	}
-	return nil
-}
-
-func (x *InviteEvent) GetFileId() string {
-	if x != nil {
-		return x.FileId
-	}
-	return ""
-}
-
 // [PLUGIN]
 // User responded invite
 type RespondEvent struct {
@@ -267,7 +104,7 @@ type RespondEvent struct {
 func (x *RespondEvent) Reset() {
 	*x = RespondEvent{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_event_proto_msgTypes[4]
+		mi := &file_event_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -280,7 +117,7 @@ func (x *RespondEvent) String() string {
 func (*RespondEvent) ProtoMessage() {}
 
 func (x *RespondEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_event_proto_msgTypes[4]
+	mi := &file_event_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -293,7 +130,7 @@ func (x *RespondEvent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RespondEvent.ProtoReflect.Descriptor instead.
 func (*RespondEvent) Descriptor() ([]byte, []int) {
-	return file_event_proto_rawDescGZIP(), []int{4}
+	return file_event_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *RespondEvent) GetPeer() *PeerInfo {
@@ -320,24 +157,13 @@ var file_event_proto_rawDesc = []byte{
 	0x65, 0x76, 0x69, 0x63, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x64, 0x65, 0x76,
 	0x69, 0x63, 0x65, 0x12, 0x22, 0x0a, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x18, 0x03,
 	0x20, 0x01, 0x28, 0x0b, 0x32, 0x08, 0x2e, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x52, 0x07,
-	0x63, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x22, 0x3c, 0x0a, 0x09, 0x4a, 0x6f, 0x69, 0x6e, 0x45,
-	0x76, 0x65, 0x6e, 0x74, 0x12, 0x1d, 0x0a, 0x04, 0x70, 0x65, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x0b, 0x32, 0x09, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x04, 0x70,
-	0x65, 0x65, 0x72, 0x12, 0x10, 0x0a, 0x03, 0x6f, 0x6c, 0x63, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x03, 0x6f, 0x6c, 0x63, 0x22, 0x31, 0x0a, 0x0b, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x45,
-	0x76, 0x65, 0x6e, 0x74, 0x12, 0x22, 0x0a, 0x0c, 0x6e, 0x65, 0x77, 0x44, 0x69, 0x72, 0x65, 0x63,
-	0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x01, 0x52, 0x0c, 0x6e, 0x65, 0x77, 0x44,
-	0x69, 0x72, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x44, 0x0a, 0x0b, 0x49, 0x6e, 0x76, 0x69,
-	0x74, 0x65, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x1d, 0x0a, 0x04, 0x70, 0x65, 0x65, 0x72, 0x18,
+	0x63, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x22, 0x49, 0x0a, 0x0c, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x64, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x1d, 0x0a, 0x04, 0x70, 0x65, 0x65, 0x72, 0x18,
 	0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x09, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x49, 0x6e, 0x66, 0x6f,
-	0x52, 0x04, 0x70, 0x65, 0x65, 0x72, 0x12, 0x16, 0x0a, 0x06, 0x66, 0x69, 0x6c, 0x65, 0x49, 0x64,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x66, 0x69, 0x6c, 0x65, 0x49, 0x64, 0x22, 0x49,
-	0x0a, 0x0c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x64, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x1d,
-	0x0a, 0x04, 0x70, 0x65, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x09, 0x2e, 0x50,
-	0x65, 0x65, 0x72, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x04, 0x70, 0x65, 0x65, 0x72, 0x12, 0x1a, 0x0a,
-	0x08, 0x64, 0x65, 0x63, 0x69, 0x73, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x52,
-	0x08, 0x64, 0x65, 0x63, 0x69, 0x73, 0x69, 0x6f, 0x6e, 0x42, 0x09, 0x5a, 0x07, 0x2e, 0x3b, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x52, 0x04, 0x70, 0x65, 0x65, 0x72, 0x12, 0x1a, 0x0a, 0x08, 0x64, 0x65, 0x63, 0x69, 0x73, 0x69,
+	0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x52, 0x08, 0x64, 0x65, 0x63, 0x69, 0x73, 0x69,
+	0x6f, 0x6e, 0x42, 0x09, 0x5a, 0x07, 0x2e, 0x3b, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -352,26 +178,21 @@ func file_event_proto_rawDescGZIP() []byte {
 	return file_event_proto_rawDescData
 }
 
-var file_event_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_event_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_event_proto_goTypes = []interface{}{
 	(*ConnectEvent)(nil), // 0: ConnectEvent
-	(*JoinEvent)(nil),    // 1: JoinEvent
-	(*UpdateEvent)(nil),  // 2: UpdateEvent
-	(*InviteEvent)(nil),  // 3: InviteEvent
-	(*RespondEvent)(nil), // 4: RespondEvent
-	(*Contact)(nil),      // 5: Contact
-	(*PeerInfo)(nil),     // 6: PeerInfo
+	(*RespondEvent)(nil), // 1: RespondEvent
+	(*Contact)(nil),      // 2: Contact
+	(*PeerInfo)(nil),     // 3: PeerInfo
 }
 var file_event_proto_depIdxs = []int32{
-	5, // 0: ConnectEvent.contact:type_name -> Contact
-	6, // 1: JoinEvent.peer:type_name -> PeerInfo
-	6, // 2: InviteEvent.peer:type_name -> PeerInfo
-	6, // 3: RespondEvent.peer:type_name -> PeerInfo
-	4, // [4:4] is the sub-list for method output_type
-	4, // [4:4] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	2, // 0: ConnectEvent.contact:type_name -> Contact
+	3, // 1: RespondEvent.peer:type_name -> PeerInfo
+	2, // [2:2] is the sub-list for method output_type
+	2, // [2:2] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_event_proto_init() }
@@ -394,42 +215,6 @@ func file_event_proto_init() {
 			}
 		}
 		file_event_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*JoinEvent); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_event_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UpdateEvent); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_event_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*InviteEvent); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_event_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*RespondEvent); i {
 			case 0:
 				return &v.state
@@ -448,7 +233,7 @@ func file_event_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_event_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

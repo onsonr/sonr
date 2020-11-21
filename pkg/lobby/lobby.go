@@ -13,10 +13,14 @@ import (
 // ChatRoomBufSize is the number of incoming messages to buffer for each topic.
 const ChatRoomBufSize = 128
 
-// LobbyCallback returns message from lobby
-type LobbyCallback interface {
-	OnRefreshed(data []byte)
-	OnError(data []byte)
+// Define Function Types
+type OnRefreshed func(data []byte)
+type OnError func(data []byte)
+
+// Create Callback Struct to Implement Node Callback Methods
+type LobbyCallback struct {
+	Refreshed OnRefreshed
+	Error     OnError
 }
 
 // Lobby represents a subscription to a single PubSub topic. Messages

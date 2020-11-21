@@ -20,11 +20,10 @@ type Callback interface {
 }
 
 // ^ Start begins the mobile host ^
-func Start(data []byte, call Callback) *Node {
+func Start(data []byte, call *Callback) *Node {
 	// ** Create Context and Node - Begin Setup **
 	ctx := context.Background()
 	node := new(Node)
-	node.CTX = ctx
 	node.Callback = call
 
 	// @I. Unmarshal Connection Event
@@ -36,7 +35,7 @@ func Start(data []byte, call Callback) *Node {
 	}
 
 	// @1. Create Host
-	node.Host, err = sh.NewHost(&node.CTX)
+	node.Host, err = sh.NewHost(&ctx)
 	if err != nil {
 		fmt.Println(err)
 		return nil
@@ -54,7 +53,7 @@ func Start(data []byte, call Callback) *Node {
 	}
 
 	// @4. Setup Discovery w/ Lobby
-	err = node.setDiscovery(&connEvent)
+	err = node.setDiscovery(ctx, &connEvent)
 	if err != nil {
 		fmt.Println(err)
 		return nil

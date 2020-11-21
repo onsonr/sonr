@@ -1,6 +1,7 @@
 package sonr
 
 import (
+	"context"
 	"errors"
 	"fmt"
 
@@ -42,23 +43,30 @@ func (sn *Node) GetUser() []byte {
 }
 
 // ^ SetDiscovery initializes discovery protocols and creates pubsub service ^ //
-func (sn *Node) setDiscovery(connEvent *pb.ConnectEvent) error {
+func (sn *Node) setDiscovery(ctx context.Context, connEvent *pb.ConnectEvent) error {
 	// setup local mDNS discovery
-	err := initMDNSDiscovery(sn.CTX, sn.Host, sn.Callback)
+	err := initMDNSDiscovery(ctx, sn.Host)
 	if err != nil {
 		return err
 	}
 	fmt.Println("MDNS Started")
 
 	// create a new PubSub service using the GossipSub router
-	sn.PubSub, err = pubsub.NewGossipSub(sn.CTX, sn.Host)
+	sn.PubSub, err = pubsub.NewGossipSub(ctx, sn.Host)
 	if err != nil {
 		return err
 	}
 	fmt.Println("GossipSub Created")
 
-	// Enter Lobby for Olc
-	sn.Lobby, err = lobby.Enter(sn.CTX, sn.Callback, sn.PubSub, sn.getPeerInfo(), connEvent.Olc)
+	// Assign Callbacks from Node to Lobby
+	callbackRef := *sn.Callback
+	lobbyCallbackRef := lobby.LobbyCallback{
+		Refreshed: callbackRef.OnRefreshed,
+		Error:     callbackRef.OnError,
+	}
+
+	// Enter Lobby
+	sn.Lobby, err = lobby.Enter(ctx, lobbyCallbackRef, sn.PubSub, sn.getPeerInfo(), connEvent.Olc)
 	if err != nil {
 		return err
 	}

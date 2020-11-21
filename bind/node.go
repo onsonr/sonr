@@ -1,7 +1,6 @@
 package sonr
 
 import (
-	"context"
 	"fmt"
 	"math"
 	"sync"
@@ -17,7 +16,6 @@ import (
 // ^ Struct Management ^ //
 // Node contains all values for user
 type Node struct {
-	CTX            context.Context
 	Host           host.Host
 	PubSub         *pubsub.PubSub
 	Lobby          *lobby.Lobby
@@ -25,7 +23,7 @@ type Node struct {
 	Contact        pb.Contact
 	AuthStream     authStreamConn
 	TransferStream transferStreamConn
-	Callback       Callback
+	Callback       *Callback
 }
 
 // ^ Sends new proximity/direction update ^ //
@@ -81,17 +79,9 @@ func (sn *Node) Queue(path string) bool {
 }
 
 // ^ Invite an available peer to transfer ^ //
-func (sn *Node) Invite(data []byte) bool {
-	// ** Initialize **
-	invite := pb.InviteEvent{}
-	err := proto.Unmarshal(data, &invite)
-	if err != nil {
-		fmt.Println("unmarshaling error: ", err)
-		return false
-	}
-
+func (sn *Node) Invite(peerId string) bool {
 	// ** Get Required Data **
-	peerID, err := sn.Lobby.GetPeerID(invite.Peer.Id)
+	peerID, err := sn.Lobby.GetPeerID(peerId)
 	if err != nil {
 		fmt.Println("Search Error", err)
 		return false

@@ -2,6 +2,7 @@ package sonr
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"io"
 
@@ -15,18 +16,16 @@ import (
 
 // ^ Auth Stream Struct ^ //
 type authStreamConn struct {
-	stream   network.Stream
-	callback Callback
-	self     *Node
+	stream network.Stream
+	self   *Node
 }
 
 // ^ Handle Incoming Stream ^ //
 func (sn *Node) HandleAuthStream(stream network.Stream) {
 	// Create/Set Auth Stream
 	sn.AuthStream = authStreamConn{
-		stream:   stream,
-		callback: sn.Callback,
-		self:     sn,
+		stream: stream,
+		self:   sn,
 	}
 	// Print Stream Info
 	info := stream.Stat()
@@ -39,16 +38,16 @@ func (sn *Node) HandleAuthStream(stream network.Stream) {
 // ^ Create New Stream ^ //
 func (sn *Node) NewAuthStream(id peer.ID) error {
 	// Start New Auth Stream
-	stream, err := sn.Host.NewStream(sn.CTX, id, protocol.ID("/sonr/auth"))
+	ctx := context.Background()
+	stream, err := sn.Host.NewStream(ctx, id, protocol.ID("/sonr/auth"))
 	if err != nil {
 		return err
 	}
 
 	// Create/Set Auth Stream
 	sn.AuthStream = authStreamConn{
-		stream:   stream,
-		callback: sn.Callback,
-		self:     sn,
+		stream: stream,
+		self:   sn,
 	}
 
 	// Print Stream Info
@@ -140,19 +139,22 @@ func (asc *authStreamConn) handleMessage(data string) {
 	// @ Request to Invite
 	case pb.AuthMessage_REQUEST:
 		// Callback the Invitation
-		asc.self.Callback.OnInvited(authRaw)
+		callbackRef := *asc.self.Callback
+		callbackRef.OnInvited(authRaw)
 
 	// @ Peer Accepted Response to Invite
 	case pb.AuthMessage_ACCEPT:
 		fmt.Println("Auth Accepted")
 		// Callback to Proxies
-		asc.self.Callback.OnResponded(authRaw)
+		callbackRef := *asc.self.Callback
+		callbackRef.OnResponded(authRaw)
 
 	// @ Peer Accepted Response to Invite
 	case pb.AuthMessage_DECLINE:
 		fmt.Println("Auth Declined")
 		// Callback to Proxies
-		asc.self.Callback.OnResponded(authRaw)
+		callbackRef := *asc.self.Callback
+		callbackRef.OnResponded(authRaw)
 
 	// ! Invalid Subject
 	default:

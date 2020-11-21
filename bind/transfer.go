@@ -2,6 +2,7 @@ package sonr
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"io"
 
@@ -14,18 +15,16 @@ import (
 
 // ^ Data Stream Struct ^ //
 type transferStreamConn struct {
-	stream   network.Stream
-	callback Callback
-	self     *Node
+	stream network.Stream
+	self   *Node
 }
 
 // ^ Handle Incoming File Buffer ^ //
 func (sn *Node) HandleTransferStream(stream network.Stream) {
 	// Create/Set Transfer Stream
 	sn.TransferStream = transferStreamConn{
-		stream:   stream,
-		callback: sn.Callback,
-		self:     sn,
+		stream: stream,
+		self:   sn,
 	}
 	// Print Stream Info
 	info := stream.Stat()
@@ -36,18 +35,17 @@ func (sn *Node) HandleTransferStream(stream network.Stream) {
 }
 
 // ^ Create New Stream ^ //
-func (sn *Node) NewTransferStream(id peer.ID) error {
+func (sn *Node) NewTransferStream(ctx context.Context, id peer.ID) error {
 	// Start New Transfer Stream
-	stream, err := sn.Host.NewStream(sn.CTX, id, protocol.ID("/sonr/transfer"))
+	stream, err := sn.Host.NewStream(ctx, id, protocol.ID("/sonr/transfer"))
 	if err != nil {
 		return err
 	}
 
 	// Create/Set Transfer Stream
 	sn.TransferStream = transferStreamConn{
-		stream:   stream,
-		callback: sn.Callback,
-		self:     sn,
+		stream: stream,
+		self:   sn,
 	}
 
 	// Print Stream Info
