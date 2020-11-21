@@ -31,7 +31,7 @@ type Lobby struct {
 	// Public Vars
 	Messages chan *pb.LobbyMessage
 	Self     *pb.Peer
-	Data     *pb.Lobby
+	Data     pb.Lobby
 
 	// Private Vars
 	ctx    context.Context
@@ -58,7 +58,7 @@ func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, peer 
 	}
 
 	// Initialize Lobby for Peers
-	lobInfo := &pb.Lobby{
+	lobInfo := pb.Lobby{
 		Code:  olc,
 		Count: 1,
 		Peers: make(map[string]*pb.Peer),
@@ -106,7 +106,7 @@ func (lob *Lobby) Find(q string) (peer.ID, *pb.Peer) {
 // ^ Peers returns ALL Available in Lobby ^
 func (lob *Lobby) Peers() []byte {
 	// Convert to bytes
-	data, err := proto.Marshal(lob.Data)
+	data, err := proto.Marshal(&lob.Data)
 	if err != nil {
 		fmt.Println("Error Marshaling Lobby Data ", err)
 		return nil
