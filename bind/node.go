@@ -121,28 +121,24 @@ func (sn *Node) Invite(peerId string) {
 
 // ^ Respond to an Invitation ^ //
 func (sn *Node) Respond(decision bool) {
-	// @ User Accepted
+	// ** Initialize Protobuf **
+	respMsg := &pb.AuthMessage{
+		Peer: sn.getPeerInfo(),
+	}
+
+	// ** Check Decision ** //
 	if decision == true {
-		// Create Protobuf
-		acceptMsg := &pb.AuthMessage{
-			Subject: pb.AuthMessage_ACCEPT,
-			Peer:    sn.getPeerInfo(),
-		}
-
-		// Send Message
-		if err := sn.authStream.write(acceptMsg); err != nil {
-			sn.Error(err, "Respond")
-		}
-	}
-	// @ User Declined
-	// Create Protobuf
-	declineMsg := &pb.AuthMessage{
-		Subject: pb.AuthMessage_DECLINE,
-		Peer:    sn.getPeerInfo(),
+		// @ User Accepted
+		// Set Subject
+		respMsg.Subject = pb.AuthMessage_ACCEPT
+	} else {
+		// @ User Declined
+		// Set Subject
+		respMsg.Subject = pb.AuthMessage_DECLINE
 	}
 
-	// Send Message
-	if err := sn.authStream.write(declineMsg); err != nil {
+	// ** Send Message ** //
+	if err := sn.authStream.write(respMsg); err != nil {
 		sn.Error(err, "Respond")
 	}
 }
