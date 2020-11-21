@@ -48,9 +48,9 @@ message LobbyMessage {
 // Authorization message sent in stream
 message AuthMessage {
   // Define Root Message
-  Subject subject = 1;
-  Peer from = 2;
-  Peer to = 3;
+  Peer from = 1;
+  Peer to = 2;
+  Subject subject = 3;
   Metadata metadata = 4;
 
   // Define Subject

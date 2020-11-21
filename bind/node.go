@@ -7,9 +7,9 @@ import (
 	"math"
 
 	"github.com/libp2p/go-libp2p-core/protocol"
-	"github.com/sonr-io/core/pkg/file"
-	sh "github.com/sonr-io/core/pkg/host"
-	pb "github.com/sonr-io/core/pkg/models"
+	"github.com/sonr-io/core/internal/file"
+	sh "github.com/sonr-io/core/internal/host"
+	pb "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
 

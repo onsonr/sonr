@@ -21,13 +21,15 @@ BUILD_IOS="cd bind && $(GOCLEAN) &&  $(GOBIND) -target=$(IOS_TARGET) -v -o $(IOS
 BUILD_ANDROID="cd bind && $(GOCLEAN) && $(GOBIND) -target=$(ANDROID_TARGET) -v -o $(ANDROID_ARTIFACT)"
 
 # Proto Directories
-PB_PATH="/Users/prad/Sonr/core/proto"
-CORE_PB_DIR="/Users/prad/Sonr/core/pkg/models"
+PB_PATH="/Users/prad/Sonr/core/internal/models"
+CORE_PB_DIR="/Users/prad/Sonr/core/internal/models"
 PLUGIN_PB_DIR="/Users/prad/Sonr/plugin/lib/models"
 
 # Proto Build Commands
-PB_FOR_GO="--go_out=$(CORE_PB_DIR)"
-PB_FOR_DART="--dart_out=$(PLUGIN_PB_DIR)"
+PB_CLEAN_CORE="cd $(PB_PATH) && find ./ -name "*.go" -not -name "*.proto" -exec rm {} \;"
+PB_CLEAN_PLUGIN="cd $(PLUGIN_PB_DIR) && find ./ -name "*.go" -not -name "*.proto" -exec rm {} \;"
+PB_BUILD_CORE="--go_out=$(CORE_PB_DIR)"
+PB_BUILD_PLUGIN="--dart_out=$(PLUGIN_PB_DIR)"
 
 all: protoc ios android 
 	@cd /System/Library/Sounds && afplay Hero.aiff
@@ -77,12 +79,11 @@ protoc:
 	@echo "--------------------------------------------------------------"
 	@echo "------------- 🛸 START PROTOBUFS COMPILE 🛸 -------------------"
 	@echo "--------------------------------------------------------------"
-	@rm -rf $(CORE_PB_DIR) 2>/dev/null
-	@mkdir -p $(CORE_PB_DIR)
-	@cd proto && protoc -I. --proto_path=$(PB_PATH) $(PB_FOR_GO) data.proto message.proto user.proto
+	
+	@cd internal/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CORE) data.proto message.proto user.proto
 	@rm -rf $(PLUGIN_PB_DIR) 2>/dev/null
 	@mkdir -p $(PLUGIN_PB_DIR)
-	@cd proto && protoc -I. --proto_path=$(PB_PATH) $(PB_FOR_DART) data.proto message.proto user.proto
+	@cd internal/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_PLUGIN) data.proto message.proto user.proto
 	@echo "Finished Compiling ➡ " && date
 	@echo "--------------------------------------------------------------"
 	@echo "------------- 🛸 COMPILED ALL PROTOBUFS 🛸 --------------------"
@@ -94,5 +95,6 @@ clean:
 	go mod tidy
 	rm -rf $(IOS_BUILDDIR)
 	rm -rf $(ANDROID_BUILDDIR)
-	rm -rf $(CORE_PB_DIR) 2>/dev/null
+	eval $(PB_CLEAN_CORE) 2>/dev/null
 	rm -rf $(PLUGIN_PB_DIR) 2>/dev/null
+	mkdir -p $(PLUGIN_PB_DIR)

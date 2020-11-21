@@ -7,7 +7,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	pb "github.com/sonr-io/core/pkg/models"
+	pb "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
 

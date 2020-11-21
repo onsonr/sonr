@@ -6,8 +6,8 @@ import (
 	"fmt"
 
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	"github.com/sonr-io/core/pkg/lobby"
-	pb "github.com/sonr-io/core/pkg/models"
+	"github.com/sonr-io/core/internal/lobby"
+	pb "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
 

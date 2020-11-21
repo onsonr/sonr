@@ -2,7 +2,6 @@ package file
 
 import (
 	"bytes"
-	"errors"
 	"image"
 	"math"
 	"os"
@@ -18,7 +17,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/h2non/filetype"
 	"github.com/nfnt/resize"
-	pb "github.com/sonr-io/core/pkg/models"
+	pb "github.com/sonr-io/core/internal/models"
 )
 
 // ^ File that safely sets metadata and thumbnail in routine ^ //
@@ -110,12 +109,6 @@ func (sf *SafeFile) Metadata() (*pb.Metadata, error) {
 	// ** Lock File wait for access ** //
 	sf.mutex.Lock()
 	defer sf.mutex.Unlock()
-
-	// @ 1. Check for Metadata
-	if sf.metadata.GetPath() == "" {
-		errMsg := fmt.Sprintf("Metadata was not found in SafeFile for '%s'", sf.Path)
-		return nil, errors.New(errMsg)
-	}
 
 	// @ 2. Return Value
 	return &sf.metadata, nil
