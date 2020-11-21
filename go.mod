@@ -5,7 +5,6 @@ go 1.15
 // Core Imports
 require (
 	github.com/davidlazar/go-crypto v0.0.0-20190912175916-7055855a373f // indirect
-	github.com/dgraph-io/badger/v2 v2.0.3
 	github.com/golang/protobuf v1.4.3
 	github.com/google/uuid v1.1.2
 	github.com/h2non/filetype v1.1.0

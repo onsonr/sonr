@@ -32,9 +32,16 @@ message RequestMessage {
 // [CORE]
 // Message Sent when peer has direction update to Lobby Topic
 message LobbyMessage {
-  string event = 1;
-  string sender = 2;
-  Peer data = 3;
+  string id = 1;
+  Subject subject = 2;
+  Peer peer = 3;
+
+  enum Subject {
+    NONE = 0;
+    JOIN = 1;
+    UPDATE = 2;
+    EXIT = 3;
+  }
 }
 
 // [CORE]

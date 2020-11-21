@@ -61,15 +61,8 @@ func (sn *Node) Update(direction float64) bool {
 	// Update User Values
 	sn.Profile.Direction = math.Round(direction*100) / 100
 
-	// Create Message with Updated Info
-	notif := &pb.LobbyMessage{
-		Event:  "Update",
-		Sender: sn.Profile.HostId,
-		Data:   sn.getPeerInfo(),
-	}
-
 	// Inform Lobby
-	err := sn.lobby.Publish(notif)
+	err := sn.lobby.Send(sn.getPeerInfo())
 	if err != nil {
 		fmt.Println("Error Posting NotifUpdate: ", err)
 		return false
@@ -88,45 +81,42 @@ func (sn *Node) AddFile(path string) {
 	meta, err := safeFile.Metadata()
 	if err != nil {
 		// Call Error
+		sn.sendError(err, "AddFile")
+		callRef := *sn.callback
+		callRef.OnQueued(true)
 	} else {
 		// Call Success
 		sn.files = append(sn.files, meta)
+		callRef := *sn.callback
+		callRef.OnQueued(false)
 	}
 }
 
 // ^ Invite an available peer to transfer ^ //
 func (sn *Node) Invite(peerId string) bool {
-	// ** Get Required Data **
-	peerID, err := sn.lobby.GetPubSubID(peerId)
-	if err != nil {
-		fmt.Println("Search Error", err)
+	// Get Required Data
+	id, peer := sn.lobby.Find(peerId)
+	if peer == nil {
+		fmt.Println("Search Error, peer was not found in map.")
 		return false
 	}
 
-	// ** Get Current File ** //
-	// cachedFile := sn.Profile.GetCurrentFile()
-	// if cachedFile == nil {
-	// 	fmt.Println(err)
-	// 	return false
-	// }
-
-	// ** Create New Auth Stream **
-	err = sn.NewAuthStream(peerID)
+	// Create New Auth Stream
+	err := sn.NewAuthStream(id)
 	if err != nil {
 		fmt.Println("Auth Stream Failed to Open ", err)
 		return false
 	}
 
 	// Create Request Message
-	authMsg := &pb.AuthMessage{
-		Subject: pb.AuthMessage_REQUEST,
-		Peer:    sn.getPeerInfo(),
-		// Metadata:  sn.Profile.CurrentFile.GetMetadata(),
-		// Thumbnail: sn.Profile.CurrentFile.GetThumbnail(),
+	authMessage := &pb.AuthMessage{
+		Subject:  pb.AuthMessage_REQUEST,
+		Peer:     sn.getPeerInfo(),
+		Metadata: sn.files[len(sn.files)-1],
 	}
 
-	// ** Send Invite Message **
-	err = sn.authStream.write(authMsg)
+	// Send Invite Message
+	err = sn.authStream.write(authMessage)
 	if err != nil {
 		return false
 	}
@@ -165,28 +155,6 @@ func (sn *Node) Respond(decision bool) bool {
 
 	// Succesful
 	return true
-}
-
-// ^ Error Callback to Plugin with error ^
-func (sn *Node) Error(err error, method string) {
-	// Create Error Struct
-	errorMsg := pb.ErrorMessage{
-		Message: err.Error(),
-		Method:  method,
-	}
-
-	// Convert Message to bytes
-	bytes, err := proto.Marshal(&errorMsg)
-	if err != nil {
-		fmt.Println("ERROR CALLBACK ERROR: ", err)
-	}
-
-	// Check and callback
-	if sn.callback != nil {
-		// Reference
-		callRef := *sn.callback
-		callRef.OnError(bytes)
-	}
 }
 
 // ^ Close Ends All Network Communication ^

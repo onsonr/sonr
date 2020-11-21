@@ -2,9 +2,10 @@ package lobby
 
 import (
 	"context"
-	"log"
+	"fmt"
 	"sync"
 
+	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	pb "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
@@ -15,7 +16,7 @@ const ChatRoomBufSize = 128
 
 // Define Function Types
 type OnRefreshed func(data []byte)
-type OnError func(data []byte)
+type OnError func(err error, method string)
 
 // Struct to Implement Node Callback Methods
 type LobbyCallback struct {
@@ -30,7 +31,7 @@ type Lobby struct {
 	// Public Vars
 	Messages chan *pb.LobbyMessage
 	Self     *pb.Peer
-	Info     pb.Lobby
+	Data     *pb.Lobby
 
 	// Private Vars
 	ctx    context.Context
@@ -72,7 +73,7 @@ func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, peer 
 		sub:    sub,
 
 		Self:     peer,
-		Info:     lobInfo,
+		Data:     &lobInfo,
 		Messages: make(chan *pb.LobbyMessage, ChatRoomBufSize),
 	}
 
@@ -82,12 +83,19 @@ func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, peer 
 	return lob, nil
 }
 
-// Publish sends a message to the pubsub topic.
-func (lob *Lobby) Publish(m *pb.LobbyMessage) error {
+// ^ Send publishes a message to the pubsub topic OLC ^
+func (lob *Lobby) Send(p *pb.Peer) error {
+	// Create Proto Lobby Message
+	msg := &pb.LobbyMessage{
+		Subject: pb.LobbyMessage_UPDATE,
+		Peer:    p,
+		Id:      p.GetId(),
+	}
+
 	// Convert Request to Proto Binary
-	data, err := proto.Marshal(m)
+	data, err := proto.Marshal(msg)
 	if err != nil {
-		log.Fatal("marshaling error: ", err)
+		lob.call.Error(err, "Lobby.Update()")
 	}
 
 	// Publish to Topic
@@ -98,7 +106,27 @@ func (lob *Lobby) Publish(m *pb.LobbyMessage) error {
 	return nil
 }
 
-// End terminates lobby loop
+// ^ Find returns Pointer to Peer.ID and Peer ^
+func (lob *Lobby) Find(q string) (peer.ID, *pb.Peer) {
+	// Retreive Data
+	peer := lob.getPeer(q)
+	id := lob.getID(q)
+
+	return id, peer
+}
+
+// ^ Peers returns ALL Available in Lobby ^
+func (lob *Lobby) Peers() []byte {
+	// Convert to bytes
+	data, err := proto.Marshal(lob.Data)
+	if err != nil {
+		fmt.Println("Error Marshaling Lobby Data ", err)
+		return nil
+	}
+	return data
+}
+
+// ^ End terminates lobby loop ^
 func (lob *Lobby) End() {
 	lob.doneCh <- struct{}{}
 }

@@ -4,7 +4,10 @@ import (
 	"bytes"
 	"errors"
 	"image"
+	"math"
 	"os"
+	"path/filepath"
+	"strings"
 	"sync"
 
 	"fmt"
@@ -18,10 +21,7 @@ import (
 	pb "github.com/sonr-io/core/pkg/models"
 )
 
-const DEFAULT_MAX_WIDTH float64 = 320
-const DEFAULT_MAX_HEIGHT float64 = 240
-
-// ** File that concurrently sets metadata and thumbnail ** //
+// ^ File that safely sets metadata and thumbnail in routine ^ //
 type SafeFile struct {
 	Path     string
 	mutex    sync.Mutex
@@ -114,4 +114,20 @@ func (sf *SafeFile) Metadata() (*pb.Metadata, error) {
 
 	// @ 2. Return Value
 	return &sf.metadata, nil
+}
+
+// ** Resize Constants ** //
+const MAX_WIDTH float64 = 320
+const MAX_HEIGHT float64 = 240
+
+// @ Calculate the size of the image after scaling
+func calculateRatioFit(srcWidth, srcHeight int) (int, int) {
+	ratio := math.Min(MAX_WIDTH/float64(srcWidth), MAX_HEIGHT/float64(srcHeight))
+	return int(math.Ceil(float64(srcWidth) * ratio)), int(math.Ceil(float64(srcHeight) * ratio))
+}
+
+// @ Get FileName without Extension
+func fileName(path string) string {
+	fileBase := filepath.Base(path)
+	return strings.TrimSuffix(fileBase, filepath.Ext(fileBase))
 }

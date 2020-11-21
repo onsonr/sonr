@@ -37,7 +37,7 @@ func (lob *Lobby) handleMessages() {
 // ^ 2. handleEvents handles message content and ticker ^
 func (lob *Lobby) handleEvents() {
 	// Timer checks to dispose of peers
-	peerRefreshTicker := time.NewTicker(time.Second * 2)
+	peerRefreshTicker := time.NewTicker(time.Second * 3)
 	defer peerRefreshTicker.Stop()
 
 	for {
@@ -45,17 +45,18 @@ func (lob *Lobby) handleEvents() {
 		// ** when we receive a message from the lobby room **
 		case m := <-lob.Messages:
 			// Update Circle by event
-			if m.Event == "Update" {
-				// Call Update
-				lob.updatePeer(m)
-			} else if m.Event == "Exit" {
-				lob.removePeer(m)
+			if m.Subject == pb.LobbyMessage_UPDATE {
+				// Update Peer Data
+				lob.updatePeer(m.Id, m.Peer)
+
+			} else if m.Subject == pb.LobbyMessage_EXIT {
+				// Remove Peer Data
+				lob.removePeer(m.Id)
 			}
 
 		// ** Refresh and Validate Lobby Peers Periodically ** //
 		case <-peerRefreshTicker.C:
-			// Verify Dict not nil
-			// TODO: lob.callback.OnRefresh(lob.GetAllPeers())
+			lob.call.Refreshed(lob.Peers())
 
 		case <-lob.ctx.Done():
 			return

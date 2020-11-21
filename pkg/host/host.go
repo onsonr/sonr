@@ -13,9 +13,9 @@ import (
 	libp2ptls "github.com/libp2p/go-libp2p-tls"
 )
 
-// NewBasicHost creates a host without any options
+// ^ NewHost: Creates a host with: (MDNS, TCP, QUIC on UDP) ^
 func NewHost(ctx context.Context) (host.Host, error) {
-	// Find IPv4 Address
+	// @1. Find IPv4 Address
 	osHost, _ := os.Hostname()
 	addrs, _ := net.LookupIP(osHost)
 	var ipv4Ref string
@@ -28,7 +28,7 @@ func NewHost(ctx context.Context) (host.Host, error) {
 		}
 	}
 
-	// Create Libp2p Host
+	// @2. Create Libp2p Host
 	h, err := libp2p.New(ctx,
 		// Add listening Addresses
 		libp2p.ListenAddrStrings(
@@ -47,5 +47,9 @@ func NewHost(ctx context.Context) (host.Host, error) {
 		// support any other default transports (TCP)
 		libp2p.DefaultTransports,
 	)
+
+	// setup local mDNS discovery
+	err = initMDNSDiscovery(ctx, h)
+	fmt.Println("MDNS Started")
 	return h, err
 }

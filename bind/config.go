@@ -11,7 +11,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// ^ Returns public data info ^ //
+// ** Returns Peer Object (Public Presence) **
 func (sn *Node) getPeerInfo() *pb.Peer {
 	return &pb.Peer{
 		Id:         sn.host.ID().String(),
@@ -44,13 +44,6 @@ func (sn *Node) GetUser() []byte {
 
 // ^ SetDiscovery initializes discovery protocols and creates pubsub service ^ //
 func (sn *Node) setDiscovery(ctx context.Context, connEvent *pb.RequestMessage) error {
-	// setup local mDNS discovery
-	err := initMDNSDiscovery(ctx, sn.host)
-	if err != nil {
-		return err
-	}
-	fmt.Println("MDNS Started")
-
 	// create a new PubSub service using the GossipSub router
 	ps, err := pubsub.NewGossipSub(ctx, sn.host)
 	if err != nil {
@@ -62,29 +55,14 @@ func (sn *Node) setDiscovery(ctx context.Context, connEvent *pb.RequestMessage) 
 	callbackRef := *sn.callback
 	lobbyCallbackRef := lobby.LobbyCallback{
 		Refreshed: callbackRef.OnRefreshed,
-		Error:     callbackRef.OnError,
+		Error:     sn.sendError,
 	}
 
-	// Get Peer Info
-	peer := sn.getPeerInfo()
-
 	// Enter Lobby
-	sn.lobby, err = lobby.Enter(ctx, lobbyCallbackRef, ps, peer, connEvent.Olc)
-	if err != nil {
+	if sn.lobby, err = lobby.Enter(ctx, lobbyCallbackRef, ps, sn.getPeerInfo(), connEvent.Olc); err != nil {
 		return err
 	}
 	fmt.Println("Lobby Entered")
-
-	// Send Join Message
-	err = sn.lobby.Publish(&pb.LobbyMessage{
-		Event:  "Join",
-		Data:   peer,
-		Sender: peer.GetId(),
-	})
-	if err != nil {
-		return err
-	}
-	fmt.Println("Sent Joined")
 	return nil
 }
 
