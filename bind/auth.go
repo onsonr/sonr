@@ -15,12 +15,6 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// ^ Auth Stream Struct ^ //
-type authStreamConn struct {
-	stream network.Stream
-	self   *Node
-}
-
 // ^ Handle Incoming Stream ^ //
 func (sn *Node) HandleAuthStream(stream network.Stream) {
 	// Create/Set Auth Stream
@@ -127,21 +121,21 @@ func (asc *authStreamConn) handleMessage(message *pb.AuthMessage) {
 	// @ Request to Invite
 	case pb.AuthMessage_REQUEST:
 		// Callback the Invitation
-		callbackRef := *asc.self.Callback
+		callbackRef := *asc.self.callback
 		callbackRef.OnInvited(authRaw)
 
 	// @ Peer Accepted Response to Invite
 	case pb.AuthMessage_ACCEPT:
 		fmt.Println("Auth Accepted")
 		// Callback to Proxies
-		callbackRef := *asc.self.Callback
+		callbackRef := *asc.self.callback
 		callbackRef.OnResponded(authRaw)
 
 	// @ Peer Accepted Response to Invite
 	case pb.AuthMessage_DECLINE:
 		fmt.Println("Auth Declined")
 		// Callback to Proxies
-		callbackRef := *asc.self.Callback
+		callbackRef := *asc.self.callback
 		callbackRef.OnResponded(authRaw)
 
 	// ! Invalid Subject

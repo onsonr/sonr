@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/host"
-	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p/p2p/discovery"
 )
@@ -36,31 +35,6 @@ func initMDNSDiscovery(ctx context.Context, h host.Host) error {
 	return nil
 }
 
-// Get Slice of Peers minus User
-func (n *discoveryNotifee) GetPeersAsSlice() peer.IDSlice {
-	// Get Peers as Slice
-	peers := n.h.Peerstore().Peers()
-
-	// Remove User Peer
-	peers = removeIDFromSlice(peers, n.h.ID())
-
-	// Return Slice
-	return peers
-}
-
-// Get Slice of Peers minus User
-func removeIDFromSlice(slice peer.IDSlice, value peer.ID) peer.IDSlice {
-	// Remove User Peer
-	for i, v := range slice {
-		if v == value {
-			slice = append(slice[:i], slice[i+1:]...)
-			break
-		}
-	}
-	// Return Slice
-	return slice
-}
-
 // HandlePeerFound connects to peers discovered via mDNS.
 func (n *discoveryNotifee) HandlePeerFound(pi peer.AddrInfo) {
 	// Connect to Peer
@@ -69,20 +43,5 @@ func (n *discoveryNotifee) HandlePeerFound(pi peer.AddrInfo) {
 	// Log Error
 	if err != nil {
 		fmt.Printf("error connecting to peer %s: %s\n", pi.ID.Pretty(), err)
-	}
-
-	// Get Peers as Slice
-	peers := n.GetPeersAsSlice()
-
-	// Remove Disconnected Peers
-	for _, peerID := range peers {
-		// Check State
-		status := n.h.Network().Connectedness(peerID)
-
-		// Remove From Store if NotConnected
-		if status == network.NotConnected {
-			// Disconnect
-			n.h.Network().ClosePeer(peerID)
-		}
 	}
 }

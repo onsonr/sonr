@@ -1,7 +1,6 @@
 package lobby
 
 import (
-	"fmt"
 	"time"
 
 	pb "github.com/sonr-io/core/pkg/models"
@@ -47,16 +46,10 @@ func (lob *Lobby) handleEvents() {
 		case m := <-lob.Messages:
 			// Update Circle by event
 			if m.Event == "Update" {
-				// Convert Request to Proto Binary
-				value, err := proto.Marshal(m.Data)
-				if err != nil {
-					fmt.Println("marshaling error: ", err)
-				}
-
 				// Call Update
-				lob.updatePeer(m.Data.GetId(), value)
+				lob.updatePeer(m)
 			} else if m.Event == "Exit" {
-				lob.removePeer(m.Data.GetId())
+				lob.removePeer(m)
 			}
 
 		// ** Refresh and Validate Lobby Peers Periodically ** //

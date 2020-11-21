@@ -3,8 +3,8 @@ package lobby
 import (
 	"context"
 	"log"
+	"sync"
 
-	badger "github.com/dgraph-io/badger/v2"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	pb "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
@@ -29,21 +29,21 @@ type LobbyCallback struct {
 type Lobby struct {
 	// Public Vars
 	Messages chan *pb.LobbyMessage
-	Code     string
-	Self     *pb.PeerInfo
+	Self     *pb.Peer
+	Info     pb.Lobby
 
 	// Private Vars
 	ctx    context.Context
 	call   LobbyCallback
 	doneCh chan struct{}
-	peerDB *badger.DB
+	mutex  sync.Mutex
 	ps     *pubsub.PubSub
 	topic  *pubsub.Topic
 	sub    *pubsub.Subscription
 }
 
 // ^ Enter Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
-func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, peer *pb.PeerInfo, olc string) (*Lobby, error) {
+func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, peer *pb.Peer, olc string) (*Lobby, error) {
 	// Join the pubsub Topic
 	topic, err := ps.Join(olc)
 	if err != nil {
@@ -56,23 +56,23 @@ func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, peer 
 		return nil, err
 	}
 
-	// Initialize Datastore for Peers
-	db, err := badger.Open(badger.DefaultOptions("").WithInMemory(true))
-	if err != nil {
-		return nil, err
+	// Initialize Lobby for Peers
+	lobInfo := pb.Lobby{
+		Code:  olc,
+		Count: 1,
 	}
 
 	// Create Lobby Type
 	lob := &Lobby{
-		ctx:      ctx,
-		call:     callback,
-		doneCh:   make(chan struct{}, 1),
-		peerDB:   db,
-		ps:       ps,
-		topic:    topic,
-		sub:      sub,
+		ctx:    ctx,
+		call:   callback,
+		doneCh: make(chan struct{}, 1),
+		ps:     ps,
+		topic:  topic,
+		sub:    sub,
+
 		Self:     peer,
-		Code:     olc,
+		Info:     lobInfo,
 		Messages: make(chan *pb.LobbyMessage, ChatRoomBufSize),
 	}
 
@@ -100,6 +100,5 @@ func (lob *Lobby) Publish(m *pb.LobbyMessage) error {
 
 // End terminates lobby loop
 func (lob *Lobby) End() {
-	lob.peerDB.Close()
 	lob.doneCh <- struct{}{}
 }

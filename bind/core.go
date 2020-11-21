@@ -1,71 +1,50 @@
 package sonr
 
 import (
-	"context"
-	"fmt"
-
-	"github.com/libp2p/go-libp2p-core/protocol"
-	sh "github.com/sonr-io/core/pkg/host"
+	"github.com/libp2p/go-libp2p-core/host"
+	"github.com/libp2p/go-libp2p-core/network"
+	"github.com/sonr-io/core/pkg/lobby"
 	pb "github.com/sonr-io/core/pkg/models"
-	"google.golang.org/protobuf/proto"
 )
 
-// Callback returns updates from p2p
+// @ Maximum Files in Node Cache
+const maxFileBufferSize = 5
+
+// ^ Interface: Callback is implemented from Plugin to receive updates ^
 type Callback interface {
 	OnRefreshed(data []byte)
 	OnInvited(data []byte)
 	OnResponded(data []byte)
+	OnQueued(data []byte)
 	OnProgress(data []byte)
 	OnError(data []byte)
 }
 
-// ^ Start begins the mobile host ^
-func Start(data []byte, call *Callback) *Node {
-	// ** Create Context and Node - Begin Setup **
-	ctx := context.Background()
-	node := new(Node)
-	node.Callback = call
-	node.files = make([]pb.Metadata, maxFileBufferSize)
+// ^ Struct: Main Node handles Networking/Identity/Streams ^
+type Node struct {
+	// Public Properties
+	Profile pb.Profile
+	Contact pb.Contact
 
-	// @I. Unmarshal Connection Event
-	connEvent := pb.RequestMessage{}
-	err := proto.Unmarshal(data, &connEvent)
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
+	// Networking Properties
+	host       host.Host
+	authStream authStreamConn
+	dataStream dataStreamConn
 
-	// @1. Create Host
-	node.host, err = sh.NewHost(ctx)
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-
-	// @2. Set Stream Handlers
-	node.host.SetStreamHandler(protocol.ID("/sonr/auth"), node.HandleAuthStream)
-	node.host.SetStreamHandler(protocol.ID("/sonr/transfer"), node.HandleTransferStream)
-
-	// @3. Set Node User Information
-	err = node.setUser(&connEvent)
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-
-	// @4. Setup Discovery w/ Lobby
-	err = node.setDiscovery(ctx, &connEvent)
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-
-	// ** Callback Node User Information ** //
-	return node
+	// References
+	callback *Callback
+	lobby    *lobby.Lobby
+	files    []*pb.Metadata
 }
 
-// ^ Exit Ends Communication ^
-func (sn *Node) Exit() {
-	sn.Lobby.End()
-	sn.host.Close()
+// ^ Struct: Holds/Handles Stream for Authentication  ^ //
+type authStreamConn struct {
+	stream network.Stream
+	self   *Node
+}
+
+// ^ Struct: Holds/Handles Stream for Data Transfer  ^ //
+type dataStreamConn struct {
+	stream network.Stream
+	self   *Node
 }

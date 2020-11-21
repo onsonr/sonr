@@ -1,35 +1,57 @@
 package sonr
 
 import (
+	"context"
 	"fmt"
 	"math"
-	"sync"
 
-	"github.com/libp2p/go-libp2p-core/host"
+	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/sonr-io/core/pkg/file"
-	"github.com/sonr-io/core/pkg/lobby"
+	sh "github.com/sonr-io/core/pkg/host"
 	pb "github.com/sonr-io/core/pkg/models"
+	"google.golang.org/protobuf/proto"
 )
 
-const maxFileBufferSize = 5
+// ^ Start Initializes Node with a host and default properties ^
+func Start(reqBytes []byte, call *Callback) *Node {
+	// ** Create Context and Node - Begin Setup **
+	ctx := context.Background()
+	node := new(Node)
+	node.callback, node.files = call, make([]*pb.Metadata, maxFileBufferSize)
 
-// ^ Struct Management ^ //
-// Node contains all values for user
-type Node struct {
-	// Public Properties
-	Profile pb.Profile
-	Contact pb.Contact
+	// @I. Unmarshal Connection Event
+	connEvent := pb.RequestMessage{}
+	err := proto.Unmarshal(reqBytes, &connEvent)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
 
-	// Private Properties
-	host       host.Host
-	authStream authStreamConn
-	dataStream dataStreamConn
-	files      []pb.Metadata
-	mutex      sync.Mutex
+	// @1. Create Host
+	node.host, err = sh.NewHost(ctx)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
 
-	// References
-	Callback *Callback
-	Lobby    *lobby.Lobby
+	// @2. Set Stream Handlers
+	node.host.SetStreamHandler(protocol.ID("/sonr/auth"), node.HandleAuthStream)
+	node.host.SetStreamHandler(protocol.ID("/sonr/transfer"), node.HandleTransferStream)
+
+	// @3. Set Node User Information
+	if err = node.setUser(&connEvent); err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	// @4. Setup Discovery w/ Lobby
+	if err = node.setDiscovery(ctx, &connEvent); err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	// ** Callback Node User Information ** //
+	return node
 }
 
 // ^ Sends new proximity/direction update ^ //
@@ -47,7 +69,7 @@ func (sn *Node) Update(direction float64) bool {
 	}
 
 	// Inform Lobby
-	err := sn.Lobby.Publish(notif)
+	err := sn.lobby.Publish(notif)
 	if err != nil {
 		fmt.Println("Error Posting NotifUpdate: ", err)
 		return false
@@ -55,24 +77,27 @@ func (sn *Node) Update(direction float64) bool {
 	return true
 }
 
-// ^ Queue adds a file to Process for Transfer, returns key ^ //
+// ^ AddFile adds generates metadata and thumbnail from filepath to Process for Transfer, returns key ^ //
 // TODO: Implement an Error Schema with proto
-func (sn *Node) Queue(path string) {
-	sn.mutex.Lock()
-	// ** Get File Metadata ** //
-	meta := file.GetMetadata(path)
+func (sn *Node) AddFile(path string) {
+	// @ 1. Initialize SafeFile, Callback Ref
+	safeFile := file.SafeFile{Path: path}
+	go safeFile.Create() // Start GoRoutine
 
-	// ** Create Thumbnail if Available ** //
-	err := file.SetMetadataThumbnail(&meta)
-
-	// Check Size
-	sn.mutex.Unlock()
+	// @ 2. Add to files slice
+	meta, err := safeFile.Metadata()
+	if err != nil {
+		// Call Error
+	} else {
+		// Call Success
+		sn.files = append(sn.files, meta)
+	}
 }
 
 // ^ Invite an available peer to transfer ^ //
 func (sn *Node) Invite(peerId string) bool {
 	// ** Get Required Data **
-	peerID, err := sn.Lobby.GetPeerID(peerId)
+	peerID, err := sn.lobby.GetPubSubID(peerId)
 	if err != nil {
 		fmt.Println("Search Error", err)
 		return false
@@ -140,4 +165,32 @@ func (sn *Node) Respond(decision bool) bool {
 
 	// Succesful
 	return true
+}
+
+// ^ Error Callback to Plugin with error ^
+func (sn *Node) Error(err error, method string) {
+	// Create Error Struct
+	errorMsg := pb.ErrorMessage{
+		Message: err.Error(),
+		Method:  method,
+	}
+
+	// Convert Message to bytes
+	bytes, err := proto.Marshal(&errorMsg)
+	if err != nil {
+		fmt.Println("ERROR CALLBACK ERROR: ", err)
+	}
+
+	// Check and callback
+	if sn.callback != nil {
+		// Reference
+		callRef := *sn.callback
+		callRef.OnError(bytes)
+	}
+}
+
+// ^ Close Ends All Network Communication ^
+func (sn *Node) Close() {
+	sn.lobby.End()
+	sn.host.Close()
 }

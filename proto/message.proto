@@ -4,7 +4,22 @@ import "data.proto";
 import "user.proto";
 
 // Require Go Package
-option go_package = ".;proto";
+option go_package = ".;models";
+
+// [PLUGIN]
+// Define ConnectedMessage Type: Public vars
+message ConnectedMessage {
+  string hostId = 1;
+  Contact contact = 2;
+  Profile profile = 3;
+}
+
+// [PLUGIN]
+// Initial Request Message
+message ErrorMessage {
+  string message = 1;
+  string method = 2;
+}
 
 // [PLUGIN]
 // Initial Request Message
@@ -14,33 +29,19 @@ message RequestMessage {
   Contact contact = 3;
 }
 
-// Message Sent when User is connected and calls GetUser()
-message ConnectedMessage {
-  string hostId = 1;
-  Profile profile = 2;
-  Contact contact = 3;
-}
-
 // [CORE]
 // Message Sent when peer has direction update to Lobby Topic
 message LobbyMessage {
   string event = 1;
   string sender = 2;
-  PeerInfo data = 3;
-}
-
-// Message Sent when peers returned from lobby
-message RefreshMessage {
-  int32 count = 1;
-  string olc = 2;
-  repeated PeerInfo availablePeers = 3;
+  Peer data = 3;
 }
 
 // [CORE]
 // Authorization message sent in stream
 message AuthMessage {
   // Define Root Message
-  PeerInfo peer = 1;
+  Peer peer = 1;
   Subject subject = 2;
   Metadata metadata = 3;
 

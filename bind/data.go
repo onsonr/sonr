@@ -13,16 +13,10 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
-// ^ Data Stream Struct ^ //
-type dataStreamConn struct {
-	stream network.Stream
-	self   *Node
-}
-
 // ^ Handle Incoming File Buffer ^ //
 func (sn *Node) HandleTransferStream(stream network.Stream) {
 	// Create/Set Transfer Stream
-	sn.tranStream = dataStreamConn{
+	sn.dataStream = dataStreamConn{
 		stream: stream,
 		self:   sn,
 	}
@@ -31,7 +25,7 @@ func (sn *Node) HandleTransferStream(stream network.Stream) {
 	fmt.Println("Stream Info: ", info)
 
 	// Initialize Routine
-	go sn.tranStream.Read()
+	go sn.dataStream.Read()
 }
 
 // ^ Create New Stream ^ //
@@ -43,7 +37,7 @@ func (sn *Node) NewTransferStream(ctx context.Context, id peer.ID) error {
 	}
 
 	// Create/Set Transfer Stream
-	sn.tranStream = dataStreamConn{
+	sn.dataStream = dataStreamConn{
 		stream: stream,
 		self:   sn,
 	}
@@ -53,7 +47,7 @@ func (sn *Node) NewTransferStream(ctx context.Context, id peer.ID) error {
 	fmt.Println("Stream Info: ", info)
 
 	// Initialize Routine
-	go sn.tranStream.Read()
+	go sn.dataStream.Read()
 	return nil
 }
 

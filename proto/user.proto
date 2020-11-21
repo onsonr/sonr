@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 // Require Go Package
-option go_package = ".;proto";
+option go_package = ".;models";
 
 // Define Contact Type: Will be CSV in Future
 message Contact {
@@ -10,8 +10,8 @@ message Contact {
   string profilePic = 3;
 }
 
-// Define PeerInfo: Basic Info Sent to Peers
-message PeerInfo {
+// Define Peer: Basic Info Sent to Peers
+message Peer {
   string id = 1;
   string device = 2;
   string firstName = 3;
@@ -28,5 +28,4 @@ message Profile {
   string olc = 2;
   string device = 3;
   double direction = 4;
-  repeated PeerInfo peers = 5;
 }

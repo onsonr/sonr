@@ -12,8 +12,8 @@ import (
 )
 
 // ^ Returns public data info ^ //
-func (sn *Node) getPeerInfo() *pb.PeerInfo {
-	return &pb.PeerInfo{
+func (sn *Node) getPeerInfo() *pb.Peer {
+	return &pb.Peer{
 		Id:         sn.host.ID().String(),
 		Device:     sn.Profile.Device,
 		FirstName:  sn.Contact.FirstName,
@@ -26,19 +26,19 @@ func (sn *Node) getPeerInfo() *pb.PeerInfo {
 // ^ GetUser returns profile and contact in a map as string ^ //
 func (sn *Node) GetUser() []byte {
 	// Create User Object
-	user := &pb.ConnectedMessage{
+	user := pb.ConnectedMessage{
 		HostId:  sn.Profile.HostId,
 		Profile: &sn.Profile,
 		Contact: &sn.Contact,
 	}
 
 	// Marshal to Bytes
-	data, err := proto.Marshal(user)
+	data, err := proto.Marshal(&user)
 	if err != nil {
 		fmt.Println("marshaling error: ", err)
 	}
 
-	// Return as JSON String
+	// Return as Bytes
 	return data
 }
 
@@ -59,7 +59,7 @@ func (sn *Node) setDiscovery(ctx context.Context, connEvent *pb.RequestMessage) 
 	fmt.Println("GossipSub Created")
 
 	// Assign Callbacks from Node to Lobby
-	callbackRef := *sn.Callback
+	callbackRef := *sn.callback
 	lobbyCallbackRef := lobby.LobbyCallback{
 		Refreshed: callbackRef.OnRefreshed,
 		Error:     callbackRef.OnError,
@@ -69,14 +69,14 @@ func (sn *Node) setDiscovery(ctx context.Context, connEvent *pb.RequestMessage) 
 	peer := sn.getPeerInfo()
 
 	// Enter Lobby
-	sn.Lobby, err = lobby.Enter(ctx, lobbyCallbackRef, ps, peer, connEvent.Olc)
+	sn.lobby, err = lobby.Enter(ctx, lobbyCallbackRef, ps, peer, connEvent.Olc)
 	if err != nil {
 		return err
 	}
 	fmt.Println("Lobby Entered")
 
 	// Send Join Message
-	err = sn.Lobby.Publish(&pb.LobbyMessage{
+	err = sn.lobby.Publish(&pb.LobbyMessage{
 		Event:  "Join",
 		Data:   peer,
 		Sender: peer.GetId(),

@@ -2,8 +2,10 @@ package file
 
 import (
 	"bytes"
+	"errors"
 	"image"
 	"os"
+	"sync"
 
 	"fmt"
 	_ "image/gif"
@@ -19,13 +21,24 @@ import (
 const DEFAULT_MAX_WIDTH float64 = 320
 const DEFAULT_MAX_HEIGHT float64 = 240
 
-// ^ GetMetadata generates file metadata ^ //
-func GetMetadata(filePath string) pb.Metadata {
+// ** File that concurrently sets metadata and thumbnail ** //
+type SafeFile struct {
+	Path     string
+	mutex    sync.Mutex
+	metadata pb.Metadata
+}
 
-	// Initialize
-	file, err := os.Open(filePath)
+// ^ Create generates file metadata ^ //
+func (sf *SafeFile) Create() {
+	// ** Lock ** //
+	sf.mutex.Lock()
+
+	// @ 1. Get File Information
+	// Open File at Path
+	file, err := os.Open(sf.Path)
+	defer file.Close()
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("Error opening File", err)
 	}
 
 	// Get Info
@@ -38,33 +51,14 @@ func GetMetadata(filePath string) pb.Metadata {
 	head := make([]byte, 261)
 	file.Read(head)
 	kind, _ := filetype.Match(head)
-	file.Close()
 
-	// Return Protobuf
-	return pb.Metadata{
-		FileId: uuid.New().String(),
-		Name:   fileName(filePath),
-		Path:   filePath,
-		Size:   info.Size(),
-		Kind:   kind.MIME.Type,
-	}
-}
-
-// ^ SetMetadataThumbnail creates thumbnail for given metadata ^ //
-func SetMetadataThumbnail(meta *pb.Metadata) error {
-	fmt.Println("Metadata type: " + meta.GetKind())
-	// Check for Image
-	if meta.GetKind() == "image" {
-		fmt.Println("File is an image, Create a thumbnail")
-
-		// Open File Path
-		file, _ := os.Open(meta.Path)
-		defer file.Close()
-
+	// @ 2. Create Thumbnail
+	thumbBuffer := new(bytes.Buffer)
+	if filetype.IsImage(head) {
 		// Convert to Image Object
 		img, _, err := image.Decode(file)
 		if err != nil {
-			return err
+			fmt.Println(err)
 		}
 
 		// Find Image Bounds
@@ -74,21 +68,50 @@ func SetMetadataThumbnail(meta *pb.Metadata) error {
 		fmt.Println("width = ", width, " height = ", height)
 
 		// Calculate Fit
-		w, h := calculateRatioFit(width, height)
-		fmt.Println("w = ", w, " h = ", h)
+		newWidth, newHeight := calculateRatioFit(width, height)
+		fmt.Println("w = ", newWidth, " h = ", newHeight)
 
 		// Call the resize library for image scaling
-		m := resize.Resize(uint(w), uint(h), img, resize.Lanczos3)
+		scaledImage := resize.Resize(uint(newWidth), uint(newHeight), img, resize.Lanczos3)
 
-		buf := new(bytes.Buffer)
-		err = jpeg.Encode(buf, m, nil)
-
-		// Set Thumbnail
-		meta.Thumbnail = buf.Bytes()
-
-		// Log And Wait for Group
+		// Encode as Jpeg into buffer
+		err = jpeg.Encode(thumbBuffer, scaledImage, nil)
+		if err != nil {
+			fmt.Println(err)
+		}
 		fmt.Println("Thumbnail created")
-		return nil
 	}
-	return nil
+
+	// @ 3. Set Metadata Protobuf Values
+	sf.metadata = pb.Metadata{
+		FileId: uuid.New().String(),
+		Name:   fileName(sf.Path),
+		Path:   sf.Path,
+		Size:   info.Size(),
+		Kind:   kind.MIME.Type,
+	}
+
+	// @ 3. Set Thumbnail if it exists
+	if thumbBuffer.Len() > 0 {
+		sf.metadata.Thumbnail = thumbBuffer.Bytes()
+	}
+
+	// ** Unlock ** //
+	sf.mutex.Unlock()
+}
+
+// ^ SetMetadataThumbnail creates thumbnail for given metadata ^ //
+func (sf *SafeFile) Metadata() (*pb.Metadata, error) {
+	// ** Lock File wait for access ** //
+	sf.mutex.Lock()
+	defer sf.mutex.Unlock()
+
+	// @ 1. Check for Metadata
+	if sf.metadata.GetPath() == "" {
+		errMsg := fmt.Sprintf("Metadata was not found in SafeFile for '%s'", sf.Path)
+		return nil, errors.New(errMsg)
+	}
+
+	// @ 2. Return Value
+	return &sf.metadata, nil
 }

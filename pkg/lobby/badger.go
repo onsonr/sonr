@@ -11,42 +11,25 @@ import (
 )
 
 // GetPeer returns ONE Peer in Datastore
-func (lob *Lobby) GetPeer(queryID string) (*pb.PeerInfo, error) {
-	// Initialize Object
-	peer := pb.PeerInfo{}
+func (lob *Lobby) GetPeer(queryID string) *pb.Peer {
+	// @ 1. Get all Peers
+	availablePeers := lob.Info.Peers
 
-	// ** Create Transaction ** //
-	err := lob.peerDB.View(func(txn *badger.Txn) error {
-		// Set Transaction Query
-		item, err := txn.Get([]byte(queryID))
-
-		// @ Find Item
-		err = item.Value(func(val []byte) error {
-			err := proto.Unmarshal(val, &peer)
-			if err != nil {
-				fmt.Println("unmarshaling error: ", err)
-			}
-			return nil
-		})
-
-		// Check for Error
-		if err != nil {
-			return err
+	// @ 2. Iterate Through Peers, Return Matched Peer
+	for _, peer := range availablePeers {
+		// Check if peer matches query
+		if peer.Id == queryID {
+			return peer
 		}
-		return nil
-	})
-
-	// Check for Error
-	if err != nil {
-		fmt.Println("Search Error ", err)
 	}
-	return &peer, nil
+	// ! Return Nil if no matches
+	return nil
 }
 
 // GetPeer returns ONE Peer in Datastore
-func (lob *Lobby) GetPeerID(idStr string) (peer.ID, error) {
+func (lob *Lobby) GetPubSubID(idStr string) (peer.ID, error) {
 	// Get Lobby PeerID Slice
-	lobbyPeers := lob.ps.ListPeers(lob.Code)
+	lobbyPeers := lob.ps.ListPeers(lob.Info.Code)
 
 	// Get Pub/Sub Topic Peers and Iterate
 	for _, id := range lobbyPeers {
@@ -82,7 +65,7 @@ func (lob *Lobby) GetAllPeers() []byte {
 			// Get Item Value
 			err := item.Value(func(data []byte) error {
 				// Convert Value to String Add to Slice
-				peer := pb.PeerInfo{}
+				peer := pb.Peer{}
 				err := proto.Unmarshal(data, &peer)
 				if err != nil {
 					fmt.Println("unmarshaling error: ", err)
@@ -138,7 +121,7 @@ func (lob *Lobby) isPeerInLobby(queryID string) bool {
 }
 
 // ^ removePeer deletes a peer from the circle ^
-func (lob *Lobby) removePeer(id string) {
+func (lob *Lobby) removePeer(msg *pb.LobbyMessage) {
 	// Delete peer from datastore
 	key := []byte(id)
 	err := lob.peerDB.Update(func(txn *badger.Txn) error {
@@ -156,7 +139,7 @@ func (lob *Lobby) removePeer(id string) {
 }
 
 // ^ updatePeer changes peer values in circle ^
-func (lob *Lobby) updatePeer(id string, value []byte) {
+func (lob *Lobby) updatePeer(msg *pb.LobbyMessage) {
 	// Create Key/Value as Bytes
 	key := []byte(id)
 
