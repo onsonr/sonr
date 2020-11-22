@@ -1,16 +1,18 @@
 package stream
 
 import (
+	"bufio"
 	"context"
+	"encoding/binary"
 	"errors"
 	"fmt"
+	"io"
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	pb "github.com/sonr-io/core/internal/models"
-	sio "github.com/sonr-io/core/pkg/io"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -50,7 +52,7 @@ func (asc *AuthStreamConn) New(ctx context.Context, h host.Host, id peer.ID) err
 	fmt.Println("Stream Info: ", info)
 
 	// Initialize Routine
-	go asc.readLoop()
+	go asc.read()
 	return nil
 }
 
@@ -65,67 +67,42 @@ func (asc *AuthStreamConn) SetStream(stream network.Stream) {
 	fmt.Println("Stream Info: ", info)
 
 	// Initialize Routine
-	go asc.readLoop()
-}
-
-// ^ writeAuthMessage Message on Stream ^ //
-func (asc *AuthStreamConn) SendInvite(from *pb.Peer, to *pb.Peer, meta *pb.Metadata) error {
-	// @1. Create Message
-	reqMsg := pb.AuthMessage{
-		Event:    pb.AuthMessage_REQUEST,
-		From:     from,
-		To:       to,
-		Metadata: meta,
-	}
-	// Initialize Writer
-	wr := sio.NewFullWriter(asc.stream)
-	err := wr.WriteMsg(&reqMsg)
-	if err != nil {
-		fmt.Println("Auth Stream Outgoing Write-Request Error: ", err)
-		return err
-	}
-	return nil
-}
-
-// ^ writeAuthMessage Message on Stream ^ //
-func (asc *AuthStreamConn) SendResponse(from *pb.Peer, to *pb.Peer, decision bool) error {
-	//@1. Create Message
-	respMsg := pb.AuthMessage{
-		From: from,
-		To:   to,
-	}
-
-	// ** Check Decision **
-	if decision == true {
-		// User Accepted
-		respMsg.Event = pb.AuthMessage_ACCEPT // Set Event
-	} else {
-		// @ User Declined
-		respMsg.Event = pb.AuthMessage_DECLINE // Set Event
-	}
-
-	// Initialize Writer
-	wr := sio.NewFullWriter(asc.stream)
-	err := wr.WriteMsg(&respMsg)
-	if err != nil {
-		fmt.Println("Auth Stream Outgoing Write-Response Error: ", err)
-		return err
-	}
-	return nil
+	go asc.read()
 }
 
 // ^ read Data from Msgio ^ //
-func (asc *AuthStreamConn) readLoop() error {
-	for {
-		message := pb.AuthMessage{}
-		reader := sio.NewFullReader(asc.stream, 5)
-		reader.ReadMsg(&message)
-		// Create Source Reader and Dest Writer
-		fmt.Println("Received message: ", message.String())
-
-		// Handle Messages Struct
-		asc.handleMessage(&message)
+func (asc *AuthStreamConn) read() error {
+	// Find Message Size
+	buf := make([]byte, 4) // 32 bits
+	if _, err := io.ReadFull(asc.stream, buf); err != nil {
+		fmt.Println("Error getting byte size: ", err)
+		return err
 	}
+	n, size := binary.Varint(buf)
+	if n == 0 {
+		return errors.New("Buffer is too small")
+	}
+	if n < 0 {
+		
+	}
+
+	// Create Bytes from message
+	bytes := make([]byte, size)
+	if _, err := io.ReadFull(asc.stream, bytes); err != nil {
+		fmt.Println("Error reading full: ", err)
+		return err
+	}
+
+	// Unmarshal into protobuf
+	message := &pb.AuthMessage{}
+	err := proto.Unmarshal(bytes, message)
+	if err != nil {
+		fmt.Println("Error Unmarshaling message: ", err)
+		return err
+	}
+
+	asc.handleMessage(message)
+	return nil
 }
 
 // ^ Handle Received Message ^ //
@@ -159,4 +136,74 @@ func (asc *AuthStreamConn) handleMessage(msg *pb.AuthMessage) {
 		err := errors.New(fmt.Sprintf("Not a subject: %s", msg.Event))
 		asc.Call.Error(err, "handleMessage")
 	}
+}
+
+// ^ writeAuthMessage Message on Stream ^ //
+func (asc *AuthStreamConn) SendInvite(from *pb.Peer, to *pb.Peer, meta *pb.Metadata) error {
+	// @1. Create Message
+	reqMsg := &pb.AuthMessage{
+		Event:    pb.AuthMessage_REQUEST,
+		From:     from,
+		To:       to,
+		Metadata: meta,
+	}
+
+	// Convert to bytes
+	bytes, err := proto.Marshal(reqMsg)
+	if err != nil {
+		return err
+	}
+
+	// Initialize Writer
+	writer := bufio.NewWriter(asc.stream)
+
+	// Add Varint and write to buffer
+	writeWithVarint(writer, bytes)
+	return nil
+}
+
+// ^ writeAuthMessage Message on Stream ^ //
+func (asc *AuthStreamConn) SendResponse(from *pb.Peer, to *pb.Peer, decision bool) error {
+	//@1. Create Message
+	respMsg := &pb.AuthMessage{
+		From: from,
+		To:   to,
+	}
+
+	// ** Check Decision **
+	if decision == true {
+		// User Accepted
+		respMsg.Event = pb.AuthMessage_ACCEPT // Set Event
+	} else {
+		// @ User Declined
+		respMsg.Event = pb.AuthMessage_DECLINE // Set Event
+	}
+
+	// Convert to bytes
+	bytes, err := proto.Marshal(respMsg)
+	if err != nil {
+		return err
+	}
+
+	// Initialize Writer
+	writer := bufio.NewWriter(asc.stream)
+
+	// Add Varint and write to buffer
+	writeWithVarint(writer, bytes)
+	return nil
+}
+
+// ^ Adds Varint to Byte Buffer ^ //
+func writeWithVarint(w io.Writer, msg []byte) error {
+	buf := make([]byte, 8)
+	binary.PutVarint(buf, int64(len(msg)))
+
+	if _, err := w.Write(buf); err != nil {
+		return err
+	}
+
+	if _, err := w.Write(msg); err != nil {
+		return err
+	}
+	return nil
 }
