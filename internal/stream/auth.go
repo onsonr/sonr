@@ -152,10 +152,10 @@ func (asc *AuthStreamConn) SendResponse(from *pb.Peer, to *pb.Peer, decision boo
 
 // ^ read Data from Msgio ^ //
 func (asc *AuthStreamConn) readLoop() error {
+	source := bufio.NewReader(asc.stream)
+	buffer := new(bytes.Buffer)
 	for {
 		// Create Source Reader and Dest Writer
-		source := bufio.NewReader(asc.stream)
-		buffer := new(bytes.Buffer)
 		fmt.Println("Received message")
 
 		// Copy Bytes from reader to writer
