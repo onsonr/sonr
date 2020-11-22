@@ -30,7 +30,7 @@ type LobbyCallback struct {
 type Lobby struct {
 	// Public Vars
 	Messages chan *pb.LobbyMessage
-	Data     pb.Lobby
+	Info     pb.LobbyInfo
 
 	// Private Vars
 	ctx    context.Context
@@ -74,7 +74,7 @@ func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, id pe
 		sub:    sub,
 		self:   id,
 
-		Data:     lobInfo,
+		Info:     lobInfo,
 		Messages: make(chan *pb.LobbyMessage, ChatRoomBufSize),
 	}
 
@@ -104,9 +104,9 @@ func (lob *Lobby) Find(q string) (peer.ID, *pb.Peer) {
 }
 
 // ^ Peers returns ALL Available in Lobby ^
-func (lob *Lobby) Data() []byte {
+func (lob *Lobby) Info() []byte {
 	// Convert to bytes
-	data, err := proto.Marshal(&lob.Data)
+	data, err := proto.Marshal(&lob.Info)
 	if err != nil {
 		fmt.Println("Error Marshaling Lobby Data ", err)
 		return nil

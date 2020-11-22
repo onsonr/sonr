@@ -1,18 +1,9 @@
 syntax = "proto3";
 
-import "data.proto";
-import "user.proto";
+import "core.proto";
 
 // Require Go Package
 option go_package = ".;models";
-
-// [PLUGIN]
-// Define ConnectRequest Type: Public vars
-message ConnectRequest {
-  string hostId = 1;
-  Contact contact = 2;
-  Profile profile = 3;
-}
 
 // [PLUGIN]
 // Initial Request Message
@@ -29,21 +20,15 @@ message RequestMessage {
   Contact contact = 3;
 }
 
-// [CORE]
-// Message Sent when peer has direction update to Lobby Topic
-message UpdateMessage {
-  Peer peer = 1;
+// Define Lobby Type: For Info about Lobby
+message LobbyInfo {
+  string code = 1;
+  int32 size = 2;
+  map<string, Peer> peers = 3;
 }
 
-// [CORE]
-// Message Sent when peer has direction update to Lobby Topic
-message ExitMessage {
-  Peer peer = 1;
-}
-
-// [CORE]
 // Authorization message sent in stream
-message Authentication {
+message AuthMessage {
   // Define Root Message
   Peer from = 1;
   Peer to = 2;

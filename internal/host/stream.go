@@ -54,7 +54,7 @@ func (asc *AuthStreamConn) SetStream(stream network.Stream) {
 }
 
 // ^ writeAuthMessage Message on Stream ^ //
-func (asc *AuthStreamConn) Send(authMsg *pb.AuthMessage) error {
+func (asc *AuthStreamConn) Send(authMsg *pb.Authentication) error {
 	// Initialize Writer
 	writer := bufio.NewWriter(asc.stream)
 	fmt.Println("Auth Msg Struct: ", authMsg)
@@ -95,7 +95,7 @@ func (asc *AuthStreamConn) readLoop() error {
 		}
 
 		// Create Message from Buffer
-		message := &pb.AuthMessage{}
+		message := &pb.Authentication{}
 		if err := proto.Unmarshal(buffer.Bytes(), message); err != nil {
 			log.Fatalln("Failed to parse auth message:", err)
 			return err
@@ -107,7 +107,7 @@ func (asc *AuthStreamConn) readLoop() error {
 }
 
 // ^ Handle Received Message ^ //
-func (asc *AuthStreamConn) handleMessage(msg *pb.AuthMessage) {
+func (asc *AuthStreamConn) handleMessage(msg *pb.Authentication) {
 	// ** Contains Data **
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(msg)

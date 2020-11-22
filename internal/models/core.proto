@@ -3,6 +3,24 @@ syntax = "proto3";
 // Require Go Package
 option go_package = ".;models";
 
+// [CORE]
+// Message Sent when peer has direction update to Lobby Topic
+message UpdateEvent { Peer peer = 1; }
+
+// [CORE]
+// Message Sent when peer has direction update to Lobby Topic
+message ExitEvent { Peer peer = 1; }
+
+// Define Metadata Type: For File Transfer
+message Metadata {
+  string fileId = 1;
+  string name = 2;
+  string path = 3;
+  int64 size = 4;
+  string kind = 5;
+  bytes thumbnail = 6;
+}
+
 // Define Contact Type: Will be CSV in Future
 message Contact {
   string firstName = 1;
@@ -20,12 +38,4 @@ message Peer {
   double direction = 6;
   double difference = 7;
   double distance = 8;
-}
-
-// Define Profile Type: Reference for Node
-message Profile {
-  string hostId = 1;
-  string olc = 2;
-  string device = 3;
-  double direction = 4;
 }
