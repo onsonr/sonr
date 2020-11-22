@@ -80,6 +80,7 @@ func (asc *AuthStreamConn) SendInvite(from *pb.Peer, to *pb.Peer, meta *pb.Metad
 		To:       to,
 		Metadata: meta,
 	}
+	//
 
 	// Convert to Bytes
 	bytes, err := proto.Marshal(reqMsg)
