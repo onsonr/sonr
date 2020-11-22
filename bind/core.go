@@ -21,7 +21,7 @@ type Callback interface {
 	OnRefreshed(data []byte)
 	OnInvited(data []byte)
 	OnResponded(data []byte)
-	OnQueued(status bool)
+	OnQueued(data []byte)
 	OnProgress(data []byte)
 	OnError(data []byte)
 }
