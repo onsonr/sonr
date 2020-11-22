@@ -7,13 +7,14 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/protocol"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	sf "github.com/sonr-io/core/internal/file"
 	"github.com/sonr-io/core/internal/lobby"
 	pb "github.com/sonr-io/core/internal/models"
 	st "github.com/sonr-io/core/internal/stream"
 )
 
 // ^ CurrentFile returns last file in Processed Files ^ //
-func (sn *Node) currentFile() *pb.Metadata {
+func (sn *Node) currentFile() *sf.SafeFile {
 	return sn.files[len(sn.files)-1]
 }
 

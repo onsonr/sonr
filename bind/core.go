@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/libp2p/go-libp2p-core/host"
+	sf "github.com/sonr-io/core/internal/file"
 	sh "github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/internal/lobby"
 	pb "github.com/sonr-io/core/internal/models"
@@ -39,7 +40,7 @@ type Node struct {
 	// References
 	call  Callback
 	lobby *lobby.Lobby
-	files []*pb.Metadata
+	files []*sf.SafeFile
 }
 
 // ^ NewNode Initializes Node with a host and default properties ^
@@ -47,7 +48,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	// ** Create Context and Node - Begin Setup **
 	node := new(Node)
 	node.ctx = context.Background()
-	node.call, node.files = call, make([]*pb.Metadata, maxFileBufferSize)
+	node.call, node.files = call, make([]*sf.SafeFile, maxFileBufferSize)
 
 	// ** Unmarshal Request **
 	reqMsg := pb.RequestMessage{}

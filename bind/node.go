@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"time"
 
 	"github.com/sonr-io/core/internal/file"
 	"google.golang.org/protobuf/proto"
@@ -35,26 +36,26 @@ func (sn *Node) Update(direction float64) {
 
 // ^ AddFile adds generates metadata and thumbnail from filepath to Process for Transfer, returns key ^ //
 func (sn *Node) AddFile(path string) {
-	// @ 1. Initialize SafeFile, Callback Ref
-	safeFile := file.SafeFile{Path: path}
-	go safeFile.Create() // Start GoRoutine
-
-	// @ 2. Add to files slice
-	meta, err := safeFile.Metadata()
-	if err != nil {
-		// Call Error
-		sn.Error(err, "AddFile")
-		sn.call.OnQueued(true)
-	} else {
-		// Call Success
-		sn.files = append(sn.files, meta)
-		sn.call.OnQueued(false)
+	//@1. Assign Callback Ref
+	fileCall := file.FileCallback{
+		Queued:   sn.call.OnQueued,
+		Progress: sn.call.OnProgress,
+		Error:    sn.Error,
 	}
+	//@2. Initialize SafeFile
+	safeFile := file.SafeFile{Path: path, Call: fileCall}
+	sn.files = append(sn.files, &safeFile)
+	go safeFile.Create() // Start GoRoutine
 }
 
 // ^ Invite an available peer to transfer ^ //
 func (sn *Node) Invite(peerId string) {
+	// Create Delay to allow processing
+	time.Sleep(time.Second)
+
 	// Get Required Data
+	currFile := sn.currentFile()
+	currMeta := currFile.Metadata()
 	id, peer := sn.lobby.Find(peerId)
 	if peer == nil {
 		sn.Error(errors.New("Search Error, peer was not found in map."), "Invite")
@@ -67,7 +68,7 @@ func (sn *Node) Invite(peerId string) {
 	}
 
 	// Send Invite Message
-	if err := sn.authStream.SendInvite(sn.Peer, sn.lobby.Peer(peerId), sn.currentFile()); err != nil {
+	if err := sn.authStream.SendInvite(sn.Peer, sn.lobby.Peer(peerId), currMeta); err != nil {
 		sn.Error(err, "Invite")
 	}
 }
