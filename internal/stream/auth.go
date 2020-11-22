@@ -1,13 +1,9 @@
 package stream
 
 import (
-	"bufio"
-	"bytes"
 	"context"
 	"errors"
 	"fmt"
-	"io"
-	"log"
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -75,7 +71,7 @@ func (asc *AuthStreamConn) SetStream(stream network.Stream) {
 // ^ writeAuthMessage Message on Stream ^ //
 func (asc *AuthStreamConn) SendInvite(from *pb.Peer, to *pb.Peer, meta *pb.Metadata) error {
 	// @1. Create Message
-	reqMsg := &pb.AuthMessage{
+	reqMsg := pb.AuthMessage{
 		Event:    pb.AuthMessage_REQUEST,
 		From:     from,
 		To:       to,
@@ -83,30 +79,9 @@ func (asc *AuthStreamConn) SendInvite(from *pb.Peer, to *pb.Peer, meta *pb.Metad
 	}
 	// Initialize Writer
 	wr := sio.NewFullWriter(asc.stream)
-	wr.WriteMsg(reqMsg)
-	wr.
-
-	// Convert to Bytes
-	bytes, err := proto.Marshal(reqMsg)
+	err := wr.WriteMsg(&reqMsg)
 	if err != nil {
-		fmt.Println(err)
-	}
-
-	//@2. Initialize Writer
-	fmt.Println("Auth Msg Struct: ", reqMsg)
-	writer := bufio.NewWriter(asc.stream)
-
-	// Write to Stram
-	_, err = writer.Write(bytes)
-	if err != nil {
-		fmt.Println("Auth Stream Outgoing Write Error: ", err)
-		return err
-	}
-
-	//@3. Write buffered data
-	err = writer.Flush()
-	if err != nil {
-		fmt.Println("Auth Stream Outgoing Flush Error: ", err)
+		fmt.Println("Auth Stream Outgoing Write-Request Error: ", err)
 		return err
 	}
 	return nil
@@ -115,7 +90,7 @@ func (asc *AuthStreamConn) SendInvite(from *pb.Peer, to *pb.Peer, meta *pb.Metad
 // ^ writeAuthMessage Message on Stream ^ //
 func (asc *AuthStreamConn) SendResponse(from *pb.Peer, to *pb.Peer, decision bool) error {
 	//@1. Create Message
-	respMsg := &pb.AuthMessage{
+	respMsg := pb.AuthMessage{
 		From: from,
 		To:   to,
 	}
@@ -129,27 +104,11 @@ func (asc *AuthStreamConn) SendResponse(from *pb.Peer, to *pb.Peer, decision boo
 		respMsg.Event = pb.AuthMessage_DECLINE // Set Event
 	}
 
-	// Convert to Bytes
-	bytes, err := proto.Marshal(respMsg)
+	// Initialize Writer
+	wr := sio.NewFullWriter(asc.stream)
+	err := wr.WriteMsg(&respMsg)
 	if err != nil {
-		fmt.Println(err)
-	}
-
-	//@2. Initialize Writer
-	fmt.Println("Auth Msg Struct: ", respMsg)
-	writer := bufio.NewWriter(asc.stream)
-
-	// Write to Stram
-	_, err = writer.Write(bytes)
-	if err != nil {
-		fmt.Println("Auth Stream Outgoing Write Error: ", err)
-		return err
-	}
-
-	//@3. Write buffered data
-	err = writer.Flush()
-	if err != nil {
-		fmt.Println("Auth Stream Outgoing Flush Error: ", err)
+		fmt.Println("Auth Stream Outgoing Write-Response Error: ", err)
 		return err
 	}
 	return nil
@@ -157,30 +116,15 @@ func (asc *AuthStreamConn) SendResponse(from *pb.Peer, to *pb.Peer, decision boo
 
 // ^ read Data from Msgio ^ //
 func (asc *AuthStreamConn) readLoop() error {
-	source := bufio.NewReader(asc.stream)
-	buffer := new(bytes.Buffer)
 	for {
+		message := pb.AuthMessage{}
+		reader := sio.NewFullReader(asc.stream, 5)
+		reader.ReadMsg(&message)
 		// Create Source Reader and Dest Writer
-		fmt.Println("Received message")
-
-		// Copy Bytes from reader to writer
-		_, err := io.Copy(buffer, source)
-		fmt.Println("Copying Bytes to buffer")
-		if err != nil {
-			fmt.Println("Copying Error")
-			return err
-		}
-
-		// Create Message from Buffer
-		message := &pb.AuthMessage{}
-		fmt.Println("Unmarshalling bytes into Message")
-		if err := proto.Unmarshal(buffer.Bytes(), message); err != nil {
-			log.Fatalln("Failed to parse auth message:", err)
-			return err
-		}
+		fmt.Println("Received message: ", message.String())
 
 		// Handle Messages Struct
-		asc.handleMessage(message)
+		asc.handleMessage(&message)
 	}
 }
 
