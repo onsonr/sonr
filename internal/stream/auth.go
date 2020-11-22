@@ -156,15 +156,19 @@ func (asc *AuthStreamConn) readLoop() error {
 		// Create Source Reader and Dest Writer
 		source := bufio.NewReader(asc.stream)
 		buffer := new(bytes.Buffer)
+		fmt.Println("Received message")
 
 		// Copy Bytes from reader to writer
-		if _, err := io.Copy(buffer, source); err != nil {
-			fmt.Println("Auth Stream Incoming Copy Error: ", err)
+		_, err := io.Copy(buffer, source)
+		fmt.Println("Copying Bytes to buffer")
+		if err != nil {
+			fmt.Println("Copying Error")
 			return err
 		}
 
 		// Create Message from Buffer
 		message := &pb.AuthMessage{}
+		fmt.Println("Unmarshalling bytes into Message")
 		if err := proto.Unmarshal(buffer.Bytes(), message); err != nil {
 			log.Fatalln("Failed to parse auth message:", err)
 			return err
@@ -188,14 +192,17 @@ func (asc *AuthStreamConn) handleMessage(msg *pb.AuthMessage) {
 	switch msg.Event {
 	// @1. Request to Invite
 	case pb.AuthMessage_REQUEST:
+		fmt.Println("Handling Message received Request: ", msg.String())
 		asc.Call.Invited(msgBytes)
 
 	// @2. Peer Accepted Response to Invite
 	case pb.AuthMessage_ACCEPT:
+		fmt.Println("Handling Message received Accept: ", msg.String())
 		asc.Call.Responded(msgBytes)
 
 	// @3. Peer Declined Response to Invite
 	case pb.AuthMessage_DECLINE:
+		fmt.Println("Handling Message received Decline: ", msg.String())
 		asc.Call.Responded(msgBytes)
 
 	// ! Invalid Subject

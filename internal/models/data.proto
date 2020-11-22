@@ -20,6 +20,13 @@ message Contact {
   string profilePic = 3;
 }
 
+// Define Lobby Type: For Info about Lobby
+message Lobby {
+  string code = 1;
+  int32 size = 2;
+  map<string, Peer> peers = 3;
+}
+
 // Define Peer: Basic Info Sent to Peers
 message Peer {
   string id = 1;
