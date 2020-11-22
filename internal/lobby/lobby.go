@@ -7,7 +7,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	pb "github.com/sonr-io/core/pkg/models"
+	pb "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -29,8 +29,7 @@ type LobbyCallback struct {
 // messages are pushed to the Messages channel.
 type Lobby struct {
 	// Public Vars
-	Messages chan *pb.LobbyMessage
-	Self     *pb.Peer
+	Messages chan *pb.LobbyEvent
 	Data     *pb.Lobby
 
 	// Private Vars
@@ -40,11 +39,12 @@ type Lobby struct {
 	mutex  sync.Mutex
 	ps     *pubsub.PubSub
 	topic  *pubsub.Topic
+	self   peer.ID
 	sub    *pubsub.Subscription
 }
 
 // ^ Enter Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
-func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, peer *pb.Peer, olc string) (*Lobby, error) {
+func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, id peer.ID, olc string) (*Lobby, error) {
 	// Join the pubsub Topic
 	topic, err := ps.Join(olc)
 	if err != nil {
@@ -60,7 +60,7 @@ func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, peer 
 	// Initialize Lobby for Peers
 	lobInfo := &pb.Lobby{
 		Code:  olc,
-		Count: 1,
+		Size:  1,
 		Peers: make(map[string]*pb.Peer),
 	}
 
@@ -72,10 +72,10 @@ func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, peer 
 		ps:     ps,
 		topic:  topic,
 		sub:    sub,
+		self:   id,
 
-		Self:     peer,
 		Data:     lobInfo,
-		Messages: make(chan *pb.LobbyMessage, ChatRoomBufSize),
+		Messages: make(chan *pb.LobbyEvent, ChatRoomBufSize),
 	}
 
 	// start reading messages
@@ -84,14 +84,15 @@ func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, peer 
 	return lob, nil
 }
 
-// ^ Send publishes a message to the pubsub topic OLC ^
-func (lob *Lobby) Send(data []byte) error {
-	// Publish to Topic
-	err := lob.topic.Publish(lob.ctx, data)
+// ^ Info returns ALL Lobby Data as Bytes^
+func (lob *Lobby) Info() []byte {
+	// Convert to bytes
+	data, err := proto.Marshal(lob.Data)
 	if err != nil {
-		return err
+		fmt.Println("Error Marshaling Lobby Data ", err)
+		return nil
 	}
-	return nil
+	return data
 }
 
 // ^ Find returns Pointer to Peer.ID and Peer ^
@@ -103,18 +104,40 @@ func (lob *Lobby) Find(q string) (peer.ID, *pb.Peer) {
 	return id, peer
 }
 
-// ^ Peers returns ALL Available in Lobby ^
-func (lob *Lobby) Peers() []byte {
-	// Convert to bytes
-	data, err := proto.Marshal(lob.Data)
-	if err != nil {
-		fmt.Println("Error Marshaling Lobby Data ", err)
-		return nil
+// ^ Send publishes a message to the pubsub topic OLC ^
+func (lob *Lobby) Update(peer *pb.Peer) error {
+	// Create Lobby Event
+	event := pb.LobbyEvent{
+		Event: pb.LobbyEvent_UPDATE,
+		Peer:  peer,
 	}
-	return data
+
+	// Convert Event to Proto Binary
+	bytes, err := proto.Marshal(&event)
+	if err != nil {
+		return err
+	}
+
+	// Publish to Topic
+	err = lob.topic.Publish(lob.ctx, bytes)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // ^ End terminates lobby loop ^
-func (lob *Lobby) End() {
+func (lob *Lobby) Exit() {
+	// Create Lobby Event
+	event := pb.LobbyEvent{
+		Event: pb.LobbyEvent_EXIT,
+		Id:    lob.self.String(),
+	}
+
+	// Convert Event to Proto Binary, Suppress Error
+	bytes, _ := proto.Marshal(&event)
+
+	// Publish to Topic
+	lob.topic.Publish(lob.ctx, bytes)
 	lob.doneCh <- struct{}{}
 }

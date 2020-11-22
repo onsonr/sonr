@@ -5,10 +5,11 @@ import (
 	"fmt"
 
 	"github.com/libp2p/go-libp2p-core/host"
-	"github.com/libp2p/go-libp2p-core/network"
-	"github.com/libp2p/go-libp2p-core/protocol"
-	"github.com/sonr-io/core/pkg/lobby"
-	pb "github.com/sonr-io/core/pkg/models"
+	sf "github.com/sonr-io/core/internal/file"
+	sh "github.com/sonr-io/core/internal/host"
+	"github.com/sonr-io/core/internal/lobby"
+	pb "github.com/sonr-io/core/internal/models"
+	st "github.com/sonr-io/core/internal/stream"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -20,7 +21,7 @@ type Callback interface {
 	OnRefreshed(data []byte)
 	OnInvited(data []byte)
 	OnResponded(data []byte)
-	OnQueued(status bool)
+	OnQueued(data []byte)
 	OnProgress(data []byte)
 	OnError(data []byte)
 }
@@ -28,33 +29,59 @@ type Callback interface {
 // ^ Struct: Main Node handles Networking/Identity/Streams ^
 type Node struct {
 	// Public Properties
-	Profile pb.Profile
-	Contact pb.Contact
+	HostID string
+	Peer   *pb.Peer
 
 	// Networking Properties
 	ctx        context.Context
 	host       host.Host
-	authStream authStreamConn
-	dataStream dataStreamConn
+	authStream st.AuthStreamConn
 
 	// References
 	call  Callback
 	lobby *lobby.Lobby
-	files []*pb.Metadata
+	files []*sf.SafeFile
 }
 
-// ^ Struct: Holds/Handles Stream for Authentication  ^ //
-type authStreamConn struct {
-	stream network.Stream
-	self   *Node
-	pid    protocol.ID
-}
+// ^ NewNode Initializes Node with a host and default properties ^
+func NewNode(reqBytes []byte, call Callback) *Node {
+	// ** Create Context and Node - Begin Setup **
+	node := new(Node)
+	node.ctx = context.Background()
+	node.call, node.files = call, make([]*sf.SafeFile, maxFileBufferSize)
 
-// ^ Struct: Holds/Handles Stream for Data Transfer  ^ //
-type dataStreamConn struct {
-	stream network.Stream
-	self   *Node
-	pid    protocol.ID
+	// ** Unmarshal Request **
+	reqMsg := pb.RequestMessage{}
+	err := proto.Unmarshal(reqBytes, &reqMsg)
+	if err != nil {
+		fmt.Println(err)
+		node.Error(err, "NewNode")
+		return nil
+	}
+
+	// @1. Create Host and Set Stream Handlers
+	node.host, err = sh.NewHost(node.ctx)
+	if err != nil {
+		node.Error(err, "NewNode")
+		return nil
+	}
+	node.HostID = node.host.ID().String()
+	node.initStreams()
+
+	// @3. Set Node User Information
+	if err = node.setPeer(&reqMsg); err != nil {
+		node.Error(err, "NewNode")
+		return nil
+	}
+
+	// @4. Setup Discovery w/ Lobby
+	if err = node.setDiscovery(node.ctx, &reqMsg); err != nil {
+		node.Error(err, "NewNode")
+		return nil
+	}
+
+	// ** Callback Node User Information ** //
+	return node
 }
 
 // ** Error Callback to Plugin with error **

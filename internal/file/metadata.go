@@ -2,7 +2,6 @@ package file
 
 import (
 	"bytes"
-	"errors"
 	"image"
 	"math"
 	"os"
@@ -18,14 +17,28 @@ import (
 	"github.com/google/uuid"
 	"github.com/h2non/filetype"
 	"github.com/nfnt/resize"
-	pb "github.com/sonr-io/core/pkg/models"
+	pb "github.com/sonr-io/core/internal/models"
+	"google.golang.org/protobuf/proto"
 )
+
+// Define Function Types
+type OnQueued func(data []byte)
+type OnProgress func(data []byte)
+type OnError func(err error, method string)
+
+// Struct to Implement Node Callback Methods
+type FileCallback struct {
+	Queued   OnQueued
+	Progress OnProgress
+	Error    OnError
+}
 
 // ^ File that safely sets metadata and thumbnail in routine ^ //
 type SafeFile struct {
-	Path     string
-	mutex    sync.Mutex
-	metadata pb.Metadata
+	Path  string
+	Call  FileCallback
+	mutex sync.Mutex
+	meta  pb.Metadata
 }
 
 // ^ Create generates file metadata ^ //
@@ -38,12 +51,14 @@ func (sf *SafeFile) Create() {
 	file, err := os.Open(sf.Path)
 	if err != nil {
 		fmt.Println("Error opening File", err)
+		sf.Call.Error(err, "AddFile")
 	}
 
 	// Get Info
 	info, err := file.Stat()
 	if err != nil {
 		fmt.Println(err)
+		sf.Call.Error(err, "AddFile")
 	}
 
 	// Get File Type
@@ -52,6 +67,7 @@ func (sf *SafeFile) Create() {
 	kind, err := filetype.Match(head)
 	if err != nil {
 		fmt.Println(err)
+		sf.Call.Error(err, "AddFile")
 	}
 	file.Close()
 
@@ -62,6 +78,7 @@ func (sf *SafeFile) Create() {
 		file, err := os.Open(sf.Path)
 		if err != nil {
 			fmt.Println(err)
+			sf.Call.Error(err, "AddFile")
 		}
 		defer file.Close()
 
@@ -69,6 +86,7 @@ func (sf *SafeFile) Create() {
 		img, _, err := image.Decode(file)
 		if err != nil {
 			fmt.Println(err)
+			sf.Call.Error(err, "AddFile")
 		}
 
 		// Find Image Bounds
@@ -88,12 +106,13 @@ func (sf *SafeFile) Create() {
 		err = jpeg.Encode(thumbBuffer, scaledImage, nil)
 		if err != nil {
 			fmt.Println(err)
+			sf.Call.Error(err, "AddFile")
 		}
 		fmt.Println("Thumbnail created")
 	}
 
 	// @ 3. Set Metadata Protobuf Values
-	sf.metadata = pb.Metadata{
+	sf.meta = pb.Metadata{
 		FileId:    uuid.New().String(),
 		Name:      fileName(sf.Path),
 		Path:      sf.Path,
@@ -103,22 +122,31 @@ func (sf *SafeFile) Create() {
 	}
 	// ** Unlock ** //
 	sf.mutex.Unlock()
+	sf.Call.Queued(sf.Info())
 }
 
-// ^ SetMetadataThumbnail creates thumbnail for given metadata ^ //
-func (sf *SafeFile) Metadata() (*pb.Metadata, error) {
+// ^ Safely returns metadata depending on lock ^ //
+func (sf *SafeFile) Metadata() *pb.Metadata {
 	// ** Lock File wait for access ** //
 	sf.mutex.Lock()
 	defer sf.mutex.Unlock()
 
-	// @ 1. Check for Metadata
-	if sf.metadata.GetPath() == "" {
-		errMsg := fmt.Sprintf("Metadata was not found in SafeFile for '%s'", sf.Path)
-		return nil, errors.New(errMsg)
-	}
-
 	// @ 2. Return Value
-	return &sf.metadata, nil
+	return &sf.meta
+}
+
+// ^ Safely returns metadata depending on lock ^ //
+func (sf *SafeFile) Info() []byte {
+	// Get Metadata
+	meta := sf.Metadata()
+
+	// Convert to bytes
+	data, err := proto.Marshal(meta)
+	if err != nil {
+		fmt.Println("Error Marshaling Metadata ", err)
+		return nil
+	}
+	return data
 }
 
 // ** Resize Constants ** //

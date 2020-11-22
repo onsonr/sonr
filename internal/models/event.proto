@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+import "data.proto";
+
+// Require Go Package
+option go_package = ".;models";
+
+// [CORE]
+// Message Sent when peer messages Lobby Topic
+message LobbyEvent {
+  Event event = 1;
+  Peer peer = 2;
+  string id = 3; // Optional used for remove
+
+  enum Event {
+    NONE = 0;
+    UPDATE = 1;
+    EXIT = 2;
+    }
+}

@@ -5,41 +5,31 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/libp2p/go-libp2p-core/protocol"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	"github.com/sonr-io/core/pkg/lobby"
-	pb "github.com/sonr-io/core/pkg/models"
-	"google.golang.org/protobuf/proto"
+	sf "github.com/sonr-io/core/internal/file"
+	"github.com/sonr-io/core/internal/lobby"
+	pb "github.com/sonr-io/core/internal/models"
+	st "github.com/sonr-io/core/internal/stream"
 )
 
-// ** Returns Peer Object (Public Presence) **
-func (sn *Node) getPeerInfo() *pb.Peer {
-	return &pb.Peer{
-		Id:         sn.host.ID().String(),
-		Device:     sn.Profile.Device,
-		FirstName:  sn.Contact.FirstName,
-		LastName:   sn.Contact.LastName,
-		ProfilePic: sn.Contact.ProfilePic,
-		Direction:  sn.Profile.Direction,
-	}
+// ^ CurrentFile returns last file in Processed Files ^ //
+func (sn *Node) currentFile() *sf.SafeFile {
+	return sn.files[len(sn.files)-1]
 }
 
-// ^ GetUser returns profile and contact in a map as string ^ //
-func (sn *Node) GetUser() []byte {
-	// Create User Object
-	user := pb.ConnectedMessage{
-		HostId:  sn.Profile.HostId,
-		Profile: &sn.Profile,
-		Contact: &sn.Contact,
+// ^ InitStreams sets Auth/Data Streams with Handlers ^ //
+func (sn *Node) initStreams() {
+	// Assign Callbacks from Node to Stream
+	sn.authStream.Call = st.StreamCallback{
+		Invited:   sn.call.OnInvited,
+		Responded: sn.call.OnResponded,
+		Error:     sn.Error,
 	}
 
-	// Marshal to Bytes
-	data, err := proto.Marshal(&user)
-	if err != nil {
-		fmt.Println("marshaling error: ", err)
-	}
-
-	// Return as Bytes
-	return data
+	// Set Handlers
+	sn.host.SetStreamHandler(protocol.ID("/sonr/auth"), sn.authStream.SetStream)
+	//sn.host.SetStreamHandler(protocol.ID("/sonr/transfer"), sn.authStream.HandleTransferStream)
 }
 
 // ^ SetDiscovery initializes discovery protocols and creates pubsub service ^ //
@@ -58,7 +48,7 @@ func (sn *Node) setDiscovery(ctx context.Context, connEvent *pb.RequestMessage) 
 	}
 
 	// Enter Lobby
-	if sn.lobby, err = lobby.Enter(ctx, lobbyCallbackRef, ps, sn.getPeerInfo(), connEvent.Olc); err != nil {
+	if sn.lobby, err = lobby.Enter(ctx, lobbyCallbackRef, ps, sn.host.ID(), connEvent.Olc); err != nil {
 		return err
 	}
 	fmt.Println("Lobby Entered")
@@ -66,25 +56,23 @@ func (sn *Node) setDiscovery(ctx context.Context, connEvent *pb.RequestMessage) 
 }
 
 // ^ SetUser sets node info from connEvent and host ^ //
-func (sn *Node) setUser(connEvent *pb.RequestMessage) error {
+func (sn *Node) setPeer(connEvent *pb.RequestMessage) error {
 	// Check for Host
 	if sn.host == nil {
-		err := errors.New("setUser: Host has not been called")
+		err := errors.New("setPeer: Host has not been called")
 		return err
 	}
 
 	// Set Contact
-	sn.Contact = pb.Contact{
+	sn.Peer = &pb.Peer{
+		Id:         sn.host.ID().String(),
+		Olc:        connEvent.Olc,
+		Device:     connEvent.Device,
 		FirstName:  connEvent.Contact.FirstName,
 		LastName:   connEvent.Contact.LastName,
 		ProfilePic: connEvent.Contact.ProfilePic,
 	}
 
 	// Set Profile
-	sn.Profile = pb.Profile{
-		HostId: sn.host.ID().String(),
-		Olc:    connEvent.Olc,
-		Device: connEvent.Device,
-	}
 	return nil
 }
