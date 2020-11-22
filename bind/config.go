@@ -5,7 +5,9 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/libp2p/go-libp2p-core/protocol"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	sh "github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/internal/lobby"
 	pb "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
@@ -42,6 +44,20 @@ func (sn *Node) GetUser() []byte {
 	return data
 }
 
+// ^ InitStreams sets Auth/Data Streams with Handlers ^ //
+func (sn *Node) initStreams() {
+	// Assign Callbacks from Node to Stream
+	sn.authStream.Call = sh.StreamCallback{
+		Invited:   sn.call.OnInvited,
+		Responded: sn.call.OnResponded,
+		Error:     sn.Error,
+	}
+
+	// Set Handlers
+	sn.host.SetStreamHandler(protocol.ID("/sonr/auth"), sn.authStream.SetStream)
+	//sn.host.SetStreamHandler(protocol.ID("/sonr/transfer"), sn.authStream.HandleTransferStream)
+}
+
 // ^ SetDiscovery initializes discovery protocols and creates pubsub service ^ //
 func (sn *Node) setDiscovery(ctx context.Context, connEvent *pb.RequestMessage) error {
 	// create a new PubSub service using the GossipSub router
@@ -58,7 +74,7 @@ func (sn *Node) setDiscovery(ctx context.Context, connEvent *pb.RequestMessage) 
 	}
 
 	// Enter Lobby
-	if sn.lobby, err = lobby.Enter(ctx, lobbyCallbackRef, ps, sn.getPeerInfo(), connEvent.Olc); err != nil {
+	if sn.lobby, err = lobby.Enter(ctx, lobbyCallbackRef, ps, sn.HostID, connEvent.Olc); err != nil {
 		return err
 	}
 	fmt.Println("Lobby Entered")

@@ -7,8 +7,8 @@ import "user.proto";
 option go_package = ".;models";
 
 // [PLUGIN]
-// Define ConnectedMessage Type: Public vars
-message ConnectedMessage {
+// Define ConnectRequest Type: Public vars
+message ConnectRequest {
   string hostId = 1;
   Contact contact = 2;
   Profile profile = 3;
@@ -31,30 +31,27 @@ message RequestMessage {
 
 // [CORE]
 // Message Sent when peer has direction update to Lobby Topic
-message LobbyMessage {
-  string id = 1;
-  Subject subject = 2;
-  Peer peer = 3;
+message UpdateMessage {
+  Peer peer = 1;
+}
 
-  enum Subject {
-    NONE = 0;
-    JOIN = 1;
-    UPDATE = 2;
-    EXIT = 3;
-  }
+// [CORE]
+// Message Sent when peer has direction update to Lobby Topic
+message ExitMessage {
+  Peer peer = 1;
 }
 
 // [CORE]
 // Authorization message sent in stream
-message AuthMessage {
+message Authentication {
   // Define Root Message
   Peer from = 1;
   Peer to = 2;
-  Subject subject = 3;
+  Event event = 3;
   Metadata metadata = 4;
 
   // Define Subject
-  enum Subject {
+  enum Event {
     NONE = 0;
     REQUEST = 1;
     ACCEPT = 2;

@@ -30,7 +30,6 @@ type LobbyCallback struct {
 type Lobby struct {
 	// Public Vars
 	Messages chan *pb.LobbyMessage
-	Self     *pb.Peer
 	Data     pb.Lobby
 
 	// Private Vars
@@ -40,11 +39,12 @@ type Lobby struct {
 	mutex  sync.Mutex
 	ps     *pubsub.PubSub
 	topic  *pubsub.Topic
+	self   peer.ID
 	sub    *pubsub.Subscription
 }
 
 // ^ Enter Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
-func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, peer *pb.Peer, olc string) (*Lobby, error) {
+func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, id peer.ID, olc string) (*Lobby, error) {
 	// Join the pubsub Topic
 	topic, err := ps.Join(olc)
 	if err != nil {
@@ -60,7 +60,7 @@ func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, peer 
 	// Initialize Lobby for Peers
 	lobInfo := pb.Lobby{
 		Code:  olc,
-		Count: 1,
+		Size:  1,
 		Peers: make(map[string]*pb.Peer),
 	}
 
@@ -72,8 +72,8 @@ func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, peer 
 		ps:     ps,
 		topic:  topic,
 		sub:    sub,
+		self:   id,
 
-		Self:     peer,
 		Data:     lobInfo,
 		Messages: make(chan *pb.LobbyMessage, ChatRoomBufSize),
 	}
@@ -104,7 +104,7 @@ func (lob *Lobby) Find(q string) (peer.ID, *pb.Peer) {
 }
 
 // ^ Peers returns ALL Available in Lobby ^
-func (lob *Lobby) Peers() []byte {
+func (lob *Lobby) Data() []byte {
 	// Convert to bytes
 	data, err := proto.Marshal(&lob.Data)
 	if err != nil {

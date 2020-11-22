@@ -1,6 +1,7 @@
 package lobby
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
@@ -79,7 +80,8 @@ func (lob *Lobby) ID(q string) peer.ID {
 		}
 	}
 	// Log Error
-	fmt.Println("Error QueryId was not found in PubSub topic")
+	err := errors.New("Error QueryId was not found in PubSub topic")
+	lob.call.Error(err, "ID")
 	return ""
 }
 
@@ -101,14 +103,15 @@ func (lob *Lobby) removePeer(id string) {
 	delete(lob.Data.Peers, id)
 
 	// Send Callback with updated peers
-	lob.call.Refreshed(lob.Peers())
+	lob.call.Refreshed(lob.Data())
 }
 
 // ** updatePeer changes peer values in Lobby **
 func (lob *Lobby) updatePeer(id string, data *pb.Peer) {
 	// Update Peer with new data
 	lob.Data.Peers[id] = data
+	lob.Data.Size = int32(len(lob.Data.Peers)) + 1 // Account for User
 
 	// Send Callback with updated peers
-	lob.call.Refreshed(lob.Peers())
+	lob.call.Refreshed(lob.Data())
 }

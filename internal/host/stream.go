@@ -1,63 +1,60 @@
-package sonr
+package host
 
 import (
 	"bufio"
 	"bytes"
-	"context"
 	"errors"
 	"fmt"
 	"io"
 	"log"
 
 	"github.com/libp2p/go-libp2p-core/network"
-	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-core/protocol"
 	pb "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
 
-// ^ Handle Incoming Stream ^ //
-func (sn *Node) HandleAuthStream(stream network.Stream) {
-	// Create/Set Auth Stream
-	sn.authStream = authStreamConn{
-		stream: stream,
-		self:   sn,
-	}
-	// Print Stream Info
-	info := stream.Stat()
-	fmt.Println("Stream Info: ", info)
+// Define Function Types
+type OnInvited func(data []byte)
+type OnResponded func(data []byte)
+type OnError func(err error, method string)
 
-	// Initialize Routine
-	go sn.authStream.readAuthStreamLoop()
+// Struct to Implement Node Callback Methods
+type StreamCallback struct {
+	Invited   OnInvited
+	Responded OnResponded
+	Error     OnError
 }
 
-// ^ Create New Stream ^ //
-func (sn *Node) NewAuthStream(peerId peer.ID) error {
-	// Start New Auth Stream
-	ctx := context.Background()
-	stream, err := sn.host.NewStream(ctx, peerId, protocol.ID("/sonr/auth"))
-	if err != nil {
-		return err
-	}
+// ^ Struct: Holds/Handles Stream for Authentication  ^ //
+type AuthStreamConn struct {
+	Call   StreamCallback
+	id     string
+	stream network.Stream
+}
 
-	// Create/Set Auth Stream
-	sn.authStream = authStreamConn{
-		stream: stream,
-		self:   sn,
-		pid:    stream.ID(),
-	}
+// ^ Struct: Holds/Handles Stream for Data Transfer  ^ //
+type DataStreamConn struct {
+	Call   StreamCallback
+	id     string
+	stream network.Stream
+}
+
+// ^ Handle Incoming Stream ^ //
+func (asc *AuthStreamConn) SetStream(stream network.Stream) {
+	// Set Stream
+	asc.stream = stream
+	asc.id = stream.ID()
 
 	// Print Stream Info
 	info := stream.Stat()
 	fmt.Println("Stream Info: ", info)
 
 	// Initialize Routine
-	go sn.authStream.readAuthStreamLoop()
-	return nil
+	go asc.readLoop()
 }
 
 // ^ writeAuthMessage Message on Stream ^ //
-func (asc *authStreamConn) writeAuthMessage(authMsg *pb.AuthMessage) error {
+func (asc *AuthStreamConn) Send(authMsg *pb.AuthMessage) error {
 	// Initialize Writer
 	writer := bufio.NewWriter(asc.stream)
 	fmt.Println("Auth Msg Struct: ", authMsg)
@@ -85,7 +82,7 @@ func (asc *authStreamConn) writeAuthMessage(authMsg *pb.AuthMessage) error {
 }
 
 // ^ read Data from Msgio ^ //
-func (asc *authStreamConn) readAuthStreamLoop() error {
+func (asc *AuthStreamConn) readLoop() error {
 	for {
 		// Create Source Reader and Dest Writer
 		source := bufio.NewReader(asc.stream)
@@ -105,12 +102,12 @@ func (asc *authStreamConn) readAuthStreamLoop() error {
 		}
 
 		// Handle Messages Struct
-		asc.handleAuthMessage(message)
+		asc.handleMessage(message)
 	}
 }
 
 // ^ Handle Received Message ^ //
-func (asc *authStreamConn) handleAuthMessage(msg *pb.AuthMessage) {
+func (asc *AuthStreamConn) handleMessage(msg *pb.AuthMessage) {
 	// ** Contains Data **
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(msg)
@@ -122,19 +119,19 @@ func (asc *authStreamConn) handleAuthMessage(msg *pb.AuthMessage) {
 	switch msg.Subject {
 	// @1. Request to Invite
 	case pb.AuthMessage_REQUEST:
-		asc.self.call.OnInvited(msgBytes)
+		asc.Call.Invited(msgBytes)
 
 	// @2. Peer Accepted Response to Invite
 	case pb.AuthMessage_ACCEPT:
-		asc.self.call.OnResponded(msgBytes)
+		asc.Call.Responded(msgBytes)
 
 	// @3. Peer Declined Response to Invite
 	case pb.AuthMessage_DECLINE:
-		asc.self.call.OnResponded(msgBytes)
+		asc.Call.Responded(msgBytes)
 
 	// ! Invalid Subject
 	default:
 		err := errors.New(fmt.Sprintf("Not a subject: %s", msg.Subject))
-		asc.self.Error(err, "handleMessage")
+		asc.Call.Error(err, "handleMessage")
 	}
 }

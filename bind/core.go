@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/libp2p/go-libp2p-core/host"
-	"github.com/libp2p/go-libp2p-core/network"
+	sh "github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/internal/lobby"
 	pb "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
@@ -27,33 +27,20 @@ type Callback interface {
 // ^ Struct: Main Node handles Networking/Identity/Streams ^
 type Node struct {
 	// Public Properties
-	Profile pb.Profile
-	Contact pb.Contact
+	HostID string
 
 	// Networking Properties
 	ctx        context.Context
 	host       host.Host
-	authStream authStreamConn
-	dataStream dataStreamConn
+	authStream sh.AuthStreamConn
+	dataStream sh.DataStreamConn
+	profile    pb.Profile
+	contact    pb.Contact
 
 	// References
 	call  Callback
 	lobby *lobby.Lobby
 	files []*pb.Metadata
-}
-
-// ^ Struct: Holds/Handles Stream for Authentication  ^ //
-type authStreamConn struct {
-	pid    string
-	stream network.Stream
-	self   *Node
-}
-
-// ^ Struct: Holds/Handles Stream for Data Transfer  ^ //
-type dataStreamConn struct {
-	pid    string
-	stream network.Stream
-	self   *Node
 }
 
 // ** Error Callback to Plugin with error **

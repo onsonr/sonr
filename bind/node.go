@@ -29,16 +29,14 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 		return nil
 	}
 
-	// @1. Create Host
+	// @1. Create Host and Set Stream Handlers
 	node.host, err = sh.NewHost(node.ctx)
 	if err != nil {
 		node.Error(err, "NewNode")
 		return nil
 	}
-
-	// @2. Set Stream Handlers
-	node.host.SetStreamHandler(protocol.ID("/sonr/auth"), node.HandleAuthStream)
-	node.host.SetStreamHandler(protocol.ID("/sonr/transfer"), node.HandleTransferStream)
+	node.HostID = node.HostID
+	node.initStreams()
 
 	// @3. Set Node User Information
 	if err = node.setUser(&reqMsg); err != nil {
@@ -64,9 +62,9 @@ func (sn *Node) Update(direction float64) {
 
 	// Create Proto Lobby Message
 	info := sn.getPeerInfo()
-	msg := pb.LobbyMessage{
-		Subject: pb.LobbyMessage_UPDATE,
-		Peer:    info,
+	msg := pb.UpdateMessage{
+		Subject: pb.Lob_UPDATE,
+		Peer:    sn.HostID.String(),
 		Id:      info.Id,
 	}
 
@@ -111,7 +109,7 @@ func (sn *Node) Invite(peerId string) {
 	}
 
 	// Create New Auth Stream
-	err := sn.NewAuthStream(id)
+	stream, err := sn.host.NewStream(sn.ctx, id, protocol.ID("/sonr/auth"))
 	if err != nil {
 		sn.Error(err, "Invite")
 	}
@@ -126,8 +124,7 @@ func (sn *Node) Invite(peerId string) {
 	}
 
 	// Send Invite Message
-	err = sn.authStream.writeAuthMessage(authMessage)
-	if err != nil {
+	if err := sn.authStream.Send(authMessage); err != nil {
 		sn.Error(err, "Invite")
 	}
 }
@@ -150,7 +147,7 @@ func (sn *Node) Respond(peerId string, decision bool) {
 	}
 
 	// ** Send Message ** //
-	if err := sn.authStream.writeAuthMessage(respMsg); err != nil {
+	if err := sn.authStream.Send(respMsg); err != nil {
 		sn.Error(err, "Respond")
 	}
 }
