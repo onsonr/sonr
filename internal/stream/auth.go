@@ -14,6 +14,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	pb "github.com/sonr-io/core/internal/models"
+	sio "github.com/sonr-io/core/pkg/io"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -80,7 +81,10 @@ func (asc *AuthStreamConn) SendInvite(from *pb.Peer, to *pb.Peer, meta *pb.Metad
 		To:       to,
 		Metadata: meta,
 	}
-	//
+	// Initialize Writer
+	wr := sio.NewFullWriter(asc.stream)
+	wr.WriteMsg(reqMsg)
+	wr.
 
 	// Convert to Bytes
 	bytes, err := proto.Marshal(reqMsg)
