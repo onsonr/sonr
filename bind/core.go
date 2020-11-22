@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/libp2p/go-libp2p-core/host"
-	"github.com/libp2p/go-libp2p-core/peer"
 	sh "github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/internal/lobby"
 	pb "github.com/sonr-io/core/internal/models"
@@ -29,7 +28,7 @@ type Callback interface {
 // ^ Struct: Main Node handles Networking/Identity/Streams ^
 type Node struct {
 	// Public Properties
-	HostID peer.ID
+	HostID string
 	Peer   *pb.Peer
 
 	// Networking Properties
@@ -65,7 +64,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 		node.Error(err, "NewNode")
 		return nil
 	}
-	node.HostID = node.host.ID()
+	node.HostID = node.host.ID().String()
 	node.initStreams()
 
 	// @3. Set Node User Information
