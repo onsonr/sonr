@@ -72,16 +72,24 @@ func (asc *AuthStreamConn) SetStream(stream network.Stream) {
 }
 
 // ^ writeAuthMessage Message on Stream ^ //
-func (asc *AuthStreamConn) Send(authMsg *pb.AuthMessage) error {
-	// Initialize Writer
-	writer := bufio.NewWriter(asc.stream)
-	fmt.Println("Auth Msg Struct: ", authMsg)
+func (asc *AuthStreamConn) SendInvite(from *pb.Peer, to *pb.Peer, meta *pb.Metadata) error {
+	// @1. Create Message
+	reqMsg := &pb.AuthMessage{
+		Event:    pb.AuthMessage_REQUEST,
+		From:     from,
+		To:       to,
+		Metadata: meta,
+	}
 
 	// Convert to Bytes
-	bytes, err := proto.Marshal(authMsg)
+	bytes, err := proto.Marshal(reqMsg)
 	if err != nil {
 		fmt.Println(err)
 	}
+
+	//@2. Initialize Writer
+	fmt.Println("Auth Msg Struct: ", reqMsg)
+	writer := bufio.NewWriter(asc.stream)
 
 	// Write to Stram
 	_, err = writer.Write(bytes)
@@ -90,7 +98,50 @@ func (asc *AuthStreamConn) Send(authMsg *pb.AuthMessage) error {
 		return err
 	}
 
-	// Write buffered data
+	//@3. Write buffered data
+	err = writer.Flush()
+	if err != nil {
+		fmt.Println("Auth Stream Outgoing Flush Error: ", err)
+		return err
+	}
+	return nil
+}
+
+// ^ writeAuthMessage Message on Stream ^ //
+func (asc *AuthStreamConn) SendResponse(from *pb.Peer, to *pb.Peer, decision bool) error {
+	//@1. Create Message
+	respMsg := &pb.AuthMessage{
+		From: from,
+		To:   to,
+	}
+
+	// ** Check Decision **
+	if decision == true {
+		// User Accepted
+		respMsg.Event = pb.AuthMessage_ACCEPT // Set Event
+	} else {
+		// @ User Declined
+		respMsg.Event = pb.AuthMessage_DECLINE // Set Event
+	}
+
+	// Convert to Bytes
+	bytes, err := proto.Marshal(respMsg)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	//@2. Initialize Writer
+	fmt.Println("Auth Msg Struct: ", respMsg)
+	writer := bufio.NewWriter(asc.stream)
+
+	// Write to Stram
+	_, err = writer.Write(bytes)
+	if err != nil {
+		fmt.Println("Auth Stream Outgoing Write Error: ", err)
+		return err
+	}
+
+	//@3. Write buffered data
 	err = writer.Flush()
 	if err != nil {
 		fmt.Println("Auth Stream Outgoing Flush Error: ", err)

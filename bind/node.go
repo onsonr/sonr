@@ -1,56 +1,23 @@
 package sonr
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"math"
 
 	"github.com/sonr-io/core/internal/file"
-	sh "github.com/sonr-io/core/internal/host"
-	pb "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
 
-// ^ NewNode Initializes Node with a host and default properties ^
-func NewNode(reqBytes []byte, call Callback) *Node {
-	// ** Create Context and Node - Begin Setup **
-	node := new(Node)
-	node.ctx = context.Background()
-	node.call, node.files = call, make([]*pb.Metadata, maxFileBufferSize)
-
-	// ** Unmarshal Request **
-	reqMsg := pb.RequestMessage{}
-	err := proto.Unmarshal(reqBytes, &reqMsg)
+// ^ Info returns ALL Peer Data as Bytes^
+func (sn *Node) Info() []byte {
+	// Convert to bytes
+	data, err := proto.Marshal(sn.Peer)
 	if err != nil {
-		fmt.Println(err)
-		node.Error(err, "NewNode")
+		fmt.Println("Error Marshaling Lobby Data ", err)
 		return nil
 	}
-
-	// @1. Create Host and Set Stream Handlers
-	node.host, err = sh.NewHost(node.ctx)
-	if err != nil {
-		node.Error(err, "NewNode")
-		return nil
-	}
-	node.HostID = node.host.ID()
-	node.initStreams()
-
-	// @3. Set Node User Information
-	if err = node.setPeer(&reqMsg); err != nil {
-		node.Error(err, "NewNode")
-		return nil
-	}
-
-	// @4. Setup Discovery w/ Lobby
-	if err = node.setDiscovery(node.ctx, &reqMsg); err != nil {
-		node.Error(err, "NewNode")
-		return nil
-	}
-
-	// ** Callback Node User Information ** //
-	return node
+	return data
 }
 
 // ^ Update proximity/direction and Notify Lobby ^ //
@@ -99,46 +66,21 @@ func (sn *Node) Invite(peerId string) {
 		sn.Error(err, "Invite")
 	}
 
-	// Create Request Message
-	currFile := sn.files[len(sn.files)-1]
-	authMessage := &pb.AuthMessage{
-		Event:    pb.AuthMessage_REQUEST,
-		From:     sn.Peer,
-		To:       sn.lobby.Peer(peerId),
-		Metadata: currFile,
-	}
-
 	// Send Invite Message
-	if err := sn.authStream.Send(authMessage); err != nil {
+	if err := sn.authStream.SendInvite(sn.Peer, sn.lobby.Peer(peerId), sn.currentFile()); err != nil {
 		sn.Error(err, "Invite")
 	}
 }
 
 // ^ Respond to an Invitation ^ //
 func (sn *Node) Respond(peerId string, decision bool) {
-	// ** Initialize Protobuf **
-	respMsg := &pb.AuthMessage{
-		From: sn.Peer,
-		To:   sn.lobby.Peer(peerId),
-	}
-
-	// ** Check Decision ** //
-	if decision == true {
-		// @ User Accepted
-		respMsg.Event = pb.AuthMessage_ACCEPT // Set Event
-	} else {
-		// @ User Declined
-		respMsg.Event = pb.AuthMessage_DECLINE // Set Event
-	}
-
-	// ** Send Message ** //
-	if err := sn.authStream.Send(respMsg); err != nil {
+	// Send Response Message
+	if err := sn.authStream.SendResponse(sn.Peer, sn.lobby.Peer(peerId), decision); err != nil {
 		sn.Error(err, "Respond")
 	}
 }
 
 // ^ Close Ends All Network Communication ^
 func (sn *Node) Close() {
-	sn.lobby.Exit()
 	sn.host.Close()
 }

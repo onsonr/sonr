@@ -10,18 +10,11 @@ import (
 	"github.com/sonr-io/core/internal/lobby"
 	pb "github.com/sonr-io/core/internal/models"
 	st "github.com/sonr-io/core/internal/stream"
-	"google.golang.org/protobuf/proto"
 )
 
-// ^ Info returns ALL Peer Data as Bytes^
-func (sn *Node) Info() []byte {
-	// Convert to bytes
-	data, err := proto.Marshal(sn.Peer)
-	if err != nil {
-		fmt.Println("Error Marshaling Lobby Data ", err)
-		return nil
-	}
-	return data
+// ^ CurrentFile returns last file in Processed Files ^ //
+func (sn *Node) currentFile() *pb.Metadata {
+	return sn.files[len(sn.files)-1]
 }
 
 // ^ InitStreams sets Auth/Data Streams with Handlers ^ //

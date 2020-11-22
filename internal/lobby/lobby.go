@@ -84,15 +84,6 @@ func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, id pe
 	return lob, nil
 }
 
-// ^ Find returns Pointer to Peer.ID and Peer ^
-func (lob *Lobby) Find(q string) (peer.ID, *pb.Peer) {
-	// Retreive Data
-	peer := lob.Peer(q)
-	id := lob.ID(q)
-
-	return id, peer
-}
-
 // ^ Info returns ALL Lobby Data as Bytes^
 func (lob *Lobby) Info() []byte {
 	// Convert to bytes
@@ -102,6 +93,15 @@ func (lob *Lobby) Info() []byte {
 		return nil
 	}
 	return data
+}
+
+// ^ Find returns Pointer to Peer.ID and Peer ^
+func (lob *Lobby) Find(q string) (peer.ID, *pb.Peer) {
+	// Retreive Data
+	peer := lob.Peer(q)
+	id := lob.ID(q)
+
+	return id, peer
 }
 
 // ^ Send publishes a message to the pubsub topic OLC ^
@@ -128,5 +128,16 @@ func (lob *Lobby) Update(peer *pb.Peer) error {
 
 // ^ End terminates lobby loop ^
 func (lob *Lobby) Exit() {
+	// Create Lobby Event
+	event := pb.LobbyEvent{
+		Event: pb.LobbyEvent_EXIT,
+		Id:    lob.self.String(),
+	}
+
+	// Convert Event to Proto Binary, Suppress Error
+	bytes, _ := proto.Marshal(&event)
+
+	// Publish to Topic
+	lob.topic.Publish(lob.ctx, bytes)
 	lob.doneCh <- struct{}{}
 }

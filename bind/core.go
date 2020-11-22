@@ -6,6 +6,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
+	sh "github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/internal/lobby"
 	pb "github.com/sonr-io/core/internal/models"
 	st "github.com/sonr-io/core/internal/stream"
@@ -40,6 +41,47 @@ type Node struct {
 	call  Callback
 	lobby *lobby.Lobby
 	files []*pb.Metadata
+}
+
+// ^ NewNode Initializes Node with a host and default properties ^
+func NewNode(reqBytes []byte, call Callback) *Node {
+	// ** Create Context and Node - Begin Setup **
+	node := new(Node)
+	node.ctx = context.Background()
+	node.call, node.files = call, make([]*pb.Metadata, maxFileBufferSize)
+
+	// ** Unmarshal Request **
+	reqMsg := pb.RequestMessage{}
+	err := proto.Unmarshal(reqBytes, &reqMsg)
+	if err != nil {
+		fmt.Println(err)
+		node.Error(err, "NewNode")
+		return nil
+	}
+
+	// @1. Create Host and Set Stream Handlers
+	node.host, err = sh.NewHost(node.ctx)
+	if err != nil {
+		node.Error(err, "NewNode")
+		return nil
+	}
+	node.HostID = node.host.ID()
+	node.initStreams()
+
+	// @3. Set Node User Information
+	if err = node.setPeer(&reqMsg); err != nil {
+		node.Error(err, "NewNode")
+		return nil
+	}
+
+	// @4. Setup Discovery w/ Lobby
+	if err = node.setDiscovery(node.ctx, &reqMsg); err != nil {
+		node.Error(err, "NewNode")
+		return nil
+	}
+
+	// ** Callback Node User Information ** //
+	return node
 }
 
 // ** Error Callback to Plugin with error **

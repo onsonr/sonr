@@ -53,7 +53,7 @@ func (lob *Lobby) handleEvents() {
 
 			} else if m.Event == pb.LobbyEvent_EXIT {
 				// Remove Peer Data
-				lob.removePeer(m.Peer.Id)
+				lob.removePeer(m.Id)
 			}
 
 		// ** Refresh and Validate Lobby Peers Periodically ** //
