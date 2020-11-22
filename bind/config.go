@@ -10,7 +10,6 @@ import (
 	sh "github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/internal/lobby"
 	pb "github.com/sonr-io/core/internal/models"
-	"google.golang.org/protobuf/proto"
 )
 
 // ** Returns Peer Object (Public Presence) **
@@ -23,25 +22,6 @@ func (sn *Node) getPeerInfo() *pb.Peer {
 		ProfilePic: sn.Contact.ProfilePic,
 		Direction:  sn.Profile.Direction,
 	}
-}
-
-// ^ GetUser returns profile and contact in a map as string ^ //
-func (sn *Node) GetUser() []byte {
-	// Create User Object
-	user := pb.ConnectedMessage{
-		HostId:  sn.Profile.HostId,
-		Profile: &sn.Profile,
-		Contact: &sn.Contact,
-	}
-
-	// Marshal to Bytes
-	data, err := proto.Marshal(&user)
-	if err != nil {
-		fmt.Println("marshaling error: ", err)
-	}
-
-	// Return as Bytes
-	return data
 }
 
 // ^ InitStreams sets Auth/Data Streams with Handlers ^ //

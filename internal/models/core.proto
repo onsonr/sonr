@@ -3,14 +3,6 @@ syntax = "proto3";
 // Require Go Package
 option go_package = ".;models";
 
-// [CORE]
-// Message Sent when peer has direction update to Lobby Topic
-message UpdateEvent { Peer peer = 1; }
-
-// [CORE]
-// Message Sent when peer has direction update to Lobby Topic
-message ExitEvent { Peer peer = 1; }
-
 // Define Metadata Type: For File Transfer
 message Metadata {
   string fileId = 1;

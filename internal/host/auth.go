@@ -32,13 +32,6 @@ type AuthStreamConn struct {
 	stream network.Stream
 }
 
-// ^ Struct: Holds/Handles Stream for Data Transfer  ^ //
-type DataStreamConn struct {
-	Call   StreamCallback
-	id     string
-	stream network.Stream
-}
-
 // ^ Handle Incoming Stream ^ //
 func (asc *AuthStreamConn) SetStream(stream network.Stream) {
 	// Set Stream
@@ -54,7 +47,7 @@ func (asc *AuthStreamConn) SetStream(stream network.Stream) {
 }
 
 // ^ writeAuthMessage Message on Stream ^ //
-func (asc *AuthStreamConn) Send(authMsg *pb.Authentication) error {
+func (asc *AuthStreamConn) Send(authMsg *pb.AuthMessage) error {
 	// Initialize Writer
 	writer := bufio.NewWriter(asc.stream)
 	fmt.Println("Auth Msg Struct: ", authMsg)
@@ -95,7 +88,7 @@ func (asc *AuthStreamConn) readLoop() error {
 		}
 
 		// Create Message from Buffer
-		message := &pb.Authentication{}
+		message := &pb.AuthMessage{}
 		if err := proto.Unmarshal(buffer.Bytes(), message); err != nil {
 			log.Fatalln("Failed to parse auth message:", err)
 			return err
@@ -107,7 +100,7 @@ func (asc *AuthStreamConn) readLoop() error {
 }
 
 // ^ Handle Received Message ^ //
-func (asc *AuthStreamConn) handleMessage(msg *pb.Authentication) {
+func (asc *AuthStreamConn) handleMessage(msg *pb.AuthMessage) {
 	// ** Contains Data **
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(msg)
@@ -116,7 +109,7 @@ func (asc *AuthStreamConn) handleMessage(msg *pb.Authentication) {
 	}
 
 	// ** Check Message Subject **
-	switch msg.Subject {
+	switch msg.Event {
 	// @1. Request to Invite
 	case pb.AuthMessage_REQUEST:
 		asc.Call.Invited(msgBytes)

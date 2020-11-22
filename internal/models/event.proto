@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+import "core.proto";
+
+// Require Go Package
+option go_package = ".;models";
+
+// [CORE]
+// Message Sent when peer has direction update to Lobby Topic
+message UpdateEvent { Peer peer = 1; }
+
+// [CORE]
+// Message Sent when peer has direction update to Lobby Topic
+message ExitEvent { Peer peer = 1; }

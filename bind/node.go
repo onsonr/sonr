@@ -61,7 +61,7 @@ func (sn *Node) Update(direction float64) {
 	sn.Profile.Direction = math.Round(direction*100) / 100
 
 	// Create Proto Lobby Message
-	msg := pb.UpdateMessage{
+	msg := pb.UpdateEvent{
 		Peer: sn.getPeerInfo(),
 	}
 
@@ -113,8 +113,8 @@ func (sn *Node) Invite(peerId string) {
 
 	// Create Request Message
 	currFile := sn.files[len(sn.files)-1]
-	authMessage := &pb.Authentication{
-		Event:    pb.Authentication_REQUEST,
+	authMessage := &pb.AuthMessage{
+		Event:    pb.AuthMessage_REQUEST,
 		From:     sn.getPeerInfo(),
 		To:       sn.lobby.Peer(peerId),
 		Metadata: currFile,
@@ -129,7 +129,7 @@ func (sn *Node) Invite(peerId string) {
 // ^ Respond to an Invitation ^ //
 func (sn *Node) Respond(peerId string, decision bool) {
 	// ** Initialize Protobuf **
-	respMsg := &pb.Authentication{
+	respMsg := &pb.AuthMessage{
 		From: sn.getPeerInfo(),
 		To:   sn.lobby.Peer(peerId),
 	}
@@ -137,10 +137,10 @@ func (sn *Node) Respond(peerId string, decision bool) {
 	// ** Check Decision ** //
 	if decision == true {
 		// @ User Accepted
-		respMsg.Event = pb.Authentication_ACCEPT // Set Event
+		respMsg.Event = pb.AuthMessage_ACCEPT // Set Event
 	} else {
 		// @ User Declined
-		respMsg.Event = pb.Authentication_DECLINE // Set Event
+		respMsg.Event = pb.AuthMessage_DECLINE // Set Event
 	}
 
 	// ** Send Message ** //
