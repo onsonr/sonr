@@ -1,14 +1,18 @@
-package host
+package stream
 
 import (
 	"bufio"
 	"bytes"
+	"context"
 	"errors"
 	"fmt"
 	"io"
 	"log"
 
+	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
+	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-core/protocol"
 	pb "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -30,6 +34,27 @@ type AuthStreamConn struct {
 	Call   StreamCallback
 	id     string
 	stream network.Stream
+}
+
+// ^ Start New Stream ^ //
+func (asc *AuthStreamConn) New(ctx context.Context, h host.Host, id peer.ID) error {
+	// Create New Auth Stream
+	stream, err := h.NewStream(ctx, id, protocol.ID("/sonr/auth"))
+	if err != nil {
+		return err
+	}
+
+	// Set Stream
+	asc.stream = stream
+	asc.id = stream.ID()
+
+	// Print Stream Info
+	info := stream.Stat()
+	fmt.Println("Stream Info: ", info)
+
+	// Initialize Routine
+	go asc.readLoop()
+	return nil
 }
 
 // ^ Handle Incoming Stream ^ //
@@ -124,7 +149,7 @@ func (asc *AuthStreamConn) handleMessage(msg *pb.AuthMessage) {
 
 	// ! Invalid Subject
 	default:
-		err := errors.New(fmt.Sprintf("Not a subject: %s", msg.Subject))
+		err := errors.New(fmt.Sprintf("Not a subject: %s", msg.Event))
 		asc.Call.Error(err, "handleMessage")
 	}
 }

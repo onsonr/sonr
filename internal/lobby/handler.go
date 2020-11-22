@@ -2,7 +2,6 @@ package lobby
 
 import (
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -21,12 +20,12 @@ func (lob *Lobby) handleMessages() {
 		}
 
 		// Only forward messages delivered by others
-		if msg.ReceivedFrom.String() == lob.Self.GetId() {
+		if msg.ReceivedFrom == lob.self {
 			continue
 		}
 
 		// Construct message
-		notif := pb.LobbyMessage{}
+		notif := pb.LobbyEvent{}
 		err = proto.Unmarshal(msg.Data, &notif)
 		if err != nil {
 			continue
@@ -48,18 +47,18 @@ func (lob *Lobby) handleEvents() {
 		// ** when we receive a message from the lobby room **
 		case m := <-lob.Messages:
 			// Update Circle by event
-			if m.Subject == pb.LobbyMessage_UPDATE {
+			if m.Event == pb.LobbyEvent_UPDATE {
 				// Update Peer Data
-				lob.updatePeer(m.Id, m.Peer)
+				lob.updatePeer(m.Peer)
 
-			} else if m.Subject == pb.LobbyMessage_EXIT {
+			} else if m.Event == pb.LobbyEvent_EXIT {
 				// Remove Peer Data
-				lob.removePeer(m.Id)
+				lob.removePeer(m.Peer.Id)
 			}
 
 		// ** Refresh and Validate Lobby Peers Periodically ** //
 		case <-peerRefreshTicker.C:
-			lob.call.Refreshed(lob.Peers())
+			lob.call.Refreshed(lob.Info())
 
 		case <-lob.ctx.Done():
 			return
@@ -103,15 +102,16 @@ func (lob *Lobby) removePeer(id string) {
 	delete(lob.Data.Peers, id)
 
 	// Send Callback with updated peers
-	lob.call.Refreshed(lob.Data())
+	lob.call.Refreshed(lob.Info())
 }
 
 // ** updatePeer changes peer values in Lobby **
-func (lob *Lobby) updatePeer(id string, data *pb.Peer) {
+func (lob *Lobby) updatePeer(peer *pb.Peer) {
 	// Update Peer with new data
-	lob.Data.Peers[id] = data
+	id := peer.Id
+	lob.Data.Peers[id] = peer
 	lob.Data.Size = int32(len(lob.Data.Peers)) + 1 // Account for User
 
 	// Send Callback with updated peers
-	lob.call.Refreshed(lob.Data())
+	lob.call.Refreshed(lob.Info())
 }

@@ -24,10 +24,11 @@ message Contact {
 message Peer {
   string id = 1;
   string device = 2;
-  string firstName = 3;
-  string lastName = 4;
-  string profilePic = 5;
-  double direction = 6;
-  double difference = 7;
-  double distance = 8;
+  string olc = 3;
+  string firstName = 4;
+  string lastName = 5;
+  string profilePic = 6;
+  double direction = 7;
+  double difference = 8;
+  double distance = 9;
 }

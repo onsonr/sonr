@@ -7,27 +7,27 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/protocol"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	sh "github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/internal/lobby"
 	pb "github.com/sonr-io/core/internal/models"
+	st "github.com/sonr-io/core/internal/stream"
+	"google.golang.org/protobuf/proto"
 )
 
-// ** Returns Peer Object (Public Presence) **
-func (sn *Node) getPeerInfo() *pb.Peer {
-	return &pb.Peer{
-		Id:         sn.host.ID().String(),
-		Device:     sn.Profile.Device,
-		FirstName:  sn.Contact.FirstName,
-		LastName:   sn.Contact.LastName,
-		ProfilePic: sn.Contact.ProfilePic,
-		Direction:  sn.Profile.Direction,
+// ^ Info returns ALL Peer Data as Bytes^
+func (sn *Node) Info() []byte {
+	// Convert to bytes
+	data, err := proto.Marshal(sn.Peer)
+	if err != nil {
+		fmt.Println("Error Marshaling Lobby Data ", err)
+		return nil
 	}
+	return data
 }
 
 // ^ InitStreams sets Auth/Data Streams with Handlers ^ //
 func (sn *Node) initStreams() {
 	// Assign Callbacks from Node to Stream
-	sn.authStream.Call = sh.StreamCallback{
+	sn.authStream.Call = st.StreamCallback{
 		Invited:   sn.call.OnInvited,
 		Responded: sn.call.OnResponded,
 		Error:     sn.Error,
@@ -62,25 +62,23 @@ func (sn *Node) setDiscovery(ctx context.Context, connEvent *pb.RequestMessage) 
 }
 
 // ^ SetUser sets node info from connEvent and host ^ //
-func (sn *Node) setUser(connEvent *pb.RequestMessage) error {
+func (sn *Node) setPeer(connEvent *pb.RequestMessage) error {
 	// Check for Host
 	if sn.host == nil {
-		err := errors.New("setUser: Host has not been called")
+		err := errors.New("setPeer: Host has not been called")
 		return err
 	}
 
 	// Set Contact
-	sn.Contact = pb.Contact{
+	sn.Peer = &pb.Peer{
+		Id:         sn.host.ID().String(),
+		Olc:        connEvent.Olc,
+		Device:     connEvent.Device,
 		FirstName:  connEvent.Contact.FirstName,
 		LastName:   connEvent.Contact.LastName,
 		ProfilePic: connEvent.Contact.ProfilePic,
 	}
 
 	// Set Profile
-	sn.Profile = pb.Profile{
-		HostId: sn.host.ID().String(),
-		Olc:    connEvent.Olc,
-		Device: connEvent.Device,
-	}
 	return nil
 }

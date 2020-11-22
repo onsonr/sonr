@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/sonr-io/core/internal/file"
 	sh "github.com/sonr-io/core/internal/host"
 	pb "github.com/sonr-io/core/internal/models"
@@ -35,11 +34,11 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 		node.Error(err, "NewNode")
 		return nil
 	}
-	node.HostID = node.HostID
+	node.HostID = node.host.ID()
 	node.initStreams()
 
 	// @3. Set Node User Information
-	if err = node.setUser(&reqMsg); err != nil {
+	if err = node.setPeer(&reqMsg); err != nil {
 		node.Error(err, "NewNode")
 		return nil
 	}
@@ -58,21 +57,10 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 func (sn *Node) Update(direction float64) {
 	// ** Initialize ** //
 	// Update User Values
-	sn.Profile.Direction = math.Round(direction*100) / 100
-
-	// Create Proto Lobby Message
-	msg := pb.UpdateEvent{
-		Peer: sn.getPeerInfo(),
-	}
-
-	// Convert Request to Proto Binary
-	msgBytes, err := proto.Marshal(&msg)
-	if err != nil {
-		sn.Error(err, "Lobby.Update()")
-	}
+	sn.Peer.Direction = math.Round(direction*100) / 100
 
 	// Inform Lobby
-	err = sn.lobby.Send(msgBytes)
+	err := sn.lobby.Update(sn.Peer)
 	if err != nil {
 		sn.Error(err, "Update")
 	}
@@ -106,7 +94,7 @@ func (sn *Node) Invite(peerId string) {
 	}
 
 	// Create New Auth Stream
-	stream, err := sn.host.NewStream(sn.ctx, id, protocol.ID("/sonr/auth"))
+	err := sn.authStream.New(sn.ctx, sn.host, id)
 	if err != nil {
 		sn.Error(err, "Invite")
 	}
@@ -115,7 +103,7 @@ func (sn *Node) Invite(peerId string) {
 	currFile := sn.files[len(sn.files)-1]
 	authMessage := &pb.AuthMessage{
 		Event:    pb.AuthMessage_REQUEST,
-		From:     sn.getPeerInfo(),
+		From:     sn.Peer,
 		To:       sn.lobby.Peer(peerId),
 		Metadata: currFile,
 	}
@@ -130,7 +118,7 @@ func (sn *Node) Invite(peerId string) {
 func (sn *Node) Respond(peerId string, decision bool) {
 	// ** Initialize Protobuf **
 	respMsg := &pb.AuthMessage{
-		From: sn.getPeerInfo(),
+		From: sn.Peer,
 		To:   sn.lobby.Peer(peerId),
 	}
 
@@ -151,6 +139,6 @@ func (sn *Node) Respond(peerId string, decision bool) {
 
 // ^ Close Ends All Network Communication ^
 func (sn *Node) Close() {
-	sn.lobby.End()
+	sn.lobby.Exit()
 	sn.host.Close()
 }

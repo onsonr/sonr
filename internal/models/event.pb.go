@@ -25,18 +25,68 @@ const (
 // of the legacy proto package is being used.
 const _ = proto.ProtoPackageIsVersion4
 
+type LobbyEvent_Event int32
+
+const (
+	LobbyEvent_NONE   LobbyEvent_Event = 0
+	LobbyEvent_UPDATE LobbyEvent_Event = 1
+	LobbyEvent_EXIT   LobbyEvent_Event = 2
+)
+
+// Enum value maps for LobbyEvent_Event.
+var (
+	LobbyEvent_Event_name = map[int32]string{
+		0: "NONE",
+		1: "UPDATE",
+		2: "EXIT",
+	}
+	LobbyEvent_Event_value = map[string]int32{
+		"NONE":   0,
+		"UPDATE": 1,
+		"EXIT":   2,
+	}
+)
+
+func (x LobbyEvent_Event) Enum() *LobbyEvent_Event {
+	p := new(LobbyEvent_Event)
+	*p = x
+	return p
+}
+
+func (x LobbyEvent_Event) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (LobbyEvent_Event) Descriptor() protoreflect.EnumDescriptor {
+	return file_event_proto_enumTypes[0].Descriptor()
+}
+
+func (LobbyEvent_Event) Type() protoreflect.EnumType {
+	return &file_event_proto_enumTypes[0]
+}
+
+func (x LobbyEvent_Event) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use LobbyEvent_Event.Descriptor instead.
+func (LobbyEvent_Event) EnumDescriptor() ([]byte, []int) {
+	return file_event_proto_rawDescGZIP(), []int{0, 0}
+}
+
 // [CORE]
-// Message Sent when peer has direction update to Lobby Topic
-type UpdateEvent struct {
+// Message Sent when peer messages Lobby Topic
+type LobbyEvent struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Peer *Peer `protobuf:"bytes,1,opt,name=peer,proto3" json:"peer,omitempty"`
+	Event LobbyEvent_Event `protobuf:"varint,1,opt,name=event,proto3,enum=LobbyEvent_Event" json:"event,omitempty"`
+	Peer  *Peer            `protobuf:"bytes,2,opt,name=peer,proto3" json:"peer,omitempty"`
 }
 
-func (x *UpdateEvent) Reset() {
-	*x = UpdateEvent{}
+func (x *LobbyEvent) Reset() {
+	*x = LobbyEvent{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_event_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -44,13 +94,13 @@ func (x *UpdateEvent) Reset() {
 	}
 }
 
-func (x *UpdateEvent) String() string {
+func (x *LobbyEvent) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*UpdateEvent) ProtoMessage() {}
+func (*LobbyEvent) ProtoMessage() {}
 
-func (x *UpdateEvent) ProtoReflect() protoreflect.Message {
+func (x *LobbyEvent) ProtoReflect() protoreflect.Message {
 	mi := &file_event_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,61 +112,19 @@ func (x *UpdateEvent) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use UpdateEvent.ProtoReflect.Descriptor instead.
-func (*UpdateEvent) Descriptor() ([]byte, []int) {
+// Deprecated: Use LobbyEvent.ProtoReflect.Descriptor instead.
+func (*LobbyEvent) Descriptor() ([]byte, []int) {
 	return file_event_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *UpdateEvent) GetPeer() *Peer {
+func (x *LobbyEvent) GetEvent() LobbyEvent_Event {
 	if x != nil {
-		return x.Peer
+		return x.Event
 	}
-	return nil
+	return LobbyEvent_NONE
 }
 
-// [CORE]
-// Message Sent when peer has direction update to Lobby Topic
-type ExitEvent struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Peer *Peer `protobuf:"bytes,1,opt,name=peer,proto3" json:"peer,omitempty"`
-}
-
-func (x *ExitEvent) Reset() {
-	*x = ExitEvent{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_event_proto_msgTypes[1]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *ExitEvent) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ExitEvent) ProtoMessage() {}
-
-func (x *ExitEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_event_proto_msgTypes[1]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ExitEvent.ProtoReflect.Descriptor instead.
-func (*ExitEvent) Descriptor() ([]byte, []int) {
-	return file_event_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *ExitEvent) GetPeer() *Peer {
+func (x *LobbyEvent) GetPeer() *Peer {
 	if x != nil {
 		return x.Peer
 	}
@@ -126,14 +134,17 @@ func (x *ExitEvent) GetPeer() *Peer {
 var File_event_proto protoreflect.FileDescriptor
 
 var file_event_proto_rawDesc = []byte{
-	0x0a, 0x0b, 0x65, 0x76, 0x65, 0x6e, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x0a, 0x63,
-	0x6f, 0x72, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x28, 0x0a, 0x0b, 0x55, 0x70, 0x64,
-	0x61, 0x74, 0x65, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x19, 0x0a, 0x04, 0x70, 0x65, 0x65, 0x72,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x05, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x04, 0x70,
-	0x65, 0x65, 0x72, 0x22, 0x26, 0x0a, 0x09, 0x45, 0x78, 0x69, 0x74, 0x45, 0x76, 0x65, 0x6e, 0x74,
-	0x12, 0x19, 0x0a, 0x04, 0x70, 0x65, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x05,
-	0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x04, 0x70, 0x65, 0x65, 0x72, 0x42, 0x0a, 0x5a, 0x08, 0x2e,
-	0x3b, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x0a, 0x0b, 0x65, 0x76, 0x65, 0x6e, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x0a, 0x64,
+	0x61, 0x74, 0x61, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x79, 0x0a, 0x0a, 0x4c, 0x6f, 0x62,
+	0x62, 0x79, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x27, 0x0a, 0x05, 0x65, 0x76, 0x65, 0x6e, 0x74,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x11, 0x2e, 0x4c, 0x6f, 0x62, 0x62, 0x79, 0x45, 0x76,
+	0x65, 0x6e, 0x74, 0x2e, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x52, 0x05, 0x65, 0x76, 0x65, 0x6e, 0x74,
+	0x12, 0x19, 0x0a, 0x04, 0x70, 0x65, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x05,
+	0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x04, 0x70, 0x65, 0x65, 0x72, 0x22, 0x27, 0x0a, 0x05, 0x45,
+	0x76, 0x65, 0x6e, 0x74, 0x12, 0x08, 0x0a, 0x04, 0x4e, 0x4f, 0x4e, 0x45, 0x10, 0x00, 0x12, 0x0a,
+	0x0a, 0x06, 0x55, 0x50, 0x44, 0x41, 0x54, 0x45, 0x10, 0x01, 0x12, 0x08, 0x0a, 0x04, 0x45, 0x58,
+	0x49, 0x54, 0x10, 0x02, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x3b, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73,
+	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -148,15 +159,16 @@ func file_event_proto_rawDescGZIP() []byte {
 	return file_event_proto_rawDescData
 }
 
-var file_event_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_event_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_event_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_event_proto_goTypes = []interface{}{
-	(*UpdateEvent)(nil), // 0: UpdateEvent
-	(*ExitEvent)(nil),   // 1: ExitEvent
-	(*Peer)(nil),        // 2: Peer
+	(LobbyEvent_Event)(0), // 0: LobbyEvent.Event
+	(*LobbyEvent)(nil),    // 1: LobbyEvent
+	(*Peer)(nil),          // 2: Peer
 }
 var file_event_proto_depIdxs = []int32{
-	2, // 0: UpdateEvent.peer:type_name -> Peer
-	2, // 1: ExitEvent.peer:type_name -> Peer
+	0, // 0: LobbyEvent.event:type_name -> LobbyEvent.Event
+	2, // 1: LobbyEvent.peer:type_name -> Peer
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
@@ -169,22 +181,10 @@ func file_event_proto_init() {
 	if File_event_proto != nil {
 		return
 	}
-	file_core_proto_init()
+	file_data_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_event_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UpdateEvent); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_event_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ExitEvent); i {
+			switch v := v.(*LobbyEvent); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -201,13 +201,14 @@ func file_event_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_event_proto_rawDesc,
-			NumEnums:      0,
-			NumMessages:   2,
+			NumEnums:      1,
+			NumMessages:   1,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_event_proto_goTypes,
 		DependencyIndexes: file_event_proto_depIdxs,
+		EnumInfos:         file_event_proto_enumTypes,
 		MessageInfos:      file_event_proto_msgTypes,
 	}.Build()
 	File_event_proto = out.File

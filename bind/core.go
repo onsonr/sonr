@@ -5,9 +5,10 @@ import (
 	"fmt"
 
 	"github.com/libp2p/go-libp2p-core/host"
-	sh "github.com/sonr-io/core/internal/host"
+	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/lobby"
 	pb "github.com/sonr-io/core/internal/models"
+	st "github.com/sonr-io/core/internal/stream"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -27,15 +28,13 @@ type Callback interface {
 // ^ Struct: Main Node handles Networking/Identity/Streams ^
 type Node struct {
 	// Public Properties
-	HostID string
+	HostID peer.ID
+	Peer   *pb.Peer
 
 	// Networking Properties
 	ctx        context.Context
 	host       host.Host
-	authStream sh.AuthStreamConn
-	dataStream sh.DataStreamConn
-	profile    pb.Profile
-	contact    pb.Contact
+	authStream st.AuthStreamConn
 
 	// References
 	call  Callback

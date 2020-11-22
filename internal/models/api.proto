@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-import "core.proto";
+import "data.proto";
 
 // Require Go Package
 option go_package = ".;models";
@@ -21,7 +21,7 @@ message RequestMessage {
 }
 
 // Define Lobby Type: For Info about Lobby
-message LobbyInfo {
+message Lobby {
   string code = 1;
   int32 size = 2;
   map<string, Peer> peers = 3;

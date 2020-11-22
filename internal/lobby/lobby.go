@@ -29,8 +29,8 @@ type LobbyCallback struct {
 // messages are pushed to the Messages channel.
 type Lobby struct {
 	// Public Vars
-	Messages chan *pb.LobbyMessage
-	Info     pb.LobbyInfo
+	Messages chan *pb.LobbyEvent
+	Data     *pb.Lobby
 
 	// Private Vars
 	ctx    context.Context
@@ -58,7 +58,7 @@ func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, id pe
 	}
 
 	// Initialize Lobby for Peers
-	lobInfo := pb.Lobby{
+	lobInfo := &pb.Lobby{
 		Code:  olc,
 		Size:  1,
 		Peers: make(map[string]*pb.Peer),
@@ -74,24 +74,14 @@ func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, id pe
 		sub:    sub,
 		self:   id,
 
-		Info:     lobInfo,
-		Messages: make(chan *pb.LobbyMessage, ChatRoomBufSize),
+		Data:     lobInfo,
+		Messages: make(chan *pb.LobbyEvent, ChatRoomBufSize),
 	}
 
 	// start reading messages
 	go lob.handleMessages()
 	go lob.handleEvents()
 	return lob, nil
-}
-
-// ^ Send publishes a message to the pubsub topic OLC ^
-func (lob *Lobby) Send(data []byte) error {
-	// Publish to Topic
-	err := lob.topic.Publish(lob.ctx, data)
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 // ^ Find returns Pointer to Peer.ID and Peer ^
@@ -103,10 +93,10 @@ func (lob *Lobby) Find(q string) (peer.ID, *pb.Peer) {
 	return id, peer
 }
 
-// ^ Peers returns ALL Available in Lobby ^
+// ^ Info returns ALL Lobby Data as Bytes^
 func (lob *Lobby) Info() []byte {
 	// Convert to bytes
-	data, err := proto.Marshal(&lob.Info)
+	data, err := proto.Marshal(lob.Data)
 	if err != nil {
 		fmt.Println("Error Marshaling Lobby Data ", err)
 		return nil
@@ -114,7 +104,29 @@ func (lob *Lobby) Info() []byte {
 	return data
 }
 
+// ^ Send publishes a message to the pubsub topic OLC ^
+func (lob *Lobby) Update(peer *pb.Peer) error {
+	// Create Lobby Event
+	event := pb.LobbyEvent{
+		Event: pb.LobbyEvent_UPDATE,
+		Peer:  peer,
+	}
+
+	// Convert Event to Proto Binary
+	bytes, err := proto.Marshal(&event)
+	if err != nil {
+		return err
+	}
+
+	// Publish to Topic
+	err = lob.topic.Publish(lob.ctx, bytes)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // ^ End terminates lobby loop ^
-func (lob *Lobby) End() {
+func (lob *Lobby) Exit() {
 	lob.doneCh <- struct{}{}
 }
