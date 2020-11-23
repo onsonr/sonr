@@ -1,17 +1,15 @@
 package stream
 
 import (
-	"bufio"
 	"context"
-	"encoding/binary"
 	"errors"
 	"fmt"
-	"io"
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
+	msgio "github.com/libp2p/go-msgio"
 	pb "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -72,36 +70,21 @@ func (asc *AuthStreamConn) SetStream(stream network.Stream) {
 
 // ^ read Data from Msgio ^ //
 func (asc *AuthStreamConn) read() error {
-	// Find Message Size
-	buf := make([]byte, 4) // 32 bits
-	if _, err := io.ReadFull(asc.stream, buf); err != nil {
-		fmt.Println("Error getting byte size: ", err)
-		return err
-	}
-	n, size := binary.Varint(buf)
-	if n == 0 {
-		return errors.New("Buffer is too small")
-	}
-	if n < 0 {
-		
-	}
-
-	// Create Bytes from message
-	bytes := make([]byte, size)
-	if _, err := io.ReadFull(asc.stream, bytes); err != nil {
-		fmt.Println("Error reading full: ", err)
-		return err
-	}
-
-	// Unmarshal into protobuf
-	message := &pb.AuthMessage{}
-	err := proto.Unmarshal(bytes, message)
+	// Read Length Fixed Bytes
+	mrw := msgio.NewReadWriter(asc.stream)
+	lengthBytes, err := mrw.ReadMsg()
 	if err != nil {
-		fmt.Println("Error Unmarshaling message: ", err)
 		return err
 	}
 
-	asc.handleMessage(message)
+	// Unmarshal Bytes into Proto
+	protoMsg := &pb.AuthMessage{}
+	err = proto.Unmarshal(lengthBytes, protoMsg)
+	if err != nil {
+		return err
+	}
+
+	asc.handleMessage(protoMsg)
 	return nil
 }
 
@@ -155,10 +138,12 @@ func (asc *AuthStreamConn) SendInvite(from *pb.Peer, to *pb.Peer, meta *pb.Metad
 	}
 
 	// Initialize Writer
-	writer := bufio.NewWriter(asc.stream)
+	writer := msgio.NewWriter(asc.stream)
 
-	// Add Varint and write to buffer
-	writeWithVarint(writer, bytes)
+	// Add Msg to buffer
+	if err := writer.WriteMsg(bytes); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -186,23 +171,10 @@ func (asc *AuthStreamConn) SendResponse(from *pb.Peer, to *pb.Peer, decision boo
 	}
 
 	// Initialize Writer
-	writer := bufio.NewWriter(asc.stream)
+	writer := msgio.NewWriter(asc.stream)
 
-	// Add Varint and write to buffer
-	writeWithVarint(writer, bytes)
-	return nil
-}
-
-// ^ Adds Varint to Byte Buffer ^ //
-func writeWithVarint(w io.Writer, msg []byte) error {
-	buf := make([]byte, 8)
-	binary.PutVarint(buf, int64(len(msg)))
-
-	if _, err := w.Write(buf); err != nil {
-		return err
-	}
-
-	if _, err := w.Write(msg); err != nil {
+	// Add Msg to buffer
+	if err := writer.WriteMsg(bytes); err != nil {
 		return err
 	}
 	return nil
