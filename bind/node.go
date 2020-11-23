@@ -97,7 +97,7 @@ func (sn *Node) Transfer() {
 	safeFile := sn.currentFile()
 
 	// Create Transfer Stream
-	err := sn.dataStream.Transfer(sn.ctx, sn.host, id, peer, sf.TransferFile{Call: safeFile.Call, Meta: safeFile.Metadata()})
+	err := sn.dataStream.Transfer(sn.ctx, sn.host, id, peer, safeFile)
 	if err != nil {
 		sn.Error(err, "Transfer")
 	}

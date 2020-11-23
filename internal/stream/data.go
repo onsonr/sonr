@@ -39,7 +39,7 @@ type DataStreamConn struct {
 }
 
 // ^ Start New Stream ^ //
-func (dsc *DataStreamConn) Transfer(ctx context.Context, h host.Host, id peer.ID, r *pb.Peer, tf sf.TransferFile) error {
+func (dsc *DataStreamConn) Transfer(ctx context.Context, h host.Host, id peer.ID, r *pb.Peer,sm *sf.SafeMeta) error {
 	// Create New Auth Stream
 	stream, err := h.NewStream(ctx, id, protocol.ID("/sonr/data"))
 	if err != nil {
@@ -56,7 +56,7 @@ func (dsc *DataStreamConn) Transfer(ctx context.Context, h host.Host, id peer.ID
 	fmt.Println("Stream Info: ", info)
 
 	// Initialize Routine
-	go dsc.writeFileToStream(tf)
+	go dsc.writeFileToStream(sm)
 	return nil
 }
 
@@ -134,13 +134,16 @@ func (dsc *DataStreamConn) sendProgress(current int64, total int64) {
 	dsc.Call.Progressed(bytes)
 }
 
-func (dsc *DataStreamConn) writeFileToStream(tf sf.TransferFile) error {
+func (dsc *DataStreamConn) writeFileToStream(sm *sf.SafeMeta) error {
+	// Create Transfer File
+	transferFile := sf.TransferFile{Call: sm.Call, Meta: sm.Metadata()}
+
 	// Retreive Transfer Blocks
-	tf.Generate()
+	transferFile.Generate()
 
 	// Create Delay to allow processing
 	time.Sleep(time.Second)
-	chunks := tf.Chunks()
+	chunks := transferFile.Chunks()
 
 	// Initialize Writer
 	writer := msgio.NewWriter(dsc.stream)
