@@ -6,7 +6,7 @@ import "data.proto";
 option go_package = ".;models";
 
 // [PLUGIN]
-// Initial Request Message
+// Error Message
 message ErrorMessage {
   string message = 1;
   string method = 2;
@@ -18,6 +18,13 @@ message RequestMessage {
   string olc = 1;
   string device = 2;
   Contact contact = 3;
+}
+
+// [PLUGIN]
+// Initial Request Message
+message ProgressMessage {
+  string fileId = 1;
+  float progress = 2;
 }
 
 // Authorization message sent in stream

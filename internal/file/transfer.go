@@ -10,6 +10,8 @@ import (
 
 // Struct defines a File Transferring
 type TransferFile struct {
+	Call   FileCallback
+	Meta   *pb.Metadata
 	mutex  sync.Mutex
 	blocks []*pb.Block
 }
@@ -21,22 +23,22 @@ type Chunk struct {
 }
 
 // ^ Create generates file metadata ^ //
-func (tf *TransferFile) Generate(fi *Item) {
+func (tf *TransferFile) Generate() {
 	// ** Lock ** //
 	tf.mutex.Lock()
 
 	// Initialize
-	meta := fi.GetMetadata()
+	tf.blocks = make([]*pb.Block, tf.Meta.Blocks)
 
 	// Open File
-	file, err := os.Open(meta.Path)
+	file, err := os.Open(tf.Meta.Path)
 	if err != nil {
-		fi.Call.Error(err, "Generate")
+		tf.Call.Error(err, "Generate")
 	}
 	defer file.Close()
 
 	// Number of go routines we need to spawn.
-	concurrency := int(meta.Blocks)
+	concurrency := int(tf.Meta.Blocks)
 	// buffer sizes that each of the go routine below should use. ReadAt
 	// returns an error if the buffer size is larger than the bytes returned
 	// from the file.
@@ -52,7 +54,7 @@ func (tf *TransferFile) Generate(fi *Item) {
 
 	// check for any left over bytes. Add the residual number of bytes as the
 	// the last chunk size.
-	if remainder := meta.Size % BlockSize; remainder != 0 {
+	if remainder := tf.Meta.Size % BlockSize; remainder != 0 {
 		c := Chunk{bufsize: remainder, offset: int64(concurrency * BlockSize)}
 		concurrency++
 		chunksizes = append(chunksizes, c)
@@ -81,7 +83,7 @@ func (tf *TransferFile) Generate(fi *Item) {
 			tf.blocks = append(tf.blocks, block)
 
 			if err != nil {
-				fi.Call.Error(err, "Generate")
+				tf.Call.Error(err, "Generate")
 			}
 
 			fmt.Println("bytes read, string(bytestream): ", bytesread)
@@ -93,7 +95,6 @@ func (tf *TransferFile) Generate(fi *Item) {
 
 	fmt.Println("Blocks for file generated")
 	tf.mutex.Unlock()
-	fi.completedTransfer()
 }
 
 // ^ Safely returns Blocks depending on lock ^ //

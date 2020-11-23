@@ -14,8 +14,8 @@ import (
 )
 
 // ^ CurrentFile returns last file in Processed Files ^ //
-func (sn *Node) currentFile() *sf.Item {
-	return &sn.files[len(sn.files)-1]
+func (sn *Node) currentFile() *sf.SafeMeta {
+	return sn.files[len(sn.files)-1]
 }
 
 // ^ InitStreams sets Auth/Data Streams with Handlers ^ //

@@ -42,7 +42,7 @@ type Node struct {
 	// References
 	call  Callback
 	lobby *lobby.Lobby
-	files []sf.Item
+	files []*sf.SafeMeta
 }
 
 // ^ NewNode Initializes Node with a host and default properties ^
@@ -50,7 +50,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	// ** Create Context and Node - Begin Setup **
 	node := new(Node)
 	node.ctx = context.Background()
-	node.call, node.files = call, make([]sf.Item, maxFileBufferSize)
+	node.call, node.files = call, make([]*sf.SafeMeta, maxFileBufferSize)
 
 	// ** Unmarshal Request **
 	reqMsg := pb.RequestMessage{}

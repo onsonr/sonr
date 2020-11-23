@@ -12,7 +12,7 @@ import (
 
 // ^ Info returns ALL Peer Data as Bytes^
 func (sn *Node) Info() []byte {
-	// Convert to bytes
+	// Convert to bytes to view in plugin
 	data, err := proto.Marshal(sn.Peer)
 	if err != nil {
 		fmt.Println("Error Marshaling Lobby Data ", err)
@@ -38,16 +38,14 @@ func (sn *Node) Update(direction float64) {
 func (sn *Node) AddFile(path string) {
 	//@1. Assign Callback Ref
 	fileCall := sf.FileCallback{
-		Queued:    sn.call.OnQueued,
-		Progress:  sn.call.OnProgress,
-		Completed: sn.call.OnCompleted,
-		Error:     sn.Error,
+		Queued:   sn.call.OnQueued,
+		Progress: sn.call.OnProgress,
+		Error:    sn.Error,
 	}
-
-	//@2. Initialize ItemFile
-	item := sf.Item{Path: path, Call: fileCall}
-	sn.files = append(sn.files, item)
-	item.New() // Start GoRoutine
+	//@2. Initialize SafeFile
+	safeMeta := sf.SafeMeta{Path: path, Call: fileCall}
+	sn.files = append(sn.files, &safeMeta)
+	go safeMeta.Generate() // Start GoRoutine// Start GoRoutine
 }
 
 // ^ Invite an available peer to transfer ^ //
@@ -57,7 +55,7 @@ func (sn *Node) Invite(peerId string) {
 
 	// Get Required Data
 	currFile := sn.currentFile()
-	currMeta := currFile.GetMetadata()
+	currMeta := currFile.Metadata()
 	id, peer := sn.lobby.Find(peerId)
 	if peer == nil {
 		sn.Error(errors.New("Search Error, peer was not found in map."), "Invite")
@@ -94,7 +92,13 @@ func (sn *Node) Transfer(peerId string) {
 		sn.Error(err, "Invite")
 	}
 
-	blocks := sn.currentFile().GetBlocks()
+	safeFile := sn.currentFile()
+	transFile := sf.TransferFile{Call: safeFile.Call, Meta: safeFile.Metadata()}
+
+	// Create Delay to allow processing
+	time.Sleep(time.Second)
+	blocks := transFile.Blocks()
+
 	fmt.Println("Item Blocks", blocks)
 
 	// Begin File Transfer
