@@ -17,7 +17,8 @@ message ErrorMessage {
 message RequestMessage {
   string olc = 1;
   string device = 2;
-  Contact contact = 3;
+  string documents = 3;
+  Contact contact = 4;
 }
 
 // [PLUGIN]

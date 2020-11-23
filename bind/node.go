@@ -69,9 +69,20 @@ func (sn *Node) Invite(peerId string) {
 
 // ^ Respond to an Invitation ^ //
 func (sn *Node) Respond(peerId string, decision bool) {
-	// Send Response Message
-	if err := sn.authStream.Respond(decision); err != nil {
-		sn.Error(err, "Respond")
+	// Check Respons
+	if decision {
+		// Allocate Space for File and Add as Ref to Datastream
+		sn.dataStream.File = sf.NewFile(sn.documents, sn.authStream.Metadata)
+
+		// Send Accept Response Message
+		if err := sn.authStream.Accept(); err != nil {
+			sn.Error(err, "Respond")
+		}
+	} else {
+		// Send Decline Response Message
+		if err := sn.authStream.Decline(); err != nil {
+			sn.Error(err, "Respond")
+		}
 	}
 }
 

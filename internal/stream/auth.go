@@ -28,8 +28,10 @@ type AuthCallback struct {
 
 // ^ Struct: Holds/Handles Stream for Authentication  ^ //
 type AuthStreamConn struct {
-	Call   AuthCallback
-	Self   *pb.Peer // Set on Config
+	Call     AuthCallback
+	Self     *pb.Peer
+	Metadata *pb.Metadata
+
 	id     string
 	stream network.Stream
 	peer   *pb.Peer
@@ -123,6 +125,7 @@ func (asc *AuthStreamConn) handleMessage(msg *pb.AuthMessage) {
 	switch msg.Event {
 	// @1. Request to Invite
 	case pb.AuthMessage_REQUEST:
+		asc.Metadata = msg.Metadata
 		asc.Call.Invited(msgBytes)
 
 	// @2. Peer Accepted Response to Invite
@@ -139,8 +142,8 @@ func (asc *AuthStreamConn) handleMessage(msg *pb.AuthMessage) {
 	}
 }
 
-// ^ writeAuthMessage Message on Stream ^ //
-func (asc *AuthStreamConn) Respond(decision bool) error {
+// ^ Send Accept Message on Stream ^ //
+func (asc *AuthStreamConn) Accept() error {
 	// ** Validate Stream exists **
 	if asc.stream == nil {
 		err := errors.New("Auth Stream hasnt been set")
@@ -148,19 +151,38 @@ func (asc *AuthStreamConn) Respond(decision bool) error {
 	}
 	//@1. Create Message
 	respMsg := &pb.AuthMessage{
-		From: asc.Self,
+		From:  asc.Self,
+		Event: pb.AuthMessage_ACCEPT,
 	}
 
-	//@2. Check Decision
-	if decision == true {
-		// User Accepted
-		respMsg.Event = pb.AuthMessage_ACCEPT // Set Event
-	} else {
-		// User Declined
-		respMsg.Event = pb.AuthMessage_DECLINE // Set Event
+	//@2. Convert Protobuf to bytes
+	bytes, err := proto.Marshal(respMsg)
+	if err != nil {
+		return err
 	}
 
-	//@3. Convert Protobuf to bytes
+	// @4. Initialize Writer and Write to Stream
+	writer := msgio.NewWriter(asc.stream)
+	if err := writer.WriteMsg(bytes); err != nil {
+		return err
+	}
+	return nil
+}
+
+// ^ Send Decline Message on Stream ^ //
+func (asc *AuthStreamConn) Decline() error {
+	// ** Validate Stream exists **
+	if asc.stream == nil {
+		err := errors.New("Auth Stream hasnt been set")
+		return err
+	}
+	//@1. Create Message
+	respMsg := &pb.AuthMessage{
+		From:  asc.Self,
+		Event: pb.AuthMessage_DECLINE,
+	}
+
+	//@2. Convert Protobuf to bytes
 	bytes, err := proto.Marshal(respMsg)
 	if err != nil {
 		return err

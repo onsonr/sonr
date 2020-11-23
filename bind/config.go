@@ -86,4 +86,5 @@ func (sn *Node) setStreams() {
 	// Set Handlers
 	sn.host.SetStreamHandler(protocol.ID("/sonr/auth"), sn.authStream.HandleStream)
 	sn.host.SetStreamHandler(protocol.ID("/sonr/data"), sn.dataStream.HandleStream)
+
 }

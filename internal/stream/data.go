@@ -1,7 +1,6 @@
 package stream
 
 import (
-	"bytes"
 	"context"
 	"fmt"
 	"time"
@@ -31,12 +30,12 @@ type DataCallback struct {
 type DataStreamConn struct {
 	Call DataCallback
 	Self *pb.Peer
+	File sf.SonrFile
 
 	id     string
 	data   *pb.Metadata
 	remote *pb.Peer
 	stream network.Stream
-	buffer bytes.Buffer
 }
 
 // ^ Start New Stream ^ //
@@ -101,15 +100,14 @@ func (dsc *DataStreamConn) handleBlock(msg *pb.Block) {
 	fmt.Println("Current ", msg.Current, "Total ", msg.Total)
 
 	if msg.Current < msg.Total {
-		// Write Bytes to Buffer
-		_, err := dsc.buffer.Write(msg.Data)
-		if err != nil {
-			fmt.Println(err)
-		}
+		// Add Block to Buffer
+		dsc.File.AddBlock(msg.Data)
 	}
 
 	// Save File on Buffer Complete
 	if msg.Current == msg.Total {
+		// Add Block to Buffer
+		dsc.File.AddBlock(msg.Data)
 		fmt.Println("Completed All Blocks, Save the File")
 	}
 }
