@@ -13,7 +13,6 @@ type TransferFile struct {
 	Call   FileCallback
 	Meta   *pb.Metadata
 	chunks []Chunk
-	mutex  sync.Mutex
 }
 
 // Struct defines a Chunk of Bytes of File
@@ -32,7 +31,6 @@ type Chunk struct {
 
 // ^ Create generates file metadata ^ //
 func (tf *TransferFile) Generate() {
-	tf.mutex.Lock()
 	// Initialize
 	tf.chunks = make([]Chunk, tf.Meta.Blocks)
 
@@ -93,16 +91,12 @@ func (tf *TransferFile) Generate() {
 	}
 
 	wg.Wait()
-	tf.mutex.Unlock()
 	fmt.Println("Blocks for file generated")
 }
 
 // ^ Safely returns Chunks depending on lock ^ //
 func (tf *TransferFile) Chunks() []Chunk {
 	// ** Lock File wait for access ** //
-	tf.mutex.Lock()
-	defer tf.mutex.Unlock()
-
 	// @ 2. Return Value
 	return tf.chunks
 }

@@ -39,7 +39,7 @@ type DataStreamConn struct {
 }
 
 // ^ Start New Stream ^ //
-func (dsc *DataStreamConn) Transfer(ctx context.Context, h host.Host, id peer.ID, r *pb.Peer, tf *sf.TransferFile) error {
+func (dsc *DataStreamConn) Transfer(ctx context.Context, h host.Host, id peer.ID, r *pb.Peer, tf sf.TransferFile) error {
 	// Create New Auth Stream
 	stream, err := h.NewStream(ctx, id, protocol.ID("/sonr/data"))
 	if err != nil {
@@ -134,7 +134,7 @@ func (dsc *DataStreamConn) sendProgress(current int64, total int64) {
 	dsc.Call.Progressed(bytes)
 }
 
-func (dsc *DataStreamConn) writeFileToStream(tf *sf.TransferFile) error {
+func (dsc *DataStreamConn) writeFileToStream(tf sf.TransferFile) error {
 	// Retreive Transfer Blocks
 	tf.Generate()
 
