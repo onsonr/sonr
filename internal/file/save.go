@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sync"
 
 	pb "github.com/sonr-io/core/internal/models"
 )
@@ -14,8 +15,10 @@ type SonrFile struct {
 	path     string
 	writer   *bufio.Writer
 	file     *os.File
+	mutex    sync.Mutex
 }
 
+// ^ Create new SonrFile struct with meta and documents directory ^ //
 func NewFile(docDir string, meta *pb.Metadata) SonrFile {
 	docPath := fmt.Sprintf(docDir + "/" + meta.Name)
 
@@ -34,7 +37,9 @@ func NewFile(docDir string, meta *pb.Metadata) SonrFile {
 	}
 }
 
+// ^ Add Block to SonrFile Buffer ^ //
 func (sf *SonrFile) AddBlock(block []byte) {
+	sf.mutex.Lock()
 	// Add Block to Buffer
 	written, err := sf.writer.Write(block)
 	if err != nil {
@@ -42,11 +47,19 @@ func (sf *SonrFile) AddBlock(block []byte) {
 	}
 
 	fmt.Println("Bytes Written: ", written)
+	sf.mutex.Unlock()
 }
 
-func (sf *SonrFile) Save() {
+// ^ Save file of Documents Directory and Return Path ^ //
+func (sf *SonrFile) Save() string {
+	sf.mutex.Lock()
+	defer sf.mutex.Unlock()
+
+	// Wait for block to be added
 	err := sf.writer.Flush()
 	if err != nil {
 		fmt.Println("error flushing sonr file")
 	}
+	// Return Block
+	return sf.path
 }
