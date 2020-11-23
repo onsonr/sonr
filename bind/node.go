@@ -52,23 +52,25 @@ func (sn *Node) Invite(peerId string) {
 	// Create Delay to allow processing
 	time.Sleep(time.Second)
 
-	// Get Required Data
+	// Set Metadata in Auth Stream
 	currFile := sn.currentFile()
-	currMeta := currFile.Metadata()
+	sn.authStream.Metadata = currFile.Metadata()
+
+	// Find PeerID and Peer Struct
 	id, peer := sn.lobby.Find(peerId)
 	if peer == nil {
 		sn.Error(errors.New("Search Error, peer was not found in map."), "Invite")
 	}
 
-	// Create New Auth Stream
-	err := sn.authStream.Invite(sn.ctx, sn.host, id, peer, currMeta)
+	// Initialize new AuthStream with Peer
+	err := sn.authStream.Invite(sn.ctx, sn.host, id, peer)
 	if err != nil {
 		sn.Error(err, "Invite")
 	}
 }
 
 // ^ Respond to an Invitation ^ //
-func (sn *Node) Respond(peerId string, decision bool) {
+func (sn *Node) Respond(decision bool) {
 	// Check Respons
 	if decision {
 		// Allocate Space for File and Add as Ref to Datastream
@@ -87,9 +89,9 @@ func (sn *Node) Respond(peerId string, decision bool) {
 }
 
 // ^ Begin the File transfer ^ //
-func (sn *Node) Transfer(peerId string) {
+func (sn *Node) Transfer() {
 	// Retreive Peer Data
-	id, peer := sn.lobby.Find(peerId)
+	id, peer := sn.lobby.Find(sn.authStream.Peer.Id)
 
 	// Initialize Data
 	safeFile := sn.currentFile()

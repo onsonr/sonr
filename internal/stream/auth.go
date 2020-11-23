@@ -30,11 +30,11 @@ type AuthCallback struct {
 type AuthStreamConn struct {
 	Call     AuthCallback
 	Self     *pb.Peer
+	Peer     *pb.Peer
 	Metadata *pb.Metadata
 
 	id     string
 	stream network.Stream
-	peer   *pb.Peer
 }
 
 // ^ Handle Incoming Stream ^ //
@@ -52,7 +52,10 @@ func (asc *AuthStreamConn) HandleStream(stream network.Stream) {
 }
 
 // ^ Start New Stream ^ //
-func (asc *AuthStreamConn) Invite(ctx context.Context, h host.Host, id peer.ID, to *pb.Peer, meta *pb.Metadata) error {
+func (asc *AuthStreamConn) Invite(ctx context.Context, h host.Host, id peer.ID, to *pb.Peer) error {
+	// ** Set Peer ** //
+	asc.Peer = to
+
 	//@1. Create New Auth Stream
 	stream, err := h.NewStream(ctx, id, protocol.ID("/sonr/auth"))
 	if err != nil {
@@ -62,7 +65,6 @@ func (asc *AuthStreamConn) Invite(ctx context.Context, h host.Host, id peer.ID, 
 	// Set Stream
 	asc.stream = stream
 	asc.id = stream.ID()
-	asc.peer = to
 
 	// Print Stream Info
 	info := stream.Stat()
@@ -76,7 +78,7 @@ func (asc *AuthStreamConn) Invite(ctx context.Context, h host.Host, id peer.ID, 
 	reqMsg := &pb.AuthMessage{
 		Event:    pb.AuthMessage_REQUEST,
 		From:     asc.Self,
-		Metadata: meta,
+		Metadata: asc.Metadata,
 	}
 
 	// Convert to bytes
