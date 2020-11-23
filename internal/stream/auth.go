@@ -45,7 +45,8 @@ func (asc *AuthStreamConn) HandleStream(stream network.Stream) {
 	fmt.Println("Stream Info: ", stream.Stat())
 
 	// Initialize Routine
-	go asc.read()
+	mrw := msgio.NewReader(asc.stream)
+	go asc.read(mrw)
 }
 
 // ^ Start New Stream ^ //
@@ -66,7 +67,8 @@ func (asc *AuthStreamConn) Invite(ctx context.Context, h host.Host, id peer.ID, 
 	fmt.Println("Stream Info: ", info)
 
 	// Initialize Routine
-	go asc.read()
+	mrw := msgio.NewReader(asc.stream)
+	go asc.read(mrw)
 
 	// @2. Create Invite Message
 	reqMsg := &pb.AuthMessage{
@@ -92,9 +94,7 @@ func (asc *AuthStreamConn) Invite(ctx context.Context, h host.Host, id peer.ID, 
 }
 
 // ^ read Data from Msgio ^ //
-func (asc *AuthStreamConn) read() error {
-	// Read Length Fixed Bytes
-	mrw := msgio.NewReadWriter(asc.stream)
+func (asc *AuthStreamConn) read(mrw msgio.ReadCloser) error {
 	lengthBytes, err := mrw.ReadMsg()
 	if err != nil {
 		return err

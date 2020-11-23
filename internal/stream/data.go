@@ -72,13 +72,13 @@ func (dsc *DataStreamConn) HandleStream(stream network.Stream) {
 	fmt.Println("Stream Info: ", info)
 
 	// Initialize Routine
-	go dsc.read()
+	mrw := msgio.NewReader(dsc.stream)
+	go dsc.read(mrw)
 }
 
 // ^ read Data from Msgio ^ //
-func (dsc *DataStreamConn) read() error {
+func (dsc *DataStreamConn) read(mrw msgio.ReadCloser) error {
 	// Read Length Fixed Bytes
-	mrw := msgio.NewReadWriter(dsc.stream)
 	lengthBytes, err := mrw.ReadMsg()
 	if err != nil {
 		return err
@@ -98,9 +98,9 @@ func (dsc *DataStreamConn) read() error {
 // ^ Handle Received Message ^ //
 func (dsc *DataStreamConn) handleBlock(msg *pb.Block) {
 	// Verify Bytes Remaining
-	if msg.Current < msg.Total {
-		fmt.Println("Current ", msg.Current, "Total ", msg.Total)
+	fmt.Println("Current ", msg.Current, "Total ", msg.Total)
 
+	if msg.Current < msg.Total {
 		// Write Bytes to Buffer
 		_, err := dsc.buffer.Write(msg.Data)
 		if err != nil {
@@ -122,6 +122,9 @@ func (dsc *DataStreamConn) writeFileToStream(tf *sf.TransferFile) error {
 	time.Sleep(time.Second)
 	blocks := tf.Blocks()
 
+	// Initialize Writer
+	writer := msgio.NewWriter(dsc.stream)
+
 	// Iterate through blocks and write to message
 	for _, block := range blocks {
 		// Convert to bytes
@@ -129,9 +132,6 @@ func (dsc *DataStreamConn) writeFileToStream(tf *sf.TransferFile) error {
 		if err != nil {
 			return err
 		}
-
-		// Initialize Writer
-		writer := msgio.NewWriter(dsc.stream)
 
 		// Add Msg to buffer
 		if err := writer.WriteMsg(bytes); err != nil {
