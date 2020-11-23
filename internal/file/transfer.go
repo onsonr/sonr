@@ -12,23 +12,29 @@ import (
 type TransferFile struct {
 	Call   FileCallback
 	Meta   *pb.Metadata
+	chunks []Chunk
 	mutex  sync.Mutex
-	blocks []*pb.Block
 }
 
 // Struct defines a Chunk of Bytes of File
+// type Chunk struct {
+// 	bufsize int64
+// 	offset  int64
+// }
+
 type Chunk struct {
-	bufsize int64
-	offset  int64
+	Size    int64
+	Offset  int64
+	Data    []byte
+	Current int64
+	Total   int64
 }
 
 // ^ Create generates file metadata ^ //
 func (tf *TransferFile) Generate() {
-	// ** Lock ** //
 	tf.mutex.Lock()
-
 	// Initialize
-	tf.blocks = make([]*pb.Block, tf.Meta.Blocks)
+	tf.chunks = make([]Chunk, tf.Meta.Blocks)
 
 	// Open File
 	file, err := os.Open(tf.Meta.Path)
@@ -48,14 +54,14 @@ func (tf *TransferFile) Generate() {
 	// index. Second go routine should start at 100, for example, given our
 	// buffer size of 100.
 	for i := 0; i < concurrency; i++ {
-		chunksizes[i].bufsize = BlockSize
-		chunksizes[i].offset = int64(BlockSize * i)
+		chunksizes[i].Size = BlockSize
+		chunksizes[i].Offset = int64(BlockSize * i)
 	}
 
 	// check for any left over bytes. Add the residual number of bytes as the
 	// the last chunk size.
 	if remainder := tf.Meta.Size % BlockSize; remainder != 0 {
-		c := Chunk{bufsize: remainder, offset: int64(concurrency * BlockSize)}
+		c := Chunk{Size: remainder, Offset: int64(concurrency * BlockSize)}
 		concurrency++
 		chunksizes = append(chunksizes, c)
 	}
@@ -69,40 +75,34 @@ func (tf *TransferFile) Generate() {
 
 			// Create Chunk Data
 			chunk := chunksizes[i]
-			buffer := make([]byte, chunk.bufsize)
-			bytesread, err := file.ReadAt(buffer, chunk.offset)
+			chunk.Current = int64(i)
+			chunk.Total = int64(concurrency)
+			chunk.Data = make([]byte, chunk.Size)
+			bytesread, err := file.ReadAt(chunk.Data, chunk.Offset)
 
-			// Create Block
-			block := &pb.Block{
-				Data:    buffer,
-				Size:    chunk.bufsize,
-				Offset:  chunk.offset,
-				Current: int64(i),
-				Total:   int64(concurrency),
-			}
-			tf.blocks = append(tf.blocks, block)
+			// Add to Array
+			tf.chunks = append(tf.chunks, chunk)
 
 			if err != nil {
 				tf.Call.Error(err, "Generate")
 			}
 
 			fmt.Println("bytes read, string(bytestream): ", bytesread)
-			fmt.Println("bytestream to string: ", string(buffer))
+			fmt.Println("bytestream to string: ", string(chunk.Data))
 		}(chunksizes, i)
 	}
 
 	wg.Wait()
-
-	fmt.Println("Blocks for file generated")
 	tf.mutex.Unlock()
+	fmt.Println("Blocks for file generated")
 }
 
-// ^ Safely returns Blocks depending on lock ^ //
-func (tf *TransferFile) Blocks() []*pb.Block {
+// ^ Safely returns Chunks depending on lock ^ //
+func (tf *TransferFile) Chunks() []Chunk {
 	// ** Lock File wait for access ** //
 	tf.mutex.Lock()
 	defer tf.mutex.Unlock()
 
 	// @ 2. Return Value
-	return tf.blocks
+	return tf.chunks
 }

@@ -63,7 +63,8 @@ func (sn *Node) setPeer(connEvent *pb.RequestMessage) error {
 	sn.authStream.Self = sn.Peer
 	sn.dataStream.Self = sn.Peer
 
-	// Set Profile
+	// Set Documents
+	sn.documents = connEvent.Documents
 	return nil
 }
 

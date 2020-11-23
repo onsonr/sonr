@@ -118,13 +118,22 @@ func (dsc *DataStreamConn) writeFileToStream(tf *sf.TransferFile) error {
 
 	// Create Delay to allow processing
 	time.Sleep(time.Second)
-	blocks := tf.Blocks()
+	chunks := tf.Chunks()
 
 	// Initialize Writer
 	writer := msgio.NewWriter(dsc.stream)
 
 	// Iterate through blocks and write to message
-	for _, block := range blocks {
+	for _, chunk := range chunks {
+		// Create Block Protobuf from Chunk
+		block := &pb.Block{
+			Size:    chunk.Size,
+			Offset:  chunk.Offset,
+			Data:    chunk.Data,
+			Current: chunk.Current,
+			Total:   chunk.Total,
+		}
+
 		// Convert to bytes
 		bytes, err := proto.Marshal(block)
 		if err != nil {

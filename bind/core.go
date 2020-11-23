@@ -65,14 +65,12 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	}
 
 	// @1. Create Host and Set Stream Handlers
-	node.host, err = sh.NewHost(node.ctx)
+	node.host, node.HostID, err = sh.NewHost(node.ctx)
 	if err != nil {
 		node.Error(err, "NewNode")
 		return nil
 	}
-	node.HostID = node.host.ID().String()
 	node.setStreams()
-	node.documents = reqMsg.Documents
 
 	// @3. Set Node User Information
 	if err = node.setPeer(&reqMsg); err != nil {
