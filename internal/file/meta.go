@@ -23,8 +23,6 @@ import (
 
 // Define Function Types
 type OnQueued func(data []byte)
-type OnProgress func(data []byte)
-type OnComplete func(data []byte)
 type OnError func(err error, method string)
 
 // Define Block Size
@@ -32,10 +30,8 @@ const BlockSize = 16000
 
 // Struct to Implement Node Callback Methods
 type FileCallback struct {
-	Queued   OnQueued
-	Progress OnProgress
-	Complete OnProgress
-	Error    OnError
+	Queued OnQueued
+	Error  OnError
 }
 
 // ^ File that safely sets metadata and thumbnail in routine ^ //

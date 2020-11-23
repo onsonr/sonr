@@ -18,16 +18,18 @@ import (
 
 // Define Function Types
 type OnProgressed func(data []byte)
+type OnComplete func(data []byte)
 
 // Struct to Implement Node Callback Methods
 type DataCallback struct {
 	Progressed OnProgressed
+	Completed  OnComplete
 	Error      OnError
 }
 
 // ^ Struct: Holds/Handles Stream for Authentication  ^ //
 type DataStreamConn struct {
-	Call StreamCallback
+	Call DataCallback
 	Self *pb.Peer
 
 	id     string
@@ -38,7 +40,7 @@ type DataStreamConn struct {
 }
 
 // ^ Start New Stream ^ //
-func (dsc *DataStreamConn) Transfer(ctx context.Context, h host.Host, id peer.ID, r *pb.Peer, s *pb.Peer, tf *sf.TransferFile) error {
+func (dsc *DataStreamConn) Transfer(ctx context.Context, h host.Host, id peer.ID, r *pb.Peer, tf *sf.TransferFile) error {
 	// Create New Auth Stream
 	stream, err := h.NewStream(ctx, id, protocol.ID("/sonr/auth"))
 	if err != nil {
@@ -48,6 +50,7 @@ func (dsc *DataStreamConn) Transfer(ctx context.Context, h host.Host, id peer.ID
 	// Set Stream
 	dsc.stream = stream
 	dsc.id = stream.ID()
+	dsc.remote = r
 
 	// Print Stream Info
 	info := stream.Stat()
@@ -101,7 +104,7 @@ func (dsc *DataStreamConn) handleBlock(msg *pb.Block) {
 
 	// Save File on Buffer Complete
 	if msg.Current == msg.Total {
-		
+
 	}
 }
 

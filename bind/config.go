@@ -69,11 +69,18 @@ func (sn *Node) setPeer(connEvent *pb.RequestMessage) error {
 
 // ^ SetStreams sets Auth/Data Streams with Handlers ^ //
 func (sn *Node) setStreams() {
-	// Assign Callbacks from Node to Stream
-	sn.authStream.Call = st.StreamCallback{
+	// Assign Callbacks from Node to Auth Stream
+	sn.authStream.Call = st.AuthCallback{
 		Invited:   sn.call.OnInvited,
 		Responded: sn.call.OnResponded,
 		Error:     sn.Error,
+	}
+
+	// Assign Callbacks from Node to Data Stream
+	sn.dataStream.Call = st.DataCallback{
+		Progressed: sn.call.OnProgress,
+		Completed:  sn.call.OnCompleted,
+		Error:      sn.Error,
 	}
 
 	// Set Handlers

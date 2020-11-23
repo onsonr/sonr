@@ -38,9 +38,8 @@ func (sn *Node) Update(direction float64) {
 func (sn *Node) AddFile(path string) {
 	//@1. Assign Callback Ref
 	fileCall := sf.FileCallback{
-		Queued:   sn.call.OnQueued,
-		Progress: sn.call.OnProgress,
-		Error:    sn.Error,
+		Queued: sn.call.OnQueued,
+		Error:  sn.Error,
 	}
 	//@2. Initialize SafeFile
 	safeMeta := sf.SafeMeta{Path: path, Call: fileCall}
@@ -86,18 +85,17 @@ func (sn *Node) Transfer(peerId string) {
 	transFile := &sf.TransferFile{Call: safeFile.Call, Meta: safeFile.Metadata()}
 
 	// Create Transfer Stream
-	err := sn.dataStream.Transfer(sn.ctx, sn.host, id, peer, sn.Peer, transFile)
+	err := sn.dataStream.Transfer(sn.ctx, sn.host, id, peer, transFile)
 	if err != nil {
 		sn.Error(err, "Transfer")
 	}
 }
 
-// ^ Respond to an Invitation ^ //
-func (sn *Node) Reset(peerId string) {
-	// Send Response Message
-	// if err := sn.authStream.SendResponse(sn.Peer, sn.lobby.Peer(peerId), decision); err != nil {
-	// 	sn.Error(err, "Respond")
-	// }
+// ^ Reset Current Queued File Metadata ^ //
+func (sn *Node) Reset() {
+	// Reset Files Slice
+	sn.files = nil
+	sn.files = make([]*sf.SafeMeta, maxFileBufferSize)
 }
 
 // ^ Close Ends All Network Communication ^

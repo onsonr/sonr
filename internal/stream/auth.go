@@ -20,7 +20,7 @@ type OnResponded func(data []byte)
 type OnError func(err error, method string)
 
 // Struct to Implement Node Callback Methods
-type StreamCallback struct {
+type AuthCallback struct {
 	Invited   OnInvited
 	Responded OnResponded
 	Error     OnError
@@ -28,11 +28,24 @@ type StreamCallback struct {
 
 // ^ Struct: Holds/Handles Stream for Authentication  ^ //
 type AuthStreamConn struct {
-	Call   StreamCallback
+	Call   AuthCallback
 	Self   *pb.Peer // Set on Config
 	id     string
 	stream network.Stream
 	peer   *pb.Peer
+}
+
+// ^ Handle Incoming Stream ^ //
+func (asc *AuthStreamConn) HandleStream(stream network.Stream) {
+	// Set Stream
+	asc.id = stream.ID()
+	asc.stream = stream
+
+	// Print Stream Info
+	fmt.Println("Stream Info: ", stream.Stat())
+
+	// Initialize Routine
+	go asc.read()
 }
 
 // ^ Start New Stream ^ //
@@ -76,19 +89,6 @@ func (asc *AuthStreamConn) Invite(ctx context.Context, h host.Host, id peer.ID, 
 		return err
 	}
 	return nil
-}
-
-// ^ Handle Incoming Stream ^ //
-func (asc *AuthStreamConn) HandleStream(stream network.Stream) {
-	// Set Stream
-	asc.id = stream.ID()
-	asc.stream = stream
-
-	// Print Stream Info
-	fmt.Println("Stream Info: ", stream.Stat())
-
-	// Initialize Routine
-	go asc.read()
 }
 
 // ^ read Data from Msgio ^ //
