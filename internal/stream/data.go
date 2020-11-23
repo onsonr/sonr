@@ -39,7 +39,7 @@ type DataStreamConn struct {
 }
 
 // ^ Start New Stream ^ //
-func (dsc *DataStreamConn) Transfer(ctx context.Context, h host.Host, id peer.ID, r *pb.Peer,sm *sf.SafeMeta) error {
+func (dsc *DataStreamConn) Transfer(ctx context.Context, h host.Host, id peer.ID, r *pb.Peer, sm *sf.SafeMeta) error {
 	// Create New Auth Stream
 	stream, err := h.NewStream(ctx, id, protocol.ID("/sonr/data"))
 	if err != nil {
@@ -80,14 +80,14 @@ func (dsc *DataStreamConn) read(mrw msgio.ReadCloser) error {
 	// Read Length Fixed Bytes
 	lengthBytes, err := mrw.ReadMsg()
 	if err != nil {
-		return err
+		dsc.Call.Error(err, "read")
 	}
 
 	// Unmarshal Bytes into Proto
 	protoMsg := &pb.Block{}
 	err = proto.Unmarshal(lengthBytes, protoMsg)
 	if err != nil {
-		return err
+		dsc.Call.Error(err, "read")
 	}
 
 	dsc.handleBlock(protoMsg)
@@ -127,7 +127,7 @@ func (dsc *DataStreamConn) sendProgress(current int64, total int64) {
 	// Convert to bytes
 	bytes, err := proto.Marshal(&progressMessage)
 	if err != nil {
-		fmt.Println(err)
+		dsc.Call.Error(err, "SendProgress")
 	}
 
 	// Send Callback
@@ -136,14 +136,13 @@ func (dsc *DataStreamConn) sendProgress(current int64, total int64) {
 
 func (dsc *DataStreamConn) writeFileToStream(sm *sf.SafeMeta) error {
 	// Create Transfer File
-	transferFile := sf.TransferFile{Call: sm.Call, Meta: sm.Metadata()}
-
-	// Retreive Transfer Blocks
-	transferFile.Generate()
-
-	// Create Delay to allow processing
+	chunks, err := sf.GetChunks(sm.Metadata())
 	time.Sleep(time.Second)
-	chunks := transferFile.Chunks()
+
+	// Manage Output
+	if err != nil {
+		dsc.Call.Error(err, "writeFileToStream")
+	}
 
 	// Initialize Writer
 	writer := msgio.NewWriter(dsc.stream)
@@ -162,7 +161,7 @@ func (dsc *DataStreamConn) writeFileToStream(sm *sf.SafeMeta) error {
 		// Convert to bytes
 		bytes, err := proto.Marshal(block)
 		if err != nil {
-			return err
+			dsc.Call.Error(err, "writeFileToStream")
 		}
 
 		// Add Msg to buffer
