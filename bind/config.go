@@ -18,20 +18,6 @@ func (sn *Node) currentFile() *sf.SafeMeta {
 	return sn.files[len(sn.files)-1]
 }
 
-// ^ InitStreams sets Auth/Data Streams with Handlers ^ //
-func (sn *Node) initStreams() {
-	// Assign Callbacks from Node to Stream
-	sn.authStream.Call = st.StreamCallback{
-		Invited:   sn.call.OnInvited,
-		Responded: sn.call.OnResponded,
-		Error:     sn.Error,
-	}
-
-	// Set Handlers
-	sn.host.SetStreamHandler(protocol.ID("/sonr/auth"), sn.authStream.HandleStream)
-	sn.host.SetStreamHandler(protocol.ID("/sonr/transfer"), sn.dataStream.HandleStream)
-}
-
 // ^ SetDiscovery initializes discovery protocols and creates pubsub service ^ //
 func (sn *Node) setDiscovery(ctx context.Context, connEvent *pb.RequestMessage) error {
 	// create a new PubSub service using the GossipSub router
@@ -79,4 +65,18 @@ func (sn *Node) setPeer(connEvent *pb.RequestMessage) error {
 
 	// Set Profile
 	return nil
+}
+
+// ^ SetStreams sets Auth/Data Streams with Handlers ^ //
+func (sn *Node) setStreams() {
+	// Assign Callbacks from Node to Stream
+	sn.authStream.Call = st.StreamCallback{
+		Invited:   sn.call.OnInvited,
+		Responded: sn.call.OnResponded,
+		Error:     sn.Error,
+	}
+
+	// Set Handlers
+	sn.host.SetStreamHandler(protocol.ID("/sonr/auth"), sn.authStream.HandleStream)
+	sn.host.SetStreamHandler(protocol.ID("/sonr/transfer"), sn.dataStream.HandleStream)
 }

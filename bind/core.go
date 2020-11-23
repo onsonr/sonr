@@ -68,7 +68,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 		return nil
 	}
 	node.HostID = node.host.ID().String()
-	node.initStreams()
+	node.setStreams()
 
 	// @3. Set Node User Information
 	if err = node.setPeer(&reqMsg); err != nil {

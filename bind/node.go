@@ -62,13 +62,8 @@ func (sn *Node) Invite(peerId string) {
 	}
 
 	// Create New Auth Stream
-	err := sn.authStream.NewStream(sn.ctx, sn.host, id, peer)
+	err := sn.authStream.Invite(sn.ctx, sn.host, id, peer, currMeta)
 	if err != nil {
-		sn.Error(err, "Invite")
-	}
-
-	// Send Invite Message
-	if err := sn.authStream.SendInvite(sn.Peer, currMeta); err != nil {
 		sn.Error(err, "Invite")
 	}
 }
@@ -76,7 +71,7 @@ func (sn *Node) Invite(peerId string) {
 // ^ Respond to an Invitation ^ //
 func (sn *Node) Respond(peerId string, decision bool) {
 	// Send Response Message
-	if err := sn.authStream.SendResponse(sn.Peer, decision); err != nil {
+	if err := sn.authStream.Respond(decision); err != nil {
 		sn.Error(err, "Respond")
 	}
 }
@@ -86,25 +81,15 @@ func (sn *Node) Transfer(peerId string) {
 	// Retreive Peer Data
 	id, peer := sn.lobby.Find(peerId)
 
-	// Create New Auth Stream
-	err := sn.dataStream.NewStream(sn.ctx, sn.host, id, peer, sn.Peer)
-	if err != nil {
-		sn.Error(err, "Invite")
-	}
-
+	// Initialize Data
 	safeFile := sn.currentFile()
-	transFile := sf.TransferFile{Call: safeFile.Call, Meta: safeFile.Metadata()}
+	transFile := &sf.TransferFile{Call: safeFile.Call, Meta: safeFile.Metadata()}
 
-	// Create Delay to allow processing
-	time.Sleep(time.Second)
-	blocks := transFile.Blocks()
-
-	fmt.Println("Item Blocks", blocks)
-
-	// Begin File Transfer
-	// if err := sn.dataStream.Send(sn.Peer, sn.currentFile()); err != nil {
-	// 	sn.Error(err, "Transfer")
-	// }
+	// Create Transfer Stream
+	err := sn.dataStream.Transfer(sn.ctx, sn.host, id, peer, sn.Peer, transFile)
+	if err != nil {
+		sn.Error(err, "Transfer")
+	}
 }
 
 // ^ Respond to an Invitation ^ //

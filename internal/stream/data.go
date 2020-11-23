@@ -1,15 +1,17 @@
 package stream
 
 import (
+	"bytes"
 	"context"
-	"errors"
 	"fmt"
+	"time"
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	msgio "github.com/libp2p/go-msgio"
+	sf "github.com/sonr-io/core/internal/file"
 	pb "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -32,10 +34,11 @@ type DataStreamConn struct {
 	data   *pb.Metadata
 	remote *pb.Peer
 	stream network.Stream
+	buffer bytes.Buffer
 }
 
 // ^ Start New Stream ^ //
-func (dsc *DataStreamConn) NewStream(ctx context.Context, h host.Host, id peer.ID, r *pb.Peer, s *pb.Peer) error {
+func (dsc *DataStreamConn) Transfer(ctx context.Context, h host.Host, id peer.ID, r *pb.Peer, s *pb.Peer, tf *sf.TransferFile) error {
 	// Create New Auth Stream
 	stream, err := h.NewStream(ctx, id, protocol.ID("/sonr/auth"))
 	if err != nil {
@@ -51,7 +54,7 @@ func (dsc *DataStreamConn) NewStream(ctx context.Context, h host.Host, id peer.I
 	fmt.Println("Stream Info: ", info)
 
 	// Initialize Routine
-	go dsc.read()
+	go dsc.writeFileToStream(tf)
 	return nil
 }
 
@@ -79,7 +82,7 @@ func (dsc *DataStreamConn) read() error {
 	}
 
 	// Unmarshal Bytes into Proto
-	protoMsg := &pb.AuthMessage{}
+	protoMsg := &pb.Block{}
 	err = proto.Unmarshal(lengthBytes, protoMsg)
 	if err != nil {
 		return err
@@ -90,86 +93,41 @@ func (dsc *DataStreamConn) read() error {
 }
 
 // ^ Handle Received Message ^ //
-func (dsc *DataStreamConn) handleBlock(msg *pb.AuthMessage) {
-	// ** Contains Data **
-	// Convert Protobuf to bytes
-	msgBytes, err := proto.Marshal(msg)
-	if err != nil {
-		fmt.Println(err)
+func (dsc *DataStreamConn) handleBlock(msg *pb.Block) {
+	// Verify Bytes Remaining
+	if msg.Current < msg.Total {
+		dsc.buffer.Write(msg.Data)
 	}
 
-	// ** Check Message Subject **
-	switch msg.Event {
-	// @1. Request to Invite
-	case pb.AuthMessage_REQUEST:
-		fmt.Println("Handling Message received Request: ", msg.String())
-		dsc.Call.Invited(msgBytes)
-
-	// @2. Peer Accepted Response to Invite
-	case pb.AuthMessage_ACCEPT:
-		fmt.Println("Handling Message received Accept: ", msg.String())
-		dsc.Call.Responded(msgBytes)
-
-	// @3. Peer Declined Response to Invite
-	case pb.AuthMessage_DECLINE:
-		fmt.Println("Handling Message received Decline: ", msg.String())
-		dsc.Call.Responded(msgBytes)
-
-	// ! Invalid Subject
-	default:
-		err := errors.New(fmt.Sprintf("Not a subject: %s", msg.Event))
-		dsc.Call.Error(err, "handleMessage")
+	// Save File on Buffer Complete
+	if msg.Current == msg.Total {
+		
 	}
 }
 
-// // ^ writeAuthMessage Message on Stream ^ //
-// func (dsc *DataStreamConn) Send(to *pb.Peer, item *sf.Item) error {
-// 	// @1. Retreive Blocks in Data
-// 	if !item.IsReady {
-// 		err := errors.New("ItemFile blocks arent ready")
-// 		return err
-// 	}
+func (dsc *DataStreamConn) writeFileToStream(tf *sf.TransferFile) error {
+	// Retreive Transfer Blocks
+	tf.Generate()
 
-// 	blocks := item.GetBlocks()
+	// Create Delay to allow processing
+	time.Sleep(time.Second)
+	blocks := tf.Blocks()
 
-// 	// Initialize Writer
-// 	writer := msgio.NewWriter(dsc.stream)
+	// Iterate through blocks and write to message
+	for _, block := range blocks {
+		// Convert to bytes
+		bytes, err := proto.Marshal(block)
+		if err != nil {
+			return err
+		}
 
-// 	// Add Msg to buffer
-// 	if err := writer.WriteMsg(bytes); err != nil {
-// 		return err
-// 	}
-// 	return nil
-// }
+		// Initialize Writer
+		writer := msgio.NewWriter(dsc.stream)
 
-// ^ writeAuthMessage Message on Stream ^ //
-func (dsc *DataStreamConn) SendComplete(from *pb.Peer, to *pb.Peer, decision bool) error {
-	//@1. Create Message
-	respMsg := &pb.AuthMessage{
-		From: from,
-	}
-
-	// ** Check Decision **
-	if decision == true {
-		// User Accepted
-		respMsg.Event = pb.AuthMessage_ACCEPT // Set Event
-	} else {
-		// @ User Declined
-		respMsg.Event = pb.AuthMessage_DECLINE // Set Event
-	}
-
-	// Convert to bytes
-	bytes, err := proto.Marshal(respMsg)
-	if err != nil {
-		return err
-	}
-
-	// Initialize Writer
-	writer := msgio.NewWriter(dsc.stream)
-
-	// Add Msg to buffer
-	if err := writer.WriteMsg(bytes); err != nil {
-		return err
+		// Add Msg to buffer
+		if err := writer.WriteMsg(bytes); err != nil {
+			return err
+		}
 	}
 	return nil
 }

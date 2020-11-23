@@ -36,8 +36,8 @@ type AuthStreamConn struct {
 }
 
 // ^ Start New Stream ^ //
-func (asc *AuthStreamConn) NewStream(ctx context.Context, h host.Host, id peer.ID, peer *pb.Peer) error {
-	// Create New Auth Stream
+func (asc *AuthStreamConn) Invite(ctx context.Context, h host.Host, id peer.ID, to *pb.Peer, meta *pb.Metadata) error {
+	//@1. Create New Auth Stream
 	stream, err := h.NewStream(ctx, id, protocol.ID("/sonr/auth"))
 	if err != nil {
 		return err
@@ -46,7 +46,7 @@ func (asc *AuthStreamConn) NewStream(ctx context.Context, h host.Host, id peer.I
 	// Set Stream
 	asc.stream = stream
 	asc.id = stream.ID()
-	asc.peer = peer
+	asc.peer = to
 
 	// Print Stream Info
 	info := stream.Stat()
@@ -54,6 +54,27 @@ func (asc *AuthStreamConn) NewStream(ctx context.Context, h host.Host, id peer.I
 
 	// Initialize Routine
 	go asc.read()
+
+	// @2. Create Invite Message
+	reqMsg := &pb.AuthMessage{
+		Event:    pb.AuthMessage_REQUEST,
+		From:     asc.Self,
+		Metadata: meta,
+	}
+
+	// Convert to bytes
+	bytes, err := proto.Marshal(reqMsg)
+	if err != nil {
+		return err
+	}
+
+	// Initialize Writer
+	writer := msgio.NewWriter(asc.stream)
+
+	// Add Msg to buffer
+	if err := writer.WriteMsg(bytes); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -119,32 +140,7 @@ func (asc *AuthStreamConn) handleMessage(msg *pb.AuthMessage) {
 }
 
 // ^ writeAuthMessage Message on Stream ^ //
-func (asc *AuthStreamConn) SendInvite(from *pb.Peer, meta *pb.Metadata) error {
-	// @1. Create Message
-	reqMsg := &pb.AuthMessage{
-		Event:    pb.AuthMessage_REQUEST,
-		From:     from,
-		Metadata: meta,
-	}
-
-	// Convert to bytes
-	bytes, err := proto.Marshal(reqMsg)
-	if err != nil {
-		return err
-	}
-
-	// Initialize Writer
-	writer := msgio.NewWriter(asc.stream)
-
-	// Add Msg to buffer
-	if err := writer.WriteMsg(bytes); err != nil {
-		return err
-	}
-	return nil
-}
-
-// ^ writeAuthMessage Message on Stream ^ //
-func (asc *AuthStreamConn) SendResponse(from *pb.Peer, decision bool) error {
+func (asc *AuthStreamConn) Respond(decision bool) error {
 	// ** Validate Stream exists **
 	if asc.stream == nil {
 		err := errors.New("Auth Stream hasnt been set")
@@ -152,7 +148,7 @@ func (asc *AuthStreamConn) SendResponse(from *pb.Peer, decision bool) error {
 	}
 	//@1. Create Message
 	respMsg := &pb.AuthMessage{
-		From: from,
+		From: asc.Self,
 	}
 
 	//@2. Check Decision
