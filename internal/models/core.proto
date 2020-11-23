@@ -18,3 +18,12 @@ message LobbyEvent {
     EXIT = 2;
     }
 }
+
+// Define Block Type: Sent on Data Transfer
+message Block {
+  bytes data = 1;
+  int64 size = 2;
+  int64 offset = 3;
+  int64 current = 4;
+  int64 total = 5;
+}

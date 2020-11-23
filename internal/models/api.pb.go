@@ -75,11 +75,11 @@ func (x AuthMessage_Event) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use AuthMessage_Event.Descriptor instead.
 func (AuthMessage_Event) EnumDescriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{2, 0}
+	return file_api_proto_rawDescGZIP(), []int{3, 0}
 }
 
 // [PLUGIN]
-// Initial Request Message
+// Error Message
 type ErrorMessage struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -200,6 +200,63 @@ func (x *RequestMessage) GetContact() *Contact {
 	return nil
 }
 
+// [PLUGIN]
+// Initial Request Message
+type ProgressMessage struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	FileId   string  `protobuf:"bytes,1,opt,name=fileId,proto3" json:"fileId,omitempty"`
+	Progress float32 `protobuf:"fixed32,2,opt,name=progress,proto3" json:"progress,omitempty"`
+}
+
+func (x *ProgressMessage) Reset() {
+	*x = ProgressMessage{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ProgressMessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ProgressMessage) ProtoMessage() {}
+
+func (x *ProgressMessage) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ProgressMessage.ProtoReflect.Descriptor instead.
+func (*ProgressMessage) Descriptor() ([]byte, []int) {
+	return file_api_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *ProgressMessage) GetFileId() string {
+	if x != nil {
+		return x.FileId
+	}
+	return ""
+}
+
+func (x *ProgressMessage) GetProgress() float32 {
+	if x != nil {
+		return x.Progress
+	}
+	return 0
+}
+
 // Authorization message sent in stream
 type AuthMessage struct {
 	state         protoimpl.MessageState
@@ -208,15 +265,14 @@ type AuthMessage struct {
 
 	// Define Root Message
 	From     *Peer             `protobuf:"bytes,1,opt,name=from,proto3" json:"from,omitempty"`
-	To       *Peer             `protobuf:"bytes,2,opt,name=to,proto3" json:"to,omitempty"`
-	Event    AuthMessage_Event `protobuf:"varint,3,opt,name=event,proto3,enum=AuthMessage_Event" json:"event,omitempty"`
-	Metadata *Metadata         `protobuf:"bytes,4,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Event    AuthMessage_Event `protobuf:"varint,2,opt,name=event,proto3,enum=AuthMessage_Event" json:"event,omitempty"`
+	Metadata *Metadata         `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 }
 
 func (x *AuthMessage) Reset() {
 	*x = AuthMessage{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[2]
+		mi := &file_api_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -229,7 +285,7 @@ func (x *AuthMessage) String() string {
 func (*AuthMessage) ProtoMessage() {}
 
 func (x *AuthMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[2]
+	mi := &file_api_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -242,19 +298,12 @@ func (x *AuthMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AuthMessage.ProtoReflect.Descriptor instead.
 func (*AuthMessage) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{2}
+	return file_api_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *AuthMessage) GetFrom() *Peer {
 	if x != nil {
 		return x.From
-	}
-	return nil
-}
-
-func (x *AuthMessage) GetTo() *Peer {
-	if x != nil {
-		return x.To
 	}
 	return nil
 }
@@ -287,15 +336,18 @@ var file_api_proto_rawDesc = []byte{
 	0x06, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x64,
 	0x65, 0x76, 0x69, 0x63, 0x65, 0x12, 0x22, 0x0a, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74,
 	0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x08, 0x2e, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74,
-	0x52, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x22, 0xc9, 0x01, 0x0a, 0x0b, 0x41, 0x75,
-	0x74, 0x68, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x19, 0x0a, 0x04, 0x66, 0x72, 0x6f,
-	0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x05, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x04,
-	0x66, 0x72, 0x6f, 0x6d, 0x12, 0x15, 0x0a, 0x02, 0x74, 0x6f, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b,
-	0x32, 0x05, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x02, 0x74, 0x6f, 0x12, 0x28, 0x0a, 0x05, 0x65,
-	0x76, 0x65, 0x6e, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x12, 0x2e, 0x41, 0x75, 0x74,
+	0x52, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x22, 0x45, 0x0a, 0x0f, 0x50, 0x72, 0x6f,
+	0x67, 0x72, 0x65, 0x73, 0x73, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x16, 0x0a, 0x06,
+	0x66, 0x69, 0x6c, 0x65, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x66, 0x69,
+	0x6c, 0x65, 0x49, 0x64, 0x12, 0x1a, 0x0a, 0x08, 0x70, 0x72, 0x6f, 0x67, 0x72, 0x65, 0x73, 0x73,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x02, 0x52, 0x08, 0x70, 0x72, 0x6f, 0x67, 0x72, 0x65, 0x73, 0x73,
+	0x22, 0xb2, 0x01, 0x0a, 0x0b, 0x41, 0x75, 0x74, 0x68, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65,
+	0x12, 0x19, 0x0a, 0x04, 0x66, 0x72, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x05,
+	0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x04, 0x66, 0x72, 0x6f, 0x6d, 0x12, 0x28, 0x0a, 0x05, 0x65,
+	0x76, 0x65, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x12, 0x2e, 0x41, 0x75, 0x74,
 	0x68, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x2e, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x52, 0x05,
 	0x65, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x25, 0x0a, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74,
-	0x61, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x09, 0x2e, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61,
+	0x61, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x09, 0x2e, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61,
 	0x74, 0x61, 0x52, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x22, 0x37, 0x0a, 0x05,
 	0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x08, 0x0a, 0x04, 0x4e, 0x4f, 0x4e, 0x45, 0x10, 0x00, 0x12,
 	0x0b, 0x0a, 0x07, 0x52, 0x45, 0x51, 0x55, 0x45, 0x53, 0x54, 0x10, 0x01, 0x12, 0x0a, 0x0a, 0x06,
@@ -317,27 +369,27 @@ func file_api_proto_rawDescGZIP() []byte {
 }
 
 var file_api_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_api_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_api_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_api_proto_goTypes = []interface{}{
-	(AuthMessage_Event)(0), // 0: AuthMessage.Event
-	(*ErrorMessage)(nil),   // 1: ErrorMessage
-	(*RequestMessage)(nil), // 2: RequestMessage
-	(*AuthMessage)(nil),    // 3: AuthMessage
-	(*Contact)(nil),        // 4: Contact
-	(*Peer)(nil),           // 5: Peer
-	(*Metadata)(nil),       // 6: Metadata
+	(AuthMessage_Event)(0),  // 0: AuthMessage.Event
+	(*ErrorMessage)(nil),    // 1: ErrorMessage
+	(*RequestMessage)(nil),  // 2: RequestMessage
+	(*ProgressMessage)(nil), // 3: ProgressMessage
+	(*AuthMessage)(nil),     // 4: AuthMessage
+	(*Contact)(nil),         // 5: Contact
+	(*Peer)(nil),            // 6: Peer
+	(*Metadata)(nil),        // 7: Metadata
 }
 var file_api_proto_depIdxs = []int32{
-	4, // 0: RequestMessage.contact:type_name -> Contact
-	5, // 1: AuthMessage.from:type_name -> Peer
-	5, // 2: AuthMessage.to:type_name -> Peer
-	0, // 3: AuthMessage.event:type_name -> AuthMessage.Event
-	6, // 4: AuthMessage.metadata:type_name -> Metadata
-	5, // [5:5] is the sub-list for method output_type
-	5, // [5:5] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	5, // 0: RequestMessage.contact:type_name -> Contact
+	6, // 1: AuthMessage.from:type_name -> Peer
+	0, // 2: AuthMessage.event:type_name -> AuthMessage.Event
+	7, // 3: AuthMessage.metadata:type_name -> Metadata
+	4, // [4:4] is the sub-list for method output_type
+	4, // [4:4] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_api_proto_init() }
@@ -372,6 +424,18 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ProgressMessage); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*AuthMessage); i {
 			case 0:
 				return &v.state
@@ -390,7 +454,7 @@ func file_api_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_api_proto_rawDesc,
 			NumEnums:      1,
-			NumMessages:   3,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -23,18 +23,19 @@ import (
 
 // Define Function Types
 type OnQueued func(data []byte)
-type OnProgress func(data []byte)
 type OnError func(err error, method string)
+
+// Define Block Size
+const BlockSize = 16000
 
 // Struct to Implement Node Callback Methods
 type FileCallback struct {
-	Queued   OnQueued
-	Progress OnProgress
-	Error    OnError
+	Queued OnQueued
+	Error  OnError
 }
 
 // ^ File that safely sets metadata and thumbnail in routine ^ //
-type SafeFile struct {
+type SafeMeta struct {
 	Path  string
 	Call  FileCallback
 	mutex sync.Mutex
@@ -42,7 +43,7 @@ type SafeFile struct {
 }
 
 // ^ Create generates file metadata ^ //
-func (sf *SafeFile) Create() {
+func (sf *SafeMeta) Generate() {
 	// ** Lock ** //
 	sf.mutex.Lock()
 
@@ -117,16 +118,17 @@ func (sf *SafeFile) Create() {
 		Name:      fileName(sf.Path),
 		Path:      sf.Path,
 		Size:      info.Size(),
+		Blocks:    info.Size() / BlockSize,
 		Kind:      kind.MIME.Type,
 		Thumbnail: thumbBuffer.Bytes(),
 	}
 	// ** Unlock ** //
 	sf.mutex.Unlock()
-	sf.Call.Queued(sf.Info())
+	sf.Call.Queued(sf.Bytes())
 }
 
 // ^ Safely returns metadata depending on lock ^ //
-func (sf *SafeFile) Metadata() *pb.Metadata {
+func (sf *SafeMeta) Metadata() *pb.Metadata {
 	// ** Lock File wait for access ** //
 	sf.mutex.Lock()
 	defer sf.mutex.Unlock()
@@ -136,7 +138,7 @@ func (sf *SafeFile) Metadata() *pb.Metadata {
 }
 
 // ^ Safely returns metadata depending on lock ^ //
-func (sf *SafeFile) Info() []byte {
+func (sf *SafeMeta) Bytes() []byte {
 	// Get Metadata
 	meta := sf.Metadata()
 

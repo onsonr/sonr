@@ -6,7 +6,7 @@ import "data.proto";
 option go_package = ".;models";
 
 // [PLUGIN]
-// Initial Request Message
+// Error Message
 message ErrorMessage {
   string message = 1;
   string method = 2;
@@ -20,13 +20,19 @@ message RequestMessage {
   Contact contact = 3;
 }
 
+// [PLUGIN]
+// Initial Request Message
+message ProgressMessage {
+  string fileId = 1;
+  float progress = 2;
+}
+
 // Authorization message sent in stream
 message AuthMessage {
   // Define Root Message
   Peer from = 1;
-  Peer to = 2;
-  Event event = 3;
-  Metadata metadata = 4;
+  Event event = 2;
+  Metadata metadata = 3;
 
   // Define Subject
   enum Event {

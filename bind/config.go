@@ -14,22 +14,8 @@ import (
 )
 
 // ^ CurrentFile returns last file in Processed Files ^ //
-func (sn *Node) currentFile() *sf.SafeFile {
+func (sn *Node) currentFile() *sf.SafeMeta {
 	return sn.files[len(sn.files)-1]
-}
-
-// ^ InitStreams sets Auth/Data Streams with Handlers ^ //
-func (sn *Node) initStreams() {
-	// Assign Callbacks from Node to Stream
-	sn.authStream.Call = st.StreamCallback{
-		Invited:   sn.call.OnInvited,
-		Responded: sn.call.OnResponded,
-		Error:     sn.Error,
-	}
-
-	// Set Handlers
-	sn.host.SetStreamHandler(protocol.ID("/sonr/auth"), sn.authStream.SetStream)
-	//sn.host.SetStreamHandler(protocol.ID("/sonr/transfer"), sn.authStream.HandleTransferStream)
 }
 
 // ^ SetDiscovery initializes discovery protocols and creates pubsub service ^ //
@@ -63,7 +49,7 @@ func (sn *Node) setPeer(connEvent *pb.RequestMessage) error {
 		return err
 	}
 
-	// Set Contact
+	// Set Peer Info
 	sn.Peer = &pb.Peer{
 		Id:         sn.host.ID().String(),
 		Olc:        connEvent.Olc,
@@ -73,6 +59,31 @@ func (sn *Node) setPeer(connEvent *pb.RequestMessage) error {
 		ProfilePic: connEvent.Contact.ProfilePic,
 	}
 
+	// Assign Peer Info to Stream Handlers
+	sn.authStream.Self = sn.Peer
+	sn.dataStream.Self = sn.Peer
+
 	// Set Profile
 	return nil
+}
+
+// ^ SetStreams sets Auth/Data Streams with Handlers ^ //
+func (sn *Node) setStreams() {
+	// Assign Callbacks from Node to Auth Stream
+	sn.authStream.Call = st.AuthCallback{
+		Invited:   sn.call.OnInvited,
+		Responded: sn.call.OnResponded,
+		Error:     sn.Error,
+	}
+
+	// Assign Callbacks from Node to Data Stream
+	sn.dataStream.Call = st.DataCallback{
+		Progressed: sn.call.OnProgress,
+		Completed:  sn.call.OnCompleted,
+		Error:      sn.Error,
+	}
+
+	// Set Handlers
+	sn.host.SetStreamHandler(protocol.ID("/sonr/auth"), sn.authStream.HandleStream)
+	sn.host.SetStreamHandler(protocol.ID("/sonr/transfer"), sn.dataStream.HandleStream)
 }

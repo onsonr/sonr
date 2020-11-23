@@ -23,6 +23,7 @@ type Callback interface {
 	OnResponded(data []byte)
 	OnQueued(data []byte)
 	OnProgress(data []byte)
+	OnCompleted(data []byte)
 	OnError(data []byte)
 }
 
@@ -36,11 +37,12 @@ type Node struct {
 	ctx        context.Context
 	host       host.Host
 	authStream st.AuthStreamConn
+	dataStream st.DataStreamConn
 
 	// References
 	call  Callback
 	lobby *lobby.Lobby
-	files []*sf.SafeFile
+	files []*sf.SafeMeta
 }
 
 // ^ NewNode Initializes Node with a host and default properties ^
@@ -48,7 +50,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	// ** Create Context and Node - Begin Setup **
 	node := new(Node)
 	node.ctx = context.Background()
-	node.call, node.files = call, make([]*sf.SafeFile, maxFileBufferSize)
+	node.call, node.files = call, make([]*sf.SafeMeta, maxFileBufferSize)
 
 	// ** Unmarshal Request **
 	reqMsg := pb.RequestMessage{}
@@ -66,7 +68,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 		return nil
 	}
 	node.HostID = node.host.ID().String()
-	node.initStreams()
+	node.setStreams()
 
 	// @3. Set Node User Information
 	if err = node.setPeer(&reqMsg); err != nil {
