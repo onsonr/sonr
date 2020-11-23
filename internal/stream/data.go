@@ -42,7 +42,7 @@ type DataStreamConn struct {
 // ^ Start New Stream ^ //
 func (dsc *DataStreamConn) Transfer(ctx context.Context, h host.Host, id peer.ID, r *pb.Peer, tf *sf.TransferFile) error {
 	// Create New Auth Stream
-	stream, err := h.NewStream(ctx, id, protocol.ID("/sonr/auth"))
+	stream, err := h.NewStream(ctx, id, protocol.ID("/sonr/data"))
 	if err != nil {
 		return err
 	}
@@ -99,12 +99,18 @@ func (dsc *DataStreamConn) read() error {
 func (dsc *DataStreamConn) handleBlock(msg *pb.Block) {
 	// Verify Bytes Remaining
 	if msg.Current < msg.Total {
-		dsc.buffer.Write(msg.Data)
+		fmt.Println("Current ", msg.Current, "Total ", msg.Total)
+
+		// Write Bytes to Buffer
+		_, err := dsc.buffer.Write(msg.Data)
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 
 	// Save File on Buffer Complete
 	if msg.Current == msg.Total {
-
+		fmt.Println("Completed All Blocks, Save the File")
 	}
 }
 
