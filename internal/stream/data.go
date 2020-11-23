@@ -102,6 +102,7 @@ func (dsc *DataStreamConn) handleBlock(msg *pb.Block) {
 	if msg.Current < msg.Total {
 		// Add Block to Buffer
 		dsc.File.AddBlock(msg.Data)
+		go dsc.sendProgress(msg.Current, msg.Total)
 	}
 
 	// Save File on Buffer Complete
@@ -110,6 +111,27 @@ func (dsc *DataStreamConn) handleBlock(msg *pb.Block) {
 		dsc.File.AddBlock(msg.Data)
 		fmt.Println("Completed All Blocks, Save the File")
 	}
+}
+
+func (dsc *DataStreamConn) sendProgress(current int64, total int64) {
+	// Calculate Progress
+	progress := float32(current) / float32(total)
+
+	// Create Message
+	progressMessage := pb.ProgressMessage{
+		Current:  current,
+		Total:    total,
+		Progress: progress,
+	}
+
+	// Convert to bytes
+	bytes, err := proto.Marshal(&progressMessage)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// Send Callback
+	dsc.Call.Progressed(bytes)
 }
 
 func (dsc *DataStreamConn) writeFileToStream(tf *sf.TransferFile) error {

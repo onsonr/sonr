@@ -24,8 +24,9 @@ message RequestMessage {
 // [PLUGIN]
 // Initial Request Message
 message ProgressMessage {
-  string fileId = 1;
-  float progress = 2;
+  int64 current = 1;
+  int64 total = 2;
+  float progress = 3;
 }
 
 // Authorization message sent in stream
