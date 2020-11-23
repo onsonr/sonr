@@ -14,8 +14,8 @@ import (
 )
 
 // ^ CurrentFile returns last file in Processed Files ^ //
-func (sn *Node) currentFile() *sf.SafeFile {
-	return sn.files[len(sn.files)-1]
+func (sn *Node) currentFile() *sf.Item {
+	return &sn.files[len(sn.files)-1]
 }
 
 // ^ InitStreams sets Auth/Data Streams with Handlers ^ //
@@ -28,8 +28,8 @@ func (sn *Node) initStreams() {
 	}
 
 	// Set Handlers
-	sn.host.SetStreamHandler(protocol.ID("/sonr/auth"), sn.authStream.SetStream)
-	//sn.host.SetStreamHandler(protocol.ID("/sonr/transfer"), sn.authStream.HandleTransferStream)
+	sn.host.SetStreamHandler(protocol.ID("/sonr/auth"), sn.authStream.HandleStream)
+	sn.host.SetStreamHandler(protocol.ID("/sonr/transfer"), sn.dataStream.HandleStream)
 }
 
 // ^ SetDiscovery initializes discovery protocols and creates pubsub service ^ //
@@ -63,7 +63,7 @@ func (sn *Node) setPeer(connEvent *pb.RequestMessage) error {
 		return err
 	}
 
-	// Set Contact
+	// Set Peer Info
 	sn.Peer = &pb.Peer{
 		Id:         sn.host.ID().String(),
 		Olc:        connEvent.Olc,
@@ -72,6 +72,10 @@ func (sn *Node) setPeer(connEvent *pb.RequestMessage) error {
 		LastName:   connEvent.Contact.LastName,
 		ProfilePic: connEvent.Contact.ProfilePic,
 	}
+
+	// Assign Peer Info to Stream Handlers
+	sn.authStream.Self = sn.Peer
+	sn.dataStream.Self = sn.Peer
 
 	// Set Profile
 	return nil

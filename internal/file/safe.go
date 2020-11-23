@@ -21,44 +21,30 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// Define Function Types
-type OnQueued func(data []byte)
-type OnProgress func(data []byte)
-type OnError func(err error, method string)
-
-// Struct to Implement Node Callback Methods
-type FileCallback struct {
-	Queued   OnQueued
-	Progress OnProgress
-	Error    OnError
-}
-
 // ^ File that safely sets metadata and thumbnail in routine ^ //
-type SafeFile struct {
-	Path  string
-	Call  FileCallback
+type SafeMeta struct {
 	mutex sync.Mutex
 	meta  pb.Metadata
 }
 
 // ^ Create generates file metadata ^ //
-func (sf *SafeFile) Create() {
+func (sf *SafeMeta) Generate(i *Item) {
 	// ** Lock ** //
 	sf.mutex.Lock()
 
 	// @ 1. Get File Information
 	// Open File at Path
-	file, err := os.Open(sf.Path)
+	file, err := os.Open(i.Path)
 	if err != nil {
 		fmt.Println("Error opening File", err)
-		sf.Call.Error(err, "AddFile")
+		i.Call.Error(err, "AddFile")
 	}
 
 	// Get Info
 	info, err := file.Stat()
 	if err != nil {
 		fmt.Println(err)
-		sf.Call.Error(err, "AddFile")
+		i.Call.Error(err, "AddFile")
 	}
 
 	// Get File Type
@@ -67,7 +53,7 @@ func (sf *SafeFile) Create() {
 	kind, err := filetype.Match(head)
 	if err != nil {
 		fmt.Println(err)
-		sf.Call.Error(err, "AddFile")
+		i.Call.Error(err, "AddFile")
 	}
 	file.Close()
 
@@ -75,10 +61,10 @@ func (sf *SafeFile) Create() {
 	thumbBuffer := new(bytes.Buffer)
 	if filetype.IsImage(head) {
 		// New File for ThumbNail
-		file, err := os.Open(sf.Path)
+		file, err := os.Open(i.Path)
 		if err != nil {
 			fmt.Println(err)
-			sf.Call.Error(err, "AddFile")
+			i.Call.Error(err, "AddFile")
 		}
 		defer file.Close()
 
@@ -86,7 +72,7 @@ func (sf *SafeFile) Create() {
 		img, _, err := image.Decode(file)
 		if err != nil {
 			fmt.Println(err)
-			sf.Call.Error(err, "AddFile")
+			i.Call.Error(err, "AddFile")
 		}
 
 		// Find Image Bounds
@@ -106,7 +92,7 @@ func (sf *SafeFile) Create() {
 		err = jpeg.Encode(thumbBuffer, scaledImage, nil)
 		if err != nil {
 			fmt.Println(err)
-			sf.Call.Error(err, "AddFile")
+			i.Call.Error(err, "AddFile")
 		}
 		fmt.Println("Thumbnail created")
 	}
@@ -114,19 +100,20 @@ func (sf *SafeFile) Create() {
 	// @ 3. Set Metadata Protobuf Values
 	sf.meta = pb.Metadata{
 		FileId:    uuid.New().String(),
-		Name:      fileName(sf.Path),
-		Path:      sf.Path,
+		Name:      fileName(i.Path),
+		Path:      i.Path,
 		Size:      info.Size(),
+		Blocks:    info.Size() / BlockSize,
 		Kind:      kind.MIME.Type,
 		Thumbnail: thumbBuffer.Bytes(),
 	}
 	// ** Unlock ** //
 	sf.mutex.Unlock()
-	sf.Call.Queued(sf.Info())
+	i.completedMetadata(sf)
 }
 
 // ^ Safely returns metadata depending on lock ^ //
-func (sf *SafeFile) Metadata() *pb.Metadata {
+func (sf *SafeMeta) Metadata() *pb.Metadata {
 	// ** Lock File wait for access ** //
 	sf.mutex.Lock()
 	defer sf.mutex.Unlock()
@@ -136,7 +123,7 @@ func (sf *SafeFile) Metadata() *pb.Metadata {
 }
 
 // ^ Safely returns metadata depending on lock ^ //
-func (sf *SafeFile) Info() []byte {
+func (sf *SafeMeta) Bytes() []byte {
 	// Get Metadata
 	meta := sf.Metadata()
 

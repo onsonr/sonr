@@ -24,9 +24,8 @@ message RequestMessage {
 message AuthMessage {
   // Define Root Message
   Peer from = 1;
-  Peer to = 2;
-  Event event = 3;
-  Metadata metadata = 4;
+  Event event = 2;
+  Metadata metadata = 3;
 
   // Define Subject
   enum Event {

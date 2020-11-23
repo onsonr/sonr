@@ -6,7 +6,7 @@ import (
 	"math"
 	"time"
 
-	"github.com/sonr-io/core/internal/file"
+	sf "github.com/sonr-io/core/internal/file"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -37,15 +37,17 @@ func (sn *Node) Update(direction float64) {
 // ^ AddFile adds generates metadata and thumbnail from filepath to Process for Transfer, returns key ^ //
 func (sn *Node) AddFile(path string) {
 	//@1. Assign Callback Ref
-	fileCall := file.FileCallback{
-		Queued:   sn.call.OnQueued,
-		Progress: sn.call.OnProgress,
-		Error:    sn.Error,
+	fileCall := sf.FileCallback{
+		Queued:    sn.call.OnQueued,
+		Progress:  sn.call.OnProgress,
+		Completed: sn.call.OnCompleted,
+		Error:     sn.Error,
 	}
-	//@2. Initialize SafeFile
-	safeFile := file.SafeFile{Path: path, Call: fileCall}
-	sn.files = append(sn.files, &safeFile)
-	go safeFile.Create() // Start GoRoutine
+
+	//@2. Initialize ItemFile
+	item := sf.Item{Path: path, Call: fileCall}
+	sn.files = append(sn.files, item)
+	item.New() // Start GoRoutine
 }
 
 // ^ Invite an available peer to transfer ^ //
@@ -55,20 +57,20 @@ func (sn *Node) Invite(peerId string) {
 
 	// Get Required Data
 	currFile := sn.currentFile()
-	currMeta := currFile.Metadata()
+	currMeta := currFile.GetMetadata()
 	id, peer := sn.lobby.Find(peerId)
 	if peer == nil {
 		sn.Error(errors.New("Search Error, peer was not found in map."), "Invite")
 	}
 
 	// Create New Auth Stream
-	err := sn.authStream.New(sn.ctx, sn.host, id)
+	err := sn.authStream.NewStream(sn.ctx, sn.host, id, peer)
 	if err != nil {
 		sn.Error(err, "Invite")
 	}
 
 	// Send Invite Message
-	if err := sn.authStream.SendInvite(sn.Peer, sn.lobby.Peer(peerId), currMeta); err != nil {
+	if err := sn.authStream.SendInvite(sn.Peer, currMeta); err != nil {
 		sn.Error(err, "Invite")
 	}
 }
@@ -76,9 +78,37 @@ func (sn *Node) Invite(peerId string) {
 // ^ Respond to an Invitation ^ //
 func (sn *Node) Respond(peerId string, decision bool) {
 	// Send Response Message
-	if err := sn.authStream.SendResponse(sn.Peer, sn.lobby.Peer(peerId), decision); err != nil {
+	if err := sn.authStream.SendResponse(sn.Peer, decision); err != nil {
 		sn.Error(err, "Respond")
 	}
+}
+
+// ^ Begin the File transfer ^ //
+func (sn *Node) Transfer(peerId string) {
+	// Retreive Peer Data
+	id, peer := sn.lobby.Find(peerId)
+
+	// Create New Auth Stream
+	err := sn.dataStream.NewStream(sn.ctx, sn.host, id, peer, sn.Peer)
+	if err != nil {
+		sn.Error(err, "Invite")
+	}
+
+	blocks := sn.currentFile().GetBlocks()
+	fmt.Println("Item Blocks", blocks)
+
+	// Begin File Transfer
+	// if err := sn.dataStream.Send(sn.Peer, sn.currentFile()); err != nil {
+	// 	sn.Error(err, "Transfer")
+	// }
+}
+
+// ^ Respond to an Invitation ^ //
+func (sn *Node) Reset(peerId string) {
+	// Send Response Message
+	// if err := sn.authStream.SendResponse(sn.Peer, sn.lobby.Peer(peerId), decision); err != nil {
+	// 	sn.Error(err, "Respond")
+	// }
 }
 
 // ^ Close Ends All Network Communication ^

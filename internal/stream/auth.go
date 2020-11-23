@@ -29,12 +29,14 @@ type StreamCallback struct {
 // ^ Struct: Holds/Handles Stream for Authentication  ^ //
 type AuthStreamConn struct {
 	Call   StreamCallback
+	Self   *pb.Peer // Set on Config
 	id     string
 	stream network.Stream
+	peer   *pb.Peer
 }
 
 // ^ Start New Stream ^ //
-func (asc *AuthStreamConn) New(ctx context.Context, h host.Host, id peer.ID) error {
+func (asc *AuthStreamConn) NewStream(ctx context.Context, h host.Host, id peer.ID, peer *pb.Peer) error {
 	// Create New Auth Stream
 	stream, err := h.NewStream(ctx, id, protocol.ID("/sonr/auth"))
 	if err != nil {
@@ -44,6 +46,7 @@ func (asc *AuthStreamConn) New(ctx context.Context, h host.Host, id peer.ID) err
 	// Set Stream
 	asc.stream = stream
 	asc.id = stream.ID()
+	asc.peer = peer
 
 	// Print Stream Info
 	info := stream.Stat()
@@ -55,14 +58,13 @@ func (asc *AuthStreamConn) New(ctx context.Context, h host.Host, id peer.ID) err
 }
 
 // ^ Handle Incoming Stream ^ //
-func (asc *AuthStreamConn) SetStream(stream network.Stream) {
+func (asc *AuthStreamConn) HandleStream(stream network.Stream) {
 	// Set Stream
-	asc.stream = stream
 	asc.id = stream.ID()
+	asc.stream = stream
 
 	// Print Stream Info
-	info := stream.Stat()
-	fmt.Println("Stream Info: ", info)
+	fmt.Println("Stream Info: ", stream.Stat())
 
 	// Initialize Routine
 	go asc.read()
@@ -90,8 +92,7 @@ func (asc *AuthStreamConn) read() error {
 
 // ^ Handle Received Message ^ //
 func (asc *AuthStreamConn) handleMessage(msg *pb.AuthMessage) {
-	// ** Contains Data **
-	// Convert Protobuf to bytes
+	// ** Convert Protobuf to bytes **
 	msgBytes, err := proto.Marshal(msg)
 	if err != nil {
 		fmt.Println(err)
@@ -101,33 +102,28 @@ func (asc *AuthStreamConn) handleMessage(msg *pb.AuthMessage) {
 	switch msg.Event {
 	// @1. Request to Invite
 	case pb.AuthMessage_REQUEST:
-		fmt.Println("Handling Message received Request: ", msg.String())
 		asc.Call.Invited(msgBytes)
 
 	// @2. Peer Accepted Response to Invite
 	case pb.AuthMessage_ACCEPT:
-		fmt.Println("Handling Message received Accept: ", msg.String())
 		asc.Call.Responded(msgBytes)
 
 	// @3. Peer Declined Response to Invite
 	case pb.AuthMessage_DECLINE:
-		fmt.Println("Handling Message received Decline: ", msg.String())
 		asc.Call.Responded(msgBytes)
 
 	// ! Invalid Subject
 	default:
-		err := errors.New(fmt.Sprintf("Not a subject: %s", msg.Event))
 		asc.Call.Error(err, "handleMessage")
 	}
 }
 
 // ^ writeAuthMessage Message on Stream ^ //
-func (asc *AuthStreamConn) SendInvite(from *pb.Peer, to *pb.Peer, meta *pb.Metadata) error {
+func (asc *AuthStreamConn) SendInvite(from *pb.Peer, meta *pb.Metadata) error {
 	// @1. Create Message
 	reqMsg := &pb.AuthMessage{
 		Event:    pb.AuthMessage_REQUEST,
 		From:     from,
-		To:       to,
 		Metadata: meta,
 	}
 
@@ -148,32 +144,34 @@ func (asc *AuthStreamConn) SendInvite(from *pb.Peer, to *pb.Peer, meta *pb.Metad
 }
 
 // ^ writeAuthMessage Message on Stream ^ //
-func (asc *AuthStreamConn) SendResponse(from *pb.Peer, to *pb.Peer, decision bool) error {
+func (asc *AuthStreamConn) SendResponse(from *pb.Peer, decision bool) error {
+	// ** Validate Stream exists **
+	if asc.stream == nil {
+		err := errors.New("Auth Stream hasnt been set")
+		return err
+	}
 	//@1. Create Message
 	respMsg := &pb.AuthMessage{
 		From: from,
-		To:   to,
 	}
 
-	// ** Check Decision **
+	//@2. Check Decision
 	if decision == true {
 		// User Accepted
 		respMsg.Event = pb.AuthMessage_ACCEPT // Set Event
 	} else {
-		// @ User Declined
+		// User Declined
 		respMsg.Event = pb.AuthMessage_DECLINE // Set Event
 	}
 
-	// Convert to bytes
+	//@3. Convert Protobuf to bytes
 	bytes, err := proto.Marshal(respMsg)
 	if err != nil {
 		return err
 	}
 
-	// Initialize Writer
+	// @4. Initialize Writer and Write to Stream
 	writer := msgio.NewWriter(asc.stream)
-
-	// Add Msg to buffer
 	if err := writer.WriteMsg(bytes); err != nil {
 		return err
 	}
