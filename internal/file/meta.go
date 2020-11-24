@@ -6,7 +6,6 @@ import (
 	"math"
 	"os"
 	"path/filepath"
-	"strings"
 	"sync"
 
 	"fmt"
@@ -115,7 +114,7 @@ func (sf *SafeMeta) Generate() {
 	// @ 3. Set Metadata Protobuf Values
 	sf.meta = pb.Metadata{
 		FileId:    uuid.New().String(),
-		Name:      fileName(sf.Path),
+		Name:      filepath.Base(sf.Path),
 		Path:      sf.Path,
 		Size:      info.Size(),
 		Blocks:    info.Size() / BlockSize,
@@ -159,10 +158,4 @@ const MAX_HEIGHT float64 = 240
 func calculateRatioFit(srcWidth, srcHeight int) (int, int) {
 	ratio := math.Min(MAX_WIDTH/float64(srcWidth), MAX_HEIGHT/float64(srcHeight))
 	return int(math.Ceil(float64(srcWidth) * ratio)), int(math.Ceil(float64(srcHeight) * ratio))
-}
-
-// @ Get FileName without Extension
-func fileName(path string) string {
-	fileBase := filepath.Base(path)
-	return strings.TrimSuffix(fileBase, filepath.Ext(fileBase))
 }

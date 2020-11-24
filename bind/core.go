@@ -39,10 +39,13 @@ type Node struct {
 	authStream st.AuthStreamConn
 	dataStream st.DataStreamConn
 
+	// Data Properties
+	documents string
+	files     []*sf.SafeMeta
+
 	// References
 	call  Callback
 	lobby *lobby.Lobby
-	files []*sf.SafeMeta
 }
 
 // ^ NewNode Initializes Node with a host and default properties ^
@@ -62,12 +65,11 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	}
 
 	// @1. Create Host and Set Stream Handlers
-	node.host, err = sh.NewHost(node.ctx)
+	node.host, node.HostID, err = sh.NewHost(node.ctx)
 	if err != nil {
 		node.Error(err, "NewNode")
 		return nil
 	}
-	node.HostID = node.host.ID().String()
 	node.setStreams()
 
 	// @3. Set Node User Information

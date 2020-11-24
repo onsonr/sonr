@@ -1,9 +1,10 @@
 package stream
 
 import (
-	"bytes"
 	"context"
 	"fmt"
+	"io"
+	"os"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/host"
@@ -20,6 +21,8 @@ import (
 type OnProgressed func(data []byte)
 type OnComplete func(data []byte)
 
+const BlockSize = 16000
+
 // Struct to Implement Node Callback Methods
 type DataCallback struct {
 	Progressed OnProgressed
@@ -27,22 +30,32 @@ type DataCallback struct {
 	Error      OnError
 }
 
+// Struct defines a Chunk of Bytes of File
+type Chunk struct {
+	Size    int64
+	Offset  int64
+	Data    []byte
+	Current int64
+	Total   int64
+}
+
 // ^ Struct: Holds/Handles Stream for Authentication  ^ //
 type DataStreamConn struct {
 	Call DataCallback
 	Self *pb.Peer
+	File sf.SonrFile
+	Peer *pb.Peer
 
 	id     string
 	data   *pb.Metadata
-	remote *pb.Peer
 	stream network.Stream
-	buffer bytes.Buffer
+	writer msgio.Writer
 }
 
 // ^ Start New Stream ^ //
-func (dsc *DataStreamConn) Transfer(ctx context.Context, h host.Host, id peer.ID, r *pb.Peer, tf *sf.TransferFile) error {
+func (dsc *DataStreamConn) Transfer(ctx context.Context, h host.Host, id peer.ID, r *pb.Peer, sm *sf.SafeMeta) error {
 	// Create New Auth Stream
-	stream, err := h.NewStream(ctx, id, protocol.ID("/sonr/auth"))
+	stream, err := h.NewStream(ctx, id, protocol.ID("/sonr/data"))
 	if err != nil {
 		return err
 	}
@@ -50,14 +63,15 @@ func (dsc *DataStreamConn) Transfer(ctx context.Context, h host.Host, id peer.ID
 	// Set Stream
 	dsc.stream = stream
 	dsc.id = stream.ID()
-	dsc.remote = r
+	dsc.Peer = r
+	dsc.writer = msgio.NewWriter(dsc.stream)
 
 	// Print Stream Info
 	info := stream.Stat()
 	fmt.Println("Stream Info: ", info)
 
 	// Initialize Routine
-	go dsc.writeFileToStream(tf)
+	go dsc.writeFile(sm)
 	return nil
 }
 
@@ -72,65 +86,135 @@ func (dsc *DataStreamConn) HandleStream(stream network.Stream) {
 	fmt.Println("Stream Info: ", info)
 
 	// Initialize Routine
-	go dsc.read()
+	mrw := msgio.NewReader(dsc.stream)
+	go dsc.readBlock(mrw)
 }
 
 // ^ read Data from Msgio ^ //
-func (dsc *DataStreamConn) read() error {
-	// Read Length Fixed Bytes
-	mrw := msgio.NewReadWriter(dsc.stream)
-	lengthBytes, err := mrw.ReadMsg()
-	if err != nil {
-		return err
-	}
+func (dsc *DataStreamConn) readBlock(mrw msgio.ReadCloser) error {
+	for {
+		// Read Length Fixed Bytes
+		buffer, err := mrw.ReadMsg()
+		if err != nil {
+			dsc.Call.Error(err, "read")
+			return err
+		}
+		// Unmarshal Bytes into Proto
+		msg := pb.Block{}
+		err = proto.Unmarshal(buffer, &msg)
+		if err != nil {
+			dsc.Call.Error(err, "read")
+			return err
+		}
 
-	// Unmarshal Bytes into Proto
-	protoMsg := &pb.Block{}
-	err = proto.Unmarshal(lengthBytes, protoMsg)
-	if err != nil {
-		return err
-	}
+		if msg.Current < msg.Total {
+			// Add Block to Buffer
+			dsc.File.AddBlock(msg.Data)
+			dsc.sendProgress(msg.Current, msg.Total)
+		}
 
-	dsc.handleBlock(protoMsg)
+		// Save File on Buffer Complete
+		if msg.Current == msg.Total {
+			// Add Block to Buffer
+			fmt.Println("Completed All Blocks, Save the File")
+			dsc.File.AddBlock(msg.Data)
+
+			// Save The File
+			savePath := dsc.File.Save()
+
+			// Create Completed Protobuf
+			completedMessage := pb.CompletedMessage{
+				From:     dsc.Peer,
+				Metadata: dsc.File.Metadata,
+				Path:     savePath,
+				Received: int64(time.Now().Unix()),
+			}
+
+			// Convert to Bytes
+			bytes, err := proto.Marshal(&completedMessage)
+			if err != nil {
+				dsc.Call.Error(err, "Completed")
+			}
+
+			// Callback Completed
+			dsc.Call.Completed(bytes)
+			break
+		}
+	}
 	return nil
 }
 
-// ^ Handle Received Message ^ //
-func (dsc *DataStreamConn) handleBlock(msg *pb.Block) {
-	// Verify Bytes Remaining
-	if msg.Current < msg.Total {
-		dsc.buffer.Write(msg.Data)
+func (dsc *DataStreamConn) sendProgress(current int64, total int64) {
+	// Calculate Progress
+	progress := float32(current) / float32(total)
+
+	// Create Message
+	progressMessage := pb.ProgressMessage{
+		Current:  current,
+		Total:    total,
+		Progress: progress,
 	}
 
-	// Save File on Buffer Complete
-	if msg.Current == msg.Total {
-
+	// Convert to bytes
+	bytes, err := proto.Marshal(&progressMessage)
+	if err != nil {
+		dsc.Call.Error(err, "SendProgress")
 	}
+
+	// Send Callback
+	dsc.Call.Progressed(bytes)
 }
 
-func (dsc *DataStreamConn) writeFileToStream(tf *sf.TransferFile) error {
-	// Retreive Transfer Blocks
-	tf.Generate()
+func (dsc *DataStreamConn) writeFile(sm *sf.SafeMeta) error {
+	// Get Metadata
+	meta := sm.Metadata()
 
-	// Create Delay to allow processing
-	time.Sleep(time.Second)
-	blocks := tf.Blocks()
+	// Open File
+	file, err := os.Open(meta.Path)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
 
-	// Iterate through blocks and write to message
-	for _, block := range blocks {
-		// Convert to bytes
-		bytes, err := proto.Marshal(block)
+	// Initialize Chunk Buffer
+	buffer := make([]byte, BlockSize)
+	i := 0
+
+	// Iterate for Entire file
+	for {
+		i++
+		// Read bytes at file
+		bytesread, err := file.Read(buffer)
 		if err != nil {
-			return err
+			if err != io.EOF {
+				fmt.Println(err)
+			}
+
+			break
 		}
 
-		// Initialize Writer
-		writer := msgio.NewWriter(dsc.stream)
-
-		// Add Msg to buffer
-		if err := writer.WriteMsg(bytes); err != nil {
-			return err
+		// Create Block Protobuf from Chunk
+		block := pb.Block{
+			Size:    int64(len(buffer)),
+			Data:    buffer[:bytesread],
+			Current: int64(i),
+			Total:   meta.Blocks,
 		}
+		fmt.Println("Block: ", block.String())
+
+		// Convert to bytes
+		bytes, err := proto.Marshal(&block)
+		if err != nil {
+			dsc.Call.Error(err, "writeFileToStream")
+		}
+
+		// Write Message Bytes to Stream
+		err = dsc.writer.WriteMsg(bytes)
+		if err != nil {
+			dsc.Call.Error(err, "writeFileToStream")
+		}
+
+		fmt.Println("bytes read: ", bytesread)
 	}
 	return nil
 }

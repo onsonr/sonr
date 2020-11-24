@@ -63,7 +63,8 @@ func (sn *Node) setPeer(connEvent *pb.RequestMessage) error {
 	sn.authStream.Self = sn.Peer
 	sn.dataStream.Self = sn.Peer
 
-	// Set Profile
+	// Set Documents
+	sn.documents = connEvent.Documents
 	return nil
 }
 
@@ -85,5 +86,6 @@ func (sn *Node) setStreams() {
 
 	// Set Handlers
 	sn.host.SetStreamHandler(protocol.ID("/sonr/auth"), sn.authStream.HandleStream)
-	sn.host.SetStreamHandler(protocol.ID("/sonr/transfer"), sn.dataStream.HandleStream)
+	sn.host.SetStreamHandler(protocol.ID("/sonr/data"), sn.dataStream.HandleStream)
+
 }
