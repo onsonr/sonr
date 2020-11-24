@@ -199,8 +199,27 @@ func (dsc *DataStreamConn) writeFile(sm *sf.SafeMeta) error {
 				fmt.Println(err)
 			}
 
-			// Write to Stream
-			dsc.writeChunkToStream(chunk)
+			// Create Block Protobuf from Chunk
+			block := &pb.Block{
+				Size:    chunk.Size,
+				Offset:  chunk.Offset,
+				Data:    chunk.Data,
+				Current: chunk.Current,
+				Total:   chunk.Total,
+			}
+			fmt.Println("Block: ", block.String())
+
+			// Convert to bytes
+			bytes, err := proto.Marshal(block)
+			if err != nil {
+				dsc.Call.Error(err, "writeFileToStream")
+			}
+
+			// Write Message Bytes to Stream
+			if err := dsc.writer.WriteMsg(bytes); err != nil {
+				dsc.Call.Error(err, "writeFileToStream")
+			}
+
 			fmt.Println("bytes read, string(bytestream): ", bytesread)
 			fmt.Println("bytestream to string: ", string(chunk.Data))
 		}(chunksizes, i)
@@ -208,27 +227,4 @@ func (dsc *DataStreamConn) writeFile(sm *sf.SafeMeta) error {
 
 	wg.Wait()
 	return nil
-}
-
-func (dsc *DataStreamConn) writeChunkToStream(chunk Chunk) {
-	// Create Block Protobuf from Chunk
-	block := &pb.Block{
-		Size:    chunk.Size,
-		Offset:  chunk.Offset,
-		Data:    chunk.Data,
-		Current: chunk.Current,
-		Total:   chunk.Total,
-	}
-	fmt.Println("Block: ", block.String())
-
-	// Convert to bytes
-	bytes, err := proto.Marshal(block)
-	if err != nil {
-		dsc.Call.Error(err, "writeFileToStream")
-	}
-
-	// Add Msg to buffer
-	if err := dsc.writer.WriteMsg(bytes); err != nil {
-		dsc.Call.Error(err, "writeFileToStream")
-	}
 }
