@@ -21,7 +21,7 @@ import (
 type OnProgressed func(data []byte)
 type OnComplete func(data []byte)
 
-const BlockSize = 64000
+const BlockSize = 16000
 
 // Struct to Implement Node Callback Methods
 type DataCallback struct {
