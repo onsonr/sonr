@@ -43,7 +43,7 @@ type Chunk struct {
 type DataStreamConn struct {
 	Call DataCallback
 	Self *pb.Peer
-	File *sf.SonrFile
+	File sf.SonrFile
 	Peer *pb.Peer
 
 	id     string

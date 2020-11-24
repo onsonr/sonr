@@ -2,8 +2,9 @@ package file
 
 import (
 	"bufio"
-	"bytes"
 	"fmt"
+	"log"
+	"os"
 	"sync"
 
 	pb "github.com/sonr-io/core/internal/models"
@@ -13,21 +14,27 @@ type SonrFile struct {
 	Metadata *pb.Metadata
 	path     string
 	writer   *bufio.Writer
-	buffer   bytes.Buffer
+	file     *os.File
 	mutex    sync.Mutex
 }
 
 // ^ Create new SonrFile struct with meta and documents directory ^ //
-func NewFile(docDir string, meta *pb.Metadata) *SonrFile {
+func NewFile(docDir string, meta *pb.Metadata) SonrFile {
 	docPath := fmt.Sprintf(docDir + "/" + meta.Name)
 
-	sf := SonrFile{
-		Metadata: meta,
-		path:     docPath,
+	file, err := os.Create(docPath)
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	sf.writer = bufio.NewWriter(&sf.buffer)
-	return &sf
+	wr := bufio.NewWriter(file)
+
+	return SonrFile{
+		Metadata: meta,
+		path:     docPath,
+		file:     file,
+		writer:   wr,
+	}
 }
 
 // ^ Add Block to SonrFile Buffer ^ //
@@ -54,9 +61,14 @@ func (sf *SonrFile) Save() string {
 		fmt.Println("error flushing sonr file")
 	}
 
-	if sf.Metadata.Kind == "image" {
-		EncodeImage(sf.buffer, sf.path)
+	// Close The File
+	err = sf.file.Close()
+	if err != nil {
+		fmt.Println("error closing sonr file")
 	}
+
+	// Encode as Jpeg
+	
 	// Return Block
 	return sf.path
 }
