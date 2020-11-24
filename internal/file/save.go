@@ -2,8 +2,10 @@ package file
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
-	"log"
+	"image"
+	"image/jpeg"
 	"os"
 	"sync"
 
@@ -14,25 +16,21 @@ type SonrFile struct {
 	Metadata *pb.Metadata
 	path     string
 	writer   *bufio.Writer
-	file     *os.File
-	mutex    sync.Mutex
+	buffer   bytes.Buffer
+	//file     *os.File
+	mutex sync.Mutex
 }
 
 // ^ Create new SonrFile struct with meta and documents directory ^ //
 func NewFile(docDir string, meta *pb.Metadata) SonrFile {
 	docPath := fmt.Sprintf(docDir + "/" + meta.Name)
 
-	file, err := os.Create(docPath)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	wr := bufio.NewWriter(file)
+	buffer := new(bytes.Buffer)
+	wr := bufio.NewWriter(buffer)
 
 	return SonrFile{
 		Metadata: meta,
 		path:     docPath,
-		file:     file,
 		writer:   wr,
 	}
 }
@@ -55,11 +53,30 @@ func (sf *SonrFile) Save() string {
 	sf.mutex.Lock()
 	defer sf.mutex.Unlock()
 
-	// Wait for block to be added
+	// Flush to Buffer
 	err := sf.writer.Flush()
 	if err != nil {
 		fmt.Println("error flushing sonr file")
 	}
+
+	// Decode Buffer
+	imgByte := sf.buffer.Bytes()
+
+	// Decode Buffer into Img
+	img, _, err := image.Decode(bytes.NewReader(imgByte))
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// Set Options
+	var opts jpeg.Options
+	opts.Quality = 1
+
+	// Create File at Path
+	f, err := os.Create(sf.path)
+	defer f.Close()
+	jpeg.Encode(f, img, &opts)
+
 	// Return Block
 	return sf.path
 }
