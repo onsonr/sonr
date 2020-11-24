@@ -22,11 +22,20 @@ message RequestMessage {
 }
 
 // [PLUGIN]
-// Initial Request Message
+// On Data Transfer
 message ProgressMessage {
   int64 current = 1;
   int64 total = 2;
   float progress = 3;
+}
+
+// [PLUGIN]
+// On Transfer Completed
+message CompletedMessage {
+  Peer from = 1;
+  Metadata metadata = 2;
+  string path = 3;
+  int64 received = 4;
 }
 
 // Authorization message sent in stream

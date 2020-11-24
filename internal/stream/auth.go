@@ -118,6 +118,7 @@ func (asc *AuthStreamConn) read(mrw msgio.ReadCloser) error {
 // ^ Handle Received Message ^ //
 func (asc *AuthStreamConn) handleMessage(msg *pb.AuthMessage) {
 	// ** Convert Protobuf to bytes **
+	asc.Peer = msg.From
 	msgBytes, err := proto.Marshal(msg)
 	if err != nil {
 		fmt.Println(err)

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"time"
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -20,7 +21,7 @@ import (
 type OnProgressed func(data []byte)
 type OnComplete func(data []byte)
 
-const BlockSize = 16000
+const BlockSize = 64000
 
 // Struct to Implement Node Callback Methods
 type DataCallback struct {
@@ -43,10 +44,10 @@ type DataStreamConn struct {
 	Call DataCallback
 	Self *pb.Peer
 	File sf.SonrFile
+	Peer *pb.Peer
 
 	id     string
 	data   *pb.Metadata
-	remote *pb.Peer
 	stream network.Stream
 	writer msgio.Writer
 }
@@ -62,7 +63,7 @@ func (dsc *DataStreamConn) Transfer(ctx context.Context, h host.Host, id peer.ID
 	// Set Stream
 	dsc.stream = stream
 	dsc.id = stream.ID()
-	dsc.remote = r
+	dsc.Peer = r
 	dsc.writer = msgio.NewWriter(dsc.stream)
 
 	// Print Stream Info
@@ -115,9 +116,28 @@ func (dsc *DataStreamConn) readBlock(mrw msgio.ReadCloser) error {
 		// Save File on Buffer Complete
 		if msg.Current == msg.Total {
 			// Add Block to Buffer
-			dsc.File.AddBlock(msg.Data)
-			dsc.File.Save()
 			fmt.Println("Completed All Blocks, Save the File")
+			dsc.File.AddBlock(msg.Data)
+
+			// Save The File
+			savePath := dsc.File.Save()
+
+			// Create Completed Protobuf
+			completedMessage := pb.CompletedMessage{
+				From:     dsc.Peer,
+				Metadata: dsc.File.Metadata,
+				Path:     savePath,
+				Received: int64(time.Now().Unix()),
+			}
+
+			// Convert to Bytes
+			bytes, err := proto.Marshal(&completedMessage)
+			if err != nil {
+				dsc.Call.Error(err, "Completed")
+			}
+
+			// Callback Completed
+			dsc.Call.Completed(bytes)
 			break
 		}
 	}
