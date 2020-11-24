@@ -3,8 +3,8 @@ package stream
 import (
 	"context"
 	"fmt"
+	"io"
 	"os"
-	"sync"
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -86,46 +86,42 @@ func (dsc *DataStreamConn) HandleStream(stream network.Stream) {
 
 	// Initialize Routine
 	mrw := msgio.NewReader(dsc.stream)
-	go dsc.read(mrw)
+	go dsc.readBlock(mrw)
 }
 
 // ^ read Data from Msgio ^ //
-func (dsc *DataStreamConn) read(mrw msgio.ReadCloser) error {
-	// Read Length Fixed Bytes
-	lengthBytes, err := mrw.ReadMsg()
-	if err != nil {
-		dsc.Call.Error(err, "read")
-	}
+func (dsc *DataStreamConn) readBlock(mrw msgio.ReadCloser) error {
+	for {
+		// Read Length Fixed Bytes
+		buffer, err := mrw.ReadMsg()
+		if err != nil {
+			dsc.Call.Error(err, "read")
+			return err
+		}
+		// Unmarshal Bytes into Proto
+		msg := pb.Block{}
+		err = proto.Unmarshal(buffer, &msg)
+		if err != nil {
+			dsc.Call.Error(err, "read")
+			return err
+		}
 
-	// Unmarshal Bytes into Proto
-	protoMsg := &pb.Block{}
-	err = proto.Unmarshal(lengthBytes, protoMsg)
-	if err != nil {
-		dsc.Call.Error(err, "read")
-	}
+		if msg.Current < msg.Total {
+			// Add Block to Buffer
+			dsc.File.AddBlock(msg.Data)
+			dsc.sendProgress(msg.Current, msg.Total)
+		}
 
-	dsc.handleBlock(protoMsg)
-	mrw.ReleaseMsg(lengthBytes)
+		// Save File on Buffer Complete
+		if msg.Current == msg.Total {
+			// Add Block to Buffer
+			dsc.File.AddBlock(msg.Data)
+			dsc.File.Save()
+			fmt.Println("Completed All Blocks, Save the File")
+			break
+		}
+	}
 	return nil
-}
-
-// ^ Handle Received Message ^ //
-func (dsc *DataStreamConn) handleBlock(msg *pb.Block) {
-	// Verify Bytes Remaining
-	fmt.Println("Current ", msg.Current, "Total ", msg.Total)
-
-	if msg.Current < msg.Total {
-		// Add Block to Buffer
-		dsc.File.AddBlock(msg.Data)
-		go dsc.sendProgress(msg.Current, msg.Total)
-	}
-
-	// Save File on Buffer Complete
-	if msg.Current == msg.Total {
-		// Add Block to Buffer
-		dsc.File.AddBlock(msg.Data)
-		fmt.Println("Completed All Blocks, Save the File")
-	}
 }
 
 func (dsc *DataStreamConn) sendProgress(current int64, total int64) {
@@ -152,6 +148,7 @@ func (dsc *DataStreamConn) sendProgress(current int64, total int64) {
 func (dsc *DataStreamConn) writeFile(sm *sf.SafeMeta) error {
 	// Get Metadata
 	meta := sm.Metadata()
+
 	// Open File
 	file, err := os.Open(meta.Path)
 	if err != nil {
@@ -159,72 +156,45 @@ func (dsc *DataStreamConn) writeFile(sm *sf.SafeMeta) error {
 	}
 	defer file.Close()
 
-	// Number of go routines we need to spawn.
-	concurrency := int(meta.Blocks)
-	// buffer sizes that each of the go routine below should use. ReadAt
-	// returns an error if the buffer size is larger than the bytes returned
-	// from the file.
-	chunksizes := make([]Chunk, concurrency)
+	// Initialize Chunk Buffer
+	buffer := make([]byte, BlockSize)
+	i := 0
 
-	// All buffer sizes are the same in the normal case. Offsets depend on the
-	// index. Second go routine should start at 100, for example, given our
-	// buffer size of 100.
-	for i := 0; i < concurrency; i++ {
-		chunksizes[i].Size = BlockSize
-		chunksizes[i].Offset = int64(BlockSize * i)
-	}
-
-	// check for any left over bytes. Add the residual number of bytes as the
-	// the last chunk size.
-	if remainder := meta.Size % BlockSize; remainder != 0 {
-		c := Chunk{Size: remainder, Offset: int64(concurrency * BlockSize)}
-		concurrency++
-		chunksizes = append(chunksizes, c)
-	}
-
-	var wg sync.WaitGroup
-	wg.Add(concurrency)
-
-	for i := 0; i < concurrency; i++ {
-		go func(chunksizes []Chunk, i int) {
-			defer wg.Done()
-
-			// Create Chunk Data
-			chunk := chunksizes[i]
-			chunk.Current = int64(i)
-			chunk.Total = int64(concurrency)
-			chunk.Data = make([]byte, chunk.Size)
-			bytesread, err := file.ReadAt(chunk.Data, chunk.Offset)
-			if err != nil {
+	// Iterate for Entire file
+	for {
+		i++
+		// Read bytes at file
+		bytesread, err := file.Read(buffer)
+		if err != nil {
+			if err != io.EOF {
 				fmt.Println(err)
 			}
 
-			// Create Block Protobuf from Chunk
-			block := &pb.Block{
-				Size:    chunk.Size,
-				Offset:  chunk.Offset,
-				Data:    chunk.Data,
-				Current: chunk.Current,
-				Total:   chunk.Total,
-			}
-			fmt.Println("Block: ", block.String())
+			break
+		}
 
-			// Convert to bytes
-			bytes, err := proto.Marshal(block)
-			if err != nil {
-				dsc.Call.Error(err, "writeFileToStream")
-			}
+		// Create Block Protobuf from Chunk
+		block := pb.Block{
+			Size:    int64(len(buffer)),
+			Data:    buffer[:bytesread],
+			Current: int64(i),
+			Total:   meta.Blocks,
+		}
+		fmt.Println("Block: ", block.String())
 
-			// Write Message Bytes to Stream
-			if err := dsc.writer.WriteMsg(bytes); err != nil {
-				dsc.Call.Error(err, "writeFileToStream")
-			}
+		// Convert to bytes
+		bytes, err := proto.Marshal(&block)
+		if err != nil {
+			dsc.Call.Error(err, "writeFileToStream")
+		}
 
-			fmt.Println("bytes read, string(bytestream): ", bytesread)
-			fmt.Println("bytestream to string: ", string(chunk.Data))
-		}(chunksizes, i)
+		// Write Message Bytes to Stream
+		err = dsc.writer.WriteMsg(bytes)
+		if err != nil {
+			dsc.Call.Error(err, "writeFileToStream")
+		}
+
+		fmt.Println("bytes read: ", bytesread)
 	}
-
-	wg.Wait()
 	return nil
 }
