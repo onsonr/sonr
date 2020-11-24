@@ -4,9 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"image"
-	"image/jpeg"
-	"os"
 	"sync"
 
 	pb "github.com/sonr-io/core/internal/models"
@@ -17,22 +14,20 @@ type SonrFile struct {
 	path     string
 	writer   *bufio.Writer
 	buffer   bytes.Buffer
-	//file     *os.File
-	mutex sync.Mutex
+	mutex    sync.Mutex
 }
 
 // ^ Create new SonrFile struct with meta and documents directory ^ //
-func NewFile(docDir string, meta *pb.Metadata) SonrFile {
+func NewFile(docDir string, meta *pb.Metadata) *SonrFile {
 	docPath := fmt.Sprintf(docDir + "/" + meta.Name)
 
-	buffer := new(bytes.Buffer)
-	wr := bufio.NewWriter(buffer)
-
-	return SonrFile{
+	sf := SonrFile{
 		Metadata: meta,
 		path:     docPath,
-		writer:   wr,
 	}
+
+	sf.writer = bufio.NewWriter(&sf.buffer)
+	return &sf
 }
 
 // ^ Add Block to SonrFile Buffer ^ //
@@ -53,30 +48,15 @@ func (sf *SonrFile) Save() string {
 	sf.mutex.Lock()
 	defer sf.mutex.Unlock()
 
-	// Flush to Buffer
+	// Wait for block to be added
 	err := sf.writer.Flush()
 	if err != nil {
 		fmt.Println("error flushing sonr file")
 	}
 
-	// Decode Buffer
-	imgByte := sf.buffer.Bytes()
-
-	// Decode Buffer into Img
-	img, _, err := image.Decode(bytes.NewReader(imgByte))
-	if err != nil {
-		fmt.Println(err)
+	if sf.Metadata.Kind == "image" {
+		EncodeImage(sf.buffer, sf.path)
 	}
-
-	// Set Options
-	var opts jpeg.Options
-	opts.Quality = 1
-
-	// Create File at Path
-	f, err := os.Create(sf.path)
-	defer f.Close()
-	jpeg.Encode(f, img, &opts)
-
 	// Return Block
 	return sf.path
 }
