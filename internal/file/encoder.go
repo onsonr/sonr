@@ -1,27 +1,33 @@
 package file
 
 import (
-	"fmt"
+	"bytes"
 	"image"
 	"image/jpeg"
+	"log"
 	"os"
 )
 
-func EncodeImage(path string) {
-	file, err := os.Open(path)
+func EncodeImage(imgByte []byte, path string) (string, error) {
+	// Read Buffer
+	img, _, err := image.Decode(bytes.NewReader(imgByte))
 	if err != nil {
-		fmt.Println("Opening File: ", err)
-	}
-	defer file.Close()
-
-	// Convert to Image Object
-	img, _, err := image.Decode(file)
-	if err != nil {
-		fmt.Println("Decoding: ", err)
+		log.Fatalln(err)
 	}
 
-	err = jpeg.Encode(file, img, nil)
+	// Create File at Path
+	out, _ := os.Create(path)
+	defer out.Close()
+
+	// Encode to Jpeg
+	var opts jpeg.Options
+	opts.Quality = 1
+
+	// Encode bytes into file
+	err = jpeg.Encode(out, img, &opts)
 	if err != nil {
-		fmt.Println("Encoding: ", err)
+		log.Println(err)
+		return "", err
 	}
+	return path, nil
 }

@@ -120,7 +120,10 @@ func (dsc *DataStreamConn) readBlock(mrw msgio.ReadCloser) error {
 			dsc.File.AddBlock(msg.Data)
 
 			// Save The File
-			savePath := dsc.File.Save()
+			savePath, err := dsc.File.Save()
+			if err != nil {
+				dsc.Call.Error(err, "Save")
+			}
 
 			// Create Completed Protobuf
 			completedMessage := pb.CompletedMessage{

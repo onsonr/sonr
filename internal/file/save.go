@@ -1,10 +1,8 @@
 package file
 
 import (
-	"bufio"
+	"bytes"
 	"fmt"
-	"log"
-	"os"
 	"sync"
 
 	pb "github.com/sonr-io/core/internal/models"
@@ -13,8 +11,7 @@ import (
 type SonrFile struct {
 	Metadata *pb.Metadata
 	path     string
-	writer   *bufio.Writer
-	file     *os.File
+	buffer   *bytes.Buffer
 	mutex    sync.Mutex
 }
 
@@ -22,18 +19,10 @@ type SonrFile struct {
 func NewFile(docDir string, meta *pb.Metadata) SonrFile {
 	docPath := fmt.Sprintf(docDir + "/" + meta.Name)
 
-	file, err := os.Create(docPath)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	wr := bufio.NewWriter(file)
-
 	return SonrFile{
 		Metadata: meta,
 		path:     docPath,
-		file:     file,
-		writer:   wr,
+		buffer:   new(bytes.Buffer),
 	}
 }
 
@@ -41,7 +30,7 @@ func NewFile(docDir string, meta *pb.Metadata) SonrFile {
 func (sf *SonrFile) AddBlock(block []byte) {
 	sf.mutex.Lock()
 	// Add Block to Buffer
-	written, err := sf.writer.Write(block)
+	written, err := sf.buffer.Write(block)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -51,24 +40,17 @@ func (sf *SonrFile) AddBlock(block []byte) {
 }
 
 // ^ Save file of Documents Directory and Return Path ^ //
-func (sf *SonrFile) Save() string {
+func (sf *SonrFile) Save() (string, error) {
 	sf.mutex.Lock()
 	defer sf.mutex.Unlock()
 
-	// Wait for block to be added
-	err := sf.writer.Flush()
-	if err != nil {
-		fmt.Println("error flushing sonr file")
-	}
-
-	// Close The File
-	err = sf.file.Close()
-	if err != nil {
-		fmt.Println("error closing sonr file")
-	}
-
 	// Encode as Jpeg
-	
+	bytes := sf.buffer.Bytes()
+	_, err := EncodeImage(bytes, sf.path)
+	if err != nil {
+		return "", err
+	}
+
 	// Return Block
-	return sf.path
+	return sf.path, nil
 }
