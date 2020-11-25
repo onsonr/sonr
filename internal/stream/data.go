@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"os"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/host"
@@ -173,11 +172,10 @@ func (dsc *DataStreamConn) writeFile(sm *sf.SafeMeta) error {
 	meta := sm.Metadata()
 
 	// Open File
-	file, err := os.Open(meta.Path)
+	file, err := sf.DecodeImage(meta.Path)
 	if err != nil {
-		return err
+		dsc.Call.Error(err, "writeFile")
 	}
-	defer file.Close()
 
 	// Initialize Chunk Buffer
 	buffer := make([]byte, BlockSize)
@@ -190,12 +188,11 @@ func (dsc *DataStreamConn) writeFile(sm *sf.SafeMeta) error {
 		bytesread, err := file.Read(buffer)
 		if err != nil {
 			if err != io.EOF {
-				fmt.Println(err)
+				dsc.Call.Error(err, "writeFile")
+				panic(err)
 			}
-
 			break
 		}
-
 		// Create Block Protobuf from Chunk
 		block := pb.Block{
 			Size:    int64(len(buffer)),
