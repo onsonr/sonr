@@ -16,7 +16,6 @@ import (
 
 type SonrFile struct {
 	Metadata *pb.Metadata
-	path     string
 	builder  *strings.Builder
 	mutex    sync.Mutex
 }
@@ -29,11 +28,8 @@ var (
 
 // ^ Create new SonrFile struct with meta and documents directory ^ //
 func NewFile(docDir string, meta *pb.Metadata) SonrFile {
-	docPath := fmt.Sprintf(docDir + "/" + meta.Name)
-
 	return SonrFile{
 		Metadata: meta,
-		path:     docPath,
 		builder:  new(strings.Builder),
 	}
 }
@@ -94,5 +90,5 @@ func (sf *SonrFile) Save() (string, error) {
 	time.After(time.Second)
 
 	// Return Block
-	return sf.path, nil
+	return fileName, nil
 }
