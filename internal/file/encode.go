@@ -9,6 +9,7 @@ import (
 	"os"
 )
 
+// ^ Encode Image Bytes into File at Path ^ //
 func EncodeImage(imgByte []byte, path string) (string, error) {
 	// Read Buffer
 	img, _, err := image.Decode(bytes.NewReader(imgByte))
@@ -33,6 +34,7 @@ func EncodeImage(imgByte []byte, path string) (string, error) {
 	return path, nil
 }
 
+// ^ Decode Image at File Path and Return as Buffer ^ //
 func DecodeImage(path string) (*bytes.Buffer, error) {
 	// Initialize Buffer
 	imgBuffer := new(bytes.Buffer)

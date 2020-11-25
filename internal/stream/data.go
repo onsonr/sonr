@@ -2,8 +2,9 @@ package stream
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
-	"io"
+	"io/ioutil"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/host"
@@ -20,7 +21,7 @@ import (
 type OnProgressed func(data []byte)
 type OnComplete func(data []byte)
 
-const BlockSize = 16000
+const ChunkSize = 1200
 
 // Struct to Implement Node Callback Methods
 type DataCallback struct {
@@ -171,32 +172,27 @@ func (dsc *DataStreamConn) writeFile(sm *sf.SafeMeta) error {
 	// Get Metadata
 	meta := sm.Metadata()
 
-	// Open File
-	file, err := sf.DecodeImage(meta.Path)
+	// Open File at Path
+	fileBytes, err := ioutil.ReadFile(meta.Path)
+
+	// Check For Error
 	if err != nil {
-		dsc.Call.Error(err, "writeFile")
+		fmt.Println(err)
+		return err
 	}
 
-	// Initialize Chunk Buffer
-	buffer := make([]byte, BlockSize)
-	i := 0
+	// Convert the buffer bytes to base64 string
+	b64 := base64.StdEncoding.EncodeToString(fileBytes)
 
-	// Iterate for Entire file
-	for {
-		i++
-		// Read bytes at file
-		bytesread, err := file.Read(buffer)
-		if err != nil {
-			if err != io.EOF {
-				dsc.Call.Error(err, "writeFile")
-				panic(err)
-			}
-			break
-		}
+	// Split String into Chunks
+	for i, chunk := range splitString(b64, ChunkSize) {
+		// Log Chunk
+		fmt.Println(i, " = ", chunk)
+
 		// Create Block Protobuf from Chunk
 		block := pb.Block{
-			Size:    int64(len(buffer)),
-			Data:    buffer[:bytesread],
+			Size:    int64(len(chunk)),
+			Data:    chunk,
 			Current: int64(i),
 			Total:   meta.Blocks,
 		}
@@ -213,8 +209,18 @@ func (dsc *DataStreamConn) writeFile(sm *sf.SafeMeta) error {
 		if err != nil {
 			dsc.Call.Error(err, "writeFileToStream")
 		}
-
-		fmt.Println("bytes read: ", bytesread)
 	}
 	return nil
+}
+
+func splitString(s string, size int) []string {
+	ss := make([]string, 0, len(s)/size+1)
+	for len(s) > 0 {
+		if len(s) < size {
+			size = len(s)
+		}
+		ss, s = append(ss, s[:size]), s[size:]
+
+	}
+	return ss
 }
