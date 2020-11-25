@@ -8,7 +8,7 @@ GOBIND=$(GOMOBILE) bind
 
 # GoMobile Directories
 IOS_BUILDDIR=/Users/prad/Sonr/plugin/ios/Frameworks
-ANDROID_BUILDDIR=/Users/prad/Sonr/plugin/android/src/main/libs
+ANDROID_BUILDDIR=/Users/prad/Sonr/plugin/android/libs
 
 # Platform Specific Parameters
 IOS_ARTIFACT=$(IOS_BUILDDIR)/Core.framework
