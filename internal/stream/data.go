@@ -3,10 +3,10 @@ package stream
 import (
 	"bytes"
 	"context"
+	"encoding/base64"
 	"fmt"
 	"image"
 	"image/jpeg"
-	"io"
 	"os"
 	"time"
 
@@ -197,27 +197,15 @@ func (dsc *DataStreamConn) writeFile(sm *sf.SafeMeta) error {
 		fmt.Println(err)
 		dsc.Call.Error(err, "AddFile")
 	}
-	i := 0
+
+	b64 := base64.StdEncoding.EncodeToString(imgBuffer.Bytes())
 
 	// Iterate for Entire file
-	for {
-		// Initialize Chunk Buffer
-		buffer := make([]byte, ChunkSize)
-
-		// Read bytes at file
-		bytesread, err := imgBuffer.Read(buffer)
-		if err != nil {
-			if err != io.EOF {
-				fmt.Println(err)
-			}
-
-			break
-		}
-
+	for i, chunk := range splitString(b64, ChunkSize) {
 		// Create Block Protobuf from Chunk
 		block := pb.Block{
-			Size:    int64(len(buffer)),
-			Data:    buffer,
+			Size:    int64(len(chunk)),
+			Data:    chunk,
 			Current: int64(i),
 			Total:   meta.Blocks,
 		}
@@ -234,8 +222,7 @@ func (dsc *DataStreamConn) writeFile(sm *sf.SafeMeta) error {
 		if err != nil {
 			dsc.Call.Error(err, "writeFileToStream")
 		}
-
-		fmt.Println("bytes read: ", bytesread)
+		fmt.Println("Chunk read: ", int64(len(chunk)))
 	}
 	return nil
 }

@@ -115,7 +115,7 @@ func (sf *SafeMeta) Generate() {
 	// @ 3. Set Metadata Protobuf Values
 	sf.meta = pb.Metadata{
 		FileId:    uuid.New().String(),
-		Name:      fileNameWithoutExtension(sf.Path),
+		Name:      filepath.Base(sf.Path),
 		Path:      sf.Path,
 		Size:      info.Size(),
 		Blocks:    info.Size() / BlockSize,

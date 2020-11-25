@@ -1,12 +1,11 @@
 package file
 
 import (
-	"bytes"
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"image"
-	"io/ioutil"
+	"log"
+	"os"
 	"strings"
 	"sync"
 	"time"
@@ -16,6 +15,7 @@ import (
 
 type SonrFile struct {
 	Metadata *pb.Metadata
+	Path     string
 	builder  *strings.Builder
 	mutex    sync.Mutex
 }
@@ -28,18 +28,20 @@ var (
 
 // ^ Create new SonrFile struct with meta and documents directory ^ //
 func NewFile(docDir string, meta *pb.Metadata) SonrFile {
+
 	return SonrFile{
 		Metadata: meta,
 		builder:  new(strings.Builder),
+		Path:     docDir + "/" + meta.Name,
 	}
 }
 
 // ^ Add Block to SonrFile Buffer ^ //
-func (sf *SonrFile) AddBlock(block []byte) {
+func (sf *SonrFile) AddBlock(block string) {
 	// ** Lock ** //
 	sf.mutex.Lock()
 	// Add Block to Buffer
-	written, err := sf.builder.Write(block)
+	written, err := sf.builder.WriteString(block)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -59,37 +61,30 @@ func (sf *SonrFile) Save() (string, error) {
 	// Get Base64 Data
 	data := sf.builder.String()
 
-	// Verify Image Type
-	idx := strings.Index(data, ";base64,")
-	if idx < 0 {
-		return "", ErrInvalidImage
-	}
-
-	// Open Base64 Decode
-	reader := base64.NewDecoder(base64.StdEncoding, strings.NewReader(data[idx+8:]))
-	buff := bytes.Buffer{}
-	_, err := buff.ReadFrom(reader)
+	// Get Bytes from base64
+	bytes, err := base64.StdEncoding.DecodeString(data)
 	if err != nil {
-		return "", err
+		log.Fatal("error:", err)
 	}
-
-	// Check Image Configuration, Retreive Format
-	imgCfg, fm, err := image.DecodeConfig(bytes.NewReader(buff.Bytes()))
-	if err != nil {
-		return "", err
-	}
-
-	if imgCfg.Width != 750 || imgCfg.Height != 685 {
-		return "", ErrSize
-	}
-
-	// Write Data as FileName to Path
-	fileName := sf.Metadata.Name + "." + fm
-	ioutil.WriteFile(fileName, buff.Bytes(), 0644)
 
 	// Create Delay
 	time.After(time.Second)
 
+	// Create File at Path
+	f, err := os.Create(sf.Path)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer f.Close()
+
+	// Write Bytes to to file
+	if _, err := f.Write(bytes); err != nil {
+		log.Fatalln(err)
+	}
+	if err := f.Sync(); err != nil {
+		log.Fatalln(err)
+	}
+
 	// Return Block
-	return fileName, nil
+	return sf.Path, nil
 }
