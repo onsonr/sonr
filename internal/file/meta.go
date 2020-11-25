@@ -162,5 +162,6 @@ func calculateRatioFit(srcWidth, srcHeight int) (int, int) {
 }
 
 func fileNameWithoutExtension(fileName string) string {
-	return strings.TrimSuffix(fileName, filepath.Ext(fileName))
+	base := filepath.Base(fileName)
+	return strings.TrimSuffix(base, filepath.Ext(fileName))
 }

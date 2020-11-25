@@ -1,10 +1,13 @@
 package stream
 
 import (
+	"bytes"
 	"context"
-	"encoding/base64"
 	"fmt"
-	"io/ioutil"
+	"image"
+	"image/jpeg"
+	"io"
+	"os"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/host"
@@ -21,7 +24,7 @@ import (
 type OnProgressed func(data []byte)
 type OnComplete func(data []byte)
 
-const ChunkSize = 1200
+const ChunkSize = 16000
 
 // Struct to Implement Node Callback Methods
 type DataCallback struct {
@@ -171,28 +174,50 @@ func (dsc *DataStreamConn) sendProgress(current int64, total int64) {
 func (dsc *DataStreamConn) writeFile(sm *sf.SafeMeta) error {
 	// Get Metadata
 	meta := sm.Metadata()
+	imgBuffer := new(bytes.Buffer)
 
-	// Open File at Path
-	fileBytes, err := ioutil.ReadFile(meta.Path)
-
-	// Check For Error
+	// New File for ThumbNail
+	file, err := os.Open(meta.Path)
 	if err != nil {
 		fmt.Println(err)
-		return err
+		dsc.Call.Error(err, "AddFile")
+	}
+	defer file.Close()
+
+	// Convert to Image Object
+	img, _, err := image.Decode(file)
+	if err != nil {
+		fmt.Println(err)
+		dsc.Call.Error(err, "AddFile")
 	}
 
-	// Convert the buffer bytes to base64 string
-	b64 := base64.StdEncoding.EncodeToString(fileBytes)
+	// Encode as Jpeg into buffer
+	err = jpeg.Encode(imgBuffer, img, nil)
+	if err != nil {
+		fmt.Println(err)
+		dsc.Call.Error(err, "AddFile")
+	}
+	i := 0
 
-	// Split String into Chunks
-	for i, chunk := range splitString(b64, ChunkSize) {
-		// Log Chunk
-		fmt.Println(i, " = ", chunk)
+	// Iterate for Entire file
+	for {
+		// Initialize Chunk Buffer
+		buffer := make([]byte, ChunkSize)
+
+		// Read bytes at file
+		bytesread, err := imgBuffer.Read(buffer)
+		if err != nil {
+			if err != io.EOF {
+				fmt.Println(err)
+			}
+
+			break
+		}
 
 		// Create Block Protobuf from Chunk
 		block := pb.Block{
-			Size:    int64(len(chunk)),
-			Data:    chunk,
+			Size:    int64(len(buffer)),
+			Data:    buffer,
 			Current: int64(i),
 			Total:   meta.Blocks,
 		}
@@ -209,6 +234,8 @@ func (dsc *DataStreamConn) writeFile(sm *sf.SafeMeta) error {
 		if err != nil {
 			dsc.Call.Error(err, "writeFileToStream")
 		}
+
+		fmt.Println("bytes read: ", bytesread)
 	}
 	return nil
 }

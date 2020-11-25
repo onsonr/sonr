@@ -35,16 +35,17 @@ func NewFile(docDir string, meta *pb.Metadata) SonrFile {
 }
 
 // ^ Add Block to SonrFile Buffer ^ //
-func (sf *SonrFile) AddBlock(block string) {
+func (sf *SonrFile) AddBlock(block []byte) {
 	// ** Lock ** //
 	sf.mutex.Lock()
 	// Add Block to Buffer
-	written, err := sf.builder.WriteString(block)
+	written, err := sf.builder.Write(block)
 	if err != nil {
 		fmt.Println(err)
 	}
 
 	fmt.Println("Bytes Written: ", written)
+	fmt.Println("Bytes Total: ", sf.builder.Len())
 	sf.mutex.Unlock()
 	// ** Unlock ** //
 }
