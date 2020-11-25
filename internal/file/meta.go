@@ -6,6 +6,7 @@ import (
 	"math"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 
 	"fmt"
@@ -158,4 +159,9 @@ const MAX_HEIGHT float64 = 240
 func calculateRatioFit(srcWidth, srcHeight int) (int, int) {
 	ratio := math.Min(MAX_WIDTH/float64(srcWidth), MAX_HEIGHT/float64(srcHeight))
 	return int(math.Ceil(float64(srcWidth) * ratio)), int(math.Ceil(float64(srcHeight) * ratio))
+}
+
+func fileNameWithoutExtension(fileName string) string {
+	base := filepath.Base(fileName)
+	return strings.TrimSuffix(base, filepath.Ext(fileName))
 }

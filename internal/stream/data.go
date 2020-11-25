@@ -1,9 +1,12 @@
 package stream
 
 import (
+	"bytes"
 	"context"
+	"encoding/base64"
 	"fmt"
-	"io"
+	"image"
+	"image/jpeg"
 	"os"
 	"time"
 
@@ -21,7 +24,7 @@ import (
 type OnProgressed func(data []byte)
 type OnComplete func(data []byte)
 
-const BlockSize = 16000
+const ChunkSize = 16000
 
 // Struct to Implement Node Callback Methods
 type DataCallback struct {
@@ -171,35 +174,38 @@ func (dsc *DataStreamConn) sendProgress(current int64, total int64) {
 func (dsc *DataStreamConn) writeFile(sm *sf.SafeMeta) error {
 	// Get Metadata
 	meta := sm.Metadata()
+	imgBuffer := new(bytes.Buffer)
 
-	// Open File
+	// New File for ThumbNail
 	file, err := os.Open(meta.Path)
 	if err != nil {
-		return err
+		fmt.Println(err)
+		dsc.Call.Error(err, "AddFile")
 	}
 	defer file.Close()
 
-	// Initialize Chunk Buffer
-	buffer := make([]byte, BlockSize)
-	i := 0
+	// Convert to Image Object
+	img, _, err := image.Decode(file)
+	if err != nil {
+		fmt.Println(err)
+		dsc.Call.Error(err, "AddFile")
+	}
+
+	// Encode as Jpeg into buffer
+	err = jpeg.Encode(imgBuffer, img, nil)
+	if err != nil {
+		fmt.Println(err)
+		dsc.Call.Error(err, "AddFile")
+	}
+
+	b64 := base64.StdEncoding.EncodeToString(imgBuffer.Bytes())
 
 	// Iterate for Entire file
-	for {
-		i++
-		// Read bytes at file
-		bytesread, err := file.Read(buffer)
-		if err != nil {
-			if err != io.EOF {
-				fmt.Println(err)
-			}
-
-			break
-		}
-
+	for i, chunk := range splitString(b64, ChunkSize) {
 		// Create Block Protobuf from Chunk
 		block := pb.Block{
-			Size:    int64(len(buffer)),
-			Data:    buffer[:bytesread],
+			Size:    int64(len(chunk)),
+			Data:    chunk,
 			Current: int64(i),
 			Total:   meta.Blocks,
 		}
@@ -216,8 +222,19 @@ func (dsc *DataStreamConn) writeFile(sm *sf.SafeMeta) error {
 		if err != nil {
 			dsc.Call.Error(err, "writeFileToStream")
 		}
-
-		fmt.Println("bytes read: ", bytesread)
+		fmt.Println("Chunk read: ", int64(len(chunk)))
 	}
 	return nil
+}
+
+func splitString(s string, size int) []string {
+	ss := make([]string, 0, len(s)/size+1)
+	for len(s) > 0 {
+		if len(s) < size {
+			size = len(s)
+		}
+		ss, s = append(ss, s[:size]), s[size:]
+
+	}
+	return ss
 }
