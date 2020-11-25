@@ -8,17 +8,18 @@ GOBIND=$(GOMOBILE) bind
 
 # GoMobile Directories
 IOS_BUILDDIR=/Users/prad/Sonr/plugin/ios/Frameworks
-ANDROID_BUILDDIR=/Users/prad/Sonr/plugin/android/libs
+ANDROID_BUILDDIR=/Users/prad/Sonr/plugin/android/src/main/libs
 
 # Platform Specific Parameters
 IOS_ARTIFACT=$(IOS_BUILDDIR)/Core.framework
 IOS_TARGET=ios/arm64
 ANDROID_ARTIFACT=$(ANDROID_BUILDDIR)/io.sonr.core.aar
 ANDROID_TARGET=android
+LD_FLAGS='-s -w'
 
 # Gomobile Build Commands
-BUILD_IOS="cd bind && $(GOCLEAN) &&  $(GOBIND) -target=$(IOS_TARGET) -v -o $(IOS_ARTIFACT)"
-BUILD_ANDROID="cd bind && $(GOCLEAN) && $(GOBIND) -target=$(ANDROID_TARGET) -v -o $(ANDROID_ARTIFACT)"
+BUILD_IOS="cd bind && $(GOCLEAN) &&  $(GOBIND) -ldflags=$(LD_FLAGS) -target=$(IOS_TARGET) -v -o $(IOS_ARTIFACT)"
+BUILD_ANDROID="cd bind && $(GOCLEAN) && $(GOBIND) -ldflags=$(LD_FLAGS) -target=$(ANDROID_TARGET) -v -o $(ANDROID_ARTIFACT)"
 
 # Proto Directories
 PB_PATH="/Users/prad/Sonr/core/internal/models"
