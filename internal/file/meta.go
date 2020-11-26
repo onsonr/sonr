@@ -117,8 +117,8 @@ func (sf *SafeMeta) Generate() {
 		FileId:    uuid.New().String(),
 		Name:      filepath.Base(sf.Path),
 		Path:      sf.Path,
-		Size:      info.Size(),
-		Blocks:    info.Size() / BlockSize,
+		Size:      int32(info.Size()),
+		Blocks:    int32(info.Size()) / BlockSize,
 		Kind:      kind.MIME.Type,
 		Thumbnail: thumbBuffer.Bytes(),
 	}

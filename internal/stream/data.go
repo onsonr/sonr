@@ -128,12 +128,20 @@ func (dsc *DataStreamConn) readBlock(mrw msgio.ReadCloser) error {
 				dsc.Call.Error(err, "Save")
 			}
 
+			// Get Metadata
+			metadata, err := sf.GetMetadata(savePath)
+			if err != nil {
+				dsc.Call.Error(err, "Save")
+			}
+
+			// Create Delay
+			time.After(time.Millisecond * 500)
+
 			// Create Completed Protobuf
 			completedMessage := pb.CompletedMessage{
 				From:     dsc.Peer,
-				Metadata: dsc.File.Metadata,
-				Path:     savePath,
-				Received: int64(time.Now().Unix()),
+				Metadata: metadata,
+				Received: int32(time.Now().Unix()),
 			}
 
 			// Convert to Bytes
@@ -150,7 +158,7 @@ func (dsc *DataStreamConn) readBlock(mrw msgio.ReadCloser) error {
 	return nil
 }
 
-func (dsc *DataStreamConn) sendProgress(current int64, total int64) {
+func (dsc *DataStreamConn) sendProgress(current int32, total int32) {
 	// Calculate Progress
 	progress := float32(current) / float32(total)
 
@@ -204,9 +212,9 @@ func (dsc *DataStreamConn) writeFile(sm *sf.SafeMeta) error {
 	for i, chunk := range splitString(b64, ChunkSize) {
 		// Create Block Protobuf from Chunk
 		block := pb.Block{
-			Size:    int64(len(chunk)),
+			Size:    int32(len(chunk)),
 			Data:    chunk,
-			Current: int64(i),
+			Current: int32(i),
 			Total:   meta.Blocks,
 		}
 		fmt.Println("Block: ", block.String())
@@ -222,7 +230,7 @@ func (dsc *DataStreamConn) writeFile(sm *sf.SafeMeta) error {
 		if err != nil {
 			dsc.Call.Error(err, "writeFileToStream")
 		}
-		fmt.Println("Chunk read: ", int64(len(chunk)))
+		fmt.Println("Chunk read: ", int32(len(chunk)))
 	}
 	return nil
 }

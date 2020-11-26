@@ -8,8 +8,8 @@ message Metadata {
   string fileId = 1;
   string name = 2;
   string path = 3;
-  int64 size = 4;
-  int64 blocks = 5;
+  int32 size = 4;
+  int32 blocks = 5;
   string kind = 6;
   bytes thumbnail = 7;
 }

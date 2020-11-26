@@ -10,6 +10,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/google/uuid"
+	"github.com/h2non/filetype"
 	pb "github.com/sonr-io/core/internal/models"
 )
 
@@ -68,7 +70,7 @@ func (sf *SonrFile) Save() (string, error) {
 	}
 
 	// Create Delay
-	time.After(time.Second)
+	time.After(time.Millisecond * 500)
 
 	// Create File at Path
 	f, err := os.Create(sf.Path)
@@ -87,4 +89,40 @@ func (sf *SonrFile) Save() (string, error) {
 
 	// Return Block
 	return sf.Path, nil
+}
+
+// ^ Creates Metadata for File at Path ^ //
+func GetMetadata(path string) (*pb.Metadata, error) {
+	// @ 1. Get File Information
+	// Open File at Path
+	file, err := os.Open(path)
+	if err != nil {
+		fmt.Println("Error opening File", err)
+		return nil, err
+	}
+
+	// Get Info
+	info, err := file.Stat()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// Get File Type
+	head := make([]byte, 261)
+	file.Read(head)
+	kind, err := filetype.Match(head)
+	if err != nil {
+		fmt.Println(err)
+	}
+	file.Close()
+
+	// @ 3. Set Metadata Protobuf Values
+	return &pb.Metadata{
+		FileId: uuid.New().String(),
+		Name:   fileNameWithoutExtension(path),
+		Path:   path,
+		Size:   int32(info.Size()),
+		Blocks: int32(info.Size()) / BlockSize,
+		Kind:   kind.MIME.Type,
+	}, nil
 }

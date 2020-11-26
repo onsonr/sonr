@@ -23,17 +23,17 @@ message LobbyEvent {
 // Define Block Type: Sent on Data Transfer
 message Block {
   string data = 1;
-  int64 size = 2;
-  int64 current = 3;
-  int64 total = 4;
+  int32 size = 2;
+  int32 current = 3;
+  int32 total = 4;
 }
 
-message File {
+message SonrFile {
   repeated string base64 = 1;
   string fileId = 2;
   string name = 3;
   string path = 4;
-  int64 size = 5;
-  int64 blocks = 6;
+  int32 size = 5;
+  int32 blocks = 6;
   string kind = 7; 
 }
