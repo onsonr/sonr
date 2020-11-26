@@ -129,7 +129,7 @@ func (dsc *DataStreamConn) readBlock(mrw msgio.ReadCloser) error {
 			}
 
 			// Get Metadata
-			metadata, err := sf.GetMetadata(savePath)
+			metadata, err := sf.GetMetadata(savePath, dsc.Peer)
 			if err != nil {
 				dsc.Call.Error(err, "Save")
 			}
@@ -137,15 +137,8 @@ func (dsc *DataStreamConn) readBlock(mrw msgio.ReadCloser) error {
 			// Create Delay
 			time.After(time.Millisecond * 500)
 
-			// Create Completed Protobuf
-			completedMessage := pb.CompletedMessage{
-				From:     dsc.Peer,
-				Metadata: metadata,
-				Received: int32(time.Now().Unix()),
-			}
-
 			// Convert to Bytes
-			bytes, err := proto.Marshal(&completedMessage)
+			bytes, err := proto.Marshal(metadata)
 			if err != nil {
 				dsc.Call.Error(err, "Completed")
 			}

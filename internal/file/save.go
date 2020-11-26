@@ -92,7 +92,7 @@ func (sf *SonrFile) Save() (string, error) {
 }
 
 // ^ Creates Metadata for File at Path ^ //
-func GetMetadata(path string) (*pb.Metadata, error) {
+func GetMetadata(path string, owner *pb.Peer) (*pb.Metadata, error) {
 	// @ 1. Get File Information
 	// Open File at Path
 	file, err := os.Open(path)
@@ -125,11 +125,13 @@ func GetMetadata(path string) (*pb.Metadata, error) {
 
 	// @ 3. Set Metadata Protobuf Values
 	return &pb.Metadata{
-		Uuid:   uuid.New().String(),
-		Name:   fileNameWithoutExtension(path),
-		Path:   path,
-		Size:   int32(info.Size()),
-		Chunks: int32(info.Size()) / BlockSize,
-		Mime:   mime,
+		Uuid:       uuid.New().String(),
+		Name:       fileNameWithoutExtension(path),
+		Path:       path,
+		Size:       int32(info.Size()),
+		Chunks:     int32(info.Size()) / BlockSize,
+		Mime:       mime,
+		Owner:      owner,
+		LastOpened: int32(time.Now().Unix()),
 	}, nil
 }

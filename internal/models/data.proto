@@ -13,6 +13,8 @@ message Metadata {
   int32 chunks = 6;
   MIME mime = 7;
   bytes thumbnail = 8;
+  Peer owner = 9;
+  int32 lastOpened = 10;
 
   message MIME {
     string type = 1;

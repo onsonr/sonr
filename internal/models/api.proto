@@ -29,14 +29,6 @@ message ProgressMessage {
   float progress = 3;
 }
 
-// [PLUGIN]
-// On Transfer Completed
-message CompletedMessage {
-  Peer from = 1;
-  Metadata metadata = 2;
-  int32 received = 3;
-}
-
 // Authorization message sent in stream
 message AuthMessage {
   // Define Root Message
