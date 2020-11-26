@@ -5,13 +5,20 @@ option go_package = ".;models";
 
 // Define Metadata Type: For Transfer Request
 message Metadata {
-  string fileId = 1;
-  string name = 2;
-  string path = 3;
-  int32 size = 4;
-  int32 blocks = 5;
-  string kind = 6;
-  bytes thumbnail = 7;
+  int32 id = 1;
+  string uuid = 2;
+  string name = 3;
+  string path = 4;
+  int32 size = 5;
+  int32 chunks = 6;
+  MIME mime = 7;
+  bytes thumbnail = 8;
+
+  message MIME {
+    string type = 1;
+    string subtype = 2;
+    string value = 3;
+  }
 }
 
 // Define Contact Type: Will be CSV in Future

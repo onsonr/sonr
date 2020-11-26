@@ -215,7 +215,7 @@ func (dsc *DataStreamConn) writeFile(sm *sf.SafeMeta) error {
 			Size:    int32(len(chunk)),
 			Data:    chunk,
 			Current: int32(i),
-			Total:   meta.Blocks,
+			Total:   meta.Chunks,
 		}
 		fmt.Println("Block: ", block.String())
 

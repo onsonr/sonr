@@ -112,14 +112,21 @@ func (sf *SafeMeta) Generate() {
 		fmt.Println("Thumbnail created")
 	}
 
+	// Get Mime Type
+	mime := &pb.Metadata_MIME{
+		Type:    kind.MIME.Type,
+		Subtype: kind.MIME.Subtype,
+		Value:   kind.MIME.Value,
+	}
+
 	// @ 3. Set Metadata Protobuf Values
 	sf.meta = pb.Metadata{
-		FileId:    uuid.New().String(),
+		Uuid:      uuid.New().String(),
 		Name:      filepath.Base(sf.Path),
 		Path:      sf.Path,
 		Size:      int32(info.Size()),
-		Blocks:    int32(info.Size()) / BlockSize,
-		Kind:      kind.MIME.Type,
+		Chunks:    int32(info.Size()) / BlockSize,
+		Mime:      mime,
 		Thumbnail: thumbBuffer.Bytes(),
 	}
 	// ** Unlock ** //
