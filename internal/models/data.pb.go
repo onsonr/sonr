@@ -25,6 +25,59 @@ const (
 // of the legacy proto package is being used.
 const _ = proto.ProtoPackageIsVersion4
 
+// Define Proximity
+type Peer_Proximity int32
+
+const (
+	Peer_NONE      Peer_Proximity = 0
+	Peer_IMMEDIATE Peer_Proximity = 1
+	Peer_NEAR      Peer_Proximity = 2
+	Peer_FAR       Peer_Proximity = 3
+)
+
+// Enum value maps for Peer_Proximity.
+var (
+	Peer_Proximity_name = map[int32]string{
+		0: "NONE",
+		1: "IMMEDIATE",
+		2: "NEAR",
+		3: "FAR",
+	}
+	Peer_Proximity_value = map[string]int32{
+		"NONE":      0,
+		"IMMEDIATE": 1,
+		"NEAR":      2,
+		"FAR":       3,
+	}
+)
+
+func (x Peer_Proximity) Enum() *Peer_Proximity {
+	p := new(Peer_Proximity)
+	*p = x
+	return p
+}
+
+func (x Peer_Proximity) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Peer_Proximity) Descriptor() protoreflect.EnumDescriptor {
+	return file_data_proto_enumTypes[0].Descriptor()
+}
+
+func (Peer_Proximity) Type() protoreflect.EnumType {
+	return &file_data_proto_enumTypes[0]
+}
+
+func (x Peer_Proximity) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use Peer_Proximity.Descriptor instead.
+func (Peer_Proximity) EnumDescriptor() ([]byte, []int) {
+	return file_data_proto_rawDescGZIP(), []int{3, 0}
+}
+
 // Define Metadata Type: For Transfer Request
 type Metadata struct {
 	state         protoimpl.MessageState
@@ -255,15 +308,16 @@ type Peer struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id         string  `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Device     string  `protobuf:"bytes,2,opt,name=device,proto3" json:"device,omitempty"`
-	Olc        string  `protobuf:"bytes,3,opt,name=olc,proto3" json:"olc,omitempty"`
-	FirstName  string  `protobuf:"bytes,4,opt,name=firstName,proto3" json:"firstName,omitempty"`
-	LastName   string  `protobuf:"bytes,5,opt,name=lastName,proto3" json:"lastName,omitempty"`
-	ProfilePic string  `protobuf:"bytes,6,opt,name=profilePic,proto3" json:"profilePic,omitempty"`
-	Direction  float64 `protobuf:"fixed64,7,opt,name=direction,proto3" json:"direction,omitempty"`
-	Difference float64 `protobuf:"fixed64,8,opt,name=difference,proto3" json:"difference,omitempty"`
-	Distance   float64 `protobuf:"fixed64,9,opt,name=distance,proto3" json:"distance,omitempty"`
+	Id         string         `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Device     string         `protobuf:"bytes,2,opt,name=device,proto3" json:"device,omitempty"`
+	Olc        string         `protobuf:"bytes,3,opt,name=olc,proto3" json:"olc,omitempty"`
+	FirstName  string         `protobuf:"bytes,4,opt,name=firstName,proto3" json:"firstName,omitempty"`
+	LastName   string         `protobuf:"bytes,5,opt,name=lastName,proto3" json:"lastName,omitempty"`
+	ProfilePic string         `protobuf:"bytes,6,opt,name=profilePic,proto3" json:"profilePic,omitempty"`
+	Direction  float64        `protobuf:"fixed64,7,opt,name=direction,proto3" json:"direction,omitempty"`
+	Difference float64        `protobuf:"fixed64,8,opt,name=difference,proto3" json:"difference,omitempty"`
+	Distance   float64        `protobuf:"fixed64,9,opt,name=distance,proto3" json:"distance,omitempty"`
+	Proximity  Peer_Proximity `protobuf:"varint,10,opt,name=proximity,proto3,enum=Peer_Proximity" json:"proximity,omitempty"`
 }
 
 func (x *Peer) Reset() {
@@ -361,6 +415,13 @@ func (x *Peer) GetDistance() float64 {
 	return 0
 }
 
+func (x *Peer) GetProximity() Peer_Proximity {
+	if x != nil {
+		return x.Proximity
+	}
+	return Peer_NONE
+}
+
 var File_data_proto protoreflect.FileDescriptor
 
 var file_data_proto_rawDesc = []byte{
@@ -391,7 +452,7 @@ var file_data_proto_rawDesc = []byte{
 	0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01,
 	0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x1b, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65,
 	0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x05, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x05, 0x76,
-	0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0xf4, 0x01, 0x0a, 0x04, 0x50, 0x65, 0x65,
+	0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0xdc, 0x02, 0x0a, 0x04, 0x50, 0x65, 0x65,
 	0x72, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69,
 	0x64, 0x12, 0x16, 0x0a, 0x06, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28,
 	0x09, 0x52, 0x06, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x6f, 0x6c, 0x63,
@@ -406,9 +467,15 @@ var file_data_proto_rawDesc = []byte{
 	0x69, 0x6f, 0x6e, 0x12, 0x1e, 0x0a, 0x0a, 0x64, 0x69, 0x66, 0x66, 0x65, 0x72, 0x65, 0x6e, 0x63,
 	0x65, 0x18, 0x08, 0x20, 0x01, 0x28, 0x01, 0x52, 0x0a, 0x64, 0x69, 0x66, 0x66, 0x65, 0x72, 0x65,
 	0x6e, 0x63, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x64, 0x69, 0x73, 0x74, 0x61, 0x6e, 0x63, 0x65, 0x18,
-	0x09, 0x20, 0x01, 0x28, 0x01, 0x52, 0x08, 0x64, 0x69, 0x73, 0x74, 0x61, 0x6e, 0x63, 0x65, 0x42,
-	0x0a, 0x5a, 0x08, 0x2e, 0x3b, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x33,
+	0x09, 0x20, 0x01, 0x28, 0x01, 0x52, 0x08, 0x64, 0x69, 0x73, 0x74, 0x61, 0x6e, 0x63, 0x65, 0x12,
+	0x2d, 0x0a, 0x09, 0x70, 0x72, 0x6f, 0x78, 0x69, 0x6d, 0x69, 0x74, 0x79, 0x18, 0x0a, 0x20, 0x01,
+	0x28, 0x0e, 0x32, 0x0f, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x2e, 0x50, 0x72, 0x6f, 0x78, 0x69, 0x6d,
+	0x69, 0x74, 0x79, 0x52, 0x09, 0x70, 0x72, 0x6f, 0x78, 0x69, 0x6d, 0x69, 0x74, 0x79, 0x22, 0x37,
+	0x0a, 0x09, 0x50, 0x72, 0x6f, 0x78, 0x69, 0x6d, 0x69, 0x74, 0x79, 0x12, 0x08, 0x0a, 0x04, 0x4e,
+	0x4f, 0x4e, 0x45, 0x10, 0x00, 0x12, 0x0d, 0x0a, 0x09, 0x49, 0x4d, 0x4d, 0x45, 0x44, 0x49, 0x41,
+	0x54, 0x45, 0x10, 0x01, 0x12, 0x08, 0x0a, 0x04, 0x4e, 0x45, 0x41, 0x52, 0x10, 0x02, 0x12, 0x07,
+	0x0a, 0x03, 0x46, 0x41, 0x52, 0x10, 0x03, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x3b, 0x6d, 0x6f, 0x64,
+	0x65, 0x6c, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -423,22 +490,25 @@ func file_data_proto_rawDescGZIP() []byte {
 	return file_data_proto_rawDescData
 }
 
+var file_data_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_data_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_data_proto_goTypes = []interface{}{
-	(*Metadata)(nil), // 0: Metadata
-	(*Contact)(nil),  // 1: Contact
-	(*Lobby)(nil),    // 2: Lobby
-	(*Peer)(nil),     // 3: Peer
-	nil,              // 4: Lobby.PeersEntry
+	(Peer_Proximity)(0), // 0: Peer.Proximity
+	(*Metadata)(nil),    // 1: Metadata
+	(*Contact)(nil),     // 2: Contact
+	(*Lobby)(nil),       // 3: Lobby
+	(*Peer)(nil),        // 4: Peer
+	nil,                 // 5: Lobby.PeersEntry
 }
 var file_data_proto_depIdxs = []int32{
-	4, // 0: Lobby.peers:type_name -> Lobby.PeersEntry
-	3, // 1: Lobby.PeersEntry.value:type_name -> Peer
-	2, // [2:2] is the sub-list for method output_type
-	2, // [2:2] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	5, // 0: Lobby.peers:type_name -> Lobby.PeersEntry
+	0, // 1: Peer.proximity:type_name -> Peer.Proximity
+	4, // 2: Lobby.PeersEntry.value:type_name -> Peer
+	3, // [3:3] is the sub-list for method output_type
+	3, // [3:3] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_data_proto_init() }
@@ -501,13 +571,14 @@ func file_data_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_data_proto_rawDesc,
-			NumEnums:      0,
+			NumEnums:      1,
 			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_data_proto_goTypes,
 		DependencyIndexes: file_data_proto_depIdxs,
+		EnumInfos:         file_data_proto_enumTypes,
 		MessageInfos:      file_data_proto_msgTypes,
 	}.Build()
 	File_data_proto = out.File

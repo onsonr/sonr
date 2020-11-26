@@ -39,4 +39,13 @@ message Peer {
   double direction = 7;
   double difference = 8;
   double distance = 9;
+  Proximity proximity = 10;
+
+  // Define Proximity
+  enum Proximity {
+    NONE = 0;
+    IMMEDIATE = 1;
+    NEAR = 2;
+    FAR = 3;
+  }
 }
