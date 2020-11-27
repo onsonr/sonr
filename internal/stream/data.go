@@ -115,7 +115,7 @@ func (dsc *DataStreamConn) readBlock(mrw msgio.ReadCloser) error {
 			dsc.File.AddBlock(msg.Data)
 
 			// Send Receiver Progress Update
-			dsc.sendProgress(msg.Current, msg.Total)
+			go dsc.sendProgress(msg.Current, msg.Total)
 		}
 
 		// Save File on Buffer Complete
@@ -146,7 +146,7 @@ func (dsc *DataStreamConn) readBlock(mrw msgio.ReadCloser) error {
 			}
 
 			// Callback Completed
-			dsc.Call.Completed(bytes)
+			go dsc.Call.Completed(bytes)
 			break
 		}
 	}
@@ -162,7 +162,6 @@ func (dsc *DataStreamConn) sendProgress(current int32, total int32) {
 		Current:  current,
 		Total:    total,
 		Progress: progress,
-		Mime:     dsc.File.Metadata.Mime,
 	}
 
 	// Convert to bytes
@@ -226,10 +225,6 @@ func (dsc *DataStreamConn) writeFile(sm *sf.SafeMeta) error {
 		if err != nil {
 			dsc.Call.Error(err, "writeFileToStream")
 		}
-		fmt.Println("Chunk read: ", int32(len(chunk)))
-
-		// Send Transfer Progress Update
-		dsc.sendProgress(int32(i), meta.Chunks)
 	}
 	return nil
 }
