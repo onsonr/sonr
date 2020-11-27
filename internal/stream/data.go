@@ -121,8 +121,10 @@ func (dsc *DataStreamConn) readBlock(mrw msgio.ReadCloser) error {
 		// Save File on Buffer Complete
 		if msg.Current == msg.Total {
 			// Add Block to Buffer
-			fmt.Println("Completed All Blocks, Save the File")
 			dsc.File.AddBlock(msg.Data)
+
+			// Send Receiver Progress Update
+			go dsc.sendProgress(msg.Current, msg.Total)
 
 			// Save The File
 			savePath, err := dsc.File.Save()
