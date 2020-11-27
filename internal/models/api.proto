@@ -10,7 +10,7 @@ option go_package = ".;models";
 message ConnectionRequest {
   string olc = 1;
   Device device = 2;
-  Directory directory = 3;
+  Directories directory = 3;
   Contact contact = 4;
 }
 

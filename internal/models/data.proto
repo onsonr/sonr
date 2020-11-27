@@ -46,8 +46,8 @@ message Device {
   int32 sdk = 5; // For Android
 }
 
-// Define Directory Type: Where Data can be stored
-message Directory {
+// Define Directories Type: Where Data can be stored
+message Directories {
   string documents = 1;
   string library = 2;
   string temporary = 3;

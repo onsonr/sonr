@@ -64,7 +64,7 @@ func (sn *Node) setPeer(connEvent *pb.ConnectionRequest) error {
 	sn.dataStream.Self = sn.Peer
 
 	// Set Directory
-	sn.directory = connEvent.Directory
+	sn.directories = connEvent.Directory
 	return nil
 }
 

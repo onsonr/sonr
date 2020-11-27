@@ -30,9 +30,9 @@ type Callback interface {
 // ^ Struct: Main Node handles Networking/Identity/Streams ^
 type Node struct {
 	// Public Properties
-	HostID    string
-	Peer      *pb.Peer
-	directory *pb.Directory
+	HostID      string
+	Peer        *pb.Peer
+	directories *pb.Directories
 
 	// Networking Properties
 	ctx        context.Context

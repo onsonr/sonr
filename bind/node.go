@@ -74,7 +74,7 @@ func (sn *Node) Respond(decision bool) {
 	// Check Respons
 	if decision {
 		// Allocate Space for File and Add as Ref to Datastream
-		sn.dataStream.File = sf.NewFile(sn.directory.Documents, sn.authStream.Metadata)
+		sn.dataStream.File = sf.NewFile(sn.directories.Documents, sn.authStream.Metadata)
 		sn.dataStream.Peer = sn.authStream.Peer
 
 		// Send Accept Response Message
