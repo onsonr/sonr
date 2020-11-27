@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/golang/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	sf "github.com/sonr-io/core/internal/file"
@@ -19,7 +20,7 @@ func (sn *Node) currentFile() *sf.SafeMeta {
 }
 
 // ^ SetDiscovery initializes discovery protocols and creates pubsub service ^ //
-func (sn *Node) setDiscovery(ctx context.Context, connEvent *pb.RequestMessage) error {
+func (sn *Node) setDiscovery(ctx context.Context, connEvent *pb.ConnectionRequest) error {
 	// create a new PubSub service using the GossipSub router
 	ps, err := pubsub.NewGossipSub(ctx, sn.host)
 	if err != nil {
@@ -42,10 +43,17 @@ func (sn *Node) setDiscovery(ctx context.Context, connEvent *pb.RequestMessage) 
 }
 
 // ^ SetUser sets node info from connEvent and host ^ //
-func (sn *Node) setPeer(connEvent *pb.RequestMessage) error {
+func (sn *Node) setPeer(connEvent *pb.ConnectionRequest) error {
 	// Check for Host
 	if sn.host == nil {
 		err := errors.New("setPeer: Host has not been called")
+		return err
+	}
+
+	// Get Device
+	device := &pb.Device{}
+	err := proto.Unmarshal(connEvent.Device, device)
+	if err != nil {
 		return err
 	}
 
@@ -53,7 +61,7 @@ func (sn *Node) setPeer(connEvent *pb.RequestMessage) error {
 	sn.Peer = &pb.Peer{
 		Id:         sn.host.ID().String(),
 		Olc:        connEvent.Olc,
-		Device:     connEvent.Device,
+		Device:     device,
 		FirstName:  connEvent.Contact.FirstName,
 		LastName:   connEvent.Contact.LastName,
 		ProfilePic: connEvent.Contact.ProfilePic,

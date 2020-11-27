@@ -113,6 +113,8 @@ func (dsc *DataStreamConn) readBlock(mrw msgio.ReadCloser) error {
 		if msg.Current < msg.Total {
 			// Add Block to Buffer
 			dsc.File.AddBlock(msg.Data)
+
+			// Send Receiver Progress Update
 			dsc.sendProgress(msg.Current, msg.Total)
 		}
 
@@ -156,7 +158,7 @@ func (dsc *DataStreamConn) sendProgress(current int32, total int32) {
 	progress := float32(current) / float32(total)
 
 	// Create Message
-	progressMessage := pb.ProgressMessage{
+	progressMessage := pb.ProgressUpdate{
 		Current:  current,
 		Total:    total,
 		Progress: progress,
@@ -224,6 +226,9 @@ func (dsc *DataStreamConn) writeFile(sm *sf.SafeMeta) error {
 			dsc.Call.Error(err, "writeFileToStream")
 		}
 		fmt.Println("Chunk read: ", int32(len(chunk)))
+
+		// Send Transfer Progress Update
+		dsc.sendProgress(int32(i), meta.Chunks)
 	}
 	return nil
 }

@@ -6,24 +6,17 @@ import "data.proto";
 option go_package = ".;models";
 
 // [PLUGIN]
-// Error Message
-message ErrorMessage {
-  string message = 1;
-  string method = 2;
-}
-
-// [PLUGIN]
-// Initial Request Message
-message RequestMessage {
+// Initial Connection Message
+message ConnectionRequest {
   string olc = 1;
-  string device = 2;
+  bytes device = 2;
   string documents = 3;
   Contact contact = 4;
 }
 
 // [PLUGIN]
 // On Data Transfer
-message ProgressMessage {
+message ProgressUpdate {
   int32 current = 1;
   int32 total = 2;
   float progress = 3;
@@ -43,4 +36,11 @@ message AuthMessage {
     ACCEPT = 2;
     DECLINE = 3;
   }
+}
+
+// [PLUGIN]
+// Error Message
+message ErrorMessage {
+  string message = 1;
+  string method = 2;
 }

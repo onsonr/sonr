@@ -56,7 +56,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	node.call, node.files = call, make([]*sf.SafeMeta, maxFileBufferSize)
 
 	// ** Unmarshal Request **
-	reqMsg := pb.RequestMessage{}
+	reqMsg := pb.ConnectionRequest{}
 	err := proto.Unmarshal(reqBytes, &reqMsg)
 	if err != nil {
 		fmt.Println(err)

@@ -75,22 +75,24 @@ func (x AuthMessage_Event) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use AuthMessage_Event.Descriptor instead.
 func (AuthMessage_Event) EnumDescriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{3, 0}
+	return file_api_proto_rawDescGZIP(), []int{2, 0}
 }
 
 // [PLUGIN]
-// Error Message
-type ErrorMessage struct {
+// Initial Connection Message
+type ConnectionRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Message string `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
-	Method  string `protobuf:"bytes,2,opt,name=method,proto3" json:"method,omitempty"`
+	Olc       string   `protobuf:"bytes,1,opt,name=olc,proto3" json:"olc,omitempty"`
+	Device    []byte   `protobuf:"bytes,2,opt,name=device,proto3" json:"device,omitempty"`
+	Documents string   `protobuf:"bytes,3,opt,name=documents,proto3" json:"documents,omitempty"`
+	Contact   *Contact `protobuf:"bytes,4,opt,name=contact,proto3" json:"contact,omitempty"`
 }
 
-func (x *ErrorMessage) Reset() {
-	*x = ErrorMessage{}
+func (x *ConnectionRequest) Reset() {
+	*x = ConnectionRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_api_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -98,13 +100,13 @@ func (x *ErrorMessage) Reset() {
 	}
 }
 
-func (x *ErrorMessage) String() string {
+func (x *ConnectionRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ErrorMessage) ProtoMessage() {}
+func (*ConnectionRequest) ProtoMessage() {}
 
-func (x *ErrorMessage) ProtoReflect() protoreflect.Message {
+func (x *ConnectionRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_api_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -116,40 +118,53 @@ func (x *ErrorMessage) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ErrorMessage.ProtoReflect.Descriptor instead.
-func (*ErrorMessage) Descriptor() ([]byte, []int) {
+// Deprecated: Use ConnectionRequest.ProtoReflect.Descriptor instead.
+func (*ConnectionRequest) Descriptor() ([]byte, []int) {
 	return file_api_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *ErrorMessage) GetMessage() string {
+func (x *ConnectionRequest) GetOlc() string {
 	if x != nil {
-		return x.Message
+		return x.Olc
 	}
 	return ""
 }
 
-func (x *ErrorMessage) GetMethod() string {
+func (x *ConnectionRequest) GetDevice() []byte {
 	if x != nil {
-		return x.Method
+		return x.Device
+	}
+	return nil
+}
+
+func (x *ConnectionRequest) GetDocuments() string {
+	if x != nil {
+		return x.Documents
 	}
 	return ""
+}
+
+func (x *ConnectionRequest) GetContact() *Contact {
+	if x != nil {
+		return x.Contact
+	}
+	return nil
 }
 
 // [PLUGIN]
-// Initial Request Message
-type RequestMessage struct {
+// On Data Transfer
+type ProgressUpdate struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Olc       string   `protobuf:"bytes,1,opt,name=olc,proto3" json:"olc,omitempty"`
-	Device    string   `protobuf:"bytes,2,opt,name=device,proto3" json:"device,omitempty"`
-	Documents string   `protobuf:"bytes,3,opt,name=documents,proto3" json:"documents,omitempty"`
-	Contact   *Contact `protobuf:"bytes,4,opt,name=contact,proto3" json:"contact,omitempty"`
+	Current  int32   `protobuf:"varint,1,opt,name=current,proto3" json:"current,omitempty"`
+	Total    int32   `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
+	Progress float32 `protobuf:"fixed32,3,opt,name=progress,proto3" json:"progress,omitempty"`
 }
 
-func (x *RequestMessage) Reset() {
-	*x = RequestMessage{}
+func (x *ProgressUpdate) Reset() {
+	*x = ProgressUpdate{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_api_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -157,13 +172,13 @@ func (x *RequestMessage) Reset() {
 	}
 }
 
-func (x *RequestMessage) String() string {
+func (x *ProgressUpdate) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*RequestMessage) ProtoMessage() {}
+func (*ProgressUpdate) ProtoMessage() {}
 
-func (x *RequestMessage) ProtoReflect() protoreflect.Message {
+func (x *ProgressUpdate) ProtoReflect() protoreflect.Message {
 	mi := &file_api_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -175,98 +190,26 @@ func (x *RequestMessage) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use RequestMessage.ProtoReflect.Descriptor instead.
-func (*RequestMessage) Descriptor() ([]byte, []int) {
+// Deprecated: Use ProgressUpdate.ProtoReflect.Descriptor instead.
+func (*ProgressUpdate) Descriptor() ([]byte, []int) {
 	return file_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *RequestMessage) GetOlc() string {
-	if x != nil {
-		return x.Olc
-	}
-	return ""
-}
-
-func (x *RequestMessage) GetDevice() string {
-	if x != nil {
-		return x.Device
-	}
-	return ""
-}
-
-func (x *RequestMessage) GetDocuments() string {
-	if x != nil {
-		return x.Documents
-	}
-	return ""
-}
-
-func (x *RequestMessage) GetContact() *Contact {
-	if x != nil {
-		return x.Contact
-	}
-	return nil
-}
-
-// [PLUGIN]
-// On Data Transfer
-type ProgressMessage struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Current  int32   `protobuf:"varint,1,opt,name=current,proto3" json:"current,omitempty"`
-	Total    int32   `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
-	Progress float32 `protobuf:"fixed32,3,opt,name=progress,proto3" json:"progress,omitempty"`
-}
-
-func (x *ProgressMessage) Reset() {
-	*x = ProgressMessage{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[2]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *ProgressMessage) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ProgressMessage) ProtoMessage() {}
-
-func (x *ProgressMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[2]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ProgressMessage.ProtoReflect.Descriptor instead.
-func (*ProgressMessage) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *ProgressMessage) GetCurrent() int32 {
+func (x *ProgressUpdate) GetCurrent() int32 {
 	if x != nil {
 		return x.Current
 	}
 	return 0
 }
 
-func (x *ProgressMessage) GetTotal() int32 {
+func (x *ProgressUpdate) GetTotal() int32 {
 	if x != nil {
 		return x.Total
 	}
 	return 0
 }
 
-func (x *ProgressMessage) GetProgress() float32 {
+func (x *ProgressUpdate) GetProgress() float32 {
 	if x != nil {
 		return x.Progress
 	}
@@ -288,7 +231,7 @@ type AuthMessage struct {
 func (x *AuthMessage) Reset() {
 	*x = AuthMessage{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[3]
+		mi := &file_api_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -301,7 +244,7 @@ func (x *AuthMessage) String() string {
 func (*AuthMessage) ProtoMessage() {}
 
 func (x *AuthMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[3]
+	mi := &file_api_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -314,7 +257,7 @@ func (x *AuthMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AuthMessage.ProtoReflect.Descriptor instead.
 func (*AuthMessage) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{3}
+	return file_api_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *AuthMessage) GetFrom() *Peer {
@@ -338,24 +281,77 @@ func (x *AuthMessage) GetMetadata() *Metadata {
 	return nil
 }
 
+// [PLUGIN]
+// Error Message
+type ErrorMessage struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Message string `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	Method  string `protobuf:"bytes,2,opt,name=method,proto3" json:"method,omitempty"`
+}
+
+func (x *ErrorMessage) Reset() {
+	*x = ErrorMessage{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ErrorMessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ErrorMessage) ProtoMessage() {}
+
+func (x *ErrorMessage) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ErrorMessage.ProtoReflect.Descriptor instead.
+func (*ErrorMessage) Descriptor() ([]byte, []int) {
+	return file_api_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *ErrorMessage) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *ErrorMessage) GetMethod() string {
+	if x != nil {
+		return x.Method
+	}
+	return ""
+}
+
 var File_api_proto protoreflect.FileDescriptor
 
 var file_api_proto_rawDesc = []byte{
 	0x0a, 0x09, 0x61, 0x70, 0x69, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x0a, 0x64, 0x61, 0x74,
-	0x61, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x40, 0x0a, 0x0c, 0x45, 0x72, 0x72, 0x6f, 0x72,
-	0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61,
-	0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67,
-	0x65, 0x12, 0x16, 0x0a, 0x06, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x06, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x22, 0x7c, 0x0a, 0x0e, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x6f,
-	0x6c, 0x63, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6f, 0x6c, 0x63, 0x12, 0x16, 0x0a,
-	0x06, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x64,
-	0x65, 0x76, 0x69, 0x63, 0x65, 0x12, 0x1c, 0x0a, 0x09, 0x64, 0x6f, 0x63, 0x75, 0x6d, 0x65, 0x6e,
-	0x74, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x64, 0x6f, 0x63, 0x75, 0x6d, 0x65,
-	0x6e, 0x74, 0x73, 0x12, 0x22, 0x0a, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x18, 0x04,
-	0x20, 0x01, 0x28, 0x0b, 0x32, 0x08, 0x2e, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x52, 0x07,
-	0x63, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x22, 0x5d, 0x0a, 0x0f, 0x50, 0x72, 0x6f, 0x67, 0x72,
-	0x65, 0x73, 0x73, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x75,
+	0x61, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x7f, 0x0a, 0x11, 0x43, 0x6f, 0x6e, 0x6e, 0x65,
+	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x10, 0x0a, 0x03,
+	0x6f, 0x6c, 0x63, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6f, 0x6c, 0x63, 0x12, 0x16,
+	0x0a, 0x06, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x06,
+	0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x12, 0x1c, 0x0a, 0x09, 0x64, 0x6f, 0x63, 0x75, 0x6d, 0x65,
+	0x6e, 0x74, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x64, 0x6f, 0x63, 0x75, 0x6d,
+	0x65, 0x6e, 0x74, 0x73, 0x12, 0x22, 0x0a, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x18,
+	0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x08, 0x2e, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x52,
+	0x07, 0x63, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x22, 0x5c, 0x0a, 0x0e, 0x50, 0x72, 0x6f, 0x67,
+	0x72, 0x65, 0x73, 0x73, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x75,
 	0x72, 0x72, 0x65, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x07, 0x63, 0x75, 0x72,
 	0x72, 0x65, 0x6e, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x18, 0x02, 0x20,
 	0x01, 0x28, 0x05, 0x52, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x12, 0x1a, 0x0a, 0x08, 0x70, 0x72,
@@ -371,8 +367,13 @@ var file_api_proto_rawDesc = []byte{
 	0x74, 0x61, 0x22, 0x37, 0x0a, 0x05, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x08, 0x0a, 0x04, 0x4e,
 	0x4f, 0x4e, 0x45, 0x10, 0x00, 0x12, 0x0b, 0x0a, 0x07, 0x52, 0x45, 0x51, 0x55, 0x45, 0x53, 0x54,
 	0x10, 0x01, 0x12, 0x0a, 0x0a, 0x06, 0x41, 0x43, 0x43, 0x45, 0x50, 0x54, 0x10, 0x02, 0x12, 0x0b,
-	0x0a, 0x07, 0x44, 0x45, 0x43, 0x4c, 0x49, 0x4e, 0x45, 0x10, 0x03, 0x42, 0x0a, 0x5a, 0x08, 0x2e,
-	0x3b, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x0a, 0x07, 0x44, 0x45, 0x43, 0x4c, 0x49, 0x4e, 0x45, 0x10, 0x03, 0x22, 0x40, 0x0a, 0x0c, 0x45,
+	0x72, 0x72, 0x6f, 0x72, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x6d,
+	0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65,
+	0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x42, 0x0a, 0x5a,
+	0x08, 0x2e, 0x3b, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x33,
 }
 
 var (
@@ -390,17 +391,17 @@ func file_api_proto_rawDescGZIP() []byte {
 var file_api_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_api_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_api_proto_goTypes = []interface{}{
-	(AuthMessage_Event)(0),  // 0: AuthMessage.Event
-	(*ErrorMessage)(nil),    // 1: ErrorMessage
-	(*RequestMessage)(nil),  // 2: RequestMessage
-	(*ProgressMessage)(nil), // 3: ProgressMessage
-	(*AuthMessage)(nil),     // 4: AuthMessage
-	(*Contact)(nil),         // 5: Contact
-	(*Peer)(nil),            // 6: Peer
-	(*Metadata)(nil),        // 7: Metadata
+	(AuthMessage_Event)(0),    // 0: AuthMessage.Event
+	(*ConnectionRequest)(nil), // 1: ConnectionRequest
+	(*ProgressUpdate)(nil),    // 2: ProgressUpdate
+	(*AuthMessage)(nil),       // 3: AuthMessage
+	(*ErrorMessage)(nil),      // 4: ErrorMessage
+	(*Contact)(nil),           // 5: Contact
+	(*Peer)(nil),              // 6: Peer
+	(*Metadata)(nil),          // 7: Metadata
 }
 var file_api_proto_depIdxs = []int32{
-	5, // 0: RequestMessage.contact:type_name -> Contact
+	5, // 0: ConnectionRequest.contact:type_name -> Contact
 	6, // 1: AuthMessage.from:type_name -> Peer
 	0, // 2: AuthMessage.event:type_name -> AuthMessage.Event
 	7, // 3: AuthMessage.metadata:type_name -> Metadata
@@ -419,7 +420,7 @@ func file_api_proto_init() {
 	file_data_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_api_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ErrorMessage); i {
+			switch v := v.(*ConnectionRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -431,7 +432,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*RequestMessage); i {
+			switch v := v.(*ProgressUpdate); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -443,7 +444,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProgressMessage); i {
+			switch v := v.(*AuthMessage); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -455,7 +456,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AuthMessage); i {
+			switch v := v.(*ErrorMessage); i {
 			case 0:
 				return &v.state
 			case 1:
