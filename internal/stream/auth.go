@@ -133,10 +133,12 @@ func (asc *AuthStreamConn) handleMessage(msg *pb.AuthMessage) {
 
 	// @2. Peer Accepted Response to Invite
 	case pb.AuthMessage_ACCEPT:
+		asc.Peer.Relation = *pb.Peer_ACCEPTED.Enum()
 		asc.Call.Responded(msgBytes)
 
 	// @3. Peer Declined Response to Invite
 	case pb.AuthMessage_DECLINE:
+		asc.Peer.Relation = *pb.Peer_DECLINED.Enum()
 		asc.Call.Responded(msgBytes)
 
 	// ! Invalid Subject
