@@ -113,7 +113,7 @@ func (sf *SafeMeta) Generate() {
 	}
 
 	// Get Mime Type
-	mime := &pb.Metadata_MIME{
+	mime := &pb.MIME{
 		Type:    kind.MIME.Type,
 		Subtype: kind.MIME.Subtype,
 		Value:   kind.MIME.Value,

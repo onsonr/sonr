@@ -162,6 +162,7 @@ func (dsc *DataStreamConn) sendProgress(current int32, total int32) {
 		Current:  current,
 		Total:    total,
 		Progress: progress,
+		Mime:     dsc.File.Metadata.Mime,
 	}
 
 	// Convert to bytes

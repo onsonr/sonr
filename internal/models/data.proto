@@ -15,12 +15,13 @@ message Metadata {
   bytes thumbnail = 8;
   Peer owner = 9;
   int32 lastOpened = 10;
+}
 
-  message MIME {
-    string type = 1;
-    string subtype = 2;
-    string value = 3;
-  }
+// Define MIME: Protobuf Version of Mime
+message MIME {
+  string type = 1;
+  string subtype = 2;
+  string value = 3;
 }
 
 // Define Lobby Type: For Info about Lobby
