@@ -43,6 +43,7 @@ message Device {
   string model = 2;
   string name = 3;
   string version = 4;
+  int32 sdk = 5; // For Android
 }
 
 // Define Directory Type: Where Data can be stored
