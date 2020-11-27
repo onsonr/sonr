@@ -30,8 +30,9 @@ type Callback interface {
 // ^ Struct: Main Node handles Networking/Identity/Streams ^
 type Node struct {
 	// Public Properties
-	HostID string
-	Peer   *pb.Peer
+	HostID    string
+	Peer      *pb.Peer
+	directory *pb.Directory
 
 	// Networking Properties
 	ctx        context.Context
@@ -40,8 +41,7 @@ type Node struct {
 	dataStream st.DataStreamConn
 
 	// Data Properties
-	documents string
-	files     []*sf.SafeMeta
+	files []*sf.SafeMeta
 
 	// References
 	call  Callback

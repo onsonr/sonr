@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/golang/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	sf "github.com/sonr-io/core/internal/file"
@@ -50,18 +49,11 @@ func (sn *Node) setPeer(connEvent *pb.ConnectionRequest) error {
 		return err
 	}
 
-	// Get Device
-	device := &pb.Device{}
-	err := proto.Unmarshal(connEvent.Device, device)
-	if err != nil {
-		return err
-	}
-
 	// Set Peer Info
 	sn.Peer = &pb.Peer{
 		Id:         sn.host.ID().String(),
 		Olc:        connEvent.Olc,
-		Device:     device,
+		Device:     connEvent.Device,
 		FirstName:  connEvent.Contact.FirstName,
 		LastName:   connEvent.Contact.LastName,
 		ProfilePic: connEvent.Contact.ProfilePic,
@@ -71,8 +63,8 @@ func (sn *Node) setPeer(connEvent *pb.ConnectionRequest) error {
 	sn.authStream.Self = sn.Peer
 	sn.dataStream.Self = sn.Peer
 
-	// Set Documents
-	sn.documents = connEvent.Documents
+	// Set Directory
+	sn.directory = connEvent.Directory
 	return nil
 }
 
@@ -95,5 +87,4 @@ func (sn *Node) setStreams() {
 	// Set Handlers
 	sn.host.SetStreamHandler(protocol.ID("/sonr/auth"), sn.authStream.HandleStream)
 	sn.host.SetStreamHandler(protocol.ID("/sonr/data"), sn.dataStream.HandleStream)
-
 }

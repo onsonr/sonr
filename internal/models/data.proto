@@ -41,7 +41,15 @@ message Contact {
 message Device {
   string platform = 1;
   string model = 2;
-  string version = 3;
+  string name = 3;
+  string version = 4;
+}
+
+// Define Directory Type: Where Data can be stored
+message Directory {
+  string documents = 1;
+  string library = 2;
+  string temporary = 3;
 }
 
 // Define Peer: Basic Info Sent to Peers

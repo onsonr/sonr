@@ -9,8 +9,8 @@ option go_package = ".;models";
 // Initial Connection Message
 message ConnectionRequest {
   string olc = 1;
-  bytes device = 2;
-  string documents = 3;
+  Device device = 2;
+  Directory directory = 3;
   Contact contact = 4;
 }
 
