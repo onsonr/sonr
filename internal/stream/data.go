@@ -156,14 +156,14 @@ func (dsc *DataStreamConn) readBlock(mrw msgio.ReadCloser) error {
 }
 
 func (dsc *DataStreamConn) sendProgress(current int32, total int32) {
-	// Calculate Progress
-	progress := float32(current) / float32(total)
+	// Calculate Percent
+	percent := float32(current) / float32(total)
 
 	// Create Message
 	progressMessage := pb.ProgressUpdate{
-		Current:  current,
-		Total:    total,
-		Progress: progress,
+		Current: current,
+		Total:   total,
+		Percent: percent,
 	}
 
 	// Convert to bytes
