@@ -57,6 +57,7 @@ func (sn *Node) setPeer(connEvent *pb.ConnectionRequest) error {
 		FirstName:  connEvent.Contact.FirstName,
 		LastName:   connEvent.Contact.LastName,
 		ProfilePic: connEvent.Contact.ProfilePic,
+		Relation:   *pb.Peer_NONE.Enum(),
 	}
 
 	// Assign Peer Info to Stream Handlers
