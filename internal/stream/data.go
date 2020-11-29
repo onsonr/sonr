@@ -113,18 +113,14 @@ func (dsc *DataStreamConn) readBlock(mrw msgio.ReadCloser) error {
 		if msg.Current < msg.Total {
 			// Add Block to Buffer
 			dsc.File.AddBlock(msg.Data)
-
-			// Send Receiver Progress Update
-			go dsc.sendProgress(msg.Current, msg.Total)
+			dsc.sendProgress(msg.Current, msg.Total)
 		}
 
 		// Save File on Buffer Complete
 		if msg.Current == msg.Total {
 			// Add Block to Buffer
+			fmt.Println("Completed All Blocks, Save the File")
 			dsc.File.AddBlock(msg.Data)
-
-			// Send Receiver Progress Update
-			go dsc.sendProgress(msg.Current, msg.Total)
 
 			// Save The File
 			savePath, err := dsc.File.Save()
@@ -148,7 +144,7 @@ func (dsc *DataStreamConn) readBlock(mrw msgio.ReadCloser) error {
 			}
 
 			// Callback Completed
-			go dsc.Call.Completed(bytes)
+			dsc.Call.Completed(bytes)
 			break
 		}
 	}
@@ -156,18 +152,18 @@ func (dsc *DataStreamConn) readBlock(mrw msgio.ReadCloser) error {
 }
 
 func (dsc *DataStreamConn) sendProgress(current int32, total int32) {
-	// Calculate Percent
+	// Calculate Progress
 	percent := float32(current) / float32(total)
 
 	// Create Message
-	progressMessage := pb.ProgressUpdate{
+	progressUpdate := pb.ProgressUpdate{
 		Current: current,
 		Total:   total,
 		Percent: percent,
 	}
 
 	// Convert to bytes
-	bytes, err := proto.Marshal(&progressMessage)
+	bytes, err := proto.Marshal(&progressUpdate)
 	if err != nil {
 		dsc.Call.Error(err, "SendProgress")
 	}
@@ -227,6 +223,7 @@ func (dsc *DataStreamConn) writeFile(sm *sf.SafeMeta) error {
 		if err != nil {
 			dsc.Call.Error(err, "writeFileToStream")
 		}
+		fmt.Println("Chunk read: ", int32(len(chunk)))
 	}
 	return nil
 }
