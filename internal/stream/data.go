@@ -113,7 +113,7 @@ func (dsc *DataStreamConn) readBlock(mrw msgio.ReadCloser) error {
 		if msg.Current < msg.Total {
 			// Add Block to Buffer
 			dsc.File.AddBlock(msg.Data)
-			dsc.sendProgress(msg.Current, msg.Total)
+			dsc.calcProgress(msg.Current, msg.Total)
 		}
 
 		// Save File on Buffer Complete
@@ -149,6 +149,20 @@ func (dsc *DataStreamConn) readBlock(mrw msgio.ReadCloser) error {
 		}
 	}
 	return nil
+}
+
+func (dsc *DataStreamConn) calcProgress(current int32, total int32) {
+	// Adjust Progress to Send on 100 Intervals
+	if total > 100 {
+		// Check if interval has been met
+		updateInterval := total / 100
+		remainder := current % updateInterval
+		if remainder == 0 {
+			dsc.sendProgress(current, total)
+		}
+	} else {
+		dsc.sendProgress(current, total)
+	}
 }
 
 func (dsc *DataStreamConn) sendProgress(current int32, total int32) {

@@ -15,11 +15,7 @@ IOS_TARGET=ios
 ANDROID_ARTIFACT=$(ANDROID_BUILDDIR)/io.sonr.core.aar
 ANDROID_TARGET=android/arm64
 LD_FLAGS='-s -w'
-
-# Gomobile Build Commands
-BUILD_IOS="cd bind && $(GOBIND) -ldflags=$(LD_FLAGS) -target=$(IOS_TARGET) -v -o $(IOS_ARTIFACT)"
-BUILD_ANDROID="cd bind && $(GOBIND) -ldflags=$(LD_FLAGS) -target=$(ANDROID_TARGET) -v -o $(ANDROID_ARTIFACT)"
-
+ 
 # Proto Directories
 PB_PATH="/Users/prad/Sonr/core/internal/models"
 CORE_PB_DIR="/Users/prad/Sonr/core/internal/models"
@@ -45,10 +41,7 @@ ios:
 	@echo "--------------------------------------------------------------"
 	@echo "-------------- 📱 BEGIN IOS BIND 📱 ---------------------------"
 	@echo "--------------------------------------------------------------"
-	@rm -rf $(IOS_BUILDDIR) 2>/dev/null
-	@mkdir -p $(IOS_BUILDDIR)
-	gomobile clean
-	eval $(BUILD_IOS)
+	cd bind && $(GOBIND) -ldflags=$(LD_FLAGS) -target=$(IOS_TARGET) -v -o $(IOS_ARTIFACT)
 	@go mod tidy
 	@cd /System/Library/Sounds && afplay Glass.aiff
 	@echo "Finished Binding ➡ " && date
@@ -63,10 +56,7 @@ android:
 	@echo "--------------------------------------------------------------"
 	@echo "--------------- 🤖 BEGIN ANDROID BIND 🤖 ----------------------"
 	@echo "--------------------------------------------------------------"
-	@rm -rf $(ANDROID_BUILDDIR) 2>/dev/null
-	@mkdir -p $(ANDROID_BUILDDIR)
-	gomobile clean
-	eval $(BUILD_ANDROID)
+	cd bind && $(GOBIND) -ldflags=$(LD_FLAGS) -target=$(ANDROID_TARGET) -v -o $(ANDROID_ARTIFACT)
 	@go mod tidy
 	@cd /System/Library/Sounds && afplay Glass.aiff
 	@echo "Finished Binding ➡ " && date
