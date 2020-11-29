@@ -1,6 +1,7 @@
 SHELL := /bin/zsh # Set Shell
 
 # GoMobile Commands
+#GODEBUG=asyncpreemptoff=1 
 GOMOBILE=gomobile
 GCMSG=git-commitmsg
 GOCLEAN=$(GOMOBILE) clean
@@ -12,13 +13,13 @@ ANDROID_BUILDDIR=/Users/prad/Sonr/plugin/android/libs
 
 # Platform Specific Parameters
 IOS_ARTIFACT=$(IOS_BUILDDIR)/Core.framework
-IOS_TARGET=ios/arm64
+IOS_TARGET=ios
 ANDROID_ARTIFACT=$(ANDROID_BUILDDIR)/io.sonr.core.aar
-ANDROID_TARGET=android
+ANDROID_TARGET=android/arm64
 LD_FLAGS='-s -w'
 
 # Gomobile Build Commands
-BUILD_IOS="cd bind && $(GOCLEAN) &&  $(GOBIND) -ldflags=$(LD_FLAGS) -target=$(IOS_TARGET) -v -o $(IOS_ARTIFACT)"
+BUILD_IOS="cd bind && $(GOCLEAN) && $(GODEBUG) $(GOBIND) -ldflags=$(LD_FLAGS) -target=$(IOS_TARGET) -v -o $(IOS_ARTIFACT)"
 BUILD_ANDROID="cd bind && $(GOCLEAN) && $(GOBIND) -ldflags=$(LD_FLAGS) -target=$(ANDROID_TARGET) -v -o $(ANDROID_ARTIFACT)"
 
 # Proto Directories
