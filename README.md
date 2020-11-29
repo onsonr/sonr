@@ -9,7 +9,9 @@
 
 # Build
 
-> Use `make` with `ios` or `android` or `all` command in `root directory`, then `flutter run` in [plugin]("https://github.com/sonr-io/plugin") `/plugin/example`  
+> For iOS `GODEBUG=asyncpreemptoff=1 gomobile bind -target=ios -ldflags='-s -w' -v -o /Users/prad/Sonr/plugin/ios/Frameworks/Core.framework`
+> For Android `GODEBUG=asyncpreemptoff=1 gomobile bind -target=android/arm64 -ldflags='-s -w' -v -o /Users/prad/Sonr/plugin/android/libs/io.sonr.core.aar`
+> Then `flutter run` in [plugin]("https://github.com/sonr-io/plugin") `/plugin/example`  
 
 ## Compatible types
 
