@@ -1,11 +1,9 @@
 SHELL := /bin/zsh # Set Shell
 
 # GoMobile Commands
-#GODEBUG=asyncpreemptoff=1 
-GOMOBILE=gomobile
+#GODEBUG=asyncpreemptoff=1
 GCMSG=git-commitmsg
-GOCLEAN=$(GOMOBILE) clean
-GOBIND=$(GOMOBILE) bind
+GOBIND=gomobile bind
 
 # GoMobile Directories
 IOS_BUILDDIR=/Users/prad/Sonr/plugin/ios/Frameworks
@@ -19,8 +17,8 @@ ANDROID_TARGET=android/arm64
 LD_FLAGS='-s -w'
 
 # Gomobile Build Commands
-BUILD_IOS="cd bind && $(GOCLEAN) && $(GODEBUG) $(GOBIND) -ldflags=$(LD_FLAGS) -target=$(IOS_TARGET) -v -o $(IOS_ARTIFACT)"
-BUILD_ANDROID="cd bind && $(GOCLEAN) && $(GOBIND) -ldflags=$(LD_FLAGS) -target=$(ANDROID_TARGET) -v -o $(ANDROID_ARTIFACT)"
+BUILD_IOS="cd bind && $(GOBIND) -ldflags=$(LD_FLAGS) -target=$(IOS_TARGET) -v -o $(IOS_ARTIFACT)"
+BUILD_ANDROID="cd bind && $(GOBIND) -ldflags=$(LD_FLAGS) -target=$(ANDROID_TARGET) -v -o $(ANDROID_ARTIFACT)"
 
 # Proto Directories
 PB_PATH="/Users/prad/Sonr/core/internal/models"
@@ -49,6 +47,7 @@ ios:
 	@echo "--------------------------------------------------------------"
 	@rm -rf $(IOS_BUILDDIR) 2>/dev/null
 	@mkdir -p $(IOS_BUILDDIR)
+	gomobile clean
 	eval $(BUILD_IOS)
 	@go mod tidy
 	@cd /System/Library/Sounds && afplay Glass.aiff
@@ -66,6 +65,7 @@ android:
 	@echo "--------------------------------------------------------------"
 	@rm -rf $(ANDROID_BUILDDIR) 2>/dev/null
 	@mkdir -p $(ANDROID_BUILDDIR)
+	gomobile clean
 	eval $(BUILD_ANDROID)
 	@go mod tidy
 	@cd /System/Library/Sounds && afplay Glass.aiff

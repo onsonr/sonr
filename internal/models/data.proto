@@ -65,7 +65,6 @@ message Peer {
   double direction = 7;
   double difference = 8;
   Proximity proximity = 9;
-  Relation relation = 10;
 
   // Define Proximity
   enum Proximity {
@@ -73,13 +72,5 @@ message Peer {
     IMMEDIATE = 1;
     NEAR = 2;
     FAR = 3;
-  }
-
-  // Define Relation
-  enum Relation {
-    NONE = 0;
-    INVITED = 1;
-    ACCEPTED = 2;
-    DECLINED = 3;
   }
 }
