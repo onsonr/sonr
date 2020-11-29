@@ -24,7 +24,7 @@ import (
 type OnProgressed func(data []byte)
 type OnComplete func(data []byte)
 
-const ChunkSize = 16000
+const ChunkSize = 32000
 
 // Struct to Implement Node Callback Methods
 type DataCallback struct {
@@ -120,7 +120,7 @@ func (dsc *DataStreamConn) readBlock(mrw msgio.ReadCloser) error {
 		if msg.Current == msg.Total {
 			// Add Block to Buffer
 			fmt.Println("Completed All Blocks, Save the File")
-			dsc.File.AddBlock(msg.Data)
+			go dsc.File.AddBlock(msg.Data)
 
 			// Save The File
 			savePath, err := dsc.File.Save()

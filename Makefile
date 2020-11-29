@@ -27,44 +27,6 @@ PB_CLEAN_PLUGIN="cd $(PLUGIN_PB_DIR) && find ./ -name "*.dart" -not -name "model
 PB_BUILD_CORE="--go_out=$(CORE_PB_DIR)"
 PB_BUILD_PLUGIN="--dart_out=$(PLUGIN_PB_DIR)"
 
-all: protoc ios android 
-	@cd /System/Library/Sounds && afplay Hero.aiff
-	@echo ""
-	@echo ""
-	@echo "--------------------------------------------------------------"
-	@echo "-------- ✅ ✅ ✅   FINISHED ALL TASKS  ✅ ✅ ✅  --------------"
-	@echo "--------------------------------------------------------------"
-
-ios:
-	@echo ""
-	@echo ""
-	@echo "--------------------------------------------------------------"
-	@echo "-------------- 📱 BEGIN IOS BIND 📱 ---------------------------"
-	@echo "--------------------------------------------------------------"
-	cd bind && $(GOBIND) -ldflags=$(LD_FLAGS) -target=$(IOS_TARGET) -v -o $(IOS_ARTIFACT)
-	@go mod tidy
-	@cd /System/Library/Sounds && afplay Glass.aiff
-	@echo "Finished Binding ➡ " && date
-	@echo "--------------------------------------------------------------"
-	@echo "-------------- 📱 COMPLETE IOS BIND 📱 ------------------------"
-	@echo "--------------------------------------------------------------"
-	@echo ""
-
-android:
-	@echo ""
-	@echo ""
-	@echo "--------------------------------------------------------------"
-	@echo "--------------- 🤖 BEGIN ANDROID BIND 🤖 ----------------------"
-	@echo "--------------------------------------------------------------"
-	cd bind && $(GOBIND) -ldflags=$(LD_FLAGS) -target=$(ANDROID_TARGET) -v -o $(ANDROID_ARTIFACT)
-	@go mod tidy
-	@cd /System/Library/Sounds && afplay Glass.aiff
-	@echo "Finished Binding ➡ " && date
-	@echo "--------------------------------------------------------------"
-	@echo "------------- 🤖  COMPLETE ANDROID BIND 🤖  -------------------"
-	@echo "--------------------------------------------------------------"
-	@echo ""
-
 protoc:
 	@echo ""
 	@echo ""

@@ -58,7 +58,6 @@ func (sf *SonrFile) AddBlock(block string) {
 func (sf *SonrFile) Save() (string, error) {
 	// ** Lock/Unlock ** //
 	sf.mutex.Lock()
-	defer sf.mutex.Unlock()
 
 	// Get Base64 Data
 	data := sf.builder.String()
@@ -87,6 +86,7 @@ func (sf *SonrFile) Save() (string, error) {
 		log.Fatalln(err)
 	}
 
+	sf.mutex.Unlock()
 	// Return Block
 	return sf.Path, nil
 }
