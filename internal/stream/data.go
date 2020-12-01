@@ -45,15 +45,19 @@ type DataStreamConn struct {
 	Self   *pb.Peer
 	Peer   *pb.Peer
 
+	// RPC Structs
+	progressClient ProgressClient
+	progressServer ProgressServer
+
 	// Stream Info
 	id     string
 	stream network.Stream
 }
 
 // ^ Start New Stream ^ //
-func (dsc *DataStreamConn) Transfer(ctx context.Context, peerId peer.ID, peer *pb.Peer, sm *sf.SafeMeta) {
+func (dsc *DataStreamConn) Transfer(ctx context.Context, sm *sf.SafeMeta) {
 	// Create New Auth Stream
-	stream, err := dsc.Host.NewStream(ctx, peerId, protocol.ID("/sonr/data"))
+	stream, err := dsc.Host.NewStream(ctx, dsc.PeerID, protocol.ID("/sonr/data"))
 	if err != nil {
 		dsc.Call.Error(err, "Transfer")
 	}
@@ -61,17 +65,16 @@ func (dsc *DataStreamConn) Transfer(ctx context.Context, peerId peer.ID, peer *p
 	// Set Stream
 	dsc.stream = stream
 	dsc.id = stream.ID()
-	dsc.Peer = peer
-	dsc.PeerID = peerId
 
-	writer := msgio.NewWriter(dsc.stream)
+	// Set RPC Server
+	dsc.progressServer = setSender(dsc.Host, dsc.Call.Progressed)
 
 	// Print Stream Info
 	info := stream.Stat()
 	fmt.Println("Stream Info: ", info)
 
 	// Initialize Routine
-	go dsc.writeMessages(writer, sm)
+	go dsc.writeMessages(sm)
 }
 
 // ^ Handle Incoming Stream ^ //
@@ -79,6 +82,9 @@ func (dsc *DataStreamConn) HandleStream(stream network.Stream) {
 	// Set Stream
 	dsc.stream = stream
 	dsc.id = stream.ID()
+
+	// Set RPC Client
+	dsc.progressClient = setReceiver(dsc.Host, dsc.PeerID, dsc.Call.Progressed)
 
 	// Print Stream Info
 	info := stream.Stat()
@@ -111,7 +117,7 @@ func (dsc *DataStreamConn) readBlock(reader msgio.ReadCloser) error {
 			dsc.File.AddBlock(msg.Data)
 
 			// Send Receiver Progress Update
-			go dsc.sendProgress(msg.Current, msg.Total)
+			go dsc.progressClient.SendProgress(msg.Current, msg.Total)
 		}
 
 		// Save File on Buffer Complete
@@ -120,7 +126,7 @@ func (dsc *DataStreamConn) readBlock(reader msgio.ReadCloser) error {
 			dsc.File.AddBlock(msg.Data)
 
 			// Send Receiver Progress Update
-			dsc.sendProgress(msg.Current, msg.Total)
+			go dsc.progressClient.SendProgress(msg.Current, msg.Total)
 
 			// Save The File
 			savePath, err := dsc.File.Save()
@@ -151,26 +157,9 @@ func (dsc *DataStreamConn) readBlock(reader msgio.ReadCloser) error {
 	return nil
 }
 
-func (dsc *DataStreamConn) sendProgress(current int32, total int32) {
-	// Create Message
-	progressMessage := pb.ProgressUpdate{
-		Current: current,
-		Total:   total,
-		Percent: float32(current) / float32(total),
-	}
-
-	// Convert to bytes
-	bytes, err := proto.Marshal(&progressMessage)
-	if err != nil {
-		dsc.Call.Error(err, "SendProgress")
-	}
-
-	// Send Callback
-	dsc.Call.Progressed(bytes)
-}
-
-func (dsc *DataStreamConn) writeMessages(writer msgio.Writer, sf *sf.SafeMeta) error {
+func (dsc *DataStreamConn) writeMessages(sf *sf.SafeMeta) error {
 	// Get Metadata
+	writer := msgio.NewWriter(dsc.stream)
 	meta := sf.Metadata()
 	imgBuffer := new(bytes.Buffer)
 
@@ -179,7 +168,6 @@ func (dsc *DataStreamConn) writeMessages(writer msgio.Writer, sf *sf.SafeMeta) e
 	if err != nil {
 		return err
 	}
-	defer file.Close()
 
 	// Convert to Image Object
 	img, _, err := image.Decode(file)
@@ -194,6 +182,7 @@ func (dsc *DataStreamConn) writeMessages(writer msgio.Writer, sf *sf.SafeMeta) e
 	}
 
 	b64 := base64.StdEncoding.EncodeToString(imgBuffer.Bytes())
+	file.Close()
 
 	// Iterate for Entire file
 	for i, chunk := range splitString(b64, ChunkSize) {

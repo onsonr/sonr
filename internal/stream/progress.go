@@ -1,107 +1,120 @@
 package stream
 
 import (
-	"bytes"
 	"context"
-	"crypto/rand"
 	"fmt"
-	"time"
-
 	"log"
+	"time"
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
+	pb "github.com/sonr-io/core/internal/models"
+	"google.golang.org/protobuf/proto"
 
 	gorpc "github.com/libp2p/go-libp2p-gorpc"
-
-	multiaddr "github.com/multiformats/go-multiaddr"
 )
 
-type PingArgs struct {
-	Data []byte
-}
-type PingReply struct {
-	Data []byte
-}
-type PingService struct{}
+const protocolID = protocol.ID("/sonr/data/progress")
 
-func (t *PingService) Ping(ctx context.Context, argType PingArgs, replyType *PingReply) error {
-	log.Println("Received a Ping call")
-	replyType.Data = argType.Data
+// ** Service Types ** //
+type ProgressArgs struct {
+	Current  int
+	Total    int
+	Progress float32
+}
+type ProgressReply struct {
+	HasReceived bool
+}
+
+type ProgressService struct{}
+
+func (t *ProgressService) Progress(ctx context.Context, argType ProgressArgs, replyType *ProgressReply) error {
+	log.Println("Received a Progress call: ", argType.Progress)
+	replyType.HasReceived = true
+	// Send Callback
 	return nil
 }
 
-var protocolID = protocol.ID("/p2p/rpc/ping")
+// ** DataStream Handling Types ** //
+type ProgressClient struct {
+	progressed OnProgressed
+	rpcClient  *gorpc.Client
+	hostID     peer.ID
+}
 
-func startServer(host host.Host) {
-	log.Println("Launching host")
-	log.Printf("Hello World, my hosts ID is %s\n", host.ID().Pretty())
-	for _, addr := range host.Addrs() {
-		ipfsAddr, err := multiaddr.NewMultiaddr("/ipfs/" + host.ID().Pretty())
-		if err != nil {
-			panic(err)
-		}
-		peerAddr := addr.Encapsulate(ipfsAddr)
-		log.Printf("I'm listening on %s\n", peerAddr)
-	}
+type ProgressServer struct {
+	progressed OnProgressed
+	rpcServer  *gorpc.Server
+}
 
+// ^ Set Sender as Server ^ //
+func setSender(host host.Host, op OnProgressed) ProgressServer {
+	log.Println("Setting Data Sender as RPC Server")
 	rpcHost := gorpc.NewServer(host, protocolID)
-
-	svc := PingService{}
+	svc := ProgressService{}
 	err := rpcHost.Register(&svc)
 	if err != nil {
 		panic(err)
 	}
-
-	fmt.Println("Done")
-
-	for {
-		time.Sleep(time.Second * 1)
+	return ProgressServer{
+		rpcServer:  rpcHost,
+		progressed: op,
 	}
 }
 
-func startClient(client host.Host, hostID peer.ID, pingCount, randomDataSize int) {
-	fmt.Println("Launching client")
-	rpcClient := gorpc.NewClient(client, protocolID)
-	numCalls := 0
-	durations := []time.Duration{}
-	betweenPingsSleep := time.Second * 1
+// ^ Set Receiver as Client ^ //
+func setReceiver(client host.Host, peerID peer.ID, op OnProgressed) ProgressClient {
+	log.Println("Setting Data Receiver as RPC Server")
+	rpc := gorpc.NewClient(client, protocolID)
+	return ProgressClient{
+		rpcClient:  rpc,
+		progressed: op,
+		hostID:     peerID,
+	}
+}
 
-	for numCalls < pingCount {
-		var reply PingReply
-		var args PingArgs
+// ^ Send Progress to Data Sender ^ //
+func (pc *ProgressClient) SendProgress(current int32, total int32) {
+	// Send Callback
+	callbackProtobuf(pc.progressed, current, total)
 
-		c := randomDataSize
-		b := make([]byte, c)
-		_, err := rand.Read(b)
-		if err != nil {
-			panic(err)
-		}
+	var reply ProgressReply
+	var args ProgressArgs
+	p := float32(current) / float32(total)
 
-		args.Data = b
+	args.Progress = p
+	args.Current = int(current)
+	args.Total = int(total)
 
-		time.Sleep(betweenPingsSleep)
-		startTime := time.Now()
-		err = rpcClient.Call(hostID, "PingService", "Ping", args, &reply)
-		if err != nil {
-			panic(err)
-		}
-		if !bytes.Equal(reply.Data, b) {
-			panic("Received wrong amount of bytes back!")
-		}
-		endTime := time.Now()
-		diff := endTime.Sub(startTime)
-		fmt.Printf("%d bytes from %s: seq=%d time=%s\n", c, hostID.String(), numCalls+1, diff)
-		numCalls += 1
-		durations = append(durations, diff)
+	startTime := time.Now()
+	err := pc.rpcClient.Call(pc.hostID, "ProgressService", "Progress", args, &reply)
+	if err != nil {
+		panic(err)
+	}
+	if !(reply.HasReceived) {
+		panic("Server did not receive progress")
+	}
+	endTime := time.Now()
+	diff := endTime.Sub(startTime)
+	fmt.Printf("%f progress from %s: time=%s\n", p, pc.hostID.String(), diff)
+}
+
+// ^ Callback to Frontend with Protobuf ^ //
+func callbackProtobuf(op OnProgressed, current int32, total int32) {
+	// Create Callback for User
+	progressMessage := pb.ProgressUpdate{
+		Current: current,
+		Total:   total,
+		Percent: float32(current) / float32(total),
 	}
 
-	totalDuration := int64(0)
-	for _, dur := range durations {
-		totalDuration = totalDuration + dur.Nanoseconds()
+	// Convert to bytes
+	bytes, err := proto.Marshal(&progressMessage)
+	if err != nil {
+		fmt.Println(err, "SendProgress")
 	}
-	averageDuration := totalDuration / int64(len(durations))
-	fmt.Printf("Average duration for ping reply: %s\n", time.Duration(averageDuration))
 
+	// Send Callback
+	op(bytes)
 }

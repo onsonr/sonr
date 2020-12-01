@@ -73,9 +73,11 @@ func (sn *Node) Invite(peerId string) {
 func (sn *Node) Respond(decision bool) {
 	// Check Respons
 	if decision {
+		// Retreive Peer Data
+		sn.dataStream.PeerID, sn.dataStream.Peer = sn.lobby.Find(sn.authStream.Peer.Id)
+
 		// Allocate Space for File and Add as Ref to Datastream
 		sn.dataStream.File = sf.NewFile(sn.directories.Documents, sn.authStream.Metadata)
-		sn.dataStream.Peer = sn.authStream.Peer
 
 		// Send Accept Response Message
 		if err := sn.authStream.Accept(); err != nil {
@@ -94,11 +96,15 @@ func (sn *Node) Transfer() {
 	// Retreive Peer Data
 	id, peer := sn.lobby.Find(sn.authStream.Peer.Id)
 
+	// Set Peer Data in Datastream
+	sn.dataStream.PeerID = id
+	sn.dataStream.Peer = peer
+
 	// Initialize Data
 	safeFile := sn.currentFile()
 
 	// Create Transfer Stream
-	sn.dataStream.Transfer(sn.ctx, id, peer, safeFile)
+	sn.dataStream.Transfer(sn.ctx, safeFile)
 }
 
 // ^ Reset Current Queued File Metadata ^ //
