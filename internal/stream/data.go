@@ -228,7 +228,11 @@ func (dsc *DataStreamConn) writeFile(sm *sf.SafeMeta) error {
 	// Get Metadata
 	var wg sync.WaitGroup
 	meta := sm.Metadata()
-	b64 := sf.GetBase64Image(dsc.Call.Error, meta.Path)
+	b64, err := sf.GetBase64Image(meta.Path)
+	if err != nil {
+		dsc.Call.Error(err, "writeFile")
+		return err
+	}
 
 	// Create Delay
 	time.After(time.Millisecond * 500)
