@@ -30,7 +30,6 @@ var (
 
 // ^ Create new SonrFile struct with meta and documents directory ^ //
 func NewFile(docDir string, meta *pb.Metadata) SonrFile {
-
 	return SonrFile{
 		Metadata: meta,
 		builder:  new(strings.Builder),

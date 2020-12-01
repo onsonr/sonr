@@ -24,7 +24,7 @@ import (
 type OnProgressed func(data []byte)
 type OnComplete func(data []byte)
 
-const ChunkSize = 16000
+const ChunkSize = 16002 // Adjusted for Base64
 
 // Struct to Implement Node Callback Methods
 type DataCallback struct {
@@ -33,49 +33,45 @@ type DataCallback struct {
 	Error      OnError
 }
 
-// Struct defines a Chunk of Bytes of File
-type Chunk struct {
-	Size    int64
-	Offset  int64
-	Data    []byte
-	Current int64
-	Total   int64
-}
-
 // ^ Struct: Holds/Handles Stream for Authentication  ^ //
 type DataStreamConn struct {
+	// Properties
 	Call DataCallback
-	Self *pb.Peer
+	Host host.Host
 	File sf.SonrFile
-	Peer *pb.Peer
 
+	// Peer/Self Info
+	PeerID peer.ID
+	Self   *pb.Peer
+	Peer   *pb.Peer
+
+	// Stream Info
 	id     string
-	data   *pb.Metadata
 	stream network.Stream
-	writer msgio.Writer
 }
 
 // ^ Start New Stream ^ //
-func (dsc *DataStreamConn) Transfer(ctx context.Context, h host.Host, id peer.ID, r *pb.Peer, sm *sf.SafeMeta) error {
+func (dsc *DataStreamConn) Transfer(ctx context.Context, peerId peer.ID, peer *pb.Peer, sm *sf.SafeMeta) {
 	// Create New Auth Stream
-	stream, err := h.NewStream(ctx, id, protocol.ID("/sonr/data"))
+	stream, err := dsc.Host.NewStream(ctx, peerId, protocol.ID("/sonr/data"))
 	if err != nil {
-		return err
+		dsc.Call.Error(err, "Transfer")
 	}
 
 	// Set Stream
 	dsc.stream = stream
 	dsc.id = stream.ID()
-	dsc.Peer = r
-	dsc.writer = msgio.NewWriter(dsc.stream)
+	dsc.Peer = peer
+	dsc.PeerID = peerId
+
+	writer := msgio.NewWriter(dsc.stream)
 
 	// Print Stream Info
 	info := stream.Stat()
 	fmt.Println("Stream Info: ", info)
 
 	// Initialize Routine
-	go dsc.writeFile(sm)
-	return nil
+	go dsc.writeMessages(writer, sm)
 }
 
 // ^ Handle Incoming Stream ^ //
@@ -89,21 +85,21 @@ func (dsc *DataStreamConn) HandleStream(stream network.Stream) {
 	fmt.Println("Stream Info: ", info)
 
 	// Initialize Routine
-	mrw := msgio.NewReader(dsc.stream)
-	go dsc.readBlock(mrw)
+	reader := msgio.NewReader(dsc.stream)
+	go dsc.readBlock(reader)
 }
 
 // ^ read Data from Msgio ^ //
-func (dsc *DataStreamConn) readBlock(mrw msgio.ReadCloser) error {
+func (dsc *DataStreamConn) readBlock(reader msgio.ReadCloser) error {
 	for {
 		// Read Length Fixed Bytes
-		buffer, err := mrw.ReadMsg()
+		buffer, err := reader.ReadMsg()
 		if err != nil {
 			dsc.Call.Error(err, "read")
 			return err
 		}
 		// Unmarshal Bytes into Proto
-		msg := pb.Block{}
+		msg := pb.Chunk{}
 		err = proto.Unmarshal(buffer, &msg)
 		if err != nil {
 			dsc.Call.Error(err, "read")
@@ -124,7 +120,7 @@ func (dsc *DataStreamConn) readBlock(mrw msgio.ReadCloser) error {
 			dsc.File.AddBlock(msg.Data)
 
 			// Send Receiver Progress Update
-			go dsc.sendProgress(msg.Current, msg.Total)
+			dsc.sendProgress(msg.Current, msg.Total)
 
 			// Save The File
 			savePath, err := dsc.File.Save()
@@ -156,14 +152,11 @@ func (dsc *DataStreamConn) readBlock(mrw msgio.ReadCloser) error {
 }
 
 func (dsc *DataStreamConn) sendProgress(current int32, total int32) {
-	// Calculate Progress
-	progress := float32(current) / float32(total)
-
 	// Create Message
 	progressMessage := pb.ProgressUpdate{
-		Current:  current,
-		Total:    total,
-		Progress: progress,
+		Current: current,
+		Total:   total,
+		Percent: float32(current) / float32(total),
 	}
 
 	// Convert to bytes
@@ -176,31 +169,28 @@ func (dsc *DataStreamConn) sendProgress(current int32, total int32) {
 	dsc.Call.Progressed(bytes)
 }
 
-func (dsc *DataStreamConn) writeFile(sm *sf.SafeMeta) error {
+func (dsc *DataStreamConn) writeMessages(writer msgio.Writer, sf *sf.SafeMeta) error {
 	// Get Metadata
-	meta := sm.Metadata()
+	meta := sf.Metadata()
 	imgBuffer := new(bytes.Buffer)
 
 	// New File for ThumbNail
 	file, err := os.Open(meta.Path)
 	if err != nil {
-		fmt.Println(err)
-		dsc.Call.Error(err, "AddFile")
+		return err
 	}
 	defer file.Close()
 
 	// Convert to Image Object
 	img, _, err := image.Decode(file)
 	if err != nil {
-		fmt.Println(err)
-		dsc.Call.Error(err, "AddFile")
+		return err
 	}
 
 	// Encode as Jpeg into buffer
 	err = jpeg.Encode(imgBuffer, img, nil)
 	if err != nil {
-		fmt.Println(err)
-		dsc.Call.Error(err, "AddFile")
+		return err
 	}
 
 	b64 := base64.StdEncoding.EncodeToString(imgBuffer.Bytes())
@@ -208,24 +198,23 @@ func (dsc *DataStreamConn) writeFile(sm *sf.SafeMeta) error {
 	// Iterate for Entire file
 	for i, chunk := range splitString(b64, ChunkSize) {
 		// Create Block Protobuf from Chunk
-		block := pb.Block{
+		chunk := pb.Chunk{
 			Size:    int32(len(chunk)),
 			Data:    chunk,
 			Current: int32(i),
-			Total:   meta.Chunks,
+			Total:   int32(len(b64)),
 		}
-		fmt.Println("Block: ", block.String())
 
 		// Convert to bytes
-		bytes, err := proto.Marshal(&block)
+		bytes, err := proto.Marshal(&chunk)
 		if err != nil {
-			dsc.Call.Error(err, "writeFileToStream")
+			dsc.Call.Error(err, "writeMessages")
 		}
 
 		// Write Message Bytes to Stream
-		err = dsc.writer.WriteMsg(bytes)
+		err = writer.WriteMsg(bytes)
 		if err != nil {
-			dsc.Call.Error(err, "writeFileToStream")
+			dsc.Call.Error(err, "writeMessages")
 		}
 	}
 	return nil

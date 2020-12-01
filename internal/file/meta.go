@@ -23,6 +23,7 @@ import (
 
 // Define Function Types
 type OnQueued func(data []byte)
+type OnProgress func(data []byte)
 type OnError func(err error, method string)
 
 // Define Block Size
@@ -125,7 +126,6 @@ func (sf *SafeMeta) Generate() {
 		Name:      filepath.Base(sf.Path),
 		Path:      sf.Path,
 		Size:      int32(info.Size()),
-		Chunks:    int32(info.Size()) / BlockSize,
 		Mime:      mime,
 		Thumbnail: thumbBuffer.Bytes(),
 	}

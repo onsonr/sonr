@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package core;
+
 import "data.proto";
 
 // Require Go Package
@@ -20,8 +22,8 @@ message LobbyEvent {
     }
 }
 
-// Define Block Type: Sent on Data Transfer
-message Block {
+// Define Chunk Type: Sent on Data Transfer
+message Chunk {
   string data = 1;
   int32 size = 2;
   int32 current = 3;
