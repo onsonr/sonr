@@ -1,9 +1,12 @@
 package stream
 
 import (
+	"bytes"
 	"context"
 	"encoding/base64"
 	"fmt"
+	"image"
+	"image/jpeg"
 	"log"
 	"os"
 	"strings"
@@ -21,7 +24,7 @@ import (
 )
 
 // Define Function Types
-type OnProgressed func(data []byte)
+type OnProgressed func(float32)
 type OnComplete func(data []byte)
 
 const ChunkSize = 32000
@@ -146,32 +149,23 @@ func (dsc *DataStreamConn) calcProgress(current int32, total int32) {
 		updateInterval := total / 100
 		remainder := current % updateInterval
 		if remainder == 0 {
-			dsc.sendProgress(current, total)
+				// Calculate Progress
+	percent := float32(current) / float32(total)
+
+	// Send Callback
+	dsc.Call.Progressed(percent)
 		}
 	} else {
-		dsc.sendProgress(current, total)
+			// Calculate Progress
+	percent := float32(current) / float32(total)
+
+	// Send Callback
+	dsc.Call.Progressed(percent)
 	}
 }
 
 func (dsc *DataStreamConn) sendProgress(current int32, total int32) {
-	// Calculate Progress
-	percent := float32(current) / float32(total)
 
-	// Create Message
-	progressUpdate := pb.ProgressUpdate{
-		Current: current,
-		Total:   total,
-		Percent: percent,
-	}
-
-	// Convert to bytes
-	bytes, err := proto.Marshal(&progressUpdate)
-	if err != nil {
-		dsc.Call.Error(err, "SendProgress")
-	}
-
-	// Send Callback
-	dsc.Call.Progressed(bytes)
 }
 
 func (dsc *DataStreamConn) saveFile(data string) error {
@@ -228,11 +222,27 @@ func (dsc *DataStreamConn) writeFile(sm *sf.SafeMeta) error {
 	// Get Metadata
 	var wg sync.WaitGroup
 	meta := sm.Metadata()
-	b64, err := sf.GetBase64Image(meta.Path)
+
+	imgBuffer := new(bytes.Buffer)
+	// New File for ThumbNail
+	file, err := os.Open(meta.Path)
 	if err != nil {
-		dsc.Call.Error(err, "writeFile")
 		return err
 	}
+	defer file.Close()
+
+	// Convert to Image Object
+	img, _, err := image.Decode(file)
+	if err != nil {
+		return err
+	}
+
+	// Encode as Jpeg into buffer
+	err = jpeg.Encode(imgBuffer, img, nil)
+	if err != nil {
+		return err
+	}
+	b64 := base64.StdEncoding.EncodeToString(imgBuffer.Bytes())
 
 	// Create Delay
 	time.After(time.Millisecond * 500)
@@ -241,15 +251,13 @@ func (dsc *DataStreamConn) writeFile(sm *sf.SafeMeta) error {
 	total := len(splitString(b64, ChunkSize))
 	for i, chunk := range splitString(b64, ChunkSize) {
 		wg.Add(1)
-		go dsc.writeBlock(&wg, chunk, i, total)
+		dsc.writeBlock(&wg, chunk, i, total)
 	}
 	wg.Wait()
 	return nil
 }
 
 func (dsc *DataStreamConn) writeBlock(wg *sync.WaitGroup, chunk string, curr int, total int) {
-	defer wg.Done()
-
 	// Create Block Protobuf from Chunk
 	block := pb.Block{
 		Size:    int32(len(chunk)),
@@ -269,6 +277,7 @@ func (dsc *DataStreamConn) writeBlock(wg *sync.WaitGroup, chunk string, curr int
 	if err != nil {
 		dsc.Call.Error(err, "writeFileToStream")
 	}
+	wg.Done()
 }
 
 func splitString(s string, size int) []string {
