@@ -62,6 +62,7 @@ func (sn *Node) setPeer(connEvent *pb.ConnectionRequest) error {
 	// Assign Peer Info to Stream Handlers
 	sn.authStream.Self = sn.Peer
 	sn.dataStream.Self = sn.Peer
+	sn.dataStream.Host = sn.host
 
 	// Set Directory
 	sn.directories = connEvent.Directory

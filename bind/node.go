@@ -98,10 +98,7 @@ func (sn *Node) Transfer() {
 	safeFile := sn.currentFile()
 
 	// Create Transfer Stream
-	err := sn.dataStream.Transfer(sn.ctx, sn.host, id, peer, safeFile)
-	if err != nil {
-		sn.Error(err, "Transfer")
-	}
+	sn.dataStream.Transfer(sn.ctx, id, peer, safeFile)
 }
 
 // ^ Reset Current Queued File Metadata ^ //
