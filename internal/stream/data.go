@@ -10,7 +10,6 @@ import (
 	"log"
 	"os"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/host"
@@ -24,7 +23,7 @@ import (
 )
 
 // Define Function Types
-type OnProgressed func(float32)
+type OnProgressed func(float64)
 type OnComplete func(data []byte)
 
 const ChunkSize = 32000
@@ -120,7 +119,7 @@ func (dsc *DataStreamConn) readMessages(mrw msgio.ReadCloser) error {
 			if err != nil {
 				fmt.Println(err)
 			}
-			dsc.calcProgress(msg.Current, msg.Total)
+			dsc.sendProgress(msg.Current, msg.Total)
 		}
 
 		// Save File on Buffer Complete
@@ -142,30 +141,26 @@ func (dsc *DataStreamConn) readMessages(mrw msgio.ReadCloser) error {
 	return nil
 }
 
-func (dsc *DataStreamConn) calcProgress(current int32, total int32) {
+func (dsc *DataStreamConn) sendProgress(current int32, total int32) {
 	// Adjust Progress to Send on 100 Intervals
 	if total > 100 {
 		// Check if interval has been met
 		updateInterval := total / 100
 		remainder := current % updateInterval
 		if remainder == 0 {
-				// Calculate Progress
-	percent := float32(current) / float32(total)
+			// Calculate Progress
+			percent := float64(current) / float64(total)
 
-	// Send Callback
-	dsc.Call.Progressed(percent)
+			// Send Callback
+			dsc.Call.Progressed(percent)
 		}
 	} else {
-			// Calculate Progress
-	percent := float32(current) / float32(total)
+		// Calculate Progress
+		percent := float64(current) / float64(total)
 
-	// Send Callback
-	dsc.Call.Progressed(percent)
+		// Send Callback
+		dsc.Call.Progressed(percent)
 	}
-}
-
-func (dsc *DataStreamConn) sendProgress(current int32, total int32) {
-
 }
 
 func (dsc *DataStreamConn) saveFile(data string) error {
@@ -220,7 +215,6 @@ func (dsc *DataStreamConn) saveFile(data string) error {
 
 func (dsc *DataStreamConn) writeFile(sm *sf.SafeMeta) error {
 	// Get Metadata
-	var wg sync.WaitGroup
 	meta := sm.Metadata()
 
 	imgBuffer := new(bytes.Buffer)
@@ -248,36 +242,28 @@ func (dsc *DataStreamConn) writeFile(sm *sf.SafeMeta) error {
 	time.After(time.Millisecond * 500)
 
 	// Iterate for Entire file
-	total := len(splitString(b64, ChunkSize))
 	for i, chunk := range splitString(b64, ChunkSize) {
-		wg.Add(1)
-		dsc.writeBlock(&wg, chunk, i, total)
+		// Create Block Protobuf from Chunk
+		block := pb.Block{
+			Size:    int32(len(chunk)),
+			Data:    chunk,
+			Current: int32(i),
+			Total:   int32(meta.Chunks),
+		}
+
+		// Convert to bytes
+		bytes, err := proto.Marshal(&block)
+		if err != nil {
+			dsc.Call.Error(err, "writeFileToStream")
+		}
+
+		// Write Message Bytes to Stream
+		err = dsc.writer.WriteMsg(bytes)
+		if err != nil {
+			dsc.Call.Error(err, "writeFileToStream")
+		}
 	}
-	wg.Wait()
 	return nil
-}
-
-func (dsc *DataStreamConn) writeBlock(wg *sync.WaitGroup, chunk string, curr int, total int) {
-	// Create Block Protobuf from Chunk
-	block := pb.Block{
-		Size:    int32(len(chunk)),
-		Data:    chunk,
-		Current: int32(curr),
-		Total:   int32(total),
-	}
-
-	// Convert to bytes
-	bytes, err := proto.Marshal(&block)
-	if err != nil {
-		dsc.Call.Error(err, "writeFileToStream")
-	}
-
-	// Write Message Bytes to Stream
-	err = dsc.writer.WriteMsg(bytes)
-	if err != nil {
-		dsc.Call.Error(err, "writeFileToStream")
-	}
-	wg.Done()
 }
 
 func splitString(s string, size int) []string {

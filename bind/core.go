@@ -22,7 +22,7 @@ type Callback interface {
 	OnInvited(data []byte)
 	OnResponded(data []byte)
 	OnQueued(data []byte)
-	OnProgress(float32)
+	OnProgress(float64)
 	OnCompleted(data []byte)
 	OnError(data []byte)
 }
