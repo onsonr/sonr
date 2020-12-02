@@ -3,6 +3,7 @@ package file
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 
 	"fmt"
@@ -41,6 +42,10 @@ func (sm *SafeMeta) NewMetadata() {
 	// ** Lock ** //
 	sm.mutex.Lock()
 
+	// Get File Name
+	base := filepath.Base(sm.Path)
+	name := strings.TrimSuffix(base, filepath.Ext(sm.Path))
+
 	// @ 1. Get File Information
 	// Open File at Path
 	file, err := os.Open(sm.Path)
@@ -72,14 +77,15 @@ func (sm *SafeMeta) NewMetadata() {
 
 	// Set Mime
 	mime := &pb.MIME{
-		Type:    mimeType,
-		Subtype: kind.MIME.Subtype,
-		Value:   kind.MIME.Value,
+		Type:      mimeType,
+		Subtype:   kind.MIME.Subtype,
+		Value:     kind.MIME.Value,
+		Extension: filepath.Ext(sm.Path),
 	}
 
 	// @ 2. Set Metadata Protobuf Values
 	sm.meta = pb.Metadata{
-		Name: filepath.Base(sm.Path),
+		Name: name,
 		Path: sm.Path,
 		Size: int32(info.Size()),
 		Mime: mime,

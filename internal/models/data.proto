@@ -20,6 +20,7 @@ message MIME {
   Type type = 1;
   string subtype = 2;
   string value = 3;
+  string extension = 4;
   enum Type { application = 0; audio = 1; image = 2; text = 3; video = 4; }
 }
 

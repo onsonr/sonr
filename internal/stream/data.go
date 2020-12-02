@@ -77,13 +77,23 @@ func (dsc *DataStreamConn) HandleStream(stream network.Stream) {
 	info := stream.Stat()
 	fmt.Println("Stream Info: ", info)
 
+	// Calculate Call interval
+	var callInterval int
+	estSize := dsc.File.Metadata.Size
+	estChunks := estSize / BufferChunkSize
+	if estChunks > 20 {
+		callInterval = int32(estChunks / 20)
+	} else {
+		callInterval = estChunks
+	}
+
 	// Initialize Routine
 	reader := msgio.NewReader(dsc.stream)
-	go dsc.readBlock(reader)
+	go dsc.readBlock(reader, callInterval)
 }
 
 // ^ read Data from Msgio ^ //
-func (dsc *DataStreamConn) readBlock(reader msgio.ReadCloser) {
+func (dsc *DataStreamConn) readBlock(reader msgio.ReadCloser, callInterval int32) {
 	for i := 0; ; i++ {
 		// @ Read Length Fixed Bytes
 		buffer, err := reader.ReadMsg()
@@ -124,7 +134,7 @@ func (dsc *DataStreamConn) readBlock(reader msgio.ReadCloser) {
 			break
 		} else {
 			// @ Send Progress every 10 Messages
-			if i%10 == 0 {
+			if i%callInterval == 0 {
 				dsc.Call.Progressed(progress)
 			}
 		}

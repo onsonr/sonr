@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"path/filepath"
 	"strings"
 	"sync"
 	"time"
@@ -37,7 +36,7 @@ func NewFile(docDir string, meta *pb.Metadata) SonrFile {
 		Metadata:       meta,
 		stringsBuilder: new(strings.Builder),
 		bytesBuilder:   new(bytes.Buffer),
-		Path:           docDir + "/" + meta.Name,
+		Path:           docDir + "/" + meta.Name + meta.Mime.Extension,
 		progress:       0,
 	}
 }
@@ -154,7 +153,7 @@ func (sf *SonrFile) saveBytes(owner *pb.Peer) (*pb.Metadata, error) {
 
 	// @ 3. Set Metadata Protobuf Values
 	return &pb.Metadata{
-		Name:       fileNameWithoutExtension(sf.Path),
+		Name:       sf.Metadata.Name,
 		Path:       sf.Path,
 		Size:       int32(info.Size()),
 		Mime:       sf.Metadata.Mime,
@@ -201,16 +200,11 @@ func (sf *SonrFile) saveBase64(owner *pb.Peer) (*pb.Metadata, error) {
 
 	// @ 3. Set Metadata Protobuf Values
 	return &pb.Metadata{
-		Name:       fileNameWithoutExtension(sf.Path),
+		Name:       sf.Metadata.Name,
 		Path:       sf.Path,
 		Size:       int32(info.Size()),
 		Mime:       sf.Metadata.Mime,
 		Owner:      owner,
 		LastOpened: int32(time.Now().Unix()),
 	}, nil
-}
-
-func fileNameWithoutExtension(fileName string) string {
-	base := filepath.Base(fileName)
-	return strings.TrimSuffix(base, filepath.Ext(fileName))
 }
