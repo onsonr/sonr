@@ -15,13 +15,11 @@ const B64ChunkSize = 63996 // Adjusted for Base64 -- has to be divisible by 3
 const BufferChunkSize = 64000
 
 // ^ Safely returns metadata depending on lock ^ //
-func Base64(sf *SafeMeta) string {
-	// Retreive Metadata
-	meta := sf.Metadata()
+func Base64(path string) (string, int) {
 	imgBuffer := new(bytes.Buffer)
 
 	// New File for ThumbNail
-	file, err := os.Open(meta.Path)
+	file, err := os.Open(path)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -41,13 +39,11 @@ func Base64(sf *SafeMeta) string {
 
 	// Return B64 Encoded string
 	b64 := base64.StdEncoding.EncodeToString(imgBuffer.Bytes())
-	return b64
+	return b64, len(b64)
 }
 
 // ^ Chunks string based on B64ChunkSize ^ //
-func ChunkBase64(sf *SafeMeta) []string {
-	// Get String
-	s := Base64(sf)
+func ChunkBase64(s string) []string {
 	// scanner := bufio.NewScanner(bytes.NewBufferString(Base64(sf)))
 	chunkSize := B64ChunkSize
 	ss := make([]string, 0, len(s)/chunkSize+1)
@@ -62,10 +58,9 @@ func ChunkBase64(sf *SafeMeta) []string {
 }
 
 // ^ Chunk bytes from FilePath based on Buffer Chunk Size ^ //
-func ChunkBytes(sf *SafeMeta) [][]byte {
+func ChunkBytes(path string, total int) [][]byte {
 	// Open File
-	meta := sf.Metadata()
-	file, err := os.Open(meta.Path)
+	file, err := os.Open(path)
 	if err != nil {
 		fmt.Println(err)
 		return nil
@@ -75,7 +70,7 @@ func ChunkBytes(sf *SafeMeta) [][]byte {
 
 	// Set Chunk Variables
 	size := BufferChunkSize
-	pss := make([][]byte, 0, int(meta.Size)/size+1)
+	pss := make([][]byte, 0, total/size+1)
 	ps := make([]byte, BufferChunkSize)
 
 	// Iterate file
@@ -97,18 +92,4 @@ func ChunkBytes(sf *SafeMeta) [][]byte {
 		pss, ps = append(pss, ps[:bytesread]), ps[bytesread:]
 	}
 	return pss
-}
-
-func GetSize(sf *SafeMeta) int32 {
-	// Get Metadata
-	meta := sf.Metadata()
-
-	// Check Type for image
-	if meta.Mime.Type == "image" {
-		// Return Adjusted Size
-		return int32(len(Base64(sf)))
-	} else {
-		// Return Given Size
-		return meta.Size
-	}
 }

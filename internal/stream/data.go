@@ -37,10 +37,6 @@ type DataStreamConn struct {
 	Self   *pb.Peer
 	Peer   *pb.Peer
 
-	// RPC Structs
-	progressClient ProgressClient
-	progressServer ProgressServer
-
 	// Stream Info
 	id     string
 	stream network.Stream
@@ -58,9 +54,6 @@ func (dsc *DataStreamConn) Transfer(ctx context.Context, sm *sf.SafeMeta) {
 	dsc.stream = stream
 	dsc.id = stream.ID()
 
-	// Set RPC Server
-	dsc.progressServer = setSender(dsc.Host, dsc.Call.Progressed)
-
 	// Print Stream Info
 	info := stream.Stat()
 	fmt.Println("Stream Info: ", info)
@@ -74,9 +67,6 @@ func (dsc *DataStreamConn) HandleStream(stream network.Stream) {
 	// Set Stream
 	dsc.stream = stream
 	dsc.id = stream.ID()
-
-	// Set RPC Client
-	dsc.progressClient = setReceiver(dsc.Host, dsc.PeerID, dsc.Call.Progressed)
 
 	// Print Stream Info
 	info := stream.Stat()
@@ -132,12 +122,16 @@ func (dsc *DataStreamConn) readBlock(reader msgio.ReadCloser) error {
 func (dsc *DataStreamConn) writeMessages(file *sf.SafeMeta) error {
 	// Get Data
 	writer := msgio.NewWriter(dsc.stream)
-	total := sf.GetSize(file)
+	meta := file.Metadata()
 
-	// Check type before splitting
-	if file.Metadata().Mime.Type == "image" {
+	// Check Type for image
+	if meta.Mime.Type == "image" {
+		// Return Adjusted Size
+		b64, length := sf.Base64(meta.Path)
+		total := int32(length)
+
 		// Iterate for Entire file as String
-		for i, chunk := range sf.ChunkBase64(file) {
+		for i, chunk := range sf.ChunkBase64(b64) {
 			// Create Block Protobuf from Chunk
 			chunk := pb.Chunk{
 				Size:    int32(len(chunk)),
@@ -159,8 +153,11 @@ func (dsc *DataStreamConn) writeMessages(file *sf.SafeMeta) error {
 			}
 		}
 	} else {
+		// Return Given Size
+		total := meta.Size
+
 		// Iterate for Entire file as Bytes
-		for i, chunk := range sf.ChunkBytes(file) {
+		for i, chunk := range sf.ChunkBytes(meta.Path, int(total)) {
 			// Create Block Protobuf from Chunk
 			chunk := pb.Chunk{
 				Size:    int32(len(chunk)),

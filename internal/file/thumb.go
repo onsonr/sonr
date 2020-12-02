@@ -23,7 +23,6 @@ func NewThumbnail(path string) ([]byte, error) {
 		fmt.Println(err)
 		return nil, err
 	}
-	defer file.Close()
 
 	// Convert to Image Object
 	img, _, err := image.Decode(file)
@@ -51,6 +50,7 @@ func NewThumbnail(path string) ([]byte, error) {
 		fmt.Println(err)
 		return nil, err
 	}
+	file.Close()
 	fmt.Println("Thumbnail created")
 	return thumbBuffer.Bytes(), nil
 }

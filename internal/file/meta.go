@@ -38,23 +38,24 @@ type SafeMeta struct {
 }
 
 // ^ Create generates file metadata ^ //
-func (sf *SafeMeta) NewMetadata() {
+func (sm *SafeMeta) NewMetadata() {
 	// ** Lock ** //
-	sf.mutex.Lock()
+	sm.mutex.Lock()
 
 	// @ 1. Get File Information
 	// Open File at Path
-	file, err := os.Open(sf.Path)
+	file, err := os.Open(sm.Path)
+	defer file.Close()
 	if err != nil {
 		fmt.Println("Error opening File", err)
-		sf.Call.Error(err, "AddFile")
+		sm.Call.Error(err, "AddFile")
 	}
 
 	// Get Info
 	info, err := file.Stat()
 	if err != nil {
 		fmt.Println(err)
-		sf.Call.Error(err, "AddFile")
+		sm.Call.Error(err, "AddFile")
 	}
 
 	// Get File Type
@@ -63,9 +64,8 @@ func (sf *SafeMeta) NewMetadata() {
 	kind, err := filetype.Match(head)
 	if err != nil {
 		fmt.Println(err)
-		sf.Call.Error(err, "AddFile")
+		sm.Call.Error(err, "AddFile")
 	}
-	file.Close()
 
 	// Get Mime Type
 	mime := &pb.MIME{
@@ -75,10 +75,10 @@ func (sf *SafeMeta) NewMetadata() {
 	}
 
 	// @ 2. Set Metadata Protobuf Values
-	sf.meta = pb.Metadata{
+	sm.meta = pb.Metadata{
 		Uuid: uuid.New().String(),
-		Name: filepath.Base(sf.Path),
-		Path: sf.Path,
+		Name: filepath.Base(sm.Path),
+		Path: sm.Path,
 		Size: int32(info.Size()),
 		Mime: mime,
 	}
@@ -86,23 +86,20 @@ func (sf *SafeMeta) NewMetadata() {
 	// @ 3. Create Thumbnail
 	if filetype.IsImage(head) {
 		// New File for ThumbNail
-		thumbBytes, err := NewThumbnail(sf.Path)
+		thumbBytes, err := NewThumbnail(sm.Path)
 		if err != nil {
 			fmt.Println(err)
-			sf.Call.Error(err, "AddFile")
+			sm.Call.Error(err, "AddFile")
 		}
-
 		// Update Metadata Value
-		sf.meta = pb.Metadata{
-			Thumbnail: thumbBytes,
-		}
+		sm.meta.Thumbnail = thumbBytes
 	}
 
 	// ** Unlock ** //
-	sf.mutex.Unlock()
+	sm.mutex.Unlock()
 
 	// Get Metadata
-	meta := sf.Metadata()
+	meta := sm.Metadata()
 
 	// Convert to bytes
 	data, err := proto.Marshal(meta)
@@ -111,7 +108,7 @@ func (sf *SafeMeta) NewMetadata() {
 	}
 
 	// Callback with Metadata
-	sf.Call.Queued(data)
+	sm.Call.Queued(data)
 }
 
 // ^ Safely returns metadata depending on lock ^ //
