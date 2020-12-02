@@ -5,7 +5,7 @@ import (
 	"context"
 	"fmt"
 	"image"
-	"image/png"
+	"image/jpeg"
 	"log"
 	"os"
 
@@ -122,18 +122,14 @@ func (dsc *DataStreamConn) readBlock(reader msgio.ReadCloser) {
 			// Callback Completed
 			dsc.Call.Completed(bytes)
 			break
+		} else {
+			// @ Send Progress
+			// Only 20 Callbacks per transfer to limit UI thread
+			rounded := int(progress) * 100
+			if rounded%5 == 0 {
+				dsc.Call.Progressed(progress)
+			}
 		}
-
-		// @ Send Progress
-		dsc.handleProgress(progress)
-	}
-}
-
-// ^ Decide to callback progress ^ //
-func (dsc *DataStreamConn) handleProgress(progress float32) {
-	// Only 20 Callbacks per transfer to limit UI thread
-	if int(progress)%5 == 0 {
-		dsc.Call.Progressed(progress)
 	}
 }
 
@@ -160,7 +156,7 @@ func (dsc *DataStreamConn) writeMessages(file *sf.SafeMeta) {
 		}
 
 		// Encode as Jpeg into buffer
-		err = png.Encode(imgBuffer, img)
+		err = jpeg.Encode(imgBuffer, img, &jpeg.Options{Quality: 100})
 		if err != nil {
 			log.Fatalln(err)
 		}
