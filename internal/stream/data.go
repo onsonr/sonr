@@ -8,7 +8,6 @@ import (
 	"image"
 	"image/jpeg"
 	"os"
-	"time"
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -98,36 +97,22 @@ func (dsc *DataStreamConn) HandleStream(stream network.Stream) {
 // ^ read Data from Msgio ^ //
 func (dsc *DataStreamConn) readBlock(reader msgio.ReadCloser) error {
 	for {
-		// Read Length Fixed Bytes
+		// @ Read Length Fixed Bytes
 		buffer, err := reader.ReadMsg()
 		if err != nil {
-			dsc.Call.Error(err, "read")
+			dsc.Call.Error(err, "ReadMsg")
 			return err
 		}
-		// Unmarshal Bytes into Proto
-		msg := pb.Chunk{}
-		err = proto.Unmarshal(buffer, &msg)
+
+		// @ Add Buffer Data to File, Check for Completed
+		hasCompleted, err := dsc.File.AddBuffer(buffer)
 		if err != nil {
-			dsc.Call.Error(err, "read")
+			dsc.Call.Error(err, "AddBuffer")
 			return err
 		}
 
-		if msg.Current < msg.Total {
-			// Add Block to Buffer
-			dsc.File.AddBlock(msg.Data)
-
-			// Send Receiver Progress Update
-			go dsc.progressClient.SendProgress(msg.Current, msg.Total)
-		}
-
-		// Save File on Buffer Complete
-		if msg.Current == msg.Total {
-			// Add Block to Buffer
-			dsc.File.AddBlock(msg.Data)
-
-			// Send Receiver Progress Update
-			go dsc.progressClient.SendProgress(msg.Current, msg.Total)
-
+		// @ Check for Completed
+		if hasCompleted {
 			// Save The File
 			savePath, err := dsc.File.Save()
 			if err != nil {
@@ -139,9 +124,6 @@ func (dsc *DataStreamConn) readBlock(reader msgio.ReadCloser) error {
 			if err != nil {
 				dsc.Call.Error(err, "Save")
 			}
-
-			// Create Delay
-			time.After(time.Millisecond * 500)
 
 			// Convert to Bytes
 			bytes, err := proto.Marshal(metadata)
@@ -168,6 +150,7 @@ func (dsc *DataStreamConn) writeMessages(sf *sf.SafeMeta) error {
 	if err != nil {
 		return err
 	}
+	defer file.Close()
 
 	// Convert to Image Object
 	img, _, err := image.Decode(file)
@@ -182,7 +165,6 @@ func (dsc *DataStreamConn) writeMessages(sf *sf.SafeMeta) error {
 	}
 
 	b64 := base64.StdEncoding.EncodeToString(imgBuffer.Bytes())
-	file.Close()
 
 	// Iterate for Entire file
 	for i, chunk := range splitString(b64, ChunkSize) {

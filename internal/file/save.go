@@ -13,6 +13,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/h2non/filetype"
 	pb "github.com/sonr-io/core/internal/models"
+	"google.golang.org/protobuf/proto"
 )
 
 type SonrFile struct {
@@ -38,19 +39,31 @@ func NewFile(docDir string, meta *pb.Metadata) SonrFile {
 }
 
 // ^ Add Block to SonrFile Buffer ^ //
-func (sf *SonrFile) AddBlock(block string) {
+func (sf *SonrFile) AddBuffer(buffer []byte) (bool, error) {
+	// @ Unmarshal Bytes into Proto
+	chunk := pb.Chunk{}
+	err := proto.Unmarshal(buffer, &chunk)
+	if err != nil {
+		fmt.Println("Unmarshal Error ", err)
+		return true, err
+	}
+
 	// ** Lock ** //
 	sf.mutex.Lock()
 	// Add Block to Buffer
-	written, err := sf.builder.WriteString(block)
+	_, err = sf.builder.WriteString(chunk.Data)
 	if err != nil {
 		fmt.Println(err)
+		return true, err
 	}
-
-	fmt.Println("Bytes Written: ", written)
-	fmt.Println("Bytes Total: ", sf.builder.Len())
 	sf.mutex.Unlock()
 	// ** Unlock ** //
+
+	// @ Check if Completed
+	if sf.builder.Len() == int(chunk.Total) {
+		return true, nil
+	}
+	return false, nil
 }
 
 // ^ Save file of Documents Directory and Return Path ^ //
