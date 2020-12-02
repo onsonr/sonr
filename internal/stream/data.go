@@ -132,10 +132,7 @@ func (dsc *DataStreamConn) readBlock(reader msgio.ReadCloser) error {
 func (dsc *DataStreamConn) writeMessages(file *sf.SafeMeta) error {
 	// Get Data
 	writer := msgio.NewWriter(dsc.stream)
-	total, err := sf.GetSize(file)
-	if err != nil {
-		dsc.Call.Error(err, "writeMessages-getSize")
-	}
+	total := sf.GetSize(file)
 
 	// Check type before splitting
 	if file.Metadata().Mime.Type == "image" {

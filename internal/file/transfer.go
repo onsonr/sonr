@@ -7,6 +7,7 @@ import (
 	"image"
 	"image/png"
 	"io"
+	"log"
 	"os"
 )
 
@@ -14,7 +15,7 @@ const B64ChunkSize = 63996 // Adjusted for Base64 -- has to be divisible by 3
 const BufferChunkSize = 64000
 
 // ^ Safely returns metadata depending on lock ^ //
-func Base64(sf *SafeMeta) (string, error) {
+func Base64(sf *SafeMeta) string {
 	// Retreive Metadata
 	meta := sf.Metadata()
 	imgBuffer := new(bytes.Buffer)
@@ -22,39 +23,40 @@ func Base64(sf *SafeMeta) (string, error) {
 	// New File for ThumbNail
 	file, err := os.Open(meta.Path)
 	if err != nil {
-		return "", err
+		log.Fatal(err)
 	}
 	defer file.Close()
 
 	// Convert to Image Object
 	img, _, err := image.Decode(file)
 	if err != nil {
-		return "", err
+		log.Fatal(err)
 	}
 
 	// Encode as Jpeg into buffer
 	err = png.Encode(file, img)
 	if err != nil {
-		return "", err
+		log.Fatal(err)
 	}
 
 	// Return B64 Encoded string
 	b64 := base64.StdEncoding.EncodeToString(imgBuffer.Bytes())
-	return b64, nil
+	return b64
 }
 
 // ^ Chunks string based on B64ChunkSize ^ //
 func ChunkBase64(sf *SafeMeta) []string {
 	// Get String
-	s, _ := Base64(sf)
-	size := B64ChunkSize
-	ss := make([]string, 0, len(s)/size+1)
+	s := Base64(sf)
+	// scanner := bufio.NewScanner(bytes.NewBufferString(Base64(sf)))
+	chunkSize := B64ChunkSize
+	ss := make([]string, 0, len(s)/chunkSize+1)
 	for len(s) > 0 {
-		if len(s) < size {
-			size = len(s)
+		if len(s) < chunkSize {
+			chunkSize = len(s)
 		}
 		// Create Current Chunk String
-		ss, s = append(ss, s[:size]), s[size:]
+		ss, s = append(ss, s[:chunkSize]), s[chunkSize:]
 	}
 	return ss
 }
@@ -69,6 +71,7 @@ func ChunkBytes(sf *SafeMeta) [][]byte {
 		return nil
 	}
 	defer file.Close()
+	// scanner := bufio.NewScanner(file)
 
 	// Set Chunk Variables
 	size := BufferChunkSize
@@ -96,23 +99,16 @@ func ChunkBytes(sf *SafeMeta) [][]byte {
 	return pss
 }
 
-func GetSize(sf *SafeMeta) (int32, error) {
+func GetSize(sf *SafeMeta) int32 {
 	// Get Metadata
 	meta := sf.Metadata()
 
 	// Check Type for image
 	if meta.Mime.Type == "image" {
-		s, err := Base64(sf)
-
-		// Handle Error
-		if err != nil {
-			return 0, err
-		}
-
 		// Return Adjusted Size
-		return int32(len(s)), nil
+		return int32(len(Base64(sf)))
 	} else {
 		// Return Given Size
-		return meta.Size, nil
+		return meta.Size
 	}
 }
