@@ -12,7 +12,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/h2non/filetype"
 	pb "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
@@ -55,7 +54,7 @@ func (sf *SonrFile) AddBuffer(buffer []byte) (bool, float32, error) {
 	}
 
 	// Check File Type for Base64 Media
-	if sf.Metadata.Mime.Type == "image" {
+	if sf.Metadata.Mime.Type == pb.MIME_image {
 		hc, n, err := sf.addBase64(&chunk)
 		return hc, n, err
 	}
@@ -114,7 +113,7 @@ func (sf *SonrFile) addBase64(chunk *pb.Chunk) (bool, float32, error) {
 // ^ Check file type and use corresponding method ^ //
 func (sf *SonrFile) Save(owner *pb.Peer) (*pb.Metadata, error) {
 	// Check File Type for Base64 Media
-	if sf.Metadata.Mime.Type == "image" {
+	if sf.Metadata.Mime.Type == pb.MIME_image {
 		m, err := sf.saveBase64(owner)
 		return m, err
 	}
@@ -162,20 +161,22 @@ func (sf *SonrFile) saveBytes(owner *pb.Peer) (*pb.Metadata, error) {
 		fmt.Println(err)
 	}
 
-	// Get Mime Type
+	// Get Mime Type from String
+	mimeTypeID := pb.MIME_Type_value[kind.MIME.Type]
+	mimeType := pb.MIME_Type(mimeTypeID)
+
+	// Set Mime
 	mime := &pb.MIME{
-		Type:    kind.MIME.Type,
+		Type:    mimeType,
 		Subtype: kind.MIME.Subtype,
 		Value:   kind.MIME.Value,
 	}
 
 	// @ 3. Set Metadata Protobuf Values
 	return &pb.Metadata{
-		Uuid:       uuid.New().String(),
 		Name:       fileNameWithoutExtension(sf.Path),
 		Path:       sf.Path,
 		Size:       int32(info.Size()),
-		Chunks:     int32(info.Size()) / BlockSize,
 		Mime:       mime,
 		Owner:      owner,
 		LastOpened: int32(time.Now().Unix()),
@@ -226,20 +227,22 @@ func (sf *SonrFile) saveBase64(owner *pb.Peer) (*pb.Metadata, error) {
 		fmt.Println(err)
 	}
 
-	// Get Mime Type
+	// Get Mime Type from String
+	mimeTypeID := pb.MIME_Type_value[kind.MIME.Type]
+	mimeType := pb.MIME_Type(mimeTypeID)
+
+	// Set Mime
 	mime := pb.MIME{
-		Type:    kind.MIME.Type,
+		Type:    mimeType,
 		Subtype: kind.MIME.Subtype,
 		Value:   kind.MIME.Value,
 	}
 
 	// @ 3. Set Metadata Protobuf Values
 	return &pb.Metadata{
-		Uuid:       uuid.New().String(),
 		Name:       fileNameWithoutExtension(sf.Path),
 		Path:       sf.Path,
 		Size:       int32(info.Size()),
-		Chunks:     int32(info.Size()) / BlockSize,
 		Mime:       &mime,
 		Owner:      owner,
 		LastOpened: int32(time.Now().Unix()),

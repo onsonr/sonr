@@ -84,7 +84,7 @@ func (dsc *DataStreamConn) HandleStream(stream network.Stream) {
 
 // ^ read Data from Msgio ^ //
 func (dsc *DataStreamConn) readBlock(reader msgio.ReadCloser) {
-	for {
+	for i := 0; ; i++ {
 		// @ Read Length Fixed Bytes
 		buffer, err := reader.ReadMsg()
 		if err != nil {
@@ -123,10 +123,10 @@ func (dsc *DataStreamConn) readBlock(reader msgio.ReadCloser) {
 			dsc.Call.Completed(bytes)
 			break
 		} else {
-			// @ Send Progress
-			// Only 20 Callbacks per transfer to limit UI thread
-			rounded := int(progress) * 100
-			if rounded%5 == 0 {
+			// @ Send Progress every 10 Messages
+			rem := i % 10
+			fmt.Println("Remainder: ", rem)
+			if rem == 0 {
 				dsc.Call.Progressed(progress)
 			}
 		}
@@ -141,7 +141,7 @@ func (dsc *DataStreamConn) writeMessages(file *sf.SafeMeta) {
 	imgBuffer := new(bytes.Buffer)
 
 	// Check Type for image
-	if meta.Mime.Type == "image" {
+	if meta.Mime.Type == pb.MIME_image {
 		// New File for ThumbNail
 		file, err := os.Open(meta.Path)
 		if err != nil {

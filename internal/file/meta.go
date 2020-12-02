@@ -9,7 +9,6 @@ import (
 	_ "image/gif"
 	_ "image/jpeg"
 
-	"github.com/google/uuid"
 	"github.com/h2non/filetype"
 	pb "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
@@ -67,16 +66,19 @@ func (sm *SafeMeta) NewMetadata() {
 		sm.Call.Error(err, "AddFile")
 	}
 
-	// Get Mime Type
+	// Get Mime Type from String
+	mimeTypeID := pb.MIME_Type_value[kind.MIME.Type]
+	mimeType := pb.MIME_Type(mimeTypeID)
+
+	// Set Mime
 	mime := &pb.MIME{
-		Type:    kind.MIME.Type,
+		Type:    mimeType,
 		Subtype: kind.MIME.Subtype,
 		Value:   kind.MIME.Value,
 	}
 
 	// @ 2. Set Metadata Protobuf Values
 	sm.meta = pb.Metadata{
-		Uuid: uuid.New().String(),
 		Name: filepath.Base(sm.Path),
 		Path: sm.Path,
 		Size: int32(info.Size()),

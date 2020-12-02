@@ -6,22 +6,21 @@ option go_package = ".;models";
 // Define Metadata Type: For Transfer Request
 message Metadata {
   int32 id = 1;
-  string uuid = 2;
-  string name = 3;
-  string path = 4;
-  int32 size = 5;
-  int32 chunks = 6;
-  MIME mime = 7;
-  bytes thumbnail = 8;
-  Peer owner = 9;
-  int32 lastOpened = 10;
+  string name = 2;
+  string path = 3;
+  int32 size = 4;
+  MIME mime = 5;
+  bytes thumbnail = 6;
+  Peer owner = 7;
+  int32 lastOpened = 8;
 }
 
 // Define MIME: Protobuf Version of Mime
 message MIME {
-  string type = 1;
+  Type type = 1;
   string subtype = 2;
   string value = 3;
+  enum Type { application = 0; audio = 1; image = 2; text = 3; video = 4; }
 }
 
 // Define Lobby Type: For Info about Lobby
@@ -68,10 +67,5 @@ message Peer {
   Proximity proximity = 10;
 
   // Define Proximity
-  enum Proximity {
-    NONE = 0;
-    IMMEDIATE = 1;
-    NEAR = 2;
-    FAR = 3;
-  }
+  enum Proximity { NONE = 0; IMMEDIATE = 1; NEAR = 2; FAR = 3; }
 }
