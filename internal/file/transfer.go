@@ -5,7 +5,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"image"
-	"image/jpeg"
+	"image/png"
 	"io"
 	"os"
 )
@@ -33,7 +33,7 @@ func Base64(sf *SafeMeta) (string, error) {
 	}
 
 	// Encode as Jpeg into buffer
-	err = jpeg.Encode(file, img, nil)
+	err = png.Encode(file, img)
 	if err != nil {
 		return "", err
 	}
