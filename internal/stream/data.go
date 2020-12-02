@@ -1,8 +1,12 @@
 package stream
 
 import (
+	"bytes"
 	"context"
 	"fmt"
+	"image"
+	"image/jpeg"
+	"os"
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -123,15 +127,35 @@ func (dsc *DataStreamConn) writeMessages(file *sf.SafeMeta) error {
 	// Get Data
 	writer := msgio.NewWriter(dsc.stream)
 	meta := file.Metadata()
+	imgBuffer := new(bytes.Buffer)
 
 	// Check Type for image
 	if meta.Mime.Type == "image" {
+		// New File for ThumbNail
+		file, err := os.Open(meta.Path)
+		if err != nil {
+			return err
+		}
+		defer file.Close()
+
+		// Convert to Image Object
+		img, _, err := image.Decode(file)
+		if err != nil {
+			return err
+		}
+
+		// Encode as Jpeg into buffer
+		err = jpeg.Encode(imgBuffer, img, nil)
+		if err != nil {
+			return err
+		}
+
 		// Return Adjusted Size
-		b64, length := sf.Base64(meta.Path)
+		b64, length := Base64(imgBuffer.Bytes())
 		total := int32(length)
 
 		// Iterate for Entire file as String
-		for i, chunk := range sf.ChunkBase64(b64) {
+		for i, chunk := range ChunkBase64(b64) {
 			// Create Block Protobuf from Chunk
 			chunk := pb.Chunk{
 				Size:    int32(len(chunk)),
@@ -157,7 +181,7 @@ func (dsc *DataStreamConn) writeMessages(file *sf.SafeMeta) error {
 		total := meta.Size
 
 		// Iterate for Entire file as Bytes
-		for i, chunk := range sf.ChunkBytes(meta.Path, int(total)) {
+		for i, chunk := range ChunkBytes(meta.Path, int(total)) {
 			// Create Block Protobuf from Chunk
 			chunk := pb.Chunk{
 				Size:    int32(len(chunk)),

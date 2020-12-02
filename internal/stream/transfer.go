@@ -1,13 +1,9 @@
-package file
+package stream
 
 import (
-	"bytes"
 	"encoding/base64"
 	"fmt"
-	"image"
-	"image/png"
 	"io"
-	"log"
 	"os"
 )
 
@@ -15,30 +11,30 @@ const B64ChunkSize = 63996 // Adjusted for Base64 -- has to be divisible by 3
 const BufferChunkSize = 64000
 
 // ^ Safely returns metadata depending on lock ^ //
-func Base64(path string) (string, int) {
-	imgBuffer := new(bytes.Buffer)
+func Base64(buffer []byte) (string, int) {
+	// imgBuffer := new(bytes.Buffer)
 
-	// New File for ThumbNail
-	file, err := os.Open(path)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer file.Close()
+	// // New File for ThumbNail
+	// file, err := os.Open(path)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// defer file.Close()
 
-	// Convert to Image Object
-	img, _, err := image.Decode(file)
-	if err != nil {
-		log.Fatal(err)
-	}
+	// // Convert to Image Object
+	// img, _, err := image.Decode(file)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
-	// Encode as Jpeg into buffer
-	err = png.Encode(file, img)
-	if err != nil {
-		log.Fatal(err)
-	}
+	// // Encode as Jpeg into buffer
+	// err = png.Encode(file, img)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
 	// Return B64 Encoded string
-	b64 := base64.StdEncoding.EncodeToString(imgBuffer.Bytes())
+	b64 := base64.StdEncoding.EncodeToString(buffer)
 	return b64, len(b64)
 }
 
