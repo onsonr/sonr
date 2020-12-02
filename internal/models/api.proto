@@ -14,14 +14,6 @@ message ConnectionRequest {
   Contact contact = 4;
 }
 
-// [PLUGIN]
-// On Data Transfer
-message ProgressUpdate {
-  int32 current = 1;
-  int32 total = 2;
-  float percent = 3;
-}
-
 // Authorization message sent in stream
 message AuthMessage {
   // Define Root Message
@@ -30,12 +22,7 @@ message AuthMessage {
   Metadata metadata = 3;
 
   // Define Subject
-  enum Event {
-    NONE = 0;
-    REQUEST = 1;
-    ACCEPT = 2;
-    DECLINE = 3;
-  }
+  enum Event { NONE = 0; REQUEST = 1; ACCEPT = 2; DECLINE = 3; }
 }
 
 // [PLUGIN]
