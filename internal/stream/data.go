@@ -1,13 +1,8 @@
 package stream
 
 import (
-	"bytes"
 	"context"
-	"encoding/base64"
 	"fmt"
-	"image"
-	"image/jpeg"
-	"os"
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -105,7 +100,7 @@ func (dsc *DataStreamConn) readBlock(reader msgio.ReadCloser) error {
 		}
 
 		// @ Add Buffer Data to File, Check for Completed
-		hasCompleted, err := dsc.File.AddBuffer(buffer)
+		hasCompleted, err := dsc.File.AddBase64Buffer(buffer)
 		if err != nil {
 			dsc.Call.Error(err, "AddBuffer")
 			return err
@@ -139,35 +134,16 @@ func (dsc *DataStreamConn) readBlock(reader msgio.ReadCloser) error {
 	return nil
 }
 
-func (dsc *DataStreamConn) writeMessages(sf *sf.SafeMeta) error {
-	// Get Metadata
+func (dsc *DataStreamConn) writeMessages(file *sf.SafeMeta) error {
+	// Get Data
 	writer := msgio.NewWriter(dsc.stream)
-	meta := sf.Metadata()
-	imgBuffer := new(bytes.Buffer)
-
-	// New File for ThumbNail
-	file, err := os.Open(meta.Path)
+	b64, err := file.Base64()
 	if err != nil {
 		return err
 	}
-	defer file.Close()
-
-	// Convert to Image Object
-	img, _, err := image.Decode(file)
-	if err != nil {
-		return err
-	}
-
-	// Encode as Jpeg into buffer
-	err = jpeg.Encode(imgBuffer, img, nil)
-	if err != nil {
-		return err
-	}
-
-	b64 := base64.StdEncoding.EncodeToString(imgBuffer.Bytes())
 
 	// Iterate for Entire file
-	for i, chunk := range splitString(b64, ChunkSize) {
+	for i, chunk := range sf.SplitString(b64, ChunkSize) {
 		// Create Block Protobuf from Chunk
 		chunk := pb.Chunk{
 			Size:    int32(len(chunk)),
@@ -189,16 +165,4 @@ func (dsc *DataStreamConn) writeMessages(sf *sf.SafeMeta) error {
 		}
 	}
 	return nil
-}
-
-func splitString(s string, size int) []string {
-	ss := make([]string, 0, len(s)/size+1)
-	for len(s) > 0 {
-		if len(s) < size {
-			size = len(s)
-		}
-		ss, s = append(ss, s[:size]), s[size:]
-
-	}
-	return ss
 }

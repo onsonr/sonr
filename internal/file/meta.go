@@ -2,6 +2,7 @@ package file
 
 import (
 	"bytes"
+	"encoding/base64"
 	"image"
 	"math"
 	"os"
@@ -142,6 +143,36 @@ func (sf *SafeMeta) Metadata() *pb.Metadata {
 
 	// @ 2. Return Value
 	return &sf.meta
+}
+
+// ^ Safely returns metadata depending on lock ^ //
+func (sf *SafeMeta) Base64() (string, error) {
+	// Retreive Metadata
+	meta := sf.Metadata()
+	imgBuffer := new(bytes.Buffer)
+
+	// New File for ThumbNail
+	file, err := os.Open(meta.Path)
+	if err != nil {
+		return "", err
+	}
+	defer file.Close()
+
+	// Convert to Image Object
+	img, _, err := image.Decode(file)
+	if err != nil {
+		return "", err
+	}
+
+	// Encode as Jpeg into buffer
+	err = jpeg.Encode(file, img, nil)
+	if err != nil {
+		return "", err
+	}
+
+	// Return B64 Encoded string
+	b64 := base64.StdEncoding.EncodeToString(imgBuffer.Bytes())
+	return b64, nil
 }
 
 // ^ Safely returns metadata depending on lock ^ //

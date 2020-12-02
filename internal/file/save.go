@@ -39,7 +39,7 @@ func NewFile(docDir string, meta *pb.Metadata) SonrFile {
 }
 
 // ^ Add Block to SonrFile Buffer ^ //
-func (sf *SonrFile) AddBuffer(buffer []byte) (bool, error) {
+func (sf *SonrFile) AddBase64Buffer(buffer []byte) (bool, error) {
 	// @ Unmarshal Bytes into Proto
 	chunk := pb.Chunk{}
 	err := proto.Unmarshal(buffer, &chunk)
