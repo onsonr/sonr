@@ -2,9 +2,6 @@ package stream
 
 import (
 	"encoding/base64"
-	"fmt"
-	"io"
-	"os"
 )
 
 const B64ChunkSize = 31998 // Adjusted for Base64 -- has to be divisible by 3
@@ -30,41 +27,4 @@ func ChunkBase64(s string) []string {
 		ss, s = append(ss, s[:chunkSize]), s[chunkSize:]
 	}
 	return ss
-}
-
-// ^ Chunk bytes from FilePath based on Buffer Chunk Size ^ //
-func ChunkBytes(path string, total int) [][]byte {
-	// Open File
-	file, err := os.Open(path)
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-	defer file.Close()
-	// scanner := bufio.NewScanner(file)
-
-	// Set Chunk Variables
-	size := BufferChunkSize
-	pss := make([][]byte, 0, total/size+1)
-	ps := make([]byte, BufferChunkSize)
-
-	// Iterate file
-	for {
-		// Read Bytes
-		bytesread, err := file.Read(ps)
-
-		// Check for Error
-		if err != nil {
-			// Non EOF Error
-			if err != io.EOF {
-				fmt.Println(err)
-			}
-			// File Complete
-			break
-		}
-
-		// Set Current Chunk to how many bytes read
-		pss, ps = append(pss, ps[:bytesread]), ps[bytesread:]
-	}
-	return pss
 }

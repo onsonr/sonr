@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"image"
 	"image/jpeg"
+	"io"
 	"log"
 	"os"
 
@@ -77,23 +78,13 @@ func (dsc *DataStreamConn) HandleStream(stream network.Stream) {
 	info := stream.Stat()
 	fmt.Println("Stream Info: ", info)
 
-	// Calculate Call interval
-	var callInterval int
-	estSize := dsc.File.Metadata.Size
-	estChunks := estSize / BufferChunkSize
-	if estChunks > 20 {
-		callInterval = int32(estChunks / 20)
-	} else {
-		callInterval = estChunks
-	}
-
 	// Initialize Routine
 	reader := msgio.NewReader(dsc.stream)
-	go dsc.readBlock(reader, callInterval)
+	go dsc.readBlock(reader)
 }
 
 // ^ read Data from Msgio ^ //
-func (dsc *DataStreamConn) readBlock(reader msgio.ReadCloser, callInterval int32) {
+func (dsc *DataStreamConn) readBlock(reader msgio.ReadCloser) {
 	for i := 0; ; i++ {
 		// @ Read Length Fixed Bytes
 		buffer, err := reader.ReadMsg()
@@ -133,8 +124,8 @@ func (dsc *DataStreamConn) readBlock(reader msgio.ReadCloser, callInterval int32
 			dsc.Call.Completed(bytes)
 			break
 		} else {
-			// @ Send Progress every 10 Messages
-			if i%callInterval == 0 {
+			// @ Send Progress every ~0.5MB
+			if i%16 == 0 {
 				dsc.Call.Progressed(progress)
 			}
 		}
@@ -201,12 +192,36 @@ func (dsc *DataStreamConn) writeMessages(file *sf.SafeMeta) {
 		// Return Given Size
 		total := meta.Size
 
-		// Iterate for Entire file as Bytes
-		for i, chunk := range ChunkBytes(meta.Path, int(total)) {
+		// Open File
+		file, err := os.Open(meta.Path)
+		if err != nil {
+			dsc.Call.Error(err, "writeMessages-buffer")
+			log.Fatalln(err)
+		}
+		defer file.Close()
+
+		// Set Chunk Variables
+		ps := make([]byte, BufferChunkSize)
+
+		// Iterate file
+		for i := 0; ; i++ {
+			// Read Bytes
+			bytesread, err := file.Read(ps)
+
+			// Check for Error
+			if err != nil {
+				// Non EOF Error
+				if err != io.EOF {
+					fmt.Println(err)
+				}
+				// File Complete
+				break
+			}
+
 			// Create Block Protobuf from Chunk
 			chunk := pb.Chunk{
-				Size:    int32(len(chunk)),
-				Buffer:  chunk,
+				Size:    int32(len(ps[:bytesread])),
+				Buffer:  ps[:bytesread],
 				Current: int32(i),
 				Total:   total,
 			}
@@ -214,13 +229,15 @@ func (dsc *DataStreamConn) writeMessages(file *sf.SafeMeta) {
 			// Convert to bytes
 			bytes, err := proto.Marshal(&chunk)
 			if err != nil {
-				dsc.Call.Error(err, "writeMessages-base64")
+				dsc.Call.Error(err, "writeMessages-buffer")
+				log.Fatalln(err)
 			}
 
 			// Write Message Bytes to Stream
 			err = writer.WriteMsg(bytes)
 			if err != nil {
-				dsc.Call.Error(err, "writeMessages-base64")
+				dsc.Call.Error(err, "writeMessages-buffer")
+				log.Fatalln(err)
 			}
 		}
 	}
