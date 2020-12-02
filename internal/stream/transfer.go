@@ -12,27 +12,6 @@ const BufferChunkSize = 64000
 
 // ^ Safely returns metadata depending on lock ^ //
 func Base64(buffer []byte) (string, int) {
-	// imgBuffer := new(bytes.Buffer)
-
-	// // New File for ThumbNail
-	// file, err := os.Open(path)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// defer file.Close()
-
-	// // Convert to Image Object
-	// img, _, err := image.Decode(file)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	// // Encode as Jpeg into buffer
-	// err = png.Encode(file, img)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
 	// Return B64 Encoded string
 	b64 := base64.StdEncoding.EncodeToString(buffer)
 	return b64, len(b64)

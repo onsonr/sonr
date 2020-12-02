@@ -21,6 +21,7 @@ import (
 type SonrFile struct {
 	Metadata       *pb.Metadata
 	Path           string
+	progress       float32
 	stringsBuilder *strings.Builder
 	bytesBuilder   *bytes.Buffer
 	mutex          sync.Mutex
@@ -39,6 +40,7 @@ func NewFile(docDir string, meta *pb.Metadata) SonrFile {
 		stringsBuilder: new(strings.Builder),
 		bytesBuilder:   new(bytes.Buffer),
 		Path:           docDir + "/" + meta.Name,
+		progress:       0,
 	}
 }
 
@@ -76,11 +78,14 @@ func (sf *SonrFile) addBytes(chunk *pb.Chunk) (bool, float32, error) {
 	sf.mutex.Unlock()
 	// ** Unlock ** //
 
+	// Update Progress
+	sf.progress = sf.progress + float32(n)
+
 	// @ Check if Completed
 	if sf.stringsBuilder.Len() == int(chunk.Total) {
 		return true, 0, nil
 	}
-	return false, float32(n) / float32(chunk.Total), nil
+	return false, sf.progress, nil
 }
 
 // ^ Add Base64 Buffer to SonrFile Buffer ^ //
@@ -96,11 +101,14 @@ func (sf *SonrFile) addBase64(chunk *pb.Chunk) (bool, float32, error) {
 	sf.mutex.Unlock()
 	// ** Unlock ** //
 
+	// Update Progress
+	sf.progress = sf.progress + float32(n)
+
 	// @ Check if Completed
 	if sf.stringsBuilder.Len() == int(chunk.Total) {
 		return true, 0, nil
 	}
-	return false, float32(n) / float32(chunk.Total), nil
+	return false, sf.progress, nil
 }
 
 // ^ Check file type and use corresponding method ^ //
