@@ -34,7 +34,7 @@ func (sn *Node) setDiscovery(ctx context.Context, connEvent *pb.ConnectionReques
 	}
 
 	// Enter Lobby
-	if sn.lobby, err = lobby.Enter(ctx, lobbyCallbackRef, ps, sn.host.ID(), sn.Peer, connEvent.Olc); err != nil {
+	if sn.lobby, err = lobby.Enter(ctx, lobbyCallbackRef, ps, sn.host.ID(), connEvent.Olc); err != nil {
 		return err
 	}
 	fmt.Println("Lobby Entered")

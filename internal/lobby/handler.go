@@ -30,7 +30,7 @@ func (lob *Lobby) handleMessages() {
 		if err != nil {
 			continue
 		}
-
+		
 		// Send valid messages onto the Messages channel
 		lob.Messages <- &notif
 	}

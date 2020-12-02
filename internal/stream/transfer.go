@@ -7,8 +7,8 @@ import (
 	"os"
 )
 
-const B64ChunkSize = 63996 // Adjusted for Base64 -- has to be divisible by 3
-const BufferChunkSize = 64000
+const B64ChunkSize = 31998 // Adjusted for Base64 -- has to be divisible by 3
+const BufferChunkSize = 32000
 
 // ^ Safely returns metadata depending on lock ^ //
 func Base64(buffer []byte) (string, int) {

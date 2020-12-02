@@ -25,10 +25,10 @@ func (sn *Node) Info() []byte {
 func (sn *Node) Update(direction float64) {
 	// ** Initialize ** //
 	// Update User Values
-	sn.Peer.Range.Direction = math.Round(direction*100) / 100
+	sn.Peer.Direction = math.Round(direction*100) / 100
 
 	// Inform Lobby
-	err := sn.lobby.Update()
+	err := sn.lobby.Update(sn.Peer)
 	if err != nil {
 		sn.Error(err, "Update")
 	}
