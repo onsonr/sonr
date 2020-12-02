@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"image"
 	"image/jpeg"
+	"log"
 	"os"
 
 	"github.com/libp2p/go-libp2p-core/host"
@@ -82,20 +83,22 @@ func (dsc *DataStreamConn) HandleStream(stream network.Stream) {
 }
 
 // ^ read Data from Msgio ^ //
-func (dsc *DataStreamConn) readBlock(reader msgio.ReadCloser) error {
+func (dsc *DataStreamConn) readBlock(reader msgio.ReadCloser) {
 	for {
 		// @ Read Length Fixed Bytes
 		buffer, err := reader.ReadMsg()
 		if err != nil {
 			dsc.Call.Error(err, "ReadMsg")
-			return err
+			log.Fatalln(err)
+			break
 		}
 
 		// @ Add Buffer Data to File, Check for Completed
 		hasCompleted, progress, err := dsc.File.AddBuffer(buffer)
 		if err != nil {
 			dsc.Call.Error(err, "AddBuffer")
-			return err
+			log.Fatalln(err)
+			break
 		}
 
 		// @ Check for Completed
@@ -104,12 +107,16 @@ func (dsc *DataStreamConn) readBlock(reader msgio.ReadCloser) error {
 			metadata, err := dsc.File.Save(dsc.Peer)
 			if err != nil {
 				dsc.Call.Error(err, "Save")
+				log.Fatalln(err)
+				break
 			}
 
 			// Convert to Bytes
 			bytes, err := proto.Marshal(metadata)
 			if err != nil {
 				dsc.Call.Error(err, "Completed")
+				log.Fatalln(err)
+				break
 			}
 
 			// Callback Completed
@@ -120,10 +127,9 @@ func (dsc *DataStreamConn) readBlock(reader msgio.ReadCloser) error {
 		// @ Send Progress
 		dsc.Call.Progressed(progress)
 	}
-	return nil
 }
 
-func (dsc *DataStreamConn) writeMessages(file *sf.SafeMeta) error {
+func (dsc *DataStreamConn) writeMessages(file *sf.SafeMeta) {
 	// Get Data
 	writer := msgio.NewWriter(dsc.stream)
 	meta := file.Metadata()
@@ -134,20 +140,20 @@ func (dsc *DataStreamConn) writeMessages(file *sf.SafeMeta) error {
 		// New File for ThumbNail
 		file, err := os.Open(meta.Path)
 		if err != nil {
-			return err
+			log.Fatalln(err)
 		}
 		defer file.Close()
 
 		// Convert to Image Object
 		img, _, err := image.Decode(file)
 		if err != nil {
-			return err
+			log.Fatalln(err)
 		}
 
 		// Encode as Jpeg into buffer
 		err = jpeg.Encode(imgBuffer, img, nil)
 		if err != nil {
-			return err
+			log.Fatalln(err)
 		}
 
 		// Return Adjusted Size
@@ -168,12 +174,14 @@ func (dsc *DataStreamConn) writeMessages(file *sf.SafeMeta) error {
 			bytes, err := proto.Marshal(&chunk)
 			if err != nil {
 				dsc.Call.Error(err, "writeMessages-base64")
+				log.Fatalln(err)
 			}
 
 			// Write Message Bytes to Stream
 			err = writer.WriteMsg(bytes)
 			if err != nil {
 				dsc.Call.Error(err, "writeMessages-base64")
+				log.Fatalln(err)
 			}
 		}
 	} else {
@@ -203,6 +211,4 @@ func (dsc *DataStreamConn) writeMessages(file *sf.SafeMeta) error {
 			}
 		}
 	}
-
-	return nil
 }
