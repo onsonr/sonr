@@ -33,18 +33,19 @@ type Lobby struct {
 	Data     *pb.Lobby
 
 	// Private Vars
-	ctx    context.Context
-	call   LobbyCallback
-	doneCh chan struct{}
-	mutex  sync.Mutex
-	ps     *pubsub.PubSub
-	topic  *pubsub.Topic
-	self   peer.ID
-	sub    *pubsub.Subscription
+	ctx      context.Context
+	call     LobbyCallback
+	doneCh   chan struct{}
+	mutex    sync.Mutex
+	ps       *pubsub.PubSub
+	topic    *pubsub.Topic
+	selfID   peer.ID
+	selfInfo *pb.Peer
+	sub      *pubsub.Subscription
 }
 
 // ^ Enter Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
-func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, id peer.ID, olc string) (*Lobby, error) {
+func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, id peer.ID, info *pb.Peer, olc string) (*Lobby, error) {
 	// Join the pubsub Topic
 	topic, err := ps.Join(olc)
 	if err != nil {
@@ -72,7 +73,7 @@ func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, id pe
 		ps:     ps,
 		topic:  topic,
 		sub:    sub,
-		self:   id,
+		selfID: id,
 
 		Data:     lobInfo,
 		Messages: make(chan *pb.LobbyEvent, ChatRoomBufSize),
@@ -86,6 +87,9 @@ func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, id pe
 
 // ^ Info returns ALL Lobby Data as Bytes^
 func (lob *Lobby) Info() []byte {
+	// Get Difference of all Peer
+	//for id, peer := range lob.
+
 	// Convert to bytes
 	data, err := proto.Marshal(lob.Data)
 	if err != nil {
@@ -105,11 +109,11 @@ func (lob *Lobby) Find(q string) (peer.ID, *pb.Peer) {
 }
 
 // ^ Send publishes a message to the pubsub topic OLC ^
-func (lob *Lobby) Update(peer *pb.Peer) error {
+func (lob *Lobby) Update() error {
 	// Create Lobby Event
 	event := pb.LobbyEvent{
 		Event: pb.LobbyEvent_UPDATE,
-		Peer:  peer,
+		Peer:  lob.selfInfo,
 	}
 
 	// Convert Event to Proto Binary
@@ -131,7 +135,7 @@ func (lob *Lobby) Exit() {
 	// Create Lobby Event
 	event := pb.LobbyEvent{
 		Event: pb.LobbyEvent_EXIT,
-		Id:    lob.self.String(),
+		Id:    lob.selfID.String(),
 	}
 
 	// Convert Event to Proto Binary, Suppress Error

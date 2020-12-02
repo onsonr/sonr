@@ -124,9 +124,7 @@ func (dsc *DataStreamConn) readBlock(reader msgio.ReadCloser) {
 			break
 		} else {
 			// @ Send Progress every 10 Messages
-			rem := i % 10
-			fmt.Println("Remainder: ", rem)
-			if rem == 0 {
+			if i%10 == 0 {
 				dsc.Call.Progressed(progress)
 			}
 		}

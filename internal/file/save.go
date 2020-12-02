@@ -12,7 +12,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/h2non/filetype"
 	pb "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -153,31 +152,12 @@ func (sf *SonrFile) saveBytes(owner *pb.Peer) (*pb.Metadata, error) {
 		fmt.Println(err)
 	}
 
-	// Get File Type
-	head := make([]byte, 261)
-	f.Read(head)
-	kind, err := filetype.Match(head)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	// Get Mime Type from String
-	mimeTypeID := pb.MIME_Type_value[kind.MIME.Type]
-	mimeType := pb.MIME_Type(mimeTypeID)
-
-	// Set Mime
-	mime := &pb.MIME{
-		Type:    mimeType,
-		Subtype: kind.MIME.Subtype,
-		Value:   kind.MIME.Value,
-	}
-
 	// @ 3. Set Metadata Protobuf Values
 	return &pb.Metadata{
 		Name:       fileNameWithoutExtension(sf.Path),
 		Path:       sf.Path,
 		Size:       int32(info.Size()),
-		Mime:       mime,
+		Mime:       sf.Metadata.Mime,
 		Owner:      owner,
 		LastOpened: int32(time.Now().Unix()),
 	}, nil
@@ -219,31 +199,12 @@ func (sf *SonrFile) saveBase64(owner *pb.Peer) (*pb.Metadata, error) {
 		fmt.Println(err)
 	}
 
-	// Get File Type
-	head := make([]byte, 261)
-	f.Read(head)
-	kind, err := filetype.Match(head)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	// Get Mime Type from String
-	mimeTypeID := pb.MIME_Type_value[kind.MIME.Type]
-	mimeType := pb.MIME_Type(mimeTypeID)
-
-	// Set Mime
-	mime := pb.MIME{
-		Type:    mimeType,
-		Subtype: kind.MIME.Subtype,
-		Value:   kind.MIME.Value,
-	}
-
 	// @ 3. Set Metadata Protobuf Values
 	return &pb.Metadata{
 		Name:       fileNameWithoutExtension(sf.Path),
 		Path:       sf.Path,
 		Size:       int32(info.Size()),
-		Mime:       &mime,
+		Mime:       sf.Metadata.Mime,
 		Owner:      owner,
 		LastOpened: int32(time.Now().Unix()),
 	}, nil

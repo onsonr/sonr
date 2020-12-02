@@ -57,15 +57,17 @@ message Directories {
 message Peer {
   string id = 1;
   Device device = 2;
-  string olc = 3;
+  string username = 3;
   string firstName = 4;
-  string lastName = 5;
-  string profilePic = 6;
-  double direction = 7;
-  double difference = 8;
-  double distance = 9;
-  Proximity proximity = 10;
+  string profilePic = 5;
+  Range range = 6;
+}
 
-  // Define Proximity
+// Define Range: Distance Between users
+message Range {
+  double direction = 1;
+  double difference = 2;
+  double distance = 3;
+  Proximity proximity = 4;
   enum Proximity { NONE = 0; IMMEDIATE = 1; NEAR = 2; FAR = 3; }
 }

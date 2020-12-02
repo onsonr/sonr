@@ -20,7 +20,7 @@ func (lob *Lobby) handleMessages() {
 		}
 
 		// Only forward messages delivered by others
-		if msg.ReceivedFrom == lob.self {
+		if msg.ReceivedFrom == lob.selfID {
 			continue
 		}
 

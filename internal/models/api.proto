@@ -9,9 +9,10 @@ option go_package = ".;models";
 // Initial Connection Message
 message ConnectionRequest {
   string olc = 1;
-  Device device = 2;
-  Directories directory = 3;
-  Contact contact = 4;
+  string username = 2;
+  Device device = 3;
+  Directories directory = 4;
+  Contact contact = 5;
 }
 
 // Authorization message sent in stream
