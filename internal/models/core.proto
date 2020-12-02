@@ -14,20 +14,16 @@ message LobbyEvent {
   Peer peer = 2;
   string id = 3; // Optional used for remove
 
-  enum Event {
-    NONE = 0;
-    JOIN = 1;
-    UPDATE = 2;
-    EXIT = 3;
-    }
+  enum Event { NONE = 0; JOIN = 1; UPDATE = 2; EXIT = 3; }
 }
 
 // Define Chunk Type: Sent on Data Transfer
 message Chunk {
-  string data = 1;
-  int32 size = 2;
-  int32 current = 3;
-  int32 total = 4;
+  string b64 = 1;
+  bytes buffer = 2;
+  int32 size = 3;
+  int32 current = 4;
+  int32 total = 5;
 }
 
 message SonrFile {
@@ -37,5 +33,5 @@ message SonrFile {
   string path = 4;
   int32 size = 5;
   int32 blocks = 6;
-  string kind = 7; 
+  string kind = 7;
 }

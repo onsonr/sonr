@@ -9,8 +9,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
-	pb "github.com/sonr-io/core/internal/models"
-	"google.golang.org/protobuf/proto"
 
 	gorpc "github.com/libp2p/go-libp2p-gorpc"
 )
@@ -103,18 +101,18 @@ func (pc *ProgressClient) SendProgress(current int32, total int32) {
 // ^ Callback to Frontend with Protobuf ^ //
 func callbackProtobuf(op OnProgressed, current int32, total int32) {
 	// Create Callback for User
-	progressMessage := pb.ProgressUpdate{
-		Current: current,
-		Total:   total,
-		Percent: float32(current) / float32(total),
-	}
+	// progressMessage := pb.ProgressUpdate{
+	// 	Current: current,
+	// 	Total:   total,
+	// 	Percent: float32(current) / float32(total),
+	// }
 
 	// Convert to bytes
-	bytes, err := proto.Marshal(&progressMessage)
-	if err != nil {
-		fmt.Println(err, "SendProgress")
-	}
+	// bytes, err := proto.Marshal(&progressMessage)
+	// if err != nil {
+	// 	fmt.Println(err, "SendProgress")
+	// }
 
 	// Send Callback
-	op(bytes)
+	//op(bytes)
 }

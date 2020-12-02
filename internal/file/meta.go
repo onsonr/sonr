@@ -1,23 +1,16 @@
 package file
 
 import (
-	"bytes"
-	"encoding/base64"
-	"image"
-	"math"
 	"os"
 	"path/filepath"
-	"strings"
 	"sync"
 
 	"fmt"
 	_ "image/gif"
-	"image/jpeg"
 	_ "image/jpeg"
 
 	"github.com/google/uuid"
 	"github.com/h2non/filetype"
-	"github.com/nfnt/resize"
 	pb "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -45,7 +38,7 @@ type SafeMeta struct {
 }
 
 // ^ Create generates file metadata ^ //
-func (sf *SafeMeta) Generate() {
+func (sf *SafeMeta) NewMetadata() {
 	// ** Lock ** //
 	sf.mutex.Lock()
 
@@ -74,46 +67,6 @@ func (sf *SafeMeta) Generate() {
 	}
 	file.Close()
 
-	// @ 2. Create Thumbnail
-	thumbBuffer := new(bytes.Buffer)
-	if filetype.IsImage(head) {
-		// New File for ThumbNail
-		file, err := os.Open(sf.Path)
-		if err != nil {
-			fmt.Println(err)
-			sf.Call.Error(err, "AddFile")
-		}
-		defer file.Close()
-
-		// Convert to Image Object
-		img, _, err := image.Decode(file)
-		if err != nil {
-			fmt.Println(err)
-			sf.Call.Error(err, "AddFile")
-		}
-
-		// Find Image Bounds
-		b := img.Bounds()
-		width := b.Max.X
-		height := b.Max.Y
-		fmt.Println("width = ", width, " height = ", height)
-
-		// Calculate Fit
-		newWidth, newHeight := calculateRatioFit(width, height)
-		fmt.Println("w = ", newWidth, " h = ", newHeight)
-
-		// Call the resize library for image scaling
-		scaledImage := resize.Resize(uint(newWidth), uint(newHeight), img, resize.Lanczos3)
-
-		// Encode as Jpeg into buffer
-		err = jpeg.Encode(thumbBuffer, scaledImage, nil)
-		if err != nil {
-			fmt.Println(err)
-			sf.Call.Error(err, "AddFile")
-		}
-		fmt.Println("Thumbnail created")
-	}
-
 	// Get Mime Type
 	mime := &pb.MIME{
 		Type:    kind.MIME.Type,
@@ -121,18 +74,44 @@ func (sf *SafeMeta) Generate() {
 		Value:   kind.MIME.Value,
 	}
 
-	// @ 3. Set Metadata Protobuf Values
+	// @ 2. Set Metadata Protobuf Values
 	sf.meta = pb.Metadata{
-		Uuid:      uuid.New().String(),
-		Name:      filepath.Base(sf.Path),
-		Path:      sf.Path,
-		Size:      int32(info.Size()),
-		Mime:      mime,
-		Thumbnail: thumbBuffer.Bytes(),
+		Uuid: uuid.New().String(),
+		Name: filepath.Base(sf.Path),
+		Path: sf.Path,
+		Size: int32(info.Size()),
+		Mime: mime,
 	}
+
+	// @ 3. Create Thumbnail
+	if filetype.IsImage(head) {
+		// New File for ThumbNail
+		thumbBytes, err := NewThumbnail(sf.Path)
+		if err != nil {
+			fmt.Println(err)
+			sf.Call.Error(err, "AddFile")
+		}
+
+		// Update Metadata Value
+		sf.meta = pb.Metadata{
+			Thumbnail: thumbBytes,
+		}
+	}
+
 	// ** Unlock ** //
 	sf.mutex.Unlock()
-	sf.Call.Queued(sf.Bytes())
+
+	// Get Metadata
+	meta := sf.Metadata()
+
+	// Convert to bytes
+	data, err := proto.Marshal(meta)
+	if err != nil {
+		fmt.Println("Error Marshaling Metadata ", err)
+	}
+
+	// Callback with Metadata
+	sf.Call.Queued(data)
 }
 
 // ^ Safely returns metadata depending on lock ^ //
@@ -143,63 +122,4 @@ func (sf *SafeMeta) Metadata() *pb.Metadata {
 
 	// @ 2. Return Value
 	return &sf.meta
-}
-
-// ^ Safely returns metadata depending on lock ^ //
-func (sf *SafeMeta) Base64() (string, error) {
-	// Retreive Metadata
-	meta := sf.Metadata()
-	imgBuffer := new(bytes.Buffer)
-
-	// New File for ThumbNail
-	file, err := os.Open(meta.Path)
-	if err != nil {
-		return "", err
-	}
-	defer file.Close()
-
-	// Convert to Image Object
-	img, _, err := image.Decode(file)
-	if err != nil {
-		return "", err
-	}
-
-	// Encode as Jpeg into buffer
-	err = jpeg.Encode(file, img, nil)
-	if err != nil {
-		return "", err
-	}
-
-	// Return B64 Encoded string
-	b64 := base64.StdEncoding.EncodeToString(imgBuffer.Bytes())
-	return b64, nil
-}
-
-// ^ Safely returns metadata depending on lock ^ //
-func (sf *SafeMeta) Bytes() []byte {
-	// Get Metadata
-	meta := sf.Metadata()
-
-	// Convert to bytes
-	data, err := proto.Marshal(meta)
-	if err != nil {
-		fmt.Println("Error Marshaling Metadata ", err)
-		return nil
-	}
-	return data
-}
-
-// ** Resize Constants ** //
-const MAX_WIDTH float64 = 320
-const MAX_HEIGHT float64 = 240
-
-// @ Calculate the size of the image after scaling
-func calculateRatioFit(srcWidth, srcHeight int) (int, int) {
-	ratio := math.Min(MAX_WIDTH/float64(srcWidth), MAX_HEIGHT/float64(srcHeight))
-	return int(math.Ceil(float64(srcWidth) * ratio)), int(math.Ceil(float64(srcHeight) * ratio))
-}
-
-func fileNameWithoutExtension(fileName string) string {
-	base := filepath.Base(fileName)
-	return strings.TrimSuffix(base, filepath.Ext(fileName))
 }

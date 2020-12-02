@@ -44,7 +44,7 @@ func (sn *Node) AddFile(path string) {
 	//@2. Initialize SafeFile
 	safeMeta := sf.SafeMeta{Path: path, Call: fileCall}
 	sn.files = append(sn.files, &safeMeta)
-	go safeMeta.Generate() // Start GoRoutine// Start GoRoutine
+	go safeMeta.NewMetadata() // Start GoRoutine// Start GoRoutine
 }
 
 // ^ Invite an available peer to transfer ^ //
