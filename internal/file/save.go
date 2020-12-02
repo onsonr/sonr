@@ -79,7 +79,7 @@ func (sf *SonrFile) addBytes(chunk *pb.Chunk) (bool, float32, error) {
 	// ** Unlock ** //
 
 	// Update Progress
-	sf.progress = sf.progress + float32(n)
+	sf.progress = float32(n)/float32(chunk.Total) + sf.progress
 
 	// @ Check if Completed
 	if sf.stringsBuilder.Len() == int(chunk.Total) {
@@ -102,7 +102,7 @@ func (sf *SonrFile) addBase64(chunk *pb.Chunk) (bool, float32, error) {
 	// ** Unlock ** //
 
 	// Update Progress
-	sf.progress = sf.progress + float32(n)
+	sf.progress = float32(n)/float32(chunk.Total) + sf.progress
 
 	// @ Check if Completed
 	if sf.stringsBuilder.Len() == int(chunk.Total) {
