@@ -222,101 +222,6 @@ func (x *Chunk) GetTotal() int32 {
 	return 0
 }
 
-type SonrFile struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Base64 []string `protobuf:"bytes,1,rep,name=base64,proto3" json:"base64,omitempty"`
-	FileId string   `protobuf:"bytes,2,opt,name=fileId,proto3" json:"fileId,omitempty"`
-	Name   string   `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
-	Path   string   `protobuf:"bytes,4,opt,name=path,proto3" json:"path,omitempty"`
-	Size   int32    `protobuf:"varint,5,opt,name=size,proto3" json:"size,omitempty"`
-	Blocks int32    `protobuf:"varint,6,opt,name=blocks,proto3" json:"blocks,omitempty"`
-	Kind   string   `protobuf:"bytes,7,opt,name=kind,proto3" json:"kind,omitempty"`
-}
-
-func (x *SonrFile) Reset() {
-	*x = SonrFile{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_core_proto_msgTypes[2]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *SonrFile) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*SonrFile) ProtoMessage() {}
-
-func (x *SonrFile) ProtoReflect() protoreflect.Message {
-	mi := &file_core_proto_msgTypes[2]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use SonrFile.ProtoReflect.Descriptor instead.
-func (*SonrFile) Descriptor() ([]byte, []int) {
-	return file_core_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *SonrFile) GetBase64() []string {
-	if x != nil {
-		return x.Base64
-	}
-	return nil
-}
-
-func (x *SonrFile) GetFileId() string {
-	if x != nil {
-		return x.FileId
-	}
-	return ""
-}
-
-func (x *SonrFile) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-func (x *SonrFile) GetPath() string {
-	if x != nil {
-		return x.Path
-	}
-	return ""
-}
-
-func (x *SonrFile) GetSize() int32 {
-	if x != nil {
-		return x.Size
-	}
-	return 0
-}
-
-func (x *SonrFile) GetBlocks() int32 {
-	if x != nil {
-		return x.Blocks
-	}
-	return 0
-}
-
-func (x *SonrFile) GetKind() string {
-	if x != nil {
-		return x.Kind
-	}
-	return ""
-}
-
 var File_core_proto protoreflect.FileDescriptor
 
 var file_core_proto_rawDesc = []byte{
@@ -339,18 +244,8 @@ var file_core_proto_rawDesc = []byte{
 	0x12, 0x18, 0x0a, 0x07, 0x63, 0x75, 0x72, 0x72, 0x65, 0x6e, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28,
 	0x05, 0x52, 0x07, 0x63, 0x75, 0x72, 0x72, 0x65, 0x6e, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f,
 	0x74, 0x61, 0x6c, 0x18, 0x05, 0x20, 0x01, 0x28, 0x05, 0x52, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c,
-	0x22, 0xa2, 0x01, 0x0a, 0x08, 0x53, 0x6f, 0x6e, 0x72, 0x46, 0x69, 0x6c, 0x65, 0x12, 0x16, 0x0a,
-	0x06, 0x62, 0x61, 0x73, 0x65, 0x36, 0x34, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x06, 0x62,
-	0x61, 0x73, 0x65, 0x36, 0x34, 0x12, 0x16, 0x0a, 0x06, 0x66, 0x69, 0x6c, 0x65, 0x49, 0x64, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x66, 0x69, 0x6c, 0x65, 0x49, 0x64, 0x12, 0x12, 0x0a,
-	0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d,
-	0x65, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x61, 0x74, 0x68, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x04, 0x70, 0x61, 0x74, 0x68, 0x12, 0x12, 0x0a, 0x04, 0x73, 0x69, 0x7a, 0x65, 0x18, 0x05, 0x20,
-	0x01, 0x28, 0x05, 0x52, 0x04, 0x73, 0x69, 0x7a, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x62, 0x6c, 0x6f,
-	0x63, 0x6b, 0x73, 0x18, 0x06, 0x20, 0x01, 0x28, 0x05, 0x52, 0x06, 0x62, 0x6c, 0x6f, 0x63, 0x6b,
-	0x73, 0x12, 0x12, 0x0a, 0x04, 0x6b, 0x69, 0x6e, 0x64, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x04, 0x6b, 0x69, 0x6e, 0x64, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x3b, 0x6d, 0x6f, 0x64, 0x65, 0x6c,
-	0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x3b, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x62, 0x06, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -366,17 +261,16 @@ func file_core_proto_rawDescGZIP() []byte {
 }
 
 var file_core_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_core_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_core_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_core_proto_goTypes = []interface{}{
 	(LobbyEvent_Event)(0), // 0: core.LobbyEvent.Event
 	(*LobbyEvent)(nil),    // 1: core.LobbyEvent
 	(*Chunk)(nil),         // 2: core.Chunk
-	(*SonrFile)(nil),      // 3: core.SonrFile
-	(*Peer)(nil),          // 4: Peer
+	(*Peer)(nil),          // 3: Peer
 }
 var file_core_proto_depIdxs = []int32{
 	0, // 0: core.LobbyEvent.event:type_name -> core.LobbyEvent.Event
-	4, // 1: core.LobbyEvent.peer:type_name -> Peer
+	3, // 1: core.LobbyEvent.peer:type_name -> Peer
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
@@ -415,18 +309,6 @@ func file_core_proto_init() {
 				return nil
 			}
 		}
-		file_core_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SonrFile); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -434,7 +316,7 @@ func file_core_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_core_proto_rawDesc,
 			NumEnums:      1,
-			NumMessages:   3,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

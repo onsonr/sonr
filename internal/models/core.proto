@@ -25,13 +25,3 @@ message Chunk {
   int32 current = 4;
   int32 total = 5;
 }
-
-message SonrFile {
-  repeated string base64 = 1;
-  string fileId = 2;
-  string name = 3;
-  string path = 4;
-  int32 size = 5;
-  int32 blocks = 6;
-  string kind = 7;
-}
