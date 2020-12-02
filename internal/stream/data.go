@@ -113,12 +113,12 @@ func (dsc *DataStreamConn) readBlock(reader msgio.ReadCloser) error {
 			}
 
 			// Callback Completed
-			go dsc.Call.Completed(bytes)
+			dsc.Call.Completed(bytes)
 			break
 		}
 
 		// @ Send Progress
-		go dsc.Call.Progressed(progress)
+		dsc.Call.Progressed(progress)
 	}
 	return nil
 }
