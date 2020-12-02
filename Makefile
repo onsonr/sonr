@@ -8,18 +8,9 @@ GOBIND=$(GOMOBILE) bind
 
 # GoMobile Directories
 IOS_BUILDDIR=/Users/prad/Sonr/plugin/ios/Frameworks
+IOS_ARTIFACT= $(IOS_BUILDDIR)/Core.framework
 ANDROID_BUILDDIR=/Users/prad/Sonr/plugin/android/libs
-
-# Platform Specific Parameters
-IOS_ARTIFACT=$(IOS_BUILDDIR)/Core.framework
-IOS_TARGET=ios/arm64
-ANDROID_ARTIFACT=$(ANDROID_BUILDDIR)/io.sonr.core.aar
-ANDROID_TARGET=android
-LD_FLAGS='-s -w'
-
-# Gomobile Build Commands
-BUILD_IOS="cd bind && $(GOCLEAN) &&  $(GOBIND) -ldflags=$(LD_FLAGS) -target=$(IOS_TARGET) -v -o $(IOS_ARTIFACT)"
-BUILD_ANDROID="cd bind && $(GOCLEAN) && $(GOBIND) -ldflags=$(LD_FLAGS) -target=$(ANDROID_TARGET) -v -o $(ANDROID_ARTIFACT)"
+ANDROID_ARTIFACT= $(ANDROID_BUILDDIR)/io.sonr.core.aar
 
 # Proto Directories
 PB_PATH="/Users/prad/Sonr/core/internal/models"
@@ -46,9 +37,7 @@ ios:
 	@echo "--------------------------------------------------------------"
 	@echo "-------------- 📱 BEGIN IOS BIND 📱 ---------------------------"
 	@echo "--------------------------------------------------------------"
-	@rm -rf $(IOS_BUILDDIR) 2>/dev/null
-	@mkdir -p $(IOS_BUILDDIR)
-	eval $(BUILD_IOS)
+	cd bind && GODEBUG=asyncpreemptoff=1 gomobile bind -target=ios -ldflags='-s -w' -v -o $(IOS_ARTIFACT)
 	@go mod tidy
 	@cd /System/Library/Sounds && afplay Glass.aiff
 	@echo "Finished Binding ➡ " && date
@@ -63,9 +52,7 @@ android:
 	@echo "--------------------------------------------------------------"
 	@echo "--------------- 🤖 BEGIN ANDROID BIND 🤖 ----------------------"
 	@echo "--------------------------------------------------------------"
-	@rm -rf $(ANDROID_BUILDDIR) 2>/dev/null
-	@mkdir -p $(ANDROID_BUILDDIR)
-	eval $(BUILD_ANDROID)
+	cd bind && GODEBUG=asyncpreemptoff=1 gomobile bind -target=android/arm64 -ldflags='-s -w' -v -o $(ANDROID_ARTIFACT)
 	@go mod tidy
 	@cd /System/Library/Sounds && afplay Glass.aiff
 	@echo "Finished Binding ➡ " && date
@@ -93,5 +80,8 @@ clean:
 	go mod tidy
 	rm -rf $(IOS_BUILDDIR)
 	rm -rf $(ANDROID_BUILDDIR)
+	mkdir -p $(IOS_BUILDDIR)
+	mkdir -p $(ANDROID_BUILDDIR)
 	eval $(PB_CLEAN_CORE) 2>/dev/null
 	eval $(PB_CLEAN_PLUGIN) 
+	gomobile init

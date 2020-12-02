@@ -155,7 +155,7 @@ func (sf *SonrFile) saveBytes(owner *pb.Peer) (*pb.Metadata, error) {
 	}
 
 	// Get Mime Type
-	mime := pb.MIME{
+	mime := &pb.MIME{
 		Type:    kind.MIME.Type,
 		Subtype: kind.MIME.Subtype,
 		Value:   kind.MIME.Value,
@@ -168,7 +168,7 @@ func (sf *SonrFile) saveBytes(owner *pb.Peer) (*pb.Metadata, error) {
 		Path:       sf.Path,
 		Size:       int32(info.Size()),
 		Chunks:     int32(info.Size()) / BlockSize,
-		Mime:       &mime,
+		Mime:       mime,
 		Owner:      owner,
 		LastOpened: int32(time.Now().Unix()),
 	}, nil
@@ -219,7 +219,7 @@ func (sf *SonrFile) saveBase64(owner *pb.Peer) (*pb.Metadata, error) {
 	}
 
 	// Get Mime Type
-	mime := &pb.MIME{
+	mime := pb.MIME{
 		Type:    kind.MIME.Type,
 		Subtype: kind.MIME.Subtype,
 		Value:   kind.MIME.Value,
@@ -232,7 +232,7 @@ func (sf *SonrFile) saveBase64(owner *pb.Peer) (*pb.Metadata, error) {
 		Path:       sf.Path,
 		Size:       int32(info.Size()),
 		Chunks:     int32(info.Size()) / BlockSize,
-		Mime:       mime,
+		Mime:       &mime,
 		Owner:      owner,
 		LastOpened: int32(time.Now().Unix()),
 	}, nil
