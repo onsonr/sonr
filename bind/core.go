@@ -5,11 +5,11 @@ import (
 	"fmt"
 
 	"github.com/libp2p/go-libp2p-core/host"
-	sf "github.com/sonr-io/core/internal/file"
-	sh "github.com/sonr-io/core/internal/host"
+	sonrFile "github.com/sonr-io/core/internal/file"
+	sonrHost "github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/internal/lobby"
-	pb "github.com/sonr-io/core/internal/models"
-	st "github.com/sonr-io/core/internal/stream"
+	sonrModel "github.com/sonr-io/core/internal/models"
+	sonrStream "github.com/sonr-io/core/internal/stream"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -31,17 +31,17 @@ type Callback interface {
 type Node struct {
 	// Public Properties
 	HostID      string
-	Peer        *pb.Peer
-	directories *pb.Directories
+	Peer        *sonrModel.Peer
+	directories *sonrModel.Directories
 
 	// Networking Properties
 	ctx        context.Context
 	host       host.Host
-	authStream st.AuthStreamConn
-	dataStream st.DataStreamConn
+	authStream sonrStream.AuthStreamConn
+	dataStream sonrStream.DataStreamConn
 
 	// Data Properties
-	files []*sf.SafeMeta
+	files []*sonrFile.SafeFile
 
 	// References
 	call  Callback
@@ -53,10 +53,10 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	// ** Create Context and Node - Begin Setup **
 	node := new(Node)
 	node.ctx = context.Background()
-	node.call, node.files = call, make([]*sf.SafeMeta, maxFileBufferSize)
+	node.call, node.files = call, make([]*sonrFile.SafeFile, maxFileBufferSize)
 
 	// ** Unmarshal Request **
-	reqMsg := pb.ConnectionRequest{}
+	reqMsg := sonrModel.ConnectionRequest{}
 	err := proto.Unmarshal(reqBytes, &reqMsg)
 	if err != nil {
 		fmt.Println(err)
@@ -65,7 +65,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	}
 
 	// @1. Create Host and Set Stream Handlers
-	node.host, node.HostID, err = sh.NewHost(node.ctx)
+	node.host, node.HostID, err = sonrHost.NewHost(node.ctx)
 	if err != nil {
 		node.Error(err, "NewNode")
 		return nil
@@ -86,28 +86,4 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 
 	// ** Callback Node User Information ** //
 	return node
-}
-
-// ** Error Callback to Plugin with error **
-func (sn *Node) Error(err error, method string) {
-	// Log In Core
-	fmt.Println(fmt.Sprintf("[Error] At Method %s : %s", err.Error(), method))
-
-	// Create Error ProtoBuf
-	errorMsg := pb.ErrorMessage{
-		Message: err.Error(),
-		Method:  method,
-	}
-
-	// Convert Message to bytes
-	bytes, err := proto.Marshal(&errorMsg)
-	if err != nil {
-		fmt.Println("Cannot Marshal Error Protobuf: ", err)
-	}
-
-	// Check and callback
-	if sn.call != nil {
-		// Reference
-		sn.call.OnError(bytes)
-	}
 }

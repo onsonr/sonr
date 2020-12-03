@@ -25,3 +25,7 @@ message Chunk {
   int32 current = 4;
   int32 total = 5;
 }
+
+enum CallbackType {
+  REFRESHED = 0; QUEUED = 1; INVITED = 2; RESPONDED = 3; COMPLETED = 5;
+}

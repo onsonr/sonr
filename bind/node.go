@@ -36,15 +36,9 @@ func (sn *Node) Update(direction float64) {
 
 // ^ AddFile adds generates metadata and thumbnail from filepath to Process for Transfer, returns key ^ //
 func (sn *Node) AddFile(path string) {
-	//@1. Assign Callback Ref
-	fileCall := sf.FileCallback{
-		Queued: sn.call.OnQueued,
-		Error:  sn.Error,
-	}
 	//@2. Initialize SafeFile
-	safeMeta := sf.SafeMeta{Path: path, Call: fileCall}
-	sn.files = append(sn.files, &safeMeta)
-	go safeMeta.NewMetadata() // Start GoRoutine// Start GoRoutine
+	safeMeta := sf.NewMetadata(path, sn.call.OnQueued, sn.call.OnProgress, sn.Error)
+	sn.files = append(sn.files, safeMeta)
 }
 
 // ^ Invite an available peer to transfer ^ //
@@ -111,7 +105,7 @@ func (sn *Node) Transfer() {
 func (sn *Node) Reset() {
 	// Reset Files Slice
 	sn.files = nil
-	sn.files = make([]*sf.SafeMeta, maxFileBufferSize)
+	sn.files = make([]*sf.SafeFile, maxFileBufferSize)
 }
 
 // ^ Close Ends All Network Communication ^

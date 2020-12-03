@@ -20,7 +20,7 @@ func (lob *Lobby) handleMessages() {
 		}
 
 		// Only forward messages delivered by others
-		if msg.ReceivedFrom == lob.selfID {
+		if msg.ReceivedFrom == lob.self {
 			continue
 		}
 
@@ -30,7 +30,7 @@ func (lob *Lobby) handleMessages() {
 		if err != nil {
 			continue
 		}
-		
+
 		// Send valid messages onto the Messages channel
 		lob.Messages <- &notif
 	}
@@ -102,7 +102,8 @@ func (lob *Lobby) removePeer(id string) {
 	delete(lob.Data.Peers, id)
 
 	// Send Callback with updated peers
-	lob.call.Refreshed(lob.Info())
+	//lob.call.Refreshed(lob.Info())
+	lob.refresh(pb.CallbackType_REFRESHED, lob.Data)
 }
 
 // ** updatePeer changes peer values in Lobby **

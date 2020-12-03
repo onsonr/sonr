@@ -15,9 +15,9 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-type SonrFile struct {
+type TransferFile struct {
 	Metadata       *pb.Metadata
-	Path           string
+	SavePath       string
 	progress       float32
 	stringsBuilder *strings.Builder
 	bytesBuilder   *bytes.Buffer
@@ -31,18 +31,18 @@ var (
 )
 
 // ^ Create new SonrFile struct with meta and documents directory ^ //
-func NewFile(docDir string, meta *pb.Metadata) SonrFile {
-	return SonrFile{
+func NewFile(docDir string, meta *pb.Metadata) TransferFile {
+	return TransferFile{
 		Metadata:       meta,
 		stringsBuilder: new(strings.Builder),
 		bytesBuilder:   new(bytes.Buffer),
-		Path:           docDir + "/" + meta.Name + meta.Mime.Extension,
+		SavePath:       docDir + "/" + meta.Name + "." + meta.Mime.Subtype,
 		progress:       0,
 	}
 }
 
 // ^ Check file type and use corresponding method ^ //
-func (sf *SonrFile) AddBuffer(buffer []byte) (bool, float32, error) {
+func (sf *TransferFile) AddBuffer(buffer []byte) (bool, float32, error) {
 	// @ Unmarshal Bytes into Proto
 	chunk := pb.Chunk{}
 	err := proto.Unmarshal(buffer, &chunk)
@@ -63,7 +63,7 @@ func (sf *SonrFile) AddBuffer(buffer []byte) (bool, float32, error) {
 }
 
 // ^ Add Bytes Buffer to SonrFile Buffer ^ //
-func (sf *SonrFile) addBytes(chunk *pb.Chunk) (bool, float32, error) {
+func (sf *TransferFile) addBytes(chunk *pb.Chunk) (bool, float32, error) {
 	// ** Lock ** //
 	sf.mutex.Lock()
 	// Add Block to Buffer
@@ -86,7 +86,7 @@ func (sf *SonrFile) addBytes(chunk *pb.Chunk) (bool, float32, error) {
 }
 
 // ^ Add Base64 Buffer to SonrFile Buffer ^ //
-func (sf *SonrFile) addBase64(chunk *pb.Chunk) (bool, float32, error) {
+func (sf *TransferFile) addBase64(chunk *pb.Chunk) (bool, float32, error) {
 	// ** Lock ** //
 	sf.mutex.Lock()
 	// Add Block to Buffer
@@ -109,7 +109,7 @@ func (sf *SonrFile) addBase64(chunk *pb.Chunk) (bool, float32, error) {
 }
 
 // ^ Check file type and use corresponding method ^ //
-func (sf *SonrFile) Save(owner *pb.Peer) (*pb.Metadata, error) {
+func (sf *TransferFile) Save(owner *pb.Peer) (*pb.Metadata, error) {
 	// Check File Type for Base64 Media
 	if sf.Metadata.Mime.Type == pb.MIME_image {
 		m, err := sf.saveBase64(owner)
@@ -122,7 +122,7 @@ func (sf *SonrFile) Save(owner *pb.Peer) (*pb.Metadata, error) {
 }
 
 // ^ Save file of type Base64 to Documents Directory and Return Path ^ //
-func (sf *SonrFile) saveBytes(owner *pb.Peer) (*pb.Metadata, error) {
+func (sf *TransferFile) saveBytes(owner *pb.Peer) (*pb.Metadata, error) {
 	// ** Lock/Unlock ** //
 	sf.mutex.Lock()
 	defer sf.mutex.Unlock()
@@ -131,7 +131,7 @@ func (sf *SonrFile) saveBytes(owner *pb.Peer) (*pb.Metadata, error) {
 	data := sf.bytesBuilder.Bytes()
 
 	// Create File at Path
-	f, err := os.Create(sf.Path)
+	f, err := os.Create(sf.SavePath)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -154,7 +154,7 @@ func (sf *SonrFile) saveBytes(owner *pb.Peer) (*pb.Metadata, error) {
 	// @ 3. Set Metadata Protobuf Values
 	return &pb.Metadata{
 		Name:       sf.Metadata.Name,
-		Path:       sf.Path,
+		Path:       sf.SavePath,
 		Size:       int32(info.Size()),
 		Mime:       sf.Metadata.Mime,
 		Owner:      owner,
@@ -163,7 +163,7 @@ func (sf *SonrFile) saveBytes(owner *pb.Peer) (*pb.Metadata, error) {
 }
 
 // ^ Save file of type Base64 to Documents Directory and Return Path ^ //
-func (sf *SonrFile) saveBase64(owner *pb.Peer) (*pb.Metadata, error) {
+func (sf *TransferFile) saveBase64(owner *pb.Peer) (*pb.Metadata, error) {
 	// ** Lock/Unlock ** //
 	sf.mutex.Lock()
 	defer sf.mutex.Unlock()
@@ -178,7 +178,7 @@ func (sf *SonrFile) saveBase64(owner *pb.Peer) (*pb.Metadata, error) {
 	}
 
 	// Create File at Path
-	f, err := os.Create(sf.Path)
+	f, err := os.Create(sf.SavePath)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -201,7 +201,7 @@ func (sf *SonrFile) saveBase64(owner *pb.Peer) (*pb.Metadata, error) {
 	// @ 3. Set Metadata Protobuf Values
 	return &pb.Metadata{
 		Name:       sf.Metadata.Name,
-		Path:       sf.Path,
+		Path:       sf.SavePath,
 		Size:       int32(info.Size()),
 		Mime:       sf.Metadata.Mime,
 		Owner:      owner,

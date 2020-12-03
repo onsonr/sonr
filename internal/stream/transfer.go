@@ -16,7 +16,6 @@ func Base64(buffer []byte) (string, int) {
 
 // ^ Chunks string based on B64ChunkSize ^ //
 func ChunkBase64(s string) []string {
-	// scanner := bufio.NewScanner(bytes.NewBufferString(Base64(sf)))
 	chunkSize := B64ChunkSize
 	ss := make([]string, 0, len(s)/chunkSize+1)
 	for len(s) > 0 {

@@ -1,11 +1,8 @@
 package stream
 
 import (
-	"bytes"
 	"context"
 	"fmt"
-	"image"
-	"image/jpeg"
 	"io"
 	"log"
 	"os"
@@ -15,7 +12,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	msgio "github.com/libp2p/go-msgio"
-	sf "github.com/sonr-io/core/internal/file"
+	sonrFile "github.com/sonr-io/core/internal/file"
 	pb "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -36,7 +33,7 @@ type DataStreamConn struct {
 	// Properties
 	Call DataCallback
 	Host host.Host
-	File sf.SonrFile
+	File sonrFile.TransferFile
 
 	// Peer/Self Info
 	PeerID peer.ID
@@ -49,7 +46,7 @@ type DataStreamConn struct {
 }
 
 // ^ Start New Stream ^ //
-func (dsc *DataStreamConn) Transfer(ctx context.Context, sm *sf.SafeMeta) {
+func (dsc *DataStreamConn) Transfer(ctx context.Context, sm *sonrFile.SafeFile) {
 	// Create New Auth Stream
 	stream, err := dsc.Host.NewStream(ctx, dsc.PeerID, protocol.ID("/sonr/data"))
 	if err != nil {
@@ -133,36 +130,14 @@ func (dsc *DataStreamConn) readBlock(reader msgio.ReadCloser) {
 }
 
 // ^ write file to Msgio ^ //
-func (dsc *DataStreamConn) writeMessages(file *sf.SafeMeta) {
+func (dsc *DataStreamConn) writeMessages(sf *sonrFile.SafeFile) {
 	// Get Data
 	writer := msgio.NewWriter(dsc.stream)
-	meta := file.Metadata()
-	imgBuffer := new(bytes.Buffer)
 
 	// Check Type for image
-	if meta.Mime.Type == pb.MIME_image {
-		// New File for ThumbNail
-		file, err := os.Open(meta.Path)
-		if err != nil {
-			log.Fatalln(err)
-		}
-		defer file.Close()
-
-		// Convert to Image Object
-		img, _, err := image.Decode(file)
-		if err != nil {
-			log.Fatalln(err)
-		}
-
-		// Encode as Jpeg into buffer
-		err = jpeg.Encode(imgBuffer, img, &jpeg.Options{Quality: 100})
-		if err != nil {
-			log.Fatalln(err)
-		}
-
-		// Return Adjusted Size
-		b64, length := Base64(imgBuffer.Bytes())
-		total := int32(length)
+	if sf.Mime.Type == pb.MIME_image {
+		// Retreive Base64 Value for Image File
+		b64, total := sf.Base64()
 
 		// Iterate for Entire file as String
 		for i, chunk := range ChunkBase64(b64) {
@@ -189,6 +164,8 @@ func (dsc *DataStreamConn) writeMessages(file *sf.SafeMeta) {
 			}
 		}
 	} else {
+		meta := sf.Metadata()
+
 		// Return Given Size
 		total := meta.Size
 

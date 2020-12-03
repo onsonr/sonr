@@ -3,7 +3,6 @@ package lobby
 import (
 	"context"
 	"fmt"
-	"sync"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
@@ -15,6 +14,7 @@ import (
 const ChatRoomBufSize = 128
 
 // Define Function Types
+type Refreshed func(call pb.CallbackType, data proto.Message)
 type OnRefreshed func(data []byte)
 type OnError func(err error, method string)
 
@@ -33,18 +33,18 @@ type Lobby struct {
 	Data     *pb.Lobby
 
 	// Private Vars
-	ctx    context.Context
-	call   LobbyCallback
-	doneCh chan struct{}
-	mutex  sync.Mutex
-	ps     *pubsub.PubSub
-	topic  *pubsub.Topic
-	selfID peer.ID
-	sub    *pubsub.Subscription
+	ctx     context.Context
+	call    LobbyCallback
+	refresh Refreshed
+	doneCh  chan struct{}
+	ps      *pubsub.PubSub
+	topic   *pubsub.Topic
+	self    peer.ID
+	sub     *pubsub.Subscription
 }
 
 // ^ Enter Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
-func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, id peer.ID, olc string) (*Lobby, error) {
+func Enter(ctx context.Context, callr Refreshed, callback LobbyCallback, ps *pubsub.PubSub, id peer.ID, olc string) (*Lobby, error) {
 	// Join the pubsub Topic
 	topic, err := ps.Join(olc)
 	if err != nil {
@@ -66,13 +66,14 @@ func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, id pe
 
 	// Create Lobby Type
 	lob := &Lobby{
-		ctx:    ctx,
-		call:   callback,
-		doneCh: make(chan struct{}, 1),
-		ps:     ps,
-		topic:  topic,
-		sub:    sub,
-		selfID: id,
+		ctx:     ctx,
+		call:    callback,
+		refresh: callr,
+		doneCh:  make(chan struct{}, 1),
+		ps:      ps,
+		topic:   topic,
+		sub:     sub,
+		self:    id,
 
 		Data:     lobInfo,
 		Messages: make(chan *pb.LobbyEvent, ChatRoomBufSize),
@@ -131,13 +132,16 @@ func (lob *Lobby) Exit() {
 	// Create Lobby Event
 	event := pb.LobbyEvent{
 		Event: pb.LobbyEvent_EXIT,
-		Id:    lob.selfID.String(),
+		Id:    lob.self.String(),
 	}
 
 	// Convert Event to Proto Binary, Suppress Error
 	bytes, _ := proto.Marshal(&event)
 
 	// Publish to Topic
-	lob.topic.Publish(lob.ctx, bytes)
+	err := lob.topic.Publish(lob.ctx, bytes)
+	if err != nil {
+		lob.call.Error(err, "Exit")
+	}
 	lob.doneCh <- struct{}{}
 }

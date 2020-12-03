@@ -25,6 +25,61 @@ const (
 // of the legacy proto package is being used.
 const _ = proto.ProtoPackageIsVersion4
 
+type CallbackType int32
+
+const (
+	CallbackType_REFRESHED CallbackType = 0
+	CallbackType_QUEUED    CallbackType = 1
+	CallbackType_INVITED   CallbackType = 2
+	CallbackType_RESPONDED CallbackType = 3
+	CallbackType_COMPLETED CallbackType = 5
+)
+
+// Enum value maps for CallbackType.
+var (
+	CallbackType_name = map[int32]string{
+		0: "REFRESHED",
+		1: "QUEUED",
+		2: "INVITED",
+		3: "RESPONDED",
+		5: "COMPLETED",
+	}
+	CallbackType_value = map[string]int32{
+		"REFRESHED": 0,
+		"QUEUED":    1,
+		"INVITED":   2,
+		"RESPONDED": 3,
+		"COMPLETED": 5,
+	}
+)
+
+func (x CallbackType) Enum() *CallbackType {
+	p := new(CallbackType)
+	*p = x
+	return p
+}
+
+func (x CallbackType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (CallbackType) Descriptor() protoreflect.EnumDescriptor {
+	return file_core_proto_enumTypes[0].Descriptor()
+}
+
+func (CallbackType) Type() protoreflect.EnumType {
+	return &file_core_proto_enumTypes[0]
+}
+
+func (x CallbackType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use CallbackType.Descriptor instead.
+func (CallbackType) EnumDescriptor() ([]byte, []int) {
+	return file_core_proto_rawDescGZIP(), []int{0}
+}
+
 type LobbyEvent_Event int32
 
 const (
@@ -61,11 +116,11 @@ func (x LobbyEvent_Event) String() string {
 }
 
 func (LobbyEvent_Event) Descriptor() protoreflect.EnumDescriptor {
-	return file_core_proto_enumTypes[0].Descriptor()
+	return file_core_proto_enumTypes[1].Descriptor()
 }
 
 func (LobbyEvent_Event) Type() protoreflect.EnumType {
-	return &file_core_proto_enumTypes[0]
+	return &file_core_proto_enumTypes[1]
 }
 
 func (x LobbyEvent_Event) Number() protoreflect.EnumNumber {
@@ -244,8 +299,13 @@ var file_core_proto_rawDesc = []byte{
 	0x12, 0x18, 0x0a, 0x07, 0x63, 0x75, 0x72, 0x72, 0x65, 0x6e, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28,
 	0x05, 0x52, 0x07, 0x63, 0x75, 0x72, 0x72, 0x65, 0x6e, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f,
 	0x74, 0x61, 0x6c, 0x18, 0x05, 0x20, 0x01, 0x28, 0x05, 0x52, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c,
-	0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x3b, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x62, 0x06, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x33,
+	0x2a, 0x54, 0x0a, 0x0c, 0x43, 0x61, 0x6c, 0x6c, 0x62, 0x61, 0x63, 0x6b, 0x54, 0x79, 0x70, 0x65,
+	0x12, 0x0d, 0x0a, 0x09, 0x52, 0x45, 0x46, 0x52, 0x45, 0x53, 0x48, 0x45, 0x44, 0x10, 0x00, 0x12,
+	0x0a, 0x0a, 0x06, 0x51, 0x55, 0x45, 0x55, 0x45, 0x44, 0x10, 0x01, 0x12, 0x0b, 0x0a, 0x07, 0x49,
+	0x4e, 0x56, 0x49, 0x54, 0x45, 0x44, 0x10, 0x02, 0x12, 0x0d, 0x0a, 0x09, 0x52, 0x45, 0x53, 0x50,
+	0x4f, 0x4e, 0x44, 0x45, 0x44, 0x10, 0x03, 0x12, 0x0d, 0x0a, 0x09, 0x43, 0x4f, 0x4d, 0x50, 0x4c,
+	0x45, 0x54, 0x45, 0x44, 0x10, 0x05, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x3b, 0x6d, 0x6f, 0x64, 0x65,
+	0x6c, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -260,17 +320,18 @@ func file_core_proto_rawDescGZIP() []byte {
 	return file_core_proto_rawDescData
 }
 
-var file_core_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_core_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
 var file_core_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_core_proto_goTypes = []interface{}{
-	(LobbyEvent_Event)(0), // 0: core.LobbyEvent.Event
-	(*LobbyEvent)(nil),    // 1: core.LobbyEvent
-	(*Chunk)(nil),         // 2: core.Chunk
-	(*Peer)(nil),          // 3: Peer
+	(CallbackType)(0),     // 0: core.CallbackType
+	(LobbyEvent_Event)(0), // 1: core.LobbyEvent.Event
+	(*LobbyEvent)(nil),    // 2: core.LobbyEvent
+	(*Chunk)(nil),         // 3: core.Chunk
+	(*Peer)(nil),          // 4: Peer
 }
 var file_core_proto_depIdxs = []int32{
-	0, // 0: core.LobbyEvent.event:type_name -> core.LobbyEvent.Event
-	3, // 1: core.LobbyEvent.peer:type_name -> Peer
+	1, // 0: core.LobbyEvent.event:type_name -> core.LobbyEvent.Event
+	4, // 1: core.LobbyEvent.peer:type_name -> Peer
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
@@ -315,7 +376,7 @@ func file_core_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_core_proto_rawDesc,
-			NumEnums:      1,
+			NumEnums:      2,
 			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
