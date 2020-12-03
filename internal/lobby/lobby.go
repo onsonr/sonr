@@ -15,14 +15,7 @@ const ChatRoomBufSize = 128
 
 // Define Function Types
 type Refreshed func(call pb.CallbackType, data proto.Message)
-type OnRefreshed func(data []byte)
-type OnError func(err error, method string)
-
-// Struct to Implement Node Callback Methods
-type LobbyCallback struct {
-	Refreshed OnRefreshed
-	Error     OnError
-}
+type Error func(err error, method string)
 
 // Lobby represents a subscription to a single PubSub topic. Messages
 // can be published to the topic with Lobby.Publish, and received
@@ -34,8 +27,8 @@ type Lobby struct {
 
 	// Private Vars
 	ctx     context.Context
-	call    LobbyCallback
 	refresh Refreshed
+	onError Error
 	doneCh  chan struct{}
 	ps      *pubsub.PubSub
 	topic   *pubsub.Topic
@@ -44,7 +37,7 @@ type Lobby struct {
 }
 
 // ^ Enter Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
-func Enter(ctx context.Context, callr Refreshed, callback LobbyCallback, ps *pubsub.PubSub, id peer.ID, olc string) (*Lobby, error) {
+func Enter(ctx context.Context, callr Refreshed, onErr Error, ps *pubsub.PubSub, id peer.ID, olc string) (*Lobby, error) {
 	// Join the pubsub Topic
 	topic, err := ps.Join(olc)
 	if err != nil {
@@ -67,7 +60,7 @@ func Enter(ctx context.Context, callr Refreshed, callback LobbyCallback, ps *pub
 	// Create Lobby Type
 	lob := &Lobby{
 		ctx:     ctx,
-		call:    callback,
+		onError: onErr,
 		refresh: callr,
 		doneCh:  make(chan struct{}, 1),
 		ps:      ps,
@@ -141,7 +134,7 @@ func (lob *Lobby) Exit() {
 	// Publish to Topic
 	err := lob.topic.Publish(lob.ctx, bytes)
 	if err != nil {
-		lob.call.Error(err, "Exit")
+		lob.onError(err, "Exit")
 	}
 	lob.doneCh <- struct{}{}
 }

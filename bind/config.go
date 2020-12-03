@@ -27,14 +27,8 @@ func (sn *Node) setDiscovery(ctx context.Context, connEvent *sonrModel.Connectio
 	}
 	fmt.Println("GossipSub Created")
 
-	// Assign Callbacks from Node to Lobby
-	lobbyCallbackRef := lobby.LobbyCallback{
-		Refreshed: sn.call.OnRefreshed,
-		Error:     sn.Error,
-	}
-
 	// Enter Lobby
-	if sn.lobby, err = lobby.Enter(ctx, sn.Callback, lobbyCallbackRef, ps, sn.host.ID(), connEvent.Olc); err != nil {
+	if sn.lobby, err = lobby.Enter(ctx, sn.Callback, sn.Error, ps, sn.host.ID(), connEvent.Olc); err != nil {
 		return err
 	}
 	fmt.Println("Lobby Entered")

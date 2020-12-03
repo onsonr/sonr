@@ -80,7 +80,7 @@ func (lob *Lobby) ID(q string) peer.ID {
 	}
 	// Log Error
 	err := errors.New("Error QueryId was not found in PubSub topic")
-	lob.call.Error(err, "ID")
+	lob.onError(err, "ID")
 	return ""
 }
 
@@ -102,7 +102,6 @@ func (lob *Lobby) removePeer(id string) {
 	delete(lob.Data.Peers, id)
 
 	// Send Callback with updated peers
-	//lob.call.Refreshed(lob.Info())
 	lob.refresh(pb.CallbackType_REFRESHED, lob.Data)
 }
 
@@ -115,5 +114,4 @@ func (lob *Lobby) updatePeer(peer *pb.Peer) {
 
 	// Send Callback with updated peers
 	lob.refresh(pb.CallbackType_REFRESHED, lob.Data)
-	//lob.call.Refreshed(lob.Info())
 }
