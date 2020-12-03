@@ -1,7 +1,9 @@
 package stream
 
 import (
+	"bytes"
 	"context"
+	"encoding/base64"
 	"fmt"
 	"io"
 	"log"
@@ -69,12 +71,12 @@ func (dsc *DataStreamConn) Transfer(ctx context.Context, sf *sonrFile.SafeFile) 
 
 	// @ Check Type
 	if sf.Mime.Type == pb.MIME_image {
-		// Get Data and Size
-		b64, total := sf.Base64()
+		// Get Metadata
+		meta := sf.Metadata()
 
 		// Start Routine
 		log.Println("Starting Base64 Write Routine")
-		go writeBase64ToStream(writer, b64, total)
+		go writeBase64ToStream(writer, meta)
 	} else {
 		// Get Metadata and Size
 		meta := sf.Metadata()
@@ -147,7 +149,30 @@ func (dsc *DataStreamConn) readFile(reader msgio.ReadCloser) {
 }
 
 // ^ write file as Base64 in Msgio to Stream ^ //
-func writeBase64ToStream(writer msgio.WriteCloser, data string, total int32) {
+func writeBase64ToStream(writer msgio.WriteCloser, meta *pb.Metadata) {
+	// Initialize Buffer
+	imgBuffer := new(bytes.Buffer)
+
+	// @ Check Image type
+	if meta.Mime.Subtype == "jpeg" {
+		// Get JPEG Encoded Buffer
+		err := sonrFile.EncodeJpegBuffer(imgBuffer, meta)
+		if err != nil {
+			log.Fatalln(err)
+		}
+	} else if meta.Mime.Subtype == "png" {
+		// Get PNG Encoded Buffer
+		err := sonrFile.EncodePngBuffer(imgBuffer, meta)
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}
+
+	// Encode Buffer to base 64
+	imgBytes := imgBuffer.Bytes()
+	data := base64.StdEncoding.EncodeToString(imgBytes)
+	total := int32(len(data))
+
 	// Iterate for Entire file as String
 	for i, chunk := range sonrFile.ChunkBase64(data, B64ChunkSize) {
 		log.Println("Chunk Number: ", i)
