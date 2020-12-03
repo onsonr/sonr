@@ -58,7 +58,7 @@ func (lob *Lobby) handleEvents() {
 
 		// ** Refresh and Validate Lobby Peers Periodically ** //
 		case <-peerRefreshTicker.C:
-			lob.call.Refreshed(lob.Info())
+			lob.refresh(pb.CallbackType_REFRESHED, lob.Data)
 
 		case <-lob.ctx.Done():
 			return
@@ -114,5 +114,6 @@ func (lob *Lobby) updatePeer(peer *pb.Peer) {
 	lob.Data.Size = int32(len(lob.Data.Peers)) + 1 // Account for User
 
 	// Send Callback with updated peers
-	lob.call.Refreshed(lob.Info())
+	lob.refresh(pb.CallbackType_REFRESHED, lob.Data)
+	//lob.call.Refreshed(lob.Info())
 }

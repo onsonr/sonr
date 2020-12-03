@@ -28,6 +28,9 @@ type DataCallback struct {
 	Error      OnError
 }
 
+const B64ChunkSize = 31998 // Adjusted for Base64 -- has to be divisible by 3
+const BufferChunkSize = 32000
+
 // ^ Struct: Holds/Handles Stream for Authentication  ^ //
 type DataStreamConn struct {
 	// Properties
@@ -62,7 +65,7 @@ func (dsc *DataStreamConn) Transfer(ctx context.Context, sm *sonrFile.SafeFile) 
 	fmt.Println("Stream Info: ", info)
 
 	// Initialize Routine
-	go dsc.writeMessages(sm)
+	dsc.writeMessages(sm)
 }
 
 // ^ Handle Incoming Stream ^ //
@@ -131,38 +134,40 @@ func (dsc *DataStreamConn) readBlock(reader msgio.ReadCloser) {
 
 // ^ write file to Msgio ^ //
 func (dsc *DataStreamConn) writeMessages(sf *sonrFile.SafeFile) {
-	// Get Data
+	// Initialize Writer
 	writer := msgio.NewWriter(dsc.stream)
 
-	// Check Type for image
+	// @ Check Type
 	if sf.Mime.Type == pb.MIME_image {
 		// Retreive Base64 Value for Image File
 		b64, total := sf.Base64()
+		// Chunk in Goroutine
+		go func(writer msgio.WriteCloser, data string, total int32) {
+			// Iterate for Entire file as String
+			for i, chunk := range sonrFile.ChunkBase64(data, B64ChunkSize) {
+				// Create Block Protobuf from Chunk
+				chunk := pb.Chunk{
+					Size:    int32(len(chunk)),
+					B64:     chunk,
+					Current: int32(i),
+					Total:   total,
+				}
 
-		// Iterate for Entire file as String
-		for i, chunk := range ChunkBase64(b64) {
-			// Create Block Protobuf from Chunk
-			chunk := pb.Chunk{
-				Size:    int32(len(chunk)),
-				B64:     chunk,
-				Current: int32(i),
-				Total:   total,
-			}
+				// Convert to bytes
+				bytes, err := proto.Marshal(&chunk)
+				if err != nil {
+					dsc.Call.Error(err, "writeMessages-base64")
+					log.Fatalln(err)
+				}
 
-			// Convert to bytes
-			bytes, err := proto.Marshal(&chunk)
-			if err != nil {
-				dsc.Call.Error(err, "writeMessages-base64")
-				log.Fatalln(err)
+				// Write Message Bytes to Stream
+				err = writer.WriteMsg(bytes)
+				if err != nil {
+					dsc.Call.Error(err, "writeMessages-base64")
+					log.Fatalln(err)
+				}
 			}
-
-			// Write Message Bytes to Stream
-			err = writer.WriteMsg(bytes)
-			if err != nil {
-				dsc.Call.Error(err, "writeMessages-base64")
-				log.Fatalln(err)
-			}
-		}
+		}(writer, b64, total)
 	} else {
 		meta := sf.Metadata()
 

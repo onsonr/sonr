@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -52,27 +53,20 @@ func (asc *AuthStreamConn) HandleStream(stream network.Stream) {
 }
 
 // ^ Start New Stream ^ //
-func (asc *AuthStreamConn) Invite(ctx context.Context, h host.Host, id peer.ID, to *pb.Peer) error {
+func (asc *AuthStreamConn) Invite(ctx context.Context, h host.Host, id peer.ID, to *pb.Peer) {
 	// ** Set Peer ** //
 	asc.Peer = to
 
 	//@1. Create New Auth Stream
 	stream, err := h.NewStream(ctx, id, protocol.ID("/sonr/auth"))
 	if err != nil {
-		return err
+		asc.Call.Error(err, "read")
+		log.Fatalln(err)
 	}
 
 	// Set Stream
 	asc.stream = stream
 	asc.id = stream.ID()
-
-	// Print Stream Info
-	info := stream.Stat()
-	fmt.Println("Stream Info: ", info)
-
-	// Initialize Routine
-	mrw := msgio.NewReader(asc.stream)
-	go asc.read(mrw)
 
 	// @2. Create Invite Message
 	reqMsg := &pb.AuthMessage{
@@ -84,7 +78,8 @@ func (asc *AuthStreamConn) Invite(ctx context.Context, h host.Host, id peer.ID, 
 	// Convert to bytes
 	bytes, err := proto.Marshal(reqMsg)
 	if err != nil {
-		return err
+		asc.Call.Error(err, "read")
+		log.Fatalln(err)
 	}
 
 	// Initialize Writer
@@ -92,27 +87,28 @@ func (asc *AuthStreamConn) Invite(ctx context.Context, h host.Host, id peer.ID, 
 
 	// Add Msg to buffer
 	if err := writer.WriteMsg(bytes); err != nil {
-		return err
+		asc.Call.Error(err, "read")
+		log.Fatalln(err)
 	}
-	return nil
 }
 
 // ^ read Data from Msgio ^ //
-func (asc *AuthStreamConn) read(mrw msgio.ReadCloser) error {
+func (asc *AuthStreamConn) read(mrw msgio.ReadCloser) {
 	lengthBytes, err := mrw.ReadMsg()
 	if err != nil {
-		return err
+		asc.Call.Error(err, "read")
+		log.Fatalln(err)
 	}
 
 	// Unmarshal Bytes into Proto
 	protoMsg := &pb.AuthMessage{}
 	err = proto.Unmarshal(lengthBytes, protoMsg)
 	if err != nil {
-		return err
+		asc.Call.Error(err, "read")
+		log.Fatalln(err)
 	}
 
 	asc.handleMessage(protoMsg)
-	return nil
 }
 
 // ^ Handle Received Message ^ //

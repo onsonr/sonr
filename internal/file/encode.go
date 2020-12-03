@@ -58,6 +58,20 @@ func (sf *SafeFile) Base64() (string, int32) {
 	return result, int32(size)
 }
 
+// ^ Chunks string based on B64ChunkSize ^ //
+func ChunkBase64(s string, B64ChunkSize int) []string {
+	chunkSize := B64ChunkSize
+	ss := make([]string, 0, len(s)/chunkSize+1)
+	for len(s) > 0 {
+		if len(s) < chunkSize {
+			chunkSize = len(s)
+		}
+		// Create Current Chunk String
+		ss, s = append(ss, s[:chunkSize]), s[chunkSize:]
+	}
+	return ss
+}
+
 // ^ Helper: Encodes to Jpeg Image ^ //
 func getJpegBuffer(buf *bytes.Buffer, meta *pb.Metadata) error {
 	// Open File at Meta Path

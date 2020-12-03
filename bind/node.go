@@ -57,10 +57,7 @@ func (sn *Node) Invite(peerId string) {
 	}
 
 	// Initialize new AuthStream with Peer
-	err := sn.authStream.Invite(sn.ctx, sn.host, id, peer)
-	if err != nil {
-		sn.Error(err, "Invite")
-	}
+	sn.authStream.Invite(sn.ctx, sn.host, id, peer)
 }
 
 // ^ Respond to an Invitation ^ //
@@ -102,7 +99,7 @@ func (sn *Node) Transfer() {
 }
 
 // ^ Reset Current Queued File Metadata ^ //
-func (sn *Node) Reset() {
+func (sn *Node) ResetFile() {
 	// Reset Files Slice
 	sn.files = nil
 	sn.files = make([]*sf.SafeFile, maxFileBufferSize)

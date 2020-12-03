@@ -14,13 +14,13 @@ import (
 
 // ^ Callback Method with type ^
 func (sn *Node) Callback(call sonrModel.CallbackType, data proto.Message) {
-	// Convert Message to bytes
+	// ** Convert Message to bytes **
 	bytes, err := proto.Marshal(data)
 	if err != nil {
 		fmt.Println("Cannot Marshal Error Protobuf: ", err)
 	}
 
-	// Check Call Type
+	// ** Check Call Type **
 	switch call {
 	case sonrModel.CallbackType_REFRESHED:
 		sn.call.OnRefreshed(bytes)
@@ -35,7 +35,7 @@ func (sn *Node) Callback(call sonrModel.CallbackType, data proto.Message) {
 	}
 }
 
-// ^ Error Callback to Plugin with error  ^
+// ^ Error Callback with error instance, and method ^
 func (sn *Node) Error(err error, method string) {
 	// Create Error ProtoBuf
 	errorMsg := sonrModel.ErrorMessage{
@@ -48,12 +48,8 @@ func (sn *Node) Error(err error, method string) {
 	if err != nil {
 		fmt.Println("Cannot Marshal Error Protobuf: ", err)
 	}
-
-	// Check and callback
-	if sn.call != nil {
-		// Reference
-		sn.call.OnError(bytes)
-	}
+	// Send Callback
+	sn.call.OnError(bytes)
 
 	// Log In Core
 	log.Fatalln(fmt.Sprintf("[Error] At Method %s : %s", err.Error(), method))
