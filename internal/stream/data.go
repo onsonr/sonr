@@ -34,9 +34,9 @@ const BufferChunkSize = 32000
 // ^ Struct: Holds/Handles Stream for Authentication  ^ //
 type DataStreamConn struct {
 	// Properties
-	Call DataCallback
-	Host host.Host
-	File sonrFile.TransferFile
+	Call         DataCallback
+	Host         host.Host
+	TransferFile sonrFile.TransferFile
 
 	// Peer/Self Info
 	PeerID peer.ID
@@ -49,7 +49,7 @@ type DataStreamConn struct {
 }
 
 // ^ Start New Stream ^ //
-func (dsc *DataStreamConn) Transfer(ctx context.Context, sm *sonrFile.SafeFile) {
+func (dsc *DataStreamConn) Transfer(ctx context.Context, sf *sonrFile.SafeFile) {
 	// Create New Auth Stream
 	stream, err := dsc.Host.NewStream(ctx, dsc.PeerID, protocol.ID("/sonr/data"))
 	if err != nil {
@@ -64,8 +64,26 @@ func (dsc *DataStreamConn) Transfer(ctx context.Context, sm *sonrFile.SafeFile) 
 	info := stream.Stat()
 	fmt.Println("Stream Info: ", info)
 
-	// Initialize Routine
-	dsc.writeMessages(sm)
+	// Initialize Writer
+	writer := msgio.NewWriter(stream)
+
+	// @ Check Type
+	if sf.Mime.Type == pb.MIME_image {
+		// Get Data and Size
+		b64, total := sf.Base64()
+
+		// Start Routine
+		log.Println("Starting Base64 Write Routine")
+		go writeBase64ToStream(writer, b64, total)
+	} else {
+		// Get Metadata and Size
+		meta := sf.Metadata()
+		total := meta.Size
+
+		// Start Routine
+		log.Println("Starting Bytes Write Routine")
+		go writeBytesToStream(writer, meta, total)
+	}
 }
 
 // ^ Handle Incoming Stream ^ //
@@ -79,25 +97,23 @@ func (dsc *DataStreamConn) HandleStream(stream network.Stream) {
 	fmt.Println("Stream Info: ", info)
 
 	// Initialize Routine
-	reader := msgio.NewReader(dsc.stream)
-	go dsc.readBlock(reader)
+	reader := msgio.NewReader(stream)
+	go dsc.readFile(reader)
 }
 
 // ^ read Data from Msgio ^ //
-func (dsc *DataStreamConn) readBlock(reader msgio.ReadCloser) {
+func (dsc *DataStreamConn) readFile(reader msgio.ReadCloser) {
 	for i := 0; ; i++ {
 		// @ Read Length Fixed Bytes
 		buffer, err := reader.ReadMsg()
 		if err != nil {
-			dsc.Call.Error(err, "ReadMsg")
 			log.Fatalln(err)
 			break
 		}
 
 		// @ Add Buffer Data to File, Check for Completed
-		hasCompleted, progress, err := dsc.File.AddBuffer(buffer)
+		hasCompleted, progress, err := dsc.TransferFile.AddBuffer(buffer)
 		if err != nil {
-			dsc.Call.Error(err, "AddBuffer")
 			log.Fatalln(err)
 			break
 		}
@@ -105,9 +121,8 @@ func (dsc *DataStreamConn) readBlock(reader msgio.ReadCloser) {
 		// @ Check for Completed
 		if hasCompleted {
 			// Save The File
-			metadata, err := dsc.File.Save(dsc.Peer)
+			metadata, err := dsc.TransferFile.Save(dsc.Peer)
 			if err != nil {
-				dsc.Call.Error(err, "Save")
 				log.Fatalln(err)
 				break
 			}
@@ -115,7 +130,6 @@ func (dsc *DataStreamConn) readBlock(reader msgio.ReadCloser) {
 			// Convert to Bytes
 			bytes, err := proto.Marshal(metadata)
 			if err != nil {
-				dsc.Call.Error(err, "Completed")
 				log.Fatalln(err)
 				break
 			}
@@ -132,95 +146,78 @@ func (dsc *DataStreamConn) readBlock(reader msgio.ReadCloser) {
 	}
 }
 
-// ^ write file to Msgio ^ //
-func (dsc *DataStreamConn) writeMessages(sf *sonrFile.SafeFile) {
-	// Initialize Writer
-	writer := msgio.NewWriter(dsc.stream)
+// ^ write file as Base64 in Msgio to Stream ^ //
+func writeBase64ToStream(writer msgio.WriteCloser, data string, total int32) {
+	// Iterate for Entire file as String
+	for i, chunk := range sonrFile.ChunkBase64(data, B64ChunkSize) {
+		log.Println("Chunk Number: ", i)
+		// Create Block Protobuf from Chunk
+		chunk := pb.Chunk{
+			Size:    int32(len(chunk)),
+			B64:     chunk,
+			Current: int32(i),
+			Total:   total,
+		}
 
-	// @ Check Type
-	if sf.Mime.Type == pb.MIME_image {
-		// Retreive Base64 Value for Image File
-		b64, total := sf.Base64()
-		// Chunk in Goroutine
-		go func(writer msgio.WriteCloser, data string, total int32) {
-			// Iterate for Entire file as String
-			for i, chunk := range sonrFile.ChunkBase64(data, B64ChunkSize) {
-				// Create Block Protobuf from Chunk
-				chunk := pb.Chunk{
-					Size:    int32(len(chunk)),
-					B64:     chunk,
-					Current: int32(i),
-					Total:   total,
-				}
-
-				// Convert to bytes
-				bytes, err := proto.Marshal(&chunk)
-				if err != nil {
-					dsc.Call.Error(err, "writeMessages-base64")
-					log.Fatalln(err)
-				}
-
-				// Write Message Bytes to Stream
-				err = writer.WriteMsg(bytes)
-				if err != nil {
-					dsc.Call.Error(err, "writeMessages-base64")
-					log.Fatalln(err)
-				}
-			}
-		}(writer, b64, total)
-	} else {
-		meta := sf.Metadata()
-
-		// Return Given Size
-		total := meta.Size
-
-		// Open File
-		file, err := os.Open(meta.Path)
+		// Convert to bytes
+		bytes, err := proto.Marshal(&chunk)
 		if err != nil {
-			dsc.Call.Error(err, "writeMessages-buffer")
 			log.Fatalln(err)
 		}
-		defer file.Close()
 
-		// Set Chunk Variables
-		ps := make([]byte, BufferChunkSize)
+		// Write Message Bytes to Stream
+		err = writer.WriteMsg(bytes)
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}
+}
 
-		// Iterate file
-		for i := 0; ; i++ {
-			// Read Bytes
-			bytesread, err := file.Read(ps)
+// ^ write file as Bytes in Msgio to Stream ^ //
+func writeBytesToStream(writer msgio.WriteCloser, meta *pb.Metadata, total int32) {
+	// Open File
+	file, err := os.Open(meta.Path)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer file.Close()
 
-			// Check for Error
-			if err != nil {
-				// Non EOF Error
-				if err != io.EOF {
-					fmt.Println(err)
-				}
-				// File Complete
-				break
+	// Set Chunk Variables
+	ps := make([]byte, BufferChunkSize)
+
+	// Iterate file
+	for i := 0; ; i++ {
+		// Read Bytes
+		bytesread, err := file.Read(ps)
+
+		// Check for Error
+		if err != nil {
+			// Non EOF Error
+			if err != io.EOF {
+				fmt.Println(err)
 			}
+			// File Complete
+			break
+		}
 
-			// Create Block Protobuf from Chunk
-			chunk := pb.Chunk{
-				Size:    int32(len(ps[:bytesread])),
-				Buffer:  ps[:bytesread],
-				Current: int32(i),
-				Total:   total,
-			}
+		// Create Block Protobuf from Chunk
+		chunk := pb.Chunk{
+			Size:    int32(len(ps[:bytesread])),
+			Buffer:  ps[:bytesread],
+			Current: int32(i),
+			Total:   total,
+		}
 
-			// Convert to bytes
-			bytes, err := proto.Marshal(&chunk)
-			if err != nil {
-				dsc.Call.Error(err, "writeMessages-buffer")
-				log.Fatalln(err)
-			}
+		// Convert to bytes
+		bytes, err := proto.Marshal(&chunk)
+		if err != nil {
+			log.Fatalln(err)
+		}
 
-			// Write Message Bytes to Stream
-			err = writer.WriteMsg(bytes)
-			if err != nil {
-				dsc.Call.Error(err, "writeMessages-buffer")
-				log.Fatalln(err)
-			}
+		// Write Message Bytes to Stream
+		err = writer.WriteMsg(bytes)
+		if err != nil {
+			log.Fatalln(err)
 		}
 	}
 }

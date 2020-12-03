@@ -68,7 +68,7 @@ func (sn *Node) Respond(decision bool) {
 		sn.dataStream.PeerID, sn.dataStream.Peer = sn.lobby.Find(sn.authStream.Peer.Id)
 
 		// Allocate Space for File and Add as Ref to Datastream
-		sn.dataStream.File = sf.NewFile(sn.directories.Documents, sn.authStream.Metadata)
+		sn.dataStream.TransferFile = sf.NewFile(sn.directories.Documents, sn.authStream.Metadata)
 
 		// Send Accept Response Message
 		if err := sn.authStream.Accept(); err != nil {
