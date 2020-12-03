@@ -44,8 +44,8 @@ type Node struct {
 	files []*sonrFile.SafeFile
 
 	// References
-	call  Callback
-	lobby *lobby.Lobby
+	callbackRef Callback
+	lobby       *lobby.Lobby
 }
 
 // ^ NewNode Initializes Node with a host and default properties ^
@@ -53,34 +53,34 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	// ** Create Context and Node - Begin Setup **
 	node := new(Node)
 	node.ctx = context.Background()
-	node.call, node.files = call, make([]*sonrFile.SafeFile, maxFileBufferSize)
+	node.callbackRef, node.files = call, make([]*sonrFile.SafeFile, maxFileBufferSize)
 
 	// ** Unmarshal Request **
 	reqMsg := sonrModel.ConnectionRequest{}
 	err := proto.Unmarshal(reqBytes, &reqMsg)
 	if err != nil {
 		fmt.Println(err)
-		node.Error(err, "NewNode")
+		node.error(err, "NewNode")
 		return nil
 	}
 
 	// @1. Create Host and Set Stream Handlers
 	node.host, node.HostID, err = sonrHost.NewHost(node.ctx)
 	if err != nil {
-		node.Error(err, "NewNode")
+		node.error(err, "NewNode")
 		return nil
 	}
 	node.setStreams()
 
 	// @3. Set Node User Information
 	if err = node.setPeer(&reqMsg); err != nil {
-		node.Error(err, "NewNode")
+		node.error(err, "NewNode")
 		return nil
 	}
 
 	// @4. Setup Discovery w/ Lobby
 	if err = node.setDiscovery(node.ctx, &reqMsg); err != nil {
-		node.Error(err, "NewNode")
+		node.error(err, "NewNode")
 		return nil
 	}
 

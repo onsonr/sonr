@@ -12,8 +12,8 @@ import (
 // Class to handle Callbacks uses callback in Node
 // Marshals data and sends Callback
 
-// ^ Callback Method with type ^
-func (sn *Node) Callback(call sonrModel.CallbackType, data proto.Message) {
+// ^ callback Method with type ^
+func (sn *Node) callback(call sonrModel.CallbackType, data proto.Message) {
 	// ** Convert Message to bytes **
 	bytes, err := proto.Marshal(data)
 	if err != nil {
@@ -22,21 +22,30 @@ func (sn *Node) Callback(call sonrModel.CallbackType, data proto.Message) {
 
 	// ** Check Call Type **
 	switch call {
+	// @ Lobby Refreshed
 	case sonrModel.CallbackType_REFRESHED:
-		sn.call.OnRefreshed(bytes)
+		sn.callbackRef.OnRefreshed(bytes)
+
+	// @ File has Queued
 	case sonrModel.CallbackType_QUEUED:
-		sn.call.OnQueued(bytes)
+		sn.callbackRef.OnQueued(bytes)
+
+	// @ Peer has been Invited
 	case sonrModel.CallbackType_INVITED:
-		sn.call.OnQueued(bytes)
+		sn.callbackRef.OnInvited(bytes)
+
+	// @ Peer has Responded
 	case sonrModel.CallbackType_RESPONDED:
-		sn.call.OnResponded(bytes)
+		sn.callbackRef.OnResponded(bytes)
+
+	// @ Transfer has Completed
 	case sonrModel.CallbackType_COMPLETED:
-		sn.call.OnQueued(bytes)
+		sn.callbackRef.OnCompleted(bytes)
 	}
 }
 
-// ^ Error Callback with error instance, and method ^
-func (sn *Node) Error(err error, method string) {
+// ^ error Callback with error instance, and method ^
+func (sn *Node) error(err error, method string) {
 	// Create Error ProtoBuf
 	errorMsg := sonrModel.ErrorMessage{
 		Message: err.Error(),
@@ -49,7 +58,7 @@ func (sn *Node) Error(err error, method string) {
 		fmt.Println("Cannot Marshal Error Protobuf: ", err)
 	}
 	// Send Callback
-	sn.call.OnError(bytes)
+	sn.callbackRef.OnError(bytes)
 
 	// Log In Core
 	log.Fatalln(fmt.Sprintf("[Error] At Method %s : %s", err.Error(), method))

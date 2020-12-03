@@ -30,14 +30,14 @@ func (sn *Node) Update(direction float64) {
 	// Inform Lobby
 	err := sn.lobby.Update(sn.Peer)
 	if err != nil {
-		sn.Error(err, "Update")
+		sn.error(err, "Update")
 	}
 }
 
 // ^ AddFile adds generates metadata and thumbnail from filepath to Process for Transfer, returns key ^ //
 func (sn *Node) AddFile(path string) {
 	//@2. Initialize SafeFile
-	safeMeta := sf.NewMetadata(path, sn.call.OnQueued, sn.call.OnProgress, sn.Error)
+	safeMeta := sf.NewMetadata(path, sn.callbackRef.OnQueued, sn.callbackRef.OnProgress, sn.error)
 	sn.files = append(sn.files, safeMeta)
 }
 
@@ -53,7 +53,7 @@ func (sn *Node) Invite(peerId string) {
 	// Find PeerID and Peer Struct
 	id, peer := sn.lobby.Find(peerId)
 	if peer == nil {
-		sn.Error(errors.New("Search Error, peer was not found in map."), "Invite")
+		sn.error(errors.New("Search Error, peer was not found in map."), "Invite")
 	}
 
 	// Initialize new AuthStream with Peer
@@ -72,12 +72,12 @@ func (sn *Node) Respond(decision bool) {
 
 		// Send Accept Response Message
 		if err := sn.authStream.Accept(); err != nil {
-			sn.Error(err, "Respond")
+			sn.error(err, "Respond")
 		}
 	} else {
 		// Send Decline Response Message
 		if err := sn.authStream.Decline(); err != nil {
-			sn.Error(err, "Respond")
+			sn.error(err, "Respond")
 		}
 	}
 }

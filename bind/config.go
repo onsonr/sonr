@@ -28,7 +28,7 @@ func (sn *Node) setDiscovery(ctx context.Context, connEvent *sonrModel.Connectio
 	fmt.Println("GossipSub Created")
 
 	// Enter Lobby
-	if sn.lobby, err = lobby.Enter(ctx, sn.Callback, sn.Error, ps, sn.host.ID(), connEvent.Olc); err != nil {
+	if sn.lobby, err = lobby.Enter(ctx, sn.callback, sn.error, ps, sn.host.ID(), connEvent.Olc); err != nil {
 		return err
 	}
 	fmt.Println("Lobby Entered")
@@ -66,16 +66,16 @@ func (sn *Node) setPeer(connEvent *sonrModel.ConnectionRequest) error {
 func (sn *Node) setStreams() {
 	// Assign Callbacks from Node to Auth Stream
 	sn.authStream.Call = sonrStream.AuthCallback{
-		Invited:   sn.call.OnInvited,
-		Responded: sn.call.OnResponded,
-		Error:     sn.Error,
+		Invited:   sn.callbackRef.OnInvited,
+		Responded: sn.callbackRef.OnResponded,
+		Error:     sn.error,
 	}
 
 	// Assign Callbacks from Node to Data Stream
 	sn.dataStream.Call = sonrStream.DataCallback{
-		Progressed: sn.call.OnProgress,
-		Completed:  sn.call.OnCompleted,
-		Error:      sn.Error,
+		Progressed: sn.callbackRef.OnProgress,
+		Completed:  sn.callbackRef.OnCompleted,
+		Error:      sn.error,
 	}
 
 	// Set Handlers
