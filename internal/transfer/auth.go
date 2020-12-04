@@ -2,12 +2,12 @@ package transfer
 
 import (
 	"context"
+	"errors"
 	"log"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-core/protocol"
-	gorpc "github.com/libp2p/go-libp2p-gorpc"
+	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -28,139 +28,138 @@ type AuthReply struct {
 }
 
 // Service Struct
-type AuthService struct {
+type Authorization struct {
 	// Current Data
 	currArgs  AuthArgs
 	currReply *AuthReply
+	invited   OnProtobuf
+	responded OnProtobuf
 	peerConn  *PeerConnection
 }
 
 // ^ Calls Invite on Remote Peer ^ //
-func (as *AuthService) Invite(ctx context.Context, args AuthArgs, reply *AuthReply) error {
+func (as *Authorization) Invite(ctx context.Context, args AuthArgs, reply *AuthReply) error {
 	log.Println("Received a Invite call: ", args.Data)
-	// Process Message
-	err := as.processInvite(args, reply)
-	if err != nil {
-		onError(err, "process")
-		panic(err)
-	}
-	return nil
-}
-
-// ^ Processes Accept Event ^ //
-func (as *AuthService) processInvite(args AuthArgs, reply *AuthReply) error {
 	// Set Current Data
 	as.currArgs = args
 	as.currReply = reply
 
-	// Set Current Message
-	err := proto.Unmarshal(args.Data, as.peerConn.currMessage)
-	if err != nil {
-		return err
-	}
-
 	// Set Peer ID
 	as.peerConn.peerID = as.peerConn.Find(args.From)
 
-	// Send Callback
-	as.peerConn.invitedCall(args.Data)
-	return nil
-}
-
-// ********************* //
-// ** Method Handling ** //
-// ********************* //
-// Handler Struct
-type Authorization struct {
-	rpcClient   *gorpc.Client
-	rpcServer   *gorpc.Server
-	authService AuthService
-	peerConn    *PeerConnection
-}
-
-// ^ Set Sender as Server ^ //
-func NewAuthRPC(pc *PeerConnection) *Authorization {
-	log.Println("Creating New Auth Handler")
-	// Create Server Client
-	rpcServer := gorpc.NewServer(pc.host, protocol.ID("/sonr/rpc/auth"))
-	rpcClient := gorpc.NewClientWithServer(pc.host, protocol.ID("/sonr/rpc/auth"), rpcServer)
-
-	// Create Service
-	svc := AuthService{
-		peerConn: pc,
-	}
-
-	// Register Service
-	err := rpcServer.Register(&svc)
+	// Set Current Message
+	err := proto.Unmarshal(args.Data, as.peerConn.currMessage)
 	if err != nil {
-		log.Println(err)
-		panic(err)
-	}
-
-	return &Authorization{
-		// Rpc Properties
-		rpcServer:   rpcServer,
-		rpcClient:   rpcClient,
-		authService: svc,
-		peerConn:    pc,
-	}
-}
-
-// ^ Send Authorization Invite to Peer ^ //
-func (ah *Authorization) sendInvite(id peer.ID, authMsg *md.AuthMessage) error {
-	// Convert Protobuf to bytes
-	msgBytes, err := proto.Marshal(authMsg)
-	if err != nil {
+		onError(err, "process")
 		return err
 	}
 
-	// Initialize Vars
-	var reply AuthReply
-	args := AuthArgs{
-		Data: msgBytes,
+	// Send Callback
+	as.invited(args.Data)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// ^ Send SendInvite to a Peer ^ //
+func (pc *PeerConnection) SendInvite(id peer.ID, info *md.Peer, sm *sf.SafeMetadata) {
+	// Set SafeFile
+	pc.safeFile = sm
+
+	// Create Invite Message
+	reqMsg := &md.AuthMessage{
+		Event:    md.AuthMessage_REQUEST,
+		From:     info,
+		Metadata: sm.GetMetadata(),
 	}
 
-	// Set Data
-	startTime := time.Now()
-
-	// Call to Peer
-	err = ah.rpcClient.Call(id, "AuthService", "Invite", args, &reply)
+	// Convert Protobuf to bytes
+	msgBytes, err := proto.Marshal(reqMsg)
 	if err != nil {
 		onError(err, "sendInvite")
-		log.Fatalln(err)
+		log.Println(err)
 	}
 
-	// End Tracking
-	endTime := time.Now()
-	diff := endTime.Sub(startTime)
-	log.Printf("Auth from %s: time=%s\n", id, diff)
+	// Send GRPC Call
+	go func(id peer.ID, data []byte) {
+		// Initialize Vars
+		var reply AuthReply
+		var args AuthArgs
+		args.Data = msgBytes
 
-	// Send Callback and Reset
-	ah.peerConn.respondedCall(reply.Data)
+		// Set Data
+		startTime := time.Now()
 
-	// Handle Response
-	if reply.Decision {
-		// Send Callback and Start Transfer
-		ah.peerConn.respondedCall(args.Data)
-		ah.peerConn.StartTransfer()
-	} else {
-		// Send Callback and Reset Auth
-		ah.peerConn.respondedCall(args.Data)
-	}
+		// Call to Peer
+		err = pc.rpcClient.Call(id, "Authorization", "Invite", args, &reply)
 
-	return nil
+		if err != nil {
+			onError(err, "sendInvite")
+			log.Panicln(err)
+		}
+
+		// End Tracking
+		endTime := time.Now()
+		diff := endTime.Sub(startTime)
+		log.Printf("Auth from %s: time=%s\n", id, diff)
+
+		// Send Callback and Reset
+		pc.respondedCall(reply.Data)
+
+		// Handle Response
+		if reply.Decision {
+			// Begin Transfer
+			pc.SendFile()
+		}
+	}(id, msgBytes)
 }
 
-// ^ Respond to Authorization Invite to Peer ^ //
-func (ah *Authorization) sendResponse(d bool, authMsg *md.AuthMessage) error {
-	// Convert Protobuf to bytes
-	msgBytes, err := proto.Marshal(authMsg)
-	if err != nil {
-		return err
+// ^ Send Accept Message on Stream ^ //
+func (pc *PeerConnection) SendResponse(decision bool, selfInfo *md.Peer) {
+	// Initialize Message
+	var respMsg *md.AuthMessage
+
+	// Check Decision
+	if decision {
+		if pc.currMessage != nil {
+			// Initialize Transfer
+			savePath := "/" + pc.currMessage.Metadata.Name + "." + pc.currMessage.Metadata.Mime.Subtype
+			pc.transfer = NewTransfer(savePath, pc.currMessage.Metadata, pc.currMessage.From, pc.progressCall, pc.completedCall)
+
+			// Create Accept Response
+			respMsg = &md.AuthMessage{
+				From:  selfInfo,
+				Event: md.AuthMessage_ACCEPT,
+			}
+		} else {
+			err := errors.New("AuthMessage wasnt cached")
+			onError(err, "sendInvite")
+			log.Panicln(err)
+		}
+	} else {
+		// Reset Peer Info
+		pc.peerID = ""
+		pc.currMessage = nil
+
+		// Create Decline Response
+		respMsg = &md.AuthMessage{
+			From:  selfInfo,
+			Event: md.AuthMessage_DECLINE,
+		}
 	}
 
-	// Send Reply
-	ah.authService.currReply.Data = msgBytes
-	ah.authService.currReply.Decision = d
-	return nil
+	// Convert Protobuf to bytes
+	msgBytes, err := proto.Marshal(respMsg)
+	if err != nil {
+		onError(err, "sendInvite")
+		log.Println(err)
+	}
+
+	// Send GRPC Call
+	go func(d bool, msgBytes []byte) {
+		// Send Reply
+		pc.ascv.currReply.Data = msgBytes
+		pc.ascv.currReply.Decision = d
+	}(decision, msgBytes)
 }

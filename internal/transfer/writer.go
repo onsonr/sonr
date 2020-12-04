@@ -2,14 +2,15 @@ package transfer
 
 import (
 	"bytes"
+	"context"
 	"encoding/base64"
-	"fmt"
 	"io"
 	"log"
 	"os"
 
 	md "github.com/sonr-io/core/internal/models"
 
+	"github.com/libp2p/go-libp2p-core/protocol"
 	msgio "github.com/libp2p/go-msgio"
 	"google.golang.org/protobuf/proto"
 )
@@ -18,18 +19,31 @@ import (
 const B64ChunkSize = 31998 // Adjusted for Base64 -- has to be divisible by 3
 const BufferChunkSize = 32000
 
-// ^ Chunks string based on B64ChunkSize ^ //
-func chunkBase64(s string, B64ChunkSize int) []string {
-	chunkSize := B64ChunkSize
-	ss := make([]string, 0, len(s)/chunkSize+1)
-	for len(s) > 0 {
-		if len(s) < chunkSize {
-			chunkSize = len(s)
-		}
-		// Create Current Chunk String
-		ss, s = append(ss, s[:chunkSize]), s[chunkSize:]
+// ^ User has accepted, Begin Sending Transfer ^ //
+func (pc *PeerConnection) SendFile() {
+	// Create New Auth Stream
+	stream, err := pc.host.NewStream(context.Background(), pc.peerID, protocol.ID("/sonr/data/transfer"))
+	if err != nil {
+		onError(err, "Transfer")
+		log.Fatalln(err)
 	}
-	return ss
+
+	// Initialize Writer
+	writer := msgio.NewWriter(stream)
+	meta := pc.safeFile.GetMetadata()
+
+	// @ Check Type
+	if pc.safeFile.Mime.Type == md.MIME_image {
+		// Start Routine
+		log.Println("Starting Base64 Write Routine")
+		go writeBase64ToStream(writer, meta)
+	} else {
+		total := meta.Size
+
+		// Start Routine
+		log.Println("Starting Bytes Write Routine")
+		go writeBytesToStream(writer, meta, total)
+	}
 }
 
 // ^ write file as Base64 in Msgio to Stream ^ //
@@ -82,6 +96,20 @@ func writeBase64ToStream(writer msgio.WriteCloser, meta *md.Metadata) {
 	}
 }
 
+// ^ Helper Method: Chunks string based on B64ChunkSize ^ //
+func chunkBase64(s string, B64ChunkSize int) []string {
+	chunkSize := B64ChunkSize
+	ss := make([]string, 0, len(s)/chunkSize+1)
+	for len(s) > 0 {
+		if len(s) < chunkSize {
+			chunkSize = len(s)
+		}
+		// Create Current Chunk String
+		ss, s = append(ss, s[:chunkSize]), s[chunkSize:]
+	}
+	return ss
+}
+
 // ^ write file as Bytes in Msgio to Stream ^ //
 func writeBytesToStream(writer msgio.WriteCloser, meta *md.Metadata, total int32) {
 	// Open File
@@ -103,7 +131,7 @@ func writeBytesToStream(writer msgio.WriteCloser, meta *md.Metadata, total int32
 		if err != nil {
 			// Non EOF Error
 			if err != io.EOF {
-				fmt.Println(err)
+				log.Println(err)
 			}
 			// File Complete
 			break

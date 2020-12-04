@@ -2,7 +2,7 @@ package file
 
 import (
 	"bytes"
-	"fmt"
+	"log"
 	"image"
 	"image/jpeg"
 	"math"
@@ -15,19 +15,20 @@ import (
 const MAX_WIDTH float64 = 320
 const MAX_HEIGHT float64 = 240
 
-func NewThumbnail(path string) ([]byte, error) {
+// ^ Method to generate thumbnail for File Path ^ //
+func newThumbnail(path string) ([]byte, error) {
 	// New File for ThumbNail
 	thumbBuffer := new(bytes.Buffer)
 	file, err := os.Open(path)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return nil, err
 	}
 
 	// Convert to Image Object
 	img, _, err := image.Decode(file)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return nil, err
 	}
 
@@ -35,23 +36,21 @@ func NewThumbnail(path string) ([]byte, error) {
 	b := img.Bounds()
 	width := b.Max.X
 	height := b.Max.Y
-	fmt.Println("width = ", width, " height = ", height)
 
 	// Calculate Fit
 	newWidth, newHeight := calculateRatioFit(width, height)
-	fmt.Println("w = ", newWidth, " h = ", newHeight)
-
-	// Call the resize library for image scaling
 	scaledImage := resize.Resize(uint(newWidth), uint(newHeight), img, resize.Lanczos3)
 
 	// Encode as Jpeg into buffer
 	err = jpeg.Encode(thumbBuffer, scaledImage, nil)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return nil, err
 	}
+
+	// Close File
 	file.Close()
-	fmt.Println("Thumbnail created")
+	log.Println("Thumbnail created")
 	return thumbBuffer.Bytes(), nil
 }
 

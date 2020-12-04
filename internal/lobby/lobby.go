@@ -2,7 +2,7 @@ package lobby
 
 import (
 	"context"
-	"fmt"
+	"log"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
@@ -36,8 +36,8 @@ type Lobby struct {
 	sub     *pubsub.Subscription
 }
 
-// ^ Enter Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
-func Enter(ctx context.Context, callr Refreshed, onErr Error, ps *pubsub.PubSub, id peer.ID, olc string) (*Lobby, error) {
+// ^ Initialize Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
+func Initialize(ctx context.Context, callr Refreshed, onErr Error, ps *pubsub.PubSub, id peer.ID, olc string) (*Lobby, error) {
 	// Join the pubsub Topic
 	topic, err := ps.Join(olc)
 	if err != nil {
@@ -83,7 +83,7 @@ func (lob *Lobby) Info() []byte {
 	// Convert to bytes
 	data, err := proto.Marshal(lob.Data)
 	if err != nil {
-		fmt.Println("Error Marshaling Lobby Data ", err)
+		log.Println("Error Marshaling Lobby Data ", err)
 		return nil
 	}
 	return data

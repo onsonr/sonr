@@ -2,7 +2,7 @@ package sonr
 
 import (
 	"errors"
-	"fmt"
+	"log"
 	"math"
 	"time"
 
@@ -13,9 +13,9 @@ import (
 // ^ Info returns ALL Peer Data as Bytes^
 func (sn *Node) Info() []byte {
 	// Convert to bytes to view in plugin
-	data, err := proto.Marshal(sn.Peer)
+	data, err := proto.Marshal(sn.peer)
 	if err != nil {
-		fmt.Println("Error Marshaling Lobby Data ", err)
+		log.Println("Error Marshaling Lobby Data ", err)
 		return nil
 	}
 	return data
@@ -25,10 +25,10 @@ func (sn *Node) Info() []byte {
 func (sn *Node) Update(direction float64) {
 	// ** Initialize ** //
 	// Update User Values
-	sn.Peer.Direction = math.Round(direction*100) / 100
+	sn.peer.Direction = math.Round(direction*100) / 100
 
 	// Inform Lobby
-	err := sn.lobby.Update(sn.Peer)
+	err := sn.lobby.Update(sn.peer)
 	if err != nil {
 		sn.error(err, "Update")
 	}
@@ -37,7 +37,7 @@ func (sn *Node) Update(direction float64) {
 // ^ AddFile adds generates metadata and thumbnail from filepath to Process for Transfer, returns key ^ //
 func (sn *Node) AddFile(path string) {
 	//@2. Initialize SafeFile
-	safeMeta := sf.NewMetadata(path, sn.callbackRef.OnQueued, sn.callbackRef.OnProgress, sn.error)
+	safeMeta := sf.NewMetadata(path, sn.callbackRef.OnQueued, sn.error)
 	sn.files = append(sn.files, safeMeta)
 }
 
@@ -48,7 +48,6 @@ func (sn *Node) Invite(peerId string) {
 
 	// Set Metadata in Auth Stream
 	currFile := sn.currentFile()
-	sn.authStream.Metadata = currFile.Metadata()
 
 	// Find PeerID and Peer Struct
 	id, peer := sn.lobby.Find(peerId)
@@ -57,52 +56,20 @@ func (sn *Node) Invite(peerId string) {
 	}
 
 	// Initialize new AuthStream with Peer
-	sn.authStream.Invite(sn.ctx, sn.host, id, peer)
+	sn.peerConn.SendInvite(id, peer, currFile)
 }
 
 // ^ Respond to an Invitation ^ //
 func (sn *Node) Respond(decision bool) {
-	// Check Respons
-	if decision {
-		// Retreive Peer Data
-		sn.dataStream.PeerID, sn.dataStream.Peer = sn.lobby.Find(sn.authStream.Peer.Id)
-
-		// Allocate Space for File and Add as Ref to Datastream
-		sn.dataStream.TransferFile = sf.NewFile(sn.directories.Documents, sn.authStream.Metadata)
-
-		// Send Accept Response Message
-		if err := sn.authStream.Accept(); err != nil {
-			sn.error(err, "Respond")
-		}
-	} else {
-		// Send Decline Response Message
-		if err := sn.authStream.Decline(); err != nil {
-			sn.error(err, "Respond")
-		}
-	}
-}
-
-// ^ Begin the File transfer ^ //
-func (sn *Node) Transfer() {
-	// Retreive Peer Data
-	id, peer := sn.lobby.Find(sn.authStream.Peer.Id)
-
-	// Set Peer Data in Datastream
-	sn.dataStream.PeerID = id
-	sn.dataStream.Peer = peer
-
-	// Initialize Data
-	safeFile := sn.currentFile()
-
-	// Create Transfer Stream
-	sn.dataStream.Transfer(sn.ctx, safeFile)
+	// Send Response on PeerConnection
+	sn.peerConn.SendResponse(decision, sn.peer)
 }
 
 // ^ Reset Current Queued File Metadata ^ //
 func (sn *Node) ResetFile() {
 	// Reset Files Slice
 	sn.files = nil
-	sn.files = make([]*sf.SafeFile, maxFileBufferSize)
+	sn.files = make([]*sf.SafeMetadata, maxFileBufferSize)
 }
 
 // ^ Close Ends All Network Communication ^

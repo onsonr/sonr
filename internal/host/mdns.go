@@ -2,7 +2,7 @@ package host
 
 import (
 	"context"
-	"fmt"
+	"log"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/host"
@@ -10,19 +10,19 @@ import (
 	"github.com/libp2p/go-libp2p/p2p/discovery"
 )
 
-// discoveryInterval is how often we re-publish our mDNS records.
+// @ discoveryInterval is how often we re-publish our mDNS records.
 const discoveryInterval = time.Second
 
-// discoveryServiceTag is used in our mDNS advertisements to discover other chat peers.
+// @ discoveryServiceTag is used in our mDNS advertisements to discover other chat peers.
 const discoveryServiceTag = "sonr-mdns"
 
-// discoveryNotifee gets notified when we find a new peer via mDNS discovery
+// @ discoveryNotifee gets notified when we find a new peer via mDNS discovery ^
 type discoveryNotifee struct {
 	h host.Host
 }
 
-// initMDNSDiscovery creates an mDNS discovery service and attaches it to the libp2p Host.
-func initMDNSDiscovery(ctx context.Context, h host.Host) error {
+// ^ startMDNS creates an mDNS discovery service and attaches it to the libp2p Host. ^
+func startMDNS(ctx context.Context, h host.Host) error {
 	// setup mDNS discovery to find local peers
 	disc, err := discovery.NewMdnsService(ctx, h, discoveryInterval, discoveryServiceTag)
 	if err != nil {
@@ -42,6 +42,6 @@ func (n *discoveryNotifee) HandlePeerFound(pi peer.AddrInfo) {
 
 	// Log Error
 	if err != nil {
-		fmt.Printf("error connecting to peer %s: %s\n", pi.ID.Pretty(), err)
+		log.Printf("error connecting to peer %s: %s\n", pi.ID.Pretty(), err)
 	}
 }

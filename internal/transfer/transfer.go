@@ -3,7 +3,6 @@ package transfer
 import (
 	"bytes"
 	"encoding/base64"
-	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -32,26 +31,6 @@ type Transfer struct {
 	// Tracking
 	count int
 	size  int
-}
-
-// ^ Create new SonrFile struct with meta and documents directory ^ //
-func NewTransfer(savePath string, meta *md.Metadata, own *md.Peer, op OnProgress, oc OnProtobuf) *Transfer {
-	return &Transfer{
-		// Inherited Properties
-		metadata:   meta,
-		path:       savePath,
-		owner:      own,
-		onProgress: op,
-		onComplete: oc,
-
-		// Builders
-		stringsBuilder: new(strings.Builder),
-		bytesBuilder:   new(bytes.Buffer),
-
-		// Tracking
-		count: 0,
-		size:  0,
-	}
 }
 
 // ^ Check file type and use corresponding method ^ //
@@ -151,7 +130,7 @@ func (t *Transfer) Save() {
 	// Get Info
 	info, err := f.Stat()
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
 	// @ 3. Callback saved Metadata
@@ -168,7 +147,7 @@ func (t *Transfer) Save() {
 	// Convert Message to bytes
 	bytes, err := proto.Marshal(saved)
 	if err != nil {
-		fmt.Println("Cannot Marshal Error Protobuf: ", err)
+		log.Println("Cannot Marshal Error Protobuf: ", err)
 	}
 
 	// Send Complete Callback

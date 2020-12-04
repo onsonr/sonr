@@ -7,8 +7,6 @@ import (
 	"strings"
 	"sync"
 
-	"fmt"
-
 	"github.com/h2non/filetype"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
@@ -16,22 +14,15 @@ import (
 
 // Define Function Types
 type OnProtobuf func(data []byte)
-type OnProgress func(data float32)
 type OnError func(err error, method string)
 
-// Define Block Size
-const BlockSize = 16000
-
-// Struct to Implement Node Callback Methods
-type FileCallback struct {
-}
+// Package Error Callback
+var onError OnError
 
 // ^ File that safely sets metadata and thumbnail in routine ^ //
-type SafeFile struct {
+type SafeMetadata struct {
 	// Callbacks
-	CallQueued   OnProtobuf
-	CallProgress OnProgress
-	CallError    OnError
+	CallQueued OnProtobuf
 
 	// Public Properties
 	Mime *md.MIME
@@ -43,24 +34,25 @@ type SafeFile struct {
 }
 
 // ^ Create generates file metadata ^ //
-func NewMetadata(filePath string, queueCall OnProtobuf, progCall OnProgress, errCall OnError) *SafeFile {
+func NewMetadata(filePath string, queueCall OnProtobuf, errCall OnError) *SafeMetadata {
+	// Set Package Level Callbacks
+	onError = errCall
+
 	// Create new SafeFile
-	sf := &SafeFile{
-		CallQueued:   queueCall,
-		CallProgress: progCall,
-		CallError:    errCall,
-		path:         filePath,
+	sm := &SafeMetadata{
+		CallQueued: queueCall,
+		path:       filePath,
 	}
 
 	// ** Lock ** //
-	sf.mutex.Lock()
+	sm.mutex.Lock()
 
 	// @ 1. Get File Information
 	// Open File at Path
-	file, err := os.Open(sf.path)
+	file, err := os.Open(sm.path)
 	if err != nil {
 		log.Fatalln(err)
-		sf.CallError(err, "AddFile")
+		onError(err, "AddFile")
 	}
 	defer file.Close()
 
@@ -68,7 +60,7 @@ func NewMetadata(filePath string, queueCall OnProtobuf, progCall OnProgress, err
 	info, err := file.Stat()
 	if err != nil {
 		log.Fatalln(err)
-		sf.CallError(err, "AddFile")
+		onError(err, "AddFile")
 	}
 
 	// Read File to required bytes
@@ -76,21 +68,22 @@ func NewMetadata(filePath string, queueCall OnProtobuf, progCall OnProgress, err
 	_, err = file.Read(head)
 	if err != nil {
 		log.Fatalln(err)
-		sf.CallError(err, "AddFile")
+		onError(err, "AddFile")
 	}
 
 	// Get File Type
 	kind, err := filetype.Match(head)
 	if err != nil {
 		log.Fatalln(err)
-		sf.CallError(err, "AddFile")
+		onError(err, "AddFile")
 	}
 
 	// @ 2. Set Metadata Protobuf Values
 	// Set Metadata
-	sf.meta = md.Metadata{
-		Name: getFileName(sf.path),
-		Path: sf.path,
+	base := filepath.Base(sm.path)
+	sm.meta = md.Metadata{
+		Name: strings.TrimSuffix(base, filepath.Ext(sm.path)),
+		Path: sm.path,
 		Size: int32(info.Size()),
 		Mime: &md.MIME{
 			Type:    md.MIME_Type(md.MIME_Type_value[kind.MIME.Type]),
@@ -100,52 +93,45 @@ func NewMetadata(filePath string, queueCall OnProtobuf, progCall OnProgress, err
 	}
 
 	// Set Mime
-	sf.Mime = sf.meta.Mime
+	sm.Mime = sm.meta.Mime
 
 	// @ 3. Create Thumbnail in Goroutine
-	go func(sf *SafeFile) {
+	go func(sm *SafeMetadata) {
 		if filetype.IsImage(head) {
 			// New File for ThumbNail
-			thumbBytes, err := NewThumbnail(sf.path)
+			thumbBytes, err := newThumbnail(sm.path)
 			if err != nil {
-				fmt.Println(err)
-				sf.CallError(err, "AddFile")
+				log.Fatalln(err)
+				onError(err, "AddFile")
 			}
 			// Update Metadata Value
-			sf.meta.Thumbnail = thumbBytes
+			sm.meta.Thumbnail = thumbBytes
 		}
 
 		// ** Unlock ** //
-		sf.mutex.Unlock()
+		sm.mutex.Unlock()
 
 		// Get Metadata
-		meta := sf.Metadata()
+		meta := sm.GetMetadata()
 
 		// Convert to bytes
 		data, err := proto.Marshal(meta)
 		if err != nil {
-			fmt.Println("Error Marshaling Metadata ", err)
+			log.Println("Error Marshaling Metadata ", err)
 		}
 
 		// Callback with Metadata
-		sf.CallQueued(data)
-	}(sf)
-	return sf
+		sm.CallQueued(data)
+	}(sm)
+	return sm
 }
 
 // ^ Safely returns metadata depending on lock ^ //
-func (sf *SafeFile) Metadata() *md.Metadata {
+func (sm *SafeMetadata) GetMetadata() *md.Metadata {
 	// ** Lock File wait for access ** //
-	sf.mutex.Lock()
-	defer sf.mutex.Unlock()
+	sm.mutex.Lock()
+	defer sm.mutex.Unlock()
 
 	// @ 2. Return Value
-	return &sf.meta
-}
-
-// ^ Helper: Get File name from Path ^ //
-func getFileName(path string) string {
-	// Get File Name
-	base := filepath.Base(path)
-	return strings.TrimSuffix(base, filepath.Ext(path))
+	return &sm.meta
 }
