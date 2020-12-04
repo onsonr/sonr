@@ -1,7 +1,6 @@
 package lobby
 
 import (
-	"errors"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -78,9 +77,6 @@ func (lob *Lobby) ID(q string) peer.ID {
 			return id
 		}
 	}
-	// Log Error
-	err := errors.New("Error QueryId was not found in PubSub topic")
-	lob.onError(err, "ID")
 	return ""
 }
 

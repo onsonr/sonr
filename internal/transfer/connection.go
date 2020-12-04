@@ -29,11 +29,8 @@ var onError OnError
 // ^ Struct: Holds/Handles GRPC Calls and Handles Data Stream  ^ //
 type PeerConnection struct {
 	// Connection
-	host      host.Host
-	pubSub    *pubsub.PubSub
-	rpcClient *gorpc.Client
-	rpcServer *gorpc.Server
-	ascv      Authorization
+	pubSub *pubsub.PubSub
+	ascv   *AuthService
 
 	// Data Handlers
 	safeFile *sf.SafeMetadata
@@ -53,44 +50,37 @@ type PeerConnection struct {
 }
 
 // ^ Initialize sets up new Peer Connection handler ^
-func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic OnProtobuf, rc OnProtobuf, pc OnProgress, cc OnProtobuf, ec OnError) (PeerConnection, error) {
+func (peerConn *PeerConnection) Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic OnProtobuf, rc OnProtobuf, pc OnProgress, cc OnProtobuf, ec OnError) error {
 	// Set Package Level Callbacks
 	onError = ec
 
 	// Initialize Parameters into PeerConnection
-	peerConn := PeerConnection{
-		// Connection
-		host:   h,
-		pubSub: ps,
+	peerConn.pubSub = ps
+	peerConn.olc = o
+	peerConn.dirs = d
+	peerConn.invitedCall = ic
+	peerConn.respondedCall = rc
+	peerConn.progressCall = pc
+	peerConn.completedCall = cc
 
-		// Info
-		olc:  o,
-		dirs: d,
+	// Create GRPC Client/Server and Set Data Stream Handler
+	h.SetStreamHandler(protocol.ID("/sonr/data/transfer"), peerConn.HandleTransfer)
+	rpcServer := gorpc.NewServer(h, protocol.ID("/sonr/rpc/auth"))
 
-		// Callbacks
-		invitedCall:   ic,
-		respondedCall: rc,
-		progressCall:  pc,
-		completedCall: cc,
-	}
-
-	// Create Server/Client/Service
-	peerConn.rpcServer = gorpc.NewServer(peerConn.host, protocol.ID("/sonr/rpc/auth"))
-	peerConn.rpcClient = gorpc.NewClientWithServer(peerConn.host, protocol.ID("/sonr/rpc/auth"), peerConn.rpcServer)
-	peerConn.ascv = Authorization{
-		peerConn: &peerConn,
-	}
+	// Create AuthService
+	auth := new(AuthService)
+	auth.inviteCall = peerConn.invitedCall
 
 	// Register Service
-	err := peerConn.rpcServer.Register(&peerConn.ascv)
+	err := rpcServer.Register(&peerConn.ascv)
 	if err != nil {
-		log.Panicln(err)
+		return err
 	}
 	log.Println("Created RPC AuthService")
 
-	// Set Data Stream Handler
-	peerConn.host.SetStreamHandler(protocol.ID("/sonr/data/transfer"), peerConn.HandleTransfer)
-	return peerConn, nil
+	// Set RPC Services
+	peerConn.ascv = auth
+	return nil
 }
 
 // ^ Search for Peer in PubSub ^ //

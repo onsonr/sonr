@@ -9,7 +9,6 @@ import (
 	sf "github.com/sonr-io/core/internal/file"
 	sl "github.com/sonr-io/core/internal/lobby"
 	md "github.com/sonr-io/core/internal/models"
-	tr "github.com/sonr-io/core/internal/transfer"
 )
 
 // ^ CurrentFile returns last file in Processed Files ^ //
@@ -57,7 +56,7 @@ func (sn *Node) setConnection(ctx context.Context) error {
 	log.Println("Lobby Initialized")
 
 	// Initialize Peer Connection
-	if sn.peerConn, err = tr.Initialize(sn.host, sn.pubSub, sn.directories, sn.olc, sn.callbackRef.OnInvited, sn.callbackRef.OnResponded, sn.callbackRef.OnProgress, sn.callbackRef.OnCompleted, sn.error); err != nil {
+	if err = sn.peerConn.Initialize(sn.host, sn.pubSub, sn.directories, sn.olc, sn.callbackRef.OnInvited, sn.callbackRef.OnResponded, sn.callbackRef.OnProgress, sn.callbackRef.OnCompleted, sn.error); err != nil {
 		return err
 	}
 	log.Println("Connection Initialized")

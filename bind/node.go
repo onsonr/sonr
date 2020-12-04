@@ -51,12 +51,12 @@ func (sn *Node) Invite(peerId string) {
 
 	// Find PeerID and Peer Struct
 	id, peer := sn.lobby.Find(peerId)
-	if peer == nil {
+	if peer == nil || id == "" {
 		sn.error(errors.New("Search Error, peer was not found in map."), "Invite")
+	} else {
+		// Call GRPC in PeerConnection
+		sn.peerConn.SendInvite(sn.host, id, peer, currFile)
 	}
-
-	// Initialize new AuthStream with Peer
-	sn.peerConn.SendInvite(id, peer, currFile)
 }
 
 // ^ Respond to an Invitation ^ //

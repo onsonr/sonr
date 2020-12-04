@@ -10,6 +10,7 @@ import (
 
 	md "github.com/sonr-io/core/internal/models"
 
+	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	msgio "github.com/libp2p/go-msgio"
 	"google.golang.org/protobuf/proto"
@@ -20,9 +21,9 @@ const B64ChunkSize = 31998 // Adjusted for Base64 -- has to be divisible by 3
 const BufferChunkSize = 32000
 
 // ^ User has accepted, Begin Sending Transfer ^ //
-func (pc *PeerConnection) SendFile() {
+func (pc *PeerConnection) SendFile(h host.Host) {
 	// Create New Auth Stream
-	stream, err := pc.host.NewStream(context.Background(), pc.peerID, protocol.ID("/sonr/data/transfer"))
+	stream, err := h.NewStream(context.Background(), pc.peerID, protocol.ID("/sonr/data/transfer"))
 	if err != nil {
 		onError(err, "Transfer")
 		log.Fatalln(err)
