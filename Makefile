@@ -23,13 +23,27 @@ PB_CLEAN_PLUGIN="cd $(PLUGIN_PB_DIR) && find ./ -name "*.dart" -not -name "model
 PB_BUILD_CORE="--go_out=$(CORE_PB_DIR)"
 PB_BUILD_PLUGIN="--dart_out=$(PLUGIN_PB_DIR)"
 
-all: protoc ios android 
+all: protoc ios android
 	@cd /System/Library/Sounds && afplay Hero.aiff
 	@echo ""
 	@echo ""
 	@echo "--------------------------------------------------------------"
 	@echo "-------- ✅ ✅ ✅   FINISHED ALL TASKS  ✅ ✅ ✅  --------------"
 	@echo "--------------------------------------------------------------"
+
+protoc:
+	@echo ""
+	@echo ""
+	@echo "--------------------------------------------------------------"
+	@echo "------------- 🛸 START PROTOBUFS COMPILE 🛸 -------------------"
+	@echo "--------------------------------------------------------------"
+	@cd internal/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CORE) api.proto data.proto core.proto
+	@cd internal/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_PLUGIN) api.proto data.proto
+	@echo "Finished Compiling ➡ " && date
+	@echo "--------------------------------------------------------------"
+	@echo "------------- 🛸 COMPILED ALL PROTOBUFS 🛸 --------------------"
+	@echo "--------------------------------------------------------------"
+	@echo ""
 
 ios:
 	@echo ""
@@ -61,27 +75,11 @@ android:
 	@echo "--------------------------------------------------------------"
 	@echo ""
 
-protoc:
-	@echo ""
-	@echo ""
-	@echo "--------------------------------------------------------------"
-	@echo "------------- 🛸 START PROTOBUFS COMPILE 🛸 -------------------"
-	@echo "--------------------------------------------------------------"
-	@cd internal/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CORE) api.proto data.proto core.proto
-	@cd internal/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_PLUGIN) api.proto data.proto 
-	@echo "Finished Compiling ➡ " && date
-	@echo "--------------------------------------------------------------"
-	@echo "------------- 🛸 COMPILED ALL PROTOBUFS 🛸 --------------------"
-	@echo "--------------------------------------------------------------"
-	@echo ""
-
-clean:
+reset:
 	cd bind && $(GOCLEAN)
 	go mod tidy
 	rm -rf $(IOS_BUILDDIR)
 	rm -rf $(ANDROID_BUILDDIR)
 	mkdir -p $(IOS_BUILDDIR)
 	mkdir -p $(ANDROID_BUILDDIR)
-	eval $(PB_CLEAN_CORE) 2>/dev/null
-	eval $(PB_CLEAN_PLUGIN) 
 	gomobile init

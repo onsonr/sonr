@@ -2,7 +2,6 @@ package transfer
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"github.com/libp2p/go-libp2p-core/host"
@@ -11,60 +10,79 @@ import (
 	"github.com/libp2p/go-libp2p-core/protocol"
 	msgio "github.com/libp2p/go-msgio"
 	sf "github.com/sonr-io/core/internal/file"
-	pb "github.com/sonr-io/core/internal/models"
+	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
 
 // ChatRoomBufSize is the number of incoming messages to buffer for each topic.
 const ChatRoomBufSize = 128
 
-// Define Function Types
+// Define Callback Function Types
 type OnProtobuf func(data []byte)
 type OnError func(err error, method string)
 
-// Struct to Implement Node Callback Methods
-type PeerCallback struct {
-	Invited   OnProtobuf
-	Responded OnProtobuf
-	Completed OnProtobuf
-	Error     OnError
-}
+// Package Error Callback
+var onError OnError
 
 // ^ Struct: Holds/Handles GRPC Calls and Handles Data Stream  ^ //
 type PeerConnection struct {
-	// Peer/Self Info
-	Self *pb.Peer
-	Peer *pb.Peer
+	// Handlers
+	auth     *Authentication
+	safeFile *sf.SafeFile
+	transfer Transfer
 
-	// Stream Info
-	auth   *AuthHandler
-	host   host.Host
-	stream network.Stream
+	// Connection
+	host host.Host
 
-	// Data Handling
-	Call PeerCallback
+	// Callbacks
+	invitedCall   OnProtobuf
+	respondedCall OnProtobuf
+	progressCall  OnProgress
+	completedCall OnProtobuf
+
+	// Info
+	dirs     *md.Directories
+	peerInfo *md.Peer
+	peerID   peer.ID
+	selfInfo *md.Peer
+	selfID   peer.ID
 }
 
 // ^ Initialize sets up new Peer Connection handler ^
-func Initialize(host host.Host, callback PeerCallback) (*PeerConnection, error) {
+func Initialize(h host.Host, d *md.Directories, si *md.Peer, ic OnProtobuf, rc OnProtobuf, pc OnProgress, cc OnProtobuf, ec OnError) (*PeerConnection, error) {
+	// Set Package Level Callbacks
+	onError = ec
+
 	// Initialize Parameters into PeerConnection
 	peerConn := &PeerConnection{
-		Call: callback,
-		host: host,
+		host:          h,
+		dirs:          d,
+		selfInfo:      si,
+		selfID:        h.ID(),
+		invitedCall:   ic,
+		respondedCall: rc,
+		progressCall:  pc,
+		completedCall: cc,
 	}
 
 	// Set Handlers
-	host.SetStreamHandler(protocol.ID("/sonr/data/transfer"), peerConn.HandleTransfer)
+	h.SetStreamHandler(protocol.ID("/sonr/transfer/data"), peerConn.HandleTransfer)
 
 	// Create Auth Handler
-	peerConn.auth = NewAuthHandler(peerConn)
+	peerConn.auth = NewAuthentication(peerConn)
 	return peerConn, nil
 }
 
-func (dsc *PeerConnection) Invite(peerID peer.ID, info *pb.Peer, sm *sf.SafeFile) {
+// ^ Send Invite to a Peer ^ //
+func (pc *PeerConnection) Invite(id peer.ID, info *md.Peer, sm *sf.SafeFile) {
+	// @1. Set PeerConnection Details
+	pc.peerInfo = info
+	pc.peerID = id
+	pc.safeFile = sm
+
 	// @2. Create Invite Message
-	reqMsg := &pb.AuthMessage{
-		Event:    pb.AuthMessage_REQUEST,
+	reqMsg := &md.AuthMessage{
+		Event:    md.AuthMessage_REQUEST,
 		From:     info,
 		Metadata: sm.Metadata(),
 	}
@@ -72,35 +90,59 @@ func (dsc *PeerConnection) Invite(peerID peer.ID, info *pb.Peer, sm *sf.SafeFile
 	// Convert to bytes
 	bytes, err := proto.Marshal(reqMsg)
 	if err != nil {
-		dsc.Call.Error(err, "Invite")
+		onError(err, "Invite")
 		log.Fatalln(err)
 	}
 
 	// Send GRPC Call
-	err = dsc.auth.sendInvite(peerID, bytes)
+	err = pc.auth.sendInvite(id, bytes)
 	if err != nil {
-		dsc.Call.Error(err, "Invite")
+		onError(err, "Invite")
 		log.Fatalln(err)
 	}
 }
 
-// ^ Start New Stream ^ //
-func (dsc *PeerConnection) Transfer(ctx context.Context, peerID peer.ID, sm *sf.SafeFile) {
+// ^ User has accepted ^ //
+func (pc *PeerConnection) HandleInvited(meta *md.Metadata, peer *md.Peer) {
+	// Create Save Path
+	savePath := "/" + meta.Name + "." + meta.Mime.Subtype
+
+	// Set Transfer
+	pc.transfer = NewTransfer(savePath, meta, pc.progressCall, pc.completedCall)
+}
+
+// ^ User has accepted ^ //
+func (pc *PeerConnection) HandleAccepted() {
 	// Create New Auth Stream
-	stream, err := dsc.host.NewStream(ctx, peerID, protocol.ID("/sonr/data/transfer"))
+	stream, err := pc.host.NewStream(context.Background(), pc.peerID, protocol.ID("/sonr/data/transfer"))
 	if err != nil {
-		dsc.Call.Error(err, "Transfer")
+		onError(err, "Transfer")
 		log.Fatalln(err)
 	}
 
-	// Set Stream
-	dsc.stream = stream
+	// Initialize Writer
+	writer := msgio.NewWriter(stream)
+	meta := pc.safeFile.Metadata()
 
-	// Print Stream Info
-	info := stream.Stat()
-	fmt.Println("Stream Info: ", info)
+	// @ Check Type
+	if pc.safeFile.Mime.Type == md.MIME_image {
+		// Start Routine
+		log.Println("Starting Base64 Write Routine")
+		go writeBase64ToStream(writer, meta)
+	} else {
+		total := meta.Size
+
+		// Start Routine
+		log.Println("Starting Bytes Write Routine")
+		go writeBytesToStream(writer, meta, total)
+	}
+}
+
+// ^ Handle Incoming Stream ^ //
+func (pc *PeerConnection) HandleTransfer(stream network.Stream) {
+	// Set Stream
+	log.Println("Stream Info: ", stream.Stat())
 
 	// Initialize Routine
-	writer := msgio.NewWriter(dsc.stream)
-	go dsc.writeTransferStream(writer, sm)
+	go pc.ReadStream(msgio.NewReader(stream))
 }

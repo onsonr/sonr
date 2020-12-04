@@ -66,25 +66,19 @@ func (dsc *DataStreamConn) Transfer(ctx context.Context, sf *sonrFile.SafeFile) 
 	info := stream.Stat()
 	fmt.Println("Stream Info: ", info)
 
-	// Initialize Writer
+	// Initialize Writer and Get Metadata
 	writer := msgio.NewWriter(stream)
+	meta := sf.Metadata()
 
 	// @ Check Type
 	if sf.Mime.Type == pb.MIME_image {
-		// Get Metadata
-		meta := sf.Metadata()
-
 		// Start Routine
 		log.Println("Starting Base64 Write Routine")
 		go writeBase64ToStream(writer, meta)
 	} else {
-		// Get Metadata and Size
-		meta := sf.Metadata()
-		total := meta.Size
-
 		// Start Routine
 		log.Println("Starting Bytes Write Routine")
-		go writeBytesToStream(writer, meta, total)
+		go writeBytesToStream(writer, meta, meta.Size)
 	}
 }
 

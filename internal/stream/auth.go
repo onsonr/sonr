@@ -67,6 +67,8 @@ func (asc *AuthStreamConn) Invite(ctx context.Context, h host.Host, id peer.ID, 
 	// Set Stream
 	asc.stream = stream
 	asc.id = stream.ID()
+	mrw := msgio.NewReader(asc.stream)
+	go asc.read(mrw)
 
 	// @2. Create Invite Message
 	reqMsg := &pb.AuthMessage{

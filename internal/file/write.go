@@ -3,7 +3,6 @@ package file
 import (
 	"bytes"
 	"encoding/base64"
-	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -23,12 +22,6 @@ type TransferFile struct {
 	bytesBuilder   *bytes.Buffer
 	mutex          sync.Mutex
 }
-
-var (
-	ErrBucket       = errors.New("Invalid bucket!")
-	ErrSize         = errors.New("Invalid size!")
-	ErrInvalidImage = errors.New("Invalid image!")
-)
 
 // ^ Create new SonrFile struct with meta and documents directory ^ //
 func NewFile(docDir string, meta *pb.Metadata) TransferFile {
