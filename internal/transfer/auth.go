@@ -33,6 +33,7 @@ type AuthService struct {
 	currArgs   AuthArgs
 	currReply  *AuthReply
 	inviteCall OnProtobuf
+	peerConn   *PeerConnection
 }
 
 // GRPC Callback
