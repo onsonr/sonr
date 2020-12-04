@@ -37,7 +37,6 @@ type PeerConnection struct {
 	pubSub *pubsub.PubSub
 
 	// Callbacks
-	callback      OnProtobuf
 	invitedCall   OnProtobuf
 	respondedCall OnProtobuf
 	progressCall  OnProgress

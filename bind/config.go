@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 
 	"github.com/libp2p/go-libp2p-core/protocol"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
@@ -12,6 +13,7 @@ import (
 	sonrModel "github.com/sonr-io/core/internal/models"
 	sonrStream "github.com/sonr-io/core/internal/stream"
 	tr "github.com/sonr-io/core/internal/transfer"
+	"google.golang.org/protobuf/proto"
 )
 
 // ^ CurrentFile returns last file in Processed Files ^ //
@@ -26,19 +28,20 @@ func (sn *Node) setDiscovery(ctx context.Context, connEvent *sonrModel.Connectio
 	if err != nil {
 		return err
 	}
-	fmt.Println("GossipSub Created")
+	log.Println("GossipSub Created")
 
 	// Enter Lobby
 	if sn.lobby, err = lobby.Enter(ctx, sn.callback, sn.error, ps, sn.host.ID(), connEvent.Olc); err != nil {
 		return err
 	}
-	fmt.Println("Lobby Entered")
+	log.Println("Lobby Entered")
 
 	// Initialize Peer Connection
 	sn.peerConn, err = tr.Initialize(sn.host, ps, sn.directories, connEvent.Olc, sn.callbackRef.OnInvited, sn.callbackRef.OnResponded, sn.callbackRef.OnProgress, sn.callbackRef.OnCompleted, sn.error)
 	if err != nil {
 		return err
 	}
+	log.Println("Peer Connection Initialized")
 
 	return nil
 }
@@ -89,4 +92,56 @@ func (sn *Node) setStreams() {
 	// Set Handlers
 	sn.host.SetStreamHandler(protocol.ID("/sonr/auth"), sn.authStream.HandleStream)
 	sn.host.SetStreamHandler(protocol.ID("/sonr/data"), sn.dataStream.HandleStream)
+}
+
+// ^ callback Method with type ^
+func (sn *Node) callback(call sonrModel.CallbackType, data proto.Message) {
+	// ** Convert Message to bytes **
+	bytes, err := proto.Marshal(data)
+	if err != nil {
+		fmt.Println("Cannot Marshal Error Protobuf: ", err)
+	}
+
+	// ** Check Call Type **
+	switch call {
+	// @ Lobby Refreshed
+	case sonrModel.CallbackType_REFRESHED:
+		sn.callbackRef.OnRefreshed(bytes)
+
+	// @ File has Queued
+	case sonrModel.CallbackType_QUEUED:
+		sn.callbackRef.OnQueued(bytes)
+
+	// @ Peer has been Invited
+	case sonrModel.CallbackType_INVITED:
+		sn.callbackRef.OnInvited(bytes)
+
+	// @ Peer has Responded
+	case sonrModel.CallbackType_RESPONDED:
+		sn.callbackRef.OnResponded(bytes)
+
+	// @ Transfer has Completed
+	case sonrModel.CallbackType_COMPLETED:
+		sn.callbackRef.OnCompleted(bytes)
+	}
+}
+
+// ^ error Callback with error instance, and method ^
+func (sn *Node) error(err error, method string) {
+	// Create Error ProtoBuf
+	errorMsg := sonrModel.ErrorMessage{
+		Message: err.Error(),
+		Method:  method,
+	}
+
+	// Convert Message to bytes
+	bytes, err := proto.Marshal(&errorMsg)
+	if err != nil {
+		log.Println("Cannot Marshal Error Protobuf: ", err)
+	}
+	// Send Callback
+	sn.callbackRef.OnError(bytes)
+
+	// Log In Core
+	log.Fatalln(fmt.Sprintf("[Error] At Method %s : %s", err.Error(), method))
 }
