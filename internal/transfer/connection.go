@@ -2,23 +2,24 @@ package transfer
 
 import (
 	"context"
+	"errors"
 	"log"
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
+	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	msgio "github.com/libp2p/go-msgio"
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
-	"google.golang.org/protobuf/proto"
 )
 
 // ChatRoomBufSize is the number of incoming messages to buffer for each topic.
 const ChatRoomBufSize = 128
 
 // Define Callback Function Types
-type OnProtobuf func(data []byte)
+type OnProtobuf func([]byte)
 type OnError func(err error, method string)
 
 // Package Error Callback
@@ -27,32 +28,38 @@ var onError OnError
 // ^ Struct: Holds/Handles GRPC Calls and Handles Data Stream  ^ //
 type PeerConnection struct {
 	// Handlers
-	auth     *AuthRPC
+	auth     *Authorization
 	safeFile *sf.SafeFile
 	transfer *Transfer
 
 	// Connection
-	host host.Host
+	host   host.Host
+	pubSub *pubsub.PubSub
 
 	// Callbacks
+	callback      OnProtobuf
 	invitedCall   OnProtobuf
 	respondedCall OnProtobuf
 	progressCall  OnProgress
 	completedCall OnProtobuf
 
 	// Info
-	dirs   *md.Directories
-	peerID peer.ID
+	olc         string
+	dirs        *md.Directories
+	currMessage *md.AuthMessage
+	peerID      peer.ID
 }
 
 // ^ Initialize sets up new Peer Connection handler ^
-func Initialize(h host.Host, d *md.Directories, ic OnProtobuf, rc OnProtobuf, pc OnProgress, cc OnProtobuf, ec OnError) (*PeerConnection, error) {
+func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic OnProtobuf, rc OnProtobuf, pc OnProgress, cc OnProtobuf, ec OnError) (*PeerConnection, error) {
 	// Set Package Level Callbacks
 	onError = ec
 
 	// Initialize Parameters into PeerConnection
 	peerConn := &PeerConnection{
 		host:          h,
+		pubSub:        ps,
+		olc:           o,
 		dirs:          d,
 		invitedCall:   ic,
 		respondedCall: rc,
@@ -64,49 +71,91 @@ func Initialize(h host.Host, d *md.Directories, ic OnProtobuf, rc OnProtobuf, pc
 	h.SetStreamHandler(protocol.ID("/sonr/transfer/data"), peerConn.HandleTransfer)
 
 	// Create Auth Handler
-	peerConn.auth = NewAuthentication(peerConn)
+	peerConn.auth = NewAuthRPC(peerConn)
 	return peerConn, nil
 }
 
+// ^ Search for Peer in PubSub ^ //
+func (pc *PeerConnection) Find(q string) peer.ID {
+	// Iterate through PubSub in topic
+	for _, id := range pc.pubSub.ListPeers(pc.olc) {
+		// If Found Match
+		if id.String() == q {
+			return id
+		}
+	}
+	return ""
+}
+
 // ^ Send Invite to a Peer ^ //
-func (pc *PeerConnection) Invite(id peer.ID, info *md.Peer, sm *sf.SafeFile) {
-	// @1. Set PeerConnection Details
-	pc.peerID = id
+func (pc *PeerConnection) Invite(id string, info *md.Peer, sm *sf.SafeFile) {
+	// Set SafeFile
 	pc.safeFile = sm
 
-	// @2. Create Invite Message
+	// Find Peer and Set
+	pc.peerID = pc.Find(id)
+	if pc.peerID == "" {
+		onError(errors.New("Peer ID not Found"), "ID")
+	}
+
+	// Create Invite Message
 	reqMsg := &md.AuthMessage{
 		Event:    md.AuthMessage_REQUEST,
 		From:     info,
 		Metadata: sm.Metadata(),
 	}
 
-	// Convert to bytes
-	bytes, err := proto.Marshal(reqMsg)
+	// Send GRPC Call
+	err := pc.auth.sendInvite(pc.peerID, reqMsg)
 	if err != nil {
 		onError(err, "Invite")
 		log.Fatalln(err)
+	}
+}
+
+// ^ Send Accept Message on Stream ^ //
+func (pc *PeerConnection) Accept(selfInfo *md.Peer) error {
+	// Find Save Path and Create Transfer
+	savePath := "/" + pc.currMessage.Metadata.Name + "." + pc.currMessage.Metadata.Mime.Subtype
+	pc.transfer = NewTransfer(savePath, pc.currMessage.Metadata, pc.currMessage.From, pc.progressCall, pc.completedCall)
+
+	// Create Message
+	respMsg := &md.AuthMessage{
+		From:  selfInfo,
+		Event: md.AuthMessage_ACCEPT,
 	}
 
 	// Send GRPC Call
-	err = pc.auth.sendInvite(id, bytes)
+	err := pc.auth.sendResponse(true, respMsg)
 	if err != nil {
-		onError(err, "Invite")
+		onError(err, "Accept")
 		log.Fatalln(err)
 	}
+
+	return nil
+}
+
+// ^ Send Decline Message on Stream ^ //
+func (pc *PeerConnection) Decline(selfInfo *md.Peer) error {
+	// Create Message
+	respMsg := &md.AuthMessage{
+		From:  selfInfo,
+		Event: md.AuthMessage_DECLINE,
+	}
+
+	// Send GRPC Call
+	err := pc.auth.sendResponse(false, respMsg)
+	if err != nil {
+		onError(err, "Decline")
+		log.Fatalln(err)
+	}
+
+	// TODO: Reset Peer Info
+	return nil
 }
 
 // ^ User has accepted ^ //
-func (pc *PeerConnection) Accept(meta *md.Metadata, peer *md.Peer) {
-	// Create Save Path
-	savePath := "/" + meta.Name + "." + meta.Mime.Subtype
-
-	// Set Transfer
-	pc.transfer = NewTransfer(savePath, meta, peer, pc.progressCall, pc.completedCall)
-}
-
-// ^ User has accepted ^ //
-func (pc *PeerConnection) HandleAccepted() {
+func (pc *PeerConnection) StartTransfer() {
 	// Create New Auth Stream
 	stream, err := pc.host.NewStream(context.Background(), pc.peerID, protocol.ID("/sonr/data/transfer"))
 	if err != nil {

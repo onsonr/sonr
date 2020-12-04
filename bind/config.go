@@ -11,6 +11,7 @@ import (
 	"github.com/sonr-io/core/internal/lobby"
 	sonrModel "github.com/sonr-io/core/internal/models"
 	sonrStream "github.com/sonr-io/core/internal/stream"
+	tr "github.com/sonr-io/core/internal/transfer"
 )
 
 // ^ CurrentFile returns last file in Processed Files ^ //
@@ -32,6 +33,13 @@ func (sn *Node) setDiscovery(ctx context.Context, connEvent *sonrModel.Connectio
 		return err
 	}
 	fmt.Println("Lobby Entered")
+
+	// Initialize Peer Connection
+	sn.peerConn, err = tr.Initialize(sn.host, ps, sn.directories, connEvent.Olc, sn.callbackRef.OnInvited, sn.callbackRef.OnResponded, sn.callbackRef.OnProgress, sn.callbackRef.OnCompleted, sn.error)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

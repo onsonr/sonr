@@ -14,7 +14,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-type OnProgress func(p float32)
+type OnProgress func(data float32)
 
 type Transfer struct {
 	// Inherited Properties
@@ -35,11 +35,11 @@ type Transfer struct {
 }
 
 // ^ Create new SonrFile struct with meta and documents directory ^ //
-func NewTransfer(docDir string, meta *md.Metadata, own *md.Peer, op OnProgress, oc OnProtobuf) *Transfer {
+func NewTransfer(savePath string, meta *md.Metadata, own *md.Peer, op OnProgress, oc OnProtobuf) *Transfer {
 	return &Transfer{
 		// Inherited Properties
 		metadata:   meta,
-		path:       docDir + "/" + meta.Name + "." + meta.Mime.Subtype,
+		path:       savePath,
 		owner:      own,
 		onProgress: op,
 		onComplete: oc,
@@ -165,11 +165,10 @@ func (t *Transfer) Save() {
 		LastOpened: int32(time.Now().Unix()),
 	}
 
-	// Convert to bytes
+	// Convert Message to bytes
 	bytes, err := proto.Marshal(saved)
 	if err != nil {
-		onError(err, "read")
-		log.Fatalln(err)
+		fmt.Println("Cannot Marshal Error Protobuf: ", err)
 	}
 
 	// Send Complete Callback

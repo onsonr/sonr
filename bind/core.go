@@ -10,6 +10,7 @@ import (
 	"github.com/sonr-io/core/internal/lobby"
 	sonrModel "github.com/sonr-io/core/internal/models"
 	sonrStream "github.com/sonr-io/core/internal/stream"
+	tr "github.com/sonr-io/core/internal/transfer"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -39,6 +40,7 @@ type Node struct {
 	host       host.Host
 	authStream sonrStream.AuthStreamConn
 	dataStream sonrStream.DataStreamConn
+	peerConn   *tr.PeerConnection
 
 	// Data Properties
 	files []*sonrFile.SafeFile
