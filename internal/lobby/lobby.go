@@ -36,8 +36,8 @@ type Lobby struct {
 	sub     *pubsub.Subscription
 }
 
-// ^ Enter Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
-func Enter(ctx context.Context, callr Refreshed, onErr Error, ps *pubsub.PubSub, id peer.ID, olc string) (*Lobby, error) {
+// ^ Initialize Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
+func Initialize(ctx context.Context, callr Refreshed, onErr Error, ps *pubsub.PubSub, id peer.ID, olc string) (*Lobby, error) {
 	// Join the pubsub Topic
 	topic, err := ps.Join(olc)
 	if err != nil {

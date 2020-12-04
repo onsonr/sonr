@@ -51,17 +51,16 @@ func (sn *Node) setConnection(ctx context.Context) error {
 	log.Println("GossipSub Created")
 
 	// Enter Lobby
-	if sn.lobby, err = sl.Enter(ctx, sn.callback, sn.error, sn.pubSub, sn.host.ID(), sn.olc); err != nil {
+	if sn.lobby, err = sl.Initialize(ctx, sn.callback, sn.error, sn.pubSub, sn.host.ID(), sn.olc); err != nil {
 		return err
 	}
-	log.Println("Lobby Entered")
+	log.Println("Lobby Initialized")
 
 	// Initialize Peer Connection
-	sn.peerConn, err = tr.Initialize(sn.host, sn.pubSub, sn.directories, sn.olc, sn.callbackRef.OnInvited, sn.callbackRef.OnResponded, sn.callbackRef.OnProgress, sn.callbackRef.OnCompleted, sn.error)
-	if err != nil {
+	if sn.peerConn, err = tr.Initialize(sn.host, sn.pubSub, sn.directories, sn.olc, sn.callbackRef.OnInvited, sn.callbackRef.OnResponded, sn.callbackRef.OnProgress, sn.callbackRef.OnCompleted, sn.error); err != nil {
 		return err
 	}
-	log.Println("Peer Connection Initialized")
+	log.Println("Connection Initialized")
 
 	return nil
 }
