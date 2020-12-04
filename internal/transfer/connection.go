@@ -2,15 +2,18 @@ package transfer
 
 import (
 	"log"
+	"time"
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
+	gorpc "github.com/libp2p/go-libp2p-gorpc"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	msgio "github.com/libp2p/go-msgio"
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
+	"google.golang.org/protobuf/proto"
 )
 
 // ChatRoomBufSize is the number of incoming messages to buffer for each topic.
@@ -26,13 +29,15 @@ var onError OnError
 // ^ Struct: Holds/Handles GRPC Calls and Handles Data Stream  ^ //
 type PeerConnection struct {
 	// Handlers
-	auth     *Authorization
 	safeFile *sf.SafeMetadata
 	transfer *Transfer
 
 	// Connection
-	host   host.Host
-	pubSub *pubsub.PubSub
+	host      host.Host
+	pubSub    *pubsub.PubSub
+	rpcClient *gorpc.Client
+	rpcServer *gorpc.Server
+	ascv      *AuthService
 
 	// Callbacks
 	invitedCall   OnProtobuf
@@ -54,22 +59,37 @@ func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic 
 
 	// Initialize Parameters into PeerConnection
 	peerConn := &PeerConnection{
-		host:          h,
-		pubSub:        ps,
-		olc:           o,
-		dirs:          d,
+		// Connection
+		host:   h,
+		pubSub: ps,
+
+		// Info
+		olc:  o,
+		dirs: d,
+
+		// Callbacks
 		invitedCall:   ic,
 		respondedCall: rc,
 		progressCall:  pc,
 		completedCall: cc,
 	}
 
-	// Create Auth Handler
-	peerConn.auth = NewAuthRPC(peerConn)
+	// Create Server/Client/Service
+	peerConn.rpcServer = gorpc.NewServer(peerConn.host, protocol.ID("/sonr/rpc/auth"))
+	peerConn.rpcClient = gorpc.NewClientWithServer(peerConn.host, protocol.ID("/sonr/rpc/auth"), peerConn.rpcServer)
+	peerConn.ascv = &AuthService{
+		peerConn: peerConn,
+	}
 
-	// Set Handlers
-	h.SetStreamHandler(protocol.ID("/sonr/data/transfer"), peerConn.HandleTransfer)
+	// Register Service
+	err := peerConn.rpcServer.Register(peerConn.ascv)
+	if err != nil {
+		log.Panicln(err)
+	}
+	log.Println("Created RPC AuthService")
 
+	// Set Data Stream Handler
+	peerConn.host.SetStreamHandler(protocol.ID("/sonr/data/transfer"), peerConn.HandleTransfer)
 	return peerConn, nil
 }
 
@@ -97,8 +117,45 @@ func (pc *PeerConnection) Invite(id peer.ID, info *md.Peer, sm *sf.SafeMetadata)
 		Metadata: sm.GetMetadata(),
 	}
 
+	// Convert Protobuf to bytes
+	msgBytes, err := proto.Marshal(reqMsg)
+	if err != nil {
+		onError(err, "sendInvite")
+		log.Println(err)
+	}
+
 	// Send GRPC Call
-	go pc.auth.sendInvite(pc.peerID, reqMsg)
+	//go pc.auth.sendInvite(pc.peerID, reqMsg)
+	go func(id peer.ID, data []byte) {
+		// Initialize Vars
+		var reply AuthReply
+		var args AuthArgs
+		args.Data = msgBytes
+
+		// Set Data
+		startTime := time.Now()
+
+		// Call to Peer
+		err = pc.rpcClient.Call(id, "AuthService", "Invite", args, &reply)
+		if err != nil {
+			onError(err, "sendInvite")
+			log.Panicln(err)
+		}
+
+		// End Tracking
+		endTime := time.Now()
+		diff := endTime.Sub(startTime)
+		log.Printf("Auth from %s: time=%s\n", id, diff)
+
+		// Send Callback and Reset
+		pc.respondedCall(reply.Data)
+
+		// Handle Response
+		if reply.Decision {
+			// Begin Transfer
+			pc.SendFile()
+		}
+	}(id, msgBytes)
 }
 
 // ^ Send Accept Message on Stream ^ //
@@ -130,7 +187,7 @@ func (pc *PeerConnection) SendResponse(decision bool, selfInfo *md.Peer) {
 	}
 
 	// Send GRPC Call
-	go pc.auth.sendResponse(decision, respMsg)
+	go pc.ascv.sendResponse(decision, respMsg)
 }
 
 // ^ Handle Incoming Stream ^ //
