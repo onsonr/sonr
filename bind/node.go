@@ -61,19 +61,8 @@ func (sn *Node) Invite(peerId string) {
 
 // ^ Respond to an Invitation ^ //
 func (sn *Node) Respond(decision bool) {
-	// Check Respons
-	if decision {
-		err := sn.peerConn.Accept(sn.Peer)
-		if err != nil {
-			sn.error(err, "Respond")
-		}
-
-	} else {
-		err := sn.peerConn.Decline(sn.Peer)
-		if err != nil {
-			sn.error(err, "Respond")
-		}
-	}
+	// Send Response on PeerConnection
+	sn.peerConn.SendResponse(decision, sn.Peer)
 }
 
 // ^ Reset Current Queued File Metadata ^ //

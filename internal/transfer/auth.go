@@ -33,6 +33,7 @@ type AuthService struct {
 	currArgs  AuthArgs
 	currReply *AuthReply
 	peerConn  *PeerConnection
+	done      chan *gorpc.Call
 }
 
 // ^ Calls Invite on Remote Peer ^ //
@@ -81,13 +82,11 @@ type Authorization struct {
 // ^ Set Sender as Server ^ //
 func NewAuthRPC(pc *PeerConnection) *Authorization {
 	log.Println("Creating New Auth Handler")
-	// Create Server Client
+	// Create Server
 	rpcServer := gorpc.NewServer(pc.host, protocol.ID("/sonr/rpc/auth"))
-	rpcClient := gorpc.NewClient(pc.host, protocol.ID("/sonr/rpc/auth"))
-
-	// Create Service
 	svc := AuthService{
 		peerConn: pc,
+		done:     make(chan *gorpc.Call, 1),
 	}
 
 	// Register Service
@@ -95,6 +94,9 @@ func NewAuthRPC(pc *PeerConnection) *Authorization {
 	if err != nil {
 		log.Panicln(err)
 	}
+
+	// Create Client
+	rpcClient := gorpc.NewClientWithServer(pc.host, protocol.ID("/sonr/rpc/auth"), rpcServer)
 	log.Println("Setup RPC Auth")
 
 	return &Authorization{
@@ -107,27 +109,27 @@ func NewAuthRPC(pc *PeerConnection) *Authorization {
 }
 
 // ^ Send Authorization Invite to Peer ^ //
-func (ah *Authorization) sendInvite(id peer.ID, authMsg *md.AuthMessage) error {
+func (ah *Authorization) sendInvite(id *peer.ID, authMsg *md.AuthMessage) {
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(authMsg)
 	if err != nil {
-		return err
+		onError(err, "sendInvite")
+		log.Println(err)
 	}
 
 	// Initialize Vars
 	var reply AuthReply
-	args := AuthArgs{
-		Data: msgBytes,
-	}
+	var args AuthArgs
+	args.Data = msgBytes
 
 	// Set Data
 	startTime := time.Now()
 
 	// Call to Peer
-	err = ah.rpcClient.Call(id, "AuthService", "Invite", args, &reply)
+	err = ah.rpcClient.Call(*id, "AuthService", "Invite", args, &reply)
 	if err != nil {
 		onError(err, "sendInvite")
-		log.Fatalln(err)
+		log.Panicln(err)
 	}
 
 	// End Tracking
@@ -141,24 +143,22 @@ func (ah *Authorization) sendInvite(id peer.ID, authMsg *md.AuthMessage) error {
 	// Handle Response
 	if reply.Decision {
 		// Begin Transfer
-		ah.peerConn.StartTransfer()
+		ah.peerConn.SendFile()
 	} else {
 		// TODO: Reset RPC Data
 	}
-
-	return nil
 }
 
 // ^ Respond to Authorization Invite to Peer ^ //
-func (ah *Authorization) sendResponse(d bool, authMsg *md.AuthMessage) error {
+func (ah *Authorization) sendResponse(d bool, authMsg *md.AuthMessage) {
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(authMsg)
 	if err != nil {
-		return err
+		onError(err, "sendInvite")
+		log.Println(err)
 	}
 
 	// Send Reply
 	ah.authService.currReply.Data = msgBytes
 	ah.authService.currReply.Decision = d
-	return nil
 }

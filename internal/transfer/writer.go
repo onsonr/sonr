@@ -2,6 +2,7 @@ package transfer
 
 import (
 	"bytes"
+	"context"
 	"encoding/base64"
 	"fmt"
 	"io"
@@ -10,6 +11,7 @@ import (
 
 	md "github.com/sonr-io/core/internal/models"
 
+	"github.com/libp2p/go-libp2p-core/protocol"
 	msgio "github.com/libp2p/go-msgio"
 	"google.golang.org/protobuf/proto"
 )
@@ -17,6 +19,33 @@ import (
 // ** Constants for Chunking Data ** //
 const B64ChunkSize = 31998 // Adjusted for Base64 -- has to be divisible by 3
 const BufferChunkSize = 32000
+
+// ^ User has accepted, Begin Sending Transfer ^ //
+func (pc *PeerConnection) SendFile() {
+	// Create New Auth Stream
+	stream, err := pc.host.NewStream(context.Background(), *pc.peerID, protocol.ID("/sonr/data/transfer"))
+	if err != nil {
+		onError(err, "Transfer")
+		log.Fatalln(err)
+	}
+
+	// Initialize Writer
+	writer := msgio.NewWriter(stream)
+	meta := pc.safeFile.GetMetadata()
+
+	// @ Check Type
+	if pc.safeFile.Mime.Type == md.MIME_image {
+		// Start Routine
+		log.Println("Starting Base64 Write Routine")
+		go writeBase64ToStream(writer, meta)
+	} else {
+		total := meta.Size
+
+		// Start Routine
+		log.Println("Starting Bytes Write Routine")
+		go writeBytesToStream(writer, meta, total)
+	}
+}
 
 // ^ Chunks string based on B64ChunkSize ^ //
 func chunkBase64(s string, B64ChunkSize int) []string {

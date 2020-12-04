@@ -1,7 +1,6 @@
 package transfer
 
 import (
-	"context"
 	"log"
 
 	"github.com/libp2p/go-libp2p-core/host"
@@ -45,7 +44,7 @@ type PeerConnection struct {
 	olc         string
 	dirs        *md.Directories
 	currMessage *md.AuthMessage
-	peerID      peer.ID
+	peerID      *peer.ID
 }
 
 // ^ Initialize sets up new Peer Connection handler ^
@@ -65,24 +64,25 @@ func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic 
 		completedCall: cc,
 	}
 
+	// Create Auth Handler
+	peerConn.auth = NewAuthRPC(peerConn)
+
 	// Set Handlers
 	h.SetStreamHandler(protocol.ID("/sonr/data/transfer"), peerConn.HandleTransfer)
 
-	// Create Auth Handler
-	peerConn.auth = NewAuthRPC(peerConn)
 	return peerConn, nil
 }
 
 // ^ Search for Peer in PubSub ^ //
-func (pc *PeerConnection) Find(q string) peer.ID {
+func (pc *PeerConnection) Find(q string) *peer.ID {
 	// Iterate through PubSub in topic
 	for _, id := range pc.pubSub.ListPeers(pc.olc) {
 		// If Found Match
 		if id.String() == q {
-			return id
+			return &id
 		}
 	}
-	return ""
+	return nil
 }
 
 // ^ Send Invite to a Peer ^ //
@@ -98,79 +98,39 @@ func (pc *PeerConnection) Invite(id peer.ID, info *md.Peer, sm *sf.SafeMetadata)
 	}
 
 	// Send GRPC Call
-	err := pc.auth.sendInvite(pc.peerID, reqMsg)
-	if err != nil {
-		onError(err, "Invite")
-		log.Fatalln(err)
-	}
+	go pc.auth.sendInvite(pc.peerID, reqMsg)
 }
 
 // ^ Send Accept Message on Stream ^ //
-func (pc *PeerConnection) Accept(selfInfo *md.Peer) error {
-	// Find Save Path and Create Transfer
-	savePath := "/" + pc.currMessage.Metadata.Name + "." + pc.currMessage.Metadata.Mime.Subtype
-	pc.transfer = NewTransfer(savePath, pc.currMessage.Metadata, pc.currMessage.From, pc.progressCall, pc.completedCall)
+func (pc *PeerConnection) SendResponse(decision bool, selfInfo *md.Peer) {
+	// Initialize Message
+	var respMsg *md.AuthMessage
 
-	// Create Message
-	respMsg := &md.AuthMessage{
-		From:  selfInfo,
-		Event: md.AuthMessage_ACCEPT,
-	}
+	// Check Decision
+	if decision {
+		// Initialize Transfer
+		savePath := "/" + pc.currMessage.Metadata.Name + "." + pc.currMessage.Metadata.Mime.Subtype
+		pc.transfer = NewTransfer(savePath, pc.currMessage.Metadata, pc.currMessage.From, pc.progressCall, pc.completedCall)
 
-	// Send GRPC Call
-	err := pc.auth.sendResponse(true, respMsg)
-	if err != nil {
-		onError(err, "Accept")
-		log.Fatalln(err)
-	}
-
-	return nil
-}
-
-// ^ Send Decline Message on Stream ^ //
-func (pc *PeerConnection) Decline(selfInfo *md.Peer) error {
-	// Create Message
-	respMsg := &md.AuthMessage{
-		From:  selfInfo,
-		Event: md.AuthMessage_DECLINE,
-	}
-
-	// Send GRPC Call
-	err := pc.auth.sendResponse(false, respMsg)
-	if err != nil {
-		onError(err, "Decline")
-		log.Fatalln(err)
-	}
-
-	// TODO: Reset Peer Info
-	return nil
-}
-
-// ^ User has accepted ^ //
-func (pc *PeerConnection) StartTransfer() {
-	// Create New Auth Stream
-	stream, err := pc.host.NewStream(context.Background(), pc.peerID, protocol.ID("/sonr/data/transfer"))
-	if err != nil {
-		onError(err, "Transfer")
-		log.Fatalln(err)
-	}
-
-	// Initialize Writer
-	writer := msgio.NewWriter(stream)
-	meta := pc.safeFile.GetMetadata()
-
-	// @ Check Type
-	if pc.safeFile.Mime.Type == md.MIME_image {
-		// Start Routine
-		log.Println("Starting Base64 Write Routine")
-		go writeBase64ToStream(writer, meta)
+		// Create Accept Response
+		respMsg = &md.AuthMessage{
+			From:  selfInfo,
+			Event: md.AuthMessage_ACCEPT,
+		}
 	} else {
-		total := meta.Size
+		// Reset Peer Info
+		pc.peerID = nil
+		pc.currMessage = nil
 
-		// Start Routine
-		log.Println("Starting Bytes Write Routine")
-		go writeBytesToStream(writer, meta, total)
+		// Create Decline Response
+		respMsg = &md.AuthMessage{
+			From:  selfInfo,
+			Event: md.AuthMessage_DECLINE,
+		}
 	}
+
+	// Send GRPC Call
+	go pc.auth.sendResponse(decision, respMsg)
 }
 
 // ^ Handle Incoming Stream ^ //
