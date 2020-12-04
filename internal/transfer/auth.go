@@ -10,14 +10,15 @@ import (
 	"github.com/libp2p/go-libp2p-core/protocol"
 	gorpc "github.com/libp2p/go-libp2p-gorpc"
 	md "github.com/sonr-io/core/internal/models"
+	"google.golang.org/protobuf/proto"
 )
 
 // *********************** //
 // ** Callback Handling ** //
 // *********************** //
 // Define Callback Function Types
-type OnInvited func(meta *md.Metadata, peer *md.Peer)
-type OnAccepted func()
+type OnAccepted func(meta *md.Metadata, peer *md.Peer)
+type HandleAccepted func()
 
 // ****************** //
 // ** GRPC Service ** //
@@ -34,6 +35,8 @@ type AuthReply struct {
 
 // Service Struct
 type AuthService struct {
+	onAccepted     OnAccepted
+	handleAccepted HandleAccepted
 }
 
 // ^ Calls Invite on Remote Peer ^ //
@@ -56,7 +59,13 @@ func (as *AuthService) Accept(ctx context.Context, args AuthArgs, reply *AuthRep
 
 // ^ Processes Message Content ^ //
 func (as *AuthService) process(args AuthArgs) {
-
+	// Unmarshal Bytes into Proto
+	protoMsg := &md.AuthMessage{}
+	err := proto.Unmarshal(args.Data, protoMsg)
+	if err != nil {
+		onError(err, "read")
+		log.Fatalln(err)
+	}
 }
 
 // ********************* //
@@ -67,9 +76,6 @@ type Authentication struct {
 	// Rpc Properties
 	rpcClient *gorpc.Client
 	rpcServer *gorpc.Server
-
-	// Callbacks
-
 }
 
 // ^ Set Sender as Server ^ //
@@ -79,8 +85,13 @@ func NewAuthentication(pc *PeerConnection) *Authentication {
 	rpcServer := gorpc.NewServer(pc.host, protocol.ID("/sonr/auth/handler"))
 	rpcClient := gorpc.NewClientWithServer(pc.host, protocol.ID("/sonr/auth/caller"), rpcServer)
 
-	// Register Functions
-	svc := AuthService{}
+	// Create Service
+	svc := AuthService{
+		onAccepted:     pc.OnAccepted,
+		handleAccepted: pc.HandleAccepted,
+	}
+
+	// Register Service
 	err := rpcServer.Register(&svc)
 	if err != nil {
 		panic(err)
@@ -90,9 +101,6 @@ func NewAuthentication(pc *PeerConnection) *Authentication {
 		// Rpc Properties
 		rpcServer: rpcServer,
 		rpcClient: rpcClient,
-
-		// Callback Properties
-		
 	}
 }
 

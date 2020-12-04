@@ -21,6 +21,7 @@ type Transfer struct {
 	// Inherited Properties
 	mutex      sync.Mutex
 	metadata   *md.Metadata
+	owner      *md.Peer
 	onProgress OnProgress
 	onComplete OnProtobuf
 	path       string
@@ -56,12 +57,14 @@ func (dsc *PeerConnection) ReadStream(reader msgio.ReadCloser) {
 }
 
 // ^ Create new SonrFile struct with meta and documents directory ^ //
-func NewTransfer(docDir string, meta *md.Metadata, op OnProgress, oc OnProtobuf) Transfer {
+func NewTransfer(docDir string, meta *md.Metadata, own *md.Peer, op OnProgress, oc OnProtobuf) Transfer {
 	return Transfer{
 		// Inherited Properties
 		metadata:   meta,
 		path:       docDir + "/" + meta.Name + "." + meta.Mime.Subtype,
+		owner:      own,
 		onProgress: op,
+		onComplete: oc,
 
 		// Builders
 		stringsBuilder: new(strings.Builder),
@@ -116,19 +119,24 @@ func (t *Transfer) AddBuffer(buffer []byte) (bool, error) {
 	t.onProgress(currP)
 
 	if t.stringsBuilder.Len() == t.size || t.bytesBuilder.Len() == t.size {
+		t.Save()
 		return true, nil
 	}
 	return false, nil
 }
 
 // ^ Check file type and use corresponding method to Save to Disk ^ //
-func (t *Transfer) Save(owner *md.Peer) (*md.Metadata, error) {
+func (t *Transfer) Save() {
 	// ** Lock/Unlock ** //
 	t.mutex.Lock()
 	defer t.mutex.Unlock()
 
-	// Initialize
-	var fileBytes []byte
+	// @ Create File at Path
+	f, err := os.Create(t.path)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer f.Close()
 
 	// @ Set File Bytes by Type
 	if t.metadata.Mime.Type == md.MIME_image {
@@ -141,26 +149,25 @@ func (t *Transfer) Save(owner *md.Peer) (*md.Metadata, error) {
 			log.Fatal("error:", err)
 		}
 
-		// Set Bytes from Base64
-		fileBytes = b64Bytes
+		// Save Bytes from Base64
+		if _, err := f.Write(b64Bytes); err != nil {
+			log.Fatalln(err)
+		}
+
+		// Sync file
+		if err := f.Sync(); err != nil {
+			log.Fatalln(err)
+		}
 	} else {
-		// Set Bytes from Buffer
-		fileBytes = t.bytesBuilder.Bytes()
-	}
+		// Save Bytes from Buffer
+		if _, err := f.Write(t.bytesBuilder.Bytes()); err != nil {
+			log.Fatalln(err)
+		}
 
-	// @ Create File at Path
-	f, err := os.Create(t.path)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	defer f.Close()
-
-	// @ Write Bytes to to file
-	if _, err := f.Write(fileBytes); err != nil {
-		log.Fatalln(err)
-	}
-	if err := f.Sync(); err != nil {
-		log.Fatalln(err)
+		// Sync file
+		if err := f.Sync(); err != nil {
+			log.Fatalln(err)
+		}
 	}
 
 	// Get Info
@@ -169,13 +176,24 @@ func (t *Transfer) Save(owner *md.Peer) (*md.Metadata, error) {
 		fmt.Println(err)
 	}
 
-	// @ 3. Set Metadata Protobuf Values
-	return &md.Metadata{
+	// @ 3. Callback saved Metadata
+	// Create Metadata
+	saved := &md.Metadata{
 		Name:       t.metadata.Name,
 		Path:       t.path,
 		Size:       int32(info.Size()),
 		Mime:       t.metadata.Mime,
-		Owner:      owner,
+		Owner:      t.owner,
 		LastOpened: int32(time.Now().Unix()),
-	}, nil
+	}
+
+	// Convert to bytes
+	bytes, err := proto.Marshal(saved)
+	if err != nil {
+		onError(err, "read")
+		log.Fatalln(err)
+	}
+
+	// Send Complete Callback
+	t.onComplete(bytes)
 }

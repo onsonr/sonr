@@ -41,15 +41,12 @@ type PeerConnection struct {
 	completedCall OnProtobuf
 
 	// Info
-	dirs     *md.Directories
-	peerInfo *md.Peer
-	peerID   peer.ID
-	selfInfo *md.Peer
-	selfID   peer.ID
+	dirs   *md.Directories
+	peerID peer.ID
 }
 
 // ^ Initialize sets up new Peer Connection handler ^
-func Initialize(h host.Host, d *md.Directories, si *md.Peer, ic OnProtobuf, rc OnProtobuf, pc OnProgress, cc OnProtobuf, ec OnError) (*PeerConnection, error) {
+func Initialize(h host.Host, d *md.Directories, ic OnProtobuf, rc OnProtobuf, pc OnProgress, cc OnProtobuf, ec OnError) (*PeerConnection, error) {
 	// Set Package Level Callbacks
 	onError = ec
 
@@ -57,8 +54,6 @@ func Initialize(h host.Host, d *md.Directories, si *md.Peer, ic OnProtobuf, rc O
 	peerConn := &PeerConnection{
 		host:          h,
 		dirs:          d,
-		selfInfo:      si,
-		selfID:        h.ID(),
 		invitedCall:   ic,
 		respondedCall: rc,
 		progressCall:  pc,
@@ -76,7 +71,6 @@ func Initialize(h host.Host, d *md.Directories, si *md.Peer, ic OnProtobuf, rc O
 // ^ Send Invite to a Peer ^ //
 func (pc *PeerConnection) Invite(id peer.ID, info *md.Peer, sm *sf.SafeFile) {
 	// @1. Set PeerConnection Details
-	pc.peerInfo = info
 	pc.peerID = id
 	pc.safeFile = sm
 
@@ -103,12 +97,12 @@ func (pc *PeerConnection) Invite(id peer.ID, info *md.Peer, sm *sf.SafeFile) {
 }
 
 // ^ User has accepted ^ //
-func (pc *PeerConnection) HandleInvited(meta *md.Metadata, peer *md.Peer) {
+func (pc *PeerConnection) OnAccepted(meta *md.Metadata, peer *md.Peer) {
 	// Create Save Path
 	savePath := "/" + meta.Name + "." + meta.Mime.Subtype
 
 	// Set Transfer
-	pc.transfer = NewTransfer(savePath, meta, pc.progressCall, pc.completedCall)
+	pc.transfer = NewTransfer(savePath, meta, peer, pc.progressCall, pc.completedCall)
 }
 
 // ^ User has accepted ^ //
