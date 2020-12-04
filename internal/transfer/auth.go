@@ -44,7 +44,6 @@ func (as *AuthService) InviteRequest(ctx context.Context, args AuthArgs, reply *
 	log.Println("Received a Invite call: ", args.Data)
 	// Set Current Data
 	as.currArgs = args
-	as.currReply = reply
 
 	// Send Callback
 	as.inviteCall(args.Data)
@@ -78,7 +77,7 @@ func (pc *PeerConnection) SendInvite(h host.Host, id peer.ID, msgBytes []byte) {
 	// End Tracking
 	endTime := time.Now()
 	diff := endTime.Sub(startTime)
-	log.Printf("Response from %s: time=%s\n", id, diff)
+	log.Printf("Response %s from %s: time=%s\n", id, reply.Data, diff)
 
 	// Send Callback and Reset
 	pc.respondedCall(reply.Data)
