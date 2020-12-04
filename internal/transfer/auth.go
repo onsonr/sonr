@@ -13,13 +13,6 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// *********************** //
-// ** Callback Handling ** //
-// *********************** //
-// Define Callback Function Types
-type OnAccepted func(meta *md.Metadata, peer *md.Peer)
-type HandleAccepted func()
-
 // ****************** //
 // ** GRPC Service ** //
 // ****************** //
@@ -34,61 +27,106 @@ type AuthReply struct {
 }
 
 // Service Struct
-type AuthService struct {
-	onAccepted     OnAccepted
-	handleAccepted HandleAccepted
+type Authorization struct {
+	// Reference
+	peerConn *PeerConnection
+
+	// Current Data
+	currArgs  AuthArgs
+	currReply *AuthReply
 }
 
 // ^ Calls Invite on Remote Peer ^ //
-func (as *AuthService) Invite(ctx context.Context, args AuthArgs, reply *AuthReply) error {
+func (as *Authorization) Invite(ctx context.Context, args AuthArgs, reply *AuthReply) error {
 	log.Println("Received a Invite call: ", args.Data)
-	as.process(args)
-	reply.Data = args.Data
-	// Send Callback
+	// Process Message
+	err := as.processInvite(args, reply)
+	if err != nil {
+		onError(err, "process")
+		panic(err)
+	}
+
+	//reply.Data = args.Data
 	return nil
 }
 
 // ^ Calls Accept on Remote Peer ^ //
-func (as *AuthService) Accept(ctx context.Context, args AuthArgs, reply *AuthReply) error {
+func (as *Authorization) Accept(ctx context.Context, args AuthArgs, reply *AuthReply) error {
 	log.Println("Received a Accept call: ", args.Data)
-	as.process(args)
-	reply.Data = args.Data
+	// Process Message
+	err := as.processAccept(args, reply)
+	if err != nil {
+		onError(err, "process")
+		panic(err)
+	}
+
+	//reply.Data = args.Data
 	// Send Callback
 	return nil
 }
 
-// ^ Processes Message Content ^ //
-func (as *AuthService) process(args AuthArgs) {
+// ^ Processes Accept Event ^ //
+func (as *Authorization) processInvite(args AuthArgs, reply *AuthReply) error {
+	// Set Current Data
+	as.currArgs = args
+	as.currReply = reply
+
+	// Send Callback
+	as.peerConn.invitedCall(args.Data)
+	return nil
+}
+
+// ^ Processes Accept Event ^ //
+func (as *Authorization) processAccept(args AuthArgs, reply *AuthReply) error {
+	// Set Current Data
+	as.currArgs = args
+	as.currReply = reply
+
+	// Send Callback
+	as.peerConn.respondedCall(args.Data)
+
+	// Initiate Transfer
+	as.peerConn.HandleAccepted()
+	return nil
+}
+
+// ^ Processes Accept Event ^ //
+func (as *Authorization) processDecline(args AuthArgs, reply *AuthReply) error {
+	// Set Current Data
+	as.currArgs = args
+	as.currReply = reply
+
 	// Unmarshal Bytes into Proto
 	protoMsg := &md.AuthMessage{}
 	err := proto.Unmarshal(args.Data, protoMsg)
 	if err != nil {
-		onError(err, "read")
-		log.Fatalln(err)
+		return err
 	}
+
+	// Send Callback by Event Type
+	return nil
 }
 
 // ********************* //
 // ** Method Handling ** //
 // ********************* //
 // Handler Struct
-type Authentication struct {
-	// Rpc Properties
+type AuthRPC struct {
+	// Connection
 	rpcClient *gorpc.Client
 	rpcServer *gorpc.Server
 }
 
 // ^ Set Sender as Server ^ //
-func NewAuthentication(pc *PeerConnection) *Authentication {
+func NewAuthentication(pc *PeerConnection) *AuthRPC {
 	log.Println("Creating New Auth Handler")
 	// Create Server Client
 	rpcServer := gorpc.NewServer(pc.host, protocol.ID("/sonr/auth/handler"))
 	rpcClient := gorpc.NewClientWithServer(pc.host, protocol.ID("/sonr/auth/caller"), rpcServer)
 
 	// Create Service
-	svc := AuthService{
-		onAccepted:     pc.OnAccepted,
-		handleAccepted: pc.HandleAccepted,
+	svc := Authorization{
+		peerConn: pc,
 	}
 
 	// Register Service
@@ -97,15 +135,39 @@ func NewAuthentication(pc *PeerConnection) *Authentication {
 		panic(err)
 	}
 
-	return &Authentication{
+	return &AuthRPC{
 		// Rpc Properties
 		rpcServer: rpcServer,
 		rpcClient: rpcClient,
 	}
 }
 
-// ^ Send Authorization Invite to Data Sender ^ //
-func (ah *Authentication) sendInvite(id peer.ID, msgBytes []byte) error {
+// ^ Send Authorization Invite to Peer ^ //
+func (ah *AuthRPC) sendInvite(id peer.ID, msgBytes []byte) error {
+	// Initialize Vars
+	var reply AuthReply
+	args := AuthArgs{
+		Data: msgBytes,
+	}
+
+	// Set Message Data
+	startTime := time.Now()
+
+	// Call to Peer
+	err := ah.rpcClient.Call(id, "AuthService", "Invite", args, &reply)
+	if err != nil {
+		onError(err, "sendInvite")
+		panic(err)
+	}
+
+	endTime := time.Now()
+	diff := endTime.Sub(startTime)
+	fmt.Printf("Auth from %s: time=%s\n", id, diff)
+	return nil
+}
+
+// ^ Send Response as Accept to Invite ^ //
+func (ah *AuthRPC) sendAccept(id peer.ID, msgBytes []byte) error {
 	// Initialize Vars
 	var reply AuthReply
 	args := AuthArgs{

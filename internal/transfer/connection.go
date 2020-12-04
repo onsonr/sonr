@@ -27,9 +27,9 @@ var onError OnError
 // ^ Struct: Holds/Handles GRPC Calls and Handles Data Stream  ^ //
 type PeerConnection struct {
 	// Handlers
-	auth     *Authentication
+	auth     *AuthRPC
 	safeFile *sf.SafeFile
-	transfer Transfer
+	transfer *Transfer
 
 	// Connection
 	host host.Host
@@ -97,7 +97,7 @@ func (pc *PeerConnection) Invite(id peer.ID, info *md.Peer, sm *sf.SafeFile) {
 }
 
 // ^ User has accepted ^ //
-func (pc *PeerConnection) OnAccepted(meta *md.Metadata, peer *md.Peer) {
+func (pc *PeerConnection) Accept(meta *md.Metadata, peer *md.Peer) {
 	// Create Save Path
 	savePath := "/" + meta.Name + "." + meta.Mime.Subtype
 
@@ -137,6 +137,27 @@ func (pc *PeerConnection) HandleTransfer(stream network.Stream) {
 	// Set Stream
 	log.Println("Stream Info: ", stream.Stat())
 
-	// Initialize Routine
-	go pc.ReadStream(msgio.NewReader(stream))
+	// Route Data from Stream
+	go func(reader msgio.ReadCloser, t *Transfer) {
+		for {
+			// @ Read Length Fixed Bytes
+			buffer, err := reader.ReadMsg()
+			if err != nil {
+				onError(err, "ReadStream")
+				log.Fatalln(err)
+				break
+			}
+
+			// @ Unmarshal Bytes into Proto
+			hasCompleted, err := t.AddBuffer(buffer)
+			if err != nil {
+				onError(err, "ReadStream")
+				log.Fatalln(err)
+				break
+			}
+			if hasCompleted {
+				break
+			}
+		}
+	}(msgio.NewReader(stream), pc.transfer)
 }

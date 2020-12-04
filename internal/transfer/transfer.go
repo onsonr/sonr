@@ -10,7 +10,6 @@ import (
 	"sync"
 	"time"
 
-	msgio "github.com/libp2p/go-msgio"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -35,30 +34,9 @@ type Transfer struct {
 	size  int
 }
 
-// ^ read Data from Msgio ^ //
-func (dsc *PeerConnection) ReadStream(reader msgio.ReadCloser) {
-	for i := 0; ; i++ {
-		// @ Read Length Fixed Bytes
-		buffer, err := reader.ReadMsg()
-		if err != nil {
-			onError(err, "ReadStream")
-			log.Fatalln(err)
-			break
-		}
-
-		// @ Unmarshal Bytes into Proto
-		chunk := md.Chunk{}
-		err = proto.Unmarshal(buffer, &chunk)
-		if err != nil {
-			onError(err, "ReadStream")
-			log.Fatalln(err)
-		}
-	}
-}
-
 // ^ Create new SonrFile struct with meta and documents directory ^ //
-func NewTransfer(docDir string, meta *md.Metadata, own *md.Peer, op OnProgress, oc OnProtobuf) Transfer {
-	return Transfer{
+func NewTransfer(docDir string, meta *md.Metadata, own *md.Peer, op OnProgress, oc OnProtobuf) *Transfer {
+	return &Transfer{
 		// Inherited Properties
 		metadata:   meta,
 		path:       docDir + "/" + meta.Name + "." + meta.Mime.Subtype,
