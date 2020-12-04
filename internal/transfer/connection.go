@@ -48,17 +48,17 @@ type PeerConnection struct {
 	// Info
 	olc         string
 	dirs        *md.Directories
-	currMessage md.AuthMessage
+	currMessage *md.AuthMessage
 	peerID      peer.ID
 }
 
 // ^ Initialize sets up new Peer Connection handler ^
-func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic OnProtobuf, rc OnProtobuf, pc OnProgress, cc OnProtobuf, ec OnError) (*PeerConnection, error) {
+func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic OnProtobuf, rc OnProtobuf, pc OnProgress, cc OnProtobuf, ec OnError) (PeerConnection, error) {
 	// Set Package Level Callbacks
 	onError = ec
 
 	// Initialize Parameters into PeerConnection
-	peerConn := &PeerConnection{
+	peerConn := PeerConnection{
 		// Connection
 		host:   h,
 		pubSub: ps,
@@ -78,7 +78,7 @@ func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic 
 	peerConn.rpcServer = gorpc.NewServer(peerConn.host, protocol.ID("/sonr/rpc/auth"))
 	peerConn.rpcClient = gorpc.NewClientWithServer(peerConn.host, protocol.ID("/sonr/rpc/auth"), peerConn.rpcServer)
 	peerConn.ascv = Authorization{
-		peerConn: peerConn,
+		peerConn: &peerConn,
 	}
 
 	// Register Service

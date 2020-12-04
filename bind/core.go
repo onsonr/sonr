@@ -48,7 +48,7 @@ type Node struct {
 	// References
 	callbackRef Callback
 	lobby       *lobby.Lobby
-	peerConn    *tr.PeerConnection
+	peerConn    tr.PeerConnection
 }
 
 // ^ NewNode Initializes Node with a host and default properties ^

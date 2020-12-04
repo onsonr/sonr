@@ -2,6 +2,7 @@ package transfer
 
 import (
 	"context"
+	"errors"
 	"log"
 	"time"
 
@@ -47,7 +48,7 @@ func (as *Authorization) Invite(ctx context.Context, args AuthArgs, reply *AuthR
 	as.peerConn.peerID = as.peerConn.Find(args.From)
 
 	// Set Current Message
-	err := proto.Unmarshal(args.Data, &as.peerConn.currMessage)
+	err := proto.Unmarshal(args.Data, as.peerConn.currMessage)
 	if err != nil {
 		onError(err, "process")
 		return err
@@ -121,19 +122,25 @@ func (pc *PeerConnection) SendResponse(decision bool, selfInfo *md.Peer) {
 
 	// Check Decision
 	if decision {
-		// Initialize Transfer
-		savePath := "/" + pc.currMessage.Metadata.Name + "." + pc.currMessage.Metadata.Mime.Subtype
-		pc.transfer = NewTransfer(savePath, pc.currMessage.Metadata, pc.currMessage.From, pc.progressCall, pc.completedCall)
+		if pc.currMessage != nil {
+			// Initialize Transfer
+			savePath := "/" + pc.currMessage.Metadata.Name + "." + pc.currMessage.Metadata.Mime.Subtype
+			pc.transfer = NewTransfer(savePath, pc.currMessage.Metadata, pc.currMessage.From, pc.progressCall, pc.completedCall)
 
-		// Create Accept Response
-		respMsg = &md.AuthMessage{
-			From:  selfInfo,
-			Event: md.AuthMessage_ACCEPT,
+			// Create Accept Response
+			respMsg = &md.AuthMessage{
+				From:  selfInfo,
+				Event: md.AuthMessage_ACCEPT,
+			}
+		} else {
+			err := errors.New("AuthMessage wasnt cached")
+			onError(err, "sendInvite")
+			log.Panicln(err)
 		}
 	} else {
 		// Reset Peer Info
 		pc.peerID = ""
-		pc.currMessage = md.AuthMessage{}
+		pc.currMessage = nil
 
 		// Create Decline Response
 		respMsg = &md.AuthMessage{
