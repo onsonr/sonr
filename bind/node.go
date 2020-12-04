@@ -7,6 +7,7 @@ import (
 	"time"
 
 	sf "github.com/sonr-io/core/internal/file"
+	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -46,23 +47,76 @@ func (sn *Node) Invite(peerId string) {
 	// Create Delay to allow processing
 	time.Sleep(time.Second)
 
-	// Set Metadata in Auth Stream
-	currFile := sn.currentFile()
-
 	// Find PeerID and Peer Struct
 	id, peer := sn.lobby.Find(peerId)
+
+	// Validate Peer Values
 	if peer == nil || id == "" {
 		sn.error(errors.New("Search Error, peer was not found in map."), "Invite")
 	} else {
+		// Set Metadata in Auth Stream
+		currFile := sn.currentFile()
+		meta := currFile.GetMetadata()
+
+		// Set SafeFile
+		sn.peerConn.SafeFile = currFile
+
+		// Create Invite Message
+		reqMsg := md.AuthMessage{
+			Event:    md.AuthMessage_REQUEST,
+			From:     sn.peer,
+			Metadata: meta,
+		}
+
+		// Convert Protobuf to bytes
+		msgBytes, err := proto.Marshal(&reqMsg)
+		if err != nil {
+			sn.error(err, "Marshal")
+			log.Println(err)
+		}
+
 		// Call GRPC in PeerConnection
-		sn.peerConn.SendInvite(sn.host, id, peer, currFile)
+		sn.peerConn.SendInvite(sn.host, id, msgBytes)
 	}
 }
 
 // ^ Respond to an Invitation ^ //
 func (sn *Node) Respond(decision bool) {
-	// Send Response on PeerConnection
-	sn.peerConn.SendResponse(decision, sn.peer)
+	// @ Check Decision
+	if decision {
+		// Create Accept Response
+		respMsg := &md.AuthMessage{
+			From:  sn.peer,
+			Event: md.AuthMessage_ACCEPT,
+		}
+
+		// Convert Protobuf to bytes
+		msgBytes, err := proto.Marshal(respMsg)
+		if err != nil {
+			sn.error(err, "Marshal")
+			log.Println(err)
+		}
+
+		// Send Response on PeerConnection
+		sn.peerConn.SendResponse(decision, msgBytes)
+	} else {
+		// Create Decline Response
+		respMsg := &md.AuthMessage{
+			From:  sn.peer,
+			Event: md.AuthMessage_DECLINE,
+		}
+
+		// Convert Protobuf to bytes
+		msgBytes, err := proto.Marshal(respMsg)
+		if err != nil {
+			sn.error(err, "Marshal")
+			log.Println(err)
+		}
+
+		// Send Response on PeerConnection
+		sn.peerConn.SendResponse(decision, msgBytes)
+	}
+
 }
 
 // ^ Reset Current Queued File Metadata ^ //

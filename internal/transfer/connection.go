@@ -30,10 +30,10 @@ var onError OnError
 type PeerConnection struct {
 	// Connection
 	pubSub *pubsub.PubSub
-	ascv   *AuthService
+	auth   AuthService
 
 	// Data Handlers
-	safeFile *sf.SafeMetadata
+	SafeFile *sf.SafeMetadata
 	transfer *Transfer
 
 	// Callbacks
@@ -68,18 +68,19 @@ func (peerConn *PeerConnection) Initialize(h host.Host, ps *pubsub.PubSub, d *md
 	rpcServer := gorpc.NewServer(h, protocol.ID("/sonr/rpc/auth"))
 
 	// Create AuthService
-	auth := new(AuthService)
-	auth.inviteCall = peerConn.invitedCall
+	ath := AuthService{
+		inviteCall: ic,
+	}
 
 	// Register Service
-	err := rpcServer.Register(&peerConn.ascv)
+	err := rpcServer.Register(&ath)
 	if err != nil {
 		return err
 	}
 	log.Println("Created RPC AuthService")
 
 	// Set RPC Services
-	peerConn.ascv = auth
+	peerConn.auth = ath
 	return nil
 }
 

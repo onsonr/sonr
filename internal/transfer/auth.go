@@ -10,9 +10,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	gorpc "github.com/libp2p/go-libp2p-gorpc"
-	sf "github.com/sonr-io/core/internal/file"
-	md "github.com/sonr-io/core/internal/models"
-	"google.golang.org/protobuf/proto"
 )
 
 // ****************** //
@@ -54,26 +51,9 @@ func (as *AuthService) InviteRequest(ctx context.Context, args AuthArgs, reply *
 }
 
 // ^ Send SendInvite to a Peer ^ //
-func (pc *PeerConnection) SendInvite(h host.Host, id peer.ID, info *md.Peer, sm *sf.SafeMetadata) {
-	// Set SafeFile
-	pc.safeFile = sm
-
+func (pc *PeerConnection) SendInvite(h host.Host, id peer.ID, msgBytes []byte) {
 	// Create Client
 	rpcClient := gorpc.NewClient(h, protocol.ID("/sonr/rpc/auth"))
-
-	// Create Invite Message
-	reqMsg := md.AuthMessage{
-		Event:    md.AuthMessage_REQUEST,
-		From:     info,
-		Metadata: sm.GetMetadata(),
-	}
-
-	// Convert Protobuf to bytes
-	msgBytes, err := proto.Marshal(&reqMsg)
-	if err != nil {
-		onError(err, "sendInvite")
-		log.Println(err)
-	}
 
 	// Set Data
 	var reply AuthReply
@@ -82,7 +62,7 @@ func (pc *PeerConnection) SendInvite(h host.Host, id peer.ID, info *md.Peer, sm 
 	startTime := time.Now()
 
 	// Call to Peer
-	err = rpcClient.Call(id, "AuthService", "InviteRequest", args, &reply)
+	err := rpcClient.Call(id, "AuthService", "InviteRequest", args, &reply)
 	if err != nil {
 		// Track Execution
 		endTime := time.Now()
@@ -110,22 +90,13 @@ func (pc *PeerConnection) SendInvite(h host.Host, id peer.ID, info *md.Peer, sm 
 }
 
 // ^ Send Accept Message on Stream ^ //
-func (pc *PeerConnection) SendResponse(decision bool, selfInfo *md.Peer) {
-	// Initialize Message
-	var respMsg *md.AuthMessage
-
+func (pc *PeerConnection) SendResponse(decision bool, msgBytes []byte) {
 	// Check Decision
 	if decision {
 		if pc.currMessage != nil {
 			// Initialize Transfer
 			savePath := "/" + pc.currMessage.Metadata.Name + "." + pc.currMessage.Metadata.Mime.Subtype
 			pc.transfer = NewTransfer(savePath, pc.currMessage.Metadata, pc.currMessage.From, pc.progressCall, pc.completedCall)
-
-			// Create Accept Response
-			respMsg = &md.AuthMessage{
-				From:  selfInfo,
-				Event: md.AuthMessage_ACCEPT,
-			}
 		} else {
 			err := errors.New("AuthMessage wasnt cached")
 			onError(err, "sendInvite")
@@ -135,21 +106,8 @@ func (pc *PeerConnection) SendResponse(decision bool, selfInfo *md.Peer) {
 		// Reset Peer Info
 		pc.peerID = ""
 		pc.currMessage = nil
-
-		// Create Decline Response
-		respMsg = &md.AuthMessage{
-			From:  selfInfo,
-			Event: md.AuthMessage_DECLINE,
-		}
 	}
 
-	// Convert Protobuf to bytes
-	msgBytes, err := proto.Marshal(respMsg)
-	if err != nil {
-		onError(err, "sendInvite")
-		log.Println(err)
-	}
-
-	pc.ascv.currReply.Data = msgBytes
-	pc.ascv.currReply.Decision = decision
+	pc.auth.currReply.Data = msgBytes
+	pc.auth.currReply.Decision = decision
 }
