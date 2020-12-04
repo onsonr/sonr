@@ -48,7 +48,7 @@ type PeerConnection struct {
 	// Info
 	olc         string
 	dirs        *md.Directories
-	currMessage *md.AuthMessage
+	currMessage md.AuthMessage
 	peerID      peer.ID
 }
 

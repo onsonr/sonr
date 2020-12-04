@@ -56,7 +56,7 @@ func (sn *Node) Invite(peerId string) {
 	}
 
 	// Initialize new AuthStream with Peer
-	sn.peerConn.Invite(id, peer, currFile)
+	sn.peerConn.SendInvite(id, peer, currFile)
 }
 
 // ^ Respond to an Invitation ^ //

@@ -47,7 +47,7 @@ func (as *Authorization) Invite(ctx context.Context, args AuthArgs, reply *AuthR
 	as.peerConn.peerID = as.peerConn.Find(args.From)
 
 	// Set Current Message
-	err := proto.Unmarshal(args.Data, as.peerConn.currMessage)
+	err := proto.Unmarshal(args.Data, &as.peerConn.currMessage)
 	if err != nil {
 		onError(err, "process")
 		return err
@@ -61,8 +61,8 @@ func (as *Authorization) Invite(ctx context.Context, args AuthArgs, reply *AuthR
 	return nil
 }
 
-// ^ Send Invite to a Peer ^ //
-func (pc *PeerConnection) Invite(id peer.ID, info *md.Peer, sm *sf.SafeMetadata) {
+// ^ Send SendInvite to a Peer ^ //
+func (pc *PeerConnection) SendInvite(id peer.ID, info *md.Peer, sm *sf.SafeMetadata) {
 	// Set SafeFile
 	pc.safeFile = sm
 
@@ -133,7 +133,7 @@ func (pc *PeerConnection) SendResponse(decision bool, selfInfo *md.Peer) {
 	} else {
 		// Reset Peer Info
 		pc.peerID = ""
-		pc.currMessage = nil
+		pc.currMessage = md.AuthMessage{}
 
 		// Create Decline Response
 		respMsg = &md.AuthMessage{
