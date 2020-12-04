@@ -27,7 +27,7 @@ type FileCallback struct {
 }
 
 // ^ File that safely sets metadata and thumbnail in routine ^ //
-type SafeFile struct {
+type SafeMetadata struct {
 	// Callbacks
 	CallQueued   OnProtobuf
 	CallProgress OnProgress
@@ -43,9 +43,9 @@ type SafeFile struct {
 }
 
 // ^ Create generates file metadata ^ //
-func NewMetadata(filePath string, queueCall OnProtobuf, progCall OnProgress, errCall OnError) *SafeFile {
+func NewMetadata(filePath string, queueCall OnProtobuf, progCall OnProgress, errCall OnError) *SafeMetadata {
 	// Create new SafeFile
-	sf := &SafeFile{
+	sm := &SafeMetadata{
 		CallQueued:   queueCall,
 		CallProgress: progCall,
 		CallError:    errCall,
@@ -53,14 +53,14 @@ func NewMetadata(filePath string, queueCall OnProtobuf, progCall OnProgress, err
 	}
 
 	// ** Lock ** //
-	sf.mutex.Lock()
+	sm.mutex.Lock()
 
 	// @ 1. Get File Information
 	// Open File at Path
-	file, err := os.Open(sf.path)
+	file, err := os.Open(sm.path)
 	if err != nil {
 		log.Fatalln(err)
-		sf.CallError(err, "AddFile")
+		sm.CallError(err, "AddFile")
 	}
 	defer file.Close()
 
@@ -68,7 +68,7 @@ func NewMetadata(filePath string, queueCall OnProtobuf, progCall OnProgress, err
 	info, err := file.Stat()
 	if err != nil {
 		log.Fatalln(err)
-		sf.CallError(err, "AddFile")
+		sm.CallError(err, "AddFile")
 	}
 
 	// Read File to required bytes
@@ -76,21 +76,22 @@ func NewMetadata(filePath string, queueCall OnProtobuf, progCall OnProgress, err
 	_, err = file.Read(head)
 	if err != nil {
 		log.Fatalln(err)
-		sf.CallError(err, "AddFile")
+		sm.CallError(err, "AddFile")
 	}
 
 	// Get File Type
 	kind, err := filetype.Match(head)
 	if err != nil {
 		log.Fatalln(err)
-		sf.CallError(err, "AddFile")
+		sm.CallError(err, "AddFile")
 	}
 
 	// @ 2. Set Metadata Protobuf Values
 	// Set Metadata
-	sf.meta = md.Metadata{
-		Name: getFileName(sf.path),
-		Path: sf.path,
+	base := filepath.Base(sm.path)
+	sm.meta = md.Metadata{
+		Name: strings.TrimSuffix(base, filepath.Ext(sm.path)),
+		Path: sm.path,
 		Size: int32(info.Size()),
 		Mime: &md.MIME{
 			Type:    md.MIME_Type(md.MIME_Type_value[kind.MIME.Type]),
@@ -100,26 +101,26 @@ func NewMetadata(filePath string, queueCall OnProtobuf, progCall OnProgress, err
 	}
 
 	// Set Mime
-	sf.Mime = sf.meta.Mime
+	sm.Mime = sm.meta.Mime
 
 	// @ 3. Create Thumbnail in Goroutine
-	go func(sf *SafeFile) {
+	go func(sm *SafeMetadata) {
 		if filetype.IsImage(head) {
 			// New File for ThumbNail
-			thumbBytes, err := NewThumbnail(sf.path)
+			thumbBytes, err := newThumbnail(sm.path)
 			if err != nil {
 				fmt.Println(err)
-				sf.CallError(err, "AddFile")
+				sm.CallError(err, "AddFile")
 			}
 			// Update Metadata Value
-			sf.meta.Thumbnail = thumbBytes
+			sm.meta.Thumbnail = thumbBytes
 		}
 
 		// ** Unlock ** //
-		sf.mutex.Unlock()
+		sm.mutex.Unlock()
 
 		// Get Metadata
-		meta := sf.Metadata()
+		meta := sm.GetMetadata()
 
 		// Convert to bytes
 		data, err := proto.Marshal(meta)
@@ -128,24 +129,17 @@ func NewMetadata(filePath string, queueCall OnProtobuf, progCall OnProgress, err
 		}
 
 		// Callback with Metadata
-		sf.CallQueued(data)
-	}(sf)
-	return sf
+		sm.CallQueued(data)
+	}(sm)
+	return sm
 }
 
 // ^ Safely returns metadata depending on lock ^ //
-func (sf *SafeFile) Metadata() *md.Metadata {
+func (sm *SafeMetadata) GetMetadata() *md.Metadata {
 	// ** Lock File wait for access ** //
-	sf.mutex.Lock()
-	defer sf.mutex.Unlock()
+	sm.mutex.Lock()
+	defer sm.mutex.Unlock()
 
 	// @ 2. Return Value
-	return &sf.meta
-}
-
-// ^ Helper: Get File name from Path ^ //
-func getFileName(path string) string {
-	// Get File Name
-	base := filepath.Base(path)
-	return strings.TrimSuffix(base, filepath.Ext(path))
+	return &sm.meta
 }

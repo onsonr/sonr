@@ -53,14 +53,14 @@ func (as *AuthService) processInvite(args AuthArgs, reply *AuthReply) error {
 	as.currArgs = args
 	as.currReply = reply
 
+	// Set Peer ID
+	as.peerConn.peerID = as.peerConn.Find(args.From)
+
 	// Set Current Message
 	err := proto.Unmarshal(args.Data, as.peerConn.currMessage)
 	if err != nil {
 		return err
 	}
-
-	// Set Peer ID
-	as.peerConn.peerID = as.peerConn.Find(args.From)
 
 	// Send Callback
 	as.peerConn.invitedCall(args.Data)

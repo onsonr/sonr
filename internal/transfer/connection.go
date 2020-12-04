@@ -28,7 +28,7 @@ var onError OnError
 type PeerConnection struct {
 	// Handlers
 	auth     *Authorization
-	safeFile *sf.SafeFile
+	safeFile *sf.SafeMetadata
 	transfer *Transfer
 
 	// Connection
@@ -86,21 +86,15 @@ func (pc *PeerConnection) Find(q string) peer.ID {
 }
 
 // ^ Send Invite to a Peer ^ //
-func (pc *PeerConnection) Invite(id peer.ID, info *md.Peer, sm *sf.SafeFile) {
+func (pc *PeerConnection) Invite(id peer.ID, info *md.Peer, sm *sf.SafeMetadata) {
 	// Set SafeFile
 	pc.safeFile = sm
-
-	// // Find Peer and Set
-	// pc.peerID = pc.Find(id)
-	// if pc.peerID == "" {
-	// 	onError(errors.New("Peer ID not Found"), "ID")
-	// }
 
 	// Create Invite Message
 	reqMsg := &md.AuthMessage{
 		Event:    md.AuthMessage_REQUEST,
 		From:     info,
-		Metadata: sm.Metadata(),
+		Metadata: sm.GetMetadata(),
 	}
 
 	// Send GRPC Call
@@ -163,7 +157,7 @@ func (pc *PeerConnection) StartTransfer() {
 
 	// Initialize Writer
 	writer := msgio.NewWriter(stream)
-	meta := pc.safeFile.Metadata()
+	meta := pc.safeFile.GetMetadata()
 
 	// @ Check Type
 	if pc.safeFile.Mime.Type == md.MIME_image {

@@ -15,7 +15,7 @@ import (
 )
 
 // ^ CurrentFile returns last file in Processed Files ^ //
-func (sn *Node) currentFile() *sf.SafeFile {
+func (sn *Node) currentFile() *sf.SafeMetadata {
 	return sn.files[len(sn.files)-1]
 }
 

@@ -15,7 +15,8 @@ import (
 const MAX_WIDTH float64 = 320
 const MAX_HEIGHT float64 = 240
 
-func NewThumbnail(path string) ([]byte, error) {
+// ^ Method to generate thumbnail for File Path ^ //
+func newThumbnail(path string) ([]byte, error) {
 	// New File for ThumbNail
 	thumbBuffer := new(bytes.Buffer)
 	file, err := os.Open(path)

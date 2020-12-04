@@ -80,7 +80,7 @@ func (sn *Node) Respond(decision bool) {
 func (sn *Node) ResetFile() {
 	// Reset Files Slice
 	sn.files = nil
-	sn.files = make([]*sf.SafeFile, maxFileBufferSize)
+	sn.files = make([]*sf.SafeMetadata, maxFileBufferSize)
 }
 
 // ^ Close Ends All Network Communication ^

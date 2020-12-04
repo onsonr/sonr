@@ -39,7 +39,7 @@ type Node struct {
 	host host.Host
 
 	// Data Properties
-	files []*sf.SafeFile
+	files []*sf.SafeMetadata
 
 	// References
 	callbackRef Callback
@@ -52,7 +52,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	// ** Create Context and Node - Begin Setup **
 	node := new(Node)
 	node.ctx = context.Background()
-	node.callbackRef, node.files = call, make([]*sf.SafeFile, maxFileBufferSize)
+	node.callbackRef, node.files = call, make([]*sf.SafeMetadata, maxFileBufferSize)
 
 	// ** Unmarshal Request **
 	reqMsg := md.ConnectionRequest{}
