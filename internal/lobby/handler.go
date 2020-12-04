@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
-	pb "github.com/sonr-io/core/internal/models"
+	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -25,7 +25,7 @@ func (lob *Lobby) handleMessages() {
 		}
 
 		// Construct message
-		notif := pb.LobbyEvent{}
+		notif := md.LobbyEvent{}
 		err = proto.Unmarshal(msg.Data, &notif)
 		if err != nil {
 			continue
@@ -47,18 +47,18 @@ func (lob *Lobby) handleEvents() {
 		// ** when we receive a message from the lobby room **
 		case m := <-lob.Messages:
 			// Update Circle by event
-			if m.Event == pb.LobbyEvent_UPDATE {
+			if m.Event == md.LobbyEvent_UPDATE {
 				// Update Peer Data
 				lob.updatePeer(m.Peer)
 
-			} else if m.Event == pb.LobbyEvent_EXIT {
+			} else if m.Event == md.LobbyEvent_EXIT {
 				// Remove Peer Data
 				lob.removePeer(m.Id)
 			}
 
 		// ** Refresh and Validate Lobby Peers Periodically ** //
 		case <-peerRefreshTicker.C:
-			lob.refresh(pb.CallbackType_REFRESHED, lob.Data)
+			lob.refresh(md.CallbackType_REFRESHED, lob.Data)
 
 		case <-lob.ctx.Done():
 			return
@@ -85,7 +85,7 @@ func (lob *Lobby) ID(q string) peer.ID {
 }
 
 // ** Peer returns ONE Peer in Lobby **
-func (lob *Lobby) Peer(q string) *pb.Peer {
+func (lob *Lobby) Peer(q string) *md.Peer {
 	// Iterate Through Peers, Return Matched Peer
 	for _, peer := range lob.Data.Peers {
 		// If Found Match
@@ -102,16 +102,16 @@ func (lob *Lobby) removePeer(id string) {
 	delete(lob.Data.Peers, id)
 
 	// Send Callback with updated peers
-	lob.refresh(pb.CallbackType_REFRESHED, lob.Data)
+	lob.refresh(md.CallbackType_REFRESHED, lob.Data)
 }
 
 // ** updatePeer changes peer values in Lobby **
-func (lob *Lobby) updatePeer(peer *pb.Peer) {
+func (lob *Lobby) updatePeer(peer *md.Peer) {
 	// Update Peer with new data
 	id := peer.Id
 	lob.Data.Peers[id] = peer
 	lob.Data.Size = int32(len(lob.Data.Peers)) + 1 // Account for User
 
 	// Send Callback with updated peers
-	lob.refresh(pb.CallbackType_REFRESHED, lob.Data)
+	lob.refresh(md.CallbackType_REFRESHED, lob.Data)
 }

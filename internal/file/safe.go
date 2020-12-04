@@ -8,11 +8,9 @@ import (
 	"sync"
 
 	"fmt"
-	_ "image/gif"
-	_ "image/jpeg"
 
 	"github.com/h2non/filetype"
-	pb "github.com/sonr-io/core/internal/models"
+	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -36,11 +34,11 @@ type SafeFile struct {
 	CallError    OnError
 
 	// Public Properties
-	Mime *pb.MIME
+	Mime *md.MIME
 
 	// Private Properties
 	mutex sync.Mutex
-	meta  pb.Metadata
+	meta  md.Metadata
 	path  string
 }
 
@@ -90,12 +88,12 @@ func NewMetadata(filePath string, queueCall OnProtobuf, progCall OnProgress, err
 
 	// @ 2. Set Metadata Protobuf Values
 	// Set Metadata
-	sf.meta = pb.Metadata{
+	sf.meta = md.Metadata{
 		Name: getFileName(sf.path),
 		Path: sf.path,
 		Size: int32(info.Size()),
-		Mime: &pb.MIME{
-			Type:    pb.MIME_Type(pb.MIME_Type_value[kind.MIME.Type]),
+		Mime: &md.MIME{
+			Type:    md.MIME_Type(md.MIME_Type_value[kind.MIME.Type]),
 			Subtype: kind.MIME.Subtype,
 			Value:   kind.MIME.Value,
 		},
@@ -136,7 +134,7 @@ func NewMetadata(filePath string, queueCall OnProtobuf, progCall OnProgress, err
 }
 
 // ^ Safely returns metadata depending on lock ^ //
-func (sf *SafeFile) Metadata() *pb.Metadata {
+func (sf *SafeFile) Metadata() *md.Metadata {
 	// ** Lock File wait for access ** //
 	sf.mutex.Lock()
 	defer sf.mutex.Unlock()

@@ -6,7 +6,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	pb "github.com/sonr-io/core/internal/models"
+	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -14,7 +14,7 @@ import (
 const ChatRoomBufSize = 128
 
 // Define Function Types
-type Refreshed func(call pb.CallbackType, data proto.Message)
+type Refreshed func(call md.CallbackType, data proto.Message)
 type Error func(err error, method string)
 
 // Lobby represents a subscription to a single PubSub topic. Messages
@@ -22,8 +22,8 @@ type Error func(err error, method string)
 // messages are pushed to the Messages channel.
 type Lobby struct {
 	// Public Vars
-	Messages chan *pb.LobbyEvent
-	Data     *pb.Lobby
+	Messages chan *md.LobbyEvent
+	Data     *md.Lobby
 
 	// Private Vars
 	ctx     context.Context
@@ -51,10 +51,10 @@ func Enter(ctx context.Context, callr Refreshed, onErr Error, ps *pubsub.PubSub,
 	}
 
 	// Initialize Lobby for Peers
-	lobInfo := &pb.Lobby{
+	lobInfo := &md.Lobby{
 		Code:  olc,
 		Size:  1,
-		Peers: make(map[string]*pb.Peer),
+		Peers: make(map[string]*md.Peer),
 	}
 
 	// Create Lobby Type
@@ -69,7 +69,7 @@ func Enter(ctx context.Context, callr Refreshed, onErr Error, ps *pubsub.PubSub,
 		self:    id,
 
 		Data:     lobInfo,
-		Messages: make(chan *pb.LobbyEvent, ChatRoomBufSize),
+		Messages: make(chan *md.LobbyEvent, ChatRoomBufSize),
 	}
 
 	// start reading messages
@@ -90,7 +90,7 @@ func (lob *Lobby) Info() []byte {
 }
 
 // ^ Find returns Pointer to Peer.ID and Peer ^
-func (lob *Lobby) Find(q string) (peer.ID, *pb.Peer) {
+func (lob *Lobby) Find(q string) (peer.ID, *md.Peer) {
 	// Retreive Data
 	peer := lob.Peer(q)
 	id := lob.ID(q)
@@ -99,10 +99,10 @@ func (lob *Lobby) Find(q string) (peer.ID, *pb.Peer) {
 }
 
 // ^ Send publishes a message to the pubsub topic OLC ^
-func (lob *Lobby) Update(p *pb.Peer) error {
+func (lob *Lobby) Update(p *md.Peer) error {
 	// Create Lobby Event
-	event := pb.LobbyEvent{
-		Event: pb.LobbyEvent_UPDATE,
+	event := md.LobbyEvent{
+		Event: md.LobbyEvent_UPDATE,
 		Peer:  p,
 	}
 
@@ -123,8 +123,8 @@ func (lob *Lobby) Update(p *pb.Peer) error {
 // ^ End terminates lobby loop ^
 func (lob *Lobby) Exit() {
 	// Create Lobby Event
-	event := pb.LobbyEvent{
-		Event: pb.LobbyEvent_EXIT,
+	event := md.LobbyEvent{
+		Event: md.LobbyEvent_EXIT,
 		Id:    lob.self.String(),
 	}
 

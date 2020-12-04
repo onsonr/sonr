@@ -8,21 +8,21 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/protocol"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	sonrFile "github.com/sonr-io/core/internal/file"
+	sf "github.com/sonr-io/core/internal/file"
 	"github.com/sonr-io/core/internal/lobby"
-	sonrModel "github.com/sonr-io/core/internal/models"
-	sonrStream "github.com/sonr-io/core/internal/stream"
+	md "github.com/sonr-io/core/internal/models"
+	str "github.com/sonr-io/core/internal/stream"
 	tr "github.com/sonr-io/core/internal/transfer"
 	"google.golang.org/protobuf/proto"
 )
 
 // ^ CurrentFile returns last file in Processed Files ^ //
-func (sn *Node) currentFile() *sonrFile.SafeFile {
+func (sn *Node) currentFile() *sf.SafeFile {
 	return sn.files[len(sn.files)-1]
 }
 
 // ^ SetDiscovery initializes discovery protocols and creates pubsub service ^ //
-func (sn *Node) setDiscovery(ctx context.Context, connEvent *sonrModel.ConnectionRequest) error {
+func (sn *Node) setDiscovery(ctx context.Context, connEvent *md.ConnectionRequest) error {
 	// create a new PubSub service using the GossipSub router
 	ps, err := pubsub.NewGossipSub(ctx, sn.host)
 	if err != nil {
@@ -47,7 +47,7 @@ func (sn *Node) setDiscovery(ctx context.Context, connEvent *sonrModel.Connectio
 }
 
 // ^ SetUser sets node info from connEvent and host ^ //
-func (sn *Node) setPeer(connEvent *sonrModel.ConnectionRequest) error {
+func (sn *Node) setPeer(connEvent *md.ConnectionRequest) error {
 	// Check for Host
 	if sn.host == nil {
 		err := errors.New("setPeer: Host has not been called")
@@ -55,7 +55,7 @@ func (sn *Node) setPeer(connEvent *sonrModel.ConnectionRequest) error {
 	}
 
 	// Set Peer Info
-	sn.Peer = &sonrModel.Peer{
+	sn.Peer = &md.Peer{
 		Id:         sn.host.ID().String(),
 		Username:   connEvent.Username,
 		Device:     connEvent.Device,
@@ -76,14 +76,14 @@ func (sn *Node) setPeer(connEvent *sonrModel.ConnectionRequest) error {
 // ^ SetStreams sets Auth/Data Streams with Handlers ^ //
 func (sn *Node) setStreams() {
 	// Assign Callbacks from Node to Auth Stream
-	sn.authStream.Call = sonrStream.AuthCallback{
+	sn.authStream.Call = str.AuthCallback{
 		Invited:   sn.callbackRef.OnInvited,
 		Responded: sn.callbackRef.OnResponded,
 		Error:     sn.error,
 	}
 
 	// Assign Callbacks from Node to Data Stream
-	sn.dataStream.Call = sonrStream.DataCallback{
+	sn.dataStream.Call = str.DataCallback{
 		Progressed: sn.callbackRef.OnProgress,
 		Completed:  sn.callbackRef.OnCompleted,
 		Error:      sn.error,
@@ -95,7 +95,7 @@ func (sn *Node) setStreams() {
 }
 
 // ^ callback Method with type ^
-func (sn *Node) callback(call sonrModel.CallbackType, data proto.Message) {
+func (sn *Node) callback(call md.CallbackType, data proto.Message) {
 	// ** Convert Message to bytes **
 	bytes, err := proto.Marshal(data)
 	if err != nil {
@@ -105,23 +105,23 @@ func (sn *Node) callback(call sonrModel.CallbackType, data proto.Message) {
 	// ** Check Call Type **
 	switch call {
 	// @ Lobby Refreshed
-	case sonrModel.CallbackType_REFRESHED:
+	case md.CallbackType_REFRESHED:
 		sn.callbackRef.OnRefreshed(bytes)
 
 	// @ File has Queued
-	case sonrModel.CallbackType_QUEUED:
+	case md.CallbackType_QUEUED:
 		sn.callbackRef.OnQueued(bytes)
 
 	// @ Peer has been Invited
-	case sonrModel.CallbackType_INVITED:
+	case md.CallbackType_INVITED:
 		sn.callbackRef.OnInvited(bytes)
 
 	// @ Peer has Responded
-	case sonrModel.CallbackType_RESPONDED:
+	case md.CallbackType_RESPONDED:
 		sn.callbackRef.OnResponded(bytes)
 
 	// @ Transfer has Completed
-	case sonrModel.CallbackType_COMPLETED:
+	case md.CallbackType_COMPLETED:
 		sn.callbackRef.OnCompleted(bytes)
 	}
 }
@@ -129,7 +129,7 @@ func (sn *Node) callback(call sonrModel.CallbackType, data proto.Message) {
 // ^ error Callback with error instance, and method ^
 func (sn *Node) error(err error, method string) {
 	// Create Error ProtoBuf
-	errorMsg := sonrModel.ErrorMessage{
+	errorMsg := md.ErrorMessage{
 		Message: err.Error(),
 		Method:  method,
 	}

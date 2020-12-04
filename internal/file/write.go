@@ -10,12 +10,12 @@ import (
 	"sync"
 	"time"
 
-	pb "github.com/sonr-io/core/internal/models"
+	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
 
 type TransferFile struct {
-	Metadata       *pb.Metadata
+	Metadata       *md.Metadata
 	SavePath       string
 	progress       float32
 	stringsBuilder *strings.Builder
@@ -24,7 +24,7 @@ type TransferFile struct {
 }
 
 // ^ Create new SonrFile struct with meta and documents directory ^ //
-func NewFile(docDir string, meta *pb.Metadata) TransferFile {
+func NewFile(docDir string, meta *md.Metadata) TransferFile {
 	return TransferFile{
 		Metadata:       meta,
 		stringsBuilder: new(strings.Builder),
@@ -37,7 +37,7 @@ func NewFile(docDir string, meta *pb.Metadata) TransferFile {
 // ^ Check file type and use corresponding method ^ //
 func (sf *TransferFile) AddBuffer(buffer []byte) (bool, float32, error) {
 	// @ Unmarshal Bytes into Proto
-	chunk := pb.Chunk{}
+	chunk := md.Chunk{}
 	err := proto.Unmarshal(buffer, &chunk)
 	if err != nil {
 		fmt.Println("Unmarshal Error ", err)
@@ -45,7 +45,7 @@ func (sf *TransferFile) AddBuffer(buffer []byte) (bool, float32, error) {
 	}
 
 	// Check File Type for Base64 Media
-	if sf.Metadata.Mime.Type == pb.MIME_image {
+	if sf.Metadata.Mime.Type == md.MIME_image {
 		hc, n, err := sf.addBase64(&chunk)
 		return hc, n, err
 	}
@@ -56,7 +56,7 @@ func (sf *TransferFile) AddBuffer(buffer []byte) (bool, float32, error) {
 }
 
 // ^ Add Bytes Buffer to SonrFile Buffer ^ //
-func (sf *TransferFile) addBytes(chunk *pb.Chunk) (bool, float32, error) {
+func (sf *TransferFile) addBytes(chunk *md.Chunk) (bool, float32, error) {
 	// ** Lock ** //
 	sf.mutex.Lock()
 	// Add Block to Buffer
@@ -79,7 +79,7 @@ func (sf *TransferFile) addBytes(chunk *pb.Chunk) (bool, float32, error) {
 }
 
 // ^ Add Base64 Buffer to SonrFile Buffer ^ //
-func (sf *TransferFile) addBase64(chunk *pb.Chunk) (bool, float32, error) {
+func (sf *TransferFile) addBase64(chunk *md.Chunk) (bool, float32, error) {
 	// ** Lock ** //
 	sf.mutex.Lock()
 	// Add Block to Buffer
@@ -102,9 +102,9 @@ func (sf *TransferFile) addBase64(chunk *pb.Chunk) (bool, float32, error) {
 }
 
 // ^ Check file type and use corresponding method ^ //
-func (sf *TransferFile) Save(owner *pb.Peer) (*pb.Metadata, error) {
+func (sf *TransferFile) Save(owner *md.Peer) (*md.Metadata, error) {
 	// Check File Type for Base64 Media
-	if sf.Metadata.Mime.Type == pb.MIME_image {
+	if sf.Metadata.Mime.Type == md.MIME_image {
 		m, err := sf.saveBase64(owner)
 		return m, err
 	}
@@ -115,7 +115,7 @@ func (sf *TransferFile) Save(owner *pb.Peer) (*pb.Metadata, error) {
 }
 
 // ^ Save file of type Base64 to Documents Directory and Return Path ^ //
-func (sf *TransferFile) saveBytes(owner *pb.Peer) (*pb.Metadata, error) {
+func (sf *TransferFile) saveBytes(owner *md.Peer) (*md.Metadata, error) {
 	// ** Lock/Unlock ** //
 	sf.mutex.Lock()
 	defer sf.mutex.Unlock()
@@ -145,7 +145,7 @@ func (sf *TransferFile) saveBytes(owner *pb.Peer) (*pb.Metadata, error) {
 	}
 
 	// @ 3. Set Metadata Protobuf Values
-	return &pb.Metadata{
+	return &md.Metadata{
 		Name:       sf.Metadata.Name,
 		Path:       sf.SavePath,
 		Size:       int32(info.Size()),
@@ -156,7 +156,7 @@ func (sf *TransferFile) saveBytes(owner *pb.Peer) (*pb.Metadata, error) {
 }
 
 // ^ Save file of type Base64 to Documents Directory and Return Path ^ //
-func (sf *TransferFile) saveBase64(owner *pb.Peer) (*pb.Metadata, error) {
+func (sf *TransferFile) saveBase64(owner *md.Peer) (*md.Metadata, error) {
 	// ** Lock/Unlock ** //
 	sf.mutex.Lock()
 	defer sf.mutex.Unlock()
@@ -192,7 +192,7 @@ func (sf *TransferFile) saveBase64(owner *pb.Peer) (*pb.Metadata, error) {
 	}
 
 	// @ 3. Set Metadata Protobuf Values
-	return &pb.Metadata{
+	return &md.Metadata{
 		Name:       sf.Metadata.Name,
 		Path:       sf.SavePath,
 		Size:       int32(info.Size()),

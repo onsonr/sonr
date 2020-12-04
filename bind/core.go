@@ -5,11 +5,11 @@ import (
 	"fmt"
 
 	"github.com/libp2p/go-libp2p-core/host"
-	sonrFile "github.com/sonr-io/core/internal/file"
-	sonrHost "github.com/sonr-io/core/internal/host"
+	sf "github.com/sonr-io/core/internal/file"
+	sh "github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/internal/lobby"
-	sonrModel "github.com/sonr-io/core/internal/models"
-	sonrStream "github.com/sonr-io/core/internal/stream"
+	md "github.com/sonr-io/core/internal/models"
+	str "github.com/sonr-io/core/internal/stream"
 	tr "github.com/sonr-io/core/internal/transfer"
 	"google.golang.org/protobuf/proto"
 )
@@ -32,22 +32,22 @@ type Callback interface {
 type Node struct {
 	// Public Properties
 	HostID      string
-	Peer        *sonrModel.Peer
-	directories *sonrModel.Directories
+	Peer        *md.Peer
+	directories *md.Directories
 
 	// Networking Properties
 	ctx        context.Context
 	host       host.Host
-	authStream sonrStream.AuthStreamConn
-	dataStream sonrStream.DataStreamConn
-	peerConn   *tr.PeerConnection
+	authStream str.AuthStreamConn
+	dataStream str.DataStreamConn
 
 	// Data Properties
-	files []*sonrFile.SafeFile
+	files []*sf.SafeFile
 
 	// References
 	callbackRef Callback
 	lobby       *lobby.Lobby
+	peerConn    *tr.PeerConnection
 }
 
 // ^ NewNode Initializes Node with a host and default properties ^
@@ -55,10 +55,10 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	// ** Create Context and Node - Begin Setup **
 	node := new(Node)
 	node.ctx = context.Background()
-	node.callbackRef, node.files = call, make([]*sonrFile.SafeFile, maxFileBufferSize)
+	node.callbackRef, node.files = call, make([]*sf.SafeFile, maxFileBufferSize)
 
 	// ** Unmarshal Request **
-	reqMsg := sonrModel.ConnectionRequest{}
+	reqMsg := md.ConnectionRequest{}
 	err := proto.Unmarshal(reqBytes, &reqMsg)
 	if err != nil {
 		fmt.Println(err)
@@ -67,7 +67,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	}
 
 	// @1. Create Host and Set Stream Handlers
-	node.host, node.HostID, err = sonrHost.NewHost(node.ctx)
+	node.host, node.HostID, err = sh.NewHost(node.ctx)
 	if err != nil {
 		node.error(err, "NewNode")
 		return nil

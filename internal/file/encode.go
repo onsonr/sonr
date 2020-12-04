@@ -7,7 +7,7 @@ import (
 	"image/png"
 	"os"
 
-	pb "github.com/sonr-io/core/internal/models"
+	md "github.com/sonr-io/core/internal/models"
 )
 
 // ^ Chunks string based on B64ChunkSize ^ //
@@ -25,7 +25,7 @@ func ChunkBase64(s string, B64ChunkSize int) []string {
 }
 
 // ^ Helper: Encodes to Jpeg Image ^ //
-func EncodeJpegBuffer(buf *bytes.Buffer, meta *pb.Metadata) error {
+func EncodeJpegBuffer(buf *bytes.Buffer, meta *md.Metadata) error {
 	// Open File at Meta Path
 	file, err := os.Open(meta.Path)
 	if err != nil {
@@ -48,7 +48,7 @@ func EncodeJpegBuffer(buf *bytes.Buffer, meta *pb.Metadata) error {
 }
 
 // ^ Helper: Encodes to PNG Image ^ //
-func EncodePngBuffer(buf *bytes.Buffer, meta *pb.Metadata) error {
+func EncodePngBuffer(buf *bytes.Buffer, meta *md.Metadata) error {
 	// Open File at Meta Path
 	file, err := os.Open(meta.Path)
 	if err != nil {
