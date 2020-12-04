@@ -80,7 +80,7 @@ func (pc *PeerConnection) SendInvite(h host.Host, id peer.ID, msgBytes []byte) {
 	log.Printf("Response %s from %s: time=%s\n", id, reply.Data, diff)
 
 	// Send Callback and Reset
-	pc.respondedCall(reply.Data)
+	// pc.respondedCall(reply.Data)
 
 	// Handle Response
 	if reply.Decision {
