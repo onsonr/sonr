@@ -2,7 +2,6 @@ package transfer
 
 import (
 	"context"
-	"errors"
 	"log"
 
 	"github.com/libp2p/go-libp2p-core/host"
@@ -67,7 +66,7 @@ func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic 
 	}
 
 	// Set Handlers
-	h.SetStreamHandler(protocol.ID("/sonr/transfer/data"), peerConn.HandleTransfer)
+	h.SetStreamHandler(protocol.ID("/sonr/data/transfer"), peerConn.HandleTransfer)
 
 	// Create Auth Handler
 	peerConn.auth = NewAuthRPC(peerConn)
@@ -87,15 +86,15 @@ func (pc *PeerConnection) Find(q string) peer.ID {
 }
 
 // ^ Send Invite to a Peer ^ //
-func (pc *PeerConnection) Invite(id string, info *md.Peer, sm *sf.SafeFile) {
+func (pc *PeerConnection) Invite(id peer.ID, info *md.Peer, sm *sf.SafeFile) {
 	// Set SafeFile
 	pc.safeFile = sm
 
-	// Find Peer and Set
-	pc.peerID = pc.Find(id)
-	if pc.peerID == "" {
-		onError(errors.New("Peer ID not Found"), "ID")
-	}
+	// // Find Peer and Set
+	// pc.peerID = pc.Find(id)
+	// if pc.peerID == "" {
+	// 	onError(errors.New("Peer ID not Found"), "ID")
+	// }
 
 	// Create Invite Message
 	reqMsg := &md.AuthMessage{

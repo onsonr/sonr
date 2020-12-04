@@ -83,7 +83,7 @@ func NewAuthRPC(pc *PeerConnection) *Authorization {
 	log.Println("Creating New Auth Handler")
 	// Create Server Client
 	rpcServer := gorpc.NewServer(pc.host, protocol.ID("/sonr/rpc/auth"))
-	rpcClient := gorpc.NewClientWithServer(pc.host, protocol.ID("/sonr/rpc/auth"), rpcServer)
+	rpcClient := gorpc.NewClient(pc.host, protocol.ID("/sonr/rpc/auth"))
 
 	// Create Service
 	svc := AuthService{
@@ -93,9 +93,9 @@ func NewAuthRPC(pc *PeerConnection) *Authorization {
 	// Register Service
 	err := rpcServer.Register(&svc)
 	if err != nil {
-		log.Println(err)
-		panic(err)
+		log.Panicln(err)
 	}
+	log.Println("Setup RPC Auth")
 
 	return &Authorization{
 		// Rpc Properties
@@ -140,12 +140,10 @@ func (ah *Authorization) sendInvite(id peer.ID, authMsg *md.AuthMessage) error {
 
 	// Handle Response
 	if reply.Decision {
-		// Send Callback and Start Transfer
-		ah.peerConn.respondedCall(args.Data)
+		// Begin Transfer
 		ah.peerConn.StartTransfer()
 	} else {
-		// Send Callback and Reset Auth
-		ah.peerConn.respondedCall(args.Data)
+		// TODO: Reset RPC Data
 	}
 
 	return nil

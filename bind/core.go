@@ -9,7 +9,6 @@ import (
 	sh "github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/internal/lobby"
 	md "github.com/sonr-io/core/internal/models"
-	str "github.com/sonr-io/core/internal/stream"
 	tr "github.com/sonr-io/core/internal/transfer"
 	"google.golang.org/protobuf/proto"
 )
@@ -36,10 +35,8 @@ type Node struct {
 	directories *md.Directories
 
 	// Networking Properties
-	ctx        context.Context
-	host       host.Host
-	authStream str.AuthStreamConn
-	dataStream str.DataStreamConn
+	ctx  context.Context
+	host host.Host
 
 	// Data Properties
 	files []*sf.SafeFile
@@ -72,7 +69,6 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 		node.error(err, "NewNode")
 		return nil
 	}
-	node.setStreams()
 
 	// @3. Set Node User Information
 	if err = node.setPeer(&reqMsg); err != nil {

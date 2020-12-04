@@ -48,7 +48,6 @@ func (sn *Node) Invite(peerId string) {
 
 	// Set Metadata in Auth Stream
 	currFile := sn.currentFile()
-	sn.authStream.Metadata = currFile.Metadata()
 
 	// Find PeerID and Peer Struct
 	id, peer := sn.lobby.Find(peerId)
@@ -57,45 +56,24 @@ func (sn *Node) Invite(peerId string) {
 	}
 
 	// Initialize new AuthStream with Peer
-	sn.authStream.Invite(sn.ctx, sn.host, id, peer)
+	sn.peerConn.Invite(id, peer, currFile)
 }
 
 // ^ Respond to an Invitation ^ //
 func (sn *Node) Respond(decision bool) {
 	// Check Respons
 	if decision {
-		// Retreive Peer Data
-		sn.dataStream.PeerID, sn.dataStream.Peer = sn.lobby.Find(sn.authStream.Peer.Id)
-
-		// Allocate Space for File and Add as Ref to Datastream
-		sn.dataStream.TransferFile = sf.NewFile(sn.directories.Documents, sn.authStream.Metadata)
-
-		// Send Accept Response Message
-		if err := sn.authStream.Accept(); err != nil {
+		err := sn.peerConn.Accept(sn.Peer)
+		if err != nil {
 			sn.error(err, "Respond")
 		}
+
 	} else {
-		// Send Decline Response Message
-		if err := sn.authStream.Decline(); err != nil {
+		err := sn.peerConn.Decline(sn.Peer)
+		if err != nil {
 			sn.error(err, "Respond")
 		}
 	}
-}
-
-// ^ Begin the File transfer ^ //
-func (sn *Node) Transfer() {
-	// Retreive Peer Data
-	id, peer := sn.lobby.Find(sn.authStream.Peer.Id)
-
-	// Set Peer Data in Datastream
-	sn.dataStream.PeerID = id
-	sn.dataStream.Peer = peer
-
-	// Initialize Data
-	safeFile := sn.currentFile()
-
-	// Create Transfer Stream
-	sn.dataStream.Transfer(sn.ctx, safeFile)
 }
 
 // ^ Reset Current Queued File Metadata ^ //

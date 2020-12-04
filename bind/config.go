@@ -6,12 +6,10 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/libp2p/go-libp2p-core/protocol"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	sf "github.com/sonr-io/core/internal/file"
 	"github.com/sonr-io/core/internal/lobby"
 	md "github.com/sonr-io/core/internal/models"
-	str "github.com/sonr-io/core/internal/stream"
 	tr "github.com/sonr-io/core/internal/transfer"
 	"google.golang.org/protobuf/proto"
 )
@@ -63,35 +61,9 @@ func (sn *Node) setPeer(connEvent *md.ConnectionRequest) error {
 		ProfilePic: connEvent.Contact.ProfilePic,
 	}
 
-	// Assign Peer Info to Stream Handlers
-	sn.authStream.Self = sn.Peer
-	sn.dataStream.Self = sn.Peer
-	sn.dataStream.Host = sn.host
-
 	// Set Directory
 	sn.directories = connEvent.Directory
 	return nil
-}
-
-// ^ SetStreams sets Auth/Data Streams with Handlers ^ //
-func (sn *Node) setStreams() {
-	// Assign Callbacks from Node to Auth Stream
-	sn.authStream.Call = str.AuthCallback{
-		Invited:   sn.callbackRef.OnInvited,
-		Responded: sn.callbackRef.OnResponded,
-		Error:     sn.error,
-	}
-
-	// Assign Callbacks from Node to Data Stream
-	sn.dataStream.Call = str.DataCallback{
-		Progressed: sn.callbackRef.OnProgress,
-		Completed:  sn.callbackRef.OnCompleted,
-		Error:      sn.error,
-	}
-
-	// Set Handlers
-	sn.host.SetStreamHandler(protocol.ID("/sonr/auth"), sn.authStream.HandleStream)
-	sn.host.SetStreamHandler(protocol.ID("/sonr/data"), sn.dataStream.HandleStream)
 }
 
 // ^ callback Method with type ^
