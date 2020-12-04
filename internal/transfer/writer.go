@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/base64"
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -132,7 +131,7 @@ func writeBytesToStream(writer msgio.WriteCloser, meta *md.Metadata, total int32
 		if err != nil {
 			// Non EOF Error
 			if err != io.EOF {
-				fmt.Println(err)
+				log.Println(err)
 			}
 			// File Complete
 			break

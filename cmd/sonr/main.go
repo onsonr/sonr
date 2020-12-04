@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
+	"log"
 )
 
 func main() {
-	fmt.Println("Will become bind executable later")
+	log.Println("Will become bind executable later")
 }

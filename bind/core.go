@@ -2,7 +2,6 @@ package sonr
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"github.com/libp2p/go-libp2p-core/host"
@@ -62,7 +61,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	reqMsg := md.ConnectionRequest{}
 	err := proto.Unmarshal(reqBytes, &reqMsg)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		node.error(err, "NewNode")
 		return nil
 	}
@@ -95,7 +94,7 @@ func (sn *Node) callback(call md.CallbackType, data proto.Message) {
 	// ** Convert Message to bytes **
 	bytes, err := proto.Marshal(data)
 	if err != nil {
-		fmt.Println("Cannot Marshal Error Protobuf: ", err)
+		log.Println("Cannot Marshal Error Protobuf: ", err)
 	}
 
 	// ** Check Call Type **
@@ -139,5 +138,5 @@ func (sn *Node) error(err error, method string) {
 	sn.callbackRef.OnError(bytes)
 
 	// Log In Core
-	log.Fatalln(fmt.Sprintf("[Error] At Method %s : %s", err.Error(), method))
+	log.Fatalf("[Error] At Method %s : %s", err.Error(), method)
 }

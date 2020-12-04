@@ -2,7 +2,7 @@ package lobby
 
 import (
 	"context"
-	"fmt"
+	"log"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
@@ -83,7 +83,7 @@ func (lob *Lobby) Info() []byte {
 	// Convert to bytes
 	data, err := proto.Marshal(lob.Data)
 	if err != nil {
-		fmt.Println("Error Marshaling Lobby Data ", err)
+		log.Println("Error Marshaling Lobby Data ", err)
 		return nil
 	}
 	return data

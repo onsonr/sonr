@@ -2,7 +2,7 @@ package sonr
 
 import (
 	"errors"
-	"fmt"
+	"log"
 	"math"
 	"time"
 
@@ -15,7 +15,7 @@ func (sn *Node) Info() []byte {
 	// Convert to bytes to view in plugin
 	data, err := proto.Marshal(sn.peer)
 	if err != nil {
-		fmt.Println("Error Marshaling Lobby Data ", err)
+		log.Println("Error Marshaling Lobby Data ", err)
 		return nil
 	}
 	return data
@@ -37,7 +37,7 @@ func (sn *Node) Update(direction float64) {
 // ^ AddFile adds generates metadata and thumbnail from filepath to Process for Transfer, returns key ^ //
 func (sn *Node) AddFile(path string) {
 	//@2. Initialize SafeFile
-	safeMeta := sf.NewMetadata(path, sn.callbackRef.OnQueued, sn.callbackRef.OnProgress, sn.error)
+	safeMeta := sf.NewMetadata(path, sn.callbackRef.OnQueued, sn.error)
 	sn.files = append(sn.files, safeMeta)
 }
 

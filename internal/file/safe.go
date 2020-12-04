@@ -7,8 +7,6 @@ import (
 	"strings"
 	"sync"
 
-	"fmt"
-
 	"github.com/h2non/filetype"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
@@ -16,22 +14,15 @@ import (
 
 // Define Function Types
 type OnProtobuf func(data []byte)
-type OnProgress func(data float32)
 type OnError func(err error, method string)
 
-// Define Block Size
-const BlockSize = 16000
-
-// Struct to Implement Node Callback Methods
-type FileCallback struct {
-}
+// Package Error Callback
+var onError OnError
 
 // ^ File that safely sets metadata and thumbnail in routine ^ //
 type SafeMetadata struct {
 	// Callbacks
-	CallQueued   OnProtobuf
-	CallProgress OnProgress
-	CallError    OnError
+	CallQueued OnProtobuf
 
 	// Public Properties
 	Mime *md.MIME
@@ -43,13 +34,14 @@ type SafeMetadata struct {
 }
 
 // ^ Create generates file metadata ^ //
-func NewMetadata(filePath string, queueCall OnProtobuf, progCall OnProgress, errCall OnError) *SafeMetadata {
+func NewMetadata(filePath string, queueCall OnProtobuf, errCall OnError) *SafeMetadata {
+	// Set Package Level Callbacks
+	onError = errCall
+
 	// Create new SafeFile
 	sm := &SafeMetadata{
-		CallQueued:   queueCall,
-		CallProgress: progCall,
-		CallError:    errCall,
-		path:         filePath,
+		CallQueued: queueCall,
+		path:       filePath,
 	}
 
 	// ** Lock ** //
@@ -60,7 +52,7 @@ func NewMetadata(filePath string, queueCall OnProtobuf, progCall OnProgress, err
 	file, err := os.Open(sm.path)
 	if err != nil {
 		log.Fatalln(err)
-		sm.CallError(err, "AddFile")
+		onError(err, "AddFile")
 	}
 	defer file.Close()
 
@@ -68,7 +60,7 @@ func NewMetadata(filePath string, queueCall OnProtobuf, progCall OnProgress, err
 	info, err := file.Stat()
 	if err != nil {
 		log.Fatalln(err)
-		sm.CallError(err, "AddFile")
+		onError(err, "AddFile")
 	}
 
 	// Read File to required bytes
@@ -76,14 +68,14 @@ func NewMetadata(filePath string, queueCall OnProtobuf, progCall OnProgress, err
 	_, err = file.Read(head)
 	if err != nil {
 		log.Fatalln(err)
-		sm.CallError(err, "AddFile")
+		onError(err, "AddFile")
 	}
 
 	// Get File Type
 	kind, err := filetype.Match(head)
 	if err != nil {
 		log.Fatalln(err)
-		sm.CallError(err, "AddFile")
+		onError(err, "AddFile")
 	}
 
 	// @ 2. Set Metadata Protobuf Values
@@ -109,8 +101,8 @@ func NewMetadata(filePath string, queueCall OnProtobuf, progCall OnProgress, err
 			// New File for ThumbNail
 			thumbBytes, err := newThumbnail(sm.path)
 			if err != nil {
-				fmt.Println(err)
-				sm.CallError(err, "AddFile")
+				log.Fatalln(err)
+				onError(err, "AddFile")
 			}
 			// Update Metadata Value
 			sm.meta.Thumbnail = thumbBytes
@@ -125,7 +117,7 @@ func NewMetadata(filePath string, queueCall OnProtobuf, progCall OnProgress, err
 		// Convert to bytes
 		data, err := proto.Marshal(meta)
 		if err != nil {
-			fmt.Println("Error Marshaling Metadata ", err)
+			log.Println("Error Marshaling Metadata ", err)
 		}
 
 		// Callback with Metadata

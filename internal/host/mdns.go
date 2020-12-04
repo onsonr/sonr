@@ -2,7 +2,7 @@ package host
 
 import (
 	"context"
-	"fmt"
+	"log"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/host"
@@ -42,6 +42,6 @@ func (n *discoveryNotifee) HandlePeerFound(pi peer.AddrInfo) {
 
 	// Log Error
 	if err != nil {
-		fmt.Printf("error connecting to peer %s: %s\n", pi.ID.Pretty(), err)
+		log.Printf("error connecting to peer %s: %s\n", pi.ID.Pretty(), err)
 	}
 }

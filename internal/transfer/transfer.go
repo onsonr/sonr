@@ -3,7 +3,6 @@ package transfer
 import (
 	"bytes"
 	"encoding/base64"
-	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -131,7 +130,7 @@ func (t *Transfer) Save() {
 	// Get Info
 	info, err := f.Stat()
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
 	// @ 3. Callback saved Metadata
@@ -148,7 +147,7 @@ func (t *Transfer) Save() {
 	// Convert Message to bytes
 	bytes, err := proto.Marshal(saved)
 	if err != nil {
-		fmt.Println("Cannot Marshal Error Protobuf: ", err)
+		log.Println("Cannot Marshal Error Protobuf: ", err)
 	}
 
 	// Send Complete Callback
