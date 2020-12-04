@@ -24,7 +24,7 @@ type AuthReply struct {
 }
 
 // Service Struct
-type AuthService struct {
+type Authorization struct {
 	// Current Data
 	currArgs  AuthArgs
 	currReply *AuthReply
@@ -34,19 +34,8 @@ type AuthService struct {
 }
 
 // ^ Calls Invite on Remote Peer ^ //
-func (as *AuthService) Invite(ctx context.Context, args AuthArgs, reply *AuthReply) error {
+func (as *Authorization) Invite(ctx context.Context, args AuthArgs, reply *AuthReply) error {
 	log.Println("Received a Invite call: ", args.Data)
-	// Process Message
-	err := as.processInvite(args, reply)
-	if err != nil {
-		onError(err, "process")
-		panic(err)
-	}
-	return nil
-}
-
-// ^ Processes Accept Event ^ //
-func (as *AuthService) processInvite(args AuthArgs, reply *AuthReply) error {
 	// Set Current Data
 	as.currArgs = args
 	as.currReply = reply
@@ -57,16 +46,20 @@ func (as *AuthService) processInvite(args AuthArgs, reply *AuthReply) error {
 	// Set Current Message
 	err := proto.Unmarshal(args.Data, as.peerConn.currMessage)
 	if err != nil {
+		onError(err, "process")
 		return err
 	}
 
 	// Send Callback
 	as.invited(args.Data)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
 // ^ Respond to Authorization Invite to Peer ^ //
-func (as *AuthService) sendResponse(d bool, authMsg *md.AuthMessage) {
+func (as *Authorization) sendResponse(d bool, authMsg *md.AuthMessage) {
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(authMsg)
 	if err != nil {

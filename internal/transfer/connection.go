@@ -28,16 +28,16 @@ var onError OnError
 
 // ^ Struct: Holds/Handles GRPC Calls and Handles Data Stream  ^ //
 type PeerConnection struct {
-	// Handlers
-	safeFile *sf.SafeMetadata
-	transfer *Transfer
-
 	// Connection
 	host      host.Host
 	pubSub    *pubsub.PubSub
 	rpcClient *gorpc.Client
 	rpcServer *gorpc.Server
-	ascv      *AuthService
+	ascv      *Authorization
+
+	// Data Handlers
+	safeFile *sf.SafeMetadata
+	transfer *Transfer
 
 	// Callbacks
 	invitedCall   OnProtobuf
@@ -49,7 +49,7 @@ type PeerConnection struct {
 	olc         string
 	dirs        *md.Directories
 	currMessage *md.AuthMessage
-	peerID      *peer.ID
+	peerID      peer.ID
 }
 
 // ^ Initialize sets up new Peer Connection handler ^
@@ -77,7 +77,7 @@ func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic 
 	// Create Server/Client/Service
 	peerConn.rpcServer = gorpc.NewServer(peerConn.host, protocol.ID("/sonr/rpc/auth"))
 	peerConn.rpcClient = gorpc.NewClientWithServer(peerConn.host, protocol.ID("/sonr/rpc/auth"), peerConn.rpcServer)
-	peerConn.ascv = &AuthService{
+	peerConn.ascv = &Authorization{
 		peerConn: peerConn,
 	}
 
@@ -94,15 +94,15 @@ func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic 
 }
 
 // ^ Search for Peer in PubSub ^ //
-func (pc *PeerConnection) Find(q string) *peer.ID {
+func (pc *PeerConnection) Find(q string) peer.ID {
 	// Iterate through PubSub in topic
 	for _, id := range pc.pubSub.ListPeers(pc.olc) {
 		// If Found Match
 		if id.String() == q {
-			return &id
+			return id
 		}
 	}
-	return nil
+	return ""
 }
 
 // ^ Send Invite to a Peer ^ //
@@ -136,7 +136,7 @@ func (pc *PeerConnection) Invite(id peer.ID, info *md.Peer, sm *sf.SafeMetadata)
 		startTime := time.Now()
 
 		// Call to Peer
-		err = pc.rpcClient.Call(id, "AuthService", "Invite", args, &reply)
+		err = pc.rpcClient.Call(id, "Authorization", "Invite", args, &reply)
 		if err != nil {
 			onError(err, "sendInvite")
 			log.Panicln(err)
@@ -176,7 +176,7 @@ func (pc *PeerConnection) SendResponse(decision bool, selfInfo *md.Peer) {
 		}
 	} else {
 		// Reset Peer Info
-		pc.peerID = nil
+		pc.peerID = ""
 		pc.currMessage = nil
 
 		// Create Decline Response

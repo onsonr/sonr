@@ -23,7 +23,7 @@ const BufferChunkSize = 32000
 // ^ User has accepted, Begin Sending Transfer ^ //
 func (pc *PeerConnection) SendFile() {
 	// Create New Auth Stream
-	stream, err := pc.host.NewStream(context.Background(), *pc.peerID, protocol.ID("/sonr/data/transfer"))
+	stream, err := pc.host.NewStream(context.Background(), pc.peerID, protocol.ID("/sonr/data/transfer"))
 	if err != nil {
 		onError(err, "Transfer")
 		log.Fatalln(err)
@@ -45,20 +45,6 @@ func (pc *PeerConnection) SendFile() {
 		log.Println("Starting Bytes Write Routine")
 		go writeBytesToStream(writer, meta, total)
 	}
-}
-
-// ^ Chunks string based on B64ChunkSize ^ //
-func chunkBase64(s string, B64ChunkSize int) []string {
-	chunkSize := B64ChunkSize
-	ss := make([]string, 0, len(s)/chunkSize+1)
-	for len(s) > 0 {
-		if len(s) < chunkSize {
-			chunkSize = len(s)
-		}
-		// Create Current Chunk String
-		ss, s = append(ss, s[:chunkSize]), s[chunkSize:]
-	}
-	return ss
 }
 
 // ^ write file as Base64 in Msgio to Stream ^ //
@@ -109,6 +95,20 @@ func writeBase64ToStream(writer msgio.WriteCloser, meta *md.Metadata) {
 			log.Fatalln(err)
 		}
 	}
+}
+
+// ^ Helper Method: Chunks string based on B64ChunkSize ^ //
+func chunkBase64(s string, B64ChunkSize int) []string {
+	chunkSize := B64ChunkSize
+	ss := make([]string, 0, len(s)/chunkSize+1)
+	for len(s) > 0 {
+		if len(s) < chunkSize {
+			chunkSize = len(s)
+		}
+		// Create Current Chunk String
+		ss, s = append(ss, s[:chunkSize]), s[chunkSize:]
+	}
+	return ss
 }
 
 // ^ write file as Bytes in Msgio to Stream ^ //
