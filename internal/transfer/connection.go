@@ -29,8 +29,7 @@ var onError OnError
 // ^ Struct: Holds/Handles GRPC Calls and Handles Data Stream  ^ //
 type PeerConnection struct {
 	// Connection
-	pubSub *pubsub.PubSub
-	auth   AuthService
+	auth *AuthService
 
 	// Data Handlers
 	SafeFile *sf.SafeMetadata
@@ -50,12 +49,12 @@ type PeerConnection struct {
 }
 
 // ^ Initialize sets up new Peer Connection handler ^
-func (peerConn *PeerConnection) Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic OnProtobuf, rc OnProtobuf, pc OnProgress, cc OnProtobuf, ec OnError) error {
+func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic OnProtobuf, rc OnProtobuf, pc OnProgress, cc OnProtobuf, ec OnError) (*PeerConnection, error) {
 	// Set Package Level Callbacks
 	onError = ec
 
 	// Initialize Parameters into PeerConnection
-	peerConn.pubSub = ps
+	peerConn := &PeerConnection{}
 	peerConn.olc = o
 	peerConn.dirs = d
 	peerConn.invitedCall = ic
@@ -75,25 +74,13 @@ func (peerConn *PeerConnection) Initialize(h host.Host, ps *pubsub.PubSub, d *md
 	// Register Service
 	err := rpcServer.Register(&ath)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	log.Println("Created RPC AuthService")
 
 	// Set RPC Services
-	peerConn.auth = ath
-	return nil
-}
-
-// ^ Search for Peer in PubSub ^ //
-func (pc *PeerConnection) Find(q string) peer.ID {
-	// Iterate through PubSub in topic
-	for _, id := range pc.pubSub.ListPeers(pc.olc) {
-		// If Found Match
-		if id.String() == q {
-			return id
-		}
-	}
-	return ""
+	peerConn.auth = &ath
+	return peerConn, nil
 }
 
 // ^ Create new SonrFile struct with meta and documents directory ^ //
