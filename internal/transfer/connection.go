@@ -1,8 +1,9 @@
 package transfer
 
 import (
+	"bytes"
 	"log"
-	"time"
+	"strings"
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -13,7 +14,6 @@ import (
 	msgio "github.com/libp2p/go-msgio"
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
-	"google.golang.org/protobuf/proto"
 )
 
 // ChatRoomBufSize is the number of incoming messages to buffer for each topic.
@@ -33,7 +33,7 @@ type PeerConnection struct {
 	pubSub    *pubsub.PubSub
 	rpcClient *gorpc.Client
 	rpcServer *gorpc.Server
-	ascv      *Authorization
+	ascv      Authorization
 
 	// Data Handlers
 	safeFile *sf.SafeMetadata
@@ -77,12 +77,12 @@ func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic 
 	// Create Server/Client/Service
 	peerConn.rpcServer = gorpc.NewServer(peerConn.host, protocol.ID("/sonr/rpc/auth"))
 	peerConn.rpcClient = gorpc.NewClientWithServer(peerConn.host, protocol.ID("/sonr/rpc/auth"), peerConn.rpcServer)
-	peerConn.ascv = &Authorization{
+	peerConn.ascv = Authorization{
 		peerConn: peerConn,
 	}
 
 	// Register Service
-	err := peerConn.rpcServer.Register(peerConn.ascv)
+	err := peerConn.rpcServer.Register(&peerConn.ascv)
 	if err != nil {
 		log.Panicln(err)
 	}
@@ -105,89 +105,24 @@ func (pc *PeerConnection) Find(q string) peer.ID {
 	return ""
 }
 
-// ^ Send Invite to a Peer ^ //
-func (pc *PeerConnection) Invite(id peer.ID, info *md.Peer, sm *sf.SafeMetadata) {
-	// Set SafeFile
-	pc.safeFile = sm
+// ^ Create new SonrFile struct with meta and documents directory ^ //
+func NewTransfer(savePath string, meta *md.Metadata, own *md.Peer, op OnProgress, oc OnProtobuf) *Transfer {
+	return &Transfer{
+		// Inherited Properties
+		metadata:   meta,
+		path:       savePath,
+		owner:      own,
+		onProgress: op,
+		onComplete: oc,
 
-	// Create Invite Message
-	reqMsg := &md.AuthMessage{
-		Event:    md.AuthMessage_REQUEST,
-		From:     info,
-		Metadata: sm.GetMetadata(),
+		// Builders
+		stringsBuilder: new(strings.Builder),
+		bytesBuilder:   new(bytes.Buffer),
+
+		// Tracking
+		count: 0,
+		size:  0,
 	}
-
-	// Convert Protobuf to bytes
-	msgBytes, err := proto.Marshal(reqMsg)
-	if err != nil {
-		onError(err, "sendInvite")
-		log.Println(err)
-	}
-
-	// Send GRPC Call
-	//go pc.auth.sendInvite(pc.peerID, reqMsg)
-	go func(id peer.ID, data []byte) {
-		// Initialize Vars
-		var reply AuthReply
-		var args AuthArgs
-		args.Data = msgBytes
-
-		// Set Data
-		startTime := time.Now()
-
-		// Call to Peer
-		err = pc.rpcClient.Call(id, "Authorization", "Invite", args, &reply)
-		if err != nil {
-			onError(err, "sendInvite")
-			log.Panicln(err)
-		}
-
-		// End Tracking
-		endTime := time.Now()
-		diff := endTime.Sub(startTime)
-		log.Printf("Auth from %s: time=%s\n", id, diff)
-
-		// Send Callback and Reset
-		pc.respondedCall(reply.Data)
-
-		// Handle Response
-		if reply.Decision {
-			// Begin Transfer
-			pc.SendFile()
-		}
-	}(id, msgBytes)
-}
-
-// ^ Send Accept Message on Stream ^ //
-func (pc *PeerConnection) SendResponse(decision bool, selfInfo *md.Peer) {
-	// Initialize Message
-	var respMsg *md.AuthMessage
-
-	// Check Decision
-	if decision {
-		// Initialize Transfer
-		savePath := "/" + pc.currMessage.Metadata.Name + "." + pc.currMessage.Metadata.Mime.Subtype
-		pc.transfer = NewTransfer(savePath, pc.currMessage.Metadata, pc.currMessage.From, pc.progressCall, pc.completedCall)
-
-		// Create Accept Response
-		respMsg = &md.AuthMessage{
-			From:  selfInfo,
-			Event: md.AuthMessage_ACCEPT,
-		}
-	} else {
-		// Reset Peer Info
-		pc.peerID = ""
-		pc.currMessage = nil
-
-		// Create Decline Response
-		respMsg = &md.AuthMessage{
-			From:  selfInfo,
-			Event: md.AuthMessage_DECLINE,
-		}
-	}
-
-	// Send GRPC Call
-	go pc.ascv.sendResponse(decision, respMsg)
 }
 
 // ^ Handle Incoming Stream ^ //

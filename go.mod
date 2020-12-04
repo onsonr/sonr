@@ -22,6 +22,7 @@ require (
 	github.com/libp2p/go-msgio v0.0.6
 	//github.com/multiformats/go-multiaddr v0.3.1
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
+	golang.org/x/mobile v0.0.0-20200801112145-973feb4309de // indirect
 	golang.org/x/tools v0.0.0-20201123203206-735e963e909b // indirect
 	google.golang.org/protobuf v1.23.0
 	honnef.co/go/tools v0.0.1-2020.1.6 // indirect

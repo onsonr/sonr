@@ -34,26 +34,6 @@ type Transfer struct {
 	size  int
 }
 
-// ^ Create new SonrFile struct with meta and documents directory ^ //
-func NewTransfer(savePath string, meta *md.Metadata, own *md.Peer, op OnProgress, oc OnProtobuf) *Transfer {
-	return &Transfer{
-		// Inherited Properties
-		metadata:   meta,
-		path:       savePath,
-		owner:      own,
-		onProgress: op,
-		onComplete: oc,
-
-		// Builders
-		stringsBuilder: new(strings.Builder),
-		bytesBuilder:   new(bytes.Buffer),
-
-		// Tracking
-		count: 0,
-		size:  0,
-	}
-}
-
 // ^ Check file type and use corresponding method ^ //
 func (t *Transfer) AddBuffer(buffer []byte) (bool, error) {
 	// ** Lock/Unlock ** //
