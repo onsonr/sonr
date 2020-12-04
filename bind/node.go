@@ -13,7 +13,7 @@ import (
 // ^ Info returns ALL Peer Data as Bytes^
 func (sn *Node) Info() []byte {
 	// Convert to bytes to view in plugin
-	data, err := proto.Marshal(sn.Peer)
+	data, err := proto.Marshal(sn.peer)
 	if err != nil {
 		fmt.Println("Error Marshaling Lobby Data ", err)
 		return nil
@@ -25,10 +25,10 @@ func (sn *Node) Info() []byte {
 func (sn *Node) Update(direction float64) {
 	// ** Initialize ** //
 	// Update User Values
-	sn.Peer.Direction = math.Round(direction*100) / 100
+	sn.peer.Direction = math.Round(direction*100) / 100
 
 	// Inform Lobby
-	err := sn.lobby.Update(sn.Peer)
+	err := sn.lobby.Update(sn.peer)
 	if err != nil {
 		sn.error(err, "Update")
 	}
@@ -62,7 +62,7 @@ func (sn *Node) Invite(peerId string) {
 // ^ Respond to an Invitation ^ //
 func (sn *Node) Respond(decision bool) {
 	// Send Response on PeerConnection
-	sn.peerConn.SendResponse(decision, sn.Peer)
+	sn.peerConn.SendResponse(decision, sn.peer)
 }
 
 // ^ Reset Current Queued File Metadata ^ //

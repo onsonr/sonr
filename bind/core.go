@@ -3,8 +3,10 @@ package sonr
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/libp2p/go-libp2p-core/host"
+	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	sf "github.com/sonr-io/core/internal/file"
 	sh "github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/internal/lobby"
@@ -29,17 +31,19 @@ type Callback interface {
 
 // ^ Struct: Main Node handles Networking/Identity/Streams ^
 type Node struct {
-	// Public Properties
-	HostID      string
-	Peer        *md.Peer
-	directories *md.Directories
+	// Properties
+	hostID string
+	olc    string
+	peer   *md.Peer
 
 	// Networking Properties
-	ctx  context.Context
-	host host.Host
+	ctx    context.Context
+	host   host.Host
+	pubSub *pubsub.PubSub
 
 	// Data Properties
-	files []*sf.SafeMetadata
+	files       []*sf.SafeMetadata
+	directories *md.Directories
 
 	// References
 	callbackRef Callback
@@ -63,25 +67,77 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 		return nil
 	}
 
-	// @1. Create Host and Set Stream Handlers
-	node.host, node.HostID, err = sh.NewHost(node.ctx)
+	// @1. Create Host and Start Discovery
+	node.host, node.hostID, err = sh.NewHost(node.ctx)
 	if err != nil {
 		node.error(err, "NewNode")
 		return nil
 	}
 
 	// @3. Set Node User Information
-	if err = node.setPeer(&reqMsg); err != nil {
+	if err = node.setInfo(&reqMsg); err != nil {
 		node.error(err, "NewNode")
 		return nil
 	}
 
-	// @4. Setup Discovery w/ Lobby
-	if err = node.setDiscovery(node.ctx, &reqMsg); err != nil {
+	// @4. Setup Connection w/ Lobby and Set Stream Handlers
+	if err = node.setConnection(node.ctx); err != nil {
 		node.error(err, "NewNode")
 		return nil
 	}
 
 	// ** Callback Node User Information ** //
 	return node
+}
+
+// ^ callback Method with type ^
+func (sn *Node) callback(call md.CallbackType, data proto.Message) {
+	// ** Convert Message to bytes **
+	bytes, err := proto.Marshal(data)
+	if err != nil {
+		fmt.Println("Cannot Marshal Error Protobuf: ", err)
+	}
+
+	// ** Check Call Type **
+	switch call {
+	// @ Lobby Refreshed
+	case md.CallbackType_REFRESHED:
+		sn.callbackRef.OnRefreshed(bytes)
+
+	// @ File has Queued
+	case md.CallbackType_QUEUED:
+		sn.callbackRef.OnQueued(bytes)
+
+	// @ Peer has been Invited
+	case md.CallbackType_INVITED:
+		sn.callbackRef.OnInvited(bytes)
+
+	// @ Peer has Responded
+	case md.CallbackType_RESPONDED:
+		sn.callbackRef.OnResponded(bytes)
+
+	// @ Transfer has Completed
+	case md.CallbackType_COMPLETED:
+		sn.callbackRef.OnCompleted(bytes)
+	}
+}
+
+// ^ error Callback with error instance, and method ^
+func (sn *Node) error(err error, method string) {
+	// Create Error ProtoBuf
+	errorMsg := md.ErrorMessage{
+		Message: err.Error(),
+		Method:  method,
+	}
+
+	// Convert Message to bytes
+	bytes, err := proto.Marshal(&errorMsg)
+	if err != nil {
+		log.Println("Cannot Marshal Error Protobuf: ", err)
+	}
+	// Send Callback
+	sn.callbackRef.OnError(bytes)
+
+	// Log In Core
+	log.Fatalln(fmt.Sprintf("[Error] At Method %s : %s", err.Error(), method))
 }
