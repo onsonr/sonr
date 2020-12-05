@@ -2,8 +2,8 @@ package transfer
 
 import (
 	"context"
+	"errors"
 	"log"
-	"time"
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -44,7 +44,10 @@ type OnGRPCall func(data []byte, from string) error
 func (as *AuthService) InviteRequest(ctx context.Context, args AuthArgs, reply *AuthReply) error {
 	log.Println("Received a Invite call: ", args.Data)
 	// Set Current Message
-	as.peerConn.SetCurrentMessage(args.Data)
+	err := as.peerConn.SetCurrentMessage(args.Data)
+	if err != nil {
+		log.Println(err)
+	}
 
 	// Send Callback
 	as.inviteCall(args.Data)
@@ -52,14 +55,16 @@ func (as *AuthService) InviteRequest(ctx context.Context, args AuthArgs, reply *
 	select {
 	// Received Auth Channel Message
 	case m := <-as.authCh:
-		log.Println("Auth Message Received")
+		log.Println("User has replied")
 		// Convert Protobuf to bytes
 		msgBytes, err := proto.Marshal(m)
 		if err != nil {
 			log.Println(err)
 		}
 
+		// Set Message data and call done
 		reply.Data = msgBytes
+		ctx.Done()
 		return nil
 		// Context is Done
 	case <-ctx.Done():
@@ -76,7 +81,6 @@ func (pc *PeerConnection) SendInvite(h host.Host, id peer.ID, msgBytes []byte) {
 	var reply AuthReply
 	var args AuthArgs
 	args.Data = msgBytes
-	startTime := time.Now()
 
 	// Call to Peer
 	done := make(chan *gorpc.Call, 1)
@@ -84,20 +88,11 @@ func (pc *PeerConnection) SendInvite(h host.Host, id peer.ID, msgBytes []byte) {
 
 	call := <-done
 	if call.Error != nil {
-		// Track Execution
-		endTime := time.Now()
-		diff := endTime.Sub(startTime)
-		log.Printf("Failed to call %s: time=%s\n", id, diff)
-
 		// Send Error
 		onError(err, "sendInvite")
 		log.Panicln(err)
 	} else {
 		//call.Reply := AuthReply
-		// End Tracking
-		endTime := time.Now()
-		diff := endTime.Sub(startTime)
-		log.Printf("Response %s from %s: time=%s\n", id, reply.Data, diff)
 
 		// Send Callback and Reset
 		pc.respondedCall(reply.Data)
@@ -111,24 +106,17 @@ func (pc *PeerConnection) SendInvite(h host.Host, id peer.ID, msgBytes []byte) {
 func (pc *PeerConnection) Respond(decision bool, peer *md.Peer) {
 	// @ Check Decision
 	if decision {
+		// Create Transfer File
 		if pc.currMessage != nil {
 			// Initialize Transfer
+			log.Println("Preparing for Transfer")
 			savePath := "/" + pc.currMessage.Metadata.Name + "." + pc.currMessage.Metadata.Mime.Subtype
 			pc.transfer = NewTransfer(savePath, pc.currMessage.Metadata, pc.currMessage.From, pc.progressCall, pc.completedCall)
+		} else {
+			err := errors.New("AuthMessage wasnt cached")
+			onError(err, "sendInvite")
 		}
-		// else {
-		// 	err := errors.New("AuthMessage wasnt cached")
-		// 	onError(err, "sendInvite")
-		// 	log.Panicln(err)
-		// }
-	} else {
-		// Reset Peer Info
-		pc.peerID = ""
-		pc.currMessage = nil
-	}
 
-	// @ Handle Decision
-	if decision {
 		// Create Accept Response
 		respMsg := &md.AuthMessage{
 			From:  peer,
@@ -138,6 +126,10 @@ func (pc *PeerConnection) Respond(decision bool, peer *md.Peer) {
 		// Send to Channel
 		pc.auth.authCh <- respMsg
 	} else {
+		// Reset Peer Info
+		pc.peerID = ""
+		pc.currMessage = nil
+
 		// Create Decline Response
 		respMsg := &md.AuthMessage{
 			From:  peer,
@@ -147,5 +139,4 @@ func (pc *PeerConnection) Respond(decision bool, peer *md.Peer) {
 		// Send to Channel
 		pc.auth.authCh <- respMsg
 	}
-
 }

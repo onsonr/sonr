@@ -76,7 +76,9 @@ func (sn *Node) Invite(peerId string) {
 		}
 
 		// Call GRPC in PeerConnection
-		sn.peerConn.SendInvite(sn.host, id, msgBytes)
+		go func() {
+			sn.peerConn.SendInvite(sn.host, id, msgBytes)
+		}()
 	}
 }
 
