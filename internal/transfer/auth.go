@@ -10,6 +10,8 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	gorpc "github.com/libp2p/go-libp2p-gorpc"
+	md "github.com/sonr-io/core/internal/models"
+	"google.golang.org/protobuf/proto"
 )
 
 // ****************** //
@@ -23,8 +25,7 @@ type AuthArgs struct {
 
 // Reply is also AuthMessage protobuf
 type AuthReply struct {
-	Data     []byte
-	Decision bool
+	Data []byte
 }
 
 // Service Struct
@@ -34,6 +35,7 @@ type AuthService struct {
 	currReply  *AuthReply
 	inviteCall OnProtobuf
 	peerConn   *PeerConnection
+	authCh     chan *md.AuthMessage
 }
 
 // GRPC Callback
@@ -41,13 +43,28 @@ type OnGRPCall func(data []byte, from string) error
 
 // ^ Calls Invite on Remote Peer ^ //
 func (as *AuthService) InviteRequest(ctx context.Context, args AuthArgs, reply *AuthReply) error {
-	log.Println("Received a Invite call: ", args.Data)
-	// Set Current Data
-	as.currArgs = args
+	for {
+		log.Println("Received a Invite call: ", args.Data)
+		// Send Callback
+		as.inviteCall(args.Data)
 
-	// Send Callback
-	as.inviteCall(args.Data)
-	return nil
+		select {
+		// Received Auth Channel Message
+		case m := <-as.authCh:
+			log.Println("Auth Message Received")
+			// Convert Protobuf to bytes
+			msgBytes, err := proto.Marshal(m)
+			if err != nil {
+				log.Println(err)
+			}
+
+			reply.Data = msgBytes
+			return nil
+			// Context is Done
+		case <-ctx.Done():
+			return ctx.Err()
+		}
+	}
 }
 
 // ^ Send SendInvite to a Peer ^ //
@@ -62,8 +79,11 @@ func (pc *PeerConnection) SendInvite(h host.Host, id peer.ID, msgBytes []byte) {
 	startTime := time.Now()
 
 	// Call to Peer
-	err := rpcClient.Call(id, "AuthService", "InviteRequest", args, &reply)
-	if err != nil {
+	done := make(chan *gorpc.Call, 1)
+	err := rpcClient.Go(id, "AuthService", "InviteRequest", args, &reply, done)
+
+	call := <-done
+	if call.Error != nil {
 		// Track Execution
 		endTime := time.Now()
 		diff := endTime.Sub(startTime)
@@ -72,25 +92,23 @@ func (pc *PeerConnection) SendInvite(h host.Host, id peer.ID, msgBytes []byte) {
 		// Send Error
 		onError(err, "sendInvite")
 		log.Panicln(err)
-	}
+	} else {
+		//call.Reply := AuthReply
+		// End Tracking
+		endTime := time.Now()
+		diff := endTime.Sub(startTime)
+		log.Printf("Response %s from %s: time=%s\n", id, reply.Data, diff)
 
-	// End Tracking
-	endTime := time.Now()
-	diff := endTime.Sub(startTime)
-	log.Printf("Response %s from %s: time=%s\n", id, reply.Data, diff)
+		// Send Callback and Reset
+		pc.respondedCall(reply.Data)
 
-	// Send Callback and Reset
-	// pc.respondedCall(reply.Data)
-
-	// Handle Response
-	if reply.Decision {
 		// Begin Transfer
-		pc.SendFile(h)
+		//pc.SendFile(h)
 	}
 }
 
 // ^ Send Accept Message on Stream ^ //
-func (pc *PeerConnection) SendResponse(decision bool, msgBytes []byte) {
+func (pc *PeerConnection) Respond(decision bool, msgBytes []byte) {
 	// Check Decision
 	if decision {
 		if pc.currMessage != nil {
@@ -107,7 +125,5 @@ func (pc *PeerConnection) SendResponse(decision bool, msgBytes []byte) {
 		pc.peerID = ""
 		pc.currMessage = nil
 	}
-
-	pc.auth.currReply.Data = msgBytes
-	pc.auth.currReply.Decision = decision
+	pc.auth.authCh <- pc.currMessage
 }

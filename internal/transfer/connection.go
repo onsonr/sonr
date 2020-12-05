@@ -69,6 +69,7 @@ func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic 
 	// Create AuthService
 	ath := AuthService{
 		inviteCall: ic,
+		authCh:     make(chan *md.AuthMessage, 100),
 	}
 
 	// Register Service

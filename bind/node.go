@@ -98,7 +98,7 @@ func (sn *Node) Respond(decision bool) {
 		}
 
 		// Send Response on PeerConnection
-		sn.peerConn.SendResponse(decision, msgBytes)
+		sn.peerConn.Respond(decision, msgBytes)
 	} else {
 		// Create Decline Response
 		respMsg := &md.AuthMessage{
@@ -114,7 +114,7 @@ func (sn *Node) Respond(decision bool) {
 		}
 
 		// Send Response on PeerConnection
-		sn.peerConn.SendResponse(decision, msgBytes)
+		sn.peerConn.Respond(decision, msgBytes)
 	}
 
 }
