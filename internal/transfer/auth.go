@@ -2,7 +2,6 @@ package transfer
 
 import (
 	"context"
-	"errors"
 	"log"
 	"time"
 
@@ -109,22 +108,44 @@ func (pc *PeerConnection) SendInvite(h host.Host, id peer.ID, msgBytes []byte) {
 }
 
 // ^ Send Accept Message on Stream ^ //
-func (pc *PeerConnection) Respond(decision bool, msgBytes []byte) {
-	// Check Decision
+func (pc *PeerConnection) Respond(decision bool, peer *md.Peer) {
+	// @ Check Decision
 	if decision {
 		if pc.currMessage != nil {
 			// Initialize Transfer
 			savePath := "/" + pc.currMessage.Metadata.Name + "." + pc.currMessage.Metadata.Mime.Subtype
 			pc.transfer = NewTransfer(savePath, pc.currMessage.Metadata, pc.currMessage.From, pc.progressCall, pc.completedCall)
-		} else {
-			err := errors.New("AuthMessage wasnt cached")
-			onError(err, "sendInvite")
-			log.Panicln(err)
 		}
+		// else {
+		// 	err := errors.New("AuthMessage wasnt cached")
+		// 	onError(err, "sendInvite")
+		// 	log.Panicln(err)
+		// }
 	} else {
 		// Reset Peer Info
 		pc.peerID = ""
 		pc.currMessage = nil
 	}
-	pc.auth.authCh <- pc.currMessage
+
+	// @ Handle Decision
+	if decision {
+		// Create Accept Response
+		respMsg := &md.AuthMessage{
+			From:  peer,
+			Event: md.AuthMessage_ACCEPT,
+		}
+
+		// Send to Channel
+		pc.auth.authCh <- respMsg
+	} else {
+		// Create Decline Response
+		respMsg := &md.AuthMessage{
+			From:  peer,
+			Event: md.AuthMessage_DECLINE,
+		}
+
+		// Send to Channel
+		pc.auth.authCh <- respMsg
+	}
+
 }

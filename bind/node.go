@@ -83,40 +83,8 @@ func (sn *Node) Invite(peerId string) {
 // ^ Respond to an Invitation ^ //
 func (sn *Node) Respond(decision bool) {
 	// @ Check Decision
-	if decision {
-		// Create Accept Response
-		respMsg := &md.AuthMessage{
-			From:  sn.peer,
-			Event: md.AuthMessage_ACCEPT,
-		}
-
-		// Convert Protobuf to bytes
-		msgBytes, err := proto.Marshal(respMsg)
-		if err != nil {
-			sn.error(err, "Marshal")
-			log.Println(err)
-		}
-
-		// Send Response on PeerConnection
-		sn.peerConn.Respond(decision, msgBytes)
-	} else {
-		// Create Decline Response
-		respMsg := &md.AuthMessage{
-			From:  sn.peer,
-			Event: md.AuthMessage_DECLINE,
-		}
-
-		// Convert Protobuf to bytes
-		msgBytes, err := proto.Marshal(respMsg)
-		if err != nil {
-			sn.error(err, "Marshal")
-			log.Println(err)
-		}
-
-		// Send Response on PeerConnection
-		sn.peerConn.Respond(decision, msgBytes)
-	}
-
+	// Send Response on PeerConnection
+	sn.peerConn.Respond(decision, sn.peer)
 }
 
 // ^ Reset Current Queued File Metadata ^ //
