@@ -43,27 +43,28 @@ type OnGRPCall func(data []byte, from string) error
 
 // ^ Calls Invite on Remote Peer ^ //
 func (as *AuthService) InviteRequest(ctx context.Context, args AuthArgs, reply *AuthReply) error {
-	for {
-		log.Println("Received a Invite call: ", args.Data)
-		// Send Callback
-		as.inviteCall(args.Data)
+	log.Println("Received a Invite call: ", args.Data)
+	// Set Current Message
+	as.peerConn.SetCurrentMessage(args.Data)
 
-		select {
-		// Received Auth Channel Message
-		case m := <-as.authCh:
-			log.Println("Auth Message Received")
-			// Convert Protobuf to bytes
-			msgBytes, err := proto.Marshal(m)
-			if err != nil {
-				log.Println(err)
-			}
+	// Send Callback
+	as.inviteCall(args.Data)
 
-			reply.Data = msgBytes
-			return nil
-			// Context is Done
-		case <-ctx.Done():
-			return ctx.Err()
+	select {
+	// Received Auth Channel Message
+	case m := <-as.authCh:
+		log.Println("Auth Message Received")
+		// Convert Protobuf to bytes
+		msgBytes, err := proto.Marshal(m)
+		if err != nil {
+			log.Println(err)
 		}
+
+		reply.Data = msgBytes
+		return nil
+		// Context is Done
+	case <-ctx.Done():
+		return ctx.Err()
 	}
 }
 

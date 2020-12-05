@@ -14,6 +14,7 @@ import (
 	msgio "github.com/libp2p/go-msgio"
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
+	"google.golang.org/protobuf/proto"
 )
 
 // ChatRoomBufSize is the number of incoming messages to buffer for each topic.
@@ -84,26 +85,6 @@ func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic 
 	return peerConn, nil
 }
 
-// ^ Create new SonrFile struct with meta and documents directory ^ //
-func NewTransfer(savePath string, meta *md.Metadata, own *md.Peer, op OnProgress, oc OnProtobuf) *Transfer {
-	return &Transfer{
-		// Inherited Properties
-		metadata:   meta,
-		path:       savePath,
-		owner:      own,
-		onProgress: op,
-		onComplete: oc,
-
-		// Builders
-		stringsBuilder: new(strings.Builder),
-		bytesBuilder:   new(bytes.Buffer),
-
-		// Tracking
-		count: 0,
-		size:  0,
-	}
-}
-
 // ^ Handle Incoming Stream ^ //
 func (pc *PeerConnection) HandleTransfer(stream network.Stream) {
 	// Set Stream
@@ -132,4 +113,35 @@ func (pc *PeerConnection) HandleTransfer(stream network.Stream) {
 			}
 		}
 	}(msgio.NewReader(stream), pc.transfer)
+}
+
+// ^ Set the Current Message ^ //
+func (pc *PeerConnection) SetCurrentMessage(data []byte) error {
+	// @ Unmarshal Bytes into Proto
+	authMsg := md.AuthMessage{}
+	err := proto.Unmarshal(data, &authMsg)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// ^ Create new SonrFile struct with meta and documents directory ^ //
+func NewTransfer(savePath string, meta *md.Metadata, own *md.Peer, op OnProgress, oc OnProtobuf) *Transfer {
+	return &Transfer{
+		// Inherited Properties
+		metadata:   meta,
+		path:       savePath,
+		owner:      own,
+		onProgress: op,
+		onComplete: oc,
+
+		// Builders
+		stringsBuilder: new(strings.Builder),
+		bytesBuilder:   new(bytes.Buffer),
+
+		// Tracking
+		count: 0,
+		size:  0,
+	}
 }
