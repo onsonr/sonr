@@ -78,10 +78,8 @@ func (as *AuthService) InviteRequest(ctx context.Context, args AuthArgs, reply *
 
 // ^ Send SendInvite to a Peer ^ //
 func (pc *PeerConnection) SendInvite(h host.Host, id peer.ID, msgBytes []byte) {
-	// Create Client
+	// Initialize Data
 	rpcClient := gorpc.NewClient(h, protocol.ID("/sonr/rpc/auth"))
-
-	// Set Data
 	var reply AuthReply
 	var args AuthArgs
 	args.Data = msgBytes
@@ -90,18 +88,20 @@ func (pc *PeerConnection) SendInvite(h host.Host, id peer.ID, msgBytes []byte) {
 	done := make(chan *gorpc.Call, 1)
 	err := rpcClient.Go(id, "AuthService", "InviteRequest", args, &reply, done)
 
+	// Initiate Call on transfer
 	call := <-done
 	if call.Error != nil {
 		// Send Error
 		onError(err, "sendInvite")
 		log.Panicln(err)
-	} else {
-		// Send Callback and Reset
-		pc.respondedCall(reply.Data)
-
-		// Begin Transfer
-		//pc.SendFile(h)
 	}
+
+	// Send Callback and Reset
+	pc.respondedCall(reply.Data)
+	log.Println("Received Response")
+
+	// Begin Transfer
+	pc.SendFile(h, id)
 }
 
 // ^ Send Accept Message on Stream ^ //
