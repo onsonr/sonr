@@ -29,8 +29,6 @@ type AuthReply struct {
 // Service Struct
 type AuthService struct {
 	// Current Data
-	currArgs   AuthArgs
-	currReply  *AuthReply
 	inviteCall OnProtobuf
 	peerConn   *PeerConnection
 	authCh     chan *md.AuthMessage
