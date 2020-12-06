@@ -28,17 +28,19 @@ type Transfer struct {
 	bytesBuilder   *bytes.Buffer
 
 	// Tracking
-	currentSize int32
+	currentSize int
 	isBase64    bool
-	interval    int32
-	totalChunks int32
-	totalSize   int32
+	interval    int
+	totalChunks int
+	totalSize   int
 }
 
 // ^ Check file type and use corresponding method ^ //
-func (t *Transfer) addBuffer(buffer []byte) (bool, error) {
-	// ** Lock ** //
+func (t *Transfer) addBuffer(curr int, buffer []byte) (bool, error) {
+	// ** Lock/Unlock ** //
 	t.mutex.Lock()
+	defer t.mutex.Unlock()
+
 	// @ Unmarshal Bytes into Proto
 	chunk := md.Chunk{}
 	err := proto.Unmarshal(buffer, &chunk)
@@ -47,20 +49,20 @@ func (t *Transfer) addBuffer(buffer []byte) (bool, error) {
 	}
 
 	// @ Initialize Vars if First Chunk
-	if chunk.Current == 0 {
+	if curr == 0 {
 		// Set Size
-		t.totalSize = chunk.Total
+		t.totalSize = int(chunk.Total)
 
 		// Check for base64
 		if chunk.GetB64() != "" {
 			// Set Tracking Data
 			t.totalChunks = t.totalSize / B64ChunkSize
-			t.interval = t.totalChunks / 100
+			t.interval = t.totalChunks / 16
 			t.isBase64 = true
 		} else {
 			// Set Tracking Data
 			t.totalChunks = t.totalSize / BufferChunkSize
-			t.interval = t.totalChunks / 100
+			t.interval = t.totalChunks / 16
 			t.isBase64 = false
 		}
 	}
@@ -74,12 +76,19 @@ func (t *Transfer) addBuffer(buffer []byte) (bool, error) {
 		}
 
 		// Update Tracking
-		t.currentSize = t.currentSize + int32(n)
-		t.sendProgress(chunk.Current)
+		t.currentSize = t.currentSize + n
 
 		// Check Completed
-		if t.stringsBuilder.Len() == int(t.totalSize) {
+		if t.currentSize == t.totalSize {
+			err := t.save()
+			if err != nil {
+				return true, err
+			}
 			return true, nil
+		} else {
+			// Update Tracking
+			t.currentSize = t.currentSize + n
+			t.sendProgress(curr)
 		}
 	} else {
 		// Add ByteChunk to Buffer
@@ -88,22 +97,24 @@ func (t *Transfer) addBuffer(buffer []byte) (bool, error) {
 			return true, err
 		}
 
-		// Update Tracking
-		t.currentSize = t.currentSize + int32(n)
-		t.sendProgress(chunk.Current)
-
 		// Check Completed
-		if t.bytesBuilder.Len() == int(t.totalSize) {
+		if t.currentSize == t.totalSize {
+			err := t.save()
+			if err != nil {
+				return true, err
+			}
 			return true, nil
+		} else {
+			// Update Tracking
+			t.currentSize = t.currentSize + n
+			t.sendProgress(curr)
 		}
 	}
-	// ** Unlock ** //
-	t.mutex.Unlock()
 	return false, nil
 }
 
 // ^ Check if Progress Interval has been met before callback ^ //
-func (t *Transfer) sendProgress(count int32) {
+func (t *Transfer) sendProgress(count int) {
 	// @ Adjust Progress to Send on 100 Intervals
 	if t.totalChunks > 100 {
 		// Check for Interval
@@ -180,7 +191,7 @@ func (t *Transfer) sendCompleted() error {
 	saved := &md.Metadata{
 		Name:       t.metadata.Name,
 		Path:       t.path,
-		Size:       t.totalSize,
+		Size:       int32(t.totalSize),
 		Mime:       t.metadata.Mime,
 		Owner:      t.owner,
 		LastOpened: int32(time.Now().Unix()),

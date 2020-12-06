@@ -74,13 +74,12 @@ func writeBase64ToStream(writer msgio.WriteCloser, meta *md.Metadata) {
 	total := int32(len(data))
 
 	// Iterate for Entire file as String
-	for i, chunk := range ChunkBase64(data) {
+	for _, chunk := range ChunkBase64(data) {
 		// Create Block Protobuf from Chunk
 		chunk := md.Chunk{
-			Size:    int32(len(chunk)),
-			B64:     chunk,
-			Current: int32(i),
-			Total:   total,
+			Size:  int32(len(chunk)),
+			B64:   chunk,
+			Total: total,
 		}
 
 		// Convert to bytes
@@ -110,7 +109,7 @@ func writeBytesToStream(writer msgio.WriteCloser, meta *md.Metadata, total int32
 	ps := make([]byte, BufferChunkSize)
 
 	// Iterate file
-	for i := 0; ; i++ {
+	for {
 		// Read Bytes
 		bytesread, err := file.Read(ps)
 
@@ -126,10 +125,9 @@ func writeBytesToStream(writer msgio.WriteCloser, meta *md.Metadata, total int32
 
 		// Create Block Protobuf from Chunk
 		chunk := md.Chunk{
-			Size:    int32(len(ps[:bytesread])),
-			Buffer:  ps[:bytesread],
-			Current: int32(i),
-			Total:   total,
+			Size:   int32(len(ps[:bytesread])),
+			Buffer: ps[:bytesread],
+			Total:  total,
 		}
 
 		// Convert to bytes

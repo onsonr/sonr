@@ -85,7 +85,7 @@ func (pc *PeerConnection) HandleTransfer(stream network.Stream) {
 
 	// Route Data from Stream
 	go func(reader msgio.ReadCloser, t *Transfer) {
-		for {
+		for i := 0; ; i++ {
 			// @ Read Length Fixed Bytes
 			buffer, err := reader.ReadMsg()
 			if err != nil {
@@ -95,7 +95,7 @@ func (pc *PeerConnection) HandleTransfer(stream network.Stream) {
 			}
 
 			// @ Unmarshal Bytes into Proto
-			hasCompleted, err := t.addBuffer(buffer)
+			hasCompleted, err := t.addBuffer(i, buffer)
 			if err != nil {
 				onError(err, "ReadStream")
 				log.Fatalln(err)
@@ -104,12 +104,6 @@ func (pc *PeerConnection) HandleTransfer(stream network.Stream) {
 
 			// @ Check if All Buffer Received to Save
 			if hasCompleted {
-				err := pc.transfer.save()
-				if err != nil {
-					onError(err, "Save")
-					log.Fatalln(err)
-					break
-				}
 				break
 			}
 		}

@@ -22,8 +22,7 @@ message Chunk {
   string b64 = 1;
   bytes buffer = 2;
   int32 size = 3;
-  int32 current = 4;
-  int32 total = 5;
+  int32 total = 4;
 }
 
 enum CallbackType {
