@@ -97,16 +97,21 @@ func (pc *PeerConnection) HandleTransfer(stream network.Stream) {
 			}
 
 			// @ Unmarshal Bytes into Proto
-			hasCompleted, err := t.AddBuffer(buffer)
+			hasCompleted, err := t.addBuffer(buffer)
 			if err != nil {
 				onError(err, "ReadStream")
 				log.Fatalln(err)
 				break
 			}
 
-			// @ Check if All Buffer Received
+			// @ Check if All Buffer Received to Save
 			if hasCompleted {
-				pc.transfer.Save()
+				err := pc.transfer.save()
+				if err != nil {
+					onError(err, "Save")
+					log.Fatalln(err)
+					break
+				}
 				break
 			}
 		}
@@ -126,9 +131,5 @@ func NewTransfer(savePath string, meta *md.Metadata, own *md.Peer, op OnProgress
 		// Builders
 		stringsBuilder: new(strings.Builder),
 		bytesBuilder:   new(bytes.Buffer),
-
-		// Tracking
-		count:       0,
-		currentSize: 0,
 	}
 }
