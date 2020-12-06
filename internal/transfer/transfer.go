@@ -144,7 +144,12 @@ func (t *Transfer) Save() {
 	if err != nil {
 		log.Println(err)
 	}
-	f.Close()
+
+	// Close File
+	err = f.Close()
+	if err != nil {
+		log.Println(err)
+	}
 
 	// @ 3. Callback saved Metadata
 	// Create Metadata
