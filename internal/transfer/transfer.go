@@ -29,12 +29,12 @@ type Transfer struct {
 	bytesBuilder   *bytes.Buffer
 
 	// Tracking
-	count int
-	size  int
+	size       int
+	encodeType string
 }
 
 // ^ Check file type and use corresponding method ^ //
-func (t *Transfer) AddBuffer(buffer []byte) (bool, error) {
+func (t *Transfer) AddBuffer(count int, buffer []byte) (bool, error) {
 	// ** Lock/Unlock ** //
 	t.mutex.Lock()
 	defer t.mutex.Unlock()
@@ -47,13 +47,21 @@ func (t *Transfer) AddBuffer(buffer []byte) (bool, error) {
 	}
 
 	// @ Increment received count
-	if t.count == 0 {
+	if count == 0 {
+		// Set Transfer Size
 		t.size = int(chunk.Total)
+
+		// Set Encode Type
+		if chunk.GetB64() != "" {
+			t.encodeType = "Base64"
+		} else {
+			t.encodeType = "Buffer"
+		}
 	}
 
 	// Set Tracking
 	var n int
-	t.count++
+	count++
 
 	// @ Check File Type
 	if chunk.GetB64() != "" {
@@ -71,12 +79,17 @@ func (t *Transfer) AddBuffer(buffer []byte) (bool, error) {
 	}
 
 	// @ Update Tracking
-	currW := t.count*BufferChunkSize + n
-	currP := float32(currW) / float32(t.size)
-	t.onProgress(currP)
+	if t.encodeType == "Base64" {
+		currW := count*B64ChunkSize + n
+		currP := float32(currW) / float32(t.size)
+		t.onProgress(currP)
+	} else {
+		currW := count*BufferChunkSize + n
+		currP := float32(currW) / float32(t.size)
+		t.onProgress(currP)
+	}
 
 	if t.stringsBuilder.Len() == t.size || t.bytesBuilder.Len() == t.size {
-		t.Save()
 		return true, nil
 	}
 	return false, nil
