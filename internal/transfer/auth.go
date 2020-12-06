@@ -110,7 +110,7 @@ func (pc *PeerConnection) SendResponse(decision bool, peer *md.Peer) {
 	if decision {
 		// Initialize Transfer
 		currMsg := pc.auth.currMsg
-		pc.transfer = NewTransfer(pc.dirs, currMsg.Metadata, currMsg.From, pc.progressCall, pc.completedCall)
+		pc.transfer = pc.NewTransfer(currMsg.Metadata, currMsg.From)
 
 		// Create Accept Response
 		respMsg := &md.AuthMessage{

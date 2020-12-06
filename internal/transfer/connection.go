@@ -7,7 +7,6 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
-	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	gorpc "github.com/libp2p/go-libp2p-gorpc"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
@@ -39,9 +38,8 @@ type PeerConnection struct {
 	completedCall OnProtobuf
 
 	// Info
-	olc    string
-	dirs   *md.Directories
-	peerID peer.ID
+	olc  string
+	dirs *md.Directories
 }
 
 // ^ Initialize sets up new Peer Connection handler ^
@@ -119,15 +117,15 @@ func (pc *PeerConnection) HandleTransfer(stream network.Stream) {
 }
 
 // ^ Create new SonrFile struct with meta and documents directory ^ //
-func NewTransfer(dirs *md.Directories, meta *md.Metadata, own *md.Peer, op OnProgress, oc OnProtobuf) *Transfer {
+func (pc *PeerConnection) NewTransfer(meta *md.Metadata, own *md.Peer) *Transfer {
 	// Create Transfer
 	return &Transfer{
 		// Inherited Properties
 		metadata:   meta,
-		path:       dirs.Documents + "/" + meta.Name + "." + meta.Mime.Subtype,
+		path:       pc.dirs.Documents + "/" + meta.Name + "." + meta.Mime.Subtype,
 		owner:      own,
-		onProgress: op,
-		onComplete: oc,
+		onProgress: pc.progressCall,
+		onComplete: pc.completedCall,
 
 		// Builders
 		stringsBuilder: new(strings.Builder),
