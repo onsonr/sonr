@@ -110,9 +110,7 @@ func (pc *PeerConnection) SendResponse(decision bool, peer *md.Peer) {
 	if decision {
 		// Initialize Transfer
 		currMsg := pc.auth.currMsg
-		log.Println("Preparing for Transfer")
-		savePath := "/" + currMsg.Metadata.Name + "." + currMsg.Metadata.Mime.Subtype
-		pc.transfer = NewTransfer(savePath, currMsg.Metadata, currMsg.From, pc.progressCall, pc.completedCall)
+		pc.transfer = NewTransfer(pc.dirs, currMsg.Metadata, currMsg.From, pc.progressCall, pc.completedCall)
 
 		// Create Accept Response
 		respMsg := &md.AuthMessage{

@@ -14,7 +14,6 @@ import (
 )
 
 type OnProgress func(data float32)
-
 type Transfer struct {
 	// Inherited Properties
 	mutex      sync.Mutex

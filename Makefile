@@ -24,6 +24,7 @@ PB_BUILD_CORE="--go_out=$(CORE_PB_DIR)"
 PB_BUILD_PLUGIN="--dart_out=$(PLUGIN_PB_DIR)"
 
 all: protoc ios android
+	@go mod tidy
 	@cd /System/Library/Sounds && afplay Hero.aiff
 	@echo ""
 	@echo ""

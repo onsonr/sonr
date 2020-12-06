@@ -119,11 +119,12 @@ func (pc *PeerConnection) HandleTransfer(stream network.Stream) {
 }
 
 // ^ Create new SonrFile struct with meta and documents directory ^ //
-func NewTransfer(savePath string, meta *md.Metadata, own *md.Peer, op OnProgress, oc OnProtobuf) *Transfer {
+func NewTransfer(dirs *md.Directories, meta *md.Metadata, own *md.Peer, op OnProgress, oc OnProtobuf) *Transfer {
+	// Create Transfer
 	return &Transfer{
 		// Inherited Properties
 		metadata:   meta,
-		path:       savePath,
+		path:       dirs.Documents + "/" + meta.Name + "." + meta.Mime.Subtype,
 		owner:      own,
 		onProgress: op,
 		onComplete: oc,

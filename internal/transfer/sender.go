@@ -75,7 +75,6 @@ func writeBase64ToStream(writer msgio.WriteCloser, meta *md.Metadata) {
 
 	// Iterate for Entire file as String
 	for i, chunk := range ChunkBase64(data) {
-		log.Println("Chunk Number: ", i)
 		// Create Block Protobuf from Chunk
 		chunk := md.Chunk{
 			Size:    int32(len(chunk)),
