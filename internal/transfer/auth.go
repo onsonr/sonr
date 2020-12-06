@@ -2,7 +2,6 @@ package transfer
 
 import (
 	"context"
-	"errors"
 	"log"
 
 	"github.com/libp2p/go-libp2p-core/host"
@@ -35,6 +34,7 @@ type AuthService struct {
 	inviteCall OnProtobuf
 	peerConn   *PeerConnection
 	authCh     chan *md.AuthMessage
+	currMsg    *md.AuthMessage
 }
 
 // GRPC Callback
@@ -43,19 +43,25 @@ type OnGRPCall func(data []byte, from string) error
 // ^ Calls Invite on Remote Peer ^ //
 func (as *AuthService) InviteRequest(ctx context.Context, args AuthArgs, reply *AuthReply) error {
 	log.Println("Received a Invite call: ", args.Data)
-	// Set Current Message
-	err := as.peerConn.SetCurrentMessage(args.Data)
-	if err != nil {
-		log.Println(err)
-	}
 
 	// Send Callback
 	as.inviteCall(args.Data)
+
+	// Received Message
+	receivedMessage := md.AuthMessage{}
+	err := proto.Unmarshal(args.Data, &receivedMessage)
+	if err != nil {
+		return err
+	}
+
+	// Set Current Message
+	as.currMsg = &receivedMessage
 
 	select {
 	// Received Auth Channel Message
 	case m := <-as.authCh:
 		log.Println("User has replied")
+
 		// Convert Protobuf to bytes
 		msgBytes, err := proto.Marshal(m)
 		if err != nil {
@@ -92,8 +98,6 @@ func (pc *PeerConnection) SendInvite(h host.Host, id peer.ID, msgBytes []byte) {
 		onError(err, "sendInvite")
 		log.Panicln(err)
 	} else {
-		//call.Reply := AuthReply
-
 		// Send Callback and Reset
 		pc.respondedCall(reply.Data)
 
@@ -106,16 +110,11 @@ func (pc *PeerConnection) SendInvite(h host.Host, id peer.ID, msgBytes []byte) {
 func (pc *PeerConnection) Respond(decision bool, peer *md.Peer) {
 	// @ Check Decision
 	if decision {
-		// Create Transfer File
-		if pc.currMessage != nil {
-			// Initialize Transfer
-			log.Println("Preparing for Transfer")
-			savePath := "/" + pc.currMessage.Metadata.Name + "." + pc.currMessage.Metadata.Mime.Subtype
-			pc.transfer = NewTransfer(savePath, pc.currMessage.Metadata, pc.currMessage.From, pc.progressCall, pc.completedCall)
-		} else {
-			err := errors.New("AuthMessage wasnt cached")
-			onError(err, "sendInvite")
-		}
+		// Initialize Transfer
+		currMsg := pc.auth.currMsg
+		log.Println("Preparing for Transfer")
+		savePath := "/" + currMsg.Metadata.Name + "." + currMsg.Metadata.Mime.Subtype
+		pc.transfer = NewTransfer(savePath, currMsg.Metadata, currMsg.From, pc.progressCall, pc.completedCall)
 
 		// Create Accept Response
 		respMsg := &md.AuthMessage{
@@ -125,11 +124,8 @@ func (pc *PeerConnection) Respond(decision bool, peer *md.Peer) {
 
 		// Send to Channel
 		pc.auth.authCh <- respMsg
-	} else {
-		// Reset Peer Info
-		pc.peerID = ""
-		pc.currMessage = nil
 
+	} else {
 		// Create Decline Response
 		respMsg := &md.AuthMessage{
 			From:  peer,

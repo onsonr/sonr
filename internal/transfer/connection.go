@@ -14,7 +14,6 @@ import (
 	msgio "github.com/libp2p/go-msgio"
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
-	"google.golang.org/protobuf/proto"
 )
 
 // ChatRoomBufSize is the number of incoming messages to buffer for each topic.
@@ -43,10 +42,9 @@ type PeerConnection struct {
 	completedCall OnProtobuf
 
 	// Info
-	olc         string
-	dirs        *md.Directories
-	currMessage *md.AuthMessage
-	peerID      peer.ID
+	olc    string
+	dirs   *md.Directories
+	peerID peer.ID
 }
 
 // ^ Initialize sets up new Peer Connection handler ^
@@ -113,17 +111,6 @@ func (pc *PeerConnection) HandleTransfer(stream network.Stream) {
 			}
 		}
 	}(msgio.NewReader(stream), pc.transfer)
-}
-
-// ^ Set the Current Message ^ //
-func (pc *PeerConnection) SetCurrentMessage(data []byte) error {
-	// @ Unmarshal Bytes into Proto
-	authMsg := md.AuthMessage{}
-	err := proto.Unmarshal(data, &authMsg)
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 // ^ Create new SonrFile struct with meta and documents directory ^ //
