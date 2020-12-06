@@ -87,7 +87,6 @@ func (pc *PeerConnection) HandleTransfer(stream network.Stream) {
 
 	// Route Data from Stream
 	go func(reader msgio.ReadCloser, t *Transfer) {
-		count := 0
 		for {
 			// @ Read Length Fixed Bytes
 			buffer, err := reader.ReadMsg()
@@ -98,7 +97,7 @@ func (pc *PeerConnection) HandleTransfer(stream network.Stream) {
 			}
 
 			// @ Unmarshal Bytes into Proto
-			hasCompleted, err := t.AddBuffer(count, buffer)
+			hasCompleted, err := t.AddBuffer(buffer)
 			if err != nil {
 				onError(err, "ReadStream")
 				log.Fatalln(err)
@@ -129,6 +128,7 @@ func NewTransfer(savePath string, meta *md.Metadata, own *md.Peer, op OnProgress
 		bytesBuilder:   new(bytes.Buffer),
 
 		// Tracking
-		size: 0,
+		count:       0,
+		currentSize: 0,
 	}
 }

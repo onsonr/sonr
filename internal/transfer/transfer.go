@@ -29,16 +29,16 @@ type Transfer struct {
 	bytesBuilder   *bytes.Buffer
 
 	// Tracking
-	size       int
-	encodeType string
+	currentSize int32
+	totalSize   int32
+	count       int32
+	encodeType  string
 }
 
 // ^ Check file type and use corresponding method ^ //
-func (t *Transfer) AddBuffer(count int, buffer []byte) (bool, error) {
-	// ** Lock/Unlock ** //
+func (t *Transfer) AddBuffer(buffer []byte) (bool, error) {
+	// ** Lock ** //
 	t.mutex.Lock()
-	defer t.mutex.Unlock()
-
 	// @ Unmarshal Bytes into Proto
 	chunk := md.Chunk{}
 	err := proto.Unmarshal(buffer, &chunk)
@@ -47,9 +47,9 @@ func (t *Transfer) AddBuffer(count int, buffer []byte) (bool, error) {
 	}
 
 	// @ Increment received count
-	if count == 0 {
+	if t.count == 0 {
 		// Set Transfer Size
-		t.size = int(chunk.Total)
+		t.totalSize = chunk.Total
 
 		// Set Encode Type
 		if chunk.GetB64() != "" {
@@ -57,41 +57,44 @@ func (t *Transfer) AddBuffer(count int, buffer []byte) (bool, error) {
 		} else {
 			t.encodeType = "Buffer"
 		}
+	} else {
+		t.count = chunk.Current
 	}
-
-	// Set Tracking
-	var n int
-	count++
 
 	// @ Check File Type
 	if chunk.GetB64() != "" {
 		// Add Base64 Chunk to Buffer
-		n, err = t.stringsBuilder.WriteString(chunk.B64)
+		n, err := t.stringsBuilder.WriteString(chunk.B64)
 		if err != nil {
 			return true, err
+		}
+
+		// Update Tracking
+		t.currentSize = t.currentSize + int32(n)
+		t.onProgress(float32(t.currentSize) / float32(t.totalSize))
+
+		// Check Completed
+		if t.stringsBuilder.Len() == int(t.totalSize) {
+			return true, nil
 		}
 	} else {
 		// Add ByteChunk to Buffer
-		n, err = t.bytesBuilder.Write(chunk.Buffer)
+		n, err := t.bytesBuilder.Write(chunk.Buffer)
 		if err != nil {
 			return true, err
 		}
-	}
 
-	// @ Update Tracking
-	if t.encodeType == "Base64" {
-		currW := count*B64ChunkSize + n
-		currP := float32(currW) / float32(t.size)
-		t.onProgress(currP)
-	} else {
-		currW := count*BufferChunkSize + n
-		currP := float32(currW) / float32(t.size)
-		t.onProgress(currP)
-	}
+		// Update Tracking
+		t.currentSize = t.currentSize + int32(n)
+		t.onProgress(float32(t.currentSize) / float32(t.totalSize))
 
-	if t.stringsBuilder.Len() == t.size || t.bytesBuilder.Len() == t.size {
-		return true, nil
+		// Check Completed
+		if t.bytesBuilder.Len() == int(t.totalSize) {
+			return true, nil
+		}
 	}
+	// ** Unlock ** //
+	t.mutex.Unlock()
 	return false, nil
 }
 
