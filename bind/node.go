@@ -59,7 +59,7 @@ func (sn *Node) Invite(peerId string) {
 		meta := currFile.GetMetadata()
 
 		// Set SafeFile
-		sn.peerConn.SafeFile = currFile
+		sn.peerConn.SafeMeta = currFile
 
 		// Create Invite Message
 		reqMsg := md.AuthMessage{
@@ -86,7 +86,7 @@ func (sn *Node) Invite(peerId string) {
 func (sn *Node) Respond(decision bool) {
 	// @ Check Decision
 	// Send Response on PeerConnection
-	sn.peerConn.Respond(decision, sn.peer)
+	sn.peerConn.SendResponse(decision, sn.peer)
 }
 
 // ^ Reset Current Queued File Metadata ^ //

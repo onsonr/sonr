@@ -39,7 +39,7 @@ type AuthService struct {
 type OnGRPCall func(data []byte, from string) error
 
 // ^ Calls Invite on Remote Peer ^ //
-func (as *AuthService) InviteRequest(ctx context.Context, args AuthArgs, reply *AuthReply) error {
+func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthReply) error {
 	log.Println("Received a Invite call: ", args.Data)
 
 	// Send Callback
@@ -86,7 +86,7 @@ func (pc *PeerConnection) SendInvite(h host.Host, id peer.ID, msgBytes []byte) {
 
 	// Call to Peer
 	done := make(chan *gorpc.Call, 1)
-	err := rpcClient.Go(id, "AuthService", "InviteRequest", args, &reply, done)
+	err := rpcClient.Go(id, "AuthService", "Invited", args, &reply, done)
 
 	// Initiate Call on transfer
 	call := <-done
@@ -105,7 +105,7 @@ func (pc *PeerConnection) SendInvite(h host.Host, id peer.ID, msgBytes []byte) {
 }
 
 // ^ Send Accept Message on Stream ^ //
-func (pc *PeerConnection) Respond(decision bool, peer *md.Peer) {
+func (pc *PeerConnection) SendResponse(decision bool, peer *md.Peer) {
 	// @ Check Decision
 	if decision {
 		// Initialize Transfer

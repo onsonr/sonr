@@ -16,9 +16,6 @@ import (
 	md "github.com/sonr-io/core/internal/models"
 )
 
-// ChatRoomBufSize is the number of incoming messages to buffer for each topic.
-const ChatRoomBufSize = 128
-
 // Define Callback Function Types
 type OnProtobuf func([]byte)
 type OnError func(err error, method string)
@@ -32,7 +29,7 @@ type PeerConnection struct {
 	auth *AuthService
 
 	// Data Handlers
-	SafeFile *sf.SafeMetadata
+	SafeMeta *sf.SafeMetadata
 	transfer *Transfer
 
 	// Callbacks

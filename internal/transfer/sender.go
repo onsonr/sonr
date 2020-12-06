@@ -32,10 +32,10 @@ func (pc *PeerConnection) SendFile(h host.Host, pid peer.ID) {
 
 	// Initialize Writer
 	writer := msgio.NewWriter(stream)
-	meta := pc.SafeFile.GetMetadata()
+	meta := pc.SafeMeta.GetMetadata()
 
 	// @ Check Type
-	if pc.SafeFile.Mime.Type == md.MIME_image {
+	if pc.SafeMeta.Mime.Type == md.MIME_image {
 		// Start Routine
 		log.Println("Starting Base64 Write Routine")
 		go writeBase64ToStream(writer, meta)
