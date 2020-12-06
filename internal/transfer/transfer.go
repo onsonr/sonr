@@ -106,7 +106,6 @@ func (t *Transfer) Save() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	defer f.Close()
 
 	// @ Set File Bytes by Type
 	if t.metadata.Mime.Type == md.MIME_image {
@@ -145,6 +144,7 @@ func (t *Transfer) Save() {
 	if err != nil {
 		log.Println(err)
 	}
+	f.Close()
 
 	// @ 3. Callback saved Metadata
 	// Create Metadata
