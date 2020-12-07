@@ -80,6 +80,23 @@ func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic 
 	return peerConn, nil
 }
 
+// ^ Create new Transfer to Prepare for Stream ^ //
+func (pc *PeerConnection) NewTransfer(meta *md.Metadata, own *md.Peer) *Transfer {
+	// Create Transfer
+	return &Transfer{
+		// Inherited Properties
+		meta:       meta,
+		owner:      own,
+		path:       pc.dirs.Documents + "/" + meta.Name + "." + meta.Mime.Subtype,
+		onProgress: pc.progressCall,
+		onComplete: pc.receivedCall,
+
+		// Builders
+		stringsBuilder: new(strings.Builder),
+		bytesBuilder:   new(bytes.Buffer),
+	}
+}
+
 // ^ Handle Incoming Stream ^ //
 func (pc *PeerConnection) HandleTransfer(stream network.Stream) {
 	// Route Data from Stream
@@ -112,21 +129,4 @@ func (pc *PeerConnection) HandleTransfer(stream network.Stream) {
 			}
 		}
 	}(msgio.NewReader(stream), pc.transfer)
-}
-
-// ^ Create new SonrFile struct with meta and documents directory ^ //
-func (pc *PeerConnection) NewTransfer(meta *md.Metadata, own *md.Peer) *Transfer {
-	// Create Transfer
-	return &Transfer{
-		// Inherited Properties
-		meta:       meta,
-		owner:      own,
-		path:       pc.dirs.Documents + "/" + meta.Name + "." + meta.Mime.Subtype,
-		onProgress: pc.progressCall,
-		onComplete: pc.receivedCall,
-
-		// Builders
-		stringsBuilder: new(strings.Builder),
-		bytesBuilder:   new(bytes.Buffer),
-	}
 }
