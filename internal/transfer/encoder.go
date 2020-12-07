@@ -10,7 +10,7 @@ import (
 	md "github.com/sonr-io/core/internal/models"
 )
 
-// ^ Helper Method: Chunks string based on B64ChunkSize ^ //
+// ^ Helper: Chunks string based on B64ChunkSize ^ //
 func ChunkBase64(s string) []string {
 	chunkSize := B64ChunkSize
 	ss := make([]string, 0, len(s)/chunkSize+1)
