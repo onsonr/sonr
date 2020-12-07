@@ -14,7 +14,7 @@ import (
 const discoveryInterval = time.Second
 
 // @ discoveryMDNSTag is used in our mDNS advertisements to discover other chat peers.
-const discoveryMDNSTag = "sonr-mdns"
+const defaultMDNSTag = "sonr-mdns+"
 
 // @ mdnsNotifee gets notified when we find a new peer via mDNS discovery ^
 type mdnsNotifee struct {
@@ -22,9 +22,10 @@ type mdnsNotifee struct {
 }
 
 // ^ startMDNS creates an mDNS discovery service and attaches it to the libp2p Host. ^
-func startMDNS(ctx context.Context, h host.Host) error {
+func startMDNS(ctx context.Context, h host.Host, olc string) error {
 	// setup mDNS discovery to find local peers
-	disc, err := discovery.NewMdnsService(ctx, h, discoveryInterval, discoveryMDNSTag)
+	discTag := defaultMDNSTag + olc
+	disc, err := discovery.NewMdnsService(ctx, h, discoveryInterval, discTag)
 	if err != nil {
 		return err
 	}

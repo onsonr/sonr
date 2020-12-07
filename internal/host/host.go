@@ -49,8 +49,10 @@ func NewHost(ctx context.Context, olc string) (host.Host, string, error) {
 	)
 
 	// setup local mDNS discovery
-	err = startMDNS(ctx, h)
+	err = startMDNS(ctx, h, olc)
 	fmt.Println("MDNS Started")
+
+	// setup global dht discovery
 	err = startDHT(ctx, h, olc)
 	fmt.Println("DHT Started")
 	return h, h.ID().String(), err
