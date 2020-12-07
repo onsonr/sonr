@@ -49,7 +49,7 @@ func NewHost(ctx context.Context) (host.Host, string, error) {
 	)
 
 	// setup local mDNS discovery
-	err = initMDNSDiscovery(ctx, h)
+	err = startMDNS(ctx, h)
 	fmt.Println("MDNS Started")
 	return h, h.ID().String(), err
 }

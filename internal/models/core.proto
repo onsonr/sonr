@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package core;
+
 import "data.proto";
 
 // Require Go Package
@@ -12,28 +14,17 @@ message LobbyEvent {
   Peer peer = 2;
   string id = 3; // Optional used for remove
 
-  enum Event {
-    NONE = 0;
-    JOIN = 1;
-    UPDATE = 2;
-    EXIT = 3;
-    }
+  enum Event { NONE = 0; JOIN = 1; UPDATE = 2; EXIT = 3; }
 }
 
-// Define Block Type: Sent on Data Transfer
-message Block {
-  string data = 1;
-  int32 size = 2;
-  int32 current = 3;
+// Define Chunk Type: Sent on Data Transfer
+message Chunk {
+  string b64 = 1;
+  bytes buffer = 2;
+  int32 size = 3;
   int32 total = 4;
 }
 
-message SonrFile {
-  repeated string base64 = 1;
-  string fileId = 2;
-  string name = 3;
-  string path = 4;
-  int32 size = 5;
-  int32 blocks = 6;
-  string kind = 7; 
+enum CallbackType {
+  REFRESHED = 0; QUEUED = 1; INVITED = 2; RESPONDED = 3; COMPLETED = 5;
 }

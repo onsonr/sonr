@@ -75,7 +75,7 @@ func (x AuthMessage_Event) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use AuthMessage_Event.Descriptor instead.
 func (AuthMessage_Event) EnumDescriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{2, 0}
+	return file_api_proto_rawDescGZIP(), []int{1, 0}
 }
 
 // [PLUGIN]
@@ -86,9 +86,10 @@ type ConnectionRequest struct {
 	unknownFields protoimpl.UnknownFields
 
 	Olc       string       `protobuf:"bytes,1,opt,name=olc,proto3" json:"olc,omitempty"`
-	Device    *Device      `protobuf:"bytes,2,opt,name=device,proto3" json:"device,omitempty"`
-	Directory *Directories `protobuf:"bytes,3,opt,name=directory,proto3" json:"directory,omitempty"`
-	Contact   *Contact     `protobuf:"bytes,4,opt,name=contact,proto3" json:"contact,omitempty"`
+	Username  string       `protobuf:"bytes,2,opt,name=username,proto3" json:"username,omitempty"`
+	Device    *Device      `protobuf:"bytes,3,opt,name=device,proto3" json:"device,omitempty"`
+	Directory *Directories `protobuf:"bytes,4,opt,name=directory,proto3" json:"directory,omitempty"`
+	Contact   *Contact     `protobuf:"bytes,5,opt,name=contact,proto3" json:"contact,omitempty"`
 }
 
 func (x *ConnectionRequest) Reset() {
@@ -130,6 +131,13 @@ func (x *ConnectionRequest) GetOlc() string {
 	return ""
 }
 
+func (x *ConnectionRequest) GetUsername() string {
+	if x != nil {
+		return x.Username
+	}
+	return ""
+}
+
 func (x *ConnectionRequest) GetDevice() *Device {
 	if x != nil {
 		return x.Device
@@ -151,71 +159,6 @@ func (x *ConnectionRequest) GetContact() *Contact {
 	return nil
 }
 
-// [PLUGIN]
-// On Data Transfer
-type ProgressUpdate struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Current int32   `protobuf:"varint,1,opt,name=current,proto3" json:"current,omitempty"`
-	Total   int32   `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
-	Percent float32 `protobuf:"fixed32,3,opt,name=percent,proto3" json:"percent,omitempty"`
-}
-
-func (x *ProgressUpdate) Reset() {
-	*x = ProgressUpdate{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[1]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *ProgressUpdate) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ProgressUpdate) ProtoMessage() {}
-
-func (x *ProgressUpdate) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[1]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ProgressUpdate.ProtoReflect.Descriptor instead.
-func (*ProgressUpdate) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *ProgressUpdate) GetCurrent() int32 {
-	if x != nil {
-		return x.Current
-	}
-	return 0
-}
-
-func (x *ProgressUpdate) GetTotal() int32 {
-	if x != nil {
-		return x.Total
-	}
-	return 0
-}
-
-func (x *ProgressUpdate) GetPercent() float32 {
-	if x != nil {
-		return x.Percent
-	}
-	return 0
-}
-
 // Authorization message sent in stream
 type AuthMessage struct {
 	state         protoimpl.MessageState
@@ -231,7 +174,7 @@ type AuthMessage struct {
 func (x *AuthMessage) Reset() {
 	*x = AuthMessage{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[2]
+		mi := &file_api_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -244,7 +187,7 @@ func (x *AuthMessage) String() string {
 func (*AuthMessage) ProtoMessage() {}
 
 func (x *AuthMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[2]
+	mi := &file_api_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -257,7 +200,7 @@ func (x *AuthMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AuthMessage.ProtoReflect.Descriptor instead.
 func (*AuthMessage) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{2}
+	return file_api_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *AuthMessage) GetFrom() *Peer {
@@ -295,7 +238,7 @@ type ErrorMessage struct {
 func (x *ErrorMessage) Reset() {
 	*x = ErrorMessage{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[3]
+		mi := &file_api_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -308,7 +251,7 @@ func (x *ErrorMessage) String() string {
 func (*ErrorMessage) ProtoMessage() {}
 
 func (x *ErrorMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[3]
+	mi := &file_api_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -321,7 +264,7 @@ func (x *ErrorMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ErrorMessage.ProtoReflect.Descriptor instead.
 func (*ErrorMessage) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{3}
+	return file_api_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *ErrorMessage) GetMessage() string {
@@ -342,22 +285,18 @@ var File_api_proto protoreflect.FileDescriptor
 
 var file_api_proto_rawDesc = []byte{
 	0x0a, 0x09, 0x61, 0x70, 0x69, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x0a, 0x64, 0x61, 0x74,
-	0x61, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x96, 0x01, 0x0a, 0x11, 0x43, 0x6f, 0x6e, 0x6e,
+	0x61, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xb2, 0x01, 0x0a, 0x11, 0x43, 0x6f, 0x6e, 0x6e,
 	0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x10, 0x0a,
 	0x03, 0x6f, 0x6c, 0x63, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6f, 0x6c, 0x63, 0x12,
-	0x1f, 0x0a, 0x06, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32,
-	0x07, 0x2e, 0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x52, 0x06, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65,
-	0x12, 0x2a, 0x0a, 0x09, 0x64, 0x69, 0x72, 0x65, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x18, 0x03, 0x20,
-	0x01, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x44, 0x69, 0x72, 0x65, 0x63, 0x74, 0x6f, 0x72, 0x69, 0x65,
-	0x73, 0x52, 0x09, 0x64, 0x69, 0x72, 0x65, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x12, 0x22, 0x0a, 0x07,
-	0x63, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x08, 0x2e,
-	0x43, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x52, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74,
-	0x22, 0x5a, 0x0a, 0x0e, 0x50, 0x72, 0x6f, 0x67, 0x72, 0x65, 0x73, 0x73, 0x55, 0x70, 0x64, 0x61,
-	0x74, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x75, 0x72, 0x72, 0x65, 0x6e, 0x74, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x05, 0x52, 0x07, 0x63, 0x75, 0x72, 0x72, 0x65, 0x6e, 0x74, 0x12, 0x14, 0x0a, 0x05,
-	0x74, 0x6f, 0x74, 0x61, 0x6c, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x05, 0x74, 0x6f, 0x74,
-	0x61, 0x6c, 0x12, 0x18, 0x0a, 0x07, 0x70, 0x65, 0x72, 0x63, 0x65, 0x6e, 0x74, 0x18, 0x03, 0x20,
-	0x01, 0x28, 0x02, 0x52, 0x07, 0x70, 0x65, 0x72, 0x63, 0x65, 0x6e, 0x74, 0x22, 0xb2, 0x01, 0x0a,
+	0x1a, 0x0a, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x1f, 0x0a, 0x06, 0x64,
+	0x65, 0x76, 0x69, 0x63, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x07, 0x2e, 0x44, 0x65,
+	0x76, 0x69, 0x63, 0x65, 0x52, 0x06, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x12, 0x2a, 0x0a, 0x09,
+	0x64, 0x69, 0x72, 0x65, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x0c, 0x2e, 0x44, 0x69, 0x72, 0x65, 0x63, 0x74, 0x6f, 0x72, 0x69, 0x65, 0x73, 0x52, 0x09, 0x64,
+	0x69, 0x72, 0x65, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x12, 0x22, 0x0a, 0x07, 0x63, 0x6f, 0x6e, 0x74,
+	0x61, 0x63, 0x74, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x08, 0x2e, 0x43, 0x6f, 0x6e, 0x74,
+	0x61, 0x63, 0x74, 0x52, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x22, 0xb2, 0x01, 0x0a,
 	0x0b, 0x41, 0x75, 0x74, 0x68, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x19, 0x0a, 0x04,
 	0x66, 0x72, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x05, 0x2e, 0x50, 0x65, 0x65,
 	0x72, 0x52, 0x04, 0x66, 0x72, 0x6f, 0x6d, 0x12, 0x28, 0x0a, 0x05, 0x65, 0x76, 0x65, 0x6e, 0x74,
@@ -390,26 +329,25 @@ func file_api_proto_rawDescGZIP() []byte {
 }
 
 var file_api_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_api_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_api_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_api_proto_goTypes = []interface{}{
 	(AuthMessage_Event)(0),    // 0: AuthMessage.Event
 	(*ConnectionRequest)(nil), // 1: ConnectionRequest
-	(*ProgressUpdate)(nil),    // 2: ProgressUpdate
-	(*AuthMessage)(nil),       // 3: AuthMessage
-	(*ErrorMessage)(nil),      // 4: ErrorMessage
-	(*Device)(nil),            // 5: Device
-	(*Directories)(nil),       // 6: Directories
-	(*Contact)(nil),           // 7: Contact
-	(*Peer)(nil),              // 8: Peer
-	(*Metadata)(nil),          // 9: Metadata
+	(*AuthMessage)(nil),       // 2: AuthMessage
+	(*ErrorMessage)(nil),      // 3: ErrorMessage
+	(*Device)(nil),            // 4: Device
+	(*Directories)(nil),       // 5: Directories
+	(*Contact)(nil),           // 6: Contact
+	(*Peer)(nil),              // 7: Peer
+	(*Metadata)(nil),          // 8: Metadata
 }
 var file_api_proto_depIdxs = []int32{
-	5, // 0: ConnectionRequest.device:type_name -> Device
-	6, // 1: ConnectionRequest.directory:type_name -> Directories
-	7, // 2: ConnectionRequest.contact:type_name -> Contact
-	8, // 3: AuthMessage.from:type_name -> Peer
+	4, // 0: ConnectionRequest.device:type_name -> Device
+	5, // 1: ConnectionRequest.directory:type_name -> Directories
+	6, // 2: ConnectionRequest.contact:type_name -> Contact
+	7, // 3: AuthMessage.from:type_name -> Peer
 	0, // 4: AuthMessage.event:type_name -> AuthMessage.Event
-	9, // 5: AuthMessage.metadata:type_name -> Metadata
+	8, // 5: AuthMessage.metadata:type_name -> Metadata
 	6, // [6:6] is the sub-list for method output_type
 	6, // [6:6] is the sub-list for method input_type
 	6, // [6:6] is the sub-list for extension type_name
@@ -437,18 +375,6 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProgressUpdate); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*AuthMessage); i {
 			case 0:
 				return &v.state
@@ -460,7 +386,7 @@ func file_api_proto_init() {
 				return nil
 			}
 		}
-		file_api_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+		file_api_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ErrorMessage); i {
 			case 0:
 				return &v.state
@@ -479,7 +405,7 @@ func file_api_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_api_proto_rawDesc,
 			NumEnums:      1,
-			NumMessages:   4,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

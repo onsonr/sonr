@@ -8,12 +8,7 @@
 > Core Framework that manages the Sonr Libp2p node in Go, Handles File Management, Connection to Peer, Pub-Sub for Lobby, and Graph Data Structure.
 
 # Build
-
-- For iOS `GODEBUG=asyncpreemptoff=1 gomobile bind -target=ios -ldflags='-s -w' -v -o /Users/prad/Sonr/plugin/ios/Frameworks/Core.framework`
-
-- For Android `GODEBUG=asyncpreemptoff=1 gomobile bind -target=android -ldflags='-s -w' -v -o /Users/prad/Sonr/plugin/android/libs/io.sonr.core.aar`
-
-> Then `flutter run` in [plugin]("https://github.com/sonr-io/plugin") `/plugin/example`  
+> Use `make` with `ios` or `android` or `all` command in root directory, then `flutter` run in [plugin]("https://github.com/sonr-io/plugin") `$HOME/Sonr/plugin/example`
 
 ## Compatible types
 

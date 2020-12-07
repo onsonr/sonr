@@ -3,88 +3,64 @@ package sonr
 import (
 	"context"
 	"errors"
-	"fmt"
+	"log"
 
-	"github.com/libp2p/go-libp2p-core/protocol"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	sf "github.com/sonr-io/core/internal/file"
-	"github.com/sonr-io/core/internal/lobby"
-	pb "github.com/sonr-io/core/internal/models"
-	st "github.com/sonr-io/core/internal/stream"
+	sl "github.com/sonr-io/core/internal/lobby"
+	md "github.com/sonr-io/core/internal/models"
+	tf "github.com/sonr-io/core/internal/transfer"
 )
 
 // ^ CurrentFile returns last file in Processed Files ^ //
-func (sn *Node) currentFile() *sf.SafeMeta {
+func (sn *Node) currentFile() *sf.SafeMetadata {
 	return sn.files[len(sn.files)-1]
 }
 
-// ^ SetDiscovery initializes discovery protocols and creates pubsub service ^ //
-func (sn *Node) setDiscovery(ctx context.Context, connEvent *pb.ConnectionRequest) error {
-	// create a new PubSub service using the GossipSub router
-	ps, err := pubsub.NewGossipSub(ctx, sn.host)
-	if err != nil {
-		return err
-	}
-	fmt.Println("GossipSub Created")
-
-	// Assign Callbacks from Node to Lobby
-	lobbyCallbackRef := lobby.LobbyCallback{
-		Refreshed: sn.call.OnRefreshed,
-		Error:     sn.Error,
-	}
-
-	// Enter Lobby
-	if sn.lobby, err = lobby.Enter(ctx, lobbyCallbackRef, ps, sn.host.ID(), connEvent.Olc); err != nil {
-		return err
-	}
-	fmt.Println("Lobby Entered")
-	return nil
-}
-
-// ^ SetUser sets node info from connEvent and host ^ //
-func (sn *Node) setPeer(connEvent *pb.ConnectionRequest) error {
+// ^ setInfo sets node info from connEvent and host ^ //
+func (sn *Node) setInfo(connEvent *md.ConnectionRequest) error {
 	// Check for Host
 	if sn.host == nil {
 		err := errors.New("setPeer: Host has not been called")
 		return err
 	}
 
+	// Set Directory and OLC
+	sn.directories = connEvent.Directory
+	sn.olc = connEvent.Olc
+
 	// Set Peer Info
-	sn.Peer = &pb.Peer{
+	sn.peer = &md.Peer{
 		Id:         sn.host.ID().String(),
-		Olc:        connEvent.Olc,
+		Username:   connEvent.Username,
 		Device:     connEvent.Device,
 		FirstName:  connEvent.Contact.FirstName,
-		LastName:   connEvent.Contact.LastName,
 		ProfilePic: connEvent.Contact.ProfilePic,
 	}
-
-	// Assign Peer Info to Stream Handlers
-	sn.authStream.Self = sn.Peer
-	sn.dataStream.Self = sn.Peer
-
-	// Set Directory
-	sn.directories = connEvent.Directory
 	return nil
 }
 
-// ^ SetStreams sets Auth/Data Streams with Handlers ^ //
-func (sn *Node) setStreams() {
-	// Assign Callbacks from Node to Auth Stream
-	sn.authStream.Call = st.AuthCallback{
-		Invited:   sn.call.OnInvited,
-		Responded: sn.call.OnResponded,
-		Error:     sn.Error,
+// ^ setConnection initializes connection protocols joins lobby and creates pubsub service ^ //
+func (sn *Node) setConnection(ctx context.Context) error {
+	// create a new PubSub service using the GossipSub router
+	var err error
+	sn.pubSub, err = pubsub.NewGossipSub(ctx, sn.host)
+	if err != nil {
+		return err
 	}
+	log.Println("GossipSub Created")
 
-	// Assign Callbacks from Node to Data Stream
-	sn.dataStream.Call = st.DataCallback{
-		Progressed: sn.call.OnProgress,
-		Completed:  sn.call.OnCompleted,
-		Error:      sn.Error,
+	// Enter Lobby
+	if sn.lobby, err = sl.Initialize(ctx, sn.callback, sn.error, sn.pubSub, sn.host.ID(), sn.olc); err != nil {
+		return err
 	}
+	log.Println("Lobby Initialized")
 
-	// Set Handlers
-	sn.host.SetStreamHandler(protocol.ID("/sonr/auth"), sn.authStream.HandleStream)
-	sn.host.SetStreamHandler(protocol.ID("/sonr/data"), sn.dataStream.HandleStream)
+	// Initialize Peer Connection
+	if sn.peerConn, err = tf.Initialize(sn.host, sn.pubSub, sn.directories, sn.olc, sn.callbackRef.OnInvited, sn.callbackRef.OnResponded, sn.callbackRef.OnProgress, sn.callbackRef.OnReceived, sn.callbackRef.OnTransmitted, sn.error); err != nil {
+		return err
+	}
+	log.Println("Connection Initialized")
+
+	return nil
 }

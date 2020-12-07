@@ -2,12 +2,11 @@ package lobby
 
 import (
 	"context"
-	"fmt"
-	"sync"
+	"log"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	pb "github.com/sonr-io/core/internal/models"
+	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -15,36 +14,30 @@ import (
 const ChatRoomBufSize = 128
 
 // Define Function Types
-type OnRefreshed func(data []byte)
-type OnError func(err error, method string)
-
-// Struct to Implement Node Callback Methods
-type LobbyCallback struct {
-	Refreshed OnRefreshed
-	Error     OnError
-}
+type Refreshed func(call md.CallbackType, data proto.Message)
+type Error func(err error, method string)
 
 // Lobby represents a subscription to a single PubSub topic. Messages
 // can be published to the topic with Lobby.Publish, and received
 // messages are pushed to the Messages channel.
 type Lobby struct {
 	// Public Vars
-	Messages chan *pb.LobbyEvent
-	Data     *pb.Lobby
+	Messages chan *md.LobbyEvent
+	Data     *md.Lobby
 
 	// Private Vars
-	ctx    context.Context
-	call   LobbyCallback
-	doneCh chan struct{}
-	mutex  sync.Mutex
-	ps     *pubsub.PubSub
-	topic  *pubsub.Topic
-	self   peer.ID
-	sub    *pubsub.Subscription
+	ctx     context.Context
+	refresh Refreshed
+	onError Error
+	doneCh  chan struct{}
+	ps      *pubsub.PubSub
+	topic   *pubsub.Topic
+	self    peer.ID
+	sub     *pubsub.Subscription
 }
 
-// ^ Enter Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
-func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, id peer.ID, olc string) (*Lobby, error) {
+// ^ Initialize Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
+func Initialize(ctx context.Context, callr Refreshed, onErr Error, ps *pubsub.PubSub, id peer.ID, olc string) (*Lobby, error) {
 	// Join the pubsub Topic
 	topic, err := ps.Join(olc)
 	if err != nil {
@@ -58,24 +51,25 @@ func Enter(ctx context.Context, callback LobbyCallback, ps *pubsub.PubSub, id pe
 	}
 
 	// Initialize Lobby for Peers
-	lobInfo := &pb.Lobby{
+	lobInfo := &md.Lobby{
 		Code:  olc,
 		Size:  1,
-		Peers: make(map[string]*pb.Peer),
+		Peers: make(map[string]*md.Peer),
 	}
 
 	// Create Lobby Type
 	lob := &Lobby{
-		ctx:    ctx,
-		call:   callback,
-		doneCh: make(chan struct{}, 1),
-		ps:     ps,
-		topic:  topic,
-		sub:    sub,
-		self:   id,
+		ctx:     ctx,
+		onError: onErr,
+		refresh: callr,
+		doneCh:  make(chan struct{}, 1),
+		ps:      ps,
+		topic:   topic,
+		sub:     sub,
+		self:    id,
 
 		Data:     lobInfo,
-		Messages: make(chan *pb.LobbyEvent, ChatRoomBufSize),
+		Messages: make(chan *md.LobbyEvent, ChatRoomBufSize),
 	}
 
 	// start reading messages
@@ -89,14 +83,14 @@ func (lob *Lobby) Info() []byte {
 	// Convert to bytes
 	data, err := proto.Marshal(lob.Data)
 	if err != nil {
-		fmt.Println("Error Marshaling Lobby Data ", err)
+		log.Println("Error Marshaling Lobby Data ", err)
 		return nil
 	}
 	return data
 }
 
 // ^ Find returns Pointer to Peer.ID and Peer ^
-func (lob *Lobby) Find(q string) (peer.ID, *pb.Peer) {
+func (lob *Lobby) Find(q string) (peer.ID, *md.Peer) {
 	// Retreive Data
 	peer := lob.Peer(q)
 	id := lob.ID(q)
@@ -105,11 +99,11 @@ func (lob *Lobby) Find(q string) (peer.ID, *pb.Peer) {
 }
 
 // ^ Send publishes a message to the pubsub topic OLC ^
-func (lob *Lobby) Update(peer *pb.Peer) error {
+func (lob *Lobby) Update(p *md.Peer) error {
 	// Create Lobby Event
-	event := pb.LobbyEvent{
-		Event: pb.LobbyEvent_UPDATE,
-		Peer:  peer,
+	event := md.LobbyEvent{
+		Event: md.LobbyEvent_UPDATE,
+		Peer:  p,
 	}
 
 	// Convert Event to Proto Binary
@@ -129,8 +123,8 @@ func (lob *Lobby) Update(peer *pb.Peer) error {
 // ^ End terminates lobby loop ^
 func (lob *Lobby) Exit() {
 	// Create Lobby Event
-	event := pb.LobbyEvent{
-		Event: pb.LobbyEvent_EXIT,
+	event := md.LobbyEvent{
+		Event: md.LobbyEvent_EXIT,
 		Id:    lob.self.String(),
 	}
 
@@ -138,6 +132,9 @@ func (lob *Lobby) Exit() {
 	bytes, _ := proto.Marshal(&event)
 
 	// Publish to Topic
-	lob.topic.Publish(lob.ctx, bytes)
+	err := lob.topic.Publish(lob.ctx, bytes)
+	if err != nil {
+		lob.onError(err, "Exit")
+	}
 	lob.doneCh <- struct{}{}
 }
