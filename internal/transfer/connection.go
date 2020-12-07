@@ -49,14 +49,15 @@ func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic 
 	onError = ec
 
 	// Initialize Parameters into PeerConnection
-	peerConn := &PeerConnection{}
-	peerConn.olc = o
-	peerConn.dirs = d
-	peerConn.invitedCall = ic
-	peerConn.respondedCall = rc
-	peerConn.progressCall = pc
-	peerConn.receivedCall = recCall
-	peerConn.transmittedCall = transCall
+	peerConn := &PeerConnection{
+		olc:             o,
+		dirs:            d,
+		invitedCall:     ic,
+		respondedCall:   rc,
+		progressCall:    pc,
+		receivedCall:    recCall,
+		transmittedCall: transCall,
+	}
 
 	// Create GRPC Client/Server and Set Data Stream Handler
 	h.SetStreamHandler(protocol.ID("/sonr/data/transfer"), peerConn.HandleTransfer)
