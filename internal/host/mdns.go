@@ -16,8 +16,8 @@ const discoveryInterval = time.Second
 // @ discoveryMDNSTag is used in our mDNS advertisements to discover other chat peers.
 const defaultMDNSTag = "sonr-mdns+"
 
-// @ mdnsNotifee gets notified when we find a new peer via mDNS discovery ^
-type mdnsNotifee struct {
+// @ discNotifee gets notified when we find a new peer via mDNS discovery ^
+type discNotifee struct {
 	h host.Host
 }
 
@@ -31,13 +31,13 @@ func startMDNS(ctx context.Context, h host.Host, olc string) error {
 	}
 
 	// Create Discovery Notifier
-	n := mdnsNotifee{h: h}
+	n := discNotifee{h: h}
 	disc.RegisterNotifee(&n)
 	return nil
 }
 
 // HandlePeerFound connects to peers discovered via mDNS.
-func (n *mdnsNotifee) HandlePeerFound(pi peer.AddrInfo) {
+func (n *discNotifee) HandlePeerFound(pi peer.AddrInfo) {
 	// Connect to Peer
 	err := n.h.Connect(context.Background(), pi)
 

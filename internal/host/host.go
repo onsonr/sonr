@@ -8,6 +8,8 @@ import (
 
 	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/host"
+	"github.com/libp2p/go-libp2p-core/routing"
+	dht "github.com/libp2p/go-libp2p-kad-dht"
 	libp2pquic "github.com/libp2p/go-libp2p-quic-transport"
 	secio "github.com/libp2p/go-libp2p-secio"
 	libp2ptls "github.com/libp2p/go-libp2p-tls"
@@ -46,14 +48,23 @@ func NewHost(ctx context.Context, olc string) (host.Host, string, error) {
 
 		// support any other default transports (TCP)
 		libp2p.DefaultTransports,
+
+		// Attempt to open ports using uPNP for NATed hosts.
+		libp2p.NATPortMap(),
+
+		// Let this host use the DHT to find other hosts
+		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
+			idht, err := dht.New(ctx, h)
+			return idht, err
+		}),
+		// Let this host use relays and advertise itself on relays if
+		// it finds it is behind NAT. Use libp2p.Relay(options...) to
+		// enable active relays and more.
+		libp2p.EnableAutoRelay(),
 	)
 
 	// setup local mDNS discovery
 	err = startMDNS(ctx, h, olc)
 	fmt.Println("MDNS Started")
-
-	// setup global dht discovery
-	err = startDHT(ctx, h, olc)
-	fmt.Println("DHT Started")
 	return h, h.ID().String(), err
 }
