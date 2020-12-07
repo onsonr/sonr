@@ -18,7 +18,6 @@ import (
 // Argument is AuthMessage protobuf
 type AuthArgs struct {
 	Data []byte
-	From string
 }
 
 // Reply is also AuthMessage protobuf
@@ -29,21 +28,18 @@ type AuthReply struct {
 // Service Struct
 type AuthService struct {
 	// Current Data
-	inviteCall OnProtobuf
-	peerConn   *PeerConnection
-	authCh     chan *md.AuthMessage
-	currMsg    *md.AuthMessage
+	onInvite  OnProtobuf
+	peerConn  *PeerConnection
+	respCh    chan *md.AuthMessage
+	inviteMsg *md.AuthMessage
 }
-
-// GRPC Callback
-type OnGRPCall func(data []byte, from string) error
 
 // ^ Calls Invite on Remote Peer ^ //
 func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthReply) error {
 	log.Println("Received a Invite call: ", args.Data)
 
 	// Send Callback
-	as.inviteCall(args.Data)
+	as.onInvite(args.Data)
 
 	// Received Message
 	receivedMessage := md.AuthMessage{}
@@ -53,11 +49,11 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 	}
 
 	// Set Current Message
-	as.currMsg = &receivedMessage
+	as.inviteMsg = &receivedMessage
 
 	select {
 	// Received Auth Channel Message
-	case m := <-as.authCh:
+	case m := <-as.respCh:
 		log.Println("User has replied")
 
 		// Convert Protobuf to bytes
@@ -108,15 +104,11 @@ func (pc *PeerConnection) SendInvite(h host.Host, id peer.ID, msgBytes []byte) {
 		log.Panicln(err)
 	}
 
-	// Check Response
+	// Check Response for Accept
 	if responseMessage.Event == md.AuthMessage_ACCEPT {
-
-	} else if responseMessage.Event == md.AuthMessage_DECLINE {
-
+		// Begin Transfer
+		pc.SendFile(h, id, responseMessage.From)
 	}
-
-	// Begin Transfer
-	pc.SendFile(h, id, responseMessage.From)
 }
 
 // ^ Send Accept Message on Stream ^ //
@@ -124,7 +116,7 @@ func (pc *PeerConnection) SendResponse(decision bool, peer *md.Peer) {
 	// @ Check Decision
 	if decision {
 		// Initialize Transfer
-		currMsg := pc.auth.currMsg
+		currMsg := pc.auth.inviteMsg
 		pc.transfer = pc.NewTransfer(currMsg.Metadata, currMsg.From)
 
 		// Create Accept Response
@@ -134,7 +126,7 @@ func (pc *PeerConnection) SendResponse(decision bool, peer *md.Peer) {
 		}
 
 		// Send to Channel
-		pc.auth.authCh <- respMsg
+		pc.auth.respCh <- respMsg
 
 	} else {
 		// Create Decline Response
@@ -144,6 +136,6 @@ func (pc *PeerConnection) SendResponse(decision bool, peer *md.Peer) {
 		}
 
 		// Send to Channel
-		pc.auth.authCh <- respMsg
+		pc.auth.respCh <- respMsg
 	}
 }
