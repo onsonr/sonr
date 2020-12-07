@@ -59,7 +59,7 @@ func (sn *Node) Invite(peerId string) {
 		meta := currFile.GetMetadata()
 
 		// Set SafeFile
-		sn.peerConn.SafeFile = currFile
+		sn.peerConn.SafeMeta = currFile
 
 		// Create Invite Message
 		reqMsg := md.AuthMessage{
@@ -76,47 +76,17 @@ func (sn *Node) Invite(peerId string) {
 		}
 
 		// Call GRPC in PeerConnection
-		sn.peerConn.SendInvite(sn.host, id, msgBytes)
+		go func() {
+			sn.peerConn.SendInvite(sn.host, id, msgBytes)
+		}()
 	}
 }
 
 // ^ Respond to an Invitation ^ //
 func (sn *Node) Respond(decision bool) {
 	// @ Check Decision
-	if decision {
-		// Create Accept Response
-		respMsg := &md.AuthMessage{
-			From:  sn.peer,
-			Event: md.AuthMessage_ACCEPT,
-		}
-
-		// Convert Protobuf to bytes
-		msgBytes, err := proto.Marshal(respMsg)
-		if err != nil {
-			sn.error(err, "Marshal")
-			log.Println(err)
-		}
-
-		// Send Response on PeerConnection
-		sn.peerConn.SendResponse(decision, msgBytes)
-	} else {
-		// Create Decline Response
-		respMsg := &md.AuthMessage{
-			From:  sn.peer,
-			Event: md.AuthMessage_DECLINE,
-		}
-
-		// Convert Protobuf to bytes
-		msgBytes, err := proto.Marshal(respMsg)
-		if err != nil {
-			sn.error(err, "Marshal")
-			log.Println(err)
-		}
-
-		// Send Response on PeerConnection
-		sn.peerConn.SendResponse(decision, msgBytes)
-	}
-
+	// Send Response on PeerConnection
+	sn.peerConn.SendResponse(decision, sn.peer)
 }
 
 // ^ Reset Current Queued File Metadata ^ //

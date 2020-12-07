@@ -14,11 +14,10 @@ import (
 )
 
 type OnProgress func(data float32)
-
 type Transfer struct {
 	// Inherited Properties
 	mutex      sync.Mutex
-	metadata   *md.Metadata
+	meta       *md.Metadata
 	owner      *md.Peer
 	onProgress OnProgress
 	onComplete OnProtobuf
@@ -29,12 +28,15 @@ type Transfer struct {
 	bytesBuilder   *bytes.Buffer
 
 	// Tracking
-	count int
-	size  int
+	currentSize int
+	isBase64    bool
+	interval    int
+	totalChunks int
+	totalSize   int
 }
 
 // ^ Check file type and use corresponding method ^ //
-func (t *Transfer) AddBuffer(buffer []byte) (bool, error) {
+func (t *Transfer) addBuffer(curr int, buffer []byte) (bool, error) {
 	// ** Lock/Unlock ** //
 	t.mutex.Lock()
 	defer t.mutex.Unlock()
@@ -46,110 +48,142 @@ func (t *Transfer) AddBuffer(buffer []byte) (bool, error) {
 		return true, err
 	}
 
-	// @ Increment received count
-	if t.count == 0 {
-		t.size = int(chunk.Total)
+	// @ Initialize Vars if First Chunk
+	if curr == 0 {
+		// Set Size
+		t.totalSize = int(chunk.Total)
+
+		// Check for base64
+		if chunk.GetB64() != "" {
+			// Calculate Tracking Data
+			t.totalChunks = t.totalSize / B64ChunkSize
+			t.interval = t.totalChunks / 100
+
+			// Set Tracking Data
+			t.isBase64 = true
+		} else {
+			// Set Tracking Data
+			t.totalChunks = t.totalSize / BufferChunkSize
+			t.isBase64 = false
+		}
 	}
 
-	// Set Tracking
-	var n int
-	t.count++
-
-	// @ Check File Type
-	if chunk.GetB64() != "" {
+	// @ Add Buffer by File Type
+	if t.isBase64 {
 		// Add Base64 Chunk to Buffer
-		n, err = t.stringsBuilder.WriteString(chunk.B64)
+		n, err := t.stringsBuilder.WriteString(chunk.B64)
 		if err != nil {
 			return true, err
 		}
+
+		// Update Tracking
+		t.currentSize = t.currentSize + n
 	} else {
 		// Add ByteChunk to Buffer
-		n, err = t.bytesBuilder.Write(chunk.Buffer)
+		n, err := t.bytesBuilder.Write(chunk.Buffer)
 		if err != nil {
 			return true, err
 		}
+
+		// Update Tracking
+		t.currentSize = t.currentSize + n
 	}
 
-	// @ Update Tracking
-	currW := t.count*BufferChunkSize + n
-	currP := float32(currW) / float32(t.size)
-	t.onProgress(currP)
-
-	if t.stringsBuilder.Len() == t.size || t.bytesBuilder.Len() == t.size {
-		t.Save()
+	// @ Check Completed
+	if t.currentSize < t.totalSize {
+		// Check for Interval
+		if curr%t.interval == 0 {
+			// Send Callback
+			t.onProgress(float32(t.currentSize) / float32(t.totalSize))
+		}
+		return false, nil
+	} else {
 		return true, nil
 	}
-	return false, nil
 }
 
-// ^ Check file type and use corresponding method to Save to Disk ^ //
-func (t *Transfer) Save() {
-	// ** Lock/Unlock ** //
-	t.mutex.Lock()
-	defer t.mutex.Unlock()
-
-	// @ Create File at Path
-	f, err := os.Create(t.path)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	defer f.Close()
-
+// ^ Check file type and use corresponding method to save to Disk ^ //
+func (t *Transfer) save() error {
 	// @ Set File Bytes by Type
-	if t.metadata.Mime.Type == md.MIME_image {
-		// Get Base64 Data
-		data := t.stringsBuilder.String()
-
+	if t.isBase64 {
 		// Get Bytes from base64
-		b64Bytes, err := base64.StdEncoding.DecodeString(data)
+		b64Bytes, err := base64.StdEncoding.DecodeString(t.stringsBuilder.String())
 		if err != nil {
 			log.Fatal("error:", err)
 		}
 
+		// Create File at Path
+		f, err := os.Create(t.path)
+		if err != nil {
+			return err
+		}
+		defer f.Close()
+
 		// Save Bytes from Base64
 		if _, err := f.Write(b64Bytes); err != nil {
-			log.Fatalln(err)
+			return err
 		}
 
 		// Sync file
 		if err := f.Sync(); err != nil {
-			log.Fatalln(err)
+			return err
 		}
+
+		// Create Metadata
+		saved := &md.Metadata{
+			Name:       t.meta.Name,
+			Path:       t.path,
+			Size:       int32(t.totalSize),
+			Mime:       t.meta.Mime,
+			Owner:      t.owner,
+			LastOpened: int32(time.Now().Unix()),
+		}
+
+		// Convert Message to bytes
+		bytes, err := proto.Marshal(saved)
+		if err != nil {
+			return err
+		}
+
+		// Send Complete Callback
+		t.onComplete(bytes)
+		return nil
 	} else {
+		// Create File at Path
+		f, err := os.Create(t.path)
+		if err != nil {
+			return err
+		}
+		defer f.Close()
+
 		// Save Bytes from Buffer
 		if _, err := f.Write(t.bytesBuilder.Bytes()); err != nil {
-			log.Fatalln(err)
+			return err
 		}
 
 		// Sync file
 		if err := f.Sync(); err != nil {
-			log.Fatalln(err)
+			return err
 		}
-	}
 
-	// Get Info
-	info, err := f.Stat()
-	if err != nil {
-		log.Println(err)
-	}
+		// Create Metadata
+		saved := &md.Metadata{
+			Name:       t.meta.Name,
+			Path:       t.path,
+			Size:       int32(t.totalSize),
+			Mime:       t.meta.Mime,
+			Owner:      t.owner,
+			LastOpened: int32(time.Now().Unix()),
+		}
 
-	// @ 3. Callback saved Metadata
-	// Create Metadata
-	saved := &md.Metadata{
-		Name:       t.metadata.Name,
-		Path:       t.path,
-		Size:       int32(info.Size()),
-		Mime:       t.metadata.Mime,
-		Owner:      t.owner,
-		LastOpened: int32(time.Now().Unix()),
-	}
+		// Convert Message to bytes
+		bytes, err := proto.Marshal(saved)
+		if err != nil {
+			return err
+		}
 
-	// Convert Message to bytes
-	bytes, err := proto.Marshal(saved)
-	if err != nil {
-		log.Println("Cannot Marshal Error Protobuf: ", err)
+		// Send Complete Callback
+		t.onComplete(bytes)
+		return nil
 	}
-
-	// Send Complete Callback
-	t.onComplete(bytes)
 }

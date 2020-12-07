@@ -24,7 +24,8 @@ type Callback interface {
 	OnResponded(data []byte)
 	OnQueued(data []byte)
 	OnProgress(data float32)
-	OnCompleted(data []byte)
+	OnReceived(data []byte)
+	OnTransmitted(data []byte)
 	OnError(data []byte)
 }
 
@@ -117,7 +118,7 @@ func (sn *Node) callback(call md.CallbackType, data proto.Message) {
 
 	// @ Transfer has Completed
 	case md.CallbackType_COMPLETED:
-		sn.callbackRef.OnCompleted(bytes)
+		sn.callbackRef.OnReceived(bytes)
 	}
 }
 
