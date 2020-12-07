@@ -71,7 +71,6 @@ func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic 
 	if err != nil {
 		return nil, err
 	}
-	log.Println("Created RPC AuthService")
 
 	// Set RPC Services
 	peerConn.auth = &ath
@@ -80,9 +79,6 @@ func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic 
 
 // ^ Handle Incoming Stream ^ //
 func (pc *PeerConnection) HandleTransfer(stream network.Stream) {
-	// Set Stream
-	log.Println("Stream Info: ", stream.Stat())
-
 	// Route Data from Stream
 	go func(reader msgio.ReadCloser, t *Transfer) {
 		for i := 0; ; i++ {
@@ -104,6 +100,11 @@ func (pc *PeerConnection) HandleTransfer(stream network.Stream) {
 
 			// @ Check if All Buffer Received to Save
 			if hasCompleted {
+				// Sync file
+				if err := pc.transfer.save(); err != nil {
+					onError(err, "SaveFile")
+					log.Fatalln(err)
+				}
 				break
 			}
 		}
@@ -115,9 +116,9 @@ func (pc *PeerConnection) NewTransfer(meta *md.Metadata, own *md.Peer) *Transfer
 	// Create Transfer
 	return &Transfer{
 		// Inherited Properties
-		metadata:   meta,
-		path:       pc.dirs.Documents + "/" + meta.Name + "." + meta.Mime.Subtype,
+		meta:   meta,
 		owner:      own,
+		path:       pc.dirs.Documents + "/" + meta.Name + "." + meta.Mime.Subtype,
 		onProgress: pc.progressCall,
 		onComplete: pc.completedCall,
 

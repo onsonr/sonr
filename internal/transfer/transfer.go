@@ -17,7 +17,7 @@ type OnProgress func(data float32)
 type Transfer struct {
 	// Inherited Properties
 	mutex      sync.Mutex
-	metadata   *md.Metadata
+	meta       *md.Metadata
 	owner      *md.Peer
 	onProgress OnProgress
 	onComplete OnProtobuf
@@ -55,19 +55,20 @@ func (t *Transfer) addBuffer(curr int, buffer []byte) (bool, error) {
 
 		// Check for base64
 		if chunk.GetB64() != "" {
-			// Set Tracking Data
+			// Calculate Tracking Data
 			t.totalChunks = t.totalSize / B64ChunkSize
-			t.interval = t.totalChunks / 16
+			t.interval = t.totalChunks / 100
+
+			// Set Tracking Data
 			t.isBase64 = true
 		} else {
 			// Set Tracking Data
 			t.totalChunks = t.totalSize / BufferChunkSize
-			t.interval = t.totalChunks / 16
 			t.isBase64 = false
 		}
 	}
 
-	// @ Check File Type
+	// @ Add Buffer by File Type
 	if t.isBase64 {
 		// Add Base64 Chunk to Buffer
 		n, err := t.stringsBuilder.WriteString(chunk.B64)
@@ -77,19 +78,6 @@ func (t *Transfer) addBuffer(curr int, buffer []byte) (bool, error) {
 
 		// Update Tracking
 		t.currentSize = t.currentSize + n
-
-		// Check Completed
-		if t.currentSize == t.totalSize {
-			err := t.save()
-			if err != nil {
-				return true, err
-			}
-			return true, nil
-		} else {
-			// Update Tracking
-			t.currentSize = t.currentSize + n
-			t.sendProgress(curr)
-		}
 	} else {
 		// Add ByteChunk to Buffer
 		n, err := t.bytesBuilder.Write(chunk.Buffer)
@@ -97,34 +85,20 @@ func (t *Transfer) addBuffer(curr int, buffer []byte) (bool, error) {
 			return true, err
 		}
 
-		// Check Completed
-		if t.currentSize == t.totalSize {
-			err := t.save()
-			if err != nil {
-				return true, err
-			}
-			return true, nil
-		} else {
-			// Update Tracking
-			t.currentSize = t.currentSize + n
-			t.sendProgress(curr)
-		}
+		// Update Tracking
+		t.currentSize = t.currentSize + n
 	}
-	return false, nil
-}
 
-// ^ Check if Progress Interval has been met before callback ^ //
-func (t *Transfer) sendProgress(count int) {
-	// @ Adjust Progress to Send on 100 Intervals
-	if t.totalChunks > 100 {
+	// @ Check Completed
+	if t.currentSize < t.totalSize {
 		// Check for Interval
-		if count%t.interval == 0 {
+		if curr%t.interval == 0 {
 			// Send Callback
 			t.onProgress(float32(t.currentSize) / float32(t.totalSize))
 		}
+		return false, nil
 	} else {
-		// Send Callback
-		t.onProgress(float32(t.currentSize) / float32(t.totalSize))
+		return true, nil
 	}
 }
 
@@ -155,10 +129,25 @@ func (t *Transfer) save() error {
 			return err
 		}
 
-		// Send Completed Callback
-		if err := t.sendCompleted(); err != nil {
+		// Create Metadata
+		saved := &md.Metadata{
+			Name:       t.meta.Name,
+			Path:       t.path,
+			Size:       int32(t.totalSize),
+			Mime:       t.meta.Mime,
+			Owner:      t.owner,
+			LastOpened: int32(time.Now().Unix()),
+		}
+
+		// Convert Message to bytes
+		bytes, err := proto.Marshal(saved)
+		if err != nil {
 			return err
 		}
+
+		// Send Complete Callback
+		t.onComplete(bytes)
+		return nil
 	} else {
 		// Create File at Path
 		f, err := os.Create(t.path)
@@ -177,33 +166,24 @@ func (t *Transfer) save() error {
 			return err
 		}
 
-		// Send Completed Callback
-		if err := t.sendCompleted(); err != nil {
+		// Create Metadata
+		saved := &md.Metadata{
+			Name:       t.meta.Name,
+			Path:       t.path,
+			Size:       int32(t.totalSize),
+			Mime:       t.meta.Mime,
+			Owner:      t.owner,
+			LastOpened: int32(time.Now().Unix()),
+		}
+
+		// Convert Message to bytes
+		bytes, err := proto.Marshal(saved)
+		if err != nil {
 			return err
 		}
-	}
-	return nil
-}
 
-// ^ Creates received file Metadata and sends callback ^ //
-func (t *Transfer) sendCompleted() error {
-	// Create Metadata
-	saved := &md.Metadata{
-		Name:       t.metadata.Name,
-		Path:       t.path,
-		Size:       int32(t.totalSize),
-		Mime:       t.metadata.Mime,
-		Owner:      t.owner,
-		LastOpened: int32(time.Now().Unix()),
+		// Send Complete Callback
+		t.onComplete(bytes)
+		return nil
 	}
-
-	// Convert Message to bytes
-	bytes, err := proto.Marshal(saved)
-	if err != nil {
-		return err
-	}
-
-	// Send Complete Callback
-	t.onComplete(bytes)
-	return nil
 }
