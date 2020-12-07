@@ -98,10 +98,25 @@ func (pc *PeerConnection) SendInvite(h host.Host, id peer.ID, msgBytes []byte) {
 
 	// Send Callback and Reset
 	pc.respondedCall(reply.Data)
-	log.Println("Received Response")
+
+	// Received Message
+	responseMessage := md.AuthMessage{}
+	err = proto.Unmarshal(reply.Data, &responseMessage)
+	if err != nil {
+		// Send Error
+		onError(err, "Unmarshal")
+		log.Panicln(err)
+	}
+
+	// Check Response
+	if responseMessage.Event == md.AuthMessage_ACCEPT {
+
+	} else if responseMessage.Event == md.AuthMessage_DECLINE {
+
+	}
 
 	// Begin Transfer
-	pc.SendFile(h, id)
+	pc.SendFile(h, id, responseMessage.From)
 }
 
 // ^ Send Accept Message on Stream ^ //

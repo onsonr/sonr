@@ -32,10 +32,11 @@ type PeerConnection struct {
 	transfer *Transfer
 
 	// Callbacks
-	invitedCall   OnProtobuf
-	respondedCall OnProtobuf
-	progressCall  OnProgress
-	completedCall OnProtobuf
+	invitedCall     OnProtobuf
+	respondedCall   OnProtobuf
+	progressCall    OnProgress
+	receivedCall    OnProtobuf
+	transmittedCall OnProtobuf
 
 	// Info
 	olc  string
@@ -43,7 +44,7 @@ type PeerConnection struct {
 }
 
 // ^ Initialize sets up new Peer Connection handler ^
-func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic OnProtobuf, rc OnProtobuf, pc OnProgress, cc OnProtobuf, ec OnError) (*PeerConnection, error) {
+func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic OnProtobuf, rc OnProtobuf, pc OnProgress, recCall OnProtobuf, transCall OnProtobuf, ec OnError) (*PeerConnection, error) {
 	// Set Package Level Callbacks
 	onError = ec
 
@@ -54,7 +55,8 @@ func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic 
 	peerConn.invitedCall = ic
 	peerConn.respondedCall = rc
 	peerConn.progressCall = pc
-	peerConn.completedCall = cc
+	peerConn.receivedCall = recCall
+	peerConn.transmittedCall = transCall
 
 	// Create GRPC Client/Server and Set Data Stream Handler
 	h.SetStreamHandler(protocol.ID("/sonr/data/transfer"), peerConn.HandleTransfer)
@@ -116,11 +118,11 @@ func (pc *PeerConnection) NewTransfer(meta *md.Metadata, own *md.Peer) *Transfer
 	// Create Transfer
 	return &Transfer{
 		// Inherited Properties
-		meta:   meta,
+		meta:       meta,
 		owner:      own,
 		path:       pc.dirs.Documents + "/" + meta.Name + "." + meta.Mime.Subtype,
 		onProgress: pc.progressCall,
-		onComplete: pc.completedCall,
+		onComplete: pc.receivedCall,
 
 		// Builders
 		stringsBuilder: new(strings.Builder),
