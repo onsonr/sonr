@@ -52,7 +52,7 @@ ios:
 	@echo "--------------------------------------------------------------"
 	@echo "-------------- 📱 BEGIN IOS BIND 📱 ---------------------------"
 	@echo "--------------------------------------------------------------"
-	cd bind && GODEBUG=asyncpreemptoff=1 gomobile bind -target=ios -ldflags='-s -w' -v -o $(IOS_ARTIFACT)
+	cd bind && GODEBUG=asyncpreemptoff=1 gomobile bind -ldflags='-s -w' -target=ios/arm64 -v -o $(IOS_ARTIFACT)
 	@go mod tidy
 	@cd /System/Library/Sounds && afplay Glass.aiff
 	@echo "Finished Binding ➡ " && date
@@ -67,7 +67,7 @@ android:
 	@echo "--------------------------------------------------------------"
 	@echo "--------------- 🤖 BEGIN ANDROID BIND 🤖 ----------------------"
 	@echo "--------------------------------------------------------------"
-	cd bind && GODEBUG=asyncpreemptoff=1 gomobile bind -target=android/arm64 -ldflags='-s -w' -v -o $(ANDROID_ARTIFACT)
+	cd bind && GODEBUG=asyncpreemptoff=1 gomobile bind -ldflags='-s -w' -target=android/arm64 -v -o $(ANDROID_ARTIFACT)
 	@go mod tidy
 	@cd /System/Library/Sounds && afplay Glass.aiff
 	@echo "Finished Binding ➡ " && date

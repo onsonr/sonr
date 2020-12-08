@@ -23,17 +23,19 @@ type Error func(err error, method string)
 type Lobby struct {
 	// Public Vars
 	Messages chan *md.LobbyEvent
+	Events   chan *pubsub.PeerEvent
 	Data     *md.Lobby
 
 	// Private Vars
-	ctx     context.Context
-	refresh Refreshed
-	onError Error
-	doneCh  chan struct{}
-	ps      *pubsub.PubSub
-	topic   *pubsub.Topic
-	self    peer.ID
-	sub     *pubsub.Subscription
+	ctx          context.Context
+	refresh      Refreshed
+	onError      Error
+	doneCh       chan struct{}
+	ps           *pubsub.PubSub
+	topic        *pubsub.Topic
+	topicHandler *pubsub.TopicEventHandler
+	self         peer.ID
+	sub          *pubsub.Subscription
 }
 
 // ^ Initialize Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
@@ -50,6 +52,11 @@ func Initialize(ctx context.Context, callr Refreshed, onErr Error, ps *pubsub.Pu
 		return nil, err
 	}
 
+	topicHandler, err := topic.EventHandler()
+	if err != nil {
+		return nil, err
+	}
+
 	// Initialize Lobby for Peers
 	lobInfo := &md.Lobby{
 		Code:  olc,
@@ -59,14 +66,15 @@ func Initialize(ctx context.Context, callr Refreshed, onErr Error, ps *pubsub.Pu
 
 	// Create Lobby Type
 	lob := &Lobby{
-		ctx:     ctx,
-		onError: onErr,
-		refresh: callr,
-		doneCh:  make(chan struct{}, 1),
-		ps:      ps,
-		topic:   topic,
-		sub:     sub,
-		self:    id,
+		ctx:          ctx,
+		onError:      onErr,
+		refresh:      callr,
+		doneCh:       make(chan struct{}, 1),
+		ps:           ps,
+		topic:        topic,
+		topicHandler: topicHandler,
+		sub:          sub,
+		self:         id,
 
 		Data:     lobInfo,
 		Messages: make(chan *md.LobbyEvent, ChatRoomBufSize),

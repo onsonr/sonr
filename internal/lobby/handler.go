@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
+	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -17,6 +18,13 @@ func (lob *Lobby) handleMessages() {
 			close(lob.Messages)
 			return
 		}
+
+		event, err := lob.topicHandler.NextPeerEvent(lob.ctx)
+		if err != nil {
+			return
+		}
+
+		lob.Events <- &event
 
 		// Only forward messages delivered by others
 		if msg.ReceivedFrom == lob.self {
@@ -50,9 +58,12 @@ func (lob *Lobby) handleEvents() {
 				// Update Peer Data
 				lob.updatePeer(m.Peer)
 
-			} else if m.Event == md.LobbyEvent_EXIT {
-				// Remove Peer Data
-				lob.removePeer(m.Id)
+			}
+
+		// ** Event for Peer Left ** //
+		case e := <-lob.Events:
+			if e.Type == pubsub.PeerLeave {
+				lob.removePeer(e.Peer.String())
 			}
 
 		// ** Refresh and Validate Lobby Peers Periodically ** //
