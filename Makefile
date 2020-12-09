@@ -1,12 +1,12 @@
 SHELL := /bin/zsh # Set Shell
 
-# GoMobile Commands
+# Go Commands
 GOMOBILE=gomobile
 GCMSG=git-commitmsg
 GOCLEAN=$(GOMOBILE) clean
 GOBIND=$(GOMOBILE) bind
 
-# GoMobile Directories
+# Plugin Directories
 IOS_BUILDDIR=/Users/prad/Sonr/plugin/ios/Frameworks
 IOS_ARTIFACT= $(IOS_BUILDDIR)/Core.framework
 ANDROID_BUILDDIR=/Users/prad/Sonr/plugin/android/libs
@@ -18,8 +18,6 @@ CORE_PB_DIR="/Users/prad/Sonr/core/internal/models"
 PLUGIN_PB_DIR="/Users/prad/Sonr/plugin/lib/models"
 
 # Proto Build Commands
-PB_CLEAN_CORE="cd $(PB_PATH) && find ./ -name "*.go" -not -name "*.proto" -exec rm {} \;"
-PB_CLEAN_PLUGIN="cd $(PLUGIN_PB_DIR) && find ./ -name "*.dart" -not -name "models.dart" -exec rm {} \;"
 PB_BUILD_CORE="--go_out=$(CORE_PB_DIR)"
 PB_BUILD_PLUGIN="--dart_out=$(PLUGIN_PB_DIR)"
 
