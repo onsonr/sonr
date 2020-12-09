@@ -13,6 +13,14 @@ message ConnectionRequest {
   Device device = 3;
   Directories directory = 4;
   Contact contact = 5;
+  Connectivity connectivity = 6;
+
+  // Define Connectivity
+  enum Connectivity {
+    NONE = 0;
+    WIFI = 1;
+    MOBILE = 2;
+  }
 }
 
 // Authorization message sent in stream

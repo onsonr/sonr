@@ -4,11 +4,13 @@ go 1.15
 
 // Core Imports
 require (
+	berty.tech/go-libp2p-tor-transport v0.8.3
 	github.com/golang/protobuf v1.4.3
 	github.com/h2non/filetype v1.1.0
 	github.com/libp2p/go-libp2p v0.11.0
 	//github.com/libp2p/go-libp2p-connmgr v0.2.4
 	github.com/libp2p/go-libp2p-core v0.6.1
+	github.com/libp2p/go-libp2p-discovery v0.5.0
 	github.com/libp2p/go-libp2p-gorpc v0.1.1
 	github.com/libp2p/go-libp2p-kad-dht v0.10.0
 	github.com/libp2p/go-libp2p-pubsub v0.3.6
@@ -18,6 +20,5 @@ require (
 	github.com/libp2p/go-msgio v0.0.6
 	//github.com/multiformats/go-multiaddr v0.3.1
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
-	golang.org/x/tools v0.0.0-20200117012304-6edc0a871e69 // indirect
 	google.golang.org/protobuf v1.23.0
 )
