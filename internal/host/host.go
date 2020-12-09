@@ -66,7 +66,7 @@ func NewHost(ctx context.Context, olc string) (host.Host, string, error) {
 	)
 
 	// setup local mDNS discovery
-	err = startMDNS(ctx, h, olc)
+	// err = startMDNS(ctx, h, olc)
 	err = startRendezvous(ctx, h, kademliaDHT, olc)
 	fmt.Println("MDNS Started")
 	return h, h.ID().String(), err

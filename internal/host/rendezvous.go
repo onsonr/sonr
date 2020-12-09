@@ -62,8 +62,14 @@ func handleKademliaDiscovery(ctx context.Context, h host.Host, disc *discovery.R
 			for peer := range peerChan {
 				if peer.ID == h.ID() {
 					continue
+				} else {
+					log.Println("Found peer:", peer)
+					err := h.Connect(ctx, peer)
+					if err != nil {
+						log.Println("Error occurred connecting to peer: ", err)
+					}
 				}
-				log.Println("Found peer:", peer)
+
 			}
 		case <-ctx.Done():
 			return
