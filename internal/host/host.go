@@ -4,8 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"net"
-	"os"
 	"sync"
 	"time"
 
@@ -80,23 +78,17 @@ func NewHost(ctx context.Context, conReq *md.ConnectionRequest) (host.Host, stri
 			}
 			wg.Wait()
 
-			// We use a rendezvous point "meet me here" to announce our location.
-			// This is like telling your friends to meet you at the Eiffel Tower.
-			log.Println("Announcing ourselves...")
+			// Start DHT Discovery
 			routingDiscovery := discovery.NewRoutingDiscovery(idht)
-			discovery.Advertise(ctx, routingDiscovery, point, discovery.TTL((time.Second * 3)))
-			log.Println("Successfully announced!")
+			discovery.Advertise(ctx, routingDiscovery, point, discovery.TTL((time.Second * 1)))
+
+			// Handle Peers
 			go handleKademliaDiscovery(ctx, h, routingDiscovery, point)
-			log.Println("Waiting for Peers...")
 			return idht, err
 		}),
-		// Let this host use relays and advertise itself on relays if
-		// it finds it is behind NAT. Use libp2p.Relay(options...) to
-		// enable active relays and more.
+		// Let this host use relays and advertise itself on relays if behind NAT
 		libp2p.EnableAutoRelay(),
 	)
-
-	h.Addrs()
 
 	// setup local mDNS discovery
 	// err = startMDNS(ctx, h, olc)
@@ -107,7 +99,7 @@ func NewHost(ctx context.Context, conReq *md.ConnectionRequest) (host.Host, stri
 // ^ Handles Peers that appear on DHT ^
 func handleKademliaDiscovery(ctx context.Context, h host.Host, disc *discovery.RoutingDiscovery, point string) {
 	// Timer checks to dispose of peers
-	peerRefreshTicker := time.NewTicker(time.Second * 3)
+	peerRefreshTicker := time.NewTicker(time.Second * 1)
 	defer peerRefreshTicker.Stop()
 
 	// Start Routing Discovery
