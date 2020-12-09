@@ -32,6 +32,7 @@ all: protoc ios android
 	@echo "-------- ✅ ✅ ✅   FINISHED ALL TASKS  ✅ ✅ ✅  --------------"
 	@echo "--------------------------------------------------------------"
 
+## protoc   :  Compiles Protobuf models for Core Library and Plugin
 protoc:
 	@echo ""
 	@echo ""
@@ -46,6 +47,7 @@ protoc:
 	@echo "--------------------------------------------------------------"
 	@echo ""
 
+## ios      :  Builds iOS Bind at Plugin Path
 ios:
 	@echo ""
 	@echo ""
@@ -61,6 +63,7 @@ ios:
 	@echo "--------------------------------------------------------------"
 	@echo ""
 
+## android  :  Builds Android Bind at Plugin Path
 android:
 	@echo ""
 	@echo ""
@@ -76,6 +79,7 @@ android:
 	@echo "--------------------------------------------------------------"
 	@echo ""
 
+## reset    :  Cleans Gomobile, Removes Framworks from Plugin and Inits Gomobile
 reset:
 	cd bind && $(GOCLEAN)
 	go mod tidy
@@ -84,3 +88,6 @@ reset:
 	mkdir -p $(IOS_BUILDDIR)
 	mkdir -p $(ANDROID_BUILDDIR)
 	gomobile init
+
+help : Makefile
+	@sed -n 's/^##//p' $<

@@ -51,9 +51,6 @@ func NewHost(ctx context.Context, conReq *md.ConnectionRequest) (host.Host, stri
 		// support any other default transports (TCP)
 		libp2p.DefaultTransports,
 
-		// Attempt to open ports using uPNP for NATed hosts.
-		libp2p.NATPortMap(),
-
 		// Let this host use the DHT to find other hosts
 		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
 			// Create New IDHT
@@ -86,6 +83,10 @@ func NewHost(ctx context.Context, conReq *md.ConnectionRequest) (host.Host, stri
 			go handleKademliaDiscovery(ctx, h, routingDiscovery, point)
 			return idht, err
 		}),
+
+		// Attempt to open ports using uPNP for NATed hosts.
+		libp2p.EnableNATService(),
+
 		// Let this host use relays and advertise itself on relays if behind NAT
 		libp2p.EnableAutoRelay(),
 	)
