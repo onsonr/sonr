@@ -1,7 +1,6 @@
 // from: https://gist.github.com/cs8425/107e01a0652f1f1f6e033b5b68364b5e
-
 //nolint
-package core
+package sonr
 
 import (
 	_ "net"
@@ -51,7 +50,6 @@ type resolverConfig struct {
 func (conf *resolverConfig) tryUpdate(name string)
 
 // Need an empty .s file (dnsconfig_empty.s)
-
 func setDefaultNS(addrs []string, loadFromSystem bool) {
 	if resolvConf.dnsConfig == nil {
 		resolvConf.tryUpdate("")

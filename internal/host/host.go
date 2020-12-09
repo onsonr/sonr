@@ -9,8 +9,6 @@ import (
 	"sync"
 	"time"
 
-	tor "berty.tech/go-libp2p-tor-transport"
-	config "berty.tech/go-libp2p-tor-transport/config"
 	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -24,42 +22,21 @@ import (
 )
 
 // ^ NewHost: Creates a host with: (MDNS, TCP, QUIC on UDP) ^
-func NewHost(ctx context.Context, dirs *md.Directories, olc string) (host.Host, string, error) {
-	// @1. Find IPv4 Address
-	osHost, _ := os.Hostname()
-	addrs, _ := net.LookupIP(osHost)
-	var ipv4Ref string
-
-	// Iterate through addresses
-	for _, addr := range addrs {
-		// @ Set IPv4
-		if ipv4 := addr.To4(); ipv4 != nil {
-			ipv4Ref = ipv4.String()
-		}
-	}
+func NewHost(ctx context.Context, conReq *md.ConnectionRequest) (host.Host, string, error) {
 
 	// @2. Get Host Requirements
-	point := "sonr-kademlia+" + olc
-	torTransport, err := tor.NewBuilder( // Create a builder
-		config.EnableEmbeded,
-		config.DoSlowStart,
-		config.AllowTcpDial, // Some Configurator are already ready to use.
-		config.SetSetupTimeout(time.Minute),
-		config.SetTemporaryDirectory(dirs.Temporary),
-	)
-	if err != nil {
-		return nil, "", err
-	}
+	point := "sonr-kademlia+" + conReq.Olc
+	ipv4 := GetIPv4()
 
 	// @2. Create Libp2p Host
 	h, err := libp2p.New(ctx,
 		// Add listening Addresses
 		libp2p.ListenAddrStrings(
-			fmt.Sprintf("/ip4/%s/tcp/0", ipv4Ref),
-			"/ip6/::/tcp/0",
+			fmt.Sprintf("/ip4/%s/tcp/0/060214", ipv4),
+			"/ip6/::/tcp/0/052006",
 
-			fmt.Sprintf("/ip4/%s/udp/0/quic", ipv4Ref),
-			"/ip6/::/udp/0/quic"),
+			fmt.Sprintf("/ip4/%s/udp/0/quic/021769", ipv4),
+			"/ip6/::/udp/0/quic/091175"),
 
 		// support TLS connections
 		libp2p.Security(libp2ptls.ID, libp2ptls.New),
@@ -71,7 +48,7 @@ func NewHost(ctx context.Context, dirs *md.Directories, olc string) (host.Host, 
 		libp2p.Transport(quic.NewTransport),
 
 		// support TOR - Mobile Networks
-		libp2p.Transport(torTransport),
+		//libp2p.Transport(torTransport),
 
 		// support any other default transports (TCP)
 		libp2p.DefaultTransports,
@@ -118,6 +95,8 @@ func NewHost(ctx context.Context, dirs *md.Directories, olc string) (host.Host, 
 		// enable active relays and more.
 		libp2p.EnableAutoRelay(),
 	)
+
+	h.Addrs()
 
 	// setup local mDNS discovery
 	// err = startMDNS(ctx, h, olc)
