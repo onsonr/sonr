@@ -9,19 +9,22 @@ import (
 	"sync"
 	"time"
 
+	tor "berty.tech/go-libp2p-tor-transport"
+	config "berty.tech/go-libp2p-tor-transport/config"
 	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/routing"
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
-	libp2pquic "github.com/libp2p/go-libp2p-quic-transport"
+	quic "github.com/libp2p/go-libp2p-quic-transport"
 	secio "github.com/libp2p/go-libp2p-secio"
 	libp2ptls "github.com/libp2p/go-libp2p-tls"
+	md "github.com/sonr-io/core/internal/models"
 )
 
 // ^ NewHost: Creates a host with: (MDNS, TCP, QUIC on UDP) ^
-func NewHost(ctx context.Context, olc string) (host.Host, string, error) {
+func NewHost(ctx context.Context, dirs *md.Directories, olc string) (host.Host, string, error) {
 	// @1. Find IPv4 Address
 	osHost, _ := os.Hostname()
 	addrs, _ := net.LookupIP(osHost)
@@ -35,8 +38,20 @@ func NewHost(ctx context.Context, olc string) (host.Host, string, error) {
 		}
 	}
 
-	// @2. Create Libp2p Host
+	// @2. Get Host Requirements
 	point := "sonr-kademlia+" + olc
+	torTransport, err := tor.NewBuilder( // Create a builder
+		config.EnableEmbeded,
+		config.DoSlowStart,
+		config.AllowTcpDial, // Some Configurator are already ready to use.
+		config.SetSetupTimeout(time.Minute),
+		config.SetTemporaryDirectory(dirs.Temporary),
+	)
+	if err != nil {
+		return nil, "", err
+	}
+
+	// @2. Create Libp2p Host
 	h, err := libp2p.New(ctx,
 		// Add listening Addresses
 		libp2p.ListenAddrStrings(
@@ -50,7 +65,10 @@ func NewHost(ctx context.Context, olc string) (host.Host, string, error) {
 		libp2p.Security(secio.ID, secio.New),
 
 		// support QUIC
-		libp2p.Transport(libp2pquic.NewTransport),
+		libp2p.Transport(quic.NewTransport),
+
+		// support TOR - Mobile Networks
+		libp2p.Transport(torTransport),
 
 		// support any other default transports (TCP)
 		libp2p.DefaultTransports,
