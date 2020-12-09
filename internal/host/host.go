@@ -56,7 +56,10 @@ func NewHost(ctx context.Context, dirs *md.Directories, olc string) (host.Host, 
 		// Add listening Addresses
 		libp2p.ListenAddrStrings(
 			fmt.Sprintf("/ip4/%s/tcp/0", ipv4Ref),
-			fmt.Sprintf("/ip4/%s/udp/0/quic", ipv4Ref)),
+			"/ip6/::/tcp/0",
+
+			fmt.Sprintf("/ip4/%s/udp/0/quic", ipv4Ref),
+			"/ip6/::/udp/0/quic"),
 
 		// support TLS connections
 		libp2p.Security(libp2ptls.ID, libp2ptls.New),
