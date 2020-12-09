@@ -39,8 +39,9 @@ type Lobby struct {
 }
 
 // ^ Initialize Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
-func Initialize(ctx context.Context, callr Refreshed, onErr Error, ps *pubsub.PubSub, id peer.ID, olc string) (*Lobby, error) {
+func Initialize(callr Refreshed, onErr Error, ps *pubsub.PubSub, id peer.ID, olc string) (*Lobby, error) {
 	// Join the pubsub Topic
+	ctx := context.Background()
 	topic, err := ps.Join(olc)
 	if err != nil {
 		return nil, err
@@ -80,9 +81,13 @@ func Initialize(ctx context.Context, callr Refreshed, onErr Error, ps *pubsub.Pu
 		Messages: make(chan *md.LobbyEvent, ChatRoomBufSize),
 	}
 
-	// start reading messages
+	// Start Handling Events
+	// go lob.handleEvents()
+	// go lob.processEvents()
+
+	// Start Reading Messages
 	go lob.handleMessages()
-	go lob.handleEvents()
+	go lob.processMessages()
 	return lob, nil
 }
 
@@ -130,19 +135,7 @@ func (lob *Lobby) Update(p *md.Peer) error {
 
 // ^ End terminates lobby loop ^
 func (lob *Lobby) Exit() {
-	// Create Lobby Event
-	event := md.LobbyEvent{
-		Event: md.LobbyEvent_EXIT,
-		Id:    lob.self.String(),
-	}
 
-	// Convert Event to Proto Binary, Suppress Error
-	bytes, _ := proto.Marshal(&event)
-
-	// Publish to Topic
-	err := lob.topic.Publish(lob.ctx, bytes)
-	if err != nil {
-		lob.onError(err, "Exit")
-	}
+	lob.sub.Cancel()
 	lob.doneCh <- struct{}{}
 }

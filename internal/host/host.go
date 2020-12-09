@@ -31,6 +31,7 @@ func NewHost(ctx context.Context, olc string) (host.Host, string, error) {
 	}
 
 	// @2. Create Libp2p Host
+	var kademliaDHT *dht.IpfsDHT
 	h, err := libp2p.New(ctx,
 		// Add listening Addresses
 		libp2p.ListenAddrStrings(
@@ -55,6 +56,7 @@ func NewHost(ctx context.Context, olc string) (host.Host, string, error) {
 		// Let this host use the DHT to find other hosts
 		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
 			idht, err := dht.New(ctx, h)
+			kademliaDHT = idht
 			return idht, err
 		}),
 		// Let this host use relays and advertise itself on relays if
@@ -65,6 +67,7 @@ func NewHost(ctx context.Context, olc string) (host.Host, string, error) {
 
 	// setup local mDNS discovery
 	err = startMDNS(ctx, h, olc)
+	err = startRendezvous(ctx, h, kademliaDHT, olc)
 	fmt.Println("MDNS Started")
 	return h, h.ID().String(), err
 }

@@ -1,6 +1,7 @@
 package lobby
 
 import (
+	"log"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -19,13 +20,6 @@ func (lob *Lobby) handleMessages() {
 			return
 		}
 
-		event, err := lob.topicHandler.NextPeerEvent(lob.ctx)
-		if err != nil {
-			return
-		}
-
-		lob.Events <- &event
-
 		// Only forward messages delivered by others
 		if msg.ReceivedFrom == lob.self {
 			continue
@@ -43,8 +37,8 @@ func (lob *Lobby) handleMessages() {
 	}
 }
 
-// ^ 2. handleEvents handles message content and ticker ^
-func (lob *Lobby) handleEvents() {
+// ^ 1a. processMessages handles message content and ticker ^
+func (lob *Lobby) processMessages() {
 	// Timer checks to dispose of peers
 	peerRefreshTicker := time.NewTicker(time.Second * 3)
 	defer peerRefreshTicker.Stop()
@@ -57,13 +51,6 @@ func (lob *Lobby) handleEvents() {
 			if m.Event == md.LobbyEvent_UPDATE {
 				// Update Peer Data
 				lob.updatePeer(m.Peer)
-
-			}
-
-		// ** Event for Peer Left ** //
-		case e := <-lob.Events:
-			if e.Type == pubsub.PeerLeave {
-				lob.removePeer(e.Peer.String())
 			}
 
 		// ** Refresh and Validate Lobby Peers Periodically ** //
@@ -75,6 +62,36 @@ func (lob *Lobby) handleEvents() {
 
 		case <-lob.doneCh:
 			return
+		}
+	}
+}
+
+// ^ 2. handleEvents listens for topicEvents ^
+func (lob *Lobby) handleEvents() {
+	for {
+		// handle topic events
+		event, err := lob.topicHandler.NextPeerEvent(lob.ctx)
+		if err != nil {
+			return
+		}
+
+		lob.Events <- &event
+	}
+}
+
+// ^ 2a. processEvents handles events from topic event channel
+func (lob *Lobby) processEvents() {
+	for {
+		select {
+		// ** Event for Peer Left ** //
+		case e := <-lob.Events:
+			if e.Type == pubsub.PeerLeave {
+				log.Println(e.Peer.ShortString(), " has exited.")
+				lob.removePeer(e.Peer.String())
+			}
+			if e.Type == pubsub.PeerJoin {
+				log.Println(e.Peer.ShortString(), " has joined.")
+			}
 		}
 	}
 }
