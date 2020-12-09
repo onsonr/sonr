@@ -2,7 +2,6 @@ SHELL := /bin/zsh # Set Shell
 
 # Go Commands
 GOMOBILE=gomobile
-GCMSG=git-commitmsg
 GOCLEAN=$(GOMOBILE) clean
 GOBIND=$(GOMOBILE) bind
 
