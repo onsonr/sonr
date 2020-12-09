@@ -32,38 +32,8 @@ all: protoc ios android
 	@echo "-------- ✅ ✅ ✅   FINISHED ALL TASKS  ✅ ✅ ✅  --------------"
 	@echo "--------------------------------------------------------------"
 
-## protoc   :  Compiles Protobuf models for Core Library and Plugin
-protoc:
-	@echo ""
-	@echo ""
-	@echo "--------------------------------------------------------------"
-	@echo "------------- 🛸 START PROTOBUFS COMPILE 🛸 -------------------"
-	@echo "--------------------------------------------------------------"
-	@cd internal/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CORE) api.proto data.proto core.proto
-	@cd internal/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_PLUGIN) api.proto data.proto
-	@echo "Finished Compiling ➡ " && date
-	@echo "--------------------------------------------------------------"
-	@echo "------------- 🛸 COMPILED ALL PROTOBUFS 🛸 --------------------"
-	@echo "--------------------------------------------------------------"
-	@echo ""
 
-## ios      :  Builds iOS Bind at Plugin Path
-ios:
-	@echo ""
-	@echo ""
-	@echo "--------------------------------------------------------------"
-	@echo "-------------- 📱 BEGIN IOS BIND 📱 ---------------------------"
-	@echo "--------------------------------------------------------------"
-	cd bind && GODEBUG=asyncpreemptoff=1 gomobile bind -ldflags='-s -w' -target=ios/arm64 -v -o $(IOS_ARTIFACT)
-	@go mod tidy
-	@cd /System/Library/Sounds && afplay Glass.aiff
-	@echo "Finished Binding ➡ " && date
-	@echo "--------------------------------------------------------------"
-	@echo "-------------- 📱 COMPLETE IOS BIND 📱 ------------------------"
-	@echo "--------------------------------------------------------------"
-	@echo ""
-
-## android  :  Builds Android Bind at Plugin Path
+## android :    Builds Android Bind at Plugin Path
 android:
 	@echo ""
 	@echo ""
@@ -79,7 +49,41 @@ android:
 	@echo "--------------------------------------------------------------"
 	@echo ""
 
-## reset    :  Cleans Gomobile, Removes Framworks from Plugin and Inits Gomobile
+
+## ios     :    Builds iOS Bind at Plugin Path
+ios:
+	@echo ""
+	@echo ""
+	@echo "--------------------------------------------------------------"
+	@echo "-------------- 📱 BEGIN IOS BIND 📱 ---------------------------"
+	@echo "--------------------------------------------------------------"
+	cd bind && GODEBUG=asyncpreemptoff=1 gomobile bind -ldflags='-s -w' -target=ios/arm64 -v -o $(IOS_ARTIFACT)
+	@go mod tidy
+	@cd /System/Library/Sounds && afplay Glass.aiff
+	@echo "Finished Binding ➡ " && date
+	@echo "--------------------------------------------------------------"
+	@echo "-------------- 📱 COMPLETE IOS BIND 📱 ------------------------"
+	@echo "--------------------------------------------------------------"
+	@echo ""
+
+
+## protoc  :    Compiles Protobuf models for Core Library and Plugin
+protoc:
+	@echo ""
+	@echo ""
+	@echo "--------------------------------------------------------------"
+	@echo "------------- 🛸 START PROTOBUFS COMPILE 🛸 -------------------"
+	@echo "--------------------------------------------------------------"
+	@cd internal/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CORE) api.proto data.proto core.proto
+	@cd internal/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_PLUGIN) api.proto data.proto
+	@echo "Finished Compiling ➡ " && date
+	@echo "--------------------------------------------------------------"
+	@echo "------------- 🛸 COMPILED ALL PROTOBUFS 🛸 --------------------"
+	@echo "--------------------------------------------------------------"
+	@echo ""
+
+
+## reset   :    Cleans Gomobile, Removes Framworks from Plugin, and Inits Gomobile
 reset:
 	cd bind && $(GOCLEAN)
 	go mod tidy
@@ -88,6 +92,7 @@ reset:
 	mkdir -p $(IOS_BUILDDIR)
 	mkdir -p $(ANDROID_BUILDDIR)
 	gomobile init
+
 
 help : Makefile
 	@sed -n 's/^##//p' $<
