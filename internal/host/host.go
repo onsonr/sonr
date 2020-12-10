@@ -73,11 +73,8 @@ func NewHost(ctx context.Context, olc string) (host.Host, error) {
 				wg.Add(1)
 				go func() {
 					defer wg.Done()
-					if err := h.Connect(ctx, *peerinfo); err != nil {
-						log.Println(err)
-					} else {
-						log.Println("Connection established with bootstrap node:", *peerinfo)
-					}
+					// We ignore errors as some bootstrap peers may be down
+					_ = h.Connect(ctx, *peerinfo)
 				}()
 			}
 			wg.Wait()
