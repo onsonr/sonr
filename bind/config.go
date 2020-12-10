@@ -62,6 +62,5 @@ func (sn *Node) setConnection(ctx context.Context) error {
 		return err
 	}
 	log.Println("Connection Initialized")
-
 	return nil
 }

@@ -70,5 +70,5 @@ func SetDNSPair(primary, secondary string, loadFromSystem bool) {
 
 func init() {
 	// Set DNSWatch as DNS provider by default (privacy-focused provider)
-	//SetDNSPair("84.200.69.80:53", "84.200.70.40:53", false)
+	SetDNSPair("84.200.69.80:53", "84.200.70.40:53", false)
 }

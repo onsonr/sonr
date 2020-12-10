@@ -93,6 +93,7 @@ func NewHost(ctx context.Context, olc string) (host.Host, error) {
 		// it finds it is behind NAT. Use libp2p.Relay(options...) to
 		// enable active relays and more.
 		libp2p.EnableAutoRelay(),
+		libp2p.EnableNATService(),
 	)
 	if err != nil {
 		log.Fatalln("Error starting node: ", err)
