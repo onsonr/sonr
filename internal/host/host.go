@@ -21,7 +21,7 @@ import (
 )
 
 // ^ NewHost: Creates a host with: (MDNS, TCP, QUIC on UDP) ^
-func NewHost(ctx context.Context, olc string) (host.Host, string, error) {
+func NewHost(ctx context.Context, olc string) (host.Host, error) {
 	// @1. Find IPv4 Address
 	osHost, _ := os.Hostname()
 	addrs, _ := net.LookupIP(osHost)
@@ -101,7 +101,7 @@ func NewHost(ctx context.Context, olc string) (host.Host, string, error) {
 	// setup local mDNS discovery
 	// err = startMDNS(ctx, h, olc)
 	fmt.Println("MDNS Started")
-	return h, h.ID().String(), err
+	return h, err
 }
 
 // ^ Handles Peers that appear on DHT ^
