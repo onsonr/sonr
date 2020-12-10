@@ -2,6 +2,7 @@ package lobby
 
 import (
 	"log"
+	"sync"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -40,7 +41,8 @@ func (lob *Lobby) handleMessages() {
 // ^ 1a. processMessages handles message content and ticker ^
 func (lob *Lobby) processMessages() {
 	// Timer checks to dispose of peers
-	peerRefreshTicker := time.NewTicker(time.Second * 3)
+	dur := (time.Second * 2) + (time.Millisecond * 500)
+	peerRefreshTicker := time.NewTicker(dur)
 	defer peerRefreshTicker.Stop()
 
 	for {
@@ -55,7 +57,7 @@ func (lob *Lobby) processMessages() {
 
 		// ** Refresh and Validate Lobby Peers Periodically ** //
 		case <-peerRefreshTicker.C:
-			lob.refresh(md.CallbackType_REFRESHED, lob.Data)
+			lob.filterLobby()
 
 		case <-lob.ctx.Done():
 			return
@@ -87,11 +89,13 @@ func (lob *Lobby) processEvents() {
 		case e := <-lob.Events:
 			if e.Type == pubsub.PeerLeave {
 				log.Println(e.Peer.ShortString(), " has exited.")
-				lob.removePeer(e.Peer.String())
 			}
 			if e.Type == pubsub.PeerJoin {
 				log.Println(e.Peer.ShortString(), " has joined.")
 			}
+
+		case <-lob.ctx.Done():
+			break
 		}
 	}
 }
@@ -120,12 +124,25 @@ func (lob *Lobby) Peer(q string) *md.Peer {
 	return nil
 }
 
-// ** removePeer deletes a peer from Lobby ** //
-func (lob *Lobby) removePeer(id string) {
-	// Delete peer from Lobby Map
-	delete(lob.Data.Peers, id)
+// ** filterLobby updates lobby and removes peers that arent subscribed ** //
+func (lob *Lobby) filterLobby() {
+	// Initialize
+	var wg sync.WaitGroup
 
-	// Send Callback with updated peers
+	// Loop through Subscribed Peers
+	for _, id := range lob.ps.ListPeers(lob.Data.Code) {
+		// Add each peer as job
+		wg.Add(1)
+		defer wg.Done()
+		// Find Peer that is not found
+		if peer, found := lob.Data.Peers[id.String()]; !found {
+			// Remove Unsubscribed Peer from Map
+			delete(lob.Data.Peers, peer.Id)
+		}
+	}
+	wg.Wait()
+
+	// Return Callback
 	lob.refresh(md.CallbackType_REFRESHED, lob.Data)
 }
 
