@@ -7,7 +7,6 @@ import (
 	"net"
 	"os"
 	"sync"
-	"time"
 
 	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/host"
@@ -26,6 +25,7 @@ func NewHost(ctx context.Context, olc string) (host.Host, error) {
 	osHost, _ := os.Hostname()
 	addrs, _ := net.LookupIP(osHost)
 	var ipv4Ref string
+	var err error
 
 	// Iterate through addresses
 	for _, addr := range addrs {
@@ -36,7 +36,7 @@ func NewHost(ctx context.Context, olc string) (host.Host, error) {
 	}
 
 	// @2. Create Libp2p Host
-	point := "sonr-kademlia+" + olc
+	point := "/sonr/dht/" + olc
 	h, err := libp2p.New(ctx,
 		// Add listening Addresses
 		libp2p.ListenAddrStrings(
@@ -84,12 +84,9 @@ func NewHost(ctx context.Context, olc string) (host.Host, error) {
 
 			// We use a rendezvous point "meet me here" to announce our location.
 			// This is like telling your friends to meet you at the Eiffel Tower.
-			log.Println("Announcing ourselves...")
 			routingDiscovery := discovery.NewRoutingDiscovery(idht)
 			discovery.Advertise(ctx, routingDiscovery, point)
-			log.Println("Successfully announced!")
 			go handleKademliaDiscovery(ctx, h, routingDiscovery, point)
-			log.Println("Waiting for Peers...")
 			return idht, err
 		}),
 		// Let this host use relays and advertise itself on relays if
@@ -97,19 +94,21 @@ func NewHost(ctx context.Context, olc string) (host.Host, error) {
 		// enable active relays and more.
 		libp2p.EnableAutoRelay(),
 	)
+	if err != nil {
+		log.Fatalln("Error starting node: ", err)
+	}
 
 	// setup local mDNS discovery
-	// err = startMDNS(ctx, h, olc)
+	err = startMDNS(ctx, h, olc)
 	fmt.Println("MDNS Started")
 	return h, err
 }
 
 // ^ Handles Peers that appear on DHT ^
+//nolint
 func handleKademliaDiscovery(ctx context.Context, h host.Host, disc *discovery.RoutingDiscovery, point string) {
 	// Timer checks to dispose of peers
-	peerRefreshTicker := time.NewTicker(time.Second * 3)
-	defer peerRefreshTicker.Stop()
-	peerChan, err := disc.FindPeers(ctx, point)
+	peerChan, err := disc.FindPeers(ctx, point, discovery.Limit(15))
 	if err != nil {
 		log.Println("Failed to get DHT Peer Channel: ", err)
 		return
@@ -119,14 +118,18 @@ func handleKademliaDiscovery(ctx context.Context, h host.Host, disc *discovery.R
 	for {
 		select {
 		case peer := <-peerChan:
+			var wg sync.WaitGroup
 			if peer.ID == h.ID() {
 				continue
 			} else {
+				wg.Add(1)
+				defer wg.Done()
 				err := h.Connect(ctx, peer)
 				if err != nil {
 					log.Println("Error occurred connecting to peer: ", err)
 				}
 			}
+			wg.Wait()
 		case <-ctx.Done():
 			return
 		}
