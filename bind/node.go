@@ -38,7 +38,7 @@ func (sn *Node) Update(direction float64) {
 // ^ AddFile adds generates metadata and thumbnail from filepath to Process for Transfer, returns key ^ //
 func (sn *Node) AddFile(path string) {
 	//@2. Initialize SafeFile
-	safeMeta := sf.NewMetadata(path, sn.callbackRef.OnQueued, sn.error)
+	safeMeta := sf.NewMetadata(path, sn.call.OnQueued, sn.error)
 	sn.files = append(sn.files, safeMeta)
 }
 

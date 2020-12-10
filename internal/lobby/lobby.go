@@ -14,7 +14,7 @@ import (
 const ChatRoomBufSize = 128
 
 // Define Function Types
-type Refreshed func(call md.CallbackType, data proto.Message)
+type OnProtobuf func([]byte)
 type Error func(err error, method string)
 
 // Lobby represents a subscription to a single PubSub topic. Messages
@@ -27,19 +27,19 @@ type Lobby struct {
 	Data     *md.Lobby
 
 	// Private Vars
-	ctx     context.Context
-	refresh Refreshed
-	onError Error
-	doneCh  chan struct{}
-	ps      *pubsub.PubSub
-	topic   *pubsub.Topic
+	ctx      context.Context
+	callback OnProtobuf
+	onError  Error
+	doneCh   chan struct{}
+	ps       *pubsub.PubSub
+	topic    *pubsub.Topic
 	//topicHandler *pubsub.TopicEventHandler
 	self peer.ID
 	sub  *pubsub.Subscription
 }
 
 // ^ Initialize Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
-func Initialize(callr Refreshed, onErr Error, ps *pubsub.PubSub, id peer.ID, olc string) (*Lobby, error) {
+func Initialize(callr OnProtobuf, onErr Error, ps *pubsub.PubSub, id peer.ID, olc string) (*Lobby, error) {
 	// Join the pubsub Topic
 	ctx := context.Background()
 	topic, err := ps.Join(olc)
@@ -67,12 +67,12 @@ func Initialize(callr Refreshed, onErr Error, ps *pubsub.PubSub, id peer.ID, olc
 
 	// Create Lobby Type
 	lob := &Lobby{
-		ctx:     ctx,
-		onError: onErr,
-		refresh: callr,
-		doneCh:  make(chan struct{}, 1),
-		ps:      ps,
-		topic:   topic,
+		ctx:      ctx,
+		onError:  onErr,
+		callback: callr,
+		doneCh:   make(chan struct{}, 1),
+		ps:       ps,
+		topic:    topic,
 		// topicHandler: topicHandler,
 		sub:  sub,
 		self: id,

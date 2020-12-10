@@ -97,6 +97,7 @@ func NewHost(ctx context.Context, olc string) (host.Host, error) {
 }
 
 // ^ Handles Peers that appear on DHT ^
+//nolint
 func handleKademliaDiscovery(ctx context.Context, h host.Host, disc *discovery.RoutingDiscovery, point string) {
 	// Timer checks to dispose of peers
 	peerChan, err := disc.FindPeers(ctx, point, discovery.Limit(15))
@@ -114,11 +115,8 @@ func handleKademliaDiscovery(ctx context.Context, h host.Host, disc *discovery.R
 				continue
 			} else {
 				wg.Add(1)
-				go func() {
-					defer wg.Done()
-					// We ignore errors as some bootstrap peers may be down
-					h.Connect(ctx, peer) //nolint
-				}()
+				// We ignore errors as some bootstrap peers may be down
+				h.Connect(ctx, peer)
 			}
 			wg.Wait()
 		case <-ctx.Done():

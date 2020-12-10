@@ -45,9 +45,9 @@ type Node struct {
 	directories *md.Directories
 
 	// References
-	callbackRef Callback
-	lobby       *lobby.Lobby
-	peerConn    *tr.PeerConnection
+	call     Callback
+	lobby    *lobby.Lobby
+	peerConn *tr.PeerConnection
 }
 
 // ^ NewNode Initializes Node with a host and default properties ^
@@ -55,7 +55,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	// ** Create Context and Node - Begin Setup **
 	node := new(Node)
 	node.ctx = context.Background()
-	node.callbackRef, node.files = call, make([]*sf.SafeMetadata, maxFileBufferSize)
+	node.call, node.files = call, make([]*sf.SafeMetadata, maxFileBufferSize)
 
 	// ** Unmarshal Request **
 	reqMsg := md.ConnectionRequest{}
@@ -89,38 +89,6 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	return node
 }
 
-// ^ callback Method with type ^
-func (sn *Node) callback(call md.CallbackType, data proto.Message) {
-	// ** Convert Message to bytes **
-	bytes, err := proto.Marshal(data)
-	if err != nil {
-		log.Println("Cannot Marshal Error Protobuf: ", err)
-	}
-
-	// ** Check Call Type **
-	switch call {
-	// @ Lobby Refreshed
-	case md.CallbackType_REFRESHED:
-		sn.callbackRef.OnRefreshed(bytes)
-
-	// @ File has Queued
-	case md.CallbackType_QUEUED:
-		sn.callbackRef.OnQueued(bytes)
-
-	// @ Peer has been Invited
-	case md.CallbackType_INVITED:
-		sn.callbackRef.OnInvited(bytes)
-
-	// @ Peer has Responded
-	case md.CallbackType_RESPONDED:
-		sn.callbackRef.OnResponded(bytes)
-
-	// @ Transfer has Completed
-	case md.CallbackType_COMPLETED:
-		sn.callbackRef.OnReceived(bytes)
-	}
-}
-
 // ^ error Callback with error instance, and method ^
 func (sn *Node) error(err error, method string) {
 	// Create Error ProtoBuf
@@ -135,7 +103,7 @@ func (sn *Node) error(err error, method string) {
 		log.Println("Cannot Marshal Error Protobuf: ", err)
 	}
 	// Send Callback
-	sn.callbackRef.OnError(bytes)
+	sn.call.OnError(bytes)
 
 	// Log In Core
 	log.Fatalf("[Error] At Method %s : %s", err.Error(), method)

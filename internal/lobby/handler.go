@@ -1,7 +1,7 @@
 package lobby
 
 import (
-	"sync"
+	"log"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -123,25 +123,26 @@ func (lob *Lobby) Peer(q string) *md.Peer {
 }
 
 // ** filterLobby updates lobby and removes peers that arent subscribed ** //
-func (lob *Lobby) filterLobby() {
-	// Initialize
-	var wg sync.WaitGroup
-
+func (lob *Lobby) refreshLobby() {
 	// Loop through Subscribed Peers
 	for _, id := range lob.ps.ListPeers(lob.Data.Code) {
-		// Add each peer as job
-		wg.Add(1)
-		defer wg.Done()
 		// Find Peer that is not found
 		if peer, found := lob.Data.Peers[id.String()]; !found {
+			log.Println(peer.String(), " is not subscribed anymore.")
+
 			// Remove Unsubscribed Peer from Map
-			delete(lob.Data.Peers, peer.Id)
+			delete(lob.Data.Peers, id.String())
 		}
 	}
-	wg.Wait()
+
+	// Marshal data to bytes
+	bytes, err := proto.Marshal(lob.Data)
+	if err != nil {
+		log.Println("Cannot Marshal Error Protobuf: ", err)
+	}
 
 	// Return Callback
-	lob.refresh(md.CallbackType_REFRESHED, lob.Data)
+	lob.callback(bytes)
 }
 
 // ** updatePeer changes peer values in Lobby **
@@ -151,6 +152,12 @@ func (lob *Lobby) updatePeer(peer *md.Peer) {
 	lob.Data.Peers[id] = peer
 	lob.Data.Size = int32(len(lob.Data.Peers)) + 1 // Account for User
 
+	// Marshal data to bytes
+	bytes, err := proto.Marshal(lob.Data)
+	if err != nil {
+		log.Println("Cannot Marshal Error Protobuf: ", err)
+	}
+
 	// Send Callback with updated peers
-	lob.refresh(md.CallbackType_REFRESHED, lob.Data)
+	lob.callback(bytes)
 }
