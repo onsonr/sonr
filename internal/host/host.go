@@ -4,8 +4,9 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net"
+	"os"
 	"sync"
-	"time"
 
 	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/host"
@@ -13,28 +14,34 @@ import (
 	"github.com/libp2p/go-libp2p-core/routing"
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
-	quic "github.com/libp2p/go-libp2p-quic-transport"
+	libp2pquic "github.com/libp2p/go-libp2p-quic-transport"
 	secio "github.com/libp2p/go-libp2p-secio"
 	libp2ptls "github.com/libp2p/go-libp2p-tls"
-	md "github.com/sonr-io/core/internal/models"
 )
 
 // ^ NewHost: Creates a host with: (MDNS, TCP, QUIC on UDP) ^
-func NewHost(ctx context.Context, conReq *md.ConnectionRequest) (host.Host, string, error) {
+func NewHost(ctx context.Context, olc string) (host.Host, error) {
+	// @1. Find IPv4 Address
+	osHost, _ := os.Hostname()
+	addrs, _ := net.LookupIP(osHost)
+	var ipv4Ref string
+	var err error
 
-	// @2. Get Host Requirements
-	point := "sonr-kademlia+" + conReq.Olc
-	ipv4 := GetIPv4()
+	// Iterate through addresses
+	for _, addr := range addrs {
+		// @ Set IPv4
+		if ipv4 := addr.To4(); ipv4 != nil {
+			ipv4Ref = ipv4.String()
+		}
+	}
 
 	// @2. Create Libp2p Host
+	point := "/sonr/dht/" + olc
 	h, err := libp2p.New(ctx,
 		// Add listening Addresses
 		libp2p.ListenAddrStrings(
-			fmt.Sprintf("/ip4/%s/tcp/0/060214", ipv4),
-			"/ip6/::/tcp/0/052006",
-
-			fmt.Sprintf("/ip4/%s/udp/0/quic/021769", ipv4),
-			"/ip6/::/udp/0/quic/091175"),
+			fmt.Sprintf("/ip4/%s/tcp/0", ipv4Ref),
+			fmt.Sprintf("/ip4/%s/udp/0/quic", ipv4Ref)),
 
 		// support TLS connections
 		libp2p.Security(libp2ptls.ID, libp2ptls.New),
@@ -43,13 +50,13 @@ func NewHost(ctx context.Context, conReq *md.ConnectionRequest) (host.Host, stri
 		libp2p.Security(secio.ID, secio.New),
 
 		// support QUIC
-		libp2p.Transport(quic.NewTransport),
-
-		// support TOR - Mobile Networks
-		//libp2p.Transport(torTransport),
+		libp2p.Transport(libp2pquic.NewTransport),
 
 		// support any other default transports (TCP)
 		libp2p.DefaultTransports,
+
+		// Attempt to open ports using uPNP for NATed hosts.
+		libp2p.NATPortMap(),
 
 		// Let this host use the DHT to find other hosts
 		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
@@ -75,55 +82,54 @@ func NewHost(ctx context.Context, conReq *md.ConnectionRequest) (host.Host, stri
 			}
 			wg.Wait()
 
-			// Start DHT Discovery
+			// We use a rendezvous point "meet me here" to announce our location.
+			// This is like telling your friends to meet you at the Eiffel Tower.
 			routingDiscovery := discovery.NewRoutingDiscovery(idht)
-			discovery.Advertise(ctx, routingDiscovery, point, discovery.TTL((time.Second * 1)))
-
-			// Handle Peers
+			discovery.Advertise(ctx, routingDiscovery, point)
 			go handleKademliaDiscovery(ctx, h, routingDiscovery, point)
 			return idht, err
 		}),
-
-		// Attempt to open ports using uPNP for NATed hosts.
-		libp2p.EnableNATService(),
-
-		// Let this host use relays and advertise itself on relays if behind NAT
+		// Let this host use relays and advertise itself on relays if
+		// it finds it is behind NAT. Use libp2p.Relay(options...) to
+		// enable active relays and more.
 		libp2p.EnableAutoRelay(),
 	)
+	if err != nil {
+		log.Fatalln("Error starting node: ", err)
+	}
 
 	// setup local mDNS discovery
-	// err = startMDNS(ctx, h, olc)
+	err = startMDNS(ctx, h, olc)
 	fmt.Println("MDNS Started")
-	return h, h.ID().String(), err
+	return h, err
 }
 
 // ^ Handles Peers that appear on DHT ^
+//nolint
 func handleKademliaDiscovery(ctx context.Context, h host.Host, disc *discovery.RoutingDiscovery, point string) {
 	// Timer checks to dispose of peers
-	peerRefreshTicker := time.NewTicker(time.Second * 1)
-	defer peerRefreshTicker.Stop()
+	peerChan, err := disc.FindPeers(ctx, point, discovery.Limit(15))
+	if err != nil {
+		log.Println("Failed to get DHT Peer Channel: ", err)
+		return
+	}
 
 	// Start Routing Discovery
 	for {
 		select {
-		case <-peerRefreshTicker.C:
-			peerChan, err := disc.FindPeers(ctx, point)
-			if err != nil {
-				log.Println("Failed to find peers: ", err)
-				return
-			}
-			for peer := range peerChan {
-				if peer.ID == h.ID() {
-					continue
-				} else {
-					log.Println("Found peer:", peer)
-					err := h.Connect(ctx, peer)
-					if err != nil {
-						log.Println("Error occurred connecting to peer: ", err)
-					}
+		case peer := <-peerChan:
+			var wg sync.WaitGroup
+			if peer.ID == h.ID() {
+				continue
+			} else {
+				wg.Add(1)
+				defer wg.Done()
+				err := h.Connect(ctx, peer)
+				if err != nil {
+					log.Println("Error occurred connecting to peer: ", err)
 				}
-
 			}
+			wg.Wait()
 		case <-ctx.Done():
 			return
 		}

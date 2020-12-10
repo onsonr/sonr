@@ -32,9 +32,8 @@ type Callback interface {
 // ^ Struct: Main Node handles Networking/Identity/Streams ^
 type Node struct {
 	// Properties
-	hostID string
-	olc    string
-	peer   *md.Peer
+	olc  string
+	peer *md.Peer
 
 	// Networking Properties
 	ctx    context.Context
@@ -68,7 +67,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	}
 
 	// @1. Create Host and Start Discovery
-	node.host, node.hostID, err = sh.NewHost(node.ctx, &reqMsg)
+	node.host, err = sh.NewHost(node.ctx, reqMsg.Olc)
 	if err != nil {
 		node.error(err, "NewNode")
 		return nil
