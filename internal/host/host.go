@@ -86,7 +86,7 @@ func NewHost(ctx context.Context, olc string) (host.Host, error) {
 			// This is like telling your friends to meet you at the Eiffel Tower.
 			log.Println("Announcing ourselves...")
 			routingDiscovery := discovery.NewRoutingDiscovery(idht)
-			discovery.Advertise(ctx, routingDiscovery, point, discovery.TTL((time.Second * 3)))
+			discovery.Advertise(ctx, routingDiscovery, point)
 			log.Println("Successfully announced!")
 			go handleKademliaDiscovery(ctx, h, routingDiscovery, point)
 			log.Println("Waiting for Peers...")
@@ -109,27 +109,23 @@ func handleKademliaDiscovery(ctx context.Context, h host.Host, disc *discovery.R
 	// Timer checks to dispose of peers
 	peerRefreshTicker := time.NewTicker(time.Second * 3)
 	defer peerRefreshTicker.Stop()
+	peerChan, err := disc.FindPeers(ctx, point)
+	if err != nil {
+		log.Println("Failed to get DHT Peer Channel: ", err)
+		return
+	}
 
 	// Start Routing Discovery
 	for {
 		select {
-		case <-peerRefreshTicker.C:
-			peerChan, err := disc.FindPeers(ctx, point)
-			if err != nil {
-				log.Println("Failed to find peers: ", err)
-				return
-			}
-			for peer := range peerChan {
-				if peer.ID == h.ID() {
-					continue
-				} else {
-					log.Println("Found peer:", peer)
-					err := h.Connect(ctx, peer)
-					if err != nil {
-						log.Println("Error occurred connecting to peer: ", err)
-					}
+		case peer := <-peerChan:
+			if peer.ID == h.ID() {
+				continue
+			} else {
+				err := h.Connect(ctx, peer)
+				if err != nil {
+					log.Println("Error occurred connecting to peer: ", err)
 				}
-
 			}
 		case <-ctx.Done():
 			return
