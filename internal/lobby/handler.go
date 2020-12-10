@@ -1,12 +1,10 @@
 package lobby
 
 import (
-	"log"
 	"sync"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
-	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -57,7 +55,7 @@ func (lob *Lobby) processMessages() {
 
 		// ** Refresh and Validate Lobby Peers Periodically ** //
 		case <-peerRefreshTicker.C:
-			lob.filterLobby()
+			//lob.filterLobby()
 
 		case <-lob.ctx.Done():
 			return
@@ -68,37 +66,37 @@ func (lob *Lobby) processMessages() {
 	}
 }
 
-// ^ 2. handleEvents listens for topicEvents ^
-func (lob *Lobby) handleEvents() {
-	for {
-		// handle topic events
-		event, err := lob.topicHandler.NextPeerEvent(lob.ctx)
-		if err != nil {
-			return
-		}
+// // ^ 2. handleEvents listens for topicEvents ^
+// func (lob *Lobby) handleEvents() {
+// 	for {
+// 		// handle topic events
+// 		event, err := lob.topicHandler.NextPeerEvent(lob.ctx)
+// 		if err != nil {
+// 			return
+// 		}
 
-		lob.Events <- &event
-	}
-}
+// 		lob.Events <- &event
+// 	}
+// }
 
-// ^ 2a. processEvents handles events from topic event channel
-func (lob *Lobby) processEvents() {
-	for {
-		select {
-		// ** Event for Peer Left ** //
-		case e := <-lob.Events:
-			if e.Type == pubsub.PeerLeave {
-				log.Println(e.Peer.ShortString(), " has exited.")
-			}
-			if e.Type == pubsub.PeerJoin {
-				log.Println(e.Peer.ShortString(), " has joined.")
-			}
+// // ^ 2a. processEvents handles events from topic event channel
+// func (lob *Lobby) processEvents() {
+// 	for {
+// 		select {
+// 		// ** Event for Peer Left ** //
+// 		case e := <-lob.Events:
+// 			if e.Type == pubsub.PeerLeave {
+// 				log.Println(e.Peer.ShortString(), " has exited.")
+// 			}
+// 			if e.Type == pubsub.PeerJoin {
+// 				log.Println(e.Peer.ShortString(), " has joined.")
+// 			}
 
-		case <-lob.ctx.Done():
-			break
-		}
-	}
-}
+// 		case <-lob.ctx.Done():
+// 			break
+// 		}
+// 	}
+// }
 
 // ** ID returns ONE Peer.ID in PubSub **
 func (lob *Lobby) ID(q string) peer.ID {

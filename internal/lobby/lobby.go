@@ -27,15 +27,15 @@ type Lobby struct {
 	Data     *md.Lobby
 
 	// Private Vars
-	ctx          context.Context
-	refresh      Refreshed
-	onError      Error
-	doneCh       chan struct{}
-	ps           *pubsub.PubSub
-	topic        *pubsub.Topic
-	topicHandler *pubsub.TopicEventHandler
-	self         peer.ID
-	sub          *pubsub.Subscription
+	ctx     context.Context
+	refresh Refreshed
+	onError Error
+	doneCh  chan struct{}
+	ps      *pubsub.PubSub
+	topic   *pubsub.Topic
+	//topicHandler *pubsub.TopicEventHandler
+	self peer.ID
+	sub  *pubsub.Subscription
 }
 
 // ^ Initialize Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
@@ -53,10 +53,10 @@ func Initialize(callr Refreshed, onErr Error, ps *pubsub.PubSub, id peer.ID, olc
 		return nil, err
 	}
 
-	topicHandler, err := topic.EventHandler()
-	if err != nil {
-		return nil, err
-	}
+	// topicHandler, err := topic.EventHandler()
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	// Initialize Lobby for Peers
 	lobInfo := &md.Lobby{
@@ -67,15 +67,15 @@ func Initialize(callr Refreshed, onErr Error, ps *pubsub.PubSub, id peer.ID, olc
 
 	// Create Lobby Type
 	lob := &Lobby{
-		ctx:          ctx,
-		onError:      onErr,
-		refresh:      callr,
-		doneCh:       make(chan struct{}, 1),
-		ps:           ps,
-		topic:        topic,
-		topicHandler: topicHandler,
-		sub:          sub,
-		self:         id,
+		ctx:     ctx,
+		onError: onErr,
+		refresh: callr,
+		doneCh:  make(chan struct{}, 1),
+		ps:      ps,
+		topic:   topic,
+		// topicHandler: topicHandler,
+		sub:  sub,
+		self: id,
 
 		Data:     lobInfo,
 		Messages: make(chan *md.LobbyEvent, ChatRoomBufSize),
