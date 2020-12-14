@@ -62,10 +62,12 @@ func (sn *Node) Invite(peerId string) {
 		sn.peerConn.SafeMeta = currFile
 
 		// Create Invite Message
-		reqMsg := md.AuthMessage{
-			Event:    md.AuthMessage_REQUEST_FILE,
-			From:     sn.peer,
-			Metadata: meta,
+		reqMsg := md.AuthInvite{
+			From: sn.peer,
+			Payload: &md.Payload{
+				Type: md.Payload_FILE,
+				File: meta,
+			},
 		}
 
 		// Convert Protobuf to bytes
@@ -91,13 +93,13 @@ func (sn *Node) Contact(peerId string) {
 	if peer == nil || id == "" {
 		sn.error(errors.New("Search Error, peer was not found in map."), "Invite")
 	} else {
-		// Set Contact
-
-		// Create Invite Message
-		reqMsg := md.AuthMessage{
-			Event:   md.AuthMessage_REQUEST_CONTACT,
-			From:    sn.peer,
-			Contact: sn.contact,
+		// Create Invite Message with Payload
+		reqMsg := md.AuthInvite{
+			From: sn.peer,
+			Payload: &md.Payload{
+				Type:    md.Payload_CONTACT,
+				Contact: sn.contact,
+			},
 		}
 
 		// Convert Protobuf to bytes

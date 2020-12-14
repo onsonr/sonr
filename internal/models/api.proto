@@ -19,20 +19,26 @@ message ConnectionRequest {
   enum Connectivity { NONE = 0; WIFI = 1; MOBILE = 2; }
 }
 
-// Authorization message sent in stream
-message AuthMessage {
+// Invitation Message sent on RPC
+message AuthInvite {
   // Define Root Message
   Peer from = 1;
-  Event event = 2;
-  Metadata metadata = 3;
-  Contact contact = 4;
+  Payload payload = 2;
+}
 
-  // Define Subject
-  enum Event {
-    NONE = 0; REQUEST_FILE = 1; REQUEST_CONTACT = 2; REPLY_CONTACT = 3;
-    ACCEPT = 4;
-    DECLINE = 5;
-  }
+// Reply Message sent on RPC
+message AuthReply {
+  Peer from = 1;
+  Payload payload = 2;
+  bool decision = 3;
+}
+
+// Define Payload
+message Payload {
+  Metadata file = 1;
+  Contact contact = 2;
+  Type type = 3;
+  enum Type { NONE = 0; FILE = 1; CONTACT = 2; }
 }
 
 // [PLUGIN]
