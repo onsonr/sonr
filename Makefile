@@ -88,7 +88,7 @@ reset:
 	rm -rf $(ANDROID_BUILDDIR)
 	mkdir -p $(IOS_BUILDDIR)
 	mkdir -p $(ANDROID_BUILDDIR)
-	gomobile init
+	cd bind && gomobile init
 
 
 help : Makefile
