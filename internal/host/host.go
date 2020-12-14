@@ -4,8 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"net"
-	"os"
 	"sync"
 
 	"github.com/libp2p/go-libp2p"
@@ -21,27 +19,22 @@ import (
 
 // ^ NewHost: Creates a host with: (MDNS, TCP, QUIC on UDP) ^
 func NewHost(ctx context.Context, olc string) (host.Host, error) {
-	// @1. Find IPv4 Address
-	osHost, _ := os.Hostname()
-	addrs, _ := net.LookupIP(osHost)
-	var ipv4Ref string
-	var err error
-
-	// Iterate through addresses
-	for _, addr := range addrs {
-		// @ Set IPv4
-		if ipv4 := addr.To4(); ipv4 != nil {
-			ipv4Ref = ipv4.String()
-		}
-	}
+	// @1. Established Required Data
+	point := "/sonr/dht/" + olc
+	ipv4 := IPv4()
+	log.Println(ipv4)
+	ipv6 := IPv6()
+	log.Println(ipv6)
 
 	// @2. Create Libp2p Host
-	point := "/sonr/dht/" + olc
 	h, err := libp2p.New(ctx,
 		// Add listening Addresses
 		libp2p.ListenAddrStrings(
-			fmt.Sprintf("/ip4/%s/tcp/0", ipv4Ref),
-			fmt.Sprintf("/ip4/%s/udp/0/quic", ipv4Ref)),
+			fmt.Sprintf("/ip4/%s/tcp/0", ipv4),
+			"/ip6/::/tcp/0",
+
+			fmt.Sprintf("/ip4/%s/udp/0/quic", ipv4),
+			"/ip6/::/udp/0/quic"),
 
 		// support TLS connections
 		libp2p.Security(libp2ptls.ID, libp2ptls.New),
@@ -74,8 +67,9 @@ func NewHost(ctx context.Context, olc string) (host.Host, error) {
 				go func() {
 					defer wg.Done()
 					// We ignore errors as some bootstrap peers may be down
-					_ = h.Connect(ctx, *peerinfo)
+					h.Connect(ctx, *peerinfo) //nolint
 				}()
+
 			}
 			wg.Wait()
 
@@ -121,11 +115,8 @@ func handleKademliaDiscovery(ctx context.Context, h host.Host, disc *discovery.R
 				continue
 			} else {
 				wg.Add(1)
-				defer wg.Done()
-				err := h.Connect(ctx, peer)
-				if err != nil {
-					log.Println("Error occurred connecting to peer: ", err)
-				}
+				// We ignore errors as some bootstrap peers may be down
+				h.Connect(ctx, peer)
 			}
 			wg.Wait()
 		case <-ctx.Done():

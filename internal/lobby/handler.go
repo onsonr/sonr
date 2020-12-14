@@ -2,11 +2,9 @@ package lobby
 
 import (
 	"log"
-	"sync"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
-	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -57,7 +55,7 @@ func (lob *Lobby) processMessages() {
 
 		// ** Refresh and Validate Lobby Peers Periodically ** //
 		case <-peerRefreshTicker.C:
-			lob.filterLobby()
+			//lob.filterLobby()
 
 		case <-lob.ctx.Done():
 			return
@@ -68,37 +66,37 @@ func (lob *Lobby) processMessages() {
 	}
 }
 
-// ^ 2. handleEvents listens for topicEvents ^
-func (lob *Lobby) handleEvents() {
-	for {
-		// handle topic events
-		event, err := lob.topicHandler.NextPeerEvent(lob.ctx)
-		if err != nil {
-			return
-		}
+// // ^ 2. handleEvents listens for topicEvents ^
+// func (lob *Lobby) handleEvents() {
+// 	for {
+// 		// handle topic events
+// 		event, err := lob.topicHandler.NextPeerEvent(lob.ctx)
+// 		if err != nil {
+// 			return
+// 		}
 
-		lob.Events <- &event
-	}
-}
+// 		lob.Events <- &event
+// 	}
+// }
 
-// ^ 2a. processEvents handles events from topic event channel
-func (lob *Lobby) processEvents() {
-	for {
-		select {
-		// ** Event for Peer Left ** //
-		case e := <-lob.Events:
-			if e.Type == pubsub.PeerLeave {
-				log.Println(e.Peer.ShortString(), " has exited.")
-			}
-			if e.Type == pubsub.PeerJoin {
-				log.Println(e.Peer.ShortString(), " has joined.")
-			}
+// // ^ 2a. processEvents handles events from topic event channel
+// func (lob *Lobby) processEvents() {
+// 	for {
+// 		select {
+// 		// ** Event for Peer Left ** //
+// 		case e := <-lob.Events:
+// 			if e.Type == pubsub.PeerLeave {
+// 				log.Println(e.Peer.ShortString(), " has exited.")
+// 			}
+// 			if e.Type == pubsub.PeerJoin {
+// 				log.Println(e.Peer.ShortString(), " has joined.")
+// 			}
 
-		case <-lob.ctx.Done():
-			break
-		}
-	}
-}
+// 		case <-lob.ctx.Done():
+// 			break
+// 		}
+// 	}
+// }
 
 // ** ID returns ONE Peer.ID in PubSub **
 func (lob *Lobby) ID(q string) peer.ID {
@@ -125,25 +123,26 @@ func (lob *Lobby) Peer(q string) *md.Peer {
 }
 
 // ** filterLobby updates lobby and removes peers that arent subscribed ** //
-func (lob *Lobby) filterLobby() {
-	// Initialize
-	var wg sync.WaitGroup
-
+func (lob *Lobby) refreshLobby() {
 	// Loop through Subscribed Peers
 	for _, id := range lob.ps.ListPeers(lob.Data.Code) {
-		// Add each peer as job
-		wg.Add(1)
-		defer wg.Done()
 		// Find Peer that is not found
 		if peer, found := lob.Data.Peers[id.String()]; !found {
+			log.Println(peer.String(), " is not subscribed anymore.")
+
 			// Remove Unsubscribed Peer from Map
-			delete(lob.Data.Peers, peer.Id)
+			delete(lob.Data.Peers, id.String())
 		}
 	}
-	wg.Wait()
+
+	// Marshal data to bytes
+	bytes, err := proto.Marshal(lob.Data)
+	if err != nil {
+		log.Println("Cannot Marshal Error Protobuf: ", err)
+	}
 
 	// Return Callback
-	lob.refresh(md.CallbackType_REFRESHED, lob.Data)
+	lob.callback(bytes)
 }
 
 // ** updatePeer changes peer values in Lobby **
@@ -153,6 +152,12 @@ func (lob *Lobby) updatePeer(peer *md.Peer) {
 	lob.Data.Peers[id] = peer
 	lob.Data.Size = int32(len(lob.Data.Peers)) + 1 // Account for User
 
+	// Marshal data to bytes
+	bytes, err := proto.Marshal(lob.Data)
+	if err != nil {
+		log.Println("Cannot Marshal Error Protobuf: ", err)
+	}
+
 	// Send Callback with updated peers
-	lob.refresh(md.CallbackType_REFRESHED, lob.Data)
+	lob.callback(bytes)
 }

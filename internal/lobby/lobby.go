@@ -2,6 +2,7 @@ package lobby
 
 import (
 	"context"
+	"errors"
 	"log"
 
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -14,7 +15,7 @@ import (
 const ChatRoomBufSize = 128
 
 // Define Function Types
-type Refreshed func(call md.CallbackType, data proto.Message)
+type OnProtobuf func([]byte)
 type Error func(err error, method string)
 
 // Lobby represents a subscription to a single PubSub topic. Messages
@@ -27,19 +28,19 @@ type Lobby struct {
 	Data     *md.Lobby
 
 	// Private Vars
-	ctx          context.Context
-	refresh      Refreshed
-	onError      Error
-	doneCh       chan struct{}
-	ps           *pubsub.PubSub
-	topic        *pubsub.Topic
-	topicHandler *pubsub.TopicEventHandler
-	self         peer.ID
-	sub          *pubsub.Subscription
+	ctx      context.Context
+	callback OnProtobuf
+	onError  Error
+	doneCh   chan struct{}
+	ps       *pubsub.PubSub
+	topic    *pubsub.Topic
+	//topicHandler *pubsub.TopicEventHandler
+	self peer.ID
+	sub  *pubsub.Subscription
 }
 
 // ^ Initialize Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
-func Initialize(callr Refreshed, onErr Error, ps *pubsub.PubSub, id peer.ID, olc string) (*Lobby, error) {
+func Initialize(callr OnProtobuf, onErr Error, ps *pubsub.PubSub, id peer.ID, olc string) (*Lobby, error) {
 	// Join the pubsub Topic
 	ctx := context.Background()
 	topic, err := ps.Join(olc)
@@ -53,10 +54,10 @@ func Initialize(callr Refreshed, onErr Error, ps *pubsub.PubSub, id peer.ID, olc
 		return nil, err
 	}
 
-	topicHandler, err := topic.EventHandler()
-	if err != nil {
-		return nil, err
-	}
+	// topicHandler, err := topic.EventHandler()
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	// Initialize Lobby for Peers
 	lobInfo := &md.Lobby{
@@ -67,15 +68,15 @@ func Initialize(callr Refreshed, onErr Error, ps *pubsub.PubSub, id peer.ID, olc
 
 	// Create Lobby Type
 	lob := &Lobby{
-		ctx:          ctx,
-		onError:      onErr,
-		refresh:      callr,
-		doneCh:       make(chan struct{}, 1),
-		ps:           ps,
-		topic:        topic,
-		topicHandler: topicHandler,
-		sub:          sub,
-		self:         id,
+		ctx:      ctx,
+		onError:  onErr,
+		callback: callr,
+		doneCh:   make(chan struct{}, 1),
+		ps:       ps,
+		topic:    topic,
+		// topicHandler: topicHandler,
+		sub:  sub,
+		self: id,
 
 		Data:     lobInfo,
 		Messages: make(chan *md.LobbyEvent, ChatRoomBufSize),
@@ -103,12 +104,16 @@ func (lob *Lobby) Info() []byte {
 }
 
 // ^ Find returns Pointer to Peer.ID and Peer ^
-func (lob *Lobby) Find(q string) (peer.ID, *md.Peer) {
+func (lob *Lobby) Find(q string) (peer.ID, *md.Peer, error) {
 	// Retreive Data
 	peer := lob.Peer(q)
 	id := lob.ID(q)
 
-	return id, peer
+	if peer == nil || id == "" {
+		return "", nil, errors.New("Search Error, peer was not found in map.")
+	}
+
+	return id, peer, nil
 }
 
 // ^ Send publishes a message to the pubsub topic OLC ^

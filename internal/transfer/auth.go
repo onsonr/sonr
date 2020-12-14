@@ -2,6 +2,7 @@ package transfer
 
 import (
 	"context"
+	"errors"
 	"log"
 
 	"github.com/libp2p/go-libp2p-core/host"
@@ -29,9 +30,8 @@ type AuthReply struct {
 type AuthService struct {
 	// Current Data
 	onInvite  OnProtobuf
-	peerConn  *PeerConnection
-	respCh    chan *md.AuthMessage
-	inviteMsg *md.AuthMessage
+	respCh    chan *md.AuthReply
+	inviteMsg *md.AuthInvite
 }
 
 // ^ Calls Invite on Remote Peer ^ //
@@ -42,7 +42,7 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 	as.onInvite(args.Data)
 
 	// Received Message
-	receivedMessage := md.AuthMessage{}
+	receivedMessage := md.AuthInvite{}
 	err := proto.Unmarshal(args.Data, &receivedMessage)
 	if err != nil {
 		return err
@@ -72,8 +72,8 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 	}
 }
 
-// ^ Send SendInvite to a Peer ^ //
-func (pc *PeerConnection) SendInvite(h host.Host, id peer.ID, msgBytes []byte) {
+// ^ Send Request to a Peer ^ //
+func (pc *PeerConnection) Request(h host.Host, id peer.ID, msgBytes []byte) {
 	// Initialize Data
 	rpcClient := gorpc.NewClient(h, protocol.ID("/sonr/rpc/auth"))
 	var reply AuthReply
@@ -88,7 +88,7 @@ func (pc *PeerConnection) SendInvite(h host.Host, id peer.ID, msgBytes []byte) {
 	call := <-done
 	if call.Error != nil {
 		// Send Error
-		onError(err, "sendInvite")
+		onError(err, "Request")
 		log.Panicln(err)
 	}
 
@@ -96,7 +96,7 @@ func (pc *PeerConnection) SendInvite(h host.Host, id peer.ID, msgBytes []byte) {
 	pc.respondedCall(reply.Data)
 
 	// Received Message
-	responseMessage := md.AuthMessage{}
+	responseMessage := md.AuthReply{}
 	err = proto.Unmarshal(reply.Data, &responseMessage)
 	if err != nil {
 		// Send Error
@@ -105,37 +105,64 @@ func (pc *PeerConnection) SendInvite(h host.Host, id peer.ID, msgBytes []byte) {
 	}
 
 	// Check Response for Accept
-	if responseMessage.Event == md.AuthMessage_ACCEPT {
+	if responseMessage.Decision && responseMessage.Payload.Type == md.Payload_NONE {
 		// Begin Transfer
-		pc.SendFile(h, id, responseMessage.From)
+		pc.StartTransfer(h, id, responseMessage.From)
 	}
 }
 
-// ^ Send Accept Message on Stream ^ //
-func (pc *PeerConnection) SendResponse(decision bool, peer *md.Peer) {
-	// @ Check Decision
-	if decision {
-		// Initialize Transfer
-		currMsg := pc.auth.inviteMsg
-		pc.transfer = pc.NewTransfer(currMsg.Metadata, currMsg.From)
+// ^ Send Authorize transfer on RPC ^ //
+func (pc *PeerConnection) Authorize(decision bool, contact *md.Contact, peer *md.Peer) {
+	// ** Get Current Message **
+	offerMsg := pc.auth.inviteMsg
 
+	// @ Check Reply Type for File
+	if offerMsg.Payload.Type == md.Payload_FILE {
+		// @ Check Decision
+		if decision {
+			// Initialize Transfer
+			pc.transfer = pc.PrepareTransfer(offerMsg.Payload.File, offerMsg.From)
+
+			// Create Accept Response
+			respMsg := &md.AuthReply{
+				From:     peer,
+				Decision: true,
+				Payload: &md.Payload{
+					Type: md.Payload_NONE,
+				},
+			}
+
+			// Send to Channel
+			pc.auth.respCh <- respMsg
+
+		} else {
+			// Create Decline Response
+			respMsg := &md.AuthReply{
+				From:     peer,
+				Decision: false,
+				Payload: &md.Payload{
+					Type: md.Payload_NONE,
+				},
+			}
+
+			// Send to Channel
+			pc.auth.respCh <- respMsg
+		}
+	} else if offerMsg.Payload.Type == md.Payload_CONTACT {
+		// @ Pass Contact Back
 		// Create Accept Response
-		respMsg := &md.AuthMessage{
-			From:  peer,
-			Event: md.AuthMessage_ACCEPT,
+		respMsg := &md.AuthReply{
+			From: peer,
+			Payload: &md.Payload{
+				Type:    md.Payload_CONTACT,
+				Contact: contact,
+			},
 		}
 
 		// Send to Channel
 		pc.auth.respCh <- respMsg
-
 	} else {
-		// Create Decline Response
-		respMsg := &md.AuthMessage{
-			From:  peer,
-			Event: md.AuthMessage_DECLINE,
-		}
-
-		// Send to Channel
-		pc.auth.respCh <- respMsg
+		// Send Error
+		onError(errors.New("Invalid Invite Message"), "Authorize")
 	}
 }

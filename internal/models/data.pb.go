@@ -692,45 +692,6 @@ func (x *Peer) GetProximity() Peer_Proximity {
 	return Peer_NONE
 }
 
-// Define Range: Distance Between users
-type Range struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-}
-
-func (x *Range) Reset() {
-	*x = Range{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_data_proto_msgTypes[7]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *Range) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Range) ProtoMessage() {}
-
-func (x *Range) ProtoReflect() protoreflect.Message {
-	mi := &file_data_proto_msgTypes[7]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Range.ProtoReflect.Descriptor instead.
-func (*Range) Descriptor() ([]byte, []int) {
-	return file_data_proto_rawDescGZIP(), []int{7}
-}
-
 var File_data_proto protoreflect.FileDescriptor
 
 var file_data_proto_rawDesc = []byte{
@@ -810,9 +771,9 @@ var file_data_proto_rawDesc = []byte{
 	0x69, 0x6d, 0x69, 0x74, 0x79, 0x22, 0x37, 0x0a, 0x09, 0x50, 0x72, 0x6f, 0x78, 0x69, 0x6d, 0x69,
 	0x74, 0x79, 0x12, 0x08, 0x0a, 0x04, 0x4e, 0x4f, 0x4e, 0x45, 0x10, 0x00, 0x12, 0x0d, 0x0a, 0x09,
 	0x49, 0x4d, 0x4d, 0x45, 0x44, 0x49, 0x41, 0x54, 0x45, 0x10, 0x01, 0x12, 0x08, 0x0a, 0x04, 0x4e,
-	0x45, 0x41, 0x52, 0x10, 0x02, 0x12, 0x07, 0x0a, 0x03, 0x46, 0x41, 0x52, 0x10, 0x03, 0x22, 0x07,
-	0x0a, 0x05, 0x52, 0x61, 0x6e, 0x67, 0x65, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x3b, 0x6d, 0x6f, 0x64,
-	0x65, 0x6c, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x45, 0x41, 0x52, 0x10, 0x02, 0x12, 0x07, 0x0a, 0x03, 0x46, 0x41, 0x52, 0x10, 0x03, 0x42, 0x0a,
+	0x5a, 0x08, 0x2e, 0x3b, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x33,
 }
 
 var (
@@ -828,7 +789,7 @@ func file_data_proto_rawDescGZIP() []byte {
 }
 
 var file_data_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_data_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_data_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_data_proto_goTypes = []interface{}{
 	(MIME_Type)(0),      // 0: MIME.Type
 	(Peer_Proximity)(0), // 1: Peer.Proximity
@@ -839,22 +800,21 @@ var file_data_proto_goTypes = []interface{}{
 	(*Device)(nil),      // 6: Device
 	(*Directories)(nil), // 7: Directories
 	(*Peer)(nil),        // 8: Peer
-	(*Range)(nil),       // 9: Range
-	nil,                 // 10: Lobby.PeersEntry
+	nil,                 // 9: Lobby.PeersEntry
 }
 var file_data_proto_depIdxs = []int32{
-	3,  // 0: Metadata.mime:type_name -> MIME
-	8,  // 1: Metadata.owner:type_name -> Peer
-	0,  // 2: MIME.type:type_name -> MIME.Type
-	10, // 3: Lobby.peers:type_name -> Lobby.PeersEntry
-	6,  // 4: Peer.device:type_name -> Device
-	1,  // 5: Peer.proximity:type_name -> Peer.Proximity
-	8,  // 6: Lobby.PeersEntry.value:type_name -> Peer
-	7,  // [7:7] is the sub-list for method output_type
-	7,  // [7:7] is the sub-list for method input_type
-	7,  // [7:7] is the sub-list for extension type_name
-	7,  // [7:7] is the sub-list for extension extendee
-	0,  // [0:7] is the sub-list for field type_name
+	3, // 0: Metadata.mime:type_name -> MIME
+	8, // 1: Metadata.owner:type_name -> Peer
+	0, // 2: MIME.type:type_name -> MIME.Type
+	9, // 3: Lobby.peers:type_name -> Lobby.PeersEntry
+	6, // 4: Peer.device:type_name -> Device
+	1, // 5: Peer.proximity:type_name -> Peer.Proximity
+	8, // 6: Lobby.PeersEntry.value:type_name -> Peer
+	7, // [7:7] is the sub-list for method output_type
+	7, // [7:7] is the sub-list for method input_type
+	7, // [7:7] is the sub-list for extension type_name
+	7, // [7:7] is the sub-list for extension extendee
+	0, // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_data_proto_init() }
@@ -947,18 +907,6 @@ func file_data_proto_init() {
 				return nil
 			}
 		}
-		file_data_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Range); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -966,7 +914,7 @@ func file_data_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_data_proto_rawDesc,
 			NumEnums:      2,
-			NumMessages:   9,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

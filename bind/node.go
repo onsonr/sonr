@@ -1,7 +1,6 @@
 package sonr
 
 import (
-	"errors"
 	"log"
 	"math"
 	"time"
@@ -38,55 +37,68 @@ func (sn *Node) Update(direction float64) {
 // ^ AddFile adds generates metadata and thumbnail from filepath to Process for Transfer, returns key ^ //
 func (sn *Node) AddFile(path string) {
 	//@2. Initialize SafeFile
-	safeMeta := sf.NewMetadata(path, sn.callbackRef.OnQueued, sn.error)
+	safeMeta := sf.NewMetadata(path, sn.call.OnQueued, sn.error)
 	sn.files = append(sn.files, safeMeta)
 }
 
 // ^ Invite an available peer to transfer ^ //
-func (sn *Node) Invite(peerId string) {
-	// Create Delay to allow processing
-	time.Sleep(time.Second)
+func (sn *Node) Invite(peerId string, kind int) {
+	// Initialize
+	var invMsg md.AuthInvite
+	payload := md.Payload_Type(kind)
+	id, _, err := sn.lobby.Find(peerId)
 
-	// Find PeerID and Peer Struct
-	id, peer := sn.lobby.Find(peerId)
+	// Check error
+	if err != nil {
+		sn.error(err, "Invite")
+	}
 
-	// Validate Peer Values
-	if peer == nil || id == "" {
-		sn.error(errors.New("Search Error, peer was not found in map."), "Invite")
-	} else {
-		// Set Metadata in Auth Stream
+	// @ Check Payload Type
+	if payload == md.Payload_FILE {
+		// Create Delay to allow processing
+		time.Sleep(time.Millisecond * 250)
+
+		// Retreive Current File
 		currFile := sn.currentFile()
-		meta := currFile.GetMetadata()
-
-		// Set SafeFile
 		sn.peerConn.SafeMeta = currFile
 
 		// Create Invite Message
-		reqMsg := md.AuthMessage{
-			Event:    md.AuthMessage_REQUEST,
-			From:     sn.peer,
-			Metadata: meta,
+		invMsg = md.AuthInvite{
+			From: sn.peer,
+			Payload: &md.Payload{
+				Type: md.Payload_FILE,
+				File: currFile.GetMetadata(),
+			},
 		}
-
-		// Convert Protobuf to bytes
-		msgBytes, err := proto.Marshal(&reqMsg)
-		if err != nil {
-			sn.error(err, "Marshal")
-			log.Println(err)
+	} else if payload == md.Payload_CONTACT {
+		// Create Invite Message with Payload
+		invMsg = md.AuthInvite{
+			From: sn.peer,
+			Payload: &md.Payload{
+				Type:    md.Payload_CONTACT,
+				Contact: sn.contact,
+			},
 		}
-
-		// Call GRPC in PeerConnection
-		go func() {
-			sn.peerConn.SendInvite(sn.host, id, msgBytes)
-		}()
 	}
+
+	// Convert Protobuf to bytes
+	msgBytes, err := proto.Marshal(&invMsg)
+	if err != nil {
+		sn.error(err, "Marshal")
+	}
+
+	// Call GRPC in PeerConnection
+	go func() {
+		sn.peerConn.Request(sn.host, id, msgBytes)
+	}()
 }
 
 // ^ Respond to an Invitation ^ //
 func (sn *Node) Respond(decision bool) {
 	// @ Check Decision
+
 	// Send Response on PeerConnection
-	sn.peerConn.SendResponse(decision, sn.peer)
+	sn.peerConn.Authorize(decision, sn.contact, sn.peer)
 }
 
 // ^ Reset Current Queued File Metadata ^ //
