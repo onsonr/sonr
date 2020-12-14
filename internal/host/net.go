@@ -1,28 +1,49 @@
 package host
 
 import (
-	"errors"
+	"log"
 	"net"
+	"os"
 )
 
-// ^ localIP returns the non loopback local IP of the host ^
-func localIP() (string, error) {
-	// Find Interface Addresses
-	addrs, err := net.InterfaceAddrs()
-	if err != nil {
-		return "", errors.New("Local IP Not Found")
-	}
+// ^ IPv4 returns the non loopback local IP of the host as IPv4 ^
+func IPv4() string {
+	// @1. Find IPv4 Address
+	osHost, _ := os.Hostname()
+	addrs, _ := net.LookupIP(osHost)
+	var ipv4Ref string
 
-	// Loop and Find Local IP
-	for _, address := range addrs {
-		// check the address type and if it is not a loopback the display it
-		if ipnet, ok := address.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
-			if ipnet.IP.To4() != nil {
-				return ipnet.IP.String(), nil
-			}
+	// Iterate through addresses
+	for _, addr := range addrs {
+		log.Println(addr.String())
+		// @ Set IPv4
+		if ipv4 := addr.To4(); ipv4 != nil {
+			ipv4Ref = ipv4.String()
+		} else {
+			ipv4Ref = "0.0.0.0"
 		}
 	}
-
 	// No IPv4 Found
-	return "", errors.New("Local IP Not Found")
+	return ipv4Ref
+}
+
+// ^ IPv4 returns the non loopback local IP of the host as IPv4 ^
+func IPv6() string {
+	// @1. Find IPv4 Address
+	osHost, _ := os.Hostname()
+	addrs, _ := net.LookupIP(osHost)
+	var ipv6Ref string
+
+	// Iterate through addresses
+	for _, addr := range addrs {
+		log.Println(addr.String())
+		// @ Set IPv4
+		if ipv6 := addr.To16(); ipv6 != nil {
+			ipv6Ref = ipv6.String()
+		} else {
+			ipv6Ref = "::"
+		}
+	}
+	// No IPv4 Found
+	return ipv6Ref
 }
