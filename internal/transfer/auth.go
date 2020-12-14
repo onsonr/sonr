@@ -34,12 +34,6 @@ type AuthService struct {
 	inviteMsg *md.AuthMessage
 }
 
-// Struct for Reply Type
-type ReplyOptions struct {
-	Decision bool
-	Contact  *md.Contact
-}
-
 // ^ Calls Invite on Remote Peer ^ //
 func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthReply) error {
 	log.Println("Received a Invite call: ", args.Data)
@@ -113,21 +107,21 @@ func (pc *PeerConnection) SendInvite(h host.Host, id peer.ID, msgBytes []byte) {
 	// Check Response for Accept
 	if responseMessage.Event == md.AuthMessage_ACCEPT {
 		// Begin Transfer
-		pc.SendFile(h, id, responseMessage.From)
+		pc.StartTransfer(h, id, responseMessage.From)
 	}
 }
 
 // ^ Send Authorize transfer on RPC ^ //
-func (pc *PeerConnection) Authorize(reply ReplyOptions, peer *md.Peer) {
+func (pc *PeerConnection) Authorize(decision bool, contact *md.Contact, peer *md.Peer) {
 	// ** Get Current Message **
 	offerMsg := pc.auth.inviteMsg
 
 	// @ Check Reply Type for File
 	if offerMsg.Event == md.AuthMessage_REQUEST_FILE {
 		// @ Check Decision
-		if reply.Decision {
+		if decision {
 			// Initialize Transfer
-			pc.transfer = pc.NewTransfer(offerMsg.Metadata, offerMsg.From)
+			pc.transfer = pc.PrepareTransfer(offerMsg.Metadata, offerMsg.From)
 
 			// Create Accept Response
 			respMsg := &md.AuthMessage{
@@ -154,7 +148,7 @@ func (pc *PeerConnection) Authorize(reply ReplyOptions, peer *md.Peer) {
 		respMsg := &md.AuthMessage{
 			From:    peer,
 			Event:   md.AuthMessage_REPLY_CONTACT,
-			Contact: reply.Contact,
+			Contact: contact,
 		}
 
 		// Send to Channel

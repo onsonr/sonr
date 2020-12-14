@@ -2,17 +2,20 @@ package transfer
 
 import (
 	"bytes"
+	"context"
 	"log"
 	"strings"
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
+	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	gorpc "github.com/libp2p/go-libp2p-gorpc"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	msgio "github.com/libp2p/go-msgio"
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
+	"google.golang.org/protobuf/proto"
 )
 
 // Define Callback Function Types
@@ -80,8 +83,8 @@ func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic 
 	return peerConn, nil
 }
 
-// ^ Create new Transfer to Prepare for Stream ^ //
-func (pc *PeerConnection) NewTransfer(meta *md.Metadata, own *md.Peer) *Transfer {
+// ^  Prepare for Stream, Create new Transfer ^ //
+func (pc *PeerConnection) PrepareTransfer(meta *md.Metadata, own *md.Peer) *Transfer {
 	// Create Transfer
 	return &Transfer{
 		// Inherited Properties
@@ -94,6 +97,38 @@ func (pc *PeerConnection) NewTransfer(meta *md.Metadata, own *md.Peer) *Transfer
 		// Builders
 		stringsBuilder: new(strings.Builder),
 		bytesBuilder:   new(bytes.Buffer),
+	}
+}
+
+// ^ User has accepted, Begin Sending Transfer ^ //
+func (pc *PeerConnection) StartTransfer(h host.Host, id peer.ID, peer *md.Peer) {
+	// Create New Auth Stream
+	stream, err := h.NewStream(context.Background(), id, protocol.ID("/sonr/data/transfer"))
+	if err != nil {
+		onError(err, "Transfer")
+		log.Fatalln(err)
+	}
+
+	// Marshal Peer to bytes
+	peerBytes, err := proto.Marshal(peer)
+	if err != nil {
+		onError(err, "Transfer")
+		log.Fatalln(err)
+	}
+
+	// Initialize Writer
+	writer := msgio.NewWriter(stream)
+	meta := pc.SafeMeta.GetMetadata()
+
+	// @ Check Type
+	if pc.SafeMeta.Mime.Type == md.MIME_image {
+		// Start Routine
+		log.Println("Starting Base64 Write Routine")
+		go writeBase64ToStream(writer, pc.transmittedCall, meta, peerBytes)
+	} else {
+		// Start Routine
+		log.Println("Starting Bytes Write Routine")
+		go writeBytesToStream(writer, pc.transmittedCall, meta, peerBytes)
 	}
 }
 

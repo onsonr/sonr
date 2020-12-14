@@ -2,7 +2,6 @@ package transfer
 
 import (
 	"bytes"
-	"context"
 	"encoding/base64"
 	"io"
 	"log"
@@ -10,9 +9,6 @@ import (
 
 	md "github.com/sonr-io/core/internal/models"
 
-	"github.com/libp2p/go-libp2p-core/host"
-	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-core/protocol"
 	msgio "github.com/libp2p/go-msgio"
 	"google.golang.org/protobuf/proto"
 )
@@ -20,38 +16,6 @@ import (
 // ** Constants for Chunking Data ** //
 const B64ChunkSize = 31998 // Adjusted for Base64 -- has to be divisible by 3
 const BufferChunkSize = 32000
-
-// ^ User has accepted, Begin Sending Transfer ^ //
-func (pc *PeerConnection) SendFile(h host.Host, id peer.ID, peer *md.Peer) {
-	// Create New Auth Stream
-	stream, err := h.NewStream(context.Background(), id, protocol.ID("/sonr/data/transfer"))
-	if err != nil {
-		onError(err, "Transfer")
-		log.Fatalln(err)
-	}
-
-	// Marshal Peer to bytes
-	peerBytes, err := proto.Marshal(peer)
-	if err != nil {
-		onError(err, "Transfer")
-		log.Fatalln(err)
-	}
-
-	// Initialize Writer
-	writer := msgio.NewWriter(stream)
-	meta := pc.SafeMeta.GetMetadata()
-
-	// @ Check Type
-	if pc.SafeMeta.Mime.Type == md.MIME_image {
-		// Start Routine
-		log.Println("Starting Base64 Write Routine")
-		go writeBase64ToStream(writer, pc.transmittedCall, meta, peerBytes)
-	} else {
-		// Start Routine
-		log.Println("Starting Bytes Write Routine")
-		go writeBytesToStream(writer, pc.transmittedCall, meta, peerBytes)
-	}
-}
 
 // ^ write file as Base64 in Msgio to Stream ^ //
 func writeBase64ToStream(writer msgio.WriteCloser, onCompleted OnProtobuf, meta *md.Metadata, peer []byte) {

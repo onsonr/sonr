@@ -8,7 +8,6 @@ import (
 
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
-	tf "github.com/sonr-io/core/internal/transfer"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -132,13 +131,9 @@ func (sn *Node) SendContact(peerId string) {
 // ^ Respond to an Invitation ^ //
 func (sn *Node) Respond(decision bool) {
 	// @ Check Decision
-	reply := tf.ReplyOptions{
-		Decision: decision,
-		Contact:  sn.contact,
-	}
 
 	// Send Response on PeerConnection
-	sn.peerConn.Authorize(reply, sn.peer)
+	sn.peerConn.Authorize(decision, sn.contact, sn.peer)
 }
 
 // ^ Reset Current Queued File Metadata ^ //
