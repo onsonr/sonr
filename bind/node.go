@@ -45,7 +45,7 @@ func (sn *Node) AddFile(path string) {
 // ^ Invite an available peer to transfer ^ //
 func (sn *Node) Invite(peerId string) {
 	// Create Delay to allow processing
-	time.Sleep(time.Second)
+	time.Sleep(time.Millisecond * 250)
 
 	// Find PeerID and Peer Struct
 	id, peer := sn.lobby.Find(peerId)
@@ -83,10 +83,7 @@ func (sn *Node) Invite(peerId string) {
 }
 
 // ^ SendContact to an available peer ^ //
-func (sn *Node) SendContact(peerId string) {
-	// Create Delay to allow processing
-	time.Sleep(time.Second)
-
+func (sn *Node) Contact(peerId string) {
 	// Find PeerID and Peer Struct
 	id, peer := sn.lobby.Find(peerId)
 
