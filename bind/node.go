@@ -35,17 +35,6 @@ func (sn *Node) Update(direction float64) {
 	}
 }
 
-// ^ Adds Peer from Discovery on Frontend
-func (sn *Node) AddPeer(id string) {
-	// TODO
-
-	// peerAddr, err := peer.IDFromString(id)
-	// if err != nil {
-	// 	sn.error(err, "AddPeer")
-	// }
-	// sn.host.Connect(context.Background(), peerAddr)
-}
-
 // ^ AddFile adds generates metadata and thumbnail from filepath to Process for Transfer, returns key ^ //
 func (sn *Node) AddFile(path string) {
 	//@2. Initialize SafeFile
