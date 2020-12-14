@@ -25,7 +25,8 @@ func (sn *Node) setInfo(connEvent *md.ConnectionRequest) error {
 		return err
 	}
 
-	// Set Directory and OLC
+	// Set Default Properties
+	sn.contact = connEvent.Contact
 	sn.directories = connEvent.Directory
 	sn.olc = connEvent.Olc
 

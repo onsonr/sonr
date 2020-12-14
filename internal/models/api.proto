@@ -16,11 +16,7 @@ message ConnectionRequest {
   Connectivity connectivity = 6;
 
   // Define Connectivity
-  enum Connectivity {
-    NONE = 0;
-    WIFI = 1;
-    MOBILE = 2;
-  }
+  enum Connectivity { NONE = 0; WIFI = 1; MOBILE = 2; }
 }
 
 // Authorization message sent in stream
@@ -29,9 +25,14 @@ message AuthMessage {
   Peer from = 1;
   Event event = 2;
   Metadata metadata = 3;
+  Contact contact = 4;
 
   // Define Subject
-  enum Event { NONE = 0; REQUEST = 1; ACCEPT = 2; DECLINE = 3; }
+  enum Event {
+    NONE = 0; REQUEST_FILE = 1; REQUEST_CONTACT = 2; REPLY_CONTACT = 3;
+    ACCEPT = 4;
+    DECLINE = 5;
+  }
 }
 
 // [PLUGIN]

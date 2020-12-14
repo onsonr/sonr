@@ -2,6 +2,7 @@ package transfer
 
 import (
 	"context"
+	"errors"
 	"log"
 
 	"github.com/libp2p/go-libp2p-core/host"
@@ -29,9 +30,14 @@ type AuthReply struct {
 type AuthService struct {
 	// Current Data
 	onInvite  OnProtobuf
-	peerConn  *PeerConnection
 	respCh    chan *md.AuthMessage
 	inviteMsg *md.AuthMessage
+}
+
+// Struct for Reply Type
+type ReplyOptions struct {
+	Decision bool
+	Contact  *md.Contact
 }
 
 // ^ Calls Invite on Remote Peer ^ //
@@ -111,31 +117,50 @@ func (pc *PeerConnection) SendInvite(h host.Host, id peer.ID, msgBytes []byte) {
 	}
 }
 
-// ^ Send Accept Message on Stream ^ //
-func (pc *PeerConnection) SendResponse(decision bool, peer *md.Peer) {
-	// @ Check Decision
-	if decision {
-		// Initialize Transfer
-		currMsg := pc.auth.inviteMsg
-		pc.transfer = pc.NewTransfer(currMsg.Metadata, currMsg.From)
+// ^ Send Authorize transfer on RPC ^ //
+func (pc *PeerConnection) Authorize(reply ReplyOptions, peer *md.Peer) {
+	// ** Get Current Message **
+	offerMsg := pc.auth.inviteMsg
 
+	// @ Check Reply Type for File
+	if offerMsg.Event == md.AuthMessage_REQUEST_FILE {
+		// @ Check Decision
+		if reply.Decision {
+			// Initialize Transfer
+			pc.transfer = pc.NewTransfer(offerMsg.Metadata, offerMsg.From)
+
+			// Create Accept Response
+			respMsg := &md.AuthMessage{
+				From:  peer,
+				Event: md.AuthMessage_ACCEPT,
+			}
+
+			// Send to Channel
+			pc.auth.respCh <- respMsg
+
+		} else {
+			// Create Decline Response
+			respMsg := &md.AuthMessage{
+				From:  peer,
+				Event: md.AuthMessage_DECLINE,
+			}
+
+			// Send to Channel
+			pc.auth.respCh <- respMsg
+		}
+	} else if offerMsg.Event == md.AuthMessage_REQUEST_CONTACT {
+		// @ Pass Contact Back
 		// Create Accept Response
 		respMsg := &md.AuthMessage{
-			From:  peer,
-			Event: md.AuthMessage_ACCEPT,
+			From:    peer,
+			Event:   md.AuthMessage_REPLY_CONTACT,
+			Contact: reply.Contact,
 		}
 
 		// Send to Channel
 		pc.auth.respCh <- respMsg
-
 	} else {
-		// Create Decline Response
-		respMsg := &md.AuthMessage{
-			From:  peer,
-			Event: md.AuthMessage_DECLINE,
-		}
-
-		// Send to Channel
-		pc.auth.respCh <- respMsg
+		// Send Error
+		onError(errors.New("Invalid Invite Message"), "Authorize")
 	}
 }

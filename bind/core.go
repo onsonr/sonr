@@ -32,8 +32,9 @@ type Callback interface {
 // ^ Struct: Main Node handles Networking/Identity/Streams ^
 type Node struct {
 	// Properties
-	olc  string
-	peer *md.Peer
+	olc     string
+	peer    *md.Peer
+	contact *md.Contact
 
 	// Networking Properties
 	ctx    context.Context

@@ -6,9 +6,9 @@ import (
 	"math"
 	"time"
 
-	"github.com/libp2p/go-libp2p-core/peer"
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
+	tf "github.com/sonr-io/core/internal/transfer"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -38,7 +38,7 @@ func (sn *Node) Update(direction float64) {
 
 // ^ Adds Peer from Discovery on Frontend
 func (sn *Node) AddPeer(id string) {
-	// TODO 
+	// TODO
 
 	// peerAddr, err := peer.IDFromString(id)
 	// if err != nil {
@@ -75,9 +75,44 @@ func (sn *Node) Invite(peerId string) {
 
 		// Create Invite Message
 		reqMsg := md.AuthMessage{
-			Event:    md.AuthMessage_REQUEST,
+			Event:    md.AuthMessage_REQUEST_FILE,
 			From:     sn.peer,
 			Metadata: meta,
+		}
+
+		// Convert Protobuf to bytes
+		msgBytes, err := proto.Marshal(&reqMsg)
+		if err != nil {
+			sn.error(err, "Marshal")
+			log.Println(err)
+		}
+
+		// Call GRPC in PeerConnection
+		go func() {
+			sn.peerConn.SendInvite(sn.host, id, msgBytes)
+		}()
+	}
+}
+
+// ^ SendContact to an available peer ^ //
+func (sn *Node) SendContact(peerId string) {
+	// Create Delay to allow processing
+	time.Sleep(time.Second)
+
+	// Find PeerID and Peer Struct
+	id, peer := sn.lobby.Find(peerId)
+
+	// Validate Peer Values
+	if peer == nil || id == "" {
+		sn.error(errors.New("Search Error, peer was not found in map."), "Invite")
+	} else {
+		// Set Contact
+
+		// Create Invite Message
+		reqMsg := md.AuthMessage{
+			Event:   md.AuthMessage_REQUEST_CONTACT,
+			From:    sn.peer,
+			Contact: sn.contact,
 		}
 
 		// Convert Protobuf to bytes
@@ -97,8 +132,13 @@ func (sn *Node) Invite(peerId string) {
 // ^ Respond to an Invitation ^ //
 func (sn *Node) Respond(decision bool) {
 	// @ Check Decision
+	reply := tf.ReplyOptions{
+		Decision: decision,
+		Contact:  sn.contact,
+	}
+
 	// Send Response on PeerConnection
-	sn.peerConn.SendResponse(decision, sn.peer)
+	sn.peerConn.Authorize(reply, sn.peer)
 }
 
 // ^ Reset Current Queued File Metadata ^ //

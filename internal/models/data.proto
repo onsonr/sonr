@@ -67,6 +67,3 @@ message Peer {
   Proximity proximity = 10;
   enum Proximity { NONE = 0; IMMEDIATE = 1; NEAR = 2; FAR = 3; }
 }
-
-// Define Range: Distance Between users
-message Range {}
