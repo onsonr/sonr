@@ -83,6 +83,10 @@ func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic 
 	return peerConn, nil
 }
 
+func (pc *PeerConnection) SetMetadata(){
+	
+}
+
 // ^  Prepare for Stream, Create new Transfer ^ //
 func (pc *PeerConnection) PrepareTransfer(meta *md.Metadata, own *md.Peer) *Transfer {
 	// Create Transfer

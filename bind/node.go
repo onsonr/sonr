@@ -1,7 +1,6 @@
 package sonr
 
 import (
-	"errors"
 	"log"
 	"math"
 	"time"
@@ -43,77 +42,55 @@ func (sn *Node) AddFile(path string) {
 }
 
 // ^ Invite an available peer to transfer ^ //
-func (sn *Node) Invite(peerId string) {
-	// Create Delay to allow processing
-	time.Sleep(time.Millisecond * 250)
+func (sn *Node) Invite(peerId string, kind int) {
+	// Initialize
+	var invMsg md.AuthInvite
+	payload := md.Payload_Type(kind)
+	id, _, err := sn.lobby.Find(peerId)
 
-	// Find PeerID and Peer Struct
-	id, peer := sn.lobby.Find(peerId)
+	// Check error
+	if err != nil {
+		sn.error(err, "Invite")
+	}
 
-	// Validate Peer Values
-	if peer == nil || id == "" {
-		sn.error(errors.New("Search Error, peer was not found in map."), "Invite")
-	} else {
-		// Set Metadata in Auth Stream
+	// @ Check Payload Type
+	if payload == md.Payload_FILE {
+		// Create Delay to allow processing
+		time.Sleep(time.Millisecond * 250)
+
+		// Retreive Current File
 		currFile := sn.currentFile()
-		meta := currFile.GetMetadata()
-
-		// Set SafeFile
 		sn.peerConn.SafeMeta = currFile
 
 		// Create Invite Message
-		reqMsg := md.AuthInvite{
+		invMsg = md.AuthInvite{
 			From: sn.peer,
 			Payload: &md.Payload{
 				Type: md.Payload_FILE,
-				File: meta,
+				File: currFile.GetMetadata(),
 			},
 		}
-
-		// Convert Protobuf to bytes
-		msgBytes, err := proto.Marshal(&reqMsg)
-		if err != nil {
-			sn.error(err, "Marshal")
-			log.Println(err)
-		}
-
-		// Call GRPC in PeerConnection
-		go func() {
-			sn.peerConn.SendInvite(sn.host, id, msgBytes)
-		}()
-	}
-}
-
-// ^ SendContact to an available peer ^ //
-func (sn *Node) Contact(peerId string) {
-	// Find PeerID and Peer Struct
-	id, peer := sn.lobby.Find(peerId)
-
-	// Validate Peer Values
-	if peer == nil || id == "" {
-		sn.error(errors.New("Search Error, peer was not found in map."), "Invite")
-	} else {
+	} else if payload == md.Payload_CONTACT {
 		// Create Invite Message with Payload
-		reqMsg := md.AuthInvite{
+		invMsg = md.AuthInvite{
 			From: sn.peer,
 			Payload: &md.Payload{
 				Type:    md.Payload_CONTACT,
 				Contact: sn.contact,
 			},
 		}
-
-		// Convert Protobuf to bytes
-		msgBytes, err := proto.Marshal(&reqMsg)
-		if err != nil {
-			sn.error(err, "Marshal")
-			log.Println(err)
-		}
-
-		// Call GRPC in PeerConnection
-		go func() {
-			sn.peerConn.SendInvite(sn.host, id, msgBytes)
-		}()
 	}
+
+	// Convert Protobuf to bytes
+	msgBytes, err := proto.Marshal(&invMsg)
+	if err != nil {
+		sn.error(err, "Marshal")
+	}
+
+	// Call GRPC in PeerConnection
+	go func() {
+		sn.peerConn.Request(sn.host, id, msgBytes)
+	}()
 }
 
 // ^ Respond to an Invitation ^ //

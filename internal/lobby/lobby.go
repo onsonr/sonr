@@ -2,6 +2,7 @@ package lobby
 
 import (
 	"context"
+	"errors"
 	"log"
 
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -103,12 +104,16 @@ func (lob *Lobby) Info() []byte {
 }
 
 // ^ Find returns Pointer to Peer.ID and Peer ^
-func (lob *Lobby) Find(q string) (peer.ID, *md.Peer) {
+func (lob *Lobby) Find(q string) (peer.ID, *md.Peer, error) {
 	// Retreive Data
 	peer := lob.Peer(q)
 	id := lob.ID(q)
 
-	return id, peer
+	if peer == nil || id == "" {
+		return "", nil, errors.New("Search Error, peer was not found in map.")
+	}
+
+	return id, peer, nil
 }
 
 // ^ Send publishes a message to the pubsub topic OLC ^
