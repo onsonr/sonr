@@ -80,70 +80,70 @@ func (MIME_Type) EnumDescriptor() ([]byte, []int) {
 	return file_data_proto_rawDescGZIP(), []int{1, 0}
 }
 
-type Contact_SocialBlock_BlockType int32
+type Contact_SocialTile_TileType int32
 
 const (
-	Contact_SocialBlock_Icon     Contact_SocialBlock_BlockType = 0
-	Contact_SocialBlock_Feed     Contact_SocialBlock_BlockType = 1
-	Contact_SocialBlock_Showcase Contact_SocialBlock_BlockType = 2
+	Contact_SocialTile_Icon     Contact_SocialTile_TileType = 0
+	Contact_SocialTile_Feed     Contact_SocialTile_TileType = 1
+	Contact_SocialTile_Showcase Contact_SocialTile_TileType = 2
 )
 
-// Enum value maps for Contact_SocialBlock_BlockType.
+// Enum value maps for Contact_SocialTile_TileType.
 var (
-	Contact_SocialBlock_BlockType_name = map[int32]string{
+	Contact_SocialTile_TileType_name = map[int32]string{
 		0: "Icon",
 		1: "Feed",
 		2: "Showcase",
 	}
-	Contact_SocialBlock_BlockType_value = map[string]int32{
+	Contact_SocialTile_TileType_value = map[string]int32{
 		"Icon":     0,
 		"Feed":     1,
 		"Showcase": 2,
 	}
 )
 
-func (x Contact_SocialBlock_BlockType) Enum() *Contact_SocialBlock_BlockType {
-	p := new(Contact_SocialBlock_BlockType)
+func (x Contact_SocialTile_TileType) Enum() *Contact_SocialTile_TileType {
+	p := new(Contact_SocialTile_TileType)
 	*p = x
 	return p
 }
 
-func (x Contact_SocialBlock_BlockType) String() string {
+func (x Contact_SocialTile_TileType) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
-func (Contact_SocialBlock_BlockType) Descriptor() protoreflect.EnumDescriptor {
+func (Contact_SocialTile_TileType) Descriptor() protoreflect.EnumDescriptor {
 	return file_data_proto_enumTypes[1].Descriptor()
 }
 
-func (Contact_SocialBlock_BlockType) Type() protoreflect.EnumType {
+func (Contact_SocialTile_TileType) Type() protoreflect.EnumType {
 	return &file_data_proto_enumTypes[1]
 }
 
-func (x Contact_SocialBlock_BlockType) Number() protoreflect.EnumNumber {
+func (x Contact_SocialTile_TileType) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
-// Deprecated: Use Contact_SocialBlock_BlockType.Descriptor instead.
-func (Contact_SocialBlock_BlockType) EnumDescriptor() ([]byte, []int) {
+// Deprecated: Use Contact_SocialTile_TileType.Descriptor instead.
+func (Contact_SocialTile_TileType) EnumDescriptor() ([]byte, []int) {
 	return file_data_proto_rawDescGZIP(), []int{3, 0, 0}
 }
 
-type Contact_SocialBlock_Provider int32
+type Contact_SocialTile_Provider int32
 
 const (
-	Contact_SocialBlock_Instagram Contact_SocialBlock_Provider = 0 // Feed/Link Option
-	Contact_SocialBlock_TikTok    Contact_SocialBlock_Provider = 1 // Feed/Link Option
-	Contact_SocialBlock_Facebook  Contact_SocialBlock_Provider = 2 // Link Only
-	Contact_SocialBlock_YouTube   Contact_SocialBlock_Provider = 3 // Feed/Link Option
-	Contact_SocialBlock_Spotify   Contact_SocialBlock_Provider = 4 // Feed/Link Option
-	Contact_SocialBlock_Medium    Contact_SocialBlock_Provider = 5 // Feed/Link Option
-	Contact_SocialBlock_Twitter   Contact_SocialBlock_Provider = 6 // Feed/Link Option
+	Contact_SocialTile_Instagram Contact_SocialTile_Provider = 0 // Feed/Link Option
+	Contact_SocialTile_TikTok    Contact_SocialTile_Provider = 1 // Feed/Link Option
+	Contact_SocialTile_Facebook  Contact_SocialTile_Provider = 2 // Link Only
+	Contact_SocialTile_YouTube   Contact_SocialTile_Provider = 3 // Feed/Link Option
+	Contact_SocialTile_Spotify   Contact_SocialTile_Provider = 4 // Feed/Link Option
+	Contact_SocialTile_Medium    Contact_SocialTile_Provider = 5 // Feed/Link Option
+	Contact_SocialTile_Twitter   Contact_SocialTile_Provider = 6 // Feed/Link Option
 )
 
-// Enum value maps for Contact_SocialBlock_Provider.
+// Enum value maps for Contact_SocialTile_Provider.
 var (
-	Contact_SocialBlock_Provider_name = map[int32]string{
+	Contact_SocialTile_Provider_name = map[int32]string{
 		0: "Instagram",
 		1: "TikTok",
 		2: "Facebook",
@@ -152,7 +152,7 @@ var (
 		5: "Medium",
 		6: "Twitter",
 	}
-	Contact_SocialBlock_Provider_value = map[string]int32{
+	Contact_SocialTile_Provider_value = map[string]int32{
 		"Instagram": 0,
 		"TikTok":    1,
 		"Facebook":  2,
@@ -163,30 +163,30 @@ var (
 	}
 )
 
-func (x Contact_SocialBlock_Provider) Enum() *Contact_SocialBlock_Provider {
-	p := new(Contact_SocialBlock_Provider)
+func (x Contact_SocialTile_Provider) Enum() *Contact_SocialTile_Provider {
+	p := new(Contact_SocialTile_Provider)
 	*p = x
 	return p
 }
 
-func (x Contact_SocialBlock_Provider) String() string {
+func (x Contact_SocialTile_Provider) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
-func (Contact_SocialBlock_Provider) Descriptor() protoreflect.EnumDescriptor {
+func (Contact_SocialTile_Provider) Descriptor() protoreflect.EnumDescriptor {
 	return file_data_proto_enumTypes[2].Descriptor()
 }
 
-func (Contact_SocialBlock_Provider) Type() protoreflect.EnumType {
+func (Contact_SocialTile_Provider) Type() protoreflect.EnumType {
 	return &file_data_proto_enumTypes[2]
 }
 
-func (x Contact_SocialBlock_Provider) Number() protoreflect.EnumNumber {
+func (x Contact_SocialTile_Provider) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
-// Deprecated: Use Contact_SocialBlock_Provider.Descriptor instead.
-func (Contact_SocialBlock_Provider) EnumDescriptor() ([]byte, []int) {
+// Deprecated: Use Contact_SocialTile_Provider.Descriptor instead.
+func (Contact_SocialTile_Provider) EnumDescriptor() ([]byte, []int) {
 	return file_data_proto_rawDescGZIP(), []int{3, 0, 1}
 }
 
@@ -481,14 +481,14 @@ type Contact struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Default
-	FirstName  string                 `protobuf:"bytes,1,opt,name=firstName,proto3" json:"firstName,omitempty"`
-	LastName   string                 `protobuf:"bytes,2,opt,name=lastName,proto3" json:"lastName,omitempty"`
-	Phone      string                 `protobuf:"bytes,3,opt,name=phone,proto3" json:"phone,omitempty"`
-	Website    string                 `protobuf:"bytes,4,opt,name=website,proto3" json:"website,omitempty"`
-	Email      string                 `protobuf:"bytes,5,opt,name=email,proto3" json:"email,omitempty"`
-	ProfilePic []byte                 `protobuf:"bytes,6,opt,name=profilePic,proto3" json:"profilePic,omitempty"`
-	Header     string                 `protobuf:"bytes,7,opt,name=header,proto3" json:"header,omitempty"`
-	Socials    []*Contact_SocialBlock `protobuf:"bytes,8,rep,name=socials,proto3" json:"socials,omitempty"`
+	FirstName  string                `protobuf:"bytes,1,opt,name=firstName,proto3" json:"firstName,omitempty"`
+	LastName   string                `protobuf:"bytes,2,opt,name=lastName,proto3" json:"lastName,omitempty"`
+	Phone      string                `protobuf:"bytes,3,opt,name=phone,proto3" json:"phone,omitempty"`
+	Website    string                `protobuf:"bytes,4,opt,name=website,proto3" json:"website,omitempty"`
+	Email      string                `protobuf:"bytes,5,opt,name=email,proto3" json:"email,omitempty"`
+	ProfilePic []byte                `protobuf:"bytes,6,opt,name=profilePic,proto3" json:"profilePic,omitempty"`
+	Header     string                `protobuf:"bytes,7,opt,name=header,proto3" json:"header,omitempty"`
+	Socials    []*Contact_SocialTile `protobuf:"bytes,8,rep,name=socials,proto3" json:"socials,omitempty"`
 }
 
 func (x *Contact) Reset() {
@@ -572,7 +572,7 @@ func (x *Contact) GetHeader() string {
 	return ""
 }
 
-func (x *Contact) GetSocials() []*Contact_SocialBlock {
+func (x *Contact) GetSocials() []*Contact_SocialTile {
 	if x != nil {
 		return x.Socials
 	}
@@ -844,20 +844,20 @@ func (x *Peer) GetProximity() Peer_Proximity {
 }
 
 // Extended Social Media Integration
-type Contact_SocialBlock struct {
+type Contact_SocialTile struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Provider  Contact_SocialBlock_Provider  `protobuf:"varint,1,opt,name=provider,proto3,enum=Contact_SocialBlock_Provider" json:"provider,omitempty"`
-	BlockType Contact_SocialBlock_BlockType `protobuf:"varint,2,opt,name=blockType,proto3,enum=Contact_SocialBlock_BlockType" json:"blockType,omitempty"`
-	Position  int32                         `protobuf:"varint,3,opt,name=position,proto3" json:"position,omitempty"` // 0-7
-	Url       string                        `protobuf:"bytes,4,opt,name=url,proto3" json:"url,omitempty"`
-	Username  string                        `protobuf:"bytes,5,opt,name=username,proto3" json:"username,omitempty"`
+	Provider Contact_SocialTile_Provider `protobuf:"varint,1,opt,name=provider,proto3,enum=Contact_SocialTile_Provider" json:"provider,omitempty"`
+	Type     Contact_SocialTile_TileType `protobuf:"varint,2,opt,name=type,proto3,enum=Contact_SocialTile_TileType" json:"type,omitempty"`
+	Position int32                       `protobuf:"varint,3,opt,name=position,proto3" json:"position,omitempty"` // 0-7
+	Url      string                      `protobuf:"bytes,4,opt,name=url,proto3" json:"url,omitempty"`
+	Username string                      `protobuf:"bytes,5,opt,name=username,proto3" json:"username,omitempty"`
 }
 
-func (x *Contact_SocialBlock) Reset() {
-	*x = Contact_SocialBlock{}
+func (x *Contact_SocialTile) Reset() {
+	*x = Contact_SocialTile{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_data_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -865,13 +865,13 @@ func (x *Contact_SocialBlock) Reset() {
 	}
 }
 
-func (x *Contact_SocialBlock) String() string {
+func (x *Contact_SocialTile) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Contact_SocialBlock) ProtoMessage() {}
+func (*Contact_SocialTile) ProtoMessage() {}
 
-func (x *Contact_SocialBlock) ProtoReflect() protoreflect.Message {
+func (x *Contact_SocialTile) ProtoReflect() protoreflect.Message {
 	mi := &file_data_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -883,40 +883,40 @@ func (x *Contact_SocialBlock) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Contact_SocialBlock.ProtoReflect.Descriptor instead.
-func (*Contact_SocialBlock) Descriptor() ([]byte, []int) {
+// Deprecated: Use Contact_SocialTile.ProtoReflect.Descriptor instead.
+func (*Contact_SocialTile) Descriptor() ([]byte, []int) {
 	return file_data_proto_rawDescGZIP(), []int{3, 0}
 }
 
-func (x *Contact_SocialBlock) GetProvider() Contact_SocialBlock_Provider {
+func (x *Contact_SocialTile) GetProvider() Contact_SocialTile_Provider {
 	if x != nil {
 		return x.Provider
 	}
-	return Contact_SocialBlock_Instagram
+	return Contact_SocialTile_Instagram
 }
 
-func (x *Contact_SocialBlock) GetBlockType() Contact_SocialBlock_BlockType {
+func (x *Contact_SocialTile) GetType() Contact_SocialTile_TileType {
 	if x != nil {
-		return x.BlockType
+		return x.Type
 	}
-	return Contact_SocialBlock_Icon
+	return Contact_SocialTile_Icon
 }
 
-func (x *Contact_SocialBlock) GetPosition() int32 {
+func (x *Contact_SocialTile) GetPosition() int32 {
 	if x != nil {
 		return x.Position
 	}
 	return 0
 }
 
-func (x *Contact_SocialBlock) GetUrl() string {
+func (x *Contact_SocialTile) GetUrl() string {
 	if x != nil {
 		return x.Url
 	}
 	return ""
 }
 
-func (x *Contact_SocialBlock) GetUsername() string {
+func (x *Contact_SocialTile) GetUsername() string {
 	if x != nil {
 		return x.Username
 	}
@@ -959,7 +959,7 @@ var file_data_proto_rawDesc = []byte{
 	0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03,
 	0x6b, 0x65, 0x79, 0x12, 0x1b, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01,
 	0x28, 0x0b, 0x32, 0x05, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65,
-	0x3a, 0x02, 0x38, 0x01, 0x22, 0xdb, 0x04, 0x0a, 0x07, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74,
+	0x3a, 0x02, 0x38, 0x01, 0x22, 0xcb, 0x04, 0x0a, 0x07, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74,
 	0x12, 0x1c, 0x0a, 0x09, 0x66, 0x69, 0x72, 0x73, 0x74, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20,
 	0x01, 0x28, 0x09, 0x52, 0x09, 0x66, 0x69, 0x72, 0x73, 0x74, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x1a,
 	0x0a, 0x08, 0x6c, 0x61, 0x73, 0x74, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
@@ -971,24 +971,23 @@ var file_data_proto_rawDesc = []byte{
 	0x12, 0x1e, 0x0a, 0x0a, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0x50, 0x69, 0x63, 0x18, 0x06,
 	0x20, 0x01, 0x28, 0x0c, 0x52, 0x0a, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0x50, 0x69, 0x63,
 	0x12, 0x16, 0x0a, 0x06, 0x68, 0x65, 0x61, 0x64, 0x65, 0x72, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x06, 0x68, 0x65, 0x61, 0x64, 0x65, 0x72, 0x12, 0x2e, 0x0a, 0x07, 0x73, 0x6f, 0x63, 0x69,
-	0x61, 0x6c, 0x73, 0x18, 0x08, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x43, 0x6f, 0x6e, 0x74,
-	0x61, 0x63, 0x74, 0x2e, 0x53, 0x6f, 0x63, 0x69, 0x61, 0x6c, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x52,
-	0x07, 0x73, 0x6f, 0x63, 0x69, 0x61, 0x6c, 0x73, 0x1a, 0xe7, 0x02, 0x0a, 0x0b, 0x53, 0x6f, 0x63,
-	0x69, 0x61, 0x6c, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x12, 0x39, 0x0a, 0x08, 0x70, 0x72, 0x6f, 0x76,
-	0x69, 0x64, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x1d, 0x2e, 0x43, 0x6f, 0x6e,
-	0x74, 0x61, 0x63, 0x74, 0x2e, 0x53, 0x6f, 0x63, 0x69, 0x61, 0x6c, 0x42, 0x6c, 0x6f, 0x63, 0x6b,
-	0x2e, 0x50, 0x72, 0x6f, 0x76, 0x69, 0x64, 0x65, 0x72, 0x52, 0x08, 0x70, 0x72, 0x6f, 0x76, 0x69,
-	0x64, 0x65, 0x72, 0x12, 0x3c, 0x0a, 0x09, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x54, 0x79, 0x70, 0x65,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x1e, 0x2e, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74,
-	0x2e, 0x53, 0x6f, 0x63, 0x69, 0x61, 0x6c, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x2e, 0x42, 0x6c, 0x6f,
-	0x63, 0x6b, 0x54, 0x79, 0x70, 0x65, 0x52, 0x09, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x54, 0x79, 0x70,
-	0x65, 0x12, 0x1a, 0x0a, 0x08, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20,
-	0x01, 0x28, 0x05, 0x52, 0x08, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x10, 0x0a,
-	0x03, 0x75, 0x72, 0x6c, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x75, 0x72, 0x6c, 0x12,
-	0x1a, 0x0a, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x22, 0x2d, 0x0a, 0x09, 0x42,
-	0x6c, 0x6f, 0x63, 0x6b, 0x54, 0x79, 0x70, 0x65, 0x12, 0x08, 0x0a, 0x04, 0x49, 0x63, 0x6f, 0x6e,
+	0x52, 0x06, 0x68, 0x65, 0x61, 0x64, 0x65, 0x72, 0x12, 0x2d, 0x0a, 0x07, 0x73, 0x6f, 0x63, 0x69,
+	0x61, 0x6c, 0x73, 0x18, 0x08, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x13, 0x2e, 0x43, 0x6f, 0x6e, 0x74,
+	0x61, 0x63, 0x74, 0x2e, 0x53, 0x6f, 0x63, 0x69, 0x61, 0x6c, 0x54, 0x69, 0x6c, 0x65, 0x52, 0x07,
+	0x73, 0x6f, 0x63, 0x69, 0x61, 0x6c, 0x73, 0x1a, 0xd8, 0x02, 0x0a, 0x0a, 0x53, 0x6f, 0x63, 0x69,
+	0x61, 0x6c, 0x54, 0x69, 0x6c, 0x65, 0x12, 0x38, 0x0a, 0x08, 0x70, 0x72, 0x6f, 0x76, 0x69, 0x64,
+	0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x1c, 0x2e, 0x43, 0x6f, 0x6e, 0x74, 0x61,
+	0x63, 0x74, 0x2e, 0x53, 0x6f, 0x63, 0x69, 0x61, 0x6c, 0x54, 0x69, 0x6c, 0x65, 0x2e, 0x50, 0x72,
+	0x6f, 0x76, 0x69, 0x64, 0x65, 0x72, 0x52, 0x08, 0x70, 0x72, 0x6f, 0x76, 0x69, 0x64, 0x65, 0x72,
+	0x12, 0x30, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x1c,
+	0x2e, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x2e, 0x53, 0x6f, 0x63, 0x69, 0x61, 0x6c, 0x54,
+	0x69, 0x6c, 0x65, 0x2e, 0x54, 0x69, 0x6c, 0x65, 0x54, 0x79, 0x70, 0x65, 0x52, 0x04, 0x74, 0x79,
+	0x70, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x05, 0x52, 0x08, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x10,
+	0x0a, 0x03, 0x75, 0x72, 0x6c, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x75, 0x72, 0x6c,
+	0x12, 0x1a, 0x0a, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x05, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x22, 0x2c, 0x0a, 0x08,
+	0x54, 0x69, 0x6c, 0x65, 0x54, 0x79, 0x70, 0x65, 0x12, 0x08, 0x0a, 0x04, 0x49, 0x63, 0x6f, 0x6e,
 	0x10, 0x00, 0x12, 0x08, 0x0a, 0x04, 0x46, 0x65, 0x65, 0x64, 0x10, 0x01, 0x12, 0x0c, 0x0a, 0x08,
 	0x53, 0x68, 0x6f, 0x77, 0x63, 0x61, 0x73, 0x65, 0x10, 0x02, 0x22, 0x66, 0x0a, 0x08, 0x50, 0x72,
 	0x6f, 0x76, 0x69, 0x64, 0x65, 0x72, 0x12, 0x0d, 0x0a, 0x09, 0x49, 0x6e, 0x73, 0x74, 0x61, 0x67,
@@ -1053,31 +1052,31 @@ func file_data_proto_rawDescGZIP() []byte {
 var file_data_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
 var file_data_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_data_proto_goTypes = []interface{}{
-	(MIME_Type)(0),                     // 0: MIME.Type
-	(Contact_SocialBlock_BlockType)(0), // 1: Contact.SocialBlock.BlockType
-	(Contact_SocialBlock_Provider)(0),  // 2: Contact.SocialBlock.Provider
-	(Peer_Proximity)(0),                // 3: Peer.Proximity
-	(*Metadata)(nil),                   // 4: Metadata
-	(*MIME)(nil),                       // 5: MIME
-	(*Lobby)(nil),                      // 6: Lobby
-	(*Contact)(nil),                    // 7: Contact
-	(*Device)(nil),                     // 8: Device
-	(*Directories)(nil),                // 9: Directories
-	(*Peer)(nil),                       // 10: Peer
-	nil,                                // 11: Lobby.PeersEntry
-	(*Contact_SocialBlock)(nil),        // 12: Contact.SocialBlock
+	(MIME_Type)(0),                   // 0: MIME.Type
+	(Contact_SocialTile_TileType)(0), // 1: Contact.SocialTile.TileType
+	(Contact_SocialTile_Provider)(0), // 2: Contact.SocialTile.Provider
+	(Peer_Proximity)(0),              // 3: Peer.Proximity
+	(*Metadata)(nil),                 // 4: Metadata
+	(*MIME)(nil),                     // 5: MIME
+	(*Lobby)(nil),                    // 6: Lobby
+	(*Contact)(nil),                  // 7: Contact
+	(*Device)(nil),                   // 8: Device
+	(*Directories)(nil),              // 9: Directories
+	(*Peer)(nil),                     // 10: Peer
+	nil,                              // 11: Lobby.PeersEntry
+	(*Contact_SocialTile)(nil),       // 12: Contact.SocialTile
 }
 var file_data_proto_depIdxs = []int32{
 	5,  // 0: Metadata.mime:type_name -> MIME
 	10, // 1: Metadata.owner:type_name -> Peer
 	0,  // 2: MIME.type:type_name -> MIME.Type
 	11, // 3: Lobby.peers:type_name -> Lobby.PeersEntry
-	12, // 4: Contact.socials:type_name -> Contact.SocialBlock
+	12, // 4: Contact.socials:type_name -> Contact.SocialTile
 	8,  // 5: Peer.device:type_name -> Device
 	3,  // 6: Peer.proximity:type_name -> Peer.Proximity
 	10, // 7: Lobby.PeersEntry.value:type_name -> Peer
-	2,  // 8: Contact.SocialBlock.provider:type_name -> Contact.SocialBlock.Provider
-	1,  // 9: Contact.SocialBlock.blockType:type_name -> Contact.SocialBlock.BlockType
+	2,  // 8: Contact.SocialTile.provider:type_name -> Contact.SocialTile.Provider
+	1,  // 9: Contact.SocialTile.type:type_name -> Contact.SocialTile.TileType
 	10, // [10:10] is the sub-list for method output_type
 	10, // [10:10] is the sub-list for method input_type
 	10, // [10:10] is the sub-list for extension type_name
@@ -1176,7 +1175,7 @@ func file_data_proto_init() {
 			}
 		}
 		file_data_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Contact_SocialBlock); i {
+			switch v := v.(*Contact_SocialTile); i {
 			case 0:
 				return &v.state
 			case 1:
