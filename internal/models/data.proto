@@ -36,20 +36,22 @@ message Contact {
   string firstName = 1;
   string lastName = 2;
   string phone = 3;
-  bytes profilePic = 4;
-  string header = 5;
-  string website = 6;
-  repeated SocialBlock socials = 7;
+  string website = 4;
+  string email = 5;
+  bytes profilePic = 6;
+  string header = 7;
+
+  repeated SocialTile socials = 8;
 
   // Extended Social Media Integration
-  message SocialBlock {
+  message SocialTile {
     Provider provider = 1;
-    BlockType blockType = 2;
+    TileType type = 2;
     int32 position = 3; // 0-7
     string url = 4;
     string username = 5;
 
-    enum BlockType { Link = 0; Feed = 1; }
+    enum TileType { Icon = 0; Feed = 1; Showcase = 2; }
     enum Provider {
       Instagram = 0; // Feed/Link Option
       TikTok = 1;    // Feed/Link Option
