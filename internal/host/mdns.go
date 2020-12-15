@@ -41,7 +41,7 @@ func (n *discNotifee) HandlePeerFound(pi peer.AddrInfo) {
 	// Connect to Peer
 	err := n.h.Connect(context.Background(), pi)
 
-	// Log Error
+	// Log Error for connection
 	if err != nil {
 		log.Printf("error connecting to peer %s: %s\n", pi.ID.Pretty(), err)
 	}
