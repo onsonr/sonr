@@ -32,9 +32,34 @@ message Lobby {
 
 // Define Contact Type: Will be CSV in Future
 message Contact {
+  // Default
   string firstName = 1;
   string lastName = 2;
-  string profilePic = 3;
+  string phone = 3;
+  bytes profilePic = 4;
+  string header = 5;
+  string website = 6;
+  repeated SocialBlock socials = 7;
+
+  // Extended Social Media Integration
+  message SocialBlock {
+    Provider provider = 1;
+    BlockType blockType = 2;
+    int32 position = 3; // 0-7
+    string url = 4;
+    string username = 5;
+
+    enum BlockType { Link = 0; Feed = 1; }
+    enum Provider {
+      Instagram = 0; // Feed/Link Option
+      TikTok = 1;    // Feed/Link Option
+      Facebook = 2;  // Link Only
+      YouTube = 3;   // Feed/Link Option
+      Spotify = 4;   // Feed/Link Option
+      Medium = 5;    // Feed/Link Option
+      Twitter = 6;   // Feed/Link Option
+    }
+  }
 }
 
 // Define Device Type: Information about device
@@ -60,7 +85,7 @@ message Peer {
   string discovery = 3;
   string username = 4;
   string firstName = 5;
-  string profilePic = 6;
+  bytes profilePic = 6;
   double direction = 7;
   double difference = 8;
   double distance = 9;
