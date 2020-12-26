@@ -107,8 +107,3 @@ func (sn *Node) ResetFile() {
 	sn.files = nil
 	sn.files = make([]*sf.SafeMetadata, maxFileBufferSize)
 }
-
-// ^ Close Ends All Network Communication ^
-func (sn *Node) Close() {
-	sn.host.Close()
-}

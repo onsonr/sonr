@@ -8,6 +8,7 @@ import (
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	sf "github.com/sonr-io/core/internal/file"
 	sh "github.com/sonr-io/core/internal/host"
+	"github.com/sonr-io/core/internal/lifecycle"
 	"github.com/sonr-io/core/internal/lobby"
 	md "github.com/sonr-io/core/internal/models"
 	tr "github.com/sonr-io/core/internal/transfer"
@@ -38,6 +39,7 @@ type Node struct {
 
 	// Networking Properties
 	ctx    context.Context
+	wctx   *lifecycle.WContext
 	host   host.Host
 	pubSub *pubsub.PubSub
 
@@ -56,6 +58,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	// ** Create Context and Node - Begin Setup **
 	node := new(Node)
 	node.ctx = context.Background()
+	node.wctx = lifecycle.NewContext()
 	node.call, node.files = call, make([]*sf.SafeMetadata, maxFileBufferSize)
 
 	// ** Unmarshal Request **
@@ -68,7 +71,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	}
 
 	// @1. Create Host and Start Discovery
-	node.host, err = sh.NewHost(node.ctx, reqMsg.Olc)
+	node.host, err = sh.NewHost(node.ctx, node.wctx, reqMsg.Olc)
 	if err != nil {
 		node.error(err, "NewNode")
 		return nil
@@ -88,6 +91,24 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 
 	// ** Callback Node User Information ** //
 	return node
+}
+
+// ^ Close Ends All Network Communication ^
+func (sn *Node) Pause() {
+	log.Println("Sonr Paused.")
+	sn.wctx.SetState(lifecycle.StatePaused)
+}
+
+// ^ Close Ends All Network Communication ^
+func (sn *Node) Resume() {
+	log.Println("Sonr Resumed.")
+	sn.wctx.SetState(lifecycle.StateRunning)
+}
+
+// ^ Close Ends All Network Communication ^
+func (sn *Node) Stop() {
+	log.Println("Sonr Stopped.")
+	sn.host.Close()
 }
 
 // ^ error Callback with error instance, and method ^

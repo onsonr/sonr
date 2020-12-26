@@ -7,6 +7,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	"github.com/sonr-io/core/internal/lifecycle"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -40,7 +41,7 @@ type Lobby struct {
 }
 
 // ^ Initialize Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
-func Initialize(callr OnProtobuf, onErr Error, ps *pubsub.PubSub, id peer.ID, olc string) (*Lobby, error) {
+func Initialize(wctx *lifecycle.WContext, callr OnProtobuf, onErr Error, ps *pubsub.PubSub, id peer.ID, olc string) (*Lobby, error) {
 	// Join the pubsub Topic
 	ctx := context.Background()
 	topic, err := ps.Join(olc)
@@ -87,8 +88,8 @@ func Initialize(callr OnProtobuf, onErr Error, ps *pubsub.PubSub, id peer.ID, ol
 	// go lob.processEvents()
 
 	// Start Reading Messages
-	go lob.handleMessages()
-	go lob.processMessages()
+	go lob.handleMessages(wctx)
+	go lob.processMessages(wctx)
 	return lob, nil
 }
 

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"sync"
+	"time"
 
 	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/host"
@@ -15,10 +16,20 @@ import (
 	libp2pquic "github.com/libp2p/go-libp2p-quic-transport"
 	secio "github.com/libp2p/go-libp2p-secio"
 	libp2ptls "github.com/libp2p/go-libp2p-tls"
+	"github.com/multiformats/go-multiaddr"
+	"github.com/sonr-io/core/internal/lifecycle"
+)
+
+type State int
+
+const (
+	Stopped State = iota
+	Paused
+	Running
 )
 
 // ^ NewHost: Creates a host with: (MDNS, TCP, QUIC on UDP) ^
-func NewHost(ctx context.Context, olc string) (host.Host, error) {
+func NewHost(ctx context.Context, wctx *lifecycle.WContext, olc string) (host.Host, error) {
 	// @1. Established Required Data
 	point := "/sonr/dht/" + olc
 	ipv4 := IPv4()
@@ -58,26 +69,11 @@ func NewHost(ctx context.Context, olc string) (host.Host, error) {
 			if err != nil {
 				return nil, err
 			}
-
-			// Connect to bootstrap nodes
-			var wg sync.WaitGroup
-			for _, peerAddr := range dht.DefaultBootstrapPeers {
-				peerinfo, _ := peer.AddrInfoFromP2pAddr(peerAddr)
-				wg.Add(1)
-				go func() {
-					defer wg.Done()
-					// We ignore errors as some bootstrap peers may be down
-					h.Connect(ctx, *peerinfo) //nolint
-				}()
-
-			}
-			wg.Wait()
-
 			// We use a rendezvous point "meet me here" to announce our location.
 			// This is like telling your friends to meet you at the Eiffel Tower.
 			routingDiscovery := discovery.NewRoutingDiscovery(idht)
 			discovery.Advertise(ctx, routingDiscovery, point)
-			go handleKademliaDiscovery(ctx, h, routingDiscovery, point)
+			go connectRendevouzNodes(ctx, wctx, h, routingDiscovery, point)
 			return idht, err
 		}),
 		// Let this host use relays and advertise itself on relays if
@@ -91,36 +87,73 @@ func NewHost(ctx context.Context, olc string) (host.Host, error) {
 	}
 
 	// setup local mDNS discovery
-	err = startMDNS(ctx, h, olc)
+	err = startMDNS(ctx, wctx, h, olc)
 	fmt.Println("MDNS Started")
+
 	return h, err
 }
 
-// ^ Handles Peers that appear on DHT ^
-//nolint
-func handleKademliaDiscovery(ctx context.Context, h host.Host, disc *discovery.RoutingDiscovery, point string) {
-	// Timer checks to dispose of peers
-	peerChan, err := disc.FindPeers(ctx, point, discovery.Limit(15))
-	if err != nil {
-		log.Println("Failed to get DHT Peer Channel: ", err)
-		return
-	}
-
-	// Start Routing Discovery
+// ^ Connects to Rendevouz Nodes then handles discovery ^
+func connectRendevouzNodes(ctx context.Context, wctx *lifecycle.WContext, h host.Host, disc *discovery.RoutingDiscovery, point string) {
 	for {
-		select {
-		case peer := <-peerChan:
+		time.Sleep(1 * time.Millisecond)
+		switch state := wctx.State(); state {
+		case lifecycle.StatePaused:
+			continue
+		default:
+			// Connect to defined nodes
 			var wg sync.WaitGroup
-			if peer.ID == h.ID() {
-				continue
-			} else {
+
+			for _, maddrString := range config.P2P.RDVP {
+				maddr, err := multiaddr.NewMultiaddr(maddrString.Maddr)
+				if err != nil {
+					log.Println(err)
+				}
 				wg.Add(1)
+				peerinfo, _ := peer.AddrInfoFromP2pAddr(maddr)
+
 				// We ignore errors as some bootstrap peers may be down
-				h.Connect(ctx, peer)
+				h.Connect(ctx, *peerinfo) //nolint
+				wg.Done()
 			}
 			wg.Wait()
-		case <-ctx.Done():
-			return
+			go handleKademliaDiscovery(ctx, wctx, h, disc, point)
+		}
+	}
+}
+
+// ^ Handles Peers that appear on DHT ^
+func handleKademliaDiscovery(ctx context.Context, wctx *lifecycle.WContext, h host.Host, disc *discovery.RoutingDiscovery, point string) {
+	for {
+		time.Sleep(1 * time.Millisecond)
+		switch state := wctx.State(); state {
+		case lifecycle.StatePaused:
+			continue
+		default:
+			// Timer checks to dispose of peers
+			peerChan, err := disc.FindPeers(ctx, point, discovery.Limit(15))
+			if err != nil {
+				log.Println("Failed to get DHT Peer Channel: ", err)
+				return
+			}
+
+			// Start Routing Discovery
+			for {
+				select {
+				case peer := <-peerChan:
+					var wg sync.WaitGroup
+					if peer.ID == h.ID() {
+						continue
+					} else {
+						wg.Add(1)
+						// We ignore errors as some bootstrap peers may be down
+						h.Connect(ctx, peer)
+					}
+					wg.Wait()
+				case <-ctx.Done():
+					return
+				}
+			}
 		}
 	}
 }
