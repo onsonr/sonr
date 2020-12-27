@@ -1,25 +1,48 @@
 package lifecycle
 
-import "sync"
-
-const (
-	StateRunning = iota
-	StatePaused
+import (
+	"sync"
+	"sync/atomic"
 )
 
-type Worker struct {
-	mu    sync.Mutex
-	state int
+type state struct {
+	flag uint64
+	chn  chan bool
 }
 
-func (w *Worker) SetState(state int) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
-	w.state = state
+var (
+	instance *state
+	once     sync.Once
+)
+
+func GetState() *state {
+	once.Do(func() {
+		chn := make(chan bool)
+		close(chn)
+
+		instance = &state{chn: chn}
+	})
+
+	return instance
 }
 
-func (w *Worker) State() int {
-	w.mu.Lock()
-	defer w.mu.Unlock()
-	return w.state
+// Checks rather to wait or does not need
+func (c *state) NeedsWait() {
+	<-c.chn
+}
+
+// Says all of goroutines to resume execution
+func (c *state) Resume() {
+	if atomic.LoadUint64(&c.flag) == 1 {
+		close(c.chn)
+		atomic.StoreUint64(&c.flag, 0)
+	}
+}
+
+// Says all of goroutines to pause execution
+func (c *state) Pause() {
+	if atomic.LoadUint64(&c.flag) == 0 {
+		atomic.StoreUint64(&c.flag, 1)
+		c.chn = make(chan bool)
+	}
 }

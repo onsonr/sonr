@@ -2,7 +2,6 @@ package lobby
 
 import (
 	"log"
-	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/lifecycle"
@@ -11,102 +10,56 @@ import (
 )
 
 // ^ 1. handleMessages pulls messages from the pubsub topic and pushes them onto the Messages channel. ^
-func (lob *Lobby) handleMessages(wctx *lifecycle.Worker) {
+func (lob *Lobby) handleMessages() {
 	for {
-		time.Sleep(1 * time.Millisecond)
-		switch state := wctx.State(); state {
-		case lifecycle.StatePaused:
-			continue
-		default:
-			for {
-				// Get next msg from pub/sub
-				msg, err := lob.sub.Next(lob.ctx)
-				if err != nil {
-					close(lob.Messages)
-					return
-				}
-
-				// Only forward messages delivered by others
-				if msg.ReceivedFrom == lob.self {
-					continue
-				}
-
-				// Construct message
-				notif := md.LobbyEvent{}
-				err = proto.Unmarshal(msg.Data, &notif)
-				if err != nil {
-					continue
-				}
-
-				// Send valid messages onto the Messages channel
-				lob.Messages <- &notif
-			}
+		// Get next msg from pub/sub
+		msg, err := lob.sub.Next(lob.ctx)
+		if err != nil {
+			close(lob.Messages)
+			return
 		}
+
+		// Only forward messages delivered by others
+		if msg.ReceivedFrom == lob.self {
+			continue
+		}
+
+		// Construct message
+		notif := md.LobbyEvent{}
+		err = proto.Unmarshal(msg.Data, &notif)
+		if err != nil {
+			continue
+		}
+
+		// Send valid messages onto the Messages channel
+		lob.Messages <- &notif
+		lifecycle.GetState().NeedsWait()
 	}
+
 }
 
 // ^ 1a. processMessages handles message content and ticker ^
-func (lob *Lobby) processMessages(wctx *lifecycle.Worker) {
+func (lob *Lobby) processMessages() {
+
 	for {
-		time.Sleep(1 * time.Millisecond)
-		switch state := wctx.State(); state {
-		case lifecycle.StatePaused:
-			continue
-		default:
-
-			// Timer checks to dispose of peers
-			for {
-				select {
-				// ** when we receive a message from the lobby room **
-				case m := <-lob.Messages:
-					// Update Circle by event
-					if m.Event == md.LobbyEvent_UPDATE {
-						// Update Peer Data
-						lob.updatePeer(m.Peer)
-					}
-
-				case <-lob.ctx.Done():
-					return
-
-				case <-lob.doneCh:
-					return
-				}
+		select {
+		// ** when we receive a message from the lobby room **
+		case m := <-lob.Messages:
+			// Update Circle by event
+			if m.Event == md.LobbyEvent_UPDATE {
+				// Update Peer Data
+				lob.updatePeer(m.Peer)
 			}
+
+		case <-lob.ctx.Done():
+			return
+
+		case <-lob.doneCh:
+			return
 		}
+		lifecycle.GetState().NeedsWait()
 	}
 }
-
-// // ^ 2. handleEvents listens for topicEvents ^
-// func (lob *Lobby) handleEvents() {
-// 	for {
-// 		// handle topic events
-// 		event, err := lob.topicHandler.NextPeerEvent(lob.ctx)
-// 		if err != nil {
-// 			return
-// 		}
-
-// 		lob.Events <- &event
-// 	}
-// }
-
-// // ^ 2a. processEvents handles events from topic event channel
-// func (lob *Lobby) processEvents() {
-// 	for {
-// 		select {
-// 		// ** Event for Peer Left ** //
-// 		case e := <-lob.Events:
-// 			if e.Type == pubsub.PeerLeave {
-// 				log.Println(e.Peer.ShortString(), " has exited.")
-// 			}
-// 			if e.Type == pubsub.PeerJoin {
-// 				log.Println(e.Peer.ShortString(), " has joined.")
-// 			}
-
-// 		case <-lob.ctx.Done():
-// 			break
-// 		}
-// 	}
-// }
 
 // ** ID returns ONE Peer.ID in PubSub **
 func (lob *Lobby) ID(q string) peer.ID {

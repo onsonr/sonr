@@ -53,13 +53,13 @@ func (sn *Node) setConnection(ctx context.Context) error {
 	log.Println("GossipSub Created")
 
 	// Enter Lobby
-	if sn.lobby, err = sl.Initialize(&sn.wctx, sn.call.OnRefreshed, sn.error, sn.pubSub, sn.host.ID(), sn.olc); err != nil {
+	if sn.lobby, err = sl.Initialize(sn.call.OnRefreshed, sn.error, sn.pubSub, sn.host.ID(), sn.olc); err != nil {
 		return err
 	}
 	log.Println("Lobby Initialized")
 
 	// Initialize Peer Connection
-	if sn.peerConn, err = tf.Initialize(sn.host, &sn.wctx, sn.pubSub, sn.directories, sn.olc, sn.call.OnInvited, sn.call.OnResponded, sn.call.OnProgress, sn.call.OnReceived, sn.call.OnTransmitted, sn.error); err != nil {
+	if sn.peerConn, err = tf.Initialize(sn.host, sn.pubSub, sn.directories, sn.olc, sn.call.OnInvited, sn.call.OnResponded, sn.call.OnProgress, sn.call.OnReceived, sn.call.OnTransmitted, sn.error); err != nil {
 		return err
 	}
 	log.Println("Connection Initialized")

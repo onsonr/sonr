@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"sync"
-	"time"
 
 	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/host"
@@ -29,7 +28,7 @@ const (
 )
 
 // ^ NewHost: Creates a host with: (MDNS, TCP, QUIC on UDP) ^
-func NewHost(ctx context.Context, wctx *lifecycle.Worker, olc string) (host.Host, error) {
+func NewHost(ctx context.Context, olc string) (host.Host, error) {
 	// @1. Established Required Data
 	point := "/sonr/dht/" + olc
 	ipv4 := IPv4()
@@ -73,7 +72,7 @@ func NewHost(ctx context.Context, wctx *lifecycle.Worker, olc string) (host.Host
 			// This is like telling your friends to meet you at the Eiffel Tower.
 			routingDiscovery := discovery.NewRoutingDiscovery(idht)
 			discovery.Advertise(ctx, routingDiscovery, point)
-			go connectRendevouzNodes(ctx, wctx, h, routingDiscovery, point)
+			go connectRendevouzNodes(ctx, h, routingDiscovery, point)
 			return idht, err
 		}),
 		// Let this host use relays and advertise itself on relays if
@@ -87,73 +86,60 @@ func NewHost(ctx context.Context, wctx *lifecycle.Worker, olc string) (host.Host
 	}
 
 	// setup local mDNS discovery
-	err = startMDNS(ctx, wctx, h, olc)
+	err = startMDNS(ctx, h, olc)
 	fmt.Println("MDNS Started")
 
 	return h, err
 }
 
 // ^ Connects to Rendevouz Nodes then handles discovery ^
-func connectRendevouzNodes(ctx context.Context, wctx *lifecycle.Worker, h host.Host, disc *discovery.RoutingDiscovery, point string) {
-	for {
-		time.Sleep(1 * time.Millisecond)
-		switch state := wctx.State(); state {
-		case lifecycle.StatePaused:
-			continue
-		default:
-			// Connect to defined nodes
-			var wg sync.WaitGroup
+func connectRendevouzNodes(ctx context.Context, h host.Host, disc *discovery.RoutingDiscovery, point string) {
+	// Connect to defined nodes
+	var wg sync.WaitGroup
 
-			for _, maddrString := range config.P2P.RDVP {
-				maddr, err := multiaddr.NewMultiaddr(maddrString.Maddr)
-				if err != nil {
-					log.Println(err)
-				}
-				wg.Add(1)
-				peerinfo, _ := peer.AddrInfoFromP2pAddr(maddr)
-
-				// We ignore errors as some bootstrap peers may be down
-				h.Connect(ctx, *peerinfo) //nolint
-				wg.Done()
-			}
-			wg.Wait()
-			go handleKademliaDiscovery(ctx, wctx, h, disc, point)
+	for _, maddrString := range config.P2P.RDVP {
+		maddr, err := multiaddr.NewMultiaddr(maddrString.Maddr)
+		if err != nil {
+			log.Println(err)
 		}
+		wg.Add(1)
+		peerinfo, _ := peer.AddrInfoFromP2pAddr(maddr)
+
+		// We ignore errors as some bootstrap peers may be down
+		h.Connect(ctx, *peerinfo) //nolint
+		wg.Done()
+		lifecycle.GetState().NeedsWait()
 	}
+	wg.Wait()
+	go handleKademliaDiscovery(ctx, h, disc, point)
+
 }
 
 // ^ Handles Peers that appear on DHT ^
-func handleKademliaDiscovery(ctx context.Context, wctx *lifecycle.Worker, h host.Host, disc *discovery.RoutingDiscovery, point string) {
-	for {
-		time.Sleep(1 * time.Millisecond)
-		switch state := wctx.State(); state {
-		case lifecycle.StatePaused:
-			continue
-		default:
-			// Timer checks to dispose of peers
-			peerChan, err := disc.FindPeers(ctx, point, discovery.Limit(15))
-			if err != nil {
-				log.Println("Failed to get DHT Peer Channel: ", err)
-				return
-			}
+func handleKademliaDiscovery(ctx context.Context, h host.Host, disc *discovery.RoutingDiscovery, point string) {
+	// Timer checks to dispose of peers
+	peerChan, err := disc.FindPeers(ctx, point, discovery.Limit(15))
+	if err != nil {
+		log.Println("Failed to get DHT Peer Channel: ", err)
+		return
+	}
 
-			// Start Routing Discovery
-			for {
-				select {
-				case peer := <-peerChan:
-					var wg sync.WaitGroup
-					if peer.ID == h.ID() {
-						continue
-					} else {
-						wg.Add(1)
-						// We ignore errors as some bootstrap peers may be down
-						h.Connect(ctx, peer)
-					}
-					wg.Wait()
-				case <-ctx.Done():
-					return
-				}
+	// Start Routing Discovery
+	for {
+		select {
+		case peer := <-peerChan:
+			var wg sync.WaitGroup
+			if peer.ID == h.ID() {
+				continue
+			} else {
+				wg.Add(1)
+				// We ignore errors as some bootstrap peers may be down
+				h.Connect(ctx, peer)
 			}
+			wg.Wait()
+		case <-ctx.Done():
+			return
 		}
+		lifecycle.GetState().NeedsWait()
 	}
 }

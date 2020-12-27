@@ -39,7 +39,6 @@ type Node struct {
 
 	// Networking Properties
 	ctx    context.Context
-	wctx   lifecycle.Worker
 	host   host.Host
 	pubSub *pubsub.PubSub
 
@@ -58,7 +57,6 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	// ** Create Context and Node - Begin Setup **
 	node := new(Node)
 	node.ctx = context.Background()
-	node.wctx = lifecycle.Worker{}
 	node.call, node.files = call, make([]*sf.SafeMetadata, maxFileBufferSize)
 
 	// ** Unmarshal Request **
@@ -71,7 +69,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	}
 
 	// @1. Create Host and Start Discovery
-	node.host, err = sh.NewHost(node.ctx, &node.wctx, reqMsg.Olc)
+	node.host, err = sh.NewHost(node.ctx, reqMsg.Olc)
 	if err != nil {
 		node.error(err, "NewNode")
 		return nil
@@ -96,13 +94,13 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 // ^ Close Ends All Network Communication ^
 func (sn *Node) Pause() {
 	log.Println("Sonr Paused.")
-	sn.wctx.SetState(lifecycle.StatePaused)
+	lifecycle.GetState().Pause()
 }
 
 // ^ Close Ends All Network Communication ^
 func (sn *Node) Resume() {
 	log.Println("Sonr Resumed.")
-	sn.wctx.SetState(lifecycle.StateRunning)
+	lifecycle.GetState().Resume()
 }
 
 // ^ Close Ends All Network Communication ^

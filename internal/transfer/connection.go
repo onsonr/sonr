@@ -5,7 +5,6 @@ import (
 	"context"
 	"log"
 	"strings"
-	"time"
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -31,7 +30,6 @@ var onError OnError
 type PeerConnection struct {
 	// Connection
 	auth *AuthService
-	wctx *lifecycle.Worker
 
 	// Data Handlers
 	SafeMeta *sf.SafeMetadata
@@ -50,7 +48,7 @@ type PeerConnection struct {
 }
 
 // ^ Initialize sets up new Peer Connection handler ^
-func Initialize(h host.Host, wctx *lifecycle.Worker, ps *pubsub.PubSub, d *md.Directories, o string, ic OnProtobuf, rc OnProtobuf, pc OnProgress, recCall OnProtobuf, transCall OnProtobuf, ec OnError) (*PeerConnection, error) {
+func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic OnProtobuf, rc OnProtobuf, pc OnProgress, recCall OnProtobuf, transCall OnProtobuf, ec OnError) (*PeerConnection, error) {
 	// Set Package Level Callbacks
 	onError = ec
 
@@ -58,7 +56,6 @@ func Initialize(h host.Host, wctx *lifecycle.Worker, ps *pubsub.PubSub, d *md.Di
 	peerConn := &PeerConnection{
 		olc:             o,
 		dirs:            d,
-		wctx:            wctx,
 		invitedCall:     ic,
 		respondedCall:   rc,
 		progressCall:    pc,
@@ -139,42 +136,35 @@ func (pc *PeerConnection) StartTransfer(h host.Host, id peer.ID, peer *md.Peer) 
 // ^ Handle Incoming Stream ^ //
 func (pc *PeerConnection) HandleTransfer(stream network.Stream) {
 	// Route Data from Stream
-	go func(reader msgio.ReadCloser, t *Transfer, ctx *lifecycle.Worker) {
-		for {
-			time.Sleep(1 * time.Millisecond)
-			switch state := ctx.State(); state {
-			case lifecycle.StatePaused:
-				continue
-			default:
-				for i := 0; ; i++ {
-					// @ Read Length Fixed Bytes
-					buffer, err := reader.ReadMsg()
-					if err != nil {
-						onError(err, "ReadStream")
-						log.Fatalln(err)
-						break
-					}
-
-					// @ Unmarshal Bytes into Proto
-					hasCompleted, err := t.addBuffer(i, buffer)
-					if err != nil {
-						onError(err, "ReadStream")
-						log.Fatalln(err)
-						break
-					}
-
-					// @ Check if All Buffer Received to Save
-					if hasCompleted {
-						// Sync file
-						if err := pc.transfer.save(); err != nil {
-							onError(err, "SaveFile")
-							log.Fatalln(err)
-						}
-						break
-					}
-				}
+	go func(reader msgio.ReadCloser, t *Transfer) {
+		for i := 0; ; i++ {
+			// @ Read Length Fixed Bytes
+			buffer, err := reader.ReadMsg()
+			if err != nil {
+				onError(err, "ReadStream")
+				log.Fatalln(err)
+				break
 			}
+
+			// @ Unmarshal Bytes into Proto
+			hasCompleted, err := t.addBuffer(i, buffer)
+			if err != nil {
+				onError(err, "ReadStream")
+				log.Fatalln(err)
+				break
+			}
+
+			// @ Check if All Buffer Received to Save
+			if hasCompleted {
+				// Sync file
+				if err := pc.transfer.save(); err != nil {
+					onError(err, "SaveFile")
+					log.Fatalln(err)
+				}
+				break
+			}
+			lifecycle.GetState().NeedsWait()
 		}
 
-	}(msgio.NewReader(stream), pc.transfer, pc.wctx)
+	}(msgio.NewReader(stream), pc.transfer)
 }

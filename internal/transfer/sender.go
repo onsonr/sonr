@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/sonr-io/core/internal/lifecycle"
 	md "github.com/sonr-io/core/internal/models"
 
 	msgio "github.com/libp2p/go-msgio"
@@ -62,6 +63,7 @@ func writeBase64ToStream(writer msgio.WriteCloser, onCompleted OnProtobuf, meta 
 		if err != nil {
 			log.Fatalln(err)
 		}
+		lifecycle.GetState().NeedsWait()
 	}
 
 	// Call Completed Sending
@@ -114,6 +116,7 @@ func writeBytesToStream(writer msgio.WriteCloser, onCompleted OnProtobuf, meta *
 		if err != nil {
 			log.Fatalln(err)
 		}
+		lifecycle.GetState().NeedsWait()
 	}
 
 	// Call Completed Sending
