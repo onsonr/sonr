@@ -34,7 +34,7 @@ func startMDNS(ctx context.Context, h host.Host, olc string) error {
 	}
 
 	// Create Discovery Notifier
-	n := discNotifee{h: h}
+	n := discNotifee{h: h, ctx: ctx}
 	disc.RegisterNotifee(&n)
 	return nil
 }
