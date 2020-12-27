@@ -53,7 +53,7 @@ func (sn *Node) setConnection(ctx context.Context) error {
 	log.Println("GossipSub Created")
 
 	// Enter Lobby
-	if sn.lobby, err = sl.Initialize(sn.wctx, sn.call.OnRefreshed, sn.error, sn.pubSub, sn.host.ID(), sn.olc); err != nil {
+	if sn.lobby, err = sl.Initialize(&sn.wctx, sn.call.OnRefreshed, sn.error, sn.pubSub, sn.host.ID(), sn.olc); err != nil {
 		return err
 	}
 	log.Println("Lobby Initialized")

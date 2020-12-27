@@ -60,6 +60,8 @@ message Contact {
       Spotify = 4;   // Feed/Link Option
       Medium = 5;    // Feed/Link Option
       Twitter = 6;   // Feed/Link Option
+      Snapchat = 7;  // Feed/Link Option
+      Github = 8;    // Feed/Link Option
     }
   }
 }

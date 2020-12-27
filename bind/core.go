@@ -39,7 +39,7 @@ type Node struct {
 
 	// Networking Properties
 	ctx    context.Context
-	wctx   *lifecycle.WContext
+	wctx   lifecycle.WContext
 	host   host.Host
 	pubSub *pubsub.PubSub
 
@@ -58,7 +58,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	// ** Create Context and Node - Begin Setup **
 	node := new(Node)
 	node.ctx = context.Background()
-	node.wctx = lifecycle.NewContext()
+	node.wctx = lifecycle.WContext{}
 	node.call, node.files = call, make([]*sf.SafeMetadata, maxFileBufferSize)
 
 	// ** Unmarshal Request **
@@ -71,7 +71,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	}
 
 	// @1. Create Host and Start Discovery
-	node.host, err = sh.NewHost(node.ctx, node.wctx, reqMsg.Olc)
+	node.host, err = sh.NewHost(node.ctx, &node.wctx, reqMsg.Olc)
 	if err != nil {
 		node.error(err, "NewNode")
 		return nil
