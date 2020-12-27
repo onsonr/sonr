@@ -104,8 +104,6 @@ func connectRendevouzNodes(ctx context.Context, h host.Host, disc *discovery.Rou
 		}
 		wg.Add(1)
 		peerinfo, _ := peer.AddrInfoFromP2pAddr(maddr)
-
-		// We ignore errors as some bootstrap peers may be down
 		h.Connect(ctx, *peerinfo) //nolint
 		wg.Done()
 		lifecycle.GetState().NeedsWait()
@@ -133,7 +131,6 @@ func handleKademliaDiscovery(ctx context.Context, h host.Host, disc *discovery.R
 				continue
 			} else {
 				wg.Add(1)
-				// We ignore errors as some bootstrap peers may be down
 				h.Connect(ctx, peer)
 			}
 			wg.Wait()

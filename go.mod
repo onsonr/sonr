@@ -15,6 +15,7 @@ require (
 	github.com/libp2p/go-libp2p-pubsub v0.3.6
 	github.com/libp2p/go-libp2p-quic-transport v0.8.2
 	github.com/libp2p/go-libp2p-secio v0.2.2
+	github.com/libp2p/go-libp2p-swarm v0.2.8
 	github.com/libp2p/go-libp2p-tls v0.1.3
 	github.com/libp2p/go-msgio v0.0.6
 	github.com/multiformats/go-multiaddr v0.3.1
