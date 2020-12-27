@@ -20,11 +20,11 @@ const defaultMDNSTag = "sonr-mdns+"
 // @ discNotifee gets notified when we find a new peer via mDNS discovery ^
 type discNotifee struct {
 	h    host.Host
-	wctx *lifecycle.WContext
+	wctx *lifecycle.Worker
 }
 
 // ^ startMDNS creates an mDNS discovery service and attaches it to the libp2p Host. ^
-func startMDNS(ctx context.Context, wctx *lifecycle.WContext, h host.Host, olc string) error {
+func startMDNS(ctx context.Context, wctx *lifecycle.Worker, h host.Host, olc string) error {
 	// setup mDNS discovery to find local peers
 	discTag := defaultMDNSTag + olc
 	disc, err := discovery.NewMdnsService(ctx, h, discoveryInterval, discTag)
@@ -33,7 +33,7 @@ func startMDNS(ctx context.Context, wctx *lifecycle.WContext, h host.Host, olc s
 	}
 
 	// Create Discovery Notifier
-	n := discNotifee{h: h}
+	n := discNotifee{h: h, wctx: wctx}
 	disc.RegisterNotifee(&n)
 	return nil
 }

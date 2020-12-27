@@ -39,7 +39,7 @@ type Node struct {
 
 	// Networking Properties
 	ctx    context.Context
-	wctx   lifecycle.WContext
+	wctx   lifecycle.Worker
 	host   host.Host
 	pubSub *pubsub.PubSub
 
@@ -58,7 +58,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	// ** Create Context and Node - Begin Setup **
 	node := new(Node)
 	node.ctx = context.Background()
-	node.wctx = lifecycle.WContext{}
+	node.wctx = lifecycle.Worker{}
 	node.call, node.files = call, make([]*sf.SafeMetadata, maxFileBufferSize)
 
 	// ** Unmarshal Request **

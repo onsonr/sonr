@@ -7,22 +7,18 @@ const (
 	StatePaused
 )
 
-type WContext struct {
+type Worker struct {
 	mu    sync.Mutex
 	state int
 }
 
-func NewContext() *WContext {
-	return new(WContext)
-}
-
-func (w *WContext) SetState(state int) {
+func (w *Worker) SetState(state int) {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 	w.state = state
 }
 
-func (w *WContext) State() int {
+func (w *Worker) State() int {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 	return w.state

@@ -41,7 +41,7 @@ type Lobby struct {
 }
 
 // ^ Initialize Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
-func Initialize(wctx *lifecycle.WContext, callr OnProtobuf, onErr Error, ps *pubsub.PubSub, id peer.ID, olc string) (*Lobby, error) {
+func Initialize(wctx *lifecycle.Worker, callr OnProtobuf, onErr Error, ps *pubsub.PubSub, id peer.ID, olc string) (*Lobby, error) {
 	// Join the pubsub Topic
 	ctx := context.Background()
 	topic, err := ps.Join(olc)

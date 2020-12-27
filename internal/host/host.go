@@ -29,7 +29,7 @@ const (
 )
 
 // ^ NewHost: Creates a host with: (MDNS, TCP, QUIC on UDP) ^
-func NewHost(ctx context.Context, wctx *lifecycle.WContext, olc string) (host.Host, error) {
+func NewHost(ctx context.Context, wctx *lifecycle.Worker, olc string) (host.Host, error) {
 	// @1. Established Required Data
 	point := "/sonr/dht/" + olc
 	ipv4 := IPv4()
@@ -94,7 +94,7 @@ func NewHost(ctx context.Context, wctx *lifecycle.WContext, olc string) (host.Ho
 }
 
 // ^ Connects to Rendevouz Nodes then handles discovery ^
-func connectRendevouzNodes(ctx context.Context, wctx *lifecycle.WContext, h host.Host, disc *discovery.RoutingDiscovery, point string) {
+func connectRendevouzNodes(ctx context.Context, wctx *lifecycle.Worker, h host.Host, disc *discovery.RoutingDiscovery, point string) {
 	for {
 		time.Sleep(1 * time.Millisecond)
 		switch state := wctx.State(); state {
@@ -123,7 +123,7 @@ func connectRendevouzNodes(ctx context.Context, wctx *lifecycle.WContext, h host
 }
 
 // ^ Handles Peers that appear on DHT ^
-func handleKademliaDiscovery(ctx context.Context, wctx *lifecycle.WContext, h host.Host, disc *discovery.RoutingDiscovery, point string) {
+func handleKademliaDiscovery(ctx context.Context, wctx *lifecycle.Worker, h host.Host, disc *discovery.RoutingDiscovery, point string) {
 	for {
 		time.Sleep(1 * time.Millisecond)
 		switch state := wctx.State(); state {

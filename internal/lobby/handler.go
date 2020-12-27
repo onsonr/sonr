@@ -11,7 +11,7 @@ import (
 )
 
 // ^ 1. handleMessages pulls messages from the pubsub topic and pushes them onto the Messages channel. ^
-func (lob *Lobby) handleMessages(wctx *lifecycle.WContext) {
+func (lob *Lobby) handleMessages(wctx *lifecycle.Worker) {
 	for {
 		time.Sleep(1 * time.Millisecond)
 		switch state := wctx.State(); state {
@@ -46,7 +46,7 @@ func (lob *Lobby) handleMessages(wctx *lifecycle.WContext) {
 }
 
 // ^ 1a. processMessages handles message content and ticker ^
-func (lob *Lobby) processMessages(wctx *lifecycle.WContext) {
+func (lob *Lobby) processMessages(wctx *lifecycle.Worker) {
 	for {
 		time.Sleep(1 * time.Millisecond)
 		switch state := wctx.State(); state {
