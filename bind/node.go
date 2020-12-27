@@ -1,7 +1,6 @@
 package sonr
 
 import (
-	"errors"
 	"log"
 	"math"
 	"time"
@@ -83,23 +82,15 @@ func (sn *Node) Invite(peerId string, kind int) {
 	}
 
 	// Check if ID in PeerStore
-	for _, n := range sn.host.Peerstore().Peers() {
-		if id == n {
-			// Call GRPC in PeerConnection
-			go func(inv *md.AuthInvite) {
-				// Convert Protobuf to bytes
-				msgBytes, err := proto.Marshal(inv)
-				if err != nil {
-					sn.error(err, "Marshal")
-				}
-
-				sn.peerConn.Request(sn.host, id, msgBytes)
-			}(&invMsg)
-		} else {
-			// Return Error
-			sn.error(errors.New("Peer not found"), "Invite")
+	go func(inv *md.AuthInvite) {
+		// Convert Protobuf to bytes
+		msgBytes, err := proto.Marshal(inv)
+		if err != nil {
+			sn.error(err, "Marshal")
 		}
-	}
+
+		sn.peerConn.Request(sn.host, id, msgBytes)
+	}(&invMsg)
 }
 
 // ^ Respond to an Invitation ^ //
