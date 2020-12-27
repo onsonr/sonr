@@ -38,7 +38,7 @@ message Payload {
   Metadata file = 1;
   Contact contact = 2;
   Type type = 3;
-  enum Type { NONE = 0; FILE = 1; CONTACT = 2; }
+  enum Type { NONE = 0; FILE = 1; CONTACT = 2; URL = 3; TEXT = 4; }
 }
 
 // [PLUGIN]
