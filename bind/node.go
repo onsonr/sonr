@@ -21,6 +21,16 @@ func (sn *Node) Info() []byte {
 	return data
 }
 
+// ^ Updates Current Contact Card ^
+func (sn *Node) SetContact(conBytes []byte) {
+	newContact := &md.Contact{}
+	err := proto.Unmarshal(conBytes, newContact)
+	if err != nil {
+		log.Println(err)
+	}
+	sn.contact = newContact
+}
+
 // ^ Update proximity/direction and Notify Lobby ^ //
 func (sn *Node) Update(direction float64) {
 	// ** Initialize ** //
@@ -34,18 +44,16 @@ func (sn *Node) Update(direction float64) {
 	}
 }
 
-// ^ AddFile adds generates metadata and thumbnail from filepath to Process for Transfer, returns key ^ //
+// ^ AddFile adds generates Metadata and Thumbnail ^ //
 func (sn *Node) AddFile(path string) {
 	//@2. Initialize SafeFile
 	safeMeta := sf.NewMetadata(path, sn.call.OnQueued, sn.error)
 	sn.files = append(sn.files, safeMeta)
 }
 
-// ^ Invite an available peer to transfer ^ //
-func (sn *Node) Invite(peerId string, kind int) {
-	// Initialize
-	var invMsg md.AuthInvite
-	payload := md.Payload_Type(kind)
+// ^ Send Invite with a File ^ //
+func (sn *Node) InviteFile(peerId string) {
+	// Get PeerID
 	id, _, err := sn.lobby.Find(peerId)
 
 	// Check error
@@ -53,32 +61,85 @@ func (sn *Node) Invite(peerId string, kind int) {
 		sn.error(err, "Invite")
 	}
 
-	// @ Check Payload Type
-	if payload == md.Payload_FILE {
-		// Create Delay to allow processing
-		time.Sleep(time.Millisecond * 250)
+	// Create Invite Message with Payload
+	time.Sleep(time.Millisecond * 100)
 
-		// Retreive Current File
-		currFile := sn.currentFile()
-		sn.peerConn.SafeMeta = currFile
+	// Retreive Current File
+	currFile := sn.currentFile()
+	sn.peerConn.SafeMeta = currFile
 
-		// Create Invite Message
-		invMsg = md.AuthInvite{
-			From: sn.peer,
-			Payload: &md.Payload{
-				Type: md.Payload_FILE,
-				File: currFile.GetMetadata(),
-			},
+	// Create Invite Message
+	invMsg := md.AuthInvite{
+		From: sn.peer,
+		Payload: &md.Payload{
+			Type: md.Payload_FILE,
+			File: currFile.GetMetadata(),
+		},
+	}
+
+	// Check if ID in PeerStore
+	go func(inv *md.AuthInvite) {
+		// Convert Protobuf to bytes
+		msgBytes, err := proto.Marshal(inv)
+		if err != nil {
+			sn.error(err, "Marshal")
 		}
-	} else if payload == md.Payload_CONTACT {
-		// Create Invite Message with Payload
-		invMsg = md.AuthInvite{
-			From: sn.peer,
-			Payload: &md.Payload{
-				Type:    md.Payload_CONTACT,
-				Contact: sn.contact,
-			},
+
+		sn.peerConn.Request(sn.host, id, msgBytes)
+	}(&invMsg)
+}
+
+// ^ Send Invite with User Contact Card ^ //
+func (sn *Node) InviteContact(peerId string) {
+	// Get PeerID
+	id, _, err := sn.lobby.Find(peerId)
+
+	// Check error
+	if err != nil {
+		sn.error(err, "Invite")
+	}
+
+	// Create Invite Message with Payload
+	invMsg := md.AuthInvite{
+		From: sn.peer,
+		Payload: &md.Payload{
+			Type:    md.Payload_CONTACT,
+			Contact: sn.contact,
+		},
+	}
+
+	// Check if ID in PeerStore
+	go func(inv *md.AuthInvite) {
+		// Convert Protobuf to bytes
+		msgBytes, err := proto.Marshal(inv)
+		if err != nil {
+			sn.error(err, "Marshal")
 		}
+
+		sn.peerConn.Request(sn.host, id, msgBytes)
+	}(&invMsg)
+}
+
+// ^ Send Invite with URL Link ^ //
+func (sn *Node) InviteLink(peerId string, display string, url string) {
+	// Get PeerID
+	id, _, err := sn.lobby.Find(peerId)
+
+	// Check error
+	if err != nil {
+		sn.error(err, "Invite")
+	}
+
+	// Create Invite Message with Payload
+	invMsg := md.AuthInvite{
+		From: sn.peer,
+		Payload: &md.Payload{
+			Type: md.Payload_CONTACT,
+			Link: &md.Link{
+				Display: display,
+				Url:     url,
+			},
+		},
 	}
 
 	// Check if ID in PeerStore

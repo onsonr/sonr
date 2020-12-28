@@ -109,6 +109,7 @@ func connectRendevouzNodes(ctx context.Context, h host.Host, disc *discovery.Rou
 		lifecycle.GetState().NeedsWait()
 	}
 	wg.Wait()
+	print("Connected to bootstrap peers")
 	go handleKademliaDiscovery(ctx, h, disc, point)
 
 }
@@ -116,7 +117,7 @@ func connectRendevouzNodes(ctx context.Context, h host.Host, disc *discovery.Rou
 // ^ Handles Peers that appear on DHT ^
 func handleKademliaDiscovery(ctx context.Context, h host.Host, disc *discovery.RoutingDiscovery, point string) {
 	// Timer checks to dispose of peers
-	peerChan, err := disc.FindPeers(ctx, point, discovery.Limit(15))
+	peerChan, err := disc.FindPeers(ctx, point, discovery.Limit(15)) //nolint
 	if err != nil {
 		log.Println("Failed to get DHT Peer Channel: ", err)
 		return
@@ -131,7 +132,7 @@ func handleKademliaDiscovery(ctx context.Context, h host.Host, disc *discovery.R
 				continue
 			} else {
 				wg.Add(1)
-				h.Connect(ctx, peer)
+				h.Connect(ctx, peer) //nolint
 			}
 			wg.Wait()
 		case <-ctx.Done():

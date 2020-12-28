@@ -30,6 +30,11 @@ message Lobby {
   map<string, Peer> peers = 3;
 }
 
+message Link {
+  string display = 1;
+  string url = 2;
+}
+
 // Define Contact Type: Will be CSV in Future
 message Contact {
   // Default
