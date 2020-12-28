@@ -134,7 +134,7 @@ func (sn *Node) InviteLink(peerId string, display string, url string) {
 	invMsg := md.AuthInvite{
 		From: sn.peer,
 		Payload: &md.Payload{
-			Type: md.Payload_CONTACT,
+			Type: md.Payload_URL,
 			Link: &md.Link{
 				Display: display,
 				Url:     url,
