@@ -56,6 +56,7 @@ func NewClient(ctx context.Context, m ui.SystemMenu) *Client {
 		},
 	}
 
+	// Convert to Bytes
 	bytes, err := proto.Marshal(&request)
 	if err != nil {
 		log.Panicln("Error Marshalling Request")
