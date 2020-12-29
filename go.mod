@@ -4,6 +4,7 @@ go 1.15
 
 // Core Imports
 require (
+	github.com/getlantern/systray v1.1.0
 	github.com/golang/protobuf v1.4.3
 	github.com/h2non/filetype v1.1.0
 	github.com/libp2p/go-libp2p v0.11.0
@@ -21,6 +22,8 @@ require (
 	github.com/multiformats/go-multiaddr v0.3.1
 	//github.com/multiformats/go-multiaddr v0.3.1
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
+	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
+	golang.org/x/mobile v0.0.0-20201217150744-e6ae53a27f4f // indirect
 	golang.org/x/tools v0.0.0-20200904185747-39188db58858 // indirect
 	google.golang.org/protobuf v1.23.0
 )

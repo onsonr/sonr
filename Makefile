@@ -1,6 +1,7 @@
 SHELL := /bin/zsh # Set Shell
 
 # Go Commands
+GODESKTOP=/Users/prad/Downloads/mobile-desktop/cmd/gomobile/gomobile
 GOMOBILE=gomobile
 GOCLEAN=$(GOMOBILE) clean
 GOBIND=$(GOMOBILE) bind
@@ -20,7 +21,11 @@ PLUGIN_PB_DIR="/Users/prad/Sonr/plugin/lib/models"
 PB_BUILD_CORE="--go_out=$(CORE_PB_DIR)"
 PB_BUILD_PLUGIN="--dart_out=$(PLUGIN_PB_DIR)"
 
-all: protoc ios android
+all: Makefile
+	@sed -n 's/^##//p' $<
+
+## mobile   :   Builds Android and iOS Bind for Plugin Path
+mobile: protoc ios android
 	@go mod tidy
 	@cd /System/Library/Sounds && afplay Hero.aiff
 	@echo ""
@@ -30,7 +35,7 @@ all: protoc ios android
 	@echo "--------------------------------------------------------------"
 
 
-## android :    Builds Android Bind at Plugin Path
+## android  :   Builds Android Bind at Plugin Path
 android:
 	@echo ""
 	@echo ""
@@ -47,7 +52,7 @@ android:
 	@echo ""
 
 
-## ios     :    Builds iOS Bind at Plugin Path
+## ios      :   Builds iOS Bind at Plugin Path
 ios:
 	@echo ""
 	@echo ""
@@ -63,8 +68,12 @@ ios:
 	@echo "--------------------------------------------------------------"
 	@echo ""
 
+## desktop  :   Compiles Desktop build of Sonr as System Tray
+desktop:
+	cd pkg && go build -o sonr
+	cd pkg && ./sonr
 
-## protoc  :    Compiles Protobuf models for Core Library and Plugin
+## protoc   :   Compiles Protobuf models for Core Library and Plugin
 protoc:
 	@echo ""
 	@echo ""
@@ -80,7 +89,7 @@ protoc:
 	@echo ""
 
 
-## reset   :    Cleans Gomobile, Removes Framworks from Plugin, and Inits Gomobile
+## reset    :   Cleans Gomobile, Removes Framworks from Plugin, and Initializes Gomobile
 reset:
 	cd bind && $(GOCLEAN)
 	go mod tidy
@@ -89,7 +98,3 @@ reset:
 	mkdir -p $(IOS_BUILDDIR)
 	mkdir -p $(ANDROID_BUILDDIR)
 	cd bind && gomobile init
-
-
-help : Makefile
-	@sed -n 's/^##//p' $<
