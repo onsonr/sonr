@@ -13,6 +13,9 @@ ANDROID_BUILDDIR=/Users/prad/Sonr/plugin/android/libs
 ANDROID_ARTIFACT= $(ANDROID_BUILDDIR)/io.sonr.core.aar
 MAC_BUILDDIR=/Users/prad/Sonr/core/build/Sonr.app/Contents/MacOS
 MAC_ARTIFACT=$(MAC_BUILDDIR)/sonr_core
+WIN_BUILDDIR=/Users/prad/Sonr/core/build
+WIN_386_ARTIFACT=$(WIN_BUILDDIR)/sonr-386.exe
+WIN_AMD_ARTIFACT=$(WIN_BUILDDIR)/sonr-amd.exe
 
 # Proto Directories
 PB_PATH="/Users/prad/Sonr/core/internal/models"
@@ -72,8 +75,19 @@ ios:
 
 ## desktop  :   Compiles Desktop build of Sonr as System Tray
 desktop:
+	@echo ""
+	@echo ""
+	@echo "-----------------------------------------------------------"
+	@echo "------------- 🖥 START DESKTOP BUILD 🖥 --------------------"
+	@echo "-----------------------------------------------------------"
 	cd pkg && go build -o $(MAC_ARTIFACT)
+	cd pkg && env GOOS=windows GOARCH=386 go build -o $(WIN_386_ARTIFACT)
+	cd pkg && env GOOS=windows GOARCH=amd64 go build -o $(WIN_AMD_ARTIFACT)
 	cd $(MAC_BUILDDIR) && ./sonr_core
+	@echo "--------------------------------------------------------------"
+	@echo "------------- 🖥 COMPLETED DESKTOP BULD 🖥 --------------------"
+	@echo "--------------------------------------------------------------"
+	@echo ""
 
 ## protoc   :   Compiles Protobuf models for Core Library and Plugin
 protoc:
@@ -95,6 +109,8 @@ protoc:
 reset:
 	cd bind && $(GOCLEAN)
 	go mod tidy
+	go clean -cache -x
+	go clean -modcache -x
 	rm -rf $(IOS_BUILDDIR)
 	rm -rf $(ANDROID_BUILDDIR)
 	mkdir -p $(IOS_BUILDDIR)
