@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"os"
 
 	sonr "github.com/sonr-io/core/bind"
 	md "github.com/sonr-io/core/internal/models"
@@ -15,11 +16,36 @@ type Client struct {
 	node *sonr.Node
 }
 
+const weybridgeOLC = "87c4xfjv+"
+
 // ^ Create New Client Node ^ //
 func NewClient(ctx context.Context) *Client {
-	// Get Request Message
+	// Get Info
+	name, err := os.Hostname()
+	if err != nil {
+		log.Println(err)
+		name = "Undefined"
+	}
+
+	docDir, err := os.UserHomeDir()
+	if err != nil {
+		log.Println(err)
+		docDir = "local/temp"
+	}
+
+	// Create Request Message
 	request := md.ConnectionRequest{
-		Olc: "",
+		Olc:      weybridgeOLC,
+		Username: "",
+		Device: &md.Device{
+			Platform: "Mac",
+			Model:    "MBP",
+			Name:     name,
+		},
+		Directory: &md.Directories{
+			Documents: docDir,
+			Temporary: "local/temp",
+		},
 	}
 
 	bytes, err := proto.Marshal(&request)
@@ -32,50 +58,6 @@ func NewClient(ctx context.Context) *Client {
 	c.ctx = ctx
 	c.node = sonr.NewNode(bytes, c)
 	return c
-}
-
-// @ Inherited Method: Handle Refresh ^ //
-func (c *Client) OnRefreshed(data []byte) {
-	m := &md.Lobby{}
-	err := proto.Unmarshal(data, m)
-	if err != nil {
-		log.Panicln("Error Unmarshalling Request")
-	}
-}
-
-// @ Inherited Method: Handle Invite ^ //
-func (c *Client) OnInvited(data []byte) {
-
-}
-
-// @ Inherited Method: Handle Response ^ //
-func (c *Client) OnResponded(data []byte) {
-
-}
-
-// @ Inherited Method: Handle Queue ^ //
-func (c *Client) OnQueued(data []byte) {
-
-}
-
-// @ Inherited Method: Handle Progress ^ //
-func (c *Client) OnProgress(data float32) {
-
-}
-
-// @ Inherited Method: Handle Received ^ //
-func (c *Client) OnReceived(data []byte) {
-
-}
-
-// @ Inherited Method: Handle Sent ^ //
-func (c *Client) OnTransmitted(data []byte) {
-
-}
-
-// @ Inherited Method: Handle Error ^ //
-func (c *Client) OnError(data []byte) {
-
 }
 
 // ^ Method To Share File ^ //

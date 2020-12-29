@@ -5,6 +5,8 @@ import (
 	"image/png"
 	"log"
 	"os"
+
+	md "github.com/sonr-io/core/internal/models"
 )
 
 // ** Icon Type for Image
@@ -16,6 +18,10 @@ const (
 	User
 	Peer
 	Invite
+	iPhone
+	Android
+	Mac
+	Windows
 )
 
 // ** Const UI Resource Path ** //
@@ -23,7 +29,7 @@ const RES_PATH = "/Users/prad/Sonr/core/pkg/res/"
 const ICON_PATH = "/Users/prad/Sonr/core/pkg/res/systray.png"
 
 func (d Icon) File() string {
-	return [...]string{"systray.png", "close.png", "user.png", "peer.png", "invite.png"}[d]
+	return [...]string{"systray.png", "close.png", "user.png", "peer.png", "invite.png", "iphone.png", "android.png", "mac.png", "windows.png"}[d]
 }
 
 // ^ Returns Buffer of Image by Icon Type
@@ -53,4 +59,16 @@ func GetIcon(i Icon) []byte {
 		return nil
 	}
 	return imgBuffer.Bytes()
+}
+
+func GetDeviceIcon(d *md.Device) []byte {
+	if d.Platform == "Android" {
+		return GetIcon(Android)
+	} else if d.Platform == "iOS" {
+		return GetIcon(iPhone)
+	} else if d.Platform == "Mac" {
+		return GetIcon(Mac)
+	} else {
+		return GetIcon(Windows)
+	}
 }

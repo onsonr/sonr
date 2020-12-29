@@ -6,7 +6,11 @@ import (
 
 	"github.com/getlantern/systray"
 	"github.com/skratchdot/open-golang/open"
+	md "github.com/sonr-io/core/internal/models"
 )
+
+type StatusMenu struct {
+}
 
 func StartTray() {
 	go func() {
@@ -20,10 +24,10 @@ func StartTray() {
 		mEnabled.SetTemplateIcon(GetIcon(SystemTray), GetIcon(SystemTray))
 
 		systray.AddMenuItem("Ignored", "Ignored")
-		subMenuTop := systray.AddMenuItem("Testing", "Beep Package Testing")
-		subMenuBottom := subMenuTop.AddSubMenuItem("Test Notification", "Beep Testing Notifaction")
-		subMenuBottom2 := subMenuTop.AddSubMenuItem("Test Alert", "Beep Testing Alert")
-		subMenuBottom3 := subMenuTop.AddSubMenuItem("Test Alert", "Beep Testing Alert")
+
+		// subMenuBottom := subMenuTop.AddSubMenuItem("Test Notification", "Beep Testing Notifaction")
+		// subMenuBottom2 := subMenuTop.AddSubMenuItem("Test Alert", "Beep Testing Alert")
+		// subMenuBottom3 := subMenuTop.AddSubMenuItem("Test Alert", "Beep Testing Alert")
 
 		mUrl := systray.AddMenuItem("Open UI", "my home")
 		systray.AddSeparator()
@@ -55,13 +59,21 @@ func StartTray() {
 				if err != nil {
 					log.Fatalln(err)
 				}
-			case <-subMenuBottom2.ClickedCh:
-				PushInvited()
-			case <-subMenuBottom.ClickedCh:
-				PushInvited()
-			case <-subMenuBottom3.ClickedCh:
-				PushInvited()
 			}
 		}
 	}()
+}
+
+func RefreshLobby(lob *md.Lobby) {
+	if lob.Size > 1 {
+		peersMenuItem := systray.AddMenuItem("Peers", "Available local peers")
+		for _, p := range lob.Peers {
+			// Build Item
+			itemTitle := p.FirstName + " | " + p.Device.Platform
+
+			// Add Item to Menu
+			item := peersMenuItem.AddSubMenuItem(itemTitle, "Nearby Available Peer")
+			item.SetIcon(GetDeviceIcon(p.Device))
+		}
+	}
 }
