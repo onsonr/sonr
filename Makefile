@@ -1,6 +1,7 @@
 SHELL := /bin/zsh # Set Shell
 
 # Go Commands
+GODESKTOP=/Users/prad/Downloads/mobile-desktop/cmd/gomobile/gomobile
 GOMOBILE=gomobile
 GOCLEAN=$(GOMOBILE) clean
 GOBIND=$(GOMOBILE) bind
@@ -10,6 +11,8 @@ IOS_BUILDDIR=/Users/prad/Sonr/plugin/ios/Frameworks
 IOS_ARTIFACT= $(IOS_BUILDDIR)/Core.framework
 ANDROID_BUILDDIR=/Users/prad/Sonr/plugin/android/libs
 ANDROID_ARTIFACT= $(ANDROID_BUILDDIR)/io.sonr.core.aar
+MAC_BUILDDIR=/Users/prad/Sonr/core/build/Sonr.app/Contents/MacOS
+MAC_ARTIFACT=$(MAC_BUILDDIR)/sonr_core
 
 # Proto Directories
 PB_PATH="/Users/prad/Sonr/core/internal/models"
@@ -20,7 +23,11 @@ PLUGIN_PB_DIR="/Users/prad/Sonr/plugin/lib/models"
 PB_BUILD_CORE="--go_out=$(CORE_PB_DIR)"
 PB_BUILD_PLUGIN="--dart_out=$(PLUGIN_PB_DIR)"
 
-all: protoc ios android
+all: Makefile
+	@sed -n 's/^##//p' $<
+
+## mobile   :   Builds Android and iOS Bind for Plugin Path
+mobile: protoc ios android
 	@go mod tidy
 	@cd /System/Library/Sounds && afplay Hero.aiff
 	@echo ""
@@ -30,7 +37,7 @@ all: protoc ios android
 	@echo "--------------------------------------------------------------"
 
 
-## android :    Builds Android Bind at Plugin Path
+## android  :   Builds Android Bind at Plugin Path
 android:
 	@echo ""
 	@echo ""
@@ -47,7 +54,7 @@ android:
 	@echo ""
 
 
-## ios     :    Builds iOS Bind at Plugin Path
+## ios      :   Builds iOS Bind at Plugin Path
 ios:
 	@echo ""
 	@echo ""
@@ -63,8 +70,12 @@ ios:
 	@echo "--------------------------------------------------------------"
 	@echo ""
 
+## desktop  :   Compiles Desktop build of Sonr as System Tray
+desktop:
+	cd pkg && go build -o $(MAC_ARTIFACT)
+	cd $(MAC_BUILDDIR) && ./sonr_core
 
-## protoc  :    Compiles Protobuf models for Core Library and Plugin
+## protoc   :   Compiles Protobuf models for Core Library and Plugin
 protoc:
 	@echo ""
 	@echo ""
@@ -80,7 +91,7 @@ protoc:
 	@echo ""
 
 
-## reset   :    Cleans Gomobile, Removes Framworks from Plugin, and Inits Gomobile
+## reset    :   Cleans Gomobile, Removes Framworks from Plugin, and Initializes Gomobile
 reset:
 	cd bind && $(GOCLEAN)
 	go mod tidy
@@ -89,7 +100,3 @@ reset:
 	mkdir -p $(IOS_BUILDDIR)
 	mkdir -p $(ANDROID_BUILDDIR)
 	cd bind && gomobile init
-
-
-help : Makefile
-	@sed -n 's/^##//p' $<
