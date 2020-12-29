@@ -23,8 +23,8 @@ func main() {
 func onReady() {
 	// node := sonr.NewNode(reqBytes []byte, call sonr.Callback)
 	systray.SetTemplateIcon(ui.GetIcon(ui.SystemTray), ui.GetIcon(ui.SystemTray))
-	systray.SetTitle("Sonr")
-	systray.SetTooltip("Lantern")
+	systray.SetTitle("")
+	systray.SetTooltip("Sonr")
 
 	// We can manipulate the systray in other goroutines
 	go func() {
@@ -46,6 +46,7 @@ func onReady() {
 		mUrl := systray.AddMenuItem("Open UI", "my home")
 		systray.AddSeparator()
 		mQuitOrig := systray.AddMenuItem("Quit", "Quit the whole app")
+		mQuitOrig.SetTemplateIcon(ui.GetIcon(ui.Close), ui.GetIcon(ui.Close))
 		go func() {
 			<-mQuitOrig.ClickedCh
 			fmt.Println("Requesting quit")

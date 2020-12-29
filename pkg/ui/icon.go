@@ -15,35 +15,21 @@ const (
 	Close
 	User
 	Peer
+	Invite
 )
 
 // ** Const UI Resource Path ** //
-const path = "/Users/prad/Sonr/core/pkg/res/"
+const RES_PATH = "/Users/prad/Sonr/core/pkg/res/"
 
-func (d Icon) String() string {
-	return [...]string{"SystemTray", "Close", "User", "Peer"}[d]
+func (d Icon) File() string {
+	return [...]string{"systray.png", "close.png", "user.png", "peer.png", "invite.png"}[d]
 }
 
 // ^ Returns Buffer of Image by Icon Type
 func GetIcon(i Icon) []byte {
-	var image []byte
-	switch i {
-	case SystemTray:
-		return readIcon(path + "icon.png")
-	case Close:
-		log.Println(" goes down.")
-	case User:
-		log.Println(" goes down.")
-	case Peer:
-		log.Println(" goes down.")
-	default:
-		log.Println(" stays put.")
-	}
-	return image
-}
+	// Get Path
+	path := RES_PATH + i.File()
 
-// ^ Reads Decodes/Encodes Image from Path ^ //
-func readIcon(path string) []byte {
 	// Initialize
 	imgBuffer := new(bytes.Buffer)
 	existingImageFile, err := os.Open(path)
