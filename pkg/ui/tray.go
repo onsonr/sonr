@@ -56,11 +56,11 @@ func StartTray() {
 					log.Fatalln(err)
 				}
 			case <-subMenuBottom2.ClickedCh:
-				TestNotif()
+				PushInvited()
 			case <-subMenuBottom.ClickedCh:
-				TestAlert()
+				PushInvited()
 			case <-subMenuBottom3.ClickedCh:
-				TestBeep()
+				PushInvited()
 			}
 		}
 	}()
