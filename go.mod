@@ -4,11 +4,11 @@ go 1.15
 
 // Core Imports
 require (
+	github.com/cratonica/2goarray v0.0.0-20190331194516-514510793eaa // indirect
 	github.com/getlantern/systray v1.1.0
 	github.com/golang/protobuf v1.4.3
 	github.com/h2non/filetype v1.1.0
 	github.com/libp2p/go-libp2p v0.11.0
-	//github.com/libp2p/go-libp2p-connmgr v0.2.4
 	github.com/libp2p/go-libp2p-core v0.6.1
 	github.com/libp2p/go-libp2p-discovery v0.5.0
 	github.com/libp2p/go-libp2p-gorpc v0.1.1
@@ -20,7 +20,6 @@ require (
 	github.com/libp2p/go-libp2p-tls v0.1.3
 	github.com/libp2p/go-msgio v0.0.6
 	github.com/multiformats/go-multiaddr v0.3.1
-	//github.com/multiformats/go-multiaddr v0.3.1
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
 	golang.org/x/mobile v0.0.0-20201217150744-e6ae53a27f4f // indirect

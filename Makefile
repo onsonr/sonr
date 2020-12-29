@@ -11,6 +11,8 @@ IOS_BUILDDIR=/Users/prad/Sonr/plugin/ios/Frameworks
 IOS_ARTIFACT= $(IOS_BUILDDIR)/Core.framework
 ANDROID_BUILDDIR=/Users/prad/Sonr/plugin/android/libs
 ANDROID_ARTIFACT= $(ANDROID_BUILDDIR)/io.sonr.core.aar
+MAC_BUILDDIR=/Users/prad/Sonr/core/build/Sonr.app/Contents/MacOS
+MAC_ARTIFACT=$(MAC_BUILDDIR)/sonr_core
 
 # Proto Directories
 PB_PATH="/Users/prad/Sonr/core/internal/models"
@@ -70,8 +72,8 @@ ios:
 
 ## desktop  :   Compiles Desktop build of Sonr as System Tray
 desktop:
-	cd pkg && go build -o sonr
-	cd pkg && ./sonr
+	cd pkg && go build -o $(MAC_ARTIFACT)
+	cd $(MAC_BUILDDIR) && ./sonr_core
 
 ## protoc   :   Compiles Protobuf models for Core Library and Plugin
 protoc:
