@@ -27,13 +27,15 @@ func StartTray() SystemMenu {
 	sm := SystemMenu{}
 	sm.peerCount = 0
 	sm.lobbySize = 1
-	sm.mCount = systray.AddMenuItem("Available Peers: "+string(sm.peerCount), "Peers Near You")
-	sm.mCount.Disable()
 
 	// Quit Sonr
 	sm.mQuit = systray.AddMenuItem("Quit", "Quit the whole app")
 	sm.mQuit.SetTemplateIcon(GetIcon(Close), GetIcon(Close))
 	systray.AddSeparator()
+
+	// Pers Label
+	sm.mCount = systray.AddMenuItem("Available Peers", "Peers Near You")
+	sm.mCount.Disable()
 
 	// Handle Menu Events
 	go sm.HandleMenuInput()
