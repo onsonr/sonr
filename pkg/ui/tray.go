@@ -1,79 +1,94 @@
+//nolint
 package ui
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/getlantern/systray"
-	"github.com/skratchdot/open-golang/open"
 	md "github.com/sonr-io/core/internal/models"
 )
 
-type StatusMenu struct {
+type SystemMenu struct {
+	mPeers *systray.MenuItem
+
+	mCount     *systray.MenuItem
+	mQuit      *systray.MenuItem
+	mPeersList []*systray.MenuItem
+	peerCount  int32
+	lobbySize  int32
 }
 
-func StartTray() {
+func StartTray() SystemMenu {
+	// Set Initial Menu Vars
+	systray.SetTemplateIcon(GetIcon(SystemTray), GetIcon(SystemTray))
+	systray.SetTitle("")
+	systray.SetTooltip("Sonr")
+
+	sm := SystemMenu{}
+	sm.peerCount = 0
+	sm.lobbySize = 1
+	sm.mCount = systray.AddMenuItem("Available Peers: "+string(sm.peerCount), "Peers Near You")
+	sm.mCount.Disable()
+
+	// Quit Sonr
+	sm.mQuit = systray.AddMenuItem("Quit", "Quit the whole app")
+	sm.mQuit.SetTemplateIcon(GetIcon(Close), GetIcon(Close))
+	systray.AddSeparator()
+
+	// Handle Menu Events
+	go sm.HandleMenuInput()
+	return sm
+}
+
+// ^ Routine Handles Menu Input ^ //
+func (sm *SystemMenu) HandleMenuInput() {
 	go func() {
-		systray.SetTemplateIcon(GetIcon(SystemTray), GetIcon(SystemTray))
-		systray.SetTitle("")
-		systray.SetTooltip("Sonr")
-		mChange := systray.AddMenuItem("Change Me", "Change Me")
-		mChecked := systray.AddMenuItemCheckbox("Unchecked", "Check Me", true)
-		mEnabled := systray.AddMenuItem("Enabled", "Enabled")
-		// Sets the icon of a menu item. Only available on Mac.
-		mEnabled.SetTemplateIcon(GetIcon(SystemTray), GetIcon(SystemTray))
-
-		systray.AddMenuItem("Ignored", "Ignored")
-
-		// subMenuBottom := subMenuTop.AddSubMenuItem("Test Notification", "Beep Testing Notifaction")
-		// subMenuBottom2 := subMenuTop.AddSubMenuItem("Test Alert", "Beep Testing Alert")
-		// subMenuBottom3 := subMenuTop.AddSubMenuItem("Test Alert", "Beep Testing Alert")
-
-		mUrl := systray.AddMenuItem("Open UI", "my home")
-		systray.AddSeparator()
-		mQuitOrig := systray.AddMenuItem("Quit", "Quit the whole app")
-		mQuitOrig.SetTemplateIcon(GetIcon(Close), GetIcon(Close))
-		go func() {
-			<-mQuitOrig.ClickedCh
-			fmt.Println("Requesting quit")
-			systray.Quit()
-			fmt.Println("Finished quitting")
-		}()
-		for {
-			select {
-			case <-mChange.ClickedCh:
-				mChange.SetTitle("I've Changed")
-			case <-mChecked.ClickedCh:
-				if mChecked.Checked() {
-					mChecked.Uncheck()
-					mChecked.SetTitle("Unchecked")
-				} else {
-					mChecked.Check()
-					mChecked.SetTitle("Checked")
-				}
-			case <-mEnabled.ClickedCh:
-				mEnabled.SetTitle("Disabled")
-				mEnabled.Disable()
-			case <-mUrl.ClickedCh:
-				err := open.Run("https://www.getlantern.org")
-				if err != nil {
-					log.Fatalln(err)
-				}
-			}
-		}
+		<-sm.mQuit.ClickedCh
+		fmt.Println("Requesting quit")
+		systray.Quit()
+		fmt.Println("Finished quitting")
 	}()
 }
 
-func RefreshLobby(lob *md.Lobby) {
-	if lob.Size > 1 {
-		peersMenuItem := systray.AddMenuItem("Peers", "Available local peers")
-		for _, p := range lob.Peers {
+// ^ Method to Rebuild Menu for Lobby Refresh ^ //
+func (sm *SystemMenu) UpdatePeers(newLob *md.Lobby) {
+	// Check if Lobby Updated
+	if newLob.Size != sm.lobbySize {
+		// Change Lobby
+		sm.lobbySize = newLob.Size
+		sm.peerCount = newLob.Size - 1
+
+		// Reset Menu
+		sm.ResetPeers()
+
+		// Add Peers
+		for _, p := range newLob.Peers {
 			// Build Item
-			itemTitle := p.FirstName + " | " + p.Device.Platform
+			itemTitle := p.FirstName
 
 			// Add Item to Menu
-			item := peersMenuItem.AddSubMenuItem(itemTitle, "Nearby Available Peer")
-			item.SetIcon(GetDeviceIcon(p.Device))
+			item := sm.mPeers.AddSubMenuItem(itemTitle, "Nearby Available Peer")
+			item.SetTemplateIcon(GetDeviceIcon(p.Device), GetDeviceIcon(p.Device))
+
+			// // Spawn Routine to handle Item
+			// go func(item *systray.MenuItem, peer *md.Peer) {
+			// 	// On Item Click
+			// 	<-item.ClickedCh
+
+			// 	// Action
+			// 	log.Println(peer.String() + " Clicked")
+			// }(item, p)
+
+			// Add to Menu List
+			sm.mPeersList = append(sm.mPeersList, item)
 		}
 	}
+}
+
+// ^ Method that resets peers list ^ //
+func (sm *SystemMenu) ResetPeers() {
+	for _, mi := range sm.mPeersList {
+		mi.Hide()
+	}
+	sm.mPeersList = nil
 }

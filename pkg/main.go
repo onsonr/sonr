@@ -29,8 +29,8 @@ func main() {
 
 func onReady() {
 	// Starts New Node
-	ui.StartTray()
+	menu := ui.StartTray()
 
 	// Creates New Client
-	NewClient(ctx)
+	NewClient(ctx, menu)
 }
