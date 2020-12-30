@@ -97,31 +97,33 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 func (sn *Node) Pause() {
 	log.Println("Sonr Paused.")
 	sn.peer.Status = md.Peer_STANDBY
+	err := sn.lobby.Busy()
+	if err != nil {
+		log.Println(err)
+	}
 	lifecycle.GetState().Pause()
 }
 
 // ^ Close Ends All Network Communication ^
 func (sn *Node) Resume() {
 	log.Println("Sonr Resumed.")
-	sn.peer.Status = md.Peer_AVAILABLE
 	lifecycle.GetState().Resume()
+	sn.peer.Status = md.Peer_AVAILABLE
+	err := sn.lobby.Update()
+	if err != nil {
+		log.Println(err)
+	}
+
 }
 
 // ^ Close Ends All Network Communication ^
 func (sn *Node) Stop() {
 	log.Println("Sonr Stopped.")
-	sn.lobby.Exit(sn.peer)
+	sn.ctx.Done()
 	sn.host.Close()
 }
 
-// ^ exchange sends Nodes current info ^ //
-func (sn *Node) exchange() *md.Peer {
-	if sn.peer != nil {
-		return sn.peer
-	} else {
-		return nil
-	}
-}
+
 
 // ^ error Callback with error instance, and method ^
 func (sn *Node) error(err error, method string) {

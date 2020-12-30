@@ -22,6 +22,16 @@ message ConnectionRequest {
 // Define Payload Enum
 enum Payload { NONE = 0; FILE = 1; CONTACT = 2; URL = 3; TEXT = 4; }
 
+// Define Lobby Message
+message LobbyEvent {
+  Event event = 1;
+  Peer peer = 2;
+  string peerId = 3;
+  double direction = 4;
+
+  enum Event { UPDATE = 0; BUSY = 1; EXIT = 2; }
+}
+
 // Invitation Message sent on RPC
 message AuthInvite {
   Payload payload = 1;

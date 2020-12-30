@@ -17,6 +17,15 @@ func (sn *Node) currentFile() *sf.SafeMetadata {
 	return sn.files[len(sn.files)-1]
 }
 
+// ^ exchange returns Nodes current peer info ^ //
+func (sn *Node) exchange() *md.Peer {
+	if sn.peer != nil {
+		return sn.peer
+	} else {
+		return nil
+	}
+}
+
 // ^ setInfo sets node info from connEvent and host ^ //
 func (sn *Node) setInfo(connEvent *md.ConnectionRequest) error {
 	// Check for Host
@@ -54,7 +63,7 @@ func (sn *Node) setConnection(ctx context.Context) error {
 	log.Println("GossipSub Created")
 
 	// Enter Lobby
-	if sn.lobby, err = sl.Join(sn.ctx, sn.call.OnRefreshed, sn.call.OnEvent, sn.exchange, sn.error, sn.pubSub, sn.host.ID(), sn.olc); err != nil {
+	if sn.lobby, err = sl.Join(sn.ctx, sn.call.OnEvent, sn.exchange, sn.error, sn.pubSub, sn.host.ID(), sn.olc); err != nil {
 		return err
 	}
 	log.Println("Lobby Initialized")

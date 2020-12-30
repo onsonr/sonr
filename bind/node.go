@@ -21,6 +21,12 @@ func (sn *Node) Info() []byte {
 	return data
 }
 
+// ^ Retreive Entire Lobby data ^ //
+func (sn *Node) Refresh() {
+	lobbyData := sn.lobby.Refresh()
+	sn.call.OnRefreshed(lobbyData)
+}
+
 // ^ Updates Current Contact Card ^
 func (sn *Node) SetContact(conBytes []byte) {
 	newContact := &md.Contact{}
@@ -38,7 +44,7 @@ func (sn *Node) Update(direction float64) {
 	sn.peer.Direction = math.Round(direction*100) / 100
 
 	// Inform Lobby
-	err := sn.lobby.Update(sn.peer)
+	err := sn.lobby.Update()
 	if err != nil {
 		sn.error(err, "Update")
 	}
@@ -148,6 +154,9 @@ func (sn *Node) InviteLink(peerId string, url string) {
 // ^ Respond to an Invitation ^ //
 func (sn *Node) Respond(decision bool) {
 	// @ Check Decision
+	if decision {
+		sn.lobby.Busy()
+	}
 
 	// Send Response on PeerConnection
 	sn.peerConn.Authorize(decision, sn.contact, sn.peer)

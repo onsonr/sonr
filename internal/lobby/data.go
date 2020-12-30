@@ -9,17 +9,6 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// ^ GetLobbyData returns ALL Lobby Data as Bytes^
-func (lob *Lobby) GetLobbyData() []byte {
-	// Convert to bytes
-	data, err := proto.Marshal(lob.Data)
-	if err != nil {
-		log.Println("Error Marshaling Lobby Data ", err)
-		return nil
-	}
-	return data
-}
-
 // ^ Find returns Pointer to Peer.ID and Peer ^
 func (lob *Lobby) Find(q string) (peer.ID, *md.Peer, error) {
 	// Retreive Data
@@ -57,23 +46,56 @@ func (lob *Lobby) Peer(q string) *md.Peer {
 	return nil
 }
 
-// ^ setBusy changes peer values in Lobby ^
-func (lob *Lobby) setUnavailable(event *md.LobbyMessage) {
-	// Remove Peer
-	delete(lob.Data.Available, event.Id)
+// ^ setPeer changes peer values in Lobby ^
+func (lob *Lobby) setPeer(msg *md.LobbyMessage) {
+	// Remove Peer from Unavailable
+	delete(lob.Data.Unavailable, msg.Id)
 
-	// Add Peer to Unavailable Map
-	lob.Data.Unavailable[event.Id] = event.Peer
+	// Update Peer with new data
+	id := msg.Id
+	lob.Data.Available[id] = msg.Peer
 	lob.Data.Size = int32(len(lob.Data.Available)) + 1 // Account for User
 
+	// Create Event
+	event := md.LobbyEvent{
+		Event:     md.LobbyEvent_UPDATE,
+		Peer:      msg.Peer,
+		Direction: msg.Direction,
+	}
+
 	// Marshal data to bytes
-	bytes, err := proto.Marshal(lob.Data)
+	bytes, err := proto.Marshal(&event)
 	if err != nil {
 		log.Println("Cannot Marshal Error Protobuf: ", err)
 	}
 
 	// Send Callback with updated peers
-	lob.callRefresh(bytes)
+	lob.callEvent(bytes)
+}
+
+// ^ setBusy changes peer values in Lobby ^
+func (lob *Lobby) setUnavailable(msg *md.LobbyMessage) {
+	// Remove Peer from Available
+	delete(lob.Data.Available, msg.Id)
+
+	// Add Peer to Unavailable Map
+	lob.Data.Unavailable[msg.Id] = msg.Peer
+	lob.Data.Size = int32(len(lob.Data.Available)) + 1 // Account for User
+
+	// Create Event
+	event := md.LobbyEvent{
+		Event: md.LobbyEvent_BUSY,
+		Peer:  msg.Peer,
+	}
+
+	// Marshal data to bytes
+	bytes, err := proto.Marshal(&event)
+	if err != nil {
+		log.Println("Cannot Marshal Error Protobuf: ", err)
+	}
+
+	// Send Callback with updated peers
+	lob.callEvent(bytes)
 }
 
 // ^ removePeer deletes peer from all maps ^
@@ -85,32 +107,18 @@ func (lob *Lobby) removePeer(id string) {
 	delete(lob.Data.Unavailable, id)
 	lob.Data.Size = int32(len(lob.Data.Available)) + 1 // Account for User
 
+	// Create Event
+	event := md.LobbyEvent{
+		Event:  md.LobbyEvent_BUSY,
+		PeerId: id,
+	}
+
 	// Marshal data to bytes
-	bytes, err := proto.Marshal(lob.Data)
+	bytes, err := proto.Marshal(&event)
 	if err != nil {
 		log.Println("Cannot Marshal Error Protobuf: ", err)
 	}
 
 	// Send Callback with updated peers
-	lob.callRefresh(bytes)
-}
-
-// ^ updatePeer changes peer values in Lobby ^
-func (lob *Lobby) updatePeer(event *md.LobbyMessage) {
-	// Remove Peer
-	delete(lob.Data.Unavailable, event.Id)
-
-	// Update Peer with new data
-	id := event.Id
-	lob.Data.Available[id] = event.Peer
-	lob.Data.Size = int32(len(lob.Data.Available)) + 1 // Account for User
-
-	// Marshal data to bytes
-	bytes, err := proto.Marshal(lob.Data)
-	if err != nil {
-		log.Println("Cannot Marshal Error Protobuf: ", err)
-	}
-
-	// Send Callback with updated peers
-	lob.callRefresh(bytes)
+	lob.callEvent(bytes)
 }

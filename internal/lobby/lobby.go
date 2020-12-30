@@ -28,18 +28,18 @@ type Lobby struct {
 	Data     *md.Lobby
 
 	// Private Vars
-	ctx         context.Context
-	pushInfo    OnPeerJoin
-	callRefresh OnProtobuf
-	onError     Error
-	ps          *pubsub.PubSub
-	topic       *pubsub.Topic
-	self        peer.ID
-	sub         *pubsub.Subscription
+	ctx       context.Context
+	pushInfo  OnPeerJoin
+	callEvent OnProtobuf
+	onError   Error
+	ps        *pubsub.PubSub
+	topic     *pubsub.Topic
+	self      peer.ID
+	sub       *pubsub.Subscription
 }
 
 // ^ Join Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
-func Join(ctx context.Context, callr OnProtobuf, calle OnProtobuf, push OnPeerJoin, onErr Error, ps *pubsub.PubSub, id peer.ID, olc string) (*Lobby, error) {
+func Join(ctx context.Context, calle OnProtobuf, push OnPeerJoin, onErr Error, ps *pubsub.PubSub, id peer.ID, olc string) (*Lobby, error) {
 	// Join the pubsub Topic
 	topic, err := ps.Join(olc)
 	if err != nil {
@@ -62,34 +62,69 @@ func Join(ctx context.Context, callr OnProtobuf, calle OnProtobuf, push OnPeerJo
 
 	// Create Lobby Type
 	lob := &Lobby{
-		ctx:         ctx,
-		onError:     onErr,
-		pushInfo:    push,
-		callRefresh: callr,
-		ps:          ps,
-		topic:       topic,
-		sub:         sub,
-		self:        id,
+		ctx:       ctx,
+		onError:   onErr,
+		pushInfo:  push,
+		callEvent: calle,
+		ps:        ps,
+		topic:     topic,
+		sub:       sub,
+		self:      id,
 
 		Data:     lobInfo,
 		Messages: make(chan *md.LobbyMessage, ChatRoomBufSize),
 	}
 
-	// Start Handling Events
-	// go lob.processEvents()
-
-	// Start Reading Messages
+	// Start Reading Messages / Events
 	go lob.handleEvents()
 	go lob.handleMessages()
 	go lob.processMessages()
 	return lob, nil
 }
 
+// ^ Exchange publishes a message with Current Info to Peer that Exchanged ^
+func (lob *Lobby) Exchange(msg *md.LobbyMessage) error {
+	// @ Check if Exchanged, Push Data if not
+	if _, ok := lob.Data.Available[msg.Id]; ok {
+		return nil
+	} else {
+		// Set the Peer
+		lob.setPeer(msg)
+
+		// Get Peer info
+		p := lob.pushInfo()
+
+		// Create Lobby Event
+		event := md.LobbyMessage{
+			Event:     md.LobbyMessage_EXCHANGE,
+			Peer:      p,
+			Direction: p.Direction,
+			Id:        p.Id,
+		}
+
+		// Convert Event to Proto Binary
+		bytes, err := proto.Marshal(&event)
+		if err != nil {
+			return err
+		}
+
+		// Publish to Topic
+		err = lob.topic.Publish(lob.ctx, bytes)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+}
+
 // ^ Send publishes a message to the pubsub topic OLC ^
-func (lob *Lobby) Update(p *md.Peer) error {
+func (lob *Lobby) Update() error {
+	// Get Peer info
+	p := lob.pushInfo()
+
 	// Create Lobby Event
 	event := md.LobbyMessage{
-		Event:     md.LobbyMessage_UPDATE,
+		Event:     md.LobbyMessage_AVAILABLE,
 		Peer:      p,
 		Direction: p.Direction,
 		Id:        p.Id,
@@ -110,7 +145,10 @@ func (lob *Lobby) Update(p *md.Peer) error {
 }
 
 // ^ Send publishes a message to the pubsub topic OLC ^
-func (lob *Lobby) Busy(p *md.Peer) error {
+func (lob *Lobby) Busy() error {
+	// Get Peer info
+	p := lob.pushInfo()
+
 	// Create Lobby Event
 	event := md.LobbyMessage{
 		Event: md.LobbyMessage_BUSY,
@@ -132,79 +170,14 @@ func (lob *Lobby) Busy(p *md.Peer) error {
 	return nil
 }
 
-// ^ Send publishes a message to the pubsub topic OLC ^
-func (lob *Lobby) Resume(p *md.Peer) {
-	// Create Lobby Event
-	event := md.LobbyMessage{
-		Event:     md.LobbyMessage_UPDATE,
-		Peer:      p,
-		Id:        p.Id,
-		Direction: p.Direction,
-	}
-
-	// Convert Event to Proto Binary
-	bytes, err := proto.Marshal(&event)
+// ^ Refresh Returns Entire Lobby Map as Bytes ^
+func (lob *Lobby) Refresh() []byte {
+	// Marshal data to bytes
+	bytes, err := proto.Marshal(lob.Data)
 	if err != nil {
-		log.Println(err)
-		return
+		log.Println("Cannot Marshal Error Protobuf: ", err)
 	}
 
-	// Publish to Topic
-	err = lob.topic.Publish(lob.ctx, bytes)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-}
-
-// ^ Send publishes a message to the pubsub topic OLC ^
-func (lob *Lobby) Standby(p *md.Peer) {
-	// Create Lobby Event
-	event := md.LobbyMessage{
-		Event: md.LobbyMessage_STANDBY,
-		Peer:  p,
-		Id:    p.Id,
-	}
-
-	// Convert Event to Proto Binary
-	bytes, err := proto.Marshal(&event)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
-	// Publish to Topic
-	err = lob.topic.Publish(lob.ctx, bytes)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-}
-
-// ^ Send publishes a message to the pubsub topic OLC ^
-func (lob *Lobby) Exit(p *md.Peer) {
-	// Create Lobby Event
-	event := md.LobbyMessage{
-		Event: md.LobbyMessage_EXIT,
-		Peer:  p,
-		Id:    p.Id,
-	}
-
-	// Convert Event to Proto Binary
-	bytes, err := proto.Marshal(&event)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
-	// Publish to Topic
-	err = lob.topic.Publish(lob.ctx, bytes)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
-	// Close Lobby
-	lob.sub.Cancel()
-	lob.ctx.Done()
+	// Send Callback with updated peers
+	return bytes
 }
