@@ -42,7 +42,16 @@ message Payload {
   enum Type { NONE = 0; FILE = 1; CONTACT = 2; URL = 3; TEXT = 4; }
 }
 
-// [PLUGIN]
+// Define Lobby Message
+message LobbyMessage {
+  Event event = 1;
+  Peer peer = 2;
+  string id = 3;
+  double direction = 4;
+
+  enum Event { NONE = 0; JOIN = 1; UPDATE = 2; STANDBY = 3; EXIT = 4; }
+}
+
 // Error Message
 message ErrorMessage {
   string message = 1;

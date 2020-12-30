@@ -32,9 +32,6 @@ func NewHost(ctx context.Context, olc string) (host.Host, error) {
 	// @1. Established Required Data
 	point := "/sonr/dht/" + olc
 	ipv4 := IPv4()
-	log.Println(ipv4)
-	ipv6 := IPv6()
-	log.Println(ipv6)
 
 	// @2. Create Libp2p Host
 	h, err := libp2p.New(ctx,
@@ -88,7 +85,48 @@ func NewHost(ctx context.Context, olc string) (host.Host, error) {
 	// setup local mDNS discovery
 	err = startMDNS(ctx, h, olc)
 	fmt.Println("MDNS Started")
+	return h, err
+}
 
+// ^ NewHost: Creates a host with: (MDNS Only) ^
+func NewMDNSHost(ctx context.Context, olc string) (host.Host, error) {
+	// @1. Established Required Data
+	ipv4 := IPv4()
+
+	// @2. Create Libp2p Host
+	h, err := libp2p.New(ctx,
+		// Add listening Addresses
+		libp2p.ListenAddrStrings(
+			fmt.Sprintf("/ip4/%s/tcp/0", ipv4),
+			"/ip6/::/tcp/0",
+
+			fmt.Sprintf("/ip4/%s/udp/0/quic", ipv4),
+			"/ip6/::/udp/0/quic"),
+
+		// support TLS connections
+		libp2p.Security(libp2ptls.ID, libp2ptls.New),
+
+		// support secio connections
+		libp2p.Security(secio.ID, secio.New),
+
+		// support QUIC
+		libp2p.Transport(libp2pquic.NewTransport),
+
+		// support any other default transports (TCP)
+		libp2p.DefaultTransports,
+
+		// Let this host use relays and advertise itself on relays if
+		// it finds it is behind NAT. Use libp2p.Relay(options...) to
+		// enable active relays and more.
+		libp2p.EnableNATService(),
+	)
+	if err != nil {
+		log.Fatalln("Error starting node: ", err)
+	}
+
+	// setup local mDNS discovery
+	err = startMDNS(ctx, h, olc)
+	fmt.Println("MDNS Started")
 	return h, err
 }
 

@@ -130,6 +130,61 @@ func (Payload_Type) EnumDescriptor() ([]byte, []int) {
 	return file_api_proto_rawDescGZIP(), []int{3, 0}
 }
 
+type LobbyMessage_Event int32
+
+const (
+	LobbyMessage_NONE    LobbyMessage_Event = 0
+	LobbyMessage_JOIN    LobbyMessage_Event = 1
+	LobbyMessage_UPDATE  LobbyMessage_Event = 2
+	LobbyMessage_STANDBY LobbyMessage_Event = 3
+	LobbyMessage_EXIT    LobbyMessage_Event = 4
+)
+
+// Enum value maps for LobbyMessage_Event.
+var (
+	LobbyMessage_Event_name = map[int32]string{
+		0: "NONE",
+		1: "JOIN",
+		2: "UPDATE",
+		3: "STANDBY",
+		4: "EXIT",
+	}
+	LobbyMessage_Event_value = map[string]int32{
+		"NONE":    0,
+		"JOIN":    1,
+		"UPDATE":  2,
+		"STANDBY": 3,
+		"EXIT":    4,
+	}
+)
+
+func (x LobbyMessage_Event) Enum() *LobbyMessage_Event {
+	p := new(LobbyMessage_Event)
+	*p = x
+	return p
+}
+
+func (x LobbyMessage_Event) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (LobbyMessage_Event) Descriptor() protoreflect.EnumDescriptor {
+	return file_api_proto_enumTypes[2].Descriptor()
+}
+
+func (LobbyMessage_Event) Type() protoreflect.EnumType {
+	return &file_api_proto_enumTypes[2]
+}
+
+func (x LobbyMessage_Event) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use LobbyMessage_Event.Descriptor instead.
+func (LobbyMessage_Event) EnumDescriptor() ([]byte, []int) {
+	return file_api_proto_rawDescGZIP(), []int{4, 0}
+}
+
 // [PLUGIN]
 // Initial Connection Message
 type ConnectionRequest struct {
@@ -412,7 +467,78 @@ func (x *Payload) GetType() Payload_Type {
 	return Payload_NONE
 }
 
-// [PLUGIN]
+// Define Lobby Message
+type LobbyMessage struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Event     LobbyMessage_Event `protobuf:"varint,1,opt,name=event,proto3,enum=LobbyMessage_Event" json:"event,omitempty"`
+	Peer      *Peer              `protobuf:"bytes,2,opt,name=peer,proto3" json:"peer,omitempty"`
+	Id        string             `protobuf:"bytes,3,opt,name=id,proto3" json:"id,omitempty"`
+	Direction float64            `protobuf:"fixed64,4,opt,name=direction,proto3" json:"direction,omitempty"`
+}
+
+func (x *LobbyMessage) Reset() {
+	*x = LobbyMessage{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *LobbyMessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LobbyMessage) ProtoMessage() {}
+
+func (x *LobbyMessage) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LobbyMessage.ProtoReflect.Descriptor instead.
+func (*LobbyMessage) Descriptor() ([]byte, []int) {
+	return file_api_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *LobbyMessage) GetEvent() LobbyMessage_Event {
+	if x != nil {
+		return x.Event
+	}
+	return LobbyMessage_NONE
+}
+
+func (x *LobbyMessage) GetPeer() *Peer {
+	if x != nil {
+		return x.Peer
+	}
+	return nil
+}
+
+func (x *LobbyMessage) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *LobbyMessage) GetDirection() float64 {
+	if x != nil {
+		return x.Direction
+	}
+	return 0
+}
+
 // Error Message
 type ErrorMessage struct {
 	state         protoimpl.MessageState
@@ -426,7 +552,7 @@ type ErrorMessage struct {
 func (x *ErrorMessage) Reset() {
 	*x = ErrorMessage{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[4]
+		mi := &file_api_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -439,7 +565,7 @@ func (x *ErrorMessage) String() string {
 func (*ErrorMessage) ProtoMessage() {}
 
 func (x *ErrorMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[4]
+	mi := &file_api_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -452,7 +578,7 @@ func (x *ErrorMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ErrorMessage.ProtoReflect.Descriptor instead.
 func (*ErrorMessage) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{4}
+	return file_api_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *ErrorMessage) GetMessage() string {
@@ -516,12 +642,24 @@ var file_api_proto_rawDesc = []byte{
 	0x4f, 0x4e, 0x45, 0x10, 0x00, 0x12, 0x08, 0x0a, 0x04, 0x46, 0x49, 0x4c, 0x45, 0x10, 0x01, 0x12,
 	0x0b, 0x0a, 0x07, 0x43, 0x4f, 0x4e, 0x54, 0x41, 0x43, 0x54, 0x10, 0x02, 0x12, 0x07, 0x0a, 0x03,
 	0x55, 0x52, 0x4c, 0x10, 0x03, 0x12, 0x08, 0x0a, 0x04, 0x54, 0x45, 0x58, 0x54, 0x10, 0x04, 0x22,
-	0x40, 0x0a, 0x0c, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12,
-	0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x6d, 0x65, 0x74,
-	0x68, 0x6f, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x6d, 0x65, 0x74, 0x68, 0x6f,
-	0x64, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x3b, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x62, 0x06, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0xc2, 0x01, 0x0a, 0x0c, 0x4c, 0x6f, 0x62, 0x62, 0x79, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65,
+	0x12, 0x29, 0x0a, 0x05, 0x65, 0x76, 0x65, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32,
+	0x13, 0x2e, 0x4c, 0x6f, 0x62, 0x62, 0x79, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x2e, 0x45,
+	0x76, 0x65, 0x6e, 0x74, 0x52, 0x05, 0x65, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x19, 0x0a, 0x04, 0x70,
+	0x65, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x05, 0x2e, 0x50, 0x65, 0x65, 0x72,
+	0x52, 0x04, 0x70, 0x65, 0x65, 0x72, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x1c, 0x0a, 0x09, 0x64, 0x69, 0x72, 0x65, 0x63, 0x74,
+	0x69, 0x6f, 0x6e, 0x18, 0x04, 0x20, 0x01, 0x28, 0x01, 0x52, 0x09, 0x64, 0x69, 0x72, 0x65, 0x63,
+	0x74, 0x69, 0x6f, 0x6e, 0x22, 0x3e, 0x0a, 0x05, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x08, 0x0a,
+	0x04, 0x4e, 0x4f, 0x4e, 0x45, 0x10, 0x00, 0x12, 0x08, 0x0a, 0x04, 0x4a, 0x4f, 0x49, 0x4e, 0x10,
+	0x01, 0x12, 0x0a, 0x0a, 0x06, 0x55, 0x50, 0x44, 0x41, 0x54, 0x45, 0x10, 0x02, 0x12, 0x0b, 0x0a,
+	0x07, 0x53, 0x54, 0x41, 0x4e, 0x44, 0x42, 0x59, 0x10, 0x03, 0x12, 0x08, 0x0a, 0x04, 0x45, 0x58,
+	0x49, 0x54, 0x10, 0x04, 0x22, 0x40, 0x0a, 0x0c, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x4d, 0x65, 0x73,
+	0x73, 0x61, 0x67, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x16,
+	0x0a, 0x06, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06,
+	0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x3b, 0x6d, 0x6f, 0x64, 0x65,
+	0x6c, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -536,41 +674,45 @@ func file_api_proto_rawDescGZIP() []byte {
 	return file_api_proto_rawDescData
 }
 
-var file_api_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_api_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_api_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
+var file_api_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_api_proto_goTypes = []interface{}{
 	(ConnectionRequest_Connectivity)(0), // 0: ConnectionRequest.Connectivity
 	(Payload_Type)(0),                   // 1: Payload.Type
-	(*ConnectionRequest)(nil),           // 2: ConnectionRequest
-	(*AuthInvite)(nil),                  // 3: AuthInvite
-	(*AuthReply)(nil),                   // 4: AuthReply
-	(*Payload)(nil),                     // 5: Payload
-	(*ErrorMessage)(nil),                // 6: ErrorMessage
-	(*Device)(nil),                      // 7: Device
-	(*Directories)(nil),                 // 8: Directories
-	(*Contact)(nil),                     // 9: Contact
-	(*Peer)(nil),                        // 10: Peer
-	(*Metadata)(nil),                    // 11: Metadata
-	(*Link)(nil),                        // 12: Link
+	(LobbyMessage_Event)(0),             // 2: LobbyMessage.Event
+	(*ConnectionRequest)(nil),           // 3: ConnectionRequest
+	(*AuthInvite)(nil),                  // 4: AuthInvite
+	(*AuthReply)(nil),                   // 5: AuthReply
+	(*Payload)(nil),                     // 6: Payload
+	(*LobbyMessage)(nil),                // 7: LobbyMessage
+	(*ErrorMessage)(nil),                // 8: ErrorMessage
+	(*Device)(nil),                      // 9: Device
+	(*Directories)(nil),                 // 10: Directories
+	(*Contact)(nil),                     // 11: Contact
+	(*Peer)(nil),                        // 12: Peer
+	(*Metadata)(nil),                    // 13: Metadata
+	(*Link)(nil),                        // 14: Link
 }
 var file_api_proto_depIdxs = []int32{
-	7,  // 0: ConnectionRequest.device:type_name -> Device
-	8,  // 1: ConnectionRequest.directory:type_name -> Directories
-	9,  // 2: ConnectionRequest.contact:type_name -> Contact
+	9,  // 0: ConnectionRequest.device:type_name -> Device
+	10, // 1: ConnectionRequest.directory:type_name -> Directories
+	11, // 2: ConnectionRequest.contact:type_name -> Contact
 	0,  // 3: ConnectionRequest.connectivity:type_name -> ConnectionRequest.Connectivity
-	10, // 4: AuthInvite.from:type_name -> Peer
-	5,  // 5: AuthInvite.payload:type_name -> Payload
-	10, // 6: AuthReply.from:type_name -> Peer
-	5,  // 7: AuthReply.payload:type_name -> Payload
-	11, // 8: Payload.file:type_name -> Metadata
-	9,  // 9: Payload.contact:type_name -> Contact
-	12, // 10: Payload.link:type_name -> Link
+	12, // 4: AuthInvite.from:type_name -> Peer
+	6,  // 5: AuthInvite.payload:type_name -> Payload
+	12, // 6: AuthReply.from:type_name -> Peer
+	6,  // 7: AuthReply.payload:type_name -> Payload
+	13, // 8: Payload.file:type_name -> Metadata
+	11, // 9: Payload.contact:type_name -> Contact
+	14, // 10: Payload.link:type_name -> Link
 	1,  // 11: Payload.type:type_name -> Payload.Type
-	12, // [12:12] is the sub-list for method output_type
-	12, // [12:12] is the sub-list for method input_type
-	12, // [12:12] is the sub-list for extension type_name
-	12, // [12:12] is the sub-list for extension extendee
-	0,  // [0:12] is the sub-list for field type_name
+	2,  // 12: LobbyMessage.event:type_name -> LobbyMessage.Event
+	12, // 13: LobbyMessage.peer:type_name -> Peer
+	14, // [14:14] is the sub-list for method output_type
+	14, // [14:14] is the sub-list for method input_type
+	14, // [14:14] is the sub-list for extension type_name
+	14, // [14:14] is the sub-list for extension extendee
+	0,  // [0:14] is the sub-list for field type_name
 }
 
 func init() { file_api_proto_init() }
@@ -629,6 +771,18 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*LobbyMessage); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ErrorMessage); i {
 			case 0:
 				return &v.state
@@ -646,8 +800,8 @@ func file_api_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_api_proto_rawDesc,
-			NumEnums:      2,
-			NumMessages:   5,
+			NumEnums:      3,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

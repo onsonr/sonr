@@ -28,22 +28,22 @@ type Lobby struct {
 	Data     *md.Lobby
 
 	// Private Vars
-	ctx      context.Context
-	callback OnProtobuf
-	onError  Error
-	doneCh   chan struct{}
-	ps       *pubsub.PubSub
-	topic    *pubsub.Topic
-	//topicHandler *pubsub.TopicEventHandler
-	self peer.ID
-	sub  *pubsub.Subscription
+	ctx          context.Context
+	callback     OnProtobuf
+	onError      Error
+	doneCh       chan struct{}
+	ps           *pubsub.PubSub
+	topic        *pubsub.Topic
+	topicHandler *pubsub.TopicEventHandler
+	self         peer.ID
+	sub          *pubsub.Subscription
 }
 
 // ^ Initialize Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
-func Initialize(callr OnProtobuf, onErr Error, ps *pubsub.PubSub, id peer.ID, olc string) (*Lobby, error) {
+func Initialize(callr OnProtobuf, onErr Error, ps *pubsub.PubSub, id peer.ID, pointLocal string) (*Lobby, error) {
 	// Join the pubsub Topic
 	ctx := context.Background()
-	topic, err := ps.Join(olc)
+	topic, err := ps.Join(pointLocal)
 	if err != nil {
 		return nil, err
 	}
@@ -54,29 +54,29 @@ func Initialize(callr OnProtobuf, onErr Error, ps *pubsub.PubSub, id peer.ID, ol
 		return nil, err
 	}
 
-	// topicHandler, err := topic.EventHandler()
-	// if err != nil {
-	// 	return nil, err
-	// }
+	topicHandler, err := topic.EventHandler()
+	if err != nil {
+		return nil, err
+	}
 
 	// Initialize Lobby for Peers
 	lobInfo := &md.Lobby{
-		Code:  olc,
+		Code:  pointLocal,
 		Size:  1,
 		Peers: make(map[string]*md.Peer),
 	}
 
 	// Create Lobby Type
 	lob := &Lobby{
-		ctx:      ctx,
-		onError:  onErr,
-		callback: callr,
-		doneCh:   make(chan struct{}, 1),
-		ps:       ps,
-		topic:    topic,
-		// topicHandler: topicHandler,
-		sub:  sub,
-		self: id,
+		ctx:          ctx,
+		onError:      onErr,
+		callback:     callr,
+		doneCh:       make(chan struct{}, 1),
+		ps:           ps,
+		topic:        topic,
+		topicHandler: topicHandler,
+		sub:          sub,
+		self:         id,
 
 		Data:     lobInfo,
 		Messages: make(chan *md.LobbyEvent, ChatRoomBufSize),
