@@ -29,6 +29,22 @@ PB_BUILD_PLUGIN="--dart_out=$(PLUGIN_PB_DIR)"
 all: Makefile
 	@sed -n 's/^##//p' $<
 
+## protoc   :   Compiles Protobuf models for Core Library and Plugin
+protoc:
+	@echo ""
+	@echo ""
+	@echo "--------------------------------------------------------------"
+	@echo "------------- 🛸 START PROTOBUFS COMPILE 🛸 -------------------"
+	@echo "--------------------------------------------------------------"
+	@cd internal/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CORE) api.proto data.proto core.proto
+	@cd internal/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_PLUGIN) api.proto data.proto
+	@echo "Finished Compiling ➡ " && date
+	@echo "--------------------------------------------------------------"
+	@echo "------------- 🛸 COMPILED ALL PROTOBUFS 🛸 --------------------"
+	@echo "--------------------------------------------------------------"
+	@echo ""
+
+
 ## mobile   :   Builds Android and iOS Bind for Plugin Path
 mobile: protoc ios android
 	@go mod tidy
@@ -38,17 +54,6 @@ mobile: protoc ios android
 	@echo "--------------------------------------------------------------"
 	@echo "-------- ✅ ✅ ✅   FINISHED ALL TASKS  ✅ ✅ ✅  --------------"
 	@echo "--------------------------------------------------------------"
-
-## desktop  :   Builds Darwin and Windows Builds at Build Path
-desktop: protoc darwin win
-	@go mod tidy
-	@cd /System/Library/Sounds && afplay Hero.aiff
-	@echo ""
-	@echo ""
-	@echo "--------------------------------------------------------------"
-	@echo "-------- ✅ ✅ ✅   FINISHED ALL TASKS  ✅ ✅ ✅  --------------"
-	@echo "--------------------------------------------------------------"
-
 
 ## android  :   Builds Android Bind at Plugin Path
 android:
@@ -83,6 +88,17 @@ ios:
 	@echo "--------------------------------------------------------------"
 	@echo ""
 
+## desktop  :   Builds Darwin and Windows Builds at Build Path
+desktop: protoc darwin win
+	@go mod tidy
+	@cd /System/Library/Sounds && afplay Hero.aiff
+	@echo ""
+	@echo ""
+	@echo "--------------------------------------------------------------"
+	@echo "-------- ✅ ✅ ✅   FINISHED ALL TASKS  ✅ ✅ ✅  --------------"
+	@echo "--------------------------------------------------------------"
+
+
 ## darwin   :   Compiles Desktop build of Sonr for MacOS
 darwin:
 	@echo ""
@@ -96,21 +112,6 @@ darwin:
 	@cd $(MAC_BUILDDIR) && ./sonr_core
 	@echo "--------------------------------------------------------------"
 	@echo "------------- 🖥 COMPLETED DAWIN BULD 🖥 --------------------"
-	@echo "--------------------------------------------------------------"
-	@echo ""
-
-## protoc   :   Compiles Protobuf models for Core Library and Plugin
-protoc:
-	@echo ""
-	@echo ""
-	@echo "--------------------------------------------------------------"
-	@echo "------------- 🛸 START PROTOBUFS COMPILE 🛸 -------------------"
-	@echo "--------------------------------------------------------------"
-	@cd internal/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CORE) api.proto data.proto core.proto
-	@cd internal/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_PLUGIN) api.proto data.proto
-	@echo "Finished Compiling ➡ " && date
-	@echo "--------------------------------------------------------------"
-	@echo "------------- 🛸 COMPILED ALL PROTOBUFS 🛸 --------------------"
 	@echo "--------------------------------------------------------------"
 	@echo ""
 

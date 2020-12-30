@@ -20,6 +20,8 @@ const maxFileBufferSize = 5
 
 // ^ Interface: Callback is implemented from Plugin to receive updates ^
 type Callback interface {
+	OnConnected()
+	OnEvent(data []byte)
 	OnRefreshed(data []byte)
 	OnInvited(data []byte)
 	OnResponded(data []byte)
@@ -69,7 +71,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	}
 
 	// @1. Create Host and Start Discovery
-	node.host, err = sh.NewHost(node.ctx, reqMsg.Olc)
+	node.host, err = sh.NewHost(node.ctx, node.call.OnConnected, reqMsg.Olc)
 	if err != nil {
 		node.error(err, "NewNode")
 		return nil
@@ -110,6 +112,15 @@ func (sn *Node) Stop() {
 	log.Println("Sonr Stopped.")
 	sn.lobby.Exit(sn.peer)
 	sn.host.Close()
+}
+
+// ^ exchange sends Nodes current info ^ //
+func (sn *Node) exchange() *md.Peer {
+	if sn.peer != nil {
+		return sn.peer
+	} else {
+		return nil
+	}
 }
 
 // ^ error Callback with error instance, and method ^

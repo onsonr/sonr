@@ -58,7 +58,7 @@ func (lob *Lobby) Peer(q string) *md.Peer {
 }
 
 // ^ setBusy changes peer values in Lobby ^
-func (lob *Lobby) setUnavailable(event *md.LobbyEvent) {
+func (lob *Lobby) setUnavailable(event *md.LobbyMessage) {
 	// Remove Peer
 	delete(lob.Data.Available, event.Id)
 
@@ -73,16 +73,16 @@ func (lob *Lobby) setUnavailable(event *md.LobbyEvent) {
 	}
 
 	// Send Callback with updated peers
-	lob.callback(bytes)
+	lob.callRefresh(bytes)
 }
 
 // ^ removePeer deletes peer from all maps ^
-func (lob *Lobby) removePeer(event *md.LobbyEvent) {
+func (lob *Lobby) removePeer(id string) {
 	// Remove Peer from Available
-	delete(lob.Data.Available, event.Id)
+	delete(lob.Data.Available, id)
 
 	// Remove Peer from Unavailable
-	delete(lob.Data.Unavailable, event.Id)
+	delete(lob.Data.Unavailable, id)
 	lob.Data.Size = int32(len(lob.Data.Available)) + 1 // Account for User
 
 	// Marshal data to bytes
@@ -92,11 +92,11 @@ func (lob *Lobby) removePeer(event *md.LobbyEvent) {
 	}
 
 	// Send Callback with updated peers
-	lob.callback(bytes)
+	lob.callRefresh(bytes)
 }
 
 // ^ updatePeer changes peer values in Lobby ^
-func (lob *Lobby) updatePeer(event *md.LobbyEvent) {
+func (lob *Lobby) updatePeer(event *md.LobbyMessage) {
 	// Remove Peer
 	delete(lob.Data.Unavailable, event.Id)
 
@@ -112,5 +112,5 @@ func (lob *Lobby) updatePeer(event *md.LobbyEvent) {
 	}
 
 	// Send Callback with updated peers
-	lob.callback(bytes)
+	lob.callRefresh(bytes)
 }

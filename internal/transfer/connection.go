@@ -91,7 +91,7 @@ func (pc *PeerConnection) PrepareTransfer(meta *md.Metadata, own *md.Peer) *Tran
 		// Inherited Properties
 		meta:       meta,
 		owner:      own,
-		path:       pc.dirs.Documents + "/" + meta.Name + "." + meta.Mime.Subtype,
+		path:       pc.dirs.Temporary + "/" + meta.Name + "." + meta.Mime.Subtype,
 		onProgress: pc.progressCall,
 		onComplete: pc.receivedCall,
 

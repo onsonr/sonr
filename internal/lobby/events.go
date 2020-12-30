@@ -25,7 +25,7 @@ func (lob *Lobby) handleMessages() {
 		}
 
 		// Construct message
-		notif := md.LobbyEvent{}
+		notif := md.LobbyMessage{}
 		err = proto.Unmarshal(msg.Data, &notif)
 		if err != nil {
 			continue
@@ -57,10 +57,16 @@ func (lob *Lobby) handleEvents() {
 
 		if lobEvent.Type == pubsub.PeerJoin {
 			log.Println("Lobby Event: Peer Joined")
+			peerInfo := lob.pushInfo()
+			err := lob.Update(peerInfo)
+			if err != nil {
+				log.Println(err)
+			}
 		}
 
 		if lobEvent.Type == pubsub.PeerLeave {
 			log.Println("Lobby Event: Peer Left")
+			lob.removePeer(lobEvent.Peer.String())
 		}
 
 		lifecycle.GetState().NeedsWait()
@@ -73,14 +79,12 @@ func (lob *Lobby) processMessages() {
 		select {
 		// @ Message Received
 		case m := <-lob.Messages:
-			if m.Event == md.LobbyEvent_UPDATE {
+			if m.Event == md.LobbyMessage_UPDATE {
 				lob.updatePeer(m)
-			} else if m.Event == md.LobbyEvent_STANDBY {
+			} else if m.Event == md.LobbyMessage_STANDBY {
 				lob.setUnavailable(m)
-			} else if m.Event == md.LobbyEvent_BUSY {
+			} else if m.Event == md.LobbyMessage_BUSY {
 				lob.setUnavailable(m)
-			} else if m.Event == md.LobbyEvent_EXIT {
-				lob.removePeer(m)
 			}
 		case <-lob.ctx.Done():
 			return

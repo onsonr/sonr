@@ -15,6 +15,7 @@ const ChatRoomBufSize = 128
 
 // Define Function Types
 type OnProtobuf func([]byte)
+type OnPeerJoin func() *md.Peer
 type Error func(err error, method string)
 
 // Lobby represents a subscription to a single PubSub topic. Messages
@@ -22,22 +23,23 @@ type Error func(err error, method string)
 // messages are pushed to the Messages channel.
 type Lobby struct {
 	// Public Vars
-	Messages chan *md.LobbyEvent
+	Messages chan *md.LobbyMessage
 	Events   chan *pubsub.PeerEvent
 	Data     *md.Lobby
 
 	// Private Vars
-	ctx      context.Context
-	callback OnProtobuf
-	onError  Error
-	ps       *pubsub.PubSub
-	topic    *pubsub.Topic
-	self     peer.ID
-	sub      *pubsub.Subscription
+	ctx         context.Context
+	pushInfo    OnPeerJoin
+	callRefresh OnProtobuf
+	onError     Error
+	ps          *pubsub.PubSub
+	topic       *pubsub.Topic
+	self        peer.ID
+	sub         *pubsub.Subscription
 }
 
 // ^ Join Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
-func Join(ctx context.Context, callr OnProtobuf, onErr Error, ps *pubsub.PubSub, id peer.ID, olc string) (*Lobby, error) {
+func Join(ctx context.Context, callr OnProtobuf, calle OnProtobuf, push OnPeerJoin, onErr Error, ps *pubsub.PubSub, id peer.ID, olc string) (*Lobby, error) {
 	// Join the pubsub Topic
 	topic, err := ps.Join(olc)
 	if err != nil {
@@ -60,16 +62,17 @@ func Join(ctx context.Context, callr OnProtobuf, onErr Error, ps *pubsub.PubSub,
 
 	// Create Lobby Type
 	lob := &Lobby{
-		ctx:      ctx,
-		onError:  onErr,
-		callback: callr,
-		ps:       ps,
-		topic:    topic,
-		sub:      sub,
-		self:     id,
+		ctx:         ctx,
+		onError:     onErr,
+		pushInfo:    push,
+		callRefresh: callr,
+		ps:          ps,
+		topic:       topic,
+		sub:         sub,
+		self:        id,
 
 		Data:     lobInfo,
-		Messages: make(chan *md.LobbyEvent, ChatRoomBufSize),
+		Messages: make(chan *md.LobbyMessage, ChatRoomBufSize),
 	}
 
 	// Start Handling Events
@@ -85,8 +88,8 @@ func Join(ctx context.Context, callr OnProtobuf, onErr Error, ps *pubsub.PubSub,
 // ^ Send publishes a message to the pubsub topic OLC ^
 func (lob *Lobby) Update(p *md.Peer) error {
 	// Create Lobby Event
-	event := md.LobbyEvent{
-		Event:     md.LobbyEvent_UPDATE,
+	event := md.LobbyMessage{
+		Event:     md.LobbyMessage_UPDATE,
 		Peer:      p,
 		Direction: p.Direction,
 		Id:        p.Id,
@@ -109,8 +112,8 @@ func (lob *Lobby) Update(p *md.Peer) error {
 // ^ Send publishes a message to the pubsub topic OLC ^
 func (lob *Lobby) Busy(p *md.Peer) error {
 	// Create Lobby Event
-	event := md.LobbyEvent{
-		Event: md.LobbyEvent_BUSY,
+	event := md.LobbyMessage{
+		Event: md.LobbyMessage_BUSY,
 		Peer:  p,
 		Id:    p.Id,
 	}
@@ -132,8 +135,8 @@ func (lob *Lobby) Busy(p *md.Peer) error {
 // ^ Send publishes a message to the pubsub topic OLC ^
 func (lob *Lobby) Resume(p *md.Peer) {
 	// Create Lobby Event
-	event := md.LobbyEvent{
-		Event:     md.LobbyEvent_UPDATE,
+	event := md.LobbyMessage{
+		Event:     md.LobbyMessage_UPDATE,
 		Peer:      p,
 		Id:        p.Id,
 		Direction: p.Direction,
@@ -157,8 +160,8 @@ func (lob *Lobby) Resume(p *md.Peer) {
 // ^ Send publishes a message to the pubsub topic OLC ^
 func (lob *Lobby) Standby(p *md.Peer) {
 	// Create Lobby Event
-	event := md.LobbyEvent{
-		Event: md.LobbyEvent_STANDBY,
+	event := md.LobbyMessage{
+		Event: md.LobbyMessage_STANDBY,
 		Peer:  p,
 		Id:    p.Id,
 	}
@@ -181,8 +184,8 @@ func (lob *Lobby) Standby(p *md.Peer) {
 // ^ Send publishes a message to the pubsub topic OLC ^
 func (lob *Lobby) Exit(p *md.Peer) {
 	// Create Lobby Event
-	event := md.LobbyEvent{
-		Event: md.LobbyEvent_EXIT,
+	event := md.LobbyMessage{
+		Event: md.LobbyMessage_EXIT,
 		Peer:  p,
 		Id:    p.Id,
 	}
