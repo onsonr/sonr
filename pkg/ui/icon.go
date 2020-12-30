@@ -61,6 +61,7 @@ func GetIcon(i Icon) []byte {
 	return imgBuffer.Bytes()
 }
 
+// ^ Returns Buffer of Image from Device Type
 func GetDeviceIcon(d *md.Device) []byte {
 	if d.Platform == "Android" {
 		return GetIcon(Android)
@@ -68,7 +69,8 @@ func GetDeviceIcon(d *md.Device) []byte {
 		return GetIcon(iPhone)
 	} else if d.Platform == "Mac" {
 		return GetIcon(Mac)
-	} else {
+	} else if d.Platform == "Windows" {
 		return GetIcon(Windows)
 	}
+	return nil
 }
