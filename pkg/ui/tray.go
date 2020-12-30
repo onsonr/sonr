@@ -64,7 +64,7 @@ func (sm *SystemMenu) UpdatePeers(newLob *md.Lobby) {
 		sm.ResetPeers()
 
 		// Add Peers
-		for _, p := range newLob.Peers {
+		for _, p := range newLob.Available {
 			// Build Item
 			itemTitle := p.FirstName
 
