@@ -73,19 +73,19 @@ ios:
 	@echo "--------------------------------------------------------------"
 	@echo ""
 
-## desktop  :   Compiles Desktop build of Sonr as System Tray
-desktop:
+## darwin   :   Compiles Desktop build of Sonr for MacOS
+darwin:
 	@echo ""
 	@echo ""
 	@echo "-----------------------------------------------------------"
-	@echo "------------- 🖥 START DESKTOP BUILD 🖥 --------------------"
+	@echo "------------- 🖥 START DARWIN BUILD 🖥 --------------------"
 	@echo "-----------------------------------------------------------"
+	go clean -cache -x
 	cd pkg && go build -o $(MAC_ARTIFACT)
-	cd pkg && env GOOS=windows GOARCH=386 go build -o $(WIN_386_ARTIFACT)
-	cd pkg && env GOOS=windows GOARCH=amd64 go build -o $(WIN_AMD_ARTIFACT)
-	cd $(MAC_BUILDDIR) && ./sonr_core
+	@echo "Finished Binding ➡ " && date
+	@cd $(MAC_BUILDDIR) && ./sonr_core
 	@echo "--------------------------------------------------------------"
-	@echo "------------- 🖥 COMPLETED DESKTOP BULD 🖥 --------------------"
+	@echo "------------- 🖥 COMPLETED DAWIN BULD 🖥 --------------------"
 	@echo "--------------------------------------------------------------"
 	@echo ""
 
@@ -101,6 +101,22 @@ protoc:
 	@echo "Finished Compiling ➡ " && date
 	@echo "--------------------------------------------------------------"
 	@echo "------------- 🛸 COMPILED ALL PROTOBUFS 🛸 --------------------"
+	@echo "--------------------------------------------------------------"
+	@echo ""
+
+## win      :   Compiles Desktop build of Sonr for Windows
+win:
+	@echo ""
+	@echo ""
+	@echo "-----------------------------------------------------------"
+	@echo "------------- 🖥 START DARWIN BUILD 🖥 --------------------"
+	@echo "-----------------------------------------------------------"
+	go clean -cache -x
+	cd pkg && GOOS=windows GOARCH=amd64 go build -o $(WIN_AMD_ARTIFACT)
+	@echo "Finished Binding ➡ " && date
+	@cd $(MAC_BUILDDIR) && ./sonr_core
+	@echo "--------------------------------------------------------------"
+	@echo "------------- 🖥 COMPLETED DAWIN BULD 🖥 --------------------"
 	@echo "--------------------------------------------------------------"
 	@echo ""
 
