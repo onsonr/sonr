@@ -9,8 +9,8 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// ^ Info returns ALL Lobby Data as Bytes^
-func (lob *Lobby) Info() []byte {
+// ^ GetLobbyData returns ALL Lobby Data as Bytes^
+func (lob *Lobby) GetLobbyData() []byte {
 	// Convert to bytes
 	data, err := proto.Marshal(lob.Data)
 	if err != nil {
@@ -48,7 +48,7 @@ func (lob *Lobby) ID(q string) peer.ID {
 // ^ Peer returns ONE Peer in Lobby ^
 func (lob *Lobby) Peer(q string) *md.Peer {
 	// Iterate Through Peers, Return Matched Peer
-	for _, peer := range lob.Data.Peers {
+	for _, peer := range lob.Data.Available {
 		// If Found Match
 		if peer.Id == q {
 			return peer
@@ -57,12 +57,53 @@ func (lob *Lobby) Peer(q string) *md.Peer {
 	return nil
 }
 
+// ^ setBusy changes peer values in Lobby ^
+func (lob *Lobby) setUnavailable(event *md.LobbyEvent) {
+	// Remove Peer
+	delete(lob.Data.Available, event.Id)
+
+	// Add Peer to Unavailable Map
+	lob.Data.Unavailable[event.Id] = event.Peer
+	lob.Data.Size = int32(len(lob.Data.Available)) + 1 // Account for User
+
+	// Marshal data to bytes
+	bytes, err := proto.Marshal(lob.Data)
+	if err != nil {
+		log.Println("Cannot Marshal Error Protobuf: ", err)
+	}
+
+	// Send Callback with updated peers
+	lob.callback(bytes)
+}
+
+// ^ removePeer deletes peer from all maps ^
+func (lob *Lobby) removePeer(event *md.LobbyEvent) {
+	// Remove Peer from Available
+	delete(lob.Data.Available, event.Id)
+
+	// Remove Peer from Unavailable
+	delete(lob.Data.Unavailable, event.Id)
+	lob.Data.Size = int32(len(lob.Data.Available)) + 1 // Account for User
+
+	// Marshal data to bytes
+	bytes, err := proto.Marshal(lob.Data)
+	if err != nil {
+		log.Println("Cannot Marshal Error Protobuf: ", err)
+	}
+
+	// Send Callback with updated peers
+	lob.callback(bytes)
+}
+
 // ^ updatePeer changes peer values in Lobby ^
-func (lob *Lobby) updatePeer(peer *md.Peer) {
+func (lob *Lobby) updatePeer(event *md.LobbyEvent) {
+	// Remove Peer
+	delete(lob.Data.Unavailable, event.Id)
+
 	// Update Peer with new data
-	id := peer.Id
-	lob.Data.Peers[id] = peer
-	lob.Data.Size = int32(len(lob.Data.Peers)) + 1 // Account for User
+	id := event.Id
+	lob.Data.Available[id] = event.Peer
+	lob.Data.Size = int32(len(lob.Data.Available)) + 1 // Account for User
 
 	// Marshal data to bytes
 	bytes, err := proto.Marshal(lob.Data)

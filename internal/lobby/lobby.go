@@ -27,21 +27,19 @@ type Lobby struct {
 	Data     *md.Lobby
 
 	// Private Vars
-	ctx          context.Context
-	callback     OnProtobuf
-	onError      Error
-	ps           *pubsub.PubSub
-	topic        *pubsub.Topic
-	topicHandler *pubsub.TopicEventHandler
-	self         peer.ID
-	sub          *pubsub.Subscription
+	ctx      context.Context
+	callback OnProtobuf
+	onError  Error
+	ps       *pubsub.PubSub
+	topic    *pubsub.Topic
+	self     peer.ID
+	sub      *pubsub.Subscription
 }
 
 // ^ Join Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
-func Join(callr OnProtobuf, onErr Error, ps *pubsub.PubSub, id peer.ID, pointLocal string) (*Lobby, error) {
+func Join(ctx context.Context, callr OnProtobuf, onErr Error, ps *pubsub.PubSub, id peer.ID, olc string) (*Lobby, error) {
 	// Join the pubsub Topic
-	ctx := context.Background()
-	topic, err := ps.Join(pointLocal)
+	topic, err := ps.Join(olc)
 	if err != nil {
 		return nil, err
 	}
@@ -52,38 +50,33 @@ func Join(callr OnProtobuf, onErr Error, ps *pubsub.PubSub, id peer.ID, pointLoc
 		return nil, err
 	}
 
-	topicHandler, err := topic.EventHandler()
-	if err != nil {
-		return nil, err
-	}
-
 	// Initialize Lobby for Peers
 	lobInfo := &md.Lobby{
-		Code:  pointLocal,
-		Size:  1,
-		Peers: make(map[string]*md.Peer),
+		Code:        olc,
+		Size:        1,
+		Available:   make(map[string]*md.Peer),
+		Unavailable: make(map[string]*md.Peer),
 	}
 
 	// Create Lobby Type
 	lob := &Lobby{
-		ctx:          ctx,
-		onError:      onErr,
-		callback:     callr,
-		ps:           ps,
-		topic:        topic,
-		topicHandler: topicHandler,
-		sub:          sub,
-		self:         id,
+		ctx:      ctx,
+		onError:  onErr,
+		callback: callr,
+		ps:       ps,
+		topic:    topic,
+		sub:      sub,
+		self:     id,
 
 		Data:     lobInfo,
 		Messages: make(chan *md.LobbyEvent, ChatRoomBufSize),
 	}
 
 	// Start Handling Events
-	// go lob.handleEvents()
 	// go lob.processEvents()
 
 	// Start Reading Messages
+	go lob.handleEvents()
 	go lob.handleMessages()
 	go lob.processMessages()
 	return lob, nil
@@ -134,6 +127,31 @@ func (lob *Lobby) Busy(p *md.Peer) error {
 		return err
 	}
 	return nil
+}
+
+// ^ Send publishes a message to the pubsub topic OLC ^
+func (lob *Lobby) Resume(p *md.Peer) {
+	// Create Lobby Event
+	event := md.LobbyEvent{
+		Event:     md.LobbyEvent_UPDATE,
+		Peer:      p,
+		Id:        p.Id,
+		Direction: p.Direction,
+	}
+
+	// Convert Event to Proto Binary
+	bytes, err := proto.Marshal(&event)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	// Publish to Topic
+	err = lob.topic.Publish(lob.ctx, bytes)
+	if err != nil {
+		log.Println(err)
+		return
+	}
 }
 
 // ^ Send publishes a message to the pubsub topic OLC ^
