@@ -165,6 +165,5 @@ func (pc *PeerConnection) HandleTransfer(stream network.Stream) {
 			}
 			lifecycle.GetState().NeedsWait()
 		}
-
 	}(msgio.NewReader(stream), pc.transfer)
 }

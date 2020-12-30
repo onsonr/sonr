@@ -40,7 +40,6 @@ func (lob *Lobby) handleMessages() {
 
 // ^ 1a. processMessages handles message content and ticker ^
 func (lob *Lobby) processMessages() {
-
 	for {
 		select {
 		// ** when we receive a message from the lobby room **

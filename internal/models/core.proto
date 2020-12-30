@@ -14,7 +14,7 @@ message LobbyEvent {
   Peer peer = 2;
   string id = 3; // Optional used for remove
 
-  enum Event { NONE = 0; JOIN = 1; UPDATE = 2; EXIT = 3; }
+  enum Event { NONE = 0; JOIN = 1; UPDATE = 2; STANDBY = 3; EXIT = 4; }
 }
 
 // Define Chunk Type: Sent on Data Transfer
@@ -23,8 +23,4 @@ message Chunk {
   bytes buffer = 2;
   int32 size = 3;
   int32 total = 4;
-}
-
-enum CallbackType {
-  REFRESHED = 0; QUEUED = 1; INVITED = 2; RESPONDED = 3; COMPLETED = 5;
 }

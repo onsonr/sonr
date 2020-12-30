@@ -36,8 +36,6 @@ type AuthService struct {
 
 // ^ Calls Invite on Remote Peer ^ //
 func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthReply) error {
-	log.Println("Received a Invite call: ", args.Data)
-
 	// Send Callback
 	as.onInvite(args.Data)
 
@@ -54,7 +52,6 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 	select {
 	// Received Auth Channel Message
 	case m := <-as.respCh:
-		log.Println("User has replied")
 
 		// Convert Protobuf to bytes
 		msgBytes, err := proto.Marshal(m)
