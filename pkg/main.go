@@ -8,7 +8,6 @@ import (
 
 	"github.com/getlantern/systray"
 	"github.com/sonr-io/core/pkg/ui"
-	//	"github.com/sonr-io/core/bind"
 )
 
 // Define Context

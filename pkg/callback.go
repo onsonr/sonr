@@ -26,7 +26,7 @@ func (c *Client) OnInvited(data []byte) {
 		log.Panicln("Error Unmarshalling Request")
 	}
 	ui.PushInvited(m)
-	c.node.Respond(true)
+	// c.node.Respond(true)
 }
 
 // @ Inherited Method: Handle Response ^ //

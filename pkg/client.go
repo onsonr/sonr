@@ -31,6 +31,12 @@ func NewClient(ctx context.Context, m ui.SystemMenu) *Client {
 		name = "Undefined"
 	}
 
+	tempDir, err := os.UserCacheDir()
+	if err != nil {
+		log.Println(err)
+		tempDir = "local/temp"
+	}
+
 	docDir, err := os.UserHomeDir()
 	if err != nil {
 		log.Println(err)
@@ -48,7 +54,7 @@ func NewClient(ctx context.Context, m ui.SystemMenu) *Client {
 		},
 		Directory: &md.Directories{
 			Documents: docDir,
-			Temporary: "local/temp",
+			Temporary: tempDir,
 		},
 		Contact: &md.Contact{
 			FirstName: "MacTest",
