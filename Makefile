@@ -39,6 +39,16 @@ mobile: protoc ios android
 	@echo "-------- ✅ ✅ ✅   FINISHED ALL TASKS  ✅ ✅ ✅  --------------"
 	@echo "--------------------------------------------------------------"
 
+## desktop  :   Builds Darwin and Windows Builds at Build Path
+desktop: protoc darwin win
+	@go mod tidy
+	@cd /System/Library/Sounds && afplay Hero.aiff
+	@echo ""
+	@echo ""
+	@echo "--------------------------------------------------------------"
+	@echo "-------- ✅ ✅ ✅   FINISHED ALL TASKS  ✅ ✅ ✅  --------------"
+	@echo "--------------------------------------------------------------"
+
 
 ## android  :   Builds Android Bind at Plugin Path
 android:
@@ -109,14 +119,14 @@ win:
 	@echo ""
 	@echo ""
 	@echo "-----------------------------------------------------------"
-	@echo "------------- 🖥 START DARWIN BUILD 🖥 --------------------"
+	@echo "------------- 🪟 START WINDOWS BUILD 🪟 --------------------"
 	@echo "-----------------------------------------------------------"
 	go clean -cache -x
 	cd pkg && GOOS=windows GOARCH=amd64 go build -o $(WIN_AMD_ARTIFACT)
 	@echo "Finished Binding ➡ " && date
 	@cd $(MAC_BUILDDIR) && ./sonr_core
 	@echo "--------------------------------------------------------------"
-	@echo "------------- 🖥 COMPLETED DAWIN BULD 🖥 --------------------"
+	@echo "------------- 🪟 COMPLETED WINDOWS BULD 🪟 --------------------"
 	@echo "--------------------------------------------------------------"
 	@echo ""
 
