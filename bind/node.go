@@ -121,7 +121,7 @@ func (sn *Node) InviteContact(peerId string) {
 }
 
 // ^ Send Invite with URL Link ^ //
-func (sn *Node) InviteLink(peerId string, display string, url string) {
+func (sn *Node) InviteLink(peerId string, url string) {
 	// Get PeerID
 	id, _, err := sn.lobby.Find(peerId)
 
@@ -135,10 +135,7 @@ func (sn *Node) InviteLink(peerId string, display string, url string) {
 		From: sn.peer,
 		Payload: &md.Payload{
 			Type: md.Payload_URL,
-			Link: &md.Link{
-				Display: display,
-				Url:     url,
-			},
+			Url:  url,
 		},
 	}
 

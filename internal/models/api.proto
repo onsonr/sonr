@@ -37,7 +37,7 @@ message AuthReply {
 message Payload {
   Metadata file = 1;
   Contact contact = 2;
-  Link link = 3;
+  string url = 3;
   Type type = 4;
   enum Type { NONE = 0; FILE = 1; CONTACT = 2; URL = 3; TEXT = 4; }
 }

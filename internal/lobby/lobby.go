@@ -119,6 +119,7 @@ func (lob *Lobby) Busy(p *md.Peer) error {
 	event := md.LobbyEvent{
 		Event: md.LobbyEvent_BUSY,
 		Peer:  p,
+		Id:    p.Id,
 	}
 
 	// Convert Event to Proto Binary
@@ -141,6 +142,7 @@ func (lob *Lobby) Standby(p *md.Peer) {
 	event := md.LobbyEvent{
 		Event: md.LobbyEvent_STANDBY,
 		Peer:  p,
+		Id:    p.Id,
 	}
 
 	// Convert Event to Proto Binary
@@ -164,6 +166,7 @@ func (lob *Lobby) Exit(p *md.Peer) {
 	event := md.LobbyEvent{
 		Event: md.LobbyEvent_EXIT,
 		Peer:  p,
+		Id:    p.Id,
 	}
 
 	// Convert Event to Proto Binary

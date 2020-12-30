@@ -28,11 +28,7 @@ message Lobby {
   string code = 1;
   int32 size = 2;
   map<string, Peer> peers = 3;
-}
-
-message Link {
-  string display = 1;
-  string url = 2;
+  repeated Peer standby = 4;
 }
 
 // Define Contact Type: Will be CSV in Future
