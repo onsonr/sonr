@@ -70,11 +70,9 @@ func (sn *Node) InviteFile(peerId string) {
 
 	// Create Invite Message
 	invMsg := md.AuthInvite{
-		From: sn.peer,
-		Payload: &md.Payload{
-			Type: md.Payload_FILE,
-			File: currFile.GetMetadata(),
-		},
+		From:    sn.peer,
+		Payload: md.Payload_FILE,
+		File:    currFile.GetMetadata(),
 	}
 
 	// Check if ID in PeerStore
@@ -101,11 +99,9 @@ func (sn *Node) InviteContact(peerId string) {
 
 	// Create Invite Message with Payload
 	invMsg := md.AuthInvite{
-		From: sn.peer,
-		Payload: &md.Payload{
-			Type:    md.Payload_CONTACT,
-			Contact: sn.contact,
-		},
+		From:    sn.peer,
+		Payload: md.Payload_CONTACT,
+		Contact: sn.contact,
 	}
 
 	// Check if ID in PeerStore
@@ -132,11 +128,9 @@ func (sn *Node) InviteLink(peerId string, url string) {
 
 	// Create Invite Message with Payload
 	invMsg := md.AuthInvite{
-		From: sn.peer,
-		Payload: &md.Payload{
-			Type: md.Payload_URL,
-			Url:  url,
-		},
+		From:    sn.peer,
+		Payload: md.Payload_URL,
+		Url:     url,
 	}
 
 	// Check if ID in PeerStore
