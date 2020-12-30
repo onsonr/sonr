@@ -37,6 +37,7 @@ func (sn *Node) setInfo(connEvent *md.ConnectionRequest) error {
 		Device:     connEvent.Device,
 		FirstName:  connEvent.Contact.FirstName,
 		ProfilePic: connEvent.Contact.ProfilePic,
+		Status:     md.Peer_AVAILABLE,
 	}
 	return nil
 }
@@ -53,7 +54,7 @@ func (sn *Node) setConnection(ctx context.Context) error {
 	log.Println("GossipSub Created")
 
 	// Enter Lobby
-	if sn.lobby, err = sl.Initialize(sn.call.OnRefreshed, sn.error, sn.pubSub, sn.host.ID(), sn.olc); err != nil {
+	if sn.lobby, err = sl.Join(sn.call.OnRefreshed, sn.error, sn.pubSub, sn.host.ID(), sn.olc); err != nil {
 		return err
 	}
 	log.Println("Lobby Initialized")

@@ -94,18 +94,21 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 // ^ Close Ends All Network Communication ^
 func (sn *Node) Pause() {
 	log.Println("Sonr Paused.")
+	sn.peer.Status = md.Peer_STANDBY
 	lifecycle.GetState().Pause()
 }
 
 // ^ Close Ends All Network Communication ^
 func (sn *Node) Resume() {
 	log.Println("Sonr Resumed.")
+	sn.peer.Status = md.Peer_AVAILABLE
 	lifecycle.GetState().Resume()
 }
 
 // ^ Close Ends All Network Communication ^
 func (sn *Node) Stop() {
 	log.Println("Sonr Stopped.")
+	sn.lobby.Exit(sn.peer)
 	sn.host.Close()
 }
 

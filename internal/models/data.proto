@@ -90,14 +90,15 @@ message Directories {
 // Define Peer: Basic Info Sent to Peers
 message Peer {
   string id = 1;
-  Device device = 2;
-  string discovery = 3;
-  string username = 4;
-  string firstName = 5;
-  bytes profilePic = 6;
-  double direction = 7;
-  double difference = 8;
-  double distance = 9;
+  Status status = 2;
+  Device device = 3;
+  string discovery = 4;
+  string username = 5;
+  string firstName = 6;
+  bytes profilePic = 7;
+  double direction = 8;
+  double difference = 9;
   Proximity proximity = 10;
   enum Proximity { NONE = 0; IMMEDIATE = 1; NEAR = 2; FAR = 3; }
+  enum Status { AVAILABLE = 0; BUSY = 1; STANDBY = 2; }
 }

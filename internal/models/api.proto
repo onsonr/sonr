@@ -43,13 +43,15 @@ message Payload {
 }
 
 // Define Lobby Message
-message LobbyMessage {
+message LobbyEvent {
   Event event = 1;
   Peer peer = 2;
   string id = 3;
   double direction = 4;
 
-  enum Event { NONE = 0; JOIN = 1; UPDATE = 2; STANDBY = 3; EXIT = 4; }
+  enum Event {
+    NONE = 0; JOIN = 1; UPDATE = 2; BUSY = 3; STANDBY = 4; EXIT = 5;
+  }
 }
 
 // Error Message
