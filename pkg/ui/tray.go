@@ -3,6 +3,7 @@ package ui
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/getlantern/systray"
 	md "github.com/sonr-io/core/internal/models"
@@ -71,7 +72,7 @@ func (sm *SystemMenu) UpdatePeers(newLob *md.Lobby) {
 			// Add Item to Menu
 			item := sm.mPeers.AddSubMenuItem(itemTitle, "Nearby Available Peer")
 			item.SetTemplateIcon(GetDeviceIcon(p.Device), GetDeviceIcon(p.Device))
-
+			log.Println(p)
 			// // Spawn Routine to handle Item
 			// go func(item *systray.MenuItem, peer *md.Peer) {
 			// 	// On Item Click
