@@ -8,6 +8,21 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+// @ Inherited Method: On Connected ^ //
+func (c *Client) OnConnected() {
+	log.Println("Connected")
+}
+
+// @ Inherited Method: Handle Event ^ //
+func (c *Client) OnEvent(data []byte) {
+	m := &md.LobbyEvent{}
+	err := proto.Unmarshal(data, m)
+	if err != nil {
+		log.Panicln("Error Unmarshalling Request")
+	}
+	log.Println(m.String())
+}
+
 // @ Inherited Method: Handle Refresh ^ //
 func (c *Client) OnRefreshed(data []byte) {
 	m := &md.Lobby{}

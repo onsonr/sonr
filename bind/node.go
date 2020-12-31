@@ -160,7 +160,8 @@ func (sn *Node) Respond(decision bool) {
 	// @ Check Decision
 	if decision {
 		// Inform Lobby
-		if err := sn.lobby.Busy(); err != nil {
+		sn.peer.Status = md.Peer_BUSY
+		if err := sn.lobby.Update(); err != nil {
 			log.Println(err)
 		}
 	}

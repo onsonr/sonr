@@ -124,36 +124,10 @@ func (lob *Lobby) Update() error {
 
 	// Create Lobby Event
 	event := md.LobbyMessage{
-		Event:     md.LobbyMessage_AVAILABLE,
+		Event:     md.LobbyMessage_UPDATE,
 		Peer:      p,
 		Direction: p.Direction,
 		Id:        p.Id,
-	}
-
-	// Convert Event to Proto Binary
-	bytes, err := proto.Marshal(&event)
-	if err != nil {
-		return err
-	}
-
-	// Publish to Topic
-	err = lob.topic.Publish(lob.ctx, bytes)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-// ^ Send publishes a message to the pubsub topic OLC ^
-func (lob *Lobby) Busy() error {
-	// Get Peer info
-	p := lob.pushInfo()
-
-	// Create Lobby Event
-	event := md.LobbyMessage{
-		Event: md.LobbyMessage_BUSY,
-		Peer:  p,
-		Id:    p.Id,
 	}
 
 	// Convert Event to Proto Binary

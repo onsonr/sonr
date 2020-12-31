@@ -14,7 +14,7 @@ message LobbyMessage {
   string id = 3;
   double direction = 4;
 
-  enum Subject { EXCHANGE = 0; AVAILABLE = 1; BUSY = 2; }
+  enum Subject { EXCHANGE = 0; UPDATE = 1; }
 }
 
 // Define Chunk Type: Sent on Data Transfer

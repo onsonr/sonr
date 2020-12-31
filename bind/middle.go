@@ -12,7 +12,7 @@ func (sn *Node) responded(decision bool, data []byte) {
 	// Announce Lobby if Accepted
 	if decision {
 		sn.peer.Status = md.Peer_BUSY
-		if err := sn.lobby.Busy(); err != nil {
+		if err := sn.lobby.Update(); err != nil {
 			log.Println(err)
 		}
 	}

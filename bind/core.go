@@ -97,8 +97,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 func (sn *Node) Pause() {
 	log.Println("Sonr Paused.")
 	sn.peer.Status = md.Peer_BUSY
-	err := sn.lobby.Busy()
-	if err != nil {
+	if err := sn.lobby.Update(); err != nil {
 		log.Println(err)
 	}
 	lifecycle.GetState().Pause()

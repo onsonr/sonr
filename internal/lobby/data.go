@@ -54,16 +54,6 @@ func (lob *Lobby) setPeer(msg *md.LobbyMessage) {
 	lob.sendRefresh()
 }
 
-// ^ setBusy changes peer values in Lobby ^
-func (lob *Lobby) setBusyPeer(msg *md.LobbyMessage) {
-	// Add Peer to UnPeers Map
-	lob.Data.Peers[msg.Id].Status = md.Peer_BUSY
-	lob.Data.Size = int32(len(lob.Data.Peers)) + 1 // Account for User
-
-	// Send Event
-	lob.sendRefresh()
-}
-
 // ^ removePeer deletes peer from all maps ^
 func (lob *Lobby) removePeer(id string) {
 	// Remove Peer from Peers
