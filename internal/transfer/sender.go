@@ -19,7 +19,7 @@ const B64ChunkSize = 31998 // Adjusted for Base64 -- has to be divisible by 3
 const BufferChunkSize = 32000
 
 // ^ write file as Base64 in Msgio to Stream ^ //
-func writeBase64ToStream(writer msgio.WriteCloser, onCompleted OnProtobuf, meta *md.Metadata, peer []byte) {
+func writeBase64ToStream(writer msgio.WriteCloser, onCompleted OnCompleted, meta *md.Metadata, peer []byte) {
 	// Initialize Buffer
 	imgBuffer := new(bytes.Buffer)
 
@@ -67,11 +67,11 @@ func writeBase64ToStream(writer msgio.WriteCloser, onCompleted OnProtobuf, meta 
 	}
 
 	// Call Completed Sending
-	onCompleted(peer)
+	onCompleted(false, peer)
 }
 
 // ^ write file as Bytes in Msgio to Stream ^ //
-func writeBytesToStream(writer msgio.WriteCloser, onCompleted OnProtobuf, meta *md.Metadata, peer []byte) {
+func writeBytesToStream(writer msgio.WriteCloser, onCompleted OnCompleted, meta *md.Metadata, peer []byte) {
 	// Open File
 	file, err := os.Open(meta.Path)
 	if err != nil {
@@ -120,5 +120,5 @@ func writeBytesToStream(writer msgio.WriteCloser, onCompleted OnProtobuf, meta *
 	}
 
 	// Call Completed Sending
-	onCompleted(peer)
+	onCompleted(false, peer)
 }

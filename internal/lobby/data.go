@@ -2,11 +2,9 @@ package lobby
 
 import (
 	"errors"
-	"log"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	md "github.com/sonr-io/core/internal/models"
-	"google.golang.org/protobuf/proto"
 )
 
 // ^ Find returns Pointer to Peer.ID and Peer ^
@@ -52,25 +50,11 @@ func (lob *Lobby) setPeer(msg *md.LobbyMessage) {
 	delete(lob.Data.Unavailable, msg.Id)
 
 	// Update Peer with new data
-	id := msg.Id
-	lob.Data.Available[id] = msg.Peer
+	lob.Data.Available[msg.Id] = msg.Peer
 	lob.Data.Size = int32(len(lob.Data.Available)) + 1 // Account for User
 
-	// Create Event
-	event := md.LobbyEvent{
-		Event:     md.LobbyEvent_UPDATE,
-		Peer:      msg.Peer,
-		Direction: msg.Direction,
-	}
-
-	// Marshal data to bytes
-	bytes, err := proto.Marshal(&event)
-	if err != nil {
-		log.Println("Cannot Marshal Error Protobuf: ", err)
-	}
-
-	// Send Callback with updated peers
-	lob.callEvent(bytes)
+	// Send Event
+	lob.sendRefresh()
 }
 
 // ^ setBusy changes peer values in Lobby ^
@@ -82,20 +66,8 @@ func (lob *Lobby) setUnavailable(msg *md.LobbyMessage) {
 	lob.Data.Unavailable[msg.Id] = msg.Peer
 	lob.Data.Size = int32(len(lob.Data.Available)) + 1 // Account for User
 
-	// Create Event
-	event := md.LobbyEvent{
-		Event: md.LobbyEvent_BUSY,
-		Peer:  msg.Peer,
-	}
-
-	// Marshal data to bytes
-	bytes, err := proto.Marshal(&event)
-	if err != nil {
-		log.Println("Cannot Marshal Error Protobuf: ", err)
-	}
-
-	// Send Callback with updated peers
-	lob.callEvent(bytes)
+	// Send Event
+	lob.sendRefresh()
 }
 
 // ^ removePeer deletes peer from all maps ^
@@ -107,18 +79,6 @@ func (lob *Lobby) removePeer(id string) {
 	delete(lob.Data.Unavailable, id)
 	lob.Data.Size = int32(len(lob.Data.Available)) + 1 // Account for User
 
-	// Create Event
-	event := md.LobbyEvent{
-		Event:  md.LobbyEvent_BUSY,
-		PeerId: id,
-	}
-
-	// Marshal data to bytes
-	bytes, err := proto.Marshal(&event)
-	if err != nil {
-		log.Println("Cannot Marshal Error Protobuf: ", err)
-	}
-
-	// Send Callback with updated peers
-	lob.callEvent(bytes)
+	// Send Event
+	lob.sendRefresh()
 }

@@ -20,7 +20,7 @@ type Transfer struct {
 	meta       *md.Metadata
 	owner      *md.Peer
 	onProgress OnProgress
-	onComplete OnProtobuf
+	onComplete OnCompleted
 	path       string
 
 	// Builders
@@ -146,7 +146,7 @@ func (t *Transfer) save() error {
 		}
 
 		// Send Complete Callback
-		t.onComplete(bytes)
+		t.onComplete(true, bytes)
 		return nil
 	} else {
 		// Create File at Path
@@ -183,7 +183,7 @@ func (t *Transfer) save() error {
 		}
 
 		// Send Complete Callback
-		t.onComplete(bytes)
+		t.onComplete(true, bytes)
 		return nil
 	}
 }

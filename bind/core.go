@@ -122,25 +122,3 @@ func (sn *Node) Stop() {
 	sn.ctx.Done()
 	sn.host.Close()
 }
-
-
-
-// ^ error Callback with error instance, and method ^
-func (sn *Node) error(err error, method string) {
-	// Create Error ProtoBuf
-	errorMsg := md.ErrorMessage{
-		Message: err.Error(),
-		Method:  method,
-	}
-
-	// Convert Message to bytes
-	bytes, err := proto.Marshal(&errorMsg)
-	if err != nil {
-		log.Println("Cannot Marshal Error Protobuf: ", err)
-	}
-	// Send Callback
-	sn.call.OnError(bytes)
-
-	// Log In Core
-	log.Fatalf("[Error] At Method %s : %s", err.Error(), method)
-}

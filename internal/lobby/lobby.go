@@ -28,18 +28,19 @@ type Lobby struct {
 	Data     *md.Lobby
 
 	// Private Vars
-	ctx       context.Context
-	pushInfo  OnPeerJoin
-	callEvent OnProtobuf
-	onError   Error
-	ps        *pubsub.PubSub
-	topic     *pubsub.Topic
-	self      peer.ID
-	sub       *pubsub.Subscription
+	ctx         context.Context
+	pushInfo    OnPeerJoin
+	callEvent   OnProtobuf
+	callRefresh OnProtobuf
+	onError     Error
+	ps          *pubsub.PubSub
+	topic       *pubsub.Topic
+	self        peer.ID
+	sub         *pubsub.Subscription
 }
 
 // ^ Join Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
-func Join(ctx context.Context, calle OnProtobuf, push OnPeerJoin, onErr Error, ps *pubsub.PubSub, id peer.ID, olc string) (*Lobby, error) {
+func Join(ctx context.Context, calle OnProtobuf, callr OnProtobuf, push OnPeerJoin, onErr Error, ps *pubsub.PubSub, id peer.ID, olc string) (*Lobby, error) {
 	// Join the pubsub Topic
 	topic, err := ps.Join(olc)
 	if err != nil {
@@ -62,14 +63,15 @@ func Join(ctx context.Context, calle OnProtobuf, push OnPeerJoin, onErr Error, p
 
 	// Create Lobby Type
 	lob := &Lobby{
-		ctx:       ctx,
-		onError:   onErr,
-		pushInfo:  push,
-		callEvent: calle,
-		ps:        ps,
-		topic:     topic,
-		sub:       sub,
-		self:      id,
+		ctx:         ctx,
+		onError:     onErr,
+		pushInfo:    push,
+		callEvent:   calle,
+		callRefresh: callr,
+		ps:          ps,
+		topic:       topic,
+		sub:         sub,
+		self:        id,
 
 		Data:     lobInfo,
 		Messages: make(chan *md.LobbyMessage, ChatRoomBufSize),

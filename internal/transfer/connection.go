@@ -20,6 +20,7 @@ import (
 )
 
 // Define Callback Function Types
+type OnCompleted func(isReceiver bool, data []byte)
 type OnProtobuf func([]byte)
 type OnError func(err error, method string)
 
@@ -36,11 +37,10 @@ type PeerConnection struct {
 	transfer *Transfer
 
 	// Callbacks
-	invitedCall     OnProtobuf
-	respondedCall   OnProtobuf
-	progressCall    OnProgress
-	receivedCall    OnProtobuf
-	transmittedCall OnProtobuf
+	invitedCall   OnProtobuf
+	respondedCall OnProtobuf
+	progressCall  OnProgress
+	completedCall OnCompleted
 
 	// Info
 	olc  string
@@ -48,19 +48,18 @@ type PeerConnection struct {
 }
 
 // ^ Initialize sets up new Peer Connection handler ^
-func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic OnProtobuf, rc OnProtobuf, pc OnProgress, recCall OnProtobuf, transCall OnProtobuf, ec OnError) (*PeerConnection, error) {
+func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic OnProtobuf, rc OnProtobuf, pc OnProgress, compCall OnCompleted, ec OnError) (*PeerConnection, error) {
 	// Set Package Level Callbacks
 	onError = ec
 
 	// Initialize Parameters into PeerConnection
 	peerConn := &PeerConnection{
-		olc:             o,
-		dirs:            d,
-		invitedCall:     ic,
-		respondedCall:   rc,
-		progressCall:    pc,
-		receivedCall:    recCall,
-		transmittedCall: transCall,
+		olc:           o,
+		dirs:          d,
+		invitedCall:   ic,
+		respondedCall: rc,
+		progressCall:  pc,
+		completedCall: compCall,
 	}
 
 	// Create GRPC Client/Server and Set Data Stream Handler
@@ -93,7 +92,7 @@ func (pc *PeerConnection) PrepareTransfer(meta *md.Metadata, own *md.Peer) *Tran
 		owner:      own,
 		path:       pc.dirs.Temporary + "/" + meta.Name + "." + meta.Mime.Subtype,
 		onProgress: pc.progressCall,
-		onComplete: pc.receivedCall,
+		onComplete: pc.completedCall,
 
 		// Builders
 		stringsBuilder: new(strings.Builder),
@@ -125,11 +124,11 @@ func (pc *PeerConnection) StartTransfer(h host.Host, id peer.ID, peer *md.Peer) 
 	if pc.SafeMeta.Mime.Type == md.MIME_image {
 		// Start Routine
 		log.Println("Starting Base64 Write Routine")
-		go writeBase64ToStream(writer, pc.transmittedCall, meta, peerBytes)
+		go writeBase64ToStream(writer, pc.completedCall, meta, peerBytes)
 	} else {
 		// Start Routine
 		log.Println("Starting Bytes Write Routine")
-		go writeBytesToStream(writer, pc.transmittedCall, meta, peerBytes)
+		go writeBytesToStream(writer, pc.completedCall, meta, peerBytes)
 	}
 }
 

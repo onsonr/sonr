@@ -97,3 +97,27 @@ func (lob *Lobby) processMessages() {
 		lifecycle.GetState().NeedsWait()
 	}
 }
+
+// ^ Send Event calls back event to Node ^ //
+func (lob *Lobby) sendEvent(event *md.LobbyEvent) {
+	// Marshal data to bytes
+	bytes, err := proto.Marshal(event)
+	if err != nil {
+		log.Println("Cannot Marshal Error Protobuf: ", err)
+	}
+
+	// Send Callback with updated peers
+	lob.callEvent(bytes)
+}
+
+// ^ Send Refresh calls back lobby to Node ^ //
+func (lob *Lobby) sendRefresh() {
+	// Marshal data to bytes
+	bytes, err := proto.Marshal(lob.Data)
+	if err != nil {
+		log.Println("Cannot Marshal Error Protobuf: ", err)
+	}
+
+	// Send Callback with updated peers
+	lob.callRefresh(bytes)
+}
