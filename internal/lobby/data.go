@@ -48,17 +48,15 @@ func (lob *Lobby) Peer(q string) *md.Peer {
 func (lob *Lobby) setPeer(msg *md.LobbyMessage) {
 	// Update Peer with new data
 	lob.Data.Peers[msg.Id] = msg.Peer
-	lob.Data.Size = int32(len(lob.Data.Peers)) + 1 // Account for User
 
 	// Send Event
 	lob.sendRefresh()
 }
 
 // ^ removePeer deletes peer from all maps ^
-func (lob *Lobby) removePeer(id string) {
+func (lob *Lobby) removePeer(id peer.ID) {
 	// Remove Peer from Peers
-	delete(lob.Data.Peers, id)
-	lob.Data.Size = int32(len(lob.Data.Peers)) + 1 // Account for User
+	delete(lob.Data.Peers, id.String())
 
 	// Send Event
 	lob.sendRefresh()

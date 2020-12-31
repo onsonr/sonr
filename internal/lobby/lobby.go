@@ -14,7 +14,7 @@ const ChatRoomBufSize = 128
 
 // Define Function Types
 type OnProtobuf func([]byte)
-type OnPeerJoin func() *md.Peer
+type GetPeerInfo func() *md.Peer
 type Error func(err error, method string)
 
 // Lobby represents a subscription to a single PubSub topic. Messages
@@ -28,7 +28,7 @@ type Lobby struct {
 
 	// Private Vars
 	ctx         context.Context
-	pushInfo    OnPeerJoin
+	pushInfo    GetPeerInfo
 	callEvent   OnProtobuf
 	callRefresh OnProtobuf
 	onError     Error
@@ -39,7 +39,7 @@ type Lobby struct {
 }
 
 // ^ Join Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
-func Join(ctx context.Context, calle OnProtobuf, callr OnProtobuf, push OnPeerJoin, onErr Error, ps *pubsub.PubSub, id peer.ID, olc string) (*Lobby, error) {
+func Join(ctx context.Context, calle OnProtobuf, callr OnProtobuf, push GetPeerInfo, onErr Error, ps *pubsub.PubSub, id peer.ID, olc string) (*Lobby, error) {
 	// Join the pubsub Topic
 	topic, err := ps.Join(olc)
 	if err != nil {
@@ -82,41 +82,6 @@ func Join(ctx context.Context, calle OnProtobuf, callr OnProtobuf, push OnPeerJo
 	return lob, nil
 }
 
-// ^ Exchange publishes a message with Current Info to Peer that Exchanged ^
-func (lob *Lobby) Exchange(msg *md.LobbyMessage) error {
-	// @ Check if Exchanged, Push Data if not
-	if _, ok := lob.Data.Peers[msg.Id]; ok {
-		return nil
-	} else {
-		// Set the Peer
-		lob.setPeer(msg)
-
-		// Get Peer info
-		p := lob.pushInfo()
-
-		// Create Lobby Event
-		event := md.LobbyMessage{
-			Event:     md.LobbyMessage_EXCHANGE,
-			Peer:      p,
-			Direction: p.Direction,
-			Id:        p.Id,
-		}
-
-		// Convert Event to Proto Binary
-		bytes, err := proto.Marshal(&event)
-		if err != nil {
-			return err
-		}
-
-		// Publish to Topic
-		err = lob.topic.Publish(lob.ctx, bytes)
-		if err != nil {
-			return err
-		}
-		return nil
-	}
-}
-
 // ^ Send publishes a message to the pubsub topic OLC ^
 func (lob *Lobby) Update() error {
 	// Get Peer info
@@ -124,7 +89,6 @@ func (lob *Lobby) Update() error {
 
 	// Create Lobby Event
 	event := md.LobbyMessage{
-		Event:     md.LobbyMessage_UPDATE,
 		Peer:      p,
 		Direction: p.Direction,
 		Id:        p.Id,

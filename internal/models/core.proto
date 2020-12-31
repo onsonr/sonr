@@ -9,12 +9,9 @@ option go_package = ".;models";
 
 // Define Lobby Message
 message LobbyMessage {
-  Subject event = 1;
-  Peer peer = 2;
-  string id = 3;
-  double direction = 4;
-
-  enum Subject { EXCHANGE = 0; UPDATE = 1; }
+  Peer peer = 1;
+  string id = 2;
+  double direction = 3;
 }
 
 // Define Chunk Type: Sent on Data Transfer

@@ -22,6 +22,7 @@ const (
 	Android
 	Mac
 	Windows
+	Unknown
 )
 
 // ** Const UI Resource Path ** //
@@ -29,7 +30,7 @@ const RES_PATH = "/Users/prad/Sonr/core/pkg/res/"
 const ICON_PATH = "/Users/prad/Sonr/core/pkg/res/systray.png"
 
 func (d Icon) File() string {
-	return [...]string{"systray.png", "close.png", "user.png", "peer.png", "invite.png", "iphone.png", "android.png", "mac.png", "windows.png"}[d]
+	return [...]string{"systray.png", "close.png", "user.png", "peer.png", "invite.png", "iphone.png", "android.png", "mac.png", "windows.png", "unknown.png"}[d]
 }
 
 // ^ Returns Buffer of Image by Icon Type
@@ -63,14 +64,16 @@ func GetIcon(i Icon) []byte {
 
 // ^ Returns Buffer of Image from Device Type
 func GetDeviceIcon(d *md.Device) []byte {
-	if d.Platform == "Android" {
-		return GetIcon(Android)
-	} else if d.Platform == "iOS" {
-		return GetIcon(iPhone)
-	} else if d.Platform == "Mac" {
-		return GetIcon(Mac)
-	} else if d.Platform == "Windows" {
-		return GetIcon(Windows)
+	if d != nil {
+		if d.Platform == "Android" {
+			return GetIcon(Android)
+		} else if d.Platform == "iOS" {
+			return GetIcon(iPhone)
+		} else if d.Platform == "Mac" {
+			return GetIcon(Mac)
+		} else if d.Platform == "Windows" {
+			return GetIcon(Windows)
+		}
 	}
-	return nil
+	return GetIcon(Unknown)
 }

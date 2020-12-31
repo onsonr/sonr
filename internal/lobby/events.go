@@ -58,16 +58,24 @@ func (lob *Lobby) handleEvents() {
 		// Push User Data to new peer
 		if lobEvent.Type == pubsub.PeerJoin {
 			log.Println("Lobby Event: Peer Joined")
-			err := lob.Update()
-			if err != nil {
-				log.Println(err)
+			if lobEvent.Peer == lob.self {
+				continue
+			} else {
+				if err := lob.Update(); err != nil {
+					log.Println(err)
+					continue
+				}
 			}
 		}
 
 		// Remove Peer from Lobby
 		if lobEvent.Type == pubsub.PeerLeave {
-			log.Println("Lobby Event: Peer Left")
-			lob.removePeer(lobEvent.Peer.String())
+			if lobEvent.Peer == lob.self {
+				continue
+			} else {
+				lob.removePeer(lobEvent.Peer)
+				continue
+			}
 		}
 
 		lifecycle.GetState().NeedsWait()
@@ -80,13 +88,7 @@ func (lob *Lobby) processMessages() {
 		select {
 		// @ Message Received
 		case m := <-lob.Messages:
-			if m.Event == md.LobbyMessage_EXCHANGE {
-				if err := lob.Exchange(m); err != nil {
-					log.Println(err)
-				}
-			} else {
-				lob.setPeer(m)
-			}
+			lob.setPeer(m)
 		case <-lob.ctx.Done():
 			return
 		}
@@ -96,20 +98,11 @@ func (lob *Lobby) processMessages() {
 	}
 }
 
-// ^ Send Event calls back event to Node ^ //
-func (lob *Lobby) sendEvent(event *md.LobbyEvent) {
-	// Marshal data to bytes
-	bytes, err := proto.Marshal(event)
-	if err != nil {
-		log.Println("Cannot Marshal Error Protobuf: ", err)
-	}
-
-	// Send Callback with updated peers
-	lob.callEvent(bytes)
-}
-
 // ^ Send Refresh calls back lobby to Node ^ //
 func (lob *Lobby) sendRefresh() {
+	// Set Size
+	lob.Data.Size = int32(len(lob.Data.Peers)) + 1 // Account for User
+
 	// Marshal data to bytes
 	bytes, err := proto.Marshal(lob.Data)
 	if err != nil {
@@ -119,3 +112,15 @@ func (lob *Lobby) sendRefresh() {
 	// Send Callback with updated peers
 	lob.callRefresh(bytes)
 }
+
+// // ^ Send Event calls back event to Node ^ //
+// func (lob *Lobby) sendEvent(event *md.LobbyEvent) {
+// 	// Marshal data to bytes
+// 	bytes, err := proto.Marshal(event)
+// 	if err != nil {
+// 		log.Println("Cannot Marshal Error Protobuf: ", err)
+// 	}
+
+// 	// Send Callback with updated peers
+// 	lob.callEvent(bytes)
+// }
