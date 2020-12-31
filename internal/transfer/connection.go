@@ -32,8 +32,8 @@ type PeerConnection struct {
 	auth *AuthService
 
 	// Data Handlers
-	SafeMeta *sf.SafeMetadata
-	transfer *Transfer
+	SafePreview *sf.SafePreview
+	transfer    *Transfer
 
 	// Callbacks
 	invitedCall     OnProtobuf
@@ -85,13 +85,13 @@ func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic 
 }
 
 // ^  Prepare for Stream, Create new Transfer ^ //
-func (pc *PeerConnection) PrepareTransfer(meta *md.Metadata, own *md.Peer) *Transfer {
+func (pc *PeerConnection) PrepareTransfer(preview *md.Preview, own *md.Peer) *Transfer {
 	// Create Transfer
 	return &Transfer{
 		// Inherited Properties
-		meta:       meta,
+		preview:    preview,
 		owner:      own,
-		path:       pc.dirs.Documents + "/" + meta.Name + "." + meta.Mime.Subtype,
+		path:       pc.dirs.Temporary + "/" + preview.Name + "." + preview.Mime.Subtype,
 		onProgress: pc.progressCall,
 		onComplete: pc.receivedCall,
 
@@ -119,10 +119,10 @@ func (pc *PeerConnection) StartTransfer(h host.Host, id peer.ID, peer *md.Peer) 
 
 	// Initialize Writer
 	writer := msgio.NewWriter(stream)
-	meta := pc.SafeMeta.GetMetadata()
+	meta := pc.SafePreview.GetPreview()
 
 	// @ Check Type
-	if pc.SafeMeta.Mime.Type == md.MIME_image {
+	if pc.SafePreview.Type == md.MIME_image {
 		// Start Routine
 		log.Println("Starting Base64 Write Routine")
 		go writeBase64ToStream(writer, pc.transmittedCall, meta, peerBytes)

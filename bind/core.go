@@ -43,7 +43,7 @@ type Node struct {
 	pubSub *pubsub.PubSub
 
 	// Data Properties
-	files       []*sf.SafeMetadata
+	files       []*sf.SafePreview
 	directories *md.Directories
 
 	// References
@@ -57,7 +57,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	// ** Create Context and Node - Begin Setup **
 	node := new(Node)
 	node.ctx = context.Background()
-	node.call, node.files = call, make([]*sf.SafeMetadata, maxFileBufferSize)
+	node.call, node.files = call, make([]*sf.SafePreview, maxFileBufferSize)
 
 	// ** Unmarshal Request **
 	reqMsg := md.ConnectionRequest{}

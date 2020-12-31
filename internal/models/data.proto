@@ -3,7 +3,7 @@ syntax = "proto3";
 // Require Go Package
 option go_package = ".;models";
 
-// Define Metadata Type: For Transfer Request
+// Define Metadata Type: For Received Transfer
 message Metadata {
   int32 id = 1;
   string name = 2;
@@ -11,8 +11,16 @@ message Metadata {
   int32 size = 4;
   MIME mime = 5;
   bytes thumbnail = 6;
-  Peer owner = 7;
-  int32 lastOpened = 8;
+  int32 lastOpened = 7;
+}
+
+// Define Preview: For File Transfer Request
+message Preview {
+  MIME mime = 1;
+  string path = 2;
+  string name = 3;
+  int32 size = 4;
+  bytes thumbnail = 5;
 }
 
 // Define MIME: Protobuf Version of Mime
@@ -20,7 +28,13 @@ message MIME {
   Type type = 1;
   string subtype = 2;
   string value = 3;
-  enum Type { application = 0; audio = 1; image = 2; text = 3; video = 4; }
+  enum Type {
+    application = 0;
+    audio = 1;
+    image = 2;
+    text = 3;
+    video = 4;
+  }
 }
 
 // Define Lobby Type: For Info about Lobby
@@ -28,11 +42,6 @@ message Lobby {
   string code = 1;
   int32 size = 2;
   map<string, Peer> peers = 3;
-}
-
-message Link {
-  string display = 1;
-  string url = 2;
 }
 
 // Define Contact Type: Will be CSV in Future
@@ -51,12 +60,11 @@ message Contact {
   // Extended Social Media Integration
   message SocialTile {
     Provider provider = 1;
-    TileType type = 2;
-    int32 position = 3; // 0-7
-    string url = 4;
-    string username = 5;
+    int32 position = 2; // 0-7
+    string username = 3;
+    string showcase = 4;
+    string feed = 5;
 
-    enum TileType { Icon = 0; Feed = 1; Showcase = 2; }
     enum Provider {
       Instagram = 0; // Feed/Link Option
       TikTok = 1;    // Feed/Link Option
@@ -99,5 +107,10 @@ message Peer {
   double difference = 8;
   double distance = 9;
   Proximity proximity = 10;
-  enum Proximity { NONE = 0; IMMEDIATE = 1; NEAR = 2; FAR = 3; }
+  enum Proximity {
+    NONE = 0;
+    IMMEDIATE = 1;
+    NEAR = 2;
+    FAR = 3;
+  }
 }

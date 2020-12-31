@@ -13,7 +13,7 @@ import (
 )
 
 // ^ CurrentFile returns last file in Processed Files ^ //
-func (sn *Node) currentFile() *sf.SafeMetadata {
+func (sn *Node) currentFile() *sf.SafePreview {
 	return sn.files[len(sn.files)-1]
 }
 
@@ -53,7 +53,7 @@ func (sn *Node) setConnection(ctx context.Context) error {
 	log.Println("GossipSub Created")
 
 	// Enter Lobby
-	if sn.lobby, err = sl.Initialize(sn.call.OnRefreshed, sn.error, sn.pubSub, sn.host.ID(), sn.peer, sn.olc); err != nil {
+	if sn.lobby, err = sl.Join(sn.ctx, sn.call.OnRefreshed, sn.error, sn.pubSub, sn.host.ID(), sn.peer, sn.olc); err != nil {
 		return err
 	}
 	log.Println("Lobby Initialized")

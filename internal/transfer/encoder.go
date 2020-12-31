@@ -25,9 +25,9 @@ func ChunkBase64(s string) []string {
 }
 
 // ^ Helper: Encodes to Jpeg Image ^ //
-func EncodeJpegBuffer(buf *bytes.Buffer, meta *md.Metadata) error {
+func EncodeJpegBuffer(buf *bytes.Buffer, preview *md.Preview) error {
 	// Open File at Meta Path
-	file, err := os.Open(meta.Path)
+	file, err := os.Open(preview.Path)
 	if err != nil {
 		return err
 	}
@@ -48,9 +48,9 @@ func EncodeJpegBuffer(buf *bytes.Buffer, meta *md.Metadata) error {
 }
 
 // ^ Helper: Encodes to PNG Image ^ //
-func EncodePngBuffer(buf *bytes.Buffer, meta *md.Metadata) error {
+func EncodePngBuffer(buf *bytes.Buffer, preview *md.Preview) error {
 	// Open File at Meta Path
-	file, err := os.Open(meta.Path)
+	file, err := os.Open(preview.Path)
 	if err != nil {
 		return err
 	}

@@ -76,7 +76,7 @@ func NewHost(ctx context.Context, dir *md.Directories, olc string) (host.Host, e
 			// This is like telling your friends to meet you at the Eiffel Tower.
 			routingDiscovery := discovery.NewRoutingDiscovery(idht)
 			discovery.Advertise(ctx, routingDiscovery, point)
-			go connectRendevouzNodes(ctx, h, routingDiscovery, point)
+			go startBootstrap(ctx, h, routingDiscovery, point)
 			return idht, err
 		}),
 		// Let this host use relays and advertise itself on relays if

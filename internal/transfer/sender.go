@@ -19,20 +19,20 @@ const B64ChunkSize = 31998 // Adjusted for Base64 -- has to be divisible by 3
 const BufferChunkSize = 32000
 
 // ^ write file as Base64 in Msgio to Stream ^ //
-func writeBase64ToStream(writer msgio.WriteCloser, onCompleted OnProtobuf, meta *md.Metadata, peer []byte) {
+func writeBase64ToStream(writer msgio.WriteCloser, onCompleted OnProtobuf, preview *md.Preview, peer []byte) {
 	// Initialize Buffer
 	imgBuffer := new(bytes.Buffer)
 
 	// @ Check Image type
-	if meta.Mime.Subtype == "jpeg" {
+	if preview.Mime.Subtype == "jpeg" {
 		// Get JPEG Encoded Buffer
-		err := EncodeJpegBuffer(imgBuffer, meta)
+		err := EncodeJpegBuffer(imgBuffer, preview)
 		if err != nil {
 			log.Fatalln(err)
 		}
-	} else if meta.Mime.Subtype == "png" {
+	} else if preview.Mime.Subtype == "png" {
 		// Get PNG Encoded Buffer
-		err := EncodePngBuffer(imgBuffer, meta)
+		err := EncodePngBuffer(imgBuffer, preview)
 		if err != nil {
 			log.Fatalln(err)
 		}
@@ -71,9 +71,9 @@ func writeBase64ToStream(writer msgio.WriteCloser, onCompleted OnProtobuf, meta 
 }
 
 // ^ write file as Bytes in Msgio to Stream ^ //
-func writeBytesToStream(writer msgio.WriteCloser, onCompleted OnProtobuf, meta *md.Metadata, peer []byte) {
+func writeBytesToStream(writer msgio.WriteCloser, onCompleted OnProtobuf, preview *md.Preview, peer []byte) {
 	// Open File
-	file, err := os.Open(meta.Path)
+	file, err := os.Open(preview.Path)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -81,7 +81,7 @@ func writeBytesToStream(writer msgio.WriteCloser, onCompleted OnProtobuf, meta *
 
 	// Set Chunk Variables
 	ps := make([]byte, BufferChunkSize)
-	total := meta.Size
+	total := preview.Size
 
 	// Iterate file
 	for {

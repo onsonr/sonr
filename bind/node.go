@@ -44,11 +44,10 @@ func (sn *Node) Update(direction float64) {
 	}
 }
 
-// ^ AddFile adds generates Metadata and Thumbnail ^ //
-func (sn *Node) AddFile(path string) {
-	//@2. Initialize SafeFile
-	safeMeta := sf.NewMetadata(path, sn.call.OnQueued, sn.error)
-	sn.files = append(sn.files, safeMeta)
+// ^ Process adds generates Preview with Thumbnail ^ //
+func (sn *Node) Process(path string) {
+	safePrev := sf.NewPreview(path, sn.call.OnQueued, sn.error)
+	sn.files = append(sn.files, safePrev)
 }
 
 // ^ Send Invite with a File ^ //
@@ -66,13 +65,13 @@ func (sn *Node) InviteWithFile(peerId string) {
 
 	// Retreive Current File
 	currFile := sn.currentFile()
-	sn.peerConn.SafeMeta = currFile
+	sn.peerConn.SafePreview = currFile
 
 	// Create Invite Message
 	invMsg := md.AuthInvite{
 		From:    sn.peer,
 		Payload: md.Payload_FILE,
-		File:    currFile.GetMetadata(),
+		Preview: currFile.GetPreview(),
 	}
 
 	// Check if ID in PeerStore
@@ -157,5 +156,5 @@ func (sn *Node) Respond(decision bool) {
 func (sn *Node) ResetFile() {
 	// Reset Files Slice
 	sn.files = nil
-	sn.files = make([]*sf.SafeMetadata, maxFileBufferSize)
+	sn.files = make([]*sf.SafePreview, maxFileBufferSize)
 }

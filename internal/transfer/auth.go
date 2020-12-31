@@ -118,7 +118,7 @@ func (pc *PeerConnection) Authorize(decision bool, contact *md.Contact, peer *md
 		// @ Check Decision
 		if decision {
 			// Initialize Transfer
-			pc.transfer = pc.PrepareTransfer(offerMsg.File, offerMsg.From)
+			pc.transfer = pc.PrepareTransfer(offerMsg.Preview, offerMsg.From)
 
 			// Create Accept Response
 			respMsg := &md.AuthReply{

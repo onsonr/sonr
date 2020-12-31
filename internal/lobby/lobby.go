@@ -40,11 +40,11 @@ type Lobby struct {
 	sub          *pubsub.Subscription
 }
 
-// ^ Initialize Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
-func Initialize(callr OnProtobuf, onErr Error, ps *pubsub.PubSub, id peer.ID, sp *md.Peer, pointLocal string) (*Lobby, error) {
+// ^ Join Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
+func Join(ctx context.Context, callr OnProtobuf, onErr Error, ps *pubsub.PubSub, id peer.ID, sp *md.Peer, olc string) (*Lobby, error) {
 	// Join the pubsub Topic
-	ctx := context.Background()
-	topic, err := ps.Join(pointLocal)
+	point := "/sonr/" + olc
+	topic, err := ps.Join(point)
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +62,7 @@ func Initialize(callr OnProtobuf, onErr Error, ps *pubsub.PubSub, id peer.ID, sp
 
 	// Initialize Lobby for Peers
 	lobInfo := &md.Lobby{
-		Code:  pointLocal,
+		Code:  point,
 		Size:  1,
 		Peers: make(map[string]*md.Peer),
 	}
