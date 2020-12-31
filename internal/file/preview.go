@@ -127,7 +127,7 @@ func NewPreview(path string, queueCall OnProtobuf, errCall OnError) *SafePreview
 			log.Println("Error Marshaling Metadata ", err)
 		}
 
-		// Callback with Metadata
+		// Callback with Preview
 		sm.CallQueued(data)
 	}(sm)
 	return sm
