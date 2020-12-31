@@ -29,8 +29,8 @@ PB_BUILD_PLUGIN="--dart_out=$(PLUGIN_PB_DIR)"
 all: Makefile
 	@sed -n 's/^##//p' $<
 
-## protoc   :   Compiles Protobuf models for Core Library and Plugin
-protoc:
+## proto    :   Compiles Protobuf models for Core Library and Plugin
+proto:
 	@echo ""
 	@echo ""
 	@echo "--------------------------------------------------------------"
@@ -47,6 +47,8 @@ protoc:
 
 ## mobile   :   Builds Android and iOS Bind for Plugin Path
 mobile: protoc ios android
+	@cd /Users/prad/Sonr/plugin && flutter clean
+	@cd /Users/prad/Sonr/plugin/example && flutter clean
 	@go mod tidy
 	@cd /System/Library/Sounds && afplay Hero.aiff
 	@echo ""

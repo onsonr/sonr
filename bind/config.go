@@ -59,7 +59,6 @@ func (sn *Node) setConnection(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-
 	log.Println("GossipSub Created")
 
 	// Enter Lobby
@@ -72,6 +71,6 @@ func (sn *Node) setConnection(ctx context.Context) error {
 	if sn.peerConn, err = tf.Initialize(sn.host, sn.pubSub, sn.directories, sn.olc, sn.call.OnInvited, sn.responded, sn.call.OnProgress, sn.complete, sn.error); err != nil {
 		return err
 	}
-	log.Println("Connection Initialized")
+	log.Println("Transfer Manager Initialized")
 	return nil
 }

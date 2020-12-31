@@ -2,7 +2,6 @@ package lobby
 
 import (
 	"context"
-	"log"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
@@ -55,9 +54,9 @@ func Join(ctx context.Context, calle OnProtobuf, callr OnProtobuf, push OnPeerJo
 
 	// Initialize Lobby for Peers
 	lobInfo := &md.Lobby{
-		Code:        olc,
-		Size:        1,
-		Peers:   make(map[string]*md.Peer),
+		Code:  olc,
+		Size:  1,
+		Peers: make(map[string]*md.Peer),
 	}
 
 	// Create Lobby Type
@@ -169,16 +168,4 @@ func (lob *Lobby) Busy() error {
 		return err
 	}
 	return nil
-}
-
-// ^ Refresh Returns Entire Lobby Map as Bytes ^
-func (lob *Lobby) Refresh() []byte {
-	// Marshal data to bytes
-	bytes, err := proto.Marshal(lob.Data)
-	if err != nil {
-		log.Println("Cannot Marshal Error Protobuf: ", err)
-	}
-
-	// Send Callback with updated peers
-	return bytes
 }

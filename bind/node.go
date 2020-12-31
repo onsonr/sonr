@@ -23,8 +23,12 @@ func (sn *Node) Info() []byte {
 
 // ^ Retreive Entire Lobby data ^ //
 func (sn *Node) Refresh() {
-	lobbyData := sn.lobby.Refresh()
-	sn.call.OnRefreshed(lobbyData)
+	// Marshal data to bytes
+	bytes, err := proto.Marshal(sn.lobby.Data)
+	if err != nil {
+		log.Println("Cannot Marshal Error Protobuf: ", err)
+	}
+	sn.call.OnRefreshed(bytes)
 }
 
 // ^ Updates Current Contact Card ^
@@ -58,7 +62,7 @@ func (sn *Node) AddFile(path string) {
 }
 
 // ^ Send Invite with a File ^ //
-func (sn *Node) InviteFile(peerId string) {
+func (sn *Node) InviteWithFile(peerId string) {
 	// Get PeerID
 	id, _, err := sn.lobby.Find(peerId)
 
@@ -94,7 +98,7 @@ func (sn *Node) InviteFile(peerId string) {
 }
 
 // ^ Send Invite with User Contact Card ^ //
-func (sn *Node) InviteContact(peerId string) {
+func (sn *Node) InviteWithContact(peerId string) {
 	// Get PeerID
 	id, _, err := sn.lobby.Find(peerId)
 
@@ -123,7 +127,7 @@ func (sn *Node) InviteContact(peerId string) {
 }
 
 // ^ Send Invite with URL Link ^ //
-func (sn *Node) InviteLink(peerId string, url string) {
+func (sn *Node) InviteWithURL(peerId string, url string) {
 	// Get PeerID
 	id, _, err := sn.lobby.Find(peerId)
 
