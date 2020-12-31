@@ -21,7 +21,7 @@ type Transfer struct {
 	preview    *md.Preview
 	owner      *md.Peer
 	onProgress OnProgress
-	onComplete OnCompleted
+	onComplete OnProtobuf
 	path       string
 
 	// Builders
@@ -148,7 +148,7 @@ func (t *Transfer) save() error {
 		}
 
 		// Send Complete Callback
-		t.onComplete(true, bytes)
+		t.onComplete(bytes)
 		return nil
 	} else {
 		// Create File at Path
@@ -186,7 +186,7 @@ func (t *Transfer) save() error {
 		}
 
 		// Send Complete Callback
-		t.onComplete(true, bytes)
+		t.onComplete(bytes)
 		return nil
 	}
 }
