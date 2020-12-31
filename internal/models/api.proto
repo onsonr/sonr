@@ -18,28 +18,24 @@ message ConnectionRequest {
   // Define Connectivity
   enum Connectivity { NONE = 0; WIFI = 1; MOBILE = 2; }
 }
+// Define Payload Enum
+enum Payload { NONE = 0; FILE = 1; CONTACT = 2; URL = 3; TEXT = 4; }
 
 // Invitation Message sent on RPC
 message AuthInvite {
-  // Define Root Message
-  Peer from = 1;
-  Payload payload = 2;
+  Payload payload = 1;
+  Peer from = 2;
+  Metadata file = 3;
+  Contact contact = 4;
+  string url = 5;
 }
 
 // Reply Message sent on RPC
 message AuthReply {
-  Peer from = 1;
-  Payload payload = 2;
+  Payload payload = 1;
+  Peer from = 2;
   bool decision = 3;
-}
-
-// Define Payload
-message Payload {
-  Metadata file = 1;
-  Contact contact = 2;
-  Link link = 3;
-  Type type = 4;
-  enum Type { NONE = 0; FILE = 1; CONTACT = 2; URL = 3; TEXT = 4; }
+  Contact contact = 4;
 }
 
 // Define Lobby Message

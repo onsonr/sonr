@@ -38,7 +38,7 @@ func (sn *Node) Update(direction float64) {
 	sn.peer.Direction = math.Round(direction*100) / 100
 
 	// Inform Lobby
-	err := sn.lobby.Update(sn.peer)
+	err := sn.lobby.Update()
 	if err != nil {
 		sn.error(err, "Update")
 	}
@@ -52,7 +52,7 @@ func (sn *Node) AddFile(path string) {
 }
 
 // ^ Send Invite with a File ^ //
-func (sn *Node) InviteFile(peerId string) {
+func (sn *Node) InviteWithFile(peerId string) {
 	// Get PeerID
 	id, _, err := sn.lobby.Find(peerId)
 
@@ -70,11 +70,9 @@ func (sn *Node) InviteFile(peerId string) {
 
 	// Create Invite Message
 	invMsg := md.AuthInvite{
-		From: sn.peer,
-		Payload: &md.Payload{
-			Type: md.Payload_FILE,
-			File: currFile.GetMetadata(),
-		},
+		From:    sn.peer,
+		Payload: md.Payload_FILE,
+		File:    currFile.GetMetadata(),
 	}
 
 	// Check if ID in PeerStore
@@ -90,7 +88,7 @@ func (sn *Node) InviteFile(peerId string) {
 }
 
 // ^ Send Invite with User Contact Card ^ //
-func (sn *Node) InviteContact(peerId string) {
+func (sn *Node) InviteWithContact(peerId string) {
 	// Get PeerID
 	id, _, err := sn.lobby.Find(peerId)
 
@@ -101,11 +99,9 @@ func (sn *Node) InviteContact(peerId string) {
 
 	// Create Invite Message with Payload
 	invMsg := md.AuthInvite{
-		From: sn.peer,
-		Payload: &md.Payload{
-			Type:    md.Payload_CONTACT,
-			Contact: sn.contact,
-		},
+		From:    sn.peer,
+		Payload: md.Payload_CONTACT,
+		Contact: sn.contact,
 	}
 
 	// Check if ID in PeerStore
@@ -121,7 +117,7 @@ func (sn *Node) InviteContact(peerId string) {
 }
 
 // ^ Send Invite with URL Link ^ //
-func (sn *Node) InviteLink(peerId string, display string, url string) {
+func (sn *Node) InviteWithURL(peerId string, url string) {
 	// Get PeerID
 	id, _, err := sn.lobby.Find(peerId)
 
@@ -132,14 +128,9 @@ func (sn *Node) InviteLink(peerId string, display string, url string) {
 
 	// Create Invite Message with Payload
 	invMsg := md.AuthInvite{
-		From: sn.peer,
-		Payload: &md.Payload{
-			Type: md.Payload_URL,
-			Link: &md.Link{
-				Display: display,
-				Url:     url,
-			},
-		},
+		From:    sn.peer,
+		Payload: md.Payload_URL,
+		Url:     url,
 	}
 
 	// Check if ID in PeerStore

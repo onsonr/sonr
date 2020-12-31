@@ -102,7 +102,7 @@ func (pc *PeerConnection) Request(h host.Host, id peer.ID, msgBytes []byte) {
 	}
 
 	// Check Response for Accept
-	if responseMessage.Decision && responseMessage.Payload.Type == md.Payload_NONE {
+	if responseMessage.Decision && responseMessage.Payload == md.Payload_NONE {
 		// Begin Transfer
 		pc.StartTransfer(h, id, responseMessage.From)
 	}
@@ -114,19 +114,17 @@ func (pc *PeerConnection) Authorize(decision bool, contact *md.Contact, peer *md
 	offerMsg := pc.auth.inviteMsg
 
 	// @ Check Reply Type for File
-	if offerMsg.Payload.Type == md.Payload_FILE {
+	if offerMsg.Payload == md.Payload_FILE {
 		// @ Check Decision
 		if decision {
 			// Initialize Transfer
-			pc.transfer = pc.PrepareTransfer(offerMsg.Payload.File, offerMsg.From)
+			pc.transfer = pc.PrepareTransfer(offerMsg.File, offerMsg.From)
 
 			// Create Accept Response
 			respMsg := &md.AuthReply{
 				From:     peer,
 				Decision: true,
-				Payload: &md.Payload{
-					Type: md.Payload_NONE,
-				},
+				Payload:  md.Payload_NONE,
 			}
 
 			// Send to Channel
@@ -137,23 +135,19 @@ func (pc *PeerConnection) Authorize(decision bool, contact *md.Contact, peer *md
 			respMsg := &md.AuthReply{
 				From:     peer,
 				Decision: false,
-				Payload: &md.Payload{
-					Type: md.Payload_NONE,
-				},
+				Payload:  md.Payload_NONE,
 			}
 
 			// Send to Channel
 			pc.auth.respCh <- respMsg
 		}
-	} else if offerMsg.Payload.Type == md.Payload_CONTACT {
+	} else if offerMsg.Payload == md.Payload_CONTACT {
 		// @ Pass Contact Back
 		// Create Accept Response
 		respMsg := &md.AuthReply{
-			From: peer,
-			Payload: &md.Payload{
-				Type:    md.Payload_CONTACT,
-				Contact: contact,
-			},
+			From:    peer,
+			Payload: md.Payload_CONTACT,
+			Contact: contact,
 		}
 
 		// Send to Channel

@@ -36,11 +36,12 @@ type Lobby struct {
 	topic        *pubsub.Topic
 	topicHandler *pubsub.TopicEventHandler
 	self         peer.ID
+	selfPeer     *md.Peer
 	sub          *pubsub.Subscription
 }
 
 // ^ Initialize Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
-func Initialize(callr OnProtobuf, onErr Error, ps *pubsub.PubSub, id peer.ID, pointLocal string) (*Lobby, error) {
+func Initialize(callr OnProtobuf, onErr Error, ps *pubsub.PubSub, id peer.ID, sp *md.Peer, pointLocal string) (*Lobby, error) {
 	// Join the pubsub Topic
 	ctx := context.Background()
 	topic, err := ps.Join(pointLocal)
@@ -77,16 +78,13 @@ func Initialize(callr OnProtobuf, onErr Error, ps *pubsub.PubSub, id peer.ID, po
 		topicHandler: topicHandler,
 		sub:          sub,
 		self:         id,
-
-		Data:     lobInfo,
-		Messages: make(chan *md.LobbyEvent, ChatRoomBufSize),
+		selfPeer:     sp,
+		Data:         lobInfo,
+		Messages:     make(chan *md.LobbyEvent, ChatRoomBufSize),
 	}
 
-	// Start Handling Events
-	// go lob.handleEvents()
-	// go lob.processEvents()
-
 	// Start Reading Messages
+	go lob.handleEvents()
 	go lob.handleMessages()
 	go lob.processMessages()
 	return lob, nil
@@ -117,11 +115,11 @@ func (lob *Lobby) Find(q string) (peer.ID, *md.Peer, error) {
 }
 
 // ^ Send publishes a message to the pubsub topic OLC ^
-func (lob *Lobby) Update(p *md.Peer) error {
+func (lob *Lobby) Update() error {
 	// Create Lobby Event
 	event := md.LobbyEvent{
 		Event: md.LobbyEvent_UPDATE,
-		Peer:  p,
+		Peer:  lob.selfPeer,
 	}
 
 	// Convert Event to Proto Binary
@@ -136,11 +134,4 @@ func (lob *Lobby) Update(p *md.Peer) error {
 		return err
 	}
 	return nil
-}
-
-// ^ End terminates lobby loop ^
-func (lob *Lobby) Exit() {
-
-	lob.sub.Cancel()
-	lob.doneCh <- struct{}{}
 }
