@@ -9,6 +9,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
 	discovery "github.com/libp2p/go-libp2p-discovery"
+	dht "github.com/libp2p/go-libp2p-kad-dht"
 	swarm "github.com/libp2p/go-libp2p-swarm"
 	disc "github.com/libp2p/go-libp2p/p2p/discovery"
 	"github.com/multiformats/go-multiaddr"
@@ -16,7 +17,7 @@ import (
 )
 
 // @ discoveryInterval is how often we re-publish our mDNS records.
-const discoveryInterval = time.Second
+const discoveryInterval = time.Second * 4
 
 // @ discNotifee gets notified when we find a new peer via mDNS discovery ^
 type discNotifee struct {
@@ -25,7 +26,11 @@ type discNotifee struct {
 }
 
 // ^ Connects to Rendevouz Nodes then handles discovery ^
-func startBootstrap(ctx context.Context, h host.Host, disc *discovery.RoutingDiscovery, point string) {
+func startBootstrap(ctx context.Context, h host.Host, idht *dht.IpfsDHT, point string) {
+	// Begin Discovery
+	routingDiscovery := discovery.NewRoutingDiscovery(idht)
+	discovery.Advertise(ctx, routingDiscovery, point, discovery.TTL(discoveryInterval))
+
 	// Connect to defined nodes
 	var wg sync.WaitGroup
 
@@ -41,7 +46,7 @@ func startBootstrap(ctx context.Context, h host.Host, disc *discovery.RoutingDis
 		lifecycle.GetState().NeedsWait()
 	}
 	wg.Wait()
-	go handleKademliaDiscovery(ctx, h, disc, point)
+	go handleKademliaDiscovery(ctx, h, routingDiscovery, point)
 }
 
 // ^ startMDNS creates an mDNS discovery service and attaches it to the libp2p Host. ^

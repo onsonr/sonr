@@ -2,14 +2,15 @@ package host
 
 import (
 	"context"
+	"time"
 
 	"fmt"
 	"log"
 
 	"github.com/libp2p/go-libp2p"
+	connmgr "github.com/libp2p/go-libp2p-connmgr"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/routing"
-	discovery "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	libp2pquic "github.com/libp2p/go-libp2p-quic-transport"
 	secio "github.com/libp2p/go-libp2p-secio"
@@ -62,6 +63,14 @@ func NewHost(ctx context.Context, dir *md.Directories, olc string) (host.Host, e
 		// support any other default transports (TCP)
 		libp2p.DefaultTransports,
 
+		// Let's prevent our peer from having too many
+		// connections by attaching a connection manager.
+		libp2p.ConnectionManager(connmgr.NewConnManager(
+			10,          // Lowwater
+			20,          // HighWater,
+			time.Minute, // GracePeriod
+		)),
+
 		// Attempt to open ports using uPNP for NATed hosts.
 		libp2p.NATPortMap(),
 
@@ -74,9 +83,8 @@ func NewHost(ctx context.Context, dir *md.Directories, olc string) (host.Host, e
 			}
 			// We use a rendezvous point "meet me here" to announce our location.
 			// This is like telling your friends to meet you at the Eiffel Tower.
-			routingDiscovery := discovery.NewRoutingDiscovery(idht)
-			discovery.Advertise(ctx, routingDiscovery, point)
-			go startBootstrap(ctx, h, routingDiscovery, point)
+
+			go startBootstrap(ctx, h, idht, point)
 			return idht, err
 		}),
 		// Let this host use relays and advertise itself on relays if
@@ -130,6 +138,14 @@ func NewMDNSHost(ctx context.Context, dir *md.Directories, olc string) (host.Hos
 
 		// support any other default transports (TCP)
 		libp2p.DefaultTransports,
+
+		// Let's prevent our peer from having too many
+		// connections by attaching a connection manager.
+		libp2p.ConnectionManager(connmgr.NewConnManager(
+			10,          // Lowwater
+			20,          // HighWater,
+			time.Minute, // GracePeriod
+		)),
 
 		// Let this host use relays and advertise itself on relays if
 		// it finds it is behind NAT. Use libp2p.Relay(options...) to
