@@ -57,8 +57,7 @@ func Join(ctx context.Context, calle OnProtobuf, callr OnProtobuf, push OnPeerJo
 	lobInfo := &md.Lobby{
 		Code:        olc,
 		Size:        1,
-		Available:   make(map[string]*md.Peer),
-		Unavailable: make(map[string]*md.Peer),
+		Peers:   make(map[string]*md.Peer),
 	}
 
 	// Create Lobby Type
@@ -87,7 +86,7 @@ func Join(ctx context.Context, calle OnProtobuf, callr OnProtobuf, push OnPeerJo
 // ^ Exchange publishes a message with Current Info to Peer that Exchanged ^
 func (lob *Lobby) Exchange(msg *md.LobbyMessage) error {
 	// @ Check if Exchanged, Push Data if not
-	if _, ok := lob.Data.Available[msg.Id]; ok {
+	if _, ok := lob.Data.Peers[msg.Id]; ok {
 		return nil
 	} else {
 		// Set the Peer

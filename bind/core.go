@@ -96,7 +96,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 // ^ Close Ends All Network Communication ^
 func (sn *Node) Pause() {
 	log.Println("Sonr Paused.")
-	sn.peer.Status = md.Peer_STANDBY
+	sn.peer.Status = md.Peer_BUSY
 	err := sn.lobby.Busy()
 	if err != nil {
 		log.Println(err)

@@ -87,7 +87,7 @@ func (lob *Lobby) processMessages() {
 			} else if m.Event == md.LobbyMessage_AVAILABLE {
 				lob.setPeer(m)
 			} else if m.Event == md.LobbyMessage_BUSY {
-				lob.setUnavailable(m)
+				lob.setBusyPeer(m)
 			}
 		case <-lob.ctx.Done():
 			return

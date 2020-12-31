@@ -89,9 +89,6 @@ func (pc *PeerConnection) Request(h host.Host, id peer.ID, msgBytes []byte) {
 		log.Panicln(err)
 	}
 
-	// Send Callback and Reset
-	pc.respondedCall(reply.Data)
-
 	// Received Message
 	responseMessage := md.AuthReply{}
 	err = proto.Unmarshal(reply.Data, &responseMessage)
@@ -100,6 +97,9 @@ func (pc *PeerConnection) Request(h host.Host, id peer.ID, msgBytes []byte) {
 		onError(err, "Unmarshal")
 		log.Panicln(err)
 	}
+
+	// Send Callback and Reset
+	pc.respondedCall(responseMessage.Decision, reply.Data)
 
 	// Check Response for Accept
 	if responseMessage.Decision && responseMessage.Payload == md.Payload_NONE {

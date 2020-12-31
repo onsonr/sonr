@@ -35,7 +35,7 @@ func (lob *Lobby) ID(q string) peer.ID {
 // ^ Peer returns ONE Peer in Lobby ^
 func (lob *Lobby) Peer(q string) *md.Peer {
 	// Iterate Through Peers, Return Matched Peer
-	for _, peer := range lob.Data.Available {
+	for _, peer := range lob.Data.Peers {
 		// If Found Match
 		if peer.Id == q {
 			return peer
@@ -46,25 +46,19 @@ func (lob *Lobby) Peer(q string) *md.Peer {
 
 // ^ setPeer changes peer values in Lobby ^
 func (lob *Lobby) setPeer(msg *md.LobbyMessage) {
-	// Remove Peer from Unavailable
-	delete(lob.Data.Unavailable, msg.Id)
-
 	// Update Peer with new data
-	lob.Data.Available[msg.Id] = msg.Peer
-	lob.Data.Size = int32(len(lob.Data.Available)) + 1 // Account for User
+	lob.Data.Peers[msg.Id] = msg.Peer
+	lob.Data.Size = int32(len(lob.Data.Peers)) + 1 // Account for User
 
 	// Send Event
 	lob.sendRefresh()
 }
 
 // ^ setBusy changes peer values in Lobby ^
-func (lob *Lobby) setUnavailable(msg *md.LobbyMessage) {
-	// Remove Peer from Available
-	delete(lob.Data.Available, msg.Id)
-
-	// Add Peer to Unavailable Map
-	lob.Data.Unavailable[msg.Id] = msg.Peer
-	lob.Data.Size = int32(len(lob.Data.Available)) + 1 // Account for User
+func (lob *Lobby) setBusyPeer(msg *md.LobbyMessage) {
+	// Add Peer to UnPeers Map
+	lob.Data.Peers[msg.Id].Status = md.Peer_BUSY
+	lob.Data.Size = int32(len(lob.Data.Peers)) + 1 // Account for User
 
 	// Send Event
 	lob.sendRefresh()
@@ -72,12 +66,9 @@ func (lob *Lobby) setUnavailable(msg *md.LobbyMessage) {
 
 // ^ removePeer deletes peer from all maps ^
 func (lob *Lobby) removePeer(id string) {
-	// Remove Peer from Available
-	delete(lob.Data.Available, id)
-
-	// Remove Peer from Unavailable
-	delete(lob.Data.Unavailable, id)
-	lob.Data.Size = int32(len(lob.Data.Available)) + 1 // Account for User
+	// Remove Peer from Peers
+	delete(lob.Data.Peers, id)
+	lob.Data.Size = int32(len(lob.Data.Peers)) + 1 // Account for User
 
 	// Send Event
 	lob.sendRefresh()

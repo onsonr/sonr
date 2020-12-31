@@ -20,6 +20,7 @@ import (
 )
 
 // Define Callback Function Types
+type OnResponded func(isReceiver bool, data []byte)
 type OnCompleted func(isReceiver bool, data []byte)
 type OnProtobuf func([]byte)
 type OnError func(err error, method string)
@@ -38,7 +39,7 @@ type PeerConnection struct {
 
 	// Callbacks
 	invitedCall   OnProtobuf
-	respondedCall OnProtobuf
+	respondedCall OnResponded
 	progressCall  OnProgress
 	completedCall OnCompleted
 
@@ -48,7 +49,7 @@ type PeerConnection struct {
 }
 
 // ^ Initialize sets up new Peer Connection handler ^
-func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic OnProtobuf, rc OnProtobuf, pc OnProgress, compCall OnCompleted, ec OnError) (*PeerConnection, error) {
+func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic OnProtobuf, rc OnResponded, pc OnProgress, compCall OnCompleted, ec OnError) (*PeerConnection, error) {
 	// Set Package Level Callbacks
 	onError = ec
 

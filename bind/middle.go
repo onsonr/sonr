@@ -7,6 +7,20 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+// ^ responded is middleware method to transfer start for sender
+func (sn *Node) responded(decision bool, data []byte) {
+	// Announce Lobby if Accepted
+	if decision {
+		sn.peer.Status = md.Peer_BUSY
+		if err := sn.lobby.Busy(); err != nil {
+			log.Println(err)
+		}
+	}
+
+	// Send Callback
+	sn.call.OnResponded(data)
+}
+
 // ^ complete is middleware method to handle post transfer
 func (sn *Node) complete(isReceiver bool, data []byte) {
 	// Send Callback
@@ -17,6 +31,7 @@ func (sn *Node) complete(isReceiver bool, data []byte) {
 	}
 
 	// Announce Available
+	sn.peer.Status = md.Peer_AVAILABLE
 	err := sn.lobby.Update()
 	if err != nil {
 		log.Println(err)

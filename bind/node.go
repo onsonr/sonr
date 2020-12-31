@@ -155,7 +155,10 @@ func (sn *Node) InviteLink(peerId string, url string) {
 func (sn *Node) Respond(decision bool) {
 	// @ Check Decision
 	if decision {
-		sn.lobby.Busy()
+		// Inform Lobby
+		if err := sn.lobby.Busy(); err != nil {
+			log.Println(err)
+		}
 	}
 
 	// Send Response on PeerConnection

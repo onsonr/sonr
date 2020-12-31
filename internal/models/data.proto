@@ -27,8 +27,7 @@ message MIME {
 message Lobby {
   string code = 1;
   int32 size = 2;
-  map<string, Peer> available = 3;
-  map<string, Peer> unavailable = 4;
+  map<string, Peer> peers = 3;
 }
 
 // Define Contact Type: Will be CSV in Future
@@ -96,5 +95,5 @@ message Peer {
   double difference = 9;
   Proximity proximity = 10;
   enum Proximity { NONE = 0; IMMEDIATE = 1; NEAR = 2; FAR = 3; }
-  enum Status { AVAILABLE = 0; BUSY = 1; STANDBY = 2; }
+  enum Status { AVAILABLE = 0; BUSY = 1; }
 }
