@@ -23,6 +23,20 @@ enum Payload {
   TEXT = 4;
 }
 
+// Externally Shared Media
+message SharedMediaFile {
+  int32 duration = 1;
+  string path = 2;
+  string thumbnail = 3;
+  Type type = 4;
+
+  enum Type {
+    IMAGE = 0;
+    VIDEO = 1;
+    FILE = 2;
+  }
+}
+
 // Invitation Message sent on RPC
 message AuthInvite {
   Payload payload = 1;

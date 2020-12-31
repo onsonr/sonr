@@ -50,6 +50,19 @@ func (sn *Node) Process(path string) {
 	sn.files = append(sn.files, safePrev)
 }
 
+// ^ Create Preview with a Externally Shared File ^ //
+func (sn *Node) ProcessExternal(sharedMediaBytes []byte) {
+	// Initialize from Info
+	sharedMediaFile := &md.SharedMediaFile{}
+	err := proto.Unmarshal(sharedMediaBytes, sharedMediaFile)
+	if err != nil {
+		log.Println(err)
+	}
+
+	safePrev := sf.NewSharedPreview(sharedMediaFile, sn.call.OnQueued, sn.error)
+	sn.files = append(sn.files, safePrev)
+}
+
 // ^ Send Invite with a File ^ //
 func (sn *Node) InviteWithFile(peerId string) {
 	// Get PeerID

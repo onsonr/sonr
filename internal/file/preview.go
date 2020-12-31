@@ -97,16 +97,113 @@ func NewPreview(path string, queueCall OnProtobuf, errCall OnError) *SafePreview
 	go func(sm *SafePreview) {
 		if sm.Type == md.MIME_image {
 			// New File for ThumbNail
-			thumbBytes, err := newImageThumbnail(sm.path)
+			thumbBytes, err := newThumbnail(sm.path)
 			if err != nil {
 				log.Fatalln(err)
 				onError(err, "AddFile")
 			}
 			// Update Metadata Value
 			sm.preview.Thumbnail = thumbBytes
-		} else if sm.Type == md.MIME_video {
+		}
+
+		// ** Unlock ** //
+		sm.mutex.Unlock()
+
+		// Get Metadata
+		preview := sm.GetPreview()
+
+		// Convert to bytes
+		data, err := proto.Marshal(preview)
+		if err != nil {
+			log.Println("Error Marshaling Metadata ", err)
+		}
+
+		// Callback with Preview
+		sm.CallQueued(data)
+	}(sm)
+	return sm
+}
+
+// ^ Create New Preview for Externally Shared File ^ //
+func NewSharedPreview(smf *md.SharedMediaFile, queueCall OnProtobuf, errCall OnError) *SafePreview {
+	// Set Package Level Callbacks
+	onError = errCall
+
+	// Create new SafeFile
+	sm := &SafePreview{
+		CallQueued: queueCall,
+		path:       smf.Path,
+	}
+
+	// ** Lock ** //
+	sm.mutex.Lock()
+
+	// @ 1. Get File Information
+	// Open File at Path
+	file, err := os.Open(sm.path)
+	if err != nil {
+		log.Fatalln(err)
+		onError(err, "AddFile")
+	}
+	defer file.Close()
+
+	// Get Info
+	info, err := file.Stat()
+	if err != nil {
+		log.Fatalln(err)
+		onError(err, "AddFile")
+	}
+
+	// Read File to required bytes
+	head := make([]byte, 261)
+	_, err = file.Read(head)
+	if err != nil {
+		log.Fatalln(err)
+		onError(err, "AddFile")
+	}
+
+	// Get File Type
+	kind, err := filetype.Match(head)
+	if err != nil {
+		log.Fatalln(err)
+		onError(err, "AddFile")
+	}
+
+	// @ 2. Set Metadata Protobuf Values
+	// Set Metadata
+	base := filepath.Base(sm.path)
+	sm.preview = md.Preview{
+		Name: strings.TrimSuffix(base, filepath.Ext(sm.path)),
+		Path: sm.path,
+		Size: int32(info.Size()),
+		Mime: &md.MIME{
+			Type:    md.MIME_Type(md.MIME_Type_value[kind.MIME.Type]),
+			Subtype: kind.MIME.Subtype,
+			Value:   kind.MIME.Value,
+		},
+	}
+
+	// Set Mime
+	sm.Type = sm.preview.Mime.Type
+
+	// @ 3. Create Thumbnail in Goroutine
+	go func(sm *SafePreview) {
+		// Provide File Path if Image
+		if smf.Type == md.SharedMediaFile_IMAGE {
 			// New File for ThumbNail
-			thumbBytes, err := newVideoThumbnail(sm.path)
+			thumbBytes, err := newThumbnail(smf.Path)
+			if err != nil {
+				log.Fatalln(err)
+				onError(err, "AddFile")
+			}
+			// Update Metadata Value
+			sm.preview.Thumbnail = thumbBytes
+		}
+
+		// Provide Thumb Path if Video
+		if smf.Type == md.SharedMediaFile_VIDEO {
+			// New File for ThumbNail
+			thumbBytes, err := newThumbnail(smf.Thumbnail)
 			if err != nil {
 				log.Fatalln(err)
 				onError(err, "AddFile")
