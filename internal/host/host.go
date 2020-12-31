@@ -2,29 +2,47 @@ package host
 
 import (
 	"context"
+	"time"
+
 	"fmt"
 	"log"
 
 	"github.com/libp2p/go-libp2p"
+	connmgr "github.com/libp2p/go-libp2p-connmgr"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/routing"
-	discovery "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	libp2pquic "github.com/libp2p/go-libp2p-quic-transport"
 	secio "github.com/libp2p/go-libp2p-secio"
 	libp2ptls "github.com/libp2p/go-libp2p-tls"
+	md "github.com/sonr-io/core/internal/models"
 )
 
-type OnProtobuf func()
+type State int
+
+const (
+	Stopped State = iota
+	Paused
+	Running
+)
 
 // ^ NewHost: Creates a host with: (MDNS, TCP, QUIC on UDP) ^
-func NewHost(ctx context.Context, callC OnProtobuf, olc string) (host.Host, error) {
+func NewHost(ctx context.Context, dir *md.Directories, olc string) (host.Host, error) {
 	// @1. Established Required Data
-	point := "/sonr/dht/" + olc
+	point := "/sonr/" + olc
 	ipv4 := IPv4()
 
-	// @2. Create Libp2p Host
+	// @2. Get Private Key
+	privKey, err := getKeys(dir)
+	if err != nil {
+		return nil, err
+	}
+
+	// @3. Create Libp2p Host
 	h, err := libp2p.New(ctx,
+		// Identity
+		libp2p.Identity(privKey),
+
 		// Add listening Addresses
 		libp2p.ListenAddrStrings(
 			fmt.Sprintf("/ip4/%s/tcp/0", ipv4),
@@ -44,6 +62,14 @@ func NewHost(ctx context.Context, callC OnProtobuf, olc string) (host.Host, erro
 
 		// support any other default transports (TCP)
 		libp2p.DefaultTransports,
+
+		// Let's prevent our peer from having too many
+		// connections by attaching a connection manager.
+		libp2p.ConnectionManager(connmgr.NewConnManager(
+			10,          // Lowwater
+			20,          // HighWater,
+			time.Minute, // GracePeriod
+		)),
 
 		// Attempt to open ports using uPNP for NATed hosts.
 		libp2p.NATPortMap(),
@@ -57,9 +83,8 @@ func NewHost(ctx context.Context, callC OnProtobuf, olc string) (host.Host, erro
 			}
 			// We use a rendezvous point "meet me here" to announce our location.
 			// This is like telling your friends to meet you at the Eiffel Tower.
-			routingDiscovery := discovery.NewRoutingDiscovery(idht)
-			discovery.Advertise(ctx, routingDiscovery, point)
-			go connectRendevouzNodes(ctx, callC, h, routingDiscovery, point)
+
+			go startBootstrap(ctx, h, idht, point)
 			return idht, err
 		}),
 		// Let this host use relays and advertise itself on relays if
@@ -73,18 +98,27 @@ func NewHost(ctx context.Context, callC OnProtobuf, olc string) (host.Host, erro
 	}
 
 	// setup local mDNS discovery
-	err = startMDNS(ctx, h, olc)
+	err = startMDNS(ctx, h, point)
 	fmt.Println("MDNS Started")
 	return h, err
 }
 
 // ^ NewHost: Creates a host with: (MDNS Only) ^
-func NewMDNSHost(ctx context.Context, olc string) (host.Host, error) {
+func NewMDNSHost(ctx context.Context, dir *md.Directories, olc string) (host.Host, error) {
 	// @1. Established Required Data
 	ipv4 := IPv4()
 
-	// @2. Create Libp2p Host
+	// @2. Get Private Key
+	privKey, err := getKeys(dir)
+	if err != nil {
+		return nil, err
+	}
+
+	// @3. Create Libp2p Host
 	h, err := libp2p.New(ctx,
+		// Identity
+		libp2p.Identity(privKey),
+
 		// Add listening Addresses
 		libp2p.ListenAddrStrings(
 			fmt.Sprintf("/ip4/%s/tcp/0", ipv4),
@@ -104,6 +138,14 @@ func NewMDNSHost(ctx context.Context, olc string) (host.Host, error) {
 
 		// support any other default transports (TCP)
 		libp2p.DefaultTransports,
+
+		// Let's prevent our peer from having too many
+		// connections by attaching a connection manager.
+		libp2p.ConnectionManager(connmgr.NewConnManager(
+			10,          // Lowwater
+			20,          // HighWater,
+			time.Minute, // GracePeriod
+		)),
 
 		// Let this host use relays and advertise itself on relays if
 		// it finds it is behind NAT. Use libp2p.Relay(options...) to

@@ -2,9 +2,9 @@ package file
 
 import (
 	"bytes"
-	"log"
 	"image"
 	"image/jpeg"
+	"log"
 	"math"
 	"os"
 
@@ -15,8 +15,47 @@ import (
 const MAX_WIDTH float64 = 320
 const MAX_HEIGHT float64 = 240
 
-// ^ Method to generate thumbnail for File Path ^ //
-func newThumbnail(path string) ([]byte, error) {
+// ^ Method to generate thumbnail for Image at File Path ^ //
+func newImageThumbnail(path string) ([]byte, error) {
+	// New File for ThumbNail
+	thumbBuffer := new(bytes.Buffer)
+	file, err := os.Open(path)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	// Convert to Image Object
+	img, _, err := image.Decode(file)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	// Find Image Bounds
+	b := img.Bounds()
+	width := b.Max.X
+	height := b.Max.Y
+
+	// Calculate Fit
+	newWidth, newHeight := calculateRatioFit(width, height)
+	scaledImage := resize.Resize(uint(newWidth), uint(newHeight), img, resize.Lanczos3)
+
+	// Encode as Jpeg into buffer
+	err = jpeg.Encode(thumbBuffer, scaledImage, nil)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	// Close File
+	file.Close()
+	log.Println("Thumbnail created")
+	return thumbBuffer.Bytes(), nil
+}
+
+// ^ Method to generate thumbnail for Image at File Path ^ //
+func newVideoThumbnail(path string) ([]byte, error) {
 	// New File for ThumbNail
 	thumbBuffer := new(bytes.Buffer)
 	file, err := os.Open(path)

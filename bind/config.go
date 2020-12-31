@@ -13,17 +13,8 @@ import (
 )
 
 // ^ CurrentFile returns last file in Processed Files ^ //
-func (sn *Node) currentFile() *sf.SafeMetadata {
+func (sn *Node) currentFile() *sf.SafePreview {
 	return sn.files[len(sn.files)-1]
-}
-
-// ^ exchange returns Nodes current peer info ^ //
-func (sn *Node) exchange() *md.Peer {
-	if sn.peer != nil {
-		return sn.peer
-	} else {
-		return nil
-	}
 }
 
 // ^ setInfo sets node info from connEvent and host ^ //
@@ -46,7 +37,6 @@ func (sn *Node) setInfo(connEvent *md.ConnectionRequest) error {
 		Device:     connEvent.Device,
 		FirstName:  connEvent.Contact.FirstName,
 		ProfilePic: connEvent.Contact.ProfilePic,
-		Status:     md.Peer_AVAILABLE,
 	}
 	return nil
 }
@@ -59,18 +49,19 @@ func (sn *Node) setConnection(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
+
 	log.Println("GossipSub Created")
 
 	// Enter Lobby
-	if sn.lobby, err = sl.Join(sn.ctx, sn.call.OnEvent, sn.call.OnRefreshed, sn.exchange, sn.error, sn.pubSub, sn.host.ID(), sn.olc); err != nil {
+	if sn.lobby, err = sl.Join(sn.ctx, sn.call.OnRefreshed, sn.error, sn.pubSub, sn.host.ID(), sn.peer, sn.olc); err != nil {
 		return err
 	}
 	log.Println("Lobby Initialized")
 
 	// Initialize Peer Connection
-	if sn.peerConn, err = tf.Initialize(sn.host, sn.pubSub, sn.directories, sn.olc, sn.call.OnInvited, sn.responded, sn.call.OnProgress, sn.complete, sn.error); err != nil {
+	if sn.peerConn, err = tf.Initialize(sn.host, sn.pubSub, sn.directories, sn.olc, sn.call.OnInvited, sn.call.OnResponded, sn.call.OnProgress, sn.call.OnReceived, sn.call.OnTransmitted, sn.error); err != nil {
 		return err
 	}
-	log.Println("Transfer Manager Initialized")
+	log.Println("Connection Initialized")
 	return nil
 }

@@ -73,7 +73,7 @@ func (sm *SystemMenu) UpdatePeers(newLob *md.Lobby) {
 			log.Println(p)
 			item := sm.mPeers.AddSubMenuItem(itemTitle, "Nearby Available Peer")
 			item.SetTemplateIcon(GetDeviceIcon(p.Device), GetDeviceIcon(p.Device))
-
+			log.Println(p)
 			// // Spawn Routine to handle Item
 			// go func(item *systray.MenuItem, peer *md.Peer) {
 			// 	// On Item Click

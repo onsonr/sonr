@@ -1,26 +1,14 @@
 package lobby
 
 import (
-	"errors"
+	"log"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	md "github.com/sonr-io/core/internal/models"
+	"google.golang.org/protobuf/proto"
 )
 
-// ^ Find returns Pointer to Peer.ID and Peer ^
-func (lob *Lobby) Find(q string) (peer.ID, *md.Peer, error) {
-	// Retreive Data
-	peer := lob.Peer(q)
-	id := lob.ID(q)
-
-	if peer == nil || id == "" {
-		return "", nil, errors.New("Search Error, peer was not found in map.")
-	}
-
-	return id, peer, nil
-}
-
-// ^ ID returns ONE Peer.ID in PubSub ^
+// ** ID returns ONE Peer.ID in PubSub **
 func (lob *Lobby) ID(q string) peer.ID {
 	// Iterate through PubSub in topic
 	for _, id := range lob.ps.ListPeers(lob.Data.Code) {
@@ -32,7 +20,7 @@ func (lob *Lobby) ID(q string) peer.ID {
 	return ""
 }
 
-// ^ Peer returns ONE Peer in Lobby ^
+// ** Peer returns ONE Peer in Lobby **
 func (lob *Lobby) Peer(q string) *md.Peer {
 	// Iterate Through Peers, Return Matched Peer
 	for _, peer := range lob.Data.Peers {
@@ -44,20 +32,35 @@ func (lob *Lobby) Peer(q string) *md.Peer {
 	return nil
 }
 
-// ^ setPeer changes peer values in Lobby ^
-func (lob *Lobby) setPeer(msg *md.LobbyMessage) {
+// ** updatePeer changes peer values in Lobby **
+func (lob *Lobby) removePeer(id peer.ID) {
 	// Update Peer with new data
-	lob.Data.Peers[msg.Id] = msg.Peer
+	delete(lob.Data.Peers, id.String())
+	lob.Data.Size = int32(len(lob.Data.Peers)) + 1 // Account for User
 
-	// Send Event
-	lob.sendRefresh()
+	// Marshal data to bytes
+	bytes, err := proto.Marshal(lob.Data)
+	if err != nil {
+		log.Println("Cannot Marshal Error Protobuf: ", err)
+	}
+
+	// Send Callback with updated peers
+	lob.callback(bytes)
 }
 
-// ^ removePeer deletes peer from all maps ^
-func (lob *Lobby) removePeer(id peer.ID) {
-	// Remove Peer from Peers
-	delete(lob.Data.Peers, id.String())
+// ** updatePeer changes peer values in Lobby **
+func (lob *Lobby) updatePeer(peer *md.Peer) {
+	// Update Peer with new data
+	id := peer.Id
+	lob.Data.Peers[id] = peer
+	lob.Data.Size = int32(len(lob.Data.Peers)) + 1 // Account for User
 
-	// Send Event
-	lob.sendRefresh()
+	// Marshal data to bytes
+	bytes, err := proto.Marshal(lob.Data)
+	if err != nil {
+		log.Println("Cannot Marshal Error Protobuf: ", err)
+	}
+
+	// Send Callback with updated peers
+	lob.callback(bytes)
 }

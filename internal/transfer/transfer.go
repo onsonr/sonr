@@ -9,6 +9,7 @@ import (
 	"sync"
 	"time"
 
+	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -17,7 +18,7 @@ type OnProgress func(data float32)
 type Transfer struct {
 	// Inherited Properties
 	mutex      sync.Mutex
-	meta       *md.Metadata
+	preview    *md.Preview
 	owner      *md.Peer
 	onProgress OnProgress
 	onComplete OnCompleted
@@ -130,17 +131,18 @@ func (t *Transfer) save() error {
 		}
 
 		// Create Metadata
-		saved := &md.Metadata{
-			Name:       t.meta.Name,
-			Path:       t.path,
-			Size:       int32(t.totalSize),
-			Mime:       t.meta.Mime,
-			Owner:      t.owner,
-			LastOpened: int32(time.Now().Unix()),
+		meta := sf.GetMetadata(t.path)
+
+		// Generate Received Message
+		received := &md.Received{
+			Payload:  md.Payload_FILE,
+			Owner:    t.owner,
+			Metadata: meta,
+			Received: int32(time.Now().Unix()),
 		}
 
 		// Convert Message to bytes
-		bytes, err := proto.Marshal(saved)
+		bytes, err := proto.Marshal(received)
 		if err != nil {
 			return err
 		}
@@ -167,17 +169,18 @@ func (t *Transfer) save() error {
 		}
 
 		// Create Metadata
-		saved := &md.Metadata{
-			Name:       t.meta.Name,
-			Path:       t.path,
-			Size:       int32(t.totalSize),
-			Mime:       t.meta.Mime,
-			Owner:      t.owner,
-			LastOpened: int32(time.Now().Unix()),
+		meta := sf.GetMetadata(t.path)
+
+		// Generate Received Message
+		received := &md.Received{
+			Payload:  md.Payload_FILE,
+			Owner:    t.owner,
+			Metadata: meta,
+			Received: int32(time.Now().Unix()),
 		}
 
 		// Convert Message to bytes
-		bytes, err := proto.Marshal(saved)
+		bytes, err := proto.Marshal(received)
 		if err != nil {
 			return err
 		}

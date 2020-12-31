@@ -20,8 +20,6 @@ import (
 )
 
 // Define Callback Function Types
-type OnResponded func(isReceiver bool, data []byte)
-type OnCompleted func(isReceiver bool, data []byte)
 type OnProtobuf func([]byte)
 type OnError func(err error, method string)
 
@@ -34,14 +32,15 @@ type PeerConnection struct {
 	auth *AuthService
 
 	// Data Handlers
-	SafeMeta *sf.SafeMetadata
-	transfer *Transfer
+	SafePreview *sf.SafePreview
+	transfer    *Transfer
 
 	// Callbacks
-	invitedCall   OnProtobuf
-	respondedCall OnResponded
-	progressCall  OnProgress
-	completedCall OnCompleted
+	invitedCall     OnProtobuf
+	respondedCall   OnProtobuf
+	progressCall    OnProgress
+	receivedCall    OnProtobuf
+	transmittedCall OnProtobuf
 
 	// Info
 	olc  string
@@ -49,18 +48,19 @@ type PeerConnection struct {
 }
 
 // ^ Initialize sets up new Peer Connection handler ^
-func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic OnProtobuf, rc OnResponded, pc OnProgress, compCall OnCompleted, ec OnError) (*PeerConnection, error) {
+func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic OnProtobuf, rc OnProtobuf, pc OnProgress, recCall OnProtobuf, transCall OnProtobuf, ec OnError) (*PeerConnection, error) {
 	// Set Package Level Callbacks
 	onError = ec
 
 	// Initialize Parameters into PeerConnection
 	peerConn := &PeerConnection{
-		olc:           o,
-		dirs:          d,
-		invitedCall:   ic,
-		respondedCall: rc,
-		progressCall:  pc,
-		completedCall: compCall,
+		olc:             o,
+		dirs:            d,
+		invitedCall:     ic,
+		respondedCall:   rc,
+		progressCall:    pc,
+		receivedCall:    recCall,
+		transmittedCall: transCall,
 	}
 
 	// Create GRPC Client/Server and Set Data Stream Handler
@@ -85,15 +85,15 @@ func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic 
 }
 
 // ^  Prepare for Stream, Create new Transfer ^ //
-func (pc *PeerConnection) PrepareTransfer(meta *md.Metadata, own *md.Peer) *Transfer {
+func (pc *PeerConnection) PrepareTransfer(preview *md.Preview, own *md.Peer) *Transfer {
 	// Create Transfer
 	return &Transfer{
 		// Inherited Properties
-		meta:       meta,
+		preview:    preview,
 		owner:      own,
-		path:       pc.dirs.Temporary + "/" + meta.Name + "." + meta.Mime.Subtype,
+		path:       pc.dirs.Temporary + "/" + preview.Name + "." + preview.Mime.Subtype,
 		onProgress: pc.progressCall,
-		onComplete: pc.completedCall,
+		onComplete: pc.receivedCall,
 
 		// Builders
 		stringsBuilder: new(strings.Builder),
@@ -119,17 +119,17 @@ func (pc *PeerConnection) StartTransfer(h host.Host, id peer.ID, peer *md.Peer) 
 
 	// Initialize Writer
 	writer := msgio.NewWriter(stream)
-	meta := pc.SafeMeta.GetMetadata()
+	meta := pc.SafePreview.GetPreview()
 
 	// @ Check Type
-	if pc.SafeMeta.Mime.Type == md.MIME_image {
+	if pc.SafePreview.Type == md.MIME_image {
 		// Start Routine
 		log.Println("Starting Base64 Write Routine")
-		go writeBase64ToStream(writer, pc.completedCall, meta, peerBytes)
+		go writeBase64ToStream(writer, pc.transmittedCall, meta, peerBytes)
 	} else {
 		// Start Routine
 		log.Println("Starting Bytes Write Routine")
-		go writeBytesToStream(writer, pc.completedCall, meta, peerBytes)
+		go writeBytesToStream(writer, pc.transmittedCall, meta, peerBytes)
 	}
 }
 

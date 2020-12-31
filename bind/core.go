@@ -20,8 +20,6 @@ const maxFileBufferSize = 5
 
 // ^ Interface: Callback is implemented from Plugin to receive updates ^
 type Callback interface {
-	OnConnected()
-	OnEvent(data []byte)
 	OnRefreshed(data []byte)
 	OnInvited(data []byte)
 	OnResponded(data []byte)
@@ -45,7 +43,7 @@ type Node struct {
 	pubSub *pubsub.PubSub
 
 	// Data Properties
-	files       []*sf.SafeMetadata
+	files       []*sf.SafePreview
 	directories *md.Directories
 
 	// References
@@ -59,7 +57,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	// ** Create Context and Node - Begin Setup **
 	node := new(Node)
 	node.ctx = context.Background()
-	node.call, node.files = call, make([]*sf.SafeMetadata, maxFileBufferSize)
+	node.call, node.files = call, make([]*sf.SafePreview, maxFileBufferSize)
 
 	// ** Unmarshal Request **
 	reqMsg := md.ConnectionRequest{}
@@ -71,7 +69,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	}
 
 	// @1. Create Host and Start Discovery
-	node.host, err = sh.NewHost(node.ctx, node.call.OnConnected, reqMsg.Olc)
+	node.host, err = sh.NewHost(node.ctx, reqMsg.Directory, reqMsg.Olc)
 	if err != nil {
 		node.error(err, "NewNode")
 		return nil
@@ -96,10 +94,6 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 // ^ Close Ends All Network Communication ^
 func (sn *Node) Pause() {
 	log.Println("Sonr Paused.")
-	sn.peer.Status = md.Peer_BUSY
-	if err := sn.lobby.Update(); err != nil {
-		log.Println(err)
-	}
 	lifecycle.GetState().Pause()
 }
 
@@ -107,17 +101,30 @@ func (sn *Node) Pause() {
 func (sn *Node) Resume() {
 	log.Println("Sonr Resumed.")
 	lifecycle.GetState().Resume()
-	sn.peer.Status = md.Peer_AVAILABLE
-	err := sn.lobby.Update()
-	if err != nil {
-		log.Println(err)
-	}
-
 }
 
 // ^ Close Ends All Network Communication ^
 func (sn *Node) Stop() {
 	log.Println("Sonr Stopped.")
-	sn.ctx.Done()
 	sn.host.Close()
+}
+
+// ^ error Callback with error instance, and method ^
+func (sn *Node) error(err error, method string) {
+	// Create Error ProtoBuf
+	errorMsg := md.ErrorMessage{
+		Message: err.Error(),
+		Method:  method,
+	}
+
+	// Convert Message to bytes
+	bytes, err := proto.Marshal(&errorMsg)
+	if err != nil {
+		log.Println("Cannot Marshal Error Protobuf: ", err)
+	}
+	// Send Callback
+	sn.call.OnError(bytes)
+
+	// Log In Core
+	log.Fatalf("[Error] At Method %s : %s", err.Error(), method)
 }

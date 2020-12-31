@@ -49,7 +49,7 @@ darwin:
 	@echo "-----------------------------------------------------------"
 	@echo "------------- 🖥 START DARWIN BUILD 🖥 --------------------"
 	@echo "-----------------------------------------------------------"
-	go clean -cache -x
+	@go clean -cache
 	cd pkg && go build -o $(MAC_ARTIFACT)
 	@echo "Finished Building ➡ " && date
 	@cd $(MAC_BUILDDIR) && ./sonr_core
@@ -65,7 +65,7 @@ win:
 	@echo "-----------------------------------------------------------"
 	@echo "------------- 🪟 START WINDOWS BUILD 🪟 --------------------"
 	@echo "-----------------------------------------------------------"
-	go clean -cache -x
+	@go clean -cache
 	cd pkg && GOOS=windows GOARCH=amd64 go build -o $(WIN_ARTIFACT)
 	@echo "Finished Binding ➡ " && date
 	@echo "--------------------------------------------------------------"

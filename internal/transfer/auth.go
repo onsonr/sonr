@@ -89,6 +89,9 @@ func (pc *PeerConnection) Request(h host.Host, id peer.ID, msgBytes []byte) {
 		log.Panicln(err)
 	}
 
+	// Send Callback and Reset
+	pc.respondedCall(reply.Data)
+
 	// Received Message
 	responseMessage := md.AuthReply{}
 	err = proto.Unmarshal(reply.Data, &responseMessage)
@@ -97,9 +100,6 @@ func (pc *PeerConnection) Request(h host.Host, id peer.ID, msgBytes []byte) {
 		onError(err, "Unmarshal")
 		log.Panicln(err)
 	}
-
-	// Send Callback and Reset
-	pc.respondedCall(responseMessage.Decision, reply.Data)
 
 	// Check Response for Accept
 	if responseMessage.Decision && responseMessage.Payload == md.Payload_NONE {
@@ -118,7 +118,7 @@ func (pc *PeerConnection) Authorize(decision bool, contact *md.Contact, peer *md
 		// @ Check Decision
 		if decision {
 			// Initialize Transfer
-			pc.transfer = pc.PrepareTransfer(offerMsg.File, offerMsg.From)
+			pc.transfer = pc.PrepareTransfer(offerMsg.Preview, offerMsg.From)
 
 			// Create Accept Response
 			respMsg := &md.AuthReply{
