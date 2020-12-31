@@ -14,8 +14,7 @@ ANDROID_ARTIFACT= $(ANDROID_BUILDDIR)/io.sonr.core.aar
 MAC_BUILDDIR=/Users/prad/Sonr/core/build/Sonr.app/Contents/MacOS
 MAC_ARTIFACT=$(MAC_BUILDDIR)/sonr_core
 WIN_BUILDDIR=/Users/prad/Sonr/core/build
-WIN_386_ARTIFACT=$(WIN_BUILDDIR)/sonr-386.exe
-WIN_AMD_ARTIFACT=$(WIN_BUILDDIR)/sonr-amd.exe
+WIN_ARTIFACT=$(WIN_BUILDDIR)/sonr-core.exe
 
 # Proto Directories
 PB_PATH="/Users/prad/Sonr/core/internal/models"
@@ -29,35 +28,65 @@ PB_BUILD_PLUGIN="--dart_out=$(PLUGIN_PB_DIR)"
 all: Makefile
 	@sed -n 's/^##//p' $<
 
-## proto    :   Compiles Protobuf models for Core Library and Plugin
-proto:
+
+## desktop    :   Builds Darwin and Windows Builds at Build Path
+desktop: proto
+	go clean -cache -x
+	cd pkg && go build -o $(MAC_ARTIFACT)
+	cd pkg && GOOS=windows GOARCH=amd64 go build -o $(WIN_ARTIFACT)
+	@go mod tidy
+	@cd /System/Library/Sounds && afplay Hero.aiff
 	@echo ""
 	@echo ""
+	@echo "------------------------------------------------------------------"
+	@echo "-------- ✅ ✅ ✅   FINISHED DESKTOP BUILD  ✅ ✅ ✅  --------------"
+	@echo "------------------------------------------------------------------"
+
+## - darwin   :   Compiles Desktop build of Sonr for MacOS
+darwin:
+	@echo ""
+	@echo ""
+	@echo "-----------------------------------------------------------"
+	@echo "------------- 🖥 START DARWIN BUILD 🖥 --------------------"
+	@echo "-----------------------------------------------------------"
+	go clean -cache -x
+	cd pkg && go build -o $(MAC_ARTIFACT)
+	@echo "Finished Building ➡ " && date
+	@cd $(MAC_BUILDDIR) && ./sonr_core
 	@echo "--------------------------------------------------------------"
-	@echo "------------- 🛸 START PROTOBUFS COMPILE 🛸 -------------------"
-	@echo "--------------------------------------------------------------"
-	@cd internal/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CORE) api.proto data.proto core.proto
-	@cd internal/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_PLUGIN) api.proto data.proto
-	@echo "Finished Compiling ➡ " && date
-	@echo "--------------------------------------------------------------"
-	@echo "------------- 🛸 COMPILED ALL PROTOBUFS 🛸 --------------------"
+	@echo "------------- 🖥 COMPLETED DAWIN BULD 🖥 --------------------"
 	@echo "--------------------------------------------------------------"
 	@echo ""
 
+## - win      :   Compiles Desktop build of Sonr for Windows
+win:
+	@echo ""
+	@echo ""
+	@echo "-----------------------------------------------------------"
+	@echo "------------- 🪟 START WINDOWS BUILD 🪟 --------------------"
+	@echo "-----------------------------------------------------------"
+	go clean -cache -x
+	cd pkg && GOOS=windows GOARCH=amd64 go build -o $(WIN_ARTIFACT)
+	@echo "Finished Binding ➡ " && date
+	@echo "--------------------------------------------------------------"
+	@echo "------------- 🪟 COMPLETED WINDOWS BULD 🪟 --------------------"
+	@echo "--------------------------------------------------------------"
+	@echo ""
 
-## mobile   :   Builds Android and iOS Bind for Plugin Path
-mobile: protoc ios android
+## mobile     :   Builds Android and iOS Bind for Plugin Path
+mobile: proto ios android
 	@cd /Users/prad/Sonr/plugin && flutter clean
 	@cd /Users/prad/Sonr/plugin/example && flutter clean
 	@go mod tidy
 	@cd /System/Library/Sounds && afplay Hero.aiff
 	@echo ""
 	@echo ""
-	@echo "--------------------------------------------------------------"
-	@echo "-------- ✅ ✅ ✅   FINISHED ALL TASKS  ✅ ✅ ✅  --------------"
-	@echo "--------------------------------------------------------------"
+	@echo "----------------------------------------------------------------"
+	@echo "-------- ✅ ✅ ✅   FINISHED MOBILE BIND  ✅ ✅ ✅  --------------"
+	@echo "----------------------------------------------------------------"
 
-## android  :   Builds Android Bind at Plugin Path
+
+## - android  :   Builds Android Bind at Plugin Path
 android:
 	@echo ""
 	@echo ""
@@ -74,7 +103,7 @@ android:
 	@echo ""
 
 
-## ios      :   Builds iOS Bind at Plugin Path
+## - ios      :   Builds iOS Bind at Plugin Path
 ios:
 	@echo ""
 	@echo ""
@@ -90,51 +119,29 @@ ios:
 	@echo "--------------------------------------------------------------"
 	@echo ""
 
-## desktop  :   Builds Darwin and Windows Builds at Build Path
-desktop: protoc darwin win
-	@go mod tidy
-	@cd /System/Library/Sounds && afplay Hero.aiff
+## proto      :   Compiles Protobuf models for Core Library and Plugin
+proto:
 	@echo ""
 	@echo ""
 	@echo "--------------------------------------------------------------"
-	@echo "-------- ✅ ✅ ✅   FINISHED ALL TASKS  ✅ ✅ ✅  --------------"
+	@echo "------------- 🛸 START PROTOBUFS COMPILE 🛸 -------------------"
 	@echo "--------------------------------------------------------------"
-
-
-## darwin   :   Compiles Desktop build of Sonr for MacOS
-darwin:
-	@echo ""
-	@echo ""
-	@echo "-----------------------------------------------------------"
-	@echo "------------- 🖥 START DARWIN BUILD 🖥 --------------------"
-	@echo "-----------------------------------------------------------"
-	go clean -cache -x
-	cd pkg && go build -o $(MAC_ARTIFACT)
-	@echo "Finished Binding ➡ " && date
-	@cd $(MAC_BUILDDIR) && ./sonr_core
+	@cd internal/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CORE) api.proto data.proto core.proto
+	@cd internal/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_PLUGIN) api.proto data.proto
+	@echo "Finished Compiling ➡ " && date
 	@echo "--------------------------------------------------------------"
-	@echo "------------- 🖥 COMPLETED DAWIN BULD 🖥 --------------------"
+	@echo "------------- 🛸 COMPILED ALL PROTOBUFS 🛸 --------------------"
 	@echo "--------------------------------------------------------------"
 	@echo ""
 
-## win      :   Compiles Desktop build of Sonr for Windows
-win:
-	@echo ""
-	@echo ""
-	@echo "-----------------------------------------------------------"
-	@echo "------------- 🪟 START WINDOWS BUILD 🪟 --------------------"
-	@echo "-----------------------------------------------------------"
-	go clean -cache -x
-	cd pkg && GOOS=windows GOARCH=amd64 go build -o $(WIN_AMD_ARTIFACT)
-	@echo "Finished Binding ➡ " && date
-	@cd $(MAC_BUILDDIR) && ./sonr_core
-	@echo "--------------------------------------------------------------"
-	@echo "------------- 🪟 COMPLETED WINDOWS BULD 🪟 --------------------"
-	@echo "--------------------------------------------------------------"
-	@echo ""
+## run        :   Runs current Darwin Build
+run:
+	cd $(MAC_BUILDDIR) && ./sonr_core
 
+## upgrade    :   Builds ALL supported devices
+upgrade: proto mobile desktop
 
-## reset    :   Cleans Gomobile, Removes Framworks from Plugin, and Initializes Gomobile
+## [reset]    :   Cleans Gomobile, Removes Framworks from Plugin, and Initializes Gomobile
 reset:
 	cd bind && $(GOCLEAN)
 	go mod tidy
