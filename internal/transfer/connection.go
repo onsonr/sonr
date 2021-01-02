@@ -122,15 +122,10 @@ func (pc *PeerConnection) StartTransfer(h host.Host, id peer.ID, peer *md.Peer) 
 	meta := pc.SafePreview.GetPreview()
 
 	// @ Check Type
-	if pc.SafePreview.Type == md.MIME_image {
-		// Start Routine
-		log.Println("Starting Base64 Write Routine")
-		go writeBase64ToStream(writer, pc.transmittedCall, meta, peerBytes)
-	} else {
-		// Start Routine
-		log.Println("Starting Bytes Write Routine")
-		go writeBytesToStream(writer, pc.transmittedCall, meta, peerBytes)
-	}
+
+	// Start Routine
+	log.Println("Starting Base64 Write Routine")
+	go writeBase64ToStream(writer, pc.transmittedCall, meta, peerBytes)
 }
 
 // ^ Handle Incoming Stream ^ //

@@ -3,9 +3,7 @@ package transfer
 import (
 	"bytes"
 	"encoding/base64"
-	"io"
 	"log"
-	"os"
 
 	"github.com/sonr-io/core/internal/lifecycle"
 	md "github.com/sonr-io/core/internal/models"
@@ -50,59 +48,6 @@ func writeBase64ToStream(writer msgio.WriteCloser, onCompleted OnProtobuf, previ
 			Size:  int32(len(chunk)),
 			B64:   chunk,
 			Total: total,
-		}
-
-		// Convert to bytes
-		bytes, err := proto.Marshal(&chunk)
-		if err != nil {
-			log.Fatalln(err)
-		}
-
-		// Write Message Bytes to Stream
-		err = writer.WriteMsg(bytes)
-		if err != nil {
-			log.Fatalln(err)
-		}
-		lifecycle.GetState().NeedsWait()
-	}
-
-	// Call Completed Sending
-	onCompleted(peer)
-}
-
-// ^ write file as Bytes in Msgio to Stream ^ //
-func writeBytesToStream(writer msgio.WriteCloser, onCompleted OnProtobuf, preview *md.Preview, peer []byte) {
-	// Open File
-	file, err := os.Open(preview.Path)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	defer file.Close()
-
-	// Set Chunk Variables
-	ps := make([]byte, BufferChunkSize)
-	total := preview.Size
-
-	// Iterate file
-	for {
-		// Read Bytes
-		bytesread, err := file.Read(ps)
-
-		// Check for Error
-		if err != nil {
-			// Non EOF Error
-			if err != io.EOF {
-				log.Println(err)
-			}
-			// File Complete
-			break
-		}
-
-		// Create Block Protobuf from Chunk
-		chunk := md.Chunk{
-			Size:   int32(len(ps[:bytesread])),
-			Buffer: ps[:bytesread],
-			Total:  total,
 		}
 
 		// Convert to bytes
