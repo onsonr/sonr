@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	op "github.com/skratchdot/open-golang/open"
@@ -72,10 +71,8 @@ func (c *Client) OnReceived(data []byte) {
 	print(m.String())
 
 	// Move File
-	op.Start(m.Path)
-	err = c.MoveFileToDownloads(m)
+	err = op.Start(m.Path)
 	if err != nil {
-		fmt.Println(err)
 		return
 	}
 

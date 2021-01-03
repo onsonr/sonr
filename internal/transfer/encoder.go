@@ -5,6 +5,7 @@ import (
 	"image"
 	"image/jpeg"
 	"image/png"
+	"io/ioutil"
 	"os"
 
 	md "github.com/sonr-io/core/internal/models"
@@ -64,6 +65,22 @@ func EncodePngBuffer(buf *bytes.Buffer, preview *md.Preview) error {
 
 	// Encode as Jpeg into buffer
 	err = png.Encode(buf, img)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// ^ Helper: Opens File for Buffer and Writes ^ //
+func WriteBuffer(buf *bytes.Buffer, preview *md.Preview) error {
+	// Open File at Meta Path\
+	dat, err := ioutil.ReadFile(preview.Path)
+	if err != nil {
+		return err
+	}
+
+	// Write Bytes to buffer
+	_, err = buf.Write(dat)
 	if err != nil {
 		return err
 	}

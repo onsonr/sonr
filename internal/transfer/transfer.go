@@ -118,5 +118,4 @@ func (t *Transfer) save() error {
 	// Send Complete Callback
 	t.onComplete(bytes)
 	return nil
-
 }

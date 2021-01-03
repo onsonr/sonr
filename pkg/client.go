@@ -20,10 +20,7 @@ type Client struct {
 	ctx  context.Context
 	menu ui.SystemMenu
 	sonr.Callback
-	node    *sonr.Node
-	docsDir string
-	downDir string
-	tempDir string
+	node *sonr.Node
 }
 
 // ^ Create New Client Node ^ //
@@ -33,12 +30,6 @@ func NewClient(ctx context.Context, m ui.SystemMenu) *Client {
 	if err != nil {
 		log.Println(err)
 		name = "Undefined"
-	}
-
-	tempDir, err := os.UserCacheDir()
-	if err != nil {
-		log.Println(err)
-		tempDir = "local/temp"
 	}
 
 	docDir, err := os.UserHomeDir()
@@ -58,7 +49,7 @@ func NewClient(ctx context.Context, m ui.SystemMenu) *Client {
 		},
 		Directory: &md.Directories{
 			Documents: docDir,
-			Temporary: tempDir,
+			Temporary: filepath.Join(docDir, "Downloads"),
 		},
 		Contact: &md.Contact{
 			FirstName: "MacTest",
@@ -76,9 +67,6 @@ func NewClient(ctx context.Context, m ui.SystemMenu) *Client {
 	var c = new(Client)
 	c.ctx = ctx
 	c.node = sonr.NewNode(bytes, c)
-	c.docsDir = docDir
-	c.downDir = filepath.Join(docDir, "Downloads")
-	c.tempDir = tempDir
 	go c.UpdatePeriodically(time.NewTicker(interval))
 	return c
 }
@@ -93,18 +81,6 @@ func (c *Client) UpdatePeriodically(ticker *time.Ticker) {
 			c.node.Update(0)
 		}
 	}
-}
-
-// ^ Method Moves File to Downloads Folder ^ //
-func (c *Client) MoveFileToDownloads(m *md.Metadata) error {
-	// Move to Downloads
-	fileName := m.Name + "." + m.Mime.Subtype
-	filePath := filepath.Join(c.downDir, fileName)
-	err := os.Rename(m.Path, filePath)
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 // ^ Method To Share File ^ //
