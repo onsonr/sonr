@@ -49,16 +49,17 @@ func (t *Transfer) addBuffer(curr int, buffer []byte) (bool, error) {
 
 	// @ Initialize Vars if First Chunk
 	if curr == 0 {
-		// Set Size
-		t.totalSize = int(chunk.Total)
-
 		// Calculate Tracking Data
-		t.totalChunks = t.totalSize / B64ChunkSize
-		t.interval = t.totalChunks / 100
+		totalChunks := int(chunk.Total) / B64ChunkSize
+		interval := totalChunks / 100
+
+		// Set Data
+		t.totalSize = int(chunk.Total)
+		t.totalChunks = totalChunks
+		t.interval = interval
 	}
 
 	// @ Add Buffer by File Type
-	// if t.isBase64 {
 	// Add Base64 Chunk to Buffer
 	n, err := t.stringsBuilder.WriteString(chunk.B64)
 	if err != nil {
@@ -70,10 +71,13 @@ func (t *Transfer) addBuffer(curr int, buffer []byte) (bool, error) {
 
 	// @ Check Completed
 	if t.currentSize < t.totalSize {
-		// Check for Interval
-		if curr%t.interval == 0 {
-			// Send Callback
-			t.onProgress(float32(t.currentSize) / float32(t.totalSize))
+		// Validate Interval
+		if t.interval != 0 {
+			// Check for Interval
+			if curr%t.interval == 0 {
+				// Send Callback
+				t.onProgress(float32(t.currentSize) / float32(t.totalSize))
+			}
 		}
 		return false, nil
 	} else {
