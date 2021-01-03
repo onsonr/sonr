@@ -36,18 +36,18 @@ type AuthService struct {
 
 // ^ Calls Invite on Remote Peer ^ //
 func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthReply) error {
-	// Send Callback
-	as.onInvite(args.Data)
-
 	// Received Message
-	receivedMessage := md.AuthInvite{}
-	err := proto.Unmarshal(args.Data, &receivedMessage)
+	receivedMessage := &md.AuthInvite{}
+	err := proto.Unmarshal(args.Data, receivedMessage)
 	if err != nil {
 		return err
 	}
 
 	// Set Current Message
-	as.inviteMsg = &receivedMessage
+	as.inviteMsg = receivedMessage
+
+	// Send Callback
+	as.onInvite(args.Data)
 
 	select {
 	// Received Auth Channel Message

@@ -41,7 +41,7 @@ func (c *Client) OnInvited(data []byte) {
 		log.Panicln("Error Unmarshalling Request")
 	}
 	ui.PushInvited(m)
-	// c.node.Respond(true)
+	c.node.Respond(true)
 }
 
 // @ Inherited Method: Handle Response ^ //
@@ -61,6 +61,12 @@ func (c *Client) OnProgress(data float32) {
 
 // @ Inherited Method: Handle Received ^ //
 func (c *Client) OnReceived(data []byte) {
+	m := &md.Metadata{}
+	err := proto.Unmarshal(data, m)
+	if err != nil {
+		log.Panicln("Error Unmarshalling Request")
+	}
+	print(m.String())
 	ui.BeepCompleted()
 }
 

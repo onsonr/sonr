@@ -94,6 +94,7 @@ message Directories {
   string documents = 1;
   string library = 2;
   string temporary = 3;
+  bool saveToDocs = 4;
 }
 
 // Define Peer: Basic Info Sent to Peers

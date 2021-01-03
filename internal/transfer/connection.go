@@ -86,12 +86,20 @@ func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic 
 
 // ^  Prepare for Stream, Create new Transfer ^ //
 func (pc *PeerConnection) PrepareTransfer(preview *md.Preview, own *md.Peer) *Transfer {
+	// Determine Path
+	var docPath string
+	if pc.dirs.SaveToDocs {
+		docPath = pc.dirs.Documents + preview.Name + "." + preview.Mime.Subtype
+	} else {
+		docPath = pc.dirs.Temporary + "/" + preview.Name + "." + preview.Mime.Subtype
+	}
+
 	// Create Transfer
 	return &Transfer{
 		// Inherited Properties
 		preview:    preview,
 		owner:      own,
-		path:       pc.dirs.Temporary + "/" + preview.Name + "." + preview.Mime.Subtype,
+		path:       docPath,
 		onProgress: pc.progressCall,
 		onComplete: pc.receivedCall,
 
