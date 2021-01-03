@@ -109,6 +109,7 @@ func (sn *Node) Stop() {
 	sn.host.Close()
 }
 
+
 // ^ error Callback with error instance, and method ^
 func (sn *Node) error(err error, method string) {
 	// Create Error ProtoBuf

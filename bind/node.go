@@ -21,6 +21,11 @@ func (sn *Node) Info() []byte {
 	return data
 }
 
+// ^ Peer returns Current Peer Info ^
+func (sn *Node) Peer() *md.Peer {
+	return sn.peer
+}
+
 // ^ Updates Current Contact Card ^
 func (sn *Node) SetContact(conBytes []byte) {
 	newContact := &md.Contact{}

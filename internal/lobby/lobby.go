@@ -16,6 +16,7 @@ const ChatRoomBufSize = 128
 
 // Define Function Types
 type OnProtobuf func([]byte)
+type ReturnPeer func() *md.Peer
 type Error func(err error, method string)
 
 // Lobby represents a subscription to a single PubSub topic. Messages
@@ -33,6 +34,7 @@ type Lobby struct {
 	onError      Error
 	doneCh       chan struct{}
 	ps           *pubsub.PubSub
+	getPeer      ReturnPeer
 	topic        *pubsub.Topic
 	topicHandler *pubsub.TopicEventHandler
 	self         peer.ID
@@ -41,7 +43,7 @@ type Lobby struct {
 }
 
 // ^ Join Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
-func Join(ctx context.Context, callr OnProtobuf, onErr Error, ps *pubsub.PubSub, id peer.ID, sp *md.Peer, olc string) (*Lobby, error) {
+func Join(ctx context.Context, callr OnProtobuf, gp ReturnPeer, onErr Error, ps *pubsub.PubSub, id peer.ID, sp *md.Peer, olc string) (*Lobby, error) {
 	// Join the pubsub Topic
 	point := "/sonr/" + olc
 	topic, err := ps.Join(point)
@@ -74,6 +76,7 @@ func Join(ctx context.Context, callr OnProtobuf, onErr Error, ps *pubsub.PubSub,
 		callback:     callr,
 		doneCh:       make(chan struct{}, 1),
 		ps:           ps,
+		getPeer:      gp,
 		topic:        topic,
 		topicHandler: topicHandler,
 		sub:          sub,
@@ -119,7 +122,7 @@ func (lob *Lobby) Update() error {
 	// Create Lobby Event
 	event := md.LobbyEvent{
 		Event: md.LobbyEvent_UPDATE,
-		Peer:  lob.selfPeer,
+		Peer:  lob.getPeer(),
 	}
 
 	// Convert Event to Proto Binary

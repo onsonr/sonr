@@ -29,10 +29,15 @@ func (lob *Lobby) handleEvents() {
 
 		if lobEvent.Type == pubsub.PeerJoin {
 			log.Println("Lobby Event: Peer Joined")
+			err := lob.Update()
+			if err != nil {
+				log.Println(err)
+			}
 		}
 
 		if lobEvent.Type == pubsub.PeerLeave {
 			log.Println("Lobby Event: Peer Left")
+			lob.removePeer(lobEvent.Peer)
 		}
 
 		lifecycle.GetState().NeedsWait()
