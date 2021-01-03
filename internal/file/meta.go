@@ -11,7 +11,7 @@ import (
 	md "github.com/sonr-io/core/internal/models"
 )
 
-func GetMetadata(path string) *md.Metadata {
+func GetMetadata(path string, owner *md.Peer) *md.Metadata {
 	// @ 1. Get File Information
 	// Open File at Path
 	file, err := os.Open(path)
@@ -51,6 +51,7 @@ func GetMetadata(path string) *md.Metadata {
 			Subtype: kind.MIME.Subtype,
 			Value:   kind.MIME.Value,
 		},
-		LastOpened: int32(time.Now().Unix()),
+		Received: int32(time.Now().Unix()),
+		Owner:    owner,
 	}
 }

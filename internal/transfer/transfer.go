@@ -7,7 +7,6 @@ import (
 	"os"
 	"strings"
 	"sync"
-	"time"
 
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
@@ -108,18 +107,10 @@ func (t *Transfer) save() error {
 	}
 
 	// Create Metadata
-	meta := sf.GetMetadata(t.path)
-
-	// Generate Received Message
-	received := &md.Received{
-		Payload:  md.Payload_FILE,
-		Owner:    t.owner,
-		Metadata: meta,
-		Received: int32(time.Now().Unix()),
-	}
+	meta := sf.GetMetadata(t.path, t.owner)
 
 	// Convert Message to bytes
-	bytes, err := proto.Marshal(received)
+	bytes, err := proto.Marshal(meta)
 	if err != nil {
 		return err
 	}

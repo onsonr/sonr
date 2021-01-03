@@ -11,7 +11,8 @@ message Metadata {
   int32 size = 4;
   MIME mime = 5;
   bytes thumbnail = 6;
-  int32 lastOpened = 7;
+  int32 received = 7;
+  Peer owner = 8;
 }
 
 // Define Preview: For File Transfer Request
