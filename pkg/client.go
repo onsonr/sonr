@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 	"os"
-	"runtime"
+	"path/filepath"
 	"time"
 
 	sonr "github.com/sonr-io/core/bind"
@@ -77,32 +77,10 @@ func NewClient(ctx context.Context, m ui.SystemMenu) *Client {
 	c.ctx = ctx
 	c.node = sonr.NewNode(bytes, c)
 	c.docsDir = docDir
-	c.downDir = docDir + "/Downloads/"
+	c.downDir = filepath.Join(docDir, "Downloads")
 	c.tempDir = tempDir
 	go c.UpdatePeriodically(time.NewTicker(interval))
 	return c
-}
-
-func (c *Client) setPaths() {
-	tempDir, err := os.UserCacheDir()
-	if err != nil {
-		log.Println(err)
-		tempDir = "local/temp"
-	}
-
-	docDir, err := os.UserHomeDir()
-	if err != nil {
-		log.Println(err)
-		docDir = "local/temp"
-	}
-	c.docsDir = docDir
-	c.tempDir = tempDir
-	if runtime.GOOS == "windows" {
-		c.downDir = docDir + "\\Downloads\\"
-
-	} else {
-		c.downDir = docDir + "/Downloads/"
-	}
 }
 
 // ^ Method to Periodically Update Presence ^ //
@@ -120,8 +98,9 @@ func (c *Client) UpdatePeriodically(ticker *time.Ticker) {
 // ^ Method Moves File to Downloads Folder ^ //
 func (c *Client) MoveFileToDownloads(m *md.Metadata) error {
 	// Move to Downloads
-	fileDir := c.downDir + m.Name + "." + m.Mime.Subtype
-	err := os.Rename(m.Path, fileDir)
+	fileName := m.Name + "." + m.Mime.Subtype
+	filePath := filepath.Join(c.downDir, fileName)
+	err := os.Rename(m.Path, filePath)
 	if err != nil {
 		return err
 	}

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	op "github.com/skratchdot/open-golang/open"
 	md "github.com/sonr-io/core/internal/models"
 	"github.com/sonr-io/core/pkg/ui"
 	"google.golang.org/protobuf/proto"
@@ -71,6 +72,7 @@ func (c *Client) OnReceived(data []byte) {
 	print(m.String())
 
 	// Move File
+	op.Start(m.Path)
 	err = c.MoveFileToDownloads(m)
 	if err != nil {
 		fmt.Println(err)
