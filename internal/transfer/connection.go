@@ -6,6 +6,8 @@ import (
 	"log"
 	"strings"
 
+	"path/filepath"
+
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -87,11 +89,12 @@ func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic 
 // ^  Prepare for Stream, Create new Transfer ^ //
 func (pc *PeerConnection) PrepareTransfer(preview *md.Preview, own *md.Peer) *Transfer {
 	// Create Transfer
+	fileName := preview.Name + "." + preview.Mime.Subtype
 	return &Transfer{
 		// Inherited Properties
 		preview:    preview,
 		owner:      own,
-		path:       pc.dirs.Temporary + "/" + preview.Name + "." + preview.Mime.Subtype,
+		path:       filepath.Join(pc.dirs.Temporary, fileName),
 		onProgress: pc.progressCall,
 		onComplete: pc.receivedCall,
 

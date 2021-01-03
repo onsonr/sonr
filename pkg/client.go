@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"os"
+	"runtime"
 	"time"
 
 	sonr "github.com/sonr-io/core/bind"
@@ -19,7 +20,10 @@ type Client struct {
 	ctx  context.Context
 	menu ui.SystemMenu
 	sonr.Callback
-	node *sonr.Node
+	node    *sonr.Node
+	docsDir string
+	downDir string
+	tempDir string
 }
 
 // ^ Create New Client Node ^ //
@@ -72,8 +76,33 @@ func NewClient(ctx context.Context, m ui.SystemMenu) *Client {
 	var c = new(Client)
 	c.ctx = ctx
 	c.node = sonr.NewNode(bytes, c)
+	c.docsDir = docDir
+	c.downDir = docDir + "/Downloads/"
+	c.tempDir = tempDir
 	go c.UpdatePeriodically(time.NewTicker(interval))
 	return c
+}
+
+func (c *Client) setPaths() {
+	tempDir, err := os.UserCacheDir()
+	if err != nil {
+		log.Println(err)
+		tempDir = "local/temp"
+	}
+
+	docDir, err := os.UserHomeDir()
+	if err != nil {
+		log.Println(err)
+		docDir = "local/temp"
+	}
+	c.docsDir = docDir
+	c.tempDir = tempDir
+	if runtime.GOOS == "windows" {
+		c.downDir = docDir + "\\Downloads\\"
+
+	} else {
+		c.downDir = docDir + "/Downloads/"
+	}
 }
 
 // ^ Method to Periodically Update Presence ^ //
@@ -86,6 +115,17 @@ func (c *Client) UpdatePeriodically(ticker *time.Ticker) {
 			c.node.Update(0)
 		}
 	}
+}
+
+// ^ Method Moves File to Downloads Folder ^ //
+func (c *Client) MoveFileToDownloads(m *md.Metadata) error {
+	// Move to Downloads
+	fileDir := c.downDir + m.Name + "." + m.Mime.Subtype
+	err := os.Rename(m.Path, fileDir)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // ^ Method To Share File ^ //

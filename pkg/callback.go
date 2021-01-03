@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	md "github.com/sonr-io/core/internal/models"
@@ -61,12 +62,22 @@ func (c *Client) OnProgress(data float32) {
 
 // @ Inherited Method: Handle Received ^ //
 func (c *Client) OnReceived(data []byte) {
+	// Unmarshal Data
 	m := &md.Metadata{}
 	err := proto.Unmarshal(data, m)
 	if err != nil {
 		log.Panicln("Error Unmarshalling Request")
 	}
 	print(m.String())
+
+	// Move File
+	err = c.MoveFileToDownloads(m)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	// Notify
 	ui.BeepCompleted()
 }
 
