@@ -16,10 +16,9 @@ message LobbyEvent {
 
   enum Event {
     NONE = 0;
-    JOIN = 1;
+    EXCHANGE = 1;
     UPDATE = 2;
     STANDBY = 3;
-    EXIT = 4;
   }
 }
 

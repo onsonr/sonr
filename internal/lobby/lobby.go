@@ -118,6 +118,32 @@ func (lob *Lobby) Find(q string) (peer.ID, *md.Peer, error) {
 }
 
 // ^ Send publishes a message to the pubsub topic OLC ^
+func (lob *Lobby) Exchange(peerID peer.ID) error {
+	// Check if Peer already exchanged
+	if p := lob.Peer(peerID.String()); p == nil {
+		// Create Lobby Event
+		event := md.LobbyEvent{
+			Event: md.LobbyEvent_EXCHANGE,
+			Peer:  lob.getPeer(),
+		}
+
+		// Convert Event to Proto Binary
+		bytes, err := proto.Marshal(&event)
+		if err != nil {
+			return err
+		}
+
+		// Publish to Topic
+		err = lob.topic.Publish(lob.ctx, bytes)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+	return nil
+}
+
+// ^ Send publishes a message to the pubsub topic OLC ^
 func (lob *Lobby) Update() error {
 	// Create Lobby Event
 	event := md.LobbyEvent{
