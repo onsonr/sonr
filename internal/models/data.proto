@@ -43,6 +43,7 @@ message Lobby {
   string code = 1;
   int32 size = 2;
   map<string, Peer> peers = 3;
+  repeated string exited = 4;
 }
 
 // Define Contact Type: Will be CSV in Future

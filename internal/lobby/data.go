@@ -38,6 +38,9 @@ func (lob *Lobby) removePeer(id peer.ID) {
 	delete(lob.Data.Peers, id.String())
 	lob.Data.Size = int32(len(lob.Data.Peers)) + 1 // Account for User
 
+	// Add Exited ID
+	lob.Data.Exited = append(lob.Data.Exited, id.String())
+
 	// Marshal data to bytes
 	bytes, err := proto.Marshal(lob.Data)
 	if err != nil {
@@ -46,6 +49,9 @@ func (lob *Lobby) removePeer(id peer.ID) {
 
 	// Send Callback with updated peers
 	lob.callback(bytes)
+
+	// Clear Exited ID
+	lob.Data.Exited = lob.Data.Exited[:0]
 }
 
 // ** updatePeer changes peer values in Lobby **
