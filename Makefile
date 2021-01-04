@@ -66,7 +66,7 @@ win:
 	@echo "------------- 🪟 START WINDOWS BUILD 🪟 --------------------"
 	@echo "-----------------------------------------------------------"
 	@go clean -cache
-	cd pkg && GOOS=windows GOARCH=amd64 go build -o $(WIN_ARTIFACT)
+	cd pkg && GOOS=windows GOARCH=amd64 go build -ldflags -H=windowsgui -o $(WIN_ARTIFACT)
 	@echo "Finished Binding ➡ " && date
 	@echo "--------------------------------------------------------------"
 	@echo "------------- 🪟 COMPLETED WINDOWS BULD 🪟 --------------------"
