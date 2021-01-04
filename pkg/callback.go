@@ -36,13 +36,24 @@ func (c *Client) OnRefreshed(data []byte) {
 
 // @ Inherited Method: Handle Invite ^ //
 func (c *Client) OnInvited(data []byte) {
+	// Unmarshal Invite
 	m := &md.AuthInvite{}
 	err := proto.Unmarshal(data, m)
 	if err != nil {
 		log.Panicln("Error Unmarshalling Request")
 	}
 	ui.PushInvited(m)
-	c.node.Respond(true)
+
+	// Check Invite
+	if m.Payload == md.Payload_FILE {
+		c.node.Respond(true)
+	} else if m.Payload == md.Payload_URL {
+		err := op.Start(m.Url)
+		if err != nil {
+			log.Println(err)
+		}
+	}
+
 }
 
 // @ Inherited Method: Handle Response ^ //

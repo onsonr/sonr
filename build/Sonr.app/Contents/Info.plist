@@ -1,5 +1,22 @@
-
-	<key>NSHighResolutionCapable</key>
-	<string>True</string>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleExecutable</key>
+	<string>sonr_core</string>
+	<key>CFBundleSignature</key>
+	<string>sonr</string>
+	<key>CFBundlePackageType</key>
+	<string>AAPL</string>
+	<key>CFBundleVersion</key>
+	<string>0.8</string>
+	<key>CFBundleIdentifier</key>
+	<string>io.sonr.mac</string>
+	<key>CFBundleName</key>
+	<string>Sonr Desktop</string>
 	<key>LSUIElement</key>
-	<string>1</string>
+	<true/>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+</dict>
+</plist>
