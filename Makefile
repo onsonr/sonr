@@ -47,16 +47,16 @@ darwin:
 	@echo ""
 	@echo ""
 	@echo "-----------------------------------------------------------"
-	@echo "------------- 🖥  START DARWIN BUILD  🖥 -------------------"
+	@echo "------------- 🖥  START DARWIN BUILD  🖥  -------------------"
 	@echo "-----------------------------------------------------------"
 	@go clean -cache
 	cd pkg && go build -o $(MAC_ARTIFACT)
 	@echo "Finished Building ➡ " && date
-	@cd $(MAC_BUILDDIR) && ./sonr_core
 	@echo "--------------------------------------------------------------"
-	@echo "------------- 🖥  COMPLETED DAWIN BULD  🖥  ------------------"
+	@echo "------------- 🖥  COMPLETED DAWIN BULD  🖥  -------------------"
 	@echo "--------------------------------------------------------------"
 	@echo ""
+	@cd $(MAC_BUILDDIR) && ./sonr_core
 
 ## - win      :   Compiles Desktop build of Sonr for Windows
 win:
