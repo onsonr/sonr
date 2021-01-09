@@ -83,11 +83,12 @@ message Contact {
 
 // Define Device Type: Information about device
 message Device {
-  string platform = 1;
-  string model = 2;
-  string name = 3;
-  string version = 4;
-  int32 sdk = 5; // For Android
+  string id = 1;
+  string platform = 2;
+  string model = 3;
+  string name = 4;
+  string version = 5;
+  int32 sdk = 6; // For Android
 }
 
 // Define Directories Type: Where Data can be stored

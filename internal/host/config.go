@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -65,7 +66,7 @@ func init() {
 // ^ Get Keys: Returns Private/Public keys from disk if found ^ //
 func getKeys(dir *md.Directories) (crypto.PrivKey, error) {
 	// Set Path
-	path := dir.Documents + "/.sonr-priv-key"
+	path := filepath.Join(dir.Documents, ".sonr-priv-key")
 	log.Println("Key Path: " + path)
 
 	// @ Path Doesnt Exist Generate Keys

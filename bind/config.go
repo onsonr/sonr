@@ -3,7 +3,12 @@ package sonr
 import (
 	"context"
 	"errors"
+	"io/ioutil"
 	"log"
+	"os"
+	"path/filepath"
+
+	"github.com/denisbrodbeck/machineid"
 
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	sf "github.com/sonr-io/core/internal/file"
@@ -15,6 +20,62 @@ import (
 // ^ CurrentFile returns last file in Processed Files ^ //
 func (sn *Node) currentFile() *sf.SafePreview {
 	return sn.files[len(sn.files)-1]
+}
+
+// ^ getDeviceID sets node device ID from path if Exists ^ //
+func getDeviceID(connEvent *md.ConnectionRequest) error {
+	// Create Device ID Path
+	path := filepath.Join(connEvent.Directory.Documents, ".sonr-device-id")
+
+	// @ Check for Path
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		// Generate ID
+		log.Println("ID Doesnt Exist, Generating...")
+		id, err := machineid.ProtectedID("Sonr")
+		if err != nil {
+			return err
+		}
+
+		// Print ID
+		log.Println(id)
+
+		// Write ID To File
+		f, err := os.Create(path)
+		if err != nil {
+			return err
+		}
+
+		// Defer Close
+		defer f.Close()
+
+		// Write to File
+		_, err = f.WriteString(id)
+		if err != nil {
+			return err
+		}
+
+		// Update Device
+		connEvent.Device.Id = id
+		return nil
+	} else {
+		// @ Read Device ID Data
+		log.Println("ID Exists, Returning...")
+		dat, err := ioutil.ReadFile(path)
+		if err != nil {
+			return err
+		}
+
+		// Convert to String
+		id := string(dat)
+
+		// Print ID
+		log.Println(id)
+
+		// Update Device
+		connEvent.Device.Id = id
+
+		return nil
+	}
 }
 
 // ^ setInfo sets node info from connEvent and host ^ //
@@ -29,6 +90,12 @@ func (sn *Node) setInfo(connEvent *md.ConnectionRequest) error {
 	sn.contact = connEvent.Contact
 	sn.directories = connEvent.Directory
 	sn.olc = connEvent.Olc
+
+	// Get Device ID
+	err := getDeviceID(connEvent)
+	if err != nil {
+		return err
+	}
 
 	// Set Peer Info
 	sn.peer = &md.Peer{
