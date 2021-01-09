@@ -24,6 +24,11 @@ func (sn *Node) currentFile() *sf.SafePreview {
 
 // ^ getDeviceID sets node device ID from path if Exists ^ //
 func getDeviceID(connEvent *md.ConnectionRequest) error {
+	// Check if ID already provided
+	if connEvent.Device.Id != "" {
+		return nil
+	}
+
 	// Create Device ID Path
 	path := filepath.Join(connEvent.Directory.Documents, ".sonr-device-id")
 
