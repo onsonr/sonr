@@ -20,7 +20,7 @@ func (sn *Node) LinkDevice(peerString string) error {
 		return err
 	}
 
-	// TODO: Save Peer to Disk
+	// TODO: Save Device to Disk
 
 	return nil
 }

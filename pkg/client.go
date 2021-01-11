@@ -67,6 +67,7 @@ func NewClient(ctx context.Context, m ui.SystemMenu) *Client {
 	var c = new(Client)
 	c.ctx = ctx
 	c.node = sonr.NewNode(bytes, c)
+	// go c.HandleLinkInput()
 	go c.UpdatePeriodically(time.NewTicker(interval))
 	return c
 }
@@ -82,6 +83,12 @@ func (c *Client) UpdatePeriodically(ticker *time.Ticker) {
 		}
 	}
 }
+
+// // ^ Routine Handles Menu Input ^ //
+// func (c *Client) HandleLinkInput() {
+// 	<-c.menu.MLink.ClickedCh
+// 	c.node.DisplayCode()
+// }
 
 // ^ Method To Share File ^ //
 func (c *Client) ShareFile() {

@@ -12,6 +12,7 @@ import (
 type SystemMenu struct {
 	mPeers *systray.MenuItem
 
+	MLink      *systray.MenuItem
 	mCount     *systray.MenuItem
 	mQuit      *systray.MenuItem
 	mPeersList []*systray.MenuItem
@@ -28,6 +29,10 @@ func StartTray() SystemMenu {
 	sm := SystemMenu{}
 	sm.peerCount = 0
 	sm.lobbySize = 1
+
+	// Quit Sonr
+	sm.MLink = systray.AddMenuItem("Link Device", "Link a Device to Sonr")
+	sm.MLink.SetTemplateIcon(GetIcon(Link), GetIcon(Link))
 
 	// Quit Sonr
 	sm.mQuit = systray.AddMenuItem("Quit", "Quit the whole app")

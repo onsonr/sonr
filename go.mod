@@ -5,7 +5,6 @@ go 1.15
 // Core Imports
 require (
 	github.com/denisbrodbeck/machineid v1.0.1
-	github.com/gogo/protobuf v1.3.1
 	github.com/golang/protobuf v1.4.3
 	github.com/h2non/filetype v1.1.0
 	github.com/libp2p/go-libp2p v0.11.0
