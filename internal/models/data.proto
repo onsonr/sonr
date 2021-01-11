@@ -107,7 +107,7 @@ message Peer {
   string firstName = 5;
   bytes profilePic = 6;
   double direction = 7;
-  double difference = 8;
+  double antipodal = 8;
   double distance = 9;
   Proximity proximity = 10;
   enum Proximity {
