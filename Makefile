@@ -30,7 +30,7 @@ all: Makefile
 	@sed -n 's/^##//p' $<
 
 
-## desktop    :   Builds Darwin and Windows Builds at Build Path
+## desktop     :   Builds Darwin and Windows Builds at Build Path
 desktop: proto
 	go clean -cache -x
 	cd pkg && go build -o $(MAC_ARTIFACT)
@@ -43,7 +43,7 @@ desktop: proto
 	@echo "-------- ✅ ✅ ✅   FINISHED DESKTOP BUILD  ✅ ✅ ✅  --------------"
 	@echo "------------------------------------------------------------------"
 
-## - darwin   :   Compiles Desktop build of Sonr for MacOS
+## └─ darwin   :   Compiles Desktop build of Sonr for MacOS
 darwin:
 	@echo ""
 	@echo ""
@@ -59,7 +59,7 @@ darwin:
 	@echo ""
 	@cd $(MAC_BUILDDIR) && ./sonr_core
 
-## - win      :   Compiles Desktop build of Sonr for Windows
+## └─ win      :   Compiles Desktop build of Sonr for Windows
 win:
 	@echo ""
 	@echo ""
@@ -74,7 +74,7 @@ win:
 	@echo "--------------------------------------------------------------"
 	@echo ""
 
-## mobile     :   Builds Android and iOS Bind for Plugin Path
+## mobile      :   Builds Android and iOS Bind for Plugin Path
 mobile: proto ios android
 	@cd /Users/prad/Sonr/plugin && flutter clean
 	@cd /Users/prad/Sonr/plugin/example && flutter clean
@@ -87,7 +87,7 @@ mobile: proto ios android
 	@echo "----------------------------------------------------------------"
 
 
-## - android  :   Builds Android Bind at Plugin Path
+## └─ android  :   Builds Android Bind at Plugin Path
 android:
 	@echo ""
 	@echo ""
@@ -104,7 +104,7 @@ android:
 	@echo ""
 
 
-## - ios      :   Builds iOS Bind at Plugin Path
+## └─ ios      :   Builds iOS Bind at Plugin Path
 ios:
 	@echo ""
 	@echo ""
@@ -120,7 +120,7 @@ ios:
 	@echo "--------------------------------------------------------------"
 	@echo ""
 
-## proto      :   Compiles Protobuf models for Core Library and Plugin
+## proto       :   Compiles Protobuf models for Core Library and Plugin
 proto:
 	@echo ""
 	@echo ""
@@ -135,14 +135,14 @@ proto:
 	@echo "--------------------------------------------------------------"
 	@echo ""
 
-## run        :   Runs current Darwin Build
+## run         :   Runs current Darwin Build
 run:
 	cd $(MAC_BUILDDIR) && ./sonr_core
 
-## upgrade    :   Builds ALL supported devices
+## upgrade     :   Builds ALL supported devices
 upgrade: proto mobile desktop
 
-## [reset]    :   Cleans Gomobile, Removes Framworks from Plugin, and Initializes Gomobile
+## [reset]     :   Cleans Gomobile, Removes Framworks from Plugin, and Initializes Gomobile
 reset:
 	cd bind && $(GOCLEAN)
 	go mod tidy
