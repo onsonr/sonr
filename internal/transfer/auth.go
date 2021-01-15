@@ -49,24 +49,28 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 	// Send Callback
 	as.onInvite(args.Data)
 
-	select {
-	// Received Auth Channel Message
-	case m := <-as.respCh:
+	// Hold Select for Invite Type
+	if as.inviteMsg.Type == md.AuthInvite_Peer {
+		select {
+		// Received Auth Channel Message
+		case m := <-as.respCh:
 
-		// Convert Protobuf to bytes
-		msgBytes, err := proto.Marshal(m)
-		if err != nil {
-			log.Println(err)
+			// Convert Protobuf to bytes
+			msgBytes, err := proto.Marshal(m)
+			if err != nil {
+				log.Println(err)
+			}
+
+			// Set Message data and call done
+			reply.Data = msgBytes
+			ctx.Done()
+			return nil
+			// Context is Done
+		case <-ctx.Done():
+			return nil
 		}
-
-		// Set Message data and call done
-		reply.Data = msgBytes
-		ctx.Done()
-		return nil
-		// Context is Done
-	case <-ctx.Done():
-		return ctx.Err()
 	}
+	return nil
 }
 
 // ^ Send Request to a Peer ^ //

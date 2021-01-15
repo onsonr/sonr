@@ -3,10 +3,10 @@ package sonr
 import (
 	"log"
 	"math"
-	"time"
 
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
+	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -19,6 +19,23 @@ func (sn *Node) Info() []byte {
 		return nil
 	}
 	return data
+}
+
+// ^ Link with a QR Code ^ //
+func (sn *Node) LinkDevice(peerString string) error {
+	// Convert String to Bytes
+	b := []byte(peerString)
+	peer := md.Peer{}
+
+	// Convert to Peer Protobuf
+	err := protojson.Unmarshal(b, &peer)
+	if err != nil {
+		return err
+	}
+
+	// TODO: Save Device to Disk
+
+	return nil
 }
 
 // ^ Peer returns Current Peer Info ^
@@ -66,100 +83,6 @@ func (sn *Node) ProcessExternal(sharedMediaBytes []byte) {
 
 	safePrev := sf.NewSharedPreview(sharedMediaFile, sn.call.OnQueued, sn.error)
 	sn.files = append(sn.files, safePrev)
-}
-
-// ^ Send Invite with a File ^ //
-func (sn *Node) InviteWithFile(peerId string) {
-	// Get PeerID
-	id, _, err := sn.lobby.Find(peerId)
-
-	// Check error
-	if err != nil {
-		sn.error(err, "Invite")
-	}
-
-	// Create Invite Message with Payload
-	time.Sleep(time.Millisecond * 100)
-
-	// Retreive Current File
-	currFile := sn.currentFile()
-	sn.peerConn.SafePreview = currFile
-
-	// Create Invite Message
-	invMsg := md.AuthInvite{
-		From:    sn.peer,
-		Payload: md.Payload_FILE,
-		Preview: currFile.GetPreview(),
-	}
-
-	// Check if ID in PeerStore
-	go func(inv *md.AuthInvite) {
-		// Convert Protobuf to bytes
-		msgBytes, err := proto.Marshal(inv)
-		if err != nil {
-			sn.error(err, "Marshal")
-		}
-
-		sn.peerConn.Request(sn.host, id, msgBytes)
-	}(&invMsg)
-}
-
-// ^ Send Invite with User Contact Card ^ //
-func (sn *Node) InviteWithContact(peerId string) {
-	// Get PeerID
-	id, _, err := sn.lobby.Find(peerId)
-
-	// Check error
-	if err != nil {
-		sn.error(err, "Invite")
-	}
-
-	// Create Invite Message with Payload
-	invMsg := md.AuthInvite{
-		From:    sn.peer,
-		Payload: md.Payload_CONTACT,
-		Contact: sn.contact,
-	}
-
-	// Check if ID in PeerStore
-	go func(inv *md.AuthInvite) {
-		// Convert Protobuf to bytes
-		msgBytes, err := proto.Marshal(inv)
-		if err != nil {
-			sn.error(err, "Marshal")
-		}
-
-		sn.peerConn.Request(sn.host, id, msgBytes)
-	}(&invMsg)
-}
-
-// ^ Send Invite with URL Link ^ //
-func (sn *Node) InviteWithURL(peerId string, url string) {
-	// Get PeerID
-	id, _, err := sn.lobby.Find(peerId)
-
-	// Check error
-	if err != nil {
-		sn.error(err, "Invite")
-	}
-
-	// Create Invite Message with Payload
-	invMsg := md.AuthInvite{
-		From:    sn.peer,
-		Payload: md.Payload_URL,
-		Url:     url,
-	}
-
-	// Check if ID in PeerStore
-	go func(inv *md.AuthInvite) {
-		// Convert Protobuf to bytes
-		msgBytes, err := proto.Marshal(inv)
-		if err != nil {
-			sn.error(err, "Marshal")
-		}
-
-		sn.peerConn.Request(sn.host, id, msgBytes)
-	}(&invMsg)
 }
 
 // ^ Respond to an Invitation ^ //

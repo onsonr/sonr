@@ -44,6 +44,12 @@ message AuthInvite {
   Preview preview = 3;
   Contact contact = 4;
   string url = 5;
+  Type type = 6;
+
+  enum Type {
+    Peer = 0;
+    Device = 1;
+  }
 }
 
 // Reply Message sent on RPC

@@ -7,9 +7,11 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/skip2/go-qrcode"
 	sonr "github.com/sonr-io/core/bind"
 	md "github.com/sonr-io/core/internal/models"
 	"github.com/sonr-io/core/pkg/ui"
+	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -21,6 +23,7 @@ type Client struct {
 	menu ui.SystemMenu
 	sonr.Callback
 	node *sonr.Node
+	hLinkInput chan bool
 }
 
 // ^ Create New Client Node ^ //
@@ -82,6 +85,26 @@ func (c *Client) UpdatePeriodically(ticker *time.Ticker) {
 			c.node.Update(0)
 		}
 	}
+}
+
+// ^ Display QR Code of Peer Info ^ //
+func (c *Client) DisplayCode() []byte {
+	// Get Node JSON
+	jsonBytes, err := protojson.Marshal(c.node.Peer())
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+	json := string(jsonBytes)
+	print(json)
+
+	// Encode to QR
+	png, err := qrcode.Encode(json, qrcode.Medium, 256)
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+	return png
 }
 
 // // ^ Routine Handles Menu Input ^ //
