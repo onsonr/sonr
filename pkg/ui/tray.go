@@ -10,8 +10,7 @@ import (
 )
 
 type SystemMenu struct {
-	mPeers *systray.MenuItem
-
+	mPeers     *systray.MenuItem
 	MLink      *systray.MenuItem
 	mCount     *systray.MenuItem
 	mQuit      *systray.MenuItem

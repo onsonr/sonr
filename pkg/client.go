@@ -22,8 +22,7 @@ type Client struct {
 	ctx  context.Context
 	menu ui.SystemMenu
 	sonr.Callback
-	node *sonr.Node
-	hLinkInput chan bool
+	node       *sonr.Node
 }
 
 // ^ Create New Client Node ^ //
@@ -113,9 +112,14 @@ func (c *Client) DisplayCode() []byte {
 // 	c.node.DisplayCode()
 // }
 
-// ^ Method To Share File ^ //
-func (c *Client) ShareFile() {
+// ^ Method To Queue File ^ //
+func (c *Client) QueueFile(path string) {
+	c.node.Process(path)
+}
 
+// ^ Method To Share File ^ //
+func (c *Client) ShareFile(id string, path string) {
+	c.node.InviteWithFile(id)
 }
 
 // ^ Method To Share Text ^ //
