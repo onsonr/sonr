@@ -6,7 +6,9 @@ import (
 	"log"
 
 	"github.com/getlantern/systray"
+	sonr "github.com/sonr-io/core/bind"
 	md "github.com/sonr-io/core/internal/models"
+	"github.com/sqweek/dialog"
 )
 
 type SystemMenu struct {
@@ -15,6 +17,7 @@ type SystemMenu struct {
 	mCount     *systray.MenuItem
 	mQuit      *systray.MenuItem
 	mPeersList []*systray.MenuItem
+	node       *sonr.Node
 	peerCount  int32
 	lobbySize  int32
 }
@@ -48,6 +51,11 @@ func StartTray() SystemMenu {
 }
 
 // ^ Routine Handles Menu Input ^ //
+func (sm *SystemMenu) SetNode(n *sonr.Node) {
+	sm.node = n
+}
+
+// ^ Routine Handles Menu Input ^ //
 func (sm *SystemMenu) HandleMenuInput() {
 	go func() {
 		<-sm.mQuit.ClickedCh
@@ -78,14 +86,28 @@ func (sm *SystemMenu) UpdatePeers(newLob *md.Lobby) {
 			item := sm.mPeers.AddSubMenuItem(itemTitle, "Nearby Available Peer")
 			item.SetTemplateIcon(GetDeviceIcon(p.Device), GetDeviceIcon(p.Device))
 			log.Println(p)
-			// // Spawn Routine to handle Item
-			// go func(item *systray.MenuItem, peer *md.Peer) {
-			// 	// On Item Click
-			// 	<-item.ClickedCh
 
-			// 	// Action
-			// 	log.Println(peer.String() + " Clicked")
-			// }(item, p)
+			// Spawn Routine to handle Item
+			go func(item *systray.MenuItem, peer *md.Peer) {
+				for {
+					select {
+					case <-item.ClickedCh:
+						// Load File
+						filename, err := dialog.File().Filter("PNG Image file", "png").Load()
+
+						// Process File
+						sm.node.Process(filename)
+
+						// Invite Peer
+						sm.node.InviteWithFile(peer.Id)
+
+						// Log Error 
+						if err != nil {
+							log.Fatalln(err)
+						}
+					}
+				}
+			}(item, p)
 
 			// Add to Menu List
 			sm.mPeersList = append(sm.mPeersList, item)

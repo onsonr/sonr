@@ -46,7 +46,7 @@ func (c *Client) OnInvited(data []byte) {
 
 	// Check Invite
 	if m.Payload == md.Payload_FILE {
-		c.node.Respond(true)
+		c.Node.Respond(true)
 	} else if m.Payload == md.Payload_URL {
 		err := op.Start(m.Url)
 		if err != nil {

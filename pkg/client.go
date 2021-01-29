@@ -22,7 +22,7 @@ type Client struct {
 	ctx  context.Context
 	menu ui.SystemMenu
 	sonr.Callback
-	node       *sonr.Node
+	Node *sonr.Node
 }
 
 // ^ Create New Client Node ^ //
@@ -68,7 +68,7 @@ func NewClient(ctx context.Context, m ui.SystemMenu) *Client {
 	// Create New Client
 	var c = new(Client)
 	c.ctx = ctx
-	c.node = sonr.NewNode(bytes, c)
+	c.Node = sonr.NewNode(bytes, c)
 	// go c.HandleLinkInput()
 	go c.UpdatePeriodically(time.NewTicker(interval))
 	return c
@@ -81,7 +81,7 @@ func (c *Client) UpdatePeriodically(ticker *time.Ticker) {
 		case <-c.ctx.Done():
 			return
 		case <-ticker.C:
-			c.node.Update(0)
+			c.Node.Update(0)
 		}
 	}
 }
@@ -89,7 +89,7 @@ func (c *Client) UpdatePeriodically(ticker *time.Ticker) {
 // ^ Display QR Code of Peer Info ^ //
 func (c *Client) DisplayCode() []byte {
 	// Get Node JSON
-	jsonBytes, err := protojson.Marshal(c.node.Peer())
+	jsonBytes, err := protojson.Marshal(c.Node.Peer())
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -114,12 +114,12 @@ func (c *Client) DisplayCode() []byte {
 
 // ^ Method To Queue File ^ //
 func (c *Client) QueueFile(path string) {
-	c.node.Process(path)
+	c.Node.Process(path)
 }
 
 // ^ Method To Share File ^ //
 func (c *Client) ShareFile(id string, path string) {
-	c.node.InviteWithFile(id)
+	c.Node.InviteWithFile(id)
 }
 
 // ^ Method To Share Text ^ //
