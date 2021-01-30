@@ -8,49 +8,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// ** ID returns ONE Peer.ID in PubSub **
-func (lob *Lobby) ID(q string) peer.ID {
-	// Iterate through PubSub in topic
-	for _, id := range lob.ps.ListPeers(lob.Data.Code) {
-		// If Found Match
-		if id.String() == q {
-			return id
-		}
-	}
-	return ""
-}
-
-// ** Peer returns ONE Peer in Lobby **
-func (lob *Lobby) Peer(q string) *md.Peer {
-	// Iterate Through Peers, Return Matched Peer
-	for _, peer := range lob.Data.Peers {
-		// If Found Match
-		if peer.Id == q {
-			return peer
-		}
-	}
-	return nil
-}
-
-// ** updatePeer changes peer values in Lobby **
-func (lob *Lobby) addPeer(peer *md.Peer) {
-	// Validate ID doesnt Exist
-	if result := Contains(lob.Data.Peers, peer.Id); !result {
-		// Add Peer to List
-		lob.Data.Peers = append(lob.Data.Peers, peer)
-
-		// Marshal data to bytes
-		bytes, err := proto.Marshal(lob.Data)
-		if err != nil {
-			log.Println("Cannot Marshal Error Protobuf: ", err)
-		}
-
-		// Send Callback with updated peers
-		lob.callback(bytes)
-	}
-}
-
-// ** updatePeer changes peer values in Lobby **
+// ^ removePeer removes peer on Exit ^
 func (lob *Lobby) removePeer(id peer.ID) {
 	// Validate ID Exists
 	if result := Contains(lob.Data.Peers, string(id)); result {
@@ -74,7 +32,7 @@ func (lob *Lobby) removePeer(id peer.ID) {
 	}
 }
 
-// ** updatePeer changes peer values in Lobby **
+// ^ updatePeer changes peer values in Lobby ^
 func (lob *Lobby) updatePeer(peer *md.Peer) {
 	// Validate ID Exists
 	if result := Contains(lob.Data.Peers, string(peer.Id)); result {
@@ -95,9 +53,31 @@ func (lob *Lobby) updatePeer(peer *md.Peer) {
 
 		// Send Callback with updated peers
 		lob.callback(bytes)
-	} else {
-		lob.addPeer(peer)
 	}
+}
+
+// @ Helper: ID returns ONE Peer.ID in PubSub
+func (lob *Lobby) ID(q string) peer.ID {
+	// Iterate through PubSub in topic
+	for _, id := range lob.ps.ListPeers(lob.Data.Code) {
+		// If Found Match
+		if id.String() == q {
+			return id
+		}
+	}
+	return ""
+}
+
+// @ Helper: Peer returns ONE Peer in Lobby
+func (lob *Lobby) Peer(q string) *md.Peer {
+	// Iterate Through Peers, Return Matched Peer
+	for _, peer := range lob.Data.Peers {
+		// If Found Match
+		if peer.Id == q {
+			return peer
+		}
+	}
+	return nil
 }
 
 // @ Helper: Find returns the smallest index i at which x == a[i]
