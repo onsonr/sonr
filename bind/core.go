@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 
+	olc "github.com/google/open-location-code/go"
 	"github.com/libp2p/go-libp2p-core/host"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	sf "github.com/sonr-io/core/internal/file"
@@ -68,7 +69,8 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 		return nil
 	}
 
-	// @1. Create Host and Start Discovery
+	// @1. Set OLC, Create Host, and Start Discovery
+	node.olc = olc.Encode(float64(reqMsg.Latitude), float64(reqMsg.Longitude), 8)
 	node.host, err = sh.NewHost(node.ctx, reqMsg.Directories, node.olc)
 	if err != nil {
 		node.error(err, "NewNode")
