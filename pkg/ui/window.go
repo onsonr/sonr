@@ -23,7 +23,7 @@ func (sm *AppInterface) OpenQRWindow(json string) {
 	reader := bytes.NewReader(qrData)
 
 	// Initialize New App
-	w := sm.fyApp.NewWindow("Sonr Device QR Code")
+	w := sm.App.NewWindow("Sonr Device QR Code")
 
 	image := canvas.NewImageFromReader(reader, UUID())
 	image.FillMode = canvas.ImageFillOriginal

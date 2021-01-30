@@ -28,7 +28,7 @@ func (lob *Lobby) handleEvents() {
 		}
 
 		if lobEvent.Type == pubsub.PeerJoin {
-			err := lob.Exchange(lobEvent.Peer)
+			err := lob.Update()
 			if err != nil {
 				log.Println(err)
 			}
@@ -81,13 +81,6 @@ func (lob *Lobby) processMessages() {
 			if m.Event == md.LobbyEvent_UPDATE {
 				// Update Peer Data
 				lob.updatePeer(m.Peer)
-			} else if m.Event == md.LobbyEvent_EXCHANGE {
-				// Update Peer Data
-				lob.updatePeer(m.Peer)
-				err := lob.Exchange(lob.ID(m.Id))
-				if err != nil {
-					log.Println(err)
-				}
 			}
 
 		case <-lob.ctx.Done():

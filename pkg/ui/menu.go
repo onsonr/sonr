@@ -9,6 +9,7 @@ import (
 	sonr "github.com/sonr-io/core/bind"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/proto"
 )
 
 type AppInterface struct {
@@ -19,7 +20,7 @@ type AppInterface struct {
 	mPeersList []*systray.MenuItem
 	peerCount  int32
 	lobbySize  int32
-	fyApp      fyne.App
+	App        fyne.App
 }
 
 // ^ Start Starts System tray with Library ^ //
@@ -32,7 +33,7 @@ func Start() AppInterface {
 	ai := AppInterface{
 		peerCount: 0,
 		lobbySize: 1,
-		fyApp:     app.New(),
+		App:       app.New(),
 	}
 	ai.peerCount = 0
 	ai.lobbySize = 1
@@ -96,8 +97,22 @@ func (ai *AppInterface) HandlePeerInput(fileItem *systray.MenuItem, linkItem *sy
 		case <-fileItem.ClickedCh:
 			// Validate and Invite File
 			if ai.node != nil {
+				// Get File
 				filename := ShowFileDialog()
-				ai.node.Process(filename)
+
+				// Create Request
+				procReq := md.ProcessRequest{
+					IsExternal: false,
+					FilePath:   filename,
+				}
+
+				// Convert to Bytes
+				reqBytes, err := proto.Marshal(&procReq)
+				if err != nil {
+					log.Panicln(err)
+				}
+
+				ai.node.Process(reqBytes)
 				ai.node.InviteWithFile(peer.Id)
 			} else {
 				log.Println("Node not set.")

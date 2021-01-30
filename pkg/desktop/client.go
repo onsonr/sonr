@@ -35,10 +35,11 @@ func NewClient(ctx context.Context, m ui.AppInterface) *Client {
 
 	// Create Request Message
 	request := md.ConnectionRequest{
-		Olc:       c.info.OLC,
-		Username:  "@TestUser",
-		Device:    &c.info.Device,
-		Directory: &c.info.Directory,
+		Latitude:    38.980620,
+		Longitude:   -77.505890,
+		Username:    "@TestUser",
+		Device:      &c.info.Device,
+		Directories: &c.info.Directory,
 		Contact: &md.Contact{
 			FirstName: "MacTest",
 			LastName:  "MacTest",
