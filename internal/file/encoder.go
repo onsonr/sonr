@@ -13,7 +13,7 @@ import (
 	"github.com/nfnt/resize"
 )
 
-// ^ Method Processes File at Path for Image to Send ^ //
+// ^ Method Processes File at Path^ //
 func (pf *ProcessedFile) EncodeFile(buf *bytes.Buffer) error {
 	// @ Jpeg Image
 	if ext := pf.Ext(); ext == "jpg" {
@@ -98,8 +98,8 @@ func EncodeThumb(buf *bytes.Buffer, path string) error {
 	return nil
 }
 
-// ^ Encodes Image to Scaled Thumbnail Image: (buf) is reference to buffer, (isScaled) is to scale image or not ^ //
-func EncodeScaledThumb(buf *bytes.Buffer, path string) error {
+// ^ Generates Scaled Thumbnail for Image: (buf) is reference to buffer, (isScaled) is to scale image or not ^ //
+func GenerateThumb(buf *bytes.Buffer, path string) error {
 	// @ Open File at Meta Path
 	file, err := os.Open(path)
 	if err != nil {

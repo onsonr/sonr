@@ -23,15 +23,6 @@ message ProcessRequest {
   int32 duration = 4;
 }
 
-// Define OutgoingMedia Enum
-enum OutgoingMedia {
-  Unknown = 0;
-  External = 1;
-  Image = 2;
-  Video = 3;
-  Document = 4;
-}
-
 // Define Payload Enum
 enum Payload {
   NONE = 0;

@@ -29,7 +29,6 @@ var onError OnError
 type ProcessedFile struct {
 	// References
 	OnQueued OnProtobuf
-	media    md.OutgoingMedia
 	mime     *md.MIME
 	path     string
 
@@ -60,7 +59,6 @@ func NewProcessedFile(req *md.ProcessRequest, queueCall OnProtobuf, errCall OnEr
 		path:     req.FilePath,
 		request:  req,
 		mime:     info.Mime,
-		media:    SetOutgoingType(req, info.Mime),
 	}
 
 	// ** Lock ** //
@@ -154,20 +152,4 @@ func GetInfo(path string) Info {
 		Size:    int32(info.Size()),
 		IsImage: isImage,
 	}
-}
-
-// ^ Method Returns Outgoing Type ^ //
-func SetOutgoingType(req *md.ProcessRequest, mime *md.MIME) md.OutgoingMedia {
-	// @ External File
-	if req.IsExternal {
-		return md.OutgoingMedia_External
-		// @ Passed Internal File
-	} else {
-		if mime.Type == md.MIME_image {
-			return md.OutgoingMedia_Image
-		} else if mime.Type == md.MIME_video {
-			return md.OutgoingMedia_Video
-		}
-	}
-	return md.OutgoingMedia_Unknown
 }
