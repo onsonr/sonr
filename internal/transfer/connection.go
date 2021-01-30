@@ -1,12 +1,8 @@
 package transfer
 
 import (
-	"bytes"
 	"context"
 	"log"
-	"strings"
-
-	"path/filepath"
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -23,6 +19,7 @@ import (
 
 // Define Callback Function Types
 type OnProtobuf func([]byte)
+type OnProgress func(data float32)
 type OnError func(err error, method string)
 
 // Package Error Callback
@@ -34,8 +31,8 @@ type PeerConnection struct {
 	auth *AuthService
 
 	// Data Handlers
-	SafePreview *sf.SafePreview
-	transfer    *Transfer
+	SafePreview *sf.ProcessedFile
+	transfer    *sf.TransferFile
 
 	// Callbacks
 	invitedCall     OnProtobuf
@@ -87,21 +84,9 @@ func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic 
 }
 
 // ^  Prepare for Stream, Create new Transfer ^ //
-func (pc *PeerConnection) PrepareTransfer(preview *md.Preview, own *md.Peer) *Transfer {
-	// Create Transfer
-	fileName := preview.Name + "." + preview.Mime.Subtype
-	return &Transfer{
-		// Inherited Properties
-		preview:    preview,
-		owner:      own,
-		path:       filepath.Join(pc.dirs.Temporary, fileName),
-		onProgress: pc.progressCall,
-		onComplete: pc.receivedCall,
-
-		// Builders
-		stringsBuilder: new(strings.Builder),
-		bytesBuilder:   new(bytes.Buffer),
-	}
+func (pc *PeerConnection) PrepareTransfer(inv *md.AuthInvite) {
+	// Initialize Transfer
+	pc.transfer = sf.NewTransfer(inv, pc.dirs, pc.progressCall, pc.receivedCall)
 }
 
 // ^ User has accepted, Begin Sending Transfer ^ //
@@ -130,7 +115,7 @@ func (pc *PeerConnection) StartTransfer(h host.Host, id peer.ID, peer *md.Peer) 
 // ^ Handle Incoming Stream ^ //
 func (pc *PeerConnection) HandleTransfer(stream network.Stream) {
 	// Route Data from Stream
-	go func(reader msgio.ReadCloser, t *Transfer) {
+	go func(reader msgio.ReadCloser, t *sf.TransferFile) {
 		for i := 0; ; i++ {
 			// @ Read Length Fixed Bytes
 			buffer, err := reader.ReadMsg()
@@ -141,7 +126,7 @@ func (pc *PeerConnection) HandleTransfer(stream network.Stream) {
 			}
 
 			// @ Unmarshal Bytes into Proto
-			hasCompleted, err := t.addBuffer(i, buffer)
+			hasCompleted, err := t.AddBuffer(i, buffer)
 			if err != nil {
 				onError(err, "ReadStream")
 				log.Fatalln(err)
@@ -151,7 +136,7 @@ func (pc *PeerConnection) HandleTransfer(stream network.Stream) {
 			// @ Check if All Buffer Received to Save
 			if hasCompleted {
 				// Sync file
-				if err := pc.transfer.save(); err != nil {
+				if err := pc.transfer.Save(); err != nil {
 					onError(err, "SaveFile")
 					log.Fatalln(err)
 				}

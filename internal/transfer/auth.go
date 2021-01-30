@@ -2,7 +2,6 @@ package transfer
 
 import (
 	"context"
-	"errors"
 	"log"
 
 	"github.com/libp2p/go-libp2p-core/host"
@@ -118,11 +117,12 @@ func (pc *PeerConnection) Authorize(decision bool, contact *md.Contact, peer *md
 	offerMsg := pc.auth.inviteMsg
 
 	// @ Check Reply Type for File
-	if offerMsg.Payload == md.Payload_FILE {
+	switch offerMsg.Payload {
+	case md.Payload_FILE:
 		// @ Check Decision
 		if decision {
 			// Initialize Transfer
-			pc.transfer = pc.PrepareTransfer(offerMsg.Preview, offerMsg.From)
+			pc.PrepareTransfer(offerMsg)
 
 			// Create Accept Response
 			respMsg := &md.AuthReply{
@@ -145,7 +145,7 @@ func (pc *PeerConnection) Authorize(decision bool, contact *md.Contact, peer *md
 			// Send to Channel
 			pc.auth.respCh <- respMsg
 		}
-	} else if offerMsg.Payload == md.Payload_CONTACT {
+	case md.Payload_CONTACT:
 		// @ Pass Contact Back
 		// Create Accept Response
 		respMsg := &md.AuthReply{
@@ -156,8 +156,7 @@ func (pc *PeerConnection) Authorize(decision bool, contact *md.Contact, peer *md
 
 		// Send to Channel
 		pc.auth.respCh <- respMsg
-	} else {
-		// Send Error
-		onError(errors.New("Invalid Invite Message"), "Authorize")
+	default:
+		break
 	}
 }

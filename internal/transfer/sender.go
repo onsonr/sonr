@@ -18,31 +18,11 @@ const B64ChunkSize = 31998 // Adjusted for Base64 -- has to be divisible by 3
 const BufferChunkSize = 32000
 
 // ^ write file as Base64 in Msgio to Stream ^ //
-func writeBase64ToStream(writer msgio.WriteCloser, onCompleted OnProtobuf, sp *sf.SafePreview, peer []byte) {
-	// Initialize Buffer
+func writeBase64ToStream(writer msgio.WriteCloser, onCompleted OnProtobuf, pf *sf.ProcessedFile, peer []byte) {
+	// Initialize Buffer and Encode File
 	buffer := new(bytes.Buffer)
-	prev := sp.GetPreview()
-	subType := prev.Mime.Subtype
-
-	// @ Check Image type
-	if subType == "jpeg" {
-		// Get JPEG Encoded Buffer
-		err := EncodeJpegBuffer(buffer, sp.Path)
-		if err != nil {
-			log.Fatalln(err)
-		}
-	} else if subType == "png" {
-		// Get PNG Encoded Buffer
-		err := EncodePngBuffer(buffer, sp.Path)
-		if err != nil {
-			log.Fatalln(err)
-		}
-	} else {
-		// Get Raw Bytes
-		err := WriteBuffer(buffer, sp.Path)
-		if err != nil {
-			log.Fatalln(err)
-		}
+	if err := pf.EncodeFile(buffer); err != nil {
+		log.Fatalln(err)
 	}
 
 	// Encode Buffer to base 64
@@ -75,4 +55,18 @@ func writeBase64ToStream(writer msgio.WriteCloser, onCompleted OnProtobuf, sp *s
 
 	// Call Completed Sending
 	onCompleted(peer)
+}
+
+// ^ Helper: Chunks string based on B64ChunkSize ^ //
+func ChunkBase64(s string) []string {
+	chunkSize := B64ChunkSize
+	ss := make([]string, 0, len(s)/chunkSize+1)
+	for len(s) > 0 {
+		if len(s) < chunkSize {
+			chunkSize = len(s)
+		}
+		// Create Current Chunk String
+		ss, s = append(ss, s[:chunkSize]), s[chunkSize:]
+	}
+	return ss
 }

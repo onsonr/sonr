@@ -1,24 +1,24 @@
-package transfer
+package file
 
 import (
 	"bytes"
 	"encoding/base64"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 	"sync"
+	"time"
 
-	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
 
-type OnProgress func(data float32)
-type Transfer struct {
+const B64ChunkSize = 31998 // Adjusted for Base64 -- has to be divisible by 3
+type TransferFile struct {
 	// Inherited Properties
 	mutex      sync.Mutex
-	preview    *md.Preview
-	owner      *md.Peer
+	invite     *md.AuthInvite
 	onProgress OnProgress
 	onComplete OnProtobuf
 	path       string
@@ -34,8 +34,27 @@ type Transfer struct {
 	totalSize   int
 }
 
+// ^ Method Creates New Transfer File ^ //
+func NewTransfer(inv *md.AuthInvite, dirs *md.Directories, op func(data float32), oc func([]byte)) *TransferFile {
+	// Create File Name
+	fileName := inv.Preview.Name + "." + inv.Preview.Mime.Subtype
+
+	// Return File
+	return &TransferFile{
+		// Inherited Properties
+		invite:     inv,
+		path:       filepath.Join(dirs.Temporary, fileName),
+		onProgress: op,
+		onComplete: oc,
+
+		// Builders
+		stringsBuilder: new(strings.Builder),
+		bytesBuilder:   new(bytes.Buffer),
+	}
+}
+
 // ^ Check file type and use corresponding method ^ //
-func (t *Transfer) addBuffer(curr int, buffer []byte) (bool, error) {
+func (t *TransferFile) AddBuffer(curr int, buffer []byte) (bool, error) {
 	// ** Lock/Unlock ** //
 	t.mutex.Lock()
 	defer t.mutex.Unlock()
@@ -86,7 +105,7 @@ func (t *Transfer) addBuffer(curr int, buffer []byte) (bool, error) {
 }
 
 // ^ Check file type and use corresponding method to save to Disk ^ //
-func (t *Transfer) save() error {
+func (t *TransferFile) Save() error {
 	// Get Bytes from base64
 	b64Bytes, err := base64.StdEncoding.DecodeString(t.stringsBuilder.String())
 	if err != nil {
@@ -110,8 +129,20 @@ func (t *Transfer) save() error {
 		return err
 	}
 
+	// @ 1. Get File Information
+	// Get File Information
+	info := GetInfo(t.path)
+
 	// Create Metadata
-	meta := sf.GetMetadata(t.path, t.owner)
+	meta := &md.Metadata{
+		Name:      info.Name,
+		Path:      t.path,
+		Size:      info.Size,
+		Mime:      info.Mime,
+		Thumbnail: t.invite.Preview.Thumbnail,
+		Received:  int32(time.Now().Unix()),
+		Owner:     t.invite.From,
+	}
 
 	// Convert Message to bytes
 	bytes, err := proto.Marshal(meta)

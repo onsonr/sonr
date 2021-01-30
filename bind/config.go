@@ -18,7 +18,7 @@ import (
 )
 
 // ^ CurrentFile returns last file in Processed Files ^ //
-func (sn *Node) currentFile() *sf.SafePreview {
+func (sn *Node) currentFile() *sf.ProcessedFile {
 	return sn.files[len(sn.files)-1]
 }
 

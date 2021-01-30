@@ -29,7 +29,6 @@ message MIME {
   Type type = 1;
   string subtype = 2;
   string value = 3;
-  string extension = 4;
 
   enum Type {
     application = 0;

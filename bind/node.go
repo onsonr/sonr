@@ -81,8 +81,8 @@ func (sn *Node) Process(procBytes []byte) {
 	}
 
 	// Create Preview
-	safePrev := sf.NewPreview(request, sn.call.OnQueued, sn.error)
-	sn.files = append(sn.files, safePrev)
+	safeFile := sf.NewProcessedFile(request, sn.call.OnQueued, sn.error)
+	sn.files = append(sn.files, safeFile)
 }
 
 // ^ Respond to an Invitation ^ //
@@ -97,5 +97,5 @@ func (sn *Node) Respond(decision bool) {
 func (sn *Node) ResetFile() {
 	// Reset Files Slice
 	sn.files = nil
-	sn.files = make([]*sf.SafePreview, maxFileBufferSize)
+	sn.files = make([]*sf.ProcessedFile, maxFileBufferSize)
 }
