@@ -33,12 +33,12 @@ type Callback interface {
 // ^ Struct: Main Node handles Networking/Identity/Streams ^
 type Node struct {
 	// Properties
+	ctx     context.Context
 	olc     string
 	peer    *md.Peer
 	contact *md.Contact
 
 	// Networking Properties
-	ctx    context.Context
 	host   host.Host
 	pubSub *pubsub.PubSub
 
@@ -69,7 +69,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	}
 
 	// @1. Create Host and Start Discovery
-	node.host, err = sh.NewHost(node.ctx, reqMsg.Directory, reqMsg.Olc)
+	node.host, err = sh.NewHost(node.ctx, reqMsg.Directories, reqMsg.Olc)
 	if err != nil {
 		node.error(err, "NewNode")
 		return nil
@@ -93,19 +93,16 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 
 // ^ Close Ends All Network Communication ^
 func (sn *Node) Pause() {
-	log.Println("Sonr Paused.")
 	lifecycle.GetState().Pause()
 }
 
 // ^ Close Ends All Network Communication ^
 func (sn *Node) Resume() {
-	log.Println("Sonr Resumed.")
 	lifecycle.GetState().Resume()
 }
 
 // ^ Close Ends All Network Communication ^
 func (sn *Node) Stop() {
-	log.Println("Sonr Stopped.")
 	sn.host.Close()
 }
 

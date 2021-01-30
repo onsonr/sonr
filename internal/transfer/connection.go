@@ -122,13 +122,9 @@ func (pc *PeerConnection) StartTransfer(h host.Host, id peer.ID, peer *md.Peer) 
 
 	// Initialize Writer
 	writer := msgio.NewWriter(stream)
-	meta := pc.SafePreview.GetPreview()
-
-	// @ Check Type
 
 	// Start Routine
-	log.Println("Starting Base64 Write Routine")
-	go writeBase64ToStream(writer, pc.transmittedCall, meta, peerBytes)
+	go writeBase64ToStream(writer, pc.transmittedCall, pc.SafePreview, peerBytes)
 }
 
 // ^ Handle Incoming Stream ^ //

@@ -7,8 +7,6 @@ import (
 	"image/png"
 	"io/ioutil"
 	"os"
-
-	md "github.com/sonr-io/core/internal/models"
 )
 
 // ^ Helper: Chunks string based on B64ChunkSize ^ //
@@ -26,9 +24,9 @@ func ChunkBase64(s string) []string {
 }
 
 // ^ Helper: Encodes to Jpeg Image ^ //
-func EncodeJpegBuffer(buf *bytes.Buffer, preview *md.Preview) error {
+func EncodeJpegBuffer(buf *bytes.Buffer, path string) error {
 	// Open File at Meta Path
-	file, err := os.Open(preview.Path)
+	file, err := os.Open(path)
 	if err != nil {
 		return err
 	}
@@ -49,9 +47,9 @@ func EncodeJpegBuffer(buf *bytes.Buffer, preview *md.Preview) error {
 }
 
 // ^ Helper: Encodes to PNG Image ^ //
-func EncodePngBuffer(buf *bytes.Buffer, preview *md.Preview) error {
+func EncodePngBuffer(buf *bytes.Buffer, path string) error {
 	// Open File at Meta Path
-	file, err := os.Open(preview.Path)
+	file, err := os.Open(path)
 	if err != nil {
 		return err
 	}
@@ -72,9 +70,9 @@ func EncodePngBuffer(buf *bytes.Buffer, preview *md.Preview) error {
 }
 
 // ^ Helper: Opens File for Buffer and Writes ^ //
-func WriteBuffer(buf *bytes.Buffer, preview *md.Preview) error {
+func WriteBuffer(buf *bytes.Buffer, path string) error {
 	// Open File at Meta Path\
-	dat, err := ioutil.ReadFile(preview.Path)
+	dat, err := ioutil.ReadFile(path)
 	if err != nil {
 		return err
 	}

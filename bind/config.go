@@ -30,7 +30,7 @@ func getDeviceID(connEvent *md.ConnectionRequest) error {
 	}
 
 	// Create Device ID Path
-	path := filepath.Join(connEvent.Directory.Documents, ".sonr-device-id")
+	path := filepath.Join(connEvent.Directories.Documents, ".sonr-device-id")
 
 	// @ Check for Path
 	if _, err := os.Stat(path); os.IsNotExist(err) {
@@ -93,7 +93,7 @@ func (sn *Node) setInfo(connEvent *md.ConnectionRequest) error {
 
 	// Set Default Properties
 	sn.contact = connEvent.Contact
-	sn.directories = connEvent.Directory
+	sn.directories = connEvent.Directories
 	sn.olc = connEvent.Olc
 
 	// Get Device ID

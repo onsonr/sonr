@@ -7,29 +7,30 @@ import (
 	"context"
 
 	"github.com/getlantern/systray"
+	"github.com/sonr-io/core/pkg/desktop"
 	"github.com/sonr-io/core/pkg/ui"
 )
 
 // Define Context
+var desk *desktop.Client
 var ctx context.Context
+var app ui.AppInterface
 
 func main() {
-	// Exit Function
-	onExit := func() {
-		now := time.Now()
-		log.Println(now)
-		ctx.Done()
-	}
-
 	// Start Function
 	ctx = context.Background()
 	systray.Run(onReady, onExit)
 }
 
 func onReady() {
-	// Starts New Node
-	menu := ui.StartTray()
+	// Starts Menu Bar
+	app = ui.Start()
 
-	// Creates New Client, Set Node
-	NewClient(ctx, menu)
+	// Creates New Client
+	desk = desktop.NewClient(ctx, app)
+}
+
+func onExit() {
+	log.Println(time.Now())
+	ctx.Done()
 }

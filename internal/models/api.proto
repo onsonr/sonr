@@ -11,30 +11,29 @@ message ConnectionRequest {
   string olc = 1;
   string username = 2;
   Device device = 3;
-  Directories directory = 4;
+  Directories directories = 4;
   Contact contact = 5;
 }
+
+// Processes Given File with Information
+message ProcessRequest {
+  Payload payload = 1;
+  bool isExternal = 2;
+  string name = 3;
+  string filePath = 4;
+  string thumbnailPath = 5;
+  int32 duration = 6;
+}
+
 // Define Payload Enum
 enum Payload {
   NONE = 0;
-  FILE = 1;
-  CONTACT = 2;
-  URL = 3;
-  TEXT = 4;
-}
-
-// Externally Shared Media
-message SharedMediaFile {
-  int32 duration = 1;
-  string path = 2;
-  string thumbnail = 3;
-  Type type = 4;
-
-  enum Type {
-    IMAGE = 0;
-    VIDEO = 1;
-    FILE = 2;
-  }
+  IMAGE = 1;
+  VIDEO = 2;
+  FILE = 3;
+  CONTACT = 4;
+  URL = 5;
+  TEXT = 6;
 }
 
 // Invitation Message sent on RPC

@@ -12,7 +12,6 @@ func PushInvited(inv *md.AuthInvite) {
 	if err != nil {
 		log.Println(err)
 	}
-	//log.Println("Pushed Invite Notification")
 }
 
 func BeepCompleted() {

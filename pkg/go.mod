@@ -3,6 +3,7 @@ module github.com/sonr-io/core/pkg
 go 1.15
 
 require (
+	fyne.io/fyne/v2 v2.0.0
 	github.com/gen2brain/beeep v0.0.0-20200526185328-e9c15c258e28
 	github.com/gen2brain/dlgs v0.0.0-20201118155338-03fe7f81ad25
 	github.com/getlantern/systray v1.1.0

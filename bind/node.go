@@ -24,11 +24,10 @@ func (sn *Node) Info() []byte {
 // ^ Link with a QR Code ^ //
 func (sn *Node) LinkDevice(peerString string) error {
 	// Convert String to Bytes
-	b := []byte(peerString)
 	peer := md.Peer{}
 
 	// Convert to Peer Protobuf
-	err := protojson.Unmarshal(b, &peer)
+	err := protojson.Unmarshal([]byte(peerString), &peer)
 	if err != nil {
 		return err
 	}
@@ -58,6 +57,13 @@ func (sn *Node) Update(direction float64) {
 	// Update User Values
 	sn.peer.Direction = math.Round(direction*100) / 100
 
+	// Set Antipodal
+	if direction > 180 {
+		sn.peer.Antipodal = math.Round((direction-180)*100) / 100
+	} else {
+		sn.peer.Antipodal = math.Round((direction+180)*100) / 100
+	}
+
 	// Inform Lobby
 	err := sn.lobby.Update()
 	if err != nil {
@@ -66,21 +72,16 @@ func (sn *Node) Update(direction float64) {
 }
 
 // ^ Process adds generates Preview with Thumbnail ^ //
-func (sn *Node) Process(path string) {
-	safePrev := sf.NewPreview(path, sn.call.OnQueued, sn.error)
-	sn.files = append(sn.files, safePrev)
-}
-
-// ^ Create Preview with a Externally Shared File ^ //
-func (sn *Node) ProcessExternal(sharedMediaBytes []byte) {
+func (sn *Node) Process(procBytes []byte) {
 	// Initialize from Info
-	sharedMediaFile := &md.SharedMediaFile{}
-	err := proto.Unmarshal(sharedMediaBytes, sharedMediaFile)
+	request := &md.ProcessRequest{}
+	err := proto.Unmarshal(procBytes, request)
 	if err != nil {
 		log.Println(err)
 	}
 
-	safePrev := sf.NewSharedPreview(sharedMediaFile, sn.call.OnQueued, sn.error)
+	// Create Preview
+	safePrev := sf.NewPreview(request, sn.call.OnQueued, sn.error)
 	sn.files = append(sn.files, safePrev)
 }
 

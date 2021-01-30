@@ -18,10 +18,10 @@ message Metadata {
 // Define Preview: For File Transfer Request
 message Preview {
   MIME mime = 1;
-  string path = 2;
-  string name = 3;
-  int32 size = 4;
-  bytes thumbnail = 5;
+  string name = 2;
+  int32 size = 3;
+  bytes thumbnail = 4;
+  int32 duration = 5;
 }
 
 // Define MIME: Protobuf Version of Mime
@@ -29,6 +29,8 @@ message MIME {
   Type type = 1;
   string subtype = 2;
   string value = 3;
+  string extension = 4;
+
   enum Type {
     application = 0;
     audio = 1;
@@ -89,13 +91,15 @@ message Device {
   string name = 4;
   string version = 5;
   int32 sdk = 6; // For Android
+  bool desktop = 7;
 }
 
 // Define Directories Type: Where Data can be stored
 message Directories {
-  string documents = 1;
-  string library = 2;
-  string temporary = 3;
+  string cache = 1; // Only For Desktop
+  string documents = 2;
+  string downloads = 3;
+  string temporary = 4;
 }
 
 // Define Peer: Basic Info Sent to Peers
@@ -110,6 +114,7 @@ message Peer {
   double antipodal = 8;
   double distance = 9;
   Proximity proximity = 10;
+
   enum Proximity {
     NONE = 0;
     IMMEDIATE = 1;
