@@ -25,21 +25,11 @@ var onError OnError
 // ******************* //
 // ******************* //
 
-// ^ Outgoing Type for File Media ^
-type OutgoingType int
-
-const (
-	Unknown OutgoingType = iota
-	ExternalMedia
-	Image
-	Video
-)
-
 // ^ File that safely sets metadata and thumbnail in routine ^ //
 type ProcessedFile struct {
 	// References
 	OnQueued OnProtobuf
-	outType  OutgoingType
+	media    md.OutgoingMedia
 	mime     *md.MIME
 	path     string
 
@@ -70,7 +60,7 @@ func NewProcessedFile(req *md.ProcessRequest, queueCall OnProtobuf, errCall OnEr
 		path:     req.FilePath,
 		request:  req,
 		mime:     info.Mime,
-		outType:  GetOutgoingType(req, info.Mime),
+		media:    SetOutgoingType(req, info.Mime),
 	}
 
 	// ** Lock ** //
@@ -167,22 +157,17 @@ func GetInfo(path string) Info {
 }
 
 // ^ Method Returns Outgoing Type ^ //
-func GetOutgoingType(req *md.ProcessRequest, mime *md.MIME) OutgoingType {
+func SetOutgoingType(req *md.ProcessRequest, mime *md.MIME) md.OutgoingMedia {
 	// @ External File
 	if req.IsExternal {
-		if mime.Type == md.MIME_image || mime.Type == md.MIME_video {
-			if req.ThumbnailPath != "" {
-				return ExternalMedia
-			}
-		}
-
+		return md.OutgoingMedia_External
 		// @ Passed Internal File
 	} else {
 		if mime.Type == md.MIME_image {
-			return Image
+			return md.OutgoingMedia_Image
 		} else if mime.Type == md.MIME_video {
-			return Video
+			return md.OutgoingMedia_Video
 		}
 	}
-	return Unknown
+	return md.OutgoingMedia_Unknown
 }

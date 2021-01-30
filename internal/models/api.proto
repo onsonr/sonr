@@ -17,12 +17,19 @@ message ConnectionRequest {
 
 // Processes Given File with Information
 message ProcessRequest {
-  Payload payload = 1;
-  bool isExternal = 2;
-  string name = 3;
-  string filePath = 4;
-  string thumbnailPath = 5;
-  int32 duration = 6;
+  bool isExternal = 1;
+  string filePath = 2;
+  string thumbnailPath = 3;
+  int32 duration = 4;
+}
+
+// Define OutgoingMedia Enum
+enum OutgoingMedia {
+  Unknown = 0;
+  External = 1;
+  Image = 2;
+  Video = 3;
+  Document = 4;
 }
 
 // Define Payload Enum

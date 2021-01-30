@@ -14,7 +14,7 @@ func RequestThumbnail(req *md.ProcessRequest, sm *ProcessedFile) {
 	thumbBuffer := new(bytes.Buffer)
 
 	// @ 1. Check for External File Request
-	if sm.outType == ExternalMedia {
+	if sm.media == md.OutgoingMedia_External {
 		// Encode Thumbnail
 		err := EncodeThumb(thumbBuffer, req.ThumbnailPath)
 		if err != nil {
@@ -25,7 +25,7 @@ func RequestThumbnail(req *md.ProcessRequest, sm *ProcessedFile) {
 		sm.preview.Thumbnail = thumbBuffer.Bytes()
 
 		// @ 2. Handle Created File Request
-	} else if sm.outType == Image {
+	} else if sm.media == md.OutgoingMedia_Image {
 		// Encode Thumbnail
 		err := EncodeScaledThumb(thumbBuffer, req.FilePath)
 		if err != nil {
