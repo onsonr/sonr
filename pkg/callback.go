@@ -31,7 +31,7 @@ func (c *Client) OnRefreshed(data []byte) {
 	if err != nil {
 		log.Panicln("Error Unmarshalling Request")
 	}
-	c.menu.UpdatePeers(m)
+	c.menu.UpdatePeers(c.Node, m)
 }
 
 // @ Inherited Method: Handle Invite ^ //

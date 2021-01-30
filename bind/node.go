@@ -34,7 +34,6 @@ func (sn *Node) LinkDevice(peerString string) error {
 	}
 
 	// TODO: Save Device to Disk
-
 	return nil
 }
 

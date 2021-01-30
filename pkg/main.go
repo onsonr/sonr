@@ -31,6 +31,5 @@ func onReady() {
 	menu := ui.StartTray()
 
 	// Creates New Client, Set Node
-	c := NewClient(ctx, menu)
-	menu.SetNode(c.Node)
+	NewClient(ctx, menu)
 }

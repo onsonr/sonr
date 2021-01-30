@@ -1,14 +1,13 @@
-//nolint
 package ui
 
 import (
 	"fmt"
 	"log"
 
+	"github.com/gen2brain/dlgs"
 	"github.com/getlantern/systray"
 	sonr "github.com/sonr-io/core/bind"
 	md "github.com/sonr-io/core/internal/models"
-	"github.com/sqweek/dialog"
 )
 
 type SystemMenu struct {
@@ -17,11 +16,11 @@ type SystemMenu struct {
 	mCount     *systray.MenuItem
 	mQuit      *systray.MenuItem
 	mPeersList []*systray.MenuItem
-	node       *sonr.Node
 	peerCount  int32
 	lobbySize  int32
 }
 
+// ^ StartTray Starts System tray with Library ^ //
 func StartTray() SystemMenu {
 	// Set Initial Menu Vars
 	systray.SetTemplateIcon(GetIcon(SystemTray), GetIcon(SystemTray))
@@ -51,11 +50,6 @@ func StartTray() SystemMenu {
 }
 
 // ^ Routine Handles Menu Input ^ //
-func (sm *SystemMenu) SetNode(n *sonr.Node) {
-	sm.node = n
-}
-
-// ^ Routine Handles Menu Input ^ //
 func (sm *SystemMenu) HandleMenuInput() {
 	go func() {
 		<-sm.mQuit.ClickedCh
@@ -66,7 +60,7 @@ func (sm *SystemMenu) HandleMenuInput() {
 }
 
 // ^ Method to Rebuild Menu for Lobby Refresh ^ //
-func (sm *SystemMenu) UpdatePeers(newLob *md.Lobby) {
+func (sm *SystemMenu) UpdatePeers(node *sonr.Node, newLob *md.Lobby) {
 	// Check if Lobby Updated
 	if newLob.Size != sm.lobbySize {
 		// Change Lobby
@@ -81,36 +75,47 @@ func (sm *SystemMenu) UpdatePeers(newLob *md.Lobby) {
 			// Build Item
 			itemTitle := p.FirstName
 
-			// Add Item to Menu
+			// Add Peer to Menu
 			log.Println(p)
-			item := sm.mPeers.AddSubMenuItem(itemTitle, "Nearby Available Peer")
-			item.SetTemplateIcon(GetDeviceIcon(p.Device), GetDeviceIcon(p.Device))
-			log.Println(p)
+			peerItem := sm.mPeers.AddSubMenuItem(itemTitle, "Nearby Available Peer")
+			peerItem.SetTemplateIcon(GetDeviceIcon(p.Device), GetDeviceIcon(p.Device))
 
-			// Spawn Routine to handle Item
-			go func(item *systray.MenuItem, peer *md.Peer) {
+			// Add Peer Send Options
+			linkItem := peerItem.AddSubMenuItem("Send Link", "Send a Link to "+itemTitle)
+			fileItem := peerItem.AddSubMenuItem("Send File", "Send a File to "+itemTitle)
+
+			// Spawn Routine to handle Peer Item Actions
+			go func(fileItem *systray.MenuItem, linkItem *systray.MenuItem, peer *md.Peer) {
 				for {
 					select {
-					case <-item.ClickedCh:
+					case <-fileItem.ClickedCh:
 						// Load File
-						filename, err := dialog.File().Filter("PNG Image file", "png").Load()
+						filename, _, err := dlgs.File("Select File", ".png .jpg .jpeg .mp4 .avi", false)
+						if err != nil {
+							log.Println(err)
+						}
 
 						// Process File
-						sm.node.Process(filename)
+						node.Process(filename)
 
 						// Invite Peer
-						sm.node.InviteWithFile(peer.Id)
+						node.InviteWithFile(peer.Id)
 
-						// Log Error 
+					case <-linkItem.ClickedCh:
+						// Load File
+						link, _, err := dlgs.Entry("URL Link", "Enter a URL Here: ", "")
 						if err != nil {
-							log.Fatalln(err)
+							panic(err)
 						}
+
+						// Invite Peer
+						node.InviteWithURL(peer.Id, link)
 					}
 				}
-			}(item, p)
+			}(fileItem, linkItem, p)
 
 			// Add to Menu List
-			sm.mPeersList = append(sm.mPeersList, item)
+			sm.mPeersList = append(sm.mPeersList, peerItem)
 		}
 	}
 }
