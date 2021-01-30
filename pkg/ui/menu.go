@@ -3,8 +3,6 @@ package ui
 import (
 	"log"
 
-	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/app"
 	"github.com/getlantern/systray"
 	sonr "github.com/sonr-io/core/bind"
 	md "github.com/sonr-io/core/internal/models"
@@ -20,7 +18,7 @@ type AppInterface struct {
 	mPeersList []*systray.MenuItem
 	peerCount  int32
 	lobbySize  int32
-	App        fyne.App
+	// App        fyne.App
 }
 
 // ^ Start Starts System tray with Library ^ //
@@ -33,10 +31,8 @@ func Start() AppInterface {
 	ai := AppInterface{
 		peerCount: 0,
 		lobbySize: 1,
-		App:       app.New(),
+		// App:       app.New(),
 	}
-	ai.peerCount = 0
-	ai.lobbySize = 1
 
 	// Link Sonr Device
 	ai.mLink = systray.AddMenuItem("Link Device", "Link a Device to Sonr")
@@ -81,7 +77,7 @@ func (ai *AppInterface) HandleMenuInput() {
 				}
 
 				// Display Window
-				ai.OpenQRWindow(string(jsonBytes))
+				go ai.OpenQRWindow(string(jsonBytes))
 			} else {
 				log.Println("Node not set.")
 			}

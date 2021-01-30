@@ -1,34 +1,38 @@
 package ui
 
 import (
-	"bytes"
 	"crypto/rand"
 	"fmt"
 	"log"
+	"net/url"
 
-	"fyne.io/fyne/v2/canvas"
-	"github.com/skip2/go-qrcode"
+	"github.com/zserge/lorca"
 )
 
 // ^ Opens a Window For QR Code ^ //
 func (sm *AppInterface) OpenQRWindow(json string) {
 	// Encode to QR
 	print(json)
-	qrData, err := qrcode.Encode(json, qrcode.Medium, 256)
-	if err != nil {
-		log.Panicln(err)
-	}
+	// qrData, err := qrcode.Encode(json, qrcode.Medium, 256)
+	// if err != nil {
+	// 	log.Panicln(err)
+	// }
 
 	// Create Byte Reader
-	reader := bytes.NewReader(qrData)
-
-	// Initialize New App
-	w := sm.App.NewWindow("Sonr Device QR Code")
-
-	image := canvas.NewImageFromReader(reader, UUID())
-	image.FillMode = canvas.ImageFillOriginal
-	w.SetContent(image)
-	w.ShowAndRun()
+	//reader := bytes.NewReader(qrData)
+	// Create UI with basic HTML passed via data URI
+	ui, err := lorca.New("data:text/html,"+url.PathEscape(`
+	<html>
+		<head><title>Hello</title></head>
+		<body><h1>Hello, world!</h1></body>
+	</html>
+	`), "", 480, 320)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer ui.Close()
+	// Wait until UI window is closed
+	<-ui.Done()
 }
 
 // ^ Generates UUID ^ //

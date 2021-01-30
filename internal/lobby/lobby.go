@@ -45,15 +45,9 @@ type Lobby struct {
 
 // ^ Join Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
 func Join(ctx context.Context, callr OnProtobuf, gp ReturnPeer, onErr Error, ps *pubsub.PubSub, id peer.ID, sp *md.Peer, olc string) (*Lobby, error) {
-	// Initialize Lobby for Peers
-	lobInfo := &md.Lobby{
-		Code:  "/sonr/lobby/" + olc,
-		Size:  1,
-		Peers: make([]*md.Peer, LobbySize),
-	}
-
 	// Join the pubsub Topic
-	topic, err := ps.Join(lobInfo.Code)
+	point := "/sonr/lobby" + olc
+	topic, err := ps.Join(point)
 	if err != nil {
 		return nil, err
 	}
@@ -67,6 +61,13 @@ func Join(ctx context.Context, callr OnProtobuf, gp ReturnPeer, onErr Error, ps 
 	topicHandler, err := topic.EventHandler()
 	if err != nil {
 		return nil, err
+	}
+
+	// Initialize Lobby for Peers
+	lobInfo := &md.Lobby{
+		Code:  point,
+		Size:  1,
+		Peers: make(map[string]*md.Peer),
 	}
 
 	// Create Lobby Type
@@ -91,6 +92,32 @@ func Join(ctx context.Context, callr OnProtobuf, gp ReturnPeer, onErr Error, ps 
 	go lob.handleMessages()
 	go lob.processMessages()
 	return lob, nil
+}
+
+// ^ Send publishes a message to the pubsub topic OLC ^
+func (lob *Lobby) Exchange(peerID peer.ID) error {
+	// Check if Peer already exchanged
+	if p := lob.Peer(peerID.String()); p == nil {
+		// Create Lobby Event
+		event := md.LobbyEvent{
+			Event: md.LobbyEvent_EXCHANGE,
+			Peer:  lob.getPeer(),
+		}
+
+		// Convert Event to Proto Binary
+		bytes, err := proto.Marshal(&event)
+		if err != nil {
+			return err
+		}
+
+		// Publish to Topic
+		err = lob.topic.Publish(lob.ctx, bytes)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+	return nil
 }
 
 // ^ Info returns ALL Lobby Data as Bytes^

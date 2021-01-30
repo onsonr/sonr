@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 
@@ -35,7 +34,6 @@ func getDeviceID(connEvent *md.ConnectionRequest) error {
 	// @ Check for Path
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		// Generate ID
-		log.Println("ID Doesnt Exist, Generating...")
 		id, err := machineid.ProtectedID("Sonr")
 		if err != nil {
 			return err
@@ -61,7 +59,6 @@ func getDeviceID(connEvent *md.ConnectionRequest) error {
 		return nil
 	} else {
 		// @ Read Device ID Data
-		log.Println("ID Exists, Returning...")
 		dat, err := ioutil.ReadFile(path)
 		if err != nil {
 			return err
