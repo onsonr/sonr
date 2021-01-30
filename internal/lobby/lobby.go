@@ -13,6 +13,7 @@ import (
 
 // ChatRoomBufSize is the number of incoming messages to buffer for each topic.
 const ChatRoomBufSize = 128
+const LobbySize = 16
 
 // Define Function Types
 type OnProtobuf func([]byte)
@@ -44,9 +45,15 @@ type Lobby struct {
 
 // ^ Join Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
 func Join(ctx context.Context, callr OnProtobuf, gp ReturnPeer, onErr Error, ps *pubsub.PubSub, id peer.ID, sp *md.Peer, olc string) (*Lobby, error) {
+	// Initialize Lobby for Peers
+	lobInfo := &md.Lobby{
+		Code:  "/sonr/lobby/" + olc,
+		Size:  1,
+		Peers: make([]*md.Peer, LobbySize),
+	}
+
 	// Join the pubsub Topic
-	point := "/sonr/" + olc
-	topic, err := ps.Join(point)
+	topic, err := ps.Join(lobInfo.Code)
 	if err != nil {
 		return nil, err
 	}
@@ -60,13 +67,6 @@ func Join(ctx context.Context, callr OnProtobuf, gp ReturnPeer, onErr Error, ps 
 	topicHandler, err := topic.EventHandler()
 	if err != nil {
 		return nil, err
-	}
-
-	// Initialize Lobby for Peers
-	lobInfo := &md.Lobby{
-		Code:  point,
-		Size:  1,
-		Peers: make(map[string]*md.Peer),
 	}
 
 	// Create Lobby Type

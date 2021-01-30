@@ -33,40 +33,94 @@ func (lob *Lobby) Peer(q string) *md.Peer {
 }
 
 // ** updatePeer changes peer values in Lobby **
-func (lob *Lobby) removePeer(id peer.ID) {
-	// Update Peer with new data
-	delete(lob.Data.Peers, id.String())
-	lob.Data.Size = int32(len(lob.Data.Peers)) + 1 // Account for User
+func (lob *Lobby) addPeer(peer *md.Peer) {
+	// Validate ID doesnt Exist
+	if result := Contains(lob.Data.Peers, peer.Id); !result {
+		// Add Peer to List
+		lob.Data.Peers = append(lob.Data.Peers, peer)
 
-	// Add Exited ID
-	lob.Data.Exited = append(lob.Data.Exited, id.String())
+		// Marshal data to bytes
+		bytes, err := proto.Marshal(lob.Data)
+		if err != nil {
+			log.Println("Cannot Marshal Error Protobuf: ", err)
+		}
 
-	// Marshal data to bytes
-	bytes, err := proto.Marshal(lob.Data)
-	if err != nil {
-		log.Println("Cannot Marshal Error Protobuf: ", err)
+		// Send Callback with updated peers
+		lob.callback(bytes)
 	}
+}
 
-	// Send Callback with updated peers
-	lob.callback(bytes)
+// ** updatePeer changes peer values in Lobby **
+func (lob *Lobby) removePeer(id peer.ID) {
+	// Validate ID Exists
+	if result := Contains(lob.Data.Peers, string(id)); result {
+		// Get Peer Index
+		idx := Find(lob.Data.Peers, string(id))
 
-	// Clear Exited ID
-	lob.Data.Exited = lob.Data.Exited[:0]
+		// Remove Peer from List
+		lob.Data.Peers = Remove(lob.Data.Peers, idx)
+
+		// Update Size, Account for User
+		lob.Data.Size = int32(len(lob.Data.Peers)) + 1
+
+		// Marshal data to bytes
+		bytes, err := proto.Marshal(lob.Data)
+		if err != nil {
+			log.Println("Cannot Marshal Error Protobuf: ", err)
+		}
+
+		// Send Callback with updated peers
+		lob.callback(bytes)
+	}
 }
 
 // ** updatePeer changes peer values in Lobby **
 func (lob *Lobby) updatePeer(peer *md.Peer) {
-	// Update Peer with new data
-	id := peer.Id
-	lob.Data.Peers[id] = peer
-	lob.Data.Size = int32(len(lob.Data.Peers)) + 1 // Account for User
+	// Validate ID Exists
+	if result := Contains(lob.Data.Peers, string(peer.Id)); result {
+		// Get Peer Index
+		idx := Find(lob.Data.Peers, string(peer.Id))
 
-	// Marshal data to bytes
-	bytes, err := proto.Marshal(lob.Data)
-	if err != nil {
-		log.Println("Cannot Marshal Error Protobuf: ", err)
+		// Update Value
+		lob.Data.Peers[idx] = peer
+
+		// Update Size, Account for User
+		lob.Data.Size = int32(len(lob.Data.Peers)) + 1
+
+		// Marshal data to bytes
+		bytes, err := proto.Marshal(lob.Data)
+		if err != nil {
+			log.Println("Cannot Marshal Error Protobuf: ", err)
+		}
+
+		// Send Callback with updated peers
+		lob.callback(bytes)
+	} else {
+		lob.addPeer(peer)
 	}
+}
 
-	// Send Callback with updated peers
-	lob.callback(bytes)
+// @ Helper: Find returns the smallest index i at which x == a[i]
+func Find(a []*md.Peer, id string) int {
+	for i, n := range a {
+		if id == n.Id {
+			return i
+		}
+	}
+	return len(a)
+}
+
+// @ Helper: Contains tells whether a contains x.
+func Contains(a []*md.Peer, id string) bool {
+	for _, n := range a {
+		if id == n.Id {
+			return true
+		}
+	}
+	return false
+}
+
+// @ Helper: Removes Item at Index
+func Remove(a []*md.Peer, index int) []*md.Peer {
+	return append(a[:index], a[index+1:]...)
 }

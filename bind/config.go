@@ -10,7 +10,6 @@ import (
 
 	"github.com/denisbrodbeck/machineid"
 
-
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	sf "github.com/sonr-io/core/internal/file"
 	sl "github.com/sonr-io/core/internal/lobby"
@@ -42,9 +41,6 @@ func getDeviceID(connEvent *md.ConnectionRequest) error {
 			return err
 		}
 
-		// Print ID
-		log.Println(id)
-
 		// Write ID To File
 		f, err := os.Create(path)
 		if err != nil {
@@ -74,9 +70,6 @@ func getDeviceID(connEvent *md.ConnectionRequest) error {
 		// Convert to String
 		id := string(dat)
 
-		// Print ID
-		log.Println(id)
-
 		// Update Device
 		connEvent.Device.Id = id
 
@@ -95,7 +88,6 @@ func (sn *Node) setInfo(connEvent *md.ConnectionRequest) error {
 	// Set Default Properties
 	sn.contact = connEvent.Contact
 	sn.directories = connEvent.Directories
-
 
 	// Get Device ID
 	err := getDeviceID(connEvent)
@@ -123,18 +115,14 @@ func (sn *Node) setConnection(ctx context.Context) error {
 		return err
 	}
 
-	log.Println("GossipSub Created")
-
 	// Enter Lobby
 	if sn.lobby, err = sl.Join(sn.ctx, sn.call.OnRefreshed, sn.Peer, sn.error, sn.pubSub, sn.host.ID(), sn.peer, sn.olc); err != nil {
 		return err
 	}
-	log.Println("Lobby Initialized")
 
 	// Initialize Peer Connection
 	if sn.peerConn, err = tf.Initialize(sn.host, sn.pubSub, sn.directories, sn.olc, sn.call.OnInvited, sn.call.OnResponded, sn.call.OnProgress, sn.call.OnReceived, sn.call.OnTransmitted, sn.error); err != nil {
 		return err
 	}
-	log.Println("Connection Initialized")
 	return nil
 }
