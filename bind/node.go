@@ -22,18 +22,15 @@ func (sn *Node) Info() []byte {
 }
 
 // ^ Link with a QR Code ^ //
-func (sn *Node) LinkDevice(peerString string) error {
+func (sn *Node) LinkDevice(peerString string) {
 	// Convert String to Bytes
 	peer := md.Peer{}
 
 	// Convert to Peer Protobuf
 	err := protojson.Unmarshal([]byte(peerString), &peer)
 	if err != nil {
-		return err
+		sn.error(err, "LinkDevice")
 	}
-
-	// TODO: Save Device to Disk
-	return nil
 }
 
 // ^ Peer returns Current Peer Info ^

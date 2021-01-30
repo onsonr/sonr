@@ -8,11 +8,12 @@ option go_package = ".;models";
 // [PLUGIN]
 // Initial Connection Message
 message ConnectionRequest {
-  string olc = 1;
-  string username = 2;
-  Device device = 3;
-  Directories directories = 4;
-  Contact contact = 5;
+  double latitude = 1;
+  double longitude = 2;
+  string username = 3;
+  Device device = 4;
+  Directories directories = 5;
+  Contact contact = 6;
 }
 
 // Processes Given File with Information

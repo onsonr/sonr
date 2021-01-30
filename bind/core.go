@@ -69,7 +69,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	}
 
 	// @1. Create Host and Start Discovery
-	node.host, err = sh.NewHost(node.ctx, reqMsg.Directories, reqMsg.Olc)
+	node.host, err = sh.NewHost(node.ctx, reqMsg.Directories, node.olc)
 	if err != nil {
 		node.error(err, "NewNode")
 		return nil

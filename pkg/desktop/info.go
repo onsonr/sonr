@@ -68,6 +68,7 @@ func SystemInfo() SysInfo {
 			Platform: platform,
 			Model:    model,
 			Name:     name,
+			Desktop:  true,
 		},
 
 		// Current Directories

@@ -10,6 +10,7 @@ import (
 
 	"github.com/denisbrodbeck/machineid"
 
+	olc "github.com/google/open-location-code/go"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	sf "github.com/sonr-io/core/internal/file"
 	sl "github.com/sonr-io/core/internal/lobby"
@@ -94,7 +95,7 @@ func (sn *Node) setInfo(connEvent *md.ConnectionRequest) error {
 	// Set Default Properties
 	sn.contact = connEvent.Contact
 	sn.directories = connEvent.Directories
-	sn.olc = connEvent.Olc
+	sn.olc = olc.Encode(float64(connEvent.Latitude), float64(connEvent.Longitude), 8)
 
 	// Get Device ID
 	err := getDeviceID(connEvent)
