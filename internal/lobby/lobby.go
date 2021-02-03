@@ -16,9 +16,7 @@ import (
 const ChatRoomBufSize = 128
 const LobbySize = 16
 
-// Lobby represents a subscription to a single PubSub topic. Messages
-// can be published to the topic with Lobby.Publish, and received
-// messages are pushed to the Messages channel.
+// Lobby represents a subscription to a single PubSub topic.
 type Lobby struct {
 	// Public Vars
 	Messages chan *md.LobbyEvent
@@ -27,7 +25,8 @@ type Lobby struct {
 
 	// Private Vars
 	ctx          context.Context
-	callback     lf.OnProtobuf
+	onEvent      lf.OnProtobuf
+	onRefresh    lf.OnProtobuf
 	onError      lf.OnError
 	doneCh       chan struct{}
 	ps           *pubsub.PubSub
@@ -69,8 +68,9 @@ func Join(ctx context.Context, lobCall lf.LobbyCallbacks, ps *pubsub.PubSub, id 
 	// Create Lobby Type
 	lob := &Lobby{
 		ctx:          ctx,
+		onEvent:      lobCall.CallEvent,
 		onError:      lobCall.CallError,
-		callback:     lobCall.CallRefresh,
+		onRefresh:    lobCall.CallRefresh,
 		doneCh:       make(chan struct{}, 1),
 		ps:           ps,
 		getPeer:      lobCall.GetPeer,
@@ -86,7 +86,7 @@ func Join(ctx context.Context, lobCall lf.LobbyCallbacks, ps *pubsub.PubSub, id 
 	// Start Reading Messages
 	go lob.handleEvents()
 	go lob.handleMessages()
-	go lob.processMessages()
+	// go lob.processMessages()
 	return lob, nil
 }
 
@@ -116,8 +116,8 @@ func (lob *Lobby) Exchange(peerID peer.ID) error {
 	return nil
 }
 
-// ^ Info returns ALL Lobby Data as Bytes^
-func (lob *Lobby) Info() []byte {
+// ^ Current returns ALL Lobby Data as Bytes^
+func (lob *Lobby) Current() []byte {
 	// Convert to bytes
 	data, err := proto.Marshal(lob.Data)
 	if err != nil {

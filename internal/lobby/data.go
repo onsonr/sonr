@@ -22,7 +22,37 @@ func (lob *Lobby) removePeer(id peer.ID) {
 	}
 
 	// Send Callback with updated peers
-	lob.callback(bytes)
+	lob.onRefresh(bytes)
+}
+
+// ^ sendPeerLeft notifies when a peer exited lobby ^
+func (lob *Lobby) sendPeerLeft(id peer.ID) {
+	// Create Event Message
+	lobEvent := &md.LobbyEvent{
+		Id:    id.String(),
+		Event: md.LobbyEvent_EXIT,
+	}
+
+	// Marshal data to bytes
+	bytes, err := proto.Marshal(lobEvent)
+	if err != nil {
+		log.Println("Cannot Marshal Error Protobuf: ", err)
+	}
+
+	// Send Callback with updated peers
+	lob.onEvent(bytes)
+}
+
+// ^ sendPeerEvent notifies when a peer exited lobby ^
+func (lob *Lobby) sendPeerEvent(event *md.LobbyEvent) {
+	// Marshal data to bytes
+	bytes, err := proto.Marshal(event)
+	if err != nil {
+		log.Println("Cannot Marshal Error Protobuf: ", err)
+	}
+
+	// Send Callback with updated peers
+	lob.onEvent(bytes)
 }
 
 // ** updatePeer changes peer values in Lobby **
@@ -40,7 +70,7 @@ func (lob *Lobby) updatePeer(peer *md.Peer) {
 	}
 
 	// Send Callback with updated peers
-	lob.callback(bytes)
+	lob.onRefresh(bytes)
 }
 
 // @ Helper: ID returns ONE Peer.ID in PubSub

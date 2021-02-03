@@ -141,7 +141,7 @@ func (t *TransferFile) Save() error {
 		Mime:      info.Mime,
 		Thumbnail: t.invite.Preview.Thumbnail,
 		Received:  int32(time.Now().Unix()),
-		Owner:     t.invite.From,
+		Owner:     t.invite.From.Profile,
 	}
 
 	// Convert Message to bytes

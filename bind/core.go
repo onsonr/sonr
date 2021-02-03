@@ -22,6 +22,7 @@ const maxFileBufferSize = 5
 // ^ Interface: Callback is implemented from Plugin to receive updates ^
 type Callback interface {
 	OnRefreshed(data []byte)
+	OnEvent(data []byte)
 	OnInvited(data []byte)
 	OnResponded(data []byte)
 	OnQueued(data []byte)

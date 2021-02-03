@@ -28,7 +28,6 @@ func (lob *Lobby) handleEvents() {
 		}
 
 		if lobEvent.Type == pubsub.PeerJoin {
-			log.Println("Lobby Event: Peer Joined")
 			err := lob.Exchange(lobEvent.Peer)
 			if err != nil {
 				log.Println(err)
@@ -36,10 +35,21 @@ func (lob *Lobby) handleEvents() {
 		}
 
 		if lobEvent.Type == pubsub.PeerLeave {
-			log.Println("Lobby Event: Peer Left")
-			lob.removePeer(lobEvent.Peer)
-		}
+			// Create Event Message
+			lobEvent := &md.LobbyEvent{
+				Id:    lobEvent.Peer.String(),
+				Event: md.LobbyEvent_EXIT,
+			}
 
+			// Marshal data to bytes
+			bytes, err := proto.Marshal(lobEvent)
+			if err != nil {
+				log.Println("Cannot Marshal Error Protobuf: ", err)
+			}
+
+			// Send Callback with updated peers
+			lob.onEvent(bytes)
+		}
 		lifecycle.GetState().NeedsWait()
 	}
 }
@@ -66,8 +76,19 @@ func (lob *Lobby) handleMessages() {
 			continue
 		}
 
+		if notif.Event == md.LobbyEvent_EXCHANGE {
+			// Update Peer Data
+			err := lob.Exchange(lob.ID(notif.Id))
+			if err != nil {
+				log.Println(err)
+			}
+		} else {
+			// Send Callback with updated peers
+			lob.onEvent(msg.Data)
+		}
+
 		// Send valid messages onto the Messages channel
-		lob.Messages <- &notif
+		// lob.Messages <- &notif
 		lifecycle.GetState().NeedsWait()
 	}
 

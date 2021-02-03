@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 import "data.proto";
+import "user.proto";
 
 // Require Go Package
 option go_package = ".;models";
@@ -21,17 +22,6 @@ message ProcessRequest {
   string filePath = 2;
   string thumbnailPath = 3;
   int32 duration = 4;
-}
-
-// Define Payload: Define Payload Enum
-enum Payload {
-  NONE = 0;
-  IMAGE = 1;
-  VIDEO = 2;
-  FILE = 3;
-  CONTACT = 4;
-  URL = 5;
-  TEXT = 6;
 }
 
 // Define AuthInvite: Invitation Message sent on RPC

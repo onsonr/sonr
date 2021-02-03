@@ -1,7 +1,20 @@
 syntax = "proto3";
 
+import "user.proto";
+
 // Require Go Package
 option go_package = ".;models";
+
+// Define Payload: Define Payload Enum
+enum Payload {
+  NONE = 0;
+  IMAGE = 1;
+  VIDEO = 2;
+  FILE = 3;
+  CONTACT = 4;
+  URL = 5;
+  TEXT = 6;
+}
 
 // Define Metadata Type: For Received Transfer
 message Metadata {
@@ -12,7 +25,7 @@ message Metadata {
   MIME mime = 5;
   bytes thumbnail = 6;
   int32 received = 7;
-  Peer owner = 8;
+  Profile owner = 8;
 }
 
 // Define Preview: For File Transfer Request
@@ -47,130 +60,18 @@ message Lobby {
   map<string, Peer> peers = 4;
 }
 
-// Define Contact Type: Will be CSV in Future
-message Contact {
-  // Default
-  string firstName = 1;
-  string lastName = 2;
-  string phone = 3;
-  string website = 4;
-  string email = 5;
-  bytes profilePic = 6;
-  string header = 7;
-
-  repeated SocialTile socials = 8;
-
-  // Extended Social Media Integration
-  message SocialTile {
-    Provider provider = 1;
-    int32 position = 2; // 0-7
-    string username = 3;
-    string showcase = 4;
-    string feed = 5;
-
-    enum Provider {
-      Instagram = 0; // Feed/Link Option
-      TikTok = 1;    // Feed/Link Option
-      Facebook = 2;  // Link Only
-      YouTube = 3;   // Feed/Link Option
-      Spotify = 4;   // Feed/Link Option
-      Medium = 5;    // Feed/Link Option
-      Twitter = 6;   // Feed/Link Option
-      Snapchat = 7;  // Feed/Link Option
-      Github = 8;    // Feed/Link Option
-    }
-  }
-}
-
-// Define Platform Enum: Operating System of Device
-enum Platform {
-  Unknown = 0;
-  Android = 1;
-  iOS = 2;
-  MacOS = 3;
-  Windows = 4;
-  Linux = 5;
-  Web = 6;
-}
-
-// Define Device Type: Information about device
-message Device {
+// [CORE]
+// Message Sent when peer messages Lobby Topic
+message LobbyEvent {
   string id = 1;
-  Platform platform = 2;
-  string model = 3;
-  string name = 4;
-  string version = 5;
-  int32 sdk = 6; // For Android
-  bool desktop = 7;
-}
+  Event event = 2;
+  Peer data = 3;
 
-// Define Directories Type: Where Data can be stored
-message Directories {
-  string cache = 1; // Only For Desktop
-  string documents = 2;
-  string downloads = 3;
-  string temporary = 4;
-}
-
-// Define Peer: Basic Info Sent to Peers
-message Peer {
-  string id = 1;
-  Device device = 2;
-  Position position = 3;
-  Profile profile = 4;
-  Discovery discovery = 5;
-
-  // Enum for Discovery Type
-  enum Discovery {
-    Linked = 0;
-    MDNS = 1;
-    Ultrasonic = 2;
-    Rendevouz = 3;
-  }
-}
-
-// Define Profile: General Information about Peer
-message Profile {
-  string username = 1;
-  string firstName = 2;
-  string lastName = 3;
-  bytes picture = 4;
-  Platform platform = 5;
-}
-
-// Define Direction: Includes All Direction Info
-message Position {
-  // Given Data
-  double direction = 1;
-  double antipodal = 2;
-  double distance = 3;
-  Heading heading = 4;
-  Proximity proximity = 5;
-
-  // Enum for Proximity from User
-  enum Proximity {
-    Unknown = 0;
-    Immediate = 1;
-    Near = 2;
-    Distant = 3;
-  }
-
-  enum Heading {
-    N = 0;
-    NNE = 1;
-    NE = 2;
-    ENE = 3;
-    E = 4;
-    ESE = 5;
-    SE = 6;
-    SSE = 7;
-    S = 8;
-    SSW = 9;
-    SW = 10;
-    WSW = 11;
-    W = 12;
-    WNW = 13;
-    NW = 14;
-    NNW = 15;
+  enum Event {
+    ENTER = 0;
+    EXIT = 1;
+    STANDBY = 2;
+    EXCHANGE = 3;
+    UPDATE = 4;
   }
 }
