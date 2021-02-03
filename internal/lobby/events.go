@@ -82,10 +82,10 @@ func (lob *Lobby) processMessages() {
 			// Update Circle by event
 			if m.Event == md.LobbyEvent_UPDATE {
 				// Update Peer Data
-				lob.updatePeer(m.Peer)
+				lob.updatePeer(m.Data)
 			} else if m.Event == md.LobbyEvent_EXCHANGE {
 				// Update Peer Data
-				lob.updatePeer(m.Peer)
+				lob.updatePeer(m.Data)
 				err := lob.Exchange(lob.ID(m.Id))
 				if err != nil {
 					log.Println(err)

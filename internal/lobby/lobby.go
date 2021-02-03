@@ -97,7 +97,7 @@ func (lob *Lobby) Exchange(peerID peer.ID) error {
 		// Create Lobby Event
 		event := md.LobbyEvent{
 			Event: md.LobbyEvent_EXCHANGE,
-			Peer:  lob.getPeer(),
+			Data:  lob.getPeer(),
 		}
 
 		// Convert Event to Proto Binary
@@ -145,7 +145,7 @@ func (lob *Lobby) Update() error {
 	// Create Lobby Event
 	event := md.LobbyEvent{
 		Event: md.LobbyEvent_UPDATE,
-		Peer:  lob.getPeer(),
+		Data:  lob.getPeer(),
 	}
 
 	// Convert Event to Proto Binary
