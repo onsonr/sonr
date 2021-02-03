@@ -85,7 +85,7 @@ func Join(ctx context.Context, lobCall lf.LobbyCallbacks, ps *pubsub.PubSub, id 
 
 	// Start Reading Messages
 	go lob.handleEvents()
-	go lob.handleMessages()
+	go lob.handleNotifications()
 	// go lob.processMessages()
 	return lob, nil
 }

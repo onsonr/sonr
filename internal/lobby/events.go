@@ -9,7 +9,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// ^ handleMessages pulls messages from the pubsub topic and pushes them onto the Messages channel. ^
+// ^ handleEvents manages lobby event handler ^
 func (lob *Lobby) handleEvents() {
 	// @ Create Topic Handler
 	topicHandler, err := lob.topic.EventHandler()
@@ -54,8 +54,8 @@ func (lob *Lobby) handleEvents() {
 	}
 }
 
-// ^ 1. handleMessages pulls messages from the pubsub topic and pushes them onto the Messages channel. ^
-func (lob *Lobby) handleMessages() {
+// ^ 1. handleNotifications pulls messages from the pubsub topic and pushes them onto the Messages channel. ^
+func (lob *Lobby) handleNotifications() {
 	for {
 		// Get next msg from pub/sub
 		msg, err := lob.sub.Next(lob.ctx)
