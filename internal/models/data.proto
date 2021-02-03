@@ -104,19 +104,47 @@ message Directories {
 message Peer {
   string id = 1;
   Device device = 2;
-  string discovery = 3;
-  string username = 4;
-  string firstName = 5;
-  bytes profilePic = 6;
+  Position position = 3;
+  Profile profile = 4;
+  string username = 5;
+  string firstName = 6;
   double direction = 7;
   double antipodal = 8;
-  double distance = 9;
-  Proximity proximity = 10;
+}
 
+// Define Profile: General Information about Peer
+message Profile {
+  string username = 1;
+  string firstName = 2;
+  string lastName = 3;
+  bytes picture = 4;
+}
+
+// Define Direction: Includes All Direction Info
+message Position {
+  // Given Data
+  double direction = 1;
+  double antipodal = 2;
+  double distance = 3;
+  string heading = 4;
+
+  // Calculated Data
+  Discovery discovery = 5;
+  Proximity proximity = 6;
+
+  // Enum for Discovery Type
+  enum Discovery {
+    Linked = 0;
+    MDNS = 1;
+    Ultrasonic = 2;
+    Rendevouz = 3;
+  }
+
+  // Enum for Proximity from User
   enum Proximity {
-    NONE = 0;
-    IMMEDIATE = 1;
-    NEAR = 2;
-    FAR = 3;
+    Unknown = 0;
+    Immediate = 1;
+    Near = 2;
+    Distant = 3;
   }
 }

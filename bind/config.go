@@ -11,6 +11,7 @@ import (
 
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	sf "github.com/sonr-io/core/internal/file"
+	lf "github.com/sonr-io/core/internal/lifecycle"
 	sl "github.com/sonr-io/core/internal/lobby"
 	md "github.com/sonr-io/core/internal/models"
 	tf "github.com/sonr-io/core/internal/transfer"
@@ -105,20 +106,24 @@ func (sn *Node) setInfo(connEvent *md.ConnectionRequest) error {
 
 // ^ setConnection initializes connection protocols joins lobby and creates pubsub service ^ //
 func (sn *Node) setConnection(ctx context.Context) error {
-	// create a new PubSub service using the GossipSub router
+	// Create a new PubSub service using the GossipSub router
 	var err error
 	sn.pubSub, err = pubsub.NewGossipSub(ctx, sn.host)
 	if err != nil {
 		return err
 	}
 
+	// Create Callbacks
+	lobCall := lf.LobbyCallbacks{CallRefresh: sn.call.OnRefreshed, CallError: sn.error, GetPeer: sn.Peer}
+	transCall := lf.TransferCallbacks{CallInvited: sn.call.OnInvited, CallResponded: sn.call.OnResponded, CallReceived: sn.call.OnReceived, CallProgress: sn.call.OnProgress, CallTransmitted: sn.call.OnTransmitted, CallError: sn.error}
+
 	// Enter Lobby
-	if sn.lobby, err = sl.Join(sn.ctx, sn.call.OnRefreshed, sn.Peer, sn.error, sn.pubSub, sn.host.ID(), sn.peer, sn.olc); err != nil {
+	if sn.lobby, err = sl.Join(sn.ctx, lobCall, sn.pubSub, sn.host.ID(), sn.peer, sn.olc); err != nil {
 		return err
 	}
 
 	// Initialize Peer Connection
-	if sn.peerConn, err = tf.Initialize(sn.host, sn.pubSub, sn.directories, sn.olc, sn.call.OnInvited, sn.call.OnResponded, sn.call.OnProgress, sn.call.OnReceived, sn.call.OnTransmitted, sn.error); err != nil {
+	if sn.peerConn, err = tf.Initialize(sn.host, sn.pubSub, sn.directories, sn.olc, transCall); err != nil {
 		return err
 	}
 	return nil

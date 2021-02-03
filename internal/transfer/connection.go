@@ -13,17 +13,13 @@ import (
 	msgio "github.com/libp2p/go-msgio"
 	sf "github.com/sonr-io/core/internal/file"
 	"github.com/sonr-io/core/internal/lifecycle"
+	lf "github.com/sonr-io/core/internal/lifecycle"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
 
-// Define Callback Function Types
-type OnProtobuf func([]byte)
-type OnProgress func(data float32)
-type OnError func(err error, method string)
-
 // Package Error Callback
-var onError OnError
+var onError lf.OnError
 
 // ^ Struct: Holds/Handles GRPC Calls and Handles Data Stream  ^ //
 type PeerConnection struct {
@@ -35,11 +31,11 @@ type PeerConnection struct {
 	transfer    *sf.TransferFile
 
 	// Callbacks
-	invitedCall     OnProtobuf
-	respondedCall   OnProtobuf
-	progressCall    OnProgress
-	receivedCall    OnProtobuf
-	transmittedCall OnProtobuf
+	invitedCall     lf.OnProtobuf
+	respondedCall   lf.OnProtobuf
+	progressCall    lf.OnProgress
+	receivedCall    lf.OnProtobuf
+	transmittedCall lf.OnProtobuf
 
 	// Info
 	olc  string
@@ -47,19 +43,19 @@ type PeerConnection struct {
 }
 
 // ^ Initialize sets up new Peer Connection handler ^
-func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic OnProtobuf, rc OnProtobuf, pc OnProgress, recCall OnProtobuf, transCall OnProtobuf, ec OnError) (*PeerConnection, error) {
+func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, tc lf.TransferCallbacks) (*PeerConnection, error) {
 	// Set Package Level Callbacks
-	onError = ec
+	onError = tc.CallError
 
 	// Initialize Parameters into PeerConnection
 	peerConn := &PeerConnection{
 		olc:             o,
 		dirs:            d,
-		invitedCall:     ic,
-		respondedCall:   rc,
-		progressCall:    pc,
-		receivedCall:    recCall,
-		transmittedCall: transCall,
+		invitedCall:     tc.CallInvited,
+		respondedCall:   tc.CallResponded,
+		progressCall:    tc.CallProgress,
+		receivedCall:    tc.CallReceived,
+		transmittedCall: tc.CallTransmitted,
 	}
 
 	// Create GRPC Client/Server and Set Data Stream Handler
@@ -68,7 +64,7 @@ func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic 
 
 	// Create AuthService
 	ath := AuthService{
-		onInvite: ic,
+		onInvite: tc.CallInvited,
 		respCh:   make(chan *md.AuthReply, 1),
 	}
 

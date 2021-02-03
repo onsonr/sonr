@@ -5,8 +5,7 @@ import "data.proto";
 // Require Go Package
 option go_package = ".;models";
 
-// [PLUGIN]
-// Initial Connection Message
+// Define ConnectionRequest: Initial Connection Message
 message ConnectionRequest {
   double latitude = 1;
   double longitude = 2;
@@ -16,7 +15,7 @@ message ConnectionRequest {
   Contact contact = 6;
 }
 
-// Processes Given File with Information
+// Define ProcessRequest: Processes Given File with Information
 message ProcessRequest {
   bool isExternal = 1;
   string filePath = 2;
@@ -24,7 +23,7 @@ message ProcessRequest {
   int32 duration = 4;
 }
 
-// Define Payload Enum
+// Define Payload: Define Payload Enum
 enum Payload {
   NONE = 0;
   IMAGE = 1;
@@ -35,7 +34,7 @@ enum Payload {
   TEXT = 6;
 }
 
-// Invitation Message sent on RPC
+// Define AuthInvite: Invitation Message sent on RPC
 message AuthInvite {
   Payload payload = 1;
   Peer from = 2;
@@ -50,7 +49,7 @@ message AuthInvite {
   }
 }
 
-// Reply Message sent on RPC
+// Define AuthReply: Reply Message sent on RPC
 message AuthReply {
   Payload payload = 1;
   Peer from = 2;
@@ -58,7 +57,14 @@ message AuthReply {
   Contact contact = 4;
 }
 
-// Error Message
+// Define CompletedTransfer: Resulting Payload and Data
+message CompletedTransfer {
+  Payload payload = 1;
+  Peer from = 2;
+  Metadata metadata = 3;
+}
+
+// Define ErrorMessage: Error Message
 message ErrorMessage {
   string message = 1;
   string method = 2;

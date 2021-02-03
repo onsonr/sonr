@@ -7,6 +7,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	lf "github.com/sonr-io/core/internal/lifecycle"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -14,11 +15,6 @@ import (
 // ChatRoomBufSize is the number of incoming messages to buffer for each topic.
 const ChatRoomBufSize = 128
 const LobbySize = 16
-
-// Define Function Types
-type OnProtobuf func([]byte)
-type ReturnPeer func() *md.Peer
-type Error func(err error, method string)
 
 // Lobby represents a subscription to a single PubSub topic. Messages
 // can be published to the topic with Lobby.Publish, and received
@@ -31,11 +27,11 @@ type Lobby struct {
 
 	// Private Vars
 	ctx          context.Context
-	callback     OnProtobuf
-	onError      Error
+	callback     lf.OnProtobuf
+	onError      lf.OnError
 	doneCh       chan struct{}
 	ps           *pubsub.PubSub
-	getPeer      ReturnPeer
+	getPeer      lf.GetUserPeer
 	topic        *pubsub.Topic
 	topicHandler *pubsub.TopicEventHandler
 	self         peer.ID
@@ -44,7 +40,7 @@ type Lobby struct {
 }
 
 // ^ Join Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
-func Join(ctx context.Context, callr OnProtobuf, gp ReturnPeer, onErr Error, ps *pubsub.PubSub, id peer.ID, sp *md.Peer, olc string) (*Lobby, error) {
+func Join(ctx context.Context, lobCall lf.LobbyCallbacks, ps *pubsub.PubSub, id peer.ID, sp *md.Peer, olc string) (*Lobby, error) {
 	// Join the pubsub Topic
 	point := "/sonr/lobby" + olc
 	topic, err := ps.Join(point)
@@ -73,11 +69,11 @@ func Join(ctx context.Context, callr OnProtobuf, gp ReturnPeer, onErr Error, ps 
 	// Create Lobby Type
 	lob := &Lobby{
 		ctx:          ctx,
-		onError:      onErr,
-		callback:     callr,
+		onError:      lobCall.CallError,
+		callback:     lobCall.CallRefresh,
 		doneCh:       make(chan struct{}, 1),
 		ps:           ps,
-		getPeer:      gp,
+		getPeer:      lobCall.GetPeer,
 		topic:        topic,
 		topicHandler: topicHandler,
 		sub:          sub,
