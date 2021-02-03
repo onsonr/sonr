@@ -5,7 +5,10 @@ import (
 	"fmt"
 	"log"
 	"net/url"
+	"os"
+	"path/filepath"
 
+	"github.com/skip2/go-qrcode"
 	"github.com/zserge/lorca"
 )
 
@@ -13,20 +16,33 @@ import (
 func (sm *AppInterface) OpenQRWindow(json string) {
 	// Encode to QR
 	print(json)
-	// qrData, err := qrcode.Encode(json, qrcode.Medium, 256)
-	// if err != nil {
-	// 	log.Panicln(err)
-	// }
+	//qrData, err := qrcode.Encode(json, qrcode.Medium, 256)
+	err := qrcode.WriteFile(json, qrcode.Medium, 256, "qrcode.png")
+	if err != nil {
+		log.Panicln(err)
+	}
 
-	// Create Byte Reader
-	//reader := bytes.NewReader(qrData)
+	// Create WebView Window
+	ui, err := lorca.New("", "", 480, 320)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer ui.Close()
+
+	// Get QR Code Location
+	path, err := os.Getwd()
+
 	// Create UI with basic HTML passed via data URI
-	ui, err := lorca.New("data:text/html,"+url.PathEscape(`
+	ui.Load("data:text/html," + url.PathEscape(fmt.Sprintf(`
 	<html>
-		<head><title>Hello</title></head>
+		<head><title>Hello</title>
+		<div align="center">
+    <img src="%s" alt="Sonr-Core-Header"/>
+  <br>
+</div></head>
 		<body><h1>Hello, world!</h1></body>
 	</html>
-	`), "", 480, 320)
+	`, filepath.Join(path, "qrcode.png"))))
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -54,6 +54,7 @@ func NewClient(ctx context.Context, m ui.AppInterface) *Client {
 
 	// Create New Client
 	c.node = sonr.NewNode(bytes, c)
+	c.menu.Initialize(c.node)
 	m.Initialize(c.node)
 
 	// Start Routine

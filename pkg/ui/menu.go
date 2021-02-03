@@ -128,7 +128,10 @@ func (ai *AppInterface) HandlePeerInput(fileItem *systray.MenuItem, linkItem *sy
 }
 
 // ^ Method to Rebuild Menu for Lobby Refresh ^ //
-func (ai *AppInterface) RefreshPeers(newLob *md.Lobby) {
+func (ai *AppInterface) RefreshPeers(newLob *md.Lobby, node *sonr.Node) {
+	// Set Node
+	ai.node = node
+
 	// Check if Lobby Updated
 	if newLob.Size != ai.lobbySize {
 		// Change Lobby
