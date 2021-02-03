@@ -9,7 +9,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// ^ handleEvents manages lobby event handler ^
+// ^ handleMessages pulls messages from the pubsub topic and pushes them onto the Messages channel. ^
 func (lob *Lobby) handleEvents() {
 	// @ Create Topic Handler
 	topicHandler, err := lob.topic.EventHandler()
@@ -28,6 +28,7 @@ func (lob *Lobby) handleEvents() {
 		}
 
 		if lobEvent.Type == pubsub.PeerJoin {
+			log.Println("Lobby Event: Peer Joined")
 			err := lob.Exchange(lobEvent.Peer)
 			if err != nil {
 				log.Println(err)
@@ -35,27 +36,16 @@ func (lob *Lobby) handleEvents() {
 		}
 
 		if lobEvent.Type == pubsub.PeerLeave {
-			// Create Event Message
-			lobEvent := &md.LobbyEvent{
-				Id:    lobEvent.Peer.String(),
-				Event: md.LobbyEvent_EXIT,
-			}
-
-			// Marshal data to bytes
-			bytes, err := proto.Marshal(lobEvent)
-			if err != nil {
-				log.Println("Cannot Marshal Error Protobuf: ", err)
-			}
-
-			// Send Callback with updated peers
-			lob.onEvent(bytes)
+			log.Println("Lobby Event: Peer Left")
+			lob.removePeer(lobEvent.Peer)
 		}
+
 		lifecycle.GetState().NeedsWait()
 	}
 }
 
-// ^ 1. handleNotifications pulls messages from the pubsub topic and pushes them onto the Messages channel. ^
-func (lob *Lobby) handleNotifications() {
+// ^ 1. handleMessages pulls messages from the pubsub topic and pushes them onto the Messages channel. ^
+func (lob *Lobby) handleMessages() {
 	for {
 		// Get next msg from pub/sub
 		msg, err := lob.sub.Next(lob.ctx)
@@ -76,19 +66,8 @@ func (lob *Lobby) handleNotifications() {
 			continue
 		}
 
-		if notif.Event == md.LobbyEvent_EXCHANGE {
-			// Update Peer Data
-			err := lob.Exchange(lob.ID(notif.Id))
-			if err != nil {
-				log.Println(err)
-			}
-		} else {
-			// Send Callback with updated peers
-			lob.onEvent(msg.Data)
-		}
-
 		// Send valid messages onto the Messages channel
-		// lob.Messages <- &notif
+		lob.Messages <- &notif
 		lifecycle.GetState().NeedsWait()
 	}
 
