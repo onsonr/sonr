@@ -52,13 +52,13 @@ func (sn *Node) SetContact(conBytes []byte) {
 func (sn *Node) Update(direction float64) {
 	// ** Initialize ** //
 	// Update User Values
-	sn.peer.Direction = math.Round(direction*100) / 100
+	sn.peer.Position.Direction = math.Round(direction*100) / 100
 
 	// Set Antipodal
 	if direction > 180 {
-		sn.peer.Antipodal = math.Round((direction-180)*100) / 100
+		sn.peer.Position.Antipodal = math.Round((direction-180)*100) / 100
 	} else {
-		sn.peer.Antipodal = math.Round((direction+180)*100) / 100
+		sn.peer.Position.Antipodal = math.Round((direction+180)*100) / 100
 	}
 
 	// Inform Lobby

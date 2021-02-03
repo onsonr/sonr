@@ -95,11 +95,9 @@ func (sn *Node) setInfo(connEvent *md.ConnectionRequest) error {
 
 	// Set Peer Info
 	sn.peer = &md.Peer{
-		Id:         sn.host.ID().String(),
-		Username:   connEvent.Username,
-		Device:     connEvent.Device,
-		FirstName:  connEvent.Contact.FirstName,
-		ProfilePic: connEvent.Contact.ProfilePic,
+		Id:      sn.host.ID().String(),
+		Profile: connEvent.Profile,
+		Device:  connEvent.Device,
 	}
 	return nil
 }

@@ -61,7 +61,7 @@ func Join(ctx context.Context, lobCall lf.LobbyCallbacks, ps *pubsub.PubSub, id 
 
 	// Initialize Lobby for Peers
 	lobInfo := &md.Lobby{
-		Code:  point,
+		Olc:   point,
 		Size:  1,
 		Peers: make(map[string]*md.Peer),
 	}

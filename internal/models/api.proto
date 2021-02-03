@@ -9,7 +9,7 @@ option go_package = ".;models";
 message ConnectionRequest {
   double latitude = 1;
   double longitude = 2;
-  string username = 3;
+  Profile profile = 3;
   Device device = 4;
   Directories directories = 5;
   Contact contact = 6;

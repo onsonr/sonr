@@ -12,6 +12,7 @@ import (
 func (lob *Lobby) removePeer(id peer.ID) {
 	// Update Peer with new data
 	delete(lob.Data.Peers, id.String())
+	lob.Data.Count = int32(len(lob.Data.Peers))
 	lob.Data.Size = int32(len(lob.Data.Peers)) + 1 // Account for User
 
 	// Marshal data to bytes
@@ -29,6 +30,7 @@ func (lob *Lobby) updatePeer(peer *md.Peer) {
 	// Update Peer with new data
 	id := peer.Id
 	lob.Data.Peers[id] = peer
+	lob.Data.Count = int32(len(lob.Data.Peers))
 	lob.Data.Size = int32(len(lob.Data.Peers)) + 1 // Account for User
 
 	// Marshal data to bytes
@@ -44,7 +46,7 @@ func (lob *Lobby) updatePeer(peer *md.Peer) {
 // @ Helper: ID returns ONE Peer.ID in PubSub
 func (lob *Lobby) ID(q string) peer.ID {
 	// Iterate through PubSub in topic
-	for _, id := range lob.ps.ListPeers(lob.Data.Code) {
+	for _, id := range lob.ps.ListPeers(lob.Data.Olc) {
 		// If Found Match
 		if id.String() == q {
 			return id

@@ -41,9 +41,10 @@ message MIME {
 
 // Define Lobby Type: For Info about Lobby
 message Lobby {
-  string code = 1;
+  string olc = 1;
   int32 size = 2;
-  map<string, Peer> peers = 3;
+  int32 count = 3;
+  map<string, Peer> peers = 4;
 }
 
 // Define Contact Type: Will be CSV in Future
@@ -81,10 +82,21 @@ message Contact {
   }
 }
 
+// Define Platform Enum: Operating System of Device
+enum Platform {
+  Unknown = 0;
+  Android = 1;
+  iOS = 2;
+  MacOS = 3;
+  Windows = 4;
+  Linux = 5;
+  Web = 6;
+}
+
 // Define Device Type: Information about device
 message Device {
   string id = 1;
-  string platform = 2;
+  Platform platform = 2;
   string model = 3;
   string name = 4;
   string version = 5;
@@ -106,31 +118,7 @@ message Peer {
   Device device = 2;
   Position position = 3;
   Profile profile = 4;
-  string username = 5;
-  string firstName = 6;
-  double direction = 7;
-  double antipodal = 8;
-}
-
-// Define Profile: General Information about Peer
-message Profile {
-  string username = 1;
-  string firstName = 2;
-  string lastName = 3;
-  bytes picture = 4;
-}
-
-// Define Direction: Includes All Direction Info
-message Position {
-  // Given Data
-  double direction = 1;
-  double antipodal = 2;
-  double distance = 3;
-  string heading = 4;
-
-  // Calculated Data
   Discovery discovery = 5;
-  Proximity proximity = 6;
 
   // Enum for Discovery Type
   enum Discovery {
@@ -139,6 +127,25 @@ message Position {
     Ultrasonic = 2;
     Rendevouz = 3;
   }
+}
+
+// Define Profile: General Information about Peer
+message Profile {
+  string username = 1;
+  string firstName = 2;
+  string lastName = 3;
+  bytes picture = 4;
+  Platform platform = 5;
+}
+
+// Define Direction: Includes All Direction Info
+message Position {
+  // Given Data
+  double direction = 1;
+  double antipodal = 2;
+  double distance = 3;
+  Heading heading = 4;
+  Proximity proximity = 5;
 
   // Enum for Proximity from User
   enum Proximity {
@@ -146,5 +153,24 @@ message Position {
     Immediate = 1;
     Near = 2;
     Distant = 3;
+  }
+
+  enum Heading {
+    N = 0;
+    NNE = 1;
+    NE = 2;
+    ENE = 3;
+    E = 4;
+    ESE = 5;
+    SE = 6;
+    SSE = 7;
+    S = 8;
+    SSW = 9;
+    SW = 10;
+    WSW = 11;
+    W = 12;
+    WNW = 13;
+    NW = 14;
+    NNW = 15;
   }
 }
