@@ -12,7 +12,7 @@ const kCompatibleFileTypes = "*.png *.jpg *.jpeg *.mp4 *.avi"
 // ^ Presents a Authentication Dialog for Approval ^ //
 func ShowAuthDialog(inv *md.AuthInvite) bool {
 	// Set Text
-	description := "Do you accept " + inv.From.FirstName + "'s invite to receive an " + inv.Payload.String()
+	description := "Do you accept " + inv.From.Profile.FirstName + "'s invite to receive an " + inv.Payload.String()
 
 	// Display
 	decision, err := dlgs.Question("Sonr Invitation", description, true)

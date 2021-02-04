@@ -8,7 +8,7 @@ import (
 )
 
 func PushInvited(inv *md.AuthInvite) {
-	err := beeep.Notify("Invited", inv.From.FirstName+" has sent an invite to share "+inv.Payload.String(), "assets/information.png")
+	err := beeep.Notify("Invited", inv.From.Profile.FirstName+" has sent an invite to share "+inv.Payload.String(), "assets/information.png")
 	if err != nil {
 		log.Println(err)
 	}

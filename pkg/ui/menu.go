@@ -156,13 +156,13 @@ func (ai *AppInterface) RefreshPeers(newLob *md.Lobby, node *sonr.Node) {
 // ^ Method to Build Peer Item ^ //
 func (ai *AppInterface) SetPeerItem(p *md.Peer) {
 	// Add Peer to Menu
-	peerItem := systray.AddMenuItem(p.FirstName, "")
+	peerItem := systray.AddMenuItem(p.Profile.FirstName, "")
 	peerItem.SetTemplateIcon(GetDeviceIcon(p.Device), GetDeviceIcon(p.Device))
 
 	// Add Peer Send Options
-	urlItem := peerItem.AddSubMenuItem("Send URL", "Send a URL to "+p.FirstName)
+	urlItem := peerItem.AddSubMenuItem("Send URL", "Send a URL to "+p.Profile.FirstName)
 	urlItem.SetTemplateIcon(GetIcon(URL), GetIcon(URL))
-	fileItem := peerItem.AddSubMenuItem("Send File", "Send a File to "+p.FirstName)
+	fileItem := peerItem.AddSubMenuItem("Send File", "Send a File to "+p.Profile.FirstName)
 	fileItem.SetTemplateIcon(GetIcon(File), GetIcon(File))
 
 	// Spawn Routine to handle Peer Item Actions

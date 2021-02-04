@@ -18,7 +18,7 @@ type SysInfo struct {
 // ^ Returns System Info ^ //
 func SystemInfo() SysInfo {
 	// Initialize Vars
-	var platform string
+	var platform md.Platform
 	var model string
 	var name string
 	var docDir string
@@ -31,19 +31,19 @@ func SystemInfo() SysInfo {
 	switch runOs {
 	// @ Windows
 	case "windows":
-		platform = "Windows"
+		platform = md.Platform_Windows
 
 		// @ Mac
 	case "darwin":
-		platform = "Mac"
+		platform = md.Platform_MacOS
 
 		// @ Linux
 	case "linux":
-		platform = "Linux"
+		platform = md.Platform_Linux
 
 		// @ Unknown
 	default:
-		platform = "Unknown"
+		platform = md.Platform_Unknown
 	}
 
 	// Get Hostname
