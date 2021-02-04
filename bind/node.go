@@ -3,10 +3,10 @@ package sonr
 import (
 	"log"
 	"math"
-	"time"
 
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
+	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -19,6 +19,18 @@ func (sn *Node) Info() []byte {
 		return nil
 	}
 	return data
+}
+
+// ^ Link with a QR Code ^ //
+func (sn *Node) LinkDevice(peerString string) {
+	// Convert String to Bytes
+	peer := md.Peer{}
+
+	// Convert to Peer Protobuf
+	err := protojson.Unmarshal([]byte(peerString), &peer)
+	if err != nil {
+		sn.error(err, "LinkDevice")
+	}
 }
 
 // ^ Peer returns Current Peer Info ^
@@ -40,7 +52,22 @@ func (sn *Node) SetContact(conBytes []byte) {
 func (sn *Node) Update(direction float64) {
 	// ** Initialize ** //
 	// Update User Values
-	sn.peer.Direction = math.Round(direction*100) / 100
+	var dir float64
+	var anpd float64
+	dir = math.Round(direction*100) / 100
+
+	// Find Antipodal
+	if direction > 180 {
+		anpd = math.Round((direction-180)*100) / 100
+	} else {
+		anpd = math.Round((direction+180)*100) / 100
+	}
+
+	// Set Position
+	sn.peer.Position = &md.Position{
+		Direction: dir,
+		Antipodal: anpd,
+	}
 
 	// Inform Lobby
 	err := sn.lobby.Update()
@@ -50,116 +77,17 @@ func (sn *Node) Update(direction float64) {
 }
 
 // ^ Process adds generates Preview with Thumbnail ^ //
-func (sn *Node) Process(path string) {
-	safePrev := sf.NewPreview(path, sn.call.OnQueued, sn.error)
-	sn.files = append(sn.files, safePrev)
-}
-
-// ^ Create Preview with a Externally Shared File ^ //
-func (sn *Node) ProcessExternal(sharedMediaBytes []byte) {
+func (sn *Node) Process(procBytes []byte) {
 	// Initialize from Info
-	sharedMediaFile := &md.SharedMediaFile{}
-	err := proto.Unmarshal(sharedMediaBytes, sharedMediaFile)
+	request := &md.ProcessRequest{}
+	err := proto.Unmarshal(procBytes, request)
 	if err != nil {
 		log.Println(err)
 	}
 
-	safePrev := sf.NewSharedPreview(sharedMediaFile, sn.call.OnQueued, sn.error)
-	sn.files = append(sn.files, safePrev)
-}
-
-// ^ Send Invite with a File ^ //
-func (sn *Node) InviteWithFile(peerId string) {
-	// Get PeerID
-	id, _, err := sn.lobby.Find(peerId)
-
-	// Check error
-	if err != nil {
-		sn.error(err, "Invite")
-	}
-
-	// Create Invite Message with Payload
-	time.Sleep(time.Millisecond * 100)
-
-	// Retreive Current File
-	currFile := sn.currentFile()
-	sn.peerConn.SafePreview = currFile
-
-	// Create Invite Message
-	invMsg := md.AuthInvite{
-		From:    sn.peer,
-		Payload: md.Payload_FILE,
-		Preview: currFile.GetPreview(),
-	}
-
-	// Check if ID in PeerStore
-	go func(inv *md.AuthInvite) {
-		// Convert Protobuf to bytes
-		msgBytes, err := proto.Marshal(inv)
-		if err != nil {
-			sn.error(err, "Marshal")
-		}
-
-		sn.peerConn.Request(sn.host, id, msgBytes)
-	}(&invMsg)
-}
-
-// ^ Send Invite with User Contact Card ^ //
-func (sn *Node) InviteWithContact(peerId string) {
-	// Get PeerID
-	id, _, err := sn.lobby.Find(peerId)
-
-	// Check error
-	if err != nil {
-		sn.error(err, "Invite")
-	}
-
-	// Create Invite Message with Payload
-	invMsg := md.AuthInvite{
-		From:    sn.peer,
-		Payload: md.Payload_CONTACT,
-		Contact: sn.contact,
-	}
-
-	// Check if ID in PeerStore
-	go func(inv *md.AuthInvite) {
-		// Convert Protobuf to bytes
-		msgBytes, err := proto.Marshal(inv)
-		if err != nil {
-			sn.error(err, "Marshal")
-		}
-
-		sn.peerConn.Request(sn.host, id, msgBytes)
-	}(&invMsg)
-}
-
-// ^ Send Invite with URL Link ^ //
-func (sn *Node) InviteWithURL(peerId string, url string) {
-	// Get PeerID
-	id, _, err := sn.lobby.Find(peerId)
-
-	// Check error
-	if err != nil {
-		sn.error(err, "Invite")
-	}
-
-	// Create Invite Message with Payload
-	invMsg := md.AuthInvite{
-		From:    sn.peer,
-		Payload: md.Payload_URL,
-		Url:     url,
-	}
-
-	// Check if ID in PeerStore
-	go func(inv *md.AuthInvite) {
-		// Convert Protobuf to bytes
-		msgBytes, err := proto.Marshal(inv)
-		if err != nil {
-			sn.error(err, "Marshal")
-		}
-
-		sn.peerConn.Request(sn.host, id, msgBytes)
-	}(&invMsg)
+	// Create Preview
+	safeFile := sf.NewProcessedFile(request, sn.call.OnQueued, sn.error)
+	sn.files = append(sn.files, safeFile)
 }
 
 // ^ Respond to an Invitation ^ //
@@ -174,5 +102,5 @@ func (sn *Node) Respond(decision bool) {
 func (sn *Node) ResetFile() {
 	// Reset Files Slice
 	sn.files = nil
-	sn.files = make([]*sf.SafePreview, maxFileBufferSize)
+	sn.files = make([]*sf.ProcessedFile, maxFileBufferSize)
 }

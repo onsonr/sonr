@@ -1,12 +1,8 @@
 package transfer
 
 import (
-	"bytes"
 	"context"
 	"log"
-	"strings"
-
-	"path/filepath"
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -17,16 +13,13 @@ import (
 	msgio "github.com/libp2p/go-msgio"
 	sf "github.com/sonr-io/core/internal/file"
 	"github.com/sonr-io/core/internal/lifecycle"
+	lf "github.com/sonr-io/core/internal/lifecycle"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
 
-// Define Callback Function Types
-type OnProtobuf func([]byte)
-type OnError func(err error, method string)
-
 // Package Error Callback
-var onError OnError
+var onError lf.OnError
 
 // ^ Struct: Holds/Handles GRPC Calls and Handles Data Stream  ^ //
 type PeerConnection struct {
@@ -34,15 +27,15 @@ type PeerConnection struct {
 	auth *AuthService
 
 	// Data Handlers
-	SafePreview *sf.SafePreview
-	transfer    *Transfer
+	SafePreview *sf.ProcessedFile
+	transfer    *sf.TransferFile
 
 	// Callbacks
-	invitedCall     OnProtobuf
-	respondedCall   OnProtobuf
-	progressCall    OnProgress
-	receivedCall    OnProtobuf
-	transmittedCall OnProtobuf
+	invitedCall     lf.OnProtobuf
+	respondedCall   lf.OnProtobuf
+	progressCall    lf.OnProgress
+	receivedCall    lf.OnProtobuf
+	transmittedCall lf.OnProtobuf
 
 	// Info
 	olc  string
@@ -50,19 +43,19 @@ type PeerConnection struct {
 }
 
 // ^ Initialize sets up new Peer Connection handler ^
-func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic OnProtobuf, rc OnProtobuf, pc OnProgress, recCall OnProtobuf, transCall OnProtobuf, ec OnError) (*PeerConnection, error) {
+func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, tc lf.TransferCallbacks) (*PeerConnection, error) {
 	// Set Package Level Callbacks
-	onError = ec
+	onError = tc.CallError
 
 	// Initialize Parameters into PeerConnection
 	peerConn := &PeerConnection{
 		olc:             o,
 		dirs:            d,
-		invitedCall:     ic,
-		respondedCall:   rc,
-		progressCall:    pc,
-		receivedCall:    recCall,
-		transmittedCall: transCall,
+		invitedCall:     tc.CallInvited,
+		respondedCall:   tc.CallResponded,
+		progressCall:    tc.CallProgress,
+		receivedCall:    tc.CallReceived,
+		transmittedCall: tc.CallTransmitted,
 	}
 
 	// Create GRPC Client/Server and Set Data Stream Handler
@@ -71,7 +64,7 @@ func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic 
 
 	// Create AuthService
 	ath := AuthService{
-		onInvite: ic,
+		onInvite: tc.CallInvited,
 		respCh:   make(chan *md.AuthReply, 1),
 	}
 
@@ -87,21 +80,9 @@ func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, ic 
 }
 
 // ^  Prepare for Stream, Create new Transfer ^ //
-func (pc *PeerConnection) PrepareTransfer(preview *md.Preview, own *md.Peer) *Transfer {
-	// Create Transfer
-	fileName := preview.Name + "." + preview.Mime.Subtype
-	return &Transfer{
-		// Inherited Properties
-		preview:    preview,
-		owner:      own,
-		path:       filepath.Join(pc.dirs.Temporary, fileName),
-		onProgress: pc.progressCall,
-		onComplete: pc.receivedCall,
-
-		// Builders
-		stringsBuilder: new(strings.Builder),
-		bytesBuilder:   new(bytes.Buffer),
-	}
+func (pc *PeerConnection) PrepareTransfer(inv *md.AuthInvite) {
+	// Initialize Transfer
+	pc.transfer = sf.NewTransfer(inv, pc.dirs, pc.progressCall, pc.receivedCall)
 }
 
 // ^ User has accepted, Begin Sending Transfer ^ //
@@ -122,19 +103,15 @@ func (pc *PeerConnection) StartTransfer(h host.Host, id peer.ID, peer *md.Peer) 
 
 	// Initialize Writer
 	writer := msgio.NewWriter(stream)
-	meta := pc.SafePreview.GetPreview()
-
-	// @ Check Type
 
 	// Start Routine
-	log.Println("Starting Base64 Write Routine")
-	go writeBase64ToStream(writer, pc.transmittedCall, meta, peerBytes)
+	go writeBase64ToStream(writer, pc.transmittedCall, pc.SafePreview, peerBytes)
 }
 
 // ^ Handle Incoming Stream ^ //
 func (pc *PeerConnection) HandleTransfer(stream network.Stream) {
 	// Route Data from Stream
-	go func(reader msgio.ReadCloser, t *Transfer) {
+	go func(reader msgio.ReadCloser, t *sf.TransferFile) {
 		for i := 0; ; i++ {
 			// @ Read Length Fixed Bytes
 			buffer, err := reader.ReadMsg()
@@ -145,7 +122,7 @@ func (pc *PeerConnection) HandleTransfer(stream network.Stream) {
 			}
 
 			// @ Unmarshal Bytes into Proto
-			hasCompleted, err := t.addBuffer(i, buffer)
+			hasCompleted, err := t.AddBuffer(i, buffer)
 			if err != nil {
 				onError(err, "ReadStream")
 				log.Fatalln(err)
@@ -155,7 +132,7 @@ func (pc *PeerConnection) HandleTransfer(stream network.Stream) {
 			// @ Check if All Buffer Received to Save
 			if hasCompleted {
 				// Sync file
-				if err := pc.transfer.save(); err != nil {
+				if err := pc.transfer.Save(); err != nil {
 					onError(err, "SaveFile")
 					log.Fatalln(err)
 				}

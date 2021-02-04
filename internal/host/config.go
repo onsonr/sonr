@@ -4,12 +4,10 @@ import (
 	"crypto/rand"
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
-	"github.com/libp2p/go-libp2p-core/peer"
 	md "github.com/sonr-io/core/internal/models"
 )
 
@@ -67,13 +65,11 @@ func init() {
 func getKeys(dir *md.Directories) (crypto.PrivKey, error) {
 	// Set Path
 	path := filepath.Join(dir.Documents, ".sonr-priv-key")
-	log.Println("Key Path: " + path)
 
 	// @ Path Doesnt Exist Generate Keys
 	if _, err := os.Stat(path); os.IsNotExist(err) {
-		log.Println("Keys Dont Exist, Generating...")
 		// Generate Keys
-		privKey, pubKey, err := crypto.GenerateRSAKeyPair(2048, rand.Reader)
+		privKey, _, err := crypto.GenerateRSAKeyPair(2048, rand.Reader)
 		if err != nil {
 			return nil, err
 		}
@@ -89,17 +85,9 @@ func getKeys(dir *md.Directories) (crypto.PrivKey, error) {
 		if err != nil {
 			return nil, err
 		}
-
-		// Get Peer Id from PubKey
-		id, err := peer.IDFromPublicKey(pubKey)
-		log.Println("Generated ID: " + id)
-		if err != nil {
-			return nil, err
-		}
 		return privKey, nil
 	}
 	// @ Keys Exist Load Keys
-	log.Println("Keys Exist, Returning...")
 	// Load Private Key Bytes from File
 	privDat, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -108,13 +96,6 @@ func getKeys(dir *md.Directories) (crypto.PrivKey, error) {
 
 	// Unmarshal PrivKey from Bytes
 	privKey, err := crypto.UnmarshalPrivateKey(privDat)
-	if err != nil {
-		return nil, err
-	}
-
-	// Get Peer Id from PubKey
-	id, err := peer.IDFromPrivateKey(privKey)
-	log.Println("Returned ID: " + id)
 	if err != nil {
 		return nil, err
 	}

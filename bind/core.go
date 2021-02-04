@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 
+	olc "github.com/google/open-location-code/go"
 	"github.com/libp2p/go-libp2p-core/host"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	sf "github.com/sonr-io/core/internal/file"
@@ -21,6 +22,7 @@ const maxFileBufferSize = 5
 // ^ Interface: Callback is implemented from Plugin to receive updates ^
 type Callback interface {
 	OnRefreshed(data []byte)
+	OnEvent(data []byte)
 	OnInvited(data []byte)
 	OnResponded(data []byte)
 	OnQueued(data []byte)
@@ -33,17 +35,17 @@ type Callback interface {
 // ^ Struct: Main Node handles Networking/Identity/Streams ^
 type Node struct {
 	// Properties
+	ctx     context.Context
 	olc     string
 	peer    *md.Peer
 	contact *md.Contact
 
 	// Networking Properties
-	ctx    context.Context
 	host   host.Host
 	pubSub *pubsub.PubSub
 
 	// Data Properties
-	files       []*sf.SafePreview
+	files       []*sf.ProcessedFile
 	directories *md.Directories
 
 	// References
@@ -57,7 +59,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	// ** Create Context and Node - Begin Setup **
 	node := new(Node)
 	node.ctx = context.Background()
-	node.call, node.files = call, make([]*sf.SafePreview, maxFileBufferSize)
+	node.call, node.files = call, make([]*sf.ProcessedFile, maxFileBufferSize)
 
 	// ** Unmarshal Request **
 	reqMsg := md.ConnectionRequest{}
@@ -68,8 +70,9 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 		return nil
 	}
 
-	// @1. Create Host and Start Discovery
-	node.host, err = sh.NewHost(node.ctx, reqMsg.Directory, reqMsg.Olc)
+	// @1. Set OLC, Create Host, and Start Discovery
+	node.olc = olc.Encode(float64(reqMsg.Latitude), float64(reqMsg.Longitude), 8)
+	node.host, err = sh.NewHost(node.ctx, reqMsg.Directories, node.olc)
 	if err != nil {
 		node.error(err, "NewNode")
 		return nil
@@ -93,22 +96,18 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 
 // ^ Close Ends All Network Communication ^
 func (sn *Node) Pause() {
-	log.Println("Sonr Paused.")
 	lifecycle.GetState().Pause()
 }
 
 // ^ Close Ends All Network Communication ^
 func (sn *Node) Resume() {
-	log.Println("Sonr Resumed.")
 	lifecycle.GetState().Resume()
 }
 
 // ^ Close Ends All Network Communication ^
 func (sn *Node) Stop() {
-	log.Println("Sonr Stopped.")
 	sn.host.Close()
 }
-
 
 // ^ error Callback with error instance, and method ^
 func (sn *Node) error(err error, method string) {

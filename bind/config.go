@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 
@@ -12,13 +11,14 @@ import (
 
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	sf "github.com/sonr-io/core/internal/file"
+	lf "github.com/sonr-io/core/internal/lifecycle"
 	sl "github.com/sonr-io/core/internal/lobby"
 	md "github.com/sonr-io/core/internal/models"
 	tf "github.com/sonr-io/core/internal/transfer"
 )
 
 // ^ CurrentFile returns last file in Processed Files ^ //
-func (sn *Node) currentFile() *sf.SafePreview {
+func (sn *Node) currentFile() *sf.ProcessedFile {
 	return sn.files[len(sn.files)-1]
 }
 
@@ -30,19 +30,15 @@ func getDeviceID(connEvent *md.ConnectionRequest) error {
 	}
 
 	// Create Device ID Path
-	path := filepath.Join(connEvent.Directory.Documents, ".sonr-device-id")
+	path := filepath.Join(connEvent.Directories.Documents, ".sonr-device-id")
 
 	// @ Check for Path
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		// Generate ID
-		log.Println("ID Doesnt Exist, Generating...")
 		id, err := machineid.ProtectedID("Sonr")
 		if err != nil {
 			return err
 		}
-
-		// Print ID
-		log.Println(id)
 
 		// Write ID To File
 		f, err := os.Create(path)
@@ -64,7 +60,6 @@ func getDeviceID(connEvent *md.ConnectionRequest) error {
 		return nil
 	} else {
 		// @ Read Device ID Data
-		log.Println("ID Exists, Returning...")
 		dat, err := ioutil.ReadFile(path)
 		if err != nil {
 			return err
@@ -72,9 +67,6 @@ func getDeviceID(connEvent *md.ConnectionRequest) error {
 
 		// Convert to String
 		id := string(dat)
-
-		// Print ID
-		log.Println(id)
 
 		// Update Device
 		connEvent.Device.Id = id
@@ -93,8 +85,7 @@ func (sn *Node) setInfo(connEvent *md.ConnectionRequest) error {
 
 	// Set Default Properties
 	sn.contact = connEvent.Contact
-	sn.directories = connEvent.Directory
-	sn.olc = connEvent.Olc
+	sn.directories = connEvent.Directories
 
 	// Get Device ID
 	err := getDeviceID(connEvent)
@@ -104,36 +95,34 @@ func (sn *Node) setInfo(connEvent *md.ConnectionRequest) error {
 
 	// Set Peer Info
 	sn.peer = &md.Peer{
-		Id:         sn.host.ID().String(),
-		Username:   connEvent.Username,
-		Device:     connEvent.Device,
-		FirstName:  connEvent.Contact.FirstName,
-		ProfilePic: connEvent.Contact.ProfilePic,
+		Id:      sn.host.ID().String(),
+		Profile: connEvent.Profile,
+		Device:  connEvent.Device,
 	}
 	return nil
 }
 
 // ^ setConnection initializes connection protocols joins lobby and creates pubsub service ^ //
 func (sn *Node) setConnection(ctx context.Context) error {
-	// create a new PubSub service using the GossipSub router
+	// Create a new PubSub service using the GossipSub router
 	var err error
 	sn.pubSub, err = pubsub.NewGossipSub(ctx, sn.host)
 	if err != nil {
 		return err
 	}
 
-	log.Println("GossipSub Created")
+	// Create Callbacks
+	lobCall := lf.LobbyCallbacks{CallRefresh: sn.call.OnRefreshed, CallError: sn.error, GetPeer: sn.Peer, CallEvent: sn.call.OnEvent}
+	transCall := lf.TransferCallbacks{CallInvited: sn.call.OnInvited, CallResponded: sn.call.OnResponded, CallReceived: sn.call.OnReceived, CallProgress: sn.call.OnProgress, CallTransmitted: sn.call.OnTransmitted, CallError: sn.error}
 
 	// Enter Lobby
-	if sn.lobby, err = sl.Join(sn.ctx, sn.call.OnRefreshed, sn.Peer, sn.error, sn.pubSub, sn.host.ID(), sn.peer, sn.olc); err != nil {
+	if sn.lobby, err = sl.Join(sn.ctx, lobCall, sn.pubSub, sn.host.ID(), sn.peer, sn.olc); err != nil {
 		return err
 	}
-	log.Println("Lobby Initialized")
 
 	// Initialize Peer Connection
-	if sn.peerConn, err = tf.Initialize(sn.host, sn.pubSub, sn.directories, sn.olc, sn.call.OnInvited, sn.call.OnResponded, sn.call.OnProgress, sn.call.OnReceived, sn.call.OnTransmitted, sn.error); err != nil {
+	if sn.peerConn, err = tf.Initialize(sn.host, sn.pubSub, sn.directories, sn.olc, transCall); err != nil {
 		return err
 	}
-	log.Println("Connection Initialized")
 	return nil
 }

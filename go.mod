@@ -6,6 +6,7 @@ go 1.15
 require (
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/golang/protobuf v1.4.3
+	github.com/google/open-location-code/go v0.0.0-20201229230907-d47d9f9b95e9
 	github.com/h2non/filetype v1.1.0
 	github.com/libp2p/go-libp2p v0.11.0
 	github.com/libp2p/go-libp2p-connmgr v0.2.4

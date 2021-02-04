@@ -5,7 +5,9 @@ import (
 	"encoding/base64"
 	"log"
 
+	sf "github.com/sonr-io/core/internal/file"
 	"github.com/sonr-io/core/internal/lifecycle"
+	lf "github.com/sonr-io/core/internal/lifecycle"
 	md "github.com/sonr-io/core/internal/models"
 
 	msgio "github.com/libp2p/go-msgio"
@@ -17,29 +19,11 @@ const B64ChunkSize = 31998 // Adjusted for Base64 -- has to be divisible by 3
 const BufferChunkSize = 32000
 
 // ^ write file as Base64 in Msgio to Stream ^ //
-func writeBase64ToStream(writer msgio.WriteCloser, onCompleted OnProtobuf, preview *md.Preview, peer []byte) {
-	// Initialize Buffer
+func writeBase64ToStream(writer msgio.WriteCloser, onCompleted lf.OnProtobuf, pf *sf.ProcessedFile, peer []byte) {
+	// Initialize Buffer and Encode File
 	buffer := new(bytes.Buffer)
-
-	// @ Check Image type
-	if preview.Mime.Subtype == "jpeg" {
-		// Get JPEG Encoded Buffer
-		err := EncodeJpegBuffer(buffer, preview)
-		if err != nil {
-			log.Fatalln(err)
-		}
-	} else if preview.Mime.Subtype == "png" {
-		// Get PNG Encoded Buffer
-		err := EncodePngBuffer(buffer, preview)
-		if err != nil {
-			log.Fatalln(err)
-		}
-	} else {
-		// Get Raw Bytes
-		err := WriteBuffer(buffer, preview)
-		if err != nil {
-			log.Fatalln(err)
-		}
+	if err := pf.EncodeFile(buffer); err != nil {
+		log.Fatalln(err)
 	}
 
 	// Encode Buffer to base 64
@@ -72,4 +56,18 @@ func writeBase64ToStream(writer msgio.WriteCloser, onCompleted OnProtobuf, previ
 
 	// Call Completed Sending
 	onCompleted(peer)
+}
+
+// ^ Helper: Chunks string based on B64ChunkSize ^ //
+func ChunkBase64(s string) []string {
+	chunkSize := B64ChunkSize
+	ss := make([]string, 0, len(s)/chunkSize+1)
+	for len(s) > 0 {
+		if len(s) < chunkSize {
+			chunkSize = len(s)
+		}
+		// Create Current Chunk String
+		ss, s = append(ss, s[:chunkSize]), s[chunkSize:]
+	}
+	return ss
 }

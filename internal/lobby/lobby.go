@@ -7,17 +7,14 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	lf "github.com/sonr-io/core/internal/lifecycle"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
 
 // ChatRoomBufSize is the number of incoming messages to buffer for each topic.
 const ChatRoomBufSize = 128
-
-// Define Function Types
-type OnProtobuf func([]byte)
-type ReturnPeer func() *md.Peer
-type Error func(err error, method string)
+const LobbySize = 16
 
 // Lobby represents a subscription to a single PubSub topic. Messages
 // can be published to the topic with Lobby.Publish, and received
@@ -30,11 +27,11 @@ type Lobby struct {
 
 	// Private Vars
 	ctx          context.Context
-	callback     OnProtobuf
-	onError      Error
+	callback     lf.OnProtobuf
+	onError      lf.OnError
 	doneCh       chan struct{}
 	ps           *pubsub.PubSub
-	getPeer      ReturnPeer
+	getPeer      lf.GetUserPeer
 	topic        *pubsub.Topic
 	topicHandler *pubsub.TopicEventHandler
 	self         peer.ID
@@ -43,9 +40,9 @@ type Lobby struct {
 }
 
 // ^ Join Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
-func Join(ctx context.Context, callr OnProtobuf, gp ReturnPeer, onErr Error, ps *pubsub.PubSub, id peer.ID, sp *md.Peer, olc string) (*Lobby, error) {
+func Join(ctx context.Context, lobCall lf.LobbyCallbacks, ps *pubsub.PubSub, id peer.ID, sp *md.Peer, olc string) (*Lobby, error) {
 	// Join the pubsub Topic
-	point := "/sonr/" + olc
+	point := "/sonr/lobby" + olc
 	topic, err := ps.Join(point)
 	if err != nil {
 		return nil, err
@@ -64,7 +61,7 @@ func Join(ctx context.Context, callr OnProtobuf, gp ReturnPeer, onErr Error, ps 
 
 	// Initialize Lobby for Peers
 	lobInfo := &md.Lobby{
-		Code:  point,
+		Olc:   point,
 		Size:  1,
 		Peers: make(map[string]*md.Peer),
 	}
@@ -72,11 +69,11 @@ func Join(ctx context.Context, callr OnProtobuf, gp ReturnPeer, onErr Error, ps 
 	// Create Lobby Type
 	lob := &Lobby{
 		ctx:          ctx,
-		onError:      onErr,
-		callback:     callr,
+		onError:      lobCall.CallError,
+		callback:     lobCall.CallRefresh,
 		doneCh:       make(chan struct{}, 1),
 		ps:           ps,
-		getPeer:      gp,
+		getPeer:      lobCall.GetPeer,
 		topic:        topic,
 		topicHandler: topicHandler,
 		sub:          sub,
@@ -91,6 +88,32 @@ func Join(ctx context.Context, callr OnProtobuf, gp ReturnPeer, onErr Error, ps 
 	go lob.handleMessages()
 	go lob.processMessages()
 	return lob, nil
+}
+
+// ^ Send publishes a message to the pubsub topic OLC ^
+func (lob *Lobby) Exchange(peerID peer.ID) error {
+	// Check if Peer already exchanged
+	if p := lob.Peer(peerID.String()); p == nil {
+		// Create Lobby Event
+		event := md.LobbyEvent{
+			Event: md.LobbyEvent_EXCHANGE,
+			Data:  lob.getPeer(),
+		}
+
+		// Convert Event to Proto Binary
+		bytes, err := proto.Marshal(&event)
+		if err != nil {
+			return err
+		}
+
+		// Publish to Topic
+		err = lob.topic.Publish(lob.ctx, bytes)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+	return nil
 }
 
 // ^ Info returns ALL Lobby Data as Bytes^
@@ -118,37 +141,11 @@ func (lob *Lobby) Find(q string) (peer.ID, *md.Peer, error) {
 }
 
 // ^ Send publishes a message to the pubsub topic OLC ^
-func (lob *Lobby) Exchange(peerID peer.ID) error {
-	// Check if Peer already exchanged
-	if p := lob.Peer(peerID.String()); p == nil {
-		// Create Lobby Event
-		event := md.LobbyEvent{
-			Event: md.LobbyEvent_EXCHANGE,
-			Peer:  lob.getPeer(),
-		}
-
-		// Convert Event to Proto Binary
-		bytes, err := proto.Marshal(&event)
-		if err != nil {
-			return err
-		}
-
-		// Publish to Topic
-		err = lob.topic.Publish(lob.ctx, bytes)
-		if err != nil {
-			return err
-		}
-		return nil
-	}
-	return nil
-}
-
-// ^ Send publishes a message to the pubsub topic OLC ^
 func (lob *Lobby) Update() error {
 	// Create Lobby Event
 	event := md.LobbyEvent{
 		Event: md.LobbyEvent_UPDATE,
-		Peer:  lob.getPeer(),
+		Data:  lob.getPeer(),
 	}
 
 	// Convert Event to Proto Binary
