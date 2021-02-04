@@ -28,7 +28,6 @@ func (lob *Lobby) handleEvents() {
 		}
 
 		if lobEvent.Type == pubsub.PeerJoin {
-			log.Println("Lobby Event: Peer Joined")
 			err := lob.Exchange(lobEvent.Peer)
 			if err != nil {
 				log.Println(err)
@@ -36,7 +35,6 @@ func (lob *Lobby) handleEvents() {
 		}
 
 		if lobEvent.Type == pubsub.PeerLeave {
-			log.Println("Lobby Event: Peer Left")
 			lob.removePeer(lobEvent.Peer)
 		}
 

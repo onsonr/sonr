@@ -1,7 +1,6 @@
 package host
 
 import (
-	"log"
 	"net"
 	"os"
 )
@@ -15,7 +14,6 @@ func IPv4() string {
 
 	// Iterate through addresses
 	for _, addr := range addrs {
-		log.Println(addr.String())
 		// @ Set IPv4
 		if ipv4 := addr.To4(); ipv4 != nil {
 			ipv4Ref = ipv4.String()
@@ -36,7 +34,6 @@ func IPv6() string {
 
 	// Iterate through addresses
 	for _, addr := range addrs {
-		log.Println(addr.String())
 		// @ Set IPv4
 		if ipv6 := addr.To16(); ipv6 != nil {
 			ipv6Ref = ipv6.String()
