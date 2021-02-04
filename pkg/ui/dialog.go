@@ -7,7 +7,7 @@ import (
 	md "github.com/sonr-io/core/internal/models"
 )
 
-const kCompatibleFileTypes = "*.png *.jpg *.jpeg *.mp4 *.avi"
+const kCompatibleFileTypes = "*.png *.jpg *.jpeg *.mp4 *.avi *.pdf *.doc *.docx *.ttf *.mp3 *.xml *.csv *.key *.ppt *.pptx *.xls *.xlsm *.xlsx *.rtf *.txt"
 
 // ^ Presents a Authentication Dialog for Approval ^ //
 func ShowAuthDialog(inv *md.AuthInvite) bool {
