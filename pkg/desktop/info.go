@@ -75,6 +75,7 @@ func SystemInfo() SysInfo {
 		Directory: md.Directories{
 			Documents: docDir,
 			Temporary: filepath.Join(docDir, "Downloads"),
+			Downloads: filepath.Join(docDir, "Downloads"),
 		},
 	}
 }
