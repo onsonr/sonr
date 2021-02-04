@@ -49,6 +49,9 @@ message MIME {
     image = 2;
     text = 3;
     video = 4;
+    pdf = 5;
+    presentation = 6;
+    spreadsheet = 7;
   }
 }
 

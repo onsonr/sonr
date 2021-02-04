@@ -135,21 +135,29 @@ func GetInfo(path string) Info {
 		onError(err, "AddFile")
 	}
 
-	// Check for Image
-	var isImage bool
-	if filetype.IsImage(head) {
-		isImage = true
-	}
-
 	return Info{
 		Mime: &md.MIME{
-			Type:    md.MIME_Type(md.MIME_Type_value[kind.MIME.Type]),
+			Type:    getType(kind.MIME.Type, filepath.Ext(path)),
 			Subtype: kind.MIME.Subtype,
 			Value:   kind.MIME.Value,
 		},
 		Name:    strings.TrimSuffix(filepath.Base(path), filepath.Ext(path)),
 		Path:    path,
 		Size:    int32(info.Size()),
-		IsImage: isImage,
+		IsImage: filetype.IsImage(head),
 	}
+}
+
+// @ Helper Method to Get File Mime Type
+func getType(value string, ext string) md.MIME_Type {
+	if value == "application" {
+		if ext == "pdf" {
+			return md.MIME_pdf
+		} else if ext == "key" || ext == "ppt" || ext == "pptx" {
+			return md.MIME_presentation
+		} else if ext == "xls" || ext == "xlsm" || ext == "xlsx" {
+			return md.MIME_spreadsheet
+		}
+	}
+	return md.MIME_Type(md.MIME_Type_value[value])
 }
