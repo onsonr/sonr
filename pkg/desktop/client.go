@@ -44,7 +44,10 @@ func NewClient(ctx context.Context, m ui.AppInterface) *Client {
 			LastName:  "MacTest",
 		},
 		Profile: &md.Profile{
-			Username: "@TestUser",
+			Username:  "@TestUser",
+			FirstName: "Test",
+			LastName:  "Test",
+			Platform:  c.info.Device.Platform,
 		},
 	}
 
