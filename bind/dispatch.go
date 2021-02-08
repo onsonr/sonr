@@ -3,6 +3,7 @@ package sonr
 import (
 	"time"
 
+	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -121,12 +122,13 @@ func (sn *Node) InviteWithContact(peerId string) {
 		sn.error(err, "InviteWithContact")
 	}
 
-	// Create Invite Message with Payload
+	// Create Invite Message with Payload and Card
 	invMsg := md.AuthInvite{
 		From:    sn.peer,
 		Payload: md.Payload_CONTACT,
 		Contact: sn.contact,
 		Type:    md.AuthInvite_Peer,
+		Card:    sf.NewCardFromContact(sn.peer.Profile, sn.contact),
 	}
 
 	// Check if ID in PeerStore

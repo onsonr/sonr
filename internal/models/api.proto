@@ -32,6 +32,7 @@ message AuthInvite {
   Contact contact = 4;
   string url = 5;
   Type type = 6;
+  TransferCard card = 7;
 
   enum Type {
     Peer = 0;
@@ -47,11 +48,23 @@ message AuthReply {
   Contact contact = 4;
 }
 
-// Define CompletedTransfer: Resulting Payload and Data
-message CompletedTransfer {
-  Payload payload = 1;
-  Peer from = 2;
-  Metadata metadata = 3;
+// Define TransferCard Type: Transferred Data Card
+message TransferCard {
+  // SQL Properties
+  string id = 1;
+  Payload payload = 2;
+  int32 lastOpened = 3;
+  Platform platform = 4;
+  bytes preview = 5;
+
+  // Owner Properties
+  string username = 6;
+  string firstName = 7;
+  string lastName = 8;
+
+  // Data Properties
+  Contact contact = 9;
+  Metadata metadata = 10;
 }
 
 // Define ErrorMessage: Error Message

@@ -106,7 +106,7 @@ func (pc *PeerConnection) Request(h host.Host, id peer.ID, msgBytes []byte) {
 	}
 
 	// Check Response for Accept
-	if responseMessage.Decision && responseMessage.Payload == md.Payload_NONE {
+	if responseMessage.Decision && responseMessage.Payload == md.Payload_UNDEFINED {
 		// Begin Transfer
 		pc.StartTransfer(h, id, responseMessage.From)
 	}
@@ -129,7 +129,7 @@ func (pc *PeerConnection) Authorize(decision bool, contact *md.Contact, peer *md
 			respMsg := &md.AuthReply{
 				From:     peer,
 				Decision: true,
-				Payload:  md.Payload_NONE,
+				Payload:  md.Payload_UNDEFINED,
 			}
 
 			// Send to Channel
@@ -140,7 +140,7 @@ func (pc *PeerConnection) Authorize(decision bool, contact *md.Contact, peer *md
 			respMsg := &md.AuthReply{
 				From:     peer,
 				Decision: false,
-				Payload:  md.Payload_NONE,
+				Payload:  md.Payload_UNDEFINED,
 			}
 
 			// Send to Channel

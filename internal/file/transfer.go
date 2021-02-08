@@ -133,8 +133,8 @@ func (t *TransferFile) Save() error {
 	// Get File Information
 	info := GetInfo(t.path)
 
-	// Create Metadata
-	meta := &md.Metadata{
+	// Create Metadata Card
+	card := NewCardFromMetadata(t.invite.From.Profile, &md.Metadata{
 		Name:      info.Name,
 		Path:      t.path,
 		Size:      info.Size,
@@ -142,10 +142,10 @@ func (t *TransferFile) Save() error {
 		Thumbnail: t.invite.Preview.Thumbnail,
 		Received:  int32(time.Now().Unix()),
 		Owner:     t.invite.From.Profile,
-	}
+	})
 
 	// Convert Message to bytes
-	bytes, err := proto.Marshal(meta)
+	bytes, err := proto.Marshal(card)
 	if err != nil {
 		return err
 	}

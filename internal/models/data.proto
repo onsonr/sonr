@@ -7,13 +7,14 @@ option go_package = ".;models";
 
 // Define Payload: Define Payload Enum
 enum Payload {
-  NONE = 0;
+  UNDEFINED = 0;
   IMAGE = 1;
   VIDEO = 2;
   FILE = 3;
   CONTACT = 4;
   URL = 5;
   TEXT = 6;
+  AUDIO = 7;
 }
 
 // Define Metadata Type: For Received Transfer
