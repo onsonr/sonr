@@ -8,6 +8,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	gorpc "github.com/libp2p/go-libp2p-gorpc"
+	sf "github.com/sonr-io/core/internal/file"
 	lf "github.com/sonr-io/core/internal/lifecycle"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
@@ -50,7 +51,7 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 	as.onInvite(args.Data)
 
 	// Hold Select for Invite Type
-	if as.inviteMsg.Type == md.AuthInvite_Peer {
+	if as.inviteMsg.IsDirect {
 		select {
 		// Received Auth Channel Message
 		case m := <-as.respCh:
@@ -118,8 +119,7 @@ func (pc *PeerConnection) Authorize(decision bool, contact *md.Contact, peer *md
 	offerMsg := pc.auth.inviteMsg
 
 	// @ Check Reply Type for File
-	switch offerMsg.Payload {
-	case md.Payload_FILE:
+	if offerMsg.IsFile {
 		// @ Check Decision
 		if decision {
 			// Initialize Transfer
@@ -146,18 +146,16 @@ func (pc *PeerConnection) Authorize(decision bool, contact *md.Contact, peer *md
 			// Send to Channel
 			pc.auth.respCh <- respMsg
 		}
-	case md.Payload_CONTACT:
+	} else {
 		// @ Pass Contact Back
 		// Create Accept Response
 		respMsg := &md.AuthReply{
 			From:    peer,
 			Payload: md.Payload_CONTACT,
-			Contact: contact,
+			Card:    sf.NewCardFromContact(peer.Profile, contact),
 		}
 
 		// Send to Channel
 		pc.auth.respCh <- respMsg
-	default:
-		break
 	}
 }

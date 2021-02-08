@@ -22,7 +22,7 @@ func RequestThumbnail(req *md.ProcessRequest, sm *ProcessedFile) {
 		}
 
 		// Update Thumbnail Value
-		sm.preview.Thumbnail = thumbBuffer.Bytes()
+		sm.card.Preview = thumbBuffer.Bytes()
 
 		// @ 2. Handle Created File Request
 	} else {
@@ -35,7 +35,7 @@ func RequestThumbnail(req *md.ProcessRequest, sm *ProcessedFile) {
 			}
 
 			// Update Thumbnail Value
-			sm.preview.Thumbnail = thumbBuffer.Bytes()
+			sm.card.Preview = thumbBuffer.Bytes()
 		}
 	}
 

@@ -8,13 +8,13 @@ option go_package = ".;models";
 // Define Payload: Define Payload Enum
 enum Payload {
   UNDEFINED = 0;
-  IMAGE = 1;
-  VIDEO = 2;
-  FILE = 3;
-  CONTACT = 4;
-  URL = 5;
-  TEXT = 6;
-  AUDIO = 7;
+  CONTACT = 1;
+  MEDIA = 2;
+  URL = 3;
+  TEXT = 4;
+  PDF = 5;
+  PRESENTATION = 6;
+  SPREADSHEET = 7;
 }
 
 // Define Metadata Type: For Received Transfer
@@ -25,17 +25,6 @@ message Metadata {
   int32 size = 4;
   MIME mime = 5;
   bytes thumbnail = 6;
-  int32 received = 7;
-  Profile owner = 8;
-}
-
-// Define Preview: For File Transfer Request
-message Preview {
-  MIME mime = 1;
-  string name = 2;
-  int32 size = 3;
-  bytes thumbnail = 4;
-  int32 duration = 5;
 }
 
 // Define MIME: Protobuf Version of Mime
@@ -50,9 +39,6 @@ message MIME {
     image = 2;
     text = 3;
     video = 4;
-    pdf = 5;
-    presentation = 6;
-    spreadsheet = 7;
   }
 }
 

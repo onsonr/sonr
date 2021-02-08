@@ -1,10 +1,29 @@
 package file
 
 import (
+	"path/filepath"
 	"time"
 
 	md "github.com/sonr-io/core/internal/models"
 )
+
+// ^ Method Returns Payload by Extension ^ //
+func GetPayloadFromPath(p string) md.Payload {
+	// Get Extension
+	ext := filepath.Ext(p)
+
+	// Cross Check Extension
+	if ext == "pdf" {
+		return md.Payload_PDF
+	} else if ext == "ppt" || ext == "pptx" {
+		return md.Payload_PRESENTATION
+	} else if ext == "xls" || ext == "xlsm" || ext == "xlsx" || ext == "csv" {
+		return md.Payload_SPREADSHEET
+	} else if ext == "txt" || ext == "doc" || ext == "docx" || ext == "ttf" {
+		return md.Payload_TEXT
+	}
+	return md.Payload_UNDEFINED
+}
 
 // ^ Method Generates new Transfer Card from Contact^ //
 func NewCardFromContact(p *md.Profile, c *md.Contact) *md.TransferCard {
@@ -27,29 +46,10 @@ func NewCardFromContact(p *md.Profile, c *md.Contact) *md.TransferCard {
 
 // ^ Method Generates new Transfer Card from Metadata^ //
 func NewCardFromMetadata(p *md.Profile, m *md.Metadata) *md.TransferCard {
-	// Get Payload Type
-	var load md.Payload
-
-	// Check Metadata MIME
-	switch m.Mime.Type {
-	case md.MIME_application:
-		load = md.Payload_UNDEFINED
-	case md.MIME_audio:
-		load = md.Payload_AUDIO
-	case md.MIME_image:
-		load = md.Payload_IMAGE
-	case md.MIME_text:
-		load = md.Payload_TEXT
-	case md.MIME_video:
-		load = md.Payload_VIDEO
-	default:
-		load = md.Payload_FILE
-	}
-
 	// Return Card
 	return &md.TransferCard{
 		// SQL Properties
-		Payload:    load,
+		Payload:    GetPayloadFromPath(m.Path),
 		LastOpened: int32(time.Now().Unix()),
 		Platform:   p.Platform,
 		Preview:    m.Thumbnail,
@@ -61,5 +61,23 @@ func NewCardFromMetadata(p *md.Profile, m *md.Metadata) *md.TransferCard {
 
 		// Data Properties
 		Metadata: m,
+	}
+}
+
+// ^ Method Generates new Transfer Card from URL ^ //
+func NewCardFromUrl(p *md.Profile, s string) *md.TransferCard {
+	// Return Card
+	return &md.TransferCard{
+		// SQL Properties
+		Payload:  md.Payload_URL,
+		Platform: p.Platform,
+
+		// Owner Properties
+		Username:  p.Username,
+		FirstName: p.FirstName,
+		LastName:  p.LastName,
+
+		// Data Properties
+		Url: s,
 	}
 }

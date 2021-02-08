@@ -28,16 +28,9 @@ message ProcessRequest {
 message AuthInvite {
   Payload payload = 1;
   Peer from = 2;
-  Preview preview = 3;
-  Contact contact = 4;
-  string url = 5;
-  Type type = 6;
-  TransferCard card = 7;
-
-  enum Type {
-    Peer = 0;
-    Device = 1;
-  }
+  TransferCard card = 3;
+  bool isDirect = 4;
+  bool isFile = 5;
 }
 
 // Define AuthReply: Reply Message sent on RPC
@@ -45,26 +38,44 @@ message AuthReply {
   Payload payload = 1;
   Peer from = 2;
   bool decision = 3;
-  Contact contact = 4;
+  TransferCard card = 4;
 }
 
 // Define TransferCard Type: Transferred Data Card
 message TransferCard {
   // SQL Properties
-  string id = 1;
+  int32 id = 1;
   Payload payload = 2;
-  int32 lastOpened = 3;
-  Platform platform = 4;
-  bytes preview = 5;
+  Properties properties = 3;
+  int32 lastOpened = 4;
+  Platform platform = 5;
+  bytes preview = 6;
 
   // Owner Properties
-  string username = 6;
-  string firstName = 7;
-  string lastName = 8;
+  string username = 7;
+  string firstName = 8;
+  string lastName = 9;
 
   // Data Properties
-  Contact contact = 9;
-  Metadata metadata = 10;
+  Contact contact = 10;
+  Metadata metadata = 11;
+  string url = 12;
+
+  // -- Card Properties -- //
+  message Properties {
+    Type type = 1;
+    MIME mime = 2;
+    int32 size = 3;
+    int32 duration = 4;
+    string name = 5;
+
+    enum Type {
+      NONE = 0;
+      INVITE = 1;
+      REPLY = 2;
+      COMPLETED = 3;
+    }
+  }
 }
 
 // Define ErrorMessage: Error Message

@@ -86,7 +86,7 @@ func (sn *Node) Process(procBytes []byte) {
 	}
 
 	// Create Preview
-	safeFile := sf.NewProcessedFile(request, sn.call.OnQueued, sn.error)
+	safeFile := sf.NewProcessedFile(request, sn.peer.Profile, sn.call.OnQueued, sn.error)
 	sn.files = append(sn.files, safeFile)
 }
 

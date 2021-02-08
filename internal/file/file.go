@@ -34,7 +34,7 @@ type ProcessedFile struct {
 
 	// Private Properties
 	mutex   sync.Mutex
-	preview md.Preview
+	card    md.TransferCard
 	request *md.ProcessRequest
 }
 
@@ -46,7 +46,7 @@ func (pf *ProcessedFile) Ext() string {
 }
 
 // ^ NewProcessedFile Processes Outgoing File ^ //
-func NewProcessedFile(req *md.ProcessRequest, queueCall OnProtobuf, errCall OnError) *ProcessedFile {
+func NewProcessedFile(req *md.ProcessRequest, p *md.Profile, queueCall OnProtobuf, errCall OnError) *ProcessedFile {
 	// Set Package Level Callbacks
 	onError = errCall
 
@@ -65,11 +65,22 @@ func NewProcessedFile(req *md.ProcessRequest, queueCall OnProtobuf, errCall OnEr
 	sm.mutex.Lock()
 
 	// @ 2. Set Metadata Protobuf Values
-	// Create Preview
-	sm.preview = md.Preview{
-		Name: info.Name,
-		Size: info.Size,
-		Mime: info.Mime,
+	// Create Card
+	sm.card = md.TransferCard{
+		// SQL Properties
+		Payload:  GetPayloadFromPath(req.FilePath),
+		Platform: p.Platform,
+
+		// Owner Properties
+		Username:  p.Username,
+		FirstName: p.FirstName,
+		LastName:  p.LastName,
+
+		Properties: &md.TransferCard_Properties{
+			Name: info.Name,
+			Size: info.Size,
+			Mime: info.Mime,
+		},
 	}
 
 	// @ 3. Create Thumbnail in Goroutine
@@ -78,13 +89,13 @@ func NewProcessedFile(req *md.ProcessRequest, queueCall OnProtobuf, errCall OnEr
 }
 
 // ^ Safely returns Preview depending on lock ^ //
-func (sm *ProcessedFile) GetPreview() *md.Preview {
+func (sm *ProcessedFile) GetPreview() *md.TransferCard {
 	// ** Lock File wait for access ** //
 	sm.mutex.Lock()
 	defer sm.mutex.Unlock()
 
 	// @ 2. Return Value
-	return &sm.preview
+	return &sm.card
 }
 
 // ********************** //
@@ -137,7 +148,7 @@ func GetInfo(path string) Info {
 
 	return Info{
 		Mime: &md.MIME{
-			Type:    getType(kind.MIME.Type, filepath.Ext(path)),
+			Type:    md.MIME_Type(md.MIME_Type_value[kind.MIME.Type]),
 			Subtype: kind.MIME.Subtype,
 			Value:   kind.MIME.Value,
 		},
@@ -146,18 +157,4 @@ func GetInfo(path string) Info {
 		Size:    int32(info.Size()),
 		IsImage: filetype.IsImage(head),
 	}
-}
-
-// @ Helper Method to Get File Mime Type
-func getType(value string, ext string) md.MIME_Type {
-	if value == "application" {
-		if ext == "pdf" {
-			return md.MIME_pdf
-		} else if ext == "key" || ext == "ppt" || ext == "pptx" {
-			return md.MIME_presentation
-		} else if ext == "xls" || ext == "xlsm" || ext == "xlsx" {
-			return md.MIME_spreadsheet
-		}
-	}
-	return md.MIME_Type(md.MIME_Type_value[value])
 }

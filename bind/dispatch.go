@@ -23,14 +23,16 @@ func (sn *Node) DirectWithFile(peerId string) {
 
 	// Retreive Current File
 	currFile := sn.currentFile()
+	card := currFile.GetPreview()
 	sn.peerConn.SafePreview = currFile
 
 	// Create Invite Message
 	invMsg := md.AuthInvite{
-		From:    sn.peer,
-		Payload: md.Payload_FILE,
-		Preview: currFile.GetPreview(),
-		Type:    md.AuthInvite_Device,
+		From:     sn.peer,
+		Payload:  card.Payload,
+		Card:     card,
+		IsFile:   true,
+		IsDirect: true,
 	}
 
 	// Check if ID in PeerStore
@@ -57,10 +59,11 @@ func (sn *Node) DirectWithURL(peerId string, url string) {
 
 	// Create Invite Message with Payload
 	invMsg := md.AuthInvite{
-		From:    sn.peer,
-		Payload: md.Payload_URL,
-		Url:     url,
-		Type:    md.AuthInvite_Device,
+		From:     sn.peer,
+		Payload:  md.Payload_URL,
+		Card:     sf.NewCardFromUrl(sn.peer.Profile, url),
+		IsFile:   false,
+		IsDirect: true,
 	}
 
 	// Check if ID in PeerStore
@@ -90,14 +93,16 @@ func (sn *Node) InviteWithFile(peerId string) {
 
 	// Retreive Current File
 	currFile := sn.currentFile()
+	card := currFile.GetPreview()
 	sn.peerConn.SafePreview = currFile
 
 	// Create Invite Message
 	invMsg := md.AuthInvite{
-		From:    sn.peer,
-		Payload: md.Payload_FILE,
-		Preview: currFile.GetPreview(),
-		Type:    md.AuthInvite_Peer,
+		From:     sn.peer,
+		Payload:  card.Payload,
+		Card:     card,
+		IsDirect: false,
+		IsFile:   true,
 	}
 
 	// Check if ID in PeerStore
@@ -124,11 +129,11 @@ func (sn *Node) InviteWithContact(peerId string) {
 
 	// Create Invite Message with Payload and Card
 	invMsg := md.AuthInvite{
-		From:    sn.peer,
-		Payload: md.Payload_CONTACT,
-		Contact: sn.contact,
-		Type:    md.AuthInvite_Peer,
-		Card:    sf.NewCardFromContact(sn.peer.Profile, sn.contact),
+		From:     sn.peer,
+		Payload:  md.Payload_CONTACT,
+		Card:     sf.NewCardFromContact(sn.peer.Profile, sn.contact),
+		IsFile:   false,
+		IsDirect: false,
 	}
 
 	// Check if ID in PeerStore
@@ -155,10 +160,11 @@ func (sn *Node) InviteWithURL(peerId string, url string) {
 
 	// Create Invite Message with Payload
 	invMsg := md.AuthInvite{
-		From:    sn.peer,
-		Payload: md.Payload_URL,
-		Url:     url,
-		Type:    md.AuthInvite_Peer,
+		From:     sn.peer,
+		Payload:  md.Payload_URL,
+		Card:     sf.NewCardFromUrl(sn.peer.Profile, url),
+		IsFile:   false,
+		IsDirect: false,
 	}
 
 	// Check if ID in PeerStore

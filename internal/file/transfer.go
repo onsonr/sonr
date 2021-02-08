@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
-	"time"
 
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
@@ -37,7 +36,7 @@ type TransferFile struct {
 // ^ Method Creates New Transfer File ^ //
 func NewTransfer(inv *md.AuthInvite, dirs *md.Directories, op func(data float32), oc func([]byte)) *TransferFile {
 	// Create File Name
-	fileName := inv.Preview.Name + "." + inv.Preview.Mime.Subtype
+	fileName := inv.Card.Properties.Name + "." + inv.Card.Properties.Mime.Subtype
 
 	// Return File
 	return &TransferFile{
@@ -139,9 +138,7 @@ func (t *TransferFile) Save() error {
 		Path:      t.path,
 		Size:      info.Size,
 		Mime:      info.Mime,
-		Thumbnail: t.invite.Preview.Thumbnail,
-		Received:  int32(time.Now().Unix()),
-		Owner:     t.invite.From.Profile,
+		Thumbnail: t.invite.Card.Preview,
 	})
 
 	// Convert Message to bytes
