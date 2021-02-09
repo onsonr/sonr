@@ -51,7 +51,7 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 	as.onInvite(args.Data)
 
 	// Hold Select for Invite Type
-	if as.inviteMsg.IsDirect {
+	if !as.inviteMsg.IsDirect {
 		select {
 		// Received Auth Channel Message
 		case m := <-as.respCh:
@@ -71,6 +71,9 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 			return nil
 		}
 	}
+
+	// Begin Direct Transfer
+	log.Println("Direct Transfer")
 	return nil
 }
 

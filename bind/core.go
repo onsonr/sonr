@@ -139,15 +139,6 @@ func (sn *Node) Queued(card *md.TransferCard, req *md.InviteRequest) {
 		IsDirect: req.IsDirect,
 	}
 
-	// Convert Message to bytes
-	bytes, err := proto.Marshal(card)
-	if err != nil {
-		log.Println("Cannot Marshal Error Protobuf: ", err)
-	}
-
-	// Notify Queued
-	sn.call.OnQueued(bytes)
-
 	// Check if ID in PeerStore
 	go func(inv *md.AuthInvite) {
 		// Convert Protobuf to bytes
@@ -193,15 +184,6 @@ func (sn *Node) MultiQueued(card *md.TransferCard, req *md.InviteRequest) {
 
 		sn.peerConn.Request(sn.host, id, msgBytes)
 	}(&invMsg)
-
-	// Convert Message to bytes
-	bytes, err := proto.Marshal(card)
-	if err != nil {
-		log.Println("Cannot Marshal Error Protobuf: ", err)
-	}
-
-	// Notify Queued
-	sn.call.OnQueued(bytes)
 }
 
 // ^ error Callback with error instance, and method ^
