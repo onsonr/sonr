@@ -5,6 +5,7 @@ import (
 	"math"
 
 	sf "github.com/sonr-io/core/internal/file"
+	"github.com/sonr-io/core/internal/lifecycle"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
@@ -130,4 +131,27 @@ func (sn *Node) ResetFile() {
 	// Reset Files Slice
 	sn.files = nil
 	sn.files = make([]*sf.ProcessedFile, maxFileBufferSize)
+}
+
+// ^ Close Ends All Network Communication ^
+func (sn *Node) Pause() {
+	err := sn.lobby.Standby()
+	if err != nil {
+		sn.error(err, "Pause")
+	}
+	lifecycle.GetState().Pause()
+}
+
+// ^ Close Ends All Network Communication ^
+func (sn *Node) Resume() {
+	err := sn.lobby.Resume()
+	if err != nil {
+		sn.error(err, "Resume")
+	}
+	lifecycle.GetState().Resume()
+}
+
+// ^ Close Ends All Network Communication ^
+func (sn *Node) Stop() {
+	sn.host.Close()
 }

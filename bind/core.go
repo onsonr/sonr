@@ -9,7 +9,6 @@ import (
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	sf "github.com/sonr-io/core/internal/file"
 	sh "github.com/sonr-io/core/internal/host"
-	"github.com/sonr-io/core/internal/lifecycle"
 	"github.com/sonr-io/core/internal/lobby"
 	md "github.com/sonr-io/core/internal/models"
 	tr "github.com/sonr-io/core/internal/transfer"
@@ -91,29 +90,6 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 
 	// ** Callback Node User Information ** //
 	return node
-}
-
-// ^ Close Ends All Network Communication ^
-func (sn *Node) Pause() {
-	err := sn.lobby.Standby()
-	if err != nil {
-		sn.error(err, "Pause")
-	}
-	lifecycle.GetState().Pause()
-}
-
-// ^ Close Ends All Network Communication ^
-func (sn *Node) Resume() {
-	err := sn.lobby.Resume()
-	if err != nil {
-		sn.error(err, "Resume")
-	}
-	lifecycle.GetState().Resume()
-}
-
-// ^ Close Ends All Network Communication ^
-func (sn *Node) Stop() {
-	sn.host.Close()
 }
 
 // ^ queued Callback, Sends File Invite to Peer, and Notifies Client ^
