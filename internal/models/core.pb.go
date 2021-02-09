@@ -25,7 +25,7 @@ const (
 // of the legacy proto package is being used.
 const _ = proto.ProtoPackageIsVersion4
 
-// Define Chunk Type: Sent on Data Transfer
+// Sent on Data Transfer to Add piece of File
 type Chunk struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

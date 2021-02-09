@@ -5,7 +5,7 @@ package core;
 // Require Go Package
 option go_package = ".;models";
 
-// Define Chunk Type: Sent on Data Transfer
+// Sent on Data Transfer to Add piece of File
 message Chunk {
   string b64 = 1;
   bytes buffer = 2;

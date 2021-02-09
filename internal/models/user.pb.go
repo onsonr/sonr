@@ -25,7 +25,7 @@ const (
 // of the legacy proto package is being used.
 const _ = proto.ProtoPackageIsVersion4
 
-// Define Platform Enum: Operating System of Device
+// Platform is the Operating System of Device
 type Platform int32
 
 const (
@@ -87,7 +87,7 @@ func (Platform) EnumDescriptor() ([]byte, []int) {
 	return file_user_proto_rawDescGZIP(), []int{0}
 }
 
-// Enum for Provider
+// Social Media Service
 type Contact_SocialTile_Provider int32
 
 const (
@@ -212,10 +212,10 @@ func (Contact_SocialTile_Type) EnumDescriptor() ([]byte, []int) {
 type Peer_Discovery int32
 
 const (
-	Peer_Linked     Peer_Discovery = 0
-	Peer_MDNS       Peer_Discovery = 1
-	Peer_Ultrasonic Peer_Discovery = 2
-	Peer_Rendevouz  Peer_Discovery = 3
+	Peer_Linked     Peer_Discovery = 0 // Users own Device
+	Peer_MDNS       Peer_Discovery = 1 // Local Network
+	Peer_Ultrasonic Peer_Discovery = 2 // Ultrasonic discovered peer
+	Peer_Rendevouz  Peer_Discovery = 3 // Rendevouz Discovered Peer
 )
 
 // Enum value maps for Peer_Discovery.
@@ -261,7 +261,7 @@ func (Peer_Discovery) EnumDescriptor() ([]byte, []int) {
 	return file_user_proto_rawDescGZIP(), []int{3, 0}
 }
 
-// Enum for Proximity from User
+// Proximity is the Distance between Peers, from Ultrasonic
 type Position_Proximity int32
 
 const (
@@ -314,24 +314,25 @@ func (Position_Proximity) EnumDescriptor() ([]byte, []int) {
 	return file_user_proto_rawDescGZIP(), []int{5, 0}
 }
 
+// Heading is the Compass Direction of Peer
 type Position_Heading int32
 
 const (
-	Position_N   Position_Heading = 0
+	Position_N   Position_Heading = 0 // North
 	Position_NNE Position_Heading = 1
-	Position_NE  Position_Heading = 2
+	Position_NE  Position_Heading = 2 // North East
 	Position_ENE Position_Heading = 3
-	Position_E   Position_Heading = 4
+	Position_E   Position_Heading = 4 // East
 	Position_ESE Position_Heading = 5
-	Position_SE  Position_Heading = 6
+	Position_SE  Position_Heading = 6 // South East
 	Position_SSE Position_Heading = 7
-	Position_S   Position_Heading = 8
+	Position_S   Position_Heading = 8 // South
 	Position_SSW Position_Heading = 9
-	Position_SW  Position_Heading = 10
+	Position_SW  Position_Heading = 10 // South West
 	Position_WSW Position_Heading = 11
-	Position_W   Position_Heading = 12
+	Position_W   Position_Heading = 12 // West
 	Position_WNW Position_Heading = 13
-	Position_NW  Position_Heading = 14
+	Position_NW  Position_Heading = 14 // North West
 	Position_NNW Position_Heading = 15
 )
 
@@ -458,13 +459,12 @@ func (User_Settings_Option) EnumDescriptor() ([]byte, []int) {
 	return file_user_proto_rawDescGZIP(), []int{6, 0, 0}
 }
 
-// Define Contact Type: Will be CSV in Future
+// Contact is Extensive User Info that can be passed
 type Contact struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// Default
 	FirstName string                `protobuf:"bytes,1,opt,name=firstName,proto3" json:"firstName,omitempty"`
 	LastName  string                `protobuf:"bytes,2,opt,name=lastName,proto3" json:"lastName,omitempty"`
 	Phone     string                `protobuf:"bytes,3,opt,name=phone,proto3" json:"phone,omitempty"`
@@ -563,7 +563,7 @@ func (x *Contact) GetSocials() []*Contact_SocialTile {
 	return nil
 }
 
-// Define Device Type: Information about device
+// Information about device for User or Peer
 type Device struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -574,8 +574,8 @@ type Device struct {
 	Model    string   `protobuf:"bytes,3,opt,name=model,proto3" json:"model,omitempty"`
 	Name     string   `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
 	Version  string   `protobuf:"bytes,5,opt,name=version,proto3" json:"version,omitempty"`
-	Sdk      int32    `protobuf:"varint,6,opt,name=sdk,proto3" json:"sdk,omitempty"` // For Android
-	Desktop  bool     `protobuf:"varint,7,opt,name=desktop,proto3" json:"desktop,omitempty"`
+	Sdk      int32    `protobuf:"varint,6,opt,name=sdk,proto3" json:"sdk,omitempty"`         // Only For Android
+	Desktop  bool     `protobuf:"varint,7,opt,name=desktop,proto3" json:"desktop,omitempty"` // Only For Desktop
 }
 
 func (x *Device) Reset() {
@@ -659,16 +659,16 @@ func (x *Device) GetDesktop() bool {
 	return false
 }
 
-// Define Directories Type: Where Data can be stored
+// Directories are for FilePaths Where Data can be stored
 type Directories struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Cache     string `protobuf:"bytes,1,opt,name=cache,proto3" json:"cache,omitempty"` // Only For Desktop
-	Documents string `protobuf:"bytes,2,opt,name=documents,proto3" json:"documents,omitempty"`
-	Downloads string `protobuf:"bytes,3,opt,name=downloads,proto3" json:"downloads,omitempty"`
-	Temporary string `protobuf:"bytes,4,opt,name=temporary,proto3" json:"temporary,omitempty"`
+	Cache     string `protobuf:"bytes,1,opt,name=cache,proto3" json:"cache,omitempty"`         // Only For Desktop
+	Documents string `protobuf:"bytes,2,opt,name=documents,proto3" json:"documents,omitempty"` // Permanent Data Storage
+	Downloads string `protobuf:"bytes,3,opt,name=downloads,proto3" json:"downloads,omitempty"` // Only For Desktop
+	Temporary string `protobuf:"bytes,4,opt,name=temporary,proto3" json:"temporary,omitempty"` // Temporary Data Storage, Mobile Only
 }
 
 func (x *Directories) Reset() {
@@ -731,7 +731,7 @@ func (x *Directories) GetTemporary() string {
 	return ""
 }
 
-// Define Peer: Basic Info Sent to Peers
+// Basic Info Sent to Peers to Establish Connections
 type Peer struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -811,7 +811,7 @@ func (x *Peer) GetDiscovery() Peer_Discovery {
 	return Peer_Linked
 }
 
-// Define Profile: General Information about Peer
+// General Information about Peer passed during Authentication
 type Profile struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -891,13 +891,12 @@ func (x *Profile) GetPlatform() Platform {
 	return Platform_Unknown
 }
 
-// Define Direction: Includes All Direction Info
+// Position Includes All Directional Info of Peer
 type Position struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// Given Data
 	Direction float64            `protobuf:"fixed64,1,opt,name=direction,proto3" json:"direction,omitempty"`
 	Antipodal float64            `protobuf:"fixed64,2,opt,name=antipodal,proto3" json:"antipodal,omitempty"`
 	Distance  float64            `protobuf:"fixed64,3,opt,name=distance,proto3" json:"distance,omitempty"`
@@ -972,7 +971,7 @@ func (x *Position) GetProximity() Position_Proximity {
 	return Position_Unknown
 }
 
-// Define User: Saved Data from Client
+// User is the Saved Data from Client that Passes to Proxy
 type User struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1052,7 +1051,7 @@ func (x *User) GetSettings() []*User_Settings {
 	return nil
 }
 
-// Extended Social Media Integration
+// Social Tile provides Display Information and Provider Information
 type Contact_SocialTile struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

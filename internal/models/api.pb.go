@@ -143,7 +143,7 @@ func (TransferCard_Status) EnumDescriptor() ([]byte, []int) {
 	return file_api_proto_rawDescGZIP(), []int{4, 0}
 }
 
-// Define ConnectionRequest: Initial Connection Message
+// Initial Connection Message
 type ConnectionRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -231,7 +231,7 @@ func (x *ConnectionRequest) GetContact() *Contact {
 	return nil
 }
 
-// Define InviteRequest: Processes Given File and Invites Peer
+// Processes Given File and Invites Peer
 type InviteRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -321,7 +321,7 @@ func (x *InviteRequest) GetFiles() []*InviteRequest_FileInfo {
 	return nil
 }
 
-// Define AuthInvite: Invitation Message sent on RPC
+// Invitation Message sent on RPC
 type AuthInvite struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -393,7 +393,7 @@ func (x *AuthInvite) GetIsDirect() bool {
 	return false
 }
 
-// Define AuthReply: Reply Message sent on RPC
+// Reply Message sent on RPC
 type AuthReply struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -465,7 +465,7 @@ func (x *AuthReply) GetCard() *TransferCard {
 	return nil
 }
 
-// Define TransferCard Type: Transferred Data Card
+// TransferCard holds data passed between Exchange
 type TransferCard struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -621,7 +621,7 @@ func (x *TransferCard) GetUrl() string {
 	return ""
 }
 
-// Define ErrorMessage: Error Message
+// Error Message returned from Core Library
 type ErrorMessage struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -749,7 +749,7 @@ func (x *InviteRequest_FileInfo) GetDuration() int32 {
 	return 0
 }
 
-// -- Card Properties -- //
+// Card Properties based on File
 type TransferCard_Properties struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -829,7 +829,7 @@ func (x *TransferCard_Properties) GetTotal() int32 {
 	return 0
 }
 
-// -- Progress Variables -- //
+// Progress Variables to determine completion
 type TransferCard_Progress struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

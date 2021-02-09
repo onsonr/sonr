@@ -6,7 +6,7 @@ import "user.proto";
 // Require Go Package
 option go_package = ".;models";
 
-// Define ConnectionRequest: Initial Connection Message
+// Initial Connection Message
 message ConnectionRequest {
   double latitude = 1;
   double longitude = 2;
@@ -16,7 +16,7 @@ message ConnectionRequest {
   Contact contact = 6;
 }
 
-// Define InviteRequest: Processes Given File and Invites Peer
+// Processes Given File and Invites Peer
 message InviteRequest {
   // Transfer Properties
   TransferType type = 1;
@@ -46,7 +46,7 @@ message InviteRequest {
   }
 }
 
-// Define AuthInvite: Invitation Message sent on RPC
+// Invitation Message sent on RPC
 message AuthInvite {
   Payload payload = 1;
   Peer from = 2;
@@ -54,7 +54,7 @@ message AuthInvite {
   bool isDirect = 4;
 }
 
-// Define AuthReply: Reply Message sent on RPC
+// Reply Message sent on RPC
 message AuthReply {
   Payload payload = 1;
   Peer from = 2;
@@ -62,7 +62,7 @@ message AuthReply {
   TransferCard card = 4;
 }
 
-// Define TransferCard Type: Transferred Data Card
+// TransferCard holds data passed between Exchange
 message TransferCard {
   // SQL Properties
   int32 id = 1;
@@ -97,7 +97,7 @@ message TransferCard {
     COMPLETED = 6;
   }
 
-  // -- Card Properties -- //
+  // Card Properties based on File
   message Properties {
     MIME mime = 1;
     int32 size = 2;
@@ -106,7 +106,7 @@ message TransferCard {
     int32 total = 5;
   }
 
-  // -- Progress Variables -- //
+  // Progress Variables to determine completion
   message Progress {
     int32 currentSize = 1;
     int32 interval = 2;
@@ -115,7 +115,7 @@ message TransferCard {
   }
 }
 
-// Define ErrorMessage: Error Message
+// Error Message returned from Core Library
 message ErrorMessage {
   string message = 1;
   string method = 2;

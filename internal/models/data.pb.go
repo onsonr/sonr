@@ -25,7 +25,7 @@ const (
 // of the legacy proto package is being used.
 const _ = proto.ProtoPackageIsVersion4
 
-// Define Payload: Define Payload Enum
+// Payload is type of Data being transferred
 type Payload int32
 
 const (
@@ -200,7 +200,7 @@ func (MIME_Type) EnumDescriptor() ([]byte, []int) {
 	return file_data_proto_rawDescGZIP(), []int{3, 0}
 }
 
-// Define Lobby Type: For Info about Lobby
+// For Info about Lobby
 type Lobby struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -280,7 +280,6 @@ func (x *Lobby) GetStandby() map[string]*Peer {
 	return nil
 }
 
-// [CORE]
 // Message Sent when peer messages Lobby Topic
 type LobbyEvent struct {
 	state         protoimpl.MessageState
@@ -345,7 +344,7 @@ func (x *LobbyEvent) GetData() *Peer {
 	return nil
 }
 
-// Define Metadata Type: For Received Transfer
+// For Received Transfer File Information
 type Metadata struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -433,7 +432,7 @@ func (x *Metadata) GetThumbnail() []byte {
 	return nil
 }
 
-// Define MIME: Protobuf Version of Mime
+// Protobuf for Standard MIME
 type MIME struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

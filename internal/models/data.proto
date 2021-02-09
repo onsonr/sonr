@@ -5,64 +5,62 @@ import "user.proto";
 // Require Go Package
 option go_package = ".;models";
 
-// Define Lobby Type: For Info about Lobby
+// For Info about Lobby
 message Lobby {
-  string olc = 1;
-  int32 size = 2;
-  int32 count = 3;
-  map<string, Peer> peers = 4;
-  map<string, Peer> standby = 5;
+  string olc = 1;                // Open Location Code of Lobby
+  int32 size = 2;                // Total Number of Devices in Lobby
+  int32 count = 3;               // Total Devices in Lobby EXCLUDING User
+  map<string, Peer> peers = 4;   // Total Data of Active Peers
+  map<string, Peer> standby = 5; // Peers that have went inactive
 }
 
-// [CORE]
 // Message Sent when peer messages Lobby Topic
 message LobbyEvent {
-  string id = 1;
-  Event event = 2;
-  Peer data = 3;
+  string id = 1;   // Peer ID
+  Event event = 2; // What Peer is Doing
+  Peer data = 3;   // Peer Information
 
   enum Event {
-    EXCHANGE = 0;
-    EXIT = 1;
-    STANDBY = 2;
-    RESUME = 3;
-    UPDATE = 4;
+    EXCHANGE = 0; // Peer has joined wants Info
+    STANDBY = 1;  // Peer is taking break from lobby
+    RESUME = 2;   // Peer has rejoined Lobby
+    UPDATE = 3;   // Peer has changed position
   }
 }
 
-// Define Metadata Type: For Received Transfer
+// For Received Transfer File Information
 message Metadata {
-  int32 id = 1;
-  string name = 2;
-  string path = 3;
-  int32 size = 4;
-  MIME mime = 5;
-  bytes thumbnail = 6;
+  int32 id = 1;        // Time based Assignment
+  string name = 2;     // File Name without Path
+  string path = 3;     // File Location
+  int32 size = 4;      // File Size in Bytes
+  MIME mime = 5;       // Standard Mime Type
+  bytes thumbnail = 6; // Thumbnail Preview of File
 }
 
-// Define MIME: Protobuf Version of Mime
+// Protobuf for Standard MIME
 message MIME {
-  Type type = 1;
-  string subtype = 2;
-  string value = 3;
+  Type type = 1;      // Type of File
+  string subtype = 2; // Extension of File
+  string value = 3;   // Type/Subtype i.e. (image/jpeg)
 
   enum Type {
-    application = 0;
-    audio = 1;
-    image = 2;
-    text = 3;
-    video = 4;
+    application = 0; // Document Files
+    audio = 1;       // Sound, Audio Files
+    image = 2;       // Image Files
+    text = 3;        // Text Based Files
+    video = 4;       // Video Files
   }
 }
 
-// Define Payload: Define Payload Enum
+// Payload is type of Data being transferred
 enum Payload {
-  UNDEFINED = 0;
-  CONTACT = 1;
-  MEDIA = 2;
-  URL = 3;
-  TEXT = 4;
-  PDF = 5;
-  PRESENTATION = 6;
-  SPREADSHEET = 7;
+  UNDEFINED = 0;    // Not Specified
+  CONTACT = 1;      // Sonr Based Contact
+  MEDIA = 2;        // Image, Audio, Video
+  URL = 3;          // Link to Site
+  TEXT = 4;         // Text based document
+  PDF = 5;          // PDF File
+  PRESENTATION = 6; // Presentation based File from PPT or Keynote
+  SPREADSHEET = 7;  // Spreadsheet based File from Excel or Numbers
 }
