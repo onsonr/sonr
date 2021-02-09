@@ -19,9 +19,10 @@ message ConnectionRequest {
 // Define ProcessRequest: Processes Given File with Information
 message ProcessRequest {
   bool isExternal = 1;
-  string filePath = 2;
-  string thumbnailPath = 3;
-  int32 duration = 4;
+  bool hasThumbnail = 2;
+  string filePath = 3;
+  string thumbnailPath = 4;
+  int32 duration = 5;
 }
 
 // Define AuthInvite: Invitation Message sent on RPC

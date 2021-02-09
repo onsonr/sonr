@@ -5,6 +5,7 @@ import (
 	"math"
 
 	sf "github.com/sonr-io/core/internal/file"
+	lf "github.com/sonr-io/core/internal/lifecycle"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
@@ -86,7 +87,7 @@ func (sn *Node) Process(procBytes []byte) {
 	}
 
 	// Create Preview
-	safeFile := sf.NewProcessedFile(request, sn.peer.Profile, sn.call.OnQueued, sn.error)
+	safeFile := sf.NewProcessedFile(request, sn.peer.Profile, lf.ProcessCallbacks{CallQueued: sn.call.OnQueued, CallError: sn.error})
 	sn.files = append(sn.files, safeFile)
 }
 

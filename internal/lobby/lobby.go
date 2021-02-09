@@ -30,7 +30,7 @@ type Lobby struct {
 	onError      lf.OnError
 	doneCh       chan struct{}
 	ps           *pubsub.PubSub
-	getPeer      lf.GetUserPeer
+	getPeer      lf.ReturnPeer
 	topic        *pubsub.Topic
 	topicHandler *pubsub.TopicEventHandler
 	self         peer.ID

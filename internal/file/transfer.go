@@ -10,6 +10,7 @@ import (
 	"sync"
 	"time"
 
+	lf "github.com/sonr-io/core/internal/lifecycle"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -19,8 +20,8 @@ type TransferFile struct {
 	// Inherited Properties
 	mutex      sync.Mutex
 	invite     *md.AuthInvite
-	onProgress OnProgress
-	onComplete OnProtobuf
+	onProgress lf.OnProgress
+	onComplete lf.OnProtobuf
 	path       string
 
 	// Builders
@@ -35,7 +36,7 @@ type TransferFile struct {
 }
 
 // ^ Method Creates New Transfer File ^ //
-func NewTransfer(inv *md.AuthInvite, dirs *md.Directories, op func(data float32), oc func([]byte)) *TransferFile {
+func NewTransfer(inv *md.AuthInvite, dirs *md.Directories, calls lf.TransferFileCallbacks) *TransferFile {
 	// Create File Name
 	fileName := inv.Card.Properties.Name + "." + inv.Card.Properties.Mime.Subtype
 
@@ -44,8 +45,8 @@ func NewTransfer(inv *md.AuthInvite, dirs *md.Directories, op func(data float32)
 		// Inherited Properties
 		invite:     inv,
 		path:       filepath.Join(dirs.Temporary, fileName),
-		onProgress: op,
-		onComplete: oc,
+		onProgress: calls.CallProgress,
+		onComplete: calls.CallComplete,
 
 		// Builders
 		stringsBuilder: new(strings.Builder),
@@ -131,7 +132,7 @@ func (t *TransferFile) Save() error {
 
 	// @ 1. Get File Information
 	// Create Card
-	card := t.GetCard()
+	card := t.TransferCard()
 
 	// Convert Message to bytes
 	bytes, err := proto.Marshal(card)
@@ -145,7 +146,7 @@ func (t *TransferFile) Save() error {
 }
 
 // ^ Method Generates new Transfer Card from TransferFile^ //
-func (t *TransferFile) GetCard() *md.TransferCard {
+func (t *TransferFile) TransferCard() *md.TransferCard {
 	// Get File Information
 	i := GetFileInfo(t.path)
 	p := t.invite.From.Profile

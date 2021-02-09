@@ -119,30 +119,6 @@ func NewCardFromContact(p *md.Profile, c *md.Contact, status md.TransferCard_Sta
 	}
 }
 
-// ^ Method Generates new Transfer Card from ProcessRequest^ //
-func NewCardFromProcessRequest(p *md.Profile, path string) md.TransferCard {
-	// Get File Information
-	info := GetFileInfo(path)
-
-	// Return Card
-	return md.TransferCard{
-		// SQL Properties
-		Payload:  info.Payload,
-		Platform: p.Platform,
-
-		// Owner Properties
-		Username:  p.Username,
-		FirstName: p.FirstName,
-		LastName:  p.LastName,
-
-		Properties: &md.TransferCard_Properties{
-			Name: info.Name,
-			Size: info.Size,
-			Mime: info.Mime,
-		},
-	}
-}
-
 // ^ Method Generates new Transfer Card from URL ^ //
 func NewCardFromUrl(p *md.Profile, s string, status md.TransferCard_Status) *md.TransferCard {
 	// Return Card

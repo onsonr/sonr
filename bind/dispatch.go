@@ -23,7 +23,7 @@ func (sn *Node) DirectWithFile(peerId string) {
 
 	// Retreive Current File
 	currFile := sn.currentFile()
-	card := currFile.GetTransferCard()
+	card := currFile.TransferCard()
 	card.Status = md.TransferCard_DIRECT
 	sn.peerConn.SafePreview = currFile
 
@@ -94,7 +94,7 @@ func (sn *Node) InviteWithFile(peerId string) {
 
 	// Retreive Current File
 	currFile := sn.currentFile()
-	card := currFile.GetTransferCard()
+	card := currFile.TransferCard()
 	card.Status = md.TransferCard_INVITE
 	sn.peerConn.SafePreview = currFile
 
