@@ -81,65 +81,6 @@ func (InviteRequest_TransferType) EnumDescriptor() ([]byte, []int) {
 	return file_api_proto_rawDescGZIP(), []int{1, 0}
 }
 
-// Card Transfer Status
-type TransferCard_Status int32
-
-const (
-	TransferCard_NONE       TransferCard_Status = 0 // Default, Idle or Post-Completion
-	TransferCard_INVITE     TransferCard_Status = 1 // An Invited Transfer
-	TransferCard_DIRECT     TransferCard_Status = 2 // A Direct Transfer
-	TransferCard_REPLY      TransferCard_Status = 3 // A Response Card (Usually Contact only)
-	TransferCard_INPROGRESS TransferCard_Status = 4 // A Transfer in Progress
-	TransferCard_COMPLETED  TransferCard_Status = 5 // A Received and Completed Transfer
-)
-
-// Enum value maps for TransferCard_Status.
-var (
-	TransferCard_Status_name = map[int32]string{
-		0: "NONE",
-		1: "INVITE",
-		2: "DIRECT",
-		3: "REPLY",
-		4: "INPROGRESS",
-		5: "COMPLETED",
-	}
-	TransferCard_Status_value = map[string]int32{
-		"NONE":       0,
-		"INVITE":     1,
-		"DIRECT":     2,
-		"REPLY":      3,
-		"INPROGRESS": 4,
-		"COMPLETED":  5,
-	}
-)
-
-func (x TransferCard_Status) Enum() *TransferCard_Status {
-	p := new(TransferCard_Status)
-	*p = x
-	return p
-}
-
-func (x TransferCard_Status) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (TransferCard_Status) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_proto_enumTypes[1].Descriptor()
-}
-
-func (TransferCard_Status) Type() protoreflect.EnumType {
-	return &file_api_proto_enumTypes[1]
-}
-
-func (x TransferCard_Status) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use TransferCard_Status.Descriptor instead.
-func (TransferCard_Status) EnumDescriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{4, 0}
-}
-
 // Initial Connection Message to Establish Sonr
 type ConnectionRequest struct {
 	state         protoimpl.MessageState
@@ -461,158 +402,6 @@ func (x *AuthReply) GetCard() *TransferCard {
 	return nil
 }
 
-// TransferCard holds data passed between Exchange
-type TransferCard struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Id         int32                    `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`                                   // SQL: Id reference
-	Payload    Payload                  `protobuf:"varint,2,opt,name=payload,proto3,enum=Payload" json:"payload,omitempty"`            // SQL: Type of Data received
-	Received   int32                    `protobuf:"varint,3,opt,name=received,proto3" json:"received,omitempty"`                       // SQL: UnixTime of received Date/Time
-	Preview    []byte                   `protobuf:"bytes,4,opt,name=preview,proto3" json:"preview,omitempty"`                          // SQL: Thumbnail Preview Bytes
-	Platform   Platform                 `protobuf:"varint,5,opt,name=platform,proto3,enum=Platform" json:"platform,omitempty"`         // OWNER: Operating System of Owner
-	Username   string                   `protobuf:"bytes,6,opt,name=username,proto3" json:"username,omitempty"`                        // OWNER: Sonr Username Reference
-	FirstName  string                   `protobuf:"bytes,7,opt,name=firstName,proto3" json:"firstName,omitempty"`                      // OWNER: General FirstName Reference
-	LastName   string                   `protobuf:"bytes,8,opt,name=lastName,proto3" json:"lastName,omitempty"`                        // OWNER: General LastName Reference
-	Progress   *TransferCard_Progress   `protobuf:"bytes,9,opt,name=progress,proto3" json:"progress,omitempty"`                        // TRANSFER: Progress of Transfer - File Only
-	Status     TransferCard_Status      `protobuf:"varint,10,opt,name=status,proto3,enum=TransferCard_Status" json:"status,omitempty"` // TRANSFER: Status of the Card - File Only
-	Properties *TransferCard_Properties `protobuf:"bytes,11,opt,name=properties,proto3" json:"properties,omitempty"`                   // TRANSFER: Card Properties - File Only
-	Contact    *Contact                 `protobuf:"bytes,12,opt,name=contact,proto3" json:"contact,omitempty"`                         // DATA(Optional): Received Contact Information
-	Metadata   *Metadata                `protobuf:"bytes,13,opt,name=metadata,proto3" json:"metadata,omitempty"`                       // DATA(Optional): Received a File or Media
-	Url        string                   `protobuf:"bytes,14,opt,name=url,proto3" json:"url,omitempty"`                                 // DATA(Optional): Received a Website Link
-}
-
-func (x *TransferCard) Reset() {
-	*x = TransferCard{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[4]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *TransferCard) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*TransferCard) ProtoMessage() {}
-
-func (x *TransferCard) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[4]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use TransferCard.ProtoReflect.Descriptor instead.
-func (*TransferCard) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *TransferCard) GetId() int32 {
-	if x != nil {
-		return x.Id
-	}
-	return 0
-}
-
-func (x *TransferCard) GetPayload() Payload {
-	if x != nil {
-		return x.Payload
-	}
-	return Payload_UNDEFINED
-}
-
-func (x *TransferCard) GetReceived() int32 {
-	if x != nil {
-		return x.Received
-	}
-	return 0
-}
-
-func (x *TransferCard) GetPreview() []byte {
-	if x != nil {
-		return x.Preview
-	}
-	return nil
-}
-
-func (x *TransferCard) GetPlatform() Platform {
-	if x != nil {
-		return x.Platform
-	}
-	return Platform_Unknown
-}
-
-func (x *TransferCard) GetUsername() string {
-	if x != nil {
-		return x.Username
-	}
-	return ""
-}
-
-func (x *TransferCard) GetFirstName() string {
-	if x != nil {
-		return x.FirstName
-	}
-	return ""
-}
-
-func (x *TransferCard) GetLastName() string {
-	if x != nil {
-		return x.LastName
-	}
-	return ""
-}
-
-func (x *TransferCard) GetProgress() *TransferCard_Progress {
-	if x != nil {
-		return x.Progress
-	}
-	return nil
-}
-
-func (x *TransferCard) GetStatus() TransferCard_Status {
-	if x != nil {
-		return x.Status
-	}
-	return TransferCard_NONE
-}
-
-func (x *TransferCard) GetProperties() *TransferCard_Properties {
-	if x != nil {
-		return x.Properties
-	}
-	return nil
-}
-
-func (x *TransferCard) GetContact() *Contact {
-	if x != nil {
-		return x.Contact
-	}
-	return nil
-}
-
-func (x *TransferCard) GetMetadata() *Metadata {
-	if x != nil {
-		return x.Metadata
-	}
-	return nil
-}
-
-func (x *TransferCard) GetUrl() string {
-	if x != nil {
-		return x.Url
-	}
-	return ""
-}
-
 // Error Message returned from Core Library
 type ErrorMessage struct {
 	state         protoimpl.MessageState
@@ -626,7 +415,7 @@ type ErrorMessage struct {
 func (x *ErrorMessage) Reset() {
 	*x = ErrorMessage{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[5]
+		mi := &file_api_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -639,7 +428,7 @@ func (x *ErrorMessage) String() string {
 func (*ErrorMessage) ProtoMessage() {}
 
 func (x *ErrorMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[5]
+	mi := &file_api_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -652,7 +441,7 @@ func (x *ErrorMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ErrorMessage.ProtoReflect.Descriptor instead.
 func (*ErrorMessage) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{5}
+	return file_api_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *ErrorMessage) GetMessage() string {
@@ -684,7 +473,7 @@ type InviteRequest_FileInfo struct {
 func (x *InviteRequest_FileInfo) Reset() {
 	*x = InviteRequest_FileInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[6]
+		mi := &file_api_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -697,7 +486,7 @@ func (x *InviteRequest_FileInfo) String() string {
 func (*InviteRequest_FileInfo) ProtoMessage() {}
 
 func (x *InviteRequest_FileInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[6]
+	mi := &file_api_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -737,150 +526,6 @@ func (x *InviteRequest_FileInfo) GetThumbpath() string {
 func (x *InviteRequest_FileInfo) GetDuration() int32 {
 	if x != nil {
 		return x.Duration
-	}
-	return 0
-}
-
-// Card Properties based on File
-type TransferCard_Properties struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Mime     *MIME  `protobuf:"bytes,1,opt,name=mime,proto3" json:"mime,omitempty"`          // Standard MIME Type Values
-	Size     int32  `protobuf:"varint,2,opt,name=size,proto3" json:"size,omitempty"`         // Size of File in Bytes
-	Duration int32  `protobuf:"varint,3,opt,name=duration,proto3" json:"duration,omitempty"` // Length of Video - Optional
-	Name     string `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`          // Name of File
-}
-
-func (x *TransferCard_Properties) Reset() {
-	*x = TransferCard_Properties{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[7]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *TransferCard_Properties) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*TransferCard_Properties) ProtoMessage() {}
-
-func (x *TransferCard_Properties) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[7]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use TransferCard_Properties.ProtoReflect.Descriptor instead.
-func (*TransferCard_Properties) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{4, 0}
-}
-
-func (x *TransferCard_Properties) GetMime() *MIME {
-	if x != nil {
-		return x.Mime
-	}
-	return nil
-}
-
-func (x *TransferCard_Properties) GetSize() int32 {
-	if x != nil {
-		return x.Size
-	}
-	return 0
-}
-
-func (x *TransferCard_Properties) GetDuration() int32 {
-	if x != nil {
-		return x.Duration
-	}
-	return 0
-}
-
-func (x *TransferCard_Properties) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-// Progress Variables to determine completion
-type TransferCard_Progress struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	CurrentSize int32 `protobuf:"varint,1,opt,name=currentSize,proto3" json:"currentSize,omitempty"` // Current size of File in Transfer
-	Interval    int32 `protobuf:"varint,2,opt,name=interval,proto3" json:"interval,omitempty"`       // Current Interval of Transfer
-	TotalChunks int32 `protobuf:"varint,3,opt,name=totalChunks,proto3" json:"totalChunks,omitempty"` // Total Chunks of File
-	TotalSize   int32 `protobuf:"varint,4,opt,name=totalSize,proto3" json:"totalSize,omitempty"`     // Total Size of File
-}
-
-func (x *TransferCard_Progress) Reset() {
-	*x = TransferCard_Progress{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[8]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *TransferCard_Progress) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*TransferCard_Progress) ProtoMessage() {}
-
-func (x *TransferCard_Progress) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[8]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use TransferCard_Progress.ProtoReflect.Descriptor instead.
-func (*TransferCard_Progress) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{4, 1}
-}
-
-func (x *TransferCard_Progress) GetCurrentSize() int32 {
-	if x != nil {
-		return x.CurrentSize
-	}
-	return 0
-}
-
-func (x *TransferCard_Progress) GetInterval() int32 {
-	if x != nil {
-		return x.Interval
-	}
-	return 0
-}
-
-func (x *TransferCard_Progress) GetTotalChunks() int32 {
-	if x != nil {
-		return x.TotalChunks
-	}
-	return 0
-}
-
-func (x *TransferCard_Progress) GetTotalSize() int32 {
-	if x != nil {
-		return x.TotalSize
 	}
 	return 0
 }
@@ -948,64 +593,13 @@ var file_api_proto_rawDesc = []byte{
 	0x64, 0x65, 0x63, 0x69, 0x73, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x08, 0x52, 0x08,
 	0x64, 0x65, 0x63, 0x69, 0x73, 0x69, 0x6f, 0x6e, 0x12, 0x21, 0x0a, 0x04, 0x63, 0x61, 0x72, 0x64,
 	0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x66, 0x65,
-	0x72, 0x43, 0x61, 0x72, 0x64, 0x52, 0x04, 0x63, 0x61, 0x72, 0x64, 0x22, 0xbc, 0x06, 0x0a, 0x0c,
-	0x54, 0x72, 0x61, 0x6e, 0x73, 0x66, 0x65, 0x72, 0x43, 0x61, 0x72, 0x64, 0x12, 0x0e, 0x0a, 0x02,
-	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x02, 0x69, 0x64, 0x12, 0x22, 0x0a, 0x07,
-	0x70, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x08, 0x2e,
-	0x50, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x52, 0x07, 0x70, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64,
-	0x12, 0x1a, 0x0a, 0x08, 0x72, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65, 0x64, 0x18, 0x03, 0x20, 0x01,
-	0x28, 0x05, 0x52, 0x08, 0x72, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65, 0x64, 0x12, 0x18, 0x0a, 0x07,
-	0x70, 0x72, 0x65, 0x76, 0x69, 0x65, 0x77, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x07, 0x70,
-	0x72, 0x65, 0x76, 0x69, 0x65, 0x77, 0x12, 0x25, 0x0a, 0x08, 0x70, 0x6c, 0x61, 0x74, 0x66, 0x6f,
-	0x72, 0x6d, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x09, 0x2e, 0x50, 0x6c, 0x61, 0x74, 0x66,
-	0x6f, 0x72, 0x6d, 0x52, 0x08, 0x70, 0x6c, 0x61, 0x74, 0x66, 0x6f, 0x72, 0x6d, 0x12, 0x1a, 0x0a,
-	0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x1c, 0x0a, 0x09, 0x66, 0x69, 0x72,
-	0x73, 0x74, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x66, 0x69,
-	0x72, 0x73, 0x74, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x6c, 0x61, 0x73, 0x74, 0x4e,
-	0x61, 0x6d, 0x65, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x6c, 0x61, 0x73, 0x74, 0x4e,
-	0x61, 0x6d, 0x65, 0x12, 0x32, 0x0a, 0x08, 0x70, 0x72, 0x6f, 0x67, 0x72, 0x65, 0x73, 0x73, 0x18,
-	0x09, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x16, 0x2e, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x66, 0x65, 0x72,
-	0x43, 0x61, 0x72, 0x64, 0x2e, 0x50, 0x72, 0x6f, 0x67, 0x72, 0x65, 0x73, 0x73, 0x52, 0x08, 0x70,
-	0x72, 0x6f, 0x67, 0x72, 0x65, 0x73, 0x73, 0x12, 0x2c, 0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75,
-	0x73, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x14, 0x2e, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x66,
-	0x65, 0x72, 0x43, 0x61, 0x72, 0x64, 0x2e, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x06, 0x73,
-	0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x38, 0x0a, 0x0a, 0x70, 0x72, 0x6f, 0x70, 0x65, 0x72, 0x74,
-	0x69, 0x65, 0x73, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x54, 0x72, 0x61, 0x6e,
-	0x73, 0x66, 0x65, 0x72, 0x43, 0x61, 0x72, 0x64, 0x2e, 0x50, 0x72, 0x6f, 0x70, 0x65, 0x72, 0x74,
-	0x69, 0x65, 0x73, 0x52, 0x0a, 0x70, 0x72, 0x6f, 0x70, 0x65, 0x72, 0x74, 0x69, 0x65, 0x73, 0x12,
-	0x22, 0x0a, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x0b,
-	0x32, 0x08, 0x2e, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x52, 0x07, 0x63, 0x6f, 0x6e, 0x74,
-	0x61, 0x63, 0x74, 0x12, 0x25, 0x0a, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x18,
-	0x0d, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x09, 0x2e, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61,
-	0x52, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x12, 0x10, 0x0a, 0x03, 0x75, 0x72,
-	0x6c, 0x18, 0x0e, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x75, 0x72, 0x6c, 0x1a, 0x6b, 0x0a, 0x0a,
-	0x50, 0x72, 0x6f, 0x70, 0x65, 0x72, 0x74, 0x69, 0x65, 0x73, 0x12, 0x19, 0x0a, 0x04, 0x6d, 0x69,
-	0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x05, 0x2e, 0x4d, 0x49, 0x4d, 0x45, 0x52,
-	0x04, 0x6d, 0x69, 0x6d, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x73, 0x69, 0x7a, 0x65, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x05, 0x52, 0x04, 0x73, 0x69, 0x7a, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x64, 0x75, 0x72,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x52, 0x08, 0x64, 0x75, 0x72,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x04, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x1a, 0x88, 0x01, 0x0a, 0x08, 0x50, 0x72,
-	0x6f, 0x67, 0x72, 0x65, 0x73, 0x73, 0x12, 0x20, 0x0a, 0x0b, 0x63, 0x75, 0x72, 0x72, 0x65, 0x6e,
-	0x74, 0x53, 0x69, 0x7a, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x0b, 0x63, 0x75, 0x72,
-	0x72, 0x65, 0x6e, 0x74, 0x53, 0x69, 0x7a, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x69, 0x6e, 0x74, 0x65,
-	0x72, 0x76, 0x61, 0x6c, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x08, 0x69, 0x6e, 0x74, 0x65,
-	0x72, 0x76, 0x61, 0x6c, 0x12, 0x20, 0x0a, 0x0b, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x43, 0x68, 0x75,
-	0x6e, 0x6b, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x52, 0x0b, 0x74, 0x6f, 0x74, 0x61, 0x6c,
-	0x43, 0x68, 0x75, 0x6e, 0x6b, 0x73, 0x12, 0x1c, 0x0a, 0x09, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x53,
-	0x69, 0x7a, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x05, 0x52, 0x09, 0x74, 0x6f, 0x74, 0x61, 0x6c,
-	0x53, 0x69, 0x7a, 0x65, 0x22, 0x54, 0x0a, 0x06, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x08,
-	0x0a, 0x04, 0x4e, 0x4f, 0x4e, 0x45, 0x10, 0x00, 0x12, 0x0a, 0x0a, 0x06, 0x49, 0x4e, 0x56, 0x49,
-	0x54, 0x45, 0x10, 0x01, 0x12, 0x0a, 0x0a, 0x06, 0x44, 0x49, 0x52, 0x45, 0x43, 0x54, 0x10, 0x02,
-	0x12, 0x09, 0x0a, 0x05, 0x52, 0x45, 0x50, 0x4c, 0x59, 0x10, 0x03, 0x12, 0x0e, 0x0a, 0x0a, 0x49,
-	0x4e, 0x50, 0x52, 0x4f, 0x47, 0x52, 0x45, 0x53, 0x53, 0x10, 0x04, 0x12, 0x0d, 0x0a, 0x09, 0x43,
-	0x4f, 0x4d, 0x50, 0x4c, 0x45, 0x54, 0x45, 0x44, 0x10, 0x05, 0x22, 0x40, 0x0a, 0x0c, 0x45, 0x72,
-	0x72, 0x6f, 0x72, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65,
-	0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73,
-	0x73, 0x61, 0x67, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x42, 0x0a, 0x5a, 0x08,
-	0x2e, 0x3b, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x72, 0x43, 0x61, 0x72, 0x64, 0x52, 0x04, 0x63, 0x61, 0x72, 0x64, 0x22, 0x40, 0x0a, 0x0c, 0x45,
+	0x72, 0x72, 0x6f, 0x72, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x6d,
+	0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65,
+	0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x42, 0x0a, 0x5a,
+	0x08, 0x2e, 0x3b, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x33,
 }
 
 var (
@@ -1020,58 +614,44 @@ func file_api_proto_rawDescGZIP() []byte {
 	return file_api_proto_rawDescData
 }
 
-var file_api_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_api_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_api_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_api_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_api_proto_goTypes = []interface{}{
 	(InviteRequest_TransferType)(0), // 0: InviteRequest.TransferType
-	(TransferCard_Status)(0),        // 1: TransferCard.Status
-	(*ConnectionRequest)(nil),       // 2: ConnectionRequest
-	(*InviteRequest)(nil),           // 3: InviteRequest
-	(*AuthInvite)(nil),              // 4: AuthInvite
-	(*AuthReply)(nil),               // 5: AuthReply
-	(*TransferCard)(nil),            // 6: TransferCard
-	(*ErrorMessage)(nil),            // 7: ErrorMessage
-	(*InviteRequest_FileInfo)(nil),  // 8: InviteRequest.FileInfo
-	(*TransferCard_Properties)(nil), // 9: TransferCard.Properties
-	(*TransferCard_Progress)(nil),   // 10: TransferCard.Progress
-	(*Profile)(nil),                 // 11: Profile
-	(*Device)(nil),                  // 12: Device
-	(*Directories)(nil),             // 13: Directories
-	(*Contact)(nil),                 // 14: Contact
-	(*Peer)(nil),                    // 15: Peer
-	(Payload)(0),                    // 16: Payload
-	(Platform)(0),                   // 17: Platform
-	(*Metadata)(nil),                // 18: Metadata
-	(*MIME)(nil),                    // 19: MIME
+	(*ConnectionRequest)(nil),       // 1: ConnectionRequest
+	(*InviteRequest)(nil),           // 2: InviteRequest
+	(*AuthInvite)(nil),              // 3: AuthInvite
+	(*AuthReply)(nil),               // 4: AuthReply
+	(*ErrorMessage)(nil),            // 5: ErrorMessage
+	(*InviteRequest_FileInfo)(nil),  // 6: InviteRequest.FileInfo
+	(*Profile)(nil),                 // 7: Profile
+	(*Device)(nil),                  // 8: Device
+	(*Directories)(nil),             // 9: Directories
+	(*Contact)(nil),                 // 10: Contact
+	(*Peer)(nil),                    // 11: Peer
+	(Payload)(0),                    // 12: Payload
+	(*TransferCard)(nil),            // 13: TransferCard
 }
 var file_api_proto_depIdxs = []int32{
-	11, // 0: ConnectionRequest.profile:type_name -> Profile
-	12, // 1: ConnectionRequest.device:type_name -> Device
-	13, // 2: ConnectionRequest.directories:type_name -> Directories
-	14, // 3: ConnectionRequest.contact:type_name -> Contact
+	7,  // 0: ConnectionRequest.profile:type_name -> Profile
+	8,  // 1: ConnectionRequest.device:type_name -> Device
+	9,  // 2: ConnectionRequest.directories:type_name -> Directories
+	10, // 3: ConnectionRequest.contact:type_name -> Contact
 	0,  // 4: InviteRequest.type:type_name -> InviteRequest.TransferType
-	15, // 5: InviteRequest.to:type_name -> Peer
-	14, // 6: InviteRequest.contact:type_name -> Contact
-	8,  // 7: InviteRequest.files:type_name -> InviteRequest.FileInfo
-	16, // 8: AuthInvite.payload:type_name -> Payload
-	15, // 9: AuthInvite.from:type_name -> Peer
-	6,  // 10: AuthInvite.card:type_name -> TransferCard
-	16, // 11: AuthReply.payload:type_name -> Payload
-	15, // 12: AuthReply.from:type_name -> Peer
-	6,  // 13: AuthReply.card:type_name -> TransferCard
-	16, // 14: TransferCard.payload:type_name -> Payload
-	17, // 15: TransferCard.platform:type_name -> Platform
-	10, // 16: TransferCard.progress:type_name -> TransferCard.Progress
-	1,  // 17: TransferCard.status:type_name -> TransferCard.Status
-	9,  // 18: TransferCard.properties:type_name -> TransferCard.Properties
-	14, // 19: TransferCard.contact:type_name -> Contact
-	18, // 20: TransferCard.metadata:type_name -> Metadata
-	19, // 21: TransferCard.Properties.mime:type_name -> MIME
-	22, // [22:22] is the sub-list for method output_type
-	22, // [22:22] is the sub-list for method input_type
-	22, // [22:22] is the sub-list for extension type_name
-	22, // [22:22] is the sub-list for extension extendee
-	0,  // [0:22] is the sub-list for field type_name
+	11, // 5: InviteRequest.to:type_name -> Peer
+	10, // 6: InviteRequest.contact:type_name -> Contact
+	6,  // 7: InviteRequest.files:type_name -> InviteRequest.FileInfo
+	12, // 8: AuthInvite.payload:type_name -> Payload
+	11, // 9: AuthInvite.from:type_name -> Peer
+	13, // 10: AuthInvite.card:type_name -> TransferCard
+	12, // 11: AuthReply.payload:type_name -> Payload
+	11, // 12: AuthReply.from:type_name -> Peer
+	13, // 13: AuthReply.card:type_name -> TransferCard
+	14, // [14:14] is the sub-list for method output_type
+	14, // [14:14] is the sub-list for method input_type
+	14, // [14:14] is the sub-list for extension type_name
+	14, // [14:14] is the sub-list for extension extendee
+	0,  // [0:14] is the sub-list for field type_name
 }
 
 func init() { file_api_proto_init() }
@@ -1131,18 +711,6 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TransferCard); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ErrorMessage); i {
 			case 0:
 				return &v.state
@@ -1154,32 +722,8 @@ func file_api_proto_init() {
 				return nil
 			}
 		}
-		file_api_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+		file_api_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*InviteRequest_FileInfo); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TransferCard_Properties); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TransferCard_Progress); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1196,8 +740,8 @@ func file_api_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_api_proto_rawDesc,
-			NumEnums:      2,
-			NumMessages:   9,
+			NumEnums:      1,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
