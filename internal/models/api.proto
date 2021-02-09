@@ -61,53 +61,6 @@ message AuthReply {
   TransferCard card = 4; // Card contains all Data Info, Transfer Info
 }
 
-// TransferCard holds data passed between Exchange
-message TransferCard {
-  int32 id = 1;        // SQL: Id reference
-  Payload payload = 2; // SQL: Type of Data received
-  int32 received = 3;  // SQL: UnixTime of received Date/Time
-  bytes preview = 4;   // SQL: Thumbnail Preview Bytes
-
-  Platform platform = 5; // OWNER: Operating System of Owner
-  string username = 6;   // OWNER: Sonr Username Reference
-  string firstName = 7;  // OWNER: General FirstName Reference
-  string lastName = 8;   // OWNER: General LastName Reference
-
-  Progress progress = 9;      // TRANSFER: Progress of Transfer - File Only
-  Status status = 10;         // TRANSFER: Status of the Card - File Only
-  Properties properties = 11; // TRANSFER: Card Properties - File Only
-
-  Contact contact = 12;   // DATA(Optional): Received Contact Information
-  Metadata metadata = 13; // DATA(Optional): Received a File or Media
-  string url = 14;        // DATA(Optional): Received a Website Link
-
-  // Card Transfer Status
-  enum Status {
-    NONE = 0;       // Default, Idle or Post-Completion
-    INVITE = 1;     // An Invited Transfer
-    DIRECT = 2;     // A Direct Transfer
-    REPLY = 3;      // A Response Card (Usually Contact only)
-    INPROGRESS = 4; // A Transfer in Progress
-    COMPLETED = 5;  // A Received and Completed Transfer
-  }
-
-  // Card Properties based on File
-  message Properties {
-    MIME mime = 1;      // Standard MIME Type Values
-    int32 size = 2;     // Size of File in Bytes
-    int32 duration = 3; // Length of Video - Optional
-    string name = 4;    // Name of File
-  }
-
-  // Progress Variables to determine completion
-  message Progress {
-    int32 currentSize = 1; // Current size of File in Transfer
-    int32 interval = 2;    // Current Interval of Transfer
-    int32 totalChunks = 3; // Total Chunks of File
-    int32 totalSize = 4;   // Total Size of File
-  }
-}
-
 // Error Message returned from Core Library
 message ErrorMessage {
   string message = 1; // Generated Error Message

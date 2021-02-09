@@ -22,14 +22,14 @@ func (sn *Node) Info() []byte {
 }
 
 // ^ Link with a QR Code ^ //
-func (sn *Node) LinkDevice(peerString string) {
+func (sn *Node) LinkDevice(json string) {
 	// Convert String to Bytes
 	peer := md.Peer{}
 
 	// Convert to Peer Protobuf
-	err := protojson.Unmarshal([]byte(peerString), &peer)
+	err := protojson.Unmarshal([]byte(json), &peer)
 	if err != nil {
-		sn.Error(err, "LinkDevice")
+		sn.error(err, "LinkDevice")
 	}
 }
 
@@ -72,7 +72,7 @@ func (sn *Node) Update(direction float64) {
 	// Inform Lobby
 	err := sn.lobby.Update()
 	if err != nil {
-		sn.Error(err, "Update")
+		sn.error(err, "Update")
 	}
 }
 
@@ -88,11 +88,11 @@ func (sn *Node) Invite(reqBytes []byte) {
 	// @ 2. Check Transfer Type
 	if req.Type == md.InviteRequest_File {
 		// Single File Transfer
-		safeFile := sf.NewProcessedFile(req, sn.peer.Profile, sn.Queued, sn.Error)
+		safeFile := sf.NewProcessedFile(req, sn.peer.Profile, sn.queued, sn.error)
 		sn.files = append(sn.files, safeFile)
 	} else if req.Type == md.InviteRequest_MultiFiles {
 		// Batch File Transfer
-		safeFiles := sf.NewBatchProcessFiles(req, sn.peer.Profile, sn.Queued, sn.Error)
+		safeFiles := sf.NewBatchProcessFiles(req, sn.peer.Profile, sn.queued, sn.error)
 		sn.files = safeFiles
 	} else if req.Type == md.InviteRequest_Contact || req.Type == md.InviteRequest_URL {
 		// @ 3. Send Invite to Peer
@@ -103,7 +103,7 @@ func (sn *Node) Invite(reqBytes []byte) {
 		// Get PeerID and Check error
 		id, _, err := sn.lobby.Find(req.To.Id)
 		if err != nil {
-			sn.Error(err, "InviteWithContact")
+			sn.error(err, "InviteWithContact")
 		}
 
 		// Run Routine
@@ -111,7 +111,7 @@ func (sn *Node) Invite(reqBytes []byte) {
 			// Convert Protobuf to bytes
 			msgBytes, err := proto.Marshal(inv)
 			if err != nil {
-				sn.Error(err, "Marshal")
+				sn.error(err, "Marshal")
 			}
 
 			sn.peerConn.Request(sn.host, id, msgBytes)
