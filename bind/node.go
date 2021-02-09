@@ -121,9 +121,6 @@ func (sn *Node) Invite(reqBytes []byte) {
 
 // ^ Respond to an Invitation ^ //
 func (sn *Node) Respond(decision bool) {
-	// @ Check Decision
-	log.Printf("User decision: %t", decision)
-
 	// Send Response on PeerConnection
 	sn.peerConn.Authorize(decision, sn.contact, sn.peer)
 }

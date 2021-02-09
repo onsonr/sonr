@@ -31,8 +31,6 @@ func writeBase64ToStream(writer msgio.WriteCloser, onCompleted lf.OnProtobuf, pf
 	data := base64.StdEncoding.EncodeToString(imgBytes)
 	total := int32(len(data))
 
-	log.Printf("Sender data: %s, Sender Total: %b", data, total)
-
 	// Iterate for Entire file as String
 	for _, chunk := range ChunkBase64(data) {
 		// Create Block Protobuf from Chunk

@@ -36,9 +36,10 @@ type ProcessedFile struct {
 	request *md.InviteRequest
 }
 
+// ^ Method adjusts extension for JPEG ^ //
 func (pf *ProcessedFile) Ext() string {
 	if pf.mime.Subtype == "jpg" || pf.mime.Subtype == "jpeg" {
-		return "jpg"
+		return "jpeg"
 	}
 	return pf.mime.Subtype
 }

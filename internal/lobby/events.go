@@ -88,6 +88,10 @@ func (lob *Lobby) processMessages() {
 				if err != nil {
 					log.Println(err)
 				}
+			} else if m.Event == md.LobbyEvent_STANDBY {
+				lob.standbyPeer(m.Data)
+			} else if m.Event == md.LobbyEvent_RESUME {
+				lob.resumePeer(m.Data)
 			}
 
 		case <-lob.ctx.Done():
