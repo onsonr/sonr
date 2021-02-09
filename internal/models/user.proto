@@ -11,18 +11,36 @@ message Contact {
   string phone = 3;
   string website = 4;
   string email = 5;
-  bytes profilePic = 6;
+  bytes picture = 6;
   string header = 7;
   repeated SocialTile socials = 8;
 
   // Extended Social Media Integration
   message SocialTile {
-    Provider provider = 1;
-    int32 position = 2; // 0-7
-    string username = 3;
-    string showcase = 4;
-    string feed = 5;
+    // Properties
+    string username = 1;
+    bool isPrivate = 2;
+    Provider provider = 3;
+    Type type = 4;
+    Links links = 5;
+    Position position = 6; // 0-7
 
+    // Social Links
+    message Links {
+      string userLink = 1;
+      string feedLink = 2;
+      string postLink = 3;
+    }
+
+    // Tile Display Position
+    message Position {
+      int32 row = 1;
+      int32 column = 2;
+      int32 size = 3;
+      int32 location = 4;
+    }
+
+    // Enum for Provider
     enum Provider {
       Instagram = 0; // Feed/Link Option
       TikTok = 1;    // Feed/Link Option
@@ -34,18 +52,15 @@ message Contact {
       Snapchat = 7;  // Feed/Link Option
       Github = 8;    // Feed/Link Option
     }
-  }
-}
 
-// Define Platform Enum: Operating System of Device
-enum Platform {
-  Unknown = 0;
-  Android = 1;
-  iOS = 2;
-  MacOS = 3;
-  Windows = 4;
-  Linux = 5;
-  Web = 6;
+    // Social Tile Display Type
+    enum Type {
+      None = 0;
+      Feed = 1;
+      Post = 2;
+      Link = 3;
+    }
+  }
 }
 
 // Define Device Type: Information about device
@@ -82,6 +97,17 @@ message Peer {
     Ultrasonic = 2;
     Rendevouz = 3;
   }
+}
+
+// Define Platform Enum: Operating System of Device
+enum Platform {
+  Unknown = 0;
+  Android = 1;
+  iOS = 2;
+  MacOS = 3;
+  Windows = 4;
+  Linux = 5;
+  Web = 6;
 }
 
 // Define Profile: General Information about Peer
@@ -127,5 +153,34 @@ message Position {
     WNW = 13;
     NW = 14;
     NNW = 15;
+  }
+}
+
+// Define User: Saved Data from Client
+message User {
+  Contact contact = 1;
+  Device device = 2;
+  Directories directories = 3;
+  Profile profile = 4;
+  repeated Settings settings = 5;
+
+  message Settings {
+    Option option = 1;
+    Value value = 2;
+
+    // Value of Settings Option
+    message Value {
+      bool enabled = 1;
+      string value = 2;
+    }
+
+    // Enum for Settings Options
+    enum Option {
+      None = 0;
+      DefaultVideoCall = 1;
+      FallbackVideoCall = 2;
+      DarkMode = 3;
+      RunInBackground = 4;
+    }
   }
 }

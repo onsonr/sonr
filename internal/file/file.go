@@ -144,7 +144,7 @@ func RequestThumbnail(reqFi *md.InviteRequest_FileInfo, sm *ProcessedFile) {
 	// @ 1. Check for External File Request
 	if reqFi.HasThumbnail {
 		// Encode Thumbnail
-		err := EncodeThumb(thumbBuffer, reqFi.Thumbnail)
+		err := EncodeThumb(thumbBuffer, reqFi.Thumbpath)
 		if err != nil {
 			log.Panicln(err)
 		}

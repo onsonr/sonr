@@ -32,7 +32,7 @@ message InviteRequest {
   message FileInfo {
     string path = 1;
     bool hasThumbnail = 2;
-    string thumbnail = 3;
+    string thumbpath = 3;
     int32 duration = 4;
   }
 
