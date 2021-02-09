@@ -43,7 +43,8 @@ func RequestThumbnail(req *md.ProcessRequest, sm *ProcessedFile) {
 	sm.mutex.Unlock()
 
 	// Get Metadata
-	preview := sm.GetPreview()
+	preview := sm.GetTransferCard()
+	preview.Status = md.TransferCard_PROCESSED
 
 	// Convert to bytes
 	data, err := proto.Marshal(preview)

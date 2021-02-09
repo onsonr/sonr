@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
+	"time"
 
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
@@ -129,17 +130,8 @@ func (t *TransferFile) Save() error {
 	}
 
 	// @ 1. Get File Information
-	// Get File Information
-	info := GetInfo(t.path)
-
-	// Create Metadata Card
-	card := NewCardFromMetadata(t.invite.From.Profile, &md.Metadata{
-		Name:      info.Name,
-		Path:      t.path,
-		Size:      info.Size,
-		Mime:      info.Mime,
-		Thumbnail: t.invite.Card.Preview,
-	})
+	// Create Card
+	card := t.GetCard()
 
 	// Convert Message to bytes
 	bytes, err := proto.Marshal(card)
@@ -150,4 +142,37 @@ func (t *TransferFile) Save() error {
 	// Send Complete Callback
 	t.onComplete(bytes)
 	return nil
+}
+
+// ^ Method Generates new Transfer Card from TransferFile^ //
+func (t *TransferFile) GetCard() *md.TransferCard {
+	// Get File Information
+	i := GetFileInfo(t.path)
+	p := t.invite.From.Profile
+
+	// Return Card
+	return &md.TransferCard{
+		// SQL Properties
+		Payload:  i.Payload,
+		Received: int32(time.Now().Unix()),
+		Platform: p.Platform,
+		Preview:  t.invite.Card.Preview,
+
+		// Transfer Properties
+		Status: md.TransferCard_COMPLETED,
+
+		// Owner Properties
+		Username:  p.Username,
+		FirstName: p.FirstName,
+		LastName:  p.LastName,
+
+		// Data Properties
+		Metadata: &md.Metadata{
+			Name:      i.Name,
+			Path:      t.path,
+			Size:      i.Size,
+			Mime:      i.Mime,
+			Thumbnail: t.invite.Card.Preview,
+		},
+	}
 }

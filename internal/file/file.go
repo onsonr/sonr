@@ -1,13 +1,8 @@
 package file
 
 import (
-	"log"
-	"os"
-	"path/filepath"
-	"strings"
 	"sync"
 
-	"github.com/h2non/filetype"
 	md "github.com/sonr-io/core/internal/models"
 )
 
@@ -51,7 +46,7 @@ func NewProcessedFile(req *md.ProcessRequest, p *md.Profile, queueCall OnProtobu
 	onError = errCall
 
 	// Get File Information
-	info := GetInfo(req.FilePath)
+	info := GetFileInfo(req.FilePath)
 
 	// @ 1. Create new SafeFile
 	sm := &ProcessedFile{
@@ -66,22 +61,7 @@ func NewProcessedFile(req *md.ProcessRequest, p *md.Profile, queueCall OnProtobu
 
 	// @ 2. Set Metadata Protobuf Values
 	// Create Card
-	sm.card = md.TransferCard{
-		// SQL Properties
-		Payload:  GetPayloadFromPath(req.FilePath),
-		Platform: p.Platform,
-
-		// Owner Properties
-		Username:  p.Username,
-		FirstName: p.FirstName,
-		LastName:  p.LastName,
-
-		Properties: &md.TransferCard_Properties{
-			Name: info.Name,
-			Size: info.Size,
-			Mime: info.Mime,
-		},
-	}
+	sm.card = NewCardFromProcessRequest(p, req.FilePath)
 
 	// @ 3. Create Thumbnail in Goroutine
 	go RequestThumbnail(req, sm)
@@ -89,72 +69,11 @@ func NewProcessedFile(req *md.ProcessRequest, p *md.Profile, queueCall OnProtobu
 }
 
 // ^ Safely returns Preview depending on lock ^ //
-func (sm *ProcessedFile) GetPreview() *md.TransferCard {
+func (sm *ProcessedFile) GetTransferCard() *md.TransferCard {
 	// ** Lock File wait for access ** //
 	sm.mutex.Lock()
 	defer sm.mutex.Unlock()
 
 	// @ 2. Return Value
 	return &sm.card
-}
-
-// ********************** //
-// ********************** //
-// ** FILE INFORMATION ** //
-// ********************** //
-// ********************** //
-
-// ^ Struct returned on GetInfo() Generate Preview/Metadata
-type Info struct {
-	Mime    *md.MIME
-	Name    string
-	Path    string
-	Size    int32
-	IsImage bool
-}
-
-// ^ Method Returns File Info at Path ^ //
-func GetInfo(path string) Info {
-	// @ 1. Get File Information
-	// Open File at Path
-	file, err := os.Open(path)
-	if err != nil {
-		log.Fatalln(err)
-		onError(err, "AddFile")
-	}
-	defer file.Close()
-
-	// Get Info
-	info, err := file.Stat()
-	if err != nil {
-		log.Fatalln(err)
-		onError(err, "AddFile")
-	}
-
-	// Read File to required bytes
-	head := make([]byte, 261)
-	_, err = file.Read(head)
-	if err != nil {
-		log.Fatalln(err)
-		onError(err, "AddFile")
-	}
-
-	// Get File Type
-	kind, err := filetype.Match(head)
-	if err != nil {
-		log.Fatalln(err)
-		onError(err, "AddFile")
-	}
-
-	return Info{
-		Mime: &md.MIME{
-			Type:    md.MIME_Type(md.MIME_Type_value[kind.MIME.Type]),
-			Subtype: kind.MIME.Subtype,
-			Value:   kind.MIME.Value,
-		},
-		Name:    strings.TrimSuffix(filepath.Base(path), filepath.Ext(path)),
-		Path:    path,
-		Size:    int32(info.Size()),
-		IsImage: filetype.IsImage(head),
-	}
 }

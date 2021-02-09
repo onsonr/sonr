@@ -152,7 +152,7 @@ func (pc *PeerConnection) Authorize(decision bool, contact *md.Contact, peer *md
 		respMsg := &md.AuthReply{
 			From:    peer,
 			Payload: md.Payload_CONTACT,
-			Card:    sf.NewCardFromContact(peer.Profile, contact),
+			Card:    sf.NewCardFromContact(peer.Profile, contact, md.TransferCard_REPLY),
 		}
 
 		// Send to Channel

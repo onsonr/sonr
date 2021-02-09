@@ -45,36 +45,39 @@ message AuthReply {
 message TransferCard {
   // SQL Properties
   int32 id = 1;
-  Payload payload = 2;
-  Properties properties = 3;
-  int32 lastOpened = 4;
-  Platform platform = 5;
-  bytes preview = 6;
+  Status status = 2;
+  Payload payload = 3;
+  Properties properties = 4;
+  int32 received = 5;
+  Platform platform = 6;
+  bytes preview = 7;
 
   // Owner Properties
-  string username = 7;
-  string firstName = 8;
-  string lastName = 9;
+  string username = 8;
+  string firstName = 9;
+  string lastName = 10;
 
   // Data Properties
-  Contact contact = 10;
-  Metadata metadata = 11;
-  string url = 12;
+  Contact contact = 11;
+  Metadata metadata = 12;
+  string url = 13;
+
+  // Card Status
+  enum Status {
+    NONE = 0;
+    PROCESSED = 1;
+    INVITE = 2;
+    DIRECT = 3;
+    REPLY = 4;
+    COMPLETED = 5;
+  }
 
   // -- Card Properties -- //
   message Properties {
-    Type type = 1;
-    MIME mime = 2;
-    int32 size = 3;
-    int32 duration = 4;
-    string name = 5;
-
-    enum Type {
-      NONE = 0;
-      INVITE = 1;
-      REPLY = 2;
-      COMPLETED = 3;
-    }
+    MIME mime = 1;
+    int32 size = 2;
+    int32 duration = 3;
+    string name = 4;
   }
 }
 

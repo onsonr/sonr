@@ -2,7 +2,6 @@ package lobby
 
 import (
 	"context"
-	"errors"
 	"log"
 
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -98,6 +97,7 @@ func (lob *Lobby) Exchange(peerID peer.ID) error {
 		event := md.LobbyEvent{
 			Event: md.LobbyEvent_EXCHANGE,
 			Data:  lob.getPeer(),
+			Id:    lob.getPeer().Id,
 		}
 
 		// Convert Event to Proto Binary
@@ -116,36 +116,13 @@ func (lob *Lobby) Exchange(peerID peer.ID) error {
 	return nil
 }
 
-// ^ Info returns ALL Lobby Data as Bytes^
-func (lob *Lobby) Info() []byte {
-	// Convert to bytes
-	data, err := proto.Marshal(lob.Data)
-	if err != nil {
-		log.Println("Error Marshaling Lobby Data ", err)
-		return nil
-	}
-	return data
-}
-
-// ^ Find returns Pointer to Peer.ID and Peer ^
-func (lob *Lobby) Find(q string) (peer.ID, *md.Peer, error) {
-	// Retreive Data
-	peer := lob.Peer(q)
-	id := lob.ID(q)
-
-	if peer == nil || id == "" {
-		return "", nil, errors.New("Search Error, peer was not found in map.")
-	}
-
-	return id, peer, nil
-}
-
 // ^ Send publishes a message to the pubsub topic OLC ^
-func (lob *Lobby) Update() error {
+func (lob *Lobby) Resume() error {
 	// Create Lobby Event
 	event := md.LobbyEvent{
-		Event: md.LobbyEvent_UPDATE,
+		Event: md.LobbyEvent_RESUME,
 		Data:  lob.getPeer(),
+		Id:    lob.getPeer().Id,
 	}
 
 	// Convert Event to Proto Binary
@@ -160,4 +137,62 @@ func (lob *Lobby) Update() error {
 		return err
 	}
 	return nil
+}
+
+// ^ Send publishes a message to the pubsub topic OLC ^
+func (lob *Lobby) Standby() error {
+	// Create Lobby Event
+	event := md.LobbyEvent{
+		Event: md.LobbyEvent_STANDBY,
+		Data:  lob.getPeer(),
+		Id:    lob.getPeer().Id,
+	}
+
+	// Convert Event to Proto Binary
+	bytes, err := proto.Marshal(&event)
+	if err != nil {
+		return err
+	}
+
+	// Publish to Topic
+	err = lob.topic.Publish(lob.ctx, bytes)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// ^ Send publishes a message to the pubsub topic OLC ^
+func (lob *Lobby) Update() error {
+	// Create Lobby Event
+	event := md.LobbyEvent{
+		Event: md.LobbyEvent_UPDATE,
+		Data:  lob.getPeer(),
+		Id:    lob.getPeer().Id,
+	}
+
+	// Convert Event to Proto Binary
+	bytes, err := proto.Marshal(&event)
+	if err != nil {
+		return err
+	}
+
+	// Publish to Topic
+	err = lob.topic.Publish(lob.ctx, bytes)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// ^ Info returns ALL Lobby Data as Bytes^
+func (lob *Lobby) Refresh() {
+	// Marshal data to bytes
+	bytes, err := proto.Marshal(lob.Data)
+	if err != nil {
+		log.Println("Cannot Marshal Error Protobuf: ", err)
+	}
+
+	// Send Callback with updated peers
+	lob.callback(bytes)
 }

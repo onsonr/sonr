@@ -5,16 +5,29 @@ import "user.proto";
 // Require Go Package
 option go_package = ".;models";
 
-// Define Payload: Define Payload Enum
-enum Payload {
-  UNDEFINED = 0;
-  CONTACT = 1;
-  MEDIA = 2;
-  URL = 3;
-  TEXT = 4;
-  PDF = 5;
-  PRESENTATION = 6;
-  SPREADSHEET = 7;
+// Define Lobby Type: For Info about Lobby
+message Lobby {
+  string olc = 1;
+  int32 size = 2;
+  int32 count = 3;
+  map<string, Peer> peers = 4;
+  map<string, Peer> standby = 5;
+}
+
+// [CORE]
+// Message Sent when peer messages Lobby Topic
+message LobbyEvent {
+  string id = 1;
+  Event event = 2;
+  Peer data = 3;
+
+  enum Event {
+    EXCHANGE = 0;
+    EXIT = 1;
+    STANDBY = 2;
+    RESUME = 3;
+    UPDATE = 4;
+  }
 }
 
 // Define Metadata Type: For Received Transfer
@@ -42,26 +55,14 @@ message MIME {
   }
 }
 
-// Define Lobby Type: For Info about Lobby
-message Lobby {
-  string olc = 1;
-  int32 size = 2;
-  int32 count = 3;
-  map<string, Peer> peers = 4;
-}
-
-// [CORE]
-// Message Sent when peer messages Lobby Topic
-message LobbyEvent {
-  string id = 1;
-  Event event = 2;
-  Peer data = 3;
-
-  enum Event {
-    ENTER = 0;
-    EXIT = 1;
-    STANDBY = 2;
-    EXCHANGE = 3;
-    UPDATE = 4;
-  }
+// Define Payload: Define Payload Enum
+enum Payload {
+  UNDEFINED = 0;
+  CONTACT = 1;
+  MEDIA = 2;
+  URL = 3;
+  TEXT = 4;
+  PDF = 5;
+  PRESENTATION = 6;
+  SPREADSHEET = 7;
 }

@@ -23,7 +23,8 @@ func (sn *Node) DirectWithFile(peerId string) {
 
 	// Retreive Current File
 	currFile := sn.currentFile()
-	card := currFile.GetPreview()
+	card := currFile.GetTransferCard()
+	card.Status = md.TransferCard_DIRECT
 	sn.peerConn.SafePreview = currFile
 
 	// Create Invite Message
@@ -61,7 +62,7 @@ func (sn *Node) DirectWithURL(peerId string, url string) {
 	invMsg := md.AuthInvite{
 		From:     sn.peer,
 		Payload:  md.Payload_URL,
-		Card:     sf.NewCardFromUrl(sn.peer.Profile, url),
+		Card:     sf.NewCardFromUrl(sn.peer.Profile, url, md.TransferCard_DIRECT),
 		IsFile:   false,
 		IsDirect: true,
 	}
@@ -93,7 +94,8 @@ func (sn *Node) InviteWithFile(peerId string) {
 
 	// Retreive Current File
 	currFile := sn.currentFile()
-	card := currFile.GetPreview()
+	card := currFile.GetTransferCard()
+	card.Status = md.TransferCard_INVITE
 	sn.peerConn.SafePreview = currFile
 
 	// Create Invite Message
@@ -131,7 +133,7 @@ func (sn *Node) InviteWithContact(peerId string) {
 	invMsg := md.AuthInvite{
 		From:     sn.peer,
 		Payload:  md.Payload_CONTACT,
-		Card:     sf.NewCardFromContact(sn.peer.Profile, sn.contact),
+		Card:     sf.NewCardFromContact(sn.peer.Profile, sn.contact, md.TransferCard_INVITE),
 		IsFile:   false,
 		IsDirect: false,
 	}
@@ -162,7 +164,7 @@ func (sn *Node) InviteWithURL(peerId string, url string) {
 	invMsg := md.AuthInvite{
 		From:     sn.peer,
 		Payload:  md.Payload_URL,
-		Card:     sf.NewCardFromUrl(sn.peer.Profile, url),
+		Card:     sf.NewCardFromUrl(sn.peer.Profile, url, md.TransferCard_INVITE),
 		IsFile:   false,
 		IsDirect: false,
 	}

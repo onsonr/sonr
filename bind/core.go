@@ -96,11 +96,19 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 
 // ^ Close Ends All Network Communication ^
 func (sn *Node) Pause() {
+	err := sn.lobby.Standby()
+	if err != nil {
+		sn.error(err, "Pause")
+	}
 	lifecycle.GetState().Pause()
 }
 
 // ^ Close Ends All Network Communication ^
 func (sn *Node) Resume() {
+	err := sn.lobby.Resume()
+	if err != nil {
+		sn.error(err, "Resume")
+	}
 	lifecycle.GetState().Resume()
 }
 
