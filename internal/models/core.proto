@@ -7,8 +7,8 @@ option go_package = ".;models";
 
 // Sent on Data Transfer to Add piece of File
 message Chunk {
-  string b64 = 1;
-  bytes buffer = 2;
-  int32 size = 3;
-  int32 total = 4;
+  string b64 = 1;   // Base 64 Value of Chunk
+  bytes buffer = 2; // Binary Value of Chunk
+  int32 size = 3;   // Size of this Chunk
+  int32 total = 4;  // Size of ALL Chunks together
 }

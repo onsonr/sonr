@@ -6,117 +6,110 @@ import "user.proto";
 // Require Go Package
 option go_package = ".;models";
 
-// Initial Connection Message
+// Initial Connection Message to Establish Sonr
 message ConnectionRequest {
-  double latitude = 1;
-  double longitude = 2;
-  Profile profile = 3;
-  Device device = 4;
-  Directories directories = 5;
-  Contact contact = 6;
+  double latitude = 1;         // Geolocation for OLC
+  double longitude = 2;        // Geolocation for OLC
+  Profile profile = 3;         // General Peer Info
+  Device device = 4;           // Users Device
+  Directories directories = 5; // Users Available File Paths
+  Contact contact = 6;         // Users Contact Card
 }
 
-// Processes Given File and Invites Peer
+// Processes Given File and Invites Specified Peer
 message InviteRequest {
-  // Transfer Properties
-  TransferType type = 1;
-  Peer to = 2;
-  bool isDirect = 3;
+  TransferType type = 1; // General Payload Type
+  Peer to = 2;           // User thats being Invited
+  bool isDirect = 3;     // Is Users own Device
 
   // Attached Data
-  string url = 4;
-  Contact contact = 5;
-  repeated FileInfo files = 6;
+  string url = 4;              // URL to be Sent - Optional
+  Contact contact = 5;         // Contact Card to be Sent - Optional
+  repeated FileInfo files = 6; // Files to be Sent - Optional
 
   // FileInfo Message for Attached Files
   message FileInfo {
-    string path = 1;
-    bool hasThumbnail = 2;
-    string thumbpath = 3;
-    int32 duration = 4;
+    string path = 1;       // Location of File
+    bool hasThumbnail = 2; // Provided File already has thumbnail
+    string thumbpath = 3;  // Path of Provided Thumbnail - Optional
+    int32 duration = 4;    // Duration of Video - Optional
   }
 
   // Enum for Type of Transfer
   enum TransferType {
-    Unknown = 0;
-    File = 1;
-    MultiFiles = 2;
-    Contact = 3;
-    URL = 4;
+    Unknown = 0;    // Default Value, Would not Transfer
+    File = 1;       // Media or Document
+    MultiFiles = 2; // Multiple Media or Documents
+    Contact = 3;    // Users Contact Card
+    URL = 4;        // Website URL Link
   }
 }
 
 // Invitation Message sent on RPC
 message AuthInvite {
-  Payload payload = 1;
-  Peer from = 2;
-  TransferCard card = 3;
-  bool isDirect = 4;
+  Payload payload = 1;   // Type of Transfer
+  Peer from = 2;         // Users Peer Data
+  TransferCard card = 3; // Card contains all Data Info, Transfer Info
+  bool isDirect = 4;     // Is Users own Device
 }
 
 // Reply Message sent on RPC
 message AuthReply {
-  Payload payload = 1;
-  Peer from = 2;
-  bool decision = 3;
-  TransferCard card = 4;
+  Payload payload = 1;   // Type of Transfer
+  Peer from = 2;         // Users Peer Data
+  bool decision = 3;     // Users Decision for the Invitation
+  TransferCard card = 4; // Card contains all Data Info, Transfer Info
 }
 
 // TransferCard holds data passed between Exchange
 message TransferCard {
-  // SQL Properties
-  int32 id = 1;
-  Status status = 2;
-  Payload payload = 3;
-  Properties properties = 4;
-  int32 received = 5;
-  Platform platform = 6;
-  bytes preview = 7;
+  int32 id = 1;        // SQL: Id reference
+  Payload payload = 2; // SQL: Type of Data received
+  int32 received = 3;  // SQL: UnixTime of received Date/Time
+  bytes preview = 4;   // SQL: Thumbnail Preview Bytes
 
-  // Owner Properties
-  string username = 8;
-  string firstName = 9;
-  string lastName = 10;
+  Platform platform = 5; // OWNER: Operating System of Owner
+  string username = 6;   // OWNER: Sonr Username Reference
+  string firstName = 7;  // OWNER: General FirstName Reference
+  string lastName = 8;   // OWNER: General LastName Reference
 
-  // Transfer Properties
-  Progress progress = 11;
+  Progress progress = 9;      // TRANSFER: Progress of Transfer - File Only
+  Status status = 10;         // TRANSFER: Status of the Card - File Only
+  Properties properties = 11; // TRANSFER: Card Properties - File Only
 
-  // Data Properties
-  Contact contact = 12;
-  Metadata metadata = 13;
-  string url = 14;
+  Contact contact = 12;   // DATA(Optional):
+  Metadata metadata = 13; // DATA(Optional):
+  string url = 14;        // DATA(Optional):
 
-  // Card Status
+  // Card Transfer Status
   enum Status {
-    NONE = 0;
-    PROCESSED = 1;
-    INVITE = 2;
-    DIRECT = 3;
-    REPLY = 4;
-    INPROGRESS = 5;
-    COMPLETED = 6;
+    NONE = 0;       // Default, Idle or Post-Completion
+    INVITE = 1;     // An Invited Transfer
+    DIRECT = 2;     // A Direct Transfer
+    REPLY = 3;      // A Response Card (Usually Contact only)
+    INPROGRESS = 4; // A Transfer in Progress
+    COMPLETED = 5;  // A Received and Completed Transfer
   }
 
   // Card Properties based on File
   message Properties {
-    MIME mime = 1;
-    int32 size = 2;
-    int32 duration = 3;
-    string name = 4;
-    int32 total = 5;
+    MIME mime = 1;      // Standard MIME Type Values
+    int32 size = 2;     // Size of File in Bytes
+    int32 duration = 3; // Length of Video - Optional
+    string name = 4;    // Name of File
   }
 
   // Progress Variables to determine completion
   message Progress {
-    int32 currentSize = 1;
-    int32 interval = 2;
-    int32 totalChunks = 3;
-    int32 totalSize = 4;
+    int32 currentSize = 1; // Current size of File in Transfer
+    int32 interval = 2;    // Current Interval of Transfer
+    int32 totalChunks = 3; // Total Chunks of File
+    int32 totalSize = 4;   // Total Size of File
   }
 }
 
 // Error Message returned from Core Library
 message ErrorMessage {
-  string message = 1;
-  string method = 2;
+  string message = 1; // Generated Error Message
+  string method = 2;  // Method Error Occurred
 }
