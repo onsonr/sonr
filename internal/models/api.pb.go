@@ -478,9 +478,9 @@ type TransferCard struct {
 	Progress   *TransferCard_Progress   `protobuf:"bytes,9,opt,name=progress,proto3" json:"progress,omitempty"`                        // TRANSFER: Progress of Transfer - File Only
 	Status     TransferCard_Status      `protobuf:"varint,10,opt,name=status,proto3,enum=TransferCard_Status" json:"status,omitempty"` // TRANSFER: Status of the Card - File Only
 	Properties *TransferCard_Properties `protobuf:"bytes,11,opt,name=properties,proto3" json:"properties,omitempty"`                   // TRANSFER: Card Properties - File Only
-	Contact    *Contact                 `protobuf:"bytes,12,opt,name=contact,proto3" json:"contact,omitempty"`                         // DATA(Optional):
-	Metadata   *Metadata                `protobuf:"bytes,13,opt,name=metadata,proto3" json:"metadata,omitempty"`                       // DATA(Optional):
-	Url        string                   `protobuf:"bytes,14,opt,name=url,proto3" json:"url,omitempty"`                                 // DATA(Optional):
+	Contact    *Contact                 `protobuf:"bytes,12,opt,name=contact,proto3" json:"contact,omitempty"`                         // DATA(Optional): Received Contact Information
+	Metadata   *Metadata                `protobuf:"bytes,13,opt,name=metadata,proto3" json:"metadata,omitempty"`                       // DATA(Optional): Received a File or Media
+	Url        string                   `protobuf:"bytes,14,opt,name=url,proto3" json:"url,omitempty"`                                 // DATA(Optional): Received a Website Link
 }
 
 func (x *TransferCard) Reset() {

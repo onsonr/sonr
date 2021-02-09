@@ -153,7 +153,7 @@ message Position {
   }
 }
 
-// User is the Saved Data from Client that Passes to Proxy
+// User is the Saved Data from Client that Passes to Proxy, During ConnRequest
 message User {
   Contact contact = 1;            // Clients Contact Card
   Device device = 2;              // Clients Device

@@ -955,7 +955,7 @@ func (x *Position) GetProximity() Position_Proximity {
 	return Position_Unknown
 }
 
-// User is the Saved Data from Client that Passes to Proxy
+// User is the Saved Data from Client that Passes to Proxy, During ConnRequest
 type User struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

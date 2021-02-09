@@ -77,9 +77,9 @@ message TransferCard {
   Status status = 10;         // TRANSFER: Status of the Card - File Only
   Properties properties = 11; // TRANSFER: Card Properties - File Only
 
-  Contact contact = 12;   // DATA(Optional):
-  Metadata metadata = 13; // DATA(Optional):
-  string url = 14;        // DATA(Optional):
+  Contact contact = 12;   // DATA(Optional): Received Contact Information
+  Metadata metadata = 13; // DATA(Optional): Received a File or Media
+  string url = 14;        // DATA(Optional): Received a Website Link
 
   // Card Transfer Status
   enum Status {
