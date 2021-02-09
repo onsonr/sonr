@@ -116,7 +116,7 @@ func (sn *Node) Stop() {
 	sn.host.Close()
 }
 
-// ^ error Callback with error instance, and method ^
+// ^ Queued Callback, Sends File Invite to Peer, and Notifies Client ^
 func (sn *Node) Queued(card *md.TransferCard, req *md.InviteRequest) {
 	// Get PeerID
 	id, _, err := sn.lobby.Find(req.To.Id)
