@@ -94,9 +94,15 @@ func (sn *Node) Invite(reqBytes []byte) {
 
 	// @ 2. Check Transfer Type
 	// Process the File
-	if req.Type == md.InviteRequest_Data {
+	if req.Type == md.InviteRequest_File {
 		safeFile := sf.NewProcessedFile(req, sn.peer.Profile, lf.ProcessCallbacks{CallQueued: sn.Queued, CallError: sn.Error})
 		sn.files = append(sn.files, safeFile)
+	}
+
+	// Contact Type Attach User Contact
+	if req.Type == md.InviteRequest_MultiFiles {
+		safeFiles := sf.NewBatchProcessFiles(req, sn.peer.Profile, lf.ProcessCallbacks{CallQueued: sn.Queued, CallError: sn.Error})
+		sn.files = safeFiles
 	}
 
 	// Contact Type Attach User Contact

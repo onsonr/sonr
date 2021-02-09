@@ -17,7 +17,7 @@ import (
 )
 
 // @ Maximum Files in Node Cache
-const maxFileBufferSize = 5
+const maxFileBufferSize = 64
 
 // ^ Interface: Callback is implemented from Plugin to receive updates ^
 type Callback interface {
@@ -118,6 +118,50 @@ func (sn *Node) Stop() {
 
 // ^ Queued Callback, Sends File Invite to Peer, and Notifies Client ^
 func (sn *Node) Queued(card *md.TransferCard, req *md.InviteRequest) {
+	// Get PeerID
+	id, _, err := sn.lobby.Find(req.To.Id)
+
+	// Check error
+	if err != nil {
+		sn.Error(err, "Queued")
+	}
+
+	// Retreive Current File
+	currFile := sn.currentFile()
+	card.Status = md.TransferCard_INVITE
+	sn.peerConn.SafePreview = currFile
+
+	// Create Invite Message
+	invMsg := md.AuthInvite{
+		From:     sn.peer,
+		Payload:  card.Payload,
+		Card:     card,
+		IsDirect: req.IsDirect,
+	}
+
+	// Check if ID in PeerStore
+	go func(inv *md.AuthInvite) {
+		// Convert Protobuf to bytes
+		msgBytes, err := proto.Marshal(inv)
+		if err != nil {
+			sn.Error(err, "Marshal")
+		}
+
+		sn.peerConn.Request(sn.host, id, msgBytes)
+	}(&invMsg)
+
+	// Convert Message to bytes
+	bytes, err := proto.Marshal(card)
+	if err != nil {
+		log.Println("Cannot Marshal Error Protobuf: ", err)
+	}
+
+	// Notify Queued
+	sn.call.OnQueued(bytes)
+}
+
+// ^ MultiQueued Callback, Sends File Invite to Peer, and Notifies Client ^
+func (sn *Node) MultiQueued(card *md.TransferCard, req *md.InviteRequest) {
 	// Get PeerID
 	id, _, err := sn.lobby.Find(req.To.Id)
 

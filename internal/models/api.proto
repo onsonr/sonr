@@ -23,21 +23,26 @@ message InviteRequest {
   Peer to = 2;
   bool isDirect = 3;
 
-  // Non-Data Fields
+  // Attached Data
   string url = 4;
   Contact contact = 5;
+  repeated FileInfo files = 6;
 
-  // Data Based Properties
-  bool hasThumbnail = 6;
-  string path = 7;
-  string thumbnail = 8;
-  int32 duration = 9;
+  // FileInfo Message for Attached Files
+  message FileInfo {
+    string path = 1;
+    bool hasThumbnail = 2;
+    string thumbnail = 3;
+    int32 duration = 4;
+  }
 
+  // Enum for Type of Transfer
   enum TransferType {
     Unknown = 0;
-    Data = 1;
-    Contact = 2;
-    URL = 3;
+    File = 1;
+    MultiFiles = 2;
+    Contact = 3;
+    URL = 4;
   }
 }
 
@@ -94,6 +99,7 @@ message TransferCard {
     int32 size = 2;
     int32 duration = 3;
     string name = 4;
+    int32 total = 5;
   }
 }
 

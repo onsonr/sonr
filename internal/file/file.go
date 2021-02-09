@@ -31,25 +31,19 @@ type ProcessedFile struct {
 	request *md.InviteRequest
 }
 
-func (pf *ProcessedFile) Ext() string {
-	if pf.mime.Subtype == "jpg" || pf.mime.Subtype == "jpeg" {
-		return "jpg"
-	}
-	return pf.mime.Subtype
-}
-
 // ^ NewProcessedFile Processes Outgoing File ^ //
 func NewProcessedFile(req *md.InviteRequest, p *md.Profile, calls lf.ProcessCallbacks) *ProcessedFile {
 	// Set Package Level Callbacks
 	onError = calls.CallError
 
 	// Get File Information
-	info := GetFileInfo(req.Path)
+	file := req.Files[len(req.Files)-1]
+	info := GetFileInfo(file.Path)
 
 	// @ 1. Create new SafeFile
 	sm := &ProcessedFile{
 		OnQueued: calls.CallQueued,
-		path:     req.Path,
+		path:     file.Path,
 		request:  req,
 		mime:     info.Mime,
 	}
@@ -78,8 +72,58 @@ func NewProcessedFile(req *md.InviteRequest, p *md.Profile, calls lf.ProcessCall
 	}
 
 	// @ 3. Create Thumbnail in Goroutine
-	go RequestThumbnail(req, sm)
+	go RequestThumbnail(file, sm)
 	return sm
+}
+
+// ^ NewBatchProcessFiles Processes Multiple Outgoing Files ^ //
+func NewBatchProcessFiles(req *md.InviteRequest, p *md.Profile, calls lf.ProcessCallbacks) []*ProcessedFile {
+	// Set Package Level Callbacks
+	onError = calls.CallError
+	files := make([]*ProcessedFile, 64)
+	count := len(req.Files)
+
+	// Iterate Through Attached Files
+	for _, file := range req.Files {
+		// Get Info
+		info := GetFileInfo(file.Path)
+
+		// @ 1. Create new SafeFile
+		sm := &ProcessedFile{
+			OnQueued: calls.CallQueued,
+			path:     file.Path,
+			request:  req,
+			mime:     info.Mime,
+		}
+
+		// ** Lock ** //
+		sm.mutex.Lock()
+
+		// @ 2. Set Metadata Protobuf Values
+		// Create Card
+		sm.card = md.TransferCard{
+			// SQL Properties
+			Payload:  info.Payload,
+			Platform: p.Platform,
+
+			// Owner Properties
+			Username:  p.Username,
+			FirstName: p.FirstName,
+			LastName:  p.LastName,
+
+			Properties: &md.TransferCard_Properties{
+				Name: info.Name,
+				Size: info.Size,
+				Mime: info.Mime,
+			},
+		}
+
+		// @ 3. Create Thumbnail in Goroutine
+		if count < 4 {
+			go RequestThumbnail(file, sm)
+		}
+	}
+	return files
 }
 
 // ^ Safely returns Preview depending on lock ^ //
@@ -93,14 +137,14 @@ func (sm *ProcessedFile) TransferCard() *md.TransferCard {
 }
 
 // ^ Method to generate thumbnail for ProcessRequest^ //
-func RequestThumbnail(req *md.InviteRequest, sm *ProcessedFile) {
+func RequestThumbnail(reqFi *md.InviteRequest_FileInfo, sm *ProcessedFile) {
 	// Initialize
 	thumbBuffer := new(bytes.Buffer)
 
 	// @ 1. Check for External File Request
-	if req.HasThumbnail {
+	if reqFi.HasThumbnail {
 		// Encode Thumbnail
-		err := EncodeThumb(thumbBuffer, req.Thumbnail)
+		err := EncodeThumb(thumbBuffer, reqFi.Thumbnail)
 		if err != nil {
 			log.Panicln(err)
 		}
@@ -113,7 +157,7 @@ func RequestThumbnail(req *md.InviteRequest, sm *ProcessedFile) {
 		// Validate Image
 		if sm.mime.Type == md.MIME_image {
 			// Encode Thumbnail
-			err := GenerateThumb(thumbBuffer, req.Path)
+			err := GenerateThumb(thumbBuffer, reqFi.Path)
 			if err != nil {
 				log.Panicln(err)
 			}

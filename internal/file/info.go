@@ -26,6 +26,7 @@ func GetFileInfo(path string) FileInfo {
 	// Initialize
 	var mime *md.MIME
 	var payload md.Payload
+	var subtype string
 
 	// @ 1. Get File Information
 	// Open File at Path
@@ -59,9 +60,17 @@ func GetFileInfo(path string) FileInfo {
 	}
 
 	// @ 2. Create Mime Protobuf
+	// Adjust JPEG
+	if kind.MIME.Subtype == "jpg" || kind.MIME.Subtype == "jpeg" {
+		subtype = "jpg"
+	} else {
+		subtype = kind.MIME.Subtype
+	}
+
+	// Create Data
 	mime = &md.MIME{
 		Type:    md.MIME_Type(md.MIME_Type_value[kind.MIME.Type]),
-		Subtype: kind.MIME.Subtype,
+		Subtype: subtype,
 		Value:   kind.MIME.Value,
 	}
 
