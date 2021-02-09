@@ -107,8 +107,8 @@ func GetFileInfo(path string) FileInfo {
 }
 
 // ^ Method Generates new Transfer Card from Contact^ //
-func NewCardFromContact(p *md.Profile, c *md.Contact, status md.TransferCard_Status) *md.TransferCard {
-	return &md.TransferCard{
+func NewCardFromContact(p *md.Profile, c *md.Contact, status md.TransferCard_Status) md.TransferCard {
+	return md.TransferCard{
 		// SQL Properties
 		Payload:  md.Payload_CONTACT,
 		Received: int32(time.Now().Unix()),
@@ -129,9 +129,9 @@ func NewCardFromContact(p *md.Profile, c *md.Contact, status md.TransferCard_Sta
 }
 
 // ^ Method Generates new Transfer Card from URL ^ //
-func NewCardFromUrl(p *md.Profile, s string, status md.TransferCard_Status) *md.TransferCard {
+func NewCardFromUrl(p *md.Profile, s string, status md.TransferCard_Status) md.TransferCard {
 	// Return Card
-	return &md.TransferCard{
+	return md.TransferCard{
 		// SQL Properties
 		Payload:  md.Payload_URL,
 		Received: int32(time.Now().Unix()),
@@ -153,7 +153,7 @@ func NewCardFromUrl(p *md.Profile, s string, status md.TransferCard_Status) *md.
 // ^ Method Creates AuthInvite from Request ^ //
 func NewInviteFromRequest(req *md.InviteRequest, p *md.Peer) md.AuthInvite {
 	// Initialize
-	var card *md.TransferCard
+	var card md.TransferCard
 	var payload md.Payload
 
 	// Determine Payload
@@ -171,7 +171,7 @@ func NewInviteFromRequest(req *md.InviteRequest, p *md.Peer) md.AuthInvite {
 	return md.AuthInvite{
 		From:     p,
 		Payload:  payload,
-		Card:     card,
+		Card:     &card,
 		IsDirect: req.IsDirect,
 	}
 }

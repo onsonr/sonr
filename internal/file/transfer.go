@@ -39,6 +39,7 @@ type TransferFile struct {
 func NewTransfer(inv *md.AuthInvite, dirs *md.Directories, op func(data float32), oc func([]byte)) *TransferFile {
 	// Create File Name
 	fileName := inv.Card.Properties.Name + "." + inv.Card.Properties.Mime.Subtype
+	log.Printf("Transfer is starting %s", fileName)
 
 	// Return File
 	return &TransferFile{

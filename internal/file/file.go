@@ -5,12 +5,17 @@ import (
 	"log"
 	"sync"
 
-	lf "github.com/sonr-io/core/internal/lifecycle"
 	md "github.com/sonr-io/core/internal/models"
 )
 
+// Define Function Types
+type OnProtobuf func([]byte)
+type OnQueued func(card *md.TransferCard, req *md.InviteRequest)
+type OnProgress func(data float32)
+type OnError func(err error, method string)
+
 // Package Error Callback
-var onError lf.OnError
+var onError OnError
 
 // ******************* //
 // ******************* //
@@ -21,7 +26,7 @@ var onError lf.OnError
 // ^ File that safely sets metadata and thumbnail in routine ^ //
 type ProcessedFile struct {
 	// References
-	OnQueued lf.OnQueued
+	OnQueued OnQueued
 	mime     *md.MIME
 	path     string
 
@@ -32,9 +37,9 @@ type ProcessedFile struct {
 }
 
 // ^ NewProcessedFile Processes Outgoing File ^ //
-func NewProcessedFile(req *md.InviteRequest, p *md.Profile, calls lf.ProcessCallbacks) *ProcessedFile {
+func NewProcessedFile(req *md.InviteRequest, p *md.Profile, queueCall OnQueued, errCall OnError) *ProcessedFile {
 	// Set Package Level Callbacks
-	onError = calls.CallError
+	onError = errCall
 
 	// Get File Information
 	file := req.Files[len(req.Files)-1]
@@ -42,7 +47,7 @@ func NewProcessedFile(req *md.InviteRequest, p *md.Profile, calls lf.ProcessCall
 
 	// @ 1. Create new SafeFile
 	sm := &ProcessedFile{
-		OnQueued: calls.CallQueued,
+		OnQueued: queueCall,
 		path:     file.Path,
 		request:  req,
 		mime:     info.Mime,
@@ -77,9 +82,9 @@ func NewProcessedFile(req *md.InviteRequest, p *md.Profile, calls lf.ProcessCall
 }
 
 // ^ NewBatchProcessFiles Processes Multiple Outgoing Files ^ //
-func NewBatchProcessFiles(req *md.InviteRequest, p *md.Profile, calls lf.ProcessCallbacks) []*ProcessedFile {
+func NewBatchProcessFiles(req *md.InviteRequest, p *md.Profile, queueCall OnQueued, errCall OnError) []*ProcessedFile {
 	// Set Package Level Callbacks
-	onError = calls.CallError
+	onError = errCall
 	files := make([]*ProcessedFile, 64)
 	count := len(req.Files)
 
@@ -90,7 +95,7 @@ func NewBatchProcessFiles(req *md.InviteRequest, p *md.Profile, calls lf.Process
 
 		// @ 1. Create new SafeFile
 		sm := &ProcessedFile{
-			OnQueued: calls.CallQueued,
+			OnQueued: queueCall,
 			path:     file.Path,
 			request:  req,
 			mime:     info.Mime,

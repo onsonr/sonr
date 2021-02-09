@@ -5,7 +5,6 @@ import (
 	"math"
 
 	sf "github.com/sonr-io/core/internal/file"
-	lf "github.com/sonr-io/core/internal/lifecycle"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
@@ -95,13 +94,13 @@ func (sn *Node) Invite(reqBytes []byte) {
 	// @ 2. Check Transfer Type
 	// Process the File
 	if req.Type == md.InviteRequest_File {
-		safeFile := sf.NewProcessedFile(req, sn.peer.Profile, lf.ProcessCallbacks{CallQueued: sn.Queued, CallError: sn.Error})
+		safeFile := sf.NewProcessedFile(req, sn.peer.Profile, sn.Queued, sn.Error)
 		sn.files = append(sn.files, safeFile)
 	}
 
 	// Contact Type Attach User Contact
 	if req.Type == md.InviteRequest_MultiFiles {
-		safeFiles := sf.NewBatchProcessFiles(req, sn.peer.Profile, lf.ProcessCallbacks{CallQueued: sn.Queued, CallError: sn.Error})
+		safeFiles := sf.NewBatchProcessFiles(req, sn.peer.Profile, sn.Queued, sn.Error)
 		sn.files = safeFiles
 	}
 
@@ -129,6 +128,7 @@ func (sn *Node) Invite(reqBytes []byte) {
 // ^ Respond to an Invitation ^ //
 func (sn *Node) Respond(decision bool) {
 	// @ Check Decision
+	log.Printf("User decision: %t", decision)
 
 	// Send Response on PeerConnection
 	sn.peerConn.Authorize(decision, sn.contact, sn.peer)

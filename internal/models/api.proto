@@ -78,10 +78,13 @@ message TransferCard {
   string firstName = 9;
   string lastName = 10;
 
+  // Transfer Properties
+  Progress progress = 11;
+
   // Data Properties
-  Contact contact = 11;
-  Metadata metadata = 12;
-  string url = 13;
+  Contact contact = 12;
+  Metadata metadata = 13;
+  string url = 14;
 
   // Card Status
   enum Status {
@@ -90,7 +93,8 @@ message TransferCard {
     INVITE = 2;
     DIRECT = 3;
     REPLY = 4;
-    COMPLETED = 5;
+    INPROGRESS = 5;
+    COMPLETED = 6;
   }
 
   // -- Card Properties -- //
@@ -100,6 +104,14 @@ message TransferCard {
     int32 duration = 3;
     string name = 4;
     int32 total = 5;
+  }
+
+  // -- Progress Variables -- //
+  message Progress {
+    int32 currentSize = 1;
+    int32 interval = 2;
+    int32 totalChunks = 3;
+    int32 totalSize = 4;
   }
 }
 

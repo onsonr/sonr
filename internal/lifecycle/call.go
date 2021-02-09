@@ -6,7 +6,6 @@ import (
 
 // Define Function Types
 type OnProtobuf func([]byte)
-type OnQueued func(card *md.TransferCard, req *md.InviteRequest)
 type OnProgress func(data float32)
 type OnError func(err error, method string)
 type ReturnPeer func() *md.Peer
@@ -25,15 +24,4 @@ type TransferCallbacks struct {
 	CallProgress    OnProgress
 	CallTransmitted OnProtobuf
 	CallError       OnError
-}
-
-type ProcessCallbacks struct {
-	CallQueued OnQueued
-	CallError  OnError
-}
-
-type TransferFileCallbacks struct {
-	CallProgress OnProgress
-	CallComplete OnProtobuf
-	CallError    OnError
 }
