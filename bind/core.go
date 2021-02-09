@@ -3,7 +3,6 @@ package sonr
 import (
 	"context"
 	"log"
-	"time"
 
 	olc "github.com/google/open-location-code/go"
 	"github.com/libp2p/go-libp2p-core/host"
@@ -124,11 +123,8 @@ func (sn *Node) Queued(card *md.TransferCard, req *md.InviteRequest) {
 
 	// Check error
 	if err != nil {
-		sn.Error(err, "InviteWithFile")
+		sn.Error(err, "Queued")
 	}
-
-	// Create Invite Message with Payload
-	time.Sleep(time.Millisecond * 100)
 
 	// Retreive Current File
 	currFile := sn.currentFile()
