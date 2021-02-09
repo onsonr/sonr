@@ -3,6 +3,7 @@ package sonr
 import (
 	"context"
 	"log"
+	"time"
 
 	olc "github.com/google/open-location-code/go"
 	"github.com/libp2p/go-libp2p-core/host"
@@ -65,8 +66,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	reqMsg := md.ConnectionRequest{}
 	err := proto.Unmarshal(reqBytes, &reqMsg)
 	if err != nil {
-		log.Println(err)
-		node.error(err, "NewNode")
+		node.Error(err, "NewNode")
 		return nil
 	}
 
@@ -74,19 +74,19 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	node.olc = olc.Encode(float64(reqMsg.Latitude), float64(reqMsg.Longitude), 8)
 	node.host, err = sh.NewHost(node.ctx, reqMsg.Directories, node.olc)
 	if err != nil {
-		node.error(err, "NewNode")
+		node.Error(err, "NewNode")
 		return nil
 	}
 
 	// @3. Set Node User Information
 	if err = node.setInfo(&reqMsg); err != nil {
-		node.error(err, "NewNode")
+		node.Error(err, "NewNode")
 		return nil
 	}
 
 	// @4. Setup Connection w/ Lobby and Set Stream Handlers
 	if err = node.setConnection(node.ctx); err != nil {
-		node.error(err, "NewNode")
+		node.Error(err, "NewNode")
 		return nil
 	}
 
@@ -98,7 +98,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 func (sn *Node) Pause() {
 	err := sn.lobby.Standby()
 	if err != nil {
-		sn.error(err, "Pause")
+		sn.Error(err, "Pause")
 	}
 	lifecycle.GetState().Pause()
 }
@@ -107,7 +107,7 @@ func (sn *Node) Pause() {
 func (sn *Node) Resume() {
 	err := sn.lobby.Resume()
 	if err != nil {
-		sn.error(err, "Resume")
+		sn.Error(err, "Resume")
 	}
 	lifecycle.GetState().Resume()
 }
@@ -118,7 +118,54 @@ func (sn *Node) Stop() {
 }
 
 // ^ error Callback with error instance, and method ^
-func (sn *Node) error(err error, method string) {
+func (sn *Node) Queued(card *md.TransferCard, req *md.InviteRequest) {
+	// Get PeerID
+	id, _, err := sn.lobby.Find(req.To.Id)
+
+	// Check error
+	if err != nil {
+		sn.Error(err, "InviteWithFile")
+	}
+
+	// Create Invite Message with Payload
+	time.Sleep(time.Millisecond * 100)
+
+	// Retreive Current File
+	currFile := sn.currentFile()
+	card.Status = md.TransferCard_INVITE
+	sn.peerConn.SafePreview = currFile
+
+	// Create Invite Message
+	invMsg := md.AuthInvite{
+		From:     sn.peer,
+		Payload:  card.Payload,
+		Card:     card,
+		IsDirect: req.IsDirect,
+	}
+
+	// Check if ID in PeerStore
+	go func(inv *md.AuthInvite) {
+		// Convert Protobuf to bytes
+		msgBytes, err := proto.Marshal(inv)
+		if err != nil {
+			sn.Error(err, "Marshal")
+		}
+
+		sn.peerConn.Request(sn.host, id, msgBytes)
+	}(&invMsg)
+
+	// Convert Message to bytes
+	bytes, err := proto.Marshal(card)
+	if err != nil {
+		log.Println("Cannot Marshal Error Protobuf: ", err)
+	}
+
+	// Notify Queued
+	sn.call.OnQueued(bytes)
+}
+
+// ^ error Callback with error instance, and method ^
+func (sn *Node) Error(err error, method string) {
 	// Create Error ProtoBuf
 	errorMsg := md.ErrorMessage{
 		Message: err.Error(),

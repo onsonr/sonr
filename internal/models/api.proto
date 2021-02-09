@@ -16,13 +16,29 @@ message ConnectionRequest {
   Contact contact = 6;
 }
 
-// Define ProcessRequest: Processes Given File with Information
-message ProcessRequest {
-  bool isExternal = 1;
-  bool hasThumbnail = 2;
-  string filePath = 3;
-  string thumbnailPath = 4;
-  int32 duration = 5;
+// Define InviteRequest: Processes Given File and Invites Peer
+message InviteRequest {
+  // Transfer Properties
+  TransferType type = 1;
+  Peer to = 2;
+  bool isDirect = 3;
+
+  // Non-Data Fields
+  string url = 4;
+  Contact contact = 5;
+
+  // Data Based Properties
+  bool hasThumbnail = 6;
+  string path = 7;
+  string thumbnail = 8;
+  int32 duration = 9;
+
+  enum TransferType {
+    Unknown = 0;
+    Data = 1;
+    Contact = 2;
+    URL = 3;
+  }
 }
 
 // Define AuthInvite: Invitation Message sent on RPC
@@ -31,7 +47,6 @@ message AuthInvite {
   Peer from = 2;
   TransferCard card = 3;
   bool isDirect = 4;
-  bool isFile = 5;
 }
 
 // Define AuthReply: Reply Message sent on RPC

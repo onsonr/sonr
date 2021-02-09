@@ -7,7 +7,6 @@ import (
 
 	lf "github.com/sonr-io/core/internal/lifecycle"
 	md "github.com/sonr-io/core/internal/models"
-	"google.golang.org/protobuf/proto"
 )
 
 // Package Error Callback
@@ -22,14 +21,14 @@ var onError lf.OnError
 // ^ File that safely sets metadata and thumbnail in routine ^ //
 type ProcessedFile struct {
 	// References
-	OnQueued lf.OnProtobuf
+	OnQueued lf.OnQueued
 	mime     *md.MIME
 	path     string
 
 	// Private Properties
 	mutex   sync.Mutex
 	card    md.TransferCard
-	request *md.ProcessRequest
+	request *md.InviteRequest
 }
 
 func (pf *ProcessedFile) Ext() string {
@@ -40,17 +39,17 @@ func (pf *ProcessedFile) Ext() string {
 }
 
 // ^ NewProcessedFile Processes Outgoing File ^ //
-func NewProcessedFile(req *md.ProcessRequest, p *md.Profile, calls lf.ProcessCallbacks) *ProcessedFile {
+func NewProcessedFile(req *md.InviteRequest, p *md.Profile, calls lf.ProcessCallbacks) *ProcessedFile {
 	// Set Package Level Callbacks
 	onError = calls.CallError
 
 	// Get File Information
-	info := GetFileInfo(req.FilePath)
+	info := GetFileInfo(req.Path)
 
 	// @ 1. Create new SafeFile
 	sm := &ProcessedFile{
 		OnQueued: calls.CallQueued,
-		path:     req.FilePath,
+		path:     req.Path,
 		request:  req,
 		mime:     info.Mime,
 	}
@@ -94,14 +93,14 @@ func (sm *ProcessedFile) TransferCard() *md.TransferCard {
 }
 
 // ^ Method to generate thumbnail for ProcessRequest^ //
-func RequestThumbnail(req *md.ProcessRequest, sm *ProcessedFile) {
+func RequestThumbnail(req *md.InviteRequest, sm *ProcessedFile) {
 	// Initialize
 	thumbBuffer := new(bytes.Buffer)
 
 	// @ 1. Check for External File Request
 	if req.HasThumbnail {
 		// Encode Thumbnail
-		err := EncodeThumb(thumbBuffer, req.ThumbnailPath)
+		err := EncodeThumb(thumbBuffer, req.Thumbnail)
 		if err != nil {
 			log.Panicln(err)
 		}
@@ -114,7 +113,7 @@ func RequestThumbnail(req *md.ProcessRequest, sm *ProcessedFile) {
 		// Validate Image
 		if sm.mime.Type == md.MIME_image {
 			// Encode Thumbnail
-			err := GenerateThumb(thumbBuffer, req.FilePath)
+			err := GenerateThumb(thumbBuffer, req.Path)
 			if err != nil {
 				log.Panicln(err)
 			}
@@ -127,16 +126,10 @@ func RequestThumbnail(req *md.ProcessRequest, sm *ProcessedFile) {
 	// ** Unlock ** //
 	sm.mutex.Unlock()
 
-	// Get Metadata
+	// Get Transfer Card
 	preview := sm.TransferCard()
 	preview.Status = md.TransferCard_PROCESSED
 
-	// Convert to bytes
-	data, err := proto.Marshal(preview)
-	if err != nil {
-		log.Println("Error Marshaling Metadata ", err)
-	}
-
 	// @ 3. Callback with Preview
-	sm.OnQueued(data)
+	sm.OnQueued(preview, sm.request)
 }

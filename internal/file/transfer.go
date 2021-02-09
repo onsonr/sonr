@@ -36,7 +36,7 @@ type TransferFile struct {
 }
 
 // ^ Method Creates New Transfer File ^ //
-func NewTransfer(inv *md.AuthInvite, dirs *md.Directories, calls lf.TransferFileCallbacks) *TransferFile {
+func NewTransfer(inv *md.AuthInvite, dirs *md.Directories, op func(data float32), oc func([]byte)) *TransferFile {
 	// Create File Name
 	fileName := inv.Card.Properties.Name + "." + inv.Card.Properties.Mime.Subtype
 
@@ -45,8 +45,8 @@ func NewTransfer(inv *md.AuthInvite, dirs *md.Directories, calls lf.TransferFile
 		// Inherited Properties
 		invite:     inv,
 		path:       filepath.Join(dirs.Temporary, fileName),
-		onProgress: calls.CallProgress,
-		onComplete: calls.CallComplete,
+		onProgress: op,
+		onComplete: oc,
 
 		// Builders
 		stringsBuilder: new(strings.Builder),

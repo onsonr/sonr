@@ -6,8 +6,9 @@ import (
 
 // Define Function Types
 type OnProtobuf func([]byte)
-type OnError func(err error, method string)
+type OnQueued func(card *md.TransferCard, req *md.InviteRequest)
 type OnProgress func(data float32)
+type OnError func(err error, method string)
 type ReturnPeer func() *md.Peer
 
 type LobbyCallbacks struct {
@@ -27,8 +28,8 @@ type TransferCallbacks struct {
 }
 
 type ProcessCallbacks struct {
-	CallQueued OnProtobuf
-	CallError     OnError
+	CallQueued OnQueued
+	CallError  OnError
 }
 
 type TransferFileCallbacks struct {

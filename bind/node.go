@@ -30,7 +30,7 @@ func (sn *Node) LinkDevice(peerString string) {
 	// Convert to Peer Protobuf
 	err := protojson.Unmarshal([]byte(peerString), &peer)
 	if err != nil {
-		sn.error(err, "LinkDevice")
+		sn.Error(err, "LinkDevice")
 	}
 }
 
@@ -73,22 +73,51 @@ func (sn *Node) Update(direction float64) {
 	// Inform Lobby
 	err := sn.lobby.Update()
 	if err != nil {
-		sn.error(err, "Update")
+		sn.Error(err, "Update")
 	}
 }
 
-// ^ Process adds generates Preview with Thumbnail ^ //
-func (sn *Node) Process(procBytes []byte) {
-	// Initialize from Info
-	request := &md.ProcessRequest{}
-	err := proto.Unmarshal(procBytes, request)
+// ^ Invite Processes Data and Sens Invite to Peer ^ //
+func (sn *Node) Invite(reqBytes []byte) {
+	// @ 1. Initialize from Request
+	req := &md.InviteRequest{}
+	err := proto.Unmarshal(reqBytes, req)
 	if err != nil {
 		log.Println(err)
 	}
 
-	// Create Preview
-	safeFile := sf.NewProcessedFile(request, sn.peer.Profile, lf.ProcessCallbacks{CallQueued: sn.call.OnQueued, CallError: sn.error})
-	sn.files = append(sn.files, safeFile)
+	// Get PeerID and Check error
+	id, _, err := sn.lobby.Find(req.To.Id)
+	if err != nil {
+		sn.Error(err, "InviteWithContact")
+	}
+
+	// @ 2. Check Transfer Type
+	// Process the File
+	if req.Type == md.InviteRequest_Data {
+		safeFile := sf.NewProcessedFile(req, sn.peer.Profile, lf.ProcessCallbacks{CallQueued: sn.Queued, CallError: sn.Error})
+		sn.files = append(sn.files, safeFile)
+	}
+
+	// Contact Type Attach User Contact
+	if req.Type == md.InviteRequest_Contact {
+		// Set Contact
+		req.Contact = sn.contact
+	}
+
+	// @ 3. Send Invite to Peer
+	invMsg := sf.NewInviteFromRequest(req, sn.peer)
+
+	// Check if ID in PeerStore
+	go func(inv *md.AuthInvite) {
+		// Convert Protobuf to bytes
+		msgBytes, err := proto.Marshal(inv)
+		if err != nil {
+			sn.Error(err, "Marshal")
+		}
+
+		sn.peerConn.Request(sn.host, id, msgBytes)
+	}(&invMsg)
 }
 
 // ^ Respond to an Invitation ^ //

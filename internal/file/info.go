@@ -140,3 +140,29 @@ func NewCardFromUrl(p *md.Profile, s string, status md.TransferCard_Status) *md.
 		Url: s,
 	}
 }
+
+// ^ Method Creates AuthInvite from Request ^ //
+func NewInviteFromRequest(req *md.InviteRequest, p *md.Peer) md.AuthInvite {
+	// Initialize
+	var card *md.TransferCard
+	var payload md.Payload
+
+	// Determine Payload
+	if req.Type == md.InviteRequest_Contact {
+		payload = md.Payload_CONTACT
+		card = NewCardFromContact(p.Profile, req.Contact, md.TransferCard_DIRECT)
+	} else if req.Type == md.InviteRequest_URL {
+		payload = md.Payload_URL
+		card = NewCardFromUrl(p.Profile, req.Url, md.TransferCard_DIRECT)
+	} else {
+		payload = md.Payload_UNDEFINED
+	}
+
+	// Return Protobuf
+	return md.AuthInvite{
+		From:     p,
+		Payload:  payload,
+		Card:     card,
+		IsDirect: req.IsDirect,
+	}
+}

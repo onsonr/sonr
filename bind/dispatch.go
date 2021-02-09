@@ -15,7 +15,7 @@ func (sn *Node) DirectWithFile(peerId string) {
 
 	// Check error
 	if err != nil {
-		sn.error(err, "DirectWithFile")
+		sn.Error(err, "DirectWithFile")
 	}
 
 	// Create Invite Message with Payload
@@ -32,7 +32,6 @@ func (sn *Node) DirectWithFile(peerId string) {
 		From:     sn.peer,
 		Payload:  card.Payload,
 		Card:     card,
-		IsFile:   true,
 		IsDirect: true,
 	}
 
@@ -41,7 +40,7 @@ func (sn *Node) DirectWithFile(peerId string) {
 		// Convert Protobuf to bytes
 		msgBytes, err := proto.Marshal(inv)
 		if err != nil {
-			sn.error(err, "Marshal")
+			sn.Error(err, "Marshal")
 		}
 
 		sn.peerConn.Request(sn.host, id, msgBytes)
@@ -55,15 +54,14 @@ func (sn *Node) DirectWithURL(peerId string, url string) {
 
 	// Check error
 	if err != nil {
-		sn.error(err, "DirectWithURL")
+		sn.Error(err, "DirectWithURL")
 	}
 
 	// Create Invite Message with Payload
 	invMsg := md.AuthInvite{
-		From:     sn.peer,
-		Payload:  md.Payload_URL,
-		Card:     sf.NewCardFromUrl(sn.peer.Profile, url, md.TransferCard_DIRECT),
-		IsFile:   false,
+		From:    sn.peer,
+		Payload: md.Payload_URL,
+		Card:    sf.NewCardFromUrl(sn.peer.Profile, url, md.TransferCard_DIRECT),
 		IsDirect: true,
 	}
 
@@ -72,7 +70,7 @@ func (sn *Node) DirectWithURL(peerId string, url string) {
 		// Convert Protobuf to bytes
 		msgBytes, err := proto.Marshal(inv)
 		if err != nil {
-			sn.error(err, "Marshal")
+			sn.Error(err, "Marshal")
 		}
 
 		sn.peerConn.Request(sn.host, id, msgBytes)
@@ -86,7 +84,7 @@ func (sn *Node) InviteWithFile(peerId string) {
 
 	// Check error
 	if err != nil {
-		sn.error(err, "InviteWithFile")
+		sn.Error(err, "InviteWithFile")
 	}
 
 	// Create Invite Message with Payload
@@ -104,7 +102,6 @@ func (sn *Node) InviteWithFile(peerId string) {
 		Payload:  card.Payload,
 		Card:     card,
 		IsDirect: false,
-		IsFile:   true,
 	}
 
 	// Check if ID in PeerStore
@@ -112,7 +109,7 @@ func (sn *Node) InviteWithFile(peerId string) {
 		// Convert Protobuf to bytes
 		msgBytes, err := proto.Marshal(inv)
 		if err != nil {
-			sn.error(err, "Marshal")
+			sn.Error(err, "Marshal")
 		}
 
 		sn.peerConn.Request(sn.host, id, msgBytes)
@@ -126,7 +123,7 @@ func (sn *Node) InviteWithContact(peerId string) {
 
 	// Check error
 	if err != nil {
-		sn.error(err, "InviteWithContact")
+		sn.Error(err, "InviteWithContact")
 	}
 
 	// Create Invite Message with Payload and Card
@@ -134,7 +131,6 @@ func (sn *Node) InviteWithContact(peerId string) {
 		From:     sn.peer,
 		Payload:  md.Payload_CONTACT,
 		Card:     sf.NewCardFromContact(sn.peer.Profile, sn.contact, md.TransferCard_INVITE),
-		IsFile:   false,
 		IsDirect: false,
 	}
 
@@ -143,7 +139,7 @@ func (sn *Node) InviteWithContact(peerId string) {
 		// Convert Protobuf to bytes
 		msgBytes, err := proto.Marshal(inv)
 		if err != nil {
-			sn.error(err, "Marshal")
+			sn.Error(err, "Marshal")
 		}
 
 		sn.peerConn.Request(sn.host, id, msgBytes)
@@ -157,7 +153,7 @@ func (sn *Node) InviteWithURL(peerId string, url string) {
 
 	// Check error
 	if err != nil {
-		sn.error(err, "InviteWithURL")
+		sn.Error(err, "InviteWithURL")
 	}
 
 	// Create Invite Message with Payload
@@ -165,7 +161,6 @@ func (sn *Node) InviteWithURL(peerId string, url string) {
 		From:     sn.peer,
 		Payload:  md.Payload_URL,
 		Card:     sf.NewCardFromUrl(sn.peer.Profile, url, md.TransferCard_INVITE),
-		IsFile:   false,
 		IsDirect: false,
 	}
 
@@ -174,7 +169,7 @@ func (sn *Node) InviteWithURL(peerId string, url string) {
 		// Convert Protobuf to bytes
 		msgBytes, err := proto.Marshal(inv)
 		if err != nil {
-			sn.error(err, "Marshal")
+			sn.Error(err, "Marshal")
 		}
 
 		sn.peerConn.Request(sn.host, id, msgBytes)

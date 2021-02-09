@@ -82,7 +82,7 @@ func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, tc 
 // ^  Prepare for Stream, Create new Transfer ^ //
 func (pc *PeerConnection) PrepareTransfer(inv *md.AuthInvite) {
 	// Initialize Transfer
-	pc.transfer = sf.NewTransfer(inv, pc.dirs, lf.TransferFileCallbacks{CallProgress: pc.progressCall, CallComplete: pc.receivedCall, CallError: onError})
+	pc.transfer = sf.NewTransfer(inv, pc.dirs, pc.progressCall, pc.receivedCall)
 }
 
 // ^ User has accepted, Begin Sending Transfer ^ //
