@@ -85,44 +85,38 @@ func (sn *Node) Invite(reqBytes []byte) {
 		log.Println(err)
 	}
 
-	// Get PeerID and Check error
-	id, _, err := sn.lobby.Find(req.To.Id)
-	if err != nil {
-		sn.Error(err, "InviteWithContact")
-	}
-
 	// @ 2. Check Transfer Type
-	// Process the File
 	if req.Type == md.InviteRequest_File {
+		// Single File Transfer
 		safeFile := sf.NewProcessedFile(req, sn.peer.Profile, sn.Queued, sn.Error)
 		sn.files = append(sn.files, safeFile)
-	}
-
-	// Contact Type Attach User Contact
-	if req.Type == md.InviteRequest_MultiFiles {
+	} else if req.Type == md.InviteRequest_MultiFiles {
+		// Batch File Transfer
 		safeFiles := sf.NewBatchProcessFiles(req, sn.peer.Profile, sn.Queued, sn.Error)
 		sn.files = safeFiles
-	}
-
-	// Contact Type Attach User Contact
-	if req.Type == md.InviteRequest_Contact {
+	} else if req.Type == md.InviteRequest_Contact || req.Type == md.InviteRequest_URL {
+		// @ 3. Send Invite to Peer
 		// Set Contact
 		req.Contact = sn.contact
-	}
+		invMsg := sf.NewInviteFromRequest(req, sn.peer)
 
-	// @ 3. Send Invite to Peer
-	invMsg := sf.NewInviteFromRequest(req, sn.peer)
-
-	// Check if ID in PeerStore
-	go func(inv *md.AuthInvite) {
-		// Convert Protobuf to bytes
-		msgBytes, err := proto.Marshal(inv)
+		// Get PeerID and Check error
+		id, _, err := sn.lobby.Find(req.To.Id)
 		if err != nil {
-			sn.Error(err, "Marshal")
+			sn.Error(err, "InviteWithContact")
 		}
 
-		sn.peerConn.Request(sn.host, id, msgBytes)
-	}(&invMsg)
+		// Run Routine
+		go func(inv *md.AuthInvite) {
+			// Convert Protobuf to bytes
+			msgBytes, err := proto.Marshal(inv)
+			if err != nil {
+				sn.Error(err, "Marshal")
+			}
+
+			sn.peerConn.Request(sn.host, id, msgBytes)
+		}(&invMsg)
+	}
 }
 
 // ^ Respond to an Invitation ^ //

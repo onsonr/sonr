@@ -16,7 +16,7 @@ import (
 // ^ Method Processes File at Path^ //
 func (pf *ProcessedFile) EncodeFile(buf *bytes.Buffer) error {
 	// @ Jpeg Image
-	if pf.mime.Subtype == "jpg" {
+	if ext := pf.Ext(); ext == "jpg" {
 		// Open File at Meta Path
 		file, err := os.Open(pf.path)
 		if err != nil {
@@ -38,7 +38,7 @@ func (pf *ProcessedFile) EncodeFile(buf *bytes.Buffer) error {
 		return nil
 
 		// @ PNG Image
-	} else if pf.mime.Subtype == "png" {
+	} else if ext == "png" {
 		// Open File at Meta Path
 		file, err := os.Open(pf.path)
 		if err != nil {

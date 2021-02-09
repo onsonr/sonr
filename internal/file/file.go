@@ -36,6 +36,13 @@ type ProcessedFile struct {
 	request *md.InviteRequest
 }
 
+func (pf *ProcessedFile) Ext() string {
+	if pf.mime.Subtype == "jpg" || pf.mime.Subtype == "jpeg" {
+		return "jpg"
+	}
+	return pf.mime.Subtype
+}
+
 // ^ NewProcessedFile Processes Outgoing File ^ //
 func NewProcessedFile(req *md.InviteRequest, p *md.Profile, queueCall OnQueued, errCall OnError) *ProcessedFile {
 	// Set Package Level Callbacks

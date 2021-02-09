@@ -23,6 +23,7 @@ type TransferFile struct {
 	onProgress lf.OnProgress
 	onComplete lf.OnProtobuf
 	path       string
+	name       string
 
 	// Builders
 	stringsBuilder *strings.Builder
@@ -48,6 +49,7 @@ func NewTransfer(inv *md.AuthInvite, dirs *md.Directories, op func(data float32)
 		path:       filepath.Join(dirs.Temporary, fileName),
 		onProgress: op,
 		onComplete: oc,
+		name:       fileName,
 
 		// Builders
 		stringsBuilder: new(strings.Builder),
@@ -132,30 +134,14 @@ func (t *TransferFile) Save() error {
 	}
 
 	// @ 1. Get File Information
-	// Create Card
-	card := t.TransferCard()
 
-	// Convert Message to bytes
-	bytes, err := proto.Marshal(card)
-	if err != nil {
-		return err
-	}
-
-	// Send Complete Callback
-	t.onComplete(bytes)
-	return nil
-}
-
-// ^ Method Generates new Transfer Card from TransferFile^ //
-func (t *TransferFile) TransferCard() *md.TransferCard {
 	// Get File Information
-	i := GetFileInfo(t.path)
 	p := t.invite.From.Profile
 
-	// Return Card
-	return &md.TransferCard{
+	// Create Card
+	card := &md.TransferCard{
 		// SQL Properties
-		Payload:  i.Payload,
+		Payload:  t.invite.Payload,
 		Received: int32(time.Now().Unix()),
 		Platform: p.Platform,
 		Preview:  t.invite.Card.Preview,
@@ -170,11 +156,23 @@ func (t *TransferFile) TransferCard() *md.TransferCard {
 
 		// Data Properties
 		Metadata: &md.Metadata{
-			Name:      i.Name,
+			Name:      t.name,
 			Path:      t.path,
-			Size:      i.Size,
-			Mime:      i.Mime,
+			Size:      t.invite.Card.Properties.Size,
+			Mime:      t.invite.Card.Properties.Mime,
 			Thumbnail: t.invite.Card.Preview,
 		},
 	}
+
+	log.Println(card)
+
+	// Convert Message to bytes
+	bytes, err := proto.Marshal(card)
+	if err != nil {
+		return err
+	}
+
+	// Send Complete Callback
+	t.onComplete(bytes)
+	return nil
 }
