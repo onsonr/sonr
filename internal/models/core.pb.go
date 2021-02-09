@@ -31,10 +31,10 @@ type Chunk struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	B64    string `protobuf:"bytes,1,opt,name=b64,proto3" json:"b64,omitempty"`
-	Buffer []byte `protobuf:"bytes,2,opt,name=buffer,proto3" json:"buffer,omitempty"`
-	Size   int32  `protobuf:"varint,3,opt,name=size,proto3" json:"size,omitempty"`
-	Total  int32  `protobuf:"varint,4,opt,name=total,proto3" json:"total,omitempty"`
+	B64    string `protobuf:"bytes,1,opt,name=b64,proto3" json:"b64,omitempty"`       // Base 64 Value of Chunk
+	Buffer []byte `protobuf:"bytes,2,opt,name=buffer,proto3" json:"buffer,omitempty"` // Binary Value of Chunk
+	Size   int32  `protobuf:"varint,3,opt,name=size,proto3" json:"size,omitempty"`    // Size of this Chunk
+	Total  int32  `protobuf:"varint,4,opt,name=total,proto3" json:"total,omitempty"`  // Size of ALL Chunks together
 }
 
 func (x *Chunk) Reset() {

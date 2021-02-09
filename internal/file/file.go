@@ -184,7 +184,6 @@ func RequestThumbnail(reqFi *md.InviteRequest_FileInfo, sm *ProcessedFile) {
 
 	// Get Transfer Card
 	preview := sm.TransferCard()
-	preview.Status = md.TransferCard_PROCESSED
 
 	// @ 3. Callback with Preview
 	sm.OnQueued(preview, sm.request)
