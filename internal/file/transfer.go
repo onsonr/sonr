@@ -8,7 +8,9 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
+	"time"
 
+	lf "github.com/sonr-io/core/internal/lifecycle"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -18,9 +20,10 @@ type TransferFile struct {
 	// Inherited Properties
 	mutex      sync.Mutex
 	invite     *md.AuthInvite
-	onProgress OnProgress
-	onComplete OnProtobuf
+	onProgress lf.OnProgress
+	onComplete lf.OnProtobuf
 	path       string
+	name       string
 
 	// Builders
 	stringsBuilder *strings.Builder
@@ -45,6 +48,7 @@ func NewTransfer(inv *md.AuthInvite, dirs *md.Directories, op func(data float32)
 		path:       filepath.Join(dirs.Temporary, fileName),
 		onProgress: op,
 		onComplete: oc,
+		name:       fileName,
 
 		// Builders
 		stringsBuilder: new(strings.Builder),
@@ -129,17 +133,37 @@ func (t *TransferFile) Save() error {
 	}
 
 	// @ 1. Get File Information
-	// Get File Information
-	info := GetInfo(t.path)
 
-	// Create Metadata Card
-	card := NewCardFromMetadata(t.invite.From.Profile, &md.Metadata{
-		Name:      info.Name,
-		Path:      t.path,
-		Size:      info.Size,
-		Mime:      info.Mime,
-		Thumbnail: t.invite.Card.Preview,
-	})
+	// Get File Information
+	p := t.invite.From.Profile
+
+	// Create Card
+	card := &md.TransferCard{
+		// SQL Properties
+		Payload:  t.invite.Payload,
+		Received: int32(time.Now().Unix()),
+		Platform: p.Platform,
+		Preview:  t.invite.Card.Preview,
+
+		// Transfer Properties
+		Status: md.TransferCard_COMPLETED,
+
+		// Owner Properties
+		Username:  p.Username,
+		FirstName: p.FirstName,
+		LastName:  p.LastName,
+
+		// Data Properties
+		Metadata: &md.Metadata{
+			Name:      t.name,
+			Path:      t.path,
+			Size:      t.invite.Card.Properties.Size,
+			Mime:      t.invite.Card.Properties.Mime,
+			Thumbnail: t.invite.Card.Preview,
+		},
+	}
+
+	log.Println(card)
 
 	// Convert Message to bytes
 	bytes, err := proto.Marshal(card)

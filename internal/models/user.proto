@@ -3,41 +3,101 @@ syntax = "proto3";
 // Require Go Package
 option go_package = ".;models";
 
-// Define Contact Type: Will be CSV in Future
+// Contact is Extensive User Info that can be passed
 message Contact {
-  // Default
-  string firstName = 1;
-  string lastName = 2;
-  string phone = 3;
-  string website = 4;
-  string email = 5;
-  bytes profilePic = 6;
-  string header = 7;
-  repeated SocialTile socials = 8;
+  string firstName = 1; // General, First Name
+  string lastName = 2;  // General, Last Name
+  string phone = 3;     // Phone Number - For Text Message or  Video/Phone Call
+  string website = 4;   // Website URL Link
+  string email = 5;     // Email Address
+  bytes picture = 6;    // Profile Picture
+  repeated SocialTile socials = 7; // Available Social Media
 
-  // Extended Social Media Integration
+  // Social Tile provides Display Information and Provider Information
   message SocialTile {
-    Provider provider = 1;
-    int32 position = 2; // 0-7
-    string username = 3;
-    string showcase = 4;
-    string feed = 5;
+    // Properties
+    string username = 1;   // Users handle on Service
+    bool isPrivate = 2;    // Is the User's Account Private
+    Provider provider = 3; // Type of Social Provider
+    Type type = 4;         // Type of Tile to be Displayed
+    Links links = 5;       // Links based on Service
+    Position position = 6; // Location in Users Contact Card
 
+    // Social Links
+    message Links {
+      string userLink = 1; // Link to Users Profile
+      string feedLink = 2; // Link to Users Feed
+      string postLink = 3; // Link to Users Specifed Post
+    }
+
+    // Tile Display Position
+    message Position {
+      int32 row = 1;      // Row Location
+      int32 column = 2;   // Column Location
+      int32 size = 3;     // Size of Tile
+      int32 location = 4; // Position in Contact Array
+    }
+
+    // Social Media Service
     enum Provider {
-      Instagram = 0; // Feed/Link Option
-      TikTok = 1;    // Feed/Link Option
+      Instagram = 0; // Feed/Post/Link
+      TikTok = 1;    // Post/Link
       Facebook = 2;  // Link Only
-      YouTube = 3;   // Feed/Link Option
-      Spotify = 4;   // Feed/Link Option
-      Medium = 5;    // Feed/Link Option
-      Twitter = 6;   // Feed/Link Option
-      Snapchat = 7;  // Feed/Link Option
-      Github = 8;    // Feed/Link Option
+      YouTube = 3;   // Post/Link
+      Spotify = 4;   // Post/Link
+      Medium = 5;    // Feed/Post/Link
+      Twitter = 6;   // Feed/Post/Link
+      Snapchat = 7;  // Link Only
+      Github = 8;    // Link Only
+    }
+
+    // Social Tile Display Type
+    enum Type {
+      None = 0; // Default Tile Type
+      Feed = 1; // Big Tile Showcases Current User Feed
+      Post = 2; // Medium Tile Showcases a Featured Post
+      Link = 3; // Small Tile is Direct Link to User Profile
     }
   }
 }
 
-// Define Platform Enum: Operating System of Device
+// Information about device for User or Peer
+message Device {
+  string id = 1;         // Generated or Provided Device ID
+  Platform platform = 2; // Operating System
+  string model = 3;      // Model of Device
+  string name = 4;       // Name of Device
+  string version = 5;    // Device Software Version
+  int32 sdk = 6;         // Only For Android
+  bool desktop = 7;      // Only For Desktop
+}
+
+// Directories are for FilePaths Where Data can be stored
+message Directories {
+  string cache = 1;     // Only For Desktop
+  string documents = 2; // Permanent Data Storage
+  string downloads = 3; // Only For Desktop
+  string temporary = 4; // Temporary Data Storage, Mobile Only
+}
+
+// Basic Info Sent to Peers to Establish Connections
+message Peer {
+  string id = 1;           // Peer.ID from Libp2p
+  Device device = 2;       // Peers Device
+  Position position = 3;   // Peers Positional Information
+  Profile profile = 4;     // Peers General Information
+  Discovery discovery = 5; // Peers Method of Discovery
+
+  // Enum for Discovery Type
+  enum Discovery {
+    Linked = 0;     // Users own Device
+    MDNS = 1;       // Local Network
+    Ultrasonic = 2; // Ultrasonic discovered peer
+    Rendevouz = 3;  // Rendevouz Discovered Peer
+  }
+}
+
+// Platform is the Operating System of Device
 enum Platform {
   Unknown = 0;
   Android = 1;
@@ -48,84 +108,76 @@ enum Platform {
   Web = 6;
 }
 
-// Define Device Type: Information about device
-message Device {
-  string id = 1;
-  Platform platform = 2;
-  string model = 3;
-  string name = 4;
-  string version = 5;
-  int32 sdk = 6; // For Android
-  bool desktop = 7;
-}
-
-// Define Directories Type: Where Data can be stored
-message Directories {
-  string cache = 1; // Only For Desktop
-  string documents = 2;
-  string downloads = 3;
-  string temporary = 4;
-}
-
-// Define Peer: Basic Info Sent to Peers
-message Peer {
-  string id = 1;
-  Device device = 2;
-  Position position = 3;
-  Profile profile = 4;
-  Discovery discovery = 5;
-
-  // Enum for Discovery Type
-  enum Discovery {
-    Linked = 0;
-    MDNS = 1;
-    Ultrasonic = 2;
-    Rendevouz = 3;
-  }
-}
-
-// Define Profile: General Information about Peer
+// General Information about Peer passed during Authentication
 message Profile {
-  string username = 1;
-  string firstName = 2;
-  string lastName = 3;
-  bytes picture = 4;
-  Platform platform = 5;
+  string username = 1;   // Sonr Based Username
+  string firstName = 2;  // General Info
+  string lastName = 3;   // General Info
+  bytes picture = 4;     // Profile Picture
+  Platform platform = 5; // Peers Device Operating System
 }
 
-// Define Direction: Includes All Direction Info
+// Position Includes All Directional Info of Peer
 message Position {
-  // Given Data
-  double direction = 1;
-  double antipodal = 2;
-  double distance = 3;
-  Heading heading = 4;
-  Proximity proximity = 5;
+  double direction = 1;    // Compass Direction of Peer
+  double antipodal = 2;    // Inverse Compass Direction of Peer
+  Heading heading = 3;     // Cardinal Direction of Peer Facing
+  Proximity proximity = 4; // Proximit from the User - Calculated
 
-  // Enum for Proximity from User
+  // Proximity is the Distance between Peers, from Ultrasonic
   enum Proximity {
-    Unknown = 0;
-    Immediate = 1;
-    Near = 2;
-    Distant = 3;
+    Unknown = 0;   // Unable to Calculate
+    Immediate = 1; // Within 5 Meters
+    Near = 2;      // Within 10 Meters
+    Distant = 3;   // Within 15 Meters
   }
 
+  // Heading is the Compass Direction of Peer
   enum Heading {
-    N = 0;
-    NNE = 1;
-    NE = 2;
-    ENE = 3;
-    E = 4;
-    ESE = 5;
-    SE = 6;
-    SSE = 7;
-    S = 8;
-    SSW = 9;
-    SW = 10;
-    WSW = 11;
-    W = 12;
-    WNW = 13;
-    NW = 14;
-    NNW = 15;
+    N = 0;    // North
+    NNE = 1;  // North North East
+    NE = 2;   // North East
+    ENE = 3;  // East North East
+    E = 4;    // East
+    ESE = 5;  // East South East
+    SE = 6;   // South East
+    SSE = 7;  // South South East
+    S = 8;    // South
+    SSW = 9;  // South South West
+    SW = 10;  // South West
+    WSW = 11; // West South West
+    W = 12;   // West
+    WNW = 13; // West North West
+    NW = 14;  // North West
+    NNW = 15; // North North West
+  }
+}
+
+// User is the Saved Data from Client that Passes to Proxy, During ConnRequest
+message User {
+  Contact contact = 1;            // Clients Contact Card
+  Device device = 2;              // Clients Device
+  Directories directories = 3;    // Clients available Directories
+  Profile profile = 4;            // Clients General Profile - Optional
+  repeated Settings settings = 5; // Clients Specified Preferences
+
+  message Settings {
+    Option option = 1; // Type of Setting
+    Value value = 2;   // Value for Setting
+
+    // Value of Settings Option
+    message Value {
+      bool enabled = 1; // If Value is for simple enable/disable
+      string value = 2; // If Value is complex
+    }
+
+    // Available Settings Options
+    enum Option {
+      None = 0;              // Arbitrary Zero Value
+      DefaultVideoCall = 1;  // Default App to be used for Video Calls
+      FallbackVideoCall = 2; // Fallback App for Video Calls
+      DarkMode = 3;          // Dark Mode Preference
+      RunInBackground = 4;   // Sonr Background Run Preference
+    }
   }
 }

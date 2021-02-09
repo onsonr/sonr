@@ -9,7 +9,6 @@ import (
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	sf "github.com/sonr-io/core/internal/file"
 	sh "github.com/sonr-io/core/internal/host"
-	"github.com/sonr-io/core/internal/lifecycle"
 	"github.com/sonr-io/core/internal/lobby"
 	md "github.com/sonr-io/core/internal/models"
 	tr "github.com/sonr-io/core/internal/transfer"
@@ -17,19 +16,19 @@ import (
 )
 
 // @ Maximum Files in Node Cache
-const maxFileBufferSize = 5
+const maxFileBufferSize = 64
 
 // ^ Interface: Callback is implemented from Plugin to receive updates ^
 type Callback interface {
-	OnRefreshed(data []byte)
-	OnEvent(data []byte)
-	OnInvited(data []byte)
-	OnResponded(data []byte)
-	OnQueued(data []byte)
-	OnProgress(data float32)
-	OnReceived(data []byte)
-	OnTransmitted(data []byte)
-	OnError(data []byte)
+	OnRefreshed(data []byte)   // Lobby Updates
+	OnEvent(data []byte)       // Lobby Event
+	OnInvited(data []byte)     // User Invited
+	OnDirected(data []byte)    // User Direct-Invite from another Device
+	OnResponded(data []byte)   // Peer has responded
+	OnProgress(data float32)   // File Progress Updated
+	OnReceived(data []byte)    // User Received File
+	OnTransmitted(data []byte) // User Sent File
+	OnError(data []byte)       // Internal Error
 }
 
 // ^ Struct: Main Node handles Networking/Identity/Streams ^
@@ -65,7 +64,6 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	reqMsg := md.ConnectionRequest{}
 	err := proto.Unmarshal(reqBytes, &reqMsg)
 	if err != nil {
-		log.Println(err)
 		node.error(err, "NewNode")
 		return nil
 	}
@@ -94,19 +92,74 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	return node
 }
 
-// ^ Close Ends All Network Communication ^
-func (sn *Node) Pause() {
-	lifecycle.GetState().Pause()
+// ^ queued Callback, Sends File Invite to Peer, and Notifies Client ^
+func (sn *Node) queued(card *md.TransferCard, req *md.InviteRequest) {
+	// Get PeerID
+	id, _, err := sn.lobby.Find(req.To.Id)
+
+	// Check error
+	if err != nil {
+		sn.error(err, "Queued")
+	}
+
+	// Retreive Current File
+	currFile := sn.currentFile()
+	card.Status = md.TransferCard_INVITE
+	sn.peerConn.SafePreview = currFile
+
+	// Create Invite Message
+	invMsg := md.AuthInvite{
+		From:     sn.peer,
+		Payload:  card.Payload,
+		Card:     card,
+		IsDirect: req.IsDirect,
+	}
+
+	// Check if ID in PeerStore
+	go func(inv *md.AuthInvite) {
+		// Convert Protobuf to bytes
+		msgBytes, err := proto.Marshal(inv)
+		if err != nil {
+			sn.error(err, "Marshal")
+		}
+
+		sn.peerConn.Request(sn.host, id, msgBytes)
+	}(&invMsg)
 }
 
-// ^ Close Ends All Network Communication ^
-func (sn *Node) Resume() {
-	lifecycle.GetState().Resume()
-}
+// ^ multiQueued Callback, Sends File Invite to Peer, and Notifies Client ^
+func (sn *Node) multiQueued(card *md.TransferCard, req *md.InviteRequest) {
+	// Get PeerID
+	id, _, err := sn.lobby.Find(req.To.Id)
 
-// ^ Close Ends All Network Communication ^
-func (sn *Node) Stop() {
-	sn.host.Close()
+	// Check error
+	if err != nil {
+		sn.error(err, "Queued")
+	}
+
+	// Retreive Current File
+	currFile := sn.currentFile()
+	card.Status = md.TransferCard_INVITE
+	sn.peerConn.SafePreview = currFile
+
+	// Create Invite Message
+	invMsg := md.AuthInvite{
+		From:     sn.peer,
+		Payload:  card.Payload,
+		Card:     card,
+		IsDirect: req.IsDirect,
+	}
+
+	// Check if ID in PeerStore
+	go func(inv *md.AuthInvite) {
+		// Convert Protobuf to bytes
+		msgBytes, err := proto.Marshal(inv)
+		if err != nil {
+			sn.error(err, "Marshal")
+		}
+
+		sn.peerConn.Request(sn.host, id, msgBytes)
+	}(&invMsg)
 }
 
 // ^ error Callback with error instance, and method ^

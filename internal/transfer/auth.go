@@ -23,7 +23,7 @@ type AuthArgs struct {
 }
 
 // Reply is also AuthMessage protobuf
-type AuthReply struct {
+type AuthResponse struct {
 	Data []byte
 }
 
@@ -36,7 +36,7 @@ type AuthService struct {
 }
 
 // ^ Calls Invite on Remote Peer ^ //
-func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthReply) error {
+func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthResponse) error {
 	// Received Message
 	receivedMessage := &md.AuthInvite{}
 	err := proto.Unmarshal(args.Data, receivedMessage)
@@ -51,7 +51,7 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 	as.onInvite(args.Data)
 
 	// Hold Select for Invite Type
-	if as.inviteMsg.IsDirect {
+	if !as.inviteMsg.IsDirect {
 		select {
 		// Received Auth Channel Message
 		case m := <-as.respCh:
@@ -71,6 +71,9 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 			return nil
 		}
 	}
+
+	// Begin Direct Transfer
+	log.Println("Direct Transfer")
 	return nil
 }
 
@@ -78,7 +81,7 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 func (pc *PeerConnection) Request(h host.Host, id peer.ID, msgBytes []byte) {
 	// Initialize Data
 	rpcClient := gorpc.NewClient(h, protocol.ID("/sonr/rpc/auth"))
-	var reply AuthReply
+	var reply AuthResponse
 	var args AuthArgs
 	args.Data = msgBytes
 
@@ -119,7 +122,8 @@ func (pc *PeerConnection) Authorize(decision bool, contact *md.Contact, peer *md
 	offerMsg := pc.auth.inviteMsg
 
 	// @ Check Reply Type for File
-	if offerMsg.IsFile {
+	switch offerMsg.Payload {
+	case md.Payload_MEDIA:
 		// @ Check Decision
 		if decision {
 			// Initialize Transfer
@@ -146,16 +150,19 @@ func (pc *PeerConnection) Authorize(decision bool, contact *md.Contact, peer *md
 			// Send to Channel
 			pc.auth.respCh <- respMsg
 		}
-	} else {
+	case md.Payload_CONTACT:
 		// @ Pass Contact Back
 		// Create Accept Response
+		card := sf.NewCardFromContact(peer.Profile, contact, md.TransferCard_REPLY)
 		respMsg := &md.AuthReply{
 			From:    peer,
 			Payload: md.Payload_CONTACT,
-			Card:    sf.NewCardFromContact(peer.Profile, contact),
+			Card:    &card,
 		}
 
 		// Send to Channel
 		pc.auth.respCh <- respMsg
+	default:
+		break
 	}
 }

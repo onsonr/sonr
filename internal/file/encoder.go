@@ -98,7 +98,7 @@ func EncodeThumb(buf *bytes.Buffer, path string) error {
 	return nil
 }
 
-// ^ Generates Scaled Thumbnail for Image: (buf) is reference to buffer, (isScaled) is to scale image or not ^ //
+// ^ Generates Scaled Thumbnail for Image: (buf) is reference to buffer ^ //
 func GenerateThumb(buf *bytes.Buffer, path string) error {
 	// @ Open File at Meta Path
 	file, err := os.Open(path)

@@ -6,80 +6,63 @@ import "user.proto";
 // Require Go Package
 option go_package = ".;models";
 
-// Define ConnectionRequest: Initial Connection Message
+// Initial Connection Message to Establish Sonr
 message ConnectionRequest {
-  double latitude = 1;
-  double longitude = 2;
-  Profile profile = 3;
-  Device device = 4;
-  Directories directories = 5;
-  Contact contact = 6;
+  double latitude = 1;         // Geolocation for OLC
+  double longitude = 2;        // Geolocation for OLC
+  Profile profile = 3;         // General Peer Info
+  Device device = 4;           // Users Device
+  Directories directories = 5; // Users Available File Paths
+  Contact contact = 6;         // Users Contact Card
 }
 
-// Define ProcessRequest: Processes Given File with Information
-message ProcessRequest {
-  bool isExternal = 1;
-  string filePath = 2;
-  string thumbnailPath = 3;
-  int32 duration = 4;
-}
+// Processes Given File and Invites Specified Peer
+message InviteRequest {
+  TransferType type = 1; // General Payload Type
+  Peer to = 2;           // User thats being Invited
+  bool isDirect = 3;     // Is Users own Device
 
-// Define AuthInvite: Invitation Message sent on RPC
-message AuthInvite {
-  Payload payload = 1;
-  Peer from = 2;
-  TransferCard card = 3;
-  bool isDirect = 4;
-  bool isFile = 5;
-}
+  // Attached Data
+  string url = 4;              // URL to be Sent - Optional
+  Contact contact = 5;         // Contact Card to be Sent - Optional
+  repeated FileInfo files = 6; // Files to be Sent - Optional
 
-// Define AuthReply: Reply Message sent on RPC
-message AuthReply {
-  Payload payload = 1;
-  Peer from = 2;
-  bool decision = 3;
-  TransferCard card = 4;
-}
+  // FileInfo Message for Attached Files
+  message FileInfo {
+    string path = 1;       // Location of File
+    bool hasThumbnail = 2; // Provided File already has thumbnail
+    string thumbpath = 3;  // Path of Provided Thumbnail - Optional
+    int32 duration = 4;    // Duration of Video - Optional
+  }
 
-// Define TransferCard Type: Transferred Data Card
-message TransferCard {
-  // SQL Properties
-  int32 id = 1;
-  Payload payload = 2;
-  Properties properties = 3;
-  int32 lastOpened = 4;
-  Platform platform = 5;
-  bytes preview = 6;
-
-  // Owner Properties
-  string username = 7;
-  string firstName = 8;
-  string lastName = 9;
-
-  // Data Properties
-  Contact contact = 10;
-  Metadata metadata = 11;
-  string url = 12;
-
-  // -- Card Properties -- //
-  message Properties {
-    Type type = 1;
-    MIME mime = 2;
-    int32 size = 3;
-    int32 duration = 4;
-    string name = 5;
-
-    enum Type {
-      NONE = 0;
-      INVITE = 1;
-      REPLY = 2;
-      COMPLETED = 3;
-    }
+  // Enum for Type of Transfer
+  enum TransferType {
+    Unknown = 0;    // Default Value, Would not Transfer
+    File = 1;       // Media or Document
+    MultiFiles = 2; // Multiple Media or Documents
+    Contact = 3;    // Users Contact Card
+    URL = 4;        // Website URL Link
   }
 }
 
-// Define ErrorMessage: Error Message
+// Invitation Message sent on RPC
+message AuthInvite {
+  Payload payload = 1;   // Type of Transfer
+  Peer from = 2;         // Users Peer Data
+  TransferCard card = 3; // Card contains all Data Info, Transfer Info
+  bool isDirect = 4;     // Is Users own Device
+}
+
+// Reply Message sent on RPC
+message AuthReply {
+  Payload payload = 1;   // Type of Transfer
+  Peer from = 2;         // Users Peer Data
+  bool decision = 3;     // Users Decision for the Invitation
+  TransferCard card = 4; // Card contains all Data Info, Transfer Info
+}
+
+// Error Message returned from Core Library
 message ErrorMessage {
-  string message = 1;
-  string method = 2;
+  string message = 1; // Generated Error Message
+  string method = 2;  // Method Error Occurred
 }

@@ -5,63 +5,109 @@ import "user.proto";
 // Require Go Package
 option go_package = ".;models";
 
-// Define Payload: Define Payload Enum
-enum Payload {
-  UNDEFINED = 0;
-  CONTACT = 1;
-  MEDIA = 2;
-  URL = 3;
-  TEXT = 4;
-  PDF = 5;
-  PRESENTATION = 6;
-  SPREADSHEET = 7;
+// For Info about Lobby
+message Lobby {
+  string olc = 1;                // Open Location Code of Lobby
+  int32 size = 2;                // Total Number of Devices in Lobby
+  int32 count = 3;               // Total Devices in Lobby EXCLUDING User
+  map<string, Peer> peers = 4;   // Total Data of Active Peers
+  map<string, Peer> standby = 5; // Peers that have went inactive
 }
 
-// Define Metadata Type: For Received Transfer
-message Metadata {
-  int32 id = 1;
-  string name = 2;
-  string path = 3;
-  int32 size = 4;
-  MIME mime = 5;
-  bytes thumbnail = 6;
-}
+// Message Sent when peer messages Lobby Topic
+message LobbyEvent {
+  string id = 1;   // Peer ID
+  Event event = 2; // What Peer is Doing
+  Peer data = 3;   // Peer Information
 
-// Define MIME: Protobuf Version of Mime
-message MIME {
-  Type type = 1;
-  string subtype = 2;
-  string value = 3;
-
-  enum Type {
-    application = 0;
-    audio = 1;
-    image = 2;
-    text = 3;
-    video = 4;
+  enum Event {
+    EXCHANGE = 0; // Peer has joined wants Info
+    STANDBY = 1;  // Peer is taking break from lobby
+    RESUME = 2;   // Peer has rejoined Lobby
+    UPDATE = 3;   // Peer has changed position
   }
 }
 
-// Define Lobby Type: For Info about Lobby
-message Lobby {
-  string olc = 1;
-  int32 size = 2;
-  int32 count = 3;
-  map<string, Peer> peers = 4;
+// For Received Transfer File Information
+message Metadata {
+  int32 id = 1;        // Time based Assignment
+  string name = 2;     // File Name without Path
+  string path = 3;     // File Location
+  int32 size = 4;      // File Size in Bytes
+  MIME mime = 5;       // Standard Mime Type
+  bytes thumbnail = 6; // Thumbnail Preview of File
 }
 
-// [CORE]
-// Message Sent when peer messages Lobby Topic
-message LobbyEvent {
-  string id = 1;
-  Event event = 2;
-  Peer data = 3;
+// Protobuf for Standard MIME
+message MIME {
+  Type type = 1;      // Type of File
+  string subtype = 2; // Extension of File
+  string value = 3;   // Type/Subtype i.e. (image/jpeg)
 
-  enum Event {
-    ENTER = 0;
-    EXIT = 1;
-    STANDBY = 2;
-    EXCHANGE = 3;
-    UPDATE = 4;
+  enum Type {
+    application = 0; // Document Files
+    audio = 1;       // Sound, Audio Files
+    image = 2;       // Image Files
+    text = 3;        // Text Based Files
+    video = 4;       // Video Files
+  }
+}
+
+// Payload is type of Data being transferred
+enum Payload {
+  UNDEFINED = 0;    // Not Specified
+  CONTACT = 1;      // Sonr Based Contact
+  MEDIA = 2;        // Image, Audio, Video
+  URL = 3;          // Link to Site
+  TEXT = 4;         // Text based document
+  PDF = 5;          // PDF File
+  PRESENTATION = 6; // Presentation based File from PPT or Keynote
+  SPREADSHEET = 7;  // Spreadsheet based File from Excel or Numbers
+}
+
+// TransferCard holds data passed between Exchange
+message TransferCard {
+  int32 id = 1;        // SQL: Id reference
+  Payload payload = 2; // SQL: Type of Data received
+  int32 received = 3;  // SQL: UnixTime of received Date/Time
+  bytes preview = 4;   // SQL: Thumbnail Preview Bytes
+
+  Platform platform = 5; // OWNER: Operating System of Owner
+  string username = 6;   // OWNER: Sonr Username Reference
+  string firstName = 7;  // OWNER: General FirstName Reference
+  string lastName = 8;   // OWNER: General LastName Reference
+
+  Progress progress = 9;      // TRANSFER: Progress of Transfer - File Only
+  Status status = 10;         // TRANSFER: Status of the Card - File Only
+  Properties properties = 11; // TRANSFER: Card Properties - File Only
+
+  Contact contact = 12;   // DATA(Optional): Received Contact Information
+  Metadata metadata = 13; // DATA(Optional): Received a File or Media
+  string url = 14;        // DATA(Optional): Received a Website Link
+
+  // Card Transfer Status
+  enum Status {
+    NONE = 0;       // Default, Idle or Post-Completion
+    INVITE = 1;     // An Invited Transfer
+    DIRECT = 2;     // A Direct Transfer
+    REPLY = 3;      // A Response Card (Usually Contact only)
+    INPROGRESS = 4; // A Transfer in Progress
+    COMPLETED = 5;  // A Received and Completed Transfer
+  }
+
+  // Card Properties based on File
+  message Properties {
+    MIME mime = 1;      // Standard MIME Type Values
+    int32 size = 2;     // Size of File in Bytes
+    int32 duration = 3; // Length of Video - Optional
+    string name = 4;    // Name of File
+  }
+
+  // Progress Variables to determine completion
+  message Progress {
+    int32 currentSize = 1; // Current size of File in Transfer
+    int32 interval = 2;    // Current Interval of Transfer
+    int32 totalChunks = 3; // Total Chunks of File
+    int32 totalSize = 4;   // Total Size of File
   }
 }

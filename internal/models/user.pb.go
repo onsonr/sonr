@@ -25,7 +25,7 @@ const (
 // of the legacy proto package is being used.
 const _ = proto.ProtoPackageIsVersion4
 
-// Define Platform Enum: Operating System of Device
+// Platform is the Operating System of Device
 type Platform int32
 
 const (
@@ -87,18 +87,19 @@ func (Platform) EnumDescriptor() ([]byte, []int) {
 	return file_user_proto_rawDescGZIP(), []int{0}
 }
 
+// Social Media Service
 type Contact_SocialTile_Provider int32
 
 const (
-	Contact_SocialTile_Instagram Contact_SocialTile_Provider = 0 // Feed/Link Option
-	Contact_SocialTile_TikTok    Contact_SocialTile_Provider = 1 // Feed/Link Option
+	Contact_SocialTile_Instagram Contact_SocialTile_Provider = 0 // Feed/Post/Link
+	Contact_SocialTile_TikTok    Contact_SocialTile_Provider = 1 // Post/Link
 	Contact_SocialTile_Facebook  Contact_SocialTile_Provider = 2 // Link Only
-	Contact_SocialTile_YouTube   Contact_SocialTile_Provider = 3 // Feed/Link Option
-	Contact_SocialTile_Spotify   Contact_SocialTile_Provider = 4 // Feed/Link Option
-	Contact_SocialTile_Medium    Contact_SocialTile_Provider = 5 // Feed/Link Option
-	Contact_SocialTile_Twitter   Contact_SocialTile_Provider = 6 // Feed/Link Option
-	Contact_SocialTile_Snapchat  Contact_SocialTile_Provider = 7 // Feed/Link Option
-	Contact_SocialTile_Github    Contact_SocialTile_Provider = 8 // Feed/Link Option
+	Contact_SocialTile_YouTube   Contact_SocialTile_Provider = 3 // Post/Link
+	Contact_SocialTile_Spotify   Contact_SocialTile_Provider = 4 // Post/Link
+	Contact_SocialTile_Medium    Contact_SocialTile_Provider = 5 // Feed/Post/Link
+	Contact_SocialTile_Twitter   Contact_SocialTile_Provider = 6 // Feed/Post/Link
+	Contact_SocialTile_Snapchat  Contact_SocialTile_Provider = 7 // Link Only
+	Contact_SocialTile_Github    Contact_SocialTile_Provider = 8 // Link Only
 )
 
 // Enum value maps for Contact_SocialTile_Provider.
@@ -154,14 +155,67 @@ func (Contact_SocialTile_Provider) EnumDescriptor() ([]byte, []int) {
 	return file_user_proto_rawDescGZIP(), []int{0, 0, 0}
 }
 
+// Social Tile Display Type
+type Contact_SocialTile_Type int32
+
+const (
+	Contact_SocialTile_None Contact_SocialTile_Type = 0 // Default Tile Type
+	Contact_SocialTile_Feed Contact_SocialTile_Type = 1 // Big Tile Showcases Current User Feed
+	Contact_SocialTile_Post Contact_SocialTile_Type = 2 // Medium Tile Showcases a Featured Post
+	Contact_SocialTile_Link Contact_SocialTile_Type = 3 // Small Tile is Direct Link to User Profile
+)
+
+// Enum value maps for Contact_SocialTile_Type.
+var (
+	Contact_SocialTile_Type_name = map[int32]string{
+		0: "None",
+		1: "Feed",
+		2: "Post",
+		3: "Link",
+	}
+	Contact_SocialTile_Type_value = map[string]int32{
+		"None": 0,
+		"Feed": 1,
+		"Post": 2,
+		"Link": 3,
+	}
+)
+
+func (x Contact_SocialTile_Type) Enum() *Contact_SocialTile_Type {
+	p := new(Contact_SocialTile_Type)
+	*p = x
+	return p
+}
+
+func (x Contact_SocialTile_Type) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Contact_SocialTile_Type) Descriptor() protoreflect.EnumDescriptor {
+	return file_user_proto_enumTypes[2].Descriptor()
+}
+
+func (Contact_SocialTile_Type) Type() protoreflect.EnumType {
+	return &file_user_proto_enumTypes[2]
+}
+
+func (x Contact_SocialTile_Type) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use Contact_SocialTile_Type.Descriptor instead.
+func (Contact_SocialTile_Type) EnumDescriptor() ([]byte, []int) {
+	return file_user_proto_rawDescGZIP(), []int{0, 0, 1}
+}
+
 // Enum for Discovery Type
 type Peer_Discovery int32
 
 const (
-	Peer_Linked     Peer_Discovery = 0
-	Peer_MDNS       Peer_Discovery = 1
-	Peer_Ultrasonic Peer_Discovery = 2
-	Peer_Rendevouz  Peer_Discovery = 3
+	Peer_Linked     Peer_Discovery = 0 // Users own Device
+	Peer_MDNS       Peer_Discovery = 1 // Local Network
+	Peer_Ultrasonic Peer_Discovery = 2 // Ultrasonic discovered peer
+	Peer_Rendevouz  Peer_Discovery = 3 // Rendevouz Discovered Peer
 )
 
 // Enum value maps for Peer_Discovery.
@@ -191,11 +245,11 @@ func (x Peer_Discovery) String() string {
 }
 
 func (Peer_Discovery) Descriptor() protoreflect.EnumDescriptor {
-	return file_user_proto_enumTypes[2].Descriptor()
+	return file_user_proto_enumTypes[3].Descriptor()
 }
 
 func (Peer_Discovery) Type() protoreflect.EnumType {
-	return &file_user_proto_enumTypes[2]
+	return &file_user_proto_enumTypes[3]
 }
 
 func (x Peer_Discovery) Number() protoreflect.EnumNumber {
@@ -207,14 +261,14 @@ func (Peer_Discovery) EnumDescriptor() ([]byte, []int) {
 	return file_user_proto_rawDescGZIP(), []int{3, 0}
 }
 
-// Enum for Proximity from User
+// Proximity is the Distance between Peers, from Ultrasonic
 type Position_Proximity int32
 
 const (
-	Position_Unknown   Position_Proximity = 0
-	Position_Immediate Position_Proximity = 1
-	Position_Near      Position_Proximity = 2
-	Position_Distant   Position_Proximity = 3
+	Position_Unknown   Position_Proximity = 0 // Unable to Calculate
+	Position_Immediate Position_Proximity = 1 // Within 5 Meters
+	Position_Near      Position_Proximity = 2 // Within 10 Meters
+	Position_Distant   Position_Proximity = 3 // Within 15 Meters
 )
 
 // Enum value maps for Position_Proximity.
@@ -244,11 +298,11 @@ func (x Position_Proximity) String() string {
 }
 
 func (Position_Proximity) Descriptor() protoreflect.EnumDescriptor {
-	return file_user_proto_enumTypes[3].Descriptor()
+	return file_user_proto_enumTypes[4].Descriptor()
 }
 
 func (Position_Proximity) Type() protoreflect.EnumType {
-	return &file_user_proto_enumTypes[3]
+	return &file_user_proto_enumTypes[4]
 }
 
 func (x Position_Proximity) Number() protoreflect.EnumNumber {
@@ -260,25 +314,26 @@ func (Position_Proximity) EnumDescriptor() ([]byte, []int) {
 	return file_user_proto_rawDescGZIP(), []int{5, 0}
 }
 
+// Heading is the Compass Direction of Peer
 type Position_Heading int32
 
 const (
-	Position_N   Position_Heading = 0
-	Position_NNE Position_Heading = 1
-	Position_NE  Position_Heading = 2
-	Position_ENE Position_Heading = 3
-	Position_E   Position_Heading = 4
-	Position_ESE Position_Heading = 5
-	Position_SE  Position_Heading = 6
-	Position_SSE Position_Heading = 7
-	Position_S   Position_Heading = 8
-	Position_SSW Position_Heading = 9
-	Position_SW  Position_Heading = 10
-	Position_WSW Position_Heading = 11
-	Position_W   Position_Heading = 12
-	Position_WNW Position_Heading = 13
-	Position_NW  Position_Heading = 14
-	Position_NNW Position_Heading = 15
+	Position_N   Position_Heading = 0  // North
+	Position_NNE Position_Heading = 1  // North North East
+	Position_NE  Position_Heading = 2  // North East
+	Position_ENE Position_Heading = 3  // East North East
+	Position_E   Position_Heading = 4  // East
+	Position_ESE Position_Heading = 5  // East South East
+	Position_SE  Position_Heading = 6  // South East
+	Position_SSE Position_Heading = 7  // South South East
+	Position_S   Position_Heading = 8  // South
+	Position_SSW Position_Heading = 9  // South South West
+	Position_SW  Position_Heading = 10 // South West
+	Position_WSW Position_Heading = 11 // West South West
+	Position_W   Position_Heading = 12 // West
+	Position_WNW Position_Heading = 13 // West North West
+	Position_NW  Position_Heading = 14 // North West
+	Position_NNW Position_Heading = 15 // North North West
 )
 
 // Enum value maps for Position_Heading.
@@ -332,11 +387,11 @@ func (x Position_Heading) String() string {
 }
 
 func (Position_Heading) Descriptor() protoreflect.EnumDescriptor {
-	return file_user_proto_enumTypes[4].Descriptor()
+	return file_user_proto_enumTypes[5].Descriptor()
 }
 
 func (Position_Heading) Type() protoreflect.EnumType {
-	return &file_user_proto_enumTypes[4]
+	return &file_user_proto_enumTypes[5]
 }
 
 func (x Position_Heading) Number() protoreflect.EnumNumber {
@@ -348,21 +403,75 @@ func (Position_Heading) EnumDescriptor() ([]byte, []int) {
 	return file_user_proto_rawDescGZIP(), []int{5, 1}
 }
 
-// Define Contact Type: Will be CSV in Future
+// Available Settings Options
+type User_Settings_Option int32
+
+const (
+	User_Settings_None              User_Settings_Option = 0 // Arbitrary Zero Value
+	User_Settings_DefaultVideoCall  User_Settings_Option = 1 // Default App to be used for Video Calls
+	User_Settings_FallbackVideoCall User_Settings_Option = 2 // Fallback App for Video Calls
+	User_Settings_DarkMode          User_Settings_Option = 3 // Dark Mode Preference
+	User_Settings_RunInBackground   User_Settings_Option = 4 // Sonr Background Run Preference
+)
+
+// Enum value maps for User_Settings_Option.
+var (
+	User_Settings_Option_name = map[int32]string{
+		0: "None",
+		1: "DefaultVideoCall",
+		2: "FallbackVideoCall",
+		3: "DarkMode",
+		4: "RunInBackground",
+	}
+	User_Settings_Option_value = map[string]int32{
+		"None":              0,
+		"DefaultVideoCall":  1,
+		"FallbackVideoCall": 2,
+		"DarkMode":          3,
+		"RunInBackground":   4,
+	}
+)
+
+func (x User_Settings_Option) Enum() *User_Settings_Option {
+	p := new(User_Settings_Option)
+	*p = x
+	return p
+}
+
+func (x User_Settings_Option) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (User_Settings_Option) Descriptor() protoreflect.EnumDescriptor {
+	return file_user_proto_enumTypes[6].Descriptor()
+}
+
+func (User_Settings_Option) Type() protoreflect.EnumType {
+	return &file_user_proto_enumTypes[6]
+}
+
+func (x User_Settings_Option) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use User_Settings_Option.Descriptor instead.
+func (User_Settings_Option) EnumDescriptor() ([]byte, []int) {
+	return file_user_proto_rawDescGZIP(), []int{6, 0, 0}
+}
+
+// Contact is Extensive User Info that can be passed
 type Contact struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// Default
-	FirstName  string                `protobuf:"bytes,1,opt,name=firstName,proto3" json:"firstName,omitempty"`
-	LastName   string                `protobuf:"bytes,2,opt,name=lastName,proto3" json:"lastName,omitempty"`
-	Phone      string                `protobuf:"bytes,3,opt,name=phone,proto3" json:"phone,omitempty"`
-	Website    string                `protobuf:"bytes,4,opt,name=website,proto3" json:"website,omitempty"`
-	Email      string                `protobuf:"bytes,5,opt,name=email,proto3" json:"email,omitempty"`
-	ProfilePic []byte                `protobuf:"bytes,6,opt,name=profilePic,proto3" json:"profilePic,omitempty"`
-	Header     string                `protobuf:"bytes,7,opt,name=header,proto3" json:"header,omitempty"`
-	Socials    []*Contact_SocialTile `protobuf:"bytes,8,rep,name=socials,proto3" json:"socials,omitempty"`
+	FirstName string                `protobuf:"bytes,1,opt,name=firstName,proto3" json:"firstName,omitempty"` // General, First Name
+	LastName  string                `protobuf:"bytes,2,opt,name=lastName,proto3" json:"lastName,omitempty"`   // General, Last Name
+	Phone     string                `protobuf:"bytes,3,opt,name=phone,proto3" json:"phone,omitempty"`         // Phone Number - For Text Message or  Video/Phone Call
+	Website   string                `protobuf:"bytes,4,opt,name=website,proto3" json:"website,omitempty"`     // Website URL Link
+	Email     string                `protobuf:"bytes,5,opt,name=email,proto3" json:"email,omitempty"`         // Email Address
+	Picture   []byte                `protobuf:"bytes,6,opt,name=picture,proto3" json:"picture,omitempty"`     // Profile Picture
+	Socials   []*Contact_SocialTile `protobuf:"bytes,7,rep,name=socials,proto3" json:"socials,omitempty"`     // Available Social Media
 }
 
 func (x *Contact) Reset() {
@@ -432,18 +541,11 @@ func (x *Contact) GetEmail() string {
 	return ""
 }
 
-func (x *Contact) GetProfilePic() []byte {
+func (x *Contact) GetPicture() []byte {
 	if x != nil {
-		return x.ProfilePic
+		return x.Picture
 	}
 	return nil
-}
-
-func (x *Contact) GetHeader() string {
-	if x != nil {
-		return x.Header
-	}
-	return ""
 }
 
 func (x *Contact) GetSocials() []*Contact_SocialTile {
@@ -453,19 +555,19 @@ func (x *Contact) GetSocials() []*Contact_SocialTile {
 	return nil
 }
 
-// Define Device Type: Information about device
+// Information about device for User or Peer
 type Device struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id       string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Platform Platform `protobuf:"varint,2,opt,name=platform,proto3,enum=Platform" json:"platform,omitempty"`
-	Model    string   `protobuf:"bytes,3,opt,name=model,proto3" json:"model,omitempty"`
-	Name     string   `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
-	Version  string   `protobuf:"bytes,5,opt,name=version,proto3" json:"version,omitempty"`
-	Sdk      int32    `protobuf:"varint,6,opt,name=sdk,proto3" json:"sdk,omitempty"` // For Android
-	Desktop  bool     `protobuf:"varint,7,opt,name=desktop,proto3" json:"desktop,omitempty"`
+	Id       string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`                            // Generated or Provided Device ID
+	Platform Platform `protobuf:"varint,2,opt,name=platform,proto3,enum=Platform" json:"platform,omitempty"` // Operating System
+	Model    string   `protobuf:"bytes,3,opt,name=model,proto3" json:"model,omitempty"`                      // Model of Device
+	Name     string   `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`                        // Name of Device
+	Version  string   `protobuf:"bytes,5,opt,name=version,proto3" json:"version,omitempty"`                  // Device Software Version
+	Sdk      int32    `protobuf:"varint,6,opt,name=sdk,proto3" json:"sdk,omitempty"`                         // Only For Android
+	Desktop  bool     `protobuf:"varint,7,opt,name=desktop,proto3" json:"desktop,omitempty"`                 // Only For Desktop
 }
 
 func (x *Device) Reset() {
@@ -549,16 +651,16 @@ func (x *Device) GetDesktop() bool {
 	return false
 }
 
-// Define Directories Type: Where Data can be stored
+// Directories are for FilePaths Where Data can be stored
 type Directories struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Cache     string `protobuf:"bytes,1,opt,name=cache,proto3" json:"cache,omitempty"` // Only For Desktop
-	Documents string `protobuf:"bytes,2,opt,name=documents,proto3" json:"documents,omitempty"`
-	Downloads string `protobuf:"bytes,3,opt,name=downloads,proto3" json:"downloads,omitempty"`
-	Temporary string `protobuf:"bytes,4,opt,name=temporary,proto3" json:"temporary,omitempty"`
+	Cache     string `protobuf:"bytes,1,opt,name=cache,proto3" json:"cache,omitempty"`         // Only For Desktop
+	Documents string `protobuf:"bytes,2,opt,name=documents,proto3" json:"documents,omitempty"` // Permanent Data Storage
+	Downloads string `protobuf:"bytes,3,opt,name=downloads,proto3" json:"downloads,omitempty"` // Only For Desktop
+	Temporary string `protobuf:"bytes,4,opt,name=temporary,proto3" json:"temporary,omitempty"` // Temporary Data Storage, Mobile Only
 }
 
 func (x *Directories) Reset() {
@@ -621,17 +723,17 @@ func (x *Directories) GetTemporary() string {
 	return ""
 }
 
-// Define Peer: Basic Info Sent to Peers
+// Basic Info Sent to Peers to Establish Connections
 type Peer struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id        string         `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Device    *Device        `protobuf:"bytes,2,opt,name=device,proto3" json:"device,omitempty"`
-	Position  *Position      `protobuf:"bytes,3,opt,name=position,proto3" json:"position,omitempty"`
-	Profile   *Profile       `protobuf:"bytes,4,opt,name=profile,proto3" json:"profile,omitempty"`
-	Discovery Peer_Discovery `protobuf:"varint,5,opt,name=discovery,proto3,enum=Peer_Discovery" json:"discovery,omitempty"`
+	Id        string         `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`                                    // Peer.ID from Libp2p
+	Device    *Device        `protobuf:"bytes,2,opt,name=device,proto3" json:"device,omitempty"`                            // Peers Device
+	Position  *Position      `protobuf:"bytes,3,opt,name=position,proto3" json:"position,omitempty"`                        // Peers Positional Information
+	Profile   *Profile       `protobuf:"bytes,4,opt,name=profile,proto3" json:"profile,omitempty"`                          // Peers General Information
+	Discovery Peer_Discovery `protobuf:"varint,5,opt,name=discovery,proto3,enum=Peer_Discovery" json:"discovery,omitempty"` // Peers Method of Discovery
 }
 
 func (x *Peer) Reset() {
@@ -701,17 +803,17 @@ func (x *Peer) GetDiscovery() Peer_Discovery {
 	return Peer_Linked
 }
 
-// Define Profile: General Information about Peer
+// General Information about Peer passed during Authentication
 type Profile struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Username  string   `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
-	FirstName string   `protobuf:"bytes,2,opt,name=firstName,proto3" json:"firstName,omitempty"`
-	LastName  string   `protobuf:"bytes,3,opt,name=lastName,proto3" json:"lastName,omitempty"`
-	Picture   []byte   `protobuf:"bytes,4,opt,name=picture,proto3" json:"picture,omitempty"`
-	Platform  Platform `protobuf:"varint,5,opt,name=platform,proto3,enum=Platform" json:"platform,omitempty"`
+	Username  string   `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`                // Sonr Based Username
+	FirstName string   `protobuf:"bytes,2,opt,name=firstName,proto3" json:"firstName,omitempty"`              // General Info
+	LastName  string   `protobuf:"bytes,3,opt,name=lastName,proto3" json:"lastName,omitempty"`                // General Info
+	Picture   []byte   `protobuf:"bytes,4,opt,name=picture,proto3" json:"picture,omitempty"`                  // Profile Picture
+	Platform  Platform `protobuf:"varint,5,opt,name=platform,proto3,enum=Platform" json:"platform,omitempty"` // Peers Device Operating System
 }
 
 func (x *Profile) Reset() {
@@ -781,18 +883,16 @@ func (x *Profile) GetPlatform() Platform {
 	return Platform_Unknown
 }
 
-// Define Direction: Includes All Direction Info
+// Position Includes All Directional Info of Peer
 type Position struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// Given Data
-	Direction float64            `protobuf:"fixed64,1,opt,name=direction,proto3" json:"direction,omitempty"`
-	Antipodal float64            `protobuf:"fixed64,2,opt,name=antipodal,proto3" json:"antipodal,omitempty"`
-	Distance  float64            `protobuf:"fixed64,3,opt,name=distance,proto3" json:"distance,omitempty"`
-	Heading   Position_Heading   `protobuf:"varint,4,opt,name=heading,proto3,enum=Position_Heading" json:"heading,omitempty"`
-	Proximity Position_Proximity `protobuf:"varint,5,opt,name=proximity,proto3,enum=Position_Proximity" json:"proximity,omitempty"`
+	Direction float64            `protobuf:"fixed64,1,opt,name=direction,proto3" json:"direction,omitempty"`                        // Compass Direction of Peer
+	Antipodal float64            `protobuf:"fixed64,2,opt,name=antipodal,proto3" json:"antipodal,omitempty"`                        // Inverse Compass Direction of Peer
+	Heading   Position_Heading   `protobuf:"varint,3,opt,name=heading,proto3,enum=Position_Heading" json:"heading,omitempty"`       // Cardinal Direction of Peer Facing
+	Proximity Position_Proximity `protobuf:"varint,4,opt,name=proximity,proto3,enum=Position_Proximity" json:"proximity,omitempty"` // Proximit from the User - Calculated
 }
 
 func (x *Position) Reset() {
@@ -841,13 +941,6 @@ func (x *Position) GetAntipodal() float64 {
 	return 0
 }
 
-func (x *Position) GetDistance() float64 {
-	if x != nil {
-		return x.Distance
-	}
-	return 0
-}
-
 func (x *Position) GetHeading() Position_Heading {
 	if x != nil {
 		return x.Heading
@@ -862,23 +955,105 @@ func (x *Position) GetProximity() Position_Proximity {
 	return Position_Unknown
 }
 
-// Extended Social Media Integration
+// User is the Saved Data from Client that Passes to Proxy, During ConnRequest
+type User struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Contact     *Contact         `protobuf:"bytes,1,opt,name=contact,proto3" json:"contact,omitempty"`         // Clients Contact Card
+	Device      *Device          `protobuf:"bytes,2,opt,name=device,proto3" json:"device,omitempty"`           // Clients Device
+	Directories *Directories     `protobuf:"bytes,3,opt,name=directories,proto3" json:"directories,omitempty"` // Clients available Directories
+	Profile     *Profile         `protobuf:"bytes,4,opt,name=profile,proto3" json:"profile,omitempty"`         // Clients General Profile - Optional
+	Settings    []*User_Settings `protobuf:"bytes,5,rep,name=settings,proto3" json:"settings,omitempty"`       // Clients Specified Preferences
+}
+
+func (x *User) Reset() {
+	*x = User{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_user_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *User) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*User) ProtoMessage() {}
+
+func (x *User) ProtoReflect() protoreflect.Message {
+	mi := &file_user_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use User.ProtoReflect.Descriptor instead.
+func (*User) Descriptor() ([]byte, []int) {
+	return file_user_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *User) GetContact() *Contact {
+	if x != nil {
+		return x.Contact
+	}
+	return nil
+}
+
+func (x *User) GetDevice() *Device {
+	if x != nil {
+		return x.Device
+	}
+	return nil
+}
+
+func (x *User) GetDirectories() *Directories {
+	if x != nil {
+		return x.Directories
+	}
+	return nil
+}
+
+func (x *User) GetProfile() *Profile {
+	if x != nil {
+		return x.Profile
+	}
+	return nil
+}
+
+func (x *User) GetSettings() []*User_Settings {
+	if x != nil {
+		return x.Settings
+	}
+	return nil
+}
+
+// Social Tile provides Display Information and Provider Information
 type Contact_SocialTile struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Provider Contact_SocialTile_Provider `protobuf:"varint,1,opt,name=provider,proto3,enum=Contact_SocialTile_Provider" json:"provider,omitempty"`
-	Position int32                       `protobuf:"varint,2,opt,name=position,proto3" json:"position,omitempty"` // 0-7
-	Username string                      `protobuf:"bytes,3,opt,name=username,proto3" json:"username,omitempty"`
-	Showcase string                      `protobuf:"bytes,4,opt,name=showcase,proto3" json:"showcase,omitempty"`
-	Feed     string                      `protobuf:"bytes,5,opt,name=feed,proto3" json:"feed,omitempty"`
+	// Properties
+	Username  string                       `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`                                   // Users handle on Service
+	IsPrivate bool                         `protobuf:"varint,2,opt,name=isPrivate,proto3" json:"isPrivate,omitempty"`                                // Is the User's Account Private
+	Provider  Contact_SocialTile_Provider  `protobuf:"varint,3,opt,name=provider,proto3,enum=Contact_SocialTile_Provider" json:"provider,omitempty"` // Type of Social Provider
+	Type      Contact_SocialTile_Type      `protobuf:"varint,4,opt,name=type,proto3,enum=Contact_SocialTile_Type" json:"type,omitempty"`             // Type of Tile to be Displayed
+	Links     *Contact_SocialTile_Links    `protobuf:"bytes,5,opt,name=links,proto3" json:"links,omitempty"`                                         // Links based on Service
+	Position  *Contact_SocialTile_Position `protobuf:"bytes,6,opt,name=position,proto3" json:"position,omitempty"`                                   // Location in Users Contact Card
 }
 
 func (x *Contact_SocialTile) Reset() {
 	*x = Contact_SocialTile{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_user_proto_msgTypes[6]
+		mi := &file_user_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -891,7 +1066,7 @@ func (x *Contact_SocialTile) String() string {
 func (*Contact_SocialTile) ProtoMessage() {}
 
 func (x *Contact_SocialTile) ProtoReflect() protoreflect.Message {
-	mi := &file_user_proto_msgTypes[6]
+	mi := &file_user_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -907,20 +1082,6 @@ func (*Contact_SocialTile) Descriptor() ([]byte, []int) {
 	return file_user_proto_rawDescGZIP(), []int{0, 0}
 }
 
-func (x *Contact_SocialTile) GetProvider() Contact_SocialTile_Provider {
-	if x != nil {
-		return x.Provider
-	}
-	return Contact_SocialTile_Instagram
-}
-
-func (x *Contact_SocialTile) GetPosition() int32 {
-	if x != nil {
-		return x.Position
-	}
-	return 0
-}
-
 func (x *Contact_SocialTile) GetUsername() string {
 	if x != nil {
 		return x.Username
@@ -928,16 +1089,284 @@ func (x *Contact_SocialTile) GetUsername() string {
 	return ""
 }
 
-func (x *Contact_SocialTile) GetShowcase() string {
+func (x *Contact_SocialTile) GetIsPrivate() bool {
 	if x != nil {
-		return x.Showcase
+		return x.IsPrivate
+	}
+	return false
+}
+
+func (x *Contact_SocialTile) GetProvider() Contact_SocialTile_Provider {
+	if x != nil {
+		return x.Provider
+	}
+	return Contact_SocialTile_Instagram
+}
+
+func (x *Contact_SocialTile) GetType() Contact_SocialTile_Type {
+	if x != nil {
+		return x.Type
+	}
+	return Contact_SocialTile_None
+}
+
+func (x *Contact_SocialTile) GetLinks() *Contact_SocialTile_Links {
+	if x != nil {
+		return x.Links
+	}
+	return nil
+}
+
+func (x *Contact_SocialTile) GetPosition() *Contact_SocialTile_Position {
+	if x != nil {
+		return x.Position
+	}
+	return nil
+}
+
+// Social Links
+type Contact_SocialTile_Links struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	UserLink string `protobuf:"bytes,1,opt,name=userLink,proto3" json:"userLink,omitempty"` // Link to Users Profile
+	FeedLink string `protobuf:"bytes,2,opt,name=feedLink,proto3" json:"feedLink,omitempty"` // Link to Users Feed
+	PostLink string `protobuf:"bytes,3,opt,name=postLink,proto3" json:"postLink,omitempty"` // Link to Users Specifed Post
+}
+
+func (x *Contact_SocialTile_Links) Reset() {
+	*x = Contact_SocialTile_Links{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_user_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Contact_SocialTile_Links) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Contact_SocialTile_Links) ProtoMessage() {}
+
+func (x *Contact_SocialTile_Links) ProtoReflect() protoreflect.Message {
+	mi := &file_user_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Contact_SocialTile_Links.ProtoReflect.Descriptor instead.
+func (*Contact_SocialTile_Links) Descriptor() ([]byte, []int) {
+	return file_user_proto_rawDescGZIP(), []int{0, 0, 0}
+}
+
+func (x *Contact_SocialTile_Links) GetUserLink() string {
+	if x != nil {
+		return x.UserLink
 	}
 	return ""
 }
 
-func (x *Contact_SocialTile) GetFeed() string {
+func (x *Contact_SocialTile_Links) GetFeedLink() string {
 	if x != nil {
-		return x.Feed
+		return x.FeedLink
+	}
+	return ""
+}
+
+func (x *Contact_SocialTile_Links) GetPostLink() string {
+	if x != nil {
+		return x.PostLink
+	}
+	return ""
+}
+
+// Tile Display Position
+type Contact_SocialTile_Position struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Row      int32 `protobuf:"varint,1,opt,name=row,proto3" json:"row,omitempty"`           // Row Location
+	Column   int32 `protobuf:"varint,2,opt,name=column,proto3" json:"column,omitempty"`     // Column Location
+	Size     int32 `protobuf:"varint,3,opt,name=size,proto3" json:"size,omitempty"`         // Size of Tile
+	Location int32 `protobuf:"varint,4,opt,name=location,proto3" json:"location,omitempty"` // Position in Contact Array
+}
+
+func (x *Contact_SocialTile_Position) Reset() {
+	*x = Contact_SocialTile_Position{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_user_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Contact_SocialTile_Position) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Contact_SocialTile_Position) ProtoMessage() {}
+
+func (x *Contact_SocialTile_Position) ProtoReflect() protoreflect.Message {
+	mi := &file_user_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Contact_SocialTile_Position.ProtoReflect.Descriptor instead.
+func (*Contact_SocialTile_Position) Descriptor() ([]byte, []int) {
+	return file_user_proto_rawDescGZIP(), []int{0, 0, 1}
+}
+
+func (x *Contact_SocialTile_Position) GetRow() int32 {
+	if x != nil {
+		return x.Row
+	}
+	return 0
+}
+
+func (x *Contact_SocialTile_Position) GetColumn() int32 {
+	if x != nil {
+		return x.Column
+	}
+	return 0
+}
+
+func (x *Contact_SocialTile_Position) GetSize() int32 {
+	if x != nil {
+		return x.Size
+	}
+	return 0
+}
+
+func (x *Contact_SocialTile_Position) GetLocation() int32 {
+	if x != nil {
+		return x.Location
+	}
+	return 0
+}
+
+type User_Settings struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Option User_Settings_Option `protobuf:"varint,1,opt,name=option,proto3,enum=User_Settings_Option" json:"option,omitempty"` // Type of Setting
+	Value  *User_Settings_Value `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`                              // Value for Setting
+}
+
+func (x *User_Settings) Reset() {
+	*x = User_Settings{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_user_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *User_Settings) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*User_Settings) ProtoMessage() {}
+
+func (x *User_Settings) ProtoReflect() protoreflect.Message {
+	mi := &file_user_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use User_Settings.ProtoReflect.Descriptor instead.
+func (*User_Settings) Descriptor() ([]byte, []int) {
+	return file_user_proto_rawDescGZIP(), []int{6, 0}
+}
+
+func (x *User_Settings) GetOption() User_Settings_Option {
+	if x != nil {
+		return x.Option
+	}
+	return User_Settings_None
+}
+
+func (x *User_Settings) GetValue() *User_Settings_Value {
+	if x != nil {
+		return x.Value
+	}
+	return nil
+}
+
+// Value of Settings Option
+type User_Settings_Value struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Enabled bool   `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty"` // If Value is for simple enable/disable
+	Value   string `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`      // If Value is complex
+}
+
+func (x *User_Settings_Value) Reset() {
+	*x = User_Settings_Value{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_user_proto_msgTypes[11]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *User_Settings_Value) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*User_Settings_Value) ProtoMessage() {}
+
+func (x *User_Settings_Value) ProtoReflect() protoreflect.Message {
+	mi := &file_user_proto_msgTypes[11]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use User_Settings_Value.ProtoReflect.Descriptor instead.
+func (*User_Settings_Value) Descriptor() ([]byte, []int) {
+	return file_user_proto_rawDescGZIP(), []int{6, 0, 0}
+}
+
+func (x *User_Settings_Value) GetEnabled() bool {
+	if x != nil {
+		return x.Enabled
+	}
+	return false
+}
+
+func (x *User_Settings_Value) GetValue() string {
+	if x != nil {
+		return x.Value
 	}
 	return ""
 }
@@ -945,7 +1374,7 @@ func (x *Contact_SocialTile) GetFeed() string {
 var File_user_proto protoreflect.FileDescriptor
 
 var file_user_proto_rawDesc = []byte{
-	0x0a, 0x0a, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xa4, 0x04, 0x0a,
+	0x0a, 0x0a, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xe4, 0x06, 0x0a,
 	0x07, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x12, 0x1c, 0x0a, 0x09, 0x66, 0x69, 0x72, 0x73,
 	0x74, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x66, 0x69, 0x72,
 	0x73, 0x74, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x6c, 0x61, 0x73, 0x74, 0x4e, 0x61,
@@ -954,24 +1383,41 @@ var file_user_proto_rawDesc = []byte{
 	0x09, 0x52, 0x05, 0x70, 0x68, 0x6f, 0x6e, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x77, 0x65, 0x62, 0x73,
 	0x69, 0x74, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x77, 0x65, 0x62, 0x73, 0x69,
 	0x74, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x18, 0x05, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x12, 0x1e, 0x0a, 0x0a, 0x70, 0x72, 0x6f, 0x66,
-	0x69, 0x6c, 0x65, 0x50, 0x69, 0x63, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x0a, 0x70, 0x72,
-	0x6f, 0x66, 0x69, 0x6c, 0x65, 0x50, 0x69, 0x63, 0x12, 0x16, 0x0a, 0x06, 0x68, 0x65, 0x61, 0x64,
-	0x65, 0x72, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x68, 0x65, 0x61, 0x64, 0x65, 0x72,
-	0x12, 0x2d, 0x0a, 0x07, 0x73, 0x6f, 0x63, 0x69, 0x61, 0x6c, 0x73, 0x18, 0x08, 0x20, 0x03, 0x28,
-	0x0b, 0x32, 0x13, 0x2e, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x2e, 0x53, 0x6f, 0x63, 0x69,
-	0x61, 0x6c, 0x54, 0x69, 0x6c, 0x65, 0x52, 0x07, 0x73, 0x6f, 0x63, 0x69, 0x61, 0x6c, 0x73, 0x1a,
-	0xb1, 0x02, 0x0a, 0x0a, 0x53, 0x6f, 0x63, 0x69, 0x61, 0x6c, 0x54, 0x69, 0x6c, 0x65, 0x12, 0x38,
-	0x0a, 0x08, 0x70, 0x72, 0x6f, 0x76, 0x69, 0x64, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e,
-	0x32, 0x1c, 0x2e, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x2e, 0x53, 0x6f, 0x63, 0x69, 0x61,
-	0x6c, 0x54, 0x69, 0x6c, 0x65, 0x2e, 0x50, 0x72, 0x6f, 0x76, 0x69, 0x64, 0x65, 0x72, 0x52, 0x08,
-	0x70, 0x72, 0x6f, 0x76, 0x69, 0x64, 0x65, 0x72, 0x12, 0x1a, 0x0a, 0x08, 0x70, 0x6f, 0x73, 0x69,
-	0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x08, 0x70, 0x6f, 0x73, 0x69,
-	0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1a, 0x0a, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65,
-	0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65,
-	0x12, 0x1a, 0x0a, 0x08, 0x73, 0x68, 0x6f, 0x77, 0x63, 0x61, 0x73, 0x65, 0x18, 0x04, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x08, 0x73, 0x68, 0x6f, 0x77, 0x63, 0x61, 0x73, 0x65, 0x12, 0x12, 0x0a, 0x04,
-	0x66, 0x65, 0x65, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x66, 0x65, 0x65, 0x64,
+	0x09, 0x52, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x12, 0x18, 0x0a, 0x07, 0x70, 0x69, 0x63, 0x74,
+	0x75, 0x72, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x07, 0x70, 0x69, 0x63, 0x74, 0x75,
+	0x72, 0x65, 0x12, 0x2d, 0x0a, 0x07, 0x73, 0x6f, 0x63, 0x69, 0x61, 0x6c, 0x73, 0x18, 0x07, 0x20,
+	0x03, 0x28, 0x0b, 0x32, 0x13, 0x2e, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x2e, 0x53, 0x6f,
+	0x63, 0x69, 0x61, 0x6c, 0x54, 0x69, 0x6c, 0x65, 0x52, 0x07, 0x73, 0x6f, 0x63, 0x69, 0x61, 0x6c,
+	0x73, 0x1a, 0x8f, 0x05, 0x0a, 0x0a, 0x53, 0x6f, 0x63, 0x69, 0x61, 0x6c, 0x54, 0x69, 0x6c, 0x65,
+	0x12, 0x1a, 0x0a, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x1c, 0x0a, 0x09,
+	0x69, 0x73, 0x50, 0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x52,
+	0x09, 0x69, 0x73, 0x50, 0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x12, 0x38, 0x0a, 0x08, 0x70, 0x72,
+	0x6f, 0x76, 0x69, 0x64, 0x65, 0x72, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x1c, 0x2e, 0x43,
+	0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x2e, 0x53, 0x6f, 0x63, 0x69, 0x61, 0x6c, 0x54, 0x69, 0x6c,
+	0x65, 0x2e, 0x50, 0x72, 0x6f, 0x76, 0x69, 0x64, 0x65, 0x72, 0x52, 0x08, 0x70, 0x72, 0x6f, 0x76,
+	0x69, 0x64, 0x65, 0x72, 0x12, 0x2c, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x04, 0x20, 0x01,
+	0x28, 0x0e, 0x32, 0x18, 0x2e, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x2e, 0x53, 0x6f, 0x63,
+	0x69, 0x61, 0x6c, 0x54, 0x69, 0x6c, 0x65, 0x2e, 0x54, 0x79, 0x70, 0x65, 0x52, 0x04, 0x74, 0x79,
+	0x70, 0x65, 0x12, 0x2f, 0x0a, 0x05, 0x6c, 0x69, 0x6e, 0x6b, 0x73, 0x18, 0x05, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x19, 0x2e, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x2e, 0x53, 0x6f, 0x63, 0x69,
+	0x61, 0x6c, 0x54, 0x69, 0x6c, 0x65, 0x2e, 0x4c, 0x69, 0x6e, 0x6b, 0x73, 0x52, 0x05, 0x6c, 0x69,
+	0x6e, 0x6b, 0x73, 0x12, 0x38, 0x0a, 0x08, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x18,
+	0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x2e,
+	0x53, 0x6f, 0x63, 0x69, 0x61, 0x6c, 0x54, 0x69, 0x6c, 0x65, 0x2e, 0x50, 0x6f, 0x73, 0x69, 0x74,
+	0x69, 0x6f, 0x6e, 0x52, 0x08, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x1a, 0x5b, 0x0a,
+	0x05, 0x4c, 0x69, 0x6e, 0x6b, 0x73, 0x12, 0x1a, 0x0a, 0x08, 0x75, 0x73, 0x65, 0x72, 0x4c, 0x69,
+	0x6e, 0x6b, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x75, 0x73, 0x65, 0x72, 0x4c, 0x69,
+	0x6e, 0x6b, 0x12, 0x1a, 0x0a, 0x08, 0x66, 0x65, 0x65, 0x64, 0x4c, 0x69, 0x6e, 0x6b, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x66, 0x65, 0x65, 0x64, 0x4c, 0x69, 0x6e, 0x6b, 0x12, 0x1a,
+	0x0a, 0x08, 0x70, 0x6f, 0x73, 0x74, 0x4c, 0x69, 0x6e, 0x6b, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x08, 0x70, 0x6f, 0x73, 0x74, 0x4c, 0x69, 0x6e, 0x6b, 0x1a, 0x64, 0x0a, 0x08, 0x50, 0x6f,
+	0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x10, 0x0a, 0x03, 0x72, 0x6f, 0x77, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x05, 0x52, 0x03, 0x72, 0x6f, 0x77, 0x12, 0x16, 0x0a, 0x06, 0x63, 0x6f, 0x6c, 0x75,
+	0x6d, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x06, 0x63, 0x6f, 0x6c, 0x75, 0x6d, 0x6e,
+	0x12, 0x12, 0x0a, 0x04, 0x73, 0x69, 0x7a, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x52, 0x04,
+	0x73, 0x69, 0x7a, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x6c, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e,
+	0x18, 0x04, 0x20, 0x01, 0x28, 0x05, 0x52, 0x08, 0x6c, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e,
 	0x22, 0x80, 0x01, 0x0a, 0x08, 0x50, 0x72, 0x6f, 0x76, 0x69, 0x64, 0x65, 0x72, 0x12, 0x0d, 0x0a,
 	0x09, 0x49, 0x6e, 0x73, 0x74, 0x61, 0x67, 0x72, 0x61, 0x6d, 0x10, 0x00, 0x12, 0x0a, 0x0a, 0x06,
 	0x54, 0x69, 0x6b, 0x54, 0x6f, 0x6b, 0x10, 0x01, 0x12, 0x0c, 0x0a, 0x08, 0x46, 0x61, 0x63, 0x65,
@@ -980,7 +1426,10 @@ var file_user_proto_rawDesc = []byte{
 	0x12, 0x0a, 0x0a, 0x06, 0x4d, 0x65, 0x64, 0x69, 0x75, 0x6d, 0x10, 0x05, 0x12, 0x0b, 0x0a, 0x07,
 	0x54, 0x77, 0x69, 0x74, 0x74, 0x65, 0x72, 0x10, 0x06, 0x12, 0x0c, 0x0a, 0x08, 0x53, 0x6e, 0x61,
 	0x70, 0x63, 0x68, 0x61, 0x74, 0x10, 0x07, 0x12, 0x0a, 0x0a, 0x06, 0x47, 0x69, 0x74, 0x68, 0x75,
-	0x62, 0x10, 0x08, 0x22, 0xaf, 0x01, 0x0a, 0x06, 0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x12, 0x0e,
+	0x62, 0x10, 0x08, 0x22, 0x2e, 0x0a, 0x04, 0x54, 0x79, 0x70, 0x65, 0x12, 0x08, 0x0a, 0x04, 0x4e,
+	0x6f, 0x6e, 0x65, 0x10, 0x00, 0x12, 0x08, 0x0a, 0x04, 0x46, 0x65, 0x65, 0x64, 0x10, 0x01, 0x12,
+	0x08, 0x0a, 0x04, 0x50, 0x6f, 0x73, 0x74, 0x10, 0x02, 0x12, 0x08, 0x0a, 0x04, 0x4c, 0x69, 0x6e,
+	0x6b, 0x10, 0x03, 0x22, 0xaf, 0x01, 0x0a, 0x06, 0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x12, 0x0e,
 	0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x25,
 	0x0a, 0x08, 0x70, 0x6c, 0x61, 0x74, 0x66, 0x6f, 0x72, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0e,
 	0x32, 0x09, 0x2e, 0x50, 0x6c, 0x61, 0x74, 0x66, 0x6f, 0x72, 0x6d, 0x52, 0x08, 0x70, 0x6c, 0x61,
@@ -1024,40 +1473,67 @@ var file_user_proto_rawDesc = []byte{
 	0x70, 0x69, 0x63, 0x74, 0x75, 0x72, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x07, 0x70,
 	0x69, 0x63, 0x74, 0x75, 0x72, 0x65, 0x12, 0x25, 0x0a, 0x08, 0x70, 0x6c, 0x61, 0x74, 0x66, 0x6f,
 	0x72, 0x6d, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x09, 0x2e, 0x50, 0x6c, 0x61, 0x74, 0x66,
-	0x6f, 0x72, 0x6d, 0x52, 0x08, 0x70, 0x6c, 0x61, 0x74, 0x66, 0x6f, 0x72, 0x6d, 0x22, 0x92, 0x03,
+	0x6f, 0x72, 0x6d, 0x52, 0x08, 0x70, 0x6c, 0x61, 0x74, 0x66, 0x6f, 0x72, 0x6d, 0x22, 0xf6, 0x02,
 	0x0a, 0x08, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1c, 0x0a, 0x09, 0x64, 0x69,
 	0x72, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x01, 0x52, 0x09, 0x64,
 	0x69, 0x72, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1c, 0x0a, 0x09, 0x61, 0x6e, 0x74, 0x69,
 	0x70, 0x6f, 0x64, 0x61, 0x6c, 0x18, 0x02, 0x20, 0x01, 0x28, 0x01, 0x52, 0x09, 0x61, 0x6e, 0x74,
-	0x69, 0x70, 0x6f, 0x64, 0x61, 0x6c, 0x12, 0x1a, 0x0a, 0x08, 0x64, 0x69, 0x73, 0x74, 0x61, 0x6e,
-	0x63, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x01, 0x52, 0x08, 0x64, 0x69, 0x73, 0x74, 0x61, 0x6e,
-	0x63, 0x65, 0x12, 0x2b, 0x0a, 0x07, 0x68, 0x65, 0x61, 0x64, 0x69, 0x6e, 0x67, 0x18, 0x04, 0x20,
-	0x01, 0x28, 0x0e, 0x32, 0x11, 0x2e, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x48,
-	0x65, 0x61, 0x64, 0x69, 0x6e, 0x67, 0x52, 0x07, 0x68, 0x65, 0x61, 0x64, 0x69, 0x6e, 0x67, 0x12,
-	0x31, 0x0a, 0x09, 0x70, 0x72, 0x6f, 0x78, 0x69, 0x6d, 0x69, 0x74, 0x79, 0x18, 0x05, 0x20, 0x01,
-	0x28, 0x0e, 0x32, 0x13, 0x2e, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x50, 0x72,
-	0x6f, 0x78, 0x69, 0x6d, 0x69, 0x74, 0x79, 0x52, 0x09, 0x70, 0x72, 0x6f, 0x78, 0x69, 0x6d, 0x69,
-	0x74, 0x79, 0x22, 0x3e, 0x0a, 0x09, 0x50, 0x72, 0x6f, 0x78, 0x69, 0x6d, 0x69, 0x74, 0x79, 0x12,
-	0x0b, 0x0a, 0x07, 0x55, 0x6e, 0x6b, 0x6e, 0x6f, 0x77, 0x6e, 0x10, 0x00, 0x12, 0x0d, 0x0a, 0x09,
-	0x49, 0x6d, 0x6d, 0x65, 0x64, 0x69, 0x61, 0x74, 0x65, 0x10, 0x01, 0x12, 0x08, 0x0a, 0x04, 0x4e,
-	0x65, 0x61, 0x72, 0x10, 0x02, 0x12, 0x0b, 0x0a, 0x07, 0x44, 0x69, 0x73, 0x74, 0x61, 0x6e, 0x74,
-	0x10, 0x03, 0x22, 0x8d, 0x01, 0x0a, 0x07, 0x48, 0x65, 0x61, 0x64, 0x69, 0x6e, 0x67, 0x12, 0x05,
-	0x0a, 0x01, 0x4e, 0x10, 0x00, 0x12, 0x07, 0x0a, 0x03, 0x4e, 0x4e, 0x45, 0x10, 0x01, 0x12, 0x06,
-	0x0a, 0x02, 0x4e, 0x45, 0x10, 0x02, 0x12, 0x07, 0x0a, 0x03, 0x45, 0x4e, 0x45, 0x10, 0x03, 0x12,
-	0x05, 0x0a, 0x01, 0x45, 0x10, 0x04, 0x12, 0x07, 0x0a, 0x03, 0x45, 0x53, 0x45, 0x10, 0x05, 0x12,
-	0x06, 0x0a, 0x02, 0x53, 0x45, 0x10, 0x06, 0x12, 0x07, 0x0a, 0x03, 0x53, 0x53, 0x45, 0x10, 0x07,
-	0x12, 0x05, 0x0a, 0x01, 0x53, 0x10, 0x08, 0x12, 0x07, 0x0a, 0x03, 0x53, 0x53, 0x57, 0x10, 0x09,
-	0x12, 0x06, 0x0a, 0x02, 0x53, 0x57, 0x10, 0x0a, 0x12, 0x07, 0x0a, 0x03, 0x57, 0x53, 0x57, 0x10,
-	0x0b, 0x12, 0x05, 0x0a, 0x01, 0x57, 0x10, 0x0c, 0x12, 0x07, 0x0a, 0x03, 0x57, 0x4e, 0x57, 0x10,
-	0x0d, 0x12, 0x06, 0x0a, 0x02, 0x4e, 0x57, 0x10, 0x0e, 0x12, 0x07, 0x0a, 0x03, 0x4e, 0x4e, 0x57,
-	0x10, 0x0f, 0x2a, 0x59, 0x0a, 0x08, 0x50, 0x6c, 0x61, 0x74, 0x66, 0x6f, 0x72, 0x6d, 0x12, 0x0b,
-	0x0a, 0x07, 0x55, 0x6e, 0x6b, 0x6e, 0x6f, 0x77, 0x6e, 0x10, 0x00, 0x12, 0x0b, 0x0a, 0x07, 0x41,
-	0x6e, 0x64, 0x72, 0x6f, 0x69, 0x64, 0x10, 0x01, 0x12, 0x07, 0x0a, 0x03, 0x69, 0x4f, 0x53, 0x10,
-	0x02, 0x12, 0x09, 0x0a, 0x05, 0x4d, 0x61, 0x63, 0x4f, 0x53, 0x10, 0x03, 0x12, 0x0b, 0x0a, 0x07,
-	0x57, 0x69, 0x6e, 0x64, 0x6f, 0x77, 0x73, 0x10, 0x04, 0x12, 0x09, 0x0a, 0x05, 0x4c, 0x69, 0x6e,
-	0x75, 0x78, 0x10, 0x05, 0x12, 0x07, 0x0a, 0x03, 0x57, 0x65, 0x62, 0x10, 0x06, 0x42, 0x0a, 0x5a,
-	0x08, 0x2e, 0x3b, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x33,
+	0x69, 0x70, 0x6f, 0x64, 0x61, 0x6c, 0x12, 0x2b, 0x0a, 0x07, 0x68, 0x65, 0x61, 0x64, 0x69, 0x6e,
+	0x67, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x11, 0x2e, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69,
+	0x6f, 0x6e, 0x2e, 0x48, 0x65, 0x61, 0x64, 0x69, 0x6e, 0x67, 0x52, 0x07, 0x68, 0x65, 0x61, 0x64,
+	0x69, 0x6e, 0x67, 0x12, 0x31, 0x0a, 0x09, 0x70, 0x72, 0x6f, 0x78, 0x69, 0x6d, 0x69, 0x74, 0x79,
+	0x18, 0x04, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x13, 0x2e, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f,
+	0x6e, 0x2e, 0x50, 0x72, 0x6f, 0x78, 0x69, 0x6d, 0x69, 0x74, 0x79, 0x52, 0x09, 0x70, 0x72, 0x6f,
+	0x78, 0x69, 0x6d, 0x69, 0x74, 0x79, 0x22, 0x3e, 0x0a, 0x09, 0x50, 0x72, 0x6f, 0x78, 0x69, 0x6d,
+	0x69, 0x74, 0x79, 0x12, 0x0b, 0x0a, 0x07, 0x55, 0x6e, 0x6b, 0x6e, 0x6f, 0x77, 0x6e, 0x10, 0x00,
+	0x12, 0x0d, 0x0a, 0x09, 0x49, 0x6d, 0x6d, 0x65, 0x64, 0x69, 0x61, 0x74, 0x65, 0x10, 0x01, 0x12,
+	0x08, 0x0a, 0x04, 0x4e, 0x65, 0x61, 0x72, 0x10, 0x02, 0x12, 0x0b, 0x0a, 0x07, 0x44, 0x69, 0x73,
+	0x74, 0x61, 0x6e, 0x74, 0x10, 0x03, 0x22, 0x8d, 0x01, 0x0a, 0x07, 0x48, 0x65, 0x61, 0x64, 0x69,
+	0x6e, 0x67, 0x12, 0x05, 0x0a, 0x01, 0x4e, 0x10, 0x00, 0x12, 0x07, 0x0a, 0x03, 0x4e, 0x4e, 0x45,
+	0x10, 0x01, 0x12, 0x06, 0x0a, 0x02, 0x4e, 0x45, 0x10, 0x02, 0x12, 0x07, 0x0a, 0x03, 0x45, 0x4e,
+	0x45, 0x10, 0x03, 0x12, 0x05, 0x0a, 0x01, 0x45, 0x10, 0x04, 0x12, 0x07, 0x0a, 0x03, 0x45, 0x53,
+	0x45, 0x10, 0x05, 0x12, 0x06, 0x0a, 0x02, 0x53, 0x45, 0x10, 0x06, 0x12, 0x07, 0x0a, 0x03, 0x53,
+	0x53, 0x45, 0x10, 0x07, 0x12, 0x05, 0x0a, 0x01, 0x53, 0x10, 0x08, 0x12, 0x07, 0x0a, 0x03, 0x53,
+	0x53, 0x57, 0x10, 0x09, 0x12, 0x06, 0x0a, 0x02, 0x53, 0x57, 0x10, 0x0a, 0x12, 0x07, 0x0a, 0x03,
+	0x57, 0x53, 0x57, 0x10, 0x0b, 0x12, 0x05, 0x0a, 0x01, 0x57, 0x10, 0x0c, 0x12, 0x07, 0x0a, 0x03,
+	0x57, 0x4e, 0x57, 0x10, 0x0d, 0x12, 0x06, 0x0a, 0x02, 0x4e, 0x57, 0x10, 0x0e, 0x12, 0x07, 0x0a,
+	0x03, 0x4e, 0x4e, 0x57, 0x10, 0x0f, 0x22, 0xd0, 0x03, 0x0a, 0x04, 0x55, 0x73, 0x65, 0x72, 0x12,
+	0x22, 0x0a, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x08, 0x2e, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x52, 0x07, 0x63, 0x6f, 0x6e, 0x74,
+	0x61, 0x63, 0x74, 0x12, 0x1f, 0x0a, 0x06, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x07, 0x2e, 0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x52, 0x06, 0x64, 0x65,
+	0x76, 0x69, 0x63, 0x65, 0x12, 0x2e, 0x0a, 0x0b, 0x64, 0x69, 0x72, 0x65, 0x63, 0x74, 0x6f, 0x72,
+	0x69, 0x65, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x44, 0x69, 0x72, 0x65,
+	0x63, 0x74, 0x6f, 0x72, 0x69, 0x65, 0x73, 0x52, 0x0b, 0x64, 0x69, 0x72, 0x65, 0x63, 0x74, 0x6f,
+	0x72, 0x69, 0x65, 0x73, 0x12, 0x22, 0x0a, 0x07, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0x18,
+	0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x08, 0x2e, 0x50, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0x52,
+	0x07, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0x12, 0x2a, 0x0a, 0x08, 0x73, 0x65, 0x74, 0x74,
+	0x69, 0x6e, 0x67, 0x73, 0x18, 0x05, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x55, 0x73, 0x65,
+	0x72, 0x2e, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x52, 0x08, 0x73, 0x65, 0x74, 0x74,
+	0x69, 0x6e, 0x67, 0x73, 0x1a, 0x82, 0x02, 0x0a, 0x08, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67,
+	0x73, 0x12, 0x2d, 0x0a, 0x06, 0x6f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x0e, 0x32, 0x15, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x2e, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67,
+	0x73, 0x2e, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x06, 0x6f, 0x70, 0x74, 0x69, 0x6f, 0x6e,
+	0x12, 0x2a, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x14, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x2e, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x2e,
+	0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x1a, 0x37, 0x0a, 0x05,
+	0x56, 0x61, 0x6c, 0x75, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x12,
+	0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05,
+	0x76, 0x61, 0x6c, 0x75, 0x65, 0x22, 0x62, 0x0a, 0x06, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12,
+	0x08, 0x0a, 0x04, 0x4e, 0x6f, 0x6e, 0x65, 0x10, 0x00, 0x12, 0x14, 0x0a, 0x10, 0x44, 0x65, 0x66,
+	0x61, 0x75, 0x6c, 0x74, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x43, 0x61, 0x6c, 0x6c, 0x10, 0x01, 0x12,
+	0x15, 0x0a, 0x11, 0x46, 0x61, 0x6c, 0x6c, 0x62, 0x61, 0x63, 0x6b, 0x56, 0x69, 0x64, 0x65, 0x6f,
+	0x43, 0x61, 0x6c, 0x6c, 0x10, 0x02, 0x12, 0x0c, 0x0a, 0x08, 0x44, 0x61, 0x72, 0x6b, 0x4d, 0x6f,
+	0x64, 0x65, 0x10, 0x03, 0x12, 0x13, 0x0a, 0x0f, 0x52, 0x75, 0x6e, 0x49, 0x6e, 0x42, 0x61, 0x63,
+	0x6b, 0x67, 0x72, 0x6f, 0x75, 0x6e, 0x64, 0x10, 0x04, 0x2a, 0x59, 0x0a, 0x08, 0x50, 0x6c, 0x61,
+	0x74, 0x66, 0x6f, 0x72, 0x6d, 0x12, 0x0b, 0x0a, 0x07, 0x55, 0x6e, 0x6b, 0x6e, 0x6f, 0x77, 0x6e,
+	0x10, 0x00, 0x12, 0x0b, 0x0a, 0x07, 0x41, 0x6e, 0x64, 0x72, 0x6f, 0x69, 0x64, 0x10, 0x01, 0x12,
+	0x07, 0x0a, 0x03, 0x69, 0x4f, 0x53, 0x10, 0x02, 0x12, 0x09, 0x0a, 0x05, 0x4d, 0x61, 0x63, 0x4f,
+	0x53, 0x10, 0x03, 0x12, 0x0b, 0x0a, 0x07, 0x57, 0x69, 0x6e, 0x64, 0x6f, 0x77, 0x73, 0x10, 0x04,
+	0x12, 0x09, 0x0a, 0x05, 0x4c, 0x69, 0x6e, 0x75, 0x78, 0x10, 0x05, 0x12, 0x07, 0x0a, 0x03, 0x57,
+	0x65, 0x62, 0x10, 0x06, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x3b, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73,
+	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1072,38 +1548,55 @@ func file_user_proto_rawDescGZIP() []byte {
 	return file_user_proto_rawDescData
 }
 
-var file_user_proto_enumTypes = make([]protoimpl.EnumInfo, 5)
-var file_user_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_user_proto_enumTypes = make([]protoimpl.EnumInfo, 7)
+var file_user_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_user_proto_goTypes = []interface{}{
-	(Platform)(0),                    // 0: Platform
-	(Contact_SocialTile_Provider)(0), // 1: Contact.SocialTile.Provider
-	(Peer_Discovery)(0),              // 2: Peer.Discovery
-	(Position_Proximity)(0),          // 3: Position.Proximity
-	(Position_Heading)(0),            // 4: Position.Heading
-	(*Contact)(nil),                  // 5: Contact
-	(*Device)(nil),                   // 6: Device
-	(*Directories)(nil),              // 7: Directories
-	(*Peer)(nil),                     // 8: Peer
-	(*Profile)(nil),                  // 9: Profile
-	(*Position)(nil),                 // 10: Position
-	(*Contact_SocialTile)(nil),       // 11: Contact.SocialTile
+	(Platform)(0),                       // 0: Platform
+	(Contact_SocialTile_Provider)(0),    // 1: Contact.SocialTile.Provider
+	(Contact_SocialTile_Type)(0),        // 2: Contact.SocialTile.Type
+	(Peer_Discovery)(0),                 // 3: Peer.Discovery
+	(Position_Proximity)(0),             // 4: Position.Proximity
+	(Position_Heading)(0),               // 5: Position.Heading
+	(User_Settings_Option)(0),           // 6: User.Settings.Option
+	(*Contact)(nil),                     // 7: Contact
+	(*Device)(nil),                      // 8: Device
+	(*Directories)(nil),                 // 9: Directories
+	(*Peer)(nil),                        // 10: Peer
+	(*Profile)(nil),                     // 11: Profile
+	(*Position)(nil),                    // 12: Position
+	(*User)(nil),                        // 13: User
+	(*Contact_SocialTile)(nil),          // 14: Contact.SocialTile
+	(*Contact_SocialTile_Links)(nil),    // 15: Contact.SocialTile.Links
+	(*Contact_SocialTile_Position)(nil), // 16: Contact.SocialTile.Position
+	(*User_Settings)(nil),               // 17: User.Settings
+	(*User_Settings_Value)(nil),         // 18: User.Settings.Value
 }
 var file_user_proto_depIdxs = []int32{
-	11, // 0: Contact.socials:type_name -> Contact.SocialTile
+	14, // 0: Contact.socials:type_name -> Contact.SocialTile
 	0,  // 1: Device.platform:type_name -> Platform
-	6,  // 2: Peer.device:type_name -> Device
-	10, // 3: Peer.position:type_name -> Position
-	9,  // 4: Peer.profile:type_name -> Profile
-	2,  // 5: Peer.discovery:type_name -> Peer.Discovery
+	8,  // 2: Peer.device:type_name -> Device
+	12, // 3: Peer.position:type_name -> Position
+	11, // 4: Peer.profile:type_name -> Profile
+	3,  // 5: Peer.discovery:type_name -> Peer.Discovery
 	0,  // 6: Profile.platform:type_name -> Platform
-	4,  // 7: Position.heading:type_name -> Position.Heading
-	3,  // 8: Position.proximity:type_name -> Position.Proximity
-	1,  // 9: Contact.SocialTile.provider:type_name -> Contact.SocialTile.Provider
-	10, // [10:10] is the sub-list for method output_type
-	10, // [10:10] is the sub-list for method input_type
-	10, // [10:10] is the sub-list for extension type_name
-	10, // [10:10] is the sub-list for extension extendee
-	0,  // [0:10] is the sub-list for field type_name
+	5,  // 7: Position.heading:type_name -> Position.Heading
+	4,  // 8: Position.proximity:type_name -> Position.Proximity
+	7,  // 9: User.contact:type_name -> Contact
+	8,  // 10: User.device:type_name -> Device
+	9,  // 11: User.directories:type_name -> Directories
+	11, // 12: User.profile:type_name -> Profile
+	17, // 13: User.settings:type_name -> User.Settings
+	1,  // 14: Contact.SocialTile.provider:type_name -> Contact.SocialTile.Provider
+	2,  // 15: Contact.SocialTile.type:type_name -> Contact.SocialTile.Type
+	15, // 16: Contact.SocialTile.links:type_name -> Contact.SocialTile.Links
+	16, // 17: Contact.SocialTile.position:type_name -> Contact.SocialTile.Position
+	6,  // 18: User.Settings.option:type_name -> User.Settings.Option
+	18, // 19: User.Settings.value:type_name -> User.Settings.Value
+	20, // [20:20] is the sub-list for method output_type
+	20, // [20:20] is the sub-list for method input_type
+	20, // [20:20] is the sub-list for extension type_name
+	20, // [20:20] is the sub-list for extension extendee
+	0,  // [0:20] is the sub-list for field type_name
 }
 
 func init() { file_user_proto_init() }
@@ -1185,7 +1678,67 @@ func file_user_proto_init() {
 			}
 		}
 		file_user_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*User); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_user_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Contact_SocialTile); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_user_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Contact_SocialTile_Links); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_user_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Contact_SocialTile_Position); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_user_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*User_Settings); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_user_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*User_Settings_Value); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1202,8 +1755,8 @@ func file_user_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_user_proto_rawDesc,
-			NumEnums:      5,
-			NumMessages:   7,
+			NumEnums:      7,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

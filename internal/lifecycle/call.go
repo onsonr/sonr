@@ -6,15 +6,15 @@ import (
 
 // Define Function Types
 type OnProtobuf func([]byte)
-type GetUserPeer func() *md.Peer
-type OnError func(err error, method string)
 type OnProgress func(data float32)
+type OnError func(err error, method string)
+type ReturnPeer func() *md.Peer
 
 type LobbyCallbacks struct {
 	CallEvent   OnProtobuf
 	CallRefresh OnProtobuf
 	CallError   OnError
-	GetPeer     GetUserPeer
+	GetPeer     ReturnPeer
 }
 
 type TransferCallbacks struct {

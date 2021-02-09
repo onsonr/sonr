@@ -1,46 +1,58 @@
 package lobby
 
 import (
-	"log"
+	"errors"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	md "github.com/sonr-io/core/internal/models"
-	"google.golang.org/protobuf/proto"
 )
 
-// ** updatePeer changes peer values in Lobby **
+// ** removePeer removes Peer from Map **
 func (lob *Lobby) removePeer(id peer.ID) {
 	// Update Peer with new data
 	delete(lob.Data.Peers, id.String())
 	lob.Data.Count = int32(len(lob.Data.Peers))
 	lob.Data.Size = int32(len(lob.Data.Peers)) + 1 // Account for User
 
-	// Marshal data to bytes
-	bytes, err := proto.Marshal(lob.Data)
-	if err != nil {
-		log.Println("Cannot Marshal Error Protobuf: ", err)
-	}
-
-	// Send Callback with updated peers
-	lob.callback(bytes)
+	// Callback with Updated Data
+	lob.Refresh()
 }
 
-// ** updatePeer changes peer values in Lobby **
-func (lob *Lobby) updatePeer(peer *md.Peer) {
+// ** standbyPeer puts a Peer in Standby Mode **
+func (lob *Lobby) resumePeer(peer *md.Peer) {
 	// Update Peer with new data
-	id := peer.Id
-	lob.Data.Peers[id] = peer
+	delete(lob.Data.Standby, peer.Id)
+	lob.Data.Peers[peer.Id] = peer
 	lob.Data.Count = int32(len(lob.Data.Peers))
 	lob.Data.Size = int32(len(lob.Data.Peers)) + 1 // Account for User
 
-	// Marshal data to bytes
-	bytes, err := proto.Marshal(lob.Data)
-	if err != nil {
-		log.Println("Cannot Marshal Error Protobuf: ", err)
-	}
+	// Callback with Updated Data
+	lob.Refresh()
+}
 
-	// Send Callback with updated peers
-	lob.callback(bytes)
+// ** standbyPeer puts a Peer in Standby Mode **
+func (lob *Lobby) standbyPeer(peer *md.Peer) {
+	// Update Peer with new data
+	delete(lob.Data.Peers, peer.Id)
+	lob.Data.Count = int32(len(lob.Data.Peers))
+	lob.Data.Size = int32(len(lob.Data.Peers)) + 1 // Account for User
+
+	// Add to Standby
+	lob.Data.Standby[peer.Id] = peer
+
+	// Callback with Updated Data
+	lob.Refresh()
+}
+
+// ** updatePeer changes Peer values in Lobby **
+func (lob *Lobby) updatePeer(peer *md.Peer) {
+	// Update Peer with new data
+	lob.Data.Peers[peer.Id] = peer
+	lob.Data.Count = int32(len(lob.Data.Peers))
+	lob.Data.Size = int32(len(lob.Data.Peers)) + 1 // Account for User
+
+	// Callback with Updated Data
+	lob.Refresh()
 }
 
 // @ Helper: ID returns ONE Peer.ID in PubSub
@@ -65,4 +77,17 @@ func (lob *Lobby) Peer(q string) *md.Peer {
 		}
 	}
 	return nil
+}
+
+// @ Helper: Find returns Pointer to Peer.ID and Peer
+func (lob *Lobby) Find(q string) (peer.ID, *md.Peer, error) {
+	// Retreive Data
+	peer := lob.Peer(q)
+	id := lob.ID(q)
+
+	if peer == nil || id == "" {
+		return "", nil, errors.New("Search Error, peer was not found in map.")
+	}
+
+	return id, peer, nil
 }
