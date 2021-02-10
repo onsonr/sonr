@@ -102,7 +102,7 @@ func NewCardFromContact(p *md.Profile, c *md.Contact, status md.TransferCard_Sta
 	return md.TransferCard{
 		// SQL Properties
 		Payload:  md.Payload_CONTACT,
-		Received: int32(time.Now().Unix()),
+		Received: time.Now().Unix(),
 		Preview:  p.Picture,
 		Platform: p.Platform,
 
@@ -125,7 +125,7 @@ func NewCardFromUrl(p *md.Profile, s string, status md.TransferCard_Status) md.T
 	return md.TransferCard{
 		// SQL Properties
 		Payload:  md.Payload_URL,
-		Received: int32(time.Now().Unix()),
+		Received: time.Now().Unix(),
 		Platform: p.Platform,
 
 		// Transfer Properties

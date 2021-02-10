@@ -141,7 +141,7 @@ func (t *TransferFile) Save() error {
 	card := &md.TransferCard{
 		// SQL Properties
 		Payload:  t.invite.Payload,
-		Received: int32(time.Now().Unix()),
+		Received: time.Now().Unix(),
 		Platform: p.Platform,
 		Preview:  t.invite.Card.Preview,
 
