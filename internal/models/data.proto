@@ -69,7 +69,7 @@ enum Payload {
 message TransferCard {
   int32 id = 1;        // SQL: Id reference
   Payload payload = 2; // SQL: Type of Data received
-  int64 received = 3;  // SQL: UnixTime of received Date/Time
+  int32 received = 3;  // SQL: UnixTime of received Date/Time
   bytes preview = 4;   // SQL: Thumbnail Preview Bytes
 
   Platform platform = 5; // OWNER: Operating System of Owner
