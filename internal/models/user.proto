@@ -11,7 +11,7 @@ message Contact {
   string website = 4;   // Website URL Link
   string email = 5;     // Email Address
   bytes picture = 6;    // Profile Picture
-  repeated SocialTile socials = 7; // Available Social Media
+  map<string, SocialTile> socials = 7; // <Provider.toString, SocialTile>
 
   // Social Tile provides Display Information and Provider Information
   message SocialTile {
@@ -32,10 +32,10 @@ message Contact {
 
     // Tile Display Position
     message Position {
-      int32 row = 1;      // Row Location
-      int32 column = 2;   // Column Location
-      int32 size = 3;     // Size of Tile
-      int32 location = 4; // Position in Contact Array
+      int32 index = 1;  // Position in Contact Array
+      int32 row = 2;    // Row Location
+      int32 column = 3; // Column Location
+      int32 size = 4;   // Size of Tile
     }
 
     // Social Media Service

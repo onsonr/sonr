@@ -10,7 +10,7 @@ require (
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
 	github.com/sonr-io/core v0.0.0-20201228055835-b410f59b2c15
 	github.com/zserge/lorca v0.1.9
-	google.golang.org/protobuf v1.23.0
+	google.golang.org/protobuf v1.25.0
 )
 
 replace github.com/sonr-io/core => /Users/prad/Sonr/core/

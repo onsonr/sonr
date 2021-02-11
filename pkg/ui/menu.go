@@ -96,10 +96,17 @@ func (ai *AppInterface) HandlePeerInput(fileItem *systray.MenuItem, linkItem *sy
 				// Get File
 				filename := ShowFileDialog()
 
+				// Add Files
+				files := make([]*md.InviteRequest_FileInfo, 0)
+				files = append(files, &md.InviteRequest_FileInfo{
+					Path: filename,
+				})
+
 				// Create Request
-				procReq := md.ProcessRequest{
-					IsExternal: false,
-					FilePath:   filename,
+				procReq := md.InviteRequest{
+					To:    peer,
+					Files: files,
+					Type:  md.InviteRequest_File,
 				}
 
 				// Convert to Bytes
@@ -108,8 +115,7 @@ func (ai *AppInterface) HandlePeerInput(fileItem *systray.MenuItem, linkItem *sy
 					log.Panicln(err)
 				}
 
-				ai.node.Process(reqBytes)
-				ai.node.InviteWithFile(peer.Id)
+				ai.node.Invite(reqBytes)
 			} else {
 				log.Println("Node not set.")
 			}
@@ -119,7 +125,21 @@ func (ai *AppInterface) HandlePeerInput(fileItem *systray.MenuItem, linkItem *sy
 			// Validate and Invite URL
 			if ai.node != nil {
 				url := ShowURLDialog()
-				ai.node.InviteWithURL(peer.Id, url)
+
+				// Create Request
+				procReq := md.InviteRequest{
+					To:   peer,
+					Url:  url,
+					Type: md.InviteRequest_File,
+				}
+
+				// Convert to Bytes
+				reqBytes, err := proto.Marshal(&procReq)
+				if err != nil {
+					log.Panicln(err)
+				}
+
+				ai.node.Invite(reqBytes)
 			} else {
 				log.Println("Node not set.")
 			}

@@ -47,10 +47,10 @@ func (c *Client) OnInvited(data []byte) {
 	decs := ui.ShowAuthDialog(m)
 
 	// Check Invite
-	if m.Payload == md.Payload_FILE {
+	if m.Payload == md.Payload_MEDIA {
 		c.node.Respond(decs)
 	} else if m.Payload == md.Payload_URL {
-		err := op.Start(m.Url)
+		err := op.Start(m.Card.Url)
 
 		if err != nil {
 			log.Println(err)
@@ -64,7 +64,7 @@ func (c *Client) OnResponded(data []byte) {
 }
 
 // @ Inherited Method: Handle Queue ^ //
-func (c *Client) OnQueued(data []byte) {
+func (c *Client) OnDirected(data []byte) {
 	log.Println(data)
 }
 
