@@ -11,7 +11,7 @@ message Contact {
   string website = 4;   // Website URL Link
   string email = 5;     // Email Address
   bytes picture = 6;    // Profile Picture
-  map<string, SocialTile> socials = 7; // <Provider.toString, SocialTile>
+  repeated SocialTile socials = 7; // Users Social Media
 
   // Social Tile provides Display Information and Provider Information
   message SocialTile {
