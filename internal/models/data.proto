@@ -67,23 +67,24 @@ enum Payload {
 
 // TransferCard holds data passed between Exchange
 message TransferCard {
-  int32 id = 1;        // SQL: Id reference
-  Payload payload = 2; // SQL: Type of Data received
-  int32 received = 3;  // SQL: UnixTime of received Date/Time
-  bytes preview = 4;   // SQL: Thumbnail Preview Bytes
+  int32 id = 1;         // SQL: Id reference
+  Payload payload = 2;  // SQL: Type of Data received
+  int32 received = 3;   // SQL: UnixTime of received Date/Time
+  bytes preview = 4;    // SQL: Thumbnail Preview Bytes
+  bool hasExported = 5; // SQL: Notifies if saved to Gallery
 
-  Platform platform = 5; // OWNER: Operating System of Owner
-  string username = 6;   // OWNER: Sonr Username Reference
-  string firstName = 7;  // OWNER: General FirstName Reference
-  string lastName = 8;   // OWNER: General LastName Reference
+  Platform platform = 6; // OWNER: Operating System of Owner
+  string username = 7;   // OWNER: Sonr Username Reference
+  string firstName = 8;  // OWNER: General FirstName Reference
+  string lastName = 9;   // OWNER: General LastName Reference
 
-  Progress progress = 9;      // TRANSFER: Progress of Transfer - File Only
-  Status status = 10;         // TRANSFER: Status of the Card - File Only
-  Properties properties = 11; // TRANSFER: Card Properties - File Only
+  Progress progress = 10;     // TRANSFER: Progress of Transfer - File Only
+  Status status = 11;         // TRANSFER: Status of the Card - File Only
+  Properties properties = 12; // TRANSFER: Card Properties - File Only
 
-  Contact contact = 12;   // DATA(Optional): Received Contact Information
-  Metadata metadata = 13; // DATA(Optional): Received a File or Media
-  string url = 14;        // DATA(Optional): Received a Website Link
+  Contact contact = 13;   // DATA(Optional): Received Contact Information
+  Metadata metadata = 14; // DATA(Optional): Received a File or Media
+  string url = 15;        // DATA(Optional): Received a Website Link
 
   // Card Transfer Status
   enum Status {
