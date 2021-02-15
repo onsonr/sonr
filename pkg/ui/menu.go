@@ -177,7 +177,7 @@ func (ai *AppInterface) RefreshPeers(newLob *md.Lobby, node *sonr.Node) {
 func (ai *AppInterface) SetPeerItem(p *md.Peer) {
 	// Add Peer to Menu
 	peerItem := systray.AddMenuItem(p.Profile.FirstName, "")
-	peerItem.SetTemplateIcon(GetDeviceIcon(p.Device), GetDeviceIcon(p.Device))
+	peerItem.SetTemplateIcon(GetDeviceIcon(p.Platform), GetDeviceIcon(p.Platform))
 
 	// Add Peer Send Options
 	urlItem := peerItem.AddSubMenuItem("Send URL", "Send a URL to "+p.Profile.FirstName)

@@ -28,6 +28,7 @@ func (sn *Node) setInfo(connEvent *md.ConnectionRequest) error {
 	// Set Default Properties
 	sn.contact = connEvent.Contact
 	sn.directories = connEvent.Directories
+	sn.device = connEvent.Device
 
 	// Get Device ID
 	err := getDeviceID(connEvent)

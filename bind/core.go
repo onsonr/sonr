@@ -36,6 +36,7 @@ type Node struct {
 	// Properties
 	ctx     context.Context
 	olc     string
+	device  *md.Device
 	peer    *md.Peer
 	contact *md.Contact
 	status  md.Status
