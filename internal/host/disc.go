@@ -6,6 +6,7 @@ import (
 	"sync"
 	"time"
 
+	disco "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
 	discovery "github.com/libp2p/go-libp2p-discovery"
@@ -29,7 +30,7 @@ type discNotifee struct {
 func startBootstrap(ctx context.Context, h host.Host, idht *dht.IpfsDHT, point string) {
 	// Begin Discovery
 	routingDiscovery := discovery.NewRoutingDiscovery(idht)
-	discovery.Advertise(ctx, routingDiscovery, point, discovery.TTL(discoveryInterval))
+	discovery.Advertise(ctx, routingDiscovery, point, disco.TTL(discoveryInterval))
 
 	// Connect to defined nodes
 	var wg sync.WaitGroup

@@ -107,7 +107,7 @@ func (sn *Node) queued(card *md.TransferCard, req *md.InviteRequest) {
 	// Retreive Current File
 	currFile := sn.currentFile()
 	card.Status = md.TransferCard_INVITE
-	sn.peerConn.SafePreview = currFile
+	sn.peerConn.ProcessedFile = currFile
 
 	// Create Invite Message
 	invMsg := md.AuthInvite{
@@ -142,7 +142,7 @@ func (sn *Node) multiQueued(card *md.TransferCard, req *md.InviteRequest) {
 	// Retreive Current File
 	currFile := sn.currentFile()
 	card.Status = md.TransferCard_INVITE
-	sn.peerConn.SafePreview = currFile
+	sn.peerConn.ProcessedFile = currFile
 
 	// Create Invite Message
 	invMsg := md.AuthInvite{

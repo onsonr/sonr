@@ -99,7 +99,6 @@ func NewHost(ctx context.Context, dir *md.Directories, olc string) (host.Host, e
 
 	// setup local mDNS discovery
 	err = startMDNS(ctx, h, point)
-	fmt.Println("MDNS Started")
 	return h, err
 }
 
@@ -158,6 +157,5 @@ func NewMDNSHost(ctx context.Context, dir *md.Directories, olc string) (host.Hos
 
 	// setup local mDNS discovery
 	err = startMDNS(ctx, h, olc)
-	fmt.Println("MDNS Started")
 	return h, err
 }

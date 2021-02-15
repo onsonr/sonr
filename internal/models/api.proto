@@ -18,6 +18,7 @@ message ConnectionRequest {
 
 // Processes Given File and Invites Specified Peer
 message InviteRequest {
+  // Properties
   TransferType type = 1; // General Payload Type
   Peer to = 2;           // User thats being Invited
   bool isDirect = 3;     // Is Users own Device
@@ -26,6 +27,29 @@ message InviteRequest {
   string url = 4;              // URL to be Sent - Optional
   Contact contact = 5;         // Contact Card to be Sent - Optional
   repeated FileInfo files = 6; // Files to be Sent - Optional
+
+  // FileInfo Message for Attached Files
+  message FileInfo {
+    string path = 1;       // Location of File
+    bool hasThumbnail = 2; // Provided File already has thumbnail
+    string thumbpath = 3;  // Path of Provided Thumbnail - Optional
+    int32 duration = 4;    // Duration of Video - Optional
+  }
+
+  // Enum for Type of Transfer
+  enum TransferType {
+    Unknown = 0;       // Default Value, Would not Transfer
+    File = 1;          // Media or Document
+    MultiFiles = 2;    // Multiple Media or Documents
+    Contact = 3;       // Users Contact Card
+    URL = 4;           // Website URL Link
+    ExternalMedia = 5; // Shared from Mobile Gallery
+  }
+}
+
+// For Pre Invite File PRocessing
+message ProcessRequest {
+  repeated FileInfo files = 1; // Files to be Sent
 
   // FileInfo Message for Attached Files
   message FileInfo {

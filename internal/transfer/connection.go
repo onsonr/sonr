@@ -26,8 +26,8 @@ type PeerConnection struct {
 	auth *AuthService
 
 	// Data Handlers
-	SafePreview *sf.ProcessedFile
-	transfer    *sf.TransferFile
+	ProcessedFile *sf.ProcessedFile
+	transfer      *sf.TransferFile
 
 	// Callbacks
 	invitedCall     lf.OnInvite
@@ -97,7 +97,7 @@ func (pc *PeerConnection) StartTransfer(h host.Host, id peer.ID, peer *md.Peer) 
 	writer := msgio.NewWriter(stream)
 
 	// Start Routine
-	go writeBase64ToStream(writer, pc.transmittedCall, pc.SafePreview, peer)
+	go writeBase64ToStream(writer, pc.transmittedCall, pc.ProcessedFile, peer)
 }
 
 // ^ Handle Incoming Stream ^ //

@@ -94,7 +94,6 @@ func NewBatchProcessFiles(req *md.InviteRequest, p *md.Profile, queueCall OnQueu
 	// Set Package Level Callbacks
 	onError = errCall
 	files := make([]*ProcessedFile, 64)
-	count := len(req.Files)
 
 	// Iterate Through Attached Files
 	for _, file := range req.Files {
@@ -129,11 +128,6 @@ func NewBatchProcessFiles(req *md.InviteRequest, p *md.Profile, queueCall OnQueu
 				Size: info.Size,
 				Mime: info.Mime,
 			},
-		}
-
-		// @ 3. Create Thumbnail in Goroutine
-		if count < 4 {
-			go RequestThumbnail(file, sm)
 		}
 	}
 	return files

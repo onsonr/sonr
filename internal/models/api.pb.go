@@ -84,6 +84,65 @@ func (InviteRequest_TransferType) EnumDescriptor() ([]byte, []int) {
 	return file_api_proto_rawDescGZIP(), []int{1, 0}
 }
 
+// Enum for Type of Transfer
+type ProcessRequest_TransferType int32
+
+const (
+	ProcessRequest_Unknown       ProcessRequest_TransferType = 0 // Default Value, Would not Transfer
+	ProcessRequest_File          ProcessRequest_TransferType = 1 // Media or Document
+	ProcessRequest_MultiFiles    ProcessRequest_TransferType = 2 // Multiple Media or Documents
+	ProcessRequest_Contact       ProcessRequest_TransferType = 3 // Users Contact Card
+	ProcessRequest_URL           ProcessRequest_TransferType = 4 // Website URL Link
+	ProcessRequest_ExternalMedia ProcessRequest_TransferType = 5 // Shared from Mobile Gallery
+)
+
+// Enum value maps for ProcessRequest_TransferType.
+var (
+	ProcessRequest_TransferType_name = map[int32]string{
+		0: "Unknown",
+		1: "File",
+		2: "MultiFiles",
+		3: "Contact",
+		4: "URL",
+		5: "ExternalMedia",
+	}
+	ProcessRequest_TransferType_value = map[string]int32{
+		"Unknown":       0,
+		"File":          1,
+		"MultiFiles":    2,
+		"Contact":       3,
+		"URL":           4,
+		"ExternalMedia": 5,
+	}
+)
+
+func (x ProcessRequest_TransferType) Enum() *ProcessRequest_TransferType {
+	p := new(ProcessRequest_TransferType)
+	*p = x
+	return p
+}
+
+func (x ProcessRequest_TransferType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (ProcessRequest_TransferType) Descriptor() protoreflect.EnumDescriptor {
+	return file_api_proto_enumTypes[1].Descriptor()
+}
+
+func (ProcessRequest_TransferType) Type() protoreflect.EnumType {
+	return &file_api_proto_enumTypes[1]
+}
+
+func (x ProcessRequest_TransferType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use ProcessRequest_TransferType.Descriptor instead.
+func (ProcessRequest_TransferType) EnumDescriptor() ([]byte, []int) {
+	return file_api_proto_rawDescGZIP(), []int{2, 0}
+}
+
 // Initial Connection Message to Establish Sonr
 type ConnectionRequest struct {
 	state         protoimpl.MessageState
@@ -178,6 +237,7 @@ type InviteRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// Properties
 	Type     InviteRequest_TransferType `protobuf:"varint,1,opt,name=type,proto3,enum=InviteRequest_TransferType" json:"type,omitempty"` // General Payload Type
 	To       *Peer                      `protobuf:"bytes,2,opt,name=to,proto3" json:"to,omitempty"`                                      // User thats being Invited
 	IsDirect bool                       `protobuf:"varint,3,opt,name=isDirect,proto3" json:"isDirect,omitempty"`                         // Is Users own Device
@@ -261,6 +321,54 @@ func (x *InviteRequest) GetFiles() []*InviteRequest_FileInfo {
 	return nil
 }
 
+// For Pre Invite File PRocessing
+type ProcessRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Files []*ProcessRequest_FileInfo `protobuf:"bytes,1,rep,name=files,proto3" json:"files,omitempty"` // Files to be Sent
+}
+
+func (x *ProcessRequest) Reset() {
+	*x = ProcessRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ProcessRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ProcessRequest) ProtoMessage() {}
+
+func (x *ProcessRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ProcessRequest.ProtoReflect.Descriptor instead.
+func (*ProcessRequest) Descriptor() ([]byte, []int) {
+	return file_api_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *ProcessRequest) GetFiles() []*ProcessRequest_FileInfo {
+	if x != nil {
+		return x.Files
+	}
+	return nil
+}
+
 // Invitation Message sent on RPC
 type AuthInvite struct {
 	state         protoimpl.MessageState
@@ -276,7 +384,7 @@ type AuthInvite struct {
 func (x *AuthInvite) Reset() {
 	*x = AuthInvite{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[2]
+		mi := &file_api_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -289,7 +397,7 @@ func (x *AuthInvite) String() string {
 func (*AuthInvite) ProtoMessage() {}
 
 func (x *AuthInvite) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[2]
+	mi := &file_api_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -302,7 +410,7 @@ func (x *AuthInvite) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AuthInvite.ProtoReflect.Descriptor instead.
 func (*AuthInvite) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{2}
+	return file_api_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *AuthInvite) GetPayload() Payload {
@@ -348,7 +456,7 @@ type AuthReply struct {
 func (x *AuthReply) Reset() {
 	*x = AuthReply{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[3]
+		mi := &file_api_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -361,7 +469,7 @@ func (x *AuthReply) String() string {
 func (*AuthReply) ProtoMessage() {}
 
 func (x *AuthReply) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[3]
+	mi := &file_api_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -374,7 +482,7 @@ func (x *AuthReply) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AuthReply.ProtoReflect.Descriptor instead.
 func (*AuthReply) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{3}
+	return file_api_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *AuthReply) GetPayload() Payload {
@@ -418,7 +526,7 @@ type ErrorMessage struct {
 func (x *ErrorMessage) Reset() {
 	*x = ErrorMessage{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[4]
+		mi := &file_api_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -431,7 +539,7 @@ func (x *ErrorMessage) String() string {
 func (*ErrorMessage) ProtoMessage() {}
 
 func (x *ErrorMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[4]
+	mi := &file_api_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -444,7 +552,7 @@ func (x *ErrorMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ErrorMessage.ProtoReflect.Descriptor instead.
 func (*ErrorMessage) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{4}
+	return file_api_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *ErrorMessage) GetMessage() string {
@@ -476,7 +584,7 @@ type InviteRequest_FileInfo struct {
 func (x *InviteRequest_FileInfo) Reset() {
 	*x = InviteRequest_FileInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[5]
+		mi := &file_api_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -489,7 +597,7 @@ func (x *InviteRequest_FileInfo) String() string {
 func (*InviteRequest_FileInfo) ProtoMessage() {}
 
 func (x *InviteRequest_FileInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[5]
+	mi := &file_api_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -527,6 +635,78 @@ func (x *InviteRequest_FileInfo) GetThumbpath() string {
 }
 
 func (x *InviteRequest_FileInfo) GetDuration() int32 {
+	if x != nil {
+		return x.Duration
+	}
+	return 0
+}
+
+// FileInfo Message for Attached Files
+type ProcessRequest_FileInfo struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Path         string `protobuf:"bytes,1,opt,name=path,proto3" json:"path,omitempty"`                  // Location of File
+	HasThumbnail bool   `protobuf:"varint,2,opt,name=hasThumbnail,proto3" json:"hasThumbnail,omitempty"` // Provided File already has thumbnail
+	Thumbpath    string `protobuf:"bytes,3,opt,name=thumbpath,proto3" json:"thumbpath,omitempty"`        // Path of Provided Thumbnail - Optional
+	Duration     int32  `protobuf:"varint,4,opt,name=duration,proto3" json:"duration,omitempty"`         // Duration of Video - Optional
+}
+
+func (x *ProcessRequest_FileInfo) Reset() {
+	*x = ProcessRequest_FileInfo{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ProcessRequest_FileInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ProcessRequest_FileInfo) ProtoMessage() {}
+
+func (x *ProcessRequest_FileInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ProcessRequest_FileInfo.ProtoReflect.Descriptor instead.
+func (*ProcessRequest_FileInfo) Descriptor() ([]byte, []int) {
+	return file_api_proto_rawDescGZIP(), []int{2, 0}
+}
+
+func (x *ProcessRequest_FileInfo) GetPath() string {
+	if x != nil {
+		return x.Path
+	}
+	return ""
+}
+
+func (x *ProcessRequest_FileInfo) GetHasThumbnail() bool {
+	if x != nil {
+		return x.HasThumbnail
+	}
+	return false
+}
+
+func (x *ProcessRequest_FileInfo) GetThumbpath() string {
+	if x != nil {
+		return x.Thumbpath
+	}
+	return ""
+}
+
+func (x *ProcessRequest_FileInfo) GetDuration() int32 {
 	if x != nil {
 		return x.Duration
 	}
@@ -580,30 +760,48 @@ var file_api_proto_rawDesc = []byte{
 	0x4d, 0x75, 0x6c, 0x74, 0x69, 0x46, 0x69, 0x6c, 0x65, 0x73, 0x10, 0x02, 0x12, 0x0b, 0x0a, 0x07,
 	0x43, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x10, 0x03, 0x12, 0x07, 0x0a, 0x03, 0x55, 0x52, 0x4c,
 	0x10, 0x04, 0x12, 0x11, 0x0a, 0x0d, 0x45, 0x78, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x4d, 0x65,
-	0x64, 0x69, 0x61, 0x10, 0x05, 0x22, 0x8a, 0x01, 0x0a, 0x0a, 0x41, 0x75, 0x74, 0x68, 0x49, 0x6e,
-	0x76, 0x69, 0x74, 0x65, 0x12, 0x22, 0x0a, 0x07, 0x70, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x08, 0x2e, 0x50, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x52,
-	0x07, 0x70, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x12, 0x19, 0x0a, 0x04, 0x66, 0x72, 0x6f, 0x6d,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x05, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x04, 0x66,
-	0x72, 0x6f, 0x6d, 0x12, 0x21, 0x0a, 0x04, 0x63, 0x61, 0x72, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28,
-	0x0b, 0x32, 0x0d, 0x2e, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x66, 0x65, 0x72, 0x43, 0x61, 0x72, 0x64,
-	0x52, 0x04, 0x63, 0x61, 0x72, 0x64, 0x12, 0x1a, 0x0a, 0x08, 0x69, 0x73, 0x44, 0x69, 0x72, 0x65,
-	0x63, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x08, 0x52, 0x08, 0x69, 0x73, 0x44, 0x69, 0x72, 0x65,
-	0x63, 0x74, 0x22, 0x89, 0x01, 0x0a, 0x09, 0x41, 0x75, 0x74, 0x68, 0x52, 0x65, 0x70, 0x6c, 0x79,
-	0x12, 0x22, 0x0a, 0x07, 0x70, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x0e, 0x32, 0x08, 0x2e, 0x50, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x52, 0x07, 0x70, 0x61, 0x79,
-	0x6c, 0x6f, 0x61, 0x64, 0x12, 0x19, 0x0a, 0x04, 0x66, 0x72, 0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01,
-	0x28, 0x0b, 0x32, 0x05, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x04, 0x66, 0x72, 0x6f, 0x6d, 0x12,
-	0x1a, 0x0a, 0x08, 0x64, 0x65, 0x63, 0x69, 0x73, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28,
-	0x08, 0x52, 0x08, 0x64, 0x65, 0x63, 0x69, 0x73, 0x69, 0x6f, 0x6e, 0x12, 0x21, 0x0a, 0x04, 0x63,
-	0x61, 0x72, 0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x54, 0x72, 0x61, 0x6e,
-	0x73, 0x66, 0x65, 0x72, 0x43, 0x61, 0x72, 0x64, 0x52, 0x04, 0x63, 0x61, 0x72, 0x64, 0x22, 0x40,
-	0x0a, 0x0c, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x18,
-	0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x6d, 0x65, 0x74, 0x68,
-	0x6f, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64,
-	0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x3b, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x62, 0x06, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x33,
+	0x64, 0x69, 0x61, 0x10, 0x05, 0x22, 0x9e, 0x02, 0x0a, 0x0e, 0x50, 0x72, 0x6f, 0x63, 0x65, 0x73,
+	0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x2e, 0x0a, 0x05, 0x66, 0x69, 0x6c, 0x65,
+	0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x50, 0x72, 0x6f, 0x63, 0x65, 0x73,
+	0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x2e, 0x46, 0x69, 0x6c, 0x65, 0x49, 0x6e, 0x66,
+	0x6f, 0x52, 0x05, 0x66, 0x69, 0x6c, 0x65, 0x73, 0x1a, 0x7c, 0x0a, 0x08, 0x46, 0x69, 0x6c, 0x65,
+	0x49, 0x6e, 0x66, 0x6f, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x61, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x04, 0x70, 0x61, 0x74, 0x68, 0x12, 0x22, 0x0a, 0x0c, 0x68, 0x61, 0x73, 0x54,
+	0x68, 0x75, 0x6d, 0x62, 0x6e, 0x61, 0x69, 0x6c, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0c,
+	0x68, 0x61, 0x73, 0x54, 0x68, 0x75, 0x6d, 0x62, 0x6e, 0x61, 0x69, 0x6c, 0x12, 0x1c, 0x0a, 0x09,
+	0x74, 0x68, 0x75, 0x6d, 0x62, 0x70, 0x61, 0x74, 0x68, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x09, 0x74, 0x68, 0x75, 0x6d, 0x62, 0x70, 0x61, 0x74, 0x68, 0x12, 0x1a, 0x0a, 0x08, 0x64, 0x75,
+	0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x04, 0x20, 0x01, 0x28, 0x05, 0x52, 0x08, 0x64, 0x75,
+	0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x5e, 0x0a, 0x0c, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x66,
+	0x65, 0x72, 0x54, 0x79, 0x70, 0x65, 0x12, 0x0b, 0x0a, 0x07, 0x55, 0x6e, 0x6b, 0x6e, 0x6f, 0x77,
+	0x6e, 0x10, 0x00, 0x12, 0x08, 0x0a, 0x04, 0x46, 0x69, 0x6c, 0x65, 0x10, 0x01, 0x12, 0x0e, 0x0a,
+	0x0a, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x46, 0x69, 0x6c, 0x65, 0x73, 0x10, 0x02, 0x12, 0x0b, 0x0a,
+	0x07, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x10, 0x03, 0x12, 0x07, 0x0a, 0x03, 0x55, 0x52,
+	0x4c, 0x10, 0x04, 0x12, 0x11, 0x0a, 0x0d, 0x45, 0x78, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x4d,
+	0x65, 0x64, 0x69, 0x61, 0x10, 0x05, 0x22, 0x8a, 0x01, 0x0a, 0x0a, 0x41, 0x75, 0x74, 0x68, 0x49,
+	0x6e, 0x76, 0x69, 0x74, 0x65, 0x12, 0x22, 0x0a, 0x07, 0x70, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x08, 0x2e, 0x50, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64,
+	0x52, 0x07, 0x70, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x12, 0x19, 0x0a, 0x04, 0x66, 0x72, 0x6f,
+	0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x05, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x04,
+	0x66, 0x72, 0x6f, 0x6d, 0x12, 0x21, 0x0a, 0x04, 0x63, 0x61, 0x72, 0x64, 0x18, 0x03, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x66, 0x65, 0x72, 0x43, 0x61, 0x72,
+	0x64, 0x52, 0x04, 0x63, 0x61, 0x72, 0x64, 0x12, 0x1a, 0x0a, 0x08, 0x69, 0x73, 0x44, 0x69, 0x72,
+	0x65, 0x63, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x08, 0x52, 0x08, 0x69, 0x73, 0x44, 0x69, 0x72,
+	0x65, 0x63, 0x74, 0x22, 0x89, 0x01, 0x0a, 0x09, 0x41, 0x75, 0x74, 0x68, 0x52, 0x65, 0x70, 0x6c,
+	0x79, 0x12, 0x22, 0x0a, 0x07, 0x70, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0e, 0x32, 0x08, 0x2e, 0x50, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x52, 0x07, 0x70, 0x61,
+	0x79, 0x6c, 0x6f, 0x61, 0x64, 0x12, 0x19, 0x0a, 0x04, 0x66, 0x72, 0x6f, 0x6d, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x05, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x04, 0x66, 0x72, 0x6f, 0x6d,
+	0x12, 0x1a, 0x0a, 0x08, 0x64, 0x65, 0x63, 0x69, 0x73, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01,
+	0x28, 0x08, 0x52, 0x08, 0x64, 0x65, 0x63, 0x69, 0x73, 0x69, 0x6f, 0x6e, 0x12, 0x21, 0x0a, 0x04,
+	0x63, 0x61, 0x72, 0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x54, 0x72, 0x61,
+	0x6e, 0x73, 0x66, 0x65, 0x72, 0x43, 0x61, 0x72, 0x64, 0x52, 0x04, 0x63, 0x61, 0x72, 0x64, 0x22,
+	0x40, 0x0a, 0x0c, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12,
+	0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x6d, 0x65, 0x74,
+	0x68, 0x6f, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x6d, 0x65, 0x74, 0x68, 0x6f,
+	0x64, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x3b, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x62, 0x06, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -618,44 +816,48 @@ func file_api_proto_rawDescGZIP() []byte {
 	return file_api_proto_rawDescData
 }
 
-var file_api_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_api_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_api_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_api_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_api_proto_goTypes = []interface{}{
-	(InviteRequest_TransferType)(0), // 0: InviteRequest.TransferType
-	(*ConnectionRequest)(nil),       // 1: ConnectionRequest
-	(*InviteRequest)(nil),           // 2: InviteRequest
-	(*AuthInvite)(nil),              // 3: AuthInvite
-	(*AuthReply)(nil),               // 4: AuthReply
-	(*ErrorMessage)(nil),            // 5: ErrorMessage
-	(*InviteRequest_FileInfo)(nil),  // 6: InviteRequest.FileInfo
-	(*Profile)(nil),                 // 7: Profile
-	(*Device)(nil),                  // 8: Device
-	(*Directories)(nil),             // 9: Directories
-	(*Contact)(nil),                 // 10: Contact
-	(*Peer)(nil),                    // 11: Peer
-	(Payload)(0),                    // 12: Payload
-	(*TransferCard)(nil),            // 13: TransferCard
+	(InviteRequest_TransferType)(0),  // 0: InviteRequest.TransferType
+	(ProcessRequest_TransferType)(0), // 1: ProcessRequest.TransferType
+	(*ConnectionRequest)(nil),        // 2: ConnectionRequest
+	(*InviteRequest)(nil),            // 3: InviteRequest
+	(*ProcessRequest)(nil),           // 4: ProcessRequest
+	(*AuthInvite)(nil),               // 5: AuthInvite
+	(*AuthReply)(nil),                // 6: AuthReply
+	(*ErrorMessage)(nil),             // 7: ErrorMessage
+	(*InviteRequest_FileInfo)(nil),   // 8: InviteRequest.FileInfo
+	(*ProcessRequest_FileInfo)(nil),  // 9: ProcessRequest.FileInfo
+	(*Profile)(nil),                  // 10: Profile
+	(*Device)(nil),                   // 11: Device
+	(*Directories)(nil),              // 12: Directories
+	(*Contact)(nil),                  // 13: Contact
+	(*Peer)(nil),                     // 14: Peer
+	(Payload)(0),                     // 15: Payload
+	(*TransferCard)(nil),             // 16: TransferCard
 }
 var file_api_proto_depIdxs = []int32{
-	7,  // 0: ConnectionRequest.profile:type_name -> Profile
-	8,  // 1: ConnectionRequest.device:type_name -> Device
-	9,  // 2: ConnectionRequest.directories:type_name -> Directories
-	10, // 3: ConnectionRequest.contact:type_name -> Contact
+	10, // 0: ConnectionRequest.profile:type_name -> Profile
+	11, // 1: ConnectionRequest.device:type_name -> Device
+	12, // 2: ConnectionRequest.directories:type_name -> Directories
+	13, // 3: ConnectionRequest.contact:type_name -> Contact
 	0,  // 4: InviteRequest.type:type_name -> InviteRequest.TransferType
-	11, // 5: InviteRequest.to:type_name -> Peer
-	10, // 6: InviteRequest.contact:type_name -> Contact
-	6,  // 7: InviteRequest.files:type_name -> InviteRequest.FileInfo
-	12, // 8: AuthInvite.payload:type_name -> Payload
-	11, // 9: AuthInvite.from:type_name -> Peer
-	13, // 10: AuthInvite.card:type_name -> TransferCard
-	12, // 11: AuthReply.payload:type_name -> Payload
-	11, // 12: AuthReply.from:type_name -> Peer
-	13, // 13: AuthReply.card:type_name -> TransferCard
-	14, // [14:14] is the sub-list for method output_type
-	14, // [14:14] is the sub-list for method input_type
-	14, // [14:14] is the sub-list for extension type_name
-	14, // [14:14] is the sub-list for extension extendee
-	0,  // [0:14] is the sub-list for field type_name
+	14, // 5: InviteRequest.to:type_name -> Peer
+	13, // 6: InviteRequest.contact:type_name -> Contact
+	8,  // 7: InviteRequest.files:type_name -> InviteRequest.FileInfo
+	9,  // 8: ProcessRequest.files:type_name -> ProcessRequest.FileInfo
+	15, // 9: AuthInvite.payload:type_name -> Payload
+	14, // 10: AuthInvite.from:type_name -> Peer
+	16, // 11: AuthInvite.card:type_name -> TransferCard
+	15, // 12: AuthReply.payload:type_name -> Payload
+	14, // 13: AuthReply.from:type_name -> Peer
+	16, // 14: AuthReply.card:type_name -> TransferCard
+	15, // [15:15] is the sub-list for method output_type
+	15, // [15:15] is the sub-list for method input_type
+	15, // [15:15] is the sub-list for extension type_name
+	15, // [15:15] is the sub-list for extension extendee
+	0,  // [0:15] is the sub-list for field type_name
 }
 
 func init() { file_api_proto_init() }
@@ -691,7 +893,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AuthInvite); i {
+			switch v := v.(*ProcessRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -703,7 +905,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AuthReply); i {
+			switch v := v.(*AuthInvite); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -715,7 +917,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ErrorMessage); i {
+			switch v := v.(*AuthReply); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -727,7 +929,31 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ErrorMessage); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*InviteRequest_FileInfo); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ProcessRequest_FileInfo); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -744,8 +970,8 @@ func file_api_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_api_proto_rawDesc,
-			NumEnums:      1,
-			NumMessages:   6,
+			NumEnums:      2,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
