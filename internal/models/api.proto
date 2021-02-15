@@ -37,11 +37,12 @@ message InviteRequest {
 
   // Enum for Type of Transfer
   enum TransferType {
-    Unknown = 0;    // Default Value, Would not Transfer
-    File = 1;       // Media or Document
-    MultiFiles = 2; // Multiple Media or Documents
-    Contact = 3;    // Users Contact Card
-    URL = 4;        // Website URL Link
+    Unknown = 0;       // Default Value, Would not Transfer
+    File = 1;          // Media or Document
+    MultiFiles = 2;    // Multiple Media or Documents
+    Contact = 3;       // Users Contact Card
+    URL = 4;           // Website URL Link
+    ExternalMedia = 5; // Shared from Mobile Gallery
   }
 }
 
