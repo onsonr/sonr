@@ -15,7 +15,6 @@ import (
 	"github.com/sonr-io/core/internal/lifecycle"
 	lf "github.com/sonr-io/core/internal/lifecycle"
 	md "github.com/sonr-io/core/internal/models"
-	"google.golang.org/protobuf/proto"
 )
 
 // Package Error Callback
@@ -31,11 +30,11 @@ type PeerConnection struct {
 	transfer    *sf.TransferFile
 
 	// Callbacks
-	invitedCall     lf.OnProtobuf
+	invitedCall     lf.OnInvite
 	respondedCall   lf.OnProtobuf
 	progressCall    lf.OnProgress
-	receivedCall    lf.OnProtobuf
-	transmittedCall lf.OnProtobuf
+	receivedCall    lf.OnReceived
+	transmittedCall lf.OnTransmitted
 
 	// Info
 	olc  string
@@ -94,18 +93,11 @@ func (pc *PeerConnection) StartTransfer(h host.Host, id peer.ID, peer *md.Peer) 
 		log.Fatalln(err)
 	}
 
-	// Marshal Peer to bytes
-	peerBytes, err := proto.Marshal(peer)
-	if err != nil {
-		onError(err, "Transfer")
-		log.Fatalln(err)
-	}
-
 	// Initialize Writer
 	writer := msgio.NewWriter(stream)
 
 	// Start Routine
-	go writeBase64ToStream(writer, pc.transmittedCall, pc.SafePreview, peerBytes)
+	go writeBase64ToStream(writer, pc.transmittedCall, pc.SafePreview, peer)
 }
 
 // ^ Handle Incoming Stream ^ //

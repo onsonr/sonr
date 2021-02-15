@@ -12,3 +12,13 @@ message Chunk {
   int32 size = 3;   // Size of this Chunk
   int32 total = 4;  // Size of ALL Chunks together
 }
+
+// Status is User Node Situation
+enum Status {
+  NONE = 0;       // Default Status on Launch
+  AVAILABLE = 1;  // Connected and Visible on OLC
+  PENDING = 2;    // Awaiting Peer Authorization
+  INVITED = 3;    // Has received Invitation
+  INPROGRESS = 4; // In Middle of Transfer
+  STANDBY = 5;    // Away from Sonr Application
+}

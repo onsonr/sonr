@@ -21,7 +21,7 @@ type TransferFile struct {
 	mutex      sync.Mutex
 	invite     *md.AuthInvite
 	onProgress lf.OnProgress
-	onComplete lf.OnProtobuf
+	onReceived lf.OnReceived
 	path       string
 	name       string
 
@@ -37,7 +37,7 @@ type TransferFile struct {
 }
 
 // ^ Method Creates New Transfer File ^ //
-func NewTransfer(inv *md.AuthInvite, dirs *md.Directories, op func(data float32), oc func([]byte)) *TransferFile {
+func NewTransfer(inv *md.AuthInvite, dirs *md.Directories, op func(data float32), oc func(*md.TransferCard)) *TransferFile {
 	// Create File Name
 	fileName := inv.Card.Properties.Name + "." + inv.Card.Properties.Mime.Subtype
 
@@ -47,7 +47,7 @@ func NewTransfer(inv *md.AuthInvite, dirs *md.Directories, op func(data float32)
 		invite:     inv,
 		path:       filepath.Join(dirs.Temporary, fileName),
 		onProgress: op,
-		onComplete: oc,
+		onReceived: oc,
 		name:       fileName,
 
 		// Builders
@@ -163,15 +163,7 @@ func (t *TransferFile) Save() error {
 		},
 	}
 
-	log.Println(card)
-
-	// Convert Message to bytes
-	bytes, err := proto.Marshal(card)
-	if err != nil {
-		return err
-	}
-
 	// Send Complete Callback
-	t.onComplete(bytes)
+	t.onReceived(card)
 	return nil
 }

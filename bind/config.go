@@ -113,7 +113,7 @@ func (sn *Node) setConnection(ctx context.Context) error {
 
 	// Create Callbacks
 	lobCall := lf.LobbyCallbacks{CallRefresh: sn.call.OnRefreshed, CallError: sn.error, GetPeer: sn.Peer, CallEvent: sn.call.OnEvent}
-	transCall := lf.TransferCallbacks{CallInvited: sn.call.OnInvited, CallResponded: sn.call.OnResponded, CallReceived: sn.call.OnReceived, CallProgress: sn.call.OnProgress, CallTransmitted: sn.call.OnTransmitted, CallError: sn.error}
+	transCall := lf.TransferCallbacks{CallInvited: sn.invited, CallResponded: sn.call.OnResponded, CallReceived: sn.received, CallProgress: sn.call.OnProgress, CallTransmitted: sn.transmitted, CallError: sn.error}
 
 	// Enter Lobby
 	if sn.lobby, err = sl.Join(sn.ctx, lobCall, sn.pubSub, sn.host.ID(), sn.peer, sn.olc); err != nil {
@@ -124,5 +124,8 @@ func (sn *Node) setConnection(ctx context.Context) error {
 	if sn.peerConn, err = tf.Initialize(sn.host, sn.pubSub, sn.directories, sn.olc, transCall); err != nil {
 		return err
 	}
+
+	// Update Status
+	sn.status = md.Status_AVAILABLE
 	return nil
 }

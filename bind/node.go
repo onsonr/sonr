@@ -118,12 +118,22 @@ func (sn *Node) Invite(reqBytes []byte) {
 			sn.peerConn.Request(sn.host, id, msgBytes)
 		}(&invMsg)
 	}
+
+	// Update Status
+	sn.status = md.Status_PENDING
 }
 
 // ^ Respond to an Invitation ^ //
 func (sn *Node) Respond(decision bool) {
 	// Send Response on PeerConnection
 	sn.peerConn.Authorize(decision, sn.contact, sn.peer)
+
+	// Update Status
+	if decision {
+		sn.status = md.Status_INPROGRESS
+	} else {
+		sn.status = md.Status_AVAILABLE
+	}
 }
 
 // ^ Reset Current Queued File Metadata ^ //
@@ -135,6 +145,10 @@ func (sn *Node) ResetFile() {
 
 // ^ Close Ends All Network Communication ^
 func (sn *Node) Pause() {
+	// Check if Response Is Invited
+	if sn.status == md.Status_INVITED {
+		sn.Respond(false)
+	}
 	err := sn.lobby.Standby()
 	if err != nil {
 		sn.error(err, "Pause")
@@ -153,5 +167,9 @@ func (sn *Node) Resume() {
 
 // ^ Close Ends All Network Communication ^
 func (sn *Node) Stop() {
+	// Check if Response Is Invited
+	if sn.status == md.Status_INVITED {
+		sn.Respond(false)
+	}
 	sn.host.Close()
 }

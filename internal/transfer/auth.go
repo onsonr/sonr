@@ -30,7 +30,7 @@ type AuthResponse struct {
 // Service Struct
 type AuthService struct {
 	// Current Data
-	onInvite  lf.OnProtobuf
+	onInvite  lf.OnInvite
 	respCh    chan *md.AuthReply
 	inviteMsg *md.AuthInvite
 }
@@ -48,7 +48,7 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 	as.inviteMsg = receivedMessage
 
 	// Send Callback
-	as.onInvite(args.Data)
+	as.onInvite(receivedMessage)
 
 	// Hold Select for Invite Type
 	if !as.inviteMsg.IsDirect {
@@ -94,7 +94,6 @@ func (pc *PeerConnection) Request(h host.Host, id peer.ID, msgBytes []byte) {
 	if call.Error != nil {
 		// Send Error
 		onError(err, "Request")
-		log.Panicln(err)
 	}
 
 	// Send Callback and Reset
@@ -106,7 +105,6 @@ func (pc *PeerConnection) Request(h host.Host, id peer.ID, msgBytes []byte) {
 	if err != nil {
 		// Send Error
 		onError(err, "Unmarshal")
-		log.Panicln(err)
 	}
 
 	// Check Response for Accept

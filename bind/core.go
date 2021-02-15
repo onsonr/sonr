@@ -38,6 +38,7 @@ type Node struct {
 	olc     string
 	peer    *md.Peer
 	contact *md.Contact
+	status  md.Status
 
 	// Networking Properties
 	host   host.Host
@@ -59,6 +60,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	node := new(Node)
 	node.ctx = context.Background()
 	node.call, node.files = call, make([]*sf.ProcessedFile, maxFileBufferSize)
+	node.status = md.Status_NONE
 
 	// ** Unmarshal Request **
 	reqMsg := md.ConnectionRequest{}
@@ -160,6 +162,51 @@ func (sn *Node) multiQueued(card *md.TransferCard, req *md.InviteRequest) {
 
 		sn.peerConn.Request(sn.host, id, msgBytes)
 	}(&invMsg)
+}
+
+// ^ invite Callback with data for Lifecycle ^ //
+func (sn *Node) invited(invite *md.AuthInvite) {
+	// Update Status
+	sn.status = md.Status_INVITED
+
+	// Convert Protobuf to bytes
+	msgBytes, err := proto.Marshal(invite)
+	if err != nil {
+		log.Println(err)
+	}
+
+	// Callback with Data
+	sn.call.OnInvited(msgBytes)
+}
+
+// ^ transmitted Callback middleware post transfer ^ //
+func (sn *Node) transmitted(peer *md.Peer) {
+	// Update Status
+	sn.status = md.Status_AVAILABLE
+
+	// Convert Protobuf to bytes
+	msgBytes, err := proto.Marshal(peer)
+	if err != nil {
+		log.Println(err)
+	}
+
+	// Callback with Data
+	sn.call.OnTransmitted(msgBytes)
+}
+
+// ^ received Callback middleware post transfer ^ //
+func (sn *Node) received(card *md.TransferCard) {
+	// Update Status
+	sn.status = md.Status_AVAILABLE
+
+	// Convert Protobuf to bytes
+	msgBytes, err := proto.Marshal(card)
+	if err != nil {
+		log.Println(err)
+	}
+
+	// Callback with Data
+	sn.call.OnReceived(msgBytes)
 }
 
 // ^ error Callback with error instance, and method ^
