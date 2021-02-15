@@ -3,6 +3,7 @@ package sonr
 import (
 	"log"
 	"math"
+	"time"
 
 	sf "github.com/sonr-io/core/internal/file"
 	"github.com/sonr-io/core/internal/lifecycle"
@@ -33,14 +34,30 @@ func (sn *Node) LinkDevice(json string) {
 		sn.error(err, "LinkDevice")
 	}
 
-	// Update Device Info
-	request.Device.Directories = request.Directories
-	request.Device.Name = request.Name
-
 	// Link Device
 	err = addDevice(request.Device, sn.directories.Documents)
 	if err != nil {
 		sn.error(err, "LinkDevice")
+	}
+}
+
+// ^ Link with a QR Code ^ //
+func (sn *Node) LinkRequest(name string) *md.LinkRequest {
+	// Set Device
+	device := sn.device
+	device.Directories = sn.directories
+	device.Name = name
+
+	// Create Expiry - 1min 30s
+	timein := time.Now().Local().Add(
+		time.Minute*time.Duration(1) +
+			time.Second*time.Duration(30))
+
+	// Return Request
+	return &md.LinkRequest{
+		Device: device,
+		Peer:   sn.Peer(),
+		Expiry: int32(timein.Unix()),
 	}
 }
 

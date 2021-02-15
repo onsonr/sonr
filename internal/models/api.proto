@@ -49,9 +49,9 @@ message InviteRequest {
 
 // Request to Link a Device for Direct Transfer
 message LinkRequest {
-  Device device = 1;           // Device Information
-  Directories directories = 2; // Device Directories
-  string name = 3;             // Device Nickname Set by User
+  Device device = 1; // Device Information
+  int32 expiry = 2;  // TimeStamp for Link Expiry
+  Peer peer = 3;     // Device Peer Info
 }
 
 // Invitation Message sent on RPC

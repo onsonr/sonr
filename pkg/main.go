@@ -9,7 +9,15 @@ import (
 	"github.com/getlantern/systray"
 	"github.com/sonr-io/core/pkg/desktop"
 	"github.com/sonr-io/core/pkg/ui"
+
+	md "github.com/sonr-io/core/internal/models"
 )
+
+type SysInfo struct {
+	OLC       string
+	Device    md.Device
+	Directory md.Directories
+}
 
 // Define Context
 var desk *desktop.Client

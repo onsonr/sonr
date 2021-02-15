@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/url"
-	"os"
-	"path/filepath"
 
 	"github.com/skip2/go-qrcode"
 	"github.com/zserge/lorca"
@@ -30,19 +28,10 @@ func (sm *AppInterface) OpenQRWindow(json string) {
 	defer ui.Close()
 
 	// Get QR Code Location
-	path, err := os.Getwd()
+	//path, err := os.Getwd()
 
 	// Create UI with basic HTML passed via data URI
-	ui.Load("data:text/html," + url.PathEscape(fmt.Sprintf(`
-	<html>
-		<head><title>Hello</title>
-		<div align="center">
-    <img src="%s" alt="Sonr-Core-Header"/>
-  <br>
-</div></head>
-		<body><h1>Hello, world!</h1></body>
-	</html>
-	`, filepath.Join(path, "qrcode.png"))))
+	err = ui.Load("data:text/html," + url.PathEscape("/res/window/index.html"))
 	if err != nil {
 		log.Fatal(err)
 	}

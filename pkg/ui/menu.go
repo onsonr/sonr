@@ -18,7 +18,6 @@ type AppInterface struct {
 	mPeersList []*systray.MenuItem
 	peerCount  int32
 	lobbySize  int32
-	// App        fyne.App
 }
 
 // ^ Start Starts System tray with Library ^ //
@@ -31,7 +30,6 @@ func Start() AppInterface {
 	ai := AppInterface{
 		peerCount: 0,
 		lobbySize: 1,
-		// App:       app.New(),
 	}
 
 	// Link Sonr Device
@@ -70,8 +68,12 @@ func (ai *AppInterface) HandleMenuInput() {
 		case <-ai.mLink.ClickedCh:
 			// Validate Node Set
 			if ai.node != nil {
+				// Create Link Request
+				name := ShowNameDialog()
+				linkRequest := ai.node.LinkRequest(name)
+
 				// Get Node JSON
-				jsonBytes, err := protojson.Marshal(ai.node.Peer())
+				jsonBytes, err := protojson.Marshal(linkRequest)
 				if err != nil {
 					log.Panicln(err)
 				}

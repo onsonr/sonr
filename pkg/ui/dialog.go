@@ -55,3 +55,15 @@ func ShowURLDialog() string {
 	// Return
 	return url
 }
+
+// ^ Presents a URL Input Dialog ^ //
+func ShowNameDialog() string {
+	// Display
+	url, _, err := dlgs.Entry("Device Name", "Enter a Device Nickname Here: ", "")
+	if err != nil {
+		log.Println(err)
+	}
+
+	// Return
+	return url
+}
