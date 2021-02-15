@@ -158,7 +158,7 @@ message User {
   Contact contact = 1;            // Clients Contact Card
   Device device = 2;              // Clients Device
   Directories directories = 3;    // Clients available Directories
-  Profile profile = 4;            // Clients General Profile - Optional
+  Profile profile = 4;            // Clients General Profile
   repeated Settings settings = 5; // Clients Specified Preferences
 
   message Settings {

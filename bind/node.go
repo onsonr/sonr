@@ -80,7 +80,7 @@ func (sn *Node) Update(direction float64) {
 // ^ Process Processes Data before Invite occurrs ^ //
 func (sn *Node) Process(reqBytes []byte) {
 	// @ 1. Initialize from Request
-	req := &md.InviteRequest{}
+	req := &md.ProcessRequest{}
 	err := proto.Unmarshal(reqBytes, req)
 	if err != nil {
 		log.Println(err)

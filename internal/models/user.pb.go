@@ -964,7 +964,7 @@ type User struct {
 	Contact     *Contact         `protobuf:"bytes,1,opt,name=contact,proto3" json:"contact,omitempty"`         // Clients Contact Card
 	Device      *Device          `protobuf:"bytes,2,opt,name=device,proto3" json:"device,omitempty"`           // Clients Device
 	Directories *Directories     `protobuf:"bytes,3,opt,name=directories,proto3" json:"directories,omitempty"` // Clients available Directories
-	Profile     *Profile         `protobuf:"bytes,4,opt,name=profile,proto3" json:"profile,omitempty"`         // Clients General Profile - Optional
+	Profile     *Profile         `protobuf:"bytes,4,opt,name=profile,proto3" json:"profile,omitempty"`         // Clients General Profile
 	Settings    []*User_Settings `protobuf:"bytes,5,rep,name=settings,proto3" json:"settings,omitempty"`       // Clients Specified Preferences
 }
 

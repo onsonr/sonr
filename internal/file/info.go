@@ -98,21 +98,21 @@ func GetFileInfo(path string) FileInfo {
 }
 
 // ^ Method Generates new Transfer Card from Contact^ //
-func NewCardFromContact(p *md.Profile, c *md.Contact, status md.TransferCard_Status) md.TransferCard {
+func NewCardFromContact(p *md.Peer, c *md.Contact, status md.TransferCard_Status) md.TransferCard {
 	return md.TransferCard{
 		// SQL Properties
 		Payload:  md.Payload_CONTACT,
 		Received: int32(time.Now().Unix()),
-		Preview:  p.Picture,
-		Platform: p.Platform,
+		Preview:  p.Profile.Picture,
+		Platform: p.Device.Platform,
 
 		// Transfer Properties
 		Status: status,
 
 		// Owner Properties
-		Username:  p.Username,
-		FirstName: p.FirstName,
-		LastName:  p.LastName,
+		Username:  p.Profile.Username,
+		FirstName: p.Profile.FirstName,
+		LastName:  p.Profile.LastName,
 
 		// Data Properties
 		Contact: c,
@@ -120,21 +120,21 @@ func NewCardFromContact(p *md.Profile, c *md.Contact, status md.TransferCard_Sta
 }
 
 // ^ Method Generates new Transfer Card from URL ^ //
-func NewCardFromUrl(p *md.Profile, s string, status md.TransferCard_Status) md.TransferCard {
+func NewCardFromUrl(p *md.Peer, s string, status md.TransferCard_Status) md.TransferCard {
 	// Return Card
 	return md.TransferCard{
 		// SQL Properties
 		Payload:  md.Payload_URL,
 		Received: int32(time.Now().Unix()),
-		Platform: p.Platform,
+		Platform: p.Device.Platform,
 
 		// Transfer Properties
 		Status: status,
 
 		// Owner Properties
-		Username:  p.Username,
-		FirstName: p.FirstName,
-		LastName:  p.LastName,
+		Username:  p.Profile.Username,
+		FirstName: p.Profile.FirstName,
+		LastName:  p.Profile.LastName,
 
 		// Data Properties
 		Url: s,
@@ -150,10 +150,10 @@ func NewInviteFromRequest(req *md.InviteRequest, p *md.Peer) md.AuthInvite {
 	// Determine Payload
 	if req.Type == md.InviteRequest_Contact {
 		payload = md.Payload_CONTACT
-		card = NewCardFromContact(p.Profile, req.Contact, md.TransferCard_DIRECT)
+		card = NewCardFromContact(p, req.Contact, md.TransferCard_DIRECT)
 	} else if req.Type == md.InviteRequest_URL {
 		payload = md.Payload_URL
-		card = NewCardFromUrl(p.Profile, req.Url, md.TransferCard_DIRECT)
+		card = NewCardFromUrl(p, req.Url, md.TransferCard_DIRECT)
 	} else {
 		payload = md.Payload_UNDEFINED
 	}
