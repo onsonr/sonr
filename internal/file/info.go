@@ -104,7 +104,7 @@ func NewCardFromContact(p *md.Peer, c *md.Contact, status md.TransferCard_Status
 		Payload:  md.Payload_CONTACT,
 		Received: int32(time.Now().Unix()),
 		Preview:  p.Profile.Picture,
-		Platform: p.Device.Platform,
+		Platform: p.Platform,
 
 		// Transfer Properties
 		Status: status,
@@ -120,13 +120,13 @@ func NewCardFromContact(p *md.Peer, c *md.Contact, status md.TransferCard_Status
 }
 
 // ^ Method Generates new Transfer Card from URL ^ //
-func NewCardFromUrl(p *md.Peer, s string, status md.TransferCard_Status) md.TransferCard {
+func NewCardFromUrl(p *md.Peer, url string, status md.TransferCard_Status) md.TransferCard {
 	// Return Card
 	return md.TransferCard{
 		// SQL Properties
 		Payload:  md.Payload_URL,
 		Received: int32(time.Now().Unix()),
-		Platform: p.Device.Platform,
+		Platform: p.Platform,
 
 		// Transfer Properties
 		Status: status,
@@ -137,7 +137,7 @@ func NewCardFromUrl(p *md.Peer, s string, status md.TransferCard_Status) md.Tran
 		LastName:  p.Profile.LastName,
 
 		// Data Properties
-		Url: s,
+		Url: url,
 	}
 }
 
@@ -160,9 +160,8 @@ func NewInviteFromRequest(req *md.InviteRequest, p *md.Peer) md.AuthInvite {
 
 	// Return Protobuf
 	return md.AuthInvite{
-		From:     p,
-		Payload:  payload,
-		Card:     &card,
-		IsDirect: req.IsDirect,
+		From:    p,
+		Payload: payload,
+		Card:    &card,
 	}
 }

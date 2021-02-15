@@ -61,15 +61,16 @@ message Contact {
   }
 }
 
-// Information about device for User or Peer
+// Information about device for User
 message Device {
-  string id = 1;         // Generated or Provided Device ID
-  Platform platform = 2; // Operating System
-  string model = 3;      // Model of Device
-  string name = 4;       // Name of Device
-  string version = 5;    // Device Software Version
-  int32 sdk = 6;         // Only For Android
-  bool desktop = 7;      // Only For Desktop
+  string id = 1;               // Generated or Provided Device ID
+  Platform platform = 2;       // Operating System
+  string model = 3;            // Model of Device
+  string name = 4;             // Name of Device
+  string version = 5;          // Device Software Version
+  int32 sdk = 6;               // Only For Android
+  bool desktop = 7;            // Only For Desktop
+  Directories directories = 8; // Directories for this Device
 }
 
 // Directories are for FilePaths Where Data can be stored
@@ -83,10 +84,11 @@ message Directories {
 // Basic Info Sent to Peers to Establish Connections
 message Peer {
   string id = 1;           // Peer.ID from Libp2p
-  Device device = 2;       // Peers Device
-  Position position = 3;   // Peers Positional Information
-  Profile profile = 4;     // Peers General Information
-  Discovery discovery = 5; // Peers Method of Discovery
+  Platform platform = 2;   // Peers Device Platform
+  string model = 3;        // Peers Device Model
+  Position position = 4;   // Peers Positional Information
+  Profile profile = 5;     // Peers General Information
+  Discovery discovery = 6; // Peers Method of Discovery
 
   // Enum for Discovery Type
   enum Discovery {
@@ -156,10 +158,9 @@ message Position {
 // User is the Saved Data from Client that Passes to Proxy, During ConnRequest
 message User {
   Contact contact = 1;            // Clients Contact Card
-  Device device = 2;              // Clients Device
-  Directories directories = 3;    // Clients available Directories
-  Profile profile = 4;            // Clients General Profile
-  repeated Settings settings = 5; // Clients Specified Preferences
+  Profile profile = 2;            // Clients General Profile
+  repeated Device devices = 3;    // Clients Devices
+  repeated Settings settings = 4; // Clients Specified Preferences
 
   message Settings {
     Option option = 1; // Type of Setting

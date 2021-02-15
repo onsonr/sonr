@@ -22,7 +22,6 @@ message InviteRequest {
   // Properties
   TransferType type = 1; // General Payload Type
   Peer to = 2;           // User thats being Invited
-  bool isDirect = 3;     // Is Users own Device
 
   // Attached Data
   string url = 4;              // URL to be Sent - Optional
@@ -48,25 +47,11 @@ message InviteRequest {
   }
 }
 
-// For Pre Invite File PRocessing
-message ProcessRequest {
-  repeated FileInfo files = 1; // Files to be Sent
-
-  // FileInfo Message for Attached Files
-  message FileInfo {
-    string path = 1;       // Location of File
-    bool hasThumbnail = 2; // Provided File already has thumbnail
-    string thumbpath = 3;  // Path of Provided Thumbnail - Optional
-    int32 duration = 4;    // Duration of Video - Optional
-  }
-
-  // Enum for Type of Transfer
-  enum ProcessType {
-    Unknown = 0;       // Default Value, Would not Transfer
-    File = 1;          // Media or Document
-    MultiFiles = 2;    // Multiple Media or Documents
-    ExternalMedia = 3; // Shared from Mobile Gallery
-  }
+// Request to Link a Device for Direct Transfer
+message LinkRequest {
+  Device device = 1;           // Device Information
+  Directories directories = 2; // Device Directories
+  string name = 3;             // Device Nickname Set by User
 }
 
 // Invitation Message sent on RPC

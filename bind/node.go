@@ -25,10 +25,20 @@ func (sn *Node) Info() []byte {
 // ^ Link with a QR Code ^ //
 func (sn *Node) LinkDevice(json string) {
 	// Convert String to Bytes
-	peer := md.Peer{}
+	request := md.LinkRequest{}
 
 	// Convert to Peer Protobuf
-	err := protojson.Unmarshal([]byte(json), &peer)
+	err := protojson.Unmarshal([]byte(json), &request)
+	if err != nil {
+		sn.error(err, "LinkDevice")
+	}
+
+	// Update Device Info
+	request.Device.Directories = request.Directories
+	request.Device.Name = request.Name
+
+	// Link Device
+	err = addDevice(request.Device, sn.directories.Documents)
 	if err != nil {
 		sn.error(err, "LinkDevice")
 	}
@@ -41,12 +51,21 @@ func (sn *Node) Peer() *md.Peer {
 
 // ^ Updates Current Contact Card ^
 func (sn *Node) SetContact(conBytes []byte) {
+	// Unmarshal Data
 	newContact := &md.Contact{}
 	err := proto.Unmarshal(conBytes, newContact)
 	if err != nil {
 		log.Println(err)
 	}
+
+	// Set Node Contact
 	sn.contact = newContact
+
+	// Set User Contact
+	err = updateContact(newContact, sn.directories.Documents)
+	if err != nil {
+		sn.error(err, "SetContact")
+	}
 }
 
 // ^ Update proximity/direction and Notify Lobby ^ //
@@ -74,16 +93,6 @@ func (sn *Node) Update(direction float64) {
 	err := sn.lobby.Update()
 	if err != nil {
 		sn.error(err, "Update")
-	}
-}
-
-// ^ Process Processes Data before Invite occurrs ^ //
-func (sn *Node) Process(reqBytes []byte) {
-	// @ 1. Initialize from Request
-	req := &md.ProcessRequest{}
-	err := proto.Unmarshal(reqBytes, req)
-	if err != nil {
-		log.Println(err)
 	}
 }
 

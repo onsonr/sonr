@@ -111,10 +111,9 @@ func (sn *Node) queued(card *md.TransferCard, req *md.InviteRequest) {
 
 	// Create Invite Message
 	invMsg := md.AuthInvite{
-		From:     sn.peer,
-		Payload:  card.Payload,
-		Card:     card,
-		IsDirect: req.IsDirect,
+		From:    sn.peer,
+		Payload: card.Payload,
+		Card:    card,
 	}
 
 	// Check if ID in PeerStore
@@ -146,10 +145,9 @@ func (sn *Node) multiQueued(card *md.TransferCard, req *md.InviteRequest) {
 
 	// Create Invite Message
 	invMsg := md.AuthInvite{
-		From:     sn.peer,
-		Payload:  card.Payload,
-		Card:     card,
-		IsDirect: req.IsDirect,
+		From:    sn.peer,
+		Payload: card.Payload,
+		Card:    card,
 	}
 
 	// Check if ID in PeerStore
