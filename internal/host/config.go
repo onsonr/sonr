@@ -21,9 +21,8 @@ type Config struct {
 	} `json:"p2p"`
 }
 
-var config Config
-
-func init() {
+func getConfig() Config {
+	var config Config
 	input := `
 {
   "p2p": {
@@ -59,6 +58,7 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
+	return config
 }
 
 // ^ Get Keys: Returns Private/Public keys from disk if found ^ //

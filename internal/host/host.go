@@ -42,25 +42,19 @@ func NewHost(ctx context.Context, dirs *md.Directories, olc string, connectivity
 		privateKey:   getKeys(dirs),
 	}
 
+	h, err := sh.hostWithRelay()
+	if err != nil {
+		return sh, err
+	}
+	sh.Host = h
+
 	// @2. Create Libp2p Host
 	if connectivity == md.ConnectionRequest_Wifi {
-		h, err := sh.hostWithRelay()
-		if err != nil {
-			return sh, err
-		}
-		sh.Host = h
 		err = startMDNS(ctx, h, sh.Point)
 		if err != nil {
 			return sh, err
 		}
-	} else if connectivity == md.ConnectionRequest_Mobile {
-		h, err := sh.hostWithoutRelay()
-		if err != nil {
-			return sh, err
-		}
-		sh.Host = h
 	}
-
 	return sh, nil
 }
 

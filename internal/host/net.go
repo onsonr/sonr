@@ -5,8 +5,10 @@ import (
 	"net"
 	"os"
 	"sync"
+	"time"
 
 	"github.com/libp2p/go-libp2p"
+	connmgr "github.com/libp2p/go-libp2p-connmgr"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/routing"
@@ -84,6 +86,14 @@ func (sh *SonrHost) hostWithRelay() (host.Host, error) {
 		// support any other default transports (TCP)
 		libp2p.DefaultTransports,
 
+		// Let's prevent our peer from having too many
+		// connections by attaching a connection manager.
+		libp2p.ConnectionManager(connmgr.NewConnManager(
+			10,          // Lowwater
+			20,          // HighWater,
+			time.Minute, // GracePeriod
+		)),
+
 		// Attempt to open ports using uPNP for NATed hosts.
 		libp2p.NATPortMap(),
 
@@ -94,28 +104,10 @@ func (sh *SonrHost) hostWithRelay() (host.Host, error) {
 			if err != nil {
 				return nil, err
 			}
+			// We use a rendezvous point "meet me here" to announce our location.
+			// This is like telling your friends to meet you at the Eiffel Tower.
 
-			go func(givenDht *dht.IpfsDHT) {
-				// Connect to bootstrap nodes
-				var wg sync.WaitGroup
-				for _, peerAddr := range dht.DefaultBootstrapPeers {
-					peerinfo, _ := peer.AddrInfoFromP2pAddr(peerAddr)
-					wg.Add(1)
-					go func() {
-						defer wg.Done()
-						// We ignore errors as some bootstrap peers may be down
-						h.Connect(sh.ctx, *peerinfo) //nolint
-					}()
-
-				}
-				wg.Wait()
-
-				// We use a rendezvous point "meet me here" to announce our location.
-				// This is like telling your friends to meet you at the Eiffel Tower.
-				routingDiscovery := discovery.NewRoutingDiscovery(givenDht)
-				discovery.Advertise(sh.ctx, routingDiscovery, sh.Point)
-				go handleKademliaDiscovery(sh.ctx, h, routingDiscovery, sh.Point)
-			}(idht)
+			go startBootstrap(sh.ctx, h, idht, sh.Point)
 			return idht, err
 		}),
 		// Let this host use relays and advertise itself on relays if

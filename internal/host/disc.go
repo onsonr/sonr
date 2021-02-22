@@ -6,11 +6,14 @@ import (
 	"sync"
 	"time"
 
+	disco "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
 	discovery "github.com/libp2p/go-libp2p-discovery"
+	dht "github.com/libp2p/go-libp2p-kad-dht"
 	swarm "github.com/libp2p/go-libp2p-swarm"
 	disc "github.com/libp2p/go-libp2p/p2p/discovery"
+	"github.com/multiformats/go-multiaddr"
 	"github.com/sonr-io/core/internal/lifecycle"
 )
 
@@ -35,6 +38,31 @@ func startMDNS(ctx context.Context, h host.Host, point string) error {
 	n := discNotifee{h: h, ctx: ctx}
 	disc.RegisterNotifee(&n)
 	return nil
+}
+
+// ^ Connects to Rendevouz Nodes then handles discovery ^
+func startBootstrap(ctx context.Context, h host.Host, idht *dht.IpfsDHT, point string) {
+	// Begin Discovery
+	routingDiscovery := discovery.NewRoutingDiscovery(idht)
+	discovery.Advertise(ctx, routingDiscovery, point, disco.TTL(discoveryInterval))
+
+	// Connect to defined nodes
+	var wg sync.WaitGroup
+	config := getConfig()
+
+	for _, maddrString := range config.P2P.RDVP {
+		maddr, err := multiaddr.NewMultiaddr(maddrString.Maddr)
+		if err != nil {
+			log.Println(err)
+		}
+		wg.Add(1)
+		peerinfo, _ := peer.AddrInfoFromP2pAddr(maddr)
+		h.Connect(ctx, *peerinfo) //nolint
+		wg.Done()
+		lifecycle.GetState().NeedsWait()
+	}
+	wg.Wait()
+	go handleKademliaDiscovery(ctx, h, routingDiscovery, point)
 }
 
 // ^ Handles Peers that appear on DHT ^
