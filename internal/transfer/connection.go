@@ -27,7 +27,7 @@ type PeerConnection struct {
 
 	// Data Handlers
 	ProcessedFile *sf.ProcessedFile
-	transfer      *sf.TransferFile
+	transfer      *IncomingFile
 
 	// Callbacks
 	invitedCall     lf.OnInvite
@@ -79,9 +79,9 @@ func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, tc 
 }
 
 // ^  Prepare for Stream, Create new Transfer ^ //
-func (pc *PeerConnection) PrepareTransfer(inv *md.AuthInvite) {
+func (pc *PeerConnection) PrepareIncoming(inv *md.AuthInvite) {
 	// Initialize Transfer
-	pc.transfer = sf.NewTransfer(inv, pc.dirs, pc.progressCall, pc.receivedCall)
+	pc.transfer = NewIncomingFile(inv, pc.dirs, pc.progressCall, pc.receivedCall)
 }
 
 // ^ User has accepted, Begin Sending Transfer ^ //
@@ -103,7 +103,7 @@ func (pc *PeerConnection) StartTransfer(h host.Host, id peer.ID, peer *md.Peer) 
 // ^ Handle Incoming Stream ^ //
 func (pc *PeerConnection) HandleTransfer(stream network.Stream) {
 	// Route Data from Stream
-	go func(reader msgio.ReadCloser, t *sf.TransferFile) {
+	go func(reader msgio.ReadCloser, t *IncomingFile) {
 		for i := 0; ; i++ {
 			// @ Read Length Fixed Bytes
 			buffer, err := reader.ReadMsg()

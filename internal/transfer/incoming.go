@@ -1,4 +1,4 @@
-package file
+package transfer
 
 import (
 	"bytes"
@@ -15,8 +15,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-const B64ChunkSize = 31998 // Adjusted for Base64 -- has to be divisible by 3
-type TransferFile struct {
+type IncomingFile struct {
 	// Inherited Properties
 	mutex      sync.Mutex
 	invite     *md.AuthInvite
@@ -37,12 +36,12 @@ type TransferFile struct {
 }
 
 // ^ Method Creates New Transfer File ^ //
-func NewTransfer(inv *md.AuthInvite, dirs *md.Directories, op func(data float32), oc func(*md.TransferCard)) *TransferFile {
+func NewIncomingFile(inv *md.AuthInvite, dirs *md.Directories, op func(data float32), oc func(*md.TransferCard)) *IncomingFile {
 	// Create File Name
 	fileName := inv.Card.Properties.Name + "." + inv.Card.Properties.Mime.Subtype
 
 	// Return File
-	return &TransferFile{
+	return &IncomingFile{
 		// Inherited Properties
 		invite:     inv,
 		path:       filepath.Join(dirs.Temporary, fileName),
@@ -57,7 +56,7 @@ func NewTransfer(inv *md.AuthInvite, dirs *md.Directories, op func(data float32)
 }
 
 // ^ Check file type and use corresponding method ^ //
-func (t *TransferFile) AddBuffer(curr int, buffer []byte) (bool, error) {
+func (t *IncomingFile) AddBuffer(curr int, buffer []byte) (bool, error) {
 	// ** Lock/Unlock ** //
 	t.mutex.Lock()
 	defer t.mutex.Unlock()
@@ -108,7 +107,7 @@ func (t *TransferFile) AddBuffer(curr int, buffer []byte) (bool, error) {
 }
 
 // ^ Check file type and use corresponding method to save to Disk ^ //
-func (t *TransferFile) Save() error {
+func (t *IncomingFile) Save() error {
 	// Get Bytes from base64
 	b64Bytes, err := base64.StdEncoding.DecodeString(t.stringsBuilder.String())
 	if err != nil {
