@@ -135,7 +135,7 @@ func (sn *Node) Invite(reqBytes []byte) {
 		// @ 3. Send Invite to Peer
 		// Set Contact
 		req.Contact = sn.contact
-		invMsg := sf.NewInviteFromRequest(req, sn.peer)
+		invMsg := md.NewInviteFromRequest(req, sn.peer)
 
 		// Get PeerID and Check error
 		id, _, err := sn.lobby.Find(req.To.Id)

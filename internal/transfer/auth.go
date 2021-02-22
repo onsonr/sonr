@@ -8,7 +8,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	gorpc "github.com/libp2p/go-libp2p-gorpc"
-	sf "github.com/sonr-io/core/internal/file"
 	lf "github.com/sonr-io/core/internal/lifecycle"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
@@ -151,7 +150,7 @@ func (pc *PeerConnection) Authorize(decision bool, contact *md.Contact, peer *md
 	case md.Payload_CONTACT:
 		// @ Pass Contact Back
 		// Create Accept Response
-		card := sf.NewCardFromContact(peer, contact, md.TransferCard_REPLY)
+		card := md.NewCardFromContact(peer, contact, md.TransferCard_REPLY)
 		respMsg := &md.AuthReply{
 			From:    peer,
 			Payload: md.Payload_CONTACT,
