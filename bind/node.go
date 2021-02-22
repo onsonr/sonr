@@ -156,7 +156,7 @@ func (sn *Node) Invite(reqBytes []byte) {
 				sn.error(err, "Marshal")
 			}
 
-			sn.peerConn.Request(sn.host, id, msgBytes)
+			sn.peerConn.Request(sn.host.Host, id, msgBytes)
 		}(&invMsg)
 	}
 

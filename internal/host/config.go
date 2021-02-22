@@ -62,7 +62,7 @@ func init() {
 }
 
 // ^ Get Keys: Returns Private/Public keys from disk if found ^ //
-func getKeys(dir *md.Directories) (crypto.PrivKey, error) {
+func getKeys(dir *md.Directories) crypto.PrivKey {
 	// Set Path
 	path := filepath.Join(dir.Documents, ".sonr-priv-key")
 
@@ -71,33 +71,33 @@ func getKeys(dir *md.Directories) (crypto.PrivKey, error) {
 		// Generate Keys
 		privKey, _, err := crypto.GenerateRSAKeyPair(2048, rand.Reader)
 		if err != nil {
-			return nil, err
+			return nil
 		}
 
 		// Get Key Bytes
 		privDat, err := crypto.MarshalPrivateKey(privKey)
 		if err != nil {
-			return nil, err
+			return nil
 		}
 
 		// Write Private/Pub To File
 		err = ioutil.WriteFile(path, privDat, 0644)
 		if err != nil {
-			return nil, err
+			return nil
 		}
-		return privKey, nil
+		return privKey
 	}
 	// @ Keys Exist Load Keys
 	// Load Private Key Bytes from File
 	privDat, err := ioutil.ReadFile(path)
 	if err != nil {
-		return nil, err
+		return nil
 	}
 
 	// Unmarshal PrivKey from Bytes
 	privKey, err := crypto.UnmarshalPrivateKey(privDat)
 	if err != nil {
-		return nil, err
+		return nil
 	}
-	return privKey, nil
+	return privKey
 }

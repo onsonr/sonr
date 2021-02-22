@@ -9,7 +9,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
 	discovery "github.com/libp2p/go-libp2p-discovery"
-	dht "github.com/libp2p/go-libp2p-kad-dht"
 	swarm "github.com/libp2p/go-libp2p-swarm"
 	disc "github.com/libp2p/go-libp2p/p2p/discovery"
 	"github.com/sonr-io/core/internal/lifecycle"
@@ -35,51 +34,6 @@ func startMDNS(ctx context.Context, h host.Host, point string) error {
 	// Create Discovery Notifier
 	n := discNotifee{h: h, ctx: ctx}
 	disc.RegisterNotifee(&n)
-	return nil
-}
-
-// ^ Connects to Rendevouz Nodes then handles discovery ^
-func startRendevouz(ctx context.Context, host host.Host, point string) error {
-	// Start a DHT, for use in peer discovery. We can't just make a new DHT
-	// client because we want each peer to maintain its own local copy of the
-	// DHT, so that the bootstrapping node of the DHT can go down without
-	// inhibiting future peer discovery.
-	kademliaDHT, err := dht.New(ctx, host)
-	if err != nil {
-		return err
-	}
-
-	// Bootstrap the DHT. In the default configuration, this spawns a Background
-	// thread that will refresh the peer table every five minutes.
-	log.Println("Bootstrapping the DHT")
-	if err = kademliaDHT.Bootstrap(ctx); err != nil {
-		log.Println(err)
-	}
-
-	// Let's connect to the bootstrap nodes first. They will tell us about the
-	// other nodes in the network.
-	go func() {
-		var wg sync.WaitGroup
-		for _, peerAddr := range dht.DefaultBootstrapPeers {
-			peerinfo, _ := peer.AddrInfoFromP2pAddr(peerAddr)
-			wg.Add(1)
-
-			defer wg.Done()
-			if err := host.Connect(ctx, *peerinfo); err != nil {
-				log.Println(err)
-			}
-			lifecycle.GetState().NeedsWait()
-		}
-		wg.Wait()
-
-		// We use a rendezvous point "meet me here" to announce our location.
-		// This is like telling your friends to meet you at the Eiffel Tower.
-		log.Println("Announcing ourselves...")
-		routingDiscovery := discovery.NewRoutingDiscovery(kademliaDHT)
-		discovery.Advertise(ctx, routingDiscovery, point)
-		log.Println("Successfully announced!")
-		go handleKademliaDiscovery(ctx, host, routingDiscovery, point)
-	}()
 	return nil
 }
 
