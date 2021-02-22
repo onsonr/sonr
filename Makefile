@@ -1,7 +1,6 @@
-SHELL := /bin/zsh # Set Shell
+SHELL=/bin/zsh # Set Shell
 
 # Go Commands
-GODESKTOP=/Users/prad/Downloads/mobile-desktop/cmd/gomobile/gomobile
 GOMOBILE=gomobile
 GOCLEAN=$(GOMOBILE) clean
 GOBIND=$(GOMOBILE) bind
@@ -77,8 +76,6 @@ win:
 
 ## mobile      :   Builds Android and iOS Bind for Plugin Path
 mobile: proto ios android
-	@cd /Users/prad/Sonr/plugin && flutter clean
-	@cd /Users/prad/Sonr/plugin/example && flutter clean
 	@go mod tidy
 	@cd /System/Library/Sounds && afplay Hero.aiff
 	@echo ""
@@ -95,7 +92,9 @@ android:
 	@echo "--------------------------------------------------------------"
 	@echo "--------------- 🤖 BEGIN ANDROID BIND 🤖 ----------------------"
 	@echo "--------------------------------------------------------------"
-	cd bind && GODEBUG=asyncpreemptoff=1 gomobile bind -ldflags='-s -w' -target=android/arm64 -v -o $(ANDROID_ARTIFACT)
+	@go get golang.org/x/mobile/bind
+	@gomobile init
+	cd bind && gomobile bind -ldflags='-s -w' -target=android/arm64 -v -o $(ANDROID_ARTIFACT)
 	@go mod tidy
 	@cd /System/Library/Sounds && afplay Glass.aiff
 	@echo "Finished Binding ➡ " && date
@@ -112,7 +111,8 @@ ios:
 	@echo "--------------------------------------------------------------"
 	@echo "-------------- 📱 BEGIN IOS BIND 📱 ---------------------------"
 	@echo "--------------------------------------------------------------"
-	cd bind && GODEBUG=asyncpreemptoff=1 gomobile bind -ldflags='-s -w' -target=ios/arm64 -v -o $(IOS_ARTIFACT)
+	@go get golang.org/x/mobile/bind
+	cd bind && gomobile bind -ldflags='-s -w' -target=ios/arm64 -v -o $(IOS_ARTIFACT)
 	@go mod tidy
 	@cd /System/Library/Sounds && afplay Glass.aiff
 	@echo "Finished Binding ➡ " && date
