@@ -5,6 +5,7 @@ import (
 	"log"
 
 	olc "github.com/google/open-location-code/go"
+	"github.com/libp2p/go-libp2p-core/host"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	sf "github.com/sonr-io/core/internal/file"
 	sh "github.com/sonr-io/core/internal/host"
@@ -41,7 +42,7 @@ type Node struct {
 	status  md.Status
 
 	// Networking Properties
-	host   sh.SonrHost
+	host   host.Host
 	pubSub *pubsub.PubSub
 
 	// Data Properties
@@ -124,7 +125,7 @@ func (sn *Node) queued(card *md.TransferCard, req *md.InviteRequest) {
 			sn.error(err, "Marshal")
 		}
 
-		sn.peerConn.Request(sn.host.Host, id, msgBytes)
+		sn.peerConn.Request(sn.host, id, msgBytes)
 	}(&invMsg)
 }
 
@@ -158,7 +159,7 @@ func (sn *Node) multiQueued(card *md.TransferCard, req *md.InviteRequest) {
 			sn.error(err, "Marshal")
 		}
 
-		sn.peerConn.Request(sn.host.Host, id, msgBytes)
+		sn.peerConn.Request(sn.host, id, msgBytes)
 	}(&invMsg)
 }
 

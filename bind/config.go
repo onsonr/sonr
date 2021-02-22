@@ -20,7 +20,7 @@ func (sn *Node) currentFile() *sf.ProcessedFile {
 // ^ setInfo sets node info from connEvent and host ^ //
 func (sn *Node) setInfo(connEvent *md.ConnectionRequest) error {
 	// Check for Host
-	if sn.host.Host == nil {
+	if sn.host == nil {
 		err := errors.New("setPeer: Host has not been called")
 		return err
 	}
@@ -38,7 +38,7 @@ func (sn *Node) setInfo(connEvent *md.ConnectionRequest) error {
 
 	// Set Peer Info
 	sn.peer = &md.Peer{
-		Id:       sn.host.Host.ID().String(),
+		Id:       sn.host.ID().String(),
 		Profile:  connEvent.Profile,
 		Platform: connEvent.Device.Platform,
 		Model:    connEvent.Device.Model,
@@ -58,7 +58,7 @@ func (sn *Node) setInfo(connEvent *md.ConnectionRequest) error {
 func (sn *Node) setConnection(ctx context.Context) error {
 	// Create a new PubSub service using the GossipSub router
 	var err error
-	sn.pubSub, err = pubsub.NewGossipSub(ctx, sn.host.Host)
+	sn.pubSub, err = pubsub.NewGossipSub(ctx, sn.host)
 	if err != nil {
 		return err
 	}
@@ -68,12 +68,12 @@ func (sn *Node) setConnection(ctx context.Context) error {
 	transCall := lf.TransferCallbacks{CallInvited: sn.invited, CallResponded: sn.call.OnResponded, CallReceived: sn.received, CallProgress: sn.call.OnProgress, CallTransmitted: sn.transmitted, CallError: sn.error}
 
 	// Enter Lobby
-	if sn.lobby, err = sl.Join(sn.ctx, lobCall, sn.pubSub, sn.host.PeerID(), sn.peer, sn.olc); err != nil {
+	if sn.lobby, err = sl.Join(sn.ctx, lobCall, sn.pubSub, sn.host.ID(), sn.peer, sn.olc); err != nil {
 		return err
 	}
 
 	// Initialize Peer Connection
-	if sn.peerConn, err = tf.Initialize(sn.host.Host, sn.pubSub, sn.directories, sn.olc, transCall); err != nil {
+	if sn.peerConn, err = tf.Initialize(sn.host, sn.pubSub, sn.directories, sn.olc, transCall); err != nil {
 		return err
 	}
 
