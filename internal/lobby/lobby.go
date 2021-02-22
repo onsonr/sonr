@@ -41,7 +41,7 @@ type Lobby struct {
 // ^ Join Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
 func Join(ctx context.Context, lobCall lf.LobbyCallbacks, ps *pubsub.PubSub, id peer.ID, sp *md.Peer, olc string) (*Lobby, error) {
 	// Join the pubsub Topic
-	point := "/sonr/lobby" + olc
+	point := "/sonr/lobby/" + olc
 	topic, err := ps.Join(point)
 	if err != nil {
 		return nil, err

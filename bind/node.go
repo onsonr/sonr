@@ -61,6 +61,11 @@ func (sn *Node) LinkRequest(name string) *md.LinkRequest {
 	}
 }
 
+// ^ Refresh Refreshes Users Current Lobby ^ //
+func (sn *Node) Refresh() {
+	sn.lobby.Refresh()
+}
+
 // ^ Peer returns Current Peer Info ^
 func (sn *Node) Peer() *md.Peer {
 	return sn.peer
