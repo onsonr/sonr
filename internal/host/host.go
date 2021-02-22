@@ -10,8 +10,6 @@ import (
 	"github.com/libp2p/go-libp2p"
 	connmgr "github.com/libp2p/go-libp2p-connmgr"
 	"github.com/libp2p/go-libp2p-core/host"
-	"github.com/libp2p/go-libp2p-core/routing"
-	dht "github.com/libp2p/go-libp2p-kad-dht"
 	libp2pquic "github.com/libp2p/go-libp2p-quic-transport"
 	secio "github.com/libp2p/go-libp2p-secio"
 	libp2ptls "github.com/libp2p/go-libp2p-tls"
@@ -27,7 +25,7 @@ const (
 )
 
 // ^ NewHost: Creates a host with: (MDNS, TCP, QUIC on UDP) ^
-func NewHost(ctx context.Context, dir *md.Directories, olc string) (host.Host, error) {
+func NewHost(ctx context.Context, dir *md.Directories, olc string, connectivity md.ConnectionRequest_Connectivity) (host.Host, error) {
 	// @1. Established Required Data
 	point := "/sonr/" + olc
 	ipv4 := IPv4()
@@ -73,32 +71,24 @@ func NewHost(ctx context.Context, dir *md.Directories, olc string) (host.Host, e
 
 		// Attempt to open ports using uPNP for NATed hosts.
 		libp2p.NATPortMap(),
-
-		// Let this host use the DHT to find other hosts
-		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
-			// Create New IDHT
-			idht, err := dht.New(ctx, h)
-			if err != nil {
-				return nil, err
-			}
-			// We use a rendezvous point "meet me here" to announce our location.
-			// This is like telling your friends to meet you at the Eiffel Tower.
-
-			go startBootstrap(ctx, h, idht, point)
-			return idht, err
-		}),
 		// Let this host use relays and advertise itself on relays if
 		// it finds it is behind NAT. Use libp2p.Relay(options...) to
 		// enable active relays and more.
 		libp2p.EnableAutoRelay(),
 		libp2p.EnableNATService(),
 	)
+
+	// Check Error
 	if err != nil {
 		log.Fatalln("Error starting node: ", err)
 	}
 
 	// setup local mDNS discovery
-	err = startMDNS(ctx, h, point)
+	if connectivity == md.ConnectionRequest_Wifi {
+		err = startMDNS(ctx, h, point)
+	} else if connectivity == md.ConnectionRequest_Mobile {
+		err = startRendevouz(ctx, h, point)
+	}
 	return h, err
 }
 
