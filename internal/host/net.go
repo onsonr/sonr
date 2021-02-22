@@ -5,10 +5,8 @@ import (
 	"net"
 	"os"
 	"sync"
-	"time"
 
 	"github.com/libp2p/go-libp2p"
-	connmgr "github.com/libp2p/go-libp2p-connmgr"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/routing"
@@ -86,14 +84,6 @@ func (sh *SonrHost) hostWithRelay() (host.Host, error) {
 		// support any other default transports (TCP)
 		libp2p.DefaultTransports,
 
-		// Let's prevent our peer from having too many
-		// connections by attaching a connection manager.
-		libp2p.ConnectionManager(connmgr.NewConnManager(
-			10,          // Lowwater
-			20,          // HighWater,
-			time.Minute, // GracePeriod
-		)),
-
 		// Attempt to open ports using uPNP for NATed hosts.
 		libp2p.NATPortMap(),
 
@@ -151,28 +141,11 @@ func (sh *SonrHost) hostWithoutRelay() (host.Host, error) {
 			fmt.Sprintf("/ip4/%s/udp/0/quic", sh.IPv4),
 			"/ip6/::/udp/0/quic"),
 
-		// support TLS connections
-		libp2p.Security(libp2ptls.ID, libp2ptls.New),
-
-		// support secio connections
-		libp2p.Security(secio.ID, secio.New),
-
 		// support QUIC
 		libp2p.Transport(libp2pquic.NewTransport),
 
 		// support any other default transports (TCP)
 		libp2p.DefaultTransports,
-
-		// Let's prevent our peer from having too many
-		// connections by attaching a connection manager.
-		libp2p.ConnectionManager(connmgr.NewConnManager(
-			10,          // Lowwater
-			20,          // HighWater,
-			time.Minute, // GracePeriod
-		)),
-
-		// Attempt to open ports using uPNP for NATed hosts.
-		libp2p.NATPortMap(),
 
 		// Let this host use the DHT to find other hosts
 		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
@@ -205,10 +178,6 @@ func (sh *SonrHost) hostWithoutRelay() (host.Host, error) {
 			}(idht)
 			return idht, err
 		}),
-		// Let this host use relays and advertise itself on relays if
-		// it finds it is behind NAT. Use libp2p.Relay(options...) to
-		// enable active relays and more.
-		libp2p.EnableNATService(),
 	)
 	return h, err
 }
