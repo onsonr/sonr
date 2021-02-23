@@ -2,6 +2,8 @@ package file
 
 import (
 	"bytes"
+	"image"
+	"image/jpeg"
 	"log"
 	"sync"
 
@@ -177,6 +179,36 @@ func RequestThumbnail(reqFi *md.InviteRequest_FileInfo, sm *ProcessedFile) {
 			sm.card.Preview = thumbBuffer.Bytes()
 		}
 	}
+
+	// ** Unlock ** //
+	sm.mutex.Unlock()
+
+	// Get Transfer Card
+	preview := sm.TransferCard()
+
+	// @ 3. Callback with Preview
+	sm.OnQueued(preview, sm.request)
+}
+
+// ^ Method to generate thumbnail for ProcessRequest^ //
+func HandleThumbdata(reqFi *md.InviteRequest_FileInfo, sm *ProcessedFile) {
+	// Initialize
+	thumbWriter := new(bytes.Buffer)
+	thumbReader := bytes.NewReader(reqFi.Thumbdata)
+
+	// Convert to Image Object
+	img, _, err := image.Decode(thumbReader)
+	if err != nil {
+		log.Println(err)
+	}
+
+	// @ Encode as Jpeg into buffer w/o scaling
+	err = jpeg.Encode(thumbWriter, img, nil)
+	if err != nil {
+		log.Panicln(err)
+	}
+
+	sm.card.Preview = thumbWriter.Bytes()
 
 	// ** Unlock ** //
 	sm.mutex.Unlock()
