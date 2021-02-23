@@ -16,12 +16,11 @@ import (
 
 type IncomingFile struct {
 	// Inherited Properties
-	mutex      sync.Mutex
-	invite     *md.AuthInvite
-	onProgress md.OnProgress
-	onReceived md.OnReceived
-	path       string
-	name       string
+	mutex  sync.Mutex
+	invite *md.AuthInvite
+	call   md.TransferCallback
+	path   string
+	name   string
 
 	// Builders
 	stringsBuilder *strings.Builder
@@ -35,18 +34,17 @@ type IncomingFile struct {
 }
 
 // ^ Method Creates New Transfer File ^ //
-func NewIncomingFile(inv *md.AuthInvite, dirs *md.Directories, op func(data float32), oc func(*md.TransferCard)) *IncomingFile {
+func NewIncomingFile(inv *md.AuthInvite, dirs *md.Directories, call md.TransferCallback) *IncomingFile {
 	// Create File Name
 	fileName := inv.Card.Properties.Name + "." + inv.Card.Properties.Mime.Subtype
 
 	// Return File
 	return &IncomingFile{
 		// Inherited Properties
-		invite:     inv,
-		path:       filepath.Join(dirs.Temporary, fileName),
-		onProgress: op,
-		onReceived: oc,
-		name:       fileName,
+		invite: inv,
+		path:   filepath.Join(dirs.Temporary, fileName),
+		call:   call,
+		name:   fileName,
 
 		// Builders
 		stringsBuilder: new(strings.Builder),
@@ -96,7 +94,7 @@ func (t *IncomingFile) AddBuffer(curr int, buffer []byte) (bool, error) {
 			// Check for Interval
 			if curr%t.interval == 0 {
 				// Send Callback
-				t.onProgress(float32(t.currentSize) / float32(t.totalSize))
+				t.call.OnProgress(float32(t.currentSize) / float32(t.totalSize))
 			}
 		}
 		return false, nil
@@ -162,6 +160,6 @@ func (t *IncomingFile) Save() error {
 	}
 
 	// Send Complete Callback
-	t.onReceived(card)
+	t.call.OnReceived(card)
 	return nil
 }

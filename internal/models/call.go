@@ -1,5 +1,11 @@
 package models
 
+import (
+	"log"
+
+	"google.golang.org/protobuf/proto"
+)
+
 // Define Function Types
 type OnProtobuf func([]byte)
 type OnInvite func(data *AuthInvite)
@@ -24,7 +30,12 @@ func (lc *LobbyCallback) OnEvent(data []byte) {
 	lc.CallEvent(data)
 }
 
-func (lc *LobbyCallback) OnRefresh(data []byte) {
+func (lc *LobbyCallback) OnRefresh(lob *Lobby) {
+	// Marshal data to bytes
+	data, err := proto.Marshal(lob)
+	if err != nil {
+		log.Println("Cannot Marshal Error Protobuf: ", err)
+	}
 	lc.CallRefresh(data)
 }
 

@@ -19,8 +19,8 @@ import (
 // ^ Connects to Rendevouz Nodes then handles discovery ^
 func (hc *HostConfig) StartBootstrap(ctx context.Context, h host.Host) {
 	// Begin Discovery
-	hc.Routing = discovery.NewRoutingDiscovery(hc.DHT)
-	discovery.Advertise(ctx, hc.Routing, hc.Point, disco.TTL(hc.Interval))
+	routing := discovery.NewRoutingDiscovery(hc.DHT)
+	discovery.Advertise(ctx, routing, hc.Point, disco.TTL(hc.Interval))
 
 	// Connect to defined nodes
 	var wg sync.WaitGroup
@@ -37,28 +37,28 @@ func (hc *HostConfig) StartBootstrap(ctx context.Context, h host.Host) {
 		lifecycle.GetState().NeedsWait()
 	}
 	wg.Wait()
-	go hc.handleKademliaDiscovery(ctx, h)
+	go hc.handleKademliaDiscovery(ctx, h, routing)
 }
 
 // ^ Find Peers from Routing Discovery ^ //
 func (hc *HostConfig) StartMDNS(ctx context.Context, h host.Host) error {
 	// setup mDNS discovery to find local peers
 	var err error
-	hc.MDNS, err = disc.NewMdnsService(ctx, h, hc.Interval, hc.Point)
+	mdns, err := disc.NewMdnsService(ctx, h, hc.Interval, hc.Point)
 	if err != nil {
 		return err
 	}
 
 	// Create Discovery Notifier
 	n := DiscNotifee{h: h, ctx: ctx}
-	hc.MDNS.RegisterNotifee(&n)
+	mdns.RegisterNotifee(&n)
 	return nil
 }
 
 // ^ Handles Peers that appear on DHT ^
-func (hc *HostConfig) handleKademliaDiscovery(ctx context.Context, h host.Host) {
+func (hc *HostConfig) handleKademliaDiscovery(ctx context.Context, h host.Host, routing *discovery.RoutingDiscovery) {
 	// Find Peers
-	peerChan, err := hc.FindPeers(ctx, 15)
+	peerChan, err := routing.FindPeers(ctx, hc.Point, disco.Limit(15))
 	if err != nil {
 		log.Println("Failed to get DHT Peer Channel: ", err)
 		return

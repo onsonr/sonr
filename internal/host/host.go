@@ -23,7 +23,7 @@ func NewHost(ctx context.Context, config HostConfig) (host.Host, error) {
 		libp2p.Identity(config.PrivateKey),
 
 		// Add listening Addresses
-		libp2p.ListenAddrs(config.ListenAddrs...),
+		libp2p.ListenAddrs(config.UDPv4, config.UDPv6, config.TCPv4, config.TCPv6),
 
 		// support TLS connections
 		libp2p.Security(libp2ptls.ID, libp2ptls.New),
@@ -78,7 +78,7 @@ func NewMDNSHost(ctx context.Context, config HostConfig) (host.Host, error) {
 		libp2p.Identity(config.PrivateKey),
 
 		// Add listening Addresses
-		libp2p.ListenAddrs(config.ListenAddrs...),
+		libp2p.ListenAddrs(config.UDPv4, config.UDPv6, config.TCPv4, config.TCPv6),
 
 		// support TLS connections
 		libp2p.Security(libp2ptls.ID, libp2ptls.New),

@@ -2,7 +2,6 @@ package lobby
 
 import (
 	"context"
-	"log"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
@@ -10,13 +9,11 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// ChatRoomBufSize is the number of incoming messages to buffer for each topic.
+// ChatRoomBufSize is the number of incoming messages to buffer
 const ChatRoomBufSize = 128
 const LobbySize = 16
 
 // Lobby represents a subscription to a single PubSub topic. Messages
-// can be published to the topic with Lobby.Publish, and received
-// messages are pushed to the Messages channel.
 type Lobby struct {
 	// Public Vars
 	Messages chan *md.LobbyEvent
@@ -25,15 +22,12 @@ type Lobby struct {
 
 	// Private Vars
 	ctx          context.Context
-	callback     md.OnProtobuf
-	onError      md.OnError
+	call         md.LobbyCallback
 	doneCh       chan struct{}
 	ps           *pubsub.PubSub
-	getPeer      md.ReturnPeer
 	topic        *pubsub.Topic
 	topicHandler *pubsub.TopicEventHandler
 	self         peer.ID
-	selfPeer     *md.Peer
 	sub          *pubsub.Subscription
 }
 
@@ -67,16 +61,13 @@ func Join(ctx context.Context, lobCall md.LobbyCallback, ps *pubsub.PubSub, id p
 	// Create Lobby Type
 	lob := &Lobby{
 		ctx:          ctx,
-		onError:      lobCall.CallError,
-		callback:     lobCall.CallRefresh,
+		call:         lobCall,
 		doneCh:       make(chan struct{}, 1),
 		ps:           ps,
-		getPeer:      lobCall.GetPeer,
 		topic:        topic,
 		topicHandler: topicHandler,
 		sub:          sub,
 		self:         id,
-		selfPeer:     sp,
 		Data:         lobInfo,
 		Messages:     make(chan *md.LobbyEvent, ChatRoomBufSize),
 	}
@@ -95,8 +86,8 @@ func (lob *Lobby) Exchange(peerID peer.ID) error {
 		// Create Lobby Event
 		event := md.LobbyEvent{
 			Event: md.LobbyEvent_EXCHANGE,
-			Data:  lob.getPeer(),
-			Id:    lob.getPeer().Id,
+			Data:  lob.call.GetPeer(),
+			Id:    lob.call.GetPeer().Id,
 		}
 
 		// Convert Event to Proto Binary
@@ -120,8 +111,8 @@ func (lob *Lobby) Resume() error {
 	// Create Lobby Event
 	event := md.LobbyEvent{
 		Event: md.LobbyEvent_RESUME,
-		Data:  lob.getPeer(),
-		Id:    lob.getPeer().Id,
+		Data:  lob.call.GetPeer(),
+		Id:    lob.call.GetPeer().Id,
 	}
 
 	// Convert Event to Proto Binary
@@ -143,8 +134,8 @@ func (lob *Lobby) Standby() error {
 	// Create Lobby Event
 	event := md.LobbyEvent{
 		Event: md.LobbyEvent_STANDBY,
-		Data:  lob.getPeer(),
-		Id:    lob.getPeer().Id,
+		Data:  lob.call.GetPeer(),
+		Id:    lob.call.GetPeer().Id,
 	}
 
 	// Convert Event to Proto Binary
@@ -166,8 +157,8 @@ func (lob *Lobby) Update() error {
 	// Create Lobby Event
 	event := md.LobbyEvent{
 		Event: md.LobbyEvent_UPDATE,
-		Data:  lob.getPeer(),
-		Id:    lob.getPeer().Id,
+		Data:  lob.call.GetPeer(),
+		Id:    lob.call.GetPeer().Id,
 	}
 
 	// Convert Event to Proto Binary
@@ -186,12 +177,5 @@ func (lob *Lobby) Update() error {
 
 // ^ Info returns ALL Lobby Data as Bytes^
 func (lob *Lobby) Refresh() {
-	// Marshal data to bytes
-	bytes, err := proto.Marshal(lob.Data)
-	if err != nil {
-		log.Println("Cannot Marshal Error Protobuf: ", err)
-	}
-
-	// Send Callback with updated peers
-	lob.callback(bytes)
+	lob.call.OnRefresh(lob.Data)
 }

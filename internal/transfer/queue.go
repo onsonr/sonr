@@ -28,12 +28,12 @@ func (tq *TransferQueue) Processed(pf *sf.ProcessedFile) {
 	tq.processed = append(tq.processed, pf)
 }
 
-func (tq *TransferQueue) NewIncoming(inv *md.AuthInvite, dirs *md.Directories, op func(data float32), oc func(*md.TransferCard)) {
-	incFile := NewIncomingFile(inv, dirs, op, oc)
+func (tq *TransferQueue) NewIncoming(inv *md.AuthInvite, dirs *md.Directories, call md.TransferCallback) {
+	incFile := NewIncomingFile(inv, dirs, call)
 	tq.incomingCh <- incFile
 }
 
-func (tq *TransferQueue) NewOutgoing(inv *md.AuthInvite, dirs *md.Directories, op func(data float32), oc func(*md.TransferCard)) {
-	incFile := NewIncomingFile(inv, dirs, op, oc)
+func (tq *TransferQueue) NewOutgoing(inv *md.AuthInvite, dirs *md.Directories, call md.TransferCallback) {
+	incFile := NewIncomingFile(inv, dirs, call)
 	tq.incomingCh <- incFile
 }

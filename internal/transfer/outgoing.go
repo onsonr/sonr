@@ -18,7 +18,7 @@ const B64ChunkSize = 31998 // Adjusted for Base64 -- has to be divisible by 3
 const BufferChunkSize = 32000
 
 // ^ write file as Base64 in Msgio to Stream ^ //
-func writeBase64ToStream(writer msgio.WriteCloser, onTransmitted md.OnTransmitted, pf *sf.ProcessedFile, peer *md.Peer) {
+func writeBase64ToStream(writer msgio.WriteCloser, call md.TransferCallback, pf *sf.ProcessedFile, peer *md.Peer) {
 	// Initialize Buffer and Encode File
 	buffer := new(bytes.Buffer)
 	if err := pf.EncodeFile(buffer); err != nil {
@@ -54,7 +54,7 @@ func writeBase64ToStream(writer msgio.WriteCloser, onTransmitted md.OnTransmitte
 	}
 
 	// Call Completed Sending
-	onTransmitted(peer)
+	call.OnTransmitted(peer)
 }
 
 // ^ Helper: Chunks string based on B64ChunkSize ^ //

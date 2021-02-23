@@ -28,7 +28,7 @@ type AuthResponse struct {
 // Service Struct
 type AuthService struct {
 	// Current Data
-	onInvite  md.OnInvite
+	call      md.TransferCallback
 	respCh    chan *md.AuthReply
 	inviteMsg *md.AuthInvite
 }
@@ -46,7 +46,7 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 	as.inviteMsg = receivedMessage
 
 	// Send Callback
-	as.onInvite(receivedMessage)
+	as.call.OnInvited(receivedMessage)
 
 	// Hold Select for Invite Type
 	if !as.inviteMsg.IsDirect {
@@ -76,7 +76,7 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 }
 
 // ^ Send Request to a Peer ^ //
-func (pc *PeerConnection) Request(h host.Host, id peer.ID, msgBytes []byte) {
+func (tc *TransferController) Request(h host.Host, id peer.ID, msgBytes []byte) {
 	// Initialize Data
 	rpcClient := gorpc.NewClient(h, protocol.ID("/sonr/rpc/auth"))
 	var reply AuthResponse
@@ -91,31 +91,31 @@ func (pc *PeerConnection) Request(h host.Host, id peer.ID, msgBytes []byte) {
 	call := <-done
 	if call.Error != nil {
 		// Send Error
-		onError(err, "Request")
+		tc.call.OnError(err, "Request")
 	}
 
 	// Send Callback and Reset
-	pc.respondedCall(reply.Data)
+	tc.call.OnResponded(reply.Data)
 
 	// Received Message
 	responseMessage := md.AuthReply{}
 	err = proto.Unmarshal(reply.Data, &responseMessage)
 	if err != nil {
 		// Send Error
-		onError(err, "Unmarshal")
+		tc.call.OnError(err, "Unmarshal")
 	}
 
 	// Check Response for Accept
 	if responseMessage.Decision && responseMessage.Payload == md.Payload_UNDEFINED {
 		// Begin Transfer
-		pc.StartTransfer(h, id, responseMessage.From)
+		tc.StartTransfer(h, id, responseMessage.From)
 	}
 }
 
 // ^ Send Authorize transfer on RPC ^ //
-func (pc *PeerConnection) Authorize(decision bool, contact *md.Contact, peer *md.Peer) {
+func (tc *TransferController) Authorize(decision bool, contact *md.Contact, peer *md.Peer) {
 	// ** Get Current Message **
-	offerMsg := pc.auth.inviteMsg
+	offerMsg := tc.auth.inviteMsg
 
 	// @ Check Reply Type for File
 	switch offerMsg.Payload {
@@ -123,7 +123,7 @@ func (pc *PeerConnection) Authorize(decision bool, contact *md.Contact, peer *md
 		// @ Check Decision
 		if decision {
 			// Initialize Transfer
-			pc.PrepareIncoming(offerMsg)
+			tc.PrepareIncoming(offerMsg)
 
 			// Create Accept Response
 			respMsg := &md.AuthReply{
@@ -133,7 +133,7 @@ func (pc *PeerConnection) Authorize(decision bool, contact *md.Contact, peer *md
 			}
 
 			// Send to Channel
-			pc.auth.respCh <- respMsg
+			tc.auth.respCh <- respMsg
 
 		} else {
 			// Create Decline Response
@@ -144,7 +144,7 @@ func (pc *PeerConnection) Authorize(decision bool, contact *md.Contact, peer *md
 			}
 
 			// Send to Channel
-			pc.auth.respCh <- respMsg
+			tc.auth.respCh <- respMsg
 		}
 	case md.Payload_CONTACT:
 		// @ Pass Contact Back
@@ -157,7 +157,7 @@ func (pc *PeerConnection) Authorize(decision bool, contact *md.Contact, peer *md
 		}
 
 		// Send to Channel
-		pc.auth.respCh <- respMsg
+		tc.auth.respCh <- respMsg
 	default:
 		break
 	}
