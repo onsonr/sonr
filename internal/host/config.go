@@ -22,14 +22,13 @@ type DiscNotifee struct {
 
 // ^ Contains Host Configuration ^ //
 type HostConfig struct {
-	Connectivity md.ConnectionRequest_Connectivity
-	UDPv4        ma.Multiaddr
-	TCPv4        ma.Multiaddr
-	UDPv6        ma.Multiaddr
-	TCPv6        ma.Multiaddr
-	OLC          string
-	Point        string
-	PrivateKey   crypto.PrivKey
+	UDPv4      ma.Multiaddr
+	TCPv4      ma.Multiaddr
+	UDPv6      ma.Multiaddr
+	TCPv6      ma.Multiaddr
+	OLC        string
+	Point      string
+	PrivateKey crypto.PrivKey
 }
 
 // ^ Creates new host configuration ^ //
@@ -37,9 +36,8 @@ func NewHostConfig(req *md.ConnectionRequest) (HostConfig, error) {
 	// Initialize
 	olc := olc.Encode(req.Latitude, req.Longitude, 8)
 	config := HostConfig{
-		OLC:          olc,
-		Point:        "/sonr/" + olc,
-		Connectivity: req.Connectivity,
+		OLC:   olc,
+		Point: "/sonr/" + olc,
 	}
 
 	// Get Private Key

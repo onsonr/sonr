@@ -8,20 +8,13 @@ option go_package = ".;models";
 
 // Initial Connection Message to Establish Sonr
 message ConnectionRequest {
-  double latitude = 1;           // Geolocation for OLC
-  double longitude = 2;          // Geolocation for OLC
-  Profile profile = 3;           // General Peer Info
-  Device device = 4;             // Users Device
-  Directories directories = 5;   // Users Available File Paths
-  Contact contact = 6;           // Users Contact Card
-  User user = 7;                 // User Saved Data
-  Connectivity connectivity = 8; // Type of Network Device is on
-
-  enum Connectivity {
-    None = 0;
-    Mobile = 1;
-    Wifi = 2;
-  }
+  double latitude = 1;         // Geolocation for OLC
+  double longitude = 2;        // Geolocation for OLC
+  Profile profile = 3;         // General Peer Info
+  Device device = 4;           // Users Device
+  Directories directories = 5; // Users Available File Paths
+  Contact contact = 6;         // Users Contact Card
+  User user = 7;               // User Saved Data
 }
 
 // Processes Given File and Invites Specified Peer
