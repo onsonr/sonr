@@ -6,7 +6,6 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	lf "github.com/sonr-io/core/internal/lifecycle"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -26,11 +25,11 @@ type Lobby struct {
 
 	// Private Vars
 	ctx          context.Context
-	callback     lf.OnProtobuf
-	onError      lf.OnError
+	callback     md.OnProtobuf
+	onError      md.OnError
 	doneCh       chan struct{}
 	ps           *pubsub.PubSub
-	getPeer      lf.ReturnPeer
+	getPeer      md.ReturnPeer
 	topic        *pubsub.Topic
 	topicHandler *pubsub.TopicEventHandler
 	self         peer.ID
@@ -39,7 +38,7 @@ type Lobby struct {
 }
 
 // ^ Join Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
-func Join(ctx context.Context, lobCall lf.LobbyCallbacks, ps *pubsub.PubSub, id peer.ID, sp *md.Peer, olc string) (*Lobby, error) {
+func Join(ctx context.Context, lobCall md.LobbyCallback, ps *pubsub.PubSub, id peer.ID, sp *md.Peer, olc string) (*Lobby, error) {
 	// Join the pubsub Topic
 	point := "/sonr/lobby/" + olc
 	topic, err := ps.Join(point)

@@ -6,7 +6,7 @@ import (
 
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	sf "github.com/sonr-io/core/internal/file"
-	lf "github.com/sonr-io/core/internal/lifecycle"
+	sh "github.com/sonr-io/core/internal/host"
 	sl "github.com/sonr-io/core/internal/lobby"
 	md "github.com/sonr-io/core/internal/models"
 	tf "github.com/sonr-io/core/internal/transfer"
@@ -15,6 +15,33 @@ import (
 // ^ CurrentFile returns last file in Processed Files ^ //
 func (sn *Node) currentFile() *sf.ProcessedFile {
 	return sn.files[len(sn.files)-1]
+}
+
+// ^ Initialize Sonr Node ^ //
+func (sn *Node) initialize(req *md.ConnectionRequest, call Callback) error {
+	// Initialize
+	var config sh.HostConfig
+	sn.ctx = context.Background()
+	sn.call, sn.files = call, make([]*sf.ProcessedFile, maxFileBufferSize)
+	sn.status = md.Status_NONE
+
+	// Create Host Configuration
+	config, err := sh.NewHostConfig(req)
+	if err != nil {
+		sn.error(err, "NewNode")
+		return err
+	}
+
+	// Set OLC
+	sn.olc = config.OLC
+
+	// Create Host
+	sn.host, err = sh.NewHost(sn.ctx, config)
+	if err != nil {
+		sn.error(err, "NewNode")
+		return nil
+	}
+	return nil
 }
 
 // ^ setInfo sets node info from connEvent and host ^ //
@@ -64,8 +91,8 @@ func (sn *Node) setConnection(ctx context.Context) error {
 	}
 
 	// Create Callbacks
-	lobCall := lf.LobbyCallbacks{CallRefresh: sn.call.OnRefreshed, CallError: sn.error, GetPeer: sn.Peer, CallEvent: sn.call.OnEvent}
-	transCall := lf.TransferCallbacks{CallInvited: sn.invited, CallResponded: sn.call.OnResponded, CallReceived: sn.received, CallProgress: sn.call.OnProgress, CallTransmitted: sn.transmitted, CallError: sn.error}
+	lobCall := md.LobbyCallback{CallRefresh: sn.call.OnRefreshed, CallError: sn.error, GetPeer: sn.Peer, CallEvent: sn.call.OnEvent}
+	transCall := md.TransferCallback{CallInvited: sn.invited, CallResponded: sn.call.OnResponded, CallReceived: sn.received, CallProgress: sn.call.OnProgress, CallTransmitted: sn.transmitted, CallError: sn.error}
 
 	// Enter Lobby
 	if sn.lobby, err = sl.Join(sn.ctx, lobCall, sn.pubSub, sn.host.ID(), sn.peer, sn.olc); err != nil {

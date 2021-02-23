@@ -8,7 +8,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	gorpc "github.com/libp2p/go-libp2p-gorpc"
-	lf "github.com/sonr-io/core/internal/lifecycle"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -29,7 +28,7 @@ type AuthResponse struct {
 // Service Struct
 type AuthService struct {
 	// Current Data
-	onInvite  lf.OnInvite
+	onInvite  md.OnInvite
 	respCh    chan *md.AuthReply
 	inviteMsg *md.AuthInvite
 }

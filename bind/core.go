@@ -4,11 +4,9 @@ import (
 	"context"
 	"log"
 
-	olc "github.com/google/open-location-code/go"
 	"github.com/libp2p/go-libp2p-core/host"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	sf "github.com/sonr-io/core/internal/file"
-	sh "github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/internal/lobby"
 	md "github.com/sonr-io/core/internal/models"
 	tr "github.com/sonr-io/core/internal/transfer"
@@ -57,41 +55,34 @@ type Node struct {
 
 // ^ NewNode Initializes Node with a host and default properties ^
 func NewNode(reqBytes []byte, call Callback) *Node {
-	// ** Create Context and Node - Begin Setup **
+	// New Node
 	node := new(Node)
-	node.ctx = context.Background()
-	node.call, node.files = call, make([]*sf.ProcessedFile, maxFileBufferSize)
-	node.status = md.Status_NONE
 
-	// ** Unmarshal Request **
-	reqMsg := md.ConnectionRequest{}
-	err := proto.Unmarshal(reqBytes, &reqMsg)
+	// @1. Unmarshal Request
+	request := &md.ConnectionRequest{}
+	err := proto.Unmarshal(reqBytes, request)
 	if err != nil {
-		node.error(err, "NewNode")
+		node.error(err, "NewNode-Unmarshal")
 		return nil
 	}
 
-	// @1. Set OLC, Create Host, and Start Discovery
-	node.olc = olc.Encode(float64(reqMsg.Latitude), float64(reqMsg.Longitude), 8)
-	node.host, err = sh.NewHost(node.ctx, reqMsg.Directories, node.olc)
-	if err != nil {
-		node.error(err, "NewNode")
+	// @1 Initialize
+	if err = node.initialize(request, call); err != nil {
+		node.error(err, "NewNode-Initialize")
 		return nil
 	}
 
-	// @3. Set Node User Information
-	if err = node.setInfo(&reqMsg); err != nil {
-		node.error(err, "NewNode")
+	// @4. Set Node User Information
+	if err = node.setInfo(request); err != nil {
+		node.error(err, "NewNode-setInfo")
 		return nil
 	}
 
-	// @4. Setup Connection w/ Lobby and Set Stream Handlers
+	// @5. Setup Connection w/ Lobby and Set Stream Handlers
 	if err = node.setConnection(node.ctx); err != nil {
-		node.error(err, "NewNode")
+		node.error(err, "NewNode-setConnection")
 		return nil
 	}
-
-	// ** Callback Node User Information ** //
 	return node
 }
 

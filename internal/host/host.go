@@ -4,7 +4,6 @@ import (
 	"context"
 	"time"
 
-	"fmt"
 	"log"
 
 	"github.com/libp2p/go-libp2p"
@@ -15,34 +14,16 @@ import (
 	libp2pquic "github.com/libp2p/go-libp2p-quic-transport"
 	secio "github.com/libp2p/go-libp2p-secio"
 	libp2ptls "github.com/libp2p/go-libp2p-tls"
-	md "github.com/sonr-io/core/internal/models"
 )
 
 // ^ NewHost: Creates a host with: (MDNS, TCP, QUIC on UDP) ^
-func NewHost(ctx context.Context, dir *md.Directories, olc string) (host.Host, error) {
-	// @1. Established Required Data
-	point := "/sonr/" + olc
-	ipv4 := IPv4()
-
-	// // @2. Get Private Key
-	// privKey, err := getKeys(dir)
-	// if err != nil {
-	// 	return nil, err
-	// }
-
-	// @3. Create Libp2p Host
+func NewHost(ctx context.Context, config HostConfig) (host.Host, error) {
 	h, err := libp2p.New(ctx,
 		// Identity
-		// libp2p.Identity(privKey),
+		libp2p.Identity(config.PrivateKey),
 
 		// Add listening Addresses
-		libp2p.ListenAddrStrings(
-			fmt.Sprintf("/ip4/%s/tcp/0", ipv4),
-			// "/ip6/::/tcp/0",
-
-			fmt.Sprintf("/ip4/%s/udp/0/quic", ipv4),
-			// "/ip6/::/udp/0/quic",
-		),
+		libp2p.ListenAddrs(config.ListenAddrs...),
 
 		// support TLS connections
 		libp2p.Security(libp2ptls.ID, libp2ptls.New),
@@ -74,7 +55,7 @@ func NewHost(ctx context.Context, dir *md.Directories, olc string) (host.Host, e
 			if err != nil {
 				return nil, err
 			}
-			go startBootstrap(ctx, h, idht, point)
+			go config.StartBootstrap(ctx, h)
 			return idht, err
 		}),
 
@@ -86,33 +67,18 @@ func NewHost(ctx context.Context, dir *md.Directories, olc string) (host.Host, e
 	}
 
 	// setup local mDNS discovery
-	err = startMDNS(ctx, h, point)
+	err = config.StartMDNS(ctx, h)
 	return h, err
 }
 
 // ^ NewHost: Creates a host with: (MDNS Only) ^
-func NewMDNSHost(ctx context.Context, dir *md.Directories, olc string) (host.Host, error) {
-	// @1. Established Required Data
-	ipv4 := IPv4()
-
-	// @2. Get Private Key
-	privKey, err := getKeys(dir)
-	if err != nil {
-		return nil, err
-	}
-
-	// @3. Create Libp2p Host
+func NewMDNSHost(ctx context.Context, config HostConfig) (host.Host, error) {
 	h, err := libp2p.New(ctx,
 		// Identity
-		libp2p.Identity(privKey),
+		libp2p.Identity(config.PrivateKey),
 
 		// Add listening Addresses
-		libp2p.ListenAddrStrings(
-			fmt.Sprintf("/ip4/%s/tcp/0", ipv4),
-			"/ip6/::/tcp/0",
-
-			fmt.Sprintf("/ip4/%s/udp/0/quic", ipv4),
-			"/ip6/::/udp/0/quic"),
+		libp2p.ListenAddrs(config.ListenAddrs...),
 
 		// support TLS connections
 		libp2p.Security(libp2ptls.ID, libp2ptls.New),
@@ -144,6 +110,6 @@ func NewMDNSHost(ctx context.Context, dir *md.Directories, olc string) (host.Hos
 	}
 
 	// setup local mDNS discovery
-	err = startMDNS(ctx, h, olc)
+	err = config.StartMDNS(ctx, h)
 	return h, err
 }

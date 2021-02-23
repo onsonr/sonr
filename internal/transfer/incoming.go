@@ -10,7 +10,6 @@ import (
 	"sync"
 	"time"
 
-	lf "github.com/sonr-io/core/internal/lifecycle"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -19,8 +18,8 @@ type IncomingFile struct {
 	// Inherited Properties
 	mutex      sync.Mutex
 	invite     *md.AuthInvite
-	onProgress lf.OnProgress
-	onReceived lf.OnReceived
+	onProgress md.OnProgress
+	onReceived md.OnReceived
 	path       string
 	name       string
 

@@ -7,7 +7,6 @@ import (
 
 	sf "github.com/sonr-io/core/internal/file"
 	"github.com/sonr-io/core/internal/lifecycle"
-	lf "github.com/sonr-io/core/internal/lifecycle"
 	md "github.com/sonr-io/core/internal/models"
 
 	msgio "github.com/libp2p/go-msgio"
@@ -19,7 +18,7 @@ const B64ChunkSize = 31998 // Adjusted for Base64 -- has to be divisible by 3
 const BufferChunkSize = 32000
 
 // ^ write file as Base64 in Msgio to Stream ^ //
-func writeBase64ToStream(writer msgio.WriteCloser, onTransmitted lf.OnTransmitted, pf *sf.ProcessedFile, peer *md.Peer) {
+func writeBase64ToStream(writer msgio.WriteCloser, onTransmitted md.OnTransmitted, pf *sf.ProcessedFile, peer *md.Peer) {
 	// Initialize Buffer and Encode File
 	buffer := new(bytes.Buffer)
 	if err := pf.EncodeFile(buffer); err != nil {

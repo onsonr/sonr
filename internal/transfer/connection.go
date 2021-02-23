@@ -13,12 +13,11 @@ import (
 	msgio "github.com/libp2p/go-msgio"
 	sf "github.com/sonr-io/core/internal/file"
 	"github.com/sonr-io/core/internal/lifecycle"
-	lf "github.com/sonr-io/core/internal/lifecycle"
 	md "github.com/sonr-io/core/internal/models"
 )
 
 // Package Error Callback
-var onError lf.OnError
+var onError md.OnError
 
 // ^ Struct: Holds/Handles GRPC Calls and Handles Data Stream  ^ //
 type PeerConnection struct {
@@ -30,11 +29,11 @@ type PeerConnection struct {
 	transfer      *IncomingFile
 
 	// Callbacks
-	invitedCall     lf.OnInvite
-	respondedCall   lf.OnProtobuf
-	progressCall    lf.OnProgress
-	receivedCall    lf.OnReceived
-	transmittedCall lf.OnTransmitted
+	invitedCall     md.OnInvite
+	respondedCall   md.OnProtobuf
+	progressCall    md.OnProgress
+	receivedCall    md.OnReceived
+	transmittedCall md.OnTransmitted
 
 	// Info
 	olc  string
@@ -42,7 +41,7 @@ type PeerConnection struct {
 }
 
 // ^ Initialize sets up new Peer Connection handler ^
-func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, tc lf.TransferCallbacks) (*PeerConnection, error) {
+func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, tc md.TransferCallback) (*PeerConnection, error) {
 	// Set Package Level Callbacks
 	onError = tc.CallError
 
