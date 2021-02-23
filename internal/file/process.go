@@ -85,7 +85,11 @@ func NewProcessedFile(req *md.InviteRequest, p *md.Profile, queueCall OnQueued, 
 	}
 
 	// @ 3. Create Thumbnail in Goroutine
-	go RequestThumbnail(file, sm)
+	if len(file.Thumbdata) > 0 {
+		go HandleThumbdata(file, sm)
+	} else {
+		go RequestThumbnail(file, sm)
+	}
 	return sm
 }
 
