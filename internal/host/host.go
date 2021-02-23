@@ -46,10 +46,7 @@ func NewHost(ctx context.Context, dir *md.Directories, olc string) (host.Host, e
 		// Add listening Addresses
 		libp2p.ListenAddrStrings(
 			fmt.Sprintf("/ip4/%s/tcp/0", ipv4),
-			"/ip6/::/tcp/0",
-
-			fmt.Sprintf("/ip4/%s/udp/0/quic", ipv4),
-			"/ip6/::/udp/0/quic"),
+			fmt.Sprintf("/ip4/%s/udp/0/quic", ipv4)),
 
 		// support TLS connections
 		libp2p.Security(libp2ptls.ID, libp2ptls.New),
@@ -99,63 +96,5 @@ func NewHost(ctx context.Context, dir *md.Directories, olc string) (host.Host, e
 
 	// setup local mDNS discovery
 	err = startMDNS(ctx, h, point)
-	return h, err
-}
-
-// ^ NewHost: Creates a host with: (MDNS Only) ^
-func NewMDNSHost(ctx context.Context, dir *md.Directories, olc string) (host.Host, error) {
-	// @1. Established Required Data
-	ipv4 := IPv4()
-
-	// @2. Get Private Key
-	privKey, err := getKeys(dir)
-	if err != nil {
-		return nil, err
-	}
-
-	// @3. Create Libp2p Host
-	h, err := libp2p.New(ctx,
-		// Identity
-		libp2p.Identity(privKey),
-
-		// Add listening Addresses
-		libp2p.ListenAddrStrings(
-			fmt.Sprintf("/ip4/%s/tcp/0", ipv4),
-			"/ip6/::/tcp/0",
-
-			fmt.Sprintf("/ip4/%s/udp/0/quic", ipv4),
-			"/ip6/::/udp/0/quic"),
-
-		// support TLS connections
-		libp2p.Security(libp2ptls.ID, libp2ptls.New),
-
-		// support secio connections
-		libp2p.Security(secio.ID, secio.New),
-
-		// support QUIC
-		libp2p.Transport(libp2pquic.NewTransport),
-
-		// support any other default transports (TCP)
-		libp2p.DefaultTransports,
-
-		// Let's prevent our peer from having too many
-		// connections by attaching a connection manager.
-		libp2p.ConnectionManager(connmgr.NewConnManager(
-			10,          // Lowwater
-			20,          // HighWater,
-			time.Minute, // GracePeriod
-		)),
-
-		// Let this host use relays and advertise itself on relays if
-		// it finds it is behind NAT. Use libp2p.Relay(options...) to
-		// enable active relays and more.
-		libp2p.EnableNATService(),
-	)
-	if err != nil {
-		log.Fatalln("Error starting node: ", err)
-	}
-
-	// setup local mDNS discovery
-	err = startMDNS(ctx, h, olc)
 	return h, err
 }
