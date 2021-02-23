@@ -1,6 +1,6 @@
 module github.com/sonr-io/core
 
-go 1.15
+go 1.16
 
 // Core Imports
 require (

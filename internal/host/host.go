@@ -31,6 +31,7 @@ func NewHost(ctx context.Context, dir *md.Directories, olc string) (host.Host, e
 	// @1. Established Required Data
 	point := "/sonr/" + olc
 	ipv4 := IPv4()
+	ipv6 := IPv6()
 
 	// @2. Get Private Key
 	privKey, err := getKeys(dir)
@@ -46,7 +47,10 @@ func NewHost(ctx context.Context, dir *md.Directories, olc string) (host.Host, e
 		// Add listening Addresses
 		libp2p.ListenAddrStrings(
 			fmt.Sprintf("/ip4/%s/tcp/0", ipv4),
-			fmt.Sprintf("/ip4/%s/udp/0/quic", ipv4)),
+			fmt.Sprintf("/ip6/%s/tcp/0", ipv6),
+
+			fmt.Sprintf("/ip4/%s/udp/0/quic", ipv4),
+			fmt.Sprintf("/ip6/%s/udp/0/quic", ipv6)),
 
 		// support TLS connections
 		libp2p.Security(libp2ptls.ID, libp2ptls.New),
