@@ -61,28 +61,28 @@ func (hc *HostConfig) setAddresses() error {
 	ipv4 := ipv4()
 	ipv6 := ipv6()
 
-	udpv4, err := ma.NewMultiaddr(fmt.Sprintf("/ip4/%s/udp/0/quic", ipv4))
+	udpv4, err := ma.NewMultiaddr(fmt.Sprintf("/ip4/%s/udp/8081/quic", ipv4))
 	if err != nil {
 		return err
 	} else {
 		hc.UDPv4 = udpv4
 	}
 
-	udpv6, err := ma.NewMultiaddr(fmt.Sprintf("/ip6/%s/udp/0/quic", ipv6))
+	udpv6, err := ma.NewMultiaddr(fmt.Sprintf("/ip6/%s/udp/8081/quic", ipv6))
 	if err != nil {
 		return err
 	} else {
 		hc.UDPv6 = udpv6
 	}
 
-	tcpv4, err := ma.NewMultiaddr(fmt.Sprintf("/ip4/%s/tcp/0", ipv4))
+	tcpv4, err := ma.NewMultiaddr(fmt.Sprintf("/ip4/%s/tcp/8081", ipv4))
 	if err != nil {
 		return err
 	} else {
 		hc.TCPv4 = tcpv4
 	}
 
-	tcpv6, err := ma.NewMultiaddr(fmt.Sprintf("/ip6/%s/tcp/0", ipv6))
+	tcpv6, err := ma.NewMultiaddr(fmt.Sprintf("/ip6/%s/tcp/8081", ipv6))
 	if err != nil {
 		return err
 	} else {

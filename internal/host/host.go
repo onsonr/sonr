@@ -22,7 +22,6 @@ import (
 	disc "github.com/libp2p/go-libp2p/p2p/discovery"
 	"github.com/multiformats/go-multiaddr"
 	"github.com/sonr-io/core/internal/lifecycle"
-	md "github.com/sonr-io/core/internal/models"
 )
 
 const Interval = time.Second * 4
@@ -78,10 +77,8 @@ func NewHost(ctx context.Context, config HostConfig) (host.Host, error) {
 	}
 
 	// Check for Wifi
-	if config.Connectivity == md.ConnectionRequest_Wifi {
-		// setup local mDNS discovery
-		err = StartMDNS(ctx, h, &config)
-	}
+	// setup local mDNS discovery
+	err = StartMDNS(ctx, h, &config)
 	return h, err
 }
 
