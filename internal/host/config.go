@@ -7,12 +7,10 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"time"
 
 	olc "github.com/google/open-location-code/go"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/host"
-	dht "github.com/libp2p/go-libp2p-kad-dht"
 	ma "github.com/multiformats/go-multiaddr"
 	md "github.com/sonr-io/core/internal/models"
 )
@@ -25,23 +23,24 @@ type DiscNotifee struct {
 // ^ Contains Host Configuration ^ //
 type HostConfig struct {
 	Connectivity md.ConnectionRequest_Connectivity
-	DHT          *dht.IpfsDHT
 	UDPv4        ma.Multiaddr
 	TCPv4        ma.Multiaddr
 	UDPv6        ma.Multiaddr
 	TCPv6        ma.Multiaddr
-	Interval     time.Duration
 	OLC          string
 	Point        string
 	PrivateKey   crypto.PrivKey
-	Bootstrap    BootstrapConfig
 }
 
 // ^ Creates new host configuration ^ //
 func NewHostConfig(req *md.ConnectionRequest) (HostConfig, error) {
 	// Initialize
-	var config HostConfig
-	config.setInfo(req)
+	olc := olc.Encode(req.Latitude, req.Longitude, 8)
+	config := HostConfig{
+		OLC:          olc,
+		Point:        "/sonr/" + olc,
+		Connectivity: req.Connectivity,
+	}
 
 	// Get Private Key
 	err := config.setPrivateKey(req.Directories)
@@ -54,17 +53,11 @@ func NewHostConfig(req *md.ConnectionRequest) (HostConfig, error) {
 	if err != nil {
 		return config, err
 	}
-
-	// Get Bootstrap Nodes
-	config.Bootstrap, err = getBootstrap()
-	if err != nil {
-		return config, err
-	}
 	return config, nil
 }
 
 // ^ Listen Addresses Returns MultiAddr of Listening Addresses ^
-func (hc HostConfig) setAddresses() error {
+func (hc *HostConfig) setAddresses() error {
 	ipv4 := ipv4()
 	ipv6 := ipv6()
 
@@ -98,17 +91,8 @@ func (hc HostConfig) setAddresses() error {
 	return nil
 }
 
-// ^ Set Config Info ^ //
-func (hc HostConfig) setInfo(req *md.ConnectionRequest) {
-	olc := olc.Encode(req.Latitude, req.Longitude, 8)
-	hc.Connectivity = req.Connectivity
-	hc.OLC = olc
-	hc.Point = "/sonr/" + olc
-	hc.Interval = time.Second * 4
-}
-
 // ^ Get Keys: Returns Private/Public keys from disk if found ^ //
-func (hc HostConfig) setPrivateKey(dirs *md.Directories) error {
+func (hc *HostConfig) setPrivateKey(dirs *md.Directories) error {
 	// Set Path
 	path := filepath.Join(dirs.Documents, ".sonr-priv-key")
 

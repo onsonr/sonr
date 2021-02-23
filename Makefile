@@ -57,8 +57,6 @@ darwin:
 	@echo "--------------------------------------------------------------"
 	@echo "------------- 🖥  COMPLETED DAWIN BULD  🖥  -------------------"
 	@echo "--------------------------------------------------------------"
-	@echo ""
-	@cd $(MAC_BUILDDIR) && ./sonr_core
 
 ## └─ win      :   Compiles Desktop build of Sonr for Windows
 win:
@@ -140,7 +138,20 @@ proto:
 
 ## run         :   Runs current Darwin Build
 run:
-	cd $(MAC_BUILDDIR) && ./sonr_core
+	@echo ""
+	@echo ""
+	@echo "-----------------------------------------------------------"
+	@echo "------------- 🖥  START DARWIN BUILD  🖥  -------------------"
+	@echo "-----------------------------------------------------------"
+	@go clean -cache
+	@go mod tidy
+	cd pkg && go build -o $(MAC_ARTIFACT)
+	@echo "Finished Building ➡ " && date
+	@echo "--------------------------------------------------------------"
+	@echo "------------- 🖥  RUN DAWIN BULD  🖥  -------------------"
+	@echo "--------------------------------------------------------------"
+	@echo ""
+	@cd $(MAC_BUILDDIR) && ./sonr_core
 
 ## upgrade     :   Builds ALL supported devices
 upgrade: proto mobile desktop
