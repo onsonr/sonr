@@ -24,24 +24,25 @@ func NewHost(ctx context.Context, dir *md.Directories, olc string) (host.Host, e
 	point := "/sonr/" + olc
 	ipv4 := IPv4()
 
-	// @2. Get Private Key
-	privKey, err := getKeys(dir)
-	if err != nil {
-		return nil, err
-	}
+	// // @2. Get Private Key
+	// privKey, err := getKeys(dir)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	// @3. Create Libp2p Host
 	h, err := libp2p.New(ctx,
 		// Identity
-		libp2p.Identity(privKey),
+		// libp2p.Identity(privKey),
 
 		// Add listening Addresses
 		libp2p.ListenAddrStrings(
 			fmt.Sprintf("/ip4/%s/tcp/0", ipv4),
-			"/ip6/::/tcp/0",
+			// "/ip6/::/tcp/0",
 
 			fmt.Sprintf("/ip4/%s/udp/0/quic", ipv4),
-			"/ip6/::/udp/0/quic"),
+			// "/ip6/::/udp/0/quic",
+		),
 
 		// support TLS connections
 		libp2p.Security(libp2ptls.ID, libp2ptls.New),
@@ -73,17 +74,12 @@ func NewHost(ctx context.Context, dir *md.Directories, olc string) (host.Host, e
 			if err != nil {
 				return nil, err
 			}
-			// We use a rendezvous point "meet me here" to announce our location.
-			// This is like telling your friends to meet you at the Eiffel Tower.
-
 			go startBootstrap(ctx, h, idht, point)
 			return idht, err
 		}),
+
 		// Let this host use relays and advertise itself on relays if
-		// it finds it is behind NAT. Use libp2p.Relay(options...) to
-		// enable active relays and more.
 		libp2p.EnableAutoRelay(),
-		libp2p.EnableNATService(),
 	)
 	if err != nil {
 		log.Fatalln("Error starting node: ", err)

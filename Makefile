@@ -51,6 +51,7 @@ darwin:
 	@echo "------------- 🖥  START DARWIN BUILD  🖥  -------------------"
 	@echo "-----------------------------------------------------------"
 	@go clean -cache
+	@go mod tidy
 	cd pkg && go build -o $(MAC_ARTIFACT)
 	@echo "Finished Building ➡ " && date
 	@echo "--------------------------------------------------------------"
@@ -93,7 +94,6 @@ android:
 	@echo "--------------- 🤖 BEGIN ANDROID BIND 🤖 ----------------------"
 	@echo "--------------------------------------------------------------"
 	@go get golang.org/x/mobile/bind
-	@gomobile init
 	cd bind && gomobile bind -ldflags='-s -w' -target=android/arm64 -v -o $(ANDROID_ARTIFACT)
 	@go mod tidy
 	@cd /System/Library/Sounds && afplay Glass.aiff
