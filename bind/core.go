@@ -73,7 +73,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 
 	// @1. Set OLC, Create Host, and Start Discovery
 	node.olc = olc.Encode(float64(reqMsg.Latitude), float64(reqMsg.Longitude), 8)
-	node.host, err = sh.NewHost(node.ctx, reqMsg.Directories, node.olc, reqMsg.Connectivity)
+	node.host, err = sh.NewHost(node.ctx, reqMsg.Directories, node.olc)
 	if err != nil {
 		node.error(err, "NewNode")
 		return nil

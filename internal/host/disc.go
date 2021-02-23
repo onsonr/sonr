@@ -26,20 +26,6 @@ type discNotifee struct {
 	ctx context.Context
 }
 
-// ^ startMDNS creates an mDNS discovery service and attaches it to the libp2p Host. ^
-func startMDNS(ctx context.Context, h host.Host, point string) error {
-	// setup mDNS discovery to find local peers
-	disc, err := disc.NewMdnsService(ctx, h, discoveryInterval, point)
-	if err != nil {
-		return err
-	}
-
-	// Create Discovery Notifier
-	n := discNotifee{h: h, ctx: ctx}
-	disc.RegisterNotifee(&n)
-	return nil
-}
-
 // ^ Connects to Rendevouz Nodes then handles discovery ^
 func startBootstrap(ctx context.Context, h host.Host, idht *dht.IpfsDHT, point string) {
 	// Begin Discovery
@@ -48,7 +34,6 @@ func startBootstrap(ctx context.Context, h host.Host, idht *dht.IpfsDHT, point s
 
 	// Connect to defined nodes
 	var wg sync.WaitGroup
-	config := getConfig()
 
 	for _, maddrString := range config.P2P.RDVP {
 		maddr, err := multiaddr.NewMultiaddr(maddrString.Maddr)
@@ -63,6 +48,20 @@ func startBootstrap(ctx context.Context, h host.Host, idht *dht.IpfsDHT, point s
 	}
 	wg.Wait()
 	go handleKademliaDiscovery(ctx, h, routingDiscovery, point)
+}
+
+// ^ startMDNS creates an mDNS discovery service and attaches it to the libp2p Host. ^
+func startMDNS(ctx context.Context, h host.Host, point string) error {
+	// setup mDNS discovery to find local peers
+	disc, err := disc.NewMdnsService(ctx, h, discoveryInterval, point)
+	if err != nil {
+		return err
+	}
+
+	// Create Discovery Notifier
+	n := discNotifee{h: h, ctx: ctx}
+	disc.RegisterNotifee(&n)
+	return nil
 }
 
 // ^ Handles Peers that appear on DHT ^
