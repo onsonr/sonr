@@ -29,8 +29,8 @@ const (
 )
 
 // ** Const UI Resource Path ** //
-const RES_PATH = "/Users/prad/Sonr/core/pkg/res/"
-const ICON_PATH = "/Users/prad/Sonr/core/pkg/res/systray.png"
+const RES_PATH = "/Users/prad/Sonr/core/pkg/res/image"
+const ICON_PATH = "/Users/prad/Sonr/core/pkg/res/image/systray.png"
 
 func (d Icon) File() string {
 	return [...]string{"systray.png", "close.png", "user.png", "peer.png", "invite.png", "iphone.png", "android.png", "mac.png", "windows.png", "unknown.png", "link.png", "url.png", "file.png"}[d]

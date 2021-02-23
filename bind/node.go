@@ -61,11 +61,6 @@ func (sn *Node) LinkRequest(name string) *md.LinkRequest {
 	}
 }
 
-// ^ Refresh Refreshes Users Current Lobby ^ //
-func (sn *Node) Refresh() {
-	sn.lobby.Refresh()
-}
-
 // ^ Peer returns Current Peer Info ^
 func (sn *Node) Peer() *md.Peer {
 	return sn.peer
@@ -140,7 +135,7 @@ func (sn *Node) Invite(reqBytes []byte) {
 		// @ 3. Send Invite to Peer
 		// Set Contact
 		req.Contact = sn.contact
-		invMsg := md.NewInviteFromRequest(req, sn.peer)
+		invMsg := sf.NewInviteFromRequest(req, sn.peer)
 
 		// Get PeerID and Check error
 		id, _, err := sn.lobby.Find(req.To.Id)

@@ -2,8 +2,6 @@ package file
 
 import (
 	"bytes"
-	"image"
-	"image/jpeg"
 	"log"
 	"sync"
 
@@ -53,7 +51,7 @@ func NewProcessedFile(req *md.InviteRequest, p *md.Profile, queueCall OnQueued, 
 
 	// Get File Information
 	file := req.Files[len(req.Files)-1]
-	info := md.GetFileInfo(file.Path)
+	info := GetFileInfo(file.Path)
 
 	// @ 1. Create new SafeFile
 	sm := &ProcessedFile{
@@ -87,11 +85,7 @@ func NewProcessedFile(req *md.InviteRequest, p *md.Profile, queueCall OnQueued, 
 	}
 
 	// @ 3. Create Thumbnail in Goroutine
-	if len(file.Thumbdata) > 0 {
-		go HandleThumbdata(file, sm)
-	} else {
-		go RequestThumbnail(file, sm)
-	}
+	go RequestThumbnail(file, sm)
 	return sm
 }
 
@@ -104,7 +98,7 @@ func NewBatchProcessFiles(req *md.InviteRequest, p *md.Profile, queueCall OnQueu
 	// Iterate Through Attached Files
 	for _, file := range req.Files {
 		// Get Info
-		info := md.GetFileInfo(file.Path)
+		info := GetFileInfo(file.Path)
 
 		// @ 1. Create new SafeFile
 		sm := &ProcessedFile{
@@ -179,36 +173,6 @@ func RequestThumbnail(reqFi *md.InviteRequest_FileInfo, sm *ProcessedFile) {
 			sm.card.Preview = thumbBuffer.Bytes()
 		}
 	}
-
-	// ** Unlock ** //
-	sm.mutex.Unlock()
-
-	// Get Transfer Card
-	preview := sm.TransferCard()
-
-	// @ 3. Callback with Preview
-	sm.OnQueued(preview, sm.request)
-}
-
-// ^ Method to generate thumbnail for ProcessRequest^ //
-func HandleThumbdata(reqFi *md.InviteRequest_FileInfo, sm *ProcessedFile) {
-	// Initialize
-	thumbWriter := new(bytes.Buffer)
-	thumbReader := bytes.NewReader(reqFi.Thumbdata)
-
-	// Convert to Image Object
-	img, _, err := image.Decode(thumbReader)
-	if err != nil {
-		log.Println(err)
-	}
-
-	// @ Encode as Jpeg into buffer w/o scaling
-	err = jpeg.Encode(thumbWriter, img, nil)
-	if err != nil {
-		log.Panicln(err)
-	}
-
-	sm.card.Preview = thumbWriter.Bytes()
 
 	// ** Unlock ** //
 	sm.mutex.Unlock()
