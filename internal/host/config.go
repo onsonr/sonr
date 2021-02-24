@@ -1,135 +1,103 @@
 package host
 
 import (
-	"context"
 	"crypto/rand"
-	"fmt"
+	"encoding/json"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 
-	olc "github.com/google/open-location-code/go"
 	"github.com/libp2p/go-libp2p-core/crypto"
-	"github.com/libp2p/go-libp2p-core/host"
-	ma "github.com/multiformats/go-multiaddr"
 	md "github.com/sonr-io/core/internal/models"
 )
 
-type DiscNotifee struct {
-	h   host.Host
-	ctx context.Context
+// ^ Bootstrap Nodes ^ //
+type Config struct {
+	P2P struct {
+		RDVP []struct {
+			Maddr string `json:"maddr"`
+		} `json:"rdvp"`
+		RelayHack []string `json:"relayHack" yaml:"relayHack"`
+	} `json:"p2p"`
 }
 
-// ^ Contains Host Configuration ^ //
-type HostConfig struct {
-	Connectivity md.ConnectionRequest_Connectivity
-	UDPv4        ma.Multiaddr
-	TCPv4        ma.Multiaddr
-	UDPv6        ma.Multiaddr
-	TCPv6        ma.Multiaddr
-	OLC          string
-	Point        string
-	PrivateKey   crypto.PrivKey
-}
+var config Config
 
-// ^ Creates new host configuration ^ //
-func NewHostConfig(req *md.ConnectionRequest) (HostConfig, error) {
-	// Initialize
-	olc := olc.Encode(req.Latitude, req.Longitude, 8)
-	config := HostConfig{
-		OLC:          olc,
-		Point:        "/sonr/" + olc,
-		Connectivity: req.Connectivity,
-	}
+func init() {
+	input := `
+{
+  "p2p": {
+    "rdvp": [
+      {
+        "maddr": "/ip4/51.159.21.214/tcp/4040/p2p/QmdT7AmhhnbuwvCpa5PH1ySK9HJVB82jr3fo1bxMxBPW6p"
+      },
+      {
+        "maddr": "/ip4/51.159.21.214/udp/4040/quic/p2p/QmdT7AmhhnbuwvCpa5PH1ySK9HJVB82jr3fo1bxMxBPW6p"
+      },
+      {
+        "maddr": "/ip4/51.15.25.224/tcp/4040/p2p/12D3KooWHhDBv6DJJ4XDWjzEXq6sVNEs6VuxsV1WyBBEhPENHzcZ"
+      },
+      {
+        "maddr": "/ip4/51.15.25.224/udp/4040/quic/p2p/12D3KooWHhDBv6DJJ4XDWjzEXq6sVNEs6VuxsV1WyBBEhPENHzcZ"
+      },
+      {
+        "maddr": "/ip4/51.75.127.200/tcp/4141/p2p/12D3KooWPwRwwKatdy5yzRVCYPHib3fntYgbFB4nqrJPHWAqXD7z"
+      },
+      {
+        "maddr": "/ip4/51.75.127.200/udp/4141/quic/p2p/12D3KooWPwRwwKatdy5yzRVCYPHib3fntYgbFB4nqrJPHWAqXD7z"
+      }
+    ],
+    "relayHack": [
+      "/ip4/51.159.21.214/udp/4040/quic/p2p/QmdT7AmhhnbuwvCpa5PH1ySK9HJVB82jr3fo1bxMxBPW6p",
+      "/ip4/51.15.25.224/udp/4040/quic/p2p/12D3KooWHhDBv6DJJ4XDWjzEXq6sVNEs6VuxsV1WyBBEhPENHzcZ",
+      "/ip4/51.75.127.200/udp/4141/quic/p2p/12D3KooWPwRwwKatdy5yzRVCYPHib3fntYgbFB4nqrJPHWAqXD7z"
+    ]
+  }
+}`
 
-	// Get Private Key
-	err := config.setPrivateKey(req.Directories)
+	err := json.Unmarshal([]byte(input), &config)
 	if err != nil {
-		return config, err
+		panic(err)
 	}
-
-	// Get Addresses
-	err = config.setAddresses()
-	if err != nil {
-		return config, err
-	}
-	return config, nil
-}
-
-// ^ Listen Addresses Returns MultiAddr of Listening Addresses ^
-func (hc *HostConfig) setAddresses() error {
-	ipv4 := ipv4()
-	ipv6 := ipv6()
-
-	udpv4, err := ma.NewMultiaddr(fmt.Sprintf("/ip4/%s/udp/8081/quic", ipv4))
-	if err != nil {
-		return err
-	} else {
-		hc.UDPv4 = udpv4
-	}
-
-	udpv6, err := ma.NewMultiaddr(fmt.Sprintf("/ip6/%s/udp/8081/quic", ipv6))
-	if err != nil {
-		return err
-	} else {
-		hc.UDPv6 = udpv6
-	}
-
-	tcpv4, err := ma.NewMultiaddr(fmt.Sprintf("/ip4/%s/tcp/8081", ipv4))
-	if err != nil {
-		return err
-	} else {
-		hc.TCPv4 = tcpv4
-	}
-
-	tcpv6, err := ma.NewMultiaddr(fmt.Sprintf("/ip6/%s/tcp/8081", ipv6))
-	if err != nil {
-		return err
-	} else {
-		hc.TCPv6 = tcpv6
-	}
-	return nil
 }
 
 // ^ Get Keys: Returns Private/Public keys from disk if found ^ //
-func (hc *HostConfig) setPrivateKey(dirs *md.Directories) error {
+func getKeys(dir *md.Directories) (crypto.PrivKey, error) {
 	// Set Path
-	path := filepath.Join(dirs.Documents, ".sonr-priv-key")
+	path := filepath.Join(dir.Documents, ".sonr-priv-key")
 
 	// @ Path Doesnt Exist Generate Keys
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		// Generate Keys
 		privKey, _, err := crypto.GenerateRSAKeyPair(2048, rand.Reader)
 		if err != nil {
-			return err
+			return nil, err
 		}
 
 		// Get Key Bytes
 		privDat, err := crypto.MarshalPrivateKey(privKey)
 		if err != nil {
-			return err
+			return nil, err
 		}
 
 		// Write Private/Pub To File
 		err = ioutil.WriteFile(path, privDat, 0644)
 		if err != nil {
-			return err
+			return nil, err
 		}
-		hc.PrivateKey = privKey
-		return nil
+		return privKey, nil
 	}
 	// @ Keys Exist Load Keys
 	// Load Private Key Bytes from File
 	privDat, err := ioutil.ReadFile(path)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// Unmarshal PrivKey from Bytes
 	privKey, err := crypto.UnmarshalPrivateKey(privDat)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	hc.PrivateKey = privKey
-	return nil
+	return privKey, nil
 }

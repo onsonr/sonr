@@ -8,6 +8,8 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	gorpc "github.com/libp2p/go-libp2p-gorpc"
+	sf "github.com/sonr-io/core/internal/file"
+	lf "github.com/sonr-io/core/internal/lifecycle"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -28,7 +30,7 @@ type AuthResponse struct {
 // Service Struct
 type AuthService struct {
 	// Current Data
-	call      md.TransferCallback
+	onInvite  lf.OnInvite
 	respCh    chan *md.AuthReply
 	inviteMsg *md.AuthInvite
 }
@@ -46,7 +48,7 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 	as.inviteMsg = receivedMessage
 
 	// Send Callback
-	as.call.OnInvited(receivedMessage)
+	as.onInvite(receivedMessage)
 
 	// Hold Select for Invite Type
 	if !as.inviteMsg.IsDirect {
@@ -76,7 +78,7 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 }
 
 // ^ Send Request to a Peer ^ //
-func (tc *TransferController) Request(h host.Host, id peer.ID, msgBytes []byte) {
+func (pc *PeerConnection) Request(h host.Host, id peer.ID, msgBytes []byte) {
 	// Initialize Data
 	rpcClient := gorpc.NewClient(h, protocol.ID("/sonr/rpc/auth"))
 	var reply AuthResponse
@@ -91,31 +93,31 @@ func (tc *TransferController) Request(h host.Host, id peer.ID, msgBytes []byte) 
 	call := <-done
 	if call.Error != nil {
 		// Send Error
-		tc.call.OnError(err, "Request")
+		onError(err, "Request")
 	}
 
 	// Send Callback and Reset
-	tc.call.OnResponded(reply.Data)
+	pc.respondedCall(reply.Data)
 
 	// Received Message
 	responseMessage := md.AuthReply{}
 	err = proto.Unmarshal(reply.Data, &responseMessage)
 	if err != nil {
 		// Send Error
-		tc.call.OnError(err, "Unmarshal")
+		onError(err, "Unmarshal")
 	}
 
 	// Check Response for Accept
 	if responseMessage.Decision && responseMessage.Payload == md.Payload_UNDEFINED {
 		// Begin Transfer
-		tc.StartTransfer(h, id, responseMessage.From)
+		pc.StartTransfer(h, id, responseMessage.From)
 	}
 }
 
 // ^ Send Authorize transfer on RPC ^ //
-func (tc *TransferController) Authorize(decision bool, contact *md.Contact, peer *md.Peer) {
+func (pc *PeerConnection) Authorize(decision bool, contact *md.Contact, peer *md.Peer) {
 	// ** Get Current Message **
-	offerMsg := tc.auth.inviteMsg
+	offerMsg := pc.auth.inviteMsg
 
 	// @ Check Reply Type for File
 	switch offerMsg.Payload {
@@ -123,7 +125,7 @@ func (tc *TransferController) Authorize(decision bool, contact *md.Contact, peer
 		// @ Check Decision
 		if decision {
 			// Initialize Transfer
-			tc.PrepareIncoming(offerMsg)
+			pc.PrepareTransfer(offerMsg)
 
 			// Create Accept Response
 			respMsg := &md.AuthReply{
@@ -133,7 +135,7 @@ func (tc *TransferController) Authorize(decision bool, contact *md.Contact, peer
 			}
 
 			// Send to Channel
-			tc.auth.respCh <- respMsg
+			pc.auth.respCh <- respMsg
 
 		} else {
 			// Create Decline Response
@@ -144,12 +146,12 @@ func (tc *TransferController) Authorize(decision bool, contact *md.Contact, peer
 			}
 
 			// Send to Channel
-			tc.auth.respCh <- respMsg
+			pc.auth.respCh <- respMsg
 		}
 	case md.Payload_CONTACT:
 		// @ Pass Contact Back
 		// Create Accept Response
-		card := md.NewCardFromContact(peer, contact, md.TransferCard_REPLY)
+		card := sf.NewCardFromContact(peer, contact, md.TransferCard_REPLY)
 		respMsg := &md.AuthReply{
 			From:    peer,
 			Payload: md.Payload_CONTACT,
@@ -157,7 +159,7 @@ func (tc *TransferController) Authorize(decision bool, contact *md.Contact, peer
 		}
 
 		// Send to Channel
-		tc.auth.respCh <- respMsg
+		pc.auth.respCh <- respMsg
 	default:
 		break
 	}

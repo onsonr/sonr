@@ -4,9 +4,11 @@ import (
 	"context"
 	"log"
 
+	olc "github.com/google/open-location-code/go"
 	"github.com/libp2p/go-libp2p-core/host"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	sf "github.com/sonr-io/core/internal/file"
+	sh "github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/internal/lobby"
 	md "github.com/sonr-io/core/internal/models"
 	tr "github.com/sonr-io/core/internal/transfer"
@@ -50,39 +52,46 @@ type Node struct {
 	// References
 	call     Callback
 	lobby    *lobby.Lobby
-	peerConn *tr.TransferController
+	peerConn *tr.PeerConnection
 }
 
 // ^ NewNode Initializes Node with a host and default properties ^
 func NewNode(reqBytes []byte, call Callback) *Node {
-	// New Node
+	// ** Create Context and Node - Begin Setup **
 	node := new(Node)
+	node.ctx = context.Background()
+	node.call, node.files = call, make([]*sf.ProcessedFile, maxFileBufferSize)
+	node.status = md.Status_NONE
 
-	// @1. Unmarshal Request
-	request := &md.ConnectionRequest{}
-	err := proto.Unmarshal(reqBytes, request)
+	// ** Unmarshal Request **
+	reqMsg := md.ConnectionRequest{}
+	err := proto.Unmarshal(reqBytes, &reqMsg)
 	if err != nil {
-		node.error(err, "NewNode-Unmarshal")
+		node.error(err, "NewNode")
 		return nil
 	}
 
-	// @1 Initialize
-	if err = node.initialize(request, call); err != nil {
-		node.error(err, "NewNode-Initialize")
+	// @1. Set OLC, Create Host, and Start Discovery
+	node.olc = olc.Encode(float64(reqMsg.Latitude), float64(reqMsg.Longitude), 8)
+	node.host, err = sh.NewHost(node.ctx, reqMsg.Directories, node.olc)
+	if err != nil {
+		node.error(err, "NewNode")
 		return nil
 	}
 
-	// @4. Set Node User Information
-	if err = node.setInfo(request); err != nil {
-		node.error(err, "NewNode-setInfo")
+	// @3. Set Node User Information
+	if err = node.setInfo(&reqMsg); err != nil {
+		node.error(err, "NewNode")
 		return nil
 	}
 
-	// @5. Setup Connection w/ Lobby and Set Stream Handlers
+	// @4. Setup Connection w/ Lobby and Set Stream Handlers
 	if err = node.setConnection(node.ctx); err != nil {
-		node.error(err, "NewNode-setConnection")
+		node.error(err, "NewNode")
 		return nil
 	}
+
+	// ** Callback Node User Information ** //
 	return node
 }
 

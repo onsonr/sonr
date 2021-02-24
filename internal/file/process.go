@@ -53,7 +53,7 @@ func NewProcessedFile(req *md.InviteRequest, p *md.Profile, queueCall OnQueued, 
 
 	// Get File Information
 	file := req.Files[len(req.Files)-1]
-	info := md.GetFileInfo(file.Path)
+	info := GetFileInfo(file.Path)
 
 	// @ 1. Create new SafeFile
 	sm := &ProcessedFile{
@@ -104,7 +104,7 @@ func NewBatchProcessFiles(req *md.InviteRequest, p *md.Profile, queueCall OnQueu
 	// Iterate Through Attached Files
 	for _, file := range req.Files {
 		// Get Info
-		info := md.GetFileInfo(file.Path)
+		info := GetFileInfo(file.Path)
 
 		// @ 1. Create new SafeFile
 		sm := &ProcessedFile{
