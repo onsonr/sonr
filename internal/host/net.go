@@ -50,20 +50,21 @@ func IPv6() string {
 }
 
 // ^ Retreives URL Metadata ^ //
-func ExtractURLData(link string) (ul *md.URLLink) {
+func ExtractURLData(link string) *md.URLLink {
 	// Initialize
+	titleFound := false
+	ul := new(md.URLLink)
 	ul.Url = link
 
 	// Create Request
 	resp, err := http.Get(link)
 	if err != nil {
-		return nil
+		return ul
 	}
 	defer resp.Body.Close()
 
 	// Tokenize Response
 	z := html.NewTokenizer(resp.Body)
-	titleFound := false
 
 	// Iterate through URL Elements
 	for {
@@ -71,7 +72,7 @@ func ExtractURLData(link string) (ul *md.URLLink) {
 		switch tt {
 		case html.ErrorToken:
 			ul = analyzeData(ul)
-			return
+			return ul
 		case html.StartTagToken:
 			t := z.Token()
 			// Title Tag

@@ -116,14 +116,12 @@ message TransferCard {
 
 // URLLink Contains metadata of provided URL
 message URLLink {
-  Type type = 1;
-  string title = 2;       // Meta Field for Title
-  string description = 3; // Meta field for description
-  string displayName = 4; // Calculated URL Display Name
-  string url = 5;         // Actual URL Link
-
-  OpenGraph openGraph = 6;
-  Twitter twitter = 7;
+  Type type = 1;           // Type of URLLink
+  string title = 2;        // Meta Field for Title
+  string description = 3;  // Meta field for description
+  string url = 4;          // Actual URL Link
+  OpenGraph openGraph = 5; // OpenGraph Data
+  Twitter twitter = 6;     // Twitter Data
 
   // URLLink Type
   enum Type {
