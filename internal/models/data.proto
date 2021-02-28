@@ -116,37 +116,85 @@ message TransferCard {
 
 // URLLink Contains metadata of provided URL
 message URLLink {
-  Type type = 1;           // Type of URLLink
-  string title = 2;        // Meta Field for Title
-  string description = 3;  // Meta field for description
-  string url = 4;          // Actual URL Link
-  OpenGraph openGraph = 5; // OpenGraph Data
-  Twitter twitter = 6;     // Twitter Data
+  string link = 1;                     // Entered URL
+  string title = 2;                    // Meta Field for Title
+  string type = 3;                     // OG Type
+  string url = 4;                      // OG URL Link
+  string site = 5;                     // Meta field for site
+  string siteName = 6;                 // Meta field for sitename
+  string description = 7;              // Meta field for description
+  string locale = 8;                   // Meta field for locale
+  repeated OpenGraphImage images = 9;  // Images
+  repeated OpenGraphVideo videos = 10; // Videos
+  repeated OpenGraphAudio audios = 11; // Audios
+  TwitterCard twitter = 12;            // Twitter Card
+  string content = 13;                 // URL Content
 
-  // URLLink Type
-  enum Type {
-    DEFAULT = 0;   // No Social Info Provided
-    OPENGRAPH = 1; // OpenGraph info Provided
-    TWITTER = 2;   // Twitter info Provided
+  // OpenGraph Image
+  message OpenGraphImage {
+    string url = 1;       // `meta:"og:image,og:image:url"`
+    string secureUrl = 2; // `meta:"og:image:secure_url"`
+    int32 width = 3;      // `meta:"og:image:width"`
+    int32 height = 4;     // `meta:"og:image:height"`
+    string type = 5;      // `meta:"og:image:type"`
   }
 
-  // Facebook
-  message OpenGraph {
-    string title = 1;       // Open Graph field Title
-    string description = 2; // Open Graph field for description
-    string image = 3;       // Open Graph for provided image
-    string author = 4;      // Open Graph for Author
-    string publisher = 5;   // Open Graph for Publisher
-    string siteName = 6;    // Open Graph for Website Name
+  // OpenGraph Video
+  message OpenGraphVideo {
+    string url = 1;       // `meta:"og:video,og:video:url"`
+    string secureUrl = 2; // `meta:"og:video:secure_url"`
+    int32 width = 3;      // `meta:"og:video:width"`
+    int32 height = 4;     // `meta:"og:video:height"`
+    string type = 5;      // `meta:"og:video:type"`
   }
 
-  // Twitter
-  message Twitter {
-    string card = 1;        // Twitter Field for Card Type
-    string domain = 2;      // Twitter field for Domain
-    string url = 3;         // Twitter for provided url
-    string title = 4;       // Twitter for provided Title
-    string description = 5; // Twitter field for description
-    string image = 6;       // Twitter for Image
+  // OpenGraph Audio
+  message OpenGraphAudio {
+    string url = 1;       // `meta:"og:audio,og:audio:url"`
+    string secureUrl = 2; // `meta:"og:audio:secure_url"`
+    string type = 3;      // `meta:"og:audio:type"`
+  }
+
+  // Twitter Card
+  message TwitterCard {
+    string card = 1;            // `meta:"twitter:card"`
+    string site = 2;            // `meta:"twitter:site"`
+    string siteId = 3;          // `meta:"twitter:site:id"`
+    string creator = 4;         // `meta:"twitter:creator"`
+    string creatorId = 5;       // `meta:"twitter:creator:id"`
+    string description = 6;     // `meta:"twitter:description"`
+    string title = 7;           // `meta:"twitter:title"`
+    string image = 8;           // `meta:"twitter:image,twitter:image:src"`
+    string imageAlt = 9;        // `meta:"twitter:image:alt"`
+    string url = 10;            // `meta:"twitter:url"`
+    Player player = 11;         // Twitter Item Player
+    IPhone iphone = 12;         // Twitter iPhone Data
+    IPad ipad = 13;             // Twitter iPad Data
+    GooglePlay googlePlay = 14; // Twitter Android Data
+
+    message Player {
+      string url = 1;    // `meta:"twitter:player"`
+      int32 width = 2;   // `meta:"twitter:width"`
+      int32 height = 3;  // `meta:"twitter:height"`
+      string stream = 4; // `meta:"twitter:stream"`
+    }
+
+    message IPhone {
+      string name = 1; // `meta:"twitter:app:name:iphone"`
+      string id = 2;   // `meta:"twitter:app:id:iphone"`
+      string url = 3;  // `meta:"twitter:app:url:iphone"`
+    }
+
+    message IPad {
+      string name = 1; // `meta:"twitter:app:name:ipad"`
+      string id = 2;   // `meta:"twitter:app:id:ipad"`
+      string url = 3;  // `meta:"twitter:app:url:ipad"`
+    }
+
+    message GooglePlay {
+      string name = 1; // `meta:"twitter:app:name:googleplay"`
+      string id = 2;   // `meta:"twitter:app:id:googleplay"`
+      string url = 3;  // `meta:"twitter:app:url:googleplay"`
+    }
   }
 }

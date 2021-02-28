@@ -256,56 +256,6 @@ func (TransferCard_Status) EnumDescriptor() ([]byte, []int) {
 	return file_data_proto_rawDescGZIP(), []int{4, 0}
 }
 
-// URLLink Type
-type URLLink_Type int32
-
-const (
-	URLLink_DEFAULT   URLLink_Type = 0 // No Social Info Provided
-	URLLink_OPENGRAPH URLLink_Type = 1 // OpenGraph info Provided
-	URLLink_TWITTER   URLLink_Type = 2 // Twitter info Provided
-)
-
-// Enum value maps for URLLink_Type.
-var (
-	URLLink_Type_name = map[int32]string{
-		0: "DEFAULT",
-		1: "OPENGRAPH",
-		2: "TWITTER",
-	}
-	URLLink_Type_value = map[string]int32{
-		"DEFAULT":   0,
-		"OPENGRAPH": 1,
-		"TWITTER":   2,
-	}
-)
-
-func (x URLLink_Type) Enum() *URLLink_Type {
-	p := new(URLLink_Type)
-	*p = x
-	return p
-}
-
-func (x URLLink_Type) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (URLLink_Type) Descriptor() protoreflect.EnumDescriptor {
-	return file_data_proto_enumTypes[4].Descriptor()
-}
-
-func (URLLink_Type) Type() protoreflect.EnumType {
-	return &file_data_proto_enumTypes[4]
-}
-
-func (x URLLink_Type) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use URLLink_Type.Descriptor instead.
-func (URLLink_Type) EnumDescriptor() ([]byte, []int) {
-	return file_data_proto_rawDescGZIP(), []int{5, 0}
-}
-
 // For Info about Lobby
 type Lobby struct {
 	state         protoimpl.MessageState
@@ -776,12 +726,19 @@ type URLLink struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Type        URLLink_Type       `protobuf:"varint,1,opt,name=type,proto3,enum=URLLink_Type" json:"type,omitempty"` // Type of URLLink
-	Title       string             `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`                  // Meta Field for Title
-	Description string             `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`      // Meta field for description
-	Url         string             `protobuf:"bytes,4,opt,name=url,proto3" json:"url,omitempty"`                      // Actual URL Link
-	OpenGraph   *URLLink_OpenGraph `protobuf:"bytes,5,opt,name=openGraph,proto3" json:"openGraph,omitempty"`          // OpenGraph Data
-	Twitter     *URLLink_Twitter   `protobuf:"bytes,6,opt,name=twitter,proto3" json:"twitter,omitempty"`              // Twitter Data
+	Link        string                    `protobuf:"bytes,1,opt,name=link,proto3" json:"link,omitempty"`               // Entered URL
+	Title       string                    `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`             // Meta Field for Title
+	Type        string                    `protobuf:"bytes,3,opt,name=type,proto3" json:"type,omitempty"`               // OG Type
+	Url         string                    `protobuf:"bytes,4,opt,name=url,proto3" json:"url,omitempty"`                 // OG URL Link
+	Site        string                    `protobuf:"bytes,5,opt,name=site,proto3" json:"site,omitempty"`               // Meta field for site
+	SiteName    string                    `protobuf:"bytes,6,opt,name=siteName,proto3" json:"siteName,omitempty"`       // Meta field for sitename
+	Description string                    `protobuf:"bytes,7,opt,name=description,proto3" json:"description,omitempty"` // Meta field for description
+	Locale      string                    `protobuf:"bytes,8,opt,name=locale,proto3" json:"locale,omitempty"`           // Meta field for locale
+	Images      []*URLLink_OpenGraphImage `protobuf:"bytes,9,rep,name=images,proto3" json:"images,omitempty"`           // Images
+	Videos      []*URLLink_OpenGraphVideo `protobuf:"bytes,10,rep,name=videos,proto3" json:"videos,omitempty"`          // Videos
+	Audios      []*URLLink_OpenGraphAudio `protobuf:"bytes,11,rep,name=audios,proto3" json:"audios,omitempty"`          // Audios
+	Twitter     *URLLink_TwitterCard      `protobuf:"bytes,12,opt,name=twitter,proto3" json:"twitter,omitempty"`        // Twitter Card
+	Content     string                    `protobuf:"bytes,13,opt,name=content,proto3" json:"content,omitempty"`        // URL Content
 }
 
 func (x *URLLink) Reset() {
@@ -816,11 +773,11 @@ func (*URLLink) Descriptor() ([]byte, []int) {
 	return file_data_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *URLLink) GetType() URLLink_Type {
+func (x *URLLink) GetLink() string {
 	if x != nil {
-		return x.Type
+		return x.Link
 	}
-	return URLLink_DEFAULT
+	return ""
 }
 
 func (x *URLLink) GetTitle() string {
@@ -830,9 +787,9 @@ func (x *URLLink) GetTitle() string {
 	return ""
 }
 
-func (x *URLLink) GetDescription() string {
+func (x *URLLink) GetType() string {
 	if x != nil {
-		return x.Description
+		return x.Type
 	}
 	return ""
 }
@@ -844,18 +801,67 @@ func (x *URLLink) GetUrl() string {
 	return ""
 }
 
-func (x *URLLink) GetOpenGraph() *URLLink_OpenGraph {
+func (x *URLLink) GetSite() string {
 	if x != nil {
-		return x.OpenGraph
+		return x.Site
+	}
+	return ""
+}
+
+func (x *URLLink) GetSiteName() string {
+	if x != nil {
+		return x.SiteName
+	}
+	return ""
+}
+
+func (x *URLLink) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *URLLink) GetLocale() string {
+	if x != nil {
+		return x.Locale
+	}
+	return ""
+}
+
+func (x *URLLink) GetImages() []*URLLink_OpenGraphImage {
+	if x != nil {
+		return x.Images
 	}
 	return nil
 }
 
-func (x *URLLink) GetTwitter() *URLLink_Twitter {
+func (x *URLLink) GetVideos() []*URLLink_OpenGraphVideo {
+	if x != nil {
+		return x.Videos
+	}
+	return nil
+}
+
+func (x *URLLink) GetAudios() []*URLLink_OpenGraphAudio {
+	if x != nil {
+		return x.Audios
+	}
+	return nil
+}
+
+func (x *URLLink) GetTwitter() *URLLink_TwitterCard {
 	if x != nil {
 		return x.Twitter
 	}
 	return nil
+}
+
+func (x *URLLink) GetContent() string {
+	if x != nil {
+		return x.Content
+	}
+	return ""
 }
 
 // Card Properties based on File
@@ -1002,22 +1008,21 @@ func (x *TransferCard_Progress) GetTotalSize() int32 {
 	return 0
 }
 
-// Facebook
-type URLLink_OpenGraph struct {
+// OpenGraph Image
+type URLLink_OpenGraphImage struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Title       string `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`             // Open Graph field Title
-	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"` // Open Graph field for description
-	Image       string `protobuf:"bytes,3,opt,name=image,proto3" json:"image,omitempty"`             // Open Graph for provided image
-	Author      string `protobuf:"bytes,4,opt,name=author,proto3" json:"author,omitempty"`           // Open Graph for Author
-	Publisher   string `protobuf:"bytes,5,opt,name=publisher,proto3" json:"publisher,omitempty"`     // Open Graph for Publisher
-	SiteName    string `protobuf:"bytes,6,opt,name=siteName,proto3" json:"siteName,omitempty"`       // Open Graph for Website Name
+	Url       string `protobuf:"bytes,1,opt,name=url,proto3" json:"url,omitempty"`             // `meta:"og:image,og:image:url"`
+	SecureUrl string `protobuf:"bytes,2,opt,name=secureUrl,proto3" json:"secureUrl,omitempty"` // `meta:"og:image:secure_url"`
+	Width     int32  `protobuf:"varint,3,opt,name=width,proto3" json:"width,omitempty"`        // `meta:"og:image:width"`
+	Height    int32  `protobuf:"varint,4,opt,name=height,proto3" json:"height,omitempty"`      // `meta:"og:image:height"`
+	Type      string `protobuf:"bytes,5,opt,name=type,proto3" json:"type,omitempty"`           // `meta:"og:image:type"`
 }
 
-func (x *URLLink_OpenGraph) Reset() {
-	*x = URLLink_OpenGraph{}
+func (x *URLLink_OpenGraphImage) Reset() {
+	*x = URLLink_OpenGraphImage{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_data_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1025,13 +1030,13 @@ func (x *URLLink_OpenGraph) Reset() {
 	}
 }
 
-func (x *URLLink_OpenGraph) String() string {
+func (x *URLLink_OpenGraphImage) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*URLLink_OpenGraph) ProtoMessage() {}
+func (*URLLink_OpenGraphImage) ProtoMessage() {}
 
-func (x *URLLink_OpenGraph) ProtoReflect() protoreflect.Message {
+func (x *URLLink_OpenGraphImage) ProtoReflect() protoreflect.Message {
 	mi := &file_data_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1043,69 +1048,61 @@ func (x *URLLink_OpenGraph) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use URLLink_OpenGraph.ProtoReflect.Descriptor instead.
-func (*URLLink_OpenGraph) Descriptor() ([]byte, []int) {
+// Deprecated: Use URLLink_OpenGraphImage.ProtoReflect.Descriptor instead.
+func (*URLLink_OpenGraphImage) Descriptor() ([]byte, []int) {
 	return file_data_proto_rawDescGZIP(), []int{5, 0}
 }
 
-func (x *URLLink_OpenGraph) GetTitle() string {
+func (x *URLLink_OpenGraphImage) GetUrl() string {
 	if x != nil {
-		return x.Title
+		return x.Url
 	}
 	return ""
 }
 
-func (x *URLLink_OpenGraph) GetDescription() string {
+func (x *URLLink_OpenGraphImage) GetSecureUrl() string {
 	if x != nil {
-		return x.Description
+		return x.SecureUrl
 	}
 	return ""
 }
 
-func (x *URLLink_OpenGraph) GetImage() string {
+func (x *URLLink_OpenGraphImage) GetWidth() int32 {
 	if x != nil {
-		return x.Image
+		return x.Width
+	}
+	return 0
+}
+
+func (x *URLLink_OpenGraphImage) GetHeight() int32 {
+	if x != nil {
+		return x.Height
+	}
+	return 0
+}
+
+func (x *URLLink_OpenGraphImage) GetType() string {
+	if x != nil {
+		return x.Type
 	}
 	return ""
 }
 
-func (x *URLLink_OpenGraph) GetAuthor() string {
-	if x != nil {
-		return x.Author
-	}
-	return ""
-}
-
-func (x *URLLink_OpenGraph) GetPublisher() string {
-	if x != nil {
-		return x.Publisher
-	}
-	return ""
-}
-
-func (x *URLLink_OpenGraph) GetSiteName() string {
-	if x != nil {
-		return x.SiteName
-	}
-	return ""
-}
-
-// Twitter
-type URLLink_Twitter struct {
+// OpenGraph Video
+type URLLink_OpenGraphVideo struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Card        string `protobuf:"bytes,1,opt,name=card,proto3" json:"card,omitempty"`               // Twitter Field for Card Type
-	Domain      string `protobuf:"bytes,2,opt,name=domain,proto3" json:"domain,omitempty"`           // Twitter field for Domain
-	Url         string `protobuf:"bytes,3,opt,name=url,proto3" json:"url,omitempty"`                 // Twitter for provided url
-	Title       string `protobuf:"bytes,4,opt,name=title,proto3" json:"title,omitempty"`             // Twitter for provided Title
-	Description string `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"` // Twitter field for description
-	Image       string `protobuf:"bytes,6,opt,name=image,proto3" json:"image,omitempty"`             // Twitter for Image
+	Url       string `protobuf:"bytes,1,opt,name=url,proto3" json:"url,omitempty"`             // `meta:"og:video,og:video:url"`
+	SecureUrl string `protobuf:"bytes,2,opt,name=secureUrl,proto3" json:"secureUrl,omitempty"` // `meta:"og:video:secure_url"`
+	Width     int32  `protobuf:"varint,3,opt,name=width,proto3" json:"width,omitempty"`        // `meta:"og:video:width"`
+	Height    int32  `protobuf:"varint,4,opt,name=height,proto3" json:"height,omitempty"`      // `meta:"og:video:height"`
+	Type      string `protobuf:"bytes,5,opt,name=type,proto3" json:"type,omitempty"`           // `meta:"og:video:type"`
 }
 
-func (x *URLLink_Twitter) Reset() {
-	*x = URLLink_Twitter{}
+func (x *URLLink_OpenGraphVideo) Reset() {
+	*x = URLLink_OpenGraphVideo{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_data_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1113,13 +1110,13 @@ func (x *URLLink_Twitter) Reset() {
 	}
 }
 
-func (x *URLLink_Twitter) String() string {
+func (x *URLLink_OpenGraphVideo) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*URLLink_Twitter) ProtoMessage() {}
+func (*URLLink_OpenGraphVideo) ProtoMessage() {}
 
-func (x *URLLink_Twitter) ProtoReflect() protoreflect.Message {
+func (x *URLLink_OpenGraphVideo) ProtoReflect() protoreflect.Message {
 	mi := &file_data_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1131,49 +1128,518 @@ func (x *URLLink_Twitter) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use URLLink_Twitter.ProtoReflect.Descriptor instead.
-func (*URLLink_Twitter) Descriptor() ([]byte, []int) {
+// Deprecated: Use URLLink_OpenGraphVideo.ProtoReflect.Descriptor instead.
+func (*URLLink_OpenGraphVideo) Descriptor() ([]byte, []int) {
 	return file_data_proto_rawDescGZIP(), []int{5, 1}
 }
 
-func (x *URLLink_Twitter) GetCard() string {
-	if x != nil {
-		return x.Card
-	}
-	return ""
-}
-
-func (x *URLLink_Twitter) GetDomain() string {
-	if x != nil {
-		return x.Domain
-	}
-	return ""
-}
-
-func (x *URLLink_Twitter) GetUrl() string {
+func (x *URLLink_OpenGraphVideo) GetUrl() string {
 	if x != nil {
 		return x.Url
 	}
 	return ""
 }
 
-func (x *URLLink_Twitter) GetTitle() string {
+func (x *URLLink_OpenGraphVideo) GetSecureUrl() string {
 	if x != nil {
-		return x.Title
+		return x.SecureUrl
 	}
 	return ""
 }
 
-func (x *URLLink_Twitter) GetDescription() string {
+func (x *URLLink_OpenGraphVideo) GetWidth() int32 {
+	if x != nil {
+		return x.Width
+	}
+	return 0
+}
+
+func (x *URLLink_OpenGraphVideo) GetHeight() int32 {
+	if x != nil {
+		return x.Height
+	}
+	return 0
+}
+
+func (x *URLLink_OpenGraphVideo) GetType() string {
+	if x != nil {
+		return x.Type
+	}
+	return ""
+}
+
+// OpenGraph Audio
+type URLLink_OpenGraphAudio struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Url       string `protobuf:"bytes,1,opt,name=url,proto3" json:"url,omitempty"`             // `meta:"og:audio,og:audio:url"`
+	SecureUrl string `protobuf:"bytes,2,opt,name=secureUrl,proto3" json:"secureUrl,omitempty"` // `meta:"og:audio:secure_url"`
+	Type      string `protobuf:"bytes,3,opt,name=type,proto3" json:"type,omitempty"`           // `meta:"og:audio:type"`
+}
+
+func (x *URLLink_OpenGraphAudio) Reset() {
+	*x = URLLink_OpenGraphAudio{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_data_proto_msgTypes[12]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *URLLink_OpenGraphAudio) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*URLLink_OpenGraphAudio) ProtoMessage() {}
+
+func (x *URLLink_OpenGraphAudio) ProtoReflect() protoreflect.Message {
+	mi := &file_data_proto_msgTypes[12]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use URLLink_OpenGraphAudio.ProtoReflect.Descriptor instead.
+func (*URLLink_OpenGraphAudio) Descriptor() ([]byte, []int) {
+	return file_data_proto_rawDescGZIP(), []int{5, 2}
+}
+
+func (x *URLLink_OpenGraphAudio) GetUrl() string {
+	if x != nil {
+		return x.Url
+	}
+	return ""
+}
+
+func (x *URLLink_OpenGraphAudio) GetSecureUrl() string {
+	if x != nil {
+		return x.SecureUrl
+	}
+	return ""
+}
+
+func (x *URLLink_OpenGraphAudio) GetType() string {
+	if x != nil {
+		return x.Type
+	}
+	return ""
+}
+
+// Twitter Card
+type URLLink_TwitterCard struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Card        string                          `protobuf:"bytes,1,opt,name=card,proto3" json:"card,omitempty"`               // `meta:"twitter:card"`
+	Site        string                          `protobuf:"bytes,2,opt,name=site,proto3" json:"site,omitempty"`               // `meta:"twitter:site"`
+	SiteId      string                          `protobuf:"bytes,3,opt,name=siteId,proto3" json:"siteId,omitempty"`           // `meta:"twitter:site:id"`
+	Creator     string                          `protobuf:"bytes,4,opt,name=creator,proto3" json:"creator,omitempty"`         // `meta:"twitter:creator"`
+	CreatorId   string                          `protobuf:"bytes,5,opt,name=creatorId,proto3" json:"creatorId,omitempty"`     // `meta:"twitter:creator:id"`
+	Description string                          `protobuf:"bytes,6,opt,name=description,proto3" json:"description,omitempty"` // `meta:"twitter:description"`
+	Title       string                          `protobuf:"bytes,7,opt,name=title,proto3" json:"title,omitempty"`             // `meta:"twitter:title"`
+	Image       string                          `protobuf:"bytes,8,opt,name=image,proto3" json:"image,omitempty"`             // `meta:"twitter:image,twitter:image:src"`
+	ImageAlt    string                          `protobuf:"bytes,9,opt,name=imageAlt,proto3" json:"imageAlt,omitempty"`       // `meta:"twitter:image:alt"`
+	Url         string                          `protobuf:"bytes,10,opt,name=url,proto3" json:"url,omitempty"`                // `meta:"twitter:url"`
+	Player      *URLLink_TwitterCard_Player     `protobuf:"bytes,11,opt,name=player,proto3" json:"player,omitempty"`          // Twitter Item Player
+	Iphone      *URLLink_TwitterCard_IPhone     `protobuf:"bytes,12,opt,name=iphone,proto3" json:"iphone,omitempty"`          // Twitter iPhone Data
+	Ipad        *URLLink_TwitterCard_IPad       `protobuf:"bytes,13,opt,name=ipad,proto3" json:"ipad,omitempty"`              // Twitter iPad Data
+	GooglePlay  *URLLink_TwitterCard_GooglePlay `protobuf:"bytes,14,opt,name=googlePlay,proto3" json:"googlePlay,omitempty"`  // Twitter Android Data
+}
+
+func (x *URLLink_TwitterCard) Reset() {
+	*x = URLLink_TwitterCard{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_data_proto_msgTypes[13]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *URLLink_TwitterCard) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*URLLink_TwitterCard) ProtoMessage() {}
+
+func (x *URLLink_TwitterCard) ProtoReflect() protoreflect.Message {
+	mi := &file_data_proto_msgTypes[13]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use URLLink_TwitterCard.ProtoReflect.Descriptor instead.
+func (*URLLink_TwitterCard) Descriptor() ([]byte, []int) {
+	return file_data_proto_rawDescGZIP(), []int{5, 3}
+}
+
+func (x *URLLink_TwitterCard) GetCard() string {
+	if x != nil {
+		return x.Card
+	}
+	return ""
+}
+
+func (x *URLLink_TwitterCard) GetSite() string {
+	if x != nil {
+		return x.Site
+	}
+	return ""
+}
+
+func (x *URLLink_TwitterCard) GetSiteId() string {
+	if x != nil {
+		return x.SiteId
+	}
+	return ""
+}
+
+func (x *URLLink_TwitterCard) GetCreator() string {
+	if x != nil {
+		return x.Creator
+	}
+	return ""
+}
+
+func (x *URLLink_TwitterCard) GetCreatorId() string {
+	if x != nil {
+		return x.CreatorId
+	}
+	return ""
+}
+
+func (x *URLLink_TwitterCard) GetDescription() string {
 	if x != nil {
 		return x.Description
 	}
 	return ""
 }
 
-func (x *URLLink_Twitter) GetImage() string {
+func (x *URLLink_TwitterCard) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *URLLink_TwitterCard) GetImage() string {
 	if x != nil {
 		return x.Image
+	}
+	return ""
+}
+
+func (x *URLLink_TwitterCard) GetImageAlt() string {
+	if x != nil {
+		return x.ImageAlt
+	}
+	return ""
+}
+
+func (x *URLLink_TwitterCard) GetUrl() string {
+	if x != nil {
+		return x.Url
+	}
+	return ""
+}
+
+func (x *URLLink_TwitterCard) GetPlayer() *URLLink_TwitterCard_Player {
+	if x != nil {
+		return x.Player
+	}
+	return nil
+}
+
+func (x *URLLink_TwitterCard) GetIphone() *URLLink_TwitterCard_IPhone {
+	if x != nil {
+		return x.Iphone
+	}
+	return nil
+}
+
+func (x *URLLink_TwitterCard) GetIpad() *URLLink_TwitterCard_IPad {
+	if x != nil {
+		return x.Ipad
+	}
+	return nil
+}
+
+func (x *URLLink_TwitterCard) GetGooglePlay() *URLLink_TwitterCard_GooglePlay {
+	if x != nil {
+		return x.GooglePlay
+	}
+	return nil
+}
+
+type URLLink_TwitterCard_Player struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Url    string `protobuf:"bytes,1,opt,name=url,proto3" json:"url,omitempty"`        // `meta:"twitter:player"`
+	Width  int32  `protobuf:"varint,2,opt,name=width,proto3" json:"width,omitempty"`   // `meta:"twitter:width"`
+	Height int32  `protobuf:"varint,3,opt,name=height,proto3" json:"height,omitempty"` // `meta:"twitter:height"`
+	Stream string `protobuf:"bytes,4,opt,name=stream,proto3" json:"stream,omitempty"`  // `meta:"twitter:stream"`
+}
+
+func (x *URLLink_TwitterCard_Player) Reset() {
+	*x = URLLink_TwitterCard_Player{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_data_proto_msgTypes[14]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *URLLink_TwitterCard_Player) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*URLLink_TwitterCard_Player) ProtoMessage() {}
+
+func (x *URLLink_TwitterCard_Player) ProtoReflect() protoreflect.Message {
+	mi := &file_data_proto_msgTypes[14]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use URLLink_TwitterCard_Player.ProtoReflect.Descriptor instead.
+func (*URLLink_TwitterCard_Player) Descriptor() ([]byte, []int) {
+	return file_data_proto_rawDescGZIP(), []int{5, 3, 0}
+}
+
+func (x *URLLink_TwitterCard_Player) GetUrl() string {
+	if x != nil {
+		return x.Url
+	}
+	return ""
+}
+
+func (x *URLLink_TwitterCard_Player) GetWidth() int32 {
+	if x != nil {
+		return x.Width
+	}
+	return 0
+}
+
+func (x *URLLink_TwitterCard_Player) GetHeight() int32 {
+	if x != nil {
+		return x.Height
+	}
+	return 0
+}
+
+func (x *URLLink_TwitterCard_Player) GetStream() string {
+	if x != nil {
+		return x.Stream
+	}
+	return ""
+}
+
+type URLLink_TwitterCard_IPhone struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"` // `meta:"twitter:app:name:iphone"`
+	Id   string `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`     // `meta:"twitter:app:id:iphone"`
+	Url  string `protobuf:"bytes,3,opt,name=url,proto3" json:"url,omitempty"`   // `meta:"twitter:app:url:iphone"`
+}
+
+func (x *URLLink_TwitterCard_IPhone) Reset() {
+	*x = URLLink_TwitterCard_IPhone{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_data_proto_msgTypes[15]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *URLLink_TwitterCard_IPhone) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*URLLink_TwitterCard_IPhone) ProtoMessage() {}
+
+func (x *URLLink_TwitterCard_IPhone) ProtoReflect() protoreflect.Message {
+	mi := &file_data_proto_msgTypes[15]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use URLLink_TwitterCard_IPhone.ProtoReflect.Descriptor instead.
+func (*URLLink_TwitterCard_IPhone) Descriptor() ([]byte, []int) {
+	return file_data_proto_rawDescGZIP(), []int{5, 3, 1}
+}
+
+func (x *URLLink_TwitterCard_IPhone) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *URLLink_TwitterCard_IPhone) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *URLLink_TwitterCard_IPhone) GetUrl() string {
+	if x != nil {
+		return x.Url
+	}
+	return ""
+}
+
+type URLLink_TwitterCard_IPad struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"` // `meta:"twitter:app:name:ipad"`
+	Id   string `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`     // `meta:"twitter:app:id:ipad"`
+	Url  string `protobuf:"bytes,3,opt,name=url,proto3" json:"url,omitempty"`   // `meta:"twitter:app:url:ipad"`
+}
+
+func (x *URLLink_TwitterCard_IPad) Reset() {
+	*x = URLLink_TwitterCard_IPad{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_data_proto_msgTypes[16]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *URLLink_TwitterCard_IPad) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*URLLink_TwitterCard_IPad) ProtoMessage() {}
+
+func (x *URLLink_TwitterCard_IPad) ProtoReflect() protoreflect.Message {
+	mi := &file_data_proto_msgTypes[16]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use URLLink_TwitterCard_IPad.ProtoReflect.Descriptor instead.
+func (*URLLink_TwitterCard_IPad) Descriptor() ([]byte, []int) {
+	return file_data_proto_rawDescGZIP(), []int{5, 3, 2}
+}
+
+func (x *URLLink_TwitterCard_IPad) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *URLLink_TwitterCard_IPad) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *URLLink_TwitterCard_IPad) GetUrl() string {
+	if x != nil {
+		return x.Url
+	}
+	return ""
+}
+
+type URLLink_TwitterCard_GooglePlay struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"` // `meta:"twitter:app:name:googleplay"`
+	Id   string `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`     // `meta:"twitter:app:id:googleplay"`
+	Url  string `protobuf:"bytes,3,opt,name=url,proto3" json:"url,omitempty"`   // `meta:"twitter:app:url:googleplay"`
+}
+
+func (x *URLLink_TwitterCard_GooglePlay) Reset() {
+	*x = URLLink_TwitterCard_GooglePlay{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_data_proto_msgTypes[17]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *URLLink_TwitterCard_GooglePlay) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*URLLink_TwitterCard_GooglePlay) ProtoMessage() {}
+
+func (x *URLLink_TwitterCard_GooglePlay) ProtoReflect() protoreflect.Message {
+	mi := &file_data_proto_msgTypes[17]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use URLLink_TwitterCard_GooglePlay.ProtoReflect.Descriptor instead.
+func (*URLLink_TwitterCard_GooglePlay) Descriptor() ([]byte, []int) {
+	return file_data_proto_rawDescGZIP(), []int{5, 3, 3}
+}
+
+func (x *URLLink_TwitterCard_GooglePlay) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *URLLink_TwitterCard_GooglePlay) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *URLLink_TwitterCard_GooglePlay) GetUrl() string {
+	if x != nil {
+		return x.Url
 	}
 	return ""
 }
@@ -1285,52 +1751,112 @@ var file_data_proto_rawDesc = []byte{
 	0x4e, 0x56, 0x49, 0x54, 0x45, 0x10, 0x01, 0x12, 0x0a, 0x0a, 0x06, 0x44, 0x49, 0x52, 0x45, 0x43,
 	0x54, 0x10, 0x02, 0x12, 0x09, 0x0a, 0x05, 0x52, 0x45, 0x50, 0x4c, 0x59, 0x10, 0x03, 0x12, 0x0e,
 	0x0a, 0x0a, 0x49, 0x4e, 0x50, 0x52, 0x4f, 0x47, 0x52, 0x45, 0x53, 0x53, 0x10, 0x04, 0x12, 0x0d,
-	0x0a, 0x09, 0x43, 0x4f, 0x4d, 0x50, 0x4c, 0x45, 0x54, 0x45, 0x44, 0x10, 0x05, 0x22, 0xcb, 0x04,
-	0x0a, 0x07, 0x55, 0x52, 0x4c, 0x4c, 0x69, 0x6e, 0x6b, 0x12, 0x21, 0x0a, 0x04, 0x74, 0x79, 0x70,
-	0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x0d, 0x2e, 0x55, 0x52, 0x4c, 0x4c, 0x69, 0x6e,
-	0x6b, 0x2e, 0x54, 0x79, 0x70, 0x65, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x14, 0x0a, 0x05,
-	0x74, 0x69, 0x74, 0x6c, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x69, 0x74,
-	0x6c, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f,
-	0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70,
-	0x74, 0x69, 0x6f, 0x6e, 0x12, 0x10, 0x0a, 0x03, 0x75, 0x72, 0x6c, 0x18, 0x04, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x03, 0x75, 0x72, 0x6c, 0x12, 0x30, 0x0a, 0x09, 0x6f, 0x70, 0x65, 0x6e, 0x47, 0x72,
-	0x61, 0x70, 0x68, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x12, 0x2e, 0x55, 0x52, 0x4c, 0x4c,
-	0x69, 0x6e, 0x6b, 0x2e, 0x4f, 0x70, 0x65, 0x6e, 0x47, 0x72, 0x61, 0x70, 0x68, 0x52, 0x09, 0x6f,
-	0x70, 0x65, 0x6e, 0x47, 0x72, 0x61, 0x70, 0x68, 0x12, 0x2a, 0x0a, 0x07, 0x74, 0x77, 0x69, 0x74,
-	0x74, 0x65, 0x72, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x10, 0x2e, 0x55, 0x52, 0x4c, 0x4c,
-	0x69, 0x6e, 0x6b, 0x2e, 0x54, 0x77, 0x69, 0x74, 0x74, 0x65, 0x72, 0x52, 0x07, 0x74, 0x77, 0x69,
-	0x74, 0x74, 0x65, 0x72, 0x1a, 0xab, 0x01, 0x0a, 0x09, 0x4f, 0x70, 0x65, 0x6e, 0x47, 0x72, 0x61,
-	0x70, 0x68, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73, 0x63,
-	0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x64,
-	0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x14, 0x0a, 0x05, 0x69, 0x6d,
-	0x61, 0x67, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x69, 0x6d, 0x61, 0x67, 0x65,
-	0x12, 0x16, 0x0a, 0x06, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x06, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x12, 0x1c, 0x0a, 0x09, 0x70, 0x75, 0x62, 0x6c,
-	0x69, 0x73, 0x68, 0x65, 0x72, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x70, 0x75, 0x62,
-	0x6c, 0x69, 0x73, 0x68, 0x65, 0x72, 0x12, 0x1a, 0x0a, 0x08, 0x73, 0x69, 0x74, 0x65, 0x4e, 0x61,
-	0x6d, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x73, 0x69, 0x74, 0x65, 0x4e, 0x61,
-	0x6d, 0x65, 0x1a, 0x95, 0x01, 0x0a, 0x07, 0x54, 0x77, 0x69, 0x74, 0x74, 0x65, 0x72, 0x12, 0x12,
-	0x0a, 0x04, 0x63, 0x61, 0x72, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x63, 0x61,
-	0x72, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x64, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x18, 0x02, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x06, 0x64, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x12, 0x10, 0x0a, 0x03, 0x75, 0x72,
-	0x6c, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x75, 0x72, 0x6c, 0x12, 0x14, 0x0a, 0x05,
-	0x74, 0x69, 0x74, 0x6c, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x69, 0x74,
-	0x6c, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f,
-	0x6e, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70,
-	0x74, 0x69, 0x6f, 0x6e, 0x12, 0x14, 0x0a, 0x05, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x18, 0x06, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x05, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x22, 0x2f, 0x0a, 0x04, 0x54, 0x79,
-	0x70, 0x65, 0x12, 0x0b, 0x0a, 0x07, 0x44, 0x45, 0x46, 0x41, 0x55, 0x4c, 0x54, 0x10, 0x00, 0x12,
-	0x0d, 0x0a, 0x09, 0x4f, 0x50, 0x45, 0x4e, 0x47, 0x52, 0x41, 0x50, 0x48, 0x10, 0x01, 0x12, 0x0b,
-	0x0a, 0x07, 0x54, 0x57, 0x49, 0x54, 0x54, 0x45, 0x52, 0x10, 0x02, 0x2a, 0x6f, 0x0a, 0x07, 0x50,
-	0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x12, 0x0d, 0x0a, 0x09, 0x55, 0x4e, 0x44, 0x45, 0x46, 0x49,
-	0x4e, 0x45, 0x44, 0x10, 0x00, 0x12, 0x0b, 0x0a, 0x07, 0x43, 0x4f, 0x4e, 0x54, 0x41, 0x43, 0x54,
-	0x10, 0x01, 0x12, 0x09, 0x0a, 0x05, 0x4d, 0x45, 0x44, 0x49, 0x41, 0x10, 0x02, 0x12, 0x07, 0x0a,
-	0x03, 0x55, 0x52, 0x4c, 0x10, 0x03, 0x12, 0x08, 0x0a, 0x04, 0x54, 0x45, 0x58, 0x54, 0x10, 0x04,
-	0x12, 0x07, 0x0a, 0x03, 0x50, 0x44, 0x46, 0x10, 0x05, 0x12, 0x10, 0x0a, 0x0c, 0x50, 0x52, 0x45,
-	0x53, 0x45, 0x4e, 0x54, 0x41, 0x54, 0x49, 0x4f, 0x4e, 0x10, 0x06, 0x12, 0x0f, 0x0a, 0x0b, 0x53,
-	0x50, 0x52, 0x45, 0x41, 0x44, 0x53, 0x48, 0x45, 0x45, 0x54, 0x10, 0x07, 0x42, 0x0a, 0x5a, 0x08,
-	0x2e, 0x3b, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x0a, 0x09, 0x43, 0x4f, 0x4d, 0x50, 0x4c, 0x45, 0x54, 0x45, 0x44, 0x10, 0x05, 0x22, 0x82, 0x0c,
+	0x0a, 0x07, 0x55, 0x52, 0x4c, 0x4c, 0x69, 0x6e, 0x6b, 0x12, 0x12, 0x0a, 0x04, 0x6c, 0x69, 0x6e,
+	0x6b, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6c, 0x69, 0x6e, 0x6b, 0x12, 0x14, 0x0a,
+	0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x69,
+	0x74, 0x6c, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x75, 0x72, 0x6c, 0x18, 0x04,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x75, 0x72, 0x6c, 0x12, 0x12, 0x0a, 0x04, 0x73, 0x69, 0x74,
+	0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x73, 0x69, 0x74, 0x65, 0x12, 0x1a, 0x0a,
+	0x08, 0x73, 0x69, 0x74, 0x65, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x08, 0x73, 0x69, 0x74, 0x65, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73,
+	0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b,
+	0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x16, 0x0a, 0x06, 0x6c,
+	0x6f, 0x63, 0x61, 0x6c, 0x65, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x6c, 0x6f, 0x63,
+	0x61, 0x6c, 0x65, 0x12, 0x2f, 0x0a, 0x06, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x73, 0x18, 0x09, 0x20,
+	0x03, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x55, 0x52, 0x4c, 0x4c, 0x69, 0x6e, 0x6b, 0x2e, 0x4f, 0x70,
+	0x65, 0x6e, 0x47, 0x72, 0x61, 0x70, 0x68, 0x49, 0x6d, 0x61, 0x67, 0x65, 0x52, 0x06, 0x69, 0x6d,
+	0x61, 0x67, 0x65, 0x73, 0x12, 0x2f, 0x0a, 0x06, 0x76, 0x69, 0x64, 0x65, 0x6f, 0x73, 0x18, 0x0a,
+	0x20, 0x03, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x55, 0x52, 0x4c, 0x4c, 0x69, 0x6e, 0x6b, 0x2e, 0x4f,
+	0x70, 0x65, 0x6e, 0x47, 0x72, 0x61, 0x70, 0x68, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x52, 0x06, 0x76,
+	0x69, 0x64, 0x65, 0x6f, 0x73, 0x12, 0x2f, 0x0a, 0x06, 0x61, 0x75, 0x64, 0x69, 0x6f, 0x73, 0x18,
+	0x0b, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x55, 0x52, 0x4c, 0x4c, 0x69, 0x6e, 0x6b, 0x2e,
+	0x4f, 0x70, 0x65, 0x6e, 0x47, 0x72, 0x61, 0x70, 0x68, 0x41, 0x75, 0x64, 0x69, 0x6f, 0x52, 0x06,
+	0x61, 0x75, 0x64, 0x69, 0x6f, 0x73, 0x12, 0x2e, 0x0a, 0x07, 0x74, 0x77, 0x69, 0x74, 0x74, 0x65,
+	0x72, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x55, 0x52, 0x4c, 0x4c, 0x69, 0x6e,
+	0x6b, 0x2e, 0x54, 0x77, 0x69, 0x74, 0x74, 0x65, 0x72, 0x43, 0x61, 0x72, 0x64, 0x52, 0x07, 0x74,
+	0x77, 0x69, 0x74, 0x74, 0x65, 0x72, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x65, 0x6e,
+	0x74, 0x18, 0x0d, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74,
+	0x1a, 0x82, 0x01, 0x0a, 0x0e, 0x4f, 0x70, 0x65, 0x6e, 0x47, 0x72, 0x61, 0x70, 0x68, 0x49, 0x6d,
+	0x61, 0x67, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x75, 0x72, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x03, 0x75, 0x72, 0x6c, 0x12, 0x1c, 0x0a, 0x09, 0x73, 0x65, 0x63, 0x75, 0x72, 0x65, 0x55,
+	0x72, 0x6c, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x73, 0x65, 0x63, 0x75, 0x72, 0x65,
+	0x55, 0x72, 0x6c, 0x12, 0x14, 0x0a, 0x05, 0x77, 0x69, 0x64, 0x74, 0x68, 0x18, 0x03, 0x20, 0x01,
+	0x28, 0x05, 0x52, 0x05, 0x77, 0x69, 0x64, 0x74, 0x68, 0x12, 0x16, 0x0a, 0x06, 0x68, 0x65, 0x69,
+	0x67, 0x68, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x05, 0x52, 0x06, 0x68, 0x65, 0x69, 0x67, 0x68,
+	0x74, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x04, 0x74, 0x79, 0x70, 0x65, 0x1a, 0x82, 0x01, 0x0a, 0x0e, 0x4f, 0x70, 0x65, 0x6e, 0x47, 0x72,
+	0x61, 0x70, 0x68, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x12, 0x10, 0x0a, 0x03, 0x75, 0x72, 0x6c, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x75, 0x72, 0x6c, 0x12, 0x1c, 0x0a, 0x09, 0x73, 0x65,
+	0x63, 0x75, 0x72, 0x65, 0x55, 0x72, 0x6c, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x73,
+	0x65, 0x63, 0x75, 0x72, 0x65, 0x55, 0x72, 0x6c, 0x12, 0x14, 0x0a, 0x05, 0x77, 0x69, 0x64, 0x74,
+	0x68, 0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x52, 0x05, 0x77, 0x69, 0x64, 0x74, 0x68, 0x12, 0x16,
+	0x0a, 0x06, 0x68, 0x65, 0x69, 0x67, 0x68, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x05, 0x52, 0x06,
+	0x68, 0x65, 0x69, 0x67, 0x68, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x05,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x1a, 0x54, 0x0a, 0x0e, 0x4f, 0x70,
+	0x65, 0x6e, 0x47, 0x72, 0x61, 0x70, 0x68, 0x41, 0x75, 0x64, 0x69, 0x6f, 0x12, 0x10, 0x0a, 0x03,
+	0x75, 0x72, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x75, 0x72, 0x6c, 0x12, 0x1c,
+	0x0a, 0x09, 0x73, 0x65, 0x63, 0x75, 0x72, 0x65, 0x55, 0x72, 0x6c, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x09, 0x73, 0x65, 0x63, 0x75, 0x72, 0x65, 0x55, 0x72, 0x6c, 0x12, 0x12, 0x0a, 0x04,
+	0x74, 0x79, 0x70, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65,
+	0x1a, 0xff, 0x05, 0x0a, 0x0b, 0x54, 0x77, 0x69, 0x74, 0x74, 0x65, 0x72, 0x43, 0x61, 0x72, 0x64,
+	0x12, 0x12, 0x0a, 0x04, 0x63, 0x61, 0x72, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04,
+	0x63, 0x61, 0x72, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x73, 0x69, 0x74, 0x65, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x04, 0x73, 0x69, 0x74, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x69, 0x74, 0x65,
+	0x49, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x69, 0x74, 0x65, 0x49, 0x64,
+	0x12, 0x18, 0x0a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x18, 0x04, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x1c, 0x0a, 0x09, 0x63, 0x72,
+	0x65, 0x61, 0x74, 0x6f, 0x72, 0x49, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x63,
+	0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x49, 0x64, 0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73, 0x63,
+	0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x64,
+	0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x69,
+	0x74, 0x6c, 0x65, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65,
+	0x12, 0x14, 0x0a, 0x05, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x05, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x41,
+	0x6c, 0x74, 0x18, 0x09, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x41,
+	0x6c, 0x74, 0x12, 0x10, 0x0a, 0x03, 0x75, 0x72, 0x6c, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x03, 0x75, 0x72, 0x6c, 0x12, 0x33, 0x0a, 0x06, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x18, 0x0b,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x55, 0x52, 0x4c, 0x4c, 0x69, 0x6e, 0x6b, 0x2e, 0x54,
+	0x77, 0x69, 0x74, 0x74, 0x65, 0x72, 0x43, 0x61, 0x72, 0x64, 0x2e, 0x50, 0x6c, 0x61, 0x79, 0x65,
+	0x72, 0x52, 0x06, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x12, 0x33, 0x0a, 0x06, 0x69, 0x70, 0x68,
+	0x6f, 0x6e, 0x65, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x55, 0x52, 0x4c, 0x4c,
+	0x69, 0x6e, 0x6b, 0x2e, 0x54, 0x77, 0x69, 0x74, 0x74, 0x65, 0x72, 0x43, 0x61, 0x72, 0x64, 0x2e,
+	0x49, 0x50, 0x68, 0x6f, 0x6e, 0x65, 0x52, 0x06, 0x69, 0x70, 0x68, 0x6f, 0x6e, 0x65, 0x12, 0x2d,
+	0x0a, 0x04, 0x69, 0x70, 0x61, 0x64, 0x18, 0x0d, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x55,
+	0x52, 0x4c, 0x4c, 0x69, 0x6e, 0x6b, 0x2e, 0x54, 0x77, 0x69, 0x74, 0x74, 0x65, 0x72, 0x43, 0x61,
+	0x72, 0x64, 0x2e, 0x49, 0x50, 0x61, 0x64, 0x52, 0x04, 0x69, 0x70, 0x61, 0x64, 0x12, 0x3f, 0x0a,
+	0x0a, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x50, 0x6c, 0x61, 0x79, 0x18, 0x0e, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x1f, 0x2e, 0x55, 0x52, 0x4c, 0x4c, 0x69, 0x6e, 0x6b, 0x2e, 0x54, 0x77, 0x69, 0x74,
+	0x74, 0x65, 0x72, 0x43, 0x61, 0x72, 0x64, 0x2e, 0x47, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x50, 0x6c,
+	0x61, 0x79, 0x52, 0x0a, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x50, 0x6c, 0x61, 0x79, 0x1a, 0x60,
+	0x0a, 0x06, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x12, 0x10, 0x0a, 0x03, 0x75, 0x72, 0x6c, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x75, 0x72, 0x6c, 0x12, 0x14, 0x0a, 0x05, 0x77, 0x69,
+	0x64, 0x74, 0x68, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x05, 0x77, 0x69, 0x64, 0x74, 0x68,
+	0x12, 0x16, 0x0a, 0x06, 0x68, 0x65, 0x69, 0x67, 0x68, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x05,
+	0x52, 0x06, 0x68, 0x65, 0x69, 0x67, 0x68, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x74, 0x72, 0x65,
+	0x61, 0x6d, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x74, 0x72, 0x65, 0x61, 0x6d,
+	0x1a, 0x3e, 0x0a, 0x06, 0x49, 0x50, 0x68, 0x6f, 0x6e, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61,
+	0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x0e,
+	0x0a, 0x02, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x10,
+	0x0a, 0x03, 0x75, 0x72, 0x6c, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x75, 0x72, 0x6c,
+	0x1a, 0x3c, 0x0a, 0x04, 0x49, 0x50, 0x61, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x0e, 0x0a, 0x02,
+	0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x10, 0x0a, 0x03,
+	0x75, 0x72, 0x6c, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x75, 0x72, 0x6c, 0x1a, 0x42,
+	0x0a, 0x0a, 0x47, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x50, 0x6c, 0x61, 0x79, 0x12, 0x12, 0x0a, 0x04,
+	0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65,
+	0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64,
+	0x12, 0x10, 0x0a, 0x03, 0x75, 0x72, 0x6c, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x75,
+	0x72, 0x6c, 0x2a, 0x6f, 0x0a, 0x07, 0x50, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x12, 0x0d, 0x0a,
+	0x09, 0x55, 0x4e, 0x44, 0x45, 0x46, 0x49, 0x4e, 0x45, 0x44, 0x10, 0x00, 0x12, 0x0b, 0x0a, 0x07,
+	0x43, 0x4f, 0x4e, 0x54, 0x41, 0x43, 0x54, 0x10, 0x01, 0x12, 0x09, 0x0a, 0x05, 0x4d, 0x45, 0x44,
+	0x49, 0x41, 0x10, 0x02, 0x12, 0x07, 0x0a, 0x03, 0x55, 0x52, 0x4c, 0x10, 0x03, 0x12, 0x08, 0x0a,
+	0x04, 0x54, 0x45, 0x58, 0x54, 0x10, 0x04, 0x12, 0x07, 0x0a, 0x03, 0x50, 0x44, 0x46, 0x10, 0x05,
+	0x12, 0x10, 0x0a, 0x0c, 0x50, 0x52, 0x45, 0x53, 0x45, 0x4e, 0x54, 0x41, 0x54, 0x49, 0x4f, 0x4e,
+	0x10, 0x06, 0x12, 0x0f, 0x0a, 0x0b, 0x53, 0x50, 0x52, 0x45, 0x41, 0x44, 0x53, 0x48, 0x45, 0x45,
+	0x54, 0x10, 0x07, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x3b, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x62,
+	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1345,56 +1871,66 @@ func file_data_proto_rawDescGZIP() []byte {
 	return file_data_proto_rawDescData
 }
 
-var file_data_proto_enumTypes = make([]protoimpl.EnumInfo, 5)
-var file_data_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_data_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
+var file_data_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
 var file_data_proto_goTypes = []interface{}{
-	(Payload)(0),                    // 0: Payload
-	(LobbyEvent_Event)(0),           // 1: LobbyEvent.Event
-	(MIME_Type)(0),                  // 2: MIME.Type
-	(TransferCard_Status)(0),        // 3: TransferCard.Status
-	(URLLink_Type)(0),               // 4: URLLink.Type
-	(*Lobby)(nil),                   // 5: Lobby
-	(*LobbyEvent)(nil),              // 6: LobbyEvent
-	(*Metadata)(nil),                // 7: Metadata
-	(*MIME)(nil),                    // 8: MIME
-	(*TransferCard)(nil),            // 9: TransferCard
-	(*URLLink)(nil),                 // 10: URLLink
-	nil,                             // 11: Lobby.PeersEntry
-	nil,                             // 12: Lobby.StandbyEntry
-	(*TransferCard_Properties)(nil), // 13: TransferCard.Properties
-	(*TransferCard_Progress)(nil),   // 14: TransferCard.Progress
-	(*URLLink_OpenGraph)(nil),       // 15: URLLink.OpenGraph
-	(*URLLink_Twitter)(nil),         // 16: URLLink.Twitter
-	(*Peer)(nil),                    // 17: Peer
-	(Platform)(0),                   // 18: Platform
-	(*Contact)(nil),                 // 19: Contact
+	(Payload)(0),                           // 0: Payload
+	(LobbyEvent_Event)(0),                  // 1: LobbyEvent.Event
+	(MIME_Type)(0),                         // 2: MIME.Type
+	(TransferCard_Status)(0),               // 3: TransferCard.Status
+	(*Lobby)(nil),                          // 4: Lobby
+	(*LobbyEvent)(nil),                     // 5: LobbyEvent
+	(*Metadata)(nil),                       // 6: Metadata
+	(*MIME)(nil),                           // 7: MIME
+	(*TransferCard)(nil),                   // 8: TransferCard
+	(*URLLink)(nil),                        // 9: URLLink
+	nil,                                    // 10: Lobby.PeersEntry
+	nil,                                    // 11: Lobby.StandbyEntry
+	(*TransferCard_Properties)(nil),        // 12: TransferCard.Properties
+	(*TransferCard_Progress)(nil),          // 13: TransferCard.Progress
+	(*URLLink_OpenGraphImage)(nil),         // 14: URLLink.OpenGraphImage
+	(*URLLink_OpenGraphVideo)(nil),         // 15: URLLink.OpenGraphVideo
+	(*URLLink_OpenGraphAudio)(nil),         // 16: URLLink.OpenGraphAudio
+	(*URLLink_TwitterCard)(nil),            // 17: URLLink.TwitterCard
+	(*URLLink_TwitterCard_Player)(nil),     // 18: URLLink.TwitterCard.Player
+	(*URLLink_TwitterCard_IPhone)(nil),     // 19: URLLink.TwitterCard.IPhone
+	(*URLLink_TwitterCard_IPad)(nil),       // 20: URLLink.TwitterCard.IPad
+	(*URLLink_TwitterCard_GooglePlay)(nil), // 21: URLLink.TwitterCard.GooglePlay
+	(*Peer)(nil),                           // 22: Peer
+	(Platform)(0),                          // 23: Platform
+	(*Contact)(nil),                        // 24: Contact
 }
 var file_data_proto_depIdxs = []int32{
-	11, // 0: Lobby.peers:type_name -> Lobby.PeersEntry
-	12, // 1: Lobby.standby:type_name -> Lobby.StandbyEntry
+	10, // 0: Lobby.peers:type_name -> Lobby.PeersEntry
+	11, // 1: Lobby.standby:type_name -> Lobby.StandbyEntry
 	1,  // 2: LobbyEvent.event:type_name -> LobbyEvent.Event
-	17, // 3: LobbyEvent.data:type_name -> Peer
-	8,  // 4: Metadata.mime:type_name -> MIME
+	22, // 3: LobbyEvent.data:type_name -> Peer
+	7,  // 4: Metadata.mime:type_name -> MIME
 	2,  // 5: MIME.type:type_name -> MIME.Type
 	0,  // 6: TransferCard.payload:type_name -> Payload
-	18, // 7: TransferCard.platform:type_name -> Platform
-	14, // 8: TransferCard.progress:type_name -> TransferCard.Progress
+	23, // 7: TransferCard.platform:type_name -> Platform
+	13, // 8: TransferCard.progress:type_name -> TransferCard.Progress
 	3,  // 9: TransferCard.status:type_name -> TransferCard.Status
-	13, // 10: TransferCard.properties:type_name -> TransferCard.Properties
-	19, // 11: TransferCard.contact:type_name -> Contact
-	7,  // 12: TransferCard.metadata:type_name -> Metadata
-	10, // 13: TransferCard.urlLink:type_name -> URLLink
-	4,  // 14: URLLink.type:type_name -> URLLink.Type
-	15, // 15: URLLink.openGraph:type_name -> URLLink.OpenGraph
-	16, // 16: URLLink.twitter:type_name -> URLLink.Twitter
-	17, // 17: Lobby.PeersEntry.value:type_name -> Peer
-	17, // 18: Lobby.StandbyEntry.value:type_name -> Peer
-	8,  // 19: TransferCard.Properties.mime:type_name -> MIME
-	20, // [20:20] is the sub-list for method output_type
-	20, // [20:20] is the sub-list for method input_type
-	20, // [20:20] is the sub-list for extension type_name
-	20, // [20:20] is the sub-list for extension extendee
-	0,  // [0:20] is the sub-list for field type_name
+	12, // 10: TransferCard.properties:type_name -> TransferCard.Properties
+	24, // 11: TransferCard.contact:type_name -> Contact
+	6,  // 12: TransferCard.metadata:type_name -> Metadata
+	9,  // 13: TransferCard.urlLink:type_name -> URLLink
+	14, // 14: URLLink.images:type_name -> URLLink.OpenGraphImage
+	15, // 15: URLLink.videos:type_name -> URLLink.OpenGraphVideo
+	16, // 16: URLLink.audios:type_name -> URLLink.OpenGraphAudio
+	17, // 17: URLLink.twitter:type_name -> URLLink.TwitterCard
+	22, // 18: Lobby.PeersEntry.value:type_name -> Peer
+	22, // 19: Lobby.StandbyEntry.value:type_name -> Peer
+	7,  // 20: TransferCard.Properties.mime:type_name -> MIME
+	18, // 21: URLLink.TwitterCard.player:type_name -> URLLink.TwitterCard.Player
+	19, // 22: URLLink.TwitterCard.iphone:type_name -> URLLink.TwitterCard.IPhone
+	20, // 23: URLLink.TwitterCard.ipad:type_name -> URLLink.TwitterCard.IPad
+	21, // 24: URLLink.TwitterCard.googlePlay:type_name -> URLLink.TwitterCard.GooglePlay
+	25, // [25:25] is the sub-list for method output_type
+	25, // [25:25] is the sub-list for method input_type
+	25, // [25:25] is the sub-list for extension type_name
+	25, // [25:25] is the sub-list for extension extendee
+	0,  // [0:25] is the sub-list for field type_name
 }
 
 func init() { file_data_proto_init() }
@@ -1501,7 +2037,7 @@ func file_data_proto_init() {
 			}
 		}
 		file_data_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*URLLink_OpenGraph); i {
+			switch v := v.(*URLLink_OpenGraphImage); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1513,7 +2049,79 @@ func file_data_proto_init() {
 			}
 		}
 		file_data_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*URLLink_Twitter); i {
+			switch v := v.(*URLLink_OpenGraphVideo); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_data_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*URLLink_OpenGraphAudio); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_data_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*URLLink_TwitterCard); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_data_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*URLLink_TwitterCard_Player); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_data_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*URLLink_TwitterCard_IPhone); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_data_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*URLLink_TwitterCard_IPad); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_data_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*URLLink_TwitterCard_GooglePlay); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1530,8 +2138,8 @@ func file_data_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_data_proto_rawDesc,
-			NumEnums:      5,
-			NumMessages:   12,
+			NumEnums:      4,
+			NumMessages:   18,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

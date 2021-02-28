@@ -123,26 +123,50 @@ func NewCardFromContact(p *md.Peer, c *md.Contact, status md.TransferCard_Status
 // ^ Method Generates new Transfer Card from URL ^ //
 func NewCardFromUrl(p *md.Peer, url string, status md.TransferCard_Status) md.TransferCard {
 	// Get URL Data
-	urlData := sh.ExtractURLData(url)
+	urlInfo, err := sh.GetPageInfoFromUrl(url)
+	if err != nil {
+		log.Println(err)
 
-	// Return Card
-	return md.TransferCard{
-		// SQL Properties
-		Payload:  md.Payload_URL,
-		Received: int32(time.Now().Unix()),
-		Platform: p.Platform,
+		// Return Card
+		return md.TransferCard{
+			// SQL Properties
+			Payload:  md.Payload_URL,
+			Received: int32(time.Now().Unix()),
+			Platform: p.Platform,
 
-		// Transfer Properties
-		Status: status,
+			// Transfer Properties
+			Status: status,
 
-		// Owner Properties
-		Username:  p.Profile.Username,
-		FirstName: p.Profile.FirstName,
-		LastName:  p.Profile.LastName,
+			// Owner Properties
+			Username:  p.Profile.Username,
+			FirstName: p.Profile.FirstName,
+			LastName:  p.Profile.LastName,
 
-		// Data Properties
-		Url:     url,
-		UrlLink: urlData,
+			// Data Properties
+			UrlLink: &md.URLLink{
+				Link: url,
+			},
+		}
+	} else {
+		// Return Card
+		return md.TransferCard{
+			// SQL Properties
+			Payload:  md.Payload_URL,
+			Received: int32(time.Now().Unix()),
+			Platform: p.Platform,
+
+			// Transfer Properties
+			Status: status,
+
+			// Owner Properties
+			Username:  p.Profile.Username,
+			FirstName: p.Profile.FirstName,
+			LastName:  p.Profile.LastName,
+
+			// Data Properties
+			Url:     url,
+			UrlLink: urlInfo,
+		}
 	}
 }
 
