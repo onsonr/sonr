@@ -115,10 +115,37 @@ message TransferCard {
 
 // URLLink Contains metadata of provided URL
 message URLLink {
-  string title = 1;       // Meta Field for Title
-  string description = 2; // Meta field for description
-  string image = 3;       // Meta for provided image
-  string siteName = 4;    // Meta for Site Name
+  Type type = 1;
+  string title = 2;       // Meta Field for Title
+  string description = 3; // Meta field for description
+  string image = 4;
   string displayName = 5; // Meta for Display Name
   string url = 6;         // Meta for Actual URL Link
+
+  // URLLink Type
+  enum Type {
+    DEFAULT = 0;
+    OPENGRAPH = 1;
+    TWITTER = 2;
+  }
+
+  // Facebook
+  message OpenGraph {
+    string title = 1;       // Meta Field for Title
+    string description = 2; // Meta field for description
+    string image = 3;       // Meta for provided image
+    string author = 4;      // Meta for provided image
+    string publisher = 5;
+    string siteName = 6; // Meta for Site Name
+  }
+
+  // Twitter
+  message Twitter {
+    string card = 1;   // Meta Field for Title
+    string domain = 2; // Meta field for description
+    string url = 3;    // Meta for provided image
+    string title = 4;  // Meta for provided image
+    string description = 5;
+    string image = 6; // Meta for Site Name
+  }
 }
