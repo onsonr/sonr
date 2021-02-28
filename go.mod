@@ -26,5 +26,6 @@ require (
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad // indirect
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b // indirect
+	golang.org/x/net v0.0.0-20201021035429-f5854403a974
 	google.golang.org/protobuf v1.25.0
 )

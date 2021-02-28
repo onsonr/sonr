@@ -18,7 +18,7 @@ WIN_ARTIFACT=$(WIN_BUILDDIR)/sonr-core.exe
 # Proto Directories
 PB_PATH="/Users/prad/Sonr/core/internal/models"
 CORE_PB_DIR="/Users/prad/Sonr/core/internal/models"
-PLUGIN_PB_DIR="/Users/prad/Sonr/plugin/lib/models"
+PLUGIN_PB_DIR="/Users/prad/Sonr/plugin/lib/src/core/models"
 PROTO_DOC_OUT="/Users/prad/Sonr/docs/proto"
 
 # Proto Build Commands

@@ -112,3 +112,13 @@ message TransferCard {
     int32 totalSize = 4;   // Total Size of File
   }
 }
+
+// URLLink Contains metadata of provided URL
+message URLLink {
+  string title = 1;       // Meta Field for Title
+  string description = 2; // Meta field for description
+  string image = 3;       // Meta for provided image
+  string siteName = 4;    // Meta for Site Name
+  string displayName = 5; // Meta for Display Name
+  string url = 6;         // Meta for Actual URL Link
+}

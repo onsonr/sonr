@@ -712,6 +712,94 @@ func (x *TransferCard) GetUrl() string {
 	return ""
 }
 
+// URLLink Contains metadata of provided URL
+type URLLink struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Title       string `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`             // Meta Field for Title
+	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"` // Meta field for description
+	Image       string `protobuf:"bytes,3,opt,name=image,proto3" json:"image,omitempty"`             // Meta for provided image
+	SiteName    string `protobuf:"bytes,4,opt,name=siteName,proto3" json:"siteName,omitempty"`       // Meta for Site Name
+	DisplayName string `protobuf:"bytes,5,opt,name=displayName,proto3" json:"displayName,omitempty"` // Meta for Display Name
+	Url         string `protobuf:"bytes,6,opt,name=url,proto3" json:"url,omitempty"`                 // Meta for Actual URL Link
+}
+
+func (x *URLLink) Reset() {
+	*x = URLLink{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_data_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *URLLink) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*URLLink) ProtoMessage() {}
+
+func (x *URLLink) ProtoReflect() protoreflect.Message {
+	mi := &file_data_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use URLLink.ProtoReflect.Descriptor instead.
+func (*URLLink) Descriptor() ([]byte, []int) {
+	return file_data_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *URLLink) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *URLLink) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *URLLink) GetImage() string {
+	if x != nil {
+		return x.Image
+	}
+	return ""
+}
+
+func (x *URLLink) GetSiteName() string {
+	if x != nil {
+		return x.SiteName
+	}
+	return ""
+}
+
+func (x *URLLink) GetDisplayName() string {
+	if x != nil {
+		return x.DisplayName
+	}
+	return ""
+}
+
+func (x *URLLink) GetUrl() string {
+	if x != nil {
+		return x.Url
+	}
+	return ""
+}
+
 // Card Properties based on File
 type TransferCard_Properties struct {
 	state         protoimpl.MessageState
@@ -727,7 +815,7 @@ type TransferCard_Properties struct {
 func (x *TransferCard_Properties) Reset() {
 	*x = TransferCard_Properties{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_data_proto_msgTypes[7]
+		mi := &file_data_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -740,7 +828,7 @@ func (x *TransferCard_Properties) String() string {
 func (*TransferCard_Properties) ProtoMessage() {}
 
 func (x *TransferCard_Properties) ProtoReflect() protoreflect.Message {
-	mi := &file_data_proto_msgTypes[7]
+	mi := &file_data_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -799,7 +887,7 @@ type TransferCard_Progress struct {
 func (x *TransferCard_Progress) Reset() {
 	*x = TransferCard_Progress{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_data_proto_msgTypes[8]
+		mi := &file_data_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -812,7 +900,7 @@ func (x *TransferCard_Progress) String() string {
 func (*TransferCard_Progress) ProtoMessage() {}
 
 func (x *TransferCard_Progress) ProtoReflect() protoreflect.Message {
-	mi := &file_data_proto_msgTypes[8]
+	mi := &file_data_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -961,15 +1049,26 @@ var file_data_proto_rawDesc = []byte{
 	0x45, 0x10, 0x01, 0x12, 0x0a, 0x0a, 0x06, 0x44, 0x49, 0x52, 0x45, 0x43, 0x54, 0x10, 0x02, 0x12,
 	0x09, 0x0a, 0x05, 0x52, 0x45, 0x50, 0x4c, 0x59, 0x10, 0x03, 0x12, 0x0e, 0x0a, 0x0a, 0x49, 0x4e,
 	0x50, 0x52, 0x4f, 0x47, 0x52, 0x45, 0x53, 0x53, 0x10, 0x04, 0x12, 0x0d, 0x0a, 0x09, 0x43, 0x4f,
-	0x4d, 0x50, 0x4c, 0x45, 0x54, 0x45, 0x44, 0x10, 0x05, 0x2a, 0x6f, 0x0a, 0x07, 0x50, 0x61, 0x79,
-	0x6c, 0x6f, 0x61, 0x64, 0x12, 0x0d, 0x0a, 0x09, 0x55, 0x4e, 0x44, 0x45, 0x46, 0x49, 0x4e, 0x45,
-	0x44, 0x10, 0x00, 0x12, 0x0b, 0x0a, 0x07, 0x43, 0x4f, 0x4e, 0x54, 0x41, 0x43, 0x54, 0x10, 0x01,
-	0x12, 0x09, 0x0a, 0x05, 0x4d, 0x45, 0x44, 0x49, 0x41, 0x10, 0x02, 0x12, 0x07, 0x0a, 0x03, 0x55,
-	0x52, 0x4c, 0x10, 0x03, 0x12, 0x08, 0x0a, 0x04, 0x54, 0x45, 0x58, 0x54, 0x10, 0x04, 0x12, 0x07,
-	0x0a, 0x03, 0x50, 0x44, 0x46, 0x10, 0x05, 0x12, 0x10, 0x0a, 0x0c, 0x50, 0x52, 0x45, 0x53, 0x45,
-	0x4e, 0x54, 0x41, 0x54, 0x49, 0x4f, 0x4e, 0x10, 0x06, 0x12, 0x0f, 0x0a, 0x0b, 0x53, 0x50, 0x52,
-	0x45, 0x41, 0x44, 0x53, 0x48, 0x45, 0x45, 0x54, 0x10, 0x07, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x3b,
-	0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x4d, 0x50, 0x4c, 0x45, 0x54, 0x45, 0x44, 0x10, 0x05, 0x22, 0xa7, 0x01, 0x0a, 0x07, 0x55, 0x52,
+	0x4c, 0x4c, 0x69, 0x6e, 0x6b, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x64,
+	0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x14, 0x0a,
+	0x05, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x69, 0x6d,
+	0x61, 0x67, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x73, 0x69, 0x74, 0x65, 0x4e, 0x61, 0x6d, 0x65, 0x18,
+	0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x73, 0x69, 0x74, 0x65, 0x4e, 0x61, 0x6d, 0x65, 0x12,
+	0x20, 0x0a, 0x0b, 0x64, 0x69, 0x73, 0x70, 0x6c, 0x61, 0x79, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x05,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x64, 0x69, 0x73, 0x70, 0x6c, 0x61, 0x79, 0x4e, 0x61, 0x6d,
+	0x65, 0x12, 0x10, 0x0a, 0x03, 0x75, 0x72, 0x6c, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03,
+	0x75, 0x72, 0x6c, 0x2a, 0x6f, 0x0a, 0x07, 0x50, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x12, 0x0d,
+	0x0a, 0x09, 0x55, 0x4e, 0x44, 0x45, 0x46, 0x49, 0x4e, 0x45, 0x44, 0x10, 0x00, 0x12, 0x0b, 0x0a,
+	0x07, 0x43, 0x4f, 0x4e, 0x54, 0x41, 0x43, 0x54, 0x10, 0x01, 0x12, 0x09, 0x0a, 0x05, 0x4d, 0x45,
+	0x44, 0x49, 0x41, 0x10, 0x02, 0x12, 0x07, 0x0a, 0x03, 0x55, 0x52, 0x4c, 0x10, 0x03, 0x12, 0x08,
+	0x0a, 0x04, 0x54, 0x45, 0x58, 0x54, 0x10, 0x04, 0x12, 0x07, 0x0a, 0x03, 0x50, 0x44, 0x46, 0x10,
+	0x05, 0x12, 0x10, 0x0a, 0x0c, 0x50, 0x52, 0x45, 0x53, 0x45, 0x4e, 0x54, 0x41, 0x54, 0x49, 0x4f,
+	0x4e, 0x10, 0x06, 0x12, 0x0f, 0x0a, 0x0b, 0x53, 0x50, 0x52, 0x45, 0x41, 0x44, 0x53, 0x48, 0x45,
+	0x45, 0x54, 0x10, 0x07, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x3b, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73,
+	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -985,7 +1084,7 @@ func file_data_proto_rawDescGZIP() []byte {
 }
 
 var file_data_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
-var file_data_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_data_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_data_proto_goTypes = []interface{}{
 	(Payload)(0),                    // 0: Payload
 	(LobbyEvent_Event)(0),           // 1: LobbyEvent.Event
@@ -996,30 +1095,31 @@ var file_data_proto_goTypes = []interface{}{
 	(*Metadata)(nil),                // 6: Metadata
 	(*MIME)(nil),                    // 7: MIME
 	(*TransferCard)(nil),            // 8: TransferCard
-	nil,                             // 9: Lobby.PeersEntry
-	nil,                             // 10: Lobby.StandbyEntry
-	(*TransferCard_Properties)(nil), // 11: TransferCard.Properties
-	(*TransferCard_Progress)(nil),   // 12: TransferCard.Progress
-	(*Peer)(nil),                    // 13: Peer
-	(Platform)(0),                   // 14: Platform
-	(*Contact)(nil),                 // 15: Contact
+	(*URLLink)(nil),                 // 9: URLLink
+	nil,                             // 10: Lobby.PeersEntry
+	nil,                             // 11: Lobby.StandbyEntry
+	(*TransferCard_Properties)(nil), // 12: TransferCard.Properties
+	(*TransferCard_Progress)(nil),   // 13: TransferCard.Progress
+	(*Peer)(nil),                    // 14: Peer
+	(Platform)(0),                   // 15: Platform
+	(*Contact)(nil),                 // 16: Contact
 }
 var file_data_proto_depIdxs = []int32{
-	9,  // 0: Lobby.peers:type_name -> Lobby.PeersEntry
-	10, // 1: Lobby.standby:type_name -> Lobby.StandbyEntry
+	10, // 0: Lobby.peers:type_name -> Lobby.PeersEntry
+	11, // 1: Lobby.standby:type_name -> Lobby.StandbyEntry
 	1,  // 2: LobbyEvent.event:type_name -> LobbyEvent.Event
-	13, // 3: LobbyEvent.data:type_name -> Peer
+	14, // 3: LobbyEvent.data:type_name -> Peer
 	7,  // 4: Metadata.mime:type_name -> MIME
 	2,  // 5: MIME.type:type_name -> MIME.Type
 	0,  // 6: TransferCard.payload:type_name -> Payload
-	14, // 7: TransferCard.platform:type_name -> Platform
-	12, // 8: TransferCard.progress:type_name -> TransferCard.Progress
+	15, // 7: TransferCard.platform:type_name -> Platform
+	13, // 8: TransferCard.progress:type_name -> TransferCard.Progress
 	3,  // 9: TransferCard.status:type_name -> TransferCard.Status
-	11, // 10: TransferCard.properties:type_name -> TransferCard.Properties
-	15, // 11: TransferCard.contact:type_name -> Contact
+	12, // 10: TransferCard.properties:type_name -> TransferCard.Properties
+	16, // 11: TransferCard.contact:type_name -> Contact
 	6,  // 12: TransferCard.metadata:type_name -> Metadata
-	13, // 13: Lobby.PeersEntry.value:type_name -> Peer
-	13, // 14: Lobby.StandbyEntry.value:type_name -> Peer
+	14, // 13: Lobby.PeersEntry.value:type_name -> Peer
+	14, // 14: Lobby.StandbyEntry.value:type_name -> Peer
 	7,  // 15: TransferCard.Properties.mime:type_name -> MIME
 	16, // [16:16] is the sub-list for method output_type
 	16, // [16:16] is the sub-list for method input_type
@@ -1095,8 +1195,8 @@ func file_data_proto_init() {
 				return nil
 			}
 		}
-		file_data_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TransferCard_Properties); i {
+		file_data_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*URLLink); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1108,6 +1208,18 @@ func file_data_proto_init() {
 			}
 		}
 		file_data_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TransferCard_Properties); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_data_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*TransferCard_Progress); i {
 			case 0:
 				return &v.state
@@ -1126,7 +1238,7 @@ func file_data_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_data_proto_rawDesc,
 			NumEnums:      4,
-			NumMessages:   9,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
