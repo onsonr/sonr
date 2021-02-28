@@ -123,10 +123,7 @@ func NewCardFromContact(p *md.Peer, c *md.Contact, status md.TransferCard_Status
 // ^ Method Generates new Transfer Card from URL ^ //
 func NewCardFromUrl(p *md.Peer, url string, status md.TransferCard_Status) md.TransferCard {
 	// Get URL Data
-	urlData, err := sh.ExtractURLData(url)
-	if err != nil {
-		log.Println(err)
-	}
+	urlData := sh.ExtractURLData(url)
 
 	// Return Card
 	return md.TransferCard{

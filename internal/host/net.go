@@ -1,7 +1,6 @@
 package host
 
 import (
-	"errors"
 	"net"
 	"net/http"
 	"os"
@@ -51,15 +50,14 @@ func IPv6() string {
 }
 
 // ^ Retreives URL Metadata ^ //
-func ExtractURLData(link string) (*md.URLLink, error) {
+func ExtractURLData(link string) (ul *md.URLLink) {
 	// Initialize
-	ul := new(md.URLLink)
 	ul.Url = link
 
 	// Create Request
 	resp, err := http.Get(link)
 	if err != nil {
-		return nil, err
+		return nil
 	}
 	defer resp.Body.Close()
 
@@ -72,15 +70,10 @@ func ExtractURLData(link string) (*md.URLLink, error) {
 		tt := z.Next()
 		switch tt {
 		case html.ErrorToken:
-			return nil, errors.New("Error Tokenizing HTML")
-		case html.StartTagToken, html.SelfClosingTagToken:
+			ul = analyzeData(ul)
+			return
+		case html.StartTagToken:
 			t := z.Token()
-			// Final Tag
-			if t.Data == `body` {
-				ul = analyzeData(ul)
-				return ul, nil
-			}
-
 			// Title Tag
 			if t.Data == "title" {
 				titleFound = true
@@ -145,13 +138,12 @@ func ExtractURLData(link string) (*md.URLLink, error) {
 					ul.Twitter.Image = twImage
 				}
 				ul = analyzeData(ul)
-				return ul, nil
 			}
 		case html.TextToken:
 			if titleFound {
 				t := z.Token()
 				ul.Title = t.Data
-				return ul, nil
+				titleFound = false
 			}
 		}
 	}
