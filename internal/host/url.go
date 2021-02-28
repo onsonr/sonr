@@ -178,9 +178,8 @@ func GetPageInfoFromUrl(urlStr string) (*md.URLLink, error) {
 
 	// Get Images
 	if info.Images != nil {
-		images := make([]*md.URLLink_OpenGraphImage, len(info.Images))
 		for _, v := range info.Images {
-			images = append(images, &md.URLLink_OpenGraphImage{
+			link.Images = append(link.Images, &md.URLLink_OpenGraphImage{
 				Url:       v.Url,
 				SecureUrl: v.SecureUrl,
 				Width:     int32(v.Width),
@@ -188,14 +187,12 @@ func GetPageInfoFromUrl(urlStr string) (*md.URLLink, error) {
 				Type:      v.Type,
 			})
 		}
-		link.Images = images
 	}
 
 	// Get Videos
 	if info.Videos != nil {
-		videos := make([]*md.URLLink_OpenGraphVideo, len(info.Videos))
 		for _, v := range info.Videos {
-			videos = append(videos, &md.URLLink_OpenGraphVideo{
+			link.Videos = append(link.Videos, &md.URLLink_OpenGraphVideo{
 				Url:       v.Url,
 				SecureUrl: v.SecureUrl,
 				Width:     int32(v.Width),
@@ -203,20 +200,17 @@ func GetPageInfoFromUrl(urlStr string) (*md.URLLink, error) {
 				Type:      v.Type,
 			})
 		}
-		link.Videos = videos
 	}
 
 	// Get Audios
 	if info.Audios != nil {
-		audios := make([]*md.URLLink_OpenGraphAudio, len(info.Audios))
 		for _, v := range info.Videos {
-			audios = append(audios, &md.URLLink_OpenGraphAudio{
+			link.Audios = append(link.Audios, &md.URLLink_OpenGraphAudio{
 				Url:       v.Url,
 				SecureUrl: v.SecureUrl,
 				Type:      v.Type,
 			})
 		}
-		link.Audios = audios
 	}
 
 	// Get Twitter
