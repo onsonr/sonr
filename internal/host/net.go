@@ -77,6 +77,7 @@ func ExtractURLData(link string) (*md.URLLink, error) {
 			t := z.Token()
 			// Final Tag
 			if t.Data == `body` {
+				ul = analyzeData(ul)
 				return ul, nil
 			}
 
