@@ -87,22 +87,50 @@ func ExtractURL(link string) *md.URLLink {
 
 				ogTitle, ok := extractMetaProperty(t, "og:title")
 				if ok {
-					hm.Title = ogTitle
+					hm.OpenGraph.Title = ogTitle
 				}
 
 				ogDesc, ok := extractMetaProperty(t, "og:description")
 				if ok {
-					hm.Description = ogDesc
+					hm.OpenGraph.Description = ogDesc
 				}
 
 				ogImage, ok := extractMetaProperty(t, "og:image")
 				if ok {
-					hm.Image = ogImage
+					hm.OpenGraph.Image = ogImage
 				}
 
 				ogSiteName, ok := extractMetaProperty(t, "og:site_name")
 				if ok {
-					hm.SiteName = ogSiteName
+					hm.OpenGraph.SiteName = ogSiteName
+				}
+				twCard, ok := extractMetaProperty(t, "twitter:card")
+				if ok {
+					hm.Twitter.Card = twCard
+				}
+
+				twDomain, ok := extractMetaProperty(t, "twitter:domain")
+				if ok {
+					hm.Twitter.Domain = twDomain
+				}
+
+				twUrl, ok := extractMetaProperty(t, "twitter:url")
+				if ok {
+					hm.Twitter.Url = twUrl
+				}
+				twTitle, ok := extractMetaProperty(t, "twitter:title")
+				if ok {
+					hm.Twitter.Title = twTitle
+				}
+
+				twDesc, ok := extractMetaProperty(t, "twitter:description")
+				if ok {
+					hm.Twitter.Description = twDesc
+				}
+
+				twImage, ok := extractMetaProperty(t, "twitter:image")
+				if ok {
+					hm.Twitter.Image = twImage
 				}
 				return hm
 			}

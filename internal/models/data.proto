@@ -122,6 +122,9 @@ message URLLink {
   string displayName = 5; // Meta for Display Name
   string url = 6;         // Meta for Actual URL Link
 
+  OpenGraph openGraph = 7;
+  Twitter twitter = 8;
+
   // URLLink Type
   enum Type {
     DEFAULT = 0;
