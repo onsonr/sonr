@@ -84,8 +84,7 @@ message TransferCard {
 
   Contact contact = 13;   // DATA(Optional): Received Contact Information
   Metadata metadata = 14; // DATA(Optional): Received a File or Media
-  string url = 15;      // DATA(Optional): Received a Website Link (Deprecated)
-  URLLink urlLink = 16; // DATA(Optional): Received a Website Link
+  URLLink url = 15;       // DATA(Optional): Received a Website Link
 
   // Card Transfer Status
   enum Status {

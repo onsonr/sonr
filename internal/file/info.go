@@ -143,7 +143,7 @@ func NewCardFromUrl(p *md.Peer, url string, status md.TransferCard_Status) md.Tr
 			LastName:  p.Profile.LastName,
 
 			// Data Properties
-			UrlLink: &md.URLLink{
+			Url: &md.URLLink{
 				Link: url,
 			},
 		}
@@ -164,8 +164,7 @@ func NewCardFromUrl(p *md.Peer, url string, status md.TransferCard_Status) md.Tr
 			LastName:  p.Profile.LastName,
 
 			// Data Properties
-			Url:     url,
-			UrlLink: urlInfo,
+			Url: urlInfo,
 		}
 	}
 }
