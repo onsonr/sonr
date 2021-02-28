@@ -52,10 +52,13 @@ func IPv6() string {
 
 // ^ Retreives URL Metadata ^ //
 func ExtractURLData(link string) (*md.URLLink, error) {
+	// Initialize
+	ul := new(md.URLLink)
+	ul.Url = link
+
 	// Create Request
 	resp, err := http.Get(link)
 	if err != nil {
-
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -63,7 +66,6 @@ func ExtractURLData(link string) (*md.URLLink, error) {
 	// Tokenize Response
 	z := html.NewTokenizer(resp.Body)
 	titleFound := false
-	hm := new(md.URLLink)
 
 	// Iterate through URL Elements
 	for {
@@ -75,7 +77,7 @@ func ExtractURLData(link string) (*md.URLLink, error) {
 			t := z.Token()
 			// Final Tag
 			if t.Data == `body` {
-				return hm, nil
+				return ul, nil
 			}
 
 			// Title Tag
@@ -83,7 +85,7 @@ func ExtractURLData(link string) (*md.URLLink, error) {
 				titleFound = true
 				title, ok := extractMetaProperty(t, "title")
 				if ok {
-					hm.Title = title
+					ul.Title = title
 				}
 			}
 
@@ -91,65 +93,80 @@ func ExtractURLData(link string) (*md.URLLink, error) {
 			if t.Data == "meta" {
 				desc, ok := extractMetaProperty(t, "description")
 				if ok {
-					hm.Description = desc
+					ul.Description = desc
 				}
 
 				ogTitle, ok := extractMetaProperty(t, "og:title")
 				if ok {
-					hm.OpenGraph.Title = ogTitle
+					ul.OpenGraph.Title = ogTitle
 				}
 
 				ogDesc, ok := extractMetaProperty(t, "og:description")
 				if ok {
-					hm.OpenGraph.Description = ogDesc
+					ul.OpenGraph.Description = ogDesc
 				}
 
 				ogImage, ok := extractMetaProperty(t, "og:image")
 				if ok {
-					hm.OpenGraph.Image = ogImage
+					ul.OpenGraph.Image = ogImage
 				}
 
 				ogSiteName, ok := extractMetaProperty(t, "og:site_name")
 				if ok {
-					hm.OpenGraph.SiteName = ogSiteName
+					ul.OpenGraph.SiteName = ogSiteName
 				}
 				twCard, ok := extractMetaProperty(t, "twitter:card")
 				if ok {
-					hm.Twitter.Card = twCard
+					ul.Twitter.Card = twCard
 				}
 
 				twDomain, ok := extractMetaProperty(t, "twitter:domain")
 				if ok {
-					hm.Twitter.Domain = twDomain
+					ul.Twitter.Domain = twDomain
 				}
 
 				twUrl, ok := extractMetaProperty(t, "twitter:url")
 				if ok {
-					hm.Twitter.Url = twUrl
+					ul.Twitter.Url = twUrl
 				}
 				twTitle, ok := extractMetaProperty(t, "twitter:title")
 				if ok {
-					hm.Twitter.Title = twTitle
+					ul.Twitter.Title = twTitle
 				}
 
 				twDesc, ok := extractMetaProperty(t, "twitter:description")
 				if ok {
-					hm.Twitter.Description = twDesc
+					ul.Twitter.Description = twDesc
 				}
 
 				twImage, ok := extractMetaProperty(t, "twitter:image")
 				if ok {
-					hm.Twitter.Image = twImage
+					ul.Twitter.Image = twImage
 				}
-				return hm, nil
+				ul = analyzeData(ul)
+				return ul, nil
 			}
 		case html.TextToken:
 			if titleFound {
 				t := z.Token()
-				hm.Title = t.Data
-				return hm, nil
+				ul.Title = t.Data
+				return ul, nil
 			}
 		}
+	}
+}
+
+// ^ Helper: Analyzes Extracted data to set type ^ //
+func analyzeData(data *md.URLLink) *md.URLLink {
+	if data.Twitter != nil {
+		data.Type = md.URLLink_TWITTER
+		return data
+	} else if data.OpenGraph != nil {
+		data.Type = md.URLLink_OPENGRAPH
+		return data
+	} else {
+		data.Type = md.URLLink_DEFAULT
+		return data
 	}
 }
 
