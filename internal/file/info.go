@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/h2non/filetype"
+	sh "github.com/sonr-io/core/internal/host"
 	md "github.com/sonr-io/core/internal/models"
 )
 
@@ -121,6 +122,12 @@ func NewCardFromContact(p *md.Peer, c *md.Contact, status md.TransferCard_Status
 
 // ^ Method Generates new Transfer Card from URL ^ //
 func NewCardFromUrl(p *md.Peer, url string, status md.TransferCard_Status) md.TransferCard {
+	// Get URL Data
+	urlData, err := sh.ExtractURLData(url)
+	if err != nil {
+		log.Println(err)
+	}
+
 	// Return Card
 	return md.TransferCard{
 		// SQL Properties
@@ -137,7 +144,8 @@ func NewCardFromUrl(p *md.Peer, url string, status md.TransferCard_Status) md.Tr
 		LastName:  p.Profile.LastName,
 
 		// Data Properties
-		Url: url,
+		Url:     url,
+		UrlLink: urlData,
 	}
 }
 

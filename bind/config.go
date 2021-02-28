@@ -5,17 +5,11 @@ import (
 	"errors"
 
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	sf "github.com/sonr-io/core/internal/file"
 	lf "github.com/sonr-io/core/internal/lifecycle"
 	sl "github.com/sonr-io/core/internal/lobby"
 	md "github.com/sonr-io/core/internal/models"
 	tf "github.com/sonr-io/core/internal/transfer"
 )
-
-// ^ CurrentFile returns last file in Processed Files ^ //
-func (sn *Node) currentFile() *sf.ProcessedFile {
-	return sn.files[len(sn.files)-1]
-}
 
 // ^ setInfo sets node info from connEvent and host ^ //
 func (sn *Node) setInfo(connEvent *md.ConnectionRequest) error {

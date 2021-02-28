@@ -123,15 +123,7 @@ func (sn *Node) Invite(reqBytes []byte) {
 	}
 
 	// @ 2. Check Transfer Type
-	if req.Type == md.InviteRequest_File {
-		// Single File Transfer
-		safeFile := sf.NewProcessedFile(req, sn.peer.Profile, sn.queued, sn.error)
-		sn.files = append(sn.files, safeFile)
-	} else if req.Type == md.InviteRequest_MultiFiles {
-		// Batch File Transfer
-		safeFiles := sf.NewBatchProcessFiles(req, sn.peer.Profile, sn.queued, sn.error)
-		sn.files = safeFiles
-	} else if req.Type == md.InviteRequest_Contact || req.Type == md.InviteRequest_URL {
+	if req.Type == md.InviteRequest_Contact || req.Type == md.InviteRequest_URL {
 		// @ 3. Send Invite to Peer
 		// Set Contact
 		req.Contact = sn.contact
@@ -153,6 +145,9 @@ func (sn *Node) Invite(reqBytes []byte) {
 
 			sn.peerConn.Request(sn.host, id, msgBytes)
 		}(&invMsg)
+	} else {
+		// File Transfer
+		sn.queue.AddFromRequest(req)
 	}
 
 	// Update Status
@@ -170,13 +165,6 @@ func (sn *Node) Respond(decision bool) {
 	} else {
 		sn.status = md.Status_AVAILABLE
 	}
-}
-
-// ^ Reset Current Queued File Metadata ^ //
-func (sn *Node) ResetFile() {
-	// Reset Files Slice
-	sn.files = nil
-	sn.files = make([]*sf.ProcessedFile, maxFileBufferSize)
 }
 
 // ^ Close Ends All Network Communication ^

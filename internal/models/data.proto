@@ -84,7 +84,8 @@ message TransferCard {
 
   Contact contact = 13;   // DATA(Optional): Received Contact Information
   Metadata metadata = 14; // DATA(Optional): Received a File or Media
-  string url = 15;        // DATA(Optional): Received a Website Link
+  string url = 15;      // DATA(Optional): Received a Website Link (Deprecated)
+  URLLink urlLink = 16; // DATA(Optional): Received a Website Link
 
   // Card Transfer Status
   enum Status {
@@ -118,37 +119,36 @@ message URLLink {
   Type type = 1;
   string title = 2;       // Meta Field for Title
   string description = 3; // Meta field for description
-  string image = 4;
-  string displayName = 5; // Meta for Display Name
-  string url = 6;         // Meta for Actual URL Link
+  string displayName = 4; // Calculated URL Display Name
+  string url = 5;         // Actual URL Link
 
-  OpenGraph openGraph = 7;
-  Twitter twitter = 8;
+  OpenGraph openGraph = 6;
+  Twitter twitter = 7;
 
   // URLLink Type
   enum Type {
-    DEFAULT = 0;
-    OPENGRAPH = 1;
-    TWITTER = 2;
+    DEFAULT = 0;   // No Social Info Provided
+    OPENGRAPH = 1; // OpenGraph info Provided
+    TWITTER = 2;   // Twitter info Provided
   }
 
   // Facebook
   message OpenGraph {
-    string title = 1;       // Meta Field for Title
-    string description = 2; // Meta field for description
-    string image = 3;       // Meta for provided image
-    string author = 4;      // Meta for provided image
-    string publisher = 5;
-    string siteName = 6; // Meta for Site Name
+    string title = 1;       // Open Graph field Title
+    string description = 2; // Open Graph field for description
+    string image = 3;       // Open Graph for provided image
+    string author = 4;      // Open Graph for Author
+    string publisher = 5;   // Open Graph for Publisher
+    string siteName = 6;    // Open Graph for Website Name
   }
 
   // Twitter
   message Twitter {
-    string card = 1;   // Meta Field for Title
-    string domain = 2; // Meta field for description
-    string url = 3;    // Meta for provided image
-    string title = 4;  // Meta for provided image
-    string description = 5;
-    string image = 6; // Meta for Site Name
+    string card = 1;        // Twitter Field for Card Type
+    string domain = 2;      // Twitter field for Domain
+    string url = 3;         // Twitter for provided url
+    string title = 4;       // Twitter for provided Title
+    string description = 5; // Twitter field for description
+    string image = 6;       // Twitter for Image
   }
 }

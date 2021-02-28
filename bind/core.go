@@ -7,16 +7,12 @@ import (
 	olc "github.com/google/open-location-code/go"
 	"github.com/libp2p/go-libp2p-core/host"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	sf "github.com/sonr-io/core/internal/file"
 	sh "github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/internal/lobby"
 	md "github.com/sonr-io/core/internal/models"
 	tr "github.com/sonr-io/core/internal/transfer"
 	"google.golang.org/protobuf/proto"
 )
-
-// @ Maximum Files in Node Cache
-const maxFileBufferSize = 64
 
 // ^ Interface: Callback is implemented from Plugin to receive updates ^
 type Callback interface {
@@ -34,25 +30,23 @@ type Callback interface {
 // ^ Struct: Main Node handles Networking/Identity/Streams ^
 type Node struct {
 	// Properties
-	ctx     context.Context
-	olc     string
-	device  *md.Device
-	peer    *md.Peer
-	contact *md.Contact
-	status  md.Status
+	ctx         context.Context
+	olc         string
+	directories *md.Directories
+	device      *md.Device
+	peer        *md.Peer
+	contact     *md.Contact
+	status      md.Status
 
 	// Networking Properties
 	host   host.Host
 	pubSub *pubsub.PubSub
 
-	// Data Properties
-	files       []*sf.ProcessedFile
-	directories *md.Directories
-
 	// References
 	call     Callback
 	lobby    *lobby.Lobby
 	peerConn *tr.PeerConnection
+	queue    *FileQueue
 }
 
 // ^ NewNode Initializes Node with a host and default properties ^
@@ -60,8 +54,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	// ** Create Context and Node - Begin Setup **
 	node := new(Node)
 	node.ctx = context.Background()
-	node.call, node.files = call, make([]*sf.ProcessedFile, maxFileBufferSize)
-	node.status = md.Status_NONE
+	node.call = call
 
 	// ** Unmarshal Request **
 	reqMsg := md.ConnectionRequest{}
@@ -72,6 +65,8 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	}
 
 	// @1. Set OLC, Create Host, and Start Discovery
+	node.queue = NewQueue(reqMsg.Directories, reqMsg.Profile, node.queued, node.error)
+	node.status = md.Status_NONE
 	node.olc = olc.Encode(float64(reqMsg.Latitude), float64(reqMsg.Longitude), 8)
 	node.host, err = sh.NewHost(node.ctx, reqMsg.Directories, node.olc)
 	if err != nil {
@@ -106,7 +101,7 @@ func (sn *Node) queued(card *md.TransferCard, req *md.InviteRequest) {
 	}
 
 	// Retreive Current File
-	currFile := sn.currentFile()
+	currFile := sn.queue.CurrentFile()
 	card.Status = md.TransferCard_INVITE
 	sn.peerConn.ProcessedFile = currFile
 
@@ -140,7 +135,7 @@ func (sn *Node) multiQueued(card *md.TransferCard, req *md.InviteRequest) {
 	}
 
 	// Retreive Current File
-	currFile := sn.currentFile()
+	currFile := sn.queue.CurrentFile()
 	card.Status = md.TransferCard_INVITE
 	sn.peerConn.ProcessedFile = currFile
 
