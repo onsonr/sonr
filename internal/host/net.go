@@ -114,7 +114,6 @@ func ExtractURL(link string) *md.URLLink {
 			}
 		}
 	}
-
 }
 
 // ^ Helper: Extracts a Meta Property ^ //
