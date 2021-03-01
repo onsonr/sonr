@@ -36,7 +36,7 @@ func NewLobbyCallback(callEvent OnProtobuf, callRefresh OnProtobuf, callError On
 }
 
 // @ -- Refresh Lobby -- //
-func (lc *LobbyCallback) Refresh(data *Lobby) {
+func (lc LobbyCallback) Refresh(data *Lobby) {
 	bytes, err := proto.Marshal(data)
 	if err != nil {
 		log.Println("Cannot Marshal Error Protobuf: ", err)
@@ -45,12 +45,12 @@ func (lc *LobbyCallback) Refresh(data *Lobby) {
 }
 
 // @ -- Call Lobby Error -- //
-func (lc *LobbyCallback) Error(err error) {
+func (lc LobbyCallback) Error(err error) {
 	lc.callError(err, "Lobby Error")
 }
 
 // @ -- Return Current Peer Data -- //
-func (lc *LobbyCallback) Peer() *Peer {
+func (lc LobbyCallback) Peer() *Peer {
 	return lc.getPeer()
 }
 
@@ -76,32 +76,32 @@ func NewTransferCallback(callInvited OnInvite, callResponded OnProtobuf, callPro
 }
 
 // @ -- Call Auth Invite -- //
-func (tc *TransferCallback) Invited(data []byte) {
+func (tc TransferCallback) Invited(data []byte) {
 	tc.callResponded(data)
 }
 
 // @ -- Call Auth Responded -- //
-func (tc *TransferCallback) Responded(data []byte) {
+func (tc TransferCallback) Responded(data []byte) {
 	tc.callInvited(data)
 }
 
 // @ -- Call Transfer Progressed -- //
-func (tc *TransferCallback) Progressed(data float32) {
+func (tc TransferCallback) Progressed(data float32) {
 	tc.callProgress(data)
 }
 
 // @ -- Call Transfer Received -- //
-func (tc *TransferCallback) Received(data *TransferCard) {
+func (tc TransferCallback) Received(data *TransferCard) {
 	tc.callReceived(data)
 }
 
 // @ -- Call Transfer Transmitted -- //
-func (tc *TransferCallback) Transmitted(data *Peer) {
+func (tc TransferCallback) Transmitted(data *Peer) {
 	tc.callTransmitted(data)
 }
 
 // @ -- Call Controller Error -- //
-func (tc *TransferCallback) Error(err error) {
+func (tc TransferCallback) Error(err error) {
 	tc.callError(err, "Transfer Error")
 }
 
@@ -121,16 +121,16 @@ func NewFileCallback(callQueued OnQueued, callMultiQueued OnMultiQueued, callErr
 }
 
 // @ -- Call Multiple Files Queued -- //
-func (fc *FileCallback) MultiQueued(card *TransferCard, req *InviteRequest, count int) {
+func (fc FileCallback) MultiQueued(card *TransferCard, req *InviteRequest, count int) {
 	fc.callMultiQueued(card, req, count)
 }
 
 // @ -- Call Single File Queued -- //
-func (fc *FileCallback) Queued(card *TransferCard, req *InviteRequest) {
+func (fc FileCallback) Queued(card *TransferCard, req *InviteRequest) {
 	fc.callQueued(card, req)
 }
 
 // @ -- Call File Error -- //
-func (fc *FileCallback) Error(err error) {
+func (fc FileCallback) Error(err error) {
 	fc.callError(err, "File Error")
 }
