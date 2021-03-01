@@ -53,40 +53,52 @@ func (lc *LobbyCallback) Peer() *Peer {
 }
 
 type TransferCallback struct {
-	CallInvited     OnInvite
-	CallResponded   OnProtobuf
-	CallProgress    OnProgress
-	CallReceived    OnReceived
-	CallTransmitted OnTransmitted
-	CallError       OnError
+	callInvited     OnInvite
+	callResponded   OnProtobuf
+	callProgress    OnProgress
+	callReceived    OnReceived
+	callTransmitted OnTransmitted
+	callError       OnError
+}
+
+// ^ Creates New Transfer Callback ^ //
+func NewTransferCallback(callInvited OnInvite, callResponded OnProtobuf, callProgress OnProgress, callReceived OnReceived, callTransmitted OnTransmitted, callError OnError) TransferCallback {
+	return TransferCallback{
+		callInvited:     callInvited,
+		callResponded:   callResponded,
+		callProgress:    callProgress,
+		callReceived:    callReceived,
+		callTransmitted: callTransmitted,
+		callError:       callError,
+	}
 }
 
 // @ -- Call Auth Invite -- //
 func (tc *TransferCallback) Invited(data []byte) {
-	tc.CallResponded(data)
+	tc.callResponded(data)
 }
 
 // @ -- Call Auth Responded -- //
 func (tc *TransferCallback) Responded(data []byte) {
-	tc.CallInvited(data)
+	tc.callInvited(data)
 }
 
 // @ -- Call Transfer Progressed -- //
 func (tc *TransferCallback) Progressed(data float32) {
-	tc.CallProgress(data)
+	tc.callProgress(data)
 }
 
 // @ -- Call Transfer Received -- //
 func (tc *TransferCallback) Received(data *TransferCard) {
-	tc.CallReceived(data)
+	tc.callReceived(data)
 }
 
 // @ -- Call Transfer Transmitted -- //
 func (tc *TransferCallback) Transmitted(data *Peer) {
-	tc.CallTransmitted(data)
+	tc.callTransmitted(data)
 }
 
 // @ -- Call Controller Error -- //
 func (tc *TransferCallback) Error(err error) {
-	tc.CallError(err, "Transfer Error")
+	tc.callError(err, "Transfer Error")
 }

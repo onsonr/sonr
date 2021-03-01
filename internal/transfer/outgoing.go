@@ -18,14 +18,14 @@ const B64ChunkSize = 31998 // Adjusted for Base64 -- has to be divisible by 3
 const BufferChunkSize = 32000
 
 type OutgoingFile struct {
-	onTransmitted md.OnTransmitted
+	call          md.TransferCallback
 	processedFile *sf.ProcessedFile
 }
 
 // ^ Creates New Outgoing ^ //
-func NewOutgoingFile(pf *sf.ProcessedFile, oT md.OnTransmitted) *OutgoingFile {
+func NewOutgoingFile(pf *sf.ProcessedFile, tc md.TransferCallback) *OutgoingFile {
 	return &OutgoingFile{
-		onTransmitted: oT,
+		call:          tc,
 		processedFile: pf,
 	}
 }
@@ -81,7 +81,7 @@ func (of *OutgoingFile) WriteBase64(writer msgio.WriteCloser, peer *md.Peer) {
 	}
 
 	// Call Completed Sending
-	of.onTransmitted(peer)
+	of.call.Transmitted(peer)
 }
 
 // ^ Helper: Chunks string based on B64ChunkSize ^ //

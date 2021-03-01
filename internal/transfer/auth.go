@@ -28,7 +28,7 @@ type AuthResponse struct {
 // Service Struct
 type AuthService struct {
 	// Current Data
-	onInvite  md.OnInvite
+	call      md.TransferCallback
 	respCh    chan *md.AuthReply
 	inviteMsg *md.AuthInvite
 }
@@ -65,28 +65,6 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 	return nil
 }
 
-// @ Helper Method Clears Current Invite
-func (as *AuthService) clear() {
-	as.inviteMsg = nil
-}
-
-// @ Helper Method Sets Current Invite
-func (as *AuthService) setInvite(data []byte) error {
-	// Send Callback
-	as.onInvite(data)
-
-	// Received Message
-	receivedMessage := &md.AuthInvite{}
-	err := proto.Unmarshal(data, receivedMessage)
-	if err != nil {
-		return err
-	}
-
-	// Set Current Message
-	as.inviteMsg = receivedMessage
-	return nil
-}
-
 // ^ Send Request to a Peer ^ //
 func (pc *TransferController) Request(h host.Host, id peer.ID, msgBytes []byte) {
 	// Initialize Data
@@ -102,31 +80,17 @@ func (pc *TransferController) Request(h host.Host, id peer.ID, msgBytes []byte) 
 	// Initiate Call on transfer
 	call := <-done
 	if call.Error != nil {
-		// Send Error
-		onError(err, "Request")
+		pc.call.Error(err)
 	}
 
 	// Send Callback and Reset
-	pc.respondedCall(reply.Data)
+	pc.call.Responded(reply.Data)
 	transDecs, from := pc.handleReply(reply.Data)
 
 	// Check Response for Accept
 	if transDecs {
 		pc.StartOutgoing(h, id, from)
 	}
-}
-
-// @ Helper Method to Handle Reply
-func (pc *TransferController) handleReply(data []byte) (bool, *md.Peer) {
-	// Received Message
-	resp := md.AuthReply{}
-	err := proto.Unmarshal(data, &resp)
-	if err != nil {
-		// Send Error
-		onError(err, "Unmarshal")
-		return false, nil
-	}
-	return resp.Decision && resp.Type == md.AuthReply_Transfer, resp.From
 }
 
 // ^ Send Authorize transfer on RPC ^ //
@@ -159,4 +123,38 @@ func (pc *TransferController) Cancel(peer *md.Peer) {
 
 	// Clear Current Invite
 	pc.auth.clear()
+}
+
+// @ Helper Method to Handle Reply
+func (pc *TransferController) handleReply(data []byte) (bool, *md.Peer) {
+	// Received Message
+	resp := md.AuthReply{}
+	err := proto.Unmarshal(data, &resp)
+	if err != nil {
+		pc.call.Error(err)
+		return false, nil
+	}
+	return resp.Decision && resp.Type == md.AuthReply_Transfer, resp.From
+}
+
+// @ Helper Method Clears Current Invite
+func (as *AuthService) clear() {
+	as.inviteMsg = nil
+}
+
+// @ Helper Method Sets Current Invite
+func (as *AuthService) setInvite(data []byte) error {
+	// Send Callback
+	as.call.Invited(data)
+
+	// Received Message
+	receivedMessage := &md.AuthInvite{}
+	err := proto.Unmarshal(data, receivedMessage)
+	if err != nil {
+		return err
+	}
+
+	// Set Current Message
+	as.inviteMsg = receivedMessage
+	return nil
 }

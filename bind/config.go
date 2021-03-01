@@ -58,7 +58,7 @@ func (sn *Node) setConnection(ctx context.Context) error {
 
 	// Create Callbacks
 	lobCall := md.NewLobbyCallback(sn.call.OnEvent, sn.call.OnRefreshed, sn.error, sn.Peer)
-	transCall := md.TransferCallback{CallInvited: sn.invited, CallResponded: sn.call.OnResponded, CallReceived: sn.received, CallProgress: sn.call.OnProgress, CallTransmitted: sn.transmitted, CallError: sn.error}
+	transCall := md.NewTransferCallback(sn.invited, sn.call.OnResponded, sn.call.OnProgress, sn.received, sn.transmitted, sn.error)
 
 	// Enter Lobby
 	if sn.lobby, err = sl.Join(sn.ctx, lobCall, sn.host, sn.pubSub, sn.peer, sn.olc); err != nil {

@@ -14,9 +14,6 @@ import (
 	md "github.com/sonr-io/core/internal/models"
 )
 
-// Package Error Callback
-var onError md.OnError
-
 // ^ Struct: Holds/Handles GRPC Calls and Handles Data Stream  ^ //
 type TransferController struct {
 	// Connection
@@ -27,11 +24,7 @@ type TransferController struct {
 	incoming *IncomingFile
 
 	// Callbacks
-	invitedCall     md.OnInvite
-	respondedCall   md.OnProtobuf
-	progressCall    md.OnProgress
-	receivedCall    md.OnReceived
-	transmittedCall md.OnTransmitted
+	call md.TransferCallback
 
 	// Info
 	olc  string
@@ -40,18 +33,11 @@ type TransferController struct {
 
 // ^ Initialize sets up new Peer Connection handler ^
 func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, tc md.TransferCallback) (*TransferController, error) {
-	// Set Package Level Callbacks
-	onError = tc.CallError
-
 	// Initialize Parameters into PeerConnection
 	peerConn := &TransferController{
-		olc:             o,
-		dirs:            d,
-		invitedCall:     tc.CallInvited,
-		respondedCall:   tc.CallResponded,
-		progressCall:    tc.CallProgress,
-		receivedCall:    tc.CallReceived,
-		transmittedCall: tc.CallTransmitted,
+		olc:  o,
+		dirs: d,
+		call: tc,
 	}
 
 	// Create GRPC Client/Server and Set Data Stream Handler
@@ -60,8 +46,8 @@ func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, tc 
 
 	// Create AuthService
 	ath := AuthService{
-		onInvite: tc.CallInvited,
-		respCh:   make(chan *md.AuthReply, 1),
+		call:   tc,
+		respCh: make(chan *md.AuthReply, 1),
 	}
 
 	// Register Service
@@ -78,13 +64,13 @@ func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, tc 
 // ^  Prepare for Stream, Create Incoming Transfer ^ //
 func (pc *TransferController) NewIncoming(inv *md.AuthInvite) {
 	// Initialize Incoming
-	pc.incoming = NewIncomingFile(inv, pc.dirs, pc.progressCall, pc.receivedCall)
+	pc.incoming = NewIncomingFile(inv, pc.dirs, pc.call)
 }
 
 // ^  Set Outgoing Transfer ^ //
 func (pc *TransferController) NewOutgoing(pf *sf.ProcessedFile) {
 	// Initialize Outgoing
-	pc.outgoing = NewOutgoingFile(pf, pc.transmittedCall)
+	pc.outgoing = NewOutgoingFile(pf, pc.call)
 }
 
 // ^ User has accepted, Begin Sending Transfer ^ //
@@ -92,7 +78,7 @@ func (pc *TransferController) StartOutgoing(h host.Host, id peer.ID, peer *md.Pe
 	// Create New Auth Stream
 	stream, err := h.NewStream(context.Background(), id, protocol.ID("/sonr/transfer/data"))
 	if err != nil {
-		onError(err, "Transfer")
+		pc.call.Error(err)
 
 	}
 
@@ -111,15 +97,14 @@ func (pc *TransferController) HandleIncoming(stream network.Stream) {
 			// @ Read Length Fixed Bytes
 			buffer, err := reader.ReadMsg()
 			if err != nil {
-				onError(err, "ReadStream")
+				pc.call.Error(err)
 				break
 			}
 
 			// @ Unmarshal Bytes into Proto
 			hasCompleted, err := t.AddBuffer(i, buffer)
 			if err != nil {
-				onError(err, "ReadStream")
-
+				pc.call.Error(err)
 				break
 			}
 
@@ -127,7 +112,7 @@ func (pc *TransferController) HandleIncoming(stream network.Stream) {
 			if hasCompleted {
 				// Sync file
 				if err := pc.incoming.Save(); err != nil {
-					onError(err, "SaveFile")
+					pc.call.Error(err)
 				}
 				break
 			}
