@@ -104,32 +104,41 @@ func (pc *TransferController) Authorize(decision bool, contact *md.Contact, peer
 	// Get Offer Message
 	offerMsg := pc.auth.inviteMsg
 
-	// Generate Reply
-	reply := md.NewReplyFromDecision(md.AuthOpts{
-		Decision: decision,
-		Peer:     peer,
-		Contact:  contact,
-		Offered:  offerMsg.Payload,
-		IsCancel: false,
-	})
+	// @ Pass Contact Back
+	if offerMsg.Payload == md.Payload_CONTACT {
+		// Create Accept Response
+		card := md.NewCardFromContact(peer, contact, md.TransferCard_REPLY)
+		resp := &md.AuthReply{
+			From: peer,
+			Type: md.AuthReply_Contact,
+			Card: &card,
+		}
+		// Send to Channel
+		pc.auth.respCh <- resp
+	} else {
+		// Create Accept Response
+		resp := &md.AuthReply{
+			From:     peer,
+			Type:     md.AuthReply_Transfer,
+			Decision: decision,
+		}
+		// Send to Channel
+		pc.auth.respCh <- resp
+	}
 
-	// Send to Channel
-	pc.auth.respCh <- &reply
-
-	// Clear Current Invite
-	pc.auth.clear()
 }
 
 // ^ Send Authorize transfer on RPC ^ //
 func (pc *TransferController) Cancel(peer *md.Peer) {
 	// Create Cancel Reply
-	reply := md.NewReplyFromDecision(md.AuthOpts{
-		Peer:     peer,
-		IsCancel: true,
-	})
+	reply := &md.AuthReply{
+		From:     peer,
+		Type:     md.AuthReply_None,
+		Decision: false,
+	}
 
 	// Send to Channel
-	pc.auth.respCh <- &reply
+	pc.auth.respCh <- reply
 
 	// Clear Current Invite
 	pc.auth.clear()
