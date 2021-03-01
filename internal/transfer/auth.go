@@ -116,6 +116,11 @@ func (pc *TransferController) Authorize(decision bool, contact *md.Contact, peer
 		// Send to Channel
 		pc.auth.respCh <- resp
 	} else {
+		// Prepare for Transfer
+		if decision {
+			pc.NewIncoming(offerMsg)
+		}
+
 		// Create Accept Response
 		resp := &md.AuthReply{
 			From:     peer,
