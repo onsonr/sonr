@@ -10,9 +10,11 @@ import (
 )
 
 type SysInfo struct {
-	OLC       string
-	Device    md.Device
-	Directory md.Directories
+	OLC           string
+	Device        md.Device
+	Directory     md.Directories
+	TempFirstName string
+	TempLastName  string
 }
 
 // ^ Returns System Info ^ //
@@ -22,6 +24,7 @@ func SystemInfo() SysInfo {
 	var model string
 	var name string
 	var docDir string
+	var last string
 	var err error
 
 	// Get Operating System
@@ -32,10 +35,12 @@ func SystemInfo() SysInfo {
 	// @ Windows
 	case "windows":
 		platform = md.Platform_Windows
+		last = "PC"
 
 		// @ Mac
 	case "darwin":
 		platform = md.Platform_MacOS
+		last = "Mac"
 
 		// @ Linux
 	case "linux":
@@ -61,7 +66,9 @@ func SystemInfo() SysInfo {
 	// Return SysInfo Object
 	return SysInfo{
 		// Current Hard Code OLC
-		OLC: "87C4XFJV+",
+		OLC:           "87C4XFJV+",
+		TempFirstName: "Prad's",
+		TempLastName:  last,
 
 		// Retreived Device Info
 		Device: md.Device{

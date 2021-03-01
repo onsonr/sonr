@@ -40,13 +40,13 @@ func NewClient(ctx context.Context, m ui.AppInterface) *Client {
 		Device:      &c.info.Device,
 		Directories: &c.info.Directory,
 		Contact: &md.Contact{
-			FirstName: "Prad's",
-			LastName:  "Mac",
+			FirstName: c.info.TempFirstName,
+			LastName:  c.info.TempLastName,
 		},
 		Profile: &md.Profile{
 			Username:  "@Prad",
-			FirstName: "Prad's",
-			LastName:  "Mac",
+			FirstName: c.info.TempFirstName,
+			LastName:  c.info.TempLastName,
 			Platform:  c.info.Device.Platform,
 		},
 	}
