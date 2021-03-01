@@ -77,7 +77,7 @@ func (pc *TransferController) Request(h host.Host, id peer.ID, msgBytes []byte) 
 	done := make(chan *gorpc.Call, 1)
 	err := rpcClient.Go(id, "AuthService", "Invited", args, &reply, done)
 
-	// Initiate Call on transfer
+	// Await Response
 	call := <-done
 	if call.Error != nil {
 		pc.call.Error(err)

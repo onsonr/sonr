@@ -74,10 +74,9 @@ func (lob *Lobby) Exchange(id peer.ID) {
 	done := make(chan *gorpc.Call, 1)
 	err = rpcClient.Go(id, "PeerService", "ExchangeWith", args, &reply, done)
 
-	// Initiate Call on transfer
+	// Await Response
 	call := <-done
 	if call.Error != nil {
-		// Send Error
 		lob.call.Error(err)
 	}
 
