@@ -34,9 +34,6 @@ type AuthService struct {
 
 // ^ Calls Invite on Remote Peer ^ //
 func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthResponse) error {
-	// Send Callback
-	as.call.Invited(args.Data)
-
 	// Received Message
 	receivedMessage := &md.AuthInvite{}
 	err := proto.Unmarshal(args.Data, receivedMessage)
@@ -46,6 +43,9 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 
 	// Set Current Message
 	as.inviteMsg = receivedMessage
+
+	// Send Callback
+	as.call.Invited(args.Data)
 
 	// Hold Select for Invite Type
 	if !as.inviteMsg.IsDirect {
@@ -101,12 +101,15 @@ func (pc *TransferController) Request(h host.Host, id peer.ID, msgBytes []byte) 
 
 // ^ Send Authorize transfer on RPC ^ //
 func (pc *TransferController) Authorize(decision bool, contact *md.Contact, peer *md.Peer) {
+	// Get Offer Message
+	offerMsg := pc.auth.inviteMsg
+
 	// Generate Reply
 	reply := md.NewReplyFromDecision(md.AuthOpts{
 		Decision: decision,
 		Peer:     peer,
 		Contact:  contact,
-		Offered:  pc.auth.inviteMsg.Payload,
+		Offered:  offerMsg.Payload,
 		IsCancel: false,
 	})
 
