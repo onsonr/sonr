@@ -10,7 +10,6 @@ import (
 
 // ^ Update proximity/direction and Notify Lobby ^ //
 func (sn *Node) Update(direction float64) {
-	// ** Initialize ** //
 	// Update User Values
 	var dir float64
 	var anpd float64
