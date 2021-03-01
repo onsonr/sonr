@@ -14,7 +14,7 @@ import (
 	swarm "github.com/libp2p/go-libp2p-swarm"
 	disc "github.com/libp2p/go-libp2p/p2p/discovery"
 	"github.com/multiformats/go-multiaddr"
-	"github.com/sonr-io/core/internal/lifecycle"
+	md "github.com/sonr-io/core/internal/models"
 )
 
 // @ discoveryInterval is how often we re-publish our mDNS records.
@@ -44,7 +44,7 @@ func startBootstrap(ctx context.Context, h host.Host, idht *dht.IpfsDHT, point s
 		peerinfo, _ := peer.AddrInfoFromP2pAddr(maddr)
 		h.Connect(ctx, *peerinfo) //nolint
 		wg.Done()
-		lifecycle.GetState().NeedsWait()
+		md.GetState().NeedsWait()
 	}
 	wg.Wait()
 	go handleKademliaDiscovery(ctx, h, routingDiscovery, point)
@@ -89,7 +89,7 @@ func handleKademliaDiscovery(ctx context.Context, h host.Host, disc *discovery.R
 		case <-ctx.Done():
 			return
 		}
-		lifecycle.GetState().NeedsWait()
+		md.GetState().NeedsWait()
 	}
 }
 
@@ -98,7 +98,7 @@ func (n *discNotifee) HandlePeerFound(pi peer.AddrInfo) {
 	// Connect to Peer
 	err := n.h.Connect(n.ctx, pi)
 	checkConnErr(err, pi.ID, n.h)
-	lifecycle.GetState().NeedsWait()
+	md.GetState().NeedsWait()
 }
 
 // ^ Helper: Checks for Connect Error ^

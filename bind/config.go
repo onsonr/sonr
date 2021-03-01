@@ -5,7 +5,6 @@ import (
 	"errors"
 
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	lf "github.com/sonr-io/core/internal/lifecycle"
 	sl "github.com/sonr-io/core/internal/lobby"
 	md "github.com/sonr-io/core/internal/models"
 	tf "github.com/sonr-io/core/internal/transfer"
@@ -58,8 +57,8 @@ func (sn *Node) setConnection(ctx context.Context) error {
 	}
 
 	// Create Callbacks
-	lobCall := lf.LobbyCallbacks{CallRefresh: sn.call.OnRefreshed, CallError: sn.error, GetPeer: sn.Peer, CallEvent: sn.call.OnEvent}
-	transCall := lf.TransferCallbacks{CallInvited: sn.invited, CallResponded: sn.call.OnResponded, CallReceived: sn.received, CallProgress: sn.call.OnProgress, CallTransmitted: sn.transmitted, CallError: sn.error}
+	lobCall := md.LobbyCallbacks{CallRefresh: sn.call.OnRefreshed, CallError: sn.error, GetPeer: sn.Peer, CallEvent: sn.call.OnEvent}
+	transCall := md.TransferCallbacks{CallInvited: sn.invited, CallResponded: sn.call.OnResponded, CallReceived: sn.received, CallProgress: sn.call.OnProgress, CallTransmitted: sn.transmitted, CallError: sn.error}
 
 	// Enter Lobby
 	if sn.lobby, err = sl.Join(sn.ctx, lobCall, sn.pubSub, sn.host.ID(), sn.peer, sn.olc); err != nil {

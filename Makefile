@@ -1,11 +1,11 @@
 SHELL=/bin/zsh # Set Shell
 
-# Go Commands
+# @ Go Commands
 GOMOBILE=gomobile
 GOCLEAN=$(GOMOBILE) clean
 GOBIND=$(GOMOBILE) bind
 
-# Plugin Directories
+# @ Plugin Directories
 IOS_BUILDDIR=/Users/prad/Sonr/plugin/ios/Frameworks
 IOS_ARTIFACT= $(IOS_BUILDDIR)/Core.framework
 ANDROID_BUILDDIR=/Users/prad/Sonr/plugin/android/libs
@@ -15,13 +15,13 @@ MAC_ARTIFACT=$(MAC_BUILDDIR)/sonr_core
 WIN_BUILDDIR=/Users/prad/Sonr/core/build
 WIN_ARTIFACT=$(WIN_BUILDDIR)/sonr-core.exe
 
-# Proto Directories
+# @ Proto Directories
 PB_PATH="/Users/prad/Sonr/core/internal/models"
 CORE_PB_DIR="/Users/prad/Sonr/core/internal/models"
 PLUGIN_PB_DIR="/Users/prad/Sonr/plugin/lib/src/core/models"
 PROTO_DOC_OUT="/Users/prad/Sonr/docs/proto"
 
-# Proto Build Commands
+# @ Proto Build Commands
 PB_BUILD_CORE="--go_out=$(CORE_PB_DIR)"
 PB_BUILD_PLUGIN="--dart_out=$(PLUGIN_PB_DIR)"
 

@@ -9,7 +9,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/protocol"
 	gorpc "github.com/libp2p/go-libp2p-gorpc"
 	sf "github.com/sonr-io/core/internal/file"
-	lf "github.com/sonr-io/core/internal/lifecycle"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -30,7 +29,7 @@ type AuthResponse struct {
 // Service Struct
 type AuthService struct {
 	// Current Data
-	onInvite  lf.OnInvite
+	onInvite  md.OnInvite
 	respCh    chan *md.AuthReply
 	inviteMsg *md.AuthInvite
 }
@@ -108,8 +107,7 @@ func (pc *TransferController) Request(h host.Host, id peer.ID, msgBytes []byte) 
 	}
 
 	// Check Response for Accept
-	if responseMessage.Decision && responseMessage.Payload == md.Payload_UNDEFINED {
-		// Begin Transfer
+	if responseMessage.Decision && responseMessage.Type == md.AuthReply_Transfer {
 		pc.StartTransfer(h, id, responseMessage.From)
 	}
 }
@@ -131,7 +129,7 @@ func (pc *TransferController) Authorize(decision bool, contact *md.Contact, peer
 			respMsg := &md.AuthReply{
 				From:     peer,
 				Decision: true,
-				Payload:  md.Payload_UNDEFINED,
+				Type:     md.AuthReply_Transfer,
 			}
 
 			// Send to Channel
@@ -142,7 +140,7 @@ func (pc *TransferController) Authorize(decision bool, contact *md.Contact, peer
 			respMsg := &md.AuthReply{
 				From:     peer,
 				Decision: false,
-				Payload:  md.Payload_UNDEFINED,
+				Type:     md.AuthReply_Transfer,
 			}
 
 			// Send to Channel
@@ -153,9 +151,9 @@ func (pc *TransferController) Authorize(decision bool, contact *md.Contact, peer
 		// Create Accept Response
 		card := sf.NewCardFromContact(peer, contact, md.TransferCard_REPLY)
 		respMsg := &md.AuthReply{
-			From:    peer,
-			Payload: md.Payload_CONTACT,
-			Card:    &card,
+			From: peer,
+			Type: md.AuthReply_Contact,
+			Card: &card,
 		}
 
 		// Send to Channel
@@ -163,4 +161,17 @@ func (pc *TransferController) Authorize(decision bool, contact *md.Contact, peer
 	default:
 		break
 	}
+}
+
+// ^ Send Authorize transfer on RPC ^ //
+func (pc *TransferController) Cancel(peer *md.Peer) {
+	// Create Decline Response
+	respMsg := &md.AuthReply{
+		From:     peer,
+		Decision: false,
+		Type:     md.AuthReply_Cancel,
+	}
+
+	// Send to Channel
+	pc.auth.respCh <- respMsg
 }

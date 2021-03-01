@@ -4,7 +4,6 @@ import (
 	"log"
 
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	"github.com/sonr-io/core/internal/lifecycle"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -38,7 +37,7 @@ func (lob *Lobby) handleEvents() {
 			lob.removePeer(lobEvent.Peer)
 		}
 
-		lifecycle.GetState().NeedsWait()
+		md.GetState().NeedsWait()
 	}
 }
 
@@ -66,7 +65,7 @@ func (lob *Lobby) handleMessages() {
 
 		// Send valid messages onto the Messages channel
 		lob.Messages <- &notif
-		lifecycle.GetState().NeedsWait()
+		md.GetState().NeedsWait()
 	}
 
 }
@@ -96,6 +95,6 @@ func (lob *Lobby) processMessages() {
 		case <-lob.doneCh:
 			return
 		}
-		lifecycle.GetState().NeedsWait()
+		md.GetState().NeedsWait()
 	}
 }

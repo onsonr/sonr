@@ -6,7 +6,6 @@ import (
 	"time"
 
 	sf "github.com/sonr-io/core/internal/file"
-	"github.com/sonr-io/core/internal/lifecycle"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
@@ -171,13 +170,13 @@ func (sn *Node) Respond(decision bool) {
 func (sn *Node) Pause() {
 	// Check if Response Is Invited
 	if sn.status == md.Status_INVITED {
-		sn.Respond(false)
+		sn.peerConn.Cancel(sn.peer)
 	}
 	err := sn.lobby.Standby()
 	if err != nil {
 		sn.error(err, "Pause")
 	}
-	lifecycle.GetState().Pause()
+	md.GetState().Pause()
 }
 
 // ^ Close Ends All Network Communication ^
@@ -186,14 +185,14 @@ func (sn *Node) Resume() {
 	if err != nil {
 		sn.error(err, "Resume")
 	}
-	lifecycle.GetState().Resume()
+	md.GetState().Resume()
 }
 
 // ^ Close Ends All Network Communication ^
 func (sn *Node) Stop() {
 	// Check if Response Is Invited
 	if sn.status == md.Status_INVITED {
-		sn.Respond(false)
+		sn.peerConn.Cancel(sn.peer)
 	}
 	sn.host.Close()
 }

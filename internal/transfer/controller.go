@@ -12,13 +12,11 @@ import (
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	msgio "github.com/libp2p/go-msgio"
 	sf "github.com/sonr-io/core/internal/file"
-	"github.com/sonr-io/core/internal/lifecycle"
-	lf "github.com/sonr-io/core/internal/lifecycle"
 	md "github.com/sonr-io/core/internal/models"
 )
 
 // Package Error Callback
-var onError lf.OnError
+var onError md.OnError
 
 // ^ Struct: Holds/Handles GRPC Calls and Handles Data Stream  ^ //
 type TransferController struct {
@@ -30,11 +28,11 @@ type TransferController struct {
 	transfer      *sf.TransferFile
 
 	// Callbacks
-	invitedCall     lf.OnInvite
-	respondedCall   lf.OnProtobuf
-	progressCall    lf.OnProgress
-	receivedCall    lf.OnReceived
-	transmittedCall lf.OnTransmitted
+	invitedCall     md.OnInvite
+	respondedCall   md.OnProtobuf
+	progressCall    md.OnProgress
+	receivedCall    md.OnReceived
+	transmittedCall md.OnTransmitted
 
 	// Info
 	olc  string
@@ -42,7 +40,7 @@ type TransferController struct {
 }
 
 // ^ Initialize sets up new Peer Connection handler ^
-func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, tc lf.TransferCallbacks) (*TransferController, error) {
+func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, tc md.TransferCallbacks) (*TransferController, error) {
 	// Set Package Level Callbacks
 	onError = tc.CallError
 
@@ -130,7 +128,7 @@ func (pc *TransferController) HandleTransfer(stream network.Stream) {
 				}
 				break
 			}
-			lifecycle.GetState().NeedsWait()
+			md.GetState().NeedsWait()
 		}
 	}(msgio.NewReader(stream), pc.transfer)
 }

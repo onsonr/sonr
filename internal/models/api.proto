@@ -65,10 +65,16 @@ message AuthInvite {
 
 // Reply Message sent on RPC
 message AuthReply {
-  Payload payload = 1;   // Type of Transfer
+  Type type = 1;         // Type of Transfer Reply
   Peer from = 2;         // Users Peer Data
   bool decision = 3;     // Users Decision for the Invitation
   TransferCard card = 4; // Card contains all Data Info, Transfer Info
+
+  enum Type {
+    Transfer = 0;
+    Contact = 1;
+    Cancel = 2;
+  }
 }
 
 // Error Message returned from Core Library

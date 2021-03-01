@@ -84,6 +84,55 @@ func (InviteRequest_TransferType) EnumDescriptor() ([]byte, []int) {
 	return file_api_proto_rawDescGZIP(), []int{1, 0}
 }
 
+type AuthReply_Type int32
+
+const (
+	AuthReply_Transfer AuthReply_Type = 0
+	AuthReply_Contact  AuthReply_Type = 1
+	AuthReply_Cancel   AuthReply_Type = 2
+)
+
+// Enum value maps for AuthReply_Type.
+var (
+	AuthReply_Type_name = map[int32]string{
+		0: "Transfer",
+		1: "Contact",
+		2: "Cancel",
+	}
+	AuthReply_Type_value = map[string]int32{
+		"Transfer": 0,
+		"Contact":  1,
+		"Cancel":   2,
+	}
+)
+
+func (x AuthReply_Type) Enum() *AuthReply_Type {
+	p := new(AuthReply_Type)
+	*p = x
+	return p
+}
+
+func (x AuthReply_Type) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (AuthReply_Type) Descriptor() protoreflect.EnumDescriptor {
+	return file_api_proto_enumTypes[1].Descriptor()
+}
+
+func (AuthReply_Type) Type() protoreflect.EnumType {
+	return &file_api_proto_enumTypes[1]
+}
+
+func (x AuthReply_Type) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use AuthReply_Type.Descriptor instead.
+func (AuthReply_Type) EnumDescriptor() ([]byte, []int) {
+	return file_api_proto_rawDescGZIP(), []int{4, 0}
+}
+
 // Initial Connection Message to Establish Sonr
 type ConnectionRequest struct {
 	state         protoimpl.MessageState
@@ -404,10 +453,10 @@ type AuthReply struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Payload  Payload       `protobuf:"varint,1,opt,name=payload,proto3,enum=Payload" json:"payload,omitempty"` // Type of Transfer
-	From     *Peer         `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`                     // Users Peer Data
-	Decision bool          `protobuf:"varint,3,opt,name=decision,proto3" json:"decision,omitempty"`            // Users Decision for the Invitation
-	Card     *TransferCard `protobuf:"bytes,4,opt,name=card,proto3" json:"card,omitempty"`                     // Card contains all Data Info, Transfer Info
+	Type     AuthReply_Type `protobuf:"varint,1,opt,name=type,proto3,enum=AuthReply_Type" json:"type,omitempty"` // Type of Transfer Reply
+	From     *Peer          `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`                      // Users Peer Data
+	Decision bool           `protobuf:"varint,3,opt,name=decision,proto3" json:"decision,omitempty"`             // Users Decision for the Invitation
+	Card     *TransferCard  `protobuf:"bytes,4,opt,name=card,proto3" json:"card,omitempty"`                      // Card contains all Data Info, Transfer Info
 }
 
 func (x *AuthReply) Reset() {
@@ -442,11 +491,11 @@ func (*AuthReply) Descriptor() ([]byte, []int) {
 	return file_api_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *AuthReply) GetPayload() Payload {
+func (x *AuthReply) GetType() AuthReply_Type {
 	if x != nil {
-		return x.Payload
+		return x.Type
 	}
-	return Payload_UNDEFINED
+	return AuthReply_Transfer
 }
 
 func (x *AuthReply) GetFrom() *Peer {
@@ -670,15 +719,18 @@ var file_api_proto_rawDesc = []byte{
 	0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x66, 0x65, 0x72, 0x43, 0x61, 0x72,
 	0x64, 0x52, 0x04, 0x63, 0x61, 0x72, 0x64, 0x12, 0x1a, 0x0a, 0x08, 0x69, 0x73, 0x44, 0x69, 0x72,
 	0x65, 0x63, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x08, 0x52, 0x08, 0x69, 0x73, 0x44, 0x69, 0x72,
-	0x65, 0x63, 0x74, 0x22, 0x89, 0x01, 0x0a, 0x09, 0x41, 0x75, 0x74, 0x68, 0x52, 0x65, 0x70, 0x6c,
-	0x79, 0x12, 0x22, 0x0a, 0x07, 0x70, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x0e, 0x32, 0x08, 0x2e, 0x50, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x52, 0x07, 0x70, 0x61,
-	0x79, 0x6c, 0x6f, 0x61, 0x64, 0x12, 0x19, 0x0a, 0x04, 0x66, 0x72, 0x6f, 0x6d, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x0b, 0x32, 0x05, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x04, 0x66, 0x72, 0x6f, 0x6d,
-	0x12, 0x1a, 0x0a, 0x08, 0x64, 0x65, 0x63, 0x69, 0x73, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01,
-	0x28, 0x08, 0x52, 0x08, 0x64, 0x65, 0x63, 0x69, 0x73, 0x69, 0x6f, 0x6e, 0x12, 0x21, 0x0a, 0x04,
-	0x63, 0x61, 0x72, 0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x54, 0x72, 0x61,
-	0x6e, 0x73, 0x66, 0x65, 0x72, 0x43, 0x61, 0x72, 0x64, 0x52, 0x04, 0x63, 0x61, 0x72, 0x64, 0x22,
+	0x65, 0x63, 0x74, 0x22, 0xb9, 0x01, 0x0a, 0x09, 0x41, 0x75, 0x74, 0x68, 0x52, 0x65, 0x70, 0x6c,
+	0x79, 0x12, 0x23, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32,
+	0x0f, 0x2e, 0x41, 0x75, 0x74, 0x68, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x2e, 0x54, 0x79, 0x70, 0x65,
+	0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x19, 0x0a, 0x04, 0x66, 0x72, 0x6f, 0x6d, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x05, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x04, 0x66, 0x72, 0x6f,
+	0x6d, 0x12, 0x1a, 0x0a, 0x08, 0x64, 0x65, 0x63, 0x69, 0x73, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x08, 0x52, 0x08, 0x64, 0x65, 0x63, 0x69, 0x73, 0x69, 0x6f, 0x6e, 0x12, 0x21, 0x0a,
+	0x04, 0x63, 0x61, 0x72, 0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x54, 0x72,
+	0x61, 0x6e, 0x73, 0x66, 0x65, 0x72, 0x43, 0x61, 0x72, 0x64, 0x52, 0x04, 0x63, 0x61, 0x72, 0x64,
+	0x22, 0x2d, 0x0a, 0x04, 0x54, 0x79, 0x70, 0x65, 0x12, 0x0c, 0x0a, 0x08, 0x54, 0x72, 0x61, 0x6e,
+	0x73, 0x66, 0x65, 0x72, 0x10, 0x00, 0x12, 0x0b, 0x0a, 0x07, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x63,
+	0x74, 0x10, 0x01, 0x12, 0x0a, 0x0a, 0x06, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x10, 0x02, 0x22,
 	0x40, 0x0a, 0x0c, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12,
 	0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
 	0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x6d, 0x65, 0x74,
@@ -699,44 +751,45 @@ func file_api_proto_rawDescGZIP() []byte {
 	return file_api_proto_rawDescData
 }
 
-var file_api_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_api_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
 var file_api_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_api_proto_goTypes = []interface{}{
 	(InviteRequest_TransferType)(0), // 0: InviteRequest.TransferType
-	(*ConnectionRequest)(nil),       // 1: ConnectionRequest
-	(*InviteRequest)(nil),           // 2: InviteRequest
-	(*LinkRequest)(nil),             // 3: LinkRequest
-	(*AuthInvite)(nil),              // 4: AuthInvite
-	(*AuthReply)(nil),               // 5: AuthReply
-	(*ErrorMessage)(nil),            // 6: ErrorMessage
-	(*InviteRequest_FileInfo)(nil),  // 7: InviteRequest.FileInfo
-	(*Profile)(nil),                 // 8: Profile
-	(*Device)(nil),                  // 9: Device
-	(*Directories)(nil),             // 10: Directories
-	(*Contact)(nil),                 // 11: Contact
-	(*User)(nil),                    // 12: User
-	(*Peer)(nil),                    // 13: Peer
-	(Payload)(0),                    // 14: Payload
-	(*TransferCard)(nil),            // 15: TransferCard
+	(AuthReply_Type)(0),             // 1: AuthReply.Type
+	(*ConnectionRequest)(nil),       // 2: ConnectionRequest
+	(*InviteRequest)(nil),           // 3: InviteRequest
+	(*LinkRequest)(nil),             // 4: LinkRequest
+	(*AuthInvite)(nil),              // 5: AuthInvite
+	(*AuthReply)(nil),               // 6: AuthReply
+	(*ErrorMessage)(nil),            // 7: ErrorMessage
+	(*InviteRequest_FileInfo)(nil),  // 8: InviteRequest.FileInfo
+	(*Profile)(nil),                 // 9: Profile
+	(*Device)(nil),                  // 10: Device
+	(*Directories)(nil),             // 11: Directories
+	(*Contact)(nil),                 // 12: Contact
+	(*User)(nil),                    // 13: User
+	(*Peer)(nil),                    // 14: Peer
+	(Payload)(0),                    // 15: Payload
+	(*TransferCard)(nil),            // 16: TransferCard
 }
 var file_api_proto_depIdxs = []int32{
-	8,  // 0: ConnectionRequest.profile:type_name -> Profile
-	9,  // 1: ConnectionRequest.device:type_name -> Device
-	10, // 2: ConnectionRequest.directories:type_name -> Directories
-	11, // 3: ConnectionRequest.contact:type_name -> Contact
-	12, // 4: ConnectionRequest.user:type_name -> User
+	9,  // 0: ConnectionRequest.profile:type_name -> Profile
+	10, // 1: ConnectionRequest.device:type_name -> Device
+	11, // 2: ConnectionRequest.directories:type_name -> Directories
+	12, // 3: ConnectionRequest.contact:type_name -> Contact
+	13, // 4: ConnectionRequest.user:type_name -> User
 	0,  // 5: InviteRequest.type:type_name -> InviteRequest.TransferType
-	13, // 6: InviteRequest.to:type_name -> Peer
-	11, // 7: InviteRequest.contact:type_name -> Contact
-	7,  // 8: InviteRequest.files:type_name -> InviteRequest.FileInfo
-	9,  // 9: LinkRequest.device:type_name -> Device
-	13, // 10: LinkRequest.peer:type_name -> Peer
-	14, // 11: AuthInvite.payload:type_name -> Payload
-	13, // 12: AuthInvite.from:type_name -> Peer
-	15, // 13: AuthInvite.card:type_name -> TransferCard
-	14, // 14: AuthReply.payload:type_name -> Payload
-	13, // 15: AuthReply.from:type_name -> Peer
-	15, // 16: AuthReply.card:type_name -> TransferCard
+	14, // 6: InviteRequest.to:type_name -> Peer
+	12, // 7: InviteRequest.contact:type_name -> Contact
+	8,  // 8: InviteRequest.files:type_name -> InviteRequest.FileInfo
+	10, // 9: LinkRequest.device:type_name -> Device
+	14, // 10: LinkRequest.peer:type_name -> Peer
+	15, // 11: AuthInvite.payload:type_name -> Payload
+	14, // 12: AuthInvite.from:type_name -> Peer
+	16, // 13: AuthInvite.card:type_name -> TransferCard
+	1,  // 14: AuthReply.type:type_name -> AuthReply.Type
+	14, // 15: AuthReply.from:type_name -> Peer
+	16, // 16: AuthReply.card:type_name -> TransferCard
 	17, // [17:17] is the sub-list for method output_type
 	17, // [17:17] is the sub-list for method input_type
 	17, // [17:17] is the sub-list for extension type_name
@@ -842,7 +895,7 @@ func file_api_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_api_proto_rawDesc,
-			NumEnums:      1,
+			NumEnums:      2,
 			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   0,
