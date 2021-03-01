@@ -34,8 +34,18 @@ type AuthService struct {
 
 // ^ Calls Invite on Remote Peer ^ //
 func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthResponse) error {
+	// Send Callback
+	as.call.Invited(args.Data)
+
+	// Received Message
+	receivedMessage := &md.AuthInvite{}
+	err := proto.Unmarshal(args.Data, receivedMessage)
+	if err != nil {
+		return err
+	}
+
 	// Set Current Message
-	as.setInvite(args.Data)
+	as.inviteMsg = receivedMessage
 
 	// Hold Select for Invite Type
 	if !as.inviteMsg.IsDirect {
@@ -96,7 +106,8 @@ func (pc *TransferController) Authorize(decision bool, contact *md.Contact, peer
 		Decision: decision,
 		Peer:     peer,
 		Contact:  contact,
-		Invite:   pc.auth.inviteMsg,
+		Offered:  pc.auth.inviteMsg.Payload,
+		IsCancel: false,
 	})
 
 	// Send to Channel
@@ -136,21 +147,4 @@ func (pc *TransferController) handleReply(data []byte) (bool, *md.Peer) {
 // @ Helper Method Clears Current Invite
 func (as *AuthService) clear() {
 	as.inviteMsg = nil
-}
-
-// @ Helper Method Sets Current Invite
-func (as *AuthService) setInvite(data []byte) error {
-	// Send Callback
-	as.call.Invited(data)
-
-	// Received Message
-	receivedMessage := &md.AuthInvite{}
-	err := proto.Unmarshal(data, receivedMessage)
-	if err != nil {
-		return err
-	}
-
-	// Set Current Message
-	as.inviteMsg = receivedMessage
-	return nil
 }

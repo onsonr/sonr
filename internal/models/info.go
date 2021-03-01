@@ -25,7 +25,7 @@ type AuthOpts struct {
 	Decision bool
 	Contact  *Contact
 	Peer     *Peer
-	Invite   *AuthInvite
+	Offered  Payload
 	IsCancel bool
 }
 
@@ -200,7 +200,6 @@ func NewInviteFromRequest(req *InviteRequest, p *Peer) AuthInvite {
 // ^ Method Creates AuthReply from Options ^ //
 func NewReplyFromDecision(opts AuthOpts) AuthReply {
 	// Initialize
-	offerMsg := opts.Invite
 	decision := opts.Decision
 	peer := opts.Peer
 	contact := opts.Contact
@@ -215,7 +214,7 @@ func NewReplyFromDecision(opts AuthOpts) AuthReply {
 	}
 
 	// @ Pass Contact Back
-	if offerMsg.Payload == Payload_CONTACT {
+	if opts.Offered == Payload_CONTACT {
 		// Create Accept Response
 		card := NewCardFromContact(peer, contact, TransferCard_REPLY)
 		return AuthReply{
