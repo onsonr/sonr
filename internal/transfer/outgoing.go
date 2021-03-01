@@ -58,11 +58,11 @@ func (of *OutgoingFile) WriteBase64(writer msgio.WriteCloser, peer *md.Peer) {
 	total := int32(len(base))
 
 	// Iterate for Entire file as String
-	for _, chunk := range ChunkBase64(base) {
+	for _, dat := range ChunkBase64(base) {
 		// Create Block Protobuf from Chunk
-		chunk := md.Chunk{
-			Size:  int32(len(chunk)),
-			B64:   chunk,
+		chunk := md.Chunk64{
+			Size:  int32(len(dat)),
+			Data:  dat,
 			Total: total,
 		}
 

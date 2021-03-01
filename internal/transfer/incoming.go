@@ -60,7 +60,7 @@ func (t *IncomingFile) AddBuffer(curr int, buffer []byte) (bool, error) {
 	defer t.mutex.Unlock()
 
 	// @ Unmarshal Bytes into Proto
-	chunk := md.Chunk{}
+	chunk := md.Chunk64{}
 	err := proto.Unmarshal(buffer, &chunk)
 	if err != nil {
 		return true, err
@@ -80,7 +80,7 @@ func (t *IncomingFile) AddBuffer(curr int, buffer []byte) (bool, error) {
 
 	// @ Add Buffer by File Type
 	// Add Base64 Chunk to Buffer
-	n, err := t.stringsBuilder.WriteString(chunk.B64)
+	n, err := t.stringsBuilder.WriteString(chunk.Data)
 	if err != nil {
 		return true, err
 	}

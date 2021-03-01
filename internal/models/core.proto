@@ -5,12 +5,18 @@ package core;
 // Require Go Package
 option go_package = ".;models";
 
-// Sent on Data Transfer to Add piece of File
-message Chunk {
-  string b64 = 1;   // Base 64 Value of Chunk
-  bytes buffer = 2; // Binary Value of Chunk
-  int32 size = 3;   // Size of this Chunk
-  int32 total = 4;  // Size of ALL Chunks together
+// Sent on Data Transfer to Add piece of File - Base64
+message Chunk64 {
+  string data = 1; // Base 64 Value of Chunk
+  int32 size = 2;  // Size of this Chunk
+  int32 total = 3; // Size of ALL Chunks together
+}
+
+// Sent on Data Transfer to Add piece of File - Binary
+message ChunkBuffer {
+  bytes data = 1;  // Binary Value of Chunk
+  int32 size = 2;  // Size of this Chunk
+  int32 total = 3; // Size of ALL Chunks together
 }
 
 // Status is User Node Situation

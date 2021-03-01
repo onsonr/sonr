@@ -12,19 +12,18 @@ type FileQueue struct {
 	files        []*sf.ProcessedFile
 	currentCount int
 	directories  *md.Directories
-	onQueued     sf.OnQueued
-	onError      sf.OnError
+	call         md.FileCallback
 	profile      *md.Profile
 }
 
 // ^ Initializes New Queue ^ //
-func NewQueue(dirs *md.Directories, p *md.Profile, qc sf.OnQueued, ec sf.OnError) *FileQueue {
+func NewQueue(dirs *md.Directories, p *md.Profile, qc md.OnQueued, mqc md.OnMultiQueued, ec md.OnError) *FileQueue {
+	callback := md.NewFileCallback(qc, mqc, ec)
 	return &FileQueue{
 		files:        make([]*sf.ProcessedFile, maxFileBufferSize),
 		currentCount: 0,
 		directories:  dirs,
-		onQueued:     qc,
-		onError:      ec,
+		call:         callback,
 		profile:      p,
 	}
 }
@@ -33,12 +32,12 @@ func NewQueue(dirs *md.Directories, p *md.Profile, qc sf.OnQueued, ec sf.OnError
 func (fq *FileQueue) AddFromRequest(req *md.InviteRequest) {
 	if req.Type == md.InviteRequest_File {
 		// Add Single File Transfer
-		safeFile := sf.NewProcessedFile(req, fq.profile, fq.onQueued, fq.onError)
+		safeFile := sf.NewProcessedFile(req, fq.profile, fq.call)
 		fq.files = append(fq.files, safeFile)
 		fq.currentCount = 1
 	} else if req.Type == md.InviteRequest_MultiFiles {
 		// Add Batch File Transfer
-		safeFiles := sf.NewBatchProcessFiles(req, fq.profile, fq.onQueued, fq.onError)
+		safeFiles := sf.NewBatchProcessFiles(req, fq.profile, fq.call)
 		fq.files = append(fq.files, safeFiles...)
 		fq.currentCount = len(safeFiles)
 	}

@@ -10,15 +10,6 @@ import (
 	md "github.com/sonr-io/core/internal/models"
 )
 
-// Define Function Types
-type OnProtobuf func([]byte)
-type OnQueued func(card *md.TransferCard, req *md.InviteRequest)
-type OnProgress func(data float32)
-type OnError func(err error, method string)
-
-// Package Error Callback
-var onError OnError
-
 // ******************* //
 // ******************* //
 // ** OUTGOING FILE ** //
@@ -28,10 +19,10 @@ var onError OnError
 // ^ File that safely sets metadata and thumbnail in routine ^ //
 type ProcessedFile struct {
 	// References
-	Payload  md.Payload
-	OnQueued OnQueued
-	mime     *md.MIME
-	Path     string
+	Payload md.Payload
+	call    md.FileCallback
+	mime    *md.MIME
+	Path    string
 
 	// Private Properties
 	mutex   sync.Mutex
@@ -48,24 +39,21 @@ func (pf *ProcessedFile) Ext() string {
 }
 
 // ^ NewProcessedFile Processes Outgoing File ^ //
-func NewProcessedFile(req *md.InviteRequest, p *md.Profile, queueCall OnQueued, errCall OnError) *ProcessedFile {
-	// Set Package Level Callbacks
-	onError = errCall
-
+func NewProcessedFile(req *md.InviteRequest, p *md.Profile, callback md.FileCallback) *ProcessedFile {
 	// Get File Information
 	file := req.Files[len(req.Files)-1]
 	info, err := md.GetFileInfo(file.Path)
 	if err != nil {
-		errCall(err, "File Info")
+		callback.Error(err)
 	}
 
 	// @ 1. Create new SafeFile
 	sm := &ProcessedFile{
-		OnQueued: queueCall,
-		Path:     file.Path,
-		Payload:  info.Payload,
-		request:  req,
-		mime:     info.Mime,
+		call:    callback,
+		Path:    file.Path,
+		Payload: info.Payload,
+		request: req,
+		mime:    info.Mime,
 	}
 
 	// ** Lock ** //
@@ -101,9 +89,8 @@ func NewProcessedFile(req *md.InviteRequest, p *md.Profile, queueCall OnQueued, 
 }
 
 // ^ NewBatchProcessFiles Processes Multiple Outgoing Files ^ //
-func NewBatchProcessFiles(req *md.InviteRequest, p *md.Profile, queueCall OnQueued, errCall OnError) []*ProcessedFile {
+func NewBatchProcessFiles(req *md.InviteRequest, p *md.Profile, callback md.FileCallback) []*ProcessedFile {
 	// Set Package Level Callbacks
-	onError = errCall
 	files := make([]*ProcessedFile, 64)
 
 	// Iterate Through Attached Files
@@ -111,15 +98,15 @@ func NewBatchProcessFiles(req *md.InviteRequest, p *md.Profile, queueCall OnQueu
 		// Get Info
 		info, err := md.GetFileInfo(file.Path)
 		if err != nil {
-			errCall(err, "File Info")
+			callback.Error(err)
 		}
 
 		// @ 1. Create new SafeFile
 		sm := &ProcessedFile{
-			OnQueued: queueCall,
-			Path:     file.Path,
-			request:  req,
-			mime:     info.Mime,
+			call:    callback,
+			Path:    file.Path,
+			request: req,
+			mime:    info.Mime,
 		}
 
 		// ** Lock ** //
@@ -195,7 +182,7 @@ func RequestThumbnail(reqFi *md.InviteRequest_FileInfo, sm *ProcessedFile) {
 	preview := sm.TransferCard()
 
 	// @ 3. Callback with Preview
-	sm.OnQueued(preview, sm.request)
+	sm.call.Queued(preview, sm.request)
 }
 
 // ^ Method to generate thumbnail for ProcessRequest^ //
@@ -225,5 +212,5 @@ func HandleThumbdata(reqFi *md.InviteRequest_FileInfo, sm *ProcessedFile) {
 	preview := sm.TransferCard()
 
 	// @ 3. Callback with Preview
-	sm.OnQueued(preview, sm.request)
+	sm.call.Queued(preview, sm.request)
 }

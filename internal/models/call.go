@@ -8,6 +8,8 @@ import (
 
 // Define Function Types
 type OnProtobuf func([]byte)
+type OnQueued func(card *TransferCard, req *InviteRequest)
+type OnMultiQueued func(card *TransferCard, req *InviteRequest, count int)
 type OnInvite func(data []byte)
 type OnProgress func(data float32)
 type OnReceived func(data *TransferCard)
@@ -101,4 +103,34 @@ func (tc *TransferCallback) Transmitted(data *Peer) {
 // @ -- Call Controller Error -- //
 func (tc *TransferCallback) Error(err error) {
 	tc.callError(err, "Transfer Error")
+}
+
+type FileCallback struct {
+	callQueued      OnQueued
+	callMultiQueued OnMultiQueued
+	callError       OnError
+}
+
+// ^ Creates New File Callback ^ //
+func NewFileCallback(callQueued OnQueued, callMultiQueued OnMultiQueued, callError OnError) FileCallback {
+	return FileCallback{
+		callQueued:      callQueued,
+		callMultiQueued: callMultiQueued,
+		callError:       callError,
+	}
+}
+
+// @ -- Call Multiple Files Queued -- //
+func (fc *FileCallback) MultiQueued(card *TransferCard, req *InviteRequest, count int) {
+	fc.callMultiQueued(card, req, count)
+}
+
+// @ -- Call Single File Queued -- //
+func (fc *FileCallback) Queued(card *TransferCard, req *InviteRequest) {
+	fc.callQueued(card, req)
+}
+
+// @ -- Call File Error -- //
+func (fc *FileCallback) Error(err error) {
+	fc.callError(err, "File Error")
 }

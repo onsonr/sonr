@@ -65,7 +65,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	}
 
 	// @1. Set OLC, Create Host, and Start Discovery
-	node.queue = NewQueue(reqMsg.Directories, reqMsg.Profile, node.queued, node.error)
+	node.queue = NewQueue(reqMsg.Directories, reqMsg.Profile, node.queued, node.multiQueued, node.error)
 	node.status = md.Status_NONE
 	node.olc = olc.Encode(float64(reqMsg.Latitude), float64(reqMsg.Longitude), 8)
 	node.host, err = sh.NewHost(node.ctx, reqMsg.Directories, node.olc)
@@ -125,7 +125,7 @@ func (sn *Node) queued(card *md.TransferCard, req *md.InviteRequest) {
 }
 
 // ^ multiQueued Callback, Sends File Invite to Peer, and Notifies Client ^
-func (sn *Node) multiQueued(card *md.TransferCard, req *md.InviteRequest) {
+func (sn *Node) multiQueued(card *md.TransferCard, req *md.InviteRequest, count int) {
 	// Get PeerID
 	id, _, err := sn.lobby.Find(req.To.Id)
 
