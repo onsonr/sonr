@@ -52,7 +52,7 @@ func (sn *Node) Invite(reqBytes []byte) {
 		invMsg := md.NewInviteFromRequest(req, sn.peer)
 
 		// Get PeerID and Check error
-		id, _, err := sn.lobby.Find(req.To.Id)
+		id, _, err := sn.lobby.Find(req.To.Id.Peer)
 		if err != nil {
 			sn.error(err, "InviteWithContact")
 		}

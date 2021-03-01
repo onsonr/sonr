@@ -106,7 +106,7 @@ func (lob *Lobby) Resume() error {
 	event := md.LobbyEvent{
 		Event: md.LobbyEvent_RESUME,
 		Data:  lob.call.Peer(),
-		Id:    lob.call.Peer().Id,
+		Id:    lob.call.Peer().Id.Peer,
 	}
 
 	// Convert Event to Proto Binary
@@ -129,7 +129,7 @@ func (lob *Lobby) Standby() error {
 	event := md.LobbyEvent{
 		Event: md.LobbyEvent_STANDBY,
 		Data:  lob.call.Peer(),
-		Id:    lob.call.Peer().Id,
+		Id:    lob.call.Peer().Id.Peer,
 	}
 
 	// Convert Event to Proto Binary
@@ -152,7 +152,7 @@ func (lob *Lobby) Update() error {
 	event := md.LobbyEvent{
 		Event: md.LobbyEvent_UPDATE,
 		Data:  lob.call.Peer(),
-		Id:    lob.call.Peer().Id,
+		Id:    lob.call.Peer().Id.Peer,
 	}
 
 	// Convert Event to Proto Binary

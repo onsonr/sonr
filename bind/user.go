@@ -80,6 +80,13 @@ func (sn *Node) SetContact(conBytes []byte) {
 	// Set Node Contact
 	sn.contact = newContact
 
+	// Update Peer Profile
+	sn.peer.Profile = &md.Profile{
+		FirstName: newContact.GetFirstName(),
+		LastName:  newContact.GetLastName(),
+		Picture:   newContact.GetPicture(),
+	}
+
 	// Set User Contact
 	err = updateContact(newContact, sn.directories.Documents)
 	if err != nil {
@@ -107,7 +114,7 @@ func addDevice(device *md.Device, docPath string) error {
 }
 
 // ^ Method Creates User and Saves Data to Disk ^ //
-func createUser(connEvent *md.ConnectionRequest) error {
+func createUser(connEvent *md.ConnectionRequest, profile *md.Profile) error {
 	// Initialize Path
 	path := filepath.Join(connEvent.Directories.Documents, "user.snr")
 
@@ -121,7 +128,7 @@ func createUser(connEvent *md.ConnectionRequest) error {
 	// Create User
 	user := &md.User{
 		Contact: connEvent.Contact,
-		Profile: connEvent.Profile,
+		Profile: profile,
 		Devices: devices,
 	}
 
@@ -260,10 +267,10 @@ func updateContact(contact *md.Contact, docPath string) error {
 }
 
 // ^ getDeviceID sets node device ID from path if Exists ^ //
-func getDeviceID(connEvent *md.ConnectionRequest) error {
+func getDeviceID(connEvent *md.ConnectionRequest) (string, error) {
 	// Check if ID already provided
 	if connEvent.Device.Id != "" {
-		return nil
+		return connEvent.Device.Id, nil
 	}
 
 	// Create Device ID Path
@@ -274,13 +281,13 @@ func getDeviceID(connEvent *md.ConnectionRequest) error {
 		// Generate ID
 		id, err := machineid.ProtectedID("Sonr")
 		if err != nil {
-			return err
+			return "", err
 		}
 
 		// Write ID To File
 		f, err := os.Create(path)
 		if err != nil {
-			return err
+			return "", err
 		}
 
 		// Defer Close
@@ -289,17 +296,17 @@ func getDeviceID(connEvent *md.ConnectionRequest) error {
 		// Write to File
 		_, err = f.WriteString(id)
 		if err != nil {
-			return err
+			return "", err
 		}
 
 		// Update Device
 		connEvent.Device.Id = id
-		return nil
+		return id, nil
 	} else {
 		// @ Read Device ID Data
 		dat, err := ioutil.ReadFile(path)
 		if err != nil {
-			return err
+			return "", err
 		}
 
 		// Convert to String
@@ -308,6 +315,6 @@ func getDeviceID(connEvent *md.ConnectionRequest) error {
 		// Update Device
 		connEvent.Device.Id = id
 
-		return nil
+		return id, nil
 	}
 }

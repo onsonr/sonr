@@ -10,7 +10,7 @@ option go_package = ".;models";
 message ConnectionRequest {
   double latitude = 1;         // Geolocation for OLC
   double longitude = 2;        // Geolocation for OLC
-  Profile profile = 3;         // General Peer Info
+  string username = 3;         // General Peer Info
   Device device = 4;           // Users Device
   Directories directories = 5; // Users Available File Paths
   Contact contact = 6;         // Users Contact Card

@@ -57,25 +57,34 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	node.call = call
 
 	// ** Unmarshal Request **
-	reqMsg := md.ConnectionRequest{}
-	err := proto.Unmarshal(reqBytes, &reqMsg)
+	req := md.ConnectionRequest{}
+	err := proto.Unmarshal(reqBytes, &req)
 	if err != nil {
 		node.error(err, "NewNode")
 		return nil
 	}
 
+	// Create New Profile from Request
+	profile := &md.Profile{
+		Username:  req.GetUsername(),
+		FirstName: req.Contact.GetFirstName(),
+		LastName:  req.Contact.GetLastName(),
+		Picture:   req.Contact.GetPicture(),
+		Platform:  req.Device.GetPlatform(),
+	}
+
 	// @1. Set OLC, Create Host, and Start Discovery
-	node.queue = NewQueue(reqMsg.Directories, reqMsg.Profile, node.queued, node.multiQueued, node.error)
+	node.queue = NewQueue(req.Directories, profile, node.queued, node.multiQueued, node.error)
 	node.status = md.Status_NONE
-	node.olc = olc.Encode(float64(reqMsg.Latitude), float64(reqMsg.Longitude), 8)
-	node.host, err = sh.NewHost(node.ctx, reqMsg.Directories, node.olc)
+	node.olc = olc.Encode(float64(req.Latitude), float64(req.Longitude), 8)
+	node.host, err = sh.NewHost(node.ctx, req.Directories, node.olc)
 	if err != nil {
 		node.error(err, "NewNode")
 		return nil
 	}
 
 	// @3. Set Node User Information
-	if err = node.setInfo(&reqMsg); err != nil {
+	if err = node.setInfo(&req, profile); err != nil {
 		node.error(err, "NewNode")
 		return nil
 	}
@@ -93,7 +102,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 // ^ queued Callback, Sends File Invite to Peer, and Notifies Client ^
 func (sn *Node) queued(card *md.TransferCard, req *md.InviteRequest) {
 	// Get PeerID
-	id, _, err := sn.lobby.Find(req.To.Id)
+	id, _, err := sn.lobby.Find(req.To.Id.Peer)
 
 	// Check error
 	if err != nil {
@@ -127,7 +136,7 @@ func (sn *Node) queued(card *md.TransferCard, req *md.InviteRequest) {
 // ^ multiQueued Callback, Sends File Invite to Peer, and Notifies Client ^
 func (sn *Node) multiQueued(card *md.TransferCard, req *md.InviteRequest, count int) {
 	// Get PeerID
-	id, _, err := sn.lobby.Find(req.To.Id)
+	id, _, err := sn.lobby.Find(req.To.Id.Peer)
 
 	// Check error
 	if err != nil {

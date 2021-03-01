@@ -37,15 +37,15 @@ type IncomingFile struct {
 // ^ Method Creates New Transfer File ^ //
 func NewIncomingFile(inv *md.AuthInvite, dirs *md.Directories, tc md.TransferCallback) *IncomingFile {
 	// Create File Name
-	fileName := inv.Card.Properties.Name + "." + inv.Card.Properties.Mime.Subtype
+	path, name := getPath(inv.Payload, dirs, inv.Card.Properties)
 
 	// Return File
 	return &IncomingFile{
 		// Inherited Properties
 		invite: inv,
-		path:   filepath.Join(dirs.Temporary, fileName),
+		path:   path,
 		call:   tc,
-		name:   fileName,
+		name:   name,
 
 		// Builders
 		stringsBuilder: new(strings.Builder),
@@ -163,4 +163,17 @@ func (t *IncomingFile) Save() error {
 	// Send Complete Callback
 	t.call.Received(card)
 	return nil
+}
+
+// @ Helper Method to Set Path and FileName - (Path, File Name)
+func getPath(load md.Payload, dirs *md.Directories, props *md.TransferCard_Properties) (string, string) {
+	// Create File Name
+	fileName := props.Name + "." + props.Mime.Subtype
+
+	// Check Load
+	if load == md.Payload_MEDIA {
+		return filepath.Join(dirs.Temporary, fileName), fileName
+	} else {
+		return filepath.Join(dirs.Documents, fileName), fileName
+	}
 }

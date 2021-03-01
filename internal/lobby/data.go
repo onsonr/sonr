@@ -21,8 +21,8 @@ func (lob *Lobby) removePeer(id peer.ID) {
 // ** standbyPeer puts a Peer in Standby Mode **
 func (lob *Lobby) resumePeer(peer *md.Peer) {
 	// Update Peer with new data
-	delete(lob.data.Standby, peer.Id)
-	lob.data.Peers[peer.Id] = peer
+	delete(lob.data.Standby, peer.Id.Peer)
+	lob.data.Peers[peer.Id.Peer] = peer
 	lob.data.Count = int32(len(lob.data.Peers))
 	lob.data.Size = int32(len(lob.data.Peers)) + 1 // Account for User
 
@@ -33,12 +33,12 @@ func (lob *Lobby) resumePeer(peer *md.Peer) {
 // ** standbyPeer puts a Peer in Standby Mode **
 func (lob *Lobby) standbyPeer(peer *md.Peer) {
 	// Update Peer with new data
-	delete(lob.data.Peers, peer.Id)
+	delete(lob.data.Peers, peer.Id.Peer)
 	lob.data.Count = int32(len(lob.data.Peers))
 	lob.data.Size = int32(len(lob.data.Peers)) + 1 // Account for User
 
 	// Add to Standby
-	lob.data.Standby[peer.Id] = peer
+	lob.data.Standby[peer.Id.Peer] = peer
 
 	// Callback with Updated Data
 	lob.Refresh()
@@ -47,7 +47,7 @@ func (lob *Lobby) standbyPeer(peer *md.Peer) {
 // ** updatePeer changes Peer values in Lobby **
 func (lob *Lobby) updatePeer(peer *md.Peer) {
 	// Update Peer with new data
-	lob.data.Peers[peer.Id] = peer
+	lob.data.Peers[peer.Id.Peer] = peer
 	lob.data.Count = int32(len(lob.data.Peers))
 	lob.data.Size = int32(len(lob.data.Peers)) + 1 // Account for User
 
@@ -72,7 +72,7 @@ func (lob *Lobby) Peer(q string) *md.Peer {
 	// Iterate Through Peers, Return Matched Peer
 	for _, peer := range lob.data.Peers {
 		// If Found Match
-		if peer.Id == q {
+		if peer.Id.Peer == q {
 			return peer
 		}
 	}

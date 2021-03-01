@@ -3,6 +3,7 @@ package sonr
 import (
 	"context"
 	"errors"
+	"hash/fnv"
 
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	sl "github.com/sonr-io/core/internal/lobby"
@@ -11,7 +12,7 @@ import (
 )
 
 // ^ setInfo sets node info from connEvent and host ^ //
-func (sn *Node) setInfo(connEvent *md.ConnectionRequest) error {
+func (sn *Node) setInfo(connEvent *md.ConnectionRequest, profile *md.Profile) error {
 	// Check for Host
 	if sn.host == nil {
 		err := errors.New("setPeer: Host has not been called")
@@ -24,23 +25,32 @@ func (sn *Node) setInfo(connEvent *md.ConnectionRequest) error {
 	sn.device = connEvent.Device
 
 	// Get Device ID
-	err := getDeviceID(connEvent)
+	dID, err := getDeviceID(connEvent)
+	if err != nil {
+		return err
+	}
+
+	// Get User ID
+	h := fnv.New32a()
+	_, err = h.Write([]byte(profile.Username))
 	if err != nil {
 		return err
 	}
 
 	// Set Peer Info
 	sn.peer = &md.Peer{
-		Id:       sn.host.ID().String(),
-		Profile:  connEvent.Profile,
+		Id: &md.Peer_ID{
+			Peer:   sn.host.ID().String(),
+			Device: dID,
+			User:   h.Sum32(),
+		},
+		Profile:  profile,
 		Platform: connEvent.Device.Platform,
 		Model:    connEvent.Device.Model,
 	}
 
 	// Create User and Save
-	err = createUser(connEvent)
-
-	// Check for Save
+	err = createUser(connEvent, profile)
 	if err != nil {
 		return err
 	}
