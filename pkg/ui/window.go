@@ -9,7 +9,7 @@ import (
 	"runtime"
 	"sync"
 
-	"github.com/skip2/go-qrcode"
+	// "github.com/skip2/go-qrcode"
 	"github.com/zserge/lorca"
 )
 
@@ -34,11 +34,11 @@ func (c *counter) Value() int {
 func (sm *AppInterface) OpenQRWindow(json string) {
 	// Encode to QR
 	print(json)
-	//qrData, err := qrcode.Encode(json, qrcode.Medium, 256)
-	err := qrcode.WriteFile(json, qrcode.Medium, 256, "qrcode.png")
-	if err != nil {
-		log.Panicln(err)
-	}
+	// //qrData, err := qrcode.Encode(json, qrcode.Medium, 256)
+	// err := qrcode.WriteFile(json, qrcode.Medium, 256, "qrcode.png")
+	// if err != nil {
+	// 	log.Panicln(err)
+	// }
 
 	args := []string{}
 	if runtime.GOOS == "linux" {

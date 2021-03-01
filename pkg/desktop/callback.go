@@ -50,7 +50,7 @@ func (c *Client) OnInvited(data []byte) {
 	if m.Payload == md.Payload_MEDIA {
 		c.node.Respond(decs)
 	} else if m.Payload == md.Payload_URL {
-		err := op.Start(m.Card.Url)
+		err := op.Start(m.Card.Url.Link)
 
 		if err != nil {
 			log.Println(err)

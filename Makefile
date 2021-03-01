@@ -33,8 +33,9 @@ all: Makefile
 ## desktop     :   Builds Darwin and Windows Builds at Build Path
 desktop: proto
 	go clean -cache -x
-	cd pkg && go build -o $(MAC_ARTIFACT)
-	cd pkg && GOOS=windows GOARCH=amd64 go build -o $(WIN_ARTIFACT)
+	cd pkg && packr build -o $(MAC_ARTIFACT)
+	cd pkg && GOOS=windows GOARCH=amd64 packr build -o $(WIN_ARTIFACT)
+	@packr clean
 	@go mod tidy
 	@cd /System/Library/Sounds && afplay Hero.aiff
 	@echo ""
@@ -52,7 +53,8 @@ darwin:
 	@echo "-----------------------------------------------------------"
 	@go clean -cache
 	@go mod tidy
-	cd pkg && go build -o $(MAC_ARTIFACT)
+	cd pkg && packr build -o $(MAC_ARTIFACT)
+	@packr clean
 	@echo "Finished Building ➡ " && date
 	@echo "--------------------------------------------------------------"
 	@echo "------------- 🖥  COMPLETED DAWIN BULD  🖥  -------------------"
@@ -66,7 +68,8 @@ win:
 	@echo "------------- 🪟 START WINDOWS BUILD 🪟 --------------------"
 	@echo "-----------------------------------------------------------"
 	@go clean -cache
-	cd pkg && GOOS=windows GOARCH=amd64 go build -ldflags -H=windowsgui -o $(WIN_ARTIFACT)
+	cd pkg && GOOS=windows GOARCH=amd64 packr build -ldflags -H=windowsgui -o $(WIN_ARTIFACT)
+	@packr clean
 	@echo "Finished Binding ➡ " && date
 	@echo "--------------------------------------------------------------"
 	@echo "------------- 🪟 COMPLETED WINDOWS BULD 🪟 --------------------"
@@ -145,7 +148,8 @@ run:
 	@echo "-----------------------------------------------------------"
 	@go clean -cache
 	@go mod tidy
-	cd pkg && go build -o $(MAC_ARTIFACT)
+	cd pkg && packr build -o $(MAC_ARTIFACT)
+	@packr clean
 	@echo "Finished Building ➡ " && date
 	@echo "--------------------------------------------------------------"
 	@echo "------------- 🖥  RUN DAWIN BULD  🖥  -------------------"

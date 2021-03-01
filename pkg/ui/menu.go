@@ -2,8 +2,10 @@ package ui
 
 import (
 	"log"
+	"runtime"
 
 	"github.com/getlantern/systray"
+	"github.com/gobuffalo/packr"
 	sonr "github.com/sonr-io/core/bind"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/encoding/protojson"
@@ -12,6 +14,7 @@ import (
 
 type AppInterface struct {
 	node       *sonr.Node
+	box        packr.Box
 	mLink      *systray.MenuItem
 	mCount     *systray.MenuItem
 	mQuit      *systray.MenuItem
@@ -21,15 +24,30 @@ type AppInterface struct {
 }
 
 // ^ Start Starts System tray with Library ^ //
-func Start() AppInterface {
+func Start(box packr.Box) AppInterface {
+	// Check Platform
+	if runtime.GOOS == "windows" {
+		icon, err := box.Find("systray.ico")
+		if err != nil {
+			log.Println(err)
+		}
+		systray.SetIcon(icon)
+	} else {
+		icon, err := box.Find("systray.png")
+		if err != nil {
+			log.Println(err)
+		}
+		systray.SetTemplateIcon(icon, icon)
+	}
+
 	// Set Initial Menu Vars
-	systray.SetTemplateIcon(GetIcon(SystemTray), GetIcon(SystemTray))
 	systray.SetTooltip("Sonr")
 
 	// Default
 	ai := AppInterface{
 		peerCount: 0,
 		lobbySize: 1,
+		box:       box,
 	}
 
 	// Link Sonr Device

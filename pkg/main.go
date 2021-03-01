@@ -7,6 +7,7 @@ import (
 	"context"
 
 	"github.com/getlantern/systray"
+	"github.com/gobuffalo/packr"
 	"github.com/sonr-io/core/pkg/desktop"
 	"github.com/sonr-io/core/pkg/ui"
 
@@ -25,14 +26,17 @@ var ctx context.Context
 var app ui.AppInterface
 
 func main() {
-	// Start Function
+
 	ctx = context.Background()
 	systray.Run(onReady, onExit)
 }
 
 func onReady() {
+	// Start Function
+	box := packr.NewBox("./res")
+
 	// Starts Menu Bar
-	app = ui.Start()
+	app = ui.Start(box)
 
 	// Creates New Client
 	desk = desktop.NewClient(ctx, app)
