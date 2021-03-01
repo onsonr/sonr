@@ -89,17 +89,10 @@ func NewProcessedFile(req *md.InviteRequest, p *md.Profile, queueCall OnQueued, 
 	}
 
 	// @ 3. Create Thumbnail in Goroutine
-	// Check Payload
-	if info.Payload == md.Payload_MEDIA {
-		if len(file.Thumbdata) > 0 {
-			go HandleThumbdata(file, sm)
-		} else {
-			go RequestThumbnail(file, sm)
-		}
+	if len(file.Thumbdata) > 0 {
+		go HandleThumbdata(file, sm)
 	} else {
-		// Non Media dont require Thumbnail
-		sm.mutex.Unlock()
-		sm.OnQueued(sm.TransferCard(), sm.request)
+		go RequestThumbnail(file, sm)
 	}
 	return sm
 }
