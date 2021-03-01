@@ -24,8 +24,8 @@ type TransferController struct {
 	auth *AuthService
 
 	// Data Handlers
-	ProcessedFile *sf.ProcessedFile
-	transfer      *sf.TransferFile
+	outgoing *OutgoingFile
+	incoming *IncomingFile
 
 	// Callbacks
 	invitedCall     md.OnInvite
@@ -56,7 +56,7 @@ func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, tc 
 	}
 
 	// Create GRPC Client/Server and Set Data Stream Handler
-	h.SetStreamHandler(protocol.ID("/sonr/data/transfer"), peerConn.HandleTransfer)
+	h.SetStreamHandler(protocol.ID("/sonr/data/transfer"), peerConn.HandleIncoming)
 	rpcServer := gorpc.NewServer(h, protocol.ID("/sonr/rpc/auth"))
 
 	// Create AuthService
@@ -76,14 +76,20 @@ func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, tc 
 	return peerConn, nil
 }
 
-// ^  Prepare for Stream, Create new Transfer ^ //
-func (pc *TransferController) PrepareTransfer(inv *md.AuthInvite) {
-	// Initialize Transfer
-	pc.transfer = sf.NewTransfer(inv, pc.dirs, pc.progressCall, pc.receivedCall)
+// ^  Prepare for Stream, Create Incoming Transfer ^ //
+func (pc *TransferController) NewIncoming(inv *md.AuthInvite) {
+	// Initialize Incoming
+	pc.incoming = NewIncomingFile(inv, pc.dirs, pc.progressCall, pc.receivedCall)
+}
+
+// ^  Set Outgoing Transfer ^ //
+func (pc *TransferController) NewOutgoing(pf *sf.ProcessedFile) {
+	// Initialize Outgoing
+	pc.outgoing = NewOutgoingFile(pf, pc.transmittedCall)
 }
 
 // ^ User has accepted, Begin Sending Transfer ^ //
-func (pc *TransferController) StartTransfer(h host.Host, id peer.ID, peer *md.Peer) {
+func (pc *TransferController) StartOutgoing(h host.Host, id peer.ID, peer *md.Peer) {
 	// Create New Auth Stream
 	stream, err := h.NewStream(context.Background(), id, protocol.ID("/sonr/data/transfer"))
 	if err != nil {
@@ -95,13 +101,13 @@ func (pc *TransferController) StartTransfer(h host.Host, id peer.ID, peer *md.Pe
 	writer := msgio.NewWriter(stream)
 
 	// Start Routine
-	go writeBase64ToStream(writer, pc.transmittedCall, pc.ProcessedFile, peer)
+	go pc.outgoing.WriteBase64(writer, peer)
 }
 
 // ^ Handle Incoming Stream ^ //
-func (pc *TransferController) HandleTransfer(stream network.Stream) {
+func (pc *TransferController) HandleIncoming(stream network.Stream) {
 	// Route Data from Stream
-	go func(reader msgio.ReadCloser, t *sf.TransferFile) {
+	go func(reader msgio.ReadCloser, t *IncomingFile) {
 		for i := 0; ; i++ {
 			// @ Read Length Fixed Bytes
 			buffer, err := reader.ReadMsg()
@@ -122,7 +128,7 @@ func (pc *TransferController) HandleTransfer(stream network.Stream) {
 			// @ Check if All Buffer Received to Save
 			if hasCompleted {
 				// Sync file
-				if err := pc.transfer.Save(); err != nil {
+				if err := pc.incoming.Save(); err != nil {
 					onError(err, "SaveFile")
 					log.Fatalln(err)
 				}
@@ -130,5 +136,5 @@ func (pc *TransferController) HandleTransfer(stream network.Stream) {
 			}
 			md.GetState().NeedsWait()
 		}
-	}(msgio.NewReader(stream), pc.transfer)
+	}(msgio.NewReader(stream), pc.incoming)
 }

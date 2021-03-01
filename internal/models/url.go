@@ -1,4 +1,4 @@
-package host
+package models
 
 import (
 	"bytes"
@@ -15,7 +15,6 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	readability "github.com/julianshen/go-readability"
-	md "github.com/sonr-io/core/internal/models"
 )
 
 var (
@@ -151,7 +150,7 @@ func GetPageInfoFromResponse(response *http.Response) (*PageInfo, error) {
 	return &info, nil
 }
 
-func GetPageInfoFromUrl(urlStr string) (*md.URLLink, error) {
+func GetPageInfoFromUrl(urlStr string) (*URLLink, error) {
 	// Create Request
 	resp, err := http.Get(urlStr)
 	if err != nil {
@@ -165,7 +164,7 @@ func GetPageInfoFromUrl(urlStr string) (*md.URLLink, error) {
 	}
 
 	// Set Link
-	link := &md.URLLink{
+	link := &URLLink{
 		Link:        urlStr,
 		Title:       info.Title,
 		Type:        info.Type,
@@ -179,7 +178,7 @@ func GetPageInfoFromUrl(urlStr string) (*md.URLLink, error) {
 	// Get Images
 	if info.Images != nil {
 		for _, v := range info.Images {
-			link.Images = append(link.Images, &md.URLLink_OpenGraphImage{
+			link.Images = append(link.Images, &URLLink_OpenGraphImage{
 				Url:       v.Url,
 				SecureUrl: v.SecureUrl,
 				Width:     int32(v.Width),
@@ -192,7 +191,7 @@ func GetPageInfoFromUrl(urlStr string) (*md.URLLink, error) {
 	// Get Videos
 	if info.Videos != nil {
 		for _, v := range info.Videos {
-			link.Videos = append(link.Videos, &md.URLLink_OpenGraphVideo{
+			link.Videos = append(link.Videos, &URLLink_OpenGraphVideo{
 				Url:       v.Url,
 				SecureUrl: v.SecureUrl,
 				Width:     int32(v.Width),
@@ -205,7 +204,7 @@ func GetPageInfoFromUrl(urlStr string) (*md.URLLink, error) {
 	// Get Audios
 	if info.Audios != nil {
 		for _, v := range info.Videos {
-			link.Audios = append(link.Audios, &md.URLLink_OpenGraphAudio{
+			link.Audios = append(link.Audios, &URLLink_OpenGraphAudio{
 				Url:       v.Url,
 				SecureUrl: v.SecureUrl,
 				Type:      v.Type,
@@ -215,7 +214,7 @@ func GetPageInfoFromUrl(urlStr string) (*md.URLLink, error) {
 
 	// Get Twitter
 	if info.Twitter != nil {
-		twitter := &md.URLLink_TwitterCard{
+		twitter := &URLLink_TwitterCard{
 			Card:        info.Twitter.Card,
 			Site:        info.Twitter.Site,
 			SiteId:      info.Twitter.SiteId,
@@ -226,23 +225,23 @@ func GetPageInfoFromUrl(urlStr string) (*md.URLLink, error) {
 			Image:       info.Twitter.Image,
 			ImageAlt:    info.Twitter.ImageAlt,
 			Url:         info.Twitter.Url,
-			Player: &md.URLLink_TwitterCard_Player{
+			Player: &URLLink_TwitterCard_Player{
 				Url:    info.Twitter.Player.Url,
 				Width:  int32(info.Twitter.Player.Width),
 				Height: int32(info.Twitter.Player.Height),
 				Stream: info.Twitter.Player.Stream,
 			},
-			Iphone: &md.URLLink_TwitterCard_IPhone{
+			Iphone: &URLLink_TwitterCard_IPhone{
 				Name: info.Twitter.IPhone.Name,
 				Id:   info.Twitter.IPhone.Id,
 				Url:  info.Twitter.IPhone.Url,
 			},
-			Ipad: &md.URLLink_TwitterCard_IPad{
+			Ipad: &URLLink_TwitterCard_IPad{
 				Name: info.Twitter.IPad.Name,
 				Id:   info.Twitter.IPad.Id,
 				Url:  info.Twitter.IPad.Url,
 			},
-			GooglePlay: &md.URLLink_TwitterCard_GooglePlay{
+			GooglePlay: &URLLink_TwitterCard_GooglePlay{
 				Name: info.Twitter.Googleplay.Name,
 				Id:   info.Twitter.Googleplay.Id,
 				Url:  info.Twitter.Googleplay.Url,

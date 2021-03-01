@@ -8,7 +8,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	gorpc "github.com/libp2p/go-libp2p-gorpc"
-	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -58,7 +57,7 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 			// Convert Protobuf to bytes
 			msgBytes, err := proto.Marshal(m)
 			if err != nil {
-				log.Println(err)
+				return err
 			}
 
 			// Set Message data and call done
@@ -108,70 +107,32 @@ func (pc *TransferController) Request(h host.Host, id peer.ID, msgBytes []byte) 
 
 	// Check Response for Accept
 	if responseMessage.Decision && responseMessage.Type == md.AuthReply_Transfer {
-		pc.StartTransfer(h, id, responseMessage.From)
+		pc.StartOutgoing(h, id, responseMessage.From)
 	}
 }
 
 // ^ Send Authorize transfer on RPC ^ //
 func (pc *TransferController) Authorize(decision bool, contact *md.Contact, peer *md.Peer) {
-	// ** Get Current Message **
-	offerMsg := pc.auth.inviteMsg
+	// Generate Reply
+	reply := md.NewReplyFromDecision(md.AuthOpts{
+		Decision: decision,
+		Peer:     peer,
+		Contact:  contact,
+		Invite:   pc.auth.inviteMsg,
+	})
 
-	// @ Check Reply Type for File
-	switch offerMsg.Payload {
-	case md.Payload_MEDIA:
-		// @ Check Decision
-		if decision {
-			// Initialize Transfer
-			pc.PrepareTransfer(offerMsg)
-
-			// Create Accept Response
-			respMsg := &md.AuthReply{
-				From:     peer,
-				Decision: true,
-				Type:     md.AuthReply_Transfer,
-			}
-
-			// Send to Channel
-			pc.auth.respCh <- respMsg
-
-		} else {
-			// Create Decline Response
-			respMsg := &md.AuthReply{
-				From:     peer,
-				Decision: false,
-				Type:     md.AuthReply_Transfer,
-			}
-
-			// Send to Channel
-			pc.auth.respCh <- respMsg
-		}
-	case md.Payload_CONTACT:
-		// @ Pass Contact Back
-		// Create Accept Response
-		card := sf.NewCardFromContact(peer, contact, md.TransferCard_REPLY)
-		respMsg := &md.AuthReply{
-			From: peer,
-			Type: md.AuthReply_Contact,
-			Card: &card,
-		}
-
-		// Send to Channel
-		pc.auth.respCh <- respMsg
-	default:
-		break
-	}
+	// Send to Channel
+	pc.auth.respCh <- &reply
 }
 
 // ^ Send Authorize transfer on RPC ^ //
 func (pc *TransferController) Cancel(peer *md.Peer) {
-	// Create Decline Response
-	respMsg := &md.AuthReply{
-		From:     peer,
-		Decision: false,
-		Type:     md.AuthReply_Cancel,
-	}
+	// Create Cancel Reply
+	reply := md.NewReplyFromDecision(md.AuthOpts{
+		Peer:     peer,
+		IsCancel: true,
+	})
 
 	// Send to Channel
-	pc.auth.respCh <- respMsg
+	pc.auth.respCh <- &reply
 }

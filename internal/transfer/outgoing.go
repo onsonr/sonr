@@ -17,10 +17,24 @@ import (
 const B64ChunkSize = 31998 // Adjusted for Base64 -- has to be divisible by 3
 const BufferChunkSize = 32000
 
+type OutgoingFile struct {
+	onTransmitted md.OnTransmitted
+	processedFile *sf.ProcessedFile
+}
+
+// ^ Creates New Outgoing ^ //
+func NewOutgoingFile(pf *sf.ProcessedFile, oT md.OnTransmitted) *OutgoingFile {
+	return &OutgoingFile{
+		onTransmitted: oT,
+		processedFile: pf,
+	}
+}
+
 // ^ write file as Base64 in Msgio to Stream ^ //
-func writeBase64ToStream(writer msgio.WriteCloser, onTransmitted md.OnTransmitted, pf *sf.ProcessedFile, peer *md.Peer) {
+func (of *OutgoingFile) WriteBase64(writer msgio.WriteCloser, peer *md.Peer) {
 	// Initialize Buffer and Encode File
 	var base string
+	pf := of.processedFile
 
 	if pf.Payload == md.Payload_MEDIA {
 		buffer := new(bytes.Buffer)
@@ -67,7 +81,7 @@ func writeBase64ToStream(writer msgio.WriteCloser, onTransmitted md.OnTransmitte
 	}
 
 	// Call Completed Sending
-	onTransmitted(peer)
+	of.onTransmitted(peer)
 }
 
 // ^ Helper: Chunks string based on B64ChunkSize ^ //

@@ -71,9 +71,10 @@ message AuthReply {
   TransferCard card = 4; // Card contains all Data Info, Transfer Info
 
   enum Type {
-    Transfer = 0;
-    Contact = 1;
-    Cancel = 2;
+    None = 0;
+    Transfer = 1;
+    Contact = 2;
+    Cancel = 3;
   }
 }
 
