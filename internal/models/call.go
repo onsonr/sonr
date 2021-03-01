@@ -1,11 +1,5 @@
 package models
 
-import (
-	"log"
-
-	"google.golang.org/protobuf/proto"
-)
-
 // Define Function Types
 type OnProtobuf func([]byte)
 type OnQueued func(card *TransferCard, req *InviteRequest)
@@ -19,118 +13,54 @@ type ReturnPeer func() *Peer
 type UpdatePeer func(peer *Peer)
 
 type LobbyCallback struct {
-	callEvent   OnProtobuf
-	callRefresh OnProtobuf
-	callError   OnError
-	getPeer     ReturnPeer
+	Event   OnProtobuf
+	Refresh OnProtobuf
+	Error   OnError
+	Peer    ReturnPeer
 }
 
 // ^ Creates New Lobby Callback ^ //
 func NewLobbyCallback(callEvent OnProtobuf, callRefresh OnProtobuf, callError OnError, getPeer ReturnPeer) LobbyCallback {
 	return LobbyCallback{
-		callEvent:   callEvent,
-		callRefresh: callRefresh,
-		callError:   callError,
-		getPeer:     getPeer,
+		Event:   callEvent,
+		Refresh: callRefresh,
+		Error:   callError,
+		Peer:    getPeer,
 	}
-}
-
-// @ -- Refresh Lobby -- //
-func (lc LobbyCallback) Refresh(data *Lobby) {
-	bytes, err := proto.Marshal(data)
-	if err != nil {
-		log.Println("Cannot Marshal Error Protobuf: ", err)
-	}
-	lc.callRefresh(bytes)
-}
-
-// @ -- Call Lobby Error -- //
-func (lc LobbyCallback) Error(err error) {
-	lc.callError(err, "Lobby Error")
-}
-
-// @ -- Return Current Peer Data -- //
-func (lc LobbyCallback) Peer() *Peer {
-	return lc.getPeer()
 }
 
 type TransferCallback struct {
-	callInvited     OnInvite
-	callResponded   OnProtobuf
-	callProgress    OnProgress
-	callReceived    OnReceived
-	callTransmitted OnTransmitted
-	callError       OnError
+	Invited     OnInvite
+	Responded   OnProtobuf
+	Progressed  OnProgress
+	Received    OnReceived
+	Transmitted OnTransmitted
+	Error       OnError
 }
 
 // ^ Creates New Transfer Callback ^ //
 func NewTransferCallback(callInvited OnInvite, callResponded OnProtobuf, callProgress OnProgress, callReceived OnReceived, callTransmitted OnTransmitted, callError OnError) TransferCallback {
 	return TransferCallback{
-		callInvited:     callInvited,
-		callResponded:   callResponded,
-		callProgress:    callProgress,
-		callReceived:    callReceived,
-		callTransmitted: callTransmitted,
-		callError:       callError,
+		Invited:     callInvited,
+		Responded:   callResponded,
+		Progressed:  callProgress,
+		Received:    callReceived,
+		Transmitted: callTransmitted,
+		Error:       callError,
 	}
 }
 
-// @ -- Call Auth Invite -- //
-func (tc TransferCallback) Invited(data []byte) {
-	tc.callResponded(data)
-}
-
-// @ -- Call Auth Responded -- //
-func (tc TransferCallback) Responded(data []byte) {
-	tc.callInvited(data)
-}
-
-// @ -- Call Transfer Progressed -- //
-func (tc TransferCallback) Progressed(data float32) {
-	tc.callProgress(data)
-}
-
-// @ -- Call Transfer Received -- //
-func (tc TransferCallback) Received(data *TransferCard) {
-	tc.callReceived(data)
-}
-
-// @ -- Call Transfer Transmitted -- //
-func (tc TransferCallback) Transmitted(data *Peer) {
-	tc.callTransmitted(data)
-}
-
-// @ -- Call Controller Error -- //
-func (tc TransferCallback) Error(err error) {
-	tc.callError(err, "Transfer Error")
-}
-
 type FileCallback struct {
-	callQueued      OnQueued
-	callMultiQueued OnMultiQueued
-	callError       OnError
+	Queued      OnQueued
+	MultiQueued OnMultiQueued
+	Error       OnError
 }
 
 // ^ Creates New File Callback ^ //
 func NewFileCallback(callQueued OnQueued, callMultiQueued OnMultiQueued, callError OnError) FileCallback {
 	return FileCallback{
-		callQueued:      callQueued,
-		callMultiQueued: callMultiQueued,
-		callError:       callError,
+		Queued:      callQueued,
+		MultiQueued: callMultiQueued,
+		Error:       callError,
 	}
-}
-
-// @ -- Call Multiple Files Queued -- //
-func (fc FileCallback) MultiQueued(card *TransferCard, req *InviteRequest, count int) {
-	fc.callMultiQueued(card, req, count)
-}
-
-// @ -- Call Single File Queued -- //
-func (fc FileCallback) Queued(card *TransferCard, req *InviteRequest) {
-	fc.callQueued(card, req)
-}
-
-// @ -- Call File Error -- //
-func (fc FileCallback) Error(err error) {
-	fc.callError(err, "File Error")
 }

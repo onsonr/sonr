@@ -44,7 +44,7 @@ func NewProcessedFile(req *md.InviteRequest, p *md.Profile, callback md.FileCall
 	file := req.Files[len(req.Files)-1]
 	info, err := md.GetFileInfo(file.Path)
 	if err != nil {
-		callback.Error(err)
+		callback.Error(err, "NewProcessedFile:GetFileInfo")
 	}
 
 	// @ 1. Create new SafeFile
@@ -98,7 +98,7 @@ func NewBatchProcessFiles(req *md.InviteRequest, p *md.Profile, callback md.File
 		// Get Info
 		info, err := md.GetFileInfo(file.Path)
 		if err != nil {
-			callback.Error(err)
+			callback.Error(err, "NewBatchProcessFiles:GetFileInfo")
 		}
 
 		// @ 1. Create new SafeFile

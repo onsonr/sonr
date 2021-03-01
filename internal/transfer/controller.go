@@ -78,8 +78,7 @@ func (pc *TransferController) StartOutgoing(h host.Host, id peer.ID, peer *md.Pe
 	// Create New Auth Stream
 	stream, err := h.NewStream(context.Background(), id, protocol.ID("/sonr/transfer/data"))
 	if err != nil {
-		pc.call.Error(err)
-
+		pc.call.Error(err, "StartOutgoing")
 	}
 
 	// Initialize Writer
@@ -97,14 +96,14 @@ func (pc *TransferController) HandleIncoming(stream network.Stream) {
 			// @ Read Length Fixed Bytes
 			buffer, err := reader.ReadMsg()
 			if err != nil {
-				pc.call.Error(err)
+				pc.call.Error(err, "HandleIncoming:ReadMsg")
 				break
 			}
 
 			// @ Unmarshal Bytes into Proto
 			hasCompleted, err := t.AddBuffer(i, buffer)
 			if err != nil {
-				pc.call.Error(err)
+				pc.call.Error(err, "HandleIncoming:AddBuffer")
 				break
 			}
 
@@ -112,7 +111,7 @@ func (pc *TransferController) HandleIncoming(stream network.Stream) {
 			if hasCompleted {
 				// Sync file
 				if err := pc.incoming.Save(); err != nil {
-					pc.call.Error(err)
+					pc.call.Error(err, "HandleIncoming:Save")
 				}
 				break
 			}

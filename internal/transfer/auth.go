@@ -2,7 +2,6 @@ package transfer
 
 import (
 	"context"
-	"log"
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -59,9 +58,6 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 			return nil
 		}
 	}
-
-	// Begin Direct Transfer
-	log.Println("Direct Transfer")
 	return nil
 }
 
@@ -80,7 +76,7 @@ func (pc *TransferController) Request(h host.Host, id peer.ID, msgBytes []byte) 
 	// Await Response
 	call := <-done
 	if call.Error != nil {
-		pc.call.Error(err)
+		pc.call.Error(err, "Request")
 	}
 
 	// Send Callback and Reset
@@ -131,7 +127,7 @@ func (pc *TransferController) handleReply(data []byte) (bool, *md.Peer) {
 	resp := md.AuthReply{}
 	err := proto.Unmarshal(data, &resp)
 	if err != nil {
-		pc.call.Error(err)
+		pc.call.Error(err, "handleReply")
 		return false, nil
 	}
 	return resp.Decision && resp.Type == md.AuthReply_Transfer, resp.From

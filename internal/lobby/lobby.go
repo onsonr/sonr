@@ -2,6 +2,7 @@ package lobby
 
 import (
 	"context"
+	"log"
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/protocol"
@@ -166,4 +167,13 @@ func (lob *Lobby) Update() error {
 		return err
 	}
 	return nil
+}
+
+// ^ Send Updated Lobby ^
+func (lob *Lobby) Refresh() {
+	bytes, err := proto.Marshal(lob.data)
+	if err != nil {
+		log.Println("Cannot Marshal Error Protobuf: ", err)
+	}
+	lob.call.Refresh(bytes)
 }

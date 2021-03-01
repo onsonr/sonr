@@ -61,7 +61,7 @@ func (lob *Lobby) Exchange(id peer.ID) {
 	userPeer := lob.call.Peer()
 	msgBytes, err := proto.Marshal(userPeer)
 	if err != nil {
-		lob.call.Error(err)
+		lob.call.Error(err, "Exchange")
 	}
 
 	// Initialize RPC
@@ -71,13 +71,9 @@ func (lob *Lobby) Exchange(id peer.ID) {
 	args.Data = msgBytes
 
 	// Call to Peer
-	done := make(chan *gorpc.Call, 1)
-	err = rpcClient.Go(id, "PeerService", "ExchangeWith", args, &reply, done)
-
-	// Await Response
-	call := <-done
-	if call.Error != nil {
-		lob.call.Error(err)
+	err = rpcClient.Call(id, "PeerService", "ExchangeWith", args, &reply)
+	if err != nil {
+		lob.call.Error(err, "Exchange")
 	}
 
 	// Received Message
@@ -85,7 +81,7 @@ func (lob *Lobby) Exchange(id peer.ID) {
 	err = proto.Unmarshal(reply.Data, remotePeer)
 	if err != nil {
 		// Send Error
-		lob.call.Error(err)
+		lob.call.Error(err, "Exchange")
 	}
 
 	// Update Peers

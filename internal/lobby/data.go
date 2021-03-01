@@ -15,7 +15,7 @@ func (lob *Lobby) removePeer(id peer.ID) {
 	lob.data.Size = int32(len(lob.data.Peers)) + 1 // Account for User
 
 	// Callback with Updated Data
-	lob.call.Refresh(lob.data)
+	lob.Refresh()
 }
 
 // ** standbyPeer puts a Peer in Standby Mode **
@@ -27,7 +27,7 @@ func (lob *Lobby) resumePeer(peer *md.Peer) {
 	lob.data.Size = int32(len(lob.data.Peers)) + 1 // Account for User
 
 	// Callback with Updated Data
-	lob.call.Refresh(lob.data)
+	lob.Refresh()
 }
 
 // ** standbyPeer puts a Peer in Standby Mode **
@@ -41,7 +41,7 @@ func (lob *Lobby) standbyPeer(peer *md.Peer) {
 	lob.data.Standby[peer.Id] = peer
 
 	// Callback with Updated Data
-	lob.call.Refresh(lob.data)
+	lob.Refresh()
 }
 
 // ** updatePeer changes Peer values in Lobby **
@@ -52,7 +52,7 @@ func (lob *Lobby) updatePeer(peer *md.Peer) {
 	lob.data.Size = int32(len(lob.data.Peers)) + 1 // Account for User
 
 	// Callback with Updated Data
-	lob.call.Refresh(lob.data)
+	lob.Refresh()
 }
 
 // @ Helper: ID returns ONE Peer.ID in PubSub
