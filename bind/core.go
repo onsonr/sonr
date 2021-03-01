@@ -159,18 +159,11 @@ func (sn *Node) multiQueued(card *md.TransferCard, req *md.InviteRequest) {
 }
 
 // ^ invite Callback with data for Lifecycle ^ //
-func (sn *Node) invited(invite *md.AuthInvite) {
+func (sn *Node) invited(data []byte) {
 	// Update Status
 	sn.status = md.Status_INVITED
-
-	// Convert Protobuf to bytes
-	msgBytes, err := proto.Marshal(invite)
-	if err != nil {
-		log.Println(err)
-	}
-
 	// Callback with Data
-	sn.call.OnInvited(msgBytes)
+	sn.call.OnInvited(data)
 }
 
 // ^ transmitted Callback middleware post transfer ^ //

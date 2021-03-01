@@ -35,18 +35,8 @@ type AuthService struct {
 
 // ^ Calls Invite on Remote Peer ^ //
 func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthResponse) error {
-	// Received Message
-	receivedMessage := &md.AuthInvite{}
-	err := proto.Unmarshal(args.Data, receivedMessage)
-	if err != nil {
-		return err
-	}
-
 	// Set Current Message
-	as.inviteMsg = receivedMessage
-
-	// Send Callback
-	as.onInvite(receivedMessage)
+	as.setInvite(args.Data)
 
 	// Hold Select for Invite Type
 	if !as.inviteMsg.IsDirect {
@@ -75,10 +65,32 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 	return nil
 }
 
+// @ Helper Method Clears Current Invite
+func (as *AuthService) clear() {
+	as.inviteMsg = nil
+}
+
+// @ Helper Method Sets Current Invite
+func (as *AuthService) setInvite(data []byte) error {
+	// Send Callback
+	as.onInvite(data)
+
+	// Received Message
+	receivedMessage := &md.AuthInvite{}
+	err := proto.Unmarshal(data, receivedMessage)
+	if err != nil {
+		return err
+	}
+
+	// Set Current Message
+	as.inviteMsg = receivedMessage
+	return nil
+}
+
 // ^ Send Request to a Peer ^ //
 func (pc *TransferController) Request(h host.Host, id peer.ID, msgBytes []byte) {
 	// Initialize Data
-	rpcClient := gorpc.NewClient(h, protocol.ID("/sonr/rpc/auth"))
+	rpcClient := gorpc.NewClient(h, protocol.ID("/sonr/transfer/auth"))
 	var reply AuthResponse
 	var args AuthArgs
 	args.Data = msgBytes
@@ -96,19 +108,25 @@ func (pc *TransferController) Request(h host.Host, id peer.ID, msgBytes []byte) 
 
 	// Send Callback and Reset
 	pc.respondedCall(reply.Data)
+	transDecs, from := pc.handleReply(reply.Data)
 
+	// Check Response for Accept
+	if transDecs {
+		pc.StartOutgoing(h, id, from)
+	}
+}
+
+// @ Helper Method to Handle Reply
+func (pc *TransferController) handleReply(data []byte) (bool, *md.Peer) {
 	// Received Message
-	responseMessage := md.AuthReply{}
-	err = proto.Unmarshal(reply.Data, &responseMessage)
+	resp := md.AuthReply{}
+	err := proto.Unmarshal(data, &resp)
 	if err != nil {
 		// Send Error
 		onError(err, "Unmarshal")
+		return false, nil
 	}
-
-	// Check Response for Accept
-	if responseMessage.Decision && responseMessage.Type == md.AuthReply_Transfer {
-		pc.StartOutgoing(h, id, responseMessage.From)
-	}
+	return resp.Decision && resp.Type == md.AuthReply_Transfer, resp.From
 }
 
 // ^ Send Authorize transfer on RPC ^ //
@@ -123,6 +141,9 @@ func (pc *TransferController) Authorize(decision bool, contact *md.Contact, peer
 
 	// Send to Channel
 	pc.auth.respCh <- &reply
+
+	// Clear Current Invite
+	pc.auth.clear()
 }
 
 // ^ Send Authorize transfer on RPC ^ //
@@ -135,4 +156,7 @@ func (pc *TransferController) Cancel(peer *md.Peer) {
 
 	// Send to Channel
 	pc.auth.respCh <- &reply
+
+	// Clear Current Invite
+	pc.auth.clear()
 }

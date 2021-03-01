@@ -5,31 +5,6 @@ import (
 	"sync/atomic"
 )
 
-// Define Function Types
-type OnProtobuf func([]byte)
-type OnInvite func(data *AuthInvite)
-type OnProgress func(data float32)
-type OnReceived func(data *TransferCard)
-type OnTransmitted func(data *Peer)
-type OnError func(err error, method string)
-type ReturnPeer func() *Peer
-
-type LobbyCallbacks struct {
-	CallEvent   OnProtobuf
-	CallRefresh OnProtobuf
-	CallError   OnError
-	GetPeer     ReturnPeer
-}
-
-type TransferCallbacks struct {
-	CallInvited     OnInvite
-	CallResponded   OnProtobuf
-	CallProgress    OnProgress
-	CallReceived    OnReceived
-	CallTransmitted OnTransmitted
-	CallError       OnError
-}
-
 type state struct {
 	flag uint64
 	chn  chan bool

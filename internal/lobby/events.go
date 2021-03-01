@@ -27,10 +27,7 @@ func (lob *Lobby) handleEvents() {
 		}
 
 		if lobEvent.Type == pubsub.PeerJoin {
-			err := lob.Exchange(lobEvent.Peer)
-			if err != nil {
-				log.Println(err)
-			}
+			lob.Exchange(lobEvent.Peer)
 		}
 
 		if lobEvent.Type == pubsub.PeerLeave {
@@ -47,12 +44,12 @@ func (lob *Lobby) handleMessages() {
 		// Get next msg from pub/sub
 		msg, err := lob.sub.Next(lob.ctx)
 		if err != nil {
-			close(lob.Messages)
+			close(lob.messages)
 			return
 		}
 
 		// Only forward messages delivered by others
-		if msg.ReceivedFrom == lob.self {
+		if msg.ReceivedFrom == lob.host.ID() {
 			continue
 		}
 
@@ -64,7 +61,7 @@ func (lob *Lobby) handleMessages() {
 		}
 
 		// Send valid messages onto the Messages channel
-		lob.Messages <- &notif
+		lob.messages <- &notif
 		md.GetState().NeedsWait()
 	}
 
@@ -75,18 +72,11 @@ func (lob *Lobby) processMessages() {
 	for {
 		select {
 		// ** when we receive a message from the lobby room **
-		case m := <-lob.Messages:
+		case m := <-lob.messages:
 			// Update Circle by event
 			if m.Event == md.LobbyEvent_UPDATE {
 				// Update Peer Data
 				lob.updatePeer(m.Data)
-			} else if m.Event == md.LobbyEvent_EXCHANGE {
-				// Update Peer Data
-				lob.updatePeer(m.Data)
-				err := lob.Exchange(lob.ID(m.Id))
-				if err != nil {
-					log.Println(err)
-				}
 			}
 
 		case <-lob.ctx.Done():

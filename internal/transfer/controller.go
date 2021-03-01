@@ -2,7 +2,6 @@ package transfer
 
 import (
 	"context"
-	"log"
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -40,7 +39,7 @@ type TransferController struct {
 }
 
 // ^ Initialize sets up new Peer Connection handler ^
-func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, tc md.TransferCallbacks) (*TransferController, error) {
+func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, tc md.TransferCallback) (*TransferController, error) {
 	// Set Package Level Callbacks
 	onError = tc.CallError
 
@@ -56,8 +55,8 @@ func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, tc 
 	}
 
 	// Create GRPC Client/Server and Set Data Stream Handler
-	h.SetStreamHandler(protocol.ID("/sonr/data/transfer"), peerConn.HandleIncoming)
-	rpcServer := gorpc.NewServer(h, protocol.ID("/sonr/rpc/auth"))
+	h.SetStreamHandler(protocol.ID("/sonr/transfer/data"), peerConn.HandleIncoming)
+	rpcServer := gorpc.NewServer(h, protocol.ID("/sonr/transfer/auth"))
 
 	// Create AuthService
 	ath := AuthService{
@@ -91,10 +90,10 @@ func (pc *TransferController) NewOutgoing(pf *sf.ProcessedFile) {
 // ^ User has accepted, Begin Sending Transfer ^ //
 func (pc *TransferController) StartOutgoing(h host.Host, id peer.ID, peer *md.Peer) {
 	// Create New Auth Stream
-	stream, err := h.NewStream(context.Background(), id, protocol.ID("/sonr/data/transfer"))
+	stream, err := h.NewStream(context.Background(), id, protocol.ID("/sonr/transfer/data"))
 	if err != nil {
 		onError(err, "Transfer")
-		log.Fatalln(err)
+
 	}
 
 	// Initialize Writer
@@ -113,7 +112,6 @@ func (pc *TransferController) HandleIncoming(stream network.Stream) {
 			buffer, err := reader.ReadMsg()
 			if err != nil {
 				onError(err, "ReadStream")
-				log.Fatalln(err)
 				break
 			}
 
@@ -121,7 +119,7 @@ func (pc *TransferController) HandleIncoming(stream network.Stream) {
 			hasCompleted, err := t.AddBuffer(i, buffer)
 			if err != nil {
 				onError(err, "ReadStream")
-				log.Fatalln(err)
+
 				break
 			}
 
@@ -130,7 +128,6 @@ func (pc *TransferController) HandleIncoming(stream network.Stream) {
 				// Sync file
 				if err := pc.incoming.Save(); err != nil {
 					onError(err, "SaveFile")
-					log.Fatalln(err)
 				}
 				break
 			}
