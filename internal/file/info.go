@@ -74,13 +74,13 @@ func GetFileInfo(path string) FileInfo {
 		ext := filepath.Ext(path)
 
 		// Cross Check Extension
-		if ext == "pdf" {
+		if ext == ".pdf" {
 			payload = md.Payload_PDF
-		} else if ext == "ppt" || ext == "pptx" {
+		} else if ext == ".ppt" || ext == ".pptx" {
 			payload = md.Payload_PRESENTATION
-		} else if ext == "xls" || ext == "xlsm" || ext == "xlsx" || ext == "csv" {
+		} else if ext == ".xls" || ext == ".xlsm" || ext == ".xlsx" || ext == ".csv" {
 			payload = md.Payload_SPREADSHEET
-		} else if ext == "txt" || ext == "doc" || ext == "docx" || ext == "ttf" {
+		} else if ext == ".txt" || ext == ".doc" || ext == ".docx" || ext == ".ttf" {
 			payload = md.Payload_TEXT
 		} else {
 			payload = md.Payload_UNDEFINED

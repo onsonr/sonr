@@ -18,7 +18,7 @@ func (pf *ProcessedFile) EncodeFile(buf *bytes.Buffer) error {
 	// @ Jpeg Image
 	if ext := pf.Ext(); ext == "jpg" {
 		// Open File at Meta Path
-		file, err := os.Open(pf.path)
+		file, err := os.Open(pf.Path)
 		if err != nil {
 			return err
 		}
@@ -40,7 +40,7 @@ func (pf *ProcessedFile) EncodeFile(buf *bytes.Buffer) error {
 		// @ PNG Image
 	} else if ext == "png" {
 		// Open File at Meta Path
-		file, err := os.Open(pf.path)
+		file, err := os.Open(pf.Path)
 		if err != nil {
 			return err
 		}
@@ -61,7 +61,7 @@ func (pf *ProcessedFile) EncodeFile(buf *bytes.Buffer) error {
 
 		// @ Other - Open File at Path
 	} else {
-		dat, err := ioutil.ReadFile(pf.path)
+		dat, err := ioutil.ReadFile(pf.Path)
 		if err != nil {
 			return err
 		}

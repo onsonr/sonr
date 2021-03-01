@@ -28,9 +28,10 @@ var onError OnError
 // ^ File that safely sets metadata and thumbnail in routine ^ //
 type ProcessedFile struct {
 	// References
+	Payload  md.Payload
 	OnQueued OnQueued
 	mime     *md.MIME
-	path     string
+	Path     string
 
 	// Private Properties
 	mutex   sync.Mutex
@@ -58,7 +59,8 @@ func NewProcessedFile(req *md.InviteRequest, p *md.Profile, queueCall OnQueued, 
 	// @ 1. Create new SafeFile
 	sm := &ProcessedFile{
 		OnQueued: queueCall,
-		path:     file.Path,
+		Path:     file.Path,
+		Payload:  info.Payload,
 		request:  req,
 		mime:     info.Mime,
 	}
@@ -87,10 +89,17 @@ func NewProcessedFile(req *md.InviteRequest, p *md.Profile, queueCall OnQueued, 
 	}
 
 	// @ 3. Create Thumbnail in Goroutine
-	if len(file.Thumbdata) > 0 {
-		go HandleThumbdata(file, sm)
+	// Check Payload
+	if info.Payload == md.Payload_MEDIA {
+		if len(file.Thumbdata) > 0 {
+			go HandleThumbdata(file, sm)
+		} else {
+			go RequestThumbnail(file, sm)
+		}
 	} else {
-		go RequestThumbnail(file, sm)
+		// Non Media dont require Thumbnail
+		sm.mutex.Unlock()
+		sm.OnQueued(sm.TransferCard(), sm.request)
 	}
 	return sm
 }
@@ -109,7 +118,7 @@ func NewBatchProcessFiles(req *md.InviteRequest, p *md.Profile, queueCall OnQueu
 		// @ 1. Create new SafeFile
 		sm := &ProcessedFile{
 			OnQueued: queueCall,
-			path:     file.Path,
+			Path:     file.Path,
 			request:  req,
 			mime:     info.Mime,
 		}

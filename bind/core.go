@@ -45,7 +45,7 @@ type Node struct {
 	// References
 	call     Callback
 	lobby    *lobby.Lobby
-	peerConn *tr.PeerConnection
+	peerConn *tr.TransferController
 	queue    *FileQueue
 }
 

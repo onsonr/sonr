@@ -78,7 +78,7 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 }
 
 // ^ Send Request to a Peer ^ //
-func (pc *PeerConnection) Request(h host.Host, id peer.ID, msgBytes []byte) {
+func (pc *TransferController) Request(h host.Host, id peer.ID, msgBytes []byte) {
 	// Initialize Data
 	rpcClient := gorpc.NewClient(h, protocol.ID("/sonr/rpc/auth"))
 	var reply AuthResponse
@@ -115,7 +115,7 @@ func (pc *PeerConnection) Request(h host.Host, id peer.ID, msgBytes []byte) {
 }
 
 // ^ Send Authorize transfer on RPC ^ //
-func (pc *PeerConnection) Authorize(decision bool, contact *md.Contact, peer *md.Peer) {
+func (pc *TransferController) Authorize(decision bool, contact *md.Contact, peer *md.Peer) {
 	// ** Get Current Message **
 	offerMsg := pc.auth.inviteMsg
 
