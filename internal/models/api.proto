@@ -30,11 +30,10 @@ message InviteRequest {
 
   // FileInfo Message for Attached Files
   message FileInfo {
-    string path = 1;       // Location of File
-    bool hasThumbnail = 2; // Provided File already has thumbnail
-    string thumbpath = 3;  // Path of Provided Thumbnail - Optional
-    bytes thumbdata = 4;   // Provided Thumbnail Data
-    int32 duration = 5;    // Duration of Video - Optional
+    string path = 1;     // Location of File
+    bytes thumbnail = 2; // Provided Thumbnail Data
+    int32 duration = 3;  // Duration of Video - Optional
+    bool isVideo = 4;    // If File is Video
   }
 
   // Enum for Type of Transfer

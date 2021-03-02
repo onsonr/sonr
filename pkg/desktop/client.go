@@ -43,12 +43,7 @@ func NewClient(ctx context.Context, m ui.AppInterface) *Client {
 			FirstName: c.info.TempFirstName,
 			LastName:  c.info.TempLastName,
 		},
-		Profile: &md.Profile{
-			Username:  "@Prad",
-			FirstName: c.info.TempFirstName,
-			LastName:  c.info.TempLastName,
-			Platform:  c.info.Device.Platform,
-		},
+		Username: "@Prad",
 	}
 
 	// Convert to Bytes

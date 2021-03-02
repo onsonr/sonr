@@ -13,10 +13,18 @@ import (
 	"github.com/nfnt/resize"
 )
 
+// ^ Method adjusts extension for JPEG ^ //
+func (pf *ProcessedFile) ext() string {
+	if pf.mime.Subtype == "jpg" || pf.mime.Subtype == "jpeg" {
+		return "jpeg"
+	}
+	return pf.mime.Subtype
+}
+
 // ^ Method Processes File at Path^ //
 func (pf *ProcessedFile) EncodeFile(buf *bytes.Buffer) error {
 	// @ Jpeg Image
-	if ext := pf.Ext(); ext == "jpg" {
+	if ext := pf.ext(); ext == "jpg" {
 		// Open File at Meta Path
 		file, err := os.Open(pf.Path)
 		if err != nil {
@@ -73,29 +81,6 @@ func (pf *ProcessedFile) EncodeFile(buf *bytes.Buffer) error {
 		}
 		return nil
 	}
-}
-
-// ^ Encodes Image to Thumbnail Image: (buf) is reference to buffer ^ //
-func EncodeThumb(buf *bytes.Buffer, path string) error {
-	// @ Open File at Meta Path
-	file, err := os.Open(path)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	// Convert to Image Object
-	img, _, err := image.Decode(file)
-	if err != nil {
-		return err
-	}
-
-	// @ Encode as Jpeg into buffer w/o scaling
-	err = jpeg.Encode(buf, img, nil)
-	if err != nil {
-		log.Panicln(err)
-	}
-	return nil
 }
 
 // ^ Generates Scaled Thumbnail for Image: (buf) is reference to buffer ^ //
