@@ -34,7 +34,7 @@ all: Makefile
 desktop: proto
 	go clean -cache -x
 	cd pkg && packr build -o $(MAC_ARTIFACT)
-	cd pkg && GOOS=windows GOARCH=amd64 packr build -o $(WIN_ARTIFACT)
+	cd pkg && GOOS=windows GOARCH=amd64 packr build -ldflags -H=windowsgui -o $(WIN_ARTIFACT)
 	@packr clean
 	@go mod tidy
 	@cd /System/Library/Sounds && afplay Hero.aiff
@@ -70,7 +70,7 @@ win:
 	@go clean -cache
 	cd pkg && GOOS=windows GOARCH=amd64 packr build -ldflags -H=windowsgui -o $(WIN_ARTIFACT)
 	@packr clean
-	@echo "Finished Binding ➡ " && date
+	@echo "Finished Building ➡ " && date
 	@echo "--------------------------------------------------------------"
 	@echo "------------- 🪟 COMPLETED WINDOWS BULD 🪟 --------------------"
 	@echo "--------------------------------------------------------------"
