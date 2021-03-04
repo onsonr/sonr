@@ -14,6 +14,7 @@ func (sn *Node) Update(direction float64) {
 	var dir float64
 	var anpd float64
 	dir = math.Round(direction*100) / 100
+	desg := int((direction / 11.25) + 0.25)
 
 	// Find Antipodal
 	if direction > 180 {
@@ -26,6 +27,7 @@ func (sn *Node) Update(direction float64) {
 	sn.peer.Position = &md.Position{
 		Direction: dir,
 		Antipodal: anpd,
+		Heading:   md.Position_Heading(desg % 32),
 	}
 
 	// Inform Lobby

@@ -144,22 +144,38 @@ message Position {
 
   // Heading is the Compass Direction of Peer
   enum Heading {
-    N = 0;    // North
-    NNE = 1;  // North North East
-    NE = 2;   // North East
-    ENE = 3;  // East North East
-    E = 4;    // East
-    ESE = 5;  // East South East
-    SE = 6;   // South East
-    SSE = 7;  // South South East
-    S = 8;    // South
-    SSW = 9;  // South South West
-    SW = 10;  // South West
-    WSW = 11; // West South West
-    W = 12;   // West
-    WNW = 13; // West North West
-    NW = 14;  // North West
-    NNW = 15; // North North West
+    N = 0;     // North
+    NbE = 1;   // North by East
+    NNE = 2;   // North North East
+    NEbN = 3;  // NorthEast by North
+    NE = 4;    // North East
+    NEbE = 5;  // NorthEast by East
+    ENE = 6;   // East North East
+    EbN = 7;   // East by North
+    E = 8;     // East
+    EbS = 9;   // East by South
+    ESE = 10;  // East South East
+    SEbE = 11; // SouthEast by East
+    SE = 12;   // South East
+    SEbS = 13; // SouthEast by South
+    SSE = 14;  // South South East
+    SbE = 15;  // South by East
+    S = 16;    // South
+    SbW = 17;  // South by West
+    SSW = 18;  // South South West
+    SWbS = 19; // SouthWest by South
+    SW = 20;   // South West
+    SWbW = 21; // SouthWest by West
+    WSW = 22;  // West South West
+    WbS = 23;  // West by South
+    W = 24;    // West
+    WbN = 25;  // West by North
+    WNW = 26;  // West North West
+    NWbW = 27; // North West by West
+    NW = 28;   // North West
+    NWbN = 29; // North West by North
+    NNW = 30;  // North North West
+    NbW = 31;  // North by West
   }
 }
 
