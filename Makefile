@@ -12,6 +12,7 @@ ANDROID_BUILDDIR=/Users/prad/Sonr/plugin/android/libs
 ANDROID_ARTIFACT= $(ANDROID_BUILDDIR)/io.sonr.core.aar
 MAC_BUILDDIR=/Users/prad/Sonr/core/build/Sonr.app/Contents/MacOS
 MAC_ARTIFACT=$(MAC_BUILDDIR)/sonr_core
+WEB_ARTIFACT=$(WIN_BUILDDIR)/sonr-core.wasm
 WIN_BUILDDIR=/Users/prad/Sonr/core/build
 WIN_ARTIFACT=$(WIN_BUILDDIR)/sonr-core.exe
 
@@ -139,7 +140,7 @@ proto:
 	@echo "--------------------------------------------------------------"
 	@echo ""
 
-## run         :   Runs current Darwin Build
+## run         :   Builds and Runs for Darwin
 run:
 	@echo ""
 	@echo ""
@@ -156,6 +157,19 @@ run:
 	@echo "--------------------------------------------------------------"
 	@echo ""
 	@cd $(MAC_BUILDDIR) && ./sonr_core
+
+## wasm        :   Builds WebAssembly Binary at Build Path *BROKEN*
+wasm: proto
+	go clean -cache -x
+	cd bind && GOOS=js GOARCH=wasm go build -o $(WEB_ARTIFACT)
+	@packr clean
+	@go mod tidy
+	@cd /System/Library/Sounds && afplay Hero.aiff
+	@echo ""
+	@echo ""
+	@echo "------------------------------------------------------------------"
+	@echo "-------- ✅ ✅ ✅   FINISHED DESKTOP BUILD  ✅ ✅ ✅  --------------"
+	@echo "------------------------------------------------------------------"
 
 ## upgrade     :   Builds ALL supported devices
 upgrade: proto mobile desktop
