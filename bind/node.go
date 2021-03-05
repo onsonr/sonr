@@ -9,25 +9,37 @@ import (
 )
 
 // ^ Update proximity/direction and Notify Lobby ^ //
-func (sn *Node) Update(direction float64) {
+func (sn *Node) Update(facing float64, heading float64) {
 	// Update User Values
-	var dir float64
-	var anpd float64
-	dir = math.Round(direction*100) / 100
-	desg := int((direction / 11.25) + 0.25)
+	var faceDir float64
+	var faceAnpd float64
+	var headDir float64
+	var headAnpd float64
+	faceDir = math.Round(facing*100) / 100
+	headDir = math.Round(heading*100) / 100
+	desg := int((facing / 11.25) + 0.25)
 
 	// Find Antipodal
-	if direction > 180 {
-		anpd = math.Round((direction-180)*100) / 100
+	if facing > 180 {
+		faceAnpd = math.Round((facing-180)*100) / 100
 	} else {
-		anpd = math.Round((direction+180)*100) / 100
+		faceAnpd = math.Round((facing+180)*100) / 100
+	}
+
+	// Find Antipodal
+	if heading > 180 {
+		headAnpd = math.Round((heading-180)*100) / 100
+	} else {
+		headAnpd = math.Round((heading+180)*100) / 100
 	}
 
 	// Set Position
 	sn.peer.Position = &md.Position{
-		Direction: dir,
-		Antipodal: anpd,
-		Heading:   md.Position_Heading(desg % 32),
+		Facing:           faceDir,
+		FacingAntipodal:  faceAnpd,
+		Heading:          headDir,
+		HeadingAntipodal: headAnpd,
+		Designation:      md.Position_Designation(desg % 32),
 	}
 
 	// Inform Lobby

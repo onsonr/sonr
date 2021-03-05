@@ -129,10 +129,12 @@ message Profile {
 
 // Position Includes All Directional Info of Peer
 message Position {
-  double direction = 1;    // Compass Direction of Peer
-  double antipodal = 2;    // Inverse Compass Direction of Peer
-  Heading heading = 3;     // Cardinal Direction of Peer Facing
-  Proximity proximity = 4; // Proximit from the User - Calculated
+  double facing = 1;           // Compass Direction of Peer on Z axis
+  double heading = 2;          // Compass Direction of Peer on X axis
+  double facingAntipodal = 3;  // Inverse Compass Direction of Peer in Z axis
+  double headingAntipodal = 4; // Inverse Compass Direction of Peer in Z axis
+  Designation designation = 5; // Cardinal Direction of Peer Facing
+  Proximity proximity = 6;     // Proximity from the User - Calculated
 
   // Proximity is the Distance between Peers, from Ultrasonic
   enum Proximity {
@@ -142,8 +144,8 @@ message Position {
     Distant = 3;   // Within 15 Meters
   }
 
-  // Heading is the Compass Direction of Peer
-  enum Heading {
+  // Designation is the Compass Direction of Peer
+  enum Designation {
     N = 0;     // North
     NbE = 1;   // North by East
     NNE = 2;   // North North East
