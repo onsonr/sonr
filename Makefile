@@ -18,11 +18,13 @@ WIN_ARTIFACT=$(WIN_BUILDDIR)/sonr-core.exe
 
 # @ Proto Directories
 PB_PATH="/Users/prad/Sonr/core/internal/models"
+CONTACT_PB_DIR="/Users/prad/Sonr/contact/lib/src/data/models"
 CORE_PB_DIR="/Users/prad/Sonr/core/internal/models"
 PLUGIN_PB_DIR="/Users/prad/Sonr/plugin/lib/src/core/models"
 PROTO_DOC_OUT="/Users/prad/Sonr/docs/proto"
 
 # @ Proto Build Commands
+PB_BUILD_CONTACT="--dart_out=$(CONTACT_PB_DIR)"
 PB_BUILD_CORE="--go_out=$(CORE_PB_DIR)"
 PB_BUILD_PLUGIN="--dart_out=$(PLUGIN_PB_DIR)"
 
@@ -133,6 +135,7 @@ proto:
 	@echo "--------------------------------------------------------------"
 	@cd internal/models && protoc --doc_out=$(PROTO_DOC_OUT) --doc_opt=html,index.html api.proto data.proto core.proto user.proto
 	@cd internal/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CORE) api.proto data.proto core.proto user.proto
+	@cd internal/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CONTACT) api.proto data.proto user.proto
 	@cd internal/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_PLUGIN) api.proto data.proto user.proto
 	@echo "Finished Compiling ➡ " && date
 	@echo "--------------------------------------------------------------"
