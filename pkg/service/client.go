@@ -7,7 +7,7 @@ import (
 
 	sonr "github.com/sonr-io/core/bind"
 	md "github.com/sonr-io/core/internal/models"
-	ui "github.com/sonr-io/core/pkg/tray"
+	ui "github.com/sonr-io/core/pkg/interface"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -16,7 +16,7 @@ const interval = 500 * time.Millisecond
 type Client struct {
 	sonr.Callback
 	ctx       context.Context
-	menu      ui.InterfaceTray
+	menu      ui.Interface
 	node      *sonr.Node
 	info      SysInfo
 	peerCount int32
@@ -24,7 +24,7 @@ type Client struct {
 }
 
 // ^ Create New DeskClient Node ^ //
-func NewClient(ctx context.Context, m ui.InterfaceTray) *Client {
+func NewClient(ctx context.Context, m ui.Interface) *Client {
 	// Set Default Info
 	var c = new(Client)
 	c.info = SystemInfo()

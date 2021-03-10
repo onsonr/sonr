@@ -1,8 +1,9 @@
-package interface
+package ui
 
 import (
 	"log"
 
+	"github.com/gobuffalo/packr"
 	md "github.com/sonr-io/core/internal/models"
 )
 
@@ -25,22 +26,21 @@ const (
 	File
 )
 
-// ** Const UI Resource Path ** //
-const RES_PATH = "/Users/prad/Sonr/core/pkg/res/"
-const ICON_PATH = "/Users/prad/Sonr/core/pkg/res/systray.png"
-
 func (d Icon) File() string {
 	return [...]string{"systray.png", "close.png", "user.png", "peer.png", "invite.png", "iphone.png", "android.png", "mac.png", "windows.png", "unknown.png", "link.png", "url.png", "file.png"}[d]
 }
 
-type AssetImage struct {
-	
+// @ Struct for All Image Assets //
+type ImageAssets struct {
+	Device packr.Box
+	Icon   packr.Box
+	System packr.Box
 }
 
 // ^ Returns Buffer of Image by Icon Type
-func GetIcon(i Icon) []byte {
+func (ai *ImageAssets) SystemIcon(i Icon) []byte {
 	// Get Path
-	data, err := box.Find(i.File())
+	data, err := ai.System.Find(i.File())
 	if err != nil {
 		log.Println(err)
 	}
@@ -48,15 +48,35 @@ func GetIcon(i Icon) []byte {
 }
 
 // ^ Returns Buffer of Image from Device Type
-func GetDeviceIcon(p md.Platform) []byte {
+func (ai *ImageAssets) DeviceIcon(p md.Platform) []byte {
 	if p == md.Platform_Android {
-		return ai.GetIcon(Android)
+		data, err := ai.Device.Find("android.png")
+		if err != nil {
+			log.Println(err)
+		}
+		return data
 	} else if p == md.Platform_iOS {
-		return ai.GetIcon(iPhone)
+		data, err := ai.Device.Find("iphone.png")
+		if err != nil {
+			log.Println(err)
+		}
+		return data
 	} else if p == md.Platform_MacOS {
-		return ai.GetIcon(Mac)
+		data, err := ai.Device.Find("mac.png")
+		if err != nil {
+			log.Println(err)
+		}
+		return data
 	} else if p == md.Platform_Windows {
-		return ai.GetIcon(Windows)
+		data, err := ai.Device.Find("windows.png")
+		if err != nil {
+			log.Println(err)
+		}
+		return data
 	}
-	return ai.GetIcon(Unknown)
+	data, err := ai.Device.Find("unknown.png")
+	if err != nil {
+		log.Println(err)
+	}
+	return data
 }

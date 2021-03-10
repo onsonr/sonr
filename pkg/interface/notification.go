@@ -1,9 +1,10 @@
-package interface
+package ui
 
 import (
 	"log"
 
 	"github.com/gen2brain/beeep"
+	"github.com/gen2brain/dlgs"
 	md "github.com/sonr-io/core/internal/models"
 )
 
