@@ -10,8 +10,8 @@ IOS_BUILDDIR=/Users/prad/Sonr/plugin/ios/Frameworks
 IOS_ARTIFACT= $(IOS_BUILDDIR)/Core.framework
 ANDROID_BUILDDIR=/Users/prad/Sonr/plugin/android/libs
 ANDROID_ARTIFACT= $(ANDROID_BUILDDIR)/io.sonr.core.aar
-MAC_BUILDDIR=/Users/prad/Sonr/core/build/darwin/Sonr.app/Contents/MacOS
-MAC_ARTIFACT=$(MAC_BUILDDIR)/sonr_core
+MAC_BUILDDIR=/Users/prad/Sonr/core/build/darwin
+MAC_ARTIFACT=$(MAC_BUILDDIR)/Sonr.app/Contents/MacOS/sonr_core
 WIN_BUILDDIR=/Users/prad/Sonr/core/build/win
 WIN_ARTIFACT=$(WIN_BUILDDIR)/sonr-core.exe
 
@@ -162,17 +162,19 @@ mac:
 	@go clean -cache
 	@go mod tidy
 	cd pkg && packr build -o $(MAC_ARTIFACT)
-	test -f Sonr-Installer.dmg && rm Sonr-Installer.dmg
+	rm $(MAC_BUILDDIR)/Sonr-Installer.dmg
 	create-dmg \
   --volname "Sonr Installer" \
+  --volicon $(MAC_BUILDDIR)/meta/"volume.icns" \
+  --background $(MAC_BUILDDIR)/meta/"volume-bg.png" \
   --window-pos 200 120 \
   --window-size 800 400 \
   --icon-size 100 \
   --icon "Sonr.app" 200 190 \
   --hide-extension "Sonr.app" \
   --app-drop-link 600 185 \
-  "Sonr-Installer.dmg" \
-  "/Users/prad/Sonr/core/build/darwin/"
+  $(MAC_BUILDDIR)"/Sonr-Installer.dmg" \
+  $(MAC_BUILDDIR)
 
 	@echo "--------------------------------------------------------------"
 	@echo "------------- 🖥  Packaged MacOS  🖥  -------------------------"
