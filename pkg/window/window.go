@@ -1,31 +1,29 @@
 package window
 
 import (
-	"encoding/base64"
-	"io/ioutil"
-	"log"
-	"os"
-
-	"github.com/progrium/macdriver/bridge"
+	"github.com/progrium/macdriver/cocoa"
+	"github.com/progrium/macdriver/core"
+	"github.com/progrium/macdriver/objc"
+	"github.com/progrium/macdriver/webkit"
 )
 
 func NewMacWindow() {
-	h, err := bridge.NewHost(os.Stderr)
-	if err != nil {
-		log.Fatal(err)
-	}
-	go h.Run()
+	app := cocoa.NSApp_WithDidLaunch(func(notification objc.Object) {
+		config := webkit.WKWebViewConfiguration_New()
+		wv := webkit.WKWebView_Init(core.Rect(0, 0, 1440, 900), config)
+		url := core.URL("http://progrium.com")
+		req := core.NSURLRequest_Init(url)
+		wv.LoadRequest(req)
 
-	window := bridge.Window{
-		Title:       "Hello 1",
-		Size:        bridge.Size{W: 480, H: 240},
-		Position:    bridge.Point{X: 200, Y: 200},
-		Closable:    true,
-		Minimizable: false,
-		Resizable:   false,
-		Borderless:  false,
-		Image:       base64.StdEncoding.EncodeToString(data),
-		Background:  &bridge.Color{R: 0, G: 0, B: 1, A: 0.5},
-	}
-	h.Sync(&window)
+		w := cocoa.NSWindow_Init(core.Rect(0, 0, 1440, 900),
+			cocoa.NSClosableWindowMask|
+				cocoa.NSTitledWindowMask,
+			cocoa.NSBackingStoreBuffered, false)
+		w.SetContentView(wv)
+		w.MakeKeyAndOrderFront(w)
+		w.Center()
+	})
+	app.SetActivationPolicy(cocoa.NSApplicationActivationPolicyRegular)
+	app.ActivateIgnoringOtherApps(true)
+	app.Run()
 }

@@ -70,7 +70,7 @@ func OpenQRWindow(json string) {
 	}
 	defer ln.Close()
 
-	box := packr.NewBox("./assets/www")
+	box := packr.NewBox("../assets/www")
 	go http.Serve(ln, http.FileServer(box))
 	ui.Load(fmt.Sprintf("http://%s", ln.Addr()))
 

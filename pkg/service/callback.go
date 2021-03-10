@@ -5,7 +5,8 @@ import (
 
 	op "github.com/skratchdot/open-golang/open"
 	md "github.com/sonr-io/core/internal/models"
-	ui "github.com/sonr-io/core/pkg/menu"
+
+	// ui "github.com/sonr-io/core/pkg/tray"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -44,7 +45,7 @@ func (c *Client) OnInvited(data []byte) {
 	}
 
 	// Check Auth
-	decs := ui.ShowAuthDialog(m)
+	decs := true //  ui.ShowAuthDialog(m)
 
 	// Check Invite
 	if m.Payload == md.Payload_MEDIA {
@@ -88,12 +89,12 @@ func (c *Client) OnReceived(data []byte) {
 	}
 
 	// Notify
-	ui.BeepCompleted()
+	//ui.BeepCompleted()
 }
 
 // @ Inherited Method: Handle Sent ^ //
 func (c *Client) OnTransmitted(data []byte) {
-	ui.BeepCompleted()
+	//ui.BeepCompleted()
 }
 
 // @ Inherited Method: Handle Error ^ //
@@ -106,5 +107,5 @@ func (c *Client) OnError(data []byte) {
 	}
 
 	// Display Message
-	ui.ShowErrorDialog(errMsg)
+	// ui.ShowErrorDialog(errMsg)
 }

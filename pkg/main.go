@@ -8,7 +8,7 @@ import (
 
 	"github.com/getlantern/systray"
 	"github.com/gobuffalo/packr"
-	ui "github.com/sonr-io/core/pkg/menu"
+	ui "github.com/sonr-io/core/pkg/tray"
 	sv "github.com/sonr-io/core/pkg/service"
 
 	md "github.com/sonr-io/core/internal/models"
@@ -23,7 +23,7 @@ type SysInfo struct {
 // Define Context
 var desk *sv.Client
 var ctx context.Context
-var app ui.AppInterface
+var app ui.InterfaceTray
 
 func main() {
 
