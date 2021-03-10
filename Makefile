@@ -5,11 +5,13 @@ GOMOBILE=gomobile
 GOCLEAN=$(GOMOBILE) clean
 GOBIND=$(GOMOBILE) bind
 
-# @ Plugin Directories
-IOS_BUILDDIR=/Users/prad/Sonr/plugin/ios/Frameworks
-IOS_ARTIFACT= $(IOS_BUILDDIR)/Core.framework
-ANDROID_BUILDDIR=/Users/prad/Sonr/plugin/android/libs
-ANDROID_ARTIFACT= $(ANDROID_BUILDDIR)/io.sonr.core.aar
+# @ Bind Directories
+IOS_BINDDIR=/Users/prad/Sonr/plugin/ios/Frameworks
+IOS_ARTIFACT= $(IOS_BINDDIR)/Core.framework
+ANDROID_BINDDIR=/Users/prad/Sonr/plugin/android/libs
+ANDROID_ARTIFACT= $(ANDROID_BINDDIR)/io.sonr.core.aar
+
+# @ Build Directories
 MAC_BUILDDIR=/Users/prad/Sonr/core/build/darwin
 MAC_ARTIFACT=$(MAC_BUILDDIR)/Sonr.app/Contents/MacOS/sonr_core
 WIN_BUILDDIR=/Users/prad/Sonr/core/build/win
@@ -32,54 +34,8 @@ all: Makefile
 	@echo ''
 	@sed -n 's/^##//p ' $<
 
-## desktop     :   Builds Darwin and Windows Builds at Build Path
-desktop: proto
-	go clean -cache -x
-	cd pkg && packr build -o $(MAC_ARTIFACT)
-	cd pkg && GOOS=windows GOARCH=amd64 packr build -ldflags -H=windowsgui -o $(WIN_ARTIFACT)
-	@packr clean
-	@go mod tidy
-	@cd /System/Library/Sounds && afplay Hero.aiff
-	@echo ""
-	@echo ""
-	@echo "------------------------------------------------------------------"
-	@echo "-------- ✅ ✅ ✅   FINISHED DESKTOP BUILD  ✅ ✅ ✅  --------------"
-	@echo "------------------------------------------------------------------"
-
-## └─ darwin   :   Compiles Desktop build of Sonr for MacOS
-darwin:
-	@echo ""
-	@echo ""
-	@echo "-----------------------------------------------------------"
-	@echo "------------- 🖥  START DARWIN BUILD  🖥  -------------------"
-	@echo "-----------------------------------------------------------"
-	@go clean -cache
-	@go mod tidy
-	cd pkg && packr build -o $(MAC_ARTIFACT)
-	@packr clean
-	@echo "Finished Building ➡ " && date
-	@echo "--------------------------------------------------------------"
-	@echo "------------- 🖥  COMPLETED DAWIN BULD  🖥  -------------------"
-	@echo "--------------------------------------------------------------"
-
-## └─ win      :   Compiles Desktop build of Sonr for Windows
-win:
-	@echo ""
-	@echo ""
-	@echo "-----------------------------------------------------------"
-	@echo "------------- 🪟 START WINDOWS BUILD 🪟 --------------------"
-	@echo "-----------------------------------------------------------"
-	@go clean -cache
-	cd pkg && GOOS=windows GOARCH=amd64 packr build -ldflags -H=windowsgui -o $(WIN_ARTIFACT)
-	@packr clean
-	@echo "Finished Building ➡ " && date
-	@echo "--------------------------------------------------------------"
-	@echo "------------- 🪟 COMPLETED WINDOWS BULD 🪟 --------------------"
-	@echo "--------------------------------------------------------------"
-	@echo ""
-
-## mobile      :   Builds Android and iOS Bind for Plugin Path
-mobile: proto ios android
+## bind        :   Binds Android and iOS for Plugin Path
+bind: proto bind.ios bind.android
 	@go mod tidy
 	@cd /System/Library/Sounds && afplay Hero.aiff
 	@echo ""
@@ -89,8 +45,8 @@ mobile: proto ios android
 	@echo "----------------------------------------------------------------"
 
 
-## └─ android  :   Builds Android Bind at Plugin Path
-android:
+## └─ android       - Android AAR
+bind.android:
 	@echo ""
 	@echo ""
 	@echo "--------------------------------------------------------------"
@@ -108,8 +64,8 @@ android:
 	@echo ""
 
 
-## └─ ios      :   Builds iOS Bind at Plugin Path
-ios:
+## └─ ios           - iOS Framework
+bind.ios:
 	@echo ""
 	@echo ""
 	@echo "--------------------------------------------------------------"
@@ -125,6 +81,83 @@ ios:
 	@echo "--------------------------------------------------------------"
 	@echo ""
 
+## build       :   Builds Darwin and Windows Builds at Build Path
+build: proto build.darwin build.win
+	@go mod tidy
+	@cd /System/Library/Sounds && afplay Hero.aiff
+	@echo ""
+	@echo ""
+	@echo "------------------------------------------------------------------"
+	@echo "-------- ✅ ✅ ✅   FINISHED DESKTOP BUILD  ✅ ✅ ✅  --------------"
+	@echo "------------------------------------------------------------------"
+
+## └─ darwin        - MacOS executable
+build.darwin:
+	@echo ""
+	@echo ""
+	@echo "-----------------------------------------------------------"
+	@echo "------------- 🖥  START DARWIN BUILD  🖥  -------------------"
+	@echo "-----------------------------------------------------------"
+	@go clean -cache
+	@go mod tidy
+	cd pkg && packr build -o $(MAC_ARTIFACT)
+	@packr clean
+	@cd /System/Library/Sounds && afplay Glass.aiff
+	@echo "Finished Building ➡ " && date
+	@echo "--------------------------------------------------------------"
+	@echo "------------- 🖥  COMPLETED DAWIN BULD  🖥  -------------------"
+	@echo "--------------------------------------------------------------"
+
+## └─ win           - Windows executable
+build.win:
+	@echo ""
+	@echo ""
+	@echo "-----------------------------------------------------------"
+	@echo "------------- 🪟 START WINDOWS BUILD 🪟 --------------------"
+	@echo "-----------------------------------------------------------"
+	@go clean -cache
+	cd pkg && GOOS=windows GOARCH=amd64 packr build -ldflags -H=windowsgui -o $(WIN_ARTIFACT)
+	@packr clean
+	@cd /System/Library/Sounds && afplay Glass.aiff
+	@echo "Finished Building ➡ " && date
+	@echo "--------------------------------------------------------------"
+	@echo "------------- 🪟 COMPLETED WINDOWS BULD 🪟 --------------------"
+	@echo "--------------------------------------------------------------"
+	@echo ""
+
+
+## deploy      :   Package into Desktop Installers
+deploy: proto deploy.mac
+	@go mod tidy
+	@cd /System/Library/Sounds && afplay Hero.aiff
+	@echo ""
+	@echo ""
+	@echo "-------------------------------------------------------------------------"
+	@echo "-------- ✅ ✅ ✅   FINISHED PACKAGING INSTALLERS  ✅ ✅ ✅  --------------"
+	@echo "-------------------------------------------------------------------------"
+
+## └─ mac           - MacOS DMG
+# https://github.com/create-dmg/create-dmg
+deploy.mac: build.darwin
+	rm $(MAC_BUILDDIR)/Sonr-Installer.dmg
+	create-dmg \
+  --volname "Sonr Installer" \
+  --volicon $(MAC_BUILDDIR)/meta/"volume.icns" \
+  --background $(MAC_BUILDDIR)/meta/"volume-bg-alt.png" \
+  --window-pos 200 120 \
+  --window-size 800 400 \
+  --icon-size 125 \
+  --icon "Sonr.app" 182 172 \
+  --hide-extension "Sonr.app" \
+  --app-drop-link 618 167 \
+  $(MAC_BUILDDIR)"/Sonr-Installer.dmg" \
+  $(MAC_BUILDDIR)"/Sonr.app"
+	@cd /System/Library/Sounds && afplay Glass.aiff
+	@echo "--------------------------------------------------------------"
+	@echo "------------- 🖥  Packaged MacOS  🖥  -------------------------"
+	@echo "--------------------------------------------------------------"
+
+##
 ## [proto]     :   Compiles Protobuf models for Core Library and Plugin
 proto:
 	@echo ""
@@ -142,43 +175,6 @@ proto:
 	@echo "--------------------------------------------------------------"
 	@echo ""
 
-## deploy      :   Package into Desktop Installers
-deploy: proto
-	go clean -cache -x
-	cd pkg && packr build -o $(MAC_ARTIFACT)
-	cd pkg && GOOS=windows GOARCH=amd64 packr build -ldflags -H=windowsgui -o $(WIN_ARTIFACT)
-	@packr clean
-	@go mod tidy
-	@cd /System/Library/Sounds && afplay Hero.aiff
-	@echo ""
-	@echo ""
-	@echo "------------------------------------------------------------------"
-	@echo "-------- ✅ ✅ ✅   FINISHED DESKTOP BUILD  ✅ ✅ ✅  --------------"
-	@echo "------------------------------------------------------------------"
-
-## └─ mac      :   Builds and Packages for DMG
-# https://github.com/create-dmg/create-dmg
-mac:
-	@go clean -cache
-	@go mod tidy
-	cd pkg && packr build -o $(MAC_ARTIFACT)
-	rm $(MAC_BUILDDIR)/Sonr-Installer.dmg
-	create-dmg \
-  --volname "Sonr Installer" \
-  --volicon $(MAC_BUILDDIR)/meta/"volume.icns" \
-  --background $(MAC_BUILDDIR)/meta/"volume-bg.png" \
-  --window-pos 200 120 \
-  --window-size 800 400 \
-  --icon-size 100 \
-  --icon "Sonr.app" 200 190 \
-  --hide-extension "Sonr.app" \
-  --app-drop-link 600 185 \
-  $(MAC_BUILDDIR)"/Sonr-Installer.dmg" \
-  $(MAC_BUILDDIR)
-
-	@echo "--------------------------------------------------------------"
-	@echo "------------- 🖥  Packaged MacOS  🖥  -------------------------"
-	@echo "--------------------------------------------------------------"
 
 ## [run]       :   Builds and Runs for Darwin
 run:
@@ -198,17 +194,14 @@ run:
 	@echo ""
 	@cd $(MAC_BUILDDIR) && ./sonr_core
 
-## [build]     :   Builds ALL supported devices
-build: proto mobile desktop
-
 ## [reset]     :   Cleans Gomobile, Removes Framworks from Plugin, and Initializes Gomobile
 reset:
 	cd bind && $(GOCLEAN)
 	go mod tidy
 	go clean -cache -x
 	go clean -modcache -x
-	rm -rf $(IOS_BUILDDIR)
-	rm -rf $(ANDROID_BUILDDIR)
-	mkdir -p $(IOS_BUILDDIR)
-	mkdir -p $(ANDROID_BUILDDIR)
+	rm -rf $(IOS_BINDDIR)
+	rm -rf $(ANDROID_BINDDIR)
+	mkdir -p $(IOS_BINDDIR)
+	mkdir -p $(ANDROID_BINDDIR)
 	cd bind && gomobile init
