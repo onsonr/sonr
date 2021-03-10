@@ -10,10 +10,9 @@ IOS_BUILDDIR=/Users/prad/Sonr/plugin/ios/Frameworks
 IOS_ARTIFACT= $(IOS_BUILDDIR)/Core.framework
 ANDROID_BUILDDIR=/Users/prad/Sonr/plugin/android/libs
 ANDROID_ARTIFACT= $(ANDROID_BUILDDIR)/io.sonr.core.aar
-MAC_BUILDDIR=/Users/prad/Sonr/core/build/Sonr.app/Contents/MacOS
+MAC_BUILDDIR=/Users/prad/Sonr/core/build/darwin/Sonr.app/Contents/MacOS
 MAC_ARTIFACT=$(MAC_BUILDDIR)/sonr_core
-WEB_ARTIFACT=$(WIN_BUILDDIR)/sonr-core.wasm
-WIN_BUILDDIR=/Users/prad/Sonr/core/build
+WIN_BUILDDIR=/Users/prad/Sonr/core/build/win
 WIN_ARTIFACT=$(WIN_BUILDDIR)/sonr-core.exe
 
 # @ Proto Directories
@@ -158,21 +157,26 @@ deploy: proto
 	@echo "------------------------------------------------------------------"
 
 ## └─ mac      :   Builds and Packages for DMG
+# https://github.com/create-dmg/create-dmg
 mac:
-	@echo ""
-	@echo ""
-	@echo "--------------------------------------------------------------"
-	@echo "-------------- 📱 BEGIN IOS BIND 📱 ---------------------------"
-	@echo "--------------------------------------------------------------"
-	@go get golang.org/x/mobile/bind
-	cd bind && gomobile bind -ldflags='-s -w' -target=ios -v -o $(IOS_ARTIFACT)
+	@go clean -cache
 	@go mod tidy
-	@cd /System/Library/Sounds && afplay Glass.aiff
-	@echo "Finished Binding ➡ " && date
+	cd pkg && packr build -o $(MAC_ARTIFACT)
+	test -f Sonr-Installer.dmg && rm Sonr-Installer.dmg
+	create-dmg \
+  --volname "Sonr Installer" \
+  --window-pos 200 120 \
+  --window-size 800 400 \
+  --icon-size 100 \
+  --icon "Sonr.app" 200 190 \
+  --hide-extension "Sonr.app" \
+  --app-drop-link 600 185 \
+  "Sonr-Installer.dmg" \
+  "/Users/prad/Sonr/core/build/darwin/"
+
 	@echo "--------------------------------------------------------------"
-	@echo "-------------- 📱 COMPLETE IOS BIND 📱 ------------------------"
+	@echo "------------- 🖥  Packaged MacOS  🖥  -------------------------"
 	@echo "--------------------------------------------------------------"
-	@echo ""
 
 ## [run]       :   Builds and Runs for Darwin
 run:
@@ -187,7 +191,7 @@ run:
 	@packr clean
 	@echo "Finished Building ➡ " && date
 	@echo "--------------------------------------------------------------"
-	@echo "------------- 🖥  RUN DAWIN BULD  🖥  -------------------"
+	@echo "------------- 🖥  RUN DAWIN BULD  🖥  -------------------------"
 	@echo "--------------------------------------------------------------"
 	@echo ""
 	@cd $(MAC_BUILDDIR) && ./sonr_core
