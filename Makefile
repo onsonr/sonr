@@ -29,9 +29,9 @@ PB_BUILD_CORE="--go_out=$(CORE_PB_DIR)"
 PB_BUILD_PLUGIN="--dart_out=$(PLUGIN_PB_DIR)"
 
 all: Makefile
-	@echo 'Sonr Core Module'
-	@sed -n 's/^##//p' $<
-
+	@echo '--- Sonr Core Module Actions ---'
+	@echo ''
+	@sed -n 's/^##//p ' $<
 
 ## desktop     :   Builds Darwin and Windows Builds at Build Path
 desktop: proto
@@ -126,7 +126,7 @@ ios:
 	@echo "--------------------------------------------------------------"
 	@echo ""
 
-## proto       :   Compiles Protobuf models for Core Library and Plugin
+## [proto]     :   Compiles Protobuf models for Core Library and Plugin
 proto:
 	@echo ""
 	@echo ""
@@ -143,7 +143,38 @@ proto:
 	@echo "--------------------------------------------------------------"
 	@echo ""
 
-## run         :   Builds and Runs for Darwin
+## deploy      :   Package into Desktop Installers
+deploy: proto
+	go clean -cache -x
+	cd pkg && packr build -o $(MAC_ARTIFACT)
+	cd pkg && GOOS=windows GOARCH=amd64 packr build -ldflags -H=windowsgui -o $(WIN_ARTIFACT)
+	@packr clean
+	@go mod tidy
+	@cd /System/Library/Sounds && afplay Hero.aiff
+	@echo ""
+	@echo ""
+	@echo "------------------------------------------------------------------"
+	@echo "-------- ✅ ✅ ✅   FINISHED DESKTOP BUILD  ✅ ✅ ✅  --------------"
+	@echo "------------------------------------------------------------------"
+
+## └─ mac      :   Builds and Packages for DMG
+mac:
+	@echo ""
+	@echo ""
+	@echo "--------------------------------------------------------------"
+	@echo "-------------- 📱 BEGIN IOS BIND 📱 ---------------------------"
+	@echo "--------------------------------------------------------------"
+	@go get golang.org/x/mobile/bind
+	cd bind && gomobile bind -ldflags='-s -w' -target=ios -v -o $(IOS_ARTIFACT)
+	@go mod tidy
+	@cd /System/Library/Sounds && afplay Glass.aiff
+	@echo "Finished Binding ➡ " && date
+	@echo "--------------------------------------------------------------"
+	@echo "-------------- 📱 COMPLETE IOS BIND 📱 ------------------------"
+	@echo "--------------------------------------------------------------"
+	@echo ""
+
+## [run]       :   Builds and Runs for Darwin
 run:
 	@echo ""
 	@echo ""
@@ -161,21 +192,8 @@ run:
 	@echo ""
 	@cd $(MAC_BUILDDIR) && ./sonr_core
 
-## wasm        :   Builds WebAssembly Binary at Build Path *BROKEN*
-wasm: proto
-	go clean -cache -x
-	cd bind && GOOS=js GOARCH=wasm go build -o $(WEB_ARTIFACT)
-	@packr clean
-	@go mod tidy
-	@cd /System/Library/Sounds && afplay Hero.aiff
-	@echo ""
-	@echo ""
-	@echo "------------------------------------------------------------------"
-	@echo "-------- ✅ ✅ ✅   FINISHED DESKTOP BUILD  ✅ ✅ ✅  --------------"
-	@echo "------------------------------------------------------------------"
-
-## upgrade     :   Builds ALL supported devices
-upgrade: proto mobile desktop
+## [build]     :   Builds ALL supported devices
+build: proto mobile desktop
 
 ## [reset]     :   Cleans Gomobile, Removes Framworks from Plugin, and Initializes Gomobile
 reset:
