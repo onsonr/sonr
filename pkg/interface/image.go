@@ -16,18 +16,13 @@ const (
 	User
 	Peer
 	Invite
-	iPhone
-	Android
-	Mac
-	Windows
-	Unknown
 	Link
 	URL
 	File
 )
 
 func (d Icon) File() string {
-	return [...]string{"systray.png", "close.png", "user.png", "peer.png", "invite.png", "iphone.png", "android.png", "mac.png", "windows.png", "unknown.png", "link.png", "url.png", "file.png"}[d]
+	return [...]string{"systray.png", "close.png", "user.png", "peer.png", "invite.png", "link.png", "url.png", "file.png"}[d]
 }
 
 // @ Struct for All Image Assets //
