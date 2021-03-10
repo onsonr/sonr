@@ -16,7 +16,7 @@ const interval = 500 * time.Millisecond
 type Client struct {
 	sonr.Callback
 	ctx       context.Context
-	menu      ui.Interface
+	face      ui.Interface
 	node      *sonr.Node
 	info      SysInfo
 	peerCount int32
@@ -29,7 +29,7 @@ func NewClient(ctx context.Context, m ui.Interface) *Client {
 	var c = new(Client)
 	c.info = SystemInfo()
 	c.ctx = ctx
-	c.menu = m
+	c.face = m
 	c.peerCount = 0
 	c.lobbySize = 1
 
@@ -54,7 +54,7 @@ func NewClient(ctx context.Context, m ui.Interface) *Client {
 
 	// Create New Client
 	c.node = sonr.NewNode(bytes, c)
-	c.menu.Initialize(c.node)
+	c.face.Initialize(c.node)
 	m.Initialize(c.node)
 
 	// Start Routine

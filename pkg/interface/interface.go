@@ -8,20 +8,27 @@ import (
 	"github.com/gobuffalo/packr"
 	snr "github.com/sonr-io/core/bind"
 	md "github.com/sonr-io/core/internal/models"
+	mn "github.com/sonr-io/core/pkg/menu"
 	win "github.com/sonr-io/core/pkg/window"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )
 
 type Interface struct {
-	node       *snr.Node
-	assets     ImageAssets
-	mLink      *systray.MenuItem
-	mCount     *systray.MenuItem
-	mQuit      *systray.MenuItem
-	mPeersList []*systray.MenuItem
-	peerCount  int32
-	lobbySize  int32
+	// Client Properties
+	node   *snr.Node
+	assets ImageAssets
+
+	// System Native Tray
+	tLink      *systray.MenuItem
+	tShare     *systray.MenuItem
+	tCount     *systray.MenuItem
+	tQuit      *systray.MenuItem
+	tPeersList []*systray.MenuItem
+
+	// Locale Info
+	peerCount int32
+	lobbySize int32
 }
 
 func Start() Interface {
@@ -46,13 +53,13 @@ func Start() Interface {
 
 	// Check Platform
 	if runtime.GOOS == "windows" {
-		icon, err := iconBox.Find("systray.ico")
+		icon, err := iconBox.Find("tray.ico")
 		if err != nil {
 			log.Println(err)
 		}
 		systray.SetIcon(icon)
 	} else {
-		icon, err := iconBox.Find("systray.png")
+		icon, err := iconBox.Find("tray.png")
 		if err != nil {
 			log.Println(err)
 		}
@@ -60,17 +67,18 @@ func Start() Interface {
 	}
 
 	// Link Sonr Device
-	ai.mLink = systray.AddMenuItem("Link Device", "Link a Device to Sonr")
-	ai.mLink.SetTemplateIcon(ai.assets.SystemIcon(Link), ai.assets.SystemIcon(Link))
+	ai.tLink = systray.AddMenuItem("Link Device", "Link a Device to Sonr")
+	ai.tLink.SetTemplateIcon(ai.assets.SystemIcon(Link), ai.assets.SystemIcon(Link))
+	ai.tShare = systray.AddMenuItem("Open Share", "Open Share Menu")
 
 	// Quit Sonr
-	ai.mQuit = systray.AddMenuItem("Quit", "Quit Sonr Desktop")
-	ai.mQuit.SetTemplateIcon(ai.assets.SystemIcon(Close), ai.assets.SystemIcon(Close))
+	ai.tQuit = systray.AddMenuItem("Quit", "Quit Sonr Desktop")
+	ai.tQuit.SetTemplateIcon(ai.assets.SystemIcon(Close), ai.assets.SystemIcon(Close))
 	systray.AddSeparator()
 
 	// Pers Label
-	ai.mCount = systray.AddMenuItem("Available Peers", "")
-	ai.mCount.Disable()
+	ai.tCount = systray.AddMenuItem("Available Peers", "")
+	ai.tCount.Disable()
 	return ai
 }
 
@@ -88,11 +96,14 @@ func (ai *Interface) HandleMenuInput() {
 	for {
 		select {
 		// @ File Item Clicked
-		case <-ai.mQuit.ClickedCh:
+		case <-ai.tQuit.ClickedCh:
 			systray.Quit()
 
+		case <-ai.tShare.ClickedCh:
+			mn.OpenShareMenu()
+
 			// @ Link Item Clicked
-		case <-ai.mLink.ClickedCh:
+		case <-ai.tLink.ClickedCh:
 			// Validate Node Set
 			if ai.node != nil {
 				// Create Link Request
@@ -188,12 +199,12 @@ func (ai *Interface) RefreshPeers(newLob *md.Lobby, node *snr.Node) {
 		ai.peerCount = newLob.Size - 1
 
 		// Reset Menu
-		for _, mi := range ai.mPeersList {
+		for _, mi := range ai.tPeersList {
 			mi.Hide()
 		}
 
 		// Empty Peers
-		ai.mPeersList = nil
+		ai.tPeersList = nil
 
 		// Add Peers to Menu
 		for _, p := range newLob.Peers {
@@ -218,5 +229,5 @@ func (ai *Interface) SetPeerItem(p *md.Peer) {
 	go ai.HandlePeerInput(fileItem, urlItem, p)
 
 	// Add to Menu List
-	ai.mPeersList = append(ai.mPeersList, peerItem)
+	ai.tPeersList = append(ai.tPeersList, peerItem)
 }

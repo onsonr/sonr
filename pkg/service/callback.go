@@ -6,7 +6,7 @@ import (
 	op "github.com/skratchdot/open-golang/open"
 	md "github.com/sonr-io/core/internal/models"
 
-	ui "github.com/sonr-io/core/pkg/Interface"
+	ui "github.com/sonr-io/core/pkg/interface"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -32,7 +32,7 @@ func (c *Client) OnRefreshed(data []byte) {
 	if err != nil {
 		log.Panicln("Error Unmarshalling Request")
 	}
-	c.menu.RefreshPeers(lob, c.node)
+	c.face.RefreshPeers(lob, c.node)
 }
 
 // @ Inherited Method: Handle Invite ^ //

@@ -5,6 +5,7 @@ go 1.16
 // Core Imports
 require (
 	github.com/PuerkitoBio/goquery v1.6.1
+	github.com/deckarep/gosx-notifier v0.0.0-20180201035817-e127226297fb // indirect
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.4.3
