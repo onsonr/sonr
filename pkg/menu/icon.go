@@ -1,10 +1,7 @@
 package ui
 
 import (
-	"bytes"
-	"image/png"
 	"log"
-	"os"
 
 	md "github.com/sonr-io/core/internal/models"
 )
@@ -37,45 +34,25 @@ func (d Icon) File() string {
 }
 
 // ^ Returns Buffer of Image by Icon Type
-func GetIcon(i Icon) []byte {
+func (ai *AppInterface) GetIcon(i Icon) []byte {
 	// Get Path
-	path := RES_PATH + i.File()
-
-	// Initialize
-	imgBuffer := new(bytes.Buffer)
-	existingImageFile, err := os.Open(path)
+	data, err := ai.box.Find(i.File())
 	if err != nil {
 		log.Println(err)
-		return nil
 	}
-	defer existingImageFile.Close()
-
-	// Decode PNG
-	loadedImage, err := png.Decode(existingImageFile)
-	if err != nil {
-		log.Println(err)
-		return nil
-	}
-	// Encode PNG into Memory
-	err = png.Encode(imgBuffer, loadedImage)
-	if err != nil {
-		log.Println(err)
-		return nil
-	}
-	return imgBuffer.Bytes()
+	return data
 }
 
 // ^ Returns Buffer of Image from Device Type
-func GetDeviceIcon(p md.Platform) []byte {
+func (ai *AppInterface) GetDeviceIcon(p md.Platform) []byte {
 	if p == md.Platform_Android {
-		return GetIcon(Android)
+		return ai.GetIcon(Android)
 	} else if p == md.Platform_iOS {
-		return GetIcon(iPhone)
+		return ai.GetIcon(iPhone)
 	} else if p == md.Platform_MacOS {
-		return GetIcon(Mac)
+		return ai.GetIcon(Mac)
 	} else if p == md.Platform_Windows {
-		return GetIcon(Windows)
+		return ai.GetIcon(Windows)
 	}
-
-	return GetIcon(Unknown)
+	return ai.GetIcon(Unknown)
 }

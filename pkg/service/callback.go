@@ -1,11 +1,11 @@
-package desktop
+package service
 
 import (
 	"log"
 
 	op "github.com/skratchdot/open-golang/open"
 	md "github.com/sonr-io/core/internal/models"
-	"github.com/sonr-io/core/pkg/ui"
+	ui "github.com/sonr-io/core/pkg/menu"
 	"google.golang.org/protobuf/proto"
 )
 

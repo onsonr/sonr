@@ -1,4 +1,4 @@
-package desktop
+package service
 
 import (
 	"log"

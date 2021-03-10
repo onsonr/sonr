@@ -1,4 +1,4 @@
-package ui
+package window
 
 import (
 	"crypto/rand"
@@ -10,6 +10,7 @@ import (
 	"sync"
 
 	// "github.com/skip2/go-qrcode"
+	"github.com/gobuffalo/packr"
 	"github.com/zserge/lorca"
 )
 
@@ -31,7 +32,7 @@ func (c *counter) Value() int {
 }
 
 // ^ Opens a Window For QR Code ^ //
-func (sm *AppInterface) OpenQRWindow(json string) {
+func OpenQRWindow(json string) {
 	// Encode to QR
 	print(json)
 	// //qrData, err := qrcode.Encode(json, qrcode.Medium, 256)
@@ -51,25 +52,26 @@ func (sm *AppInterface) OpenQRWindow(json string) {
 	defer ui.Close()
 
 	// A simple way to know when UI is ready (uses body.onload event in JS)
-	ui.Bind("start", func() {
+	err = ui.Bind("start", func() {
 		log.Println("UI is ready")
 	})
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// Create and bind Go object to the UI
 	c := &counter{}
 	ui.Bind("counterAdd", c.Add)
 	ui.Bind("counterValue", c.Value)
 
-	// Load HTML.
-	// You may also use `data:text/html,<base64>` approach to load initial HTML,
-	// e.g: ui.Load("data:text/html," + url.PathEscape(html))
-
 	ln, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer ln.Close()
-	go http.Serve(ln, http.FileServer(FS))
+
+	box := packr.NewBox("./assets/www")
+	go http.Serve(ln, http.FileServer(box))
 	ui.Load(fmt.Sprintf("http://%s", ln.Addr()))
 
 	// You may use console.log to debug your JS code, it will be printed via

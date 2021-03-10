@@ -8,8 +8,8 @@ import (
 
 	"github.com/getlantern/systray"
 	"github.com/gobuffalo/packr"
-	"github.com/sonr-io/core/pkg/desktop"
-	"github.com/sonr-io/core/pkg/ui"
+	ui "github.com/sonr-io/core/pkg/menu"
+	sv "github.com/sonr-io/core/pkg/service"
 
 	md "github.com/sonr-io/core/internal/models"
 )
@@ -21,7 +21,7 @@ type SysInfo struct {
 }
 
 // Define Context
-var desk *desktop.Client
+var desk *sv.Client
 var ctx context.Context
 var app ui.AppInterface
 
@@ -33,13 +33,13 @@ func main() {
 
 func onReady() {
 	// Start Function
-	box := packr.NewBox("./res")
+	box := packr.NewBox("./assets/icons")
 
 	// Starts Menu Bar
 	app = ui.Start(box)
 
 	// Creates New Client
-	desk = desktop.NewClient(ctx, app)
+	desk = sv.NewClient(ctx, app)
 }
 
 func onExit() {

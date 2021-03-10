@@ -8,6 +8,7 @@ import (
 	"github.com/gobuffalo/packr"
 	sonr "github.com/sonr-io/core/bind"
 	md "github.com/sonr-io/core/internal/models"
+	win "github.com/sonr-io/core/pkg/window"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )
@@ -52,11 +53,11 @@ func Start(box packr.Box) AppInterface {
 
 	// Link Sonr Device
 	ai.mLink = systray.AddMenuItem("Link Device", "Link a Device to Sonr")
-	ai.mLink.SetTemplateIcon(GetIcon(Link), GetIcon(Link))
+	ai.mLink.SetTemplateIcon(ai.GetIcon(Link), ai.GetIcon(Link))
 
 	// Quit Sonr
 	ai.mQuit = systray.AddMenuItem("Quit", "Quit Sonr Desktop")
-	ai.mQuit.SetTemplateIcon(GetIcon(Close), GetIcon(Close))
+	ai.mQuit.SetTemplateIcon(ai.GetIcon(Close), ai.GetIcon(Close))
 	systray.AddSeparator()
 
 	// Pers Label
@@ -97,7 +98,7 @@ func (ai *AppInterface) HandleMenuInput() {
 				}
 
 				// Display Window
-				go ai.OpenQRWindow(string(jsonBytes))
+				go win.OpenQRWindow(string(jsonBytes))
 			} else {
 				log.Println("Node not set.")
 			}
@@ -197,13 +198,13 @@ func (ai *AppInterface) RefreshPeers(newLob *md.Lobby, node *sonr.Node) {
 func (ai *AppInterface) SetPeerItem(p *md.Peer) {
 	// Add Peer to Menu
 	peerItem := systray.AddMenuItem(p.Profile.FirstName, "")
-	peerItem.SetTemplateIcon(GetDeviceIcon(p.Platform), GetDeviceIcon(p.Platform))
+	peerItem.SetTemplateIcon(ai.GetDeviceIcon(p.Platform), ai.GetDeviceIcon(p.Platform))
 
 	// Add Peer Send Options
 	urlItem := peerItem.AddSubMenuItem("Send URL", "Send a URL to "+p.Profile.FirstName)
-	urlItem.SetTemplateIcon(GetIcon(URL), GetIcon(URL))
+	urlItem.SetTemplateIcon(ai.GetIcon(URL), ai.GetIcon(URL))
 	fileItem := peerItem.AddSubMenuItem("Send File", "Send a File to "+p.Profile.FirstName)
-	fileItem.SetTemplateIcon(GetIcon(File), GetIcon(File))
+	fileItem.SetTemplateIcon(ai.GetIcon(File), ai.GetIcon(File))
 
 	// Spawn Routine to handle Peer Item Actions
 	go ai.HandlePeerInput(fileItem, urlItem, p)

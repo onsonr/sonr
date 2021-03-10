@@ -1,4 +1,4 @@
-package desktop
+package service
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 
 	sonr "github.com/sonr-io/core/bind"
 	md "github.com/sonr-io/core/internal/models"
-	"github.com/sonr-io/core/pkg/ui"
+	ui "github.com/sonr-io/core/pkg/menu"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -70,7 +70,7 @@ func (dc *Client) UpdateAuto(ticker *time.Ticker) {
 			dc.node.Stop()
 			return
 		case <-ticker.C:
-			dc.node.Update(0)
+			dc.node.Update(0, 0)
 		}
 	}
 }
