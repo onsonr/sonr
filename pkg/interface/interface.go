@@ -8,7 +8,6 @@ import (
 	"github.com/gobuffalo/packr"
 	snr "github.com/sonr-io/core/bind"
 	md "github.com/sonr-io/core/internal/models"
-	mn "github.com/sonr-io/core/pkg/menu"
 	win "github.com/sonr-io/core/pkg/window"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
@@ -21,7 +20,6 @@ type Interface struct {
 
 	// System Native Tray
 	tLink      *systray.MenuItem
-	tShare     *systray.MenuItem
 	tCount     *systray.MenuItem
 	tQuit      *systray.MenuItem
 	tPeersList []*systray.MenuItem
@@ -69,7 +67,6 @@ func Start() Interface {
 	// Link Sonr Device
 	ai.tLink = systray.AddMenuItem("Link Device", "Link a Device to Sonr")
 	ai.tLink.SetTemplateIcon(ai.assets.SystemIcon(Link), ai.assets.SystemIcon(Link))
-	ai.tShare = systray.AddMenuItem("Open Share", "Open Share Menu")
 
 	// Quit Sonr
 	ai.tQuit = systray.AddMenuItem("Quit", "Quit Sonr Desktop")
@@ -98,9 +95,6 @@ func (ai *Interface) HandleMenuInput() {
 		// @ File Item Clicked
 		case <-ai.tQuit.ClickedCh:
 			systray.Quit()
-
-		case <-ai.tShare.ClickedCh:
-			mn.OpenShareMenu()
 
 			// @ Link Item Clicked
 		case <-ai.tLink.ClickedCh:

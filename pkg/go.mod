@@ -10,7 +10,6 @@ require (
 	github.com/gobuffalo/envy v1.9.0 // indirect
 	github.com/gobuffalo/packd v1.0.0 // indirect
 	github.com/gobuffalo/packr v1.30.1
-	github.com/progrium/macdriver v0.0.1
 	github.com/rogpeppe/go-internal v1.7.0 // indirect
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
 	github.com/sonr-io/core v0.0.0-20201228055835-b410f59b2c15
