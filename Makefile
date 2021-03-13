@@ -77,6 +77,23 @@ bind.ios:
 	@echo ""
 
 ##
+## [install]   :   Creates CLI for Managing Sonr Code
+install:
+	@echo ""
+	@echo ""
+	@echo "--------------------------------------------------------------"
+	@echo "------------- 🛸 START PROTOBUFS COMPILE 🛸 -------------------"
+	@echo "--------------------------------------------------------------"
+	@cd pkg/models && protoc --doc_out=$(PROTO_DOC_OUT) --doc_opt=html,index.html api.proto data.proto core.proto user.proto
+	@cd pkg/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CORE) api.proto data.proto core.proto user.proto
+	@cd pkg/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CONTACT) api.proto data.proto user.proto
+	@cd pkg/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_PLUGIN) user.proto
+	@echo "Finished Compiling ➡ " && date
+	@echo "--------------------------------------------------------------"
+	@echo "------------- 🛸 COMPILED ALL PROTOBUFS 🛸 --------------------"
+	@echo "--------------------------------------------------------------"
+	@echo ""
+
 ## [proto]     :   Compiles Protobuf models for Core Library and Plugin
 proto:
 	@echo ""
