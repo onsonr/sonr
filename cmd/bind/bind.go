@@ -21,7 +21,7 @@ type Callback interface {
 	OnError(data []byte)       // Internal Error
 }
 
-// @ Interface: Callback is implemented from Plugin to receive updates
+// @ Struct: Reference for Binded Proxy Node
 type MobileNode struct {
 	ID       string
 	DeviceID string
@@ -30,7 +30,7 @@ type MobileNode struct {
 	Status   md.Status
 }
 
-// ^ Create New Mobile Node ^ //
+// Create New Mobile Node
 func NewNode(reqBytes []byte, call Callback) *MobileNode {
 	// ** Unmarshal Request **
 	req := md.ConnectionRequest{}
@@ -56,12 +56,12 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 // **--------------** //
 // ** Node Actions ** //
 // **--------------** //
-// ^ Update proximity/direction and Notify Lobby ^ //
+// Update proximity/direction and Notify Lobby
 func (sn *MobileNode) Update(facing float64, heading float64) {
 	sn.node.Update(facing, heading)
 }
 
-// ^ Invite Processes Data and Sends Invite to Peer ^ //
+// Invite Processes Data and Sends Invite to Peer
 func (sn *MobileNode) Invite(reqBytes []byte) {
 	// @ 1. Initialize from Request
 	req := &md.InviteRequest{}
@@ -73,35 +73,29 @@ func (sn *MobileNode) Invite(reqBytes []byte) {
 	sn.node.Invite(req)
 }
 
-// ^ Respond to an Invitation ^ //
+// Respond to an Invitation
 func (sn *MobileNode) Respond(decision bool) {
 	sn.node.Respond(decision)
 }
 
 // ** User Actions ** //
-// ^ Info returns ALL Peer Data as Bytes^
+// Info returns ALL Peer Data as Bytes
 func (sn *MobileNode) Info() []byte {
 	info := sn.node.Info()
 	return info
 }
 
-// ^ Link with a QR Code ^ //
+//  Link with a QR Code
 func (sn *MobileNode) LinkDevice(json string) {
 	sn.node.LinkDevice(json)
 }
 
-// ^ Generate QRCode for Linking ^ //
-func (sn *MobileNode) LinkRequest(name string) *md.LinkRequest {
-	lreq := sn.node.LinkRequest(name)
-	return lreq
-}
-
-// ^ Peer returns Current Peer Info ^
+// Peer returns Current Peer Info
 func (sn *MobileNode) Peer() *md.Peer {
 	return sn.node.Peer()
 }
 
-// ^ Updates Current Contact Card ^
+// Updates Current Contact Card
 func (sn *MobileNode) SetContact(conBytes []byte) {
 	// Unmarshal Data
 	newContact := &md.Contact{}
@@ -115,17 +109,17 @@ func (sn *MobileNode) SetContact(conBytes []byte) {
 // **-------------------** //
 // ** LifeCycle Actions ** //
 // **-------------------** //
-// ^ Close Ends All Network Communication ^
+// Close Ends All Network Communication
 func (sn *MobileNode) Pause() {
 	sn.node.Pause()
 }
 
-// ^ Close Ends All Network Communication ^
+// Close Ends All Network Communication
 func (sn *MobileNode) Resume() {
 	sn.node.Resume()
 }
 
-// ^ Close Ends All Network Communication ^
+// Close Ends All Network Communication
 func (sn *MobileNode) Stop() {
 	sn.node.Stop()
 }
