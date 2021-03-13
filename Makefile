@@ -1,5 +1,5 @@
 SHELL=/bin/zsh # Set Shell
-SONR_ROOT_DIR=/Users/prad/Sonr
+SONR_ROOT_DIR=/Users/prad/Sonr # Set this to Folder of Sonr
 ANDROID_BINDDIR=$(SONR_ROOT_DIR)/plugin/android/libs
 IOS_BINDDIR=$(SONR_ROOT_DIR)/plugin/ios/Frameworks
 
