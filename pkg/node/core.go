@@ -102,5 +102,6 @@ func NewNode(req *md.ConnectionRequest, call Callback) *Node {
 	}
 
 	// ** Callback Node User Information ** //
+	sentry.CaptureMessage("Node Created Successfully.")
 	return node
 }

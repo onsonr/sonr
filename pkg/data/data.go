@@ -24,12 +24,15 @@ type SonrFS struct {
 
 // ^ Method Initializes Root Sonr Directory ^ //
 func InitFS(connEvent *md.ConnectionRequest, profile *md.Profile) *SonrFS {
+	sonrPath := ""
+
+	
 	return &SonrFS{
 		Cache:     connEvent.Directories.Cache,
 		Documents: connEvent.Directories.Documents,
 		Downloads: connEvent.Directories.Downloads,
 		Home:      connEvent.Directories.Home,
-		Sonr:      connEvent.Directories.Sonr,
+		Sonr:      sonrPath,
 		Temporary: connEvent.Directories.Temporary,
 	}
 }
