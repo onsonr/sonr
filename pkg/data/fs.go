@@ -11,7 +11,7 @@ import (
 )
 
 // @ Constant Variables
-const K_SONR_ROOT_DIR = ".sonr"
+const K_SONR_CLIENT_DIR = ".sonr"
 
 // @ Sonr File System Struct
 type SonrFS struct {
@@ -42,7 +42,7 @@ func InitFS(connEvent *md.ConnectionRequest, profile *md.Profile) *SonrFS {
 	// Check for Client Type
 	if connEvent.Device.Desktop {
 		// Init Path, Check for Path
-		sonrPath = filepath.Join(connEvent.Directories.Home, K_SONR_ROOT_DIR)
+		sonrPath = filepath.Join(connEvent.Directories.Home, K_SONR_CLIENT_DIR)
 		if err := EnsureDir(sonrPath, 0755); err != nil {
 			sentry.CaptureException(err)
 			hasInitialized = false
@@ -50,14 +50,8 @@ func InitFS(connEvent *md.ConnectionRequest, profile *md.Profile) *SonrFS {
 			hasInitialized = true
 		}
 	} else {
-		// Init Path, Check for Path
-		sonrPath = filepath.Join(connEvent.Directories.Documents, K_SONR_ROOT_DIR)
-		if err := EnsureDir(sonrPath, 0755); err != nil {
-			sentry.CaptureException(err)
-			hasInitialized = false
-		} else {
-			hasInitialized = true
-		}
+		// Set Path to Documents for Mobile
+		sonrPath = connEvent.Directories.Documents
 	}
 
 	// Create SFS
@@ -103,6 +97,36 @@ func IsDir(name string) (bool, error) {
 		return false, fmt.Errorf("%q is not a directory", name)
 	}
 	return true, nil
+}
+
+// ^ Write User Data at Path ^
+func (sfs *SonrFS) WriteFile(load md.Payload, props *md.TransferCard_Properties, data []byte) (string, string) {
+	// Create File Name
+	fileName := props.Name + "." + props.Mime.Subtype
+	var path string
+
+	// Check Load
+	if load == md.Payload_MEDIA {
+		path = filepath.Join(sfs.Temporary, fileName)
+	} else {
+		path = filepath.Join(sfs.Root, fileName)
+	}
+
+	// Check for User File at Path
+	file, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		sentry.CaptureException(err)
+	}
+
+	// Defer Close
+	defer file.Close()
+
+	// Write User Data to File
+	_, err = file.Write(data)
+	if err != nil {
+		sentry.CaptureException(err)
+	}
+	return fileName, path
 }
 
 // ^ Write User Data at Path ^
