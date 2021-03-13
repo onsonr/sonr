@@ -43,7 +43,7 @@ func InitFS(connEvent *md.ConnectionRequest, profile *md.Profile) *SonrFS {
 	if connEvent.Device.Desktop {
 		// Init Path, Check for Path
 		sonrPath = filepath.Join(connEvent.Directories.Home, K_SONR_ROOT_DIR)
-		if err := EnsureDir(sonrPath, os.ModeAppend); err != nil {
+		if err := EnsureDir(sonrPath, 0755); err != nil {
 			sentry.CaptureException(err)
 			hasInitialized = false
 		} else {
@@ -52,7 +52,7 @@ func InitFS(connEvent *md.ConnectionRequest, profile *md.Profile) *SonrFS {
 	} else {
 		// Init Path, Check for Path
 		sonrPath = filepath.Join(connEvent.Directories.Documents, K_SONR_ROOT_DIR)
-		if err := EnsureDir(sonrPath, os.ModeAppend); err != nil {
+		if err := EnsureDir(sonrPath, 0755); err != nil {
 			sentry.CaptureException(err)
 			hasInitialized = false
 		} else {
