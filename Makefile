@@ -1,7 +1,7 @@
 SHELL=/bin/zsh # Set Shell
 SONR_ROOT_DIR=/Users/prad/Sonr # Set this to Folder of Sonr
-ANDROID_BINDDIR=$(SONR_ROOT_DIR)/plugin/android/libs
-IOS_BINDDIR=$(SONR_ROOT_DIR)/plugin/ios/Frameworks
+ANDROID_BINDDIR=/Users/prad/Sonr/plugin/android/libs
+IOS_BINDDIR=/Users/prad/Sonr/plugin/ios/Frameworks
 
 # @ Packaging Vars/Commands
 GOMOBILE=gomobile
@@ -10,16 +10,16 @@ GOBIND=$(GOMOBILE) bind -ldflags='-s -w' -v
 
 
 # @ Bind Directories
-BIND_DIR=$(SONR_ROOT_DIR)/core/cmd/bind
+BIND_DIR=/Users/prad/Sonr/core/cmd/bind
 IOS_ARTIFACT= $(IOS_BINDDIR)/Core.framework
 ANDROID_ARTIFACT= $(ANDROID_BINDDIR)/io.sonr.core.aar
 
 # @ Proto Directories
-PB_PATH=$(SONR_ROOT_DIR)/core/pkg/models
-CONTACT_PB_DIR=$(SONR_ROOT_DIR)/contact/lib/src/data/models
-CORE_PB_DIR=$(SONR_ROOT_DIR)/core/pkg/models
-PLUGIN_PB_DIR=$(SONR_ROOT_DIR)/plugin/lib/src/core/models
-PROTO_DOC_OUT=$(SONR_ROOT_DIR)/docs/proto
+PB_PATH=/Users/prad/Sonr/core/pkg/models
+CONTACT_PB_DIR=/Users/prad/Sonr/contact/lib/src/data/models
+CORE_PB_DIR=/Users/prad/Sonr/core/pkg/models
+PLUGIN_PB_DIR=/Users/prad/Sonr/plugin/lib/src/core/models
+PROTO_DOC_DIR=/Users/prad/Sonr/docs/proto
 
 # @ Proto Build Commands
 PB_BUILD_CONTACT="--dart_out=$(CONTACT_PB_DIR)"
@@ -79,23 +79,6 @@ bind.ios:
 	@echo ""
 
 ##
-## [install]   :   Creates CLI for Managing Sonr Code
-install:
-	@echo ""
-	@echo ""
-	@echo "--------------------------------------------------------------"
-	@echo "------------- 🛸 START PROTOBUFS COMPILE 🛸 -------------------"
-	@echo "--------------------------------------------------------------"
-	@cd pkg/models && protoc --doc_out=$(PROTO_DOC_OUT) --doc_opt=html,index.html api.proto data.proto core.proto user.proto
-	@cd pkg/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CORE) api.proto data.proto core.proto user.proto
-	@cd pkg/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CONTACT) api.proto data.proto user.proto
-	@cd pkg/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_PLUGIN) user.proto
-	@echo "Finished Compiling ➡ " && date
-	@echo "--------------------------------------------------------------"
-	@echo "------------- 🛸 COMPILED ALL PROTOBUFS 🛸 --------------------"
-	@echo "--------------------------------------------------------------"
-	@echo ""
-
 ## [proto]     :   Compiles Protobuf models for Core Library and Plugin
 proto:
 	@echo ""
@@ -103,7 +86,7 @@ proto:
 	@echo "--------------------------------------------------------------"
 	@echo "------------- 🛸 START PROTOBUFS COMPILE 🛸 -------------------"
 	@echo "--------------------------------------------------------------"
-	@cd pkg/models && protoc --doc_out=$(PROTO_DOC_OUT) --doc_opt=html,index.html api.proto data.proto core.proto user.proto
+	@cd pkg/models && protoc --doc_out=$(PROTO_DOC_DIR) --doc_opt=html,index.html api.proto data.proto core.proto user.proto
 	@cd pkg/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CORE) api.proto data.proto core.proto user.proto
 	@cd pkg/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CONTACT) api.proto data.proto user.proto
 	@cd pkg/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_PLUGIN) user.proto
