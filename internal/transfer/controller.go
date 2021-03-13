@@ -11,7 +11,7 @@ import (
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	msgio "github.com/libp2p/go-msgio"
 	sf "github.com/sonr-io/core/internal/file"
-	md "github.com/sonr-io/core/internal/models"
+	md "github.com/sonr-io/core/pkg/models"
 )
 
 // ^ Struct: Holds/Handles GRPC Calls and Handles Data Stream  ^ //

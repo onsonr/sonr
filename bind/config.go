@@ -7,8 +7,8 @@ import (
 
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	sl "github.com/sonr-io/core/internal/lobby"
-	md "github.com/sonr-io/core/internal/models"
 	tf "github.com/sonr-io/core/internal/transfer"
+	md "github.com/sonr-io/core/pkg/models"
 )
 
 // ^ setInfo sets node info from connEvent and host ^ //

@@ -4,14 +4,13 @@ import (
 	"context"
 	"log"
 
-	"github.com/getsentry/sentry-go"
 	olc "github.com/google/open-location-code/go"
 	"github.com/libp2p/go-libp2p-core/host"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	sh "github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/internal/lobby"
-	md "github.com/sonr-io/core/internal/models"
 	tr "github.com/sonr-io/core/internal/transfer"
+	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -57,16 +56,16 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	node.ctx = context.Background()
 	node.call = call
 
-	err := sentry.Init(sentry.ClientOptions{
-		Dsn: "https://cbf88b01a5a5468fa77101f7dfc54f20@o549479.ingest.sentry.io/5672329",
-	})
-	if err != nil {
-		log.Fatalf("sentry.Init: %s", err)
-	}
+	// err := sentry.Init(sentry.ClientOptions{
+	// 	Dsn: "https://cbf88b01a5a5468fa77101f7dfc54f20@o549479.ingest.sentry.io/5672329",
+	// })
+	// if err != nil {
+	// 	log.Fatalf("sentry.Init: %s", err)
+	// }
 
 	// ** Unmarshal Request **
 	req := md.ConnectionRequest{}
-	err = proto.Unmarshal(reqBytes, &req)
+	err := proto.Unmarshal(reqBytes, &req)
 	if err != nil {
 		node.error(err, "NewNode")
 		return nil

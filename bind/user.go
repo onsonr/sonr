@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/denisbrodbeck/machineid"
-	md "github.com/sonr-io/core/internal/models"
+	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )

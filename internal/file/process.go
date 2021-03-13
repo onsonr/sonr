@@ -7,7 +7,7 @@ import (
 	"log"
 	"sync"
 
-	md "github.com/sonr-io/core/internal/models"
+	md "github.com/sonr-io/core/pkg/models"
 )
 
 // ******************* //
@@ -29,7 +29,6 @@ type ProcessedFile struct {
 	card    md.TransferCard
 	request *md.InviteRequest
 }
-
 
 // ^ NewProcessedFile Processes Outgoing File ^ //
 func NewProcessedFile(req *md.InviteRequest, p *md.Profile, callback md.FileCallback) *ProcessedFile {

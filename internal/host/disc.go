@@ -14,7 +14,7 @@ import (
 	swarm "github.com/libp2p/go-libp2p-swarm"
 	disc "github.com/libp2p/go-libp2p/p2p/discovery"
 	"github.com/multiformats/go-multiaddr"
-	md "github.com/sonr-io/core/internal/models"
+	md "github.com/sonr-io/core/pkg/models"
 )
 
 // @ discoveryInterval is how often we re-publish our mDNS records.

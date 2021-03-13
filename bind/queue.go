@@ -2,7 +2,7 @@ package sonr
 
 import (
 	sf "github.com/sonr-io/core/internal/file"
-	md "github.com/sonr-io/core/internal/models"
+	md "github.com/sonr-io/core/pkg/models"
 )
 
 // @ Maximum Files in Node Cache

@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
-	md "github.com/sonr-io/core/internal/models"
+	md "github.com/sonr-io/core/pkg/models"
 )
 
 // ^ Bootstrap Nodes ^ //

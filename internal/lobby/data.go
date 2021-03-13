@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	"github.com/libp2p/go-libp2p-core/peer"
-	md "github.com/sonr-io/core/internal/models"
+	md "github.com/sonr-io/core/pkg/models"
 )
 
 // ** removePeer removes Peer from Map **
