@@ -8,6 +8,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+// TODO: Automated CLI Application to Handle Binds/Builds/Deployment
 func main() {
 	app := cli.NewApp()
 	app.Name = "sonr"
