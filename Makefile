@@ -67,7 +67,7 @@ bind.ios:
 	@echo "-------------- 📱 BEGIN IOS BIND 📱 ---------------------------"
 	@echo "--------------------------------------------------------------"
 	@go get golang.org/x/mobile/bind
-	cd $(BIND_DIR) && $(GOBIND) $(IOS_ARTIFACT)
+	cd $(BIND_DIR) && $(GOBIND) -target=ios -o $(IOS_ARTIFACT)
 	@go mod tidy
 	@cd /System/Library/Sounds && afplay Glass.aiff
 	@echo "Finished Binding ➡ " && date
