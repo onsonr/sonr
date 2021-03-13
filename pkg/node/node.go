@@ -121,7 +121,7 @@ func (sn *Node) LinkDevice(json string) {
 	}
 
 	// Link Device
-	err = sn.fs.AddDevice(request.Device, sn.directories.Documents)
+	err = sn.fs.AddDevice(request.Device)
 	if err != nil {
 		sn.error(err, "LinkDevice")
 	}
@@ -166,7 +166,7 @@ func (sn *Node) SetContact(newContact *md.Contact) {
 	}
 
 	// Set User Contact
-	err := sn.fs.UpdateContact(newContact, sn.directories.Documents)
+	err := sn.fs.UpdateContact(newContact)
 	if err != nil {
 		sn.error(err, "SetContact")
 	}

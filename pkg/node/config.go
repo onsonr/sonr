@@ -3,9 +3,9 @@ package node
 import (
 	"context"
 	"errors"
-	"hash/fnv"
 	"log"
 
+	sentry "github.com/getsentry/sentry-go"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	sl "github.com/sonr-io/core/internal/lobby"
 	tf "github.com/sonr-io/core/internal/transfer"
@@ -18,6 +18,7 @@ func (sn *Node) setInfo(connEvent *md.ConnectionRequest, profile *md.Profile) er
 	// Check for Host
 	if sn.host == nil {
 		err := errors.New("setPeer: Host has not been called")
+		sentry.CaptureException(err)
 		return err
 	}
 
@@ -25,36 +26,14 @@ func (sn *Node) setInfo(connEvent *md.ConnectionRequest, profile *md.Profile) er
 	sn.contact = connEvent.Contact
 	sn.directories = connEvent.Directories
 	sn.device = connEvent.Device
-
-	// Get Device ID
-	dID, err := sn.fs.GetDeviceID(connEvent)
-	if err != nil {
-		return err
-	}
-
-	// Get User ID
-	h := fnv.New32a()
-	_, err = h.Write([]byte(profile.Username))
-	if err != nil {
-		return err
-	}
+	id := sn.fs.GetID(connEvent, profile, sn.host.ID().String())
 
 	// Set Peer Info
 	sn.peer = &md.Peer{
-		Id: &md.Peer_ID{
-			Peer:   sn.host.ID().String(),
-			Device: dID,
-			User:   h.Sum32(),
-		},
+		Id:       id,
 		Profile:  profile,
 		Platform: connEvent.Device.Platform,
 		Model:    connEvent.Device.Model,
-	}
-
-	// Create User and Save
-	err = sn.fs.CreateUser(connEvent, profile)
-	if err != nil {
-		return err
 	}
 	return nil
 }
@@ -65,6 +44,7 @@ func (sn *Node) setConnection(ctx context.Context) error {
 	var err error
 	sn.pubSub, err = pubsub.NewGossipSub(ctx, sn.host)
 	if err != nil {
+		sentry.CaptureException(err)
 		return err
 	}
 
@@ -74,11 +54,13 @@ func (sn *Node) setConnection(ctx context.Context) error {
 
 	// Enter Lobby
 	if sn.lobby, err = sl.Join(sn.ctx, lobCall, sn.host, sn.pubSub, sn.peer, sn.olc); err != nil {
+		sentry.CaptureException(err)
 		return err
 	}
 
 	// Initialize Peer Connection
 	if sn.peerConn, err = tf.Initialize(sn.host, sn.pubSub, sn.directories, sn.olc, transCall); err != nil {
+		sentry.CaptureException(err)
 		return err
 	}
 	return nil
@@ -168,7 +150,7 @@ func (sn *Node) transmitted(peer *md.Peer) {
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(peer)
 	if err != nil {
-		log.Println(err)
+		sentry.CaptureException(err)
 	}
 
 	// Callback with Data
@@ -183,7 +165,7 @@ func (sn *Node) received(card *md.TransferCard) {
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(card)
 	if err != nil {
-		log.Println(err)
+		sentry.CaptureException(err)
 	}
 
 	// Callback with Data
@@ -192,6 +174,9 @@ func (sn *Node) received(card *md.TransferCard) {
 
 // ^ error Callback with error instance, and method ^
 func (sn *Node) error(err error, method string) {
+	// Log Error
+	sentry.CaptureException(err)
+
 	// Create Error ProtoBuf
 	errorMsg := md.ErrorMessage{
 		Message: err.Error(),
@@ -205,7 +190,4 @@ func (sn *Node) error(err error, method string) {
 	}
 	// Send Callback
 	sn.call.OnError(bytes)
-
-	// Log In Core
-	log.Fatalf("[Error] At Method %s : %s", err.Error(), method)
 }
