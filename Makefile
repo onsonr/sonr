@@ -1,23 +1,25 @@
 SHELL=/bin/zsh # Set Shell
+SONR_ROOT_DIR=/Users/prad/Sonr
+ANDROID_BINDDIR=$(SONR_ROOT_DIR)/plugin/android/libs
+IOS_BINDDIR=$(SONR_ROOT_DIR)/plugin/ios/Frameworks
 
 # @ Packaging Vars/Commands
 GOMOBILE=gomobile
 GOCLEAN=$(GOMOBILE) clean
 GOBIND=$(GOMOBILE) bind -ldflags='-s -w' -v
-BIND_DIR="/Users/prad/Sonr/core/cmd/bind"
+
 
 # @ Bind Directories
-IOS_BINDDIR=/Users/prad/Sonr/plugin/ios/Frameworks
+BIND_DIR=$(SONR_ROOT_DIR)/core/cmd/bind
 IOS_ARTIFACT= $(IOS_BINDDIR)/Core.framework
-ANDROID_BINDDIR=/Users/prad/Sonr/plugin/android/libs
 ANDROID_ARTIFACT= $(ANDROID_BINDDIR)/io.sonr.core.aar
 
 # @ Proto Directories
-PB_PATH="/Users/prad/Sonr/core/pkg/models"
-CONTACT_PB_DIR="/Users/prad/Sonr/contact/lib/src/data/models"
-CORE_PB_DIR="/Users/prad/Sonr/core/pkg/models"
-PLUGIN_PB_DIR="/Users/prad/Sonr/plugin/lib/src/core/models"
-PROTO_DOC_OUT="/Users/prad/Sonr/docs/proto"
+PB_PATH=$(SONR_ROOT_DIR)/core/pkg/models
+CONTACT_PB_DIR=$(SONR_ROOT_DIR)/contact/lib/src/data/models
+CORE_PB_DIR=$(SONR_ROOT_DIR)/core/pkg/models
+PLUGIN_PB_DIR=$(SONR_ROOT_DIR)/plugin/lib/src/core/models
+PROTO_DOC_OUT=$(SONR_ROOT_DIR)/docs/proto
 
 # @ Proto Build Commands
 PB_BUILD_CONTACT="--dart_out=$(CONTACT_PB_DIR)"
