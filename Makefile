@@ -11,16 +11,10 @@ IOS_ARTIFACT= $(IOS_BINDDIR)/Core.framework
 ANDROID_BINDDIR=/Users/prad/Sonr/plugin/android/libs
 ANDROID_ARTIFACT= $(ANDROID_BINDDIR)/io.sonr.core.aar
 
-# @ Build Directories
-MAC_BUILDDIR=/Users/prad/Sonr/core/build/darwin
-MAC_ARTIFACT=$(MAC_BUILDDIR)/Sonr.app/Contents/MacOS/sonr_core
-WIN_BUILDDIR=/Users/prad/Sonr/core/build/win
-WIN_ARTIFACT=$(WIN_BUILDDIR)/sonr-core.exe
-
 # @ Proto Directories
-PB_PATH="/Users/prad/Sonr/core/internal/models"
+PB_PATH="/Users/prad/Sonr/core/pkg/models"
 CONTACT_PB_DIR="/Users/prad/Sonr/contact/lib/src/data/models"
-CORE_PB_DIR="/Users/prad/Sonr/core/internal/models"
+CORE_PB_DIR="/Users/prad/Sonr/core/pkg/models"
 PLUGIN_PB_DIR="/Users/prad/Sonr/plugin/lib/src/core/models"
 PROTO_DOC_OUT="/Users/prad/Sonr/docs/proto"
 
@@ -81,82 +75,6 @@ bind.ios:
 	@echo "--------------------------------------------------------------"
 	@echo ""
 
-## build       :   Builds Darwin and Windows Builds at Build Path
-build: proto build.darwin build.win
-	@go mod tidy
-	@cd /System/Library/Sounds && afplay Hero.aiff
-	@echo ""
-	@echo ""
-	@echo "------------------------------------------------------------------"
-	@echo "-------- ✅ ✅ ✅   FINISHED DESKTOP BUILD  ✅ ✅ ✅  --------------"
-	@echo "------------------------------------------------------------------"
-
-## └─ darwin        - MacOS executable
-build.darwin:
-	@echo ""
-	@echo ""
-	@echo "-----------------------------------------------------------"
-	@echo "------------- 🖥  START DARWIN BUILD  🖥  -------------------"
-	@echo "-----------------------------------------------------------"
-	@go clean -cache
-	@go mod tidy
-	cd pkg && packr build -o $(MAC_ARTIFACT)
-	@packr clean
-	@cd /System/Library/Sounds && afplay Glass.aiff
-	@echo "Finished Building ➡ " && date
-	@echo "--------------------------------------------------------------"
-	@echo "------------- 🖥  COMPLETED DAWIN BULD  🖥  -------------------"
-	@echo "--------------------------------------------------------------"
-
-## └─ win           - Windows executable
-build.win:
-	@echo ""
-	@echo ""
-	@echo "-----------------------------------------------------------"
-	@echo "------------- 🪟 START WINDOWS BUILD 🪟 --------------------"
-	@echo "-----------------------------------------------------------"
-	@go clean -cache
-	cd pkg && GOOS=windows GOARCH=amd64 packr build -ldflags -H=windowsgui -o $(WIN_ARTIFACT)
-	@packr clean
-	@cd /System/Library/Sounds && afplay Glass.aiff
-	@echo "Finished Building ➡ " && date
-	@echo "--------------------------------------------------------------"
-	@echo "------------- 🪟 COMPLETED WINDOWS BULD 🪟 --------------------"
-	@echo "--------------------------------------------------------------"
-	@echo ""
-
-
-## deploy      :   Package into Desktop Installers
-deploy: proto deploy.mac
-	@go mod tidy
-	@cd /System/Library/Sounds && afplay Hero.aiff
-	@echo ""
-	@echo ""
-	@echo "-------------------------------------------------------------------------"
-	@echo "-------- ✅ ✅ ✅   FINISHED PACKAGING INSTALLERS  ✅ ✅ ✅  --------------"
-	@echo "-------------------------------------------------------------------------"
-
-## └─ mac           - MacOS DMG
-# https://github.com/create-dmg/create-dmg
-deploy.mac: build.darwin
-	rm $(MAC_BUILDDIR)/Sonr-Installer.dmg
-	create-dmg \
-  --volname "Sonr Installer" \
-  --volicon $(MAC_BUILDDIR)/meta/"volume.icns" \
-  --background $(MAC_BUILDDIR)/meta/"volume-bg-alt.png" \
-  --window-pos 200 120 \
-  --window-size 800 400 \
-  --icon-size 125 \
-  --icon "Sonr.app" 182 172 \
-  --hide-extension "Sonr.app" \
-  --app-drop-link 618 167 \
-  $(MAC_BUILDDIR)"/Sonr-Installer.dmg" \
-  $(MAC_BUILDDIR)"/Sonr.app"
-	@cd /System/Library/Sounds && afplay Glass.aiff
-	@echo "--------------------------------------------------------------"
-	@echo "------------- 🖥  Packaged MacOS  🖥  -------------------------"
-	@echo "--------------------------------------------------------------"
-
 ##
 ## [proto]     :   Compiles Protobuf models for Core Library and Plugin
 proto:
@@ -165,34 +83,15 @@ proto:
 	@echo "--------------------------------------------------------------"
 	@echo "------------- 🛸 START PROTOBUFS COMPILE 🛸 -------------------"
 	@echo "--------------------------------------------------------------"
-	@cd internal/models && protoc --doc_out=$(PROTO_DOC_OUT) --doc_opt=html,index.html api.proto data.proto core.proto user.proto
-	@cd internal/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CORE) api.proto data.proto core.proto user.proto
-	@cd internal/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CONTACT) api.proto data.proto user.proto
-	@cd internal/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_PLUGIN) user.proto
+	@cd pkg/models && protoc --doc_out=$(PROTO_DOC_OUT) --doc_opt=html,index.html api.proto data.proto core.proto user.proto
+	@cd pkg/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CORE) api.proto data.proto core.proto user.proto
+	@cd pkg/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CONTACT) api.proto data.proto user.proto
+	@cd pkg/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_PLUGIN) user.proto
 	@echo "Finished Compiling ➡ " && date
 	@echo "--------------------------------------------------------------"
 	@echo "------------- 🛸 COMPILED ALL PROTOBUFS 🛸 --------------------"
 	@echo "--------------------------------------------------------------"
 	@echo ""
-
-
-## [run]       :   Builds and Runs for Darwin
-run:
-	@echo ""
-	@echo ""
-	@echo "-----------------------------------------------------------"
-	@echo "------------- 🖥  START DARWIN BUILD  🖥  -------------------"
-	@echo "-----------------------------------------------------------"
-	@go clean -cache
-	@go mod tidy
-	cd pkg && packr build -o $(MAC_ARTIFACT)
-	@packr clean
-	@echo "Finished Building ➡ " && date
-	@echo "--------------------------------------------------------------"
-	@echo "------------- 🖥  RUN DAWIN BULD  🖥  -------------------------"
-	@echo "--------------------------------------------------------------"
-	@echo ""
-	@cd $(MAC_BUILDDIR) && ./sonr_core
 
 ## [reset]     :   Cleans Gomobile, Removes Framworks from Plugin, and Initializes Gomobile
 reset:
