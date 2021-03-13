@@ -14,19 +14,18 @@ import (
 )
 
 // ^ setInfo sets node info from connEvent and host ^ //
-func (sn *Node) setInfo(connEvent *md.ConnectionRequest, profile *md.Profile) error {
+func (sn *Node) setInfo(connEvent *md.ConnectionRequest, profile *md.Profile) {
 	// Check for Host
 	if sn.host == nil {
 		err := errors.New("setPeer: Host has not been called")
 		sentry.CaptureException(err)
-		return err
 	}
 
 	// Set Default Properties
 	sn.contact = connEvent.Contact
 	sn.directories = connEvent.Directories
 	sn.device = connEvent.Device
-	id := sn.fs.GetID(connEvent, profile, sn.host.ID().String())
+	id := sn.fs.GetPeerID(connEvent, profile, sn.host.ID().String())
 
 	// Set Peer Info
 	sn.peer = &md.Peer{
@@ -35,17 +34,15 @@ func (sn *Node) setInfo(connEvent *md.ConnectionRequest, profile *md.Profile) er
 		Platform: connEvent.Device.Platform,
 		Model:    connEvent.Device.Model,
 	}
-	return nil
 }
 
 // ^ setConnection initializes connection protocols joins lobby and creates pubsub service ^ //
-func (sn *Node) setConnection(ctx context.Context) error {
+func (sn *Node) setConnection(ctx context.Context) {
 	// Create a new PubSub service using the GossipSub router
 	var err error
 	sn.pubSub, err = pubsub.NewGossipSub(ctx, sn.host)
 	if err != nil {
 		sentry.CaptureException(err)
-		return err
 	}
 
 	// Create Callbacks
@@ -55,15 +52,14 @@ func (sn *Node) setConnection(ctx context.Context) error {
 	// Enter Lobby
 	if sn.lobby, err = sl.Join(sn.ctx, lobCall, sn.host, sn.pubSub, sn.peer, sn.olc); err != nil {
 		sentry.CaptureException(err)
-		return err
 	}
 
 	// Initialize Peer Connection
 	if sn.peerConn, err = tf.Initialize(sn.host, sn.pubSub, sn.directories, sn.olc, transCall); err != nil {
 		sentry.CaptureException(err)
-		return err
+	} else {
+		sentry.CaptureMessage("Node Started Successfully.")
 	}
-	return nil
 }
 
 // ^ queued Callback, Sends File Invite to Peer, and Notifies Client ^

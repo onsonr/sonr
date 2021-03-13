@@ -1,10 +1,10 @@
 package node
 
 import (
-	"log"
 	"math"
 	"time"
 
+	sentry "github.com/getsentry/sentry-go"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
@@ -47,7 +47,7 @@ func (sn *Node) Update(facing float64, heading float64) {
 	// Inform Lobby
 	err := sn.lobby.Update()
 	if err != nil {
-		sn.error(err, "Update")
+		sentry.CaptureException(err)
 	}
 }
 
@@ -63,7 +63,7 @@ func (sn *Node) Invite(req *md.InviteRequest) {
 		// Get PeerID and Check error
 		id, _, err := sn.lobby.Find(req.To.Id.Peer)
 		if err != nil {
-			sn.error(err, "InviteWithContact")
+			sentry.CaptureException(err)
 		}
 
 		// Run Routine
@@ -71,7 +71,7 @@ func (sn *Node) Invite(req *md.InviteRequest) {
 			// Convert Protobuf to bytes
 			msgBytes, err := proto.Marshal(inv)
 			if err != nil {
-				sn.error(err, "Marshal")
+				sentry.CaptureException(err)
 			}
 
 			sn.peerConn.Request(sn.host, id, msgBytes)
@@ -103,7 +103,7 @@ func (sn *Node) Info() []byte {
 	// Convert to bytes to view in plugin
 	data, err := proto.Marshal(sn.peer)
 	if err != nil {
-		log.Println("Error Marshaling Lobby Data ", err)
+		sentry.CaptureException(err)
 		return nil
 	}
 	return data
@@ -117,13 +117,13 @@ func (sn *Node) LinkDevice(json string) {
 	// Convert to Peer Protobuf
 	err := protojson.Unmarshal([]byte(json), &request)
 	if err != nil {
-		sn.error(err, "LinkDevice")
+		sentry.CaptureException(err)
 	}
 
 	// Link Device
-	err = sn.fs.AddDevice(request.Device)
+	err = sn.fs.SaveDevice(request.Device)
 	if err != nil {
-		sn.error(err, "LinkDevice")
+		sentry.CaptureException(err)
 	}
 }
 
@@ -166,9 +166,9 @@ func (sn *Node) SetContact(newContact *md.Contact) {
 	}
 
 	// Set User Contact
-	err := sn.fs.UpdateContact(newContact)
+	err := sn.fs.SaveContact(newContact)
 	if err != nil {
-		sn.error(err, "SetContact")
+		sentry.CaptureException(err)
 	}
 }
 
@@ -181,6 +181,7 @@ func (sn *Node) Pause() {
 	err := sn.lobby.Standby()
 	if err != nil {
 		sn.error(err, "Pause")
+		sentry.CaptureException(err)
 	}
 	md.GetState().Pause()
 }

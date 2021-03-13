@@ -54,11 +54,6 @@ type Node struct {
 
 // ^ NewNode Initializes Node with a host and default properties ^
 func NewNode(req *md.ConnectionRequest, call Callback) *Node {
-	// ** Create Context and Node - Begin Setup **
-	node := new(Node)
-	node.ctx = context.Background()
-	node.call = call
-
 	// ** Initialize Node Logging ** //
 	err := sentry.Init(sentry.ClientOptions{
 		Dsn: "https://cbf88b01a5a5468fa77101f7dfc54f20@o549479.ingest.sentry.io/5672329",
@@ -66,6 +61,11 @@ func NewNode(req *md.ConnectionRequest, call Callback) *Node {
 	if err != nil {
 		log.Fatalf("sentry.Init: %s", err)
 	}
+
+	// ** Create Context and Node - Begin Setup **
+	node := new(Node)
+	node.ctx = context.Background()
+	node.call = call
 
 	// Create New Profile from Request
 	profile := &md.Profile{
@@ -85,23 +85,13 @@ func NewNode(req *md.ConnectionRequest, call Callback) *Node {
 	node.olc = olc.Encode(float64(req.Latitude), float64(req.Longitude), 8)
 	node.host, err = sh.NewHost(node.ctx, req.Directories, node.olc)
 	if err != nil {
-		node.error(err, "NewNode")
+		sentry.CaptureException(err)
 		return nil
 	}
 
 	// @3. Set Node User Information
-	if err = node.setInfo(req, profile); err != nil {
-		node.error(err, "NewNode")
-		return nil
-	}
+	node.setInfo(req, profile)
+	node.setConnection(node.ctx)
 
-	// @4. Setup Connection w/ Lobby and Set Stream Handlers
-	if err = node.setConnection(node.ctx); err != nil {
-		node.error(err, "NewNode")
-		return nil
-	}
-
-	// ** Callback Node User Information ** //
-	sentry.CaptureMessage("Node Started Successfully.")
 	return node
 }

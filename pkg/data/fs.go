@@ -13,23 +13,24 @@ import (
 // @ Constant Variables
 const K_SONR_ROOT_DIR = ".sonr"
 
-
 // @ Sonr File System Struct
 type SonrFS struct {
-	Devices   []*md.Device
-	User      *md.User
-	Cache     string
-	Documents string
-	Downloads string
-	Home      string
-	Root      string
-	Temporary string
+	Initialized bool
+	Devices     []*md.Device
+	User        *md.User
+	Cache       string
+	Documents   string
+	Downloads   string
+	Home        string
+	Root        string
+	Temporary   string
 }
 
 // ^ Method Initializes Root Sonr Directory ^ //
 func InitFS(connEvent *md.ConnectionRequest, profile *md.Profile) *SonrFS {
 	// Initialize
 	var sonrPath string
+	var hasInitialized bool
 	devices := make([]*md.Device, 32)
 	devices = append(devices, connEvent.Device)
 	user := &md.User{
@@ -44,28 +45,38 @@ func InitFS(connEvent *md.ConnectionRequest, profile *md.Profile) *SonrFS {
 		sonrPath = filepath.Join(connEvent.Directories.Home, K_SONR_ROOT_DIR)
 		if err := EnsureDir(sonrPath, os.ModeAppend); err != nil {
 			sentry.CaptureException(err)
+			hasInitialized = false
+		} else {
+			hasInitialized = true
 		}
 	} else {
 		// Init Path, Check for Path
 		sonrPath = filepath.Join(connEvent.Directories.Documents, K_SONR_ROOT_DIR)
 		if err := EnsureDir(sonrPath, os.ModeAppend); err != nil {
 			sentry.CaptureException(err)
+			hasInitialized = false
+		} else {
+			hasInitialized = true
 		}
 	}
 
 	// Create SFS
 	sfs := &SonrFS{
-		Cache:     connEvent.Directories.Cache,
-		Documents: connEvent.Directories.Documents,
-		Downloads: connEvent.Directories.Downloads,
-		Home:      connEvent.Directories.Home,
-		Root:      sonrPath,
-		Temporary: connEvent.Directories.Temporary,
+		Initialized: hasInitialized,
+		Cache:       connEvent.Directories.Cache,
+		Documents:   connEvent.Directories.Documents,
+		Downloads:   connEvent.Directories.Downloads,
+		Home:        connEvent.Directories.Home,
+		Root:        sonrPath,
+		Temporary:   connEvent.Directories.Temporary,
 	}
 
 	// Write User
-
-	sfs.WriteUser(user)
+	if hasInitialized {
+		if err := sfs.WriteUser(user); err != nil {
+			sentry.CaptureException(err)
+		}
+	}
 	return sfs
 }
 
@@ -101,14 +112,12 @@ func (sfs *SonrFS) WriteUser(user *md.User) error {
 	// Convert User to Bytes
 	userData, err := proto.Marshal(user)
 	if err != nil {
-		sentry.CaptureException(err)
 		return err
 	}
 
 	// Check for User File at Path
 	file, err := os.OpenFile(userPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		sentry.CaptureException(err)
 		return err
 	}
 
@@ -118,7 +127,6 @@ func (sfs *SonrFS) WriteUser(user *md.User) error {
 	// Write User Data to File
 	_, err = file.Write(userData)
 	if err != nil {
-		sentry.CaptureException(err)
 		return err
 	}
 	return nil
