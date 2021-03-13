@@ -1,7 +1,6 @@
 package node
 
 import (
-	"log"
 	"math"
 
 	md "github.com/sonr-io/core/pkg/models"
@@ -50,14 +49,7 @@ func (sn *Node) Update(facing float64, heading float64) {
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (sn *Node) Invite(reqBytes []byte) {
-	// @ 1. Initialize from Request
-	req := &md.InviteRequest{}
-	err := proto.Unmarshal(reqBytes, req)
-	if err != nil {
-		log.Println(err)
-	}
-
+func (sn *Node) Invite(req *md.InviteRequest) {
 	// @ 2. Check Transfer Type
 	if req.Type == md.InviteRequest_Contact || req.Type == md.InviteRequest_URL {
 		// @ 3. Send Invite to Peer
@@ -87,7 +79,7 @@ func (sn *Node) Invite(reqBytes []byte) {
 	}
 
 	// Update Status
-	sn.status = md.Status_PENDING
+	sn.Status = md.Status_PENDING
 }
 
 // ^ Respond to an Invitation ^ //
@@ -97,16 +89,16 @@ func (sn *Node) Respond(decision bool) {
 
 	// Update Status
 	if decision {
-		sn.status = md.Status_INPROGRESS
+		sn.Status = md.Status_INPROGRESS
 	} else {
-		sn.status = md.Status_AVAILABLE
+		sn.Status = md.Status_AVAILABLE
 	}
 }
 
 // ^ Close Ends All Network Communication ^
 func (sn *Node) Pause() {
 	// Check if Response Is Invited
-	if sn.status == md.Status_INVITED {
+	if sn.Status == md.Status_INVITED {
 		sn.peerConn.Cancel(sn.peer)
 	}
 	err := sn.lobby.Standby()
@@ -128,7 +120,7 @@ func (sn *Node) Resume() {
 // ^ Close Ends All Network Communication ^
 func (sn *Node) Stop() {
 	// Check if Response Is Invited
-	if sn.status == md.Status_INVITED {
+	if sn.Status == md.Status_INVITED {
 		sn.peerConn.Cancel(sn.peer)
 	}
 	sn.host.Close()

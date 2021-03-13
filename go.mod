@@ -6,6 +6,7 @@ go 1.16
 require (
 	github.com/PuerkitoBio/goquery v1.6.1
 	github.com/denisbrodbeck/machineid v1.0.1
+	github.com/getsentry/sentry-go v0.10.0
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.4.3
 	github.com/google/open-location-code/go v0.0.0-20201229230907-d47d9f9b95e9

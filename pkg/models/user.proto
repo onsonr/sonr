@@ -78,8 +78,9 @@ message Directories {
   string cache = 1;     // Only For Desktop
   string documents = 2; // Permanent Data Storage
   string downloads = 3; // Only For Desktop
-  string sonr = 4;      // Sonr Core Data Reference
-  string temporary = 5; // Temporary Data Storage, Mobile Only
+  string home = 4;      // Only for Desktop Home Directory
+  string sonr = 5;      // Sonr Core Data Reference
+  string temporary = 6; // Temporary Data Storage, Mobile Only
 }
 
 // Basic Info Sent to Peers to Establish Connections

@@ -69,14 +69,7 @@ func (sn *Node) Peer() *md.Peer {
 }
 
 // ^ Updates Current Contact Card ^
-func (sn *Node) SetContact(conBytes []byte) {
-	// Unmarshal Data
-	newContact := &md.Contact{}
-	err := proto.Unmarshal(conBytes, newContact)
-	if err != nil {
-		log.Println(err)
-	}
-
+func (sn *Node) SetContact(newContact *md.Contact) {
 	// Set Node Contact
 	sn.contact = newContact
 
@@ -88,7 +81,7 @@ func (sn *Node) SetContact(conBytes []byte) {
 	}
 
 	// Set User Contact
-	err = updateContact(newContact, sn.directories.Documents)
+	err := updateContact(newContact, sn.directories.Documents)
 	if err != nil {
 		sn.error(err, "SetContact")
 	}
