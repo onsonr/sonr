@@ -1,9 +1,10 @@
 SHELL=/bin/zsh # Set Shell
 
-# @ Go Commands
+# @ Packaging Vars/Commands
 GOMOBILE=gomobile
 GOCLEAN=$(GOMOBILE) clean
-GOBIND=$(GOMOBILE) bind
+GOBIND=$(GOMOBILE) bind -ldflags='-s -w' -target=android -v -o
+BIND_DIR="/Users/prad/Sonr/core/cmd/bind"
 
 # @ Bind Directories
 IOS_BINDDIR=/Users/prad/Sonr/plugin/ios/Frameworks
@@ -48,7 +49,7 @@ bind.android:
 	@echo "--------------------------------------------------------------"
 	@go get golang.org/x/mobile/bind
 	@gomobile init
-	cd bind && gomobile bind -ldflags='-s -w' -target=android -v -o $(ANDROID_ARTIFACT)
+	cd bind && $(GOBIND) $(ANDROID_ARTIFACT)
 	@go mod tidy
 	@cd /System/Library/Sounds && afplay Glass.aiff
 	@echo "Finished Binding ➡ " && date
@@ -66,7 +67,7 @@ bind.ios:
 	@echo "-------------- 📱 BEGIN IOS BIND 📱 ---------------------------"
 	@echo "--------------------------------------------------------------"
 	@go get golang.org/x/mobile/bind
-	cd bind && gomobile bind -ldflags='-s -w' -target=ios -v -o $(IOS_ARTIFACT)
+	cd bind && $(GOBIND) $(IOS_ARTIFACT)
 	@go mod tidy
 	@cd /System/Library/Sounds && afplay Glass.aiff
 	@echo "Finished Binding ➡ " && date
