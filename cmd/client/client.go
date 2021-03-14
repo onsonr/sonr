@@ -45,27 +45,14 @@ type Client struct {
 }
 
 // ^ Create New DeskClient Node ^ //
-func NewClient(ctx context.Context, call Callback) *Client {
+func NewClient(req *md.ConnectionRequest, call Callback) *Client {
 	// Set Default Info
 	var c = new(Client)
 	c.Info = SystemInfo()
-	c.ctx = ctx
-
-	// Create Request Message
-	request := &md.ConnectionRequest{
-		Latitude:    38.980620,
-		Longitude:   -77.505890,
-		Device:      &c.Info.Device,
-		Directories: &c.Info.Directory,
-		Contact: &md.Contact{
-			FirstName: c.Info.TempFirstName,
-			LastName:  c.Info.TempLastName,
-		},
-		Username: "@Prad",
-	}
+	c.ctx = context.Background()
 
 	// Create New Client
-	c.Node = sn.NewNode(request, call)
+	c.Node = sn.NewNode(req, call)
 
 	// Start Routine
 	go c.UpdateAuto(time.NewTicker(interval))
