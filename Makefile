@@ -8,7 +8,6 @@ GOMOBILE=gomobile
 GOCLEAN=$(GOMOBILE) clean
 GOBIND=$(GOMOBILE) bind -ldflags='-s -w' -v
 
-
 # @ Bind Directories
 BIND_DIR=/Users/prad/Sonr/core/cmd/bind
 IOS_ARTIFACT= $(IOS_BINDDIR)/Core.framework

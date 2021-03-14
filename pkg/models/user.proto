@@ -136,8 +136,8 @@ message Profile {
 
 // Position Includes All Directional Info of Peer
 message Position {
-  double facing = 1;           // Compass Direction of Peer on Z axis
-  double heading = 2;          // Compass Direction of Peer on X axis
+  double facing = 1;  // Direction of Peer on Z axis, headingForCameraMode
+  double heading = 2; // Direction of Peer on X axis
   double facingAntipodal = 3;  // Inverse Compass Direction of Peer in Z axis
   double headingAntipodal = 4; // Inverse Compass Direction of Peer in Z axis
   Designation designation = 5; // Cardinal Direction of Peer Facing
