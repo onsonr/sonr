@@ -25,15 +25,6 @@ func main() {
 			},
 		},
 		{
-			Name:    "complete",
-			Aliases: []string{"c"},
-			Usage:   "complete a task on the list",
-			Action: func(c *cli.Context) error {
-				fmt.Println("completed task: ", c.Args().First())
-				return nil
-			},
-		},
-		{
 			Name:    "template",
 			Aliases: []string{"t"},
 			Usage:   "options for task templates",
