@@ -39,37 +39,33 @@ type SysInfo struct {
 
 // @ Struct: Reference for Exposed Sonr Client
 type Client struct {
-	ctx       context.Context
-	info      SysInfo
-	peerCount int32
-	lobbySize int32
-	node      *sn.Node
+	ctx  context.Context
+	Info SysInfo
+	Node *sn.Node
 }
 
 // ^ Create New DeskClient Node ^ //
 func NewClient(ctx context.Context, call Callback) *Client {
 	// Set Default Info
 	var c = new(Client)
-	c.info = SystemInfo()
+	c.Info = SystemInfo()
 	c.ctx = ctx
-	c.peerCount = 0
-	c.lobbySize = 1
 
 	// Create Request Message
 	request := &md.ConnectionRequest{
 		Latitude:    38.980620,
 		Longitude:   -77.505890,
-		Device:      &c.info.Device,
-		Directories: &c.info.Directory,
+		Device:      &c.Info.Device,
+		Directories: &c.Info.Directory,
 		Contact: &md.Contact{
-			FirstName: c.info.TempFirstName,
-			LastName:  c.info.TempLastName,
+			FirstName: c.Info.TempFirstName,
+			LastName:  c.Info.TempLastName,
 		},
 		Username: "@Prad",
 	}
 
 	// Create New Client
-	c.node = sn.NewNode(request, call)
+	c.Node = sn.NewNode(request, call)
 
 	// Start Routine
 	go c.UpdateAuto(time.NewTicker(interval))
@@ -81,10 +77,10 @@ func (dc *Client) UpdateAuto(ticker *time.Ticker) {
 	for {
 		select {
 		case <-dc.ctx.Done():
-			dc.node.Stop()
+			dc.Node.Stop()
 			return
 		case <-ticker.C:
-			dc.node.Update(0, 0)
+			dc.Node.Update(0, 0)
 		}
 	}
 }
