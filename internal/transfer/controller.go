@@ -11,6 +11,7 @@ import (
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	msgio "github.com/libp2p/go-msgio"
 	sf "github.com/sonr-io/core/internal/file"
+	fs "github.com/sonr-io/core/pkg/data"
 	md "github.com/sonr-io/core/pkg/models"
 )
 
@@ -27,16 +28,16 @@ type TransferController struct {
 	call md.TransferCallback
 
 	// Info
-	olc  string
-	dirs *md.Directories
+	olc string
+	fs  *fs.SonrFS
 }
 
 // ^ Initialize sets up new Peer Connection handler ^
-func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, tc md.TransferCallback) (*TransferController, error) {
+func Initialize(h host.Host, ps *pubsub.PubSub, fs *fs.SonrFS, o string, tc md.TransferCallback) (*TransferController, error) {
 	// Initialize Parameters into PeerConnection
 	peerConn := &TransferController{
 		olc:  o,
-		dirs: d,
+		fs:   fs,
 		call: tc,
 	}
 
@@ -64,7 +65,7 @@ func Initialize(h host.Host, ps *pubsub.PubSub, d *md.Directories, o string, tc 
 // ^  Prepare for Stream, Create Incoming Transfer ^ //
 func (pc *TransferController) NewIncoming(inv *md.AuthInvite) {
 	// Initialize Incoming
-	pc.incoming = NewIncomingFile(inv, pc.dirs, pc.call)
+	pc.incoming = NewIncomingFile(inv, pc.fs, pc.call)
 }
 
 // ^  Set Outgoing Transfer ^ //

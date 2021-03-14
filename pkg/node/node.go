@@ -1,10 +1,12 @@
-package sonr
+package node
 
 import (
-	"log"
 	"math"
+	"time"
 
+	sentry "github.com/getsentry/sentry-go"
 	md "github.com/sonr-io/core/pkg/models"
+	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -45,19 +47,12 @@ func (sn *Node) Update(facing float64, heading float64) {
 	// Inform Lobby
 	err := sn.lobby.Update()
 	if err != nil {
-		sn.error(err, "Update")
+		sentry.CaptureException(err)
 	}
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (sn *Node) Invite(reqBytes []byte) {
-	// @ 1. Initialize from Request
-	req := &md.InviteRequest{}
-	err := proto.Unmarshal(reqBytes, req)
-	if err != nil {
-		log.Println(err)
-	}
-
+func (sn *Node) Invite(req *md.InviteRequest) {
 	// @ 2. Check Transfer Type
 	if req.Type == md.InviteRequest_Contact || req.Type == md.InviteRequest_URL {
 		// @ 3. Send Invite to Peer
@@ -68,7 +63,7 @@ func (sn *Node) Invite(reqBytes []byte) {
 		// Get PeerID and Check error
 		id, _, err := sn.lobby.Find(req.To.Id.Peer)
 		if err != nil {
-			sn.error(err, "InviteWithContact")
+			sentry.CaptureException(err)
 		}
 
 		// Run Routine
@@ -76,7 +71,7 @@ func (sn *Node) Invite(reqBytes []byte) {
 			// Convert Protobuf to bytes
 			msgBytes, err := proto.Marshal(inv)
 			if err != nil {
-				sn.error(err, "Marshal")
+				sentry.CaptureException(err)
 			}
 
 			sn.peerConn.Request(sn.host, id, msgBytes)
@@ -87,7 +82,7 @@ func (sn *Node) Invite(reqBytes []byte) {
 	}
 
 	// Update Status
-	sn.status = md.Status_PENDING
+	sn.Status = md.Status_PENDING
 }
 
 // ^ Respond to an Invitation ^ //
@@ -97,21 +92,96 @@ func (sn *Node) Respond(decision bool) {
 
 	// Update Status
 	if decision {
-		sn.status = md.Status_INPROGRESS
+		sn.Status = md.Status_INPROGRESS
 	} else {
-		sn.status = md.Status_AVAILABLE
+		sn.Status = md.Status_AVAILABLE
+	}
+}
+
+// ^ Info returns ALL Peer Data as Bytes^
+func (sn *Node) Info() []byte {
+	// Convert to bytes to view in plugin
+	data, err := proto.Marshal(sn.peer)
+	if err != nil {
+		sentry.CaptureException(err)
+		return nil
+	}
+	return data
+}
+
+// ^ Link with a QR Code ^ //
+func (sn *Node) LinkDevice(json string) {
+	// Convert String to Bytes
+	request := md.LinkRequest{}
+
+	// Convert to Peer Protobuf
+	err := protojson.Unmarshal([]byte(json), &request)
+	if err != nil {
+		sentry.CaptureException(err)
+	}
+
+	// Link Device
+	err = sn.fs.SaveDevice(request.Device)
+	if err != nil {
+		sentry.CaptureException(err)
+	}
+}
+
+// ^ Link with a QR Code ^ //
+func (sn *Node) LinkRequest(name string) *md.LinkRequest {
+	// Set Device
+	device := sn.device
+	device.Directories = sn.directories
+	device.Name = name
+
+	// Create Expiry - 1min 30s
+	timein := time.Now().Local().Add(
+		time.Minute*time.Duration(1) +
+			time.Second*time.Duration(30))
+
+	// Return Request
+	return &md.LinkRequest{
+		Device: device,
+		Peer:   sn.Peer(),
+		Expiry: int32(timein.Unix()),
+	}
+}
+
+// ^ Peer returns Current Peer Info ^
+func (sn *Node) Peer() *md.Peer {
+	return sn.peer
+}
+
+// ^ Updates Current Contact Card ^
+func (sn *Node) SetContact(newContact *md.Contact) {
+
+	// Set Node Contact
+	sn.contact = newContact
+
+	// Update Peer Profile
+	sn.peer.Profile = &md.Profile{
+		FirstName: newContact.GetFirstName(),
+		LastName:  newContact.GetLastName(),
+		Picture:   newContact.GetPicture(),
+	}
+
+	// Set User Contact
+	err := sn.fs.SaveContact(newContact)
+	if err != nil {
+		sentry.CaptureException(err)
 	}
 }
 
 // ^ Close Ends All Network Communication ^
 func (sn *Node) Pause() {
 	// Check if Response Is Invited
-	if sn.status == md.Status_INVITED {
+	if sn.Status == md.Status_INVITED {
 		sn.peerConn.Cancel(sn.peer)
 	}
 	err := sn.lobby.Standby()
 	if err != nil {
 		sn.error(err, "Pause")
+		sentry.CaptureException(err)
 	}
 	md.GetState().Pause()
 }
@@ -128,7 +198,7 @@ func (sn *Node) Resume() {
 // ^ Close Ends All Network Communication ^
 func (sn *Node) Stop() {
 	// Check if Response Is Invited
-	if sn.status == md.Status_INVITED {
+	if sn.Status == md.Status_INVITED {
 		sn.peerConn.Cancel(sn.peer)
 	}
 	sn.host.Close()

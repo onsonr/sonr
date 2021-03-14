@@ -31,7 +31,7 @@ type Lobby struct {
 	topic        *pubsub.Topic
 	topicHandler *pubsub.TopicEventHandler
 	selfPeer     *md.Peer
-	peersv       *PeerService
+	peersv       *ExchangeService
 	sub          *pubsub.Subscription
 }
 
@@ -78,8 +78,8 @@ func Join(ctx context.Context, lobCall md.LobbyCallback, h host.Host, ps *pubsub
 	}
 
 	// Create PeerService
-	peersvServer := gorpc.NewServer(h, protocol.ID("/sonr/lobby/peers"))
-	psv := PeerService{
+	peersvServer := gorpc.NewServer(h, protocol.ID("/sonr/lobby/exchange"))
+	psv := ExchangeService{
 		updatePeer: lob.updatePeer,
 		getUser:    lob.call.Peer,
 	}

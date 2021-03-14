@@ -1,22 +1,25 @@
 SHELL=/bin/zsh # Set Shell
+SONR_ROOT_DIR=/Users/prad/Sonr # Set this to Folder of Sonr
+ANDROID_BINDDIR=/Users/prad/Sonr/plugin/android/libs
+IOS_BINDDIR=/Users/prad/Sonr/plugin/ios/Frameworks
 
-# @ Go Commands
+# @ Packaging Vars/Commands
 GOMOBILE=gomobile
 GOCLEAN=$(GOMOBILE) clean
-GOBIND=$(GOMOBILE) bind
+GOBIND=$(GOMOBILE) bind -ldflags='-s -w' -v
+
 
 # @ Bind Directories
-IOS_BINDDIR=/Users/prad/Sonr/plugin/ios/Frameworks
+BIND_DIR=/Users/prad/Sonr/core/cmd/bind
 IOS_ARTIFACT= $(IOS_BINDDIR)/Core.framework
-ANDROID_BINDDIR=/Users/prad/Sonr/plugin/android/libs
 ANDROID_ARTIFACT= $(ANDROID_BINDDIR)/io.sonr.core.aar
 
 # @ Proto Directories
-PB_PATH="/Users/prad/Sonr/core/pkg/models"
-CONTACT_PB_DIR="/Users/prad/Sonr/contact/lib/src/data/models"
-CORE_PB_DIR="/Users/prad/Sonr/core/pkg/models"
-PLUGIN_PB_DIR="/Users/prad/Sonr/plugin/lib/src/core/models"
-PROTO_DOC_OUT="/Users/prad/Sonr/docs/proto"
+PB_PATH=/Users/prad/Sonr/core/pkg/models
+CONTACT_PB_DIR=/Users/prad/Sonr/contact/lib/src/data/models
+CORE_PB_DIR=/Users/prad/Sonr/core/pkg/models
+PLUGIN_PB_DIR=/Users/prad/Sonr/plugin/lib/src/core/models
+PROTO_DOC_DIR=/Users/prad/Sonr/docs/proto
 
 # @ Proto Build Commands
 PB_BUILD_CONTACT="--dart_out=$(CONTACT_PB_DIR)"
@@ -48,7 +51,7 @@ bind.android:
 	@echo "--------------------------------------------------------------"
 	@go get golang.org/x/mobile/bind
 	@gomobile init
-	cd bind && gomobile bind -ldflags='-s -w' -target=android -v -o $(ANDROID_ARTIFACT)
+	cd $(BIND_DIR) && $(GOBIND) -target=android -o $(ANDROID_ARTIFACT)
 	@go mod tidy
 	@cd /System/Library/Sounds && afplay Glass.aiff
 	@echo "Finished Binding ➡ " && date
@@ -66,7 +69,7 @@ bind.ios:
 	@echo "-------------- 📱 BEGIN IOS BIND 📱 ---------------------------"
 	@echo "--------------------------------------------------------------"
 	@go get golang.org/x/mobile/bind
-	cd bind && gomobile bind -ldflags='-s -w' -target=ios -v -o $(IOS_ARTIFACT)
+	cd $(BIND_DIR) && $(GOBIND) -target=ios -o $(IOS_ARTIFACT)
 	@go mod tidy
 	@cd /System/Library/Sounds && afplay Glass.aiff
 	@echo "Finished Binding ➡ " && date
@@ -83,7 +86,7 @@ proto:
 	@echo "--------------------------------------------------------------"
 	@echo "------------- 🛸 START PROTOBUFS COMPILE 🛸 -------------------"
 	@echo "--------------------------------------------------------------"
-	@cd pkg/models && protoc --doc_out=$(PROTO_DOC_OUT) --doc_opt=html,index.html api.proto data.proto core.proto user.proto
+	@cd pkg/models && protoc --doc_out=$(PROTO_DOC_DIR) --doc_opt=html,index.html api.proto data.proto core.proto user.proto
 	@cd pkg/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CORE) api.proto data.proto core.proto user.proto
 	@cd pkg/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CONTACT) api.proto data.proto user.proto
 	@cd pkg/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_PLUGIN) user.proto

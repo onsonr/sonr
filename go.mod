@@ -2,10 +2,10 @@ module github.com/sonr-io/core
 
 go 1.16
 
-// Core Imports
 require (
 	github.com/PuerkitoBio/goquery v1.6.1
 	github.com/denisbrodbeck/machineid v1.0.1
+	github.com/getsentry/sentry-go v0.10.0
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.4.3
 	github.com/google/open-location-code/go v0.0.0-20201229230907-d47d9f9b95e9
@@ -26,6 +26,7 @@ require (
 	github.com/libp2p/go-msgio v0.0.6
 	github.com/multiformats/go-multiaddr v0.3.1
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
+	github.com/urfave/cli/v2 v2.3.0
 	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83 // indirect
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect

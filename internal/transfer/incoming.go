@@ -4,12 +4,11 @@ import (
 	"bytes"
 	"encoding/base64"
 	"log"
-	"os"
-	"path/filepath"
 	"strings"
 	"sync"
 	"time"
 
+	fs "github.com/sonr-io/core/pkg/data"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -17,11 +16,13 @@ import (
 // const B64ChunkSize = 31998 // Adjusted for Base64 -- has to be divisible by 3
 type IncomingFile struct {
 	// Inherited Properties
-	mutex  sync.Mutex
-	invite *md.AuthInvite
-	call   md.TransferCallback
-	path   string
-	name   string
+	mutex      sync.Mutex
+	call       md.TransferCallback
+	fs         *fs.SonrFS
+	owner      *md.Profile
+	payload    md.Payload
+	properties *md.TransferCard_Properties
+	preview    []byte
 
 	// Builders
 	stringsBuilder *strings.Builder
@@ -35,17 +36,16 @@ type IncomingFile struct {
 }
 
 // ^ Method Creates New Transfer File ^ //
-func NewIncomingFile(inv *md.AuthInvite, dirs *md.Directories, tc md.TransferCallback) *IncomingFile {
-	// Create File Name
-	path, name := getPath(inv.Payload, dirs, inv.Card.Properties)
-
+func NewIncomingFile(inv *md.AuthInvite, fs *fs.SonrFS, tc md.TransferCallback) *IncomingFile {
 	// Return File
 	return &IncomingFile{
 		// Inherited Properties
-		invite: inv,
-		path:   path,
-		call:   tc,
-		name:   name,
+		properties: inv.Card.Properties,
+		payload:    inv.Payload,
+		owner:      inv.From.Profile,
+		preview:    inv.Card.Preview,
+		fs:         fs,
+		call:       tc,
 
 		// Builders
 		stringsBuilder: new(strings.Builder),
@@ -107,73 +107,43 @@ func (t *IncomingFile) AddBuffer(curr int, buffer []byte) (bool, error) {
 // ^ Check file type and use corresponding method to save to Disk ^ //
 func (t *IncomingFile) Save() error {
 	// Get Bytes from base64
-	b64Bytes, err := base64.StdEncoding.DecodeString(t.stringsBuilder.String())
+	data, err := base64.StdEncoding.DecodeString(t.stringsBuilder.String())
 	if err != nil {
 		log.Fatal("error:", err)
 	}
 
-	// Create File at Path
-	f, err := os.Create(t.path)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
-	// Save Bytes from Base64
-	if _, err := f.Write(b64Bytes); err != nil {
-		return err
-	}
-
-	// Sync file
-	if err := f.Sync(); err != nil {
-		return err
-	}
+	// Write File to Disk
+	name, path := t.fs.WriteFile(t.payload, t.properties, data)
 
 	// @ 1. Get File Information
-
-	// Get File Information
-	p := t.invite.From.Profile
 
 	// Create Card
 	card := &md.TransferCard{
 		// SQL Properties
-		Payload:  t.invite.Payload,
+		Payload:  t.payload,
 		Received: int32(time.Now().Unix()),
-		Platform: p.Platform,
-		Preview:  t.invite.Card.Preview,
+		Platform: t.owner.Platform,
+		Preview:  t.preview,
 
 		// Transfer Properties
 		Status: md.TransferCard_COMPLETED,
 
 		// Owner Properties
-		Username:  p.Username,
-		FirstName: p.FirstName,
-		LastName:  p.LastName,
+		Username:  t.owner.Username,
+		FirstName: t.owner.FirstName,
+		LastName:  t.owner.LastName,
 
 		// Data Properties
 		Metadata: &md.Metadata{
-			Name:      t.name,
-			Path:      t.path,
-			Size:      t.invite.Card.Properties.Size,
-			Mime:      t.invite.Card.Properties.Mime,
-			Thumbnail: t.invite.Card.Preview,
+			Name:      name,
+			Path:      path,
+			Size:      t.properties.Size,
+			Mime:      t.properties.Mime,
+			Thumbnail: t.preview,
 		},
 	}
 
 	// Send Complete Callback
 	t.call.Received(card)
 	return nil
-}
-
-// @ Helper Method to Set Path and FileName - (Path, File Name)
-func getPath(load md.Payload, dirs *md.Directories, props *md.TransferCard_Properties) (string, string) {
-	// Create File Name
-	fileName := props.Name + "." + props.Mime.Subtype
-
-	// Check Load
-	if load == md.Payload_MEDIA {
-		return filepath.Join(dirs.Temporary, fileName), fileName
-	} else {
-		return filepath.Join(dirs.Documents, fileName), fileName
-	}
 }

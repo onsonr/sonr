@@ -78,7 +78,7 @@ message Directories {
   string cache = 1;     // Only For Desktop
   string documents = 2; // Permanent Data Storage
   string downloads = 3; // Only For Desktop
-  string sonr = 4;      // Sonr Core Data Reference
+  string home = 4;      // Only for Desktop Home Directory
   string temporary = 5; // Temporary Data Storage, Mobile Only
 }
 

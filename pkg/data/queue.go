@@ -1,4 +1,4 @@
-package sonr
+package data
 
 import (
 	sf "github.com/sonr-io/core/internal/file"
@@ -17,7 +17,7 @@ type FileQueue struct {
 }
 
 // ^ Initializes New Queue ^ //
-func NewQueue(dirs *md.Directories, p *md.Profile, qc md.OnQueued, mqc md.OnMultiQueued, ec md.OnError) *FileQueue {
+func InitQueue(dirs *md.Directories, p *md.Profile, qc md.OnQueued, mqc md.OnMultiQueued, ec md.OnError) *FileQueue {
 	callback := md.NewFileCallback(qc, mqc, ec)
 	return &FileQueue{
 		files:        make([]*sf.ProcessedFile, maxFileBufferSize),

@@ -13,24 +13,24 @@ import (
 // ****************** //
 // ** GRPC Service ** //
 // ****************** //
-// PeerArgs is Peer protobuf
-type PeerArgs struct {
+// ExchangeArgs is Peer protobuf
+type ExchangeArgs struct {
 	Data []byte
 }
 
-// PeerResponse is also Peer protobuf
-type PeerResponse struct {
+// ExchangeResponse is also Peer protobuf
+type ExchangeResponse struct {
 	Data []byte
 }
 
 // Service Struct
-type PeerService struct {
+type ExchangeService struct {
 	getUser    md.ReturnPeer
 	updatePeer md.UpdatePeer
 }
 
 // ^ Calls Invite on Remote Peer ^ //
-func (ps *PeerService) ExchangeWith(ctx context.Context, args PeerArgs, reply *PeerResponse) error {
+func (ps *ExchangeService) ExchangeWith(ctx context.Context, args ExchangeArgs, reply *ExchangeResponse) error {
 	// Peer Data
 	remotePeer := &md.Peer{}
 	err := proto.Unmarshal(args.Data, remotePeer)
@@ -65,13 +65,13 @@ func (lob *Lobby) Exchange(id peer.ID) {
 	}
 
 	// Initialize RPC
-	rpcClient := gorpc.NewClient(lob.host, protocol.ID("/sonr/lobby/peers"))
-	var reply PeerResponse
-	var args PeerArgs
+	rpcClient := gorpc.NewClient(lob.host, protocol.ID("/sonr/lobby/exchange"))
+	var reply ExchangeResponse
+	var args ExchangeArgs
 	args.Data = msgBytes
 
 	// Call to Peer
-	err = rpcClient.Call(id, "PeerService", "ExchangeWith", args, &reply)
+	err = rpcClient.Call(id, "ExchangeService", "ExchangeWith", args, &reply)
 	if err != nil {
 		lob.call.Error(err, "Exchange")
 	}
