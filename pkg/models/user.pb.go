@@ -969,8 +969,8 @@ type Position struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Facing           float64              `protobuf:"fixed64,1,opt,name=facing,proto3" json:"facing,omitempty"`                                    // Compass Direction of Peer on Z axis
-	Heading          float64              `protobuf:"fixed64,2,opt,name=heading,proto3" json:"heading,omitempty"`                                  // Compass Direction of Peer on X axis
+	Facing           float64              `protobuf:"fixed64,1,opt,name=facing,proto3" json:"facing,omitempty"`                                    // Direction of Peer on Z axis, headingForCameraMode
+	Heading          float64              `protobuf:"fixed64,2,opt,name=heading,proto3" json:"heading,omitempty"`                                  // Direction of Peer on X axis
 	FacingAntipodal  float64              `protobuf:"fixed64,3,opt,name=facingAntipodal,proto3" json:"facingAntipodal,omitempty"`                  // Inverse Compass Direction of Peer in Z axis
 	HeadingAntipodal float64              `protobuf:"fixed64,4,opt,name=headingAntipodal,proto3" json:"headingAntipodal,omitempty"`                // Inverse Compass Direction of Peer in Z axis
 	Designation      Position_Designation `protobuf:"varint,5,opt,name=designation,proto3,enum=Position_Designation" json:"designation,omitempty"` // Cardinal Direction of Peer Facing
