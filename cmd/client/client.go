@@ -1,9 +1,19 @@
 package client
 
 import (
+	"context"
+	"log"
+	"os"
+	"path/filepath"
+	"runtime"
+	"time"
+
 	md "github.com/sonr-io/core/pkg/models"
+
 	sn "github.com/sonr-io/core/pkg/node"
 )
+
+const interval = 500 * time.Millisecond
 
 // @ Interface: Callback is implemented from Plugin to receive updates
 type Callback interface {
@@ -18,17 +28,139 @@ type Callback interface {
 	OnError(data []byte)       // Internal Error
 }
 
-// @ Struct: Node for Alternative Client
-type ClientNode struct {
-	ID       string
-	DeviceID string
-	UserID   uint32
-	node     *sn.Node
-	Status   md.Status
+// @ Struct: Reference for Client Info
+type SysInfo struct {
+	OLC           string
+	Device        md.Device
+	Directory     md.Directories
+	TempFirstName string
+	TempLastName  string
 }
 
-// Generate QRCode for Linking
-func (sn *ClientNode) LinkRequest(name string) *md.LinkRequest {
-	lreq := sn.node.LinkRequest(name)
-	return lreq
+// @ Struct: Reference for Exposed Sonr Client
+type Client struct {
+	ctx       context.Context
+	info      SysInfo
+	peerCount int32
+	lobbySize int32
+	node      *sn.Node
+}
+
+// ^ Create New DeskClient Node ^ //
+func NewClient(ctx context.Context, call Callback) *Client {
+	// Set Default Info
+	var c = new(Client)
+	c.info = SystemInfo()
+	c.ctx = ctx
+	c.peerCount = 0
+	c.lobbySize = 1
+
+	// Create Request Message
+	request := &md.ConnectionRequest{
+		Latitude:    38.980620,
+		Longitude:   -77.505890,
+		Device:      &c.info.Device,
+		Directories: &c.info.Directory,
+		Contact: &md.Contact{
+			FirstName: c.info.TempFirstName,
+			LastName:  c.info.TempLastName,
+		},
+		Username: "@Prad",
+	}
+
+	// Create New Client
+	c.node = sn.NewNode(request, call)
+
+	// Start Routine
+	go c.UpdateAuto(time.NewTicker(interval))
+	return c
+}
+
+// ^ Method to Periodically Update Presence ^ //
+func (dc *Client) UpdateAuto(ticker *time.Ticker) {
+	for {
+		select {
+		case <-dc.ctx.Done():
+			dc.node.Stop()
+			return
+		case <-ticker.C:
+			dc.node.Update(0, 0)
+		}
+	}
+}
+
+// ^ Returns System Info ^ //
+func SystemInfo() SysInfo {
+	// Initialize Vars
+	var platform md.Platform
+	var model string
+	var name string
+	var homeDir string
+	var libDir string
+	var last string
+	var err error
+
+	// Get Operating System
+	runOs := runtime.GOOS
+
+	// Check Runtime OS
+	switch runOs {
+	// @ Windows
+	case "windows":
+		platform = md.Platform_Windows
+		last = "PC"
+
+		// @ Mac
+	case "darwin":
+		platform = md.Platform_MacOS
+		last = "Mac"
+
+		// @ Linux
+	case "linux":
+		platform = md.Platform_Linux
+
+		// @ Unknown
+	default:
+		platform = md.Platform_Unknown
+	}
+
+	// Get Hostname
+	if name, err = os.Hostname(); err != nil {
+		log.Println(err)
+		name = "Undefined"
+	}
+
+	// Get Directories
+	if homeDir, err = os.UserHomeDir(); err != nil {
+		log.Println(err)
+		homeDir = "local/temp"
+	}
+
+	if libDir, err = os.UserConfigDir(); err != nil {
+		log.Println(err)
+		libDir = "local/temp"
+	}
+
+	// Return SysInfo Object
+	return SysInfo{
+		// Current Hard Code OLC
+		OLC:           "87C4XFJV+",
+		TempFirstName: "Prad's",
+		TempLastName:  last,
+
+		// Retreived Device Info
+		Device: md.Device{
+			Platform: platform,
+			Model:    model,
+			Name:     name,
+			Desktop:  true,
+		},
+
+		// Current Directories
+		Directory: md.Directories{
+			Documents: libDir,
+			Temporary: filepath.Join(homeDir, "Downloads"),
+			Downloads: filepath.Join(homeDir, "Downloads"),
+		},
+	}
 }
