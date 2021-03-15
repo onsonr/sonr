@@ -18,14 +18,6 @@ import (
 	md "github.com/sonr-io/core/pkg/models"
 )
 
-type State int
-
-const (
-	Stopped State = iota
-	Paused
-	Running
-)
-
 // ^ NewHost: Creates a host with: (MDNS, TCP, QUIC on UDP) ^
 func NewHost(ctx context.Context, dir *md.Directories, olc string) (host.Host, error) {
 	// @1. Established Required Data
@@ -34,15 +26,15 @@ func NewHost(ctx context.Context, dir *md.Directories, olc string) (host.Host, e
 	ipv6 := IPv6()
 
 	// @2. Get Private Key
-	privKey, err := getKeys(dir)
-	if err != nil {
-		return nil, err
-	}
+	// privKey, err := getKeys(dir)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	// @3. Create Libp2p Host
 	h, err := libp2p.New(ctx,
 		// Identity
-		libp2p.Identity(privKey),
+		// libp2p.Identity(privKey),
 
 		// Add listening Addresses
 		libp2p.ListenAddrStrings(
@@ -71,9 +63,6 @@ func NewHost(ctx context.Context, dir *md.Directories, olc string) (host.Host, e
 			20,          // HighWater,
 			time.Minute, // GracePeriod
 		)),
-
-		// Attempt to open ports using uPNP for NATed hosts.
-		libp2p.NATPortMap(),
 
 		// Let this host use the DHT to find other hosts
 		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
