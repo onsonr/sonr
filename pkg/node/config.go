@@ -57,8 +57,6 @@ func (sn *Node) setConnection(ctx context.Context) {
 	// Initialize Peer Connection
 	if sn.peerConn, err = tf.Initialize(sn.host, sn.pubSub, sn.fs, sn.olc, transCall); err != nil {
 		sentry.CaptureException(err)
-	} else {
-		sentry.CaptureMessage("Node Started Successfully.")
 	}
 }
 
