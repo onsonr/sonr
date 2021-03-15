@@ -50,7 +50,7 @@ func NewClient(req *md.ConnectionRequest, call Callback) *Client {
 	var c = new(Client)
 	c.Info = SystemInfo()
 	c.ctx = context.Background()
-
+	req.Directories = c.Info.Device.GetDirectories()
 	// Create New Client
 	c.Node = sn.NewNode(req, call)
 
