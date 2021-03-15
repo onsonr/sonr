@@ -18,10 +18,17 @@ import (
 	md "github.com/sonr-io/core/pkg/models"
 )
 
+type HostOptions struct {
+	OLC          string
+	Directories  *md.Directories
+	Connectivity md.Connectivity
+}
+
 // ^ NewHost: Creates a host with: (MDNS, TCP, QUIC on UDP) ^
-func NewHost(ctx context.Context, dir *md.Directories, olc string) (host.Host, error) {
+func NewHost(ctx context.Context, opts HostOptions) (host.Host, error) {
 	// @1. Established Required Data
-	point := "/sonr/" + olc
+	var idht *dht.IpfsDHT
+	point := "/sonr/" + opts.OLC
 	ipv4 := IPv4()
 	ipv6 := IPv6()
 
@@ -67,7 +74,8 @@ func NewHost(ctx context.Context, dir *md.Directories, olc string) (host.Host, e
 		// Let this host use the DHT to find other hosts
 		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
 			// Create New IDHT
-			idht, err := dht.New(ctx, h)
+			var err error
+			idht, err = dht.New(ctx, h)
 			if err != nil {
 				return nil, err
 			}
@@ -88,6 +96,11 @@ func NewHost(ctx context.Context, dir *md.Directories, olc string) (host.Host, e
 	}
 
 	// setup local mDNS discovery
-	err = startMDNS(ctx, h, point)
+	if opts.Connectivity == md.Connectivity_WiFi {
+		err = startMDNS(ctx, h, point)
+	} else {
+		startBootstrap(ctx, h, idht, point)
+	}
+
 	return h, err
 }

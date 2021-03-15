@@ -6,6 +6,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/getsentry/sentry-go"
 	disco "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -55,6 +56,7 @@ func startMDNS(ctx context.Context, h host.Host, point string) error {
 	// setup mDNS discovery to find local peers
 	disc, err := disc.NewMdnsService(ctx, h, discoveryInterval, point)
 	if err != nil {
+		sentry.CaptureException(err)
 		return err
 	}
 
@@ -104,7 +106,7 @@ func (n *discNotifee) HandlePeerFound(pi peer.AddrInfo) {
 // ^ Helper: Checks for Connect Error ^
 func checkConnErr(err error, id peer.ID, h host.Host) {
 	if err != nil {
-		log.Printf("error connecting to peer %s: %s\n", id.Pretty(), err)
+		sentry.CaptureException(err)
 		h.Peerstore().ClearAddrs(id)
 
 		if sw, ok := h.Network().(*swarm.Swarm); ok {

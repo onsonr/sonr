@@ -203,3 +203,8 @@ func (sn *Node) Stop() {
 	}
 	sn.host.Close()
 }
+
+// ^ Update Host for New Network Connectivity ^
+func (sn *Node) NetworkSwitch(conn md.Connectivity) {
+	
+}

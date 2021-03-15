@@ -42,8 +42,9 @@ type Node struct {
 	Status      md.Status
 
 	// Networking Properties
-	host   host.Host
-	pubSub *pubsub.PubSub
+	connectivity md.Connectivity
+	host         host.Host
+	pubSub       *pubsub.PubSub
 
 	// References
 	call     Callback
@@ -77,13 +78,18 @@ func NewNode(req *md.ConnectionRequest, call Callback) *Node {
 	}
 
 	// Set File System
+	node.connectivity = req.GetConnectivity()
 	node.fs = dq.InitFS(req, profile)
 
 	// @1. Set OLC, Create Host, and Start Discovery
 	node.queue = dq.InitQueue(req.Directories, profile, node.queued, node.multiQueued, node.error)
 	node.Status = md.Status_NONE
 	node.olc = olc.Encode(float64(req.Latitude), float64(req.Longitude), 8)
-	node.host, err = sh.NewHost(node.ctx, req.Directories, node.olc)
+	node.host, err = sh.NewHost(node.ctx, sh.HostOptions{
+		OLC:          node.olc,
+		Directories:  req.Directories,
+		Connectivity: req.Connectivity,
+	})
 	if err != nil {
 		sentry.CaptureException(err)
 		return nil
