@@ -5,6 +5,13 @@ import "user.proto";
 // Require Go Package
 option go_package = ".;models";
 
+// Client Network Connection Status
+enum Connectivity {
+  None = 0;
+  Mobile = 1;
+  WiFi = 2;
+}
+
 // For Info about Lobby
 message Lobby {
   string olc = 1;                // Open Location Code of Lobby

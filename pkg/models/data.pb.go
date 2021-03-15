@@ -25,6 +25,56 @@ const (
 // of the legacy proto package is being used.
 const _ = proto.ProtoPackageIsVersion4
 
+// Client Network Connection Status
+type Connectivity int32
+
+const (
+	Connectivity_None   Connectivity = 0
+	Connectivity_Mobile Connectivity = 1
+	Connectivity_WiFi   Connectivity = 2
+)
+
+// Enum value maps for Connectivity.
+var (
+	Connectivity_name = map[int32]string{
+		0: "None",
+		1: "Mobile",
+		2: "WiFi",
+	}
+	Connectivity_value = map[string]int32{
+		"None":   0,
+		"Mobile": 1,
+		"WiFi":   2,
+	}
+)
+
+func (x Connectivity) Enum() *Connectivity {
+	p := new(Connectivity)
+	*p = x
+	return p
+}
+
+func (x Connectivity) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Connectivity) Descriptor() protoreflect.EnumDescriptor {
+	return file_data_proto_enumTypes[0].Descriptor()
+}
+
+func (Connectivity) Type() protoreflect.EnumType {
+	return &file_data_proto_enumTypes[0]
+}
+
+func (x Connectivity) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use Connectivity.Descriptor instead.
+func (Connectivity) EnumDescriptor() ([]byte, []int) {
+	return file_data_proto_rawDescGZIP(), []int{0}
+}
+
 // Payload is type of Data being transferred
 type Payload int32
 
@@ -74,11 +124,11 @@ func (x Payload) String() string {
 }
 
 func (Payload) Descriptor() protoreflect.EnumDescriptor {
-	return file_data_proto_enumTypes[0].Descriptor()
+	return file_data_proto_enumTypes[1].Descriptor()
 }
 
 func (Payload) Type() protoreflect.EnumType {
-	return &file_data_proto_enumTypes[0]
+	return &file_data_proto_enumTypes[1]
 }
 
 func (x Payload) Number() protoreflect.EnumNumber {
@@ -87,7 +137,7 @@ func (x Payload) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use Payload.Descriptor instead.
 func (Payload) EnumDescriptor() ([]byte, []int) {
-	return file_data_proto_rawDescGZIP(), []int{0}
+	return file_data_proto_rawDescGZIP(), []int{1}
 }
 
 type LobbyEvent_Event int32
@@ -126,11 +176,11 @@ func (x LobbyEvent_Event) String() string {
 }
 
 func (LobbyEvent_Event) Descriptor() protoreflect.EnumDescriptor {
-	return file_data_proto_enumTypes[1].Descriptor()
+	return file_data_proto_enumTypes[2].Descriptor()
 }
 
 func (LobbyEvent_Event) Type() protoreflect.EnumType {
-	return &file_data_proto_enumTypes[1]
+	return &file_data_proto_enumTypes[2]
 }
 
 func (x LobbyEvent_Event) Number() protoreflect.EnumNumber {
@@ -181,11 +231,11 @@ func (x MIME_Type) String() string {
 }
 
 func (MIME_Type) Descriptor() protoreflect.EnumDescriptor {
-	return file_data_proto_enumTypes[2].Descriptor()
+	return file_data_proto_enumTypes[3].Descriptor()
 }
 
 func (MIME_Type) Type() protoreflect.EnumType {
-	return &file_data_proto_enumTypes[2]
+	return &file_data_proto_enumTypes[3]
 }
 
 func (x MIME_Type) Number() protoreflect.EnumNumber {
@@ -240,11 +290,11 @@ func (x TransferCard_Status) String() string {
 }
 
 func (TransferCard_Status) Descriptor() protoreflect.EnumDescriptor {
-	return file_data_proto_enumTypes[3].Descriptor()
+	return file_data_proto_enumTypes[4].Descriptor()
 }
 
 func (TransferCard_Status) Type() protoreflect.EnumType {
-	return &file_data_proto_enumTypes[3]
+	return &file_data_proto_enumTypes[4]
 }
 
 func (x TransferCard_Status) Number() protoreflect.EnumNumber {
@@ -1838,7 +1888,10 @@ var file_data_proto_rawDesc = []byte{
 	0x61, 0x79, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
 	0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01,
 	0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x10, 0x0a, 0x03, 0x75, 0x72, 0x6c, 0x18, 0x03, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x03, 0x75, 0x72, 0x6c, 0x2a, 0x6f, 0x0a, 0x07, 0x50, 0x61, 0x79, 0x6c,
+	0x01, 0x28, 0x09, 0x52, 0x03, 0x75, 0x72, 0x6c, 0x2a, 0x2e, 0x0a, 0x0c, 0x43, 0x6f, 0x6e, 0x6e,
+	0x65, 0x63, 0x74, 0x69, 0x76, 0x69, 0x74, 0x79, 0x12, 0x08, 0x0a, 0x04, 0x4e, 0x6f, 0x6e, 0x65,
+	0x10, 0x00, 0x12, 0x0a, 0x0a, 0x06, 0x4d, 0x6f, 0x62, 0x69, 0x6c, 0x65, 0x10, 0x01, 0x12, 0x08,
+	0x0a, 0x04, 0x57, 0x69, 0x46, 0x69, 0x10, 0x02, 0x2a, 0x6f, 0x0a, 0x07, 0x50, 0x61, 0x79, 0x6c,
 	0x6f, 0x61, 0x64, 0x12, 0x0d, 0x0a, 0x09, 0x55, 0x4e, 0x44, 0x45, 0x46, 0x49, 0x4e, 0x45, 0x44,
 	0x10, 0x00, 0x12, 0x0b, 0x0a, 0x07, 0x43, 0x4f, 0x4e, 0x54, 0x41, 0x43, 0x54, 0x10, 0x01, 0x12,
 	0x09, 0x0a, 0x05, 0x4d, 0x45, 0x44, 0x49, 0x41, 0x10, 0x02, 0x12, 0x07, 0x0a, 0x03, 0x55, 0x52,
@@ -1861,61 +1914,62 @@ func file_data_proto_rawDescGZIP() []byte {
 	return file_data_proto_rawDescData
 }
 
-var file_data_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
+var file_data_proto_enumTypes = make([]protoimpl.EnumInfo, 5)
 var file_data_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
 var file_data_proto_goTypes = []interface{}{
-	(Payload)(0),                           // 0: Payload
-	(LobbyEvent_Event)(0),                  // 1: LobbyEvent.Event
-	(MIME_Type)(0),                         // 2: MIME.Type
-	(TransferCard_Status)(0),               // 3: TransferCard.Status
-	(*Lobby)(nil),                          // 4: Lobby
-	(*LobbyEvent)(nil),                     // 5: LobbyEvent
-	(*Metadata)(nil),                       // 6: Metadata
-	(*MIME)(nil),                           // 7: MIME
-	(*TransferCard)(nil),                   // 8: TransferCard
-	(*URLLink)(nil),                        // 9: URLLink
-	nil,                                    // 10: Lobby.PeersEntry
-	nil,                                    // 11: Lobby.StandbyEntry
-	(*TransferCard_Properties)(nil),        // 12: TransferCard.Properties
-	(*TransferCard_Progress)(nil),          // 13: TransferCard.Progress
-	(*URLLink_OpenGraphImage)(nil),         // 14: URLLink.OpenGraphImage
-	(*URLLink_OpenGraphVideo)(nil),         // 15: URLLink.OpenGraphVideo
-	(*URLLink_OpenGraphAudio)(nil),         // 16: URLLink.OpenGraphAudio
-	(*URLLink_TwitterCard)(nil),            // 17: URLLink.TwitterCard
-	(*URLLink_TwitterCard_Player)(nil),     // 18: URLLink.TwitterCard.Player
-	(*URLLink_TwitterCard_IPhone)(nil),     // 19: URLLink.TwitterCard.IPhone
-	(*URLLink_TwitterCard_IPad)(nil),       // 20: URLLink.TwitterCard.IPad
-	(*URLLink_TwitterCard_GooglePlay)(nil), // 21: URLLink.TwitterCard.GooglePlay
-	(*Peer)(nil),                           // 22: Peer
-	(Platform)(0),                          // 23: Platform
-	(*Contact)(nil),                        // 24: Contact
+	(Connectivity)(0),                      // 0: Connectivity
+	(Payload)(0),                           // 1: Payload
+	(LobbyEvent_Event)(0),                  // 2: LobbyEvent.Event
+	(MIME_Type)(0),                         // 3: MIME.Type
+	(TransferCard_Status)(0),               // 4: TransferCard.Status
+	(*Lobby)(nil),                          // 5: Lobby
+	(*LobbyEvent)(nil),                     // 6: LobbyEvent
+	(*Metadata)(nil),                       // 7: Metadata
+	(*MIME)(nil),                           // 8: MIME
+	(*TransferCard)(nil),                   // 9: TransferCard
+	(*URLLink)(nil),                        // 10: URLLink
+	nil,                                    // 11: Lobby.PeersEntry
+	nil,                                    // 12: Lobby.StandbyEntry
+	(*TransferCard_Properties)(nil),        // 13: TransferCard.Properties
+	(*TransferCard_Progress)(nil),          // 14: TransferCard.Progress
+	(*URLLink_OpenGraphImage)(nil),         // 15: URLLink.OpenGraphImage
+	(*URLLink_OpenGraphVideo)(nil),         // 16: URLLink.OpenGraphVideo
+	(*URLLink_OpenGraphAudio)(nil),         // 17: URLLink.OpenGraphAudio
+	(*URLLink_TwitterCard)(nil),            // 18: URLLink.TwitterCard
+	(*URLLink_TwitterCard_Player)(nil),     // 19: URLLink.TwitterCard.Player
+	(*URLLink_TwitterCard_IPhone)(nil),     // 20: URLLink.TwitterCard.IPhone
+	(*URLLink_TwitterCard_IPad)(nil),       // 21: URLLink.TwitterCard.IPad
+	(*URLLink_TwitterCard_GooglePlay)(nil), // 22: URLLink.TwitterCard.GooglePlay
+	(*Peer)(nil),                           // 23: Peer
+	(Platform)(0),                          // 24: Platform
+	(*Contact)(nil),                        // 25: Contact
 }
 var file_data_proto_depIdxs = []int32{
-	10, // 0: Lobby.peers:type_name -> Lobby.PeersEntry
-	11, // 1: Lobby.standby:type_name -> Lobby.StandbyEntry
-	1,  // 2: LobbyEvent.event:type_name -> LobbyEvent.Event
-	22, // 3: LobbyEvent.data:type_name -> Peer
-	7,  // 4: Metadata.mime:type_name -> MIME
-	2,  // 5: MIME.type:type_name -> MIME.Type
-	0,  // 6: TransferCard.payload:type_name -> Payload
-	23, // 7: TransferCard.platform:type_name -> Platform
-	13, // 8: TransferCard.progress:type_name -> TransferCard.Progress
-	3,  // 9: TransferCard.status:type_name -> TransferCard.Status
-	12, // 10: TransferCard.properties:type_name -> TransferCard.Properties
-	24, // 11: TransferCard.contact:type_name -> Contact
-	6,  // 12: TransferCard.metadata:type_name -> Metadata
-	9,  // 13: TransferCard.url:type_name -> URLLink
-	14, // 14: URLLink.images:type_name -> URLLink.OpenGraphImage
-	15, // 15: URLLink.videos:type_name -> URLLink.OpenGraphVideo
-	16, // 16: URLLink.audios:type_name -> URLLink.OpenGraphAudio
-	17, // 17: URLLink.twitter:type_name -> URLLink.TwitterCard
-	22, // 18: Lobby.PeersEntry.value:type_name -> Peer
-	22, // 19: Lobby.StandbyEntry.value:type_name -> Peer
-	7,  // 20: TransferCard.Properties.mime:type_name -> MIME
-	18, // 21: URLLink.TwitterCard.player:type_name -> URLLink.TwitterCard.Player
-	19, // 22: URLLink.TwitterCard.iphone:type_name -> URLLink.TwitterCard.IPhone
-	20, // 23: URLLink.TwitterCard.ipad:type_name -> URLLink.TwitterCard.IPad
-	21, // 24: URLLink.TwitterCard.googlePlay:type_name -> URLLink.TwitterCard.GooglePlay
+	11, // 0: Lobby.peers:type_name -> Lobby.PeersEntry
+	12, // 1: Lobby.standby:type_name -> Lobby.StandbyEntry
+	2,  // 2: LobbyEvent.event:type_name -> LobbyEvent.Event
+	23, // 3: LobbyEvent.data:type_name -> Peer
+	8,  // 4: Metadata.mime:type_name -> MIME
+	3,  // 5: MIME.type:type_name -> MIME.Type
+	1,  // 6: TransferCard.payload:type_name -> Payload
+	24, // 7: TransferCard.platform:type_name -> Platform
+	14, // 8: TransferCard.progress:type_name -> TransferCard.Progress
+	4,  // 9: TransferCard.status:type_name -> TransferCard.Status
+	13, // 10: TransferCard.properties:type_name -> TransferCard.Properties
+	25, // 11: TransferCard.contact:type_name -> Contact
+	7,  // 12: TransferCard.metadata:type_name -> Metadata
+	10, // 13: TransferCard.url:type_name -> URLLink
+	15, // 14: URLLink.images:type_name -> URLLink.OpenGraphImage
+	16, // 15: URLLink.videos:type_name -> URLLink.OpenGraphVideo
+	17, // 16: URLLink.audios:type_name -> URLLink.OpenGraphAudio
+	18, // 17: URLLink.twitter:type_name -> URLLink.TwitterCard
+	23, // 18: Lobby.PeersEntry.value:type_name -> Peer
+	23, // 19: Lobby.StandbyEntry.value:type_name -> Peer
+	8,  // 20: TransferCard.Properties.mime:type_name -> MIME
+	19, // 21: URLLink.TwitterCard.player:type_name -> URLLink.TwitterCard.Player
+	20, // 22: URLLink.TwitterCard.iphone:type_name -> URLLink.TwitterCard.IPhone
+	21, // 23: URLLink.TwitterCard.ipad:type_name -> URLLink.TwitterCard.IPad
+	22, // 24: URLLink.TwitterCard.googlePlay:type_name -> URLLink.TwitterCard.GooglePlay
 	25, // [25:25] is the sub-list for method output_type
 	25, // [25:25] is the sub-list for method input_type
 	25, // [25:25] is the sub-list for extension type_name
@@ -2128,7 +2182,7 @@ func file_data_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_data_proto_rawDesc,
-			NumEnums:      4,
+			NumEnums:      5,
 			NumMessages:   18,
 			NumExtensions: 0,
 			NumServices:   0,
