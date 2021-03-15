@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"fmt"
-	"log"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/libp2p/go-libp2p"
 	connmgr "github.com/libp2p/go-libp2p-connmgr"
 	"github.com/libp2p/go-libp2p-core/host"
@@ -85,7 +85,7 @@ func NewHost(ctx context.Context, dir *md.Directories, olc string) (host.Host, e
 			// We use a rendezvous point "meet me here" to announce our location.
 			// This is like telling your friends to meet you at the Eiffel Tower.
 
-			go startBootstrap(ctx, h, idht, point)
+			//go startBootstrap(ctx, h, idht, point)
 			return idht, err
 		}),
 		// Let this host use relays and advertise itself on relays if
@@ -95,7 +95,7 @@ func NewHost(ctx context.Context, dir *md.Directories, olc string) (host.Host, e
 		libp2p.EnableNATService(),
 	)
 	if err != nil {
-		log.Fatalln("Error starting node: ", err)
+		sentry.CaptureException(err)
 	}
 
 	// setup local mDNS discovery
