@@ -9,6 +9,7 @@ import (
 	"github.com/getsentry/sentry-go"
 	"github.com/libp2p/go-libp2p"
 	connmgr "github.com/libp2p/go-libp2p-connmgr"
+	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/routing"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
@@ -20,28 +21,21 @@ import (
 
 type HostOptions struct {
 	OLC          string
-	Directories  *md.Directories
 	Connectivity md.Connectivity
+	PrivateKey   crypto.PrivKey
 }
 
 // ^ NewHost: Creates a host with: (MDNS, TCP, QUIC on UDP) ^
 func NewHost(ctx context.Context, opts HostOptions) (host.Host, error) {
 	// @1. Established Required Data
-	var idht *dht.IpfsDHT
 	point := "/sonr/" + opts.OLC
 	ipv4 := IPv4()
 	ipv6 := IPv6()
 
-	// @2. Get Private Key
-	// privKey, err := getKeys(dir)
-	// if err != nil {
-	// 	return nil, err
-	// }
-
 	// @3. Create Libp2p Host
 	h, err := libp2p.New(ctx,
 		// Identity
-		// libp2p.Identity(privKey),
+		libp2p.Identity(opts.PrivateKey),
 
 		// Add listening Addresses
 		libp2p.ListenAddrStrings(
@@ -74,33 +68,34 @@ func NewHost(ctx context.Context, opts HostOptions) (host.Host, error) {
 		// Let this host use the DHT to find other hosts
 		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
 			// Create New IDHT
-			var err error
-			idht, err = dht.New(ctx, h)
+
+			idht, err := dht.New(ctx, h)
 			if err != nil {
 				return nil, err
 			}
 			// We use a rendezvous point "meet me here" to announce our location.
 			// This is like telling your friends to meet you at the Eiffel Tower.
-
-			//go startBootstrap(ctx, h, idht, point)
+			go startBootstrap(ctx, h, idht, point)
 			return idht, err
 		}),
-		// Let this host use relays and advertise itself on relays if
-		// it finds it is behind NAT. Use libp2p.Relay(options...) to
-		// enable active relays and more.
-		libp2p.EnableAutoRelay(),
-		libp2p.EnableNATService(),
+		// // Let this host use relays and advertise itself on relays if
+		// // it finds it is behind NAT. Use libp2p.Relay(options...) to
+		// // enable active relays and more.
+		// libp2p.EnableAutoRelay(),
+		// libp2p.EnableNATService(),
 	)
 	if err != nil {
 		sentry.CaptureException(err)
+		return nil, err
 	}
 
 	// setup local mDNS discovery
 	if opts.Connectivity == md.Connectivity_WiFi {
 		err = startMDNS(ctx, h, point)
-	} else {
-		startBootstrap(ctx, h, idht, point)
+		if err != nil {
+			sentry.CaptureException(err)
+			return nil, err
+		}
 	}
-
-	return h, err
+	return h, nil
 }

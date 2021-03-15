@@ -39,7 +39,7 @@ func startBootstrap(ctx context.Context, h host.Host, idht *dht.IpfsDHT, point s
 	for _, maddrString := range config.P2P.RDVP {
 		maddr, err := multiaddr.NewMultiaddr(maddrString.Maddr)
 		if err != nil {
-			log.Println(err)
+			sentry.CaptureException(err)
 		}
 		wg.Add(1)
 		peerinfo, _ := peer.AddrInfoFromP2pAddr(maddr)

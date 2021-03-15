@@ -85,9 +85,17 @@ func NewNode(req *md.ConnectionRequest, call Callback) *Node {
 	node.queue = dq.InitQueue(req.Directories, profile, node.queued, node.multiQueued, node.error)
 	node.Status = md.Status_NONE
 	node.olc = olc.Encode(float64(req.Latitude), float64(req.Longitude), 8)
+
+	// Get Private Key
+	key, err := node.fs.GetPrivateKey()
+	if err != nil {
+		sentry.CaptureException(err)
+		return node
+	}
+
 	node.host, err = sh.NewHost(node.ctx, sh.HostOptions{
 		OLC:          node.olc,
-		Directories:  req.Directories,
+		PrivateKey:   key,
 		Connectivity: req.Connectivity,
 	})
 	if err != nil {
