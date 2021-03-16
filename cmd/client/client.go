@@ -16,6 +16,7 @@ const interval = 500 * time.Millisecond
 
 // @ Interface: Callback is implemented from Plugin to receive updates
 type Callback interface {
+	OnReady(data bool)
 	OnRefreshed(data []byte)   // Lobby Updates
 	OnEvent(data []byte)       // Lobby Event
 	OnInvited(data []byte)     // User Invited
