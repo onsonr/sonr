@@ -116,3 +116,30 @@ func (fs *SonrFS) SaveDevice(device *md.Device) error {
 
 	return errors.New("Sonr FileSystem not Initialized")
 }
+
+// ^ Write User Data at Path ^
+func (sfs *SonrFS) WriteUser(user *md.User) error {
+	userPath := filepath.Join(sfs.Root, K_SONR_USER_PATH)
+
+	// Convert User to Bytes
+	userData, err := proto.Marshal(user)
+	if err != nil {
+		return err
+	}
+
+	// Check for User File at Path
+	file, err := os.OpenFile(userPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		return err
+	}
+
+	// Defer Close
+	defer file.Close()
+
+	// Write User Data to File
+	_, err = file.Write(userData)
+	if err != nil {
+		return err
+	}
+	return nil
+}

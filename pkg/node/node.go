@@ -90,20 +90,20 @@ func NewNode(req *md.ConnectionRequest, call Callback) *Node {
 }
 
 // ^ Start Begins Running Libp2p Host ^
-func (sn *Node) Start() error {
+func (n *Node) Start() error {
 	// Get Public Addrs
 	ipv4 := IPv4()
 
 	// Get Private Key
-	privKey, err := sn.fs.GetPrivateKey()
+	privKey, err := n.fs.GetPrivateKey()
 	if err != nil {
 		sentry.CaptureException(err)
 		return err
 	}
 
 	// Start Host
-	sn.host, err = libp2p.New(
-		sn.ctx,
+	n.host, err = libp2p.New(
+		n.ctx,
 		// Add listening Addresses
 		libp2p.ListenAddrStrings(
 			fmt.Sprintf("/ip4/%s/tcp/0", ipv4),
@@ -116,14 +116,14 @@ func (sn *Node) Start() error {
 	}
 
 	// Create Pub Sub
-	sn.pubSub, err = pubsub.NewGossipSub(sn.ctx, sn.host, pubsub.WithMessageSignaturePolicy(pubsub.StrictSign))
+	n.pubSub, err = pubsub.NewGossipSub(n.ctx, n.host, pubsub.WithMessageSignaturePolicy(pubsub.StrictSign))
 	if err != nil {
 		sentry.CaptureException(err)
 		return err
 	}
 
 	// Get P2P Multi Addr
-	p2pAddr, err := multiaddr.NewMultiaddr(fmt.Sprintf("/p2p/%s", sn.host.ID().Pretty()))
+	p2pAddr, err := multiaddr.NewMultiaddr(fmt.Sprintf("/p2p/%s", n.host.ID().Pretty()))
 	if err != nil {
 		sentry.CaptureException(err)
 		return err
@@ -131,23 +131,23 @@ func (sn *Node) Start() error {
 
 	// Get All Addr
 	var fullAddrs []string
-	for _, addr := range sn.host.Addrs() {
+	for _, addr := range n.host.Addrs() {
 		fullAddrs = append(fullAddrs, addr.Encapsulate(p2pAddr).String()) //nolint
 	}
 
 	// Check for Host
-	if sn.host == nil {
+	if n.host == nil {
 		err := errors.New("setPeer: Host has not been called")
 		sentry.CaptureException(err)
 		return err
 	}
 
 	// Set Peer Info
-	sn.peer = &md.Peer{
-		Id:       sn.fs.GetPeerID(sn.hostOpts.ConnRequest, sn.profile, sn.host.ID().String()),
-		Profile:  sn.profile,
-		Platform: sn.device.Platform,
-		Model:    sn.device.Model,
+	n.peer = &md.Peer{
+		Id:       n.fs.GetPeerID(n.hostOpts.ConnRequest, n.profile, n.host.ID().String()),
+		Profile:  n.profile,
+		Platform: n.device.Platform,
+		Model:    n.device.Model,
 	}
 	return nil
 }
@@ -231,38 +231,38 @@ func (n *Node) Bootstrap() error {
 }
 
 // ^ Close Ends All Network Communication ^
-func (sn *Node) Pause() {
+func (n *Node) Pause() {
 	// Check if Response Is Invited
-	if sn.status == md.Status_INVITED {
-		sn.peerConn.Cancel(sn.peer)
+	if n.status == md.Status_INVITED {
+		n.peerConn.Cancel(n.peer)
 	}
-	err := sn.lobby.Standby()
+	err := n.lobby.Standby()
 	if err != nil {
-		sn.error(err, "Pause")
+		n.error(err, "Pause")
 		sentry.CaptureException(err)
 	}
 	md.GetState().Pause()
 }
 
 // ^ Close Ends All Network Communication ^
-func (sn *Node) Resume() {
-	err := sn.lobby.Resume()
+func (n *Node) Resume() {
+	err := n.lobby.Resume()
 	if err != nil {
-		sn.error(err, "Resume")
+		n.error(err, "Resume")
 	}
 	md.GetState().Resume()
 }
 
 // ^ Close Ends All Network Communication ^
-func (sn *Node) Stop() {
+func (n *Node) Stop() {
 	// Check if Response Is Invited
-	if sn.status == md.Status_INVITED {
-		sn.peerConn.Cancel(sn.peer)
+	if n.status == md.Status_INVITED {
+		n.peerConn.Cancel(n.peer)
 	}
-	sn.host.Close()
+	n.host.Close()
 }
 
 // ^ Update Host for New Network Connectivity ^
-func (sn *Node) NetworkSwitch(conn md.Connectivity) {
+func (n *Node) NetworkSwitch(conn md.Connectivity) {
 
 }

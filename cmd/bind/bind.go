@@ -56,7 +56,10 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 // **-----------------** //
 // Start Host
 func (sn *MobileNode) Start() {
-	sn.node.Start()
+	err := sn.node.Start()
+	if err != nil {
+		log.Fatalln(err)
+	}
 }
 
 // Initiate Bootstrapping

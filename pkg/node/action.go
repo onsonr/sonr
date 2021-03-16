@@ -11,7 +11,7 @@ import (
 )
 
 // ^ Update proximity/direction and Notify Lobby ^ //
-func (sn *Node) Update(facing float64, heading float64) {
+func (n *Node) Update(facing float64, heading float64) {
 	// Update User Values
 	var faceDir float64
 	var faceAnpd float64
@@ -36,7 +36,7 @@ func (sn *Node) Update(facing float64, heading float64) {
 	}
 
 	// Set Position
-	sn.peer.Position = &md.Position{
+	n.peer.Position = &md.Position{
 		Facing:           faceDir,
 		FacingAntipodal:  faceAnpd,
 		Heading:          headDir,
@@ -45,23 +45,23 @@ func (sn *Node) Update(facing float64, heading float64) {
 	}
 
 	// Inform Lobby
-	err := sn.lobby.Update()
+	err := n.lobby.Update()
 	if err != nil {
 		sentry.CaptureException(err)
 	}
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (sn *Node) Invite(req *md.InviteRequest) {
+func (n *Node) Invite(req *md.InviteRequest) {
 	// @ 2. Check Transfer Type
 	if req.Type == md.InviteRequest_Contact || req.Type == md.InviteRequest_URL {
 		// @ 3. Send Invite to Peer
 		// Set Contact
-		req.Contact = sn.contact
-		invMsg := md.NewInviteFromRequest(req, sn.peer)
+		req.Contact = n.contact
+		invMsg := md.NewInviteFromRequest(req, n.peer)
 
 		// Get PeerID and Check error
-		id, _, err := sn.lobby.Find(req.To.Id.Peer)
+		id, _, err := n.lobby.Find(req.To.Id.Peer)
 		if err != nil {
 			sentry.CaptureException(err)
 		}
@@ -74,34 +74,34 @@ func (sn *Node) Invite(req *md.InviteRequest) {
 				sentry.CaptureException(err)
 			}
 
-			sn.peerConn.Request(sn.host, id, msgBytes)
+			n.peerConn.Request(n.host, id, msgBytes)
 		}(&invMsg)
 	} else {
 		// File Transfer
-		sn.fs.AddFromRequest(req)
+		n.fs.AddFromRequest(req)
 	}
 
 	// Update Status
-	sn.status = md.Status_PENDING
+	n.status = md.Status_PENDING
 }
 
 // ^ Respond to an Invitation ^ //
-func (sn *Node) Respond(decision bool) {
+func (n *Node) Respond(decision bool) {
 	// Send Response on PeerConnection
-	sn.peerConn.Authorize(decision, sn.contact, sn.peer)
+	n.peerConn.Authorize(decision, n.contact, n.peer)
 
 	// Update Status
 	if decision {
-		sn.status = md.Status_INPROGRESS
+		n.status = md.Status_INPROGRESS
 	} else {
-		sn.status = md.Status_AVAILABLE
+		n.status = md.Status_AVAILABLE
 	}
 }
 
 // ^ Info returns ALL Peer Data as Bytes^
-func (sn *Node) Info() []byte {
+func (n *Node) Info() []byte {
 	// Convert to bytes to view in plugin
-	data, err := proto.Marshal(sn.peer)
+	data, err := proto.Marshal(n.peer)
 	if err != nil {
 		sentry.CaptureException(err)
 		return nil
@@ -110,7 +110,7 @@ func (sn *Node) Info() []byte {
 }
 
 // ^ Link with a QR Code ^ //
-func (sn *Node) LinkDevice(json string) {
+func (n *Node) LinkDevice(json string) {
 	// Convert String to Bytes
 	request := md.LinkRequest{}
 
@@ -121,16 +121,16 @@ func (sn *Node) LinkDevice(json string) {
 	}
 
 	// Link Device
-	err = sn.fs.SaveDevice(request.Device)
+	err = n.fs.SaveDevice(request.Device)
 	if err != nil {
 		sentry.CaptureException(err)
 	}
 }
 
 // ^ Link with a QR Code ^ //
-func (sn *Node) LinkRequest(name string) *md.LinkRequest {
+func (n *Node) LinkRequest(name string) *md.LinkRequest {
 	// Set Device
-	device := sn.device
+	device := n.device
 	device.Name = name
 
 	// Create Expiry - 1min 30s
@@ -141,31 +141,31 @@ func (sn *Node) LinkRequest(name string) *md.LinkRequest {
 	// Return Request
 	return &md.LinkRequest{
 		Device: device,
-		Peer:   sn.Peer(),
+		Peer:   n.Peer(),
 		Expiry: int32(timein.Unix()),
 	}
 }
 
 // ^ Peer returns Current Peer Info ^
-func (sn *Node) Peer() *md.Peer {
-	return sn.peer
+func (n *Node) Peer() *md.Peer {
+	return n.peer
 }
 
 // ^ Updates Current Contact Card ^
-func (sn *Node) SetContact(newContact *md.Contact) {
+func (n *Node) SetContact(newContact *md.Contact) {
 
 	// Set Node Contact
-	sn.contact = newContact
+	n.contact = newContact
 
 	// Update Peer Profile
-	sn.peer.Profile = &md.Profile{
+	n.peer.Profile = &md.Profile{
 		FirstName: newContact.GetFirstName(),
 		LastName:  newContact.GetLastName(),
 		Picture:   newContact.GetPicture(),
 	}
 
 	// Set User Contact
-	err := sn.fs.SaveContact(newContact)
+	err := n.fs.SaveContact(newContact)
 	if err != nil {
 		sentry.CaptureException(err)
 	}
