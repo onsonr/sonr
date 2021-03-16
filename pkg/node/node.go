@@ -10,7 +10,6 @@ import (
 	"github.com/libp2p/go-libp2p"
 	discLimit "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/host"
-	"github.com/libp2p/go-libp2p-core/peer"
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
@@ -100,7 +99,7 @@ func (n *Node) Start() bool {
 	}
 
 	// Start Host
-	n.host, err = libp2p.New(
+	h, err := libp2p.New(
 		n.ctx,
 		// Add listening Addresses
 		libp2p.ListenAddrStrings(
@@ -113,14 +112,16 @@ func (n *Node) Start() bool {
 		n.call.OnReady(false)
 		return false
 	}
+	n.host = h
 
 	// Create Pub Sub
-	n.pubSub, err = pubsub.NewGossipSub(n.ctx, n.host)
+	ps, err := pubsub.NewGossipSub(n.ctx, n.host)
 	if err != nil {
 		sentry.CaptureException(err)
 		n.call.OnReady(false)
 		return false
 	}
+	n.pubSub = ps
 
 	// Set Peer Info
 	n.peer = &md.Peer{
@@ -135,24 +136,13 @@ func (n *Node) Start() bool {
 // ^ Bootstrap begins bootstrap with peers ^
 func (n *Node) Bootstrap() bool {
 	// Create Bootstrapper Info
-	var bootstrappers []peer.AddrInfo
-	for _, nodeAddr := range dht.DefaultBootstrapPeers {
-		pi, err := peer.AddrInfoFromP2pAddr(nodeAddr)
-		if err != nil {
-			sentry.CaptureException(errors.Wrap(err, "Error while parsing bootstrapper node address info from p2p address"))
-			n.error(err, "Error while parsing bootstrapper node address info from p2p address")
-		}
-		bootstrappers = append(bootstrappers, *pi)
-	}
+	bootstrappers := dht.GetDefaultBootstrapPeerAddrInfos()
 
 	// Set DHT
 	kadDHT, err := dht.New(
 		n.ctx,
 		n.host,
 		dht.BootstrapPeers(bootstrappers...),
-		dht.ProtocolPrefix(n.hostOpts.Prefix),
-		dht.Mode(dht.ModeAutoServer),
-		dht.RoutingTableRefreshPeriod(time.Second*30),
 	)
 	if err != nil {
 		sentry.CaptureException(errors.Wrap(err, "Error while Creating routing DHT"))
@@ -181,45 +171,7 @@ func (n *Node) Bootstrap() bool {
 	discovery.Advertise(n.ctx, routingDiscovery, n.hostOpts.Point)
 
 	// Try finding more peers
-	go func() {
-		for {
-			// Find peers in DHT
-			peersChan, err := routingDiscovery.FindPeers(
-				n.ctx,
-				n.hostOpts.Point,
-				discLimit.Limit(100),
-			)
-			if err != nil {
-				sentry.CaptureException(err)
-				n.error(err, "Finding DHT Peers")
-				n.call.OnReady(false)
-				return
-			}
-
-			// Iterate over Channel
-			for pi := range peersChan {
-				// Validate not Self
-				if pi.ID != n.host.ID() {
-					// Connect to Peer
-					if err := n.host.Connect(n.ctx, pi); err != nil {
-						// Capture Error
-						sentry.CaptureException(errors.Wrap(err, "Failed to connect to peer in namespace"))
-						n.error(err, "Failed to connect to peer in namespace")
-
-						// Remove Peer Reference
-						n.host.Peerstore().ClearAddrs(pi.ID)
-						if sw, ok := n.host.Network().(*swarm.Swarm); ok {
-							sw.Backoff().Clear(pi.ID)
-						}
-					}
-				}
-			}
-
-			// Refresh table every 4 seconds
-			md.GetState().NeedsWait()
-			<-time.After(time.Second * 4)
-		}
-	}()
+	go n.handlePeers(routingDiscovery)
 
 	// Enter Lobby
 	if n.lobby, err = sl.Join(n.ctx, n.LobbyCallback(), n.host, n.pubSub, n.peer, n.hostOpts.OLC); err != nil {
@@ -238,6 +190,47 @@ func (n *Node) Bootstrap() bool {
 	}
 	n.call.OnReady(true)
 	return true
+}
+
+// ^ Handles Peers in DHT ^
+func (n *Node) handlePeers(routingDiscovery *discovery.RoutingDiscovery) {
+	for {
+		// Find peers in DHT
+		peersChan, err := routingDiscovery.FindPeers(
+			n.ctx,
+			n.hostOpts.Point,
+			discLimit.Limit(100),
+		)
+		if err != nil {
+			sentry.CaptureException(err)
+			n.error(err, "Finding DHT Peers")
+			n.call.OnReady(false)
+			return
+		}
+
+		// Iterate over Channel
+		for pi := range peersChan {
+			// Validate not Self
+			if pi.ID != n.host.ID() {
+				// Connect to Peer
+				if err := n.host.Connect(n.ctx, pi); err != nil {
+					// Capture Error
+					sentry.CaptureException(errors.Wrap(err, "Failed to connect to peer in namespace"))
+					n.error(err, "Failed to connect to peer in namespace")
+
+					// Remove Peer Reference
+					n.host.Peerstore().ClearAddrs(pi.ID)
+					if sw, ok := n.host.Network().(*swarm.Swarm); ok {
+						sw.Backoff().Clear(pi.ID)
+					}
+				}
+			}
+		}
+
+		// Refresh table every 4 seconds
+		md.GetState().NeedsWait()
+		<-time.After(time.Second * 4)
+	}
 }
 
 // ^ Close Ends All Network Communication ^
