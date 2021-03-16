@@ -92,6 +92,7 @@ func NewNode(req *md.ConnectionRequest, call Callback) *Node {
 // ^ Start Begins Running Libp2p Host ^
 func (n *Node) Start() bool {
 	// Get Private Key
+	ip4 := IPv4()
 	privKey, err := n.fs.GetPrivateKey()
 	if err != nil {
 		sentry.CaptureException(err)
@@ -103,10 +104,9 @@ func (n *Node) Start() bool {
 		n.ctx,
 		// Add listening Addresses
 		libp2p.ListenAddrStrings(
-			fmt.Sprintf("/ip4/%s/tcp/0", n.hostOpts.IPv4),
-			fmt.Sprintf("/ip4/%s/udp/0/quic", n.hostOpts.IPv4)),
+			fmt.Sprintf("/ip4/%s/tcp/0", ip4),
+			fmt.Sprintf("/ip4/%s/udp/0/quic", ip4)),
 		libp2p.Identity(privKey),
-		// libp2p.EnableAutoRelay(),
 	)
 	if err != nil {
 		sentry.CaptureException(err)
@@ -140,6 +140,7 @@ func (n *Node) Bootstrap() bool {
 		pi, err := peer.AddrInfoFromP2pAddr(nodeAddr)
 		if err != nil {
 			sentry.CaptureException(errors.Wrap(err, "Error while parsing bootstrapper node address info from p2p address"))
+			n.error(err, "Error while parsing bootstrapper node address info from p2p address")
 		}
 		bootstrappers = append(bootstrappers, *pi)
 	}
@@ -154,6 +155,7 @@ func (n *Node) Bootstrap() bool {
 	)
 	if err != nil {
 		sentry.CaptureException(errors.Wrap(err, "Error while Creating routing DHT"))
+		n.error(err, "Error while Creating routing DHT")
 		n.call.OnReady(false)
 		return false
 	}
@@ -161,6 +163,7 @@ func (n *Node) Bootstrap() bool {
 
 	if err := kadDHT.Bootstrap(n.ctx); err != nil {
 		sentry.CaptureException(errors.Wrap(err, "Error while Bootstrapping DHT"))
+		n.error(err, "Error while Bootstrapping DHT")
 		n.call.OnReady(false)
 		return false
 	}
@@ -203,6 +206,7 @@ func (n *Node) Bootstrap() bool {
 					err := n.host.Connect(n.ctx, pi)
 					if err != nil {
 						sentry.CaptureException(errors.Wrap(err, "Failed to connect to peer in namespace"))
+						n.error(err, "Failed to connect to peer in namespace")
 						n.host.Peerstore().ClearAddrs(pi.ID)
 
 						if sw, ok := n.host.Network().(*swarm.Swarm); ok {
