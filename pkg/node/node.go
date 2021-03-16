@@ -68,7 +68,7 @@ func NewNode(req *md.ConnectionRequest, call Callback) *Node {
 	node.fs = dq.InitFS(req, node.profile, node.queued, node.multiQueued, node.error)
 
 	// Set Host Options
-	node.hostOpts, err = newHostOpts(req)
+	node.hostOpts, err = NewHostOpts(req)
 	if err != nil {
 		sentry.CaptureException(err)
 	}
@@ -190,34 +190,28 @@ func (n *Node) Bootstrap() bool {
 			)
 			if err != nil {
 				sentry.CaptureException(err)
+				n.error(err, "Finding DHT Peers")
 				n.call.OnReady(false)
 				return
 			}
 
-			// Clear Channel Blocking
-			select {
-			// Peer Info from Channel
-			case pi := <-peersChan:
+			// Iterate over Channel
+			for pi := range peersChan {
 				// Validate not Self
-				if pi.ID == n.host.ID() {
-					continue
-				} else {
+				if pi.ID != n.host.ID() {
 					// Connect to Peer
-					err := n.host.Connect(n.ctx, pi)
-					if err != nil {
+					if err := n.host.Connect(n.ctx, pi); err != nil {
+						// Capture Error
 						sentry.CaptureException(errors.Wrap(err, "Failed to connect to peer in namespace"))
 						n.error(err, "Failed to connect to peer in namespace")
-						n.host.Peerstore().ClearAddrs(pi.ID)
 
+						// Remove Peer Reference
+						n.host.Peerstore().ClearAddrs(pi.ID)
 						if sw, ok := n.host.Network().(*swarm.Swarm); ok {
 							sw.Backoff().Clear(pi.ID)
 						}
 					}
 				}
-
-			// Context Complete
-			case <-n.ctx.Done():
-				return
 			}
 
 			// Refresh table every 4 seconds
@@ -229,6 +223,7 @@ func (n *Node) Bootstrap() bool {
 	// Enter Lobby
 	if n.lobby, err = sl.Join(n.ctx, n.LobbyCallback(), n.host, n.pubSub, n.peer, n.hostOpts.OLC); err != nil {
 		sentry.CaptureException(err)
+		n.error(err, "Joining Lobby")
 		n.call.OnReady(false)
 		return false
 	}
@@ -236,6 +231,7 @@ func (n *Node) Bootstrap() bool {
 	// Initialize Peer Connection
 	if n.peerConn, err = tf.Initialize(n.host, n.pubSub, n.fs, n.hostOpts.OLC, n.TransferCallback()); err != nil {
 		sentry.CaptureException(err)
+		n.error(err, "Initializing Transfer Controller")
 		n.call.OnReady(false)
 		return false
 	}
@@ -262,6 +258,7 @@ func (n *Node) Resume() {
 	err := n.lobby.Resume()
 	if err != nil {
 		n.error(err, "Resume")
+		sentry.CaptureException(err)
 	}
 	md.GetState().Resume()
 }

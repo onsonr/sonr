@@ -36,51 +36,17 @@ func (n *Node) Peer() *md.Peer {
 
 // ^ Host Config ^ //
 type HostOptions struct {
-	//BootStrappers []peer.AddrInfo
-	ConnRequest *md.ConnectionRequest
-	OLC         string
-	Point       string
-	Prefix      protocol.ID
-}
-
-// @ Returns Current Addr List
-func getAddrsList() []string {
-	return []string{
-		"/dnsaddr/bootstrap.libp2p.io/p2p/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN",
-		"/dnsaddr/bootstrap.libp2p.io/p2p/QmQCU2EcMqAqQPR2i9bChDtGNJchTbq5TbXJJ16u19uLTa",
-		"/dnsaddr/bootstrap.libp2p.io/p2p/QmbLHAnMoJPWSCR5Zhtx6BHJX9KiKNN6tpvbUcqanj75Nb",
-		"/dnsaddr/bootstrap.libp2p.io/p2p/QmcZf59bWwK5XFi76CZX8cbJ4BhTzzA3gU1ZjYZcYW3dwt",
-		"/ip4/104.131.131.82/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
-		"/ip4/104.131.131.82/udp/4001/quic/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
-	}
+	BootStrappers []string
+	ConnRequest   *md.ConnectionRequest
+	OLC           string
+	Point         string
+	Prefix        protocol.ID
 }
 
 // @ Returns new Host Config
-func newHostOpts(req *md.ConnectionRequest) (*HostOptions, error) {
+func NewHostOpts(req *md.ConnectionRequest) (*HostOptions, error) {
 	// Get Open Location Code
 	olcValue := olc.Encode(float64(req.Latitude), float64(req.Longitude), 8)
-	// bootstrapAddrs := getAddrsList()
-
-	// // Create Bootstrapper List
-	// var bootstrappers []peer.AddrInfo
-
-	// // Get Known Addr List
-	// for _, maddrString := range bootstrapAddrs {
-	// 	// Convert String to MultiAddr
-	// 	maddr, err := multiaddr.NewMultiaddr(maddrString)
-	// 	if err != nil {
-	// 		sentry.CaptureException(err)
-	// 		return nil, errors.Wrap(err, "converting string to multiaddr")
-	// 	}
-
-	// 	// Get Addr Info
-	// 	pi, err := peer.AddrInfoFromP2pAddr(maddr)
-	// 	if err != nil {
-	// 		sentry.CaptureException(err)
-	// 		return nil, errors.Wrap(err, "parsing bootstrapper node address info from p2p address")
-	// 	}
-	// 	bootstrappers = append(bootstrappers, *pi)
-	// }
 
 	// Set Host Options
 	return &HostOptions{
@@ -92,6 +58,30 @@ func newHostOpts(req *md.ConnectionRequest) (*HostOptions, error) {
 	}, nil
 }
 
+// @ Returns new Bootstrapped Host Config
+func NewBootstrappedHostOpts(req *md.ConnectionRequest) (*HostOptions, error) {
+	// Create Bootstrapper List
+	olcValue := olc.Encode(float64(req.Latitude), float64(req.Longitude), 8)
+	bootstrappers := []string{
+		"/dnsaddr/bootstrap.libp2p.io/p2p/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN",
+		"/dnsaddr/bootstrap.libp2p.io/p2p/QmQCU2EcMqAqQPR2i9bChDtGNJchTbq5TbXJJ16u19uLTa",
+		"/dnsaddr/bootstrap.libp2p.io/p2p/QmbLHAnMoJPWSCR5Zhtx6BHJX9KiKNN6tpvbUcqanj75Nb",
+		"/dnsaddr/bootstrap.libp2p.io/p2p/QmcZf59bWwK5XFi76CZX8cbJ4BhTzzA3gU1ZjYZcYW3dwt",
+		"/ip4/104.131.131.82/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
+		"/ip4/104.131.131.82/udp/4001/quic/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
+	}
+
+	// Set Host Options
+	return &HostOptions{
+		BootStrappers: bootstrappers,
+		ConnRequest:   req,
+		OLC:           olcValue,
+		Prefix:        protocol.ID("/sonr"),
+		Point:         fmt.Sprintf("/sonr/%s", olcValue),
+	}, nil
+}
+
+// @ Returns Node Public IPv4 Address
 func IPv4() string {
 	osHost, _ := os.Hostname()
 	addrs, _ := net.LookupIP(osHost)
@@ -106,6 +96,7 @@ func IPv4() string {
 	return ipv4Ref
 }
 
+// @ Returns Node Public IPv6 Address
 func IPv6() string {
 	osHost, _ := os.Hostname()
 	addrs, _ := net.LookupIP(osHost)
