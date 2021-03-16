@@ -6,6 +6,7 @@ import (
 	"log"
 	"time"
 
+	sentry "github.com/getsentry/sentry-go"
 	"github.com/libp2p/go-libp2p"
 	discovery2 "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/host"
@@ -15,25 +16,23 @@ import (
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
-	"github.com/sonr-io/core/internal/lobby"
+
 	sl "github.com/sonr-io/core/internal/lobby"
 	tf "github.com/sonr-io/core/internal/transfer"
 	tr "github.com/sonr-io/core/internal/transfer"
 	dq "github.com/sonr-io/core/pkg/data"
 	md "github.com/sonr-io/core/pkg/models"
-
-	sentry "github.com/getsentry/sentry-go"
 )
 
 // ^ Struct: Main Node handles Networking/Identity/Streams ^
 type Node struct {
 	// Properties
-	ctx         context.Context
-	contact     *md.Contact
-	device      *md.Device
-	fs          *dq.SonrFS
-	peer        *md.Peer
-	profile     *md.Profile
+	ctx     context.Context
+	contact *md.Contact
+	device  *md.Device
+	fs      *dq.SonrFS
+	peer    *md.Peer
+	profile *md.Profile
 
 	// Networking Properties
 	connectivity md.Connectivity
@@ -45,7 +44,7 @@ type Node struct {
 
 	// References
 	call     Callback
-	lobby    *lobby.Lobby
+	lobby    *sl.Lobby
 	peerConn *tr.TransferController
 }
 
