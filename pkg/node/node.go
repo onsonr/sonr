@@ -107,6 +107,7 @@ func (n *Node) Start() bool {
 			fmt.Sprintf("/ip4/%s/tcp/0", n.hostOpts.IPv4),
 			fmt.Sprintf("/ip4/%s/udp/0/quic", n.hostOpts.IPv4)),
 		libp2p.Identity(privKey),
+		// libp2p.EnableAutoRelay(),
 	)
 	if err != nil {
 		sentry.CaptureException(err)
@@ -172,10 +173,9 @@ func (n *Node) Bootstrap() bool {
 	// Connect to bootstrap nodes, if any
 	for _, pi := range bootstrappers {
 		if err := n.host.Connect(n.ctx, pi); err != nil {
-			n.host.Peerstore().ClearAddrs(pi)
-
+			n.host.Peerstore().ClearAddrs(pi.ID)
 			if sw, ok := n.host.Network().(*swarm.Swarm); ok {
-				sw.Backoff().Clear(pi)
+				sw.Backoff().Clear(pi.ID)
 			}
 			continue
 		}
@@ -207,7 +207,7 @@ func (n *Node) Bootstrap() bool {
 				peerInfo := n.host.Peerstore().PeerInfo(peerID)
 				peerInfos = append(peerInfos, peerInfo.String()) //nolint
 			}
-			<-time.After(time.Second * 10)
+			<-time.After(time.Second * 4)
 		}
 	}()
 
