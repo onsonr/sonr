@@ -91,9 +91,6 @@ func NewNode(req *md.ConnectionRequest, call Callback) *Node {
 
 // ^ Start Begins Running Libp2p Host ^
 func (n *Node) Start() error {
-	// Get Public Addrs
-	ipv4 := IPv4()
-
 	// Get Private Key
 	privKey, err := n.fs.GetPrivateKey()
 	if err != nil {
@@ -106,8 +103,8 @@ func (n *Node) Start() error {
 		n.ctx,
 		// Add listening Addresses
 		libp2p.ListenAddrStrings(
-			fmt.Sprintf("/ip4/%s/tcp/0", ipv4),
-			fmt.Sprintf("/ip4/%s/udp/0/quic", ipv4)),
+			fmt.Sprintf("/ip4/%s/tcp/0", n.hostOpts.IPv4),
+			fmt.Sprintf("/ip4/%s/udp/0/quic", n.hostOpts.IPv4)),
 		libp2p.Identity(privKey),
 	)
 	if err != nil {

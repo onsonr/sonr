@@ -11,7 +11,30 @@ import (
 	"github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
 	md "github.com/sonr-io/core/pkg/models"
+	"google.golang.org/protobuf/proto"
 )
+
+// ^ User Node Info ^ //
+// @ ID Returns Peer ID
+func (n *Node) ID() *md.Peer_ID {
+	return n.fs.GetPeerID(n.hostOpts.ConnRequest, n.profile, n.host.ID().String())
+}
+
+// @ Info returns ALL Peer Data as Bytes
+func (n *Node) Info() []byte {
+	// Convert to bytes to view in plugin
+	data, err := proto.Marshal(n.ID())
+	if err != nil {
+		sentry.CaptureException(err)
+		return nil
+	}
+	return data
+}
+
+// @ Peer returns Current Peer Info
+func (n *Node) Peer() *md.Peer {
+	return n.peer
+}
 
 // ^ Bootstrap Nodes ^ //
 type AddrConfig struct {
@@ -23,7 +46,7 @@ type AddrConfig struct {
 	} `json:"p2p"`
 }
 
-// ^ Returns Current Addr List ^ //
+// @ Returns Current Addr List
 func addrList() string {
 	return `
 {
@@ -61,11 +84,13 @@ func addrList() string {
 type HostOptions struct {
 	BootStrappers []peer.AddrInfo
 	ConnRequest   *md.ConnectionRequest
+	IPv4          string
+	IPv6          string
 	OLC           string
 	Point         string
 }
 
-// ^ Returns new Host Config ^ //
+// @ Returns new Host Config
 func newHostOpts(req *md.ConnectionRequest) (*HostOptions, error) {
 	// Get Open Location Code
 	olcValue := olc.Encode(float64(req.Latitude), float64(req.Longitude), 8)
@@ -98,51 +123,36 @@ func newHostOpts(req *md.ConnectionRequest) (*HostOptions, error) {
 		bootstrappers = append(bootstrappers, *pi)
 	}
 
-	// Set Host Options
-	return &HostOptions{
-		OLC:           olcValue,
-		Point:         "/sonr/" + olcValue,
-		BootStrappers: bootstrappers,
-		ConnRequest:   req,
-	}, nil
-}
-
-// ^ IPv4 returns the non loopback local IP of the host as IPv4 ^
-func IPv4() string {
-	// @1. Find IPv4 Address
+	// Find IPv4/IPv6 Addresses
 	osHost, _ := os.Hostname()
 	addrs, _ := net.LookupIP(osHost)
-	var ipv4Ref string
+	ipv4Ref := "0.0.0.0"
+	ipv6Ref := "::"
 
 	// Iterate through addresses
 	for _, addr := range addrs {
 		// @ Set IPv4
 		if ipv4 := addr.To4(); ipv4 != nil {
 			ipv4Ref = ipv4.String()
-		} else {
-			ipv4Ref = "0.0.0.0"
 		}
 	}
-	// No IPv4 Found
-	return ipv4Ref
-}
 
-// ^ IPv4 returns the non loopback local IP of the host as IPv4 ^
-func IPv6() string {
 	// @1. Find IPv4 Address
-	osHost, _ := os.Hostname()
-	addrs, _ := net.LookupIP(osHost)
-	var ipv6Ref string
-
 	// Iterate through addresses
 	for _, addr := range addrs {
 		// @ Set IPv4
 		if ipv6 := addr.To16(); ipv6 != nil {
 			ipv6Ref = ipv6.String()
-		} else {
-			ipv6Ref = "::"
 		}
 	}
-	// No IPv4 Found
-	return ipv6Ref
+
+	// Set Host Options
+	return &HostOptions{
+		OLC:           olcValue,
+		Point:         "/sonr/" + olcValue,
+		BootStrappers: bootstrappers,
+		ConnRequest:   req,
+		IPv4:          ipv4Ref,
+		IPv6:          ipv6Ref,
+	}, nil
 }

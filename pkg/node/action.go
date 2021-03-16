@@ -98,16 +98,7 @@ func (n *Node) Respond(decision bool) {
 	}
 }
 
-// ^ Info returns ALL Peer Data as Bytes^
-func (n *Node) Info() []byte {
-	// Convert to bytes to view in plugin
-	data, err := proto.Marshal(n.peer)
-	if err != nil {
-		sentry.CaptureException(err)
-		return nil
-	}
-	return data
-}
+
 
 // ^ Link with a QR Code ^ //
 func (n *Node) LinkDevice(json string) {
@@ -146,10 +137,7 @@ func (n *Node) LinkRequest(name string) *md.LinkRequest {
 	}
 }
 
-// ^ Peer returns Current Peer Info ^
-func (n *Node) Peer() *md.Peer {
-	return n.peer
-}
+
 
 // ^ Updates Current Contact Card ^
 func (n *Node) SetContact(newContact *md.Contact) {

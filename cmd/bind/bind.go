@@ -8,7 +8,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// @ Interface: Callback is implemented from Plugin to receive updates
+// * Interface: Callback is implemented from Plugin to receive updates * //
 type Callback interface {
 	OnRefreshed(data []byte)   // Lobby Updates
 	OnEvent(data []byte)       // Lobby Event
@@ -21,50 +21,57 @@ type Callback interface {
 	OnError(data []byte)       // Internal Error
 }
 
-// @ Struct: Reference for Binded Proxy Node
+// * Struct: Reference for Binded Proxy Node * //
 type MobileNode struct {
-	ID       string
-	DeviceID string
-	UserID   uint32
-	node     *sn.Node
+	ID              string
+	DeviceID        string
+	UserID          uint32
+	node            *sn.Node
+	hasStarted      bool
+	hasBootstrapped bool
 }
 
-// Create New Mobile Node
+// @ Create New Mobile Node
 func NewNode(reqBytes []byte, call Callback) *MobileNode {
-	// ** Unmarshal Request **
+	// Unmarshal Request
 	req := md.ConnectionRequest{}
 	err := proto.Unmarshal(reqBytes, &req)
 	if err != nil {
-		panic(err)
+		log.Fatalln(err)
 	}
 
 	// Create New Sonr Client
 	node := sn.NewNode(&req, call)
-	peer := node.Peer()
 
 	// Return Mobile Node
 	return &MobileNode{
-		node:     node,
-		ID:       peer.Id.Peer,
-		DeviceID: peer.Id.Device,
-		UserID:   peer.Id.User,
+		node:            node,
+		hasStarted:      false,
+		hasBootstrapped: false,
 	}
 }
 
 // **-----------------** //
 // ** Network Actions ** //
 // **-----------------** //
-// Start Host
-func (sn *MobileNode) Start() {
-	err := sn.node.Start()
+// @ Start Host
+func (mn *MobileNode) Start() {
+	// Start Node
+	err := mn.node.Start()
 	if err != nil {
 		log.Fatalln(err)
 	}
+
+	// Set Peer Info
+	peer := mn.node.Peer()
+	mn.ID = peer.Id.Peer
+	mn.DeviceID = peer.Id.Device
+	mn.UserID = peer.Id.User
 }
 
-// Initiate Bootstrapping
-func (sn *MobileNode) Bootstrap() {
-	err := sn.node.Bootstrap()
+// @ Initiate Bootstrapping
+func (mn *MobileNode) Bootstrap() {
+	err := mn.node.Bootstrap()
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -73,65 +80,70 @@ func (sn *MobileNode) Bootstrap() {
 // **--------------** //
 // ** Node Actions ** //
 // **--------------** //
-// Update proximity/direction and Notify Lobby
-func (sn *MobileNode) Update(facing float64, heading float64) {
-	sn.node.Update(facing, heading)
+// @ Update proximity/direction and Notify Lobby
+func (mn *MobileNode) Update(facing float64, heading float64) {
+	mn.node.Update(facing, heading)
 }
 
-// Invite Processes Data and Sends Invite to Peer
-func (sn *MobileNode) Invite(reqBytes []byte) {
-	// @ 1. Initialize from Request
+// @ Invite Processes Data and Sends Invite to Peer
+func (mn *MobileNode) Invite(reqBytes []byte) {
+	// Initialize from Request
 	req := &md.InviteRequest{}
 	err := proto.Unmarshal(reqBytes, req)
 	if err != nil {
 		log.Println(err)
 	}
 
-	sn.node.Invite(req)
+	mn.node.Invite(req)
 }
 
-// Respond to an Invitation
-func (sn *MobileNode) Respond(decision bool) {
-	sn.node.Respond(decision)
+// @ Respond to an Invitation
+func (mn *MobileNode) Respond(decision bool) {
+	mn.node.Respond(decision)
 }
 
 // ** User Actions ** //
-// Info returns ALL Peer Data as Bytes
-func (sn *MobileNode) Info() []byte {
-	info := sn.node.Info()
+// @ Info returns ALL Peer Data as Bytes
+func (mn *MobileNode) Info() []byte {
+	info := mn.node.Info()
 	return info
 }
 
-//  Link with a QR Code
-func (sn *MobileNode) LinkDevice(json string) {
-	sn.node.LinkDevice(json)
+// @ Link with a QR Code
+func (mn *MobileNode) LinkDevice(json string) {
+	mn.node.LinkDevice(json)
 }
 
-// Updates Current Contact Card
-func (sn *MobileNode) SetContact(conBytes []byte) {
+// @ Updates Current Contact Card
+func (mn *MobileNode) SetContact(conBytes []byte) {
 	// Unmarshal Data
 	newContact := &md.Contact{}
 	err := proto.Unmarshal(conBytes, newContact)
 	if err != nil {
 		log.Println(err)
 	}
-	sn.node.SetContact(newContact)
+	mn.node.SetContact(newContact)
 }
 
 // **-------------------** //
 // ** LifeCycle Actions ** //
 // **-------------------** //
-// Close Ends All Network Communication
-func (sn *MobileNode) Pause() {
-	sn.node.Pause()
+// @ Checks for is Ready
+func (mn *MobileNode) IsReady() bool {
+	return mn.hasBootstrapped && mn.hasStarted
 }
 
-// Close Ends All Network Communication
-func (sn *MobileNode) Resume() {
-	sn.node.Resume()
+// @ Close Ends All Network Communication
+func (mn *MobileNode) Pause() {
+	mn.node.Pause()
 }
 
-// Close Ends All Network Communication
-func (sn *MobileNode) Stop() {
-	sn.node.Stop()
+// @ Close Ends All Network Communication
+func (mn *MobileNode) Resume() {
+	mn.node.Resume()
+}
+
+// @ Close Ends All Network Communication
+func (mn *MobileNode) Stop() {
+	mn.node.Stop()
 }
