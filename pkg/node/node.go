@@ -10,6 +10,7 @@ import (
 	"github.com/libp2p/go-libp2p"
 	discovery2 "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/host"
+	"github.com/libp2p/go-libp2p-core/peer"
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
@@ -133,7 +134,16 @@ func (n *Node) Start() bool {
 // ^ Bootstrap begins bootstrap with peers ^
 func (n *Node) Bootstrap() bool {
 	// Get Info
-	bootstrappers := n.hostOpts.BootStrappers
+	var bootstrappers []peer.AddrInfo
+
+	// Get AddrInfo from DefaultBootstrapPeers
+	for _, peerAddr := range dht.DefaultBootstrapPeers {
+		peerinfo, err := peer.AddrInfoFromP2pAddr(peerAddr)
+		if err == nil {
+			bootstrappers = append(bootstrappers, *peerinfo)
+		}
+	}
+
 	// Set DHT
 	kadDHT, err := dht.New(
 		n.ctx,
