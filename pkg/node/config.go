@@ -1,6 +1,7 @@
 package node
 
 import (
+	"fmt"
 	"net"
 	"os"
 
@@ -45,7 +46,7 @@ type HostOptions struct {
 	IPv4          string
 	IPv6          string
 	OLC           string
-	Namespace     string
+	Point         string
 	Prefix        protocol.ID
 }
 
@@ -112,14 +113,13 @@ func newHostOpts(req *md.ConnectionRequest) (*HostOptions, error) {
 	}
 
 	// Set Host Options
-	ns := "/sonr/kad/0.9.1/" + olcValue
 	return &HostOptions{
 		BootStrappers: bootstrappers,
 		ConnRequest:   req,
 		IPv4:          ipv4Ref,
 		IPv6:          ipv6Ref,
 		OLC:           olcValue,
-		Prefix:        protocol.ID("/sonr/kad/0.9.1"),
-		Namespace:     ns,
+		Prefix:        protocol.ID("/sonr"),
+		Point:         fmt.Sprintf("/sonr/%s", olcValue),
 	}, nil
 }

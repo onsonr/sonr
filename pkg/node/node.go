@@ -8,7 +8,7 @@ import (
 
 	sentry "github.com/getsentry/sentry-go"
 	"github.com/libp2p/go-libp2p"
-	discovery2 "github.com/libp2p/go-libp2p-core/discovery"
+	discLimit "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
 	discovery "github.com/libp2p/go-libp2p-discovery"
@@ -133,11 +133,12 @@ func (n *Node) Start() bool {
 
 // ^ Bootstrap begins bootstrap with peers ^
 func (n *Node) Bootstrap() bool {
+	// Create Bootstrapper Info
 	var bootstrappers []peer.AddrInfo
 	for _, nodeAddr := range dht.DefaultBootstrapPeers {
 		pi, err := peer.AddrInfoFromP2pAddr(nodeAddr)
 		if err != nil {
-			sentry.CaptureException(errors.Wrap(err, "parsing bootstrapper node address info from p2p address"))
+			sentry.CaptureException(errors.Wrap(err, "Error while parsing bootstrapper node address info from p2p address"))
 		}
 		bootstrappers = append(bootstrappers, *pi)
 	}
@@ -147,18 +148,18 @@ func (n *Node) Bootstrap() bool {
 		n.ctx,
 		n.host,
 		dht.BootstrapPeers(bootstrappers...),
-		dht.ProtocolPrefix(n.hostOpts.Prefix),
-		dht.Mode(dht.ModeAutoServer),
+		// dht.ProtocolPrefix(n.hostOpts.Prefix),
+		// dht.Mode(dht.ModeAutoServer),
 	)
 	if err != nil {
-		sentry.CaptureException(errors.Wrap(err, "creating routing DHT"))
+		sentry.CaptureException(errors.Wrap(err, "Error while Creating routing DHT"))
 		n.call.OnReady(false)
 		return false
 	}
 	n.kadDHT = kadDHT
 
 	if err := kadDHT.Bootstrap(n.ctx); err != nil {
-		sentry.CaptureException(errors.Wrap(err, "bootstrapping DHT"))
+		sentry.CaptureException(errors.Wrap(err, "Error while Bootstrapping DHT"))
 		n.call.OnReady(false)
 		return false
 	}
@@ -172,7 +173,7 @@ func (n *Node) Bootstrap() bool {
 
 	// Set Routing Discovery
 	routingDiscovery := discovery.NewRoutingDiscovery(kadDHT)
-	discovery.Advertise(n.ctx, routingDiscovery, n.hostOpts.Namespace)
+	discovery.Advertise(n.ctx, routingDiscovery, n.hostOpts.Point)
 
 	// Try finding more peers
 	go func() {
@@ -180,8 +181,8 @@ func (n *Node) Bootstrap() bool {
 			// Find peers in DHT
 			peersChan, err := routingDiscovery.FindPeers(
 				n.ctx,
-				n.hostOpts.Namespace,
-				discovery2.Limit(100),
+				n.hostOpts.Point,
+				discLimit.Limit(100),
 			)
 			if err != nil {
 				sentry.CaptureException(err)
