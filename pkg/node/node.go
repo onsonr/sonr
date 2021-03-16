@@ -190,7 +190,15 @@ func (n *Node) Bootstrap() bool {
 			}
 
 			// Clear Channel Blocking
-			for range peersChan {
+			for pi range peersChan {
+				if pi.ID == h.ID() {
+					continue
+				} else {
+					err := h.Connect(ctx, pi)
+					if err != nil {
+						sentry.CaptureException(errors.Wrap(err, "Failed to connect to peer in namespace"))
+					}
+				}
 			}
 
 			// Connect to all peers in Namespace
