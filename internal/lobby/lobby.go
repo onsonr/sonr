@@ -44,6 +44,11 @@ func Join(ctx context.Context, lobCall md.LobbyCallback, h host.Host, ps *pubsub
 		return nil, err
 	}
 
+	// TODO: Remove after Validation, Log Peers
+	for _, id := range ps.ListPeers(lobbyName) {
+		log.Println("Peer in Lobby " + id)
+	}
+
 	// Subscribe to Topic
 	sub, err := topic.Subscribe()
 	if err != nil {
@@ -57,7 +62,7 @@ func Join(ctx context.Context, lobCall md.LobbyCallback, h host.Host, ps *pubsub
 
 	// Initialize Lobby for Peers
 	lobInfo := &md.Lobby{
-		Olc:   olc,
+		Olc:   lobbyName,
 		Size:  1,
 		Peers: make(map[string]*md.Peer),
 	}

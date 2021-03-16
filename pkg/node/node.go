@@ -133,15 +133,13 @@ func (n *Node) Start() bool {
 
 // ^ Bootstrap begins bootstrap with peers ^
 func (n *Node) Bootstrap() bool {
-	// Get Info
 	var bootstrappers []peer.AddrInfo
-
-	// Get AddrInfo from DefaultBootstrapPeers
-	for _, peerAddr := range dht.DefaultBootstrapPeers {
-		peerinfo, err := peer.AddrInfoFromP2pAddr(peerAddr)
-		if err == nil {
-			bootstrappers = append(bootstrappers, *peerinfo)
+	for _, nodeAddr := range dht.DefaultBootstrapPeers {
+		pi, err := peer.AddrInfoFromP2pAddr(nodeAddr)
+		if err != nil {
+			sentry.CaptureException(errors.Wrap(err, "parsing bootstrapper node address info from p2p address"))
 		}
+		bootstrappers = append(bootstrappers, *pi)
 	}
 
 	// Set DHT
@@ -168,8 +166,9 @@ func (n *Node) Bootstrap() bool {
 	// Connect to bootstrap nodes, if any
 	for _, pi := range bootstrappers {
 		if err := n.host.Connect(n.ctx, pi); err != nil {
-			sentry.CaptureException(errors.Wrap(err, "Failed to Connect to IPFS Bootstrap Node"))
-			continue
+			sentry.CaptureException(errors.Wrap(err, "connecting to bootstrap node"))
+		} else {
+			sentry.CaptureMessage(fmt.Sprintf("Connected to %s", pi.ID.Pretty()))
 		}
 	}
 
