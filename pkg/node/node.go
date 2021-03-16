@@ -190,34 +190,27 @@ func (n *Node) Bootstrap() bool {
 			}
 
 			// Clear Channel Blocking
-			select{
-			case pi := peersChan<-:
-
-			}
-			// for range peersChan {
-			// 	if pi.ID == h.ID() {
-			// 		continue
-			// 	} else {
-			// 		err := h.Connect(ctx, pi)
-			// 		if err != nil {
-			// 			sentry.CaptureException(errors.Wrap(err, "Failed to connect to peer in namespace"))
-			// 		}
-			// 	}
-			// }
-
-			// Connect to all peers in Namespace
-			for _, peerID := range kadDHT.RoutingTable().ListPeers() {
-				// Get Info of Peer
-				peerInfo := n.host.Peerstore().PeerInfo(peerID)
-
-				// Connect to Peer
-				err := n.host.Connect(n.ctx, peerInfo)
-				if err != nil {
-					sentry.CaptureException(errors.Wrap(err, "Failed to connect to peer in namespace"))
+			select {
+			// Peer Info from Channel
+			case pi := <-peersChan:
+				// Validate not Self
+				if pi.ID == n.host.ID() {
+					continue
+				} else {
+					// Connect to Peer
+					err := n.host.Connect(n.ctx, pi)
+					if err != nil {
+						sentry.CaptureException(errors.Wrap(err, "Failed to connect to peer in namespace"))
+					}
 				}
+
+			// Context Complete
+			case <-n.ctx.Done():
+				return
 			}
 
 			// Refresh table every 4 seconds
+			md.GetState().NeedsWait()
 			<-time.After(time.Second * 4)
 		}
 	}()
