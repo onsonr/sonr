@@ -222,11 +222,13 @@ func (n *Node) Bootstrap() error {
 	// Enter Lobby
 	if n.lobby, err = sl.Join(n.ctx, n.LobbyCallback(), n.host, n.pubSub, n.peer, n.hostOpts.OLC); err != nil {
 		sentry.CaptureException(err)
+		return err
 	}
 
 	// Initialize Peer Connection
 	if n.peerConn, err = tf.Initialize(n.host, n.pubSub, n.fs, n.hostOpts.OLC, n.TransferCallback()); err != nil {
 		sentry.CaptureException(err)
+		return err
 	}
 	return nil
 }
