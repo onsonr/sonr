@@ -98,7 +98,6 @@ func (n *Node) Respond(decision bool) {
 	}
 }
 
-
 // ^ Link with a QR Code ^ //
 func (n *Node) LinkDevice(json string) {
 	// Convert String to Bytes
@@ -136,8 +135,6 @@ func (n *Node) LinkRequest(name string) *md.LinkRequest {
 	}
 }
 
-
-
 // ^ Updates Current Contact Card ^
 func (n *Node) SetContact(newContact *md.Contact) {
 
@@ -156,4 +153,42 @@ func (n *Node) SetContact(newContact *md.Contact) {
 	if err != nil {
 		sentry.CaptureException(err)
 	}
+}
+
+// ^ Close Ends All Network Communication ^
+func (n *Node) Pause() {
+	// Check if Response Is Invited
+	if n.status == md.Status_INVITED {
+		n.peerConn.Cancel(n.peer)
+	}
+	err := n.lobby.Standby()
+	if err != nil {
+		n.error(err, "Pause")
+		sentry.CaptureException(err)
+	}
+	md.GetState().Pause()
+}
+
+// ^ Close Ends All Network Communication ^
+func (n *Node) Resume() {
+	err := n.lobby.Resume()
+	if err != nil {
+		n.error(err, "Resume")
+		sentry.CaptureException(err)
+	}
+	md.GetState().Resume()
+}
+
+// ^ Close Ends All Network Communication ^
+func (n *Node) Stop() {
+	// Check if Response Is Invited
+	if n.status == md.Status_INVITED {
+		n.peerConn.Cancel(n.peer)
+	}
+	n.host.Close()
+}
+
+// ^ Update Host for New Network Connectivity ^
+func (n *Node) NetworkSwitch(conn md.Connectivity) {
+
 }

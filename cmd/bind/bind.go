@@ -81,6 +81,22 @@ func (mn *MobileNode) Connect() {
 	}
 }
 
+// @ Return URL Metadata, Helper Method
+func GetURLMetadata(url string) []byte {
+	// Get Link Data
+	data, err := md.GetPageInfoFromUrl(url)
+	if err != nil {
+		log.Println(err, " Failed to Parse URL")
+	}
+
+	// Marshal
+	bytes, err := proto.Marshal(data)
+	if err != nil {
+		log.Println(err, " Failed to Parse URL")
+	}
+	return bytes
+}
+
 // **--------------** //
 // ** Node Actions ** //
 // **--------------** //

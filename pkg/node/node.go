@@ -23,6 +23,8 @@ import (
 	md "github.com/sonr-io/core/pkg/models"
 )
 
+const discoveryInterval = time.Second * 4
+
 // ^ Struct: Main Node handles Networking/Identity/Streams ^
 type Node struct {
 	// Properties
@@ -152,6 +154,7 @@ func (n *Node) Bootstrap() bool {
 	}
 	n.kadDHT = kadDHT
 
+	// Bootstrap DHT
 	if err := kadDHT.Bootstrap(n.ctx); err != nil {
 		sentry.CaptureException(errors.Wrap(err, "Error while Bootstrapping DHT"))
 		n.error(err, "Error while Bootstrapping DHT")
@@ -160,17 +163,23 @@ func (n *Node) Bootstrap() bool {
 	}
 
 	// Connect to bootstrap nodes, if any
+	hasBootstrapped := false
 	for _, pi := range bootstrappers {
 		if err := n.host.Connect(n.ctx, pi); err == nil {
-			sentry.CaptureMessage(fmt.Sprintf("Connected to %s", pi.ID.Pretty()))
+			hasBootstrapped = true
+			break
 		}
 	}
 
-	// Set Routing Discovery
-	routingDiscovery := discovery.NewRoutingDiscovery(kadDHT)
-	discovery.Advertise(n.ctx, routingDiscovery, n.hostOpts.Point)
+	// Check if Bootstrapping Occurred
+	if !hasBootstrapped {
+		sentry.CaptureException(errors.New("Failed to connect to any bootstrap peers"))
+		return false
+	}
 
-	// Try finding more peers
+	// Set Routing Discovery, Find Peers
+	routingDiscovery := discovery.NewRoutingDiscovery(kadDHT)
+	discovery.Advertise(n.ctx, routingDiscovery, n.hostOpts.Point, discLimit.TTL(discoveryInterval))
 	go n.handlePeers(routingDiscovery)
 
 	// Enter Lobby
@@ -199,7 +208,7 @@ func (n *Node) handlePeers(routingDiscovery *discovery.RoutingDiscovery) {
 		peersChan, err := routingDiscovery.FindPeers(
 			n.ctx,
 			n.hostOpts.Point,
-			discLimit.Limit(100),
+			discLimit.Limit(16),
 		)
 		if err != nil {
 			sentry.CaptureException(err)
@@ -229,44 +238,6 @@ func (n *Node) handlePeers(routingDiscovery *discovery.RoutingDiscovery) {
 
 		// Refresh table every 4 seconds
 		md.GetState().NeedsWait()
-		<-time.After(time.Second * 4)
+		<-time.After(discoveryInterval)
 	}
-}
-
-// ^ Close Ends All Network Communication ^
-func (n *Node) Pause() {
-	// Check if Response Is Invited
-	if n.status == md.Status_INVITED {
-		n.peerConn.Cancel(n.peer)
-	}
-	err := n.lobby.Standby()
-	if err != nil {
-		n.error(err, "Pause")
-		sentry.CaptureException(err)
-	}
-	md.GetState().Pause()
-}
-
-// ^ Close Ends All Network Communication ^
-func (n *Node) Resume() {
-	err := n.lobby.Resume()
-	if err != nil {
-		n.error(err, "Resume")
-		sentry.CaptureException(err)
-	}
-	md.GetState().Resume()
-}
-
-// ^ Close Ends All Network Communication ^
-func (n *Node) Stop() {
-	// Check if Response Is Invited
-	if n.status == md.Status_INVITED {
-		n.peerConn.Cancel(n.peer)
-	}
-	n.host.Close()
-}
-
-// ^ Update Host for New Network Connectivity ^
-func (n *Node) NetworkSwitch(conn md.Connectivity) {
-
 }
