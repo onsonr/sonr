@@ -31,7 +31,6 @@ type Node struct {
 	ctx         context.Context
 	contact     *md.Contact
 	device      *md.Device
-	directories *md.Directories
 	fs          *dq.SonrFS
 	peer        *md.Peer
 	profile     *md.Profile
@@ -86,7 +85,6 @@ func NewNode(req *md.ConnectionRequest, call Callback) *Node {
 
 	// Set Default Properties
 	node.contact = req.Contact
-	node.directories = req.Directories
 	node.device = req.Device
 	node.status = md.Status_NONE
 	return node

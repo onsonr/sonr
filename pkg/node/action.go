@@ -131,7 +131,6 @@ func (sn *Node) LinkDevice(json string) {
 func (sn *Node) LinkRequest(name string) *md.LinkRequest {
 	// Set Device
 	device := sn.device
-	device.Directories = sn.directories
 	device.Name = name
 
 	// Create Expiry - 1min 30s
