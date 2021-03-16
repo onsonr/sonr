@@ -177,6 +177,7 @@ func (n *Node) Bootstrap() bool {
 	// Try finding more peers
 	go func() {
 		for {
+			// Find peers in DHT
 			peersChan, err := routingDiscovery.FindPeers(
 				n.ctx,
 				n.hostOpts.Namespace,
@@ -188,19 +189,23 @@ func (n *Node) Bootstrap() bool {
 				return
 			}
 
-			// read all channel messages to avoid blocking the find peer query
+			// Clear Channel Blocking
 			for range peersChan {
 			}
 
-			var peerInfos []string
+			// Connect to all peers in Namespace
 			for _, peerID := range kadDHT.RoutingTable().ListPeers() {
+				// Get Info of Peer
 				peerInfo := n.host.Peerstore().PeerInfo(peerID)
-				peerInfos = append(peerInfos, peerInfo.String()) //nolint
+
+				// Connect to Peer
 				err := n.host.Connect(n.ctx, peerInfo)
 				if err != nil {
 					sentry.CaptureException(errors.Wrap(err, "Failed to connect to peer in namespace"))
 				}
 			}
+
+			// Refresh table every 4 seconds
 			<-time.After(time.Second * 4)
 		}
 	}()
