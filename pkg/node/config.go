@@ -1,7 +1,6 @@
 package node
 
 import (
-	"encoding/json"
 	"net"
 	"os"
 
@@ -38,42 +37,6 @@ func (n *Node) Peer() *md.Peer {
 }
 
 // ^ Bootstrap Nodes ^ //
-type AddrConfig struct {
-	P2P struct {
-		RDVP []struct {
-			Maddr string `json:"maddr"`
-		} `json:"rdvp"`
-	} `json:"p2p"`
-}
-
-// @ Returns Current Addr List
-func addrList() string {
-	return `
-{
-  "p2p": {
-    "rdvp": [
-      {
-        "maddr": "/dnsaddr/bootstrap.libp2p.io/p2p/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN"
-      },
-      {
-        "maddr": "/dnsaddr/bootstrap.libp2p.io/p2p/QmQCU2EcMqAqQPR2i9bChDtGNJchTbq5TbXJJ16u19uLTa"
-      },
-      {
-        "maddr": "/dnsaddr/bootstrap.libp2p.io/p2p/QmbLHAnMoJPWSCR5Zhtx6BHJX9KiKNN6tpvbUcqanj75Nb"
-      },
-      {
-        "maddr": "/dnsaddr/bootstrap.libp2p.io/p2p/QmcZf59bWwK5XFi76CZX8cbJ4BhTzzA3gU1ZjYZcYW3dwt"
-      },
-      {
-        "maddr": "/ip4/104.131.131.82/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ"
-      },
-      {
-        "maddr": "/ip4/104.131.131.82/udp/4001/quic/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ"
-      }
-    ],
-  }
-}`
-}
 
 // ^ Host Config ^ //
 type HostOptions struct {
@@ -86,28 +49,34 @@ type HostOptions struct {
 	Prefix        protocol.ID
 }
 
+// @ Returns Current Addr List
+func getAddrsList() []string {
+	return []string{
+		"/dnsaddr/bootstrap.libp2p.io/p2p/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN",
+		"/dnsaddr/bootstrap.libp2p.io/p2p/QmQCU2EcMqAqQPR2i9bChDtGNJchTbq5TbXJJ16u19uLTa",
+		"/dnsaddr/bootstrap.libp2p.io/p2p/QmbLHAnMoJPWSCR5Zhtx6BHJX9KiKNN6tpvbUcqanj75Nb",
+		"/dnsaddr/bootstrap.libp2p.io/p2p/QmcZf59bWwK5XFi76CZX8cbJ4BhTzzA3gU1ZjYZcYW3dwt",
+		"/ip4/104.131.131.82/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
+		"/ip4/104.131.131.82/udp/4001/quic/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
+	}
+}
+
 // @ Returns new Host Config
 func newHostOpts(req *md.ConnectionRequest) (*HostOptions, error) {
 	// Get Open Location Code
 	olcValue := olc.Encode(float64(req.Latitude), float64(req.Longitude), 8)
-
-	// Get Addr List
-	input := addrList()
-	config := AddrConfig{}
-	err := json.Unmarshal([]byte(input), &config)
-	if err != nil {
-		panic(err)
-	}
+	bootstrapAddrs := getAddrsList()
 
 	// Create Bootstrapper List
 	var bootstrappers []peer.AddrInfo
 
 	// Get Known Addr List
-	for _, maddrString := range config.P2P.RDVP {
+	for _, maddrString := range bootstrapAddrs {
 		// Convert String to MultiAddr
-		maddr, err := multiaddr.NewMultiaddr(maddrString.Maddr)
+		maddr, err := multiaddr.NewMultiaddr(maddrString)
 		if err != nil {
 			sentry.CaptureException(err)
+			return nil, errors.Wrap(err, "converting string to multiaddr")
 		}
 
 		// Get Addr Info
