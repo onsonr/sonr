@@ -14,6 +14,7 @@ import (
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	swarm "github.com/libp2p/go-libp2p-swarm"
 	"github.com/pkg/errors"
 
 	sl "github.com/sonr-io/core/internal/lobby"
@@ -202,6 +203,11 @@ func (n *Node) Bootstrap() bool {
 					err := n.host.Connect(n.ctx, pi)
 					if err != nil {
 						sentry.CaptureException(errors.Wrap(err, "Failed to connect to peer in namespace"))
+						n.host.Peerstore().ClearAddrs(pi.ID)
+
+						if sw, ok := n.host.Network().(*swarm.Swarm); ok {
+							sw.Backoff().Clear(pi.ID)
+						}
 					}
 				}
 
