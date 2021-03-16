@@ -112,6 +112,7 @@ func newHostOpts(req *md.ConnectionRequest) (*HostOptions, error) {
 	}
 
 	// Set Host Options
+	ns := "/sonr/kad/0.9.1/" + olcValue
 	return &HostOptions{
 		BootStrappers: bootstrappers,
 		ConnRequest:   req,
@@ -119,6 +120,6 @@ func newHostOpts(req *md.ConnectionRequest) (*HostOptions, error) {
 		IPv6:          ipv6Ref,
 		OLC:           olcValue,
 		Prefix:        protocol.ID("/sonr/kad/0.9.1"),
-		Namespace:     "/sonr/kad/0.9.1",
+		Namespace:     ns,
 	}, nil
 }

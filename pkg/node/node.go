@@ -165,9 +165,7 @@ func (n *Node) Bootstrap() bool {
 
 	// Connect to bootstrap nodes, if any
 	for _, pi := range bootstrappers {
-		if err := n.host.Connect(n.ctx, pi); err != nil {
-			sentry.CaptureException(errors.Wrap(err, "connecting to bootstrap node"))
-		} else {
+		if err := n.host.Connect(n.ctx, pi); err == nil {
 			sentry.CaptureMessage(fmt.Sprintf("Connected to %s", pi.ID.Pretty()))
 		}
 	}
@@ -198,6 +196,10 @@ func (n *Node) Bootstrap() bool {
 			for _, peerID := range kadDHT.RoutingTable().ListPeers() {
 				peerInfo := n.host.Peerstore().PeerInfo(peerID)
 				peerInfos = append(peerInfos, peerInfo.String()) //nolint
+				err := n.host.Connect(n.ctx, peerInfo)
+				if err != nil {
+					sentry.CaptureException(errors.Wrap(err, "Failed to connect to peer in namespace"))
+				}
 			}
 			<-time.After(time.Second * 4)
 		}
