@@ -8,6 +8,7 @@ import (
 	sentry "github.com/getsentry/sentry-go"
 	olc "github.com/google/open-location-code/go"
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
 	md "github.com/sonr-io/core/pkg/models"
@@ -42,7 +43,6 @@ type AddrConfig struct {
 		RDVP []struct {
 			Maddr string `json:"maddr"`
 		} `json:"rdvp"`
-		RelayHack []string `json:"relayHack" yaml:"relayHack"`
 	} `json:"p2p"`
 }
 
@@ -53,29 +53,24 @@ func addrList() string {
   "p2p": {
     "rdvp": [
       {
-        "maddr": "/ip4/51.159.21.214/tcp/4040/p2p/QmdT7AmhhnbuwvCpa5PH1ySK9HJVB82jr3fo1bxMxBPW6p"
+        "maddr": "/dnsaddr/bootstrap.libp2p.io/p2p/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN"
       },
       {
-        "maddr": "/ip4/51.159.21.214/udp/4040/quic/p2p/QmdT7AmhhnbuwvCpa5PH1ySK9HJVB82jr3fo1bxMxBPW6p"
+        "maddr": "/dnsaddr/bootstrap.libp2p.io/p2p/QmQCU2EcMqAqQPR2i9bChDtGNJchTbq5TbXJJ16u19uLTa"
       },
       {
-        "maddr": "/ip4/51.15.25.224/tcp/4040/p2p/12D3KooWHhDBv6DJJ4XDWjzEXq6sVNEs6VuxsV1WyBBEhPENHzcZ"
+        "maddr": "/dnsaddr/bootstrap.libp2p.io/p2p/QmbLHAnMoJPWSCR5Zhtx6BHJX9KiKNN6tpvbUcqanj75Nb"
       },
       {
-        "maddr": "/ip4/51.15.25.224/udp/4040/quic/p2p/12D3KooWHhDBv6DJJ4XDWjzEXq6sVNEs6VuxsV1WyBBEhPENHzcZ"
+        "maddr": "/dnsaddr/bootstrap.libp2p.io/p2p/QmcZf59bWwK5XFi76CZX8cbJ4BhTzzA3gU1ZjYZcYW3dwt"
       },
       {
-        "maddr": "/ip4/51.75.127.200/tcp/4141/p2p/12D3KooWPwRwwKatdy5yzRVCYPHib3fntYgbFB4nqrJPHWAqXD7z"
+        "maddr": "/ip4/104.131.131.82/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ"
       },
       {
-        "maddr": "/ip4/51.75.127.200/udp/4141/quic/p2p/12D3KooWPwRwwKatdy5yzRVCYPHib3fntYgbFB4nqrJPHWAqXD7z"
+        "maddr": "/ip4/104.131.131.82/udp/4001/quic/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ"
       }
     ],
-    "relayHack": [
-      "/ip4/51.159.21.214/udp/4040/quic/p2p/QmdT7AmhhnbuwvCpa5PH1ySK9HJVB82jr3fo1bxMxBPW6p",
-      "/ip4/51.15.25.224/udp/4040/quic/p2p/12D3KooWHhDBv6DJJ4XDWjzEXq6sVNEs6VuxsV1WyBBEhPENHzcZ",
-      "/ip4/51.75.127.200/udp/4141/quic/p2p/12D3KooWPwRwwKatdy5yzRVCYPHib3fntYgbFB4nqrJPHWAqXD7z"
-    ]
   }
 }`
 }
@@ -87,7 +82,8 @@ type HostOptions struct {
 	IPv4          string
 	IPv6          string
 	OLC           string
-	Point         string
+	Namespace     string
+	Prefix        protocol.ID
 }
 
 // @ Returns new Host Config
@@ -148,11 +144,12 @@ func newHostOpts(req *md.ConnectionRequest) (*HostOptions, error) {
 
 	// Set Host Options
 	return &HostOptions{
-		OLC:           olcValue,
-		Point:         "/sonr/" + olcValue,
 		BootStrappers: bootstrappers,
 		ConnRequest:   req,
 		IPv4:          ipv4Ref,
 		IPv6:          ipv6Ref,
+		OLC:           olcValue,
+		Prefix:        protocol.ID("/sonr/kad/0.9.1"),
+		Namespace:     "/sonr/kad/0.9.1",
 	}, nil
 }

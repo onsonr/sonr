@@ -10,12 +10,10 @@ import (
 	"github.com/libp2p/go-libp2p"
 	discovery2 "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/host"
-	"github.com/libp2p/go-libp2p-core/protocol"
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	swarm "github.com/libp2p/go-libp2p-swarm"
-	"github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
 
 	sl "github.com/sonr-io/core/internal/lobby"
@@ -116,25 +114,11 @@ func (n *Node) Start() bool {
 	}
 
 	// Create Pub Sub
-	n.pubSub, err = pubsub.NewGossipSub(n.ctx, n.host, pubsub.WithMessageSignaturePolicy(pubsub.StrictSign))
+	n.pubSub, err = pubsub.NewGossipSub(n.ctx, n.host)
 	if err != nil {
 		sentry.CaptureException(err)
 		n.call.OnReady(false)
 		return false
-	}
-
-	// Get P2P Multi Addr
-	p2pAddr, err := multiaddr.NewMultiaddr(fmt.Sprintf("/p2p/%s", n.host.ID().Pretty()))
-	if err != nil {
-		sentry.CaptureException(err)
-		n.call.OnReady(false)
-		return false
-	}
-
-	// Get All Addr
-	var fullAddrs []string
-	for _, addr := range n.host.Addrs() {
-		fullAddrs = append(fullAddrs, addr.Encapsulate(p2pAddr).String()) //nolint
 	}
 
 	// Set Peer Info
@@ -151,15 +135,12 @@ func (n *Node) Start() bool {
 func (n *Node) Bootstrap() bool {
 	// Get Info
 	bootstrappers := n.hostOpts.BootStrappers
-	point := protocol.ID(n.hostOpts.Point)
-	pointStr := n.hostOpts.Point
-
 	// Set DHT
 	kadDHT, err := dht.New(
 		n.ctx,
 		n.host,
 		dht.BootstrapPeers(bootstrappers...),
-		dht.ProtocolPrefix(point),
+		dht.ProtocolPrefix(n.hostOpts.Prefix),
 		dht.Mode(dht.ModeAutoServer),
 	)
 	if err != nil {
@@ -188,14 +169,14 @@ func (n *Node) Bootstrap() bool {
 
 	// Set Routing Discovery
 	routingDiscovery := discovery.NewRoutingDiscovery(kadDHT)
-	discovery.Advertise(n.ctx, routingDiscovery, pointStr)
+	discovery.Advertise(n.ctx, routingDiscovery, n.hostOpts.Namespace)
 
 	// Try finding more peers
 	go func() {
 		for {
 			peersChan, err := routingDiscovery.FindPeers(
 				n.ctx,
-				n.hostOpts.Point,
+				n.hostOpts.Namespace,
 				discovery2.Limit(100),
 			)
 			if err != nil {

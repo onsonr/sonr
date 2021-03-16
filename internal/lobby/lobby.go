@@ -38,8 +38,8 @@ type Lobby struct {
 // ^ Join Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
 func Join(ctx context.Context, lobCall md.LobbyCallback, h host.Host, ps *pubsub.PubSub, sp *md.Peer, olc string) (*Lobby, error) {
 	// Join the pubsub Topic
-	point := "/sonr/lobby" + olc
-	topic, err := ps.Join(point)
+	lobbyName := "/sonr/lobby/" + olc
+	topic, err := ps.Join(lobbyName)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func Join(ctx context.Context, lobCall md.LobbyCallback, h host.Host, ps *pubsub
 
 	// Initialize Lobby for Peers
 	lobInfo := &md.Lobby{
-		Olc:   point,
+		Olc:   olc,
 		Size:  1,
 		Peers: make(map[string]*md.Peer),
 	}
@@ -78,8 +78,7 @@ func Join(ctx context.Context, lobCall md.LobbyCallback, h host.Host, ps *pubsub
 	}
 
 	// Create PeerService
-	exchangePoint := point + "/exchange"
-	peersvServer := gorpc.NewServer(h, protocol.ID(exchangePoint))
+	peersvServer := gorpc.NewServer(h, protocol.ID("/sonr/lobby/exchange"))
 	psv := ExchangeService{
 		updatePeer: lob.updatePeer,
 		getUser:    lob.call.Peer,
