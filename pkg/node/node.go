@@ -14,6 +14,7 @@ import (
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	swarm "github.com/libp2p/go-libp2p-swarm"
 	"github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
 
@@ -171,7 +172,11 @@ func (n *Node) Bootstrap() bool {
 	// Connect to bootstrap nodes, if any
 	for _, pi := range bootstrappers {
 		if err := n.host.Connect(n.ctx, pi); err != nil {
-			sentry.CaptureException(errors.Wrap(err, "connecting to bootstrap node"))
+			n.host.Peerstore().ClearAddrs(pi)
+
+			if sw, ok := n.host.Network().(*swarm.Swarm); ok {
+				sw.Backoff().Clear(pi)
+			}
 			continue
 		}
 	}
@@ -190,7 +195,7 @@ func (n *Node) Bootstrap() bool {
 			)
 			if err != nil {
 				sentry.CaptureException(err)
-				continue
+				return
 			}
 
 			// read all channel messages to avoid blocking the find peer query

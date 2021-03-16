@@ -72,7 +72,11 @@ func (mn *MobileNode) Connect() {
 		strapResult := mn.node.Bootstrap()
 		if strapResult {
 			mn.hasBootstrapped = true
+		} else {
+			log.Println("Failed to bootstrap node")
 		}
+	} else {
+		log.Println("Failed to start host")
 	}
 }
 
