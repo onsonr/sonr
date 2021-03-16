@@ -13,7 +13,6 @@ import (
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	swarm "github.com/libp2p/go-libp2p-swarm"
 	"github.com/pkg/errors"
 
 	sl "github.com/sonr-io/core/internal/lobby"
@@ -159,10 +158,7 @@ func (n *Node) Bootstrap() bool {
 	// Connect to bootstrap nodes, if any
 	for _, pi := range bootstrappers {
 		if err := n.host.Connect(n.ctx, pi); err != nil {
-			n.host.Peerstore().ClearAddrs(pi.ID)
-			if sw, ok := n.host.Network().(*swarm.Swarm); ok {
-				sw.Backoff().Clear(pi.ID)
-			}
+			sentry.CaptureException(errors.Wrap(err, "Failed to Connect to IPFS Bootstrap Node"))
 			continue
 		}
 	}
