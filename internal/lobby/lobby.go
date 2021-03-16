@@ -78,7 +78,8 @@ func Join(ctx context.Context, lobCall md.LobbyCallback, h host.Host, ps *pubsub
 	}
 
 	// Create PeerService
-	peersvServer := gorpc.NewServer(h, protocol.ID("/sonr/lobby/exchange"))
+	exchangePoint := point + "/exchange"
+	peersvServer := gorpc.NewServer(h, protocol.ID(exchangePoint))
 	psv := ExchangeService{
 		updatePeer: lob.updatePeer,
 		getUser:    lob.call.Peer,

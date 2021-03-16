@@ -111,6 +111,7 @@ func (n *Node) Start() bool {
 	)
 	if err != nil {
 		sentry.CaptureException(err)
+		n.call.OnReady(false)
 		return false
 	}
 
@@ -118,6 +119,7 @@ func (n *Node) Start() bool {
 	n.pubSub, err = pubsub.NewGossipSub(n.ctx, n.host, pubsub.WithMessageSignaturePolicy(pubsub.StrictSign))
 	if err != nil {
 		sentry.CaptureException(err)
+		n.call.OnReady(false)
 		return false
 	}
 
@@ -125,6 +127,7 @@ func (n *Node) Start() bool {
 	p2pAddr, err := multiaddr.NewMultiaddr(fmt.Sprintf("/p2p/%s", n.host.ID().Pretty()))
 	if err != nil {
 		sentry.CaptureException(err)
+		n.call.OnReady(false)
 		return false
 	}
 
@@ -161,12 +164,14 @@ func (n *Node) Bootstrap() bool {
 	)
 	if err != nil {
 		sentry.CaptureException(errors.Wrap(err, "creating routing DHT"))
+		n.call.OnReady(false)
 		return false
 	}
 	n.kadDHT = kadDHT
 
 	if err := kadDHT.Bootstrap(n.ctx); err != nil {
 		sentry.CaptureException(errors.Wrap(err, "bootstrapping DHT"))
+		n.call.OnReady(false)
 		return false
 	}
 
@@ -195,6 +200,7 @@ func (n *Node) Bootstrap() bool {
 			)
 			if err != nil {
 				sentry.CaptureException(err)
+				n.call.OnReady(false)
 				return
 			}
 
@@ -214,14 +220,17 @@ func (n *Node) Bootstrap() bool {
 	// Enter Lobby
 	if n.lobby, err = sl.Join(n.ctx, n.LobbyCallback(), n.host, n.pubSub, n.peer, n.hostOpts.OLC); err != nil {
 		sentry.CaptureException(err)
+		n.call.OnReady(false)
 		return false
 	}
 
 	// Initialize Peer Connection
 	if n.peerConn, err = tf.Initialize(n.host, n.pubSub, n.fs, n.hostOpts.OLC, n.TransferCallback()); err != nil {
 		sentry.CaptureException(err)
+		n.call.OnReady(false)
 		return false
 	}
+	n.call.OnReady(true)
 	return true
 }
 

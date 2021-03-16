@@ -10,6 +10,7 @@ import (
 
 // ^ Interface: Callback is implemented from Plugin to receive updates ^
 type Callback interface {
+	OnReady(data bool)         // Node Host Connection Result
 	OnRefreshed(data []byte)   // Lobby Updates
 	OnEvent(data []byte)       // Lobby Event
 	OnInvited(data []byte)     // User Invited
