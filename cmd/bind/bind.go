@@ -55,25 +55,24 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 // ** Network Actions ** //
 // **-----------------** //
 // @ Start Host
-func (mn *MobileNode) Start() {
+func (mn *MobileNode) Connect() {
 	// Start Node
-	err := mn.node.Start()
-	if err != nil {
-		log.Fatalln(err)
-	}
+	result := mn.node.Start()
+	if result {
+		// Set Peer Info
+		peer := mn.node.Peer()
+		mn.ID = peer.Id.Peer
+		mn.DeviceID = peer.Id.Device
+		mn.UserID = peer.Id.User
 
-	// Set Peer Info
-	peer := mn.node.Peer()
-	mn.ID = peer.Id.Peer
-	mn.DeviceID = peer.Id.Device
-	mn.UserID = peer.Id.User
-}
+		// Set Started
+		mn.hasStarted = true
 
-// @ Initiate Bootstrapping
-func (mn *MobileNode) Bootstrap() {
-	err := mn.node.Bootstrap()
-	if err != nil {
-		log.Fatalln(err)
+		// Bootstrap to Peers
+		strapResult := mn.node.Bootstrap()
+		if strapResult {
+			mn.hasBootstrapped = true
+		}
 	}
 }
 
@@ -82,47 +81,59 @@ func (mn *MobileNode) Bootstrap() {
 // **--------------** //
 // @ Update proximity/direction and Notify Lobby
 func (mn *MobileNode) Update(facing float64, heading float64) {
-	mn.node.Update(facing, heading)
+	if mn.IsReady() {
+		mn.node.Update(facing, heading)
+	}
 }
 
 // @ Invite Processes Data and Sends Invite to Peer
 func (mn *MobileNode) Invite(reqBytes []byte) {
-	// Initialize from Request
-	req := &md.InviteRequest{}
-	err := proto.Unmarshal(reqBytes, req)
-	if err != nil {
-		log.Println(err)
+	if mn.IsReady() {
+		// Initialize from Request
+		req := &md.InviteRequest{}
+		err := proto.Unmarshal(reqBytes, req)
+		if err != nil {
+			log.Println(err)
+		}
+		mn.node.Invite(req)
 	}
-
-	mn.node.Invite(req)
 }
 
 // @ Respond to an Invitation
 func (mn *MobileNode) Respond(decision bool) {
-	mn.node.Respond(decision)
+	if mn.IsReady() {
+		mn.node.Respond(decision)
+	}
 }
 
 // ** User Actions ** //
 // @ Info returns ALL Peer Data as Bytes
 func (mn *MobileNode) Info() []byte {
-	info := mn.node.Info()
-	return info
+	if mn.IsReady() {
+		info := mn.node.Info()
+		return info
+	}
+	return nil
 }
 
 // @ Link with a QR Code
 func (mn *MobileNode) LinkDevice(json string) {
-	mn.node.LinkDevice(json)
+	if mn.IsReady() {
+		mn.node.LinkDevice(json)
+	}
 }
 
 // @ Updates Current Contact Card
 func (mn *MobileNode) SetContact(conBytes []byte) {
-	// Unmarshal Data
-	newContact := &md.Contact{}
-	err := proto.Unmarshal(conBytes, newContact)
-	if err != nil {
-		log.Println(err)
+	if mn.IsReady() {
+		// Unmarshal Data
+		newContact := &md.Contact{}
+		err := proto.Unmarshal(conBytes, newContact)
+		if err != nil {
+			log.Println(err)
+		}
+		mn.node.SetContact(newContact)
 	}
-	mn.node.SetContact(newContact)
 }
 
 // **-------------------** //

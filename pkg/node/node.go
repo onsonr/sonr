@@ -90,12 +90,12 @@ func NewNode(req *md.ConnectionRequest, call Callback) *Node {
 }
 
 // ^ Start Begins Running Libp2p Host ^
-func (n *Node) Start() error {
+func (n *Node) Start() bool {
 	// Get Private Key
 	privKey, err := n.fs.GetPrivateKey()
 	if err != nil {
 		sentry.CaptureException(err)
-		return err
+		return false
 	}
 
 	// Start Host
@@ -109,34 +109,27 @@ func (n *Node) Start() error {
 	)
 	if err != nil {
 		sentry.CaptureException(err)
-		return err
+		return false
 	}
 
 	// Create Pub Sub
 	n.pubSub, err = pubsub.NewGossipSub(n.ctx, n.host, pubsub.WithMessageSignaturePolicy(pubsub.StrictSign))
 	if err != nil {
 		sentry.CaptureException(err)
-		return err
+		return false
 	}
 
 	// Get P2P Multi Addr
 	p2pAddr, err := multiaddr.NewMultiaddr(fmt.Sprintf("/p2p/%s", n.host.ID().Pretty()))
 	if err != nil {
 		sentry.CaptureException(err)
-		return err
+		return false
 	}
 
 	// Get All Addr
 	var fullAddrs []string
 	for _, addr := range n.host.Addrs() {
 		fullAddrs = append(fullAddrs, addr.Encapsulate(p2pAddr).String()) //nolint
-	}
-
-	// Check for Host
-	if n.host == nil {
-		err := errors.New("setPeer: Host has not been called")
-		sentry.CaptureException(err)
-		return err
 	}
 
 	// Set Peer Info
@@ -146,11 +139,11 @@ func (n *Node) Start() error {
 		Platform: n.device.Platform,
 		Model:    n.device.Model,
 	}
-	return nil
+	return true
 }
 
 // ^ Bootstrap begins bootstrap with peers ^
-func (n *Node) Bootstrap() error {
+func (n *Node) Bootstrap() bool {
 	// Get Info
 	bootstrappers := n.hostOpts.BootStrappers
 	point := protocol.ID(n.hostOpts.Point)
@@ -165,21 +158,21 @@ func (n *Node) Bootstrap() error {
 		dht.Mode(dht.ModeAutoServer),
 	)
 	if err != nil {
-		sentry.CaptureException(err)
-		return errors.Wrap(err, "creating routing DHT")
+		sentry.CaptureException(errors.Wrap(err, "creating routing DHT"))
+		return false
 	}
 	n.kadDHT = kadDHT
 
 	if err := kadDHT.Bootstrap(n.ctx); err != nil {
-		sentry.CaptureException(err)
-		return errors.Wrap(err, "bootstrapping DHT")
+		sentry.CaptureException(errors.Wrap(err, "bootstrapping DHT"))
+		return false
 	}
 
 	// Connect to bootstrap nodes, if any
 	for _, pi := range bootstrappers {
 		if err := n.host.Connect(n.ctx, pi); err != nil {
-			sentry.CaptureException(err)
-			return errors.Wrap(err, "connecting to bootstrap node")
+			sentry.CaptureException(errors.Wrap(err, "connecting to bootstrap node"))
+			continue
 		}
 	}
 
@@ -216,15 +209,15 @@ func (n *Node) Bootstrap() error {
 	// Enter Lobby
 	if n.lobby, err = sl.Join(n.ctx, n.LobbyCallback(), n.host, n.pubSub, n.peer, n.hostOpts.OLC); err != nil {
 		sentry.CaptureException(err)
-		return err
+		return false
 	}
 
 	// Initialize Peer Connection
 	if n.peerConn, err = tf.Initialize(n.host, n.pubSub, n.fs, n.hostOpts.OLC, n.TransferCallback()); err != nil {
 		sentry.CaptureException(err)
-		return err
+		return false
 	}
-	return nil
+	return true
 }
 
 // ^ Close Ends All Network Communication ^

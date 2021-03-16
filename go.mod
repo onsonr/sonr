@@ -13,12 +13,12 @@ require (
 	github.com/google/uuid v1.2.0 // indirect
 	github.com/h2non/filetype v1.1.0
 	github.com/julianshen/go-readability v0.0.0-20160929030430-accf5123e283
-	github.com/libp2p/go-libp2p v0.11.0
-	github.com/libp2p/go-libp2p-core v0.6.1
+	github.com/libp2p/go-libp2p v0.13.0
+	github.com/libp2p/go-libp2p-core v0.8.5
 	github.com/libp2p/go-libp2p-discovery v0.5.0
-	github.com/libp2p/go-libp2p-gorpc v0.1.1
-	github.com/libp2p/go-libp2p-kad-dht v0.10.0
-	github.com/libp2p/go-libp2p-pubsub v0.3.6
+	github.com/libp2p/go-libp2p-gorpc v0.1.2
+	github.com/libp2p/go-libp2p-kad-dht v0.11.1
+	github.com/libp2p/go-libp2p-pubsub v0.4.1
 	github.com/libp2p/go-msgio v0.0.6
 	github.com/multiformats/go-multiaddr v0.3.1
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646

@@ -9,7 +9,6 @@ import (
 	"time"
 
 	md "github.com/sonr-io/core/pkg/models"
-
 	sn "github.com/sonr-io/core/pkg/node"
 )
 
