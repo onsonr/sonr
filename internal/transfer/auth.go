@@ -3,6 +3,7 @@ package transfer
 import (
 	"context"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
@@ -38,6 +39,7 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 	receivedMessage := &md.AuthInvite{}
 	err := proto.Unmarshal(args.Data, receivedMessage)
 	if err != nil {
+		sentry.CaptureException(err)
 		return err
 	}
 
@@ -56,6 +58,7 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 			// Convert Protobuf to bytes
 			msgBytes, err := proto.Marshal(m)
 			if err != nil {
+				sentry.CaptureException(err)
 				return err
 			}
 
@@ -86,6 +89,7 @@ func (pc *TransferController) Request(h host.Host, id peer.ID, msgBytes []byte) 
 	// Await Response
 	call := <-done
 	if call.Error != nil {
+		sentry.CaptureException(err)
 		pc.call.Error(err, "Request")
 	}
 
@@ -156,6 +160,7 @@ func (pc *TransferController) handleReply(data []byte) (bool, *md.Peer) {
 	err := proto.Unmarshal(data, &resp)
 	if err != nil {
 		pc.call.Error(err, "handleReply")
+		sentry.CaptureException(err)
 		return false, nil
 	}
 	return resp.Decision && resp.Type == md.AuthReply_Transfer, resp.From

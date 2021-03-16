@@ -150,8 +150,9 @@ func (n *Node) Bootstrap() bool {
 		n.ctx,
 		n.host,
 		dht.BootstrapPeers(bootstrappers...),
-		// dht.ProtocolPrefix(n.hostOpts.Prefix),
-		// dht.Mode(dht.ModeAutoServer),
+		dht.ProtocolPrefix(n.hostOpts.Prefix),
+		dht.Mode(dht.ModeAutoServer),
+		dht.RoutingTableRefreshPeriod(time.Second*30),
 	)
 	if err != nil {
 		sentry.CaptureException(errors.Wrap(err, "Error while Creating routing DHT"))

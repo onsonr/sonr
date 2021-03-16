@@ -99,7 +99,6 @@ func (n *Node) Respond(decision bool) {
 }
 
 
-
 // ^ Link with a QR Code ^ //
 func (n *Node) LinkDevice(json string) {
 	// Convert String to Bytes
