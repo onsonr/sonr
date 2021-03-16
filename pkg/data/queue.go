@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 
 	"github.com/getsentry/sentry-go"
+	"github.com/pkg/errors"
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/pkg/models"
 )
@@ -16,20 +17,37 @@ const maxFileBufferSize = 64
 func (fq *SonrFS) AddFromRequest(req *md.InviteRequest) {
 	if req.Type == md.InviteRequest_File {
 		// Add Single File Transfer
-		safeFile := sf.NewProcessedFile(req, fq.profile, fq.Call)
-		fq.Files = append(fq.Files, safeFile)
-		fq.CurrentCount = 1
+		safeFile := sf.NewProcessedFile(req, fq.Profile, fq.Call)
+
+		// Validate Files not Null
+		if safeFile != nil {
+			fq.Files = append(fq.Files, safeFile)
+			fq.CurrentCount = 1
+		} else {
+			fq.Call.Error(errors.New("Request or Profile not Provided"), "NewProcessedFile:GetFileInfo")
+		}
+
 	} else if req.Type == md.InviteRequest_MultiFiles {
 		// Add Batch File Transfer
-		safeFiles := sf.NewBatchProcessFiles(req, fq.profile, fq.Call)
-		fq.Files = append(fq.Files, safeFiles...)
-		fq.CurrentCount = len(safeFiles)
+		safeFiles := sf.NewBatchProcessFiles(req, fq.Profile, fq.Call)
+
+		// Validate Files not Null
+		if safeFiles != nil {
+			fq.Files = append(fq.Files, safeFiles...)
+			fq.CurrentCount = len(safeFiles)
+		} else {
+			fq.Call.Error(errors.New("Request or Profile not Provided"), "NewProcessedFile:GetFileInfo")
+		}
 	}
 }
 
 // ^ CurrentFile returns last file in Processed Files ^ //
 func (fq *SonrFS) CurrentFile() *sf.ProcessedFile {
-	return fq.Files[len(fq.Files)-1]
+	if len(fq.Files) > 0 {
+		return fq.Files[len(fq.Files)-1]
+	} else {
+		return nil
+	}
 }
 
 // ^ Removes Last File ^ //

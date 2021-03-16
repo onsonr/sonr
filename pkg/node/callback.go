@@ -1,6 +1,7 @@
 package node
 
 import (
+	"errors"
 	"log"
 
 	sentry "github.com/getsentry/sentry-go"
@@ -22,10 +23,12 @@ type Callback interface {
 	OnError(data []byte)       // Internal Error
 }
 
+// ^ Passes node methods for Lobby ^
 func (n *Node) LobbyCallback() md.LobbyCallback {
 	return md.NewLobbyCallback(n.call.OnEvent, n.call.OnRefreshed, n.error, n.Peer)
 }
 
+// ^ Passes node methods for TransferController ^
 func (n *Node) TransferCallback() md.TransferCallback {
 	return md.NewTransferCallback(n.invited, n.call.OnResponded, n.call.OnProgress, n.received, n.transmitted, n.error)
 }
@@ -42,26 +45,30 @@ func (sn *Node) queued(card *md.TransferCard, req *md.InviteRequest) {
 
 	// Retreive Current File
 	currFile := sn.fs.CurrentFile()
-	card.Status = md.TransferCard_INVITE
-	sn.peerConn.NewOutgoing(currFile)
+	if currFile != nil {
+		card.Status = md.TransferCard_INVITE
+		sn.peerConn.NewOutgoing(currFile)
 
-	// Create Invite Message
-	invMsg := md.AuthInvite{
-		From:    sn.peer,
-		Payload: card.Payload,
-		Card:    card,
-	}
-
-	// Check if ID in PeerStore
-	go func(inv *md.AuthInvite) {
-		// Convert Protobuf to bytes
-		msgBytes, err := proto.Marshal(inv)
-		if err != nil {
-			sn.error(err, "Marshal")
+		// Create Invite Message
+		invMsg := md.AuthInvite{
+			From:    sn.peer,
+			Payload: card.Payload,
+			Card:    card,
 		}
 
-		sn.peerConn.Request(sn.host, id, msgBytes)
-	}(&invMsg)
+		// Check if ID in PeerStore
+		go func(inv *md.AuthInvite) {
+			// Convert Protobuf to bytes
+			msgBytes, err := proto.Marshal(inv)
+			if err != nil {
+				sn.error(err, "Marshal")
+			}
+
+			sn.peerConn.Request(sn.host, id, msgBytes)
+		}(&invMsg)
+	} else {
+		sn.error(errors.New("No current file"), "internal:queued")
+	}
 }
 
 // ^ multiQueued Callback, Sends File Invite to Peer, and Notifies Client ^
@@ -76,26 +83,30 @@ func (sn *Node) multiQueued(card *md.TransferCard, req *md.InviteRequest, count 
 
 	// Retreive Current File
 	currFile := sn.fs.CurrentFile()
-	card.Status = md.TransferCard_INVITE
-	sn.peerConn.NewOutgoing(currFile)
+	if currFile != nil {
+		card.Status = md.TransferCard_INVITE
+		sn.peerConn.NewOutgoing(currFile)
 
-	// Create Invite Message
-	invMsg := md.AuthInvite{
-		From:    sn.peer,
-		Payload: card.Payload,
-		Card:    card,
-	}
-
-	// Check if ID in PeerStore
-	go func(inv *md.AuthInvite) {
-		// Convert Protobuf to bytes
-		msgBytes, err := proto.Marshal(inv)
-		if err != nil {
-			sn.error(err, "Marshal")
+		// Create Invite Message
+		invMsg := md.AuthInvite{
+			From:    sn.peer,
+			Payload: card.Payload,
+			Card:    card,
 		}
 
-		sn.peerConn.Request(sn.host, id, msgBytes)
-	}(&invMsg)
+		// Check if ID in PeerStore
+		go func(inv *md.AuthInvite) {
+			// Convert Protobuf to bytes
+			msgBytes, err := proto.Marshal(inv)
+			if err != nil {
+				sn.error(err, "Marshal")
+			}
+
+			sn.peerConn.Request(sn.host, id, msgBytes)
+		}(&invMsg)
+	} else {
+		sn.error(errors.New("No current file"), "internal:multiQueued")
+	}
 }
 
 // ^ invite Callback with data for Lifecycle ^ //

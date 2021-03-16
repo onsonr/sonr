@@ -33,7 +33,7 @@ type SonrFS struct {
 	Files        []*sf.ProcessedFile
 	CurrentCount int
 	Call         md.FileCallback
-	profile      *md.Profile
+	Profile      *md.Profile
 }
 
 // ^ Method Initializes Root Sonr Directory ^ //
@@ -76,7 +76,7 @@ func InitFS(connEvent *md.ConnectionRequest, profile *md.Profile, qc md.OnQueued
 		Files:        make([]*sf.ProcessedFile, maxFileBufferSize),
 		CurrentCount: 0,
 		Call:         callback,
-		profile:      profile,
+		Profile:      profile,
 	}
 
 	// Write User

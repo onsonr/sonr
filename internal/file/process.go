@@ -32,6 +32,11 @@ type ProcessedFile struct {
 
 // ^ NewProcessedFile Processes Outgoing File ^ //
 func NewProcessedFile(req *md.InviteRequest, p *md.Profile, callback md.FileCallback) *ProcessedFile {
+	// Check Values
+	if req == nil || p == nil {
+		return nil
+	}
+
 	// Get File Information
 	file := req.Files[len(req.Files)-1]
 	info, err := md.GetFileInfo(file.Path)
@@ -52,7 +57,6 @@ func NewProcessedFile(req *md.InviteRequest, p *md.Profile, callback md.FileCall
 	sm.mutex.Lock()
 
 	// @ 2. Set Metadata Protobuf Values
-
 	// Create Card
 	sm.card = md.TransferCard{
 		// SQL Properties
@@ -82,6 +86,11 @@ func NewProcessedFile(req *md.InviteRequest, p *md.Profile, callback md.FileCall
 
 // ^ NewBatchProcessFiles Processes Multiple Outgoing Files ^ //
 func NewBatchProcessFiles(req *md.InviteRequest, p *md.Profile, callback md.FileCallback) []*ProcessedFile {
+	// Check Values
+	if req == nil || p == nil {
+		return nil
+	}
+
 	// Set Package Level Callbacks
 	files := make([]*ProcessedFile, 64)
 

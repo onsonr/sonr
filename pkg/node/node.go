@@ -8,6 +8,7 @@ import (
 
 	sentry "github.com/getsentry/sentry-go"
 	"github.com/libp2p/go-libp2p"
+	connmgr "github.com/libp2p/go-libp2p-connmgr"
 	discLimit "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/host"
 	discovery "github.com/libp2p/go-libp2p-discovery"
@@ -64,6 +65,15 @@ func NewNode(req *md.ConnectionRequest, call Callback) *Node {
 	node.ctx = context.Background()
 	node.call = call
 
+	// Create New Profile from Request
+	node.profile = &md.Profile{
+		Username:  req.GetUsername(),
+		FirstName: req.Contact.GetFirstName(),
+		LastName:  req.Contact.GetLastName(),
+		Picture:   req.Contact.GetPicture(),
+		Platform:  req.Device.GetPlatform(),
+	}
+
 	// Set File System
 	node.connectivity = req.GetConnectivity()
 	node.fs = dq.InitFS(req, node.profile, node.queued, node.multiQueued, node.error)
@@ -72,15 +82,6 @@ func NewNode(req *md.ConnectionRequest, call Callback) *Node {
 	node.hostOpts, err = NewHostOpts(req)
 	if err != nil {
 		sentry.CaptureException(err)
-	}
-
-	// Create New Profile from Request
-	node.profile = &md.Profile{
-		Username:  req.GetUsername(),
-		FirstName: req.Contact.GetFirstName(),
-		LastName:  req.Contact.GetLastName(),
-		Picture:   req.Contact.GetPicture(),
-		Platform:  req.Device.GetPlatform(),
 	}
 
 	// Set Default Properties
@@ -108,6 +109,11 @@ func (n *Node) Start() bool {
 			fmt.Sprintf("/ip4/%s/tcp/0", ip4),
 			fmt.Sprintf("/ip4/%s/udp/0/quic", ip4)),
 		libp2p.Identity(privKey),
+		libp2p.ConnectionManager(connmgr.NewConnManager(
+			10,          // Lowwater
+			20,          // HighWater,
+			time.Minute, // GracePeriod
+		)),
 	)
 	if err != nil {
 		sentry.CaptureException(err)
@@ -225,7 +231,6 @@ func (n *Node) handlePeers(routingDiscovery *discovery.RoutingDiscovery) {
 				if err := n.host.Connect(n.ctx, pi); err != nil {
 					// Capture Error
 					sentry.CaptureException(errors.Wrap(err, "Failed to connect to peer in namespace"))
-					n.error(err, "Failed to connect to peer in namespace")
 
 					// Remove Peer Reference
 					n.host.Peerstore().ClearAddrs(pi.ID)
