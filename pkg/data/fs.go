@@ -9,6 +9,8 @@ import (
 
 	"github.com/getsentry/sentry-go"
 	"github.com/libp2p/go-libp2p-core/crypto"
+	"github.com/pkg/errors"
+	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -18,19 +20,29 @@ const K_SONR_CLIENT_DIR = ".sonr"
 
 // @ Sonr File System Struct
 type SonrFS struct {
+	// Properties
 	Initialized bool
 	Devices     []*md.Device
 	User        *md.User
-	Cache       string
-	Documents   string
-	Downloads   string
-	Home        string
-	Root        string
-	Temporary   string
+
+	// Directories
+	Cache     string
+	Documents string
+	Downloads string
+	Home      string
+	Root      string
+	Temporary string
+
+	// Queue
+	files        []*sf.ProcessedFile
+	currentCount int
+	directories  *md.Directories
+	call         md.FileCallback
+	profile      *md.Profile
 }
 
 // ^ Method Initializes Root Sonr Directory ^ //
-func InitFS(connEvent *md.ConnectionRequest, profile *md.Profile) *SonrFS {
+func InitFS(connEvent *md.ConnectionRequest, profile *md.Profile, qc md.OnQueued, mqc md.OnMultiQueued, ec md.OnError) *SonrFS {
 	// Initialize
 	var sonrPath string
 	var hasInitialized bool
@@ -90,43 +102,57 @@ func EnsureDir(path string, perm os.FileMode) error {
 	return err
 }
 
-// ^ Get Keys: Returns Private/Public keys from disk if found ^ //
+// ^ Get Key: Returns Private key from disk if found ^ //
 func (fs *SonrFS) GetPrivateKey() (crypto.PrivKey, error) {
-	// Set Path
-	path := filepath.Join(fs.Root, ".sonr-priv-key")
+	// @ Set Path
+	privKeyFileName := filepath.Join(fs.Root, "snr-peer.privkey")
+	var generate bool
 
-	// @ Path Doesnt Exist Generate Keys
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		// Generate Keys
-		privKey, _, err := crypto.GenerateRSAKeyPair(2048, rand.Reader)
+	// @ Find Key
+	privKeyBytes, err := ioutil.ReadFile(privKeyFileName)
+	if os.IsNotExist(err) {
+		generate = true
+	} else if err != nil {
+		sentry.CaptureException(err)
+		return nil, err
+	}
+
+	// @ Check for Generate
+	if generate {
+		// Create New Key
+		privKey, _, err := crypto.GenerateEd25519Key(rand.Reader)
 		if err != nil {
-			return nil, err
+			sentry.CaptureException(err)
+			return nil, errors.Wrap(err, "generating identity private key")
 		}
 
-		// Get Key Bytes
-		privDat, err := crypto.MarshalPrivateKey(privKey)
+		// Marshal Data
+		privKeyBytes, err := crypto.MarshalPrivateKey(privKey)
 		if err != nil {
-			return nil, err
+			sentry.CaptureException(err)
+			return nil, errors.Wrap(err, "marshalling identity private key")
 		}
 
-		// Write Private/Pub To File
-		err = ioutil.WriteFile(path, privDat, 0644)
+		// Create File
+		f, err := os.Create(privKeyFileName)
 		if err != nil {
-			return nil, err
+			sentry.CaptureException(err)
+			return nil, errors.Wrap(err, "creating identity private key file")
+		}
+		defer f.Close()
+
+		// Write Key to file
+		if _, err := f.Write(privKeyBytes); err != nil {
+			sentry.CaptureException(err)
+			return nil, errors.Wrap(err, "writing identity private key to file")
 		}
 		return privKey, nil
 	}
-	// @ Keys Exist Load Keys
-	// Load Private Key Bytes from File
-	privDat, err := ioutil.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
 
-	// Unmarshal PrivKey from Bytes
-	privKey, err := crypto.UnmarshalPrivateKey(privDat)
+	privKey, err := crypto.UnmarshalPrivateKey(privKeyBytes)
 	if err != nil {
-		return nil, err
+		sentry.CaptureException(err)
+		return nil, errors.Wrap(err, "unmarshalling identity private key")
 	}
 	return privKey, nil
 }

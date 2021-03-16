@@ -27,7 +27,6 @@ type MobileNode struct {
 	DeviceID string
 	UserID   uint32
 	node     *sn.Node
-	Status   md.Status
 }
 
 // Create New Mobile Node
@@ -49,7 +48,22 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 		ID:       peer.Id.Peer,
 		DeviceID: peer.Id.Device,
 		UserID:   peer.Id.User,
-		Status:   md.Status_AVAILABLE,
+	}
+}
+
+// **-----------------** //
+// ** Network Actions ** //
+// **-----------------** //
+// Start Host
+func (sn *MobileNode) Start() {
+	sn.node.Start()
+}
+
+// Initiate Bootstrapping
+func (sn *MobileNode) Bootstrap() {
+	err := sn.node.Bootstrap()
+	if err != nil {
+		log.Fatalln(err)
 	}
 }
 
@@ -88,11 +102,6 @@ func (sn *MobileNode) Info() []byte {
 //  Link with a QR Code
 func (sn *MobileNode) LinkDevice(json string) {
 	sn.node.LinkDevice(json)
-}
-
-// Peer returns Current Peer Info
-func (sn *MobileNode) Peer() *md.Peer {
-	return sn.node.Peer()
 }
 
 // Updates Current Contact Card

@@ -26,6 +26,7 @@ require (
 	github.com/libp2p/go-msgio v0.0.6
 	github.com/multiformats/go-multiaddr v0.3.1
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
+	github.com/pkg/errors v0.9.1
 	github.com/urfave/cli/v2 v2.3.0
 	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83 // indirect
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b // indirect
