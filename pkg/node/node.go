@@ -14,6 +14,7 @@ import (
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	quic "github.com/libp2p/go-libp2p-quic-transport"
 	swarm "github.com/libp2p/go-libp2p-swarm"
 	"github.com/pkg/errors"
 
@@ -24,7 +25,8 @@ import (
 	md "github.com/sonr-io/core/pkg/models"
 )
 
-const discoveryInterval = time.Second * 4
+const discoveryInterval = time.Second * 3
+const gracePeriod = time.Second * 30
 
 // ^ Struct: Main Node handles Networking/Identity/Streams ^
 type Node struct {
@@ -109,10 +111,12 @@ func (n *Node) Start() bool {
 			fmt.Sprintf("/ip4/%s/tcp/0", ip4),
 			fmt.Sprintf("/ip4/%s/udp/0/quic", ip4)),
 		libp2p.Identity(privKey),
+		libp2p.Transport(quic.NewTransport),
+		libp2p.DefaultTransports,
 		libp2p.ConnectionManager(connmgr.NewConnManager(
 			10,          // Lowwater
 			20,          // HighWater,
-			time.Minute, // GracePeriod
+			gracePeriod, // GracePeriod
 		)),
 	)
 	if err != nil {
