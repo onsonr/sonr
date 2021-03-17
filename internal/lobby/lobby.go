@@ -2,10 +2,8 @@ package lobby
 
 import (
 	"context"
-	"fmt"
 	"log"
 
-	"github.com/getsentry/sentry-go"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	gorpc "github.com/libp2p/go-libp2p-gorpc"
@@ -44,13 +42,6 @@ func Join(ctx context.Context, lobCall md.LobbyCallback, h host.Host, ps *pubsub
 	topic, err := ps.Join(lobbyName)
 	if err != nil {
 		return nil, err
-	}
-
-	// TODO: Remove after Validation, Log Peers
-	for _, id := range ps.ListPeers(lobbyName) {
-		if id != h.ID() {
-			sentry.CaptureMessage(fmt.Sprintf("Peer in Lobby %s", id))
-		}
 	}
 
 	// Subscribe to Topic
