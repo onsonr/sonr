@@ -70,7 +70,7 @@ func (sn *Node) queued(card *md.TransferCard, req *md.InviteRequest) {
 				sn.error(err, "Marshal")
 			}
 
-			sn.peerConn.InviteRequest(sn.host, id, msgBytes)
+			sn.peerConn.RequestInvite(sn.host, id, msgBytes)
 		}(&invMsg)
 	} else {
 		sn.error(errors.New("No current file"), "internal:queued")
@@ -108,7 +108,7 @@ func (sn *Node) multiQueued(card *md.TransferCard, req *md.InviteRequest, count 
 				sn.error(err, "Marshal")
 			}
 
-			sn.peerConn.InviteRequest(sn.host, id, msgBytes)
+			sn.peerConn.RequestInvite(sn.host, id, msgBytes)
 		}(&invMsg)
 	} else {
 		sn.error(errors.New("No current file"), "internal:multiQueued")
