@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-core/protocol"
 	gorpc "github.com/libp2p/go-libp2p-gorpc"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
@@ -30,7 +29,7 @@ type ExchangeService struct {
 }
 
 // ^ Calls Invite on Remote Peer ^ //
-func (ps *ExchangeService) GotExchangeWith(ctx context.Context, args ExchangeArgs, reply *ExchangeResponse) error {
+func (ps *ExchangeService) ExchangeWith(ctx context.Context, args ExchangeArgs, reply *ExchangeResponse) error {
 	// Peer Data
 	remotePeer := &md.Peer{}
 	err := proto.Unmarshal(args.Data, remotePeer)
@@ -65,13 +64,13 @@ func (lob *Lobby) Exchange(id peer.ID) {
 	}
 
 	// Initialize RPC
-	rpcClient := gorpc.NewClient(lob.host, protocol.ID("/sonr/lobby/exchange"))
+	rpcClient := gorpc.NewClient(lob.host, lob.router.Exchange())
 	var reply ExchangeResponse
 	var args ExchangeArgs
 	args.Data = msgBytes
 
 	// Call to Peer
-	err = rpcClient.Call(id, "ExchangeService", "GotExchangeWith", args, &reply)
+	err = rpcClient.Call(id, "ExchangeService", "ExchangeWith", args, &reply)
 	if err != nil {
 		lob.call.Error(err, "Exchange")
 	}

@@ -17,6 +17,7 @@ import (
 	tr "github.com/sonr-io/core/internal/transfer"
 	dq "github.com/sonr-io/core/pkg/data"
 	md "github.com/sonr-io/core/pkg/models"
+	net "github.com/sonr-io/core/pkg/net"
 )
 
 const discoveryInterval = time.Second * 3
@@ -33,10 +34,11 @@ type Node struct {
 	profile *md.Profile
 
 	// Networking Properties
-	host         host.Host
-	kadDHT       *dht.IpfsDHT
-	pubSub       *pubsub.PubSub
-	status       md.Status
+	host   host.Host
+	kadDHT *dht.IpfsDHT
+	pubSub *pubsub.PubSub
+	router *net.ProtocolRouter
+	status md.Status
 
 	// References
 	call     Callback
@@ -70,6 +72,7 @@ func NewNode(req *md.ConnectionRequest, call Callback) *Node {
 
 	// Set File System
 	node.fs = dq.InitFS(req, node.profile, node.FSCallback())
+	node.router = net.NewProtocolRouter(req)
 
 	// Set Default Properties
 	node.contact = req.Contact

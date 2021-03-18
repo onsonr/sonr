@@ -6,7 +6,6 @@ import (
 	"github.com/getsentry/sentry-go"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-core/protocol"
 	gorpc "github.com/libp2p/go-libp2p-gorpc"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
@@ -34,7 +33,7 @@ type AuthService struct {
 }
 
 // ^ Calls Invite on Remote Peer ^ //
-func (as *AuthService) GotInvited(ctx context.Context, args AuthArgs, reply *AuthResponse) error {
+func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthResponse) error {
 	// Received Message
 	receivedMessage := &md.AuthInvite{}
 	err := proto.Unmarshal(args.Data, receivedMessage)
@@ -77,14 +76,14 @@ func (as *AuthService) GotInvited(ctx context.Context, args AuthArgs, reply *Aut
 // ^ Send Request to a Peer ^ //
 func (pc *TransferController) Request(h host.Host, id peer.ID, msgBytes []byte) {
 	// Initialize Data
-	rpcClient := gorpc.NewClient(h, protocol.ID("/sonr/transfer/auth"))
+	rpcClient := gorpc.NewClient(h, pc.router.Transfer())
 	var reply AuthResponse
 	var args AuthArgs
 	args.Data = msgBytes
 
 	// Call to Peer
 	done := make(chan *gorpc.Call, 1)
-	err := rpcClient.Go(id, "AuthService", "GotInvited", args, &reply, done)
+	err := rpcClient.Go(id, "AuthService", "Invited", args, &reply, done)
 
 	// Await Response
 	call := <-done

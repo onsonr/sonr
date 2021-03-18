@@ -7,10 +7,10 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-core/protocol"
 	gorpc "github.com/libp2p/go-libp2p-gorpc"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	md "github.com/sonr-io/core/pkg/models"
+	net "github.com/sonr-io/core/pkg/net"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -24,12 +24,14 @@ type Lobby struct {
 	messages chan *md.LobbyEvent
 	data     *md.Lobby
 
-	// Private Vars
-	ctx          context.Context
-	call         md.LobbyCallback
-	host         host.Host
-	doneCh       chan struct{}
-	pubSub       *pubsub.PubSub
+	// Networking
+	ctx    context.Context
+	call   md.LobbyCallback
+	host   host.Host
+	pubSub *pubsub.PubSub
+
+	// Connection
+	router       *net.ProtocolRouter
 	topic        *pubsub.Topic
 	topicHandler *pubsub.TopicEventHandler
 	selfPeer     *md.Peer
@@ -38,10 +40,9 @@ type Lobby struct {
 }
 
 // ^ Join Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
-func Join(ctx context.Context, lobCall md.LobbyCallback, h host.Host, ps *pubsub.PubSub, sp *md.Peer, olc string) (*Lobby, error) {
+func Join(ctx context.Context, lobCall md.LobbyCallback, h host.Host, ps *pubsub.PubSub, sp *md.Peer, pr *net.ProtocolRouter) (*Lobby, error) {
 	// Join the pubsub Topic
-	lobbyName := "/sonr/lobby/" + olc
-	topic, err := ps.Join(lobbyName)
+	topic, err := ps.Join(pr.Topic(net.SetIDForLocal()))
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +60,7 @@ func Join(ctx context.Context, lobCall md.LobbyCallback, h host.Host, ps *pubsub
 
 	// Initialize Lobby for Peers
 	lobInfo := &md.Lobby{
-		Olc:   lobbyName,
+		Olc:   pr.OLC,
 		Size:  1,
 		Peers: make(map[string]*md.Peer),
 	}
@@ -68,9 +69,9 @@ func Join(ctx context.Context, lobCall md.LobbyCallback, h host.Host, ps *pubsub
 	lob := &Lobby{
 		ctx:          ctx,
 		call:         lobCall,
-		doneCh:       make(chan struct{}, 1),
 		pubSub:       ps,
 		host:         h,
+		router:       pr,
 		topic:        topic,
 		topicHandler: topicHandler,
 		sub:          sub,
@@ -80,7 +81,7 @@ func Join(ctx context.Context, lobCall md.LobbyCallback, h host.Host, ps *pubsub
 	}
 
 	// Create PeerService
-	peersvServer := gorpc.NewServer(h, protocol.ID("/sonr/lobby/exchange"))
+	peersvServer := gorpc.NewServer(h, pr.Exchange())
 	psv := ExchangeService{
 		updatePeer: lob.setPeer,
 		getUser:    lob.call.Peer,
@@ -105,7 +106,7 @@ func Join(ctx context.Context, lobCall md.LobbyCallback, h host.Host, ps *pubsub
 // ^ Helper: ID returns ONE Peer.ID in PubSub ^
 func (lob *Lobby) ID(q string) peer.ID {
 	// Iterate through PubSub in topic
-	for _, id := range lob.pubSub.ListPeers(lob.data.Olc) {
+	for _, id := range lob.pubSub.ListPeers(lob.router.Topic(net.SetIDForLocal())) {
 		// If Found Match
 		if id.String() == q {
 			return id

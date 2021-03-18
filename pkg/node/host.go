@@ -18,12 +18,15 @@ import (
 	sl "github.com/sonr-io/core/internal/lobby"
 	tf "github.com/sonr-io/core/internal/transfer"
 	md "github.com/sonr-io/core/pkg/models"
+	net "github.com/sonr-io/core/pkg/net"
 )
 
 // ^ Start Begins Running Libp2p Host ^
 func (n *Node) Start(opts *HostOptions) bool {
+	// IP Address
+	ip4 := net.IPv4()
+
 	// Get Private Key
-	ip4 := IPv4()
 	privKey, err := n.fs.GetPrivateKey()
 	if err != nil {
 		sentry.CaptureException(err)
@@ -118,11 +121,11 @@ func (n *Node) Bootstrap(opts *HostOptions) bool {
 
 	// Set Routing Discovery, Find Peers
 	routingDiscovery := disc.NewRoutingDiscovery(kadDHT)
-	disc.Advertise(n.ctx, routingDiscovery, opts.Point, discLimit.TTL(discoveryInterval))
-	go n.handlePeers(routingDiscovery, opts)
+	disc.Advertise(n.ctx, routingDiscovery, n.router.Point(), discLimit.TTL(discoveryInterval))
+	go n.handlePeers(routingDiscovery)
 
 	// Enter Lobby
-	if n.lobby, err = sl.Join(n.ctx, n.LobbyCallback(), n.host, n.pubSub, n.peer, opts.OLC); err != nil {
+	if n.lobby, err = sl.Join(n.ctx, n.LobbyCallback(), n.host, n.pubSub, n.peer, n.router); err != nil {
 		sentry.CaptureException(err)
 		n.error(err, "Joining Lobby")
 		n.call.OnReady(false)
@@ -130,7 +133,7 @@ func (n *Node) Bootstrap(opts *HostOptions) bool {
 	}
 
 	// Initialize Peer Connection
-	if n.peerConn, err = tf.Initialize(n.host, n.pubSub, n.fs, opts.OLC, n.TransferCallback()); err != nil {
+	if n.peerConn, err = tf.Initialize(n.host, n.pubSub, n.fs, n.router, n.TransferCallback()); err != nil {
 		sentry.CaptureException(err)
 		n.error(err, "Initializing Transfer Controller")
 		n.call.OnReady(false)
@@ -141,12 +144,12 @@ func (n *Node) Bootstrap(opts *HostOptions) bool {
 }
 
 // ^ Handles Peers in DHT ^
-func (n *Node) handlePeers(routingDiscovery *disc.RoutingDiscovery, opts *HostOptions) {
+func (n *Node) handlePeers(routingDiscovery *disc.RoutingDiscovery) {
 	for {
 		// Find peers in DHT
 		peersChan, err := routingDiscovery.FindPeers(
 			n.ctx,
-			opts.Point,
+			n.router.Point(),
 			discLimit.Limit(16),
 		)
 		if err != nil {

@@ -2,17 +2,13 @@ package node
 
 import (
 	"fmt"
-	"net"
-	"os"
 
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
 	"google.golang.org/protobuf/proto"
 
 	sentry "github.com/getsentry/sentry-go"
-	olc "github.com/google/open-location-code/go"
 	md "github.com/sonr-io/core/pkg/models"
 )
 
@@ -21,16 +17,10 @@ type HostOptions struct {
 	BootstrapAddrs []multiaddr.Multiaddr
 	Callback       Callback
 	ConnRequest    *md.ConnectionRequest
-	OLC            string
-	Point          string
-	Prefix         protocol.ID
 }
 
 // @ Returns new Host Config
 func NewHostOpts(req *md.ConnectionRequest) (*HostOptions, error) {
-	// Get Open Location Code
-	olcValue := olc.Encode(float64(req.Latitude), float64(req.Longitude), 8)
-
 	// Create Bootstrapper List
 	var bootstrappers []multiaddr.Multiaddr
 	for _, s := range []string{
@@ -64,9 +54,6 @@ func NewHostOpts(req *md.ConnectionRequest) (*HostOptions, error) {
 	return &HostOptions{
 		BootstrapAddrs: bootstrappers,
 		ConnRequest:    req,
-		OLC:            olcValue,
-		Prefix:         protocol.ID("/sonr"),
-		Point:          fmt.Sprintf("/sonr/%s", olcValue),
 	}, nil
 }
 
@@ -83,37 +70,6 @@ func (ho *HostOptions) GetBootstrapAddrInfo() []peer.AddrInfo {
 		ds = append(ds, *info)
 	}
 	return ds
-}
-
-// @ Returns Node Public IPv4 Address
-func IPv4() string {
-	osHost, _ := os.Hostname()
-	addrs, _ := net.LookupIP(osHost)
-	ipv4Ref := "0.0.0.0"
-	// Iterate through addresses
-	for _, addr := range addrs {
-		// @ Set IPv4
-		if ipv4 := addr.To4(); ipv4 != nil {
-			ipv4Ref = ipv4.String()
-		}
-	}
-	return ipv4Ref
-}
-
-// @ Returns Node Public IPv6 Address
-func IPv6() string {
-	osHost, _ := os.Hostname()
-	addrs, _ := net.LookupIP(osHost)
-	ipv6Ref := "::"
-
-	// Iterate through addresses
-	for _, addr := range addrs {
-		// @ Set IPv4
-		if ipv6 := addr.To16(); ipv6 != nil {
-			ipv6Ref = ipv6.String()
-		}
-	}
-	return ipv6Ref
 }
 
 // ^ User Node Info ^ //
