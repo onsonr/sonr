@@ -133,7 +133,6 @@ func (pc *TransferController) Authorize(decision bool, contact *md.Contact, peer
 		// Send to Channel
 		pc.auth.respCh <- resp
 	}
-
 }
 
 // ^ Send Authorize transfer on RPC ^ //

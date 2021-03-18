@@ -65,7 +65,6 @@ func (lob *Lobby) handleMessages() {
 		lob.messages <- &m
 		md.GetState().NeedsWait()
 	}
-
 }
 
 // ^ 1a. processMessages handles message content and ticker ^

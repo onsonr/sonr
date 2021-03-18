@@ -39,8 +39,6 @@ func (ps *ExchangeService) ExchangeWith(ctx context.Context, args ExchangeArgs, 
 
 	// Update Peers
 	ps.updatePeer(remotePeer)
-
-	// Set Current Message
 	userPeer := ps.getUser()
 
 	// Convert Protobuf to bytes

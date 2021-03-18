@@ -39,7 +39,7 @@ type Lobby struct {
 	sub          *pubsub.Subscription
 }
 
-// ^ Join Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
+// ^ Join Joins/Subscribes to pubsub topic and returns Lobby ^
 func Join(ctx context.Context, lobCall md.LobbyCallback, h host.Host, ps *pubsub.PubSub, sp *md.Peer, pr *net.ProtocolRouter) (*Lobby, error) {
 	// Join the pubsub Topic
 	topic, err := ps.Join(pr.Topic(net.SetIDForLocal()))
@@ -53,16 +53,10 @@ func Join(ctx context.Context, lobCall md.LobbyCallback, h host.Host, ps *pubsub
 		return nil, err
 	}
 
+	// Create Top Handler
 	topicHandler, err := topic.EventHandler()
 	if err != nil {
 		return nil, err
-	}
-
-	// Initialize Lobby for Peers
-	lobInfo := &md.Lobby{
-		Olc:   pr.OLC,
-		Size:  1,
-		Peers: make(map[string]*md.Peer),
 	}
 
 	// Create Lobby Type
@@ -76,8 +70,13 @@ func Join(ctx context.Context, lobCall md.LobbyCallback, h host.Host, ps *pubsub
 		topicHandler: topicHandler,
 		sub:          sub,
 		selfPeer:     sp,
-		data:         lobInfo,
-		messages:     make(chan *md.LobbyEvent, ChatRoomBufSize),
+
+		messages: make(chan *md.LobbyEvent, ChatRoomBufSize),
+		data: &md.Lobby{
+			Olc:   pr.OLC,
+			Size:  1,
+			Peers: make(map[string]*md.Peer),
+		},
 	}
 
 	// Create PeerService
