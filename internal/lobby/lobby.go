@@ -99,7 +99,7 @@ func Join(ctx context.Context, lobCall md.LobbyCallback, h host.Host, ps *pubsub
 	// Start Reading Messages
 	go lob.handleEvents()
 	go lob.handleMessages()
-	// go lob.processMessages()
+	go lob.processMessages()
 	return lob, nil
 }
 

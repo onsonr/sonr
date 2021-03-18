@@ -117,6 +117,8 @@ func (n *Node) Bootstrap(opts *HostOptions) bool {
 	if !hasBootstrapped {
 		sentry.CaptureException(errors.New("Failed to connect to any bootstrap peers"))
 		return false
+	} else {
+		n.call.OnReady(true)
 	}
 
 	// Set Routing Discovery, Find Peers
@@ -173,8 +175,6 @@ func (n *Node) handlePeers(routingDiscovery *disc.RoutingDiscovery) {
 					if sw, ok := n.host.Network().(*swarm.Swarm); ok {
 						sw.Backoff().Clear(pi.ID)
 					}
-				} else {
-					n.call.OnReady(true)
 				}
 			}
 		}

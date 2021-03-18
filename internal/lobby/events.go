@@ -67,52 +67,38 @@ func (lob *Lobby) handleMessages() {
 		}
 
 		// Update Circle by event
-		if m.Event == md.LobbyEvent_UPDATE {
-			// Get Data
-			peer := m.Data
-
-			// Update Peer with new data
-			lob.data.Peers[peer.Id.Peer] = peer
-			lob.data.Count = int32(len(lob.data.Peers))
-			lob.data.Size = int32(len(lob.data.Peers)) + 1 // Account for User
-
-			// Callback with Updated Data
-			lob.Refresh()
-		}
+		lob.messages <- &m
 		md.GetState().NeedsWait()
 	}
 
 }
 
-// // ^ 1a. processMessages handles message content and ticker ^
-// func (lob *Lobby) processMessages() {
-// 	for {
-// 		select {
-// 		// @ when we receive a message from the lobby room
-// 		case m := <-lob.messages:
-// 			// Update Circle by event
-// 			if m.Event == md.LobbyEvent_UPDATE {
-// 				// Get Data
-// 				peer := m.Data
+// ^ 1a. processMessages handles message content and ticker ^
+func (lob *Lobby) processMessages() {
+	for {
+		select {
+		// @ when we receive a message from the lobby room
+		case m := <-lob.messages:
+			// Update Circle by event
+			if m.Event == md.LobbyEvent_UPDATE {
+				// Get Data
+				peer := m.Data
 
-// 				// Update Peer with new data
-// 				lob.data.Peers[peer.Id.Peer] = peer
-// 				lob.data.Count = int32(len(lob.data.Peers))
-// 				lob.data.Size = int32(len(lob.data.Peers)) + 1 // Account for User
+				// Update Peer with new data
+				lob.data.Peers[peer.Id.Peer] = peer
+				lob.data.Count = int32(len(lob.data.Peers))
+				lob.data.Size = int32(len(lob.data.Peers)) + 1 // Account for User
 
-// 				// Callback with Updated Data
-// 				lob.Refresh()
-// 			}
+				// Callback with Updated Data
+				lob.Refresh()
+			}
 
-// 		case <-lob.ctx.Done():
-// 			return
-
-// 		case <-lob.doneCh:
-// 			return
-// 		}
-// 		md.GetState().NeedsWait()
-// 	}
-// }
+		case <-lob.ctx.Done():
+			return
+		}
+		md.GetState().NeedsWait()
+	}
+}
 
 // ^ setPeer changes Peer values in Lobby ^
 func (lob *Lobby) setPeer(peer *md.Peer) {

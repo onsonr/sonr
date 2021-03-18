@@ -15,7 +15,6 @@ import (
 // ^ Host Config ^ //
 type HostOptions struct {
 	BootstrapAddrs []multiaddr.Multiaddr
-	Callback       Callback
 	ConnRequest    *md.ConnectionRequest
 }
 
