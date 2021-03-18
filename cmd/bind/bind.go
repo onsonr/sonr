@@ -10,7 +10,8 @@ import (
 
 // * Interface: Callback is implemented from Plugin to receive updates * //
 type Callback interface {
-	OnReady(data bool)         // Node Host Connection Result
+	OnConnected(data bool)     // Node Host has Bootstrapped
+	OnReady(data bool)         // Node Host has Bootstrapped
 	OnRefreshed(data []byte)   // Lobby Updates
 	OnEvent(data []byte)       // Lobby Event
 	OnInvited(data []byte)     // User Invited
@@ -30,6 +31,7 @@ type MobileNode struct {
 	node            *sn.Node
 	hasStarted      bool
 	hasBootstrapped bool
+	hostOpts        *sn.HostOptions
 }
 
 // @ Create New Mobile Node
@@ -41,6 +43,11 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 		log.Fatalln(err)
 	}
 
+	hostOpts, err := sn.NewHostOpts(&req)
+	if err != nil {
+		log.Println(err)
+	}
+
 	// Create New Sonr Client
 	node := sn.NewNode(&req, call)
 
@@ -49,6 +56,7 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 		node:            node,
 		hasStarted:      false,
 		hasBootstrapped: false,
+		hostOpts:        hostOpts,
 	}
 }
 
@@ -58,7 +66,7 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 // @ Start Host
 func (mn *MobileNode) Connect() {
 	// Start Node
-	result := mn.node.Start()
+	result := mn.node.Start(mn.hostOpts)
 	if result {
 		// Set Peer Info
 		peer := mn.node.Peer()
@@ -70,7 +78,7 @@ func (mn *MobileNode) Connect() {
 		mn.hasStarted = true
 
 		// Bootstrap to Peers
-		strapResult := mn.node.Bootstrap()
+		strapResult := mn.node.Bootstrap(mn.hostOpts)
 		if strapResult {
 			mn.hasBootstrapped = true
 		} else {

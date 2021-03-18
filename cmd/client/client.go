@@ -16,6 +16,7 @@ const interval = 500 * time.Millisecond
 
 // @ Interface: Callback is implemented from Plugin to receive updates
 type Callback interface {
+	OnConnected(data bool)     // Node Host has Bootstrapped
 	OnReady(data bool)         // Node Host Connection Result
 	OnRefreshed(data []byte)   // Lobby Updates
 	OnEvent(data []byte)       // Lobby Event

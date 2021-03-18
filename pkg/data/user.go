@@ -17,9 +17,9 @@ import (
 const K_SONR_USER_PATH = "user.snr"
 
 // ^ GetPeerID returns ID Reference ^ //
-func (sfs *SonrFS) GetPeerID(connEvent *md.ConnectionRequest, profile *md.Profile, peerID string) *md.Peer_ID {
+func (sfs *SonrFS) GetPeerID(device *md.Device, profile *md.Profile, peerID string) *md.Peer_ID {
 	// Initialize
-	deviceID := connEvent.Device.GetId()
+	deviceID := device.GetId()
 
 	// Get User ID
 	userID := fnv.New32a()

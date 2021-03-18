@@ -18,13 +18,12 @@ import (
 
 // ^ Host Config ^ //
 type HostOptions struct {
-	BootstrapAddrInfo []peer.AddrInfo
-	BootstrapAddrs    []multiaddr.Multiaddr
-	Callback          Callback
-	ConnRequest       *md.ConnectionRequest
-	OLC               string
-	Point             string
-	Prefix            protocol.ID
+	BootstrapAddrs []multiaddr.Multiaddr
+	Callback       Callback
+	ConnRequest    *md.ConnectionRequest
+	OLC            string
+	Point          string
+	Prefix         protocol.ID
 }
 
 // @ Returns new Host Config
@@ -61,27 +60,29 @@ func NewHostOpts(req *md.ConnectionRequest) (*HostOptions, error) {
 		bootstrappers = append(bootstrappers, ma)
 	}
 
-	// Get Address Info
-	ds := make([]peer.AddrInfo, 0, len(bootstrappers))
-	for i := range bootstrappers {
-		info, err := peer.AddrInfoFromP2pAddr(bootstrappers[i])
+	// Set Host Options
+	return &HostOptions{
+		BootstrapAddrs: bootstrappers,
+		ConnRequest:    req,
+		OLC:            olcValue,
+		Prefix:         protocol.ID("/sonr"),
+		Point:          fmt.Sprintf("/sonr/%s", olcValue),
+	}, nil
+}
+
+// ^ Return Bootstrap List Address Info ^ //
+func (ho *HostOptions) GetBootstrapAddrInfo() []peer.AddrInfo {
+	ds := make([]peer.AddrInfo, 0, len(ho.BootstrapAddrs))
+	for i := range ho.BootstrapAddrs {
+		info, err := peer.AddrInfoFromP2pAddr(ho.BootstrapAddrs[i])
 		if err != nil {
 			sentry.CaptureException(errors.Wrap(err, fmt.Sprintf("failed to convert bootstrapper address to peer addr info addr: %s",
-				bootstrappers[i].String())))
+				ho.BootstrapAddrs[i].String())))
 			continue
 		}
 		ds = append(ds, *info)
 	}
-
-	// Set Host Options
-	return &HostOptions{
-		BootstrapAddrs:    bootstrappers,
-		BootstrapAddrInfo: ds,
-		ConnRequest:       req,
-		OLC:               olcValue,
-		Prefix:            protocol.ID("/sonr"),
-		Point:             fmt.Sprintf("/sonr/%s", olcValue),
-	}, nil
+	return ds
 }
 
 // @ Returns Node Public IPv4 Address
@@ -118,7 +119,7 @@ func IPv6() string {
 // ^ User Node Info ^ //
 // @ ID Returns Peer ID
 func (n *Node) ID() *md.Peer_ID {
-	return n.fs.GetPeerID(n.hostOpts.ConnRequest, n.profile, n.host.ID().String())
+	return n.fs.GetPeerID(n.device, n.profile, n.host.ID().String())
 }
 
 // @ Info returns ALL Peer Data as Bytes

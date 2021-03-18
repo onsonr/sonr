@@ -34,7 +34,6 @@ type Node struct {
 
 	// Networking Properties
 	host         host.Host
-	hostOpts     *HostOptions
 	kadDHT       *dht.IpfsDHT
 	pubSub       *pubsub.PubSub
 	status       md.Status
@@ -71,12 +70,6 @@ func NewNode(req *md.ConnectionRequest, call Callback) *Node {
 
 	// Set File System
 	node.fs = dq.InitFS(req, node.profile, node.FSCallback())
-
-	// Set Host Options
-	node.hostOpts, err = NewHostOpts(req)
-	if err != nil {
-		sentry.CaptureException(err)
-	}
 
 	// Set Default Properties
 	node.contact = req.Contact
