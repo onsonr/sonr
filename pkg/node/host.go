@@ -75,7 +75,7 @@ func (n *Node) Start() bool {
 // ^ Bootstrap begins bootstrap with peers ^
 func (n *Node) Bootstrap() bool {
 	// Create Bootstrapper Info
-	bootstrappers := dht.GetDefaultBootstrapPeerAddrInfos()
+	bootstrappers := n.hostOpts.BootstrapAddrInfo
 
 	// Set DHT
 	kadDHT, err := dht.New(
