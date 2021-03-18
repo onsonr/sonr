@@ -10,12 +10,6 @@ import (
 	md "github.com/sonr-io/core/pkg/models"
 )
 
-// ******************* //
-// ******************* //
-// ** OUTGOING FILE ** //
-// ******************* //
-// ******************* //
-
 // ^ File that safely sets metadata and thumbnail in routine ^ //
 type ProcessedFile struct {
 	// References
