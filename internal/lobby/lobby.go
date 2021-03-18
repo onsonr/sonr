@@ -2,9 +2,11 @@ package lobby
 
 import (
 	"context"
+	"errors"
 	"log"
 
 	"github.com/libp2p/go-libp2p-core/host"
+	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	gorpc "github.com/libp2p/go-libp2p-gorpc"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
@@ -80,7 +82,7 @@ func Join(ctx context.Context, lobCall md.LobbyCallback, h host.Host, ps *pubsub
 	// Create PeerService
 	peersvServer := gorpc.NewServer(h, protocol.ID("/sonr/lobby/exchange"))
 	psv := ExchangeService{
-		updatePeer: lob.updatePeer,
+		updatePeer: lob.setPeer,
 		getUser:    lob.call.Peer,
 	}
 
@@ -96,8 +98,45 @@ func Join(ctx context.Context, lobCall md.LobbyCallback, h host.Host, ps *pubsub
 	// Start Reading Messages
 	go lob.handleEvents()
 	go lob.handleMessages()
-	go lob.processMessages()
+	// go lob.processMessages()
 	return lob, nil
+}
+
+// ^ Helper: ID returns ONE Peer.ID in PubSub ^
+func (lob *Lobby) ID(q string) peer.ID {
+	// Iterate through PubSub in topic
+	for _, id := range lob.pubSub.ListPeers(lob.data.Olc) {
+		// If Found Match
+		if id.String() == q {
+			return id
+		}
+	}
+	return ""
+}
+
+// ^ Helper: Peer returns ONE Peer in Lobby ^
+func (lob *Lobby) Peer(q string) *md.Peer {
+	// Iterate Through Peers, Return Matched Peer
+	for _, peer := range lob.data.Peers {
+		// If Found Match
+		if peer.Id.Peer == q {
+			return peer
+		}
+	}
+	return nil
+}
+
+// ^ Helper: Find returns Pointer to Peer.ID and Peer ^
+func (lob *Lobby) Find(q string) (peer.ID, *md.Peer, error) {
+	// Retreive Data
+	peer := lob.Peer(q)
+	id := lob.ID(q)
+
+	if peer == nil || id == "" {
+		return "", nil, errors.New("Search Error, peer was not found in map.")
+	}
+
+	return id, peer, nil
 }
 
 // ^ Send publishes a message to the pubsub topic OLC ^

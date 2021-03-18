@@ -30,7 +30,7 @@ type ExchangeService struct {
 }
 
 // ^ Calls Invite on Remote Peer ^ //
-func (ps *ExchangeService) ExchangeWith(ctx context.Context, args ExchangeArgs, reply *ExchangeResponse) error {
+func (ps *ExchangeService) GotExchangeWith(ctx context.Context, args ExchangeArgs, reply *ExchangeResponse) error {
 	// Peer Data
 	remotePeer := &md.Peer{}
 	err := proto.Unmarshal(args.Data, remotePeer)
@@ -71,7 +71,7 @@ func (lob *Lobby) Exchange(id peer.ID) {
 	args.Data = msgBytes
 
 	// Call to Peer
-	err = rpcClient.Call(id, "ExchangeService", "ExchangeWith", args, &reply)
+	err = rpcClient.Call(id, "ExchangeService", "GotExchangeWith", args, &reply)
 	if err != nil {
 		lob.call.Error(err, "Exchange")
 	}
@@ -79,11 +79,12 @@ func (lob *Lobby) Exchange(id peer.ID) {
 	// Received Message
 	remotePeer := &md.Peer{}
 	err = proto.Unmarshal(reply.Data, remotePeer)
+
+	// Send Error
 	if err != nil {
-		// Send Error
 		lob.call.Error(err, "Exchange")
 	}
 
-	// Update Peers
-	lob.updatePeer(remotePeer)
+	// Update Peer with new data
+	lob.setPeer(remotePeer)
 }

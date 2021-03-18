@@ -34,7 +34,7 @@ type AuthService struct {
 }
 
 // ^ Calls Invite on Remote Peer ^ //
-func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthResponse) error {
+func (as *AuthService) GotInvited(ctx context.Context, args AuthArgs, reply *AuthResponse) error {
 	// Received Message
 	receivedMessage := &md.AuthInvite{}
 	err := proto.Unmarshal(args.Data, receivedMessage)
@@ -84,7 +84,7 @@ func (pc *TransferController) Request(h host.Host, id peer.ID, msgBytes []byte) 
 
 	// Call to Peer
 	done := make(chan *gorpc.Call, 1)
-	err := rpcClient.Go(id, "AuthService", "Invited", args, &reply, done)
+	err := rpcClient.Go(id, "AuthService", "GotInvited", args, &reply, done)
 
 	// Await Response
 	call := <-done

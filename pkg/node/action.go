@@ -1,14 +1,91 @@
 package node
 
 import (
+	"context"
+	"log"
 	"math"
 	"time"
 
 	sentry "github.com/getsentry/sentry-go"
-	md "github.com/sonr-io/core/pkg/models"
+	"github.com/libp2p/go-libp2p-core/host"
+	dht "github.com/libp2p/go-libp2p-kad-dht"
+	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
+
+	sl "github.com/sonr-io/core/internal/lobby"
+	tr "github.com/sonr-io/core/internal/transfer"
+	dq "github.com/sonr-io/core/pkg/data"
+	md "github.com/sonr-io/core/pkg/models"
 )
+
+const discoveryInterval = time.Second * 3
+const gracePeriod = time.Second * 30
+
+// ^ Struct: Main Node handles Networking/Identity/Streams ^
+type Node struct {
+	// Properties
+	ctx     context.Context
+	contact *md.Contact
+	device  *md.Device
+	fs      *dq.SonrFS
+	peer    *md.Peer
+	profile *md.Profile
+
+	// Networking Properties
+	connectivity md.Connectivity
+	host         host.Host
+	hostOpts     *HostOptions
+	kadDHT       *dht.IpfsDHT
+	pubSub       *pubsub.PubSub
+	status       md.Status
+
+	// References
+	call     Callback
+	lobby    *sl.Lobby
+	peerConn *tr.TransferController
+}
+
+// ^ NewNode Initializes Node with a host and default properties ^
+func NewNode(req *md.ConnectionRequest, call Callback) *Node {
+	// Initialize Node Logging
+	err := sentry.Init(sentry.ClientOptions{
+		Dsn: "https://cbf88b01a5a5468fa77101f7dfc54f20@o549479.ingest.sentry.io/5672329",
+	})
+	if err != nil {
+		log.Fatalf("sentry.Init: %s", err)
+	}
+
+	// Create Context and Set Node Properties
+	node := new(Node)
+	node.ctx = context.Background()
+	node.call = call
+
+	// Create New Profile from Request
+	node.profile = &md.Profile{
+		Username:  req.GetUsername(),
+		FirstName: req.Contact.GetFirstName(),
+		LastName:  req.Contact.GetLastName(),
+		Picture:   req.Contact.GetPicture(),
+		Platform:  req.Device.GetPlatform(),
+	}
+
+	// Set File System
+	node.connectivity = req.GetConnectivity()
+	node.fs = dq.InitFS(req, node.profile, node.queued, node.multiQueued, node.error)
+
+	// Set Host Options
+	node.hostOpts, err = NewHostOpts(req)
+	if err != nil {
+		sentry.CaptureException(err)
+	}
+
+	// Set Default Properties
+	node.contact = req.Contact
+	node.device = req.Device
+	node.status = md.Status_NONE
+	return node
+}
 
 // ^ Update proximity/direction and Notify Lobby ^ //
 func (n *Node) Update(facing float64, heading float64) {
@@ -186,9 +263,4 @@ func (n *Node) Stop() {
 		n.peerConn.Cancel(n.peer)
 	}
 	n.host.Close()
-}
-
-// ^ Update Host for New Network Connectivity ^
-func (n *Node) NetworkSwitch(conn md.Connectivity) {
-
 }

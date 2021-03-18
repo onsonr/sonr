@@ -1,97 +1,24 @@
 package node
 
 import (
-	"context"
 	"fmt"
-	"log"
 	"time"
 
-	sentry "github.com/getsentry/sentry-go"
 	"github.com/libp2p/go-libp2p"
+	"github.com/pkg/errors"
+
+	sentry "github.com/getsentry/sentry-go"
 	connmgr "github.com/libp2p/go-libp2p-connmgr"
 	discLimit "github.com/libp2p/go-libp2p-core/discovery"
-	"github.com/libp2p/go-libp2p-core/host"
-	discovery "github.com/libp2p/go-libp2p-discovery"
+	disc "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	quic "github.com/libp2p/go-libp2p-quic-transport"
 	swarm "github.com/libp2p/go-libp2p-swarm"
-	"github.com/pkg/errors"
-
 	sl "github.com/sonr-io/core/internal/lobby"
 	tf "github.com/sonr-io/core/internal/transfer"
-	tr "github.com/sonr-io/core/internal/transfer"
-	dq "github.com/sonr-io/core/pkg/data"
 	md "github.com/sonr-io/core/pkg/models"
 )
-
-const discoveryInterval = time.Second * 3
-const gracePeriod = time.Second * 30
-
-// ^ Struct: Main Node handles Networking/Identity/Streams ^
-type Node struct {
-	// Properties
-	ctx     context.Context
-	contact *md.Contact
-	device  *md.Device
-	fs      *dq.SonrFS
-	peer    *md.Peer
-	profile *md.Profile
-
-	// Networking Properties
-	connectivity md.Connectivity
-	host         host.Host
-	hostOpts     *HostOptions
-	kadDHT       *dht.IpfsDHT
-	pubSub       *pubsub.PubSub
-	status       md.Status
-
-	// References
-	call     Callback
-	lobby    *sl.Lobby
-	peerConn *tr.TransferController
-}
-
-// ^ NewNode Initializes Node with a host and default properties ^
-func NewNode(req *md.ConnectionRequest, call Callback) *Node {
-	// Initialize Node Logging
-	err := sentry.Init(sentry.ClientOptions{
-		Dsn: "https://cbf88b01a5a5468fa77101f7dfc54f20@o549479.ingest.sentry.io/5672329",
-	})
-	if err != nil {
-		log.Fatalf("sentry.Init: %s", err)
-	}
-
-	// Create Context and Set Node Properties
-	node := new(Node)
-	node.ctx = context.Background()
-	node.call = call
-
-	// Create New Profile from Request
-	node.profile = &md.Profile{
-		Username:  req.GetUsername(),
-		FirstName: req.Contact.GetFirstName(),
-		LastName:  req.Contact.GetLastName(),
-		Picture:   req.Contact.GetPicture(),
-		Platform:  req.Device.GetPlatform(),
-	}
-
-	// Set File System
-	node.connectivity = req.GetConnectivity()
-	node.fs = dq.InitFS(req, node.profile, node.queued, node.multiQueued, node.error)
-
-	// Set Host Options
-	node.hostOpts, err = NewHostOpts(req)
-	if err != nil {
-		sentry.CaptureException(err)
-	}
-
-	// Set Default Properties
-	node.contact = req.Contact
-	node.device = req.Device
-	node.status = md.Status_NONE
-	return node
-}
 
 // ^ Start Begins Running Libp2p Host ^
 func (n *Node) Start() bool {
@@ -188,8 +115,8 @@ func (n *Node) Bootstrap() bool {
 	}
 
 	// Set Routing Discovery, Find Peers
-	routingDiscovery := discovery.NewRoutingDiscovery(kadDHT)
-	discovery.Advertise(n.ctx, routingDiscovery, n.hostOpts.Point, discLimit.TTL(discoveryInterval))
+	routingDiscovery := disc.NewRoutingDiscovery(kadDHT)
+	disc.Advertise(n.ctx, routingDiscovery, n.hostOpts.Point, discLimit.TTL(discoveryInterval))
 	go n.handlePeers(routingDiscovery)
 
 	// Enter Lobby
@@ -212,7 +139,7 @@ func (n *Node) Bootstrap() bool {
 }
 
 // ^ Handles Peers in DHT ^
-func (n *Node) handlePeers(routingDiscovery *discovery.RoutingDiscovery) {
+func (n *Node) handlePeers(routingDiscovery *disc.RoutingDiscovery) {
 	for {
 		// Find peers in DHT
 		peersChan, err := routingDiscovery.FindPeers(
