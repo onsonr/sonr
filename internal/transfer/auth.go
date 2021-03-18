@@ -73,10 +73,10 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 	return nil
 }
 
-// ^ Send Request to a Peer ^ //
-func (pc *TransferController) Request(h host.Host, id peer.ID, msgBytes []byte) {
+// ^ Send InviteRequest to a Peer ^ //
+func (pc *TransferController) InviteRequest(h host.Host, id peer.ID, msgBytes []byte) {
 	// Initialize Data
-	rpcClient := gorpc.NewClient(h, pc.router.Transfer())
+	rpcClient := gorpc.NewClient(h, pc.router.Auth())
 	var reply AuthResponse
 	var args AuthArgs
 	args.Data = msgBytes

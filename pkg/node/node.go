@@ -145,7 +145,7 @@ func (n *Node) Invite(req *md.InviteRequest) {
 				sentry.CaptureException(err)
 			}
 
-			n.peerConn.Request(n.host, id, msgBytes)
+			n.peerConn.InviteRequest(n.host, id, msgBytes)
 		}(&invMsg)
 	} else {
 		// File Transfer

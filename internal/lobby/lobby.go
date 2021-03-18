@@ -104,6 +104,18 @@ func Join(ctx context.Context, lobCall md.LobbyCallback, h host.Host, ps *pubsub
 }
 
 // ^ Helper: ID returns ONE Peer.ID in PubSub ^
+func (lob *Lobby) HasPeer(q string) peer.ID {
+	// Iterate through PubSub in topic
+	for _, id := range lob.pubSub.ListPeers(lob.router.Topic(net.SetIDForLocal())) {
+		// If Found Match
+		if id.String() == q {
+			return id
+		}
+	}
+	return ""
+}
+
+// ^ Helper: ID returns ONE Peer.ID in PubSub ^
 func (lob *Lobby) ID(q string) peer.ID {
 	// Iterate through PubSub in topic
 	for _, id := range lob.pubSub.ListPeers(lob.router.Topic(net.SetIDForLocal())) {
