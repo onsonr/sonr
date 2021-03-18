@@ -85,5 +85,5 @@ func (lob *Lobby) Exchange(id peer.ID) {
 	}
 
 	// Update Peer with new data
-	lob.setPeer(remotePeer)
+	lob.updatePeer(remotePeer)
 }

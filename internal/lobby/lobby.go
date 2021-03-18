@@ -83,7 +83,7 @@ func Join(ctx context.Context, lobCall md.LobbyCallback, h host.Host, ps *pubsub
 	// Create PeerService
 	peersvServer := gorpc.NewServer(h, pr.Exchange())
 	psv := ExchangeService{
-		updatePeer: lob.setPeer,
+		updatePeer: lob.updatePeer,
 		getUser:    lob.call.Peer,
 	}
 
@@ -104,15 +104,15 @@ func Join(ctx context.Context, lobCall md.LobbyCallback, h host.Host, ps *pubsub
 }
 
 // ^ Helper: ID returns ONE Peer.ID in PubSub ^
-func (lob *Lobby) HasPeer(q string) peer.ID {
+func (lob *Lobby) HasPeer(q string) bool {
 	// Iterate through PubSub in topic
 	for _, id := range lob.pubSub.ListPeers(lob.router.Topic(net.SetIDForLocal())) {
 		// If Found Match
 		if id.String() == q {
-			return id
+			return true
 		}
 	}
-	return ""
+	return false
 }
 
 // ^ Helper: ID returns ONE Peer.ID in PubSub ^
