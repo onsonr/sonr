@@ -37,7 +37,7 @@ type SonrFS struct {
 }
 
 // ^ Method Initializes Root Sonr Directory ^ //
-func InitFS(connEvent *md.ConnectionRequest, profile *md.Profile, qc md.OnQueued, mqc md.OnMultiQueued, ec md.OnError) *SonrFS {
+func InitFS(connEvent *md.ConnectionRequest, profile *md.Profile, callback md.FileCallback) *SonrFS {
 	// Initialize
 	var sonrPath string
 	var hasInitialized bool
@@ -66,7 +66,6 @@ func InitFS(connEvent *md.ConnectionRequest, profile *md.Profile, qc md.OnQueued
 	}
 
 	// Create SFS
-	callback := md.NewFileCallback(qc, mqc, ec)
 	sfs := &SonrFS{
 		Initialized: hasInitialized,
 		Downloads:   connEvent.Directories.Downloads,

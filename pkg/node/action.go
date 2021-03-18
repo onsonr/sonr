@@ -33,7 +33,6 @@ type Node struct {
 	profile *md.Profile
 
 	// Networking Properties
-	connectivity md.Connectivity
 	host         host.Host
 	hostOpts     *HostOptions
 	kadDHT       *dht.IpfsDHT
@@ -71,8 +70,7 @@ func NewNode(req *md.ConnectionRequest, call Callback) *Node {
 	}
 
 	// Set File System
-	node.connectivity = req.GetConnectivity()
-	node.fs = dq.InitFS(req, node.profile, node.queued, node.multiQueued, node.error)
+	node.fs = dq.InitFS(req, node.profile, node.FSCallback())
 
 	// Set Host Options
 	node.hostOpts, err = NewHostOpts(req)

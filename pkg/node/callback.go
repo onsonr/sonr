@@ -23,6 +23,11 @@ type Callback interface {
 	OnError(data []byte)       // Internal Error
 }
 
+// ^ Passes node methods for FS/FQ ^
+func (n *Node) FSCallback() md.FileCallback {
+	return md.NewFileCallback(n.queued, n.multiQueued, n.error)
+}
+
 // ^ Passes node methods for Lobby ^
 func (n *Node) LobbyCallback() md.LobbyCallback {
 	return md.NewLobbyCallback(n.call.OnEvent, n.call.OnRefreshed, n.error, n.Peer)
