@@ -155,7 +155,6 @@ func (n *Node) handlePeers(routingDiscovery *disc.RoutingDiscovery) {
 			discLimit.Limit(16),
 		)
 		if err != nil {
-			sentry.CaptureException(err)
 			n.error(err, "Finding DHT Peers")
 			n.call.OnReady(false)
 			return
