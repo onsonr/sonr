@@ -141,7 +141,6 @@ func (n *Node) Bootstrap(opts *HostOptions) bool {
 		n.call.OnReady(false)
 		return false
 	}
-
 	return true
 }
 
