@@ -128,6 +128,22 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 	}
 }
 
+// @ Create a New Group
+func (mn *MobileNode) CreateGroup() string {
+	if mn.IsReady() {
+		w := mn.node.CreateGroup()
+		return w
+	}
+	return ""
+}
+
+// @ Join Existing Group
+func (mn *MobileNode) JoinGroup(data string) {
+	if mn.IsReady() {
+		mn.node.JoinGroup(data)
+	}
+}
+
 // @ Respond to an Invitation
 func (mn *MobileNode) Respond(decision bool) {
 	if mn.IsReady() {

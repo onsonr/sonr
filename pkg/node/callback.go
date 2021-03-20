@@ -53,7 +53,7 @@ func (sn *Node) queued(card *md.TransferCard, req *md.InviteRequest) {
 	currFile := sn.fs.CurrentFile()
 	if currFile != nil {
 		card.Status = md.TransferCard_INVITE
-		sn.peerConn.NewOutgoing(currFile)
+		sn.transfer.NewOutgoing(currFile)
 
 		// Create Invite Message
 		invMsg := md.AuthInvite{
@@ -70,7 +70,7 @@ func (sn *Node) queued(card *md.TransferCard, req *md.InviteRequest) {
 				sn.error(err, "Marshal")
 			}
 
-			sn.peerConn.RequestInvite(sn.host, id, msgBytes)
+			sn.transfer.RequestInvite(sn.host, id, msgBytes)
 		}(&invMsg)
 	} else {
 		sn.error(errors.New("No current file"), "internal:queued")
@@ -91,7 +91,7 @@ func (sn *Node) multiQueued(card *md.TransferCard, req *md.InviteRequest, count 
 	currFile := sn.fs.CurrentFile()
 	if currFile != nil {
 		card.Status = md.TransferCard_INVITE
-		sn.peerConn.NewOutgoing(currFile)
+		sn.transfer.NewOutgoing(currFile)
 
 		// Create Invite Message
 		invMsg := md.AuthInvite{
@@ -108,7 +108,7 @@ func (sn *Node) multiQueued(card *md.TransferCard, req *md.InviteRequest, count 
 				sn.error(err, "Marshal")
 			}
 
-			sn.peerConn.RequestInvite(sn.host, id, msgBytes)
+			sn.transfer.RequestInvite(sn.host, id, msgBytes)
 		}(&invMsg)
 	} else {
 		sn.error(errors.New("No current file"), "internal:multiQueued")

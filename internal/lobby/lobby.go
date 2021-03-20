@@ -73,9 +73,10 @@ func Join(ctx context.Context, lobCall md.LobbyCallback, h host.Host, ps *pubsub
 
 		messages: make(chan *md.LobbyEvent, ChatRoomBufSize),
 		data: &md.Lobby{
-			Olc:   pr.OLC,
-			Size:  1,
-			Peers: make(map[string]*md.Peer),
+			Olc:    pr.OLC,
+			Size:   1,
+			Peers:  make(map[string]*md.Peer),
+			Groups: make(map[string]*md.Group),
 		},
 	}
 

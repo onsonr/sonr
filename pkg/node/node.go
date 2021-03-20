@@ -2,6 +2,7 @@ package node
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"math"
@@ -44,7 +45,7 @@ type Node struct {
 	// References
 	call     Callback
 	lobby    *sl.Lobby
-	peerConn *tr.TransferController
+	transfer *tr.TransferController
 }
 
 // ^ NewNode Initializes Node with a host and default properties ^
@@ -146,7 +147,7 @@ func (n *Node) Invite(req *md.InviteRequest) {
 				sentry.CaptureException(err)
 			}
 
-			n.peerConn.RequestInvite(n.host, id, msgBytes)
+			n.transfer.RequestInvite(n.host, id, msgBytes)
 		}(&invMsg)
 	} else {
 		// File Transfer
@@ -157,25 +158,49 @@ func (n *Node) Invite(req *md.InviteRequest) {
 	n.status = md.Status_PENDING
 }
 
+// ^ Create Group Returns Words ^ //
 func (n *Node) CreateGroup() string {
-	// Return Default Option
-	_, w, err := net.RandomWords("english", 4)
-	if err != nil {
-		return "brax day test one"
+	// Validate
+	if n.lobby != nil {
+		// Return Default Option
+		_, w, err := net.RandomWords("english", 4)
+		if err != nil {
+			return "brax day test one"
+		}
+
+		// Return Split Words Join Group in Lobby
+		words := fmt.Sprintf("%s-%s-%s-%s", w[0], w[1], w[2], w[3])
+		err = n.lobby.JoinGroup(words)
+		if err != nil {
+			sentry.CaptureException(err)
+		}
+		return words
 	}
 
-	// Return Split Words
-	return fmt.Sprintf("%s %s %s %s", w[0], w[1], w[2], w[3])
+	// Lobby non-existent
+	sentry.CaptureException(errors.New("User not in a lobby"))
+	return ""
 }
 
+// ^ Join Group with Words ^ //
 func (n *Node) JoinGroup(data string) {
+	// Validate
+	if n.lobby != nil {
+		// Join Group in Lobby
+		err := n.lobby.JoinGroup(data)
+		if err != nil {
+			sentry.CaptureException(err)
+		}
+	}
 
+	// Lobby non-existent
+	sentry.CaptureException(errors.New("User not in a lobby"))
 }
 
 // ^ Respond to an Invitation ^ //
 func (n *Node) Respond(decision bool) {
 	// Send Response on PeerConnection
-	n.peerConn.Authorize(decision, n.contact, n.peer)
+	n.transfer.Authorize(decision, n.contact, n.peer)
 
 	// Update Status
 	if decision {
@@ -246,7 +271,7 @@ func (n *Node) SetContact(newContact *md.Contact) {
 func (n *Node) Pause() {
 	// Check if Response Is Invited
 	if n.status == md.Status_INVITED {
-		n.peerConn.Cancel(n.peer)
+		n.transfer.Cancel(n.peer)
 	}
 	err := n.lobby.Standby()
 	if err != nil {
@@ -270,7 +295,7 @@ func (n *Node) Resume() {
 func (n *Node) Stop() {
 	// Check if Response Is Invited
 	if n.status == md.Status_INVITED {
-		n.peerConn.Cancel(n.peer)
+		n.transfer.Cancel(n.peer)
 	}
 	n.host.Close()
 }
