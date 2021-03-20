@@ -1,6 +1,11 @@
 package data
 
 import (
+	"os"
+	"path/filepath"
+
+	"github.com/getsentry/sentry-go"
+	"github.com/pkg/errors"
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/pkg/models"
 )
@@ -8,57 +13,84 @@ import (
 // @ Maximum Files in Node Cache
 const maxFileBufferSize = 64
 
-type FileQueue struct {
-	files        []*sf.ProcessedFile
-	currentCount int
-	directories  *md.Directories
-	call         md.FileCallback
-	profile      *md.Profile
-}
-
-// ^ Initializes New Queue ^ //
-func InitQueue(dirs *md.Directories, p *md.Profile, qc md.OnQueued, mqc md.OnMultiQueued, ec md.OnError) *FileQueue {
-	callback := md.NewFileCallback(qc, mqc, ec)
-	return &FileQueue{
-		files:        make([]*sf.ProcessedFile, maxFileBufferSize),
-		currentCount: 0,
-		directories:  dirs,
-		call:         callback,
-		profile:      p,
-	}
-}
-
 // ^ Adds File Transfer from Invite Request ^ //
-func (fq *FileQueue) AddFromRequest(req *md.InviteRequest) {
+func (fq *SonrFS) AddFromRequest(req *md.InviteRequest) {
 	if req.Type == md.InviteRequest_File {
 		// Add Single File Transfer
-		safeFile := sf.NewProcessedFile(req, fq.profile, fq.call)
-		fq.files = append(fq.files, safeFile)
-		fq.currentCount = 1
+		safeFile := sf.NewProcessedFile(req, fq.Profile, fq.Call)
+
+		// Validate Files not Null
+		if safeFile != nil {
+			fq.Files = append(fq.Files, safeFile)
+			fq.CurrentCount = 1
+		} else {
+			fq.Call.Error(errors.New("Request or Profile not Provided"), "NewProcessedFile:GetFileInfo")
+		}
+
 	} else if req.Type == md.InviteRequest_MultiFiles {
 		// Add Batch File Transfer
-		safeFiles := sf.NewBatchProcessFiles(req, fq.profile, fq.call)
-		fq.files = append(fq.files, safeFiles...)
-		fq.currentCount = len(safeFiles)
+		safeFiles := sf.NewBatchProcessFiles(req, fq.Profile, fq.Call)
+
+		// Validate Files not Null
+		if safeFiles != nil {
+			fq.Files = append(fq.Files, safeFiles...)
+			fq.CurrentCount = len(safeFiles)
+		} else {
+			fq.Call.Error(errors.New("Request or Profile not Provided"), "NewProcessedFile:GetFileInfo")
+		}
 	}
 }
 
 // ^ CurrentFile returns last file in Processed Files ^ //
-func (fq *FileQueue) CurrentFile() *sf.ProcessedFile {
-	return fq.files[len(fq.files)-1]
+func (fq *SonrFS) CurrentFile() *sf.ProcessedFile {
+	if len(fq.Files) > 0 {
+		return fq.Files[len(fq.Files)-1]
+	} else {
+		return nil
+	}
 }
 
 // ^ Removes Last File ^ //
-func (fq *FileQueue) CompleteLast() {
-	if len(fq.files) > 0 {
-		fq.files = fq.files[:len(fq.files)-1]
+func (fq *SonrFS) CompleteLast() {
+	if len(fq.Files) > 0 {
+		fq.Files = fq.Files[:len(fq.Files)-1]
 	}
-	fq.currentCount = 0
+	fq.CurrentCount = 0
 }
 
 // ^ Reset Current Queued File Metadata ^ //
-func (fq *FileQueue) Reset() {
-	fq.files = nil
-	fq.files = make([]*sf.ProcessedFile, maxFileBufferSize)
-	fq.currentCount = 0
+func (fq *SonrFS) Reset() {
+	fq.Files = nil
+	fq.Files = make([]*sf.ProcessedFile, maxFileBufferSize)
+	fq.CurrentCount = 0
+}
+
+// ^ Write User Data at Path ^
+func (sfs *SonrFS) WriteFile(load md.Payload, props *md.TransferCard_Properties, data []byte) (string, string) {
+	// Create File Name
+	fileName := props.Name + "." + props.Mime.Subtype
+	var path string
+
+	// Check Load
+	if load == md.Payload_MEDIA {
+		path = filepath.Join(sfs.Temporary, fileName)
+	} else {
+		path = filepath.Join(sfs.Root, fileName)
+	}
+
+	// Check for User File at Path
+	file, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		sentry.CaptureException(err)
+	}
+
+	// Defer Close
+	defer file.Close()
+
+	// Write User Data to File
+	_, err = file.Write(data)
+	if err != nil {
+		sentry.CaptureException(err)
+	}
+	return fileName, path
 }

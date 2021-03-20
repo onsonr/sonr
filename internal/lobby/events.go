@@ -3,6 +3,7 @@ package lobby
 import (
 	"log"
 
+	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
@@ -54,24 +55,23 @@ func (lob *Lobby) handleMessages() {
 		}
 
 		// Construct message
-		notif := md.LobbyEvent{}
-		err = proto.Unmarshal(msg.Data, &notif)
+		m := md.LobbyEvent{}
+		err = proto.Unmarshal(msg.Data, &m)
 		if err != nil {
 			continue
 		}
 
-		// Send valid messages onto the Messages channel
-		lob.messages <- &notif
+		// Update Circle by event
+		lob.messages <- &m
 		md.GetState().NeedsWait()
 	}
-
 }
 
 // ^ 1a. processMessages handles message content and ticker ^
 func (lob *Lobby) processMessages() {
 	for {
 		select {
-		// ** when we receive a message from the lobby room **
+		// @ when we receive a message from the lobby room
 		case m := <-lob.messages:
 			// Update Circle by event
 			if m.Event == md.LobbyEvent_UPDATE {
@@ -81,10 +81,29 @@ func (lob *Lobby) processMessages() {
 
 		case <-lob.ctx.Done():
 			return
-
-		case <-lob.doneCh:
-			return
 		}
 		md.GetState().NeedsWait()
 	}
+}
+
+// ^ removePeer removes Peer from Map ^
+func (lob *Lobby) removePeer(id peer.ID) {
+	// Update Peer with new data
+	delete(lob.data.Peers, id.String())
+	lob.data.Count = int32(len(lob.data.Peers))
+	lob.data.Size = int32(len(lob.data.Peers)) + 1 // Account for User
+
+	// Callback with Updated Data
+	lob.Refresh()
+}
+
+// ^ updatePeer changes Peer values in Lobby ^
+func (lob *Lobby) updatePeer(peer *md.Peer) {
+	// Update Peer with new data
+	lob.data.Peers[peer.Id.Peer] = peer
+	lob.data.Count = int32(len(lob.data.Peers))
+	lob.data.Size = int32(len(lob.data.Peers)) + 1 // Account for User
+
+	// Callback with Updated Data
+	lob.Refresh()
 }

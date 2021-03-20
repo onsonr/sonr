@@ -3,9 +3,9 @@ package transfer
 import (
 	"context"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-core/protocol"
 	gorpc "github.com/libp2p/go-libp2p-gorpc"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
@@ -38,6 +38,7 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 	receivedMessage := &md.AuthInvite{}
 	err := proto.Unmarshal(args.Data, receivedMessage)
 	if err != nil {
+		sentry.CaptureException(err)
 		return err
 	}
 
@@ -56,6 +57,7 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 			// Convert Protobuf to bytes
 			msgBytes, err := proto.Marshal(m)
 			if err != nil {
+				sentry.CaptureException(err)
 				return err
 			}
 
@@ -71,10 +73,10 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 	return nil
 }
 
-// ^ Send Request to a Peer ^ //
-func (pc *TransferController) Request(h host.Host, id peer.ID, msgBytes []byte) {
+// ^ Send RequestInvite to a Peer ^ //
+func (pc *TransferController) RequestInvite(h host.Host, id peer.ID, msgBytes []byte) {
 	// Initialize Data
-	rpcClient := gorpc.NewClient(h, protocol.ID("/sonr/transfer/auth"))
+	rpcClient := gorpc.NewClient(h, pc.router.Auth())
 	var reply AuthResponse
 	var args AuthArgs
 	args.Data = msgBytes
@@ -86,6 +88,7 @@ func (pc *TransferController) Request(h host.Host, id peer.ID, msgBytes []byte) 
 	// Await Response
 	call := <-done
 	if call.Error != nil {
+		sentry.CaptureException(err)
 		pc.call.Error(err, "Request")
 	}
 
@@ -130,7 +133,6 @@ func (pc *TransferController) Authorize(decision bool, contact *md.Contact, peer
 		// Send to Channel
 		pc.auth.respCh <- resp
 	}
-
 }
 
 // ^ Send Authorize transfer on RPC ^ //
@@ -156,6 +158,7 @@ func (pc *TransferController) handleReply(data []byte) (bool, *md.Peer) {
 	err := proto.Unmarshal(data, &resp)
 	if err != nil {
 		pc.call.Error(err, "handleReply")
+		sentry.CaptureException(err)
 		return false, nil
 	}
 	return resp.Decision && resp.Type == md.AuthReply_Transfer, resp.From

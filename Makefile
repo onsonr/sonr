@@ -95,9 +95,9 @@ proto:
 	@echo "--------------------------------------------------------------"
 	@echo ""
 
-## [reset]     :   Cleans Gomobile, Removes Framworks from Plugin, and Initializes Gomobile
-reset:
-	cd bind && $(GOCLEAN)
+## [clean]     :   Cleans Gomobile, Removes Framworks from Plugin, and Initializes Gomobile
+clean:
+	cd $(BIND_DIR) && $(GOCLEAN)
 	go mod tidy
 	go clean -cache -x
 	go clean -modcache -x
@@ -105,4 +105,4 @@ reset:
 	rm -rf $(ANDROID_BINDDIR)
 	mkdir -p $(IOS_BINDDIR)
 	mkdir -p $(ANDROID_BINDDIR)
-	cd bind && gomobile init
+	cd $(BIND_DIR) && gomobile init

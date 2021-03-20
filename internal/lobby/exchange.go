@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-core/protocol"
 	gorpc "github.com/libp2p/go-libp2p-gorpc"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
@@ -40,8 +39,6 @@ func (ps *ExchangeService) ExchangeWith(ctx context.Context, args ExchangeArgs, 
 
 	// Update Peers
 	ps.updatePeer(remotePeer)
-
-	// Set Current Message
 	userPeer := ps.getUser()
 
 	// Convert Protobuf to bytes
@@ -65,7 +62,7 @@ func (lob *Lobby) Exchange(id peer.ID) {
 	}
 
 	// Initialize RPC
-	rpcClient := gorpc.NewClient(lob.host, protocol.ID("/sonr/lobby/exchange"))
+	rpcClient := gorpc.NewClient(lob.host, lob.router.Exchange())
 	var reply ExchangeResponse
 	var args ExchangeArgs
 	args.Data = msgBytes
@@ -79,11 +76,12 @@ func (lob *Lobby) Exchange(id peer.ID) {
 	// Received Message
 	remotePeer := &md.Peer{}
 	err = proto.Unmarshal(reply.Data, remotePeer)
+
+	// Send Error
 	if err != nil {
-		// Send Error
 		lob.call.Error(err, "Exchange")
 	}
 
-	// Update Peers
+	// Update Peer with new data
 	lob.updatePeer(remotePeer)
 }

@@ -1,17 +1,90 @@
 package node
 
 import (
+	"context"
+	"errors"
+	"fmt"
+	"log"
 	"math"
 	"time"
 
 	sentry "github.com/getsentry/sentry-go"
-	md "github.com/sonr-io/core/pkg/models"
+	"github.com/libp2p/go-libp2p-core/host"
+	dht "github.com/libp2p/go-libp2p-kad-dht"
+	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
+
+	sl "github.com/sonr-io/core/internal/lobby"
+	tr "github.com/sonr-io/core/internal/transfer"
+	dq "github.com/sonr-io/core/pkg/data"
+	md "github.com/sonr-io/core/pkg/models"
+	net "github.com/sonr-io/core/pkg/net"
 )
 
+const discoveryInterval = time.Second * 3
+const gracePeriod = time.Second * 30
+
+// ^ Struct: Main Node handles Networking/Identity/Streams ^
+type Node struct {
+	// Properties
+	ctx     context.Context
+	contact *md.Contact
+	device  *md.Device
+	fs      *dq.SonrFS
+	peer    *md.Peer
+	profile *md.Profile
+
+	// Networking Properties
+	host   host.Host
+	kadDHT *dht.IpfsDHT
+	pubSub *pubsub.PubSub
+	router *net.ProtocolRouter
+	status md.Status
+
+	// References
+	call     Callback
+	lobby    *sl.Lobby
+	transfer *tr.TransferController
+}
+
+// ^ NewNode Initializes Node with a host and default properties ^
+func NewNode(req *md.ConnectionRequest, call Callback) *Node {
+	// Initialize Node Logging
+	err := sentry.Init(sentry.ClientOptions{
+		Dsn: "https://cbf88b01a5a5468fa77101f7dfc54f20@o549479.ingest.sentry.io/5672329",
+	})
+	if err != nil {
+		log.Fatalf("sentry.Init: %s", err)
+	}
+
+	// Create Context and Set Node Properties
+	node := new(Node)
+	node.ctx = context.Background()
+	node.call = call
+
+	// Create New Profile from Request
+	node.profile = &md.Profile{
+		Username:  req.GetUsername(),
+		FirstName: req.Contact.GetFirstName(),
+		LastName:  req.Contact.GetLastName(),
+		Picture:   req.Contact.GetPicture(),
+		Platform:  req.Device.GetPlatform(),
+	}
+
+	// Set File System
+	node.fs = dq.InitFS(req, node.profile, node.FSCallback())
+	node.router = net.NewProtocolRouter(req)
+
+	// Set Default Properties
+	node.contact = req.Contact
+	node.device = req.Device
+	node.status = md.Status_NONE
+	return node
+}
+
 // ^ Update proximity/direction and Notify Lobby ^ //
-func (sn *Node) Update(facing float64, heading float64) {
+func (n *Node) Update(facing float64, heading float64) {
 	// Update User Values
 	var faceDir float64
 	var faceAnpd float64
@@ -36,7 +109,7 @@ func (sn *Node) Update(facing float64, heading float64) {
 	}
 
 	// Set Position
-	sn.peer.Position = &md.Position{
+	n.peer.Position = &md.Position{
 		Facing:           faceDir,
 		FacingAntipodal:  faceAnpd,
 		Heading:          headDir,
@@ -45,23 +118,23 @@ func (sn *Node) Update(facing float64, heading float64) {
 	}
 
 	// Inform Lobby
-	err := sn.lobby.Update()
+	err := n.lobby.Update()
 	if err != nil {
 		sentry.CaptureException(err)
 	}
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (sn *Node) Invite(req *md.InviteRequest) {
+func (n *Node) Invite(req *md.InviteRequest) {
 	// @ 2. Check Transfer Type
 	if req.Type == md.InviteRequest_Contact || req.Type == md.InviteRequest_URL {
 		// @ 3. Send Invite to Peer
 		// Set Contact
-		req.Contact = sn.contact
-		invMsg := md.NewInviteFromRequest(req, sn.peer)
+		req.Contact = n.contact
+		invMsg := md.NewInviteFromRequest(req, n.peer)
 
 		// Get PeerID and Check error
-		id, _, err := sn.lobby.Find(req.To.Id.Peer)
+		id, _, err := n.lobby.Find(req.To.Id.Peer)
 		if err != nil {
 			sentry.CaptureException(err)
 		}
@@ -74,43 +147,71 @@ func (sn *Node) Invite(req *md.InviteRequest) {
 				sentry.CaptureException(err)
 			}
 
-			sn.peerConn.Request(sn.host, id, msgBytes)
+			n.transfer.RequestInvite(n.host, id, msgBytes)
 		}(&invMsg)
 	} else {
 		// File Transfer
-		sn.queue.AddFromRequest(req)
+		n.fs.AddFromRequest(req)
 	}
 
 	// Update Status
-	sn.Status = md.Status_PENDING
+	n.status = md.Status_PENDING
+}
+
+// ^ Create Group Returns Words ^ //
+func (n *Node) CreateGroup() string {
+	// Validate
+	if n.lobby != nil {
+		// Return Default Option
+		_, w, err := net.RandomWords("english", 4)
+		if err != nil {
+			return "brax day test one"
+		}
+
+		// Return Split Words Join Group in Lobby
+		words := fmt.Sprintf("%s-%s-%s-%s", w[0], w[1], w[2], w[3])
+		err = n.lobby.JoinGroup(words)
+		if err != nil {
+			sentry.CaptureException(err)
+		}
+		return words
+	}
+
+	// Lobby non-existent
+	sentry.CaptureException(errors.New("User not in a lobby"))
+	return ""
+}
+
+// ^ Join Group with Words ^ //
+func (n *Node) JoinGroup(data string) {
+	// Validate
+	if n.lobby != nil {
+		// Join Group in Lobby
+		err := n.lobby.JoinGroup(data)
+		if err != nil {
+			sentry.CaptureException(err)
+		}
+	}
+
+	// Lobby non-existent
+	sentry.CaptureException(errors.New("User not in a lobby"))
 }
 
 // ^ Respond to an Invitation ^ //
-func (sn *Node) Respond(decision bool) {
+func (n *Node) Respond(decision bool) {
 	// Send Response on PeerConnection
-	sn.peerConn.Authorize(decision, sn.contact, sn.peer)
+	n.transfer.Authorize(decision, n.contact, n.peer)
 
 	// Update Status
 	if decision {
-		sn.Status = md.Status_INPROGRESS
+		n.status = md.Status_INPROGRESS
 	} else {
-		sn.Status = md.Status_AVAILABLE
+		n.status = md.Status_AVAILABLE
 	}
-}
-
-// ^ Info returns ALL Peer Data as Bytes^
-func (sn *Node) Info() []byte {
-	// Convert to bytes to view in plugin
-	data, err := proto.Marshal(sn.peer)
-	if err != nil {
-		sentry.CaptureException(err)
-		return nil
-	}
-	return data
 }
 
 // ^ Link with a QR Code ^ //
-func (sn *Node) LinkDevice(json string) {
+func (n *Node) LinkDevice(json string) {
 	// Convert String to Bytes
 	request := md.LinkRequest{}
 
@@ -121,17 +222,16 @@ func (sn *Node) LinkDevice(json string) {
 	}
 
 	// Link Device
-	err = sn.fs.SaveDevice(request.Device)
+	err = n.fs.SaveDevice(request.Device)
 	if err != nil {
 		sentry.CaptureException(err)
 	}
 }
 
 // ^ Link with a QR Code ^ //
-func (sn *Node) LinkRequest(name string) *md.LinkRequest {
+func (n *Node) LinkRequest(name string) *md.LinkRequest {
 	// Set Device
-	device := sn.device
-	device.Directories = sn.directories
+	device := n.device
 	device.Name = name
 
 	// Create Expiry - 1min 30s
@@ -142,69 +242,60 @@ func (sn *Node) LinkRequest(name string) *md.LinkRequest {
 	// Return Request
 	return &md.LinkRequest{
 		Device: device,
-		Peer:   sn.Peer(),
+		Peer:   n.Peer(),
 		Expiry: int32(timein.Unix()),
 	}
 }
 
-// ^ Peer returns Current Peer Info ^
-func (sn *Node) Peer() *md.Peer {
-	return sn.peer
-}
-
 // ^ Updates Current Contact Card ^
-func (sn *Node) SetContact(newContact *md.Contact) {
+func (n *Node) SetContact(newContact *md.Contact) {
 
 	// Set Node Contact
-	sn.contact = newContact
+	n.contact = newContact
 
 	// Update Peer Profile
-	sn.peer.Profile = &md.Profile{
+	n.peer.Profile = &md.Profile{
 		FirstName: newContact.GetFirstName(),
 		LastName:  newContact.GetLastName(),
 		Picture:   newContact.GetPicture(),
 	}
 
 	// Set User Contact
-	err := sn.fs.SaveContact(newContact)
+	err := n.fs.SaveContact(newContact)
 	if err != nil {
 		sentry.CaptureException(err)
 	}
 }
 
 // ^ Close Ends All Network Communication ^
-func (sn *Node) Pause() {
+func (n *Node) Pause() {
 	// Check if Response Is Invited
-	if sn.Status == md.Status_INVITED {
-		sn.peerConn.Cancel(sn.peer)
+	if n.status == md.Status_INVITED {
+		n.transfer.Cancel(n.peer)
 	}
-	err := sn.lobby.Standby()
+	err := n.lobby.Standby()
 	if err != nil {
-		sn.error(err, "Pause")
+		n.error(err, "Pause")
 		sentry.CaptureException(err)
 	}
 	md.GetState().Pause()
 }
 
 // ^ Close Ends All Network Communication ^
-func (sn *Node) Resume() {
-	err := sn.lobby.Resume()
+func (n *Node) Resume() {
+	err := n.lobby.Resume()
 	if err != nil {
-		sn.error(err, "Resume")
+		n.error(err, "Resume")
+		sentry.CaptureException(err)
 	}
 	md.GetState().Resume()
 }
 
 // ^ Close Ends All Network Communication ^
-func (sn *Node) Stop() {
+func (n *Node) Stop() {
 	// Check if Response Is Invited
-	if sn.Status == md.Status_INVITED {
-		sn.peerConn.Cancel(sn.peer)
+	if n.status == md.Status_INVITED {
+		n.transfer.Cancel(n.peer)
 	}
-	sn.host.Close()
-}
-
-// ^ Update Host for New Network Connectivity ^
-func (sn *Node) NetworkSwitch(conn md.Connectivity) {
-	
+	n.host.Close()
 }

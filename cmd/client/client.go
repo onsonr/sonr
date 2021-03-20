@@ -9,7 +9,6 @@ import (
 	"time"
 
 	md "github.com/sonr-io/core/pkg/models"
-
 	sn "github.com/sonr-io/core/pkg/node"
 )
 
@@ -17,6 +16,8 @@ const interval = 500 * time.Millisecond
 
 // @ Interface: Callback is implemented from Plugin to receive updates
 type Callback interface {
+	OnConnected(data bool)     // Node Host has Bootstrapped
+	OnReady(data bool)         // Node Host Connection Result
 	OnRefreshed(data []byte)   // Lobby Updates
 	OnEvent(data []byte)       // Lobby Event
 	OnInvited(data []byte)     // User Invited

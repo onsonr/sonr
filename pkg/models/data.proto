@@ -12,13 +12,20 @@ enum Connectivity {
   WiFi = 2;
 }
 
+// For Info about Group
+message Group {
+  string name = 1;               // BIP Name of Group
+  int32 size = 2;                // Total Number of Peers in Group
+  map<string, Peer> members = 3; // Total Data of Active Peers
+}
+
 // For Info about Lobby
 message Lobby {
   string olc = 1;                // Open Location Code of Lobby
   int32 size = 2;                // Total Number of Devices in Lobby
   int32 count = 3;               // Total Devices in Lobby EXCLUDING User
   map<string, Peer> peers = 4;   // Total Data of Active Peers
-  map<string, Peer> standby = 5; // Peers that have went inactive
+  map<string, Group> groups = 5; // Active User Groups
 }
 
 // Message Sent when peer messages Lobby Topic

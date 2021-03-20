@@ -2,13 +2,15 @@ package lobby
 
 import (
 	"context"
+	"errors"
 	"log"
 
 	"github.com/libp2p/go-libp2p-core/host"
-	"github.com/libp2p/go-libp2p-core/protocol"
+	"github.com/libp2p/go-libp2p-core/peer"
 	gorpc "github.com/libp2p/go-libp2p-gorpc"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	md "github.com/sonr-io/core/pkg/models"
+	net "github.com/sonr-io/core/pkg/net"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -22,12 +24,14 @@ type Lobby struct {
 	messages chan *md.LobbyEvent
 	data     *md.Lobby
 
-	// Private Vars
-	ctx          context.Context
-	call         md.LobbyCallback
-	host         host.Host
-	doneCh       chan struct{}
-	pubSub       *pubsub.PubSub
+	// Networking
+	ctx    context.Context
+	call   md.LobbyCallback
+	host   host.Host
+	pubSub *pubsub.PubSub
+
+	// Connection
+	router       *net.ProtocolRouter
 	topic        *pubsub.Topic
 	topicHandler *pubsub.TopicEventHandler
 	selfPeer     *md.Peer
@@ -35,11 +39,10 @@ type Lobby struct {
 	sub          *pubsub.Subscription
 }
 
-// ^ Join Joins/Subscribes to pubsub topic, Initializes BadgerDB, and returns Lobby ^
-func Join(ctx context.Context, lobCall md.LobbyCallback, h host.Host, ps *pubsub.PubSub, sp *md.Peer, olc string) (*Lobby, error) {
+// ^ Join Joins/Subscribes to pubsub topic and returns Lobby ^
+func Join(ctx context.Context, lobCall md.LobbyCallback, h host.Host, ps *pubsub.PubSub, sp *md.Peer, pr *net.ProtocolRouter) (*Lobby, error) {
 	// Join the pubsub Topic
-	point := "/sonr/lobby" + olc
-	topic, err := ps.Join(point)
+	topic, err := ps.Join(pr.Topic(net.SetIDForLocal()))
 	if err != nil {
 		return nil, err
 	}
@@ -50,35 +53,35 @@ func Join(ctx context.Context, lobCall md.LobbyCallback, h host.Host, ps *pubsub
 		return nil, err
 	}
 
+	// Create Top Handler
 	topicHandler, err := topic.EventHandler()
 	if err != nil {
 		return nil, err
-	}
-
-	// Initialize Lobby for Peers
-	lobInfo := &md.Lobby{
-		Olc:   point,
-		Size:  1,
-		Peers: make(map[string]*md.Peer),
 	}
 
 	// Create Lobby Type
 	lob := &Lobby{
 		ctx:          ctx,
 		call:         lobCall,
-		doneCh:       make(chan struct{}, 1),
 		pubSub:       ps,
 		host:         h,
+		router:       pr,
 		topic:        topic,
 		topicHandler: topicHandler,
 		sub:          sub,
 		selfPeer:     sp,
-		data:         lobInfo,
-		messages:     make(chan *md.LobbyEvent, ChatRoomBufSize),
+
+		messages: make(chan *md.LobbyEvent, ChatRoomBufSize),
+		data: &md.Lobby{
+			Olc:    pr.OLC,
+			Size:   1,
+			Peers:  make(map[string]*md.Peer),
+			Groups: make(map[string]*md.Group),
+		},
 	}
 
 	// Create PeerService
-	peersvServer := gorpc.NewServer(h, protocol.ID("/sonr/lobby/exchange"))
+	peersvServer := gorpc.NewServer(h, pr.Exchange())
 	psv := ExchangeService{
 		updatePeer: lob.updatePeer,
 		getUser:    lob.call.Peer,
@@ -98,6 +101,55 @@ func Join(ctx context.Context, lobCall md.LobbyCallback, h host.Host, ps *pubsub
 	go lob.handleMessages()
 	go lob.processMessages()
 	return lob, nil
+}
+
+// ^ Helper: ID returns ONE Peer.ID in PubSub ^
+func (lob *Lobby) HasPeer(q string) bool {
+	// Iterate through PubSub in topic
+	for _, id := range lob.pubSub.ListPeers(lob.router.Topic(net.SetIDForLocal())) {
+		// If Found Match
+		if id.String() == q {
+			return true
+		}
+	}
+	return false
+}
+
+// ^ Helper: ID returns ONE Peer.ID in PubSub ^
+func (lob *Lobby) ID(q string) peer.ID {
+	// Iterate through PubSub in topic
+	for _, id := range lob.pubSub.ListPeers(lob.router.Topic(net.SetIDForLocal())) {
+		// If Found Match
+		if id.String() == q {
+			return id
+		}
+	}
+	return ""
+}
+
+// ^ Helper: Peer returns ONE Peer in Lobby ^
+func (lob *Lobby) Peer(q string) *md.Peer {
+	// Iterate Through Peers, Return Matched Peer
+	for _, peer := range lob.data.Peers {
+		// If Found Match
+		if peer.Id.Peer == q {
+			return peer
+		}
+	}
+	return nil
+}
+
+// ^ Helper: Find returns Pointer to Peer.ID and Peer ^
+func (lob *Lobby) Find(q string) (peer.ID, *md.Peer, error) {
+	// Retreive Data
+	peer := lob.Peer(q)
+	id := lob.ID(q)
+
+	if peer == nil || id == "" {
+		return "", nil, errors.New("Search Error, peer was not found in map.")
+	}
+
+	return id, peer, nil
 }
 
 // ^ Send publishes a message to the pubsub topic OLC ^
