@@ -2,6 +2,7 @@ package node
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"math"
 	"time"
@@ -154,6 +155,21 @@ func (n *Node) Invite(req *md.InviteRequest) {
 
 	// Update Status
 	n.status = md.Status_PENDING
+}
+
+func (n *Node) CreateGroup() string {
+	// Return Default Option
+	_, w, err := net.RandomWords("english", 4)
+	if err != nil {
+		return "brax day test one"
+	}
+
+	// Return Split Words
+	return fmt.Sprintf("%s %s %s %s", w[0], w[1], w[2], w[3])
+}
+
+func (n *Node) JoinGroup(data string) {
+
 }
 
 // ^ Respond to an Invitation ^ //

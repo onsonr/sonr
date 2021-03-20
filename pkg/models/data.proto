@@ -12,6 +12,14 @@ enum Connectivity {
   WiFi = 2;
 }
 
+// For Info about Group
+message Group {
+  string name = 1;               // BIP Name of Group
+  int32 size = 2;                // Total Number of Peers in Group
+  map<string, Peer> members = 3; // Total Data of Active Peers
+  Peer admin = 4;                // Creator of Group
+}
+
 // For Info about Lobby
 message Lobby {
   string olc = 1;                // Open Location Code of Lobby

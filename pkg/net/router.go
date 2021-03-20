@@ -87,6 +87,11 @@ func (pr *ProtocolRouter) Topic(opts ...*protocolRouterOption) string {
 		if opt.local {
 			return fmt.Sprintf("/sonr/lobby/%s/topic", pr.OLC)
 		}
+
+		// Group Auth Point
+		if opt.group {
+			return fmt.Sprintf("/sonr/lobby/group/%s/topic", opt.groupName)
+		}
 	}
 	return "/sonr/lobby/topic"
 }
@@ -98,11 +103,15 @@ func (pr *ProtocolRouter) Exchange(opts ...*protocolRouterOption) protocol.ID {
 		// First Value
 		opt := opts[0]
 
-		// Local Authentication Point
+		// Local Exchange Point
 		if opt.local {
 			return protocol.ID(fmt.Sprintf("/sonr/lobby/%s/exchange", pr.OLC))
 		}
-	}
 
+		// Group Exchange Point
+		if opt.group {
+			return protocol.ID(fmt.Sprintf("/sonr/lobby/group/%s/exchange", opt.groupName))
+		}
+	}
 	return protocol.ID("/sonr/lobby/exchange")
 }
