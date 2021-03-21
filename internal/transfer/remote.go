@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/getsentry/sentry-go"
+	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	md "github.com/sonr-io/core/pkg/models"
 	"github.com/sonr-io/core/pkg/net"
@@ -17,6 +18,7 @@ type RemotePoint struct {
 	// Connection
 	topic        *pubsub.Topic
 	subscription *pubsub.Subscription
+	peerchan     chan peer.ID
 
 	// Data
 	Point  string
@@ -51,14 +53,31 @@ func (tr *TransferController) StartRemotePoint(authInv *md.AuthInvite) (string, 
 	// Create Remote Point
 	tr.remote = &RemotePoint{
 		Point:        words,
+		peerchan:     make(chan peer.ID, 1),
 		invite:       authInv,
 		subscription: sub,
 		topic:        topic,
 	}
 
-	// Check Peer Count
+	// Await Peer
 	go tr.handleRemoteEvents()
-	go tr.handleTimeout()
+
+	// Create Handler with Timeout
+	select {
+	case res := <-tr.remote.peerchan:
+		// Get Peer Data
+		bytes, err := proto.Marshal(tr.remote.invite)
+		if err != nil {
+			tr.call.Error(err, "Direct")
+		}
+
+		// Get Peer's ID
+		tr.RequestInvite(tr.host, res, bytes)
+	case <-time.After(50 * time.Second):
+		tr.remote.subscription.Cancel()
+		tr.remote.topic.Close()
+		tr.remote = nil
+	}
 	return words, nil
 }
 
@@ -105,30 +124,10 @@ func (tr *TransferController) handleRemoteEvents() {
 
 			// Peer Has Joined
 			if lobEvent.Type == pubsub.PeerJoin {
-				// Get Peer Data
-				bytes, err := proto.Marshal(tr.remote.invite)
-				if err != nil {
-					tr.call.Error(err, "Direct")
-				}
-
-				// Get Peer's ID
-				tr.RequestInvite(tr.host, lobEvent.Peer, bytes)
-
+				tr.remote.peerchan <- lobEvent.Peer
+				return
 			}
 			md.GetState().NeedsWait()
 		}
-	}
-}
-
-// ^ handleTimeout closes point after duration ^
-func (tr *TransferController) handleTimeout() {
-	// @ Timeout Duration
-	time.Sleep(50 * time.Second)
-
-	// @ Close Remote
-	if tr.remote != nil {
-		tr.remote.subscription.Cancel()
-		tr.remote.topic.Close()
-		tr.remote = nil
 	}
 }
