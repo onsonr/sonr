@@ -1,12 +1,10 @@
 package transfer
 
 import (
-	"context"
 	"fmt"
 	"log"
 
 	"github.com/getsentry/sentry-go"
-	"github.com/libp2p/go-libp2p-core/host"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	md "github.com/sonr-io/core/pkg/models"
 	"github.com/sonr-io/core/pkg/net"
@@ -14,30 +12,20 @@ import (
 )
 
 type RemotePoint struct {
-	// Networking
-	ctx    context.Context
-	call   md.TransferCallback
-	host   host.Host
-	point  string
-	pubSub *pubsub.PubSub
-
 	// Connection
-	router       *net.ProtocolRouter
 	topic        *pubsub.Topic
-	topicHandler *pubsub.TopicEventHandler
 	subscription *pubsub.Subscription
-	transfer     *TransferController
 
 	// Data
-	invite   *md.AuthInvite
-	selfPeer *md.Peer
+	Point  string
+	invite *md.AuthInvite
 }
 
-func StartRemotePoint(ctx context.Context, h host.Host, ps *pubsub.PubSub, sp *md.Peer, pr *net.ProtocolRouter, authInv *md.AuthInvite, tr *TransferController, lobCall md.TransferCallback) (*RemotePoint, error) {
+func (tr *TransferController) StartRemotePoint(authInv *md.AuthInvite) (string, error) {
 	// Return Default Option
 	_, w, err := net.RandomWords("english", 3)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	// Return Split Words Join Group in Lobby
@@ -47,7 +35,37 @@ func StartRemotePoint(ctx context.Context, h host.Host, ps *pubsub.PubSub, sp *m
 	}
 
 	// Join the local pubsub Topic
-	topic, err := ps.Join(pr.Remote(words))
+	topic, err := tr.pubsub.Join(tr.router.Remote(words))
+	if err != nil {
+		return "", err
+	}
+
+	// Subscribe to local Topic
+	sub, err := topic.Subscribe()
+	if err != nil {
+		return "", err
+	}
+
+	// Create Remote Point
+	tr.remote = &RemotePoint{
+		Point:        words,
+		invite:       authInv,
+		subscription: sub,
+		topic:        topic,
+	}
+
+	// Check Peer Count
+	peers := topic.ListPeers()
+	if len(peers) == 0 {
+		go tr.handleRemoteEvents()
+	}
+
+	return words, nil
+}
+
+func (tr *TransferController) JoinRemotePoint(name string) (*pubsub.Subscription, error) {
+	// Join the local pubsub Topic
+	topic, err := tr.pubsub.Join(tr.router.Remote(name))
 	if err != nil {
 		return nil, err
 	}
@@ -57,61 +75,41 @@ func StartRemotePoint(ctx context.Context, h host.Host, ps *pubsub.PubSub, sp *m
 	if err != nil {
 		return nil, err
 	}
-
-	// Create Top Handler
-	topicHandler, err := topic.EventHandler()
-	if err != nil {
-		return nil, err
-	}
-
-	rp := &RemotePoint{
-		ctx:          ctx,
-		call:         lobCall,
-		host:         h,
-		invite:       authInv,
-		point:        words,
-		pubSub:       ps,
-		selfPeer:     sp,
-		router:       pr,
-		subscription: sub,
-		transfer:     tr,
-		topic:        topic,
-		topicHandler: topicHandler,
-	}
-	go rp.handleEvents()
-	return rp, nil
+	return sub, nil
 }
 
 // ^ handleMessages pulls messages from the pubsub topic and pushes them onto the Messages channel. ^
-func (rp *RemotePoint) handleEvents() {
-	// @ Create Topic Handler
-	topicHandler, err := rp.topic.EventHandler()
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
-	// @ Loop Events
-	for {
-		// Get next event
-		lobEvent, err := topicHandler.NextPeerEvent(rp.ctx)
+func (tr *TransferController) handleRemoteEvents() {
+	if tr.remote != nil {
+		// @ Create Topic Handler
+		topicHandler, err := tr.remote.topic.EventHandler()
 		if err != nil {
-			topicHandler.Cancel()
+			log.Println(err)
 			return
 		}
 
-		// Peer Has Joined
-		if lobEvent.Type == pubsub.PeerJoin {
-			// Get Peer Data
-			bytes, err := proto.Marshal(rp.invite)
+		// @ Loop Events
+		for {
+			// Get next event
+			lobEvent, err := topicHandler.NextPeerEvent(tr.ctx)
 			if err != nil {
-				rp.call.Error(err, "Direct")
+				topicHandler.Cancel()
+				return
 			}
 
-			// Get Peer's ID
-			rp.transfer.RequestInvite(rp.host, lobEvent.Peer, bytes)
+			// Peer Has Joined
+			if lobEvent.Type == pubsub.PeerJoin {
+				// Get Peer Data
+				bytes, err := proto.Marshal(tr.remote.invite)
+				if err != nil {
+					tr.call.Error(err, "Direct")
+				}
 
+				// Get Peer's ID
+				tr.RequestInvite(tr.host, lobEvent.Peer, bytes)
+
+			}
+			md.GetState().NeedsWait()
 		}
-		md.GetState().NeedsWait()
 	}
 }

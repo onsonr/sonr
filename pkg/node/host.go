@@ -135,7 +135,7 @@ func (n *Node) Bootstrap(opts *HostOptions) bool {
 	}
 
 	// Initialize Peer Connection
-	if n.transfer, err = tf.Initialize(n.host, n.pubSub, n.fs, n.router, n.TransferCallback()); err != nil {
+	if n.transfer, err = tf.Initialize(n.ctx, n.host, n.pubSub, n.fs, n.router, n.TransferCallback()); err != nil {
 		sentry.CaptureException(err)
 		n.error(err, "Initializing Transfer Controller")
 		n.call.OnReady(false)

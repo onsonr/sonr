@@ -18,7 +18,13 @@ import (
 // ^ Struct: Holds/Handles GRPC Calls and Handles Data Stream  ^ //
 type TransferController struct {
 	// Connection
+	ctx    context.Context
 	auth   *AuthService
+	remote *RemotePoint
+
+	// Networking
+	host   host.Host
+	pubsub *pubsub.PubSub
 	router *net.ProtocolRouter
 
 	// Data Handlers
@@ -33,12 +39,15 @@ type TransferController struct {
 }
 
 // ^ Initialize sets up new Peer Connection handler ^
-func Initialize(h host.Host, ps *pubsub.PubSub, fs *fs.SonrFS, pr *net.ProtocolRouter, tc md.TransferCallback) (*TransferController, error) {
+func Initialize(ctx context.Context, h host.Host, ps *pubsub.PubSub, fs *fs.SonrFS, pr *net.ProtocolRouter, tc md.TransferCallback) (*TransferController, error) {
 	// Initialize Parameters into PeerConnection
 	peerConn := &TransferController{
 		router: pr,
 		fs:     fs,
 		call:   tc,
+		host:   h,
+		ctx:    ctx,
+		pubsub: ps,
 	}
 
 	// Create GRPC Client/Server and Set Data Stream Handler
