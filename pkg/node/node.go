@@ -124,6 +124,17 @@ func (n *Node) Update(facing float64, heading float64) {
 	}
 }
 
+// ^ Send Direct Message to Peer in Lobby ^ //
+func (n *Node) Message(content string, to string) {
+	if n.lobby.HasPeer(to) {
+		// Inform Lobby
+		err := n.lobby.Message(content, to)
+		if err != nil {
+			sentry.CaptureException(err)
+		}
+	}
+}
+
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
 func (n *Node) Invite(req *md.InviteRequest) {
 	// @ 2. Check Transfer Type

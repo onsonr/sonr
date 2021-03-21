@@ -116,6 +116,13 @@ func (mn *MobileNode) Update(facing float64, heading float64) {
 	}
 }
 
+// @ Send Direct Message to Peer in Lobby
+func (mn *MobileNode) Message(msg string, to string) {
+	if mn.IsReady() {
+		mn.node.Message(msg, to)
+	}
+}
+
 // @ Invite Processes Data and Sends Invite to Peer
 func (mn *MobileNode) Invite(reqBytes []byte) {
 	if mn.IsReady() {

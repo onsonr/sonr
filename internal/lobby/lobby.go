@@ -198,7 +198,7 @@ func (lob *Lobby) Standby() error {
 	return nil
 }
 
-// ^ Send publishes a message to the pubsub topic OLC ^
+// ^ Send updates lobby ^
 func (lob *Lobby) Update() error {
 	// Create Lobby Event
 	event := md.LobbyEvent{
@@ -221,7 +221,7 @@ func (lob *Lobby) Update() error {
 	return nil
 }
 
-// ^ Send publishes a message to the pubsub topic OLC ^
+// ^ Send publishes a message to specific peer in lobby ^
 func (lob *Lobby) Message(msg string, to string) error {
 	// Create Lobby Event
 	event := md.LobbyEvent{
