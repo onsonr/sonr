@@ -27,23 +27,23 @@ type AuthResponse struct {
 // Service Struct
 type AuthService struct {
 	// Current Data
-	call      md.TransferCallback
-	respCh    chan *md.AuthReply
-	inviteMsg *md.AuthInvite
+	call   md.TransferCallback
+	respCh chan *md.AuthReply
+	invite *md.AuthInvite
 }
 
 // ^ Calls Invite on Remote Peer ^ //
 func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthResponse) error {
 	// Received Message
-	receivedMessage := &md.AuthInvite{}
-	err := proto.Unmarshal(args.Data, receivedMessage)
+	receivedMessage := md.AuthInvite{}
+	err := proto.Unmarshal(args.Data, &receivedMessage)
 	if err != nil {
 		sentry.CaptureException(err)
 		return err
 	}
 
 	// Set Current Message
-	as.inviteMsg = receivedMessage
+	as.invite = &receivedMessage
 
 	// Send Callback
 	as.call.Invited(args.Data)
@@ -102,7 +102,7 @@ func (pc *TransferController) RequestInvite(h host.Host, id peer.ID, msgBytes []
 // ^ Send Authorize transfer on RPC ^ //
 func (pc *TransferController) Authorize(decision bool, contact *md.Contact, peer *md.Peer) {
 	// Get Offer Message
-	offerMsg := pc.auth.inviteMsg
+	offerMsg := pc.auth.invite
 
 	// @ Pass Contact Back
 	if offerMsg.Payload == md.Payload_CONTACT {
@@ -165,5 +165,5 @@ func (pc *TransferController) handleReply(data []byte) (bool, *md.Peer) {
 
 // @ Helper Method Clears Current Invite
 func (as *AuthService) clear() {
-	as.inviteMsg = nil
+	as.invite = nil
 }

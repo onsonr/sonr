@@ -25,7 +25,7 @@ type RemotePoint struct {
 }
 
 // ^ Start New Remote Point ^
-func (tr *TransferController) StartRemotePoint(authInv *md.AuthInvite) error {
+func (tr *TransferController) StartRemote(authInv *md.AuthInvite) error {
 	// Return Default Option
 	_, w, err := net.RandomWords("english", 3)
 	if err != nil {
@@ -99,7 +99,7 @@ func (tr *TransferController) StartRemotePoint(authInv *md.AuthInvite) error {
 }
 
 // ^ Join Existing Remote Point ^
-func (tr *TransferController) JoinRemotePoint(name string) (*pubsub.Subscription, error) {
+func (tr *TransferController) JoinRemote(name string) (*pubsub.Subscription, error) {
 	// Join the local pubsub Topic
 	topic, err := tr.pubsub.Join(tr.router.Remote(name))
 	if err != nil {

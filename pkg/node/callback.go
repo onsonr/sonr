@@ -58,7 +58,7 @@ func (sn *Node) queued(card *md.TransferCard, req *md.InviteRequest) {
 		// @ Check for Remote
 		if req.IsRemote {
 			// Start Remote Point
-			err := sn.transfer.StartRemotePoint(&invMsg)
+			err := sn.transfer.StartRemote(&invMsg)
 			if err != nil {
 				sentry.CaptureException(err)
 				sn.error(err, "StartRemotePoint")
@@ -114,7 +114,7 @@ func (sn *Node) multiQueued(card *md.TransferCard, req *md.InviteRequest, count 
 		// @ Check for Remote
 		if req.IsRemote {
 			// Start Remote Point
-			err := sn.transfer.StartRemotePoint(&invMsg)
+			err := sn.transfer.StartRemote(&invMsg)
 			if err != nil {
 				sn.error(err, "StartRemotePoint")
 			}

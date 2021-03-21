@@ -146,7 +146,7 @@ func (n *Node) Invite(req *md.InviteRequest) {
 
 		if req.IsRemote {
 			// Start Remote Point
-			err := n.transfer.StartRemotePoint(&invMsg)
+			err := n.transfer.StartRemote(&invMsg)
 			if err != nil {
 				n.error(err, "StartRemotePoint")
 			}
@@ -224,7 +224,7 @@ func (n *Node) JoinGroup(data string) {
 // ^ Join Remote File with Words ^ //
 func (n *Node) JoinRemote(data string) {
 	// Validate
-	_, err := n.transfer.JoinRemotePoint(data)
+	_, err := n.transfer.JoinRemote(data)
 	if err != nil {
 		// Lobby non-existent
 		sentry.CaptureException(err)
