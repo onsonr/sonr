@@ -1,4 +1,4 @@
-package remote
+package transfer
 
 import (
 	"context"
@@ -8,9 +8,9 @@ import (
 	"github.com/getsentry/sentry-go"
 	"github.com/libp2p/go-libp2p-core/host"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	"github.com/sonr-io/core/internal/transfer"
 	md "github.com/sonr-io/core/pkg/models"
 	"github.com/sonr-io/core/pkg/net"
+	"google.golang.org/protobuf/proto"
 )
 
 type RemotePoint struct {
@@ -26,14 +26,14 @@ type RemotePoint struct {
 	topic        *pubsub.Topic
 	topicHandler *pubsub.TopicEventHandler
 	subscription *pubsub.Subscription
-	transfer     *transfer.TransferController
+	transfer     *TransferController
 
 	// Data
 	invite   *md.AuthInvite
 	selfPeer *md.Peer
 }
 
-func StartRemotePoint(ctx context.Context, h host.Host, ps *pubsub.PubSub, sp *md.Peer, pr *net.ProtocolRouter, authInv *md.AuthInvite, tr *transfer.TransferController, lobCall md.TransferCallback) (*RemotePoint, error) {
+func StartRemotePoint(ctx context.Context, h host.Host, ps *pubsub.PubSub, sp *md.Peer, pr *net.ProtocolRouter, authInv *md.AuthInvite, tr *TransferController, lobCall md.TransferCallback) (*RemotePoint, error) {
 	// Return Default Option
 	_, w, err := net.RandomWords("english", 3)
 	if err != nil {
@@ -102,8 +102,14 @@ func (rp *RemotePoint) handleEvents() {
 
 		// Peer Has Joined
 		if lobEvent.Type == pubsub.PeerJoin {
+			// Get Peer Data
+			bytes, err := proto.Marshal(rp.invite)
+			if err != nil {
+				rp.call.Error(err, "Direct")
+			}
+
 			// Get Peer's ID
-			rp.Direct(lobEvent.Peer)
+			rp.transfer.RequestInvite(rp.host, lobEvent.Peer, bytes)
 
 		}
 		md.GetState().NeedsWait()
