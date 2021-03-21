@@ -57,30 +57,14 @@ func (sn *Node) queued(card *md.TransferCard, req *md.InviteRequest) {
 
 		// @ Check for Remote
 		if req.IsRemote {
-			// Retreive Current File
-			currFile := sn.fs.CurrentFile()
-			if currFile != nil {
-				card.Status = md.TransferCard_INVITE
-				sn.transfer.NewOutgoing(currFile)
-
-				// Create Invite Message
-				invMsg := md.AuthInvite{
-					From:    sn.peer,
-					Payload: card.Payload,
-					Card:    card,
-				}
-
-				// Start Remote Point
-				word, err := sn.transfer.StartRemotePoint(&invMsg)
-				if err != nil {
-					sn.error(err, "StartRemotePoint")
-				}
-
-				// Callback Point
-				sn.call.OnRemoteStart(word)
-			} else {
-				sn.error(errors.New("No current file"), "internal:queued")
+			// Start Remote Point
+			word, err := sn.transfer.StartRemotePoint(&invMsg)
+			if err != nil {
+				sn.error(err, "StartRemotePoint")
 			}
+
+			// Callback Point
+			sn.call.OnRemoteStart(word)
 		} else {
 			// Get PeerID
 			id, _, err := sn.lobby.Find(req.To.Id.Peer)
@@ -129,16 +113,28 @@ func (sn *Node) multiQueued(card *md.TransferCard, req *md.InviteRequest, count 
 			Card:    card,
 		}
 
-		// Check if ID in PeerStore
-		go func(inv *md.AuthInvite) {
-			// Convert Protobuf to bytes
-			msgBytes, err := proto.Marshal(inv)
+		// @ Check for Remote
+		if req.IsRemote {
+			// Start Remote Point
+			word, err := sn.transfer.StartRemotePoint(&invMsg)
 			if err != nil {
-				sn.error(err, "Marshal")
+				sn.error(err, "StartRemotePoint")
 			}
 
-			sn.transfer.RequestInvite(sn.host, id, msgBytes)
-		}(&invMsg)
+			// Callback Point
+			sn.call.OnRemoteStart(word)
+		} else {
+			// Check if ID in PeerStore
+			go func(inv *md.AuthInvite) {
+				// Convert Protobuf to bytes
+				msgBytes, err := proto.Marshal(inv)
+				if err != nil {
+					sn.error(err, "Marshal")
+				}
+
+				sn.transfer.RequestInvite(sn.host, id, msgBytes)
+			}(&invMsg)
+		}
 	} else {
 		sn.error(errors.New("No current file"), "internal:multiQueued")
 	}
