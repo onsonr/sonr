@@ -61,8 +61,11 @@ func (lob *Lobby) handleMessages() {
 			continue
 		}
 
-		// Update Circle by event
-		lob.messages <- &m
+		// Validate Peer in Lobby
+		if lob.HasPeer(m.Id) {
+			// Update Circle by event
+			lob.messages <- &m
+		}
 		md.GetState().NeedsWait()
 	}
 }
