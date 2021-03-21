@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/getsentry/sentry-go"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
@@ -56,11 +57,8 @@ func (tr *TransferController) StartRemotePoint(authInv *md.AuthInvite) (string, 
 	}
 
 	// Check Peer Count
-	peers := topic.ListPeers()
-	if len(peers) == 0 {
-		go tr.handleRemoteEvents()
-	}
-
+	go tr.handleRemoteEvents()
+	go tr.handleTimeout()
 	return words, nil
 }
 
@@ -74,6 +72,7 @@ func (tr *TransferController) JoinRemotePoint(name string) (*pubsub.Subscription
 	// Check Peer Count
 	peers := topic.ListPeers()
 	if len(peers) == 0 {
+		topic.Close()
 		return nil, errors.New("Invalid Point")
 	} else {
 		// Subscribe to local Topic
@@ -85,7 +84,7 @@ func (tr *TransferController) JoinRemotePoint(name string) (*pubsub.Subscription
 	}
 }
 
-// ^ handleMessages pulls messages from the pubsub topic and pushes them onto the Messages channel. ^
+// ^ handleRemoteEvents awaits peer to join to begin transfer ^
 func (tr *TransferController) handleRemoteEvents() {
 	if tr.remote != nil {
 		// @ Create Topic Handler
@@ -118,5 +117,18 @@ func (tr *TransferController) handleRemoteEvents() {
 			}
 			md.GetState().NeedsWait()
 		}
+	}
+}
+
+// ^ handleTimeout closes point after duration ^
+func (tr *TransferController) handleTimeout() {
+	// @ Timeout Duration
+	time.Sleep(50 * time.Second)
+
+	// @ Close Remote
+	if tr.remote != nil {
+		tr.remote.subscription.Cancel()
+		tr.remote.topic.Close()
+		tr.remote = nil
 	}
 }
