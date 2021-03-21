@@ -191,8 +191,9 @@ func NewInviteFromRequest(req *InviteRequest, p *Peer) AuthInvite {
 
 	// Return Protobuf
 	return AuthInvite{
-		From:    p,
-		Payload: payload,
-		Card:    &card,
+		IsRemote: req.IsRemote,
+		From:     p,
+		Payload:  payload,
+		Card:     &card,
 	}
 }

@@ -126,7 +126,6 @@ func (n *Node) Update(facing float64, heading float64) {
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
 func (n *Node) Invite(req *md.InviteRequest) {
-
 	// @ 2. Check Transfer Type
 	if req.Type == md.InviteRequest_Contact || req.Type == md.InviteRequest_URL {
 		// @ 3. Send Invite to Peer
@@ -144,22 +143,26 @@ func (n *Node) Invite(req *md.InviteRequest) {
 			// Callback Point
 			n.call.OnRemoteStart(word)
 		} else {
-			// Get PeerID and Check error
-			id, _, err := n.lobby.Find(req.To.Id.Peer)
-			if err != nil {
-				sentry.CaptureException(err)
-			}
-
-			// Run Routine
-			go func(inv *md.AuthInvite) {
-				// Convert Protobuf to bytes
-				msgBytes, err := proto.Marshal(inv)
+			if n.lobby.HasPeer(req.To.Id.Peer) {
+				// Get PeerID and Check error
+				id, _, err := n.lobby.Find(req.To.Id.Peer)
 				if err != nil {
 					sentry.CaptureException(err)
 				}
 
-				n.transfer.RequestInvite(n.host, id, msgBytes)
-			}(&invMsg)
+				// Run Routine
+				go func(inv *md.AuthInvite) {
+					// Convert Protobuf to bytes
+					msgBytes, err := proto.Marshal(inv)
+					if err != nil {
+						sentry.CaptureException(err)
+					}
+
+					n.transfer.RequestInvite(n.host, id, msgBytes)
+				}(&invMsg)
+			} else {
+				n.error(errors.New("Invalid Peer"), "Invite")
+			}
 		}
 
 	} else {
@@ -208,6 +211,17 @@ func (n *Node) JoinGroup(data string) {
 
 	// Lobby non-existent
 	sentry.CaptureException(errors.New("User not in a lobby"))
+}
+
+// ^ Join Remote File with Words ^ //
+func (n *Node) JoinRemote(data string) {
+	// Validate
+	_, err := n.transfer.JoinRemotePoint(data)
+	if err != nil {
+		// Lobby non-existent
+		sentry.CaptureException(err)
+		n.error(err, "Join Remote")
+	}
 }
 
 // ^ Respond to an Invitation ^ //

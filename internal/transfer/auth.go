@@ -49,28 +49,25 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 	as.call.Invited(args.Data)
 
 	// Hold Select for Invite Type
-	if !as.inviteMsg.IsDirect {
-		select {
-		// Received Auth Channel Message
-		case m := <-as.respCh:
+	select {
+	// Received Auth Channel Message
+	case m := <-as.respCh:
 
-			// Convert Protobuf to bytes
-			msgBytes, err := proto.Marshal(m)
-			if err != nil {
-				sentry.CaptureException(err)
-				return err
-			}
-
-			// Set Message data and call done
-			reply.Data = msgBytes
-			ctx.Done()
-			return nil
-			// Context is Done
-		case <-ctx.Done():
-			return nil
+		// Convert Protobuf to bytes
+		msgBytes, err := proto.Marshal(m)
+		if err != nil {
+			sentry.CaptureException(err)
+			return err
 		}
+
+		// Set Message data and call done
+		reply.Data = msgBytes
+		ctx.Done()
+		return nil
+		// Context is Done
+	case <-ctx.Done():
+		return nil
 	}
-	return nil
 }
 
 // ^ Send RequestInvite to a Peer ^ //
@@ -112,9 +109,10 @@ func (pc *TransferController) Authorize(decision bool, contact *md.Contact, peer
 		// Create Accept Response
 		card := md.NewCardFromContact(peer, contact, md.TransferCard_REPLY)
 		resp := &md.AuthReply{
-			From: peer,
-			Type: md.AuthReply_Contact,
-			Card: &card,
+			IsRemote: offerMsg.IsRemote,
+			From:     peer,
+			Type:     md.AuthReply_Contact,
+			Card:     &card,
 		}
 		// Send to Channel
 		pc.auth.respCh <- resp
@@ -126,6 +124,7 @@ func (pc *TransferController) Authorize(decision bool, contact *md.Contact, peer
 
 		// Create Accept Response
 		resp := &md.AuthReply{
+			IsRemote: offerMsg.IsRemote,
 			From:     peer,
 			Type:     md.AuthReply_Transfer,
 			Decision: decision,

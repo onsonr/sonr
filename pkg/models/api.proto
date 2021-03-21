@@ -61,7 +61,7 @@ message AuthInvite {
   Payload payload = 1;   // Type of Transfer
   Peer from = 2;         // Users Peer Data
   TransferCard card = 3; // Card contains all Data Info, Transfer Info
-  bool isDirect = 4;     // Is Users own Device
+  bool isRemote = 4;     // Is for Remote Point
 }
 
 // Reply Message sent on RPC
@@ -70,6 +70,7 @@ message AuthReply {
   Peer from = 2;         // Users Peer Data
   bool decision = 3;     // Users Decision for the Invitation
   TransferCard card = 4; // Card contains all Data Info, Transfer Info
+  bool isRemote = 5;     // Is for Remote Point
 
   enum Type {
     None = 0;

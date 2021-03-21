@@ -1,6 +1,7 @@
 package transfer
 
 import (
+	"errors"
 	"fmt"
 	"log"
 
@@ -70,12 +71,18 @@ func (tr *TransferController) JoinRemotePoint(name string) (*pubsub.Subscription
 		return nil, err
 	}
 
-	// Subscribe to local Topic
-	sub, err := topic.Subscribe()
-	if err != nil {
-		return nil, err
+	// Check Peer Count
+	peers := topic.ListPeers()
+	if len(peers) == 0 {
+		return nil, errors.New("Invalid Point")
+	} else {
+		// Subscribe to local Topic
+		sub, err := topic.Subscribe()
+		if err != nil {
+			return nil, err
+		}
+		return sub, nil
 	}
-	return sub, nil
 }
 
 // ^ handleMessages pulls messages from the pubsub topic and pushes them onto the Messages channel. ^
