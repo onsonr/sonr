@@ -152,6 +152,13 @@ func (mn *MobileNode) Respond(decision bool) {
 	}
 }
 
+// @ Join Existing Group
+func (mn *MobileNode) JoinRemote(data string) {
+	if mn.IsReady() {
+		mn.node.JoinRemote(data)
+	}
+}
+
 // ** User Actions ** //
 // @ Info returns ALL Peer Data as Bytes
 func (mn *MobileNode) Info() []byte {
