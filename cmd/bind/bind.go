@@ -14,7 +14,7 @@ type Callback interface {
 	OnReady(data bool)         // Node Host has Bootstrapped
 	OnRefreshed(data []byte)   // Lobby Updates
 	OnEvent(data []byte)       // Lobby Event
-	OnRemoteStart(data string) // User started remote
+	OnRemoteStart(data []byte) // User started remote
 	OnInvited(data []byte)     // User Invited
 	OnDirected(data []byte)    // User Direct-Invite from another Device
 	OnResponded(data []byte)   // Peer has responded

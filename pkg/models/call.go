@@ -31,6 +31,7 @@ func NewLobbyCallback(callEvent OnProtobuf, callRefresh OnProtobuf, callError On
 
 type TransferCallback struct {
 	Invited     OnInvite
+	RemoteStart OnProtobuf
 	Responded   OnProtobuf
 	Progressed  OnProgress
 	Received    OnReceived
@@ -39,9 +40,10 @@ type TransferCallback struct {
 }
 
 // ^ Creates New Transfer Callback ^ //
-func NewTransferCallback(callInvited OnInvite, callResponded OnProtobuf, callProgress OnProgress, callReceived OnReceived, callTransmitted OnTransmitted, callError OnError) TransferCallback {
+func NewTransferCallback(callInvited OnInvite, callRemote OnProtobuf, callResponded OnProtobuf, callProgress OnProgress, callReceived OnReceived, callTransmitted OnTransmitted, callError OnError) TransferCallback {
 	return TransferCallback{
 		Invited:     callInvited,
+		RemoteStart: callRemote,
 		Responded:   callResponded,
 		Progressed:  callProgress,
 		Received:    callReceived,

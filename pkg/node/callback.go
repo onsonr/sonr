@@ -16,7 +16,7 @@ type Callback interface {
 	OnRefreshed(data []byte)   // Lobby Updates
 	OnEvent(data []byte)       // Lobby Event
 	OnInvited(data []byte)     // User Invited
-	OnRemoteStart(data string) // User started remote
+	OnRemoteStart(data []byte) // User started remote
 	OnDirected(data []byte)    // User Direct-Invite from another Device
 	OnResponded(data []byte)   // Peer has responded
 	OnProgress(data float32)   // File Progress Updated
@@ -37,7 +37,7 @@ func (n *Node) LobbyCallback() md.LobbyCallback {
 
 // ^ Passes node methods for TransferController ^
 func (n *Node) TransferCallback() md.TransferCallback {
-	return md.NewTransferCallback(n.invited, n.call.OnResponded, n.call.OnProgress, n.received, n.transmitted, n.error)
+	return md.NewTransferCallback(n.invited, n.call.OnRemoteStart, n.call.OnResponded, n.call.OnProgress, n.received, n.transmitted, n.error)
 }
 
 // ^ queued Callback, Sends File Invite to Peer, and Notifies Client ^
@@ -58,13 +58,11 @@ func (sn *Node) queued(card *md.TransferCard, req *md.InviteRequest) {
 		// @ Check for Remote
 		if req.IsRemote {
 			// Start Remote Point
-			word, err := sn.transfer.StartRemotePoint(&invMsg)
+			err := sn.transfer.StartRemotePoint(&invMsg)
 			if err != nil {
+				sentry.CaptureException(err)
 				sn.error(err, "StartRemotePoint")
 			}
-
-			// Callback Point
-			sn.call.OnRemoteStart(word)
 		} else {
 			// Get PeerID
 			id, _, err := sn.lobby.Find(req.To.Id.Peer)
@@ -116,13 +114,10 @@ func (sn *Node) multiQueued(card *md.TransferCard, req *md.InviteRequest, count 
 		// @ Check for Remote
 		if req.IsRemote {
 			// Start Remote Point
-			word, err := sn.transfer.StartRemotePoint(&invMsg)
+			err := sn.transfer.StartRemotePoint(&invMsg)
 			if err != nil {
 				sn.error(err, "StartRemotePoint")
 			}
-
-			// Callback Point
-			sn.call.OnRemoteStart(word)
 		} else {
 			// Check if ID in PeerStore
 			go func(inv *md.AuthInvite) {

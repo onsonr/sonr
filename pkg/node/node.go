@@ -146,13 +146,10 @@ func (n *Node) Invite(req *md.InviteRequest) {
 
 		if req.IsRemote {
 			// Start Remote Point
-			word, err := n.transfer.StartRemotePoint(&invMsg)
+			err := n.transfer.StartRemotePoint(&invMsg)
 			if err != nil {
 				n.error(err, "StartRemotePoint")
 			}
-
-			// Callback Point
-			n.call.OnRemoteStart(word)
 		} else {
 			if n.lobby.HasPeer(req.To.Id.Peer) {
 				// Get PeerID and Check error

@@ -133,7 +133,7 @@ func (x AuthReply_Type) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use AuthReply_Type.Descriptor instead.
 func (AuthReply_Type) EnumDescriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{4, 0}
+	return file_api_proto_rawDescGZIP(), []int{5, 0}
 }
 
 // Initial Connection Message to Establish Sonr
@@ -330,6 +330,78 @@ func (x *InviteRequest) GetFiles() []*InviteRequest_FileInfo {
 	return nil
 }
 
+// Message with Response of Remote Point
+type RemoteResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	First   string `protobuf:"bytes,1,opt,name=first,proto3" json:"first,omitempty"`
+	Second  string `protobuf:"bytes,2,opt,name=second,proto3" json:"second,omitempty"`
+	Third   string `protobuf:"bytes,3,opt,name=third,proto3" json:"third,omitempty"`
+	Display string `protobuf:"bytes,4,opt,name=display,proto3" json:"display,omitempty"`
+}
+
+func (x *RemoteResponse) Reset() {
+	*x = RemoteResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RemoteResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemoteResponse) ProtoMessage() {}
+
+func (x *RemoteResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemoteResponse.ProtoReflect.Descriptor instead.
+func (*RemoteResponse) Descriptor() ([]byte, []int) {
+	return file_api_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *RemoteResponse) GetFirst() string {
+	if x != nil {
+		return x.First
+	}
+	return ""
+}
+
+func (x *RemoteResponse) GetSecond() string {
+	if x != nil {
+		return x.Second
+	}
+	return ""
+}
+
+func (x *RemoteResponse) GetThird() string {
+	if x != nil {
+		return x.Third
+	}
+	return ""
+}
+
+func (x *RemoteResponse) GetDisplay() string {
+	if x != nil {
+		return x.Display
+	}
+	return ""
+}
+
 // Request to Link a Device for Direct Transfer
 type LinkRequest struct {
 	state         protoimpl.MessageState
@@ -344,7 +416,7 @@ type LinkRequest struct {
 func (x *LinkRequest) Reset() {
 	*x = LinkRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[2]
+		mi := &file_api_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -357,7 +429,7 @@ func (x *LinkRequest) String() string {
 func (*LinkRequest) ProtoMessage() {}
 
 func (x *LinkRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[2]
+	mi := &file_api_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -370,7 +442,7 @@ func (x *LinkRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LinkRequest.ProtoReflect.Descriptor instead.
 func (*LinkRequest) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{2}
+	return file_api_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *LinkRequest) GetDevice() *Device {
@@ -409,7 +481,7 @@ type AuthInvite struct {
 func (x *AuthInvite) Reset() {
 	*x = AuthInvite{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[3]
+		mi := &file_api_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -422,7 +494,7 @@ func (x *AuthInvite) String() string {
 func (*AuthInvite) ProtoMessage() {}
 
 func (x *AuthInvite) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[3]
+	mi := &file_api_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -435,7 +507,7 @@ func (x *AuthInvite) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AuthInvite.ProtoReflect.Descriptor instead.
 func (*AuthInvite) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{3}
+	return file_api_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *AuthInvite) GetPayload() Payload {
@@ -482,7 +554,7 @@ type AuthReply struct {
 func (x *AuthReply) Reset() {
 	*x = AuthReply{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[4]
+		mi := &file_api_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -495,7 +567,7 @@ func (x *AuthReply) String() string {
 func (*AuthReply) ProtoMessage() {}
 
 func (x *AuthReply) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[4]
+	mi := &file_api_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -508,7 +580,7 @@ func (x *AuthReply) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AuthReply.ProtoReflect.Descriptor instead.
 func (*AuthReply) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{4}
+	return file_api_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *AuthReply) GetType() AuthReply_Type {
@@ -559,7 +631,7 @@ type ErrorMessage struct {
 func (x *ErrorMessage) Reset() {
 	*x = ErrorMessage{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[5]
+		mi := &file_api_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -572,7 +644,7 @@ func (x *ErrorMessage) String() string {
 func (*ErrorMessage) ProtoMessage() {}
 
 func (x *ErrorMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[5]
+	mi := &file_api_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -585,7 +657,7 @@ func (x *ErrorMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ErrorMessage.ProtoReflect.Descriptor instead.
 func (*ErrorMessage) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{5}
+	return file_api_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *ErrorMessage) GetMessage() string {
@@ -617,7 +689,7 @@ type InviteRequest_FileInfo struct {
 func (x *InviteRequest_FileInfo) Reset() {
 	*x = InviteRequest_FileInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[6]
+		mi := &file_api_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -630,7 +702,7 @@ func (x *InviteRequest_FileInfo) String() string {
 func (*InviteRequest_FileInfo) ProtoMessage() {}
 
 func (x *InviteRequest_FileInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[6]
+	mi := &file_api_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -725,7 +797,14 @@ var file_api_proto_rawDesc = []byte{
 	0x69, 0x46, 0x69, 0x6c, 0x65, 0x73, 0x10, 0x02, 0x12, 0x0b, 0x0a, 0x07, 0x43, 0x6f, 0x6e, 0x74,
 	0x61, 0x63, 0x74, 0x10, 0x03, 0x12, 0x07, 0x0a, 0x03, 0x55, 0x52, 0x4c, 0x10, 0x04, 0x12, 0x11,
 	0x0a, 0x0d, 0x45, 0x78, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x4d, 0x65, 0x64, 0x69, 0x61, 0x10,
-	0x05, 0x22, 0x61, 0x0a, 0x0b, 0x4c, 0x69, 0x6e, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x05, 0x22, 0x6e, 0x0a, 0x0e, 0x52, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x66, 0x69, 0x72, 0x73, 0x74, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x05, 0x66, 0x69, 0x72, 0x73, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x65, 0x63,
+	0x6f, 0x6e, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x65, 0x63, 0x6f, 0x6e,
+	0x64, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x68, 0x69, 0x72, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x05, 0x74, 0x68, 0x69, 0x72, 0x64, 0x12, 0x18, 0x0a, 0x07, 0x64, 0x69, 0x73, 0x70, 0x6c,
+	0x61, 0x79, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x64, 0x69, 0x73, 0x70, 0x6c, 0x61,
+	0x79, 0x22, 0x61, 0x0a, 0x0b, 0x4c, 0x69, 0x6e, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
 	0x12, 0x1f, 0x0a, 0x06, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b,
 	0x32, 0x07, 0x2e, 0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x52, 0x06, 0x64, 0x65, 0x76, 0x69, 0x63,
 	0x65, 0x12, 0x16, 0x0a, 0x06, 0x65, 0x78, 0x70, 0x69, 0x72, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28,
@@ -775,44 +854,45 @@ func file_api_proto_rawDescGZIP() []byte {
 }
 
 var file_api_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_api_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_api_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_api_proto_goTypes = []interface{}{
 	(InviteRequest_TransferType)(0), // 0: InviteRequest.TransferType
 	(AuthReply_Type)(0),             // 1: AuthReply.Type
 	(*ConnectionRequest)(nil),       // 2: ConnectionRequest
 	(*InviteRequest)(nil),           // 3: InviteRequest
-	(*LinkRequest)(nil),             // 4: LinkRequest
-	(*AuthInvite)(nil),              // 5: AuthInvite
-	(*AuthReply)(nil),               // 6: AuthReply
-	(*ErrorMessage)(nil),            // 7: ErrorMessage
-	(*InviteRequest_FileInfo)(nil),  // 8: InviteRequest.FileInfo
-	(*Device)(nil),                  // 9: Device
-	(*Directories)(nil),             // 10: Directories
-	(*Contact)(nil),                 // 11: Contact
-	(*User)(nil),                    // 12: User
-	(Connectivity)(0),               // 13: Connectivity
-	(*Peer)(nil),                    // 14: Peer
-	(Payload)(0),                    // 15: Payload
-	(*TransferCard)(nil),            // 16: TransferCard
+	(*RemoteResponse)(nil),          // 4: RemoteResponse
+	(*LinkRequest)(nil),             // 5: LinkRequest
+	(*AuthInvite)(nil),              // 6: AuthInvite
+	(*AuthReply)(nil),               // 7: AuthReply
+	(*ErrorMessage)(nil),            // 8: ErrorMessage
+	(*InviteRequest_FileInfo)(nil),  // 9: InviteRequest.FileInfo
+	(*Device)(nil),                  // 10: Device
+	(*Directories)(nil),             // 11: Directories
+	(*Contact)(nil),                 // 12: Contact
+	(*User)(nil),                    // 13: User
+	(Connectivity)(0),               // 14: Connectivity
+	(*Peer)(nil),                    // 15: Peer
+	(Payload)(0),                    // 16: Payload
+	(*TransferCard)(nil),            // 17: TransferCard
 }
 var file_api_proto_depIdxs = []int32{
-	9,  // 0: ConnectionRequest.device:type_name -> Device
-	10, // 1: ConnectionRequest.directories:type_name -> Directories
-	11, // 2: ConnectionRequest.contact:type_name -> Contact
-	12, // 3: ConnectionRequest.user:type_name -> User
-	13, // 4: ConnectionRequest.connectivity:type_name -> Connectivity
+	10, // 0: ConnectionRequest.device:type_name -> Device
+	11, // 1: ConnectionRequest.directories:type_name -> Directories
+	12, // 2: ConnectionRequest.contact:type_name -> Contact
+	13, // 3: ConnectionRequest.user:type_name -> User
+	14, // 4: ConnectionRequest.connectivity:type_name -> Connectivity
 	0,  // 5: InviteRequest.type:type_name -> InviteRequest.TransferType
-	14, // 6: InviteRequest.to:type_name -> Peer
-	11, // 7: InviteRequest.contact:type_name -> Contact
-	8,  // 8: InviteRequest.files:type_name -> InviteRequest.FileInfo
-	9,  // 9: LinkRequest.device:type_name -> Device
-	14, // 10: LinkRequest.peer:type_name -> Peer
-	15, // 11: AuthInvite.payload:type_name -> Payload
-	14, // 12: AuthInvite.from:type_name -> Peer
-	16, // 13: AuthInvite.card:type_name -> TransferCard
+	15, // 6: InviteRequest.to:type_name -> Peer
+	12, // 7: InviteRequest.contact:type_name -> Contact
+	9,  // 8: InviteRequest.files:type_name -> InviteRequest.FileInfo
+	10, // 9: LinkRequest.device:type_name -> Device
+	15, // 10: LinkRequest.peer:type_name -> Peer
+	16, // 11: AuthInvite.payload:type_name -> Payload
+	15, // 12: AuthInvite.from:type_name -> Peer
+	17, // 13: AuthInvite.card:type_name -> TransferCard
 	1,  // 14: AuthReply.type:type_name -> AuthReply.Type
-	14, // 15: AuthReply.from:type_name -> Peer
-	16, // 16: AuthReply.card:type_name -> TransferCard
+	15, // 15: AuthReply.from:type_name -> Peer
+	17, // 16: AuthReply.card:type_name -> TransferCard
 	17, // [17:17] is the sub-list for method output_type
 	17, // [17:17] is the sub-list for method input_type
 	17, // [17:17] is the sub-list for extension type_name
@@ -853,7 +933,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*LinkRequest); i {
+			switch v := v.(*RemoteResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -865,7 +945,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AuthInvite); i {
+			switch v := v.(*LinkRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -877,7 +957,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AuthReply); i {
+			switch v := v.(*AuthInvite); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -889,7 +969,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ErrorMessage); i {
+			switch v := v.(*AuthReply); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -901,6 +981,18 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ErrorMessage); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*InviteRequest_FileInfo); i {
 			case 0:
 				return &v.state
@@ -919,7 +1011,7 @@ func file_api_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_api_proto_rawDesc,
 			NumEnums:      2,
-			NumMessages:   7,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

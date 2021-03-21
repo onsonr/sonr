@@ -21,7 +21,7 @@ type Callback interface {
 	OnRefreshed(data []byte)   // Lobby Updates
 	OnEvent(data []byte)       // Lobby Event
 	OnInvited(data []byte)     // User Invited
-	OnRemoteStart(data string) // User started remote
+	OnRemoteStart(data []byte) // User started remote
 	OnDirected(data []byte)    // User Direct-Invite from another Device
 	OnResponded(data []byte)   // Peer has responded
 	OnProgress(data float32)   // File Progress Updated

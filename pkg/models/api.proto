@@ -49,6 +49,14 @@ message InviteRequest {
   }
 }
 
+// Message with Response of Remote Point
+message RemoteResponse {
+  string first = 1;
+  string second = 2;
+  string third = 3;
+  string display = 4;
+}
+
 // Request to Link a Device for Direct Transfer
 message LinkRequest {
   Device device = 1; // Device Information
