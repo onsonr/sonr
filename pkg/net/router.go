@@ -59,6 +59,18 @@ func (pr *ProtocolRouter) Auth(opts ...*protocolRouterOption) protocol.ID {
 	return protocol.ID("/sonr/transfer/auth")
 }
 
+// @ Remote Point Topic: ONLY ONE OPTION ALLOWED
+func (pr *ProtocolRouter) Direct(n string) protocol.ID {
+	// Return Default
+	return protocol.ID(fmt.Sprintf("/sonr/remote/%s/direct", n))
+}
+
+// @ Remote Point Topic: ONLY ONE OPTION ALLOWED
+func (pr *ProtocolRouter) Remote(n string) string {
+	// Return Default
+	return fmt.Sprintf("/sonr/remote/%s/topic", n)
+}
+
 // @ Transfer Controller Data Protocol IDs: ONLY ONE OPTION ALLOWED
 func (pr *ProtocolRouter) Transfer(opts ...*protocolRouterOption) protocol.ID {
 	// Check Options
