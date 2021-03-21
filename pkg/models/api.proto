@@ -23,6 +23,7 @@ message InviteRequest {
   // Properties
   TransferType type = 1; // General Payload Type
   Peer to = 2;           // User thats being Invited
+  bool isRemote = 3;     // If Transfer is Remote
 
   // Attached Data
   string url = 4;              // URL to be Sent - Optional

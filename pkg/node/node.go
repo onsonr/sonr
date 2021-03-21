@@ -126,6 +126,7 @@ func (n *Node) Update(facing float64, heading float64) {
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
 func (n *Node) Invite(req *md.InviteRequest) {
+
 	// @ 2. Check Transfer Type
 	if req.Type == md.InviteRequest_Contact || req.Type == md.InviteRequest_URL {
 		// @ 3. Send Invite to Peer
@@ -133,22 +134,34 @@ func (n *Node) Invite(req *md.InviteRequest) {
 		req.Contact = n.contact
 		invMsg := md.NewInviteFromRequest(req, n.peer)
 
-		// Get PeerID and Check error
-		id, _, err := n.lobby.Find(req.To.Id.Peer)
-		if err != nil {
-			sentry.CaptureException(err)
-		}
+		if req.IsRemote {
+			// Start Remote Point
+			word, err := n.transfer.StartRemotePoint(&invMsg)
+			if err != nil {
+				n.error(err, "StartRemotePoint")
+			}
 
-		// Run Routine
-		go func(inv *md.AuthInvite) {
-			// Convert Protobuf to bytes
-			msgBytes, err := proto.Marshal(inv)
+			// Callback Point
+			n.call.OnRemoteStart(word)
+		} else {
+			// Get PeerID and Check error
+			id, _, err := n.lobby.Find(req.To.Id.Peer)
 			if err != nil {
 				sentry.CaptureException(err)
 			}
 
-			n.transfer.RequestInvite(n.host, id, msgBytes)
-		}(&invMsg)
+			// Run Routine
+			go func(inv *md.AuthInvite) {
+				// Convert Protobuf to bytes
+				msgBytes, err := proto.Marshal(inv)
+				if err != nil {
+					sentry.CaptureException(err)
+				}
+
+				n.transfer.RequestInvite(n.host, id, msgBytes)
+			}(&invMsg)
+		}
+
 	} else {
 		// File Transfer
 		n.fs.AddFromRequest(req)

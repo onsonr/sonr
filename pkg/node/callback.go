@@ -16,6 +16,7 @@ type Callback interface {
 	OnRefreshed(data []byte)   // Lobby Updates
 	OnEvent(data []byte)       // Lobby Event
 	OnInvited(data []byte)     // User Invited
+	OnRemoteStart(data string) // User started remote
 	OnDirected(data []byte)    // User Direct-Invite from another Device
 	OnResponded(data []byte)   // Peer has responded
 	OnProgress(data float32)   // File Progress Updated
@@ -41,14 +42,6 @@ func (n *Node) TransferCallback() md.TransferCallback {
 
 // ^ queued Callback, Sends File Invite to Peer, and Notifies Client ^
 func (sn *Node) queued(card *md.TransferCard, req *md.InviteRequest) {
-	// Get PeerID
-	id, _, err := sn.lobby.Find(req.To.Id.Peer)
-
-	// Check error
-	if err != nil {
-		sn.error(err, "Queued")
-	}
-
 	// Retreive Current File
 	currFile := sn.fs.CurrentFile()
 	if currFile != nil {
@@ -62,16 +55,52 @@ func (sn *Node) queued(card *md.TransferCard, req *md.InviteRequest) {
 			Card:    card,
 		}
 
-		// Check if ID in PeerStore
-		go func(inv *md.AuthInvite) {
-			// Convert Protobuf to bytes
-			msgBytes, err := proto.Marshal(inv)
+		// @ Check for Remote
+		if req.IsRemote {
+			// Retreive Current File
+			currFile := sn.fs.CurrentFile()
+			if currFile != nil {
+				card.Status = md.TransferCard_INVITE
+				sn.transfer.NewOutgoing(currFile)
+
+				// Create Invite Message
+				invMsg := md.AuthInvite{
+					From:    sn.peer,
+					Payload: card.Payload,
+					Card:    card,
+				}
+
+				// Start Remote Point
+				word, err := sn.transfer.StartRemotePoint(&invMsg)
+				if err != nil {
+					sn.error(err, "StartRemotePoint")
+				}
+
+				// Callback Point
+				sn.call.OnRemoteStart(word)
+			} else {
+				sn.error(errors.New("No current file"), "internal:queued")
+			}
+		} else {
+			// Get PeerID
+			id, _, err := sn.lobby.Find(req.To.Id.Peer)
+
+			// Check error
 			if err != nil {
-				sn.error(err, "Marshal")
+				sn.error(err, "Queued")
 			}
 
-			sn.transfer.RequestInvite(sn.host, id, msgBytes)
-		}(&invMsg)
+			// Check if ID in PeerStore
+			go func(inv *md.AuthInvite) {
+				// Convert Protobuf to bytes
+				msgBytes, err := proto.Marshal(inv)
+				if err != nil {
+					sn.error(err, "Marshal")
+				}
+
+				sn.transfer.RequestInvite(sn.host, id, msgBytes)
+			}(&invMsg)
+		}
 	} else {
 		sn.error(errors.New("No current file"), "internal:queued")
 	}
