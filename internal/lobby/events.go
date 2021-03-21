@@ -79,7 +79,19 @@ func (lob *Lobby) processMessages() {
 			// Update Circle by event
 			if m.Event == md.LobbyEvent_UPDATE {
 				// Update Peer Data
-				lob.updatePeer(m.Data)
+				lob.updatePeer(m.From)
+			} else if m.Event == md.LobbyEvent_MESSAGE {
+				// Check is Message For Self
+				if m.To == lob.selfPeer.Id.Peer {
+					// Convert Message
+					bytes, err := proto.Marshal(m)
+					if err != nil {
+						log.Println("Cannot Marshal Error Protobuf: ", err)
+					}
+
+					// Call Event
+					lob.call.Event(bytes)
+				}
 			}
 
 		case <-lob.ctx.Done():

@@ -30,15 +30,18 @@ message Lobby {
 
 // Message Sent when peer messages Lobby Topic
 message LobbyEvent {
-  string id = 1;   // Peer ID
-  Event event = 2; // What Peer is Doing
-  Peer data = 3;   // Peer Information
+  string id = 1;      // Peer ID
+  Event event = 2;    // What Peer is Doing
+  Peer from = 3;      // User Information
+  string to = 4;      // Peer ID for DM
+  string message = 5; // Message being sent
 
   enum Event {
     EXCHANGE = 0; // Peer has joined wants Info
     STANDBY = 1;  // Peer is taking break from lobby
     RESUME = 2;   // Peer has rejoined Lobby
     UPDATE = 3;   // Peer has changed position
+    MESSAGE = 4;  // Peer has been messaged by a user
   }
 }
 

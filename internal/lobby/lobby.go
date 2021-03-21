@@ -157,7 +157,7 @@ func (lob *Lobby) Resume() error {
 	// Create Lobby Event
 	event := md.LobbyEvent{
 		Event: md.LobbyEvent_RESUME,
-		Data:  lob.call.Peer(),
+		From:  lob.call.Peer(),
 		Id:    lob.call.Peer().Id.Peer,
 	}
 
@@ -180,7 +180,7 @@ func (lob *Lobby) Standby() error {
 	// Create Lobby Event
 	event := md.LobbyEvent{
 		Event: md.LobbyEvent_STANDBY,
-		Data:  lob.call.Peer(),
+		From:  lob.call.Peer(),
 		Id:    lob.call.Peer().Id.Peer,
 	}
 
@@ -203,8 +203,33 @@ func (lob *Lobby) Update() error {
 	// Create Lobby Event
 	event := md.LobbyEvent{
 		Event: md.LobbyEvent_UPDATE,
-		Data:  lob.call.Peer(),
+		From:  lob.call.Peer(),
 		Id:    lob.call.Peer().Id.Peer,
+	}
+
+	// Convert Event to Proto Binary
+	bytes, err := proto.Marshal(&event)
+	if err != nil {
+		return err
+	}
+
+	// Publish to Topic
+	err = lob.topic.Publish(lob.ctx, bytes)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// ^ Send publishes a message to the pubsub topic OLC ^
+func (lob *Lobby) Message(msg string, to string) error {
+	// Create Lobby Event
+	event := md.LobbyEvent{
+		Event:   md.LobbyEvent_MESSAGE,
+		From:    lob.call.Peer(),
+		Id:      lob.call.Peer().Id.Peer,
+		Message: msg,
+		To:      to,
 	}
 
 	// Convert Event to Proto Binary
