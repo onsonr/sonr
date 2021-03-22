@@ -89,7 +89,7 @@ func (tr *TransferController) StartRemote(authInv *md.AuthInvite) error {
 
 		// Get Peer's ID
 		tr.RequestInvite(tr.host, res, bytes)
-	case <-time.After(50 * time.Second):
+	case <-time.After(5 * time.Minute):
 		tr.remote.subscription.Cancel()
 		tr.remote.topic.Close()
 		tr.remote = nil
