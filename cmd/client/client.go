@@ -27,19 +27,9 @@ type Callback interface {
 	OnError(data []byte)       // Internal Error
 }
 
-// @ Struct: Reference for Client Info
-type SysInfo struct {
-	OLC           string
-	Device        md.Device
-	Directory     md.Directories
-	TempFirstName string
-	TempLastName  string
-}
-
 // @ Struct: Reference for Exposed Sonr Client
 type Client struct {
 	ctx             context.Context
-	Info            SysInfo
 	ID              string
 	DeviceID        string
 	UserID          uint32
@@ -53,7 +43,6 @@ type Client struct {
 func NewClient(ctx context.Context, req *md.ConnectionRequest, call Callback) *Client {
 	// Set Default Info
 	var c = new(Client)
-	c.Info = SystemInfo()
 	c.ctx = ctx
 
 	// Create New Client
