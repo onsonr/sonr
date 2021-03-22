@@ -9,7 +9,7 @@ import (
 	sn "github.com/sonr-io/core/pkg/node"
 )
 
-const interval = 500 * time.Millisecond
+const interval = 2 * time.Second
 
 // @ Interface: Callback is implemented from Plugin to receive updates
 type Callback interface {
