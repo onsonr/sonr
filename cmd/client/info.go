@@ -78,8 +78,8 @@ func SystemInfo() SysInfo {
 
 		// Current Directories
 		Directory: md.Directories{
-			Documents: libDir,
-			Temporary: filepath.Join(homeDir, "Downloads"),
+			Temporary: libDir,
+			Documents: filepath.Join(homeDir, "Documents"),
 			Downloads: filepath.Join(homeDir, "Downloads"),
 			Home:      homeDir,
 		},
