@@ -94,3 +94,17 @@ func (sfs *SonrFS) WriteFile(load md.Payload, props *md.TransferCard_Properties,
 	}
 	return fileName, path
 }
+
+func (sfs *SonrFS) getIncomingFilePath(load md.Payload, fileName string) string {
+	// Check for Desktop
+	if sfs.IsDesktop {
+		return filepath.Join(sfs.Downloads, fileName)
+	} else {
+		// Check Load
+		if load == md.Payload_MEDIA {
+			return filepath.Join(sfs.Temporary, fileName)
+		} else {
+			return filepath.Join(sfs.Root, fileName)
+		}
+	}
+}

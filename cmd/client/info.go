@@ -79,10 +79,10 @@ func SystemInfo() SysInfo {
 
 		// Retreived Device Info
 		Device: md.Device{
-			Platform: platform,
-			Model:    model,
-			Name:     name,
-			Desktop:  true,
+			Platform:  platform,
+			Model:     model,
+			Name:      name,
+			IsDesktop: true,
 		},
 
 		// Current Directories

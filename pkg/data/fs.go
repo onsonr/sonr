@@ -23,6 +23,7 @@ type SonrFS struct {
 	Initialized bool
 	Devices     []*md.Device
 	User        *md.User
+	IsDesktop   bool
 
 	// Directories
 	Downloads string
@@ -50,7 +51,7 @@ func InitFS(connEvent *md.ConnectionRequest, profile *md.Profile, callback md.Fi
 	}
 
 	// Check for Client Type
-	if connEvent.Device.Desktop {
+	if connEvent.Device.IsDesktop {
 		// Init Path, Check for Path
 		sonrPath = filepath.Join(connEvent.Directories.Home, K_SONR_CLIENT_DIR)
 		if err := EnsureDir(sonrPath, 0755); err != nil {
@@ -67,6 +68,7 @@ func InitFS(connEvent *md.ConnectionRequest, profile *md.Profile, callback md.Fi
 
 	// Create SFS
 	sfs := &SonrFS{
+		IsDesktop:   connEvent.Device.GetIsDesktop(),
 		Initialized: hasInitialized,
 		Downloads:   connEvent.Directories.Downloads,
 		Root:        sonrPath,

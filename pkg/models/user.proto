@@ -69,7 +69,7 @@ message Device {
   string name = 4;             // Name of Device
   string version = 5;          // Device Software Version
   int32 sdk = 6;               // Only For Android
-  bool desktop = 7;            // Only For Desktop
+  bool isDesktop = 7;          // Only For Desktop
   Directories directories = 8; // Directories for this Device
 }
 
