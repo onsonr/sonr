@@ -1,57 +1,34 @@
 package client
 
 import (
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
-	"net/http"
-
+	"github.com/ip2location/ip2location-go"
 	net "github.com/sonr-io/core/pkg/net"
 )
 
 type IPLocation struct {
-	Continent           string   `json:"continent"`
-	Alpha2              string   `json:"alpha2"`
-	CountryCode         string   `json:"country_code"`
-	InternationalPrefix string   `json:"international_prefix"`
-	Name                string   `json:"name"`
-	CurrencyCode        string   `json:"currency_code"`
-	LanguagesSpoken     []string `json:"languages_spoken"`
-	Geo                 struct {
-		Latitude  float64 `json:"latitude"`
-		Longitude float64 `json:"longitude"`
-	} `json:"geo"`
+	CountryShort string
+	CountryLong  string
+	Latitude     float64
+	Longitude    float64
 }
 
-func GetLocation() IPLocation {
+func GetLocation() (*IPLocation, error) {
 	address := net.IPv4()
+	db, err := ip2location.OpenDB("./IP-COUNTRY-REGION-CITY-LATITUDE-LONGITUDE-ZIPCODE-TIMEZONE-ISP-DOMAIN-NETSPEED-AREACODE-WEATHER-MOBILE-ELEVATION-USAGETYPE.BIN")
 
-	// There is also /xml/ and /csv/ formats available
-	response, err := http.Get("https://api.ipgeolocationapi.com/geolocate/" + address)
 	if err != nil {
-		fmt.Println(err)
-	}
-	defer response.Body.Close()
-
-	// response.Body() is a reader type. We have
-	body, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		fmt.Println(err)
+		return nil, err
 	}
 
-	// Unmarshal the JSON byte slice to a GeoIP struct
-	geo := IPLocation{}
-	err = json.Unmarshal(body, &geo)
+	results, err := db.Get_all(address)
 	if err != nil {
-		fmt.Println(err)
+		return nil, err
 	}
-
-	// Everything accessible in struct now
-	fmt.Println("Country Code:\t", geo.CountryCode)
-	fmt.Println("Country Name:\t", geo.Name)
-	fmt.Println("Languages:\t", geo.LanguagesSpoken)
-	fmt.Println("Latitude:\t", geo.Geo.Latitude)
-	fmt.Println("Longitude:\t", geo.Geo.Longitude)
-	fmt.Println("Continent:\t", geo.Continent)
-	return geo
+	
+	return &IPLocation{
+		CountryShort: results.Country_short,
+		CountryLong:  results.Country_long,
+		Latitude:     float64(results.Latitude),
+		Longitude:    float64(results.Longitude),
+	}, nil
 }
