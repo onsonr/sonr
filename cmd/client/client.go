@@ -3,9 +3,6 @@ package client
 import (
 	"context"
 	"log"
-	"os"
-	"path/filepath"
-	"runtime"
 	"time"
 
 	md "github.com/sonr-io/core/pkg/models"
@@ -41,24 +38,64 @@ type SysInfo struct {
 
 // @ Struct: Reference for Exposed Sonr Client
 type Client struct {
-	ctx  context.Context
-	Info SysInfo
-	Node *sn.Node
+	ctx             context.Context
+	Info            SysInfo
+	ID              string
+	DeviceID        string
+	UserID          uint32
+	node            *sn.Node
+	hasStarted      bool
+	hasBootstrapped bool
+	hostOpts        *sn.HostOptions
 }
 
 // ^ Create New DeskClient Node ^ //
-func NewClient(req *md.ConnectionRequest, call Callback) *Client {
+func NewClient(ctx context.Context, req *md.ConnectionRequest, call Callback) *Client {
 	// Set Default Info
 	var c = new(Client)
 	c.Info = SystemInfo()
-	c.ctx = context.Background()
+	c.ctx = ctx
 	req.Directories = c.Info.Device.GetDirectories()
-	// Create New Client
-	c.Node = sn.NewNode(req, call)
 
-	// Start Routine
-	go c.UpdateAuto(time.NewTicker(interval))
+	// Create New Client
+	c.node = sn.NewNode(req, call)
+	hostOpts, err := sn.NewHostOpts(req)
+	if err != nil {
+		log.Println(err)
+	}
+
+	// Set Host Opts
+	c.hostOpts = hostOpts
 	return c
+}
+
+// @ Start Host
+func (c *Client) Connect() {
+	// Start Node
+	result := c.node.Start(c.hostOpts)
+	if result {
+		// Set Peer Info
+		peer := c.node.Peer()
+		c.ID = peer.Id.Peer
+		c.DeviceID = peer.Id.Device
+		c.UserID = peer.Id.User
+
+		// Set Started
+		c.hasStarted = true
+
+		// Bootstrap to Peers
+		strapResult := c.node.Bootstrap(c.hostOpts)
+		if strapResult {
+			c.hasBootstrapped = true
+
+			// Start Routine
+			go c.UpdateAuto(time.NewTicker(interval))
+		} else {
+			log.Println("Failed to bootstrap node")
+		}
+	} else {
+		log.Println("Failed to start host")
+	}
 }
 
 // ^ Method to Periodically Update Presence ^ //
@@ -66,86 +103,22 @@ func (dc *Client) UpdateAuto(ticker *time.Ticker) {
 	for {
 		select {
 		case <-dc.ctx.Done():
-			dc.Node.Stop()
+			dc.node.Stop()
 			return
 		case <-ticker.C:
-			dc.Node.Update(0, 0)
+			dc.node.Update(0, 0)
 		}
 	}
 }
 
-// ^ Returns System Info ^ //
-func SystemInfo() SysInfo {
-	// Initialize Vars
-	var platform md.Platform
-	var model string
-	var name string
-	var homeDir string
-	var libDir string
-	var last string
-	var err error
-
-	// Get Operating System
-	runOs := runtime.GOOS
-
-	// Check Runtime OS
-	switch runOs {
-	// @ Windows
-	case "windows":
-		platform = md.Platform_Windows
-		last = "PC"
-
-		// @ Mac
-	case "darwin":
-		platform = md.Platform_MacOS
-		last = "Mac"
-
-		// @ Linux
-	case "linux":
-		platform = md.Platform_Linux
-
-		// @ Unknown
-	default:
-		platform = md.Platform_Unknown
+// @ Invite Processes Data and Sends Invite to Peer
+func (dc *Client) Invite(req *md.InviteRequest) {
+	if dc.IsReady() {
+		dc.node.Invite(req)
 	}
+}
 
-	// Get Hostname
-	if name, err = os.Hostname(); err != nil {
-		log.Println(err)
-		name = "Undefined"
-	}
-
-	// Get Directories
-	if homeDir, err = os.UserHomeDir(); err != nil {
-		log.Println(err)
-		homeDir = "local/temp"
-	}
-
-	if libDir, err = os.UserConfigDir(); err != nil {
-		log.Println(err)
-		libDir = "local/temp"
-	}
-
-	// Return SysInfo Object
-	return SysInfo{
-		// Current Hard Code OLC
-		OLC:           "87C4XFJV+",
-		TempFirstName: "Prad's",
-		TempLastName:  last,
-
-		// Retreived Device Info
-		Device: md.Device{
-			Platform: platform,
-			Model:    model,
-			Name:     name,
-			Desktop:  true,
-		},
-
-		// Current Directories
-		Directory: md.Directories{
-			Documents: libDir,
-			Temporary: filepath.Join(homeDir, "Downloads"),
-			Downloads: filepath.Join(homeDir, "Downloads"),
-		},
-	}
+// @ Checks for is Ready
+func (dc *Client) IsReady() bool {
+	return dc.hasBootstrapped && dc.hasStarted
 }
