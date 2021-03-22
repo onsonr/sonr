@@ -11,7 +11,6 @@ require (
 	github.com/google/open-location-code/go v0.0.0-20201229230907-d47d9f9b95e9
 	github.com/google/uuid v1.2.0 // indirect
 	github.com/h2non/filetype v1.1.0
-	github.com/ip2location/ip2location-go v8.3.0+incompatible // indirect
 	github.com/julianshen/go-readability v0.0.0-20160929030430-accf5123e283
 	github.com/libp2p/go-libp2p v0.13.0
 	github.com/libp2p/go-libp2p-connmgr v0.2.4
