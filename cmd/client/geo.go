@@ -9,26 +9,25 @@ import (
 	net "github.com/sonr-io/core/pkg/net"
 )
 
-type GeoIP struct {
-	// The right side is the name of the JSON variable
-	Ip          string  `json:"ip"`
-	CountryCode string  `json:"country_code"`
-	CountryName string  `json:"country_name"`
-	RegionCode  string  `json:"region_code"`
-	RegionName  string  `json:"region_name"`
-	City        string  `json:"city"`
-	Zipcode     string  `json:"zipcode"`
-	Lat         float32 `json:"latitude"`
-	Lon         float32 `json:"longitude"`
-	MetroCode   int     `json:"metro_code"`
-	AreaCode    int     `json:"area_code"`
+type IPLocation struct {
+	Continent           string   `json:"continent"`
+	Alpha2              string   `json:"alpha2"`
+	CountryCode         string   `json:"country_code"`
+	InternationalPrefix string   `json:"international_prefix"`
+	Name                string   `json:"name"`
+	CurrencyCode        string   `json:"currency_code"`
+	LanguagesSpoken     []string `json:"languages_spoken"`
+	Geo                 struct {
+		Latitude  float64 `json:"latitude"`
+		Longitude float64 `json:"longitude"`
+	} `json:"geo"`
 }
 
-func GetLocation() GeoIP {
+func GetLocation() IPLocation {
 	address := net.IPv4()
 
 	// There is also /xml/ and /csv/ formats available
-	response, err := http.Get("https://freegeoip.net/json/" + address)
+	response, err := http.Get("https://api.ipgeolocationapi.com/geolocate/" + address)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -41,20 +40,18 @@ func GetLocation() GeoIP {
 	}
 
 	// Unmarshal the JSON byte slice to a GeoIP struct
-	geo := GeoIP{}
+	geo := IPLocation{}
 	err = json.Unmarshal(body, &geo)
 	if err != nil {
 		fmt.Println(err)
 	}
 
 	// Everything accessible in struct now
-	fmt.Println("IP address:\t", geo.Ip)
 	fmt.Println("Country Code:\t", geo.CountryCode)
-	fmt.Println("Country Name:\t", geo.CountryName)
-	fmt.Println("Zip Code:\t", geo.Zipcode)
-	fmt.Println("Latitude:\t", geo.Lat)
-	fmt.Println("Longitude:\t", geo.Lon)
-	fmt.Println("Metro Code:\t", geo.MetroCode)
-	fmt.Println("Area Code:\t", geo.AreaCode)
+	fmt.Println("Country Name:\t", geo.Name)
+	fmt.Println("Languages:\t", geo.LanguagesSpoken)
+	fmt.Println("Latitude:\t", geo.Geo.Latitude)
+	fmt.Println("Longitude:\t", geo.Geo.Longitude)
+	fmt.Println("Continent:\t", geo.Continent)
 	return geo
 }
