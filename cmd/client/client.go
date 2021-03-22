@@ -106,6 +106,13 @@ func (dc *Client) Invite(req *md.InviteRequest) {
 	}
 }
 
+// @ Respond to an Invitation
+func (dc *Client) Respond(decision bool) {
+	if dc.IsReady() {
+		dc.node.Respond(decision)
+	}
+}
+
 // @ Checks for is Ready
 func (dc *Client) IsReady() bool {
 	return dc.hasBootstrapped && dc.hasStarted
