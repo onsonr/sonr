@@ -66,17 +66,10 @@ func (fq *SonrFS) Reset() {
 }
 
 // ^ Write User Data at Path ^
-func (sfs *SonrFS) WriteFile(load md.Payload, props *md.TransferCard_Properties, data []byte) (string, string) {
+func (sfs *SonrFS) WriteIncomingFile(load md.Payload, props *md.TransferCard_Properties, data []byte) (string, string) {
 	// Create File Name
 	fileName := props.Name + "." + props.Mime.Subtype
-	var path string
-
-	// Check Load
-	if load == md.Payload_MEDIA {
-		path = filepath.Join(sfs.Temporary, fileName)
-	} else {
-		path = filepath.Join(sfs.Root, fileName)
-	}
+	path := sfs.getIncomingFilePath(load, fileName)
 
 	// Check for User File at Path
 	file, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
@@ -95,6 +88,7 @@ func (sfs *SonrFS) WriteFile(load md.Payload, props *md.TransferCard_Properties,
 	return fileName, path
 }
 
+// @ Helper: Finds Write Path for Incoming File
 func (sfs *SonrFS) getIncomingFilePath(load md.Payload, fileName string) string {
 	// Check for Desktop
 	if sfs.IsDesktop {
