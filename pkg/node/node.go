@@ -25,9 +25,6 @@ import (
 	dq "github.com/sonr-io/core/pkg/user"
 )
 
-const discoveryInterval = time.Second * 2
-const gracePeriod = time.Minute
-
 // ^ Struct: Main Node handles Networking/Identity/Streams ^
 type Node struct {
 	// Properties
@@ -40,8 +37,8 @@ type Node struct {
 
 	// Networking Properties
 	host   host.Host
-	kadDHT *dht.IpfsDHT
-	pubSub *pubsub.PubSub
+	kdht   *dht.IpfsDHT
+	pubsub *pubsub.PubSub
 	router *net.ProtocolRouter
 	status md.Status
 
@@ -122,15 +119,6 @@ func (n *Node) Start(opts *net.HostOptions) bool {
 	}
 	n.host = h
 
-	// Create Pub Sub
-	ps, err := pubsub.NewGossipSub(n.ctx, n.host)
-	if err != nil {
-		sentry.CaptureException(err)
-		n.call.OnConnected(false)
-		return false
-	}
-	n.pubSub = ps
-
 	// Set Peer Info
 	n.peer = &md.Peer{
 		Id:       n.fs.GetPeerID(n.device, n.profile, n.host.ID().String()),
@@ -138,10 +126,15 @@ func (n *Node) Start(opts *net.HostOptions) bool {
 		Platform: n.device.Platform,
 		Model:    n.device.Model,
 	}
-	// dat, err := proto.Marshal(n.peer)
-	// if err != nil {
 
-	// }
+	// Create Pub Sub
+	ps, err := pubsub.NewGossipSub(n.ctx, n.host)
+	if err != nil {
+		sentry.CaptureException(err)
+		n.call.OnConnected(false)
+		return false
+	}
+	n.pubsub = ps
 
 	// Create Bootstrapper Info
 	bootstrappers := opts.GetBootstrapAddrInfo()
@@ -149,7 +142,6 @@ func (n *Node) Start(opts *net.HostOptions) bool {
 		n.ctx,
 		n.host,
 		dht.BootstrapPeers(bootstrappers...),
-		// TODO: Implement after deploying bootstrappers -> dht.ProtocolPrefix(protocol.ID("/sonr/kad/")),
 	)
 	if err != nil {
 		sentry.CaptureException(errors.Wrap(err, "Error while Creating routing DHT"))
@@ -157,9 +149,9 @@ func (n *Node) Start(opts *net.HostOptions) bool {
 		n.call.OnReady(false)
 		return false
 	}
-	n.kadDHT = kadDHT
 
-	//n.kadDHT.PutValue(n.ctx, n.peer.Id.Peer, value []byte, opts ...routing.Option)
+	// Return Connected
+	n.kdht = kadDHT
 	n.call.OnConnected(true)
 	return true
 }
@@ -170,7 +162,7 @@ func (n *Node) Bootstrap(opts *net.HostOptions) bool {
 	bootstrappers := opts.GetBootstrapAddrInfo()
 
 	// Bootstrap DHT
-	if err := n.kadDHT.Bootstrap(n.ctx); err != nil {
+	if err := n.kdht.Bootstrap(n.ctx); err != nil {
 		sentry.CaptureException(errors.Wrap(err, "Error while Bootstrapping DHT"))
 		n.error(err, "Error while Bootstrapping DHT")
 		n.call.OnReady(false)
@@ -182,7 +174,6 @@ func (n *Node) Bootstrap(opts *net.HostOptions) bool {
 	for _, pi := range bootstrappers {
 		if err := n.host.Connect(n.ctx, pi); err == nil {
 			hasBootstrapped = true
-			break
 		}
 	}
 
@@ -194,20 +185,20 @@ func (n *Node) Bootstrap(opts *net.HostOptions) bool {
 		n.call.OnReady(true)
 		key, err := n.PeerCID()
 		if err != nil {
-			if err := n.kadDHT.Provide(n.ctx, key, true); err != nil {
+			if err := n.kdht.Provide(n.ctx, key, true); err != nil {
 				log.Println(err)
 			}
 		}
 	}
 
 	// Set Routing Discovery, Find Peers
-	routingDiscovery := disc.NewRoutingDiscovery(n.kadDHT)
-	disc.Advertise(n.ctx, routingDiscovery, n.router.Point(), discLimit.TTL(discoveryInterval))
+	routingDiscovery := disc.NewRoutingDiscovery(n.kdht)
+	disc.Advertise(n.ctx, routingDiscovery, n.router.Point(), discLimit.TTL(time.Second*2))
 	go n.handlePeers(routingDiscovery)
 
 	// Enter Lobby
 	var err error
-	if n.lobby, err = sl.Join(n.ctx, n.LobbyCallback(), n.host, n.pubSub, n.peer, n.router); err != nil {
+	if n.lobby, err = sl.Join(n.ctx, n.LobbyCallback(), n.host, n.pubsub, n.peer, n.router); err != nil {
 		sentry.CaptureException(err)
 		n.error(err, "Joining Lobby")
 		n.call.OnReady(false)
@@ -215,13 +206,17 @@ func (n *Node) Bootstrap(opts *net.HostOptions) bool {
 	}
 
 	// Initialize Peer Connection
-	if n.transfer, err = tf.Initialize(n.ctx, n.host, n.pubSub, n.fs, n.router, n.TransferCallback()); err != nil {
+	if n.transfer, err = tf.Initialize(n.ctx, n.host, n.pubsub, n.fs, n.router, n.TransferCallback()); err != nil {
 		sentry.CaptureException(err)
 		n.error(err, "Initializing Transfer Controller")
 		n.call.OnReady(false)
 		return false
 	}
 	return true
+}
+
+func (n *Node) Register(routingDiscovery *disc.RoutingDiscovery) {
+
 }
 
 // ^ Handles Peers in DHT ^
@@ -259,6 +254,6 @@ func (n *Node) handlePeers(routingDiscovery *disc.RoutingDiscovery) {
 
 		// Refresh table every 4 seconds
 		md.GetState().NeedsWait()
-		<-time.After(discoveryInterval)
+		<-time.After(time.Second * 2)
 	}
 }

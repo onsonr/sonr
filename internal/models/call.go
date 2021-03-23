@@ -28,7 +28,6 @@ func NewLobbyCallback(callEvent OnProtobuf, callRefresh OnProtobuf, callError On
 		Peer:    getPeer,
 	}
 }
-
 type TransferCallback struct {
 	Invited     OnInvite
 	RemoteStart OnProtobuf

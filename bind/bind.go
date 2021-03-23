@@ -27,6 +27,7 @@ type Callback interface {
 
 // * Struct: Reference for Binded Proxy Node * //
 type MobileNode struct {
+	call            Callback
 	ID              string
 	DeviceID        string
 	UserID          uint32
@@ -55,6 +56,7 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 
 	// Return Mobile Node
 	return &MobileNode{
+		call:            call,
 		node:            node,
 		hasStarted:      false,
 		hasBootstrapped: false,

@@ -35,7 +35,18 @@ func (n *Node) Peer() *md.Peer {
 	return n.peer
 }
 
-// @ Peer returns Current Peer Info
+// @ Peer returns Current Peer Info as Buffer
+func (n *Node) PeerBuf() []byte {
+	// Convert to bytes
+	buf, err := proto.Marshal(n.ID())
+	if err != nil {
+		sentry.CaptureException(err)
+		return nil
+	}
+	return buf
+}
+
+// @ Peer returns Current Peer Info as Content ID
 func (n *Node) PeerCID() (cid.Cid, error) {
 	// Convert to bytes
 	buf, err := proto.Marshal(n.ID())
