@@ -10,7 +10,8 @@ type OnReceived func(data *TransferCard)
 type OnTransmitted func(data *Peer)
 type OnError func(err error, method string)
 type ReturnPeer func() *Peer
-type UpdatePeer func(peer *Peer)
+type ReturnBuf func() []byte
+type SyncLobby func(ref *Lobby, peer *Peer)
 
 type LobbyCallback struct {
 	Event   OnProtobuf
@@ -28,6 +29,7 @@ func NewLobbyCallback(callEvent OnProtobuf, callRefresh OnProtobuf, callError On
 		Peer:    getPeer,
 	}
 }
+
 type TransferCallback struct {
 	Invited     OnInvite
 	RemoteStart OnProtobuf

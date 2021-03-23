@@ -73,7 +73,7 @@ func Join(ctx context.Context, lobCall md.LobbyCallback, h host.Host, ps *pubsub
 
 		messages: make(chan *md.LobbyEvent, ChatRoomBufSize),
 		data: &md.Lobby{
-			Olc:    pr.OLC,
+			Olc:    pr.LocalPoint(),
 			Size:   1,
 			Peers:  make(map[string]*md.Peer),
 			Groups: make(map[string]*md.Group),
@@ -83,8 +83,8 @@ func Join(ctx context.Context, lobCall md.LobbyCallback, h host.Host, ps *pubsub
 	// Create PeerService
 	peersvServer := gorpc.NewServer(h, pr.Exchange())
 	psv := ExchangeService{
-		updatePeer: lob.updatePeer,
-		getUser:    lob.call.Peer,
+		syncLobby: lob.syncLobby,
+		getUser:   lob.call.Peer,
 	}
 
 	// Register Service
@@ -253,4 +253,148 @@ func (lob *Lobby) Refresh() {
 		log.Println("Cannot Marshal Error Protobuf: ", err)
 	}
 	lob.call.Refresh(bytes)
+}
+
+// ^ handleMessages pulls messages from the pubsub topic and pushes them onto the Messages channel. ^
+func (lob *Lobby) handleEvents() {
+	// @ Create Topic Handler
+	topicHandler, err := lob.topic.EventHandler()
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	// @ Loop Events
+	for {
+		// Get next event
+		lobEvent, err := topicHandler.NextPeerEvent(lob.ctx)
+		if err != nil {
+			topicHandler.Cancel()
+			return
+		}
+
+		if lobEvent.Type == pubsub.PeerJoin {
+			lob.Exchange(lobEvent.Peer)
+		}
+
+		if lobEvent.Type == pubsub.PeerLeave {
+			lob.removePeer(lobEvent.Peer)
+		}
+
+		md.GetState().NeedsWait()
+	}
+}
+
+// ^ 1. handleMessages pulls messages from the pubsub topic and pushes them onto the Messages channel. ^
+func (lob *Lobby) handleMessages() {
+	for {
+		// Get next msg from pub/sub
+		msg, err := lob.sub.Next(lob.ctx)
+		if err != nil {
+			close(lob.messages)
+			return
+		}
+
+		// Only forward messages delivered by others
+		if msg.ReceivedFrom == lob.host.ID() {
+			continue
+		}
+
+		// Construct message
+		m := md.LobbyEvent{}
+		err = proto.Unmarshal(msg.Data, &m)
+		if err != nil {
+			continue
+		}
+
+		// Validate Peer in Lobby
+		if lob.HasPeer(m.Id) {
+			// Update Circle by event
+			lob.messages <- &m
+		}
+		md.GetState().NeedsWait()
+	}
+}
+
+// ^ 1a. processMessages handles message content and ticker ^
+func (lob *Lobby) processMessages() {
+	for {
+		select {
+		// @ when we receive a message from the lobby room
+		case m := <-lob.messages:
+			// Update Circle by event
+			if m.Event == md.LobbyEvent_UPDATE {
+				// Update Peer Data
+				lob.updatePeer(m.From)
+			} else if m.Event == md.LobbyEvent_MESSAGE {
+				// Check is Message For Self
+				if m.To == lob.selfPeer.Id.Peer {
+					// Convert Message
+					bytes, err := proto.Marshal(m)
+					if err != nil {
+						log.Println("Cannot Marshal Error Protobuf: ", err)
+					}
+
+					// Call Event
+					lob.call.Event(bytes)
+				}
+			}
+
+		case <-lob.ctx.Done():
+			return
+		}
+		md.GetState().NeedsWait()
+	}
+}
+
+// ^ updatePeer changes Peer values in Lobby ^
+func (lob *Lobby) getData() []byte {
+	bytes, err := proto.Marshal(lob.data)
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+	return bytes
+}
+
+// ^ removePeer removes Peer from Map ^
+func (lob *Lobby) removePeer(id peer.ID) {
+	// Update Peer with new data
+	delete(lob.data.Peers, id.String())
+	lob.data.Count = int32(len(lob.data.Peers))
+	lob.data.Size = int32(len(lob.data.Peers)) + 1 // Account for User
+
+	// Callback with Updated Data
+	lob.Refresh()
+}
+
+// ^ removePeer removes Peer from Map ^
+func (lob *Lobby) syncLobby(ref *md.Lobby, peer *md.Peer) {
+	// Validate Lobbies are Different
+	if lob.data.Count != ref.Count {
+		// Iterate Over List
+		for id, peer := range ref.Peers {
+			// Add all Peers NOT User
+			if id != lob.selfPeer.Id.Peer {
+				lob.data.Peers[id] = peer
+			}
+		}
+	}
+
+	// Add Peer to Lobby
+	lob.updatePeer(peer)
+
+	// Callback with Updated Data
+	lob.Refresh()
+}
+
+// ^ updatePeer changes Peer values in Lobby ^
+func (lob *Lobby) updatePeer(peer *md.Peer) {
+	// Update Peer with new data
+	lob.data.Peers[peer.Id.Peer] = peer
+	lob.data.Count = int32(len(lob.data.Peers))
+	lob.data.Size = int32(len(lob.data.Peers)) + 1 // Account for User
+
+	// Callback with Updated Data
+	lob.Refresh()
 }

@@ -11,7 +11,8 @@ import (
 // ! Protocol Router for routing Sonr Endpoints by Module !
 type ProtocolRouter struct {
 	// Open Location Code for Local Peers
-	OLC string
+	MinorOLC string
+	MajorOLC string
 
 	// User Joined Groups
 	AuthGroups     []protocol.ID
@@ -23,11 +24,13 @@ type ProtocolRouter struct {
 // ^ Creates New Protocol Router: Grouped, Local, Global ^ //
 func NewProtocolRouter(req *md.ConnectionRequest) *ProtocolRouter {
 	// Get Open Location Code
-	olcValue := olc.Encode(float64(req.Latitude), float64(req.Longitude), 8)
+	olcMinor := olc.Encode(float64(req.Latitude), float64(req.Longitude), 8)
+	olcMajor := olc.Encode(float64(req.Latitude), float64(req.Longitude), 4)
 
 	// Return Protocol ID
 	return &ProtocolRouter{
-		OLC: olcValue,
+		MinorOLC: olcMinor,
+		MajorOLC: olcMajor,
 	}
 }
 
@@ -38,8 +41,13 @@ func (pr *ProtocolRouter) Prefix() protocol.ID {
 }
 
 // Main Local Rendevouz Advertising Point
-func (pr *ProtocolRouter) Point() string {
-	return fmt.Sprintf("/sonr/%s", pr.OLC)
+func (pr *ProtocolRouter) LocalPoint() string {
+	return fmt.Sprintf("/sonr/%s", pr.MinorOLC)
+}
+
+// Main Local Rendevouz Advertising Point
+func (pr *ProtocolRouter) MajorPoint() string {
+	return fmt.Sprintf("/sonr/%s", pr.MajorOLC)
 }
 
 // @ Transfer Controller Auth Protocol IDs: ONLY ONE OPTION ALLOWED
@@ -51,7 +59,7 @@ func (pr *ProtocolRouter) Auth(opts ...*protocolRouterOption) protocol.ID {
 
 		// Local Authentication Point
 		if opt.local {
-			return protocol.ID(fmt.Sprintf("/sonr/transfer/%s/auth", pr.OLC))
+			return protocol.ID(fmt.Sprintf("/sonr/transfer/%s/auth", pr.MinorOLC))
 		}
 	}
 
@@ -80,7 +88,7 @@ func (pr *ProtocolRouter) Transfer(opts ...*protocolRouterOption) protocol.ID {
 
 		// Local Authentication Point
 		if opt.local {
-			return protocol.ID(fmt.Sprintf("/sonr/transfer/%s/data", pr.OLC))
+			return protocol.ID(fmt.Sprintf("/sonr/transfer/%s/data", pr.MinorOLC))
 		}
 	}
 
@@ -97,12 +105,7 @@ func (pr *ProtocolRouter) Topic(opts ...*protocolRouterOption) string {
 
 		// Local Authentication Point
 		if opt.local {
-			return fmt.Sprintf("/sonr/lobby/%s/topic", pr.OLC)
-		}
-
-		// Group Auth Point
-		if opt.group {
-			return fmt.Sprintf("/sonr/lobby/group/%s/topic", opt.groupName)
+			return fmt.Sprintf("/sonr/lobby/%s/topic", pr.MinorOLC)
 		}
 	}
 	return "/sonr/lobby/topic"
@@ -117,13 +120,9 @@ func (pr *ProtocolRouter) Exchange(opts ...*protocolRouterOption) protocol.ID {
 
 		// Local Exchange Point
 		if opt.local {
-			return protocol.ID(fmt.Sprintf("/sonr/lobby/%s/exchange", pr.OLC))
+			return protocol.ID(fmt.Sprintf("/sonr/lobby/%s/exchange", pr.MinorOLC))
 		}
 
-		// Group Exchange Point
-		if opt.group {
-			return protocol.ID(fmt.Sprintf("/sonr/lobby/group/%s/exchange", opt.groupName))
-		}
 	}
 	return protocol.ID("/sonr/lobby/exchange")
 }

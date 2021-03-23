@@ -139,6 +139,13 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 	}
 }
 
+// @ Respond to an Invite with Decision
+func (mn *MobileNode) Respond(decs bool) {
+	if mn.IsReady() {
+		mn.node.Respond(decs)
+	}
+}
+
 // @ Join Existing Group
 func (mn *MobileNode) JoinRemote(data string) {
 	if mn.IsReady() {
