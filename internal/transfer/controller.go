@@ -12,7 +12,7 @@ import (
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
 	net "github.com/sonr-io/core/internal/network"
-	fs "github.com/sonr-io/core/pkg/data"
+	fs "github.com/sonr-io/core/pkg/user"
 )
 
 // ^ Struct: Holds/Handles GRPC Calls and Handles Data Stream  ^ //

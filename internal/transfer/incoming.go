@@ -9,7 +9,7 @@ import (
 	"time"
 
 	md "github.com/sonr-io/core/internal/models"
-	fs "github.com/sonr-io/core/pkg/data"
+	fs "github.com/sonr-io/core/pkg/user"
 	"google.golang.org/protobuf/proto"
 )
 
