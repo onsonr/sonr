@@ -183,13 +183,14 @@ func (n *Node) Bootstrap(opts *net.HostOptions) bool {
 		return false
 	} else {
 		n.call.OnReady(true)
-		key, err := n.PeerCID()
-		if err != nil {
-			if err := n.kdht.Provide(n.ctx, key, true); err != nil {
-				log.Println(err)
-			}
-		}
 	}
+
+	// 	key, err := n.PeerCID()
+	// if err != nil {
+	// 	if err := n.kdht.Provide(n.ctx, key, true); err != nil {
+	// 		log.Println(err)
+	// 	}
+	// }
 
 	// Set Routing Discovery, Find Peers
 	routingDiscovery := disc.NewRoutingDiscovery(n.kdht)
@@ -213,10 +214,6 @@ func (n *Node) Bootstrap(opts *net.HostOptions) bool {
 		return false
 	}
 	return true
-}
-
-func (n *Node) Register(routingDiscovery *disc.RoutingDiscovery) {
-
 }
 
 // ^ Handles Peers in DHT ^
