@@ -1,4 +1,4 @@
-package net
+package network
 
 import (
 	"crypto/rand"
@@ -12,7 +12,7 @@ import (
 type Language string
 
 const (
-	English            Language = "english"
+	English            Language = "english" //nolint
 	ChineseSimplified           = "chinese_simplified"
 	ChineseTraditional          = "chinese_traditional"
 	Czech                       = "czech"

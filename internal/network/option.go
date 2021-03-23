@@ -1,4 +1,4 @@
-package net
+package network
 
 // ^ Router Protocol ID Option ^ //
 type protocolRouterOption struct {
