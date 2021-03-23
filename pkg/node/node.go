@@ -112,7 +112,7 @@ func (n *Node) Start(opts *net.HostOptions) bool {
 		libp2p.ConnectionManager(connmgr.NewConnManager(
 			10,          // Lowwater
 			20,          // HighWater,
-			gracePeriod, // GracePeriod
+			time.Minute, // GracePeriod
 		)),
 	)
 	if err != nil {
@@ -138,20 +138,18 @@ func (n *Node) Start(opts *net.HostOptions) bool {
 		Platform: n.device.Platform,
 		Model:    n.device.Model,
 	}
-	n.call.OnConnected(true)
-	return true
-}
+	// dat, err := proto.Marshal(n.peer)
+	// if err != nil {
 
-// ^ Bootstrap begins bootstrap with peers ^
-func (n *Node) Bootstrap(opts *net.HostOptions) bool {
+	// }
+
 	// Create Bootstrapper Info
 	bootstrappers := opts.GetBootstrapAddrInfo()
-
-	// Set DHT
 	kadDHT, err := dht.New(
 		n.ctx,
 		n.host,
 		dht.BootstrapPeers(bootstrappers...),
+		// TODO: Implement after deploying bootstrappers -> dht.ProtocolPrefix(protocol.ID("/sonr/kad/")),
 	)
 	if err != nil {
 		sentry.CaptureException(errors.Wrap(err, "Error while Creating routing DHT"))
@@ -161,8 +159,18 @@ func (n *Node) Bootstrap(opts *net.HostOptions) bool {
 	}
 	n.kadDHT = kadDHT
 
+	//n.kadDHT.PutValue(n.ctx, n.peer.Id.Peer, value []byte, opts ...routing.Option)
+	n.call.OnConnected(true)
+	return true
+}
+
+// ^ Bootstrap begins bootstrap with peers ^
+func (n *Node) Bootstrap(opts *net.HostOptions) bool {
+	// Create Bootstrapper Info
+	bootstrappers := opts.GetBootstrapAddrInfo()
+
 	// Bootstrap DHT
-	if err := kadDHT.Bootstrap(n.ctx); err != nil {
+	if err := n.kadDHT.Bootstrap(n.ctx); err != nil {
 		sentry.CaptureException(errors.Wrap(err, "Error while Bootstrapping DHT"))
 		n.error(err, "Error while Bootstrapping DHT")
 		n.call.OnReady(false)
@@ -184,14 +192,21 @@ func (n *Node) Bootstrap(opts *net.HostOptions) bool {
 		return false
 	} else {
 		n.call.OnReady(true)
+		key, err := n.PeerCID()
+		if err != nil {
+			if err := n.kadDHT.Provide(n.ctx, key, true); err != nil {
+				log.Println(err)
+			}
+		}
 	}
 
 	// Set Routing Discovery, Find Peers
-	routingDiscovery := disc.NewRoutingDiscovery(kadDHT)
+	routingDiscovery := disc.NewRoutingDiscovery(n.kadDHT)
 	disc.Advertise(n.ctx, routingDiscovery, n.router.Point(), discLimit.TTL(discoveryInterval))
 	go n.handlePeers(routingDiscovery)
 
 	// Enter Lobby
+	var err error
 	if n.lobby, err = sl.Join(n.ctx, n.LobbyCallback(), n.host, n.pubSub, n.peer, n.router); err != nil {
 		sentry.CaptureException(err)
 		n.error(err, "Joining Lobby")

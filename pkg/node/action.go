@@ -6,6 +6,8 @@ import (
 	"time"
 
 	sentry "github.com/getsentry/sentry-go"
+	"github.com/ipfs/go-cid"
+	"github.com/multiformats/go-multihash"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
@@ -31,6 +33,27 @@ func (n *Node) Info() []byte {
 // @ Peer returns Current Peer Info
 func (n *Node) Peer() *md.Peer {
 	return n.peer
+}
+
+// @ Peer returns Current Peer Info
+func (n *Node) PeerCID() (cid.Cid, error) {
+	// Convert to bytes
+	buf, err := proto.Marshal(n.ID())
+	if err != nil {
+		sentry.CaptureException(err)
+		return cid.Undef, err
+	}
+
+	// Encode Multihash
+	mhash, err := multihash.EncodeName(buf, n.ID().Peer)
+	if err != nil {
+		sentry.CaptureException(err)
+		return cid.Undef, err
+	}
+
+	// Return Key
+	key := cid.NewCidV1(cid.DagProtobuf, mhash)
+	return key, nil
 }
 
 // ^ Update proximity/direction and Notify Lobby ^ //
