@@ -7,7 +7,7 @@ import (
 	"github.com/getsentry/sentry-go"
 	"github.com/pkg/errors"
 	sf "github.com/sonr-io/core/internal/file"
-	md "github.com/sonr-io/core/pkg/models"
+	md "github.com/sonr-io/core/internal/models"
 )
 
 // @ Maximum Files in Node Cache

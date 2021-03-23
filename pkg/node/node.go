@@ -16,9 +16,9 @@ import (
 	"google.golang.org/protobuf/proto"
 
 	sl "github.com/sonr-io/core/internal/lobby"
+	md "github.com/sonr-io/core/internal/models"
 	tr "github.com/sonr-io/core/internal/transfer"
 	dq "github.com/sonr-io/core/pkg/data"
-	md "github.com/sonr-io/core/pkg/models"
 	net "github.com/sonr-io/core/pkg/net"
 )
 

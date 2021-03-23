@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	md "github.com/sonr-io/core/pkg/models"
+	md "github.com/sonr-io/core/internal/models"
 	sn "github.com/sonr-io/core/pkg/node"
 )
 

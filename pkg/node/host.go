@@ -15,8 +15,8 @@ import (
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	swarm "github.com/libp2p/go-libp2p-swarm"
 	sl "github.com/sonr-io/core/internal/lobby"
+	md "github.com/sonr-io/core/internal/models"
 	tf "github.com/sonr-io/core/internal/transfer"
-	md "github.com/sonr-io/core/pkg/models"
 	net "github.com/sonr-io/core/pkg/net"
 )
 

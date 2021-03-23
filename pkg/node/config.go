@@ -9,7 +9,7 @@ import (
 	"google.golang.org/protobuf/proto"
 
 	sentry "github.com/getsentry/sentry-go"
-	md "github.com/sonr-io/core/pkg/models"
+	md "github.com/sonr-io/core/internal/models"
 )
 
 // ^ Host Config ^ //

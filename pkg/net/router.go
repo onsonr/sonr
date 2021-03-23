@@ -5,7 +5,7 @@ import (
 
 	olc "github.com/google/open-location-code/go"
 	"github.com/libp2p/go-libp2p-core/protocol"
-	md "github.com/sonr-io/core/pkg/models"
+	md "github.com/sonr-io/core/internal/models"
 )
 
 // ! Protocol Router for routing Sonr Endpoints by Module !

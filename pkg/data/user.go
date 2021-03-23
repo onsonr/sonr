@@ -9,7 +9,7 @@ import (
 
 	mid "github.com/denisbrodbeck/machineid"
 	"github.com/getsentry/sentry-go"
-	md "github.com/sonr-io/core/pkg/models"
+	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
 

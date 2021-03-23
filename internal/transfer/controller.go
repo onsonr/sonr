@@ -10,8 +10,8 @@ import (
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	msgio "github.com/libp2p/go-msgio"
 	sf "github.com/sonr-io/core/internal/file"
+	md "github.com/sonr-io/core/internal/models"
 	fs "github.com/sonr-io/core/pkg/data"
-	md "github.com/sonr-io/core/pkg/models"
 	net "github.com/sonr-io/core/pkg/net"
 )
 

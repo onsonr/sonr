@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"runtime"
 
-	md "github.com/sonr-io/core/pkg/models"
+	md "github.com/sonr-io/core/internal/models"
 )
 
 // @ Struct: Reference for Client Info

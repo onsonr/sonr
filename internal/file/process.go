@@ -7,7 +7,7 @@ import (
 	"log"
 	"sync"
 
-	md "github.com/sonr-io/core/pkg/models"
+	md "github.com/sonr-io/core/internal/models"
 )
 
 // ^ File that safely sets metadata and thumbnail in routine ^ //

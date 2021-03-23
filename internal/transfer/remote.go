@@ -8,7 +8,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	md "github.com/sonr-io/core/pkg/models"
+	md "github.com/sonr-io/core/internal/models"
 	"github.com/sonr-io/core/pkg/net"
 	"google.golang.org/protobuf/proto"
 )
