@@ -75,6 +75,7 @@ func Join(ctx context.Context, lobCall md.LobbyCallback, h host.Host, ps *pubsub
 		data: &md.Lobby{
 			Olc:    pr.LocalPoint(),
 			Size:   1,
+			Count:  0,
 			Peers:  make(map[string]*md.Peer),
 			Groups: make(map[string]*md.Group),
 		},

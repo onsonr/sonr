@@ -175,6 +175,7 @@ func (n *Node) Bootstrap(opts *net.HostOptions) bool {
 		if err := n.host.Connect(n.ctx, pi); err == nil {
 			hasBootstrapped = true
 		}
+		md.GetState().NeedsWait()
 	}
 
 	// Check if Bootstrapping Occurred
@@ -185,16 +186,9 @@ func (n *Node) Bootstrap(opts *net.HostOptions) bool {
 		n.call.OnReady(true)
 	}
 
-	// 	key, err := n.PeerCID()
-	// if err != nil {
-	// 	if err := n.kdht.Provide(n.ctx, key, true); err != nil {
-	// 		log.Println(err)
-	// 	}
-	// }
-
 	// Set Routing Discovery, Find Peers
 	routingDiscovery := disc.NewRoutingDiscovery(n.kdht)
-	disc.Advertise(n.ctx, routingDiscovery, n.router.Point(), discLimit.TTL(time.Second*2))
+	disc.Advertise(n.ctx, routingDiscovery, n.router.LocalPoint(), discLimit.TTL(time.Second*2))
 	go n.handlePeers(routingDiscovery)
 
 	// Enter Lobby
@@ -222,7 +216,7 @@ func (n *Node) handlePeers(routingDiscovery *disc.RoutingDiscovery) {
 		// Find peers in DHT
 		peersChan, err := routingDiscovery.FindPeers(
 			n.ctx,
-			n.router.Point(),
+			n.router.LocalPoint(),
 			discLimit.Limit(16),
 		)
 		if err != nil {
@@ -247,6 +241,7 @@ func (n *Node) handlePeers(routingDiscovery *disc.RoutingDiscovery) {
 					}
 				}
 			}
+			md.GetState().NeedsWait()
 		}
 
 		// Refresh table every 4 seconds
