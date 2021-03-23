@@ -87,7 +87,7 @@ func NewNode(req *md.ConnectionRequest, call Callback) *Node {
 }
 
 // ^ Start Begins Running Libp2p Host ^
-func (n *Node) Start(opts *HostOptions) bool {
+func (n *Node) Start(opts *net.HostOptions) bool {
 	// IP Address
 	ip4 := net.IPv4()
 	ip6 := net.IPv6()
@@ -143,7 +143,7 @@ func (n *Node) Start(opts *HostOptions) bool {
 }
 
 // ^ Bootstrap begins bootstrap with peers ^
-func (n *Node) Bootstrap(opts *HostOptions) bool {
+func (n *Node) Bootstrap(opts *net.HostOptions) bool {
 	// Create Bootstrapper Info
 	bootstrappers := opts.GetBootstrapAddrInfo()
 

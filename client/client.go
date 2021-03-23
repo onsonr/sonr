@@ -7,6 +7,7 @@ import (
 
 	md "github.com/sonr-io/core/internal/models"
 	sn "github.com/sonr-io/core/pkg/node"
+	net "github.com/sonr-io/core/internal/network"
 )
 
 const interval = 2 * time.Second
@@ -36,7 +37,7 @@ type Client struct {
 	node            *sn.Node
 	hasStarted      bool
 	hasBootstrapped bool
-	hostOpts        *sn.HostOptions
+	hostOpts        *net.HostOptions
 }
 
 // ^ Create New DeskClient Node ^ //
@@ -47,7 +48,7 @@ func NewClient(ctx context.Context, req *md.ConnectionRequest, call Callback) *C
 
 	// Create New Client
 	c.node = sn.NewNode(req, call)
-	hostOpts, err := sn.NewHostOpts(req)
+	hostOpts, err := net.NewHostOpts(req)
 	if err != nil {
 		log.Println(err)
 	}

@@ -4,6 +4,7 @@ import (
 	"log"
 
 	md "github.com/sonr-io/core/internal/models"
+	net "github.com/sonr-io/core/internal/network"
 	sn "github.com/sonr-io/core/pkg/node"
 	"google.golang.org/protobuf/proto"
 )
@@ -32,7 +33,7 @@ type MobileNode struct {
 	node            *sn.Node
 	hasStarted      bool
 	hasBootstrapped bool
-	hostOpts        *sn.HostOptions
+	hostOpts        *net.HostOptions
 }
 
 // @ Create New Mobile Node
@@ -44,7 +45,7 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 		log.Fatalln(err)
 	}
 
-	hostOpts, err := sn.NewHostOpts(&req)
+	hostOpts, err := net.NewHostOpts(&req)
 	if err != nil {
 		log.Println(err)
 	}
@@ -133,29 +134,6 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 			log.Println(err)
 		}
 		mn.node.Invite(req)
-	}
-}
-
-// @ Create a New Group
-func (mn *MobileNode) CreateGroup() string {
-	if mn.IsReady() {
-		w := mn.node.CreateGroup()
-		return w
-	}
-	return ""
-}
-
-// @ Join Existing Group
-func (mn *MobileNode) JoinGroup(data string) {
-	if mn.IsReady() {
-		mn.node.JoinGroup(data)
-	}
-}
-
-// @ Respond to an Invitation
-func (mn *MobileNode) Respond(decision bool) {
-	if mn.IsReady() {
-		mn.node.Respond(decision)
 	}
 }
 
