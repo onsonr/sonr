@@ -17,9 +17,9 @@ import (
 
 	sl "github.com/sonr-io/core/internal/lobby"
 	md "github.com/sonr-io/core/internal/models"
+	net "github.com/sonr-io/core/internal/network"
 	tr "github.com/sonr-io/core/internal/transfer"
 	dq "github.com/sonr-io/core/pkg/data"
-	net "github.com/sonr-io/core/pkg/net"
 )
 
 const discoveryInterval = time.Second * 2
@@ -180,45 +180,6 @@ func (n *Node) Invite(req *md.InviteRequest) {
 
 	// Update Status
 	n.status = md.Status_PENDING
-}
-
-// ^ Create Group Returns Words ^ //
-func (n *Node) CreateGroup() string {
-	// Validate
-	if n.lobby != nil {
-		// Return Default Option
-		_, w, err := net.RandomWords("english", 4)
-		if err != nil {
-			return "brax day test one"
-		}
-
-		// Return Split Words Join Group in Lobby
-		words := fmt.Sprintf("%s-%s-%s-%s", w[0], w[1], w[2], w[3])
-		err = n.lobby.JoinGroup(words)
-		if err != nil {
-			sentry.CaptureException(err)
-		}
-		return words
-	}
-
-	// Lobby non-existent
-	sentry.CaptureException(errors.New("User not in a lobby"))
-	return ""
-}
-
-// ^ Join Group with Words ^ //
-func (n *Node) JoinGroup(data string) {
-	// Validate
-	if n.lobby != nil {
-		// Join Group in Lobby
-		err := n.lobby.JoinGroup(data)
-		if err != nil {
-			sentry.CaptureException(err)
-		}
-	}
-
-	// Lobby non-existent
-	sentry.CaptureException(errors.New("User not in a lobby"))
 }
 
 // ^ Join Remote File with Words ^ //

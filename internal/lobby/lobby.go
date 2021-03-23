@@ -10,7 +10,7 @@ import (
 	gorpc "github.com/libp2p/go-libp2p-gorpc"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	md "github.com/sonr-io/core/internal/models"
-	net "github.com/sonr-io/core/pkg/net"
+	net "github.com/sonr-io/core/internal/network"
 	"google.golang.org/protobuf/proto"
 )
 

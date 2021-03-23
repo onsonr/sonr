@@ -11,8 +11,8 @@ import (
 	msgio "github.com/libp2p/go-msgio"
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
+	net "github.com/sonr-io/core/internal/network"
 	fs "github.com/sonr-io/core/pkg/data"
-	net "github.com/sonr-io/core/pkg/net"
 )
 
 // ^ Struct: Holds/Handles GRPC Calls and Handles Data Stream  ^ //

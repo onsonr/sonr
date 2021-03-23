@@ -16,8 +16,8 @@ import (
 	swarm "github.com/libp2p/go-libp2p-swarm"
 	sl "github.com/sonr-io/core/internal/lobby"
 	md "github.com/sonr-io/core/internal/models"
+	net "github.com/sonr-io/core/internal/network"
 	tf "github.com/sonr-io/core/internal/transfer"
-	net "github.com/sonr-io/core/pkg/net"
 )
 
 // ^ Start Begins Running Libp2p Host ^
