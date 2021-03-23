@@ -22,8 +22,8 @@ import (
 	net "github.com/sonr-io/core/pkg/net"
 )
 
-const discoveryInterval = time.Second * 3
-const gracePeriod = time.Second * 30
+const discoveryInterval = time.Second * 2
+const gracePeriod = time.Minute
 
 // ^ Struct: Main Node handles Networking/Identity/Streams ^
 type Node struct {

@@ -13,7 +13,6 @@ import (
 	disc "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	quic "github.com/libp2p/go-libp2p-quic-transport"
 	swarm "github.com/libp2p/go-libp2p-swarm"
 	sl "github.com/sonr-io/core/internal/lobby"
 	tf "github.com/sonr-io/core/internal/transfer"
@@ -25,6 +24,7 @@ import (
 func (n *Node) Start(opts *HostOptions) bool {
 	// IP Address
 	ip4 := net.IPv4()
+	ip6 := net.IPv6()
 
 	// Get Private Key
 	privKey, err := n.fs.GetPrivateKey()
@@ -40,9 +40,8 @@ func (n *Node) Start(opts *HostOptions) bool {
 		// Add listening Addresses
 		libp2p.ListenAddrStrings(
 			fmt.Sprintf("/ip4/%s/tcp/0", ip4),
-			fmt.Sprintf("/ip4/%s/udp/0/quic", ip4)),
+			fmt.Sprintf("/ip6/%s/tcp/0", ip6)),
 		libp2p.Identity(privKey),
-		libp2p.Transport(quic.NewTransport),
 		libp2p.DefaultTransports,
 		libp2p.ConnectionManager(connmgr.NewConnManager(
 			10,          // Lowwater
