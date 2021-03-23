@@ -112,17 +112,6 @@ func (pr *ProtocolRouter) Topic(opts ...*protocolRouterOption) string {
 }
 
 // @ Lobby Exchange Protocol IDs: ONLY ONE OPTION ALLOWED
-func (pr *ProtocolRouter) Exchange(opts ...*protocolRouterOption) protocol.ID {
-	// Check Options
-	if len(opts) > 0 {
-		// First Value
-		opt := opts[0]
-
-		// Local Exchange Point
-		if opt.local {
-			return protocol.ID(fmt.Sprintf("/sonr/lobby/%s/exchange", pr.MinorOLC))
-		}
-
-	}
-	return protocol.ID("/sonr/lobby/exchange")
+func (pr *ProtocolRouter) Exchange(pointName string) protocol.ID {
+	return protocol.ID(fmt.Sprintf("/sonr/lobby/%s/exchange", pointName))
 }

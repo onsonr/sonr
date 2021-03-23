@@ -4,7 +4,6 @@ import (
 	"log"
 
 	"github.com/libp2p/go-libp2p-core/peer"
-	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -17,15 +16,13 @@ type Lobby struct {
 
 	// Private Properties
 	callRefresh md.OnProtobuf
-	topic       *pubsub.Topic
 	user        *md.Peer
 }
 
 // ^ Create New Circle  ^
-func NewLobby(u *md.Peer, t *pubsub.Topic, cr md.OnProtobuf) *Lobby {
+func NewLobby(u *md.Peer, cr md.OnProtobuf) *Lobby {
 	return &Lobby{
 		user:        u,
-		topic:       t,
 		callRefresh: cr,
 	}
 }

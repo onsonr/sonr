@@ -9,15 +9,12 @@ import (
 	sentry "github.com/getsentry/sentry-go"
 	"github.com/libp2p/go-libp2p"
 	connmgr "github.com/libp2p/go-libp2p-connmgr"
+	discLimit "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/host"
+	disc "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	swarm "github.com/libp2p/go-libp2p-swarm"
 	"github.com/pkg/errors"
-
-	discLimit "github.com/libp2p/go-libp2p-core/discovery"
-	disc "github.com/libp2p/go-libp2p-discovery"
-	sl "github.com/sonr-io/core/internal/lobby"
 	md "github.com/sonr-io/core/internal/models"
 	net "github.com/sonr-io/core/internal/network"
 	tf "github.com/sonr-io/core/internal/transfer"
@@ -42,10 +39,12 @@ type Node struct {
 	router *net.ProtocolRouter
 	status md.Status
 
-	// References
 	call     Callback
-	lobby    *sl.Lobby
 	transfer *tr.TransferController
+
+	// Peer Management
+	local *TopicManager
+	// major    *TopicManager
 }
 
 // ^ NewNode Initializes Node with a host and default properties ^
@@ -189,11 +188,11 @@ func (n *Node) Bootstrap(opts *net.HostOptions) bool {
 	// Set Routing Discovery, Find Peers
 	routingDiscovery := disc.NewRoutingDiscovery(n.kdht)
 	disc.Advertise(n.ctx, routingDiscovery, n.router.LocalPoint(), discLimit.TTL(time.Second*2))
-	go n.handlePeers(routingDiscovery)
+	go n.handleDHTPeers(routingDiscovery)
 
-	// Enter Lobby
+	// Join Local Lobby Point
 	var err error
-	if n.lobby, err = sl.Join(n.ctx, n.LobbyCallback(), n.host, n.pubsub, n.peer, n.router); err != nil {
+	if n.local, err = n.NewTopicManager(n.router.Topic(net.SetIDForLocal())); err != nil {
 		sentry.CaptureException(err)
 		n.error(err, "Joining Lobby")
 		n.call.OnReady(false)
@@ -210,42 +209,6 @@ func (n *Node) Bootstrap(opts *net.HostOptions) bool {
 	return true
 }
 
-// ^ Handles Peers in DHT ^
-func (n *Node) handlePeers(routingDiscovery *disc.RoutingDiscovery) {
-	for {
-		// Find peers in DHT
-		peersChan, err := routingDiscovery.FindPeers(
-			n.ctx,
-			n.router.LocalPoint(),
-			discLimit.Limit(16),
-		)
-		if err != nil {
-			n.error(err, "Finding DHT Peers")
-			n.call.OnReady(false)
-			return
-		}
+func (n *Node) StartServices() {
 
-		// Iterate over Channel
-		for pi := range peersChan {
-			// Validate not Self
-			if pi.ID != n.host.ID() {
-				// Connect to Peer
-				if err := n.host.Connect(n.ctx, pi); err != nil {
-					// Capture Error
-					sentry.CaptureException(errors.Wrap(err, "Failed to connect to peer in namespace"))
-
-					// Remove Peer Reference
-					n.host.Peerstore().ClearAddrs(pi.ID)
-					if sw, ok := n.host.Network().(*swarm.Swarm); ok {
-						sw.Backoff().Clear(pi.ID)
-					}
-				}
-			}
-			md.GetState().NeedsWait()
-		}
-
-		// Refresh table every 4 seconds
-		md.GetState().NeedsWait()
-		<-time.After(time.Second * 2)
-	}
 }

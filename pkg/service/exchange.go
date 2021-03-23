@@ -23,8 +23,8 @@ type ExchangeResponse struct {
 
 // Service Struct
 type ExchangeService struct {
-	getUser   md.ReturnPeer
-	syncLobby md.SyncLobby
+	GetUser   md.ReturnPeer
+	SyncLobby md.SyncLobby
 }
 
 // ^ Calls Invite on Remote Peer ^ //
@@ -43,10 +43,10 @@ func (ps *ExchangeService) ExchangeWith(ctx context.Context, args ExchangeArgs, 
 	}
 
 	// Update Peers with Lobby
-	ps.syncLobby(remoteLobbyRef, remotePeer)
+	ps.SyncLobby(remoteLobbyRef, remotePeer)
 
 	// Return User Peer
-	userPeer := ps.getUser()
+	userPeer := ps.GetUser()
 	replyData, err := proto.Marshal(userPeer)
 	if err != nil {
 		return err

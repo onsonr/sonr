@@ -127,6 +127,18 @@ func (lob *Lobby) ID(q string) peer.ID {
 	}
 	return ""
 }
+// ^ Helper: Find returns Pointer to Peer.ID and Peer ^
+func (lob *Lobby) Find(q string) (peer.ID, *md.Peer, error) {
+	// Retreive Data
+	peer := lob.Peer(q)
+	id := lob.ID(q)
+
+	if peer == nil || id == "" {
+		return "", nil, errors.New("Search Error, peer was not found in map.")
+	}
+
+	return id, peer, nil
+}
 
 // ^ Helper: Peer returns ONE Peer in Lobby ^
 func (lob *Lobby) Peer(q string) *md.Peer {
@@ -140,18 +152,6 @@ func (lob *Lobby) Peer(q string) *md.Peer {
 	return nil
 }
 
-// ^ Helper: Find returns Pointer to Peer.ID and Peer ^
-func (lob *Lobby) Find(q string) (peer.ID, *md.Peer, error) {
-	// Retreive Data
-	peer := lob.Peer(q)
-	id := lob.ID(q)
-
-	if peer == nil || id == "" {
-		return "", nil, errors.New("Search Error, peer was not found in map.")
-	}
-
-	return id, peer, nil
-}
 
 // ^ Send publishes a message to the pubsub topic OLC ^
 func (lob *Lobby) Resume() error {

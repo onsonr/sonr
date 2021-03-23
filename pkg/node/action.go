@@ -7,6 +7,7 @@ import (
 
 	sentry "github.com/getsentry/sentry-go"
 	"github.com/ipfs/go-cid"
+	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/multiformats/go-multihash"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/encoding/protojson"
@@ -15,19 +16,8 @@ import (
 
 // ^ User Node Info ^ //
 // @ ID Returns Peer ID
-func (n *Node) ID() *md.Peer_ID {
-	return n.fs.GetPeerID(n.device, n.profile, n.host.ID().String())
-}
-
-// @ Info returns ALL Peer Data as Bytes
-func (n *Node) Info() []byte {
-	// Convert to bytes to view in plugin
-	data, err := proto.Marshal(n.ID())
-	if err != nil {
-		sentry.CaptureException(err)
-		return nil
-	}
-	return data
+func (n *Node) ID() peer.ID {
+	return n.host.ID()
 }
 
 // @ Peer returns Current Peer Info
@@ -38,7 +28,7 @@ func (n *Node) Peer() *md.Peer {
 // @ Peer returns Current Peer Info as Buffer
 func (n *Node) PeerBuf() []byte {
 	// Convert to bytes
-	buf, err := proto.Marshal(n.ID())
+	buf, err := proto.Marshal(n.peer)
 	if err != nil {
 		sentry.CaptureException(err)
 		return nil
@@ -49,14 +39,14 @@ func (n *Node) PeerBuf() []byte {
 // @ Peer returns Current Peer Info as Content ID
 func (n *Node) PeerCID() (cid.Cid, error) {
 	// Convert to bytes
-	buf, err := proto.Marshal(n.ID())
+	buf, err := proto.Marshal(n.peer)
 	if err != nil {
 		sentry.CaptureException(err)
 		return cid.Undef, err
 	}
 
 	// Encode Multihash
-	mhash, err := multihash.EncodeName(buf, n.ID().Peer)
+	mhash, err := multihash.EncodeName(buf, n.peer.Id.Peer)
 	if err != nil {
 		sentry.CaptureException(err)
 		return cid.Undef, err
@@ -102,7 +92,7 @@ func (n *Node) Update(facing float64, heading float64) {
 	}
 
 	// Inform Lobby
-	err := n.lobby.Update()
+	err := n.local.Update(n.peer)
 	if err != nil {
 		sentry.CaptureException(err)
 	}
@@ -110,9 +100,9 @@ func (n *Node) Update(facing float64, heading float64) {
 
 // ^ Send Direct Message to Peer in Lobby ^ //
 func (n *Node) Message(content string, to string) {
-	if n.lobby.HasPeer(to) {
+	if n.HasPeer(n.local, to) {
 		// Inform Lobby
-		err := n.lobby.Message(content, to)
+		err := n.local.Message(content, to, n.peer)
 		if err != nil {
 			sentry.CaptureException(err)
 		}
@@ -135,9 +125,9 @@ func (n *Node) Invite(req *md.InviteRequest) {
 				n.error(err, "StartRemotePoint")
 			}
 		} else {
-			if n.lobby.HasPeer(req.To.Id.Peer) {
+			if n.HasPeer(n.local, req.To.Id.Peer) {
 				// Get PeerID and Check error
-				id, _, err := n.lobby.Find(req.To.Id.Peer)
+				id, _, err := n.GetPeer(n.local, req.To.Id.Peer)
 				if err != nil {
 					sentry.CaptureException(err)
 				}
@@ -253,21 +243,11 @@ func (n *Node) Pause() {
 	if n.status == md.Status_INVITED {
 		n.transfer.Cancel(n.peer)
 	}
-	err := n.lobby.Standby()
-	if err != nil {
-		n.error(err, "Pause")
-		sentry.CaptureException(err)
-	}
 	md.GetState().Pause()
 }
 
 // ^ Close Ends All Network Communication ^
 func (n *Node) Resume() {
-	err := n.lobby.Resume()
-	if err != nil {
-		n.error(err, "Resume")
-		sentry.CaptureException(err)
-	}
 	md.GetState().Resume()
 }
 
