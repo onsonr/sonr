@@ -37,7 +37,6 @@ type Node struct {
 	kdht   *dht.IpfsDHT
 	pubsub *pubsub.PubSub
 	router *net.ProtocolRouter
-	status md.Status
 
 	call     Callback
 	transfer *tr.TransferController

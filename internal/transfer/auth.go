@@ -136,18 +136,20 @@ func (pc *TransferController) Authorize(decision bool, contact *md.Contact, peer
 
 // ^ Send Authorize transfer on RPC ^ //
 func (pc *TransferController) Cancel(peer *md.Peer) {
-	// Create Cancel Reply
-	reply := &md.AuthReply{
-		From:     peer,
-		Type:     md.AuthReply_None,
-		Decision: false,
+	if pc.auth.invite != nil {
+		// Create Cancel Reply
+		reply := &md.AuthReply{
+			From:     peer,
+			Type:     md.AuthReply_None,
+			Decision: false,
+		}
+
+		// Send to Channel
+		pc.auth.respCh <- reply
+
+		// Clear Current Invite
+		pc.auth.invite = nil
 	}
-
-	// Send to Channel
-	pc.auth.respCh <- reply
-
-	// Clear Current Invite
-	pc.auth.clear()
 }
 
 // @ Helper Method to Handle Reply
@@ -161,9 +163,4 @@ func (pc *TransferController) handleReply(data []byte) (bool, *md.Peer) {
 		return false, nil
 	}
 	return resp.Decision && resp.Type == md.AuthReply_Transfer, resp.From
-}
-
-// @ Helper Method Clears Current Invite
-func (as *AuthService) clear() {
-	as.invite = nil
 }
