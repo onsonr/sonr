@@ -52,7 +52,7 @@ func NewFs(connEvent *md.ConnectionRequest, callback dt.NodeCallback) (*FileSyst
 	}
 
 	// Create File Queue
-	q, err := dque.New(K_FILE_QUEUE_NAME, sonrPath, K_QUEUE_SIZE, ProcessedFileBuilder)
+	q, err := dque.New(K_FILE_QUEUE_NAME, sonrPath, K_QUEUE_SIZE, dt.ProcessedFileBuilder)
 	if err != nil {
 		return nil, err
 	}

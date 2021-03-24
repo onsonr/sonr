@@ -16,23 +16,20 @@ type OnError func(err error, method string)
 type ReturnPeer func() *md.Peer
 type ReturnBuf func() []byte
 type SyncLobby func(ref *md.Lobby, peer *md.Peer)
-
-type FileCallback struct {
-	Queued OnQueued
-	Error  OnError
-}
+type HandleInviteFile func(card *md.TransferCard, req *md.InviteRequest, p *md.Peer, cf *ProcessedFile)
 
 type NodeCallback struct {
-	Connected   OnBool
-	Ready       OnBool
-	Invited     OnInvite
-	Refreshed   OnProtobuf
-	Event       OnProtobuf
-	RemoteStart OnProtobuf
-	Responded   OnProtobuf
-	Progressed  OnProgress
-	Received    OnReceived
-	Transmitted OnTransmitted
-	Queued      OnQueued
-	Error       OnError
+	Connected    OnBool
+	Ready        OnBool
+	Invited      OnInvite
+	HandleInvite HandleInviteFile
+	Refreshed    OnProtobuf
+	Event        OnProtobuf
+	RemoteStart  OnProtobuf
+	Responded    OnProtobuf
+	Progressed   OnProgress
+	Received     OnReceived
+	Transmitted  OnTransmitted
+	Queued       OnQueued
+	Error        OnError
 }

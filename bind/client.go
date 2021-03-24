@@ -48,14 +48,13 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 	}
 
 	// Create New User
-	mn.user = u.NewUser(&req, mn.nodeCallback())
-	key, err := mn.user.GetPrivateKey()
+	mn.user, err = u.NewUser(&req, mn.nodeCallback())
 	if err != nil {
 		sentry.CaptureException(err)
 	}
 
 	// Create Host Options
-	mn.hostOpts, err = net.NewHostOpts(&req, mn.user.FS, key)
+	mn.hostOpts, err = net.NewHostOpts(&req, mn.user.FS, mn.user.PrivateKey())
 	if err != nil {
 		sentry.CaptureException(err)
 		return nil
@@ -81,7 +80,7 @@ func (mn *MobileNode) Connect() {
 		mn.hasStarted = true
 
 		// Bootstrap to Peers
-		strapResult := mn.node.Bootstrap(mn.hostOpts, mn.user.FS, mn.user.GetPeer, mn.user.GetPeerBuf)
+		strapResult := mn.node.Bootstrap(mn.hostOpts, mn.user.FS, mn.user.Peer, mn.user.PeerBuf)
 		if strapResult {
 			mn.hasBootstrapped = true
 		} else {

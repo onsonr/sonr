@@ -4,13 +4,14 @@ import (
 	"log"
 
 	md "github.com/sonr-io/core/internal/models"
+	dt "github.com/sonr-io/core/pkg/data"
 )
 
 // ^ Adds File Transfer from Invite Request ^ //
-func (fs *FileSystem) AddFromRequest(req *md.InviteRequest, pr *md.Profile) error {
+func (fs *FileSystem) AddFromRequest(req *md.InviteRequest, p *md.Peer) error {
 
 	// Add Single File Transfer
-	safeFile := NewProcessedFile(req, pr, fs.Call)
+	safeFile := dt.NewProcessedFile(req, p, fs.Call)
 
 	// Add an item to the queue
 	err := fs.Queue.Enqueue(safeFile)
@@ -21,7 +22,7 @@ func (fs *FileSystem) AddFromRequest(req *md.InviteRequest, pr *md.Profile) erro
 }
 
 // ^ CurrentFile returns last file in Processed Files ^ //
-func (fs *FileSystem) CurrentFile() *ProcessedFile {
+func (fs *FileSystem) CurrentFile() *dt.ProcessedFile {
 	// Initialize
 	var iface interface{}
 	var err error
@@ -32,7 +33,7 @@ func (fs *FileSystem) CurrentFile() *ProcessedFile {
 	}
 
 	// Assert type of the response to an Item pointer so we can work with it
-	item, ok := iface.(*ProcessedFile)
+	item, ok := iface.(*dt.ProcessedFile)
 	if !ok {
 		log.Fatal("Dequeued object is not an ProcessedFile pointer")
 	}

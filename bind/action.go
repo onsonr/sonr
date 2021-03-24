@@ -12,20 +12,21 @@ import (
 func (mn *MobileNode) Update(facing float64, heading float64) {
 	if mn.isReady() {
 		mn.user.SetPosition(facing, heading)
-		mn.node.Update(mn.user.GetPeer())
+		mn.node.Update(mn.user.Peer())
 	}
 }
 
 // @ Send Direct Message to Peer in Lobby
 func (mn *MobileNode) Message(msg string, to string) {
 	if mn.isReady() {
-		mn.node.Message(msg, to, mn.user.GetPeer())
+		mn.node.Message(msg, to, mn.user.Peer())
 	}
 }
 
 // @ Invite Processes Data and Sends Invite to Peer
 func (mn *MobileNode) Invite(reqBytes []byte) {
 	if mn.isReady() {
+		mn.status = md.Status_PENDING
 		// Initialize from Request
 		req := &md.InviteRequest{}
 		err := proto.Unmarshal(reqBytes, req)
@@ -35,21 +36,23 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 
 		// @ 2. Check Transfer Type
 		if req.Type == md.InviteRequest_Contact {
-			mn.node.InviteContact(req, mn.user.GetPeer(), mn.user.Contact)
+			mn.node.InviteContact(req, mn.user.Peer(), mn.user.Contact())
 		} else if req.Type == md.InviteRequest_URL {
-			mn.node.InviteLink(req, mn.user.GetPeer())
+			mn.node.InviteLink(req, mn.user.Peer())
 		} else {
-			mn.user.FS.AddFromRequest(req, mn.user.Profile)
+			err := mn.user.FS.AddFromRequest(req, mn.user.Peer())
+			if err != nil {
+				mn.error(err, "AddFromRequest")
+			}
+			mn.status = md.Status_AVAILABLE
 		}
-
-		mn.status = md.Status_PENDING
 	}
 }
 
 // @ Respond to an Invite with Decision
 func (mn *MobileNode) Respond(decs bool) {
 	if mn.isReady() {
-		mn.node.Respond(decs, mn.user.FS, mn.user.GetPeer(), mn.user.Contact)
+		mn.node.Respond(decs, mn.user.FS, mn.user.Peer(), mn.user.Contact())
 		// Update Status
 		if decs {
 			mn.status = md.Status_INPROGRESS

@@ -71,7 +71,7 @@ func (n *Node) InviteContact(req *md.InviteRequest, p *md.Peer, c *md.Contact) {
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Node) InviteFile(card *md.TransferCard, req *md.InviteRequest, p *md.Peer, cf *sf.ProcessedFile) {
+func (n *Node) InviteFile(card *md.TransferCard, req *md.InviteRequest, p *md.Peer, cf *dt.ProcessedFile) {
 	card.Status = md.TransferCard_INVITE
 
 	// Create Invite Message
@@ -189,7 +189,7 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 }
 
 // ^ User has accepted, Begin Sending Transfer ^ //
-func (n *Node) NewOutgoingTransfer(id peer.ID, peer *md.Peer, pf *sf.ProcessedFile) {
+func (n *Node) NewOutgoingTransfer(id peer.ID, peer *md.Peer, pf *dt.ProcessedFile) {
 	// Create New Auth Stream
 	stream, err := n.host.NewStream(n.ctx, id, n.router.Transfer())
 	if err != nil {

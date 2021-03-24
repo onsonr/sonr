@@ -1,7 +1,6 @@
 package bind
 
 import (
-	"errors"
 	"log"
 
 	"github.com/getsentry/sentry-go"
@@ -39,22 +38,11 @@ func (mn *MobileNode) nodeCallback() dt.NodeCallback {
 		Progressed:  mn.call.OnProgress,
 
 		// Middleware
-		Invited:     mn.invited,
-		Received:    mn.received,
-		Transmitted: mn.transmitted,
-		Queued:      mn.queued,
-		Error:       mn.error,
-	}
-}
-
-// ^ queued Callback, Sends File Invite to Peer, and Notifies Client ^
-func (mn *MobileNode) queued(card *md.TransferCard, req *md.InviteRequest) {
-	// Retreive Current File
-	currFile := mn.user.FS.CurrentFile()
-	if currFile != nil {
-		mn.node.InviteFile(card, req, mn.user.GetPeer(), currFile)
-	} else {
-		mn.error(errors.New("No current file"), "internal:queued")
+		Invited:      mn.invited,
+		HandleInvite: mn.node.InviteFile,
+		Received:     mn.received,
+		Transmitted:  mn.transmitted,
+		Error:        mn.error,
 	}
 }
 
