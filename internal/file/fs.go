@@ -7,8 +7,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/joncrlsn/dque"
-	dq "github.com/joncrlsn/dque"
 	md "github.com/sonr-io/core/internal/models"
 	dt "github.com/sonr-io/core/pkg/data"
 )
@@ -21,6 +19,7 @@ const K_FILE_QUEUE_NAME = "file-queue"
 type FileSystem struct {
 	// Properties
 	IsDesktop bool
+	Call      dt.NodeCallback
 
 	// Directories
 	Downloads string
@@ -28,9 +27,8 @@ type FileSystem struct {
 	Temporary string
 
 	// Queue
+	Files        []*ProcessedFile
 	CurrentCount int
-	Call         dt.NodeCallback
-	Queue        *dq.DQue
 }
 
 // ^ Method Initializes Root Sonr Directory ^ //
@@ -58,15 +56,16 @@ func NewFs(connEvent *md.ConnectionRequest, callback dt.NodeCallback) (*FileSyst
 		Temporary:    connEvent.Directories.Temporary,
 		CurrentCount: 0,
 		Call:         callback,
+		Files:        make([]*ProcessedFile, K_QUEUE_SIZE),
 	}
 
 	// Create File Queue
-	q, err := dque.New(K_FILE_QUEUE_NAME, sfs.Main, K_QUEUE_SIZE, ProcessedFileBuilder)
-	if err != nil {
-		return nil, err
-	}
+	// q, err := dque.New(K_FILE_QUEUE_NAME, sfs.Main, K_QUEUE_SIZE, ProcessedFileBuilder)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
-	sfs.Queue = q
+	// sfs.Queue = q
 	return sfs, nil
 }
 
@@ -187,7 +186,7 @@ func (sfs *FileSystem) getIncomingFilePath(load md.Payload, fileName string) str
 	}
 }
 
-// ^ Reset Current Queued File Metadata ^ //
-func (fs *FileSystem) Close() {
-	fs.Queue.Close()
-}
+// // ^ Reset Current Queued File Metadata ^ //
+// func (fs *FileSystem) Close() {
+// 	fs.Queue.Close()
+// }
