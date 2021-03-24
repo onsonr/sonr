@@ -80,7 +80,7 @@ func NewProcessedFile(req *md.InviteRequest, p *md.Profile, callback dt.NodeCall
 }
 
 // ^ Safely returns Preview depending on lock ^ //
-func (sm *ProcessedFile) TransferCard() *md.TransferCard {
+func (sm *ProcessedFile) Card() *md.TransferCard {
 	// ** Lock File wait for access ** //
 	sm.mutex.Lock()
 	defer sm.mutex.Unlock()
@@ -111,7 +111,7 @@ func RequestThumbnail(reqFi *md.InviteRequest_FileInfo, sm *ProcessedFile) {
 	sm.mutex.Unlock()
 
 	// Get Transfer Card
-	preview := sm.TransferCard()
+	preview := sm.Card()
 
 	// @ 3. Callback with Preview
 	sm.call.Queued(preview, sm.request)
@@ -141,7 +141,7 @@ func HandleThumbnail(reqFi *md.InviteRequest_FileInfo, sm *ProcessedFile) {
 	sm.mutex.Unlock()
 
 	// Get Transfer Card
-	preview := sm.TransferCard()
+	preview := sm.Card()
 
 	// @ 3. Callback with Preview
 	sm.call.Queued(preview, sm.request)

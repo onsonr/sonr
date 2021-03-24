@@ -12,12 +12,11 @@ import (
 
 	md "github.com/sonr-io/core/internal/models"
 	tr "github.com/sonr-io/core/pkg/transfer"
-	fs "github.com/sonr-io/core/pkg/user"
 	"google.golang.org/protobuf/proto"
 )
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Node) InviteLink(req *md.InviteRequest) {
+func (n *Node) InviteLink(req *md.InviteRequest, p *md.Peer) {
 	// @ 3. Send Invite to Peer
 	if n.HasPeer(n.local, req.To.Id.Peer) {
 		// Get PeerID and Check error
@@ -27,23 +26,23 @@ func (n *Node) InviteLink(req *md.InviteRequest) {
 		}
 
 		// Set Contact
-		card := dt.NewCardFromUrl(n.peer, req.Url, md.TransferCard_DIRECT)
+		card := dt.NewCardFromUrl(p, req.Url, md.TransferCard_DIRECT)
 		invMsg := md.AuthInvite{
 			IsRemote: req.IsRemote,
-			From:     n.peer,
+			From:     p,
 			Payload:  md.Payload_URL,
 			Card:     &card,
 		}
 
 		// Run Routine
-		go n.handleAuthInviteResponse(id, &invMsg, nil)
+		go n.handleAuthInviteResponse(id, &invMsg, p, nil)
 	} else {
 		n.call.Error(errors.New("Invalid Peer"), "Invite")
 	}
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Node) InviteContact(req *md.InviteRequest) {
+func (n *Node) InviteContact(req *md.InviteRequest, p *md.Peer, c *md.Contact) {
 	// @ 3. Send Invite to Peer
 	if n.HasPeer(n.local, req.To.Id.Peer) {
 		// Get PeerID and Check error
@@ -53,31 +52,31 @@ func (n *Node) InviteContact(req *md.InviteRequest) {
 		}
 
 		// Set Contact
-		req.Contact = n.contact
+		req.Contact = c
 
 		// Get Card
-		card := dt.NewCardFromContact(n.peer, req.Contact, md.TransferCard_DIRECT)
+		card := dt.NewCardFromContact(p, req.Contact, md.TransferCard_DIRECT)
 		invMsg := md.AuthInvite{
 			IsRemote: req.IsRemote,
-			From:     n.peer,
+			From:     p,
 			Payload:  md.Payload_CONTACT,
 			Card:     &card,
 		}
 
 		// Run Routine
-		go n.handleAuthInviteResponse(id, &invMsg, nil)
+		go n.handleAuthInviteResponse(id, &invMsg, p, nil)
 	} else {
 		n.call.Error(errors.New("Invalid Peer"), "Invite")
 	}
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Node) InviteFile(card *md.TransferCard, req *md.InviteRequest, cf *sf.ProcessedFile) {
+func (n *Node) InviteFile(card *md.TransferCard, req *md.InviteRequest, p *md.Peer, cf *sf.ProcessedFile) {
 	card.Status = md.TransferCard_INVITE
 
 	// Create Invite Message
 	invMsg := md.AuthInvite{
-		From:    n.peer,
+		From:    p,
 		Payload: card.Payload,
 		Card:    card,
 	}
@@ -93,12 +92,12 @@ func (n *Node) InviteFile(card *md.TransferCard, req *md.InviteRequest, cf *sf.P
 		}
 
 		// Run Routine
-		go n.handleAuthInviteResponse(id, &invMsg, cf)
+		go n.handleAuthInviteResponse(id, &invMsg, p, cf)
 	}
 }
 
 // ^ Respond to an Invitation ^ //
-func (n *Node) Respond(decision bool, fs *fs.FileSystem) {
+func (n *Node) Respond(decision bool, fs *sf.FileSystem, p *md.Peer, c *md.Contact) {
 	// Check Decision
 	if decision {
 		n.host.SetStreamHandler(n.router.Transfer(), n.handleTransferIncoming)
@@ -108,10 +107,10 @@ func (n *Node) Respond(decision bool, fs *fs.FileSystem) {
 	// @ Pass Contact Back
 	if n.auth.invite.Payload == md.Payload_CONTACT {
 		// Create Accept Response
-		card := dt.NewCardFromContact(n.peer, n.contact, md.TransferCard_REPLY)
+		card := dt.NewCardFromContact(p, c, md.TransferCard_REPLY)
 		resp := &md.AuthReply{
 			IsRemote: n.auth.invite.IsRemote,
-			From:     n.peer,
+			From:     p,
 			Type:     md.AuthReply_Contact,
 			Card:     &card,
 		}
@@ -121,7 +120,7 @@ func (n *Node) Respond(decision bool, fs *fs.FileSystem) {
 		// Create Accept Response
 		resp := &md.AuthReply{
 			IsRemote: n.auth.invite.IsRemote,
-			From:     n.peer,
+			From:     p,
 			Type:     md.AuthReply_Transfer,
 			Decision: decision,
 		}

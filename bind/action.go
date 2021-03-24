@@ -11,14 +11,15 @@ import (
 // @ Update proximity/direction and Notify Lobby
 func (mn *MobileNode) Update(facing float64, heading float64) {
 	if mn.isReady() {
-		mn.node.Update(facing, heading)
+		mn.user.SetPosition(facing, heading)
+		mn.node.Update(mn.user.GetPeer())
 	}
 }
 
 // @ Send Direct Message to Peer in Lobby
 func (mn *MobileNode) Message(msg string, to string) {
 	if mn.isReady() {
-		mn.node.Message(msg, to)
+		mn.node.Message(msg, to, mn.user.GetPeer())
 	}
 }
 
@@ -34,11 +35,11 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 
 		// @ 2. Check Transfer Type
 		if req.Type == md.InviteRequest_Contact {
-			mn.node.InviteContact(req)
+			mn.node.InviteContact(req, mn.user.GetPeer(), mn.user.Contact)
 		} else if req.Type == md.InviteRequest_URL {
-			mn.node.InviteLink(req)
+			mn.node.InviteLink(req, mn.user.GetPeer())
 		} else {
-			mn.fs.AddFromRequest(req)
+			//	mn.fs.AddFromRequest(req)
 		}
 
 		mn.status = md.Status_PENDING
@@ -48,7 +49,7 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 // @ Respond to an Invite with Decision
 func (mn *MobileNode) Respond(decs bool) {
 	if mn.isReady() {
-		mn.node.Respond(decs, mn.fs)
+		mn.node.Respond(decs, mn.user.FS, mn.user.GetPeer(), mn.user.Contact)
 		// Update Status
 		if decs {
 			mn.status = md.Status_INPROGRESS
@@ -78,10 +79,7 @@ func (mn *MobileNode) SetContact(conBytes []byte) {
 		}
 
 		// Update Node Profile
-		mn.node.SetContact(newContact)
-
-		// Set User Contact
-		err = mn.fs.SaveContact(newContact)
+		err = mn.user.SetContact(newContact)
 		if err != nil {
 			sentry.CaptureException(err)
 		}

@@ -22,7 +22,7 @@ import (
 )
 
 // ^ handleAuthInviteResponse: Handles User sent AuthInvite Response ^
-func (n *Node) handleAuthInviteResponse(id peer.ID, inv *md.AuthInvite, cf *sf.ProcessedFile) {
+func (n *Node) handleAuthInviteResponse(id peer.ID, inv *md.AuthInvite, p *md.Peer, cf *sf.ProcessedFile) {
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(inv)
 	if err != nil {
@@ -50,11 +50,11 @@ func (n *Node) handleAuthInviteResponse(id peer.ID, inv *md.AuthInvite, cf *sf.P
 	n.call.Responded(reply.Data)
 
 	// Check for File
-	n.handleAcceptedFileRequest(id, cf, reply.Data)
+	n.handleAcceptedFileRequest(id, p, cf, reply.Data)
 }
 
 // ^ handleAcceptedFileRequest: Begins File Transfer if Accepted ^
-func (n *Node) handleAcceptedFileRequest(id peer.ID, cf *sf.ProcessedFile, data []byte) {
+func (n *Node) handleAcceptedFileRequest(id peer.ID, p *md.Peer, cf *sf.ProcessedFile, data []byte) {
 	// AuthReply Message
 	resp := md.AuthReply{}
 	err := proto.Unmarshal(data, &resp)
@@ -65,7 +65,7 @@ func (n *Node) handleAcceptedFileRequest(id peer.ID, cf *sf.ProcessedFile, data 
 
 	// Check for File Transfer
 	if resp.Decision && resp.Type == md.AuthReply_Transfer {
-		n.NewOutgoingTransfer(id, n.peer, cf)
+		n.NewOutgoingTransfer(id, p, cf)
 	}
 }
 
@@ -121,7 +121,7 @@ func (n *Node) handleTopicEvents(tm *TopicManager) {
 		}
 
 		if lobEvent.Type == pubsub.PeerJoin {
-			n.Exchange(tm, lobEvent.Peer)
+			n.Exchange(tm, lobEvent.Peer, tm.returnPeerBuf())
 		}
 
 		if lobEvent.Type == pubsub.PeerLeave {
@@ -173,7 +173,7 @@ func (n *Node) processTopicMessages(tm *TopicManager) {
 				tm.lobby.Add(m.From)
 			} else if m.Event == md.LobbyEvent_MESSAGE {
 				// Check is Message For Self
-				if m.To == n.peer.Id.Peer {
+				if m.To == n.ID().String() {
 					// Convert Message
 					bytes, err := proto.Marshal(m)
 					if err != nil {

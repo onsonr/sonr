@@ -20,18 +20,16 @@ import (
 	md "github.com/sonr-io/core/internal/models"
 	net "github.com/sonr-io/core/internal/network"
 	tr "github.com/sonr-io/core/pkg/transfer"
-	dq "github.com/sonr-io/core/pkg/user"
-	"google.golang.org/protobuf/proto"
+
+	//dq "github.com/sonr-io/core/pkg/user"
+	sf "github.com/sonr-io/core/internal/file"
 )
 
 // ^ Struct: Main Node handles Networking/Identity/Streams ^
 type Node struct {
 	// Properties
-	ctx     context.Context
-	opts    *net.HostOptions
-	contact *md.Contact
-	device  *md.Device
-	peer    *md.Peer
+	ctx  context.Context
+	opts *net.HostOptions
 
 	// Networking Properties
 	host   host.Host
@@ -104,21 +102,11 @@ func NewNode(opts *net.HostOptions, call dt.NodeCallback) *Node {
 	// Set RPC Services
 	node.auth = &ath
 	node.host = h
-	node.contact = opts.ConnRequest.Contact
-	node.device = opts.ConnRequest.Device
 	return node
 }
 
 // ^ Init Begins Assigning Host Parameters ^
-func (n *Node) Init(opts *net.HostOptions, id *md.Peer_ID) bool {
-	// Set Peer Info
-	n.peer = &md.Peer{
-		Id:       id,
-		Profile:  n.opts.Profile,
-		Platform: n.device.Platform,
-		Model:    n.device.Model,
-	}
-
+func (n *Node) Init(opts *net.HostOptions) bool {
 	// Create Pub Sub
 	ps, err := pubsub.NewGossipSub(n.ctx, n.host)
 	if err != nil {
@@ -149,7 +137,7 @@ func (n *Node) Init(opts *net.HostOptions, id *md.Peer_ID) bool {
 }
 
 // ^ Bootstrap begins bootstrap with peers ^
-func (n *Node) Bootstrap(opts *net.HostOptions, fs *dq.FileSystem) bool {
+func (n *Node) Bootstrap(opts *net.HostOptions, fs *sf.FileSystem, gp dt.ReturnPeer, gpb dt.ReturnBuf) bool {
 	// Create Bootstrapper Info
 	bootstrappers := opts.GetBootstrapAddrInfo()
 
@@ -185,7 +173,7 @@ func (n *Node) Bootstrap(opts *net.HostOptions, fs *dq.FileSystem) bool {
 
 	// Join Local Lobby Point
 	var err error
-	if n.local, err = n.JoinTopic(n.router.LocalTopic(), n.router.LocalTopicExchange()); err != nil {
+	if n.local, err = n.JoinTopic(n.router.LocalTopic(), n.router.LocalTopicExchange(), gp, gpb); err != nil {
 		sentry.CaptureException(err)
 		n.call.Error(err, "Joining Lobby")
 		n.call.Ready(false)
@@ -195,38 +183,9 @@ func (n *Node) Bootstrap(opts *net.HostOptions, fs *dq.FileSystem) bool {
 }
 
 // ^ User Node Info ^ //
-// @ ID Returns Peer ID
+// @ ID Returns Host ID
 func (n *Node) ID() peer.ID {
 	return n.host.ID()
-}
-
-// @ Peer returns Current Peer Info
-func (n *Node) Peer() *md.Peer {
-	return n.peer
-}
-
-// @ Peer returns Current Peer Info as Buffer
-func (n *Node) PeerBuf() []byte {
-	// Convert to bytes
-	buf, err := proto.Marshal(n.peer)
-	if err != nil {
-		sentry.CaptureException(err)
-		return nil
-	}
-	return buf
-}
-
-// ^ Updates Current Contact Card ^
-func (n *Node) SetContact(newContact *md.Contact) {
-	// Set Node Contact
-	n.contact = newContact
-
-	// Update Peer Profile
-	n.peer.Profile = &md.Profile{
-		FirstName: newContact.GetFirstName(),
-		LastName:  newContact.GetLastName(),
-		Picture:   newContact.GetPicture(),
-	}
 }
 
 // ^ Close Ends All Network Communication ^

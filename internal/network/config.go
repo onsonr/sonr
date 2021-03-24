@@ -13,8 +13,8 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
+	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
-	dq "github.com/sonr-io/core/pkg/user"
 )
 
 // ^ Host Config ^ //
@@ -26,7 +26,7 @@ type HostOptions struct {
 }
 
 // @ Returns new Host Config
-func NewHostOpts(req *md.ConnectionRequest, fs *dq.FileSystem) (*HostOptions, error) {
+func NewHostOpts(req *md.ConnectionRequest, fs *sf.FileSystem, key crypto.PrivKey) (*HostOptions, error) {
 	// Create Bootstrapper List
 	var bootstrappers []multiaddr.Multiaddr
 	for _, s := range []string{
@@ -44,17 +44,12 @@ func NewHostOpts(req *md.ConnectionRequest, fs *dq.FileSystem) (*HostOptions, er
 		}
 		bootstrappers = append(bootstrappers, ma)
 	}
-	// Get Private Key
-	privKey, err := fs.GetPrivateKey()
-	if err != nil {
-		return nil, err
-	}
 
 	// Set Host Options
 	return &HostOptions{
 		BootstrapAddrs: bootstrappers,
 		ConnRequest:    req,
-		PrivateKey:     privKey,
+		PrivateKey:     key,
 		Profile: &md.Profile{
 			Username:  req.GetUsername(),
 			FirstName: req.Contact.GetFirstName(),

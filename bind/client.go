@@ -20,10 +20,7 @@ type MobileNode struct {
 	hasBootstrapped bool
 	hostOpts        *net.HostOptions
 	status          md.Status
-	fs              *dq.FileSystem
-	profile         *md.Profile
-	contact         *md.Contact
-	device          *md.Device
+	user            *dq.User
 }
 
 // @ Create New Mobile Node
@@ -48,14 +45,17 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 		call:            call,
 		hasStarted:      false,
 		hasBootstrapped: false,
-		profile:         req.GetProfile(),
-		contact:         req.Contact,
-		device:          req.Device,
+	}
+
+	// Create New User
+	mn.user = dq.NewUser(&req, mn.nodeCallback())
+	key, err := mn.user.GetPrivateKey()
+	if err != nil {
+		sentry.CaptureException(err)
 	}
 
 	// Create Host Options
-	mn.fs = dq.InitFS(&req, mn.profile, mn.nodeCallback())
-	mn.hostOpts, err = net.NewHostOpts(&req, mn.fs)
+	mn.hostOpts, err = net.NewHostOpts(&req, mn.user.FS, key)
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -72,8 +72,8 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 // @ Start Host
 func (mn *MobileNode) Connect() {
 	// Start Node
-	peerId := dq.GetPeerID(mn.device, mn.profile, mn.node.ID().String())
-	result := mn.node.Init(mn.hostOpts, peerId)
+	mn.user.SetPeer(mn.node.ID().String())
+	result := mn.node.Init(mn.hostOpts)
 
 	// Check Result
 	if result {
@@ -81,7 +81,7 @@ func (mn *MobileNode) Connect() {
 		mn.hasStarted = true
 
 		// Bootstrap to Peers
-		strapResult := mn.node.Bootstrap(mn.hostOpts, mn.fs)
+		strapResult := mn.node.Bootstrap(mn.hostOpts, mn.user.FS, mn.user.GetPeer, mn.user.GetPeerBuf)
 		if strapResult {
 			mn.hasBootstrapped = true
 		} else {
