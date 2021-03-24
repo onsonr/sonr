@@ -4,7 +4,6 @@ package models
 type OnBool func(bool)
 type OnProtobuf func([]byte)
 type OnQueued func(card *TransferCard, req *InviteRequest)
-type OnMultiQueued func(card *TransferCard, req *InviteRequest, count int)
 type OnInvite func(data []byte)
 type OnProgress func(data float32)
 type OnReceived func(data *TransferCard)
@@ -56,7 +55,6 @@ func NewTransferCallback(callInvited OnInvite, callRemote OnProtobuf, callRespon
 
 type FileCallback struct {
 	Queued      OnQueued
-	MultiQueued OnMultiQueued
 	Error       OnError
 }
 
@@ -65,21 +63,12 @@ type NodeCallback struct {
 	Ready       OnBool
 	Invited     OnInvite
 	Refreshed   OnProtobuf
+	Event       OnProtobuf
 	RemoteStart OnProtobuf
 	Responded   OnProtobuf
 	Progressed  OnProgress
 	Received    OnReceived
 	Transmitted OnTransmitted
 	Queued      OnQueued
-	MultiQueued OnMultiQueued
 	Error       OnError
-}
-
-// ^ Creates New File Callback ^ //
-func NewFileCallback(callQueued OnQueued, callMultiQueued OnMultiQueued, callError OnError) FileCallback {
-	return FileCallback{
-		Queued:      callQueued,
-		MultiQueued: callMultiQueued,
-		Error:       callError,
-	}
 }

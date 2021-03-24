@@ -78,57 +78,6 @@ func NewProcessedFile(req *md.InviteRequest, p *md.Profile, callback md.FileCall
 	return sm
 }
 
-// ^ NewBatchProcessFiles Processes Multiple Outgoing Files ^ //
-func NewBatchProcessFiles(req *md.InviteRequest, p *md.Profile, callback md.FileCallback) []*ProcessedFile {
-	// Check Values
-	if req == nil || p == nil {
-		return nil
-	}
-
-	// Set Package Level Callbacks
-	files := make([]*ProcessedFile, 64)
-
-	// Iterate Through Attached Files
-	for _, file := range req.Files {
-		// Get Info
-		info, err := md.GetFileInfo(file.Path)
-		if err != nil {
-			callback.Error(err, "NewBatchProcessFiles:GetFileInfo")
-		}
-
-		// @ 1. Create new SafeFile
-		sm := &ProcessedFile{
-			call:    callback,
-			Path:    file.Path,
-			request: req,
-			mime:    info.Mime,
-		}
-
-		// ** Lock ** //
-		sm.mutex.Lock()
-
-		// @ 2. Set Metadata Protobuf Values
-		// Create Card
-		sm.card = md.TransferCard{
-			// SQL Properties
-			Payload:  info.Payload,
-			Platform: p.Platform,
-
-			// Owner Properties
-			Username:  p.Username,
-			FirstName: p.FirstName,
-			LastName:  p.LastName,
-
-			Properties: &md.TransferCard_Properties{
-				Name: info.Name,
-				Size: info.Size,
-				Mime: info.Mime,
-			},
-		}
-	}
-	return files
-}
-
 // ^ Safely returns Preview depending on lock ^ //
 func (sm *ProcessedFile) TransferCard() *md.TransferCard {
 	// ** Lock File wait for access ** //

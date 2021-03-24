@@ -3,7 +3,6 @@ package node
 import (
 	"context"
 	"fmt"
-	"log"
 	"time"
 
 	sentry "github.com/getsentry/sentry-go"
@@ -17,7 +16,6 @@ import (
 	"github.com/pkg/errors"
 	md "github.com/sonr-io/core/internal/models"
 	net "github.com/sonr-io/core/internal/network"
-	tf "github.com/sonr-io/core/internal/transfer"
 	tr "github.com/sonr-io/core/internal/transfer"
 	dq "github.com/sonr-io/core/pkg/user"
 )
@@ -28,7 +26,6 @@ type Node struct {
 	ctx     context.Context
 	contact *md.Contact
 	device  *md.Device
-	fs      *dq.SonrFS
 	peer    *md.Peer
 	profile *md.Profile
 
@@ -47,15 +44,7 @@ type Node struct {
 }
 
 // ^ NewNode Initializes Node with a host and default properties ^
-func NewNode(req *md.ConnectionRequest, call md.NodeCallback) *Node {
-	// Initialize Node Logging
-	err := sentry.Init(sentry.ClientOptions{
-		Dsn: "https://cbf88b01a5a5468fa77101f7dfc54f20@o549479.ingest.sentry.io/5672329",
-	})
-	if err != nil {
-		log.Fatalf("sentry.Init: %s", err)
-	}
-
+func NewNode(opts *net.HostOptions, call md.NodeCallback) *Node {
 	// Create Context and Set Node Properties
 	node := new(Node)
 	node.ctx = context.Background()
@@ -63,45 +52,28 @@ func NewNode(req *md.ConnectionRequest, call md.NodeCallback) *Node {
 
 	// Create New Profile from Request
 	node.profile = &md.Profile{
-		Username:  req.GetUsername(),
-		FirstName: req.Contact.GetFirstName(),
-		LastName:  req.Contact.GetLastName(),
-		Picture:   req.Contact.GetPicture(),
-		Platform:  req.Device.GetPlatform(),
+		Username:  opts.ConnRequest.GetUsername(),
+		FirstName: opts.ConnRequest.Contact.GetFirstName(),
+		LastName:  opts.ConnRequest.Contact.GetLastName(),
+		Picture:   opts.ConnRequest.Contact.GetPicture(),
+		Platform:  opts.ConnRequest.Device.GetPlatform(),
 	}
 
 	// Set File System
-	node.fs = dq.InitFS(req, node.profile, node.FSCallback())
-	node.router = net.NewProtocolRouter(req)
+	node.router = net.NewProtocolRouter(opts.ConnRequest)
 
-	// Set Default Properties
-	node.contact = req.Contact
-	node.device = req.Device
-	return node
-}
-
-// ^ Start Begins Running Libp2p Host ^
-func (n *Node) Start(opts *net.HostOptions) bool {
 	// IP Address
 	ip4 := net.IPv4()
 	ip6 := net.IPv6()
 
-	// Get Private Key
-	privKey, err := n.fs.GetPrivateKey()
-	if err != nil {
-		sentry.CaptureException(err)
-		n.call.Connected(false)
-		return false
-	}
-
 	// Start Host
 	h, err := libp2p.New(
-		n.ctx,
+		node.ctx,
 		// Add listening Addresses
 		libp2p.ListenAddrStrings(
 			fmt.Sprintf("/ip4/%s/tcp/0", ip4),
 			fmt.Sprintf("/ip6/%s/tcp/0", ip6)),
-		libp2p.Identity(privKey),
+		libp2p.Identity(opts.PrivateKey),
 		libp2p.DefaultTransports,
 		libp2p.ConnectionManager(connmgr.NewConnManager(
 			10,          // Lowwater
@@ -111,14 +83,18 @@ func (n *Node) Start(opts *net.HostOptions) bool {
 	)
 	if err != nil {
 		sentry.CaptureException(err)
-		n.call.Connected(false)
-		return false
+		node.call.Connected(false)
+		return nil
 	}
-	n.host = h
+	node.host = h
+	return node
+}
 
+// ^ Start Begins Running Libp2p Host ^
+func (n *Node) Start(opts *net.HostOptions, id *md.Peer_ID) bool {
 	// Set Peer Info
 	n.peer = &md.Peer{
-		Id:       n.fs.GetPeerID(n.device, n.profile, n.host.ID().String()),
+		Id:       id,
 		Profile:  n.profile,
 		Platform: n.device.Platform,
 		Model:    n.device.Model,
@@ -154,7 +130,7 @@ func (n *Node) Start(opts *net.HostOptions) bool {
 }
 
 // ^ Bootstrap begins bootstrap with peers ^
-func (n *Node) Bootstrap(opts *net.HostOptions) bool {
+func (n *Node) Bootstrap(opts *net.HostOptions, fs *dq.SonrFS) bool {
 	// Create Bootstrapper Info
 	bootstrappers := opts.GetBootstrapAddrInfo()
 
@@ -198,7 +174,7 @@ func (n *Node) Bootstrap(opts *net.HostOptions) bool {
 	}
 
 	// Initialize Peer Connection
-	if n.transfer, err = tf.Initialize(n.ctx, n.host, n.pubsub, n.fs, n.router, n.TransferCallback()); err != nil {
+	if n.transfer, err = tr.Initialize(n.ctx, n.host, n.pubsub, fs, n.router, n.TransferCallback()); err != nil {
 		sentry.CaptureException(err)
 		n.call.Error(err, "Initializing Transfer Controller")
 		n.call.Ready(false)

@@ -5,8 +5,8 @@ import (
 	"log"
 
 	"github.com/getsentry/sentry-go"
-	"google.golang.org/protobuf/proto"
 	md "github.com/sonr-io/core/internal/models"
+	"google.golang.org/protobuf/proto"
 )
 
 // * Interface: Callback is implemented from Plugin to receive updates * //
@@ -25,95 +25,43 @@ type Callback interface {
 	OnError(data []byte)       // Internal Error
 }
 
-// ^ queued Callback, Sends File Invite to Peer, and Notifies Client ^
-func (mn *MobileNode) queued(card *md.TransferCard, req *md.InviteRequest) {
-	// Retreive Current File
-	currFile := n.fs.CurrentFile()
-	if currFile != nil {
-		card.Status = md.TransferCard_INVITE
-		n.transfer.NewOutgoing(currFile)
+// ^ Passes binded Methods to Node ^
+func (mn *MobileNode) NodeCallback() md.NodeCallback {
+	return md.NodeCallback{
+		// Direct
+		Connected:   mn.call.OnConnected,
+		Ready:       mn.call.OnReady,
+		Refreshed:   mn.call.OnRefreshed,
+		Event:       mn.call.OnEvent,
+		RemoteStart: mn.call.OnRemoteStart,
+		Responded:   mn.call.OnResponded,
+		Progressed:  mn.call.OnProgress,
 
-		// Create Invite Message
-		invMsg := md.AuthInvite{
-			From:    n.peer,
-			Payload: card.Payload,
-			Card:    card,
-		}
-
-		// @ Check for Remote
-		if req.IsRemote {
-			// Start Remote Point
-			err := n.transfer.StartRemote(&invMsg)
-			if err != nil {
-				sentry.CaptureException(err)
-				n.error(err, "StartRemotePoint")
-			}
-		} else {
-			// Get PeerID
-			id, _, err := n.GetPeer(n.local, req.To.Id.Peer)
-			if err != nil {
-				n.error(err, "Queued")
-			}
-
-			// Check if ID in PeerStore
-			go func(inv *md.AuthInvite) {
-				// Convert Protobuf to bytes
-				msgBytes, err := proto.Marshal(inv)
-				if err != nil {
-					n.error(err, "Marshal")
-				}
-
-				n.transfer.RequestInvite(n.host, id, msgBytes)
-			}(&invMsg)
-		}
-	} else {
-		n.error(errors.New("No current file"), "internal:queued")
+		// Middleware
+		Invited:     mn.invited,
+		Received:    mn.received,
+		Transmitted: mn.transmitted,
+		Queued:      mn.queued,
+		Error:       mn.error,
 	}
 }
 
-// ^ multiQueued Callback, Sends File Invite to Peer, and Notifies Client ^
-func (mn *MobileNode) multiQueued(card *md.TransferCard, req *md.InviteRequest, count int) {
-	// Get PeerID
-	id, _, err := n.GetPeer(n.local, req.To.Id.Peer)
-	// Check error
-	if err != nil {
-		n.error(err, "Queued")
+// ^ Passes node methods for FS/FQ ^
+func (mn *MobileNode) FSCallback() md.FileCallback {
+	return md.FileCallback{
+		Queued: mn.queued,
+		Error:  mn.error,
 	}
+}
 
+// ^ queued Callback, Sends File Invite to Peer, and Notifies Client ^
+func (mn *MobileNode) queued(card *md.TransferCard, req *md.InviteRequest) {
 	// Retreive Current File
-	currFile := n.fs.CurrentFile()
+	currFile := mn.fs.CurrentFile()
 	if currFile != nil {
-		card.Status = md.TransferCard_INVITE
-		n.transfer.NewOutgoing(currFile)
-
-		// Create Invite Message
-		invMsg := md.AuthInvite{
-			From:    n.peer,
-			Payload: card.Payload,
-			Card:    card,
-		}
-
-		// @ Check for Remote
-		if req.IsRemote {
-			// Start Remote Point
-			err := n.transfer.StartRemote(&invMsg)
-			if err != nil {
-				n.error(err, "StartRemotePoint")
-			}
-		} else {
-			// Check if ID in PeerStore
-			go func(inv *md.AuthInvite) {
-				// Convert Protobuf to bytes
-				msgBytes, err := proto.Marshal(inv)
-				if err != nil {
-					n.error(err, "Marshal")
-				}
-
-				mn.node.transfer.RequestInvite(mn.host, id, msgBytes)
-			}(&invMsg)
-		}
+		mn.node.InviteFile(card, req, currFile)
 	} else {
-		mn.error(errors.New("No current file"), "internal:multiQueued")
+		mn.error(errors.New("No current file"), "internal:queued")
 	}
 }
 

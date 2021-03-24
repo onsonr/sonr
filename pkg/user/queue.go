@@ -15,29 +15,16 @@ const maxFileBufferSize = 64
 
 // ^ Adds File Transfer from Invite Request ^ //
 func (fq *SonrFS) AddFromRequest(req *md.InviteRequest) {
-	if req.Type == md.InviteRequest_File {
-		// Add Single File Transfer
-		safeFile := sf.NewProcessedFile(req, fq.Profile, fq.Call)
 
-		// Validate Files not Null
-		if safeFile != nil {
-			fq.Files = append(fq.Files, safeFile)
-			fq.CurrentCount = 1
-		} else {
-			fq.Call.Error(errors.New("Request or Profile not Provided"), "NewProcessedFile:GetFileInfo")
-		}
+	// Add Single File Transfer
+	safeFile := sf.NewProcessedFile(req, fq.Profile, fq.Call)
 
-	} else if req.Type == md.InviteRequest_MultiFiles {
-		// Add Batch File Transfer
-		safeFiles := sf.NewBatchProcessFiles(req, fq.Profile, fq.Call)
-
-		// Validate Files not Null
-		if safeFiles != nil {
-			fq.Files = append(fq.Files, safeFiles...)
-			fq.CurrentCount = len(safeFiles)
-		} else {
-			fq.Call.Error(errors.New("Request or Profile not Provided"), "NewProcessedFile:GetFileInfo")
-		}
+	// Validate Files not Null
+	if safeFile != nil {
+		fq.Files = append(fq.Files, safeFile)
+		fq.CurrentCount = 1
+	} else {
+		fq.Call.Error(errors.New("Request or Profile not Provided"), "NewProcessedFile:GetFileInfo")
 	}
 }
 

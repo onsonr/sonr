@@ -13,11 +13,6 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// ^ Passes node methods for FS/FQ ^
-func (n *Node) FSCallback() md.FileCallback {
-	return md.NewFileCallback(n.call.Queued, n.call.MultiQueued, n.call.Error)
-}
-
 // ^ Passes node methods for TransferController ^
 func (n *Node) TransferCallback() md.TransferCallback {
 	return md.NewTransferCallback(n.call.Invited, n.call.RemoteStart, n.call.Responded, n.call.Progressed, n.call.Received, n.call.Transmitted, n.call.Error)

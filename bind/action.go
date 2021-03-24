@@ -3,7 +3,9 @@ package bind
 import (
 	"log"
 
+	"github.com/getsentry/sentry-go"
 	md "github.com/sonr-io/core/internal/models"
+	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -31,7 +33,15 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 			log.Println(err)
 		}
 		mn.status = md.Status_PENDING
-		mn.node.Invite(req)
+
+		// @ 2. Check Transfer Type
+		if req.Type == md.InviteRequest_Contact || req.Type == md.InviteRequest_URL {
+			mn.node.Invite(req)
+
+		} else {
+			// File Transfer
+			mn.fs.AddFromRequest(req)
+		}
 	}
 }
 
@@ -59,7 +69,20 @@ func (mn *MobileNode) JoinRemote(data string) {
 // @ Link with a QR Code
 func (mn *MobileNode) LinkDevice(json string) {
 	if mn.IsReady() {
-		mn.node.LinkDevice(json)
+		// Convert String to Bytes
+		request := md.LinkRequest{}
+
+		// Convert to Peer Protobuf
+		err := protojson.Unmarshal([]byte(json), &request)
+		if err != nil {
+			sentry.CaptureException(err)
+		}
+
+		// Link Device
+		err = mn.fs.SaveDevice(request.Device)
+		if err != nil {
+			sentry.CaptureException(err)
+		}
 	}
 }
 

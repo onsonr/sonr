@@ -9,6 +9,7 @@ import (
 	"os"
 
 	"github.com/getsentry/sentry-go"
+	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
@@ -17,15 +18,16 @@ import (
 
 // ^ Router Protocol ID Option ^ //
 type protocolRouterOption struct {
-	local     bool
+	local bool
 }
 
 // ! Option to Set Protocol ID for Local
 func SetIDForLocal() *protocolRouterOption {
 	return &protocolRouterOption{
-		local:     true,
+		local: true,
 	}
 }
+
 type GeoIP struct {
 	Continent                      string   `json:"continent"`
 	AddressFormat                  string   `json:"address_format"`
@@ -116,10 +118,11 @@ func Location(target *GeoIP) error {
 type HostOptions struct {
 	BootstrapAddrs []multiaddr.Multiaddr
 	ConnRequest    *md.ConnectionRequest
+	PrivateKey     crypto.PrivKey
 }
 
 // @ Returns new Host Config
-func NewHostOpts(req *md.ConnectionRequest) (*HostOptions, error) {
+func NewHostOpts(req *md.ConnectionRequest, privKey crypto.PrivKey) (*HostOptions, error) {
 	// Create Bootstrapper List
 	var bootstrappers []multiaddr.Multiaddr
 	for _, s := range []string{
@@ -142,6 +145,7 @@ func NewHostOpts(req *md.ConnectionRequest) (*HostOptions, error) {
 	return &HostOptions{
 		BootstrapAddrs: bootstrappers,
 		ConnRequest:    req,
+		PrivateKey:     privKey,
 	}, nil
 }
 

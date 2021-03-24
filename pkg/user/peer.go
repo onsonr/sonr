@@ -9,7 +9,7 @@ import (
 )
 
 // ^ GetPeerID returns ID Reference ^ //
-func (sfs *SonrFS) GetPeerID(device *md.Device, profile *md.Profile, peerID string) *md.Peer_ID {
+func GetPeerID(device *md.Device, profile *md.Profile, peerID string) *md.Peer_ID {
 	// Initialize
 	deviceID := device.GetId()
 

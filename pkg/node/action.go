@@ -2,14 +2,12 @@ package node
 
 import (
 	"math"
-	"time"
 
 	sentry "github.com/getsentry/sentry-go"
 	"github.com/ipfs/go-cid"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/multiformats/go-multihash"
 	md "github.com/sonr-io/core/internal/models"
-	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -119,43 +117,6 @@ func (n *Node) JoinRemote(data string) {
 	}
 }
 
-// ^ Link with a QR Code ^ //
-func (n *Node) LinkDevice(json string) {
-	// Convert String to Bytes
-	request := md.LinkRequest{}
-
-	// Convert to Peer Protobuf
-	err := protojson.Unmarshal([]byte(json), &request)
-	if err != nil {
-		sentry.CaptureException(err)
-	}
-
-	// Link Device
-	err = n.fs.SaveDevice(request.Device)
-	if err != nil {
-		sentry.CaptureException(err)
-	}
-}
-
-// ^ Link with a QR Code ^ //
-func (n *Node) LinkRequest(name string) *md.LinkRequest {
-	// Set Device
-	device := n.device
-	device.Name = name
-
-	// Create Expiry - 1min 30s
-	timein := time.Now().Local().Add(
-		time.Minute*time.Duration(1) +
-			time.Second*time.Duration(30))
-
-	// Return Request
-	return &md.LinkRequest{
-		Device: device,
-		Peer:   n.Peer(),
-		Expiry: int32(timein.Unix()),
-	}
-}
-
 // ^ Updates Current Contact Card ^
 func (n *Node) SetContact(newContact *md.Contact) {
 
@@ -169,11 +130,11 @@ func (n *Node) SetContact(newContact *md.Contact) {
 		Picture:   newContact.GetPicture(),
 	}
 
-	// Set User Contact
-	err := n.fs.SaveContact(newContact)
-	if err != nil {
-		sentry.CaptureException(err)
-	}
+	// // Set User Contact
+	// err := n.fs.SaveContact(newContact)
+	// if err != nil {
+	// 	sentry.CaptureException(err)
+	// }
 }
 
 // ^ Close Ends All Network Communication ^

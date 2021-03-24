@@ -2,12 +2,11 @@ package client
 
 import (
 	"context"
-	"log"
 	"time"
 
 	md "github.com/sonr-io/core/internal/models"
-	sn "github.com/sonr-io/core/pkg/node"
 	net "github.com/sonr-io/core/internal/network"
+	sn "github.com/sonr-io/core/pkg/node"
 )
 
 const interval = 2 * time.Second
@@ -28,8 +27,30 @@ type Callback interface {
 	OnError(data []byte)       // Internal Error
 }
 
+// ^ Passes node methods for TransferController ^
+func (mn *Client) NodeCallback() md.NodeCallback {
+	return md.NodeCallback{
+		// Direct
+		Connected:   mn.call.OnConnected,
+		Ready:       mn.call.OnReady,
+		Refreshed:   mn.call.OnRefreshed,
+		Event:       mn.call.OnEvent,
+		RemoteStart: mn.call.OnRemoteStart,
+		Responded:   mn.call.OnResponded,
+		Progressed:  mn.call.OnProgress,
+
+		// Middleware
+		// Invited:     mn.invited,
+		// Received:    mn.received,
+		// Transmitted: mn.transmitted,
+		// Queued:      mn.queued,
+		// Error:       mn.error,
+	}
+}
+
 // @ Struct: Reference for Exposed Sonr Client
 type Client struct {
+	call            Callback
 	ctx             context.Context
 	ID              string
 	DeviceID        string
@@ -45,54 +66,54 @@ func NewClient(ctx context.Context, req *md.ConnectionRequest, call Callback) *C
 	// Set Default Info
 	var c = new(Client)
 	c.ctx = ctx
+	// //
+	// 	// Create New Client
+	// 	c.node = sn.NewNode(req, c.NodeCallback())
+	// 	// hostOpts, err := net.NewHostOpts(req)
+	// 	// if err != nil {
+	// 	// 	log.Println(err)
+	// 	// }
 
-	// Create New Client
-	c.node = sn.NewNode(req, call)
-	hostOpts, err := net.NewHostOpts(req)
-	if err != nil {
-		log.Println(err)
-	}
-
-	// Set Host Opts
-	c.hostOpts = hostOpts
+	// 	// Set Host Opts
+	// 	c.hostOpts = hostOpts
 	return c
 }
 
 // @ Start Host
-func (c *Client) Connect() {
-	// Start Node
-	result := c.node.Start(c.hostOpts)
-	if result {
-		// Set Peer Info
-		peer := c.node.Peer()
-		c.ID = peer.Id.Peer
-		c.DeviceID = peer.Id.Device
-		c.UserID = peer.Id.User
+// func (c *Client) Connect() {
+// 	// Start Node
+// 	result := c.node.Start(c.hostOpts, crypto.)
+// 	if result {
+// 		// Set Peer Info
+// 		peer := c.node.Peer()
+// 		c.ID = peer.Id.Peer
+// 		c.DeviceID = peer.Id.Device
+// 		c.UserID = peer.Id.User
 
-		// Set Started
-		c.hasStarted = true
+// 		// Set Started
+// 		c.hasStarted = true
 
-		// Bootstrap to Peers
-		strapResult := c.node.Bootstrap(c.hostOpts)
-		if strapResult {
-			c.hasBootstrapped = true
+// 		// Bootstrap to Peers
+// 		strapResult := c.node.Bootstrap(c.hostOpts)
+// 		if strapResult {
+// 			c.hasBootstrapped = true
 
-			// Start Routine
-			go c.UpdateAuto(time.NewTicker(interval))
-		} else {
-			log.Println("Failed to bootstrap node")
-		}
-	} else {
-		log.Println("Failed to start host")
-	}
-}
+// 			// Start Routine
+// 			go c.UpdateAuto(time.NewTicker(interval))
+// 		} else {
+// 			log.Println("Failed to bootstrap node")
+// 		}
+// 	} else {
+// 		log.Println("Failed to start host")
+// 	}
+//}
 
 // ^ Method to Periodically Update Presence ^ //
 func (dc *Client) UpdateAuto(ticker *time.Ticker) {
 	for {
 		select {
 		case <-dc.ctx.Done():
-			dc.node.Stop()
+			dc.node.Close()
 			return
 		case <-ticker.C:
 			dc.node.Update(0, 0)
