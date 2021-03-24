@@ -11,7 +11,7 @@ import (
 	dt "github.com/sonr-io/core/pkg/data"
 )
 
-// ^ File that safely sets metadata and thumbnail in routine ^ //
+// @ File that safely sets metadata and thumbnail in routine
 type ProcessedFile struct {
 	// References
 	Payload md.Payload
@@ -23,6 +23,11 @@ type ProcessedFile struct {
 	mutex   sync.Mutex
 	card    md.TransferCard
 	request *md.InviteRequest
+}
+
+// @ ProcessedFileBuilder creates a new item and returns a pointer to it.
+func ProcessedFileBuilder() interface{} {
+	return &ProcessedFile{}
 }
 
 // ^ NewProcessedFile Processes Outgoing File ^ //

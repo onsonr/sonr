@@ -39,7 +39,7 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 		} else if req.Type == md.InviteRequest_URL {
 			mn.node.InviteLink(req, mn.user.GetPeer())
 		} else {
-			//	mn.fs.AddFromRequest(req)
+			mn.user.FS.AddFromRequest(req, mn.user.Profile)
 		}
 
 		mn.status = md.Status_PENDING
@@ -107,5 +107,6 @@ func (mn *MobileNode) Resume() {
 // @ Close Ends All Network Communication
 func (mn *MobileNode) Stop() {
 	// Check if Response Is Invited
+	mn.user.FS.Close()
 	mn.node.Close()
 }

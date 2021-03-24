@@ -1,47 +1,45 @@
 package file
 
 import (
+	"log"
+
 	md "github.com/sonr-io/core/internal/models"
 )
 
-// @ Maximum Files in Node Cache
-const maxFileBufferSize = 64
-
 // ^ Adds File Transfer from Invite Request ^ //
-func (fq *FileSystem) AddFromRequest(req *md.InviteRequest) {
+func (fs *FileSystem) AddFromRequest(req *md.InviteRequest, pr *md.Profile) error {
 
-	// // Add Single File Transfer
-	// safeFile := sf.NewProcessedFile(req, fq.Profile, fq.Call)
+	// Add Single File Transfer
+	safeFile := NewProcessedFile(req, pr, fs.Call)
 
-	// // Validate Files not Null
-	// if safeFile != nil {
-	// 	fq.Files = append(fq.Files, safeFile)
-	// 	fq.CurrentCount = 1
-	// } else {
-	// 	fq.Call.Error(errors.New("Request or Profile not Provided"), "NewProcessedFile:GetFileInfo")
-	// }
+	// Add an item to the queue
+	err := fs.Queue.Enqueue(safeFile)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // ^ CurrentFile returns last file in Processed Files ^ //
-func (fq *FileSystem) CurrentFile() *ProcessedFile {
-	if len(fq.Files) > 0 {
-		return fq.Files[len(fq.Files)-1]
-	} else {
-		return nil
-	}
-}
+func (fs *FileSystem) CurrentFile() *ProcessedFile {
+	// Initialize
+	var iface interface{}
+	var err error
 
-// ^ Removes Last File ^ //
-func (fq *FileSystem) CompleteLast() {
-	if len(fq.Files) > 0 {
-		fq.Files = fq.Files[:len(fq.Files)-1]
+	// Dequeue the next item in the queue and block until one is available
+	if iface, err = fs.Queue.DequeueBlock(); err != nil {
+		log.Fatal("Error dequeuing item ", err)
 	}
-	fq.CurrentCount = 0
+
+	// Assert type of the response to an Item pointer so we can work with it
+	item, ok := iface.(*ProcessedFile)
+	if !ok {
+		log.Fatal("Dequeued object is not an ProcessedFile pointer")
+	}
+	return item
 }
 
 // ^ Reset Current Queued File Metadata ^ //
-func (fq *FileSystem) Reset() {
-	fq.Files = nil
-	fq.Files = make([]*ProcessedFile, maxFileBufferSize)
-	fq.CurrentCount = 0
+func (fs *FileSystem) Close() {
+	fs.Queue.Close()
 }

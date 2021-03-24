@@ -5,9 +5,25 @@ import (
 	"fmt"
 	"math/big"
 
+	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/pkg/errors"
 	"github.com/tyler-smith/go-bip39/wordlists"
 )
+
+func Ed25519KeyBuf() (crypto.PrivKey, []byte, error) {
+	// Create New Key
+	privKey, _, err := crypto.GenerateEd25519Key(rand.Reader)
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "generating identity private key")
+	}
+
+	// Marshal Data
+	buf, err := crypto.MarshalPrivateKey(privKey)
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "marshalling identity private key")
+	}
+	return privKey, buf, nil
+}
 
 type Language string
 

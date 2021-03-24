@@ -7,19 +7,30 @@ import (
 
 	mid "github.com/denisbrodbeck/machineid"
 	"github.com/getsentry/sentry-go"
+	"github.com/libp2p/go-libp2p-core/crypto"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
 
+// ^ Get Peer returns Users Contact ^ //
+func (u *User) Contact() *md.Contact {
+	return u.contact
+}
+
+// ^ Get Peer returns Users Current device ^ //
+func (u *User) Device() *md.Device {
+	return u.device
+}
+
 // ^ Get Peer returns Current Peer ^ //
-func (u *User) GetPeer() *md.Peer {
-	return u.Peer
+func (u *User) Peer() *md.Peer {
+	return u.peer
 }
 
 // ^ Peer returns Current Peer Info as Buffer
-func (u *User) GetPeerBuf() []byte {
+func (u *User) PeerBuf() []byte {
 	// Convert to bytes
-	buf, err := proto.Marshal(u.Peer)
+	buf, err := proto.Marshal(u.peer)
 	if err != nil {
 		sentry.CaptureException(err)
 		return nil
@@ -27,13 +38,23 @@ func (u *User) GetPeerBuf() []byte {
 	return buf
 }
 
+// ^ Get Key: Returns Private key from disk if found ^ //
+func (u *User) PrivateKey() crypto.PrivKey {
+	return u.privKey
+}
+
+// ^ Get Peer returns Peers Profile ^ //
+func (u *User) Profile() *md.Profile {
+	return u.profile
+}
+
 // ^ Updates Current Contact Card ^
 func (u *User) SetContact(newContact *md.Contact) error {
 	// Set Node Contact
-	u.Contact = newContact
+	u.contact = newContact
 
 	// Update Peer Profile
-	u.Peer.Profile = &md.Profile{
+	u.peer.Profile = &md.Profile{
 		FirstName: newContact.GetFirstName(),
 		LastName:  newContact.GetLastName(),
 		Picture:   newContact.GetPicture(),
@@ -55,11 +76,11 @@ func (u *User) SetContact(newContact *md.Contact) error {
 // ^ SetPeer configures Peer Ref from Host ID Reference ^ //
 func (u *User) SetPeer(hID string) {
 	// Initialize
-	deviceID := u.Device.GetId()
+	deviceID := u.device.GetId()
 
 	// Get User ID
 	userID := fnv.New32a()
-	_, err := userID.Write([]byte(u.Profile.GetUsername()))
+	_, err := userID.Write([]byte(u.profile.GetUsername()))
 	if err != nil {
 		log.Println(err)
 	}
@@ -76,15 +97,15 @@ func (u *User) SetPeer(hID string) {
 	}
 
 	// Set Peer
-	u.Peer = &md.Peer{
+	u.peer = &md.Peer{
 		Id: &md.Peer_ID{
 			Peer:   hID,
 			Device: deviceID,
 			User:   userID.Sum32(),
 		},
-		Profile:  u.Profile,
-		Platform: u.Device.Platform,
-		Model:    u.Device.Model,
+		Profile:  u.profile,
+		Platform: u.device.Platform,
+		Model:    u.device.Model,
 	}
 }
 
@@ -114,7 +135,7 @@ func (u *User) SetPosition(facing float64, heading float64) {
 	}
 
 	// Set Position
-	u.Peer.Position = &md.Position{
+	u.peer.Position = &md.Position{
 		Facing:           faceDir,
 		FacingAntipodal:  faceAnpd,
 		Heading:          headDir,
