@@ -17,7 +17,6 @@ import (
 // ** Constants for Chunking Data ** //
 const BufferChunkSize = 32000
 const B64ChunkSize = 31998 // Adjusted for Base64 -- has to be divisible by 3
-
 type OutgoingFile struct {
 	call          dt.NodeCallback
 	processedFile *sf.ProcessedFile
