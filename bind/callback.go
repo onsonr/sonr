@@ -5,8 +5,8 @@ import (
 	"log"
 
 	"github.com/getsentry/sentry-go"
-	dt "github.com/sonr-io/core/internal/data"
 	md "github.com/sonr-io/core/internal/models"
+	dt "github.com/sonr-io/core/pkg/data"
 	"google.golang.org/protobuf/proto"
 )
 

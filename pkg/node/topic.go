@@ -10,9 +10,9 @@ import (
 	"github.com/libp2p/go-libp2p-core/protocol"
 	rpc "github.com/libp2p/go-libp2p-gorpc"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	"github.com/sonr-io/core/internal/data"
-	dt "github.com/sonr-io/core/internal/data"
 	md "github.com/sonr-io/core/internal/models"
+	"github.com/sonr-io/core/pkg/data"
+	dt "github.com/sonr-io/core/pkg/data"
 	"google.golang.org/protobuf/proto"
 )
 

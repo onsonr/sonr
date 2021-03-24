@@ -7,8 +7,8 @@ import (
 	sentry "github.com/getsentry/sentry-go"
 	"github.com/libp2p/go-libp2p-core/peer"
 	msgio "github.com/libp2p/go-msgio"
-	dt "github.com/sonr-io/core/internal/data"
 	sf "github.com/sonr-io/core/internal/file"
+	dt "github.com/sonr-io/core/pkg/data"
 
 	md "github.com/sonr-io/core/internal/models"
 	tr "github.com/sonr-io/core/pkg/transfer"

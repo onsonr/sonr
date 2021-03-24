@@ -10,7 +10,7 @@ import (
 	md "github.com/sonr-io/core/internal/models"
 
 	msgio "github.com/libp2p/go-msgio"
-	dt "github.com/sonr-io/core/internal/data"
+	dt "github.com/sonr-io/core/pkg/data"
 	"google.golang.org/protobuf/proto"
 )
 

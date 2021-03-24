@@ -3,9 +3,9 @@ package user
 import (
 	"google.golang.org/protobuf/proto"
 
-	dt "github.com/sonr-io/core/internal/data"
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
+	dt "github.com/sonr-io/core/pkg/data"
 )
 
 // @ Constant Variables

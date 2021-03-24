@@ -16,9 +16,9 @@ import (
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/pkg/errors"
-	dt "github.com/sonr-io/core/internal/data"
 	md "github.com/sonr-io/core/internal/models"
 	net "github.com/sonr-io/core/internal/network"
+	dt "github.com/sonr-io/core/pkg/data"
 	tr "github.com/sonr-io/core/pkg/transfer"
 
 	//dq "github.com/sonr-io/core/pkg/user"

@@ -9,8 +9,8 @@ import (
 
 	"github.com/getsentry/sentry-go"
 	dq "github.com/joncrlsn/dque"
-	dt "github.com/sonr-io/core/internal/data"
 	md "github.com/sonr-io/core/internal/models"
+	dt "github.com/sonr-io/core/pkg/data"
 )
 
 const K_SONR_CLIENT_DIR = ".sonr"

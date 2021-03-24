@@ -14,9 +14,9 @@ import (
 	swarm "github.com/libp2p/go-libp2p-swarm"
 	msgio "github.com/libp2p/go-msgio"
 	"github.com/pkg/errors"
-	dt "github.com/sonr-io/core/internal/data"
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
+	dt "github.com/sonr-io/core/pkg/data"
 	tr "github.com/sonr-io/core/pkg/transfer"
 	"google.golang.org/protobuf/proto"
 )

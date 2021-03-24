@@ -4,10 +4,10 @@ import (
 	"log"
 
 	"github.com/getsentry/sentry-go"
-	dt "github.com/sonr-io/core/internal/data"
 	md "github.com/sonr-io/core/internal/models"
 	net "github.com/sonr-io/core/internal/network"
 	u "github.com/sonr-io/core/internal/user"
+	dt "github.com/sonr-io/core/pkg/data"
 	sn "github.com/sonr-io/core/pkg/node"
 	"google.golang.org/protobuf/proto"
 )
