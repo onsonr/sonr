@@ -13,7 +13,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
-	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
 )
 
@@ -26,7 +25,7 @@ type HostOptions struct {
 }
 
 // @ Returns new Host Config
-func NewHostOpts(req *md.ConnectionRequest, fs *sf.FileSystem, key crypto.PrivKey) (*HostOptions, error) {
+func NewHostOpts(req *md.ConnectionRequest, key crypto.PrivKey) (*HostOptions, error) {
 	// Create Bootstrapper List
 	var bootstrappers []multiaddr.Multiaddr
 	for _, s := range []string{

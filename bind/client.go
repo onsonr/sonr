@@ -34,8 +34,8 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 	}
 
 	// Unmarshal Request
-	req := md.ConnectionRequest{}
-	err = proto.Unmarshal(reqBytes, &req)
+	req := &md.ConnectionRequest{}
+	err = proto.Unmarshal(reqBytes, req)
 	if err != nil {
 		sentry.CaptureException(err)
 	}
@@ -48,13 +48,13 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 	}
 
 	// Create New User
-	mn.user, err = u.NewUser(&req, mn.nodeCallback())
+	mn.user, err = u.NewUser(req, mn.nodeCallback())
 	if err != nil {
 		sentry.CaptureException(err)
 	}
 
 	// Create Host Options
-	mn.hostOpts, err = net.NewHostOpts(&req, mn.user.FS, mn.user.PrivateKey())
+	mn.hostOpts, err = net.NewHostOpts(req, mn.user.PrivateKey())
 	if err != nil {
 		sentry.CaptureException(err)
 		return nil

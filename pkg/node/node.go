@@ -41,7 +41,7 @@ type Node struct {
 	incoming *tr.IncomingFile
 
 	// Peers
-	auth  *AuthService
+	auth  AuthService
 	local *TopicManager
 	// major    *TopicManager
 }
@@ -53,25 +53,16 @@ func NewNode(opts *net.HostOptions, call dt.NodeCallback) *Node {
 	node.ctx = context.Background()
 	node.call = call
 
-	// Set File System
+	// Set Protocol Router
 	node.router = net.NewProtocolRouter(opts.ConnRequest)
-
-	return node
-}
-
-// ^ Connect Begins Assigning Host Parameters ^
-func (n *Node) Connect(opts *net.HostOptions) bool {
-	// IP Address
-	ip4 := net.IPv4()
-	ip6 := net.IPv6()
-
+	
 	// Start Host
-	h, err := libp2p.New(
-		n.ctx,
+	var err error
+	node.host, err = libp2p.New(
+		node.ctx,
 		// Add listening Addresses
 		libp2p.ListenAddrStrings(
-			fmt.Sprintf("/ip4/%s/tcp/0", ip4),
-			fmt.Sprintf("/ip6/%s/tcp/0", ip6)),
+			fmt.Sprintf("/ip4/%s/tcp/0", net.IPv4())),
 		libp2p.Identity(opts.PrivateKey),
 		libp2p.DefaultTransports,
 		libp2p.ConnectionManager(connmgr.NewConnManager(
@@ -81,28 +72,28 @@ func (n *Node) Connect(opts *net.HostOptions) bool {
 		)),
 	)
 	if err != nil {
-		n.call.Connected(false)
-		return false
+		node.call.Connected(false)
+		return nil
 	}
+	return node
+}
 
-	// Create GRPC Client/Server
-	rpcServer := rpc.NewServer(h, n.router.Auth())
+// ^ Connect Begins Assigning Host Parameters ^
+func (n *Node) Connect(opts *net.HostOptions) bool {
+	// Create GRPC Server
+	authServer := rpc.NewServer(n.host, n.router.Auth())
 
 	// Create AuthService
-	ath := AuthService{
+	n.auth = AuthService{
 		call:   n.call,
 		respCh: make(chan *md.AuthReply, 1),
 	}
 
 	// Register Service
-	err = rpcServer.Register(&ath)
+	err := authServer.Register(&n.auth)
 	if err != nil {
 		return false
 	}
-
-	// Set RPC Services
-	n.auth = &ath
-	n.host = h
 
 	// Create Pub Sub
 	ps, err := pubsub.NewGossipSub(n.ctx, n.host)
@@ -112,7 +103,12 @@ func (n *Node) Connect(opts *net.HostOptions) bool {
 		return false
 	}
 	n.pubsub = ps
+	n.call.Connected(true)
+	return true
+}
 
+// ^ Bootstrap begins bootstrap with peers ^
+func (n *Node) Bootstrap(opts *net.HostOptions, fs *sf.FileSystem, gp dt.ReturnPeer, gpb dt.ReturnBuf) bool {
 	// Create Bootstrapper Info
 	bootstrappers := opts.GetBootstrapAddrInfo()
 	kadDHT, err := dht.New(
@@ -129,14 +125,6 @@ func (n *Node) Connect(opts *net.HostOptions) bool {
 
 	// Return Connected
 	n.kdht = kadDHT
-	n.call.Connected(true)
-	return true
-}
-
-// ^ Bootstrap begins bootstrap with peers ^
-func (n *Node) Bootstrap(opts *net.HostOptions, fs *sf.FileSystem, gp dt.ReturnPeer, gpb dt.ReturnBuf) bool {
-	// Create Bootstrapper Info
-	bootstrappers := opts.GetBootstrapAddrInfo()
 
 	// Bootstrap DHT
 	if err := n.kdht.Bootstrap(n.ctx); err != nil {
@@ -169,7 +157,6 @@ func (n *Node) Bootstrap(opts *net.HostOptions, fs *sf.FileSystem, gp dt.ReturnP
 	go n.handleDHTPeers(routingDiscovery)
 
 	// Join Local Lobby Point
-	var err error
 	if n.local, err = n.JoinTopic(n.router.LocalTopic(), n.router.LocalTopicExchange(), gp, gpb); err != nil {
 		sentry.CaptureException(err)
 		n.call.Error(err, "Joining Lobby")
@@ -177,6 +164,11 @@ func (n *Node) Bootstrap(opts *net.HostOptions, fs *sf.FileSystem, gp dt.ReturnP
 		return false
 	}
 	return true
+}
+
+// @ ID Returns Host ID
+func (n *Node) JoinLocal() peer.ID {
+	return n.host.ID()
 }
 
 // ^ User Node Info ^ //
