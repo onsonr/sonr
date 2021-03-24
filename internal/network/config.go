@@ -17,18 +17,70 @@ import (
 	dq "github.com/sonr-io/core/pkg/user"
 )
 
-// ^ Router Protocol ID Option ^ //
-type protocolRouterOption struct {
-	local bool
+// ^ Host Config ^ //
+type HostOptions struct {
+	BootstrapAddrs []multiaddr.Multiaddr
+	ConnRequest    *md.ConnectionRequest
+	PrivateKey     crypto.PrivKey
+	Profile        *md.Profile
 }
 
-// ! Option to Set Protocol ID for Local
-func SetIDForLocal() *protocolRouterOption {
-	return &protocolRouterOption{
-		local: true,
+// @ Returns new Host Config
+func NewHostOpts(req *md.ConnectionRequest, fs *dq.SonrFS) (*HostOptions, error) {
+	// Create Bootstrapper List
+	var bootstrappers []multiaddr.Multiaddr
+	for _, s := range []string{
+		// Libp2p Default
+		"/dnsaddr/bootstrap.libp2p.io/p2p/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN",
+		"/dnsaddr/bootstrap.libp2p.io/p2p/QmQCU2EcMqAqQPR2i9bChDtGNJchTbq5TbXJJ16u19uLTa",
+		"/dnsaddr/bootstrap.libp2p.io/p2p/QmbLHAnMoJPWSCR5Zhtx6BHJX9KiKNN6tpvbUcqanj75Nb",
+		"/dnsaddr/bootstrap.libp2p.io/p2p/QmcZf59bWwK5XFi76CZX8cbJ4BhTzzA3gU1ZjYZcYW3dwt",
+		"/ip4/104.131.131.82/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
+		"/ip4/104.131.131.82/udp/4001/quic/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
+	} {
+		ma, err := multiaddr.NewMultiaddr(s)
+		if err != nil {
+			return nil, err
+		}
+		bootstrappers = append(bootstrappers, ma)
 	}
+	// Get Private Key
+	privKey, err := fs.GetPrivateKey()
+	if err != nil {
+		return nil, err
+	}
+
+	// Set Host Options
+	return &HostOptions{
+		BootstrapAddrs: bootstrappers,
+		ConnRequest:    req,
+		PrivateKey:     privKey,
+		Profile: &md.Profile{
+			Username:  req.GetUsername(),
+			FirstName: req.Contact.GetFirstName(),
+			LastName:  req.Contact.GetLastName(),
+			Picture:   req.Contact.GetPicture(),
+			Platform:  req.Device.GetPlatform(),
+		},
+	}, nil
 }
 
+// ^ Return Bootstrap List Address Info ^ //
+func (ho *HostOptions) GetBootstrapAddrInfo() []peer.AddrInfo {
+	ds := make([]peer.AddrInfo, 0, len(ho.BootstrapAddrs))
+	for i := range ho.BootstrapAddrs {
+		info, err := peer.AddrInfoFromP2pAddr(ho.BootstrapAddrs[i])
+		if err != nil {
+			sentry.CaptureException(errors.Wrap(err, fmt.Sprintf("failed to convert bootstrapper address to peer addr info addr: %s",
+				ho.BootstrapAddrs[i].String())))
+			continue
+		}
+		ds = append(ds, *info)
+	}
+	return ds
+}
+
+// ^ Geographical Position from IP ^ //
 type GeoIP struct {
 	Continent                      string   `json:"continent"`
 	AddressFormat                  string   `json:"address_format"`
@@ -113,67 +165,4 @@ func Location(target *GeoIP) error {
 		log.Fatalln(err)
 	}
 	return json.NewDecoder(r.Body).Decode(target)
-}
-
-// ^ Host Config ^ //
-type HostOptions struct {
-	BootstrapAddrs []multiaddr.Multiaddr
-	ConnRequest    *md.ConnectionRequest
-	PrivateKey     crypto.PrivKey
-	Profile        *md.Profile
-}
-
-// @ Returns new Host Config
-func NewHostOpts(req *md.ConnectionRequest, fs *dq.SonrFS) (*HostOptions, error) {
-	// Create Bootstrapper List
-	var bootstrappers []multiaddr.Multiaddr
-	for _, s := range []string{
-		// Libp2p Default
-		"/dnsaddr/bootstrap.libp2p.io/p2p/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN",
-		"/dnsaddr/bootstrap.libp2p.io/p2p/QmQCU2EcMqAqQPR2i9bChDtGNJchTbq5TbXJJ16u19uLTa",
-		"/dnsaddr/bootstrap.libp2p.io/p2p/QmbLHAnMoJPWSCR5Zhtx6BHJX9KiKNN6tpvbUcqanj75Nb",
-		"/dnsaddr/bootstrap.libp2p.io/p2p/QmcZf59bWwK5XFi76CZX8cbJ4BhTzzA3gU1ZjYZcYW3dwt",
-		"/ip4/104.131.131.82/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
-		"/ip4/104.131.131.82/udp/4001/quic/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
-	} {
-		ma, err := multiaddr.NewMultiaddr(s)
-		if err != nil {
-			return nil, err
-		}
-		bootstrappers = append(bootstrappers, ma)
-	}
-	// Get Private Key
-	privKey, err := fs.GetPrivateKey()
-	if err != nil {
-		return nil, err
-	}
-
-	// Set Host Options
-	return &HostOptions{
-		BootstrapAddrs: bootstrappers,
-		ConnRequest:    req,
-		PrivateKey:     privKey,
-		Profile: &md.Profile{
-			Username:  req.GetUsername(),
-			FirstName: req.Contact.GetFirstName(),
-			LastName:  req.Contact.GetLastName(),
-			Picture:   req.Contact.GetPicture(),
-			Platform:  req.Device.GetPlatform(),
-		},
-	}, nil
-}
-
-// ^ Return Bootstrap List Address Info ^ //
-func (ho *HostOptions) GetBootstrapAddrInfo() []peer.AddrInfo {
-	ds := make([]peer.AddrInfo, 0, len(ho.BootstrapAddrs))
-	for i := range ho.BootstrapAddrs {
-		info, err := peer.AddrInfoFromP2pAddr(ho.BootstrapAddrs[i])
-		if err != nil {
-			sentry.CaptureException(errors.Wrap(err, fmt.Sprintf("failed to convert bootstrapper address to peer addr info addr: %s",
-				ho.BootstrapAddrs[i].String())))
-			continue
-		}
-		ds = append(ds, *info)
-	}
-	return ds
 }

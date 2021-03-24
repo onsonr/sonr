@@ -23,13 +23,13 @@ type TopicManager struct {
 	lobby        *data.Lobby
 	topicPoint   string
 	exchange     *ExchangeService
-	exchangePID  protocol.ID
+	protocol     protocol.ID
 }
 
 // ^ Create New Contained Topic Manager ^ //
-func (n *Node) JoinTopic(pointName string) (*TopicManager, error) {
+func (n *Node) JoinTopic(name string, protocol protocol.ID) (*TopicManager, error) {
 	// Join Topic
-	topic, err := n.pubsub.Join(pointName)
+	topic, err := n.pubsub.Join(name)
 	if err != nil {
 		return nil, err
 	}
@@ -50,16 +50,16 @@ func (n *Node) JoinTopic(pointName string) (*TopicManager, error) {
 	// Create Lobby Manager
 	mgr := &TopicManager{
 		ctx:          n.ctx,
-		topic:        topic,
 		handler:      handler,
+		lobby:        data.NewLobby(name, n.Peer(), n.call.Refreshed),
+		protocol:     protocol,
 		subscription: sub,
-		lobby:        data.NewLobby(n.Peer(), n.call.Refreshed),
-		topicPoint:   pointName,
-		exchangePID:  n.router.Exchange(pointName),
+		topic:        topic,
+		topicPoint:   name,
 	}
 
 	// Start Exchange Server
-	peersvServer := rpc.NewServer(n.host, n.router.Exchange(pointName))
+	peersvServer := rpc.NewServer(n.host, protocol)
 	psv := ExchangeService{
 		SyncLobby: mgr.lobby.Sync,
 		GetUser:   n.Peer,
@@ -179,7 +179,7 @@ func (n *Node) FindPeerFromTopic(tm *TopicManager, q string) *md.Peer {
 // ^ Calls Invite on Remote Peer ^ //
 func (n *Node) Exchange(tm *TopicManager, id peer.ID) {
 	// Initialize RPC
-	rpcClient := rpc.NewClient(n.host, tm.exchangePID)
+	rpcClient := rpc.NewClient(n.host, tm.protocol)
 	var reply ExchangeResponse
 	var args ExchangeArgs
 

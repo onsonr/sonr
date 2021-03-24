@@ -155,12 +155,12 @@ func (n *Node) Bootstrap(opts *net.HostOptions, fs *dq.SonrFS) bool {
 
 	// Set Routing Discovery, Find Peers
 	routingDiscovery := disc.NewRoutingDiscovery(n.kdht)
-	disc.Advertise(n.ctx, routingDiscovery, n.router.LocalPoint(), discLimit.TTL(time.Second*2))
+	disc.Advertise(n.ctx, routingDiscovery, n.router.GloalPoint(), discLimit.TTL(time.Second*2))
 	go n.handleDHTPeers(routingDiscovery)
 
 	// Join Local Lobby Point
 	var err error
-	if n.local, err = n.JoinTopic(n.router.Topic(net.SetIDForLocal())); err != nil {
+	if n.local, err = n.JoinTopic(n.router.LocalTopic(), n.router.LocalTopicExchange()); err != nil {
 		sentry.CaptureException(err)
 		n.call.Error(err, "Joining Lobby")
 		n.call.Ready(false)

@@ -20,10 +20,15 @@ type Lobby struct {
 }
 
 // ^ Create New Circle  ^
-func NewLobby(u *md.Peer, cr OnProtobuf) *Lobby {
+func NewLobby(o string, u *md.Peer, cr OnProtobuf) *Lobby {
 	return &Lobby{
 		user:        u,
 		callRefresh: cr,
+
+		OLC:   o,
+		Size:  1,
+		Count: 0,
+		Peers: make(map[string]*md.Peer),
 	}
 }
 
@@ -51,6 +56,14 @@ func (l *Lobby) Add(peer *md.Peer) {
 	l.Refresh()
 }
 
+// ^ Add/Update Peer in Lobby without Callback ^
+func (l *Lobby) AddWithoutRefresh(peer *md.Peer) {
+	// Update Peer with new data
+	l.Peers[peer.Id.Peer] = peer
+	l.Count = int32(len(l.Peers))
+	l.Size = int32(len(l.Peers)) + 1 // Account for User
+}
+
 // ^ Remove Peer from Lobby ^
 func (l *Lobby) Remove(id peer.ID) {
 	// Update Peer with new data
@@ -61,20 +74,20 @@ func (l *Lobby) Remove(id peer.ID) {
 }
 
 // ^ Sync Between Remote Peers Lobby ^
-func (l *Lobby) Sync(ref *md.Lobby, peer *md.Peer) {
+func (l *Lobby) Sync(ref *md.Lobby, remotePeer *md.Peer) {
 	// Validate Lobbies are Different
 	if l.Count != ref.Count {
 		// Iterate Over List
 		for id, peer := range ref.Peers {
 			// Add all Peers NOT User
 			if id != l.user.Id.Peer {
-				l.Peers[id] = peer
+				l.AddWithoutRefresh(peer)
 			}
 		}
 	}
 
-	// Add Peer to Lobby, Refreshes Automatically
-	l.Add(peer)
+	// Add Synced Peer to Lobby
+	l.Add(remotePeer)
 }
 
 // ^ Send Updated Lobby ^
