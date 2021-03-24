@@ -43,7 +43,6 @@ type Node struct {
 
 	// Data
 	// Data Handlers
-	outgoing *tr.OutgoingFile
 	incoming *tr.IncomingFile
 
 	// Peers

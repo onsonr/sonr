@@ -5,14 +5,17 @@ import (
 
 	sentry "github.com/getsentry/sentry-go"
 	discLimit "github.com/libp2p/go-libp2p-core/discovery"
+	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	disc "github.com/libp2p/go-libp2p-discovery"
 	rpc "github.com/libp2p/go-libp2p-gorpc"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	swarm "github.com/libp2p/go-libp2p-swarm"
+	msgio "github.com/libp2p/go-msgio"
 	"github.com/pkg/errors"
 	dt "github.com/sonr-io/core/internal/data"
 	md "github.com/sonr-io/core/internal/models"
+	tr "github.com/sonr-io/core/pkg/transfer"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -160,4 +163,36 @@ func (n *Node) handleTopicMessages(tm *TopicManager) {
 		}
 		dt.GetState().NeedsWait()
 	}
+}
+
+// ^ Handle Incoming Stream ^ //
+func (n *Node) handleTransferIncoming(stream network.Stream) {
+	// Route Data from Stream
+	go func(reader msgio.ReadCloser, t *tr.IncomingFile) {
+		for i := 0; ; i++ {
+			// @ Read Length Fixed Bytes
+			buffer, err := reader.ReadMsg()
+			if err != nil {
+				n.call.Error(err, "HandleIncoming:ReadMsg")
+				break
+			}
+
+			// @ Unmarshal Bytes into Proto
+			hasCompleted, err := t.AddBuffer(i, buffer)
+			if err != nil {
+				n.call.Error(err, "HandleIncoming:AddBuffer")
+				break
+			}
+
+			// @ Check if All Buffer Received to Save
+			if hasCompleted {
+				// Sync file
+				if err := n.incoming.Save(); err != nil {
+					n.call.Error(err, "HandleIncoming:Save")
+				}
+				break
+			}
+			dt.GetState().NeedsWait()
+		}
+	}(msgio.NewReader(stream), n.incoming)
 }

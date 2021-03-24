@@ -5,7 +5,6 @@ import (
 	"errors"
 
 	sentry "github.com/getsentry/sentry-go"
-	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	msgio "github.com/libp2p/go-msgio"
@@ -101,23 +100,18 @@ func (n *Node) InviteFile(card *md.TransferCard, req *md.InviteRequest, cf *sf.P
 
 // ^ Respond to an Invitation ^ //
 func (n *Node) Respond(decision bool, fs *fs.SonrFS) {
-
 	// Check Decision
 	if decision {
-		n.host.SetStreamHandler(n.router.Transfer(), n.HandleIncoming)
+		n.host.SetStreamHandler(n.router.Transfer(), n.handleTransferIncoming)
 		n.incoming = tr.CreateIncomingFile(n.auth.invite, fs, n.call)
 	}
 
-	// Send Response on PeerConnection
-	// Get Offer Message
-	offerMsg := n.auth.invite
-
 	// @ Pass Contact Back
-	if offerMsg.Payload == md.Payload_CONTACT {
+	if n.auth.invite.Payload == md.Payload_CONTACT {
 		// Create Accept Response
 		card := dt.NewCardFromContact(n.peer, n.contact, md.TransferCard_REPLY)
 		resp := &md.AuthReply{
-			IsRemote: offerMsg.IsRemote,
+			IsRemote: n.auth.invite.IsRemote,
 			From:     n.peer,
 			Type:     md.AuthReply_Contact,
 			Card:     &card,
@@ -127,7 +121,7 @@ func (n *Node) Respond(decision bool, fs *fs.SonrFS) {
 	} else {
 		// Create Accept Response
 		resp := &md.AuthReply{
-			IsRemote: offerMsg.IsRemote,
+			IsRemote: n.auth.invite.IsRemote,
 			From:     n.peer,
 			Type:     md.AuthReply_Transfer,
 			Decision: decision,
@@ -194,38 +188,6 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 	case <-ctx.Done():
 		return nil
 	}
-}
-
-// ^ Handle Incoming Stream ^ //
-func (n *Node) HandleIncoming(stream network.Stream) {
-	// Route Data from Stream
-	go func(reader msgio.ReadCloser, t *tr.IncomingFile) {
-		for i := 0; ; i++ {
-			// @ Read Length Fixed Bytes
-			buffer, err := reader.ReadMsg()
-			if err != nil {
-				n.call.Error(err, "HandleIncoming:ReadMsg")
-				break
-			}
-
-			// @ Unmarshal Bytes into Proto
-			hasCompleted, err := t.AddBuffer(i, buffer)
-			if err != nil {
-				n.call.Error(err, "HandleIncoming:AddBuffer")
-				break
-			}
-
-			// @ Check if All Buffer Received to Save
-			if hasCompleted {
-				// Sync file
-				if err := n.incoming.Save(); err != nil {
-					n.call.Error(err, "HandleIncoming:Save")
-				}
-				break
-			}
-			dt.GetState().NeedsWait()
-		}
-	}(msgio.NewReader(stream), n.incoming)
 }
 
 // ^ User has accepted, Begin Sending Transfer ^ //
