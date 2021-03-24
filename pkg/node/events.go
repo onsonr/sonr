@@ -1,6 +1,7 @@
 package node
 
 import (
+	"log"
 	"time"
 
 	sentry "github.com/getsentry/sentry-go"
@@ -19,12 +20,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// ^ Passes node methods for TransferController ^
-func (n *Node) TransferCallback() dt.TransferCallback {
-	return dt.NewTransferCallback(n.call.Invited, n.call.RemoteStart, n.call.Responded, n.call.Progressed, n.call.Received, n.call.Transmitted, n.call.Error)
-}
-
-// ^ Helper Method to Handle User sent AuthInvite Response ^
+// ^ handleAuthInviteRPC: Handles User sent AuthInvite Response ^
 func (n *Node) handleAuthInviteRPC(id peer.ID, inv *md.AuthInvite) {
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(inv)
@@ -59,7 +55,7 @@ func (n *Node) handleAuthInviteRPC(id peer.ID, inv *md.AuthInvite) {
 	// }
 }
 
-// ^ Helper Method to Handle User sent AuthInvite Response ^
+// ^ handleAuthReply: Handle User sent AuthInvite Response ^
 func (n *Node) handleAuthReply(data []byte) (bool, *md.Peer) {
 	// Received Message
 	resp := md.AuthReply{}
@@ -72,7 +68,7 @@ func (n *Node) handleAuthReply(data []byte) (bool, *md.Peer) {
 	return resp.Decision && resp.Type == md.AuthReply_Transfer, resp.From
 }
 
-// ^ Handles Peers in DHT ^
+// ^ handleDHTPeers: Connects to Peers in DHT ^
 func (n *Node) handleDHTPeers(routingDiscovery *disc.RoutingDiscovery) {
 	for {
 		// Find peers in DHT
@@ -112,7 +108,7 @@ func (n *Node) handleDHTPeers(routingDiscovery *disc.RoutingDiscovery) {
 	}
 }
 
-// ^ handleMessages pulls messages from the pubsub topic and pushes them onto the Messages channel. ^
+// ^ handleTopicEvents: listens to Pubsub Events for topic  ^
 func (n *Node) handleTopicEvents(tm *TopicManager) {
 	// @ Loop Events
 	for {
@@ -135,7 +131,7 @@ func (n *Node) handleTopicEvents(tm *TopicManager) {
 	}
 }
 
-// ^ 1. handleMessages pulls messages from the pubsub topic and pushes them onto the Messages channel. ^
+// ^ handleTopicMessages: listens for messages on pubsub topic subscription ^
 func (n *Node) handleTopicMessages(tm *TopicManager) {
 	for {
 		// Get next msg from pub/sub
@@ -165,7 +161,38 @@ func (n *Node) handleTopicMessages(tm *TopicManager) {
 	}
 }
 
-// ^ Handle Incoming Stream ^ //
+// ^ processTopicMessages: pulls messages from channel that have been handled ^
+func (n *Node) processTopicMessages(tm *TopicManager) {
+	for {
+		select {
+		// @ when we receive a message from the lobby room
+		case m := <-tm.messages:
+			// Update Circle by event
+			if m.Event == md.LobbyEvent_UPDATE {
+				// Update Peer Data
+				tm.lobby.Add(m.From)
+			} else if m.Event == md.LobbyEvent_MESSAGE {
+				// Check is Message For Self
+				if m.To == n.peer.Id.Peer {
+					// Convert Message
+					bytes, err := proto.Marshal(m)
+					if err != nil {
+						log.Println("Cannot Marshal Error Protobuf: ", err)
+					}
+
+					// Call Event
+					n.call.Event(bytes)
+				}
+			}
+
+		case <-n.ctx.Done():
+			return
+		}
+		dt.GetState().NeedsWait()
+	}
+}
+
+// ^ handleTransferIncoming: Processes Incoming Data ^ //
 func (n *Node) handleTransferIncoming(stream network.Stream) {
 	// Route Data from Stream
 	go func(reader msgio.ReadCloser, t *tr.IncomingFile) {

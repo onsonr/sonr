@@ -7,7 +7,6 @@ import (
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
-
 type Lobby struct {
 	OLC   string
 	Size  int32

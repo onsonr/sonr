@@ -17,15 +17,19 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+const ChatRoomBufSize = 128
+
 type TopicManager struct {
 	ctx          context.Context
 	topic        *pubsub.Topic
 	subscription *pubsub.Subscription
 	handler      *pubsub.TopicEventHandler
 	lobby        *data.Lobby
-	topicPoint   string
-	exchange     *ExchangeService
-	protocol     protocol.ID
+
+	topicPoint string
+	exchange   *ExchangeService
+	protocol   protocol.ID
+	messages   chan *md.LobbyEvent
 }
 
 // ^ Create New Contained Topic Manager ^ //
@@ -54,6 +58,7 @@ func (n *Node) JoinTopic(name string, protocol protocol.ID) (*TopicManager, erro
 		ctx:          n.ctx,
 		handler:      handler,
 		lobby:        data.NewLobby(name, n.Peer(), n.call.Refreshed),
+		messages:     make(chan *md.LobbyEvent, ChatRoomBufSize),
 		protocol:     protocol,
 		subscription: sub,
 		topic:        topic,
@@ -78,6 +83,7 @@ func (n *Node) JoinTopic(name string, protocol protocol.ID) (*TopicManager, erro
 
 	go n.handleTopicEvents(mgr)
 	go n.handleTopicMessages(mgr)
+	go n.processTopicMessages(mgr)
 	return mgr, nil
 }
 
