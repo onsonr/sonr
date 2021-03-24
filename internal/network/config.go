@@ -14,6 +14,7 @@ import (
 	"github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
 	md "github.com/sonr-io/core/internal/models"
+	dq "github.com/sonr-io/core/pkg/user"
 )
 
 // ^ Router Protocol ID Option ^ //
@@ -119,10 +120,11 @@ type HostOptions struct {
 	BootstrapAddrs []multiaddr.Multiaddr
 	ConnRequest    *md.ConnectionRequest
 	PrivateKey     crypto.PrivKey
+	Profile        *md.Profile
 }
 
 // @ Returns new Host Config
-func NewHostOpts(req *md.ConnectionRequest, privKey crypto.PrivKey) (*HostOptions, error) {
+func NewHostOpts(req *md.ConnectionRequest, fs *dq.SonrFS) (*HostOptions, error) {
 	// Create Bootstrapper List
 	var bootstrappers []multiaddr.Multiaddr
 	for _, s := range []string{
@@ -140,12 +142,24 @@ func NewHostOpts(req *md.ConnectionRequest, privKey crypto.PrivKey) (*HostOption
 		}
 		bootstrappers = append(bootstrappers, ma)
 	}
+	// Get Private Key
+	privKey, err := fs.GetPrivateKey()
+	if err != nil {
+		return nil, err
+	}
 
 	// Set Host Options
 	return &HostOptions{
 		BootstrapAddrs: bootstrappers,
 		ConnRequest:    req,
 		PrivateKey:     privKey,
+		Profile: &md.Profile{
+			Username:  req.GetUsername(),
+			FirstName: req.Contact.GetFirstName(),
+			LastName:  req.Contact.GetLastName(),
+			Picture:   req.Contact.GetPicture(),
+			Platform:  req.Device.GetPlatform(),
+		},
 	}, nil
 }
 

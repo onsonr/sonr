@@ -3,6 +3,7 @@ package bind
 import (
 	"log"
 
+	"github.com/getsentry/sentry-go"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -73,7 +74,15 @@ func (mn *MobileNode) SetContact(conBytes []byte) {
 		if err != nil {
 			log.Println(err)
 		}
+
+		// Update Node Profile
 		mn.node.SetContact(newContact)
+
+		// Set User Contact
+		err = mn.fs.SaveContact(newContact)
+		if err != nil {
+			sentry.CaptureException(err)
+		}
 	}
 }
 

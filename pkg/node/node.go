@@ -29,7 +29,6 @@ type Node struct {
 	contact *md.Contact
 	device  *md.Device
 	peer    *md.Peer
-	profile *md.Profile
 
 	// Networking Properties
 	host   host.Host
@@ -52,15 +51,6 @@ func NewNode(opts *net.HostOptions, call dt.NodeCallback) *Node {
 	node.ctx = context.Background()
 	node.call = call
 	node.opts = opts
-
-	// Create New Profile from Request
-	node.profile = &md.Profile{
-		Username:  opts.ConnRequest.GetUsername(),
-		FirstName: opts.ConnRequest.Contact.GetFirstName(),
-		LastName:  opts.ConnRequest.Contact.GetLastName(),
-		Picture:   opts.ConnRequest.Contact.GetPicture(),
-		Platform:  opts.ConnRequest.Device.GetPlatform(),
-	}
 
 	// Set File System
 	node.router = net.NewProtocolRouter(opts.ConnRequest)
@@ -99,7 +89,7 @@ func (n *Node) Init(opts *net.HostOptions, id *md.Peer_ID) bool {
 	// Set Peer Info
 	n.peer = &md.Peer{
 		Id:       id,
-		Profile:  n.profile,
+		Profile:  n.opts.Profile,
 		Platform: n.device.Platform,
 		Model:    n.device.Model,
 	}

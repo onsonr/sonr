@@ -4,9 +4,7 @@ import (
 	"math"
 
 	sentry "github.com/getsentry/sentry-go"
-	"github.com/ipfs/go-cid"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/multiformats/go-multihash"
 	dt "github.com/sonr-io/core/internal/data"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
@@ -32,27 +30,6 @@ func (n *Node) PeerBuf() []byte {
 		return nil
 	}
 	return buf
-}
-
-// @ Peer returns Current Peer Info as Content ID
-func (n *Node) PeerCID() (cid.Cid, error) {
-	// Convert to bytes
-	buf, err := proto.Marshal(n.peer)
-	if err != nil {
-		sentry.CaptureException(err)
-		return cid.Undef, err
-	}
-
-	// Encode Multihash
-	mhash, err := multihash.EncodeName(buf, n.peer.Id.Peer)
-	if err != nil {
-		sentry.CaptureException(err)
-		return cid.Undef, err
-	}
-
-	// Return Key
-	key := cid.NewCidV1(cid.DagProtobuf, mhash)
-	return key, nil
 }
 
 // ^ Update proximity/direction and Notify Lobby ^ //
@@ -120,7 +97,6 @@ func (n *Node) JoinRemote(data string) {
 
 // ^ Updates Current Contact Card ^
 func (n *Node) SetContact(newContact *md.Contact) {
-
 	// Set Node Contact
 	n.contact = newContact
 
@@ -130,12 +106,6 @@ func (n *Node) SetContact(newContact *md.Contact) {
 		LastName:  newContact.GetLastName(),
 		Picture:   newContact.GetPicture(),
 	}
-
-	// // Set User Contact
-	// err := n.fs.SaveContact(newContact)
-	// if err != nil {
-	// 	sentry.CaptureException(err)
-	// }
 }
 
 // ^ Close Ends All Network Communication ^

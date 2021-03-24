@@ -64,17 +64,11 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 	mn.device = req.Device
 	mn.fs = dq.InitFS(&req, mn.profile, mn.fSCallback())
 
-	// Get Private Key
-	privKey, err := mn.fs.GetPrivateKey()
-	if err != nil {
-		mn.call.OnConnected(false)
-		return nil
-	}
-
 	// Create Host Options
-	mn.hostOpts, err = net.NewHostOpts(&req, privKey)
+	mn.hostOpts, err = net.NewHostOpts(&req, mn.fs)
 	if err != nil {
 		log.Println(err)
+		return nil
 	}
 
 	// Create Node
