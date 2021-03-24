@@ -104,3 +104,28 @@ func GetURLMetadata(url string) []byte {
 	}
 	return bytes
 }
+
+// **-------------------** //
+// ** LifeCycle Actions ** //
+// **-------------------** //
+// @ Checks for is Ready
+func (mn *MobileNode) isReady() bool {
+	return mn.hasBootstrapped && mn.hasStarted
+}
+
+// @ Close Ends All Network Communication
+func (mn *MobileNode) Pause() {
+	mn.node.Pause()
+}
+
+// @ Close Ends All Network Communication
+func (mn *MobileNode) Resume() {
+	mn.node.Resume()
+}
+
+// @ Close Ends All Network Communication
+func (mn *MobileNode) Stop() {
+	// Check if Response Is Invited
+	mn.user.FS.Close()
+	mn.node.Close()
+}
