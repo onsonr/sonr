@@ -15,13 +15,14 @@ import (
 	msgio "github.com/libp2p/go-msgio"
 	"github.com/pkg/errors"
 	dt "github.com/sonr-io/core/internal/data"
+	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
 	tr "github.com/sonr-io/core/pkg/transfer"
 	"google.golang.org/protobuf/proto"
 )
 
-// ^ handleAuthInviteRPC: Handles User sent AuthInvite Response ^
-func (n *Node) handleAuthInviteRPC(id peer.ID, inv *md.AuthInvite) {
+// ^ handleAuthInviteResponse: Handles User sent AuthInvite Response ^
+func (n *Node) handleAuthInviteResponse(id peer.ID, inv *md.AuthInvite, cf *sf.ProcessedFile) {
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(inv)
 	if err != nil {
@@ -47,25 +48,25 @@ func (n *Node) handleAuthInviteRPC(id peer.ID, inv *md.AuthInvite) {
 
 	// Send Callback and Reset
 	n.call.Responded(reply.Data)
-	// transDecs, from := n.handleAuthReply(reply.Data)
 
-	// Check Response for Accept
-	// if transDecs {
-	// pc.StartOutgoing(h, id, from)
-	// }
+	// Check for File
+	n.handleAcceptedFileRequest(id, cf, reply.Data)
 }
 
-// ^ handleAuthReply: Handle User sent AuthInvite Response ^
-func (n *Node) handleAuthReply(data []byte) (bool, *md.Peer) {
-	// Received Message
+// ^ handleAcceptedFileRequest: Begins File Transfer if Accepted ^
+func (n *Node) handleAcceptedFileRequest(id peer.ID, cf *sf.ProcessedFile, data []byte) {
+	// AuthReply Message
 	resp := md.AuthReply{}
 	err := proto.Unmarshal(data, &resp)
 	if err != nil {
 		n.call.Error(err, "handleReply")
 		sentry.CaptureException(err)
-		return false, nil
 	}
-	return resp.Decision && resp.Type == md.AuthReply_Transfer, resp.From
+
+	// Check for File Transfer
+	if resp.Decision && resp.Type == md.AuthReply_Transfer {
+		n.NewOutgoingTransfer(id, n.peer, cf)
+	}
 }
 
 // ^ handleDHTPeers: Connects to Peers in DHT ^

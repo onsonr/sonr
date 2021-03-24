@@ -19,6 +19,23 @@ import (
 
 const ChatRoomBufSize = 128
 
+// ExchangeArgs is Peer protobuf
+type ExchangeArgs struct {
+	Lobby []byte
+	Peer  []byte
+}
+
+// ExchangeResponse is also Peer protobuf
+type ExchangeResponse struct {
+	Data []byte
+}
+
+// Service Struct
+type ExchangeService struct {
+	GetUser   dt.ReturnPeer
+	SyncLobby dt.SyncLobby
+}
+
 type TopicManager struct {
 	ctx          context.Context
 	topic        *pubsub.Topic
@@ -55,7 +72,6 @@ func (n *Node) JoinTopic(name string, protocol protocol.ID) (*TopicManager, erro
 
 	// Create Lobby Manager
 	mgr := &TopicManager{
-		ctx:          n.ctx,
 		handler:      handler,
 		lobby:        data.NewLobby(name, n.Peer(), n.call.Refreshed),
 		messages:     make(chan *md.LobbyEvent, ChatRoomBufSize),
@@ -87,107 +103,10 @@ func (n *Node) JoinTopic(name string, protocol protocol.ID) (*TopicManager, erro
 	return mgr, nil
 }
 
-// ^ Send Peer Update to Topic ^
-func (tm *TopicManager) Update(data *md.Peer) error {
-	// Create Lobby Event
-	event := md.LobbyEvent{
-		Event: md.LobbyEvent_UPDATE,
-		From:  data,
-		Id:    data.Id.Peer,
-	}
-
-	// Convert Event to Proto Binary
-	bytes, err := proto.Marshal(&event)
-	if err != nil {
-		return err
-	}
-
-	// Publish to Topic
-	err = tm.topic.Publish(tm.ctx, bytes)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-// ^ Send message to specific peer in topic ^
-func (tm *TopicManager) Message(msg string, to string, data *md.Peer) error {
-	// Create Lobby Event
-	event := md.LobbyEvent{
-		Event:   md.LobbyEvent_MESSAGE,
-		From:    data,
-		Id:      data.Id.Peer,
-		Message: msg,
-		To:      to,
-	}
-
-	// Convert Event to Proto Binary
-	bytes, err := proto.Marshal(&event)
-	if err != nil {
-		return err
-	}
-
-	// Publish to Topic
-	err = tm.topic.Publish(tm.ctx, bytes)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-// ^ Helper: Find returns Pointer to Peer.ID and Peer ^
-func (n *Node) GetPeer(tm *TopicManager, q string) (peer.ID, *md.Peer, error) {
-	// Retreive Data
-	peer := n.FindPeerFromTopic(tm, q)
-	id := n.FindIDFromTopic(tm, q)
-
-	if peer == nil || id == "" {
-		return "", nil, errors.New("Search Error, peer was not found in map.")
-	}
-
-	return id, peer, nil
-}
-
-// ^ Helper: ID returns ONE Peer.ID in Topic ^
-func (n *Node) HasPeer(tm *TopicManager, q string) bool {
-	// Iterate through PubSub in topic
-	for _, id := range n.pubsub.ListPeers(tm.topicPoint) {
-		// If Found Match
-		if id.String() == q {
-			return true
-		}
-	}
-	return false
-}
-
-// ^ Helper: ID returns ONE Peer.ID in PubSub ^
-func (n *Node) FindIDFromTopic(tm *TopicManager, q string) peer.ID {
-	// Iterate through PubSub in topic
-	for _, id := range n.pubsub.ListPeers(tm.topicPoint) {
-		// If Found Match
-		if id.String() == q {
-			return id
-		}
-	}
-	return ""
-}
-
-// ^ Helper: Peer returns ONE Peer in Lobby ^
-func (n *Node) FindPeerFromTopic(tm *TopicManager, q string) *md.Peer {
-	// Iterate Through Peers, Return Matched Peer
-	for _, peer := range tm.lobby.Peers {
-		// If Found Match
-		if peer.Id.Peer == q {
-			return peer
-		}
-	}
-	return nil
-}
-
 // ^ Calls Invite on Remote Peer ^ //
 func (n *Node) Exchange(tm *TopicManager, id peer.ID) {
 	// Initialize RPC
-	rpcClient := rpc.NewClient(n.host, tm.protocol)
+	exchClient := rpc.NewClient(n.host, tm.protocol)
 	var reply ExchangeResponse
 	var args ExchangeArgs
 
@@ -196,7 +115,7 @@ func (n *Node) Exchange(tm *TopicManager, id peer.ID) {
 	args.Peer = n.PeerBuf()
 
 	// Call to Peer
-	err := rpcClient.Call(id, "ExchangeService", "ExchangeWith", args, &reply)
+	err := exchClient.Call(id, "ExchangeService", "ExchangeWith", args, &reply)
 	if err != nil {
 		n.call.Error(err, "Exchange")
 	}
@@ -212,6 +131,114 @@ func (n *Node) Exchange(tm *TopicManager, id peer.ID) {
 
 	// Update Peer with new data
 	tm.lobby.Add(remotePeer)
+}
+
+// ^ Calls Invite on Remote Peer ^ //
+func (es *ExchangeService) ExchangeWith(ctx context.Context, args ExchangeArgs, reply *ExchangeResponse) error {
+	// Peer Data
+	remoteLobbyRef := &md.Lobby{}
+	err := proto.Unmarshal(args.Lobby, remoteLobbyRef)
+	if err != nil {
+		return err
+	}
+
+	remotePeer := &md.Peer{}
+	err = proto.Unmarshal(args.Peer, remotePeer)
+	if err != nil {
+		return err
+	}
+
+	// Update Peers with Lobby
+	es.SyncLobby(remoteLobbyRef, remotePeer)
+
+	// Return User Peer
+	userPeer := es.GetUser()
+	replyData, err := proto.Marshal(userPeer)
+	if err != nil {
+		return err
+	}
+
+	// Set Message data and call done
+	reply.Data = replyData
+	return nil
+}
+
+// ^ Helper: Find returns Pointer to Peer.ID and Peer ^
+func (n *Node) FindPeerInTopic(tm *TopicManager, q string) (peer.ID, *md.Peer, error) {
+	// Retreive Data
+	var p *md.Peer
+	var i peer.ID
+
+	// Iterate Through Peers, Return Matched Peer
+	for _, peer := range tm.lobby.Peers {
+		// If Found Match
+		if peer.Id.Peer == q {
+			p = peer
+		}
+	}
+
+	// Validate Peer
+	if p == nil {
+		return "", nil, errors.New("Peer data was not found in topic.")
+	}
+
+	// Iterate through Topic Peers
+	for _, id := range n.pubsub.ListPeers(tm.topicPoint) {
+		// If Found Match
+		if id.String() == q {
+			i = id
+		}
+	}
+
+	// Validate ID
+	if i == "" {
+		return "", nil, errors.New("Peer ID was not found in topic.")
+	}
+	return i, p, nil
+}
+
+// ^ Helper: ID returns ONE Peer.ID in Topic ^
+func (n *Node) HasPeer(tm *TopicManager, q string) bool {
+	// Iterate through PubSub in topic
+	for _, id := range n.pubsub.ListPeers(tm.topicPoint) {
+		// If Found Match
+		if id.String() == q {
+			return true
+		}
+	}
+	return false
+}
+
+// ^ Send Direct Message to Peer in Lobby ^ //
+func (n *Node) Message(msg string, to string) {
+	if n.HasPeer(n.local, to) {
+		// Inform Lobby
+		if err := n.local.Send(&md.LobbyEvent{
+			Event:   md.LobbyEvent_MESSAGE,
+			From:    n.peer,
+			Id:      n.peer.Id.Peer,
+			Message: msg,
+			To:      to,
+		}); err != nil {
+			sentry.CaptureException(err)
+		}
+	}
+}
+
+// ^ Send message to specific peer in topic ^
+func (tm *TopicManager) Send(msg *md.LobbyEvent) error {
+	// Convert Event to Proto Binary
+	bytes, err := proto.Marshal(msg)
+	if err != nil {
+		return err
+	}
+
+	// Publish to Topic
+	err = tm.topic.Publish(tm.ctx, bytes)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // ^ Update proximity/direction and Notify Lobby ^ //
@@ -249,69 +276,11 @@ func (n *Node) Update(facing float64, heading float64) {
 	}
 
 	// Inform Lobby
-	err := n.local.Update(n.peer)
-	if err != nil {
+	if err := n.local.Send(&md.LobbyEvent{
+		Event: md.LobbyEvent_UPDATE,
+		From:  n.peer,
+		Id:    n.peer.Id.Peer,
+	}); err != nil {
 		sentry.CaptureException(err)
 	}
-}
-
-// ^ Send Direct Message to Peer in Lobby ^ //
-func (n *Node) Message(content string, to string) {
-	if n.HasPeer(n.local, to) {
-		// Inform Lobby
-		err := n.local.Message(content, to, n.peer)
-		if err != nil {
-			sentry.CaptureException(err)
-		}
-	}
-}
-
-// ****************** //
-// ** GRPC Service ** //
-// ****************** //
-// ExchangeArgs is Peer protobuf
-type ExchangeArgs struct {
-	Lobby []byte
-	Peer  []byte
-}
-
-// ExchangeResponse is also Peer protobuf
-type ExchangeResponse struct {
-	Data []byte
-}
-
-// Service Struct
-type ExchangeService struct {
-	GetUser   dt.ReturnPeer
-	SyncLobby dt.SyncLobby
-}
-
-// ^ Calls Invite on Remote Peer ^ //
-func (es *ExchangeService) ExchangeWith(ctx context.Context, args ExchangeArgs, reply *ExchangeResponse) error {
-	// Peer Data
-	remoteLobbyRef := &md.Lobby{}
-	err := proto.Unmarshal(args.Lobby, remoteLobbyRef)
-	if err != nil {
-		return err
-	}
-
-	remotePeer := &md.Peer{}
-	err = proto.Unmarshal(args.Peer, remotePeer)
-	if err != nil {
-		return err
-	}
-
-	// Update Peers with Lobby
-	es.SyncLobby(remoteLobbyRef, remotePeer)
-
-	// Return User Peer
-	userPeer := es.GetUser()
-	replyData, err := proto.Marshal(userPeer)
-	if err != nil {
-		return err
-	}
-
-	// Set Message data and call done
-	reply.Data = replyData
-	return nil
 }

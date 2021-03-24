@@ -6,7 +6,6 @@ import (
 
 	sentry "github.com/getsentry/sentry-go"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-core/protocol"
 	msgio "github.com/libp2p/go-msgio"
 	dt "github.com/sonr-io/core/internal/data"
 	sf "github.com/sonr-io/core/internal/file"
@@ -22,7 +21,7 @@ func (n *Node) InviteLink(req *md.InviteRequest) {
 	// @ 3. Send Invite to Peer
 	if n.HasPeer(n.local, req.To.Id.Peer) {
 		// Get PeerID and Check error
-		id, _, err := n.GetPeer(n.local, req.To.Id.Peer)
+		id, _, err := n.FindPeerInTopic(n.local, req.To.Id.Peer)
 		if err != nil {
 			sentry.CaptureException(err)
 		}
@@ -37,7 +36,7 @@ func (n *Node) InviteLink(req *md.InviteRequest) {
 		}
 
 		// Run Routine
-		go n.handleAuthInviteRPC(id, &invMsg)
+		go n.handleAuthInviteResponse(id, &invMsg, nil)
 	} else {
 		n.call.Error(errors.New("Invalid Peer"), "Invite")
 	}
@@ -48,7 +47,7 @@ func (n *Node) InviteContact(req *md.InviteRequest) {
 	// @ 3. Send Invite to Peer
 	if n.HasPeer(n.local, req.To.Id.Peer) {
 		// Get PeerID and Check error
-		id, _, err := n.GetPeer(n.local, req.To.Id.Peer)
+		id, _, err := n.FindPeerInTopic(n.local, req.To.Id.Peer)
 		if err != nil {
 			sentry.CaptureException(err)
 		}
@@ -66,7 +65,7 @@ func (n *Node) InviteContact(req *md.InviteRequest) {
 		}
 
 		// Run Routine
-		go n.handleAuthInviteRPC(id, &invMsg)
+		go n.handleAuthInviteResponse(id, &invMsg, nil)
 	} else {
 		n.call.Error(errors.New("Invalid Peer"), "Invite")
 	}
@@ -88,13 +87,13 @@ func (n *Node) InviteFile(card *md.TransferCard, req *md.InviteRequest, cf *sf.P
 
 	} else {
 		// Get PeerID
-		id, _, err := n.GetPeer(n.local, req.To.Id.Peer)
+		id, _, err := n.FindPeerInTopic(n.local, req.To.Id.Peer)
 		if err != nil {
 			n.call.Error(err, "Queued")
 		}
 
 		// Run Routine
-		go n.handleAuthInviteRPC(id, &invMsg)
+		go n.handleAuthInviteResponse(id, &invMsg, cf)
 	}
 }
 
@@ -191,9 +190,9 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 }
 
 // ^ User has accepted, Begin Sending Transfer ^ //
-func (n *Node) NewOutgoingTransfer(ctx context.Context, id peer.ID, peer *md.Peer, pid protocol.ID, pf *sf.ProcessedFile) {
+func (n *Node) NewOutgoingTransfer(id peer.ID, peer *md.Peer, pf *sf.ProcessedFile) {
 	// Create New Auth Stream
-	stream, err := n.host.NewStream(n.ctx, id, pid)
+	stream, err := n.host.NewStream(n.ctx, id, n.router.Transfer())
 	if err != nil {
 		n.call.Error(err, "StartOutgoing")
 	}
