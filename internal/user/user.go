@@ -90,22 +90,38 @@ func NewUser(cr *md.ConnectionRequest, callback dt.NodeCallback) (*User, error) 
 	}, nil
 }
 
-// ^ Method Loads User Data from Disk ^ //
-func (u *User) LoadUser() (*md.User, error) {
-	// Read File
-	dat, err := u.FS.ReadFile(K_SONR_USER_PATH)
-	if err != nil {
-		return nil, err
-	}
-
-	// Get User Data
-	user := &md.User{}
-	err = proto.Unmarshal(dat, user)
-	if err != nil {
-		return nil, err
-	}
-
-	// Set and Return
-	u.protoRef = user
-	return user, nil
+// ^ Get Peer returns Users Contact ^ //
+func (u *User) Contact() *md.Contact {
+	return u.contact
 }
+
+// ^ Get Peer returns Users Current device ^ //
+func (u *User) Device() *md.Device {
+	return u.device
+}
+
+// ^ Get Peer returns Current Peer ^ //
+func (u *User) Peer() *md.Peer {
+	return u.peer
+}
+
+// ^ Peer returns Current Peer Info as Buffer
+func (u *User) PeerBuf() []byte {
+	// Convert to bytes
+	buf, err := proto.Marshal(u.peer)
+	if err != nil {
+		return nil
+	}
+	return buf
+}
+
+// ^ Get Key: Returns Private key from disk if found ^ //
+func (u *User) PrivateKey() crypto.PrivKey {
+	return u.privKey
+}
+
+// ^ Get Peer returns Peers Profile ^ //
+func (u *User) Profile() *md.Profile {
+	return u.profile
+}
+
