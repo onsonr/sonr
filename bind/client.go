@@ -36,13 +36,6 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 		log.Fatalf("sentry.Init: %s", err)
 	}
 
-	// Create Mobile Node
-	mn := &MobileNode{
-		call:            call,
-		hasStarted:      false,
-		hasBootstrapped: false,
-	}
-
 	// Unmarshal Request
 	req := md.ConnectionRequest{}
 	err = proto.Unmarshal(reqBytes, &req)
@@ -50,21 +43,18 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 		log.Fatalln(err)
 	}
 
-	// Set Profile
-	mn.profile = &md.Profile{
-		Username:  req.GetUsername(),
-		FirstName: req.Contact.GetFirstName(),
-		LastName:  req.Contact.GetLastName(),
-		Picture:   req.Contact.GetPicture(),
-		Platform:  req.Device.GetPlatform(),
+	// Create Mobile Node
+	mn := &MobileNode{
+		call:            call,
+		hasStarted:      false,
+		hasBootstrapped: false,
+		profile:         req.GetProfile(),
+		contact:         req.Contact,
+		device:          req.Device,
 	}
 
-	// Set Default Properties
-	mn.contact = req.Contact
-	mn.device = req.Device
-	mn.fs = dq.InitFS(&req, mn.profile, mn.nodeCallback())
-
 	// Create Host Options
+	mn.fs = dq.InitFS(&req, mn.profile, mn.nodeCallback())
 	mn.hostOpts, err = net.NewHostOpts(&req, mn.fs)
 	if err != nil {
 		log.Println(err)
