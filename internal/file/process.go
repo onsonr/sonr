@@ -7,6 +7,7 @@ import (
 	"log"
 	"sync"
 
+	dt "github.com/sonr-io/core/internal/data"
 	md "github.com/sonr-io/core/internal/models"
 )
 
@@ -14,7 +15,7 @@ import (
 type ProcessedFile struct {
 	// References
 	Payload md.Payload
-	call    md.FileCallback
+	call    dt.FileCallback
 	mime    *md.MIME
 	Path    string
 
@@ -25,7 +26,7 @@ type ProcessedFile struct {
 }
 
 // ^ NewProcessedFile Processes Outgoing File ^ //
-func NewProcessedFile(req *md.InviteRequest, p *md.Profile, callback md.FileCallback) *ProcessedFile {
+func NewProcessedFile(req *md.InviteRequest, p *md.Profile, callback dt.FileCallback) *ProcessedFile {
 	// Check Values
 	if req == nil || p == nil {
 		return nil
@@ -33,7 +34,7 @@ func NewProcessedFile(req *md.InviteRequest, p *md.Profile, callback md.FileCall
 
 	// Get File Information
 	file := req.Files[len(req.Files)-1]
-	info, err := md.GetFileInfo(file.Path)
+	info, err := dt.GetFileInfo(file.Path)
 	if err != nil {
 		callback.Error(err, "NewProcessedFile:GetFileInfo")
 	}

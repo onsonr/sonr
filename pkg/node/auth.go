@@ -5,46 +5,80 @@ import (
 	"errors"
 
 	sentry "github.com/getsentry/sentry-go"
+	dt "github.com/sonr-io/core/internal/data"
 	"github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
-	dt "github.com/sonr-io/core/internal/data"
 	"google.golang.org/protobuf/proto"
 )
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Node) Invite(req *md.InviteRequest) {
+func (n *Node) InviteLink(req *md.InviteRequest) {
 	// @ 3. Send Invite to Peer
-	// Set Contact
-	req.Contact = n.contact
-	invMsg := dt.NewInviteFromRequest(req, n.peer)
-
-	if req.IsRemote {
-		// Start Remote Point
-		err := n.transfer.StartRemote(&invMsg)
+	if n.HasPeer(n.local, req.To.Id.Peer) {
+		// Get PeerID and Check error
+		id, _, err := n.GetPeer(n.local, req.To.Id.Peer)
 		if err != nil {
-			n.call.Error(err, "StartRemotePoint")
+			sentry.CaptureException(err)
 		}
-	} else {
-		if n.HasPeer(n.local, req.To.Id.Peer) {
-			// Get PeerID and Check error
-			id, _, err := n.GetPeer(n.local, req.To.Id.Peer)
+
+		// Set Contact
+		card := dt.NewCardFromUrl(n.peer, req.Url, md.TransferCard_DIRECT)
+		invMsg := md.AuthInvite{
+			IsRemote: req.IsRemote,
+			From:     n.peer,
+			Payload:  md.Payload_URL,
+			Card:     &card,
+		}
+
+		// Run Routine
+		go func(inv *md.AuthInvite) {
+			// Convert Protobuf to bytes
+			msgBytes, err := proto.Marshal(inv)
 			if err != nil {
 				sentry.CaptureException(err)
 			}
 
-			// Run Routine
-			go func(inv *md.AuthInvite) {
-				// Convert Protobuf to bytes
-				msgBytes, err := proto.Marshal(inv)
-				if err != nil {
-					sentry.CaptureException(err)
-				}
+			n.transfer.RequestInvite(n.host, id, msgBytes)
+		}(&invMsg)
+	} else {
+		n.call.Error(errors.New("Invalid Peer"), "Invite")
+	}
+}
 
-				n.transfer.RequestInvite(n.host, id, msgBytes)
-			}(&invMsg)
-		} else {
-			n.call.Error(errors.New("Invalid Peer"), "Invite")
+// ^ Invite Processes Data and Sends Invite to Peer ^ //
+func (n *Node) InviteContact(req *md.InviteRequest) {
+	// @ 3. Send Invite to Peer
+	if n.HasPeer(n.local, req.To.Id.Peer) {
+		// Get PeerID and Check error
+		id, _, err := n.GetPeer(n.local, req.To.Id.Peer)
+		if err != nil {
+			sentry.CaptureException(err)
 		}
+
+		// Set Contact
+		req.Contact = n.contact
+
+		// Get Card
+		card := dt.NewCardFromContact(n.peer, req.Contact, md.TransferCard_DIRECT)
+		invMsg := md.AuthInvite{
+			IsRemote: req.IsRemote,
+			From:     n.peer,
+			Payload:  md.Payload_CONTACT,
+			Card:     &card,
+		}
+
+		// Run Routine
+		go func(inv *md.AuthInvite) {
+			// Convert Protobuf to bytes
+			msgBytes, err := proto.Marshal(inv)
+			if err != nil {
+				sentry.CaptureException(err)
+			}
+
+			n.transfer.RequestInvite(n.host, id, msgBytes)
+		}(&invMsg)
+	} else {
+		n.call.Error(errors.New("Invalid Peer"), "Invite")
 	}
 }
 
@@ -91,7 +125,6 @@ func (n *Node) InviteFile(card *md.TransferCard, req *md.InviteRequest, cf *file
 func (n *Node) Respond(decision bool) {
 	// Send Response on PeerConnection
 	n.transfer.Authorize(decision, n.contact, n.peer)
-
 }
 
 // ****************** //

@@ -31,16 +31,17 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 		if err != nil {
 			log.Println(err)
 		}
-		mn.status = md.Status_PENDING
 
 		// @ 2. Check Transfer Type
-		if req.Type == md.InviteRequest_Contact || req.Type == md.InviteRequest_URL {
-			mn.node.Invite(req)
-
+		if req.Type == md.InviteRequest_Contact {
+			mn.node.InviteContact(req)
+		} else if req.Type == md.InviteRequest_URL {
+			mn.node.InviteLink(req)
 		} else {
-			// File Transfer
 			mn.fs.AddFromRequest(req)
 		}
+
+		mn.status = md.Status_PENDING
 	}
 }
 
