@@ -11,7 +11,6 @@ require (
 	github.com/google/open-location-code/go v0.0.0-20201229230907-d47d9f9b95e9
 	github.com/google/uuid v1.2.0 // indirect
 	github.com/h2non/filetype v1.1.0
-	github.com/joncrlsn/dque v0.0.0-20200702023911-3e80e3146ce5
 	github.com/libp2p/go-libp2p v0.13.0
 	github.com/libp2p/go-libp2p-connmgr v0.2.4
 	github.com/libp2p/go-libp2p-core v0.8.5
