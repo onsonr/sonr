@@ -14,11 +14,10 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// const B64ChunkSize = 31998 // Adjusted for Base64 -- has to be divisible by 3
 type IncomingFile struct {
 	// Inherited Properties
 	mutex      sync.Mutex
-	call       dt.TransferCallback
+	call       dt.NodeCallback
 	fs         *fs.SonrFS
 	owner      *md.Profile
 	payload    md.Payload
@@ -37,7 +36,7 @@ type IncomingFile struct {
 }
 
 // ^ Method Creates New Transfer File ^ //
-func NewIncomingFile(inv *md.AuthInvite, fs *fs.SonrFS, tc dt.TransferCallback) *IncomingFile {
+func CreateIncomingFile(inv *md.AuthInvite, fs *fs.SonrFS, tc dt.NodeCallback) *IncomingFile {
 	// Return File
 	return &IncomingFile{
 		// Inherited Properties

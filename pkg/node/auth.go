@@ -5,9 +5,16 @@ import (
 	"errors"
 
 	sentry "github.com/getsentry/sentry-go"
+	"github.com/libp2p/go-libp2p-core/network"
+	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-core/protocol"
+	msgio "github.com/libp2p/go-msgio"
 	dt "github.com/sonr-io/core/internal/data"
-	"github.com/sonr-io/core/internal/file"
+	sf "github.com/sonr-io/core/internal/file"
+
 	md "github.com/sonr-io/core/internal/models"
+	tr "github.com/sonr-io/core/pkg/transfer"
+	fs "github.com/sonr-io/core/pkg/user"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -31,15 +38,7 @@ func (n *Node) InviteLink(req *md.InviteRequest) {
 		}
 
 		// Run Routine
-		go func(inv *md.AuthInvite) {
-			// Convert Protobuf to bytes
-			msgBytes, err := proto.Marshal(inv)
-			if err != nil {
-				sentry.CaptureException(err)
-			}
-
-			n.transfer.RequestInvite(n.host, id, msgBytes)
-		}(&invMsg)
+		go n.handleAuthInviteRPC(id, &invMsg)
 	} else {
 		n.call.Error(errors.New("Invalid Peer"), "Invite")
 	}
@@ -68,24 +67,15 @@ func (n *Node) InviteContact(req *md.InviteRequest) {
 		}
 
 		// Run Routine
-		go func(inv *md.AuthInvite) {
-			// Convert Protobuf to bytes
-			msgBytes, err := proto.Marshal(inv)
-			if err != nil {
-				sentry.CaptureException(err)
-			}
-
-			n.transfer.RequestInvite(n.host, id, msgBytes)
-		}(&invMsg)
+		go n.handleAuthInviteRPC(id, &invMsg)
 	} else {
 		n.call.Error(errors.New("Invalid Peer"), "Invite")
 	}
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Node) InviteFile(card *md.TransferCard, req *md.InviteRequest, cf *file.ProcessedFile) {
+func (n *Node) InviteFile(card *md.TransferCard, req *md.InviteRequest, cf *sf.ProcessedFile) {
 	card.Status = md.TransferCard_INVITE
-	n.transfer.NewOutgoing(cf)
 
 	// Create Invite Message
 	invMsg := md.AuthInvite{
@@ -96,12 +86,7 @@ func (n *Node) InviteFile(card *md.TransferCard, req *md.InviteRequest, cf *file
 
 	// @ Check for Remote
 	if req.IsRemote {
-		// Start Remote Point
-		err := n.transfer.StartRemote(&invMsg)
-		if err != nil {
-			sentry.CaptureException(err)
-			n.call.Error(err, "StartRemotePoint")
-		}
+
 	} else {
 		// Get PeerID
 		id, _, err := n.GetPeer(n.local, req.To.Id.Peer)
@@ -109,22 +94,47 @@ func (n *Node) InviteFile(card *md.TransferCard, req *md.InviteRequest, cf *file
 			n.call.Error(err, "Queued")
 		}
 
-		// Check if ID in PeerStore
-		go func(inv *md.AuthInvite) {
-			// Convert Protobuf to bytes
-			msgBytes, err := proto.Marshal(inv)
-			if err != nil {
-				n.call.Error(err, "Marshal")
-			}
-			n.transfer.RequestInvite(n.host, id, msgBytes)
-		}(&invMsg)
+		// Run Routine
+		go n.handleAuthInviteRPC(id, &invMsg)
 	}
 }
 
 // ^ Respond to an Invitation ^ //
-func (n *Node) Respond(decision bool) {
+func (n *Node) Respond(decision bool, fs *fs.SonrFS) {
+
+	// Check Decision
+	if decision {
+		n.host.SetStreamHandler(n.router.Transfer(), n.HandleIncoming)
+		n.incoming = tr.CreateIncomingFile(n.auth.invite, fs, n.call)
+	}
+
 	// Send Response on PeerConnection
-	n.transfer.Authorize(decision, n.contact, n.peer)
+	// Get Offer Message
+	offerMsg := n.auth.invite
+
+	// @ Pass Contact Back
+	if offerMsg.Payload == md.Payload_CONTACT {
+		// Create Accept Response
+		card := dt.NewCardFromContact(n.peer, n.contact, md.TransferCard_REPLY)
+		resp := &md.AuthReply{
+			IsRemote: offerMsg.IsRemote,
+			From:     n.peer,
+			Type:     md.AuthReply_Contact,
+			Card:     &card,
+		}
+		// Send to Channel
+		n.auth.respCh <- resp
+	} else {
+		// Create Accept Response
+		resp := &md.AuthReply{
+			IsRemote: offerMsg.IsRemote,
+			From:     n.peer,
+			Type:     md.AuthReply_Transfer,
+			Decision: decision,
+		}
+		// Send to Channel
+		n.auth.respCh <- resp
+	}
 }
 
 // ****************** //
@@ -143,7 +153,7 @@ type AuthResponse struct {
 // Service Struct
 type AuthService struct {
 	// Current Data
-	call   dt.TransferCallback
+	call   dt.NodeCallback
 	respCh chan *md.AuthReply
 	invite *md.AuthInvite
 }
@@ -184,4 +194,53 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 	case <-ctx.Done():
 		return nil
 	}
+}
+
+// ^ Handle Incoming Stream ^ //
+func (n *Node) HandleIncoming(stream network.Stream) {
+	// Route Data from Stream
+	go func(reader msgio.ReadCloser, t *tr.IncomingFile) {
+		for i := 0; ; i++ {
+			// @ Read Length Fixed Bytes
+			buffer, err := reader.ReadMsg()
+			if err != nil {
+				n.call.Error(err, "HandleIncoming:ReadMsg")
+				break
+			}
+
+			// @ Unmarshal Bytes into Proto
+			hasCompleted, err := t.AddBuffer(i, buffer)
+			if err != nil {
+				n.call.Error(err, "HandleIncoming:AddBuffer")
+				break
+			}
+
+			// @ Check if All Buffer Received to Save
+			if hasCompleted {
+				// Sync file
+				if err := n.incoming.Save(); err != nil {
+					n.call.Error(err, "HandleIncoming:Save")
+				}
+				break
+			}
+			dt.GetState().NeedsWait()
+		}
+	}(msgio.NewReader(stream), n.incoming)
+}
+
+// ^ User has accepted, Begin Sending Transfer ^ //
+func (n *Node) NewOutgoingTransfer(ctx context.Context, id peer.ID, peer *md.Peer, pid protocol.ID, pf *sf.ProcessedFile) {
+	// Create New Auth Stream
+	stream, err := n.host.NewStream(n.ctx, id, pid)
+	if err != nil {
+		n.call.Error(err, "StartOutgoing")
+	}
+
+	outFile := tr.CreateOutgoingFile(pf, n.call)
+
+	// Initialize Writer
+	writer := msgio.NewWriter(stream)
+
+	// Start Routine
+	go outFile.WriteBase64(writer, peer)
 }

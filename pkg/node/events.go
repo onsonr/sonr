@@ -5,7 +5,9 @@ import (
 
 	sentry "github.com/getsentry/sentry-go"
 	discLimit "github.com/libp2p/go-libp2p-core/discovery"
+	"github.com/libp2p/go-libp2p-core/peer"
 	disc "github.com/libp2p/go-libp2p-discovery"
+	rpc "github.com/libp2p/go-libp2p-gorpc"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	swarm "github.com/libp2p/go-libp2p-swarm"
 	"github.com/pkg/errors"
@@ -17,6 +19,54 @@ import (
 // ^ Passes node methods for TransferController ^
 func (n *Node) TransferCallback() dt.TransferCallback {
 	return dt.NewTransferCallback(n.call.Invited, n.call.RemoteStart, n.call.Responded, n.call.Progressed, n.call.Received, n.call.Transmitted, n.call.Error)
+}
+
+// ^ Helper Method to Handle User sent AuthInvite Response ^
+func (n *Node) handleAuthInviteRPC(id peer.ID, inv *md.AuthInvite) {
+	// Convert Protobuf to bytes
+	msgBytes, err := proto.Marshal(inv)
+	if err != nil {
+		sentry.CaptureException(err)
+	}
+
+	// Initialize Data
+	rpcClient := rpc.NewClient(n.host, n.router.Auth())
+	var reply AuthResponse
+	var args AuthArgs
+	args.Data = msgBytes
+
+	// Call to Peer
+	done := make(chan *rpc.Call, 1)
+	err = rpcClient.Go(id, "AuthService", "Invited", args, &reply, done)
+
+	// Await Response
+	call := <-done
+	if call.Error != nil {
+		sentry.CaptureException(err)
+		n.call.Error(err, "Request")
+	}
+
+	// Send Callback and Reset
+	n.call.Responded(reply.Data)
+	// transDecs, from := n.handleAuthReply(reply.Data)
+
+	// Check Response for Accept
+	// if transDecs {
+	// pc.StartOutgoing(h, id, from)
+	// }
+}
+
+// ^ Helper Method to Handle User sent AuthInvite Response ^
+func (n *Node) handleAuthReply(data []byte) (bool, *md.Peer) {
+	// Received Message
+	resp := md.AuthReply{}
+	err := proto.Unmarshal(data, &resp)
+	if err != nil {
+		n.call.Error(err, "handleReply")
+		sentry.CaptureException(err)
+		return false, nil
+	}
+	return resp.Decision && resp.Type == md.AuthReply_Transfer, resp.From
 }
 
 // ^ Handles Peers in DHT ^

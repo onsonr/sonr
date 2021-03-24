@@ -10,15 +10,18 @@ import (
 	connmgr "github.com/libp2p/go-libp2p-connmgr"
 	discLimit "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/host"
+	"github.com/libp2p/go-libp2p-core/peer"
 	disc "github.com/libp2p/go-libp2p-discovery"
+	rpc "github.com/libp2p/go-libp2p-gorpc"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/pkg/errors"
 	dt "github.com/sonr-io/core/internal/data"
 	md "github.com/sonr-io/core/internal/models"
 	net "github.com/sonr-io/core/internal/network"
-	tr "github.com/sonr-io/core/internal/transfer"
+	tr "github.com/sonr-io/core/pkg/transfer"
 	dq "github.com/sonr-io/core/pkg/user"
+	"google.golang.org/protobuf/proto"
 )
 
 // ^ Struct: Main Node handles Networking/Identity/Streams ^
@@ -36,10 +39,15 @@ type Node struct {
 	pubsub *pubsub.PubSub
 	router *net.ProtocolRouter
 
-	call     dt.NodeCallback
-	transfer *tr.TransferController
+	call dt.NodeCallback
 
-	// Peer Management
+	// Data
+	// Data Handlers
+	outgoing *tr.OutgoingFile
+	incoming *tr.IncomingFile
+
+	// Peers
+	auth  *AuthService
 	local *TopicManager
 	// major    *TopicManager
 }
@@ -78,6 +86,27 @@ func NewNode(opts *net.HostOptions, call dt.NodeCallback) *Node {
 		node.call.Connected(false)
 		return nil
 	}
+
+	// Initialize Auth Service
+
+	// Create GRPC Client/Server
+	// h.SetStreamHandler(node.router.Transfer(), peerConn.HandleIncoming)
+	rpcServer := rpc.NewServer(h, node.router.Auth())
+
+	// Create AuthService
+	ath := AuthService{
+		call:   node.call,
+		respCh: make(chan *md.AuthReply, 1),
+	}
+
+	// Register Service
+	err = rpcServer.Register(&ath)
+	if err != nil {
+		return nil
+	}
+
+	// Set RPC Services
+	node.auth = &ath
 	node.host = h
 	node.contact = opts.ConnRequest.Contact
 	node.device = opts.ConnRequest.Device
@@ -166,13 +195,56 @@ func (n *Node) Bootstrap(opts *net.HostOptions, fs *dq.SonrFS) bool {
 		n.call.Ready(false)
 		return false
 	}
-
-	// Initialize Peer Connection
-	if n.transfer, err = tr.Initialize(n.ctx, n.host, n.pubsub, fs, n.router, n.TransferCallback()); err != nil {
-		sentry.CaptureException(err)
-		n.call.Error(err, "Initializing Transfer Controller")
-		n.call.Ready(false)
-		return false
-	}
 	return true
+}
+
+// ^ User Node Info ^ //
+// @ ID Returns Peer ID
+func (n *Node) ID() peer.ID {
+	return n.host.ID()
+}
+
+// @ Peer returns Current Peer Info
+func (n *Node) Peer() *md.Peer {
+	return n.peer
+}
+
+// @ Peer returns Current Peer Info as Buffer
+func (n *Node) PeerBuf() []byte {
+	// Convert to bytes
+	buf, err := proto.Marshal(n.peer)
+	if err != nil {
+		sentry.CaptureException(err)
+		return nil
+	}
+	return buf
+}
+
+// ^ Updates Current Contact Card ^
+func (n *Node) SetContact(newContact *md.Contact) {
+	// Set Node Contact
+	n.contact = newContact
+
+	// Update Peer Profile
+	n.peer.Profile = &md.Profile{
+		FirstName: newContact.GetFirstName(),
+		LastName:  newContact.GetLastName(),
+		Picture:   newContact.GetPicture(),
+	}
+}
+
+// ^ Close Ends All Network Communication ^
+func (n *Node) Pause() {
+	// Check if Response Is Invited
+	dt.GetState().Pause()
+}
+
+// ^ Close Ends All Network Communication ^
+func (n *Node) Resume() {
+	dt.GetState().Resume()
+}
+
+// ^ Close Ends All Network Communication ^
+func (n *Node) Close() {
+	n.host.Close()
 }

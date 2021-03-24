@@ -4,7 +4,9 @@ import (
 	"context"
 	"errors"
 	"log"
+	"math"
 
+	sentry "github.com/getsentry/sentry-go"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	rpc "github.com/libp2p/go-libp2p-gorpc"
@@ -204,6 +206,58 @@ func (n *Node) Exchange(tm *TopicManager, id peer.ID) {
 
 	// Update Peer with new data
 	tm.lobby.Add(remotePeer)
+}
+
+// ^ Update proximity/direction and Notify Lobby ^ //
+func (n *Node) Update(facing float64, heading float64) {
+	// Update User Values
+	var faceDir float64
+	var faceAnpd float64
+	var headDir float64
+	var headAnpd float64
+	faceDir = math.Round(facing*100) / 100
+	headDir = math.Round(heading*100) / 100
+	desg := int((facing / 11.25) + 0.25)
+
+	// Find Antipodal
+	if facing > 180 {
+		faceAnpd = math.Round((facing-180)*100) / 100
+	} else {
+		faceAnpd = math.Round((facing+180)*100) / 100
+	}
+
+	// Find Antipodal
+	if heading > 180 {
+		headAnpd = math.Round((heading-180)*100) / 100
+	} else {
+		headAnpd = math.Round((heading+180)*100) / 100
+	}
+
+	// Set Position
+	n.peer.Position = &md.Position{
+		Facing:           faceDir,
+		FacingAntipodal:  faceAnpd,
+		Heading:          headDir,
+		HeadingAntipodal: headAnpd,
+		Designation:      md.Position_Designation(desg % 32),
+	}
+
+	// Inform Lobby
+	err := n.local.Update(n.peer)
+	if err != nil {
+		sentry.CaptureException(err)
+	}
+}
+
+// ^ Send Direct Message to Peer in Lobby ^ //
+func (n *Node) Message(content string, to string) {
+	if n.HasPeer(n.local, to) {
+		// Inform Lobby
+		err := n.local.Message(content, to, n.peer)
+		if err != nil {
+			sentry.CaptureException(err)
+		}
+	}
 }
 
 // ****************** //

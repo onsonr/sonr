@@ -15,16 +15,16 @@ import (
 )
 
 // ** Constants for Chunking Data ** //
-const B64ChunkSize = 31998 // Adjusted for Base64 -- has to be divisible by 3
 const BufferChunkSize = 32000
+const B64ChunkSize = 31998 // Adjusted for Base64 -- has to be divisible by 3
 
 type OutgoingFile struct {
-	call          dt.TransferCallback
+	call          dt.NodeCallback
 	processedFile *sf.ProcessedFile
 }
 
 // ^ Creates New Outgoing ^ //
-func NewOutgoingFile(pf *sf.ProcessedFile, tc dt.TransferCallback) *OutgoingFile {
+func CreateOutgoingFile(pf *sf.ProcessedFile, tc dt.NodeCallback) *OutgoingFile {
 	return &OutgoingFile{
 		call:          tc,
 		processedFile: pf,
