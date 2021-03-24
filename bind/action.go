@@ -39,7 +39,10 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 		} else if req.Type == md.InviteRequest_URL {
 			mn.node.InviteLink(req, mn.user.Peer())
 		} else {
-			mn.user.FS.AddFromRequest(req, mn.user.Profile())
+			err := mn.user.FS.AddFromRequest(req, mn.user.Profile())
+			if err != nil {
+				sentry.CaptureException(err)
+			}
 		}
 
 		mn.status = md.Status_PENDING
