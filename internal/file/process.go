@@ -7,14 +7,15 @@ import (
 	"log"
 	"sync"
 
-	md "github.com/sonr-io/core/pkg/models"
+	dt "github.com/sonr-io/core/internal/data"
+	md "github.com/sonr-io/core/internal/models"
 )
 
 // ^ File that safely sets metadata and thumbnail in routine ^ //
 type ProcessedFile struct {
 	// References
 	Payload md.Payload
-	call    md.FileCallback
+	call    dt.NodeCallback
 	mime    *md.MIME
 	Path    string
 
@@ -25,7 +26,7 @@ type ProcessedFile struct {
 }
 
 // ^ NewProcessedFile Processes Outgoing File ^ //
-func NewProcessedFile(req *md.InviteRequest, p *md.Profile, callback md.FileCallback) *ProcessedFile {
+func NewProcessedFile(req *md.InviteRequest, p *md.Profile, callback dt.NodeCallback) *ProcessedFile {
 	// Check Values
 	if req == nil || p == nil {
 		return nil
@@ -33,7 +34,7 @@ func NewProcessedFile(req *md.InviteRequest, p *md.Profile, callback md.FileCall
 
 	// Get File Information
 	file := req.Files[len(req.Files)-1]
-	info, err := md.GetFileInfo(file.Path)
+	info, err := dt.GetFileInfo(file.Path)
 	if err != nil {
 		callback.Error(err, "NewProcessedFile:GetFileInfo")
 	}
@@ -76,57 +77,6 @@ func NewProcessedFile(req *md.InviteRequest, p *md.Profile, callback md.FileCall
 		go RequestThumbnail(file, sm)
 	}
 	return sm
-}
-
-// ^ NewBatchProcessFiles Processes Multiple Outgoing Files ^ //
-func NewBatchProcessFiles(req *md.InviteRequest, p *md.Profile, callback md.FileCallback) []*ProcessedFile {
-	// Check Values
-	if req == nil || p == nil {
-		return nil
-	}
-
-	// Set Package Level Callbacks
-	files := make([]*ProcessedFile, 64)
-
-	// Iterate Through Attached Files
-	for _, file := range req.Files {
-		// Get Info
-		info, err := md.GetFileInfo(file.Path)
-		if err != nil {
-			callback.Error(err, "NewBatchProcessFiles:GetFileInfo")
-		}
-
-		// @ 1. Create new SafeFile
-		sm := &ProcessedFile{
-			call:    callback,
-			Path:    file.Path,
-			request: req,
-			mime:    info.Mime,
-		}
-
-		// ** Lock ** //
-		sm.mutex.Lock()
-
-		// @ 2. Set Metadata Protobuf Values
-		// Create Card
-		sm.card = md.TransferCard{
-			// SQL Properties
-			Payload:  info.Payload,
-			Platform: p.Platform,
-
-			// Owner Properties
-			Username:  p.Username,
-			FirstName: p.FirstName,
-			LastName:  p.LastName,
-
-			Properties: &md.TransferCard_Properties{
-				Name: info.Name,
-				Size: info.Size,
-				Mime: info.Mime,
-			},
-		}
-	}
-	return files
 }
 
 // ^ Safely returns Preview depending on lock ^ //

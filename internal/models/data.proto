@@ -1,0 +1,208 @@
+syntax = "proto3";
+
+import "user.proto";
+
+// Require Go Package
+option go_package = ".;models";
+
+// Client Network Connection Status
+enum Connectivity {
+  None = 0;
+  Mobile = 1;
+  WiFi = 2;
+}
+
+// For Info about Lobby
+message Lobby {
+  string olc = 1;              // Open Location Code of Lobby
+  int32 size = 2;              // Total Number of Devices in Lobby
+  int32 count = 3;             // Total Devices in Lobby EXCLUDING User
+  map<string, Peer> peers = 4; // Total Data of Active Peers
+}
+
+// Message Sent when peer messages Lobby Topic
+message LobbyEvent {
+  string id = 1;      // Peer ID
+  Event event = 2;    // What Peer is Doing
+  Peer from = 3;      // User Information
+  string to = 4;      // Peer ID for DM
+  string message = 5; // Message being sent
+
+  enum Event {
+    EXCHANGE = 0; // Peer has joined wants Info
+    STANDBY = 1;  // Peer is taking break from lobby
+    RESUME = 2;   // Peer has rejoined Lobby
+    UPDATE = 3;   // Peer has changed position
+    MESSAGE = 4;  // Peer has been messaged by a user
+  }
+}
+
+// For Received Transfer File Information
+message Metadata {
+  int32 id = 1;        // Time based Assignment
+  string name = 2;     // File Name without Path
+  string path = 3;     // File Location
+  int32 size = 4;      // File Size in Bytes
+  MIME mime = 5;       // Standard Mime Type
+  bytes thumbnail = 6; // Thumbnail Preview of File
+}
+
+// Protobuf for Standard MIME
+message MIME {
+  Type type = 1;      // Type of File
+  string subtype = 2; // Extension of File
+  string value = 3;   // Type/Subtype i.e. (image/jpeg)
+
+  enum Type {
+    application = 0; // Document Files
+    audio = 1;       // Sound, Audio Files
+    image = 2;       // Image Files
+    text = 3;        // Text Based Files
+    video = 4;       // Video Files
+  }
+}
+
+// Payload is type of Data being transferred
+enum Payload {
+  UNDEFINED = 0;    // Not Specified
+  CONTACT = 1;      // Sonr Based Contact
+  MEDIA = 2;        // Image, Audio, Video
+  URL = 3;          // Link to Site
+  TEXT = 4;         // Text based document
+  PDF = 5;          // PDF File
+  PRESENTATION = 6; // Presentation based File from PPT or Keynote
+  SPREADSHEET = 7;  // Spreadsheet based File from Excel or Numbers
+}
+
+// TransferCard holds data passed between Exchange
+message TransferCard {
+  int32 id = 1;         // SQL: Id reference
+  Payload payload = 2;  // SQL: Type of Data received
+  int32 received = 3;   // SQL: UnixTime of received Date/Time
+  bytes preview = 4;    // SQL: Thumbnail Preview Bytes
+  bool hasExported = 5; // SQL: Notifies if saved to Gallery
+
+  Platform platform = 6; // OWNER: Operating System of Owner
+  string username = 7;   // OWNER: Sonr Username Reference
+  string firstName = 8;  // OWNER: General FirstName Reference
+  string lastName = 9;   // OWNER: General LastName Reference
+
+  Progress progress = 10;     // TRANSFER: Progress of Transfer - File Only
+  Status status = 11;         // TRANSFER: Status of the Card - File Only
+  Properties properties = 12; // TRANSFER: Card Properties - File Only
+
+  Contact contact = 13;   // DATA(Optional): Received Contact Information
+  Metadata metadata = 14; // DATA(Optional): Received a File or Media
+  URLLink url = 15;       // DATA(Optional): Received a Website Link
+
+  // Card Transfer Status
+  enum Status {
+    NONE = 0;       // Default, Idle or Post-Completion
+    INVITE = 1;     // An Invited Transfer
+    DIRECT = 2;     // A Direct Transfer
+    REPLY = 3;      // A Response Card (Usually Contact only)
+    INPROGRESS = 4; // A Transfer in Progress
+    COMPLETED = 5;  // A Received and Completed Transfer
+  }
+
+  // Card Properties based on File
+  message Properties {
+    MIME mime = 1;      // Standard MIME Type Values
+    int32 size = 2;     // Size of File in Bytes
+    int32 duration = 3; // Length of Video - Optional
+    string name = 4;    // Name of File
+  }
+
+  // Progress Variables to determine completion
+  message Progress {
+    int32 currentSize = 1; // Current size of File in Transfer
+    int32 interval = 2;    // Current Interval of Transfer
+    int32 totalChunks = 3; // Total Chunks of File
+    int32 totalSize = 4;   // Total Size of File
+  }
+}
+
+// URLLink Contains metadata of provided URL
+message URLLink {
+  string link = 1;                     // Entered URL
+  string title = 2;                    // Meta Field for Title
+  string type = 3;                     // OG Type
+  string url = 4;                      // OG URL Link
+  string site = 5;                     // Meta field for site
+  string siteName = 6;                 // Meta field for sitename
+  string description = 7;              // Meta field for description
+  string locale = 8;                   // Meta field for locale
+  repeated OpenGraphImage images = 9;  // Images
+  repeated OpenGraphVideo videos = 10; // Videos
+  repeated OpenGraphAudio audios = 11; // Audios
+  TwitterCard twitter = 12;            // Twitter Card
+  string content = 13;                 // URL Content
+
+  // OpenGraph Image
+  message OpenGraphImage {
+    string url = 1;       // `meta:"og:image,og:image:url"`
+    string secureUrl = 2; // `meta:"og:image:secure_url"`
+    int32 width = 3;      // `meta:"og:image:width"`
+    int32 height = 4;     // `meta:"og:image:height"`
+    string type = 5;      // `meta:"og:image:type"`
+  }
+
+  // OpenGraph Video
+  message OpenGraphVideo {
+    string url = 1;       // `meta:"og:video,og:video:url"`
+    string secureUrl = 2; // `meta:"og:video:secure_url"`
+    int32 width = 3;      // `meta:"og:video:width"`
+    int32 height = 4;     // `meta:"og:video:height"`
+    string type = 5;      // `meta:"og:video:type"`
+  }
+
+  // OpenGraph Audio
+  message OpenGraphAudio {
+    string url = 1;       // `meta:"og:audio,og:audio:url"`
+    string secureUrl = 2; // `meta:"og:audio:secure_url"`
+    string type = 3;      // `meta:"og:audio:type"`
+  }
+
+  // Twitter Card
+  message TwitterCard {
+    string card = 1;            // `meta:"twitter:card"`
+    string site = 2;            // `meta:"twitter:site"`
+    string siteId = 3;          // `meta:"twitter:site:id"`
+    string creator = 4;         // `meta:"twitter:creator"`
+    string creatorId = 5;       // `meta:"twitter:creator:id"`
+    string description = 6;     // `meta:"twitter:description"`
+    string title = 7;           // `meta:"twitter:title"`
+    string image = 8;           // `meta:"twitter:image,twitter:image:src"`
+    string imageAlt = 9;        // `meta:"twitter:image:alt"`
+    string url = 10;            // `meta:"twitter:url"`
+    Player player = 11;         // Twitter Item Player
+    IPhone iphone = 12;         // Twitter iPhone Data
+    IPad ipad = 13;             // Twitter iPad Data
+    GooglePlay googlePlay = 14; // Twitter Android Data
+
+    message Player {
+      string url = 1;    // `meta:"twitter:player"`
+      int32 width = 2;   // `meta:"twitter:width"`
+      int32 height = 3;  // `meta:"twitter:height"`
+      string stream = 4; // `meta:"twitter:stream"`
+    }
+
+    message IPhone {
+      string name = 1; // `meta:"twitter:app:name:iphone"`
+      string id = 2;   // `meta:"twitter:app:id:iphone"`
+      string url = 3;  // `meta:"twitter:app:url:iphone"`
+    }
+
+    message IPad {
+      string name = 1; // `meta:"twitter:app:name:ipad"`
+      string id = 2;   // `meta:"twitter:app:id:ipad"`
+      string url = 3;  // `meta:"twitter:app:url:ipad"`
+    }
+
+    message GooglePlay {
+      string name = 1; // `meta:"twitter:app:name:googleplay"`
+      string id = 2;   // `meta:"twitter:app:id:googleplay"`
+      string url = 3;  // `meta:"twitter:app:url:googleplay"`
+    }
+  }
+}

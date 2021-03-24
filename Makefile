@@ -9,14 +9,14 @@ GOCLEAN=$(GOMOBILE) clean
 GOBIND=$(GOMOBILE) bind -ldflags='-s -w' -v
 
 # @ Bind Directories
-BIND_DIR=/Users/prad/Sonr/core/cmd/bind
+BIND_DIR=/Users/prad/Sonr/core/bind
 IOS_ARTIFACT= $(IOS_BINDDIR)/Core.framework
 ANDROID_ARTIFACT= $(ANDROID_BINDDIR)/io.sonr.core.aar
 
 # @ Proto Directories
-PB_PATH=/Users/prad/Sonr/core/pkg/models
+PB_PATH=/Users/prad/Sonr/core/internal/models
 CONTACT_PB_DIR=/Users/prad/Sonr/contact/lib/src/data/models
-CORE_PB_DIR=/Users/prad/Sonr/core/pkg/models
+CORE_PB_DIR=/Users/prad/Sonr/core/internal/models
 PLUGIN_PB_DIR=/Users/prad/Sonr/plugin/lib/src/core/models
 PROTO_DOC_DIR=/Users/prad/Sonr/docs/proto
 
@@ -85,10 +85,10 @@ proto:
 	@echo "--------------------------------------------------------------"
 	@echo "------------- 🛸 START PROTOBUFS COMPILE 🛸 -------------------"
 	@echo "--------------------------------------------------------------"
-	@cd pkg/models && protoc --doc_out=$(PROTO_DOC_DIR) --doc_opt=html,index.html api.proto data.proto core.proto user.proto
-	@cd pkg/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CORE) api.proto data.proto core.proto user.proto
-	@cd pkg/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CONTACT) user.proto
-	@cd pkg/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_PLUGIN) api.proto data.proto user.proto
+	@cd internal/models && protoc --doc_out=$(PROTO_DOC_DIR) --doc_opt=html,index.html api.proto data.proto core.proto user.proto
+	@cd internal/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CORE) api.proto data.proto core.proto user.proto
+	@cd internal/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CONTACT) user.proto
+	@cd internal/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_PLUGIN) api.proto data.proto user.proto
 	@echo "Finished Compiling ➡ " && date
 	@echo "--------------------------------------------------------------"
 	@echo "------------- 🛸 COMPILED ALL PROTOBUFS 🛸 --------------------"

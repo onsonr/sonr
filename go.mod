@@ -12,7 +12,6 @@ require (
 	github.com/google/open-location-code/go v0.0.0-20201229230907-d47d9f9b95e9
 	github.com/google/uuid v1.2.0 // indirect
 	github.com/h2non/filetype v1.1.0
-	github.com/julianshen/go-readability v0.0.0-20160929030430-accf5123e283
 	github.com/libp2p/go-libp2p v0.13.0
 	github.com/libp2p/go-libp2p-connmgr v0.2.4
 	github.com/libp2p/go-libp2p-core v0.8.5
@@ -27,9 +26,9 @@ require (
 	github.com/onsi/ginkgo v1.14.0 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/tyler-smith/go-bip39 v1.1.0
-	github.com/urfave/cli/v2 v2.3.0
 	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83 // indirect
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b // indirect
+	golang.org/x/net v0.0.0-20201021035429-f5854403a974
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
 	golang.org/x/sys v0.0.0-20210228012217-479acdf4ea46 // indirect
 	google.golang.org/protobuf v1.25.0

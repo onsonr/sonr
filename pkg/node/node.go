@@ -2,289 +2,225 @@ package node
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"log"
-	"math"
 	"time"
 
 	sentry "github.com/getsentry/sentry-go"
+	"github.com/libp2p/go-libp2p"
+	connmgr "github.com/libp2p/go-libp2p-connmgr"
+	discLimit "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/host"
+	"github.com/libp2p/go-libp2p-core/peer"
+	disc "github.com/libp2p/go-libp2p-discovery"
+	rpc "github.com/libp2p/go-libp2p-gorpc"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	"google.golang.org/protobuf/encoding/protojson"
+	"github.com/pkg/errors"
+	dt "github.com/sonr-io/core/internal/data"
+	md "github.com/sonr-io/core/internal/models"
+	net "github.com/sonr-io/core/internal/network"
+	tr "github.com/sonr-io/core/pkg/transfer"
+	dq "github.com/sonr-io/core/pkg/user"
 	"google.golang.org/protobuf/proto"
-
-	sl "github.com/sonr-io/core/internal/lobby"
-	tr "github.com/sonr-io/core/internal/transfer"
-	dq "github.com/sonr-io/core/pkg/data"
-	md "github.com/sonr-io/core/pkg/models"
-	net "github.com/sonr-io/core/pkg/net"
 )
-
-const discoveryInterval = time.Second * 2
-const gracePeriod = time.Minute
 
 // ^ Struct: Main Node handles Networking/Identity/Streams ^
 type Node struct {
 	// Properties
 	ctx     context.Context
+	opts    *net.HostOptions
 	contact *md.Contact
 	device  *md.Device
-	fs      *dq.SonrFS
 	peer    *md.Peer
-	profile *md.Profile
 
 	// Networking Properties
 	host   host.Host
-	kadDHT *dht.IpfsDHT
-	pubSub *pubsub.PubSub
+	kdht   *dht.IpfsDHT
+	pubsub *pubsub.PubSub
 	router *net.ProtocolRouter
-	status md.Status
 
-	// References
-	call     Callback
-	lobby    *sl.Lobby
-	transfer *tr.TransferController
+	call dt.NodeCallback
+
+	// Data
+	// Data Handlers
+	incoming *tr.IncomingFile
+
+	// Peers
+	auth  *AuthService
+	local *TopicManager
+	// major    *TopicManager
 }
 
 // ^ NewNode Initializes Node with a host and default properties ^
-func NewNode(req *md.ConnectionRequest, call Callback) *Node {
-	// Initialize Node Logging
-	err := sentry.Init(sentry.ClientOptions{
-		Dsn: "https://cbf88b01a5a5468fa77101f7dfc54f20@o549479.ingest.sentry.io/5672329",
-	})
-	if err != nil {
-		log.Fatalf("sentry.Init: %s", err)
-	}
-
+func NewNode(opts *net.HostOptions, call dt.NodeCallback) *Node {
 	// Create Context and Set Node Properties
 	node := new(Node)
 	node.ctx = context.Background()
 	node.call = call
-
-	// Create New Profile from Request
-	node.profile = &md.Profile{
-		Username:  req.GetUsername(),
-		FirstName: req.Contact.GetFirstName(),
-		LastName:  req.Contact.GetLastName(),
-		Picture:   req.Contact.GetPicture(),
-		Platform:  req.Device.GetPlatform(),
-	}
+	node.opts = opts
 
 	// Set File System
-	node.fs = dq.InitFS(req, node.profile, node.FSCallback())
-	node.router = net.NewProtocolRouter(req)
+	node.router = net.NewProtocolRouter(opts.ConnRequest)
 
-	// Set Default Properties
-	node.contact = req.Contact
-	node.device = req.Device
-	node.status = md.Status_NONE
+	// IP Address
+	ip4 := net.IPv4()
+	ip6 := net.IPv6()
+
+	// Start Host
+	h, err := libp2p.New(
+		node.ctx,
+		// Add listening Addresses
+		libp2p.ListenAddrStrings(
+			fmt.Sprintf("/ip4/%s/tcp/0", ip4),
+			fmt.Sprintf("/ip6/%s/tcp/0", ip6)),
+		libp2p.Identity(opts.PrivateKey),
+		libp2p.DefaultTransports,
+		libp2p.ConnectionManager(connmgr.NewConnManager(
+			10,          // Lowwater
+			20,          // HighWater,
+			time.Minute, // GracePeriod
+		)),
+	)
+	if err != nil {
+		node.call.Connected(false)
+		return nil
+	}
+
+	// Initialize Auth Service
+
+	// Create GRPC Client/Server
+	// h.SetStreamHandler(node.router.Transfer(), peerConn.HandleIncoming)
+	rpcServer := rpc.NewServer(h, node.router.Auth())
+
+	// Create AuthService
+	ath := AuthService{
+		call:   node.call,
+		respCh: make(chan *md.AuthReply, 1),
+	}
+
+	// Register Service
+	err = rpcServer.Register(&ath)
+	if err != nil {
+		return nil
+	}
+
+	// Set RPC Services
+	node.auth = &ath
+	node.host = h
+	node.contact = opts.ConnRequest.Contact
+	node.device = opts.ConnRequest.Device
 	return node
 }
 
-// ^ Update proximity/direction and Notify Lobby ^ //
-func (n *Node) Update(facing float64, heading float64) {
-	// Update User Values
-	var faceDir float64
-	var faceAnpd float64
-	var headDir float64
-	var headAnpd float64
-	faceDir = math.Round(facing*100) / 100
-	headDir = math.Round(heading*100) / 100
-	desg := int((facing / 11.25) + 0.25)
-
-	// Find Antipodal
-	if facing > 180 {
-		faceAnpd = math.Round((facing-180)*100) / 100
-	} else {
-		faceAnpd = math.Round((facing+180)*100) / 100
+// ^ Init Begins Assigning Host Parameters ^
+func (n *Node) Init(opts *net.HostOptions, id *md.Peer_ID) bool {
+	// Set Peer Info
+	n.peer = &md.Peer{
+		Id:       id,
+		Profile:  n.opts.Profile,
+		Platform: n.device.Platform,
+		Model:    n.device.Model,
 	}
 
-	// Find Antipodal
-	if heading > 180 {
-		headAnpd = math.Round((heading-180)*100) / 100
-	} else {
-		headAnpd = math.Round((heading+180)*100) / 100
-	}
-
-	// Set Position
-	n.peer.Position = &md.Position{
-		Facing:           faceDir,
-		FacingAntipodal:  faceAnpd,
-		Heading:          headDir,
-		HeadingAntipodal: headAnpd,
-		Designation:      md.Position_Designation(desg % 32),
-	}
-
-	// Inform Lobby
-	err := n.lobby.Update()
+	// Create Pub Sub
+	ps, err := pubsub.NewGossipSub(n.ctx, n.host)
 	if err != nil {
 		sentry.CaptureException(err)
+		n.call.Connected(false)
+		return false
 	}
+	n.pubsub = ps
+
+	// Create Bootstrapper Info
+	bootstrappers := opts.GetBootstrapAddrInfo()
+	kadDHT, err := dht.New(
+		n.ctx,
+		n.host,
+		dht.BootstrapPeers(bootstrappers...),
+	)
+	if err != nil {
+		sentry.CaptureException(errors.Wrap(err, "Error while Creating routing DHT"))
+		n.call.Error(err, "Error while Creating routing DHT")
+		n.call.Ready(false)
+		return false
+	}
+
+	// Return Connected
+	n.kdht = kadDHT
+	n.call.Connected(true)
+	return true
 }
 
-// ^ Send Direct Message to Peer in Lobby ^ //
-func (n *Node) Message(content string, to string) {
-	if n.lobby.HasPeer(to) {
-		// Inform Lobby
-		err := n.lobby.Message(content, to)
-		if err != nil {
-			sentry.CaptureException(err)
-		}
+// ^ Bootstrap begins bootstrap with peers ^
+func (n *Node) Bootstrap(opts *net.HostOptions, fs *dq.SonrFS) bool {
+	// Create Bootstrapper Info
+	bootstrappers := opts.GetBootstrapAddrInfo()
+
+	// Bootstrap DHT
+	if err := n.kdht.Bootstrap(n.ctx); err != nil {
+		sentry.CaptureException(errors.Wrap(err, "Error while Bootstrapping DHT"))
+		n.call.Error(err, "Error while Bootstrapping DHT")
+		n.call.Ready(false)
+		return false
 	}
-}
 
-// ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Node) Invite(req *md.InviteRequest) {
-	// @ 2. Check Transfer Type
-	if req.Type == md.InviteRequest_Contact || req.Type == md.InviteRequest_URL {
-		// @ 3. Send Invite to Peer
-		// Set Contact
-		req.Contact = n.contact
-		invMsg := md.NewInviteFromRequest(req, n.peer)
-
-		if req.IsRemote {
-			// Start Remote Point
-			err := n.transfer.StartRemote(&invMsg)
-			if err != nil {
-				n.error(err, "StartRemotePoint")
-			}
-		} else {
-			if n.lobby.HasPeer(req.To.Id.Peer) {
-				// Get PeerID and Check error
-				id, _, err := n.lobby.Find(req.To.Id.Peer)
-				if err != nil {
-					sentry.CaptureException(err)
-				}
-
-				// Run Routine
-				go func(inv *md.AuthInvite) {
-					// Convert Protobuf to bytes
-					msgBytes, err := proto.Marshal(inv)
-					if err != nil {
-						sentry.CaptureException(err)
-					}
-
-					n.transfer.RequestInvite(n.host, id, msgBytes)
-				}(&invMsg)
-			} else {
-				n.error(errors.New("Invalid Peer"), "Invite")
-			}
+	// Connect to bootstrap nodes, if any
+	hasBootstrapped := false
+	for _, pi := range bootstrappers {
+		if err := n.host.Connect(n.ctx, pi); err == nil {
+			hasBootstrapped = true
 		}
+		dt.GetState().NeedsWait()
+	}
 
+	// Check if Bootstrapping Occurred
+	if !hasBootstrapped {
+		sentry.CaptureException(errors.New("Failed to connect to any bootstrap peers"))
+		return false
 	} else {
-		// File Transfer
-		n.fs.AddFromRequest(req)
+		n.call.Ready(true)
 	}
 
-	// Update Status
-	n.status = md.Status_PENDING
-}
+	// Set Routing Discovery, Find Peers
+	routingDiscovery := disc.NewRoutingDiscovery(n.kdht)
+	disc.Advertise(n.ctx, routingDiscovery, n.router.GloalPoint(), discLimit.TTL(time.Second*2))
+	go n.handleDHTPeers(routingDiscovery)
 
-// ^ Create Group Returns Words ^ //
-func (n *Node) CreateGroup() string {
-	// Validate
-	if n.lobby != nil {
-		// Return Default Option
-		_, w, err := net.RandomWords("english", 4)
-		if err != nil {
-			return "brax day test one"
-		}
-
-		// Return Split Words Join Group in Lobby
-		words := fmt.Sprintf("%s-%s-%s-%s", w[0], w[1], w[2], w[3])
-		err = n.lobby.JoinGroup(words)
-		if err != nil {
-			sentry.CaptureException(err)
-		}
-		return words
-	}
-
-	// Lobby non-existent
-	sentry.CaptureException(errors.New("User not in a lobby"))
-	return ""
-}
-
-// ^ Join Group with Words ^ //
-func (n *Node) JoinGroup(data string) {
-	// Validate
-	if n.lobby != nil {
-		// Join Group in Lobby
-		err := n.lobby.JoinGroup(data)
-		if err != nil {
-			sentry.CaptureException(err)
-		}
-	}
-
-	// Lobby non-existent
-	sentry.CaptureException(errors.New("User not in a lobby"))
-}
-
-// ^ Join Remote File with Words ^ //
-func (n *Node) JoinRemote(data string) {
-	// Validate
-	_, err := n.transfer.JoinRemote(data)
-	if err != nil {
-		// Lobby non-existent
+	// Join Local Lobby Point
+	var err error
+	if n.local, err = n.JoinTopic(n.router.LocalTopic(), n.router.LocalTopicExchange()); err != nil {
 		sentry.CaptureException(err)
-		n.error(err, "Join Remote")
+		n.call.Error(err, "Joining Lobby")
+		n.call.Ready(false)
+		return false
 	}
+	return true
 }
 
-// ^ Respond to an Invitation ^ //
-func (n *Node) Respond(decision bool) {
-	// Send Response on PeerConnection
-	n.transfer.Authorize(decision, n.contact, n.peer)
-
-	// Update Status
-	if decision {
-		n.status = md.Status_INPROGRESS
-	} else {
-		n.status = md.Status_AVAILABLE
-	}
+// ^ User Node Info ^ //
+// @ ID Returns Peer ID
+func (n *Node) ID() peer.ID {
+	return n.host.ID()
 }
 
-// ^ Link with a QR Code ^ //
-func (n *Node) LinkDevice(json string) {
-	// Convert String to Bytes
-	request := md.LinkRequest{}
+// @ Peer returns Current Peer Info
+func (n *Node) Peer() *md.Peer {
+	return n.peer
+}
 
-	// Convert to Peer Protobuf
-	err := protojson.Unmarshal([]byte(json), &request)
+// @ Peer returns Current Peer Info as Buffer
+func (n *Node) PeerBuf() []byte {
+	// Convert to bytes
+	buf, err := proto.Marshal(n.peer)
 	if err != nil {
 		sentry.CaptureException(err)
+		return nil
 	}
-
-	// Link Device
-	err = n.fs.SaveDevice(request.Device)
-	if err != nil {
-		sentry.CaptureException(err)
-	}
-}
-
-// ^ Link with a QR Code ^ //
-func (n *Node) LinkRequest(name string) *md.LinkRequest {
-	// Set Device
-	device := n.device
-	device.Name = name
-
-	// Create Expiry - 1min 30s
-	timein := time.Now().Local().Add(
-		time.Minute*time.Duration(1) +
-			time.Second*time.Duration(30))
-
-	// Return Request
-	return &md.LinkRequest{
-		Device: device,
-		Peer:   n.Peer(),
-		Expiry: int32(timein.Unix()),
-	}
+	return buf
 }
 
 // ^ Updates Current Contact Card ^
 func (n *Node) SetContact(newContact *md.Contact) {
-
 	// Set Node Contact
 	n.contact = newContact
 
@@ -294,43 +230,20 @@ func (n *Node) SetContact(newContact *md.Contact) {
 		LastName:  newContact.GetLastName(),
 		Picture:   newContact.GetPicture(),
 	}
-
-	// Set User Contact
-	err := n.fs.SaveContact(newContact)
-	if err != nil {
-		sentry.CaptureException(err)
-	}
 }
 
 // ^ Close Ends All Network Communication ^
 func (n *Node) Pause() {
 	// Check if Response Is Invited
-	if n.status == md.Status_INVITED {
-		n.transfer.Cancel(n.peer)
-	}
-	err := n.lobby.Standby()
-	if err != nil {
-		n.error(err, "Pause")
-		sentry.CaptureException(err)
-	}
-	md.GetState().Pause()
+	dt.GetState().Pause()
 }
 
 // ^ Close Ends All Network Communication ^
 func (n *Node) Resume() {
-	err := n.lobby.Resume()
-	if err != nil {
-		n.error(err, "Resume")
-		sentry.CaptureException(err)
-	}
-	md.GetState().Resume()
+	dt.GetState().Resume()
 }
 
 // ^ Close Ends All Network Communication ^
-func (n *Node) Stop() {
-	// Check if Response Is Invited
-	if n.status == md.Status_INVITED {
-		n.transfer.Cancel(n.peer)
-	}
+func (n *Node) Close() {
 	n.host.Close()
 }
