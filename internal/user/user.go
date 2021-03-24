@@ -124,4 +124,3 @@ func (u *User) PrivateKey() crypto.PrivKey {
 func (u *User) Profile() *md.Profile {
 	return u.profile
 }
-
