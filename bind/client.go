@@ -3,7 +3,6 @@ package bind
 import (
 	"log"
 
-	"github.com/getsentry/sentry-go"
 	md "github.com/sonr-io/core/internal/models"
 	net "github.com/sonr-io/core/internal/network"
 	u "github.com/sonr-io/core/internal/user"
@@ -25,19 +24,20 @@ type MobileNode struct {
 
 // @ Create New Mobile Node
 func NewNode(reqBytes []byte, call Callback) *MobileNode {
-	// Initialize Node Logging
-	err := sentry.Init(sentry.ClientOptions{
-		Dsn: "https://cbf88b01a5a5468fa77101f7dfc54f20@o549479.ingest.sentry.io/5672329",
-	})
-	if err != nil {
-		log.Fatalf("sentry.Init: %s", err)
-	}
+	// // Initialize Node Logging
+	// err := sentry.Init(sentry.ClientOptions{
+	// 	Dsn: "https://cbf88b01a5a5468fa77101f7dfc54f20@o549479.ingest.sentry.io/5672329",
+	// })
+	// if err != nil {
+	// 	panic(err)
+	// }
 
 	// Unmarshal Request
 	req := &md.ConnectionRequest{}
-	err = proto.Unmarshal(reqBytes, req)
+	err := proto.Unmarshal(reqBytes, req)
 	if err != nil {
-		sentry.CaptureException(err)
+		// sentry.CaptureException(err)
+		panic(err)
 	}
 
 	// Create Mobile Node
@@ -50,14 +50,15 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 	// Create New User
 	mn.user, err = u.NewUser(req, mn.nodeCallback())
 	if err != nil {
-		sentry.CaptureException(err)
+		// sentry.CaptureException(err)
+		panic(err)
 	}
 
 	// Create Host Options
 	mn.hostOpts, err = net.NewHostOpts(req, mn.user.PrivateKey())
 	if err != nil {
-		sentry.CaptureException(err)
-		return nil
+		// sentry.CaptureException(err)
+		panic(err)
 	}
 
 	// Create Node
@@ -74,7 +75,11 @@ func (mn *MobileNode) Connect() {
 	if err := mn.node.Connect(mn.hostOpts); err == nil {
 		// Set Started
 		mn.hasStarted = true
-		mn.user.SetPeer(mn.node.ID().String())
+		err := mn.user.SetPeer(mn.node.ID())
+		if err != nil {
+			log.Println(err)
+			return
+		}
 		mn.call.OnConnected(true)
 
 		// ! Bootstrap to Peers
@@ -85,17 +90,17 @@ func (mn *MobileNode) Connect() {
 
 			// ! Join Local Topic
 			if err := mn.node.JoinLocal(mn.user.Peer, mn.user.PeerBuf); err != nil {
-				sentry.CaptureException(err)
+				// sentry.CaptureException(err)
 				mn.error(err, "Joining Local Topic")
 			}
 		} else {
 			log.Println("Failed to bootstrap node")
-			sentry.CaptureException(err)
+			// sentry.CaptureException(err)
 			mn.call.OnReady(false)
 		}
 	} else {
 		log.Println("Failed to start host")
-		sentry.CaptureException(err)
+		// sentry.CaptureException(err)
 		mn.call.OnConnected(false)
 	}
 }

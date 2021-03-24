@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"time"
 
-	sentry "github.com/getsentry/sentry-go"
 	"github.com/libp2p/go-libp2p"
 	connmgr "github.com/libp2p/go-libp2p-connmgr"
 	discLimit "github.com/libp2p/go-libp2p-core/discovery"
@@ -15,7 +14,6 @@ import (
 	rpc "github.com/libp2p/go-libp2p-gorpc"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	"github.com/pkg/errors"
 	md "github.com/sonr-io/core/internal/models"
 	net "github.com/sonr-io/core/internal/network"
 	dt "github.com/sonr-io/core/pkg/data"
@@ -147,7 +145,6 @@ func (n *Node) Bootstrap(opts *net.HostOptions, fs *sf.FileSystem) error {
 
 	// Check if Bootstrapping Occurred
 	if !hasBootstrapped {
-		sentry.CaptureException(errors.New("Failed to connect to any bootstrap peers"))
 		return err
 	}
 

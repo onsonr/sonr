@@ -4,7 +4,6 @@ import (
 	"log"
 	"time"
 
-	sentry "github.com/getsentry/sentry-go"
 	discLimit "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -13,7 +12,6 @@ import (
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	swarm "github.com/libp2p/go-libp2p-swarm"
 	msgio "github.com/libp2p/go-msgio"
-	"github.com/pkg/errors"
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
 	dt "github.com/sonr-io/core/pkg/data"
@@ -26,7 +24,7 @@ func (n *Node) handleAuthInviteResponse(id peer.ID, inv *md.AuthInvite, p *md.Pe
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(inv)
 	if err != nil {
-		sentry.CaptureException(err)
+		log.Println(err)
 	}
 
 	// Initialize Data
@@ -42,7 +40,6 @@ func (n *Node) handleAuthInviteResponse(id peer.ID, inv *md.AuthInvite, p *md.Pe
 	// Await Response
 	call := <-done
 	if call.Error != nil {
-		sentry.CaptureException(err)
 		n.call.Error(err, "Request")
 	}
 
@@ -60,7 +57,6 @@ func (n *Node) handleAcceptedFileRequest(id peer.ID, p *md.Peer, cf *sf.Processe
 	err := proto.Unmarshal(data, &resp)
 	if err != nil {
 		n.call.Error(err, "handleReply")
-		sentry.CaptureException(err)
 	}
 
 	// Check for File Transfer
@@ -90,9 +86,6 @@ func (n *Node) handleDHTPeers(routingDiscovery *disc.RoutingDiscovery) {
 			if pi.ID != n.host.ID() {
 				// Connect to Peer
 				if err := n.host.Connect(n.ctx, pi); err != nil {
-					// Capture Error
-					sentry.CaptureException(errors.Wrap(err, "Failed to connect to peer in namespace"))
-
 					// Remove Peer Reference
 					n.host.Peerstore().ClearAddrs(pi.ID)
 					if sw, ok := n.host.Network().(*swarm.Swarm); ok {

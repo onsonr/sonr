@@ -4,7 +4,6 @@ import (
 	"errors"
 	"log"
 
-	"github.com/getsentry/sentry-go"
 	md "github.com/sonr-io/core/internal/models"
 	dt "github.com/sonr-io/core/pkg/data"
 	"google.golang.org/protobuf/proto"
@@ -74,7 +73,8 @@ func (mn *MobileNode) transmitted(peer *md.Peer) {
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(peer)
 	if err != nil {
-		sentry.CaptureException(err)
+		// sentry.CaptureException(err)
+		log.Println(err)
 	}
 
 	// Callback with Data
@@ -89,7 +89,8 @@ func (mn *MobileNode) received(card *md.TransferCard) {
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(card)
 	if err != nil {
-		sentry.CaptureException(err)
+		// sentry.CaptureException(err)
+		log.Println(err)
 	}
 
 	// Callback with Data
@@ -99,7 +100,7 @@ func (mn *MobileNode) received(card *md.TransferCard) {
 // ^ error Callback with error instance, and method ^
 func (mn *MobileNode) error(err error, method string) {
 	// Log Error
-	sentry.CaptureException(err)
+	// sentry.CaptureException(err)
 
 	// Create Error ProtoBuf
 	errorMsg := md.ErrorMessage{
@@ -111,6 +112,7 @@ func (mn *MobileNode) error(err error, method string) {
 	bytes, err := proto.Marshal(&errorMsg)
 	if err != nil {
 		log.Println("Cannot Marshal Error Protobuf: ", err)
+		log.Println(err)
 	}
 	// Send Callback
 	mn.call.OnError(bytes)

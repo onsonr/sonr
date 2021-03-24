@@ -6,7 +6,6 @@ import (
 	"log"
 	"time"
 
-	sentry "github.com/getsentry/sentry-go"
 	"github.com/libp2p/go-libp2p-core/peer"
 	msgio "github.com/libp2p/go-msgio"
 	sf "github.com/sonr-io/core/internal/file"
@@ -18,13 +17,13 @@ import (
 )
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Node) InviteLink(req *md.InviteRequest, p *md.Peer) {
+func (n *Node) InviteLink(req *md.InviteRequest, p *md.Peer) error {
 	// @ 3. Send Invite to Peer
 	if n.HasPeer(n.local, req.To.Id.Peer) {
 		// Get PeerID and Check error
 		id, _, err := n.FindPeerInTopic(n.local, req.To.Id.Peer)
 		if err != nil {
-			sentry.CaptureException(err)
+			return err
 		}
 
 		// Get URL Data
@@ -62,18 +61,19 @@ func (n *Node) InviteLink(req *md.InviteRequest, p *md.Peer) {
 		// Run Routine
 		go n.handleAuthInviteResponse(id, &invMsg, p, nil)
 	} else {
-		n.call.Error(errors.New("Invalid Peer"), "Invite")
+		return errors.New("Invalid Peer")
 	}
+	return nil
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Node) InviteContact(req *md.InviteRequest, p *md.Peer, c *md.Contact) {
+func (n *Node) InviteContact(req *md.InviteRequest, p *md.Peer, c *md.Contact) error {
 	// @ 3. Send Invite to Peer
 	if n.HasPeer(n.local, req.To.Id.Peer) {
 		// Get PeerID and Check error
 		id, _, err := n.FindPeerInTopic(n.local, req.To.Id.Peer)
 		if err != nil {
-			sentry.CaptureException(err)
+			return err
 		}
 
 		// Build Invite Message
@@ -104,12 +104,13 @@ func (n *Node) InviteContact(req *md.InviteRequest, p *md.Peer, c *md.Contact) {
 		// Run Routine
 		go n.handleAuthInviteResponse(id, &invMsg, p, nil)
 	} else {
-		n.call.Error(errors.New("Invalid Peer"), "Invite")
+		return errors.New("Invalid Peer")
 	}
+	return nil
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Node) InviteFile(card *md.TransferCard, req *md.InviteRequest, p *md.Peer, cf *sf.ProcessedFile) {
+func (n *Node) InviteFile(card *md.TransferCard, req *md.InviteRequest, p *md.Peer, cf *sf.ProcessedFile) error {
 	card.Status = md.TransferCard_INVITE
 
 	// Create Invite Message
@@ -120,18 +121,16 @@ func (n *Node) InviteFile(card *md.TransferCard, req *md.InviteRequest, p *md.Pe
 	}
 
 	// @ Check for Remote
-	if req.IsRemote {
 
-	} else {
-		// Get PeerID
-		id, _, err := n.FindPeerInTopic(n.local, req.To.Id.Peer)
-		if err != nil {
-			n.call.Error(err, "Queued")
-		}
-
-		// Run Routine
-		go n.handleAuthInviteResponse(id, &invMsg, p, cf)
+	// Get PeerID
+	id, _, err := n.FindPeerInTopic(n.local, req.To.Id.Peer)
+	if err != nil {
+		return err
 	}
+
+	// Run Routine
+	go n.handleAuthInviteResponse(id, &invMsg, p, cf)
+	return nil
 }
 
 // ^ Respond to an Invitation ^ //
@@ -210,7 +209,7 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 	receivedMessage := md.AuthInvite{}
 	err := proto.Unmarshal(args.Data, &receivedMessage)
 	if err != nil {
-		sentry.CaptureException(err)
+		log.Println(err)
 		return err
 	}
 
@@ -228,7 +227,7 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 		// Convert Protobuf to bytes
 		msgBytes, err := proto.Marshal(m)
 		if err != nil {
-			sentry.CaptureException(err)
+			log.Println(err)
 			return err
 		}
 

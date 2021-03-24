@@ -6,8 +6,8 @@ import (
 	"math"
 
 	mid "github.com/denisbrodbeck/machineid"
-	"github.com/getsentry/sentry-go"
 	"github.com/libp2p/go-libp2p-core/crypto"
+	"github.com/libp2p/go-libp2p-core/peer"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -32,7 +32,7 @@ func (u *User) PeerBuf() []byte {
 	// Convert to bytes
 	buf, err := proto.Marshal(u.peer)
 	if err != nil {
-		sentry.CaptureException(err)
+		log.Println(err)
 		return nil
 	}
 	return buf
@@ -74,7 +74,7 @@ func (u *User) SetContact(newContact *md.Contact) error {
 }
 
 // ^ SetPeer configures Peer Ref from Host ID Reference ^ //
-func (u *User) SetPeer(hID string) {
+func (u *User) SetPeer(id peer.ID) error {
 	// Initialize
 	deviceID := u.device.GetId()
 
@@ -82,14 +82,14 @@ func (u *User) SetPeer(hID string) {
 	userID := fnv.New32a()
 	_, err := userID.Write([]byte(u.profile.GetUsername()))
 	if err != nil {
-		log.Println(err)
+		return err
 	}
 
 	// Check if ID not provided
 	if deviceID == "" {
 		// Generate ID
 		if id, err := mid.ProtectedID("Sonr"); err != nil {
-			sentry.CaptureException(err)
+			log.Println(err)
 			deviceID = ""
 		} else {
 			deviceID = id
@@ -99,7 +99,7 @@ func (u *User) SetPeer(hID string) {
 	// Set Peer
 	u.peer = &md.Peer{
 		Id: &md.Peer_ID{
-			Peer:   hID,
+			Peer:   id.String(),
 			Device: deviceID,
 			User:   userID.Sum32(),
 		},
@@ -107,6 +107,7 @@ func (u *User) SetPeer(hID string) {
 		Platform: u.device.Platform,
 		Model:    u.device.Model,
 	}
+	return nil
 }
 
 // ^ Update proximity/direction and Notify Lobby ^ //

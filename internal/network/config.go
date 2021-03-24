@@ -2,17 +2,14 @@ package network
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net"
 	"net/http"
 	"os"
 
-	"github.com/getsentry/sentry-go"
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/multiformats/go-multiaddr"
-	"github.com/pkg/errors"
 	md "github.com/sonr-io/core/internal/models"
 )
 
@@ -65,8 +62,6 @@ func (ho *HostOptions) GetBootstrapAddrInfo() []peer.AddrInfo {
 	for i := range ho.BootstrapAddrs {
 		info, err := peer.AddrInfoFromP2pAddr(ho.BootstrapAddrs[i])
 		if err != nil {
-			sentry.CaptureException(errors.Wrap(err, fmt.Sprintf("failed to convert bootstrapper address to peer addr info addr: %s",
-				ho.BootstrapAddrs[i].String())))
 			continue
 		}
 		ds = append(ds, *info)

@@ -114,7 +114,10 @@ func (t *IncomingFile) Save() error {
 	}
 
 	// Write File to Disk
-	name, path := t.fs.WriteIncomingFile(t.payload, t.properties, data)
+	name, path, err := t.fs.WriteIncomingFile(t.payload, t.properties, data)
+	if err != nil {
+		return err
+	}
 
 	// @ 1. Get File Information
 	// Create Card

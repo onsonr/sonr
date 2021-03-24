@@ -5,7 +5,6 @@ import (
 	"errors"
 	"log"
 
-	sentry "github.com/getsentry/sentry-go"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	rpc "github.com/libp2p/go-libp2p-gorpc"
@@ -214,7 +213,7 @@ func (n *Node) HasPeer(tm *TopicManager, q string) bool {
 }
 
 // ^ Send Direct Message to Peer in Lobby ^ //
-func (n *Node) Message(msg string, to string, p *md.Peer) {
+func (n *Node) Message(msg string, to string, p *md.Peer) error {
 	if n.HasPeer(n.local, to) {
 		// Inform Lobby
 		if err := n.local.Send(&md.LobbyEvent{
@@ -224,9 +223,10 @@ func (n *Node) Message(msg string, to string, p *md.Peer) {
 			Message: msg,
 			To:      to,
 		}); err != nil {
-			sentry.CaptureException(err)
+			return err
 		}
 	}
+	return nil
 }
 
 // ^ Send message to specific peer in topic ^
@@ -246,13 +246,14 @@ func (tm *TopicManager) Send(msg *md.LobbyEvent) error {
 }
 
 // ^ Update proximity/direction and Notify Lobby ^ //
-func (n *Node) Update(p *md.Peer) {
+func (n *Node) Update(p *md.Peer) error {
 	// Inform Lobby
 	if err := n.local.Send(&md.LobbyEvent{
 		Event: md.LobbyEvent_UPDATE,
 		From:  p,
 		Id:    p.Id.Peer,
 	}); err != nil {
-		sentry.CaptureException(err)
+		return err
 	}
+	return nil
 }

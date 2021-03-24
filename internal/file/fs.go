@@ -7,7 +7,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/getsentry/sentry-go"
 	"github.com/joncrlsn/dque"
 	dq "github.com/joncrlsn/dque"
 	md "github.com/sonr-io/core/internal/models"
@@ -151,7 +150,7 @@ func (sfs *FileSystem) WriteFile(name string, data []byte) (string, error) {
 }
 
 // ^ WriteIncomingFile writes file to Disk ^
-func (sfs *FileSystem) WriteIncomingFile(load md.Payload, props *md.TransferCard_Properties, data []byte) (string, string) {
+func (sfs *FileSystem) WriteIncomingFile(load md.Payload, props *md.TransferCard_Properties, data []byte) (string, string, error) {
 	// Create File Name
 	fileName := props.Name + "." + props.Mime.Subtype
 	path := sfs.getIncomingFilePath(load, fileName)
@@ -159,7 +158,7 @@ func (sfs *FileSystem) WriteIncomingFile(load md.Payload, props *md.TransferCard
 	// Check for User File at Path
 	file, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		sentry.CaptureException(err)
+		return "", "", err
 	}
 
 	// Defer Close
@@ -168,9 +167,9 @@ func (sfs *FileSystem) WriteIncomingFile(load md.Payload, props *md.TransferCard
 	// Write User Data to File
 	_, err = file.Write(data)
 	if err != nil {
-		sentry.CaptureException(err)
+		return "", "", err
 	}
-	return fileName, path
+	return fileName, path, nil
 }
 
 // @ Helper: Finds Write Path for Incoming File
