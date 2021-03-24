@@ -25,6 +25,7 @@ import (
 type Node struct {
 	// Properties
 	ctx     context.Context
+	opts    *net.HostOptions
 	contact *md.Contact
 	device  *md.Device
 	peer    *md.Peer
@@ -36,7 +37,7 @@ type Node struct {
 	pubsub *pubsub.PubSub
 	router *net.ProtocolRouter
 
-	call     md.NodeCallback
+	call     dt.NodeCallback
 	transfer *tr.TransferController
 
 	// Peer Management
@@ -45,11 +46,12 @@ type Node struct {
 }
 
 // ^ NewNode Initializes Node with a host and default properties ^
-func NewNode(opts *net.HostOptions, call md.NodeCallback) *Node {
+func NewNode(opts *net.HostOptions, call dt.NodeCallback) *Node {
 	// Create Context and Set Node Properties
 	node := new(Node)
 	node.ctx = context.Background()
 	node.call = call
+	node.opts = opts
 
 	// Create New Profile from Request
 	node.profile = &md.Profile{
@@ -83,11 +85,12 @@ func NewNode(opts *net.HostOptions, call md.NodeCallback) *Node {
 		)),
 	)
 	if err != nil {
-		sentry.CaptureException(err)
 		node.call.Connected(false)
 		return nil
 	}
 	node.host = h
+	node.contact = opts.ConnRequest.Contact
+	node.device = opts.ConnRequest.Device
 	return node
 }
 

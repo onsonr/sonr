@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/getsentry/sentry-go"
+	dt "github.com/sonr-io/core/internal/data"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -26,8 +27,8 @@ type Callback interface {
 }
 
 // ^ Passes binded Methods to Node ^
-func (mn *MobileNode) nodeCallback() md.NodeCallback {
-	return md.NodeCallback{
+func (mn *MobileNode) nodeCallback() dt.NodeCallback {
+	return dt.NodeCallback{
 		// Direct
 		Connected:   mn.call.OnConnected,
 		Ready:       mn.call.OnReady,
@@ -47,8 +48,8 @@ func (mn *MobileNode) nodeCallback() md.NodeCallback {
 }
 
 // ^ Passes node methods for FS/FQ ^
-func (mn *MobileNode) fSCallback() md.FileCallback {
-	return md.FileCallback{
+func (mn *MobileNode) fSCallback() dt.FileCallback {
+	return dt.FileCallback{
 		Queued: mn.queued,
 		Error:  mn.error,
 	}

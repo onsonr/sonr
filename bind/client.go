@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/getsentry/sentry-go"
+	dt "github.com/sonr-io/core/internal/data"
 	md "github.com/sonr-io/core/internal/models"
 	net "github.com/sonr-io/core/internal/network"
 	sn "github.com/sonr-io/core/pkg/node"
@@ -110,7 +111,7 @@ func (mn *MobileNode) Connect() {
 // @ Return URL Metadata, Helper Method
 func GetURLMetadata(url string) []byte {
 	// Get Link Data
-	data, err := md.GetPageInfoFromUrl(url)
+	data, err := dt.GetPageInfoFromUrl(url)
 	if err != nil {
 		log.Println(err, " Failed to Parse URL")
 	}

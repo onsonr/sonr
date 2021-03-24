@@ -15,8 +15,8 @@ import (
 )
 
 // ^ Passes node methods for TransferController ^
-func (n *Node) TransferCallback() md.TransferCallback {
-	return md.NewTransferCallback(n.call.Invited, n.call.RemoteStart, n.call.Responded, n.call.Progressed, n.call.Received, n.call.Transmitted, n.call.Error)
+func (n *Node) TransferCallback() dt.TransferCallback {
+	return dt.NewTransferCallback(n.call.Invited, n.call.RemoteStart, n.call.Responded, n.call.Progressed, n.call.Received, n.call.Transmitted, n.call.Error)
 }
 
 // ^ Handles Peers in DHT ^

@@ -10,6 +10,7 @@ import (
 	rpc "github.com/libp2p/go-libp2p-gorpc"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/core/internal/data"
+	dt "github.com/sonr-io/core/internal/data"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -221,8 +222,8 @@ type ExchangeResponse struct {
 
 // Service Struct
 type ExchangeService struct {
-	GetUser   md.ReturnPeer
-	SyncLobby md.SyncLobby
+	GetUser   dt.ReturnPeer
+	SyncLobby dt.SyncLobby
 }
 
 // ^ Calls Invite on Remote Peer ^ //

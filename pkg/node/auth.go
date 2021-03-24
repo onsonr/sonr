@@ -7,6 +7,7 @@ import (
 	sentry "github.com/getsentry/sentry-go"
 	"github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
+	dt "github.com/sonr-io/core/internal/data"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -15,7 +16,7 @@ func (n *Node) Invite(req *md.InviteRequest) {
 	// @ 3. Send Invite to Peer
 	// Set Contact
 	req.Contact = n.contact
-	invMsg := md.NewInviteFromRequest(req, n.peer)
+	invMsg := dt.NewInviteFromRequest(req, n.peer)
 
 	if req.IsRemote {
 		// Start Remote Point
@@ -109,7 +110,7 @@ type AuthResponse struct {
 // Service Struct
 type AuthService struct {
 	// Current Data
-	call   md.TransferCallback
+	call   dt.TransferCallback
 	respCh chan *md.AuthReply
 	invite *md.AuthInvite
 }
