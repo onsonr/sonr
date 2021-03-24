@@ -10,6 +10,7 @@ import (
 	"github.com/getsentry/sentry-go"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/pkg/errors"
+	dt "github.com/sonr-io/core/internal/data"
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
 )
@@ -33,12 +34,12 @@ type SonrFS struct {
 	// Queue
 	Files        []*sf.ProcessedFile
 	CurrentCount int
-	Call         md.FileCallback
+	Call         dt.FileCallback
 	Profile      *md.Profile
 }
 
 // ^ Method Initializes Root Sonr Directory ^ //
-func InitFS(connEvent *md.ConnectionRequest, profile *md.Profile, callback md.FileCallback) *SonrFS {
+func InitFS(connEvent *md.ConnectionRequest, profile *md.Profile, callback dt.FileCallback) *SonrFS {
 	// Initialize
 	var sonrPath string
 	var hasInitialized bool
