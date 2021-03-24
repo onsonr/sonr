@@ -3,6 +3,8 @@ package node
 import (
 	"context"
 	"errors"
+	"log"
+	"time"
 
 	sentry "github.com/getsentry/sentry-go"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -25,15 +27,38 @@ func (n *Node) InviteLink(req *md.InviteRequest, p *md.Peer) {
 			sentry.CaptureException(err)
 		}
 
-		// Set Contact
-		card := dt.NewCardFromUrl(p, req.Url, md.TransferCard_DIRECT)
+		// Get URL Data
+		urlInfo, err := dt.GetPageInfoFromUrl(req.Url)
+		if err != nil {
+			log.Println(err)
+			urlInfo = &md.URLLink{
+				Link: req.Url,
+			}
+		}
+
+		// Build Invite Message
 		invMsg := md.AuthInvite{
 			IsRemote: req.IsRemote,
 			From:     p,
 			Payload:  md.Payload_URL,
-			Card:     &card,
-		}
+			Card: &md.TransferCard{
+				// SQL Properties
+				Payload:  md.Payload_URL,
+				Received: int32(time.Now().Unix()),
+				Platform: p.Platform,
 
+				// Transfer Properties
+				Status: md.TransferCard_DIRECT,
+
+				// Owner Properties
+				Username:  p.Profile.Username,
+				FirstName: p.Profile.FirstName,
+				LastName:  p.Profile.LastName,
+
+				// Data Properties
+				Url: urlInfo,
+			},
+		}
 		// Run Routine
 		go n.handleAuthInviteResponse(id, &invMsg, p, nil)
 	} else {
@@ -51,16 +76,29 @@ func (n *Node) InviteContact(req *md.InviteRequest, p *md.Peer, c *md.Contact) {
 			sentry.CaptureException(err)
 		}
 
-		// Set Contact
-		req.Contact = c
-
-		// Get Card
-		card := dt.NewCardFromContact(p, req.Contact, md.TransferCard_DIRECT)
+		// Build Invite Message
 		invMsg := md.AuthInvite{
 			IsRemote: req.IsRemote,
 			From:     p,
 			Payload:  md.Payload_CONTACT,
-			Card:     &card,
+			Card: &md.TransferCard{
+				// SQL Properties
+				Payload:  md.Payload_CONTACT,
+				Received: int32(time.Now().Unix()),
+				Preview:  p.Profile.Picture,
+				Platform: p.Platform,
+
+				// Transfer Properties
+				Status: md.TransferCard_DIRECT,
+
+				// Owner Properties
+				Username:  p.Profile.Username,
+				FirstName: p.Profile.FirstName,
+				LastName:  p.Profile.LastName,
+
+				// Data Properties
+				Contact: c,
+			},
 		}
 
 		// Run Routine
@@ -107,12 +145,28 @@ func (n *Node) Respond(decision bool, fs *sf.FileSystem, p *md.Peer, c *md.Conta
 	// @ Pass Contact Back
 	if n.auth.invite.Payload == md.Payload_CONTACT {
 		// Create Accept Response
-		card := dt.NewCardFromContact(p, c, md.TransferCard_REPLY)
 		resp := &md.AuthReply{
 			IsRemote: n.auth.invite.IsRemote,
 			From:     p,
 			Type:     md.AuthReply_Contact,
-			Card:     &card,
+			Card: &md.TransferCard{
+				// SQL Properties
+				Payload:  md.Payload_CONTACT,
+				Received: int32(time.Now().Unix()),
+				Preview:  p.Profile.Picture,
+				Platform: p.Platform,
+
+				// Transfer Properties
+				Status: md.TransferCard_REPLY,
+
+				// Owner Properties
+				Username:  p.Profile.Username,
+				FirstName: p.Profile.FirstName,
+				LastName:  p.Profile.LastName,
+
+				// Data Properties
+				Contact: c,
+			},
 		}
 		// Send to Channel
 		n.auth.respCh <- resp

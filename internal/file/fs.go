@@ -40,7 +40,7 @@ func NewFs(connEvent *md.ConnectionRequest, callback dt.NodeCallback) (*FileSyst
 	var sonrPath string
 
 	// Check for Client Type
-	if connEvent.IsDesktop() {
+	if connEvent.Device.GetIsDesktop() {
 		// Init Path, Check for Path
 		sonrPath = filepath.Join(connEvent.Directories.Home, K_SONR_CLIENT_DIR)
 		if err := EnsureDir(sonrPath, 0755); err != nil {
@@ -66,6 +66,7 @@ func NewFs(connEvent *md.ConnectionRequest, callback dt.NodeCallback) (*FileSyst
 	if err != nil {
 		return nil, err
 	}
+
 	sfs.Queue = q
 	return sfs, nil
 }
