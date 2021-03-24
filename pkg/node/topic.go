@@ -52,7 +52,7 @@ func (n *Node) NewTopicManager(pointName string) (*TopicManager, error) {
 		topic:        topic,
 		handler:      handler,
 		subscription: sub,
-		lobby:        data.NewLobby(n.Peer(), n.call.OnRefreshed),
+		lobby:        data.NewLobby(n.Peer(), n.call.Refreshed),
 		topicPoint:   pointName,
 		exchangePID:  n.router.Exchange(pointName),
 	}
@@ -189,7 +189,7 @@ func (n *Node) Exchange(tm *TopicManager, id peer.ID) {
 	// Call to Peer
 	err := rpcClient.Call(id, "ExchangeService", "ExchangeWith", args, &reply)
 	if err != nil {
-		n.error(err, "Exchange")
+		n.call.Error(err, "Exchange")
 	}
 
 	// Received Message
@@ -198,7 +198,7 @@ func (n *Node) Exchange(tm *TopicManager, id peer.ID) {
 
 	// Send Error
 	if err != nil {
-		n.error(err, "Exchange")
+		n.call.Error(err, "Exchange")
 	}
 
 	// Update Peer with new data

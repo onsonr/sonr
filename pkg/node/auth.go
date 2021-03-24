@@ -21,7 +21,7 @@ func (n *Node) Invite(req *md.InviteRequest) {
 			// Start Remote Point
 			err := n.transfer.StartRemote(&invMsg)
 			if err != nil {
-				n.error(err, "StartRemotePoint")
+				n.call.Error(err, "StartRemotePoint")
 			}
 		} else {
 			if n.HasPeer(n.local, req.To.Id.Peer) {
@@ -42,7 +42,7 @@ func (n *Node) Invite(req *md.InviteRequest) {
 					n.transfer.RequestInvite(n.host, id, msgBytes)
 				}(&invMsg)
 			} else {
-				n.error(errors.New("Invalid Peer"), "Invite")
+				n.call.Error(errors.New("Invalid Peer"), "Invite")
 			}
 		}
 
@@ -52,7 +52,7 @@ func (n *Node) Invite(req *md.InviteRequest) {
 	}
 
 	// Update Status
-	n.status = md.Status_PENDING
+
 }
 
 // ^ Respond to an Invitation ^ //
@@ -60,10 +60,5 @@ func (n *Node) Respond(decision bool) {
 	// Send Response on PeerConnection
 	n.transfer.Authorize(decision, n.contact, n.peer)
 
-	// Update Status
-	if decision {
-		n.status = md.Status_INPROGRESS
-	} else {
-		n.status = md.Status_AVAILABLE
-	}
+
 }

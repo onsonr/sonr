@@ -38,7 +38,7 @@ type Node struct {
 	pubsub *pubsub.PubSub
 	router *net.ProtocolRouter
 
-	call     Callback
+	call     md.NodeCallback
 	transfer *tr.TransferController
 
 	// Peer Management
@@ -47,7 +47,7 @@ type Node struct {
 }
 
 // ^ NewNode Initializes Node with a host and default properties ^
-func NewNode(req *md.ConnectionRequest, call Callback) *Node {
+func NewNode(req *md.ConnectionRequest, call md.NodeCallback) *Node {
 	// Initialize Node Logging
 	err := sentry.Init(sentry.ClientOptions{
 		Dsn: "https://cbf88b01a5a5468fa77101f7dfc54f20@o549479.ingest.sentry.io/5672329",
@@ -77,7 +77,6 @@ func NewNode(req *md.ConnectionRequest, call Callback) *Node {
 	// Set Default Properties
 	node.contact = req.Contact
 	node.device = req.Device
-	node.status = md.Status_NONE
 	return node
 }
 
@@ -91,7 +90,7 @@ func (n *Node) Start(opts *net.HostOptions) bool {
 	privKey, err := n.fs.GetPrivateKey()
 	if err != nil {
 		sentry.CaptureException(err)
-		n.call.OnConnected(false)
+		n.call.Connected(false)
 		return false
 	}
 
@@ -112,7 +111,7 @@ func (n *Node) Start(opts *net.HostOptions) bool {
 	)
 	if err != nil {
 		sentry.CaptureException(err)
-		n.call.OnConnected(false)
+		n.call.Connected(false)
 		return false
 	}
 	n.host = h
@@ -129,7 +128,7 @@ func (n *Node) Start(opts *net.HostOptions) bool {
 	ps, err := pubsub.NewGossipSub(n.ctx, n.host)
 	if err != nil {
 		sentry.CaptureException(err)
-		n.call.OnConnected(false)
+		n.call.Connected(false)
 		return false
 	}
 	n.pubsub = ps
@@ -143,14 +142,14 @@ func (n *Node) Start(opts *net.HostOptions) bool {
 	)
 	if err != nil {
 		sentry.CaptureException(errors.Wrap(err, "Error while Creating routing DHT"))
-		n.error(err, "Error while Creating routing DHT")
-		n.call.OnReady(false)
+		n.call.Error(err, "Error while Creating routing DHT")
+		n.call.Ready(false)
 		return false
 	}
 
 	// Return Connected
 	n.kdht = kadDHT
-	n.call.OnConnected(true)
+	n.call.Connected(true)
 	return true
 }
 
@@ -162,8 +161,8 @@ func (n *Node) Bootstrap(opts *net.HostOptions) bool {
 	// Bootstrap DHT
 	if err := n.kdht.Bootstrap(n.ctx); err != nil {
 		sentry.CaptureException(errors.Wrap(err, "Error while Bootstrapping DHT"))
-		n.error(err, "Error while Bootstrapping DHT")
-		n.call.OnReady(false)
+		n.call.Error(err, "Error while Bootstrapping DHT")
+		n.call.Ready(false)
 		return false
 	}
 
@@ -181,7 +180,7 @@ func (n *Node) Bootstrap(opts *net.HostOptions) bool {
 		sentry.CaptureException(errors.New("Failed to connect to any bootstrap peers"))
 		return false
 	} else {
-		n.call.OnReady(true)
+		n.call.Ready(true)
 	}
 
 	// Set Routing Discovery, Find Peers
@@ -193,21 +192,17 @@ func (n *Node) Bootstrap(opts *net.HostOptions) bool {
 	var err error
 	if n.local, err = n.NewTopicManager(n.router.Topic(net.SetIDForLocal())); err != nil {
 		sentry.CaptureException(err)
-		n.error(err, "Joining Lobby")
-		n.call.OnReady(false)
+		n.call.Error(err, "Joining Lobby")
+		n.call.Ready(false)
 		return false
 	}
 
 	// Initialize Peer Connection
 	if n.transfer, err = tf.Initialize(n.ctx, n.host, n.pubsub, n.fs, n.router, n.TransferCallback()); err != nil {
 		sentry.CaptureException(err)
-		n.error(err, "Initializing Transfer Controller")
-		n.call.OnReady(false)
+		n.call.Error(err, "Initializing Transfer Controller")
+		n.call.Ready(false)
 		return false
 	}
 	return true
-}
-
-func (n *Node) StartServices() {
-
 }

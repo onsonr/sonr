@@ -1,6 +1,7 @@
 package models
 
 // Define Function Types
+type OnBool func(bool)
 type OnProtobuf func([]byte)
 type OnQueued func(card *TransferCard, req *InviteRequest)
 type OnMultiQueued func(card *TransferCard, req *InviteRequest, count int)
@@ -54,6 +55,21 @@ func NewTransferCallback(callInvited OnInvite, callRemote OnProtobuf, callRespon
 }
 
 type FileCallback struct {
+	Queued      OnQueued
+	MultiQueued OnMultiQueued
+	Error       OnError
+}
+
+type NodeCallback struct {
+	Connected   OnBool
+	Ready       OnBool
+	Invited     OnInvite
+	Refreshed   OnProtobuf
+	RemoteStart OnProtobuf
+	Responded   OnProtobuf
+	Progressed  OnProgress
+	Received    OnReceived
+	Transmitted OnTransmitted
 	Queued      OnQueued
 	MultiQueued OnMultiQueued
 	Error       OnError

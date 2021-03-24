@@ -30,6 +30,7 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 		if err != nil {
 			log.Println(err)
 		}
+		mn.status = md.Status_PENDING
 		mn.node.Invite(req)
 	}
 }
@@ -38,6 +39,12 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 func (mn *MobileNode) Respond(decs bool) {
 	if mn.IsReady() {
 		mn.node.Respond(decs)
+		// Update Status
+		if decs {
+			mn.status = md.Status_INPROGRESS
+		} else {
+			mn.status = md.Status_AVAILABLE
+		}
 	}
 }
 

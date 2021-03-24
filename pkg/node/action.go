@@ -115,7 +115,7 @@ func (n *Node) JoinRemote(data string) {
 	if err != nil {
 		// Lobby non-existent
 		sentry.CaptureException(err)
-		n.error(err, "Join Remote")
+		n.call.Error(err, "Join Remote")
 	}
 }
 
