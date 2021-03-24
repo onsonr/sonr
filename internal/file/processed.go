@@ -1,4 +1,4 @@
-package data
+package file
 
 import (
 	"bytes"
@@ -19,7 +19,7 @@ import (
 type ProcessedFile struct {
 	// References
 	Payload md.Payload
-	call    NodeCallback
+	call    dt.NodeCallback
 	mime    *md.MIME
 	Path    string
 
@@ -35,7 +35,7 @@ func ProcessedFileBuilder() interface{} {
 }
 
 // ^ NewProcessedFile Processes Outgoing File ^ //
-func NewProcessedFile(req *md.InviteRequest, p *md.Peer, callback NodeCallback) *ProcessedFile {
+func NewProcessedFile(req *md.InviteRequest, p *md.Peer, callback dt.NodeCallback) *ProcessedFile {
 	// Check Values
 	if req == nil || p == nil {
 		return nil
@@ -81,9 +81,9 @@ func NewProcessedFile(req *md.InviteRequest, p *md.Peer, callback NodeCallback) 
 
 	// @ 3. Create Thumbnail in Goroutine
 	if len(file.Thumbnail) > 0 {
-		go HandleThumbnail(file, sm, p)
+		go sm.HandleThumbnail(file, sm, p)
 	} else {
-		go RequestThumbnail(file, sm, p)
+		go sm.RequestThumbnail(file, sm, p)
 	}
 	return sm
 }
@@ -99,14 +99,14 @@ func (sm *ProcessedFile) Card() *md.TransferCard {
 }
 
 // ^ Method to generate thumbnail for ProcessRequest^ //
-func (pf *ProcessedFile)RequestThumbnail(reqFi *md.InviteRequest_FileInfo, sm *ProcessedFile, p *md.Peer) {
+func (pf *ProcessedFile) RequestThumbnail(reqFi *md.InviteRequest_FileInfo, p *md.Peer) {
 	// Initialize
 	thumbBuffer := new(bytes.Buffer)
 	// @ Handle Created File Request
 	// Validate Image
 	if sm.mime.Type == md.MIME_image {
 		// Encode Thumbnail
-		err := GenerateThumb(thumbBuffer, reqFi.Path)
+		err := pf.GenerateThumb(thumbBuffer, reqFi.Path)
 		if err != nil {
 			log.Panicln(err)
 		}
@@ -117,14 +117,14 @@ func (pf *ProcessedFile)RequestThumbnail(reqFi *md.InviteRequest_FileInfo, sm *P
 	}
 
 	// ** Unlock ** //
-	sm.mutex.Unlock()
+	pf.mutex.Unlock()
 
 	// @ 3. Callback with Preview
-	sm.call.HandleInvite(sm.Card(), sm.request, p, sm)
+	pf.call.HandleInvite(pf.Card(), pf.request, p, pf)
 }
 
 // ^ Method to Handle Provided Thumbnail ^ //
-func (pf *ProcessedFile)HandleThumbnail(reqFi *md.InviteRequest_FileInfo, sm *ProcessedFile, p *md.Peer) {
+func (pf *ProcessedFile) HandleThumbnail(reqFi *md.InviteRequest_FileInfo, p *md.Peer) {
 	// Initialize
 	thumbWriter := new(bytes.Buffer)
 	thumbReader := bytes.NewReader(reqFi.Thumbnail)
@@ -141,13 +141,13 @@ func (pf *ProcessedFile)HandleThumbnail(reqFi *md.InviteRequest_FileInfo, sm *Pr
 		log.Panicln(err)
 	}
 
-	sm.card.Preview = thumbWriter.Bytes()
+	pf.card.Preview = thumbWriter.Bytes()
 
 	// ** Unlock ** //
-	sm.mutex.Unlock()
+	pf.mutex.Unlock()
 
 	// @ 3. Callback with Preview
-	sm.call.HandleInvite(sm.Card(), sm.request, p, sm)
+	pf.call.HandleInvite(pf.Card(), pf.request, p, pf)
 }
 
 // ^ Method adjusts extension for JPEG ^ //
@@ -221,7 +221,7 @@ func (pf *ProcessedFile) EncodeFile(buf *bytes.Buffer) error {
 }
 
 // ^ Generates Scaled Thumbnail for Image: (buf) is reference to buffer ^ //
-func (pf *ProcessedFile)GenerateThumb(buf *bytes.Buffer, path string) error {
+func (pf *ProcessedFile) GenerateThumb(buf *bytes.Buffer, path string) error {
 	// @ Open File at Meta Path
 	file, err := os.Open(path)
 	if err != nil {

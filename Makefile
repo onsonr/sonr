@@ -105,4 +105,3 @@ clean:
 	rm -rf $(ANDROID_BINDDIR)
 	mkdir -p $(IOS_BINDDIR)
 	mkdir -p $(ANDROID_BINDDIR)
-	cd $(BIND_DIR) && gomobile init
