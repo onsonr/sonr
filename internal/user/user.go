@@ -84,7 +84,13 @@ func NewUser(cr *md.ConnectionRequest, callback dt.NodeCallback) (*User, error) 
 		device:  cr.Device,
 		devices: devices,
 		//Peer: *md.Peer,
-		profile: cr.GetProfile(),
+		profile: &md.Profile{
+			Username:  cr.GetUsername(),
+			FirstName: cr.Contact.GetFirstName(),
+			LastName:  cr.Contact.GetLastName(),
+			Picture:   cr.Contact.GetPicture(),
+			Platform:  cr.Device.GetPlatform(),
+		},
 		FS:      fs,
 		privKey: privKey,
 	}, nil

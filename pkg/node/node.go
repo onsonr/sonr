@@ -55,14 +55,27 @@ func NewNode(opts *net.HostOptions, call dt.NodeCallback) *Node {
 
 	// Set Protocol Router
 	node.router = net.NewProtocolRouter(opts.ConnRequest)
-	
+
 	// Start Host
+
+	return node
+}
+
+// ^ Connect Begins Assigning Host Parameters ^
+func (n *Node) Connect(opts *net.HostOptions) error {
 	var err error
-	node.host, err = libp2p.New(
-		node.ctx,
+
+	// IP Address
+	ip4 := net.IPv4()
+	ip6 := net.IPv6()
+
+	// Start Host
+	h, err := libp2p.New(
+		n.ctx,
 		// Add listening Addresses
 		libp2p.ListenAddrStrings(
-			fmt.Sprintf("/ip4/%s/tcp/0", net.IPv4())),
+			fmt.Sprintf("/ip4/%s/tcp/0", ip4),
+			fmt.Sprintf("/ip6/%s/tcp/0", ip6)),
 		libp2p.Identity(opts.PrivateKey),
 		libp2p.DefaultTransports,
 		libp2p.ConnectionManager(connmgr.NewConnManager(
@@ -72,14 +85,17 @@ func NewNode(opts *net.HostOptions, call dt.NodeCallback) *Node {
 		)),
 	)
 	if err != nil {
-		node.call.Connected(false)
-		return nil
+		return err
 	}
-	return node
-}
+	n.host = h
 
-// ^ Connect Begins Assigning Host Parameters ^
-func (n *Node) Connect(opts *net.HostOptions) bool {
+	// Create Pub Sub
+	ps, err := pubsub.NewGossipSub(n.ctx, n.host)
+	if err != nil {
+		return err
+	}
+	n.pubsub = ps
+
 	// Create GRPC Server
 	authServer := rpc.NewServer(n.host, n.router.Auth())
 
@@ -90,37 +106,26 @@ func (n *Node) Connect(opts *net.HostOptions) bool {
 	}
 
 	// Register Service
-	err := authServer.Register(&n.auth)
+	err = authServer.Register(&n.auth)
 	if err != nil {
-		return false
+		return err
 	}
-
-	// Create Pub Sub
-	ps, err := pubsub.NewGossipSub(n.ctx, n.host)
-	if err != nil {
-		sentry.CaptureException(err)
-		n.call.Connected(false)
-		return false
-	}
-	n.pubsub = ps
-	n.call.Connected(true)
-	return true
+	return nil
 }
 
 // ^ Bootstrap begins bootstrap with peers ^
-func (n *Node) Bootstrap(opts *net.HostOptions, fs *sf.FileSystem, gp dt.ReturnPeer, gpb dt.ReturnBuf) bool {
+func (n *Node) Bootstrap(opts *net.HostOptions, fs *sf.FileSystem) error {
 	// Create Bootstrapper Info
 	bootstrappers := opts.GetBootstrapAddrInfo()
+
+	// Set DHT
 	kadDHT, err := dht.New(
 		n.ctx,
 		n.host,
 		dht.BootstrapPeers(bootstrappers...),
 	)
 	if err != nil {
-		sentry.CaptureException(errors.Wrap(err, "Error while Creating routing DHT"))
-		n.call.Error(err, "Error while Creating routing DHT")
-		n.call.Ready(false)
-		return false
+		return err
 	}
 
 	// Return Connected
@@ -128,10 +133,7 @@ func (n *Node) Bootstrap(opts *net.HostOptions, fs *sf.FileSystem, gp dt.ReturnP
 
 	// Bootstrap DHT
 	if err := n.kdht.Bootstrap(n.ctx); err != nil {
-		sentry.CaptureException(errors.Wrap(err, "Error while Bootstrapping DHT"))
-		n.call.Error(err, "Error while Bootstrapping DHT")
-		n.call.Ready(false)
-		return false
+		return err
 	}
 
 	// Connect to bootstrap nodes, if any
@@ -139,16 +141,14 @@ func (n *Node) Bootstrap(opts *net.HostOptions, fs *sf.FileSystem, gp dt.ReturnP
 	for _, pi := range bootstrappers {
 		if err := n.host.Connect(n.ctx, pi); err == nil {
 			hasBootstrapped = true
+			break
 		}
-		dt.GetState().NeedsWait()
 	}
 
 	// Check if Bootstrapping Occurred
 	if !hasBootstrapped {
 		sentry.CaptureException(errors.New("Failed to connect to any bootstrap peers"))
-		return false
-	} else {
-		n.call.Ready(true)
+		return err
 	}
 
 	// Set Routing Discovery, Find Peers
@@ -156,19 +156,17 @@ func (n *Node) Bootstrap(opts *net.HostOptions, fs *sf.FileSystem, gp dt.ReturnP
 	disc.Advertise(n.ctx, routingDiscovery, n.router.GloalPoint(), discLimit.TTL(time.Second*2))
 	go n.handleDHTPeers(routingDiscovery)
 
-	// Join Local Lobby Point
-	if n.local, err = n.JoinTopic(n.router.LocalTopic(), n.router.LocalTopicExchange(), gp, gpb); err != nil {
-		sentry.CaptureException(err)
-		n.call.Error(err, "Joining Lobby")
-		n.call.Ready(false)
-		return false
-	}
-	return true
+	return nil
 }
 
-// @ ID Returns Host ID
-func (n *Node) JoinLocal() peer.ID {
-	return n.host.ID()
+// ^ Join Local Adds Node to Local Topic ^
+func (n *Node) JoinLocal(gp dt.ReturnPeer, gpb dt.ReturnBuf) error {
+	if t, err := n.JoinTopic(n.router.LocalTopic(), n.router.LocalTopicExchange(), gp, gpb); err != nil {
+		return err
+	} else {
+		n.local = t
+		return nil
+	}
 }
 
 // ^ User Node Info ^ //

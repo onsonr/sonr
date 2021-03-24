@@ -70,22 +70,33 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 // **-----------------** //
 // @ Start Host
 func (mn *MobileNode) Connect() {
-	// Connect to Host
-	if ok := mn.node.Connect(mn.hostOpts); ok {
+	// ! Connect to Host
+	if err := mn.node.Connect(mn.hostOpts); err == nil {
 		// Set Started
 		mn.hasStarted = true
 		mn.user.SetPeer(mn.node.ID().String())
+		mn.call.OnConnected(true)
 
-		// Bootstrap to Peers
-		if ok := mn.node.Bootstrap(mn.hostOpts, mn.user.FS, mn.user.Peer, mn.user.PeerBuf); ok {
+		// ! Bootstrap to Peers
+		if err := mn.node.Bootstrap(mn.hostOpts, mn.user.FS); err == nil {
+			// Update Status
 			mn.hasBootstrapped = true
+			mn.call.OnReady(true)
+
+			// ! Join Local Topic
+			if err := mn.node.JoinLocal(mn.user.Peer, mn.user.PeerBuf); err != nil {
+				sentry.CaptureException(err)
+				mn.error(err, "Joining Local Topic")
+			}
 		} else {
 			log.Println("Failed to bootstrap node")
-			return
+			sentry.CaptureException(err)
+			mn.call.OnReady(false)
 		}
 	} else {
 		log.Println("Failed to start host")
-		return
+		sentry.CaptureException(err)
+		mn.call.OnConnected(false)
 	}
 }
 
