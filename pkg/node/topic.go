@@ -227,7 +227,7 @@ type ExchangeService struct {
 }
 
 // ^ Calls Invite on Remote Peer ^ //
-func (ps *ExchangeService) ExchangeWith(ctx context.Context, args ExchangeArgs, reply *ExchangeResponse) error {
+func (es *ExchangeService) ExchangeWith(ctx context.Context, args ExchangeArgs, reply *ExchangeResponse) error {
 	// Peer Data
 	remoteLobbyRef := &md.Lobby{}
 	err := proto.Unmarshal(args.Lobby, remoteLobbyRef)
@@ -242,10 +242,10 @@ func (ps *ExchangeService) ExchangeWith(ctx context.Context, args ExchangeArgs, 
 	}
 
 	// Update Peers with Lobby
-	ps.SyncLobby(remoteLobbyRef, remotePeer)
+	es.SyncLobby(remoteLobbyRef, remotePeer)
 
 	// Return User Peer
-	userPeer := ps.GetUser()
+	userPeer := es.GetUser()
 	replyData, err := proto.Marshal(userPeer)
 	if err != nil {
 		return err
