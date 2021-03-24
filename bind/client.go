@@ -7,8 +7,8 @@ import (
 	dt "github.com/sonr-io/core/internal/data"
 	md "github.com/sonr-io/core/internal/models"
 	net "github.com/sonr-io/core/internal/network"
+	u "github.com/sonr-io/core/internal/user"
 	sn "github.com/sonr-io/core/pkg/node"
-	dq "github.com/sonr-io/core/pkg/user"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -20,7 +20,7 @@ type MobileNode struct {
 	hasBootstrapped bool
 	hostOpts        *net.HostOptions
 	status          md.Status
-	user            *dq.User
+	user            *u.User
 }
 
 // @ Create New Mobile Node
@@ -37,7 +37,7 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 	req := md.ConnectionRequest{}
 	err = proto.Unmarshal(reqBytes, &req)
 	if err != nil {
-		log.Fatalln(err)
+		sentry.CaptureException(err)
 	}
 
 	// Create Mobile Node
@@ -48,7 +48,7 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 	}
 
 	// Create New User
-	mn.user = dq.NewUser(&req, mn.nodeCallback())
+	mn.user = u.NewUser(&req, mn.nodeCallback())
 	key, err := mn.user.GetPrivateKey()
 	if err != nil {
 		sentry.CaptureException(err)
@@ -57,7 +57,7 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 	// Create Host Options
 	mn.hostOpts, err = net.NewHostOpts(&req, mn.user.FS, key)
 	if err != nil {
-		log.Println(err)
+		sentry.CaptureException(err)
 		return nil
 	}
 
