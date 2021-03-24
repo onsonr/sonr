@@ -99,7 +99,7 @@ func (sm *ProcessedFile) Card() *md.TransferCard {
 }
 
 // ^ Method to generate thumbnail for ProcessRequest^ //
-func RequestThumbnail(reqFi *md.InviteRequest_FileInfo, sm *ProcessedFile, p *md.Peer) {
+func (pf *ProcessedFile)RequestThumbnail(reqFi *md.InviteRequest_FileInfo, sm *ProcessedFile, p *md.Peer) {
 	// Initialize
 	thumbBuffer := new(bytes.Buffer)
 	// @ Handle Created File Request
@@ -124,7 +124,7 @@ func RequestThumbnail(reqFi *md.InviteRequest_FileInfo, sm *ProcessedFile, p *md
 }
 
 // ^ Method to Handle Provided Thumbnail ^ //
-func HandleThumbnail(reqFi *md.InviteRequest_FileInfo, sm *ProcessedFile, p *md.Peer) {
+func (pf *ProcessedFile)HandleThumbnail(reqFi *md.InviteRequest_FileInfo, sm *ProcessedFile, p *md.Peer) {
 	// Initialize
 	thumbWriter := new(bytes.Buffer)
 	thumbReader := bytes.NewReader(reqFi.Thumbnail)
@@ -221,7 +221,7 @@ func (pf *ProcessedFile) EncodeFile(buf *bytes.Buffer) error {
 }
 
 // ^ Generates Scaled Thumbnail for Image: (buf) is reference to buffer ^ //
-func GenerateThumb(buf *bytes.Buffer, path string) error {
+func (pf *ProcessedFile)GenerateThumb(buf *bytes.Buffer, path string) error {
 	// @ Open File at Meta Path
 	file, err := os.Open(path)
 	if err != nil {
