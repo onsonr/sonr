@@ -71,7 +71,7 @@ func (n *Node) handleDHTPeers(routingDiscovery *disc.RoutingDiscovery) {
 		// Find peers in DHT
 		peersChan, err := routingDiscovery.FindPeers(
 			n.ctx,
-			n.router.LocalPoint(),
+			n.router.MajorPoint(),
 			discLimit.Limit(16),
 		)
 		if err != nil {
@@ -93,7 +93,6 @@ func (n *Node) handleDHTPeers(routingDiscovery *disc.RoutingDiscovery) {
 					}
 				}
 			}
-			dt.GetState().NeedsWait()
 		}
 
 		// Refresh table every 4 seconds

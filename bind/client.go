@@ -101,13 +101,6 @@ func (mn *MobileNode) Connect() {
 	// Update Status
 	mn.hasBootstrapped = true
 	mn.call.OnReady(true)
-
-	// ! Join Local Topic
-	if err := mn.node.JoinLocal(); err != nil {
-		// sentry.CaptureException(err)
-		log.Println("Failed to Join Local")
-		return
-	}
 }
 
 // @ Return URL Metadata, Helper Method

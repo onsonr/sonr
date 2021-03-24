@@ -93,21 +93,6 @@ func (n *Node) Connect(opts *net.HostOptions) error {
 		return err
 	}
 	n.pubsub = ps
-
-	// Create GRPC Server
-	authServer := rpc.NewServer(n.host, n.router.Auth())
-
-	// Create AuthService
-	n.auth = AuthService{
-		call:   n.call,
-		respCh: make(chan *md.AuthReply, 1),
-	}
-
-	// Register Service
-	err = authServer.Register(&n.auth)
-	if err != nil {
-		return err
-	}
 	return nil
 }
 
@@ -150,15 +135,35 @@ func (n *Node) Bootstrap(opts *net.HostOptions, fs *sf.FileSystem) error {
 
 	// Set Routing Discovery, Find Peers
 	routingDiscovery := disc.NewRoutingDiscovery(n.kdht)
-	disc.Advertise(n.ctx, routingDiscovery, n.router.GloalPoint(), discLimit.TTL(time.Second*2))
+	disc.Advertise(n.ctx, routingDiscovery, n.router.MajorPoint(), discLimit.TTL(time.Second*2))
 	go n.handleDHTPeers(routingDiscovery)
 
-	return nil
+	// Create GRPC Server
+	authServer := rpc.NewServer(n.host, n.router.Auth())
+
+	// Create AuthService
+	n.auth = AuthService{
+		call:   n.call,
+		respCh: make(chan *md.AuthReply, 1),
+	}
+
+	// Register Service
+	err = authServer.Register(&n.auth)
+	if err != nil {
+		return err
+	}
+
+	if t, err := n.JoinTopic(n.router.LocalTopic(), n.router.TopicExchange(), n.call.GetPeer); err != nil {
+		return err
+	} else {
+		n.local = t
+		return nil
+	}
 }
 
 // ^ Join Local Adds Node to Local Topic ^
-func (n *Node) JoinLocal() error {
-	if t, err := n.JoinTopic(n.router.LocalTopic(), n.router.LocalTopicExchange(), n.call.GetPeer); err != nil {
+func (n *Node) JoinLobby(name string) error {
+	if t, err := n.JoinTopic(n.router.Topic(name), n.router.TopicExchange(), n.call.GetPeer); err != nil {
 		return err
 	} else {
 		n.local = t
