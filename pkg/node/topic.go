@@ -27,7 +27,7 @@ type TopicManager struct {
 }
 
 // ^ Create New Contained Topic Manager ^ //
-func (n *Node) NewTopicManager(pointName string) (*TopicManager, error) {
+func (n *Node) JoinTopic(pointName string) (*TopicManager, error) {
 	// Join Topic
 	topic, err := n.pubsub.Join(pointName)
 	if err != nil {

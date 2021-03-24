@@ -160,7 +160,7 @@ func (n *Node) Bootstrap(opts *net.HostOptions, fs *dq.SonrFS) bool {
 
 	// Join Local Lobby Point
 	var err error
-	if n.local, err = n.NewTopicManager(n.router.Topic(net.SetIDForLocal())); err != nil {
+	if n.local, err = n.JoinTopic(n.router.Topic(net.SetIDForLocal())); err != nil {
 		sentry.CaptureException(err)
 		n.call.Error(err, "Joining Lobby")
 		n.call.Ready(false)

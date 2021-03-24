@@ -111,7 +111,7 @@ func (pr *ProtocolRouter) Topic(opts ...*protocolRouterOption) string {
 	return "/sonr/lobby/topic"
 }
 
-// @ Lobby Exchange Protocol IDs: ONLY ONE OPTION ALLOWED
+// @ Lobby Exchange Protocol IDs
 func (pr *ProtocolRouter) Exchange(pointName string) protocol.ID {
-	return protocol.ID(fmt.Sprintf("/sonr/lobby/%s/exchange", pointName))
+	return protocol.ID("/sonr/lobby/%/exchange")
 }
