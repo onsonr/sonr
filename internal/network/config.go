@@ -26,7 +26,7 @@ type HostOptions struct {
 }
 
 // @ Returns new Host Config
-func NewHostOpts(req *md.ConnectionRequest, fs *dq.SonrFS) (*HostOptions, error) {
+func NewHostOpts(req *md.ConnectionRequest, fs *dq.FileSystem) (*HostOptions, error) {
 	// Create Bootstrapper List
 	var bootstrappers []multiaddr.Multiaddr
 	for _, s := range []string{

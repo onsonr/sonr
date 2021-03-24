@@ -17,9 +17,10 @@ import (
 
 // @ Constant Variables
 const K_SONR_CLIENT_DIR = ".sonr"
+const K_SONR_USER_PATH = "user.snr"
 
 // @ Sonr File System Struct
-type SonrFS struct {
+type FileSystem struct {
 	// Properties
 	Initialized bool
 	Devices     []*md.Device
@@ -39,7 +40,7 @@ type SonrFS struct {
 }
 
 // ^ Method Initializes Root Sonr Directory ^ //
-func InitFS(connEvent *md.ConnectionRequest, profile *md.Profile, callback dt.NodeCallback) *SonrFS {
+func InitFS(connEvent *md.ConnectionRequest, profile *md.Profile, callback dt.NodeCallback) *FileSystem {
 	// Initialize
 	var sonrPath string
 	var hasInitialized bool
@@ -68,7 +69,7 @@ func InitFS(connEvent *md.ConnectionRequest, profile *md.Profile, callback dt.No
 	}
 
 	// Create SFS
-	sfs := &SonrFS{
+	sfs := &FileSystem{
 		IsDesktop:   connEvent.Device.GetIsDesktop(),
 		Initialized: hasInitialized,
 		Downloads:   connEvent.Directories.Downloads,
@@ -104,7 +105,7 @@ func EnsureDir(path string, perm os.FileMode) error {
 }
 
 // ^ Get Key: Returns Private key from disk if found ^ //
-func (fs *SonrFS) GetPrivateKey() (crypto.PrivKey, error) {
+func (fs *FileSystem) GetPrivateKey() (crypto.PrivKey, error) {
 	if fs.Initialized {
 		// @ Set Path
 		privKeyFileName := filepath.Join(fs.Root, "snr-peer.privkey")

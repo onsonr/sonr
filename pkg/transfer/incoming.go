@@ -18,7 +18,7 @@ type IncomingFile struct {
 	// Inherited Properties
 	mutex      sync.Mutex
 	call       dt.NodeCallback
-	fs         *fs.SonrFS
+	fs         *fs.FileSystem
 	owner      *md.Profile
 	payload    md.Payload
 	properties *md.TransferCard_Properties
@@ -36,7 +36,7 @@ type IncomingFile struct {
 }
 
 // ^ Method Creates New Transfer File ^ //
-func CreateIncomingFile(inv *md.AuthInvite, fs *fs.SonrFS, tc dt.NodeCallback) *IncomingFile {
+func CreateIncomingFile(inv *md.AuthInvite, fs *fs.FileSystem, tc dt.NodeCallback) *IncomingFile {
 	// Return File
 	return &IncomingFile{
 		// Inherited Properties

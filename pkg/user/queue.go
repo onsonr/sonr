@@ -14,7 +14,7 @@ import (
 const maxFileBufferSize = 64
 
 // ^ Adds File Transfer from Invite Request ^ //
-func (fq *SonrFS) AddFromRequest(req *md.InviteRequest) {
+func (fq *FileSystem) AddFromRequest(req *md.InviteRequest) {
 
 	// Add Single File Transfer
 	safeFile := sf.NewProcessedFile(req, fq.Profile, fq.Call)
@@ -29,7 +29,7 @@ func (fq *SonrFS) AddFromRequest(req *md.InviteRequest) {
 }
 
 // ^ CurrentFile returns last file in Processed Files ^ //
-func (fq *SonrFS) CurrentFile() *sf.ProcessedFile {
+func (fq *FileSystem) CurrentFile() *sf.ProcessedFile {
 	if len(fq.Files) > 0 {
 		return fq.Files[len(fq.Files)-1]
 	} else {
@@ -38,7 +38,7 @@ func (fq *SonrFS) CurrentFile() *sf.ProcessedFile {
 }
 
 // ^ Removes Last File ^ //
-func (fq *SonrFS) CompleteLast() {
+func (fq *FileSystem) CompleteLast() {
 	if len(fq.Files) > 0 {
 		fq.Files = fq.Files[:len(fq.Files)-1]
 	}
@@ -46,14 +46,14 @@ func (fq *SonrFS) CompleteLast() {
 }
 
 // ^ Reset Current Queued File Metadata ^ //
-func (fq *SonrFS) Reset() {
+func (fq *FileSystem) Reset() {
 	fq.Files = nil
 	fq.Files = make([]*sf.ProcessedFile, maxFileBufferSize)
 	fq.CurrentCount = 0
 }
 
 // ^ Write User Data at Path ^
-func (sfs *SonrFS) WriteIncomingFile(load md.Payload, props *md.TransferCard_Properties, data []byte) (string, string) {
+func (sfs *FileSystem) WriteIncomingFile(load md.Payload, props *md.TransferCard_Properties, data []byte) (string, string) {
 	// Create File Name
 	fileName := props.Name + "." + props.Mime.Subtype
 	path := sfs.getIncomingFilePath(load, fileName)
@@ -76,7 +76,7 @@ func (sfs *SonrFS) WriteIncomingFile(load md.Payload, props *md.TransferCard_Pro
 }
 
 // @ Helper: Finds Write Path for Incoming File
-func (sfs *SonrFS) getIncomingFilePath(load md.Payload, fileName string) string {
+func (sfs *FileSystem) getIncomingFilePath(load md.Payload, fileName string) string {
 	// Check for Desktop
 	if sfs.IsDesktop {
 		return filepath.Join(sfs.Downloads, fileName)

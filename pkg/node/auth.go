@@ -98,7 +98,7 @@ func (n *Node) InviteFile(card *md.TransferCard, req *md.InviteRequest, cf *sf.P
 }
 
 // ^ Respond to an Invitation ^ //
-func (n *Node) Respond(decision bool, fs *fs.SonrFS) {
+func (n *Node) Respond(decision bool, fs *fs.FileSystem) {
 	// Check Decision
 	if decision {
 		n.host.SetStreamHandler(n.router.Transfer(), n.handleTransferIncoming)

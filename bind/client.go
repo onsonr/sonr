@@ -20,7 +20,7 @@ type MobileNode struct {
 	hasBootstrapped bool
 	hostOpts        *net.HostOptions
 	status          md.Status
-	fs              *dq.SonrFS
+	fs              *dq.FileSystem
 	profile         *md.Profile
 	contact         *md.Contact
 	device          *md.Device

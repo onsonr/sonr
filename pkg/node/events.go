@@ -147,16 +147,15 @@ func (n *Node) handleTopicMessages(tm *TopicManager) {
 		}
 
 		// Construct message
-		m := md.LobbyEvent{}
-		err = proto.Unmarshal(msg.Data, &m)
+		m := &md.LobbyEvent{}
+		err = proto.Unmarshal(msg.Data, m)
 		if err != nil {
 			continue
 		}
 
 		// Validate Peer in Lobby
 		if n.HasPeer(tm, m.Id) {
-			// Update Circle by event
-			tm.lobby.Add(m.From)
+			tm.messages <- m
 		}
 		dt.GetState().NeedsWait()
 	}

@@ -6,15 +6,22 @@ import (
 	"os"
 	"path/filepath"
 
+	dt "github.com/sonr-io/core/internal/data"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
 
-// @ Constant Variables
-const K_SONR_USER_PATH = "user.snr"
+// @ Sonr User Struct
+type User struct {
+	Call    dt.NodeCallback
+	Contact *md.Contact
+	Device  *md.Device
+	Peer    *md.Peer
+	User    *md.User
+}
 
 // ^ Method Loads User Data from Disk ^ //
-func (fs *SonrFS) LoadUser() (*md.User, error) {
+func (fs *FileSystem) LoadUser() (*md.User, error) {
 	if fs.Initialized {
 		path := filepath.Join(fs.Root, K_SONR_USER_PATH)
 
@@ -41,7 +48,7 @@ func (fs *SonrFS) LoadUser() (*md.User, error) {
 }
 
 // ^ Method Updates User Contact ^ //
-func (fs *SonrFS) SaveContact(contact *md.Contact) error {
+func (fs *FileSystem) SaveContact(contact *md.Contact) error {
 	if fs.Initialized {
 		// Load User
 		user, err := fs.LoadUser()
@@ -62,7 +69,7 @@ func (fs *SonrFS) SaveContact(contact *md.Contact) error {
 }
 
 // ^ Method Adds Device to User ^ //
-func (fs *SonrFS) SaveDevice(device *md.Device) error {
+func (fs *FileSystem) SaveDevice(device *md.Device) error {
 	if fs.Initialized {
 		// Load User
 		user, err := fs.LoadUser()
@@ -85,7 +92,7 @@ func (fs *SonrFS) SaveDevice(device *md.Device) error {
 }
 
 // ^ Write User Data at Path ^
-func (sfs *SonrFS) WriteUser(user *md.User) error {
+func (sfs *FileSystem) WriteUser(user *md.User) error {
 	userPath := filepath.Join(sfs.Root, K_SONR_USER_PATH)
 
 	// Convert User to Bytes

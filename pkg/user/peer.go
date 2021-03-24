@@ -8,6 +8,8 @@ import (
 	md "github.com/sonr-io/core/internal/models"
 )
 
+
+
 // ^ GetPeerID returns ID Reference ^ //
 func GetPeerID(device *md.Device, profile *md.Profile, peerID string) *md.Peer_ID {
 	// Initialize

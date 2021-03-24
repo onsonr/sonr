@@ -86,10 +86,7 @@ func NewNode(opts *net.HostOptions, call dt.NodeCallback) *Node {
 		return nil
 	}
 
-	// Initialize Auth Service
-
 	// Create GRPC Client/Server
-	// h.SetStreamHandler(node.router.Transfer(), peerConn.HandleIncoming)
 	rpcServer := rpc.NewServer(h, node.router.Auth())
 
 	// Create AuthService
@@ -152,7 +149,7 @@ func (n *Node) Init(opts *net.HostOptions, id *md.Peer_ID) bool {
 }
 
 // ^ Bootstrap begins bootstrap with peers ^
-func (n *Node) Bootstrap(opts *net.HostOptions, fs *dq.SonrFS) bool {
+func (n *Node) Bootstrap(opts *net.HostOptions, fs *dq.FileSystem) bool {
 	// Create Bootstrapper Info
 	bootstrappers := opts.GetBootstrapAddrInfo()
 
