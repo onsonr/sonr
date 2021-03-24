@@ -7,8 +7,46 @@ import (
 
 	mid "github.com/denisbrodbeck/machineid"
 	"github.com/getsentry/sentry-go"
+	"github.com/libp2p/go-libp2p-core/crypto"
 	md "github.com/sonr-io/core/internal/models"
+	"google.golang.org/protobuf/proto"
 )
+
+// ^ Get Peer returns Users Contact ^ //
+func (u *User) Contact() *md.Contact {
+	return u.contact
+}
+
+// ^ Get Peer returns Users Current device ^ //
+func (u *User) Device() *md.Device {
+	return u.device
+}
+
+// ^ Get Peer returns Current Peer ^ //
+func (u *User) Peer() *md.Peer {
+	return u.peer
+}
+
+// ^ Peer returns Current Peer Info as Buffer
+func (u *User) PeerBuf() []byte {
+	// Convert to bytes
+	buf, err := proto.Marshal(u.peer)
+	if err != nil {
+		sentry.CaptureException(err)
+		return nil
+	}
+	return buf
+}
+
+// ^ Get Key: Returns Private key from disk if found ^ //
+func (u *User) PrivateKey() crypto.PrivKey {
+	return u.privKey
+}
+
+// ^ Get Peer returns Peers Profile ^ //
+func (u *User) Profile() *md.Profile {
+	return u.profile
+}
 
 // ^ Updates Current Contact Card ^
 func (u *User) SetContact(newContact *md.Contact) error {

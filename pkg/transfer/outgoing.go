@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 
+	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
 
 	msgio "github.com/libp2p/go-msgio"
@@ -19,11 +20,11 @@ const B64ChunkSize = 31998 // Adjusted for Base64 -- has to be divisible by 3
 
 type OutgoingFile struct {
 	call          dt.NodeCallback
-	processedFile *dt.ProcessedFile
+	processedFile *sf.ProcessedFile
 }
 
 // ^ Creates New Outgoing ^ //
-func CreateOutgoingFile(pf *dt.ProcessedFile, tc dt.NodeCallback) *OutgoingFile {
+func CreateOutgoingFile(pf *sf.ProcessedFile, tc dt.NodeCallback) *OutgoingFile {
 	return &OutgoingFile{
 		call:          tc,
 		processedFile: pf,

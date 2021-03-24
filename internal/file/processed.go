@@ -4,15 +4,11 @@ import (
 	"bytes"
 	"image"
 	"image/jpeg"
-	"image/png"
-	"io/ioutil"
 	"log"
-	"math"
-	"os"
 	"sync"
 
-	"github.com/nfnt/resize"
 	md "github.com/sonr-io/core/internal/models"
+	dt "github.com/sonr-io/core/pkg/data"
 )
 
 // @ File that safely sets metadata and thumbnail in routine
@@ -35,7 +31,7 @@ func ProcessedFileBuilder() interface{} {
 }
 
 // ^ NewProcessedFile Processes Outgoing File ^ //
-func NewProcessedFile(req *md.InviteRequest, p *md.Peer, callback dt.NodeCallback) *ProcessedFile {
+func NewProcessedFile(req *md.InviteRequest, p *md.Profile, callback dt.NodeCallback) *ProcessedFile {
 	// Check Values
 	if req == nil || p == nil {
 		return nil
@@ -43,7 +39,7 @@ func NewProcessedFile(req *md.InviteRequest, p *md.Peer, callback dt.NodeCallbac
 
 	// Get File Information
 	file := req.Files[len(req.Files)-1]
-	info, err := GetFileInfo(file.Path)
+	info, err := dt.GetFileInfo(file.Path)
 	if err != nil {
 		callback.Error(err, "NewProcessedFile:GetFileInfo")
 	}
@@ -68,9 +64,9 @@ func NewProcessedFile(req *md.InviteRequest, p *md.Peer, callback dt.NodeCallbac
 		Platform: p.Platform,
 
 		// Owner Properties
-		Username:  p.Profile.Username,
-		FirstName: p.Profile.FirstName,
-		LastName:  p.Profile.LastName,
+		Username:  p.Username,
+		FirstName: p.FirstName,
+		LastName:  p.LastName,
 
 		Properties: &md.TransferCard_Properties{
 			Name: info.Name,
@@ -81,9 +77,9 @@ func NewProcessedFile(req *md.InviteRequest, p *md.Peer, callback dt.NodeCallbac
 
 	// @ 3. Create Thumbnail in Goroutine
 	if len(file.Thumbnail) > 0 {
-		go sm.HandleThumbnail(file, sm, p)
+		go HandleThumbnail(file, sm)
 	} else {
-		go sm.RequestThumbnail(file, sm, p)
+		go RequestThumbnail(file, sm)
 	}
 	return sm
 }
@@ -99,14 +95,14 @@ func (sm *ProcessedFile) Card() *md.TransferCard {
 }
 
 // ^ Method to generate thumbnail for ProcessRequest^ //
-func (pf *ProcessedFile) RequestThumbnail(reqFi *md.InviteRequest_FileInfo, p *md.Peer) {
+func RequestThumbnail(reqFi *md.InviteRequest_FileInfo, sm *ProcessedFile) {
 	// Initialize
 	thumbBuffer := new(bytes.Buffer)
 	// @ Handle Created File Request
 	// Validate Image
 	if sm.mime.Type == md.MIME_image {
 		// Encode Thumbnail
-		err := pf.GenerateThumb(thumbBuffer, reqFi.Path)
+		err := GenerateThumb(thumbBuffer, reqFi.Path)
 		if err != nil {
 			log.Panicln(err)
 		}
@@ -117,14 +113,17 @@ func (pf *ProcessedFile) RequestThumbnail(reqFi *md.InviteRequest_FileInfo, p *m
 	}
 
 	// ** Unlock ** //
-	pf.mutex.Unlock()
+	sm.mutex.Unlock()
+
+	// Get Transfer Card
+	preview := sm.Card()
 
 	// @ 3. Callback with Preview
-	pf.call.HandleInvite(pf.Card(), pf.request, p, pf)
+	sm.call.Queued(preview, sm.request)
 }
 
 // ^ Method to Handle Provided Thumbnail ^ //
-func (pf *ProcessedFile) HandleThumbnail(reqFi *md.InviteRequest_FileInfo, p *md.Peer) {
+func HandleThumbnail(reqFi *md.InviteRequest_FileInfo, sm *ProcessedFile) {
 	// Initialize
 	thumbWriter := new(bytes.Buffer)
 	thumbReader := bytes.NewReader(reqFi.Thumbnail)
@@ -141,119 +140,14 @@ func (pf *ProcessedFile) HandleThumbnail(reqFi *md.InviteRequest_FileInfo, p *md
 		log.Panicln(err)
 	}
 
-	pf.card.Preview = thumbWriter.Bytes()
+	sm.card.Preview = thumbWriter.Bytes()
 
 	// ** Unlock ** //
-	pf.mutex.Unlock()
+	sm.mutex.Unlock()
+
+	// Get Transfer Card
+	preview := sm.Card()
 
 	// @ 3. Callback with Preview
-	pf.call.HandleInvite(pf.Card(), pf.request, p, pf)
-}
-
-// ^ Method adjusts extension for JPEG ^ //
-func (pf *ProcessedFile) ext() string {
-	if pf.mime.Subtype == "jpg" || pf.mime.Subtype == "jpeg" {
-		return "jpeg"
-	}
-	return pf.mime.Subtype
-}
-
-// ^ Method Processes File at Path^ //
-func (pf *ProcessedFile) EncodeFile(buf *bytes.Buffer) error {
-	// @ Jpeg Image
-	if ext := pf.ext(); ext == "jpg" {
-		// Open File at Meta Path
-		file, err := os.Open(pf.Path)
-		if err != nil {
-			return err
-		}
-		defer file.Close()
-
-		// Convert to Image Object
-		img, _, err := image.Decode(file)
-		if err != nil {
-			return err
-		}
-
-		// Encode as Jpeg into buffer
-		err = jpeg.Encode(buf, img, &jpeg.Options{Quality: 100})
-		if err != nil {
-			return err
-		}
-		return nil
-
-		// @ PNG Image
-	} else if ext == "png" {
-		// Open File at Meta Path
-		file, err := os.Open(pf.Path)
-		if err != nil {
-			return err
-		}
-		defer file.Close()
-
-		// Convert to Image Object
-		img, _, err := image.Decode(file)
-		if err != nil {
-			return err
-		}
-
-		// Encode as Jpeg into buffer
-		err = png.Encode(buf, img)
-		if err != nil {
-			return err
-		}
-		return nil
-
-		// @ Other - Open File at Path
-	} else {
-		dat, err := ioutil.ReadFile(pf.Path)
-		if err != nil {
-			return err
-		}
-
-		// Write Bytes to buffer
-		_, err = buf.Write(dat)
-		if err != nil {
-			return err
-		}
-		return nil
-	}
-}
-
-// ^ Generates Scaled Thumbnail for Image: (buf) is reference to buffer ^ //
-func (pf *ProcessedFile) GenerateThumb(buf *bytes.Buffer, path string) error {
-	// @ Open File at Meta Path
-	file, err := os.Open(path)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	// Convert to Image Object
-	img, _, err := image.Decode(file)
-	if err != nil {
-		return err
-	}
-
-	// Retreive Bounds
-	b := img.Bounds()
-	w, h := b.Max.X, b.Max.Y
-
-	// ** Resize Constants ** //
-	const MAX_WIDTH float64 = 320
-	const MAX_HEIGHT float64 = 240
-
-	// Get Ratio
-	ratio := math.Min(MAX_WIDTH/float64(w), MAX_HEIGHT/float64(h))
-
-	// Calculate Fit and Scale Image
-	newW, newH := int(math.Ceil(float64(w)*ratio)), int(math.Ceil(float64(h)*ratio))
-	scaledImage := resize.Resize(uint(newW), uint(newH), img, resize.Lanczos3)
-
-	// @ Encode as Jpeg into buffer
-	err = jpeg.Encode(buf, scaledImage, nil)
-	if err != nil {
-		log.Panicln(err)
-	}
-	return nil
+	sm.call.Queued(preview, sm.request)
 }

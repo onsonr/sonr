@@ -14,6 +14,7 @@ import (
 	swarm "github.com/libp2p/go-libp2p-swarm"
 	msgio "github.com/libp2p/go-msgio"
 	"github.com/pkg/errors"
+	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
 	dt "github.com/sonr-io/core/pkg/data"
 	tr "github.com/sonr-io/core/pkg/transfer"
@@ -21,7 +22,7 @@ import (
 )
 
 // ^ handleAuthInviteResponse: Handles User sent AuthInvite Response ^
-func (n *Node) handleAuthInviteResponse(id peer.ID, inv *md.AuthInvite, p *md.Peer, cf *dt.ProcessedFile) {
+func (n *Node) handleAuthInviteResponse(id peer.ID, inv *md.AuthInvite, p *md.Peer, cf *sf.ProcessedFile) {
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(inv)
 	if err != nil {
@@ -53,7 +54,7 @@ func (n *Node) handleAuthInviteResponse(id peer.ID, inv *md.AuthInvite, p *md.Pe
 }
 
 // ^ handleAcceptedFileRequest: Begins File Transfer if Accepted ^
-func (n *Node) handleAcceptedFileRequest(id peer.ID, p *md.Peer, cf *dt.ProcessedFile, data []byte) {
+func (n *Node) handleAcceptedFileRequest(id peer.ID, p *md.Peer, cf *sf.ProcessedFile, data []byte) {
 	// AuthReply Message
 	resp := md.AuthReply{}
 	err := proto.Unmarshal(data, &resp)

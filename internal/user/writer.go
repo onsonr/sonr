@@ -5,26 +5,6 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// ^ Method Loads User Data from Disk ^ //
-func (u *User) LoadUser() (*md.User, error) {
-	// Read File
-	dat, err := u.FS.ReadFile(K_SONR_USER_PATH)
-	if err != nil {
-		return nil, err
-	}
-
-	// Get User Data
-	user := &md.User{}
-	err = proto.Unmarshal(dat, user)
-	if err != nil {
-		return nil, err
-	}
-
-	// Set and Return
-	u.protoRef = user
-	return user, nil
-}
-
 // ^ Method Updates User Contact ^ //
 func (u *User) SaveContact(contact *md.Contact) error {
 	// Load User

@@ -26,7 +26,6 @@ func (mn *MobileNode) Message(msg string, to string) {
 // @ Invite Processes Data and Sends Invite to Peer
 func (mn *MobileNode) Invite(reqBytes []byte) {
 	if mn.isReady() {
-		mn.status = md.Status_PENDING
 		// Initialize from Request
 		req := &md.InviteRequest{}
 		err := proto.Unmarshal(reqBytes, req)
@@ -40,12 +39,10 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 		} else if req.Type == md.InviteRequest_URL {
 			mn.node.InviteLink(req, mn.user.Peer())
 		} else {
-			err := mn.user.FS.AddFromRequest(req, mn.user.Peer())
-			if err != nil {
-				mn.error(err, "AddFromRequest")
-			}
-			mn.status = md.Status_AVAILABLE
+			mn.user.FS.AddFromRequest(req, mn.user.Profile())
 		}
+
+		mn.status = md.Status_PENDING
 	}
 }
 

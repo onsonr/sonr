@@ -17,6 +17,11 @@ type ReturnPeer func() *md.Peer
 type ReturnBuf func() []byte
 type SyncLobby func(ref *md.Lobby, peer *md.Peer)
 
+type FileCallback struct {
+	Queued OnQueued
+	Error  OnError
+}
+
 type NodeCallback struct {
 	Connected   OnBool
 	Ready       OnBool
