@@ -48,7 +48,7 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 // @ Respond to an Invite with Decision
 func (mn *MobileNode) Respond(decs bool) {
 	if mn.isReady() {
-		mn.node.Respond(decs)
+		mn.node.Respond(decs, mn.fs)
 		// Update Status
 		if decs {
 			mn.status = md.Status_INPROGRESS
@@ -61,7 +61,8 @@ func (mn *MobileNode) Respond(decs bool) {
 // @ Join Existing Group
 func (mn *MobileNode) JoinRemote(data string) {
 	if mn.isReady() {
-		mn.node.JoinRemote(data)
+		// mn.node.JoinRemote(data)
+		log.Println(data)
 	}
 }
 

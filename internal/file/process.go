@@ -15,7 +15,7 @@ import (
 type ProcessedFile struct {
 	// References
 	Payload md.Payload
-	call    dt.FileCallback
+	call    dt.NodeCallback
 	mime    *md.MIME
 	Path    string
 
@@ -26,7 +26,7 @@ type ProcessedFile struct {
 }
 
 // ^ NewProcessedFile Processes Outgoing File ^ //
-func NewProcessedFile(req *md.InviteRequest, p *md.Profile, callback dt.FileCallback) *ProcessedFile {
+func NewProcessedFile(req *md.InviteRequest, p *md.Profile, callback dt.NodeCallback) *ProcessedFile {
 	// Check Values
 	if req == nil || p == nil {
 		return nil

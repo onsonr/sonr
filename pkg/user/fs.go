@@ -34,12 +34,12 @@ type SonrFS struct {
 	// Queue
 	Files        []*sf.ProcessedFile
 	CurrentCount int
-	Call         dt.FileCallback
+	Call         dt.NodeCallback
 	Profile      *md.Profile
 }
 
 // ^ Method Initializes Root Sonr Directory ^ //
-func InitFS(connEvent *md.ConnectionRequest, profile *md.Profile, callback dt.FileCallback) *SonrFS {
+func InitFS(connEvent *md.ConnectionRequest, profile *md.Profile, callback dt.NodeCallback) *SonrFS {
 	// Initialize
 	var sonrPath string
 	var hasInitialized bool

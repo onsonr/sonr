@@ -62,7 +62,7 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 	// Set Default Properties
 	mn.contact = req.Contact
 	mn.device = req.Device
-	mn.fs = dq.InitFS(&req, mn.profile, mn.fSCallback())
+	mn.fs = dq.InitFS(&req, mn.profile, mn.nodeCallback())
 
 	// Create Host Options
 	mn.hostOpts, err = net.NewHostOpts(&req, mn.fs)

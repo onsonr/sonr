@@ -47,14 +47,6 @@ func (mn *MobileNode) nodeCallback() dt.NodeCallback {
 	}
 }
 
-// ^ Passes node methods for FS/FQ ^
-func (mn *MobileNode) fSCallback() dt.FileCallback {
-	return dt.FileCallback{
-		Queued: mn.queued,
-		Error:  mn.error,
-	}
-}
-
 // ^ queued Callback, Sends File Invite to Peer, and Notifies Client ^
 func (mn *MobileNode) queued(card *md.TransferCard, req *md.InviteRequest) {
 	// Retreive Current File
