@@ -26,7 +26,7 @@ PB_BUILD_CORE="--go_out=$(CORE_PB_DIR)"
 PB_BUILD_PLUGIN="--dart_out=$(PLUGIN_PB_DIR)"
 
 all: Makefile
-	@echo '--- Sonr Core Module Actions ---'
+	@figlet -f slant Sonr Core Actions
 	@echo ''
 	@sed -n 's/^##//p ' $<
 
