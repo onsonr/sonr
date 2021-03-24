@@ -62,7 +62,7 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 	// Set Default Properties
 	mn.contact = req.Contact
 	mn.device = req.Device
-	mn.fs = dq.InitFS(&req, mn.profile, mn.FSCallback())
+	mn.fs = dq.InitFS(&req, mn.profile, mn.fSCallback())
 
 	// Get Private Key
 	privKey, err := mn.fs.GetPrivateKey()
@@ -78,7 +78,7 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 	}
 
 	// Create Node
-	mn.node = sn.NewNode(mn.hostOpts, mn.NodeCallback())
+	mn.node = sn.NewNode(mn.hostOpts, mn.nodeCallback())
 	return mn
 }
 
@@ -87,10 +87,9 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 // **-----------------** //
 // @ Start Host
 func (mn *MobileNode) Connect() {
-
 	// Start Node
 	peerId := dq.GetPeerID(mn.device, mn.profile, mn.node.ID().String())
-	result := mn.node.Start(mn.hostOpts, peerId)
+	result := mn.node.Init(mn.hostOpts, peerId)
 
 	// Check Result
 	if result {

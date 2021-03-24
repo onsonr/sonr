@@ -90,8 +90,8 @@ func NewNode(opts *net.HostOptions, call md.NodeCallback) *Node {
 	return node
 }
 
-// ^ Start Begins Running Libp2p Host ^
-func (n *Node) Start(opts *net.HostOptions, id *md.Peer_ID) bool {
+// ^ Init Begins Assigning Host Parameters ^
+func (n *Node) Init(opts *net.HostOptions, id *md.Peer_ID) bool {
 	// Set Peer Info
 	n.peer = &md.Peer{
 		Id:       id,

@@ -26,7 +26,7 @@ type Callback interface {
 }
 
 // ^ Passes binded Methods to Node ^
-func (mn *MobileNode) NodeCallback() md.NodeCallback {
+func (mn *MobileNode) nodeCallback() md.NodeCallback {
 	return md.NodeCallback{
 		// Direct
 		Connected:   mn.call.OnConnected,
@@ -47,7 +47,7 @@ func (mn *MobileNode) NodeCallback() md.NodeCallback {
 }
 
 // ^ Passes node methods for FS/FQ ^
-func (mn *MobileNode) FSCallback() md.FileCallback {
+func (mn *MobileNode) fSCallback() md.FileCallback {
 	return md.FileCallback{
 		Queued: mn.queued,
 		Error:  mn.error,

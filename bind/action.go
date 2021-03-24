@@ -3,29 +3,27 @@ package bind
 import (
 	"log"
 
-	"github.com/getsentry/sentry-go"
 	md "github.com/sonr-io/core/internal/models"
-	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )
 
 // @ Update proximity/direction and Notify Lobby
 func (mn *MobileNode) Update(facing float64, heading float64) {
-	if mn.IsReady() {
+	if mn.isReady() {
 		mn.node.Update(facing, heading)
 	}
 }
 
 // @ Send Direct Message to Peer in Lobby
 func (mn *MobileNode) Message(msg string, to string) {
-	if mn.IsReady() {
+	if mn.isReady() {
 		mn.node.Message(msg, to)
 	}
 }
 
 // @ Invite Processes Data and Sends Invite to Peer
 func (mn *MobileNode) Invite(reqBytes []byte) {
-	if mn.IsReady() {
+	if mn.isReady() {
 		// Initialize from Request
 		req := &md.InviteRequest{}
 		err := proto.Unmarshal(reqBytes, req)
@@ -47,7 +45,7 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 
 // @ Respond to an Invite with Decision
 func (mn *MobileNode) Respond(decs bool) {
-	if mn.IsReady() {
+	if mn.isReady() {
 		mn.node.Respond(decs)
 		// Update Status
 		if decs {
@@ -60,35 +58,15 @@ func (mn *MobileNode) Respond(decs bool) {
 
 // @ Join Existing Group
 func (mn *MobileNode) JoinRemote(data string) {
-	if mn.IsReady() {
+	if mn.isReady() {
 		mn.node.JoinRemote(data)
 	}
 }
 
 // ** User Actions ** //
-// @ Link with a QR Code
-func (mn *MobileNode) LinkDevice(json string) {
-	if mn.IsReady() {
-		// Convert String to Bytes
-		request := md.LinkRequest{}
-
-		// Convert to Peer Protobuf
-		err := protojson.Unmarshal([]byte(json), &request)
-		if err != nil {
-			sentry.CaptureException(err)
-		}
-
-		// Link Device
-		err = mn.fs.SaveDevice(request.Device)
-		if err != nil {
-			sentry.CaptureException(err)
-		}
-	}
-}
-
 // @ Updates Current Contact Card
 func (mn *MobileNode) SetContact(conBytes []byte) {
-	if mn.IsReady() {
+	if mn.isReady() {
 		// Unmarshal Data
 		newContact := &md.Contact{}
 		err := proto.Unmarshal(conBytes, newContact)
@@ -97,4 +75,28 @@ func (mn *MobileNode) SetContact(conBytes []byte) {
 		}
 		mn.node.SetContact(newContact)
 	}
+}
+
+// **-------------------** //
+// ** LifeCycle Actions ** //
+// **-------------------** //
+// @ Checks for is Ready
+func (mn *MobileNode) isReady() bool {
+	return mn.hasBootstrapped && mn.hasStarted
+}
+
+// @ Close Ends All Network Communication
+func (mn *MobileNode) Pause() {
+	mn.node.Pause()
+}
+
+// @ Close Ends All Network Communication
+func (mn *MobileNode) Resume() {
+	mn.node.Resume()
+}
+
+// @ Close Ends All Network Communication
+func (mn *MobileNode) Stop() {
+	// Check if Response Is Invited
+	mn.node.Close()
 }
