@@ -8,6 +8,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	dt "github.com/sonr-io/core/internal/data"
 	md "github.com/sonr-io/core/internal/models"
 	net "github.com/sonr-io/core/internal/network"
 	"google.golang.org/protobuf/proto"
@@ -145,7 +146,7 @@ func (tr *TransferController) handleRemoteEvents() {
 				tr.remote.peerchan <- lobEvent.Peer
 				return
 			}
-			md.GetState().NeedsWait()
+			dt.GetState().NeedsWait()
 		}
 	}
 }

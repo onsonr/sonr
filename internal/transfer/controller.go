@@ -9,6 +9,7 @@ import (
 	gorpc "github.com/libp2p/go-libp2p-gorpc"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	msgio "github.com/libp2p/go-msgio"
+	dt "github.com/sonr-io/core/internal/data"
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
 	net "github.com/sonr-io/core/internal/network"
@@ -32,14 +33,14 @@ type TransferController struct {
 	incoming *IncomingFile
 
 	// Callbacks
-	call md.TransferCallback
+	call dt.TransferCallback
 
 	// Info
 	fs *fs.SonrFS
 }
 
 // ^ Initialize sets up new Peer Connection handler ^
-func Initialize(ctx context.Context, h host.Host, ps *pubsub.PubSub, fs *fs.SonrFS, pr *net.ProtocolRouter, tc md.TransferCallback) (*TransferController, error) {
+func Initialize(ctx context.Context, h host.Host, ps *pubsub.PubSub, fs *fs.SonrFS, pr *net.ProtocolRouter, tc dt.TransferCallback) (*TransferController, error) {
 	// Initialize Parameters into PeerConnection
 	peerConn := &TransferController{
 		router: pr,
@@ -125,7 +126,7 @@ func (pc *TransferController) HandleIncoming(stream network.Stream) {
 				}
 				break
 			}
-			md.GetState().NeedsWait()
+			dt.GetState().NeedsWait()
 		}
 	}(msgio.NewReader(stream), pc.incoming)
 }

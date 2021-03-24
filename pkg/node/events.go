@@ -9,6 +9,7 @@ import (
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	swarm "github.com/libp2p/go-libp2p-swarm"
 	"github.com/pkg/errors"
+	dt "github.com/sonr-io/core/internal/data"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -49,11 +50,11 @@ func (n *Node) handleDHTPeers(routingDiscovery *disc.RoutingDiscovery) {
 					}
 				}
 			}
-			md.GetState().NeedsWait()
+			dt.GetState().NeedsWait()
 		}
 
 		// Refresh table every 4 seconds
-		md.GetState().NeedsWait()
+		dt.GetState().NeedsWait()
 		<-time.After(time.Second * 2)
 	}
 }
@@ -77,7 +78,7 @@ func (n *Node) handleTopicEvents(tm *TopicManager) {
 			tm.lobby.Remove(lobEvent.Peer)
 		}
 
-		md.GetState().NeedsWait()
+		dt.GetState().NeedsWait()
 	}
 }
 
@@ -107,6 +108,6 @@ func (n *Node) handleTopicMessages(tm *TopicManager) {
 			// Update Circle by event
 			tm.lobby.Add(m.From)
 		}
-		md.GetState().NeedsWait()
+		dt.GetState().NeedsWait()
 	}
 }

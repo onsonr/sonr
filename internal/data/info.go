@@ -1,4 +1,4 @@
-package models
+package data
 
 import (
 	"log"
@@ -8,12 +8,13 @@ import (
 	"time"
 
 	"github.com/h2non/filetype"
+	md "github.com/sonr-io/core/internal/models"
 )
 
 // ^ Struct returned on GetInfo() Generate Preview/Metadata
 type FileInfo struct {
-	Mime    *MIME
-	Payload Payload
+	Mime    *md.MIME
+	Payload md.Payload
 	Name    string
 	Path    string
 	Size    int32
@@ -23,17 +24,17 @@ type FileInfo struct {
 // ^ Struct to Pass Invite and Response Info
 type AuthOpts struct {
 	Decision bool
-	Contact  *Contact
-	Peer     *Peer
-	Offered  Payload
+	Contact  *md.Contact
+	Peer     *md.Peer
+	Offered  md.Payload
 	IsCancel bool
 }
 
 // ^ Method Returns File Info at Path ^ //
 func GetFileInfo(path string) (FileInfo, error) {
 	// Initialize
-	var mime *MIME
-	var payload Payload
+	var mime *md.MIME
+	var payload md.Payload
 
 	// @ 1. Get File Information
 	// Open File at Path
@@ -63,30 +64,30 @@ func GetFileInfo(path string) (FileInfo, error) {
 	}
 
 	// @ 2. Create Mime Protobuf
-	mime = &MIME{
-		Type:    MIME_Type(MIME_Type_value[kind.MIME.Type]),
+	mime = &md.MIME{
+		Type:    md.MIME_Type(md.MIME_Type_value[kind.MIME.Type]),
 		Subtype: kind.MIME.Subtype,
 		Value:   kind.MIME.Value,
 	}
 
 	// @ 3. Find Payload
-	if mime.Type == MIME_image || mime.Type == MIME_video || mime.Type == MIME_audio {
-		payload = Payload_MEDIA
+	if mime.Type == md.MIME_image || mime.Type == md.MIME_video || mime.Type == md.MIME_audio {
+		payload = md.Payload_MEDIA
 	} else {
 		// Get Extension
 		ext := filepath.Ext(path)
 
 		// Cross Check Extension
 		if ext == ".pdf" {
-			payload = Payload_PDF
+			payload = md.Payload_PDF
 		} else if ext == ".ppt" || ext == ".pptx" {
-			payload = Payload_PRESENTATION
+			payload = md.Payload_PRESENTATION
 		} else if ext == ".xls" || ext == ".xlsm" || ext == ".xlsx" || ext == ".csv" {
-			payload = Payload_SPREADSHEET
+			payload = md.Payload_SPREADSHEET
 		} else if ext == ".txt" || ext == ".doc" || ext == ".docx" || ext == ".ttf" {
-			payload = Payload_TEXT
+			payload = md.Payload_TEXT
 		} else {
-			payload = Payload_UNDEFINED
+			payload = md.Payload_UNDEFINED
 		}
 	}
 
@@ -102,10 +103,10 @@ func GetFileInfo(path string) (FileInfo, error) {
 }
 
 // ^ Method Generates new Transfer Card from Contact^ //
-func NewCardFromContact(p *Peer, c *Contact, status TransferCard_Status) TransferCard {
-	return TransferCard{
+func NewCardFromContact(p *md.Peer, c *md.Contact, status md.TransferCard_Status) md.TransferCard {
+	return md.TransferCard{
 		// SQL Properties
-		Payload:  Payload_CONTACT,
+		Payload:  md.Payload_CONTACT,
 		Received: int32(time.Now().Unix()),
 		Preview:  p.Profile.Picture,
 		Platform: p.Platform,
@@ -124,16 +125,16 @@ func NewCardFromContact(p *Peer, c *Contact, status TransferCard_Status) Transfe
 }
 
 // ^ Method Generates new Transfer Card from URL ^ //
-func NewCardFromUrl(p *Peer, url string, status TransferCard_Status) TransferCard {
+func NewCardFromUrl(p *md.Peer, url string, status md.TransferCard_Status) md.TransferCard {
 	// Get URL Data
 	urlInfo, err := GetPageInfoFromUrl(url)
 	if err != nil {
 		log.Println(err)
 
 		// Return Card
-		return TransferCard{
+		return md.TransferCard{
 			// SQL Properties
-			Payload:  Payload_URL,
+			Payload:  md.Payload_URL,
 			Received: int32(time.Now().Unix()),
 			Platform: p.Platform,
 
@@ -146,15 +147,15 @@ func NewCardFromUrl(p *Peer, url string, status TransferCard_Status) TransferCar
 			LastName:  p.Profile.LastName,
 
 			// Data Properties
-			Url: &URLLink{
+			Url: &md.URLLink{
 				Link: url,
 			},
 		}
 	} else {
 		// Return Card
-		return TransferCard{
+		return md.TransferCard{
 			// SQL Properties
-			Payload:  Payload_URL,
+			Payload:  md.Payload_URL,
 			Received: int32(time.Now().Unix()),
 			Platform: p.Platform,
 
@@ -173,24 +174,24 @@ func NewCardFromUrl(p *Peer, url string, status TransferCard_Status) TransferCar
 }
 
 // ^ Method Creates AuthInvite from Request ^ //
-func NewInviteFromRequest(req *InviteRequest, p *Peer) AuthInvite {
+func NewInviteFromRequest(req *md.InviteRequest, p *md.Peer) md.AuthInvite {
 	// Initialize
-	var card TransferCard
-	var payload Payload
+	var card md.TransferCard
+	var payload md.Payload
 
 	// Determine Payload
-	if req.Type == InviteRequest_Contact {
-		payload = Payload_CONTACT
-		card = NewCardFromContact(p, req.Contact, TransferCard_DIRECT)
-	} else if req.Type == InviteRequest_URL {
-		payload = Payload_URL
-		card = NewCardFromUrl(p, req.Url, TransferCard_DIRECT)
+	if req.Type == md.InviteRequest_Contact {
+		payload = md.Payload_CONTACT
+		card = NewCardFromContact(p, req.Contact, md.TransferCard_DIRECT)
+	} else if req.Type == md.InviteRequest_URL {
+		payload = md.Payload_URL
+		card = NewCardFromUrl(p, req.Url, md.TransferCard_DIRECT)
 	} else {
-		payload = Payload_UNDEFINED
+		payload = md.Payload_UNDEFINED
 	}
 
 	// Return Protobuf
-	return AuthInvite{
+	return md.AuthInvite{
 		IsRemote: req.IsRemote,
 		From:     p,
 		Payload:  payload,

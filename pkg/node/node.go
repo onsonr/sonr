@@ -14,6 +14,7 @@ import (
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/pkg/errors"
+	dt "github.com/sonr-io/core/internal/data"
 	md "github.com/sonr-io/core/internal/models"
 	net "github.com/sonr-io/core/internal/network"
 	tr "github.com/sonr-io/core/internal/transfer"
@@ -148,7 +149,7 @@ func (n *Node) Bootstrap(opts *net.HostOptions, fs *dq.SonrFS) bool {
 		if err := n.host.Connect(n.ctx, pi); err == nil {
 			hasBootstrapped = true
 		}
-		md.GetState().NeedsWait()
+		dt.GetState().NeedsWait()
 	}
 
 	// Check if Bootstrapping Occurred

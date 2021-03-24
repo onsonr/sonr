@@ -15,12 +15,12 @@ type Lobby struct {
 	Peers map[string]*md.Peer
 
 	// Private Properties
-	callRefresh md.OnProtobuf
+	callRefresh OnProtobuf
 	user        *md.Peer
 }
 
 // ^ Create New Circle  ^
-func NewLobby(u *md.Peer, cr md.OnProtobuf) *Lobby {
+func NewLobby(u *md.Peer, cr OnProtobuf) *Lobby {
 	return &Lobby{
 		user:        u,
 		callRefresh: cr,

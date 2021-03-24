@@ -1,34 +1,21 @@
-package models
+package data
+
+import (
+	md "github.com/sonr-io/core/internal/models"
+)
 
 // Define Function Types
 type OnBool func(bool)
 type OnProtobuf func([]byte)
-type OnQueued func(card *TransferCard, req *InviteRequest)
+type OnQueued func(card *md.TransferCard, req *md.InviteRequest)
 type OnInvite func(data []byte)
 type OnProgress func(data float32)
-type OnReceived func(data *TransferCard)
-type OnTransmitted func(data *Peer)
+type OnReceived func(data *md.TransferCard)
+type OnTransmitted func(data *md.Peer)
 type OnError func(err error, method string)
-type ReturnPeer func() *Peer
+type ReturnPeer func() *md.Peer
 type ReturnBuf func() []byte
-type SyncLobby func(ref *Lobby, peer *Peer)
-
-type LobbyCallback struct {
-	Event   OnProtobuf
-	Refresh OnProtobuf
-	Error   OnError
-	Peer    ReturnPeer
-}
-
-// ^ Creates New Lobby Callback ^ //
-func NewLobbyCallback(callEvent OnProtobuf, callRefresh OnProtobuf, callError OnError, getPeer ReturnPeer) LobbyCallback {
-	return LobbyCallback{
-		Event:   callEvent,
-		Refresh: callRefresh,
-		Error:   callError,
-		Peer:    getPeer,
-	}
-}
+type SyncLobby func(ref *md.Lobby, peer *md.Peer)
 
 type TransferCallback struct {
 	Invited     OnInvite
@@ -54,8 +41,8 @@ func NewTransferCallback(callInvited OnInvite, callRemote OnProtobuf, callRespon
 }
 
 type FileCallback struct {
-	Queued      OnQueued
-	Error       OnError
+	Queued OnQueued
+	Error  OnError
 }
 
 type NodeCallback struct {

@@ -10,6 +10,7 @@ import (
 	md "github.com/sonr-io/core/internal/models"
 
 	msgio "github.com/libp2p/go-msgio"
+	dt "github.com/sonr-io/core/internal/data"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -18,12 +19,12 @@ const B64ChunkSize = 31998 // Adjusted for Base64 -- has to be divisible by 3
 const BufferChunkSize = 32000
 
 type OutgoingFile struct {
-	call          md.TransferCallback
+	call          dt.TransferCallback
 	processedFile *sf.ProcessedFile
 }
 
 // ^ Creates New Outgoing ^ //
-func NewOutgoingFile(pf *sf.ProcessedFile, tc md.TransferCallback) *OutgoingFile {
+func NewOutgoingFile(pf *sf.ProcessedFile, tc dt.TransferCallback) *OutgoingFile {
 	return &OutgoingFile{
 		call:          tc,
 		processedFile: pf,
@@ -77,7 +78,7 @@ func (of *OutgoingFile) WriteBase64(writer msgio.WriteCloser, peer *md.Peer) {
 		if err != nil {
 			log.Fatalln(err)
 		}
-		md.GetState().NeedsWait()
+		dt.GetState().NeedsWait()
 	}
 
 	// Call Completed Sending

@@ -7,6 +7,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
 	gorpc "github.com/libp2p/go-libp2p-gorpc"
+	dt "github.com/sonr-io/core/internal/data"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -27,7 +28,7 @@ type AuthResponse struct {
 // Service Struct
 type AuthService struct {
 	// Current Data
-	call   md.TransferCallback
+	call   dt.TransferCallback
 	respCh chan *md.AuthReply
 	invite *md.AuthInvite
 }
@@ -107,7 +108,7 @@ func (pc *TransferController) Authorize(decision bool, contact *md.Contact, peer
 	// @ Pass Contact Back
 	if offerMsg.Payload == md.Payload_CONTACT {
 		// Create Accept Response
-		card := md.NewCardFromContact(peer, contact, md.TransferCard_REPLY)
+		card := dt.NewCardFromContact(peer, contact, md.TransferCard_REPLY)
 		resp := &md.AuthReply{
 			IsRemote: offerMsg.IsRemote,
 			From:     peer,

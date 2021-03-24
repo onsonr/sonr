@@ -7,6 +7,7 @@ import (
 	"github.com/ipfs/go-cid"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/multiformats/go-multihash"
+	dt "github.com/sonr-io/core/internal/data"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -141,12 +142,12 @@ func (n *Node) SetContact(newContact *md.Contact) {
 func (n *Node) Pause() {
 	// Check if Response Is Invited
 	n.transfer.Cancel(n.peer)
-	md.GetState().Pause()
+	dt.GetState().Pause()
 }
 
 // ^ Close Ends All Network Communication ^
 func (n *Node) Resume() {
-	md.GetState().Resume()
+	dt.GetState().Resume()
 }
 
 // ^ Close Ends All Network Communication ^

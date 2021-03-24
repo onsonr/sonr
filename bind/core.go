@@ -58,7 +58,6 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 		Platform:  req.Device.GetPlatform(),
 	}
 
-	// Create Node
 	// Set Default Properties
 	mn.contact = req.Contact
 	mn.device = req.Device

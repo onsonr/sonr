@@ -8,6 +8,7 @@ import (
 	"sync"
 	"time"
 
+	dt "github.com/sonr-io/core/internal/data"
 	md "github.com/sonr-io/core/internal/models"
 	fs "github.com/sonr-io/core/pkg/user"
 	"google.golang.org/protobuf/proto"
@@ -17,7 +18,7 @@ import (
 type IncomingFile struct {
 	// Inherited Properties
 	mutex      sync.Mutex
-	call       md.TransferCallback
+	call       dt.TransferCallback
 	fs         *fs.SonrFS
 	owner      *md.Profile
 	payload    md.Payload
@@ -36,7 +37,7 @@ type IncomingFile struct {
 }
 
 // ^ Method Creates New Transfer File ^ //
-func NewIncomingFile(inv *md.AuthInvite, fs *fs.SonrFS, tc md.TransferCallback) *IncomingFile {
+func NewIncomingFile(inv *md.AuthInvite, fs *fs.SonrFS, tc dt.TransferCallback) *IncomingFile {
 	// Return File
 	return &IncomingFile{
 		// Inherited Properties
