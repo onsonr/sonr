@@ -1,7 +1,6 @@
 package bind
 
 import (
-	"errors"
 	"log"
 
 	md "github.com/sonr-io/core/internal/models"
@@ -50,10 +49,16 @@ func (mn *MobileNode) nodeCallback() dt.NodeCallback {
 func (mn *MobileNode) queued(card *md.TransferCard, req *md.InviteRequest) {
 	// Retreive Current File
 	currFile := mn.user.FS.CurrentFile()
-	if currFile != nil {
-		mn.node.InviteFile(card, req, mn.user.Peer(), currFile)
-	} else {
-		mn.error(errors.New("No current file"), "internal:queued")
+	if currFile == nil {
+		log.Println("No Current file")
+		return
+	}
+
+	// Invite With file
+	err := mn.node.InviteFile(card, req, mn.user.Peer(), currFile)
+	if err != nil {
+		log.Println(err)
+		return
 	}
 }
 
@@ -75,6 +80,7 @@ func (mn *MobileNode) transmitted(peer *md.Peer) {
 	if err != nil {
 		// sentry.CaptureException(err)
 		log.Println(err)
+		return
 	}
 
 	// Callback with Data
@@ -91,6 +97,7 @@ func (mn *MobileNode) received(card *md.TransferCard) {
 	if err != nil {
 		// sentry.CaptureException(err)
 		log.Println(err)
+		return
 	}
 
 	// Callback with Data
@@ -99,9 +106,6 @@ func (mn *MobileNode) received(card *md.TransferCard) {
 
 // ^ error Callback with error instance, and method ^
 func (mn *MobileNode) error(err error, method string) {
-	// Log Error
-	// sentry.CaptureException(err)
-
 	// Create Error ProtoBuf
 	errorMsg := md.ErrorMessage{
 		Message: err.Error(),
@@ -111,8 +115,8 @@ func (mn *MobileNode) error(err error, method string) {
 	// Convert Message to bytes
 	bytes, err := proto.Marshal(&errorMsg)
 	if err != nil {
-		log.Println("Cannot Marshal Error Protobuf: ", err)
 		log.Println(err)
+		return
 	}
 	// Send Callback
 	mn.call.OnError(bytes)

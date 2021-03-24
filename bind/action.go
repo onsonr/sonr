@@ -11,39 +11,58 @@ import (
 func (mn *MobileNode) Update(facing float64, heading float64) {
 	if mn.isReady() {
 		mn.user.SetPosition(facing, heading)
-		mn.node.Update(mn.user.Peer())
+		err := mn.node.Update(mn.user.Peer())
+		if err != nil {
+			log.Println(err)
+			return
+		}
 	}
 }
 
 // @ Send Direct Message to Peer in Lobby
 func (mn *MobileNode) Message(msg string, to string) {
 	if mn.isReady() {
-		mn.node.Message(msg, to, mn.user.Peer())
+		err := mn.node.Message(msg, to, mn.user.Peer())
+		if err != nil {
+			log.Println(err)
+			return
+		}
 	}
 }
 
 // @ Invite Processes Data and Sends Invite to Peer
 func (mn *MobileNode) Invite(reqBytes []byte) {
 	if mn.isReady() {
+		// Update Status
+		mn.status = md.Status_PENDING
+
 		// Initialize from Request
 		req := &md.InviteRequest{}
 		if err := proto.Unmarshal(reqBytes, req); err != nil {
 			log.Println(err)
+			return
 		}
 
 		// @ 2. Check Transfer Type
 		if req.Type == md.InviteRequest_Contact {
-			mn.node.InviteContact(req, mn.user.Peer(), mn.user.Contact())
+			err := mn.node.InviteContact(req, mn.user.Peer(), mn.user.Contact())
+			if err != nil {
+				log.Println(err)
+				return
+			}
 		} else if req.Type == md.InviteRequest_URL {
-			mn.node.InviteLink(req, mn.user.Peer())
+			err := mn.node.InviteLink(req, mn.user.Peer())
+			if err != nil {
+				log.Println(err)
+				return
+			}
 		} else {
 			if err := mn.user.FS.AddFromRequest(req, mn.user.Profile()); err != nil {
 				// sentry.CaptureException(err)
 				log.Println(err)
+				return
 			}
 		}
-
-		mn.status = md.Status_PENDING
 	}
 }
 
@@ -77,12 +96,14 @@ func (mn *MobileNode) SetContact(conBytes []byte) {
 		err := proto.Unmarshal(conBytes, newContact)
 		if err != nil {
 			log.Println(err)
+			return
 		}
 
 		// Update Node Profile
 		err = mn.user.SetContact(newContact)
 		if err != nil {
-			// sentry.CaptureException(err)
+			log.Println(err)
+			return
 		}
 	}
 }

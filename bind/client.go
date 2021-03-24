@@ -72,36 +72,41 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 // @ Start Host
 func (mn *MobileNode) Connect() {
 	// ! Connect to Host
-	if err := mn.node.Connect(mn.hostOpts); err == nil {
-		// Set Started
-		mn.hasStarted = true
-		err := mn.user.SetPeer(mn.node.ID())
-		if err != nil {
-			log.Println(err)
-			return
-		}
-		mn.call.OnConnected(true)
-
-		// ! Bootstrap to Peers
-		if err := mn.node.Bootstrap(mn.hostOpts, mn.user.FS); err == nil {
-			// Update Status
-			mn.hasBootstrapped = true
-			mn.call.OnReady(true)
-
-			// ! Join Local Topic
-			if err := mn.node.JoinLocal(mn.user.Peer, mn.user.PeerBuf); err != nil {
-				// sentry.CaptureException(err)
-				mn.error(err, "Joining Local Topic")
-			}
-		} else {
-			log.Println("Failed to bootstrap node")
-			// sentry.CaptureException(err)
-			mn.call.OnReady(false)
-		}
-	} else {
+	err := mn.node.Connect(mn.hostOpts)
+	if err != nil {
 		log.Println("Failed to start host")
 		// sentry.CaptureException(err)
 		mn.call.OnConnected(false)
+		return
+	}
+
+	// Set Started
+	mn.hasStarted = true
+	err = mn.user.SetPeer(mn.node.ID())
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	mn.call.OnConnected(true)
+
+	// ! Bootstrap to Peers
+	err = mn.node.Bootstrap(mn.hostOpts, mn.user.FS)
+	if err != nil {
+		log.Println("Failed to bootstrap node")
+		// sentry.CaptureException(err)
+		mn.call.OnReady(false)
+		return
+	}
+
+	// Update Status
+	mn.hasBootstrapped = true
+	mn.call.OnReady(true)
+
+	// ! Join Local Topic
+	if err := mn.node.JoinLocal(mn.user.Peer, mn.user.PeerBuf); err != nil {
+		// sentry.CaptureException(err)
+		log.Println("Failed to Join Local")
+		return
 	}
 }
 
@@ -142,6 +147,6 @@ func (mn *MobileNode) Resume() {
 // @ Close Ends All Network Communication
 func (mn *MobileNode) Stop() {
 	// Check if Response Is Invited
-	mn.user.FS.Close()
+	// mn.user.FS.Close()
 	mn.node.Close()
 }
