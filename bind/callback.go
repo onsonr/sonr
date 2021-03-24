@@ -1,6 +1,7 @@
 package bind
 
 import (
+	"errors"
 	"log"
 
 	"github.com/getsentry/sentry-go"
@@ -38,11 +39,11 @@ func (mn *MobileNode) nodeCallback() dt.NodeCallback {
 		Progressed:  mn.call.OnProgress,
 
 		// Middleware
-		Invited:      mn.invited,
-		HandleInvite: mn.node.InviteFile,
-		Received:     mn.received,
-		Transmitted:  mn.transmitted,
-		Error:        mn.error,
+		Invited:     mn.invited,
+		Queued:      mn.queued,
+		Received:    mn.received,
+		Transmitted: mn.transmitted,
+		Error:       mn.error,
 	}
 }
 
@@ -56,7 +57,6 @@ func (mn *MobileNode) queued(card *md.TransferCard, req *md.InviteRequest) {
 		mn.error(errors.New("No current file"), "internal:queued")
 	}
 }
-
 
 // ^ invite Callback with data for Lifecycle ^ //
 func (mn *MobileNode) invited(data []byte) {
