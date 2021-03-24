@@ -39,7 +39,4 @@ func (fs *FileSystem) CurrentFile() *ProcessedFile {
 	return item
 }
 
-// ^ Reset Current Queued File Metadata ^ //
-func (fs *FileSystem) Close() {
-	fs.Queue.Close()
-}
+

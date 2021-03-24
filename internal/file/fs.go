@@ -51,12 +51,6 @@ func NewFs(connEvent *md.ConnectionRequest, callback dt.NodeCallback) (*FileSyst
 		sonrPath = connEvent.Directories.Documents
 	}
 
-	// Create File Queue
-	q, err := dque.New(K_FILE_QUEUE_NAME, sonrPath, K_QUEUE_SIZE, ProcessedFileBuilder)
-	if err != nil {
-		return nil, err
-	}
-
 	// Create SFS
 	sfs := &FileSystem{
 		IsDesktop:    connEvent.Device.GetIsDesktop(),
@@ -65,9 +59,14 @@ func NewFs(connEvent *md.ConnectionRequest, callback dt.NodeCallback) (*FileSyst
 		Temporary:    connEvent.Directories.Temporary,
 		CurrentCount: 0,
 		Call:         callback,
-		Queue:        q,
 	}
 
+	// Create File Queue
+	q, err := dque.New(K_FILE_QUEUE_NAME, sfs.Main, K_QUEUE_SIZE, ProcessedFileBuilder)
+	if err != nil {
+		return nil, err
+	}
+	sfs.Queue = q
 	return sfs, nil
 }
 
@@ -186,4 +185,9 @@ func (sfs *FileSystem) getIncomingFilePath(load md.Payload, fileName string) str
 			return filepath.Join(sfs.Main, fileName)
 		}
 	}
+}
+
+// ^ Reset Current Queued File Metadata ^ //
+func (fs *FileSystem) Close() {
+	fs.Queue.Close()
 }

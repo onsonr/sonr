@@ -28,8 +28,7 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 	if mn.isReady() {
 		// Initialize from Request
 		req := &md.InviteRequest{}
-		err := proto.Unmarshal(reqBytes, req)
-		if err != nil {
+		if err := proto.Unmarshal(reqBytes, req); err != nil {
 			log.Println(err)
 		}
 
@@ -39,8 +38,7 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 		} else if req.Type == md.InviteRequest_URL {
 			mn.node.InviteLink(req, mn.user.Peer())
 		} else {
-			err := mn.user.FS.AddFromRequest(req, mn.user.Profile())
-			if err != nil {
+			if err := mn.user.FS.AddFromRequest(req, mn.user.Profile()); err != nil {
 				sentry.CaptureException(err)
 			}
 		}

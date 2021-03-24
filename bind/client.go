@@ -70,24 +70,22 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 // **-----------------** //
 // @ Start Host
 func (mn *MobileNode) Connect() {
-	// Start Node
-	mn.user.SetPeer(mn.node.ID().String())
-	result := mn.node.Init(mn.hostOpts)
-
-	// Check Result
-	if result {
+	// Connect to Host
+	if ok := mn.node.Connect(mn.hostOpts); ok {
 		// Set Started
 		mn.hasStarted = true
+		mn.user.SetPeer(mn.node.ID().String())
 
 		// Bootstrap to Peers
-		strapResult := mn.node.Bootstrap(mn.hostOpts, mn.user.FS, mn.user.Peer, mn.user.PeerBuf)
-		if strapResult {
+		if ok := mn.node.Bootstrap(mn.hostOpts, mn.user.FS, mn.user.Peer, mn.user.PeerBuf); ok {
 			mn.hasBootstrapped = true
 		} else {
 			log.Println("Failed to bootstrap node")
+			return
 		}
 	} else {
 		log.Println("Failed to start host")
+		return
 	}
 }
 

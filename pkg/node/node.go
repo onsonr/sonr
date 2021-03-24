@@ -28,18 +28,15 @@ import (
 // ^ Struct: Main Node handles Networking/Identity/Streams ^
 type Node struct {
 	// Properties
-	ctx  context.Context
-	opts *net.HostOptions
+	ctx context.Context
 
 	// Networking Properties
 	host   host.Host
 	kdht   *dht.IpfsDHT
 	pubsub *pubsub.PubSub
 	router *net.ProtocolRouter
+	call   dt.NodeCallback
 
-	call dt.NodeCallback
-
-	// Data
 	// Data Handlers
 	incoming *tr.IncomingFile
 
@@ -55,18 +52,22 @@ func NewNode(opts *net.HostOptions, call dt.NodeCallback) *Node {
 	node := new(Node)
 	node.ctx = context.Background()
 	node.call = call
-	node.opts = opts
 
 	// Set File System
 	node.router = net.NewProtocolRouter(opts.ConnRequest)
 
+	return node
+}
+
+// ^ Connect Begins Assigning Host Parameters ^
+func (n *Node) Connect(opts *net.HostOptions) bool {
 	// IP Address
 	ip4 := net.IPv4()
 	ip6 := net.IPv6()
 
 	// Start Host
 	h, err := libp2p.New(
-		node.ctx,
+		n.ctx,
 		// Add listening Addresses
 		libp2p.ListenAddrStrings(
 			fmt.Sprintf("/ip4/%s/tcp/0", ip4),
@@ -80,33 +81,29 @@ func NewNode(opts *net.HostOptions, call dt.NodeCallback) *Node {
 		)),
 	)
 	if err != nil {
-		node.call.Connected(false)
-		return nil
+		n.call.Connected(false)
+		return false
 	}
 
 	// Create GRPC Client/Server
-	rpcServer := rpc.NewServer(h, node.router.Auth())
+	rpcServer := rpc.NewServer(h, n.router.Auth())
 
 	// Create AuthService
 	ath := AuthService{
-		call:   node.call,
+		call:   n.call,
 		respCh: make(chan *md.AuthReply, 1),
 	}
 
 	// Register Service
 	err = rpcServer.Register(&ath)
 	if err != nil {
-		return nil
+		return false
 	}
 
 	// Set RPC Services
-	node.auth = &ath
-	node.host = h
-	return node
-}
+	n.auth = &ath
+	n.host = h
 
-// ^ Init Begins Assigning Host Parameters ^
-func (n *Node) Init(opts *net.HostOptions) bool {
 	// Create Pub Sub
 	ps, err := pubsub.NewGossipSub(n.ctx, n.host)
 	if err != nil {
