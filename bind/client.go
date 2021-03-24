@@ -103,7 +103,7 @@ func (mn *MobileNode) Connect() {
 	mn.call.OnReady(true)
 
 	// ! Join Local Topic
-	if err := mn.node.JoinLocal(mn.user.Peer, mn.user.PeerBuf); err != nil {
+	if err := mn.node.JoinLocal(); err != nil {
 		// sentry.CaptureException(err)
 		log.Println("Failed to Join Local")
 		return

@@ -14,7 +14,6 @@ type OnReceived func(data *md.TransferCard)
 type OnTransmitted func(data *md.Peer)
 type OnError func(err error, method string)
 type ReturnPeer func() *md.Peer
-type ReturnBuf func() []byte
 type SyncLobby func(ref *md.Lobby, peer *md.Peer)
 
 type FileCallback struct {
@@ -32,6 +31,7 @@ type NodeCallback struct {
 	Responded   OnProtobuf
 	Progressed  OnProgress
 	Received    OnReceived
+	GetPeer     ReturnPeer
 	Transmitted OnTransmitted
 	Queued      OnQueued
 	Error       OnError

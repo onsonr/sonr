@@ -114,7 +114,12 @@ func (n *Node) handleTopicEvents(tm *TopicManager) {
 		}
 
 		if lobEvent.Type == pubsub.PeerJoin {
-			n.Exchange(tm, lobEvent.Peer, tm.returnPeerBuf())
+			p := tm.returnPeer()
+			buf, err := proto.Marshal(p)
+			if err != nil {
+				continue
+			}
+			n.Exchange(tm, lobEvent.Peer, buf)
 		}
 
 		if lobEvent.Type == pubsub.PeerLeave {

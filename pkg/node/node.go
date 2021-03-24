@@ -157,8 +157,8 @@ func (n *Node) Bootstrap(opts *net.HostOptions, fs *sf.FileSystem) error {
 }
 
 // ^ Join Local Adds Node to Local Topic ^
-func (n *Node) JoinLocal(gp dt.ReturnPeer, gpb dt.ReturnBuf) error {
-	if t, err := n.JoinTopic(n.router.LocalTopic(), n.router.LocalTopicExchange(), gp, gpb); err != nil {
+func (n *Node) JoinLocal() error {
+	if t, err := n.JoinTopic(n.router.LocalTopic(), n.router.LocalTopicExchange(), n.call.GetPeer); err != nil {
 		return err
 	} else {
 		n.local = t

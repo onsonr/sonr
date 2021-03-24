@@ -47,11 +47,10 @@ type TopicManager struct {
 	messages   chan *md.LobbyEvent
 
 	returnPeer    dt.ReturnPeer
-	returnPeerBuf dt.ReturnBuf
 }
 
 // ^ Create New Contained Topic Manager ^ //
-func (n *Node) JoinTopic(name string, protocol protocol.ID, gp dt.ReturnPeer, gpb dt.ReturnBuf) (*TopicManager, error) {
+func (n *Node) JoinTopic(name string, protocol protocol.ID, gp dt.ReturnPeer) (*TopicManager, error) {
 	// Join Topic
 	topic, err := n.pubsub.Join(name)
 	if err != nil {
@@ -81,7 +80,6 @@ func (n *Node) JoinTopic(name string, protocol protocol.ID, gp dt.ReturnPeer, gp
 		topic:         topic,
 		topicPoint:    name,
 		returnPeer:    gp,
-		returnPeerBuf: gpb,
 	}
 
 	// Start Exchange Server

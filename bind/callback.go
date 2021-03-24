@@ -42,6 +42,9 @@ func (mn *MobileNode) nodeCallback() dt.NodeCallback {
 		Transmitted: mn.transmitted,
 		Queued:      mn.queued,
 		Error:       mn.error,
+
+		// User
+		GetPeer: mn.user.Peer,
 	}
 }
 
