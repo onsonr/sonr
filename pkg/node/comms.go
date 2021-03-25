@@ -49,6 +49,7 @@ func (n *Node) Resume() {
 
 // ^ Close Ends All Network Communication ^
 func (n *Node) Close() {
+	n.ctx.Done()
 	n.host.Close()
 }
 
