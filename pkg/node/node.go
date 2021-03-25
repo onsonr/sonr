@@ -130,7 +130,7 @@ func (n *Node) Bootstrap(opts *net.HostOptions, fs *sf.FileSystem) error {
 
 	// Set Routing Discovery, Find Peers
 	routingDiscovery := dsc.NewRoutingDiscovery(n.kdht)
-	dsc.Advertise(n.ctx, routingDiscovery, n.router.MajorPoint(), dscl.TTL(time.Minute*15))
+	dsc.Advertise(n.ctx, routingDiscovery, n.router.MajorPoint(), dscl.TTL(time.Second*4))
 	go n.handleDHTPeers(routingDiscovery)
 	return nil
 }
@@ -165,9 +165,9 @@ func (n *Node) handleDHTPeers(routingDiscovery *dsc.RoutingDiscovery) {
 			}
 		}
 
-		// Refresh table every 4 seconds
+		// Refresh table every 200 milliseconds
 		dt.GetState().NeedsWait()
-		<-time.After(time.Second * 2)
+		time.Sleep(time.Millisecond * 200)
 	}
 }
 
