@@ -70,7 +70,6 @@ func (n *Node) Connect(opts *net.HostOptions) error {
 			fmt.Sprintf("/ip6/%s/tcp/0", ip6)),
 		libp2p.Identity(opts.PrivateKey),
 		libp2p.DefaultTransports,
-		libp2p.EnableAutoRelay(),
 	)
 	if err != nil {
 		return err
