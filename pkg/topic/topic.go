@@ -166,3 +166,8 @@ func (tm *TopicManager) Send(msg *md.LobbyEvent) error {
 	}
 	return nil
 }
+
+// ^ Leave Current Topic ^
+func (tm *TopicManager) LeaveTopic() error {
+	return tm.topic.Close()
+}
