@@ -40,7 +40,7 @@ func (n *Node) OnInvite(invite []byte) {
 	n.call.Invited(invite)
 }
 
-func (n *Node) OnReply(id peer.ID, p *md.Peer, cf *sf.ProcessedFile, reply []byte) {
+func (n *Node) OnReply(id peer.ID, p *md.Peer, cf *sf.FileItem, reply []byte) {
 	// Call Responded
 	n.call.Responded(reply)
 
@@ -60,42 +60,14 @@ func (n *Node) OnReply(id peer.ID, p *md.Peer, cf *sf.ProcessedFile, reply []byt
 		}
 
 		// Initialize Writer
-		outFile := tr.CreateOutgoingFile(cf, n.call)
 		writer := msgio.NewWriter(stream)
 
 		// Start Routine
-		go outFile.WriteBase64(writer, p)
+		go cf.WriteBase64(writer, p)
 	}
 }
 
-// ^ onSendTransfer: Begins File Transfer if Accepted ^
-func (n *Node) OnSendTransfer(id peer.ID, p *md.Peer, cf *sf.ProcessedFile, data []byte) {
-	// AuthReply Message
-	resp := md.AuthReply{}
-	err := proto.Unmarshal(data, &resp)
-	if err != nil {
-		n.call.Error(err, "handleReply")
-	}
-
-	// Check for File Transfer
-	if resp.Decision && resp.Type == md.AuthReply_Transfer {
-		// Create New Auth Stream
-		stream, err := n.host.NewStream(n.ctx, id, n.router.Transfer())
-		if err != nil {
-			n.call.Error(err, "StartOutgoing")
-		}
-
-		outFile := tr.CreateOutgoingFile(cf, n.call)
-
-		// Initialize Writer
-		writer := msgio.NewWriter(stream)
-
-		// Start Routine
-		go outFile.WriteBase64(writer, p)
-	}
-}
-
-// ^ handleAcceptedFileRequest: Begins File Transfer if Accepted ^
+// ^ OnReceiveTransfer: Begins File Transfer when Accepted ^
 func (n *Node) OnReceiveTransfer(inv *md.AuthInvite, fs *sf.FileSystem) {
 	n.host.SetStreamHandler(n.router.Transfer(), n.handleTransferIncoming)
 	n.incoming = tr.CreateIncomingFile(inv, fs, n.call)

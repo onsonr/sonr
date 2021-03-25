@@ -15,6 +15,8 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+const B64ChunkSize = 31998 // Adjusted for Base64 -- has to be divisible by 3
+
 type IncomingFile struct {
 	// Inherited Properties
 	mutex      sync.Mutex

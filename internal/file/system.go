@@ -27,7 +27,7 @@ type FileSystem struct {
 	Temporary string
 
 	// Queue
-	Files        []*ProcessedFile
+	Files        []*FileItem
 	CurrentCount int
 }
 
@@ -56,7 +56,7 @@ func NewFs(connEvent *md.ConnectionRequest, callback dt.NodeCallback) (*FileSyst
 		Temporary:    connEvent.Directories.Temporary,
 		CurrentCount: 0,
 		Call:         callback,
-		Files:        make([]*ProcessedFile, K_QUEUE_SIZE),
+		Files:        make([]*FileItem, K_QUEUE_SIZE),
 	}
 
 	// sfs.Queue = q

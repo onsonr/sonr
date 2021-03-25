@@ -9,7 +9,7 @@ import (
 // ^ Adds File Transfer from Invite Request ^ //
 func (fq *FileSystem) AddFromRequest(req *md.InviteRequest, p *md.Profile) error {
 	// Add Single File Transfer
-	safeFile := NewProcessedFile(req, p, fq.Call)
+	safeFile := NewFileItem(req, p, fq.Call)
 
 	// Validate Files not Null
 	if safeFile == nil {
@@ -22,7 +22,7 @@ func (fq *FileSystem) AddFromRequest(req *md.InviteRequest, p *md.Profile) error
 }
 
 // ^ CurrentFile returns last file in Processed Files ^ //
-func (fq *FileSystem) CurrentFile() *ProcessedFile {
+func (fq *FileSystem) CurrentFile() *FileItem {
 	if len(fq.Files) > 0 {
 		return fq.Files[len(fq.Files)-1]
 	} else {
@@ -41,6 +41,6 @@ func (fq *FileSystem) CompleteLast() {
 // ^ Reset Current Queued File Metadata ^ //
 func (fq *FileSystem) Reset() {
 	fq.Files = nil
-	fq.Files = make([]*ProcessedFile, K_QUEUE_SIZE)
+	fq.Files = make([]*FileItem, K_QUEUE_SIZE)
 	fq.CurrentCount = 0
 }

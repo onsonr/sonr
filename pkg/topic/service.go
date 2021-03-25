@@ -100,7 +100,7 @@ func (ts *TopicService) ExchangeWith(ctx context.Context, args TopicServiceArgs,
 }
 
 // ^ Invite: Handles User sent AuthInvite Response ^
-func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite, p *md.Peer, cf *sf.ProcessedFile) {
+func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite, p *md.Peer, cf *sf.FileItem) {
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(inv)
 	if err != nil {
