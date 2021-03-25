@@ -25,12 +25,11 @@ type TopicManager struct {
 	handler      *pubsub.TopicEventHandler
 	Lobby        *Lobby
 
-	topicPoint   string
-	service      *TopicService
-	exchProtocol protocol.ID
-	authProtocol protocol.ID
-	Messages     chan *md.LobbyEvent
-	callback     TopicHandler
+	topicPoint string
+	service    *TopicService
+	protocol   protocol.ID
+	Messages   chan *md.LobbyEvent
+	callback   TopicHandler
 }
 
 type TopicHandler interface {
@@ -76,15 +75,14 @@ func NewTopic(ctx context.Context, h host.Host, ps *pubsub.PubSub, name string, 
 			Peers:    make(map[string]*md.Peer),
 		},
 		Messages:     make(chan *md.LobbyEvent, ChatRoomBufSize),
-		authProtocol: router.Auth(),
-		exchProtocol: router.TopicExchange(),
+		protocol:     router.TopicService(),
 		subscription: sub,
 		topic:        topic,
 		topicPoint:   name,
 	}
 
 	// Start Exchange Server
-	peersvServer := rpc.NewServer(h, router.TopicExchange())
+	peersvServer := rpc.NewServer(h, router.TopicService())
 	psv := TopicService{
 		SyncLobby: mgr.Lobby.Sync,
 		GetUser:   th.GetPeer,
