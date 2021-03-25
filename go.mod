@@ -11,7 +11,6 @@ require (
 	github.com/google/uuid v1.2.0 // indirect
 	github.com/h2non/filetype v1.1.0
 	github.com/libp2p/go-libp2p v0.13.0
-	github.com/libp2p/go-libp2p-connmgr v0.2.4
 	github.com/libp2p/go-libp2p-core v0.8.5
 	github.com/libp2p/go-libp2p-discovery v0.5.0
 	github.com/libp2p/go-libp2p-gorpc v0.1.2
