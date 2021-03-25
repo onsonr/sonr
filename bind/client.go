@@ -8,6 +8,7 @@ import (
 	u "github.com/sonr-io/core/internal/user"
 	dt "github.com/sonr-io/core/pkg/data"
 	sn "github.com/sonr-io/core/pkg/node"
+	tpc "github.com/sonr-io/core/pkg/topic"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -20,6 +21,8 @@ type MobileNode struct {
 	hostOpts        *net.HostOptions
 	status          md.Status
 	user            *u.User
+	local           *tpc.TopicManager
+	topics          []*tpc.TopicManager
 }
 
 // @ Create New Mobile Node
@@ -45,6 +48,7 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 		call:            call,
 		hasStarted:      false,
 		hasBootstrapped: false,
+		topics:          make([]*tpc.TopicManager, 10),
 	}
 
 	// Create New User
@@ -80,14 +84,16 @@ func (mn *MobileNode) Connect() {
 		return
 	}
 
-	// Set Started
+	// Update Status
 	mn.hasStarted = true
+	mn.call.OnConnected(true)
+
+	// ! Set User Peer
 	err = mn.user.SetPeer(mn.node.ID())
 	if err != nil {
 		log.Println(err)
 		return
 	}
-	mn.call.OnConnected(true)
 
 	// ! Bootstrap to Peers
 	err = mn.node.Bootstrap(mn.hostOpts, mn.user.FS)
@@ -101,6 +107,15 @@ func (mn *MobileNode) Connect() {
 	// Update Status
 	mn.hasBootstrapped = true
 	mn.call.OnReady(true)
+
+	// ! Join Local topic
+	t, err := mn.node.JoinLocal()
+	if err != nil {
+		log.Println("Failed to connect to local topic")
+		// sentry.CaptureException(err)
+		mn.call.OnReady(false)
+	}
+	mn.local = t
 }
 
 // @ Return URL Metadata, Helper Method

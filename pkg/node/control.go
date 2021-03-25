@@ -9,6 +9,7 @@ import (
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
 	dt "github.com/sonr-io/core/pkg/data"
+	tpc "github.com/sonr-io/core/pkg/topic"
 )
 
 // ^ User Node Info ^ //
@@ -34,11 +35,11 @@ func (n *Node) Close() {
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Node) InviteLink(req *md.InviteRequest, p *md.Peer) error {
+func (n *Node) InviteLink(req *md.InviteRequest, t *tpc.TopicManager, p *md.Peer) error {
 	// @ 3. Send Invite to Peer
-	if n.local.HasPeer(req.To.Id.Peer) {
+	if t.HasPeer(req.To.Id.Peer) {
 		// Get PeerID and Check error
-		id, _, err := n.local.FindPeerInTopic(req.To.Id.Peer)
+		id, _, err := t.FindPeerInTopic(req.To.Id.Peer)
 		if err != nil {
 			return err
 		}
@@ -76,7 +77,7 @@ func (n *Node) InviteLink(req *md.InviteRequest, p *md.Peer) error {
 			},
 		}
 		// Run Routine
-		go n.local.Invite(id, &invMsg, p, nil)
+		go t.Invite(id, &invMsg, p, nil)
 	} else {
 		return errors.New("Invalid Peer")
 	}
@@ -84,11 +85,11 @@ func (n *Node) InviteLink(req *md.InviteRequest, p *md.Peer) error {
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Node) InviteContact(req *md.InviteRequest, p *md.Peer, c *md.Contact) error {
+func (n *Node) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, p *md.Peer, c *md.Contact) error {
 	// @ 3. Send Invite to Peer
-	if n.local.HasPeer(req.To.Id.Peer) {
+	if t.HasPeer(req.To.Id.Peer) {
 		// Get PeerID and Check error
-		id, _, err := n.local.FindPeerInTopic(req.To.Id.Peer)
+		id, _, err := t.FindPeerInTopic(req.To.Id.Peer)
 		if err != nil {
 			return err
 		}
@@ -119,7 +120,7 @@ func (n *Node) InviteContact(req *md.InviteRequest, p *md.Peer, c *md.Contact) e
 		}
 
 		// Run Routine
-		go n.local.Invite(id, &invMsg, p, nil)
+		go t.Invite(id, &invMsg, p, nil)
 	} else {
 		return errors.New("Invalid Peer")
 	}
@@ -127,7 +128,7 @@ func (n *Node) InviteContact(req *md.InviteRequest, p *md.Peer, c *md.Contact) e
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Node) InviteFile(card *md.TransferCard, req *md.InviteRequest, p *md.Peer, cf *sf.ProcessedFile) error {
+func (n *Node) InviteFile(card *md.TransferCard, req *md.InviteRequest, t *tpc.TopicManager, p *md.Peer, cf *sf.ProcessedFile) error {
 	card.Status = md.TransferCard_INVITE
 
 	// Create Invite Message
@@ -138,26 +139,26 @@ func (n *Node) InviteFile(card *md.TransferCard, req *md.InviteRequest, p *md.Pe
 	}
 
 	// Get PeerID
-	id, _, err := n.local.FindPeerInTopic(req.To.Id.Peer)
+	id, _, err := t.FindPeerInTopic(req.To.Id.Peer)
 	if err != nil {
 		return err
 	}
 
 	// Run Routine
-	go n.local.Invite(id, &invMsg, p, cf)
+	go t.Invite(id, &invMsg, p, cf)
 	return nil
 }
 
 // ^ Respond to an Invitation ^ //
-func (n *Node) Respond(decision bool, fs *sf.FileSystem, p *md.Peer, c *md.Contact) {
-	n.local.RespondToInvite(decision, fs, p, c)
+func (n *Node) Respond(decision bool, fs *sf.FileSystem, p *md.Peer, t *tpc.TopicManager, c *md.Contact) {
+	t.RespondToInvite(decision, fs, p, c)
 }
 
 // ^ Send Direct Message to Peer in Lobby ^ //
-func (n *Node) Message(msg string, to string, p *md.Peer) error {
-	if n.local.HasPeer(to) {
+func (n *Node) Message(t *tpc.TopicManager, msg string, to string, p *md.Peer) error {
+	if t.HasPeer(to) {
 		// Inform Lobby
-		if err := n.local.Send(&md.LobbyEvent{
+		if err := t.Send(&md.LobbyEvent{
 			Event:   md.LobbyEvent_MESSAGE,
 			From:    p,
 			Id:      p.Id.Peer,
@@ -171,9 +172,9 @@ func (n *Node) Message(msg string, to string, p *md.Peer) error {
 }
 
 // ^ Update proximity/direction and Notify Lobby ^ //
-func (n *Node) Update(p *md.Peer) error {
+func (n *Node) Update(t *tpc.TopicManager, p *md.Peer) error {
 	// Inform Lobby
-	if err := n.local.Send(&md.LobbyEvent{
+	if err := t.Send(&md.LobbyEvent{
 		Event: md.LobbyEvent_UPDATE,
 		From:  p,
 		Id:    p.Id.Peer,

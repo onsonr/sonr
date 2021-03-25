@@ -58,7 +58,7 @@ func (mn *MobileNode) queued(card *md.TransferCard, req *md.InviteRequest) {
 	}
 
 	// Invite With file
-	err := mn.node.InviteFile(card, req, mn.user.Peer(), currFile)
+	err := mn.node.InviteFile(card, req, mn.local, mn.user.Peer(), currFile)
 	if err != nil {
 		log.Println(err)
 		return

@@ -33,10 +33,6 @@ type Node struct {
 
 	// Data Handlers
 	incoming *tr.IncomingFile
-
-	// Peers
-	local *tpc.TopicManager
-	// major    *TopicManager
 }
 
 // ^ NewNode Initializes Node with a host and default properties ^
