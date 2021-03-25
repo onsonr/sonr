@@ -7,7 +7,6 @@ import (
 
 	// Imported
 	"github.com/libp2p/go-libp2p"
-	cmgr "github.com/libp2p/go-libp2p-connmgr"
 	dscl "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -56,8 +55,6 @@ func NewNode(opts *net.HostOptions, call dt.NodeCallback) *Node {
 
 // ^ Connect Begins Assigning Host Parameters ^
 func (n *Node) Connect(opts *net.HostOptions) error {
-	var err error
-
 	// IP Address
 	ip4 := net.IPv4()
 	ip6 := net.IPv6()
@@ -71,11 +68,7 @@ func (n *Node) Connect(opts *net.HostOptions) error {
 			fmt.Sprintf("/ip6/%s/tcp/0", ip6)),
 		libp2p.Identity(opts.PrivateKey),
 		libp2p.DefaultTransports,
-		libp2p.ConnectionManager(cmgr.NewConnManager(
-			10,          // Lowwater
-			20,          // HighWater,
-			time.Minute, // GracePeriod
-		)),
+		libp2p.EnableAutoRelay(),
 	)
 	if err != nil {
 		return err
