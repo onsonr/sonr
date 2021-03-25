@@ -59,12 +59,6 @@ func NewFs(connEvent *md.ConnectionRequest, callback dt.NodeCallback) (*FileSyst
 		Files:        make([]*ProcessedFile, K_QUEUE_SIZE),
 	}
 
-	// Create File Queue
-	// q, err := dque.New(K_FILE_QUEUE_NAME, sfs.Main, K_QUEUE_SIZE, ProcessedFileBuilder)
-	// if err != nil {
-	// 	return nil, err
-	// }
-
 	// sfs.Queue = q
 	return sfs, nil
 }
