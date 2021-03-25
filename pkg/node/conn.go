@@ -12,6 +12,24 @@ import (
 	tpc "github.com/sonr-io/core/pkg/topic"
 )
 
+// ^ Join Lobby Adds Node to Named Topic ^
+func (n *Node) JoinLobby(name string) (*tpc.TopicManager, error) {
+	if t, err := tpc.NewTopic(n.ctx, n.host, n.pubsub, n.router.Topic(name), n.router, n); err != nil {
+		return nil, err
+	} else {
+		return t, nil
+	}
+}
+
+// ^ Join Lobby Adds Node to Named Topic ^
+func (n *Node) JoinLocal() (*tpc.TopicManager, error) {
+	if t, err := tpc.NewTopic(n.ctx, n.host, n.pubsub, n.router.LocalTopic(), n.router, n); err != nil {
+		return nil, err
+	} else {
+		return t, nil
+	}
+}
+
 // ^ User Node Info ^ //
 // @ ID Returns Host ID
 func (n *Node) ID() peer.ID {

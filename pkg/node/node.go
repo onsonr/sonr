@@ -5,18 +5,23 @@ import (
 	"fmt"
 	"time"
 
+	// Imported
 	"github.com/libp2p/go-libp2p"
-	connmgr "github.com/libp2p/go-libp2p-connmgr"
-	discLimit "github.com/libp2p/go-libp2p-core/discovery"
+	cmgr "github.com/libp2p/go-libp2p-connmgr"
+	dscl "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/host"
-	disc "github.com/libp2p/go-libp2p-discovery"
+	"github.com/libp2p/go-libp2p-core/network"
+	dsc "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
-	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	psub "github.com/libp2p/go-libp2p-pubsub"
+	swr "github.com/libp2p/go-libp2p-swarm"
+	msg "github.com/libp2p/go-msgio"
+
+	// Local
+	sf "github.com/sonr-io/core/internal/file"
 	net "github.com/sonr-io/core/internal/network"
 	dt "github.com/sonr-io/core/pkg/data"
-	tpc "github.com/sonr-io/core/pkg/topic"
 	tr "github.com/sonr-io/core/pkg/transfer"
-	sf "github.com/sonr-io/core/internal/file"
 )
 
 // ^ Struct: Main Node handles Networking/Identity/Streams ^
@@ -27,7 +32,7 @@ type Node struct {
 	// Networking Properties
 	host   host.Host
 	kdht   *dht.IpfsDHT
-	pubsub *pubsub.PubSub
+	pubsub *psub.PubSub
 	router *net.ProtocolRouter
 	call   dt.NodeCallback
 
@@ -46,7 +51,6 @@ func NewNode(opts *net.HostOptions, call dt.NodeCallback) *Node {
 	node.router = net.NewProtocolRouter(opts.ConnRequest)
 
 	// Start Host
-
 	return node
 }
 
@@ -67,7 +71,7 @@ func (n *Node) Connect(opts *net.HostOptions) error {
 			fmt.Sprintf("/ip6/%s/tcp/0", ip6)),
 		libp2p.Identity(opts.PrivateKey),
 		libp2p.DefaultTransports,
-		libp2p.ConnectionManager(connmgr.NewConnManager(
+		libp2p.ConnectionManager(cmgr.NewConnManager(
 			10,          // Lowwater
 			20,          // HighWater,
 			time.Minute, // GracePeriod
@@ -79,7 +83,7 @@ func (n *Node) Connect(opts *net.HostOptions) error {
 	n.host = h
 
 	// Create Pub Sub
-	ps, err := pubsub.NewGossipSub(n.ctx, n.host)
+	ps, err := psub.NewGossipSub(n.ctx, n.host)
 	if err != nil {
 		return err
 	}
@@ -125,26 +129,76 @@ func (n *Node) Bootstrap(opts *net.HostOptions, fs *sf.FileSystem) error {
 	}
 
 	// Set Routing Discovery, Find Peers
-	routingDiscovery := disc.NewRoutingDiscovery(n.kdht)
-	disc.Advertise(n.ctx, routingDiscovery, n.router.MajorPoint(), discLimit.TTL(time.Second*2))
+	routingDiscovery := dsc.NewRoutingDiscovery(n.kdht)
+	dsc.Advertise(n.ctx, routingDiscovery, n.router.MajorPoint(), dscl.TTL(time.Second*2))
 	go n.handleDHTPeers(routingDiscovery)
 	return nil
 }
 
-// ^ Join Lobby Adds Node to Named Topic ^
-func (n *Node) JoinLobby(name string) (*tpc.TopicManager, error) {
-	if t, err := tpc.NewTopic(n.host, n.pubsub, n.router.Topic(name), n.router, n); err != nil {
-		return nil, err
-	} else {
-		return t, nil
+// ^ handleDHTPeers: Connects to Peers in DHT ^
+func (n *Node) handleDHTPeers(routingDiscovery *dsc.RoutingDiscovery) {
+	for {
+		// Find peers in DHT
+		peersChan, err := routingDiscovery.FindPeers(
+			n.ctx,
+			n.router.MajorPoint(),
+			dscl.Limit(16),
+		)
+		if err != nil {
+			n.call.Error(err, "Finding DHT Peers")
+			n.call.Ready(false)
+			return
+		}
+
+		// Iterate over Channel
+		for pi := range peersChan {
+			// Validate not Self
+			if pi.ID != n.host.ID() {
+				// Connect to Peer
+				if err := n.host.Connect(n.ctx, pi); err != nil {
+					// Remove Peer Reference
+					n.host.Peerstore().ClearAddrs(pi.ID)
+					if sw, ok := n.host.Network().(*swr.Swarm); ok {
+						sw.Backoff().Clear(pi.ID)
+					}
+				}
+			}
+		}
+
+		// Refresh table every 4 seconds
+		dt.GetState().NeedsWait()
+		<-time.After(time.Second * 2)
 	}
 }
 
-// ^ Join Lobby Adds Node to Named Topic ^
-func (n *Node) JoinLocal() (*tpc.TopicManager, error) {
-	if t, err := tpc.NewTopic(n.host, n.pubsub, n.router.LocalTopic(), n.router, n); err != nil {
-		return nil, err
-	} else {
-		return t, nil
-	}
+// ^ handleTransferIncoming: Processes Incoming Data ^ //
+func (n *Node) handleTransferIncoming(stream network.Stream) {
+	// Route Data from Stream
+	go func(reader msg.ReadCloser, t *tr.IncomingFile) {
+		for i := 0; ; i++ {
+			// @ Read Length Fixed Bytes
+			buffer, err := reader.ReadMsg()
+			if err != nil {
+				n.call.Error(err, "HandleIncoming:ReadMsg")
+				break
+			}
+
+			// @ Unmarshal Bytes into Proto
+			hasCompleted, err := t.AddBuffer(i, buffer)
+			if err != nil {
+				n.call.Error(err, "HandleIncoming:AddBuffer")
+				break
+			}
+
+			// @ Check if All Buffer Received to Save
+			if hasCompleted {
+				// Sync file
+				if err := n.incoming.Save(); err != nil {
+					n.call.Error(err, "HandleIncoming:Save")
+				}
+				break
+			}
+			dt.GetState().NeedsWait()
+		}
+	}(msg.NewReader(stream), n.incoming)
 }

@@ -3,7 +3,6 @@ package topic
 import (
 	"context"
 	"errors"
-	"log"
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -44,7 +43,7 @@ type TopicHandler interface {
 }
 
 // ^ Create New Contained Topic Manager ^ //
-func NewTopic(h host.Host, ps *pubsub.PubSub, name string, router *network.ProtocolRouter, th TopicHandler) (*TopicManager, error) {
+func NewTopic(ctx context.Context, h host.Host, ps *pubsub.PubSub, name string, router *network.ProtocolRouter, th TopicHandler) (*TopicManager, error) {
 	// Join Topic
 	topic, err := ps.Join(name)
 	if err != nil {
@@ -60,13 +59,13 @@ func NewTopic(h host.Host, ps *pubsub.PubSub, name string, router *network.Proto
 	// Create Topic Handler
 	handler, err := topic.EventHandler()
 	if err != nil {
-		log.Println(err)
 		return nil, err
 	}
 
 	// Create Lobby Manager
 	mgr := &TopicManager{
 		callback: th,
+		ctx:      ctx,
 		host:     h,
 		handler:  handler,
 		Lobby: &Lobby{
@@ -89,6 +88,8 @@ func NewTopic(h host.Host, ps *pubsub.PubSub, name string, router *network.Proto
 	psv := TopicService{
 		SyncLobby: mgr.Lobby.Sync,
 		GetUser:   th.GetPeer,
+		call:      th,
+		respCh:    make(chan *md.AuthReply, 1),
 	}
 
 	// Register Service
