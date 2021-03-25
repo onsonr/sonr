@@ -55,6 +55,8 @@ func NewNode(opts *net.HostOptions, call dt.NodeCallback) *Node {
 
 // ^ Connect Begins Assigning Host Parameters ^
 func (n *Node) Connect(opts *net.HostOptions) error {
+	var err error
+
 	// IP Address
 	ip4 := net.IPv4()
 	ip6 := net.IPv6()
