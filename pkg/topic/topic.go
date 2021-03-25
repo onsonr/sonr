@@ -13,13 +13,10 @@ import (
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
 	"github.com/sonr-io/core/internal/network"
-	dt "github.com/sonr-io/core/pkg/data"
 	"google.golang.org/protobuf/proto"
 )
 
 const ChatRoomBufSize = 128
-
-type ContinueTransfer func(id peer.ID, p *md.Peer, cf *sf.ProcessedFile, data []byte)
 
 type TopicManager struct {
 	ctx          context.Context
@@ -34,20 +31,20 @@ type TopicManager struct {
 	exchProtocol protocol.ID
 	authProtocol protocol.ID
 	Messages     chan *md.LobbyEvent
-	call         dt.NodeCallback
-	returnPeer   dt.ReturnPeer
-	cont         ContinueTransfer
+	callback     TopicHandler
 }
 
 type TopicHandler interface {
-	Refresh() *md.Lobby
-	GotInvite() *md.AuthInvite
-	GotReply() *md.AuthReply
-	ReturnPeer() *md.Peer
+	GetPeer() *md.Peer
+	OnEvent(*md.LobbyEvent)
+	OnRefresh(*md.Lobby)
+	OnInvite([]byte)
+	OnReply(id peer.ID, p *md.Peer, cf *sf.ProcessedFile, data []byte)
+	OnReceiveTransfer(inv *md.AuthInvite, fs *sf.FileSystem)
 }
 
 // ^ Create New Contained Topic Manager ^ //
-func NewTopic(h host.Host, ps *pubsub.PubSub, name string, router *network.ProtocolRouter, call dt.NodeCallback, cont ContinueTransfer) (*TopicManager, error) {
+func NewTopic(h host.Host, ps *pubsub.PubSub, name string, router *network.ProtocolRouter, th TopicHandler) (*TopicManager, error) {
 	// Join Topic
 	topic, err := ps.Join(name)
 	if err != nil {
@@ -69,25 +66,29 @@ func NewTopic(h host.Host, ps *pubsub.PubSub, name string, router *network.Proto
 
 	// Create Lobby Manager
 	mgr := &TopicManager{
-		call:         call,
-		cont:         cont,
-		host:         h,
-		handler:      handler,
-		Lobby:        NewLobby(name, call.GetPeer(), call.Refreshed),
+		callback: th,
+		host:     h,
+		handler:  handler,
+		Lobby: &Lobby{
+			callback: th,
+			OLC:      name,
+			Size:     1,
+			Count:    0,
+			Peers:    make(map[string]*md.Peer),
+		},
 		Messages:     make(chan *md.LobbyEvent, ChatRoomBufSize),
 		authProtocol: router.Auth(),
 		exchProtocol: router.TopicExchange(),
 		subscription: sub,
 		topic:        topic,
 		topicPoint:   name,
-		returnPeer:   call.GetPeer,
 	}
 
 	// Start Exchange Server
 	peersvServer := rpc.NewServer(h, router.TopicExchange())
 	psv := TopicService{
 		SyncLobby: mgr.Lobby.Sync,
-		GetUser:   call.GetPeer,
+		GetUser:   th.GetPeer,
 	}
 
 	// Register Service
@@ -101,6 +102,7 @@ func NewTopic(h host.Host, ps *pubsub.PubSub, name string, router *network.Proto
 
 	go mgr.handleTopicEvents()
 	go mgr.handleTopicMessages()
+	go mgr.processTopicMessages()
 	return mgr, nil
 }
 
@@ -164,61 +166,4 @@ func (tm *TopicManager) Send(msg *md.LobbyEvent) error {
 		return err
 	}
 	return nil
-}
-
-// ^ handleTopicEvents: listens to Pubsub Events for topic  ^
-func (tm *TopicManager) handleTopicEvents() {
-	// @ Loop Events
-	for {
-		// Get next event
-		lobEvent, err := tm.handler.NextPeerEvent(tm.ctx)
-		if err != nil {
-			tm.handler.Cancel()
-			return
-		}
-
-		if lobEvent.Type == pubsub.PeerJoin {
-			p := tm.returnPeer()
-			buf, err := proto.Marshal(p)
-			if err != nil {
-				continue
-			}
-			tm.Exchange(lobEvent.Peer, buf)
-		}
-
-		if lobEvent.Type == pubsub.PeerLeave {
-			tm.Lobby.Remove(lobEvent.Peer)
-		}
-
-		dt.GetState().NeedsWait()
-	}
-}
-
-// ^ handleTopicMessages: listens for messages on pubsub topic subscription ^
-func (tm *TopicManager) handleTopicMessages() {
-	for {
-		// Get next msg from pub/sub
-		msg, err := tm.subscription.Next(tm.ctx)
-		if err != nil {
-			return
-		}
-
-		// Only forward messages delivered by others
-		if msg.ReceivedFrom.String() == tm.returnPeer().Id.Peer {
-			continue
-		}
-
-		// Construct message
-		m := &md.LobbyEvent{}
-		err = proto.Unmarshal(msg.Data, m)
-		if err != nil {
-			continue
-		}
-
-		// Validate Peer in Lobby
-		if tm.HasPeer(m.Id) {
-			tm.Messages <- m
-		}
-		dt.GetState().NeedsWait()
-	}
 }

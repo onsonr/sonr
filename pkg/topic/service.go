@@ -3,6 +3,7 @@ package topic
 import (
 	"context"
 	"log"
+	"time"
 
 	rpc "github.com/libp2p/go-libp2p-gorpc"
 
@@ -22,7 +23,8 @@ type TopicServiceArgs struct {
 
 // ExchangeResponse is also Peer protobuf
 type TopicServiceResponse struct {
-	Data []byte
+	InvReply []byte
+	Peer     []byte
 }
 
 // Service Struct
@@ -32,7 +34,7 @@ type TopicService struct {
 	SyncLobby dt.SyncLobby
 
 	// Current Data
-	call   dt.NodeCallback
+	call   TopicHandler
 	respCh chan *md.AuthReply
 	invite *md.AuthInvite
 }
@@ -51,16 +53,16 @@ func (tm *TopicManager) Exchange(id peer.ID, pb []byte) {
 	// Call to Peer
 	err := exchClient.Call(id, "TopicService", "ExchangeWith", args, &reply)
 	if err != nil {
-		tm.call.Error(err, "Exchange")
+		log.Println(err)
 	}
 
 	// Received Message
 	remotePeer := &md.Peer{}
-	err = proto.Unmarshal(reply.Data, remotePeer)
+	err = proto.Unmarshal(reply.Peer, remotePeer)
 
 	// Send Error
 	if err != nil {
-		tm.call.Error(err, "Exchange")
+		log.Println(err)
 	}
 
 	// Update Peer with new data
@@ -93,7 +95,7 @@ func (ts *TopicService) ExchangeWith(ctx context.Context, args TopicServiceArgs,
 	}
 
 	// Set Message data and call done
-	reply.Data = replyData
+	reply.Peer = replyData
 	return nil
 }
 
@@ -118,14 +120,9 @@ func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite, p *md.Peer, cf *s
 	// Await Response
 	call := <-done
 	if call.Error != nil {
-		tm.call.Error(err, "Request")
+		log.Println(err)
 	}
-
-	// Send Callback and Reset
-	tm.call.Responded(reply.Data)
-
-	// Check for File
-	tm.cont(id, p, cf, reply.Data)
+	tm.callback.OnReply(id, p, cf, reply.InvReply)
 }
 
 // ^ Calls Invite on Remote Peer ^ //
@@ -142,13 +139,12 @@ func (ts *TopicService) InviteWith(ctx context.Context, args TopicServiceArgs, r
 	ts.invite = &receivedMessage
 
 	// Send Callback
-	ts.call.Invited(args.Invite)
+	ts.call.OnInvite(args.Invite)
 
 	// Hold Select for Invite Type
 	select {
 	// Received Auth Channel Message
 	case m := <-ts.respCh:
-
 		// Convert Protobuf to bytes
 		msgBytes, err := proto.Marshal(m)
 		if err != nil {
@@ -157,11 +153,59 @@ func (ts *TopicService) InviteWith(ctx context.Context, args TopicServiceArgs, r
 		}
 
 		// Set Message data and call done
-		reply.Data = msgBytes
+		reply.InvReply = msgBytes
 		ctx.Done()
 		return nil
 		// Context is Done
 	case <-ctx.Done():
 		return nil
+	}
+}
+
+// ^ RespondToInvite to an Invitation ^ //
+func (n *TopicManager) RespondToInvite(decision bool, fs *sf.FileSystem, p *md.Peer, c *md.Contact) {
+	// Check Decision
+	if decision {
+		n.callback.OnReceiveTransfer(n.service.invite, fs)
+	}
+
+	// @ Pass Contact Back
+	if n.service.invite.Payload == md.Payload_CONTACT {
+		// Create Accept Response
+		resp := &md.AuthReply{
+			IsRemote: n.service.invite.IsRemote,
+			From:     p,
+			Type:     md.AuthReply_Contact,
+			Card: &md.TransferCard{
+				// SQL Properties
+				Payload:  md.Payload_CONTACT,
+				Received: int32(time.Now().Unix()),
+				Preview:  p.Profile.Picture,
+				Platform: p.Platform,
+
+				// Transfer Properties
+				Status: md.TransferCard_REPLY,
+
+				// Owner Properties
+				Username:  p.Profile.Username,
+				FirstName: p.Profile.FirstName,
+				LastName:  p.Profile.LastName,
+
+				// Data Properties
+				Contact: c,
+			},
+		}
+		// Send to Channel
+		n.service.respCh <- resp
+	} else {
+		// Create Accept Response
+		resp := &md.AuthReply{
+			IsRemote: n.service.invite.IsRemote,
+			From:     p,
+			Type:     md.AuthReply_Transfer,
+			Decision: decision,
+		}
+		// Send to Channel
+		n.service.respCh <- resp
 	}
 }

@@ -9,18 +9,13 @@ import (
 	connmgr "github.com/libp2p/go-libp2p-connmgr"
 	discLimit "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/host"
-	"github.com/libp2p/go-libp2p-core/peer"
 	disc "github.com/libp2p/go-libp2p-discovery"
-	rpc "github.com/libp2p/go-libp2p-gorpc"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	md "github.com/sonr-io/core/internal/models"
 	net "github.com/sonr-io/core/internal/network"
 	dt "github.com/sonr-io/core/pkg/data"
 	tpc "github.com/sonr-io/core/pkg/topic"
 	tr "github.com/sonr-io/core/pkg/transfer"
-
-	//dq "github.com/sonr-io/core/pkg/user"
 	sf "github.com/sonr-io/core/internal/file"
 )
 
@@ -40,7 +35,6 @@ type Node struct {
 	incoming *tr.IncomingFile
 
 	// Peers
-	auth  AuthService
 	local *tpc.TopicManager
 	// major    *TopicManager
 }
@@ -138,59 +132,23 @@ func (n *Node) Bootstrap(opts *net.HostOptions, fs *sf.FileSystem) error {
 	routingDiscovery := disc.NewRoutingDiscovery(n.kdht)
 	disc.Advertise(n.ctx, routingDiscovery, n.router.MajorPoint(), discLimit.TTL(time.Second*2))
 	go n.handleDHTPeers(routingDiscovery)
-
-	// Create GRPC Server
-	authServer := rpc.NewServer(n.host, n.router.Auth())
-
-	// Create AuthService
-	n.auth = AuthService{
-		call:   n.call,
-		respCh: make(chan *md.AuthReply, 1),
-	}
-
-	// Register Service
-	err = authServer.Register(&n.auth)
-	if err != nil {
-		return err
-	}
-
-	if t, err := tpc.NewTopic(n.host, n.pubsub, n.router.LocalTopic(), n.router, n.call, n.handleAcceptedFileRequest); err != nil {
-		return err
-	} else {
-		n.local = t
-		go n.processTopicMessages(t)
-		return nil
-	}
+	return nil
 }
 
-// ^ Join Local Adds Node to Local Topic ^
+// ^ Join Lobby Adds Node to Named Topic ^
 func (n *Node) JoinLobby(name string) (*tpc.TopicManager, error) {
-	if t, err := tpc.NewTopic(n.host, n.pubsub, n.router.Topic(name), n.router, n.call, n.handleAcceptedFileRequest); err != nil {
+	if t, err := tpc.NewTopic(n.host, n.pubsub, n.router.Topic(name), n.router, n); err != nil {
 		return nil, err
 	} else {
-		go n.processTopicMessages(t)
 		return t, nil
 	}
 }
 
-// ^ User Node Info ^ //
-// @ ID Returns Host ID
-func (n *Node) ID() peer.ID {
-	return n.host.ID()
-}
-
-// ^ Close Ends All Network Communication ^
-func (n *Node) Pause() {
-	// Check if Response Is Invited
-	dt.GetState().Pause()
-}
-
-// ^ Close Ends All Network Communication ^
-func (n *Node) Resume() {
-	dt.GetState().Resume()
-}
-
-// ^ Close Ends All Network Communication ^
-func (n *Node) Close() {
-	n.host.Close()
+// ^ Join Lobby Adds Node to Named Topic ^
+func (n *Node) JoinLocal() (*tpc.TopicManager, error) {
+	if t, err := tpc.NewTopic(n.host, n.pubsub, n.router.LocalTopic(), n.router, n); err != nil {
+		return nil, err
+	} else {
+		return t, nil
+	}
 }
