@@ -3,6 +3,7 @@ package file
 import (
 	"bytes"
 	"encoding/base64"
+	"errors"
 	"image"
 	"image/jpeg"
 	"image/png"
@@ -32,10 +33,10 @@ type FileItem struct {
 }
 
 // ^ NewFileItem Processes Outgoing File ^ //
-func NewFileItem(req *md.InviteRequest, p *md.Profile, callback dt.NodeCallback) *FileItem {
+func NewFileItem(req *md.InviteRequest, p *md.Profile, callback dt.NodeCallback) (*FileItem, error) {
 	// Check Values
 	if req == nil || p == nil {
-		return nil
+		return nil, errors.New("No Request or Profile Provided")
 	}
 
 	// Get File Information
@@ -85,13 +86,13 @@ func NewFileItem(req *md.InviteRequest, p *md.Profile, callback dt.NodeCallback)
 		// Convert to Image Object
 		img, _, err := image.Decode(thumbReader)
 		if err != nil {
-			log.Println(err)
+			return nil, err
 		}
 
 		// @ Encode as Jpeg into buffer w/o scaling
-		err = jpeg.Encode(thumbWriter, img, nil)
+		err = jpeg.Encode(thumbWriter, img, &jpeg.Options{Quality: 90})
 		if err != nil {
-			log.Panicln(err)
+			return nil, err
 		}
 
 		sm.card.Preview = thumbWriter.Bytes()
@@ -104,7 +105,7 @@ func NewFileItem(req *md.InviteRequest, p *md.Profile, callback dt.NodeCallback)
 
 	// @ 3. Callback with Preview
 	sm.call.Queued(preview, sm.request)
-	return sm
+	return sm, nil
 }
 
 // ^ Safely returns Preview depending on lock ^ //
