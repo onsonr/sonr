@@ -38,11 +38,6 @@ func (pr *ProtocolRouter) MajorPoint() string {
 }
 
 // ^ Transfer Protocols ^ //
-// @ Transfer Controller Auth Protocol IDs
-func (pr *ProtocolRouter) Auth() protocol.ID {
-	return protocol.ID("/sonr/transfer/auth")
-}
-
 // @ Remote Point Topic
 func (pr *ProtocolRouter) Direct(n string) protocol.ID {
 	return protocol.ID(fmt.Sprintf("/sonr/remote/%s/direct", n))
@@ -61,15 +56,15 @@ func (pr *ProtocolRouter) Transfer() protocol.ID {
 // ^ Lobby Protocols ^ //
 // @ Local Lobby Topic Protocol IDs
 func (pr *ProtocolRouter) LocalTopic() string {
-	return fmt.Sprintf("/sonr/lobby/%s/topic", pr.MinorOLC)
+	return fmt.Sprintf("/sonr/topic/%s", pr.MinorOLC)
 }
 
 // @ Lobby Topic Protocol IDs
 func (pr *ProtocolRouter) Topic(name string) string {
-	return fmt.Sprintf("/sonr/lobby/%s/topic", name)
+	return fmt.Sprintf("/sonr/topic/%s", name)
 }
 
 // @ Lobby Exchange Protocol IDs
-func (pr *ProtocolRouter) TopicExchange() protocol.ID {
-	return protocol.ID("/sonr/lobby/exchange")
+func (pr *ProtocolRouter) TopicService() protocol.ID {
+	return protocol.ID("/sonr/topic/service")
 }

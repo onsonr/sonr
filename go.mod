@@ -6,7 +6,6 @@ require (
 	github.com/PuerkitoBio/goquery v1.6.1
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/gogo/protobuf v1.3.2 // indirect
-	github.com/golang/groupcache v0.0.0-20191027212112-611e8accdfc9 // indirect
 	github.com/golang/protobuf v1.4.3
 	github.com/google/open-location-code/go v0.0.0-20201229230907-d47d9f9b95e9
 	github.com/google/uuid v1.2.0 // indirect

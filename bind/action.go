@@ -11,7 +11,7 @@ import (
 func (mn *MobileNode) Update(facing float64, heading float64) {
 	if mn.isReady() {
 		mn.user.SetPosition(facing, heading)
-		err := mn.node.Update(mn.user.Peer())
+		err := mn.node.Update(mn.local, mn.user.Peer())
 		if err != nil {
 			log.Println(err)
 			return
@@ -22,7 +22,7 @@ func (mn *MobileNode) Update(facing float64, heading float64) {
 // @ Send Direct Message to Peer in Lobby
 func (mn *MobileNode) Message(msg string, to string) {
 	if mn.isReady() {
-		err := mn.node.Message(msg, to, mn.user.Peer())
+		err := mn.node.Message(mn.local, msg, to, mn.user.Peer())
 		if err != nil {
 			log.Println(err)
 			return
@@ -45,13 +45,13 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 
 		// @ 2. Check Transfer Type
 		if req.Type == md.InviteRequest_Contact {
-			err := mn.node.InviteContact(req, mn.user.Peer(), mn.user.Contact())
+			err := mn.node.InviteContact(req, mn.local, mn.user.Peer(), mn.user.Contact())
 			if err != nil {
 				log.Println(err)
 				return
 			}
 		} else if req.Type == md.InviteRequest_URL {
-			err := mn.node.InviteLink(req, mn.user.Peer())
+			err := mn.node.InviteLink(req, mn.local, mn.user.Peer())
 			if err != nil {
 				log.Println(err)
 				return
@@ -69,7 +69,7 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 // @ Respond to an Invite with Decision
 func (mn *MobileNode) Respond(decs bool) {
 	if mn.isReady() {
-		mn.node.Respond(decs, mn.user.FS, mn.user.Peer(), mn.user.Contact())
+		mn.node.Respond(decs, mn.user.FS, mn.user.Peer(), mn.local, mn.user.Contact())
 		// Update Status
 		if decs {
 			mn.status = md.Status_INPROGRESS
