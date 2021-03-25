@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"time"
 
-	sentry "github.com/getsentry/sentry-go"
 	"github.com/libp2p/go-libp2p"
 	connmgr "github.com/libp2p/go-libp2p-connmgr"
 	discLimit "github.com/libp2p/go-libp2p-core/discovery"
@@ -15,38 +14,32 @@ import (
 	rpc "github.com/libp2p/go-libp2p-gorpc"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	"github.com/pkg/errors"
-	dt "github.com/sonr-io/core/internal/data"
 	md "github.com/sonr-io/core/internal/models"
 	net "github.com/sonr-io/core/internal/network"
+	dt "github.com/sonr-io/core/pkg/data"
 	tr "github.com/sonr-io/core/pkg/transfer"
-	dq "github.com/sonr-io/core/pkg/user"
-	"google.golang.org/protobuf/proto"
+
+	//dq "github.com/sonr-io/core/pkg/user"
+	sf "github.com/sonr-io/core/internal/file"
 )
 
 // ^ Struct: Main Node handles Networking/Identity/Streams ^
 type Node struct {
 	// Properties
-	ctx     context.Context
-	opts    *net.HostOptions
-	contact *md.Contact
-	device  *md.Device
-	peer    *md.Peer
+	ctx context.Context
 
 	// Networking Properties
 	host   host.Host
 	kdht   *dht.IpfsDHT
 	pubsub *pubsub.PubSub
 	router *net.ProtocolRouter
+	call   dt.NodeCallback
 
-	call dt.NodeCallback
-
-	// Data
 	// Data Handlers
 	incoming *tr.IncomingFile
 
 	// Peers
-	auth  *AuthService
+	auth  AuthService
 	local *TopicManager
 	// major    *TopicManager
 }
@@ -57,10 +50,18 @@ func NewNode(opts *net.HostOptions, call dt.NodeCallback) *Node {
 	node := new(Node)
 	node.ctx = context.Background()
 	node.call = call
-	node.opts = opts
 
-	// Set File System
+	// Set Protocol Router
 	node.router = net.NewProtocolRouter(opts.ConnRequest)
+
+	// Start Host
+
+	return node
+}
+
+// ^ Connect Begins Assigning Host Parameters ^
+func (n *Node) Connect(opts *net.HostOptions) error {
+	var err error
 
 	// IP Address
 	ip4 := net.IPv4()
@@ -68,7 +69,7 @@ func NewNode(opts *net.HostOptions, call dt.NodeCallback) *Node {
 
 	// Start Host
 	h, err := libp2p.New(
-		node.ctx,
+		n.ctx,
 		// Add listening Addresses
 		libp2p.ListenAddrStrings(
 			fmt.Sprintf("/ip4/%s/tcp/0", ip4),
@@ -82,86 +83,40 @@ func NewNode(opts *net.HostOptions, call dt.NodeCallback) *Node {
 		)),
 	)
 	if err != nil {
-		node.call.Connected(false)
-		return nil
+		return err
 	}
-
-	// Initialize Auth Service
-
-	// Create GRPC Client/Server
-	// h.SetStreamHandler(node.router.Transfer(), peerConn.HandleIncoming)
-	rpcServer := rpc.NewServer(h, node.router.Auth())
-
-	// Create AuthService
-	ath := AuthService{
-		call:   node.call,
-		respCh: make(chan *md.AuthReply, 1),
-	}
-
-	// Register Service
-	err = rpcServer.Register(&ath)
-	if err != nil {
-		return nil
-	}
-
-	// Set RPC Services
-	node.auth = &ath
-	node.host = h
-	node.contact = opts.ConnRequest.Contact
-	node.device = opts.ConnRequest.Device
-	return node
-}
-
-// ^ Init Begins Assigning Host Parameters ^
-func (n *Node) Init(opts *net.HostOptions, id *md.Peer_ID) bool {
-	// Set Peer Info
-	n.peer = &md.Peer{
-		Id:       id,
-		Profile:  n.opts.Profile,
-		Platform: n.device.Platform,
-		Model:    n.device.Model,
-	}
+	n.host = h
 
 	// Create Pub Sub
 	ps, err := pubsub.NewGossipSub(n.ctx, n.host)
 	if err != nil {
-		sentry.CaptureException(err)
-		n.call.Connected(false)
-		return false
+		return err
 	}
 	n.pubsub = ps
+	return nil
+}
 
+// ^ Bootstrap begins bootstrap with peers ^
+func (n *Node) Bootstrap(opts *net.HostOptions, fs *sf.FileSystem) error {
 	// Create Bootstrapper Info
 	bootstrappers := opts.GetBootstrapAddrInfo()
+
+	// Set DHT
 	kadDHT, err := dht.New(
 		n.ctx,
 		n.host,
 		dht.BootstrapPeers(bootstrappers...),
 	)
 	if err != nil {
-		sentry.CaptureException(errors.Wrap(err, "Error while Creating routing DHT"))
-		n.call.Error(err, "Error while Creating routing DHT")
-		n.call.Ready(false)
-		return false
+		return err
 	}
 
 	// Return Connected
 	n.kdht = kadDHT
-	n.call.Connected(true)
-	return true
-}
-
-// ^ Bootstrap begins bootstrap with peers ^
-func (n *Node) Bootstrap(opts *net.HostOptions, fs *dq.SonrFS) bool {
-	// Create Bootstrapper Info
-	bootstrappers := opts.GetBootstrapAddrInfo()
 
 	// Bootstrap DHT
 	if err := n.kdht.Bootstrap(n.ctx); err != nil {
-		sentry.CaptureException(errors.Wrap(err, "Error while Bootstrapping DHT"))
-		n.call.Error(err, "Error while Bootstrapping DHT")
-		n.call.Ready(false)
-		return false
+		return err
 	}
 
 	// Connect to bootstrap nodes, if any
@@ -169,67 +124,57 @@ func (n *Node) Bootstrap(opts *net.HostOptions, fs *dq.SonrFS) bool {
 	for _, pi := range bootstrappers {
 		if err := n.host.Connect(n.ctx, pi); err == nil {
 			hasBootstrapped = true
+			break
 		}
-		dt.GetState().NeedsWait()
 	}
 
 	// Check if Bootstrapping Occurred
 	if !hasBootstrapped {
-		sentry.CaptureException(errors.New("Failed to connect to any bootstrap peers"))
-		return false
-	} else {
-		n.call.Ready(true)
+		return err
 	}
 
 	// Set Routing Discovery, Find Peers
 	routingDiscovery := disc.NewRoutingDiscovery(n.kdht)
-	disc.Advertise(n.ctx, routingDiscovery, n.router.GloalPoint(), discLimit.TTL(time.Second*2))
+	disc.Advertise(n.ctx, routingDiscovery, n.router.MajorPoint(), discLimit.TTL(time.Second*2))
 	go n.handleDHTPeers(routingDiscovery)
 
-	// Join Local Lobby Point
-	var err error
-	if n.local, err = n.JoinTopic(n.router.LocalTopic(), n.router.LocalTopicExchange()); err != nil {
-		sentry.CaptureException(err)
-		n.call.Error(err, "Joining Lobby")
-		n.call.Ready(false)
-		return false
+	// Create GRPC Server
+	authServer := rpc.NewServer(n.host, n.router.Auth())
+
+	// Create AuthService
+	n.auth = AuthService{
+		call:   n.call,
+		respCh: make(chan *md.AuthReply, 1),
 	}
-	return true
+
+	// Register Service
+	err = authServer.Register(&n.auth)
+	if err != nil {
+		return err
+	}
+
+	if t, err := n.JoinTopic(n.router.LocalTopic(), n.router.TopicExchange(), n.call.GetPeer); err != nil {
+		return err
+	} else {
+		n.local = t
+		return nil
+	}
+}
+
+// ^ Join Local Adds Node to Local Topic ^
+func (n *Node) JoinLobby(name string) error {
+	if t, err := n.JoinTopic(n.router.Topic(name), n.router.TopicExchange(), n.call.GetPeer); err != nil {
+		return err
+	} else {
+		n.local = t
+		return nil
+	}
 }
 
 // ^ User Node Info ^ //
-// @ ID Returns Peer ID
+// @ ID Returns Host ID
 func (n *Node) ID() peer.ID {
 	return n.host.ID()
-}
-
-// @ Peer returns Current Peer Info
-func (n *Node) Peer() *md.Peer {
-	return n.peer
-}
-
-// @ Peer returns Current Peer Info as Buffer
-func (n *Node) PeerBuf() []byte {
-	// Convert to bytes
-	buf, err := proto.Marshal(n.peer)
-	if err != nil {
-		sentry.CaptureException(err)
-		return nil
-	}
-	return buf
-}
-
-// ^ Updates Current Contact Card ^
-func (n *Node) SetContact(newContact *md.Contact) {
-	// Set Node Contact
-	n.contact = newContact
-
-	// Update Peer Profile
-	n.peer.Profile = &md.Profile{
-		FirstName: newContact.GetFirstName(),
-		LastName:  newContact.GetLastName(),
-		Picture:   newContact.GetPicture(),
-	}
 }
 
 // ^ Close Ends All Network Communication ^

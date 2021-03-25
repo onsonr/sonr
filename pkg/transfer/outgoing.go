@@ -10,14 +10,13 @@ import (
 	md "github.com/sonr-io/core/internal/models"
 
 	msgio "github.com/libp2p/go-msgio"
-	dt "github.com/sonr-io/core/internal/data"
+	dt "github.com/sonr-io/core/pkg/data"
 	"google.golang.org/protobuf/proto"
 )
 
 // ** Constants for Chunking Data ** //
 const BufferChunkSize = 32000
 const B64ChunkSize = 31998 // Adjusted for Base64 -- has to be divisible by 3
-
 type OutgoingFile struct {
 	call          dt.NodeCallback
 	processedFile *sf.ProcessedFile

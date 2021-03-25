@@ -3,12 +3,11 @@ package bind
 import (
 	"log"
 
-	"github.com/getsentry/sentry-go"
-	dt "github.com/sonr-io/core/internal/data"
 	md "github.com/sonr-io/core/internal/models"
 	net "github.com/sonr-io/core/internal/network"
+	u "github.com/sonr-io/core/internal/user"
+	dt "github.com/sonr-io/core/pkg/data"
 	sn "github.com/sonr-io/core/pkg/node"
-	dq "github.com/sonr-io/core/pkg/user"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -20,20 +19,25 @@ type MobileNode struct {
 	hasBootstrapped bool
 	hostOpts        *net.HostOptions
 	status          md.Status
-	fs              *dq.SonrFS
-	profile         *md.Profile
-	contact         *md.Contact
-	device          *md.Device
+	user            *u.User
 }
 
 // @ Create New Mobile Node
 func NewNode(reqBytes []byte, call Callback) *MobileNode {
-	// Initialize Node Logging
-	err := sentry.Init(sentry.ClientOptions{
-		Dsn: "https://cbf88b01a5a5468fa77101f7dfc54f20@o549479.ingest.sentry.io/5672329",
-	})
+	// // Initialize Node Logging
+	// err := sentry.Init(sentry.ClientOptions{
+	// 	Dsn: "https://cbf88b01a5a5468fa77101f7dfc54f20@o549479.ingest.sentry.io/5672329",
+	// })
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	// Unmarshal Request
+	req := &md.ConnectionRequest{}
+	err := proto.Unmarshal(reqBytes, req)
 	if err != nil {
-		log.Fatalf("sentry.Init: %s", err)
+		// sentry.CaptureException(err)
+		panic(err)
 	}
 
 	// Create Mobile Node
@@ -43,32 +47,18 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 		hasBootstrapped: false,
 	}
 
-	// Unmarshal Request
-	req := md.ConnectionRequest{}
-	err = proto.Unmarshal(reqBytes, &req)
+	// Create New User
+	mn.user, err = u.NewUser(req, mn.nodeCallback())
 	if err != nil {
-		log.Fatalln(err)
+		// sentry.CaptureException(err)
+		panic(err)
 	}
-
-	// Set Profile
-	mn.profile = &md.Profile{
-		Username:  req.GetUsername(),
-		FirstName: req.Contact.GetFirstName(),
-		LastName:  req.Contact.GetLastName(),
-		Picture:   req.Contact.GetPicture(),
-		Platform:  req.Device.GetPlatform(),
-	}
-
-	// Set Default Properties
-	mn.contact = req.Contact
-	mn.device = req.Device
-	mn.fs = dq.InitFS(&req, mn.profile, mn.nodeCallback())
 
 	// Create Host Options
-	mn.hostOpts, err = net.NewHostOpts(&req, mn.fs)
+	mn.hostOpts, err = net.NewHostOpts(req, mn.user.PrivateKey())
 	if err != nil {
-		log.Println(err)
-		return nil
+		// sentry.CaptureException(err)
+		panic(err)
 	}
 
 	// Create Node
@@ -81,25 +71,36 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 // **-----------------** //
 // @ Start Host
 func (mn *MobileNode) Connect() {
-	// Start Node
-	peerId := dq.GetPeerID(mn.device, mn.profile, mn.node.ID().String())
-	result := mn.node.Init(mn.hostOpts, peerId)
-
-	// Check Result
-	if result {
-		// Set Started
-		mn.hasStarted = true
-
-		// Bootstrap to Peers
-		strapResult := mn.node.Bootstrap(mn.hostOpts, mn.fs)
-		if strapResult {
-			mn.hasBootstrapped = true
-		} else {
-			log.Println("Failed to bootstrap node")
-		}
-	} else {
+	// ! Connect to Host
+	err := mn.node.Connect(mn.hostOpts)
+	if err != nil {
 		log.Println("Failed to start host")
+		// sentry.CaptureException(err)
+		mn.call.OnConnected(false)
+		return
 	}
+
+	// Set Started
+	mn.hasStarted = true
+	err = mn.user.SetPeer(mn.node.ID())
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	mn.call.OnConnected(true)
+
+	// ! Bootstrap to Peers
+	err = mn.node.Bootstrap(mn.hostOpts, mn.user.FS)
+	if err != nil {
+		log.Println("Failed to bootstrap node")
+		// sentry.CaptureException(err)
+		mn.call.OnReady(false)
+		return
+	}
+
+	// Update Status
+	mn.hasBootstrapped = true
+	mn.call.OnReady(true)
 }
 
 // @ Return URL Metadata, Helper Method
@@ -116,4 +117,29 @@ func GetURLMetadata(url string) []byte {
 		log.Println(err, " Failed to Parse URL")
 	}
 	return bytes
+}
+
+// **-------------------** //
+// ** LifeCycle Actions ** //
+// **-------------------** //
+// @ Checks for is Ready
+func (mn *MobileNode) isReady() bool {
+	return mn.hasBootstrapped && mn.hasStarted
+}
+
+// @ Close Ends All Network Communication
+func (mn *MobileNode) Pause() {
+	mn.node.Pause()
+}
+
+// @ Close Ends All Network Communication
+func (mn *MobileNode) Resume() {
+	mn.node.Resume()
+}
+
+// @ Close Ends All Network Communication
+func (mn *MobileNode) Stop() {
+	// Check if Response Is Invited
+	// mn.user.FS.Close()
+	mn.node.Close()
 }

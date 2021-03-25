@@ -27,18 +27,6 @@ func NewProtocolRouter(req *md.ConnectionRequest) *ProtocolRouter {
 	}
 }
 
-// ^ Discovery Protocols ^ //
-// @ Host Protocol IDs
-// Main Application Prefix
-func (pr *ProtocolRouter) Prefix() protocol.ID {
-	return protocol.ID("/sonr")
-}
-
-// @ Global Rendevouz Advertising Point
-func (pr *ProtocolRouter) GloalPoint() string {
-	return "/sonr/rendevouz"
-}
-
 // @ Local Rendevouz Advertising Point
 func (pr *ProtocolRouter) LocalPoint() string {
 	return fmt.Sprintf("/sonr/%s", pr.MinorOLC)
@@ -76,17 +64,12 @@ func (pr *ProtocolRouter) LocalTopic() string {
 	return fmt.Sprintf("/sonr/lobby/%s/topic", pr.MinorOLC)
 }
 
-// @ Local Lobby Exchange Protocol IDs
-func (pr *ProtocolRouter) LocalTopicExchange() protocol.ID {
-	return protocol.ID(fmt.Sprintf("/sonr/lobby/%s/exchange", pr.MinorOLC))
-}
-
 // @ Lobby Topic Protocol IDs
 func (pr *ProtocolRouter) Topic(name string) string {
 	return fmt.Sprintf("/sonr/lobby/%s/topic", name)
 }
 
 // @ Lobby Exchange Protocol IDs
-func (pr *ProtocolRouter) TopicExchange(name string) protocol.ID {
-	return protocol.ID(fmt.Sprintf("/sonr/lobby/%s/exchange", name))
+func (pr *ProtocolRouter) TopicExchange() protocol.ID {
+	return protocol.ID("/sonr/lobby/exchange")
 }

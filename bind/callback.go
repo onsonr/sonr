@@ -1,12 +1,10 @@
 package bind
 
 import (
-	"errors"
 	"log"
 
-	"github.com/getsentry/sentry-go"
-	dt "github.com/sonr-io/core/internal/data"
 	md "github.com/sonr-io/core/internal/models"
+	dt "github.com/sonr-io/core/pkg/data"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -44,17 +42,26 @@ func (mn *MobileNode) nodeCallback() dt.NodeCallback {
 		Transmitted: mn.transmitted,
 		Queued:      mn.queued,
 		Error:       mn.error,
+
+		// User
+		GetPeer: mn.user.Peer,
 	}
 }
 
 // ^ queued Callback, Sends File Invite to Peer, and Notifies Client ^
 func (mn *MobileNode) queued(card *md.TransferCard, req *md.InviteRequest) {
 	// Retreive Current File
-	currFile := mn.fs.CurrentFile()
-	if currFile != nil {
-		mn.node.InviteFile(card, req, currFile)
-	} else {
-		mn.error(errors.New("No current file"), "internal:queued")
+	currFile := mn.user.FS.CurrentFile()
+	if currFile == nil {
+		log.Println("No Current file")
+		return
+	}
+
+	// Invite With file
+	err := mn.node.InviteFile(card, req, mn.user.Peer(), currFile)
+	if err != nil {
+		log.Println(err)
+		return
 	}
 }
 
@@ -74,7 +81,9 @@ func (mn *MobileNode) transmitted(peer *md.Peer) {
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(peer)
 	if err != nil {
-		sentry.CaptureException(err)
+		// sentry.CaptureException(err)
+		log.Println(err)
+		return
 	}
 
 	// Callback with Data
@@ -89,7 +98,9 @@ func (mn *MobileNode) received(card *md.TransferCard) {
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(card)
 	if err != nil {
-		sentry.CaptureException(err)
+		// sentry.CaptureException(err)
+		log.Println(err)
+		return
 	}
 
 	// Callback with Data
@@ -98,9 +109,6 @@ func (mn *MobileNode) received(card *md.TransferCard) {
 
 // ^ error Callback with error instance, and method ^
 func (mn *MobileNode) error(err error, method string) {
-	// Log Error
-	sentry.CaptureException(err)
-
 	// Create Error ProtoBuf
 	errorMsg := md.ErrorMessage{
 		Message: err.Error(),
@@ -110,7 +118,8 @@ func (mn *MobileNode) error(err error, method string) {
 	// Convert Message to bytes
 	bytes, err := proto.Marshal(&errorMsg)
 	if err != nil {
-		log.Println("Cannot Marshal Error Protobuf: ", err)
+		log.Println(err)
+		return
 	}
 	// Send Callback
 	mn.call.OnError(bytes)

@@ -14,7 +14,7 @@ IOS_ARTIFACT= $(IOS_BINDDIR)/Core.framework
 ANDROID_ARTIFACT= $(ANDROID_BINDDIR)/io.sonr.core.aar
 
 # @ Proto Directories
-PB_PATH=/Users/prad/Sonr/core/internal/models
+PB_PATH=/Users/prad/Sonr/core/api
 CONTACT_PB_DIR=/Users/prad/Sonr/contact/lib/src/data/models
 CORE_PB_DIR=/Users/prad/Sonr/core/internal/models
 PLUGIN_PB_DIR=/Users/prad/Sonr/plugin/lib/src/core/models
@@ -26,7 +26,7 @@ PB_BUILD_CORE="--go_out=$(CORE_PB_DIR)"
 PB_BUILD_PLUGIN="--dart_out=$(PLUGIN_PB_DIR)"
 
 all: Makefile
-	@echo '--- Sonr Core Module Actions ---'
+	@figlet -f slant Sonr Core
 	@echo ''
 	@sed -n 's/^##//p ' $<
 
@@ -85,10 +85,10 @@ proto:
 	@echo "--------------------------------------------------------------"
 	@echo "------------- 🛸 START PROTOBUFS COMPILE 🛸 -------------------"
 	@echo "--------------------------------------------------------------"
-	@cd internal/models && protoc --doc_out=$(PROTO_DOC_DIR) --doc_opt=html,index.html api.proto data.proto core.proto user.proto
-	@cd internal/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CORE) api.proto data.proto core.proto user.proto
-	@cd internal/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CONTACT) user.proto
-	@cd internal/models && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_PLUGIN) api.proto data.proto user.proto
+	@cd api && protoc --doc_out=$(PROTO_DOC_DIR) --doc_opt=html,index.html api.proto data.proto core.proto user.proto
+	@cd api && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CORE) api.proto data.proto core.proto user.proto
+	@cd api && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CONTACT) user.proto
+	@cd api && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_PLUGIN) api.proto data.proto user.proto
 	@echo "Finished Compiling ➡ " && date
 	@echo "--------------------------------------------------------------"
 	@echo "------------- 🛸 COMPILED ALL PROTOBUFS 🛸 --------------------"

@@ -3,7 +3,6 @@ package bind
 import (
 	"log"
 
-	"github.com/getsentry/sentry-go"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -11,44 +10,66 @@ import (
 // @ Update proximity/direction and Notify Lobby
 func (mn *MobileNode) Update(facing float64, heading float64) {
 	if mn.isReady() {
-		mn.node.Update(facing, heading)
+		mn.user.SetPosition(facing, heading)
+		err := mn.node.Update(mn.user.Peer())
+		if err != nil {
+			log.Println(err)
+			return
+		}
 	}
 }
 
 // @ Send Direct Message to Peer in Lobby
 func (mn *MobileNode) Message(msg string, to string) {
 	if mn.isReady() {
-		mn.node.Message(msg, to)
+		err := mn.node.Message(msg, to, mn.user.Peer())
+		if err != nil {
+			log.Println(err)
+			return
+		}
 	}
 }
 
 // @ Invite Processes Data and Sends Invite to Peer
 func (mn *MobileNode) Invite(reqBytes []byte) {
 	if mn.isReady() {
+		// Update Status
+		mn.status = md.Status_PENDING
+
 		// Initialize from Request
 		req := &md.InviteRequest{}
-		err := proto.Unmarshal(reqBytes, req)
-		if err != nil {
+		if err := proto.Unmarshal(reqBytes, req); err != nil {
 			log.Println(err)
+			return
 		}
 
 		// @ 2. Check Transfer Type
 		if req.Type == md.InviteRequest_Contact {
-			mn.node.InviteContact(req)
+			err := mn.node.InviteContact(req, mn.user.Peer(), mn.user.Contact())
+			if err != nil {
+				log.Println(err)
+				return
+			}
 		} else if req.Type == md.InviteRequest_URL {
-			mn.node.InviteLink(req)
+			err := mn.node.InviteLink(req, mn.user.Peer())
+			if err != nil {
+				log.Println(err)
+				return
+			}
 		} else {
-			mn.fs.AddFromRequest(req)
+			if err := mn.user.FS.AddFromRequest(req, mn.user.Profile()); err != nil {
+				// sentry.CaptureException(err)
+				log.Println(err)
+				return
+			}
 		}
-
-		mn.status = md.Status_PENDING
 	}
 }
 
 // @ Respond to an Invite with Decision
 func (mn *MobileNode) Respond(decs bool) {
 	if mn.isReady() {
-		mn.node.Respond(decs, mn.fs)
+		mn.node.Respond(decs, mn.user.FS, mn.user.Peer(), mn.user.Contact())
 		// Update Status
 		if decs {
 			mn.status = md.Status_INPROGRESS
@@ -75,39 +96,14 @@ func (mn *MobileNode) SetContact(conBytes []byte) {
 		err := proto.Unmarshal(conBytes, newContact)
 		if err != nil {
 			log.Println(err)
+			return
 		}
 
 		// Update Node Profile
-		mn.node.SetContact(newContact)
-
-		// Set User Contact
-		err = mn.fs.SaveContact(newContact)
+		err = mn.user.SetContact(newContact)
 		if err != nil {
-			sentry.CaptureException(err)
+			log.Println(err)
+			return
 		}
 	}
-}
-
-// **-------------------** //
-// ** LifeCycle Actions ** //
-// **-------------------** //
-// @ Checks for is Ready
-func (mn *MobileNode) isReady() bool {
-	return mn.hasBootstrapped && mn.hasStarted
-}
-
-// @ Close Ends All Network Communication
-func (mn *MobileNode) Pause() {
-	mn.node.Pause()
-}
-
-// @ Close Ends All Network Communication
-func (mn *MobileNode) Resume() {
-	mn.node.Resume()
-}
-
-// @ Close Ends All Network Communication
-func (mn *MobileNode) Stop() {
-	// Check if Response Is Invited
-	mn.node.Close()
 }

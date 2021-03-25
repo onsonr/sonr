@@ -4,16 +4,14 @@ import (
 	"context"
 	"errors"
 	"log"
-	"math"
 
-	sentry "github.com/getsentry/sentry-go"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	rpc "github.com/libp2p/go-libp2p-gorpc"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	"github.com/sonr-io/core/internal/data"
-	dt "github.com/sonr-io/core/internal/data"
 	md "github.com/sonr-io/core/internal/models"
+	"github.com/sonr-io/core/pkg/data"
+	dt "github.com/sonr-io/core/pkg/data"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -47,10 +45,12 @@ type TopicManager struct {
 	exchange   *ExchangeService
 	protocol   protocol.ID
 	messages   chan *md.LobbyEvent
+
+	returnPeer    dt.ReturnPeer
 }
 
 // ^ Create New Contained Topic Manager ^ //
-func (n *Node) JoinTopic(name string, protocol protocol.ID) (*TopicManager, error) {
+func (n *Node) JoinTopic(name string, protocol protocol.ID, gp dt.ReturnPeer) (*TopicManager, error) {
 	// Join Topic
 	topic, err := n.pubsub.Join(name)
 	if err != nil {
@@ -72,20 +72,21 @@ func (n *Node) JoinTopic(name string, protocol protocol.ID) (*TopicManager, erro
 
 	// Create Lobby Manager
 	mgr := &TopicManager{
-		handler:      handler,
-		lobby:        data.NewLobby(name, n.Peer(), n.call.Refreshed),
-		messages:     make(chan *md.LobbyEvent, ChatRoomBufSize),
-		protocol:     protocol,
-		subscription: sub,
-		topic:        topic,
-		topicPoint:   name,
+		handler:       handler,
+		lobby:         data.NewLobby(name, gp(), n.call.Refreshed),
+		messages:      make(chan *md.LobbyEvent, ChatRoomBufSize),
+		protocol:      protocol,
+		subscription:  sub,
+		topic:         topic,
+		topicPoint:    name,
+		returnPeer:    gp,
 	}
 
 	// Start Exchange Server
 	peersvServer := rpc.NewServer(n.host, protocol)
 	psv := ExchangeService{
 		SyncLobby: mgr.lobby.Sync,
-		GetUser:   n.Peer,
+		GetUser:   gp,
 	}
 
 	// Register Service
@@ -104,7 +105,7 @@ func (n *Node) JoinTopic(name string, protocol protocol.ID) (*TopicManager, erro
 }
 
 // ^ Calls Invite on Remote Peer ^ //
-func (n *Node) Exchange(tm *TopicManager, id peer.ID) {
+func (n *Node) Exchange(tm *TopicManager, id peer.ID, pb []byte) {
 	// Initialize RPC
 	exchClient := rpc.NewClient(n.host, tm.protocol)
 	var reply ExchangeResponse
@@ -112,7 +113,7 @@ func (n *Node) Exchange(tm *TopicManager, id peer.ID) {
 
 	// Set Args
 	args.Lobby = tm.lobby.Buffer()
-	args.Peer = n.PeerBuf()
+	args.Peer = pb
 
 	// Call to Peer
 	err := exchClient.Call(id, "ExchangeService", "ExchangeWith", args, &reply)
@@ -210,19 +211,20 @@ func (n *Node) HasPeer(tm *TopicManager, q string) bool {
 }
 
 // ^ Send Direct Message to Peer in Lobby ^ //
-func (n *Node) Message(msg string, to string) {
+func (n *Node) Message(msg string, to string, p *md.Peer) error {
 	if n.HasPeer(n.local, to) {
 		// Inform Lobby
 		if err := n.local.Send(&md.LobbyEvent{
 			Event:   md.LobbyEvent_MESSAGE,
-			From:    n.peer,
-			Id:      n.peer.Id.Peer,
+			From:    p,
+			Id:      p.Id.Peer,
 			Message: msg,
 			To:      to,
 		}); err != nil {
-			sentry.CaptureException(err)
+			return err
 		}
 	}
+	return nil
 }
 
 // ^ Send message to specific peer in topic ^
@@ -242,45 +244,14 @@ func (tm *TopicManager) Send(msg *md.LobbyEvent) error {
 }
 
 // ^ Update proximity/direction and Notify Lobby ^ //
-func (n *Node) Update(facing float64, heading float64) {
-	// Update User Values
-	var faceDir float64
-	var faceAnpd float64
-	var headDir float64
-	var headAnpd float64
-	faceDir = math.Round(facing*100) / 100
-	headDir = math.Round(heading*100) / 100
-	desg := int((facing / 11.25) + 0.25)
-
-	// Find Antipodal
-	if facing > 180 {
-		faceAnpd = math.Round((facing-180)*100) / 100
-	} else {
-		faceAnpd = math.Round((facing+180)*100) / 100
-	}
-
-	// Find Antipodal
-	if heading > 180 {
-		headAnpd = math.Round((heading-180)*100) / 100
-	} else {
-		headAnpd = math.Round((heading+180)*100) / 100
-	}
-
-	// Set Position
-	n.peer.Position = &md.Position{
-		Facing:           faceDir,
-		FacingAntipodal:  faceAnpd,
-		Heading:          headDir,
-		HeadingAntipodal: headAnpd,
-		Designation:      md.Position_Designation(desg % 32),
-	}
-
+func (n *Node) Update(p *md.Peer) error {
 	// Inform Lobby
 	if err := n.local.Send(&md.LobbyEvent{
 		Event: md.LobbyEvent_UPDATE,
-		From:  n.peer,
-		Id:    n.peer.Id.Peer,
+		From:  p,
+		Id:    p.Id.Peer,
 	}); err != nil {
-		sentry.CaptureException(err)
+		return err
 	}
+	return nil
 }

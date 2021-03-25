@@ -3,102 +3,138 @@ package node
 import (
 	"context"
 	"errors"
+	"log"
+	"time"
 
-	sentry "github.com/getsentry/sentry-go"
 	"github.com/libp2p/go-libp2p-core/peer"
 	msgio "github.com/libp2p/go-msgio"
-	dt "github.com/sonr-io/core/internal/data"
 	sf "github.com/sonr-io/core/internal/file"
+	dt "github.com/sonr-io/core/pkg/data"
 
 	md "github.com/sonr-io/core/internal/models"
 	tr "github.com/sonr-io/core/pkg/transfer"
-	fs "github.com/sonr-io/core/pkg/user"
 	"google.golang.org/protobuf/proto"
 )
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Node) InviteLink(req *md.InviteRequest) {
+func (n *Node) InviteLink(req *md.InviteRequest, p *md.Peer) error {
 	// @ 3. Send Invite to Peer
 	if n.HasPeer(n.local, req.To.Id.Peer) {
 		// Get PeerID and Check error
 		id, _, err := n.FindPeerInTopic(n.local, req.To.Id.Peer)
 		if err != nil {
-			sentry.CaptureException(err)
+			return err
 		}
 
-		// Set Contact
-		card := dt.NewCardFromUrl(n.peer, req.Url, md.TransferCard_DIRECT)
+		// Get URL Data
+		urlInfo, err := dt.GetPageInfoFromUrl(req.Url)
+		if err != nil {
+			log.Println(err)
+			urlInfo = &md.URLLink{
+				Link: req.Url,
+			}
+		}
+
+		// Build Invite Message
 		invMsg := md.AuthInvite{
 			IsRemote: req.IsRemote,
-			From:     n.peer,
+			From:     p,
 			Payload:  md.Payload_URL,
-			Card:     &card,
-		}
+			Card: &md.TransferCard{
+				// SQL Properties
+				Payload:  md.Payload_URL,
+				Received: int32(time.Now().Unix()),
+				Platform: p.Platform,
 
+				// Transfer Properties
+				Status: md.TransferCard_DIRECT,
+
+				// Owner Properties
+				Username:  p.Profile.Username,
+				FirstName: p.Profile.FirstName,
+				LastName:  p.Profile.LastName,
+
+				// Data Properties
+				Url: urlInfo,
+			},
+		}
 		// Run Routine
-		go n.handleAuthInviteResponse(id, &invMsg, nil)
+		go n.handleAuthInviteResponse(id, &invMsg, p, nil)
 	} else {
-		n.call.Error(errors.New("Invalid Peer"), "Invite")
+		return errors.New("Invalid Peer")
 	}
+	return nil
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Node) InviteContact(req *md.InviteRequest) {
+func (n *Node) InviteContact(req *md.InviteRequest, p *md.Peer, c *md.Contact) error {
 	// @ 3. Send Invite to Peer
 	if n.HasPeer(n.local, req.To.Id.Peer) {
 		// Get PeerID and Check error
 		id, _, err := n.FindPeerInTopic(n.local, req.To.Id.Peer)
 		if err != nil {
-			sentry.CaptureException(err)
+			return err
 		}
 
-		// Set Contact
-		req.Contact = n.contact
-
-		// Get Card
-		card := dt.NewCardFromContact(n.peer, req.Contact, md.TransferCard_DIRECT)
+		// Build Invite Message
 		invMsg := md.AuthInvite{
 			IsRemote: req.IsRemote,
-			From:     n.peer,
+			From:     p,
 			Payload:  md.Payload_CONTACT,
-			Card:     &card,
+			Card: &md.TransferCard{
+				// SQL Properties
+				Payload:  md.Payload_CONTACT,
+				Received: int32(time.Now().Unix()),
+				Preview:  p.Profile.Picture,
+				Platform: p.Platform,
+
+				// Transfer Properties
+				Status: md.TransferCard_DIRECT,
+
+				// Owner Properties
+				Username:  p.Profile.Username,
+				FirstName: p.Profile.FirstName,
+				LastName:  p.Profile.LastName,
+
+				// Data Properties
+				Contact: c,
+			},
 		}
 
 		// Run Routine
-		go n.handleAuthInviteResponse(id, &invMsg, nil)
+		go n.handleAuthInviteResponse(id, &invMsg, p, nil)
 	} else {
-		n.call.Error(errors.New("Invalid Peer"), "Invite")
+		return errors.New("Invalid Peer")
 	}
+	return nil
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Node) InviteFile(card *md.TransferCard, req *md.InviteRequest, cf *sf.ProcessedFile) {
+func (n *Node) InviteFile(card *md.TransferCard, req *md.InviteRequest, p *md.Peer, cf *sf.ProcessedFile) error {
 	card.Status = md.TransferCard_INVITE
 
 	// Create Invite Message
 	invMsg := md.AuthInvite{
-		From:    n.peer,
+		From:    p,
 		Payload: card.Payload,
 		Card:    card,
 	}
 
 	// @ Check for Remote
-	if req.IsRemote {
 
-	} else {
-		// Get PeerID
-		id, _, err := n.FindPeerInTopic(n.local, req.To.Id.Peer)
-		if err != nil {
-			n.call.Error(err, "Queued")
-		}
-
-		// Run Routine
-		go n.handleAuthInviteResponse(id, &invMsg, cf)
+	// Get PeerID
+	id, _, err := n.FindPeerInTopic(n.local, req.To.Id.Peer)
+	if err != nil {
+		return err
 	}
+
+	// Run Routine
+	go n.handleAuthInviteResponse(id, &invMsg, p, cf)
+	return nil
 }
 
 // ^ Respond to an Invitation ^ //
-func (n *Node) Respond(decision bool, fs *fs.SonrFS) {
+func (n *Node) Respond(decision bool, fs *sf.FileSystem, p *md.Peer, c *md.Contact) {
 	// Check Decision
 	if decision {
 		n.host.SetStreamHandler(n.router.Transfer(), n.handleTransferIncoming)
@@ -108,12 +144,28 @@ func (n *Node) Respond(decision bool, fs *fs.SonrFS) {
 	// @ Pass Contact Back
 	if n.auth.invite.Payload == md.Payload_CONTACT {
 		// Create Accept Response
-		card := dt.NewCardFromContact(n.peer, n.contact, md.TransferCard_REPLY)
 		resp := &md.AuthReply{
 			IsRemote: n.auth.invite.IsRemote,
-			From:     n.peer,
+			From:     p,
 			Type:     md.AuthReply_Contact,
-			Card:     &card,
+			Card: &md.TransferCard{
+				// SQL Properties
+				Payload:  md.Payload_CONTACT,
+				Received: int32(time.Now().Unix()),
+				Preview:  p.Profile.Picture,
+				Platform: p.Platform,
+
+				// Transfer Properties
+				Status: md.TransferCard_REPLY,
+
+				// Owner Properties
+				Username:  p.Profile.Username,
+				FirstName: p.Profile.FirstName,
+				LastName:  p.Profile.LastName,
+
+				// Data Properties
+				Contact: c,
+			},
 		}
 		// Send to Channel
 		n.auth.respCh <- resp
@@ -121,7 +173,7 @@ func (n *Node) Respond(decision bool, fs *fs.SonrFS) {
 		// Create Accept Response
 		resp := &md.AuthReply{
 			IsRemote: n.auth.invite.IsRemote,
-			From:     n.peer,
+			From:     p,
 			Type:     md.AuthReply_Transfer,
 			Decision: decision,
 		}
@@ -157,7 +209,7 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 	receivedMessage := md.AuthInvite{}
 	err := proto.Unmarshal(args.Data, &receivedMessage)
 	if err != nil {
-		sentry.CaptureException(err)
+		log.Println(err)
 		return err
 	}
 
@@ -175,7 +227,7 @@ func (as *AuthService) Invited(ctx context.Context, args AuthArgs, reply *AuthRe
 		// Convert Protobuf to bytes
 		msgBytes, err := proto.Marshal(m)
 		if err != nil {
-			sentry.CaptureException(err)
+			log.Println(err)
 			return err
 		}
 

@@ -4,7 +4,6 @@ import (
 	"log"
 	"time"
 
-	sentry "github.com/getsentry/sentry-go"
 	discLimit "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -13,20 +12,19 @@ import (
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	swarm "github.com/libp2p/go-libp2p-swarm"
 	msgio "github.com/libp2p/go-msgio"
-	"github.com/pkg/errors"
-	dt "github.com/sonr-io/core/internal/data"
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
+	dt "github.com/sonr-io/core/pkg/data"
 	tr "github.com/sonr-io/core/pkg/transfer"
 	"google.golang.org/protobuf/proto"
 )
 
 // ^ handleAuthInviteResponse: Handles User sent AuthInvite Response ^
-func (n *Node) handleAuthInviteResponse(id peer.ID, inv *md.AuthInvite, cf *sf.ProcessedFile) {
+func (n *Node) handleAuthInviteResponse(id peer.ID, inv *md.AuthInvite, p *md.Peer, cf *sf.ProcessedFile) {
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(inv)
 	if err != nil {
-		sentry.CaptureException(err)
+		log.Println(err)
 	}
 
 	// Initialize Data
@@ -42,7 +40,6 @@ func (n *Node) handleAuthInviteResponse(id peer.ID, inv *md.AuthInvite, cf *sf.P
 	// Await Response
 	call := <-done
 	if call.Error != nil {
-		sentry.CaptureException(err)
 		n.call.Error(err, "Request")
 	}
 
@@ -50,22 +47,21 @@ func (n *Node) handleAuthInviteResponse(id peer.ID, inv *md.AuthInvite, cf *sf.P
 	n.call.Responded(reply.Data)
 
 	// Check for File
-	n.handleAcceptedFileRequest(id, cf, reply.Data)
+	n.handleAcceptedFileRequest(id, p, cf, reply.Data)
 }
 
 // ^ handleAcceptedFileRequest: Begins File Transfer if Accepted ^
-func (n *Node) handleAcceptedFileRequest(id peer.ID, cf *sf.ProcessedFile, data []byte) {
+func (n *Node) handleAcceptedFileRequest(id peer.ID, p *md.Peer, cf *sf.ProcessedFile, data []byte) {
 	// AuthReply Message
 	resp := md.AuthReply{}
 	err := proto.Unmarshal(data, &resp)
 	if err != nil {
 		n.call.Error(err, "handleReply")
-		sentry.CaptureException(err)
 	}
 
 	// Check for File Transfer
 	if resp.Decision && resp.Type == md.AuthReply_Transfer {
-		n.NewOutgoingTransfer(id, n.peer, cf)
+		n.NewOutgoingTransfer(id, p, cf)
 	}
 }
 
@@ -75,7 +71,7 @@ func (n *Node) handleDHTPeers(routingDiscovery *disc.RoutingDiscovery) {
 		// Find peers in DHT
 		peersChan, err := routingDiscovery.FindPeers(
 			n.ctx,
-			n.router.LocalPoint(),
+			n.router.MajorPoint(),
 			discLimit.Limit(16),
 		)
 		if err != nil {
@@ -90,9 +86,6 @@ func (n *Node) handleDHTPeers(routingDiscovery *disc.RoutingDiscovery) {
 			if pi.ID != n.host.ID() {
 				// Connect to Peer
 				if err := n.host.Connect(n.ctx, pi); err != nil {
-					// Capture Error
-					sentry.CaptureException(errors.Wrap(err, "Failed to connect to peer in namespace"))
-
 					// Remove Peer Reference
 					n.host.Peerstore().ClearAddrs(pi.ID)
 					if sw, ok := n.host.Network().(*swarm.Swarm); ok {
@@ -100,7 +93,6 @@ func (n *Node) handleDHTPeers(routingDiscovery *disc.RoutingDiscovery) {
 					}
 				}
 			}
-			dt.GetState().NeedsWait()
 		}
 
 		// Refresh table every 4 seconds
@@ -121,7 +113,12 @@ func (n *Node) handleTopicEvents(tm *TopicManager) {
 		}
 
 		if lobEvent.Type == pubsub.PeerJoin {
-			n.Exchange(tm, lobEvent.Peer)
+			p := tm.returnPeer()
+			buf, err := proto.Marshal(p)
+			if err != nil {
+				continue
+			}
+			n.Exchange(tm, lobEvent.Peer, buf)
 		}
 
 		if lobEvent.Type == pubsub.PeerLeave {
@@ -147,16 +144,15 @@ func (n *Node) handleTopicMessages(tm *TopicManager) {
 		}
 
 		// Construct message
-		m := md.LobbyEvent{}
-		err = proto.Unmarshal(msg.Data, &m)
+		m := &md.LobbyEvent{}
+		err = proto.Unmarshal(msg.Data, m)
 		if err != nil {
 			continue
 		}
 
 		// Validate Peer in Lobby
 		if n.HasPeer(tm, m.Id) {
-			// Update Circle by event
-			tm.lobby.Add(m.From)
+			tm.messages <- m
 		}
 		dt.GetState().NeedsWait()
 	}
@@ -174,7 +170,7 @@ func (n *Node) processTopicMessages(tm *TopicManager) {
 				tm.lobby.Add(m.From)
 			} else if m.Event == md.LobbyEvent_MESSAGE {
 				// Check is Message For Self
-				if m.To == n.peer.Id.Peer {
+				if m.To == n.ID().String() {
 					// Convert Message
 					bytes, err := proto.Marshal(m)
 					if err != nil {

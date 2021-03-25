@@ -5,13 +5,17 @@ import (
 	"image"
 	"image/jpeg"
 	"log"
+	"os"
+	"path/filepath"
+	"strings"
 	"sync"
 
-	dt "github.com/sonr-io/core/internal/data"
+	"github.com/h2non/filetype"
 	md "github.com/sonr-io/core/internal/models"
+	dt "github.com/sonr-io/core/pkg/data"
 )
 
-// ^ File that safely sets metadata and thumbnail in routine ^ //
+// @ File that safely sets metadata and thumbnail in routine
 type ProcessedFile struct {
 	// References
 	Payload md.Payload
@@ -25,6 +29,11 @@ type ProcessedFile struct {
 	request *md.InviteRequest
 }
 
+// @ ProcessedFileBuilder creates a new item and returns a pointer to it.
+func ProcessedFileBuilder() interface{} {
+	return &ProcessedFile{}
+}
+
 // ^ NewProcessedFile Processes Outgoing File ^ //
 func NewProcessedFile(req *md.InviteRequest, p *md.Profile, callback dt.NodeCallback) *ProcessedFile {
 	// Check Values
@@ -34,7 +43,7 @@ func NewProcessedFile(req *md.InviteRequest, p *md.Profile, callback dt.NodeCall
 
 	// Get File Information
 	file := req.Files[len(req.Files)-1]
-	info, err := dt.GetFileInfo(file.Path)
+	info, err := GetFileInfo(file.Path)
 	if err != nil {
 		callback.Error(err, "NewProcessedFile:GetFileInfo")
 	}
@@ -80,7 +89,7 @@ func NewProcessedFile(req *md.InviteRequest, p *md.Profile, callback dt.NodeCall
 }
 
 // ^ Safely returns Preview depending on lock ^ //
-func (sm *ProcessedFile) TransferCard() *md.TransferCard {
+func (sm *ProcessedFile) Card() *md.TransferCard {
 	// ** Lock File wait for access ** //
 	sm.mutex.Lock()
 	defer sm.mutex.Unlock()
@@ -111,7 +120,7 @@ func RequestThumbnail(reqFi *md.InviteRequest_FileInfo, sm *ProcessedFile) {
 	sm.mutex.Unlock()
 
 	// Get Transfer Card
-	preview := sm.TransferCard()
+	preview := sm.Card()
 
 	// @ 3. Callback with Preview
 	sm.call.Queued(preview, sm.request)
@@ -141,8 +150,90 @@ func HandleThumbnail(reqFi *md.InviteRequest_FileInfo, sm *ProcessedFile) {
 	sm.mutex.Unlock()
 
 	// Get Transfer Card
-	preview := sm.TransferCard()
+	preview := sm.Card()
 
 	// @ 3. Callback with Preview
 	sm.call.Queued(preview, sm.request)
+}
+
+// ^ Struct returned on GetInfo() Generate Preview/Metadata
+type FileInfo struct {
+	Mime    *md.MIME
+	Payload md.Payload
+	Name    string
+	Path    string
+	Size    int32
+	IsImage bool
+}
+
+// ^ Method Returns File Info at Path ^ //
+func GetFileInfo(path string) (*FileInfo, error) {
+	// Initialize
+	var mime *md.MIME
+	var payload md.Payload
+
+	// @ 1. Get File Information
+	// Open File at Path
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	// Get Info
+	info, err := file.Stat()
+	if err != nil {
+		return nil, err
+	}
+
+	// Read File to required bytes
+	head := make([]byte, 261)
+	_, err = file.Read(head)
+	if err != nil {
+		return nil, err
+	}
+
+	// Get File Type
+	kind, err := filetype.Match(head)
+	if err != nil {
+		return nil, err
+	}
+
+	// @ 2. Create Mime Protobuf
+	mime = &md.MIME{
+		Type:    md.MIME_Type(md.MIME_Type_value[kind.MIME.Type]),
+		Subtype: kind.MIME.Subtype,
+		Value:   kind.MIME.Value,
+	}
+
+	// @ 3. Find Payload
+	if mime.Type == md.MIME_image || mime.Type == md.MIME_video || mime.Type == md.MIME_audio {
+		payload = md.Payload_MEDIA
+	} else {
+		// Get Extension
+		ext := filepath.Ext(path)
+
+		// Cross Check Extension
+		if ext == ".pdf" {
+			payload = md.Payload_PDF
+		} else if ext == ".ppt" || ext == ".pptx" {
+			payload = md.Payload_PRESENTATION
+		} else if ext == ".xls" || ext == ".xlsm" || ext == ".xlsx" || ext == ".csv" {
+			payload = md.Payload_SPREADSHEET
+		} else if ext == ".txt" || ext == ".doc" || ext == ".docx" || ext == ".ttf" {
+			payload = md.Payload_TEXT
+		} else {
+			payload = md.Payload_UNDEFINED
+		}
+	}
+
+	// Return Object
+	return &FileInfo{
+		Mime:    mime,
+		Payload: payload,
+		Name:    strings.TrimSuffix(filepath.Base(path), filepath.Ext(path)),
+		Path:    path,
+		Size:    int32(info.Size()),
+		IsImage: filetype.IsImage(head),
+	}, nil
 }

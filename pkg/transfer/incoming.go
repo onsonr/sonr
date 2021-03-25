@@ -8,9 +8,10 @@ import (
 	"sync"
 	"time"
 
-	dt "github.com/sonr-io/core/internal/data"
+	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
-	fs "github.com/sonr-io/core/pkg/user"
+	dt "github.com/sonr-io/core/pkg/data"
+
 	"google.golang.org/protobuf/proto"
 )
 
@@ -18,7 +19,7 @@ type IncomingFile struct {
 	// Inherited Properties
 	mutex      sync.Mutex
 	call       dt.NodeCallback
-	fs         *fs.SonrFS
+	fs         *sf.FileSystem
 	owner      *md.Profile
 	payload    md.Payload
 	properties *md.TransferCard_Properties
@@ -36,7 +37,7 @@ type IncomingFile struct {
 }
 
 // ^ Method Creates New Transfer File ^ //
-func CreateIncomingFile(inv *md.AuthInvite, fs *fs.SonrFS, tc dt.NodeCallback) *IncomingFile {
+func CreateIncomingFile(inv *md.AuthInvite, fs *sf.FileSystem, tc dt.NodeCallback) *IncomingFile {
 	// Return File
 	return &IncomingFile{
 		// Inherited Properties
@@ -113,7 +114,10 @@ func (t *IncomingFile) Save() error {
 	}
 
 	// Write File to Disk
-	name, path := t.fs.WriteIncomingFile(t.payload, t.properties, data)
+	name, path, err := t.fs.WriteIncomingFile(t.payload, t.properties, data)
+	if err != nil {
+		return err
+	}
 
 	// @ 1. Get File Information
 	// Create Card
