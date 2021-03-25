@@ -20,7 +20,6 @@ type FileCallback struct {
 	Queued OnQueued
 	Error  OnError
 }
-
 type NodeCallback struct {
 	Connected   OnBool
 	Ready       OnBool
