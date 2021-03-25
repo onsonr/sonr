@@ -17,6 +17,7 @@ import (
 	md "github.com/sonr-io/core/internal/models"
 	net "github.com/sonr-io/core/internal/network"
 	dt "github.com/sonr-io/core/pkg/data"
+	tpc "github.com/sonr-io/core/pkg/topic"
 	tr "github.com/sonr-io/core/pkg/transfer"
 
 	//dq "github.com/sonr-io/core/pkg/user"
@@ -40,7 +41,7 @@ type Node struct {
 
 	// Peers
 	auth  AuthService
-	local *TopicManager
+	local *tpc.TopicManager
 	// major    *TopicManager
 }
 
@@ -153,21 +154,22 @@ func (n *Node) Bootstrap(opts *net.HostOptions, fs *sf.FileSystem) error {
 		return err
 	}
 
-	if t, err := n.JoinTopic(n.router.LocalTopic(), n.router.TopicExchange(), n.call.GetPeer); err != nil {
+	if t, err := tpc.NewTopic(n.host, n.pubsub, n.router.LocalTopic(), n.router, n.call, n.handleAcceptedFileRequest); err != nil {
 		return err
 	} else {
 		n.local = t
+		go n.processTopicMessages(t)
 		return nil
 	}
 }
 
 // ^ Join Local Adds Node to Local Topic ^
-func (n *Node) JoinLobby(name string) error {
-	if t, err := n.JoinTopic(n.router.Topic(name), n.router.TopicExchange(), n.call.GetPeer); err != nil {
-		return err
+func (n *Node) JoinLobby(name string) (*tpc.TopicManager, error) {
+	if t, err := tpc.NewTopic(n.host, n.pubsub, n.router.Topic(name), n.router, n.call, n.handleAcceptedFileRequest); err != nil {
+		return nil, err
 	} else {
-		n.local = t
-		return nil
+		go n.processTopicMessages(t)
+		return t, nil
 	}
 }
 

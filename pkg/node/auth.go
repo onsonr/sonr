@@ -19,9 +19,9 @@ import (
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
 func (n *Node) InviteLink(req *md.InviteRequest, p *md.Peer) error {
 	// @ 3. Send Invite to Peer
-	if n.HasPeer(n.local, req.To.Id.Peer) {
+	if n.local.HasPeer(req.To.Id.Peer) {
 		// Get PeerID and Check error
-		id, _, err := n.FindPeerInTopic(n.local, req.To.Id.Peer)
+		id, _, err := n.local.FindPeerInTopic(req.To.Id.Peer)
 		if err != nil {
 			return err
 		}
@@ -69,9 +69,9 @@ func (n *Node) InviteLink(req *md.InviteRequest, p *md.Peer) error {
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
 func (n *Node) InviteContact(req *md.InviteRequest, p *md.Peer, c *md.Contact) error {
 	// @ 3. Send Invite to Peer
-	if n.HasPeer(n.local, req.To.Id.Peer) {
+	if n.local.HasPeer(req.To.Id.Peer) {
 		// Get PeerID and Check error
-		id, _, err := n.FindPeerInTopic(n.local, req.To.Id.Peer)
+		id, _, err := n.local.FindPeerInTopic(req.To.Id.Peer)
 		if err != nil {
 			return err
 		}
@@ -123,7 +123,7 @@ func (n *Node) InviteFile(card *md.TransferCard, req *md.InviteRequest, p *md.Pe
 	// @ Check for Remote
 
 	// Get PeerID
-	id, _, err := n.FindPeerInTopic(n.local, req.To.Id.Peer)
+	id, _, err := n.local.FindPeerInTopic(req.To.Id.Peer)
 	if err != nil {
 		return err
 	}

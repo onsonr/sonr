@@ -9,12 +9,12 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	disc "github.com/libp2p/go-libp2p-discovery"
 	rpc "github.com/libp2p/go-libp2p-gorpc"
-	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	swarm "github.com/libp2p/go-libp2p-swarm"
 	msgio "github.com/libp2p/go-msgio"
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
 	dt "github.com/sonr-io/core/pkg/data"
+	tpc "github.com/sonr-io/core/pkg/topic"
 	tr "github.com/sonr-io/core/pkg/transfer"
 	"google.golang.org/protobuf/proto"
 )
@@ -101,73 +101,46 @@ func (n *Node) handleDHTPeers(routingDiscovery *disc.RoutingDiscovery) {
 	}
 }
 
-// ^ handleTopicEvents: listens to Pubsub Events for topic  ^
-func (n *Node) handleTopicEvents(tm *TopicManager) {
-	// @ Loop Events
-	for {
-		// Get next event
-		lobEvent, err := tm.handler.NextPeerEvent(n.ctx)
-		if err != nil {
-			tm.handler.Cancel()
-			return
+// ^ Send Direct Message to Peer in Lobby ^ //
+func (n *Node) Message(msg string, to string, p *md.Peer) error {
+	if n.local.HasPeer(to) {
+		// Inform Lobby
+		if err := n.local.Send(&md.LobbyEvent{
+			Event:   md.LobbyEvent_MESSAGE,
+			From:    p,
+			Id:      p.Id.Peer,
+			Message: msg,
+			To:      to,
+		}); err != nil {
+			return err
 		}
-
-		if lobEvent.Type == pubsub.PeerJoin {
-			p := tm.returnPeer()
-			buf, err := proto.Marshal(p)
-			if err != nil {
-				continue
-			}
-			n.Exchange(tm, lobEvent.Peer, buf)
-		}
-
-		if lobEvent.Type == pubsub.PeerLeave {
-			tm.lobby.Remove(lobEvent.Peer)
-		}
-
-		dt.GetState().NeedsWait()
 	}
+	return nil
 }
 
-// ^ handleTopicMessages: listens for messages on pubsub topic subscription ^
-func (n *Node) handleTopicMessages(tm *TopicManager) {
-	for {
-		// Get next msg from pub/sub
-		msg, err := tm.subscription.Next(n.ctx)
-		if err != nil {
-			return
-		}
-
-		// Only forward messages delivered by others
-		if msg.ReceivedFrom == n.ID() {
-			continue
-		}
-
-		// Construct message
-		m := &md.LobbyEvent{}
-		err = proto.Unmarshal(msg.Data, m)
-		if err != nil {
-			continue
-		}
-
-		// Validate Peer in Lobby
-		if n.HasPeer(tm, m.Id) {
-			tm.messages <- m
-		}
-		dt.GetState().NeedsWait()
+// ^ Update proximity/direction and Notify Lobby ^ //
+func (n *Node) Update(p *md.Peer) error {
+	// Inform Lobby
+	if err := n.local.Send(&md.LobbyEvent{
+		Event: md.LobbyEvent_UPDATE,
+		From:  p,
+		Id:    p.Id.Peer,
+	}); err != nil {
+		return err
 	}
+	return nil
 }
 
 // ^ processTopicMessages: pulls messages from channel that have been handled ^
-func (n *Node) processTopicMessages(tm *TopicManager) {
+func (n *Node) processTopicMessages(tm *tpc.TopicManager) {
 	for {
 		select {
 		// @ when we receive a message from the lobby room
-		case m := <-tm.messages:
+		case m := <-tm.Messages:
 			// Update Circle by event
 			if m.Event == md.LobbyEvent_UPDATE {
 				// Update Peer Data
-				tm.lobby.Add(m.From)
+				tm.Lobby.Add(m.From)
 			} else if m.Event == md.LobbyEvent_MESSAGE {
 				// Check is Message For Self
 				if m.To == n.ID().String() {

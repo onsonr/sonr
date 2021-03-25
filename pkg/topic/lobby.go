@@ -1,4 +1,4 @@
-package data
+package topic
 
 import (
 	"log"
@@ -6,6 +6,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
+		dt "github.com/sonr-io/core/pkg/data"
 )
 type Lobby struct {
 	OLC   string
@@ -14,12 +15,12 @@ type Lobby struct {
 	Peers map[string]*md.Peer
 
 	// Private Properties
-	callRefresh OnProtobuf
+	callRefresh dt.OnProtobuf
 	user        *md.Peer
 }
 
 // ^ Create New Circle  ^
-func NewLobby(o string, u *md.Peer, cr OnProtobuf) *Lobby {
+func NewLobby(o string, u *md.Peer, cr dt.OnProtobuf) *Lobby {
 	return &Lobby{
 		user:        u,
 		callRefresh: cr,
