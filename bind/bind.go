@@ -45,7 +45,7 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 	}
 
 	// Create Node
-	mn.node = sn.NewNode(mn.config.contextNode(), req, mn.callbackNode())
+	mn.node = sn.NewNode(mn.contextNode(), req, mn.callbackNode())
 	return mn
 }
 
@@ -62,8 +62,7 @@ func (mn *MobileNode) Connect() {
 	// Get Private Key and Connect Host
 	key, err := mn.user.PrivateKey()
 	if err != nil {
-		mn.config.setConnected(false)
-		mn.call.OnConnected(false)
+		mn.setConnected(false)
 	} else {
 		// Connect Host
 		go mn.start(key, startChan)
@@ -74,15 +73,13 @@ func (mn *MobileNode) Connect() {
 			// @ On Connection
 			case status := <-startChan:
 				// Update Status
-				mn.config.setConnected(status)
-				mn.call.OnConnected(status)
+				mn.setConnected(status)
 
 				// Set User Peer
 				if status {
 					err = mn.user.SetPeer(mn.node.Host.ID())
 					if err != nil {
 						log.Println(err)
-						mn.call.OnReady(false)
 						break
 					} else {
 						// Begin Bootstrap
@@ -93,8 +90,7 @@ func (mn *MobileNode) Connect() {
 				// @ On Bootstrap
 			case status := <-bootstrapChan:
 				// Update Status and Join Local
-				mn.config.setBootstrapped(status)
-				mn.call.OnReady(status)
+				mn.setBootstrapped(status)
 				if status {
 					go mn.joinLocal(localChan)
 				} else {
@@ -104,7 +100,7 @@ func (mn *MobileNode) Connect() {
 				// @ On Local Join
 			case status := <-localChan:
 				// Update Status
-				mn.config.setJoinedLocal(status)
+				mn.setJoinedLocal(status)
 				break
 			}
 		}

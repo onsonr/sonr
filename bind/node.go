@@ -25,7 +25,7 @@ func GetURLMetadata(url string) []byte {
 
 // @ Update proximity/direction and Notify Lobby
 func (mn *MobileNode) Update(facing float64, heading float64) {
-	if mn.config.isReady() {
+	if mn.isReady() {
 		mn.user.SetPosition(facing, heading)
 		err := mn.node.Update(mn.local, mn.user.Peer())
 		if err != nil {
@@ -37,7 +37,7 @@ func (mn *MobileNode) Update(facing float64, heading float64) {
 
 // @ Send Direct Message to Peer in Lobby
 func (mn *MobileNode) Message(msg string, to string) {
-	if mn.config.isReady() {
+	if mn.isReady() {
 		err := mn.node.Message(mn.local, msg, to, mn.user.Peer())
 		if err != nil {
 			log.Println(err)
@@ -48,9 +48,9 @@ func (mn *MobileNode) Message(msg string, to string) {
 
 // @ Invite Processes Data and Sends Invite to Peer
 func (mn *MobileNode) Invite(reqBytes []byte) {
-	if mn.config.isReady() {
+	if mn.isReady() {
 		// Update Status
-		mn.config.Status = md.Status_PENDING
+		mn.setStatus(md.Status_PENDING)
 
 		// Initialize from Request
 		req := &md.InviteRequest{}
@@ -98,7 +98,7 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 
 // @ Join Existing Group
 func (mn *MobileNode) JoinRemote(data string) {
-	if mn.config.isReady() {
+	if mn.isReady() {
 		// mn.node.JoinRemote(data)
 		log.Println(data)
 		return
@@ -107,13 +107,13 @@ func (mn *MobileNode) JoinRemote(data string) {
 
 // @ Respond to an Invite with Decision
 func (mn *MobileNode) Respond(decs bool) {
-	if mn.config.isReady() {
+	if mn.isReady() {
 		mn.node.Respond(decs, mn.user.FS, mn.user.Peer(), mn.local, mn.user.Contact())
 		// Update Status
 		if decs {
-			mn.config.Status = md.Status_INPROGRESS
+			mn.setStatus(md.Status_INPROGRESS)
 		} else {
-			mn.config.Status = md.Status_AVAILABLE
+			mn.setStatus(md.Status_AVAILABLE)
 		}
 	}
 }
@@ -121,7 +121,7 @@ func (mn *MobileNode) Respond(decs bool) {
 // ** User Actions ** //
 // @ Updates Current Contact Card
 func (mn *MobileNode) SetContact(conBytes []byte) {
-	if mn.config.isReady() {
+	if mn.isReady() {
 		// Unmarshal Data
 		newContact := &md.Contact{}
 		err := proto.Unmarshal(conBytes, newContact)

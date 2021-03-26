@@ -10,8 +10,7 @@ import (
 
 // * Interface: Callback is implemented from Plugin to receive updates * //
 type Callback interface {
-	OnConnected(data bool)     // Node Host has Bootstrapped
-	OnReady(data bool)         // Node Host has Bootstrapped
+	OnStatus(data []byte)      // Node Status Updates
 	OnRefreshed(data []byte)   // Lobby Updates
 	OnEvent(data []byte)       // Lobby Event
 	OnRemoteStart(data []byte) // User started remote
@@ -28,8 +27,6 @@ type Callback interface {
 func (mn *MobileNode) callbackNode() dt.NodeCallback {
 	return dt.NodeCallback{
 		// Direct
-		Connected:   mn.call.OnConnected,
-		Ready:       mn.call.OnReady,
 		Refreshed:   mn.call.OnRefreshed,
 		Event:       mn.call.OnEvent,
 		RemoteStart: mn.call.OnRemoteStart,
@@ -50,7 +47,7 @@ func (mn *MobileNode) callbackNode() dt.NodeCallback {
 // ^ invite Callback with data for Lifecycle ^ //
 func (mn *MobileNode) invited(data []byte) {
 	// Update Status
-	mn.config.Status = md.Status_INVITED
+	mn.setStatus(md.Status_INVITED)
 	// Callback with Data
 	mn.call.OnInvited(data)
 }
@@ -58,7 +55,7 @@ func (mn *MobileNode) invited(data []byte) {
 // ^ transmitted Callback middleware post transfer ^ //
 func (mn *MobileNode) transmitted(peer *md.Peer) {
 	// Update Status
-	mn.config.Status = md.Status_AVAILABLE
+	mn.setStatus(md.Status_AVAILABLE)
 
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(peer)
@@ -75,7 +72,7 @@ func (mn *MobileNode) transmitted(peer *md.Peer) {
 // ^ received Callback middleware post transfer ^ //
 func (mn *MobileNode) received(card *md.TransferCard) {
 	// Update Status
-	mn.config.Status = md.Status_AVAILABLE
+	mn.setStatus(md.Status_AVAILABLE)
 
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(card)
