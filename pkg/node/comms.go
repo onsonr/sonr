@@ -2,8 +2,6 @@ package node
 
 import (
 	"errors"
-	"log"
-	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	sf "github.com/sonr-io/core/internal/file"
@@ -62,40 +60,11 @@ func (n *Node) InviteLink(req *md.InviteRequest, t *tpc.TopicManager, p *md.Peer
 			return err
 		}
 
-		// Get URL Data
-		urlInfo, err := md.GetPageInfoFromUrl(req.Url)
-		if err != nil {
-			log.Println(err)
-			urlInfo = &md.URLLink{
-				Link: req.Url,
-			}
-		}
+		// Create Invite
+		invite := md.NewAuthInviteWithURL(req, p)
 
-		// Build Invite Message
-		invMsg := md.AuthInvite{
-			IsRemote: req.IsRemote,
-			From:     p,
-			Payload:  md.Payload_URL,
-			Card: &md.TransferCard{
-				// SQL Properties
-				Payload:  md.Payload_URL,
-				Received: int32(time.Now().Unix()),
-				Platform: p.Platform,
-
-				// Transfer Properties
-				Status: md.TransferCard_DIRECT,
-
-				// Owner Properties
-				Username:  p.Profile.Username,
-				FirstName: p.Profile.FirstName,
-				LastName:  p.Profile.LastName,
-
-				// Data Properties
-				Url: urlInfo,
-			},
-		}
 		// Run Routine
-		err = t.Invite(id, &invMsg, p, nil)
+		err = t.Invite(id, &invite, p, nil)
 		if err != nil {
 			return err
 		}
@@ -116,29 +85,7 @@ func (n *Node) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, p *md.P
 		}
 
 		// Build Invite Message
-		invMsg := md.AuthInvite{
-			IsRemote: req.IsRemote,
-			From:     p,
-			Payload:  md.Payload_CONTACT,
-			Card: &md.TransferCard{
-				// SQL Properties
-				Payload:  md.Payload_CONTACT,
-				Received: int32(time.Now().Unix()),
-				Preview:  p.Profile.Picture,
-				Platform: p.Platform,
-
-				// Transfer Properties
-				Status: md.TransferCard_DIRECT,
-
-				// Owner Properties
-				Username:  p.Profile.Username,
-				FirstName: p.Profile.FirstName,
-				LastName:  p.Profile.LastName,
-
-				// Data Properties
-				Contact: c,
-			},
-		}
+		invMsg := md.NewAuthInviteWithContact(req, p, c)
 
 		// Run Routine
 		err = t.Invite(id, &invMsg, p, nil)
