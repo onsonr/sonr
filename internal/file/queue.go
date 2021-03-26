@@ -1,15 +1,19 @@
 package file
 
 import (
+	"errors"
+
 	md "github.com/sonr-io/core/internal/models"
 )
 
 // ^ Adds File Transfer from Invite Request ^ //
 func (fq *FileSystem) AddFromRequest(req *md.InviteRequest, p *md.Profile) error {
 	// Add Single File Transfer
-	safeFile, err := NewFileItem(req, p, fq.Call)
-	if err != nil {
-		return err
+	safeFile := NewFileItem(req, p, fq.Call)
+
+	// Validate Files not Null
+	if safeFile == nil {
+		return errors.New("Request or Profile not Provided")
 	}
 
 	fq.Files = append(fq.Files, safeFile)

@@ -7,6 +7,7 @@ import (
 
 	// Imported
 	"github.com/libp2p/go-libp2p"
+	cmgr "github.com/libp2p/go-libp2p-connmgr"
 	dscl "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -70,6 +71,11 @@ func (n *Node) Connect(opts *net.HostOptions) error {
 			fmt.Sprintf("/ip6/%s/tcp/0", ip6)),
 		libp2p.Identity(opts.PrivateKey),
 		libp2p.DefaultTransports,
+		libp2p.ConnectionManager(cmgr.NewConnManager(
+			10,          // Lowwater
+			20,          // HighWater,
+			time.Minute, // GracePeriod
+		)),
 	)
 	if err != nil {
 		return err
@@ -124,7 +130,7 @@ func (n *Node) Bootstrap(opts *net.HostOptions, fs *sf.FileSystem) error {
 
 	// Set Routing Discovery, Find Peers
 	routingDiscovery := dsc.NewRoutingDiscovery(n.kdht)
-	dsc.Advertise(n.ctx, routingDiscovery, n.router.MajorPoint(), dscl.TTL(time.Second*4))
+	dsc.Advertise(n.ctx, routingDiscovery, n.router.MajorPoint(), dscl.TTL(time.Second*2))
 	go n.handleDHTPeers(routingDiscovery)
 	return nil
 }
@@ -159,9 +165,9 @@ func (n *Node) handleDHTPeers(routingDiscovery *dsc.RoutingDiscovery) {
 			}
 		}
 
-		// Refresh table every 200 milliseconds
+		// Refresh table every 4 seconds
 		dt.GetState().NeedsWait()
-		time.Sleep(time.Millisecond * 200)
+		<-time.After(time.Second * 2)
 	}
 }
 

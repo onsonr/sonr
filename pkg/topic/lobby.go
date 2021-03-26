@@ -46,9 +46,9 @@ func (l *Lobby) Add(peer *md.Peer) {
 }
 
 // ^ Add/Update Peer in Lobby without Callback ^
-func (l *Lobby) AddWithoutRefresh(id string, peer *md.Peer) {
+func (l *Lobby) AddWithoutRefresh(peer *md.Peer) {
 	// Update Peer with new data
-	l.Peers[id] = peer
+	l.Peers[peer.Id.Peer] = peer
 	l.Count = int32(len(l.Peers))
 	l.Size = int32(len(l.Peers)) + 1 // Account for User
 }
@@ -65,12 +65,12 @@ func (l *Lobby) Remove(id peer.ID) {
 // ^ Sync Between Remote Peers Lobby ^
 func (l *Lobby) Sync(ref *md.Lobby, remotePeer *md.Peer) {
 	// Validate Lobbies are Different
-	if l.Count < ref.Count {
+	if l.Count != ref.Count {
 		// Iterate Over List
 		for id, peer := range ref.Peers {
 			// Add all Peers NOT User
 			if id != l.user.Id.Peer {
-				l.AddWithoutRefresh(id, peer)
+				l.AddWithoutRefresh(peer)
 			}
 		}
 	}
