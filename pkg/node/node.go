@@ -61,7 +61,7 @@ func (n *Node) Connect(key crypto.PrivKey) error {
 	ip6 := net.IPv6()
 
 	// Start Host
-	h, err := libp2p.New(
+	n.host, err = libp2p.New(
 		n.ctx,
 		// Add listening Addresses
 		libp2p.ListenAddrStrings(
@@ -78,24 +78,24 @@ func (n *Node) Connect(key crypto.PrivKey) error {
 	if err != nil {
 		return err
 	}
-	n.host = h
 
 	// Create Pub Sub
-	ps, err := psub.NewGossipSub(n.ctx, n.host)
+	n.pubsub, err = psub.NewGossipSub(n.ctx, n.host)
 	if err != nil {
 		return err
 	}
-	n.pubsub = ps
 	return nil
 }
 
 // ^ Bootstrap begins bootstrap with peers ^
 func (n *Node) Bootstrap() error {
+	var err error
+
 	// Create Bootstrapper Info
 	bootstrappers := n.opts.GetBootstrapAddrInfo()
 
 	// Set DHT
-	kadDHT, err := dht.New(
+	n.kdht, err = dht.New(
 		n.ctx,
 		n.host,
 		dht.BootstrapPeers(bootstrappers...),
@@ -104,31 +104,21 @@ func (n *Node) Bootstrap() error {
 		return err
 	}
 
-	// Return Connected
-	n.kdht = kadDHT
-
 	// Bootstrap DHT
 	if err := n.kdht.Bootstrap(n.ctx); err != nil {
 		return err
 	}
 
 	// Connect to bootstrap nodes, if any
-	hasBootstrapped := false
 	for _, pi := range bootstrappers {
 		if err := n.host.Connect(n.ctx, pi); err == nil {
-			hasBootstrapped = true
 			break
 		}
 	}
 
-	// Check if Bootstrapping Occurred
-	if !hasBootstrapped {
-		return err
-	}
-
 	// Set Routing Discovery, Find Peers
 	routingDiscovery := dsc.NewRoutingDiscovery(n.kdht)
-	dsc.Advertise(n.ctx, routingDiscovery, n.router.MajorPoint(), dscl.TTL(time.Second*2))
+	dsc.Advertise(n.ctx, routingDiscovery, n.router.MajorPoint(), dscl.TTL(time.Second*4))
 	go n.handleDHTPeers(routingDiscovery)
 	return nil
 }
@@ -144,7 +134,6 @@ func (n *Node) handleDHTPeers(routingDiscovery *dsc.RoutingDiscovery) {
 		)
 		if err != nil {
 			n.call.Error(err, "Finding DHT Peers")
-			n.call.Ready(false)
 			return
 		}
 
@@ -161,11 +150,11 @@ func (n *Node) handleDHTPeers(routingDiscovery *dsc.RoutingDiscovery) {
 					}
 				}
 			}
+			dt.GetState().NeedsWait()
 		}
 
 		// Refresh table every 4 seconds
-		dt.GetState().NeedsWait()
-		<-time.After(time.Second * 2)
+		<-time.After(time.Second * 4)
 	}
 }
 

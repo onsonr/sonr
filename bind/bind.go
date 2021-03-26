@@ -32,8 +32,8 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 
 	// Create Mobile Node
 	mn := &MobileNode{
-		config: newMobileConfig(),
 		call:   call,
+		config: newMobileConfig(),
 		topics: make([]*tpc.TopicManager, 10),
 	}
 
@@ -60,7 +60,15 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 // @ Start Host
 func (mn *MobileNode) Connect() {
 	// ! Connect to Host
-	err := mn.node.Connect(mn.user.PrivateKey())
+	// Get Key
+	key, err := mn.user.PrivateKey()
+	if err != nil {
+		mn.config.setConnected(false)
+		mn.call.OnConnected(false)
+	}
+
+	// Start Host
+	err = mn.node.Connect(key)
 	if err != nil {
 		mn.config.setConnected(false)
 		mn.call.OnConnected(false)

@@ -1,6 +1,7 @@
 package user
 
 import (
+	"crypto/rand"
 	"hash/fnv"
 	"log"
 	"math"
@@ -8,6 +9,7 @@ import (
 	mid "github.com/denisbrodbeck/machineid"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/pkg/errors"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -39,8 +41,46 @@ func (u *User) PeerBuf() []byte {
 }
 
 // ^ Get Key: Returns Private key from disk if found ^ //
-func (u *User) PrivateKey() crypto.PrivKey {
-	return u.privKey
+func (u *User) PrivateKey() (crypto.PrivKey, error) {
+	// @ Get Private Key
+	if ok := u.FS.IsFile(K_SONR_PRIV_KEY); ok {
+		// Get Key File
+		buf, err := u.FS.ReadFile(K_SONR_PRIV_KEY)
+		if err != nil {
+			return nil, err
+		}
+
+		// Get Key from Buffer
+		key, err := crypto.UnmarshalPrivateKey(buf)
+		if err != nil {
+			return nil, errors.Wrap(err, "unmarshalling identity private key")
+		}
+
+		// Set Key Ref
+		return key, nil
+	} else {
+		// Create New Key
+		privKey, _, err := crypto.GenerateEd25519Key(rand.Reader)
+		if err != nil {
+			return nil, errors.Wrap(err, "generating identity private key")
+		}
+
+		// Marshal Data
+		buf, err := crypto.MarshalPrivateKey(privKey)
+		if err != nil {
+			return nil, errors.Wrap(err, "marshalling identity private key")
+		}
+
+		// Write Key to File
+		_, err = u.FS.WriteFile(K_SONR_PRIV_KEY, buf)
+		if err != nil {
+			return nil, err
+		}
+
+		// Set Key Ref
+		return privKey, nil
+	}
+
 }
 
 // ^ Get Peer returns Peers Profile ^ //
