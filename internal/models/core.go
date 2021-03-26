@@ -186,16 +186,66 @@ type InFileInfo struct {
 	// Tracking
 	CurrentSize int
 	Interval    int
-	TotalChunks int
 	TotalSize   int
 }
 
+type InFileProgress struct {
+	// Tracking
+	HasCompleted bool
+	MetInterval  bool
+	Progress     float32
+}
+
 // ** Method Creates New Transfer File **
-func GetInFileInfo(inv *AuthInvite) *InFileInfo {
+func GetInFileInfo(inv *AuthInvite, interval int) *InFileInfo {
 	// Return File
 	return &InFileInfo{
 		// Inherited Properties
-		Properties: inv.Card.Properties,
-		Preview:    inv.Card.Preview,
+		CurrentSize: 0,
+		Properties:  inv.Card.Properties,
+		Preview:     inv.Card.Preview,
+		Interval:    interval,
+		TotalSize:   int(inv.Card.Properties.Size),
+	}
+}
+
+// ^ Update Tracking Returns: (Has Completed), (Has Met Interval), (Current Progress)
+func (ifo *InFileInfo) UpdateTracking(n int, curr int) *InFileProgress {
+	// Update Size
+	ifo.CurrentSize = ifo.CurrentSize + n
+
+	// Check Completed
+	if ifo.CurrentSize < ifo.TotalSize {
+		// Validate Interval
+		if ifo.Interval != 0 {
+			// Check for Interval
+			if curr%ifo.Interval == 0 {
+				// Return Progress
+				return &InFileProgress{
+					HasCompleted: false,
+					MetInterval:  true,
+					Progress:     float32(ifo.CurrentSize) / float32(ifo.TotalSize),
+				}
+			} else {
+				return &InFileProgress{
+					HasCompleted: false,
+					MetInterval:  false,
+					Progress:     float32(ifo.CurrentSize) / float32(ifo.TotalSize),
+				}
+			}
+		} else {
+			return &InFileProgress{
+				HasCompleted: false,
+				MetInterval:  true,
+				Progress:     float32(ifo.CurrentSize) / float32(ifo.TotalSize),
+			}
+		}
+	}
+
+	// Completed File
+	return &InFileProgress{
+		HasCompleted: true,
+		MetInterval:  true,
+		Progress:     100,
 	}
 }

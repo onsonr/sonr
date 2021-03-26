@@ -82,8 +82,38 @@ func (pf *FileItem) EncodeMedia(buf *bytes.Buffer) error {
 	}
 }
 
+// ^ Returns Total Incoming Buffer ^ //
+func (i *FileItem) GetIncomingBuffer() ([]byte, error) {
+	// Get Bytes from base64
+	return base64.StdEncoding.DecodeString(i.stringsBuilder.String())
+}
+
+// ^ Check file type and use corresponding method ^ //
+func (t *FileItem) WriteFromStream(curr int, buffer []byte) (*md.InFileProgress, error) {
+	// ** Lock/Unlock ** //
+	t.mutex.Lock()
+	defer t.mutex.Unlock()
+
+	// @ Unmarshal Bytes into Proto
+	chunk := md.Chunk64{}
+	err := proto.Unmarshal(buffer, &chunk)
+	if err != nil {
+		return nil, err
+	}
+
+	// @ Add Buffer by File Type
+	// Add Base64 Chunk to Buffer
+	n, err := t.stringsBuilder.WriteString(chunk.Data)
+	if err != nil {
+		return nil, err
+	}
+
+	// Update Tracking
+	return t.inInfo.UpdateTracking(n, curr), nil
+}
+
 // ^ write fileItem as Base64 in Msgio to Stream ^ //
-func (pf *FileItem) WriteBase64(writer msgio.WriteCloser, peer *md.Peer, hc chan bool) {
+func (pf *FileItem) WriteToStream(writer msgio.WriteCloser, peer *md.Peer, hc chan bool) {
 	// Initialize Buffer and Encode File
 	var base string
 	if pf.Payload == md.Payload_MEDIA {

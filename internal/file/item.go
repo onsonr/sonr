@@ -5,6 +5,7 @@ import (
 	"errors"
 	"image"
 	"image/jpeg"
+	"strings"
 	"sync"
 
 	md "github.com/sonr-io/core/internal/models"
@@ -20,13 +21,18 @@ type FileItem struct {
 	// References
 	Payload md.Payload
 	Owner   *md.Peer
+	Name    string
 	Path    string
 
 	// Outgoing Properties
-	inInfo  *md.InFileInfo
 	outInfo *md.OutFileInfo
 	request *md.InviteRequest
-	invite  *md.AuthInvite
+
+	// Incoming Properties
+	inInfo         *md.InFileInfo
+	invite         *md.AuthInvite
+	stringsBuilder *strings.Builder
+	bytesBuilder   *bytes.Buffer
 }
 
 // ^ NewOutgoingFileItem Processes Outgoing File ^ //
@@ -69,6 +75,7 @@ func NewOutgoingFileItem(req *md.InviteRequest, p *md.Peer, hc chan bool) (*File
 
 		// @ 2a. Create new SafeFile
 		sm := &FileItem{
+			Name:    info.Name,
 			Path:    file.Path,
 			outInfo: info,
 			Owner:   p,
@@ -102,19 +109,31 @@ func NewOutgoingFileItem(req *md.InviteRequest, p *md.Peer, hc chan bool) (*File
 
 // ^ NewIncomingFileItem Prepares for Incoming Data ^ //
 func NewIncomingFileItem(i *md.AuthInvite, p string) (*FileItem, error) {
+	// Calculate Tracking Data
+	totalChunks := int(i.Card.Properties.Size) / K_B64_CHUNK
+	interval := totalChunks / 100
+
 	// Get Info
-	info := md.GetInFileInfo(i)
+	info := md.GetInFileInfo(i, interval)
+	fileName := i.Card.Properties.Name + "." + i.Card.Properties.Mime.Subtype
 
 	// Return Item
 	return &FileItem{
+		// Inherited Properties
 		Owner:   i.From,
 		Payload: i.Payload,
+		Name:    fileName,
 		Path:    p,
 		inInfo:  info,
 		invite:  i,
+
+		// Builders
+		stringsBuilder: new(strings.Builder),
+		bytesBuilder:   new(bytes.Buffer),
 	}, nil
 }
 
+// ^ Display Outgoing File Information ^ //
 func (pf *FileItem) InfoOut() (*md.OutFileInfo, error) {
 	if pf.outInfo != nil {
 		return pf.outInfo, nil
@@ -122,6 +141,7 @@ func (pf *FileItem) InfoOut() (*md.OutFileInfo, error) {
 	return nil, errors.New("No Outgoing Info")
 }
 
+// ^ Display Incoming File Information ^ //
 func (pf *FileItem) InfoIn() (*md.InFileInfo, error) {
 	if pf.inInfo != nil {
 		return pf.inInfo, nil

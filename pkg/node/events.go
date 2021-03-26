@@ -69,7 +69,7 @@ func (n *Node) OnReply(id peer.ID, p *md.Peer, cf *sf.FileItem, reply []byte) {
 
 		// Start Routine
 		hasCompleted := make(chan bool)
-		go cf.WriteBase64(writer, p, hasCompleted)
+		go cf.WriteToStream(writer, p, hasCompleted)
 
 		// Wait For Done
 		done := <-hasCompleted
