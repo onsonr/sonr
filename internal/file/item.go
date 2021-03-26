@@ -25,14 +25,16 @@ type FileItem struct {
 	Path    string
 
 	// Outgoing Properties
-	outInfo *md.OutFileInfo
-	request *md.InviteRequest
+	hasPreview bool
+	outInfo    *md.OutFileInfo
+	preview    []byte
+	request    *md.InviteRequest
 
 	// Incoming Properties
+	bytesBuilder   *bytes.Buffer
 	inInfo         *md.InFileInfo
 	invite         *md.AuthInvite
 	stringsBuilder *strings.Builder
-	bytesBuilder   *bytes.Buffer
 }
 
 // ^ NewOutgoingFileItem Processes Outgoing File ^ //
@@ -75,11 +77,13 @@ func NewOutgoingFileItem(req *md.InviteRequest, p *md.Peer, hc chan bool) (*File
 
 		// @ 2a. Create new SafeFile
 		sm := &FileItem{
-			Name:    info.Name,
-			Path:    file.Path,
-			outInfo: info,
-			Owner:   p,
-			request: req,
+			hasPreview: true,
+			preview:    preview,
+			Name:       info.Name,
+			Path:       file.Path,
+			outInfo:    info,
+			Owner:      p,
+			request:    req,
 		}
 
 		// @ 3a. Callback with Preview
@@ -95,10 +99,11 @@ func NewOutgoingFileItem(req *md.InviteRequest, p *md.Peer, hc chan bool) (*File
 
 		// @ 2b. Create new SafeFile
 		sm := &FileItem{
-			Path:    file.Path,
-			outInfo: info,
-			Owner:   p,
-			request: req,
+			hasPreview: false,
+			Path:       file.Path,
+			outInfo:    info,
+			Owner:      p,
+			request:    req,
 		}
 
 		// @ 3b. Callback with Preview
@@ -135,16 +140,18 @@ func NewIncomingFileItem(i *md.AuthInvite, p string) (*FileItem, error) {
 
 // ^ Display Outgoing File Information ^ //
 func (pf *FileItem) InfoOut() (*md.OutFileInfo, error) {
-	if pf.outInfo != nil {
-		return pf.outInfo, nil
+	if pf.hasPreview {
+		return md.GetOutFileInfoWithPreview(pf.Path, pf.preview)
+	} else {
+		return md.GetOutFileInfo(pf.Path)
 	}
-	return nil, errors.New("No Outgoing Info")
+
 }
 
 // ^ Display Incoming File Information ^ //
-func (pf *FileItem) InfoIn() (*md.InFileInfo, error) {
+func (pf *FileItem) InfoIn() (md.InFileInfo, error) {
 	if pf.inInfo != nil {
-		return pf.inInfo, nil
+		return *pf.inInfo, nil
 	}
-	return nil, errors.New("No Incoming Info")
+	return md.InFileInfo{}, errors.New("No Incoming Info")
 }
