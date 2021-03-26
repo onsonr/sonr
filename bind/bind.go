@@ -13,59 +13,44 @@ import (
 
 // * Struct: Reference for Binded Proxy Node * //
 type MobileNode struct {
-	call            Callback
-	node            *sn.Node
-	hasStarted      bool
-	hasBootstrapped bool
-	hostOpts        *net.HostOptions
-	status          md.Status
-	user            *u.User
-	local           *tpc.TopicManager
-	topics          []*tpc.TopicManager
+	call   Callback
+	config mobileConfig
+	node   *sn.Node
+	user   *u.User
+	local  *tpc.TopicManager
+	topics []*tpc.TopicManager
 }
 
 // @ Create New Mobile Node
 func NewNode(reqBytes []byte, call Callback) *MobileNode {
-	// // Initialize Node Logging
-	// err := sentry.Init(sentry.ClientOptions{
-	// 	Dsn: "https://cbf88b01a5a5468fa77101f7dfc54f20@o549479.ingest.sentry.io/5672329",
-	// })
-	// if err != nil {
-	// 	panic(err)
-	// }
-
 	// Unmarshal Request
 	req := &md.ConnectionRequest{}
 	err := proto.Unmarshal(reqBytes, req)
 	if err != nil {
-		// sentry.CaptureException(err)
 		panic(err)
 	}
 
 	// Create Mobile Node
 	mn := &MobileNode{
-		call:            call,
-		hasStarted:      false,
-		hasBootstrapped: false,
-		topics:          make([]*tpc.TopicManager, 10),
+		config: newMobileConfig(),
+		call:   call,
+		topics: make([]*tpc.TopicManager, 10),
 	}
 
 	// Create New User
-	mn.user, err = u.NewUser(req, mn.nodeCallback())
+	mn.user, err = u.NewUser(req, mn.callbackNode())
 	if err != nil {
-		// sentry.CaptureException(err)
 		panic(err)
 	}
 
 	// Create Host Options
-	mn.hostOpts, err = net.NewHostOpts(req)
+	hostOpts, err := net.NewHostOpts(req)
 	if err != nil {
-		// sentry.CaptureException(err)
 		panic(err)
 	}
 
 	// Create Node
-	mn.node = sn.NewNode(mn.hostOpts, mn.nodeCallback())
+	mn.node = sn.NewNode(mn.config.contextNode(), hostOpts, mn.callbackNode())
 	return mn
 }
 
@@ -75,16 +60,15 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 // @ Start Host
 func (mn *MobileNode) Connect() {
 	// ! Connect to Host
-	err := mn.node.Connect(mn.hostOpts, mn.user.PrivateKey())
+	err := mn.node.Connect(mn.user.PrivateKey())
 	if err != nil {
-		log.Println("Failed to start host")
-		// sentry.CaptureException(err)
 		mn.call.OnConnected(false)
+		mn.config.setConnected(false)
 		return
 	}
 
 	// Update Status
-	mn.hasStarted = true
+	mn.config.setConnected(true)
 	mn.call.OnConnected(true)
 
 	// ! Set User Peer
@@ -95,25 +79,26 @@ func (mn *MobileNode) Connect() {
 	}
 
 	// ! Bootstrap to Peers
-	err = mn.node.Bootstrap(mn.hostOpts, mn.user.FS)
+	err = mn.node.Bootstrap()
 	if err != nil {
 		log.Println("Failed to bootstrap node")
-		// sentry.CaptureException(err)
 		mn.call.OnReady(false)
+		mn.config.setBootstrapped(false)
 		return
 	}
 
 	// Update Status
-	mn.hasBootstrapped = true
-	mn.call.OnReady(true)
+	mn.config.setBootstrapped(true)
 
 	// ! Join Local topic
 	t, err := mn.node.JoinLocal()
 	if err != nil {
 		log.Println("Failed to connect to local topic")
-		// sentry.CaptureException(err)
+		mn.config.setJoinedLocal(false)
 		mn.call.OnReady(false)
+		return
 	}
+	mn.config.setJoinedLocal(true)
 	mn.local = t
 }
 
@@ -136,11 +121,6 @@ func GetURLMetadata(url string) []byte {
 // **-------------------** //
 // ** LifeCycle Actions ** //
 // **-------------------** //
-// @ Checks for is Ready
-func (mn *MobileNode) isReady() bool {
-	return mn.hasBootstrapped && mn.hasStarted
-}
-
 // @ Close Ends All Network Communication
 func (mn *MobileNode) Pause() {
 	mn.node.Pause()

@@ -25,7 +25,7 @@ type Callback interface {
 }
 
 // ^ Passes binded Methods to Node ^
-func (mn *MobileNode) nodeCallback() dt.NodeCallback {
+func (mn *MobileNode) callbackNode() dt.NodeCallback {
 	return dt.NodeCallback{
 		// Direct
 		Connected:   mn.call.OnConnected,
@@ -50,7 +50,7 @@ func (mn *MobileNode) nodeCallback() dt.NodeCallback {
 // ^ invite Callback with data for Lifecycle ^ //
 func (mn *MobileNode) invited(data []byte) {
 	// Update Status
-	mn.status = md.Status_INVITED
+	mn.config.Status = md.Status_INVITED
 	// Callback with Data
 	mn.call.OnInvited(data)
 }
@@ -58,7 +58,7 @@ func (mn *MobileNode) invited(data []byte) {
 // ^ transmitted Callback middleware post transfer ^ //
 func (mn *MobileNode) transmitted(peer *md.Peer) {
 	// Update Status
-	mn.status = md.Status_AVAILABLE
+	mn.config.Status = md.Status_AVAILABLE
 
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(peer)
@@ -75,7 +75,7 @@ func (mn *MobileNode) transmitted(peer *md.Peer) {
 // ^ received Callback middleware post transfer ^ //
 func (mn *MobileNode) received(card *md.TransferCard) {
 	// Update Status
-	mn.status = md.Status_AVAILABLE
+	mn.config.Status = md.Status_AVAILABLE
 
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(card)

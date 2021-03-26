@@ -19,7 +19,7 @@ import (
 	msg "github.com/libp2p/go-msgio"
 
 	// Local
-	sf "github.com/sonr-io/core/internal/file"
+
 	net "github.com/sonr-io/core/internal/network"
 	dt "github.com/sonr-io/core/pkg/data"
 	tr "github.com/sonr-io/core/pkg/transfer"
@@ -28,35 +28,32 @@ import (
 // ^ Struct: Main Node handles Networking/Identity/Streams ^
 type Node struct {
 	// Properties
-	ctx context.Context
+	ctx  context.Context
+	opts *net.HostOptions
+	call dt.NodeCallback
 
 	// Networking Properties
 	host   host.Host
 	kdht   *dht.IpfsDHT
 	pubsub *psub.PubSub
 	router *net.ProtocolRouter
-	call   dt.NodeCallback
 
 	// Data Handlers
 	incoming *tr.IncomingFile
 }
 
 // ^ NewNode Initializes Node with a host and default properties ^
-func NewNode(opts *net.HostOptions, call dt.NodeCallback) *Node {
-	// Create Context and Set Node Properties
-	node := new(Node)
-	node.ctx = context.Background()
-	node.call = call
-
-	// Set Protocol Router
-	node.router = net.NewProtocolRouter(opts.ConnRequest)
-
-	// Start Host
-	return node
+func NewNode(ctx context.Context, opts *net.HostOptions, call dt.NodeCallback) *Node {
+	return &Node{
+		ctx:    ctx,
+		call:   call,
+		opts:   opts,
+		router: net.NewProtocolRouter(opts.ConnRequest),
+	}
 }
 
 // ^ Connect Begins Assigning Host Parameters ^
-func (n *Node) Connect(opts *net.HostOptions, key crypto.PrivKey) error {
+func (n *Node) Connect(key crypto.PrivKey) error {
 	var err error
 
 	// IP Address
@@ -93,9 +90,9 @@ func (n *Node) Connect(opts *net.HostOptions, key crypto.PrivKey) error {
 }
 
 // ^ Bootstrap begins bootstrap with peers ^
-func (n *Node) Bootstrap(opts *net.HostOptions, fs *sf.FileSystem) error {
+func (n *Node) Bootstrap() error {
 	// Create Bootstrapper Info
-	bootstrappers := opts.GetBootstrapAddrInfo()
+	bootstrappers := n.opts.GetBootstrapAddrInfo()
 
 	// Set DHT
 	kadDHT, err := dht.New(
