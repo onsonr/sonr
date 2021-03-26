@@ -58,32 +58,34 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 			}
 		} else {
 			// @ Add File to Queue
-			hasCompleted := make(chan bool)
-			go func() {
-				if err := mn.user.FS.EnqueueFromRequest(req, mn.user.Peer(), hasCompleted); err != nil {
-					log.Println(err)
-					return
-				}
-			}()
+			if err := mn.user.FS.EnqueueFromRequest(req, mn.user.Peer()); err != nil {
+				log.Println(err)
+				return
+			}
 
-			// @ Wait For Done
-			done := <-hasCompleted
-			if done {
-				// Retreive Current File
-				currFile, err := mn.user.FS.DequeueOut()
-				if err != nil {
-					log.Println(err)
-					return
-				}
+			// @ Retreive Current File
+			currFile, err := mn.user.FS.DequeueOut()
+			if err != nil {
+				log.Println(err)
+				return
+			}
 
-				// Send Invite
-				err = mn.node.InviteFile(req, mn.local, mn.user.Peer(), currFile)
-				if err != nil {
-					log.Println(err)
-					return
-				}
+			// @ Send Invite
+			err = mn.node.InviteFile(req, mn.local, mn.user.Peer(), currFile)
+			if err != nil {
+				log.Println(err)
+				return
 			}
 		}
+	}
+}
+
+// @ Join Existing Group
+func (mn *MobileNode) JoinRemote(data string) {
+	if mn.config.isReady() {
+		// mn.node.JoinRemote(data)
+		log.Println(data)
+		return
 	}
 }
 
@@ -97,15 +99,6 @@ func (mn *MobileNode) Respond(decs bool) {
 		} else {
 			mn.config.Status = md.Status_AVAILABLE
 		}
-	}
-}
-
-// @ Join Existing Group
-func (mn *MobileNode) JoinRemote(data string) {
-	if mn.config.isReady() {
-		// mn.node.JoinRemote(data)
-		log.Println(data)
-		return
 	}
 }
 

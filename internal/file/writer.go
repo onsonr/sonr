@@ -23,7 +23,7 @@ func (pf *FileItem) EncodeMedia(buf *bytes.Buffer) error {
 	defer pf.mutex.Unlock()
 
 	// @ Jpeg Image
-	if ext := pf.outInfo.Ext(); ext == "jpg" {
+	if ext := pf.Ext; ext == "jpg" {
 		// Open File at Meta Path
 		file, err := os.Open(pf.Path)
 		if err != nil {

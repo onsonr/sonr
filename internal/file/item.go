@@ -23,10 +23,10 @@ type FileItem struct {
 	Owner   *md.Peer
 	Name    string
 	Path    string
+	Ext     string
 
 	// Outgoing Properties
 	hasPreview bool
-	outInfo    *md.OutFileInfo
 	preview    []byte
 	request    *md.InviteRequest
 
@@ -38,10 +38,9 @@ type FileItem struct {
 }
 
 // ^ NewOutgoingFileItem Processes Outgoing File ^ //
-func NewOutgoingFileItem(req *md.InviteRequest, p *md.Peer, hc chan bool) (*FileItem, error) {
+func NewOutgoingFileItem(req *md.InviteRequest, p *md.Peer) (*FileItem, error) {
 	// Check Values
 	if req == nil || p == nil {
-		hc <- false
 		return nil, errors.New("Request or Profile not Provided")
 	}
 
@@ -63,7 +62,6 @@ func NewOutgoingFileItem(req *md.InviteRequest, p *md.Peer, hc chan bool) (*File
 		// @ Encode as Jpeg into buffer w/o scaling
 		err = jpeg.Encode(thumbWriter, img, nil)
 		if err != nil {
-			hc <- false
 			return nil, err
 		}
 
@@ -71,44 +69,35 @@ func NewOutgoingFileItem(req *md.InviteRequest, p *md.Peer, hc chan bool) (*File
 		preview := thumbWriter.Bytes()
 		info, err := md.GetOutFileInfoWithPreview(file.Path, preview)
 		if err != nil {
-			hc <- false
 			return nil, err
 		}
 
-		// @ 2a. Create new SafeFile
-		sm := &FileItem{
+		// @ 3a. Callback with Preview
+		return &FileItem{
 			hasPreview: true,
 			preview:    preview,
 			Name:       info.Name,
 			Path:       file.Path,
-			outInfo:    info,
+			Ext:        info.Ext(),
 			Owner:      p,
 			request:    req,
-		}
-
-		// @ 3a. Callback with Preview
-		hc <- true
-		return sm, nil
+		}, nil
 	} else {
 		// @ 1b. Get File Info
 		info, err := md.GetOutFileInfo(file.Path)
 		if err != nil {
-			hc <- false
 			return nil, err
 		}
 
-		// @ 2b. Create new SafeFile
-		sm := &FileItem{
+		// @ 3b. Callback with Preview
+		return &FileItem{
 			hasPreview: false,
 			Path:       file.Path,
-			outInfo:    info,
+			Name:       info.Name,
+			Ext:        info.Ext(),
 			Owner:      p,
 			request:    req,
-		}
-
-		// @ 3b. Callback with Preview
-		hc <- true
-		return sm, nil
+		}, nil
 	}
 }
 
