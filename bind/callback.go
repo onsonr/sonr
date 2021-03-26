@@ -51,14 +51,14 @@ func (mn *MobileNode) nodeCallback() dt.NodeCallback {
 // ^ queued Callback, Sends File Invite to Peer, and Notifies Client ^
 func (mn *MobileNode) queued(card *md.TransferCard, req *md.InviteRequest) {
 	// Retreive Current File
-	currFile := mn.user.FS.CurrentFile()
-	if currFile == nil {
-		log.Println("No Current file")
+	currFile, err := mn.user.FS.CurrentFile()
+	if err != nil {
+		log.Println(err)
 		return
 	}
 
 	// Invite With file
-	err := mn.node.InviteFile(card, req, mn.local, mn.user.Peer(), currFile)
+	err = mn.node.InviteFile(card, req, mn.local, mn.user.Peer(), currFile)
 	if err != nil {
 		log.Println(err)
 		return

@@ -95,7 +95,10 @@ func (n *Node) InviteLink(req *md.InviteRequest, t *tpc.TopicManager, p *md.Peer
 			},
 		}
 		// Run Routine
-		go t.Invite(id, &invMsg, p, nil)
+		err = t.Invite(id, &invMsg, p, nil)
+		if err != nil {
+			return err
+		}
 	} else {
 		return errors.New("Invalid Peer")
 	}
@@ -138,7 +141,10 @@ func (n *Node) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, p *md.P
 		}
 
 		// Run Routine
-		go t.Invite(id, &invMsg, p, nil)
+		err = t.Invite(id, &invMsg, p, nil)
+		if err != nil {
+			return err
+		}
 	} else {
 		return errors.New("Invalid Peer")
 	}
@@ -163,7 +169,10 @@ func (n *Node) InviteFile(card *md.TransferCard, req *md.InviteRequest, t *tpc.T
 	}
 
 	// Run Routine
-	go t.Invite(id, &invMsg, p, cf)
+	err = t.Invite(id, &invMsg, p, cf)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

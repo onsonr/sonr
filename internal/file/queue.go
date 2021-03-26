@@ -6,41 +6,54 @@ import (
 	md "github.com/sonr-io/core/internal/models"
 )
 
+type FileQueue struct {
+	queue []*FileItem
+}
+
+func NewFileQueue(maxSize int) *FileQueue {
+	return &FileQueue{
+		queue: make([]*FileItem, maxSize),
+	}
+}
+
+func (fq *FileQueue) Enqueue(element *FileItem) {
+	fq.queue = append(fq.queue, element) // Simply append to enqueue.
+}
+
+func (fq *FileQueue) Dequeue() *FileItem {
+	file := fq.queue[0]     // The first element is the one to be dequeued.
+	fq.queue = fq.queue[1:] // Slice off the element once it is dequeued.
+	return file
+}
+
+func (fq *FileQueue) Count() int {
+	return len(fq.queue)
+}
+
+func (fq *FileQueue) IsEmpty() bool {
+	return len(fq.queue) == 0
+}
+
+func (fq *FileQueue) IsNotEmpty() bool {
+	return len(fq.queue) > 0
+}
+
 // ^ Adds File Transfer from Invite Request ^ //
 func (fq *FileSystem) AddFromRequest(req *md.InviteRequest, p *md.Profile) error {
 	// Add Single File Transfer
-	safeFile := NewFileItem(req, p, fq.Call)
-
-	// Validate Files not Null
-	if safeFile == nil {
-		return errors.New("Request or Profile not Provided")
+	safeFile, err := NewFileItem(req, p, fq.Call)
+	if err != nil {
+		return err
 	}
 
-	fq.Files = append(fq.Files, safeFile)
-	fq.CurrentCount = 1
+	fq.Queue.Enqueue(safeFile)
 	return nil
 }
 
 // ^ CurrentFile returns last file in Processed Files ^ //
-func (fq *FileSystem) CurrentFile() *FileItem {
-	if len(fq.Files) > 0 {
-		return fq.Files[len(fq.Files)-1]
-	} else {
-		return nil
+func (fq *FileSystem) CurrentFile() (*FileItem, error) {
+	if fq.Queue.IsNotEmpty() {
+		return fq.Queue.Dequeue(), nil
 	}
-}
-
-// ^ Removes Last File ^ //
-func (fq *FileSystem) CompleteLast() {
-	if len(fq.Files) > 0 {
-		fq.Files = fq.Files[:len(fq.Files)-1]
-	}
-	fq.CurrentCount = 0
-}
-
-// ^ Reset Current Queued File Metadata ^ //
-func (fq *FileSystem) Reset() {
-	fq.Files = nil
-	fq.Files = make([]*FileItem, K_QUEUE_SIZE)
-	fq.CurrentCount = 0
+	return nil, errors.New("No File in Queue")
 }

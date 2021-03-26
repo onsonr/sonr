@@ -38,16 +38,6 @@ func (pr *ProtocolRouter) MajorPoint() string {
 }
 
 // ^ Transfer Protocols ^ //
-// @ Remote Point Topic
-func (pr *ProtocolRouter) Direct(n string) protocol.ID {
-	return protocol.ID(fmt.Sprintf("/sonr/remote/%s/direct", n))
-}
-
-// @ Remote Point Topic
-func (pr *ProtocolRouter) Remote(n string) string {
-	return fmt.Sprintf("/sonr/remote/%s/topic", n)
-}
-
 // @ Transfer Controller Data Protocol IDs
 func (pr *ProtocolRouter) Transfer() protocol.ID {
 	return protocol.ID("/sonr/transfer/data")

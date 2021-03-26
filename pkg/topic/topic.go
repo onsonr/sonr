@@ -15,7 +15,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-const ChatRoomBufSize = 128
+const K_MAX_MESSAGES = 128
 
 type TopicManager struct {
 	ctx          context.Context
@@ -74,7 +74,7 @@ func NewTopic(ctx context.Context, h host.Host, ps *pubsub.PubSub, name string, 
 			Count:    0,
 			Peers:    make(map[string]*md.Peer),
 		},
-		Messages:     make(chan *md.LobbyEvent, ChatRoomBufSize),
+		Messages:     make(chan *md.LobbyEvent, K_MAX_MESSAGES),
 		protocol:     router.TopicService(),
 		subscription: sub,
 		topic:        topic,

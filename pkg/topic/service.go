@@ -2,7 +2,6 @@ package topic
 
 import (
 	"context"
-	"log"
 	"time"
 
 	rpc "github.com/libp2p/go-libp2p-gorpc"
@@ -40,7 +39,7 @@ type TopicService struct {
 }
 
 // ^ Calls Invite on Remote Peer ^ //
-func (tm *TopicManager) Exchange(id peer.ID, pb []byte) {
+func (tm *TopicManager) Exchange(id peer.ID, pb []byte) error {
 	// Initialize RPC
 	exchClient := rpc.NewClient(tm.host, tm.protocol)
 	var reply TopicServiceResponse
@@ -53,7 +52,7 @@ func (tm *TopicManager) Exchange(id peer.ID, pb []byte) {
 	// Call to Peer
 	err := exchClient.Call(id, "TopicService", "ExchangeWith", args, &reply)
 	if err != nil {
-		log.Println(err)
+		return err
 	}
 
 	// Received Message
@@ -62,11 +61,12 @@ func (tm *TopicManager) Exchange(id peer.ID, pb []byte) {
 
 	// Send Error
 	if err != nil {
-		log.Println(err)
+		return err
 	}
 
 	// Update Peer with new data
 	tm.Lobby.Add(remotePeer)
+	return nil
 }
 
 // ^ Calls Invite on Remote Peer ^ //
@@ -100,11 +100,11 @@ func (ts *TopicService) ExchangeWith(ctx context.Context, args TopicServiceArgs,
 }
 
 // ^ Invite: Handles User sent AuthInvite Response ^
-func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite, p *md.Peer, cf *sf.FileItem) {
+func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite, p *md.Peer, cf *sf.FileItem) error {
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(inv)
 	if err != nil {
-		log.Println(err)
+		return err
 	}
 
 	// Initialize Data
@@ -120,9 +120,10 @@ func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite, p *md.Peer, cf *s
 	// Await Response
 	call := <-done
 	if call.Error != nil {
-		log.Println(err)
+		return err
 	}
 	tm.callback.OnReply(id, p, cf, reply.InvReply)
+	return nil
 }
 
 // ^ Calls Invite on Remote Peer ^ //
@@ -131,7 +132,6 @@ func (ts *TopicService) InviteWith(ctx context.Context, args TopicServiceArgs, r
 	receivedMessage := md.AuthInvite{}
 	err := proto.Unmarshal(args.Invite, &receivedMessage)
 	if err != nil {
-		log.Println(err)
 		return err
 	}
 
@@ -148,7 +148,6 @@ func (ts *TopicService) InviteWith(ctx context.Context, args TopicServiceArgs, r
 		// Convert Protobuf to bytes
 		msgBytes, err := proto.Marshal(m)
 		if err != nil {
-			log.Println(err)
 			return err
 		}
 
