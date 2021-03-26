@@ -26,6 +26,7 @@ type FileItem struct {
 	inInfo  *md.InFileInfo
 	outInfo *md.OutFileInfo
 	request *md.InviteRequest
+	invite  *md.AuthInvite
 }
 
 // ^ NewOutgoingFileItem Processes Outgoing File ^ //
@@ -100,11 +101,17 @@ func NewOutgoingFileItem(req *md.InviteRequest, p *md.Peer, hc chan bool) (*File
 }
 
 // ^ NewIncomingFileItem Prepares for Incoming Data ^ //
-func NewIncomingFileItem(inv *md.AuthInvite) (*FileItem, error) {
-	info := md.GetInFileInfo(inv)
+func NewIncomingFileItem(i *md.AuthInvite, p string) (*FileItem, error) {
+	// Get Info
+	info := md.GetInFileInfo(i)
+
+	// Return Item
 	return &FileItem{
-		Owner:  inv.From,
-		inInfo: info,
+		Owner:   i.From,
+		Payload: i.Payload,
+		Path:    p,
+		inInfo:  info,
+		invite:  i,
 	}, nil
 }
 

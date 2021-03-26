@@ -54,7 +54,8 @@ func NewFs(connEvent *md.ConnectionRequest, callback dt.NodeCallback) (*FileSyst
 		Temporary: connEvent.Directories.Temporary,
 		Call:      callback,
 		Queue: FileQueue{
-			elements: make([]*FileItem, K_QUEUE_SIZE),
+			incoming: make([]*FileItem, K_QUEUE_SIZE),
+			outgoing: make([]*FileItem, K_QUEUE_SIZE),
 		},
 	}
 

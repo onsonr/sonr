@@ -70,7 +70,7 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 			done := <-hasCompleted
 			if done {
 				// Retreive Current File
-				currFile, err := mn.user.FS.Dequeue()
+				currFile, err := mn.user.FS.DequeueOut()
 				if err != nil {
 					log.Println(err)
 					return
