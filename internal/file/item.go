@@ -2,19 +2,12 @@ package file
 
 import (
 	"bytes"
-	"encoding/base64"
 	"errors"
 	"image"
 	"image/jpeg"
-	"image/png"
-	"io/ioutil"
-	"log"
-	"os"
+	"sync"
 
-	"github.com/libp2p/go-msgio"
 	md "github.com/sonr-io/core/internal/models"
-	dt "github.com/sonr-io/core/pkg/data"
-	"google.golang.org/protobuf/proto"
 )
 
 const K_BUF_CHUNK = 32000
@@ -22,17 +15,21 @@ const K_B64_CHUNK = 31998 // Adjusted for Base64 -- has to be divisible by 3
 
 // @ File that safely sets metadata and thumbnail in routine
 type FileItem struct {
+	mutex sync.Mutex
+
 	// References
 	Payload md.Payload
-	Info    *md.FileInfo
+	Owner   *md.Peer
 	Path    string
 
 	// Outgoing Properties
+	inInfo  *md.InFileInfo
+	outInfo *md.OutFileInfo
 	request *md.InviteRequest
 }
 
 // ^ NewOutgoingFileItem Processes Outgoing File ^ //
-func NewOutgoingFileItem(req *md.InviteRequest, p *md.Profile, hc chan bool) (*FileItem, error) {
+func NewOutgoingFileItem(req *md.InviteRequest, p *md.Peer, hc chan bool) (*FileItem, error) {
 	// Check Values
 	if req == nil || p == nil {
 		hc <- false
@@ -63,7 +60,7 @@ func NewOutgoingFileItem(req *md.InviteRequest, p *md.Profile, hc chan bool) (*F
 
 		// @ 1a. Get File Info
 		preview := thumbWriter.Bytes()
-		info, err := md.GetFileInfoWithPreview(file.Path, preview)
+		info, err := md.GetOutFileInfoWithPreview(file.Path, preview)
 		if err != nil {
 			hc <- false
 			return nil, err
@@ -72,7 +69,8 @@ func NewOutgoingFileItem(req *md.InviteRequest, p *md.Profile, hc chan bool) (*F
 		// @ 2a. Create new SafeFile
 		sm := &FileItem{
 			Path:    file.Path,
-			Info:    info,
+			outInfo: info,
+			Owner:   p,
 			request: req,
 		}
 
@@ -81,7 +79,7 @@ func NewOutgoingFileItem(req *md.InviteRequest, p *md.Profile, hc chan bool) (*F
 		return sm, nil
 	} else {
 		// @ 1b. Get File Info
-		info, err := md.GetFileInfo(file.Path)
+		info, err := md.GetOutFileInfo(file.Path)
 		if err != nil {
 			hc <- false
 			return nil, err
@@ -90,7 +88,8 @@ func NewOutgoingFileItem(req *md.InviteRequest, p *md.Profile, hc chan bool) (*F
 		// @ 2b. Create new SafeFile
 		sm := &FileItem{
 			Path:    file.Path,
-			Info:    info,
+			outInfo: info,
+			Owner:   p,
 			request: req,
 		}
 
@@ -100,134 +99,25 @@ func NewOutgoingFileItem(req *md.InviteRequest, p *md.Profile, hc chan bool) (*F
 	}
 }
 
-// ^ Method Processes File at Path^ //
-func (pf *FileItem) EncodeMedia(buf *bytes.Buffer) error {
-	// @ Jpeg Image
-	if ext := pf.Info.Ext(); ext == "jpg" {
-		// Open File at Meta Path
-		file, err := os.Open(pf.Path)
-		if err != nil {
-			return err
-		}
-		defer file.Close()
-
-		// Convert to Image Object
-		img, _, err := image.Decode(file)
-		if err != nil {
-			return err
-		}
-
-		// Encode as Jpeg into buffer
-		err = jpeg.Encode(buf, img, &jpeg.Options{Quality: 100})
-		if err != nil {
-			return err
-		}
-		return nil
-
-		// @ PNG Image
-	} else if ext == "png" {
-		// Open File at Meta Path
-		file, err := os.Open(pf.Path)
-		if err != nil {
-			return err
-		}
-		defer file.Close()
-
-		// Convert to Image Object
-		img, _, err := image.Decode(file)
-		if err != nil {
-			return err
-		}
-
-		// Encode as Jpeg into buffer
-		err = png.Encode(buf, img)
-		if err != nil {
-			return err
-		}
-		return nil
-
-		// @ Other - Open File at Path
-	} else {
-		dat, err := ioutil.ReadFile(pf.Path)
-		if err != nil {
-			return err
-		}
-
-		// Write Bytes to buffer
-		_, err = buf.Write(dat)
-		if err != nil {
-			return err
-		}
-		return nil
-	}
+// ^ NewIncomingFileItem Prepares for Incoming Data ^ //
+func NewIncomingFileItem(inv *md.AuthInvite) (*FileItem, error) {
+	info := md.GetInFileInfo(inv)
+	return &FileItem{
+		Owner:  inv.From,
+		inInfo: info,
+	}, nil
 }
 
-// ^ write fileItem as Base64 in Msgio to Stream ^ //
-func (pf *FileItem) WriteBase64(writer msgio.WriteCloser, peer *md.Peer, hc chan bool) {
-	// Initialize Buffer and Encode File
-	var base string
-	if pf.Payload == md.Payload_MEDIA {
-		buffer := new(bytes.Buffer)
-
-		if err := pf.EncodeMedia(buffer); err != nil {
-			log.Fatalln(err)
-			hc <- false
-		}
-
-		// Encode Buffer to base 64
-		data := buffer.Bytes()
-		base = base64.StdEncoding.EncodeToString(data)
-	} else {
-		data, err := ioutil.ReadFile(pf.Path)
-		if err != nil {
-			log.Fatalln(err)
-			hc <- false
-		}
-		base = base64.StdEncoding.EncodeToString(data)
+func (pf *FileItem) InfoOut() (*md.OutFileInfo, error) {
+	if pf.outInfo != nil {
+		return pf.outInfo, nil
 	}
-
-	// Set Total
-	total := int32(len(base))
-
-	// Iterate for Entire file as String
-	for _, dat := range chunkBase64(base) {
-		// Create Block Protobuf from Chunk
-		chunk := md.Chunk64{
-			Size:  int32(len(dat)),
-			Data:  dat,
-			Total: total,
-		}
-
-		// Convert to bytes
-		bytes, err := proto.Marshal(&chunk)
-		if err != nil {
-			log.Fatalln(err)
-			hc <- false
-		}
-
-		// Write Message Bytes to Stream
-		err = writer.WriteMsg(bytes)
-		if err != nil {
-			log.Fatalln(err)
-			hc <- false
-		}
-		dt.GetState().NeedsWait()
-	}
-
-	// Call Completed Sending
-	hc <- true
+	return nil, errors.New("No Outgoing Info")
 }
 
-// @ Helper: Chunks string based on B64ChunkSize ^ //
-func chunkBase64(s string) []string {
-	chunkSize := K_B64_CHUNK
-	ss := make([]string, 0, len(s)/chunkSize+1)
-	for len(s) > 0 {
-		if len(s) < chunkSize {
-			chunkSize = len(s)
-		}
-		// Create Current Chunk String
-		ss, s = append(ss, s[:chunkSize]), s[chunkSize:]
+func (pf *FileItem) InfoIn() (*md.InFileInfo, error) {
+	if pf.inInfo != nil {
+		return pf.inInfo, nil
 	}
-	return ss
+	return nil, errors.New("No Incoming Info")
 }

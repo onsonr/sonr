@@ -22,7 +22,7 @@ func (fs *FileSystem) Enqueue(element *FileItem) {
 }
 
 // ^ Adds File Transfer from Invite Request ^ //
-func (fs *FileSystem) EnqueueFromRequest(req *md.InviteRequest, p *md.Profile, done chan bool) error {
+func (fs *FileSystem) EnqueueFromRequest(req *md.InviteRequest, p *md.Peer, done chan bool) error {
 	// Handle Mutex
 	fs.Queue.mutex.Lock()
 	defer fs.Queue.mutex.Unlock()

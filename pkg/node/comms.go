@@ -101,7 +101,11 @@ func (n *Node) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, p *md.P
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
 func (n *Node) InviteFile(req *md.InviteRequest, t *tpc.TopicManager, p *md.Peer, cf *sf.FileItem) error {
 	// Create Invite
-	invite := md.GetAuthInviteWithFile(req, p, cf.Info)
+	info, err := cf.InfoOut()
+	if err != nil {
+		return err
+	}
+	invite := md.GetAuthInviteWithFile(req, p, info)
 
 	// Get PeerID
 	id, _, err := t.FindPeerInTopic(req.To.Id.Peer)

@@ -8,19 +8,19 @@ import (
 	"github.com/h2non/filetype"
 )
 
-// ^ Struct returned on GetInfo() Generate Preview/Metadata
-type FileInfo struct {
-	Mime      *MIME
-	Payload   Payload
-	Name      string
-	Path      string
-	Size      int32
-	IsImage   bool
-	Thumbnail []byte
+// ^ Struct returned for Info about Outgoing File
+type OutFileInfo struct {
+	Mime    *MIME
+	Payload Payload
+	Name    string
+	Path    string
+	Size    int32
+	IsImage bool
+	Preview []byte
 }
 
-// ^ Method Returns File Info at Path ^ //
-func GetFileInfo(path string) (*FileInfo, error) {
+// ** Method Returns File Info at Path **
+func GetOutFileInfo(path string) (*OutFileInfo, error) {
 	// Initialize
 	var mime *MIME
 	var payload Payload
@@ -81,7 +81,7 @@ func GetFileInfo(path string) (*FileInfo, error) {
 	}
 
 	// Return Object
-	return &FileInfo{
+	return &OutFileInfo{
 		Mime:    mime,
 		Payload: payload,
 		Name:    strings.TrimSuffix(filepath.Base(path), filepath.Ext(path)),
@@ -91,8 +91,8 @@ func GetFileInfo(path string) (*FileInfo, error) {
 	}, nil
 }
 
-// ^ Method Returns File Info at Path ^ //
-func GetFileInfoWithPreview(path string, preview []byte) (*FileInfo, error) {
+// ** Method Returns File Info at Path **
+func GetOutFileInfoWithPreview(path string, preview []byte) (*OutFileInfo, error) {
 	// Initialize
 	var mime *MIME
 	var payload Payload
@@ -153,26 +153,49 @@ func GetFileInfoWithPreview(path string, preview []byte) (*FileInfo, error) {
 	}
 
 	// Return Object
-	return &FileInfo{
-		Mime:      mime,
-		Payload:   payload,
-		Name:      strings.TrimSuffix(filepath.Base(path), filepath.Ext(path)),
-		Path:      path,
-		Size:      int32(info.Size()),
-		IsImage:   filetype.IsImage(head),
-		Thumbnail: preview,
+	return &OutFileInfo{
+		Mime:    mime,
+		Payload: payload,
+		Name:    strings.TrimSuffix(filepath.Base(path), filepath.Ext(path)),
+		Path:    path,
+		Size:    int32(info.Size()),
+		IsImage: filetype.IsImage(head),
+		Preview: preview,
 	}, nil
 }
 
-func (fi *FileInfo) HasPreview() bool {
-	return len(fi.Thumbnail) > 0
+// ** Checks for Preview **
+func (fi *OutFileInfo) HasPreview() bool {
+	return len(fi.Preview) > 0
 }
 
-// ^ Method adjusts extension for JPEG ^ //
-func (fi *FileInfo) Ext() string {
+// ** Method adjusts extension for JPEG **
+func (fi *OutFileInfo) Ext() string {
 	if fi.Mime.Subtype == "jpg" || fi.Mime.Subtype == "jpeg" {
 		return "jpeg"
 	}
 	return fi.Mime.Subtype
 }
 
+// ^ Struct returned for Info about Incoming File
+type InFileInfo struct {
+	// Inherited Properties
+	Properties *TransferCard_Properties
+	Preview    []byte
+
+	// Tracking
+	CurrentSize int
+	Interval    int
+	TotalChunks int
+	TotalSize   int
+}
+
+// ** Method Creates New Transfer File **
+func GetInFileInfo(inv *AuthInvite) *InFileInfo {
+	// Return File
+	return &InFileInfo{
+		// Inherited Properties
+		Properties: inv.Card.Properties,
+		Preview:    inv.Card.Preview,
+	}
+}

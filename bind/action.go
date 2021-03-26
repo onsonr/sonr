@@ -60,7 +60,7 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 			// @ Add File to Queue
 			hasCompleted := make(chan bool)
 			go func() {
-				if err := mn.user.FS.EnqueueFromRequest(req, mn.user.Profile(), hasCompleted); err != nil {
+				if err := mn.user.FS.EnqueueFromRequest(req, mn.user.Peer(), hasCompleted); err != nil {
 					log.Println(err)
 					return
 				}

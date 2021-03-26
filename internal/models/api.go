@@ -30,7 +30,7 @@ func GetAuthInviteWithContact(req *InviteRequest, p *Peer, c *Contact) AuthInvit
 }
 
 // ^ Generate AuthInvite with File Payload from Request, User Peer Data and File Info ^ //
-func GetAuthInviteWithFile(req *InviteRequest, p *Peer, i *FileInfo) AuthInvite {
+func GetAuthInviteWithFile(req *InviteRequest, p *Peer, i *OutFileInfo) AuthInvite {
 	// Create Invite
 	return AuthInvite{
 		IsRemote: req.IsRemote,
@@ -44,7 +44,7 @@ func GetAuthInviteWithFile(req *InviteRequest, p *Peer, i *FileInfo) AuthInvite 
 
 			// Transfer Properties
 			Status: TransferCard_INVITE,
-			Preview: i.Thumbnail,
+			Preview: i.Preview,
 
 			// Owner Properties
 			Username:  p.Profile.Username,
