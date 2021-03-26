@@ -11,10 +11,12 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+// ^ GetPeer: Returns Peer ^
 func (n *Node) GetPeer() *md.Peer {
 	return n.call.GetPeer()
 }
 
+// ^ OnEvent: Specific Lobby Event ^
 func (n *Node) OnEvent(e *md.LobbyEvent) {
 	// Convert Message
 	bytes, err := proto.Marshal(e)
@@ -26,6 +28,7 @@ func (n *Node) OnEvent(e *md.LobbyEvent) {
 	n.call.Event(bytes)
 }
 
+// ^ OnRefresh: Topic has Updated ^
 func (n *Node) OnRefresh(l *md.Lobby) {
 	bytes, err := proto.Marshal(l)
 	if err != nil {
@@ -35,11 +38,13 @@ func (n *Node) OnRefresh(l *md.Lobby) {
 	n.call.Refreshed(bytes)
 }
 
+// ^ OnInvite: User Received Invite ^
 func (n *Node) OnInvite(invite []byte) {
 	// Send Callback
 	n.call.Invited(invite)
 }
 
+// ^ OnReply: Begins File Transfer when Accepted ^
 func (n *Node) OnReply(id peer.ID, p *md.Peer, cf *sf.FileItem, reply []byte) {
 	// Call Responded
 	n.call.Responded(reply)
@@ -74,7 +79,7 @@ func (n *Node) OnReply(id peer.ID, p *md.Peer, cf *sf.FileItem, reply []byte) {
 	}
 }
 
-// ^ OnReceiveTransfer: Begins File Transfer when Accepted ^
+// ^ OnReceiveTransfer: Prepares for Incoming File Transfer when Accepted ^
 func (n *Node) OnReceiveTransfer(inv *md.AuthInvite, fs *sf.FileSystem) {
 	n.host.SetStreamHandler(n.router.Transfer(), n.handleTransferIncoming)
 	n.incoming = tr.CreateIncomingFile(inv, fs, n.call)

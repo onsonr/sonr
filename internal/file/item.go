@@ -24,12 +24,12 @@ type FileItem struct {
 	Info    *md.FileInfo
 	Path    string
 
-	// Private Properties
+	// Outgoing Properties
 	request *md.InviteRequest
 }
 
-// ^ NewFileItem Processes Outgoing File ^ //
-func NewFileItem(req *md.InviteRequest, p *md.Profile, hc chan bool) (*FileItem, error) {
+// ^ NewOutgoingFileItem Processes Outgoing File ^ //
+func NewOutgoingFileItem(req *md.InviteRequest, p *md.Profile, hc chan bool) (*FileItem, error) {
 	// Check Values
 	if req == nil || p == nil {
 		hc <- false
