@@ -20,7 +20,7 @@ type HostOptions struct {
 }
 
 // @ Returns new Host Config
-func NewHostOpts(req *md.ConnectionRequest) (*HostOptions, error) {
+func NewHostOpts(req *md.ConnectionRequest) (HostOptions, error) {
 	// Create Bootstrapper List
 	var bootstrappers []multiaddr.Multiaddr
 	for _, s := range []string{
@@ -34,13 +34,13 @@ func NewHostOpts(req *md.ConnectionRequest) (*HostOptions, error) {
 	} {
 		ma, err := multiaddr.NewMultiaddr(s)
 		if err != nil {
-			return nil, err
+			return HostOptions{}, err
 		}
 		bootstrappers = append(bootstrappers, ma)
 	}
 
 	// Set Host Options
-	return &HostOptions{
+	return HostOptions{
 		BootstrapAddrs: bootstrappers,
 		ConnRequest:    req,
 		Profile: &md.Profile{
@@ -54,7 +54,7 @@ func NewHostOpts(req *md.ConnectionRequest) (*HostOptions, error) {
 }
 
 // ^ Return Bootstrap List Address Info ^ //
-func (ho *HostOptions) GetBootstrapAddrInfo() []peer.AddrInfo {
+func (ho HostOptions) GetBootstrapAddrInfo() []peer.AddrInfo {
 	ds := make([]peer.AddrInfo, 0, len(ho.BootstrapAddrs))
 	for i := range ho.BootstrapAddrs {
 		info, err := peer.AddrInfoFromP2pAddr(ho.BootstrapAddrs[i])

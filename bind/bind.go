@@ -90,6 +90,7 @@ func (mn *MobileNode) Connect() {
 					if err != nil {
 						log.Println(err)
 						mn.call.OnReady(false)
+						break
 					} else {
 						// Begin Bootstrap
 						go mn.bootstrap(bootstrapChan)
@@ -103,12 +104,15 @@ func (mn *MobileNode) Connect() {
 				mn.call.OnReady(status)
 				if status {
 					go mn.joinLocal(localChan)
+				} else {
+					break
 				}
 
 				// @ On Local Join
 			case status := <-localChan:
 				// Update Status
 				mn.config.setJoinedLocal(status)
+				break
 			}
 		}
 	}
