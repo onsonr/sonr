@@ -83,6 +83,8 @@ func (n *Node) Bootstrap() error {
 	for _, pi := range bootstrappers {
 		if err := n.Host.Connect(n.ctx, pi); err != nil {
 			continue
+		} else {
+			break
 		}
 	}
 
