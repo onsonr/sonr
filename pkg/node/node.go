@@ -67,10 +67,12 @@ func (n *Node) InviteLink(req *md.InviteRequest, t *tpc.TopicManager, p *md.Peer
 		invite := md.GetAuthInviteWithURL(req, p)
 
 		// Run Routine
-		err = t.Invite(id, &invite, p, nil)
-		if err != nil {
-			return err
-		}
+		go func(inv *md.AuthInvite) {
+			err = t.Invite(id, inv, p, nil)
+			if err != nil {
+				n.call.Error(err, "InviteLink")
+			}
+		}(&invite)
 	} else {
 		return errors.New("Invalid Peer")
 	}
@@ -88,13 +90,15 @@ func (n *Node) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, p *md.P
 		}
 
 		// Build Invite Message
-		invMsg := md.GetAuthInviteWithContact(req, p, c)
+		invite := md.GetAuthInviteWithContact(req, p, c)
 
 		// Run Routine
-		err = t.Invite(id, &invMsg, p, nil)
-		if err != nil {
-			return err
-		}
+		go func(inv *md.AuthInvite) {
+			err = t.Invite(id, inv, p, nil)
+			if err != nil {
+				n.call.Error(err, "InviteLink")
+			}
+		}(&invite)
 	} else {
 		return errors.New("Invalid Peer")
 	}
@@ -108,19 +112,21 @@ func (n *Node) InviteFile(req *md.InviteRequest, t *tpc.TopicManager, p *md.Peer
 	if err != nil {
 		return err
 	}
-	invite := md.GetAuthInviteWithFile(req, p, info)
 
 	// Get PeerID
+	invite := md.GetAuthInviteWithFile(req, p, info)
 	id, _, err := t.FindPeerInTopic(req.To.Id.Peer)
 	if err != nil {
 		return err
 	}
 
 	// Run Routine
-	err = t.Invite(id, &invite, p, cf)
-	if err != nil {
-		return err
-	}
+	go func(inv *md.AuthInvite) {
+		err = t.Invite(id, inv, p, nil)
+		if err != nil {
+			n.call.Error(err, "InviteLink")
+		}
+	}(&invite)
 	return nil
 }
 
