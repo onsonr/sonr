@@ -32,6 +32,7 @@ type FileItem struct {
 func NewFileItem(req *md.InviteRequest, p *md.Profile, hc chan bool) (*FileItem, error) {
 	// Check Values
 	if req == nil || p == nil {
+		hc <- false
 		return nil, errors.New("Request or Profile not Provided")
 	}
 
@@ -53,6 +54,7 @@ func NewFileItem(req *md.InviteRequest, p *md.Profile, hc chan bool) (*FileItem,
 		// @ Encode as Jpeg into buffer w/o scaling
 		err = jpeg.Encode(thumbWriter, img, nil)
 		if err != nil {
+			hc <- false
 			return nil, err
 		}
 
@@ -60,6 +62,7 @@ func NewFileItem(req *md.InviteRequest, p *md.Profile, hc chan bool) (*FileItem,
 		preview := thumbWriter.Bytes()
 		info, err := md.GetFileInfoWithPreview(file.Path, preview)
 		if err != nil {
+			hc <- false
 			return nil, err
 		}
 
@@ -77,6 +80,7 @@ func NewFileItem(req *md.InviteRequest, p *md.Profile, hc chan bool) (*FileItem,
 		// @ 1b. Get File Info
 		info, err := md.GetFileInfo(file.Path)
 		if err != nil {
+			hc <- false
 			return nil, err
 		}
 
@@ -164,6 +168,7 @@ func (pf *FileItem) WriteBase64(writer msgio.WriteCloser, peer *md.Peer, hc chan
 
 		if err := pf.EncodeMedia(buffer); err != nil {
 			log.Fatalln(err)
+			hc <- false
 		}
 
 		// Encode Buffer to base 64
@@ -173,6 +178,7 @@ func (pf *FileItem) WriteBase64(writer msgio.WriteCloser, peer *md.Peer, hc chan
 		data, err := ioutil.ReadFile(pf.Path)
 		if err != nil {
 			log.Fatalln(err)
+			hc <- false
 		}
 		base = base64.StdEncoding.EncodeToString(data)
 	}
@@ -193,16 +199,32 @@ func (pf *FileItem) WriteBase64(writer msgio.WriteCloser, peer *md.Peer, hc chan
 		bytes, err := proto.Marshal(&chunk)
 		if err != nil {
 			log.Fatalln(err)
+			hc <- false
 		}
 
 		// Write Message Bytes to Stream
 		err = writer.WriteMsg(bytes)
 		if err != nil {
 			log.Fatalln(err)
+			hc <- false
 		}
 		dt.GetState().NeedsWait()
 	}
 
 	// Call Completed Sending
 	hc <- true
+}
+
+// @ Helper: Chunks string based on B64ChunkSize ^ //
+func chunkBase64(s string) []string {
+	chunkSize := K_B64_CHUNK
+	ss := make([]string, 0, len(s)/chunkSize+1)
+	for len(s) > 0 {
+		if len(s) < chunkSize {
+			chunkSize = len(s)
+		}
+		// Create Current Chunk String
+		ss, s = append(ss, s[:chunkSize]), s[chunkSize:]
+	}
+	return ss
 }

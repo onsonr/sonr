@@ -175,3 +175,4 @@ func (fi *FileInfo) Ext() string {
 	}
 	return fi.Mime.Subtype
 }
+

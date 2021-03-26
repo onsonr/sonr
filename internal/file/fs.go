@@ -178,8 +178,3 @@ func (sfs *FileSystem) getIncomingFilePath(load md.Payload, fileName string) str
 		}
 	}
 }
-
-// // ^ Reset Current Queued File Metadata ^ //
-// func (fs *FileSystem) Close() {
-// 	fs.Queue.Close()
-// }
