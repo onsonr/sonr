@@ -3,7 +3,6 @@ package bind
 import (
 	"log"
 
-	"github.com/libp2p/go-libp2p-core/crypto"
 	md "github.com/sonr-io/core/internal/models"
 	u "github.com/sonr-io/core/internal/user"
 	dt "github.com/sonr-io/core/pkg/data"
@@ -52,97 +51,51 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 // **-----------------** //
 // ** Network Actions ** //
 // **-----------------** //
-// @ Start Host
+// @ Start Host and Connect
 func (mn *MobileNode) Connect() {
-	// Initialize
-	startChan := make(chan bool)
-	bootstrapChan := make(chan bool)
-	localChan := make(chan bool)
-
 	// Get Private Key and Connect Host
 	key, err := mn.user.PrivateKey()
 	if err != nil {
+		log.Println("Failed to retreive private key")
 		mn.setConnected(false)
-	} else {
-		// Connect Host
-		go mn.start(key, startChan)
-
-		// Await Routine Responses
-		for i := 0; i < 3; i++ {
-			select {
-			// @ On Connection
-			case status := <-startChan:
-				// Update Status
-				mn.setConnected(status)
-
-				// Set User Peer
-				if status {
-					err = mn.user.SetPeer(mn.node.Host.ID())
-					if err != nil {
-						log.Println(err)
-						break
-					} else {
-						// Begin Bootstrap
-						go mn.bootstrap(bootstrapChan)
-					}
-				}
-
-				// @ On Bootstrap
-			case status := <-bootstrapChan:
-				// Update Status and Join Local
-				mn.setBootstrapped(status)
-				if status {
-					go mn.joinLocal(localChan)
-				} else {
-					break
-				}
-
-				// @ On Local Join
-			case status := <-localChan:
-				// Update Status
-				mn.setJoinedLocal(status)
-				break
-			}
-		}
+		return
 	}
 
-	// Close Channels
-	close(startChan)
-	close(bootstrapChan)
-	close(localChan)
-}
-
-// @ Start Nodes Host
-func (mn *MobileNode) start(key crypto.PrivKey, done chan bool) {
-	err := mn.node.Start(key)
+	// Connect Host
+	err = mn.node.Start(key)
 	if err != nil {
 		log.Println("Failed to start host")
-		done <- false
+		mn.setConnected(false)
+		return
 	} else {
-		done <- true
+		// Update Status
+		mn.setConnected(true)
 	}
-}
 
-// @ Bootstrap Host to DHT
-func (mn *MobileNode) bootstrap(done chan bool) {
-	err := mn.node.Bootstrap()
+	// Set User Peer
+	err = mn.user.SetPeer(mn.node.Host.ID())
+	if err != nil {
+		log.Println("Failed to set peer")
+		return
+	}
+
+	// Bootstrap Node
+	err = mn.node.Bootstrap()
 	if err != nil {
 		log.Println("Failed to bootstrap node")
-		done <- false
+		mn.setBootstrapped(false)
+		return
 	} else {
-		done <- true
+		mn.setBootstrapped(true)
 	}
-}
 
-// @ Join Local Pubsub
-func (mn *MobileNode) joinLocal(done chan bool) {
-	var err error
 	mn.local, err = mn.node.JoinLocal()
 	if err != nil {
 		log.Println("Failed to join local pubsub")
-		done <- false
+		mn.setJoinedLocal(false)
+		return
 	} else {
-		done <- true
+		mn.setJoinedLocal(true)
 	}
 }
 
