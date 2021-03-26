@@ -24,9 +24,11 @@ func newMobileConfig() mobileConfig {
 		CtxFS:           context.Background(),
 		CtxNode:         context.Background(),
 		CtxUser:         context.Background(),
+		
 		HasStarted:      false,
 		HasBootstrapped: false,
 		HasJoinedLocal:  false,
+
 		Status:          md.Status_NONE,
 	}
 }

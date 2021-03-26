@@ -6,6 +6,7 @@ import (
 	md "github.com/sonr-io/core/internal/models"
 	net "github.com/sonr-io/core/internal/network"
 	u "github.com/sonr-io/core/internal/user"
+	dt "github.com/sonr-io/core/pkg/data"
 	sn "github.com/sonr-io/core/pkg/node"
 	tpc "github.com/sonr-io/core/pkg/topic"
 	"google.golang.org/protobuf/proto"
@@ -72,11 +73,11 @@ func (mn *MobileNode) Connect() {
 	if err != nil {
 		mn.config.setConnected(false)
 		mn.call.OnConnected(false)
+	} else {
+		// Update Status
+		mn.config.setConnected(true)
+		mn.call.OnConnected(true)
 	}
-
-	// Update Status
-	mn.config.setConnected(true)
-	mn.call.OnConnected(true)
 
 	// ! Set User Peer
 	err = mn.user.SetPeer(mn.node.ID())
@@ -91,10 +92,10 @@ func (mn *MobileNode) Connect() {
 		log.Println("Failed to bootstrap node")
 		mn.config.setBootstrapped(false)
 		mn.call.OnReady(false)
+	} else {
+		// Update Status
+		mn.config.setBootstrapped(true)
 	}
-
-	// Update Status
-	mn.config.setBootstrapped(true)
 
 	// ! Join Local topic
 	mn.local, err = mn.node.JoinLocal()
@@ -102,10 +103,10 @@ func (mn *MobileNode) Connect() {
 		log.Println("Failed to connect to local topic")
 		mn.config.setJoinedLocal(false)
 		mn.call.OnReady(false)
+	} else {
+		mn.config.setJoinedLocal(true)
+		mn.call.OnReady(true)
 	}
-
-	mn.config.setJoinedLocal(true)
-	mn.call.OnReady(true)
 }
 
 // @ Return URL Metadata, Helper Method
@@ -129,17 +130,15 @@ func GetURLMetadata(url string) []byte {
 // **-------------------** //
 // @ Close Ends All Network Communication
 func (mn *MobileNode) Pause() {
-	mn.node.Pause()
+	dt.GetState().Pause()
 }
 
 // @ Close Ends All Network Communication
 func (mn *MobileNode) Resume() {
-	mn.node.Resume()
+	dt.GetState().Resume()
 }
 
 // @ Close Ends All Network Communication
 func (mn *MobileNode) Stop() {
-	// Check if Response Is Invited
-	// mn.user.FS.Close()
 	mn.node.Close()
 }

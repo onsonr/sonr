@@ -6,7 +6,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
-	dt "github.com/sonr-io/core/pkg/data"
 	tpc "github.com/sonr-io/core/pkg/topic"
 )
 
@@ -32,17 +31,6 @@ func (n *Node) JoinLocal() (*tpc.TopicManager, error) {
 // @ ID Returns Host ID
 func (n *Node) ID() peer.ID {
 	return n.host.ID()
-}
-
-// ^ Close Ends All Network Communication ^
-func (n *Node) Pause() {
-	// Check if Response Is Invited
-	dt.GetState().Pause()
-}
-
-// ^ Close Ends All Network Communication ^
-func (n *Node) Resume() {
-	dt.GetState().Resume()
 }
 
 // ^ Close Ends All Network Communication ^
