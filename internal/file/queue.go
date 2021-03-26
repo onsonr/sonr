@@ -10,12 +10,12 @@ import (
 const K_QUEUE_SIZE = 16
 
 type FileQueue struct {
-	incoming []*FileItem
-	outgoing []*FileItem
+	incoming []FileItem
+	outgoing []FileItem
 }
 
 // @ Adds Item to File Queue
-func (fs *FileSystem) Enqueue(element *FileItem) {
+func (fs *FileSystem) Enqueue(element FileItem) {
 	fs.Queue.outgoing = append(fs.Queue.outgoing, element) // Simply append to enqueue.
 }
 
@@ -76,7 +76,7 @@ func (fs *FileSystem) DequeueIn() (*FileItem, error) {
 	if fs.HasIn() {
 		file := fs.Queue.incoming[0]              // The first element is the one to be dequeued.
 		fs.Queue.incoming = fs.Queue.incoming[1:] // Slice off the element once it is dequeued.
-		return file, nil
+		return &file, nil
 	}
 	return nil, errors.New("No File in Queue")
 }
@@ -87,7 +87,7 @@ func (fs *FileSystem) DequeueOut() (*FileItem, error) {
 	if fs.HasOut() {
 		file := fs.Queue.outgoing[0]              // The first element is the one to be dequeued.
 		fs.Queue.outgoing = fs.Queue.outgoing[1:] // Slice off the element once it is dequeued.
-		return file, nil
+		return &file, nil
 	}
 	return nil, errors.New("No File in Queue")
 }

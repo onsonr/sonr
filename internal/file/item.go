@@ -6,7 +6,6 @@ import (
 	"image"
 	"image/jpeg"
 	"strings"
-	"sync"
 
 	md "github.com/sonr-io/core/internal/models"
 )
@@ -16,8 +15,6 @@ const K_B64_CHUNK = 31998 // Adjusted for Base64 -- has to be divisible by 3
 
 // @ File that safely sets metadata and thumbnail in routine
 type FileItem struct {
-	mutex sync.Mutex
-
 	// References
 	Payload md.Payload
 	Owner   *md.Peer
@@ -38,10 +35,10 @@ type FileItem struct {
 }
 
 // ^ NewOutgoingFileItem Processes Outgoing File ^ //
-func NewOutgoingFileItem(req *md.InviteRequest, p *md.Peer) (*FileItem, error) {
+func NewOutgoingFileItem(req *md.InviteRequest, p *md.Peer) (FileItem, error) {
 	// Check Values
 	if req == nil || p == nil {
-		return nil, errors.New("Request or Profile not Provided")
+		return FileItem{}, errors.New("Request or Profile not Provided")
 	}
 
 	// Get File Information
@@ -56,24 +53,24 @@ func NewOutgoingFileItem(req *md.InviteRequest, p *md.Peer) (*FileItem, error) {
 		// Convert to Image Object
 		img, _, err := image.Decode(thumbReader)
 		if err != nil {
-			return nil, err
+			return FileItem{}, err
 		}
 
 		// @ Encode as Jpeg into buffer w/o scaling
 		err = jpeg.Encode(thumbWriter, img, nil)
 		if err != nil {
-			return nil, err
+			return FileItem{}, err
 		}
 
 		// @ 1a. Get File Info
 		preview := thumbWriter.Bytes()
 		info, err := md.GetOutFileInfoWithPreview(file.Path, preview)
 		if err != nil {
-			return nil, err
+			return FileItem{}, err
 		}
 
 		// @ 3a. Callback with Preview
-		return &FileItem{
+		return FileItem{
 			hasPreview: true,
 			preview:    preview,
 			Name:       info.Name,
@@ -86,11 +83,11 @@ func NewOutgoingFileItem(req *md.InviteRequest, p *md.Peer) (*FileItem, error) {
 		// @ 1b. Get File Info
 		info, err := md.GetOutFileInfo(file.Path)
 		if err != nil {
-			return nil, err
+			return FileItem{}, err
 		}
 
 		// @ 3b. Callback with Preview
-		return &FileItem{
+		return FileItem{
 			hasPreview: false,
 			Path:       file.Path,
 			Name:       info.Name,
@@ -102,7 +99,7 @@ func NewOutgoingFileItem(req *md.InviteRequest, p *md.Peer) (*FileItem, error) {
 }
 
 // ^ NewIncomingFileItem Prepares for Incoming Data ^ //
-func NewIncomingFileItem(i *md.AuthInvite, p string) (*FileItem, error) {
+func NewIncomingFileItem(i *md.AuthInvite, p string) (FileItem, error) {
 	// Calculate Tracking Data
 	totalChunks := int(i.Card.Properties.Size) / K_B64_CHUNK
 	interval := totalChunks / 100
@@ -112,7 +109,7 @@ func NewIncomingFileItem(i *md.AuthInvite, p string) (*FileItem, error) {
 	fileName := i.Card.Properties.Name + "." + i.Card.Properties.Mime.Subtype
 
 	// Return Item
-	return &FileItem{
+	return FileItem{
 		// Inherited Properties
 		Owner:   i.From,
 		Payload: i.Payload,

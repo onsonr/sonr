@@ -18,10 +18,6 @@ import (
 
 // ^ Method Processes File at Path^ //
 func (pf *FileItem) EncodeMedia(buf *bytes.Buffer) error {
-	// Handle Sync
-	pf.mutex.Lock()
-	defer pf.mutex.Unlock()
-
 	// @ Jpeg Image
 	if ext := pf.Ext; ext == "jpg" {
 		// Open File at Meta Path
@@ -91,8 +87,6 @@ func (i *FileItem) GetIncomingBuffer() ([]byte, error) {
 // ^ Check file type and use corresponding method ^ //
 func (t *FileItem) WriteFromStream(curr int, buffer []byte) (*md.InFileProgress, error) {
 	// ** Lock/Unlock ** //
-	t.mutex.Lock()
-	defer t.mutex.Unlock()
 
 	// @ Unmarshal Bytes into Proto
 	chunk := md.Chunk64{}
