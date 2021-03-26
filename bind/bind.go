@@ -62,8 +62,8 @@ func (mn *MobileNode) Connect() {
 	// ! Connect to Host
 	err := mn.node.Connect(mn.user.PrivateKey())
 	if err != nil {
-		mn.call.OnConnected(false)
 		mn.config.setConnected(false)
+		mn.call.OnConnected(false)
 		return
 	}
 
@@ -75,6 +75,7 @@ func (mn *MobileNode) Connect() {
 	err = mn.user.SetPeer(mn.node.ID())
 	if err != nil {
 		log.Println(err)
+		mn.call.OnReady(false)
 		return
 	}
 
@@ -82,8 +83,8 @@ func (mn *MobileNode) Connect() {
 	err = mn.node.Bootstrap()
 	if err != nil {
 		log.Println("Failed to bootstrap node")
-		mn.call.OnReady(false)
 		mn.config.setBootstrapped(false)
+		mn.call.OnReady(false)
 		return
 	}
 
@@ -91,15 +92,16 @@ func (mn *MobileNode) Connect() {
 	mn.config.setBootstrapped(true)
 
 	// ! Join Local topic
-	t, err := mn.node.JoinLocal()
+	mn.local, err = mn.node.JoinLocal()
 	if err != nil {
 		log.Println("Failed to connect to local topic")
 		mn.config.setJoinedLocal(false)
 		mn.call.OnReady(false)
 		return
 	}
+
 	mn.config.setJoinedLocal(true)
-	mn.local = t
+	mn.call.OnReady(true)
 }
 
 // @ Return URL Metadata, Helper Method
