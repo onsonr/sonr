@@ -8,6 +8,7 @@ import (
 	// Imported
 	"github.com/libp2p/go-libp2p"
 	cmgr "github.com/libp2p/go-libp2p-connmgr"
+	"github.com/libp2p/go-libp2p-core/crypto"
 	dscl "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -55,7 +56,7 @@ func NewNode(opts *net.HostOptions, call dt.NodeCallback) *Node {
 }
 
 // ^ Connect Begins Assigning Host Parameters ^
-func (n *Node) Connect(opts *net.HostOptions) error {
+func (n *Node) Connect(opts *net.HostOptions, key crypto.PrivKey) error {
 	var err error
 
 	// IP Address
@@ -69,7 +70,7 @@ func (n *Node) Connect(opts *net.HostOptions) error {
 		libp2p.ListenAddrStrings(
 			fmt.Sprintf("/ip4/%s/tcp/0", ip4),
 			fmt.Sprintf("/ip6/%s/tcp/0", ip6)),
-		libp2p.Identity(opts.PrivateKey),
+		libp2p.Identity(key),
 		libp2p.DefaultTransports,
 		libp2p.ConnectionManager(cmgr.NewConnManager(
 			10,          // Lowwater

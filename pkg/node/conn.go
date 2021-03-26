@@ -63,7 +63,7 @@ func (n *Node) InviteLink(req *md.InviteRequest, t *tpc.TopicManager, p *md.Peer
 		}
 
 		// Get URL Data
-		urlInfo, err := dt.GetPageInfoFromUrl(req.Url)
+		urlInfo, err := md.GetPageInfoFromUrl(req.Url)
 		if err != nil {
 			log.Println(err)
 			urlInfo = &md.URLLink{

@@ -6,7 +6,6 @@ import (
 	md "github.com/sonr-io/core/internal/models"
 	net "github.com/sonr-io/core/internal/network"
 	u "github.com/sonr-io/core/internal/user"
-	dt "github.com/sonr-io/core/pkg/data"
 	sn "github.com/sonr-io/core/pkg/node"
 	tpc "github.com/sonr-io/core/pkg/topic"
 	"google.golang.org/protobuf/proto"
@@ -59,7 +58,7 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 	}
 
 	// Create Host Options
-	mn.hostOpts, err = net.NewHostOpts(req, mn.user.PrivateKey())
+	mn.hostOpts, err = net.NewHostOpts(req)
 	if err != nil {
 		// sentry.CaptureException(err)
 		panic(err)
@@ -76,7 +75,7 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 // @ Start Host
 func (mn *MobileNode) Connect() {
 	// ! Connect to Host
-	err := mn.node.Connect(mn.hostOpts)
+	err := mn.node.Connect(mn.hostOpts, mn.user.PrivateKey())
 	if err != nil {
 		log.Println("Failed to start host")
 		// sentry.CaptureException(err)
@@ -121,7 +120,7 @@ func (mn *MobileNode) Connect() {
 // @ Return URL Metadata, Helper Method
 func GetURLMetadata(url string) []byte {
 	// Get Link Data
-	data, err := dt.GetPageInfoFromUrl(url)
+	data, err := md.GetPageInfoFromUrl(url)
 	if err != nil {
 		log.Println(err, " Failed to Parse URL")
 	}

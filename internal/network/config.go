@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 
-	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/multiformats/go-multiaddr"
 	md "github.com/sonr-io/core/internal/models"
@@ -17,12 +16,11 @@ import (
 type HostOptions struct {
 	BootstrapAddrs []multiaddr.Multiaddr
 	ConnRequest    *md.ConnectionRequest
-	PrivateKey     crypto.PrivKey
 	Profile        *md.Profile
 }
 
 // @ Returns new Host Config
-func NewHostOpts(req *md.ConnectionRequest, key crypto.PrivKey) (*HostOptions, error) {
+func NewHostOpts(req *md.ConnectionRequest) (*HostOptions, error) {
 	// Create Bootstrapper List
 	var bootstrappers []multiaddr.Multiaddr
 	for _, s := range []string{
@@ -45,7 +43,6 @@ func NewHostOpts(req *md.ConnectionRequest, key crypto.PrivKey) (*HostOptions, e
 	return &HostOptions{
 		BootstrapAddrs: bootstrappers,
 		ConnRequest:    req,
-		PrivateKey:     key,
 		Profile: &md.Profile{
 			Username:  req.GetUsername(),
 			FirstName: req.Contact.GetFirstName(),
