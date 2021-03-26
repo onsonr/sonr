@@ -17,6 +17,9 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+const K_BUF_CHUNK = 32000
+const K_B64_CHUNK = 31998 // Adjusted for Base64 -- has to be divisible by 3
+
 // @ File that safely sets metadata and thumbnail in routine
 type FileItem struct {
 	// References

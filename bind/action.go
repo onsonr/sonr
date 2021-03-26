@@ -60,7 +60,7 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 			// @ Add File to Queue
 			hasCompleted := make(chan bool)
 			go func() {
-				if err := mn.user.FS.AddFromRequest(req, mn.user.Profile(), hasCompleted); err != nil {
+				if err := mn.user.FS.EnqueueFromRequest(req, mn.user.Profile(), hasCompleted); err != nil {
 					log.Println(err)
 					return
 				}
@@ -70,7 +70,7 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 			done := <-hasCompleted
 			if done {
 				// Retreive Current File
-				currFile, err := mn.user.FS.CurrentFile()
+				currFile, err := mn.user.FS.Dequeue()
 				if err != nil {
 					log.Println(err)
 					return
