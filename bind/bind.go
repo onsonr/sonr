@@ -64,7 +64,6 @@ func (mn *MobileNode) Connect() {
 	if err != nil {
 		mn.config.setConnected(false)
 		mn.call.OnConnected(false)
-		return
 	}
 
 	// Update Status
@@ -76,7 +75,6 @@ func (mn *MobileNode) Connect() {
 	if err != nil {
 		log.Println(err)
 		mn.call.OnReady(false)
-		return
 	}
 
 	// ! Bootstrap to Peers
@@ -85,7 +83,6 @@ func (mn *MobileNode) Connect() {
 		log.Println("Failed to bootstrap node")
 		mn.config.setBootstrapped(false)
 		mn.call.OnReady(false)
-		return
 	}
 
 	// Update Status
@@ -97,7 +94,6 @@ func (mn *MobileNode) Connect() {
 		log.Println("Failed to connect to local topic")
 		mn.config.setJoinedLocal(false)
 		mn.call.OnReady(false)
-		return
 	}
 
 	mn.config.setJoinedLocal(true)
