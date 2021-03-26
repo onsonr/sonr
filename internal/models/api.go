@@ -6,7 +6,7 @@ import "time"
 func GetAuthInviteWithContact(req *InviteRequest, p *Peer, c *Contact) AuthInvite {
 	// Create Invite
 	return AuthInvite{
-		IsRemote: req.IsRemote,
+		IsRemote: false,
 		From:     p,
 		Payload:  Payload_CONTACT,
 		Card: &TransferCard{
@@ -43,7 +43,7 @@ func GetAuthInviteWithFile(req *InviteRequest, p *Peer, i *OutFileInfo) AuthInvi
 			Platform: p.Platform,
 
 			// Transfer Properties
-			Status: TransferCard_INVITE,
+			Status:  TransferCard_INVITE,
 			Preview: i.Preview,
 
 			// Owner Properties
