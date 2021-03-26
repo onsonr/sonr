@@ -58,7 +58,10 @@ func (n *Node) Start(key crypto.PrivKey) error {
 // ^ Bootstrap begins bootstrap with peers ^
 func (n *Node) Bootstrap() error {
 	// Create Bootstrapper Info
-	bootstrappers := n.opts.GetBootstrapAddrInfo()
+	bootstrappers, err := net.GetBootstrapAddrInfo()
+	if err != nil {
+		return err
+	}
 
 	// Set DHT
 	kdht, err := dht.New(

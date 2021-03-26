@@ -5,7 +5,6 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/crypto"
 	md "github.com/sonr-io/core/internal/models"
-	net "github.com/sonr-io/core/internal/network"
 	u "github.com/sonr-io/core/internal/user"
 	dt "github.com/sonr-io/core/pkg/data"
 	sn "github.com/sonr-io/core/pkg/node"
@@ -45,14 +44,8 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 		panic(err)
 	}
 
-	// Create Host Options
-	hostOpts, err := net.NewHostOpts(req)
-	if err != nil {
-		panic(err)
-	}
-
 	// Create Node
-	mn.node = sn.NewNode(mn.config.contextNode(), hostOpts, mn.callbackNode())
+	mn.node = sn.NewNode(mn.config.contextNode(), req, mn.callbackNode())
 	return mn
 }
 

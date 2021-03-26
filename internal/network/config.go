@@ -9,18 +9,10 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/multiformats/go-multiaddr"
-	md "github.com/sonr-io/core/internal/models"
 )
 
-// ^ Host Config ^ //
-type HostOptions struct {
-	BootstrapAddrs []multiaddr.Multiaddr
-	ConnRequest    *md.ConnectionRequest
-	Profile        *md.Profile
-}
-
-// @ Returns new Host Config
-func NewHostOpts(req *md.ConnectionRequest) (HostOptions, error) {
+// ^ Return Bootstrap List Address Info ^ //
+func GetBootstrapAddrInfo() ([]peer.AddrInfo, error) {
 	// Create Bootstrapper List
 	var bootstrappers []multiaddr.Multiaddr
 	for _, s := range []string{
@@ -34,36 +26,20 @@ func NewHostOpts(req *md.ConnectionRequest) (HostOptions, error) {
 	} {
 		ma, err := multiaddr.NewMultiaddr(s)
 		if err != nil {
-			return HostOptions{}, err
+			return nil, err
 		}
 		bootstrappers = append(bootstrappers, ma)
 	}
 
-	// Set Host Options
-	return HostOptions{
-		BootstrapAddrs: bootstrappers,
-		ConnRequest:    req,
-		Profile: &md.Profile{
-			Username:  req.GetUsername(),
-			FirstName: req.Contact.GetFirstName(),
-			LastName:  req.Contact.GetLastName(),
-			Picture:   req.Contact.GetPicture(),
-			Platform:  req.Device.GetPlatform(),
-		},
-	}, nil
-}
-
-// ^ Return Bootstrap List Address Info ^ //
-func (ho HostOptions) GetBootstrapAddrInfo() []peer.AddrInfo {
-	ds := make([]peer.AddrInfo, 0, len(ho.BootstrapAddrs))
-	for i := range ho.BootstrapAddrs {
-		info, err := peer.AddrInfoFromP2pAddr(ho.BootstrapAddrs[i])
+	ds := make([]peer.AddrInfo, 0, len(bootstrappers))
+	for i := range bootstrappers {
+		info, err := peer.AddrInfoFromP2pAddr(bootstrappers[i])
 		if err != nil {
 			continue
 		}
 		ds = append(ds, *info)
 	}
-	return ds
+	return ds, nil
 }
 
 // ^ Geographical Position from IP ^ //

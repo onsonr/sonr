@@ -23,7 +23,6 @@ import (
 type Node struct {
 	// Properties
 	ctx  context.Context
-	opts net.HostOptions
 	call dt.NodeCallback
 
 	// Networking Properties
@@ -37,12 +36,11 @@ type Node struct {
 }
 
 // ^ NewNode Initializes Node with a host and default properties ^
-func NewNode(ctx context.Context, opts net.HostOptions, call dt.NodeCallback) *Node {
+func NewNode(ctx context.Context, cr *md.ConnectionRequest, call dt.NodeCallback) *Node {
 	return &Node{
 		ctx:    ctx,
 		call:   call,
-		opts:   opts,
-		router: net.NewProtocolRouter(opts.ConnRequest),
+		router: net.NewProtocolRouter(cr),
 	}
 }
 
