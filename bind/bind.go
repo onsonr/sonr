@@ -3,6 +3,7 @@ package bind
 import (
 	"log"
 
+	"github.com/libp2p/go-libp2p-core/crypto"
 	md "github.com/sonr-io/core/internal/models"
 	net "github.com/sonr-io/core/internal/network"
 	u "github.com/sonr-io/core/internal/user"
@@ -60,69 +61,96 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 // **-----------------** //
 // @ Start Host
 func (mn *MobileNode) Connect() {
-	// ! Connect to Host
-	// Get Key
+	// Initialize
+	startChan := make(chan bool)
+	bootstrapChan := make(chan bool)
+	localChan := make(chan bool)
+
+	// Get Private Key and Connect Host
 	key, err := mn.user.PrivateKey()
 	if err != nil {
 		mn.config.setConnected(false)
 		mn.call.OnConnected(false)
-	}
-
-	// Start Host
-	err = mn.node.Connect(key)
-	if err != nil {
-		mn.config.setConnected(false)
-		mn.call.OnConnected(false)
 	} else {
-		// Update Status
-		mn.config.setConnected(true)
-		mn.call.OnConnected(true)
+		// Connect Host
+		go mn.start(key, startChan)
+
+		// Await Routine Responses
+		for i := 0; i < 3; i++ {
+			select {
+			// @ On Connection
+			case status := <-startChan:
+				// Update Status
+				mn.config.setConnected(status)
+				mn.call.OnConnected(status)
+
+				// Set User Peer
+				if status {
+					err = mn.user.SetPeer(mn.node.Host.ID())
+					if err != nil {
+						log.Println(err)
+						mn.call.OnReady(false)
+					} else {
+						// Begin Bootstrap
+						go mn.bootstrap(bootstrapChan)
+					}
+				}
+
+				// @ On Bootstrap
+			case status := <-bootstrapChan:
+				// Update Status and Join Local
+				mn.config.setBootstrapped(status)
+				mn.call.OnReady(status)
+				if status {
+					go mn.joinLocal(localChan)
+				}
+
+				// @ On Local Join
+			case status := <-localChan:
+				// Update Status
+				mn.config.setJoinedLocal(status)
+			}
+		}
 	}
 
-	// ! Set User Peer
-	err = mn.user.SetPeer(mn.node.ID())
-	if err != nil {
-		log.Println(err)
-		mn.call.OnReady(false)
-	}
+	// Close Channels
+	close(startChan)
+	close(bootstrapChan)
+	close(localChan)
+}
 
-	// ! Bootstrap to Peers
-	err = mn.node.Bootstrap()
+// @ Start Nodes Host
+func (mn *MobileNode) start(key crypto.PrivKey, done chan bool) {
+	err := mn.node.Start(key)
 	if err != nil {
-		log.Println("Failed to bootstrap node")
-		mn.config.setBootstrapped(false)
-		mn.call.OnReady(false)
+		log.Println("Failed to start host")
+		done <- false
 	} else {
-		// Update Status
-		mn.config.setBootstrapped(true)
-	}
-
-	// ! Join Local topic
-	mn.local, err = mn.node.JoinLocal()
-	if err != nil {
-		log.Println("Failed to connect to local topic")
-		mn.config.setJoinedLocal(false)
-		mn.call.OnReady(false)
-	} else {
-		mn.config.setJoinedLocal(true)
-		mn.call.OnReady(true)
+		done <- true
 	}
 }
 
-// @ Return URL Metadata, Helper Method
-func GetURLMetadata(url string) []byte {
-	// Get Link Data
-	data, err := md.GetPageInfoFromUrl(url)
+// @ Bootstrap Host to DHT
+func (mn *MobileNode) bootstrap(done chan bool) {
+	err := mn.node.Bootstrap()
 	if err != nil {
-		log.Println(err, " Failed to Parse URL")
+		log.Println("Failed to bootstrap node")
+		done <- false
+	} else {
+		done <- true
 	}
+}
 
-	// Marshal
-	bytes, err := proto.Marshal(data)
+// @ Join Local Pubsub
+func (mn *MobileNode) joinLocal(done chan bool) {
+	var err error
+	mn.local, err = mn.node.JoinLocal()
 	if err != nil {
-		log.Println(err, " Failed to Parse URL")
+		log.Println("Failed to join local pubsub")
+		done <- false
+	} else {
+		done <- true
 	}
-	return bytes
 }
 
 // **-------------------** //

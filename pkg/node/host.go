@@ -21,8 +21,8 @@ import (
 	tpc "github.com/sonr-io/core/pkg/topic"
 )
 
-// ^ Connect Begins Assigning Host Parameters ^
-func (n *Node) Connect(key crypto.PrivKey) error {
+// ^ Start Begins Assigning Host Parameters ^
+func (n *Node) Start(key crypto.PrivKey) error {
 	var err error
 
 	// IP Address
@@ -30,7 +30,7 @@ func (n *Node) Connect(key crypto.PrivKey) error {
 	ip6 := net.IPv6()
 
 	// Start Host
-	n.host, err = libp2p.New(
+	n.Host, err = libp2p.New(
 		n.ctx,
 		// Add listening Addresses
 		libp2p.ListenAddrStrings(
@@ -49,7 +49,7 @@ func (n *Node) Connect(key crypto.PrivKey) error {
 	}
 
 	// Create Pub Sub
-	n.pubsub, err = psub.NewGossipSub(n.ctx, n.host)
+	n.pubsub, err = psub.NewGossipSub(n.ctx, n.Host)
 	if err != nil {
 		return err
 	}
@@ -59,7 +59,7 @@ func (n *Node) Connect(key crypto.PrivKey) error {
 // ^ User Node Info ^ //
 // @ ID Returns Host ID
 func (n *Node) ID() peer.ID {
-	return n.host.ID()
+	return n.Host.ID()
 }
 
 // ^ Bootstrap begins bootstrap with peers ^
@@ -72,7 +72,7 @@ func (n *Node) Bootstrap() error {
 	// Set DHT
 	n.kdht, err = dht.New(
 		n.ctx,
-		n.host,
+		n.Host,
 		dht.BootstrapPeers(bootstrappers...),
 	)
 	if err != nil {
@@ -86,7 +86,7 @@ func (n *Node) Bootstrap() error {
 
 	// Connect to bootstrap nodes, if any
 	for _, pi := range bootstrappers {
-		if err := n.host.Connect(n.ctx, pi); err == nil {
+		if err := n.Host.Connect(n.ctx, pi); err == nil {
 			break
 		}
 	}
@@ -100,7 +100,7 @@ func (n *Node) Bootstrap() error {
 
 // ^ Join Lobby Adds Node to Named Topic ^
 func (n *Node) JoinLocal() (*tpc.TopicManager, error) {
-	if t, err := tpc.NewTopic(n.ctx, n.host, n.pubsub, n.router.LocalTopic(), n.router, n); err != nil {
+	if t, err := tpc.NewTopic(n.ctx, n.Host, n.pubsub, n.router.LocalTopic(), n.router, n); err != nil {
 		return nil, err
 	} else {
 		return t, nil
@@ -109,7 +109,7 @@ func (n *Node) JoinLocal() (*tpc.TopicManager, error) {
 
 // ^ Close Ends All Network Communication ^
 func (n *Node) Close() {
-	n.host.Close()
+	n.Host.Close()
 }
 
 // ^ handleDHTPeers: Connects to Peers in DHT ^
@@ -129,12 +129,12 @@ func (n *Node) handleDHTPeers(routingDiscovery *dsc.RoutingDiscovery) {
 		// Iterate over Channel
 		for pi := range peersChan {
 			// Validate not Self
-			if pi.ID != n.host.ID() {
+			if pi.ID != n.Host.ID() {
 				// Connect to Peer
-				if err := n.host.Connect(n.ctx, pi); err != nil {
+				if err := n.Host.Connect(n.ctx, pi); err != nil {
 					// Remove Peer Reference
-					n.host.Peerstore().ClearAddrs(pi.ID)
-					if sw, ok := n.host.Network().(*swr.Swarm); ok {
+					n.Host.Peerstore().ClearAddrs(pi.ID)
+					if sw, ok := n.Host.Network().(*swr.Swarm); ok {
 						sw.Backoff().Clear(pi.ID)
 					}
 				}
@@ -146,4 +146,3 @@ func (n *Node) handleDHTPeers(routingDiscovery *dsc.RoutingDiscovery) {
 		<-time.After(time.Second * 4)
 	}
 }
-

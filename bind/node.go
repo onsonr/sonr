@@ -7,6 +7,22 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+// @ Return URL Metadata, Helper Method
+func GetURLMetadata(url string) []byte {
+	// Get Link Data
+	data, err := md.GetPageInfoFromUrl(url)
+	if err != nil {
+		log.Println(err, " Failed to Parse URL")
+	}
+
+	// Marshal
+	bytes, err := proto.Marshal(data)
+	if err != nil {
+		log.Println(err, " Failed to Parse URL")
+	}
+	return bytes
+}
+
 // @ Update proximity/direction and Notify Lobby
 func (mn *MobileNode) Update(facing float64, heading float64) {
 	if mn.config.isReady() {

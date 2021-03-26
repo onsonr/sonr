@@ -27,7 +27,7 @@ type Node struct {
 	call dt.NodeCallback
 
 	// Networking Properties
-	host   host.Host
+	Host   host.Host
 	kdht   *dht.IpfsDHT
 	pubsub *psub.PubSub
 	router *net.ProtocolRouter
@@ -48,7 +48,7 @@ func NewNode(ctx context.Context, opts *net.HostOptions, call dt.NodeCallback) *
 
 // ^ Join Lobby Adds Node to Named Topic ^
 func (n *Node) JoinLobby(name string) (*tpc.TopicManager, error) {
-	if t, err := tpc.NewTopic(n.ctx, n.host, n.pubsub, n.router.Topic(name), n.router, n); err != nil {
+	if t, err := tpc.NewTopic(n.ctx, n.Host, n.pubsub, n.router.Topic(name), n.router, n); err != nil {
 		return nil, err
 	} else {
 		return t, nil

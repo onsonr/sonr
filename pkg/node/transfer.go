@@ -15,7 +15,7 @@ import (
 // ^ OnReceiveTransfer: Prepares for Incoming File Transfer when Accepted ^
 func (n *Node) OnReceiveTransfer(inv *md.AuthInvite, fs *sf.FileSystem) {
 	n.incoming = tr.CreateIncomingFile(inv, fs, n.call)
-	n.host.SetStreamHandler(n.router.Transfer(), n.handleTransferIncoming)
+	n.Host.SetStreamHandler(n.router.Transfer(), n.handleTransferIncoming)
 }
 
 // ^ OnReply: Begins File Transfer when Accepted ^
@@ -33,7 +33,7 @@ func (n *Node) OnReply(id peer.ID, p *md.Peer, cf *sf.FileItem, reply []byte) {
 	// Check for File Transfer
 	if resp.Decision && resp.Type == md.AuthReply_Transfer {
 		// Create New Auth Stream
-		stream, err := n.host.NewStream(n.ctx, id, n.router.Transfer())
+		stream, err := n.Host.NewStream(n.ctx, id, n.router.Transfer())
 		if err != nil {
 			n.call.Error(err, "StartOutgoing")
 		}
@@ -78,7 +78,7 @@ func (n *Node) handleTransferIncoming(stream network.Stream) {
 				if err := n.incoming.Save(); err != nil {
 					n.call.Error(err, "HandleIncoming:Save")
 				}
-				n.host.RemoveStreamHandler(n.router.Transfer())
+				n.Host.RemoveStreamHandler(n.router.Transfer())
 				break
 			}
 			dt.GetState().NeedsWait()
