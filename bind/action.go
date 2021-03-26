@@ -57,10 +57,31 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 				return
 			}
 		} else {
-			if err := mn.user.FS.AddFromRequest(req, mn.user.Profile()); err != nil {
-				// sentry.CaptureException(err)
-				log.Println(err)
-				return
+			// @ Add File to Queue
+			hasCompleted := make(chan bool)
+			go func() {
+				if err := mn.user.FS.AddFromRequest(req, mn.user.Profile(), hasCompleted); err != nil {
+					log.Println(err)
+					return
+				}
+			}()
+
+			// @ Wait For Done
+			done := <-hasCompleted
+			if done {
+				// Retreive Current File
+				currFile, err := mn.user.FS.CurrentFile()
+				if err != nil {
+					log.Println(err)
+					return
+				}
+
+				// Send Invite
+				err = mn.node.InviteFile(req, mn.local, mn.user.Peer(), currFile)
+				if err != nil {
+					log.Println(err)
+					return
+				}
 			}
 		}
 	}

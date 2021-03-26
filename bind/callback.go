@@ -40,28 +40,10 @@ func (mn *MobileNode) nodeCallback() dt.NodeCallback {
 		Invited:     mn.invited,
 		Received:    mn.received,
 		Transmitted: mn.transmitted,
-		Queued:      mn.queued,
 		Error:       mn.error,
 
 		// User
 		GetPeer: mn.user.Peer,
-	}
-}
-
-// ^ queued Callback, Sends File Invite to Peer, and Notifies Client ^
-func (mn *MobileNode) queued(card *md.TransferCard, req *md.InviteRequest) {
-	// Retreive Current File
-	currFile, err := mn.user.FS.CurrentFile()
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
-	// Invite With file
-	err = mn.node.InviteFile(card, req, mn.local, mn.user.Peer(), currFile)
-	if err != nil {
-		log.Println(err)
-		return
 	}
 }
 

@@ -3,7 +3,7 @@ package models
 import "time"
 
 // ^ Generate AuthInvite with Contact Payload from Request, User Peer Data and User Contact ^ //
-func NewAuthInviteWithContact(req *InviteRequest, p *Peer, c *Contact) AuthInvite {
+func GetAuthInviteWithContact(req *InviteRequest, p *Peer, c *Contact) AuthInvite {
 	// Create Invite
 	return AuthInvite{
 		IsRemote: req.IsRemote,
@@ -16,7 +16,7 @@ func NewAuthInviteWithContact(req *InviteRequest, p *Peer, c *Contact) AuthInvit
 			Platform: p.Platform,
 
 			// Transfer Properties
-			Status: TransferCard_DIRECT,
+			Status: TransferCard_INVITE,
 
 			// Owner Properties
 			Username:  p.Profile.Username,
@@ -30,7 +30,7 @@ func NewAuthInviteWithContact(req *InviteRequest, p *Peer, c *Contact) AuthInvit
 }
 
 // ^ Generate AuthInvite with File Payload from Request, User Peer Data and File Info ^ //
-func NewAuthInviteWithFile(req *InviteRequest, p *Peer, i *FileInfo) AuthInvite {
+func GetAuthInviteWithFile(req *InviteRequest, p *Peer, i *FileInfo) AuthInvite {
 	// Create Invite
 	return AuthInvite{
 		IsRemote: req.IsRemote,
@@ -43,7 +43,7 @@ func NewAuthInviteWithFile(req *InviteRequest, p *Peer, i *FileInfo) AuthInvite 
 			Platform: p.Platform,
 
 			// Transfer Properties
-			Status: TransferCard_DIRECT,
+			Status: TransferCard_INVITE,
 			Preview: i.Thumbnail,
 
 			// Owner Properties
@@ -62,7 +62,7 @@ func NewAuthInviteWithFile(req *InviteRequest, p *Peer, i *FileInfo) AuthInvite 
 }
 
 // ^ Generate AuthInvite with URL Payload from Request and User Peer Data ^ //
-func NewAuthInviteWithURL(req *InviteRequest, p *Peer) AuthInvite {
+func GetAuthInviteWithURL(req *InviteRequest, p *Peer) AuthInvite {
 	// Get URL Data
 	urlInfo, err := GetPageInfoFromUrl(req.Url)
 	if err != nil {
@@ -83,7 +83,7 @@ func NewAuthInviteWithURL(req *InviteRequest, p *Peer) AuthInvite {
 			Platform: p.Platform,
 
 			// Transfer Properties
-			Status: TransferCard_DIRECT,
+			Status: TransferCard_INVITE,
 
 			// Owner Properties
 			Username:  p.Profile.Username,

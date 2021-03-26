@@ -63,7 +63,14 @@ func (n *Node) OnReply(id peer.ID, p *md.Peer, cf *sf.FileItem, reply []byte) {
 		writer := msgio.NewWriter(stream)
 
 		// Start Routine
-		go cf.WriteBase64(writer, p)
+		hasCompleted := make(chan bool)
+		go cf.WriteBase64(writer, p, hasCompleted)
+
+		// Wait For Done
+		done := <-hasCompleted
+		if done {
+			n.call.Transmitted(p)
+		}
 	}
 }
 

@@ -61,7 +61,7 @@ func (n *Node) InviteLink(req *md.InviteRequest, t *tpc.TopicManager, p *md.Peer
 		}
 
 		// Create Invite
-		invite := md.NewAuthInviteWithURL(req, p)
+		invite := md.GetAuthInviteWithURL(req, p)
 
 		// Run Routine
 		err = t.Invite(id, &invite, p, nil)
@@ -85,7 +85,7 @@ func (n *Node) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, p *md.P
 		}
 
 		// Build Invite Message
-		invMsg := md.NewAuthInviteWithContact(req, p, c)
+		invMsg := md.GetAuthInviteWithContact(req, p, c)
 
 		// Run Routine
 		err = t.Invite(id, &invMsg, p, nil)
@@ -99,15 +99,9 @@ func (n *Node) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, p *md.P
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Node) InviteFile(card *md.TransferCard, req *md.InviteRequest, t *tpc.TopicManager, p *md.Peer, cf *sf.FileItem) error {
-	card.Status = md.TransferCard_INVITE
-
-	// Create Invite Message
-	invMsg := md.AuthInvite{
-		From:    p,
-		Payload: card.Payload,
-		Card:    card,
-	}
+func (n *Node) InviteFile(req *md.InviteRequest, t *tpc.TopicManager, p *md.Peer, cf *sf.FileItem) error {
+	// Create Invite
+	invite := md.GetAuthInviteWithFile(req, p, cf.Info)
 
 	// Get PeerID
 	id, _, err := t.FindPeerInTopic(req.To.Id.Peer)
@@ -116,7 +110,7 @@ func (n *Node) InviteFile(card *md.TransferCard, req *md.InviteRequest, t *tpc.T
 	}
 
 	// Run Routine
-	err = t.Invite(id, &invMsg, p, cf)
+	err = t.Invite(id, &invite, p, cf)
 	if err != nil {
 		return err
 	}

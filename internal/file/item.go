@@ -10,7 +10,6 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"sync"
 
 	"github.com/libp2p/go-msgio"
 	md "github.com/sonr-io/core/internal/models"
@@ -22,18 +21,15 @@ import (
 type FileItem struct {
 	// References
 	Payload md.Payload
-	call    dt.NodeCallback
-	mime    *md.MIME
+	Info    *md.FileInfo
 	Path    string
 
 	// Private Properties
-	mutex   sync.Mutex
-	card    md.TransferCard
 	request *md.InviteRequest
 }
 
 // ^ NewFileItem Processes Outgoing File ^ //
-func NewFileItem(req *md.InviteRequest, p *md.Profile, callback dt.NodeCallback) (*FileItem, error) {
+func NewFileItem(req *md.InviteRequest, p *md.Profile, hc chan bool) (*FileItem, error) {
 	// Check Values
 	if req == nil || p == nil {
 		return nil, errors.New("Request or Profile not Provided")
@@ -41,43 +37,8 @@ func NewFileItem(req *md.InviteRequest, p *md.Profile, callback dt.NodeCallback)
 
 	// Get File Information
 	file := req.Files[len(req.Files)-1]
-	info, err := GetFileInfo(file.Path)
-	if err != nil {
-		return nil, err
-	}
 
-	// @ 1. Create new SafeFile
-	sm := &FileItem{
-		call:    callback,
-		Path:    file.Path,
-		Payload: info.Payload,
-		request: req,
-		mime:    info.Mime,
-	}
-
-	// ** Lock ** //
-	sm.mutex.Lock()
-
-	// @ 2. Set Metadata Protobuf Values
-	// Create Card
-	sm.card = md.TransferCard{
-		// SQL Properties
-		Payload:  info.Payload,
-		Platform: p.Platform,
-
-		// Owner Properties
-		Username:  p.Username,
-		FirstName: p.FirstName,
-		LastName:  p.LastName,
-
-		Properties: &md.TransferCard_Properties{
-			Name: info.Name,
-			Size: info.Size,
-			Mime: info.Mime,
-		},
-	}
-
-	// @ 3. Create Thumbnail in Goroutine
+	// Check Thumbnail
 	if len(file.Thumbnail) > 0 {
 		// Initialize
 		thumbWriter := new(bytes.Buffer)
@@ -95,41 +56,47 @@ func NewFileItem(req *md.InviteRequest, p *md.Profile, callback dt.NodeCallback)
 			return nil, err
 		}
 
-		sm.card.Preview = thumbWriter.Bytes()
+		// @ 1a. Get File Info
+		preview := thumbWriter.Bytes()
+		info, err := md.GetFileInfoWithPreview(file.Path, preview)
+		if err != nil {
+			return nil, err
+		}
+
+		// @ 2a. Create new SafeFile
+		sm := &FileItem{
+			Path:    file.Path,
+			Info:    info,
+			request: req,
+		}
+
+		// @ 3a. Callback with Preview
+		hc <- true
+		return sm, nil
+	} else {
+		// @ 1b. Get File Info
+		info, err := md.GetFileInfo(file.Path)
+		if err != nil {
+			return nil, err
+		}
+
+		// @ 2b. Create new SafeFile
+		sm := &FileItem{
+			Path:    file.Path,
+			Info:    info,
+			request: req,
+		}
+
+		// @ 3b. Callback with Preview
+		hc <- true
+		return sm, nil
 	}
-	// ** Unlock ** //
-	sm.mutex.Unlock()
-
-	// Get Transfer Card
-	preview := sm.Card()
-
-	// @ 3. Callback with Preview
-	sm.call.Queued(preview, sm.request)
-	return sm, nil
-}
-
-// ^ Safely returns Preview depending on lock ^ //
-func (sm *FileItem) Card() *md.TransferCard {
-	// ** Lock File wait for access ** //
-	sm.mutex.Lock()
-	defer sm.mutex.Unlock()
-
-	// @ 2. Return Value
-	return &sm.card
-}
-
-// ^ Method adjusts extension for JPEG ^ //
-func (pf *FileItem) Ext() string {
-	if pf.mime.Subtype == "jpg" || pf.mime.Subtype == "jpeg" {
-		return "jpeg"
-	}
-	return pf.mime.Subtype
 }
 
 // ^ Method Processes File at Path^ //
 func (pf *FileItem) EncodeMedia(buf *bytes.Buffer) error {
 	// @ Jpeg Image
-	if ext := pf.Ext(); ext == "jpg" {
+	if ext := pf.Info.Ext(); ext == "jpg" {
 		// Open File at Meta Path
 		file, err := os.Open(pf.Path)
 		if err != nil {
@@ -189,7 +156,7 @@ func (pf *FileItem) EncodeMedia(buf *bytes.Buffer) error {
 }
 
 // ^ write fileItem as Base64 in Msgio to Stream ^ //
-func (pf *FileItem) WriteBase64(writer msgio.WriteCloser, peer *md.Peer) {
+func (pf *FileItem) WriteBase64(writer msgio.WriteCloser, peer *md.Peer, hc chan bool) {
 	// Initialize Buffer and Encode File
 	var base string
 	if pf.Payload == md.Payload_MEDIA {
@@ -214,7 +181,7 @@ func (pf *FileItem) WriteBase64(writer msgio.WriteCloser, peer *md.Peer) {
 	total := int32(len(base))
 
 	// Iterate for Entire file as String
-	for _, dat := range ChunkBase64(base) {
+	for _, dat := range chunkBase64(base) {
 		// Create Block Protobuf from Chunk
 		chunk := md.Chunk64{
 			Size:  int32(len(dat)),
@@ -237,5 +204,5 @@ func (pf *FileItem) WriteBase64(writer msgio.WriteCloser, peer *md.Peer) {
 	}
 
 	// Call Completed Sending
-	pf.call.Transmitted(peer)
+	hc <- true
 }

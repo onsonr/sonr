@@ -12,7 +12,6 @@ import (
 )
 
 const K_SONR_CLIENT_DIR = ".sonr"
-const K_QUEUE_SIZE = 16
 const K_FILE_QUEUE_NAME = "file-queue"
 
 // @ Sonr File System Struct
@@ -27,7 +26,7 @@ type FileSystem struct {
 	Temporary string
 
 	// Processing
-	Queue        *FileQueue
+	Queue FileQueue
 }
 
 // ^ Method Initializes Root Sonr Directory ^ //
@@ -49,12 +48,14 @@ func NewFs(connEvent *md.ConnectionRequest, callback dt.NodeCallback) (*FileSyst
 
 	// Create SFS
 	sfs := &FileSystem{
-		IsDesktop:    connEvent.Device.GetIsDesktop(),
-		Downloads:    connEvent.Directories.Downloads,
-		Main:         sonrPath,
-		Temporary:    connEvent.Directories.Temporary,
-		Call:         callback,
-		Queue:        NewFileQueue(K_QUEUE_SIZE),
+		IsDesktop: connEvent.Device.GetIsDesktop(),
+		Downloads: connEvent.Directories.Downloads,
+		Main:      sonrPath,
+		Temporary: connEvent.Directories.Temporary,
+		Call:      callback,
+		Queue: FileQueue{
+			queue: make([]*FileItem, K_QUEUE_SIZE),
+		},
 	}
 
 	// sfs.Queue = q

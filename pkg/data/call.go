@@ -7,7 +7,6 @@ import (
 // Define Function Types
 type OnBool func(bool)
 type OnProtobuf func([]byte)
-type OnQueued func(card *md.TransferCard, req *md.InviteRequest)
 type OnInvite func(data []byte)
 type OnProgress func(data float32)
 type OnReceived func(data *md.TransferCard)
@@ -15,11 +14,6 @@ type OnTransmitted func(data *md.Peer)
 type OnError func(err error, method string)
 type ReturnPeer func() *md.Peer
 type SyncLobby func(ref *md.Lobby, peer *md.Peer)
-
-type FileCallback struct {
-	Queued OnQueued
-	Error  OnError
-}
 type NodeCallback struct {
 	Connected   OnBool
 	Ready       OnBool
@@ -32,6 +26,5 @@ type NodeCallback struct {
 	Received    OnReceived
 	GetPeer     ReturnPeer
 	Transmitted OnTransmitted
-	Queued      OnQueued
 	Error       OnError
 }
