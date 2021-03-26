@@ -81,6 +81,7 @@ func (n *Node) OnReply(id peer.ID, p *md.Peer, cf *sf.FileItem, reply []byte) {
 
 // ^ OnReceiveTransfer: Prepares for Incoming File Transfer when Accepted ^
 func (n *Node) OnReceiveTransfer(inv *md.AuthInvite, fs *sf.FileSystem) {
-	n.host.SetStreamHandler(n.router.Transfer(), n.handleTransferIncoming)
 	n.incoming = tr.CreateIncomingFile(inv, fs, n.call)
+	n.host.SetStreamHandler(n.router.Transfer(), n.handleTransferIncoming)
 }
+
