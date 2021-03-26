@@ -8,7 +8,6 @@ import (
 	"github.com/libp2p/go-libp2p"
 	cmgr "github.com/libp2p/go-libp2p-connmgr"
 	"github.com/libp2p/go-libp2p-core/crypto"
-	dscl "github.com/libp2p/go-libp2p-core/discovery"
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	psub "github.com/libp2p/go-libp2p-pubsub"
@@ -90,7 +89,8 @@ func (n *Node) Bootstrap() error {
 
 	// Set Routing Discovery, Find Peers
 	routingDiscovery := dsc.NewRoutingDiscovery(n.kdht)
-	dsc.Advertise(n.ctx, routingDiscovery, n.router.MajorPoint(), dscl.TTL(time.Second*4))
+	// dscl.TTL(time.Second*4)
+	dsc.Advertise(n.ctx, routingDiscovery, n.router.MajorPoint())
 	go n.handleDHTPeers(routingDiscovery)
 	return nil
 }
@@ -116,7 +116,6 @@ func (n *Node) handleDHTPeers(routingDiscovery *dsc.RoutingDiscovery) {
 		peersChan, err := routingDiscovery.FindPeers(
 			n.ctx,
 			n.router.MajorPoint(),
-			dscl.Limit(16),
 		)
 		if err != nil {
 			n.call.Error(err, "Finding DHT Peers")
