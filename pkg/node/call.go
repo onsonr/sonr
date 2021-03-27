@@ -4,7 +4,6 @@ import (
 	"log"
 
 	"github.com/libp2p/go-libp2p-core/peer"
-	msgio "github.com/libp2p/go-msgio"
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
 	se "github.com/sonr-io/core/internal/session"
@@ -59,11 +58,8 @@ func (n *Node) OnReply(id peer.ID, reply []byte) {
 			n.call.Error(err, "StartOutgoing")
 		}
 
-		// Initialize Writer
-		writer := msgio.NewWriter(stream)
-
-		// Start Routine
-		go n.session.WriteToStream(writer)
+		// Write to Stream on Session
+		n.session.WriteToStream(stream)
 	}
 }
 

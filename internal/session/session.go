@@ -95,53 +95,59 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 }
 
 // ^ write file as Base64 in Msgio to Stream ^ //
-func (s *Session) WriteToStream(writer msg.WriteCloser) {
-	// Initialize Buffer and Encode File
-	var base string
-	if s.outgoing.Payload == md.Payload_MEDIA {
-		buffer := new(bytes.Buffer)
+func (s *Session) WriteToStream(stream network.Stream) {
+	// Initialize Writer
+	wr := msg.NewWriter(stream)
 
-		if err := s.outgoing.EncodeFile(buffer); err != nil {
-			log.Fatalln(err)
+	// Begin Routine
+	go func(writer msg.WriteCloser) {
+		// Initialize Buffer and Encode File
+		var base string
+		if s.outgoing.Payload == md.Payload_MEDIA {
+			buffer := new(bytes.Buffer)
+
+			if err := s.outgoing.EncodeFile(buffer); err != nil {
+				log.Fatalln(err)
+			}
+
+			// Encode Buffer to base 64
+			data := buffer.Bytes()
+			base = base64.StdEncoding.EncodeToString(data)
+		} else {
+			data, err := ioutil.ReadFile(s.outgoing.Path)
+			if err != nil {
+				log.Fatalln(err)
+			}
+			base = base64.StdEncoding.EncodeToString(data)
 		}
 
-		// Encode Buffer to base 64
-		data := buffer.Bytes()
-		base = base64.StdEncoding.EncodeToString(data)
-	} else {
-		data, err := ioutil.ReadFile(s.outgoing.Path)
-		if err != nil {
-			log.Fatalln(err)
-		}
-		base = base64.StdEncoding.EncodeToString(data)
-	}
+		// Set Total
+		total := int32(len(base))
 
-	// Set Total
-	total := int32(len(base))
+		// Iterate for Entire file as String
+		for _, dat := range ChunkBase64(base) {
+			// Create Block Protobuf from Chunk
+			chunk := md.Chunk64{
+				Size:  int32(len(dat)),
+				Data:  dat,
+				Total: total,
+			}
 
-	// Iterate for Entire file as String
-	for _, dat := range ChunkBase64(base) {
-		// Create Block Protobuf from Chunk
-		chunk := md.Chunk64{
-			Size:  int32(len(dat)),
-			Data:  dat,
-			Total: total,
-		}
+			// Convert to bytes
+			bytes, err := proto.Marshal(&chunk)
+			if err != nil {
+				log.Fatalln(err)
+			}
 
-		// Convert to bytes
-		bytes, err := proto.Marshal(&chunk)
-		if err != nil {
-			log.Fatalln(err)
+			// Write Message Bytes to Stream
+			err = writer.WriteMsg(bytes)
+			if err != nil {
+				log.Fatalln(err)
+			}
+			dt.GetState().NeedsWait()
 		}
 
-		// Write Message Bytes to Stream
-		err = writer.WriteMsg(bytes)
-		if err != nil {
-			log.Fatalln(err)
-		}
-		dt.GetState().NeedsWait()
-	}
-
-	// Call Completed Sending
-	s.callback.Transmitted(s.receiver)
+		// Call Completed Sending
+		s.callback.Transmitted(s.receiver)
+	}(wr)
 }
