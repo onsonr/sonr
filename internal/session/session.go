@@ -123,14 +123,14 @@ func WriteToStream(writer msgio.WriteCloser, s *Session) {
 	// Iterate for Entire file as String
 	for _, dat := range ChunkBase64(base) {
 		// Create Block Protobuf from Chunk
-		chunk := md.Chunk64{
+		chunk := &md.Chunk64{
 			Size:  int32(len(dat)),
 			Data:  dat,
 			Total: total,
 		}
 
 		// Convert to bytes
-		bytes, err := proto.Marshal(&chunk)
+		bytes, err := proto.Marshal(chunk)
 		if err != nil {
 			log.Fatalln(err)
 		}

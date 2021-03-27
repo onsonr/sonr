@@ -43,8 +43,8 @@ func (t *incomingFile) AddBuffer(curr int, buffer []byte) (bool, error) {
 	defer t.mutex.Unlock()
 
 	// @ Unmarshal Bytes into Proto
-	chunk := md.Chunk64{}
-	err := proto.Unmarshal(buffer, &chunk)
+	chunk := &md.Chunk64{}
+	err := proto.Unmarshal(buffer, chunk)
 	if err != nil {
 		return true, err
 	}
