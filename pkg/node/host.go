@@ -51,6 +51,7 @@ func (n *Node) Start(key crypto.PrivKey) error {
 			n.kdht = kdht
 			return kdht, err
 		}),
+		libp2p.EnableAutoRelay(),
 	)
 
 	// Set Host for Node
