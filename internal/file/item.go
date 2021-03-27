@@ -5,7 +5,6 @@ import (
 	"image"
 	"image/jpeg"
 	"log"
-	"sync"
 
 	md "github.com/sonr-io/core/internal/models"
 	dt "github.com/sonr-io/core/pkg/data"
@@ -23,7 +22,6 @@ type FileItem struct {
 	Path    string
 
 	// Private Properties
-	mutex   sync.Mutex
 	card    md.TransferCard
 	request *md.InviteRequest
 }
@@ -51,9 +49,6 @@ func NewOutgoingFileItem(req *md.InviteRequest, p *md.Peer, callback dt.NodeCall
 		request: req,
 		mime:    info.Mime,
 	}
-
-	// ** Lock ** //
-	sm.mutex.Lock()
 
 	// @ 2. Set Metadata Protobuf Values
 	// Create Card
@@ -96,8 +91,6 @@ func NewOutgoingFileItem(req *md.InviteRequest, p *md.Peer, callback dt.NodeCall
 
 		sm.card.Preview = thumbWriter.Bytes()
 	}
-	// ** Unlock ** //
-	sm.mutex.Unlock()
 
 	// Get Transfer Card
 	preview := sm.Card()
@@ -109,10 +102,6 @@ func NewOutgoingFileItem(req *md.InviteRequest, p *md.Peer, callback dt.NodeCall
 
 // ^ Safely returns Preview depending on lock ^ //
 func (sm *FileItem) Card() *md.TransferCard {
-	// ** Lock File wait for access ** //
-	sm.mutex.Lock()
-	defer sm.mutex.Unlock()
-
 	// @ 2. Return Value
 	return &sm.card
 }
