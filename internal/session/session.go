@@ -3,7 +3,6 @@ package session
 import (
 	"bytes"
 	"encoding/base64"
-	"io/ioutil"
 	"log"
 	"strings"
 
@@ -65,7 +64,7 @@ func (s *Session) OutgoingCard() *md.TransferCard {
 // ^ read buffers sent on stream and save to file ^ //
 func (s *Session) ReadFromStream(stream network.Stream) {
 	// Route Data from Stream
-	go func(reader msg.ReadCloser, t *incomingFile) {
+	go func(reader msg.ReadCloser, in *incomingFile) {
 		for i := 0; ; i++ {
 			// @ Read Length Fixed Bytes
 			buffer, err := reader.ReadMsg()
@@ -75,7 +74,7 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 			}
 
 			// @ Unmarshal Bytes into Proto
-			hasCompleted, err := t.AddBuffer(i, buffer)
+			hasCompleted, err := in.AddBuffer(i, buffer)
 			if err != nil {
 				s.callback.Error(err, "HandleIncoming:AddBuffer")
 				break
@@ -84,7 +83,7 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 			// @ Check if All Buffer Received to Save
 			if hasCompleted {
 				// Sync file
-				if err := s.incoming.Save(); err != nil {
+				if err := in.Save(); err != nil {
 					s.callback.Error(err, "HandleIncoming:Save")
 				}
 				break
@@ -96,54 +95,45 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 
 // ^ write file as Base64 in Msgio to Stream ^ //
 func (s *Session) WriteToStream(stream network.Stream) {
-	// Initialize Writer
-	writer := msg.NewWriter(stream)
-
-	// Initialize Buffer and Encode File
-	var base string
-	if s.outgoing.Payload == md.Payload_MEDIA {
+	// Begin Routine
+	go func(writer msg.WriteCloser, out *outgoingFile) {
 		buffer := new(bytes.Buffer)
 
-		if err := s.outgoing.EncodeFile(buffer); err != nil {
+		if err := out.EncodeFile(buffer); err != nil {
 			log.Fatalln(err)
 		}
 
 		// Encode Buffer to base 64
 		data := buffer.Bytes()
-		base = base64.StdEncoding.EncodeToString(data)
-	} else {
-		data, err := ioutil.ReadFile(s.outgoing.Path)
-		if err != nil {
-			log.Fatalln(err)
-		}
-		base = base64.StdEncoding.EncodeToString(data)
-	}
+		base := base64.StdEncoding.EncodeToString(data)
 
-	// Set Total
-	total := int32(len(base))
-	// Iterate for Entire file as String
-	for _, dat := range ChunkBase64(base) {
-		// Create Block Protobuf from Chunk
-		chunk := md.Chunk64{
-			Size:  int32(len(dat)),
-			Data:  dat,
-			Total: total,
+		// Set Total
+		total := int32(len(base))
+
+		// Iterate for Entire file as String
+		for _, dat := range ChunkBase64(base) {
+			// Create Block Protobuf from Chunk
+			chunk := md.Chunk64{
+				Size:  int32(len(dat)),
+				Data:  dat,
+				Total: total,
+			}
+
+			// Convert to bytes
+			bytes, err := proto.Marshal(&chunk)
+			if err != nil {
+				log.Fatalln(err)
+			}
+
+			// Write Message Bytes to Stream
+			err = writer.WriteMsg(bytes)
+			if err != nil {
+				log.Fatalln(err)
+			}
+			dt.GetState().NeedsWait()
 		}
 
-		// Convert to bytes
-		bytes, err := proto.Marshal(&chunk)
-		if err != nil {
-			log.Fatalln(err)
-		}
-
-		// Write Message Bytes to Stream
-		err = writer.WriteMsg(bytes)
-		if err != nil {
-			log.Fatalln(err)
-		}
-		dt.GetState().NeedsWait()
-	}
-
-	// Call Completed Sending
-	s.callback.Transmitted(s.receiver)
+		// Call Completed Sending
+		s.callback.Transmitted(s.receiver)
+	}(msg.NewWriter(stream), s.outgoing)
 }
