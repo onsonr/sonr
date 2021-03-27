@@ -19,6 +19,9 @@ import (
 	tls "github.com/libp2p/go-libp2p-tls"
 
 	// Local
+	// mplex "github.com/libp2p/go-libp2p-mplex"
+	// direct "github.com/libp2p/go-libp2p-webrtc-direct"
+	// "github.com/pion/webrtc/v3"
 	net "github.com/sonr-io/core/internal/network"
 	dt "github.com/sonr-io/core/pkg/data"
 	tpc "github.com/sonr-io/core/pkg/topic"
@@ -36,6 +39,13 @@ func (n *Node) Start(key crypto.PrivKey) error {
 	// 	tconf.AllowTcpDial,
 	// )
 
+	// WebRTC Configuration
+
+	// transport := direct.NewTransport(
+	// 	webrtc.Configuration{},
+	// 	new(mplex.Transport),
+	// )
+
 	// Start Host
 	h, err := libp2p.New(
 		n.ctx,
@@ -43,10 +53,15 @@ func (n *Node) Start(key crypto.PrivKey) error {
 		// Add listening Addresses
 		libp2p.ListenAddrStrings(
 			fmt.Sprintf("/ip4/%s/tcp/0", ip4),
-			fmt.Sprintf("/ip6/%s/tcp/0", ip6)),
+			fmt.Sprintf("/ip6/%s/tcp/0", ip6),
+			// fmt.Sprintf("/ip4/%s/tcp/0/http/p2p-webrtc-direct", ip4),
+			// fmt.Sprintf("/ip6/%s/tcp/0/http/p2p-webrtc-direct", ip6),
+		),
 		// support TLS connections
 		libp2p.Security(tls.ID, tls.New),
 		//libp2p.Transport(tortransport),
+		//libp2p.DisableRelay(),
+		//libp2p.Transport(transport),
 		libp2p.DefaultTransports,
 		libp2p.NATPortMap(),
 		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
