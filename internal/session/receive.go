@@ -1,4 +1,4 @@
-package transfer
+package session
 
 import (
 	"bytes"
@@ -15,9 +15,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-const B64ChunkSize = 31998 // Adjusted for Base64 -- has to be divisible by 3
-
-type IncomingFile struct {
+type incomingFile struct {
 	// Inherited Properties
 	mutex      sync.Mutex
 	call       dt.NodeCallback
@@ -38,26 +36,8 @@ type IncomingFile struct {
 	totalSize   int
 }
 
-// ^ Method Creates New Transfer File ^ //
-func CreateIncomingFile(inv *md.AuthInvite, fs *sf.FileSystem, tc dt.NodeCallback) *IncomingFile {
-	// Return File
-	return &IncomingFile{
-		// Inherited Properties
-		properties: inv.Card.Properties,
-		payload:    inv.Payload,
-		owner:      inv.From.Profile,
-		preview:    inv.Card.Preview,
-		fs:         fs,
-		call:       tc,
-
-		// Builders
-		stringsBuilder: new(strings.Builder),
-		bytesBuilder:   new(bytes.Buffer),
-	}
-}
-
 // ^ Check file type and use corresponding method ^ //
-func (t *IncomingFile) AddBuffer(curr int, buffer []byte) (bool, error) {
+func (t *incomingFile) AddBuffer(curr int, buffer []byte) (bool, error) {
 	// ** Lock/Unlock ** //
 	t.mutex.Lock()
 	defer t.mutex.Unlock()
@@ -72,7 +52,7 @@ func (t *IncomingFile) AddBuffer(curr int, buffer []byte) (bool, error) {
 	// @ Initialize Vars if First Chunk
 	if curr == 0 {
 		// Calculate Tracking Data
-		totalChunks := int(chunk.Total) / B64ChunkSize
+		totalChunks := int(chunk.Total) / K_B64_CHUNK
 		interval := totalChunks / 100
 
 		// Set Data
@@ -108,7 +88,7 @@ func (t *IncomingFile) AddBuffer(curr int, buffer []byte) (bool, error) {
 }
 
 // ^ Check file type and use corresponding method to save to Disk ^ //
-func (t *IncomingFile) Save() error {
+func (t *incomingFile) Save() error {
 	// Get Bytes from base64
 	data, err := base64.StdEncoding.DecodeString(t.stringsBuilder.String())
 	if err != nil {

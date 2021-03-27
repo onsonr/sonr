@@ -7,7 +7,7 @@ import (
 	msgio "github.com/libp2p/go-msgio"
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
-	tr "github.com/sonr-io/core/pkg/transfer"
+	se "github.com/sonr-io/core/internal/session"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -39,7 +39,7 @@ func (n *Node) OnRefresh(l *md.Lobby) {
 }
 
 // ^ OnReply: Begins File Transfer when Accepted ^
-func (n *Node) OnReply(id peer.ID, p *md.Peer, cf *sf.FileItem, reply []byte) {
+func (n *Node) OnReply(id peer.ID, reply []byte) {
 	// Call Responded
 	n.call.Responded(reply)
 
@@ -52,6 +52,7 @@ func (n *Node) OnReply(id peer.ID, p *md.Peer, cf *sf.FileItem, reply []byte) {
 
 	// Check for File Transfer
 	if resp.Decision && resp.Type == md.AuthReply_Transfer {
+
 		// Create New Auth Stream
 		stream, err := n.Host.NewStream(n.ctx, id, n.router.Transfer())
 		if err != nil {
@@ -60,8 +61,9 @@ func (n *Node) OnReply(id peer.ID, p *md.Peer, cf *sf.FileItem, reply []byte) {
 
 		// Initialize Writer
 		writer := msgio.NewWriter(stream)
+
 		// Start Routine
-		go tr.WriteBase64(writer, p, cf, n.call)
+		go n.session.WriteToStream(writer)
 	}
 }
 
@@ -69,4 +71,10 @@ func (n *Node) OnReply(id peer.ID, p *md.Peer, cf *sf.FileItem, reply []byte) {
 func (n *Node) OnInvite(invite []byte) {
 	// Send Callback
 	n.call.Invited(invite)
+}
+
+// ^ OnReceiveTransfer: Prepares for Incoming File Transfer when Accepted ^
+func (n *Node) OnReceiveTransfer(inv *md.AuthInvite, fs *sf.FileSystem) {
+	n.session = se.NewInSession(n.GetPeer(), inv, fs, n.call)
+	n.Host.SetStreamHandler(n.router.Transfer(), n.session.ReadFromStream)
 }

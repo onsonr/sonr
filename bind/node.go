@@ -3,7 +3,6 @@ package bind
 import (
 	"log"
 
-	fl "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -74,9 +73,8 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 				return
 			}
 		} else {
-			// Get Processed File and Invite
-			pf := fl.NewOutgoingFileItem(req, mn.user.Peer(), mn.callbackNode())
-			err := mn.node.InviteFile(pf.Card(), req, mn.local, mn.user.Peer(), pf)
+			// Invite With file
+			err := mn.node.InviteFile(req, mn.local, mn.user.Peer(), mn.user.FS)
 			if err != nil {
 				log.Println(err)
 				return

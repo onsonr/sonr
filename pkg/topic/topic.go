@@ -37,7 +37,7 @@ type TopicHandler interface {
 	OnEvent(*md.LobbyEvent)
 	OnRefresh(*md.Lobby)
 	OnInvite([]byte)
-	OnReply(id peer.ID, p *md.Peer, cf *sf.FileItem, data []byte)
+	OnReply(id peer.ID, data []byte)
 	OnReceiveTransfer(inv *md.AuthInvite, fs *sf.FileSystem)
 }
 

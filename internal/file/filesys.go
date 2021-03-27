@@ -24,10 +24,6 @@ type FileSystem struct {
 	Downloads string
 	Main      string
 	Temporary string
-
-	// Processing
-	Files        []*FileItem
-	CurrentCount int
 }
 
 // ^ Method Initializes Root Sonr Directory ^ //
@@ -53,9 +49,7 @@ func NewFs(connEvent *md.ConnectionRequest, callback dt.NodeCallback) (*FileSyst
 		Downloads:    connEvent.Directories.Downloads,
 		Main:         sonrPath,
 		Temporary:    connEvent.Directories.Temporary,
-		CurrentCount: 0,
 		Call:         callback,
-		Files:        make([]*FileItem, K_QUEUE_SIZE),
 	}
 
 	// sfs.Queue = q
