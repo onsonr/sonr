@@ -16,6 +16,7 @@ import (
 
 // ** Constants for Chunking Data ** //
 const BufferChunkSize = 32000
+
 type OutgoingFile struct {
 	call          dt.NodeCallback
 	processedFile *sf.FileItem
