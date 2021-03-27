@@ -59,12 +59,6 @@ func (n *Node) Start(key crypto.PrivKey) error {
 	}
 	n.Host = h
 
-	// Create Pub Sub
-	ps, err := psub.NewGossipSub(n.ctx, n.Host)
-	if err != nil {
-		return err
-	}
-	n.pubsub = ps
 	return nil
 }
 
@@ -93,6 +87,13 @@ func (n *Node) Bootstrap() error {
 	// Set Routing Discovery, Find Peers
 	routingDiscovery := dsc.NewRoutingDiscovery(n.kdht)
 	dsc.Advertise(n.ctx, routingDiscovery, n.router.MajorPoint(), dscl.TTL(time.Second*4))
+
+	// Create Pub Sub
+	ps, err := psub.NewGossipSub(n.ctx, n.Host, psub.WithDiscovery(routingDiscovery))
+	if err != nil {
+		return err
+	}
+	n.pubsub = ps
 	go n.handleDHTPeers(routingDiscovery)
 	return nil
 }
