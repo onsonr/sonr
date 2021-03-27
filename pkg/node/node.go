@@ -109,7 +109,6 @@ func (n *Node) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, p *md.P
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
 func (n *Node) InviteFile(card *md.TransferCard, req *md.InviteRequest, t *tpc.TopicManager, p *md.Peer, cf *sf.FileItem) error {
 	card.Status = md.TransferCard_INVITE
-	n.outgoing = cf
 
 	// Create Invite Message
 	invite := md.AuthInvite{

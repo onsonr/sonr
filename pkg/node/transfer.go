@@ -19,7 +19,7 @@ func (n *Node) OnReceiveTransfer(inv *md.AuthInvite, fs *sf.FileSystem) {
 }
 
 // ^ OnReply: Begins File Transfer when Accepted ^
-func (n *Node) OnReply(id peer.ID, p *md.Peer, reply []byte) {
+func (n *Node) OnReply(id peer.ID, p *md.Peer, cf *sf.FileItem, reply []byte) {
 	// Call Responded
 	n.call.Responded(reply)
 
@@ -39,10 +39,11 @@ func (n *Node) OnReply(id peer.ID, p *md.Peer, reply []byte) {
 		}
 
 		// Initialize Writer
+		outFile := tr.CreateOutgoingFile(cf, n.call)
 		writer := msgio.NewWriter(stream)
 
 		// Start Routine
-		go n.outgoing.WriteBase64(writer, p)
+		go outFile.WriteBase64(writer, p)
 	}
 }
 
