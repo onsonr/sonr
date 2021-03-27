@@ -5,6 +5,8 @@ import (
 	"time"
 
 	// Imported
+	// tor "berty.tech/go-libp2p-tor-transport"
+	// tconf "berty.tech/go-libp2p-tor-transport/config"
 	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	dscl "github.com/libp2p/go-libp2p-core/discovery"
@@ -28,6 +30,12 @@ func (n *Node) Start(key crypto.PrivKey) error {
 	ip4 := net.IPv4()
 	ip6 := net.IPv6()
 
+	// // Tor Configuration
+	// tortransport, err := tor.NewBuilder( // Create a builder
+	// 	tconf.EnableEmbeded, // Use the embeded tor instance.
+	// 	tconf.AllowTcpDial,
+	// )
+
 	// Start Host
 	h, err := libp2p.New(
 		n.ctx,
@@ -38,6 +46,7 @@ func (n *Node) Start(key crypto.PrivKey) error {
 			fmt.Sprintf("/ip6/%s/tcp/0", ip6)),
 		// support TLS connections
 		libp2p.Security(tls.ID, tls.New),
+		//libp2p.Transport(tortransport),
 		libp2p.DefaultTransports,
 		libp2p.NATPortMap(),
 		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {

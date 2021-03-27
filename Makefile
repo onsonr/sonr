@@ -7,6 +7,7 @@ IOS_BINDDIR=/Users/prad/Sonr/plugin/ios/Frameworks
 GOMOBILE=gomobile
 GOCLEAN=$(GOMOBILE) clean
 GOBIND=$(GOMOBILE) bind -ldflags='-s -w' -v
+GOBINDTOR=$(GOMOBILE) bind -ldflags='-s -w' -tags=embedTor -v
 
 # @ Bind Directories
 BIND_DIR=/Users/prad/Sonr/core/bind
