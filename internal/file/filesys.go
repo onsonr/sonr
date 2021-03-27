@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"time"
 
 	md "github.com/sonr-io/core/internal/models"
 	dt "github.com/sonr-io/core/pkg/data"
@@ -27,7 +26,8 @@ type FileSystem struct {
 	Temporary string
 
 	// Processing
-	Queue FileQueue
+	Files        []*FileItem
+	CurrentCount int
 }
 
 // ^ Method Initializes Root Sonr Directory ^ //
@@ -49,15 +49,13 @@ func NewFs(connEvent *md.ConnectionRequest, callback dt.NodeCallback) (*FileSyst
 
 	// Create SFS
 	sfs := &FileSystem{
-		IsDesktop: connEvent.Device.GetIsDesktop(),
-		Downloads: connEvent.Directories.Downloads,
-		Main:      sonrPath,
-		Temporary: connEvent.Directories.Temporary,
-		Call:      callback,
-		Queue: FileQueue{
-			incoming: make([]FileItem, K_QUEUE_SIZE),
-			outgoing: make([]FileItem, K_QUEUE_SIZE),
-		},
+		IsDesktop:    connEvent.Device.GetIsDesktop(),
+		Downloads:    connEvent.Directories.Downloads,
+		Main:         sonrPath,
+		Temporary:    connEvent.Directories.Temporary,
+		CurrentCount: 0,
+		Call:         callback,
+		Files:        make([]*FileItem, K_QUEUE_SIZE),
 	}
 
 	// sfs.Queue = q
@@ -141,60 +139,6 @@ func (sfs *FileSystem) WriteFile(name string, data []byte) (string, error) {
 	}
 	return path, nil
 
-}
-
-// ^ WriteIncomingFile writes file to Disk ^
-func (sfs *FileSystem) SaveFile(i *FileItem) error {
-	// Check for User File at Path
-	file, err := os.OpenFile(i.Path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		return err
-	}
-
-	// Defer Close
-	defer file.Close()
-
-	// Get Buffer
-	data, err := i.GetIncomingBuffer()
-	if err != nil {
-		return err
-	}
-
-	// Write User Data to File
-	_, err = file.Write(data)
-	if err != nil {
-		return err
-	}
-	// @ 1. Get File Information
-	// Create Card
-	card := &md.TransferCard{
-		// SQL Properties
-		Payload:  i.Payload,
-		Received: int32(time.Now().Unix()),
-		Platform: i.Owner.Platform,
-		Preview:  i.invite.Card.Preview,
-
-		// Transfer Properties
-		Status: md.TransferCard_COMPLETED,
-
-		// Owner Properties
-		Username:  i.Owner.Profile.Username,
-		FirstName: i.Owner.Profile.FirstName,
-		LastName:  i.Owner.Profile.LastName,
-
-		// Data Properties
-		Metadata: &md.Metadata{
-			Name:      i.Name,
-			Path:      i.Path,
-			Size:      i.inInfo.Properties.Size,
-			Mime:      i.inInfo.Properties.Mime,
-			Thumbnail: i.invite.Card.Preview,
-		},
-	}
-
-	// Send Complete Callback
-	sfs.Call.Received(card)
-	return nil
 }
 
 // ^ WriteIncomingFile writes file to Disk ^

@@ -73,22 +73,8 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 				return
 			}
 		} else {
-			// @ Add File to Queue
 			if err := mn.user.FS.EnqueueFromRequest(req, mn.user.Peer()); err != nil {
-				log.Println(err)
-				return
-			}
-
-			// @ Retreive Current File
-			currFile, err := mn.user.FS.DequeueOut()
-			if err != nil {
-				log.Println(err)
-				return
-			}
-
-			// @ Send Invite
-			err = mn.node.InviteFile(req, mn.local, mn.user.Peer(), currFile)
-			if err != nil {
+				// sentry.CaptureException(err)
 				log.Println(err)
 				return
 			}

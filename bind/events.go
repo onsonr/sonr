@@ -34,6 +34,7 @@ func (mn *MobileNode) callbackNode() dt.NodeCallback {
 		Progressed:  mn.call.OnProgress,
 
 		// Middleware
+		Queued:      mn.queued,
 		Invited:     mn.invited,
 		Received:    mn.received,
 		Transmitted: mn.transmitted,
@@ -41,6 +42,23 @@ func (mn *MobileNode) callbackNode() dt.NodeCallback {
 
 		// User
 		GetPeer: mn.user.Peer,
+	}
+}
+
+// ^ queued Callback, Sends File Invite to Peer, and Notifies Client ^
+func (mn *MobileNode) queued(card *md.TransferCard, req *md.InviteRequest) {
+	// Retreive Current File
+	currFile, err := mn.user.FS.CurrentFile()
+	if err != nil {
+		log.Println("No Current file")
+		return
+	}
+
+	// Invite With file
+	err = mn.node.InviteFile(card, req, mn.local, mn.user.Peer(), currFile)
+	if err != nil {
+		log.Println(err)
+		return
 	}
 }
 

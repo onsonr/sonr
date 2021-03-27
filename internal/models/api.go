@@ -29,37 +29,6 @@ func GetAuthInviteWithContact(req *InviteRequest, p *Peer, c *Contact) AuthInvit
 	}
 }
 
-// ^ Generate AuthInvite with File Payload from Request, User Peer Data and File Info ^ //
-func GetAuthInviteWithFile(req *InviteRequest, p *Peer, i *OutFileInfo) AuthInvite {
-	// Create Invite
-	return AuthInvite{
-		IsRemote: req.IsRemote,
-		From:     p,
-		Payload:  i.Payload,
-		Card: &TransferCard{
-			// SQL Properties
-			Payload:  i.Payload,
-			Received: int32(time.Now().Unix()),
-			Platform: p.Platform,
-
-			// Transfer Properties
-			Status:  TransferCard_INVITE,
-			Preview: i.Preview,
-
-			// Owner Properties
-			Username:  p.Profile.Username,
-			FirstName: p.Profile.FirstName,
-			LastName:  p.Profile.LastName,
-
-			// Data Properties
-			Properties: &TransferCard_Properties{
-				Name: i.Name,
-				Size: i.Size,
-				Mime: i.Mime,
-			},
-		},
-	}
-}
 
 // ^ Generate AuthInvite with URL Payload from Request and User Peer Data ^ //
 func GetAuthInviteWithURL(req *InviteRequest, p *Peer) AuthInvite {

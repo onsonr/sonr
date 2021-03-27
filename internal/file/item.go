@@ -2,12 +2,13 @@ package file
 
 import (
 	"bytes"
-	"errors"
 	"image"
 	"image/jpeg"
-	"strings"
+	"log"
+	"sync"
 
 	md "github.com/sonr-io/core/internal/models"
+	dt "github.com/sonr-io/core/pkg/data"
 )
 
 const K_BUF_CHUNK = 32000
@@ -17,34 +18,62 @@ const K_B64_CHUNK = 31998 // Adjusted for Base64 -- has to be divisible by 3
 type FileItem struct {
 	// References
 	Payload md.Payload
-	Owner   *md.Peer
-	Name    string
+	call    dt.NodeCallback
+	mime    *md.MIME
 	Path    string
-	Ext     string
 
-	// Outgoing Properties
-	hasPreview bool
-	preview    []byte
-	request    *md.InviteRequest
-
-	// Incoming Properties
-	bytesBuilder   *bytes.Buffer
-	inInfo         *md.InFileInfo
-	invite         *md.AuthInvite
-	stringsBuilder *strings.Builder
+	// Private Properties
+	mutex   sync.Mutex
+	card    md.TransferCard
+	request *md.InviteRequest
 }
 
 // ^ NewOutgoingFileItem Processes Outgoing File ^ //
-func NewOutgoingFileItem(req *md.InviteRequest, p *md.Peer) (*FileItem, error) {
+func NewOutgoingFileItem(req *md.InviteRequest, p *md.Peer, callback dt.NodeCallback) *FileItem {
 	// Check Values
 	if req == nil || p == nil {
-		return nil, errors.New("Request or Profile not Provided")
+		return nil
 	}
 
 	// Get File Information
 	file := req.Files[len(req.Files)-1]
+	info, err := GetFileInfo(file.Path)
+	if err != nil {
+		callback.Error(err, "NewProcessedFile:GetFileInfo")
+	}
 
-	// Check Thumbnail
+	// @ 1. Create new SafeFile
+	sm := &FileItem{
+		call:    callback,
+		Path:    file.Path,
+		Payload: info.Payload,
+		request: req,
+		mime:    info.Mime,
+	}
+
+	// ** Lock ** //
+	sm.mutex.Lock()
+
+	// @ 2. Set Metadata Protobuf Values
+	// Create Card
+	sm.card = md.TransferCard{
+		// SQL Properties
+		Payload:  info.Payload,
+		Platform: p.Platform,
+
+		// Owner Properties
+		Username:  p.Profile.Username,
+		FirstName: p.Profile.FirstName,
+		LastName:  p.Profile.LastName,
+
+		Properties: &md.TransferCard_Properties{
+			Name: info.Name,
+			Size: info.Size,
+			Mime: info.Mime,
+		},
+	}
+
+	// @ 3. Create Thumbnail in Goroutine
 	if len(file.Thumbnail) > 0 {
 		// Initialize
 		thumbWriter := new(bytes.Buffer)
@@ -53,91 +82,42 @@ func NewOutgoingFileItem(req *md.InviteRequest, p *md.Peer) (*FileItem, error) {
 		// Convert to Image Object
 		img, _, err := image.Decode(thumbReader)
 		if err != nil {
-			return nil, err
+			log.Println(err)
 		}
 
 		// @ Encode as Jpeg into buffer w/o scaling
 		err = jpeg.Encode(thumbWriter, img, nil)
 		if err != nil {
-			return nil, err
+			log.Panicln(err)
 		}
 
-		// @ 1a. Get File Info
-		preview := thumbWriter.Bytes()
-		info, err := md.GetOutFileInfoWithPreview(file.Path, preview)
-		if err != nil {
-			return nil, err
-		}
-
-		// @ 3a. Callback with Preview
-		return &FileItem{
-			hasPreview: true,
-			preview:    preview,
-			Name:       info.Name,
-			Path:       file.Path,
-			Ext:        info.Ext(),
-			Owner:      p,
-			request:    req,
-		}, nil
-	} else {
-		// @ 1b. Get File Info
-		info, err := md.GetOutFileInfo(file.Path)
-		if err != nil {
-			return nil, err
-		}
-
-		// @ 3b. Callback with Preview
-		return &FileItem{
-			hasPreview: false,
-			Path:       file.Path,
-			Name:       info.Name,
-			Ext:        info.Ext(),
-			Owner:      p,
-			request:    req,
-		}, nil
+		sm.card.Preview = thumbWriter.Bytes()
 	}
+	// ** Unlock ** //
+	sm.mutex.Unlock()
+
+	// Get Transfer Card
+	preview := sm.Card()
+
+	// @ 3. Callback with Preview
+	sm.call.Queued(preview, sm.request)
+	return sm
 }
 
-// ^ NewIncomingFileItem Prepares for Incoming Data ^ //
-func NewIncomingFileItem(i *md.AuthInvite, p string) (FileItem, error) {
-	// Calculate Tracking Data
-	totalChunks := int(i.Card.Properties.Size) / K_B64_CHUNK
-	interval := totalChunks / 100
+// ^ Safely returns Preview depending on lock ^ //
+func (sm *FileItem) Card() *md.TransferCard {
+	// ** Lock File wait for access ** //
+	sm.mutex.Lock()
+	defer sm.mutex.Unlock()
 
-	// Get Info
-	info := md.GetInFileInfo(i, interval)
-	fileName := i.Card.Properties.Name + "." + i.Card.Properties.Mime.Subtype
-
-	// Return Item
-	return FileItem{
-		// Inherited Properties
-		Owner:   i.From,
-		Payload: i.Payload,
-		Name:    fileName,
-		Path:    p,
-		inInfo:  info,
-		invite:  i,
-
-		// Builders
-		stringsBuilder: new(strings.Builder),
-		bytesBuilder:   new(bytes.Buffer),
-	}, nil
+	// @ 2. Return Value
+	return &sm.card
 }
 
-// ^ Display Outgoing File Information ^ //
-func (pf *FileItem) InfoOut() (*md.OutFileInfo, error) {
-	if pf.hasPreview {
-		return md.GetOutFileInfoWithPreview(pf.Path, pf.preview)
-	} else {
-		return md.GetOutFileInfo(pf.Path)
+// ^ Method adjusts extension for JPEG ^ //
+func (pf *FileItem) Ext() string {
+	if pf.mime.Subtype == "jpg" || pf.mime.Subtype == "jpeg" {
+		return "jpeg"
 	}
-
-}
-
-// ^ Display Incoming File Information ^ //
-func (pf *FileItem) InfoIn() (md.InFileInfo, error) {
-	if pf.inInfo != nil {
-		return *pf.inInfo, nil
-	}
-	return md.InFileInfo{}, errors.New("No Incoming Info")
+	return pf.mime.Subtype
 }

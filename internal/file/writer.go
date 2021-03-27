@@ -19,7 +19,7 @@ import (
 // ^ Method Processes File at Path^ //
 func (pf *FileItem) EncodeMedia(buf *bytes.Buffer) error {
 	// @ Jpeg Image
-	if ext := pf.Ext; ext == "jpg" {
+	if ext := pf.Ext(); ext == "jpg" {
 		// Open File at Meta Path
 		file, err := os.Open(pf.Path)
 		if err != nil {
@@ -76,34 +76,6 @@ func (pf *FileItem) EncodeMedia(buf *bytes.Buffer) error {
 		}
 		return nil
 	}
-}
-
-// ^ Returns Total Incoming Buffer ^ //
-func (i *FileItem) GetIncomingBuffer() ([]byte, error) {
-	// Get Bytes from base64
-	return base64.StdEncoding.DecodeString(i.stringsBuilder.String())
-}
-
-// ^ Check file type and use corresponding method ^ //
-func (t *FileItem) WriteFromStream(curr int, buffer []byte) (*md.InFileProgress, error) {
-	// ** Lock/Unlock ** //
-
-	// @ Unmarshal Bytes into Proto
-	chunk := md.Chunk64{}
-	err := proto.Unmarshal(buffer, &chunk)
-	if err != nil {
-		return nil, err
-	}
-
-	// @ Add Buffer by File Type
-	// Add Base64 Chunk to Buffer
-	n, err := t.stringsBuilder.WriteString(chunk.Data)
-	if err != nil {
-		return nil, err
-	}
-
-	// Update Tracking
-	return t.inInfo.UpdateTracking(n, curr), nil
 }
 
 // ^ write fileItem as Base64 in Msgio to Stream ^ //
