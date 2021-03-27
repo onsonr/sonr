@@ -2,49 +2,17 @@ package node
 
 import (
 	"github.com/libp2p/go-libp2p-core/network"
-	"github.com/libp2p/go-libp2p-core/peer"
 	msg "github.com/libp2p/go-msgio"
-	msgio "github.com/libp2p/go-msgio"
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
 	dt "github.com/sonr-io/core/pkg/data"
 	tr "github.com/sonr-io/core/pkg/transfer"
-	"google.golang.org/protobuf/proto"
 )
 
 // ^ OnReceiveTransfer: Prepares for Incoming File Transfer when Accepted ^
 func (n *Node) OnReceiveTransfer(inv *md.AuthInvite, fs *sf.FileSystem) {
 	n.incoming = tr.CreateIncomingFile(inv, fs, n.call)
 	n.Host.SetStreamHandler(n.router.Transfer(), n.handleTransferIncoming)
-}
-
-// ^ OnReply: Begins File Transfer when Accepted ^
-func (n *Node) OnReply(id peer.ID, p *md.Peer, cf *sf.FileItem, reply []byte) {
-	// Call Responded
-	n.call.Responded(reply)
-
-	// AuthReply Message
-	resp := md.AuthReply{}
-	err := proto.Unmarshal(reply, &resp)
-	if err != nil {
-		n.call.Error(err, "handleReply")
-	}
-
-	// Check for File Transfer
-	if resp.Decision && resp.Type == md.AuthReply_Transfer {
-		// Create New Auth Stream
-		stream, err := n.Host.NewStream(n.ctx, id, n.router.Transfer())
-		if err != nil {
-			n.call.Error(err, "StartOutgoing")
-		}
-
-		// Initialize Writer
-		outFile := tr.CreateOutgoingFile(cf, n.call)
-		writer := msgio.NewWriter(stream)
-
-		// Start Routine
-		go outFile.WriteBase64(writer, p)
-	}
 }
 
 // ^ handleTransferIncoming: Processes Incoming Data ^ //

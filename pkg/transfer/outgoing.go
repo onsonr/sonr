@@ -31,11 +31,9 @@ func CreateOutgoingFile(pf *sf.FileItem, tc dt.NodeCallback) *OutgoingFile {
 }
 
 // ^ write file as Base64 in Msgio to Stream ^ //
-func (of *OutgoingFile) WriteBase64(writer msgio.WriteCloser, peer *md.Peer) {
+func WriteBase64(writer msgio.WriteCloser, peer *md.Peer, pf *sf.FileItem, call dt.NodeCallback) {
 	// Initialize Buffer and Encode File
 	var base string
-	pf := of.processedFile
-
 	if pf.Payload == md.Payload_MEDIA {
 		buffer := new(bytes.Buffer)
 
@@ -81,7 +79,7 @@ func (of *OutgoingFile) WriteBase64(writer msgio.WriteCloser, peer *md.Peer) {
 	}
 
 	// Call Completed Sending
-	of.call.Transmitted(peer)
+	call.Transmitted(peer)
 }
 
 // ^ Helper: Chunks string based on B64ChunkSize ^ //
