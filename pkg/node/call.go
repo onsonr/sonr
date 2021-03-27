@@ -59,7 +59,7 @@ func (n *Node) OnReply(id peer.ID, reply []byte) {
 		}
 
 		// Write to Stream on Session
-		n.session.WriteToStream(stream)
+		go n.session.WriteToStream(stream)
 	}
 }
 
