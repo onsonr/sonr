@@ -1,4 +1,4 @@
-package file
+package session
 
 import (
 	"bytes"
@@ -14,7 +14,7 @@ const K_BUF_CHUNK = 32000
 const K_B64_CHUNK = 31998 // Adjusted for Base64 -- has to be divisible by 3
 
 // @ File that safely sets metadata and thumbnail in routine
-type FileItem struct {
+type OutgoingFile struct {
 	// References
 	Payload md.Payload
 	call    dt.NodeCallback
@@ -27,7 +27,7 @@ type FileItem struct {
 }
 
 // ^ NewOutgoingFileItem Processes Outgoing File ^ //
-func NewOutgoingFileItem(req *md.InviteRequest, p *md.Peer, callback dt.NodeCallback) *FileItem {
+func NewOutgoingFileItem(req *md.InviteRequest, p *md.Peer, callback dt.NodeCallback) *OutgoingFile {
 	// Check Values
 	if req == nil || p == nil {
 		return nil
@@ -42,7 +42,7 @@ func NewOutgoingFileItem(req *md.InviteRequest, p *md.Peer, callback dt.NodeCall
 	}
 
 	// @ 1. Create new SafeFile
-	sm := &FileItem{
+	sm := &OutgoingFile{
 		call:    callback,
 		Path:    file.Path,
 		Payload: info.Payload,
@@ -92,21 +92,22 @@ func NewOutgoingFileItem(req *md.InviteRequest, p *md.Peer, callback dt.NodeCall
 		sm.card.Preview = thumbWriter.Bytes()
 	}
 
-	// // Get Transfer Card
-	// preview := sm.Card()
-	// // @ 3. Callback with Preview
-	// sm.call.Queued(preview, sm.request)
+	// Get Transfer Card
+	preview := sm.Card()
+
+	// @ 3. Callback with Preview
+	sm.call.Queued(preview, sm.request)
 	return sm
 }
 
 // ^ Safely returns Preview depending on lock ^ //
-func (sm *FileItem) Card() *md.TransferCard {
+func (sm *OutgoingFile) Card() *md.TransferCard {
 	// @ 2. Return Value
 	return &sm.card
 }
 
 // ^ Method adjusts extension for JPEG ^ //
-func (pf *FileItem) Ext() string {
+func (pf *OutgoingFile) Ext() string {
 	if pf.mime.Subtype == "jpg" || pf.mime.Subtype == "jpeg" {
 		return "jpeg"
 	}
