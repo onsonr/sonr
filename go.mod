@@ -11,13 +11,13 @@ require (
 	github.com/google/uuid v1.2.0 // indirect
 	github.com/h2non/filetype v1.1.0
 	github.com/libp2p/go-libp2p v0.13.0
-	github.com/libp2p/go-libp2p-connmgr v0.2.4
 	github.com/libp2p/go-libp2p-core v0.8.5
 	github.com/libp2p/go-libp2p-discovery v0.5.0
 	github.com/libp2p/go-libp2p-gorpc v0.1.2
 	github.com/libp2p/go-libp2p-kad-dht v0.11.1
 	github.com/libp2p/go-libp2p-pubsub v0.4.1
 	github.com/libp2p/go-libp2p-swarm v0.4.0
+	github.com/libp2p/go-libp2p-tls v0.1.3
 	github.com/libp2p/go-msgio v0.0.6
 	github.com/multiformats/go-multiaddr v0.3.1
 	github.com/onsi/ginkgo v1.14.0 // indirect

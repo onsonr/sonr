@@ -6,12 +6,15 @@ import (
 
 	// Imported
 	"github.com/libp2p/go-libp2p"
-	cmgr "github.com/libp2p/go-libp2p-connmgr"
 	"github.com/libp2p/go-libp2p-core/crypto"
+	dscl "github.com/libp2p/go-libp2p-core/discovery"
+	"github.com/libp2p/go-libp2p-core/host"
+	"github.com/libp2p/go-libp2p-core/routing"
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	psub "github.com/libp2p/go-libp2p-pubsub"
 	swr "github.com/libp2p/go-libp2p-swarm"
+	tls "github.com/libp2p/go-libp2p-tls"
 
 	// Local
 	net "github.com/sonr-io/core/internal/network"
@@ -28,18 +31,29 @@ func (n *Node) Start(key crypto.PrivKey) error {
 	// Start Host
 	h, err := libp2p.New(
 		n.ctx,
+		libp2p.Identity(key),
 		// Add listening Addresses
 		libp2p.ListenAddrStrings(
 			fmt.Sprintf("/ip4/%s/tcp/0", ip4),
 			fmt.Sprintf("/ip6/%s/tcp/0", ip6)),
-		libp2p.Identity(key),
+		// support TLS connections
+		libp2p.Security(tls.ID, tls.New),
 		libp2p.DefaultTransports,
-		libp2p.ConnectionManager(cmgr.NewConnManager(
-			10,          // Lowwater
-			20,          // HighWater,
-			time.Minute, // GracePeriod
-		)),
+		libp2p.NATPortMap(),
+		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
+			// Create DHT
+			kdht, err := dht.New(n.ctx, h)
+			if err != nil {
+				return nil, err
+			}
+
+			// Set DHT
+			n.kdht = kdht
+			return kdht, err
+		}),
 	)
+
+	// Set Host for Node
 	if err != nil {
 		return err
 	}
@@ -62,17 +76,6 @@ func (n *Node) Bootstrap() error {
 		return err
 	}
 
-	// Set DHT
-	kdht, err := dht.New(
-		n.ctx,
-		n.Host,
-		dht.BootstrapPeers(bootstrappers...),
-	)
-	if err != nil {
-		return err
-	}
-	n.kdht = kdht
-
 	// Bootstrap DHT
 	if err := n.kdht.Bootstrap(n.ctx); err != nil {
 		return err
@@ -89,8 +92,7 @@ func (n *Node) Bootstrap() error {
 
 	// Set Routing Discovery, Find Peers
 	routingDiscovery := dsc.NewRoutingDiscovery(n.kdht)
-	// dscl.TTL(time.Second*4)
-	dsc.Advertise(n.ctx, routingDiscovery, n.router.MajorPoint())
+	dsc.Advertise(n.ctx, routingDiscovery, n.router.MajorPoint(), dscl.TTL(time.Second*4))
 	go n.handleDHTPeers(routingDiscovery)
 	return nil
 }
@@ -135,10 +137,10 @@ func (n *Node) handleDHTPeers(routingDiscovery *dsc.RoutingDiscovery) {
 					}
 				}
 			}
-			dt.GetState().NeedsWait()
 		}
 
 		// Refresh table every 4 seconds
-		<-time.After(time.Second * 4)
+		dt.GetState().NeedsWait()
+		time.Sleep(time.Second * 4)
 	}
 }

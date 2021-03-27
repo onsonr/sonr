@@ -1,7 +1,6 @@
 package user
 
 import (
-	"crypto/rand"
 	"hash/fnv"
 	"log"
 	"math"
@@ -60,7 +59,7 @@ func (u *User) PrivateKey() (crypto.PrivKey, error) {
 		return key, nil
 	} else {
 		// Create New Key
-		privKey, _, err := crypto.GenerateEd25519Key(rand.Reader)
+		privKey, _, err := crypto.GenerateKeyPair(crypto.Ed25519, -1)
 		if err != nil {
 			return nil, errors.Wrap(err, "generating identity private key")
 		}

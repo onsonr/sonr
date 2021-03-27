@@ -35,10 +35,10 @@ type FileItem struct {
 }
 
 // ^ NewOutgoingFileItem Processes Outgoing File ^ //
-func NewOutgoingFileItem(req *md.InviteRequest, p *md.Peer) (FileItem, error) {
+func NewOutgoingFileItem(req *md.InviteRequest, p *md.Peer) (*FileItem, error) {
 	// Check Values
 	if req == nil || p == nil {
-		return FileItem{}, errors.New("Request or Profile not Provided")
+		return nil, errors.New("Request or Profile not Provided")
 	}
 
 	// Get File Information
@@ -53,24 +53,24 @@ func NewOutgoingFileItem(req *md.InviteRequest, p *md.Peer) (FileItem, error) {
 		// Convert to Image Object
 		img, _, err := image.Decode(thumbReader)
 		if err != nil {
-			return FileItem{}, err
+			return nil, err
 		}
 
 		// @ Encode as Jpeg into buffer w/o scaling
 		err = jpeg.Encode(thumbWriter, img, nil)
 		if err != nil {
-			return FileItem{}, err
+			return nil, err
 		}
 
 		// @ 1a. Get File Info
 		preview := thumbWriter.Bytes()
 		info, err := md.GetOutFileInfoWithPreview(file.Path, preview)
 		if err != nil {
-			return FileItem{}, err
+			return nil, err
 		}
 
 		// @ 3a. Callback with Preview
-		return FileItem{
+		return &FileItem{
 			hasPreview: true,
 			preview:    preview,
 			Name:       info.Name,
@@ -83,11 +83,11 @@ func NewOutgoingFileItem(req *md.InviteRequest, p *md.Peer) (FileItem, error) {
 		// @ 1b. Get File Info
 		info, err := md.GetOutFileInfo(file.Path)
 		if err != nil {
-			return FileItem{}, err
+			return nil, err
 		}
 
 		// @ 3b. Callback with Preview
-		return FileItem{
+		return &FileItem{
 			hasPreview: false,
 			Path:       file.Path,
 			Name:       info.Name,

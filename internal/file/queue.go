@@ -28,7 +28,7 @@ func (fs *FileSystem) EnqueueFromRequest(req *md.InviteRequest, p *md.Peer) erro
 	}
 
 	// Add to Queue
-	fs.Queue.outgoing = append(fs.Queue.outgoing, safeFile) // Simply append to enqueue.
+	fs.Queue.outgoing = append(fs.Queue.outgoing, *safeFile) // Simply append to enqueue.
 	return nil
 }
 
