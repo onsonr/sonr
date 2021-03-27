@@ -125,7 +125,7 @@ func (n *Node) InviteFile(card *md.TransferCard, req *md.InviteRequest, t *tpc.T
 
 	// Run Routine
 	go func(inv *md.AuthInvite) {
-		err = t.Invite(id, inv, p, nil)
+		err = t.Invite(id, inv, p, cf)
 		if err != nil {
 			n.call.Error(err, "InviteLink")
 		}
