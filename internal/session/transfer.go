@@ -11,10 +11,6 @@ import (
 
 	md "github.com/sonr-io/core/internal/models"
 )
-
-
-
-// @ File that safely sets metadata and thumbnail in routine
 type outgoingFile struct {
 	// References
 	Payload md.Payload
