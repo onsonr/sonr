@@ -68,7 +68,7 @@ func (n *Node) InviteLink(req *md.InviteRequest, t *tpc.TopicManager, p *md.Peer
 
 		// Run Routine
 		go func(inv *md.AuthInvite) {
-			err = t.Invite(id, inv)
+			err = t.Invite(id, inv, nil)
 			if err != nil {
 				n.call.Error(err, "InviteLink")
 			}
@@ -94,7 +94,7 @@ func (n *Node) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, p *md.P
 
 		// Run Routine
 		go func(inv *md.AuthInvite) {
-			err = t.Invite(id, inv)
+			err = t.Invite(id, inv, nil)
 			if err != nil {
 				n.call.Error(err, "InviteLink")
 			}
@@ -108,8 +108,8 @@ func (n *Node) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, p *md.P
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
 func (n *Node) InviteFile(req *md.InviteRequest, t *tpc.TopicManager, p *md.Peer, fs *sf.FileSystem) error {
 	// Start New Session
-	n.session = se.NewOutSession(p, req, fs, n.call)
-	card := n.session.OutgoingCard()
+	session := se.NewOutSession(p, req, fs, n.call)
+	card := session.OutgoingCard()
 
 	// Create Invite Message
 	invite := md.AuthInvite{
@@ -126,7 +126,7 @@ func (n *Node) InviteFile(req *md.InviteRequest, t *tpc.TopicManager, p *md.Peer
 
 	// Run Routine
 	go func(inv *md.AuthInvite) {
-		err = t.Invite(id, inv)
+		err = t.Invite(id, inv, session)
 		if err != nil {
 			n.call.Error(err, "InviteFile")
 		}

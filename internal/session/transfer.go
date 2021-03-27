@@ -107,7 +107,7 @@ func (pf *outgoingFile) Ext() string {
 }
 
 // ^ Method Processes File at Path^ //
-func (pf *outgoingFile) EncodeFile(buf *bytes.Buffer) error {
+func (pf *outgoingFile) encodeFile(buf *bytes.Buffer) error {
 	// @ Jpeg Image
 	if ext := pf.Ext(); ext == "jpg" {
 		// Open File at Meta Path

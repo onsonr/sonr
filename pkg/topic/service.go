@@ -9,6 +9,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
+	se "github.com/sonr-io/core/internal/session"
 	dt "github.com/sonr-io/core/pkg/data"
 	"google.golang.org/protobuf/proto"
 )
@@ -100,7 +101,7 @@ func (ts *TopicService) ExchangeWith(ctx context.Context, args TopicServiceArgs,
 }
 
 // ^ Invite: Handles User sent AuthInvite Response ^
-func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite) error {
+func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite, session *se.Session) error {
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(inv)
 	if err != nil {
@@ -122,7 +123,7 @@ func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite) error {
 	if call.Error != nil {
 		return err
 	}
-	tm.callback.OnReply(id, reply.InvReply)
+	tm.callback.OnReply(id, reply.InvReply, session)
 	return nil
 }
 
@@ -163,8 +164,6 @@ func (ts *TopicService) InviteWith(ctx context.Context, args TopicServiceArgs, r
 
 // ^ RespondToInvite to an Invitation ^ //
 func (n *TopicManager) RespondToInvite(decision bool, fs *sf.FileSystem, p *md.Peer, c *md.Contact) {
-
-
 	// @ Pass Contact Back
 	if n.service.invite.Payload == md.Payload_CONTACT {
 		// Create Accept Response

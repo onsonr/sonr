@@ -12,6 +12,7 @@ import (
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
 	"github.com/sonr-io/core/internal/network"
+	se "github.com/sonr-io/core/internal/session"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -37,7 +38,7 @@ type TopicHandler interface {
 	OnEvent(*md.LobbyEvent)
 	OnRefresh(*md.Lobby)
 	OnInvite([]byte)
-	OnReply(id peer.ID, data []byte)
+	OnReply(id peer.ID, data []byte, session *se.Session)
 	OnReceiveTransfer(inv *md.AuthInvite, fs *sf.FileSystem)
 }
 

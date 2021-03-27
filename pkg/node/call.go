@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/libp2p/go-libp2p-core/peer"
+	mg "github.com/libp2p/go-msgio"
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
 	se "github.com/sonr-io/core/internal/session"
@@ -38,7 +39,7 @@ func (n *Node) OnRefresh(l *md.Lobby) {
 }
 
 // ^ OnReply: Begins File Transfer when Accepted ^
-func (n *Node) OnReply(id peer.ID, reply []byte) {
+func (n *Node) OnReply(id peer.ID, reply []byte, session *se.Session) {
 	// Call Responded
 	n.call.Responded(reply)
 
@@ -51,15 +52,16 @@ func (n *Node) OnReply(id peer.ID, reply []byte) {
 
 	// Check for File Transfer
 	if resp.Decision && resp.Type == md.AuthReply_Transfer {
-
 		// Create New Auth Stream
 		stream, err := n.Host.NewStream(n.ctx, id, n.router.Transfer())
 		if err != nil {
 			n.call.Error(err, "StartOutgoing")
+			return
 		}
 
 		// Write to Stream on Session
-		go n.session.WriteToStream(stream)
+		writer := mg.NewWriter(stream)
+		go se.WriteToStream(writer, session)
 	}
 }
 
