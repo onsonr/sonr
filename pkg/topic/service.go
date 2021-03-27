@@ -122,7 +122,7 @@ func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite, p *md.Peer, cf *s
 	if call.Error != nil {
 		return err
 	}
-	tm.callback.OnReply(id, p, cf, reply.InvReply)
+	tm.callback.OnReply(id, p, reply.InvReply)
 	return nil
 }
 

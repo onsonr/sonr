@@ -31,18 +31,3 @@ func (fs *FileSystem) CurrentFile() (*FileItem, error) {
 		return nil, errors.New("File does not exist")
 	}
 }
-
-// ^ Removes Last File ^ //
-func (fs *FileSystem) CompleteLast() {
-	if len(fs.Files) > 0 {
-		fs.Files = fs.Files[:len(fs.Files)-1]
-	}
-	fs.CurrentCount = 0
-}
-
-// ^ Reset Current Queued File Metadata ^ //
-func (fs *FileSystem) Reset() {
-	fs.Files = nil
-	fs.Files = make([]*FileItem, K_QUEUE_SIZE)
-	fs.CurrentCount = 0
-}

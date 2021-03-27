@@ -40,6 +40,7 @@ func NewOutgoingFileItem(req *md.InviteRequest, p *md.Peer, callback dt.NodeCall
 	info, err := GetFileInfo(file.Path)
 	if err != nil {
 		callback.Error(err, "NewProcessedFile:GetFileInfo")
+		return nil
 	}
 
 	// @ 1. Create new SafeFile
@@ -83,12 +84,14 @@ func NewOutgoingFileItem(req *md.InviteRequest, p *md.Peer, callback dt.NodeCall
 		img, _, err := image.Decode(thumbReader)
 		if err != nil {
 			log.Println(err)
+			return nil
 		}
 
 		// @ Encode as Jpeg into buffer w/o scaling
 		err = jpeg.Encode(thumbWriter, img, nil)
 		if err != nil {
 			log.Panicln(err)
+			return nil
 		}
 
 		sm.card.Preview = thumbWriter.Bytes()
