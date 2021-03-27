@@ -4,10 +4,8 @@ import (
 	"google.golang.org/protobuf/proto"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
-	"github.com/pkg/errors"
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
-	"github.com/sonr-io/core/internal/network"
 	dt "github.com/sonr-io/core/pkg/data"
 )
 
@@ -39,40 +37,6 @@ func NewUser(cr *md.ConnectionRequest, callback dt.NodeCallback) (*User, error) 
 		return nil, err
 	}
 
-	// @ Get Private Key
-	var privKey crypto.PrivKey
-	if ok := fs.IsFile(K_SONR_PRIV_KEY); ok {
-		// Get Key File
-		buf, err := fs.ReadFile(K_SONR_PRIV_KEY)
-		if err != nil {
-			return nil, err
-		}
-
-		// Get Key from Buffer
-		key, err := crypto.UnmarshalPrivateKey(buf)
-		if err != nil {
-			return nil, errors.Wrap(err, "unmarshalling identity private key")
-		}
-
-		// Set Key Ref
-		privKey = key
-	} else {
-		// Create New Key
-		key, buf, err := network.Ed25519KeyBuf()
-		if err != nil {
-			return nil, err
-		}
-
-		// Write Key to File
-		_, err = fs.WriteFile(K_SONR_PRIV_KEY, buf)
-		if err != nil {
-			return nil, err
-		}
-
-		// Set Key Ref
-		privKey = key
-	}
-
 	// @ Create Devices
 	devices := make([]*md.Device, 32)
 	devices = append(devices, cr.Device)
@@ -91,8 +55,7 @@ func NewUser(cr *md.ConnectionRequest, callback dt.NodeCallback) (*User, error) 
 			Picture:   cr.Contact.GetPicture(),
 			Platform:  cr.Device.GetPlatform(),
 		},
-		FS:      fs,
-		privKey: privKey,
+		FS: fs,
 	}, nil
 }
 

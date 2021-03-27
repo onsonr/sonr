@@ -12,7 +12,6 @@ import (
 )
 
 const K_SONR_CLIENT_DIR = ".sonr"
-const K_QUEUE_SIZE = 16
 const K_FILE_QUEUE_NAME = "file-queue"
 
 // @ Sonr File System Struct
@@ -26,7 +25,7 @@ type FileSystem struct {
 	Main      string
 	Temporary string
 
-	// Queue
+	// Processing
 	Files        []*FileItem
 	CurrentCount int
 }
@@ -179,8 +178,3 @@ func (sfs *FileSystem) getIncomingFilePath(load md.Payload, fileName string) str
 		}
 	}
 }
-
-// // ^ Reset Current Queued File Metadata ^ //
-// func (fs *FileSystem) Close() {
-// 	fs.Queue.Close()
-// }

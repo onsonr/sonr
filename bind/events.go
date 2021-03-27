@@ -10,8 +10,7 @@ import (
 
 // * Interface: Callback is implemented from Plugin to receive updates * //
 type Callback interface {
-	OnConnected(data bool)     // Node Host has Bootstrapped
-	OnReady(data bool)         // Node Host has Bootstrapped
+	OnStatus(data []byte)      // Node Status Updates
 	OnRefreshed(data []byte)   // Lobby Updates
 	OnEvent(data []byte)       // Lobby Event
 	OnRemoteStart(data []byte) // User started remote
@@ -25,11 +24,9 @@ type Callback interface {
 }
 
 // ^ Passes binded Methods to Node ^
-func (mn *MobileNode) nodeCallback() dt.NodeCallback {
+func (mn *MobileNode) callbackNode() dt.NodeCallback {
 	return dt.NodeCallback{
 		// Direct
-		Connected:   mn.call.OnConnected,
-		Ready:       mn.call.OnReady,
 		Refreshed:   mn.call.OnRefreshed,
 		Event:       mn.call.OnEvent,
 		RemoteStart: mn.call.OnRemoteStart,
@@ -37,10 +34,10 @@ func (mn *MobileNode) nodeCallback() dt.NodeCallback {
 		Progressed:  mn.call.OnProgress,
 
 		// Middleware
+		Queued:      mn.queued,
 		Invited:     mn.invited,
 		Received:    mn.received,
 		Transmitted: mn.transmitted,
-		Queued:      mn.queued,
 		Error:       mn.error,
 
 		// User
@@ -51,14 +48,14 @@ func (mn *MobileNode) nodeCallback() dt.NodeCallback {
 // ^ queued Callback, Sends File Invite to Peer, and Notifies Client ^
 func (mn *MobileNode) queued(card *md.TransferCard, req *md.InviteRequest) {
 	// Retreive Current File
-	currFile := mn.user.FS.CurrentFile()
-	if currFile == nil {
+	currFile, err := mn.user.FS.CurrentFile()
+	if err != nil {
 		log.Println("No Current file")
 		return
 	}
 
 	// Invite With file
-	err := mn.node.InviteFile(card, req, mn.local, mn.user.Peer(), currFile)
+	err = mn.node.InviteFile(card, req, mn.local, mn.user.Peer(), currFile)
 	if err != nil {
 		log.Println(err)
 		return
@@ -68,7 +65,7 @@ func (mn *MobileNode) queued(card *md.TransferCard, req *md.InviteRequest) {
 // ^ invite Callback with data for Lifecycle ^ //
 func (mn *MobileNode) invited(data []byte) {
 	// Update Status
-	mn.status = md.Status_INVITED
+	mn.setStatus(md.Status_INVITED)
 	// Callback with Data
 	mn.call.OnInvited(data)
 }
@@ -76,7 +73,7 @@ func (mn *MobileNode) invited(data []byte) {
 // ^ transmitted Callback middleware post transfer ^ //
 func (mn *MobileNode) transmitted(peer *md.Peer) {
 	// Update Status
-	mn.status = md.Status_AVAILABLE
+	mn.setStatus(md.Status_AVAILABLE)
 
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(peer)
@@ -93,7 +90,7 @@ func (mn *MobileNode) transmitted(peer *md.Peer) {
 // ^ received Callback middleware post transfer ^ //
 func (mn *MobileNode) received(card *md.TransferCard) {
 	// Update Status
-	mn.status = md.Status_AVAILABLE
+	mn.setStatus(md.Status_AVAILABLE)
 
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(card)

@@ -15,14 +15,10 @@ type OnTransmitted func(data *md.Peer)
 type OnError func(err error, method string)
 type ReturnPeer func() *md.Peer
 type SyncLobby func(ref *md.Lobby, peer *md.Peer)
-
-type FileCallback struct {
-	Queued OnQueued
-	Error  OnError
-}
 type NodeCallback struct {
 	Connected   OnBool
 	Ready       OnBool
+	Queued      OnQueued
 	Invited     OnInvite
 	Refreshed   OnProtobuf
 	Event       OnProtobuf
@@ -32,6 +28,5 @@ type NodeCallback struct {
 	Received    OnReceived
 	GetPeer     ReturnPeer
 	Transmitted OnTransmitted
-	Queued      OnQueued
 	Error       OnError
 }

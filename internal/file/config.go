@@ -9,10 +9,6 @@ import (
 	md "github.com/sonr-io/core/internal/models"
 )
 
-// ** Constants for Chunking Data ** //
-const BufferChunkSize = 32000
-const B64ChunkSize = 31998 // Adjusted for Base64 -- has to be divisible by 3
-
 // ^ Struct returned on GetInfo() Generate Preview/Metadata
 type FileInfo struct {
 	Mime    *md.MIME
@@ -93,18 +89,4 @@ func GetFileInfo(path string) (*FileInfo, error) {
 		Size:    int32(info.Size()),
 		IsImage: filetype.IsImage(head),
 	}, nil
-}
-
-// ^ Helper: Chunks string based on B64ChunkSize ^ //
-func ChunkBase64(s string) []string {
-	chunkSize := B64ChunkSize
-	ss := make([]string, 0, len(s)/chunkSize+1)
-	for len(s) > 0 {
-		if len(s) < chunkSize {
-			chunkSize = len(s)
-		}
-		// Create Current Chunk String
-		ss, s = append(ss, s[:chunkSize]), s[chunkSize:]
-	}
-	return ss
 }

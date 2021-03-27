@@ -2,203 +2,169 @@ package node
 
 import (
 	"context"
-	"fmt"
-	"time"
+	"errors"
+
+	dht "github.com/libp2p/go-libp2p-kad-dht"
+	sf "github.com/sonr-io/core/internal/file"
+	md "github.com/sonr-io/core/internal/models"
+	tpc "github.com/sonr-io/core/pkg/topic"
+	tr "github.com/sonr-io/core/pkg/transfer"
 
 	// Imported
-	"github.com/libp2p/go-libp2p"
-	cmgr "github.com/libp2p/go-libp2p-connmgr"
-	dscl "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/host"
-	"github.com/libp2p/go-libp2p-core/network"
-	dsc "github.com/libp2p/go-libp2p-discovery"
-	dht "github.com/libp2p/go-libp2p-kad-dht"
 	psub "github.com/libp2p/go-libp2p-pubsub"
-	swr "github.com/libp2p/go-libp2p-swarm"
-	msg "github.com/libp2p/go-msgio"
 
 	// Local
-	sf "github.com/sonr-io/core/internal/file"
 	net "github.com/sonr-io/core/internal/network"
 	dt "github.com/sonr-io/core/pkg/data"
-	tr "github.com/sonr-io/core/pkg/transfer"
 )
 
 // ^ Struct: Main Node handles Networking/Identity/Streams ^
 type Node struct {
 	// Properties
-	ctx context.Context
+	ctx  context.Context
+	call dt.NodeCallback
 
 	// Networking Properties
-	host   host.Host
+	Host   host.Host
 	kdht   *dht.IpfsDHT
 	pubsub *psub.PubSub
 	router *net.ProtocolRouter
-	call   dt.NodeCallback
 
 	// Data Handlers
 	incoming *tr.IncomingFile
+	outgoing *sf.FileItem
 }
 
 // ^ NewNode Initializes Node with a host and default properties ^
-func NewNode(opts *net.HostOptions, call dt.NodeCallback) *Node {
-	// Create Context and Set Node Properties
-	node := new(Node)
-	node.ctx = context.Background()
-	node.call = call
-
-	// Set Protocol Router
-	node.router = net.NewProtocolRouter(opts.ConnRequest)
-
-	// Start Host
-	return node
+func NewNode(ctx context.Context, cr *md.ConnectionRequest, call dt.NodeCallback) *Node {
+	return &Node{
+		ctx:    ctx,
+		call:   call,
+		router: net.NewProtocolRouter(cr),
+	}
 }
 
-// ^ Connect Begins Assigning Host Parameters ^
-func (n *Node) Connect(opts *net.HostOptions) error {
-	var err error
-
-	// IP Address
-	ip4 := net.IPv4()
-	ip6 := net.IPv6()
-
-	// Start Host
-	h, err := libp2p.New(
-		n.ctx,
-		// Add listening Addresses
-		libp2p.ListenAddrStrings(
-			fmt.Sprintf("/ip4/%s/tcp/0", ip4),
-			fmt.Sprintf("/ip6/%s/tcp/0", ip6)),
-		libp2p.Identity(opts.PrivateKey),
-		libp2p.DefaultTransports,
-		libp2p.ConnectionManager(cmgr.NewConnManager(
-			10,          // Lowwater
-			20,          // HighWater,
-			time.Minute, // GracePeriod
-		)),
-	)
-	if err != nil {
-		return err
+// ^ Join Lobby Adds Node to Named Topic ^
+func (n *Node) JoinLobby(name string) (*tpc.TopicManager, error) {
+	if t, err := tpc.NewTopic(n.ctx, n.Host, n.pubsub, n.router.Topic(name), n.router, n); err != nil {
+		return nil, err
+	} else {
+		return t, nil
 	}
-	n.host = h
-
-	// Create Pub Sub
-	ps, err := psub.NewGossipSub(n.ctx, n.host)
-	if err != nil {
-		return err
-	}
-	n.pubsub = ps
-	return nil
 }
 
-// ^ Bootstrap begins bootstrap with peers ^
-func (n *Node) Bootstrap(opts *net.HostOptions, fs *sf.FileSystem) error {
-	// Create Bootstrapper Info
-	bootstrappers := opts.GetBootstrapAddrInfo()
-
-	// Set DHT
-	kadDHT, err := dht.New(
-		n.ctx,
-		n.host,
-		dht.BootstrapPeers(bootstrappers...),
-	)
-	if err != nil {
-		return err
-	}
-
-	// Return Connected
-	n.kdht = kadDHT
-
-	// Bootstrap DHT
-	if err := n.kdht.Bootstrap(n.ctx); err != nil {
-		return err
-	}
-
-	// Connect to bootstrap nodes, if any
-	hasBootstrapped := false
-	for _, pi := range bootstrappers {
-		if err := n.host.Connect(n.ctx, pi); err == nil {
-			hasBootstrapped = true
-			break
-		}
-	}
-
-	// Check if Bootstrapping Occurred
-	if !hasBootstrapped {
-		return err
-	}
-
-	// Set Routing Discovery, Find Peers
-	routingDiscovery := dsc.NewRoutingDiscovery(n.kdht)
-	dsc.Advertise(n.ctx, routingDiscovery, n.router.MajorPoint(), dscl.TTL(time.Second*2))
-	go n.handleDHTPeers(routingDiscovery)
-	return nil
-}
-
-// ^ handleDHTPeers: Connects to Peers in DHT ^
-func (n *Node) handleDHTPeers(routingDiscovery *dsc.RoutingDiscovery) {
-	for {
-		// Find peers in DHT
-		peersChan, err := routingDiscovery.FindPeers(
-			n.ctx,
-			n.router.MajorPoint(),
-			dscl.Limit(16),
-		)
+// ^ Invite Processes Data and Sends Invite to Peer ^ //
+func (n *Node) InviteLink(req *md.InviteRequest, t *tpc.TopicManager, p *md.Peer) error {
+	// @ 3. Send Invite to Peer
+	if t.HasPeer(req.To.Id.Peer) {
+		// Get PeerID and Check error
+		id, _, err := t.FindPeerInTopic(req.To.Id.Peer)
 		if err != nil {
-			n.call.Error(err, "Finding DHT Peers")
-			n.call.Ready(false)
-			return
+			return err
 		}
 
-		// Iterate over Channel
-		for pi := range peersChan {
-			// Validate not Self
-			if pi.ID != n.host.ID() {
-				// Connect to Peer
-				if err := n.host.Connect(n.ctx, pi); err != nil {
-					// Remove Peer Reference
-					n.host.Peerstore().ClearAddrs(pi.ID)
-					if sw, ok := n.host.Network().(*swr.Swarm); ok {
-						sw.Backoff().Clear(pi.ID)
-					}
-				}
+		// Create Invite
+		invite := md.GetAuthInviteWithURL(req, p)
+
+		// Run Routine
+		go func(inv *md.AuthInvite) {
+			err = t.Invite(id, inv, p, nil)
+			if err != nil {
+				n.call.Error(err, "InviteLink")
 			}
-		}
-
-		// Refresh table every 4 seconds
-		dt.GetState().NeedsWait()
-		<-time.After(time.Second * 2)
+		}(&invite)
+	} else {
+		return errors.New("Invalid Peer")
 	}
+	return nil
 }
 
-// ^ handleTransferIncoming: Processes Incoming Data ^ //
-func (n *Node) handleTransferIncoming(stream network.Stream) {
-	// Route Data from Stream
-	go func(reader msg.ReadCloser, t *tr.IncomingFile) {
-		for i := 0; ; i++ {
-			// @ Read Length Fixed Bytes
-			buffer, err := reader.ReadMsg()
-			if err != nil {
-				n.call.Error(err, "HandleIncoming:ReadMsg")
-				break
-			}
-
-			// @ Unmarshal Bytes into Proto
-			hasCompleted, err := t.AddBuffer(i, buffer)
-			if err != nil {
-				n.call.Error(err, "HandleIncoming:AddBuffer")
-				break
-			}
-
-			// @ Check if All Buffer Received to Save
-			if hasCompleted {
-				// Sync file
-				if err := n.incoming.Save(); err != nil {
-					n.call.Error(err, "HandleIncoming:Save")
-				}
-				break
-			}
-			dt.GetState().NeedsWait()
+// ^ Invite Processes Data and Sends Invite to Peer ^ //
+func (n *Node) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, p *md.Peer, c *md.Contact) error {
+	// @ 3. Send Invite to Peer
+	if t.HasPeer(req.To.Id.Peer) {
+		// Get PeerID and Check error
+		id, _, err := t.FindPeerInTopic(req.To.Id.Peer)
+		if err != nil {
+			return err
 		}
-	}(msg.NewReader(stream), n.incoming)
+
+		// Build Invite Message
+		invite := md.GetAuthInviteWithContact(req, p, c)
+
+		// Run Routine
+		go func(inv *md.AuthInvite) {
+			err = t.Invite(id, inv, p, nil)
+			if err != nil {
+				n.call.Error(err, "InviteLink")
+			}
+		}(&invite)
+	} else {
+		return errors.New("Invalid Peer")
+	}
+	return nil
+}
+
+// ^ Invite Processes Data and Sends Invite to Peer ^ //
+func (n *Node) InviteFile(card *md.TransferCard, req *md.InviteRequest, t *tpc.TopicManager, p *md.Peer, cf *sf.FileItem) error {
+	card.Status = md.TransferCard_INVITE
+
+	// Create Invite Message
+	invite := md.AuthInvite{
+		From:    p,
+		Payload: card.Payload,
+		Card:    card,
+	}
+
+	// Get PeerID
+	id, _, err := t.FindPeerInTopic(req.To.Id.Peer)
+	if err != nil {
+		return err
+	}
+
+	// Run Routine
+	n.outgoing = cf
+	go func(inv *md.AuthInvite) {
+		err = t.Invite(id, inv, p, cf)
+		if err != nil {
+			n.call.Error(err, "InviteFile")
+		}
+	}(&invite)
+	return nil
+}
+
+// ^ Respond to an Invitation ^ //
+func (n *Node) Respond(decision bool, fs *sf.FileSystem, p *md.Peer, t *tpc.TopicManager, c *md.Contact) {
+	t.RespondToInvite(decision, fs, p, c)
+}
+
+// ^ Send Direct Message to Peer in Lobby ^ //
+func (n *Node) Message(t *tpc.TopicManager, msg string, to string, p *md.Peer) error {
+	if t.HasPeer(to) {
+		// Inform Lobby
+		if err := t.Send(&md.LobbyEvent{
+			Event:   md.LobbyEvent_MESSAGE,
+			From:    p,
+			Id:      p.Id.Peer,
+			Message: msg,
+			To:      to,
+		}); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// ^ Update proximity/direction and Notify Lobby ^ //
+func (n *Node) Update(t *tpc.TopicManager, p *md.Peer) error {
+	// Inform Lobby
+	if err := t.Send(&md.LobbyEvent{
+		Event: md.LobbyEvent_UPDATE,
+		From:  p,
+		Id:    p.Id.Peer,
+	}); err != nil {
+		return err
+	}
+	return nil
 }

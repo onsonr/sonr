@@ -3,9 +3,26 @@ package bind
 import (
 	"log"
 
+	fl "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
+
+// @ Return URL Metadata, Helper Method
+func GetURLMetadata(url string) []byte {
+	// Get Link Data
+	data, err := md.GetPageInfoFromUrl(url)
+	if err != nil {
+		log.Println(err, " Failed to Parse URL")
+	}
+
+	// Marshal
+	bytes, err := proto.Marshal(data)
+	if err != nil {
+		log.Println(err, " Failed to Parse URL")
+	}
+	return bytes
+}
 
 // @ Update proximity/direction and Notify Lobby
 func (mn *MobileNode) Update(facing float64, heading float64) {
@@ -34,7 +51,7 @@ func (mn *MobileNode) Message(msg string, to string) {
 func (mn *MobileNode) Invite(reqBytes []byte) {
 	if mn.isReady() {
 		// Update Status
-		mn.status = md.Status_PENDING
+		mn.setStatus(md.Status_PENDING)
 
 		// Initialize from Request
 		req := &md.InviteRequest{}
@@ -57,24 +74,13 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 				return
 			}
 		} else {
-			if err := mn.user.FS.AddFromRequest(req, mn.user.Profile()); err != nil {
-				// sentry.CaptureException(err)
+			// Get Processed File and Invite
+			pf := fl.NewOutgoingFileItem(req, mn.user.Peer(), mn.callbackNode())
+			err := mn.node.InviteFile(pf.Card(), req, mn.local, mn.user.Peer(), pf)
+			if err != nil {
 				log.Println(err)
 				return
 			}
-		}
-	}
-}
-
-// @ Respond to an Invite with Decision
-func (mn *MobileNode) Respond(decs bool) {
-	if mn.isReady() {
-		mn.node.Respond(decs, mn.user.FS, mn.user.Peer(), mn.local, mn.user.Contact())
-		// Update Status
-		if decs {
-			mn.status = md.Status_INPROGRESS
-		} else {
-			mn.status = md.Status_AVAILABLE
 		}
 	}
 }
@@ -84,6 +90,20 @@ func (mn *MobileNode) JoinRemote(data string) {
 	if mn.isReady() {
 		// mn.node.JoinRemote(data)
 		log.Println(data)
+		return
+	}
+}
+
+// @ Respond to an Invite with Decision
+func (mn *MobileNode) Respond(decs bool) {
+	if mn.isReady() {
+		mn.node.Respond(decs, mn.user.FS, mn.user.Peer(), mn.local, mn.user.Contact())
+		// Update Status
+		if decs {
+			mn.setStatus(md.Status_INPROGRESS)
+		} else {
+			mn.setStatus(md.Status_AVAILABLE)
+		}
 	}
 }
 

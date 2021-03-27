@@ -53,13 +53,23 @@ func (l *Lobby) AddWithoutRefresh(peer *md.Peer) {
 	l.Size = int32(len(l.Peers)) + 1 // Account for User
 }
 
-// ^ Remove Peer from Lobby ^
-func (l *Lobby) Remove(id peer.ID) {
+// ^ Delete Peer from Lobby ^
+func (l *Lobby) Delete(id peer.ID) {
 	// Update Peer with new data
 	delete(l.Peers, id.String())
 	l.Count = int32(len(l.Peers))
 	l.Size = int32(len(l.Peers)) + 1 // Account for User
 	l.Refresh()
+}
+
+// ^ Send Updated Lobby ^
+func (l *Lobby) Refresh() {
+	l.callback.OnRefresh(&md.Lobby{
+		Olc:   l.OLC,
+		Size:  l.Size,
+		Count: l.Count,
+		Peers: l.Peers,
+	})
 }
 
 // ^ Sync Between Remote Peers Lobby ^
@@ -79,16 +89,6 @@ func (l *Lobby) Sync(ref *md.Lobby, remotePeer *md.Peer) {
 	l.Add(remotePeer)
 }
 
-// ^ Send Updated Lobby ^
-func (l *Lobby) Refresh() {
-	l.callback.OnRefresh(&md.Lobby{
-		Olc:   l.OLC,
-		Size:  l.Size,
-		Count: l.Count,
-		Peers: l.Peers,
-	})
-}
-
 // ^ handleTopicEvents: listens to Pubsub Events for topic  ^
 func (tm *TopicManager) handleTopicEvents() {
 	// @ Loop Events
@@ -106,11 +106,14 @@ func (tm *TopicManager) handleTopicEvents() {
 			if err != nil {
 				continue
 			}
-			tm.Exchange(lobEvent.Peer, buf)
+			err = tm.Exchange(lobEvent.Peer, buf)
+			if err != nil {
+				continue
+			}
 		}
 
 		if lobEvent.Type == pubsub.PeerLeave {
-			tm.Lobby.Remove(lobEvent.Peer)
+			tm.Lobby.Delete(lobEvent.Peer)
 		}
 
 		dt.GetState().NeedsWait()

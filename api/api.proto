@@ -6,6 +6,22 @@ import "user.proto";
 // Require Go Package
 option go_package = ".;models";
 
+// Status is User Node Situation
+enum Status {
+  NONE = 0;         // Default Status on Launch
+  CONNECTED = 1;    // Status after starting Host
+  BOOTSTRAPPED = 2; // After Bootstrapping Host
+  AVAILABLE = 3;    // Connected and Visible on Local Lobby
+  SEARCHING = 4;    // File has been Processed ready to Invite
+  PENDING = 5;      // Awaiting Peer Authorization
+  INVITED = 6;      // Has received Invitation
+  INPROGRESS = 7;   // In Middle of Transfer
+  STANDBY = 8;      // Away from Sonr Application
+}
+
+// Message for Status Update
+message StatusUpdate { Status value = 1; }
+
 // Initial Connection Message to Establish Sonr
 message ConnectionRequest {
   double latitude = 1;           // Geolocation for OLC
@@ -45,7 +61,6 @@ message InviteRequest {
     MultiFiles = 2;    // Multiple Media or Documents
     Contact = 3;       // Users Contact Card
     URL = 4;           // Website URL Link
-    ExternalMedia = 5; // Shared from Mobile Gallery
   }
 }
 
