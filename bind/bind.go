@@ -13,10 +13,15 @@ import (
 
 // * Struct: Reference for Binded Proxy Node * //
 type MobileNode struct {
+	// Properties
 	call   Callback
 	config mobileConfig
-	node   *sn.Node
-	user   *u.User
+
+	// Client
+	node *sn.Node
+	user *u.User
+
+	// Groups
 	local  *tpc.TopicManager
 	topics []*tpc.TopicManager
 }
