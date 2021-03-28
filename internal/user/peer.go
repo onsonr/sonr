@@ -39,6 +39,11 @@ func (u *User) PeerBuf() []byte {
 	return buf
 }
 
+// ^ Get Peer returns Peers Profile ^ //
+func (u *User) Profile() *md.Profile {
+	return u.profile
+}
+
 // ^ Get Key: Returns Private key from disk if found ^ //
 func (u *User) PrivateKey() (crypto.PrivKey, error) {
 	// @ Get Private Key
@@ -80,11 +85,6 @@ func (u *User) PrivateKey() (crypto.PrivKey, error) {
 		return privKey, nil
 	}
 
-}
-
-// ^ Get Peer returns Peers Profile ^ //
-func (u *User) Profile() *md.Profile {
-	return u.profile
 }
 
 // ^ Updates Current Contact Card ^

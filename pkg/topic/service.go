@@ -122,7 +122,7 @@ func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite, session *se.Sessi
 	if call.Error != nil {
 		return err
 	}
-	tm.callback.OnReply(id, reply.InvReply, session)
+	tm.topicHandler.OnReply(id, reply.InvReply, session)
 	return nil
 }
 
@@ -165,7 +165,7 @@ func (ts *TopicService) InviteWith(ctx context.Context, args TopicServiceArgs, r
 func (n *TopicManager) RespondToInvite(decision bool, fs *sf.FileSystem, p *md.Peer, c *md.Contact) {
 	// Prepare Transfer
 	if decision {
-		n.callback.OnReceiveTransfer(n.service.invite, fs)
+		n.topicHandler.OnResponded(n.service.invite, fs)
 	}
 
 	// @ Pass Contact Back

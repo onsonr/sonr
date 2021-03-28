@@ -1,9 +1,11 @@
 package bind
 
 import (
+	"fmt"
 	"log"
 
 	md "github.com/sonr-io/core/internal/models"
+	"github.com/sonr-io/core/internal/network"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -84,10 +86,24 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 }
 
 // @ Join Existing Group
+func (mn *MobileNode) CreateRemote() string {
+	if mn.isReady() {
+		// Generate Word List
+		_, wordList, err := network.RandomWords("english", 3)
+		if err != nil {
+			return ""
+		}
+
+		// Return Words
+		return fmt.Sprintf("%s %s %s", wordList[0], wordList[1], wordList[2])
+	}
+	return ""
+}
+
+// @ Join Existing Group
 func (mn *MobileNode) JoinRemote(data string) {
 	if mn.isReady() {
-		// mn.node.JoinRemote(data)
-		log.Println(data)
+		mn.node.JoinLobby(data)
 		return
 	}
 }

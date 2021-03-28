@@ -40,7 +40,7 @@ func (pr *ProtocolRouter) MajorPoint() string {
 // ^ Transfer Protocols ^ //
 // @ Transfer Controller Data Protocol IDs
 func (pr *ProtocolRouter) Transfer() protocol.ID {
-	return protocol.ID("/sonr/transfer/data")
+	return protocol.ID("/sonr/transfer/0.1")
 }
 
 // ^ Lobby Protocols ^ //
@@ -56,5 +56,5 @@ func (pr *ProtocolRouter) Topic(name string) string {
 
 // @ Lobby Exchange Protocol IDs
 func (pr *ProtocolRouter) TopicService() protocol.ID {
-	return protocol.ID("/sonr/topic/service")
+	return protocol.ID("/sonr/topic-service/0.1")
 }

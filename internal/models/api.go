@@ -6,9 +6,8 @@ import "time"
 func GetAuthInviteWithContact(req *InviteRequest, p *Peer, c *Contact) AuthInvite {
 	// Create Invite
 	return AuthInvite{
-		IsRemote: false,
-		From:     p,
-		Payload:  Payload_CONTACT,
+		From:    p,
+		Payload: Payload_CONTACT,
 		Card: &TransferCard{
 			// SQL Properties
 			Payload:  Payload_CONTACT,
@@ -29,7 +28,6 @@ func GetAuthInviteWithContact(req *InviteRequest, p *Peer, c *Contact) AuthInvit
 	}
 }
 
-
 // ^ Generate AuthInvite with URL Payload from Request and User Peer Data ^ //
 func GetAuthInviteWithURL(req *InviteRequest, p *Peer) AuthInvite {
 	// Get URL Data
@@ -42,9 +40,8 @@ func GetAuthInviteWithURL(req *InviteRequest, p *Peer) AuthInvite {
 
 	// Create Invite
 	return AuthInvite{
-		IsRemote: req.IsRemote,
-		From:     p,
-		Payload:  Payload_URL,
+		From:    p,
+		Payload: Payload_URL,
 		Card: &TransferCard{
 			// SQL Properties
 			Payload:  Payload_URL,

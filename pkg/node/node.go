@@ -28,9 +28,9 @@ type Node struct {
 	Host   host.Host
 	kdht   *dht.IpfsDHT
 	pubsub *psub.PubSub
-	router *net.ProtocolRouter
 
 	// Data Handlers
+	router  *net.ProtocolRouter
 	session *se.Session
 }
 

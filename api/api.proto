@@ -46,7 +46,7 @@ message InviteRequest {
   // Properties
   TransferType type = 1; // General Payload Type
   Peer to = 2;           // User thats being Invited
-  bool isRemote = 3;     // If Transfer is Remote
+  string topic = 3;      // If Transfer is Remote
 
   // Attached Data
   string url = 4;              // URL to be Sent - Optional
@@ -84,7 +84,6 @@ message AuthInvite {
   Payload payload = 1;   // Type of Transfer
   Peer from = 2;         // Users Peer Data
   TransferCard card = 3; // Card contains all Data Info, Transfer Info
-  bool isRemote = 4;     // Is for Remote Point
 }
 
 // Reply Message sent on RPC
@@ -93,7 +92,6 @@ message AuthReply {
   Peer from = 2;         // Users Peer Data
   bool decision = 3;     // Users Decision for the Invitation
   TransferCard card = 4; // Card contains all Data Info, Transfer Info
-  bool isRemote = 5;     // Is for Remote Point
 
   enum Type {
     None = 0;

@@ -93,14 +93,14 @@ func (tm *TopicManager) handleTopicEvents() {
 	// @ Loop Events
 	for {
 		// Get next event
-		lobEvent, err := tm.handler.NextPeerEvent(tm.ctx)
+		lobEvent, err := tm.eventHandler.NextPeerEvent(tm.ctx)
 		if err != nil {
-			tm.handler.Cancel()
+			tm.eventHandler.Cancel()
 			return
 		}
 
 		if lobEvent.Type == pubsub.PeerJoin {
-			p := tm.callback.GetPeer()
+			p := tm.topicHandler.GetPeer()
 			buf, err := proto.Marshal(p)
 			if err != nil {
 				continue
@@ -129,7 +129,7 @@ func (tm *TopicManager) handleTopicMessages() {
 		}
 
 		// Only forward messages delivered by others
-		if msg.ReceivedFrom.String() == tm.callback.GetPeer().Id.Peer {
+		if msg.ReceivedFrom.String() == tm.topicHandler.GetPeer().Id.Peer {
 			continue
 		}
 
@@ -160,9 +160,9 @@ func (tm *TopicManager) processTopicMessages() {
 				tm.Lobby.Add(m.From)
 			} else if m.Event == md.LobbyEvent_MESSAGE {
 				// Check is Message For Self
-				if m.To == tm.callback.GetPeer().Id.Peer {
+				if m.To == tm.topicHandler.GetPeer().Id.Peer {
 					// Call Event
-					tm.callback.OnEvent(m)
+					tm.topicHandler.OnEvent(m)
 				}
 			}
 		case <-tm.ctx.Done():
