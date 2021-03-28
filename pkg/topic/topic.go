@@ -9,7 +9,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/protocol"
 	rpc "github.com/libp2p/go-libp2p-gorpc"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	sf "github.com/sonr-io/core/internal/file"
+	sf "github.com/sonr-io/core/internal/fs"
 	md "github.com/sonr-io/core/internal/models"
 	"github.com/sonr-io/core/internal/network"
 	se "github.com/sonr-io/core/internal/session"

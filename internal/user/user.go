@@ -4,7 +4,7 @@ import (
 	"google.golang.org/protobuf/proto"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
-	sf "github.com/sonr-io/core/internal/file"
+	sf "github.com/sonr-io/core/internal/fs"
 	md "github.com/sonr-io/core/internal/models"
 	dt "github.com/sonr-io/core/pkg/data"
 )

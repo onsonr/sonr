@@ -1,4 +1,4 @@
-package file
+package fs
 
 import (
 	"errors"
@@ -45,11 +45,11 @@ func NewFs(connEvent *md.ConnectionRequest, callback dt.NodeCallback) (*FileSyst
 
 	// Create SFS
 	sfs := &FileSystem{
-		IsDesktop:    connEvent.Device.GetIsDesktop(),
-		Downloads:    connEvent.Directories.Downloads,
-		Main:         sonrPath,
-		Temporary:    connEvent.Directories.Temporary,
-		Call:         callback,
+		IsDesktop: connEvent.Device.GetIsDesktop(),
+		Downloads: connEvent.Directories.Downloads,
+		Main:      sonrPath,
+		Temporary: connEvent.Directories.Temporary,
+		Call:      callback,
 	}
 
 	// sfs.Queue = q

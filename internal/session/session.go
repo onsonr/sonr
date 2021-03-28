@@ -10,7 +10,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-msgio"
 	msg "github.com/libp2p/go-msgio"
-	sf "github.com/sonr-io/core/internal/file"
+	sf "github.com/sonr-io/core/internal/fs"
 	md "github.com/sonr-io/core/internal/models"
 	dt "github.com/sonr-io/core/pkg/data"
 	"google.golang.org/protobuf/proto"

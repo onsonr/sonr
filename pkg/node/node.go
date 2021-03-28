@@ -5,7 +5,7 @@ import (
 	"errors"
 
 	dht "github.com/libp2p/go-libp2p-kad-dht"
-	sf "github.com/sonr-io/core/internal/file"
+	sf "github.com/sonr-io/core/internal/fs"
 	md "github.com/sonr-io/core/internal/models"
 	tpc "github.com/sonr-io/core/pkg/topic"
 

@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	sf "github.com/sonr-io/core/internal/file"
+	sf "github.com/sonr-io/core/internal/fs"
 	md "github.com/sonr-io/core/internal/models"
 	dt "github.com/sonr-io/core/pkg/data"
 
