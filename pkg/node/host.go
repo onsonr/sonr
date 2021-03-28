@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"time"
 
+	// Imported
+	// tor "berty.tech/go-libp2p-tor-transport"
+	// tconf "berty.tech/go-libp2p-tor-transport/config"
 	"github.com/libp2p/go-libp2p"
-	libp2p_cicuit "github.com/libp2p/go-libp2p-circuit"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	dscl "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/host"
@@ -13,9 +15,14 @@ import (
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	psub "github.com/libp2p/go-libp2p-pubsub"
-	libp2p_quic "github.com/libp2p/go-libp2p-quic-transport"
 	swr "github.com/libp2p/go-libp2p-swarm"
+	tls "github.com/libp2p/go-libp2p-tls"
 	md "github.com/sonr-io/core/internal/models"
+
+	// Local
+	// mplex "github.com/libp2p/go-libp2p-mplex"
+	// direct "github.com/libp2p/go-libp2p-webrtc-direct"
+	// "github.com/pion/webrtc/v3"
 	net "github.com/sonr-io/core/internal/network"
 )
 
@@ -28,23 +35,16 @@ func (n *Node) Start(key crypto.PrivKey) error {
 	// Start Host
 	h, err := libp2p.New(
 		n.ctx,
-
-		// default tpt + quic
-		libp2p.DefaultTransports,
-		libp2p.Transport(libp2p_quic.NewTransport),
-
-		// Nat & Relay service
-		libp2p.EnableNATService(),
-		libp2p.DefaultStaticRelays(),
-		libp2p.EnableRelay(libp2p_cicuit.OptHop),
-
+		libp2p.Identity(key),
 		// Add listening Addresses
 		libp2p.ListenAddrStrings(
 			fmt.Sprintf("/ip4/%s/tcp/0", ip4),
 			fmt.Sprintf("/ip6/%s/tcp/0", ip6),
 		),
-
-		libp2p.Identity(key),
+		// support TLS connections
+		libp2p.Security(tls.ID, tls.New),
+		libp2p.DefaultTransports,
+		libp2p.NATPortMap(),
 		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
 			// Create DHT
 			kdht, err := dht.New(n.ctx, h)
@@ -56,6 +56,7 @@ func (n *Node) Start(key crypto.PrivKey) error {
 			n.kdht = kdht
 			return kdht, err
 		}),
+		libp2p.EnableAutoRelay(),
 	)
 
 	// Set Host for Node
