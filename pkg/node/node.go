@@ -8,7 +8,6 @@ import (
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
 	tpc "github.com/sonr-io/core/pkg/topic"
-	tr "github.com/sonr-io/core/pkg/transfer"
 
 	// Imported
 	"github.com/libp2p/go-libp2p-core/host"
@@ -16,6 +15,7 @@ import (
 
 	// Local
 	net "github.com/sonr-io/core/internal/network"
+	se "github.com/sonr-io/core/internal/session"
 	dt "github.com/sonr-io/core/pkg/data"
 )
 
@@ -32,8 +32,7 @@ type Node struct {
 	router *net.ProtocolRouter
 
 	// Data Handlers
-	incoming *tr.IncomingFile
-	outgoing *sf.FileItem
+	session *se.Session
 }
 
 // ^ NewNode Initializes Node with a host and default properties ^
@@ -69,7 +68,7 @@ func (n *Node) InviteLink(req *md.InviteRequest, t *tpc.TopicManager, p *md.Peer
 
 		// Run Routine
 		go func(inv *md.AuthInvite) {
-			err = t.Invite(id, inv, p, nil)
+			err = t.Invite(id, inv, nil)
 			if err != nil {
 				n.call.Error(err, "InviteLink")
 			}
@@ -95,7 +94,7 @@ func (n *Node) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, p *md.P
 
 		// Run Routine
 		go func(inv *md.AuthInvite) {
-			err = t.Invite(id, inv, p, nil)
+			err = t.Invite(id, inv, nil)
 			if err != nil {
 				n.call.Error(err, "InviteLink")
 			}
@@ -107,8 +106,10 @@ func (n *Node) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, p *md.P
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Node) InviteFile(card *md.TransferCard, req *md.InviteRequest, t *tpc.TopicManager, p *md.Peer, cf *sf.FileItem) error {
-	card.Status = md.TransferCard_INVITE
+func (n *Node) InviteFile(req *md.InviteRequest, t *tpc.TopicManager, p *md.Peer, fs *sf.FileSystem) error {
+	// Start New Session
+	session := se.NewOutSession(p, req, fs, n.call)
+	card := session.OutgoingCard()
 
 	// Create Invite Message
 	invite := md.AuthInvite{
@@ -124,9 +125,8 @@ func (n *Node) InviteFile(card *md.TransferCard, req *md.InviteRequest, t *tpc.T
 	}
 
 	// Run Routine
-	n.outgoing = cf
 	go func(inv *md.AuthInvite) {
-		err = t.Invite(id, inv, p, cf)
+		err = t.Invite(id, inv, session)
 		if err != nil {
 			n.call.Error(err, "InviteFile")
 		}

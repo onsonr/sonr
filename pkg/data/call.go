@@ -5,9 +5,7 @@ import (
 )
 
 // Define Function Types
-type OnBool func(bool)
 type OnProtobuf func([]byte)
-type OnQueued func(card *md.TransferCard, req *md.InviteRequest)
 type OnInvite func(data []byte)
 type OnProgress func(data float32)
 type OnReceived func(data *md.TransferCard)
@@ -16,9 +14,6 @@ type OnError func(err error, method string)
 type ReturnPeer func() *md.Peer
 type SyncLobby func(ref *md.Lobby, peer *md.Peer)
 type NodeCallback struct {
-	Connected   OnBool
-	Ready       OnBool
-	Queued      OnQueued
 	Invited     OnInvite
 	Refreshed   OnProtobuf
 	Event       OnProtobuf

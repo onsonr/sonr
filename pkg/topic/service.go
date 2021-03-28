@@ -9,6 +9,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
+	se "github.com/sonr-io/core/internal/session"
 	dt "github.com/sonr-io/core/pkg/data"
 	"google.golang.org/protobuf/proto"
 )
@@ -100,7 +101,7 @@ func (ts *TopicService) ExchangeWith(ctx context.Context, args TopicServiceArgs,
 }
 
 // ^ Invite: Handles User sent AuthInvite Response ^
-func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite, p *md.Peer, cf *sf.FileItem) error {
+func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite, session *se.Session) error {
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(inv)
 	if err != nil {
@@ -122,7 +123,7 @@ func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite, p *md.Peer, cf *s
 	if call.Error != nil {
 		return err
 	}
-	tm.callback.OnReply(id, p, cf, reply.InvReply)
+	tm.callback.OnReply(id, reply.InvReply, session)
 	return nil
 }
 
@@ -163,7 +164,7 @@ func (ts *TopicService) InviteWith(ctx context.Context, args TopicServiceArgs, r
 
 // ^ RespondToInvite to an Invitation ^ //
 func (n *TopicManager) RespondToInvite(decision bool, fs *sf.FileSystem, p *md.Peer, c *md.Contact) {
-	// Check Decision
+	// Prepare Transfer
 	if decision {
 		n.callback.OnReceiveTransfer(n.service.invite, fs)
 	}
