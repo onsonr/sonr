@@ -53,6 +53,15 @@ func (n *Node) JoinLobby(name string) (*tpc.TopicManager, error) {
 	}
 }
 
+// ^ Join Lobby Adds Node to Named Topic ^
+func (n *Node) JoinLocal() (*tpc.TopicManager, error) {
+	if t, err := tpc.NewTopic(n.ctx, n.Host, n.pubsub, n.router.LocalTopic(), n.router, n); err != nil {
+		return nil, err
+	} else {
+		return t, nil
+	}
+}
+
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
 func (n *Node) InviteLink(req *md.InviteRequest, t *tpc.TopicManager, p *md.Peer) error {
 	// @ 3. Send Invite to Peer
@@ -167,4 +176,9 @@ func (n *Node) Update(t *tpc.TopicManager, p *md.Peer) error {
 		return err
 	}
 	return nil
+}
+
+// ^ Close Ends All Network Communication ^
+func (n *Node) Close() {
+	n.Host.Close()
 }

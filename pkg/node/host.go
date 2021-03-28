@@ -24,7 +24,6 @@ import (
 	// "github.com/pion/webrtc/v3"
 	net "github.com/sonr-io/core/internal/network"
 	st "github.com/sonr-io/core/pkg/state"
-	tpc "github.com/sonr-io/core/pkg/topic"
 )
 
 // ^ Start Begins Assigning Host Parameters ^
@@ -121,20 +120,6 @@ func (n *Node) Bootstrap() error {
 	n.pubsub = ps
 	go n.handleDHTPeers(routingDiscovery)
 	return nil
-}
-
-// ^ Join Lobby Adds Node to Named Topic ^
-func (n *Node) JoinLocal() (*tpc.TopicManager, error) {
-	if t, err := tpc.NewTopic(n.ctx, n.Host, n.pubsub, n.router.LocalTopic(), n.router, n); err != nil {
-		return nil, err
-	} else {
-		return t, nil
-	}
-}
-
-// ^ Close Ends All Network Communication ^
-func (n *Node) Close() {
-	n.Host.Close()
 }
 
 // ^ handleDHTPeers: Connects to Peers in DHT ^
