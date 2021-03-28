@@ -70,7 +70,7 @@ func NewTopic(ctx context.Context, h host.Host, ps *pubsub.PubSub, name string, 
 		eventHandler: handler,
 		Lobby: &Lobby{
 			callback: th,
-			OLC:      name,
+			Name:     name[12:],
 			Size:     1,
 			Count:    0,
 			Peers:    make(map[string]*md.Peer),
