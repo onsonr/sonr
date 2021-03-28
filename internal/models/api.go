@@ -65,8 +65,8 @@ func GetAuthInviteWithURL(req *InviteRequest, p *Peer) AuthInvite {
 	}
 }
 
-func GetRemoteRequest(list []string) RemoteRequest {
-	return RemoteRequest{
+func GetRemoteInfo(list []string) RemoteInfo {
+	return RemoteInfo{
 		Display: fmt.Sprintf("%s %s %s", list[0], list[1], list[2]),
 		Topic:   fmt.Sprintf("%s-%s-%s", list[0], list[1], list[2]),
 		Count:   int32(len(list)),

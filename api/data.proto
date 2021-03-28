@@ -67,6 +67,15 @@ enum Payload {
   SPREADSHEET = 7;  // Spreadsheet based File from Excel or Numbers
 }
 
+// RemoteInfo is for Joining/Creating a New Topic
+message RemoteInfo {
+  bool isJoin = 1;
+  int32 count = 2;
+  string display = 3;
+  string topic = 4;
+  repeated string words = 5;
+}
+
 // TransferCard holds data passed between Exchange
 message TransferCard {
   int32 id = 1;         // SQL: Id reference

@@ -34,7 +34,7 @@ func (mn *MobileNode) CreateRemote() []byte {
 			return nil
 		}
 		// Create Remote Request and Join Lobby
-		remote := md.GetRemoteRequest(wordList)
+		remote := md.GetRemoteInfo(wordList)
 
 		// Join Lobby
 		tm, err := mn.node.JoinLobby(remote.Topic)
@@ -60,8 +60,12 @@ func (mn *MobileNode) CreateRemote() []byte {
 func (mn *MobileNode) JoinRemote(data []byte) {
 	if mn.isReady() {
 		// Unpackage Data
-		remote := md.RemoteRequest{}
-		proto.Unmarshal(data, &remote)
+		remote := md.RemoteInfo{}
+		err := proto.Unmarshal(data, &remote)
+		if err != nil {
+			mn.error(err, "JoinRemote")
+			return
+		}
 
 		// Join Lobby
 		tm, err := mn.node.JoinLobby(remote.Topic)
@@ -72,7 +76,6 @@ func (mn *MobileNode) JoinRemote(data []byte) {
 
 		// Set Topic
 		mn.topics[remote.Topic] = tm
-		return
 	}
 }
 

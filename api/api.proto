@@ -41,15 +41,6 @@ message ConnectionRequest {
   Connectivity connectivity = 8; // Client Network Type
 }
 
-// RemoteRequest is for Joining/Creating a New Topic
-message RemoteRequest {
-  bool isJoin = 1;
-  int32 count = 2;
-  string display = 3;
-  string topic = 4;
-  repeated string words = 5;
-}
-
 // Processes Given File and Invites Specified Peer
 message InviteRequest {
   // Properties
@@ -79,14 +70,6 @@ message InviteRequest {
     Contact = 3;    // Users Contact Card
     URL = 4;        // Website URL Link
   }
-}
-
-// Message with Response of Remote Point
-message RemoteResponse {
-  string first = 1;
-  string second = 2;
-  string third = 3;
-  string display = 4;
 }
 
 // Invitation Message sent on RPC
