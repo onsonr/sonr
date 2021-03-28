@@ -1,4 +1,4 @@
-package session
+package file
 
 import (
 	"os"
@@ -8,9 +8,6 @@ import (
 	"github.com/h2non/filetype"
 	md "github.com/sonr-io/core/internal/models"
 )
-
-const K_BUF_CHUNK = 32000
-const K_B64_CHUNK = 31998 // Adjusted for Base64 -- has to be divisible by 3
 
 // ^ Struct returned on GetInfo() Generate Preview/Metadata
 type FileInfo struct {
@@ -92,18 +89,4 @@ func GetFileInfo(path string) (*FileInfo, error) {
 		Size:    int32(info.Size()),
 		IsImage: filetype.IsImage(head),
 	}, nil
-}
-
-// ^ Helper: Chunks string based on B64ChunkSize ^ //
-func ChunkBase64(s string) []string {
-	chunkSize := K_B64_CHUNK
-	ss := make([]string, 0, len(s)/chunkSize+1)
-	for len(s) > 0 {
-		if len(s) < chunkSize {
-			chunkSize = len(s)
-		}
-		// Create Current Chunk String
-		ss, s = append(ss, s[:chunkSize]), s[chunkSize:]
-	}
-	return ss
 }

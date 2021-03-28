@@ -7,7 +7,7 @@ import (
 	rpc "github.com/libp2p/go-libp2p-gorpc"
 
 	"github.com/libp2p/go-libp2p-core/peer"
-	sf "github.com/sonr-io/core/internal/fs"
+	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
 	se "github.com/sonr-io/core/internal/session"
 	st "github.com/sonr-io/core/pkg/state"

@@ -2,168 +2,115 @@ package session
 
 import (
 	"bytes"
-	"image"
-	"image/jpeg"
-	"image/png"
+	"encoding/base64"
 	"io/ioutil"
 	"log"
-	"os"
 
+	"github.com/libp2p/go-libp2p-core/network"
+	"github.com/libp2p/go-msgio"
+	msg "github.com/libp2p/go-msgio"
 	md "github.com/sonr-io/core/internal/models"
+	st "github.com/sonr-io/core/pkg/state"
+	"google.golang.org/protobuf/proto"
 )
-type outgoingFile struct {
-	// References
-	Payload md.Payload
-	mime    *md.MIME
-	Path    string
 
-	// Private Properties
-	info    *FileInfo
-	request *md.InviteRequest
-	preview []byte
-	peer    *md.Peer
+const K_BUF_CHUNK = 32000
+const K_B64_CHUNK = 31998 // Adjusted for Base64 -- has to be divisible by 3
+
+// ^ read buffers sent on stream and save to file ^ //
+func (s *Session) ReadFromStream(stream network.Stream) {
+	// Route Data from Stream
+	go func(reader msg.ReadCloser, in *incomingFile) {
+		for i := 0; ; i++ {
+			// @ Read Length Fixed Bytes
+			buffer, err := reader.ReadMsg()
+			if err != nil {
+				s.callback.Error(err, "HandleIncoming:ReadMsg")
+				break
+			}
+
+			// @ Unmarshal Bytes into Proto
+			hasCompleted, err := in.AddBuffer(i, buffer)
+			if err != nil {
+				s.callback.Error(err, "HandleIncoming:AddBuffer")
+				break
+			}
+
+			// @ Check if All Buffer Received to Save
+			if hasCompleted {
+				// Sync file
+				if err := in.Save(); err != nil {
+					s.callback.Error(err, "HandleIncoming:Save")
+				}
+				break
+			}
+			st.GetState().NeedsWait()
+		}
+	}(msg.NewReader(stream), s.incoming)
 }
 
-// ^ newOutgoingFile Processes Outgoing File ^ //
-func newOutgoingFile(req *md.InviteRequest, p *md.Peer) *outgoingFile {
-	// Check Values
-	if req == nil || p == nil {
-		return nil
-	}
+// ^ write file as Base64 in Msgio to Stream ^ //
+func WriteToStream(writer msgio.WriteCloser, s *Session) {
+	// Initialize Buffer and Encode File
+	var base string
+	if s.outgoing.Payload == md.Payload_MEDIA {
+		buffer := new(bytes.Buffer)
 
-	// Get File Information
-	file := req.Files[len(req.Files)-1]
-	info, err := GetFileInfo(file.Path)
-	if err != nil {
-		return nil
-	}
-
-	// @ 1. Create new SafeFile
-	sm := &outgoingFile{
-		Path:    file.Path,
-		Payload: info.Payload,
-		request: req,
-		mime:    info.Mime,
-		peer:    p,
-		info:    info,
-	}
-	// @ 3. Create Thumbnail in Goroutine
-	if len(file.Thumbnail) > 0 {
-		// Initialize
-		thumbWriter := new(bytes.Buffer)
-		thumbReader := bytes.NewReader(file.Thumbnail)
-
-		// Convert to Image Object
-		img, _, err := image.Decode(thumbReader)
-		if err != nil {
-			log.Println(err)
-			return nil
+		if err := s.outgoing.encodeFile(buffer); err != nil {
+			log.Fatalln(err)
 		}
 
-		// @ Encode as Jpeg into buffer w/o scaling
-		err = jpeg.Encode(thumbWriter, img, nil)
-		if err != nil {
-			log.Panicln(err)
-			return nil
-		}
-
-		sm.preview = thumbWriter.Bytes()
-	}
-	return sm
-}
-
-// ^ Safely returns Preview depending on lock ^ //
-func (sm *outgoingFile) Card() *md.TransferCard {
-	// Create Card
-	card := md.TransferCard{
-		// SQL Properties
-		Payload:  sm.info.Payload,
-		Platform: sm.peer.Platform,
-
-		// Owner Properties
-		Username:  sm.peer.Profile.Username,
-		FirstName: sm.peer.Profile.FirstName,
-		LastName:  sm.peer.Profile.LastName,
-
-		Properties: &md.TransferCard_Properties{
-			Name: sm.info.Name,
-			Size: sm.info.Size,
-			Mime: sm.info.Mime,
-		},
-	}
-
-	if len(sm.preview) > 0 {
-		card.Preview = sm.preview
-	}
-	return &card
-}
-
-// ^ Method adjusts extension for JPEG ^ //
-func (pf *outgoingFile) Ext() string {
-	if pf.mime.Subtype == "jpg" || pf.mime.Subtype == "jpeg" {
-		return "jpeg"
-	}
-	return pf.mime.Subtype
-}
-
-// ^ Method Processes File at Path^ //
-func (pf *outgoingFile) encodeFile(buf *bytes.Buffer) error {
-	// @ Jpeg Image
-	if ext := pf.Ext(); ext == "jpg" {
-		// Open File at Meta Path
-		file, err := os.Open(pf.Path)
-		if err != nil {
-			return err
-		}
-		defer file.Close()
-
-		// Convert to Image Object
-		img, _, err := image.Decode(file)
-		if err != nil {
-			return err
-		}
-
-		// Encode as Jpeg into buffer
-		err = jpeg.Encode(buf, img, &jpeg.Options{Quality: 100})
-		if err != nil {
-			return err
-		}
-		return nil
-
-		// @ PNG Image
-	} else if ext == "png" {
-		// Open File at Meta Path
-		file, err := os.Open(pf.Path)
-		if err != nil {
-			return err
-		}
-		defer file.Close()
-
-		// Convert to Image Object
-		img, _, err := image.Decode(file)
-		if err != nil {
-			return err
-		}
-
-		// Encode as Jpeg into buffer
-		err = png.Encode(buf, img)
-		if err != nil {
-			return err
-		}
-		return nil
-
-		// @ Other - Open File at Path
+		// Encode Buffer to base 64
+		data := buffer.Bytes()
+		base = base64.StdEncoding.EncodeToString(data)
 	} else {
-		dat, err := ioutil.ReadFile(pf.Path)
+		data, err := ioutil.ReadFile(s.outgoing.Path)
 		if err != nil {
-			return err
+			log.Fatalln(err)
+		}
+		base = base64.StdEncoding.EncodeToString(data)
+	}
+
+	// Set Total
+	total := int32(len(base))
+
+	// Iterate for Entire file as String
+	for _, dat := range ChunkBase64(base) {
+		// Create Block Protobuf from Chunk
+		chunk := &md.Chunk64{
+			Size:  int32(len(dat)),
+			Data:  dat,
+			Total: total,
 		}
 
-		// Write Bytes to buffer
-		_, err = buf.Write(dat)
+		// Convert to bytes
+		bytes, err := proto.Marshal(chunk)
 		if err != nil {
-			return err
+			log.Fatalln(err)
 		}
-		return nil
+
+		// Write Message Bytes to Stream
+		err = writer.WriteMsg(bytes)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		st.GetState().NeedsWait()
 	}
+
+	// Call Completed Sending
+	s.callback.Transmitted(s.receiver)
+}
+
+// ^ Helper: Chunks string based on B64ChunkSize ^ //
+func ChunkBase64(s string) []string {
+	chunkSize := K_B64_CHUNK
+	ss := make([]string, 0, len(s)/chunkSize+1)
+	for len(s) > 0 {
+		if len(s) < chunkSize {
+			chunkSize = len(s)
+		}
+		// Create Current Chunk String
+		ss, s = append(ss, s[:chunkSize]), s[chunkSize:]
+	}
+	return ss
 }

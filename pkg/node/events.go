@@ -5,7 +5,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	mg "github.com/libp2p/go-msgio"
-	sf "github.com/sonr-io/core/internal/fs"
+	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
 	se "github.com/sonr-io/core/internal/session"
 	"google.golang.org/protobuf/proto"
