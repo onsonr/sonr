@@ -10,7 +10,7 @@ import (
 	sf "github.com/sonr-io/core/internal/fs"
 	md "github.com/sonr-io/core/internal/models"
 	se "github.com/sonr-io/core/internal/session"
-	dt "github.com/sonr-io/core/pkg/data"
+	st "github.com/sonr-io/core/pkg/state"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -30,8 +30,8 @@ type TopicServiceResponse struct {
 // Service Struct
 type TopicService struct {
 	// Methods
-	GetUser   dt.ReturnPeer
-	SyncLobby dt.SyncLobby
+	GetUser   st.ReturnPeer
+	SyncLobby st.SyncLobby
 
 	// Current Data
 	call   TopicHandler

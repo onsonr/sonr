@@ -23,7 +23,7 @@ import (
 	// direct "github.com/libp2p/go-libp2p-webrtc-direct"
 	// "github.com/pion/webrtc/v3"
 	net "github.com/sonr-io/core/internal/network"
-	dt "github.com/sonr-io/core/pkg/data"
+	st "github.com/sonr-io/core/pkg/state"
 	tpc "github.com/sonr-io/core/pkg/topic"
 )
 
@@ -166,7 +166,7 @@ func (n *Node) handleDHTPeers(routingDiscovery *dsc.RoutingDiscovery) {
 		}
 
 		// Refresh table every 4 seconds
-		dt.GetState().NeedsWait()
+		st.GetState().NeedsWait()
 		time.Sleep(time.Second * 4)
 	}
 }

@@ -6,7 +6,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	sf "github.com/sonr-io/core/internal/fs"
 	md "github.com/sonr-io/core/internal/models"
-	dt "github.com/sonr-io/core/pkg/data"
+	st "github.com/sonr-io/core/pkg/state"
 )
 
 // @ Constant Variables
@@ -16,7 +16,7 @@ const K_SONR_PRIV_KEY = "snr-peer.privkey"
 // @ Sonr User Struct
 type User struct {
 	// Properties
-	Call dt.NodeCallback
+	Call st.NodeCallback
 	FS   *sf.FileSystem
 
 	// User Data
@@ -30,7 +30,7 @@ type User struct {
 }
 
 // ^ Method Initializes User Info Struct ^ //
-func NewUser(cr *md.ConnectionRequest, callback dt.NodeCallback) (*User, error) {
+func NewUser(cr *md.ConnectionRequest, callback st.NodeCallback) (*User, error) {
 	// @ Init FileSystem
 	fs, err := sf.NewFs(cr, callback)
 	if err != nil {

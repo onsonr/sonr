@@ -12,7 +12,7 @@ import (
 	msg "github.com/libp2p/go-msgio"
 	sf "github.com/sonr-io/core/internal/fs"
 	md "github.com/sonr-io/core/internal/models"
-	dt "github.com/sonr-io/core/pkg/data"
+	st "github.com/sonr-io/core/pkg/state"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -23,11 +23,11 @@ type Session struct {
 	incoming *incomingFile
 	outgoing *outgoingFile
 
-	callback dt.NodeCallback
+	callback st.NodeCallback
 }
 
 // ^ Prepare for Outgoing Session ^ //
-func NewOutSession(p *md.Peer, req *md.InviteRequest, fs *sf.FileSystem, tc dt.NodeCallback) *Session {
+func NewOutSession(p *md.Peer, req *md.InviteRequest, fs *sf.FileSystem, tc st.NodeCallback) *Session {
 	o := newOutgoingFile(req, p)
 	return &Session{
 		sender:   p,
@@ -38,7 +38,7 @@ func NewOutSession(p *md.Peer, req *md.InviteRequest, fs *sf.FileSystem, tc dt.N
 }
 
 // ^ Prepare for Incoming Session ^ //
-func NewInSession(p *md.Peer, inv *md.AuthInvite, fs *sf.FileSystem, tc dt.NodeCallback) *Session {
+func NewInSession(p *md.Peer, inv *md.AuthInvite, fs *sf.FileSystem, tc st.NodeCallback) *Session {
 	return &Session{
 		sender:   inv.From,
 		receiver: p,
@@ -90,7 +90,7 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 				}
 				break
 			}
-			dt.GetState().NeedsWait()
+			st.GetState().NeedsWait()
 		}
 	}(msg.NewReader(stream), s.incoming)
 }
@@ -140,7 +140,7 @@ func WriteToStream(writer msgio.WriteCloser, s *Session) {
 		if err != nil {
 			log.Fatalln(err)
 		}
-		dt.GetState().NeedsWait()
+		st.GetState().NeedsWait()
 	}
 
 	// Call Completed Sending

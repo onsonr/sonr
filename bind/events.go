@@ -4,7 +4,7 @@ import (
 	"log"
 
 	md "github.com/sonr-io/core/internal/models"
-	dt "github.com/sonr-io/core/pkg/data"
+	st "github.com/sonr-io/core/pkg/state"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -24,8 +24,8 @@ type Callback interface {
 }
 
 // ^ Passes binded Methods to Node ^
-func (mn *MobileNode) callbackNode() dt.NodeCallback {
-	return dt.NodeCallback{
+func (mn *MobileNode) callbackNode() st.NodeCallback {
+	return st.NodeCallback{
 		// Direct
 		Refreshed:   mn.call.OnRefreshed,
 		Event:       mn.call.OnEvent,

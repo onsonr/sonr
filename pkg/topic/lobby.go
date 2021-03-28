@@ -6,7 +6,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	md "github.com/sonr-io/core/internal/models"
-	dt "github.com/sonr-io/core/pkg/data"
+	st "github.com/sonr-io/core/pkg/state"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -116,7 +116,7 @@ func (tm *TopicManager) handleTopicEvents() {
 			tm.Lobby.Delete(lobEvent.Peer)
 		}
 
-		dt.GetState().NeedsWait()
+		st.GetState().NeedsWait()
 	}
 }
 
@@ -145,7 +145,7 @@ func (tm *TopicManager) handleTopicMessages() {
 		if tm.HasPeer(m.Id) {
 			tm.Messages <- m
 		}
-		dt.GetState().NeedsWait()
+		st.GetState().NeedsWait()
 	}
 }
 
@@ -169,6 +169,6 @@ func (tm *TopicManager) processTopicMessages() {
 		case <-tm.ctx.Done():
 			return
 		}
-		dt.GetState().NeedsWait()
+		st.GetState().NeedsWait()
 	}
 }

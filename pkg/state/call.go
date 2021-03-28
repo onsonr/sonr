@@ -1,4 +1,4 @@
-package data
+package state
 
 import (
 	md "github.com/sonr-io/core/internal/models"
