@@ -10,7 +10,6 @@ import (
 
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
-	st "github.com/sonr-io/core/pkg/state"
 
 	"google.golang.org/protobuf/proto"
 )
@@ -18,7 +17,7 @@ import (
 type incomingFile struct {
 	// Inherited Properties
 	mutex      sync.Mutex
-	call       st.NodeCallback
+	call       md.NodeCallback
 	fs         *sf.FileSystem
 	owner      *md.Profile
 	payload    md.Payload

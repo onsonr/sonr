@@ -16,14 +16,13 @@ import (
 	// Local
 	net "github.com/sonr-io/core/internal/network"
 	se "github.com/sonr-io/core/internal/session"
-	st "github.com/sonr-io/core/pkg/state"
 )
 
 // ^ Struct: Main Node handles Networking/Identity/Streams ^
 type Node struct {
 	// Properties
 	ctx  context.Context
-	call st.NodeCallback
+	call md.NodeCallback
 
 	// Networking Properties
 	Host   host.Host
@@ -36,7 +35,7 @@ type Node struct {
 }
 
 // ^ NewNode Initializes Node with a host and default properties ^
-func NewNode(ctx context.Context, cr *md.ConnectionRequest, call st.NodeCallback) *Node {
+func NewNode(ctx context.Context, cr *md.ConnectionRequest, call md.NodeCallback) *Node {
 	return &Node{
 		ctx:    ctx,
 		call:   call,

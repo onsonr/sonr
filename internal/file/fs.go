@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 
 	md "github.com/sonr-io/core/internal/models"
-	st "github.com/sonr-io/core/pkg/state"
 )
 
 const K_SONR_CLIENT_DIR = ".sonr"
@@ -18,7 +17,7 @@ const K_FILE_QUEUE_NAME = "file-queue"
 type FileSystem struct {
 	// Properties
 	IsDesktop bool
-	Call      st.NodeCallback
+	Call      md.NodeCallback
 
 	// Directories
 	Downloads string
@@ -27,7 +26,7 @@ type FileSystem struct {
 }
 
 // ^ Method Initializes Root Sonr Directory ^ //
-func NewFs(connEvent *md.ConnectionRequest, callback st.NodeCallback) (*FileSystem, error) {
+func NewFs(connEvent *md.ConnectionRequest, callback md.NodeCallback) (*FileSystem, error) {
 	// Initialize
 	var sonrPath string
 

@@ -1,6 +1,5 @@
 package session
 
-
 import (
 	"bytes"
 	"image"
@@ -10,9 +9,10 @@ import (
 	"log"
 	"os"
 
-	md "github.com/sonr-io/core/internal/models"
 	sf "github.com/sonr-io/core/internal/file"
+	md "github.com/sonr-io/core/internal/models"
 )
+
 type outgoingFile struct {
 	// References
 	Payload md.Payload
@@ -98,6 +98,11 @@ func (sm *outgoingFile) Card() *md.TransferCard {
 		card.Preview = sm.preview
 	}
 	return &card
+}
+
+// ^ Safely returns Preview depending on lock ^ //
+func (s *Session) OutgoingCard() *md.TransferCard {
+	return s.outgoing.Card()
 }
 
 // ^ Method adjusts extension for JPEG ^ //

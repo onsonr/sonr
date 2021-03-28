@@ -6,7 +6,6 @@ import (
 	md "github.com/sonr-io/core/internal/models"
 	u "github.com/sonr-io/core/internal/user"
 	sn "github.com/sonr-io/core/pkg/node"
-	st "github.com/sonr-io/core/pkg/state"
 	tpc "github.com/sonr-io/core/pkg/topic"
 	"google.golang.org/protobuf/proto"
 )
@@ -109,12 +108,12 @@ func (mn *MobileNode) Connect() {
 // **-------------------** //
 // @ Close Ends All Network Communication
 func (mn *MobileNode) Pause() {
-	st.GetState().Pause()
+	md.GetState().Pause()
 }
 
 // @ Close Ends All Network Communication
 func (mn *MobileNode) Resume() {
-	st.GetState().Resume()
+	md.GetState().Resume()
 }
 
 // @ Close Ends All Network Communication

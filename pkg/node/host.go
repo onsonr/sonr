@@ -17,13 +17,13 @@ import (
 	psub "github.com/libp2p/go-libp2p-pubsub"
 	swr "github.com/libp2p/go-libp2p-swarm"
 	tls "github.com/libp2p/go-libp2p-tls"
+	md "github.com/sonr-io/core/internal/models"
 
 	// Local
 	// mplex "github.com/libp2p/go-libp2p-mplex"
 	// direct "github.com/libp2p/go-libp2p-webrtc-direct"
 	// "github.com/pion/webrtc/v3"
 	net "github.com/sonr-io/core/internal/network"
-	st "github.com/sonr-io/core/pkg/state"
 )
 
 // ^ Start Begins Assigning Host Parameters ^
@@ -151,7 +151,7 @@ func (n *Node) handleDHTPeers(routingDiscovery *dsc.RoutingDiscovery) {
 		}
 
 		// Refresh table every 4 seconds
-		st.GetState().NeedsWait()
+		md.GetState().NeedsWait()
 		time.Sleep(time.Second * 4)
 	}
 }

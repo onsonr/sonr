@@ -3,14 +3,12 @@ package session
 import (
 	"bytes"
 	"encoding/base64"
-	"io/ioutil"
 	"log"
 
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-msgio"
 	msg "github.com/libp2p/go-msgio"
 	md "github.com/sonr-io/core/internal/models"
-	st "github.com/sonr-io/core/pkg/state"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -44,7 +42,7 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 				}
 				break
 			}
-			st.GetState().NeedsWait()
+			md.GetState().NeedsWait()
 		}
 	}(msg.NewReader(stream), s.incoming)
 }
@@ -52,26 +50,14 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 // ^ write file as Base64 in Msgio to Stream ^ //
 func WriteToStream(writer msgio.WriteCloser, s *Session) {
 	// Initialize Buffer and Encode File
-	var base string
-	if s.outgoing.Payload == md.Payload_MEDIA {
-		buffer := new(bytes.Buffer)
-
-		if err := s.outgoing.encodeFile(buffer); err != nil {
-			log.Fatalln(err)
-		}
-
-		// Encode Buffer to base 64
-		data := buffer.Bytes()
-		base = base64.StdEncoding.EncodeToString(data)
-	} else {
-		data, err := ioutil.ReadFile(s.outgoing.Path)
-		if err != nil {
-			log.Fatalln(err)
-		}
-		base = base64.StdEncoding.EncodeToString(data)
+	buffer := new(bytes.Buffer)
+	if err := s.outgoing.encodeFile(buffer); err != nil {
+		log.Fatalln(err)
 	}
 
-	// Set Total
+	// Encode Buffer to base 64
+	data := buffer.Bytes()
+	base := base64.StdEncoding.EncodeToString(data)
 	total := int32(len(base))
 
 	// Iterate for Entire file as String
@@ -94,7 +80,7 @@ func WriteToStream(writer msgio.WriteCloser, s *Session) {
 		if err != nil {
 			log.Fatalln(err)
 		}
-		st.GetState().NeedsWait()
+		md.GetState().NeedsWait()
 	}
 
 	// Call Completed Sending
