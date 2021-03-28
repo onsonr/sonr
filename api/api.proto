@@ -6,6 +6,13 @@ import "user.proto";
 // Require Go Package
 option go_package = ".;models";
 
+// Client Network Connection Status
+enum Connectivity {
+  None = 0;
+  Mobile = 1;
+  WiFi = 2;
+}
+
 // Status is User Node Situation
 enum Status {
   NONE = 0;         // Default Status on Launch
@@ -56,11 +63,11 @@ message InviteRequest {
 
   // Enum for Type of Transfer
   enum TransferType {
-    Unknown = 0;       // Default Value, Would not Transfer
-    File = 1;          // Media or Document
-    MultiFiles = 2;    // Multiple Media or Documents
-    Contact = 3;       // Users Contact Card
-    URL = 4;           // Website URL Link
+    Unknown = 0;    // Default Value, Would not Transfer
+    File = 1;       // Media or Document
+    MultiFiles = 2; // Multiple Media or Documents
+    Contact = 3;    // Users Contact Card
+    URL = 4;        // Website URL Link
   }
 }
 
@@ -70,13 +77,6 @@ message RemoteResponse {
   string second = 2;
   string third = 3;
   string display = 4;
-}
-
-// Request to Link a Device for Direct Transfer
-message LinkRequest {
-  Device device = 1; // Device Information
-  int32 expiry = 2;  // TimeStamp for Link Expiry
-  Peer peer = 3;     // Device Peer Info
 }
 
 // Invitation Message sent on RPC
