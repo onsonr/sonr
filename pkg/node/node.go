@@ -136,6 +136,7 @@ func (n *Node) InviteFile(req *md.InviteRequest, t *tpc.TopicManager, p *md.Peer
 
 // ^ Respond to an Invitation ^ //
 func (n *Node) Respond(decision bool, fs *sf.FileSystem, p *md.Peer, t *tpc.TopicManager, c *md.Contact) {
+
 	t.RespondToInvite(decision, fs, p, c)
 }
 

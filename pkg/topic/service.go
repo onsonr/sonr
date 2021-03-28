@@ -164,6 +164,11 @@ func (ts *TopicService) InviteWith(ctx context.Context, args TopicServiceArgs, r
 
 // ^ RespondToInvite to an Invitation ^ //
 func (n *TopicManager) RespondToInvite(decision bool, fs *sf.FileSystem, p *md.Peer, c *md.Contact) {
+	// Prepare Transfer
+	if decision {
+		n.callback.OnReceiveTransfer(n.service.invite, fs)
+	}
+
 	// @ Pass Contact Back
 	if n.service.invite.Payload == md.Payload_CONTACT {
 		// Create Accept Response
