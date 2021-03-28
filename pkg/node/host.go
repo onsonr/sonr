@@ -20,9 +20,9 @@ import (
 	md "github.com/sonr-io/core/internal/models"
 
 	// Local
-	// mplex "github.com/libp2p/go-libp2p-mplex"
-	// direct "github.com/libp2p/go-libp2p-webrtc-direct"
-	// "github.com/pion/webrtc/v3"
+	mplex "github.com/libp2p/go-libp2p-mplex"
+	direct "github.com/libp2p/go-libp2p-webrtc-direct"
+	"github.com/pion/webrtc/v3"
 	net "github.com/sonr-io/core/internal/network"
 )
 
@@ -39,11 +39,10 @@ func (n *Node) Start(key crypto.PrivKey) error {
 	// )
 
 	// WebRTC Configuration
-
-	// transport := direct.NewTransport(
-	// 	webrtc.Configuration{},
-	// 	new(mplex.Transport),
-	// )
+	transport := direct.NewTransport(
+		webrtc.Configuration{},
+		new(mplex.Transport),
+	)
 
 	// Start Host
 	h, err := libp2p.New(
@@ -51,16 +50,14 @@ func (n *Node) Start(key crypto.PrivKey) error {
 		libp2p.Identity(key),
 		// Add listening Addresses
 		libp2p.ListenAddrStrings(
-			fmt.Sprintf("/ip4/%s/tcp/0", ip4),
-			fmt.Sprintf("/ip6/%s/tcp/0", ip6),
-			// fmt.Sprintf("/ip4/%s/tcp/0/http/p2p-webrtc-direct", ip4),
-			// fmt.Sprintf("/ip6/%s/tcp/0/http/p2p-webrtc-direct", ip6),
+			fmt.Sprintf("/ip4/%s/tcp/0/http/0/p2p-webrtc-direct", ip4),
+			fmt.Sprintf("/ip6/%s/tcp/0/http/0/p2p-webrtc-direct", ip6),
 		),
 		// support TLS connections
 		libp2p.Security(tls.ID, tls.New),
 		//libp2p.Transport(tortransport),
-		//libp2p.DisableRelay(),
-		//libp2p.Transport(transport),
+
+		libp2p.Transport(transport),
 		libp2p.DefaultTransports,
 		libp2p.NATPortMap(),
 		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
@@ -74,7 +71,7 @@ func (n *Node) Start(key crypto.PrivKey) error {
 			n.kdht = kdht
 			return kdht, err
 		}),
-		libp2p.EnableAutoRelay(),
+		libp2p.DisableRelay(),
 	)
 
 	// Set Host for Node
