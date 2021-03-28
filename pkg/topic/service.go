@@ -122,7 +122,7 @@ func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite, session *se.Sessi
 	if call.Error != nil {
 		return err
 	}
-	tm.callback.OnReply(id, reply.InvReply, session)
+	tm.topicHandler.OnReply(id, reply.InvReply, session)
 	return nil
 }
 
@@ -165,14 +165,13 @@ func (ts *TopicService) InviteWith(ctx context.Context, args TopicServiceArgs, r
 func (n *TopicManager) RespondToInvite(decision bool, fs *sf.FileSystem, p *md.Peer, c *md.Contact) {
 	// Prepare Transfer
 	if decision {
-		n.callback.OnReceiveTransfer(n.service.invite, fs)
+		n.topicHandler.OnResponded(n.service.invite, fs)
 	}
 
 	// @ Pass Contact Back
 	if n.service.invite.Payload == md.Payload_CONTACT {
 		// Create Accept Response
 		resp := &md.AuthReply{
-			IsRemote: n.service.invite.IsRemote,
 			From:     p,
 			Type:     md.AuthReply_Contact,
 			Card: &md.TransferCard{
@@ -199,7 +198,6 @@ func (n *TopicManager) RespondToInvite(decision bool, fs *sf.FileSystem, p *md.P
 	} else {
 		// Create Accept Response
 		resp := &md.AuthReply{
-			IsRemote: n.service.invite.IsRemote,
 			From:     p,
 			Type:     md.AuthReply_Transfer,
 			Decision: decision,

@@ -47,11 +47,12 @@ message InviteRequest {
   TransferType type = 1; // General Payload Type
   Peer to = 2;           // User thats being Invited
   bool isRemote = 3;     // If Transfer is Remote
+  string topic = 4;      // Remote Topic Name
 
   // Attached Data
-  string url = 4;              // URL to be Sent - Optional
-  Contact contact = 5;         // Contact Card to be Sent - Optional
-  repeated FileInfo files = 6; // Files to be Sent - Optional
+  string url = 5;              // URL to be Sent - Optional
+  Contact contact = 6;         // Contact Card to be Sent - Optional
+  repeated FileInfo files = 7; // Files to be Sent - Optional
 
   // FileInfo Message for Attached Files
   message FileInfo {
@@ -71,20 +72,11 @@ message InviteRequest {
   }
 }
 
-// Message with Response of Remote Point
-message RemoteResponse {
-  string first = 1;
-  string second = 2;
-  string third = 3;
-  string display = 4;
-}
-
 // Invitation Message sent on RPC
 message AuthInvite {
   Payload payload = 1;   // Type of Transfer
   Peer from = 2;         // Users Peer Data
   TransferCard card = 3; // Card contains all Data Info, Transfer Info
-  bool isRemote = 4;     // Is for Remote Point
 }
 
 // Reply Message sent on RPC
@@ -93,7 +85,6 @@ message AuthReply {
   Peer from = 2;         // Users Peer Data
   bool decision = 3;     // Users Decision for the Invitation
   TransferCard card = 4; // Card contains all Data Info, Transfer Info
-  bool isRemote = 5;     // Is for Remote Point
 
   enum Type {
     None = 0;

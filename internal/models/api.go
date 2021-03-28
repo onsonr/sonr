@@ -1,14 +1,16 @@
 package models
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 // ^ Generate AuthInvite with Contact Payload from Request, User Peer Data and User Contact ^ //
 func GetAuthInviteWithContact(req *InviteRequest, p *Peer, c *Contact) AuthInvite {
 	// Create Invite
 	return AuthInvite{
-		IsRemote: false,
-		From:     p,
-		Payload:  Payload_CONTACT,
+		From:    p,
+		Payload: Payload_CONTACT,
 		Card: &TransferCard{
 			// SQL Properties
 			Payload:  Payload_CONTACT,
@@ -29,7 +31,6 @@ func GetAuthInviteWithContact(req *InviteRequest, p *Peer, c *Contact) AuthInvit
 	}
 }
 
-
 // ^ Generate AuthInvite with URL Payload from Request and User Peer Data ^ //
 func GetAuthInviteWithURL(req *InviteRequest, p *Peer) AuthInvite {
 	// Get URL Data
@@ -42,9 +43,8 @@ func GetAuthInviteWithURL(req *InviteRequest, p *Peer) AuthInvite {
 
 	// Create Invite
 	return AuthInvite{
-		IsRemote: req.IsRemote,
-		From:     p,
-		Payload:  Payload_URL,
+		From:    p,
+		Payload: Payload_URL,
 		Card: &TransferCard{
 			// SQL Properties
 			Payload:  Payload_URL,
@@ -62,5 +62,15 @@ func GetAuthInviteWithURL(req *InviteRequest, p *Peer) AuthInvite {
 			// Data Properties
 			Url: urlInfo,
 		},
+	}
+}
+
+func GetRemoteInfo(list []string) RemoteInfo {
+	return RemoteInfo{
+		Display: fmt.Sprintf("%s %s %s", list[0], list[1], list[2]),
+		Topic:   fmt.Sprintf("%s-%s-%s", list[0], list[1], list[2]),
+		Count:   int32(len(list)),
+		IsJoin:  false,
+		Words:   list,
 	}
 }

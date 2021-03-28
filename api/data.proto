@@ -5,10 +5,9 @@ import "user.proto";
 // Require Go Package
 option go_package = ".;models";
 
-
 // For Info about Lobby
 message Lobby {
-  string olc = 1;              // Open Location Code of Lobby
+  string name = 1;             // Open Location Code of Lobby
   int32 size = 2;              // Total Number of Devices in Lobby
   int32 count = 3;             // Total Devices in Lobby EXCLUDING User
   map<string, Peer> peers = 4; // Total Data of Active Peers
@@ -66,6 +65,15 @@ enum Payload {
   PDF = 5;          // PDF File
   PRESENTATION = 6; // Presentation based File from PPT or Keynote
   SPREADSHEET = 7;  // Spreadsheet based File from Excel or Numbers
+}
+
+// RemoteInfo is for Joining/Creating a New Topic
+message RemoteInfo {
+  bool isJoin = 1;
+  int32 count = 2;
+  string display = 3;
+  string topic = 4;
+  repeated string words = 5;
 }
 
 // TransferCard holds data passed between Exchange

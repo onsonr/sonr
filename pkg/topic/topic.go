@@ -23,14 +23,14 @@ type TopicManager struct {
 	host         host.Host
 	topic        *pubsub.Topic
 	subscription *pubsub.Subscription
-	handler      *pubsub.TopicEventHandler
+	eventHandler *pubsub.TopicEventHandler
 	Lobby        *Lobby
 
-	topicPoint string
-	service    *TopicService
-	protocol   protocol.ID
-	Messages   chan *md.LobbyEvent
-	callback   TopicHandler
+	topicPoint   string
+	service      *TopicService
+	protocol     protocol.ID
+	Messages     chan *md.LobbyEvent
+	topicHandler TopicHandler
 }
 
 type TopicHandler interface {
@@ -39,7 +39,7 @@ type TopicHandler interface {
 	OnRefresh(*md.Lobby)
 	OnInvite([]byte)
 	OnReply(id peer.ID, data []byte, session *se.Session)
-	OnReceiveTransfer(inv *md.AuthInvite, fs *sf.FileSystem)
+	OnResponded(inv *md.AuthInvite, fs *sf.FileSystem)
 }
 
 // ^ Create New Contained Topic Manager ^ //
@@ -64,13 +64,13 @@ func NewTopic(ctx context.Context, h host.Host, ps *pubsub.PubSub, name string, 
 
 	// Create Lobby Manager
 	mgr := &TopicManager{
-		callback: th,
-		ctx:      ctx,
-		host:     h,
-		handler:  handler,
+		topicHandler: th,
+		ctx:          ctx,
+		host:         h,
+		eventHandler: handler,
 		Lobby: &Lobby{
 			callback: th,
-			OLC:      name,
+			Name:     name[12:],
 			Size:     1,
 			Count:    0,
 			Peers:    make(map[string]*md.Peer),
@@ -100,7 +100,6 @@ func NewTopic(ctx context.Context, h host.Host, ps *pubsub.PubSub, name string, 
 
 	// Set Service
 	mgr.service = &psv
-
 	go mgr.handleTopicEvents()
 	go mgr.handleTopicMessages()
 	go mgr.processTopicMessages()

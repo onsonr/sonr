@@ -12,7 +12,6 @@ type Callback interface {
 	OnStatus(data []byte)      // Node Status Updates
 	OnRefreshed(data []byte)   // Lobby Updates
 	OnEvent(data []byte)       // Lobby Event
-	OnRemoteStart(data []byte) // User started remote
 	OnInvited(data []byte)     // User Invited
 	OnDirected(data []byte)    // User Direct-Invite from another Device
 	OnResponded(data []byte)   // Peer has responded
@@ -26,11 +25,10 @@ type Callback interface {
 func (mn *MobileNode) callbackNode() md.NodeCallback {
 	return md.NodeCallback{
 		// Direct
-		Refreshed:   mn.call.OnRefreshed,
-		Event:       mn.call.OnEvent,
-		RemoteStart: mn.call.OnRemoteStart,
-		Responded:   mn.call.OnResponded,
-		Progressed:  mn.call.OnProgress,
+		Refreshed:  mn.call.OnRefreshed,
+		Event:      mn.call.OnEvent,
+		Responded:  mn.call.OnResponded,
+		Progressed: mn.call.OnProgress,
 
 		// Middleware
 		Invited:     mn.invited,

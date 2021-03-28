@@ -38,6 +38,12 @@ func (n *Node) OnRefresh(l *md.Lobby) {
 	n.call.Refreshed(bytes)
 }
 
+// ^ OnInvite: User Received Invite ^
+func (n *Node) OnInvite(invite []byte) {
+	// Send Callback
+	n.call.Invited(invite)
+}
+
 // ^ OnReply: Begins File Transfer when Accepted ^
 func (n *Node) OnReply(id peer.ID, reply []byte, session *se.Session) {
 	// Call Responded
@@ -62,17 +68,13 @@ func (n *Node) OnReply(id peer.ID, reply []byte, session *se.Session) {
 		// Write to Stream on Session
 		writer := mg.NewWriter(stream)
 		go se.WriteToStream(writer, session)
+	} else {
+		n.session = nil
 	}
 }
 
-// ^ OnInvite: User Received Invite ^
-func (n *Node) OnInvite(invite []byte) {
-	// Send Callback
-	n.call.Invited(invite)
-}
-
-// ^ OnReceiveTransfer: Prepares for Incoming File Transfer when Accepted ^
-func (n *Node) OnReceiveTransfer(inv *md.AuthInvite, fs *sf.FileSystem) {
+// ^ OnResponded: Prepares for Incoming File Transfer when Accepted ^
+func (n *Node) OnResponded(inv *md.AuthInvite, fs *sf.FileSystem) {
 	n.session = se.NewInSession(n.GetPeer(), inv, fs, n.call)
 	n.Host.SetStreamHandler(n.router.Transfer(), n.session.ReadFromStream)
 }

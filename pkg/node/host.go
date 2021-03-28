@@ -32,19 +32,6 @@ func (n *Node) Start(key crypto.PrivKey) error {
 	ip4 := net.IPv4()
 	ip6 := net.IPv6()
 
-	// // Tor Configuration
-	// tortransport, err := tor.NewBuilder( // Create a builder
-	// 	tconf.EnableEmbeded, // Use the embeded tor instance.
-	// 	tconf.AllowTcpDial,
-	// )
-
-	// WebRTC Configuration
-
-	// transport := direct.NewTransport(
-	// 	webrtc.Configuration{},
-	// 	new(mplex.Transport),
-	// )
-
 	// Start Host
 	h, err := libp2p.New(
 		n.ctx,
@@ -53,14 +40,9 @@ func (n *Node) Start(key crypto.PrivKey) error {
 		libp2p.ListenAddrStrings(
 			fmt.Sprintf("/ip4/%s/tcp/0", ip4),
 			fmt.Sprintf("/ip6/%s/tcp/0", ip6),
-			// fmt.Sprintf("/ip4/%s/tcp/0/http/p2p-webrtc-direct", ip4),
-			// fmt.Sprintf("/ip6/%s/tcp/0/http/p2p-webrtc-direct", ip6),
 		),
 		// support TLS connections
 		libp2p.Security(tls.ID, tls.New),
-		//libp2p.Transport(tortransport),
-		//libp2p.DisableRelay(),
-		//libp2p.Transport(transport),
 		libp2p.DefaultTransports,
 		libp2p.NATPortMap(),
 		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
@@ -82,7 +64,6 @@ func (n *Node) Start(key crypto.PrivKey) error {
 		return err
 	}
 	n.Host = h
-
 	return nil
 }
 

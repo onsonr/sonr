@@ -4,6 +4,8 @@ import (
 	"log"
 
 	md "github.com/sonr-io/core/internal/models"
+	"github.com/sonr-io/core/internal/network"
+	"github.com/sonr-io/core/pkg/topic"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -21,6 +23,60 @@ func GetURLMetadata(url string) []byte {
 		log.Println(err, " Failed to Parse URL")
 	}
 	return bytes
+}
+
+// @ Join Existing Group
+func (mn *MobileNode) CreateRemote() []byte {
+	if mn.isReady() {
+		// Generate Word List
+		_, wordList, err := network.RandomWords("english", 3)
+		if err != nil {
+			return nil
+		}
+		// Create Remote Request and Join Lobby
+		remote := md.GetRemoteInfo(wordList)
+
+		// Join Lobby
+		tm, err := mn.node.JoinLobby(remote.Topic)
+		if err != nil {
+			mn.error(err, "JoinRemote")
+			return nil
+		}
+
+		// Set Topic
+		mn.topics[remote.Topic] = tm
+
+		// Marshal
+		data, err := proto.Marshal(&remote)
+		if err != nil {
+			return nil
+		}
+		return data
+	}
+	return nil
+}
+
+// @ Join Existing Group
+func (mn *MobileNode) JoinRemote(data []byte) {
+	if mn.isReady() {
+		// Unpackage Data
+		remote := md.RemoteInfo{}
+		err := proto.Unmarshal(data, &remote)
+		if err != nil {
+			mn.error(err, "JoinRemote")
+			return
+		}
+
+		// Join Lobby
+		tm, err := mn.node.JoinLobby(remote.Topic)
+		if err != nil {
+			mn.error(err, "JoinRemote")
+			return
+		}
+
+		// Set Topic
+		mn.topics[remote.Topic] = tm
+	}
 }
 
 // @ Update proximity/direction and Notify Lobby
@@ -59,36 +115,35 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 			return
 		}
 
+		// Retreive Invite Topic
+		var topic *topic.TopicManager
+		if req.IsRemote {
+			topic = mn.topics[req.Topic]
+		} else {
+			topic = mn.local
+		}
+
 		// @ 2. Check Transfer Type
 		if req.Type == md.InviteRequest_Contact {
-			err := mn.node.InviteContact(req, mn.local, mn.user.Peer(), mn.user.Contact())
+			err := mn.node.InviteContact(req, topic, mn.user.Peer(), mn.user.Contact())
 			if err != nil {
 				log.Println(err)
 				return
 			}
 		} else if req.Type == md.InviteRequest_URL {
-			err := mn.node.InviteLink(req, mn.local, mn.user.Peer())
+			err := mn.node.InviteLink(req, topic, mn.user.Peer())
 			if err != nil {
 				log.Println(err)
 				return
 			}
 		} else {
 			// Invite With file
-			err := mn.node.InviteFile(req, mn.local, mn.user.Peer(), mn.user.FS)
+			err := mn.node.InviteFile(req, topic, mn.user.Peer(), mn.user.FS)
 			if err != nil {
 				log.Println(err)
 				return
 			}
 		}
-	}
-}
-
-// @ Join Existing Group
-func (mn *MobileNode) JoinRemote(data string) {
-	if mn.isReady() {
-		// mn.node.JoinRemote(data)
-		log.Println(data)
-		return
 	}
 }
 
