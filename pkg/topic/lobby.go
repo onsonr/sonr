@@ -23,7 +23,7 @@ type Lobby struct {
 // ^ Returns as Lobby Buffer ^
 func (l *Lobby) Buffer() []byte {
 	bytes, err := proto.Marshal(&md.Lobby{
-		Olc:   l.OLC,
+		Name:  l.OLC,
 		Size:  l.Size,
 		Count: l.Count,
 		Peers: l.Peers,
@@ -64,7 +64,7 @@ func (l *Lobby) Delete(id peer.ID) {
 // ^ Send Updated Lobby ^
 func (l *Lobby) Refresh() {
 	l.callback.OnRefresh(&md.Lobby{
-		Olc:   l.OLC,
+		Name:  l.OLC,
 		Size:  l.Size,
 		Count: l.Count,
 		Peers: l.Peers,

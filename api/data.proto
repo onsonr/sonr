@@ -5,10 +5,9 @@ import "user.proto";
 // Require Go Package
 option go_package = ".;models";
 
-
 // For Info about Lobby
 message Lobby {
-  string olc = 1;              // Open Location Code of Lobby
+  string name = 1;             // Open Location Code of Lobby
   int32 size = 2;              // Total Number of Devices in Lobby
   int32 count = 3;             // Total Devices in Lobby EXCLUDING User
   map<string, Peer> peers = 4; // Total Data of Active Peers

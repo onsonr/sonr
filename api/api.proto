@@ -41,17 +41,27 @@ message ConnectionRequest {
   Connectivity connectivity = 8; // Client Network Type
 }
 
+// RemoteRequest is for Joining/Creating a New Topic
+message RemoteRequest {
+  bool isJoin = 1;
+  int32 count = 2;
+  string display = 3;
+  string topic = 4;
+  repeated string words = 5;
+}
+
 // Processes Given File and Invites Specified Peer
 message InviteRequest {
   // Properties
   TransferType type = 1; // General Payload Type
   Peer to = 2;           // User thats being Invited
-  string topic = 3;      // If Transfer is Remote
+  bool isRemote = 3;     // If Transfer is Remote
+  string topic = 4;      // Remote Topic Name
 
   // Attached Data
-  string url = 4;              // URL to be Sent - Optional
-  Contact contact = 5;         // Contact Card to be Sent - Optional
-  repeated FileInfo files = 6; // Files to be Sent - Optional
+  string url = 5;              // URL to be Sent - Optional
+  Contact contact = 6;         // Contact Card to be Sent - Optional
+  repeated FileInfo files = 7; // Files to be Sent - Optional
 
   // FileInfo Message for Attached Files
   message FileInfo {

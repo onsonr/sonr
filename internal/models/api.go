@@ -1,6 +1,9 @@
 package models
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 // ^ Generate AuthInvite with Contact Payload from Request, User Peer Data and User Contact ^ //
 func GetAuthInviteWithContact(req *InviteRequest, p *Peer, c *Contact) AuthInvite {
@@ -59,5 +62,15 @@ func GetAuthInviteWithURL(req *InviteRequest, p *Peer) AuthInvite {
 			// Data Properties
 			Url: urlInfo,
 		},
+	}
+}
+
+func GetRemoteRequest(list []string) RemoteRequest {
+	return RemoteRequest{
+		Display: fmt.Sprintf("%s %s %s", list[0], list[1], list[2]),
+		Topic:   fmt.Sprintf("%s-%s-%s", list[0], list[1], list[2]),
+		Count:   int32(len(list)),
+		IsJoin:  false,
+		Words:   list,
 	}
 }

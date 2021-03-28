@@ -22,7 +22,7 @@ type MobileNode struct {
 
 	// Groups
 	local  *tpc.TopicManager
-	topics []*tpc.TopicManager
+	topics map[string]*tpc.TopicManager
 }
 
 // @ Create New Mobile Node
@@ -38,7 +38,7 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 	mn := &MobileNode{
 		call:   call,
 		config: newMobileConfig(),
-		topics: make([]*tpc.TopicManager, 10),
+		topics: make(map[string]*tpc.TopicManager, 10),
 	}
 
 	// Create New User

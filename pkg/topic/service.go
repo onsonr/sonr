@@ -172,7 +172,6 @@ func (n *TopicManager) RespondToInvite(decision bool, fs *sf.FileSystem, p *md.P
 	if n.service.invite.Payload == md.Payload_CONTACT {
 		// Create Accept Response
 		resp := &md.AuthReply{
-			IsRemote: n.service.invite.IsRemote,
 			From:     p,
 			Type:     md.AuthReply_Contact,
 			Card: &md.TransferCard{
@@ -199,7 +198,6 @@ func (n *TopicManager) RespondToInvite(decision bool, fs *sf.FileSystem, p *md.P
 	} else {
 		// Create Accept Response
 		resp := &md.AuthReply{
-			IsRemote: n.service.invite.IsRemote,
 			From:     p,
 			Type:     md.AuthReply_Transfer,
 			Decision: decision,
