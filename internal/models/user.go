@@ -141,7 +141,7 @@ func (p *Peer) SignReply() *AuthReply {
 		Type: AuthReply_Contact,
 		Card: &TransferCard{
 			// SQL Properties
-			Payload:  Payload_CONTACT,
+			Payload:  Payload_UNDEFINED,
 			Received: int32(time.Now().Unix()),
 			Preview:  p.Profile.Picture,
 			Platform: p.Platform,
