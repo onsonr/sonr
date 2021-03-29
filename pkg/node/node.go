@@ -37,8 +37,8 @@ func NewNode(ctx context.Context, cr *md.ConnectionRequest, call md.NodeCallback
 	}
 }
 
-// ^ Starts Host Node from Private Key ^
-func (n *Node) Start(key crypto.PrivKey) error {
+// ^ Connects Host Node from Private Key ^
+func (n *Node) Connect(key crypto.PrivKey) error {
 	hn, err := net.NewHost(n.ctx, n.router.MajorPoint(), key)
 	if err != nil {
 		return err

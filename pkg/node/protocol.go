@@ -5,14 +5,14 @@ import (
 
 	brpt "berty.tech/berty/v2/go/pkg/bertyprotocol"
 	brmd "berty.tech/berty/v2/go/pkg/protocoltypes"
-	"github.com/libp2p/go-libp2p-core/host"
-	pubsub "github.com/libp2p/go-libp2p-pubsub"
 )
 
-func (n *Node) StartProtocol(h host.Host, ps *pubsub.PubSub) error {
+// ^ Starts Protocol ^
+func (n *Node) StartProtocol() error {
+	// Start New Berty Client
 	client, err := brpt.New(n.ctx, brpt.Opts{
-		Host:   h,
-		PubSub: ps,
+		Host:   n.Host.Host,
+		PubSub: n.Host.Pubsub,
 	})
 	if err != nil {
 		return err

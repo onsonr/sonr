@@ -66,7 +66,7 @@ func (mn *MobileNode) Connect() {
 	}
 
 	// Connect Host
-	err = mn.node.Start(key)
+	err = mn.node.Connect(key)
 	if err != nil {
 		log.Println("Failed to start host")
 		mn.setConnected(false)
