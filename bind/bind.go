@@ -3,6 +3,7 @@ package bind
 import (
 	"log"
 
+	"github.com/sonr-io/core/internal/network"
 	tpc "github.com/sonr-io/core/internal/topic"
 	md "github.com/sonr-io/core/pkg/models"
 	sn "github.com/sonr-io/core/pkg/node"
@@ -11,7 +12,7 @@ import (
 )
 
 // * Struct: Reference for Binded Proxy Node * //
-type MobileNode struct {
+type Node struct {
 	// Properties
 	call    Callback
 	config  mobileConfig
@@ -27,7 +28,7 @@ type MobileNode struct {
 }
 
 // @ Create New Mobile Node
-func NewNode(reqBytes []byte, call Callback) *MobileNode {
+func NewMobileNode(reqBytes []byte, call Callback) *Node {
 	// Unmarshal Request
 	req := &md.ConnectionRequest{}
 	err := proto.Unmarshal(reqBytes, req)
@@ -36,7 +37,37 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 	}
 
 	// Create Mobile Node
-	mn := &MobileNode{
+	mn := &Node{
+		call:    call,
+		config:  newMobileConfig(),
+		connreq: req,
+		topics:  make(map[string]*tpc.TopicManager, 10),
+	}
+
+	// Create New User
+	mn.user, err = u.NewUser(req, mn.callbackNode())
+	if err != nil {
+		panic(err)
+	}
+
+	// Create Node
+	mn.node = sn.NewNode(mn.contextNode(), req, mn.callbackNode())
+	return mn
+}
+
+// @ Create New Desktop Node
+func NewDesktopNode(req *md.ConnectionRequest, call Callback) *Node {
+	// Get Location by IP
+	geoIP := md.GeoIP{}
+	err := network.Location(&geoIP)
+	if err != nil {
+		return nil
+	}
+
+	req.AttachGeoToRequest(&geoIP)
+
+	// Create Mobile Node
+	mn := &Node{
 		call:    call,
 		config:  newMobileConfig(),
 		connreq: req,
@@ -58,7 +89,7 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 // ** Network Actions ** //
 // **-----------------** //
 // @ Start Host and Connect
-func (mn *MobileNode) Connect() {
+func (mn *Node) Connect() {
 	// Get Private Key and Connect Host
 	key, err := mn.user.PrivateKey()
 	if err != nil {
@@ -102,16 +133,16 @@ func (mn *MobileNode) Connect() {
 // ** LifeCycle Actions ** //
 // **-------------------** //
 // @ Close Ends All Network Communication
-func (mn *MobileNode) Pause() {
+func (mn *Node) Pause() {
 	md.GetState().Pause()
 }
 
 // @ Close Ends All Network Communication
-func (mn *MobileNode) Resume() {
+func (mn *Node) Resume() {
 	md.GetState().Resume()
 }
 
 // @ Close Ends All Network Communication
-func (mn *MobileNode) Stop() {
+func (mn *Node) Stop() {
 	mn.node.Close()
 }

@@ -12,6 +12,20 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+// ***************************** //
+// ** ConnectionRequest Mgnmt ** //
+// ***************************** //
+
+func (req *ConnectionRequest) AttachGeoToRequest(geo *GeoIP) *ConnectionRequest {
+	req.Latitude = geo.Geo.Latitude
+	req.Longitude = geo.Geo.Longitude
+	return req
+}
+
+// **************************** //
+// ** Remote Info Management ** //
+// **************************** //
+
 // ^ Get Remote Point Info ^
 func GetRemoteInfo(list []string) RemoteInfo {
 	return RemoteInfo{

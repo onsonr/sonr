@@ -22,7 +22,7 @@ type Callback interface {
 }
 
 // ^ Passes binded Methods to Node ^
-func (mn *MobileNode) callbackNode() md.NodeCallback {
+func (mn *Node) callbackNode() md.NodeCallback {
 	return md.NodeCallback{
 		// Direct
 		Refreshed:  mn.call.OnRefreshed,
@@ -39,7 +39,7 @@ func (mn *MobileNode) callbackNode() md.NodeCallback {
 }
 
 // ^ invite Callback with data for Lifecycle ^ //
-func (mn *MobileNode) invited(data []byte) {
+func (mn *Node) invited(data []byte) {
 	// Update Status
 	mn.setStatus(md.Status_INVITED)
 	// Callback with Data
@@ -47,7 +47,7 @@ func (mn *MobileNode) invited(data []byte) {
 }
 
 // ^ transmitted Callback middleware post transfer ^ //
-func (mn *MobileNode) transmitted(peer *md.Peer) {
+func (mn *Node) transmitted(peer *md.Peer) {
 	// Update Status
 	mn.setStatus(md.Status_AVAILABLE)
 
@@ -64,7 +64,7 @@ func (mn *MobileNode) transmitted(peer *md.Peer) {
 }
 
 // ^ received Callback middleware post transfer ^ //
-func (mn *MobileNode) received(card *md.TransferCard) {
+func (mn *Node) received(card *md.TransferCard) {
 	// Update Status
 	mn.setStatus(md.Status_AVAILABLE)
 
@@ -81,7 +81,7 @@ func (mn *MobileNode) received(card *md.TransferCard) {
 }
 
 // ^ error Callback with error instance, and method ^
-func (mn *MobileNode) error(err error, method string) {
+func (mn *Node) error(err error, method string) {
 	// Create Error ProtoBuf
 	errorMsg := md.ErrorMessage{
 		Message: err.Error(),

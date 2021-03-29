@@ -26,7 +26,7 @@ func GetURLMetadata(url string) []byte {
 }
 
 // @ Join Existing Group
-func (mn *MobileNode) CreateRemote() []byte {
+func (mn *Node) CreateRemote() []byte {
 	if mn.isReady() {
 		// Generate Word List
 		_, wordList, err := network.RandomWords("english", 3)
@@ -57,7 +57,7 @@ func (mn *MobileNode) CreateRemote() []byte {
 }
 
 // @ Join Existing Group
-func (mn *MobileNode) JoinRemote(data []byte) {
+func (mn *Node) JoinRemote(data []byte) {
 	if mn.isReady() {
 		// Unpackage Data
 		remote := md.RemoteInfo{}
@@ -80,7 +80,7 @@ func (mn *MobileNode) JoinRemote(data []byte) {
 }
 
 // @ Update proximity/direction and Notify Lobby
-func (mn *MobileNode) Update(facing float64, heading float64) {
+func (mn *Node) Update(facing float64, heading float64) {
 	if mn.isReady() {
 		err := mn.node.Update(mn.local, facing, heading)
 		if err != nil {
@@ -91,7 +91,7 @@ func (mn *MobileNode) Update(facing float64, heading float64) {
 }
 
 // @ Send Direct Message to Peer in Lobby
-func (mn *MobileNode) Message(msg string, to string) {
+func (mn *Node) Message(msg string, to string) {
 	if mn.isReady() {
 		err := mn.node.Message(mn.local, msg, to)
 		if err != nil {
@@ -102,7 +102,7 @@ func (mn *MobileNode) Message(msg string, to string) {
 }
 
 // @ Invite Processes Data and Sends Invite to Peer
-func (mn *MobileNode) Invite(reqBytes []byte) {
+func (mn *Node) Invite(reqBytes []byte) {
 	if mn.isReady() {
 		// Update Status
 		mn.setStatus(md.Status_PENDING)
@@ -147,7 +147,7 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 }
 
 // @ Respond to an Invite with Decision
-func (mn *MobileNode) Respond(decs bool) {
+func (mn *Node) Respond(decs bool) {
 	if mn.isReady() {
 		mn.node.Respond(decs, mn.local, mn.user.FS, mn.user.Contact())
 		// Update Status
@@ -161,7 +161,7 @@ func (mn *MobileNode) Respond(decs bool) {
 
 // ** User Actions ** //
 // @ Updates Current Contact Card
-func (mn *MobileNode) SetContact(conBytes []byte) {
+func (mn *Node) SetContact(conBytes []byte) {
 	if mn.isReady() {
 		// Unmarshal Data
 		newContact := &md.Contact{}
