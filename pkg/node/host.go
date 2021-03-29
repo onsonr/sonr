@@ -32,6 +32,7 @@ func (n *Node) Start(key crypto.PrivKey) error {
 	// IP Address
 	ip4 := net.IPv4()
 	ip6 := net.IPv6()
+	n.StartProtocol()
 
 	// Start Host
 	h, err := libp2p.New(
