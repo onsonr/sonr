@@ -3,10 +3,10 @@ package bind
 import (
 	"log"
 
-	md "github.com/sonr-io/core/internal/models"
-	u "github.com/sonr-io/core/internal/user"
+	tpc "github.com/sonr-io/core/internal/topic"
+	md "github.com/sonr-io/core/pkg/models"
 	sn "github.com/sonr-io/core/pkg/node"
-	tpc "github.com/sonr-io/core/pkg/topic"
+	u "github.com/sonr-io/core/pkg/user"
 	"google.golang.org/protobuf/proto"
 )
 

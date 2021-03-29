@@ -18,7 +18,7 @@ import (
 	psub "github.com/libp2p/go-libp2p-pubsub"
 	swr "github.com/libp2p/go-libp2p-swarm"
 	tls "github.com/libp2p/go-libp2p-tls"
-	md "github.com/sonr-io/core/internal/models"
+	md "github.com/sonr-io/core/pkg/models"
 )
 
 type HostNode struct {

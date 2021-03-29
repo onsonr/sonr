@@ -5,14 +5,14 @@ import (
 	"errors"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
-	md "github.com/sonr-io/core/internal/models"
-	us "github.com/sonr-io/core/internal/user"
-	tpc "github.com/sonr-io/core/pkg/topic"
+	tpc "github.com/sonr-io/core/internal/topic"
+	md "github.com/sonr-io/core/pkg/models"
+	us "github.com/sonr-io/core/pkg/user"
 
 	// Local
 	// brprot "berty.tech/berty/v2/go/pkg/bertyprotocol"
-	net "github.com/sonr-io/core/internal/network"
 	se "github.com/sonr-io/core/internal/session"
+	net "github.com/sonr-io/core/pkg/network"
 )
 
 // ^ Struct: Main Node handles Networking/Identity/Streams ^

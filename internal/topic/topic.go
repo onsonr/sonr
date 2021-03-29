@@ -8,10 +8,10 @@ import (
 	"github.com/libp2p/go-libp2p-core/protocol"
 	rpc "github.com/libp2p/go-libp2p-gorpc"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	md "github.com/sonr-io/core/internal/models"
-	net "github.com/sonr-io/core/internal/network"
 	se "github.com/sonr-io/core/internal/session"
-	us "github.com/sonr-io/core/internal/user"
+	md "github.com/sonr-io/core/pkg/models"
+	net "github.com/sonr-io/core/pkg/network"
+	us "github.com/sonr-io/core/pkg/user"
 	"google.golang.org/protobuf/proto"
 )
 

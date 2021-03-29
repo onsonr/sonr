@@ -6,7 +6,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 
 	"github.com/pkg/errors"
-	md "github.com/sonr-io/core/internal/models"
+	md "github.com/sonr-io/core/pkg/models"
 )
 
 // @ Constant Variables
@@ -120,4 +120,3 @@ func (u *User) PrivateKey() (crypto.PrivKey, error) {
 	}
 
 }
-

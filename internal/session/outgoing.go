@@ -9,7 +9,7 @@ import (
 	"log"
 	"os"
 
-	md "github.com/sonr-io/core/internal/models"
+	md "github.com/sonr-io/core/pkg/models"
 )
 
 type outgoingFile struct {

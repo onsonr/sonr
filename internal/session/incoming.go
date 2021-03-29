@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	md "github.com/sonr-io/core/internal/models"
-	us "github.com/sonr-io/core/internal/user"
+	md "github.com/sonr-io/core/pkg/models"
+	us "github.com/sonr-io/core/pkg/user"
 
 	"google.golang.org/protobuf/proto"
 )
