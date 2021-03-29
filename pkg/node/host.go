@@ -7,6 +7,7 @@ import (
 	// Imported
 	// tor "berty.tech/go-libp2p-tor-transport"
 	// tconf "berty.tech/go-libp2p-tor-transport/config"
+
 	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	dscl "github.com/libp2p/go-libp2p-core/discovery"
