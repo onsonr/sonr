@@ -47,6 +47,10 @@ func NewHost(ctx context.Context, point string, key crypto.PrivKey) (*HostNode, 
 
 		libp2p.EnableAutoRelay(),
 	)
+	// Set Host for Node
+	if err != nil {
+		return nil, err
+	}
 
 	// Create DHT
 	kdht, err := dht.New(ctx, h)
@@ -54,10 +58,6 @@ func NewHost(ctx context.Context, point string, key crypto.PrivKey) (*HostNode, 
 		return nil, err
 	}
 
-	// Set Host for Node
-	if err != nil {
-		return nil, err
-	}
 	return &HostNode{
 		ctx:   ctx,
 		Host:  h,
