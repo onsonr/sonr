@@ -21,5 +21,10 @@ func (n *Node) StartProtocol() error {
 	for _, listener := range ret.Listeners {
 		log.Println(listener)
 	}
+	resp, err := client.MultiMemberGroupCreate(n.ctx, &brtypes.MultiMemberGroupCreate_Request{})
+	if err != nil {
+		return err
+	}
+	log.Println(string(resp.GroupPK))
 	return nil
 }
