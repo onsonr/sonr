@@ -59,7 +59,7 @@ func (n *Node) OnReply(id peer.ID, reply []byte, session *se.Session) {
 	// Check for File Transfer
 	if resp.Decision && resp.Type == md.AuthReply_Transfer {
 		// Create New Auth Stream
-		stream, err := n.Host.NewStream(n.ctx, id, n.router.Transfer())
+		stream, err := n.Host.StartStream(id, n.router.Transfer())
 		if err != nil {
 			n.call.Error(err, "StartOutgoing")
 			return

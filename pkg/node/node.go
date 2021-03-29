@@ -4,14 +4,10 @@ import (
 	"context"
 	"errors"
 
-	dht "github.com/libp2p/go-libp2p-kad-dht"
+	"github.com/libp2p/go-libp2p-core/crypto"
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
 	tpc "github.com/sonr-io/core/pkg/topic"
-
-	// Imported
-	"github.com/libp2p/go-libp2p-core/host"
-	psub "github.com/libp2p/go-libp2p-pubsub"
 
 	// Local
 	brprot "berty.tech/berty/v2/go/pkg/bertyprotocol"
@@ -27,16 +23,12 @@ type Node struct {
 	client brprot.Service
 
 	// Networking Properties
-	Host   host.Host
-	kdht   *dht.IpfsDHT
-	pubsub *psub.PubSub
-
-	// Data Handlers
+	Host    *net.HostNode
 	router  *net.ProtocolRouter
 	session *se.Session
 }
 
-// ^ NewNode Initializes Node with a host and default properties ^
+// ^ NewNode Initializes Node with Router ^
 func NewNode(ctx context.Context, cr *md.ConnectionRequest, call md.NodeCallback) *Node {
 	return &Node{
 		ctx:    ctx,
@@ -45,9 +37,25 @@ func NewNode(ctx context.Context, cr *md.ConnectionRequest, call md.NodeCallback
 	}
 }
 
+// ^ Starts Host Node from Private Key ^
+func (n *Node) Start(key crypto.PrivKey) error {
+	hn, err := net.NewHost(n.ctx, n.router.MajorPoint(), key)
+	if err != nil {
+		return err
+	}
+
+	n.Host = hn
+	return nil
+}
+
+// ^ Begins Bootstrapping HostNode ^
+func (n *Node) Bootstrap() error {
+	return n.Host.Bootstrap()
+}
+
 // ^ Join Lobby Adds Node to Named Topic ^
 func (n *Node) JoinLobby(name string) (*tpc.TopicManager, error) {
-	if t, err := tpc.NewTopic(n.ctx, n.Host, n.pubsub, n.router.Topic(name), n.router, n); err != nil {
+	if t, err := tpc.NewTopic(n.ctx, n.Host, n.router.Topic(name), n.router, n); err != nil {
 		return nil, err
 	} else {
 		return t, nil
@@ -56,7 +64,7 @@ func (n *Node) JoinLobby(name string) (*tpc.TopicManager, error) {
 
 // ^ Join Lobby Adds Node to Named Topic ^
 func (n *Node) JoinLocal() (*tpc.TopicManager, error) {
-	if t, err := tpc.NewTopic(n.ctx, n.Host, n.pubsub, n.router.LocalTopic(), n.router, n); err != nil {
+	if t, err := tpc.NewTopic(n.ctx, n.Host, n.router.LocalTopic(), n.router, n); err != nil {
 		return nil, err
 	} else {
 		return t, nil
@@ -181,5 +189,5 @@ func (n *Node) Update(t *tpc.TopicManager, p *md.Peer) error {
 
 // ^ Close Ends All Network Communication ^
 func (n *Node) Close() {
-	n.Host.Close()
+	n.Host.Host.Close()
 }
