@@ -48,7 +48,6 @@ func NewHost(ctx context.Context, point string, key crypto.PrivKey) (*HostNode, 
 		),
 		// support TLS connections
 		libp2p.Security(tls.ID, tls.New),
-		libp2p.DefaultTransports,
 		libp2p.NATPortMap(),
 		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
 			// Create DHT
@@ -123,6 +122,11 @@ func (h *HostNode) HandleStream(pid protocol.ID, handler network.StreamHandler) 
 	h.Host.SetStreamHandler(pid, handler)
 }
 
+// ^ Start Stream for Host ^
+func (h *HostNode) StartStream(p peer.ID, pid protocol.ID) (network.Stream, error) {
+	return h.Host.NewStream(h.ctx, p, pid)
+}
+
 // ^ Join New Topic with Name ^
 func (h *HostNode) Join(name string) (*psub.Topic, *psub.Subscription, *psub.TopicEventHandler, error) {
 	// Join Topic
@@ -145,11 +149,6 @@ func (h *HostNode) Join(name string) (*psub.Topic, *psub.Subscription, *psub.Top
 	return topic, sub, handler, nil
 }
 
-// ^ Start Stream for Host ^
-func (h *HostNode) StartStream(p peer.ID, pid protocol.ID) (network.Stream, error) {
-	return h.Host.NewStream(h.ctx, p, pid)
-}
-
 // @ handleDHTPeers: Connects to Peers in DHT
 func (h *HostNode) handleDHTPeers(routingDiscovery *dsc.RoutingDiscovery) {
 	for {
@@ -157,6 +156,7 @@ func (h *HostNode) handleDHTPeers(routingDiscovery *dsc.RoutingDiscovery) {
 		peersChan, err := routingDiscovery.FindPeers(
 			h.ctx,
 			h.Point,
+			dscl.TTL(time.Second*4),
 		)
 		if err != nil {
 			return
@@ -176,9 +176,6 @@ func (h *HostNode) handleDHTPeers(routingDiscovery *dsc.RoutingDiscovery) {
 				}
 			}
 		}
-
-		// Refresh table every 4 seconds
 		md.GetState().NeedsWait()
-		time.Sleep(time.Second * 4)
 	}
 }
