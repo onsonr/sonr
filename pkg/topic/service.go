@@ -173,7 +173,7 @@ func (n *TopicManager) RespondToInvite(decision bool, fs *us.FileSystem, p *md.P
 		n.service.respCh <- resp
 	} else {
 		// Create Accept Response
-		resp := p.SignReply()
+		resp := p.SignReply(decision)
 
 		// Send to Channel
 		n.service.respCh <- resp

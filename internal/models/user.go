@@ -205,10 +205,11 @@ func (p *Peer) SignInviteWithLink(req *InviteRequest) AuthInvite {
 }
 
 // ^ SignReply Creates AuthReply ^
-func (p *Peer) SignReply() *AuthReply {
+func (p *Peer) SignReply(d bool) *AuthReply {
 	return &AuthReply{
 		From: p,
-		Type: AuthReply_None,
+		Type: AuthReply_Transfer,
+		Decision: d,
 		Card: &TransferCard{
 			// SQL Properties
 			Payload:  Payload_UNDEFINED,
