@@ -11,11 +11,6 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// ^ GetPeer: Returns Peer ^
-func (n *Node) GetPeer() *md.Peer {
-	return n.call.GetPeer()
-}
-
 // ^ OnEvent: Specific Lobby Event ^
 func (n *Node) OnEvent(e *md.LobbyEvent) {
 	// Convert Message
@@ -75,6 +70,6 @@ func (n *Node) OnReply(id peer.ID, reply []byte, session *se.Session) {
 
 // ^ OnResponded: Prepares for Incoming File Transfer when Accepted ^
 func (n *Node) OnResponded(inv *md.AuthInvite, fs *sf.FileSystem) {
-	n.session = se.NewInSession(n.GetPeer(), inv, fs, n.call)
+	n.session = se.NewInSession(n.peer.Get(), inv, fs, n.call)
 	n.Host.HandleStream(n.router.Transfer(), n.session.ReadFromStream)
 }

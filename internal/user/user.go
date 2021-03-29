@@ -3,7 +3,6 @@ package user
 import (
 	"google.golang.org/protobuf/proto"
 
-	"github.com/libp2p/go-libp2p-core/crypto"
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
 )
@@ -22,9 +21,6 @@ type User struct {
 	contact  *md.Contact
 	device   *md.Device
 	devices  []*md.Device
-	peer     *md.Peer
-	privKey  crypto.PrivKey
-	profile  *md.Profile
 	protoRef *md.User
 }
 
@@ -46,15 +42,7 @@ func NewUser(cr *md.ConnectionRequest, callback md.NodeCallback) (*User, error) 
 		contact: cr.GetContact(),
 		device:  cr.Device,
 		devices: devices,
-		//Peer: *md.Peer,
-		profile: &md.Profile{
-			Username:  cr.GetUsername(),
-			FirstName: cr.Contact.GetFirstName(),
-			LastName:  cr.Contact.GetLastName(),
-			Picture:   cr.Contact.GetPicture(),
-			Platform:  cr.Device.GetPlatform(),
-		},
-		FS: fs,
+		FS:      fs,
 	}, nil
 }
 

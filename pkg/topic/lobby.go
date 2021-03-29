@@ -6,6 +6,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	md "github.com/sonr-io/core/internal/models"
+	pn "github.com/sonr-io/core/pkg/peer"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -18,7 +19,7 @@ type Lobby struct {
 	// Private Properties
 	callback TopicHandler
 	isLocal  bool
-	user     *md.Peer
+	peer     *pn.PeerNode
 }
 
 // ^ Returns as Lobby Buffer ^
@@ -81,7 +82,7 @@ func (l *Lobby) Sync(ref *md.Lobby, remotePeer *md.Peer) {
 		// Iterate Over List
 		for id, peer := range ref.Peers {
 			// Add all Peers NOT User
-			if id != l.user.Id.Peer {
+			if l.peer.IsNotPeerIDString(id) {
 				l.AddWithoutRefresh(peer)
 			}
 		}
@@ -103,12 +104,7 @@ func (tm *TopicManager) handleTopicEvents() {
 		}
 
 		if lobEvent.Type == pubsub.PeerJoin {
-			p := tm.topicHandler.GetPeer()
-			buf, err := proto.Marshal(p)
-			if err != nil {
-				continue
-			}
-			err = tm.Exchange(lobEvent.Peer, buf)
+			err = tm.Exchange(lobEvent.Peer)
 			if err != nil {
 				continue
 			}
@@ -132,7 +128,7 @@ func (tm *TopicManager) handleTopicMessages() {
 		}
 
 		// Only forward messages delivered by others
-		if msg.ReceivedFrom.String() == tm.topicHandler.GetPeer().Id.Peer {
+		if tm.peer.IsPeerID(msg.ReceivedFrom) {
 			continue
 		}
 
@@ -163,7 +159,7 @@ func (tm *TopicManager) processTopicMessages() {
 				tm.Lobby.Add(m.From)
 			} else if m.Event == md.LobbyEvent_MESSAGE {
 				// Check is Message For Self
-				if m.To == tm.topicHandler.GetPeer().Id.Peer {
+				if tm.peer.IsPeerIDString(m.To) {
 					// Call Event
 					tm.topicHandler.OnEvent(m)
 				}

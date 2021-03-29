@@ -12,6 +12,7 @@ import (
 	md "github.com/sonr-io/core/internal/models"
 	net "github.com/sonr-io/core/internal/network"
 	se "github.com/sonr-io/core/internal/session"
+	pn "github.com/sonr-io/core/pkg/peer"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -25,6 +26,7 @@ type TopicManager struct {
 	subscription *pubsub.Subscription
 	eventHandler *pubsub.TopicEventHandler
 	Lobby        *Lobby
+	peer         *pn.PeerNode
 
 	service      *TopicService
 	Messages     chan *md.LobbyEvent
@@ -32,7 +34,6 @@ type TopicManager struct {
 }
 
 type TopicHandler interface {
-	GetPeer() *md.Peer
 	OnEvent(*md.LobbyEvent)
 	OnRefresh(*md.Lobby)
 	OnInvite([]byte)
@@ -41,7 +42,7 @@ type TopicHandler interface {
 }
 
 // ^ Create New Contained Topic Manager ^ //
-func NewTopic(ctx context.Context, h *net.HostNode, name string, isLocal bool, th TopicHandler) (*TopicManager, error) {
+func NewTopic(ctx context.Context, h *net.HostNode, p *pn.PeerNode, name string, isLocal bool, th TopicHandler) (*TopicManager, error) {
 	// Join Topic
 	topic, sub, handler, err := h.Join(name)
 	if err != nil {
@@ -61,7 +62,7 @@ func NewTopic(ctx context.Context, h *net.HostNode, name string, isLocal bool, t
 			Count:    0,
 			Peers:    make(map[string]*md.Peer),
 			isLocal:  isLocal,
-			user:     th.GetPeer(),
+			peer:     p,
 		},
 		Messages:     make(chan *md.LobbyEvent, K_MAX_MESSAGES),
 		subscription: sub,
@@ -71,10 +72,10 @@ func NewTopic(ctx context.Context, h *net.HostNode, name string, isLocal bool, t
 	// Start Exchange Server
 	peersvServer := rpc.NewServer(h.Host, K_SERVICE_PID)
 	psv := TopicService{
-		SyncLobby: mgr.Lobby.Sync,
-		GetUser:   th.GetPeer,
-		call:      th,
-		respCh:    make(chan *md.AuthReply, 1),
+		lobby:  mgr.Lobby,
+		peer:   mgr.peer,
+		call:   th,
+		respCh: make(chan *md.AuthReply, 1),
 	}
 
 	// Register Service

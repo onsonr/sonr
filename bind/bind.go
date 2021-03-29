@@ -6,6 +6,7 @@ import (
 	md "github.com/sonr-io/core/internal/models"
 	u "github.com/sonr-io/core/internal/user"
 	sn "github.com/sonr-io/core/pkg/node"
+	p "github.com/sonr-io/core/pkg/peer"
 	tpc "github.com/sonr-io/core/pkg/topic"
 	"google.golang.org/protobuf/proto"
 )
@@ -13,11 +14,13 @@ import (
 // * Struct: Reference for Binded Proxy Node * //
 type MobileNode struct {
 	// Properties
-	call   Callback
-	config mobileConfig
+	call    Callback
+	config  mobileConfig
+	connreq *md.ConnectionRequest
 
 	// Client
 	node *sn.Node
+	peer *p.PeerNode
 	user *u.User
 
 	// Groups
@@ -36,9 +39,10 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 
 	// Create Mobile Node
 	mn := &MobileNode{
-		call:   call,
-		config: newMobileConfig(),
-		topics: make(map[string]*tpc.TopicManager, 10),
+		call:    call,
+		config:  newMobileConfig(),
+		connreq: req,
+		topics:  make(map[string]*tpc.TopicManager, 10),
 	}
 
 	// Create New User
@@ -76,15 +80,16 @@ func (mn *MobileNode) Connect() {
 		mn.setConnected(true)
 	}
 
-	// Set User Peer
-	err = mn.user.SetPeer(mn.node.Host.ID())
+	// Create User Peer
+	p, err := p.NewPeer(mn.connreq, mn.node.Host.ID())
 	if err != nil {
 		log.Println("Failed to set peer")
 		return
 	}
+	mn.peer = p
 
 	// Bootstrap Node
-	err = mn.node.Bootstrap()
+	err = mn.node.Bootstrap(mn.peer)
 	if err != nil {
 		log.Println("Failed to bootstrap node")
 		mn.setBootstrapped(false)
