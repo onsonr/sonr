@@ -20,6 +20,10 @@ import (
 	"golang.org/x/net/html"
 )
 
+// ************************* //
+// ** URL Data Management ** //
+// ************************* //
+
 var (
 	ErrorType = errors.New("Should not be non-ptr or nil")
 )

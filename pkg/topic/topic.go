@@ -4,60 +4,45 @@ import (
 	"context"
 	"errors"
 
-	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	rpc "github.com/libp2p/go-libp2p-gorpc"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
-	"github.com/sonr-io/core/internal/network"
+	net "github.com/sonr-io/core/internal/network"
 	se "github.com/sonr-io/core/internal/session"
+	us "github.com/sonr-io/core/internal/user"
 	"google.golang.org/protobuf/proto"
 )
 
 const K_MAX_MESSAGES = 128
+const K_SERVICE_PID = protocol.ID("/sonr/topic-service/0.1")
 
 type TopicManager struct {
 	ctx          context.Context
-	host         host.Host
+	host         *net.HostNode
 	topic        *pubsub.Topic
 	subscription *pubsub.Subscription
 	eventHandler *pubsub.TopicEventHandler
-	Lobby        *Lobby
+	Lobby        *md.Lobby
 
-	topicPoint   string
 	service      *TopicService
-	protocol     protocol.ID
 	Messages     chan *md.LobbyEvent
 	topicHandler TopicHandler
 }
 
 type TopicHandler interface {
-	GetPeer() *md.Peer
 	OnEvent(*md.LobbyEvent)
 	OnRefresh(*md.Lobby)
 	OnInvite([]byte)
 	OnReply(id peer.ID, data []byte, session *se.Session)
-	OnResponded(inv *md.AuthInvite, fs *sf.FileSystem)
+	OnResponded(inv *md.AuthInvite, p *md.Peer, fs *us.FileSystem)
 }
 
 // ^ Create New Contained Topic Manager ^ //
-func NewTopic(ctx context.Context, h host.Host, ps *pubsub.PubSub, name string, router *network.ProtocolRouter, th TopicHandler) (*TopicManager, error) {
+func NewTopic(ctx context.Context, h *net.HostNode, p *md.Peer, name string, isLocal bool, th TopicHandler) (*TopicManager, error) {
 	// Join Topic
-	topic, err := ps.Join(name)
-	if err != nil {
-		return nil, err
-	}
-
-	// Subscribe to Topic
-	sub, err := topic.Subscribe()
-	if err != nil {
-		return nil, err
-	}
-
-	// Create Topic Handler
-	handler, err := topic.EventHandler()
+	topic, sub, handler, err := h.Join(name)
 	if err != nil {
 		return nil, err
 	}
@@ -68,28 +53,26 @@ func NewTopic(ctx context.Context, h host.Host, ps *pubsub.PubSub, name string, 
 		ctx:          ctx,
 		host:         h,
 		eventHandler: handler,
-		Lobby: &Lobby{
-			callback: th,
-			Name:     name[12:],
-			Size:     1,
-			Count:    0,
-			Peers:    make(map[string]*md.Peer),
-			user:     th.GetPeer(),
+		Lobby: &md.Lobby{
+			Name:    name[12:],
+			Size:    1,
+			Count:   0,
+			Peers:   make(map[string]*md.Peer),
+			IsLocal: isLocal,
+			User:    p,
 		},
 		Messages:     make(chan *md.LobbyEvent, K_MAX_MESSAGES),
-		protocol:     router.TopicService(),
 		subscription: sub,
 		topic:        topic,
-		topicPoint:   name,
 	}
 
 	// Start Exchange Server
-	peersvServer := rpc.NewServer(h, router.TopicService())
+	peersvServer := rpc.NewServer(h.Host, K_SERVICE_PID)
 	psv := TopicService{
-		SyncLobby: mgr.Lobby.Sync,
-		GetUser:   th.GetPeer,
-		call:      th,
-		respCh:    make(chan *md.AuthReply, 1),
+		lobby:  mgr.Lobby,
+		peer:   p,
+		call:   th,
+		respCh: make(chan *md.AuthReply, 1),
 	}
 
 	// Register Service
@@ -100,9 +83,9 @@ func NewTopic(ctx context.Context, h host.Host, ps *pubsub.PubSub, name string, 
 
 	// Set Service
 	mgr.service = &psv
-	go mgr.handleTopicEvents()
-	go mgr.handleTopicMessages()
-	go mgr.processTopicMessages()
+	go mgr.handleTopicEvents(p)
+	go mgr.handleTopicMessages(p)
+	go mgr.processTopicMessages(p)
 	return mgr, nil
 }
 

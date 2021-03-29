@@ -1,9 +1,7 @@
 syntax = "proto3";
 
-package core;
-
 // Require Go Package
-option go_package = ".;models";
+option go_package = "/models";
 
 // Sent on Data Transfer to Add piece of File - Base64
 message Chunk64 {

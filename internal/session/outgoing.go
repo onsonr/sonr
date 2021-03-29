@@ -9,7 +9,6 @@ import (
 	"log"
 	"os"
 
-	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
 )
 
@@ -20,7 +19,7 @@ type outgoingFile struct {
 	Path    string
 
 	// Private Properties
-	info    *sf.FileInfo
+	info    *md.OutFile
 	request *md.InviteRequest
 	preview []byte
 	peer    *md.Peer
@@ -35,7 +34,7 @@ func newOutgoingFile(req *md.InviteRequest, p *md.Peer) *outgoingFile {
 
 	// Get File Information
 	file := req.Files[len(req.Files)-1]
-	info, err := sf.GetFileInfo(file.Path)
+	info, err := md.GetFileInfo(file.Path)
 	if err != nil {
 		return nil
 	}

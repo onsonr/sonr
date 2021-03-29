@@ -1,4 +1,5 @@
-package network
+package node
+
 
 import (
 	"fmt"
@@ -27,13 +28,8 @@ func NewProtocolRouter(req *md.ConnectionRequest) *ProtocolRouter {
 	}
 }
 
-// @ Local Rendevouz Advertising Point
-func (pr *ProtocolRouter) LocalPoint() string {
-	return fmt.Sprintf("/sonr/%s", pr.MinorOLC)
-}
-
 // @ Major Rendevouz Advertising Point
-func (pr *ProtocolRouter) MajorPoint() string {
+func (pr *ProtocolRouter) Rendevouz() string {
 	return fmt.Sprintf("/sonr/%s", pr.MajorOLC)
 }
 
@@ -52,9 +48,4 @@ func (pr *ProtocolRouter) LocalTopic() string {
 // @ Lobby Topic Protocol IDs
 func (pr *ProtocolRouter) Topic(name string) string {
 	return fmt.Sprintf("/sonr/topic/%s", name)
-}
-
-// @ Lobby Exchange Protocol IDs
-func (pr *ProtocolRouter) TopicService() protocol.ID {
-	return protocol.ID("/sonr/topic-service/0.1")
 }

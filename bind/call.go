@@ -35,9 +35,6 @@ func (mn *MobileNode) callbackNode() md.NodeCallback {
 		Received:    mn.received,
 		Transmitted: mn.transmitted,
 		Error:       mn.error,
-
-		// User
-		GetPeer: mn.user.Peer,
 	}
 }
 

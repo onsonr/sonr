@@ -13,8 +13,9 @@ import (
 // * Struct: Reference for Binded Proxy Node * //
 type MobileNode struct {
 	// Properties
-	call   Callback
-	config mobileConfig
+	call    Callback
+	config  mobileConfig
+	connreq *md.ConnectionRequest
 
 	// Client
 	node *sn.Node
@@ -36,9 +37,10 @@ func NewNode(reqBytes []byte, call Callback) *MobileNode {
 
 	// Create Mobile Node
 	mn := &MobileNode{
-		call:   call,
-		config: newMobileConfig(),
-		topics: make(map[string]*tpc.TopicManager, 10),
+		call:    call,
+		config:  newMobileConfig(),
+		connreq: req,
+		topics:  make(map[string]*tpc.TopicManager, 10),
 	}
 
 	// Create New User
@@ -66,7 +68,7 @@ func (mn *MobileNode) Connect() {
 	}
 
 	// Connect Host
-	err = mn.node.Start(key)
+	err = mn.node.Connect(key)
 	if err != nil {
 		log.Println("Failed to start host")
 		mn.setConnected(false)
@@ -74,13 +76,6 @@ func (mn *MobileNode) Connect() {
 	} else {
 		// Update Status
 		mn.setConnected(true)
-	}
-
-	// Set User Peer
-	err = mn.user.SetPeer(mn.node.Host.ID())
-	if err != nil {
-		log.Println("Failed to set peer")
-		return
 	}
 
 	// Bootstrap Node

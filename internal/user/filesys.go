@@ -1,4 +1,4 @@
-package file
+package user
 
 import (
 	"errors"
@@ -26,7 +26,7 @@ type FileSystem struct {
 }
 
 // ^ Method Initializes Root Sonr Directory ^ //
-func NewFs(connEvent *md.ConnectionRequest, callback md.NodeCallback) (*FileSystem, error) {
+func SetFS(connEvent *md.ConnectionRequest, callback md.NodeCallback) (*FileSystem, error) {
 	// Initialize
 	var sonrPath string
 
@@ -131,14 +131,13 @@ func (sfs *FileSystem) WriteFile(name string, data []byte) (string, error) {
 		return "", err
 	}
 	return path, nil
-
 }
 
 // ^ WriteIncomingFile writes file to Disk ^
 func (sfs *FileSystem) WriteIncomingFile(load md.Payload, props *md.TransferCard_Properties, data []byte) (string, string, error) {
 	// Create File Name
 	fileName := props.Name + "." + props.Mime.Subtype
-	path := sfs.getIncomingFilePath(load, fileName)
+	path := sfs.GetPathForIncoming(load, fileName)
 
 	// Check for User File at Path
 	file, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
@@ -158,7 +157,7 @@ func (sfs *FileSystem) WriteIncomingFile(load md.Payload, props *md.TransferCard
 }
 
 // @ Helper: Finds Write Path for Incoming File
-func (sfs *FileSystem) getIncomingFilePath(load md.Payload, fileName string) string {
+func (sfs *FileSystem) GetPathForIncoming(load md.Payload, fileName string) string {
 	// Check for Desktop
 	if sfs.IsDesktop {
 		return filepath.Join(sfs.Downloads, fileName)

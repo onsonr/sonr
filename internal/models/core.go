@@ -16,8 +16,6 @@ type OnProgress func(data float32)
 type OnReceived func(data *TransferCard)
 type OnTransmitted func(data *Peer)
 type OnError func(err error, method string)
-type ReturnPeer func() *Peer
-type SyncLobby func(ref *Lobby, peer *Peer)
 type NodeCallback struct {
 	Invited     OnInvite
 	Refreshed   OnProtobuf
@@ -26,7 +24,6 @@ type NodeCallback struct {
 	Responded   OnProtobuf
 	Progressed  OnProgress
 	Received    OnReceived
-	GetPeer     ReturnPeer
 	Transmitted OnTransmitted
 	Error       OnError
 }
@@ -75,3 +72,4 @@ func (c *state) Pause() {
 		c.chn = make(chan bool)
 	}
 }
+

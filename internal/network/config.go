@@ -42,6 +42,37 @@ func GetBootstrapAddrInfo() ([]peer.AddrInfo, error) {
 	return ds, nil
 }
 
+// @ Returns Node Public IPv4 Address
+func IPv4() string {
+	osHost, _ := os.Hostname()
+	addrs, _ := net.LookupIP(osHost)
+	ipv4Ref := "0.0.0.0"
+	// Iterate through addresses
+	for _, addr := range addrs {
+		// @ Set IPv4
+		if ipv4 := addr.To4(); ipv4 != nil {
+			ipv4Ref = ipv4.String()
+		}
+	}
+	return ipv4Ref
+}
+
+// @ Returns Node Public IPv6 Address
+func IPv6() string {
+	osHost, _ := os.Hostname()
+	addrs, _ := net.LookupIP(osHost)
+	ipv6Ref := "::"
+
+	// Iterate through addresses
+	for _, addr := range addrs {
+		// @ Set IPv4
+		if ipv6 := addr.To16(); ipv6 != nil {
+			ipv6Ref = ipv6.String()
+		}
+	}
+	return ipv6Ref
+}
+
 // ^ Geographical Position from IP ^ //
 type GeoIP struct {
 	Continent                      string   `json:"continent"`
@@ -88,37 +119,6 @@ type GeoIP struct {
 	} `json:"geo"`
 	CurrencyCode string `json:"currency_code"`
 	StartOfWeek  string `json:"start_of_week"`
-}
-
-// @ Returns Node Public IPv4 Address
-func IPv4() string {
-	osHost, _ := os.Hostname()
-	addrs, _ := net.LookupIP(osHost)
-	ipv4Ref := "0.0.0.0"
-	// Iterate through addresses
-	for _, addr := range addrs {
-		// @ Set IPv4
-		if ipv4 := addr.To4(); ipv4 != nil {
-			ipv4Ref = ipv4.String()
-		}
-	}
-	return ipv4Ref
-}
-
-// @ Returns Node Public IPv6 Address
-func IPv6() string {
-	osHost, _ := os.Hostname()
-	addrs, _ := net.LookupIP(osHost)
-	ipv6Ref := "::"
-
-	// Iterate through addresses
-	for _, addr := range addrs {
-		// @ Set IPv4
-		if ipv6 := addr.To16(); ipv6 != nil {
-			ipv6Ref = ipv6.String()
-		}
-	}
-	return ipv6Ref
 }
 
 func Location(target *GeoIP) error {

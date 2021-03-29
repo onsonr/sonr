@@ -5,16 +5,11 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	mg "github.com/libp2p/go-msgio"
-	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
 	se "github.com/sonr-io/core/internal/session"
+	us "github.com/sonr-io/core/internal/user"
 	"google.golang.org/protobuf/proto"
 )
-
-// ^ GetPeer: Returns Peer ^
-func (n *Node) GetPeer() *md.Peer {
-	return n.call.GetPeer()
-}
 
 // ^ OnEvent: Specific Lobby Event ^
 func (n *Node) OnEvent(e *md.LobbyEvent) {
@@ -59,7 +54,7 @@ func (n *Node) OnReply(id peer.ID, reply []byte, session *se.Session) {
 	// Check for File Transfer
 	if resp.Decision && resp.Type == md.AuthReply_Transfer {
 		// Create New Auth Stream
-		stream, err := n.Host.NewStream(n.ctx, id, n.router.Transfer())
+		stream, err := n.Host.StartStream(id, n.router.Transfer())
 		if err != nil {
 			n.call.Error(err, "StartOutgoing")
 			return
@@ -74,7 +69,7 @@ func (n *Node) OnReply(id peer.ID, reply []byte, session *se.Session) {
 }
 
 // ^ OnResponded: Prepares for Incoming File Transfer when Accepted ^
-func (n *Node) OnResponded(inv *md.AuthInvite, fs *sf.FileSystem) {
-	n.session = se.NewInSession(n.GetPeer(), inv, fs, n.call)
-	n.Host.SetStreamHandler(n.router.Transfer(), n.session.ReadFromStream)
+func (n *Node) OnResponded(inv *md.AuthInvite, p *md.Peer, fs *us.FileSystem) {
+	n.session = se.NewInSession(p, inv, fs, n.call)
+	n.Host.HandleStream(n.router.Transfer(), n.session.ReadFromStream)
 }
