@@ -9,7 +9,7 @@ import (
 )
 
 // * Struct: Reference for Binded Proxy Node * //
-type mobileConfig struct {
+type nodeConfig struct {
 	CtxFS   context.Context
 	CtxNode context.Context
 	CtxUser context.Context
@@ -21,8 +21,8 @@ type mobileConfig struct {
 	Status md.Status
 }
 
-func newMobileConfig() mobileConfig {
-	return mobileConfig{
+func newNodeConfig() nodeConfig {
+	return nodeConfig{
 		CtxFS:   context.Background(),
 		CtxNode: context.Background(),
 		CtxUser: context.Background(),

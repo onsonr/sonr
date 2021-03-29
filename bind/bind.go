@@ -5,8 +5,8 @@ import (
 
 	"github.com/sonr-io/core/internal/network"
 	tpc "github.com/sonr-io/core/internal/topic"
+	sc "github.com/sonr-io/core/pkg/client"
 	md "github.com/sonr-io/core/pkg/models"
-	sn "github.com/sonr-io/core/pkg/node"
 	u "github.com/sonr-io/core/pkg/user"
 	"google.golang.org/protobuf/proto"
 )
@@ -15,11 +15,11 @@ import (
 type Node struct {
 	// Properties
 	call    Callback
-	config  mobileConfig
+	config  nodeConfig
 	connreq *md.ConnectionRequest
 
 	// Client
-	node *sn.Node
+	node *sc.Client
 	user *u.User
 
 	// Groups
@@ -39,7 +39,7 @@ func NewMobileNode(reqBytes []byte, call Callback) *Node {
 	// Create Mobile Node
 	mn := &Node{
 		call:    call,
-		config:  newMobileConfig(),
+		config:  newNodeConfig(),
 		connreq: req,
 		topics:  make(map[string]*tpc.TopicManager, 10),
 	}
@@ -50,8 +50,8 @@ func NewMobileNode(reqBytes []byte, call Callback) *Node {
 		panic(err)
 	}
 
-	// Create Node
-	mn.node = sn.NewNode(mn.contextNode(), req, mn.callbackNode())
+	// Create Client
+	mn.node = sc.NewClient(mn.contextNode(), req, mn.callbackNode())
 	return mn
 }
 
@@ -69,7 +69,7 @@ func NewDesktopNode(req *md.ConnectionRequest, call Callback) *Node {
 	// Create Mobile Node
 	mn := &Node{
 		call:    call,
-		config:  newMobileConfig(),
+		config:  newNodeConfig(),
 		connreq: req,
 		topics:  make(map[string]*tpc.TopicManager, 10),
 	}
@@ -80,8 +80,8 @@ func NewDesktopNode(req *md.ConnectionRequest, call Callback) *Node {
 		panic(err)
 	}
 
-	// Create Node
-	mn.node = sn.NewNode(mn.contextNode(), req, mn.callbackNode())
+	// Create Client
+	mn.node = sc.NewClient(mn.contextNode(), req, mn.callbackNode())
 	return mn
 }
 

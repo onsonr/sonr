@@ -1,4 +1,4 @@
-package node
+package client
 
 import (
 	"context"
@@ -15,8 +15,8 @@ import (
 	se "github.com/sonr-io/core/internal/session"
 )
 
-// ^ Struct: Main Node handles Networking/Identity/Streams ^
-type Node struct {
+// ^ Struct: Main Client handles Networking/Identity/Streams ^
+type Client struct {
 	// Properties
 	ctx     context.Context
 	call    md.NodeCallback
@@ -31,9 +31,9 @@ type Node struct {
 	Peer *md.Peer
 }
 
-// ^ NewNode Initializes Node with Router ^
-func NewNode(ctx context.Context, cr *md.ConnectionRequest, call md.NodeCallback) *Node {
-	return &Node{
+// ^ NewClient Initializes Node with Router ^
+func NewClient(ctx context.Context, cr *md.ConnectionRequest, call md.NodeCallback) *Client {
+	return &Client{
 		ctx:    ctx,
 		call:   call,
 		req:    cr,
@@ -42,7 +42,7 @@ func NewNode(ctx context.Context, cr *md.ConnectionRequest, call md.NodeCallback
 }
 
 // ^ Connects Host Node from Private Key ^
-func (n *Node) Connect(key crypto.PrivKey) error {
+func (n *Client) Connect(key crypto.PrivKey) error {
 	// Set Host
 	hn, err := net.NewHost(n.ctx, n.router.Rendevouz(), key)
 	if err != nil {
@@ -60,12 +60,12 @@ func (n *Node) Connect(key crypto.PrivKey) error {
 }
 
 // ^ Begins Bootstrapping HostNode ^
-func (n *Node) Bootstrap() error {
+func (n *Client) Bootstrap() error {
 	return n.Host.Bootstrap()
 }
 
 // ^ Join Lobby Adds Node to Named Topic ^
-func (n *Node) JoinLobby(name string) (*tpc.TopicManager, error) {
+func (n *Client) JoinLobby(name string) (*tpc.TopicManager, error) {
 	if t, err := tpc.NewTopic(n.ctx, n.Host, n.Peer, n.router.Topic(name), false, n); err != nil {
 		return nil, err
 	} else {
@@ -74,7 +74,7 @@ func (n *Node) JoinLobby(name string) (*tpc.TopicManager, error) {
 }
 
 // ^ Join Lobby Adds Node to Named Topic ^
-func (n *Node) JoinLocal() (*tpc.TopicManager, error) {
+func (n *Client) JoinLocal() (*tpc.TopicManager, error) {
 	if t, err := tpc.NewTopic(n.ctx, n.Host, n.Peer, n.router.LocalTopic(), true, n); err != nil {
 		return nil, err
 	} else {
@@ -83,7 +83,7 @@ func (n *Node) JoinLocal() (*tpc.TopicManager, error) {
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Node) InviteLink(req *md.InviteRequest, t *tpc.TopicManager) error {
+func (n *Client) InviteLink(req *md.InviteRequest, t *tpc.TopicManager) error {
 	// @ 3. Send Invite to Peer
 	if t.HasPeer(req.To.Id.Peer) {
 		// Get PeerID and Check error
@@ -109,7 +109,7 @@ func (n *Node) InviteLink(req *md.InviteRequest, t *tpc.TopicManager) error {
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Node) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, c *md.Contact) error {
+func (n *Client) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, c *md.Contact) error {
 	// @ 3. Send Invite to Peer
 	if t.HasPeer(req.To.Id.Peer) {
 		// Get PeerID and Check error
@@ -135,7 +135,7 @@ func (n *Node) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, c *md.C
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Node) InviteFile(req *md.InviteRequest, t *tpc.TopicManager, fs *us.FileSystem) error {
+func (n *Client) InviteFile(req *md.InviteRequest, t *tpc.TopicManager, fs *us.FileSystem) error {
 	// Start New Session
 	session := se.NewOutSession(n.Peer, req, fs, n.call)
 	card := session.OutgoingCard()
@@ -160,12 +160,12 @@ func (n *Node) InviteFile(req *md.InviteRequest, t *tpc.TopicManager, fs *us.Fil
 }
 
 // ^ Respond to an Invitation ^ //
-func (n *Node) Respond(decision bool, t *tpc.TopicManager, fs *us.FileSystem, c *md.Contact) {
+func (n *Client) Respond(decision bool, t *tpc.TopicManager, fs *us.FileSystem, c *md.Contact) {
 	t.RespondToInvite(decision, fs, n.Peer, c)
 }
 
 // ^ Send Direct Message to Peer in Lobby ^ //
-func (n *Node) Message(t *tpc.TopicManager, msg string, to string) error {
+func (n *Client) Message(t *tpc.TopicManager, msg string, to string) error {
 	if t.HasPeer(to) {
 		// Inform Lobby
 		if err := t.Send(n.Peer.SignMessage(msg, to)); err != nil {
@@ -176,7 +176,7 @@ func (n *Node) Message(t *tpc.TopicManager, msg string, to string) error {
 }
 
 // ^ Update proximity/direction and Notify Lobby ^ //
-func (n *Node) Update(t *tpc.TopicManager, f float64, h float64) error {
+func (n *Client) Update(t *tpc.TopicManager, f float64, h float64) error {
 	// Update Position
 	n.Peer.SetPosition(f, h)
 
@@ -188,6 +188,6 @@ func (n *Node) Update(t *tpc.TopicManager, f float64, h float64) error {
 }
 
 // ^ Close Ends All Network Communication ^
-func (n *Node) Close() {
+func (n *Client) Close() {
 	n.Host.Host.Close()
 }

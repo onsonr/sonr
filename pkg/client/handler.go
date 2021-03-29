@@ -1,4 +1,4 @@
-package node
+package client
 
 import (
 	"log"
@@ -12,7 +12,7 @@ import (
 )
 
 // ^ OnEvent: Specific Lobby Event ^
-func (n *Node) OnEvent(e *md.LobbyEvent) {
+func (n *Client) OnEvent(e *md.LobbyEvent) {
 	// Convert Message
 	bytes, err := proto.Marshal(e)
 	if err != nil {
@@ -24,7 +24,7 @@ func (n *Node) OnEvent(e *md.LobbyEvent) {
 }
 
 // ^ OnRefresh: Topic has Updated ^
-func (n *Node) OnRefresh(l *md.Lobby) {
+func (n *Client) OnRefresh(l *md.Lobby) {
 	bytes, err := proto.Marshal(l)
 	if err != nil {
 		log.Println("Cannot Marshal Error Protobuf: ", err)
@@ -34,13 +34,13 @@ func (n *Node) OnRefresh(l *md.Lobby) {
 }
 
 // ^ OnInvite: User Received Invite ^
-func (n *Node) OnInvite(invite []byte) {
+func (n *Client) OnInvite(invite []byte) {
 	// Send Callback
 	n.call.Invited(invite)
 }
 
 // ^ OnReply: Begins File Transfer when Accepted ^
-func (n *Node) OnReply(id peer.ID, reply []byte, session *se.Session) {
+func (n *Client) OnReply(id peer.ID, reply []byte, session *se.Session) {
 	// Call Responded
 	n.call.Responded(reply)
 
@@ -69,7 +69,7 @@ func (n *Node) OnReply(id peer.ID, reply []byte, session *se.Session) {
 }
 
 // ^ OnResponded: Prepares for Incoming File Transfer when Accepted ^
-func (n *Node) OnResponded(inv *md.AuthInvite, p *md.Peer, fs *us.FileSystem) {
+func (n *Client) OnResponded(inv *md.AuthInvite, p *md.Peer, fs *us.FileSystem) {
 	n.session = se.NewInSession(p, inv, fs, n.call)
 	n.Host.HandleStream(n.router.Transfer(), n.session.ReadFromStream)
 }
