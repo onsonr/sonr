@@ -81,12 +81,11 @@ func (mn *MobileNode) Connect() {
 	}
 
 	// Create User Peer
-	p, err := p.NewPeer(mn.connreq, mn.node.Host.ID())
+	mn.peer, err = p.NewPeer(mn.connreq, mn.node.Host.ID())
 	if err != nil {
 		log.Println("Failed to set peer")
 		return
 	}
-	mn.peer = p
 
 	// Bootstrap Node
 	err = mn.node.Bootstrap(mn.peer)
@@ -98,7 +97,7 @@ func (mn *MobileNode) Connect() {
 		mn.setBootstrapped(true)
 	}
 
-	mn.local, err = mn.node.JoinLocal()
+	mn.local, err = mn.node.JoinLocal(mn.peer)
 	if err != nil {
 		log.Println("Failed to join local pubsub")
 		mn.setJoinedLocal(false)

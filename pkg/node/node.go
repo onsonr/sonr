@@ -5,8 +5,8 @@ import (
 	"errors"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
-	us "github.com/sonr-io/core/internal/user"
 	md "github.com/sonr-io/core/internal/models"
+	us "github.com/sonr-io/core/internal/user"
 	pn "github.com/sonr-io/core/pkg/peer"
 	tpc "github.com/sonr-io/core/pkg/topic"
 
@@ -21,7 +21,7 @@ type Node struct {
 	// Properties
 	ctx  context.Context
 	call md.NodeCallback
-	peer *pn.PeerNode
+
 	// client brprot.Service
 
 	// Networking Properties
@@ -52,13 +52,12 @@ func (n *Node) Connect(key crypto.PrivKey) error {
 
 // ^ Begins Bootstrapping HostNode ^
 func (n *Node) Bootstrap(peer *pn.PeerNode) error {
-	n.peer = peer
 	return n.Host.Bootstrap()
 }
 
 // ^ Join Lobby Adds Node to Named Topic ^
-func (n *Node) JoinLobby(name string) (*tpc.TopicManager, error) {
-	if t, err := tpc.NewTopic(n.ctx, n.Host, n.peer, n.router.Topic(name), false, n); err != nil {
+func (n *Node) JoinLobby(name string, peer *pn.PeerNode) (*tpc.TopicManager, error) {
+	if t, err := tpc.NewTopic(n.ctx, n.Host, peer, n.router.Topic(name), false, n); err != nil {
 		return nil, err
 	} else {
 		return t, nil
@@ -66,8 +65,8 @@ func (n *Node) JoinLobby(name string) (*tpc.TopicManager, error) {
 }
 
 // ^ Join Lobby Adds Node to Named Topic ^
-func (n *Node) JoinLocal() (*tpc.TopicManager, error) {
-	if t, err := tpc.NewTopic(n.ctx, n.Host, n.peer, n.router.LocalTopic(), true, n); err != nil {
+func (n *Node) JoinLocal(peer *pn.PeerNode) (*tpc.TopicManager, error) {
+	if t, err := tpc.NewTopic(n.ctx, n.Host, peer, n.router.LocalTopic(), true, n); err != nil {
 		return nil, err
 	} else {
 		return t, nil
@@ -75,7 +74,7 @@ func (n *Node) JoinLocal() (*tpc.TopicManager, error) {
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Node) InviteLink(req *md.InviteRequest, t *tpc.TopicManager) error {
+func (n *Node) InviteLink(req *md.InviteRequest, t *tpc.TopicManager, p *pn.PeerNode) error {
 	// @ 3. Send Invite to Peer
 	if t.HasPeer(req.To.Id.Peer) {
 		// Get PeerID and Check error
@@ -85,7 +84,7 @@ func (n *Node) InviteLink(req *md.InviteRequest, t *tpc.TopicManager) error {
 		}
 
 		// Create Invite
-		invite := md.GetAuthInviteWithURL(req, n.peer.Get())
+		invite := md.GetAuthInviteWithURL(req, p.Get())
 
 		// Run Routine
 		go func(inv *md.AuthInvite) {
@@ -101,7 +100,7 @@ func (n *Node) InviteLink(req *md.InviteRequest, t *tpc.TopicManager) error {
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Node) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, c *md.Contact) error {
+func (n *Node) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, p *pn.PeerNode, c *md.Contact) error {
 	// @ 3. Send Invite to Peer
 	if t.HasPeer(req.To.Id.Peer) {
 		// Get PeerID and Check error
@@ -111,7 +110,7 @@ func (n *Node) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, c *md.C
 		}
 
 		// Build Invite Message
-		invite := md.GetAuthInviteWithContact(req, n.peer.Get(), c)
+		invite := md.GetAuthInviteWithContact(req, p.Get(), c)
 
 		// Run Routine
 		go func(inv *md.AuthInvite) {
@@ -127,14 +126,14 @@ func (n *Node) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, c *md.C
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Node) InviteFile(req *md.InviteRequest, t *tpc.TopicManager, fs *us.FileSystem) error {
+func (n *Node) InviteFile(req *md.InviteRequest, t *tpc.TopicManager, p *pn.PeerNode, fs *us.FileSystem) error {
 	// Start New Session
-	session := se.NewOutSession(n.peer.Get(), req, fs, n.call)
+	session := se.NewOutSession(p.Get(), req, fs, n.call)
 	card := session.OutgoingCard()
 
 	// Create Invite Message
 	invite := md.AuthInvite{
-		From:    n.peer.Get(),
+		From:    p.Get(),
 		Payload: card.Payload,
 		Card:    card,
 	}
@@ -161,10 +160,10 @@ func (n *Node) Respond(decision bool, fs *us.FileSystem, t *tpc.TopicManager, c 
 }
 
 // ^ Send Direct Message to Peer in Lobby ^ //
-func (n *Node) Message(t *tpc.TopicManager, msg string, to string) error {
+func (n *Node) Message(t *tpc.TopicManager, p *pn.PeerNode, msg string, to string) error {
 	if t.HasPeer(to) {
 		// Inform Lobby
-		if err := t.Send(n.peer.SignMessage(msg, to)); err != nil {
+		if err := t.Send(p.SignMessage(msg, to)); err != nil {
 			return err
 		}
 	}
@@ -172,9 +171,9 @@ func (n *Node) Message(t *tpc.TopicManager, msg string, to string) error {
 }
 
 // ^ Update proximity/direction and Notify Lobby ^ //
-func (n *Node) Update(t *tpc.TopicManager) error {
+func (n *Node) Update(t *tpc.TopicManager, p *pn.PeerNode) error {
 	// Inform Lobby
-	if err := t.Send(n.peer.SignUpdate()); err != nil {
+	if err := t.Send(p.SignUpdate()); err != nil {
 		return err
 	}
 	return nil

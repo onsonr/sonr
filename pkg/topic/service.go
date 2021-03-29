@@ -6,9 +6,9 @@ import (
 	rpc "github.com/libp2p/go-libp2p-gorpc"
 
 	"github.com/libp2p/go-libp2p-core/peer"
-	us "github.com/sonr-io/core/internal/user"
 	md "github.com/sonr-io/core/internal/models"
 	se "github.com/sonr-io/core/internal/session"
+	us "github.com/sonr-io/core/internal/user"
 	pn "github.com/sonr-io/core/pkg/peer"
 	"google.golang.org/protobuf/proto"
 )
@@ -31,9 +31,10 @@ type TopicService struct {
 	// Methods
 
 	// Current Data
-	call   TopicHandler
-	lobby  *Lobby
-	peer   *pn.PeerNode
+	call  TopicHandler
+	lobby *Lobby
+	peer  *pn.PeerNode
+
 	respCh chan *md.AuthReply
 	invite *md.AuthInvite
 }
@@ -158,7 +159,7 @@ func (ts *TopicService) InviteWith(ctx context.Context, args TopicServiceArgs, r
 func (n *TopicManager) RespondToInvite(decision bool, fs *us.FileSystem, c *md.Contact) {
 	// Prepare Transfer
 	if decision {
-		n.topicHandler.OnResponded(n.service.invite, fs)
+		n.topicHandler.OnResponded(n.service.invite, n.peer, fs)
 	}
 
 	// @ Pass Contact Back

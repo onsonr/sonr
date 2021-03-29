@@ -37,7 +37,7 @@ func (mn *MobileNode) CreateRemote() []byte {
 		remote := md.GetRemoteInfo(wordList)
 
 		// Join Lobby
-		tm, err := mn.node.JoinLobby(remote.Topic)
+		tm, err := mn.node.JoinLobby(remote.Topic, mn.peer)
 		if err != nil {
 			mn.error(err, "JoinRemote")
 			return nil
@@ -68,7 +68,7 @@ func (mn *MobileNode) JoinRemote(data []byte) {
 		}
 
 		// Join Lobby
-		tm, err := mn.node.JoinLobby(remote.Topic)
+		tm, err := mn.node.JoinLobby(remote.Topic, mn.peer)
 		if err != nil {
 			mn.error(err, "JoinRemote")
 			return
@@ -83,7 +83,7 @@ func (mn *MobileNode) JoinRemote(data []byte) {
 func (mn *MobileNode) Update(facing float64, heading float64) {
 	if mn.isReady() {
 		mn.peer.SetPosition(facing, heading)
-		err := mn.node.Update(mn.local)
+		err := mn.node.Update(mn.local, mn.peer)
 		if err != nil {
 			log.Println(err)
 			return
@@ -94,7 +94,7 @@ func (mn *MobileNode) Update(facing float64, heading float64) {
 // @ Send Direct Message to Peer in Lobby
 func (mn *MobileNode) Message(msg string, to string) {
 	if mn.isReady() {
-		err := mn.node.Message(mn.local, msg, to)
+		err := mn.node.Message(mn.local, mn.peer, msg, to)
 		if err != nil {
 			log.Println(err)
 			return
@@ -125,20 +125,20 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 
 		// @ 2. Check Transfer Type
 		if req.Type == md.InviteRequest_Contact {
-			err := mn.node.InviteContact(req, topic, mn.user.Contact())
+			err := mn.node.InviteContact(req, topic, mn.peer, mn.user.Contact())
 			if err != nil {
 				log.Println(err)
 				return
 			}
 		} else if req.Type == md.InviteRequest_URL {
-			err := mn.node.InviteLink(req, topic)
+			err := mn.node.InviteLink(req, topic, mn.peer)
 			if err != nil {
 				log.Println(err)
 				return
 			}
 		} else {
 			// Invite With file
-			err := mn.node.InviteFile(req, topic, mn.user.FS)
+			err := mn.node.InviteFile(req, topic, mn.peer, mn.user.FS)
 			if err != nil {
 				log.Println(err)
 				return

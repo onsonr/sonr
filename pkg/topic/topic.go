@@ -8,10 +8,10 @@ import (
 	"github.com/libp2p/go-libp2p-core/protocol"
 	rpc "github.com/libp2p/go-libp2p-gorpc"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	us "github.com/sonr-io/core/internal/user"
 	md "github.com/sonr-io/core/internal/models"
 	net "github.com/sonr-io/core/internal/network"
 	se "github.com/sonr-io/core/internal/session"
+	us "github.com/sonr-io/core/internal/user"
 	pn "github.com/sonr-io/core/pkg/peer"
 	"google.golang.org/protobuf/proto"
 )
@@ -38,7 +38,7 @@ type TopicHandler interface {
 	OnRefresh(*md.Lobby)
 	OnInvite([]byte)
 	OnReply(id peer.ID, data []byte, session *se.Session)
-	OnResponded(inv *md.AuthInvite, fs *us.FileSystem)
+	OnResponded(inv *md.AuthInvite, p *pn.PeerNode, fs *us.FileSystem)
 }
 
 // ^ Create New Contained Topic Manager ^ //
@@ -73,7 +73,7 @@ func NewTopic(ctx context.Context, h *net.HostNode, p *pn.PeerNode, name string,
 	peersvServer := rpc.NewServer(h.Host, K_SERVICE_PID)
 	psv := TopicService{
 		lobby:  mgr.Lobby,
-		peer:   mgr.peer,
+		peer:   p,
 		call:   th,
 		respCh: make(chan *md.AuthReply, 1),
 	}
