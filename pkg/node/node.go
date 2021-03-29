@@ -93,7 +93,7 @@ func (n *Node) InviteLink(req *md.InviteRequest, t *tpc.TopicManager) error {
 		}
 
 		// Create Invite
-		invite := md.GetAuthInviteWithURL(req, n.Peer)
+		invite := n.Peer.SignInviteWithLink(req)
 
 		// Run Routine
 		go func(inv *md.AuthInvite) {
@@ -119,7 +119,7 @@ func (n *Node) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, c *md.C
 		}
 
 		// Build Invite Message
-		invite := md.GetAuthInviteWithContact(req, n.Peer, c)
+		invite := n.Peer.SignInviteWithContact(c)
 
 		// Run Routine
 		go func(inv *md.AuthInvite) {
@@ -141,11 +141,7 @@ func (n *Node) InviteFile(req *md.InviteRequest, t *tpc.TopicManager, fs *us.Fil
 	card := session.OutgoingCard()
 
 	// Create Invite Message
-	invite := md.AuthInvite{
-		From:    n.Peer,
-		Payload: card.Payload,
-		Card:    card,
-	}
+	invite := n.Peer.SignInviteWithFile(card)
 
 	// Get PeerID
 	id, _, err := t.FindPeerInTopic(req.To.Id.Peer)

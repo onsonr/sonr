@@ -1,7 +1,6 @@
 syntax = "proto3";
 
 import "api.proto";
-import "data.proto";
 import "user.proto";
 
 // Require Go Package
@@ -19,12 +18,6 @@ message ChunkBuffer {
   bytes data = 1;  // Binary Value of Chunk
   int32 size = 2;  // Size of this Chunk
   int32 total = 3; // Size of ALL Chunks together
-}
-
-message TopicRequest {
-  optional Lobby lobby = 1;
-  optional Peer peer = 2;
-  optional AuthInvite invite = 3;
 }
 
 message TopicResponse {

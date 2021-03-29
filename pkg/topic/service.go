@@ -1,4 +1,4 @@
-//nolint
+// nolint
 package topic
 
 import (
@@ -12,7 +12,7 @@ import (
 	us "github.com/sonr-io/core/internal/user"
 )
 
-// Service Struct
+// Service Structure
 type TopicService struct {
 	// Current Data
 	call  TopicHandler
@@ -23,12 +23,19 @@ type TopicService struct {
 	invite *md.AuthInvite
 }
 
+// Request Structure
+type TopicRequest struct {
+	Lobby  *md.Lobby
+	Peer   *md.Peer
+	Invite *md.AuthInvite
+}
+
 // ^ Calls Invite on Remote Peer ^ //
 func (tm *TopicManager) Exchange(id peer.ID, l *md.Lobby, p *md.Peer) error {
 	// Initialize RPC
 	exchClient := rpc.NewClient(tm.host.Host, K_SERVICE_PID)
 	var reply md.TopicResponse
-	var args md.TopicRequest
+	var args TopicRequest
 
 	// Set Args
 	args.Lobby = l
@@ -46,7 +53,7 @@ func (tm *TopicManager) Exchange(id peer.ID, l *md.Lobby, p *md.Peer) error {
 }
 
 // ^ Calls Invite on Remote Peer ^ //
-func (ts *TopicService) ExchangeWith(ctx context.Context, args md.TopicRequest, reply *md.TopicResponse) error {
+func (ts *TopicService) ExchangeWith(ctx context.Context, args TopicRequest, reply *md.TopicResponse) error {
 	// Update Peers with Lobby
 	ts.lobby.Sync(args.Lobby, args.Peer)
 	ts.call.OnRefresh(ts.lobby)
@@ -61,7 +68,7 @@ func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite, session *se.Sessi
 	// Initialize Data
 	rpcClient := rpc.NewClient(tm.host.Host, K_SERVICE_PID)
 	var reply md.TopicResponse
-	var args md.TopicRequest
+	var args TopicRequest
 	args.Invite = inv
 
 	// Call to Peer
@@ -78,7 +85,7 @@ func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite, session *se.Sessi
 }
 
 // ^ Calls Invite on Remote Peer ^ //
-func (ts *TopicService) InviteWith(ctx context.Context, args md.TopicRequest, reply *md.TopicResponse) error {
+func (ts *TopicService) InviteWith(ctx context.Context, args TopicRequest, reply *md.TopicResponse) error {
 	// Set Current Message
 	ts.invite = args.Invite
 

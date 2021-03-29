@@ -134,11 +134,81 @@ func (p *Peer) SignMessage(m string, to string) *LobbyEvent {
 	}
 }
 
+// ^ Generate AuthInvite with Contact Payload from Request, User Peer Data and User Contact ^ //
+func (p *Peer) SignInviteWithContact(c *Contact) AuthInvite {
+	// Create Invite
+	return AuthInvite{
+		From:    p,
+		Payload: Payload_CONTACT,
+		Card: &TransferCard{
+			// SQL Properties
+			Payload:  Payload_CONTACT,
+			Received: int32(time.Now().Unix()),
+			Platform: p.Platform,
+
+			// Transfer Properties
+			Status: TransferCard_INVITE,
+
+			// Owner Properties
+			Username:  p.Profile.Username,
+			FirstName: p.Profile.FirstName,
+			LastName:  p.Profile.LastName,
+
+			// Data Properties
+			Contact: c,
+		},
+	}
+}
+
+// ^ Generate AuthInvite with Contact Payload from Request, User Peer Data and User Contact ^ //
+func (p *Peer) SignInviteWithFile(tc *TransferCard) AuthInvite {
+	// Create Invite
+	return AuthInvite{
+		From:    p,
+		Payload: tc.Payload,
+		Card:    tc,
+	}
+}
+
+// ^ Generate AuthInvite with URL Payload from Request and User Peer Data ^ //
+func (p *Peer) SignInviteWithLink(req *InviteRequest) AuthInvite {
+	// Get URL Data
+	urlInfo, err := GetPageInfoFromUrl(req.Url)
+	if err != nil {
+		urlInfo = &URLLink{
+			Link: req.Url,
+		}
+	}
+
+	// Create Invite
+	return AuthInvite{
+		From:    p,
+		Payload: Payload_CONTACT,
+		Card: &TransferCard{
+			// SQL Properties
+			Payload:  Payload_CONTACT,
+			Received: int32(time.Now().Unix()),
+			Platform: p.Platform,
+
+			// Transfer Properties
+			Status: TransferCard_INVITE,
+
+			// Owner Properties
+			Username:  p.Profile.Username,
+			FirstName: p.Profile.FirstName,
+			LastName:  p.Profile.LastName,
+
+			// Data Properties
+			Url: urlInfo,
+		},
+	}
+}
+
 // ^ SignReply Creates AuthReply ^
 func (p *Peer) SignReply() *AuthReply {
 	return &AuthReply{
 		From: p,
-		Type: AuthReply_Contact,
+		Type: AuthReply_None,
 		Card: &TransferCard{
 			// SQL Properties
 			Payload:  Payload_UNDEFINED,
