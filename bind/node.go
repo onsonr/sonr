@@ -3,9 +3,9 @@ package bind
 import (
 	"log"
 
+	"github.com/sonr-io/core/internal/network"
 	"github.com/sonr-io/core/internal/topic"
 	md "github.com/sonr-io/core/pkg/models"
-	"github.com/sonr-io/core/pkg/network"
 	"google.golang.org/protobuf/proto"
 )
 

@@ -11,8 +11,8 @@ import (
 
 	// Local
 	// brprot "berty.tech/berty/v2/go/pkg/bertyprotocol"
+	net "github.com/sonr-io/core/internal/network"
 	se "github.com/sonr-io/core/internal/session"
-	net "github.com/sonr-io/core/pkg/network"
 )
 
 // ^ Struct: Main Node handles Networking/Identity/Streams ^
