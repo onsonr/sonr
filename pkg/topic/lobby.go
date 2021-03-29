@@ -6,7 +6,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	md "github.com/sonr-io/core/internal/models"
-	pn "github.com/sonr-io/core/pkg/peer"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -19,7 +18,7 @@ type Lobby struct {
 	// Private Properties
 	callback TopicHandler
 	isLocal  bool
-	peer     *pn.PeerNode
+	peer     *md.Peer
 }
 
 // ^ Returns as Lobby Buffer ^
@@ -93,7 +92,7 @@ func (l *Lobby) Sync(ref *md.Lobby, remotePeer *md.Peer) {
 }
 
 // ^ handleTopicEvents: listens to Pubsub Events for topic  ^
-func (tm *TopicManager) handleTopicEvents() {
+func (tm *TopicManager) handleTopicEvents(p *md.Peer) {
 	// @ Loop Events
 	for {
 		// Get next event
@@ -104,7 +103,12 @@ func (tm *TopicManager) handleTopicEvents() {
 		}
 
 		if lobEvent.Type == pubsub.PeerJoin {
-			err = tm.Exchange(lobEvent.Peer)
+			buf, err := p.Buffer()
+			if err != nil {
+				log.Println(err)
+				continue
+			}
+			err = tm.Exchange(lobEvent.Peer, buf)
 			if err != nil {
 				continue
 			}
@@ -119,7 +123,7 @@ func (tm *TopicManager) handleTopicEvents() {
 }
 
 // ^ handleTopicMessages: listens for messages on pubsub topic subscription ^
-func (tm *TopicManager) handleTopicMessages() {
+func (tm *TopicManager) handleTopicMessages(p *md.Peer) {
 	for {
 		// Get next msg from pub/sub
 		msg, err := tm.subscription.Next(tm.ctx)
@@ -128,7 +132,7 @@ func (tm *TopicManager) handleTopicMessages() {
 		}
 
 		// Only forward messages delivered by others
-		if tm.peer.IsPeerID(msg.ReceivedFrom) {
+		if p.IsPeerID(msg.ReceivedFrom) {
 			continue
 		}
 
@@ -148,7 +152,7 @@ func (tm *TopicManager) handleTopicMessages() {
 }
 
 // ^ processTopicMessages: pulls messages from channel that have been handled ^
-func (tm *TopicManager) processTopicMessages() {
+func (tm *TopicManager) processTopicMessages(p *md.Peer) {
 	for {
 		select {
 		// @ when we receive a message from the lobby room
@@ -159,7 +163,7 @@ func (tm *TopicManager) processTopicMessages() {
 				tm.Lobby.Add(m.From)
 			} else if m.Event == md.LobbyEvent_MESSAGE {
 				// Check is Message For Self
-				if tm.peer.IsPeerIDString(m.To) {
+				if p.IsPeerIDString(m.To) {
 					// Call Event
 					tm.topicHandler.OnEvent(m)
 				}

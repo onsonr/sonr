@@ -6,7 +6,6 @@ import (
 	md "github.com/sonr-io/core/internal/models"
 	u "github.com/sonr-io/core/internal/user"
 	sn "github.com/sonr-io/core/pkg/node"
-	p "github.com/sonr-io/core/pkg/peer"
 	tpc "github.com/sonr-io/core/pkg/topic"
 	"google.golang.org/protobuf/proto"
 )
@@ -20,7 +19,6 @@ type MobileNode struct {
 
 	// Client
 	node *sn.Node
-	peer *p.PeerNode
 	user *u.User
 
 	// Groups
@@ -80,15 +78,8 @@ func (mn *MobileNode) Connect() {
 		mn.setConnected(true)
 	}
 
-	// Create User Peer
-	mn.peer, err = p.NewPeer(mn.connreq, mn.node.Host.ID())
-	if err != nil {
-		log.Println("Failed to set peer")
-		return
-	}
-
 	// Bootstrap Node
-	err = mn.node.Bootstrap(mn.peer)
+	err = mn.node.Bootstrap()
 	if err != nil {
 		log.Println("Failed to bootstrap node")
 		mn.setBootstrapped(false)
@@ -97,7 +88,7 @@ func (mn *MobileNode) Connect() {
 		mn.setBootstrapped(true)
 	}
 
-	mn.local, err = mn.node.JoinLocal(mn.peer)
+	mn.local, err = mn.node.JoinLocal()
 	if err != nil {
 		log.Println("Failed to join local pubsub")
 		mn.setJoinedLocal(false)

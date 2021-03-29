@@ -7,7 +7,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	md "github.com/sonr-io/core/internal/models"
 	us "github.com/sonr-io/core/internal/user"
-	pn "github.com/sonr-io/core/pkg/peer"
 	tpc "github.com/sonr-io/core/pkg/topic"
 
 	// Local
@@ -19,15 +18,17 @@ import (
 // ^ Struct: Main Node handles Networking/Identity/Streams ^
 type Node struct {
 	// Properties
-	ctx  context.Context
-	call md.NodeCallback
+	ctx     context.Context
+	call    md.NodeCallback
+	req     *md.ConnectionRequest
+	router  *ProtocolRouter
+	session *se.Session
 
 	// client brprot.Service
 
-	// Networking Properties
-	Host    *net.HostNode
-	router  *ProtocolRouter
-	session *se.Session
+	// References
+	Host *net.HostNode
+	Peer *md.Peer
 }
 
 // ^ NewNode Initializes Node with Router ^
@@ -35,13 +36,21 @@ func NewNode(ctx context.Context, cr *md.ConnectionRequest, call md.NodeCallback
 	return &Node{
 		ctx:    ctx,
 		call:   call,
+		req:    cr,
 		router: NewProtocolRouter(cr),
 	}
 }
 
 // ^ Connects Host Node from Private Key ^
 func (n *Node) Connect(key crypto.PrivKey) error {
+	// Set Host
 	hn, err := net.NewHost(n.ctx, n.router.Rendevouz(), key)
+	if err != nil {
+		return err
+	}
+
+	// Set Peer
+	n.Peer, err = md.NewPeer(n.req, hn.ID())
 	if err != nil {
 		return err
 	}
@@ -51,13 +60,13 @@ func (n *Node) Connect(key crypto.PrivKey) error {
 }
 
 // ^ Begins Bootstrapping HostNode ^
-func (n *Node) Bootstrap(peer *pn.PeerNode) error {
+func (n *Node) Bootstrap() error {
 	return n.Host.Bootstrap()
 }
 
 // ^ Join Lobby Adds Node to Named Topic ^
-func (n *Node) JoinLobby(name string, peer *pn.PeerNode) (*tpc.TopicManager, error) {
-	if t, err := tpc.NewTopic(n.ctx, n.Host, peer, n.router.Topic(name), false, n); err != nil {
+func (n *Node) JoinLobby(name string) (*tpc.TopicManager, error) {
+	if t, err := tpc.NewTopic(n.ctx, n.Host, n.Peer, n.router.Topic(name), false, n); err != nil {
 		return nil, err
 	} else {
 		return t, nil
@@ -65,8 +74,8 @@ func (n *Node) JoinLobby(name string, peer *pn.PeerNode) (*tpc.TopicManager, err
 }
 
 // ^ Join Lobby Adds Node to Named Topic ^
-func (n *Node) JoinLocal(peer *pn.PeerNode) (*tpc.TopicManager, error) {
-	if t, err := tpc.NewTopic(n.ctx, n.Host, peer, n.router.LocalTopic(), true, n); err != nil {
+func (n *Node) JoinLocal() (*tpc.TopicManager, error) {
+	if t, err := tpc.NewTopic(n.ctx, n.Host, n.Peer, n.router.LocalTopic(), true, n); err != nil {
 		return nil, err
 	} else {
 		return t, nil
@@ -74,7 +83,7 @@ func (n *Node) JoinLocal(peer *pn.PeerNode) (*tpc.TopicManager, error) {
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Node) InviteLink(req *md.InviteRequest, t *tpc.TopicManager, p *pn.PeerNode) error {
+func (n *Node) InviteLink(req *md.InviteRequest, t *tpc.TopicManager) error {
 	// @ 3. Send Invite to Peer
 	if t.HasPeer(req.To.Id.Peer) {
 		// Get PeerID and Check error
@@ -84,7 +93,7 @@ func (n *Node) InviteLink(req *md.InviteRequest, t *tpc.TopicManager, p *pn.Peer
 		}
 
 		// Create Invite
-		invite := md.GetAuthInviteWithURL(req, p.Get())
+		invite := md.GetAuthInviteWithURL(req, n.Peer)
 
 		// Run Routine
 		go func(inv *md.AuthInvite) {
@@ -100,7 +109,7 @@ func (n *Node) InviteLink(req *md.InviteRequest, t *tpc.TopicManager, p *pn.Peer
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Node) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, p *pn.PeerNode, c *md.Contact) error {
+func (n *Node) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, c *md.Contact) error {
 	// @ 3. Send Invite to Peer
 	if t.HasPeer(req.To.Id.Peer) {
 		// Get PeerID and Check error
@@ -110,7 +119,7 @@ func (n *Node) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, p *pn.P
 		}
 
 		// Build Invite Message
-		invite := md.GetAuthInviteWithContact(req, p.Get(), c)
+		invite := md.GetAuthInviteWithContact(req, n.Peer, c)
 
 		// Run Routine
 		go func(inv *md.AuthInvite) {
@@ -126,14 +135,14 @@ func (n *Node) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, p *pn.P
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Node) InviteFile(req *md.InviteRequest, t *tpc.TopicManager, p *pn.PeerNode, fs *us.FileSystem) error {
+func (n *Node) InviteFile(req *md.InviteRequest, t *tpc.TopicManager, fs *us.FileSystem) error {
 	// Start New Session
-	session := se.NewOutSession(p.Get(), req, fs, n.call)
+	session := se.NewOutSession(n.Peer, req, fs, n.call)
 	card := session.OutgoingCard()
 
 	// Create Invite Message
 	invite := md.AuthInvite{
-		From:    p.Get(),
+		From:    n.Peer,
 		Payload: card.Payload,
 		Card:    card,
 	}
@@ -155,15 +164,15 @@ func (n *Node) InviteFile(req *md.InviteRequest, t *tpc.TopicManager, p *pn.Peer
 }
 
 // ^ Respond to an Invitation ^ //
-func (n *Node) Respond(decision bool, fs *us.FileSystem, t *tpc.TopicManager, c *md.Contact) {
-	t.RespondToInvite(decision, fs, c)
+func (n *Node) Respond(decision bool, t *tpc.TopicManager, fs *us.FileSystem, c *md.Contact) {
+	t.RespondToInvite(decision, fs, n.Peer, c)
 }
 
 // ^ Send Direct Message to Peer in Lobby ^ //
-func (n *Node) Message(t *tpc.TopicManager, p *pn.PeerNode, msg string, to string) error {
+func (n *Node) Message(t *tpc.TopicManager, msg string, to string) error {
 	if t.HasPeer(to) {
 		// Inform Lobby
-		if err := t.Send(p.SignMessage(msg, to)); err != nil {
+		if err := t.Send(n.Peer.SignMessage(msg, to)); err != nil {
 			return err
 		}
 	}
@@ -171,9 +180,12 @@ func (n *Node) Message(t *tpc.TopicManager, p *pn.PeerNode, msg string, to strin
 }
 
 // ^ Update proximity/direction and Notify Lobby ^ //
-func (n *Node) Update(t *tpc.TopicManager, p *pn.PeerNode) error {
+func (n *Node) Update(t *tpc.TopicManager, f float64, h float64) error {
+	// Update Position
+	n.Peer.SetPosition(f, h)
+
 	// Inform Lobby
-	if err := t.Send(p.SignUpdate()); err != nil {
+	if err := t.Send(n.Peer.SignUpdate()); err != nil {
 		return err
 	}
 	return nil

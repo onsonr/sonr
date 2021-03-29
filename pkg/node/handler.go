@@ -8,7 +8,6 @@ import (
 	md "github.com/sonr-io/core/internal/models"
 	se "github.com/sonr-io/core/internal/session"
 	us "github.com/sonr-io/core/internal/user"
-	pn "github.com/sonr-io/core/pkg/peer"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -70,7 +69,7 @@ func (n *Node) OnReply(id peer.ID, reply []byte, session *se.Session) {
 }
 
 // ^ OnResponded: Prepares for Incoming File Transfer when Accepted ^
-func (n *Node) OnResponded(inv *md.AuthInvite, p *pn.PeerNode, fs *us.FileSystem) {
-	n.session = se.NewInSession(p.Get(), inv, fs, n.call)
+func (n *Node) OnResponded(inv *md.AuthInvite, p *md.Peer, fs *us.FileSystem) {
+	n.session = se.NewInSession(p, inv, fs, n.call)
 	n.Host.HandleStream(n.router.Transfer(), n.session.ReadFromStream)
 }

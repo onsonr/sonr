@@ -9,7 +9,6 @@ import (
 	md "github.com/sonr-io/core/internal/models"
 	se "github.com/sonr-io/core/internal/session"
 	us "github.com/sonr-io/core/internal/user"
-	pn "github.com/sonr-io/core/pkg/peer"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -28,19 +27,17 @@ type TopicServiceResponse struct {
 
 // Service Struct
 type TopicService struct {
-	// Methods
-
 	// Current Data
 	call  TopicHandler
 	lobby *Lobby
-	peer  *pn.PeerNode
+	peer  *md.Peer
 
 	respCh chan *md.AuthReply
 	invite *md.AuthInvite
 }
 
 // ^ Calls Invite on Remote Peer ^ //
-func (tm *TopicManager) Exchange(id peer.ID) error {
+func (tm *TopicManager) Exchange(id peer.ID, peerBuf []byte) error {
 	// Initialize RPC
 	exchClient := rpc.NewClient(tm.host.Host, K_SERVICE_PID)
 	var reply TopicServiceResponse
@@ -48,7 +45,7 @@ func (tm *TopicManager) Exchange(id peer.ID) error {
 
 	// Set Args
 	args.Lobby = tm.Lobby.Buffer()
-	args.Peer = tm.peer.Buffer()
+	args.Peer = peerBuf
 
 	// Call to Peer
 	err := exchClient.Call(id, "TopicService", "ExchangeWith", args, &reply)
@@ -89,7 +86,11 @@ func (ts *TopicService) ExchangeWith(ctx context.Context, args TopicServiceArgs,
 	ts.lobby.Sync(remoteLobbyRef, remotePeer)
 
 	// Set Message data and call done
-	reply.Peer = ts.peer.Buffer()
+	buf, err := ts.peer.Buffer()
+	if err != nil {
+		return err
+	}
+	reply.Peer = buf
 	return nil
 }
 
@@ -156,21 +157,21 @@ func (ts *TopicService) InviteWith(ctx context.Context, args TopicServiceArgs, r
 }
 
 // ^ RespondToInvite to an Invitation ^ //
-func (n *TopicManager) RespondToInvite(decision bool, fs *us.FileSystem, c *md.Contact) {
+func (n *TopicManager) RespondToInvite(decision bool, fs *us.FileSystem, p *md.Peer, c *md.Contact) {
 	// Prepare Transfer
 	if decision {
-		n.topicHandler.OnResponded(n.service.invite, n.peer, fs)
+		n.topicHandler.OnResponded(n.service.invite, p, fs)
 	}
 
 	// @ Pass Contact Back
 	if n.service.invite.Payload == md.Payload_CONTACT {
 		// Create Accept Response
-		resp := n.peer.SignReplyWithContact(c)
+		resp := p.SignReplyWithContact(c)
 		// Send to Channel
 		n.service.respCh <- resp
 	} else {
 		// Create Accept Response
-		resp := n.peer.SignReply()
+		resp := p.SignReply()
 
 		// Send to Channel
 		n.service.respCh <- resp

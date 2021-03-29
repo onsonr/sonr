@@ -37,7 +37,7 @@ func (mn *MobileNode) CreateRemote() []byte {
 		remote := md.GetRemoteInfo(wordList)
 
 		// Join Lobby
-		tm, err := mn.node.JoinLobby(remote.Topic, mn.peer)
+		tm, err := mn.node.JoinLobby(remote.Topic)
 		if err != nil {
 			mn.error(err, "JoinRemote")
 			return nil
@@ -68,7 +68,7 @@ func (mn *MobileNode) JoinRemote(data []byte) {
 		}
 
 		// Join Lobby
-		tm, err := mn.node.JoinLobby(remote.Topic, mn.peer)
+		tm, err := mn.node.JoinLobby(remote.Topic)
 		if err != nil {
 			mn.error(err, "JoinRemote")
 			return
@@ -82,8 +82,7 @@ func (mn *MobileNode) JoinRemote(data []byte) {
 // @ Update proximity/direction and Notify Lobby
 func (mn *MobileNode) Update(facing float64, heading float64) {
 	if mn.isReady() {
-		mn.peer.SetPosition(facing, heading)
-		err := mn.node.Update(mn.local, mn.peer)
+		err := mn.node.Update(mn.local, facing, heading)
 		if err != nil {
 			log.Println(err)
 			return
@@ -94,7 +93,7 @@ func (mn *MobileNode) Update(facing float64, heading float64) {
 // @ Send Direct Message to Peer in Lobby
 func (mn *MobileNode) Message(msg string, to string) {
 	if mn.isReady() {
-		err := mn.node.Message(mn.local, mn.peer, msg, to)
+		err := mn.node.Message(mn.local, msg, to)
 		if err != nil {
 			log.Println(err)
 			return
@@ -125,20 +124,20 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 
 		// @ 2. Check Transfer Type
 		if req.Type == md.InviteRequest_Contact {
-			err := mn.node.InviteContact(req, topic, mn.peer, mn.user.Contact())
+			err := mn.node.InviteContact(req, topic, mn.user.Contact())
 			if err != nil {
 				log.Println(err)
 				return
 			}
 		} else if req.Type == md.InviteRequest_URL {
-			err := mn.node.InviteLink(req, topic, mn.peer)
+			err := mn.node.InviteLink(req, topic)
 			if err != nil {
 				log.Println(err)
 				return
 			}
 		} else {
 			// Invite With file
-			err := mn.node.InviteFile(req, topic, mn.peer, mn.user.FS)
+			err := mn.node.InviteFile(req, topic, mn.user.FS)
 			if err != nil {
 				log.Println(err)
 				return
@@ -150,7 +149,7 @@ func (mn *MobileNode) Invite(reqBytes []byte) {
 // @ Respond to an Invite with Decision
 func (mn *MobileNode) Respond(decs bool) {
 	if mn.isReady() {
-		mn.node.Respond(decs, mn.user.FS, mn.local, mn.user.Contact())
+		mn.node.Respond(decs, mn.local, mn.user.FS, mn.user.Contact())
 		// Update Status
 		if decs {
 			mn.setStatus(md.Status_INPROGRESS)
@@ -180,6 +179,6 @@ func (mn *MobileNode) SetContact(conBytes []byte) {
 		}
 
 		// Update Peer Profile
-		mn.peer.SetProfile(newContact)
+		mn.node.Peer.SetProfile(newContact)
 	}
 }
