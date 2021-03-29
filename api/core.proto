@@ -19,8 +19,3 @@ message ChunkBuffer {
   int32 size = 2;  // Size of this Chunk
   int32 total = 3; // Size of ALL Chunks together
 }
-
-message TopicResponse {
-  optional Peer peer = 1;
-  optional AuthReply reply = 2;
-}
