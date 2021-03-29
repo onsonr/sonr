@@ -24,7 +24,7 @@ type TopicManager struct {
 	topic        *pubsub.Topic
 	subscription *pubsub.Subscription
 	eventHandler *pubsub.TopicEventHandler
-	Lobby        *Lobby
+	Lobby        *md.Lobby
 
 	service      *TopicService
 	Messages     chan *md.LobbyEvent
@@ -53,13 +53,13 @@ func NewTopic(ctx context.Context, h *net.HostNode, p *md.Peer, name string, isL
 		ctx:          ctx,
 		host:         h,
 		eventHandler: handler,
-		Lobby: &Lobby{
-			callback: th,
-			Name:     name[12:],
-			Size:     1,
-			Count:    0,
-			Peers:    make(map[string]*md.Peer),
-			isLocal:  isLocal,
+		Lobby: &md.Lobby{
+			Name:    name[12:],
+			Size:    1,
+			Count:   0,
+			Peers:   make(map[string]*md.Peer),
+			IsLocal: isLocal,
+			User:    p,
 		},
 		Messages:     make(chan *md.LobbyEvent, K_MAX_MESSAGES),
 		subscription: sub,

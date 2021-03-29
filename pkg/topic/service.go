@@ -29,7 +29,7 @@ type TopicServiceResponse struct {
 type TopicService struct {
 	// Current Data
 	call  TopicHandler
-	lobby *Lobby
+	lobby *md.Lobby
 	peer  *md.Peer
 
 	respCh chan *md.AuthReply
@@ -37,14 +37,14 @@ type TopicService struct {
 }
 
 // ^ Calls Invite on Remote Peer ^ //
-func (tm *TopicManager) Exchange(id peer.ID, peerBuf []byte) error {
+func (tm *TopicManager) Exchange(id peer.ID, peerBuf []byte, lobBuf []byte) error {
 	// Initialize RPC
 	exchClient := rpc.NewClient(tm.host.Host, K_SERVICE_PID)
 	var reply TopicServiceResponse
 	var args TopicServiceArgs
 
 	// Set Args
-	args.Lobby = tm.Lobby.Buffer()
+	args.Lobby = lobBuf
 	args.Peer = peerBuf
 
 	// Call to Peer
@@ -64,6 +64,7 @@ func (tm *TopicManager) Exchange(id peer.ID, peerBuf []byte) error {
 
 	// Update Peer with new data
 	tm.Lobby.Add(remotePeer)
+	tm.Refresh()
 	return nil
 }
 
@@ -84,6 +85,7 @@ func (ts *TopicService) ExchangeWith(ctx context.Context, args TopicServiceArgs,
 
 	// Update Peers with Lobby
 	ts.lobby.Sync(remoteLobbyRef, remotePeer)
+	ts.call.OnRefresh(ts.lobby)
 
 	// Set Message data and call done
 	buf, err := ts.peer.Buffer()

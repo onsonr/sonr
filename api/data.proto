@@ -12,6 +12,7 @@ message Lobby {
   int32 size = 3;              // Total Number of Devices in Lobby
   int32 count = 4;             // Total Devices in Lobby EXCLUDING User
   map<string, Peer> peers = 5; // Total Data of Active Peers
+  Peer user = 6;               // User Peer reference
 }
 
 // Message Sent when peer messages Lobby Topic

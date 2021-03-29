@@ -18,10 +18,17 @@ import (
 
 	"io/ioutil"
 
+	"github.com/libp2p/go-libp2p-core/peer"
+
 	"github.com/PuerkitoBio/goquery"
 	"github.com/h2non/filetype"
 	"golang.org/x/net/html"
+	"google.golang.org/protobuf/proto"
 )
+
+// ************************* //
+// ** URL Data Management ** //
+// ************************* //
 
 var (
 	ErrorType = errors.New("Should not be non-ptr or nil")
@@ -1049,4 +1056,47 @@ type InFile struct {
 	Properties    *TransferCard_Properties
 	ChunkBaseChan chan Chunk64
 	ChunkBufChan  chan ChunkBuffer
+}
+
+// ********************** //
+// ** Lobby Management ** //
+// ********************** //
+// ^ Returns as Lobby Buffer ^
+func (l *Lobby) Buffer() ([]byte, error) {
+	bytes, err := proto.Marshal(l)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	return bytes, nil
+}
+
+// ^ Add/Update Peer in Lobby ^
+func (l *Lobby) Add(peer *Peer) {
+	// Update Peer with new data
+	l.Peers[peer.Id.Peer] = peer
+	l.Count = int32(len(l.Peers))
+	l.Size = int32(len(l.Peers)) + 1 // Account for User
+}
+
+// ^ Remove Peer from Lobby ^
+func (l *Lobby) Delete(id peer.ID) {
+	// Update Peer with new data
+	delete(l.Peers, id.String())
+	l.Count = int32(len(l.Peers))
+	l.Size = int32(len(l.Peers)) + 1 // Account for User
+}
+
+// ^ Sync Between Remote Peers Lobby ^
+func (l *Lobby) Sync(ref *Lobby, remotePeer *Peer) {
+	// Validate Lobbies are Different
+	if l.Count != ref.Count {
+		// Iterate Over List
+		for id, peer := range ref.Peers {
+			if l.User.IsNotPeerIDString(id) {
+				l.Add(peer)
+			}
+		}
+	}
+	l.Add(remotePeer)
 }

@@ -72,3 +72,4 @@ func (c *state) Pause() {
 		c.chn = make(chan bool)
 	}
 }
+

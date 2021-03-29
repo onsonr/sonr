@@ -3,92 +3,14 @@ package topic
 import (
 	"log"
 
-	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	md "github.com/sonr-io/core/internal/models"
 	"google.golang.org/protobuf/proto"
 )
 
-type Lobby struct {
-	Name  string
-	Size  int32
-	Count int32
-	Peers map[string]*md.Peer
-
-	// Private Properties
-	callback TopicHandler
-	isLocal  bool
-	peer     *md.Peer
-}
-
-// ^ Returns as Lobby Buffer ^
-func (l *Lobby) Buffer() []byte {
-	bytes, err := proto.Marshal(&md.Lobby{
-		IsLocal: l.isLocal,
-		Name:    l.Name,
-		Size:    l.Size,
-		Count:   l.Count,
-		Peers:   l.Peers,
-	})
-	if err != nil {
-		log.Println(err)
-		return nil
-	}
-	return bytes
-}
-
-// ^ Add/Update Peer in Lobby ^
-func (l *Lobby) Add(peer *md.Peer) {
-	// Update Peer with new data
-	l.Peers[peer.Id.Peer] = peer
-	l.Count = int32(len(l.Peers))
-	l.Size = int32(len(l.Peers)) + 1 // Account for User
-	l.Refresh()
-}
-
-// ^ Add/Update Peer in Lobby without Callback ^
-func (l *Lobby) AddWithoutRefresh(peer *md.Peer) {
-	// Update Peer with new data
-	l.Peers[peer.Id.Peer] = peer
-	l.Count = int32(len(l.Peers))
-	l.Size = int32(len(l.Peers)) + 1 // Account for User
-}
-
-// ^ Delete Peer from Lobby ^
-func (l *Lobby) Delete(id peer.ID) {
-	// Update Peer with new data
-	delete(l.Peers, id.String())
-	l.Count = int32(len(l.Peers))
-	l.Size = int32(len(l.Peers)) + 1 // Account for User
-	l.Refresh()
-}
-
 // ^ Send Updated Lobby ^
-func (l *Lobby) Refresh() {
-	l.callback.OnRefresh(&md.Lobby{
-		IsLocal: l.isLocal,
-		Name:    l.Name,
-		Size:    l.Size,
-		Count:   l.Count,
-		Peers:   l.Peers,
-	})
-}
-
-// ^ Sync Between Remote Peers Lobby ^
-func (l *Lobby) Sync(ref *md.Lobby, remotePeer *md.Peer) {
-	// Validate Lobbies are Different
-	if l.Count != ref.Count {
-		// Iterate Over List
-		for id, peer := range ref.Peers {
-			// Add all Peers NOT User
-			if l.peer.IsNotPeerIDString(id) {
-				l.AddWithoutRefresh(peer)
-			}
-		}
-	}
-
-	// Add Synced Peer to Lobby
-	l.Add(remotePeer)
+func (tm *TopicManager) Refresh() {
+	tm.topicHandler.OnRefresh(tm.Lobby)
 }
 
 // ^ handleTopicEvents: listens to Pubsub Events for topic  ^
@@ -103,12 +25,17 @@ func (tm *TopicManager) handleTopicEvents(p *md.Peer) {
 		}
 
 		if lobEvent.Type == pubsub.PeerJoin {
-			buf, err := p.Buffer()
+			pbuf, err := p.Buffer()
 			if err != nil {
 				log.Println(err)
 				continue
 			}
-			err = tm.Exchange(lobEvent.Peer, buf)
+			lbuf, err := tm.Lobby.Buffer()
+			if err != nil {
+				log.Println(err)
+				continue
+			}
+			err = tm.Exchange(lobEvent.Peer, pbuf, lbuf)
 			if err != nil {
 				continue
 			}
@@ -161,6 +88,7 @@ func (tm *TopicManager) processTopicMessages(p *md.Peer) {
 			if m.Event == md.LobbyEvent_UPDATE {
 				// Update Peer Data
 				tm.Lobby.Add(m.From)
+				tm.Refresh()
 			} else if m.Event == md.LobbyEvent_MESSAGE {
 				// Check is Message For Self
 				if p.IsPeerIDString(m.To) {
