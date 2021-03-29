@@ -76,5 +76,5 @@ func (n *Node) OnReply(id peer.ID, reply []byte, session *se.Session) {
 // ^ OnResponded: Prepares for Incoming File Transfer when Accepted ^
 func (n *Node) OnResponded(inv *md.AuthInvite, fs *sf.FileSystem) {
 	n.session = se.NewInSession(n.GetPeer(), inv, fs, n.call)
-	n.Host.SetStreamHandler(n.router.Transfer(), n.session.ReadFromStream)
+	n.Host.HandleStream(n.router.Transfer(), n.session.ReadFromStream)
 }

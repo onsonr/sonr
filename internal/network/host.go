@@ -118,6 +118,11 @@ func (h *HostNode) ID() peer.ID {
 	return h.Host.ID()
 }
 
+// ^ Set Stream Handler for Host ^
+func (h *HostNode) HandleStream(pid protocol.ID, handler network.StreamHandler) {
+	h.Host.SetStreamHandler(pid, handler)
+}
+
 // ^ Join New Topic with Name ^
 func (h *HostNode) Join(name string) (*psub.Topic, *psub.Subscription, *psub.TopicEventHandler, error) {
 	// Join Topic
@@ -138,11 +143,6 @@ func (h *HostNode) Join(name string) (*psub.Topic, *psub.Subscription, *psub.Top
 		return nil, nil, nil, err
 	}
 	return topic, sub, handler, nil
-}
-
-// ^ Set Stream Handler for Host ^
-func (h *HostNode) SetStreamHandler(pid protocol.ID, handler network.StreamHandler) {
-	h.Host.SetStreamHandler(pid, handler)
 }
 
 // ^ Start Stream for Host ^
