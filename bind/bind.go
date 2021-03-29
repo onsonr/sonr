@@ -64,6 +64,7 @@ func NewDesktopNode(req *md.ConnectionRequest, call Callback) *Node {
 		return nil
 	}
 
+	// Modify Request
 	req.AttachGeoToRequest(&geoIP)
 
 	// Create Mobile Node
