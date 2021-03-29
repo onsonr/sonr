@@ -6,9 +6,9 @@ import (
 	rpc "github.com/libp2p/go-libp2p-gorpc"
 
 	"github.com/libp2p/go-libp2p-core/peer"
-	md "github.com/sonr-io/core/internal/models"
 	se "github.com/sonr-io/core/internal/session"
-	us "github.com/sonr-io/core/internal/user"
+	md "github.com/sonr-io/core/pkg/models"
+	us "github.com/sonr-io/core/pkg/user"
 	"google.golang.org/protobuf/proto"
 )
 

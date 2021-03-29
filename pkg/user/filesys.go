@@ -7,7 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
-	md "github.com/sonr-io/core/internal/models"
+	md "github.com/sonr-io/core/pkg/models"
 )
 
 const K_SONR_CLIENT_DIR = ".sonr"

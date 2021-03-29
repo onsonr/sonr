@@ -7,8 +7,8 @@ import (
 	"encoding/base64"
 	"log"
 
-	md "github.com/sonr-io/core/internal/models"
-	us "github.com/sonr-io/core/internal/user"
+	md "github.com/sonr-io/core/pkg/models"
+	us "github.com/sonr-io/core/pkg/user"
 
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-msgio"

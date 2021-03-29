@@ -4,12 +4,12 @@ import (
 	"context"
 	"log"
 
-	md "github.com/sonr-io/core/internal/models"
+	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
 )
 
 // * Struct: Reference for Binded Proxy Node * //
-type mobileConfig struct {
+type nodeConfig struct {
 	CtxFS   context.Context
 	CtxNode context.Context
 	CtxUser context.Context
@@ -21,8 +21,8 @@ type mobileConfig struct {
 	Status md.Status
 }
 
-func newMobileConfig() mobileConfig {
-	return mobileConfig{
+func newNodeConfig() nodeConfig {
+	return nodeConfig{
 		CtxFS:   context.Background(),
 		CtxNode: context.Background(),
 		CtxUser: context.Background(),
@@ -35,23 +35,23 @@ func newMobileConfig() mobileConfig {
 	}
 }
 
-func (mn *MobileNode) contextFS() context.Context {
+func (mn *Node) contextFS() context.Context {
 	return mn.config.CtxFS
 }
 
-func (mn *MobileNode) contextNode() context.Context {
+func (mn *Node) contextNode() context.Context {
 	return mn.config.CtxNode
 }
 
-func (mn *MobileNode) contextUser() context.Context {
+func (mn *Node) contextUser() context.Context {
 	return mn.config.CtxUser
 }
 
-func (mn *MobileNode) isReady() bool {
+func (mn *Node) isReady() bool {
 	return mn.config.HasBootstrapped && mn.config.HasStarted
 }
 
-func (mn *MobileNode) setConnected(val bool) {
+func (mn *Node) setConnected(val bool) {
 	// Update Status
 	mn.config.HasStarted = val
 	mn.config.Status = md.Status_CONNECTED
@@ -70,7 +70,7 @@ func (mn *MobileNode) setConnected(val bool) {
 	mn.call.OnStatus(data)
 }
 
-func (mn *MobileNode) setBootstrapped(val bool) {
+func (mn *Node) setBootstrapped(val bool) {
 	// Update Status
 	mn.config.HasBootstrapped = val
 	mn.config.Status = md.Status_BOOTSTRAPPED
@@ -89,7 +89,7 @@ func (mn *MobileNode) setBootstrapped(val bool) {
 	mn.call.OnStatus(data)
 }
 
-func (mn *MobileNode) setJoinedLocal(val bool) {
+func (mn *Node) setJoinedLocal(val bool) {
 	// Update Status
 	mn.config.HasJoinedLocal = val
 	mn.config.Status = md.Status_AVAILABLE
@@ -108,7 +108,7 @@ func (mn *MobileNode) setJoinedLocal(val bool) {
 	mn.call.OnStatus(data)
 }
 
-func (mn *MobileNode) setStatus(newStatus md.Status) {
+func (mn *Node) setStatus(newStatus md.Status) {
 	// Set Status
 	mn.config.Status = newStatus
 

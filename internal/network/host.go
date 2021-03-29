@@ -12,11 +12,13 @@ import (
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
+	"github.com/libp2p/go-libp2p-core/routing"
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	psub "github.com/libp2p/go-libp2p-pubsub"
 	swr "github.com/libp2p/go-libp2p-swarm"
-	md "github.com/sonr-io/core/internal/models"
+	tls "github.com/libp2p/go-libp2p-tls"
+	md "github.com/sonr-io/core/pkg/models"
 )
 
 type HostNode struct {
@@ -33,6 +35,7 @@ func NewHost(ctx context.Context, point string, key crypto.PrivKey) (*HostNode, 
 	// IP Address
 	ip4 := IPv4()
 	ip6 := IPv6()
+	var kdhtRef *dht.IpfsDHT
 
 	// Start Host
 	h, err := libp2p.New(
@@ -43,25 +46,31 @@ func NewHost(ctx context.Context, point string, key crypto.PrivKey) (*HostNode, 
 			fmt.Sprintf("/ip4/%s/tcp/0", ip4),
 			fmt.Sprintf("/ip6/%s/tcp/0", ip6),
 		),
+		// support TLS connections
+		libp2p.Security(tls.ID, tls.New),
 		libp2p.NATPortMap(),
+		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
+			// Create DHT
+			kdht, err := dht.New(ctx, h)
+			if err != nil {
+				return nil, err
+			}
 
+			// Set DHT
+			kdhtRef = kdht
+			return kdht, err
+		}),
 		libp2p.EnableAutoRelay(),
 	)
+
 	// Set Host for Node
 	if err != nil {
 		return nil, err
 	}
-
-	// Create DHT
-	kdht, err := dht.New(ctx, h)
-	if err != nil {
-		return nil, err
-	}
-
 	return &HostNode{
 		ctx:   ctx,
 		Host:  h,
-		KDHT:  kdht,
+		KDHT:  kdhtRef,
 		Point: point,
 	}, nil
 }
@@ -113,11 +122,6 @@ func (h *HostNode) HandleStream(pid protocol.ID, handler network.StreamHandler) 
 	h.Host.SetStreamHandler(pid, handler)
 }
 
-// ^ Start Stream for Host ^
-func (h *HostNode) StartStream(p peer.ID, pid protocol.ID) (network.Stream, error) {
-	return h.Host.NewStream(h.ctx, p, pid)
-}
-
 // ^ Join New Topic with Name ^
 func (h *HostNode) Join(name string) (*psub.Topic, *psub.Subscription, *psub.TopicEventHandler, error) {
 	// Join Topic
@@ -140,6 +144,11 @@ func (h *HostNode) Join(name string) (*psub.Topic, *psub.Subscription, *psub.Top
 	return topic, sub, handler, nil
 }
 
+// ^ Start Stream for Host ^
+func (h *HostNode) StartStream(p peer.ID, pid protocol.ID) (network.Stream, error) {
+	return h.Host.NewStream(h.ctx, p, pid)
+}
+
 // @ handleDHTPeers: Connects to Peers in DHT
 func (h *HostNode) handleDHTPeers(routingDiscovery *dsc.RoutingDiscovery) {
 	for {
@@ -147,7 +156,6 @@ func (h *HostNode) handleDHTPeers(routingDiscovery *dsc.RoutingDiscovery) {
 		peersChan, err := routingDiscovery.FindPeers(
 			h.ctx,
 			h.Point,
-			dscl.TTL(time.Second*4),
 		)
 		if err != nil {
 			return
@@ -167,6 +175,9 @@ func (h *HostNode) handleDHTPeers(routingDiscovery *dsc.RoutingDiscovery) {
 				}
 			}
 		}
+
+		// Refresh table every 4 seconds
 		md.GetState().NeedsWait()
+		time.Sleep(time.Second * 4)
 	}
 }

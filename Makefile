@@ -17,7 +17,7 @@ ANDROID_ARTIFACT= $(ANDROID_BINDDIR)/io.sonr.core.aar
 # @ Proto Directories
 PB_PATH=/Users/prad/Sonr/core/api
 CONTACT_PB_DIR=/Users/prad/Sonr/contact/lib/src/data/models
-CORE_PB_DIR=/Users/prad/Sonr/core/internal
+CORE_PB_DIR=/Users/prad/Sonr/core/pkg
 PLUGIN_PB_DIR=/Users/prad/Sonr/plugin/lib/src/core/models
 PROTO_DOC_DIR=/Users/prad/Sonr/docs/proto
 
