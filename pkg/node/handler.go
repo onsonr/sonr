@@ -34,28 +34,25 @@ func (n *Node) OnRefresh(l *md.Lobby) {
 }
 
 // ^ OnInvite: User Received Invite ^
-func (n *Node) OnInvite(invite *md.AuthInvite) {
-	// Marshal Data
-	buf, err := proto.Marshal(invite)
-	if err != nil {
-		return
-	}
-
+func (n *Node) OnInvite(invite []byte) {
 	// Send Callback
-	n.call.Invited(buf)
+	n.call.Invited(invite)
 }
 
 // ^ OnReply: Begins File Transfer when Accepted ^
-func (n *Node) OnReply(id peer.ID, reply *md.AuthReply, session *se.Session) {
+func (n *Node) OnReply(id peer.ID, reply []byte, session *se.Session) {
 	// Call Responded
-	buf, err := proto.Marshal(reply)
+	n.call.Responded(reply)
+
+	// AuthReply Message
+	resp := md.AuthReply{}
+	err := proto.Unmarshal(reply, &resp)
 	if err != nil {
-		return
+		n.call.Error(err, "handleReply")
 	}
-	n.call.Responded(buf)
 
 	// Check for File Transfer
-	if reply.Decision && reply.Type == md.AuthReply_Transfer {
+	if resp.Decision && resp.Type == md.AuthReply_Transfer {
 		// Create New Auth Stream
 		stream, err := n.Host.StartStream(id, n.router.Transfer())
 		if err != nil {
