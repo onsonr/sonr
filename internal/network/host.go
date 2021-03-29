@@ -12,12 +12,10 @@ import (
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
-	"github.com/libp2p/go-libp2p-core/routing"
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	psub "github.com/libp2p/go-libp2p-pubsub"
 	swr "github.com/libp2p/go-libp2p-swarm"
-	tls "github.com/libp2p/go-libp2p-tls"
 	md "github.com/sonr-io/core/internal/models"
 )
 
@@ -35,7 +33,6 @@ func NewHost(ctx context.Context, point string, key crypto.PrivKey) (*HostNode, 
 	// IP Address
 	ip4 := IPv4()
 	ip6 := IPv6()
-	var kdhtRef *dht.IpfsDHT
 
 	// Start Host
 	h, err := libp2p.New(
@@ -46,22 +43,16 @@ func NewHost(ctx context.Context, point string, key crypto.PrivKey) (*HostNode, 
 			fmt.Sprintf("/ip4/%s/tcp/0", ip4),
 			fmt.Sprintf("/ip6/%s/tcp/0", ip6),
 		),
-		// support TLS connections
-		libp2p.Security(tls.ID, tls.New),
 		libp2p.NATPortMap(),
-		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
-			// Create DHT
-			kdht, err := dht.New(ctx, h)
-			if err != nil {
-				return nil, err
-			}
 
-			// Set DHT
-			kdhtRef = kdht
-			return kdht, err
-		}),
 		libp2p.EnableAutoRelay(),
 	)
+
+	// Create DHT
+	kdht, err := dht.New(ctx, h)
+	if err != nil {
+		return nil, err
+	}
 
 	// Set Host for Node
 	if err != nil {
@@ -70,7 +61,7 @@ func NewHost(ctx context.Context, point string, key crypto.PrivKey) (*HostNode, 
 	return &HostNode{
 		ctx:   ctx,
 		Host:  h,
-		KDHT:  kdhtRef,
+		KDHT:  kdht,
 		Point: point,
 	}, nil
 }
