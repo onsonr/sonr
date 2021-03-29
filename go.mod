@@ -9,7 +9,6 @@ require (
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
-	github.com/golang/protobuf v1.5.1
 	github.com/google/gopacket v1.1.19 // indirect
 	github.com/google/open-location-code/go v0.0.0-20201229230907-d47d9f9b95e9
 	github.com/h2non/filetype v1.1.0
@@ -42,7 +41,6 @@ require (
 	golang.org/x/net v0.0.0-20210316092652-d523dce5a7f4
 	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a // indirect
 	golang.org/x/text v0.3.4 // indirect
-	google.golang.org/grpc v1.36.1 // indirect
 	google.golang.org/protobuf v1.26.0
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776 // indirect

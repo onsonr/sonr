@@ -34,8 +34,8 @@ type TopicManager struct {
 type TopicHandler interface {
 	OnEvent(*md.LobbyEvent)
 	OnRefresh(*md.Lobby)
-	OnInvite([]byte)
-	OnReply(id peer.ID, data []byte, session *se.Session)
+	OnInvite(invite *md.AuthInvite)
+	OnReply(id peer.ID, reply *md.AuthReply, session *se.Session)
 	OnResponded(inv *md.AuthInvite, p *md.Peer, fs *us.FileSystem)
 }
 

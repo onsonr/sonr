@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 // Require Go Package
-option go_package = ".;models";
+option go_package = "/models";
 
 // Contact is Extensive User Info that can be passed
 message Contact {
