@@ -5,7 +5,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	mg "github.com/libp2p/go-msgio"
-	sf "github.com/sonr-io/core/internal/file"
+	us "github.com/sonr-io/core/internal/user"
 	md "github.com/sonr-io/core/internal/models"
 	se "github.com/sonr-io/core/internal/session"
 	"google.golang.org/protobuf/proto"
@@ -69,7 +69,7 @@ func (n *Node) OnReply(id peer.ID, reply []byte, session *se.Session) {
 }
 
 // ^ OnResponded: Prepares for Incoming File Transfer when Accepted ^
-func (n *Node) OnResponded(inv *md.AuthInvite, fs *sf.FileSystem) {
+func (n *Node) OnResponded(inv *md.AuthInvite, fs *us.FileSystem) {
 	n.session = se.NewInSession(n.peer.Get(), inv, fs, n.call)
 	n.Host.HandleStream(n.router.Transfer(), n.session.ReadFromStream)
 }

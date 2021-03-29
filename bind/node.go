@@ -172,11 +172,14 @@ func (mn *MobileNode) SetContact(conBytes []byte) {
 			return
 		}
 
-		// Update Node Profile
-		err = mn.user.SetContact(newContact)
+		// Save user contact
+		err = mn.user.SaveContact(newContact)
 		if err != nil {
 			log.Println(err)
 			return
 		}
+
+		// Update Peer Profile
+		mn.peer.SetProfile(newContact)
 	}
 }

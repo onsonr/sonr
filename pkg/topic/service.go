@@ -6,7 +6,7 @@ import (
 	rpc "github.com/libp2p/go-libp2p-gorpc"
 
 	"github.com/libp2p/go-libp2p-core/peer"
-	sf "github.com/sonr-io/core/internal/file"
+	us "github.com/sonr-io/core/internal/user"
 	md "github.com/sonr-io/core/internal/models"
 	se "github.com/sonr-io/core/internal/session"
 	pn "github.com/sonr-io/core/pkg/peer"
@@ -155,7 +155,7 @@ func (ts *TopicService) InviteWith(ctx context.Context, args TopicServiceArgs, r
 }
 
 // ^ RespondToInvite to an Invitation ^ //
-func (n *TopicManager) RespondToInvite(decision bool, fs *sf.FileSystem, c *md.Contact) {
+func (n *TopicManager) RespondToInvite(decision bool, fs *us.FileSystem, c *md.Contact) {
 	// Prepare Transfer
 	if decision {
 		n.topicHandler.OnResponded(n.service.invite, fs)

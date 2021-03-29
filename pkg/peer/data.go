@@ -42,12 +42,11 @@ func (pn *PeerNode) SetPosition(facing float64, heading float64) {
 }
 
 // ^ Updates Current Profile ^
-func (pn *PeerNode) SetProfile(newContact *md.Contact) error {
+func (pn *PeerNode) SetProfile(newContact *md.Contact) {
 	// Update Peer Profile
 	pn.peer.Profile = &md.Profile{
 		FirstName: newContact.GetFirstName(),
 		LastName:  newContact.GetLastName(),
 		Picture:   newContact.GetPicture(),
 	}
-	return nil
 }

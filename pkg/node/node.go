@@ -5,7 +5,7 @@ import (
 	"errors"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
-	sf "github.com/sonr-io/core/internal/file"
+	us "github.com/sonr-io/core/internal/user"
 	md "github.com/sonr-io/core/internal/models"
 	pn "github.com/sonr-io/core/pkg/peer"
 	tpc "github.com/sonr-io/core/pkg/topic"
@@ -26,7 +26,7 @@ type Node struct {
 
 	// Networking Properties
 	Host    *net.HostNode
-	router  *net.ProtocolRouter
+	router  *ProtocolRouter
 	session *se.Session
 }
 
@@ -35,7 +35,7 @@ func NewNode(ctx context.Context, cr *md.ConnectionRequest, call md.NodeCallback
 	return &Node{
 		ctx:    ctx,
 		call:   call,
-		router: net.NewProtocolRouter(cr),
+		router: NewProtocolRouter(cr),
 	}
 }
 
@@ -127,7 +127,7 @@ func (n *Node) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, c *md.C
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Node) InviteFile(req *md.InviteRequest, t *tpc.TopicManager, fs *sf.FileSystem) error {
+func (n *Node) InviteFile(req *md.InviteRequest, t *tpc.TopicManager, fs *us.FileSystem) error {
 	// Start New Session
 	session := se.NewOutSession(n.peer.Get(), req, fs, n.call)
 	card := session.OutgoingCard()
@@ -156,7 +156,7 @@ func (n *Node) InviteFile(req *md.InviteRequest, t *tpc.TopicManager, fs *sf.Fil
 }
 
 // ^ Respond to an Invitation ^ //
-func (n *Node) Respond(decision bool, fs *sf.FileSystem, t *tpc.TopicManager, c *md.Contact) {
+func (n *Node) Respond(decision bool, fs *us.FileSystem, t *tpc.TopicManager, c *md.Contact) {
 	t.RespondToInvite(decision, fs, c)
 }
 

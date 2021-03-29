@@ -8,7 +8,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/protocol"
 	rpc "github.com/libp2p/go-libp2p-gorpc"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	sf "github.com/sonr-io/core/internal/file"
+	us "github.com/sonr-io/core/internal/user"
 	md "github.com/sonr-io/core/internal/models"
 	net "github.com/sonr-io/core/internal/network"
 	se "github.com/sonr-io/core/internal/session"
@@ -38,7 +38,7 @@ type TopicHandler interface {
 	OnRefresh(*md.Lobby)
 	OnInvite([]byte)
 	OnReply(id peer.ID, data []byte, session *se.Session)
-	OnResponded(inv *md.AuthInvite, fs *sf.FileSystem)
+	OnResponded(inv *md.AuthInvite, fs *us.FileSystem)
 }
 
 // ^ Create New Contained Topic Manager ^ //

@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
+	us "github.com/sonr-io/core/internal/user"
 
 	"google.golang.org/protobuf/proto"
 )
@@ -18,7 +18,6 @@ type incomingFile struct {
 	// Inherited Properties
 	mutex      sync.Mutex
 	call       md.NodeCallback
-	fs         *sf.FileSystem
 	owner      *md.Profile
 	payload    md.Payload
 	properties *md.TransferCard_Properties
@@ -87,7 +86,7 @@ func (t *incomingFile) AddBuffer(curr int, buffer []byte) (bool, error) {
 }
 
 // ^ Check file type and use corresponding method to save to Disk ^ //
-func (t *incomingFile) Save() error {
+func (t *incomingFile) Save(fs *us.FileSystem) error {
 	// Get Bytes from base64
 	data, err := base64.StdEncoding.DecodeString(t.stringsBuilder.String())
 	if err != nil {
@@ -95,7 +94,7 @@ func (t *incomingFile) Save() error {
 	}
 
 	// Write File to Disk
-	name, path, err := t.fs.WriteIncomingFile(t.payload, t.properties, data)
+	name, path, err := fs.WriteIncomingFile(t.payload, t.properties, data)
 	if err != nil {
 		return err
 	}
