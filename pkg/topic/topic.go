@@ -10,13 +10,13 @@ import (
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	sf "github.com/sonr-io/core/internal/file"
 	md "github.com/sonr-io/core/internal/models"
-	"github.com/sonr-io/core/internal/network"
 	net "github.com/sonr-io/core/internal/network"
 	se "github.com/sonr-io/core/internal/session"
 	"google.golang.org/protobuf/proto"
 )
 
 const K_MAX_MESSAGES = 128
+const K_SERVICE_PID = protocol.ID("/sonr/topic-service/0.1")
 
 type TopicManager struct {
 	ctx          context.Context
@@ -27,7 +27,6 @@ type TopicManager struct {
 	Lobby        *Lobby
 
 	service      *TopicService
-	protocol     protocol.ID
 	Messages     chan *md.LobbyEvent
 	topicHandler TopicHandler
 }
@@ -42,7 +41,7 @@ type TopicHandler interface {
 }
 
 // ^ Create New Contained Topic Manager ^ //
-func NewTopic(ctx context.Context, h *net.HostNode, name string, router *network.ProtocolRouter, th TopicHandler) (*TopicManager, error) {
+func NewTopic(ctx context.Context, h *net.HostNode, name string, isLocal bool, th TopicHandler) (*TopicManager, error) {
 	// Join Topic
 	topic, sub, handler, err := h.Join(name)
 	if err != nil {
@@ -61,16 +60,16 @@ func NewTopic(ctx context.Context, h *net.HostNode, name string, router *network
 			Size:     1,
 			Count:    0,
 			Peers:    make(map[string]*md.Peer),
+			isLocal:  isLocal,
 			user:     th.GetPeer(),
 		},
 		Messages:     make(chan *md.LobbyEvent, K_MAX_MESSAGES),
-		protocol:     router.TopicService(),
 		subscription: sub,
 		topic:        topic,
 	}
 
 	// Start Exchange Server
-	peersvServer := rpc.NewServer(h.Host, router.TopicService())
+	peersvServer := rpc.NewServer(h.Host, K_SERVICE_PID)
 	psv := TopicService{
 		SyncLobby: mgr.Lobby.Sync,
 		GetUser:   th.GetPeer,

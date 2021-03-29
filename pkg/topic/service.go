@@ -41,7 +41,7 @@ type TopicService struct {
 // ^ Calls Invite on Remote Peer ^ //
 func (tm *TopicManager) Exchange(id peer.ID, pb []byte) error {
 	// Initialize RPC
-	exchClient := rpc.NewClient(tm.host.Host, tm.protocol)
+	exchClient := rpc.NewClient(tm.host.Host, K_SERVICE_PID)
 	var reply TopicServiceResponse
 	var args TopicServiceArgs
 
@@ -108,7 +108,7 @@ func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite, session *se.Sessi
 	}
 
 	// Initialize Data
-	rpcClient := rpc.NewClient(tm.host.Host, tm.protocol)
+	rpcClient := rpc.NewClient(tm.host.Host, K_SERVICE_PID)
 	var reply TopicServiceResponse
 	var args TopicServiceArgs
 	args.Invite = msgBytes

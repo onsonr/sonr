@@ -10,7 +10,7 @@ import (
 	tpc "github.com/sonr-io/core/pkg/topic"
 
 	// Local
-	brprot "berty.tech/berty/v2/go/pkg/bertyprotocol"
+	// brprot "berty.tech/berty/v2/go/pkg/bertyprotocol"
 	net "github.com/sonr-io/core/internal/network"
 	se "github.com/sonr-io/core/internal/session"
 )
@@ -18,9 +18,9 @@ import (
 // ^ Struct: Main Node handles Networking/Identity/Streams ^
 type Node struct {
 	// Properties
-	ctx    context.Context
-	call   md.NodeCallback
-	client brprot.Service
+	ctx  context.Context
+	call md.NodeCallback
+	// client brprot.Service
 
 	// Networking Properties
 	Host    *net.HostNode
@@ -39,7 +39,7 @@ func NewNode(ctx context.Context, cr *md.ConnectionRequest, call md.NodeCallback
 
 // ^ Connects Host Node from Private Key ^
 func (n *Node) Connect(key crypto.PrivKey) error {
-	hn, err := net.NewHost(n.ctx, n.router.MajorPoint(), key)
+	hn, err := net.NewHost(n.ctx, n.router.Rendevouz(), key)
 	if err != nil {
 		return err
 	}
@@ -55,7 +55,7 @@ func (n *Node) Bootstrap() error {
 
 // ^ Join Lobby Adds Node to Named Topic ^
 func (n *Node) JoinLobby(name string) (*tpc.TopicManager, error) {
-	if t, err := tpc.NewTopic(n.ctx, n.Host, n.router.Topic(name), n.router, n); err != nil {
+	if t, err := tpc.NewTopic(n.ctx, n.Host, n.router.Topic(name), false, n); err != nil {
 		return nil, err
 	} else {
 		return t, nil
@@ -64,7 +64,7 @@ func (n *Node) JoinLobby(name string) (*tpc.TopicManager, error) {
 
 // ^ Join Lobby Adds Node to Named Topic ^
 func (n *Node) JoinLocal() (*tpc.TopicManager, error) {
-	if t, err := tpc.NewTopic(n.ctx, n.Host, n.router.LocalTopic(), n.router, n); err != nil {
+	if t, err := tpc.NewTopic(n.ctx, n.Host, n.router.LocalTopic(), true, n); err != nil {
 		return nil, err
 	} else {
 		return t, nil

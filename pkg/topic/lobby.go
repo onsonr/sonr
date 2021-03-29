@@ -17,17 +17,18 @@ type Lobby struct {
 
 	// Private Properties
 	callback TopicHandler
+	isLocal  bool
 	user     *md.Peer
 }
 
 // ^ Returns as Lobby Buffer ^
 func (l *Lobby) Buffer() []byte {
-
 	bytes, err := proto.Marshal(&md.Lobby{
-		Name:  l.Name,
-		Size:  l.Size,
-		Count: l.Count,
-		Peers: l.Peers,
+		IsLocal: l.isLocal,
+		Name:    l.Name,
+		Size:    l.Size,
+		Count:   l.Count,
+		Peers:   l.Peers,
 	})
 	if err != nil {
 		log.Println(err)
@@ -65,10 +66,11 @@ func (l *Lobby) Delete(id peer.ID) {
 // ^ Send Updated Lobby ^
 func (l *Lobby) Refresh() {
 	l.callback.OnRefresh(&md.Lobby{
-		Name:  l.Name,
-		Size:  l.Size,
-		Count: l.Count,
-		Peers: l.Peers,
+		IsLocal: l.isLocal,
+		Name:    l.Name,
+		Size:    l.Size,
+		Count:   l.Count,
+		Peers:   l.Peers,
 	})
 }
 

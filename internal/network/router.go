@@ -27,13 +27,8 @@ func NewProtocolRouter(req *md.ConnectionRequest) *ProtocolRouter {
 	}
 }
 
-// @ Local Rendevouz Advertising Point
-func (pr *ProtocolRouter) LocalPoint() string {
-	return fmt.Sprintf("/sonr/%s", pr.MinorOLC)
-}
-
 // @ Major Rendevouz Advertising Point
-func (pr *ProtocolRouter) MajorPoint() string {
+func (pr *ProtocolRouter) Rendevouz() string {
 	return fmt.Sprintf("/sonr/%s", pr.MajorOLC)
 }
 
