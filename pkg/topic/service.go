@@ -27,8 +27,8 @@ type TopicService struct {
 func (tm *TopicManager) Exchange(id peer.ID, l *md.Lobby, p *md.Peer) error {
 	// Initialize RPC
 	exchClient := rpc.NewClient(tm.host.Host, K_SERVICE_PID)
-	var reply md.TopicServiceResponse
-	var args md.TopicServiceArgs
+	var reply md.TopicResponse
+	var args md.TopicRequest
 
 	// Set Args
 	args.Lobby = l
@@ -46,7 +46,7 @@ func (tm *TopicManager) Exchange(id peer.ID, l *md.Lobby, p *md.Peer) error {
 }
 
 // ^ Calls Invite on Remote Peer ^ //
-func (ts *TopicService) ExchangeWith(ctx context.Context, args md.TopicServiceArgs, reply *md.TopicServiceResponse) error {
+func (ts *TopicService) ExchangeWith(ctx context.Context, args md.TopicRequest, reply *md.TopicResponse) error {
 	// Update Peers with Lobby
 	ts.lobby.Sync(args.Lobby, args.Peer)
 	ts.call.OnRefresh(ts.lobby)
@@ -60,8 +60,8 @@ func (ts *TopicService) ExchangeWith(ctx context.Context, args md.TopicServiceAr
 func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite, session *se.Session) error {
 	// Initialize Data
 	rpcClient := rpc.NewClient(tm.host.Host, K_SERVICE_PID)
-	var reply md.TopicServiceResponse
-	var args md.TopicServiceArgs
+	var reply md.TopicResponse
+	var args md.TopicRequest
 	args.Invite = inv
 
 	// Call to Peer
@@ -78,7 +78,7 @@ func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite, session *se.Sessi
 }
 
 // ^ Calls Invite on Remote Peer ^ //
-func (ts *TopicService) InviteWith(ctx context.Context, args md.TopicServiceArgs, reply *md.TopicServiceResponse) error {
+func (ts *TopicService) InviteWith(ctx context.Context, args md.TopicRequest, reply *md.TopicResponse) error {
 	// Set Current Message
 	ts.invite = args.Invite
 

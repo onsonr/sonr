@@ -4,8 +4,6 @@ import "api.proto";
 import "data.proto";
 import "user.proto";
 
-package core;
-
 // Require Go Package
 option go_package = "/models";
 
@@ -23,13 +21,13 @@ message ChunkBuffer {
   int32 total = 3; // Size of ALL Chunks together
 }
 
-message TopicServiceArgs {
-  Lobby lobby = 1;
-  Peer peer = 2;
-  AuthInvite invite = 3;
+message TopicRequest {
+  optional Lobby lobby = 1;
+  optional Peer peer = 2;
+  optional AuthInvite invite = 3;
 }
 
-message TopicServiceResponse {
-  Peer peer = 1;
-  AuthReply reply = 2;
+message TopicResponse {
+  optional Peer peer = 1;
+  optional AuthReply reply = 2;
 }
