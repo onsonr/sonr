@@ -12,19 +12,16 @@ func (n *Node) StartProtocol() error {
 	if err != nil {
 		return err
 	}
+	n.client = client
 
-	ret, err := client.InstanceGetConfiguration(n.ctx, &brtypes.InstanceGetConfiguration_Request{})
-	if err != nil {
-		return err
-	}
-
-	for _, listener := range ret.Listeners {
-		log.Println(listener)
-	}
 	resp, err := client.MultiMemberGroupCreate(n.ctx, &brtypes.MultiMemberGroupCreate_Request{})
 	if err != nil {
 		return err
 	}
 	log.Println(string(resp.GroupPK))
+
+	if err != nil {
+		return err
+	}
 	return nil
 }

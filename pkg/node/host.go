@@ -4,10 +4,6 @@ import (
 	"fmt"
 	"time"
 
-	// Imported
-	// tor "berty.tech/go-libp2p-tor-transport"
-	// tconf "berty.tech/go-libp2p-tor-transport/config"
-
 	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	dscl "github.com/libp2p/go-libp2p-core/discovery"
@@ -21,9 +17,6 @@ import (
 	md "github.com/sonr-io/core/internal/models"
 
 	// Local
-	// mplex "github.com/libp2p/go-libp2p-mplex"
-	// direct "github.com/libp2p/go-libp2p-webrtc-direct"
-	// "github.com/pion/webrtc/v3"
 	net "github.com/sonr-io/core/internal/network"
 )
 
@@ -32,7 +25,12 @@ func (n *Node) Start(key crypto.PrivKey) error {
 	// IP Address
 	ip4 := net.IPv4()
 	ip6 := net.IPv6()
-	n.StartProtocol()
+
+	// Start Protocol
+	err := n.StartProtocol()
+	if err != nil {
+		return err
+	}
 
 	// Start Host
 	h, err := libp2p.New(

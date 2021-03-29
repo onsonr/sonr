@@ -14,6 +14,7 @@ import (
 	psub "github.com/libp2p/go-libp2p-pubsub"
 
 	// Local
+	brprot "berty.tech/berty/v2/go/pkg/bertyprotocol"
 	net "github.com/sonr-io/core/internal/network"
 	se "github.com/sonr-io/core/internal/session"
 )
@@ -21,8 +22,9 @@ import (
 // ^ Struct: Main Node handles Networking/Identity/Streams ^
 type Node struct {
 	// Properties
-	ctx  context.Context
-	call md.NodeCallback
+	ctx    context.Context
+	call   md.NodeCallback
+	client brprot.Service
 
 	// Networking Properties
 	Host   host.Host
