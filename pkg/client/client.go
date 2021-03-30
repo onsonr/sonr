@@ -42,26 +42,26 @@ func NewClient(ctx context.Context, cr *md.ConnectionRequest, call md.NodeCallba
 }
 
 // ^ Connects Host Node from Private Key ^
-func (n *Client) Connect(key crypto.PrivKey) error {
+func (c *Client) Connect(key crypto.PrivKey) error {
 	// Set Host
-	hn, err := net.NewHost(n.ctx, n.router.Rendevouz(), key)
+	hn, err := net.NewHost(c.ctx, c.router.Rendevouz(), key)
 	if err != nil {
 		return err
 	}
 
 	// Set Peer
-	n.Peer, err = md.NewPeer(n.req, hn.ID())
+	c.Peer, err = md.NewPeer(c.req, hn.ID())
 	if err != nil {
 		return err
 	}
 
-	n.Host = hn
+	c.Host = hn
 	return nil
 }
 
 // ^ Begins Bootstrapping HostNode ^
-func (n *Client) Bootstrap() error {
-	return n.Host.Bootstrap()
+func (c *Client) Bootstrap() error {
+	return c.Host.Bootstrap()
 }
 
 // ^ Join Lobby Adds Node to Named Topic ^

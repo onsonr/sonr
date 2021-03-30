@@ -74,6 +74,7 @@ func IPv6() string {
 	return ipv6Ref
 }
 
+// ^ Returns Location from GeoIP ^ //
 func Location(target *md.GeoIP) error {
 	r, err := http.Get("https://api.ipgeolocationapi.com/geolocate")
 	if err != nil {
