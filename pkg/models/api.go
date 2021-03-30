@@ -17,6 +17,9 @@ import (
 // ***************************** //
 
 func (req *ConnectionRequest) AttachGeoToRequest(geo *GeoIP) *ConnectionRequest {
+	if req.Latitude != 0 && req.Longitude != 0 {
+		return req
+	}
 	req.Latitude = geo.Geo.Latitude
 	req.Longitude = geo.Geo.Longitude
 	return req
