@@ -22,7 +22,7 @@ func NewProtocolRouter(req *md.ConnectionRequest) *ProtocolRouter {
 	return &ProtocolRouter{
 		Latitude:  req.Latitude,
 		Longitude: req.Longitude,
-		MinorOLC:  olc.Encode(float64(req.Latitude), float64(req.Longitude), 8),
+		MinorOLC:  olc.Encode(float64(req.Latitude), float64(req.Longitude), 6),
 		MajorOLC:  olc.Encode(float64(req.Latitude), float64(req.Longitude), 4),
 	}
 }
