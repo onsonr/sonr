@@ -50,6 +50,14 @@ func NewMobileNode(reqBytes []byte, call Callback) *Node {
 		panic(err)
 	}
 
+	// Get Location by IP
+	geoIP := &md.GeoIP{}
+	err = network.Location(geoIP)
+	if err != nil {
+		return nil
+	}
+	log.Println(geoIP.String())
+
 	// Create Client
 	mn.node = sc.NewClient(mn.contextNode(), req, mn.callbackNode())
 	return mn

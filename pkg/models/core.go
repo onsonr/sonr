@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"sync"
 	"sync/atomic"
 )
@@ -123,4 +124,14 @@ type GeoIP struct {
 	} `json:"geo"`
 	CurrencyCode string `json:"currency_code"`
 	StartOfWeek  string `json:"start_of_week"`
+}
+
+func (g *GeoIP) String() string {
+	lat := g.Geo.Latitude
+	lon := g.Geo.Longitude
+	maxlat := g.Geo.MaxLatitude
+	maxlon := g.Geo.MaxLongitude
+	minlat := g.Geo.MinLatitude
+	minlon := g.Geo.MinLongitude
+	return fmt.Sprintf("Latitude: %f \n Longitude: %f \n Max Latitude: %f \n Max Longitude: %f \n Min Latitude: %f \n Min Longitude: %f", lat, lon, maxlat, maxlon, minlat, minlon)
 }
