@@ -265,10 +265,7 @@ func (p *Peer) Update(u *UpdateRequest) {
 
 	// Set Properties
 	if u.Type == UpdateRequest_Properties {
-		p.Properties = &Peer_Properties{
-			IsFlatMode:      u.GetIsFlatMode(),
-			HasPointToShare: u.GetHasPointToShare(),
-		}
+		p.Properties = u.Properties
 	}
 
 	// Check for New Contact, Update Peer Profile
