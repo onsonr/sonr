@@ -53,8 +53,7 @@ message UpdateRequest {
   enum Type {
     Direction = 0;
     Contact = 1;
-    PointToShare = 2;
-    FlatMode = 3;
+    Properties = 2;
   }
 }
 
