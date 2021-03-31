@@ -80,9 +80,17 @@ func (mn *Node) JoinRemote(data []byte) {
 }
 
 // @ Update proximity/direction and Notify Lobby
-func (mn *Node) Update(facing float64, heading float64) {
+func (mn *Node) Update(data []byte) {
 	if mn.isReady() {
-		err := mn.node.Update(mn.local, facing, heading)
+		// Initialize from Request
+		udpate := &md.UpdateRequest{}
+		if err := proto.Unmarshal(data, udpate); err != nil {
+			log.Println(err)
+			return
+		}
+
+		// Perform Update
+		err := mn.node.Update(mn.local, udpate)
 		if err != nil {
 			log.Println(err)
 			return
@@ -91,9 +99,17 @@ func (mn *Node) Update(facing float64, heading float64) {
 }
 
 // @ Send Direct Message to Peer in Lobby
-func (mn *Node) Message(msg string, to string) {
+func (mn *Node) Message(data []byte) {
 	if mn.isReady() {
-		err := mn.node.Message(mn.local, msg, to)
+		// Initialize from Request
+		req := &md.MessageRequest{}
+		if err := proto.Unmarshal(data, req); err != nil {
+			log.Println(err)
+			return
+		}
+
+		// Run Node Action
+		err := mn.node.Message(mn.local, req.Message, req.To)
 		if err != nil {
 			log.Println(err)
 			return
@@ -102,14 +118,14 @@ func (mn *Node) Message(msg string, to string) {
 }
 
 // @ Invite Processes Data and Sends Invite to Peer
-func (mn *Node) Invite(reqBytes []byte) {
+func (mn *Node) Invite(data []byte) {
 	if mn.isReady() {
 		// Update Status
 		mn.setStatus(md.Status_PENDING)
 
 		// Initialize from Request
 		req := &md.InviteRequest{}
-		if err := proto.Unmarshal(reqBytes, req); err != nil {
+		if err := proto.Unmarshal(data, req); err != nil {
 			log.Println(err)
 			return
 		}
@@ -156,29 +172,5 @@ func (mn *Node) Respond(decs bool) {
 		} else {
 			mn.setStatus(md.Status_AVAILABLE)
 		}
-	}
-}
-
-// ** User Actions ** //
-// @ Updates Current Contact Card
-func (mn *Node) SetContact(conBytes []byte) {
-	if mn.isReady() {
-		// Unmarshal Data
-		newContact := &md.Contact{}
-		err := proto.Unmarshal(conBytes, newContact)
-		if err != nil {
-			log.Println(err)
-			return
-		}
-
-		// Save user contact
-		err = mn.user.SaveContact(newContact)
-		if err != nil {
-			log.Println(err)
-			return
-		}
-
-		// Update Peer Profile
-		mn.node.Peer.SetProfile(newContact)
 	}
 }

@@ -6,10 +6,7 @@ import (
 	"sync/atomic"
 )
 
-// ************************* //
-// ** Callback Management ** //
-// ************************* //
-
+// ** ─── CALLBACK MANAGEMENT ────────────────────────────────────────────────────────
 // Define Function Types
 type OnProtobuf func([]byte)
 type OnInvite func(data []byte)
@@ -29,9 +26,7 @@ type NodeCallback struct {
 	Error       OnError
 }
 
-// ***************************** //
-// ** Binary State Management ** //
-// ***************************** //
+// @ Binary State Management ** //
 type state struct {
 	flag uint64
 	chn  chan bool
@@ -74,11 +69,8 @@ func (c *state) Pause() {
 	}
 }
 
-// ************************* //
-// ** IP Address Location ** //
-// ************************* //
-
-// ^ Geographical Position from IP ^ //
+// ** ─── GEOLACTION FROM IP ADDRESS ─────────────────────────────────────────────────
+// Geographical Position from IP ^ //
 type GeoIP struct {
 	Continent                      string   `json:"continent"`
 	AddressFormat                  string   `json:"address_format"`
@@ -126,6 +118,7 @@ type GeoIP struct {
 	StartOfWeek  string `json:"start_of_week"`
 }
 
+// Convert to String
 func (g *GeoIP) String() string {
 	lat := g.Geo.Latitude
 	lon := g.Geo.Longitude

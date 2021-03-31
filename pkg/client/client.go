@@ -165,8 +165,8 @@ func (n *Client) Respond(decision bool, t *tpc.TopicManager, fs *us.FileSystem, 
 }
 
 // ^ Send Direct Message to Peer in Lobby ^ //
-func (n *Client) Message(t *tpc.TopicManager, msg string, to string) error {
-	if t.HasPeer(to) {
+func (n *Client) Message(t *tpc.TopicManager, msg string, to *md.Peer) error {
+	if t.HasPeer(to.PeerID()) {
 		// Inform Lobby
 		if err := t.Send(n.Peer.SignMessage(msg, to)); err != nil {
 			return err
@@ -176,9 +176,9 @@ func (n *Client) Message(t *tpc.TopicManager, msg string, to string) error {
 }
 
 // ^ Update proximity/direction and Notify Lobby ^ //
-func (n *Client) Update(t *tpc.TopicManager, f float64, h float64) error {
+func (n *Client) Update(t *tpc.TopicManager, req *md.UpdateRequest) error {
 	// Update Position
-	n.Peer.SetPosition(f, h)
+	n.Peer.Update(req)
 
 	// Inform Lobby
 	if err := t.Send(n.Peer.SignUpdate()); err != nil {

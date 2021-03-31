@@ -78,59 +78,19 @@ func (p *Peer) IsNotPeerIDString(pid string) bool {
 	return p.Id.Peer != pid
 }
 
-// ^ Update proximity/direction and Notify Lobby ^ //
-func (p *Peer) SetPosition(facing float64, heading float64) {
-	// Update User Values
-	var faceDir float64
-	var faceAnpd float64
-	var headDir float64
-	var headAnpd float64
-	faceDir = math.Round(facing*100) / 100
-	headDir = math.Round(heading*100) / 100
-	desg := int((facing / 11.25) + 0.25)
-
-	// Find Antipodal
-	if facing > 180 {
-		faceAnpd = math.Round((facing-180)*100) / 100
-	} else {
-		faceAnpd = math.Round((facing+180)*100) / 100
-	}
-
-	// Find Antipodal
-	if heading > 180 {
-		headAnpd = math.Round((heading-180)*100) / 100
-	} else {
-		headAnpd = math.Round((heading+180)*100) / 100
-	}
-
-	// Set Position
-	p.Position = &Position{
-		Facing:           faceDir,
-		FacingAntipodal:  faceAnpd,
-		Heading:          headDir,
-		HeadingAntipodal: headAnpd,
-		Designation:      Position_Designation(desg % 32),
-	}
-}
-
-// ^ Updates Current Profile ^
-func (p *Peer) SetProfile(newContact *Contact) {
-	// Update Peer Profile
-	p.Profile = &Profile{
-		FirstName: newContact.GetFirstName(),
-		LastName:  newContact.GetLastName(),
-		Picture:   newContact.GetPicture(),
-	}
+// ^ Checks for Host Peer ID String is not Same ^ //
+func (p *Peer) PeerID() string {
+	return p.Id.Peer
 }
 
 // ^ SignMessage Creates Lobby Event with Message ^
-func (p *Peer) SignMessage(m string, to string) *LobbyEvent {
+func (p *Peer) SignMessage(m string, to *Peer) *LobbyEvent {
 	return &LobbyEvent{
 		Event:   LobbyEvent_MESSAGE,
 		From:    p,
 		Id:      p.Id.Peer,
 		Message: m,
-		To:      to,
+		To:      to.Id.Peer,
 	}
 }
 
@@ -207,8 +167,8 @@ func (p *Peer) SignInviteWithLink(req *InviteRequest) AuthInvite {
 // ^ SignReply Creates AuthReply ^
 func (p *Peer) SignReply(d bool) *AuthReply {
 	return &AuthReply{
-		From: p,
-		Type: AuthReply_Transfer,
+		From:     p,
+		Type:     AuthReply_Transfer,
 		Decision: d,
 		Card: &TransferCard{
 			// SQL Properties
@@ -260,5 +220,57 @@ func (p *Peer) SignUpdate() *LobbyEvent {
 		Event: LobbyEvent_UPDATE,
 		From:  p,
 		Id:    p.Id.Peer,
+	}
+}
+
+// ^ Processes Update Request ^ //
+func (p *Peer) Update(u *UpdateRequest) {
+	// Extract Data
+	facing := u.Facing
+	heading := u.Heading
+
+	// Update User Values
+	var faceDir float64
+	var faceAnpd float64
+	var headDir float64
+	var headAnpd float64
+	faceDir = math.Round(facing*100) / 100
+	headDir = math.Round(heading*100) / 100
+	desg := int((facing / 11.25) + 0.25)
+
+	// Find Antipodal
+	if facing > 180 {
+		faceAnpd = math.Round((facing-180)*100) / 100
+	} else {
+		faceAnpd = math.Round((facing+180)*100) / 100
+	}
+
+	// Find Antipodal
+	if heading > 180 {
+		headAnpd = math.Round((heading-180)*100) / 100
+	} else {
+		headAnpd = math.Round((heading+180)*100) / 100
+	}
+
+	// Set Position
+	p.Position = &Position{
+		Facing:           faceDir,
+		FacingAntipodal:  faceAnpd,
+		Heading:          headDir,
+		HeadingAntipodal: headAnpd,
+		Designation:      Position_Designation(desg % 32),
+	}
+
+	// Set Properties
+	p.Properties.IsFlatMode = u.GetIsFlatMode()
+	p.Properties.HasPointToShare = u.GetHasPointToShare()
+
+	// Check for New Contact, Update Peer Profile
+	if u.Contact != nil {
+		p.Profile = &Profile{
+			FirstName: u.Contact.GetFirstName(),
+			LastName:  u.Contact.GetLastName(),
+			Picture:   u.Contact.GetPicture(),
+		}
 	}
 }

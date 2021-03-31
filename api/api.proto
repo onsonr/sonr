@@ -41,6 +41,22 @@ message ConnectionRequest {
   Connectivity connectivity = 8; // Client Network Type
 }
 
+// Updated Peer Info Request
+message UpdateRequest {
+  double facing = 1;        // Compass Direction on Z axis
+  double heading = 2;       // Compass Direction on Y axis
+  bool isFlatMode = 3;      // Shifted to Flat Mode
+  bool hasPointToShare = 4; // Enabled Point to share
+  Contact contact = 5;      // Users Updated Contact Card
+}
+
+// Message to Peer Request
+message MessageRequest {
+  Peer to = 1;        // Recipient
+  string message = 2; // Message Content
+  string topic = 3;   // Topic Name
+}
+
 // Processes Given File and Invites Specified Peer
 message InviteRequest {
   // Properties
