@@ -225,45 +225,51 @@ func (p *Peer) SignUpdate() *LobbyEvent {
 
 // ^ Processes Update Request ^ //
 func (p *Peer) Update(u *UpdateRequest) {
-	// Extract Data
-	facing := u.Facing
-	heading := u.Heading
+	if u.Type == UpdateRequest_Direction {
+		// Extract Data
+		facing := u.Facing
+		heading := u.Heading
 
-	// Update User Values
-	var faceDir float64
-	var faceAnpd float64
-	var headDir float64
-	var headAnpd float64
-	faceDir = math.Round(facing*100) / 100
-	headDir = math.Round(heading*100) / 100
-	desg := int((facing / 11.25) + 0.25)
+		// Update User Values
+		var faceDir float64
+		var faceAnpd float64
+		var headDir float64
+		var headAnpd float64
+		faceDir = math.Round(facing*100) / 100
+		headDir = math.Round(heading*100) / 100
+		desg := int((facing / 11.25) + 0.25)
 
-	// Find Antipodal
-	if facing > 180 {
-		faceAnpd = math.Round((facing-180)*100) / 100
-	} else {
-		faceAnpd = math.Round((facing+180)*100) / 100
-	}
+		// Find Antipodal
+		if facing > 180 {
+			faceAnpd = math.Round((facing-180)*100) / 100
+		} else {
+			faceAnpd = math.Round((facing+180)*100) / 100
+		}
 
-	// Find Antipodal
-	if heading > 180 {
-		headAnpd = math.Round((heading-180)*100) / 100
-	} else {
-		headAnpd = math.Round((heading+180)*100) / 100
-	}
+		// Find Antipodal
+		if heading > 180 {
+			headAnpd = math.Round((heading-180)*100) / 100
+		} else {
+			headAnpd = math.Round((heading+180)*100) / 100
+		}
 
-	// Set Position
-	p.Position = &Position{
-		Facing:           faceDir,
-		FacingAntipodal:  faceAnpd,
-		Heading:          headDir,
-		HeadingAntipodal: headAnpd,
-		Designation:      Position_Designation(desg % 32),
+		// Set Position
+		p.Position = &Position{
+			Facing:           faceDir,
+			FacingAntipodal:  faceAnpd,
+			Heading:          headDir,
+			HeadingAntipodal: headAnpd,
+			Designation:      Position_Designation(desg % 32),
+		}
 	}
 
 	// Set Properties
-	p.Properties.IsFlatMode = u.GetIsFlatMode()
-	p.Properties.HasPointToShare = u.GetHasPointToShare()
+	if u.Type == UpdateRequest_FlatMode {
+		p.Properties.IsFlatMode = u.GetIsFlatMode()
+	}
+	if u.Type == UpdateRequest_PointToShare {
+		p.Properties.HasPointToShare = u.GetHasPointToShare()
+	}
 
 	// Check for New Contact, Update Peer Profile
 	if u.Contact != nil {

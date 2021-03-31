@@ -43,11 +43,19 @@ message ConnectionRequest {
 
 // Updated Peer Info Request
 message UpdateRequest {
-  double facing = 1;        // Compass Direction on Z axis
-  double heading = 2;       // Compass Direction on Y axis
-  bool isFlatMode = 3;      // Shifted to Flat Mode
-  bool hasPointToShare = 4; // Enabled Point to share
-  Contact contact = 5;      // Users Updated Contact Card
+  Type type = 1;            // Type of Update
+  double facing = 2;        // Compass Direction on Z axis
+  double heading = 3;       // Compass Direction on Y axis
+  bool isFlatMode = 4;      // Shifted to Flat Mode
+  bool hasPointToShare = 5; // Enabled Point to share
+  Contact contact = 6;      // Users Updated Contact Card
+
+  enum Type {
+    Direction = 0;
+    Contact = 1;
+    PointToShare = 2;
+    FlatMode = 3;
+  }
 }
 
 // Message to Peer Request
