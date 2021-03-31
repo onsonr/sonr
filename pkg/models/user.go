@@ -272,7 +272,7 @@ func (p *Peer) Update(u *UpdateRequest) {
 	}
 
 	// Check for New Contact, Update Peer Profile
-	if u.Contact != nil {
+	if u.Type == UpdateRequest_Contact {
 		p.Profile = &Profile{
 			FirstName: u.Contact.GetFirstName(),
 			LastName:  u.Contact.GetLastName(),
