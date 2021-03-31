@@ -89,8 +89,11 @@ func (mn *Node) Update(data []byte) {
 			return
 		}
 
-		// Perform Update
-		err := mn.node.Update(mn.local, udpate)
+		// Update Peer
+		mn.node.Peer.Update(udpate)
+
+		// Notify Local Lobby
+		err := mn.node.Update(mn.local)
 		if err != nil {
 			log.Println(err)
 			return

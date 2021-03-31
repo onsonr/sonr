@@ -176,9 +176,8 @@ func (n *Client) Message(t *tpc.TopicManager, msg string, to *md.Peer) error {
 }
 
 // ^ Update proximity/direction and Notify Lobby ^ //
-func (n *Client) Update(t *tpc.TopicManager, req *md.UpdateRequest) error {
-	// Update Position
-	n.Peer.Update(req)
+func (n *Client) Update(t *tpc.TopicManager) error {
+
 
 	// Inform Lobby
 	if err := t.Send(n.Peer.SignUpdate()); err != nil {
