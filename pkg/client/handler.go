@@ -34,9 +34,9 @@ func (n *Client) OnRefresh(l *md.Lobby) {
 }
 
 // ^ OnInvite: User Received Invite ^
-func (n *Client) OnInvite(invite []byte) {
+func (n *Client) OnInvite(data []byte) {
 	// Send Callback
-	n.call.Invited(invite)
+	n.call.Invited(data)
 }
 
 // ^ OnReply: Begins File Transfer when Accepted ^

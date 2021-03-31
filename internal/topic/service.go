@@ -159,7 +159,7 @@ func (ts *TopicService) InviteWith(ctx context.Context, args TopicServiceArgs, r
 }
 
 // ^ RespondToInvite to an Invitation ^ //
-func (n *TopicManager) RespondToInvite(decision bool, fs *us.FileSystem, p *md.Peer, c *md.Contact) {
+func (n *TopicManager) RespondToInvite(decision bool, fs *us.FileSystem, p *md.Peer, c *md.Contact, isFlat bool) {
 	// Prepare Transfer
 	if decision {
 		n.topicHandler.OnResponded(n.service.invite, p, fs)
@@ -168,7 +168,7 @@ func (n *TopicManager) RespondToInvite(decision bool, fs *us.FileSystem, p *md.P
 	// @ Pass Contact Back
 	if n.service.invite.Payload == md.Payload_CONTACT {
 		// Create Accept Response
-		resp := p.SignReplyWithContact(c)
+		resp := p.SignReplyWithContact(c, isFlat)
 		// Send to Channel
 		n.service.respCh <- resp
 	} else {

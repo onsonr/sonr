@@ -86,11 +86,12 @@ message InviteRequest {
 
   // Enum for Type of Transfer
   enum TransferType {
-    Unknown = 0;    // Default Value, Would not Transfer
-    File = 1;       // Media or Document
-    MultiFiles = 2; // Multiple Media or Documents
-    Contact = 3;    // Users Contact Card
-    URL = 4;        // Website URL Link
+    Unknown = 0;     // Default Value, Would not Transfer
+    File = 1;        // Media or Document
+    MultiFiles = 2;  // Multiple Media or Documents
+    Contact = 3;     // Users Contact Card
+    URL = 4;         // Website URL Link
+    FlatContact = 5; // Send File as Flat Exchange Automatically Swaps
   }
 }
 
@@ -99,6 +100,7 @@ message AuthInvite {
   Payload payload = 1;   // Type of Transfer
   Peer from = 2;         // Users Peer Data
   TransferCard card = 3; // Card contains all Data Info, Transfer Info
+  bool isFlat = 4;
 }
 
 // Reply Message sent on RPC
@@ -112,7 +114,8 @@ message AuthReply {
     None = 0;
     Transfer = 1;
     Contact = 2;
-    Cancel = 3;
+    FlatContact = 3;
+    Cancel = 4;
   }
 }
 

@@ -95,11 +95,12 @@ func (p *Peer) SignMessage(m string, to *Peer) *LobbyEvent {
 }
 
 // ^ Generate AuthInvite with Contact Payload from Request, User Peer Data and User Contact ^ //
-func (p *Peer) SignInviteWithContact(c *Contact) AuthInvite {
+func (p *Peer) SignInviteWithContact(c *Contact, flat bool) AuthInvite {
 	// Create Invite
 	return AuthInvite{
 		From:    p,
 		Payload: Payload_CONTACT,
+		IsFlat:  flat,
 		Card: &TransferCard{
 			// SQL Properties
 			Payload:  Payload_CONTACT,
@@ -189,10 +190,19 @@ func (p *Peer) SignReply(d bool) *AuthReply {
 }
 
 // ^ SignReply Creates AuthReply with Contact  ^
-func (p *Peer) SignReplyWithContact(c *Contact) *AuthReply {
+func (p *Peer) SignReplyWithContact(c *Contact, flat bool) *AuthReply {
+	// Set Reply Type
+	var kind AuthReply_Type
+	if flat {
+		kind = AuthReply_FlatContact
+	} else {
+		kind = AuthReply_Contact
+	}
+
+	// Build Reply
 	return &AuthReply{
 		From: p,
-		Type: AuthReply_Contact,
+		Type: kind,
 		Card: &TransferCard{
 			// SQL Properties
 			Payload:  Payload_CONTACT,

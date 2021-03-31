@@ -142,7 +142,7 @@ func (mn *Node) Invite(data []byte) {
 		}
 
 		// @ 2. Check Transfer Type
-		if req.Type == md.InviteRequest_Contact {
+		if req.Type == md.InviteRequest_Contact || req.Type == md.InviteRequest_FlatContact {
 			err := mn.node.InviteContact(req, topic, mn.user.Contact())
 			if err != nil {
 				log.Println(err)
@@ -168,7 +168,7 @@ func (mn *Node) Invite(data []byte) {
 // @ Respond to an Invite with Decision
 func (mn *Node) Respond(decs bool) {
 	if mn.isReady() {
-		mn.node.Respond(decs, mn.local, mn.user.FS, mn.user.Contact())
+		mn.node.Respond(decs, mn.local, mn.user.FS, mn.user.Contact(), false)
 		// Update Status
 		if decs {
 			mn.setStatus(md.Status_INPROGRESS)

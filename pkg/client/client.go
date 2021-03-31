@@ -119,7 +119,7 @@ func (n *Client) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, c *md
 		}
 
 		// Build Invite Message
-		invite := n.Peer.SignInviteWithContact(c)
+		invite := n.Peer.SignInviteWithContact(c, req.Type == md.InviteRequest_FlatContact)
 
 		// Run Routine
 		go func(inv *md.AuthInvite) {
@@ -160,8 +160,8 @@ func (n *Client) InviteFile(req *md.InviteRequest, t *tpc.TopicManager, fs *us.F
 }
 
 // ^ Respond to an Invitation ^ //
-func (n *Client) Respond(decision bool, t *tpc.TopicManager, fs *us.FileSystem, c *md.Contact) {
-	t.RespondToInvite(decision, fs, n.Peer, c)
+func (n *Client) Respond(decision bool, t *tpc.TopicManager, fs *us.FileSystem, c *md.Contact, isFlat bool) {
+	t.RespondToInvite(decision, fs, n.Peer, c, isFlat)
 }
 
 // ^ Send Direct Message to Peer in Lobby ^ //
@@ -177,7 +177,6 @@ func (n *Client) Message(t *tpc.TopicManager, msg string, to *md.Peer) error {
 
 // ^ Update proximity/direction and Notify Lobby ^ //
 func (n *Client) Update(t *tpc.TopicManager) error {
-
 
 	// Inform Lobby
 	if err := t.Send(n.Peer.SignUpdate()); err != nil {
