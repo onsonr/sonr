@@ -132,11 +132,12 @@ func (ts *TopicService) InviteWith(ctx context.Context, args TopicServiceArgs, r
 		return err
 	}
 
-	// Set Current Message
-	ts.invite = &receivedMessage
-
 	// Check for Flat Contact Exchange
-	if ts.invite.IsFlat && ts.invite.Payload == md.Payload_CONTACT {
+	if receivedMessage.IsFlat && ts.invite.Payload == md.Payload_CONTACT {
+		// Set Current Message and send Callback
+		ts.invite = &receivedMessage
+		ts.call.OnInvite(args.Invite)
+
 		// Sign Contact Reply
 		resp := ts.peer.SignReplyWithContact(ts.call.GetContact(), true)
 
@@ -145,32 +146,34 @@ func (ts *TopicService) InviteWith(ctx context.Context, args TopicServiceArgs, r
 		if err != nil {
 			return err
 		}
-
-		reply.InvReply = msgBytes
-		return nil
-	}
-
-	// Send Callback
-	ts.call.OnInvite(args.Invite)
-
-	// Hold Select for Invite Type
-	select {
-	// Received Auth Channel Message
-	case m := <-ts.respCh:
-		// Convert Protobuf to bytes
-		msgBytes, err := proto.Marshal(m)
-		if err != nil {
-			return err
-		}
-
-		// Set Message data and call done
 		reply.InvReply = msgBytes
 		ctx.Done()
 		return nil
-		// Context is Done
-	case <-ctx.Done():
-		return nil
+	} else {
+		// Set Current Message and send Callback
+		ts.invite = &receivedMessage
+		ts.call.OnInvite(args.Invite)
+
+		// Hold Select for Invite Type
+		select {
+		// Received Auth Channel Message
+		case m := <-ts.respCh:
+			// Convert Protobuf to bytes
+			msgBytes, err := proto.Marshal(m)
+			if err != nil {
+				return err
+			}
+
+			// Set Message data and call done
+			reply.InvReply = msgBytes
+			ctx.Done()
+			return nil
+			// Context is Done
+		case <-ctx.Done():
+			return nil
+		}
 	}
+
 }
 
 // ^ RespondToInvite to an Invitation ^ //
