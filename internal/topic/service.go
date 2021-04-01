@@ -146,32 +146,34 @@ func (ts *TopicService) InviteWith(ctx context.Context, args TopicServiceArgs, r
 		if err != nil {
 			return err
 		}
+		
 		reply.InvReply = msgBytes
 		ctx.Done()
 		return nil
-	} else {
-		// Set Current Message and send Callback
-		ts.invite = &receivedMessage
-		ts.call.OnInvite(args.Invite)
+	}
 
-		// Hold Select for Invite Type
-		select {
-		// Received Auth Channel Message
-		case m := <-ts.respCh:
-			// Convert Protobuf to bytes
-			msgBytes, err := proto.Marshal(m)
-			if err != nil {
-				return err
-			}
+	// Set Current Message and send Callback
+	ts.invite = &receivedMessage
+	ts.call.OnInvite(args.Invite)
 
-			// Set Message data and call done
-			reply.InvReply = msgBytes
-			ctx.Done()
-			return nil
-			// Context is Done
-		case <-ctx.Done():
-			return nil
+	// Hold Select for Invite Type
+	select {
+	// Received Auth Channel Message
+	case m := <-ts.respCh:
+		// Convert Protobuf to bytes
+		msgBytes, err := proto.Marshal(m)
+		if err != nil {
+			return err
 		}
+
+		// Set Message data and call done
+		reply.InvReply = msgBytes
+		ctx.Done()
+		return nil
+		// Context is Done
+	case <-ctx.Done():
+		return nil
+
 	}
 
 }
