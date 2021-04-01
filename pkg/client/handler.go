@@ -11,6 +11,11 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+// ^ GetContact: Return User Contact Card for FlatContact ^
+func (n *Client) GetContact() *md.Contact {
+	return n.call.Contact()
+}
+
 // ^ OnEvent: Specific Lobby Event ^
 func (n *Client) OnEvent(e *md.LobbyEvent) {
 	// Convert Message

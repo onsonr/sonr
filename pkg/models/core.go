@@ -8,6 +8,7 @@ import (
 
 // ** ─── CALLBACK MANAGEMENT ────────────────────────────────────────────────────────
 // Define Function Types
+type GetContact func() *Contact
 type OnProtobuf func([]byte)
 type OnInvite func(data []byte)
 type OnProgress func(data float32)
@@ -15,6 +16,7 @@ type OnReceived func(data *TransferCard)
 type OnTransmitted func(data *Peer)
 type OnError func(err error, method string)
 type NodeCallback struct {
+	Contact     GetContact
 	Invited     OnInvite
 	Refreshed   OnProtobuf
 	Event       OnProtobuf

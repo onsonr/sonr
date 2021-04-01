@@ -168,7 +168,7 @@ func (mn *Node) Invite(data []byte) {
 // @ Respond to an Invite with Decision
 func (mn *Node) Respond(decs bool) {
 	if mn.isReady() {
-		mn.node.Respond(decs, mn.local, mn.user.FS, mn.user.Contact(), false)
+		mn.node.Respond(decs, mn.local, mn.user.FS, mn.user.Contact())
 		// Update Status
 		if decs {
 			mn.setStatus(md.Status_INPROGRESS)

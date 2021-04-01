@@ -160,8 +160,8 @@ func (n *Client) InviteFile(req *md.InviteRequest, t *tpc.TopicManager, fs *us.F
 }
 
 // ^ Respond to an Invitation ^ //
-func (n *Client) Respond(decision bool, t *tpc.TopicManager, fs *us.FileSystem, c *md.Contact, isFlat bool) {
-	t.RespondToInvite(decision, fs, n.Peer, c, isFlat)
+func (n *Client) Respond(decision bool, t *tpc.TopicManager, fs *us.FileSystem, c *md.Contact) {
+	t.RespondToInvite(decision, fs, n.Peer, c)
 }
 
 // ^ Send Direct Message to Peer in Lobby ^ //

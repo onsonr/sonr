@@ -32,6 +32,7 @@ type TopicManager struct {
 }
 
 type TopicHandler interface {
+	GetContact() *md.Contact
 	OnEvent(*md.LobbyEvent)
 	OnRefresh(*md.Lobby)
 	OnInvite([]byte)

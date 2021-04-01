@@ -135,6 +135,21 @@ func (ts *TopicService) InviteWith(ctx context.Context, args TopicServiceArgs, r
 	// Set Current Message
 	ts.invite = &receivedMessage
 
+	// Check for Flat Contact Exchange
+	if ts.invite.IsFlat && ts.invite.Payload == md.Payload_CONTACT {
+		// Sign Contact Reply
+		resp := ts.peer.SignReplyWithContact(ts.call.GetContact(), true)
+
+		// Convert Protobuf to bytes
+		msgBytes, err := proto.Marshal(resp)
+		if err != nil {
+			return err
+		}
+
+		reply.InvReply = msgBytes
+		return nil
+	}
+
 	// Send Callback
 	ts.call.OnInvite(args.Invite)
 
@@ -159,7 +174,7 @@ func (ts *TopicService) InviteWith(ctx context.Context, args TopicServiceArgs, r
 }
 
 // ^ RespondToInvite to an Invitation ^ //
-func (n *TopicManager) RespondToInvite(decision bool, fs *us.FileSystem, p *md.Peer, c *md.Contact, isFlat bool) {
+func (n *TopicManager) RespondToInvite(decision bool, fs *us.FileSystem, p *md.Peer, c *md.Contact) {
 	// Prepare Transfer
 	if decision {
 		n.topicHandler.OnResponded(n.service.invite, p, fs)
@@ -168,7 +183,7 @@ func (n *TopicManager) RespondToInvite(decision bool, fs *us.FileSystem, p *md.P
 	// @ Pass Contact Back
 	if n.service.invite.Payload == md.Payload_CONTACT {
 		// Create Accept Response
-		resp := p.SignReplyWithContact(c, isFlat)
+		resp := p.SignReplyWithContact(c, n.service.invite.IsFlat)
 		// Send to Channel
 		n.service.respCh <- resp
 	} else {

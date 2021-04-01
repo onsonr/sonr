@@ -31,6 +31,7 @@ func (mn *Node) callbackNode() md.NodeCallback {
 		Progressed: mn.call.OnProgress,
 
 		// Middleware
+		Contact:     mn.user.Contact,
 		Invited:     mn.invited,
 		Received:    mn.received,
 		Transmitted: mn.transmitted,
@@ -42,17 +43,6 @@ func (mn *Node) callbackNode() md.NodeCallback {
 func (mn *Node) invited(data []byte) {
 	// Update Status
 	mn.setStatus(md.Status_INVITED)
-
-	// Check Invite for FlatContact
-	invite := &md.AuthInvite{}
-	err := proto.Unmarshal(data, invite)
-	if err != nil {
-		log.Println(err)
-	}
-
-	if invite.IsFlat {
-		mn.node.Respond(true, mn.local, mn.user.FS, mn.user.Contact(), true)
-	}
 
 	// Callback with Data
 	mn.call.OnInvited(data)
