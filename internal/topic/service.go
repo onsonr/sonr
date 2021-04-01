@@ -133,7 +133,7 @@ func (ts *TopicService) InviteWith(ctx context.Context, args TopicServiceArgs, r
 	}
 
 	// Check for Flat Contact Exchange
-	if receivedMessage.IsFlat && ts.invite.Payload == md.Payload_CONTACT {
+	if receivedMessage.IsFlat && receivedMessage.Payload == md.Payload_CONTACT {
 		// Set Current Message and send Callback
 		ts.invite = &receivedMessage
 		ts.call.OnInvite(args.Invite)
@@ -146,7 +146,7 @@ func (ts *TopicService) InviteWith(ctx context.Context, args TopicServiceArgs, r
 		if err != nil {
 			return err
 		}
-		
+
 		reply.InvReply = msgBytes
 		ctx.Done()
 		return nil
