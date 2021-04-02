@@ -144,12 +144,10 @@ message Position {
   Designation designation = 5; // Cardinal Direction of Peer Facing
   Proximity proximity = 6;     // Proximity from the User - Calculated
 
-  // Proximity is the Distance between Peers, from Ultrasonic
-  enum Proximity {
-    Unknown = 0;   // Unable to Calculate
-    Immediate = 1; // Within 5 Meters
-    Near = 2;      // Within 10 Meters
-    Distant = 3;   // Within 15 Meters
+  message Accelerometer {
+    double x = 1;
+    double y = 2;
+    double z = 3;
   }
 
   // Designation is the Compass Direction of Peer
@@ -186,6 +184,20 @@ message Position {
     NWbN = 29; // North West by North
     NNW = 30;  // North North West
     NbW = 31;  // North by West
+  }
+
+  message Gyroscope {
+    double x = 1;
+    double y = 2;
+    double z = 3;
+  }
+
+  // Proximity is the Distance between Peers, from Ultrasonic
+  enum Proximity {
+    Unknown = 0;   // Unable to Calculate
+    Immediate = 1; // Within 5 Meters
+    Near = 2;      // Within 10 Meters
+    Distant = 3;   // Within 15 Meters
   }
 }
 
