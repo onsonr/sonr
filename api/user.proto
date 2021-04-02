@@ -143,6 +143,8 @@ message Position {
   double headingAntipodal = 4; // Inverse Compass Direction of Peer in Z axis
   Designation designation = 5; // Cardinal Direction of Peer Facing
   Proximity proximity = 6;     // Proximity from the User - Calculated
+  Accelerometer accelerometer = 7; // Accelerometer Values
+  Gyroscope gyroscope = 8;         // Gyroscope Values
 
   message Accelerometer {
     double x = 1;

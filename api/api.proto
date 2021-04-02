@@ -48,6 +48,8 @@ message UpdateRequest {
   double heading = 3;             // Compass Direction on Y axis
   Peer.Properties properties = 4; // Updated Peer Properties
   Contact contact = 5;            // Users Updated Contact Card
+  Position.Gyroscope gyroscope = 6;
+  Position.Accelerometer accelerometer = 7;
 
   enum Type {
     Direction = 0;

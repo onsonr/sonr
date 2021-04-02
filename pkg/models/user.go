@@ -270,6 +270,8 @@ func (p *Peer) Update(u *UpdateRequest) {
 			Heading:          headDir,
 			HeadingAntipodal: headAnpd,
 			Designation:      Position_Designation(desg % 32),
+			Accelerometer:    u.Accelerometer,
+			Gyroscope:        u.Gyroscope,
 		}
 	}
 
