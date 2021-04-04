@@ -36,6 +36,56 @@ type TopicService struct {
 	invite *md.AuthInvite
 }
 
+// ^ Direct: Handles User sent AuthInvite Response on FlatMode ^
+func (tm *TopicManager) Direct(id peer.ID, inv *md.AuthInvite) error {
+	// Convert Protobuf to bytes
+	msgBytes, err := proto.Marshal(inv)
+	if err != nil {
+		return err
+	}
+
+	// Initialize Data
+	rpcClient := rpc.NewClient(tm.host.Host, K_SERVICE_PID)
+	var reply TopicServiceResponse
+	var args TopicServiceArgs
+	args.Invite = msgBytes
+
+	// Call to Peer
+	err = rpcClient.Call(id, "TopicService", "DirectWith", args, &reply)
+	if err != nil {
+		return err
+	}
+
+	tm.topicHandler.OnReply(id, reply.InvReply, nil)
+	return nil
+}
+
+// ^ Calls Invite on Remote Peer for Flat Mode and makes Direct Response ^ //
+func (ts *TopicService) DirectWith(ctx context.Context, args TopicServiceArgs, reply *TopicServiceResponse) error {
+	// Received Message
+	receivedMessage := md.AuthInvite{}
+	err := proto.Unmarshal(args.Invite, &receivedMessage)
+	if err != nil {
+		return err
+	}
+
+	// Set Current Message and send Callback
+	ts.invite = &receivedMessage
+	ts.call.OnInvite(args.Invite)
+
+	// Sign Contact Reply
+	resp := ts.peer.SignReplyWithContact(ts.call.GetContact(), true)
+
+	// Convert Protobuf to bytes
+	msgBytes, err := proto.Marshal(resp)
+	if err != nil {
+		return err
+	}
+
+	reply.InvReply = msgBytes
+	return nil
+}
+
 // ^ Calls Invite on Remote Peer ^ //
 func (tm *TopicManager) Exchange(id peer.ID, peerBuf []byte, lobBuf []byte) error {
 	// Initialize RPC
@@ -132,26 +182,6 @@ func (ts *TopicService) InviteWith(ctx context.Context, args TopicServiceArgs, r
 		return err
 	}
 
-	// Check for Flat Contact Exchange
-	if receivedMessage.IsFlat && receivedMessage.Payload == md.Payload_CONTACT {
-		// Set Current Message and send Callback
-		ts.invite = &receivedMessage
-		ts.call.OnInvite(args.Invite)
-
-		// Sign Contact Reply
-		resp := ts.peer.SignReplyWithContact(ts.call.GetContact(), true)
-
-		// Convert Protobuf to bytes
-		msgBytes, err := proto.Marshal(resp)
-		if err != nil {
-			return err
-		}
-
-		reply.InvReply = msgBytes
-		ctx.Done()
-		return nil
-	}
-
 	// Set Current Message and send Callback
 	ts.invite = &receivedMessage
 	ts.call.OnInvite(args.Invite)
@@ -173,9 +203,7 @@ func (ts *TopicService) InviteWith(ctx context.Context, args TopicServiceArgs, r
 		// Context is Done
 	case <-ctx.Done():
 		return nil
-
 	}
-
 }
 
 // ^ RespondToInvite to an Invitation ^ //

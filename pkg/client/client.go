@@ -119,13 +119,23 @@ func (n *Client) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, c *md
 		}
 
 		// Build Invite Message
-		invite := n.Peer.SignInviteWithContact(c, req.Type == md.InviteRequest_FlatContact)
+		isFlat := req.Type == md.InviteRequest_FlatContact
+		invite := n.Peer.SignInviteWithContact(c, isFlat)
 
 		// Run Routine
 		go func(inv *md.AuthInvite) {
-			err = t.Invite(id, inv, nil)
-			if err != nil {
-				n.call.Error(err, "InviteLink")
+			// Direct Invite for Flat
+			if isFlat {
+				err = t.Direct(id, inv)
+				if err != nil {
+					n.call.Error(err, "InviteContact:Flat")
+				}
+			} else {
+				// Request Invite for Non Flat
+				err = t.Invite(id, inv, nil)
+				if err != nil {
+					n.call.Error(err, "InviteContact")
+				}
 			}
 		}(&invite)
 	} else {
