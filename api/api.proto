@@ -109,6 +109,7 @@ message AuthInvite {
   Peer from = 2;         // Users Peer Data
   TransferCard card = 3; // Card contains all Data Info, Transfer Info
   bool isFlat = 4;
+  RemoteInfo remote = 5;
 }
 
 // Reply Message sent on RPC
@@ -117,6 +118,7 @@ message AuthReply {
   Peer from = 2;         // Users Peer Data
   bool decision = 3;     // Users Decision for the Invitation
   TransferCard card = 4; // Card contains all Data Info, Transfer Info
+  RemoteInfo remote = 5;
 
   enum Type {
     None = 0;
