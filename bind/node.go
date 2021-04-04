@@ -155,7 +155,7 @@ func (mn *Node) Invite(data []byte) {
 
 		// Retreive Invite Topic
 		var topic *topic.TopicManager
-		if req.IsRemote {
+		if req.IsRemote && req.Remote != nil {
 			topic = mn.topics[req.Remote.Topic]
 		} else {
 			topic = mn.local
@@ -197,7 +197,7 @@ func (mn *Node) Respond(data []byte) {
 
 		// Retreive Invite Topic
 		var topic *topic.TopicManager
-		if req.IsRemote {
+		if req.IsRemote && req.Remote != nil {
 			topic = mn.topics[req.Remote.Topic]
 		} else {
 			topic = mn.local
