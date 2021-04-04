@@ -95,12 +95,13 @@ func (p *Peer) SignMessage(m string, to *Peer) *LobbyEvent {
 }
 
 // ^ Generate AuthInvite with Contact Payload from Request, User Peer Data and User Contact ^ //
-func (p *Peer) SignInviteWithContact(c *Contact, flat bool) AuthInvite {
+func (p *Peer) SignInviteWithContact(c *Contact, flat bool, req *InviteRequest) AuthInvite {
 	// Create Invite
 	return AuthInvite{
 		From:    p,
 		Payload: Payload_CONTACT,
 		IsFlat:  flat,
+		Remote:  req.GetRemote(),
 		Card: &TransferCard{
 			// SQL Properties
 			Payload:  Payload_CONTACT,
@@ -122,12 +123,13 @@ func (p *Peer) SignInviteWithContact(c *Contact, flat bool) AuthInvite {
 }
 
 // ^ Generate AuthInvite with Contact Payload from Request, User Peer Data and User Contact ^ //
-func (p *Peer) SignInviteWithFile(tc *TransferCard) AuthInvite {
+func (p *Peer) SignInviteWithFile(tc *TransferCard, req *InviteRequest) AuthInvite {
 	// Create Invite
 	return AuthInvite{
 		From:    p,
 		Payload: tc.Payload,
 		Card:    tc,
+		Remote:  req.GetRemote(),
 	}
 }
 
@@ -145,6 +147,7 @@ func (p *Peer) SignInviteWithLink(req *InviteRequest) AuthInvite {
 	return AuthInvite{
 		From:    p,
 		Payload: Payload_CONTACT,
+		Remote:  req.GetRemote(),
 		Card: &TransferCard{
 			// SQL Properties
 			Payload:  Payload_CONTACT,
@@ -166,11 +169,12 @@ func (p *Peer) SignInviteWithLink(req *InviteRequest) AuthInvite {
 }
 
 // ^ SignReply Creates AuthReply ^
-func (p *Peer) SignReply(d bool) *AuthReply {
+func (p *Peer) SignReply(d bool, req *RespondRequest) *AuthReply {
 	return &AuthReply{
 		From:     p,
 		Type:     AuthReply_Transfer,
 		Decision: d,
+		Remote:   req.GetRemote(),
 		Card: &TransferCard{
 			// SQL Properties
 			Payload:  Payload_UNDEFINED,
@@ -190,7 +194,7 @@ func (p *Peer) SignReply(d bool) *AuthReply {
 }
 
 // ^ SignReply Creates AuthReply with Contact  ^
-func (p *Peer) SignReplyWithContact(c *Contact, flat bool) *AuthReply {
+func (p *Peer) SignReplyWithContact(c *Contact, flat bool, req *RespondRequest) *AuthReply {
 	// Set Reply Type
 	var kind AuthReply_Type
 	if flat {
@@ -199,29 +203,58 @@ func (p *Peer) SignReplyWithContact(c *Contact, flat bool) *AuthReply {
 		kind = AuthReply_Contact
 	}
 
-	// Build Reply
-	return &AuthReply{
-		From: p,
-		Type: kind,
-		Card: &TransferCard{
-			// SQL Properties
-			Payload:  Payload_CONTACT,
-			Received: int32(time.Now().Unix()),
-			Preview:  p.Profile.Picture,
-			Platform: p.Platform,
+	// Check if Request Provided
+	if req != nil {
+		// Build Reply
+		return &AuthReply{
+			From:   p,
+			Type:   kind,
+			Remote: req.GetRemote(),
+			Card: &TransferCard{
+				// SQL Properties
+				Payload:  Payload_CONTACT,
+				Received: int32(time.Now().Unix()),
+				Preview:  p.Profile.Picture,
+				Platform: p.Platform,
 
-			// Transfer Properties
-			Status: TransferCard_REPLY,
+				// Transfer Properties
+				Status: TransferCard_REPLY,
 
-			// Owner Properties
-			Username:  p.Profile.Username,
-			FirstName: p.Profile.FirstName,
-			LastName:  p.Profile.LastName,
+				// Owner Properties
+				Username:  p.Profile.Username,
+				FirstName: p.Profile.FirstName,
+				LastName:  p.Profile.LastName,
 
-			// Data Properties
-			Contact: c,
-		},
+				// Data Properties
+				Contact: c,
+			},
+		}
+	} else {
+		// Build Reply
+		return &AuthReply{
+			From: p,
+			Type: kind,
+			Card: &TransferCard{
+				// SQL Properties
+				Payload:  Payload_CONTACT,
+				Received: int32(time.Now().Unix()),
+				Preview:  p.Profile.Picture,
+				Platform: p.Platform,
+
+				// Transfer Properties
+				Status: TransferCard_REPLY,
+
+				// Owner Properties
+				Username:  p.Profile.Username,
+				FirstName: p.Profile.FirstName,
+				LastName:  p.Profile.LastName,
+
+				// Data Properties
+				Contact: c,
+			},
+		}
 	}
+
 }
 
 // ^ SignUpdate Creates Lobby Event with Peer Data ^

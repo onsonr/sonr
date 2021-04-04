@@ -128,7 +128,7 @@ func (n *Client) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, c *md
 
 		// Build Invite Message
 		isFlat := req.Type == md.InviteRequest_FlatContact
-		invite := n.Peer.SignInviteWithContact(c, isFlat)
+		invite := n.Peer.SignInviteWithContact(c, isFlat, req)
 
 		// Run Routine
 		go func(inv *md.AuthInvite) {
@@ -159,7 +159,7 @@ func (n *Client) InviteFile(req *md.InviteRequest, t *tpc.TopicManager, fs *us.F
 	card := session.OutgoingCard()
 
 	// Create Invite Message
-	invite := n.Peer.SignInviteWithFile(card)
+	invite := n.Peer.SignInviteWithFile(card, req)
 
 	// Get PeerID
 	id, _, err := t.FindPeerInTopic(req.To.Id.Peer)
@@ -178,8 +178,8 @@ func (n *Client) InviteFile(req *md.InviteRequest, t *tpc.TopicManager, fs *us.F
 }
 
 // ^ Respond to an Invitation ^ //
-func (n *Client) Respond(decision bool, t *tpc.TopicManager, fs *us.FileSystem, c *md.Contact) {
-	t.RespondToInvite(decision, fs, n.Peer, c)
+func (n *Client) Respond(req *md.RespondRequest, t *tpc.TopicManager, fs *us.FileSystem, c *md.Contact) {
+	t.RespondToInvite(req, fs, n.Peer, c)
 }
 
 // ^ Send Direct Message to Peer in Lobby ^ //

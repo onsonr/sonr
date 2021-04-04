@@ -203,7 +203,7 @@ func (mn *Node) Respond(data []byte) {
 			topic = mn.local
 		}
 
-		mn.client.Respond(req.Decision, topic, mn.user.FS, mn.user.Contact())
+		mn.client.Respond(req, topic, mn.user.FS, mn.user.Contact())
 		// Update Status
 		if req.Decision {
 			mn.setStatus(md.Status_INPROGRESS)

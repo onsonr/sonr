@@ -74,7 +74,7 @@ func (ts *TopicService) DirectWith(ctx context.Context, args TopicServiceArgs, r
 	ts.call.OnInvite(args.Invite)
 
 	// Sign Contact Reply
-	resp := ts.peer.SignReplyWithContact(ts.call.GetContact(), true)
+	resp := ts.peer.SignReplyWithContact(ts.call.GetContact(), true, nil)
 
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(resp)
@@ -207,21 +207,21 @@ func (ts *TopicService) InviteWith(ctx context.Context, args TopicServiceArgs, r
 }
 
 // ^ RespondToInvite to an Invitation ^ //
-func (n *TopicManager) RespondToInvite(decision bool, fs *us.FileSystem, p *md.Peer, c *md.Contact) {
+func (n *TopicManager) RespondToInvite(req *md.RespondRequest, fs *us.FileSystem, p *md.Peer, c *md.Contact, ) {
 	// Prepare Transfer
-	if decision {
+	if req.Decision {
 		n.topicHandler.OnResponded(n.service.invite, p, fs)
 	}
 
 	// @ Pass Contact Back
 	if n.service.invite.Payload == md.Payload_CONTACT {
 		// Create Accept Response
-		resp := p.SignReplyWithContact(c, n.service.invite.IsFlat)
+		resp := p.SignReplyWithContact(c, n.service.invite.IsFlat, req)
 		// Send to Channel
 		n.service.respCh <- resp
 	} else {
 		// Create Accept Response
-		resp := p.SignReply(decision)
+		resp := p.SignReply(req.Decision, req)
 
 		// Send to Channel
 		n.service.respCh <- resp
