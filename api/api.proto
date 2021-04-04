@@ -71,7 +71,7 @@ message InviteRequest {
   TransferType type = 1; // General Payload Type
   Peer to = 2;           // User thats being Invited
   bool isRemote = 3;     // If Transfer is Remote
-  string topic = 4;      // Remote Topic Name
+  RemoteInfo remote = 4; // Remote Topic Name
 
   // Attached Data
   string url = 5;              // URL to be Sent - Optional
@@ -95,6 +95,12 @@ message InviteRequest {
     URL = 4;         // Website URL Link
     FlatContact = 5; // Send File as Flat Exchange Automatically Swaps
   }
+}
+
+message RespondRequest {
+  bool decision = 1;     // User Decision
+  bool isRemote = 2;     // If Transfer is Remote
+  RemoteInfo remote = 3; // Remote Topic Name
 }
 
 // Invitation Message sent on RPC

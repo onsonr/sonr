@@ -156,7 +156,7 @@ func (mn *Node) Invite(data []byte) {
 		// Retreive Invite Topic
 		var topic *topic.TopicManager
 		if req.IsRemote {
-			topic = mn.topics[req.Topic]
+			topic = mn.topics[req.Remote.Topic]
 		} else {
 			topic = mn.local
 		}
@@ -186,11 +186,26 @@ func (mn *Node) Invite(data []byte) {
 }
 
 // @ Respond to an Invite with Decision
-func (mn *Node) Respond(decs bool) {
+func (mn *Node) Respond(data []byte) {
 	if mn.isReady() {
-		mn.client.Respond(decs, mn.local, mn.user.FS, mn.user.Contact())
+		// Initialize from Request
+		req := &md.RespondRequest{}
+		if err := proto.Unmarshal(data, req); err != nil {
+			log.Println(err)
+			return
+		}
+
+		// Retreive Invite Topic
+		var topic *topic.TopicManager
+		if req.IsRemote {
+			topic = mn.topics[req.Remote.Topic]
+		} else {
+			topic = mn.local
+		}
+
+		mn.client.Respond(req.Decision, topic, mn.user.FS, mn.user.Contact())
 		// Update Status
-		if decs {
+		if req.Decision {
 			mn.setStatus(md.Status_INPROGRESS)
 		} else {
 			mn.setStatus(md.Status_AVAILABLE)
