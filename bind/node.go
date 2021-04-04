@@ -37,7 +37,7 @@ func (mn *Node) CreateRemote() []byte {
 		remote := md.GetRemoteInfo(wordList)
 
 		// Join Lobby
-		tm, err := mn.node.JoinLobby(remote.Topic)
+		tm, err := mn.client.JoinLobby(remote.Topic)
 		if err != nil {
 			mn.error(err, "JoinRemote")
 			return nil
@@ -68,7 +68,7 @@ func (mn *Node) JoinRemote(data []byte) {
 		}
 
 		// Join Lobby
-		tm, err := mn.node.JoinLobby(remote.Topic)
+		tm, err := mn.client.JoinLobby(remote.Topic)
 		if err != nil {
 			mn.error(err, "JoinRemote")
 			return
@@ -76,6 +76,26 @@ func (mn *Node) JoinRemote(data []byte) {
 
 		// Set Topic
 		mn.topics[remote.Topic] = tm
+	}
+}
+
+// @ Leave Existing Group
+func (mn *Node) LeaveRemote(data []byte) {
+	if mn.isReady() {
+		// Unpackage Data
+		remote := md.RemoteInfo{}
+		err := proto.Unmarshal(data, &remote)
+		if err != nil {
+			mn.error(err, "LeaveRemote")
+			return
+		}
+
+		// Join Lobby
+		err = mn.client.LeaveLobby(mn.topics[remote.Topic])
+		if err != nil {
+			mn.error(err, "LeaveRemote")
+			return
+		}
 	}
 }
 
@@ -90,10 +110,10 @@ func (mn *Node) Update(data []byte) {
 		}
 
 		// Update Peer
-		mn.node.Peer.Update(udpate)
+		mn.client.Peer.Update(udpate)
 
 		// Notify Local Lobby
-		err := mn.node.Update(mn.local)
+		err := mn.client.Update(mn.local)
 		if err != nil {
 			log.Println(err)
 			return
@@ -112,7 +132,7 @@ func (mn *Node) Message(data []byte) {
 		}
 
 		// Run Node Action
-		err := mn.node.Message(mn.local, req.Message, req.To)
+		err := mn.client.Message(mn.local, req.Message, req.To)
 		if err != nil {
 			log.Println(err)
 			return
@@ -143,20 +163,20 @@ func (mn *Node) Invite(data []byte) {
 
 		// @ 2. Check Transfer Type
 		if req.Type == md.InviteRequest_Contact || req.Type == md.InviteRequest_FlatContact {
-			err := mn.node.InviteContact(req, topic, mn.user.Contact())
+			err := mn.client.InviteContact(req, topic, mn.user.Contact())
 			if err != nil {
 				log.Println(err)
 				return
 			}
 		} else if req.Type == md.InviteRequest_URL {
-			err := mn.node.InviteLink(req, topic)
+			err := mn.client.InviteLink(req, topic)
 			if err != nil {
 				log.Println(err)
 				return
 			}
 		} else {
 			// Invite With file
-			err := mn.node.InviteFile(req, topic, mn.user.FS)
+			err := mn.client.InviteFile(req, topic, mn.user.FS)
 			if err != nil {
 				log.Println(err)
 				return
@@ -168,7 +188,7 @@ func (mn *Node) Invite(data []byte) {
 // @ Respond to an Invite with Decision
 func (mn *Node) Respond(decs bool) {
 	if mn.isReady() {
-		mn.node.Respond(decs, mn.local, mn.user.FS, mn.user.Contact())
+		mn.client.Respond(decs, mn.local, mn.user.FS, mn.user.Contact())
 		// Update Status
 		if decs {
 			mn.setStatus(md.Status_INPROGRESS)

@@ -19,8 +19,8 @@ type Node struct {
 	connreq *md.ConnectionRequest
 
 	// Client
-	node *sc.Client
-	user *u.User
+	client *sc.Client
+	user   *u.User
 
 	// Groups
 	local  *tpc.TopicManager
@@ -59,7 +59,7 @@ func NewMobileNode(reqBytes []byte, call Callback) *Node {
 	log.Println(geoIP.String())
 
 	// Create Client
-	mn.node = sc.NewClient(mn.contextNode(), req, mn.callbackNode())
+	mn.client = sc.NewClient(mn.contextNode(), req, mn.callbackNode())
 	return mn
 }
 
@@ -90,7 +90,7 @@ func NewDesktopNode(req *md.ConnectionRequest, call Callback) *Node {
 	}
 
 	// Create Client
-	mn.node = sc.NewClient(mn.contextNode(), req, mn.callbackNode())
+	mn.client = sc.NewClient(mn.contextNode(), req, mn.callbackNode())
 	return mn
 }
 
@@ -108,7 +108,7 @@ func (mn *Node) Connect() {
 	}
 
 	// Connect Host
-	err = mn.node.Connect(key)
+	err = mn.client.Connect(key)
 	if err != nil {
 		log.Println("Failed to start host")
 		mn.setConnected(false)
@@ -119,7 +119,7 @@ func (mn *Node) Connect() {
 	}
 
 	// Bootstrap Node
-	err = mn.node.Bootstrap()
+	err = mn.client.Bootstrap()
 	if err != nil {
 		log.Println("Failed to bootstrap node")
 		mn.setBootstrapped(false)
@@ -128,7 +128,7 @@ func (mn *Node) Connect() {
 		mn.setBootstrapped(true)
 	}
 
-	mn.local, err = mn.node.JoinLocal()
+	mn.local, err = mn.client.JoinLocal()
 	if err != nil {
 		log.Println("Failed to join local pubsub")
 		mn.setJoinedLocal(false)
@@ -153,5 +153,5 @@ func (mn *Node) Resume() {
 
 // @ Close Ends All Network Communication
 func (mn *Node) Stop() {
-	mn.node.Close()
+	mn.client.Close()
 }

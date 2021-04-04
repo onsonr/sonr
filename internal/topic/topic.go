@@ -154,5 +154,6 @@ func (tm *TopicManager) Send(msg *md.LobbyEvent) error {
 
 // ^ Leave Current Topic ^
 func (tm *TopicManager) LeaveTopic() error {
+	tm.subscription.Cancel()
 	return tm.topic.Close()
 }

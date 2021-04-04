@@ -82,6 +82,14 @@ func (n *Client) JoinLocal() (*tpc.TopicManager, error) {
 	}
 }
 
+// ^ Join Lobby Adds Node to Named Topic ^
+func (n *Client) LeaveLobby(lob *tpc.TopicManager) error {
+	if err := lob.LeaveTopic(); err != nil {
+		return err
+	}
+	return nil
+}
+
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
 func (n *Client) InviteLink(req *md.InviteRequest, t *tpc.TopicManager) error {
 	// @ 3. Send Invite to Peer
