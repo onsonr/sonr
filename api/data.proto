@@ -43,8 +43,8 @@ message Metadata {
   Properties properties = 7; // Media Properties
 
   message Properties {
-    bool isPhoto = 1;      // If File is Video
-    bool isImage = 2;      // If File is Video
+    bool isAudio = 1;      // If File is Audio
+    bool isImage = 2;      // If File is Image
     bool isVideo = 3;      // If File is Video
     bool hasThumbnail = 4; // If File has thumbnail
     int32 width = 5;       // Media Width

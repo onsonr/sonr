@@ -100,6 +100,26 @@ func GetFilePayload(m *Metadata) Payload {
 	}
 }
 
+// ^ Method Returns File Size at Path ^ //
+func GetFileSize(m *Metadata) (int32, error) {
+	// Open File at Path
+	file, err := os.Open(m.Path)
+	if err != nil {
+		return 0, err
+	}
+
+	// Find Info
+	defer file.Close()
+	info, err := file.Stat()
+	if err != nil {
+		return 0, err
+	}
+
+	// Set Size
+	m.Size = int32(info.Size())
+	return m.Size, nil
+}
+
 // *********************************** //
 // ** Incoming File Info Management ** //
 // *********************************** //

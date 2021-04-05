@@ -23,6 +23,7 @@ type outgoingFile struct {
 	request  *md.InviteRequest
 	preview  []byte
 	peer     *md.Peer
+	size     int32
 }
 
 // ^ newOutgoingFile Processes Outgoing File ^ //
@@ -41,6 +42,12 @@ func newOutgoingFile(req *md.InviteRequest, p *md.Peer) *outgoingFile {
 		return nil
 	}
 
+	// Get Size
+	size, err := md.GetFileSize(file)
+	if err != nil {
+		return nil
+	}
+
 	// Get Payload
 	payload := md.GetFilePayload(file)
 
@@ -52,6 +59,7 @@ func newOutgoingFile(req *md.InviteRequest, p *md.Peer) *outgoingFile {
 		mime:     mime,
 		peer:     p,
 		metadata: file,
+		size:     size,
 	}
 	// @ 3. Create Thumbnail in Goroutine
 	if len(file.Thumbnail) > 0 {

@@ -120,9 +120,8 @@ func (t *incomingFile) Save(fs *us.FileSystem) error {
 		Metadata: &md.Metadata{
 			Name:       name,
 			Path:       path,
-			Size:       t.metadata.GetSize(),
+			Size:       int32(t.totalSize),
 			Mime:       t.metadata.Mime,
-			Thumbnail:  t.preview,
 			Properties: t.metadata.Properties,
 		},
 	}
