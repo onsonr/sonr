@@ -34,13 +34,24 @@ message LobbyEvent {
 
 // For Received Transfer File Information
 message Metadata {
-  int32 id = 1;        // Time based Assignment
-  string name = 2;     // File Name without Path
-  string path = 3;     // File Location
-  int32 size = 4;      // File Size in Bytes
-  MIME mime = 5;       // Standard Mime Type
-  bytes thumbnail = 6; // Thumbnail Preview of File
-  string assetID = 7;  // Local Asset ID
+  string id = 1;             // Local Asset ID
+  string name = 2;           // File Name without Path
+  string path = 3;           // File Location
+  int32 size = 4;            // File Size in Bytes
+  MIME mime = 5;             // Standard Mime Type
+  bytes thumbnail = 6;       // Thumbnail Preview of File
+  Properties properties = 7; // Media Properties
+
+  message Properties {
+    bool isPhoto = 1;      // If File is Video
+    bool isImage = 2;      // If File is Video
+    bool isVideo = 3;      // If File is Video
+    bool hasThumbnail = 4; // If File has thumbnail
+    int32 width = 5;       // Media Width
+    int32 height = 6;      // Media Height
+    int32 duration = 7;    // Length of Video - Optional
+    Payload payload = 8;   // SQL: Type of Data received
+  }
 }
 
 // Protobuf for Standard MIME
@@ -81,24 +92,20 @@ message RemoteInfo {
 
 // TransferCard holds data passed between Exchange
 message TransferCard {
-  int32 id = 1;         // SQL: Id reference
-  Payload payload = 2;  // SQL: Type of Data received
-  int32 received = 3;   // SQL: UnixTime of received Date/Time
-  bytes preview = 4;    // SQL: Thumbnail Preview Bytes
-  bool hasExported = 5; // SQL: Notifies if saved to Gallery
+  int32 id = 1;        // SQL: Id reference
+  Payload payload = 2; // SQL: Type of Data received
+  int32 received = 3;  // SQL: UnixTime of received Date/Time
+  bytes preview = 4;   // SQL: Thumbnail Preview Bytes
 
-  Platform platform = 6; // OWNER: Operating System of Owner
-  string username = 7;   // OWNER: Sonr Username Reference
-  string firstName = 8;  // OWNER: General FirstName Reference
-  string lastName = 9;   // OWNER: General LastName Reference
+  string username = 5;  // OWNER: Sonr Username Reference
+  string firstName = 6; // OWNER: General FirstName Reference
+  string lastName = 7;  // OWNER: General LastName Reference
+  Profile owner = 8;    // OWNER: General Profile
 
-  Progress progress = 10;     // TRANSFER: Progress of Transfer - File Only
-  Status status = 11;         // TRANSFER: Status of the Card - File Only
-  Properties properties = 12; // TRANSFER: Card Properties - File Only
-
-  Contact contact = 13;   // DATA(Optional): Received Contact Information
-  Metadata metadata = 14; // DATA(Optional): Received a File or Media
-  URLLink url = 15;       // DATA(Optional): Received a Website Link
+  Status status = 9;      // TRANSFER: Status of the Card - File Only
+  Contact contact = 10;   // DATA(Optional): Received Contact Information
+  Metadata metadata = 11; // DATA(Optional): Received a File or Media
+  URLLink url = 12;       // DATA(Optional): Received a Website Link
 
   // Card Transfer Status
   enum Status {
@@ -108,22 +115,6 @@ message TransferCard {
     REPLY = 3;      // A Response Card (Usually Contact only)
     INPROGRESS = 4; // A Transfer in Progress
     COMPLETED = 5;  // A Received and Completed Transfer
-  }
-
-  // Card Properties based on File
-  message Properties {
-    MIME mime = 1;      // Standard MIME Type Values
-    int32 size = 2;     // Size of File in Bytes
-    int32 duration = 3; // Length of Video - Optional
-    string name = 4;    // Name of File
-  }
-
-  // Progress Variables to determine completion
-  message Progress {
-    int32 currentSize = 1; // Current size of File in Transfer
-    int32 interval = 2;    // Current Interval of Transfer
-    int32 totalChunks = 3; // Total Chunks of File
-    int32 totalSize = 4;   // Total Size of File
   }
 }
 

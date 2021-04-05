@@ -16,12 +16,12 @@ import (
 
 type incomingFile struct {
 	// Inherited Properties
-	mutex      sync.Mutex
-	call       md.NodeCallback
-	owner      *md.Profile
-	payload    md.Payload
-	properties *md.TransferCard_Properties
-	preview    []byte
+	mutex    sync.Mutex
+	call     md.NodeCallback
+	owner    *md.Profile
+	payload  md.Payload
+	metadata *md.Metadata
+	preview  []byte
 
 	// Builders
 	stringsBuilder *strings.Builder
@@ -94,7 +94,7 @@ func (t *incomingFile) Save(fs *us.FileSystem) error {
 	}
 
 	// Write File to Disk
-	name, path, err := fs.WriteIncomingFile(t.payload, t.properties, data)
+	name, path, err := fs.WriteIncomingFile(t.payload, t.metadata, data)
 	if err != nil {
 		return err
 	}
@@ -105,7 +105,6 @@ func (t *incomingFile) Save(fs *us.FileSystem) error {
 		// SQL Properties
 		Payload:  t.payload,
 		Received: int32(time.Now().Unix()),
-		Platform: t.owner.Platform,
 		Preview:  t.preview,
 
 		// Transfer Properties
@@ -115,14 +114,16 @@ func (t *incomingFile) Save(fs *us.FileSystem) error {
 		Username:  t.owner.Username,
 		FirstName: t.owner.FirstName,
 		LastName:  t.owner.LastName,
+		Owner:     t.owner,
 
 		// Data Properties
 		Metadata: &md.Metadata{
-			Name:      name,
-			Path:      path,
-			Size:      t.properties.Size,
-			Mime:      t.properties.Mime,
-			Thumbnail: t.preview,
+			Name:       name,
+			Path:       path,
+			Size:       t.metadata.GetSize(),
+			Mime:       t.metadata.Mime,
+			Thumbnail:  t.preview,
+			Properties: t.metadata.Properties,
 		},
 	}
 

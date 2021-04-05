@@ -51,11 +51,11 @@ func NewInSession(p *md.Peer, inv *md.AuthInvite, fs *us.FileSystem, tc md.NodeC
 		filesys:  fs,
 		incoming: &incomingFile{
 			// Inherited Properties
-			properties: inv.Card.Properties,
-			payload:    inv.Payload,
-			owner:      inv.From.Profile,
-			preview:    inv.Card.Preview,
-			call:       tc,
+			metadata: inv.Card.Metadata,
+			payload:  inv.Payload,
+			owner:    inv.From.Profile,
+			preview:  inv.Card.Preview,
+			call:     tc,
 
 			// Builders
 			stringsBuilder: new(strings.Builder),

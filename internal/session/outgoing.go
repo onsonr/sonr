@@ -19,10 +19,10 @@ type outgoingFile struct {
 	Path    string
 
 	// Private Properties
-	info    *md.OutFile
-	request *md.InviteRequest
-	preview []byte
-	peer    *md.Peer
+	metadata *md.Metadata
+	request  *md.InviteRequest
+	preview  []byte
+	peer     *md.Peer
 }
 
 // ^ newOutgoingFile Processes Outgoing File ^ //
@@ -34,19 +34,24 @@ func newOutgoingFile(req *md.InviteRequest, p *md.Peer) *outgoingFile {
 
 	// Get File Information
 	file := req.Files[len(req.Files)-1]
-	info, err := md.GetFileInfo(file.Path)
+
+	// Get Mime
+	mime, err := md.GetFileMime(file)
 	if err != nil {
 		return nil
 	}
 
+	// Get Payload
+	payload := md.GetFilePayload(file)
+
 	// @ 1. Create new SafeFile
 	sm := &outgoingFile{
-		Path:    file.Path,
-		Payload: info.Payload,
-		request: req,
-		mime:    info.Mime,
-		peer:    p,
-		info:    info,
+		Path:     file.Path,
+		Payload:  payload,
+		request:  req,
+		mime:     mime,
+		peer:     p,
+		metadata: file,
 	}
 	// @ 3. Create Thumbnail in Goroutine
 	if len(file.Thumbnail) > 0 {
@@ -78,19 +83,15 @@ func (sm *outgoingFile) Card() *md.TransferCard {
 	// Create Card
 	card := md.TransferCard{
 		// SQL Properties
-		Payload:  sm.info.Payload,
-		Platform: sm.peer.Platform,
+		Payload: sm.Payload,
+		Preview: sm.preview,
 
 		// Owner Properties
 		Username:  sm.peer.Profile.Username,
 		FirstName: sm.peer.Profile.FirstName,
 		LastName:  sm.peer.Profile.LastName,
-
-		Properties: &md.TransferCard_Properties{
-			Name: sm.info.Name,
-			Size: sm.info.Size,
-			Mime: sm.info.Mime,
-		},
+		Owner:     sm.peer.Profile,
+		Metadata:  sm.metadata,
 	}
 
 	if len(sm.preview) > 0 {

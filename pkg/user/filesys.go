@@ -134,9 +134,9 @@ func (sfs *FileSystem) WriteFile(name string, data []byte) (string, error) {
 }
 
 // ^ WriteIncomingFile writes file to Disk ^
-func (sfs *FileSystem) WriteIncomingFile(load md.Payload, props *md.TransferCard_Properties, data []byte) (string, string, error) {
+func (sfs *FileSystem) WriteIncomingFile(load md.Payload, meta *md.Metadata, data []byte) (string, string, error) {
 	// Create File Name
-	fileName := props.Name + "." + props.Mime.Subtype
+	fileName := meta.Name + "." + meta.Mime.Subtype
 	path := sfs.GetPathForIncoming(load, fileName)
 
 	// Check for User File at Path

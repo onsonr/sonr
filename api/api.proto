@@ -76,15 +76,7 @@ message InviteRequest {
   // Attached Data
   string url = 5;              // URL to be Sent - Optional
   Contact contact = 6;         // Contact Card to be Sent - Optional
-  repeated FileInfo files = 7; // Files to be Sent - Optional
-
-  // FileInfo Message for Attached Files
-  message FileInfo {
-    string path = 1;     // Location of File
-    bytes thumbnail = 2; // Provided Thumbnail Data
-    int32 duration = 3;  // Duration of Video - Optional
-    bool isVideo = 4;    // If File is Video
-  }
+  repeated Metadata files = 7; // Files to be Sent - Optional
 
   // Enum for Type of Transfer
   enum TransferType {

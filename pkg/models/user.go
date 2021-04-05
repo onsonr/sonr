@@ -106,7 +106,6 @@ func (p *Peer) SignInviteWithContact(c *Contact, flat bool, req *InviteRequest) 
 			// SQL Properties
 			Payload:  Payload_CONTACT,
 			Received: int32(time.Now().Unix()),
-			Platform: p.Platform,
 
 			// Transfer Properties
 			Status: TransferCard_INVITE,
@@ -115,6 +114,7 @@ func (p *Peer) SignInviteWithContact(c *Contact, flat bool, req *InviteRequest) 
 			Username:  p.Profile.Username,
 			FirstName: p.Profile.FirstName,
 			LastName:  p.Profile.LastName,
+			Owner:     p.Profile,
 
 			// Data Properties
 			Contact: c,
@@ -152,7 +152,6 @@ func (p *Peer) SignInviteWithLink(req *InviteRequest) AuthInvite {
 			// SQL Properties
 			Payload:  Payload_CONTACT,
 			Received: int32(time.Now().Unix()),
-			Platform: p.Platform,
 
 			// Transfer Properties
 			Status: TransferCard_INVITE,
@@ -161,6 +160,7 @@ func (p *Peer) SignInviteWithLink(req *InviteRequest) AuthInvite {
 			Username:  p.Profile.Username,
 			FirstName: p.Profile.FirstName,
 			LastName:  p.Profile.LastName,
+			Owner:     p.Profile,
 
 			// Data Properties
 			Url: urlInfo,
@@ -180,7 +180,6 @@ func (p *Peer) SignReply(d bool, req *RespondRequest) *AuthReply {
 			Payload:  Payload_UNDEFINED,
 			Received: int32(time.Now().Unix()),
 			Preview:  p.Profile.Picture,
-			Platform: p.Platform,
 
 			// Transfer Properties
 			Status: TransferCard_REPLY,
@@ -189,6 +188,7 @@ func (p *Peer) SignReply(d bool, req *RespondRequest) *AuthReply {
 			Username:  p.Profile.Username,
 			FirstName: p.Profile.FirstName,
 			LastName:  p.Profile.LastName,
+			Owner:     p.Profile,
 		},
 	}
 }
@@ -215,7 +215,6 @@ func (p *Peer) SignReplyWithContact(c *Contact, flat bool, req *RespondRequest) 
 				Payload:  Payload_CONTACT,
 				Received: int32(time.Now().Unix()),
 				Preview:  p.Profile.Picture,
-				Platform: p.Platform,
 
 				// Transfer Properties
 				Status: TransferCard_REPLY,
@@ -224,6 +223,7 @@ func (p *Peer) SignReplyWithContact(c *Contact, flat bool, req *RespondRequest) 
 				Username:  p.Profile.Username,
 				FirstName: p.Profile.FirstName,
 				LastName:  p.Profile.LastName,
+				Owner:     p.Profile,
 
 				// Data Properties
 				Contact: c,
@@ -239,7 +239,6 @@ func (p *Peer) SignReplyWithContact(c *Contact, flat bool, req *RespondRequest) 
 				Payload:  Payload_CONTACT,
 				Received: int32(time.Now().Unix()),
 				Preview:  p.Profile.Picture,
-				Platform: p.Platform,
 
 				// Transfer Properties
 				Status: TransferCard_REPLY,
@@ -248,6 +247,7 @@ func (p *Peer) SignReplyWithContact(c *Contact, flat bool, req *RespondRequest) 
 				Username:  p.Profile.Username,
 				FirstName: p.Profile.FirstName,
 				LastName:  p.Profile.LastName,
+				Owner:     p.Profile,
 
 				// Data Properties
 				Contact: c,
