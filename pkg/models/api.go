@@ -24,6 +24,10 @@ func (req *ConnectionRequest) AttachGeoToRequest(geo *GeoIP) *ConnectionRequest 
 	return req
 }
 
+func (req *ConnectionRequest) IsMobile() bool {
+	return !req.Device.IsDesktop
+}
+
 // **************************** //
 // ** Remote Info Management ** //
 // **************************** //

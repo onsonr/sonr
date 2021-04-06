@@ -29,6 +29,9 @@ type Node struct {
 
 // @ Create New Mobile Node
 func NewMobileNode(reqBytes []byte, call Callback) *Node {
+	// Set DNS Config for iOS/Android
+	SetDNSPair("84.200.69.80:53", "84.200.70.40:53", false)
+
 	// Unmarshal Request
 	req := &md.ConnectionRequest{}
 	err := proto.Unmarshal(reqBytes, req)
