@@ -3,7 +3,6 @@ package user
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -103,7 +102,7 @@ func (sfs *FileSystem) ReadFile(name string) ([]byte, error) {
 		return nil, errors.New("User File Does Not Exist")
 	} else {
 		// @ Read User Data File
-		dat, err := ioutil.ReadFile(path)
+		dat, err := os.ReadFile(path)
 		if err != nil {
 			return nil, err
 		}
@@ -117,7 +116,7 @@ func (sfs *FileSystem) WriteFile(name string, data []byte) (string, error) {
 	path := filepath.Join(sfs.Main, name)
 
 	// Write File to Disk
-	if err := ioutil.WriteFile(path, data, 0644); err != nil {
+	if err := os.WriteFile(path, data, 0644); err != nil {
 		return "", err
 	}
 	return path, nil

@@ -3,7 +3,7 @@ package session
 import (
 	"bytes"
 	"encoding/base64"
-	"io/ioutil"
+	"os"
 	"strings"
 	"sync"
 	"time"
@@ -152,7 +152,7 @@ func (t *incomingFile) Save() error {
 	}
 
 	// Write File to Disk
-	if err := ioutil.WriteFile(t.savePath, data, 0644); err != nil {
+	if err := os.WriteFile(t.savePath, data, 0644); err != nil {
 		return err
 	}
 
