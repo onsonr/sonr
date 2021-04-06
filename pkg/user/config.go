@@ -1,12 +1,9 @@
 package user
 
 import (
-	"fmt"
 	"path/filepath"
 
-	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/crypto"
-	"github.com/sonr-io/core/internal/network"
 	md "github.com/sonr-io/core/pkg/models"
 )
 
@@ -63,27 +60,4 @@ func InitUserConfig(req *md.ConnectionRequest, cb md.NodeCallback) *UserConfig {
 		privateKey:    privKey,
 		hasPrivateKey: hasPrivateKey,
 	}
-}
-
-// ^ Return Networking Options ^ //
-func (u *UserConfig) HostOptions() libp2p.Option {
-	// IP Address
-	ip4 := network.IPv4()
-	ip6 := network.IPv6()
-
-	// Set Defaults
-	opts := []libp2p.Option{
-		libp2p.ListenAddrStrings(
-			fmt.Sprintf("/ip4/%s/tcp/0", ip4),
-			fmt.Sprintf("/ip6/%s/tcp/0", ip6),
-		),
-		libp2p.NATPortMap(),
-		libp2p.EnableAutoRelay(),
-	}
-
-	// Check for Private Key
-	if u.hasPrivateKey {
-		opts = append(opts, libp2p.Identity(u.privateKey))
-	}
-	return libp2p.ChainOptions(opts...)
 }

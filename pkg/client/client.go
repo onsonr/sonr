@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/libp2p/go-libp2p"
+	crypto "github.com/libp2p/go-libp2p-crypto"
 	tpc "github.com/sonr-io/core/internal/topic"
 	md "github.com/sonr-io/core/pkg/models"
 	us "github.com/sonr-io/core/pkg/user"
@@ -42,9 +42,9 @@ func NewClient(ctx context.Context, cr *md.ConnectionRequest, call md.NodeCallba
 }
 
 // ^ Connects Host Node from Private Key ^
-func (c *Client) Connect(opts libp2p.Option) error {
+func (c *Client) Connect(pk crypto.PrivKey) error {
 	// Set Host
-	hn, err := net.NewHost(c.ctx, c.router.Rendevouz(), opts)
+	hn, err := net.NewHost(c.ctx, c.router.Rendevouz(), pk)
 	if err != nil {
 		return err
 	}

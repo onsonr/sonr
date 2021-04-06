@@ -92,7 +92,7 @@ func NewDesktopNode(req *md.ConnectionRequest, call Callback) *Node {
 // @ Start Host and Connect
 func (mn *Node) Connect() {
 	// Connect Host
-	err := mn.client.Connect(mn.user.HostOptions())
+	err := mn.client.Connect(mn.user.PrivateKey())
 	if err != nil {
 		log.Println("Failed to start host")
 		mn.setConnected(false)

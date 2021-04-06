@@ -1,7 +1,7 @@
 package user
 
 import (
-	"github.com/libp2p/go-libp2p"
+	"github.com/libp2p/go-libp2p-core/crypto"
 	md "github.com/sonr-io/core/pkg/models"
 )
 
@@ -44,6 +44,6 @@ func (u *User) FileSystem() *FileSystem {
 }
 
 // ^ Return User Host Options ^ //
-func (u *User) HostOptions() libp2p.Option {
-	return u.config.HostOptions()
+func (u *User) PrivateKey() crypto.PrivKey {
+	return u.config.privateKey
 }
