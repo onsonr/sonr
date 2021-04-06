@@ -17,7 +17,6 @@ import (
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	psub "github.com/libp2p/go-libp2p-pubsub"
 	swr "github.com/libp2p/go-libp2p-swarm"
-	tls "github.com/libp2p/go-libp2p-tls"
 	md "github.com/sonr-io/core/pkg/models"
 )
 
@@ -46,8 +45,6 @@ func NewHost(ctx context.Context, point string, key crypto.PrivKey) (*HostNode, 
 			fmt.Sprintf("/ip4/%s/tcp/0", ip4),
 			fmt.Sprintf("/ip6/%s/tcp/0", ip6),
 		),
-		// support TLS connections
-		libp2p.Security(tls.ID, tls.New),
 		libp2p.NATPortMap(),
 		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
 			// Create DHT
