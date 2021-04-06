@@ -3,7 +3,7 @@ package session
 import (
 	"bytes"
 	"encoding/base64"
-	"log"
+	"io/ioutil"
 	"strings"
 	"sync"
 	"time"
@@ -27,11 +27,40 @@ type incomingFile struct {
 	stringsBuilder *strings.Builder
 	bytesBuilder   *bytes.Buffer
 
+	// Calculated Properties
+	fileName string
+	savePath string
+
 	// Tracking
 	currentSize int
 	interval    int
 	totalChunks int
 	totalSize   int
+}
+
+// @ Creates New Incoming File //
+func newIncomingFile(p *md.Peer, inv *md.AuthInvite, fs *us.FileSystem, tc md.NodeCallback) *incomingFile {
+	// Create File Name
+	fileName := inv.Card.Metadata.Name + "." + inv.Card.Metadata.Mime.Subtype
+	path := fs.GetPathForPayload(inv.Payload, fileName)
+
+	// Return Incoming File
+	return &incomingFile{
+		// Inherited Properties
+		metadata: inv.Card.Metadata,
+		payload:  inv.Payload,
+		owner:    inv.From.Profile,
+		preview:  inv.Card.Preview,
+		call:     tc,
+
+		// Builders
+		stringsBuilder: new(strings.Builder),
+		bytesBuilder:   new(bytes.Buffer),
+
+		// Calculated Properties
+		fileName: fileName,
+		savePath: path,
+	}
 }
 
 // ^ Check file type and use corresponding method ^ //
@@ -85,23 +114,10 @@ func (t *incomingFile) AddBuffer(curr int, buffer []byte) (bool, error) {
 	}
 }
 
-// ^ Check file type and use corresponding method to save to Disk ^ //
-func (t *incomingFile) Save(fs *us.FileSystem) error {
-	// Get Bytes from base64
-	data, err := base64.StdEncoding.DecodeString(t.stringsBuilder.String())
-	if err != nil {
-		log.Fatal("error:", err)
-	}
-
-	// Write File to Disk
-	name, path, err := fs.WriteIncomingFile(t.payload, t.metadata, data)
-	if err != nil {
-		return err
-	}
-
-	// @ 1. Get File Information
+// ^ Safely returns Preview depending on lock ^ //
+func (t *incomingFile) Card() *md.TransferCard {
 	// Create Card
-	card := &md.TransferCard{
+	return &md.TransferCard{
 		// SQL Properties
 		Payload:  t.payload,
 		Received: int32(time.Now().Unix()),
@@ -118,15 +134,29 @@ func (t *incomingFile) Save(fs *us.FileSystem) error {
 
 		// Data Properties
 		Metadata: &md.Metadata{
-			Name:       name,
-			Path:       path,
+			Name:       t.fileName,
+			Path:       t.savePath,
 			Size:       int32(t.totalSize),
 			Mime:       t.metadata.Mime,
 			Properties: t.metadata.Properties,
 		},
 	}
+}
+
+// ^ Check file type and use corresponding method to save to Disk ^ //
+func (t *incomingFile) Save() error {
+	// Get Bytes from base64
+	data, err := base64.StdEncoding.DecodeString(t.stringsBuilder.String())
+	if err != nil {
+		return err
+	}
+
+	// Write File to Disk
+	if err := ioutil.WriteFile(t.savePath, data, 0644); err != nil {
+		return err
+	}
 
 	// Send Complete Callback
-	t.call.Received(card)
+	t.call.Received(t.Card())
 	return nil
 }

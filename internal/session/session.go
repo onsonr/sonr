@@ -2,7 +2,6 @@ package session
 
 import (
 	"bytes"
-	"strings"
 
 	"encoding/base64"
 	"log"
@@ -49,18 +48,7 @@ func NewInSession(p *md.Peer, inv *md.AuthInvite, fs *us.FileSystem, tc md.NodeC
 		receiver: p,
 		callback: tc,
 		filesys:  fs,
-		incoming: &incomingFile{
-			// Inherited Properties
-			metadata: inv.Card.Metadata,
-			payload:  inv.Payload,
-			owner:    inv.From.Profile,
-			preview:  inv.Card.Preview,
-			call:     tc,
-
-			// Builders
-			stringsBuilder: new(strings.Builder),
-			bytesBuilder:   new(bytes.Buffer),
-		},
+		incoming: newIncomingFile(p, inv, fs, tc),
 	}
 }
 
@@ -86,7 +74,7 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 			// @ Check if All Buffer Received to Save
 			if hasCompleted {
 				// Sync file
-				if err := in.Save(s.filesys); err != nil {
+				if err := in.Save(); err != nil {
 					s.callback.Error(err, "HandleIncoming:Save")
 				}
 				break

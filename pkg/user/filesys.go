@@ -116,48 +116,15 @@ func (sfs *FileSystem) WriteFile(name string, data []byte) (string, error) {
 	// Create File Path
 	path := filepath.Join(sfs.Main, name)
 
-	// Check for User File at Path
-	file, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		return "", err
-	}
-
-	// Defer Close
-	defer file.Close()
-
-	// Write User Data to File
-	_, err = file.Write(data)
-	if err != nil {
+	// Write File to Disk
+	if err := ioutil.WriteFile(path, data, 0644); err != nil {
 		return "", err
 	}
 	return path, nil
 }
 
-// ^ WriteIncomingFile writes file to Disk ^
-func (sfs *FileSystem) WriteIncomingFile(load md.Payload, meta *md.Metadata, data []byte) (string, string, error) {
-	// Create File Name
-	fileName := meta.Name + "." + meta.Mime.Subtype
-	path := sfs.GetPathForIncoming(load, fileName)
-
-	// Check for User File at Path
-	file, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		return "", "", err
-	}
-
-	// Defer Close
-	defer file.Close()
-
-	// Write User Data to File
-	_, err = file.Write(data)
-	if err != nil {
-		return "", "", err
-	}
-	return fileName, path, nil
-}
-
 // @ Helper: Finds Write Path for Incoming File
-func (sfs *FileSystem) GetPathForIncoming(load md.Payload, fileName string) string {
+func (sfs *FileSystem) GetPathForPayload(load md.Payload, fileName string) string {
 	// Check for Desktop
 	if sfs.IsDesktop {
 		return filepath.Join(sfs.Downloads, fileName)
