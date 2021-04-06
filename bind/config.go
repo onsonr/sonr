@@ -10,9 +10,7 @@ import (
 
 // * Struct: Reference for Binded Proxy Node * //
 type nodeConfig struct {
-	Ctx        context.Context
-	NodeCancel context.CancelFunc
-	UserCancel context.CancelFunc
+	Ctx context.Context
 
 	HasStarted      bool
 	HasBootstrapped bool
@@ -34,15 +32,11 @@ func newNodeConfig() nodeConfig {
 }
 
 func (mn *Node) contextNode() context.Context {
-	ctx, cancel := context.WithCancel(mn.config.Ctx)
-	mn.config.NodeCancel = cancel
-	return ctx
+	return mn.config.Ctx
 }
 
 func (mn *Node) contextUser() context.Context {
-	ctx, cancel := context.WithCancel(mn.config.Ctx)
-	mn.config.UserCancel = cancel
-	return ctx
+	return mn.config.Ctx
 }
 
 func (mn *Node) isReady() bool {

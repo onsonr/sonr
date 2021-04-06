@@ -28,13 +28,13 @@ type HostNode struct {
 }
 
 // ^ Start Begins Assigning Host Parameters ^
-func NewHost(ctx context.Context, point string, opts []libp2p.Option) (*HostNode, error) {
+func NewHost(ctx context.Context, point string, opts libp2p.Option) (*HostNode, error) {
 	var kdhtRef *dht.IpfsDHT
 
 	// Start Host
 	h, err := libp2p.New(
 		ctx,
-		libp2p.ChainOptions(opts...),
+opts,
 		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
 			// Create DHT
 			kdht, err := dht.New(ctx, h)

@@ -42,7 +42,7 @@ func NewClient(ctx context.Context, cr *md.ConnectionRequest, call md.NodeCallba
 }
 
 // ^ Connects Host Node from Private Key ^
-func (c *Client) Connect(opts []libp2p.Option) error {
+func (c *Client) Connect(opts libp2p.Option) error {
 	// Set Host
 	hn, err := net.NewHost(c.ctx, c.router.Rendevouz(), opts)
 	if err != nil {

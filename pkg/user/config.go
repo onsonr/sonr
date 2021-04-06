@@ -66,7 +66,7 @@ func InitUserConfig(req *md.ConnectionRequest, cb md.NodeCallback) *UserConfig {
 }
 
 // ^ Return Networking Options ^ //
-func (u *UserConfig) HostOptions() []libp2p.Option {
+func (u *UserConfig) HostOptions() libp2p.Option {
 	// IP Address
 	ip4 := network.IPv4()
 	ip6 := network.IPv6()
@@ -85,5 +85,5 @@ func (u *UserConfig) HostOptions() []libp2p.Option {
 	if u.hasPrivateKey {
 		opts = append(opts, libp2p.Identity(u.privateKey))
 	}
-	return opts
+	return libp2p.ChainOptions(opts...)
 }

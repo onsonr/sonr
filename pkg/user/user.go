@@ -44,6 +44,6 @@ func (u *User) FileSystem() *FileSystem {
 }
 
 // ^ Return User Host Options ^ //
-func (u *User) HostOptions() []libp2p.Option {
+func (u *User) HostOptions() libp2p.Option {
 	return u.config.HostOptions()
 }
