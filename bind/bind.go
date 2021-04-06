@@ -141,4 +141,7 @@ func (mn *Node) Resume() {
 // @ Close Ends All Network Communication
 func (mn *Node) Stop() {
 	mn.client.Close()
+	mn.config.NodeCancel()
+	mn.config.UserCancel()
+	mn.config.Ctx.Done()
 }
