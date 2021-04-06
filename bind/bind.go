@@ -94,7 +94,7 @@ func (mn *Node) Connect() {
 	// Connect Host
 	err := mn.client.Connect(mn.user.PrivateKey())
 	if err != nil {
-		log.Println("Failed to start host")
+		log.Println("Failed to start host: ", err)
 		mn.setConnected(false)
 		return
 	} else {
@@ -105,16 +105,17 @@ func (mn *Node) Connect() {
 	// Bootstrap Node
 	err = mn.client.Bootstrap()
 	if err != nil {
-		log.Println("Failed to bootstrap node")
+		log.Println("Failed to bootstrap node: ", err)
 		mn.setBootstrapped(false)
 		return
 	} else {
 		mn.setBootstrapped(true)
 	}
 
+	// Join Local Lobby
 	mn.local, err = mn.client.JoinLocal()
 	if err != nil {
-		log.Println("Failed to join local pubsub")
+		log.Println("Failed to join local pubsub: ", err)
 		mn.setJoinedLocal(false)
 		return
 	} else {
