@@ -91,16 +91,8 @@ func NewDesktopNode(req *md.ConnectionRequest, call Callback) *Node {
 // **-----------------** //
 // @ Start Host and Connect
 func (mn *Node) Connect() {
-	// Get Private Key and Connect Host
-	key, err := mn.user.PrivateKey()
-	if err != nil {
-		log.Println("Failed to retreive private key")
-		mn.setConnected(false)
-		return
-	}
-
 	// Connect Host
-	err = mn.client.Connect(key)
+	err := mn.client.Connect(mn.user.HostOptions())
 	if err != nil {
 		log.Println("Failed to start host")
 		mn.setConnected(false)
@@ -146,4 +138,7 @@ func (mn *Node) Resume() {
 // @ Close Ends All Network Communication
 func (mn *Node) Stop() {
 	mn.client.Close()
+	mn.config.NodeCancel()
+	mn.config.UserCancel()
+	mn.config.Ctx.Done()
 }

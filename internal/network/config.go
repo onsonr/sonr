@@ -82,3 +82,6 @@ func Location(target *md.GeoIP) error {
 	}
 	return json.NewDecoder(r.Body).Decode(target)
 }
+
+
+// * DNS Configuration: DNS resolve workaround for Android & iOS in pure go  * //
