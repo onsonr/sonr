@@ -9,6 +9,9 @@ import (
 	md "github.com/sonr-io/core/pkg/models"
 )
 
+// @ Constant Variables
+const K_SONR_USER_PATH = "user.snr"
+const K_SONR_PRIV_KEY = "snr-peer.privkey"
 const K_SONR_CLIENT_DIR = ".sonr"
 const K_FILE_QUEUE_NAME = "file-queue"
 
@@ -22,36 +25,6 @@ type FileSystem struct {
 	Downloads string
 	Main      string
 	Temporary string
-}
-
-// ^ Method Initializes Root Sonr Directory ^ //
-func SetFS(connEvent *md.ConnectionRequest, callback md.NodeCallback) (*FileSystem, error) {
-	// Initialize
-	var sonrPath string
-
-	// Check for Client Type
-	if connEvent.Device.GetIsDesktop() {
-		// Init Path, Check for Path
-		sonrPath = filepath.Join(connEvent.Directories.Home, K_SONR_CLIENT_DIR)
-		if err := EnsureDir(sonrPath, 0755); err != nil {
-			return nil, err
-		}
-	} else {
-		// Set Path to Documents for Mobile
-		sonrPath = connEvent.Directories.Documents
-	}
-
-	// Create SFS
-	sfs := &FileSystem{
-		IsDesktop: connEvent.Device.GetIsDesktop(),
-		Downloads: connEvent.Directories.Downloads,
-		Main:      sonrPath,
-		Temporary: connEvent.Directories.Temporary,
-		Call:      callback,
-	}
-
-	// sfs.Queue = q
-	return sfs, nil
 }
 
 // ^ EnsureDir creates directory if it doesnt exist ^

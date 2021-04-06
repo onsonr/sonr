@@ -1,6 +1,8 @@
 package user
 
 import (
+	"path/filepath"
+
 	"google.golang.org/protobuf/proto"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
@@ -8,10 +10,6 @@ import (
 	"github.com/pkg/errors"
 	md "github.com/sonr-io/core/pkg/models"
 )
-
-// @ Constant Variables
-const K_SONR_USER_PATH = "user.snr"
-const K_SONR_PRIV_KEY = "snr-peer.privkey"
 
 // @ Sonr User Struct
 type User struct {
@@ -29,9 +27,19 @@ type User struct {
 // ^ Method Initializes User Info Struct ^ //
 func NewUser(cr *md.ConnectionRequest, callback md.NodeCallback) (*User, error) {
 	// @ Init FileSystem
-	fs, err := SetFS(cr, callback)
-	if err != nil {
-		return nil, err
+	// Initialize
+	var sonrPath string
+
+	// Check for Client Type
+	if cr.Device.GetIsDesktop() {
+		// Init Path, Check for Path
+		sonrPath = filepath.Join(cr.Directories.Home, K_SONR_CLIENT_DIR)
+		if err := EnsureDir(sonrPath, 0755); err != nil {
+			return nil, err
+		}
+	} else {
+		// Set Path to Documents for Mobile
+		sonrPath = cr.Directories.Documents
 	}
 
 	// @ Create Devices
@@ -44,7 +52,13 @@ func NewUser(cr *md.ConnectionRequest, callback md.NodeCallback) (*User, error) 
 		contact: cr.GetContact(),
 		device:  cr.Device,
 		devices: devices,
-		FS:      fs,
+		FS: &FileSystem{
+			IsDesktop: cr.Device.GetIsDesktop(),
+			Downloads: cr.Directories.Downloads,
+			Main:      sonrPath,
+			Temporary: cr.Directories.Temporary,
+			Call:      callback,
+		},
 	}, nil
 }
 
@@ -118,5 +132,4 @@ func (u *User) PrivateKey() (crypto.PrivKey, error) {
 		// Set Key Ref
 		return privKey, nil
 	}
-
 }
