@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
+	crypto "github.com/libp2p/go-libp2p-crypto"
 	md "github.com/sonr-io/core/pkg/models"
 )
 
@@ -107,5 +108,47 @@ func (sfs *FileSystem) GetPathForPayload(load md.Payload, fileName string) strin
 		} else {
 			return filepath.Join(sfs.Main, fileName)
 		}
+	}
+}
+
+// @ Get Key: Returns Private key from disk if found ^ //
+func (sfs *FileSystem) getPrivateKey() (crypto.PrivKey, error) {
+	// @ Get Private Key
+	if ok := sfs.IsFile(K_SONR_PRIV_KEY); ok {
+		// Get Key File
+		buf, err := sfs.ReadFile(K_SONR_PRIV_KEY)
+		if err != nil {
+			return nil, err
+		}
+
+		// Get Key from Buffer
+		key, err := crypto.UnmarshalPrivateKey(buf)
+		if err != nil {
+			return nil, err
+		}
+
+		// Set Key Ref
+		return key, nil
+	} else {
+		// Create New Key
+		privKey, _, err := crypto.GenerateKeyPair(crypto.Ed25519, -1)
+		if err != nil {
+			return nil, err
+		}
+
+		// Marshal Data
+		buf, err := crypto.MarshalPrivateKey(privKey)
+		if err != nil {
+			return nil, err
+		}
+
+		// Write Key to File
+		_, err = sfs.WriteFile(K_SONR_PRIV_KEY, buf)
+		if err != nil {
+			return nil, err
+		}
+
+		// Set Key Ref
+		return privKey, nil
 	}
 }

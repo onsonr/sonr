@@ -176,7 +176,7 @@ func (mn *Node) Invite(data []byte) {
 			}
 		} else {
 			// Invite With file
-			err := mn.client.InviteFile(req, topic, mn.user.FS)
+			err := mn.client.InviteFile(req, topic, mn.user.FileSystem())
 			if err != nil {
 				log.Println(err)
 				return
@@ -203,7 +203,7 @@ func (mn *Node) Respond(data []byte) {
 			topic = mn.local
 		}
 
-		mn.client.Respond(req, topic, mn.user.FS, mn.user.Contact())
+		mn.client.Respond(req, topic, mn.user.FileSystem(), mn.user.Contact())
 		// Update Status
 		if req.Decision {
 			mn.setStatus(md.Status_INPROGRESS)

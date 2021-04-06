@@ -2,11 +2,9 @@ package network
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/libp2p/go-libp2p"
-	"github.com/libp2p/go-libp2p-core/crypto"
 	dscl "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -30,22 +28,13 @@ type HostNode struct {
 }
 
 // ^ Start Begins Assigning Host Parameters ^
-func NewHost(ctx context.Context, point string, key crypto.PrivKey) (*HostNode, error) {
-	// IP Address
-	ip4 := IPv4()
-	ip6 := IPv6()
+func NewHost(ctx context.Context, point string, opts []libp2p.Option) (*HostNode, error) {
 	var kdhtRef *dht.IpfsDHT
 
 	// Start Host
 	h, err := libp2p.New(
 		ctx,
-		libp2p.Identity(key),
-		// Add listening Addresses
-		libp2p.ListenAddrStrings(
-			fmt.Sprintf("/ip4/%s/tcp/0", ip4),
-			fmt.Sprintf("/ip6/%s/tcp/0", ip6),
-		),
-		libp2p.NATPortMap(),
+		libp2p.ChainOptions(opts...),
 		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
 			// Create DHT
 			kdht, err := dht.New(ctx, h)
@@ -57,7 +46,6 @@ func NewHost(ctx context.Context, point string, key crypto.PrivKey) (*HostNode, 
 			kdhtRef = kdht
 			return kdht, err
 		}),
-		libp2p.EnableAutoRelay(),
 	)
 
 	// Set Host for Node
