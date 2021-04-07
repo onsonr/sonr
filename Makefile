@@ -1,7 +1,7 @@
 SHELL=/bin/zsh # Set Shell
 SONR_ROOT_DIR=/Users/prad/Sonr # Set this to Folder of Sonr
-ANDROID_BINDDIR=/Users/prad/Sonr/plugin/android/libs
-IOS_BINDDIR=/Users/prad/Sonr/plugin/ios/Frameworks
+ANDROID_BINDDIR=/Users/prad/Sonr/mobile/plugins/sonr/android/libs
+IOS_BINDDIR=/Users/prad/Sonr/mobile/plugins/sonr/ios/Frameworks
 
 # @ Packaging Vars/Commands
 GOMOBILE=gomobile
@@ -18,7 +18,7 @@ ANDROID_ARTIFACT= $(ANDROID_BINDDIR)/io.sonr.core.aar
 PB_PATH=/Users/prad/Sonr/core/api
 CONTACT_PB_DIR=/Users/prad/Sonr/contact/lib/src/data/models
 CORE_PB_DIR=/Users/prad/Sonr/core/pkg
-PLUGIN_PB_DIR=/Users/prad/Sonr/plugin/lib/src/core/models
+PLUGIN_PB_DIR=/Users/prad/Sonr/mobile/plugins/sonr/lib/src/core/models
 PROTO_DOC_DIR=/Users/prad/Sonr/docs/proto
 
 # @ Proto Build Commands
