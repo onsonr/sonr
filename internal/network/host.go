@@ -12,7 +12,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
-	"github.com/libp2p/go-libp2p-core/routing"
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	psub "github.com/libp2p/go-libp2p-pubsub"
@@ -31,7 +30,6 @@ type HostNode struct {
 
 // ^ Start Begins Assigning Host Parameters ^
 func NewHost(ctx context.Context, point string, privateKey crypto.PrivKey) (*HostNode, error) {
-	var kdhtRef *dht.IpfsDHT
 	// IP Address
 	ip4 := IPv4()
 	ip6 := IPv6()
@@ -44,19 +42,8 @@ func NewHost(ctx context.Context, point string, privateKey crypto.PrivKey) (*Hos
 			fmt.Sprintf("/ip4/%s/tcp/0", ip4),
 			fmt.Sprintf("/ip6/%s/tcp/0", ip6),
 		),
+		libp2p.DefaultTransports,
 		libp2p.NATPortMap(),
-		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
-			// Create DHT
-			kdht, err := dht.New(ctx, h)
-			if err != nil {
-				return nil, err
-			}
-
-			// Set DHT
-			kdhtRef = kdht
-			return kdht, err
-		}),
-		libp2p.EnableAutoRelay(),
 	)
 
 	// Set Host for Node
@@ -66,7 +53,6 @@ func NewHost(ctx context.Context, point string, privateKey crypto.PrivKey) (*Hos
 	return &HostNode{
 		ctx:   ctx,
 		Host:  h,
-		KDHT:  kdhtRef,
 		Point: point,
 	}, nil
 }
@@ -75,6 +61,16 @@ func NewHost(ctx context.Context, point string, privateKey crypto.PrivKey) (*Hos
 func (h *HostNode) Bootstrap() error {
 	// Create Bootstrapper Info
 	bootstrappers, err := GetBootstrapAddrInfo()
+	if err != nil {
+		return err
+	}
+
+	// Set DHT for Host Routing
+	h.KDHT, err = dht.New(
+		h.ctx,
+		h.Host,
+		dht.BootstrapPeers(bootstrappers...),
+	)
 	if err != nil {
 		return err
 	}
