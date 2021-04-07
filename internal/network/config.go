@@ -2,6 +2,8 @@ package network
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 	"log"
 	"net"
 	"net/http"
@@ -43,35 +45,78 @@ func GetBootstrapAddrInfo() ([]peer.AddrInfo, error) {
 	return ds, nil
 }
 
-// @ Returns Node Public IPv4 Address
-func IPv4() string {
+// ^ Return Device Listening Addresses ^ //
+func GetListenAddrStrings() ([]string, error) {
+	// Initialize
+	listenAddrs := []string{}
+	hasIpv4 := false
+	hasIpv6 := false
+
+	// Get iPv4 Addresses
+	ip4Addrs, err := iPv4Addrs()
+	if err != nil {
+		log.Println(err)
+	} else {
+		hasIpv4 = true
+	}
+
+	// Get iPv6 Addresses
+	ip6Addrs, err := iPv6Addrs()
+	if err != nil {
+		log.Println(err)
+	} else {
+		hasIpv6 = true
+	}
+
+	// Add iPv4 Addresses
+	if hasIpv4 {
+		listenAddrs = append(listenAddrs, ip4Addrs...)
+	}
+
+	// Add iPv6 Addresses
+	if hasIpv6 {
+		listenAddrs = append(listenAddrs, ip6Addrs...)
+	}
+
+	// Neither iPv6 nor iPv4 found
+	if !hasIpv4 && !hasIpv6 {
+		return nil, errors.New("No IP Addresses found")
+	}
+
+	// Return Listen Addr Strings
+	return listenAddrs, nil
+}
+
+// @ Returns Node Public iPv4 Address
+func iPv4Addrs() ([]string, error) {
 	osHost, _ := os.Hostname()
 	addrs, _ := net.LookupIP(osHost)
-	ipv4Ref := "0.0.0.0"
 	// Iterate through addresses
 	for _, addr := range addrs {
 		// @ Set IPv4
 		if ipv4 := addr.To4(); ipv4 != nil {
-			ipv4Ref = ipv4.String()
+			ip4 := ipv4.String()
+			return []string{fmt.Sprintf("/ip4/%s/tcp/0", ip4)}, nil
+
 		}
 	}
-	return ipv4Ref
+	return nil, errors.New("No IPV4 found")
 }
 
-// @ Returns Node Public IPv6 Address
-func IPv6() string {
+// @ Returns Node Public iPv6 Address
+func iPv6Addrs() ([]string, error) {
 	osHost, _ := os.Hostname()
 	addrs, _ := net.LookupIP(osHost)
-	ipv6Ref := "::"
 
 	// Iterate through addresses
 	for _, addr := range addrs {
-		// @ Set IPv4
+		// @ Set IPv6
 		if ipv6 := addr.To16(); ipv6 != nil {
-			ipv6Ref = ipv6.String()
+			ip6 := ipv6.String()
+			return []string{fmt.Sprintf("/ip6/%s/tcp/0", ip6)}, nil
 		}
 	}
-	return ipv6Ref
+	return nil, errors.New("No IPV6 Found")
 }
 
 // ^ Returns Location from GeoIP ^ //
@@ -82,6 +127,3 @@ func Location(target *md.GeoIP) error {
 	}
 	return json.NewDecoder(r.Body).Decode(target)
 }
-
-
-// * DNS Configuration: DNS resolve workaround for Android & iOS in pure go  * //

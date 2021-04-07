@@ -2,7 +2,6 @@ package network
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/libp2p/go-libp2p"
@@ -30,20 +29,20 @@ type HostNode struct {
 
 // ^ Start Begins Assigning Host Parameters ^
 func NewHost(ctx context.Context, point string, privateKey crypto.PrivKey) (*HostNode, error) {
-	// IP Address
-	ip4 := IPv4()
-	ip6 := IPv6()
+	// Find Listen Addresses
+	addrs, err := GetListenAddrStrings()
+	if err != nil {
+		return nil, err
+	}
 
 	// Start Host
 	h, err := libp2p.New(
 		ctx,
+		libp2p.ListenAddrStrings(addrs...),
 		libp2p.Identity(privateKey),
-		libp2p.ListenAddrStrings(
-			fmt.Sprintf("/ip4/%s/tcp/0", ip4),
-			fmt.Sprintf("/ip6/%s/tcp/0", ip6),
-		),
 		libp2p.DefaultTransports,
 		libp2p.NATPortMap(),
+		libp2p.EnableAutoRelay(),
 	)
 
 	// Set Host for Node
