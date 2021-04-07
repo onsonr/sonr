@@ -21,6 +21,7 @@ import (
 
 type HostNode struct {
 	ctx       context.Context
+	ID        peer.ID
 	Discovery *dsc.RoutingDiscovery
 	Host      host.Host
 	KDHT      *dht.IpfsDHT
@@ -65,6 +66,7 @@ func NewHost(ctx context.Context, point string, privateKey crypto.PrivKey) (*Hos
 	}
 	return &HostNode{
 		ctx:   ctx,
+		ID:    h.ID(),
 		Host:  h,
 		Point: point,
 		KDHT:  kdhtRef,
@@ -106,11 +108,6 @@ func (h *HostNode) Bootstrap() error {
 	h.Pubsub = ps
 	go h.handleDHTPeers(routingDiscovery)
 	return nil
-}
-
-// ^ Return Host ID ^
-func (h *HostNode) ID() peer.ID {
-	return h.Host.ID()
 }
 
 // ^ Set Stream Handler for Host ^

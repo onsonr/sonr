@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	crypto "github.com/libp2p/go-libp2p-crypto"
+	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	tpc "github.com/sonr-io/core/internal/topic"
 	md "github.com/sonr-io/core/pkg/models"
 	us "github.com/sonr-io/core/pkg/user"
@@ -50,7 +50,7 @@ func (c *Client) Connect(pk crypto.PrivKey) error {
 	}
 
 	// Set Peer
-	c.Peer, err = md.NewPeer(c.req, hn.ID())
+	c.Peer, err = md.NewPeer(c.req, hn.ID)
 	if err != nil {
 		return err
 	}
