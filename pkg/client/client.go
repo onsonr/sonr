@@ -65,11 +65,21 @@ func (c *Client) Bootstrap() error {
 }
 
 // ^ Join Lobby Adds Node to Named Topic ^
-func (n *Client) JoinLobby(name string) (*tpc.TopicManager, error) {
-	if t, err := tpc.NewTopic(n.ctx, n.Host, n.Peer, n.router.Topic(name), false, n); err != nil {
-		return nil, err
+func (n *Client) JoinLobby(name string, isCreated bool) (*tpc.TopicManager, error) {
+	// @ Check for Topic being Created
+	if isCreated {
+		if t, err := tpc.NewTopic(n.ctx, n.Host, n.Peer, n.router.Topic(name), false, n); err != nil {
+			return nil, err
+		} else {
+			return t, nil
+		}
 	} else {
-		return t, nil
+		// @ Returns error if Lobby doesnt Exist
+		if t, err := tpc.JoinTopic(n.ctx, n.Host, n.Peer, n.router.Topic(name), false, n); err != nil {
+			return nil, err
+		} else {
+			return t, nil
+		}
 	}
 }
 
