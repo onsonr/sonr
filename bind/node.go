@@ -40,7 +40,7 @@ func (mn *Node) CreateRemote() []byte {
 		remote := md.GetRemoteInfo(wordList)
 
 		// Join Lobby
-		tm, err := mn.client.JoinLobby(remote.Topic)
+		tm, err := mn.client.JoinLobby(remote.Topic, true)
 		if err != nil {
 			sentry.CaptureException(errors.Wrap(err, "Joining Remote Topic"))
 			return nil
@@ -73,7 +73,7 @@ func (mn *Node) JoinRemote(data []byte) {
 		}
 
 		// Join Lobby
-		tm, err := mn.client.JoinLobby(remote.Topic)
+		tm, err := mn.client.JoinLobby(remote.Topic, false)
 		if err != nil {
 			sentry.CaptureException(errors.Wrap(err, "Joining Remote Lobby"))
 			mn.error(err, "JoinRemote")

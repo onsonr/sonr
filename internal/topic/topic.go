@@ -40,6 +40,64 @@ type TopicHandler interface {
 	OnResponded(inv *md.AuthInvite, p *md.Peer, fs *us.FileSystem)
 }
 
+func JoinTopic(ctx context.Context, h *net.HostNode, p *md.Peer, name string, isLocal bool, th TopicHandler) (*TopicManager, error) {
+	// Join Topic
+	topic, sub, handler, err := h.Join(name)
+	if err != nil {
+		return nil, err
+	}
+
+	// Check Peers
+	peers := topic.ListPeers()
+	if len(peers) == 0 {
+		handler.Cancel()
+		sub.Cancel()
+		topic.Close()
+		return nil, errors.New("Lobby does not exist")
+	}
+
+	// Create Lobby Manager
+	mgr := &TopicManager{
+		topicHandler: th,
+		ctx:          ctx,
+		host:         h,
+		eventHandler: handler,
+		Lobby: &md.Lobby{
+			Name:    name[12:],
+			Size:    1,
+			Count:   0,
+			Peers:   make(map[string]*md.Peer),
+			IsLocal: isLocal,
+			User:    p,
+		},
+		Messages:     make(chan *md.LobbyEvent, K_MAX_MESSAGES),
+		subscription: sub,
+		topic:        topic,
+	}
+
+	// Start Exchange Server
+	peersvServer := rpc.NewServer(h.Host, K_SERVICE_PID)
+	psv := TopicService{
+		lobby:  mgr.Lobby,
+		peer:   p,
+		call:   th,
+		respCh: make(chan *md.AuthReply, 1),
+	}
+
+	// Register Service
+	err = peersvServer.Register(&psv)
+	if err != nil {
+		return nil, err
+	}
+
+	// Set Service
+	mgr.service = &psv
+	go mgr.handleTopicEvents(p)
+	go mgr.handleTopicMessages(p)
+	go mgr.processTopicMessages(p)
+	return mgr, nil
+}
+
 // ^ Create New Contained Topic Manager ^ //
 func NewTopic(ctx context.Context, h *net.HostNode, p *md.Peer, name string, isLocal bool, th TopicHandler) (*TopicManager, error) {
 	// Join Topic
@@ -154,6 +212,7 @@ func (tm *TopicManager) Send(msg *md.LobbyEvent) error {
 
 // ^ Leave Current Topic ^
 func (tm *TopicManager) LeaveTopic() error {
+	tm.eventHandler.Cancel()
 	tm.subscription.Cancel()
 	return tm.topic.Close()
 }
