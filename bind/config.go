@@ -14,7 +14,7 @@ import (
 type nodeConfig struct {
 	Ctx context.Context
 
-	HasStarted      bool
+	HasConnected    bool
 	HasBootstrapped bool
 	HasJoinedLocal  bool
 
@@ -25,7 +25,7 @@ func newNodeConfig() nodeConfig {
 	return nodeConfig{
 		Ctx: context.Background(),
 
-		HasStarted:      false,
+		HasConnected:    false,
 		HasBootstrapped: false,
 		HasJoinedLocal:  false,
 
@@ -42,12 +42,12 @@ func (mn *Node) contextUser() context.Context {
 }
 
 func (mn *Node) isReady() bool {
-	return mn.config.HasBootstrapped && mn.config.HasStarted
+	return mn.config.HasBootstrapped && mn.config.HasConnected
 }
 
 func (mn *Node) setConnected(val bool) {
 	// Update Status
-	mn.config.HasStarted = val
+	mn.config.HasConnected = val
 	mn.config.Status = md.Status_CONNECTED
 
 	// Build Update

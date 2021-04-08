@@ -99,36 +99,39 @@ func NewDesktopNode(req *md.ConnectionRequest, call Callback) *Node {
 // **-----------------** //
 // @ Start Host and Connect
 func (mn *Node) Connect() {
-	// Connect Host
-	err := mn.client.Connect(mn.user.PrivateKey())
-	if err != nil {
-		sentry.CaptureException(errors.Wrap(err, "Failed to Start Host"))
-		mn.setConnected(false)
-		return
-	} else {
-		// Update Status
-		mn.setConnected(true)
+	if !mn.config.HasConnected {
+		// Connect Host
+		err := mn.client.Connect(mn.user.PrivateKey())
+		if err != nil {
+			sentry.CaptureException(errors.Wrap(err, "Failed to Start Host"))
+			mn.setConnected(false)
+			return
+		} else {
+			// Update Status
+			mn.setConnected(true)
+		}
+
+		// Bootstrap Node
+		err = mn.client.Bootstrap()
+		if err != nil {
+			sentry.CaptureException(errors.Wrap(err, "Failed to bootstrap node"))
+			mn.setBootstrapped(false)
+			return
+		} else {
+			mn.setBootstrapped(true)
+		}
+
+		// Join Local Lobby
+		mn.local, err = mn.client.JoinLocal()
+		if err != nil {
+			sentry.CaptureException(errors.Wrap(err, "Failed to join local pubsub"))
+			mn.setJoinedLocal(false)
+			return
+		} else {
+			mn.setJoinedLocal(true)
+		}
 	}
 
-	// Bootstrap Node
-	err = mn.client.Bootstrap()
-	if err != nil {
-		sentry.CaptureException(errors.Wrap(err, "Failed to bootstrap node"))
-		mn.setBootstrapped(false)
-		return
-	} else {
-		mn.setBootstrapped(true)
-	}
-
-	// Join Local Lobby
-	mn.local, err = mn.client.JoinLocal()
-	if err != nil {
-		sentry.CaptureException(errors.Wrap(err, "Failed to join local pubsub"))
-		mn.setJoinedLocal(false)
-		return
-	} else {
-		mn.setJoinedLocal(true)
-	}
 }
 
 // **-------------------** //
