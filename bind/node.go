@@ -1,8 +1,8 @@
 package bind
 
 import (
-	"log"
-
+	"github.com/getsentry/sentry-go"
+	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/network"
 	"github.com/sonr-io/core/internal/topic"
 	md "github.com/sonr-io/core/pkg/models"
@@ -14,13 +14,15 @@ func GetURLMetadata(url string) []byte {
 	// Get Link Data
 	data, err := md.GetPageInfoFromUrl(url)
 	if err != nil {
-		log.Println(err, " Failed to Parse URL")
+		sentry.CaptureException(errors.Wrap(err, "Failed to Parse URL"))
+		return nil
 	}
 
 	// Marshal
 	bytes, err := proto.Marshal(data)
 	if err != nil {
-		log.Println(err, " Failed to Parse URL")
+		sentry.CaptureException(errors.Wrap(err, "Failed to Parse URL"))
+		return nil
 	}
 	return bytes
 }
@@ -31,6 +33,7 @@ func (mn *Node) CreateRemote() []byte {
 		// Generate Word List
 		_, wordList, err := network.RandomWords("english", 3)
 		if err != nil {
+			sentry.CaptureException(errors.Wrap(err, "Generating Random Quotes"))
 			return nil
 		}
 		// Create Remote Request and Join Lobby
@@ -39,7 +42,7 @@ func (mn *Node) CreateRemote() []byte {
 		// Join Lobby
 		tm, err := mn.client.JoinLobby(remote.Topic)
 		if err != nil {
-			mn.error(err, "JoinRemote")
+			sentry.CaptureException(errors.Wrap(err, "Joining Remote Topic"))
 			return nil
 		}
 
@@ -49,6 +52,7 @@ func (mn *Node) CreateRemote() []byte {
 		// Marshal
 		data, err := proto.Marshal(&remote)
 		if err != nil {
+			sentry.CaptureException(errors.Wrap(err, "Marshalling Remote Data"))
 			return nil
 		}
 		return data
@@ -63,6 +67,7 @@ func (mn *Node) JoinRemote(data []byte) {
 		remote := md.RemoteInfo{}
 		err := proto.Unmarshal(data, &remote)
 		if err != nil {
+			sentry.CaptureException(errors.Wrap(err, "Unmarshalling Remote Data"))
 			mn.error(err, "JoinRemote")
 			return
 		}
@@ -70,6 +75,7 @@ func (mn *Node) JoinRemote(data []byte) {
 		// Join Lobby
 		tm, err := mn.client.JoinLobby(remote.Topic)
 		if err != nil {
+			sentry.CaptureException(errors.Wrap(err, "Joining Remote Lobby"))
 			mn.error(err, "JoinRemote")
 			return
 		}
@@ -86,6 +92,7 @@ func (mn *Node) LeaveRemote(data []byte) {
 		remote := md.RemoteInfo{}
 		err := proto.Unmarshal(data, &remote)
 		if err != nil {
+			sentry.CaptureException(errors.Wrap(err, "Unmarshalling Remote Info"))
 			mn.error(err, "LeaveRemote")
 			return
 		}
@@ -93,6 +100,7 @@ func (mn *Node) LeaveRemote(data []byte) {
 		// Join Lobby
 		err = mn.client.LeaveLobby(mn.topics[remote.Topic])
 		if err != nil {
+			sentry.CaptureException(errors.Wrap(err, "Leaving Remote Lobby"))
 			mn.error(err, "LeaveRemote")
 			return
 		}
@@ -105,7 +113,7 @@ func (mn *Node) Update(data []byte) {
 		// Initialize from Request
 		udpate := &md.UpdateRequest{}
 		if err := proto.Unmarshal(data, udpate); err != nil {
-			log.Println(err)
+			sentry.CaptureException(errors.Wrap(err, "Unmarshalling Update Request"))
 			return
 		}
 
@@ -115,7 +123,7 @@ func (mn *Node) Update(data []byte) {
 		// Notify Local Lobby
 		err := mn.client.Update(mn.local)
 		if err != nil {
-			log.Println(err)
+			sentry.CaptureException(errors.Wrap(err, "Updating Local Lobby"))
 			return
 		}
 	}
@@ -127,14 +135,14 @@ func (mn *Node) Message(data []byte) {
 		// Initialize from Request
 		req := &md.MessageRequest{}
 		if err := proto.Unmarshal(data, req); err != nil {
-			log.Println(err)
+			sentry.CaptureException(errors.Wrap(err, "Unmarshalling Message Request"))
 			return
 		}
 
 		// Run Node Action
 		err := mn.client.Message(mn.local, req.Message, req.To)
 		if err != nil {
-			log.Println(err)
+			sentry.CaptureException(errors.Wrap(err, "Sending Message Request to Lobby"))
 			return
 		}
 	}
@@ -149,7 +157,7 @@ func (mn *Node) Invite(data []byte) {
 		// Initialize from Request
 		req := &md.InviteRequest{}
 		if err := proto.Unmarshal(data, req); err != nil {
-			log.Println(err)
+			sentry.CaptureException(errors.Wrap(err, "Unmarshalling Invite Request"))
 			return
 		}
 
@@ -165,20 +173,20 @@ func (mn *Node) Invite(data []byte) {
 		if req.Type == md.InviteRequest_Contact || req.Type == md.InviteRequest_FlatContact {
 			err := mn.client.InviteContact(req, topic, mn.user.Contact())
 			if err != nil {
-				log.Println(err)
+				sentry.CaptureException(errors.Wrap(err, "Inviting with Contact"))
 				return
 			}
 		} else if req.Type == md.InviteRequest_URL {
 			err := mn.client.InviteLink(req, topic)
 			if err != nil {
-				log.Println(err)
+				sentry.CaptureException(errors.Wrap(err, "Inviting with Link"))
 				return
 			}
 		} else {
 			// Invite With file
 			err := mn.client.InviteFile(req, topic, mn.user.FileSystem())
 			if err != nil {
-				log.Println(err)
+				sentry.CaptureException(errors.Wrap(err, "Inviting with File"))
 				return
 			}
 		}
@@ -191,7 +199,7 @@ func (mn *Node) Respond(data []byte) {
 		// Initialize from Request
 		req := &md.RespondRequest{}
 		if err := proto.Unmarshal(data, req); err != nil {
-			log.Println(err)
+			sentry.CaptureException(errors.Wrap(err, "Unmarshalling Respond Request"))
 			return
 		}
 

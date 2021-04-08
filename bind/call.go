@@ -1,8 +1,8 @@
 package bind
 
 import (
-	"log"
-
+	"github.com/getsentry/sentry-go"
+	"github.com/pkg/errors"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -56,8 +56,7 @@ func (mn *Node) transmitted(peer *md.Peer) {
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(peer)
 	if err != nil {
-		// sentry.CaptureException(err)
-		log.Println(err)
+		sentry.CaptureException(errors.Wrap(err, "Unmarshalling Peer Protobuf"))
 		return
 	}
 
@@ -73,8 +72,7 @@ func (mn *Node) received(card *md.TransferCard) {
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(card)
 	if err != nil {
-		// sentry.CaptureException(err)
-		log.Println(err)
+		sentry.CaptureException(errors.Wrap(err, "Unmarshalling TransferCard Protobuf"))
 		return
 	}
 
@@ -93,7 +91,7 @@ func (mn *Node) error(err error, method string) {
 	// Convert Message to bytes
 	bytes, err := proto.Marshal(&errorMsg)
 	if err != nil {
-		log.Println(err)
+		sentry.CaptureException(errors.Wrap(err, "Unmarshalling ErrorMessage Protobuf"))
 		return
 	}
 	// Send Callback
