@@ -1,8 +1,6 @@
 package bind
 
 import (
-	"github.com/getsentry/sentry-go"
-	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/network"
 	"github.com/sonr-io/core/internal/topic"
 	md "github.com/sonr-io/core/pkg/models"
@@ -10,18 +8,18 @@ import (
 )
 
 // @ Return URL Metadata, Helper Method
-func GetURLMetadata(url string) []byte {
+func (mn *Node) GetURLMetadata(url string) []byte {
 	// Get Link Data
-	data, err := md.GetPageInfoFromUrl(url)
-	if err != nil {
-		sentry.CaptureException(errors.Wrap(err, "Failed to Parse URL"))
+	data, serr := md.GetPageInfoFromUrl(url)
+	if serr != nil {
+		mn.handleError(serr)
 		return nil
 	}
 
 	// Marshal
 	bytes, err := proto.Marshal(data)
 	if err != nil {
-		sentry.CaptureException(errors.Wrap(err, "Failed to Parse URL"))
+		mn.handleError(md.NewError(err, md.ErrorMessage_MARSHAL))
 		return nil
 	}
 	return bytes

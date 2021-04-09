@@ -1,8 +1,6 @@
 package client
 
 import (
-	"log"
-
 	"github.com/libp2p/go-libp2p-core/peer"
 	mg "github.com/libp2p/go-msgio"
 	se "github.com/sonr-io/core/internal/session"
@@ -21,7 +19,8 @@ func (n *Client) OnEvent(e *md.LobbyEvent) {
 	// Convert Message
 	bytes, err := proto.Marshal(e)
 	if err != nil {
-		log.Println("Cannot Marshal Error Protobuf: ", err)
+		n.call.Error(md.NewError(err, md.ErrorMessage_UNMARSHAL))
+		return
 	}
 
 	// Call Event
@@ -32,7 +31,7 @@ func (n *Client) OnEvent(e *md.LobbyEvent) {
 func (n *Client) OnRefresh(l *md.Lobby) {
 	bytes, err := proto.Marshal(l)
 	if err != nil {
-		log.Println("Cannot Marshal Error Protobuf: ", err)
+		n.call.Error(md.NewError(err, md.ErrorMessage_UNMARSHAL))
 		return
 	}
 	n.call.Refreshed(bytes)

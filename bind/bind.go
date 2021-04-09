@@ -51,11 +51,7 @@ func NewMobileNode(reqBytes []byte, call Callback) *Node {
 	}
 
 	// Create New User
-	mn.user, err = u.NewUser(req, mn.callbackNode())
-	if err != nil {
-		sentry.CaptureException(errors.Wrap(err, "Creating User"))
-		return nil
-	}
+	mn.user = u.NewUser(req, mn.callbackNode())
 
 	// Create Client
 	mn.client = sc.NewClient(mn.contextNode(), req, mn.callbackNode())
@@ -84,10 +80,7 @@ func NewDesktopNode(req *md.ConnectionRequest, call Callback) *Node {
 	}
 
 	// Create New User
-	mn.user, err = u.NewUser(req, mn.callbackNode())
-	if err != nil {
-		sentry.CaptureException(errors.Wrap(err, "Creating User"))
-	}
+	mn.user = u.NewUser(req, mn.callbackNode())
 
 	// Create Client
 	mn.client = sc.NewClient(mn.contextNode(), req, mn.callbackNode())

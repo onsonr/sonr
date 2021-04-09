@@ -46,6 +46,8 @@ message ErrorMessage {
     PEER_NOT_FOUND_INVITE = 31;
     PEER_NOT_FOUND_REPLY = 32;
     PEER_NOT_FOUND_TRANSFER = 33;
+    URL_HTTP_GET = 34;
+    URL_INFO_RESP = 35;
   }
 
   enum Severity {

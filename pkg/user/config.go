@@ -28,6 +28,7 @@ func InitUserConfig(req *md.ConnectionRequest, cb md.NodeCallback) *UserConfig {
 		// Init Path, Check for Path
 		sonrPath = filepath.Join(req.Directories.Home, K_SONR_CLIENT_DIR)
 		if err := EnsureDir(sonrPath, 0755); err != nil {
+			cb.Error(md.NewError(err, md.ErrorMessage_USER_FS))
 			return nil
 		}
 	} else {

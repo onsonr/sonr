@@ -76,9 +76,8 @@ func (errWrap *SonrError) String() string {
 	return errWrap.String()
 }
 
-// # Helper Method to Generate Client Message, Severity
+// # Helper Method to Generate Client Message, Severity with Type
 func generateError(errType ErrorMessage_Type) (string, ErrorMessage_Severity) {
-	// Check Type
 	switch errType {
 	case ErrorMessage_HOST_PUBSUB:
 		return "Failed to start communication with peers", ErrorMessage_FATAL
@@ -148,6 +147,11 @@ func generateError(errType ErrorMessage_Type) (string, ErrorMessage_Severity) {
 		return "Could not send Reply, Peer Not Found", ErrorMessage_LOG
 	case ErrorMessage_PEER_NOT_FOUND_TRANSFER:
 		return "Could not start Transfer, Peer not Found", ErrorMessage_LOG
+	case ErrorMessage_URL_HTTP_GET:
+		return "Invalid URL", ErrorMessage_WARNING
+	case ErrorMessage_URL_INFO_RESP:
+		return "Failed to parse URL Response", ErrorMessage_WARNING
+	default:
+		return "Unknown", ErrorMessage_LOG
 	}
-	return "Unknown", ErrorMessage_LOG
 }

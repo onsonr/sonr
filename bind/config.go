@@ -2,10 +2,7 @@ package bind
 
 import (
 	"context"
-	"log"
 
-	"github.com/getsentry/sentry-go"
-	"github.com/pkg/errors"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -58,7 +55,7 @@ func (mn *Node) setConnected(val bool) {
 	// Callback Status
 	data, err := proto.Marshal(m)
 	if err != nil {
-		log.Println(err)
+		mn.handleError(md.NewError(err, md.ErrorMessage_MARSHAL))
 		return
 	}
 	mn.call.OnStatus(data)
@@ -77,7 +74,7 @@ func (mn *Node) setBootstrapped(val bool) {
 	// Callback Status
 	data, err := proto.Marshal(m)
 	if err != nil {
-		log.Println(err)
+		mn.handleError(md.NewError(err, md.ErrorMessage_MARSHAL))
 		return
 	}
 	mn.call.OnStatus(data)
@@ -96,7 +93,7 @@ func (mn *Node) setJoinedLocal(val bool) {
 	// Callback Status
 	data, err := proto.Marshal(m)
 	if err != nil {
-		sentry.CaptureException(errors.Wrap(err, "Unmarshalling StatusUpdate Protobuf"))
+		mn.handleError(md.NewError(err, md.ErrorMessage_MARSHAL))
 		return
 	}
 	mn.call.OnStatus(data)
@@ -114,7 +111,7 @@ func (mn *Node) setStatus(newStatus md.Status) {
 	// Callback Status
 	data, err := proto.Marshal(m)
 	if err != nil {
-		sentry.CaptureException(errors.Wrap(err, "Unmarshalling StatusUpdate Protobuf"))
+		mn.handleError(md.NewError(err, md.ErrorMessage_MARSHAL))
 		return
 	}
 	mn.call.OnStatus(data)
