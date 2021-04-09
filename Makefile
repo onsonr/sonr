@@ -87,11 +87,10 @@ proto:
 	@echo "--------------------------------------------------------------"
 	@echo "------------- 🛸 START PROTOBUFS COMPILE 🛸 -------------------"
 	@echo "--------------------------------------------------------------"
-	@cd api && protoc --doc_out=$(PROTO_DOC_DIR) --doc_opt=html,index.html api.proto data.proto core.proto user.proto
-	@cd api && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CORE) api.proto data.proto core.proto user.proto
-	@cd api && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_RPC) core.proto
+	@cd api && protoc --doc_out=$(PROTO_DOC_DIR) --doc_opt=html,index.html api.proto data.proto core.proto error.proto user.proto
+	@cd api && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CORE) api.proto data.proto core.proto error.proto user.proto
 	@cd api && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CONTACT) user.proto
-	@cd api && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_PLUGIN) api.proto data.proto user.proto
+	@cd api && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_PLUGIN) api.proto data.proto error.proto user.proto
 	@echo "Finished Compiling ➡ " && date
 	@echo "--------------------------------------------------------------"
 	@echo "------------- 🛸 COMPILED ALL PROTOBUFS 🛸 --------------------"

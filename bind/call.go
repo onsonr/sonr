@@ -35,7 +35,7 @@ func (mn *Node) callbackNode() md.NodeCallback {
 		Invited:     mn.invited,
 		Received:    mn.received,
 		Transmitted: mn.transmitted,
-		Error:       mn.error,
+		Error:       mn.handleError,
 	}
 }
 
@@ -80,20 +80,16 @@ func (mn *Node) received(card *md.TransferCard) {
 	mn.call.OnReceived(msgBytes)
 }
 
-// ^ error Callback with error instance, and method ^
-func (mn *Node) error(err error, method string) {
-	// Create Error ProtoBuf
-	errorMsg := md.ErrorMessage{
-		Message: err.Error(),
-		Method:  method,
-	}
+// ^ handleError Callback with handleError instance, and method ^
+func (mn *Node) handleError(errMsg *md.SonrError) {
+	// Check for Error
+	if errMsg.HasError {
+		// Capture Error
+		if errMsg.Capture {
+			sentry.CaptureMessage(errMsg.String())
+		}
 
-	// Convert Message to bytes
-	bytes, err := proto.Marshal(&errorMsg)
-	if err != nil {
-		sentry.CaptureException(errors.Wrap(err, "Unmarshalling ErrorMessage Protobuf"))
-		return
+		// Send Callback
+		mn.call.OnError(errMsg.Bytes())
 	}
-	// Send Callback
-	mn.call.OnError(bytes)
 }

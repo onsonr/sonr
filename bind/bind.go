@@ -103,7 +103,7 @@ func (mn *Node) Connect() {
 		// Connect Host
 		err := mn.client.Connect(mn.user.PrivateKey())
 		if err != nil {
-			sentry.CaptureException(errors.Wrap(err, "Failed to Start Host"))
+			mn.handleError(err)
 			mn.setConnected(false)
 			return
 		} else {
@@ -114,7 +114,7 @@ func (mn *Node) Connect() {
 		// Bootstrap Node
 		err = mn.client.Bootstrap()
 		if err != nil {
-			sentry.CaptureException(errors.Wrap(err, "Failed to bootstrap node"))
+			mn.handleError(err)
 			mn.setBootstrapped(false)
 			return
 		} else {
@@ -124,7 +124,7 @@ func (mn *Node) Connect() {
 		// Join Local Lobby
 		mn.local, err = mn.client.JoinLocal()
 		if err != nil {
-			sentry.CaptureException(errors.Wrap(err, "Failed to join local pubsub"))
+			mn.handleError(err)
 			mn.setJoinedLocal(false)
 			return
 		} else {

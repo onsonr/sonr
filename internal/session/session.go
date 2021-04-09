@@ -60,14 +60,14 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 			// @ Read Length Fixed Bytes
 			buffer, err := reader.ReadMsg()
 			if err != nil {
-				s.callback.Error(err, "HandleIncoming:ReadMsg")
+				s.callback.Error(md.NewError(err, md.ErrorMessage_TRANSFER_CHUNK))
 				break
 			}
 
 			// @ Unmarshal Bytes into Proto
 			hasCompleted, err := in.AddBuffer(i, buffer)
 			if err != nil {
-				s.callback.Error(err, "HandleIncoming:AddBuffer")
+				s.callback.Error(md.NewError(err, md.ErrorMessage_TRANSFER_CHUNK))
 				break
 			}
 
@@ -75,7 +75,7 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 			if hasCompleted {
 				// Sync file
 				if err := in.Save(); err != nil {
-					s.callback.Error(err, "HandleIncoming:Save")
+					s.callback.Error(md.NewError(err, md.ErrorMessage_TRANSFER_END))
 				}
 				break
 			}

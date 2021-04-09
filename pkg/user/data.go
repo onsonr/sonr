@@ -6,18 +6,18 @@ import (
 )
 
 // ^ Method Loads User Data from Disk ^ //
-func (u *UserConfig) LoadUser() (*md.User, error) {
+func (u *UserConfig) LoadUser() (*md.User, *md.SonrError) {
 	// Read File
-	dat, err := u.fileSystem.ReadFile(K_SONR_USER_PATH)
-	if err != nil {
-		return nil, err
+	dat, serr := u.fileSystem.ReadFile(K_SONR_USER_PATH)
+	if serr != nil {
+		return nil, serr
 	}
 
 	// Get User Data
 	user := &md.User{}
-	err = proto.Unmarshal(dat, user)
+	err := proto.Unmarshal(dat, user)
 	if err != nil {
-		return nil, err
+		return nil, md.NewError(err, md.ErrorMessage_UNMARSHAL)
 	}
 
 	// Set and Return
@@ -27,7 +27,7 @@ func (u *UserConfig) LoadUser() (*md.User, error) {
 }
 
 // ^ Method Updates User Contact ^ //
-func (u *UserConfig) SaveContact(contact *md.Contact) error {
+func (u *UserConfig) SaveContact(contact *md.Contact) *md.SonrError {
 	// Load User
 	user, err := u.LoadUser()
 	if err != nil {
@@ -45,7 +45,7 @@ func (u *UserConfig) SaveContact(contact *md.Contact) error {
 }
 
 // ^ Method Adds Device to User ^ //
-func (u *UserConfig) SaveDevice(device *md.Device) error {
+func (u *UserConfig) SaveDevice(device *md.Device) *md.SonrError {
 
 	// Load User
 	user, err := u.LoadUser()
@@ -65,17 +65,17 @@ func (u *UserConfig) SaveDevice(device *md.Device) error {
 }
 
 // ^ Write User Data at Path ^
-func (u *UserConfig) SaveUser(user *md.User) error {
+func (u *UserConfig) SaveUser(user *md.User) *md.SonrError {
 	// Convert User to Bytes
 	data, err := proto.Marshal(user)
 	if err != nil {
-		return err
+		return md.NewError(err, md.ErrorMessage_UNMARSHAL)
 	}
 
 	// Write File to Disk
-	_, err = u.fileSystem.WriteFile(K_SONR_USER_PATH, data)
+	_, serr := u.fileSystem.WriteFile(K_SONR_USER_PATH, data)
 	if err != nil {
-		return err
+		return serr
 	}
 	return nil
 }

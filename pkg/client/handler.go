@@ -53,7 +53,7 @@ func (n *Client) OnReply(id peer.ID, reply []byte, session *se.Session) {
 	resp := md.AuthReply{}
 	err := proto.Unmarshal(reply, &resp)
 	if err != nil {
-		n.call.Error(err, "handleReply")
+		n.call.Error(md.NewError(err, md.ErrorMessage_UNMARSHAL))
 	}
 
 	// Check for File Transfer
@@ -61,7 +61,7 @@ func (n *Client) OnReply(id peer.ID, reply []byte, session *se.Session) {
 		// Create New Auth Stream
 		stream, err := n.Host.StartStream(id, n.router.Transfer())
 		if err != nil {
-			n.call.Error(err, "StartOutgoing")
+			n.call.Error(md.NewError(err, md.ErrorMessage_HOST_STREAM))
 			return
 		}
 

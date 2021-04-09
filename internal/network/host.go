@@ -30,13 +30,13 @@ type HostNode struct {
 }
 
 // ^ Start Begins Assigning Host Parameters ^
-func NewHost(ctx context.Context, point string, privateKey crypto.PrivKey) (*HostNode, error) {
+func NewHost(ctx context.Context, point string, privateKey crypto.PrivKey) (*HostNode, *md.SonrError) {
 	var kdhtRef *dht.IpfsDHT
 
 	// Find Listen Addresses
 	addrs, err := GetListenAddrStrings()
 	if err != nil {
-		return nil, err
+		return nil, md.NewError(err, md.ErrorMessage_IP_RESOLVE)
 	}
 
 	// Start Host
@@ -62,7 +62,7 @@ func NewHost(ctx context.Context, point string, privateKey crypto.PrivKey) (*Hos
 
 	// Set Host for Node
 	if err != nil {
-		return nil, err
+		return nil, md.NewError(err, md.ErrorMessage_HOST_START)
 	}
 	return &HostNode{
 		ctx:   ctx,
@@ -74,16 +74,16 @@ func NewHost(ctx context.Context, point string, privateKey crypto.PrivKey) (*Hos
 }
 
 // ^ Bootstrap begins bootstrap with peers ^
-func (h *HostNode) Bootstrap() error {
+func (h *HostNode) Bootstrap() *md.SonrError {
 	// Create Bootstrapper Info
 	bootstrappers, err := GetBootstrapAddrInfo()
 	if err != nil {
-		return err
+		return md.NewError(err, md.ErrorMessage_BOOTSTRAP)
 	}
 
 	// Bootstrap DHT
 	if err := h.KDHT.Bootstrap(h.ctx); err != nil {
-		return err
+		return md.NewError(err, md.ErrorMessage_BOOTSTRAP)
 	}
 
 	// Connect to bootstrap nodes, if any
@@ -103,7 +103,7 @@ func (h *HostNode) Bootstrap() error {
 	// Create Pub Sub
 	ps, err := psub.NewGossipSub(h.ctx, h.Host, psub.WithDiscovery(routingDiscovery))
 	if err != nil {
-		return err
+		return md.NewError(err, md.ErrorMessage_HOST_PUBSUB)
 	}
 	h.Pubsub = ps
 	go h.handleDHTPeers(routingDiscovery)
@@ -116,23 +116,23 @@ func (h *HostNode) HandleStream(pid protocol.ID, handler network.StreamHandler) 
 }
 
 // ^ Join New Topic with Name ^
-func (h *HostNode) Join(name string) (*psub.Topic, *psub.Subscription, *psub.TopicEventHandler, error) {
+func (h *HostNode) Join(name string) (*psub.Topic, *psub.Subscription, *psub.TopicEventHandler, *md.SonrError) {
 	// Join Topic
 	topic, err := h.Pubsub.Join(name)
 	if err != nil {
-		return nil, nil, nil, err
+		return nil, nil, nil, md.NewError(err, md.ErrorMessage_TOPIC_JOIN)
 	}
 
 	// Subscribe to Topic
 	sub, err := topic.Subscribe()
 	if err != nil {
-		return nil, nil, nil, err
+		return nil, nil, nil, md.NewError(err, md.ErrorMessage_TOPIC_SUB)
 	}
 
 	// Create Topic Handler
 	handler, err := topic.EventHandler()
 	if err != nil {
-		return nil, nil, nil, err
+		return nil, nil, nil, md.NewError(err, md.ErrorMessage_TOPIC_HANDLER)
 	}
 	return topic, sub, handler, nil
 }
