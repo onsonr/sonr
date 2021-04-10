@@ -73,7 +73,7 @@ func (errWrap *SonrError) Bytes() []byte {
 
 // @ Return Message as String ^ //
 func (errWrap *SonrError) String() string {
-	return errWrap.String()
+	return errWrap.data.String()
 }
 
 // # Helper Method to Generate Client Message, Severity with Type
