@@ -15,6 +15,7 @@ import (
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	psub "github.com/libp2p/go-libp2p-pubsub"
+	quic "github.com/libp2p/go-libp2p-quic-transport"
 	swr "github.com/libp2p/go-libp2p-swarm"
 	md "github.com/sonr-io/core/pkg/models"
 )
@@ -44,6 +45,7 @@ func NewHost(ctx context.Context, point string, privateKey crypto.PrivKey) (*Hos
 		ctx,
 		libp2p.ListenAddrStrings(addrs...),
 		libp2p.Identity(privateKey),
+		libp2p.Transport(quic.NewTransport),
 		libp2p.DefaultTransports,
 		libp2p.NATPortMap(),
 		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {

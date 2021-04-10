@@ -17,6 +17,7 @@ require (
 	github.com/libp2p/go-libp2p-kad-dht v0.11.1
 	github.com/libp2p/go-libp2p-noise v0.1.2 // indirect
 	github.com/libp2p/go-libp2p-pubsub v0.4.1
+	github.com/libp2p/go-libp2p-quic-transport v0.10.0
 	github.com/libp2p/go-libp2p-swarm v0.4.0
 	github.com/libp2p/go-msgio v0.0.6
 	github.com/multiformats/go-multiaddr v0.3.1

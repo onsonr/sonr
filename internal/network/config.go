@@ -60,23 +60,23 @@ func GetListenAddrStrings() ([]string, error) {
 		hasIpv4 = true
 	}
 
-	// Get iPv6 Addresses
-	ip6Addrs, err := iPv6Addrs()
-	if err != nil {
-		log.Println(err)
-	} else {
-		hasIpv6 = true
-	}
+	// // Get iPv6 Addresses
+	// ip6Addrs, err := iPv6Addrs()
+	// if err != nil {
+	// 	log.Println(err)
+	// } else {
+	// 	hasIpv6 = true
+	// }
 
 	// Add iPv4 Addresses
 	if hasIpv4 {
 		listenAddrs = append(listenAddrs, ip4Addrs...)
 	}
 
-	// Add iPv6 Addresses
-	if hasIpv6 {
-		listenAddrs = append(listenAddrs, ip6Addrs...)
-	}
+	// // Add iPv6 Addresses
+	// if hasIpv6 {
+	// 	listenAddrs = append(listenAddrs, ip6Addrs...)
+	// }
 
 	// Neither iPv6 nor iPv4 found
 	if !hasIpv4 && !hasIpv6 {
@@ -96,28 +96,31 @@ func iPv4Addrs() ([]string, error) {
 		// @ Set IPv4
 		if ipv4 := addr.To4(); ipv4 != nil {
 			ip4 := ipv4.String()
-			return []string{fmt.Sprintf("/ip4/%s/tcp/0", ip4)}, nil
+			return []string{
+				fmt.Sprintf("/ip4/%s/tcp/0", ip4),
+				fmt.Sprintf("/ip4/%s/udp/0/quic", ip4),
+			}, nil
 
 		}
 	}
 	return nil, errors.New("No IPV4 found")
 }
 
-// @ Returns Node Public iPv6 Address
-func iPv6Addrs() ([]string, error) {
-	osHost, _ := os.Hostname()
-	addrs, _ := net.LookupIP(osHost)
+// // @ Returns Node Public iPv6 Address
+// func iPv6Addrs() ([]string, error) {
+// 	osHost, _ := os.Hostname()
+// 	addrs, _ := net.LookupIP(osHost)
 
-	// Iterate through addresses
-	for _, addr := range addrs {
-		// @ Set IPv6
-		if ipv6 := addr.To16(); ipv6 != nil {
-			ip6 := ipv6.String()
-			return []string{fmt.Sprintf("/ip6/%s/tcp/0", ip6)}, nil
-		}
-	}
-	return nil, errors.New("No IPV6 Found")
-}
+// 	// Iterate through addresses
+// 	for _, addr := range addrs {
+// 		// @ Set IPv6
+// 		if ipv6 := addr.To16(); ipv6 != nil {
+// 			ip6 := ipv6.String()
+// 			return []string{fmt.Sprintf("/ip6/%s/tcp/0", ip6)}, nil
+// 		}
+// 	}
+// 	return nil, errors.New("No IPV6 Found")
+// }
 
 // ^ Returns Location from GeoIP ^ //
 func Location(target *md.GeoIP) error {
