@@ -150,6 +150,7 @@ func MultiAddrs() []ma.Multiaddr {
 					multiAddrs = append(multiAddrs, maddr)
 				}
 			}
+			continue
 		}
 
 		// Add ipv6
@@ -160,6 +161,7 @@ func MultiAddrs() []ma.Multiaddr {
 					multiAddrs = append(multiAddrs, maddr)
 				}
 			}
+			continue
 		}
 	}
 	return multiAddrs

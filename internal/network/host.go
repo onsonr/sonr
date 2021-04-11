@@ -37,7 +37,7 @@ func NewHost(ctx context.Context, point string, privateKey crypto.PrivKey) (*Hos
 	// Find Listen Addresses
 	addrs := MultiAddrs()
 	if len(addrs) == 0 {
-		return nil, md.NewErrorWithType(md.ErrorMessage_IP_LOCATE)
+		return nil, md.NewErrorWithType(md.ErrorMessage_IP_RESOLVE)
 	}
 
 	// Start Host
