@@ -56,6 +56,40 @@ func GetBootstrapAddrInfo() ([]peer.AddrInfo, error) {
 	return ds, nil
 }
 
+// ^ GetFreePort asks the kernel for a free open port that is ready to use. ^
+func GetFreePort() (int, error) {
+	addr, err := net.ResolveTCPAddr("tcp", "localhost:0")
+	if err != nil {
+		return 0, err
+	}
+
+	l, err := net.ListenTCP("tcp", addr)
+	if err != nil {
+		return 0, err
+	}
+	defer l.Close()
+	return l.Addr().(*net.TCPAddr).Port, nil
+}
+
+// ^ GetFreePort asks the kernel for free open ports that are ready to use. ^
+func GetFreePorts(count int) ([]int, error) {
+	var ports []int
+	for i := 0; i < count; i++ {
+		addr, err := net.ResolveTCPAddr("tcp", "localhost:0")
+		if err != nil {
+			return nil, err
+		}
+
+		l, err := net.ListenTCP("tcp", addr)
+		if err != nil {
+			return nil, err
+		}
+		defer l.Close()
+		ports = append(ports, l.Addr().(*net.TCPAddr).Port)
+	}
+	return ports, nil
+}
+
 // @ Return MultiAddrs using Net Host
 func MultiAddrs() []ma.Multiaddr {
 	// Local IP lookup
@@ -63,14 +97,18 @@ func MultiAddrs() []ma.Multiaddr {
 	addrs, _ := net.LookupIP(osHost)
 	allMultiAddrs := []ma.Multiaddr{}
 	filteredMultiAddrs := []ma.Multiaddr{}
+	port, err := GetFreePort()
+	if err != nil {
+		port = 60214
+	}
 
 	// Iterate through Net Addrs
 	for _, addr := range addrs {
 		if addr.IsGlobalUnicast() {
 			// Add ipv4
 			if ipv4 := addr.To4(); ipv4 != nil {
-				if IsNotPrivateIPv4(ipv4) {
-					maddr, err := ma.NewMultiaddr(fmt.Sprintf("/ip4/%s/tcp/%d", ipv4, 0))
+				if IsValidIPv4(ipv4) {
+					maddr, err := ma.NewMultiaddr(fmt.Sprintf("/ip4/%s/tcp/%d", ipv4.String(), port))
 					if err == nil {
 						allMultiAddrs = append(allMultiAddrs, maddr)
 					}
@@ -79,8 +117,8 @@ func MultiAddrs() []ma.Multiaddr {
 
 			// Add ipv6
 			if ipv6 := addr.To16(); ipv6 != nil {
-				if IsNotPrivateIPv6(ipv6) {
-					maddr, err := ma.NewMultiaddr(fmt.Sprintf("/ip6/%s/tcp/%d", ipv6, 0))
+				if IsValidIPv6(ipv6) {
+					maddr, err := ma.NewMultiaddr(fmt.Sprintf("/ip6/%s/tcp/%d", ipv6.String(), port))
 					if err == nil {
 						allMultiAddrs = append(allMultiAddrs, maddr)
 					}
@@ -101,7 +139,13 @@ func MultiAddrs() []ma.Multiaddr {
 }
 
 // @ Validates Not Private IPv4
-func IsNotPrivateIPv4(ip net.IP) bool {
+func IsValidIPv4(ip net.IP) bool {
+	// Local Link
+	if ip.IsLinkLocalMulticast() || ip.IsLinkLocalUnicast() {
+		return false
+	}
+
+	// Known Private iPv4
 	for _, item := range manet.Private4 {
 		if item.IP.Equal(ip) {
 			return false
@@ -111,7 +155,13 @@ func IsNotPrivateIPv4(ip net.IP) bool {
 }
 
 // @ Validates Not Private IPv6
-func IsNotPrivateIPv6(ip net.IP) bool {
+func IsValidIPv6(ip net.IP) bool {
+	// Local Link
+	if ip.IsLinkLocalMulticast() || ip.IsLinkLocalUnicast() {
+		return false
+	}
+
+	// Known Private iPv6
 	for _, item := range manet.Private6 {
 		if item.IP.Equal(ip) {
 			return false
