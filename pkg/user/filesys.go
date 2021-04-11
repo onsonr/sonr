@@ -87,7 +87,6 @@ func (sfs *FileSystem) ReadFile(name string) ([]byte, *md.SonrError) {
 func (sfs *FileSystem) WriteFile(name string, data []byte) (string, *md.SonrError) {
 	// Create File Path
 	path := filepath.Join(sfs.Main, name)
-
 	// Write File to Disk
 	if err := os.WriteFile(path, data, 0644); err != nil {
 		return "", md.NewError(err, md.ErrorMessage_USER_FS)

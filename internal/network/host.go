@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/libp2p/go-libp2p"
+	connmgr "github.com/libp2p/go-libp2p-connmgr"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	dscl "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/host"
@@ -52,6 +53,11 @@ func NewHost(ctx context.Context, point string, privateKey crypto.PrivKey) (*Hos
 		libp2p.ListenAddrStrings(addrs...),
 		libp2p.Identity(privateKey),
 		libp2p.DefaultTransports,
+		libp2p.ConnectionManager(connmgr.NewConnManager(
+			15,          // Lowwater
+			30,          // HighWater,
+			time.Minute, // GracePeriod
+		)),
 		libp2p.NATPortMap(),
 		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
 			// Create DHT
