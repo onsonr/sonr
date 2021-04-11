@@ -130,6 +130,11 @@ func (mn *Node) Connect() {
 // **-------------------** //
 // ** LifeCycle Actions ** //
 // **-------------------** //
+func (n *Node) NetworkSwitch() {
+	
+}
+
+
 // @ Close Ends All Network Communication
 func (mn *Node) Pause() {
 	md.GetState().Pause()

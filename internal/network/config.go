@@ -135,10 +135,10 @@ func MultiAddrs() []ma.Multiaddr {
 		port = 60214
 	}
 
-	// Add External IP
-	if extMultiAddr := GetExternalIPMultiAddr(port); extMultiAddr != nil {
-		multiAddrs = append(multiAddrs, extMultiAddr)
-	}
+	// // Add External IP
+	// if extMultiAddr := GetExternalIPMultiAddr(port); extMultiAddr != nil {
+	// 	multiAddrs = append(multiAddrs, extMultiAddr)
+	// }
 
 	// Iterate through Net Addrs
 	for _, addr := range addrs {
@@ -150,18 +150,6 @@ func MultiAddrs() []ma.Multiaddr {
 					multiAddrs = append(multiAddrs, maddr)
 				}
 			}
-			continue
-		}
-
-		// Add ipv6
-		if ipv6 := addr.To16(); ipv6 != nil {
-			if IsValidIPv6(ipv6) {
-				maddr, err := ma.NewMultiaddr(fmt.Sprintf("/ip6/%s/tcp/%d", ipv6.String(), port))
-				if err == nil {
-					multiAddrs = append(multiAddrs, maddr)
-				}
-			}
-			continue
 		}
 	}
 	return multiAddrs
