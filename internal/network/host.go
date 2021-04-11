@@ -30,7 +30,7 @@ type HostNode struct {
 	Pubsub    *psub.PubSub
 }
 
-const REFRESH_DURATION = time.Second * 10
+const REFRESH_DURATION = time.Second * 5
 
 // ^ Start Begins Assigning Host Parameters ^
 func NewHost(ctx context.Context, point string, privateKey crypto.PrivKey) (*HostNode, *md.SonrError) {
@@ -184,8 +184,8 @@ func (h *HostNode) handleDHTPeers(routingDiscovery *dsc.RoutingDiscovery) {
 			}
 		}
 
-		// Refresh table every 4 seconds
+		// Refresh table every 5 seconds
 		md.GetState().NeedsWait()
-		time.Sleep(time.Second * 4)
+		time.Sleep(REFRESH_DURATION)
 	}
 }
