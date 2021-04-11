@@ -2,19 +2,28 @@ package network
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net"
 	"net/http"
 	"os"
 
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-netroute"
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr/net"
 	md "github.com/sonr-io/core/pkg/models"
 )
 
 type AddrsFactory func(addrs []ma.Multiaddr) []ma.Multiaddr
+
+// ^ Returns Location from GeoIP ^ //
+func Location(target *md.GeoIP) error {
+	r, err := http.Get("https://api.ipgeolocationapi.com/geolocate")
+	if err != nil {
+		log.Fatalln(err)
+	}
+	return json.NewDecoder(r.Body).Decode(target)
+}
 
 // ^ Return Bootstrap List Address Info ^ //
 func GetBootstrapAddrInfo() ([]peer.AddrInfo, error) {
@@ -47,77 +56,8 @@ func GetBootstrapAddrInfo() ([]peer.AddrInfo, error) {
 	return ds, nil
 }
 
-// @ Returns Address with Net Route
-func MultiAddrs() ([]ma.Multiaddr, *md.SonrError) {
-	// Initialize
-	allMultiAddrs := []ma.Multiaddr{}
-	filteredMultiAddrs := []ma.Multiaddr{}
-
-	// Route IP Address
-	if r, err := netroute.New(); err != nil {
-		return nil, md.NewError(err, md.ErrorMessage_IP_LOCATE)
-	} else {
-		if _, _, localIPv4, err := r.Route(net.IPv4zero); err != nil {
-			return nil, md.NewError(err, md.ErrorMessage_IP_LOCATE)
-		} else if localIPv4.IsGlobalUnicast() {
-			maddr, err := manet.FromIP(localIPv4)
-			if err == nil {
-				allMultiAddrs = append(allMultiAddrs, maddr)
-			}
-		}
-
-		if _, _, localIPv6, err := r.Route(net.IPv6unspecified); err != nil {
-			return nil, md.NewError(err, md.ErrorMessage_IP_LOCATE)
-		} else if localIPv6.IsGlobalUnicast() {
-			maddr, err := manet.FromIP(localIPv6)
-			if err == nil {
-				allMultiAddrs = append(allMultiAddrs, maddr)
-			}
-		}
-	}
-
-	// Resolve the interface addresses
-	ifaceAddrs, err := manet.InterfaceMultiaddrs()
-	if err != nil {
-
-		// Add the loopback addresses to the filtered addrs and use them as the non-filtered addrs.
-		// Then bail. There's nothing else we can do here.
-		filteredMultiAddrs = append(filteredMultiAddrs, manet.IP4Loopback, manet.IP6Loopback)
-		allMultiAddrs = filteredMultiAddrs
-
-		// This usually shouldn't happen, but we could be in some kind
-		// of funky restricted environment.
-		return allMultiAddrs, md.NewError(err, md.ErrorMessage_IP_RESOLVE)
-	}
-
-	for _, addr := range ifaceAddrs {
-		// Skip link-local addrs, they're mostly useless.
-		if !manet.IsIP6LinkLocal(addr) {
-			allMultiAddrs = append(allMultiAddrs, addr)
-		}
-	}
-
-	// If netroute failed to get us any interface addresses, use all of
-	// them.
-	if len(filteredMultiAddrs) == 0 {
-		// Add all addresses.
-		filteredMultiAddrs = allMultiAddrs
-		return filteredMultiAddrs, nil
-	} else {
-		// Only add loopback addresses. Filter these because we might
-		// not _have_ an IPv6 loopback address.
-		for _, addr := range allMultiAddrs {
-			if manet.IsIPLoopback(addr) {
-				filteredMultiAddrs = append(filteredMultiAddrs, addr)
-			}
-		}
-	}
-
-	return filteredMultiAddrs, nil
-}
-
 // @ Return MultiAddrs using Net Host
-func MultiAddrsNet() []ma.Multiaddr {
+func MultiAddrs() []ma.Multiaddr {
 	// Local IP lookup
 	osHost, _ := os.Hostname()
 	addrs, _ := net.LookupIP(osHost)
@@ -127,9 +67,25 @@ func MultiAddrsNet() []ma.Multiaddr {
 	// Iterate through Net Addrs
 	for _, addr := range addrs {
 		if addr.IsGlobalUnicast() {
-			maddr, err := manet.FromIP(addr)
-			if err == nil {
-				allMultiAddrs = append(allMultiAddrs, maddr)
+			// Add ipv4
+			if ipv4 := addr.To4(); ipv4 != nil {
+				if IsNotPrivateIPv4(ipv4) {
+					maddr, err := ma.NewMultiaddr(fmt.Sprintf("/ip4/%s/tcp/%d", ipv4, 0))
+					if err == nil {
+						allMultiAddrs = append(allMultiAddrs, maddr)
+					}
+				}
+			}
+
+			// Add ipv6
+			if ipv6 := addr.To16(); ipv6 != nil {
+				if IsNotPrivateIPv6(ipv6) {
+					maddr, err := ma.NewMultiaddr(fmt.Sprintf("/ip6/%s/tcp/%d", ipv6, 0))
+					if err == nil {
+						allMultiAddrs = append(allMultiAddrs, maddr)
+					}
+				}
+
 			}
 		}
 	}
@@ -137,19 +93,29 @@ func MultiAddrsNet() []ma.Multiaddr {
 	// Filter out Local Link Addrs
 	for _, addr := range allMultiAddrs {
 		// Skip link-local addrs, they're mostly useless.
-		if !manet.IsIP6LinkLocal(addr) {
+		if !manet.IsIPUnspecified(addr) && !manet.IsIP6LinkLocal(addr) {
 			filteredMultiAddrs = append(filteredMultiAddrs, addr)
 		}
 	}
-
 	return filteredMultiAddrs
 }
 
-// ^ Returns Location from GeoIP ^ //
-func Location(target *md.GeoIP) error {
-	r, err := http.Get("https://api.ipgeolocationapi.com/geolocate")
-	if err != nil {
-		log.Fatalln(err)
+// @ Validates Not Private IPv4
+func IsNotPrivateIPv4(ip net.IP) bool {
+	for _, item := range manet.Private4 {
+		if item.IP.Equal(ip) {
+			return false
+		}
 	}
-	return json.NewDecoder(r.Body).Decode(target)
+	return true
+}
+
+// @ Validates Not Private IPv6
+func IsNotPrivateIPv6(ip net.IP) bool {
+	for _, item := range manet.Private6 {
+		if item.IP.Equal(ip) {
+			return false
+		}
+	}
+	return true
 }
