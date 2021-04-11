@@ -30,6 +30,8 @@ type HostNode struct {
 	Pubsub    *psub.PubSub
 }
 
+const REFRESH_DURATION = time.Second * 10
+
 // ^ Start Begins Assigning Host Parameters ^
 func NewHost(ctx context.Context, point string, privateKey crypto.PrivKey) (*HostNode, *md.SonrError) {
 	// Initialize DHT
@@ -54,9 +56,9 @@ func NewHost(ctx context.Context, point string, privateKey crypto.PrivKey) (*Hos
 		libp2p.Identity(privateKey),
 		libp2p.DefaultTransports,
 		libp2p.ConnectionManager(connmgr.NewConnManager(
-			15,          // Lowwater
-			30,          // HighWater,
-			time.Minute, // GracePeriod
+			10,               // Lowwater
+			15,               // HighWater,
+			REFRESH_DURATION, // GracePeriod
 		)),
 		libp2p.NATPortMap(),
 		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
