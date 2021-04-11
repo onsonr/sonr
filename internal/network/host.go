@@ -2,6 +2,7 @@ package network
 
 import (
 	"context"
+	"log"
 	"time"
 
 	"github.com/libp2p/go-libp2p"
@@ -17,6 +18,7 @@ import (
 	psub "github.com/libp2p/go-libp2p-pubsub"
 	quic "github.com/libp2p/go-libp2p-quic-transport"
 	swr "github.com/libp2p/go-libp2p-swarm"
+	"github.com/multiformats/go-multiaddr"
 	md "github.com/sonr-io/core/pkg/models"
 )
 
@@ -33,17 +35,22 @@ type HostNode struct {
 // ^ Start Begins Assigning Host Parameters ^
 func NewHost(ctx context.Context, point string, privateKey crypto.PrivKey) (*HostNode, *md.SonrError) {
 	var kdhtRef *dht.IpfsDHT
+	var addrs []multiaddr.Multiaddr
 
 	// Find Listen Addresses
-	addrs, err := GetListenAddrStrings()
-	if err != nil {
-		return nil, md.NewError(err, md.ErrorMessage_IP_RESOLVE)
+	addrs, serr := MultiAddrs()
+	if serr != nil {
+		// Log MultiAddrs Error
+		log.Println(serr.String())
+
+		// Failsafe with Net Host MultiAddr
+		addrs = MultiAddrsNet()
 	}
 
 	// Start Host
 	h, err := libp2p.New(
 		ctx,
-		libp2p.ListenAddrStrings(addrs...),
+		libp2p.ListenAddrs(addrs...),
 		libp2p.Identity(privateKey),
 		libp2p.Transport(quic.NewTransport),
 		libp2p.DefaultTransports,

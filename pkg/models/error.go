@@ -1,12 +1,21 @@
 package models
 
-import "google.golang.org/protobuf/proto"
+import (
+	"google.golang.org/protobuf/proto"
+)
 
 type SonrError struct {
 	data     *ErrorMessage
 	Capture  bool
 	HasError bool
+	IsJoined bool
 	Error    error
+	Joined   []*ErrorMessage
+}
+
+type SonrErrorOpt struct {
+	Error error
+	Type  ErrorMessage_Type
 }
 
 // ^ Checks for Error With Type ^ //
@@ -36,6 +45,45 @@ func NewError(err error, errType ErrorMessage_Type) *SonrError {
 	// Return Error
 	return &SonrError{
 		HasError: false,
+	}
+}
+
+// ^ Checks for Error With Type ^ //
+func NewErrorJoined(errors ...SonrErrorOpt) *SonrError {
+	if len(errors) > 0 {
+		// Create Slice
+		joined := []*ErrorMessage{}
+		capture := false
+
+		// Loop Errors
+		for _, err := range errors {
+			// Generate Message
+			message, severity := generateError(err.Type)
+			if severity == ErrorMessage_CRITICAL || severity == ErrorMessage_FATAL {
+				capture = true
+			}
+
+			// Add Joined Message
+			joined = append(joined, &ErrorMessage{
+				Message:  message,
+				Error:    err.Error.Error(),
+				Type:     err.Type,
+				Severity: severity,
+			})
+		}
+
+		// Return Joined Error
+		return &SonrError{
+			IsJoined: true,
+			HasError: true,
+			Capture:  capture,
+			Joined:   joined,
+		}
+	} else {
+		// Return Error
+		return &SonrError{
+			HasError: false,
+		}
 	}
 }
 

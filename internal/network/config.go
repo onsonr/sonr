@@ -2,22 +2,24 @@ package network
 
 import (
 	"encoding/json"
-	"errors"
-	"fmt"
 	"log"
 	"net"
 	"net/http"
 	"os"
 
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/multiformats/go-multiaddr"
+	"github.com/libp2p/go-netroute"
+	ma "github.com/multiformats/go-multiaddr"
+	manet "github.com/multiformats/go-multiaddr/net"
 	md "github.com/sonr-io/core/pkg/models"
 )
+
+type AddrsFactory func(addrs []ma.Multiaddr) []ma.Multiaddr
 
 // ^ Return Bootstrap List Address Info ^ //
 func GetBootstrapAddrInfo() ([]peer.AddrInfo, error) {
 	// Create Bootstrapper List
-	var bootstrappers []multiaddr.Multiaddr
+	var bootstrappers []ma.Multiaddr
 	for _, s := range []string{
 		// Libp2p Default
 		"/dnsaddr/bootstrap.libp2p.io/p2p/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN",
@@ -27,7 +29,7 @@ func GetBootstrapAddrInfo() ([]peer.AddrInfo, error) {
 		"/ip4/104.131.131.82/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
 		"/ip4/104.131.131.82/udp/4001/quic/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
 	} {
-		ma, err := multiaddr.NewMultiaddr(s)
+		ma, err := ma.NewMultiaddr(s)
 		if err != nil {
 			return nil, err
 		}
@@ -45,82 +47,103 @@ func GetBootstrapAddrInfo() ([]peer.AddrInfo, error) {
 	return ds, nil
 }
 
-// ^ Return Device Listening Addresses ^ //
-func GetListenAddrStrings() ([]string, error) {
+// @ Returns Address with Net Route
+func MultiAddrs() ([]ma.Multiaddr, *md.SonrError) {
 	// Initialize
-	listenAddrs := []string{}
-	hasIpv4 := false
-	hasIpv6 := false
+	allMultiAddrs := []ma.Multiaddr{}
+	filteredMultiAddrs := []ma.Multiaddr{}
 
-	// Get iPv4 Addresses
-	ip4Addrs, err := iPv4Addrs()
-	if err != nil {
-		log.Println(err)
+	// Route IP Address
+	if r, err := netroute.New(); err != nil {
+		return nil, md.NewError(err, md.ErrorMessage_IP_LOCATE)
 	} else {
-		hasIpv4 = true
-	}
+		if _, _, localIPv4, err := r.Route(net.IPv4zero); err != nil {
+			return nil, md.NewError(err, md.ErrorMessage_IP_LOCATE)
+		} else if localIPv4.IsGlobalUnicast() {
+			maddr, err := manet.FromIP(localIPv4)
+			if err == nil {
+				allMultiAddrs = append(allMultiAddrs, maddr)
+			}
+		}
 
-	// // Get iPv6 Addresses
-	// ip6Addrs, err := iPv6Addrs()
-	// if err != nil {
-	// 	log.Println(err)
-	// } else {
-	// 	hasIpv6 = true
-	// }
-
-	// Add iPv4 Addresses
-	if hasIpv4 {
-		listenAddrs = append(listenAddrs, ip4Addrs...)
-	}
-
-	// // Add iPv6 Addresses
-	// if hasIpv6 {
-	// 	listenAddrs = append(listenAddrs, ip6Addrs...)
-	// }
-
-	// Neither iPv6 nor iPv4 found
-	if !hasIpv4 && !hasIpv6 {
-		return nil, errors.New("No IP Addresses found")
-	}
-
-	// Return Listen Addr Strings
-	return listenAddrs, nil
-}
-
-// @ Returns Node Public iPv4 Address
-func iPv4Addrs() ([]string, error) {
-	osHost, _ := os.Hostname()
-	addrs, _ := net.LookupIP(osHost)
-	// Iterate through addresses
-	for _, addr := range addrs {
-		// @ Set IPv4
-		if ipv4 := addr.To4(); ipv4 != nil {
-			ip4 := ipv4.String()
-			return []string{
-				fmt.Sprintf("/ip4/%s/tcp/0", ip4),
-				fmt.Sprintf("/ip4/%s/udp/0/quic", ip4),
-			}, nil
-
+		if _, _, localIPv6, err := r.Route(net.IPv6unspecified); err != nil {
+			return nil, md.NewError(err, md.ErrorMessage_IP_LOCATE)
+		} else if localIPv6.IsGlobalUnicast() {
+			maddr, err := manet.FromIP(localIPv6)
+			if err == nil {
+				allMultiAddrs = append(allMultiAddrs, maddr)
+			}
 		}
 	}
-	return nil, errors.New("No IPV4 found")
+
+	// Resolve the interface addresses
+	ifaceAddrs, err := manet.InterfaceMultiaddrs()
+	if err != nil {
+
+		// Add the loopback addresses to the filtered addrs and use them as the non-filtered addrs.
+		// Then bail. There's nothing else we can do here.
+		filteredMultiAddrs = append(filteredMultiAddrs, manet.IP4Loopback, manet.IP6Loopback)
+		allMultiAddrs = filteredMultiAddrs
+
+		// This usually shouldn't happen, but we could be in some kind
+		// of funky restricted environment.
+		return allMultiAddrs, md.NewError(err, md.ErrorMessage_IP_RESOLVE)
+	}
+
+	for _, addr := range ifaceAddrs {
+		// Skip link-local addrs, they're mostly useless.
+		if !manet.IsIP6LinkLocal(addr) {
+			allMultiAddrs = append(allMultiAddrs, addr)
+		}
+	}
+
+	// If netroute failed to get us any interface addresses, use all of
+	// them.
+	if len(filteredMultiAddrs) == 0 {
+		// Add all addresses.
+		filteredMultiAddrs = allMultiAddrs
+		return filteredMultiAddrs, nil
+	} else {
+		// Only add loopback addresses. Filter these because we might
+		// not _have_ an IPv6 loopback address.
+		for _, addr := range allMultiAddrs {
+			if manet.IsIPLoopback(addr) {
+				filteredMultiAddrs = append(filteredMultiAddrs, addr)
+			}
+		}
+	}
+
+	return filteredMultiAddrs, nil
 }
 
-// // @ Returns Node Public iPv6 Address
-// func iPv6Addrs() ([]string, error) {
-// 	osHost, _ := os.Hostname()
-// 	addrs, _ := net.LookupIP(osHost)
+// @ Return MultiAddrs using Net Host
+func MultiAddrsNet() []ma.Multiaddr {
+	// Local IP lookup
+	osHost, _ := os.Hostname()
+	addrs, _ := net.LookupIP(osHost)
+	allMultiAddrs := []ma.Multiaddr{}
+	filteredMultiAddrs := []ma.Multiaddr{}
 
-// 	// Iterate through addresses
-// 	for _, addr := range addrs {
-// 		// @ Set IPv6
-// 		if ipv6 := addr.To16(); ipv6 != nil {
-// 			ip6 := ipv6.String()
-// 			return []string{fmt.Sprintf("/ip6/%s/tcp/0", ip6)}, nil
-// 		}
-// 	}
-// 	return nil, errors.New("No IPV6 Found")
-// }
+	// Iterate through Net Addrs
+	for _, addr := range addrs {
+		if addr.IsGlobalUnicast() {
+			maddr, err := manet.FromIP(addr)
+			if err == nil {
+				allMultiAddrs = append(allMultiAddrs, maddr)
+			}
+		}
+	}
+
+	// Filter out Local Link Addrs
+	for _, addr := range allMultiAddrs {
+		// Skip link-local addrs, they're mostly useless.
+		if !manet.IsIP6LinkLocal(addr) {
+			filteredMultiAddrs = append(filteredMultiAddrs, addr)
+		}
+	}
+
+	return filteredMultiAddrs
+}
 
 // ^ Returns Location from GeoIP ^ //
 func Location(target *md.GeoIP) error {

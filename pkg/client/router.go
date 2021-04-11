@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	olc "github.com/google/open-location-code/go"
+	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	md "github.com/sonr-io/core/pkg/models"
 )
@@ -34,8 +35,8 @@ func (pr *ProtocolRouter) Rendevouz() string {
 
 // ^ Transfer Protocols ^ //
 // @ Transfer Controller Data Protocol IDs
-func (pr *ProtocolRouter) Transfer() protocol.ID {
-	return protocol.ID("/sonr/transfer/0.1")
+func (pr *ProtocolRouter) Transfer(id peer.ID) protocol.ID {
+	return protocol.ID(fmt.Sprintf("/sonr/transfer/%s", id.Pretty()))
 }
 
 // ^ Lobby Protocols ^ //
