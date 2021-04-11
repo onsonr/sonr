@@ -167,6 +167,11 @@ func (n *Client) InviteFile(req *md.InviteRequest, t *tpc.TopicManager, fs *us.F
 	session := se.NewOutSession(n.Peer, req, fs, n.call)
 	card := session.OutgoingCard()
 
+	// Check for Card
+	if card == nil {
+		return md.NewErrorWithType(md.ErrorMessage_TRANSFER_START)
+	}
+
 	// Create Invite Message
 	invite := n.Peer.SignInviteWithFile(card, req)
 
