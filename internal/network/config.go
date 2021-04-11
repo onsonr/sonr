@@ -12,6 +12,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr/net"
+	"github.com/pkg/errors"
 	md "github.com/sonr-io/core/pkg/models"
 )
 
@@ -120,6 +121,53 @@ func GetFreePorts(count int) ([]int, error) {
 		ports = append(ports, l.Addr().(*net.TCPAddr).Port)
 	}
 	return ports, nil
+}
+
+// ^ Return Device Listening Addresses ^ //
+func GetListenAddrStrings() ([]string, error) {
+	// Initialize
+	listenAddrs := []string{}
+	hasIpv4 := false
+	hasIpv6 := false
+
+	// Get iPv4 Addresses
+	ip4Addrs, err := iPv4Addrs()
+	if err != nil {
+		log.Println(err)
+	} else {
+		hasIpv4 = true
+	}
+
+	// Add iPv4 Addresses
+	if hasIpv4 {
+		listenAddrs = append(listenAddrs, ip4Addrs...)
+	}
+
+	// Neither iPv6 nor iPv4 found
+	if !hasIpv4 && !hasIpv6 {
+		return nil, errors.New("No IP Addresses found")
+	}
+
+	// Return Listen Addr Strings
+	return listenAddrs, nil
+}
+
+// @ Returns Node Public iPv4 Address
+func iPv4Addrs() ([]string, error) {
+	osHost, _ := os.Hostname()
+	addrs, _ := net.LookupIP(osHost)
+	// Iterate through addresses
+	for _, addr := range addrs {
+		// @ Set IPv4
+		if ipv4 := addr.To4(); ipv4 != nil {
+			ip4 := ipv4.String()
+			return []string{
+				fmt.Sprintf("/ip4/%s/tcp/0", ip4),
+			}, nil
+
+		}
+	}
+	return nil, errors.New("No IPV4 found")
 }
 
 // @ Return MultiAddrs using Net Host

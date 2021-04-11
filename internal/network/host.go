@@ -34,16 +34,22 @@ func NewHost(ctx context.Context, point string, privateKey crypto.PrivKey) (*Hos
 	// Initialize DHT
 	var kdhtRef *dht.IpfsDHT
 
+	// // Find Listen Addresses
+	// addrs := MultiAddrs()
+	// if len(addrs) == 0 {
+	// 	return nil, md.NewErrorWithType(md.ErrorMessage_IP_RESOLVE)
+	// }
+
 	// Find Listen Addresses
-	addrs := MultiAddrs()
-	if len(addrs) == 0 {
-		return nil, md.NewErrorWithType(md.ErrorMessage_IP_RESOLVE)
+	addrs, err := GetListenAddrStrings()
+	if err != nil {
+		return nil, md.NewError(err, md.ErrorMessage_IP_RESOLVE)
 	}
 
 	// Start Host
 	h, err := libp2p.New(
 		ctx,
-		libp2p.ListenAddrs(addrs...),
+		libp2p.ListenAddrStrings(addrs...),
 		libp2p.Identity(privateKey),
 		libp2p.DefaultTransports,
 		libp2p.NATPortMap(),
