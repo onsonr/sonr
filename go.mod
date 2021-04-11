@@ -7,6 +7,7 @@ require (
 	github.com/btcsuite/btcd v0.21.0-beta // indirect
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/getsentry/sentry-go v0.10.0
+	github.com/glendc/go-external-ip v0.0.0-20200601212049-c872357d968e
 	github.com/golang/groupcache v0.0.0-20191027212112-611e8accdfc9 // indirect
 	github.com/google/open-location-code/go v0.0.0-20201229230907-d47d9f9b95e9
 	github.com/h2non/filetype v1.1.1
