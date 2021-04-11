@@ -2,7 +2,6 @@ package bind
 
 import (
 	"github.com/getsentry/sentry-go"
-	"github.com/pkg/errors"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -35,7 +34,7 @@ func (mn *Node) callbackNode() md.NodeCallback {
 		Invited:     mn.invited,
 		Received:    mn.received,
 		Transmitted: mn.transmitted,
-		Error:       mn.error,
+		Error:       mn.handleError,
 	}
 }
 
@@ -56,7 +55,7 @@ func (mn *Node) transmitted(peer *md.Peer) {
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(peer)
 	if err != nil {
-		sentry.CaptureException(errors.Wrap(err, "Unmarshalling Peer Protobuf"))
+		mn.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
 		return
 	}
 
@@ -72,7 +71,7 @@ func (mn *Node) received(card *md.TransferCard) {
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(card)
 	if err != nil {
-		sentry.CaptureException(errors.Wrap(err, "Unmarshalling TransferCard Protobuf"))
+		mn.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
 		return
 	}
 
@@ -80,20 +79,16 @@ func (mn *Node) received(card *md.TransferCard) {
 	mn.call.OnReceived(msgBytes)
 }
 
-// ^ error Callback with error instance, and method ^
-func (mn *Node) error(err error, method string) {
-	// Create Error ProtoBuf
-	errorMsg := md.ErrorMessage{
-		Message: err.Error(),
-		Method:  method,
-	}
+// ^ handleError Callback with handleError instance, and method ^
+func (mn *Node) handleError(errMsg *md.SonrError) {
+	// Check for Error
+	if errMsg.HasError {
+		// Capture Error
+		if errMsg.Capture {
+			sentry.CaptureMessage(errMsg.String())
+		}
 
-	// Convert Message to bytes
-	bytes, err := proto.Marshal(&errorMsg)
-	if err != nil {
-		sentry.CaptureException(errors.Wrap(err, "Unmarshalling ErrorMessage Protobuf"))
-		return
+		// Send Callback
+		mn.call.OnError(errMsg.Bytes())
 	}
-	// Send Callback
-	mn.call.OnError(bytes)
 }

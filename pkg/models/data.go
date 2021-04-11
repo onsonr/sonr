@@ -157,17 +157,17 @@ func GetPageInfoFromResponse(response *http.Response) (*PageInfo, error) {
 	return &info, nil
 }
 
-func GetPageInfoFromUrl(urlStr string) (*URLLink, error) {
+func GetPageInfoFromUrl(urlStr string) (*URLLink, *SonrError) {
 	// Create Request
 	resp, err := http.Get(urlStr)
 	if err != nil {
-		return nil, err
+		return nil, NewError(err, ErrorMessage_URL_HTTP_GET)
 	}
 
 	// Get Info
 	info, err := GetPageInfoFromResponse(resp)
 	if err != nil {
-		return nil, err
+		return nil, NewError(err, ErrorMessage_URL_INFO_RESP)
 	}
 
 	// Set Link

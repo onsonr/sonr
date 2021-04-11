@@ -1,7 +1,6 @@
 package user
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -67,31 +66,30 @@ func IsDir(name string) (bool, error) {
 }
 
 // ^ WriteIncomingFile writes file to Disk ^
-func (sfs *FileSystem) ReadFile(name string) ([]byte, error) {
+func (sfs *FileSystem) ReadFile(name string) ([]byte, *md.SonrError) {
 	// Create File Path
 	path := filepath.Join(sfs.Main, name)
 
 	// @ Check for Path
 	if _, err := os.Stat(path); os.IsNotExist(err) {
-		return nil, errors.New("User File Does Not Exist")
+		return nil, md.NewError(err, md.ErrorMessage_USER_LOAD)
 	} else {
 		// @ Read User Data File
 		dat, err := os.ReadFile(path)
 		if err != nil {
-			return nil, err
+			return nil, md.NewError(err, md.ErrorMessage_USER_LOAD)
 		}
 		return dat, nil
 	}
 }
 
 // ^ WriteIncomingFile writes file to Disk ^
-func (sfs *FileSystem) WriteFile(name string, data []byte) (string, error) {
+func (sfs *FileSystem) WriteFile(name string, data []byte) (string, *md.SonrError) {
 	// Create File Path
 	path := filepath.Join(sfs.Main, name)
-
 	// Write File to Disk
 	if err := os.WriteFile(path, data, 0644); err != nil {
-		return "", err
+		return "", md.NewError(err, md.ErrorMessage_USER_FS)
 	}
 	return path, nil
 }
@@ -112,19 +110,19 @@ func (sfs *FileSystem) GetPathForPayload(load md.Payload, fileName string) strin
 }
 
 // @ Get Key: Returns Private key from disk if found ^ //
-func (sfs *FileSystem) getPrivateKey() (crypto.PrivKey, error) {
+func (sfs *FileSystem) getPrivateKey() (crypto.PrivKey, *md.SonrError) {
 	// @ Get Private Key
 	if ok := sfs.IsFile(K_SONR_PRIV_KEY); ok {
 		// Get Key File
-		buf, err := sfs.ReadFile(K_SONR_PRIV_KEY)
-		if err != nil {
-			return nil, err
+		buf, serr := sfs.ReadFile(K_SONR_PRIV_KEY)
+		if serr != nil {
+			return nil, serr
 		}
 
 		// Get Key from Buffer
 		key, err := crypto.UnmarshalPrivateKey(buf)
 		if err != nil {
-			return nil, err
+			return nil, md.NewError(err, md.ErrorMessage_HOST_KEY)
 		}
 
 		// Set Key Ref
@@ -133,19 +131,19 @@ func (sfs *FileSystem) getPrivateKey() (crypto.PrivKey, error) {
 		// Create New Key
 		privKey, _, err := crypto.GenerateKeyPair(crypto.Ed25519, -1)
 		if err != nil {
-			return nil, err
+			return nil, md.NewError(err, md.ErrorMessage_HOST_KEY)
 		}
 
 		// Marshal Data
 		buf, err := crypto.MarshalPrivateKey(privKey)
 		if err != nil {
-			return nil, err
+			return nil, md.NewError(err, md.ErrorMessage_MARSHAL)
 		}
 
 		// Write Key to File
-		_, err = sfs.WriteFile(K_SONR_PRIV_KEY, buf)
-		if err != nil {
-			return nil, err
+		_, werr := sfs.WriteFile(K_SONR_PRIV_KEY, buf)
+		if werr != nil {
+			return nil, md.NewError(err, md.ErrorMessage_USER_SAVE)
 		}
 
 		// Set Key Ref

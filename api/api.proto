@@ -121,8 +121,3 @@ message AuthReply {
   }
 }
 
-// Error Message returned from Core Library
-message ErrorMessage {
-  string message = 1; // Generated Error Message
-  string method = 2;  // Method Error Occurred
-}

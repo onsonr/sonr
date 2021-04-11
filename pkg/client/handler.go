@@ -1,8 +1,6 @@
 package client
 
 import (
-	"log"
-
 	"github.com/libp2p/go-libp2p-core/peer"
 	mg "github.com/libp2p/go-msgio"
 	se "github.com/sonr-io/core/internal/session"
@@ -21,7 +19,8 @@ func (n *Client) OnEvent(e *md.LobbyEvent) {
 	// Convert Message
 	bytes, err := proto.Marshal(e)
 	if err != nil {
-		log.Println("Cannot Marshal Error Protobuf: ", err)
+		n.call.Error(md.NewError(err, md.ErrorMessage_UNMARSHAL))
+		return
 	}
 
 	// Call Event
@@ -32,7 +31,7 @@ func (n *Client) OnEvent(e *md.LobbyEvent) {
 func (n *Client) OnRefresh(l *md.Lobby) {
 	bytes, err := proto.Marshal(l)
 	if err != nil {
-		log.Println("Cannot Marshal Error Protobuf: ", err)
+		n.call.Error(md.NewError(err, md.ErrorMessage_UNMARSHAL))
 		return
 	}
 	n.call.Refreshed(bytes)
@@ -53,15 +52,15 @@ func (n *Client) OnReply(id peer.ID, reply []byte, session *se.Session) {
 	resp := md.AuthReply{}
 	err := proto.Unmarshal(reply, &resp)
 	if err != nil {
-		n.call.Error(err, "handleReply")
+		n.call.Error(md.NewError(err, md.ErrorMessage_UNMARSHAL))
 	}
 
 	// Check for File Transfer
 	if resp.Decision && resp.Type == md.AuthReply_Transfer {
 		// Create New Auth Stream
-		stream, err := n.Host.StartStream(id, n.router.Transfer())
+		stream, err := n.Host.StartStream(id, n.router.Transfer(id))
 		if err != nil {
-			n.call.Error(err, "StartOutgoing")
+			n.call.Error(md.NewError(err, md.ErrorMessage_HOST_STREAM))
 			return
 		}
 
@@ -76,5 +75,5 @@ func (n *Client) OnReply(id peer.ID, reply []byte, session *se.Session) {
 // ^ OnResponded: Prepares for Incoming File Transfer when Accepted ^
 func (n *Client) OnResponded(inv *md.AuthInvite, p *md.Peer, fs *us.FileSystem) {
 	n.session = se.NewInSession(p, inv, fs, n.call)
-	n.Host.HandleStream(n.router.Transfer(), n.session.ReadFromStream)
+	n.Host.HandleStream(n.router.Transfer(n.Host.ID), n.session.ReadFromStream)
 }

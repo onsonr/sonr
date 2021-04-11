@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+// Require Go Package
+option go_package = "/models";
+
+// Error Message returned from Core Library
+message ErrorMessage {
+  Type type = 1;         // Error Type Occurred
+  Severity severity = 2; // 1-4 Scale of Error
+  string message = 3;    // Client Error Message
+  string error = 4;      // Received Error
+
+  // Error Type from Enum
+  enum Type {
+    MARSHAL = 0;
+    UNMARSHAL = 1;
+    IP_RESOLVE = 2;
+    IP_LOCATE = 3;
+    BOOTSTRAP = 4;
+    TOPIC_JOIN = 5;
+    TOPIC_CREATE = 6;
+    TOPIC_INVALID = 7;
+    TOPIC_RPC = 8;
+    TOPIC_SUB = 9;
+    TOPIC_HANDLER = 10;
+    TOPIC_LEAVE = 11;
+    TOPIC_MESSAGE = 12;
+    TOPIC_UPDATE = 13;
+    TRANSFER_START = 14;
+    TRANSFER_CHUNK = 15;
+    TRANSFER_END = 16;
+    USER_CREATE = 17;
+    USER_SAVE = 18;
+    USER_LOAD = 19;
+    USER_FS = 20;
+    USER_UPDATE = 21;
+    INCOMING = 22;
+    OUTGOING = 23;
+    SESSION = 24;
+    HOST_DHT = 25;
+    HOST_KEY = 26;
+    HOST_STREAM = 27;
+    HOST_START = 28;
+    HOST_PUBSUB = 29;
+    CRYPTO_GEN = 30;
+    PEER_NOT_FOUND_INVITE = 31;
+    PEER_NOT_FOUND_REPLY = 32;
+    PEER_NOT_FOUND_TRANSFER = 33;
+    URL_HTTP_GET = 34;
+    URL_INFO_RESP = 35;
+  }
+
+  enum Severity {
+    LOG = 0;
+    WARNING = 1;
+    CRITICAL = 2;
+    FATAL = 3;
+  }
+}

@@ -51,11 +51,7 @@ func NewMobileNode(reqBytes []byte, call Callback) *Node {
 	}
 
 	// Create New User
-	mn.user, err = u.NewUser(req, mn.callbackNode())
-	if err != nil {
-		sentry.CaptureException(errors.Wrap(err, "Creating User"))
-		return nil
-	}
+	mn.user = u.NewUser(req, mn.callbackNode())
 
 	// Create Client
 	mn.client = sc.NewClient(mn.contextNode(), req, mn.callbackNode())
@@ -84,10 +80,7 @@ func NewDesktopNode(req *md.ConnectionRequest, call Callback) *Node {
 	}
 
 	// Create New User
-	mn.user, err = u.NewUser(req, mn.callbackNode())
-	if err != nil {
-		sentry.CaptureException(errors.Wrap(err, "Creating User"))
-	}
+	mn.user = u.NewUser(req, mn.callbackNode())
 
 	// Create Client
 	mn.client = sc.NewClient(mn.contextNode(), req, mn.callbackNode())
@@ -103,7 +96,7 @@ func (mn *Node) Connect() {
 		// Connect Host
 		err := mn.client.Connect(mn.user.PrivateKey())
 		if err != nil {
-			sentry.CaptureException(errors.Wrap(err, "Failed to Start Host"))
+			mn.handleError(err)
 			mn.setConnected(false)
 			return
 		} else {
@@ -114,7 +107,7 @@ func (mn *Node) Connect() {
 		// Bootstrap Node
 		err = mn.client.Bootstrap()
 		if err != nil {
-			sentry.CaptureException(errors.Wrap(err, "Failed to bootstrap node"))
+			mn.handleError(err)
 			mn.setBootstrapped(false)
 			return
 		} else {
@@ -124,7 +117,7 @@ func (mn *Node) Connect() {
 		// Join Local Lobby
 		mn.local, err = mn.client.JoinLocal()
 		if err != nil {
-			sentry.CaptureException(errors.Wrap(err, "Failed to join local pubsub"))
+			mn.handleError(err)
 			mn.setJoinedLocal(false)
 			return
 		} else {
@@ -137,6 +130,11 @@ func (mn *Node) Connect() {
 // **-------------------** //
 // ** LifeCycle Actions ** //
 // **-------------------** //
+func (n *Node) NetworkSwitch() {
+	
+}
+
+
 // @ Close Ends All Network Communication
 func (mn *Node) Pause() {
 	md.GetState().Pause()

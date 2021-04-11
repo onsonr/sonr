@@ -40,11 +40,11 @@ type TopicHandler interface {
 	OnResponded(inv *md.AuthInvite, p *md.Peer, fs *us.FileSystem)
 }
 
-func JoinTopic(ctx context.Context, h *net.HostNode, p *md.Peer, name string, isLocal bool, th TopicHandler) (*TopicManager, error) {
+func JoinTopic(ctx context.Context, h *net.HostNode, p *md.Peer, name string, isLocal bool, th TopicHandler) (*TopicManager, *md.SonrError) {
 	// Join Topic
-	topic, sub, handler, err := h.Join(name)
-	if err != nil {
-		return nil, err
+	topic, sub, handler, serr := h.Join(name)
+	if serr != nil {
+		return nil, serr
 	}
 
 	// Check Peers
@@ -53,7 +53,7 @@ func JoinTopic(ctx context.Context, h *net.HostNode, p *md.Peer, name string, is
 		handler.Cancel()
 		sub.Cancel()
 		topic.Close()
-		return nil, errors.New("Lobby does not exist")
+		return nil, md.NewErrorWithType(md.ErrorMessage_TOPIC_INVALID)
 	}
 
 	// Create Lobby Manager
@@ -85,9 +85,9 @@ func JoinTopic(ctx context.Context, h *net.HostNode, p *md.Peer, name string, is
 	}
 
 	// Register Service
-	err = peersvServer.Register(&psv)
+	err := peersvServer.Register(&psv)
 	if err != nil {
-		return nil, err
+		return nil, md.NewError(err, md.ErrorMessage_TOPIC_RPC)
 	}
 
 	// Set Service
@@ -99,11 +99,11 @@ func JoinTopic(ctx context.Context, h *net.HostNode, p *md.Peer, name string, is
 }
 
 // ^ Create New Contained Topic Manager ^ //
-func NewTopic(ctx context.Context, h *net.HostNode, p *md.Peer, name string, isLocal bool, th TopicHandler) (*TopicManager, error) {
+func NewTopic(ctx context.Context, h *net.HostNode, p *md.Peer, name string, isLocal bool, th TopicHandler) (*TopicManager, *md.SonrError) {
 	// Join Topic
-	topic, sub, handler, err := h.Join(name)
-	if err != nil {
-		return nil, err
+	topic, sub, handler, serr := h.Join(name)
+	if serr != nil {
+		return nil, serr
 	}
 
 	// Create Lobby Manager
@@ -135,9 +135,9 @@ func NewTopic(ctx context.Context, h *net.HostNode, p *md.Peer, name string, isL
 	}
 
 	// Register Service
-	err = peersvServer.Register(&psv)
+	err := peersvServer.Register(&psv)
 	if err != nil {
-		return nil, err
+		return nil, md.NewError(err, md.ErrorMessage_TOPIC_RPC)
 	}
 
 	// Set Service

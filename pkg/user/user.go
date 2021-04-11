@@ -17,15 +17,14 @@ type User struct {
 }
 
 // ^ Method Initializes User Info Struct ^ //
-func NewUser(cr *md.ConnectionRequest, callback md.NodeCallback) (*User, error) {
-
+func NewUser(cr *md.ConnectionRequest, callback md.NodeCallback) *User {
 	// @ Return
 	return &User{
 		Call:    callback,
 		contact: cr.GetContact(),
 		device:  cr.Device,
 		config:  InitUserConfig(cr, callback),
-	}, nil
+	}
 }
 
 // ^ Get Peer returns Users Contact ^ //

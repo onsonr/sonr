@@ -12,7 +12,7 @@ import (
 )
 
 // ^ Create New Peer from Connection Request and Host ID ^ //
-func NewPeer(cr *ConnectionRequest, id peer.ID) (*Peer, error) {
+func NewPeer(cr *ConnectionRequest, id peer.ID) (*Peer, *SonrError) {
 	// Initialize
 	deviceID := cr.Device.GetId()
 	profile := Profile{
@@ -27,7 +27,7 @@ func NewPeer(cr *ConnectionRequest, id peer.ID) (*Peer, error) {
 	userID := fnv.New32a()
 	_, err := userID.Write([]byte(profile.GetUsername()))
 	if err != nil {
-		return nil, err
+		return nil, NewError(err, ErrorMessage_HOST_KEY)
 	}
 
 	// Check if ID not provided

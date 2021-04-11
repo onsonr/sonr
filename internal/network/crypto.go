@@ -6,6 +6,7 @@ import (
 	"math/big"
 
 	"github.com/pkg/errors"
+	md "github.com/sonr-io/core/pkg/models"
 	"github.com/tyler-smith/go-bip39/wordlists"
 )
 
@@ -39,17 +40,17 @@ var ErrUnsupportedLanguage = errors.New("unsupported language")
 
 // Random returns a slice of random words and their respective
 // integer values from the BIP39 wordlist of that given language.
-func RandomWords(lang string, count int) ([]int, []string, error) {
+func RandomWords(lang string, count int) ([]int, []string, *md.SonrError) {
 	wordList, err := wordsForLang(lang)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, md.NewError(err, md.ErrorMessage_CRYPTO_GEN)
 	}
 	words := make([]string, count)
 	ints := make([]int, count)
 	for i := 0; i < count; i++ {
 		rint, err := rand.Int(rand.Reader, big.NewInt(int64(len(wordList))))
 		if err != nil {
-			return nil, nil, err
+			return nil, nil, md.NewError(err, md.ErrorMessage_CRYPTO_GEN)
 		}
 		words[i] = wordList[rint.Int64()]
 		ints[i] = int(rint.Int64())
