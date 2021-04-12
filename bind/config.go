@@ -38,6 +38,10 @@ func (mn *Node) contextUser() context.Context {
 	return mn.config.Ctx
 }
 
+func (mn *Node) getStatus() md.Status {
+	return mn.config.Status
+}
+
 func (mn *Node) isReady() bool {
 	return mn.config.HasBootstrapped && mn.config.HasConnected
 }

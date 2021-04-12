@@ -8,6 +8,8 @@ import (
 
 // ** ─── CALLBACK MANAGEMENT ────────────────────────────────────────────────────────
 // Define Function Types
+type GetStatus func() Status
+type SetStatus func(s Status)
 type GetContact func() *Contact
 type OnProtobuf func([]byte)
 type OnInvite func(data []byte)
@@ -24,8 +26,10 @@ type NodeCallback struct {
 	Responded   OnProtobuf
 	Progressed  OnProgress
 	Received    OnReceived
+	Status      SetStatus
 	Transmitted OnTransmitted
 	Error       OnError
+	GetStatus   GetStatus
 }
 
 // @ Binary State Management ** //
