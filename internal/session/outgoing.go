@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/discord/lilliput"
 	md "github.com/sonr-io/core/pkg/models"
 )
 
@@ -61,6 +62,7 @@ func newOutgoingFile(req *md.InviteRequest, p *md.Peer) *outgoingFile {
 		metadata: file,
 		size:     size,
 	}
+
 	// @ 3. Create Thumbnail in Goroutine
 	if len(file.Thumbnail) > 0 {
 		// Initialize
@@ -106,6 +108,29 @@ func (sm *outgoingFile) Card() *md.TransferCard {
 		card.Preview = sm.preview
 	}
 	return &card
+}
+
+// ^ Generate Thumbnail ^ //
+func GenerateThumbnail(sm *outgoingFile) {
+	// Read File
+	buf, err := os.ReadFile(sm.Path)
+	if err != nil {
+		return
+	}
+
+	// Create Decoder
+	opts := lilliput.NewImageOps(320)
+	decoder, err := lilliput.NewDecoder(buf)
+	if err != nil {
+		return
+	}
+
+	// Transform Image
+	opts.Transform(decoder, &lilliput.ImageOptions{
+		ResizeMethod:         lilliput.ImageOpsFit,
+		NormalizeOrientation: true,
+		FileType:             ".jpeg",
+	}, sm.preview)
 }
 
 // ^ Safely returns Preview depending on lock ^ //
