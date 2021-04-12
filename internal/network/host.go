@@ -37,12 +37,6 @@ func NewHost(ctx context.Context, point string, privateKey crypto.PrivKey) (*Hos
 	// Initialize DHT
 	var kdhtRef *dht.IpfsDHT
 
-	// // Find Listen Addresses
-	// addrs := MultiAddrs()
-	// if len(addrs) == 0 {
-	// 	return nil, md.NewErrorWithType(md.ErrorMessage_IP_RESOLVE)
-	// }
-
 	// Find Listen Addresses
 	addrs, err := GetListenAddrStrings()
 	if err != nil {
@@ -56,9 +50,9 @@ func NewHost(ctx context.Context, point string, privateKey crypto.PrivKey) (*Hos
 		libp2p.Identity(privateKey),
 		libp2p.DefaultTransports,
 		libp2p.ConnectionManager(connmgr.NewConnManager(
-			10,               // Lowwater
-			15,               // HighWater,
-			REFRESH_DURATION, // GracePeriod
+			10,          // Lowwater
+			15,          // HighWater,
+			time.Minute, // GracePeriod
 		)),
 		libp2p.NATPortMap(),
 		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
