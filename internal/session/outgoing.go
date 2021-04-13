@@ -9,7 +9,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/discord/lilliput"
 	md "github.com/sonr-io/core/pkg/models"
 )
 
@@ -29,6 +28,11 @@ type outgoingFile struct {
 
 // ^ newOutgoingFile Processes Outgoing File ^ //
 func newOutgoingFile(req *md.InviteRequest, p *md.Peer) *outgoingFile {
+	var mime *md.MIME
+	var payload md.Payload
+	var size int32
+	var err error
+
 	// Check Values
 	if req == nil || p == nil {
 		return nil
@@ -37,20 +41,34 @@ func newOutgoingFile(req *md.InviteRequest, p *md.Peer) *outgoingFile {
 	// Get File Information
 	file := req.Files[len(req.Files)-1]
 
-	// Get Mime
-	mime, err := md.GetFileMime(file)
-	if err != nil {
-		return nil
+	// Check if Mime Provided
+	if file.Mime != nil {
+		mime = file.GetMime()
+	} else {
+		// Get Mime
+		mime, err = md.GetFileMime(file)
+		if err != nil {
+			return nil
+		}
 	}
 
-	// Get Size
-	size, err := md.GetFileSize(file)
-	if err != nil {
-		return nil
+	// Check if Size Provided
+	if file.Size != 0 {
+		size = file.GetSize()
+	} else {
+		// Get Size
+		size, err = md.GetFileSize(file)
+		if err != nil {
+			return nil
+		}
 	}
 
 	// Get Payload
-	payload := md.GetFilePayload(file)
+	if req.Payload != md.Payload_UNDEFINED {
+		payload = req.GetPayload()
+	} else {
+		payload = md.GetFilePayload(file)
+	}
 
 	// @ 1. Create new SafeFile
 	sm := &outgoingFile{
@@ -108,29 +126,6 @@ func (sm *outgoingFile) Card() *md.TransferCard {
 		card.Preview = sm.preview
 	}
 	return &card
-}
-
-// ^ Generate Thumbnail ^ //
-func GenerateThumbnail(sm *outgoingFile) {
-	// Read File
-	buf, err := os.ReadFile(sm.Path)
-	if err != nil {
-		return
-	}
-
-	// Create Decoder
-	opts := lilliput.NewImageOps(320)
-	decoder, err := lilliput.NewDecoder(buf)
-	if err != nil {
-		return
-	}
-
-	// Transform Image
-	opts.Transform(decoder, &lilliput.ImageOptions{
-		ResizeMethod:         lilliput.ImageOpsFit,
-		NormalizeOrientation: true,
-		FileType:             ".jpeg",
-	}, sm.preview)
 }
 
 // ^ Safely returns Preview depending on lock ^ //
