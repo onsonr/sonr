@@ -72,11 +72,12 @@ message InviteRequest {
   Peer to = 2;           // User thats being Invited
   bool isRemote = 3;     // If Transfer is Remote
   RemoteInfo remote = 4; // Remote Topic Name
+  Payload payload = 5;   // File Data being Sent
 
   // Attached Data
-  string url = 5;              // URL to be Sent - Optional
-  Contact contact = 6;         // Contact Card to be Sent - Optional
-  repeated Metadata files = 7; // Files to be Sent - Optional
+  string url = 6;              // URL to be Sent - Optional
+  Contact contact = 7;         // Contact Card to be Sent - Optional
+  repeated Metadata files = 8; // Files to be Sent - Optional
 
   // Enum for Type of Transfer
   enum TransferType {
@@ -120,4 +121,3 @@ message AuthReply {
     Cancel = 4;
   }
 }
-
