@@ -99,7 +99,7 @@ func GetFilePayload(m *Metadata) Payload {
 		} else if ext == ".txt" || ext == ".doc" || ext == ".docx" || ext == ".ttf" {
 			return Payload_TEXT
 		} else {
-			return Payload_UNDEFINED
+			return Payload_OTHER
 		}
 	}
 }

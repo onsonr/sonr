@@ -79,6 +79,7 @@ enum Payload {
   PDF = 5;          // PDF File
   PRESENTATION = 6; // Presentation based File from PPT or Keynote
   SPREADSHEET = 7;  // Spreadsheet based File from Excel or Numbers
+  OTHER = 8;        // Any other Kind of File
 }
 
 // RemoteInfo is for Joining/Creating a New Topic
