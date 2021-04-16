@@ -119,7 +119,7 @@ message Peer {
 enum Platform {
   Unknown = 0;
   Android = 1;
-  iOS = 2;
+  IOS = 2;
   MacOS = 3;
   Windows = 4;
   Linux = 5;
