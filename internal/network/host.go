@@ -54,7 +54,6 @@ func NewHost(ctx context.Context, point string, privateKey crypto.PrivKey) (*Hos
 			15,          // HighWater,
 			time.Minute, // GracePeriod
 		)),
-		libp2p.NATPortMap(),
 		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
 			// Create DHT
 			kdht, err := dht.New(ctx, h)
