@@ -15,8 +15,8 @@ import (
 type outgoingFile struct {
 	// References
 	Payload md.Payload
-	mime    *md.MIME
 	Path    string
+	mime    *md.MIME
 
 	// Private Properties
 	metadata *md.Metadata
