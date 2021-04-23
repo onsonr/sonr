@@ -195,6 +195,18 @@ message Position {
     double z = 3;
   }
 
+  message Magnometer {
+    double x = 1;
+    double y = 2;
+    double z = 3;
+  }
+
+  message Orientation {
+    double pitch = 1;
+    double roll = 2;
+    double yaw = 3;
+  }
+
   // Proximity is the Distance between Peers, from Ultrasonic
   enum Proximity {
     Unknown = 0;   // Unable to Calculate

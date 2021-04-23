@@ -268,10 +268,10 @@ func (p *Peer) SignUpdate() *LobbyEvent {
 
 // ^ Processes Update Request ^ //
 func (p *Peer) Update(u *UpdateRequest) {
-	if u.Type == UpdateRequest_Direction {
+	if u.Type == UpdateRequest_Position {
 		// Extract Data
-		facing := u.Facing
-		heading := u.Heading
+		facing := u.Position.Facing
+		heading := u.Position.Heading
 
 		// Update User Values
 		var faceDir float64
@@ -303,8 +303,8 @@ func (p *Peer) Update(u *UpdateRequest) {
 			Heading:          headDir,
 			HeadingAntipodal: headAnpd,
 			Designation:      Position_Designation(desg % 32),
-			Accelerometer:    u.Accelerometer,
-			Gyroscope:        u.Gyroscope,
+			Accelerometer:    u.Position.GetAccelerometer(),
+			Gyroscope:        u.Position.GetGyroscope(),
 		}
 	}
 
