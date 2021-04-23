@@ -146,6 +146,8 @@ message Position {
   Proximity proximity = 6;     // Proximity from the User - Calculated
   Accelerometer accelerometer = 7; // Accelerometer Values
   Gyroscope gyroscope = 8;         // Gyroscope Values
+  Magnometer magnometer = 9;       // Magnometer Values
+  Orientation orientation = 10;    // Orientation Values
 
   message Accelerometer {
     double x = 1;

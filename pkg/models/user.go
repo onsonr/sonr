@@ -305,6 +305,8 @@ func (p *Peer) Update(u *UpdateRequest) {
 			Designation:      Position_Designation(desg % 32),
 			Accelerometer:    u.Position.GetAccelerometer(),
 			Gyroscope:        u.Position.GetGyroscope(),
+			Magnometer:       u.Position.GetMagnometer(),
+			Orientation:      u.Position.GetOrientation(),
 		}
 	}
 
