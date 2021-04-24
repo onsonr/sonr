@@ -98,15 +98,13 @@ message TransferCard {
   int32 received = 3;  // SQL: UnixTime of received Date/Time
   bytes preview = 4;   // SQL: Thumbnail Preview Bytes
 
-  string username = 5;  // OWNER: Sonr Username Reference
-  string firstName = 6; // OWNER: General FirstName Reference
-  string lastName = 7;  // OWNER: General LastName Reference
-  Profile owner = 8;    // OWNER: General Profile
+  Profile receiver = 5; // PROFILE: General Receiver Info
+  Profile owner = 6;    // PROFILE: General Owner Info
 
-  Status status = 9;      // TRANSFER: Status of the Card - File Only
-  Contact contact = 10;   // DATA(Optional): Received Contact Information
-  Metadata metadata = 11; // DATA(Optional): Received a File or Media
-  URLLink url = 12;       // DATA(Optional): Received a Website Link
+  Status status = 7;     // TRANSFER: Status of the Card - File Only
+  Contact contact = 8;   // DATA(Optional): Received Contact Information
+  Metadata metadata = 9; // DATA(Optional): Received a File or Media
+  URLLink url = 10;      // DATA(Optional): Received a Website Link
 
   // Card Transfer Status
   enum Status {

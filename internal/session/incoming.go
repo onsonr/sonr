@@ -19,6 +19,7 @@ type incomingFile struct {
 	mutex    sync.Mutex
 	call     md.NodeCallback
 	owner    *md.Profile
+	receiver *md.Profile
 	payload  md.Payload
 	metadata *md.Metadata
 	preview  []byte
@@ -51,6 +52,7 @@ func newIncomingFile(p *md.Peer, inv *md.AuthInvite, fs *us.FileSystem, tc md.No
 		payload:  inv.Payload,
 		owner:    inv.From.Profile,
 		preview:  inv.Card.Preview,
+		receiver: p.GetProfile(),
 		call:     tc,
 
 		// Builders
@@ -127,10 +129,8 @@ func (t *incomingFile) Card() *md.TransferCard {
 		Status: md.TransferCard_COMPLETED,
 
 		// Owner Properties
-		Username:  t.owner.Username,
-		FirstName: t.owner.FirstName,
-		LastName:  t.owner.LastName,
-		Owner:     t.owner,
+
+		Owner: t.owner,
 
 		// Data Properties
 		Metadata: &md.Metadata{

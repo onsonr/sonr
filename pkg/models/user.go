@@ -111,10 +111,8 @@ func (p *Peer) SignInviteWithContact(c *Contact, flat bool, req *InviteRequest) 
 			Status: TransferCard_INVITE,
 
 			// Owner Properties
-			Username:  p.Profile.Username,
-			FirstName: p.Profile.FirstName,
-			LastName:  p.Profile.LastName,
-			Owner:     p.Profile,
+			Receiver: req.To.GetProfile(),
+			Owner:    p.Profile,
 
 			// Data Properties
 			Contact: c,
@@ -157,10 +155,8 @@ func (p *Peer) SignInviteWithLink(req *InviteRequest) AuthInvite {
 			Status: TransferCard_INVITE,
 
 			// Owner Properties
-			Username:  p.Profile.Username,
-			FirstName: p.Profile.FirstName,
-			LastName:  p.Profile.LastName,
-			Owner:     p.Profile,
+			Owner:    p.Profile,
+			Receiver: req.To.GetProfile(),
 
 			// Data Properties
 			Url: urlInfo,
@@ -169,7 +165,7 @@ func (p *Peer) SignInviteWithLink(req *InviteRequest) AuthInvite {
 }
 
 // ^ SignReply Creates AuthReply ^
-func (p *Peer) SignReply(d bool, req *RespondRequest) *AuthReply {
+func (p *Peer) SignReply(d bool, req *RespondRequest, to *Peer) *AuthReply {
 	return &AuthReply{
 		From:     p,
 		Type:     AuthReply_Transfer,
@@ -185,16 +181,14 @@ func (p *Peer) SignReply(d bool, req *RespondRequest) *AuthReply {
 			Status: TransferCard_REPLY,
 
 			// Owner Properties
-			Username:  p.Profile.Username,
-			FirstName: p.Profile.FirstName,
-			LastName:  p.Profile.LastName,
-			Owner:     p.Profile,
+			Owner:    p.Profile,
+			Receiver: to.GetProfile(),
 		},
 	}
 }
 
 // ^ SignReply Creates AuthReply with Contact  ^
-func (p *Peer) SignReplyWithContact(c *Contact, flat bool, req *RespondRequest) *AuthReply {
+func (p *Peer) SignReplyWithContact(c *Contact, flat bool, req *RespondRequest, to *Peer) *AuthReply {
 	// Set Reply Type
 	var kind AuthReply_Type
 	if flat {
@@ -220,10 +214,8 @@ func (p *Peer) SignReplyWithContact(c *Contact, flat bool, req *RespondRequest) 
 				Status: TransferCard_REPLY,
 
 				// Owner Properties
-				Username:  p.Profile.Username,
-				FirstName: p.Profile.FirstName,
-				LastName:  p.Profile.LastName,
-				Owner:     p.Profile,
+				Owner:    p.Profile,
+				Receiver: to.GetProfile(),
 
 				// Data Properties
 				Contact: c,
@@ -244,10 +236,8 @@ func (p *Peer) SignReplyWithContact(c *Contact, flat bool, req *RespondRequest) 
 				Status: TransferCard_REPLY,
 
 				// Owner Properties
-				Username:  p.Profile.Username,
-				FirstName: p.Profile.FirstName,
-				LastName:  p.Profile.LastName,
-				Owner:     p.Profile,
+				Owner:    p.Profile,
+				Receiver: to.GetProfile(),
 
 				// Data Properties
 				Contact: c,

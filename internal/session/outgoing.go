@@ -22,7 +22,8 @@ type outgoingFile struct {
 	metadata *md.Metadata
 	request  *md.InviteRequest
 	preview  []byte
-	peer     *md.Peer
+	owner    *md.Peer
+	receiver *md.Peer
 	size     int32
 }
 
@@ -76,7 +77,8 @@ func newOutgoingFile(req *md.InviteRequest, p *md.Peer) *outgoingFile {
 		Payload:  payload,
 		request:  req,
 		mime:     mime,
-		peer:     p,
+		receiver: req.To,
+		owner:    p,
 		metadata: file,
 		size:     size,
 	}
@@ -115,11 +117,9 @@ func (sm *outgoingFile) Card() *md.TransferCard {
 		Preview: sm.preview,
 
 		// Owner Properties
-		Username:  sm.peer.Profile.Username,
-		FirstName: sm.peer.Profile.FirstName,
-		LastName:  sm.peer.Profile.LastName,
-		Owner:     sm.peer.Profile,
-		Metadata:  sm.metadata,
+		Receiver: sm.receiver.GetProfile(),
+		Owner:    sm.owner.GetProfile(),
+		Metadata: sm.metadata,
 	}
 
 	if len(sm.preview) > 0 {
