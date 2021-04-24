@@ -121,7 +121,7 @@ func WriteToStream(writer msgio.WriteCloser, s *Session) {
 	}
 
 	// Call Completed Sending
-	s.callback.Transmitted(s.receiver)
+	s.callback.Transmitted(s.outgoing.Card())
 }
 
 // ^ Helper: Chunks string based on B64ChunkSize ^ //

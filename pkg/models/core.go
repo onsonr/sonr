@@ -15,7 +15,7 @@ type OnProtobuf func([]byte)
 type OnInvite func(data []byte)
 type OnProgress func(data float32)
 type OnReceived func(data *TransferCard)
-type OnTransmitted func(data *Peer)
+type OnTransmitted func(data *TransferCard)
 type OnError func(err *SonrError)
 type NodeCallback struct {
 	Contact     GetContact
