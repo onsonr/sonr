@@ -10,7 +10,7 @@ import (
 
 	// Local
 	// brprot "berty.tech/berty/v2/go/pkg/bertyprotocol"
-	net "github.com/sonr-io/core/internal/network"
+	net "github.com/sonr-io/core/internal/host"
 	se "github.com/sonr-io/core/internal/session"
 )
 

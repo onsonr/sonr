@@ -8,7 +8,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/protocol"
 	rpc "github.com/libp2p/go-libp2p-gorpc"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	net "github.com/sonr-io/core/internal/network"
+	net "github.com/sonr-io/core/internal/host"
 	se "github.com/sonr-io/core/internal/session"
 	md "github.com/sonr-io/core/pkg/models"
 	us "github.com/sonr-io/core/pkg/user"
