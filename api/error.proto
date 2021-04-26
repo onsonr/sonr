@@ -48,6 +48,7 @@ message ErrorMessage {
     PEER_NOT_FOUND_TRANSFER = 33;
     URL_HTTP_GET = 34;
     URL_INFO_RESP = 35;
+    FAILED_CONNECTION = 36;
   }
 
   enum Severity {

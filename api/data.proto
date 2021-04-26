@@ -17,11 +17,12 @@ message Lobby {
 
 // Message Sent when peer messages Lobby Topic
 message LobbyEvent {
-  string id = 1;      // Peer ID
-  Event event = 2;    // What Peer is Doing
-  Peer from = 3;      // User Information
-  string to = 4;      // Peer ID for DM
-  string message = 5; // Message being sent
+  string id = 1;        // Peer ID
+  Event event = 2;      // What Peer is Doing
+  Peer from = 3;        // User Information
+  string to = 4;        // Peer ID for DM
+  string message = 5;   // Message being sent
+  string multiAddr = 6; // Peer MultiAddrs
 
   enum Event {
     EXCHANGE = 0; // Peer has joined wants Info

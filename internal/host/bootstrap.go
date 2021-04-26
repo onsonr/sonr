@@ -46,3 +46,25 @@ func (h *HostNode) Bootstrap() *md.SonrError {
 	go h.handleDHTPeers(routingDiscovery)
 	return nil
 }
+
+// ^ Join New Topic with Name ^
+func (h *HostNode) Join(name string) (*psub.Topic, *psub.Subscription, *psub.TopicEventHandler, *md.SonrError) {
+	// Join Topic
+	topic, err := h.Pubsub.Join(name)
+	if err != nil {
+		return nil, nil, nil, md.NewError(err, md.ErrorMessage_TOPIC_JOIN)
+	}
+
+	// Subscribe to Topic
+	sub, err := topic.Subscribe()
+	if err != nil {
+		return nil, nil, nil, md.NewError(err, md.ErrorMessage_TOPIC_SUB)
+	}
+
+	// Create Topic Handler
+	handler, err := topic.EventHandler()
+	if err != nil {
+		return nil, nil, nil, md.NewError(err, md.ErrorMessage_TOPIC_HANDLER)
+	}
+	return topic, sub, handler, nil
+}
