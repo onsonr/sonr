@@ -65,7 +65,6 @@ func GetInternalAddrStrings() []string {
 	listenAddrs := []string{
 		fmt.Sprintf("/ip4/0.0.0.0/tcp/%d", p),
 	}
-
 	return listenAddrs
 }
 
