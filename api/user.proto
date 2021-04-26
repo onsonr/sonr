@@ -103,9 +103,10 @@ message Peer {
 
   // ID References
   message ID {
-    string peer = 1;   // Host PeerID
-    string device = 2; // Device ID
-    uint32 user = 3;   // User ID
+    string peer = 1;      // Host PeerID
+    string device = 2;    // Device ID
+    uint32 user = 3;      // User ID
+    string multiAddr = 4; // Peer MultiAddr
   }
 
   // Properties

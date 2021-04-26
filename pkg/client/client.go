@@ -48,12 +48,19 @@ func (c *Client) Connect(pk crypto.PrivKey) *md.SonrError {
 		return err
 	}
 
-	// Set Peer
-	c.Peer, err = md.NewPeer(c.req, hn.ID)
+	// Get MultiAddrs
+	maddr, err := hn.MultiAddr()
 	if err != nil {
 		return err
 	}
 
+	// Set Peer
+	c.Peer, err = md.NewPeer(c.req, hn.ID, maddr)
+	if err != nil {
+		return err
+	}
+
+	// Set Host
 	c.Host = hn
 	return nil
 }

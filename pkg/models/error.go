@@ -201,6 +201,8 @@ func generateError(errType ErrorMessage_Type) (string, ErrorMessage_Severity) {
 		return "Failed to parse URL Response", ErrorMessage_WARNING
 	case ErrorMessage_FAILED_CONNECTION:
 		return "Failed to connect to Nearby Peer", ErrorMessage_WARNING
+	case ErrorMessage_HOST_INFO:
+		return "Failed to generate User Peer Info", ErrorMessage_CRITICAL
 	default:
 		return "Unknown", ErrorMessage_LOG
 	}

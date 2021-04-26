@@ -49,6 +49,7 @@ message ErrorMessage {
     URL_HTTP_GET = 34;
     URL_INFO_RESP = 35;
     FAILED_CONNECTION = 36;
+    HOST_INFO = 37;
   }
 
   enum Severity {

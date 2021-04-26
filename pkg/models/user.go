@@ -8,11 +8,12 @@ import (
 
 	mid "github.com/denisbrodbeck/machineid"
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/multiformats/go-multiaddr"
 	"google.golang.org/protobuf/proto"
 )
 
 // ^ Create New Peer from Connection Request and Host ID ^ //
-func NewPeer(cr *ConnectionRequest, id peer.ID) (*Peer, *SonrError) {
+func NewPeer(cr *ConnectionRequest, id peer.ID, maddr multiaddr.Multiaddr) (*Peer, *SonrError) {
 	// Initialize
 	deviceID := cr.Device.GetId()
 	profile := Profile{
