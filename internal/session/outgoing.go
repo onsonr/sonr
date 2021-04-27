@@ -15,19 +15,25 @@ import (
 type outgoingFile struct {
 	// References
 	Payload md.Payload
-	mime    *md.MIME
 	Path    string
+	mime    *md.MIME
 
 	// Private Properties
 	metadata *md.Metadata
 	request  *md.InviteRequest
 	preview  []byte
-	peer     *md.Peer
+	owner    *md.Peer
+	receiver *md.Peer
 	size     int32
 }
 
 // ^ newOutgoingFile Processes Outgoing File ^ //
 func newOutgoingFile(req *md.InviteRequest, p *md.Peer) *outgoingFile {
+	var mime *md.MIME
+	var payload md.Payload
+	var size int32
+	var err error
+
 	// Check Values
 	if req == nil || p == nil {
 		return nil
@@ -36,20 +42,34 @@ func newOutgoingFile(req *md.InviteRequest, p *md.Peer) *outgoingFile {
 	// Get File Information
 	file := req.Files[len(req.Files)-1]
 
-	// Get Mime
-	mime, err := md.GetFileMime(file)
-	if err != nil {
-		return nil
+	// Check if Mime Provided
+	if file.Mime != nil {
+		mime = file.GetMime()
+	} else {
+		// Get Mime
+		mime, err = md.GetFileMime(file)
+		if err != nil {
+			return nil
+		}
 	}
 
-	// Get Size
-	size, err := md.GetFileSize(file)
-	if err != nil {
-		return nil
+	// Check if Size Provided
+	if file.Size != 0 {
+		size = file.GetSize()
+	} else {
+		// Get Size
+		size, err = md.GetFileSize(file)
+		if err != nil {
+			return nil
+		}
 	}
 
 	// Get Payload
-	payload := md.GetFilePayload(file)
+	if req.Payload != md.Payload_UNDEFINED {
+		payload = req.GetPayload()
+	} else {
+		payload = md.GetFilePayload(file)
+	}
 
 	// @ 1. Create new SafeFile
 	sm := &outgoingFile{
@@ -57,10 +77,12 @@ func newOutgoingFile(req *md.InviteRequest, p *md.Peer) *outgoingFile {
 		Payload:  payload,
 		request:  req,
 		mime:     mime,
-		peer:     p,
+		receiver: req.To,
+		owner:    p,
 		metadata: file,
 		size:     size,
 	}
+
 	// @ 3. Create Thumbnail in Goroutine
 	if len(file.Thumbnail) > 0 {
 		// Initialize
@@ -95,11 +117,9 @@ func (sm *outgoingFile) Card() *md.TransferCard {
 		Preview: sm.preview,
 
 		// Owner Properties
-		Username:  sm.peer.Profile.Username,
-		FirstName: sm.peer.Profile.FirstName,
-		LastName:  sm.peer.Profile.LastName,
-		Owner:     sm.peer.Profile,
-		Metadata:  sm.metadata,
+		Receiver: sm.receiver.GetProfile(),
+		Owner:    sm.owner.GetProfile(),
+		Metadata: sm.metadata,
 	}
 
 	if len(sm.preview) > 0 {

@@ -8,11 +8,12 @@ import (
 
 	mid "github.com/denisbrodbeck/machineid"
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/multiformats/go-multiaddr"
 	"google.golang.org/protobuf/proto"
 )
 
 // ^ Create New Peer from Connection Request and Host ID ^ //
-func NewPeer(cr *ConnectionRequest, id peer.ID) (*Peer, *SonrError) {
+func NewPeer(cr *ConnectionRequest, id peer.ID, maddr multiaddr.Multiaddr) (*Peer, *SonrError) {
 	// Initialize
 	deviceID := cr.Device.GetId()
 	profile := Profile{
@@ -111,10 +112,8 @@ func (p *Peer) SignInviteWithContact(c *Contact, flat bool, req *InviteRequest) 
 			Status: TransferCard_INVITE,
 
 			// Owner Properties
-			Username:  p.Profile.Username,
-			FirstName: p.Profile.FirstName,
-			LastName:  p.Profile.LastName,
-			Owner:     p.Profile,
+			Receiver: req.To.GetProfile(),
+			Owner:    p.Profile,
 
 			// Data Properties
 			Contact: c,
@@ -157,10 +156,8 @@ func (p *Peer) SignInviteWithLink(req *InviteRequest) AuthInvite {
 			Status: TransferCard_INVITE,
 
 			// Owner Properties
-			Username:  p.Profile.Username,
-			FirstName: p.Profile.FirstName,
-			LastName:  p.Profile.LastName,
-			Owner:     p.Profile,
+			Owner:    p.Profile,
+			Receiver: req.To.GetProfile(),
 
 			// Data Properties
 			Url: urlInfo,
@@ -169,7 +166,7 @@ func (p *Peer) SignInviteWithLink(req *InviteRequest) AuthInvite {
 }
 
 // ^ SignReply Creates AuthReply ^
-func (p *Peer) SignReply(d bool, req *RespondRequest) *AuthReply {
+func (p *Peer) SignReply(d bool, req *RespondRequest, to *Peer) *AuthReply {
 	return &AuthReply{
 		From:     p,
 		Type:     AuthReply_Transfer,
@@ -185,16 +182,14 @@ func (p *Peer) SignReply(d bool, req *RespondRequest) *AuthReply {
 			Status: TransferCard_REPLY,
 
 			// Owner Properties
-			Username:  p.Profile.Username,
-			FirstName: p.Profile.FirstName,
-			LastName:  p.Profile.LastName,
-			Owner:     p.Profile,
+			Owner:    p.Profile,
+			Receiver: to.GetProfile(),
 		},
 	}
 }
 
 // ^ SignReply Creates AuthReply with Contact  ^
-func (p *Peer) SignReplyWithContact(c *Contact, flat bool, req *RespondRequest) *AuthReply {
+func (p *Peer) SignReplyWithContact(c *Contact, flat bool, req *RespondRequest, to *Peer) *AuthReply {
 	// Set Reply Type
 	var kind AuthReply_Type
 	if flat {
@@ -220,10 +215,8 @@ func (p *Peer) SignReplyWithContact(c *Contact, flat bool, req *RespondRequest) 
 				Status: TransferCard_REPLY,
 
 				// Owner Properties
-				Username:  p.Profile.Username,
-				FirstName: p.Profile.FirstName,
-				LastName:  p.Profile.LastName,
-				Owner:     p.Profile,
+				Owner:    p.Profile,
+				Receiver: to.GetProfile(),
 
 				// Data Properties
 				Contact: c,
@@ -244,10 +237,8 @@ func (p *Peer) SignReplyWithContact(c *Contact, flat bool, req *RespondRequest) 
 				Status: TransferCard_REPLY,
 
 				// Owner Properties
-				Username:  p.Profile.Username,
-				FirstName: p.Profile.FirstName,
-				LastName:  p.Profile.LastName,
-				Owner:     p.Profile,
+				Owner:    p.Profile,
+				Receiver: to.GetProfile(),
 
 				// Data Properties
 				Contact: c,
@@ -268,10 +259,10 @@ func (p *Peer) SignUpdate() *LobbyEvent {
 
 // ^ Processes Update Request ^ //
 func (p *Peer) Update(u *UpdateRequest) {
-	if u.Type == UpdateRequest_Direction {
+	if u.Type == UpdateRequest_Position {
 		// Extract Data
-		facing := u.Facing
-		heading := u.Heading
+		facing := u.Position.Facing
+		heading := u.Position.Heading
 
 		// Update User Values
 		var faceDir float64
@@ -303,8 +294,10 @@ func (p *Peer) Update(u *UpdateRequest) {
 			Heading:          headDir,
 			HeadingAntipodal: headAnpd,
 			Designation:      Position_Designation(desg % 32),
-			Accelerometer:    u.Accelerometer,
-			Gyroscope:        u.Gyroscope,
+			Accelerometer:    u.Position.GetAccelerometer(),
+			Gyroscope:        u.Position.GetGyroscope(),
+			Magnometer:       u.Position.GetMagnometer(),
+			Orientation:      u.Position.GetOrientation(),
 		}
 	}
 

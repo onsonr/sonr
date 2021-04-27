@@ -50,12 +50,12 @@ func (mn *Node) invited(data []byte) {
 }
 
 // ^ transmitted Callback middleware post transfer ^ //
-func (mn *Node) transmitted(peer *md.Peer) {
+func (mn *Node) transmitted(card *md.TransferCard) {
 	// Update Status
 	mn.setStatus(md.Status_AVAILABLE)
 
 	// Convert Protobuf to bytes
-	msgBytes, err := proto.Marshal(peer)
+	msgBytes, err := proto.Marshal(card)
 	if err != nil {
 		mn.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
 		return

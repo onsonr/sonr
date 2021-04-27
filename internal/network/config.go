@@ -1,31 +1,16 @@
 package network
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"net"
-	"net/http"
 	"os"
 
-	exip "github.com/glendc/go-external-ip"
 	"github.com/libp2p/go-libp2p-core/peer"
 	ma "github.com/multiformats/go-multiaddr"
-	manet "github.com/multiformats/go-multiaddr/net"
 	"github.com/pkg/errors"
-	md "github.com/sonr-io/core/pkg/models"
+
 )
-
-type AddrsFactory func(addrs []ma.Multiaddr) []ma.Multiaddr
-
-// ^ Returns Location from GeoIP ^ //
-func Location(target *md.GeoIP) error {
-	r, err := http.Get("https://api.ipgeolocationapi.com/geolocate")
-	if err != nil {
-		log.Fatalln(err)
-	}
-	return json.NewDecoder(r.Body).Decode(target)
-}
 
 // ^ Return Bootstrap List Address Info ^ //
 func GetBootstrapAddrInfo() ([]peer.AddrInfo, error) {
@@ -58,37 +43,6 @@ func GetBootstrapAddrInfo() ([]peer.AddrInfo, error) {
 	return ds, nil
 }
 
-// ^ Failsafe to Return External IP ^ //
-func GetExternalIPMultiAddr(port int) ma.Multiaddr {
-	// Default consensus
-	consensus := exip.DefaultConsensus(nil, nil)
-
-	// Return IP
-	externalIP, err := consensus.ExternalIP()
-	if err != nil {
-		return nil
-	}
-
-	// Check for ipv4
-	if ipv4 := externalIP.To4(); ipv4 != nil {
-		maddr, err := ma.NewMultiaddr(fmt.Sprintf("/ipv4/%s/tcp/%d", ipv4.String(), port))
-		if err != nil {
-			return nil
-		}
-		return maddr
-	}
-
-	// Check for ipv6
-	if ipv6 := externalIP.To16(); ipv6 != nil {
-		maddr, err := ma.NewMultiaddr(fmt.Sprintf("/ipv6/%s/tcp/%d", ipv6.String(), port))
-		if err != nil {
-			return nil
-		}
-		return maddr
-	}
-	return nil
-}
-
 // ^ GetFreePort asks the kernel for a free open port that is ready to use. ^
 func GetFreePort() (int, error) {
 	addr, err := net.ResolveTCPAddr("tcp", "localhost:0")
@@ -104,27 +58,18 @@ func GetFreePort() (int, error) {
 	return l.Addr().(*net.TCPAddr).Port, nil
 }
 
-// ^ GetFreePort asks the kernel for free open ports that are ready to use. ^
-func GetFreePorts(count int) ([]int, error) {
-	var ports []int
-	for i := 0; i < count; i++ {
-		addr, err := net.ResolveTCPAddr("tcp", "localhost:0")
-		if err != nil {
-			return nil, err
-		}
-
-		l, err := net.ListenTCP("tcp", addr)
-		if err != nil {
-			return nil, err
-		}
-		defer l.Close()
-		ports = append(ports, l.Addr().(*net.TCPAddr).Port)
+// ^ Return Internal Addr Strings ^ //
+func GetInternalAddrStrings() []string {
+	// Initialize
+	p, _ := GetFreePort()
+	listenAddrs := []string{
+		fmt.Sprintf("/ip4/0.0.0.0/tcp/%d", p),
 	}
-	return ports, nil
+	return listenAddrs
 }
 
 // ^ Return Device Listening Addresses ^ //
-func GetListenAddrStrings() ([]string, error) {
+func GetExternalAddrStrings() ([]string, error) {
 	// Initialize
 	listenAddrs := []string{}
 	hasIpv4 := false
@@ -156,86 +101,19 @@ func GetListenAddrStrings() ([]string, error) {
 func iPv4Addrs() ([]string, error) {
 	osHost, _ := os.Hostname()
 	addrs, _ := net.LookupIP(osHost)
+
+	p, _ := GetFreePort()
+
 	// Iterate through addresses
 	for _, addr := range addrs {
 		// @ Set IPv4
 		if ipv4 := addr.To4(); ipv4 != nil {
 			ip4 := ipv4.String()
 			return []string{
-				fmt.Sprintf("/ip4/%s/tcp/0", ip4),
+				fmt.Sprintf("/ip4/%s/tcp/%d", ip4, p),
 			}, nil
 
 		}
 	}
 	return nil, errors.New("No IPV4 found")
-}
-
-// @ Return MultiAddrs using Net Host
-func MultiAddrs() []ma.Multiaddr {
-	// Local IP lookup
-	osHost, _ := os.Hostname()
-	addrs, _ := net.LookupIP(osHost)
-	multiAddrs := []ma.Multiaddr{}
-
-	// Get Free Port
-	port, err := GetFreePort()
-	if err != nil {
-		port = 60214
-	}
-
-	// // Add External IP
-	// if extMultiAddr := GetExternalIPMultiAddr(port); extMultiAddr != nil {
-	// 	multiAddrs = append(multiAddrs, extMultiAddr)
-	// }
-
-	// Iterate through Net Addrs
-	for _, addr := range addrs {
-		// Add ipv4
-		if ipv4 := addr.To4(); ipv4 != nil {
-			if IsValidIPv4(ipv4) {
-				maddr, err := ma.NewMultiaddr(fmt.Sprintf("/ip4/%s/tcp/%d", ipv4.String(), port))
-				if err == nil {
-					multiAddrs = append(multiAddrs, maddr)
-				}
-			}
-		}
-	}
-	return multiAddrs
-}
-
-// @ Validates Not Private IPv4
-func IsValidIPv4(ip net.IP) bool {
-	// Local Link
-	if !ip.IsGlobalUnicast() {
-		return false
-	}
-
-	// Known Private iPv4
-	for _, item := range manet.Private4 {
-		if item.IP.Equal(ip) {
-			return false
-		}
-	}
-	return true
-}
-
-// @ Validates Not Private IPv6
-func IsValidIPv6(ip net.IP) bool {
-	// Local Link
-	if !ip.IsGlobalUnicast() {
-		return false
-	}
-
-	// Remove Unspecified IPv6
-	if ip.IsUnspecified() {
-		return false
-	}
-
-	// Known Private iPv6
-	for _, item := range manet.Private6 {
-		if item.IP.Equal(ip) {
-			return false
-		}
-	}
-	return true
 }

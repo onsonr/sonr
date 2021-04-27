@@ -10,7 +10,7 @@ import (
 
 	// Local
 	// brprot "berty.tech/berty/v2/go/pkg/bertyprotocol"
-	net "github.com/sonr-io/core/internal/network"
+	net "github.com/sonr-io/core/internal/host"
 	se "github.com/sonr-io/core/internal/session"
 )
 
@@ -48,12 +48,19 @@ func (c *Client) Connect(pk crypto.PrivKey) *md.SonrError {
 		return err
 	}
 
-	// Set Peer
-	c.Peer, err = md.NewPeer(c.req, hn.ID)
+	// Get MultiAddrs
+	maddr, err := hn.MultiAddr()
 	if err != nil {
 		return err
 	}
 
+	// Set Peer
+	c.Peer, err = md.NewPeer(c.req, hn.ID, maddr)
+	if err != nil {
+		return err
+	}
+
+	// Set Host
 	c.Host = hn
 	return nil
 }

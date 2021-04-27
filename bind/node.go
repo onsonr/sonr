@@ -105,14 +105,14 @@ func (mn *Node) LeaveRemote(data []byte) {
 func (mn *Node) Update(data []byte) {
 	if mn.isReady() {
 		// Initialize from Request
-		udpate := &md.UpdateRequest{}
-		if err := proto.Unmarshal(data, udpate); err != nil {
+		update := &md.UpdateRequest{}
+		if err := proto.Unmarshal(data, update); err != nil {
 			mn.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
 			return
 		}
 
 		// Update Peer
-		mn.client.Peer.Update(udpate)
+		mn.client.Peer.Update(update)
 
 		// Notify Local Lobby
 		err := mn.client.Update(mn.local)
