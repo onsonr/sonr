@@ -1,7 +1,7 @@
 SHELL=/bin/zsh # Set Shell
 SONR_ROOT_DIR=/Users/prad/Sonr # Set this to Folder of Sonr
-ANDROID_BINDDIR=/Users/prad/Sonr/mobile/plugins/sonr/android/libs
-IOS_BINDDIR=/Users/prad/Sonr/mobile/plugins/sonr/ios/Frameworks
+ANDROID_BINDDIR=/Users/prad/Sonr/plugin/android/libs
+IOS_BINDDIR=/Users/prad/Sonr/plugin/ios/Frameworks
 
 # @ Packaging Vars/Commands
 GOMOBILE=gomobile
@@ -16,13 +16,11 @@ ANDROID_ARTIFACT= $(ANDROID_BINDDIR)/io.sonr.core.aar
 
 # @ Proto Directories
 PB_PATH=/Users/prad/Sonr/core/api
-CONTACT_PB_DIR=/Users/prad/Sonr/contact/lib/src/data/models
 CORE_PB_DIR=/Users/prad/Sonr/core/pkg
-PLUGIN_PB_DIR=/Users/prad/Sonr/mobile/plugins/sonr/lib/src/core/models
+PLUGIN_PB_DIR=/Users/prad/Sonr/plugin/lib/src/core/models
 PROTO_DOC_DIR=/Users/prad/Sonr/docs/proto
 
 # @ Proto Build Commands
-PB_BUILD_CONTACT="--dart_out=$(CONTACT_PB_DIR)"
 PB_BUILD_CORE="--go_out=$(CORE_PB_DIR)"
 PB_BUILD_RPC="--go-grpc_out=$(CORE_PB_DIR)"
 PB_BUILD_PLUGIN="--dart_out=$(PLUGIN_PB_DIR)"
@@ -89,7 +87,6 @@ proto:
 	@echo "--------------------------------------------------------------"
 	@cd api && protoc --doc_out=$(PROTO_DOC_DIR) --doc_opt=html,index.html api.proto data.proto core.proto error.proto user.proto
 	@cd api && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CORE) api.proto data.proto core.proto error.proto user.proto
-	@cd api && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_CONTACT) user.proto
 	@cd api && protoc -I. --proto_path=$(PB_PATH) $(PB_BUILD_PLUGIN) api.proto data.proto error.proto user.proto
 	@echo "Finished Compiling ➡ " && date
 	@echo "--------------------------------------------------------------"
