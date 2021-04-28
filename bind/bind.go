@@ -59,7 +59,7 @@ func NewMobileNode(reqBytes []byte, call Callback) *Node {
 }
 
 // @ Create New Desktop Node
-func NewDesktopNode(req *md.ConnectionRequest, call Callback) *Node {
+func NewDesktopNode(req *md.ConnectionRequest) *Node {
 	// Get Location by IP
 	geoIP := md.GeoIP{}
 	err := network.Location(&geoIP)
@@ -73,7 +73,7 @@ func NewDesktopNode(req *md.ConnectionRequest, call Callback) *Node {
 
 	// Create Mobile Node
 	mn := &Node{
-		call:    call,
+		// call:    call,
 		config:  newNodeConfig(),
 		connreq: req,
 		topics:  make(map[string]*tpc.TopicManager, 10),
@@ -131,9 +131,8 @@ func (mn *Node) Connect() {
 // ** LifeCycle Actions ** //
 // **-------------------** //
 func (n *Node) NetworkSwitch() {
-	
-}
 
+}
 
 // @ Close Ends All Network Communication
 func (mn *Node) Pause() {
