@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
+	olc "github.com/google/open-location-code/go"
 	"github.com/h2non/filetype"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"google.golang.org/protobuf/proto"
@@ -14,7 +15,6 @@ import (
 // ***************************** //
 // ** ConnectionRequest Mgnmt ** //
 // ***************************** //
-
 func (req *ConnectionRequest) AttachGeoToRequest(geo *GeoIP) *ConnectionRequest {
 	if req.Latitude != 0 && req.Longitude != 0 {
 		return req
@@ -24,8 +24,35 @@ func (req *ConnectionRequest) AttachGeoToRequest(geo *GeoIP) *ConnectionRequest 
 	return req
 }
 
+func (g *GeoIP) GetLocation() *Location {
+	return &Location{
+		IsFromIP:    true,
+		Name:        g.Name,
+		Continent:   g.Continent,
+		CountryCode: g.CountryCode,
+		Latitude:    g.Geo.Latitude,
+		Longitude:   g.Geo.Longitude,
+		MinorOlc:    olc.Encode(float64(g.Geo.Latitude), float64(g.Geo.Longitude), 6),
+		MajorOlc:    olc.Encode(float64(g.Geo.Latitude), float64(g.Geo.Longitude), 4),
+	}
+}
+
+func (req *ConnectionRequest) GetLocation() *Location {
+	return &Location{
+		IsFromIP:  false,
+		Latitude:  req.Latitude,
+		Longitude: req.Longitude,
+		MinorOlc:  olc.Encode(float64(req.Latitude), float64(req.Longitude), 6),
+		MajorOlc:  olc.Encode(float64(req.Latitude), float64(req.Longitude), 4),
+	}
+}
+
+func (req *ConnectionRequest) IsDesktop() bool {
+	return req.Device.Platform == Platform_MacOS || req.Device.Platform == Platform_Linux || req.Device.Platform == Platform_Windows
+}
+
 func (req *ConnectionRequest) IsMobile() bool {
-	return !req.Device.IsDesktop
+	return req.Device.Platform == Platform_IOS || req.Device.Platform == Platform_Android
 }
 
 // **************************** //

@@ -19,8 +19,9 @@ type Node struct {
 	connreq *md.ConnectionRequest
 
 	// Client
-	client *sc.Client
-	user   *u.User
+	client   *sc.Client
+	location *md.Location
+	user     *u.User
 
 	// Groups
 	local  *tpc.TopicManager
@@ -28,7 +29,7 @@ type Node struct {
 }
 
 // @ Create New Mobile Node
-func NewMobileNode(reqBytes []byte, call Callback) *Node {
+func NewNode(reqBytes []byte, call Callback) *Node {
 	// Initialize Sentry
 	sentry.Init(sentry.ClientOptions{
 		Dsn: "http://8f37928df15e41318ebc28770270da05@ec2-34-201-54-61.compute-1.amazonaws.com/2",
@@ -42,49 +43,51 @@ func NewMobileNode(reqBytes []byte, call Callback) *Node {
 		return nil
 	}
 
-	// Create Mobile Node
-	mn := &Node{
-		call:    call,
-		config:  newNodeConfig(),
-		connreq: req,
-		topics:  make(map[string]*tpc.TopicManager, 10),
+	// Check Device
+	if req.IsMobile() {
+		// Create Mobile Node
+		mn := &Node{
+			call:     call,
+			config:   newNodeConfig(),
+			connreq:  req,
+			location: req.GetLocation(),
+			topics:   make(map[string]*tpc.TopicManager, 10),
+		}
+
+		// Create New User
+		mn.user = u.NewUser(req, mn.callbackNode())
+
+		// Create Client
+		mn.client = sc.NewClient(mn.contextNode(), req, mn.callbackNode())
+		return mn
+	} else {
+		// Get Location by IP
+		geoIP := &md.GeoIP{}
+		err := network.Location(geoIP)
+		if err != nil {
+			sentry.CaptureException(errors.Wrap(err, "Finding Geolocated IP"))
+			return nil
+		}
+
+		// Modify Request
+		req.AttachGeoToRequest(geoIP)
+
+		// Create Mobile Node
+		mn := &Node{
+			call:     call,
+			config:   newNodeConfig(),
+			connreq:  req,
+			location: geoIP.GetLocation(),
+			topics:   make(map[string]*tpc.TopicManager, 10),
+		}
+
+		// Create New User
+		mn.user = u.NewUser(req, mn.callbackNode())
+
+		// Create Client
+		mn.client = sc.NewClient(mn.contextNode(), req, mn.callbackNode())
+		return mn
 	}
-
-	// Create New User
-	mn.user = u.NewUser(req, mn.callbackNode())
-
-	// Create Client
-	mn.client = sc.NewClient(mn.contextNode(), req, mn.callbackNode())
-	return mn
-}
-
-// @ Create New Desktop Node
-func NewDesktopNode(req *md.ConnectionRequest, call Callback) *Node {
-	// Get Location by IP
-	geoIP := md.GeoIP{}
-	err := network.Location(&geoIP)
-	if err != nil {
-		sentry.CaptureException(errors.Wrap(err, "Finding Geolocated IP"))
-		return nil
-	}
-
-	// Modify Request
-	req.AttachGeoToRequest(&geoIP)
-
-	// Create Mobile Node
-	mn := &Node{
-		call:    call,
-		config:  newNodeConfig(),
-		connreq: req,
-		topics:  make(map[string]*tpc.TopicManager, 10),
-	}
-
-	// Create New User
-	mn.user = u.NewUser(req, mn.callbackNode())
-
-	// Create Client
-	mn.client = sc.NewClient(mn.contextNode(), req, mn.callbackNode())
-	return mn
 }
 
 // **-----------------** //
@@ -124,17 +127,23 @@ func (mn *Node) Connect() {
 			mn.setJoinedLocal(true)
 		}
 	}
+}
 
+// @ Returns Node Location Protobuf as Bytes
+func (mn *Node) Location() []byte {
+	if mn.location != nil {
+		bytes, err := proto.Marshal(mn.location)
+		if err != nil {
+			return nil
+		}
+		return bytes
+	}
+	return nil
 }
 
 // **-------------------** //
 // ** LifeCycle Actions ** //
 // **-------------------** //
-func (n *Node) NetworkSwitch() {
-	
-}
-
-
 // @ Close Ends All Network Communication
 func (mn *Node) Pause() {
 	md.GetState().Pause()
