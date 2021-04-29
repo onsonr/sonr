@@ -32,6 +32,18 @@ message LobbyEvent {
   }
 }
 
+// Location from GeoIP and OLC information
+message Location {
+  bool isFromIP = 1;
+  string name = 2;
+  string continent = 3;
+  string countryCode = 4;
+  double latitude = 5;
+  double longitude = 6;
+  string minorOlc = 7;
+  string majorOlc = 8;
+}
+
 // For Received Transfer File Information
 message Metadata {
   string id = 1;             // Local Asset ID

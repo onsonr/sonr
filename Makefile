@@ -10,7 +10,7 @@ GOBIND=$(GOMOBILE) bind -ldflags='-s -w' -v
 GOBINDTOR=$(GOMOBILE) bind -ldflags='-s -w' -tscags=embedTor -v
 
 # @ Bind Directories
-BIND_DIR=/Users/prad/Sonr/core/bind
+BIND_DIR=/Users/prad/Sonr/core/cmd
 IOS_ARTIFACT= $(IOS_BINDDIR)/Core.framework
 ANDROID_ARTIFACT= $(ANDROID_BINDDIR)/io.sonr.core.aar
 
