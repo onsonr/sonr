@@ -72,7 +72,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 
 		// Create Mobile Node
 		mn := &Node{
-			// call:    call,
+			call:    call,
 			config:  newNodeConfig(),
 			connreq: req,
 			topics:  make(map[string]*tpc.TopicManager, 10),
