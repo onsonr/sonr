@@ -28,7 +28,7 @@ type Node struct {
 }
 
 // @ Create New Mobile Node
-func NewMobileNode(reqBytes []byte, call Callback) *Node {
+func NewNode(reqBytes []byte, call Callback) *Node {
 	// Initialize Sentry
 	sentry.Init(sentry.ClientOptions{
 		Dsn: "http://8f37928df15e41318ebc28770270da05@ec2-34-201-54-61.compute-1.amazonaws.com/2",
@@ -42,49 +42,49 @@ func NewMobileNode(reqBytes []byte, call Callback) *Node {
 		return nil
 	}
 
-	// Create Mobile Node
-	mn := &Node{
-		call:    call,
-		config:  newNodeConfig(),
-		connreq: req,
-		topics:  make(map[string]*tpc.TopicManager, 10),
+	// Check Device
+	if req.Device.Platform == md.Platform_IOS || req.Device.Platform == md.Platform_Android {
+		// Create Mobile Node
+		mn := &Node{
+			call:    call,
+			config:  newNodeConfig(),
+			connreq: req,
+			topics:  make(map[string]*tpc.TopicManager, 10),
+		}
+
+		// Create New User
+		mn.user = u.NewUser(req, mn.callbackNode())
+
+		// Create Client
+		mn.client = sc.NewClient(mn.contextNode(), req, mn.callbackNode())
+		return mn
+	} else {
+		// Get Location by IP
+		geoIP := md.GeoIP{}
+		err := network.Location(&geoIP)
+		if err != nil {
+			sentry.CaptureException(errors.Wrap(err, "Finding Geolocated IP"))
+			return nil
+		}
+
+		// Modify Request
+		req.AttachGeoToRequest(&geoIP)
+
+		// Create Mobile Node
+		mn := &Node{
+			// call:    call,
+			config:  newNodeConfig(),
+			connreq: req,
+			topics:  make(map[string]*tpc.TopicManager, 10),
+		}
+
+		// Create New User
+		mn.user = u.NewUser(req, mn.callbackNode())
+
+		// Create Client
+		mn.client = sc.NewClient(mn.contextNode(), req, mn.callbackNode())
+		return mn
 	}
-
-	// Create New User
-	mn.user = u.NewUser(req, mn.callbackNode())
-
-	// Create Client
-	mn.client = sc.NewClient(mn.contextNode(), req, mn.callbackNode())
-	return mn
-}
-
-// @ Create New Desktop Node
-func NewDesktopNode(req *md.ConnectionRequest) *Node {
-	// Get Location by IP
-	geoIP := md.GeoIP{}
-	err := network.Location(&geoIP)
-	if err != nil {
-		sentry.CaptureException(errors.Wrap(err, "Finding Geolocated IP"))
-		return nil
-	}
-
-	// Modify Request
-	req.AttachGeoToRequest(&geoIP)
-
-	// Create Mobile Node
-	mn := &Node{
-		// call:    call,
-		config:  newNodeConfig(),
-		connreq: req,
-		topics:  make(map[string]*tpc.TopicManager, 10),
-	}
-
-	// Create New User
-	mn.user = u.NewUser(req, mn.callbackNode())
-
-	// Create Client
-	mn.client = sc.NewClient(mn.contextNode(), req, mn.callbackNode())
-	return mn
 }
 
 // **-----------------** //

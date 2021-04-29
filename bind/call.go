@@ -91,6 +91,7 @@ func (mn *Node) handleError(errMsg *md.SonrError) {
 		}
 
 		// Send Callback
-		mn.call.OnError(errMsg.Bytes())
+		bytes := errMsg.Bytes()
+		mn.call.OnError(bytes)
 	}
 }
