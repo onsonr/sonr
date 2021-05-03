@@ -34,14 +34,13 @@ message LobbyEvent {
 
 // Location from GeoIP and OLC information
 message Location {
-  bool isFromIP = 1;
-  string name = 2;
-  string continent = 3;
-  string countryCode = 4;
-  double latitude = 5;
-  double longitude = 6;
-  string minorOlc = 7;
-  string majorOlc = 8;
+  string name = 1;
+  string continent = 2;
+  string countryCode = 3;
+  double latitude = 4;
+  double longitude = 5;
+  string minorOlc = 6;
+  string majorOlc = 7;
 }
 
 // For Received Transfer File Information

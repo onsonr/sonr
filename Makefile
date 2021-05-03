@@ -22,7 +22,6 @@ PROTO_DOC_DIR=/Users/prad/Sonr/docs/proto
 
 # @ Proto Build Commands
 PB_BUILD_CORE="--go_out=$(CORE_PB_DIR)"
-PB_BUILD_RPC="--go-grpc_out=$(CORE_PB_DIR)"
 PB_BUILD_PLUGIN="--dart_out=$(PLUGIN_PB_DIR)"
 
 all: Makefile
@@ -94,7 +93,7 @@ proto:
 	@echo "--------------------------------------------------------------"
 	@echo ""
 
-## [clean]     :   Cleans Gomobile, Removes Framworks from Plugin, and Initializes Gomobile
+## [clean]     :   Reinitializes Gomobile and Removes Framworks from Plugin
 clean:
 	cd $(BIND_DIR) && $(GOCLEAN)
 	go mod tidy

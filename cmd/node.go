@@ -3,7 +3,6 @@ package bind
 import (
 	"github.com/getsentry/sentry-go"
 	"github.com/pkg/errors"
-	"github.com/sonr-io/core/internal/network"
 	tpc "github.com/sonr-io/core/internal/topic"
 	sc "github.com/sonr-io/core/pkg/client"
 	md "github.com/sonr-io/core/pkg/models"
@@ -61,23 +60,12 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 		mn.client = sc.NewClient(mn.contextNode(), req, mn.callbackNode())
 		return mn
 	} else {
-		// Get Location by IP
-		geoIP := &md.GeoIP{}
-		err := network.Location(geoIP)
-		if err != nil {
-			sentry.CaptureException(errors.Wrap(err, "Finding Geolocated IP"))
-			return nil
-		}
-
-		// Modify Request
-		req.AttachGeoToRequest(geoIP)
-
 		// Create Mobile Node
 		mn := &Node{
 			call:     call,
 			config:   newNodeConfig(),
 			connreq:  req,
-			location: geoIP.GetLocation(),
+			location: req.GetLocation(),
 			topics:   make(map[string]*tpc.TopicManager, 10),
 		}
 
