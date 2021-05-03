@@ -19,20 +19,20 @@ func (req *ConnectionRequest) AttachGeoToRequest(geo *GeoIP) *ConnectionRequest 
 	if req.Latitude != 0 && req.Longitude != 0 {
 		return req
 	}
-	req.Latitude = geo.Geo.Latitude
-	req.Longitude = geo.Geo.Longitude
+	req.Latitude = geo.Latitude
+	req.Longitude = geo.Longitude
 	return req
 }
 
 func (g *GeoIP) GetLocation() *Location {
 	return &Location{
-		Name:        g.Name,
+		Name:        g.State,
 		Continent:   g.Continent,
-		CountryCode: g.CountryCode,
-		Latitude:    g.Geo.Latitude,
-		Longitude:   g.Geo.Longitude,
-		MinorOlc:    olc.Encode(float64(g.Geo.Latitude), float64(g.Geo.Longitude), 6),
-		MajorOlc:    olc.Encode(float64(g.Geo.Latitude), float64(g.Geo.Longitude), 4),
+		CountryCode: g.Country,
+		Latitude:    g.Latitude,
+		Longitude:   g.Longitude,
+		MinorOlc:    olc.Encode(float64(g.Latitude), float64(g.Longitude), 6),
+		MajorOlc:    olc.Encode(float64(g.Latitude), float64(g.Longitude), 4),
 	}
 }
 
