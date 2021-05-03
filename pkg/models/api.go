@@ -17,7 +17,6 @@ import (
 // ***************************** //
 func (req *ConnectionRequest) GetLocation() *Location {
 	return &Location{
-		IsFromIP:  false,
 		Latitude:  req.Latitude,
 		Longitude: req.Longitude,
 		MinorOlc:  olc.Encode(float64(req.Latitude), float64(req.Longitude), 6),

@@ -42,40 +42,21 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 		return nil
 	}
 
-	// Check Device
-	if req.IsMobile() {
-		// Create Mobile Node
-		mn := &Node{
-			call:     call,
-			config:   newNodeConfig(),
-			connreq:  req,
-			location: req.GetLocation(),
-			topics:   make(map[string]*tpc.TopicManager, 10),
-		}
-
-		// Create New User
-		mn.user = u.NewUser(req, mn.callbackNode())
-
-		// Create Client
-		mn.client = sc.NewClient(mn.contextNode(), req, mn.callbackNode())
-		return mn
-	} else {
-		// Create Mobile Node
-		mn := &Node{
-			call:     call,
-			config:   newNodeConfig(),
-			connreq:  req,
-			location: req.GetLocation(),
-			topics:   make(map[string]*tpc.TopicManager, 10),
-		}
-
-		// Create New User
-		mn.user = u.NewUser(req, mn.callbackNode())
-
-		// Create Client
-		mn.client = sc.NewClient(mn.contextNode(), req, mn.callbackNode())
-		return mn
+	// Create Node
+	mn := &Node{
+		call:     call,
+		config:   newNodeConfig(),
+		connreq:  req,
+		location: req.GetLocation(),
+		topics:   make(map[string]*tpc.TopicManager, 10),
 	}
+
+	// Create New User
+	mn.user = u.NewUser(req, mn.callbackNode())
+
+	// Create Client
+	mn.client = sc.NewClient(mn.contextNode(), req, mn.callbackNode())
+	return mn
 }
 
 // **-----------------** //
