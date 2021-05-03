@@ -137,8 +137,25 @@ func (mn *Node) Location() []byte {
 			return nil
 		}
 		return bytes
+	} else {
+		// Get Location by IP
+		geoIP := &md.GeoIP{}
+		err := network.Location(geoIP)
+		if err != nil {
+			sentry.CaptureException(errors.Wrap(err, "Finding Geolocated IP"))
+			return nil
+		}
+
+		// Set Location
+		mn.location = geoIP.GetLocation()
+
+		// Return Marshalled Location
+		bytes, err := proto.Marshal(mn.location)
+		if err != nil {
+			return nil
+		}
+		return bytes
 	}
-	return nil
 }
 
 // **-------------------** //

@@ -2,8 +2,6 @@ package network
 
 import (
 	"encoding/json"
-	"fmt"
-	"io/ioutil"
 	"net/http"
 
 	md "github.com/sonr-io/core/pkg/models"
@@ -22,11 +20,5 @@ func Location(target *md.GeoIP) error {
 	if err != nil {
 		return err
 	}
-
-	defer r.Body.Close()
-	body, _ := ioutil.ReadAll(r.Body)
-
-	fmt.Println(r)
-	fmt.Println(string(body))
 	return json.NewDecoder(r.Body).Decode(target)
 }
