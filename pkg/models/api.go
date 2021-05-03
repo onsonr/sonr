@@ -15,6 +15,27 @@ import (
 // ***************************** //
 // ** ConnectionRequest Mgnmt ** //
 // ***************************** //
+func (req *ConnectionRequest) AttachGeoToRequest(geo *GeoIP) *ConnectionRequest {
+	if req.Latitude != 0 && req.Longitude != 0 {
+		return req
+	}
+	req.Latitude = geo.Geo.Latitude
+	req.Longitude = geo.Geo.Longitude
+	return req
+}
+
+func (g *GeoIP) GetLocation() *Location {
+	return &Location{
+		Name:        g.Name,
+		Continent:   g.Continent,
+		CountryCode: g.CountryCode,
+		Latitude:    g.Geo.Latitude,
+		Longitude:   g.Geo.Longitude,
+		MinorOlc:    olc.Encode(float64(g.Geo.Latitude), float64(g.Geo.Longitude), 6),
+		MajorOlc:    olc.Encode(float64(g.Geo.Latitude), float64(g.Geo.Longitude), 4),
+	}
+}
+
 func (req *ConnectionRequest) GetLocation() *Location {
 	return &Location{
 		Latitude:  req.Latitude,
