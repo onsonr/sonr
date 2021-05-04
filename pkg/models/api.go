@@ -17,10 +17,12 @@ import (
 // ***************************** //
 func (req *ConnectionRequest) AttachGeoToRequest(geo *GeoIP) *ConnectionRequest {
 	if req.Latitude != 0 && req.Longitude != 0 {
+		req.GeoLocation = geo.GetLocation()
 		return req
 	}
 	req.Latitude = geo.Latitude
 	req.Longitude = geo.Longitude
+	req.GeoLocation = geo.GetLocation()
 	return req
 }
 

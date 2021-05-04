@@ -12,6 +12,7 @@ import (
 // ! Protocol Router for routing Sonr Endpoints by Module !
 type ProtocolRouter struct {
 	// Open Location Code for Local Peers
+	IPOLC     string
 	MinorOLC  string
 	MajorOLC  string
 	Latitude  float64
@@ -23,6 +24,7 @@ func NewProtocolRouter(req *md.ConnectionRequest) *ProtocolRouter {
 	return &ProtocolRouter{
 		Latitude:  req.Latitude,
 		Longitude: req.Longitude,
+		IPOLC:     olc.Encode(float64(req.GeoLocation.Latitude), float64(req.GeoLocation.Longitude), 5),
 		MinorOLC:  olc.Encode(float64(req.Latitude), float64(req.Longitude), 6),
 		MajorOLC:  olc.Encode(float64(req.Latitude), float64(req.Longitude), 4),
 	}
@@ -42,7 +44,7 @@ func (pr *ProtocolRouter) Transfer(id peer.ID) protocol.ID {
 // ^ Lobby Protocols ^ //
 // @ Local Lobby Topic Protocol IDs
 func (pr *ProtocolRouter) LocalTopic() string {
-	return fmt.Sprintf("/sonr/topic/%s", pr.MinorOLC)
+	return fmt.Sprintf("/sonr/topic/%s", pr.IPOLC)
 }
 
 // @ Lobby Topic Protocol IDs
