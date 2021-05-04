@@ -12,7 +12,6 @@ import (
 // @ Constant Variables
 const K_SONR_USER_PATH = "user.snr"
 const K_SONR_PRIV_KEY = "snr-peer.privkey"
-const K_SONR_CLIENT_DIR = ".sonr"
 const K_FILE_QUEUE_NAME = "file-queue"
 
 // @ Sonr File System Struct
