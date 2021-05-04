@@ -936,7 +936,7 @@ func removeNodes(s *goquery.Selection) {
 	s.Each(func(i int, s *goquery.Selection) {
 		parent := s.Parent()
 		if parent.Length() == 0 {
-			// TODO???
+
 		} else {
 			parent.Get(0).RemoveChild(s.Get(0))
 		}

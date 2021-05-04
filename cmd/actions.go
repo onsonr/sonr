@@ -7,19 +7,17 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// @ Return URL Metadata, Helper Method
-func (mn *Node) GetURLMetadata(url string) []byte {
+// @ Return URLLink
+func GetURLLink(url string) []byte {
 	// Get Link Data
 	data, serr := md.GetPageInfoFromUrl(url)
 	if serr != nil {
-		mn.handleError(serr)
 		return nil
 	}
 
 	// Marshal
 	bytes, err := proto.Marshal(data)
 	if err != nil {
-		mn.handleError(md.NewError(err, md.ErrorMessage_MARSHAL))
 		return nil
 	}
 	return bytes
