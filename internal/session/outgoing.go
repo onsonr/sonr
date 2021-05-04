@@ -19,7 +19,7 @@ type outgoingFile struct {
 	mime    *md.MIME
 
 	// Private Properties
-	metadata *md.Metadata
+	file     *md.SonrFile
 	request  *md.InviteRequest
 	preview  []byte
 	owner    *md.Peer
@@ -40,54 +40,51 @@ func newOutgoingFile(req *md.InviteRequest, p *md.Peer) *outgoingFile {
 	}
 
 	// Get File Information
-	file := req.Files[len(req.Files)-1]
+	file := req.GetFile()
+	meta := file.GetSingleFile()
 
 	// Check if Mime Provided
-	if file.Mime != nil {
-		mime = file.GetMime()
+	if meta.Mime != nil {
+		mime = meta.GetMime()
 	} else {
 		// Get Mime
-		mime, err = md.GetFileMime(file)
+		mime, err = file.FindMime()
 		if err != nil {
 			return nil
 		}
 	}
 
 	// Check if Size Provided
-	if file.Size != 0 {
-		size = file.GetSize()
+	if meta.Size != 0 {
+		size = meta.GetSize()
 	} else {
 		// Get Size
-		size, err = md.GetFileSize(file)
+		size, err = file.FindSize()
 		if err != nil {
 			return nil
 		}
 	}
 
 	// Get Payload
-	if req.Payload != md.Payload_UNDEFINED {
-		payload = req.GetPayload()
-	} else {
-		payload = md.GetFilePayload(file)
-	}
+	payload = req.GetPayload()
 
 	// @ 1. Create new SafeFile
 	sm := &outgoingFile{
-		Path:     file.Path,
+		Path:     meta.Path,
 		Payload:  payload,
 		request:  req,
 		mime:     mime,
 		receiver: req.To,
 		owner:    p,
-		metadata: file,
+		file:     file,
 		size:     size,
 	}
 
 	// @ 3. Create Thumbnail in Goroutine
-	if len(file.Thumbnail) > 0 {
+	if len(meta.Thumbnail) > 0 {
 		// Initialize
 		thumbWriter := new(bytes.Buffer)
-		thumbReader := bytes.NewReader(file.Thumbnail)
+		thumbReader := bytes.NewReader(meta.Thumbnail)
 
 		// Convert to Image Object
 		img, _, err := image.Decode(thumbReader)
@@ -119,7 +116,7 @@ func (sm *outgoingFile) Card() *md.TransferCard {
 		// Owner Properties
 		Receiver: sm.receiver.GetProfile(),
 		Owner:    sm.owner.GetProfile(),
-		Metadata: sm.metadata,
+		File:     sm.file,
 	}
 
 	if len(sm.preview) > 0 {

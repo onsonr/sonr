@@ -95,17 +95,22 @@ func (sfs *FileSystem) WriteFile(name string, data []byte) (string, *md.SonrErro
 }
 
 // @ Helper: Finds Write Path for Incoming File
-func (sfs *FileSystem) GetPathForPayload(load md.Payload, fileName string) string {
-	// Check for Desktop
-	if sfs.IsDesktop {
-		return filepath.Join(sfs.Downloads, fileName)
-	} else {
-		// Check Load
-		if load == md.Payload_MEDIA {
-			return filepath.Join(sfs.Temporary, fileName)
+func (sfs *FileSystem) GetPathForPayload(load md.Payload, file *md.SonrFile) string {
+	// Check count
+	if !file.IsMultiple {
+		// Check for Desktop
+		if sfs.IsDesktop {
+			return filepath.Join(sfs.Downloads, file.SingleFile.Name)
 		} else {
-			return filepath.Join(sfs.Main, fileName)
+			// Check Load
+			if file.SingleFile.Mime.IsMedia() {
+				return filepath.Join(sfs.Temporary, file.SingleFile.Name)
+			} else {
+				return filepath.Join(sfs.Main, file.SingleFile.Name)
+			}
 		}
+	} else {
+		return ""
 	}
 }
 

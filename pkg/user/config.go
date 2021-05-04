@@ -1,8 +1,6 @@
 package user
 
 import (
-	"path/filepath"
-
 	"github.com/libp2p/go-libp2p-core/crypto"
 	md "github.com/sonr-io/core/pkg/models"
 )
@@ -14,7 +12,7 @@ type UserConfig struct {
 	privateKey    crypto.PrivKey
 	fileSystem    *FileSystem
 	user          *md.User
-	settings      []*md.User_Settings
+	settings      map[string]*md.User_Settings
 }
 
 // ^ Initialize User ^ //
@@ -26,14 +24,14 @@ func InitUserConfig(req *md.ConnectionRequest, cb md.NodeCallback) *UserConfig {
 	// Check for Client Type
 	if req.Device.GetIsDesktop() {
 		// Init Path, Check for Path
-		sonrPath = filepath.Join(req.Directories.Home, K_SONR_CLIENT_DIR)
-		if err := EnsureDir(sonrPath, 0755); err != nil {
+		sonrPath = req.Directories.Library
+		if err := EnsureDir(req.Directories.Library, 0755); err != nil {
 			cb.Error(md.NewError(err, md.ErrorMessage_USER_FS))
 			return nil
 		}
 	} else {
 		// Set Path to Documents for Mobile
-		sonrPath = req.Directories.Documents
+		sonrPath = req.Directories.Support
 	}
 
 	// Set File System

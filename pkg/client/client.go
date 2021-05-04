@@ -143,7 +143,7 @@ func (n *Client) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, c *md
 		}
 
 		// Build Invite Message
-		isFlat := req.Type == md.InviteRequest_FlatContact
+		isFlat := req.Payload == md.Payload_FLAT_CONTACT
 		invite := n.Peer.SignInviteWithContact(c, isFlat, req)
 
 		// Run Routine

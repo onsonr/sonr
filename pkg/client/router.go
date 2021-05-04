@@ -22,11 +22,11 @@ type ProtocolRouter struct {
 // ^ Creates New Protocol Router: Grouped, Local, Global ^ //
 func NewProtocolRouter(req *md.ConnectionRequest) *ProtocolRouter {
 	return &ProtocolRouter{
-		Latitude:  req.Latitude,
-		Longitude: req.Longitude,
-		IPOLC:     olc.Encode(float64(req.GeoLocation.Latitude), float64(req.GeoLocation.Longitude), 5),
-		MinorOLC:  olc.Encode(float64(req.Latitude), float64(req.Longitude), 6),
-		MajorOLC:  olc.Encode(float64(req.Latitude), float64(req.Longitude), 4),
+		Latitude:  req.Latitude(),
+		Longitude: req.Longitude(),
+		IPOLC:     olc.Encode(float64(req.IpLocation.Latitude), float64(req.IpLocation.Longitude), 5),
+		MinorOLC:  olc.Encode(float64(req.Latitude()), float64(req.Longitude()), 6),
+		MajorOLC:  olc.Encode(float64(req.Latitude()), float64(req.Longitude()), 4),
 	}
 }
 

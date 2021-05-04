@@ -16,13 +16,8 @@ import (
 func NewPeer(cr *ConnectionRequest, id peer.ID, maddr multiaddr.Multiaddr) (*Peer, *SonrError) {
 	// Initialize
 	deviceID := cr.Device.GetId()
-	profile := Profile{
-		Username:  cr.GetUsername(),
-		FirstName: cr.Contact.GetFirstName(),
-		LastName:  cr.Contact.GetLastName(),
-		Picture:   cr.Contact.GetPicture(),
-		Platform:  cr.Device.GetPlatform(),
-	}
+	c := cr.GetContact()
+	profile := c.GetProfile()
 
 	// Get User ID
 	userID := fnv.New32a()
@@ -49,7 +44,7 @@ func NewPeer(cr *ConnectionRequest, id peer.ID, maddr multiaddr.Multiaddr) (*Pee
 			Device: deviceID,
 			User:   userID.Sum32(),
 		},
-		Profile:  &profile,
+		Profile:  profile,
 		Platform: cr.Device.Platform,
 		Model:    cr.Device.Model,
 	}, nil
@@ -174,7 +169,7 @@ func (p *Peer) SignReply(d bool, req *RespondRequest, to *Peer) *AuthReply {
 		Remote:   req.GetRemote(),
 		Card: &TransferCard{
 			// SQL Properties
-			Payload:  Payload_UNDEFINED,
+			Payload:  Payload_NONE,
 			Received: int32(time.Now().Unix()),
 			Preview:  p.Profile.Picture,
 
@@ -261,43 +256,49 @@ func (p *Peer) SignUpdate() *LobbyEvent {
 func (p *Peer) Update(u *UpdateRequest) {
 	if u.Type == UpdateRequest_Position {
 		// Extract Data
-		facing := u.Position.Facing
-		heading := u.Position.Heading
+		facing := u.Position.GetFacing()
+		heading := u.Position.GetHeading()
 
 		// Update User Values
 		var faceDir float64
 		var faceAnpd float64
 		var headDir float64
 		var headAnpd float64
-		faceDir = math.Round(facing*100) / 100
-		headDir = math.Round(heading*100) / 100
-		desg := int((facing / 11.25) + 0.25)
+		faceDir = math.Round(facing.Direction*100) / 100
+		headDir = math.Round(heading.Direction*100) / 100
+		faceDesg := int((facing.Direction / 11.25) + 0.25)
+		headDesg := int((heading.Direction / 11.25) + 0.25)
 
 		// Find Antipodal
-		if facing > 180 {
-			faceAnpd = math.Round((facing-180)*100) / 100
+		if facing.Direction > 180 {
+			faceAnpd = math.Round((facing.Direction-180)*100) / 100
 		} else {
-			faceAnpd = math.Round((facing+180)*100) / 100
+			faceAnpd = math.Round((facing.Direction+180)*100) / 100
 		}
 
 		// Find Antipodal
-		if heading > 180 {
-			headAnpd = math.Round((heading-180)*100) / 100
+		if heading.Direction > 180 {
+			headAnpd = math.Round((heading.Direction-180)*100) / 100
 		} else {
-			headAnpd = math.Round((heading+180)*100) / 100
+			headAnpd = math.Round((heading.Direction+180)*100) / 100
 		}
 
 		// Set Position
 		p.Position = &Position{
-			Facing:           faceDir,
-			FacingAntipodal:  faceAnpd,
-			Heading:          headDir,
-			HeadingAntipodal: headAnpd,
-			Designation:      Position_Designation(desg % 32),
-			Accelerometer:    u.Position.GetAccelerometer(),
-			Gyroscope:        u.Position.GetGyroscope(),
-			Magnometer:       u.Position.GetMagnometer(),
-			Orientation:      u.Position.GetOrientation(),
+			Facing: &Position_Compass{
+				Direction: faceDir,
+				Antipodal: faceAnpd,
+				Cardinal:  Cardinal(faceDesg % 32),
+			},
+			Heading: &Position_Compass{
+				Direction: headDir,
+				Antipodal: headAnpd,
+				Cardinal:  Cardinal(headDesg % 32),
+			},
+			Accelerometer: u.Position.GetAccelerometer(),
+			Gyroscope:     u.Position.GetGyroscope(),
+			Magnometer:    u.Position.GetMagnometer(),
+			Orientation:   u.Position.GetOrientation(),
 		}
 	}
 
@@ -308,10 +309,11 @@ func (p *Peer) Update(u *UpdateRequest) {
 
 	// Check for New Contact, Update Peer Profile
 	if u.Type == UpdateRequest_Contact {
+		profile := u.Contact.GetProfile()
 		p.Profile = &Profile{
-			FirstName: u.Contact.GetFirstName(),
-			LastName:  u.Contact.GetLastName(),
-			Picture:   u.Contact.GetPicture(),
+			FirstName: profile.GetFirstName(),
+			LastName:  profile.GetLastName(),
+			Picture:   profile.GetPicture(),
 		}
 	}
 }

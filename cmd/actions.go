@@ -164,13 +164,13 @@ func (mn *Node) Invite(data []byte) {
 		}
 
 		// @ 2. Check Transfer Type
-		if req.Type == md.InviteRequest_Contact || req.Type == md.InviteRequest_FlatContact {
+		if req.Payload == md.Payload_CONTACT || req.Payload == md.Payload_FLAT_CONTACT {
 			err := mn.client.InviteContact(req, topic, mn.user.Contact())
 			if err != nil {
 				mn.handleError(err)
 				return
 			}
-		} else if req.Type == md.InviteRequest_URL {
+		} else if req.Payload == md.Payload_URL {
 			err := mn.client.InviteLink(req, topic)
 			if err != nil {
 				mn.handleError(err)

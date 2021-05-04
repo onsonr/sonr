@@ -15,7 +15,7 @@ enum Connectivity {
 
 // Status is User Node Situation
 enum Status {
-  NONE = 0;         // Default Status on Launch
+  IDLE = 0;         // Default Status on Launch
   CONNECTED = 1;    // Status after starting Host
   BOOTSTRAPPED = 2; // After Bootstrapping Host
   AVAILABLE = 3;    // Connected and Visible on Local Lobby
@@ -31,15 +31,13 @@ message StatusUpdate { Status value = 1; }
 
 // Initial Connection Message to Establish Sonr
 message ConnectionRequest {
-  double latitude = 1;           // Geolocation for OLC
-  double longitude = 2;          // Geolocation for OLC
-  string username = 3;           // General Peer Info
-  Device device = 4;             // Users Device
-  Directories directories = 5;   // Users Available File Paths
-  Contact contact = 6;           // Users Contact Card
-  User user = 7;                 // User Saved Data
-  Connectivity connectivity = 8; // Client Network Type
-  Location geoLocation = 9;      // Runtime IP based calculated GeoLocation
+  Location location = 1;         // Runtime IP based calculated GeoLocation
+  Location ipLocation = 2;       // Runtime IP based calculated GeoLocation
+  Device device = 3;             // Users Device
+  Directories directories = 4;   // Users Available File Paths
+  Contact contact = 5;           // Users Contact Card
+  User user = 6;                 // User Saved Data
+  Connectivity connectivity = 7; // Client Network Type
 }
 
 // Updated Peer Info Request
@@ -66,26 +64,15 @@ message MessageRequest {
 // Processes Given File and Invites Specified Peer
 message InviteRequest {
   // Properties
-  TransferType type = 1; // General Payload Type
+  Payload payload = 1;   // General Payload Type
   Peer to = 2;           // User thats being Invited
   bool isRemote = 3;     // If Transfer is Remote
   RemoteInfo remote = 4; // Remote Topic Name
-  Payload payload = 5;   // File Data being Sent
 
   // Attached Data
-  string url = 6;              // URL to be Sent - Optional
-  Contact contact = 7;         // Contact Card to be Sent - Optional
-  repeated Metadata files = 8; // Files to be Sent - Optional
-
-  // Enum for Type of Transfer
-  enum TransferType {
-    Unknown = 0;     // Default Value, Would not Transfer
-    File = 1;        // Media or Document
-    MultiFiles = 2;  // Multiple Media or Documents
-    Contact = 3;     // Users Contact Card
-    URL = 4;         // Website URL Link
-    FlatContact = 5; // Send File as Flat Exchange Automatically Swaps
-  }
+  string url = 6;      // URL to be Sent - Optional
+  Contact contact = 7; // Contact Card to be Sent - Optional
+  SonrFile file = 8;   // Files to be Sent - Optional
 }
 
 message RespondRequest {
@@ -117,5 +104,33 @@ message AuthReply {
     Contact = 2;
     FlatContact = 3;
     Cancel = 4;
+  }
+}
+
+// User is the Saved Data from Client that Passes to Proxy, During ConnRequest
+message User {
+  Contact contact = 1;                // Clients Contact Card
+  map<string, Device> devices = 2;    // Clients Devices: Name, Device
+  map<string, Settings> settings = 3; // Clients Specified Preferences
+
+  message Settings {
+    string key = 1;    // Option as String
+    Value value = 2;   // Value for Setting
+    Option option = 3; // Type of Setting
+
+    // Available Settings Options
+    enum Option {
+      None = 0;              // Arbitrary Zero Value
+      DefaultVideoCall = 1;  // Default App to be used for Video Calls
+      FallbackVideoCall = 2; // Fallback App for Video Calls
+      DarkMode = 3;          // Dark Mode Preference
+      RunInBackground = 4;   // Sonr Background Run Preference
+    }
+
+    // Value of Settings Option
+    message Value {
+      bool enabled = 1; // If Value is for simple enable/disable
+      string value = 2; // If Value is complex
+    }
   }
 }

@@ -21,7 +21,7 @@ type incomingFile struct {
 	owner    *md.Profile
 	receiver *md.Profile
 	payload  md.Payload
-	metadata *md.Metadata
+	file     *md.SonrFile
 	preview  []byte
 
 	// Builders
@@ -29,7 +29,6 @@ type incomingFile struct {
 	bytesBuilder   *bytes.Buffer
 
 	// Calculated Properties
-	fileName string
 	savePath string
 
 	// Tracking
@@ -42,13 +41,12 @@ type incomingFile struct {
 // @ Creates New Incoming File //
 func newIncomingFile(p *md.Peer, inv *md.AuthInvite, fs *us.FileSystem, tc md.NodeCallback) *incomingFile {
 	// Create File Name
-	fileName := inv.Card.Metadata.Name + "." + inv.Card.Metadata.Mime.Subtype
-	path := fs.GetPathForPayload(inv.Payload, fileName)
+	path := fs.GetPathForPayload(inv.Payload, inv.Card.File)
 
 	// Return Incoming File
 	return &incomingFile{
 		// Inherited Properties
-		metadata: inv.Card.Metadata,
+		file:     inv.Card.File,
 		payload:  inv.Payload,
 		owner:    inv.From.Profile,
 		preview:  inv.Card.Preview,
@@ -60,7 +58,6 @@ func newIncomingFile(p *md.Peer, inv *md.AuthInvite, fs *us.FileSystem, tc md.No
 		bytesBuilder:   new(bytes.Buffer),
 
 		// Calculated Properties
-		fileName: fileName,
 		savePath: path,
 	}
 }
@@ -133,13 +130,7 @@ func (t *incomingFile) Card() *md.TransferCard {
 		Owner: t.owner,
 
 		// Data Properties
-		Metadata: &md.Metadata{
-			Name:       t.fileName,
-			Path:       t.savePath,
-			Size:       int32(t.totalSize),
-			Mime:       t.metadata.Mime,
-			Properties: t.metadata.Properties,
-		},
+		File: t.file,
 	}
 }
 

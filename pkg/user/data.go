@@ -54,7 +54,7 @@ func (u *UserConfig) SaveDevice(device *md.Device) *md.SonrError {
 	}
 
 	// Append Devices List
-	user.Devices = append(user.Devices, device)
+	user.Devices[device.Label] = device
 
 	// Save User
 	err = u.SaveUser(user)

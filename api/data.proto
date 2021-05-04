@@ -5,6 +5,144 @@ import "user.proto";
 // Require Go Package
 option go_package = "/models";
 
+// Asset for Images/Files
+message Asset {
+  Source source = 1;    // Asset Type
+  string value = 2;     // Asset Source Value
+  string name = 3;      // Asset Name, File Name
+  int32 identifier = 4; // Asset Identifier if Name is Number
+
+  enum Source {
+    FILE = 0;    // Asset from File
+    MEMORY = 1;  // Asset in Memory
+    NETWORK = 2; // Asset from Network
+    LOCAL = 3;   // Asset from Packaging Flutter/Hover
+  }
+}
+
+// Contact is Extensive User Info that can be passed
+message Contact {
+  bool isPublic = 1;      // If Contact card is Public
+  Profile profile = 2;    // General Profile Information
+  string about = 3;       // Bio of User/About Value
+  URLLink publicLink = 4; // URLLink for Public Card if Applicable
+  Design design = 5;      // Card Design Properties
+
+  map<string, Field> general = 6;     // Base General Contact Fields
+  map<string, Address> addresses = 7; // Address Fields
+  map<string, Social> socials = 8;    // Username, Social Map
+
+  // Address: Field for Contact field
+  message Address {
+    string label = 1;       // Address Label for Type
+    string street = 2;      // Address First Line Street
+    string streetTwo = 3;   // Address Second Line Street
+    string city = 4;        // City of Address
+    string state = 5;       // Address State
+    string zipcode = 6;     // Address Zip Code
+    string country = 7;     // Address Country
+    string countryCode = 8; // Address Country Code
+  }
+
+  // Design: Card Design Values
+  message Design {
+    Asset background = 1; // Background Card Value
+    Color primary = 2;    // Primary Color
+    Color accent = 3;     // Accent Color for Text/Buttons
+
+    enum Color {
+      Transparent = 0;  // Clear Color
+      Primary = 1;      // Blue Varient
+      Secondary = 2;    // Purple Varient
+      Tertiary = 3;     // Green Varient
+      Critical = 4;     // Red Varient
+      AccentPink = 5;   // Light Pink
+      AccentBlue = 6;   // Light Blue
+      AccentNavy = 7;   // Strong Navy
+      AccentPurple = 8; // Light Purple
+      Black = 9;        // Black Varient
+      White = 10;       // White Varient
+      Grey = 11;        // Grey Varient
+    }
+  }
+
+  // Field : General Field for Contact field
+  message Field {
+    Kind kind = 1;       // Type of Field
+    string key = 2;      // Identifier for Field
+    string value = 3;    // Convert Values to String
+    bool isRequired = 4; // Required Field for General
+
+    enum Kind {
+      NAME = 0;    // Name type Field
+      DATE = 1;    // DateTime type Field
+      GENDER = 2;  // Gender: Male/Female
+      PHONE = 3;   // Phone Field
+      EMAIL = 4;   // Email Field
+      COMPANY = 5; // Company Type Field
+      TITLE = 6;   // Title Type Field
+    }
+  }
+
+  // Social: Field provides Display Information and Provider Information
+  message Social {
+    // Properties
+    Provider provider = 1;     // Type of Social Provider
+    string username = 2;       // Users handle on Service
+    Tile tile = 3;             // Social Tile Position
+    Links links = 4;           // Social Links
+    Visibility visibility = 5; // Is the User's Account Private
+
+    // Social Provider Links
+    message Links {
+      URLLink feedLink = 1;    // Link to a Social Feed
+      URLLink postLink = 2;    // Link to a Users Post
+      URLLink profileLink = 3; // Link to Users Profile
+    }
+
+    // Social Media Service
+    enum Provider {
+      Instagram = 0; // Feed/Post/Link
+      TikTok = 1;    // Post/Link
+      Facebook = 2;  // Link Only
+      YouTube = 3;   // Post/Link
+      Spotify = 4;   // Post/Link
+      Medium = 5;    // Feed/Post/Link
+      Twitter = 6;   // Feed/Post/Link
+      Snapchat = 7;  // Link Only
+      Github = 8;    // Link Only
+      LinkedIn = 9;
+    }
+
+    // Tile Display Position
+    message Tile {
+      Display type = 1; // Type of Tile to be Displayed
+      int32 index = 2;  // Position in Contact Array
+      int32 row = 3;    // Row Location
+      int32 column = 4; // Column Location
+      int32 size = 5;   // Size of Tile
+
+      // Social Tile Display Type
+      enum Display {
+        Icon = 0;     // Default Tile Type, Icon for Provider
+        Feed = 1;     // Big Tile Showcases Current User Feed
+        Post = 2;     // Medium Tile Showcases a Featured Post
+        Profile = 3;  // Small Tile is Direct Link to User Profile
+        Playlist = 4; // Playlist type similar to Feed
+      }
+    }
+
+    // Social Tile Display Type
+    enum Visibility {
+      Unknown = 0;
+      Private = 1;       // Default Tile Type, Icon for Provider
+      Public = 2;        // Big Tile Showcases Current User Feed
+      PrivateHidden = 3; // Medium Tile Showcases a Featured Post
+      PublicHidden = 4;  // Small Tile is Direct Link to User Profile
+    }
+  }
+}
+
 // For Info about Lobby
 message Lobby {
   bool isLocal = 1;            // Is Local Lobby
@@ -29,6 +167,7 @@ message LobbyEvent {
     RESUME = 2;   // Peer has rejoined Lobby
     UPDATE = 3;   // Peer has changed position
     MESSAGE = 4;  // Peer has been messaged by a user
+    EXIT = 5;     // Peer has Exited
   }
 }
 
@@ -43,54 +182,32 @@ message Location {
   string majorOlc = 7;
 }
 
-// For Received Transfer File Information
-message Metadata {
-  string id = 1;             // Local Asset ID
-  string name = 2;           // File Name without Path
-  string path = 3;           // File Location
-  int32 size = 4;            // File Size in Bytes
-  MIME mime = 5;             // Standard Mime Type
-  bytes thumbnail = 6;       // Thumbnail Preview of File
-  Properties properties = 7; // Media Properties
-
-  message Properties {
-    bool isAudio = 1;      // If File is Audio
-    bool isImage = 2;      // If File is Image
-    bool isVideo = 3;      // If File is Video
-    bool hasThumbnail = 4; // If File has thumbnail
-    int32 width = 5;       // Media Width
-    int32 height = 6;      // Media Height
-    int32 duration = 7;    // Length of Video - Optional
-    Payload payload = 8;   // SQL: Type of Data received
-  }
-}
-
-// Protobuf for Standard MIME
+// Standard MIME with Additional Extensions
 message MIME {
   Type type = 1;      // Type of File
   string subtype = 2; // Extension of File
   string value = 3;   // Type/Subtype i.e. (image/jpeg)
 
   enum Type {
-    application = 0; // Document Files
-    audio = 1;       // Sound, Audio Files
-    image = 2;       // Image Files
-    text = 3;        // Text Based Files
-    video = 4;       // Video Files
+    OTHER = 0;        // Other File Type - If cannot derive from Subtype
+    AUDIO = 1;        // Sound, Audio Files
+    IMAGE = 2;        // Image Files
+    DOCUMENT = 3;     // Text Based Files
+    PDF = 4;          // PDF Format
+    PRESENTATION = 5; // PPT type Files
+    SPREADSHEET = 6;  // CSV/Excel type files
+    VIDEO = 7;        // Video Files
   }
 }
 
 // Payload is type of Data being transferred
 enum Payload {
-  UNDEFINED = 0;    // Not Specified
+  NONE = 0;         // Not Specified
   CONTACT = 1;      // Sonr Based Contact
-  MEDIA = 2;        // Image, Audio, Video
-  URL = 3;          // Link to Site
-  TEXT = 4;         // Text based document
-  PDF = 5;          // PDF File
-  PRESENTATION = 6; // Presentation based File from PPT or Keynote
-  SPREADSHEET = 7;  // Spreadsheet based File from Excel or Numbers
-  OTHER = 8;        // Any other Kind of File
+  FLAT_CONTACT = 2; // Send File as Flat Exchange Automatically Swaps
+  FILE = 3;         // File Transfer
+  MULTI_FILES = 4;  // Multiple Files
+  URL = 5;          // Link to Site
 }
 
 // RemoteInfo is for Joining/Creating a New Topic
@@ -100,6 +217,38 @@ message RemoteInfo {
   string display = 3;
   string topic = 4;
   repeated string words = 5;
+}
+
+// For Transfer File Payload
+message SonrFile {
+  bool isMultiple = 1;
+  int32 count = 2;
+  int32 transferSize = 3;
+  Metadata singleFile = 4;
+  repeated Metadata multiFiles = 5;
+
+  // For Received Transfer File Information
+  message Metadata {
+    string id = 1;             // Local Asset ID
+    string name = 2;           // File Name without Path
+    string path = 3;           // File Location
+    int32 size = 4;            // File Size in Bytes
+    MIME mime = 5;             // Standard Mime Type
+    bytes thumbnail = 6;       // Thumbnail Preview of File
+    Properties properties = 7; // Media Properties
+
+    message Properties {
+      bool isAudio = 1;      // If File is Audio
+      bool isImage = 2;      // If File is Image
+      bool isVideo = 3;      // If File is Video
+      bool hasThumbnail = 4; // If File has thumbnail
+
+      int32 width = 5;     // Media Width
+      int32 height = 6;    // Media Height
+      int32 duration = 7;  // Length of Video - Optional
+      Payload payload = 8; // SQL: Type of Data received
+    }
+  }
 }
 
 // TransferCard holds data passed between Exchange
@@ -112,10 +261,10 @@ message TransferCard {
   Profile receiver = 5; // PROFILE: General Receiver Info
   Profile owner = 6;    // PROFILE: General Owner Info
 
-  Status status = 7;     // TRANSFER: Status of the Card - File Only
-  Contact contact = 8;   // DATA(Optional): Received Contact Information
-  Metadata metadata = 9; // DATA(Optional): Received a File or Media
-  URLLink url = 10;      // DATA(Optional): Received a Website Link
+  Status status = 7;   // TRANSFER: Status of the Card - File Only
+  Contact contact = 8; // DATA(Optional): Received Contact Information
+  SonrFile file = 9;   // DATA(Optional): Received a File
+  URLLink url = 10;    // DATA(Optional): Received a Website Link
 
   // Card Transfer Status
   enum Status {
