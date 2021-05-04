@@ -18,29 +18,13 @@ type UserConfig struct {
 // ^ Initialize User ^ //
 func InitUserConfig(req *md.ConnectionRequest, cb md.NodeCallback) *UserConfig {
 	// Initialize
-	var sonrPath string
 	var hasPrivateKey bool
-
-	// Check for Client Type
-	if req.Device.GetIsDesktop() {
-		// Init Path, Check for Path
-		sonrPath = req.Directories.Library
-		if err := EnsureDir(req.Directories.Library, 0755); err != nil {
-			cb.Error(md.NewError(err, md.ErrorMessage_USER_FS))
-			return nil
-		}
-	} else {
-		// Set Path to Documents for Mobile
-		sonrPath = req.Directories.Support
-	}
 
 	// Set File System
 	fs := &FileSystem{
-		IsDesktop: req.Device.GetIsDesktop(),
-		Downloads: req.Directories.Downloads,
-		Main:      sonrPath,
-		Temporary: req.Directories.Temporary,
-		Call:      cb,
+		Call:        cb,
+		Device:      req.Device,
+		Directories: req.Directories,
 	}
 
 	// Get Private Key
@@ -54,7 +38,7 @@ func InitUserConfig(req *md.ConnectionRequest, cb md.NodeCallback) *UserConfig {
 	// Build Config
 	return &UserConfig{
 		connectivity:  req.Connectivity,
-		isDesktop:     req.Device.IsDesktop,
+		isDesktop:     req.Device.IsDesktop(),
 		fileSystem:    fs,
 		privateKey:    privKey,
 		hasPrivateKey: hasPrivateKey,

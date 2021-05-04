@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 
-	olc "github.com/google/open-location-code/go"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"google.golang.org/protobuf/proto"
 )
@@ -12,20 +11,6 @@ import (
 // ***************************** //
 // ** ConnectionRequest Mgnmt ** //
 // ***************************** //
-func (req *ConnectionRequest) AttachGeoToRequest(geo *GeoIP) *ConnectionRequest {
-	if req.Location.Latitude != 0 && req.Location.Longitude != 0 {
-		req.IpLocation = geo.GetLocation()
-		return req
-	} else {
-		req.Location = &Location{
-			Latitude:  geo.Latitude,
-			Longitude: geo.Longitude,
-		}
-		req.IpLocation = geo.GetLocation()
-		return req
-	}
-}
-
 func (req *ConnectionRequest) Latitude() float64 {
 	loc := req.GetLocation()
 	return loc.GetLatitude()
@@ -36,24 +21,36 @@ func (req *ConnectionRequest) Longitude() float64 {
 	return loc.GetLongitude()
 }
 
-func (g *GeoIP) GetLocation() *Location {
-	return &Location{
-		Name:        g.State,
-		Continent:   g.Continent,
-		CountryCode: g.Country,
-		Latitude:    g.Latitude,
-		Longitude:   g.Longitude,
-		MinorOlc:    olc.Encode(float64(g.Latitude), float64(g.Longitude), 6),
-		MajorOlc:    olc.Encode(float64(g.Latitude), float64(g.Longitude), 4),
-	}
+func (d *Device) IsDesktop() bool {
+	return d.Platform == Platform_MacOS || d.Platform == Platform_Linux || d.Platform == Platform_Windows
 }
 
-func (req *ConnectionRequest) IsDesktop() bool {
-	return req.Device.Platform == Platform_MacOS || req.Device.Platform == Platform_Linux || req.Device.Platform == Platform_Windows
+func (d *Device) IsMobile() bool {
+	return d.Platform == Platform_IOS || d.Platform == Platform_Android
 }
 
-func (req *ConnectionRequest) IsMobile() bool {
-	return req.Device.Platform == Platform_IOS || req.Device.Platform == Platform_Android
+func (d *Device) IsIOS() bool {
+	return d.Platform == Platform_IOS
+}
+
+func (d *Device) IsAndroid() bool {
+	return d.Platform == Platform_Android
+}
+
+func (d *Device) IsMacOS() bool {
+	return d.Platform == Platform_MacOS
+}
+
+func (d *Device) IsLinux() bool {
+	return d.Platform == Platform_Linux
+}
+
+func (d *Device) IsWeb() bool {
+	return d.Platform == Platform_Web
+}
+
+func (d *Device) IsWindows() bool {
+	return d.Platform == Platform_Windows
 }
 
 // ********************** //

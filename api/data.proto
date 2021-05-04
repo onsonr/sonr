@@ -173,9 +173,9 @@ message LobbyEvent {
 
 // Location from GeoIP and OLC information
 message Location {
-  string name = 1;
+  string state = 1;
   string continent = 2;
-  string countryCode = 3;
+  string country = 3;
   double latitude = 4;
   double longitude = 5;
   string minorOlc = 6;

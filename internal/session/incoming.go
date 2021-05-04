@@ -41,7 +41,7 @@ type incomingFile struct {
 // @ Creates New Incoming File //
 func newIncomingFile(p *md.Peer, inv *md.AuthInvite, fs *us.FileSystem, tc md.NodeCallback) *incomingFile {
 	// Create File Name
-	path := fs.GetPathForPayload(inv.Payload, inv.Card.File)
+	path := fs.GetPathForPayload(inv.Card.File)
 
 	// Return Incoming File
 	return &incomingFile{

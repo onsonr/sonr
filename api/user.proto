@@ -48,8 +48,7 @@ message Device {
   string name = 5;             // Name of Device
   string version = 6;          // Device Software Version
   int32 sdk = 7;               // Only For Android
-  bool isDesktop = 8;          // Only For Desktop
-  Directories directories = 9; // Directories for this Device
+  Directories directories = 8; // Directories for this Device
 }
 
 // Directories are for FilePaths Where Data can be stored

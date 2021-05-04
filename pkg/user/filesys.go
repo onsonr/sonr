@@ -17,13 +17,9 @@ const K_FILE_QUEUE_NAME = "file-queue"
 // @ Sonr File System Struct
 type FileSystem struct {
 	// Properties
-	IsDesktop bool
-	Call      md.NodeCallback
-
-	// Directories
-	Downloads string
-	Main      string
-	Temporary string
+	Call        md.NodeCallback
+	Device      *md.Device
+	Directories *md.Directories
 }
 
 // ^ EnsureDir creates directory if it doesnt exist ^
@@ -41,10 +37,17 @@ func EnsureDir(path string, perm os.FileMode) error {
 
 // ^ EnsureDir creates directory if it doesnt exist ^
 func (sfs *FileSystem) IsFile(name string) bool {
-	// Create File Path
-	path := filepath.Join(sfs.Main, name)
+	// Initialize
+	var path string
 
-	// @ Check for Path
+	// Create File Path
+	if sfs.Device.IsDesktop() {
+		path = filepath.Join(sfs.Directories.GetLibrary(), name)
+	} else {
+		path = filepath.Join(sfs.Directories.GetDocuments(), name)
+	}
+
+	// Check Path
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		return false
 	} else {
@@ -66,8 +69,15 @@ func IsDir(name string) (bool, error) {
 
 // ^ WriteIncomingFile writes file to Disk ^
 func (sfs *FileSystem) ReadFile(name string) ([]byte, *md.SonrError) {
+	// Initialize
+	var path string
+
 	// Create File Path
-	path := filepath.Join(sfs.Main, name)
+	if sfs.Device.IsDesktop() {
+		path = filepath.Join(sfs.Directories.GetLibrary(), name)
+	} else {
+		path = filepath.Join(sfs.Directories.GetDocuments(), name)
+	}
 
 	// @ Check for Path
 	if _, err := os.Stat(path); os.IsNotExist(err) {
@@ -85,7 +95,8 @@ func (sfs *FileSystem) ReadFile(name string) ([]byte, *md.SonrError) {
 // ^ WriteIncomingFile writes file to Disk ^
 func (sfs *FileSystem) WriteFile(name string, data []byte) (string, *md.SonrError) {
 	// Create File Path
-	path := filepath.Join(sfs.Main, name)
+	path := sfs.Directories.DataSavePath(name, sfs.Device.IsDesktop())
+
 	// Write File to Disk
 	if err := os.WriteFile(path, data, 0644); err != nil {
 		return "", md.NewError(err, md.ErrorMessage_USER_FS)
@@ -94,20 +105,10 @@ func (sfs *FileSystem) WriteFile(name string, data []byte) (string, *md.SonrErro
 }
 
 // @ Helper: Finds Write Path for Incoming File
-func (sfs *FileSystem) GetPathForPayload(load md.Payload, file *md.SonrFile) string {
+func (sfs *FileSystem) GetPathForPayload(file *md.SonrFile) string {
 	// Check count
 	if !file.IsMultiple {
-		// Check for Desktop
-		if sfs.IsDesktop {
-			return filepath.Join(sfs.Downloads, file.SingleFile.Name)
-		} else {
-			// Check Load
-			if file.SingleFile.Mime.IsMedia() {
-				return filepath.Join(sfs.Temporary, file.SingleFile.Name)
-			} else {
-				return filepath.Join(sfs.Main, file.SingleFile.Name)
-			}
-		}
+		return sfs.Directories.TransferSavePath(file.SingleFile.Name, file.SingleFile.Mime, sfs.Device.IsDesktop())
 	} else {
 		return ""
 	}
