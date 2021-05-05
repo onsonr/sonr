@@ -2,7 +2,6 @@ package models
 
 import (
 	"bytes"
-	"encoding/base64"
 	"errors"
 	"image"
 	"image/jpeg"
@@ -10,13 +9,10 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"strings"
 	"time"
 )
 
-// ***************************** //
-// ** Sonr File Outgoing Info ** //
-// ***************************** //
+// ** ─── SONRFILE MANAGEMENT ────────────────────────────────────────────────────────
 // Checks if File contains single item
 func (f *SonrFile) IsSingle() bool {
 	return len(f.Files) == 1
@@ -32,76 +28,37 @@ func (f *SonrFile) IsMultiple() bool {
 	return len(f.Files) > 1
 }
 
-// Writes Buffer to File at Index with channel
-func (f *SonrFile) AddItemAtIndex(index int, path string, first *Chunk, cCh chan *Chunk, pCh chan *Progress) {
-	progress := NewItemProgress(first, int(f.Count), int(f.Size))
-	stringsBuilder := new(strings.Builder)
+// Returns SonrFile as TransferCard given Receiver and Owner
+func (f *SonrFile) CardIn(receiver *Peer, owner *Peer) *TransferCard {
+	// Update Direction
+	f.Direction = SonrFile_Default
 
-	for {
-		select {
-		case chunk := <-cCh:
-			// Add To Builder
-			n, err := stringsBuilder.WriteString(chunk.Base)
-			if err != nil {
-				log.Println(err)
-				break
-			}
-			// Send Progress if Met
-			if met := progress.Add(n); met {
-				// Get Progress
-				p := progress.Progress()
+	// Create Card
+	return &TransferCard{
+		// SQL Properties
+		Payload:  f.Payload,
+		Received: int32(time.Now().Unix()),
 
-				// Check Item Complete
-				if p.ItemComplete {
-					// Get Bytes from base64
-					data, err := base64.StdEncoding.DecodeString(stringsBuilder.String())
-					if err != nil {
-						log.Println(err)
-						break
-					}
+		// Owner Properties
+		Owner:    owner.GetProfile(),
+		Receiver: receiver.GetProfile(),
 
-					if err := f.SaveItem(path, data, index); err != nil {
-						log.Println(err)
-						break
-					}
-				}
-				pCh <- progress.Progress()
-			}
-		}
+		// Data Properties
+		File: f,
 	}
 }
 
 // Returns SonrFile as TransferCard given Receiver and Owner
-func (f *SonrFile) Card(receiver *Peer, owner *Peer) *TransferCard {
-	if f.Direction == SonrFile_Outgoing {
-		// Create Card
-		card := TransferCard{
-			// SQL Properties
-			Payload: f.Payload,
+func (f *SonrFile) CardOut(receiver *Peer, owner *Peer) *TransferCard {
+	// Create Card
+	return &TransferCard{
+		// SQL Properties
+		Payload: f.Payload,
 
-			// Owner Properties
-			Receiver: receiver.GetProfile(),
-			Owner:    owner.GetProfile(),
-			File:     f,
-		}
-		return &card
-	} else {
-		// Update Direction
-		f.Direction = SonrFile_Default
-
-		// Create Card
-		return &TransferCard{
-			// SQL Properties
-			Payload:  f.Payload,
-			Received: int32(time.Now().Unix()),
-
-			// Owner Properties
-			Owner:    owner.GetProfile(),
-			Receiver: receiver.GetProfile(),
-
-			// Data Properties
-			File: f,
-		}
+		// Owner Properties
+		Receiver: receiver.GetProfile(),
+		Owner:    owner.GetProfile(),
+		File:     f,
 	}
 }
 
@@ -238,55 +195,4 @@ func (f *SonrFile) SaveItem(path string, data []byte, index int) error {
 		return nil
 	}
 	return errors.New("Invalid Item index")
-}
-
-// Converts SonrFile to become Incoming
-func (f *SonrFile) SetIncoming() {
-	f.Direction = SonrFile_Incoming
-}
-
-// Returns Item Transfer Chunk Count
-func (f *SonrFile) TotalItemChunks(chunk *Chunk) int {
-	return int(chunk.Total) / K_B64_CHUNK
-}
-
-// Returns Total Number of Transfer Chunks
-func (f *SonrFile) TotalTranferChunks() int {
-	return int(f.Size) / K_B64_CHUNK
-}
-
-// Returns Interval for Chunk
-func (f *SonrFile) TransferInterval(chunk *Chunk) int {
-	return f.TotalItemChunks(chunk) / 100
-}
-
-// ************************** //
-// ** MIME Info Management ** //
-// ************************** //
-// Method adjusts extension for JPEG
-func (m *MIME) Ext() string {
-	if m.Subtype == "jpg" || m.Subtype == "jpeg" {
-		return "jpeg"
-	}
-	return m.Subtype
-}
-
-// Checks if Mime is Audio
-func (m *MIME) IsAudio() bool {
-	return m.Type == MIME_AUDIO
-}
-
-// Checks if Mime is any media
-func (m *MIME) IsMedia() bool {
-	return m.Type == MIME_AUDIO || m.Type == MIME_IMAGE || m.Type == MIME_VIDEO
-}
-
-// Checks if Mime is Image
-func (m *MIME) IsImage() bool {
-	return m.Type == MIME_IMAGE
-}
-
-// Checks if Mime is Video
-func (m *MIME) IsVideo() bool {
-	return m.Type == MIME_VIDEO
 }

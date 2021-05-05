@@ -107,3 +107,34 @@ func (l *Lobby) Sync(ref *Lobby, remotePeer *Peer) {
 	}
 	l.Add(remotePeer)
 }
+
+// ************************** //
+// ** MIME Info Management ** //
+// ************************** //
+// Method adjusts extension for JPEG
+func (m *MIME) Ext() string {
+	if m.Subtype == "jpg" || m.Subtype == "jpeg" {
+		return "jpeg"
+	}
+	return m.Subtype
+}
+
+// Checks if Mime is Audio
+func (m *MIME) IsAudio() bool {
+	return m.Type == MIME_AUDIO
+}
+
+// Checks if Mime is any media
+func (m *MIME) IsMedia() bool {
+	return m.Type == MIME_AUDIO || m.Type == MIME_IMAGE || m.Type == MIME_VIDEO
+}
+
+// Checks if Mime is Image
+func (m *MIME) IsImage() bool {
+	return m.Type == MIME_IMAGE
+}
+
+// Checks if Mime is Video
+func (m *MIME) IsVideo() bool {
+	return m.Type == MIME_VIDEO
+}

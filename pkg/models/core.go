@@ -108,6 +108,7 @@ func (d *Directories) TransferSavePath(fileName string, mime *MIME, IsDesktop bo
 	}
 }
 
+// ** ─── PROGRESS MANAGEMENT ────────────────────────────────────────────────────────
 type Progress struct {
 	ItemProgress  float32
 	TotalProgress float32

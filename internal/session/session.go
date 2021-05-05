@@ -2,6 +2,7 @@ package client
 
 import (
 	"bytes"
+	"strings"
 	"sync"
 
 	"encoding/base64"
@@ -27,10 +28,18 @@ type Session struct {
 	file     *md.SonrFile
 
 	// Management
-	callback     md.NodeCallback
-	filesys      *us.FileSystem
-	chunkCh      chan *md.Chunk
-	progressCh   chan *md.Progress
+	callback md.NodeCallback
+	filesys  *us.FileSystem
+
+	// Builders
+	stringsBuilder *strings.Builder
+	bytesBuilder   *bytes.Buffer
+
+	// Tracking
+	currentSize  int
+	interval     int
+	totalChunks  int
+	totalSize    int
 	currentIndex int
 }
 
@@ -55,27 +64,13 @@ func NewInSession(p *md.Peer, inv *md.AuthInvite, fs *us.FileSystem, c md.NodeCa
 		receiver:     p,
 		callback:     c,
 		filesys:      fs,
-		chunkCh:      make(chan *md.Chunk),
-		progressCh:   make(chan *md.Progress),
 		currentIndex: 0,
 	}
-
-	// Handle Progress
-	go func(pCh chan *md.Progress) {
-		for {
-			p := <-pCh
-			if p.TotalComplete {
-				s.callback.Received(s.file.Card(s.receiver, s.sender))
-			} else {
-				s.callback.Progressed(p.ItemProgress)
-			}
-		}
-	}(s.progressCh)
 	return s
 }
 
 // ^ Check file type and use corresponding method ^ //
-func (s *Session) AddBuffer(curr int, buffer []byte) error {
+func (s *Session) AddBuffer(curr int, buffer []byte) (bool, error) {
 	// ** Lock/Unlock ** //
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
@@ -84,23 +79,45 @@ func (s *Session) AddBuffer(curr int, buffer []byte) error {
 	chunk := &md.Chunk{}
 	err := proto.Unmarshal(buffer, chunk)
 	if err != nil {
-		return err
+		return true, err
 	}
 
 	// @ Initialize Vars if First Chunk
 	if curr == 0 {
-		// Retreive Item
-		m, err := s.file.ItemAtIndex(s.currentIndex)
-		if err != nil {
-			return err
-		}
+		// Calculate Tracking Data
+		totalChunks := int(chunk.Total) / K_B64_CHUNK
+		interval := totalChunks / 100
 
-		// Begin Item Progress
-		s.file.AddItemAtIndex(s.currentIndex, s.filesys.GetPathForMetadata(m), chunk, s.chunkCh, s.progressCh)
-	} else {
-		s.chunkCh <- chunk
+		// Set Data
+		s.totalSize = int(chunk.Total)
+		s.totalChunks = totalChunks
+		s.interval = interval
 	}
-	return nil
+
+	// @ Add Buffer by File Type
+	// Add Base64 Chunk to Buffer
+	n, err := s.stringsBuilder.WriteString(chunk.Base)
+	if err != nil {
+		return true, err
+	}
+
+	// Update Tracking
+	s.currentSize = s.currentSize + n
+
+	// @ Check Completed
+	if s.currentSize < s.totalSize {
+		// Validate Interval
+		if s.interval != 0 {
+			// Check for Interval
+			if curr%s.interval == 0 {
+				// Send Callback
+				s.callback.Progressed(float32(s.currentSize) / float32(s.totalSize))
+			}
+		}
+		return false, nil
+	} else {
+		return true, nil
+	}
 }
 
 // ^ Helper: Chunks string based on B64ChunkSize ^ //
@@ -130,14 +147,48 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 			}
 
 			// @ Unmarshal Bytes into Proto
-			err = s.AddBuffer(i, buffer)
+			hasCompleted, err := s.AddBuffer(i, buffer)
 			if err != nil {
 				s.callback.Error(md.NewError(err, md.ErrorMessage_TRANSFER_CHUNK))
+				break
+			}
+
+			// @ Check if All Buffer Received to Save
+			if hasCompleted {
+				// Sync file
+				if err := s.Save(); err != nil {
+					s.callback.Error(md.NewError(err, md.ErrorMessage_TRANSFER_END))
+				}
 				break
 			}
 			md.GetState().NeedsWait()
 		}
 	}(msg.NewReader(stream), s.file)
+}
+
+// ^ Check file type and use corresponding method to save to Disk ^ //
+func (s *Session) Save() error {
+	// Retreive Item
+	meta, err := s.file.ItemAtIndex(s.currentIndex)
+	if err != nil {
+		return err
+	}
+
+	// Get Path and Bytes from base64
+	path := s.filesys.GetPathForMetadata(meta)
+	data, err := base64.StdEncoding.DecodeString(s.stringsBuilder.String())
+	if err != nil {
+		return err
+	}
+
+	// Sync file
+	if err := s.file.SaveItem(path, data, s.currentIndex); err != nil {
+		s.callback.Error(md.NewError(err, md.ErrorMessage_TRANSFER_END))
+	}
+
+	// Send Complete Callback
+	s.callback.Received(s.file.CardIn(s.receiver, s.sender))
+	return nil
 }
 
 // ^ write file as Base64 in Msgio to Stream ^ //
@@ -177,5 +228,5 @@ func WriteToStream(writer msgio.WriteCloser, s *Session) {
 	}
 
 	// Call Completed Sending
-	s.callback.Transmitted(s.file.Card(s.receiver, s.sender))
+	s.callback.Transmitted(s.file.CardOut(s.receiver, s.sender))
 }
