@@ -35,7 +35,7 @@ type NodeCallback struct {
 	GetStatus   GetStatus
 }
 
-// @ Binary State Management ** //
+// ** ─── State MANAGEMENT ────────────────────────────────────────────────────────
 type state struct {
 	flag uint64
 	chn  chan bool
@@ -78,6 +78,7 @@ func (c *state) Pause() {
 	}
 }
 
+// ** ─── Directories MANAGEMENT ────────────────────────────────────────────────────────
 // Returns Path for Application/User Data
 func (d *Directories) DataSavePath(fileName string, IsDesktop bool) string {
 	// Check for Desktop

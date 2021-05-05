@@ -71,7 +71,7 @@ func (f *SonrFile) Encode(index int, buf *bytes.Buffer) error {
 	}
 
 	// @ Jpeg Image
-	if ext := pf.Mime.Ext(); ext == "jpg" {
+	if ext := pf.Mime.Ext(); ext == "jpeg" {
 		// Open File at Meta Path
 		file, err := os.Open(pf.Path)
 		if err != nil {
@@ -179,20 +179,4 @@ func (f *SonrFile) SingleFile() *SonrFile_Metadata {
 	} else {
 		return nil
 	}
-}
-
-// Saves Item Data to Disk and Sets Update Item Path at Index
-func (f *SonrFile) SaveItem(path string, data []byte, index int) error {
-	if f.Files[index] != nil {
-		// Write File to Disk
-		if err := os.WriteFile(path, data, 0644); err != nil {
-			return err
-		}
-
-		// Set Path for Item
-		f.Files[index].Path = path
-		f.Files[index].Size = int32(len(data))
-		return nil
-	}
-	return errors.New("Invalid Item index")
 }

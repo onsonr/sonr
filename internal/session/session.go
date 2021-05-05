@@ -28,6 +28,7 @@ type Session struct {
 
 	// Management
 	callback md.NodeCallback
+	device   *md.Device
 	filesys  *us.FileSystem
 
 	// Builders
@@ -53,7 +54,7 @@ func NewOutSession(p *md.Peer, req *md.InviteRequest, fs *us.FileSystem, tc md.N
 }
 
 // ^ Prepare for Incoming Session ^ //
-func NewInSession(p *md.Peer, inv *md.AuthInvite, fs *us.FileSystem, c md.NodeCallback) *Session {
+func NewInSession(p *md.Peer, inv *md.AuthInvite, fs *us.FileSystem, d *md.Device, c md.NodeCallback) *Session {
 	f := inv.GetFile()
 	s := &Session{
 		file:           f,
@@ -61,6 +62,7 @@ func NewInSession(p *md.Peer, inv *md.AuthInvite, fs *us.FileSystem, c md.NodeCa
 		receiver:       p,
 		callback:       c,
 		filesys:        fs,
+		device:         d,
 		currentIndex:   0,
 		stringsBuilder: new(strings.Builder),
 		bytesBuilder:   new(bytes.Buffer),
@@ -154,21 +156,14 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 
 // ^ Check file type and use corresponding method to save to Disk ^ //
 func (s *Session) Save() error {
-	// Retreive Item
-	meta, err := s.file.ItemAtIndex(s.currentIndex)
-	if err != nil {
-		return err
-	}
-
-	// Get Path and Bytes from base64
-	path := s.filesys.GetPathForMetadata(meta)
+	// Get Bytes from base64
 	data, err := base64.StdEncoding.DecodeString(s.stringsBuilder.String())
 	if err != nil {
 		return err
 	}
 
 	// Sync file
-	if err := s.file.SaveItem(path, data, s.currentIndex); err != nil {
+	if err := s.device.SaveTransfer(s.file, s.currentIndex, data); err != nil {
 		s.callback.Error(md.NewError(err, md.ErrorMessage_TRANSFER_END))
 	}
 

@@ -82,6 +82,6 @@ func (n *Client) OnReply(id peer.ID, reply []byte, session *se.Session) {
 
 // ^ OnResponded: Prepares for Incoming File Transfer when Accepted ^
 func (n *Client) OnResponded(inv *md.AuthInvite, p *md.Peer, fs *us.FileSystem) {
-	n.session = se.NewInSession(p, inv, fs, n.call)
+	n.session = se.NewInSession(p, inv, fs, n.device, n.call)
 	n.Host.HandleStream(n.router.Transfer(n.Host.ID), n.session.ReadFromStream)
 }

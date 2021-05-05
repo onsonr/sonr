@@ -19,6 +19,7 @@ type Client struct {
 	// Properties
 	ctx     context.Context
 	call    md.NodeCallback
+	device  *md.Device
 	req     *md.ConnectionRequest
 	router  *ProtocolRouter
 	session *se.Session
@@ -35,6 +36,7 @@ func NewClient(ctx context.Context, cr *md.ConnectionRequest, call md.NodeCallba
 	return &Client{
 		ctx:    ctx,
 		call:   call,
+		device: cr.GetDevice(),
 		req:    cr,
 		router: NewProtocolRouter(cr),
 	}

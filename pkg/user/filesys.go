@@ -1,7 +1,6 @@
 package user
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 
@@ -22,18 +21,6 @@ type FileSystem struct {
 	Directories *md.Directories
 }
 
-// ^ EnsureDir creates directory if it doesnt exist ^
-func EnsureDir(path string, perm os.FileMode) error {
-	_, err := IsDir(path)
-
-	if os.IsNotExist(err) {
-		err = os.Mkdir(path, perm)
-		if err != nil {
-			return fmt.Errorf("failed to ensure directory at %q: %q", path, err)
-		}
-	}
-	return err
-}
 
 // ^ EnsureDir creates directory if it doesnt exist ^
 func (sfs *FileSystem) IsFile(name string) bool {
@@ -53,18 +40,6 @@ func (sfs *FileSystem) IsFile(name string) bool {
 	} else {
 		return true
 	}
-}
-
-// ^ IsDir determines is the path given is a directory or not. ^
-func IsDir(name string) (bool, error) {
-	fi, err := os.Stat(name)
-	if err != nil {
-		return false, err
-	}
-	if !fi.IsDir() {
-		return false, fmt.Errorf("%q is not a directory", name)
-	}
-	return true, nil
 }
 
 // ^ WriteIncomingFile writes file to Disk ^
@@ -102,11 +77,6 @@ func (sfs *FileSystem) WriteFile(name string, data []byte) (string, *md.SonrErro
 		return "", md.NewError(err, md.ErrorMessage_USER_FS)
 	}
 	return path, nil
-}
-
-// @ Helper: Finds Write Path for Incoming File
-func (sfs *FileSystem) GetPathForMetadata(f *md.SonrFile_Metadata) string {
-	return sfs.Directories.TransferSavePath(f.Name, f.Mime, sfs.Device.IsDesktop())
 }
 
 // @ Get Key: Returns Private key from disk if found ^ //
