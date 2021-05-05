@@ -208,6 +208,7 @@ enum Payload {
   FILE = 3;         // File Transfer
   MULTI_FILES = 4;  // Multiple Files
   URL = 5;          // Link to Site
+  MEDIA = 6;
 }
 
 // RemoteInfo is for Joining/Creating a New Topic
@@ -221,11 +222,27 @@ message RemoteInfo {
 
 // For Transfer File Payload
 message SonrFile {
-  bool isMultiple = 1;
+  // Payload of File
+  Payload payload = 1;
+
+  // Total Transfer Count
   int32 count = 2;
-  int32 transferSize = 3;
-  Metadata singleFile = 4;
-  repeated Metadata multiFiles = 5;
+
+  // Total Transfer Size
+  int32 size = 3;
+
+  // List of Files as Metadata
+  repeated Metadata files = 4;
+
+  // Direction of SonrFile
+  Direction direction = 5;
+
+  // Traffic Direction of Data
+  enum Direction {
+    Default = 0;  // From Memory/Viewing
+    Incoming = 1; // Incoming Transfer
+    Outgoing = 2; // Outgoing Transfer
+  }
 
   // For Received Transfer File Information
   message Metadata {
@@ -243,10 +260,9 @@ message SonrFile {
       bool isVideo = 3;      // If File is Video
       bool hasThumbnail = 4; // If File has thumbnail
 
-      int32 width = 5;     // Media Width
-      int32 height = 6;    // Media Height
-      int32 duration = 7;  // Length of Video - Optional
-      Payload payload = 8; // SQL: Type of Data received
+      int32 width = 5;    // Media Width
+      int32 height = 6;   // Media Height
+      int32 duration = 7; // Length of Video - Optional
     }
   }
 }

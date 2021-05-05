@@ -41,7 +41,7 @@ func newOutgoingFile(req *md.InviteRequest, p *md.Peer) *outgoingFile {
 
 	// Get File Information
 	file := req.GetFile()
-	meta := file.GetSingleFile()
+	meta := file.SingleFile()
 
 	// Check if Mime Provided
 	if meta.Mime != nil {

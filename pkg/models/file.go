@@ -9,9 +9,9 @@ import (
 
 // ^ Finds Mime for Single File ^ //
 func (f *SonrFile) FindMime() (*MIME, error) {
-	if !f.IsMultiple {
+	if f.IsSingle() {
 		// Get Single File
-		m := f.GetSingleFile()
+		m := f.SingleFile()
 
 		// @ 1. Get File Information
 		// Open File at Path
@@ -51,11 +51,31 @@ func (f *SonrFile) FindMime() (*MIME, error) {
 // *********************************** //
 // ** Outgoing File Info Management ** //
 // *********************************** //
+func (f *SonrFile) IsSingle() bool {
+	return f.Payload == Payload_FILE || f.Payload == Payload_MEDIA
+}
+
+func (f *SonrFile) IsMedia() bool {
+	return f.Payload == Payload_MEDIA
+}
+
+func (f *SonrFile) IsMultiple() bool {
+	return f.Payload == Payload_MULTI_FILES
+}
+
+func (f *SonrFile) SingleFile() *SonrFile_Metadata {
+	if f.IsSingle() {
+		return f.Files[0]
+	} else {
+		return nil
+	}
+}
+
 // ^ Method Returns File Size at Path ^ //
 func (f *SonrFile) FindSize() (int32, error) {
-	if !f.IsMultiple {
+	if f.IsSingle() {
 		// Get Single File
-		m := f.GetSingleFile()
+		m := f.SingleFile()
 
 		// Open File at Path
 		file, err := os.Open(m.Path)

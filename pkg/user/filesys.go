@@ -107,8 +107,9 @@ func (sfs *FileSystem) WriteFile(name string, data []byte) (string, *md.SonrErro
 // @ Helper: Finds Write Path for Incoming File
 func (sfs *FileSystem) GetPathForPayload(file *md.SonrFile) string {
 	// Check count
-	if !file.IsMultiple {
-		return sfs.Directories.TransferSavePath(file.SingleFile.Name, file.SingleFile.Mime, sfs.Device.IsDesktop())
+	if file.IsSingle() {
+		f := file.SingleFile()
+		return sfs.Directories.TransferSavePath(f.Name, f.Mime, sfs.Device.IsDesktop())
 	} else {
 		return ""
 	}
