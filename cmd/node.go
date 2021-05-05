@@ -31,7 +31,7 @@ type Node struct {
 func NewNode(reqBytes []byte, call Callback) *Node {
 	// Initialize Sentry
 	sentry.Init(sentry.ClientOptions{
-		Dsn: "http://8f37928df15e41318ebc28770270da05@ec2-34-201-54-61.compute-1.amazonaws.com/2",
+		Dsn: "https://cbf88b01a5a5468fa77101f7dfc54f20@o549479.ingest.sentry.io/5672329",
 	})
 
 	// Unmarshal Request
