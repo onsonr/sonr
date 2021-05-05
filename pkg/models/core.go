@@ -161,8 +161,8 @@ func (p *TransferProgress) Next(c *Chunk) {
 
 	// Update Properties
 	p.CurrentChunk = 1
-	p.ItemSize = int(c.Size)
 	p.Interval = interval
+	p.ItemSize = int(c.Size)
 	p.ItemTotal = itemTotal
 }
 

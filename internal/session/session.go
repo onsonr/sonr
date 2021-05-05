@@ -97,10 +97,10 @@ func (s *Session) AddBuffer(curr int, buffer []byte) (bool, error) {
 	}
 
 	// @ Check Completed
-	if p := s.progress.Add(n); p.TotalComplete {
+	if p := s.progress.Add(n); p.ItemComplete {
 		// Check for Interval and Send Callback
 		if p.HasMetInterval {
-			s.callback.Progressed(p.TotalProgress)
+			s.callback.Progressed(p.ItemProgress)
 		}
 		return false, nil
 	} else {
