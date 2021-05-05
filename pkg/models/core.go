@@ -119,34 +119,35 @@ type Progress struct {
 }
 
 type TransferProgress struct {
-	CurrentChunk    int // Current Chunk Number
-	CurrentItemSize int // Current Size of Item
-	Interval        int // Interval for Callback Progress
-	ItemSize        int // Current Item Size
-	TransferSize    int // Current Size of Transfer
-	TotalSize       int // Total Size of Transfer
-	TotalCount      int // Total Items in Transfer
+	CurrentChunk int // Current Chunk Number
+	Interval     int // Interval for Callback Progress
+	ItemSize     int // Current Item Size
+	ItemTotal    int // Current Size of Item
+	TransferSize int // Current Size of Transfer
+	TotalSize    int // Total Size of Transfer
+	TotalCount   int // Total Items in Transfer
 }
 
 func NewProgress(totalCount int, totalSize int) *TransferProgress {
 	return &TransferProgress{
-		Interval:        0,
-		CurrentChunk:    0,
-		TransferSize:    0,
-		CurrentItemSize: 0,
-		TotalCount:      totalCount,
-		TotalSize:       totalSize,
+		Interval:     0,
+		CurrentChunk: 0,
+		TransferSize: 0,
+		ItemTotal:    0,
+		TotalCount:   totalCount,
+		TotalSize:    totalSize,
 	}
 }
 
 func (p *TransferProgress) Add(n int) *Progress {
 	p.CurrentChunk = p.CurrentChunk + 1
-	p.CurrentItemSize = p.CurrentItemSize + n
+	p.ItemSize = p.ItemSize + n
+	p.TransferSize = p.TransferSize + n
 
 	return &Progress{
 		HasMetInterval: p.checkInterval(),
-		ItemProgress:   float32(p.CurrentItemSize) / float32(p.ItemSize),
-		ItemComplete:   p.CurrentItemSize >= p.ItemSize,
+		ItemProgress:   float32(p.ItemSize) / float32(p.ItemTotal),
+		ItemComplete:   p.ItemTotal >= p.ItemSize,
 		TotalProgress:  float32(p.TransferSize) / float32(p.TotalSize),
 		TotalComplete:  p.TransferSize >= p.TotalSize,
 	}
@@ -154,16 +155,15 @@ func (p *TransferProgress) Add(n int) *Progress {
 
 func (p *TransferProgress) Next(c *Chunk) {
 	// Calculate Tracking
-	itemSize := int(c.GetTotal())
-	itemChunks := itemSize / K_B64_CHUNK
+	itemTotal := int(c.GetTotal())
+	itemChunks := itemTotal / K_B64_CHUNK
 	interval := itemChunks / 100
 
 	// Update Properties
 	p.CurrentChunk = 1
-	p.CurrentItemSize = int(c.Size)
-	p.TransferSize = p.TransferSize + itemSize
+	p.ItemSize = int(c.Size)
 	p.Interval = interval
-	p.ItemSize = itemSize
+	p.ItemTotal = itemTotal
 }
 
 func (p *TransferProgress) checkInterval() bool {
