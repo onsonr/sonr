@@ -105,14 +105,8 @@ func (sfs *FileSystem) WriteFile(name string, data []byte) (string, *md.SonrErro
 }
 
 // @ Helper: Finds Write Path for Incoming File
-func (sfs *FileSystem) GetPathForPayload(file *md.SonrFile) string {
-	// Check count
-	if file.IsSingle() {
-		f := file.SingleFile()
-		return sfs.Directories.TransferSavePath(f.Name, f.Mime, sfs.Device.IsDesktop())
-	} else {
-		return ""
-	}
+func (sfs *FileSystem) GetPathForMetadata(f *md.SonrFile_Metadata) string {
+	return sfs.Directories.TransferSavePath(f.Name, f.Mime, sfs.Device.IsDesktop())
 }
 
 // @ Get Key: Returns Private key from disk if found ^ //
