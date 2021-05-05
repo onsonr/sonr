@@ -142,14 +142,13 @@ func NewProgress(totalCount int, totalSize int) *TransferProgress {
 func (p *TransferProgress) Add(n int) *Progress {
 	p.CurrentChunk = p.CurrentChunk + 1
 	p.CurrentItemSize = p.CurrentItemSize + n
-	p.TransferSize = p.TransferSize + n
 
 	return &Progress{
 		HasMetInterval: p.checkInterval(),
 		ItemProgress:   float32(p.CurrentItemSize) / float32(p.ItemSize),
 		ItemComplete:   p.CurrentItemSize >= p.ItemSize,
 		TotalProgress:  float32(p.TransferSize) / float32(p.TotalSize),
-		TotalComplete:  p.CurrentItemSize >= p.TotalSize,
+		TotalComplete:  p.TransferSize >= p.TotalSize,
 	}
 }
 
@@ -162,7 +161,7 @@ func (p *TransferProgress) Next(c *Chunk) {
 	// Update Properties
 	p.CurrentChunk = 1
 	p.CurrentItemSize = int(c.Size)
-	p.TransferSize = p.TransferSize + p.CurrentItemSize
+	p.TransferSize = p.TransferSize + itemSize
 	p.Interval = interval
 	p.ItemSize = itemSize
 }
