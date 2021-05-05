@@ -2,6 +2,7 @@ package models
 
 import (
 	"bytes"
+	"encoding/base64"
 	"errors"
 	"image"
 	"image/jpeg"
@@ -9,21 +10,13 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 	"time"
 )
 
 // ***************************** //
-// ** Sonr File Incoming Info ** //
-// ***************************** //
-
-// ***************************** //
 // ** Sonr File Outgoing Info ** //
 // ***************************** //
-// Returns first item in File
-func (f *SonrFile) FirstFile() *SonrFile_Metadata {
-	return f.Files[0]
-}
-
 // Checks if File contains single item
 func (f *SonrFile) IsSingle() bool {
 	return len(f.Files) == 1
@@ -39,61 +32,86 @@ func (f *SonrFile) IsMultiple() bool {
 	return len(f.Files) > 1
 }
 
-// Method Returns SingleFile if Applicable
-func (f *SonrFile) SingleFile() *SonrFile_Metadata {
-	if f.IsSingle() {
-		return f.Files[0]
-	} else {
-		return nil
-	}
-}
+// Writes Buffer to File at Index with channel
+func (f *SonrFile) AddItemAtIndex(index int, path string, first *Chunk, cCh chan *Chunk, pCh chan *Progress) {
+	progress := NewItemProgress(first, int(f.Count), int(f.Size))
+	stringsBuilder := new(strings.Builder)
 
-// Method Returns Metadata Item at Given Index
-func (f *SonrFile) ItemAtIndex(index int) (*SonrFile_Metadata, error) {
-	if index < int(f.GetCount()) {
-		return f.Files[index], nil
-	}
-	return nil, errors.New("Item does not exist")
-}
-
-// Method Returns Preview from Thumbnail if Single File
-func (f *SonrFile) Preview() []byte {
-	// Validate Single
-	if f.IsSingle() {
-		// Retrieve Meta
-		meta := f.Files[0]
-		props := meta.GetProperties()
-
-		// Check if Thumbnail Provided
-		if props.HasThumbnail {
-			// Initialize
-			thumbWriter := new(bytes.Buffer)
-			thumbReader := bytes.NewReader(meta.Thumbnail)
-
-			// Convert to Image Object
-			img, _, err := image.Decode(thumbReader)
+	for {
+		select {
+		case chunk := <-cCh:
+			// Add To Builder
+			n, err := stringsBuilder.WriteString(chunk.Base)
 			if err != nil {
 				log.Println(err)
-				return nil
+				break
 			}
+			// Send Progress if Met
+			if met := progress.Add(n); met {
+				// Get Progress
+				p := progress.Progress()
 
-			// Encode as Jpeg into buffer w/o scaling
-			err = jpeg.Encode(thumbWriter, img, nil)
-			if err != nil {
-				log.Panicln(err)
-				return nil
+				// Check Item Complete
+				if p.ItemComplete {
+					// Get Bytes from base64
+					data, err := base64.StdEncoding.DecodeString(stringsBuilder.String())
+					if err != nil {
+						log.Println(err)
+						break
+					}
+
+					if err := f.SaveItem(path, data, index); err != nil {
+						log.Println(err)
+						break
+					}
+				}
+				pCh <- progress.Progress()
 			}
-
-			return thumbWriter.Bytes()
 		}
 	}
-	return nil
+}
+
+// Returns SonrFile as TransferCard given Receiver and Owner
+func (f *SonrFile) Card(receiver *Peer, owner *Peer) *TransferCard {
+	if f.Direction == SonrFile_Outgoing {
+		// Create Card
+		card := TransferCard{
+			// SQL Properties
+			Payload: f.Payload,
+
+			// Owner Properties
+			Receiver: receiver.GetProfile(),
+			Owner:    owner.GetProfile(),
+			File:     f,
+		}
+		return &card
+	} else {
+		// Update Direction
+		f.Direction = SonrFile_Default
+
+		// Create Card
+		return &TransferCard{
+			// SQL Properties
+			Payload:  f.Payload,
+			Received: int32(time.Now().Unix()),
+
+			// Owner Properties
+			Owner:    owner.GetProfile(),
+			Receiver: receiver.GetProfile(),
+
+			// Data Properties
+			File: f,
+		}
+	}
 }
 
 // Method Encodes Single File into Buffer
-func (f *SonrFile) EncodeSingle(buf *bytes.Buffer) error {
-	// Retreive First File
-	pf := f.FirstFile()
+func (f *SonrFile) Encode(index int, buf *bytes.Buffer) error {
+	// Retreive File Metadata at Index
+	pf, err := f.ItemAtIndex(index)
+	if err != nil {
+		return err
+	}
 
 	// @ Jpeg Image
 	if ext := pf.Mime.Ext(); ext == "jpg" {
@@ -155,6 +173,57 @@ func (f *SonrFile) EncodeSingle(buf *bytes.Buffer) error {
 	}
 }
 
+// Method Returns Metadata Item at Given Index
+func (f *SonrFile) ItemAtIndex(index int) (*SonrFile_Metadata, error) {
+	if index < int(f.GetCount()) {
+		return f.Files[index], nil
+	}
+	return nil, errors.New("Item does not exist")
+}
+
+// Method Returns Preview from Thumbnail if Single File
+func (f *SonrFile) Preview() []byte {
+	// Validate Single
+	if f.IsSingle() {
+		// Retrieve Meta
+		meta := f.Files[0]
+		props := meta.GetProperties()
+
+		// Check if Thumbnail Provided
+		if props.HasThumbnail {
+			// Initialize
+			thumbWriter := new(bytes.Buffer)
+			thumbReader := bytes.NewReader(meta.Thumbnail)
+
+			// Convert to Image Object
+			img, _, err := image.Decode(thumbReader)
+			if err != nil {
+				log.Println(err)
+				return nil
+			}
+
+			// Encode as Jpeg into buffer w/o scaling
+			err = jpeg.Encode(thumbWriter, img, nil)
+			if err != nil {
+				log.Panicln(err)
+				return nil
+			}
+
+			return thumbWriter.Bytes()
+		}
+	}
+	return nil
+}
+
+// Method Returns SingleFile if Applicable
+func (f *SonrFile) SingleFile() *SonrFile_Metadata {
+	if f.IsSingle() {
+		return f.Files[0]
+	} else {
+		return nil
+	}
+}
+
 // Saves Item Data to Disk and Sets Update Item Path at Index
 func (f *SonrFile) SaveItem(path string, data []byte, index int) error {
 	if f.Files[index] != nil {
@@ -176,47 +245,19 @@ func (f *SonrFile) SetIncoming() {
 	f.Direction = SonrFile_Incoming
 }
 
-// Returns SonrFile as TransferCard given Receiver and Owner
-func (f *SonrFile) ToCard(receiver *Peer, owner *Peer, preview []byte) *TransferCard {
-	if f.Direction == SonrFile_Outgoing {
-		// Create Card
-		card := TransferCard{
-			// SQL Properties
-			Payload: f.Payload,
+// Returns Item Transfer Chunk Count
+func (f *SonrFile) TotalItemChunks(chunk *Chunk) int {
+	return int(chunk.Total) / K_B64_CHUNK
+}
 
-			// Owner Properties
-			Receiver: receiver.GetProfile(),
-			Owner:    owner.GetProfile(),
-			File:     f,
-		}
+// Returns Total Number of Transfer Chunks
+func (f *SonrFile) TotalTranferChunks() int {
+	return int(f.Size) / K_B64_CHUNK
+}
 
-		// Set Preview
-		if preview != nil {
-			card.Preview = preview
-		}
-		return &card
-	} else {
-		// Update Direction
-		f.Direction = SonrFile_Default
-
-		// Create Card
-		return &TransferCard{
-			// SQL Properties
-			Payload:  f.Payload,
-			Received: int32(time.Now().Unix()),
-			Preview:  preview,
-
-			// Transfer Properties
-			Status: TransferCard_COMPLETED,
-
-			// Owner Properties
-			Owner:    owner.GetProfile(),
-			Receiver: receiver.GetProfile(),
-
-			// Data Properties
-			File: f,
-		}
-	}
+// Returns Interval for Chunk
+func (f *SonrFile) TransferInterval(chunk *Chunk) int {
+	return f.TotalItemChunks(chunk) / 100
 }
 
 // ************************** //
@@ -248,14 +289,4 @@ func (m *MIME) IsImage() bool {
 // Checks if Mime is Video
 func (m *MIME) IsVideo() bool {
 	return m.Type == MIME_VIDEO
-}
-
-// *********************************** //
-// ** Incoming File Info Management ** //
-// *********************************** //
-type InFile struct {
-	Payload       Payload
-	Metadata      *SonrFile
-	ChunkBaseChan chan Chunk64
-	ChunkBufChan  chan ChunkBuffer
 }

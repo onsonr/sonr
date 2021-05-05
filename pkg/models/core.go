@@ -6,6 +6,9 @@ import (
 	"sync/atomic"
 )
 
+const K_BUF_CHUNK = 32000
+const K_B64_CHUNK = 31998 // Adjusted for Base64 -- has to be divisible by 3
+
 // ** ─── CALLBACK MANAGEMENT ────────────────────────────────────────────────────────
 // Define Function Types
 type GetStatus func() Status
@@ -102,5 +105,54 @@ func (d *Directories) TransferSavePath(fileName string, mime *MIME, IsDesktop bo
 		} else {
 			return filepath.Join(d.GetDocuments(), fileName)
 		}
+	}
+}
+
+type Progress struct {
+	ItemProgress  float32
+	TotalProgress float32
+	ItemComplete  bool
+	TotalComplete bool
+}
+
+type TransferProgress struct {
+	CurrentChunk    int // Current Chunk Number
+	CurrentItemSize int // Current Size of Item
+	Interval        int // Interval for Callback Progress
+	ItemSize        int // Current Item Size
+	TransferSize    int // Current Size of Transfer
+	TotalSize       int // Total Size of Transfer
+	TotalCount      int // Total Items in Transfer
+}
+
+func NewItemProgress(c *Chunk, totalCount int, totalSize int) *TransferProgress {
+	itemSize := int(c.GetTotal())
+	itemChunks := int(c.GetTotal()) / K_B64_CHUNK
+	interval := itemChunks / 100
+
+	return &TransferProgress{
+		CurrentChunk:    1,
+		CurrentItemSize: int(c.Size),
+		TransferSize:    int(c.Size),
+		Interval:        interval,
+		ItemSize:        itemSize,
+		TotalCount:      totalCount,
+		TotalSize:       totalSize,
+	}
+}
+
+func (p *TransferProgress) Add(n int) bool {
+	p.CurrentChunk = p.CurrentChunk + 1
+	p.CurrentItemSize = p.CurrentItemSize + n
+	p.TransferSize = p.TransferSize + n
+	return p.CurrentChunk%p.Interval == 0
+}
+
+func (p *TransferProgress) Progress() *Progress {
+	return &Progress{
+		ItemProgress:  float32(p.CurrentItemSize) / float32(p.ItemSize),
+		ItemComplete:  p.CurrentItemSize >= p.ItemSize,
+		TotalProgress: float32(p.TransferSize) / float32(p.TotalSize),
+		TotalComplete: p.CurrentItemSize >= p.TotalSize,
 	}
 }

@@ -272,25 +272,13 @@ message TransferCard {
   int32 id = 1;        // SQL: Id reference
   Payload payload = 2; // SQL: Type of Data received
   int32 received = 3;  // SQL: UnixTime of received Date/Time
-  bytes preview = 4;   // SQL: Thumbnail Preview Bytes
 
-  Profile receiver = 5; // PROFILE: General Receiver Info
-  Profile owner = 6;    // PROFILE: General Owner Info
+  Profile receiver = 4; // PROFILE: General Receiver Info
+  Profile owner = 5;    // PROFILE: General Owner Info
 
-  Status status = 7;   // TRANSFER: Status of the Card - File Only
-  Contact contact = 8; // DATA(Optional): Received Contact Information
-  SonrFile file = 9;   // DATA(Optional): Received a File
-  URLLink url = 10;    // DATA(Optional): Received a Website Link
-
-  // Card Transfer Status
-  enum Status {
-    NONE = 0;       // Default, Idle or Post-Completion
-    INVITE = 1;     // An Invited Transfer
-    DIRECT = 2;     // A Direct Transfer
-    REPLY = 3;      // A Response Card (Usually Contact only)
-    INPROGRESS = 4; // A Transfer in Progress
-    COMPLETED = 5;  // A Received and Completed Transfer
-  }
+  Contact contact = 6; // DATA(Optional): Received Contact Information
+  SonrFile file = 7;   // DATA(Optional): Received a File
+  URLLink url = 8;     // DATA(Optional): Received a Website Link
 }
 
 // URLLink Contains metadata of provided URL

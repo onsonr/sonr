@@ -172,15 +172,9 @@ func (n *Client) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, c *md
 func (n *Client) InviteFile(req *md.InviteRequest, t *tpc.TopicManager, fs *us.FileSystem) *md.SonrError {
 	// Start New Session
 	session := se.NewOutSession(n.Peer, req, fs, n.call)
-	card := session.OutgoingCard()
-
-	// Check for Card
-	if card == nil {
-		return md.NewErrorWithType(md.ErrorMessage_TRANSFER_START)
-	}
 
 	// Create Invite Message
-	invite := n.Peer.SignInviteWithFile(card, req)
+	invite := n.Peer.SignInviteWithFile(req)
 
 	// Get PeerID
 	id, _, err := t.FindPeerInTopic(req.To.Id.Peer)

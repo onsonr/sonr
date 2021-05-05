@@ -95,34 +95,22 @@ func (p *Peer) SignInviteWithContact(c *Contact, flat bool, req *InviteRequest) 
 	// Create Invite
 	return AuthInvite{
 		From:    p,
-		Payload: Payload_CONTACT,
 		IsFlat:  flat,
+		Contact: c,
+		Payload: req.GetPayload(),
 		Remote:  req.GetRemote(),
-		Card: &TransferCard{
-			// SQL Properties
-			Payload:  Payload_CONTACT,
-			Received: int32(time.Now().Unix()),
-
-			// Transfer Properties
-			Status: TransferCard_INVITE,
-
-			// Owner Properties
-			Receiver: req.To.GetProfile(),
-			Owner:    p.Profile,
-
-			// Data Properties
-			Contact: c,
-		},
+		To:      req.GetTo(),
 	}
 }
 
 // ^ Generate AuthInvite with Contact Payload from Request, User Peer Data and User Contact ^ //
-func (p *Peer) SignInviteWithFile(tc *TransferCard, req *InviteRequest) AuthInvite {
+func (p *Peer) SignInviteWithFile(req *InviteRequest) AuthInvite {
 	// Create Invite
 	return AuthInvite{
 		From:    p,
-		Payload: tc.Payload,
-		Card:    tc,
+		To:      req.GetTo(),
+		Payload: req.GetPayload(),
+		File:    req.GetFile(),
 		Remote:  req.GetRemote(),
 	}
 }
@@ -140,23 +128,10 @@ func (p *Peer) SignInviteWithLink(req *InviteRequest) AuthInvite {
 	// Create Invite
 	return AuthInvite{
 		From:    p,
-		Payload: Payload_CONTACT,
+		Url:     urlInfo,
+		Payload: req.GetPayload(),
 		Remote:  req.GetRemote(),
-		Card: &TransferCard{
-			// SQL Properties
-			Payload:  Payload_CONTACT,
-			Received: int32(time.Now().Unix()),
-
-			// Transfer Properties
-			Status: TransferCard_INVITE,
-
-			// Owner Properties
-			Owner:    p.Profile,
-			Receiver: req.To.GetProfile(),
-
-			// Data Properties
-			Url: urlInfo,
-		},
+		To:      req.GetTo(),
 	}
 }
 
@@ -171,10 +146,6 @@ func (p *Peer) SignReply(d bool, req *RespondRequest, to *Peer) *AuthReply {
 			// SQL Properties
 			Payload:  Payload_NONE,
 			Received: int32(time.Now().Unix()),
-			Preview:  p.Profile.Picture,
-
-			// Transfer Properties
-			Status: TransferCard_REPLY,
 
 			// Owner Properties
 			Owner:    p.Profile,
@@ -204,10 +175,6 @@ func (p *Peer) SignReplyWithContact(c *Contact, flat bool, req *RespondRequest, 
 				// SQL Properties
 				Payload:  Payload_CONTACT,
 				Received: int32(time.Now().Unix()),
-				Preview:  p.Profile.Picture,
-
-				// Transfer Properties
-				Status: TransferCard_REPLY,
 
 				// Owner Properties
 				Owner:    p.Profile,
@@ -226,10 +193,6 @@ func (p *Peer) SignReplyWithContact(c *Contact, flat bool, req *RespondRequest, 
 				// SQL Properties
 				Payload:  Payload_CONTACT,
 				Received: int32(time.Now().Unix()),
-				Preview:  p.Profile.Picture,
-
-				// Transfer Properties
-				Status: TransferCard_REPLY,
 
 				// Owner Properties
 				Owner:    p.Profile,

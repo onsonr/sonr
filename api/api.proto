@@ -56,18 +56,20 @@ message UpdateRequest {
 
 // Message to Peer Request
 message MessageRequest {
-  Peer to = 1;        // Recipient
-  string message = 2; // Message Content
-  string topic = 3;   // Topic Name
+  Peer from = 1;      // Users Peer Data
+  Peer to = 2;        // Recipient
+  string message = 3; // Message Content
+  string topic = 4;   // Topic Name
 }
 
 // Processes Given File and Invites Specified Peer
 message InviteRequest {
   // Properties
   Payload payload = 1;   // General Payload Type
-  Peer to = 2;           // User thats being Invited
-  bool isRemote = 3;     // If Transfer is Remote
-  RemoteInfo remote = 4; // Remote Topic Name
+  Peer to = 2;           // Receivers Peer Data
+  Peer from = 3;         // Users Peer Data
+  bool isRemote = 4;     // If Transfer is Remote
+  RemoteInfo remote = 5; // Remote Topic Name
 
   // Attached Data
   string url = 6;      // URL to be Sent - Optional
@@ -76,27 +78,33 @@ message InviteRequest {
 }
 
 message RespondRequest {
-  bool decision = 1;     // User Decision
-  bool isRemote = 2;     // If Transfer is Remote
-  RemoteInfo remote = 3; // Remote Topic Name
+  Peer from = 1;         // Users Peer Data
+  Peer to = 2;           // Recipient
+  bool decision = 3;     // User Decision
+  bool isRemote = 4;     // If Transfer is Remote
+  RemoteInfo remote = 5; // Remote Topic Name
 }
 
 // Invitation Message sent on RPC
 message AuthInvite {
   Payload payload = 1;   // Type of Transfer
   Peer from = 2;         // Users Peer Data
-  TransferCard card = 3; // Card contains all Data Info, Transfer Info
-  bool isFlat = 4;
-  RemoteInfo remote = 5;
+  Peer to = 3;           // Receivers Peer Data
+  bool isFlat = 4;       // For Flat ContactTransfer
+  RemoteInfo remote = 5; // Remote Lobby Info
+  Contact contact = 6;   // DATA(Optional): Received Contact Information
+  SonrFile file = 7;     // DATA(Optional): Received a File
+  URLLink url = 8;       // DATA(Optional): Received a Website Link
 }
 
 // Reply Message sent on RPC
 message AuthReply {
   Type type = 1;         // Type of Transfer Reply
   Peer from = 2;         // Users Peer Data
-  bool decision = 3;     // Users Decision for the Invitation
-  TransferCard card = 4; // Card contains all Data Info, Transfer Info
-  RemoteInfo remote = 5;
+  Peer to = 3;           // Receivers Peer Data
+  bool decision = 4;     // Users Decision for the Invitation
+  TransferCard card = 5; // Card contains all Data Info, Transfer Info
+  RemoteInfo remote = 6;
 
   enum Type {
     None = 0;
