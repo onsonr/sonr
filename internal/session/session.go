@@ -6,7 +6,6 @@ import (
 	"sync"
 
 	"encoding/base64"
-	"log"
 
 	md "github.com/sonr-io/core/pkg/models"
 	us "github.com/sonr-io/core/pkg/user"
@@ -196,7 +195,7 @@ func WriteToStream(writer msgio.WriteCloser, s *Session) {
 	// Initialize Buffer and Encode File
 	buffer := new(bytes.Buffer)
 	if err := s.file.Encode(s.currentIndex, buffer); err != nil {
-		log.Fatalln(err)
+		s.callback.Error(md.NewError(err, md.ErrorMessage_OUTGOING))
 	}
 
 	// Encode Buffer to base 64
@@ -216,13 +215,13 @@ func WriteToStream(writer msgio.WriteCloser, s *Session) {
 		// Convert to bytes
 		bytes, err := proto.Marshal(chunk)
 		if err != nil {
-			log.Fatalln(err)
+			s.callback.Error(md.NewError(err, md.ErrorMessage_OUTGOING))
 		}
 
 		// Write Message Bytes to Stream
 		err = writer.WriteMsg(bytes)
 		if err != nil {
-			log.Fatalln(err)
+			s.callback.Error(md.NewError(err, md.ErrorMessage_OUTGOING))
 		}
 		md.GetState().NeedsWait()
 	}
