@@ -6,9 +6,6 @@ import (
 	"sync/atomic"
 )
 
-const K_BUF_CHUNK = 32000
-const K_B64_CHUNK = 31998 // Adjusted for Base64 -- has to be divisible by 3
-
 // ** ─── CALLBACK MANAGEMENT ────────────────────────────────────────────────────────
 // Define Function Types
 type GetStatus func() Status
@@ -110,65 +107,70 @@ func (d *Directories) TransferSavePath(fileName string, mime *MIME, IsDesktop bo
 }
 
 // ** ─── PROGRESS MANAGEMENT ────────────────────────────────────────────────────────
+// Returned Progress Struct
 type Progress struct {
 	HasMetInterval bool
 	ItemComplete   bool
 	ItemProgress   float32
-	TotalComplete  bool
-	TotalProgress  float32
 }
 
-type TransferProgress struct {
+// Individual Item Progress Struct
+type ItemProgress struct {
 	CurrentChunk int // Current Chunk Number
 	Interval     int // Interval for Callback Progress
 	ItemSize     int // Current Item Size
 	ItemTotal    int // Current Size of Item
-	TransferSize int // Current Size of Transfer
-	TotalSize    int // Total Size of Transfer
-	TotalCount   int // Total Items in Transfer
 }
 
-func NewProgress(totalCount int, totalSize int) *TransferProgress {
-	return &TransferProgress{
+// @ NewProgress: Creates new ItemProgress Instance
+func NewProgress(total int32) *ItemProgress {
+	return &ItemProgress{
 		Interval:     0,
 		CurrentChunk: 0,
-		TransferSize: 0,
-		ItemTotal:    0,
-		TotalCount:   totalCount,
-		TotalSize:    totalSize,
+		ItemTotal:    int(total),
 	}
 }
 
-func (p *TransferProgress) Add(n int) *Progress {
-	p.CurrentChunk = p.CurrentChunk + 1
+// @ Add: Updates current chunk and written bytes
+func (p *ItemProgress) Add(curr int, n int) *Progress {
+	p.CurrentChunk = curr
 	p.ItemSize = p.ItemSize + n
-	p.TransferSize = p.TransferSize + n
 
 	return &Progress{
 		HasMetInterval: p.checkInterval(),
-		ItemProgress:   float32(p.ItemSize) / float32(p.ItemTotal),
-		ItemComplete:   p.ItemTotal >= p.ItemSize,
-		TotalProgress:  float32(p.TransferSize) / float32(p.TotalSize),
-		TotalComplete:  p.TransferSize >= p.TotalSize,
+		ItemProgress:   p.getProgress(),
+		ItemComplete:   p.checkItemComplete(),
 	}
 }
 
-func (p *TransferProgress) Next(c *Chunk) {
+// @ Set: Sets the first chunk from stream to initialize tracking
+func (p *ItemProgress) Set(c *Chunk) {
 	// Calculate Tracking
-	itemTotal := int(c.GetTotal())
-	itemChunks := itemTotal / K_B64_CHUNK
+	itemChunks := p.ItemTotal / K_CHUNK_SIZE
 	interval := itemChunks / 100
 
 	// Update Properties
-	p.CurrentChunk = 1
+	p.CurrentChunk = 0
 	p.Interval = interval
 	p.ItemSize = int(c.Size)
-	p.ItemTotal = itemTotal
 }
 
-func (p *TransferProgress) checkInterval() bool {
+// # Helper: Checks wether callback Interval has been met
+func (p *ItemProgress) checkInterval() bool {
 	if p.Interval != 0 {
 		return p.CurrentChunk%p.Interval == 0
 	}
 	return false
+}
+
+// # Helper: Checks wether item has completed transfer
+func (p *ItemProgress) checkItemComplete() bool {
+	if p.ItemTotal < p.ItemSize {
+		return false
+	}
+	return true
+}
+
+func (p *ItemProgress) getProgress() float32 {
+	return float32(p.ItemSize) / float32(p.ItemTotal)
 }

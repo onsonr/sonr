@@ -2,13 +2,9 @@ package client
 
 import (
 	"bytes"
-	"strings"
 	"sync"
 
-	"encoding/base64"
-
 	md "github.com/sonr-io/core/pkg/models"
-	us "github.com/sonr-io/core/pkg/user"
 
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-msgio"
@@ -29,44 +25,37 @@ type Session struct {
 	// Management
 	callback md.NodeCallback
 	device   *md.Device
-	filesys  *us.FileSystem
 
 	// Builders
-	stringsBuilder *strings.Builder
-	bytesBuilder   *bytes.Buffer
+	bytesBuilder *bytes.Buffer
 
 	// Tracking
-	progress     *md.TransferProgress
 	currentIndex int
 }
 
 // ^ Prepare for Outgoing Session ^ //
-func NewOutSession(p *md.Peer, req *md.InviteRequest, fs *us.FileSystem, tc md.NodeCallback) *Session {
+func NewOutSession(p *md.Peer, req *md.InviteRequest, tc md.NodeCallback) *Session {
 	f := req.GetFile()
 	return &Session{
 		file:         f,
 		sender:       p,
 		receiver:     req.To,
 		callback:     tc,
-		filesys:      fs,
 		currentIndex: 0,
 	}
 }
 
 // ^ Prepare for Incoming Session ^ //
-func NewInSession(p *md.Peer, inv *md.AuthInvite, fs *us.FileSystem, d *md.Device, c md.NodeCallback) *Session {
+func NewInSession(p *md.Peer, inv *md.AuthInvite, d *md.Device, c md.NodeCallback) *Session {
 	f := inv.GetFile()
 	s := &Session{
-		file:           f,
-		sender:         inv.From,
-		receiver:       p,
-		callback:       c,
-		filesys:        fs,
-		device:         d,
-		currentIndex:   0,
-		stringsBuilder: new(strings.Builder),
-		bytesBuilder:   new(bytes.Buffer),
-		progress:       md.NewProgress(int(f.GetCount()), int(f.GetSize())),
+		file:         f,
+		sender:       inv.From,
+		receiver:     p,
+		callback:     c,
+		device:       d,
+		currentIndex: 0,
+		bytesBuilder: new(bytes.Buffer),
 	}
 	return s
 }
@@ -77,49 +66,28 @@ func (s *Session) AddBuffer(curr int, buffer []byte) (bool, error) {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
-	// @ Unmarshal Bytes into Proto
+	// Unmarshal Bytes into Proto
 	chunk := &md.Chunk{}
 	err := proto.Unmarshal(buffer, chunk)
 	if err != nil {
 		return true, err
 	}
 
-	// @ Initialize Vars if First Chunk
-	if curr == 0 {
-		s.progress.Next(chunk)
-	}
+	// Check for Complete
+	if !chunk.IsComplete {
+		// Add Buffer by File Type
+		n, err := s.bytesBuilder.Write(chunk.Buffer)
+		if err != nil {
+			return true, err
+		}
 
-	// @ Add Buffer by File Type
-	// Add Base64 Chunk to Buffer
-	n, err := s.stringsBuilder.WriteString(chunk.Base)
-	if err != nil {
-		return true, err
-	}
-
-	// @ Check Completed
-	if p := s.progress.Add(n); p.ItemComplete {
 		// Check for Interval and Send Callback
-		if p.HasMetInterval {
-			s.callback.Progressed(p.ItemProgress)
+		if met, p := s.file.ItemAtIndex(s.currentIndex).Progress(curr, n); met {
+			s.callback.Progressed(p)
+			return false, nil
 		}
-		return false, nil
-	} else {
-		return true, nil
 	}
-}
-
-// ^ Helper: Chunks string based on B64ChunkSize ^ //
-func ChunkBase64(s string) []string {
-	chunkSize := K_B64_CHUNK
-	ss := make([]string, 0, len(s)/chunkSize+1)
-	for len(s) > 0 {
-		if len(s) < chunkSize {
-			chunkSize = len(s)
-		}
-		// Create Current Chunk String
-		ss, s = append(ss, s[:chunkSize]), s[chunkSize:]
-	}
-	return ss
+	return true, nil
 }
 
 // ^ read buffers sent on stream and save to file ^ //
@@ -156,14 +124,8 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 
 // ^ Check file type and use corresponding method to save to Disk ^ //
 func (s *Session) Save() error {
-	// Get Bytes from base64
-	data, err := base64.StdEncoding.DecodeString(s.stringsBuilder.String())
-	if err != nil {
-		return err
-	}
-
-	// Sync file
-	if err := s.device.SaveTransfer(s.file, s.currentIndex, data); err != nil {
+	// Sync file to Disk
+	if err := s.device.SaveTransfer(s.file, s.currentIndex, s.bytesBuilder.Bytes()); err != nil {
 		s.callback.Error(md.NewError(err, md.ErrorMessage_TRANSFER_END))
 	}
 
@@ -174,38 +136,13 @@ func (s *Session) Save() error {
 
 // ^ write file as Base64 in Msgio to Stream ^ //
 func WriteToStream(writer msgio.WriteCloser, s *Session) {
-	// Initialize Buffer and Encode File
-	buffer := new(bytes.Buffer)
-	if err := s.file.Encode(s.currentIndex, buffer); err != nil {
+	// Get Item
+	m := s.file.ItemAtIndex(s.currentIndex)
+
+	// Write Item to Stream
+	if err := m.WriteTo(writer, s.callback); err != nil {
 		s.callback.Error(md.NewError(err, md.ErrorMessage_OUTGOING))
-	}
-
-	// Encode Buffer to base 64
-	data := buffer.Bytes()
-	base := base64.StdEncoding.EncodeToString(data)
-	total := int32(len(base))
-
-	// Iterate for Entire file as String
-	for _, dat := range ChunkBase64(base) {
-		// Create Block Protobuf from Chunk
-		chunk := &md.Chunk{
-			Size:  int32(len(dat)),
-			Base:  dat,
-			Total: total,
-		}
-
-		// Convert to bytes
-		bytes, err := proto.Marshal(chunk)
-		if err != nil {
-			s.callback.Error(md.NewError(err, md.ErrorMessage_OUTGOING))
-		}
-
-		// Write Message Bytes to Stream
-		err = writer.WriteMsg(bytes)
-		if err != nil {
-			s.callback.Error(md.NewError(err, md.ErrorMessage_OUTGOING))
-		}
-		md.GetState().NeedsWait()
+		return
 	}
 
 	// Call Completed Sending

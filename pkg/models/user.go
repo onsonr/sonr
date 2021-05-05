@@ -378,6 +378,7 @@ func (d *Device) ReadFile(name string) ([]byte, *SonrError) {
 
 // Saves Transfer File to Disk
 func (d *Device) SaveTransfer(f *SonrFile, i int, data []byte) error {
+	// Get Save Path
 	path := d.Directories.TransferSavePath(f.Files[i].Name, f.Files[i].Mime, d.IsDesktop())
 
 	// Write File to Disk

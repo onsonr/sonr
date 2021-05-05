@@ -22,7 +22,7 @@ func NewUser(cr *md.ConnectionRequest, callback md.NodeCallback) *User {
 	return &User{
 		Call:    callback,
 		contact: cr.GetContact(),
-		device:  cr.Device,
+		device:  cr.GetDevice(),
 		config:  InitUserConfig(cr, callback),
 	}
 }

@@ -173,7 +173,7 @@ func (n *Client) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, c *md
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
 func (n *Client) InviteFile(req *md.InviteRequest, t *tpc.TopicManager, fs *us.FileSystem) *md.SonrError {
 	// Start New Session
-	session := se.NewOutSession(n.Peer, req, fs, n.call)
+	session := se.NewOutSession(n.Peer, req, n.call)
 
 	// Create Invite Message
 	invite := n.Peer.SignInviteWithFile(req)
