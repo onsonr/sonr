@@ -110,10 +110,11 @@ func (d *Directories) TransferSavePath(fileName string, mime *MIME, IsDesktop bo
 
 // ** ─── PROGRESS MANAGEMENT ────────────────────────────────────────────────────────
 type Progress struct {
-	ItemProgress  float32
-	TotalProgress float32
-	ItemComplete  bool
-	TotalComplete bool
+	HasMetInterval bool
+	ItemComplete   bool
+	ItemProgress   float32
+	TotalComplete  bool
+	TotalProgress  float32
 }
 
 type TransferProgress struct {
@@ -126,34 +127,48 @@ type TransferProgress struct {
 	TotalCount      int // Total Items in Transfer
 }
 
-func NewItemProgress(c *Chunk, totalCount int, totalSize int) *TransferProgress {
-	itemSize := int(c.GetTotal())
-	itemChunks := int(c.GetTotal()) / K_B64_CHUNK
-	interval := itemChunks / 100
-
+func NewProgress(totalCount int, totalSize int) *TransferProgress {
 	return &TransferProgress{
-		CurrentChunk:    1,
-		CurrentItemSize: int(c.Size),
-		TransferSize:    int(c.Size),
-		Interval:        interval,
-		ItemSize:        itemSize,
+		Interval:        0,
+		CurrentChunk:    0,
+		TransferSize:    0,
+		CurrentItemSize: 0,
 		TotalCount:      totalCount,
 		TotalSize:       totalSize,
 	}
 }
 
-func (p *TransferProgress) Add(n int) bool {
+func (p *TransferProgress) Add(n int) *Progress {
 	p.CurrentChunk = p.CurrentChunk + 1
 	p.CurrentItemSize = p.CurrentItemSize + n
 	p.TransferSize = p.TransferSize + n
-	return p.CurrentChunk%p.Interval == 0
+
+	return &Progress{
+		HasMetInterval: p.checkInterval(),
+		ItemProgress:   float32(p.CurrentItemSize) / float32(p.ItemSize),
+		ItemComplete:   p.CurrentItemSize >= p.ItemSize,
+		TotalProgress:  float32(p.TransferSize) / float32(p.TotalSize),
+		TotalComplete:  p.CurrentItemSize >= p.TotalSize,
+	}
 }
 
-func (p *TransferProgress) Progress() *Progress {
-	return &Progress{
-		ItemProgress:  float32(p.CurrentItemSize) / float32(p.ItemSize),
-		ItemComplete:  p.CurrentItemSize >= p.ItemSize,
-		TotalProgress: float32(p.TransferSize) / float32(p.TotalSize),
-		TotalComplete: p.CurrentItemSize >= p.TotalSize,
+func (p *TransferProgress) Next(c *Chunk) {
+	// Calculate Tracking
+	itemSize := int(c.GetTotal())
+	itemChunks := itemSize / K_B64_CHUNK
+	interval := itemChunks / 100
+
+	// Update Properties
+	p.CurrentChunk = 1
+	p.CurrentItemSize = int(c.Size)
+	p.TransferSize = p.TransferSize + p.CurrentItemSize
+	p.Interval = interval
+	p.ItemSize = itemSize
+}
+
+func (p *TransferProgress) checkInterval() bool {
+	if p.Interval != 0 {
+		return p.CurrentChunk%p.Interval == 0
 	}
+	return false
 }

@@ -35,10 +35,7 @@ type Session struct {
 	bytesBuilder   *bytes.Buffer
 
 	// Tracking
-	currentSize  int
-	interval     int
-	totalChunks  int
-	totalSize    int
+	progress     *md.TransferProgress
 	currentIndex int
 }
 
@@ -57,13 +54,17 @@ func NewOutSession(p *md.Peer, req *md.InviteRequest, fs *us.FileSystem, tc md.N
 
 // ^ Prepare for Incoming Session ^ //
 func NewInSession(p *md.Peer, inv *md.AuthInvite, fs *us.FileSystem, c md.NodeCallback) *Session {
+	f := inv.GetFile()
 	s := &Session{
-		file:         inv.GetFile(),
-		sender:       inv.From,
-		receiver:     p,
-		callback:     c,
-		filesys:      fs,
-		currentIndex: 0,
+		file:           f,
+		sender:         inv.From,
+		receiver:       p,
+		callback:       c,
+		filesys:        fs,
+		currentIndex:   0,
+		stringsBuilder: new(strings.Builder),
+		bytesBuilder:   new(bytes.Buffer),
+		progress:       md.NewProgress(int(f.GetCount()), int(f.GetSize())),
 	}
 	return s
 }
@@ -83,14 +84,7 @@ func (s *Session) AddBuffer(curr int, buffer []byte) (bool, error) {
 
 	// @ Initialize Vars if First Chunk
 	if curr == 0 {
-		// Calculate Tracking Data
-		totalChunks := int(chunk.Total) / K_B64_CHUNK
-		interval := totalChunks / 100
-
-		// Set Data
-		s.totalSize = int(chunk.Total)
-		s.totalChunks = totalChunks
-		s.interval = interval
+		s.progress.Next(chunk)
 	}
 
 	// @ Add Buffer by File Type
@@ -100,18 +94,11 @@ func (s *Session) AddBuffer(curr int, buffer []byte) (bool, error) {
 		return true, err
 	}
 
-	// Update Tracking
-	s.currentSize = s.currentSize + n
-
 	// @ Check Completed
-	if s.currentSize < s.totalSize {
-		// Validate Interval
-		if s.interval != 0 {
-			// Check for Interval
-			if curr%s.interval == 0 {
-				// Send Callback
-				s.callback.Progressed(float32(s.currentSize) / float32(s.totalSize))
-			}
+	if p := s.progress.Add(n); p.TotalComplete {
+		// Check for Interval and Send Callback
+		if p.HasMetInterval {
+			s.callback.Progressed(p.TotalProgress)
 		}
 		return false, nil
 	} else {
