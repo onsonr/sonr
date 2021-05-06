@@ -7,11 +7,10 @@ import (
 	"fmt"
 	"image"
 	"image/jpeg"
-	"image/png"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/libp2p/go-msgio"
@@ -28,7 +27,7 @@ func (f *SonrFile) IsSingle() bool {
 
 // Checks if Single File is Media
 func (f *SonrFile) IsMedia() bool {
-	return f.Payload == Payload_MEDIA && f.IsSingle()
+	return f.Payload == Payload_MEDIA || (f.IsSingle() && f.Single().Mime.IsMedia())
 }
 
 // Checks if File contains multiple items
@@ -67,71 +66,6 @@ func (f *SonrFile) CardOut(receiver *Peer, owner *Peer) *TransferCard {
 		Receiver: receiver.GetProfile(),
 		Owner:    owner.GetProfile(),
 		File:     f,
-	}
-}
-
-// Method Encodes Single File into Buffer
-func (f *SonrFile) Encode(index int, buf *bytes.Buffer) error {
-	// Retreive File Metadata at Index
-	pf := f.ItemAtIndex(index)
-
-	// @ Jpeg Image
-	if ext := pf.Mime.Ext(); ext == "jpeg" {
-		// Open File at Meta Path
-		file, err := os.Open(pf.Path)
-		if err != nil {
-			return err
-		}
-		defer file.Close()
-
-		// Convert to Image Object
-		img, _, err := image.Decode(file)
-		if err != nil {
-			return err
-		}
-
-		// Encode as Jpeg into buffer
-		err = jpeg.Encode(buf, img, &jpeg.Options{Quality: 100})
-		if err != nil {
-			return err
-		}
-		return nil
-
-		// @ PNG Image
-	} else if ext == "png" {
-		// Open File at Meta Path
-		file, err := os.Open(pf.Path)
-		if err != nil {
-			return err
-		}
-		defer file.Close()
-
-		// Convert to Image Object
-		img, _, err := image.Decode(file)
-		if err != nil {
-			return err
-		}
-
-		// Encode as Jpeg into buffer
-		err = png.Encode(buf, img)
-		if err != nil {
-			return err
-		}
-		return nil
-
-		// @ Other - Open File at Path
-	} else {
-		dat, err := ioutil.ReadFile(pf.Path)
-		if err != nil {
-			return err
-		}
-
-		// Write Bytes to buffer
-		_, err = buf.Write(dat)
-		if err != nil {
-			return err
-		}
-		return nil
 	}
 }
 
@@ -190,10 +124,40 @@ func (m *SonrFile_Metadata) Progress(curr int, n int) (bool, float32) {
 	itemChunks := m.Size / K_CHUNK_SIZE
 	interval := int(itemChunks / 100)
 
-	if curr%interval == 0 {
-		return true, float32(n) / float32(m.Size)
+	// Check Interval
+	if interval != 0 {
+		if curr%interval == 0 {
+			return true, float32(n) / float32(m.Size)
+		}
 	}
 	return false, 0
+}
+
+// Returns/Updates Save Path for this File
+func (m *SonrFile_Metadata) SetPath(d *Device) string {
+	// Initialize
+	var path string
+
+	// Check for Media
+	if m.Mime.IsMedia() {
+		// Check for Desktop
+		if d.IsDesktop() {
+			path = filepath.Join(d.FileSystem.GetDownloads(), m.Name)
+		} else {
+			path = filepath.Join(d.FileSystem.GetTemporary(), m.Name)
+		}
+	} else {
+		// Check for Desktop
+		if d.IsDesktop() {
+			path = filepath.Join(d.FileSystem.GetDownloads(), m.Name)
+		} else {
+			path = filepath.Join(d.FileSystem.GetDocuments(), m.Name)
+		}
+	}
+
+	// Set Path and Return
+	m.Path = path
+	return m.Path
 }
 
 // Metadata Info returns: Total Bytes, Total Chunks, error
@@ -240,7 +204,7 @@ func (m *SonrFile_Metadata) WriteTo(writer msgio.WriteCloser, call NodeCallback)
 		nBytes += int32(len(buf))
 
 		// Write to Stream
-		go writeBufToStream(buf, false, writer, call)
+		writeBufToStream(buf, false, writer, call)
 
 		// Unexpected Error
 		if err != nil && err != io.EOF {
@@ -249,7 +213,7 @@ func (m *SonrFile_Metadata) WriteTo(writer msgio.WriteCloser, call NodeCallback)
 	}
 
 	// Send Completed
-	go writeBufToStream(nil, true, writer, call)
+	writeBufToStream(nil, true, writer, call)
 	return nil
 }
 

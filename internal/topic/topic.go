@@ -11,7 +11,6 @@ import (
 	net "github.com/sonr-io/core/internal/host"
 	se "github.com/sonr-io/core/internal/session"
 	md "github.com/sonr-io/core/pkg/models"
-	us "github.com/sonr-io/core/pkg/user"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -37,7 +36,7 @@ type TopicHandler interface {
 	OnRefresh(*md.Lobby)
 	OnInvite([]byte)
 	OnReply(id peer.ID, data []byte, session *se.Session)
-	OnResponded(inv *md.AuthInvite, p *md.Peer, fs *us.FileSystem)
+	OnResponded(inv *md.AuthInvite, p *md.Peer)
 }
 
 func JoinTopic(ctx context.Context, h *net.HostNode, p *md.Peer, name string, isLocal bool, th TopicHandler) (*TopicManager, *md.SonrError) {

@@ -6,7 +6,6 @@ import (
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	tpc "github.com/sonr-io/core/internal/topic"
 	md "github.com/sonr-io/core/pkg/models"
-	us "github.com/sonr-io/core/pkg/user"
 
 	// Local
 	// brprot "berty.tech/berty/v2/go/pkg/bertyprotocol"
@@ -171,7 +170,7 @@ func (n *Client) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, c *md
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Client) InviteFile(req *md.InviteRequest, t *tpc.TopicManager, fs *us.FileSystem) *md.SonrError {
+func (n *Client) InviteFile(req *md.InviteRequest, t *tpc.TopicManager) *md.SonrError {
 	// Start New Session
 	session := se.NewOutSession(n.Peer, req, n.call)
 
@@ -195,8 +194,8 @@ func (n *Client) InviteFile(req *md.InviteRequest, t *tpc.TopicManager, fs *us.F
 }
 
 // ^ Respond to an Invitation ^ //
-func (n *Client) Respond(req *md.RespondRequest, t *tpc.TopicManager, fs *us.FileSystem, c *md.Contact) {
-	t.RespondToInvite(req, fs, n.Peer, c)
+func (n *Client) Respond(req *md.RespondRequest, t *tpc.TopicManager, c *md.Contact) {
+	t.RespondToInvite(req, n.Peer, c)
 }
 
 // ^ Send Direct Message to Peer in Lobby ^ //

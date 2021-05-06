@@ -41,18 +41,15 @@ enum Cardinal {
 
 // Information about device for User
 message Device {
-  string label = 1;            // User Defined Name
-  string id = 2;               // Generated or Provided Device ID
-  Platform platform = 3;       // Operating System
-  string model = 4;            // Model of Device
-  string name = 5;             // Name of Device
-  string version = 6;          // Device Software Version
-  int32 sdk = 7;               // Only For Android
-  Directories directories = 8; // Directories for this Device
+  string id = 1;             // Device Identifier
+  string name = 2;           // User Defined Name
+  Platform platform = 3;     // Operating System
+  string model = 4;          // Model of Device
+  FileSystem fileSystem = 5; // Directories for this Device
 }
 
-// Directories are for FilePaths Where Data can be stored
-message Directories {
+// FileSystem is for Directores Where Data can be stored
+message FileSystem {
   string documents = 1; // User Generated Files - Both
   string downloads = 2; // Downloaded Files - Desktop
   string library = 3;   // Persistent Non Exposed Files - Desktop
@@ -67,16 +64,7 @@ message Peer {
   string model = 3;          // Peers Device Model
   Position position = 4;     // Peers Positional Information
   Profile profile = 5;       // Peers General Information
-  Discovery discovery = 6;   // Peers Method of Discovery
-  Properties properties = 7; // Peer specific options set
-
-  // Enum for Discovery Type
-  enum Discovery {
-    Linked = 0;     // Users own Device
-    MDNS = 1;       // Local Network
-    Ultrasonic = 2; // Ultrasonic discovered peer
-    Rendevouz = 3;  // Rendevouz Discovered Peer
-  }
+  Properties properties = 6; // Peer specific options set
 
   // ID References
   message ID {
@@ -124,12 +112,14 @@ message Position {
   Magnometer magnometer = 6;       // Magnometer Values
   Orientation orientation = 7;     // Orientation Values
 
+  // Accelerometer Sensor Values
   message Accelerometer {
-    double x = 1;
-    double y = 2;
-    double z = 3;
+    double x = 1; // X-Axis Value
+    double y = 2; // Y-Axis Value
+    double z = 3; // Z-Axis Value
   }
 
+  // Compass Direction Values
   message Compass {
     Cardinal cardinal = 1;     // Cardinal Designation of normal Value
     Cardinal antiCardinal = 2; // Cardinal Designation of Antipodal Value
@@ -138,15 +128,15 @@ message Position {
   }
 
   message Gyroscope {
-    double x = 1;
-    double y = 2;
-    double z = 3;
+    double x = 1; // X-Axis Value
+    double y = 2; // Y-Axis Value
+    double z = 3; // Z-Axis Value
   }
 
   message Magnometer {
-    double x = 1;
-    double y = 2;
-    double z = 3;
+    double x = 1; // X-Axis Value
+    double y = 2; // Y-Axis Value
+    double z = 3; // Z-Axis Value
   }
 
   message Orientation {

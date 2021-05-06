@@ -34,10 +34,9 @@ message ConnectionRequest {
   Location location = 1;         // Runtime IP based calculated GeoLocation
   Location ipLocation = 2;       // Runtime IP based calculated GeoLocation
   Device device = 3;             // Users Device
-  Directories directories = 4;   // Users Available File Paths
-  Contact contact = 5;           // Users Contact Card
-  User user = 6;                 // User Saved Data
-  Connectivity connectivity = 7; // Client Network Type
+  Contact contact = 4;           // Users Contact Card
+  User user = 5;                 // User Saved Data
+  Connectivity connectivity = 6; // Client Network Type
 }
 
 // Updated Peer Info Request

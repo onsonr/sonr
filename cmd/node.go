@@ -20,7 +20,7 @@ type Node struct {
 	// Client
 	client   *sc.Client
 	location *md.Location
-	user     *u.User
+	user     *u.UserConfig
 
 	// Groups
 	local  *tpc.TopicManager

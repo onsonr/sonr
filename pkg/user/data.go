@@ -8,7 +8,7 @@ import (
 // ^ Method Loads User Data from Disk ^ //
 func (u *UserConfig) LoadUser() (*md.User, *md.SonrError) {
 	// Read File
-	dat, serr := u.fileSystem.ReadFile(K_SONR_USER_PATH)
+	dat, serr := u.device.ReadFile("user.snr")
 	if serr != nil {
 		return nil, serr
 	}
@@ -54,7 +54,7 @@ func (u *UserConfig) SaveDevice(device *md.Device) *md.SonrError {
 	}
 
 	// Append Devices List
-	user.Devices[device.Label] = device
+	user.Devices[device.Name] = device
 
 	// Save User
 	err = u.SaveUser(user)
@@ -73,7 +73,7 @@ func (u *UserConfig) SaveUser(user *md.User) *md.SonrError {
 	}
 
 	// Write File to Disk
-	_, serr := u.fileSystem.WriteFile(K_SONR_USER_PATH, data)
+	_, serr := u.device.WriteFile("user.snr", data)
 	if err != nil {
 		return serr
 	}

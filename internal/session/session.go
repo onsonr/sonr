@@ -84,8 +84,10 @@ func (s *Session) AddBuffer(curr int, buffer []byte) (bool, error) {
 		// Check for Interval and Send Callback
 		if met, p := s.file.ItemAtIndex(s.currentIndex).Progress(curr, n); met {
 			s.callback.Progressed(p)
-			return false, nil
 		}
+
+		// Not Complete
+		return false, nil
 	}
 	return true, nil
 }
@@ -125,6 +127,7 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 // ^ Check file type and use corresponding method to save to Disk ^ //
 func (s *Session) Save() error {
 	// Sync file to Disk
+	
 	if err := s.device.SaveTransfer(s.file, s.currentIndex, s.bytesBuilder.Bytes()); err != nil {
 		s.callback.Error(md.NewError(err, md.ErrorMessage_TRANSFER_END))
 	}

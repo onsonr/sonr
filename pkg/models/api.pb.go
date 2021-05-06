@@ -355,10 +355,9 @@ type ConnectionRequest struct {
 	Location     *Location    `protobuf:"bytes,1,opt,name=location,proto3" json:"location,omitempty"`                            // Runtime IP based calculated GeoLocation
 	IpLocation   *Location    `protobuf:"bytes,2,opt,name=ipLocation,proto3" json:"ipLocation,omitempty"`                        // Runtime IP based calculated GeoLocation
 	Device       *Device      `protobuf:"bytes,3,opt,name=device,proto3" json:"device,omitempty"`                                // Users Device
-	Directories  *Directories `protobuf:"bytes,4,opt,name=directories,proto3" json:"directories,omitempty"`                      // Users Available File Paths
-	Contact      *Contact     `protobuf:"bytes,5,opt,name=contact,proto3" json:"contact,omitempty"`                              // Users Contact Card
-	User         *User        `protobuf:"bytes,6,opt,name=user,proto3" json:"user,omitempty"`                                    // User Saved Data
-	Connectivity Connectivity `protobuf:"varint,7,opt,name=connectivity,proto3,enum=Connectivity" json:"connectivity,omitempty"` // Client Network Type
+	Contact      *Contact     `protobuf:"bytes,4,opt,name=contact,proto3" json:"contact,omitempty"`                              // Users Contact Card
+	User         *User        `protobuf:"bytes,5,opt,name=user,proto3" json:"user,omitempty"`                                    // User Saved Data
+	Connectivity Connectivity `protobuf:"varint,6,opt,name=connectivity,proto3,enum=Connectivity" json:"connectivity,omitempty"` // Client Network Type
 }
 
 func (x *ConnectionRequest) Reset() {
@@ -410,13 +409,6 @@ func (x *ConnectionRequest) GetIpLocation() *Location {
 func (x *ConnectionRequest) GetDevice() *Device {
 	if x != nil {
 		return x.Device
-	}
-	return nil
-}
-
-func (x *ConnectionRequest) GetDirectories() *Directories {
-	if x != nil {
-		return x.Directories
 	}
 	return nil
 }
@@ -1154,7 +1146,7 @@ var file_api_proto_rawDesc = []byte{
 	0x6f, 0x74, 0x6f, 0x22, 0x2d, 0x0a, 0x0c, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x55, 0x70, 0x64,
 	0x61, 0x74, 0x65, 0x12, 0x1d, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x01, 0x20, 0x01,
 	0x28, 0x0e, 0x32, 0x07, 0x2e, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x05, 0x76, 0x61, 0x6c,
-	0x75, 0x65, 0x22, 0xa8, 0x02, 0x0a, 0x11, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f,
+	0x75, 0x65, 0x22, 0xf8, 0x01, 0x0a, 0x11, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f,
 	0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x25, 0x0a, 0x08, 0x6c, 0x6f, 0x63, 0x61,
 	0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x09, 0x2e, 0x4c, 0x6f, 0x63,
 	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x08, 0x6c, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12,
@@ -1162,15 +1154,12 @@ var file_api_proto_rawDesc = []byte{
 	0x01, 0x28, 0x0b, 0x32, 0x09, 0x2e, 0x4c, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x0a,
 	0x69, 0x70, 0x4c, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1f, 0x0a, 0x06, 0x64, 0x65,
 	0x76, 0x69, 0x63, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x07, 0x2e, 0x44, 0x65, 0x76,
-	0x69, 0x63, 0x65, 0x52, 0x06, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x12, 0x2e, 0x0a, 0x0b, 0x64,
-	0x69, 0x72, 0x65, 0x63, 0x74, 0x6f, 0x72, 0x69, 0x65, 0x73, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b,
-	0x32, 0x0c, 0x2e, 0x44, 0x69, 0x72, 0x65, 0x63, 0x74, 0x6f, 0x72, 0x69, 0x65, 0x73, 0x52, 0x0b,
-	0x64, 0x69, 0x72, 0x65, 0x63, 0x74, 0x6f, 0x72, 0x69, 0x65, 0x73, 0x12, 0x22, 0x0a, 0x07, 0x63,
-	0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x08, 0x2e, 0x43,
+	0x69, 0x63, 0x65, 0x52, 0x06, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x12, 0x22, 0x0a, 0x07, 0x63,
+	0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x08, 0x2e, 0x43,
 	0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x52, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x12,
-	0x19, 0x0a, 0x04, 0x75, 0x73, 0x65, 0x72, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x05, 0x2e,
+	0x19, 0x0a, 0x04, 0x75, 0x73, 0x65, 0x72, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x05, 0x2e,
 	0x55, 0x73, 0x65, 0x72, 0x52, 0x04, 0x75, 0x73, 0x65, 0x72, 0x12, 0x31, 0x0a, 0x0c, 0x63, 0x6f,
-	0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x76, 0x69, 0x74, 0x79, 0x18, 0x07, 0x20, 0x01, 0x28, 0x0e,
+	0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x76, 0x69, 0x74, 0x79, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0e,
 	0x32, 0x0d, 0x2e, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x76, 0x69, 0x74, 0x79, 0x52,
 	0x0c, 0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x76, 0x69, 0x74, 0x79, 0x22, 0xe8, 0x01,
 	0x0a, 0x0d, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
@@ -1340,65 +1329,63 @@ var file_api_proto_goTypes = []interface{}{
 	(*User_Settings_Value)(nil), // 17: User.Settings.Value
 	(*Location)(nil),            // 18: Location
 	(*Device)(nil),              // 19: Device
-	(*Directories)(nil),         // 20: Directories
-	(*Contact)(nil),             // 21: Contact
-	(*Peer_Properties)(nil),     // 22: Peer.Properties
-	(*Position)(nil),            // 23: Position
-	(*Peer)(nil),                // 24: Peer
-	(Payload)(0),                // 25: Payload
-	(*RemoteInfo)(nil),          // 26: RemoteInfo
-	(*SonrFile)(nil),            // 27: SonrFile
-	(*URLLink)(nil),             // 28: URLLink
-	(*TransferCard)(nil),        // 29: TransferCard
+	(*Contact)(nil),             // 20: Contact
+	(*Peer_Properties)(nil),     // 21: Peer.Properties
+	(*Position)(nil),            // 22: Position
+	(*Peer)(nil),                // 23: Peer
+	(Payload)(0),                // 24: Payload
+	(*RemoteInfo)(nil),          // 25: RemoteInfo
+	(*SonrFile)(nil),            // 26: SonrFile
+	(*URLLink)(nil),             // 27: URLLink
+	(*TransferCard)(nil),        // 28: TransferCard
 }
 var file_api_proto_depIdxs = []int32{
 	1,  // 0: StatusUpdate.value:type_name -> Status
 	18, // 1: ConnectionRequest.location:type_name -> Location
 	18, // 2: ConnectionRequest.ipLocation:type_name -> Location
 	19, // 3: ConnectionRequest.device:type_name -> Device
-	20, // 4: ConnectionRequest.directories:type_name -> Directories
-	21, // 5: ConnectionRequest.contact:type_name -> Contact
-	13, // 6: ConnectionRequest.user:type_name -> User
-	0,  // 7: ConnectionRequest.connectivity:type_name -> Connectivity
-	2,  // 8: UpdateRequest.type:type_name -> UpdateRequest.Type
-	22, // 9: UpdateRequest.properties:type_name -> Peer.Properties
-	21, // 10: UpdateRequest.contact:type_name -> Contact
-	23, // 11: UpdateRequest.position:type_name -> Position
-	24, // 12: MessageRequest.from:type_name -> Peer
-	24, // 13: MessageRequest.to:type_name -> Peer
-	25, // 14: InviteRequest.payload:type_name -> Payload
-	24, // 15: InviteRequest.to:type_name -> Peer
-	24, // 16: InviteRequest.from:type_name -> Peer
-	26, // 17: InviteRequest.remote:type_name -> RemoteInfo
-	21, // 18: InviteRequest.contact:type_name -> Contact
-	27, // 19: InviteRequest.file:type_name -> SonrFile
-	24, // 20: RespondRequest.from:type_name -> Peer
-	24, // 21: RespondRequest.to:type_name -> Peer
-	26, // 22: RespondRequest.remote:type_name -> RemoteInfo
-	25, // 23: AuthInvite.payload:type_name -> Payload
-	24, // 24: AuthInvite.from:type_name -> Peer
-	24, // 25: AuthInvite.to:type_name -> Peer
-	26, // 26: AuthInvite.remote:type_name -> RemoteInfo
-	21, // 27: AuthInvite.contact:type_name -> Contact
-	27, // 28: AuthInvite.file:type_name -> SonrFile
-	28, // 29: AuthInvite.url:type_name -> URLLink
-	3,  // 30: AuthReply.type:type_name -> AuthReply.Type
-	24, // 31: AuthReply.from:type_name -> Peer
-	24, // 32: AuthReply.to:type_name -> Peer
-	29, // 33: AuthReply.card:type_name -> TransferCard
-	26, // 34: AuthReply.remote:type_name -> RemoteInfo
-	21, // 35: User.contact:type_name -> Contact
-	14, // 36: User.devices:type_name -> User.DevicesEntry
-	15, // 37: User.settings:type_name -> User.SettingsEntry
-	19, // 38: User.DevicesEntry.value:type_name -> Device
-	16, // 39: User.SettingsEntry.value:type_name -> User.Settings
-	17, // 40: User.Settings.value:type_name -> User.Settings.Value
-	4,  // 41: User.Settings.option:type_name -> User.Settings.Option
-	42, // [42:42] is the sub-list for method output_type
-	42, // [42:42] is the sub-list for method input_type
-	42, // [42:42] is the sub-list for extension type_name
-	42, // [42:42] is the sub-list for extension extendee
-	0,  // [0:42] is the sub-list for field type_name
+	20, // 4: ConnectionRequest.contact:type_name -> Contact
+	13, // 5: ConnectionRequest.user:type_name -> User
+	0,  // 6: ConnectionRequest.connectivity:type_name -> Connectivity
+	2,  // 7: UpdateRequest.type:type_name -> UpdateRequest.Type
+	21, // 8: UpdateRequest.properties:type_name -> Peer.Properties
+	20, // 9: UpdateRequest.contact:type_name -> Contact
+	22, // 10: UpdateRequest.position:type_name -> Position
+	23, // 11: MessageRequest.from:type_name -> Peer
+	23, // 12: MessageRequest.to:type_name -> Peer
+	24, // 13: InviteRequest.payload:type_name -> Payload
+	23, // 14: InviteRequest.to:type_name -> Peer
+	23, // 15: InviteRequest.from:type_name -> Peer
+	25, // 16: InviteRequest.remote:type_name -> RemoteInfo
+	20, // 17: InviteRequest.contact:type_name -> Contact
+	26, // 18: InviteRequest.file:type_name -> SonrFile
+	23, // 19: RespondRequest.from:type_name -> Peer
+	23, // 20: RespondRequest.to:type_name -> Peer
+	25, // 21: RespondRequest.remote:type_name -> RemoteInfo
+	24, // 22: AuthInvite.payload:type_name -> Payload
+	23, // 23: AuthInvite.from:type_name -> Peer
+	23, // 24: AuthInvite.to:type_name -> Peer
+	25, // 25: AuthInvite.remote:type_name -> RemoteInfo
+	20, // 26: AuthInvite.contact:type_name -> Contact
+	26, // 27: AuthInvite.file:type_name -> SonrFile
+	27, // 28: AuthInvite.url:type_name -> URLLink
+	3,  // 29: AuthReply.type:type_name -> AuthReply.Type
+	23, // 30: AuthReply.from:type_name -> Peer
+	23, // 31: AuthReply.to:type_name -> Peer
+	28, // 32: AuthReply.card:type_name -> TransferCard
+	25, // 33: AuthReply.remote:type_name -> RemoteInfo
+	20, // 34: User.contact:type_name -> Contact
+	14, // 35: User.devices:type_name -> User.DevicesEntry
+	15, // 36: User.settings:type_name -> User.SettingsEntry
+	19, // 37: User.DevicesEntry.value:type_name -> Device
+	16, // 38: User.SettingsEntry.value:type_name -> User.Settings
+	17, // 39: User.Settings.value:type_name -> User.Settings.Value
+	4,  // 40: User.Settings.option:type_name -> User.Settings.Option
+	41, // [41:41] is the sub-list for method output_type
+	41, // [41:41] is the sub-list for method input_type
+	41, // [41:41] is the sub-list for extension type_name
+	41, // [41:41] is the sub-list for extension extendee
+	0,  // [0:41] is the sub-list for field type_name
 }
 
 func init() { file_api_proto_init() }
