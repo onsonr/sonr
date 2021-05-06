@@ -5,32 +5,18 @@ import "user.proto";
 // Require Go Package
 option go_package = "/models";
 
-// Asset for Images/Files
-message Asset {
-  Source source = 1;    // Asset Type
-  string value = 2;     // Asset Source Value
-  string name = 3;      // Asset Name, File Name
-  int32 identifier = 4; // Asset Identifier if Name is Number
-
-  enum Source {
-    FILE = 0;    // Asset from File
-    MEMORY = 1;  // Asset in Memory
-    NETWORK = 2; // Asset from Network
-    LOCAL = 3;   // Asset from Packaging Flutter/Hover
-  }
-}
-
 // Contact is Extensive User Info that can be passed
 message Contact {
-  bool isPublic = 1;      // If Contact card is Public
-  Profile profile = 2;    // General Profile Information
-  string about = 3;       // Bio of User/About Value
-  URLLink publicLink = 4; // URLLink for Public Card if Applicable
-  Design design = 5;      // Card Design Properties
+  bool isPublic = 1;   // If Contact card is Public
+  Profile profile = 2; // General Profile Information
+  string about = 3;    // Bio of User/About Value
+  URLLink link = 4;    // URLLink for Public Card if Applicable
+  Design design = 5;   // Card Design Properties
 
-  map<string, Field> general = 6; // Base General Contact Fields, Key is Label
-  map<string, Address> addresses = 7; // Address Fields, Key is Label
-  map<string, Social> socials = 8;    // Social Media Fields, Key is Username
+  map<string, Address> addresses = 6; // Address Fields, Key is Label
+  map<string, Field> general = 7;  // Base General Contact Fields, Key is Label
+  map<string, Social> socials = 8; // Social Media Fields, Key is Username
+  map<string, URLLink> websites = 9; // Website Links
 
   // Address: Field for Contact field
   message Address {
@@ -47,9 +33,9 @@ message Contact {
 
   // Design: Card Design Values
   message Design {
-    Asset background = 1; // Background Card Value
-    Color primary = 2;    // Primary Color
-    Color accent = 3;     // Accent Color for Text/Buttons
+    int32 card = 1;    // Background Card Value
+    Color primary = 2; // Primary Color
+    Color accent = 3;  // Accent Color for Text/Buttons
 
     enum Color {
       Transparent = 0;  // Clear Color
@@ -134,13 +120,13 @@ message Contact {
       }
     }
 
-    // Social Tile Display Type
+    // Social Tile Visibility
     enum Visibility {
-      Unknown = 0;
-      Private = 1;       // Default Tile Type, Icon for Provider
-      Public = 2;        // Big Tile Showcases Current User Feed
-      PrivateHidden = 3; // Medium Tile Showcases a Featured Post
-      PublicHidden = 4;  // Small Tile is Direct Link to User Profile
+      Unknown = 0;       // No Visibility Set
+      Private = 1;       // Private Account
+      Public = 2;        // Public Account
+      PrivateHidden = 3; // Private and Hidden
+      PublicHidden = 4;  // Public and Hidden
     }
   }
 }
