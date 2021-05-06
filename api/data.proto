@@ -28,20 +28,21 @@ message Contact {
   URLLink publicLink = 4; // URLLink for Public Card if Applicable
   Design design = 5;      // Card Design Properties
 
-  map<string, Field> general = 6;     // Base General Contact Fields
-  map<string, Address> addresses = 7; // Address Fields
-  map<string, Social> socials = 8;    // Username, Social Map
+  map<string, Field> general = 6; // Base General Contact Fields, Key is Label
+  map<string, Address> addresses = 7; // Address Fields, Key is Label
+  map<string, Social> socials = 8;    // Social Media Fields, Key is Username
 
   // Address: Field for Contact field
   message Address {
-    string label = 1;       // Address Label for Type
-    string street = 2;      // Address First Line Street
-    string streetTwo = 3;   // Address Second Line Street
-    string city = 4;        // City of Address
-    string state = 5;       // Address State
-    string zipcode = 6;     // Address Zip Code
-    string country = 7;     // Address Country
-    string countryCode = 8; // Address Country Code
+    bool isPrimary = 1;     // If this is the Primary field for Address
+    string label = 2;       // Address Label for Type
+    string street = 3;      // Address First Line Street
+    string streetTwo = 4;   // Address Second Line Street
+    string city = 5;        // City of Address
+    string state = 6;       // Address State
+    string zipcode = 7;     // Address Zip Code
+    string country = 8;     // Address Country
+    string countryCode = 9; // Address Country Code
   }
 
   // Design: Card Design Values
@@ -68,10 +69,10 @@ message Contact {
 
   // Field : General Field for Contact field
   message Field {
-    Kind kind = 1;       // Type of Field
-    string key = 2;      // Identifier for Field
-    string value = 3;    // Convert Values to String
-    bool isRequired = 4; // Required Field for General
+    bool isPrimary = 1; // If this is the Primary field for Kind
+    Kind kind = 2;      // Type of Field
+    string label = 3;   // Identifier for Field
+    string value = 4;   // Convert Values to String
 
     enum Kind {
       NAME = 0;    // Name type Field
@@ -87,11 +88,12 @@ message Contact {
   // Social: Field provides Display Information and Provider Information
   message Social {
     // Properties
-    Provider provider = 1;     // Type of Social Provider
-    string username = 2;       // Users handle on Service
-    Tile tile = 3;             // Social Tile Position
-    Links links = 4;           // Social Links
-    Visibility visibility = 5; // Is the User's Account Private
+    bool isPrimary = 1; // If this is the Primary field for SocialMedia Provider
+    Provider provider = 2;     // Type of Social Provider
+    string username = 3;       // Users handle on Service
+    Tile tile = 4;             // Social Tile Position
+    Links links = 5;           // Social Links
+    Visibility visibility = 6; // Is the User's Account Private
 
     // Social Provider Links
     message Links {
