@@ -192,11 +192,12 @@ message MIME {
     OTHER = 0;        // Other File Type - If cannot derive from Subtype
     AUDIO = 1;        // Sound, Audio Files
     IMAGE = 2;        // Image Files
-    DOCUMENT = 3;     // Text Based Files
+    TEXT = 3;         // Text Based Files
     PDF = 4;          // PDF Format
     PRESENTATION = 5; // PPT type Files
     SPREADSHEET = 6;  // CSV/Excel type files
     VIDEO = 7;        // Video Files
+    SNR = 8;          // SNR Files
   }
 }
 
