@@ -5,11 +5,9 @@ go 1.16
 require (
 	github.com/PuerkitoBio/goquery v1.6.1
 	github.com/btcsuite/btcd v0.21.0-beta // indirect
-	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/getsentry/sentry-go v0.10.0
 	github.com/golang/groupcache v0.0.0-20191027212112-611e8accdfc9 // indirect
 	github.com/google/open-location-code/go v0.0.0-20201229230907-d47d9f9b95e9
-	github.com/h2non/filetype v1.1.1
 	github.com/libp2p/go-libp2p v0.13.0
 	github.com/libp2p/go-libp2p-connmgr v0.2.4
 	github.com/libp2p/go-libp2p-core v0.8.5

@@ -8,7 +8,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	se "github.com/sonr-io/core/internal/session"
 	md "github.com/sonr-io/core/pkg/models"
-	us "github.com/sonr-io/core/pkg/user"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -207,10 +206,10 @@ func (ts *TopicService) InviteWith(ctx context.Context, args TopicServiceArgs, r
 }
 
 // ^ RespondToInvite to an Invitation ^ //
-func (n *TopicManager) RespondToInvite(req *md.RespondRequest, fs *us.FileSystem, p *md.Peer, c *md.Contact) {
+func (n *TopicManager) RespondToInvite(req *md.RespondRequest, p *md.Peer, c *md.Contact) {
 	// Prepare Transfer
 	if req.Decision {
-		n.topicHandler.OnResponded(n.service.invite, p, fs)
+		n.topicHandler.OnResponded(n.service.invite, p)
 	}
 
 	// @ Pass Contact Back

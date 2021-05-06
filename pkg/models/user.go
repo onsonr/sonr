@@ -1,317 +1,154 @@
 package models
 
 import (
-	"hash/fnv"
-	"log"
-	"math"
-	"time"
+	"os"
+	"path/filepath"
 
-	mid "github.com/denisbrodbeck/machineid"
-	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/multiformats/go-multiaddr"
-	"google.golang.org/protobuf/proto"
+	crypto "github.com/libp2p/go-libp2p-crypto"
 )
 
-// ^ Create New Peer from Connection Request and Host ID ^ //
-func NewPeer(cr *ConnectionRequest, id peer.ID, maddr multiaddr.Multiaddr) (*Peer, *SonrError) {
+// ** ─── DEVICE MANAGEMENT ────────────────────────────────────────────────────────
+func (d *Device) IsDesktop() bool {
+	return d.Platform == Platform_MacOS || d.Platform == Platform_Linux || d.Platform == Platform_Windows
+}
+
+func (d *Device) IsMobile() bool {
+	return d.Platform == Platform_IOS || d.Platform == Platform_Android
+}
+
+func (d *Device) IsIOS() bool {
+	return d.Platform == Platform_IOS
+}
+
+func (d *Device) IsAndroid() bool {
+	return d.Platform == Platform_Android
+}
+
+func (d *Device) IsMacOS() bool {
+	return d.Platform == Platform_MacOS
+}
+
+func (d *Device) IsLinux() bool {
+	return d.Platform == Platform_Linux
+}
+
+func (d *Device) IsWeb() bool {
+	return d.Platform == Platform_Web
+}
+
+func (d *Device) IsWindows() bool {
+	return d.Platform == Platform_Windows
+}
+
+// @ Checks if File Exists
+func (d *Device) IsFile(name string) bool {
 	// Initialize
-	deviceID := cr.Device.GetId()
-	profile := Profile{
-		Username:  cr.GetUsername(),
-		FirstName: cr.Contact.GetFirstName(),
-		LastName:  cr.Contact.GetLastName(),
-		Picture:   cr.Contact.GetPicture(),
-		Platform:  cr.Device.GetPlatform(),
-	}
+	var path string
 
-	// Get User ID
-	userID := fnv.New32a()
-	_, err := userID.Write([]byte(profile.GetUsername()))
-	if err != nil {
-		return nil, NewError(err, ErrorMessage_HOST_KEY)
-	}
-
-	// Check if ID not provided
-	if deviceID == "" {
-		// Generate ID
-		if id, err := mid.ProtectedID("Sonr"); err != nil {
-			log.Println(err)
-			deviceID = ""
-		} else {
-			deviceID = id
-		}
-	}
-
-	// Set Peer
-	return &Peer{
-		Id: &Peer_ID{
-			Peer:   id.String(),
-			Device: deviceID,
-			User:   userID.Sum32(),
-		},
-		Profile:  &profile,
-		Platform: cr.Device.Platform,
-		Model:    cr.Device.Model,
-	}, nil
-}
-
-// ^ Returns Peer as Buffer ^ //
-func (p *Peer) Buffer() ([]byte, error) {
-	buf, err := proto.Marshal(p)
-	if err != nil {
-		return nil, err
-	}
-	return buf, nil
-}
-
-// ^ Checks for Host Peer ID is Same ^ //
-func (p *Peer) IsPeerID(pid peer.ID) bool {
-	return p.Id.Peer == pid.String()
-}
-
-// ^ Checks for Host Peer ID String is Same ^ //
-func (p *Peer) IsPeerIDString(pid string) bool {
-	return p.Id.Peer == pid
-}
-
-// ^ Checks for Host Peer ID String is not Same ^ //
-func (p *Peer) IsNotPeerIDString(pid string) bool {
-	return p.Id.Peer != pid
-}
-
-// ^ Checks for Host Peer ID String is not Same ^ //
-func (p *Peer) PeerID() string {
-	return p.Id.Peer
-}
-
-// ^ SignMessage Creates Lobby Event with Message ^
-func (p *Peer) SignMessage(m string, to *Peer) *LobbyEvent {
-	return &LobbyEvent{
-		Event:   LobbyEvent_MESSAGE,
-		From:    p,
-		Id:      p.Id.Peer,
-		Message: m,
-		To:      to.Id.Peer,
-	}
-}
-
-// ^ Generate AuthInvite with Contact Payload from Request, User Peer Data and User Contact ^ //
-func (p *Peer) SignInviteWithContact(c *Contact, flat bool, req *InviteRequest) AuthInvite {
-	// Create Invite
-	return AuthInvite{
-		From:    p,
-		Payload: Payload_CONTACT,
-		IsFlat:  flat,
-		Remote:  req.GetRemote(),
-		Card: &TransferCard{
-			// SQL Properties
-			Payload:  Payload_CONTACT,
-			Received: int32(time.Now().Unix()),
-
-			// Transfer Properties
-			Status: TransferCard_INVITE,
-
-			// Owner Properties
-			Receiver: req.To.GetProfile(),
-			Owner:    p.Profile,
-
-			// Data Properties
-			Contact: c,
-		},
-	}
-}
-
-// ^ Generate AuthInvite with Contact Payload from Request, User Peer Data and User Contact ^ //
-func (p *Peer) SignInviteWithFile(tc *TransferCard, req *InviteRequest) AuthInvite {
-	// Create Invite
-	return AuthInvite{
-		From:    p,
-		Payload: tc.Payload,
-		Card:    tc,
-		Remote:  req.GetRemote(),
-	}
-}
-
-// ^ Generate AuthInvite with URL Payload from Request and User Peer Data ^ //
-func (p *Peer) SignInviteWithLink(req *InviteRequest) AuthInvite {
-	// Get URL Data
-	urlInfo, err := GetPageInfoFromUrl(req.Url)
-	if err != nil {
-		urlInfo = &URLLink{
-			Link: req.Url,
-		}
-	}
-
-	// Create Invite
-	return AuthInvite{
-		From:    p,
-		Payload: Payload_CONTACT,
-		Remote:  req.GetRemote(),
-		Card: &TransferCard{
-			// SQL Properties
-			Payload:  Payload_CONTACT,
-			Received: int32(time.Now().Unix()),
-
-			// Transfer Properties
-			Status: TransferCard_INVITE,
-
-			// Owner Properties
-			Owner:    p.Profile,
-			Receiver: req.To.GetProfile(),
-
-			// Data Properties
-			Url: urlInfo,
-		},
-	}
-}
-
-// ^ SignReply Creates AuthReply ^
-func (p *Peer) SignReply(d bool, req *RespondRequest, to *Peer) *AuthReply {
-	return &AuthReply{
-		From:     p,
-		Type:     AuthReply_Transfer,
-		Decision: d,
-		Remote:   req.GetRemote(),
-		Card: &TransferCard{
-			// SQL Properties
-			Payload:  Payload_UNDEFINED,
-			Received: int32(time.Now().Unix()),
-			Preview:  p.Profile.Picture,
-
-			// Transfer Properties
-			Status: TransferCard_REPLY,
-
-			// Owner Properties
-			Owner:    p.Profile,
-			Receiver: to.GetProfile(),
-		},
-	}
-}
-
-// ^ SignReply Creates AuthReply with Contact  ^
-func (p *Peer) SignReplyWithContact(c *Contact, flat bool, req *RespondRequest, to *Peer) *AuthReply {
-	// Set Reply Type
-	var kind AuthReply_Type
-	if flat {
-		kind = AuthReply_FlatContact
+	// Create File Path
+	if d.IsDesktop() {
+		path = filepath.Join(d.FileSystem.GetLibrary(), name)
 	} else {
-		kind = AuthReply_Contact
+		path = filepath.Join(d.FileSystem.GetDocuments(), name)
 	}
 
-	// Check if Request Provided
-	if req != nil {
-		// Build Reply
-		return &AuthReply{
-			From:   p,
-			Type:   kind,
-			Remote: req.GetRemote(),
-			Card: &TransferCard{
-				// SQL Properties
-				Payload:  Payload_CONTACT,
-				Received: int32(time.Now().Unix()),
-				Preview:  p.Profile.Picture,
-
-				// Transfer Properties
-				Status: TransferCard_REPLY,
-
-				// Owner Properties
-				Owner:    p.Profile,
-				Receiver: to.GetProfile(),
-
-				// Data Properties
-				Contact: c,
-			},
-		}
+	// Check Path
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		return false
 	} else {
-		// Build Reply
-		return &AuthReply{
-			From: p,
-			Type: kind,
-			Card: &TransferCard{
-				// SQL Properties
-				Payload:  Payload_CONTACT,
-				Received: int32(time.Now().Unix()),
-				Preview:  p.Profile.Picture,
-
-				// Transfer Properties
-				Status: TransferCard_REPLY,
-
-				// Owner Properties
-				Owner:    p.Profile,
-				Receiver: to.GetProfile(),
-
-				// Data Properties
-				Contact: c,
-			},
-		}
-	}
-
-}
-
-// ^ SignUpdate Creates Lobby Event with Peer Data ^
-func (p *Peer) SignUpdate() *LobbyEvent {
-	return &LobbyEvent{
-		Event: LobbyEvent_UPDATE,
-		From:  p,
-		Id:    p.Id.Peer,
+		return true
 	}
 }
 
-// ^ Processes Update Request ^ //
-func (p *Peer) Update(u *UpdateRequest) {
-	if u.Type == UpdateRequest_Position {
-		// Extract Data
-		facing := u.Position.Facing
-		heading := u.Position.Heading
+// @ Returns Private key from disk if found
+func (d *Device) PrivateKey() (crypto.PrivKey, *SonrError) {
+	K_SONR_PRIV_KEY := "snr-peer.privkey"
 
-		// Update User Values
-		var faceDir float64
-		var faceAnpd float64
-		var headDir float64
-		var headAnpd float64
-		faceDir = math.Round(facing*100) / 100
-		headDir = math.Round(heading*100) / 100
-		desg := int((facing / 11.25) + 0.25)
-
-		// Find Antipodal
-		if facing > 180 {
-			faceAnpd = math.Round((facing-180)*100) / 100
-		} else {
-			faceAnpd = math.Round((facing+180)*100) / 100
+	// Get Private Key
+	if ok := d.IsFile(K_SONR_PRIV_KEY); ok {
+		// Get Key File
+		buf, serr := d.ReadFile(K_SONR_PRIV_KEY)
+		if serr != nil {
+			return nil, serr
 		}
 
-		// Find Antipodal
-		if heading > 180 {
-			headAnpd = math.Round((heading-180)*100) / 100
-		} else {
-			headAnpd = math.Round((heading+180)*100) / 100
+		// Get Key from Buffer
+		key, err := crypto.UnmarshalPrivateKey(buf)
+		if err != nil {
+			return nil, NewError(err, ErrorMessage_HOST_KEY)
 		}
 
-		// Set Position
-		p.Position = &Position{
-			Facing:           faceDir,
-			FacingAntipodal:  faceAnpd,
-			Heading:          headDir,
-			HeadingAntipodal: headAnpd,
-			Designation:      Position_Designation(desg % 32),
-			Accelerometer:    u.Position.GetAccelerometer(),
-			Gyroscope:        u.Position.GetGyroscope(),
-			Magnometer:       u.Position.GetMagnometer(),
-			Orientation:      u.Position.GetOrientation(),
+		// Set Key Ref
+		return key, nil
+	} else {
+		// Create New Key
+		privKey, _, err := crypto.GenerateKeyPair(crypto.Ed25519, -1)
+		if err != nil {
+			return nil, NewError(err, ErrorMessage_HOST_KEY)
 		}
+
+		// Marshal Data
+		buf, err := crypto.MarshalPrivateKey(privKey)
+		if err != nil {
+			return nil, NewError(err, ErrorMessage_MARSHAL)
+		}
+
+		// Write Key to File
+		_, werr := d.WriteFile(K_SONR_PRIV_KEY, buf)
+		if werr != nil {
+			return nil, NewError(err, ErrorMessage_USER_SAVE)
+		}
+
+		// Set Key Ref
+		return privKey, nil
+	}
+}
+
+// Loads User File
+func (d *Device) ReadFile(name string) ([]byte, *SonrError) {
+	// Initialize
+	var path string
+
+	// Create File Path
+	if d.IsDesktop() {
+		path = filepath.Join(d.FileSystem.GetLibrary(), name)
+	} else {
+		path = filepath.Join(d.FileSystem.GetDocuments(), name)
 	}
 
-	// Set Properties
-	if u.Type == UpdateRequest_Properties {
-		p.Properties = u.Properties
-	}
-
-	// Check for New Contact, Update Peer Profile
-	if u.Type == UpdateRequest_Contact {
-		p.Profile = &Profile{
-			FirstName: u.Contact.GetFirstName(),
-			LastName:  u.Contact.GetLastName(),
-			Picture:   u.Contact.GetPicture(),
+	// @ Check for Path
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		return nil, NewError(err, ErrorMessage_USER_LOAD)
+	} else {
+		// @ Read User Data File
+		dat, err := os.ReadFile(path)
+		if err != nil {
+			return nil, NewError(err, ErrorMessage_USER_LOAD)
 		}
+		return dat, nil
 	}
+}
+
+// Saves Transfer File to Disk
+func (d *Device) SaveTransfer(f *SonrFile, i int, data []byte) error {
+	// Get Save Path
+	path := f.Files[i].SetPath(d)
+
+	// Write File to Disk
+	if err := os.WriteFile(path, data, 0644); err != nil {
+		return err
+	}
+	return nil
+}
+
+// Writes a File to Disk
+func (d *Device) WriteFile(name string, data []byte) (string, *SonrError) {
+	// Create File Path
+	path := d.FileSystem.DataSavePath(name, d.IsDesktop())
+
+	// Write File to Disk
+	if err := os.WriteFile(path, data, 0644); err != nil {
+		return "", NewError(err, ErrorMessage_USER_FS)
+	}
+	return path, nil
 }

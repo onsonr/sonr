@@ -1,7 +1,7 @@
 package models
 
 import (
-	"fmt"
+	"path/filepath"
 	"sync"
 	"sync/atomic"
 )
@@ -32,7 +32,7 @@ type NodeCallback struct {
 	GetStatus   GetStatus
 }
 
-// @ Binary State Management ** //
+// ** ─── State MANAGEMENT ────────────────────────────────────────────────────────
 type state struct {
 	flag uint64
 	chn  chan bool
@@ -75,52 +75,13 @@ func (c *state) Pause() {
 	}
 }
 
-// ** ─── GEOLACTION FROM IP ADDRESS ─────────────────────────────────────────────────
-// Geographical Position from IP ^ //
-type GeoIP struct {
-	Continent            string  `json:"continent"`
-	Country              string  `json:"country"`
-	Zipcode              string  `json:"zipCode"`
-	Accuracyradius       int     `json:"accuracyRadius"`
-	Flag                 string  `json:"flag"`
-	City                 string  `json:"city"`
-	Timezone             string  `json:"timezone"`
-	Latitude             float64 `json:"latitude"`
-	Countrygeonameid     int     `json:"countryGeoNameId"`
-	Gmt                  string  `json:"gmt"`
-	Network              string  `json:"network"`
-	Currencyname         string  `json:"currencyName"`
-	Countrynativename    string  `json:"countryNativeName"`
-	Stategeonameid       int     `json:"stateGeoNameId"`
-	Phonecode            string  `json:"phoneCode"`
-	State                string  `json:"state"`
-	Continentcode        string  `json:"continentCode"`
-	Longitude            float64 `json:"longitude"`
-	Currencynameplural   string  `json:"currencyNamePlural"`
-	Citygeonameid        int     `json:"cityGeoNameId"`
-	Languages            string  `json:"languages"`
-	Numofcities          int     `json:"numOfCities"`
-	Org                  string  `json:"org"`
-	IP                   string  `json:"ip"`
-	Currencysymbol       string  `json:"currencySymbol"`
-	Currencysymbolnative string  `json:"currencySymbolNative"`
-	Iseu                 string  `json:"isEU"`
-	Countrytld           string  `json:"countryTLD"`
-	Countrycapital       string  `json:"countryCapital"`
-	Metrocode            int     `json:"metroCode"`
-	Continentgeonameid   int     `json:"continentGeoNameId"`
-	Statecode            string  `json:"stateCode"`
-	Countryiso2          string  `json:"countryISO2"`
-	Numofstates          int     `json:"numOfStates"`
-	Countryiso3          string  `json:"countryISO3"`
-	Currencycode         string  `json:"currencyCode"`
-	Asno                 int     `json:"asNo"`
-	Status               int     `json:"status"`
-}
-
-// Convert to String
-func (g *GeoIP) String() string {
-	lat := g.Latitude
-	lon := g.Longitude
-	return fmt.Sprintf("Latitude: %f \n Longitude: %f \n", lat, lon)
+// ** ─── Directories MANAGEMENT ────────────────────────────────────────────────────────
+// Returns Path for Application/User Data
+func (f *FileSystem) DataSavePath(fileName string, IsDesktop bool) string {
+	// Check for Desktop
+	if IsDesktop {
+		return filepath.Join(f.GetLibrary(), fileName)
+	} else {
+		return filepath.Join(f.GetSupport(), fileName)
+	}
 }

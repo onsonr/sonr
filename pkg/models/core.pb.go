@@ -20,19 +20,19 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Sent on Data Transfer to Add piece of File - Base64
-type Chunk64 struct {
+// Sent on Data Transfer to Add piece of File - Binary
+type Chunk struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Data  string `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`    // Base 64 Value of Chunk
-	Size  int32  `protobuf:"varint,2,opt,name=size,proto3" json:"size,omitempty"`   // Size of this Chunk
-	Total int32  `protobuf:"varint,3,opt,name=total,proto3" json:"total,omitempty"` // Size of ALL Chunks together
+	Buffer     []byte `protobuf:"bytes,1,opt,name=buffer,proto3" json:"buffer,omitempty"`          // Binary Value of Chunk
+	Size       int32  `protobuf:"varint,2,opt,name=size,proto3" json:"size,omitempty"`             // Size of this Chunk
+	IsComplete bool   `protobuf:"varint,3,opt,name=isComplete,proto3" json:"isComplete,omitempty"` // Whether this is final chunk
 }
 
-func (x *Chunk64) Reset() {
-	*x = Chunk64{}
+func (x *Chunk) Reset() {
+	*x = Chunk{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_core_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -40,13 +40,13 @@ func (x *Chunk64) Reset() {
 	}
 }
 
-func (x *Chunk64) String() string {
+func (x *Chunk) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Chunk64) ProtoMessage() {}
+func (*Chunk) ProtoMessage() {}
 
-func (x *Chunk64) ProtoReflect() protoreflect.Message {
+func (x *Chunk) ProtoReflect() protoreflect.Message {
 	mi := &file_core_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,111 +58,43 @@ func (x *Chunk64) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Chunk64.ProtoReflect.Descriptor instead.
-func (*Chunk64) Descriptor() ([]byte, []int) {
+// Deprecated: Use Chunk.ProtoReflect.Descriptor instead.
+func (*Chunk) Descriptor() ([]byte, []int) {
 	return file_core_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Chunk64) GetData() string {
+func (x *Chunk) GetBuffer() []byte {
 	if x != nil {
-		return x.Data
-	}
-	return ""
-}
-
-func (x *Chunk64) GetSize() int32 {
-	if x != nil {
-		return x.Size
-	}
-	return 0
-}
-
-func (x *Chunk64) GetTotal() int32 {
-	if x != nil {
-		return x.Total
-	}
-	return 0
-}
-
-// Sent on Data Transfer to Add piece of File - Binary
-type ChunkBuffer struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Data  []byte `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`    // Binary Value of Chunk
-	Size  int32  `protobuf:"varint,2,opt,name=size,proto3" json:"size,omitempty"`   // Size of this Chunk
-	Total int32  `protobuf:"varint,3,opt,name=total,proto3" json:"total,omitempty"` // Size of ALL Chunks together
-}
-
-func (x *ChunkBuffer) Reset() {
-	*x = ChunkBuffer{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_core_proto_msgTypes[1]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *ChunkBuffer) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ChunkBuffer) ProtoMessage() {}
-
-func (x *ChunkBuffer) ProtoReflect() protoreflect.Message {
-	mi := &file_core_proto_msgTypes[1]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ChunkBuffer.ProtoReflect.Descriptor instead.
-func (*ChunkBuffer) Descriptor() ([]byte, []int) {
-	return file_core_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *ChunkBuffer) GetData() []byte {
-	if x != nil {
-		return x.Data
+		return x.Buffer
 	}
 	return nil
 }
 
-func (x *ChunkBuffer) GetSize() int32 {
+func (x *Chunk) GetSize() int32 {
 	if x != nil {
 		return x.Size
 	}
 	return 0
 }
 
-func (x *ChunkBuffer) GetTotal() int32 {
+func (x *Chunk) GetIsComplete() bool {
 	if x != nil {
-		return x.Total
+		return x.IsComplete
 	}
-	return 0
+	return false
 }
 
 var File_core_proto protoreflect.FileDescriptor
 
 var file_core_proto_rawDesc = []byte{
-	0x0a, 0x0a, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x47, 0x0a, 0x07,
-	0x43, 0x68, 0x75, 0x6e, 0x6b, 0x36, 0x34, 0x12, 0x12, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x12, 0x12, 0x0a, 0x04, 0x73,
-	0x69, 0x7a, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x73, 0x69, 0x7a, 0x65, 0x12,
-	0x14, 0x0a, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x52, 0x05,
-	0x74, 0x6f, 0x74, 0x61, 0x6c, 0x22, 0x4b, 0x0a, 0x0b, 0x43, 0x68, 0x75, 0x6e, 0x6b, 0x42, 0x75,
-	0x66, 0x66, 0x65, 0x72, 0x12, 0x12, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x0c, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x12, 0x12, 0x0a, 0x04, 0x73, 0x69, 0x7a, 0x65,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x73, 0x69, 0x7a, 0x65, 0x12, 0x14, 0x0a, 0x05,
-	0x74, 0x6f, 0x74, 0x61, 0x6c, 0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x52, 0x05, 0x74, 0x6f, 0x74,
-	0x61, 0x6c, 0x42, 0x09, 0x5a, 0x07, 0x2f, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x62, 0x06, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x0a, 0x0a, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x53, 0x0a, 0x05,
+	0x43, 0x68, 0x75, 0x6e, 0x6b, 0x12, 0x16, 0x0a, 0x06, 0x62, 0x75, 0x66, 0x66, 0x65, 0x72, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x06, 0x62, 0x75, 0x66, 0x66, 0x65, 0x72, 0x12, 0x12, 0x0a,
+	0x04, 0x73, 0x69, 0x7a, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x73, 0x69, 0x7a,
+	0x65, 0x12, 0x1e, 0x0a, 0x0a, 0x69, 0x73, 0x43, 0x6f, 0x6d, 0x70, 0x6c, 0x65, 0x74, 0x65, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0a, 0x69, 0x73, 0x43, 0x6f, 0x6d, 0x70, 0x6c, 0x65, 0x74,
+	0x65, 0x42, 0x09, 0x5a, 0x07, 0x2f, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x62, 0x06, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -177,10 +109,9 @@ func file_core_proto_rawDescGZIP() []byte {
 	return file_core_proto_rawDescData
 }
 
-var file_core_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_core_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_core_proto_goTypes = []interface{}{
-	(*Chunk64)(nil),     // 0: Chunk64
-	(*ChunkBuffer)(nil), // 1: ChunkBuffer
+	(*Chunk)(nil), // 0: Chunk
 }
 var file_core_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
@@ -197,19 +128,7 @@ func file_core_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_core_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Chunk64); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_core_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ChunkBuffer); i {
+			switch v := v.(*Chunk); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -227,7 +146,7 @@ func file_core_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_core_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   1,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

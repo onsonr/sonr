@@ -6,7 +6,6 @@ import (
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	tpc "github.com/sonr-io/core/internal/topic"
 	md "github.com/sonr-io/core/pkg/models"
-	us "github.com/sonr-io/core/pkg/user"
 
 	// Local
 	// brprot "berty.tech/berty/v2/go/pkg/bertyprotocol"
@@ -19,6 +18,7 @@ type Client struct {
 	// Properties
 	ctx     context.Context
 	call    md.NodeCallback
+	device  *md.Device
 	req     *md.ConnectionRequest
 	router  *ProtocolRouter
 	session *se.Session
@@ -35,6 +35,7 @@ func NewClient(ctx context.Context, cr *md.ConnectionRequest, call md.NodeCallba
 	return &Client{
 		ctx:    ctx,
 		call:   call,
+		device: cr.GetDevice(),
 		req:    cr,
 		router: NewProtocolRouter(cr),
 	}
@@ -143,7 +144,7 @@ func (n *Client) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, c *md
 		}
 
 		// Build Invite Message
-		isFlat := req.Type == md.InviteRequest_FlatContact
+		isFlat := req.Payload == md.Payload_FLAT_CONTACT
 		invite := n.Peer.SignInviteWithContact(c, isFlat, req)
 
 		// Run Routine
@@ -169,18 +170,12 @@ func (n *Client) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, c *md
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Client) InviteFile(req *md.InviteRequest, t *tpc.TopicManager, fs *us.FileSystem) *md.SonrError {
+func (n *Client) InviteFile(req *md.InviteRequest, t *tpc.TopicManager) *md.SonrError {
 	// Start New Session
-	session := se.NewOutSession(n.Peer, req, fs, n.call)
-	card := session.OutgoingCard()
-
-	// Check for Card
-	if card == nil {
-		return md.NewErrorWithType(md.ErrorMessage_TRANSFER_START)
-	}
+	session := se.NewOutSession(n.Peer, req, n.call)
 
 	// Create Invite Message
-	invite := n.Peer.SignInviteWithFile(card, req)
+	invite := n.Peer.SignInviteWithFile(req)
 
 	// Get PeerID
 	id, _, err := t.FindPeerInTopic(req.To.Id.Peer)
@@ -199,8 +194,8 @@ func (n *Client) InviteFile(req *md.InviteRequest, t *tpc.TopicManager, fs *us.F
 }
 
 // ^ Respond to an Invitation ^ //
-func (n *Client) Respond(req *md.RespondRequest, t *tpc.TopicManager, fs *us.FileSystem, c *md.Contact) {
-	t.RespondToInvite(req, fs, n.Peer, c)
+func (n *Client) Respond(req *md.RespondRequest, t *tpc.TopicManager, c *md.Contact) {
+	t.RespondToInvite(req, n.Peer, c)
 }
 
 // ^ Send Direct Message to Peer in Lobby ^ //

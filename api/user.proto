@@ -3,84 +3,59 @@ syntax = "proto3";
 // Require Go Package
 option go_package = "/models";
 
-// Contact is Extensive User Info that can be passed
-message Contact {
-  int32 design = 1;     // Number Reference to Card Design
-  string firstName = 2; // General, First Name
-  string lastName = 3;  // General, Last Name
-  string phone = 4;     // Phone Number - For Text Message or  Video/Phone Call
-  string website = 5;   // Website URL Link
-  string email = 6;     // Email Address
-  bytes picture = 7;    // Profile Picture
-  repeated SocialTile socials = 8; // Users Social Media
-
-  // Social Tile provides Display Information and Provider Information
-  message SocialTile {
-    // Properties
-    string username = 1;   // Users handle on Service
-    bool isPrivate = 2;    // Is the User's Account Private
-    Provider provider = 3; // Type of Social Provider
-    Type type = 4;         // Type of Tile to be Displayed
-    Links links = 5;       // Links based on Service
-    Position position = 6; // Location in Users Contact Card
-
-    // Social Links
-    message Links {
-      string userLink = 1; // Link to Users Profile
-      string feedLink = 2; // Link to Users Feed
-      string postLink = 3; // Link to Users Specifed Post
-    }
-
-    // Tile Display Position
-    message Position {
-      int32 index = 1;  // Position in Contact Array
-      int32 row = 2;    // Row Location
-      int32 column = 3; // Column Location
-      int32 size = 4;   // Size of Tile
-    }
-
-    // Social Media Service
-    enum Provider {
-      Instagram = 0; // Feed/Post/Link
-      TikTok = 1;    // Post/Link
-      Facebook = 2;  // Link Only
-      YouTube = 3;   // Post/Link
-      Spotify = 4;   // Post/Link
-      Medium = 5;    // Feed/Post/Link
-      Twitter = 6;   // Feed/Post/Link
-      Snapchat = 7;  // Link Only
-      Github = 8;    // Link Only
-    }
-
-    // Social Tile Display Type
-    enum Type {
-      None = 0; // Default Tile Type
-      Feed = 1; // Big Tile Showcases Current User Feed
-      Post = 2; // Medium Tile Showcases a Featured Post
-      Link = 3; // Small Tile is Direct Link to User Profile
-    }
-  }
+// Cardinal: Designation for the Compass Direction Value
+enum Cardinal {
+  N = 0;     // North
+  NbE = 1;   // North by East
+  NNE = 2;   // North North East
+  NEbN = 3;  // NorthEast by North
+  NE = 4;    // North East
+  NEbE = 5;  // NorthEast by East
+  ENE = 6;   // East North East
+  EbN = 7;   // East by North
+  E = 8;     // East
+  EbS = 9;   // East by South
+  ESE = 10;  // East South East
+  SEbE = 11; // SouthEast by East
+  SE = 12;   // South East
+  SEbS = 13; // SouthEast by South
+  SSE = 14;  // South South East
+  SbE = 15;  // South by East
+  S = 16;    // South
+  SbW = 17;  // South by West
+  SSW = 18;  // South South West
+  SWbS = 19; // SouthWest by South
+  SW = 20;   // South West
+  SWbW = 21; // SouthWest by West
+  WSW = 22;  // West South West
+  WbS = 23;  // West by South
+  W = 24;    // West
+  WbN = 25;  // West by North
+  WNW = 26;  // West North West
+  NWbW = 27; // North West by West
+  NW = 28;   // North West
+  NWbN = 29; // North West by North
+  NNW = 30;  // North North West
+  NbW = 31;  // North by West
 }
 
 // Information about device for User
 message Device {
-  string id = 1;               // Generated or Provided Device ID
-  Platform platform = 2;       // Operating System
-  string model = 3;            // Model of Device
-  string name = 4;             // Name of Device
-  string version = 5;          // Device Software Version
-  int32 sdk = 6;               // Only For Android
-  bool isDesktop = 7;          // Only For Desktop
-  Directories directories = 8; // Directories for this Device
+  string id = 1;             // Device Identifier
+  string name = 2;           // User Defined Name
+  Platform platform = 3;     // Operating System
+  string model = 4;          // Model of Device
+  string version = 5;        // Operating System Version
+  FileSystem fileSystem = 6; // Directories for this Device
 }
 
-// Directories are for FilePaths Where Data can be stored
-message Directories {
-  string cache = 1;     // Only For Desktop
-  string documents = 2; // Permanent Data Storage
-  string downloads = 3; // Only For Desktop
-  string home = 4;      // Only for Desktop Home Directory
-  string temporary = 5; // Temporary Data Storage, Mobile Only
+// FileSystem is for Directores Where Data can be stored
+message FileSystem {
+  string documents = 1; // User Generated Files - Both
+  string downloads = 2; // Downloaded Files - Desktop
+  string library = 3;   // Persistent Non Exposed Files - Desktop
+  string support = 4;   // Non Exposed Support Files - Mobile
+  string temporary = 5; // Temporary Storage - Mobile
 }
 
 // Basic Info Sent to Peers to Establish Connections
@@ -90,16 +65,7 @@ message Peer {
   string model = 3;          // Peers Device Model
   Position position = 4;     // Peers Positional Information
   Profile profile = 5;       // Peers General Information
-  Discovery discovery = 6;   // Peers Method of Discovery
-  Properties properties = 7; // Peer specific options set
-
-  // Enum for Discovery Type
-  enum Discovery {
-    Linked = 0;     // Users own Device
-    MDNS = 1;       // Local Network
-    Ultrasonic = 2; // Ultrasonic discovered peer
-    Rendevouz = 3;  // Rendevouz Discovered Peer
-  }
+  Properties properties = 6; // Peer specific options set
 
   // ID References
   message ID {
@@ -119,7 +85,7 @@ message Peer {
 
 // Platform is the Operating System of Device
 enum Platform {
-  Unknown = 0;
+  Undefined = 0;
   Android = 1;
   IOS = 2;
   MacOS = 3;
@@ -139,69 +105,39 @@ message Profile {
 
 // Position Includes All Directional Info of Peer
 message Position {
-  double facing = 1;  // Direction of Peer on Z axis, headingForCameraMode
-  double heading = 2; // Direction of Peer on X axis
-  double facingAntipodal = 3;  // Inverse Compass Direction of Peer in Z axis
-  double headingAntipodal = 4; // Inverse Compass Direction of Peer in Z axis
-  Designation designation = 5; // Cardinal Direction of Peer Facing
-  Proximity proximity = 6;     // Proximity from the User - Calculated
-  Accelerometer accelerometer = 7; // Accelerometer Values
-  Gyroscope gyroscope = 8;         // Gyroscope Values
-  Magnometer magnometer = 9;       // Magnometer Values
-  Orientation orientation = 10;    // Orientation Values
+  Compass facing = 1;              // Compass Direction of Peer on Z axis
+  Compass heading = 2;             // Compass Direction of Peer on X axis
+  Proximity proximity = 3;         // Proximity from the User - Calculated
+  Accelerometer accelerometer = 4; // Accelerometer Values
+  Gyroscope gyroscope = 5;         // Gyroscope Values
+  Magnometer magnometer = 6;       // Magnometer Values
+  Orientation orientation = 7;     // Orientation Values
 
+  // Accelerometer Sensor Values
   message Accelerometer {
-    double x = 1;
-    double y = 2;
-    double z = 3;
+    double x = 1; // X-Axis Value
+    double y = 2; // Y-Axis Value
+    double z = 3; // Z-Axis Value
   }
 
-  // Designation is the Compass Direction of Peer
-  enum Designation {
-    N = 0;     // North
-    NbE = 1;   // North by East
-    NNE = 2;   // North North East
-    NEbN = 3;  // NorthEast by North
-    NE = 4;    // North East
-    NEbE = 5;  // NorthEast by East
-    ENE = 6;   // East North East
-    EbN = 7;   // East by North
-    E = 8;     // East
-    EbS = 9;   // East by South
-    ESE = 10;  // East South East
-    SEbE = 11; // SouthEast by East
-    SE = 12;   // South East
-    SEbS = 13; // SouthEast by South
-    SSE = 14;  // South South East
-    SbE = 15;  // South by East
-    S = 16;    // South
-    SbW = 17;  // South by West
-    SSW = 18;  // South South West
-    SWbS = 19; // SouthWest by South
-    SW = 20;   // South West
-    SWbW = 21; // SouthWest by West
-    WSW = 22;  // West South West
-    WbS = 23;  // West by South
-    W = 24;    // West
-    WbN = 25;  // West by North
-    WNW = 26;  // West North West
-    NWbW = 27; // North West by West
-    NW = 28;   // North West
-    NWbN = 29; // North West by North
-    NNW = 30;  // North North West
-    NbW = 31;  // North by West
+  // Compass Direction Values
+  message Compass {
+    Cardinal cardinal = 1;     // Cardinal Designation of normal Value
+    Cardinal antiCardinal = 2; // Cardinal Designation of Antipodal Value
+    double direction = 3;      // Normal Compass Value
+    double antipodal = 4;      // Inverse Compass Direction of Peer
   }
 
   message Gyroscope {
-    double x = 1;
-    double y = 2;
-    double z = 3;
+    double x = 1; // X-Axis Value
+    double y = 2; // Y-Axis Value
+    double z = 3; // Z-Axis Value
   }
 
   message Magnometer {
-    double x = 1;
-    double y = 2;
-    double z = 3;
+    double x = 1; // X-Axis Value
+    double y = 2; // Y-Axis Value
+    double z = 3; // Z-Axis Value
   }
 
   message Orientation {
@@ -212,37 +148,9 @@ message Position {
 
   // Proximity is the Distance between Peers, from Ultrasonic
   enum Proximity {
-    Unknown = 0;   // Unable to Calculate
+    NotFound = 0;  // Unable to Calculate
     Immediate = 1; // Within 5 Meters
     Near = 2;      // Within 10 Meters
     Distant = 3;   // Within 15 Meters
-  }
-}
-
-// User is the Saved Data from Client that Passes to Proxy, During ConnRequest
-message User {
-  Contact contact = 1;            // Clients Contact Card
-  Profile profile = 2;            // Clients General Profile
-  repeated Device devices = 3;    // Clients Devices
-  repeated Settings settings = 4; // Clients Specified Preferences
-
-  message Settings {
-    Option option = 1; // Type of Setting
-    Value value = 2;   // Value for Setting
-
-    // Value of Settings Option
-    message Value {
-      bool enabled = 1; // If Value is for simple enable/disable
-      string value = 2; // If Value is complex
-    }
-
-    // Available Settings Options
-    enum Option {
-      None = 0;              // Arbitrary Zero Value
-      DefaultVideoCall = 1;  // Default App to be used for Video Calls
-      FallbackVideoCall = 2; // Fallback App for Video Calls
-      DarkMode = 3;          // Dark Mode Preference
-      RunInBackground = 4;   // Sonr Background Run Preference
-    }
   }
 }

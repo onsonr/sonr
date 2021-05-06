@@ -7,19 +7,17 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// @ Return URL Metadata, Helper Method
-func (mn *Node) GetURLMetadata(url string) []byte {
+// @ Return URLLink
+func GetURLLink(url string) []byte {
 	// Get Link Data
 	data, serr := md.GetPageInfoFromUrl(url)
 	if serr != nil {
-		mn.handleError(serr)
 		return nil
 	}
 
 	// Marshal
 	bytes, err := proto.Marshal(data)
 	if err != nil {
-		mn.handleError(md.NewError(err, md.ErrorMessage_MARSHAL))
 		return nil
 	}
 	return bytes
@@ -164,13 +162,13 @@ func (mn *Node) Invite(data []byte) {
 		}
 
 		// @ 2. Check Transfer Type
-		if req.Type == md.InviteRequest_Contact || req.Type == md.InviteRequest_FlatContact {
+		if req.Payload == md.Payload_CONTACT || req.Payload == md.Payload_FLAT_CONTACT {
 			err := mn.client.InviteContact(req, topic, mn.user.Contact())
 			if err != nil {
 				mn.handleError(err)
 				return
 			}
-		} else if req.Type == md.InviteRequest_URL {
+		} else if req.Payload == md.Payload_URL {
 			err := mn.client.InviteLink(req, topic)
 			if err != nil {
 				mn.handleError(err)
@@ -178,7 +176,7 @@ func (mn *Node) Invite(data []byte) {
 			}
 		} else {
 			// Invite With file
-			err := mn.client.InviteFile(req, topic, mn.user.FileSystem())
+			err := mn.client.InviteFile(req, topic)
 			if err != nil {
 				mn.handleError(err)
 				return
@@ -205,7 +203,7 @@ func (mn *Node) Respond(data []byte) {
 			topic = mn.local
 		}
 
-		mn.client.Respond(req, topic, mn.user.FileSystem(), mn.user.Contact())
+		mn.client.Respond(req, topic, mn.user.Contact())
 		// Update Status
 		if req.Decision {
 			mn.setStatus(md.Status_INPROGRESS)

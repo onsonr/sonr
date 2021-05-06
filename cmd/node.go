@@ -3,7 +3,6 @@ package bind
 import (
 	"github.com/getsentry/sentry-go"
 	"github.com/pkg/errors"
-	"github.com/sonr-io/core/internal/network"
 	tpc "github.com/sonr-io/core/internal/topic"
 	sc "github.com/sonr-io/core/pkg/client"
 	md "github.com/sonr-io/core/pkg/models"
@@ -21,7 +20,7 @@ type Node struct {
 	// Client
 	client   *sc.Client
 	location *md.Location
-	user     *u.User
+	user     *u.UserConfig
 
 	// Groups
 	local  *tpc.TopicManager
@@ -32,7 +31,7 @@ type Node struct {
 func NewNode(reqBytes []byte, call Callback) *Node {
 	// Initialize Sentry
 	sentry.Init(sentry.ClientOptions{
-		Dsn: "http://8f37928df15e41318ebc28770270da05@ec2-34-201-54-61.compute-1.amazonaws.com/2",
+		Dsn: "https://cbf88b01a5a5468fa77101f7dfc54f20@o549479.ingest.sentry.io/5672329",
 	})
 
 	// Unmarshal Request
@@ -42,18 +41,6 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 		sentry.CaptureException(errors.Wrap(err, "Unmarshalling Connection Request"))
 		return nil
 	}
-
-	// Get Location by IP
-	geoIP := &md.GeoIP{}
-	err = network.Location(geoIP)
-	if err != nil {
-		sentry.CaptureException(errors.Wrap(err, "Finding Geolocated IP"))
-		return nil
-	}
-
-	// Modify Request
-	req.AttachGeoToRequest(geoIP)
-
 	// Create Mobile Node
 	mn := &Node{
 		call:     call,
@@ -112,31 +99,11 @@ func (mn *Node) Connect() {
 
 // @ Returns Node Location Protobuf as Bytes
 func (mn *Node) Location() []byte {
-	if mn.location != nil {
-		bytes, err := proto.Marshal(mn.location)
-		if err != nil {
-			return nil
-		}
-		return bytes
-	} else {
-		// Get Location by IP
-		geoIP := &md.GeoIP{}
-		err := network.Location(geoIP)
-		if err != nil {
-			sentry.CaptureException(errors.Wrap(err, "Finding Geolocated IP"))
-			return nil
-		}
-
-		// Set Location
-		mn.location = geoIP.GetLocation()
-
-		// Return Marshalled Location
-		bytes, err := proto.Marshal(mn.location)
-		if err != nil {
-			return nil
-		}
-		return bytes
+	bytes, err := proto.Marshal(mn.location)
+	if err != nil {
+		return nil
 	}
+	return bytes
 }
 
 // **-------------------** //

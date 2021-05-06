@@ -26,7 +26,7 @@ func newNodeConfig() nodeConfig {
 		HasBootstrapped: false,
 		HasJoinedLocal:  false,
 
-		Status: md.Status_NONE,
+		Status: md.Status_IDLE,
 	}
 }
 
