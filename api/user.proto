@@ -45,7 +45,8 @@ message Device {
   string name = 2;           // User Defined Name
   Platform platform = 3;     // Operating System
   string model = 4;          // Model of Device
-  FileSystem fileSystem = 5; // Directories for this Device
+  string version = 5;        // Operating System Version
+  FileSystem fileSystem = 6; // Directories for this Device
 }
 
 // FileSystem is for Directores Where Data can be stored
