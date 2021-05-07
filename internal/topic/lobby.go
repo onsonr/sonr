@@ -1,8 +1,6 @@
 package topic
 
 import (
-	"log"
-
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
@@ -27,22 +25,22 @@ func (tm *TopicManager) handleTopicEvents(p *md.Peer) {
 		if lobEvent.Type == pubsub.PeerJoin {
 			pbuf, err := p.Buffer()
 			if err != nil {
-				log.Println(err)
 				continue
 			}
 			lbuf, err := tm.Lobby.Buffer()
 			if err != nil {
-				log.Println(err)
 				continue
 			}
 			err = tm.Exchange(lobEvent.Peer, pbuf, lbuf)
 			if err != nil {
 				continue
 			}
+			tm.Refresh()
 		}
 
 		if lobEvent.Type == pubsub.PeerLeave {
 			tm.Lobby.Delete(lobEvent.Peer)
+			tm.Refresh()
 		}
 
 		md.GetState().NeedsWait()
