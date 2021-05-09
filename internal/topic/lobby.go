@@ -42,7 +42,6 @@ func (tm *TopicManager) handleTopicEvents(p *md.Peer) {
 			tm.Lobby.Delete(lobEvent.Peer)
 			tm.Refresh()
 		}
-
 		md.GetState().NeedsWait()
 	}
 }
