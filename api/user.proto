@@ -66,6 +66,7 @@ message Peer {
   Position position = 4;     // Peers Positional Information
   Profile profile = 5;       // Peers General Information
   Properties properties = 6; // Peer specific options set
+  Status status = 7;         // Status of Peer
 
   // ID References
   message ID {
@@ -80,6 +81,15 @@ message Peer {
     // Whether Peer can use automatic point to Transfer
     bool hasPointToShare = 1;
     bool isFlatMode = 2;
+  }
+
+  // Status
+  enum Status {
+    IDLE = 0;
+    PENDING = 1;
+    ACCEPTED = 2;
+    DECLINED = 3;
+    COMPLETE = 4;
   }
 }
 
@@ -109,9 +119,7 @@ message Position {
   Compass heading = 2;             // Compass Direction of Peer on X axis
   Proximity proximity = 3;         // Proximity from the User - Calculated
   Accelerometer accelerometer = 4; // Accelerometer Values
-  Gyroscope gyroscope = 5;         // Gyroscope Values
-  Magnometer magnometer = 6;       // Magnometer Values
-  Orientation orientation = 7;     // Orientation Values
+  Orientation orientation = 5;     // Orientation Values
 
   // Accelerometer Sensor Values
   message Accelerometer {
@@ -128,18 +136,7 @@ message Position {
     double antipodal = 4;      // Inverse Compass Direction of Peer
   }
 
-  message Gyroscope {
-    double x = 1; // X-Axis Value
-    double y = 2; // Y-Axis Value
-    double z = 3; // Z-Axis Value
-  }
-
-  message Magnometer {
-    double x = 1; // X-Axis Value
-    double y = 2; // Y-Axis Value
-    double z = 3; // Z-Axis Value
-  }
-
+  // Euler Angle Orientation
   message Orientation {
     double pitch = 1;
     double roll = 2;

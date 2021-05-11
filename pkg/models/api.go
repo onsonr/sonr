@@ -289,10 +289,7 @@ func (p *Peer) Update(u *UpdateRequest) {
 				Antipodal: headAnpd,
 				Cardinal:  Cardinal(headDesg % 32),
 			},
-			Accelerometer: u.Position.GetAccelerometer(),
-			Gyroscope:     u.Position.GetGyroscope(),
-			Magnometer:    u.Position.GetMagnometer(),
-			Orientation:   u.Position.GetOrientation(),
+			Orientation: u.Position.GetOrientation(),
 		}
 	}
 
