@@ -1,5 +1,9 @@
 syntax = "proto3";
 
+import "api.proto";
+import "data.proto";
+import "user.proto";
+
 // Require Go Package
 option go_package = "/models";
 
@@ -8,4 +12,10 @@ message Chunk {
   bytes buffer = 1;    // Binary Value of Chunk
   int32 size = 2;      // Size of this Chunk
   bool isComplete = 3; // Whether this is final chunk
+}
+
+// Router Manages Peer Routing for Topics/Transfers
+message Router {
+  Location location = 1;
+  Connectivity connectivity = 2;
 }

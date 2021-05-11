@@ -79,7 +79,7 @@ message Peer {
   // Properties
   message Properties {
     // Whether Peer can use automatic point to Transfer
-    bool hasPointToShare = 1;
+    bool enabledPointShare = 1;
     bool isFlatMode = 2;
   }
 

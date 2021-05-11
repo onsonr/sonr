@@ -133,12 +133,19 @@ message Contact {
 
 // For Info about Lobby
 message Lobby {
-  bool isLocal = 1;            // Is Local Lobby
+  Type type = 1;               // Type of Lobby
   string name = 2;             // Open Location Code of Lobby
-  int32 size = 3;              // Total Number of Devices in Lobby
-  int32 count = 4;             // Total Devices in Lobby EXCLUDING User
-  map<string, Peer> peers = 5; // Total Data of Active Peers
-  Peer user = 6;               // User Peer reference
+  string topic = 3;            // Pubsub Address with OLC
+  int32 size = 4;              // Total Number of Devices in Lobby
+  int32 count = 5;             // Total Devices in Lobby EXCLUDING User
+  map<string, Peer> peers = 6; // Total Data of Active Peers
+  Peer user = 7;               // User Peer reference
+
+  enum Type {
+    Local = 0;
+    Remote = 1;
+    User = 2;
+  }
 }
 
 // Message Sent when peer messages Lobby Topic
@@ -161,13 +168,21 @@ message LobbyEvent {
 
 // Location from GeoIP and OLC information
 message Location {
-  string state = 1;
-  string continent = 2;
-  string country = 3;
-  double latitude = 4;
-  double longitude = 5;
-  string minorOlc = 6;
-  string majorOlc = 7;
+  IP ip = 1;
+  Geo geo = 2;
+
+  message Geo {
+    double latitude = 1;
+    double longitude = 2;
+  }
+
+  message IP {
+    string state = 1;
+    string continent = 2;
+    string country = 3;
+    double latitude = 4;
+    double longitude = 5;
+  }
 }
 
 // Standard MIME with Additional Extensions

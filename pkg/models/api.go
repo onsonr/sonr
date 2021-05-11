@@ -1,24 +1,23 @@
 package models
 
 import (
+	"errors"
 	"hash/fnv"
 	"math"
 	"time"
 
+	olc "github.com/google/open-location-code/go"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/multiformats/go-multiaddr"
 	"google.golang.org/protobuf/proto"
 )
 
 // ** ─── ConnectionRequest MANAGEMENT ────────────────────────────────────────────────────────
-func (req *ConnectionRequest) Latitude() float64 {
-	loc := req.GetLocation()
-	return loc.GetLatitude()
-}
-
-func (req *ConnectionRequest) Longitude() float64 {
-	loc := req.GetLocation()
-	return loc.GetLongitude()
+func (req *ConnectionRequest) NewRouter() *Router {
+	return &Router{
+		Location:     req.GetLocation(),
+		Connectivity: req.GetConnectivity(),
+	}
 }
 
 // ************************** //
@@ -88,6 +87,16 @@ func (p *Peer) Buffer() ([]byte, error) {
 		return nil, err
 	}
 	return buf, nil
+}
+
+// ^ Returns Peer User ID ^ //
+func (p *Peer) DeviceID() string {
+	return string(p.Id.GetDevice())
+}
+
+// ^ Returns Peer User ID ^ //
+func (p *Peer) UserID() string {
+	return string(p.Id.GetUser())
 }
 
 // ^ Checks for Host Peer ID is Same ^ //
@@ -307,4 +316,42 @@ func (p *Peer) Update(u *UpdateRequest) {
 			Picture:   profile.GetPicture(),
 		}
 	}
+}
+
+// ** ─── Location MANAGEMENT ────────────────────────────────────────────────────────
+func (l *Location) MinorOLC() string {
+	lat := l.Latitude()
+	lon := l.Longitude()
+	return olc.Encode(lat, lon, 6)
+}
+
+func (l *Location) MajorOLC() string {
+	lat := l.Latitude()
+	lon := l.Longitude()
+	return olc.Encode(lat, lon, 4)
+}
+
+func (l *Location) Latitude() float64 {
+	if l.Geo != nil {
+		return l.Geo.GetLatitude()
+	}
+	return l.Ip.GetLatitude()
+}
+
+func (l *Location) Longitude() float64 {
+	if l.Geo != nil {
+		return l.Geo.GetLongitude()
+	}
+	return l.Ip.GetLongitude()
+}
+
+func (l *Location) GeoOLC() (string, error) {
+	if l.Geo != nil {
+		return "", errors.New("Geo Location doesnt exist")
+	}
+	return olc.Encode(float64(l.Geo.GetLatitude()), float64(l.Geo.GetLongitude()), 5), nil
+}
+
+func (l *Location) IPOLC() string {
+	return olc.Encode(float64(l.Ip.GetLatitude()), float64(l.Ip.GetLongitude()), 5)
 }

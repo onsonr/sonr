@@ -1,9 +1,13 @@
 package models
 
 import (
+	"fmt"
 	"path/filepath"
 	"sync"
 	"sync/atomic"
+
+	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-core/protocol"
 )
 
 // ** ─── CALLBACK MANAGEMENT ────────────────────────────────────────────────────────
@@ -84,4 +88,38 @@ func (f *FileSystem) DataSavePath(fileName string, IsDesktop bool) string {
 	} else {
 		return filepath.Join(f.GetSupport(), fileName)
 	}
+}
+
+// ** ─── Router MANAGEMENT ────────────────────────────────────────────────────────
+// @ Local Lobby Topic Protocol ID
+func (r *Router) LocalIPTopic() string {
+	return fmt.Sprintf("/sonr/topic/%s", r.Location.IPOLC())
+}
+
+func (r *Router) LocalGeoTopic() (string, error) {
+	geoOlc, err := r.Location.GeoOLC()
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("/sonr/topic/%s", geoOlc), nil
+}
+
+// @ User Device Lobby Topic Protocol ID
+func (r *Router) DeviceTopic(p *Peer) string {
+	return fmt.Sprintf("/sonr/topic/%s", p.UserID())
+}
+
+// @ Transfer Controller Data Protocol ID
+func (r *Router) Transfer(id peer.ID) protocol.ID {
+	return protocol.ID(fmt.Sprintf("/sonr/transfer/%s", id.Pretty()))
+}
+
+// @ Lobby Topic Protocol ID
+func (r *Router) Topic(name string) string {
+	return fmt.Sprintf("/sonr/topic/%s", name)
+}
+
+// @ Major Rendevouz Advertising Point
+func (r *Router) Rendevouz() string {
+	return fmt.Sprintf("/sonr/rendevouz/0.9.2/")
 }

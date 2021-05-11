@@ -12,13 +12,13 @@ func (tm *TopicManager) Refresh() {
 }
 
 // ^ handleTopicEvents: listens to Pubsub Events for topic  ^
-func (tm *TopicManager) handleTopicEvents(p *md.Peer) {
+func (tm *TopicManager) handleTopicEvents(p *md.Peer, eh *pubsub.TopicEventHandler) {
 	// @ Loop Events
 	for {
 		// Get next event
-		lobEvent, err := tm.eventHandler.NextPeerEvent(tm.ctx)
+		lobEvent, err := eh.NextPeerEvent(tm.ctx)
 		if err != nil {
-			tm.eventHandler.Cancel()
+			eh.Cancel()
 			return
 		}
 
@@ -47,10 +47,10 @@ func (tm *TopicManager) handleTopicEvents(p *md.Peer) {
 }
 
 // ^ handleTopicMessages: listens for messages on pubsub topic subscription ^
-func (tm *TopicManager) handleTopicMessages(p *md.Peer) {
+func (tm *TopicManager) handleTopicMessages(p *md.Peer, sub *pubsub.Subscription) {
 	for {
 		// Get next msg from pub/sub
-		msg, err := tm.subscription.Next(tm.ctx)
+		msg, err := sub.Next(tm.ctx)
 		if err != nil {
 			return
 		}
