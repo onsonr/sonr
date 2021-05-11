@@ -114,10 +114,9 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 			// @ Check if All Buffer Received to Save
 			if hasCompleted {
 				// Sync file
-				if err := s.Save(); err != nil {
-					s.callback.Error(md.NewError(err, md.ErrorMessage_TRANSFER_END))
+				if done := s.Save(); done {
+					break
 				}
-				break
 			}
 			md.GetState().NeedsWait()
 		}
@@ -125,7 +124,7 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 }
 
 // ^ Check file type and use corresponding method to save to Disk ^ //
-func (s *Session) Save() error {
+func (s *Session) Save() bool {
 	// Sync file to Disk
 	if err := s.device.SaveTransfer(s.file, s.currentIndex, s.bytesBuilder.Bytes()); err != nil {
 		s.callback.Error(md.NewError(err, md.ErrorMessage_TRANSFER_END))
@@ -134,28 +133,27 @@ func (s *Session) Save() error {
 	// Send Complete Callback
 	if s.currentIndex+1 == int(s.file.GetCount()) {
 		s.callback.Received(s.file.CardIn(s.receiver, s.sender))
+		return true
 	} else {
 		s.currentIndex = s.currentIndex + 1
+		return false
 	}
-	return nil
 }
 
 // ^ write file as Base64 in Msgio to Stream ^ //
 func WriteToStream(writer msgio.WriteCloser, s *Session) {
-	// Get Item
-	m := s.file.ItemAtIndex(s.currentIndex)
+	// Write All Files
+	for i := 0; i < int(s.file.GetCount()); i++ {
+		// Get Item
+		m := s.file.ItemAtIndex(i)
 
-	// Write Item to Stream
-	if err := m.WriteTo(writer, s.callback); err != nil {
-		s.callback.Error(md.NewError(err, md.ErrorMessage_OUTGOING))
-		return
+		// Write Item to Stream
+		if err := m.WriteTo(writer, s.callback); err != nil {
+			s.callback.Error(md.NewError(err, md.ErrorMessage_OUTGOING))
+			return
+		}
 	}
 
-	// Call Completed Sending
-	if s.currentIndex+1 == int(s.file.GetCount()) {
-		s.callback.Transmitted(s.file.CardOut(s.receiver, s.sender))
-	} else {
-		s.currentIndex = s.currentIndex + 1
-		WriteToStream(writer, s)
-	}
+	// Callback
+	s.callback.Transmitted(s.file.CardOut(s.receiver, s.sender))
 }
