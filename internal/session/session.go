@@ -127,13 +127,16 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 // ^ Check file type and use corresponding method to save to Disk ^ //
 func (s *Session) Save() error {
 	// Sync file to Disk
-	
 	if err := s.device.SaveTransfer(s.file, s.currentIndex, s.bytesBuilder.Bytes()); err != nil {
 		s.callback.Error(md.NewError(err, md.ErrorMessage_TRANSFER_END))
 	}
 
 	// Send Complete Callback
-	s.callback.Received(s.file.CardIn(s.receiver, s.sender))
+	if s.currentIndex+1 == int(s.file.GetCount()) {
+		s.callback.Received(s.file.CardIn(s.receiver, s.sender))
+	} else {
+		s.currentIndex = s.currentIndex + 1
+	}
 	return nil
 }
 
@@ -149,5 +152,10 @@ func WriteToStream(writer msgio.WriteCloser, s *Session) {
 	}
 
 	// Call Completed Sending
-	s.callback.Transmitted(s.file.CardOut(s.receiver, s.sender))
+	if s.currentIndex+1 == int(s.file.GetCount()) {
+		s.callback.Transmitted(s.file.CardOut(s.receiver, s.sender))
+	} else {
+		s.currentIndex = s.currentIndex + 1
+		WriteToStream(writer, s)
+	}
 }
