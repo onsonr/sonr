@@ -121,14 +121,12 @@ func (f *SonrFile) Single() *SonrFile_Metadata {
 // Returns Progress of File, Given the written number of bytes
 func (m *SonrFile_Metadata) Progress(curr int, n int) (bool, float32) {
 	// Calculate Tracking
-	itemChunks := m.Size / K_CHUNK_SIZE
-	interval := int(itemChunks / 100)
+	progress := float32(n) / float32(m.Size)
+	adjusted := int(progress)
 
 	// Check Interval
-	if interval != 0 {
-		if curr%interval == 0 {
-			return true, float32(n) / float32(m.Size)
-		}
+	if adjusted&5 == 0 {
+		return true, progress
 	}
 	return false, 0
 }
