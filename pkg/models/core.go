@@ -121,5 +121,5 @@ func (r *Router) Topic(name string) string {
 
 // @ Major Rendevouz Advertising Point
 func (r *Router) Rendevouz() string {
-	return fmt.Sprintf("/sonr/rendevouz/0.9.2/")
+	return fmt.Sprintf("/sonr/%s", r.Location.MajorOLC())
 }

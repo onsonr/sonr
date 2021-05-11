@@ -75,14 +75,14 @@ func (c *Client) Bootstrap() *md.SonrError {
 func (n *Client) JoinLobby(name string, isCreated bool) (*tpc.TopicManager, *md.SonrError) {
 	// @ Check for Topic being Created
 	if isCreated {
-		if t, err := tpc.NewTopic(n.ctx, n.Host, n.Peer, n.router.Topic(name), n.router, md.Lobby_Remote, n); err != nil {
+		if t, err := tpc.NewTopic(n.ctx, n.Host, n.Peer, n.router.Topic(name), md.Lobby_Remote, n); err != nil {
 			return nil, err
 		} else {
 			return t, nil
 		}
 	} else {
 		// @ Returns error if Lobby doesnt Exist
-		if t, err := tpc.JoinTopic(n.ctx, n.Host, n.Peer, n.router.Topic(name), n.router, md.Lobby_Remote, n); err != nil {
+		if t, err := tpc.JoinTopic(n.ctx, n.Host, n.Peer, n.router.Topic(name), md.Lobby_Remote, n); err != nil {
 			return nil, err
 		} else {
 			return t, nil
@@ -92,7 +92,7 @@ func (n *Client) JoinLobby(name string, isCreated bool) (*tpc.TopicManager, *md.
 
 // ^ Join Lobby Adds Node to Named Topic ^
 func (n *Client) JoinLocal() (*tpc.TopicManager, *md.SonrError) {
-	if t, err := tpc.NewLocalTopic(n.ctx, n.Host, n.Peer, n.router, md.Lobby_Local, n); err != nil {
+	if t, err := tpc.NewTopic(n.ctx, n.Host, n.Peer, n.router.LocalIPTopic(), md.Lobby_Local, n); err != nil {
 		return nil, err
 	} else {
 		return t, nil

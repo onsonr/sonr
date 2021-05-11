@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"fmt"
 	"hash/fnv"
 	"math"
 	"time"
@@ -96,7 +97,7 @@ func (p *Peer) DeviceID() string {
 
 // ^ Returns Peer User ID ^ //
 func (p *Peer) UserID() string {
-	return string(p.Id.GetUser())
+	return fmt.Sprintf("%d", p.Id.GetUser())
 }
 
 // ^ Checks for Host Peer ID is Same ^ //
