@@ -111,7 +111,7 @@ func (n *Client) InviteLink(req *md.InviteRequest, t *tpc.TopicManager) *md.Sonr
 		}
 
 		// Create Invite
-		invite := n.user.Peer.SignInviteWithLink(req)
+		invite := n.user.SignInviteWithLink(req)
 
 		// Run Routine
 		go func(inv *md.AuthInvite) {
@@ -138,7 +138,7 @@ func (n *Client) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, c *md
 
 		// Build Invite Message
 		isFlat := req.Payload == md.Payload_FLAT_CONTACT
-		invite := n.user.Peer.SignInviteWithContact(c, isFlat, req)
+		invite := n.user.SignInviteWithContact(req, isFlat)
 
 		// Run Routine
 		go func(inv *md.AuthInvite) {
@@ -168,7 +168,7 @@ func (n *Client) InviteFile(req *md.InviteRequest, t *tpc.TopicManager) *md.Sonr
 	session := md.NewOutSession(n.user, req, n.call)
 
 	// Create Invite Message
-	invite := n.user.Peer.SignInviteWithFile(req)
+	invite := n.user.SignInviteWithFile(req)
 
 	// Get PeerID
 	id, _, err := t.FindPeerInTopic(req.To.Id.Peer)

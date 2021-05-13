@@ -93,12 +93,12 @@ func (p *Peer) SignMessage(m string, to *Peer) *LobbyEvent {
 }
 
 // ^ Generate AuthInvite with Contact Payload from Request, User Peer Data and User Contact ^ //
-func (p *Peer) SignInviteWithContact(c *Contact, flat bool, req *InviteRequest) AuthInvite {
+func (u *User) SignInviteWithContact(req *InviteRequest, isFlat bool) AuthInvite {
 	// Create Invite
 	return AuthInvite{
-		From:    p,
-		IsFlat:  flat,
-		Data:    c.GetTransfer(),
+		From:    u.GetPeer(),
+		IsFlat:  isFlat,
+		Data:    u.Contact.GetTransfer(),
 		Payload: req.GetPayload(),
 		Remote:  req.GetRemote(),
 		To:      req.GetTo(),
@@ -106,10 +106,10 @@ func (p *Peer) SignInviteWithContact(c *Contact, flat bool, req *InviteRequest) 
 }
 
 // ^ Generate AuthInvite with Contact Payload from Request, User Peer Data and User Contact ^ //
-func (p *Peer) SignInviteWithFile(req *InviteRequest) AuthInvite {
+func (u *User) SignInviteWithFile(req *InviteRequest) AuthInvite {
 	// Create Invite
 	return AuthInvite{
-		From:    p,
+		From:    u.GetPeer(),
 		To:      req.GetTo(),
 		Payload: req.GetPayload(),
 		Data:    req.GetData(),
@@ -118,7 +118,7 @@ func (p *Peer) SignInviteWithFile(req *InviteRequest) AuthInvite {
 }
 
 // ^ Generate AuthInvite with URL Payload from Request and User Peer Data ^ //
-func (p *Peer) SignInviteWithLink(req *InviteRequest) AuthInvite {
+func (u *User) SignInviteWithLink(req *InviteRequest) AuthInvite {
 	// Get URL Data
 	link := req.GetData().GetLink()
 	urlInfo, err := GetPageInfoFromUrl(link)
@@ -130,7 +130,7 @@ func (p *Peer) SignInviteWithLink(req *InviteRequest) AuthInvite {
 
 	// Create Invite
 	return AuthInvite{
-		From:    p,
+		From:    u.GetPeer(),
 		Data:    urlInfo.GetTransfer(),
 		Payload: req.GetPayload(),
 		Remote:  req.GetRemote(),
