@@ -80,48 +80,75 @@ func (c *state) Pause() {
 	}
 }
 
+// ** ─── Transfer MANAGEMENT ────────────────────────────────────────────────────────
+// Returns Transfer for URLLink
+func (u *URLLink) GetTransfer() *Transfer {
+	return &Transfer{
+		Data: &Transfer_Url{
+			Url: u,
+		},
+	}
+}
+
+// Returns Transfer for SonrFile
+func (f *SonrFile) GetTransfer() *Transfer {
+	return &Transfer{
+		Data: &Transfer_File{
+			File: f,
+		},
+	}
+}
+
+// Returns Transfer for Contact
+func (c *Contact) GetTransfer() *Transfer {
+	return &Transfer{
+		Data: &Transfer_Contact{
+			Contact: c,
+		},
+	}
+}
+
 // ** ─── Session MANAGEMENT ────────────────────────────────────────────────────────
 type Session struct {
 	// Inherited Properties
-	mutex    sync.Mutex
-	sender   *Peer
-	receiver *Peer
-	file     *SonrFile
-	peer     *Peer
-	user     *User
+	mutex sync.Mutex
+	file  *SonrFile
+	peer  *Peer
+	user  *User
 
 	// Management
 	callback NodeCallback
-	device   *Device
 
 	// Builders
 	bytesBuilder *bytes.Buffer
 
 	// Tracking
-	currentIndex int
+	index     int
+	direction Direction
 }
 
 // ^ Prepare for Outgoing Session ^ //
-func NewOutSession(p *Peer, req *InviteRequest, tc NodeCallback) *Session {
+func NewOutSession(p *User, req *InviteRequest, tc NodeCallback) *Session {
 	return &Session{
-		file:         req.GetFile(),
-		receiver:     req.GetTo(),
-		sender:       p,
-		callback:     tc,
-		currentIndex: 0,
+		file:      req.GetFile(),
+		peer:      req.GetTo(),
+		user:      p,
+		callback:  tc,
+		index:     0,
+		direction: Direction_Outgoing,
 	}
 }
 
 // ^ Prepare for Incoming Session ^ //
-func NewInSession(p *Peer, inv *AuthInvite, d *Device, c NodeCallback) *Session {
+func NewInSession(p *User, inv *AuthInvite, c NodeCallback) *Session {
 	return &Session{
 		file:         inv.GetFile(),
-		sender:       inv.GetFrom(),
-		receiver:     p,
+		peer:         inv.GetFrom(),
+		user:         p,
 		callback:     c,
-		device:       d,
-		currentIndex: 0,
+		index:        0,
 		bytesBuilder: new(bytes.Buffer),
+		direction:    Direction_Incoming,
 	}
 }
 
@@ -147,7 +174,7 @@ func (s *Session) AddBuffer(curr int, buffer []byte) (bool, error) {
 		}
 
 		// Check for Interval and Send Callback
-		if met, p := s.file.ItemAtIndex(s.currentIndex).Progress(curr, n); met {
+		if met, p := s.file.ItemAtIndex(s.index).Progress(curr, n); met {
 			s.callback.Progressed(p)
 		}
 
@@ -160,7 +187,7 @@ func (s *Session) AddBuffer(curr int, buffer []byte) (bool, error) {
 // ^ read buffers sent on stream and save to file ^ //
 func (s *Session) ReadFromStream(stream network.Stream) {
 	// Route Data from Stream
-	go func(reader msg.ReadCloser, in *SonrFile) {
+	go func(reader msg.ReadCloser) {
 		for i := 0; ; i++ {
 			// @ Read Length Fixed Bytes
 			buffer, err := reader.ReadMsg()
@@ -185,22 +212,22 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 			}
 			GetState().NeedsWait()
 		}
-	}(msg.NewReader(stream), s.file)
+	}(msg.NewReader(stream))
 }
 
 // ^ Check file type and use corresponding method to save to Disk ^ //
 func (s *Session) Save() bool {
 	// Sync file to Disk
-	if err := s.device.SaveTransfer(s.file, s.currentIndex, s.bytesBuilder.Bytes()); err != nil {
+	if err := s.user.Device.SaveTransfer(s.file, s.index, s.bytesBuilder.Bytes()); err != nil {
 		s.callback.Error(NewError(err, ErrorMessage_TRANSFER_END))
 	}
 
 	// Send Complete Callback
-	if s.currentIndex+1 == int(s.file.GetCount()) {
-		s.callback.Received(s.file.CardIn(s.receiver, s.sender))
+	if s.index+1 == int(s.file.GetCount()) {
+		s.callback.Received(s.file.CardIn(s.user.GetPeer(), s.peer))
 		return true
 	} else {
-		s.currentIndex = s.currentIndex + 1
+		s.index = s.index + 1
 		return false
 	}
 }
@@ -217,8 +244,9 @@ func WriteToStream(writer msgio.WriteCloser, s *Session) {
 			s.callback.Error(NewError(err, ErrorMessage_OUTGOING))
 			return
 		}
+		GetState().NeedsWait()
 	}
 
 	// Callback
-	s.callback.Transmitted(s.file.CardOut(s.receiver, s.sender))
+	s.callback.Transmitted(s.file.CardOut(s.peer, s.user.GetPeer()))
 }

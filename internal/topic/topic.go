@@ -22,6 +22,7 @@ type TopicManager struct {
 	topic        *pubsub.Topic
 	subscription *pubsub.Subscription
 	eventHandler *pubsub.TopicEventHandler
+	user         *md.User
 	Lobby        *md.Lobby
 
 	service      *TopicService
@@ -30,15 +31,14 @@ type TopicManager struct {
 }
 
 type TopicHandler interface {
-	GetContact() *md.Contact
 	OnEvent(*md.LobbyEvent)
 	OnRefresh(*md.Lobby)
 	OnInvite([]byte)
 	OnReply(id peer.ID, data []byte, session *md.Session)
-	OnResponded(inv *md.AuthInvite, p *md.Peer)
+	OnResponded(inv *md.AuthInvite)
 }
 
-func JoinTopic(ctx context.Context, h *net.HostNode, p *md.Peer, name string, lt md.Lobby_Type, th TopicHandler) (*TopicManager, *md.SonrError) {
+func JoinTopic(ctx context.Context, h *net.HostNode, u *md.User, name string, lt md.Lobby_Type, th TopicHandler) (*TopicManager, *md.SonrError) {
 	// Join Topic
 	topic, sub, handler, serr := h.Join(name)
 	if serr != nil {
@@ -56,6 +56,7 @@ func JoinTopic(ctx context.Context, h *net.HostNode, p *md.Peer, name string, lt
 
 	// Create Lobby Manager
 	mgr := &TopicManager{
+		user:         u,
 		topicHandler: th,
 		ctx:          ctx,
 		host:         h,
@@ -66,7 +67,7 @@ func JoinTopic(ctx context.Context, h *net.HostNode, p *md.Peer, name string, lt
 			Count: 0,
 			Peers: make(map[string]*md.Peer),
 			Type:  lt,
-			User:  p,
+			User:  u.GetPeer(),
 		},
 		Messages:     make(chan *md.LobbyEvent, K_MAX_MESSAGES),
 		subscription: sub,
@@ -77,7 +78,7 @@ func JoinTopic(ctx context.Context, h *net.HostNode, p *md.Peer, name string, lt
 	peersvServer := rpc.NewServer(h.Host, K_SERVICE_PID)
 	psv := TopicService{
 		lobby:  mgr.Lobby,
-		peer:   p,
+		user:   u,
 		call:   th,
 		respCh: make(chan *md.AuthReply, 1),
 	}
@@ -90,14 +91,14 @@ func JoinTopic(ctx context.Context, h *net.HostNode, p *md.Peer, name string, lt
 
 	// Set Service
 	mgr.service = &psv
-	go mgr.handleTopicEvents(p)
-	go mgr.handleTopicMessages(p)
-	go mgr.processTopicMessages(p)
+	go mgr.handleTopicEvents()
+	go mgr.handleTopicMessages()
+	go mgr.processTopicMessages()
 	return mgr, nil
 }
 
 // ^ Create New Contained Topic Manager ^ //
-func NewTopic(ctx context.Context, h *net.HostNode, p *md.Peer, name string, lt md.Lobby_Type, th TopicHandler) (*TopicManager, *md.SonrError) {
+func NewTopic(ctx context.Context, h *net.HostNode, u *md.User, name string, lt md.Lobby_Type, th TopicHandler) (*TopicManager, *md.SonrError) {
 	// Join Topic
 	topic, sub, handler, serr := h.Join(name)
 	if serr != nil {
@@ -107,6 +108,7 @@ func NewTopic(ctx context.Context, h *net.HostNode, p *md.Peer, name string, lt 
 	// Create Lobby Manager
 	mgr := &TopicManager{
 		topicHandler: th,
+		user:         u,
 		ctx:          ctx,
 		host:         h,
 		eventHandler: handler,
@@ -116,7 +118,7 @@ func NewTopic(ctx context.Context, h *net.HostNode, p *md.Peer, name string, lt 
 			Count: 0,
 			Peers: make(map[string]*md.Peer),
 			Type:  lt,
-			User:  p,
+			User:  u.GetPeer(),
 		},
 		Messages:     make(chan *md.LobbyEvent, K_MAX_MESSAGES),
 		subscription: sub,
@@ -127,7 +129,7 @@ func NewTopic(ctx context.Context, h *net.HostNode, p *md.Peer, name string, lt 
 	peersvServer := rpc.NewServer(h.Host, K_SERVICE_PID)
 	psv := TopicService{
 		lobby:  mgr.Lobby,
-		peer:   p,
+		user:   u,
 		call:   th,
 		respCh: make(chan *md.AuthReply, 1),
 	}
@@ -140,9 +142,9 @@ func NewTopic(ctx context.Context, h *net.HostNode, p *md.Peer, name string, lt 
 
 	// Set Service
 	mgr.service = &psv
-	go mgr.handleTopicEvents(p)
-	go mgr.handleTopicMessages(p)
-	go mgr.processTopicMessages(p)
+	go mgr.handleTopicEvents()
+	go mgr.handleTopicMessages()
+	go mgr.processTopicMessages()
 	return mgr, nil
 }
 

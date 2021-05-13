@@ -12,7 +12,7 @@ func (tm *TopicManager) Refresh() {
 }
 
 // ^ handleTopicEvents: listens to Pubsub Events for topic  ^
-func (tm *TopicManager) handleTopicEvents(p *md.Peer) {
+func (tm *TopicManager) handleTopicEvents() {
 	// @ Loop Events
 	for {
 		// Get next event
@@ -23,7 +23,7 @@ func (tm *TopicManager) handleTopicEvents(p *md.Peer) {
 		}
 
 		if lobEvent.Type == pubsub.PeerJoin {
-			pbuf, err := p.Buffer()
+			pbuf, err := tm.user.GetPeer().Buffer()
 			if err != nil {
 				continue
 			}
@@ -47,7 +47,7 @@ func (tm *TopicManager) handleTopicEvents(p *md.Peer) {
 }
 
 // ^ handleTopicMessages: listens for messages on pubsub topic subscription ^
-func (tm *TopicManager) handleTopicMessages(p *md.Peer) {
+func (tm *TopicManager) handleTopicMessages() {
 	for {
 		// Get next msg from pub/sub
 		msg, err := tm.subscription.Next(tm.ctx)
@@ -56,7 +56,7 @@ func (tm *TopicManager) handleTopicMessages(p *md.Peer) {
 		}
 
 		// Only forward messages delivered by others
-		if p.IsPeerID(msg.ReceivedFrom) {
+		if tm.user.GetPeer().IsPeerID(msg.ReceivedFrom) {
 			continue
 		}
 
@@ -76,7 +76,7 @@ func (tm *TopicManager) handleTopicMessages(p *md.Peer) {
 }
 
 // ^ processTopicMessages: pulls messages from channel that have been handled ^
-func (tm *TopicManager) processTopicMessages(p *md.Peer) {
+func (tm *TopicManager) processTopicMessages() {
 	for {
 		select {
 		// @ when we receive a message from the lobby room
@@ -88,7 +88,7 @@ func (tm *TopicManager) processTopicMessages(p *md.Peer) {
 				tm.Refresh()
 			} else if m.Event == md.LobbyEvent_MESSAGE {
 				// Check is Message For Self
-				if p.IsPeerIDString(m.To) {
+				if tm.user.GetPeer().IsPeerIDString(m.To) {
 					// Call Event
 					tm.topicHandler.OnEvent(m)
 				}

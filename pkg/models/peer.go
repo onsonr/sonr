@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"hash/fnv"
 	"log"
-	"math"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -140,11 +139,11 @@ func (p *Peer) SignInviteWithLink(req *InviteRequest) AuthInvite {
 }
 
 // ^ SignReply Creates AuthReply ^
-func (p *Peer) SignReply(d bool, req *RespondRequest, to *Peer) *AuthReply {
+func (u *User) SignReply(req *RespondRequest) *AuthReply {
 	return &AuthReply{
-		From:     p,
+		From:     u.GetPeer(),
 		Type:     AuthReply_Transfer,
-		Decision: d,
+		Decision: req.GetDecision(),
 		Remote:   req.GetRemote(),
 		Card: &TransferCard{
 			// SQL Properties
@@ -152,62 +151,50 @@ func (p *Peer) SignReply(d bool, req *RespondRequest, to *Peer) *AuthReply {
 			Received: int32(time.Now().Unix()),
 
 			// Owner Properties
-			Owner:    p.Profile,
-			Receiver: to.GetProfile(),
+			Owner:    u.GetPeer().Profile,
+			Receiver: req.To.GetProfile(),
+		},
+	}
+}
+
+// ^ SignReplyFlat Creates AuthReply with Contact for Flat Mode  ^
+func (u *User) SignReplyWithFlat(from *Peer) *AuthReply {
+	return &AuthReply{
+		From: u.GetPeer(),
+		Type: AuthReply_FlatContact,
+		Card: &TransferCard{
+			// SQL Properties
+			Payload:  Payload_CONTACT,
+			Received: int32(time.Now().Unix()),
+
+			// Owner Properties
+			Owner:    u.GetPeer().Profile,
+			Receiver: from.GetProfile(),
+
+			// Data Properties
+			Contact: u.GetContact(),
 		},
 	}
 }
 
 // ^ SignReply Creates AuthReply with Contact  ^
-func (p *Peer) SignReplyWithContact(c *Contact, flat bool, req *RespondRequest, to *Peer) *AuthReply {
-	// Set Reply Type
-	var kind AuthReply_Type
-	if flat {
-		kind = AuthReply_FlatContact
-	} else {
-		kind = AuthReply_Contact
+func (u *User) SignReplyWithContact(req *RespondRequest) *AuthReply {
+	return &AuthReply{
+		From: u.GetPeer(),
+		Type: AuthReply_Contact,
+		Card: &TransferCard{
+			// SQL Properties
+			Payload:  Payload_CONTACT,
+			Received: int32(time.Now().Unix()),
+
+			// Owner Properties
+			Owner:    u.GetPeer().Profile,
+			Receiver: req.To.GetProfile(),
+
+			// Data Properties
+			Contact: u.GetContact(),
+		},
 	}
-
-	// Check if Request Provided
-	if req != nil {
-		// Build Reply
-		return &AuthReply{
-			From:   p,
-			Type:   kind,
-			Remote: req.GetRemote(),
-			Card: &TransferCard{
-				// SQL Properties
-				Payload:  Payload_CONTACT,
-				Received: int32(time.Now().Unix()),
-
-				// Owner Properties
-				Owner:    p.Profile,
-				Receiver: to.GetProfile(),
-
-				// Data Properties
-				Contact: c,
-			},
-		}
-	} else {
-		// Build Reply
-		return &AuthReply{
-			From: p,
-			Type: kind,
-			Card: &TransferCard{
-				// SQL Properties
-				Payload:  Payload_CONTACT,
-				Received: int32(time.Now().Unix()),
-
-				// Owner Properties
-				Owner:    p.Profile,
-				Receiver: to.GetProfile(),
-
-				// Data Properties
-				Contact: c,
-			},
-		}
-	}
-
 }
 
 // ^ SignUpdate Creates Lobby Event with Peer Data ^
@@ -216,69 +203,6 @@ func (p *Peer) SignUpdate() *LobbyEvent {
 		Event: LobbyEvent_UPDATE,
 		From:  p,
 		Id:    p.Id.Peer,
-	}
-}
-
-// ^ Processes Update Request ^ //
-func (p *Peer) Update(u *UpdateRequest) {
-	if u.Type == UpdateRequest_Position {
-		// Extract Data
-		facing := u.Position.GetFacing()
-		heading := u.Position.GetHeading()
-
-		// Update User Values
-		var faceDir float64
-		var faceAnpd float64
-		var headDir float64
-		var headAnpd float64
-		faceDir = math.Round(facing.Direction*100) / 100
-		headDir = math.Round(heading.Direction*100) / 100
-		faceDesg := int((facing.Direction / 11.25) + 0.25)
-		headDesg := int((heading.Direction / 11.25) + 0.25)
-
-		// Find Antipodal
-		if facing.Direction > 180 {
-			faceAnpd = math.Round((facing.Direction-180)*100) / 100
-		} else {
-			faceAnpd = math.Round((facing.Direction+180)*100) / 100
-		}
-
-		// Find Antipodal
-		if heading.Direction > 180 {
-			headAnpd = math.Round((heading.Direction-180)*100) / 100
-		} else {
-			headAnpd = math.Round((heading.Direction+180)*100) / 100
-		}
-
-		// Set Position
-		p.Position = &Position{
-			Facing: &Position_Compass{
-				Direction: faceDir,
-				Antipodal: faceAnpd,
-				Cardinal:  Cardinal(faceDesg % 32),
-			},
-			Heading: &Position_Compass{
-				Direction: headDir,
-				Antipodal: headAnpd,
-				Cardinal:  Cardinal(headDesg % 32),
-			},
-			Orientation: u.Position.GetOrientation(),
-		}
-	}
-
-	// Set Properties
-	if u.Type == UpdateRequest_Properties {
-		p.Properties = u.Properties
-	}
-
-	// Check for New Contact, Update Peer Profile
-	if u.Type == UpdateRequest_Contact {
-		profile := u.Contact.GetProfile()
-		p.Profile = &Profile{
-			FirstName: profile.GetFirstName(),
-			LastName:  profile.GetLastName(),
-			Picture:   profile.GetPicture(),
-		}
 	}
 }
 

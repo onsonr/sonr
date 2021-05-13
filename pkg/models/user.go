@@ -2,11 +2,10 @@ package models
 
 import (
 	"fmt"
+	"math"
 	"os"
 	"path/filepath"
 
-	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-core/protocol"
 	crypto "github.com/libp2p/go-libp2p-crypto"
 	"google.golang.org/protobuf/proto"
 )
@@ -212,7 +211,7 @@ func (u *User) LoadUser() (*User, *SonrError) {
 
 // Method Returns Private Key
 func (u *User) PrivateKey() crypto.PrivKey {
-	pk, err := u.Device.PrivateKey()
+	pk, err := u.GetDevice().PrivateKey()
 	if err != nil {
 		return nil
 	}
@@ -255,102 +254,64 @@ func (u *User) SaveUser(user *User) *SonrError {
 
 // Updates User Peer
 func (u *User) Update(ur *UpdateRequest) {
-	u.GetPeer().Update(ur)
-}
+	if ur.Type == UpdateRequest_Position {
+		// Extract Data
+		facing := ur.Position.GetFacing()
+		heading := ur.Position.GetHeading()
 
-// ** ─── Router MANAGEMENT ────────────────────────────────────────────────────────
-// @ Local Lobby Topic Protocol ID
-func (r *User) LocalIPTopic() string {
-	return fmt.Sprintf("/sonr/topic/%s", r.Location.IPOLC())
-}
+		// Update User Values
+		var faceDir float64
+		var faceAnpd float64
+		var headDir float64
+		var headAnpd float64
+		faceDir = math.Round(facing.Direction*100) / 100
+		headDir = math.Round(heading.Direction*100) / 100
+		faceDesg := int((facing.Direction / 11.25) + 0.25)
+		headDesg := int((heading.Direction / 11.25) + 0.25)
 
-func (r *User) LocalGeoTopic() (string, error) {
-	geoOlc, err := r.Location.GeoOLC()
-	if err != nil {
-		return "", err
-	}
-	return fmt.Sprintf("/sonr/topic/%s", geoOlc), nil
-}
+		// Find Antipodal
+		if facing.Direction > 180 {
+			faceAnpd = math.Round((facing.Direction-180)*100) / 100
+		} else {
+			faceAnpd = math.Round((facing.Direction+180)*100) / 100
+		}
 
-// @ Transfer Controller Data Protocol ID
-func (r *User_Router) Transfer(id peer.ID) protocol.ID {
-	return protocol.ID(fmt.Sprintf("/sonr/transfer/%s", id.Pretty()))
-}
+		// Find Antipodal
+		if heading.Direction > 180 {
+			headAnpd = math.Round((heading.Direction-180)*100) / 100
+		} else {
+			headAnpd = math.Round((heading.Direction+180)*100) / 100
+		}
 
-// @ Lobby Topic Protocol ID
-func (r *User_Router) Topic(name string) string {
-	return fmt.Sprintf("/sonr/topic/%s", name)
-}
-
-// @ Major Rendevouz Advertising Point
-func (u *User) Router() *User_Router {
-	return u.GetConnection().GetRouter()
-}
-
-// ** ─── Status MANAGEMENT ────────────────────────────────────────────────────────
-// Update Connected Connection Status
-func (u *User) SetConnected(value bool) *StatusUpdate {
-	// Set Value
-	u.Connection.HasConnected = value
-
-	// Update Status
-	if value {
-		u.Connection.Status = Status_CONNECTED
-	} else {
-		u.Connection.Status = Status_FAILED
-	}
-
-	// Returns Status Update
-	return &StatusUpdate{Value: u.Connection.GetStatus()}
-}
-
-// Update Bootstrap Connection Status
-func (u *User) SetBootstrapped(value bool) *StatusUpdate {
-	// Set Value
-	u.Connection.HasBootstrapped = value
-
-	// Update Status
-	if value {
-		u.Connection.Status = Status_BOOTSTRAPPED
-	} else {
-		u.Connection.Status = Status_FAILED
+		// Set Position
+		u.Peer.Position = &Position{
+			Facing: &Position_Compass{
+				Direction: faceDir,
+				Antipodal: faceAnpd,
+				Cardinal:  Cardinal(faceDesg % 32),
+			},
+			Heading: &Position_Compass{
+				Direction: headDir,
+				Antipodal: headAnpd,
+				Cardinal:  Cardinal(headDesg % 32),
+			},
+			Orientation: ur.Position.GetOrientation(),
+		}
 	}
 
-	// Returns Status Update
-	return &StatusUpdate{Value: u.Connection.GetStatus()}
-}
-
-// Update Bootstrap Connection Status
-func (u *User) SetJoinedLocal(value bool) *StatusUpdate {
-	// Set Value
-	u.Connection.HasJoinedLocal = value
-
-	// Update Status
-	if value {
-		u.Connection.Status = Status_AVAILABLE
-	} else {
-		u.Connection.Status = Status_BOOTSTRAPPED
+	// Set Properties
+	if ur.Type == UpdateRequest_Properties {
+		u.Peer.Properties = ur.Properties
 	}
 
-	// Returns Status Update
-	return &StatusUpdate{Value: u.Connection.GetStatus()}
-}
-
-// Update Node Status
-func (u *User) SetStatus(ns Status) *StatusUpdate {
-	// Set Value
-	u.Connection.Status = ns
-
-	// Returns Status Update
-	return &StatusUpdate{Value: u.Connection.GetStatus()}
-}
-
-// Checks if Status is Given Value
-func (u *User) IsStatus(gs Status) bool {
-	return u.GetConnection().GetStatus() == gs
-}
-
-// Checks if Status is Not Given Value
-func (u *User) IsNotStatus(gs Status) bool {
-	return u.GetConnection().GetStatus() != gs
+	// Check for New Contact, Update Peer Profile
+	if ur.Type == UpdateRequest_Contact {
+		u.SaveContact(ur.Contact)
+		profile := ur.Contact.GetProfile()
+		u.Peer.Profile = &Profile{
+			FirstName: profile.GetFirstName(),
+			LastName:  profile.GetLastName(),
+			Picture:   profile.GetPicture(),
+		}
+	}
 }

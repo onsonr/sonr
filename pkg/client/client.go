@@ -68,14 +68,14 @@ func (c *Client) Bootstrap() *md.SonrError {
 func (n *Client) JoinLobby(name string, isCreated bool) (*tpc.TopicManager, *md.SonrError) {
 	// @ Check for Topic being Created
 	if isCreated {
-		if t, err := tpc.NewTopic(n.ctx, n.Host, n.user.Peer, n.user.Router().Topic(name), md.Lobby_Remote, n); err != nil {
+		if t, err := tpc.NewTopic(n.ctx, n.Host, n.user, n.user.Router().Topic(name), md.Lobby_Remote, n); err != nil {
 			return nil, err
 		} else {
 			return t, nil
 		}
 	} else {
 		// @ Returns error if Lobby doesnt Exist
-		if t, err := tpc.JoinTopic(n.ctx, n.Host, n.user.Peer, n.user.Router().Topic(name), md.Lobby_Remote, n); err != nil {
+		if t, err := tpc.JoinTopic(n.ctx, n.Host, n.user, n.user.Router().Topic(name), md.Lobby_Remote, n); err != nil {
 			return nil, err
 		} else {
 			return t, nil
@@ -85,7 +85,7 @@ func (n *Client) JoinLobby(name string, isCreated bool) (*tpc.TopicManager, *md.
 
 // ^ Join Lobby Adds Node to Named Topic ^
 func (n *Client) JoinLocal() (*tpc.TopicManager, *md.SonrError) {
-	if t, err := tpc.NewTopic(n.ctx, n.Host, n.user.Peer, n.user.Router().LocalIPTopic, md.Lobby_Local, n); err != nil {
+	if t, err := tpc.NewTopic(n.ctx, n.Host, n.user, n.user.Router().LocalIPTopic, md.Lobby_Local, n); err != nil {
 		return nil, err
 	} else {
 		return t, nil
@@ -165,7 +165,7 @@ func (n *Client) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, c *md
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
 func (n *Client) InviteFile(req *md.InviteRequest, t *tpc.TopicManager) *md.SonrError {
 	// Start New Session
-	session := md.NewOutSession(n.user.Peer, req, n.call)
+	session := md.NewOutSession(n.user, req, n.call)
 
 	// Create Invite Message
 	invite := n.user.Peer.SignInviteWithFile(req)
@@ -187,8 +187,8 @@ func (n *Client) InviteFile(req *md.InviteRequest, t *tpc.TopicManager) *md.Sonr
 }
 
 // ^ Respond to an Invitation ^ //
-func (n *Client) Respond(req *md.RespondRequest, t *tpc.TopicManager, c *md.Contact) {
-	t.RespondToInvite(req, n.user.Peer, c)
+func (n *Client) Respond(req *md.RespondRequest, t *tpc.TopicManager) {
+	t.RespondToInvite(req)
 }
 
 // ^ Send Direct Message to Peer in Lobby ^ //

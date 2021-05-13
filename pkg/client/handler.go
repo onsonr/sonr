@@ -7,11 +7,6 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// ^ GetContact: Return User Contact Card for FlatContact ^
-func (n *Client) GetContact() *md.Contact {
-	return n.user.GetContact()
-}
-
 // ^ OnEvent: Specific Lobby Event ^
 func (n *Client) OnEvent(e *md.LobbyEvent) {
 	// Convert Message
@@ -79,7 +74,7 @@ func (n *Client) OnReply(id peer.ID, reply []byte, session *md.Session) {
 }
 
 // ^ OnResponded: Prepares for Incoming File Transfer when Accepted ^
-func (n *Client) OnResponded(inv *md.AuthInvite, p *md.Peer) {
-	n.session = md.NewInSession(p, inv, n.user.Device, n.call)
+func (n *Client) OnResponded(inv *md.AuthInvite) {
+	n.session = md.NewInSession(n.user, inv, n.call)
 	n.Host.HandleStream(n.user.Router().Transfer(n.Host.ID), n.session.ReadFromStream)
 }

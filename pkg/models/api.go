@@ -2,8 +2,11 @@ package models
 
 import (
 	"errors"
+	"fmt"
 
 	olc "github.com/google/open-location-code/go"
+	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-core/protocol"
 )
 
 // ************************** //
@@ -99,4 +102,101 @@ func (l *Location) GeoOLC() (string, error) {
 
 func (l *Location) IPOLC() string {
 	return olc.Encode(float64(l.Ip.GetLatitude()), float64(l.Ip.GetLongitude()), 5)
+}
+
+// ** ─── Router MANAGEMENT ────────────────────────────────────────────────────────
+// @ Local Lobby Topic Protocol ID
+func (r *User) LocalIPTopic() string {
+	return fmt.Sprintf("/sonr/topic/%s", r.Location.IPOLC())
+}
+
+func (r *User) LocalGeoTopic() (string, error) {
+	geoOlc, err := r.Location.GeoOLC()
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("/sonr/topic/%s", geoOlc), nil
+}
+
+// @ Transfer Controller Data Protocol ID
+func (r *User_Router) Transfer(id peer.ID) protocol.ID {
+	return protocol.ID(fmt.Sprintf("/sonr/transfer/%s", id.Pretty()))
+}
+
+// @ Lobby Topic Protocol ID
+func (r *User_Router) Topic(name string) string {
+	return fmt.Sprintf("/sonr/topic/%s", name)
+}
+
+// @ Major Rendevouz Advertising Point
+func (u *User) Router() *User_Router {
+	return u.GetConnection().GetRouter()
+}
+
+// ** ─── Status MANAGEMENT ────────────────────────────────────────────────────────
+// Update Connected Connection Status
+func (u *User) SetConnected(value bool) *StatusUpdate {
+	// Set Value
+	u.Connection.HasConnected = value
+
+	// Update Status
+	if value {
+		u.Connection.Status = Status_CONNECTED
+	} else {
+		u.Connection.Status = Status_FAILED
+	}
+
+	// Returns Status Update
+	return &StatusUpdate{Value: u.Connection.GetStatus()}
+}
+
+// Update Bootstrap Connection Status
+func (u *User) SetBootstrapped(value bool) *StatusUpdate {
+	// Set Value
+	u.Connection.HasBootstrapped = value
+
+	// Update Status
+	if value {
+		u.Connection.Status = Status_BOOTSTRAPPED
+	} else {
+		u.Connection.Status = Status_FAILED
+	}
+
+	// Returns Status Update
+	return &StatusUpdate{Value: u.Connection.GetStatus()}
+}
+
+// Update Bootstrap Connection Status
+func (u *User) SetJoinedLocal(value bool) *StatusUpdate {
+	// Set Value
+	u.Connection.HasJoinedLocal = value
+
+	// Update Status
+	if value {
+		u.Connection.Status = Status_AVAILABLE
+	} else {
+		u.Connection.Status = Status_BOOTSTRAPPED
+	}
+
+	// Returns Status Update
+	return &StatusUpdate{Value: u.Connection.GetStatus()}
+}
+
+// Update Node Status
+func (u *User) SetStatus(ns Status) *StatusUpdate {
+	// Set Value
+	u.Connection.Status = ns
+
+	// Returns Status Update
+	return &StatusUpdate{Value: u.Connection.GetStatus()}
+}
+
+// Checks if Status is Given Value
+func (u *User) IsStatus(gs Status) bool {
+	return u.GetConnection().GetStatus() == gs
+}
+
+// Checks if Status is Not Given Value
+func (u *User) IsNotStatus(gs Status) bool {
+	return u.GetConnection().GetStatus() != gs
 }
