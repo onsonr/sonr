@@ -9,7 +9,6 @@ import (
 	rpc "github.com/libp2p/go-libp2p-gorpc"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	net "github.com/sonr-io/core/internal/host"
-	se "github.com/sonr-io/core/internal/session"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -35,7 +34,7 @@ type TopicHandler interface {
 	OnEvent(*md.LobbyEvent)
 	OnRefresh(*md.Lobby)
 	OnInvite([]byte)
-	OnReply(id peer.ID, data []byte, session *se.Session)
+	OnReply(id peer.ID, data []byte, session *md.Session)
 	OnResponded(inv *md.AuthInvite, p *md.Peer)
 }
 

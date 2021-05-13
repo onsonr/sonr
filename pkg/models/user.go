@@ -1,10 +1,14 @@
 package models
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 
+	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-core/protocol"
 	crypto "github.com/libp2p/go-libp2p-crypto"
+	"google.golang.org/protobuf/proto"
 )
 
 // ** ─── DEVICE MANAGEMENT ────────────────────────────────────────────────────────
@@ -161,4 +165,192 @@ func (d *Device) WriteFile(name string, data []byte) (string, *SonrError) {
 		return "", NewError(err, ErrorMessage_USER_FS)
 	}
 	return path, nil
+}
+
+// ** ─── User MANAGEMENT ────────────────────────────────────────────────────────
+// ^ Method Initializes User Info Struct ^ //
+func NewUser(cr *ConnectionRequest) *User {
+	return &User{
+		Contact:  cr.GetContact(),
+		Device:   cr.GetDevice(),
+		Location: cr.GetLocation(),
+		Connection: &User_Connection{
+			HasConnected:    false,
+			HasBootstrapped: false,
+			HasJoinedLocal:  false,
+			Connectivity:    cr.GetConnectivity(),
+			Router: &User_Router{
+				Rendevouz:    fmt.Sprintf("/sonr/%s", cr.GetLocation().MajorOLC()),
+				LocalIPTopic: fmt.Sprintf("/sonr/topic/%s", cr.GetLocation().IPOLC()),
+			},
+			Status: Status_IDLE,
+		},
+	}
+}
+
+// Method Loads User Data from Disk
+func (u *User) LoadUser() (*User, *SonrError) {
+	// Read File
+	dat, serr := u.GetDevice().ReadFile("user.snr")
+	if serr != nil {
+		return nil, serr
+	}
+
+	// Get User Data
+	userRef := &User{}
+	err := proto.Unmarshal(dat, userRef)
+	if err != nil {
+		return nil, NewError(err, ErrorMessage_UNMARSHAL)
+	}
+
+	// Set and Return
+	u = userRef
+	u.Settings = userRef.GetSettings()
+	u.Devices = userRef.GetDevices()
+	return u, nil
+}
+
+// Method Returns Private Key
+func (u *User) PrivateKey() crypto.PrivKey {
+	pk, err := u.Device.PrivateKey()
+	if err != nil {
+		return nil
+	}
+	return pk
+}
+
+// Method Updates User Contact
+func (u *User) SaveContact(c *Contact) *SonrError {
+	// Load User
+	user, err := u.LoadUser()
+	if err != nil {
+		return err
+	}
+
+	// Set Contact
+	user.Contact = c
+
+	// Save User
+	if err := u.SaveUser(user); err != nil {
+		return err
+	}
+	return nil
+}
+
+// Write User Data at Path
+func (u *User) SaveUser(user *User) *SonrError {
+	// Convert User to Bytes
+	data, err := proto.Marshal(user)
+	if err != nil {
+		return NewError(err, ErrorMessage_UNMARSHAL)
+	}
+
+	// Write File to Disk
+	_, serr := u.GetDevice().WriteFile("user.snr", data)
+	if err != nil {
+		return serr
+	}
+	return nil
+}
+
+// Updates User Peer
+func (u *User) Update(ur *UpdateRequest) {
+	u.GetPeer().Update(ur)
+}
+
+// ** ─── Router MANAGEMENT ────────────────────────────────────────────────────────
+// @ Local Lobby Topic Protocol ID
+func (r *User) LocalIPTopic() string {
+	return fmt.Sprintf("/sonr/topic/%s", r.Location.IPOLC())
+}
+
+func (r *User) LocalGeoTopic() (string, error) {
+	geoOlc, err := r.Location.GeoOLC()
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("/sonr/topic/%s", geoOlc), nil
+}
+
+// @ Transfer Controller Data Protocol ID
+func (r *User_Router) Transfer(id peer.ID) protocol.ID {
+	return protocol.ID(fmt.Sprintf("/sonr/transfer/%s", id.Pretty()))
+}
+
+// @ Lobby Topic Protocol ID
+func (r *User_Router) Topic(name string) string {
+	return fmt.Sprintf("/sonr/topic/%s", name)
+}
+
+// @ Major Rendevouz Advertising Point
+func (u *User) Router() *User_Router {
+	return u.GetConnection().GetRouter()
+}
+
+// ** ─── Status MANAGEMENT ────────────────────────────────────────────────────────
+// Update Connected Connection Status
+func (u *User) SetConnected(value bool) *StatusUpdate {
+	// Set Value
+	u.Connection.HasConnected = value
+
+	// Update Status
+	if value {
+		u.Connection.Status = Status_CONNECTED
+	} else {
+		u.Connection.Status = Status_FAILED
+	}
+
+	// Returns Status Update
+	return &StatusUpdate{Value: u.Connection.GetStatus()}
+}
+
+// Update Bootstrap Connection Status
+func (u *User) SetBootstrapped(value bool) *StatusUpdate {
+	// Set Value
+	u.Connection.HasBootstrapped = value
+
+	// Update Status
+	if value {
+		u.Connection.Status = Status_BOOTSTRAPPED
+	} else {
+		u.Connection.Status = Status_FAILED
+	}
+
+	// Returns Status Update
+	return &StatusUpdate{Value: u.Connection.GetStatus()}
+}
+
+// Update Bootstrap Connection Status
+func (u *User) SetJoinedLocal(value bool) *StatusUpdate {
+	// Set Value
+	u.Connection.HasJoinedLocal = value
+
+	// Update Status
+	if value {
+		u.Connection.Status = Status_AVAILABLE
+	} else {
+		u.Connection.Status = Status_BOOTSTRAPPED
+	}
+
+	// Returns Status Update
+	return &StatusUpdate{Value: u.Connection.GetStatus()}
+}
+
+// Update Node Status
+func (u *User) SetStatus(ns Status) *StatusUpdate {
+	// Set Value
+	u.Connection.Status = ns
+
+	// Returns Status Update
+	return &StatusUpdate{Value: u.Connection.GetStatus()}
+}
+
+// Checks if Status is Given Value
+func (u *User) IsStatus(gs Status) bool {
+	return u.GetConnection().GetStatus() == gs
+}
+
+// Checks if Status is Not Given Value
+func (u *User) IsNotStatus(gs Status) bool {
+	return u.GetConnection().GetStatus() != gs
 }

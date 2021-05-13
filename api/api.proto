@@ -24,6 +24,7 @@ enum Status {
   INVITED = 6;      // Has received Invitation
   INPROGRESS = 7;   // In Middle of Transfer
   STANDBY = 8;      // Away from Sonr Application
+  FAILED = 9;
 }
 
 // Message for Status Update
@@ -32,11 +33,9 @@ message StatusUpdate { Status value = 1; }
 // Initial Connection Message to Establish Sonr
 message ConnectionRequest {
   Location location = 1;         // Runtime IP based calculated GeoLocation
-  Location ipLocation = 2;       // Runtime IP based calculated GeoLocation
-  Device device = 3;             // Users Device
-  Contact contact = 4;           // Users Contact Card
-  User user = 5;                 // User Saved Data
-  Connectivity connectivity = 6; // Client Network Type
+  Device device = 2;             // Users Device
+  Contact contact = 3;           // Users Contact Card
+  Connectivity connectivity = 4; // Client Network Type
 }
 
 // Updated Peer Info Request
@@ -109,9 +108,31 @@ message AuthReply {
 
 // User is the Saved Data from Client that Passes to Proxy, During ConnRequest
 message User {
-  Contact contact = 1;                // Clients Contact Card
-  map<string, Device> devices = 2;    // Clients Devices: Name, Device
-  map<string, Settings> settings = 3; // Clients Specified Preferences
+  Connection connection = 1; // Clients Connection Reference
+  Peer peer = 2;             // Clients Peer Reference
+  Location location = 4;     // Clients current Location
+  Device device = 5;         // Clients Current Device
+  Contact contact = 6;       // Clients Contact Card
+
+  map<string, Device> devices = 8;    // Clients Devices: Name, Device
+  map<string, Settings> settings = 9; // Clients Specified Preferences
+
+  // User Connection Management
+  message Connection {
+    bool hasConnected = 1;         // Node Host Started
+    bool hasBootstrapped = 2;      // Node Host Bootstrapped
+    bool hasJoinedLocal = 3;       // Node Host Joined Local PubSub
+    Status status = 4;             // Client Node Status
+    Router router = 5;             // Client Routing Information
+    Connectivity connectivity = 6; // Client Network Type
+  }
+
+  // Router Manages Peer Routing for Topics/Transfers
+  message Router {
+    string deviceTopic = 1;
+    string localIPTopic = 2;
+    string rendevouz = 3;
+  }
 
   message Settings {
     string key = 1;    // Option as String

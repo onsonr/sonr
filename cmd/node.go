@@ -1,26 +1,25 @@
 package bind
 
 import (
+	"context"
+
 	"github.com/getsentry/sentry-go"
 	"github.com/pkg/errors"
 	tpc "github.com/sonr-io/core/internal/topic"
 	sc "github.com/sonr-io/core/pkg/client"
 	md "github.com/sonr-io/core/pkg/models"
-	u "github.com/sonr-io/core/pkg/user"
 	"google.golang.org/protobuf/proto"
 )
 
 // * Struct: Reference for Binded Proxy Node * //
 type Node struct {
 	// Properties
-	call    Callback
-	config  nodeConfig
-	connreq *md.ConnectionRequest
+	call Callback
+	ctx  context.Context
 
 	// Client
-	client   *sc.Client
-	location *md.Location
-	user     *u.UserConfig
+	user   *md.User
+	client *sc.Client
 
 	// Groups
 	local  *tpc.TopicManager
@@ -43,18 +42,16 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	}
 	// Create Mobile Node
 	mn := &Node{
-		call:     call,
-		config:   newNodeConfig(),
-		connreq:  req,
-		location: req.GetLocation(),
-		topics:   make(map[string]*tpc.TopicManager, 10),
+		call:   call,
+		ctx:    context.Background(),
+		topics: make(map[string]*tpc.TopicManager, 10),
 	}
 
 	// Create New User
-	mn.user = u.NewUser(req, mn.callbackNode())
+	mn.user = md.NewUser(req)
 
 	// Create Client
-	mn.client = sc.NewClient(mn.contextNode(), req, mn.callbackNode())
+	mn.client = sc.NewClient(mn.ctx, mn.user, mn.callbackNode())
 	return mn
 }
 
@@ -63,7 +60,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 // **-----------------** //
 // @ Start Host and Connect
 func (mn *Node) Connect() {
-	if !mn.config.HasConnected {
+	if !mn.user.Connection.HasConnected {
 		// Connect Host
 		err := mn.client.Connect(mn.user.PrivateKey())
 		if err != nil {
@@ -99,7 +96,7 @@ func (mn *Node) Connect() {
 
 // @ Returns Node Location Protobuf as Bytes
 func (mn *Node) Location() []byte {
-	bytes, err := proto.Marshal(mn.location)
+	bytes, err := proto.Marshal(mn.user.Location)
 	if err != nil {
 		return nil
 	}
@@ -122,5 +119,5 @@ func (mn *Node) Resume() {
 // @ Close Ends All Network Communication
 func (mn *Node) Stop() {
 	mn.client.Close()
-	mn.config.Ctx.Done()
+	mn.ctx.Done()
 }

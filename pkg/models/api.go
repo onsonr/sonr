@@ -6,14 +6,6 @@ import (
 	olc "github.com/google/open-location-code/go"
 )
 
-// ** ─── ConnectionRequest MANAGEMENT ────────────────────────────────────────────────────────
-func (req *ConnectionRequest) NewRouter() *Router {
-	return &Router{
-		Location:     req.GetLocation(),
-		Connectivity: req.GetConnectivity(),
-	}
-}
-
 // ************************** //
 // ** MIME Info Management ** //
 // ************************** //

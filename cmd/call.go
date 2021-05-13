@@ -24,14 +24,12 @@ type Callback interface {
 func (mn *Node) callbackNode() md.NodeCallback {
 	return md.NodeCallback{
 		// Direct
-		GetStatus:  mn.getStatus,
 		Refreshed:  mn.call.OnRefreshed,
 		Event:      mn.call.OnEvent,
 		Responded:  mn.call.OnResponded,
 		Progressed: mn.call.OnProgress,
 
 		// Middleware
-		Contact:     mn.user.Contact,
 		Invited:     mn.invited,
 		Received:    mn.received,
 		Status:      mn.setStatus,

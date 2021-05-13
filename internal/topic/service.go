@@ -6,7 +6,6 @@ import (
 	rpc "github.com/libp2p/go-libp2p-gorpc"
 
 	"github.com/libp2p/go-libp2p-core/peer"
-	se "github.com/sonr-io/core/internal/session"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -146,7 +145,7 @@ func (ts *TopicService) ExchangeWith(ctx context.Context, args TopicServiceArgs,
 }
 
 // ^ Invite: Handles User sent AuthInvite Response ^
-func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite, session *se.Session) error {
+func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite, session *md.Session) error {
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(inv)
 	if err != nil {

@@ -1,19 +1,23 @@
 package models
 
 import (
-	"fmt"
+	"bytes"
 	"sync"
 	"sync/atomic"
 
-	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-core/protocol"
+	"github.com/libp2p/go-libp2p-core/network"
+	"github.com/libp2p/go-msgio"
+	msg "github.com/libp2p/go-msgio"
+	"google.golang.org/protobuf/proto"
 )
+
+const K_BUF_CHUNK = 32000
+const K_B64_CHUNK = 31998 // Adjusted for Base64 -- has to be divisible by 3
 
 // ** ─── CALLBACK MANAGEMENT ────────────────────────────────────────────────────────
 // Define Function Types
-type GetStatus func() Status
+
 type SetStatus func(s Status)
-type GetContact func() *Contact
 type OnProtobuf func([]byte)
 type OnInvite func(data []byte)
 type OnProgress func(data float32)
@@ -21,7 +25,6 @@ type OnReceived func(data *TransferCard)
 type OnTransmitted func(data *TransferCard)
 type OnError func(err *SonrError)
 type NodeCallback struct {
-	Contact     GetContact
 	Invited     OnInvite
 	Refreshed   OnProtobuf
 	Event       OnProtobuf
@@ -32,7 +35,6 @@ type NodeCallback struct {
 	Status      SetStatus
 	Transmitted OnTransmitted
 	Error       OnError
-	GetStatus   GetStatus
 }
 
 // ** ─── State MANAGEMENT ────────────────────────────────────────────────────────
@@ -78,62 +80,145 @@ func (c *state) Pause() {
 	}
 }
 
-// ** ─── Router MANAGEMENT ────────────────────────────────────────────────────────
-// @ Local Lobby Topic Protocol ID
-func (r *Router) LocalIPTopic() string {
-	return fmt.Sprintf("/sonr/topic/%s", r.Location.IPOLC())
-}
-
-func (r *Router) LocalGeoTopic() (string, error) {
-	geoOlc, err := r.Location.GeoOLC()
-	if err != nil {
-		return "", err
-	}
-	return fmt.Sprintf("/sonr/topic/%s", geoOlc), nil
-}
-
-// @ User Device Lobby Topic Protocol ID
-func (r *Router) DeviceTopic(p *Peer) string {
-	return fmt.Sprintf("/sonr/topic/%s", p.UserID())
-}
-
-// @ Transfer Controller Data Protocol ID
-func (r *Router) Transfer(id peer.ID) protocol.ID {
-	return protocol.ID(fmt.Sprintf("/sonr/transfer/%s", id.Pretty()))
-}
-
-// @ Lobby Topic Protocol ID
-func (r *Router) Topic(name string) string {
-	return fmt.Sprintf("/sonr/topic/%s", name)
-}
-
-// @ Major Rendevouz Advertising Point
-func (r *Router) Rendevouz() string {
-	return fmt.Sprintf("/sonr/%s", r.Location.MajorOLC())
-}
-
 // ** ─── Session MANAGEMENT ────────────────────────────────────────────────────────
+type Session struct {
+	// Inherited Properties
+	mutex    sync.Mutex
+	sender   *Peer
+	receiver *Peer
+	file     *SonrFile
+	peer     *Peer
+	user     *User
+
+	// Management
+	callback NodeCallback
+	device   *Device
+
+	// Builders
+	bytesBuilder *bytes.Buffer
+
+	// Tracking
+	currentIndex int
+}
+
 // ^ Prepare for Outgoing Session ^ //
 func NewOutSession(p *Peer, req *InviteRequest, tc NodeCallback) *Session {
 	return &Session{
-		File:      req.GetFile(),
-		Receiver:  req.GetTo(),
-		Sender:    p,
-		Index:     0,
-		Direction: Session_Outgoing,
+		file:         req.GetFile(),
+		receiver:     req.GetTo(),
+		sender:       p,
+		callback:     tc,
+		currentIndex: 0,
 	}
 }
 
 // ^ Prepare for Incoming Session ^ //
 func NewInSession(p *Peer, inv *AuthInvite, d *Device, c NodeCallback) *Session {
 	return &Session{
-		File:     inv.GetFile(),
-		Sender:   inv.GetFrom(),
-		Receiver: p,
-		//callback:     c,
-		Device:    d,
-		Index:     0,
-		Direction: Session_Outgoing,
-		// bytesBuilder: new(bytes.Buffer),
+		file:         inv.GetFile(),
+		sender:       inv.GetFrom(),
+		receiver:     p,
+		callback:     c,
+		device:       d,
+		currentIndex: 0,
+		bytesBuilder: new(bytes.Buffer),
 	}
+}
+
+// ^ Check file type and use corresponding method ^ //
+func (s *Session) AddBuffer(curr int, buffer []byte) (bool, error) {
+	// ** Lock/Unlock ** //
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
+	// Unmarshal Bytes into Proto
+	chunk := &Chunk{}
+	err := proto.Unmarshal(buffer, chunk)
+	if err != nil {
+		return true, err
+	}
+
+	// Check for Complete
+	if !chunk.IsComplete {
+		// Add Buffer by File Type
+		n, err := s.bytesBuilder.Write(chunk.Buffer)
+		if err != nil {
+			return true, err
+		}
+
+		// Check for Interval and Send Callback
+		if met, p := s.file.ItemAtIndex(s.currentIndex).Progress(curr, n); met {
+			s.callback.Progressed(p)
+		}
+
+		// Not Complete
+		return false, nil
+	}
+	return true, nil
+}
+
+// ^ read buffers sent on stream and save to file ^ //
+func (s *Session) ReadFromStream(stream network.Stream) {
+	// Route Data from Stream
+	go func(reader msg.ReadCloser, in *SonrFile) {
+		for i := 0; ; i++ {
+			// @ Read Length Fixed Bytes
+			buffer, err := reader.ReadMsg()
+			if err != nil {
+				s.callback.Error(NewError(err, ErrorMessage_TRANSFER_CHUNK))
+				break
+			}
+
+			// @ Unmarshal Bytes into Proto
+			hasCompleted, err := s.AddBuffer(i, buffer)
+			if err != nil {
+				s.callback.Error(NewError(err, ErrorMessage_TRANSFER_CHUNK))
+				break
+			}
+
+			// @ Check if All Buffer Received to Save
+			if hasCompleted {
+				// Sync file
+				if done := s.Save(); done {
+					break
+				}
+			}
+			GetState().NeedsWait()
+		}
+	}(msg.NewReader(stream), s.file)
+}
+
+// ^ Check file type and use corresponding method to save to Disk ^ //
+func (s *Session) Save() bool {
+	// Sync file to Disk
+	if err := s.device.SaveTransfer(s.file, s.currentIndex, s.bytesBuilder.Bytes()); err != nil {
+		s.callback.Error(NewError(err, ErrorMessage_TRANSFER_END))
+	}
+
+	// Send Complete Callback
+	if s.currentIndex+1 == int(s.file.GetCount()) {
+		s.callback.Received(s.file.CardIn(s.receiver, s.sender))
+		return true
+	} else {
+		s.currentIndex = s.currentIndex + 1
+		return false
+	}
+}
+
+// ^ write file as Base64 in Msgio to Stream ^ //
+func WriteToStream(writer msgio.WriteCloser, s *Session) {
+	// Write All Files
+	for i := 0; i < int(s.file.GetCount()); i++ {
+		// Get Item
+		m := s.file.ItemAtIndex(i)
+
+		// Write Item to Stream
+		if err := m.WriteTo(writer, s.callback); err != nil {
+			s.callback.Error(NewError(err, ErrorMessage_OUTGOING))
+			return
+		}
+	}
+
+	// Callback
+	s.callback.Transmitted(s.file.CardOut(s.receiver, s.sender))
 }

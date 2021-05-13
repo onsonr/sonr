@@ -1,63 +1,20 @@
 package bind
 
 import (
-	"context"
-
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
 )
 
-// * Struct: Reference for Binded Proxy Node * //
-type nodeConfig struct {
-	Ctx context.Context
-
-	HasConnected    bool
-	HasBootstrapped bool
-	HasJoinedLocal  bool
-
-	Status md.Status
-}
-
-func newNodeConfig() nodeConfig {
-	return nodeConfig{
-		Ctx: context.Background(),
-
-		HasConnected:    false,
-		HasBootstrapped: false,
-		HasJoinedLocal:  false,
-
-		Status: md.Status_IDLE,
-	}
-}
-
-func (mn *Node) contextNode() context.Context {
-	return mn.config.Ctx
-}
-
-func (mn *Node) contextUser() context.Context {
-	return mn.config.Ctx
-}
-
-func (mn *Node) getStatus() md.Status {
-	return mn.config.Status
-}
-
 func (mn *Node) isReady() bool {
-	return mn.config.HasBootstrapped && mn.config.HasConnected
+	return mn.user.GetConnection().HasBootstrapped && mn.user.GetConnection().HasConnected
 }
 
 func (mn *Node) setConnected(val bool) {
 	// Update Status
-	mn.config.HasConnected = val
-	mn.config.Status = md.Status_CONNECTED
-
-	// Build Update
-	m := &md.StatusUpdate{
-		Value: mn.config.Status,
-	}
+	su := mn.user.SetConnected(val)
 
 	// Callback Status
-	data, err := proto.Marshal(m)
+	data, err := proto.Marshal(su)
 	if err != nil {
 		mn.handleError(md.NewError(err, md.ErrorMessage_MARSHAL))
 		return
@@ -67,16 +24,10 @@ func (mn *Node) setConnected(val bool) {
 
 func (mn *Node) setBootstrapped(val bool) {
 	// Update Status
-	mn.config.HasBootstrapped = val
-	mn.config.Status = md.Status_BOOTSTRAPPED
-
-	// Build Update
-	m := &md.StatusUpdate{
-		Value: mn.config.Status,
-	}
+	su := mn.user.SetBootstrapped(val)
 
 	// Callback Status
-	data, err := proto.Marshal(m)
+	data, err := proto.Marshal(su)
 	if err != nil {
 		mn.handleError(md.NewError(err, md.ErrorMessage_MARSHAL))
 		return
@@ -86,16 +37,10 @@ func (mn *Node) setBootstrapped(val bool) {
 
 func (mn *Node) setJoinedLocal(val bool) {
 	// Update Status
-	mn.config.HasJoinedLocal = val
-	mn.config.Status = md.Status_AVAILABLE
-
-	// Build Update
-	m := &md.StatusUpdate{
-		Value: mn.config.Status,
-	}
+	su := mn.user.SetJoinedLocal(val)
 
 	// Callback Status
-	data, err := proto.Marshal(m)
+	data, err := proto.Marshal(su)
 	if err != nil {
 		mn.handleError(md.NewError(err, md.ErrorMessage_MARSHAL))
 		return
@@ -105,15 +50,10 @@ func (mn *Node) setJoinedLocal(val bool) {
 
 func (mn *Node) setStatus(newStatus md.Status) {
 	// Set Status
-	mn.config.Status = newStatus
-
-	// Build Update
-	m := &md.StatusUpdate{
-		Value: mn.config.Status,
-	}
+	su := mn.user.SetStatus(newStatus)
 
 	// Callback Status
-	data, err := proto.Marshal(m)
+	data, err := proto.Marshal(su)
 	if err != nil {
 		mn.handleError(md.NewError(err, md.ErrorMessage_MARSHAL))
 		return

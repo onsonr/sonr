@@ -14,30 +14,33 @@ import (
 
 // ** ─── Peer MANAGEMENT ────────────────────────────────────────────────────────
 // ^ Create New Peer from Connection Request and Host ID ^ //
-func NewPeer(cr *ConnectionRequest, id peer.ID, maddr multiaddr.Multiaddr) (*Peer, *SonrError) {
+func (u *User) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) *SonrError {
 	// Initialize
-	deviceID := cr.Device.GetId()
-	c := cr.GetContact()
+	deviceID := u.Device.GetId()
+	c := u.GetContact()
 	profile := c.GetProfile()
 
 	// Get User ID
 	userID := fnv.New32a()
 	_, err := userID.Write([]byte(profile.GetUsername()))
 	if err != nil {
-		return nil, NewError(err, ErrorMessage_HOST_KEY)
+		return NewError(err, ErrorMessage_HOST_KEY)
 	}
 
 	// Set Peer
-	return &Peer{
+	u.Peer = &Peer{
 		Id: &Peer_ID{
 			Peer:   id.String(),
 			Device: deviceID,
 			User:   userID.Sum32(),
 		},
 		Profile:  profile,
-		Platform: cr.Device.Platform,
-		Model:    cr.Device.Model,
-	}, nil
+		Platform: u.Device.Platform,
+		Model:    u.Device.Model,
+	}
+	// Set Device Topic
+	u.Connection.Router.DeviceTopic = fmt.Sprintf("/sonr/topic/%s", u.Peer.UserID())
+	return nil
 }
 
 // ^ Returns Peer as Buffer ^ //
