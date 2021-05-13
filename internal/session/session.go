@@ -46,7 +46,7 @@ func NewOutSession(p *md.Peer, req *md.InviteRequest, tc md.NodeCallback) *Sessi
 
 // ^ Prepare for Incoming Session ^ //
 func NewInSession(p *md.Peer, inv *md.AuthInvite, d *md.Device, c md.NodeCallback) *Session {
-	s := &Session{
+	return &Session{
 		file:         inv.GetFile(),
 		sender:       inv.GetFrom(),
 		receiver:     p,
@@ -55,7 +55,6 @@ func NewInSession(p *md.Peer, inv *md.AuthInvite, d *md.Device, c md.NodeCallbac
 		currentIndex: 0,
 		bytesBuilder: new(bytes.Buffer),
 	}
-	return s
 }
 
 // ^ Check file type and use corresponding method ^ //

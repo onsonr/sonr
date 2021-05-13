@@ -40,6 +40,16 @@ func (d *Device) IsWindows() bool {
 	return d.Platform == Platform_Windows
 }
 
+// Returns Path for Application/User Data
+func (d *Device) DataSavePath(fileName string, IsDesktop bool) string {
+	// Check for Desktop
+	if IsDesktop {
+		return filepath.Join(d.FileSystem.GetLibrary(), fileName)
+	} else {
+		return filepath.Join(d.FileSystem.GetSupport(), fileName)
+	}
+}
+
 // @ Checks if File Exists
 func (d *Device) IsFile(name string) bool {
 	// Initialize
@@ -144,7 +154,7 @@ func (d *Device) SaveTransfer(f *SonrFile, i int, data []byte) error {
 // Writes a File to Disk
 func (d *Device) WriteFile(name string, data []byte) (string, *SonrError) {
 	// Create File Path
-	path := d.FileSystem.DataSavePath(name, d.IsDesktop())
+	path := d.DataSavePath(name, d.IsDesktop())
 
 	// Write File to Disk
 	if err := os.WriteFile(path, data, 0644); err != nil {

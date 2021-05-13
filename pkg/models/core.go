@@ -2,7 +2,6 @@ package models
 
 import (
 	"fmt"
-	"path/filepath"
 	"sync"
 	"sync/atomic"
 
@@ -79,17 +78,6 @@ func (c *state) Pause() {
 	}
 }
 
-// ** ─── Directories MANAGEMENT ────────────────────────────────────────────────────────
-// Returns Path for Application/User Data
-func (f *FileSystem) DataSavePath(fileName string, IsDesktop bool) string {
-	// Check for Desktop
-	if IsDesktop {
-		return filepath.Join(f.GetLibrary(), fileName)
-	} else {
-		return filepath.Join(f.GetSupport(), fileName)
-	}
-}
-
 // ** ─── Router MANAGEMENT ────────────────────────────────────────────────────────
 // @ Local Lobby Topic Protocol ID
 func (r *Router) LocalIPTopic() string {
@@ -122,4 +110,30 @@ func (r *Router) Topic(name string) string {
 // @ Major Rendevouz Advertising Point
 func (r *Router) Rendevouz() string {
 	return fmt.Sprintf("/sonr/%s", r.Location.MajorOLC())
+}
+
+// ** ─── Session MANAGEMENT ────────────────────────────────────────────────────────
+// ^ Prepare for Outgoing Session ^ //
+func NewOutSession(p *Peer, req *InviteRequest, tc NodeCallback) *Session {
+	return &Session{
+		File:      req.GetFile(),
+		Receiver:  req.GetTo(),
+		Sender:    p,
+		Index:     0,
+		Direction: Session_Outgoing,
+	}
+}
+
+// ^ Prepare for Incoming Session ^ //
+func NewInSession(p *Peer, inv *AuthInvite, d *Device, c NodeCallback) *Session {
+	return &Session{
+		File:     inv.GetFile(),
+		Sender:   inv.GetFrom(),
+		Receiver: p,
+		//callback:     c,
+		Device:    d,
+		Index:     0,
+		Direction: Session_Outgoing,
+		// bytesBuilder: new(bytes.Buffer),
+	}
 }
