@@ -16,7 +16,7 @@ const K_B64_CHUNK = 31998 // Adjusted for Base64 -- has to be divisible by 3
 
 // ** ─── CALLBACK MANAGEMENT ────────────────────────────────────────────────────────
 // Define Function Types
-
+var callback NodeCallback
 type SetStatus func(s Status)
 type OnProtobuf func([]byte)
 type OnInvite func(data []byte)

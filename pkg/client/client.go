@@ -19,8 +19,6 @@ type Client struct {
 	user    *md.User
 	session *md.Session
 
-	// client brprot.Service
-
 	// References
 	Host *net.HostNode
 }

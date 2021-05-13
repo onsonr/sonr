@@ -207,7 +207,6 @@ func (p *Peer) SignUpdate() *LobbyEvent {
 }
 
 // ** ─── Lobby MANAGEMENT ────────────────────────────────────────────────────────
-
 // ^ Get Remote Point Info ^
 func GetRemoteInfo(list []string) RemoteInfo {
 	return RemoteInfo{
