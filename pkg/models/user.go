@@ -7,7 +7,6 @@ import (
 	"path/filepath"
 
 	crypto "github.com/libp2p/go-libp2p-crypto"
-	"google.golang.org/protobuf/proto"
 )
 
 // ** ─── DEVICE MANAGEMENT ────────────────────────────────────────────────────────
@@ -74,7 +73,7 @@ func (d *Device) IsFile(name string) bool {
 }
 
 // @ Returns Private key from disk if found
-func (d *Device) PrivateKey() (crypto.PrivKey, *SonrError) {
+func (d *Device) NewPrivateKey() *SonrError {
 	K_SONR_PRIV_KEY := "snr-peer.privkey"
 
 	// Get Private Key
@@ -82,38 +81,36 @@ func (d *Device) PrivateKey() (crypto.PrivKey, *SonrError) {
 		// Get Key File
 		buf, serr := d.ReadFile(K_SONR_PRIV_KEY)
 		if serr != nil {
-			return nil, serr
+			return serr
 		}
 
-		// Get Key from Buffer
-		key, err := crypto.UnmarshalPrivateKey(buf)
-		if err != nil {
-			return nil, NewError(err, ErrorMessage_HOST_KEY)
-		}
+		// Set Buffer for Key
+		d.PrivateKey = buf
 
 		// Set Key Ref
-		return key, nil
+		return nil
 	} else {
 		// Create New Key
 		privKey, _, err := crypto.GenerateKeyPair(crypto.Ed25519, -1)
 		if err != nil {
-			return nil, NewError(err, ErrorMessage_HOST_KEY)
+			return NewError(err, ErrorMessage_HOST_KEY)
 		}
 
 		// Marshal Data
 		buf, err := crypto.MarshalPrivateKey(privKey)
 		if err != nil {
-			return nil, NewError(err, ErrorMessage_MARSHAL)
+			return NewError(err, ErrorMessage_MARSHAL)
 		}
+
+		// Set Buffer for Key
+		d.PrivateKey = buf
 
 		// Write Key to File
 		_, werr := d.WriteFile(K_SONR_PRIV_KEY, buf)
 		if werr != nil {
-			return nil, NewError(err, ErrorMessage_USER_SAVE)
+			return NewError(err, ErrorMessage_USER_SAVE)
 		}
-
-		// Set Key Ref
-		return privKey, nil
+		return nil
 	}
 }
 
@@ -169,9 +166,14 @@ func (d *Device) WriteFile(name string, data []byte) (string, *SonrError) {
 // ** ─── User MANAGEMENT ────────────────────────────────────────────────────────
 // ^ Method Initializes User Info Struct ^ //
 func NewUser(cr *ConnectionRequest) *User {
+	// Initialize Device
+	d := cr.GetDevice()
+	d.NewPrivateKey()
+
+	// Return User
 	return &User{
+		Device:   d,
 		Contact:  cr.GetContact(),
-		Device:   cr.GetDevice(),
 		Location: cr.GetLocation(),
 		Connection: &User_Connection{
 			HasConnected:    false,
@@ -187,69 +189,14 @@ func NewUser(cr *ConnectionRequest) *User {
 	}
 }
 
-// Method Loads User Data from Disk
-func (u *User) LoadUser() (*User, *SonrError) {
-	// Read File
-	dat, serr := u.GetDevice().ReadFile("user.snr")
-	if serr != nil {
-		return nil, serr
-	}
-
-	// Get User Data
-	userRef := &User{}
-	err := proto.Unmarshal(dat, userRef)
-	if err != nil {
-		return nil, NewError(err, ErrorMessage_UNMARSHAL)
-	}
-
-	// Set and Return
-	u = userRef
-	u.Settings = userRef.GetSettings()
-	u.Devices = userRef.GetDevices()
-	return u, nil
-}
-
 // Method Returns Private Key
 func (u *User) PrivateKey() crypto.PrivKey {
-	pk, err := u.GetDevice().PrivateKey()
+	// Get Key from Buffer
+	key, err := crypto.UnmarshalPrivateKey(u.GetDevice().GetPrivateKey())
 	if err != nil {
 		return nil
 	}
-	return pk
-}
-
-// Method Updates User Contact
-func (u *User) SaveContact(c *Contact) *SonrError {
-	// Load User
-	user, err := u.LoadUser()
-	if err != nil {
-		return err
-	}
-
-	// Set Contact
-	user.Contact = c
-
-	// Save User
-	if err := u.SaveUser(user); err != nil {
-		return err
-	}
-	return nil
-}
-
-// Write User Data at Path
-func (u *User) SaveUser(user *User) *SonrError {
-	// Convert User to Bytes
-	data, err := proto.Marshal(user)
-	if err != nil {
-		return NewError(err, ErrorMessage_UNMARSHAL)
-	}
-
-	// Write File to Disk
-	_, serr := u.GetDevice().WriteFile("user.snr", data)
-	if err != nil {
-		return serr
-	}
-	return nil
+	return key
 }
 
 // Updates User Peer
@@ -306,12 +253,11 @@ func (u *User) Update(ur *UpdateRequest) {
 
 	// Check for New Contact, Update Peer Profile
 	if ur.Type == UpdateRequest_Contact {
-		u.SaveContact(ur.Contact)
-		profile := ur.Contact.GetProfile()
+		u.Contact = ur.GetContact()
 		u.Peer.Profile = &Profile{
-			FirstName: profile.GetFirstName(),
-			LastName:  profile.GetLastName(),
-			Picture:   profile.GetPicture(),
+			FirstName: ur.Contact.GetProfile().GetFirstName(),
+			LastName:  ur.Contact.GetProfile().GetLastName(),
+			Picture:   ur.Contact.GetProfile().GetPicture(),
 		}
 	}
 }

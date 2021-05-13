@@ -28,7 +28,10 @@ enum Status {
 }
 
 // Message for Status Update
-message StatusUpdate { Status value = 1; }
+message StatusUpdate {
+  Status value = 1;
+  User user = 2;
+}
 
 // Initial Connection Message to Establish Sonr
 message ConnectionRequest {
@@ -108,16 +111,15 @@ message AuthReply {
 
 // User is the Saved Data from Client that Passes to Proxy, During ConnRequest
 message User {
-  Connection connection = 1; // Clients Connection Reference
-  Peer peer = 2;             // Clients Peer Reference
-  Location location = 4;     // Clients current Location
-  Device device = 5;         // Clients Current Device
-  Contact contact = 6;       // Clients Contact Card
+  Connection connection = 1;          // Clients Connection Reference
+  Peer peer = 2;                      // Clients Peer Reference
+  Location location = 4;              // Clients current Location
+  Device device = 5;                  // Clients Current Device
+  Contact contact = 6;                // Clients Contact Card
+  map<string, Device> devices = 7;    // Clients Devices: Name, Device
+  map<string, Settings> settings = 8; // Clients Specified Preferences
 
-  map<string, Device> devices = 8;    // Clients Devices: Name, Device
-  map<string, Settings> settings = 9; // Clients Specified Preferences
-
-  // User Connection Management
+  // User Connection Management - Attached from Node Client
   message Connection {
     bool hasConnected = 1;         // Node Host Started
     bool hasBootstrapped = 2;      // Node Host Bootstrapped
@@ -127,7 +129,8 @@ message User {
     Connectivity connectivity = 6; // Client Network Type
   }
 
-  // Router Manages Peer Routing for Topics/Transfers
+  // Router Manages Peer Routing for Topics/Transfers - Attached from Node
+  // Client
   message Router {
     string deviceTopic = 1;
     string localIPTopic = 2;
