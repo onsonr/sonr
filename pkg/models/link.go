@@ -172,10 +172,9 @@ func GetPageInfoFromUrl(urlStr string) (*URLLink, *SonrError) {
 
 	// Set Link
 	link := &URLLink{
-		Link:        urlStr,
+		Url:         urlStr,
 		Title:       info.Title,
 		Type:        info.Type,
-		Url:         info.Url,
 		Site:        info.Site,
 		SiteName:    info.SiteName,
 		Description: info.Description,

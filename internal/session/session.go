@@ -35,11 +35,10 @@ type Session struct {
 
 // ^ Prepare for Outgoing Session ^ //
 func NewOutSession(p *md.Peer, req *md.InviteRequest, tc md.NodeCallback) *Session {
-	f := req.GetFile()
 	return &Session{
-		file:         f,
+		file:         req.GetFile(),
+		receiver:     req.GetTo(),
 		sender:       p,
-		receiver:     req.To,
 		callback:     tc,
 		currentIndex: 0,
 	}
@@ -47,10 +46,9 @@ func NewOutSession(p *md.Peer, req *md.InviteRequest, tc md.NodeCallback) *Sessi
 
 // ^ Prepare for Incoming Session ^ //
 func NewInSession(p *md.Peer, inv *md.AuthInvite, d *md.Device, c md.NodeCallback) *Session {
-	f := inv.GetFile()
 	s := &Session{
-		file:         f,
-		sender:       inv.From,
+		file:         inv.GetFile(),
+		sender:       inv.GetFrom(),
 		receiver:     p,
 		callback:     c,
 		device:       d,

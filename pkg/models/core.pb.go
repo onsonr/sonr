@@ -20,6 +20,56 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// Traffic Direction of Session
+type Session_Direction int32
+
+const (
+	Session_Default  Session_Direction = 0 // From Memory/Viewing
+	Session_Incoming Session_Direction = 1 // Incoming Transfer
+	Session_Outgoing Session_Direction = 2 // Outgoing Transfer
+)
+
+// Enum value maps for Session_Direction.
+var (
+	Session_Direction_name = map[int32]string{
+		0: "Default",
+		1: "Incoming",
+		2: "Outgoing",
+	}
+	Session_Direction_value = map[string]int32{
+		"Default":  0,
+		"Incoming": 1,
+		"Outgoing": 2,
+	}
+)
+
+func (x Session_Direction) Enum() *Session_Direction {
+	p := new(Session_Direction)
+	*p = x
+	return p
+}
+
+func (x Session_Direction) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Session_Direction) Descriptor() protoreflect.EnumDescriptor {
+	return file_core_proto_enumTypes[0].Descriptor()
+}
+
+func (Session_Direction) Type() protoreflect.EnumType {
+	return &file_core_proto_enumTypes[0]
+}
+
+func (x Session_Direction) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use Session_Direction.Descriptor instead.
+func (Session_Direction) EnumDescriptor() ([]byte, []int) {
+	return file_core_proto_rawDescGZIP(), []int{2, 0}
+}
+
 // Sent on Data Transfer to Add piece of File - Binary
 type Chunk struct {
 	state         protoimpl.MessageState
@@ -140,6 +190,100 @@ func (x *Router) GetConnectivity() Connectivity {
 	return Connectivity_None
 }
 
+// Manages Transfer Session between Two Peers
+type Session struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Direction of Session
+	Direction Session_Direction `protobuf:"varint,1,opt,name=direction,proto3,enum=Session_Direction" json:"direction,omitempty"`
+	// Current File
+	File *SonrFile `protobuf:"bytes,2,opt,name=file,proto3" json:"file,omitempty"`
+	// Current Users Device
+	Device *Device `protobuf:"bytes,3,opt,name=device,proto3" json:"device,omitempty"`
+	// Peer thats sending
+	Sender *Peer `protobuf:"bytes,4,opt,name=sender,proto3" json:"sender,omitempty"`
+	// Peer thats receiving
+	Receiver *Peer `protobuf:"bytes,5,opt,name=receiver,proto3" json:"receiver,omitempty"`
+	// Current FileItem Index
+	Index int32 `protobuf:"varint,6,opt,name=index,proto3" json:"index,omitempty"`
+}
+
+func (x *Session) Reset() {
+	*x = Session{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_core_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Session) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Session) ProtoMessage() {}
+
+func (x *Session) ProtoReflect() protoreflect.Message {
+	mi := &file_core_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Session.ProtoReflect.Descriptor instead.
+func (*Session) Descriptor() ([]byte, []int) {
+	return file_core_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *Session) GetDirection() Session_Direction {
+	if x != nil {
+		return x.Direction
+	}
+	return Session_Default
+}
+
+func (x *Session) GetFile() *SonrFile {
+	if x != nil {
+		return x.File
+	}
+	return nil
+}
+
+func (x *Session) GetDevice() *Device {
+	if x != nil {
+		return x.Device
+	}
+	return nil
+}
+
+func (x *Session) GetSender() *Peer {
+	if x != nil {
+		return x.Sender
+	}
+	return nil
+}
+
+func (x *Session) GetReceiver() *Peer {
+	if x != nil {
+		return x.Receiver
+	}
+	return nil
+}
+
+func (x *Session) GetIndex() int32 {
+	if x != nil {
+		return x.Index
+	}
+	return 0
+}
+
 var File_core_proto protoreflect.FileDescriptor
 
 var file_core_proto_rawDesc = []byte{
@@ -157,8 +301,25 @@ var file_core_proto_rawDesc = []byte{
 	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x31, 0x0a, 0x0c, 0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74,
 	0x69, 0x76, 0x69, 0x74, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x0d, 0x2e, 0x43, 0x6f,
 	0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x76, 0x69, 0x74, 0x79, 0x52, 0x0c, 0x63, 0x6f, 0x6e, 0x6e,
-	0x65, 0x63, 0x74, 0x69, 0x76, 0x69, 0x74, 0x79, 0x42, 0x09, 0x5a, 0x07, 0x2f, 0x6d, 0x6f, 0x64,
-	0x65, 0x6c, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x65, 0x63, 0x74, 0x69, 0x76, 0x69, 0x74, 0x79, 0x22, 0x89, 0x02, 0x0a, 0x07, 0x53, 0x65, 0x73,
+	0x73, 0x69, 0x6f, 0x6e, 0x12, 0x30, 0x0a, 0x09, 0x64, 0x69, 0x72, 0x65, 0x63, 0x74, 0x69, 0x6f,
+	0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x12, 0x2e, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f,
+	0x6e, 0x2e, 0x44, 0x69, 0x72, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x09, 0x64, 0x69, 0x72,
+	0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1d, 0x0a, 0x04, 0x66, 0x69, 0x6c, 0x65, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x09, 0x2e, 0x53, 0x6f, 0x6e, 0x72, 0x46, 0x69, 0x6c, 0x65, 0x52,
+	0x04, 0x66, 0x69, 0x6c, 0x65, 0x12, 0x1f, 0x0a, 0x06, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x07, 0x2e, 0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x52, 0x06,
+	0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x12, 0x1d, 0x0a, 0x06, 0x73, 0x65, 0x6e, 0x64, 0x65, 0x72,
+	0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x05, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x06, 0x73,
+	0x65, 0x6e, 0x64, 0x65, 0x72, 0x12, 0x21, 0x0a, 0x08, 0x72, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65,
+	0x72, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x05, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x08,
+	0x72, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65, 0x72, 0x12, 0x14, 0x0a, 0x05, 0x69, 0x6e, 0x64, 0x65,
+	0x78, 0x18, 0x06, 0x20, 0x01, 0x28, 0x05, 0x52, 0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x22, 0x34,
+	0x0a, 0x09, 0x44, 0x69, 0x72, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x0b, 0x0a, 0x07, 0x44,
+	0x65, 0x66, 0x61, 0x75, 0x6c, 0x74, 0x10, 0x00, 0x12, 0x0c, 0x0a, 0x08, 0x49, 0x6e, 0x63, 0x6f,
+	0x6d, 0x69, 0x6e, 0x67, 0x10, 0x01, 0x12, 0x0c, 0x0a, 0x08, 0x4f, 0x75, 0x74, 0x67, 0x6f, 0x69,
+	0x6e, 0x67, 0x10, 0x02, 0x42, 0x09, 0x5a, 0x07, 0x2f, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x62,
+	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -173,21 +334,32 @@ func file_core_proto_rawDescGZIP() []byte {
 	return file_core_proto_rawDescData
 }
 
-var file_core_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_core_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_core_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_core_proto_goTypes = []interface{}{
-	(*Chunk)(nil),     // 0: Chunk
-	(*Router)(nil),    // 1: Router
-	(*Location)(nil),  // 2: Location
-	(Connectivity)(0), // 3: Connectivity
+	(Session_Direction)(0), // 0: Session.Direction
+	(*Chunk)(nil),          // 1: Chunk
+	(*Router)(nil),         // 2: Router
+	(*Session)(nil),        // 3: Session
+	(*Location)(nil),       // 4: Location
+	(Connectivity)(0),      // 5: Connectivity
+	(*SonrFile)(nil),       // 6: SonrFile
+	(*Device)(nil),         // 7: Device
+	(*Peer)(nil),           // 8: Peer
 }
 var file_core_proto_depIdxs = []int32{
-	2, // 0: Router.location:type_name -> Location
-	3, // 1: Router.connectivity:type_name -> Connectivity
-	2, // [2:2] is the sub-list for method output_type
-	2, // [2:2] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	4, // 0: Router.location:type_name -> Location
+	5, // 1: Router.connectivity:type_name -> Connectivity
+	0, // 2: Session.direction:type_name -> Session.Direction
+	6, // 3: Session.file:type_name -> SonrFile
+	7, // 4: Session.device:type_name -> Device
+	8, // 5: Session.sender:type_name -> Peer
+	8, // 6: Session.receiver:type_name -> Peer
+	7, // [7:7] is the sub-list for method output_type
+	7, // [7:7] is the sub-list for method input_type
+	7, // [7:7] is the sub-list for extension type_name
+	7, // [7:7] is the sub-list for extension extendee
+	0, // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_core_proto_init() }
@@ -223,19 +395,32 @@ func file_core_proto_init() {
 				return nil
 			}
 		}
+		file_core_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Session); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_core_proto_rawDesc,
-			NumEnums:      0,
-			NumMessages:   2,
+			NumEnums:      1,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_core_proto_goTypes,
 		DependencyIndexes: file_core_proto_depIdxs,
+		EnumInfos:         file_core_proto_enumTypes,
 		MessageInfos:      file_core_proto_msgTypes,
 	}.Build()
 	File_core_proto = out.File

@@ -37,9 +37,6 @@ func (f *SonrFile) IsMultiple() bool {
 
 // Returns SonrFile as TransferCard given Receiver and Owner
 func (f *SonrFile) CardIn(receiver *Peer, owner *Peer) *TransferCard {
-	// Update Direction
-	f.Direction = SonrFile_Default
-
 	// Create Card
 	return &TransferCard{
 		// SQL Properties

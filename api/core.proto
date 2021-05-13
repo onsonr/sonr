@@ -19,3 +19,31 @@ message Router {
   Location location = 1;
   Connectivity connectivity = 2;
 }
+
+// Manages Transfer Session between Two Peers
+message Session {
+  // Direction of Session
+  Direction direction = 1;
+
+  // Current File
+  SonrFile file = 2;
+
+  // Current Users Device
+  Device device = 3;
+
+  // Peer thats sending
+  Peer sender = 4;
+
+  // Peer thats receiving
+  Peer receiver = 5;
+
+  // Current FileItem Index
+  int32 index = 6;
+
+  // Traffic Direction of Session
+  enum Direction {
+    Default = 0;  // From Memory/Viewing
+    Incoming = 1; // Incoming Transfer
+    Outgoing = 2; // Outgoing Transfer
+  }
+}

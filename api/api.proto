@@ -63,17 +63,12 @@ message MessageRequest {
 
 // Processes Given File and Invites Specified Peer
 message InviteRequest {
-  // Properties
   Payload payload = 1;   // General Payload Type
   Peer to = 2;           // Receivers Peer Data
   Peer from = 3;         // Users Peer Data
   bool isRemote = 4;     // If Transfer is Remote
   RemoteInfo remote = 5; // Remote Topic Name
-
-  // Attached Data
-  string url = 6;      // URL to be Sent - Optional
-  Contact contact = 7; // Contact Card to be Sent - Optional
-  SonrFile file = 8;   // Files to be Sent - Optional
+  Transfer data = 6;     // Attached Data
 }
 
 message RespondRequest {
@@ -91,9 +86,7 @@ message AuthInvite {
   Peer to = 3;           // Receivers Peer Data
   bool isFlat = 4;       // For Flat ContactTransfer
   RemoteInfo remote = 5; // Remote Lobby Info
-  Contact contact = 6;   // DATA(Optional): Received Contact Information
-  SonrFile file = 7;     // DATA(Optional): Received a File
-  URLLink url = 8;       // DATA(Optional): Received a Website Link
+  Transfer data = 6;     // Attached Data
 }
 
 // Reply Message sent on RPC

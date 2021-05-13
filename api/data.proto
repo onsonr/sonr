@@ -210,9 +210,9 @@ enum Payload {
   CONTACT = 1;      // Sonr Based Contact
   FLAT_CONTACT = 2; // Send File as Flat Exchange Automatically Swaps
   FILE = 3;         // File Transfer
-  MULTI_FILES = 4;  // Multiple Files
+  FILES = 4;        // Multiple Files
   URL = 5;          // Link to Site
-  MEDIA = 6;
+  MEDIA = 6;        // Media Payload - (Audio, Photo, Video)
 }
 
 // RemoteInfo is for Joining/Creating a New Topic
@@ -238,16 +238,6 @@ message SonrFile {
   // List of Files as Metadata
   repeated Metadata files = 4;
 
-  // Direction of SonrFile
-  Direction direction = 5;
-
-  // Traffic Direction of Data
-  enum Direction {
-    Default = 0;  // From Memory/Viewing
-    Incoming = 1; // Incoming Transfer
-    Outgoing = 2; // Outgoing Transfer
-  }
-
   // For Received Transfer File Information
   message Metadata {
     string id = 1;             // Local Asset ID
@@ -271,6 +261,19 @@ message SonrFile {
   }
 }
 
+// Transfer is Data thats being Passed
+message Transfer {
+  Payload payload = 1;
+
+  // Attached Data
+  oneof data {
+    string link = 2;     // URL to be Sent - Optional
+    URLLink url = 3;     // Received a Website Link
+    Contact contact = 4; // Contact Card to be Sent - Optional
+    SonrFile file = 5;   // Files to be Sent - Optional
+  }
+}
+
 // TransferCard holds data passed between Exchange
 message TransferCard {
   int32 id = 1;        // SQL: Id reference
@@ -287,19 +290,18 @@ message TransferCard {
 
 // URLLink Contains metadata of provided URL
 message URLLink {
-  string link = 1;                     // Entered URL
+  string url = 1;                      // OG URL Link
   string title = 2;                    // Meta Field for Title
   string type = 3;                     // OG Type
-  string url = 4;                      // OG URL Link
-  string site = 5;                     // Meta field for site
-  string siteName = 6;                 // Meta field for sitename
-  string description = 7;              // Meta field for description
-  string locale = 8;                   // Meta field for locale
-  repeated OpenGraphImage images = 9;  // Images
-  repeated OpenGraphVideo videos = 10; // Videos
-  repeated OpenGraphAudio audios = 11; // Audios
-  TwitterCard twitter = 12;            // Twitter Card
-  string content = 13;                 // URL Content
+  string site = 4;                     // Meta field for site
+  string siteName = 5;                 // Meta field for sitename
+  string description = 6;              // Meta field for description
+  string locale = 7;                   // Meta field for locale
+  repeated OpenGraphImage images = 8;  // Images
+  repeated OpenGraphVideo videos = 9;  // Videos
+  repeated OpenGraphAudio audios = 10; // Audios
+  TwitterCard twitter = 11;            // Twitter Card
+  string content = 12;                 // URL Content
 
   // OpenGraph Image
   message OpenGraphImage {
