@@ -140,9 +140,9 @@ func (d *Device) ReadFile(name string) ([]byte, *SonrError) {
 }
 
 // Saves Transfer File to Disk
-func (d *Device) SaveTransfer(f *SonrFile, i int, data []byte) error {
+func (d *Device) SaveTransfer(f *SonrFile_Metadata, data []byte) error {
 	// Get Save Path
-	path := f.Files[i].SetPath(d)
+	path := f.SetPath(d)
 
 	// Write File to Disk
 	if err := os.WriteFile(path, data, 0644); err != nil {
