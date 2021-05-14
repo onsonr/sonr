@@ -138,7 +138,7 @@ func (f *SonrFile) Single() *SonrFile_Metadata {
 
 // ** ─── SONRFILE_Metadata MANAGEMENT ────────────────────────────────────────────────────────
 // Returns Progress of File, Given the written number of bytes
-func (m *SonrFile_Metadata) Progress(curr int, n int) (bool, float32) {
+func (m *SonrFile_Metadata) Progress(n int) (bool, float32) {
 	// Calculate Tracking
 	progress := float32(n) / float32(m.Size)
 	adjusted := int(progress)

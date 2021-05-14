@@ -276,13 +276,13 @@ func (s *Session) AddBuffer(curr int, buffer []byte, index int) (bool, error) {
 	// Check for Complete
 	if !chunk.IsComplete {
 		// Add Buffer by File Type
-		n, err := s.builder.Write(chunk.Buffer)
+		_, err := s.builder.Write(chunk.Buffer)
 		if err != nil {
 			return true, err
 		}
 
 		// Check for Interval and Send Callback
-		if met, p := s.file.ItemAtIndex(index).Progress(curr, n); met {
+		if met, p := s.file.ItemAtIndex(index).Progress(s.builder.Len()); met {
 			s.call.Progressed(p)
 		}
 
