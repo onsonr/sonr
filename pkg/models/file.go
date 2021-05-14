@@ -36,6 +36,11 @@ func (f *SonrFile) IsFinalIndex(i int) bool {
 	return i == f.FinalIndex()
 }
 
+// Checks if Given Index is Final Item
+func (f *SonrFile) IsFinalItem(i *SonrFile_Metadata) bool {
+	return f.IndexOf(i) == f.FinalIndex()
+}
+
 // Returns SonrFile as TransferCard given Receiver and Owner
 func (f *SonrFile) CardIn(receiver *Peer, owner *Peer) *TransferCard {
 	// Create Card
@@ -75,6 +80,15 @@ func (f *SonrFile) FinalIndex() int {
 // Method Returns Metadata Item at Given Index
 func (f *SonrFile) ItemAtIndex(index int) *SonrFile_Metadata {
 	return f.Files[index]
+}
+
+func (f *SonrFile) IndexOf(element *SonrFile_Metadata) int {
+	for k, v := range f.Files {
+		if element == v {
+			return k
+		}
+	}
+	return -1 //not found.
 }
 
 // Method Returns Single if Applicable

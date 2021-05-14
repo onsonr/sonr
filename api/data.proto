@@ -277,13 +277,18 @@ message SonrFile {
 
 // Transfer is Data thats being Passed
 message Transfer {
-  Payload payload = 1;
+  int32 id = 1;        // SQL: Id reference
+  Payload payload = 2; // SQL: Type of Data received
+  int32 received = 3;  // SQL: UnixTime of received Date/Time
+
+  Profile receiver = 4; // PROFILE: General Receiver Info
+  Profile owner = 5;    // PROFILE: General Sender Info
 
   // Attached Data
   oneof data {
-    URLLink url = 2;     // Received a Website Link
-    Contact contact = 3; // Contact Card to be Sent - Optional
-    SonrFile file = 4;   // Files to be Sent - Optional
+    Contact contact = 6; // DATA(Optional): Received Contact Information
+    SonrFile file = 7;   // DATA(Optional): Received a File
+    URLLink url = 8;     // DATA(Optional): Received a Website Link
   }
 }
 
