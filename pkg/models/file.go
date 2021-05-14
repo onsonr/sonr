@@ -2,13 +2,9 @@ package models
 
 import (
 	"bufio"
-	"bytes"
 	"errors"
 	"fmt"
-	"image"
-	"image/jpeg"
 	"io"
-	"log"
 	"os"
 	"path/filepath"
 	"time"
@@ -81,52 +77,6 @@ func (f *SonrFile) ItemAtIndex(index int) *SonrFile_Metadata {
 	return f.Files[index]
 }
 
-// Method Returns Preview from Thumbnail if Single File
-func (f *SonrFile) Preview() []byte {
-	// Validate Single
-	if f.IsSingle() {
-		// Retrieve Meta
-		meta := f.Files[0]
-		props := meta.GetProperties()
-
-		// Check if Thumbnail Provided
-		if props.HasThumbnail {
-			// Initialize
-			var thumbReader io.Reader
-			thumbWriter := new(bytes.Buffer)
-
-			// Get Reader
-			switch meta.Thumbnail.(type) {
-			// Load using Buffer
-			case *SonrFile_Metadata_ThumbBuffer:
-				// Set Reader
-				thumbReader = bytes.NewReader(meta.GetThumbBuffer())
-
-			// Load using Path
-			case *SonrFile_Metadata_ThumbPath:
-				// Set Reader
-				thumbReader, _ = os.Open(meta.GetThumbPath())
-			}
-
-			// Convert to Image Object
-			img, _, err := image.Decode(thumbReader)
-			if err != nil {
-				log.Println(err)
-				return nil
-			}
-
-			// Encode as Jpeg into buffer w/o scaling
-			err = jpeg.Encode(thumbWriter, img, nil)
-			if err != nil {
-				log.Panicln(err)
-				return nil
-			}
-			return thumbWriter.Bytes()
-		}
-	}
-	return nil
-}
-
 // Method Returns Single if Applicable
 func (f *SonrFile) Single() *SonrFile_Metadata {
 	if f.IsSingle() {
@@ -152,28 +102,23 @@ func (m *SonrFile_Metadata) Progress(n int) (bool, float32) {
 
 // Returns/Updates Save Path for this File
 func (m *SonrFile_Metadata) SetPath(d *Device) string {
-	// Initialize
-	var path string
-
 	// Check for Media
 	if m.Mime.IsMedia() {
 		// Check for Desktop
 		if d.IsDesktop() {
-			path = filepath.Join(d.FileSystem.GetDownloads(), m.Name)
+			m.Path = filepath.Join(d.FileSystem.GetDownloads(), m.Name)
 		} else {
-			path = filepath.Join(d.FileSystem.GetTemporary(), m.Name)
+			m.Path = filepath.Join(d.FileSystem.GetTemporary(), m.Name)
 		}
 	} else {
 		// Check for Desktop
 		if d.IsDesktop() {
-			path = filepath.Join(d.FileSystem.GetDownloads(), m.Name)
+			m.Path = filepath.Join(d.FileSystem.GetDownloads(), m.Name)
 		} else {
-			path = filepath.Join(d.FileSystem.GetDocuments(), m.Name)
+			m.Path = filepath.Join(d.FileSystem.GetDocuments(), m.Name)
 		}
 	}
-
 	// Set Path and Return
-	m.Path = path
 	return m.Path
 }
 
@@ -184,8 +129,6 @@ func (m *SonrFile_Metadata) WriteTo(writer msgio.WriteCloser, call NodeCallback)
 	if err != nil {
 		return errors.New(fmt.Sprintf("Error to read [file=%v]: %v", m.Name, err.Error()))
 	}
-
-	defer f.Close()
 
 	// @ Initialize Chunk Data
 	nBytes, nChunks := int32(0), int32(0)
@@ -231,6 +174,7 @@ func (m *SonrFile_Metadata) WriteTo(writer msgio.WriteCloser, call NodeCallback)
 
 	// Send Completed
 	writeBufToStream(nil, true, writer, call)
+	f.Close()
 	return nil
 }
 
