@@ -26,70 +26,6 @@ func (f *SonrFile) IsMultiple() bool {
 	return len(f.Items) > 1
 }
 
-// Checks if Given Index is Final Item
-func (f *SonrFile) IsFinalIndex(i int) bool {
-	return i == f.FinalIndex()
-}
-
-// Checks if Given Index is Final Item
-func (f *SonrFile) IsFinalItem(i *SonrFile_Item) bool {
-	return f.IndexOf(i) == f.FinalIndex()
-}
-
-// Returns SonrFile as TransferCard given Receiver and Owner
-func (f *SonrFile) CardIn(receiver *Peer, owner *Peer) *TransferCard {
-	// Create Card
-	return &TransferCard{
-		// SQL Properties
-		Payload:  f.Payload,
-		Received: int32(time.Now().Unix()),
-
-		// Owner Properties
-		Owner:    owner.GetProfile(),
-		Receiver: receiver.GetProfile(),
-
-		// Data Properties
-		File: f,
-	}
-}
-
-// Returns SonrFile as TransferCard given Receiver and Owner
-func (f *SonrFile) CardOut(receiver *Peer, owner *Peer) *TransferCard {
-	// Create Card
-	return &TransferCard{
-		// SQL Properties
-		Payload: f.Payload,
-
-		// Owner Properties
-		Receiver: receiver.GetProfile(),
-		Owner:    owner.GetProfile(),
-		File:     f,
-	}
-}
-
-// Method Returns Final Index of Metadata
-func (f *SonrFile) FinalIndex() int {
-	return len(f.Items) - 1
-}
-
-func (f *SonrFile) IndexOf(element *SonrFile_Item) int {
-	for k, v := range f.Items {
-		if element == v {
-			return k
-		}
-	}
-	return -1 //not found.
-}
-
-func (f *SonrFile) NextItem(i *SonrFile_Item) *SonrFile_Item {
-	idx := f.IndexOf(i)
-	if f.IsFinalIndex(idx) {
-		return nil
-	} else {
-		return f.Items[idx+1]
-	}
-}
-
 // Method Returns Single if Applicable
 func (f *SonrFile) Single() *SonrFile_Item {
 	if f.IsSingle() {
@@ -149,6 +85,38 @@ func NewInSession(u *User, inv *AuthInvite, c NodeCallback) *Session {
 	}
 }
 
+// Returns SonrFile as TransferCard given Receiver and Owner
+func (s *Session) Card(d Direction) *TransferCard {
+	if d == Direction_Incoming {
+		// Create Card
+		return &TransferCard{
+			// SQL Properties
+			Payload:  s.file.Payload,
+			Received: int32(time.Now().Unix()),
+
+			// Owner Properties
+			Owner:    s.user.Peer.GetProfile(),
+			Receiver: s.peer.GetProfile(),
+
+			// Data Properties
+			File: s.file,
+		}
+	} else {
+		// Create Card
+		return &TransferCard{
+			// SQL Properties
+			Payload: s.file.Payload,
+
+			// Owner Properties
+			Owner:    s.user.Peer.GetProfile(),
+			Receiver: s.peer.GetProfile(),
+
+			// Data Properties
+			File: s.file,
+		}
+	}
+}
+
 // ^ read buffers sent on stream and save to file ^ //
 func (s *Session) ReadFromStream(stream network.Stream) {
 	// Concurrent Function
@@ -164,7 +132,7 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 
 		// Close Stream and Callback
 		stream.Close()
-		s.call.Received(s.file.CardIn(s.user.GetPeer(), s.peer))
+		s.call.Received(s.Card(Direction_Incoming))
 	}(msg.NewReader(stream))
 }
 
@@ -183,6 +151,6 @@ func (s *Session) WriteToStream(stream network.Stream) {
 		}
 
 		// Callback
-		s.call.Transmitted(s.file.CardOut(s.peer, s.user.GetPeer()))
+		s.call.Transmitted(s.Card(Direction_Outgoing))
 	}(msg.NewWriter(stream))
 }
