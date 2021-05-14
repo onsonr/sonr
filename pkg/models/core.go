@@ -333,6 +333,9 @@ func (s *Session) Save() bool {
 		s.call.Error(NewError(err, ErrorMessage_TRANSFER_END))
 	}
 
+	// Reset Builder
+	s.builder.Reset()
+
 	// Check Completion
 	if s.file.IsFinalIndex(s.index) {
 		// Completed
