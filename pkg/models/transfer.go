@@ -22,7 +22,6 @@ type itemReader struct {
 	ItemReader
 	mutex  sync.Mutex
 	item   *SonrFile_Item
-	reader msg.ReadCloser
 	device *Device
 	size   int
 }
@@ -41,8 +40,6 @@ func (p *itemReader) Progress() (bool, float32) {
 }
 
 func (ir *itemReader) ReadFrom(reader msg.ReadCloser) error {
-	ir.reader = reader
-
 	// Check for Media
 	if ir.item.Mime.IsMedia() {
 		// Check for Desktop
@@ -89,11 +86,10 @@ func (ir *itemReader) ReadFrom(reader msg.ReadCloser) error {
 			ir.mutex.Unlock()
 		} else {
 			ir.mutex.Unlock()
-			break
+			return nil
 		}
 		GetState().NeedsWait()
 	}
-	return nil
 }
 
 type ItemWriter interface {
@@ -103,9 +99,8 @@ type ItemWriter interface {
 
 type itemWriter struct {
 	ItemWriter
-	item   *SonrFile_Item
-	size   int
-	writer msg.WriteCloser
+	item *SonrFile_Item
+	size int
 }
 
 // Returns Progress of File, Given the written number of bytes
@@ -122,8 +117,6 @@ func (p *itemWriter) Progress() (bool, float32) {
 }
 
 func (iw *itemWriter) WriteTo(writer msg.WriteCloser) error {
-	iw.writer = writer
-
 	// Write Item to Stream
 	// @ Open Os File
 	f, err := os.Open(iw.item.Path)

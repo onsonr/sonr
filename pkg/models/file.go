@@ -1,17 +1,11 @@
 package models
 
 import (
-	"bufio"
-	"errors"
-	"fmt"
-	"io"
-	"os"
-	"path/filepath"
-	sync "sync"
+	"sync"
 	"time"
 
-	"github.com/libp2p/go-msgio"
-	"google.golang.org/protobuf/proto"
+	"github.com/libp2p/go-libp2p-core/network"
+	msg "github.com/libp2p/go-msgio"
 )
 
 const K_CHUNK_SIZE = 4 * 1024
@@ -106,12 +100,6 @@ func (f *SonrFile) Single() *SonrFile_Item {
 }
 
 // ** ─── SONRFILE_Item MANAGEMENT ────────────────────────────────────────────────────────
-type ItemFileReader struct {
-	mutex sync.Mutex
-	item  *SonrFile_Item
-	file  *os.File
-	size  int
-}
 
 func (m *SonrFile_Item) NewReader(d *Device) ItemReader {
 	return &itemReader{
@@ -123,188 +111,78 @@ func (m *SonrFile_Item) NewReader(d *Device) ItemReader {
 
 func (m *SonrFile_Item) NewWriter(d *Device) ItemWriter {
 	return &itemWriter{
-		item:   m,
-		size:   0,
-	}
-}
-
-func (m *SonrFile_Item) Create(d *Device) (*ItemFileReader, error) {
-	// Check for Media
-	if m.Mime.IsMedia() {
-		// Check for Desktop
-		if d.IsDesktop() {
-			m.Path = filepath.Join(d.FileSystem.GetDownloads(), m.Name)
-		} else {
-			m.Path = filepath.Join(d.FileSystem.GetTemporary(), m.Name)
-		}
-	} else {
-		// Check for Desktop
-		if d.IsDesktop() {
-			m.Path = filepath.Join(d.FileSystem.GetDownloads(), m.Name)
-		} else {
-			m.Path = filepath.Join(d.FileSystem.GetDocuments(), m.Name)
-		}
-	}
-
-	// Return Created File
-	f, err := os.Create(m.Path)
-	if err != nil {
-		return nil, err
-	}
-
-	return &ItemFileReader{
-		file: f,
-		size: 0,
 		item: m,
-	}, nil
-}
-
-func (iw *ItemFileReader) Next(f *SonrFile, d *Device) (*ItemFileReader, error) {
-	idx := f.IndexOf(iw.item)
-	// Check if Last Item
-	if f.IsFinalIndex(idx) {
-		return nil, nil
-	} else {
-		// Get Next item
-		newItem := f.NextItem(iw.item)
-
-		// Create New Writer
-		iw, err := newItem.Create(d)
-		if err != nil {
-			return nil, err
-		}
-		return iw, nil
+		size: 0,
 	}
 }
 
-// Returns Progress of File, Given the written number of bytes
-func (p *ItemFileReader) Progress() (bool, float32) {
-	// Calculate Tracking
-	progress := float32(p.size) / float32(p.item.Size)
-	adjusted := int(progress)
+// ** ─── Session MANAGEMENT ────────────────────────────────────────────────────────
+type Session struct {
+	// Inherited Properties
+	mutex sync.Mutex
+	file  *SonrFile
+	peer  *Peer
+	user  *User
 
-	// Check Interval
-	if adjusted&5 == 0 {
-		return true, progress
-	}
-	return false, 0
+	// Management
+	call NodeCallback
 }
 
-func (p *ItemFileReader) Write(data []byte) (n int, err error) {
-	// Unmarshal Bytes into Proto
-	c := &Chunk{}
-	err = proto.Unmarshal(data, c)
-	if err != nil {
-		return -1, err
-	}
-
-	// Check for Complete
-	if !c.IsComplete {
-		n, err = p.file.Write(c.GetBuffer())
-		if err != nil {
-			return -1, err
-		}
-		p.size += n
-		return p.size, nil
-	} else {
-		err := p.file.Sync()
-		if err != nil {
-			return -1, err
-		}
-		err = p.file.Close()
-		if err != nil {
-			return -1, err
-		}
-		return 0, nil
+// ^ Prepare for Outgoing Session ^ //
+func NewOutSession(u *User, req *InviteRequest, tc NodeCallback) *Session {
+	return &Session{
+		file: req.GetFile(),
+		peer: req.GetTo(),
+		user: u,
+		call: tc,
 	}
 }
 
-// Metadata Info returns: Total Bytes, Total Chunks, error
-func (m *SonrFile_Item) WriteTo(writer msgio.WriteCloser, call NodeCallback) error {
-	// @ Open Os File
-	f, err := os.Open(m.Path)
-	if err != nil {
-		return errors.New(fmt.Sprintf("Error to read [file=%v]: %v", m.Name, err.Error()))
+// ^ Prepare for Incoming Session ^ //
+func NewInSession(u *User, inv *AuthInvite, c NodeCallback) *Session {
+	// Return Session
+	return &Session{
+		file: inv.GetFile(),
+		peer: inv.GetFrom(),
+		user: u,
+		call: c,
 	}
+}
 
-	// @ Initialize Chunk Data
-	nBytes, nChunks := int32(0), int32(0)
-	r := bufio.NewReader(f)
-	buf := make([]byte, 0, K_CHUNK_SIZE)
-
-	// @ Loop through File
-	for {
-		// Initialize
-		n, err := r.Read(buf[:cap(buf)])
-		buf = buf[:n]
-
-		// Bytes read is zero
-		if n == 0 {
-			if err == nil {
-				continue
+// ^ read buffers sent on stream and save to file ^ //
+func (s *Session) ReadFromStream(stream network.Stream) {
+	// Concurrent Function
+	go func(rs msg.ReadCloser) {
+		// Read All Files
+		for _, m := range s.file.Items {
+			r := m.NewReader(s.user.Device)
+			err := r.ReadFrom(rs)
+			if err != nil {
+				s.call.Error(NewError(err, ErrorMessage_INCOMING))
 			}
-			if err == io.EOF {
-				break
-			}
-			return err
 		}
 
-		// Increment
-		nChunks++
-		nBytes += int32(len(buf))
-
-		// Write to Stream
-		streamBuffer(buf, false, writer, call)
-
-		// Unexpected Error
-		if err != nil && err != io.EOF {
-			return err
-		}
-	}
-
-	// Send Completed
-	streamBuffer(nil, true, writer, call)
-	f.Close()
-	return nil
+		// Close Stream and Callback
+		stream.Close()
+		s.call.Received(s.file.CardIn(s.user.GetPeer(), s.peer))
+	}(msg.NewReader(stream))
 }
 
-// Writes data to provided writer until completed is called
-func streamBuffer(buf []byte, completed bool, writer msgio.WriteCloser, call NodeCallback) {
-	if !completed {
-		// Create Block Protobuf from Chunk
-		chunk := &Chunk{
-			Size:       int32(len(buf)),
-			Buffer:     buf,
-			IsComplete: false,
+// ^ write file as Base64 in Msgio to Stream ^ //
+func (s *Session) WriteToStream(stream network.Stream) {
+	// Concurrent Function
+	go func(ws msg.WriteCloser) {
+		// Write All Files
+		for _, m := range s.file.Items {
+			w := m.NewWriter(s.user.Device)
+			err := w.WriteTo(ws)
+			if err != nil {
+				s.call.Error(NewError(err, ErrorMessage_OUTGOING))
+			}
+			GetState().NeedsWait()
 		}
 
-		// Convert to bytes
-		bytes, err := proto.Marshal(chunk)
-		if err != nil {
-			call.Error(NewError(err, ErrorMessage_OUTGOING))
-		}
-
-		// Write Message Bytes to Stream
-		err = writer.WriteMsg(bytes)
-		if err != nil {
-			call.Error(NewError(err, ErrorMessage_OUTGOING))
-		}
-	} else {
-		// Create Block Protobuf from Chunk
-		chunk := &Chunk{
-			IsComplete: true,
-		}
-
-		// Convert to bytes
-		bytes, err := proto.Marshal(chunk)
-		if err != nil {
-			call.Error(NewError(err, ErrorMessage_OUTGOING))
-		}
-
-		// Write Message Bytes to Stream
-		err = writer.WriteMsg(bytes)
-		if err != nil {
-			call.Error(NewError(err, ErrorMessage_OUTGOING))
-		}
-	}
+		// Callback
+		s.call.Transmitted(s.file.CardOut(s.peer, s.user.GetPeer()))
+	}(msg.NewWriter(stream))
 }
