@@ -2,7 +2,6 @@ package client
 
 import (
 	"github.com/libp2p/go-libp2p-core/peer"
-	mg "github.com/libp2p/go-msgio"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -63,8 +62,7 @@ func (n *Client) OnReply(id peer.ID, reply []byte) {
 			}
 
 			// Write to Stream on Session
-			writer := mg.NewWriter(stream)
-			go n.session.WriteToStream(writer)
+			n.session.WriteToStream(stream)
 		}
 	} else {
 		n.call.Error(md.NewErrorWithType(md.ErrorMessage_TRANSFER_START))

@@ -1,15 +1,11 @@
 package models
 
 import (
-	"bytes"
 	"net/http"
 	"sync"
 	"sync/atomic"
 
-	"github.com/libp2p/go-libp2p-core/network"
-	"github.com/libp2p/go-msgio"
-	msg "github.com/libp2p/go-msgio"
-	"google.golang.org/protobuf/proto"
+
 )
 
 const K_BUF_CHUNK = 32000
@@ -219,151 +215,4 @@ func (c *Contact) GetTransfer() *Transfer {
 			Contact: c,
 		},
 	}
-}
-
-// ** ─── Session MANAGEMENT ────────────────────────────────────────────────────────
-type Session struct {
-	// Inherited Properties
-	mutex sync.Mutex
-	file  *SonrFile
-	peer  *Peer
-	user  *User
-
-	// Management
-	call    NodeCallback
-	builder *bytes.Buffer
-
-	// Tracking
-	direction Direction
-	index     int
-}
-
-// ^ Prepare for Outgoing Session ^ //
-func NewOutSession(u *User, req *InviteRequest, tc NodeCallback) *Session {
-	return &Session{
-		file:      req.GetFile(),
-		peer:      req.GetTo(),
-		user:      u,
-		call:      tc,
-		direction: Direction_Outgoing,
-		index:     0,
-	}
-}
-
-// ^ Prepare for Incoming Session ^ //
-func NewInSession(u *User, inv *AuthInvite, c NodeCallback) *Session {
-	return &Session{
-		file:      inv.GetFile(),
-		peer:      inv.GetFrom(),
-		user:      u,
-		call:      c,
-		builder:   new(bytes.Buffer),
-		direction: Direction_Incoming,
-		index:     0,
-	}
-}
-
-// ^ Check file type and use corresponding method ^ //
-func (s *Session) AddBuffer(curr int, buffer []byte) (bool, error) {
-	// ** Lock/Unlock ** //
-	s.mutex.Lock()
-	defer s.mutex.Unlock()
-
-	// Unmarshal Bytes into Proto
-	chunk := &Chunk{}
-	err := proto.Unmarshal(buffer, chunk)
-	if err != nil {
-		return true, err
-	}
-
-	// Check for Complete
-	if !chunk.IsComplete {
-		// Add Buffer by File Type
-		_, err := s.builder.Write(chunk.Buffer)
-		if err != nil {
-			return true, err
-		}
-
-		// Check for Interval and Send Callback
-		if met, p := s.file.ItemAtIndex(s.index).Progress(s.builder.Len()); met {
-			s.call.Progressed(p)
-		}
-
-		// Not Complete
-		return false, nil
-	}
-	return true, nil
-}
-
-// ^ read buffers sent on stream and save to file ^ //
-func (s *Session) ReadFromStream(stream network.Stream) {
-	// Create Reader
-	reader := msg.NewReader(stream)
-
-	// Route Data from Stream
-	for i := 0; ; i++ {
-		// Read Length Fixed Bytes
-		buffer, err := reader.ReadMsg()
-		if err != nil {
-			s.call.Error(NewError(err, ErrorMessage_TRANSFER_CHUNK))
-			break
-		}
-
-		// Unmarshal Bytes into Proto
-		hasCompleted, err := s.AddBuffer(i, buffer)
-		if err != nil {
-			s.call.Error(NewError(err, ErrorMessage_TRANSFER_CHUNK))
-			break
-		}
-
-		// Check if All Buffer Received to Save
-		if hasCompleted {
-			// Save file
-			if done := s.Save(); done {
-				break
-			}
-		}
-		GetState().NeedsWait()
-	}
-}
-
-// ^ Check file type and use corresponding method to save to Disk ^ //
-func (s *Session) Save() bool {
-	// Sync file to Disk
-	if err := s.user.Device.SaveTransfer(s.file.ItemAtIndex(s.index), s.builder.Bytes()); err != nil {
-		s.call.Error(NewError(err, ErrorMessage_TRANSFER_END))
-	}
-
-	// Reset Builder
-	s.builder.Reset()
-
-	// Check Completion
-	if s.file.IsFinalIndex(s.index) {
-		// Completed
-		s.call.Received(s.file.CardIn(s.user.GetPeer(), s.peer))
-		return true
-	} else {
-		// Next Item
-		s.index += 1
-		return false
-	}
-}
-
-// ^ write file as Base64 in Msgio to Stream ^ //
-func (s *Session) WriteToStream(writer msgio.WriteCloser) {
-	// Write All Files
-	for i, m := range s.file.Files {
-		// Set Index
-		s.index = i
-
-		// Write Item to Stream
-		if err := m.WriteTo(writer, s.call); err != nil {
-			s.call.Error(NewError(err, ErrorMessage_OUTGOING))
-			return
-		}
-		GetState().NeedsWait()
-	}
-
-	// Callback
-	s.call.Transmitted(s.file.CardOut(s.peer, s.user.GetPeer()))
 }

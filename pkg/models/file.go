@@ -1,16 +1,11 @@
 package models
 
 import (
-	"bufio"
-	"errors"
-	"fmt"
-	"io"
-	"os"
-	"path/filepath"
+	"sync"
 	"time"
 
-	"github.com/libp2p/go-msgio"
-	"google.golang.org/protobuf/proto"
+	"github.com/libp2p/go-libp2p-core/network"
+	msg "github.com/libp2p/go-msgio"
 )
 
 const K_CHUNK_SIZE = 4 * 1024
@@ -18,7 +13,7 @@ const K_CHUNK_SIZE = 4 * 1024
 // ** ─── SONRFILE MANAGEMENT ────────────────────────────────────────────────────────
 // Checks if File contains single item
 func (f *SonrFile) IsSingle() bool {
-	return len(f.Files) == 1
+	return len(f.Items) == 1
 }
 
 // Checks if Single File is Media
@@ -28,207 +23,134 @@ func (f *SonrFile) IsMedia() bool {
 
 // Checks if File contains multiple items
 func (f *SonrFile) IsMultiple() bool {
-	return len(f.Files) > 1
-}
-
-// Checks if Given Index is Final Item
-func (f *SonrFile) IsFinalIndex(i int) bool {
-	return i == f.FinalIndex()
-}
-
-// Checks if Given Index is Final Item
-func (f *SonrFile) IsFinalItem(i *SonrFile_Metadata) bool {
-	return f.IndexOf(i) == f.FinalIndex()
-}
-
-// Returns SonrFile as TransferCard given Receiver and Owner
-func (f *SonrFile) CardIn(receiver *Peer, owner *Peer) *TransferCard {
-	// Create Card
-	return &TransferCard{
-		// SQL Properties
-		Payload:  f.Payload,
-		Received: int32(time.Now().Unix()),
-
-		// Owner Properties
-		Owner:    owner.GetProfile(),
-		Receiver: receiver.GetProfile(),
-
-		// Data Properties
-		File: f,
-	}
-}
-
-// Returns SonrFile as TransferCard given Receiver and Owner
-func (f *SonrFile) CardOut(receiver *Peer, owner *Peer) *TransferCard {
-	// Create Card
-	return &TransferCard{
-		// SQL Properties
-		Payload: f.Payload,
-
-		// Owner Properties
-		Receiver: receiver.GetProfile(),
-		Owner:    owner.GetProfile(),
-		File:     f,
-	}
-}
-
-// Method Returns Final Index of Metadata
-func (f *SonrFile) FinalIndex() int {
-	return len(f.Files) - 1
-}
-
-// Method Returns Metadata Item at Given Index
-func (f *SonrFile) ItemAtIndex(index int) *SonrFile_Metadata {
-	return f.Files[index]
-}
-
-func (f *SonrFile) IndexOf(element *SonrFile_Metadata) int {
-	for k, v := range f.Files {
-		if element == v {
-			return k
-		}
-	}
-	return -1 //not found.
+	return len(f.Items) > 1
 }
 
 // Method Returns Single if Applicable
-func (f *SonrFile) Single() *SonrFile_Metadata {
+func (f *SonrFile) Single() *SonrFile_Item {
 	if f.IsSingle() {
-		return f.Files[0]
+		return f.Items[0]
 	} else {
 		return nil
 	}
 }
 
-// ** ─── SONRFILE_Metadata MANAGEMENT ────────────────────────────────────────────────────────
-// Returns Progress of File, Given the written number of bytes
-func (m *SonrFile_Metadata) Progress(n int) (bool, float32) {
-	// Calculate Tracking
-	progress := float32(n) / float32(m.Size)
-	adjusted := int(progress)
+// ** ─── SONRFILE_Item MANAGEMENT ────────────────────────────────────────────────────────
 
-	// Check Interval
-	if adjusted&5 == 0 {
-		return true, progress
+func (m *SonrFile_Item) NewReader(d *Device) ItemReader {
+	return &itemReader{
+		item:   m,
+		device: d,
+		size:   0,
 	}
-	return false, 0
 }
 
-// Returns/Updates Save Path for this File
-func (m *SonrFile_Metadata) SetPath(d *Device) string {
-	// Check for Media
-	if m.Mime.IsMedia() {
-		// Check for Desktop
-		if d.IsDesktop() {
-			m.Path = filepath.Join(d.FileSystem.GetDownloads(), m.Name)
-		} else {
-			m.Path = filepath.Join(d.FileSystem.GetTemporary(), m.Name)
+func (m *SonrFile_Item) NewWriter(d *Device) ItemWriter {
+	return &itemWriter{
+		item: m,
+		size: 0,
+	}
+}
+
+// ** ─── Session MANAGEMENT ────────────────────────────────────────────────────────
+type Session struct {
+	// Inherited Properties
+	mutex sync.Mutex
+	file  *SonrFile
+	peer  *Peer
+	user  *User
+
+	// Management
+	call NodeCallback
+}
+
+// ^ Prepare for Outgoing Session ^ //
+func NewOutSession(u *User, req *InviteRequest, tc NodeCallback) *Session {
+	return &Session{
+		file: req.GetFile(),
+		peer: req.GetTo(),
+		user: u,
+		call: tc,
+	}
+}
+
+// ^ Prepare for Incoming Session ^ //
+func NewInSession(u *User, inv *AuthInvite, c NodeCallback) *Session {
+	// Return Session
+	return &Session{
+		file: inv.GetFile(),
+		peer: inv.GetFrom(),
+		user: u,
+		call: c,
+	}
+}
+
+// Returns SonrFile as TransferCard given Receiver and Owner
+func (s *Session) Card(d Direction) *TransferCard {
+	if d == Direction_Incoming {
+		// Create Card
+		return &TransferCard{
+			// SQL Properties
+			Payload:  s.file.Payload,
+			Received: int32(time.Now().Unix()),
+
+			// Owner Properties
+			Owner:    s.user.Peer.GetProfile(),
+			Receiver: s.peer.GetProfile(),
+
+			// Data Properties
+			File: s.file,
 		}
 	} else {
-		// Check for Desktop
-		if d.IsDesktop() {
-			m.Path = filepath.Join(d.FileSystem.GetDownloads(), m.Name)
-		} else {
-			m.Path = filepath.Join(d.FileSystem.GetDocuments(), m.Name)
+		// Create Card
+		return &TransferCard{
+			// SQL Properties
+			Payload: s.file.Payload,
+
+			// Owner Properties
+			Owner:    s.user.Peer.GetProfile(),
+			Receiver: s.peer.GetProfile(),
+
+			// Data Properties
+			File: s.file,
 		}
 	}
-	// Set Path and Return
-	return m.Path
 }
 
-// Metadata Info returns: Total Bytes, Total Chunks, error
-func (m *SonrFile_Metadata) WriteTo(writer msgio.WriteCloser, call NodeCallback) error {
-	// @ Open Os File
-	f, err := os.Open(m.Path)
-	if err != nil {
-		return errors.New(fmt.Sprintf("Error to read [file=%v]: %v", m.Name, err.Error()))
-	}
-
-	// @ Initialize Chunk Data
-	nBytes, nChunks := int32(0), int32(0)
-	r := bufio.NewReader(f)
-	buf := make([]byte, 0, K_CHUNK_SIZE)
-
-	// @ Loop through File
-	for {
-		// Reads bytes onto chunk
-		n, err := r.Read(buf[:cap(buf)])
-
-		// Set Current chunk Value  //
-		buf = buf[:n]
-
-		// Bytes read is zero
-		if n == 0 {
-			// No Error
-			if err == nil {
-				continue
+// ^ read buffers sent on stream and save to file ^ //
+func (s *Session) ReadFromStream(stream network.Stream) {
+	// Concurrent Function
+	go func(rs msg.ReadCloser) {
+		// Read All Files
+		for _, m := range s.file.Items {
+			r := m.NewReader(s.user.Device)
+			err := r.ReadFrom(rs)
+			if err != nil {
+				s.call.Error(NewError(err, ErrorMessage_INCOMING))
 			}
-
-			// End of File
-			if err == io.EOF {
-				break
-			}
-
-			// Unexpected Error
-			return err
 		}
 
-		// * Process Here: Increase Chunk/TotalBytes count
-		nChunks++
-		nBytes += int32(len(buf))
-
-		// Write to Stream
-		writeBufToStream(buf, false, writer, call)
-
-		// Unexpected Error
-		if err != nil && err != io.EOF {
-			return err
-		}
-	}
-
-	// Send Completed
-	writeBufToStream(nil, true, writer, call)
-	f.Close()
-	return nil
+		// Close Stream and Callback
+		stream.Close()
+		s.call.Received(s.Card(Direction_Incoming))
+	}(msg.NewReader(stream))
 }
 
-// Writes data to provided writer until completed is called
-func writeBufToStream(buf []byte, completed bool, writer msgio.WriteCloser, call NodeCallback) {
-	if !completed {
-		// Create Block Protobuf from Chunk
-		chunk := &Chunk{
-			Size:       int32(len(buf)),
-			Buffer:     buf,
-			IsComplete: false,
+// ^ write file as Base64 in Msgio to Stream ^ //
+func (s *Session) WriteToStream(stream network.Stream) {
+	// Concurrent Function
+	go func(ws msg.WriteCloser) {
+		// Write All Files
+		for _, m := range s.file.Items {
+			w := m.NewWriter(s.user.Device)
+			err := w.WriteTo(ws)
+			if err != nil {
+				s.call.Error(NewError(err, ErrorMessage_OUTGOING))
+			}
+			GetState().NeedsWait()
 		}
 
-		// Convert to bytes
-		bytes, err := proto.Marshal(chunk)
-		if err != nil {
-			call.Error(NewError(err, ErrorMessage_OUTGOING))
-		}
-
-		// Write Message Bytes to Stream
-		err = writer.WriteMsg(bytes)
-		if err != nil {
-			call.Error(NewError(err, ErrorMessage_OUTGOING))
-		}
-	} else {
-		// Create Block Protobuf from Chunk
-		chunk := &Chunk{
-			IsComplete: true,
-		}
-
-		// Convert to bytes
-		bytes, err := proto.Marshal(chunk)
-		if err != nil {
-			call.Error(NewError(err, ErrorMessage_OUTGOING))
-		}
-
-		// Write Message Bytes to Stream
-		err = writer.WriteMsg(bytes)
-		if err != nil {
-			call.Error(NewError(err, ErrorMessage_OUTGOING))
-		}
-	}
+		// Callback
+		s.call.Transmitted(s.Card(Direction_Outgoing))
+	}(msg.NewWriter(stream))
 }
