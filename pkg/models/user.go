@@ -139,18 +139,6 @@ func (d *Device) ReadFile(name string) ([]byte, *SonrError) {
 	}
 }
 
-// Saves Transfer File to Disk
-func (d *Device) SaveTransfer(f *SonrFile_Metadata, data []byte) error {
-	// Get Save Path
-	path := f.SetPath(d)
-
-	// Write File to Disk
-	if err := os.WriteFile(path, data, 0644); err != nil {
-		return err
-	}
-	return nil
-}
-
 // Writes a File to Disk
 func (d *Device) WriteFile(name string, data []byte) (string, *SonrError) {
 	// Create File Path

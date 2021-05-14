@@ -244,10 +244,10 @@ message SonrFile {
   int32 size = 3;
 
   // List of Files as Metadata
-  repeated Metadata files = 4;
+  repeated Item items = 4;
 
   // For Received Transfer File Information
-  message Metadata {
+  message Item {
     string id = 1;   // Local Asset ID
     string name = 2; // File Name without Path
     string path = 3; // File Location
@@ -261,7 +261,6 @@ message SonrFile {
     }
 
     Properties properties = 8; // Media Properties
-
     message Properties {
       bool isAudio = 1;      // If File is Audio
       bool isImage = 2;      // If File is Image

@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	sync "sync"
 	"time"
 
 	"github.com/libp2p/go-msgio"
@@ -18,7 +19,7 @@ const K_CHUNK_SIZE = 4 * 1024
 // ** ─── SONRFILE MANAGEMENT ────────────────────────────────────────────────────────
 // Checks if File contains single item
 func (f *SonrFile) IsSingle() bool {
-	return len(f.Files) == 1
+	return len(f.Items) == 1
 }
 
 // Checks if Single File is Media
@@ -28,7 +29,7 @@ func (f *SonrFile) IsMedia() bool {
 
 // Checks if File contains multiple items
 func (f *SonrFile) IsMultiple() bool {
-	return len(f.Files) > 1
+	return len(f.Items) > 1
 }
 
 // Checks if Given Index is Final Item
@@ -37,7 +38,7 @@ func (f *SonrFile) IsFinalIndex(i int) bool {
 }
 
 // Checks if Given Index is Final Item
-func (f *SonrFile) IsFinalItem(i *SonrFile_Metadata) bool {
+func (f *SonrFile) IsFinalItem(i *SonrFile_Item) bool {
 	return f.IndexOf(i) == f.FinalIndex()
 }
 
@@ -74,16 +75,11 @@ func (f *SonrFile) CardOut(receiver *Peer, owner *Peer) *TransferCard {
 
 // Method Returns Final Index of Metadata
 func (f *SonrFile) FinalIndex() int {
-	return len(f.Files) - 1
+	return len(f.Items) - 1
 }
 
-// Method Returns Metadata Item at Given Index
-func (f *SonrFile) ItemAtIndex(index int) *SonrFile_Metadata {
-	return f.Files[index]
-}
-
-func (f *SonrFile) IndexOf(element *SonrFile_Metadata) int {
-	for k, v := range f.Files {
+func (f *SonrFile) IndexOf(element *SonrFile_Item) int {
+	for k, v := range f.Items {
 		if element == v {
 			return k
 		}
@@ -91,31 +87,48 @@ func (f *SonrFile) IndexOf(element *SonrFile_Metadata) int {
 	return -1 //not found.
 }
 
+func (f *SonrFile) NextItem(i *SonrFile_Item) *SonrFile_Item {
+	idx := f.IndexOf(i)
+	if f.IsFinalIndex(idx) {
+		return nil
+	} else {
+		return f.Items[idx+1]
+	}
+}
+
 // Method Returns Single if Applicable
-func (f *SonrFile) Single() *SonrFile_Metadata {
+func (f *SonrFile) Single() *SonrFile_Item {
 	if f.IsSingle() {
-		return f.Files[0]
+		return f.Items[0]
 	} else {
 		return nil
 	}
 }
 
-// ** ─── SONRFILE_Metadata MANAGEMENT ────────────────────────────────────────────────────────
-// Returns Progress of File, Given the written number of bytes
-func (m *SonrFile_Metadata) Progress(n int) (bool, float32) {
-	// Calculate Tracking
-	progress := float32(n) / float32(m.Size)
-	adjusted := int(progress)
-
-	// Check Interval
-	if adjusted&5 == 0 {
-		return true, progress
-	}
-	return false, 0
+// ** ─── SONRFILE_Item MANAGEMENT ────────────────────────────────────────────────────────
+type ItemFileReader struct {
+	mutex sync.Mutex
+	item  *SonrFile_Item
+	file  *os.File
+	size  int
 }
 
-// Returns/Updates Save Path for this File
-func (m *SonrFile_Metadata) SetPath(d *Device) string {
+func (m *SonrFile_Item) NewReader(d *Device) ItemReader {
+	return &itemReader{
+		item:   m,
+		device: d,
+		size:   0,
+	}
+}
+
+func (m *SonrFile_Item) NewWriter(d *Device) ItemWriter {
+	return &itemWriter{
+		item:   m,
+		size:   0,
+	}
+}
+
+func (m *SonrFile_Item) Create(d *Device) (*ItemFileReader, error) {
 	// Check for Media
 	if m.Mime.IsMedia() {
 		// Check for Desktop
@@ -132,12 +145,82 @@ func (m *SonrFile_Metadata) SetPath(d *Device) string {
 			m.Path = filepath.Join(d.FileSystem.GetDocuments(), m.Name)
 		}
 	}
-	// Set Path and Return
-	return m.Path
+
+	// Return Created File
+	f, err := os.Create(m.Path)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ItemFileReader{
+		file: f,
+		size: 0,
+		item: m,
+	}, nil
+}
+
+func (iw *ItemFileReader) Next(f *SonrFile, d *Device) (*ItemFileReader, error) {
+	idx := f.IndexOf(iw.item)
+	// Check if Last Item
+	if f.IsFinalIndex(idx) {
+		return nil, nil
+	} else {
+		// Get Next item
+		newItem := f.NextItem(iw.item)
+
+		// Create New Writer
+		iw, err := newItem.Create(d)
+		if err != nil {
+			return nil, err
+		}
+		return iw, nil
+	}
+}
+
+// Returns Progress of File, Given the written number of bytes
+func (p *ItemFileReader) Progress() (bool, float32) {
+	// Calculate Tracking
+	progress := float32(p.size) / float32(p.item.Size)
+	adjusted := int(progress)
+
+	// Check Interval
+	if adjusted&5 == 0 {
+		return true, progress
+	}
+	return false, 0
+}
+
+func (p *ItemFileReader) Write(data []byte) (n int, err error) {
+	// Unmarshal Bytes into Proto
+	c := &Chunk{}
+	err = proto.Unmarshal(data, c)
+	if err != nil {
+		return -1, err
+	}
+
+	// Check for Complete
+	if !c.IsComplete {
+		n, err = p.file.Write(c.GetBuffer())
+		if err != nil {
+			return -1, err
+		}
+		p.size += n
+		return p.size, nil
+	} else {
+		err := p.file.Sync()
+		if err != nil {
+			return -1, err
+		}
+		err = p.file.Close()
+		if err != nil {
+			return -1, err
+		}
+		return 0, nil
+	}
 }
 
 // Metadata Info returns: Total Bytes, Total Chunks, error
-func (m *SonrFile_Metadata) WriteTo(writer msgio.WriteCloser, call NodeCallback) error {
+func (m *SonrFile_Item) WriteTo(writer msgio.WriteCloser, call NodeCallback) error {
 	// @ Open Os File
 	f, err := os.Open(m.Path)
 	if err != nil {
@@ -151,34 +234,27 @@ func (m *SonrFile_Metadata) WriteTo(writer msgio.WriteCloser, call NodeCallback)
 
 	// @ Loop through File
 	for {
-		// Reads bytes onto chunk
+		// Initialize
 		n, err := r.Read(buf[:cap(buf)])
-
-		// Set Current chunk Value  //
 		buf = buf[:n]
 
 		// Bytes read is zero
 		if n == 0 {
-			// No Error
 			if err == nil {
 				continue
 			}
-
-			// End of File
 			if err == io.EOF {
 				break
 			}
-
-			// Unexpected Error
 			return err
 		}
 
-		// * Process Here: Increase Chunk/TotalBytes count
+		// Increment
 		nChunks++
 		nBytes += int32(len(buf))
 
 		// Write to Stream
-		writeBufToStream(buf, false, writer, call)
+		streamBuffer(buf, false, writer, call)
 
 		// Unexpected Error
 		if err != nil && err != io.EOF {
@@ -187,13 +263,13 @@ func (m *SonrFile_Metadata) WriteTo(writer msgio.WriteCloser, call NodeCallback)
 	}
 
 	// Send Completed
-	writeBufToStream(nil, true, writer, call)
+	streamBuffer(nil, true, writer, call)
 	f.Close()
 	return nil
 }
 
 // Writes data to provided writer until completed is called
-func writeBufToStream(buf []byte, completed bool, writer msgio.WriteCloser, call NodeCallback) {
+func streamBuffer(buf []byte, completed bool, writer msgio.WriteCloser, call NodeCallback) {
 	if !completed {
 		// Create Block Protobuf from Chunk
 		chunk := &Chunk{
