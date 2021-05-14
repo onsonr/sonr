@@ -248,13 +248,19 @@ message SonrFile {
 
   // For Received Transfer File Information
   message Metadata {
-    string id = 1;             // Local Asset ID
-    string name = 2;           // File Name without Path
-    string path = 3;           // File Location
-    int32 size = 4;            // File Size in Bytes
-    MIME mime = 5;             // Standard Mime Type
-    bytes thumbnail = 6;       // Thumbnail Preview of File
-    Properties properties = 7; // Media Properties
+    string id = 1;   // Local Asset ID
+    string name = 2; // File Name without Path
+    string path = 3; // File Location
+    int32 size = 4;  // File Size in Bytes
+    MIME mime = 5;   // Standard Mime Type
+
+    // Thumbnail Preview of File
+    oneof thumbnail {
+      bytes thumbBuffer = 6; // Thumbnail Buffer
+      string thumbPath = 7;  // Thumbnail Path
+    }
+
+    Properties properties = 8; // Media Properties
 
     message Properties {
       bool isAudio = 1;      // If File is Audio

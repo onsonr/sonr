@@ -82,8 +82,21 @@ func (f *SonrFile) Preview() []byte {
 		// Check if Thumbnail Provided
 		if props.HasThumbnail {
 			// Initialize
+			var thumbReader io.Reader
 			thumbWriter := new(bytes.Buffer)
-			thumbReader := bytes.NewReader(meta.Thumbnail)
+
+			// Get Reader
+			switch meta.Thumbnail.(type) {
+			// Load using Buffer
+			case *SonrFile_Metadata_ThumbBuffer:
+				// Set Reader
+				thumbReader = bytes.NewReader(meta.GetThumbBuffer())
+
+			// Load using Path
+			case *SonrFile_Metadata_ThumbPath:
+				// Set Reader
+				thumbReader, _ = os.Open(meta.GetThumbPath())
+			}
 
 			// Convert to Image Object
 			img, _, err := image.Decode(thumbReader)
@@ -98,7 +111,6 @@ func (f *SonrFile) Preview() []byte {
 				log.Panicln(err)
 				return nil
 			}
-
 			return thumbWriter.Bytes()
 		}
 	}
