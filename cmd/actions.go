@@ -9,14 +9,11 @@ import (
 
 // @ Return URLLink
 func GetURLLink(url string) []byte {
-	// Get Link Data
-	data, serr := md.GetPageInfoFromUrl(url)
-	if serr != nil {
-		return nil
-	}
+	// Create Link
+	link := md.NewURLLink(url)
 
 	// Marshal
-	bytes, err := proto.Marshal(data)
+	bytes, err := proto.Marshal(link)
 	if err != nil {
 		return nil
 	}

@@ -37,7 +37,7 @@ func (n *Client) OnInvite(data []byte) {
 }
 
 // ^ OnReply: Begins File Transfer when Accepted ^
-func (n *Client) OnReply(id peer.ID, reply []byte, session *md.Session) {
+func (n *Client) OnReply(id peer.ID, reply []byte) {
 	// Call Responded
 	n.call.Responded(reply)
 
@@ -56,7 +56,7 @@ func (n *Client) OnReply(id peer.ID, reply []byte, session *md.Session) {
 			n.call.Status(md.Status_INPROGRESS)
 
 			// Create New Auth Stream
-			stream, err := n.Host.StartStream(id, n.user.Router().Transfer(id))
+			stream, err := n.Host.StartStream(id, n.user.GetRouter().Transfer(id))
 			if err != nil {
 				n.call.Error(md.NewError(err, md.ErrorMessage_HOST_STREAM))
 				return
@@ -64,9 +64,7 @@ func (n *Client) OnReply(id peer.ID, reply []byte, session *md.Session) {
 
 			// Write to Stream on Session
 			writer := mg.NewWriter(stream)
-			go md.WriteToStream(writer, session)
-		} else {
-			n.session = nil
+			go n.session.WriteToStream(writer)
 		}
 	} else {
 		n.call.Error(md.NewErrorWithType(md.ErrorMessage_TRANSFER_START))
@@ -76,5 +74,5 @@ func (n *Client) OnReply(id peer.ID, reply []byte, session *md.Session) {
 // ^ OnResponded: Prepares for Incoming File Transfer when Accepted ^
 func (n *Client) OnResponded(inv *md.AuthInvite) {
 	n.session = md.NewInSession(n.user, inv, n.call)
-	n.Host.HandleStream(n.user.Router().Transfer(n.Host.ID), n.session.ReadFromStream)
+	n.Host.HandleStream(n.user.GetRouter().Transfer(n.Host.ID), n.session.ReadFromStream)
 }

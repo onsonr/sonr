@@ -76,7 +76,7 @@ message Contact {
     // Properties
     bool isPrimary = 1; // If this is the Primary field for SocialMedia Provider
     Provider provider = 2;     // Type of Social Provider
-    string username = 3;       // Users handle on Service
+    User user = 3;             // Social User Reference
     Tile tile = 4;             // Social Tile Position
     Links links = 5;           // Social Links
     Visibility visibility = 6; // Is the User's Account Private
@@ -118,6 +118,14 @@ message Contact {
         Profile = 3;  // Small Tile is Direct Link to User Profile
         Playlist = 4; // Playlist type similar to Feed
       }
+    }
+
+    // Social User for Provider
+    message User {
+      string name = 1;
+      string username = 2;
+      URLLink picture = 3;
+      string bio = 4;
     }
 
     // Social Tile Visibility
@@ -267,10 +275,9 @@ message Transfer {
 
   // Attached Data
   oneof data {
-    string link = 2;     // URL to be Sent - Optional
-    URLLink url = 3;     // Received a Website Link
-    Contact contact = 4; // Contact Card to be Sent - Optional
-    SonrFile file = 5;   // Files to be Sent - Optional
+    URLLink url = 2;     // Received a Website Link
+    Contact contact = 3; // Contact Card to be Sent - Optional
+    SonrFile file = 4;   // Files to be Sent - Optional
   }
 }
 
@@ -290,18 +297,19 @@ message TransferCard {
 
 // URLLink Contains metadata of provided URL
 message URLLink {
-  string url = 1;                      // OG URL Link
-  string title = 2;                    // Meta Field for Title
-  string type = 3;                     // OG Type
-  string site = 4;                     // Meta field for site
-  string siteName = 5;                 // Meta field for sitename
-  string description = 6;              // Meta field for description
-  string locale = 7;                   // Meta field for locale
-  repeated OpenGraphImage images = 8;  // Images
-  repeated OpenGraphVideo videos = 9;  // Videos
-  repeated OpenGraphAudio audios = 10; // Audios
-  TwitterCard twitter = 11;            // Twitter Card
-  string content = 12;                 // URL Content
+  bool initialized = 1;                // Whether URL Metadata has been Loaded
+  string url = 2;                      // OG URL Link
+  string title = 3;                    // Meta Field for Title
+  string type = 4;                     // OG Type
+  string site = 5;                     // Meta field for site
+  string siteName = 6;                 // Meta field for sitename
+  string description = 7;              // Meta field for description
+  string locale = 8;                   // Meta field for locale
+  repeated OpenGraphImage images = 9;  // Images
+  repeated OpenGraphVideo videos = 10; // Videos
+  repeated OpenGraphAudio audios = 11; // Audios
+  TwitterCard twitter = 12;            // Twitter Card
+  string content = 13;                 // URL Content
 
   // OpenGraph Image
   message OpenGraphImage {

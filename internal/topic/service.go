@@ -54,7 +54,7 @@ func (tm *TopicManager) Direct(id peer.ID, inv *md.AuthInvite) error {
 		return err
 	}
 
-	tm.topicHandler.OnReply(id, reply.InvReply, nil)
+	tm.topicHandler.OnReply(id, reply.InvReply)
 	return nil
 }
 
@@ -145,7 +145,7 @@ func (ts *TopicService) ExchangeWith(ctx context.Context, args TopicServiceArgs,
 }
 
 // ^ Invite: Handles User sent AuthInvite Response ^
-func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite, session *md.Session) error {
+func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite) error {
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(inv)
 	if err != nil {
@@ -167,7 +167,7 @@ func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite, session *md.Sessi
 	if call.Error != nil {
 		return err
 	}
-	tm.topicHandler.OnReply(id, reply.InvReply, session)
+	tm.topicHandler.OnReply(id, reply.InvReply)
 	return nil
 }
 

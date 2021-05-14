@@ -129,7 +129,7 @@ func (r *User_Router) Topic(name string) string {
 }
 
 // @ Major Rendevouz Advertising Point
-func (u *User) Router() *User_Router {
+func (u *User) GetRouter() *User_Router {
 	return u.GetConnection().GetRouter()
 }
 

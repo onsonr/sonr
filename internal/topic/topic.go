@@ -34,7 +34,7 @@ type TopicHandler interface {
 	OnEvent(*md.LobbyEvent)
 	OnRefresh(*md.Lobby)
 	OnInvite([]byte)
-	OnReply(id peer.ID, data []byte, session *md.Session)
+	OnReply(id peer.ID, data []byte)
 	OnResponded(inv *md.AuthInvite)
 }
 

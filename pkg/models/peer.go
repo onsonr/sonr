@@ -120,18 +120,13 @@ func (u *User) SignInviteWithFile(req *InviteRequest) AuthInvite {
 // ^ Generate AuthInvite with URL Payload from Request and User Peer Data ^ //
 func (u *User) SignInviteWithLink(req *InviteRequest) AuthInvite {
 	// Get URL Data
-	link := req.GetData().GetLink()
-	urlInfo, err := GetPageInfoFromUrl(link)
-	if err != nil {
-		urlInfo = &URLLink{
-			Url: link,
-		}
-	}
+	link := req.GetData().GetUrl()
+	link.SetData()
 
 	// Create Invite
 	return AuthInvite{
 		From:    u.GetPeer(),
-		Data:    urlInfo.GetTransfer(),
+		Data:    link.GetTransfer(),
 		Payload: req.GetPayload(),
 		Remote:  req.GetRemote(),
 		To:      req.GetTo(),
