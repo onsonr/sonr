@@ -20,3 +20,24 @@ enum Direction {
   Incoming = 1; // Incoming Transfer
   Outgoing = 2; // Outgoing Transfer
 }
+
+message RemoteTopic {
+  User owner = 1;
+  SonrFile file = 2;
+  RemoteInfo info = 3;
+  map<string, Peer> peers = 4;
+}
+
+// Message Sent when peer messages Remote Topic
+message RemoteEvent {
+  string id = 1;   // Peer ID
+  Event event = 2; // What Peer is Doing
+  Peer from = 3;   // User Information
+
+  enum Event {
+    REQUEST = 0;   // Peer has joined wants Info
+    ACCEPT = 1;    // Peer is taking break from lobby
+    DECLINE = 2;   // Peer has rejoined Lobby
+    COMPLETED = 3; // Peer has changed position
+  }
+}

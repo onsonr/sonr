@@ -234,7 +234,6 @@ type Session struct {
 	builder *bytes.Buffer
 
 	// Tracking
-	index     int
 	direction Direction
 }
 
@@ -245,7 +244,6 @@ func NewOutSession(u *User, req *InviteRequest, tc NodeCallback) *Session {
 		peer:      req.GetTo(),
 		user:      u,
 		call:      tc,
-		index:     0,
 		direction: Direction_Outgoing,
 	}
 }
@@ -257,14 +255,13 @@ func NewInSession(u *User, inv *AuthInvite, c NodeCallback) *Session {
 		peer:      inv.GetFrom(),
 		user:      u,
 		call:      c,
-		index:     0,
 		builder:   new(bytes.Buffer),
 		direction: Direction_Incoming,
 	}
 }
 
 // ^ Check file type and use corresponding method ^ //
-func (s *Session) AddBuffer(curr int, buffer []byte) (bool, error) {
+func (s *Session) AddBuffer(curr int, buffer []byte, index int) (bool, error) {
 	// ** Lock/Unlock ** //
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
@@ -285,7 +282,7 @@ func (s *Session) AddBuffer(curr int, buffer []byte) (bool, error) {
 		}
 
 		// Check for Interval and Send Callback
-		if met, p := s.file.ItemAtIndex(s.index).Progress(curr, n); met {
+		if met, p := s.file.ItemAtIndex(index).Progress(curr, n); met {
 			s.call.Progressed(p)
 		}
 
@@ -298,38 +295,40 @@ func (s *Session) AddBuffer(curr int, buffer []byte) (bool, error) {
 // ^ read buffers sent on stream and save to file ^ //
 func (s *Session) ReadFromStream(stream network.Stream) {
 	// Route Data from Stream
-	go func(reader msg.ReadCloser) {
+	go func(reader msg.ReadCloser, index int) {
 		for i := 0; ; i++ {
-			// @ Read Length Fixed Bytes
+			// Read Length Fixed Bytes
 			buffer, err := reader.ReadMsg()
 			if err != nil {
 				s.call.Error(NewError(err, ErrorMessage_TRANSFER_CHUNK))
 				break
 			}
 
-			// @ Unmarshal Bytes into Proto
-			hasCompleted, err := s.AddBuffer(i, buffer)
+			// Unmarshal Bytes into Proto
+			hasCompleted, err := s.AddBuffer(i, buffer, index)
 			if err != nil {
 				s.call.Error(NewError(err, ErrorMessage_TRANSFER_CHUNK))
 				break
 			}
 
-			// @ Check if All Buffer Received to Save
+			// Check if All Buffer Received to Save
 			if hasCompleted {
 				// Save file
-				if done := s.Save(); done {
+				if done, newIndex := s.Save(index); done {
 					break
+				} else {
+					index = newIndex
 				}
 			}
 			GetState().NeedsWait()
 		}
-	}(msg.NewReader(stream))
+	}(msg.NewReader(stream), 0)
 }
 
 // ^ Check file type and use corresponding method to save to Disk ^ //
-func (s *Session) Save() bool {
+func (s *Session) Save(index int) (bool, int) {
 	// Sync file to Disk
-	if err := s.user.Device.SaveTransfer(s.file.ItemAtIndex(s.index), s.builder.Bytes()); err != nil {
+	if err := s.user.Device.SaveTransfer(s.file.ItemAtIndex(index), s.builder.Bytes()); err != nil {
 		s.call.Error(NewError(err, ErrorMessage_TRANSFER_END))
 	}
 
@@ -337,24 +336,21 @@ func (s *Session) Save() bool {
 	s.builder.Reset()
 
 	// Check Completion
-	if s.file.IsFinalIndex(s.index) {
+	if s.file.IsFinalIndex(index) {
 		// Completed
 		s.call.Received(s.file.CardIn(s.user.GetPeer(), s.peer))
-		return true
+		return true, index
 	} else {
 		// Next Item
-		s.index += 1
-		return false
+		index += 1
+		return false, index
 	}
 }
 
 // ^ write file as Base64 in Msgio to Stream ^ //
 func (s *Session) WriteToStream(writer msgio.WriteCloser) {
 	// Write All Files
-	for i, m := range s.file.Files {
-		// Set Index
-		s.index = i
-
+	for _, m := range s.file.Files {
 		// Write Item to Stream
 		if err := m.WriteTo(writer, s.call); err != nil {
 			s.call.Error(NewError(err, ErrorMessage_OUTGOING))
