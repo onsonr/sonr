@@ -17,7 +17,7 @@ type Client struct {
 	ctx     context.Context
 	call    md.NodeCallback
 	user    *md.User
-	session md.Session
+	session *md.Session
 
 	// References
 	Host *net.HostNode

@@ -54,8 +54,8 @@ func (r *InviteRequest) GetUrl() *URLLink {
 }
 
 // Prepare for Outgoing Session
-func (r *InviteRequest) NewSession(u *User, tc NodeCallback) Session {
-	return &session{
+func (r *InviteRequest) NewSession(u *User, tc NodeCallback) *Session {
+	return &Session{
 		file: r.GetFile(),
 		peer: r.GetTo(),
 		user: u,
@@ -77,8 +77,8 @@ func (i *AuthInvite) GetUrl() *URLLink {
 }
 
 // Prepare for Incoming Session
-func (i *AuthInvite) NewSession(u *User, c NodeCallback) Session {
-	return &session{
+func (i *AuthInvite) NewSession(u *User, c NodeCallback) *Session {
+	return &Session{
 		file: i.GetFile(),
 		peer: i.GetFrom(),
 		user: u,
