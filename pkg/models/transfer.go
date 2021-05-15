@@ -17,7 +17,6 @@ type ItemReader interface {
 	Progress() (bool, float32)
 	ReadFrom(reader msg.ReadCloser) error
 }
-
 type itemReader struct {
 	ItemReader
 	mutex  sync.Mutex
