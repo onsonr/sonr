@@ -118,7 +118,6 @@ func (iw *itemWriter) WriteTo(writer msg.WriteCloser) error {
 	}
 
 	// @ Initialize Chunk Data
-	nBytes, nChunks := int32(0), int32(0)
 	r := bufio.NewReader(f)
 	buf := make([]byte, 0, K_CHUNK_SIZE)
 
@@ -138,10 +137,6 @@ func (iw *itemWriter) WriteTo(writer msg.WriteCloser) error {
 			}
 			return err
 		}
-
-		// Increment
-		nChunks++
-		nBytes += int32(len(buf))
 
 		// Create Block Protobuf from Chunk
 		data, err := encodeChunk(buf, false)
