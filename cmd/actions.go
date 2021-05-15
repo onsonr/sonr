@@ -9,14 +9,11 @@ import (
 
 // @ Return URLLink
 func GetURLLink(url string) []byte {
-	// Get Link Data
-	data, serr := md.GetPageInfoFromUrl(url)
-	if serr != nil {
-		return nil
-	}
+	// Create Link
+	link := md.NewURLLink(url)
 
 	// Marshal
-	bytes, err := proto.Marshal(data)
+	bytes, err := proto.Marshal(link)
 	if err != nil {
 		return nil
 	}
@@ -110,7 +107,7 @@ func (mn *Node) Update(data []byte) {
 		}
 
 		// Update Peer
-		mn.client.Peer.Update(update)
+		mn.user.Update(update)
 
 		// Notify Local Lobby
 		err := mn.client.Update(mn.local)
@@ -163,7 +160,7 @@ func (mn *Node) Invite(data []byte) {
 
 		// @ 2. Check Transfer Type
 		if req.Payload == md.Payload_CONTACT || req.Payload == md.Payload_FLAT_CONTACT {
-			err := mn.client.InviteContact(req, topic, mn.user.Contact())
+			err := mn.client.InviteContact(req, topic, mn.user.Contact)
 			if err != nil {
 				mn.handleError(err)
 				return
@@ -203,7 +200,7 @@ func (mn *Node) Respond(data []byte) {
 			topic = mn.local
 		}
 
-		mn.client.Respond(req, topic, mn.user.Contact())
+		mn.client.Respond(req, topic)
 		// Update Status
 		if req.Decision {
 			mn.setStatus(md.Status_INPROGRESS)

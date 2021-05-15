@@ -1,25 +1,13 @@
 package models
 
 import (
-	"hash/fnv"
-	"math"
-	"time"
+	"errors"
+	"fmt"
 
+	olc "github.com/google/open-location-code/go"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/multiformats/go-multiaddr"
-	"google.golang.org/protobuf/proto"
+	"github.com/libp2p/go-libp2p-core/protocol"
 )
-
-// ** ─── ConnectionRequest MANAGEMENT ────────────────────────────────────────────────────────
-func (req *ConnectionRequest) Latitude() float64 {
-	loc := req.GetLocation()
-	return loc.GetLatitude()
-}
-
-func (req *ConnectionRequest) Longitude() float64 {
-	loc := req.GetLocation()
-	return loc.GetLongitude()
-}
 
 // ************************** //
 // ** MIME Info Management ** //
@@ -52,259 +40,163 @@ func (m *MIME) IsVideo() bool {
 	return m.Type == MIME_VIDEO
 }
 
-// ** ─── PEER MANAGEMENT ────────────────────────────────────────────────────────
+// ** ─── InviteRequest MANAGEMENT ────────────────────────────────────────────────────────
+func (r *InviteRequest) GetContact() *Contact {
+	return r.GetData().GetContact()
+}
 
-// ^ Create New Peer from Connection Request and Host ID ^ //
-func NewPeer(cr *ConnectionRequest, id peer.ID, maddr multiaddr.Multiaddr) (*Peer, *SonrError) {
-	// Initialize
-	deviceID := cr.Device.GetId()
-	c := cr.GetContact()
-	profile := c.GetProfile()
+func (r *InviteRequest) GetFile() *SonrFile {
+	return r.GetData().GetFile()
+}
 
-	// Get User ID
-	userID := fnv.New32a()
-	_, err := userID.Write([]byte(profile.GetUsername()))
+func (r *InviteRequest) GetUrl() *URLLink {
+	return r.GetData().GetUrl()
+}
+
+// ** ─── AuthInvite MANAGEMENT ────────────────────────────────────────────────────────
+func (i *AuthInvite) GetContact() *Contact {
+	return i.GetData().GetContact()
+}
+
+func (i *AuthInvite) GetFile() *SonrFile {
+	return i.GetData().GetFile()
+}
+
+func (i *AuthInvite) GetUrl() *URLLink {
+	return i.GetData().GetUrl()
+}
+
+// ** ─── Location MANAGEMENT ────────────────────────────────────────────────────────
+func (l *Location) MinorOLC() string {
+	lat := l.Latitude()
+	lon := l.Longitude()
+	return olc.Encode(lat, lon, 6)
+}
+
+func (l *Location) MajorOLC() string {
+	lat := l.Latitude()
+	lon := l.Longitude()
+	return olc.Encode(lat, lon, 4)
+}
+
+func (l *Location) Latitude() float64 {
+	if l.Geo != nil {
+		return l.Geo.GetLatitude()
+	}
+	return l.Ip.GetLatitude()
+}
+
+func (l *Location) Longitude() float64 {
+	if l.Geo != nil {
+		return l.Geo.GetLongitude()
+	}
+	return l.Ip.GetLongitude()
+}
+
+func (l *Location) GeoOLC() (string, error) {
+	if l.Geo != nil {
+		return "", errors.New("Geo Location doesnt exist")
+	}
+	return olc.Encode(float64(l.Geo.GetLatitude()), float64(l.Geo.GetLongitude()), 5), nil
+}
+
+func (l *Location) IPOLC() string {
+	return olc.Encode(float64(l.Ip.GetLatitude()), float64(l.Ip.GetLongitude()), 5)
+}
+
+// ** ─── Router MANAGEMENT ────────────────────────────────────────────────────────
+// @ Local Lobby Topic Protocol ID
+func (r *User) LocalIPTopic() string {
+	return fmt.Sprintf("/sonr/topic/%s", r.Location.IPOLC())
+}
+
+func (r *User) LocalGeoTopic() (string, error) {
+	geoOlc, err := r.Location.GeoOLC()
 	if err != nil {
-		return nil, NewError(err, ErrorMessage_HOST_KEY)
+		return "", err
 	}
-
-	// Set Peer
-	return &Peer{
-		Id: &Peer_ID{
-			Peer:   id.String(),
-			Device: deviceID,
-			User:   userID.Sum32(),
-		},
-		Profile:  profile,
-		Platform: cr.Device.Platform,
-		Model:    cr.Device.Model,
-	}, nil
+	return fmt.Sprintf("/sonr/topic/%s", geoOlc), nil
 }
 
-// ^ Returns Peer as Buffer ^ //
-func (p *Peer) Buffer() ([]byte, error) {
-	buf, err := proto.Marshal(p)
-	if err != nil {
-		return nil, err
-	}
-	return buf, nil
+// @ Transfer Controller Data Protocol ID
+func (r *User_Router) Transfer(id peer.ID) protocol.ID {
+	return protocol.ID(fmt.Sprintf("/sonr/transfer/%s", id.Pretty()))
 }
 
-// ^ Checks for Host Peer ID is Same ^ //
-func (p *Peer) IsPeerID(pid peer.ID) bool {
-	return p.Id.Peer == pid.String()
+// @ Lobby Topic Protocol ID
+func (r *User_Router) Topic(name string) string {
+	return fmt.Sprintf("/sonr/topic/%s", name)
 }
 
-// ^ Checks for Host Peer ID String is Same ^ //
-func (p *Peer) IsPeerIDString(pid string) bool {
-	return p.Id.Peer == pid
+// @ Major Rendevouz Advertising Point
+func (u *User) GetRouter() *User_Router {
+	return u.GetConnection().GetRouter()
 }
 
-// ^ Checks for Host Peer ID String is not Same ^ //
-func (p *Peer) IsNotPeerIDString(pid string) bool {
-	return p.Id.Peer != pid
-}
+// ** ─── Status MANAGEMENT ────────────────────────────────────────────────────────
+// Update Connected Connection Status
+func (u *User) SetConnected(value bool) *StatusUpdate {
+	// Set Value
+	u.Connection.HasConnected = value
 
-// ^ Checks for Host Peer ID String is not Same ^ //
-func (p *Peer) PeerID() string {
-	return p.Id.Peer
-}
-
-// ^ SignMessage Creates Lobby Event with Message ^
-func (p *Peer) SignMessage(m string, to *Peer) *LobbyEvent {
-	return &LobbyEvent{
-		Event:   LobbyEvent_MESSAGE,
-		From:    p,
-		Id:      p.Id.Peer,
-		Message: m,
-		To:      to.Id.Peer,
-	}
-}
-
-// ^ Generate AuthInvite with Contact Payload from Request, User Peer Data and User Contact ^ //
-func (p *Peer) SignInviteWithContact(c *Contact, flat bool, req *InviteRequest) AuthInvite {
-	// Create Invite
-	return AuthInvite{
-		From:    p,
-		IsFlat:  flat,
-		Contact: c,
-		Payload: req.GetPayload(),
-		Remote:  req.GetRemote(),
-		To:      req.GetTo(),
-	}
-}
-
-// ^ Generate AuthInvite with Contact Payload from Request, User Peer Data and User Contact ^ //
-func (p *Peer) SignInviteWithFile(req *InviteRequest) AuthInvite {
-	// Create Invite
-	return AuthInvite{
-		From:    p,
-		To:      req.GetTo(),
-		Payload: req.GetPayload(),
-		File:    req.GetFile(),
-		Remote:  req.GetRemote(),
-	}
-}
-
-// ^ Generate AuthInvite with URL Payload from Request and User Peer Data ^ //
-func (p *Peer) SignInviteWithLink(req *InviteRequest) AuthInvite {
-	// Get URL Data
-	urlInfo, err := GetPageInfoFromUrl(req.Url)
-	if err != nil {
-		urlInfo = &URLLink{
-			Link: req.Url,
-		}
-	}
-
-	// Create Invite
-	return AuthInvite{
-		From:    p,
-		Url:     urlInfo,
-		Payload: req.GetPayload(),
-		Remote:  req.GetRemote(),
-		To:      req.GetTo(),
-	}
-}
-
-// ^ SignReply Creates AuthReply ^
-func (p *Peer) SignReply(d bool, req *RespondRequest, to *Peer) *AuthReply {
-	return &AuthReply{
-		From:     p,
-		Type:     AuthReply_Transfer,
-		Decision: d,
-		Remote:   req.GetRemote(),
-		Card: &TransferCard{
-			// SQL Properties
-			Payload:  Payload_NONE,
-			Received: int32(time.Now().Unix()),
-
-			// Owner Properties
-			Owner:    p.Profile,
-			Receiver: to.GetProfile(),
-		},
-	}
-}
-
-// ^ SignReply Creates AuthReply with Contact  ^
-func (p *Peer) SignReplyWithContact(c *Contact, flat bool, req *RespondRequest, to *Peer) *AuthReply {
-	// Set Reply Type
-	var kind AuthReply_Type
-	if flat {
-		kind = AuthReply_FlatContact
+	// Update Status
+	if value {
+		u.Connection.Status = Status_CONNECTED
 	} else {
-		kind = AuthReply_Contact
+		u.Connection.Status = Status_FAILED
 	}
 
-	// Check if Request Provided
-	if req != nil {
-		// Build Reply
-		return &AuthReply{
-			From:   p,
-			Type:   kind,
-			Remote: req.GetRemote(),
-			Card: &TransferCard{
-				// SQL Properties
-				Payload:  Payload_CONTACT,
-				Received: int32(time.Now().Unix()),
+	// Returns Status Update
+	return &StatusUpdate{Value: u.Connection.GetStatus()}
+}
 
-				// Owner Properties
-				Owner:    p.Profile,
-				Receiver: to.GetProfile(),
+// Update Bootstrap Connection Status
+func (u *User) SetBootstrapped(value bool) *StatusUpdate {
+	// Set Value
+	u.Connection.HasBootstrapped = value
 
-				// Data Properties
-				Contact: c,
-			},
-		}
+	// Update Status
+	if value {
+		u.Connection.Status = Status_BOOTSTRAPPED
 	} else {
-		// Build Reply
-		return &AuthReply{
-			From: p,
-			Type: kind,
-			Card: &TransferCard{
-				// SQL Properties
-				Payload:  Payload_CONTACT,
-				Received: int32(time.Now().Unix()),
-
-				// Owner Properties
-				Owner:    p.Profile,
-				Receiver: to.GetProfile(),
-
-				// Data Properties
-				Contact: c,
-			},
-		}
+		u.Connection.Status = Status_FAILED
 	}
 
+	// Returns Status Update
+	return &StatusUpdate{Value: u.Connection.GetStatus()}
 }
 
-// ^ SignUpdate Creates Lobby Event with Peer Data ^
-func (p *Peer) SignUpdate() *LobbyEvent {
-	return &LobbyEvent{
-		Event: LobbyEvent_UPDATE,
-		From:  p,
-		Id:    p.Id.Peer,
+// Update Bootstrap Connection Status
+func (u *User) SetJoinedLocal(value bool) *StatusUpdate {
+	// Set Value
+	u.Connection.HasJoinedLocal = value
+
+	// Update Status
+	if value {
+		u.Connection.Status = Status_AVAILABLE
+	} else {
+		u.Connection.Status = Status_BOOTSTRAPPED
 	}
+
+	// Returns Status Update
+	return &StatusUpdate{Value: u.Connection.GetStatus()}
 }
 
-// ^ Processes Update Request ^ //
-func (p *Peer) Update(u *UpdateRequest) {
-	if u.Type == UpdateRequest_Position {
-		// Extract Data
-		facing := u.Position.GetFacing()
-		heading := u.Position.GetHeading()
+// Update Node Status
+func (u *User) SetStatus(ns Status) *StatusUpdate {
+	// Set Value
+	u.Connection.Status = ns
 
-		// Update User Values
-		var faceDir float64
-		var faceAnpd float64
-		var headDir float64
-		var headAnpd float64
-		faceDir = math.Round(facing.Direction*100) / 100
-		headDir = math.Round(heading.Direction*100) / 100
-		faceDesg := int((facing.Direction / 11.25) + 0.25)
-		headDesg := int((heading.Direction / 11.25) + 0.25)
+	// Returns Status Update
+	return &StatusUpdate{Value: u.Connection.GetStatus()}
+}
 
-		// Find Antipodal
-		if facing.Direction > 180 {
-			faceAnpd = math.Round((facing.Direction-180)*100) / 100
-		} else {
-			faceAnpd = math.Round((facing.Direction+180)*100) / 100
-		}
+// Checks if Status is Given Value
+func (u *User) IsStatus(gs Status) bool {
+	return u.GetConnection().GetStatus() == gs
+}
 
-		// Find Antipodal
-		if heading.Direction > 180 {
-			headAnpd = math.Round((heading.Direction-180)*100) / 100
-		} else {
-			headAnpd = math.Round((heading.Direction+180)*100) / 100
-		}
-
-		// Set Position
-		p.Position = &Position{
-			Facing: &Position_Compass{
-				Direction: faceDir,
-				Antipodal: faceAnpd,
-				Cardinal:  Cardinal(faceDesg % 32),
-			},
-			Heading: &Position_Compass{
-				Direction: headDir,
-				Antipodal: headAnpd,
-				Cardinal:  Cardinal(headDesg % 32),
-			},
-			Orientation: u.Position.GetOrientation(),
-		}
-	}
-
-	// Set Properties
-	if u.Type == UpdateRequest_Properties {
-		p.Properties = u.Properties
-	}
-
-	// Check for New Contact, Update Peer Profile
-	if u.Type == UpdateRequest_Contact {
-		profile := u.Contact.GetProfile()
-		p.Profile = &Profile{
-			FirstName: profile.GetFirstName(),
-			LastName:  profile.GetLastName(),
-			Picture:   profile.GetPicture(),
-		}
-	}
+// Checks if Status is Not Given Value
+func (u *User) IsNotStatus(gs Status) bool {
+	return u.GetConnection().GetStatus() != gs
 }

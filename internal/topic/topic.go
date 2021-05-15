@@ -9,7 +9,6 @@ import (
 	rpc "github.com/libp2p/go-libp2p-gorpc"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	net "github.com/sonr-io/core/internal/host"
-	se "github.com/sonr-io/core/internal/session"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -23,6 +22,7 @@ type TopicManager struct {
 	topic        *pubsub.Topic
 	subscription *pubsub.Subscription
 	eventHandler *pubsub.TopicEventHandler
+	user         *md.User
 	Lobby        *md.Lobby
 
 	service      *TopicService
@@ -31,15 +31,14 @@ type TopicManager struct {
 }
 
 type TopicHandler interface {
-	GetContact() *md.Contact
 	OnEvent(*md.LobbyEvent)
 	OnRefresh(*md.Lobby)
 	OnInvite([]byte)
-	OnReply(id peer.ID, data []byte, session *se.Session)
-	OnResponded(inv *md.AuthInvite, p *md.Peer)
+	OnReply(id peer.ID, data []byte)
+	OnResponded(inv *md.AuthInvite)
 }
 
-func JoinTopic(ctx context.Context, h *net.HostNode, p *md.Peer, name string, isLocal bool, th TopicHandler) (*TopicManager, *md.SonrError) {
+func JoinTopic(ctx context.Context, h *net.HostNode, u *md.User, name string, lt md.Lobby_Type, th TopicHandler) (*TopicManager, *md.SonrError) {
 	// Join Topic
 	topic, sub, handler, serr := h.Join(name)
 	if serr != nil {
@@ -57,17 +56,18 @@ func JoinTopic(ctx context.Context, h *net.HostNode, p *md.Peer, name string, is
 
 	// Create Lobby Manager
 	mgr := &TopicManager{
+		user:         u,
 		topicHandler: th,
 		ctx:          ctx,
 		host:         h,
 		eventHandler: handler,
 		Lobby: &md.Lobby{
-			Name:    name[12:],
-			Size:    1,
-			Count:   0,
-			Peers:   make(map[string]*md.Peer),
-			IsLocal: isLocal,
-			User:    p,
+			Name:  name[12:],
+			Size:  1,
+			Count: 0,
+			Peers: make(map[string]*md.Peer),
+			Type:  lt,
+			User:  u.GetPeer(),
 		},
 		Messages:     make(chan *md.LobbyEvent, K_MAX_MESSAGES),
 		subscription: sub,
@@ -78,7 +78,7 @@ func JoinTopic(ctx context.Context, h *net.HostNode, p *md.Peer, name string, is
 	peersvServer := rpc.NewServer(h.Host, K_SERVICE_PID)
 	psv := TopicService{
 		lobby:  mgr.Lobby,
-		peer:   p,
+		user:   u,
 		call:   th,
 		respCh: make(chan *md.AuthReply, 1),
 	}
@@ -91,14 +91,14 @@ func JoinTopic(ctx context.Context, h *net.HostNode, p *md.Peer, name string, is
 
 	// Set Service
 	mgr.service = &psv
-	go mgr.handleTopicEvents(p)
-	go mgr.handleTopicMessages(p)
-	go mgr.processTopicMessages(p)
+	go mgr.handleTopicEvents()
+	go mgr.handleTopicMessages()
+	go mgr.processTopicMessages()
 	return mgr, nil
 }
 
 // ^ Create New Contained Topic Manager ^ //
-func NewTopic(ctx context.Context, h *net.HostNode, p *md.Peer, name string, isLocal bool, th TopicHandler) (*TopicManager, *md.SonrError) {
+func NewTopic(ctx context.Context, h *net.HostNode, u *md.User, name string, lt md.Lobby_Type, th TopicHandler) (*TopicManager, *md.SonrError) {
 	// Join Topic
 	topic, sub, handler, serr := h.Join(name)
 	if serr != nil {
@@ -108,16 +108,17 @@ func NewTopic(ctx context.Context, h *net.HostNode, p *md.Peer, name string, isL
 	// Create Lobby Manager
 	mgr := &TopicManager{
 		topicHandler: th,
+		user:         u,
 		ctx:          ctx,
 		host:         h,
 		eventHandler: handler,
 		Lobby: &md.Lobby{
-			Name:    name[12:],
-			Size:    1,
-			Count:   0,
-			Peers:   make(map[string]*md.Peer),
-			IsLocal: isLocal,
-			User:    p,
+			Name:  name[12:],
+			Size:  1,
+			Count: 0,
+			Peers: make(map[string]*md.Peer),
+			Type:  lt,
+			User:  u.GetPeer(),
 		},
 		Messages:     make(chan *md.LobbyEvent, K_MAX_MESSAGES),
 		subscription: sub,
@@ -128,7 +129,7 @@ func NewTopic(ctx context.Context, h *net.HostNode, p *md.Peer, name string, isL
 	peersvServer := rpc.NewServer(h.Host, K_SERVICE_PID)
 	psv := TopicService{
 		lobby:  mgr.Lobby,
-		peer:   p,
+		user:   u,
 		call:   th,
 		respCh: make(chan *md.AuthReply, 1),
 	}
@@ -141,9 +142,9 @@ func NewTopic(ctx context.Context, h *net.HostNode, p *md.Peer, name string, isL
 
 	// Set Service
 	mgr.service = &psv
-	go mgr.handleTopicEvents(p)
-	go mgr.handleTopicMessages(p)
-	go mgr.processTopicMessages(p)
+	go mgr.handleTopicEvents()
+	go mgr.handleTopicMessages()
+	go mgr.processTopicMessages()
 	return mgr, nil
 }
 

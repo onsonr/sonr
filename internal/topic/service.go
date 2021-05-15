@@ -6,7 +6,6 @@ import (
 	rpc "github.com/libp2p/go-libp2p-gorpc"
 
 	"github.com/libp2p/go-libp2p-core/peer"
-	se "github.com/sonr-io/core/internal/session"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -29,7 +28,7 @@ type TopicService struct {
 	// Current Data
 	call  TopicHandler
 	lobby *md.Lobby
-	peer  *md.Peer
+	user  *md.User
 
 	respCh chan *md.AuthReply
 	invite *md.AuthInvite
@@ -55,7 +54,7 @@ func (tm *TopicManager) Direct(id peer.ID, inv *md.AuthInvite) error {
 		return err
 	}
 
-	tm.topicHandler.OnReply(id, reply.InvReply, nil)
+	tm.topicHandler.OnReply(id, reply.InvReply)
 	return nil
 }
 
@@ -73,7 +72,7 @@ func (ts *TopicService) DirectWith(ctx context.Context, args TopicServiceArgs, r
 	ts.call.OnInvite(args.Invite)
 
 	// Sign Contact Reply
-	resp := ts.peer.SignReplyWithContact(ts.call.GetContact(), true, nil, receivedMessage.GetFrom())
+	resp := ts.user.SignReplyWithFlat(receivedMessage.GetFrom())
 
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(resp)
@@ -137,7 +136,7 @@ func (ts *TopicService) ExchangeWith(ctx context.Context, args TopicServiceArgs,
 	ts.call.OnRefresh(ts.lobby)
 
 	// Set Message data and call done
-	buf, err := ts.peer.Buffer()
+	buf, err := ts.user.Peer.Buffer()
 	if err != nil {
 		return err
 	}
@@ -146,7 +145,7 @@ func (ts *TopicService) ExchangeWith(ctx context.Context, args TopicServiceArgs,
 }
 
 // ^ Invite: Handles User sent AuthInvite Response ^
-func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite, session *se.Session) error {
+func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite) error {
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(inv)
 	if err != nil {
@@ -168,7 +167,7 @@ func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite, session *se.Sessi
 	if call.Error != nil {
 		return err
 	}
-	tm.topicHandler.OnReply(id, reply.InvReply, session)
+	tm.topicHandler.OnReply(id, reply.InvReply)
 	return nil
 }
 
@@ -206,21 +205,21 @@ func (ts *TopicService) InviteWith(ctx context.Context, args TopicServiceArgs, r
 }
 
 // ^ RespondToInvite to an Invitation ^ //
-func (n *TopicManager) RespondToInvite(req *md.RespondRequest, p *md.Peer, c *md.Contact) {
+func (n *TopicManager) RespondToInvite(req *md.RespondRequest) {
 	// Prepare Transfer
 	if req.Decision {
-		n.topicHandler.OnResponded(n.service.invite, p)
+		n.topicHandler.OnResponded(n.service.invite)
 	}
 
 	// @ Pass Contact Back
 	if n.service.invite.Payload == md.Payload_CONTACT {
 		// Create Accept Response
-		resp := p.SignReplyWithContact(c, n.service.invite.IsFlat, req, p)
+		resp := n.user.SignReplyWithContact(req)
 		// Send to Channel
 		n.service.respCh <- resp
 	} else {
 		// Create Accept Response
-		resp := p.SignReply(req.Decision, req, p)
+		resp := n.user.SignReply(req)
 
 		// Send to Channel
 		n.service.respCh <- resp

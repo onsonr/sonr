@@ -1,6 +1,8 @@
 package models
 
 import (
+	"fmt"
+	"math"
 	"os"
 	"path/filepath"
 
@@ -40,6 +42,16 @@ func (d *Device) IsWindows() bool {
 	return d.Platform == Platform_Windows
 }
 
+// Returns Path for Application/User Data
+func (d *Device) DataSavePath(fileName string, IsDesktop bool) string {
+	// Check for Desktop
+	if IsDesktop {
+		return filepath.Join(d.FileSystem.GetLibrary(), fileName)
+	} else {
+		return filepath.Join(d.FileSystem.GetSupport(), fileName)
+	}
+}
+
 // @ Checks if File Exists
 func (d *Device) IsFile(name string) bool {
 	// Initialize
@@ -61,7 +73,7 @@ func (d *Device) IsFile(name string) bool {
 }
 
 // @ Returns Private key from disk if found
-func (d *Device) PrivateKey() (crypto.PrivKey, *SonrError) {
+func (d *Device) NewPrivateKey() *SonrError {
 	K_SONR_PRIV_KEY := "snr-peer.privkey"
 
 	// Get Private Key
@@ -69,38 +81,36 @@ func (d *Device) PrivateKey() (crypto.PrivKey, *SonrError) {
 		// Get Key File
 		buf, serr := d.ReadFile(K_SONR_PRIV_KEY)
 		if serr != nil {
-			return nil, serr
+			return serr
 		}
 
-		// Get Key from Buffer
-		key, err := crypto.UnmarshalPrivateKey(buf)
-		if err != nil {
-			return nil, NewError(err, ErrorMessage_HOST_KEY)
-		}
+		// Set Buffer for Key
+		d.PrivateKey = buf
 
 		// Set Key Ref
-		return key, nil
+		return nil
 	} else {
 		// Create New Key
 		privKey, _, err := crypto.GenerateKeyPair(crypto.Ed25519, -1)
 		if err != nil {
-			return nil, NewError(err, ErrorMessage_HOST_KEY)
+			return NewError(err, ErrorMessage_HOST_KEY)
 		}
 
 		// Marshal Data
 		buf, err := crypto.MarshalPrivateKey(privKey)
 		if err != nil {
-			return nil, NewError(err, ErrorMessage_MARSHAL)
+			return NewError(err, ErrorMessage_MARSHAL)
 		}
+
+		// Set Buffer for Key
+		d.PrivateKey = buf
 
 		// Write Key to File
 		_, werr := d.WriteFile(K_SONR_PRIV_KEY, buf)
 		if werr != nil {
-			return nil, NewError(err, ErrorMessage_USER_SAVE)
+			return NewError(err, ErrorMessage_USER_SAVE)
 		}
-
-		// Set Key Ref
-		return privKey, nil
+		return nil
 	}
 }
 
@@ -129,26 +139,113 @@ func (d *Device) ReadFile(name string) ([]byte, *SonrError) {
 	}
 }
 
-// Saves Transfer File to Disk
-func (d *Device) SaveTransfer(f *SonrFile, i int, data []byte) error {
-	// Get Save Path
-	path := f.Files[i].SetPath(d)
-
-	// Write File to Disk
-	if err := os.WriteFile(path, data, 0644); err != nil {
-		return err
-	}
-	return nil
-}
-
 // Writes a File to Disk
 func (d *Device) WriteFile(name string, data []byte) (string, *SonrError) {
 	// Create File Path
-	path := d.FileSystem.DataSavePath(name, d.IsDesktop())
+	path := d.DataSavePath(name, d.IsDesktop())
 
 	// Write File to Disk
 	if err := os.WriteFile(path, data, 0644); err != nil {
 		return "", NewError(err, ErrorMessage_USER_FS)
 	}
 	return path, nil
+}
+
+// ** ─── User MANAGEMENT ────────────────────────────────────────────────────────
+// ^ Method Initializes User Info Struct ^ //
+func NewUser(cr *ConnectionRequest) *User {
+	// Initialize Device
+	d := cr.GetDevice()
+	d.NewPrivateKey()
+
+	// Return User
+	return &User{
+		Device:   d,
+		Contact:  cr.GetContact(),
+		Location: cr.GetLocation(),
+		Connection: &User_Connection{
+			HasConnected:    false,
+			HasBootstrapped: false,
+			HasJoinedLocal:  false,
+			Connectivity:    cr.GetConnectivity(),
+			Router: &User_Router{
+				Rendevouz:    fmt.Sprintf("/sonr/%s", cr.GetLocation().MajorOLC()),
+				LocalIPTopic: fmt.Sprintf("/sonr/topic/%s", cr.GetLocation().IPOLC()),
+			},
+			Status: Status_IDLE,
+		},
+	}
+}
+
+// Method Returns Private Key
+func (u *User) PrivateKey() crypto.PrivKey {
+	// Get Key from Buffer
+	key, err := crypto.UnmarshalPrivateKey(u.GetDevice().GetPrivateKey())
+	if err != nil {
+		return nil
+	}
+	return key
+}
+
+// Updates User Peer
+func (u *User) Update(ur *UpdateRequest) {
+	if ur.Type == UpdateRequest_Position {
+		// Extract Data
+		facing := ur.Position.GetFacing()
+		heading := ur.Position.GetHeading()
+
+		// Update User Values
+		var faceDir float64
+		var faceAnpd float64
+		var headDir float64
+		var headAnpd float64
+		faceDir = math.Round(facing.Direction*100) / 100
+		headDir = math.Round(heading.Direction*100) / 100
+		faceDesg := int((facing.Direction / 11.25) + 0.25)
+		headDesg := int((heading.Direction / 11.25) + 0.25)
+
+		// Find Antipodal
+		if facing.Direction > 180 {
+			faceAnpd = math.Round((facing.Direction-180)*100) / 100
+		} else {
+			faceAnpd = math.Round((facing.Direction+180)*100) / 100
+		}
+
+		// Find Antipodal
+		if heading.Direction > 180 {
+			headAnpd = math.Round((heading.Direction-180)*100) / 100
+		} else {
+			headAnpd = math.Round((heading.Direction+180)*100) / 100
+		}
+
+		// Set Position
+		u.Peer.Position = &Position{
+			Facing: &Position_Compass{
+				Direction: faceDir,
+				Antipodal: faceAnpd,
+				Cardinal:  Cardinal(faceDesg % 32),
+			},
+			Heading: &Position_Compass{
+				Direction: headDir,
+				Antipodal: headAnpd,
+				Cardinal:  Cardinal(headDesg % 32),
+			},
+			Orientation: ur.Position.GetOrientation(),
+		}
+	}
+
+	// Set Properties
+	if ur.Type == UpdateRequest_Properties {
+		u.Peer.Properties = ur.Properties
+	}
+
+	// Check for New Contact, Update Peer Profile
+	if ur.Type == UpdateRequest_Contact {
+		u.Contact = ur.GetContact()
+		u.Peer.Profile = &Profile{
+			FirstName: ur.Contact.GetProfile().GetFirstName(),
+			LastName:  ur.Contact.GetProfile().GetLastName(),
+			Picture:   ur.Contact.GetProfile().GetPicture(),
+		}
+	}
 }

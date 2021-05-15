@@ -76,7 +76,7 @@ message Contact {
     // Properties
     bool isPrimary = 1; // If this is the Primary field for SocialMedia Provider
     Provider provider = 2;     // Type of Social Provider
-    string username = 3;       // Users handle on Service
+    User user = 3;             // Social User Reference
     Tile tile = 4;             // Social Tile Position
     Links links = 5;           // Social Links
     Visibility visibility = 6; // Is the User's Account Private
@@ -120,6 +120,14 @@ message Contact {
       }
     }
 
+    // Social User for Provider
+    message User {
+      string name = 1;
+      string username = 2;
+      URLLink picture = 3;
+      string bio = 4;
+    }
+
     // Social Tile Visibility
     enum Visibility {
       Unknown = 0;       // No Visibility Set
@@ -133,12 +141,19 @@ message Contact {
 
 // For Info about Lobby
 message Lobby {
-  bool isLocal = 1;            // Is Local Lobby
+  Type type = 1;               // Type of Lobby
   string name = 2;             // Open Location Code of Lobby
-  int32 size = 3;              // Total Number of Devices in Lobby
-  int32 count = 4;             // Total Devices in Lobby EXCLUDING User
-  map<string, Peer> peers = 5; // Total Data of Active Peers
-  Peer user = 6;               // User Peer reference
+  string topic = 3;            // Pubsub Address with OLC
+  int32 size = 4;              // Total Number of Devices in Lobby
+  int32 count = 5;             // Total Devices in Lobby EXCLUDING User
+  map<string, Peer> peers = 6; // Total Data of Active Peers
+  Peer user = 7;               // User Peer reference
+
+  enum Type {
+    Local = 0;
+    Remote = 1;
+    User = 2;
+  }
 }
 
 // Message Sent when peer messages Lobby Topic
@@ -161,13 +176,21 @@ message LobbyEvent {
 
 // Location from GeoIP and OLC information
 message Location {
-  string state = 1;
-  string continent = 2;
-  string country = 3;
-  double latitude = 4;
-  double longitude = 5;
-  string minorOlc = 6;
-  string majorOlc = 7;
+  IP ip = 1;
+  Geo geo = 2;
+
+  message Geo {
+    double latitude = 1;
+    double longitude = 2;
+  }
+
+  message IP {
+    string state = 1;
+    string continent = 2;
+    string country = 3;
+    double latitude = 4;
+    double longitude = 5;
+  }
 }
 
 // Standard MIME with Additional Extensions
@@ -195,9 +218,9 @@ enum Payload {
   CONTACT = 1;      // Sonr Based Contact
   FLAT_CONTACT = 2; // Send File as Flat Exchange Automatically Swaps
   FILE = 3;         // File Transfer
-  MULTI_FILES = 4;  // Multiple Files
+  FILES = 4;        // Multiple Files
   URL = 5;          // Link to Site
-  MEDIA = 6;
+  MEDIA = 6;        // Media Payload - (Audio, Photo, Video)
 }
 
 // RemoteInfo is for Joining/Creating a New Topic
@@ -221,28 +244,23 @@ message SonrFile {
   int32 size = 3;
 
   // List of Files as Metadata
-  repeated Metadata files = 4;
-
-  // Direction of SonrFile
-  Direction direction = 5;
-
-  // Traffic Direction of Data
-  enum Direction {
-    Default = 0;  // From Memory/Viewing
-    Incoming = 1; // Incoming Transfer
-    Outgoing = 2; // Outgoing Transfer
-  }
+  repeated Item items = 4;
 
   // For Received Transfer File Information
-  message Metadata {
-    string id = 1;             // Local Asset ID
-    string name = 2;           // File Name without Path
-    string path = 3;           // File Location
-    int32 size = 4;            // File Size in Bytes
-    MIME mime = 5;             // Standard Mime Type
-    bytes thumbnail = 6;       // Thumbnail Preview of File
-    Properties properties = 7; // Media Properties
+  message Item {
+    string id = 1;   // Local Asset ID
+    string name = 2; // File Name without Path
+    string path = 3; // File Location
+    int32 size = 4;  // File Size in Bytes
+    MIME mime = 5;   // Standard Mime Type
 
+    // Thumbnail Preview of File
+    oneof thumbnail {
+      bytes thumbBuffer = 6; // Thumbnail Buffer
+      string thumbPath = 7;  // Thumbnail Path
+    }
+
+    Properties properties = 8; // Media Properties
     message Properties {
       bool isAudio = 1;      // If File is Audio
       bool isImage = 2;      // If File is Image
@@ -253,6 +271,23 @@ message SonrFile {
       int32 height = 6;   // Media Height
       int32 duration = 7; // Length of Video - Optional
     }
+  }
+}
+
+// Transfer is Data thats being Passed
+message Transfer {
+  int32 id = 1;        // SQL: Id reference
+  Payload payload = 2; // SQL: Type of Data received
+  int32 received = 3;  // SQL: UnixTime of received Date/Time
+
+  Profile receiver = 4; // PROFILE: General Receiver Info
+  Profile owner = 5;    // PROFILE: General Sender Info
+
+  // Attached Data
+  oneof data {
+    Contact contact = 6; // DATA(Optional): Received Contact Information
+    SonrFile file = 7;   // DATA(Optional): Received a File
+    URLLink url = 8;     // DATA(Optional): Received a Website Link
   }
 }
 
@@ -272,10 +307,10 @@ message TransferCard {
 
 // URLLink Contains metadata of provided URL
 message URLLink {
-  string link = 1;                     // Entered URL
-  string title = 2;                    // Meta Field for Title
-  string type = 3;                     // OG Type
-  string url = 4;                      // OG URL Link
+  bool initialized = 1;                // Whether URL Metadata has been Loaded
+  string url = 2;                      // OG URL Link
+  string title = 3;                    // Meta Field for Title
+  string type = 4;                     // OG Type
   string site = 5;                     // Meta field for site
   string siteName = 6;                 // Meta field for sitename
   string description = 7;              // Meta field for description

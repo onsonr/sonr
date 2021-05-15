@@ -1,0 +1,201 @@
+syntax = "proto3";
+
+import "data.proto";
+import "user.proto";
+
+// Require Go Package
+option go_package = "/models";
+
+// Contact is Extensive User Info that can be passed
+message ContactCard {
+  bool isPublic = 1;   // If Contact card is Public
+  Profile profile = 2; // General Profile Information
+  General general = 3; // Base General Contact Fields, Key is Label
+  Design design = 4;   // Card Design Properties
+
+  map<string, Address> addresses = 5; // Address Fields, Key is Label
+  map<string, Social> socials = 6;    // Social Media Fields, Key is Username
+  map<string, URLLink> websites = 7;  // Website Links
+
+  // Address: Field for Contact field
+  message Address {
+    bool isPrimary = 1;     // If this is the Primary field for Address
+    string label = 2;       // Address Label for Type
+    string street = 3;      // Address First Line Street
+    string streetTwo = 4;   // Address Second Line Street
+    string city = 5;        // City of Address
+    string state = 6;       // Address State
+    string zipcode = 7;     // Address Zip Code
+    string country = 8;     // Address Country
+    string countryCode = 9; // Address Country Code
+  }
+
+  // Design: Card Design Values
+  message Design {
+    int32 card = 1;    // Background Card Value
+    Color primary = 2; // Primary Color
+    Color accent = 3;  // Accent Color for Text/Buttons
+
+    enum Color {
+      Transparent = 0;  // Clear Color
+      Primary = 1;      // Blue Varient
+      Secondary = 2;    // Purple Varient
+      Tertiary = 3;     // Green Varient
+      Critical = 4;     // Red Varient
+      AccentPink = 5;   // Light Pink
+      AccentBlue = 6;   // Light Blue
+      AccentNavy = 7;   // Strong Navy
+      AccentPurple = 8; // Light Purple
+      Black = 9;        // Black Varient
+      White = 10;       // White Varient
+      Grey = 11;        // Grey Varient
+    }
+  }
+
+  // Field : General Field for Contact field
+  message General {
+    string bio = 1;      // If this is the Primary field for Kind
+    string username = 2; // Type of Field
+    Name name = 3;
+    Date date = 4;
+    Gender gender = 5;
+    Phone phone = 6;
+    Email email = 7;
+    Title title = 8;
+
+    message Name {
+      string prefix = 1;
+      string suffix = 2;
+      string middleName = 3;
+      string nickName = 4;
+    }
+
+    message Date {
+      int32 birthday = 1;
+      map<string, int32> dates = 2;
+    }
+
+    message Gender {
+      Options value = 1;
+
+      enum Options {
+        Unspecified = 0;
+        Male = 1;
+        Female = 2;
+      }
+    }
+
+    message Phone {
+      string primary = 1;
+      map<string, string> numbers = 2;
+    }
+
+    message Email {
+      string primary = 1;
+      map<string, string> addresses = 2;
+    }
+
+    message Title {
+      string company = 1;
+      string position = 2;
+    }
+  }
+
+  // Social: Field provides Display Information and Provider Information
+  message Social {
+    // Properties
+    bool isPrimary = 1; // If this is the Primary field for SocialMedia Provider
+    string name = 2;
+    string username = 3;
+    string link = 4;
+    string picture = 5;
+    string bio = 6;
+    Visibility visibility = 7; // Is the User's Account Private
+
+    oneof tile {
+      Icon icon = 10;
+      Feed feed = 11;
+      Playlist playlist = 12;
+      Post post = 13;
+    }
+
+    oneof provider {
+      Media media = 14;
+      Music music = 15;
+      Payment payment = 16;
+    }
+
+    message Icon {
+      int32 page = 1;
+      int32 index = 2;  // Position in Contact Array
+      int32 row = 3;    // Row Location
+      int32 column = 4; // Column Location
+      int32 size = 5;   // Size of Tile
+    }
+
+    message Feed {
+      int32 page = 1;
+      int32 index = 2;  // Position in Contact Array
+      int32 row = 3;    // Row Location
+      int32 column = 4; // Column Location
+      int32 size = 5;   // Size of Tile
+    }
+
+    message Playlist {
+      int32 page = 1;
+      int32 index = 2;  // Position in Contact Array
+      int32 row = 3;    // Row Location
+      int32 column = 4; // Column Location
+      int32 size = 5;   // Size of Tile
+    }
+
+    message Post {
+      int32 page = 1;
+      int32 index = 2;  // Position in Contact Array
+      int32 row = 3;    // Row Location
+      int32 column = 4; // Column Location
+      int32 size = 5;   // Size of Tile
+    }
+
+    // Social Media Service
+    enum Media {
+      Instagram = 0; // Feed/Post/Link
+      TikTok = 1;    // Post/Link
+      Facebook = 2;  // Link Only
+      YouTube = 3;   // Post/Link
+      Medium = 5;    // Feed/Post/Link
+      Twitter = 6;   // Feed/Post/Link
+      Snapchat = 7;  // Link Only
+      Github = 8;    // Link Only
+      LinkedIn = 9;
+      Twitch = 10;
+      Pinterest = 11;
+      Vimeo = 12;
+      Gumroad = 13;
+    }
+
+    // Music Service
+    enum Music {
+      Spotify = 0;
+      AppleMusic = 1;
+      SoundCloud = 2;
+    }
+
+    enum Payment {
+      CashApp = 0;
+      Venmo = 1;
+      PayPal = 2;
+      Bitcoin = 3;
+      Ethereum = 4;
+    }
+
+    // Social Tile Visibility
+    enum Visibility {
+      Unknown = 0;       // No Visibility Set
+      Private = 1;       // Private Account
+      Public = 2;        // Public Account
+      PrivateHidden = 3; // Private and Hidden
+      PublicHidden = 4;  // Public and Hidden
+    }
+  }
+}

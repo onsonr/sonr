@@ -24,19 +24,21 @@ enum Status {
   INVITED = 6;      // Has received Invitation
   INPROGRESS = 7;   // In Middle of Transfer
   STANDBY = 8;      // Away from Sonr Application
+  FAILED = 9;
 }
 
 // Message for Status Update
-message StatusUpdate { Status value = 1; }
+message StatusUpdate {
+  Status value = 1;
+  User user = 2;
+}
 
 // Initial Connection Message to Establish Sonr
 message ConnectionRequest {
   Location location = 1;         // Runtime IP based calculated GeoLocation
-  Location ipLocation = 2;       // Runtime IP based calculated GeoLocation
-  Device device = 3;             // Users Device
-  Contact contact = 4;           // Users Contact Card
-  User user = 5;                 // User Saved Data
-  Connectivity connectivity = 6; // Client Network Type
+  Device device = 2;             // Users Device
+  Contact contact = 3;           // Users Contact Card
+  Connectivity connectivity = 4; // Client Network Type
 }
 
 // Updated Peer Info Request
@@ -63,17 +65,12 @@ message MessageRequest {
 
 // Processes Given File and Invites Specified Peer
 message InviteRequest {
-  // Properties
   Payload payload = 1;   // General Payload Type
   Peer to = 2;           // Receivers Peer Data
   Peer from = 3;         // Users Peer Data
   bool isRemote = 4;     // If Transfer is Remote
   RemoteInfo remote = 5; // Remote Topic Name
-
-  // Attached Data
-  string url = 6;      // URL to be Sent - Optional
-  Contact contact = 7; // Contact Card to be Sent - Optional
-  SonrFile file = 8;   // Files to be Sent - Optional
+  Transfer data = 6;     // Attached Data
 }
 
 message RespondRequest {
@@ -91,9 +88,7 @@ message AuthInvite {
   Peer to = 3;           // Receivers Peer Data
   bool isFlat = 4;       // For Flat ContactTransfer
   RemoteInfo remote = 5; // Remote Lobby Info
-  Contact contact = 6;   // DATA(Optional): Received Contact Information
-  SonrFile file = 7;     // DATA(Optional): Received a File
-  URLLink url = 8;       // DATA(Optional): Received a Website Link
+  Transfer data = 6;     // Attached Data
 }
 
 // Reply Message sent on RPC
@@ -116,9 +111,31 @@ message AuthReply {
 
 // User is the Saved Data from Client that Passes to Proxy, During ConnRequest
 message User {
-  Contact contact = 1;                // Clients Contact Card
-  map<string, Device> devices = 2;    // Clients Devices: Name, Device
-  map<string, Settings> settings = 3; // Clients Specified Preferences
+  Connection connection = 1;          // Clients Connection Reference
+  Peer peer = 2;                      // Clients Peer Reference
+  Location location = 4;              // Clients current Location
+  Device device = 5;                  // Clients Current Device
+  Contact contact = 6;                // Clients Contact Card
+  map<string, Device> devices = 7;    // Clients Devices: Name, Device
+  map<string, Settings> settings = 8; // Clients Specified Preferences
+
+  // User Connection Management - Attached from Node Client
+  message Connection {
+    bool hasConnected = 1;         // Node Host Started
+    bool hasBootstrapped = 2;      // Node Host Bootstrapped
+    bool hasJoinedLocal = 3;       // Node Host Joined Local PubSub
+    Status status = 4;             // Client Node Status
+    Router router = 5;             // Client Routing Information
+    Connectivity connectivity = 6; // Client Network Type
+  }
+
+  // Router Manages Peer Routing for Topics/Transfers - Attached from Node
+  // Client
+  message Router {
+    string deviceTopic = 1;
+    string localIPTopic = 2;
+    string rendevouz = 3;
+  }
 
   message Settings {
     string key = 1;    // Option as String

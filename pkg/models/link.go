@@ -99,7 +99,7 @@ type PageInfo struct {
 	Content     string
 }
 
-func GetPageDataFromHtml(html []byte, data interface{}) error {
+func getPageDataFromHtml(html []byte, data interface{}) error {
 	buf := bytes.NewBuffer(html)
 	doc, err := goquery.NewDocumentFromReader(buf)
 
@@ -107,17 +107,17 @@ func GetPageDataFromHtml(html []byte, data interface{}) error {
 		return err
 	}
 
-	return GetPageData(doc, data)
+	return getPageDoc(doc, data)
 }
 
-func GetPageData(doc *goquery.Document, data interface{}) error {
+func getPageDoc(doc *goquery.Document, data interface{}) error {
 	doc = goquery.CloneDocument(doc)
 	return getPageData(doc, data)
 }
 
-func GetPageInfo(doc *goquery.Document) (*PageInfo, error) {
+func getPageInfo(doc *goquery.Document) (*PageInfo, error) {
 	info := PageInfo{}
-	err := GetPageData(doc, &info)
+	err := getPageDoc(doc, &info)
 
 	if err != nil {
 		return nil, err
@@ -133,7 +133,7 @@ func GetPageInfo(doc *goquery.Document) (*PageInfo, error) {
 	return &info, nil
 }
 
-func GetPageInfoFromResponse(response *http.Response) (*PageInfo, error) {
+func getPageInfoFromResponse(response *http.Response) (*PageInfo, error) {
 	info := PageInfo{}
 	html, err := ioutil.ReadAll(response.Body)
 
@@ -141,7 +141,7 @@ func GetPageInfoFromResponse(response *http.Response) (*PageInfo, error) {
 		return nil, err
 	}
 
-	err = GetPageDataFromHtml(html, &info)
+	err = getPageDataFromHtml(html, &info)
 
 	if err != nil {
 		return nil, err
@@ -155,110 +155,6 @@ func GetPageInfoFromResponse(response *http.Response) (*PageInfo, error) {
 	info.Content = r.Text()
 
 	return &info, nil
-}
-
-func GetPageInfoFromUrl(urlStr string) (*URLLink, *SonrError) {
-	// Create Request
-	resp, err := http.Get(urlStr)
-	if err != nil {
-		return nil, NewError(err, ErrorMessage_URL_HTTP_GET)
-	}
-
-	// Get Info
-	info, err := GetPageInfoFromResponse(resp)
-	if err != nil {
-		return nil, NewError(err, ErrorMessage_URL_INFO_RESP)
-	}
-
-	// Set Link
-	link := &URLLink{
-		Link:        urlStr,
-		Title:       info.Title,
-		Type:        info.Type,
-		Url:         info.Url,
-		Site:        info.Site,
-		SiteName:    info.SiteName,
-		Description: info.Description,
-		Locale:      info.Locale,
-	}
-
-	// Get Images
-	if info.Images != nil {
-		for _, v := range info.Images {
-			link.Images = append(link.Images, &URLLink_OpenGraphImage{
-				Url:       v.Url,
-				SecureUrl: v.SecureUrl,
-				Width:     int32(v.Width),
-				Height:    int32(v.Height),
-				Type:      v.Type,
-			})
-		}
-	}
-
-	// Get Videos
-	if info.Videos != nil {
-		for _, v := range info.Videos {
-			link.Videos = append(link.Videos, &URLLink_OpenGraphVideo{
-				Url:       v.Url,
-				SecureUrl: v.SecureUrl,
-				Width:     int32(v.Width),
-				Height:    int32(v.Height),
-				Type:      v.Type,
-			})
-		}
-	}
-
-	// Get Audios
-	if info.Audios != nil {
-		for _, v := range info.Videos {
-			link.Audios = append(link.Audios, &URLLink_OpenGraphAudio{
-				Url:       v.Url,
-				SecureUrl: v.SecureUrl,
-				Type:      v.Type,
-			})
-		}
-	}
-
-	// Get Twitter
-	if info.Twitter != nil {
-		twitter := &URLLink_TwitterCard{
-			Card:        info.Twitter.Card,
-			Site:        info.Twitter.Site,
-			SiteId:      info.Twitter.SiteId,
-			Creator:     info.Twitter.Creator,
-			CreatorId:   info.Twitter.CreatorId,
-			Description: info.Twitter.Description,
-			Title:       info.Twitter.Title,
-			Image:       info.Twitter.Image,
-			ImageAlt:    info.Twitter.ImageAlt,
-			Url:         info.Twitter.Url,
-			Player: &URLLink_TwitterCard_Player{
-				Url:    info.Twitter.Player.Url,
-				Width:  int32(info.Twitter.Player.Width),
-				Height: int32(info.Twitter.Player.Height),
-				Stream: info.Twitter.Player.Stream,
-			},
-			Iphone: &URLLink_TwitterCard_IPhone{
-				Name: info.Twitter.IPhone.Name,
-				Id:   info.Twitter.IPhone.Id,
-				Url:  info.Twitter.IPhone.Url,
-			},
-			Ipad: &URLLink_TwitterCard_IPad{
-				Name: info.Twitter.IPad.Name,
-				Id:   info.Twitter.IPad.Id,
-				Url:  info.Twitter.IPad.Url,
-			},
-			GooglePlay: &URLLink_TwitterCard_GooglePlay{
-				Name: info.Twitter.Googleplay.Name,
-				Id:   info.Twitter.Googleplay.Id,
-				Url:  info.Twitter.Googleplay.Url,
-			},
-		}
-		link.Twitter = twitter
-	}
-
-	// Return Link
-	return link, nil
 }
 
 func getPageData(doc *goquery.Document, data interface{}) error {
