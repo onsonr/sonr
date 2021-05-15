@@ -14,7 +14,7 @@ import (
 
 type ItemReader interface {
 	Progress() (bool, float32)
-	ReadFrom(reader msg.ReadCloser, wg *sync.WaitGroup) error
+	ReadFrom(reader msg.ReadCloser) error
 }
 type itemReader struct {
 	ItemReader
@@ -37,9 +37,9 @@ func (p *itemReader) Progress() (bool, float32) {
 	return false, 0
 }
 
-func (ir *itemReader) ReadFrom(reader msg.ReadCloser, wg *sync.WaitGroup) error {
+func (ir *itemReader) ReadFrom(reader msg.ReadCloser) error {
 	// Return Created File
-	f, err := os.Create(ir.item.Path)
+	f, err := os.Create(ir.item.SetPath(ir.device))
 	if err != nil {
 		return err
 	}
@@ -52,13 +52,13 @@ func (ir *itemReader) ReadFrom(reader msg.ReadCloser, wg *sync.WaitGroup) error 
 			return err
 		}
 
-		ir.mutex.Lock()
 		done, buf, err := decodeChunk(buffer)
 		if err != nil {
 			return err
 		}
 
 		if !done {
+			ir.mutex.Lock()
 			n, err := f.Write(buf)
 			if err != nil {
 				return err
@@ -75,8 +75,6 @@ func (ir *itemReader) ReadFrom(reader msg.ReadCloser, wg *sync.WaitGroup) error 
 			if err := f.Close(); err != nil {
 				return err
 			}
-			ir.mutex.Unlock()
-			wg.Done()
 			return nil
 		}
 		GetState().NeedsWait()
@@ -85,7 +83,7 @@ func (ir *itemReader) ReadFrom(reader msg.ReadCloser, wg *sync.WaitGroup) error 
 
 type ItemWriter interface {
 	Progress() (bool, float32)
-	WriteTo(writer msg.WriteCloser, wg *sync.WaitGroup) error
+	WriteTo(writer msg.WriteCloser) error
 }
 
 type itemWriter struct {
@@ -107,7 +105,7 @@ func (p *itemWriter) Progress() (bool, float32) {
 	return false, 0
 }
 
-func (iw *itemWriter) WriteTo(writer msg.WriteCloser, wg *sync.WaitGroup) error {
+func (iw *itemWriter) WriteTo(writer msg.WriteCloser) error {
 	// Write Item to Stream
 	// @ Open Os File
 	f, err := os.Open(iw.item.Path)
@@ -165,9 +163,6 @@ func (iw *itemWriter) WriteTo(writer msg.WriteCloser, wg *sync.WaitGroup) error 
 	if err != nil {
 		return err
 	}
-
-	// Callback
-	wg.Done()
 	return nil
 }
 
