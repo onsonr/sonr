@@ -39,6 +39,7 @@ message ConnectionRequest {
   Device device = 2;             // Users Device
   Contact contact = 3;           // Users Contact Card
   Connectivity connectivity = 4; // Client Network Type
+  bytes privateKey = 5;          // Private Key Buffer
 }
 
 // Updated Peer Info Request
