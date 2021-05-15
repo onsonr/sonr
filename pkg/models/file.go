@@ -1,7 +1,7 @@
 package models
 
 import (
-	"sync"
+	"path/filepath"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/network"
@@ -52,13 +52,31 @@ func (m *SonrFile_Item) NewWriter(d *Device) ItemWriter {
 	}
 }
 
+func (i *SonrFile_Item) SetPath(d *Device) {
+	// Check for Media
+	if i.Mime.IsMedia() {
+		// Check for Desktop
+		if d.IsDesktop() {
+			i.Path = filepath.Join(d.FileSystem.GetDownloads(), i.Name)
+		} else {
+			i.Path = filepath.Join(d.FileSystem.GetTemporary(), i.Name)
+		}
+	} else {
+		// Check for Desktop
+		if d.IsDesktop() {
+			i.Path = filepath.Join(d.FileSystem.GetDownloads(), i.Name)
+		} else {
+			i.Path = filepath.Join(d.FileSystem.GetDocuments(), i.Name)
+		}
+	}
+}
+
 // ** ─── Session MANAGEMENT ────────────────────────────────────────────────────────
 type Session struct {
 	// Inherited Properties
-	mutex sync.Mutex
-	file  *SonrFile
-	peer  *Peer
-	user  *User
+	file *SonrFile
+	peer *Peer
+	user *User
 
 	// Management
 	call NodeCallback
@@ -86,34 +104,18 @@ func NewInSession(u *User, inv *AuthInvite, c NodeCallback) *Session {
 }
 
 // Returns SonrFile as TransferCard given Receiver and Owner
-func (s *Session) Card(d Direction) *TransferCard {
-	if d == Direction_Incoming {
-		// Create Card
-		return &TransferCard{
-			// SQL Properties
-			Payload:  s.file.Payload,
-			Received: int32(time.Now().Unix()),
+func (s *Session) Card() *TransferCard {
+	return &TransferCard{
+		// SQL Properties
+		Payload:  s.file.Payload,
+		Received: int32(time.Now().Unix()),
 
-			// Owner Properties
-			Owner:    s.user.Peer.GetProfile(),
-			Receiver: s.peer.GetProfile(),
+		// Owner Properties
+		Owner:    s.user.Peer.GetProfile(),
+		Receiver: s.peer.GetProfile(),
 
-			// Data Properties
-			File: s.file,
-		}
-	} else {
-		// Create Card
-		return &TransferCard{
-			// SQL Properties
-			Payload: s.file.Payload,
-
-			// Owner Properties
-			Owner:    s.user.Peer.GetProfile(),
-			Receiver: s.peer.GetProfile(),
-
-			// Data Properties
-			File: s.file,
-		}
+		// Data Properties
+		File: s.file,
 	}
 }
 
@@ -132,7 +134,7 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 
 		// Close Stream and Callback
 		stream.Close()
-		s.call.Received(s.Card(Direction_Incoming))
+		s.call.Received(s.Card())
 	}(msg.NewReader(stream))
 }
 
@@ -151,6 +153,6 @@ func (s *Session) WriteToStream(stream network.Stream) {
 		}
 
 		// Callback
-		s.call.Transmitted(s.Card(Direction_Outgoing))
+		s.call.Transmitted(s.Card())
 	}(msg.NewWriter(stream))
 }

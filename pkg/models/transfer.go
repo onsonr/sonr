@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"path/filepath"
 	sync "sync"
 
 	msg "github.com/libp2p/go-msgio"
@@ -39,22 +38,8 @@ func (p *itemReader) Progress() (bool, float32) {
 }
 
 func (ir *itemReader) ReadFrom(reader msg.ReadCloser) error {
-	// Check for Media
-	if ir.item.Mime.IsMedia() {
-		// Check for Desktop
-		if ir.device.IsDesktop() {
-			ir.item.Path = filepath.Join(ir.device.FileSystem.GetDownloads(), ir.item.Name)
-		} else {
-			ir.item.Path = filepath.Join(ir.device.FileSystem.GetTemporary(), ir.item.Name)
-		}
-	} else {
-		// Check for Desktop
-		if ir.device.IsDesktop() {
-			ir.item.Path = filepath.Join(ir.device.FileSystem.GetDownloads(), ir.item.Name)
-		} else {
-			ir.item.Path = filepath.Join(ir.device.FileSystem.GetDocuments(), ir.item.Name)
-		}
-	}
+	// Set Item Path
+	ir.item.SetPath(ir.device)
 
 	// Return Created File
 	f, err := os.Create(ir.item.Path)
@@ -84,6 +69,15 @@ func (ir *itemReader) ReadFrom(reader msg.ReadCloser) error {
 			ir.size = ir.size + n
 			ir.mutex.Unlock()
 		} else {
+			// Flush File Data
+			if err := f.Sync(); err != nil {
+				return err
+			}
+
+			// Close File
+			if err := f.Close(); err != nil {
+				return err
+			}
 			ir.mutex.Unlock()
 			return nil
 		}
