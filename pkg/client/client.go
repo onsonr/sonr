@@ -17,7 +17,7 @@ type Client struct {
 	ctx     context.Context
 	call    md.NodeCallback
 	user    *md.User
-	session *md.Session
+	session md.Session
 
 	// References
 	Host *net.HostNode
@@ -163,7 +163,7 @@ func (n *Client) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, c *md
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
 func (n *Client) InviteFile(req *md.InviteRequest, t *tpc.TopicManager) *md.SonrError {
 	// Start New Session
-	n.session = md.NewOutSession(n.user, req, n.call)
+	n.session = req.NewSession(n.user, n.call)
 
 	// Create Invite Message
 	invite := n.user.SignInviteWithFile(req)

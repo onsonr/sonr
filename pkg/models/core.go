@@ -5,7 +5,7 @@ import (
 	"sync"
 	"sync/atomic"
 
-
+	"google.golang.org/protobuf/proto"
 )
 
 const K_BUF_CHUNK = 32000
@@ -214,5 +214,53 @@ func (c *Contact) GetTransfer() *Transfer {
 		Data: &Transfer_Contact{
 			Contact: c,
 		},
+	}
+}
+
+// ** ─── Chunk MANAGEMENT ────────────────────────────────────────────────────────
+// Converts Data into Chunk Instance
+func DecodeChunk(data []byte) (bool, []byte, error) {
+	// Unmarshal Bytes into Proto
+	c := &Chunk{}
+	err := proto.Unmarshal(data, c)
+	if err != nil {
+		return false, nil, err
+	}
+
+	if c.IsComplete {
+		return true, nil, nil
+	} else {
+		return false, c.Buffer, nil
+	}
+}
+
+// Converts Buffer Data into Chunk
+func EncodeChunk(buffer []byte, completed bool) ([]byte, error) {
+	if !completed {
+		// Create Block Protobuf from Chunk
+		chunk := &Chunk{
+			Size:       int32(len(buffer)),
+			Buffer:     buffer,
+			IsComplete: false,
+		}
+
+		// Convert to bytes
+		bytes, err := proto.Marshal(chunk)
+		if err != nil {
+			return nil, err
+		}
+		return bytes, nil
+	} else {
+		// Create Block Protobuf from Chunk
+		chunk := &Chunk{
+			IsComplete: true,
+		}
+
+		// Convert to bytes
+		bytes, err := proto.Marshal(chunk)
+		if err != nil {
+			return nil, err
+		}
+		return bytes, nil
 	}
 }

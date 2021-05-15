@@ -71,6 +71,6 @@ func (n *Client) OnReply(id peer.ID, reply []byte) {
 
 // ^ OnResponded: Prepares for Incoming File Transfer when Accepted ^
 func (n *Client) OnResponded(inv *md.AuthInvite) {
-	n.session = md.NewInSession(n.user, inv, n.call)
+	n.session = inv.NewSession(n.user, n.call)
 	n.Host.HandleStream(n.user.GetRouter().Transfer(n.Host.ID), n.session.ReadFromStream)
 }

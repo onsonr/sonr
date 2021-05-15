@@ -2,32 +2,28 @@ package models
 
 import (
 	"bufio"
-	"errors"
-	"fmt"
 	"io"
 	"os"
-	"path/filepath"
 	sync "sync"
 
 	msg "github.com/libp2p/go-msgio"
-	"google.golang.org/protobuf/proto"
 )
 
-type ItemReader interface {
+type ItemReadWriter interface {
 	Progress() (bool, float32)
 	ReadFrom(reader msg.ReadCloser) error
+	WriteTo(writer msg.WriteCloser) error
 }
 
-type itemReader struct {
-	ItemReader
+type itemReadWriter struct {
+	ItemReadWriter
 	mutex  sync.Mutex
 	item   *SonrFile_Item
-	device *Device
 	size   int
 }
 
 // Returns Progress of File, Given the written number of bytes
-func (p *itemReader) Progress() (bool, float32) {
+func (p *itemReadWriter) Progress() (bool, float32) {
 	// Calculate Tracking
 	progress := float32(p.size) / float32(p.item.Size)
 	adjusted := int(progress)
@@ -39,24 +35,8 @@ func (p *itemReader) Progress() (bool, float32) {
 	return false, 0
 }
 
-func (ir *itemReader) ReadFrom(reader msg.ReadCloser) error {
-	// Check for Media
-	if ir.item.Mime.IsMedia() {
-		// Check for Desktop
-		if ir.device.IsDesktop() {
-			ir.item.Path = filepath.Join(ir.device.FileSystem.GetDownloads(), ir.item.Name)
-		} else {
-			ir.item.Path = filepath.Join(ir.device.FileSystem.GetTemporary(), ir.item.Name)
-		}
-	} else {
-		// Check for Desktop
-		if ir.device.IsDesktop() {
-			ir.item.Path = filepath.Join(ir.device.FileSystem.GetDownloads(), ir.item.Name)
-		} else {
-			ir.item.Path = filepath.Join(ir.device.FileSystem.GetDocuments(), ir.item.Name)
-		}
-	}
-
+// Read Item from Stream with Chunking
+func (ir *itemReadWriter) ReadFrom(reader msg.ReadCloser) error {
 	// Return Created File
 	f, err := os.Create(ir.item.Path)
 	if err != nil {
@@ -72,7 +52,7 @@ func (ir *itemReader) ReadFrom(reader msg.ReadCloser) error {
 		}
 
 		ir.mutex.Lock()
-		done, buf, err := decodeChunk(buffer)
+		done, buf, err := DecodeChunk(buffer)
 		if err != nil {
 			return err
 		}
@@ -92,44 +72,19 @@ func (ir *itemReader) ReadFrom(reader msg.ReadCloser) error {
 	}
 }
 
-type ItemWriter interface {
-	Progress() (bool, float32)
-	WriteTo(writer msg.WriteCloser) error
-}
-
-type itemWriter struct {
-	ItemWriter
-	item *SonrFile_Item
-	size int
-}
-
-// Returns Progress of File, Given the written number of bytes
-func (p *itemWriter) Progress() (bool, float32) {
-	// Calculate Tracking
-	progress := float32(p.size) / float32(p.item.Size)
-	adjusted := int(progress)
-
-	// Check Interval
-	if adjusted&5 == 0 {
-		return true, progress
-	}
-	return false, 0
-}
-
-func (iw *itemWriter) WriteTo(writer msg.WriteCloser) error {
-	// Write Item to Stream
-	// @ Open Os File
+// Write Item to Stream with Chunking
+func (iw *itemReadWriter) WriteTo(writer msg.WriteCloser) error {
+	//  Open Os File
 	f, err := os.Open(iw.item.Path)
 	if err != nil {
-		return errors.New(fmt.Sprintf("Error to read Item, %s", err.Error()))
+		return err
 	}
 
-	// @ Initialize Chunk Data
-	nBytes, nChunks := int32(0), int32(0)
+	// Initialize Chunk Data
 	r := bufio.NewReader(f)
 	buf := make([]byte, 0, K_CHUNK_SIZE)
 
-	// @ Loop through File
+	//  Loop through File
 	for {
 		// Initialize
 		n, err := r.Read(buf[:cap(buf)])
@@ -146,12 +101,8 @@ func (iw *itemWriter) WriteTo(writer msg.WriteCloser) error {
 			return err
 		}
 
-		// Increment
-		nChunks++
-		nBytes += int32(len(buf))
-
 		// Create Block Protobuf from Chunk
-		data, err := encodeChunk(buf, false)
+		data, err := EncodeChunk(buf, false)
 		if err != nil {
 			return err
 		}
@@ -169,7 +120,7 @@ func (iw *itemWriter) WriteTo(writer msg.WriteCloser) error {
 	}
 
 	// Create Block Protobuf from Chunk
-	data, err := encodeChunk(nil, true)
+	data, err := EncodeChunk(nil, true)
 	if err != nil {
 		return err
 	}
@@ -182,49 +133,4 @@ func (iw *itemWriter) WriteTo(writer msg.WriteCloser) error {
 
 	// Callback
 	return nil
-}
-
-func decodeChunk(data []byte) (bool, []byte, error) {
-	// Unmarshal Bytes into Proto
-	c := &Chunk{}
-	err := proto.Unmarshal(data, c)
-	if err != nil {
-		return false, nil, err
-	}
-
-	if c.IsComplete {
-		return true, nil, nil
-	} else {
-		return false, c.Buffer, nil
-	}
-}
-
-func encodeChunk(buffer []byte, completed bool) ([]byte, error) {
-	if !completed {
-		// Create Block Protobuf from Chunk
-		chunk := &Chunk{
-			Size:       int32(len(buffer)),
-			Buffer:     buffer,
-			IsComplete: false,
-		}
-
-		// Convert to bytes
-		bytes, err := proto.Marshal(chunk)
-		if err != nil {
-			return nil, err
-		}
-		return bytes, nil
-	} else {
-		// Create Block Protobuf from Chunk
-		chunk := &Chunk{
-			IsComplete: true,
-		}
-
-		// Convert to bytes
-		bytes, err := proto.Marshal(chunk)
-		if err != nil {
-			return nil, err
-		}
-		return bytes, nil
-	}
 }

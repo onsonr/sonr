@@ -53,6 +53,16 @@ func (r *InviteRequest) GetUrl() *URLLink {
 	return r.GetData().GetUrl()
 }
 
+// Prepare for Outgoing Session
+func (r *InviteRequest) NewSession(u *User, tc NodeCallback) Session {
+	return &session{
+		file: r.GetFile(),
+		peer: r.GetTo(),
+		user: u,
+		call: tc,
+	}
+}
+
 // ** ─── AuthInvite MANAGEMENT ────────────────────────────────────────────────────────
 func (i *AuthInvite) GetContact() *Contact {
 	return i.GetData().GetContact()
@@ -64,6 +74,16 @@ func (i *AuthInvite) GetFile() *SonrFile {
 
 func (i *AuthInvite) GetUrl() *URLLink {
 	return i.GetData().GetUrl()
+}
+
+// Prepare for Incoming Session
+func (i *AuthInvite) NewSession(u *User, c NodeCallback) Session {
+	return &session{
+		file: i.GetFile(),
+		peer: i.GetFrom(),
+		user: u,
+		call: c,
+	}
 }
 
 // ** ─── Location MANAGEMENT ────────────────────────────────────────────────────────

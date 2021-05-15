@@ -1,6 +1,7 @@
 package models
 
 import (
+	"path/filepath"
 	"sync"
 	"time"
 
@@ -18,7 +19,7 @@ func (f *SonrFile) IsSingle() bool {
 
 // Checks if Single File is Media
 func (f *SonrFile) IsMedia() bool {
-	return f.Payload == Payload_MEDIA || (f.IsSingle() && f.Single().Mime.IsMedia())
+	return f.Payload == Payload_MEDIA
 }
 
 // Checks if File contains multiple items
@@ -26,34 +27,65 @@ func (f *SonrFile) IsMultiple() bool {
 	return len(f.Items) > 1
 }
 
-// Method Returns Single if Applicable
-func (f *SonrFile) Single() *SonrFile_Item {
-	if f.IsSingle() {
-		return f.Items[0]
+// Returns All Item Readers for This File
+func (f *SonrFile) Readers(d *Device) []ItemReadWriter {
+	readers := make([]ItemReadWriter, len(f.Items))
+	for i, m := range f.Items {
+		// Set Item Path
+		m.SetPath(d)
+
+		// Create Reader
+		readers[i] = &itemReadWriter{
+			item: m,
+			size: 0,
+		}
+	}
+	return readers
+}
+
+// Returns All Item Writers for This File
+func (f *SonrFile) Writers() []ItemReadWriter {
+	writers := make([]ItemReadWriter, len(f.Items))
+	for i, m := range f.Items {
+		writers[i] = &itemReadWriter{
+			item: m,
+			size: 0,
+		}
+	}
+	return writers
+}
+
+// ** ─── SonrFile_Item MANAGEMENT ────────────────────────────────────────────────────────
+// Sets New Path for Item Provided Device
+func (i *SonrFile_Item) SetPath(d *Device) {
+	// Check for Media
+	if i.Mime.IsMedia() {
+		// Check for Desktop
+		if d.IsDesktop() {
+			i.Path = filepath.Join(d.FileSystem.GetDownloads(), i.Name)
+		} else {
+			i.Path = filepath.Join(d.FileSystem.GetTemporary(), i.Name)
+		}
 	} else {
-		return nil
-	}
-}
-
-// ** ─── SONRFILE_Item MANAGEMENT ────────────────────────────────────────────────────────
-
-func (m *SonrFile_Item) NewReader(d *Device) ItemReader {
-	return &itemReader{
-		item:   m,
-		device: d,
-		size:   0,
-	}
-}
-
-func (m *SonrFile_Item) NewWriter(d *Device) ItemWriter {
-	return &itemWriter{
-		item: m,
-		size: 0,
+		// Check for Desktop
+		if d.IsDesktop() {
+			i.Path = filepath.Join(d.FileSystem.GetDownloads(), i.Name)
+		} else {
+			i.Path = filepath.Join(d.FileSystem.GetDocuments(), i.Name)
+		}
 	}
 }
 
 // ** ─── Session MANAGEMENT ────────────────────────────────────────────────────────
-type Session struct {
+// Interface for Transfer Session
+type Session interface {
+	ReadFromStream(stream network.Stream)
+	WriteToStream(stream network.Stream)
+}
+
+// Underlying Implementation
+type session struct {
+	Session
 	// Inherited Properties
 	mutex sync.Mutex
 	file  *SonrFile
@@ -64,66 +96,28 @@ type Session struct {
 	call NodeCallback
 }
 
-// ^ Prepare for Outgoing Session ^ //
-func NewOutSession(u *User, req *InviteRequest, tc NodeCallback) *Session {
-	return &Session{
-		file: req.GetFile(),
-		peer: req.GetTo(),
-		user: u,
-		call: tc,
-	}
-}
-
-// ^ Prepare for Incoming Session ^ //
-func NewInSession(u *User, inv *AuthInvite, c NodeCallback) *Session {
-	// Return Session
-	return &Session{
-		file: inv.GetFile(),
-		peer: inv.GetFrom(),
-		user: u,
-		call: c,
-	}
-}
-
 // Returns SonrFile as TransferCard given Receiver and Owner
-func (s *Session) Card(d Direction) *TransferCard {
-	if d == Direction_Incoming {
-		// Create Card
-		return &TransferCard{
-			// SQL Properties
-			Payload:  s.file.Payload,
-			Received: int32(time.Now().Unix()),
+func (s *session) Card() *TransferCard {
+	return &TransferCard{
+		// SQL Properties
+		Payload:  s.file.Payload,
+		Received: int32(time.Now().Unix()),
 
-			// Owner Properties
-			Owner:    s.user.Peer.GetProfile(),
-			Receiver: s.peer.GetProfile(),
+		// Owner Properties
+		Owner:    s.user.Peer.GetProfile(),
+		Receiver: s.peer.GetProfile(),
 
-			// Data Properties
-			File: s.file,
-		}
-	} else {
-		// Create Card
-		return &TransferCard{
-			// SQL Properties
-			Payload: s.file.Payload,
-
-			// Owner Properties
-			Owner:    s.user.Peer.GetProfile(),
-			Receiver: s.peer.GetProfile(),
-
-			// Data Properties
-			File: s.file,
-		}
+		// Data Properties
+		File: s.file,
 	}
 }
 
 // ^ read buffers sent on stream and save to file ^ //
-func (s *Session) ReadFromStream(stream network.Stream) {
+func (s *session) ReadFromStream(stream network.Stream) {
 	// Concurrent Function
 	go func(rs msg.ReadCloser) {
 		// Read All Files
-		for _, m := range s.file.Items {
-			r := m.NewReader(s.user.Device)
+		for _, r := range s.file.Readers(s.user.Device) {
 			err := r.ReadFrom(rs)
 			if err != nil {
 				s.call.Error(NewError(err, ErrorMessage_INCOMING))
@@ -132,17 +126,16 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 
 		// Close Stream and Callback
 		stream.Close()
-		s.call.Received(s.Card(Direction_Incoming))
+		s.call.Received(s.Card())
 	}(msg.NewReader(stream))
 }
 
-// ^ write file as Base64 in Msgio to Stream ^ //
-func (s *Session) WriteToStream(stream network.Stream) {
+// ^ Writes Files to Stream ^ //
+func (s *session) WriteToStream(stream network.Stream) {
 	// Concurrent Function
 	go func(ws msg.WriteCloser) {
 		// Write All Files
-		for _, m := range s.file.Items {
-			w := m.NewWriter(s.user.Device)
+		for _, w := range s.file.Writers() {
 			err := w.WriteTo(ws)
 			if err != nil {
 				s.call.Error(NewError(err, ErrorMessage_OUTGOING))
@@ -151,6 +144,6 @@ func (s *Session) WriteToStream(stream network.Stream) {
 		}
 
 		// Callback
-		s.call.Transmitted(s.Card(Direction_Outgoing))
+		s.call.Transmitted(s.Card())
 	}(msg.NewWriter(stream))
 }
