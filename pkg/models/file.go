@@ -2,6 +2,7 @@ package models
 
 import (
 	"path/filepath"
+	"sync"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/network"
@@ -37,23 +38,8 @@ func (f *SonrFile) Single() *SonrFile_Item {
 
 // ** ─── SONRFILE_Item MANAGEMENT ────────────────────────────────────────────────────────
 
-func (m *SonrFile_Item) NewReader(d *Device) ItemReader {
-	return &itemReader{
-		item:   m,
-		device: d,
-		size:   0,
-	}
-}
-
-func (m *SonrFile_Item) NewWriter(d *Device) ItemWriter {
-	return &itemWriter{
-		item: m,
-		size: 0,
-	}
-}
-
-func (i *SonrFile_Item) SetPath(d *Device) {
-	// Check for Media
+func (i *SonrFile_Item) NewReader(d *Device) ItemReader {
+	// Set Path
 	if i.Mime.IsMedia() {
 		// Check for Desktop
 		if d.IsDesktop() {
@@ -68,6 +54,20 @@ func (i *SonrFile_Item) SetPath(d *Device) {
 		} else {
 			i.Path = filepath.Join(d.FileSystem.GetDocuments(), i.Name)
 		}
+	}
+
+	// Return Reader
+	return &itemReader{
+		item:   i,
+		device: d,
+		size:   0,
+	}
+}
+
+func (m *SonrFile_Item) NewWriter(d *Device) ItemWriter {
+	return &itemWriter{
+		item: m,
+		size: 0,
 	}
 }
 
@@ -121,38 +121,45 @@ func (s *Session) Card() *TransferCard {
 
 // ^ read buffers sent on stream and save to file ^ //
 func (s *Session) ReadFromStream(stream network.Stream) {
+	var wg sync.WaitGroup
+
 	// Concurrent Function
 	go func(rs msg.ReadCloser) {
 		// Read All Files
 		for _, m := range s.file.Items {
+			wg.Add(1)
 			r := m.NewReader(s.user.Device)
-			err := r.ReadFrom(rs)
+			err := r.ReadFrom(rs, &wg)
 			if err != nil {
 				s.call.Error(NewError(err, ErrorMessage_INCOMING))
 			}
 		}
-
-		// Close Stream and Callback
-		stream.Close()
-		s.call.Received(s.Card())
+		rs.Close()
 	}(msg.NewReader(stream))
+
+	wg.Wait()
+	// Close Stream and Callback
+	stream.Close()
+	s.call.Received(s.Card())
 }
 
 // ^ write file as Base64 in Msgio to Stream ^ //
 func (s *Session) WriteToStream(stream network.Stream) {
+	var wg sync.WaitGroup
 	// Concurrent Function
 	go func(ws msg.WriteCloser) {
 		// Write All Files
 		for _, m := range s.file.Items {
+			wg.Add(1)
 			w := m.NewWriter(s.user.Device)
-			err := w.WriteTo(ws)
+			err := w.WriteTo(ws, &wg)
 			if err != nil {
 				s.call.Error(NewError(err, ErrorMessage_OUTGOING))
 			}
 			GetState().NeedsWait()
 		}
-
 		// Callback
-		s.call.Transmitted(s.Card())
 	}(msg.NewWriter(stream))
+	wg.Wait()
+	s.call.Transmitted(s.Card())
 }
