@@ -6,7 +6,6 @@ import (
 	ps "github.com/libp2p/go-libp2p-core/peer"
 	"github.com/multiformats/go-multiaddr"
 	md "github.com/sonr-io/core/pkg/models"
-	"google.golang.org/protobuf/proto"
 )
 
 // ^ Returns HostNode Peer Addr Info ^ //
@@ -27,32 +26,4 @@ func (hn *HostNode) MultiAddr() (multiaddr.Multiaddr, *md.SonrError) {
 	}
 	fmt.Println("libp2p node address:", addrs[0])
 	return addrs[0], nil
-}
-
-func (hn *HostNode) AddUser(u *md.User) error {
-	// Marshal User
-	value, err := u.ContactBytes()
-	if err != nil {
-		return err
-	}
-
-	// Place Value
-	hn.KDHT.PutValue(hn.ctx, u.Crypto.Key(), value)
-	return nil
-}
-
-func (hn *HostNode) FindUser(c *md.User_Crypto) (*md.Contact, error) {
-	// Find Value
-	value, err := hn.KDHT.GetValue(hn.ctx, c.Key())
-	if err != nil {
-		return nil, err
-	}
-
-	// Unmarshal User
-	m := &md.Contact{}
-	err = proto.Unmarshal(value, m)
-	if err != nil {
-		return nil, err
-	}
-	return m, nil
 }
