@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 
 	crypto "github.com/libp2p/go-libp2p-crypto"
+	"google.golang.org/protobuf/proto"
 )
 
 // ** ─── DEVICE MANAGEMENT ────────────────────────────────────────────────────────
@@ -163,6 +164,7 @@ func NewUser(cr *ConnectionRequest) *User {
 		Device:   d,
 		Contact:  cr.GetContact(),
 		Location: cr.GetLocation(),
+		Crypto:   cr.GetCrypto(),
 		Connection: &User_Connection{
 			HasConnected:    false,
 			HasBootstrapped: false,
@@ -175,6 +177,18 @@ func NewUser(cr *ConnectionRequest) *User {
 			Status: Status_IDLE,
 		},
 	}
+}
+
+func (u *User) ContactBytes() ([]byte, error) {
+	dat, err := proto.Marshal(u.Contact)
+	if err != nil {
+		return nil, err
+	}
+	return dat, nil
+}
+
+func (c *User_Crypto) Key() string {
+	return fmt.Sprintf("%s+%s", c.Prefix, c.Signature)
 }
 
 // Method Returns Private Key
