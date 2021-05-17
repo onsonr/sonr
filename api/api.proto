@@ -39,7 +39,17 @@ message ConnectionRequest {
   Device device = 2;             // Users Device
   Contact contact = 3;           // Users Contact Card
   Connectivity connectivity = 4; // Client Network Type
-  User.Crypto crypto = 5;
+  User.Crypto crypto = 5;        // User Crypto Data
+  ClientKeys clientKeys = 6;     // Client Keys
+
+  // Client Keys for Services
+  message ClientKeys {
+    string ipKey = 1;
+    string rapidApiHost = 2;
+    string rapidApiKey = 3;
+    string hsKey = 4;
+    string hsSecret = 5;
+  }
 }
 
 // Updated Peer Info Request
