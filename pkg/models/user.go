@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 
 	crypto "github.com/libp2p/go-libp2p-crypto"
+	"google.golang.org/protobuf/proto"
 )
 
 // ** ─── DEVICE MANAGEMENT ────────────────────────────────────────────────────────
@@ -185,6 +186,17 @@ func (u *User) PrivateKey() crypto.PrivKey {
 		return nil
 	}
 	return key
+}
+func (u *User) ContactBytes() ([]byte, error) {
+	dat, err := proto.Marshal(u.Contact)
+	if err != nil {
+		return nil, err
+	}
+	return dat, nil
+}
+
+func (c *User_Crypto) Key() string {
+	return fmt.Sprintf("%s+%s", c.Prefix, c.Signature)
 }
 
 // Updates User Peer

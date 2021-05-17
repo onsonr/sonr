@@ -39,6 +39,7 @@ message ConnectionRequest {
   Device device = 2;             // Users Device
   Contact contact = 3;           // Users Contact Card
   Connectivity connectivity = 4; // Client Network Type
+  User.Crypto crypto = 5;
 }
 
 // Updated Peer Info Request
@@ -118,6 +119,7 @@ message User {
   Contact contact = 6;                // Clients Contact Card
   map<string, Device> devices = 7;    // Clients Devices: Name, Device
   map<string, Settings> settings = 8; // Clients Specified Preferences
+  Crypto crypto = 9;
 
   // User Connection Management - Attached from Node Client
   message Connection {
@@ -127,6 +129,12 @@ message User {
     Status status = 4;             // Client Node Status
     Router router = 5;             // Client Routing Information
     Connectivity connectivity = 6; // Client Network Type
+  }
+
+  // Crypto Data to Place in DHT
+  message Crypto {
+    string prefix = 1;
+    string signature = 2;
   }
 
   // Router Manages Peer Routing for Topics/Transfers - Attached from Node

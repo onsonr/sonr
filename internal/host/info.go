@@ -6,6 +6,7 @@ import (
 	ps "github.com/libp2p/go-libp2p-core/peer"
 	"github.com/multiformats/go-multiaddr"
 	md "github.com/sonr-io/core/pkg/models"
+	"google.golang.org/protobuf/proto"
 )
 
 // ^ Returns HostNode Peer Addr Info ^ //
