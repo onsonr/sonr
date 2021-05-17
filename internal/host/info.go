@@ -56,3 +56,4 @@ func (hn *HostNode) FindUser(c *md.User_Crypto) (*md.Contact, error) {
 	}
 	return m, nil
 }
+//
