@@ -39,7 +39,19 @@ message ConnectionRequest {
   Device device = 2;             // Users Device
   Contact contact = 3;           // Users Contact Card
   Connectivity connectivity = 4; // Client Network Type
-  bytes privateKey = 5;          // Private Key Buffer
+  ECKeyPair keys = 5;
+
+  // User Private Public Keys
+  message ECKeyPair {
+    oneof privateKey {
+      string privateKeyString = 1;
+      bytes privateKeyBytes = 2;
+    }
+    oneof publicKey {
+      string publicKeyString = 3;
+      bytes publicKeyBytes = 4;
+    }
+  }
 }
 
 // Updated Peer Info Request
