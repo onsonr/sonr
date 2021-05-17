@@ -59,16 +59,7 @@ func (c *Client) Connect(pk crypto.PrivKey) *md.SonrError {
 
 // ^ Begins Bootstrapping HostNode ^
 func (c *Client) Bootstrap() *md.SonrError {
-	serr := c.Host.Bootstrap()
-	if serr != nil {
-		return serr
-	}
-
-	err := c.Host.AddUser(c.user)
-	if err != nil {
-		return md.NewError(err, md.ErrorMessage_HOST_INFO)
-	}
-	return nil
+	return c.Host.Bootstrap()
 }
 
 // ^ Join Lobby Adds Node to Named Topic ^
