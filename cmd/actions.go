@@ -1,7 +1,7 @@
 package bind
 
 import (
-	"github.com/sonr-io/core/internal/network"
+	"github.com/sonr-io/core/internal/crypto"
 	"github.com/sonr-io/core/internal/topic"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
@@ -24,7 +24,7 @@ func GetURLLink(url string) []byte {
 func (mn *Node) CreateRemote() []byte {
 	if mn.isReady() {
 		// Generate Word List
-		_, wordList, serr := network.RandomWords("english", 3)
+		_, wordList, serr := crypto.RandomWords("english", 3)
 		if serr != nil {
 			mn.handleError(serr)
 			return nil

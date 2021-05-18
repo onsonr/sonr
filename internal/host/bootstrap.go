@@ -6,14 +6,13 @@ import (
 	dscl "github.com/libp2p/go-libp2p-core/discovery"
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	psub "github.com/libp2p/go-libp2p-pubsub"
-	cfg "github.com/sonr-io/core/internal/network"
 	md "github.com/sonr-io/core/pkg/models"
 )
 
 // ^ Bootstrap begins bootstrap with peers ^
 func (h *HostNode) Bootstrap() *md.SonrError {
 	// Create Bootstrapper Info
-	bootstrappers, err := cfg.GetBootstrapAddrInfo()
+	bootstrappers, err := GetBootstrapAddrInfo()
 	if err != nil {
 		return md.NewError(err, md.ErrorMessage_BOOTSTRAP)
 	}

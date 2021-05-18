@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/alecthomas/jsonschema"
 	crypto "github.com/libp2p/go-libp2p-crypto"
 	"google.golang.org/protobuf/proto"
 )
@@ -197,6 +198,12 @@ func (u *User) ContactBytes() ([]byte, error) {
 
 func (c *User_Crypto) Key() string {
 	return fmt.Sprintf("%s+%s", c.Prefix, c.Signature)
+}
+
+// Returns User Protobuf as Reflected JSON Schema
+func ReflectUserToJson() *jsonschema.Schema {
+	reflector := jsonschema.Reflector{}
+	return reflector.Reflect(&User{})
 }
 
 // Updates User Peer

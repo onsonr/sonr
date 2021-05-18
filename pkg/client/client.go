@@ -40,6 +40,12 @@ func (c *Client) Connect(pk crypto.PrivKey) *md.SonrError {
 		return err
 	}
 
+	// Write User
+	serr := hn.WriteUser(c.user)
+	if serr != nil {
+		return md.NewError(serr, md.ErrorMessage_BOOTSTRAP)
+	}
+
 	// Get MultiAddrs
 	maddr, err := hn.MultiAddr()
 	if err != nil {
