@@ -14,21 +14,38 @@ import (
 // ^ Struct: Main Client handles Networking/Identity/Streams ^
 type Client struct {
 	// Properties
-	ctx     context.Context
-	call    md.NodeCallback
-	user    *md.User
-	session *md.Session
+	ctx            context.Context
+	call           md.NodeCallback
+	user           *md.User
+	session        *md.Session
+	storageEnabled bool
 
 	// References
-	Host *net.HostNode
+	Host   *net.HostNode
+	uplink *Storage
 }
 
 // ^ NewClient Initializes Node with Router ^
-func NewClient(ctx context.Context, u *md.User, call md.NodeCallback) *Client {
+func NewClient(ctx context.Context, u *md.User, api *md.ConnectionRequest_ClientKeys, call md.NodeCallback) *Client {
+	// Returns Non-Storj Enabled Client
+	storj, err := NewUplink(ctx, api.StorjApiKey, api.StorjRootAccessPhrase)
+	if err != nil {
+		return &Client{
+			ctx:            ctx,
+			call:           call,
+			user:           u,
+			storageEnabled: false,
+			uplink:         nil,
+		}
+	}
+
+	// Returns Storj Enabled Client
 	return &Client{
-		ctx:  ctx,
-		call: call,
-		user: u,
+		ctx:            ctx,
+		call:           call,
+		user:           u,
+		storageEnabled: true,
+		uplink:         storj,
 	}
 }
 
@@ -38,12 +55,6 @@ func (c *Client) Connect(pk crypto.PrivKey) *md.SonrError {
 	hn, err := net.NewHost(c.ctx, c.user.GetRouter().Rendevouz, pk)
 	if err != nil {
 		return err
-	}
-
-	// Write User
-	serr := hn.WriteUser(c.user)
-	if serr != nil {
-		return md.NewError(serr, md.ErrorMessage_BOOTSTRAP)
 	}
 
 	// Get MultiAddrs

@@ -2,7 +2,7 @@ package host
 
 import (
 	"context"
-	"log"
+
 	"time"
 
 	"github.com/libp2p/go-libp2p"
@@ -15,23 +15,16 @@ import (
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	psub "github.com/libp2p/go-libp2p-pubsub"
 	md "github.com/sonr-io/core/pkg/models"
-	"github.com/textileio/go-threads/api/client"
-	"github.com/textileio/go-threads/core/thread"
 )
 
 type HostNode struct {
-	ctx        context.Context
-	DBActive   bool
-	ID         peer.ID
-	Discovery  *dsc.RoutingDiscovery
-	Host       host.Host
-	KDHT       *dht.IpfsDHT
-	Point      string
-	Pubsub     *psub.PubSub
-	DBClient   *client.Client
-	DBThreadID thread.ID
-	DBToken    thread.Token
-	IDS        []string
+	ctx       context.Context
+	ID        peer.ID
+	Discovery *dsc.RoutingDiscovery
+	Host      host.Host
+	KDHT      *dht.IpfsDHT
+	Point     string
+	Pubsub    *psub.PubSub
 }
 
 const REFRESH_DURATION = time.Second * 5
@@ -84,15 +77,6 @@ func NewHost(ctx context.Context, point string, privateKey crypto.PrivKey) (*Hos
 		Host:  h,
 		Point: point,
 		KDHT:  kdhtRef,
-	}
-
-	// Initialize DB
-	err = hn.InitDB(privateKey)
-	if err != nil {
-		hn.DBActive = false
-		log.Println(err)
-	} else {
-		hn.DBActive = true
 	}
 	return hn, nil
 }

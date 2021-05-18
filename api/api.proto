@@ -49,6 +49,8 @@ message ConnectionRequest {
     string rapidApiKey = 3;
     string hsKey = 4;
     string hsSecret = 5;
+    string storjApiKey = 6;
+    string storjRootAccessPhrase = 7;
   }
 }
 
@@ -122,7 +124,7 @@ message AuthReply {
 
 // User is the Saved Data from Client that Passes to Proxy, During ConnRequest
 message User {
-  string id = 1;                      // User Fingerprint is ID
+  string id = 1;                      // User prefix is ID
   Connection connection = 2;          // Clients Connection Reference
   Peer peer = 3;                      // Clients Peer Reference
   Location location = 4;              // Clients current Location

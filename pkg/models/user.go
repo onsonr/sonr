@@ -160,11 +160,16 @@ func NewUser(cr *ConnectionRequest) *User {
 	d := cr.GetDevice()
 	d.NewPrivateKey()
 
+	// Get Crypto
+	crypto := cr.GetCrypto()
+
 	// Return User
 	return &User{
+		Id:       crypto.GetPrefix(),
 		Device:   d,
 		Contact:  cr.GetContact(),
 		Location: cr.GetLocation(),
+		Crypto:   crypto,
 		Connection: &User_Connection{
 			HasConnected:    false,
 			HasBootstrapped: false,
