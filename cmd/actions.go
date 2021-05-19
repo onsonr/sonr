@@ -22,32 +22,40 @@ func GetURLLink(url string) []byte {
 
 // @ Gets User from Storj
 func (mn *Node) GetUser(id string) []byte {
-	// Get User from Uplink
-	user, err := mn.uplink.GetUser(id)
-	if err != nil {
-		return nil
-	}
+	// Verify Storage enabled
+	if mn.storageEnabled {
+		// Get User from Uplink
+		user, err := mn.uplink.GetUser(id)
+		if err != nil {
+			return nil
+		}
 
-	// Marshal
-	bytes, err := proto.Marshal(user)
-	if err != nil {
-		return nil
+		// Marshal
+		bytes, err := proto.Marshal(user)
+		if err != nil {
+			return nil
+		}
+		return bytes
 	}
-	return bytes
+	return nil
 }
 
 // @ Puts User into Storj
 func (mn *Node) PutUser(data []byte) bool {
-	// Unmarshal Data
-	user := &md.User{}
-	proto.Unmarshal(data, user)
-	
-	// Put User
-	err := mn.uplink.PutUser(user)
-	if err != nil {
-		return false
+	// Verify Storage enabled
+	if mn.storageEnabled {
+		// Unmarshal Data
+		user := &md.User{}
+		proto.Unmarshal(data, user)
+
+		// Put User
+		err := mn.uplink.PutUser(user)
+		if err != nil {
+			return false
+		}
+		return true
 	}
-	return true
+	return false
 }
 
 // @ Join Existing Group
