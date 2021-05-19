@@ -52,8 +52,12 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 		topics: make(map[string]*tpc.TopicManager, 10),
 	}
 
+	// Get API Keys
+	storjAccess := req.ClientKeys.StorjApiKey
+	storjRootPhrase := req.ClientKeys.StorjRootAccessPhrase
+
 	// Initialize Storage
-	storj, err := sc.NewUplink(mn.ctx, req.GetClientKeys().StorjApiKey, req.GetClientKeys().StorjRootAccessPhrase)
+	storj, err := sc.NewUplink(mn.ctx, storjAccess, storjRootPhrase)
 	if err != nil {
 		mn.storageEnabled = false
 		log.Println("Storage Disabled")
