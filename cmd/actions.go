@@ -1,6 +1,8 @@
 package bind
 
 import (
+	"context"
+
 	"github.com/getsentry/sentry-go"
 	"github.com/sonr-io/core/internal/crypto"
 	"github.com/sonr-io/core/internal/topic"
@@ -23,13 +25,13 @@ func GetURLLink(url string) []byte {
 }
 
 // @ Gets User from Storj
-func (mn *Node) GetUser(data []byte) []byte {
+func GetUser(data []byte) []byte {
 	// Unmarshal Request
 	request := &md.StorjRequest{}
 	proto.Unmarshal(data, request)
 
 	// Get User from Uplink
-	user, err := sc.GetUser(mn.ctx, request.StorjApiKey, request.GetUserID())
+	user, err := sc.GetUser(context.Background(), request.StorjApiKey, request.GetUserID())
 	if err != nil {
 		sentry.CaptureException(err)
 		return nil
@@ -44,13 +46,13 @@ func (mn *Node) GetUser(data []byte) []byte {
 }
 
 // @ Puts User into Storj
-func (mn *Node) PutUser(data []byte) bool {
+func PutUser(data []byte) bool {
 	// Unmarshal Request
 	request := &md.StorjRequest{}
 	proto.Unmarshal(data, request)
 
 	// Put User
-	err := sc.PutUser(mn.ctx, request.StorjApiKey, request.GetUser())
+	err := sc.PutUser(context.Background(), request.StorjApiKey, request.GetUser())
 	if err != nil {
 		sentry.CaptureException(err)
 		return false
