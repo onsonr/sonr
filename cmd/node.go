@@ -2,6 +2,7 @@ package bind
 
 import (
 	"context"
+	"log"
 
 	"github.com/getsentry/sentry-go"
 	"github.com/pkg/errors"
@@ -55,7 +56,9 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	storj, err := sc.NewUplink(mn.ctx, req.GetClientKeys().StorjApiKey, req.GetClientKeys().StorjRootAccessPhrase)
 	if err != nil {
 		mn.storageEnabled = false
+		log.Println("Storage Disabled")
 	} else {
+		log.Println("Storage Enabled")
 		mn.storageEnabled = true
 		mn.uplink = storj
 	}

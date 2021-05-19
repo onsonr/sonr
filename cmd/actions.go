@@ -1,6 +1,8 @@
 package bind
 
 import (
+	"log"
+
 	"github.com/sonr-io/core/internal/crypto"
 	"github.com/sonr-io/core/internal/topic"
 	md "github.com/sonr-io/core/pkg/models"
@@ -37,6 +39,7 @@ func (mn *Node) GetUser(id string) []byte {
 		}
 		return bytes
 	}
+	log.Println("Storage Disabled")
 	return nil
 }
 
@@ -55,6 +58,7 @@ func (mn *Node) PutUser(data []byte) bool {
 		}
 		return true
 	}
+	log.Println("Storage Disabled")
 	return false
 }
 
