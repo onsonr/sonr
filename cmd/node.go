@@ -2,7 +2,6 @@ package bind
 
 import (
 	"context"
-	"log"
 
 	"github.com/getsentry/sentry-go"
 	"github.com/pkg/errors"
@@ -28,7 +27,6 @@ type Node struct {
 
 	// Storage
 	storageEnabled bool
-	uplink         *sc.Storage
 }
 
 // @ Create New Mobile Node
@@ -50,22 +48,6 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 		call:   call,
 		ctx:    context.Background(),
 		topics: make(map[string]*tpc.TopicManager, 10),
-	}
-
-	// Get API Keys
-	storjAccess := req.ClientKeys.StorjApiKey
-	storjRootPhrase := req.ClientKeys.StorjRootAccessPhrase
-
-	// Initialize Storage
-	storj, err := sc.NewUplink(mn.ctx, storjAccess, storjRootPhrase)
-	if err != nil {
-		mn.storageEnabled = false
-		log.Println("Storage Disabled")
-		sentry.CaptureException(err)
-	} else {
-		log.Println("Storage Enabled")
-		mn.storageEnabled = true
-		mn.uplink = storj
 	}
 
 	// Create Users

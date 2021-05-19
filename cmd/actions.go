@@ -1,11 +1,10 @@
 package bind
 
 import (
-	"log"
-
 	"github.com/getsentry/sentry-go"
 	"github.com/sonr-io/core/internal/crypto"
 	"github.com/sonr-io/core/internal/topic"
+	sc "github.com/sonr-io/core/pkg/client"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -24,45 +23,40 @@ func GetURLLink(url string) []byte {
 }
 
 // @ Gets User from Storj
-func (mn *Node) GetUser(id string) []byte {
-	// Verify Storage enabled
-	if mn.storageEnabled {
-		// Get User from Uplink
-		user, err := mn.uplink.GetUser(id)
-		if err != nil {
-			sentry.CaptureException(err)
-			return nil
-		}
+func (mn *Node) GetUser(data []byte) []byte {
+	// Unmarshal Request
+	request := &md.StorjRequest{}
+	proto.Unmarshal(data, request)
 
-		// Marshal
-		bytes, err := proto.Marshal(user)
-		if err != nil {
-			return nil
-		}
-		return bytes
+	// Get User from Uplink
+	user, err := sc.GetUser(mn.ctx, request.StorjApiKey, request.GetUserID())
+	if err != nil {
+		sentry.CaptureException(err)
+		return nil
 	}
-	log.Println("Storage Disabled")
-	return nil
+
+	// Marshal
+	bytes, err := proto.Marshal(user)
+	if err != nil {
+		return nil
+	}
+	return bytes
 }
 
 // @ Puts User into Storj
 func (mn *Node) PutUser(data []byte) bool {
-	// Verify Storage enabled
-	if mn.storageEnabled {
-		// Unmarshal Data
-		user := &md.User{}
-		proto.Unmarshal(data, user)
+	// Unmarshal Request
+	request := &md.StorjRequest{}
+	proto.Unmarshal(data, request)
 
-		// Put User
-		err := mn.uplink.PutUser(user)
-		if err != nil {
-			sentry.CaptureException(err)
-			return false
-		}
-		return true
+	// Put User
+	err := sc.PutUser(mn.ctx, request.StorjApiKey, request.GetUser())
+	if err != nil {
+		sentry.CaptureException(err)
+		return false
 	}
-	log.Println("Storage Disabled")
-	return false
+	return true
+
 }
 
 // @ Join Existing Group

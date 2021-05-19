@@ -49,8 +49,19 @@ message ConnectionRequest {
     string rapidApiKey = 3;
     string hsKey = 4;
     string hsSecret = 5;
-    string storjApiKey = 6;
-    string storjRootAccessPhrase = 7;
+  }
+}
+
+// Request to Access Storj Data
+message StorjRequest {
+  // Keys
+  string storjApiKey = 1;
+  string storjRootPassword = 2;
+
+  // Data for Get/Put
+  oneof data {
+    string userID = 3;
+    User user = 4;
   }
 }
 

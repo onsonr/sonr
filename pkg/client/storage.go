@@ -11,47 +11,29 @@ import (
 	"storj.io/uplink"
 )
 
-type Storage struct {
-	ctx       context.Context
-	appAccess *uplink.Access
-}
-
-// @ Start New Storage Uplink
-func NewUplink(ctx context.Context, appAPIKey string, rootPassword string) (*Storage, error) {
+// @ Get User from Remote Data Store
+func GetUser(ctx context.Context, appAPIKey string, id string) (*md.User, error) {
+	// Parse Access
 	appAccess, err := uplink.ParseAccess(appAPIKey)
 	if err != nil {
 		return nil, err
 	}
 
-	return &Storage{
-		ctx:       ctx,
-		appAccess: appAccess,
-	}, nil
-}
-
-// @ Get User from Remote Data Store
-func (s *Storage) GetUser(id string) (*md.User, error) {
-	// Create User Access
-	userAccess, err := s.appAccess.Share(uplink.FullPermission())
-	if err != nil {
-		return nil, err
-	}
-
 	// Open Project
-	project, err := uplink.OpenProject(s.ctx, userAccess)
+	project, err := uplink.OpenProject(ctx, appAccess)
 	if err != nil {
 		return nil, err
 	}
 	defer project.Close()
 
-	// Marshal USer
-	buffer := new(bytes.Buffer)
-	d, err := project.DownloadObject(s.ctx, "users", id, &uplink.DownloadOptions{})
+	// Create Download Object
+	d, err := project.DownloadObject(ctx, "users", id, nil)
 	if err != nil {
 		return nil, err
 	}
 
 	// Copy to Buffer
+	buffer := new(bytes.Buffer)
 	_, err = io.Copy(buffer, d)
 	if err != nil {
 		return nil, err
@@ -67,22 +49,28 @@ func (s *Storage) GetUser(id string) (*md.User, error) {
 }
 
 // @ Put User in Remote Data Store
-func (s *Storage) PutUser(u *md.User) error {
+func PutUser(ctx context.Context, appAPIKey string, u *md.User) error {
+	// Parse Access
+	appAccess, err := uplink.ParseAccess(appAPIKey)
+	if err != nil {
+		return err
+	}
+
 	// Open Project
-	project, err := uplink.OpenProject(s.ctx, s.appAccess)
+	project, err := uplink.OpenProject(ctx, appAccess)
 	if err != nil {
 		return fmt.Errorf("could not open project: %v", err)
 	}
 	defer project.Close()
 
 	// Ensure the desired Bucket within the Project is created.
-	_, err = project.EnsureBucket(s.ctx, "users")
+	_, err = project.EnsureBucket(ctx, "users")
 	if err != nil {
 		return fmt.Errorf("could not ensure bucket: %v", err)
 	}
 
 	// Create Upload Object
-	object, err := project.UploadObject(s.ctx, "users", u.GetId(), nil)
+	object, err := project.UploadObject(ctx, "users", u.GetId(), nil)
 	if err != nil {
 		return err
 	}
