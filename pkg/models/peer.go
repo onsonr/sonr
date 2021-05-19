@@ -3,7 +3,6 @@ package models
 import (
 	"fmt"
 	"hash/fnv"
-	"log"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -84,7 +83,9 @@ func (p *Peer) PeerID() string {
 // ^ SignMessage Creates Lobby Event with Message ^
 func (p *Peer) SignMessage(m string, to *Peer) *LobbyEvent {
 	return &LobbyEvent{
-		Event:   LobbyEvent_MESSAGE,
+		Event: &LobbyEvent_Local{
+			Local: LobbyEvent_MESSAGE,
+		},
 		From:    p,
 		Id:      p.Id.Peer,
 		Message: m,
@@ -100,7 +101,6 @@ func (u *User) SignInviteWithContact(req *InviteRequest, isFlat bool) AuthInvite
 		IsFlat:  isFlat,
 		Data:    u.Contact.GetTransfer(),
 		Payload: req.GetPayload(),
-		Remote:  req.GetRemote(),
 		To:      req.GetTo(),
 	}
 }
@@ -113,7 +113,6 @@ func (u *User) SignInviteWithFile(req *InviteRequest) AuthInvite {
 		To:      req.GetTo(),
 		Payload: req.GetPayload(),
 		Data:    req.GetData(),
-		Remote:  req.GetRemote(),
 	}
 }
 
@@ -128,7 +127,6 @@ func (u *User) SignInviteWithLink(req *InviteRequest) AuthInvite {
 		From:    u.GetPeer(),
 		Data:    link.GetTransfer(),
 		Payload: req.GetPayload(),
-		Remote:  req.GetRemote(),
 		To:      req.GetTo(),
 	}
 }
@@ -139,7 +137,6 @@ func (u *User) SignReply(req *RespondRequest) *AuthReply {
 		From:     u.GetPeer(),
 		Type:     AuthReply_Transfer,
 		Decision: req.GetDecision(),
-		Remote:   req.GetRemote(),
 		Card: &TransferCard{
 			// SQL Properties
 			Payload:  Payload_NONE,
@@ -195,60 +192,10 @@ func (u *User) SignReplyWithContact(req *RespondRequest) *AuthReply {
 // ^ SignUpdate Creates Lobby Event with Peer Data ^
 func (p *Peer) SignUpdate() *LobbyEvent {
 	return &LobbyEvent{
-		Event: LobbyEvent_UPDATE,
-		From:  p,
-		Id:    p.Id.Peer,
+		Event: &LobbyEvent_Local{
+			Local: LobbyEvent_UPDATE,
+		},
+		From: p,
+		Id:   p.Id.Peer,
 	}
-}
-
-// ** ─── Lobby MANAGEMENT ────────────────────────────────────────────────────────
-// ^ Get Remote Point Info ^
-func GetRemoteInfo(list []string) RemoteInfo {
-	return RemoteInfo{
-		Display: fmt.Sprintf("%s %s %s", list[0], list[1], list[2]),
-		Topic:   fmt.Sprintf("%s-%s-%s", list[0], list[1], list[2]),
-		Count:   int32(len(list)),
-		IsJoin:  false,
-		Words:   list,
-	}
-}
-
-// ^ Returns as Lobby Buffer ^
-func (l *Lobby) Buffer() ([]byte, error) {
-	bytes, err := proto.Marshal(l)
-	if err != nil {
-		log.Println(err)
-		return nil, err
-	}
-	return bytes, nil
-}
-
-// ^ Add/Update Peer in Lobby ^
-func (l *Lobby) Add(peer *Peer) {
-	// Update Peer with new data
-	l.Peers[peer.Id.Peer] = peer
-	l.Count = int32(len(l.Peers))
-	l.Size = int32(len(l.Peers)) + 1 // Account for User
-}
-
-// ^ Remove Peer from Lobby ^
-func (l *Lobby) Delete(id peer.ID) {
-	// Update Peer with new data
-	delete(l.Peers, id.String())
-	l.Count = int32(len(l.Peers))
-	l.Size = int32(len(l.Peers)) + 1 // Account for User
-}
-
-// ^ Sync Between Remote Peers Lobby ^
-func (l *Lobby) Sync(ref *Lobby, remotePeer *Peer) {
-	// Validate Lobbies are Different
-	if l.Count != ref.Count {
-		// Iterate Over List
-		for id, peer := range ref.Peers {
-			if l.User.IsNotPeerIDString(id) {
-				l.Add(peer)
-			}
-		}
-	}
-	l.Add(remotePeer)
 }

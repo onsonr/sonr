@@ -1,36 +1,35 @@
 package models
 
 import (
+	"fmt"
+	"log"
 	"net/http"
 	"sync"
 	"sync/atomic"
+
+	"github.com/libp2p/go-libp2p-core/peer"
+	"google.golang.org/protobuf/proto"
 )
 
-const K_BUF_CHUNK = 32000
-const K_B64_CHUNK = 31998 // Adjusted for Base64 -- has to be divisible by 3
-
 // ** ─── CALLBACK MANAGEMENT ────────────────────────────────────────────────────────
-// Define Function Types
-var callback NodeCallback
+type NodeCallback interface {
+	Invited([]byte)
+	Refreshed([]byte)
+	Event([]byte)
+	Responded([]byte)
+	Progressed(float32)
+	Received(*TransferCard)
+	Transmitted(*TransferCard)
+	Status(s Status)
+	Error(err *SonrError)
+}
 
-type SetStatus func(s Status)
-type OnProtobuf func([]byte)
-type OnInvite func(data []byte)
-type OnProgress func(data float32)
-type OnReceived func(data *TransferCard)
-type OnTransmitted func(data *TransferCard)
-type OnError func(err *SonrError)
-type NodeCallback struct {
-	Invited     OnInvite
-	Refreshed   OnProtobuf
-	Event       OnProtobuf
-	RemoteStart OnProtobuf
-	Responded   OnProtobuf
-	Progressed  OnProgress
-	Received    OnReceived
-	Status      SetStatus
-	Transmitted OnTransmitted
-	Error       OnError
+type ClientCallback interface {
+	OnEvent(*LobbyEvent)
+	OnRefresh(*Lobby)
+	OnInvite([]byte)
+	OnReply(id peer.ID, data []byte)
+	OnResponded(inv *AuthInvite)
 }
 
 // ** ─── URLLink MANAGEMENT ────────────────────────────────────────────────────────
@@ -213,4 +212,107 @@ func (c *Contact) GetTransfer() *Transfer {
 			Contact: c,
 		},
 	}
+}
+
+// ** ─── Lobby MANAGEMENT ────────────────────────────────────────────────────────
+// Creates Local Lobby from User Data
+func NewLocalLobby(u *User) *Lobby {
+	// Get Info
+	topic := u.LocalIPTopic()
+	loc := u.GetRouter().GetLocation()
+
+	// Create Lobby
+	return &Lobby{
+		// General
+		Type:  Lobby_LOCAL,
+		Peers: make(map[string]*Peer),
+		User:  u.GetPeer(),
+
+		// Info
+		Info: &Lobby_Local{
+			Local: &Lobby_LocalInfo{
+				Name:     topic[12:],
+				Location: loc,
+				Topic:    topic,
+			},
+		},
+	}
+}
+
+// Creates Remote Lobby from User Data
+func NewRemoteLobby(u *User, r *RemoteInfo) *Lobby {
+	// Create Lobby
+	return &Lobby{
+		// General
+		Type:  Lobby_REMOTE,
+		Peers: make(map[string]*Peer),
+		User:  u.GetPeer(),
+
+		// Info
+		Info: &Lobby_Remote{
+			Remote: &Lobby_RemoteInfo{
+				IsJoin:  r.IsJoin,
+				Display: r.Display,
+				Words:   r.GetWords(),
+				Topic:   r.GetTopic(),
+			},
+		},
+	}
+}
+
+// Get Remote Point Info
+func NewRemoteInfo(list []string) *RemoteInfo {
+	return &RemoteInfo{
+		Display: fmt.Sprintf("%s %s %s", list[0], list[1], list[2]),
+		Topic:   fmt.Sprintf("%s-%s-%s", list[0], list[1], list[2]),
+		Count:   int32(len(list)),
+		IsJoin:  false,
+		Words:   list,
+	}
+}
+
+// Returns Lobby Peer Count
+func (l *Lobby) Count() int {
+	return len(l.Peers)
+}
+
+// Returns TOTAL Lobby Size with Peer
+func (l *Lobby) Size() int {
+	return len(l.Peers) + 1
+}
+
+// Returns as Lobby Buffer
+func (l *Lobby) Buffer() ([]byte, error) {
+	bytes, err := proto.Marshal(l)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	return bytes, nil
+}
+
+// Add/Update Peer in Lobby
+func (l *Lobby) Add(peer *Peer) {
+	// Update Peer with new data
+	l.Peers[peer.Id.Peer] = peer
+}
+
+// Remove Peer from Lobby
+func (l *Lobby) Delete(id peer.ID) {
+	// Update Peer with new data
+	delete(l.Peers, id.String())
+}
+
+// Sync Between Remote Peers Lobby
+func (l *Lobby) Sync(ref *Lobby, remotePeer *Peer) {
+	// Validate Lobbies are Different
+	if l.Count() != ref.Count() {
+		// Iterate Over List
+		for id, peer := range ref.Peers {
+			if l.User.IsNotPeerIDString(id) {
+				l.Add(peer)
+			}
+		}
+	}
+	l.Add(remotePeer)
 }

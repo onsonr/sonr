@@ -13,6 +13,8 @@ import (
 
 // ^ Struct: Main Client handles Networking/Identity/Streams ^
 type Client struct {
+	md.ClientCallback
+	
 	// Properties
 	ctx     context.Context
 	call    md.NodeCallback
@@ -64,17 +66,17 @@ func (c *Client) Bootstrap() *md.SonrError {
 }
 
 // ^ Join Lobby Adds Node to Named Topic ^
-func (n *Client) JoinLobby(name string, isCreated bool) (*tpc.TopicManager, *md.SonrError) {
+func (n *Client) JoinLobby(r *md.RemoteInfo, isCreated bool) (*tpc.TopicManager, *md.SonrError) {
 	// @ Check for Topic being Created
 	if isCreated {
-		if t, err := tpc.NewTopic(n.ctx, n.Host, n.user, n.user.GetRouter().Topic(name), md.Lobby_Remote, n); err != nil {
+		if t, err := tpc.NewRemote(n.ctx, n.Host, n.user, r, n); err != nil {
 			return nil, err
 		} else {
 			return t, nil
 		}
 	} else {
 		// @ Returns error if Lobby doesnt Exist
-		if t, err := tpc.JoinTopic(n.ctx, n.Host, n.user, n.user.GetRouter().Topic(name), md.Lobby_Remote, n); err != nil {
+		if t, err := tpc.JoinRemote(n.ctx, n.Host, n.user, r, n); err != nil {
 			return nil, err
 		} else {
 			return t, nil
@@ -84,7 +86,7 @@ func (n *Client) JoinLobby(name string, isCreated bool) (*tpc.TopicManager, *md.
 
 // ^ Join Lobby Adds Node to Named Topic ^
 func (n *Client) JoinLocal() (*tpc.TopicManager, *md.SonrError) {
-	if t, err := tpc.NewTopic(n.ctx, n.Host, n.user, n.user.GetRouter().LocalIPTopic, md.Lobby_Local, n); err != nil {
+	if t, err := tpc.NewLocal(n.ctx, n.Host, n.user, n.user.GetRouter().LocalIPTopic, n); err != nil {
 		return nil, err
 	} else {
 		return t, nil
@@ -143,7 +145,7 @@ func (n *Client) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, c *md
 		go func(inv *md.AuthInvite) {
 			// Direct Invite for Flat
 			if isFlat {
-				err = t.Direct(id, inv)
+				err = t.Flat(id, inv)
 				if err != nil {
 					n.call.Error(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
 				}

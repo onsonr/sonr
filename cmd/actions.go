@@ -71,10 +71,10 @@ func (mn *Node) CreateRemote() []byte {
 			return nil
 		}
 		// Create Remote Request and Join Lobby
-		remote := md.GetRemoteInfo(wordList)
+		remote := md.NewRemoteInfo(wordList)
 
 		// Join Lobby
-		tm, serr := mn.client.JoinLobby(remote.Topic, true)
+		tm, serr := mn.client.JoinLobby(remote, true)
 		if serr != nil {
 			mn.handleError(serr)
 			return nil
@@ -84,7 +84,7 @@ func (mn *Node) CreateRemote() []byte {
 		mn.topics[remote.Topic] = tm
 
 		// Marshal
-		data, err := proto.Marshal(&remote)
+		data, err := proto.Marshal(remote)
 		if err != nil {
 			mn.handleError(md.NewError(err, md.ErrorMessage_MARSHAL))
 			return nil
@@ -98,15 +98,15 @@ func (mn *Node) CreateRemote() []byte {
 func (mn *Node) JoinRemote(data []byte) {
 	if mn.isReady() {
 		// Unpackage Data
-		remote := md.RemoteInfo{}
-		err := proto.Unmarshal(data, &remote)
+		remote := &md.RemoteInfo{}
+		err := proto.Unmarshal(data, remote)
 		if err != nil {
 			mn.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
 			return
 		}
 
 		// Join Lobby
-		tm, serr := mn.client.JoinLobby(remote.Topic, false)
+		tm, serr := mn.client.JoinLobby(remote, false)
 		if err != nil {
 			mn.handleError(serr)
 			return
@@ -152,25 +152,6 @@ func (mn *Node) Update(data []byte) {
 
 		// Notify Local Lobby
 		err := mn.client.Update(mn.local)
-		if err != nil {
-			mn.handleError(err)
-			return
-		}
-	}
-}
-
-// @ Send Direct Message to Peer in Lobby
-func (mn *Node) Message(data []byte) {
-	if mn.isReady() {
-		// Initialize from Request
-		req := &md.MessageRequest{}
-		if err := proto.Unmarshal(data, req); err != nil {
-			mn.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
-			return
-		}
-
-		// Run Node Action
-		err := mn.client.Message(mn.local, req.Message, req.To)
 		if err != nil {
 			mn.handleError(err)
 			return

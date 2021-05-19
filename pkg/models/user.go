@@ -178,11 +178,13 @@ func NewUser(cr *ConnectionRequest) *User {
 			Router: &User_Router{
 				Rendevouz:    fmt.Sprintf("/sonr/%s", cr.GetLocation().MajorOLC()),
 				LocalIPTopic: fmt.Sprintf("/sonr/topic/%s", cr.GetLocation().IPOLC()),
+				Location:     cr.GetLocation(),
 			},
 			Status: Status_IDLE,
 		},
 	}
 }
+
 
 // Method Returns Private Key
 func (u *User) PrivateKey() crypto.PrivKey {

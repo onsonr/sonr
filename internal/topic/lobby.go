@@ -81,21 +81,31 @@ func (tm *TopicManager) processTopicMessages() {
 		select {
 		// @ when we receive a message from the lobby room
 		case m := <-tm.Messages:
-			// Update Circle by event
-			if m.Event == md.LobbyEvent_UPDATE {
-				// Update Peer Data
-				tm.Lobby.Add(m.From)
-				tm.Refresh()
-			} else if m.Event == md.LobbyEvent_MESSAGE {
-				// Check is Message For Self
-				if tm.user.GetPeer().IsPeerIDString(m.To) {
-					// Call Event
-					tm.topicHandler.OnEvent(m)
-				}
-			}
+			tm.handleMessage(m)
 		case <-tm.ctx.Done():
 			return
 		}
 		md.GetState().NeedsWait()
+	}
+}
+
+// ^ handleMessage: performs action for Message Type and Event Kind ^
+func (tm *TopicManager) handleMessage(e *md.LobbyEvent) {
+	switch e.Event.(type) {
+	// Local Event
+	case *md.LobbyEvent_Local:
+		event := e.GetLocal()
+		if event == md.LobbyEvent_UPDATE {
+			// Update Peer Data
+			tm.Lobby.Add(e.From)
+			tm.Refresh()
+		}
+
+	// Remote Event
+	case *md.LobbyEvent_Remote:
+		tm.topicHandler.OnEvent(e)
+
+	default:
+		return
 	}
 }

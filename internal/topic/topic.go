@@ -27,20 +27,12 @@ type TopicManager struct {
 
 	service      *TopicService
 	Messages     chan *md.LobbyEvent
-	topicHandler TopicHandler
+	topicHandler md.ClientCallback
 }
 
-type TopicHandler interface {
-	OnEvent(*md.LobbyEvent)
-	OnRefresh(*md.Lobby)
-	OnInvite([]byte)
-	OnReply(id peer.ID, data []byte)
-	OnResponded(inv *md.AuthInvite)
-}
-
-func JoinTopic(ctx context.Context, h *net.HostNode, u *md.User, name string, lt md.Lobby_Type, th TopicHandler) (*TopicManager, *md.SonrError) {
+func JoinRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteInfo, th md.ClientCallback) (*TopicManager, *md.SonrError) {
 	// Join Topic
-	topic, sub, handler, serr := h.Join(name)
+	topic, sub, handler, serr := h.Join(r.Topic)
 	if serr != nil {
 		return nil, serr
 	}
@@ -61,14 +53,7 @@ func JoinTopic(ctx context.Context, h *net.HostNode, u *md.User, name string, lt
 		ctx:          ctx,
 		host:         h,
 		eventHandler: handler,
-		Lobby: &md.Lobby{
-			Name:  name[12:],
-			Size:  1,
-			Count: 0,
-			Peers: make(map[string]*md.Peer),
-			Type:  lt,
-			User:  u.GetPeer(),
-		},
+		Lobby:        md.NewRemoteLobby(u, r),
 		Messages:     make(chan *md.LobbyEvent, K_MAX_MESSAGES),
 		subscription: sub,
 		topic:        topic,
@@ -98,7 +83,35 @@ func JoinTopic(ctx context.Context, h *net.HostNode, u *md.User, name string, lt
 }
 
 // ^ Create New Contained Topic Manager ^ //
-func NewTopic(ctx context.Context, h *net.HostNode, u *md.User, name string, lt md.Lobby_Type, th TopicHandler) (*TopicManager, *md.SonrError) {
+func NewRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteInfo, th TopicHandler) (*TopicManager, *md.SonrError) {
+	// Join Topic
+	topic, sub, handler, serr := h.Join(r.Topic)
+	if serr != nil {
+		return nil, serr
+	}
+
+	// Create Lobby Manager
+	mgr := &TopicManager{
+		topicHandler: th,
+		user:         u,
+		ctx:          ctx,
+		host:         h,
+		eventHandler: handler,
+		Lobby:        md.NewRemoteLobby(u, r),
+		Messages:     make(chan *md.LobbyEvent, K_MAX_MESSAGES),
+		subscription: sub,
+		topic:        topic,
+	}
+
+	// Set Service
+	go mgr.handleTopicEvents()
+	go mgr.handleTopicMessages()
+	go mgr.processTopicMessages()
+	return mgr, nil
+}
+
+// ^ Create New Contained Topic Manager ^ //
+func NewLocal(ctx context.Context, h *net.HostNode, u *md.User, name string, th TopicHandler) (*TopicManager, *md.SonrError) {
 	// Join Topic
 	topic, sub, handler, serr := h.Join(name)
 	if serr != nil {
@@ -112,14 +125,7 @@ func NewTopic(ctx context.Context, h *net.HostNode, u *md.User, name string, lt 
 		ctx:          ctx,
 		host:         h,
 		eventHandler: handler,
-		Lobby: &md.Lobby{
-			Name:  name[12:],
-			Size:  1,
-			Count: 0,
-			Peers: make(map[string]*md.Peer),
-			Type:  lt,
-			User:  u.GetPeer(),
-		},
+		Lobby:        md.NewLocalLobby(u),
 		Messages:     make(chan *md.LobbyEvent, K_MAX_MESSAGES),
 		subscription: sub,
 		topic:        topic,

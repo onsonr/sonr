@@ -26,7 +26,7 @@ type TopicServiceResponse struct {
 // Service Struct
 type TopicService struct {
 	// Current Data
-	call  TopicHandler
+	call  md.ClientCallback
 	lobby *md.Lobby
 	user  *md.User
 
@@ -34,8 +34,8 @@ type TopicService struct {
 	invite *md.AuthInvite
 }
 
-// ^ Direct: Handles User sent AuthInvite Response on FlatMode ^
-func (tm *TopicManager) Direct(id peer.ID, inv *md.AuthInvite) error {
+// ^ Flat: Handles User sent AuthInvite Response on FlatMode ^
+func (tm *TopicManager) Flat(id peer.ID, inv *md.AuthInvite) error {
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(inv)
 	if err != nil {
@@ -49,7 +49,7 @@ func (tm *TopicManager) Direct(id peer.ID, inv *md.AuthInvite) error {
 	args.Invite = msgBytes
 
 	// Call to Peer
-	err = rpcClient.Call(id, "TopicService", "DirectWith", args, &reply)
+	err = rpcClient.Call(id, "TopicService", "FlatWith", args, &reply)
 	if err != nil {
 		return err
 	}
@@ -59,7 +59,7 @@ func (tm *TopicManager) Direct(id peer.ID, inv *md.AuthInvite) error {
 }
 
 // ^ Calls Invite on Remote Peer for Flat Mode and makes Direct Response ^ //
-func (ts *TopicService) DirectWith(ctx context.Context, args TopicServiceArgs, reply *TopicServiceResponse) error {
+func (ts *TopicService) FlatWith(ctx context.Context, args TopicServiceArgs, reply *TopicServiceResponse) error {
 	// Received Message
 	receivedMessage := md.AuthInvite{}
 	err := proto.Unmarshal(args.Invite, &receivedMessage)

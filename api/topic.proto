@@ -9,15 +9,18 @@ option go_package = "/models";
 // For Info about Lobby
 message Lobby {
   Type type = 1;               // Type of Lobby
-  string name = 2;             // Open Location Code of Lobby
-  string topic = 3;            // Pubsub Address with OLC
-  map<string, Peer> peers = 4; // Total Data of Active Peers
-  Peer user = 5;               // User Peer reference
+  map<string, Peer> peers = 2; // Total Data of Active Peers
+  Peer user = 3;               // User Peer reference
+
+  // Lobby Info
+  oneof info {
+    LocalInfo local = 4;
+    RemoteInfo remote = 5;
+  }
 
   enum Type {
-    Local = 0;
-    Remote = 1;
-    User = 2;
+    LOCAL = 0;
+    REMOTE = 1;
   }
 
   message LocalInfo {
@@ -28,10 +31,9 @@ message Lobby {
 
   message RemoteInfo {
     bool isJoin = 1;
-    int32 count = 2;
-    string display = 3;
-    string topic = 4;
-    repeated string words = 5;
+    string display = 2;
+    string topic = 3;
+    repeated string words = 4;
   }
 }
 
@@ -54,8 +56,7 @@ message LobbyEvent {
     STANDBY = 1;  // Peer is taking break from lobby
     RESUME = 2;   // Peer has rejoined Lobby
     UPDATE = 3;   // Peer has changed position
-    MESSAGE = 4;  // Peer has been messaged by a user
-    EXIT = 5;     // Peer has Exited
+    EXIT = 4;     // Peer has Exited
   }
 
   // Remote Type Event

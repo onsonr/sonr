@@ -13,6 +13,7 @@ import (
 
 // * Struct: Reference for Binded Proxy Node * //
 type Node struct {
+	md.NodeCallback
 	// Properties
 	call Callback
 	ctx  context.Context
@@ -54,7 +55,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	mn.user = md.NewUser(req)
 
 	// Create Client
-	mn.client = sc.NewClient(mn.ctx, mn.user, mn.callbackNode())
+	mn.client = sc.NewClient(mn.ctx, mn.user, mn)
 	return mn
 }
 
