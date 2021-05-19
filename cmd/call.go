@@ -20,7 +20,6 @@ type Callback interface {
 	OnError(data []byte)       // Internal Error
 }
 
-
 // ^ invite Callback with data for Lifecycle ^ //
 func (mn *Node) invited(data []byte) {
 	// Update Status
@@ -28,6 +27,24 @@ func (mn *Node) invited(data []byte) {
 
 	// Callback with Data
 	mn.call.OnInvited(data)
+}
+
+// ^ Passes binded Methods to Node ^
+func (mn *Node) callbackNode() md.NodeCallback {
+	return md.NodeCallback{
+		// Direct
+		Refreshed:  mn.call.OnRefreshed,
+		Event:      mn.call.OnEvent,
+		Responded:  mn.call.OnResponded,
+		Progressed: mn.call.OnProgress,
+
+		// Middleware
+		Invited:     mn.invited,
+		Received:    mn.received,
+		Status:      mn.setStatus,
+		Transmitted: mn.transmitted,
+		Error:       mn.handleError,
+	}
 }
 
 // ^ transmitted Callback middleware post transfer ^ //

@@ -32,10 +32,6 @@ func Storj(data []byte) []byte {
 	switch request.Data.(type) {
 	// @ Put USER
 	case *md.StorjRequest_User:
-		// Unmarshal Request
-		request := &md.StorjRequest{}
-		proto.Unmarshal(data, request)
-
 		// Put User
 		err := sc.PutUser(context.Background(), request.StorjApiKey, request.GetUser())
 		if err != nil {

@@ -12,16 +12,24 @@ import (
 )
 
 // ** ─── CALLBACK MANAGEMENT ────────────────────────────────────────────────────────
-type NodeCallback interface {
-	Invited([]byte)
-	Refreshed([]byte)
-	Event([]byte)
-	Responded([]byte)
-	Progressed(float32)
-	Received(*Transfer)
-	Transmitted(*Transfer)
-	Status(s Status)
-	Error(err *SonrError)
+type SetStatus func(s Status)
+type OnProtobuf func([]byte)
+type OnInvite func(data []byte)
+type OnProgress func(data float32)
+type OnReceived func(data *Transfer)
+type OnTransmitted func(data *Transfer)
+type OnError func(err *SonrError)
+type NodeCallback struct {
+	Invited     OnInvite
+	Refreshed   OnProtobuf
+	Event       OnProtobuf
+	RemoteStart OnProtobuf
+	Responded   OnProtobuf
+	Progressed  OnProgress
+	Received    OnReceived
+	Status      SetStatus
+	Transmitted OnTransmitted
+	Error       OnError
 }
 
 type ClientCallback interface {

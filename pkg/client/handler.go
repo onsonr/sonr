@@ -20,7 +20,7 @@ func (n *Client) OnEvent(e *md.LobbyEvent) {
 }
 
 // ^ OnRefresh: Topic has Updated ^
-func (n *Client) OnRefresh(l *md.Lobby) {
+func (n *Client) refreshed(l *md.Lobby) {
 	bytes, err := proto.Marshal(l)
 	if err != nil {
 		n.call.Error(md.NewError(err, md.ErrorMessage_UNMARSHAL))
