@@ -24,6 +24,10 @@ type Node struct {
 	// Groups
 	local  *tpc.TopicManager
 	topics map[string]*tpc.TopicManager
+
+	// Storage
+	storageEnabled bool
+	uplink         *sc.Storage
 }
 
 // @ Create New Mobile Node
@@ -47,11 +51,20 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 		topics: make(map[string]*tpc.TopicManager, 10),
 	}
 
-	// Create New User
+	// Initialize Storage
+	storj, err := sc.NewUplink(mn.ctx, req.GetClientKeys().StorjApiKey, req.GetClientKeys().StorjRootAccessPhrase)
+	if err != nil {
+		mn.storageEnabled = false
+	} else {
+		mn.storageEnabled = true
+		mn.uplink = storj
+	}
+
+	// Create Users
 	mn.user = md.NewUser(req)
 
 	// Create Client
-	mn.client = sc.NewClient(mn.ctx, mn.user, req.GetClientKeys(), mn.callbackNode())
+	mn.client = sc.NewClient(mn.ctx, mn.user, mn.callbackNode())
 	return mn
 }
 

@@ -938,7 +938,7 @@ type User struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id         string                    `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`                                                                                                     // User Fingerprint is ID
+	Id         string                    `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`                                                                                                     // User prefix is ID
 	Connection *User_Connection          `protobuf:"bytes,2,opt,name=connection,proto3" json:"connection,omitempty"`                                                                                     // Clients Connection Reference
 	Peer       *Peer                     `protobuf:"bytes,3,opt,name=peer,proto3" json:"peer,omitempty"`                                                                                                 // Clients Peer Reference
 	Location   *Location                 `protobuf:"bytes,4,opt,name=location,proto3" json:"location,omitempty"`                                                                                         // Clients current Location

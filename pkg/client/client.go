@@ -14,38 +14,22 @@ import (
 // ^ Struct: Main Client handles Networking/Identity/Streams ^
 type Client struct {
 	// Properties
-	ctx            context.Context
-	call           md.NodeCallback
-	user           *md.User
-	session        *md.Session
-	storageEnabled bool
+	ctx     context.Context
+	call    md.NodeCallback
+	user    *md.User
+	session *md.Session
 
 	// References
-	Host   *net.HostNode
-	uplink *Storage
+	Host *net.HostNode
 }
 
 // ^ NewClient Initializes Node with Router ^
-func NewClient(ctx context.Context, u *md.User, api *md.ConnectionRequest_ClientKeys, call md.NodeCallback) *Client {
-	// Returns Non-Storj Enabled Client
-	storj, err := NewUplink(ctx, api.StorjApiKey, api.StorjRootAccessPhrase)
-	if err != nil {
-		return &Client{
-			ctx:            ctx,
-			call:           call,
-			user:           u,
-			storageEnabled: false,
-			uplink:         nil,
-		}
-	}
-
+func NewClient(ctx context.Context, u *md.User, call md.NodeCallback) *Client {
 	// Returns Storj Enabled Client
 	return &Client{
-		ctx:            ctx,
-		call:           call,
-		user:           u,
-		storageEnabled: true,
-		uplink:         storj,
+		ctx:  ctx,
+		call: call,
+		user: u,
 	}
 }
 
