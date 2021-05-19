@@ -80,14 +80,6 @@ message UpdateRequest {
   }
 }
 
-// Message to Peer Request
-message MessageRequest {
-  Peer from = 1;      // Users Peer Data
-  Peer to = 2;        // Recipient
-  string message = 3; // Message Content
-  string topic = 4;   // Topic Name
-}
-
 // Processes Given File and Invites Specified Peer
 message InviteRequest {
   Payload payload = 1;   // General Payload Type
@@ -108,12 +100,11 @@ message RespondRequest {
 
 // Invitation Message sent on RPC
 message AuthInvite {
-  Payload payload = 1;   // Type of Transfer
-  Peer from = 2;         // Users Peer Data
-  Peer to = 3;           // Receivers Peer Data
-  bool isFlat = 4;       // For Flat ContactTransfer
-  RemoteInfo remote = 5; // Remote Lobby Info
-  Transfer data = 6;     // Attached Data
+  Payload payload = 1; // Type of Transfer
+  Peer from = 2;       // Users Peer Data
+  Peer to = 3;         // Receivers Peer Data
+  bool isFlat = 4;     // For Flat ContactTransfer
+  Transfer data = 5;   // Attached Data
 }
 
 // Reply Message sent on RPC
@@ -123,7 +114,6 @@ message AuthReply {
   Peer to = 3;           // Receivers Peer Data
   bool decision = 4;     // Users Decision for the Invitation
   TransferCard card = 5; // Card contains all Data Info, Transfer Info
-  RemoteInfo remote = 6;
 
   enum Type {
     None = 0;

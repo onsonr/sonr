@@ -258,7 +258,14 @@ enum Payload {
   MEDIA = 6;        // Media Payload - (Audio, Photo, Video)
 }
 
-
+// RemoteInfo is for Joining/Creating a New Topic
+message RemoteInfo {
+  bool isJoin = 1;
+  int32 count = 2;
+  string display = 3;
+  string topic = 4;
+  repeated string words = 5;
+}
 
 // For Transfer File Payload
 message SonrFile {
