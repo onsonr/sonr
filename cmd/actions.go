@@ -11,7 +11,7 @@ import (
 )
 
 // @ Return URLLink
-func GetURLLink(url string) []byte {
+func URLLink(url string) []byte {
 	// Create Link
 	link := md.NewURLLink(url)
 
@@ -24,40 +24,75 @@ func GetURLLink(url string) []byte {
 }
 
 // @ Gets User from Storj
-func GetUser(data []byte) []byte {
+func Storj(data []byte) []byte {
 	// Unmarshal Request
 	request := &md.StorjRequest{}
 	proto.Unmarshal(data, request)
 
-	// Get User from Uplink
-	user, err := sc.GetUser(context.Background(), request.StorjApiKey, request.GetUserID())
-	if err != nil {
-		sentry.CaptureException(err)
-		return nil
+	switch request.Data.(type) {
+	// @ Put USER
+	case *md.StorjRequest_User:
+		// Unmarshal Request
+		request := &md.StorjRequest{}
+		proto.Unmarshal(data, request)
+
+		// Put User
+		err := sc.PutUser(context.Background(), request.StorjApiKey, request.GetUser())
+		if err != nil {
+			sentry.CaptureException(err)
+
+			// Create Response
+			resp := &md.StorjResponse{
+				Data: &md.StorjResponse_Success{
+					Success: false,
+				},
+			}
+
+			// Marshal
+			bytes, err := proto.Marshal(resp)
+			if err != nil {
+				return nil
+			}
+			return bytes
+		}
+		// Create Response
+		resp := &md.StorjResponse{
+			Data: &md.StorjResponse_Success{
+				Success: true,
+			},
+		}
+
+		// Marshal
+		bytes, err := proto.Marshal(resp)
+		if err != nil {
+			return nil
+		}
+		return bytes
+
+	// @ Get USER
+	case *md.StorjRequest_UserID:
+		// Get User from Uplink
+		user, err := sc.GetUser(context.Background(), request.StorjApiKey, request.GetUserID())
+		if err != nil {
+			sentry.CaptureException(err)
+			return nil
+		}
+
+		// Create Response
+		resp := &md.StorjResponse{
+			Data: &md.StorjResponse_User{
+				User: user,
+			},
+		}
+
+		// Marshal
+		bytes, err := proto.Marshal(resp)
+		if err != nil {
+			return nil
+		}
+		return bytes
 	}
-
-	// Marshal
-	bytes, err := proto.Marshal(user)
-	if err != nil {
-		return nil
-	}
-	return bytes
-}
-
-// @ Puts User into Storj
-func PutUser(data []byte) bool {
-	// Unmarshal Request
-	request := &md.StorjRequest{}
-	proto.Unmarshal(data, request)
-
-	// Put User
-	err := sc.PutUser(context.Background(), request.StorjApiKey, request.GetUser())
-	if err != nil {
-		sentry.CaptureException(err)
-		return false
-	}
-	return true
-
+	return nil
 }
 
 // @ Join/Create/Leave Remote Group

@@ -77,6 +77,15 @@ message StorjRequest {
   }
 }
 
+// Response Data for Storj
+message StorjResponse {
+  // Data for Get/Put
+  oneof data {
+    bool success = 1;
+    User user = 2;
+  }
+}
+
 // Updated Peer Info Request
 message UpdateRequest {
   oneof data {
