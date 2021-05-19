@@ -3,6 +3,7 @@ package bind
 import (
 	"log"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/sonr-io/core/internal/crypto"
 	"github.com/sonr-io/core/internal/topic"
 	md "github.com/sonr-io/core/pkg/models"
@@ -29,6 +30,7 @@ func (mn *Node) GetUser(id string) []byte {
 		// Get User from Uplink
 		user, err := mn.uplink.GetUser(id)
 		if err != nil {
+			sentry.CaptureException(err)
 			return nil
 		}
 
@@ -54,6 +56,7 @@ func (mn *Node) PutUser(data []byte) bool {
 		// Put User
 		err := mn.uplink.PutUser(user)
 		if err != nil {
+			sentry.CaptureException(err)
 			return false
 		}
 		return true

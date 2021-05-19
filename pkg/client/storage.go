@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"io"
-	"time"
 
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
@@ -12,51 +11,26 @@ import (
 )
 
 type Storage struct {
-	ctx              context.Context
-	appAccess        *uplink.Access
-	userAccess       *uplink.Access
-	userPrefix       uplink.SharePrefix
-	serializedAccess string
+	ctx       context.Context
+	appAccess *uplink.Access
 }
 
 // @ Start New Storage Uplink
 func NewUplink(ctx context.Context, appAPIKey string, rootPassword string) (*Storage, error) {
-	appAccess, err := uplink.RequestAccessWithPassphrase(ctx, "us1.storj.io", appAPIKey, rootPassword)
+	appAccess, err := uplink.ParseAccess(appAPIKey)
 	if err != nil {
 		return nil, err
 	}
 
-	// create a user access grant for accessing their files, limited for the next 8 hours
-	now := time.Now()
-	permission := uplink.FullPermission()
-	// 2 minutes leeway to avoid time sync issues with the satellite
-	permission.NotBefore = now.Add(-2 * time.Minute)
-	permission.NotAfter = now.Add(8 * time.Hour)
-	userPrefix := uplink.SharePrefix{
-		Bucket: "Users",
-	}
-	userAccess, err := appAccess.Share(permission, userPrefix)
-	if err != nil {
-		return nil, err
-	}
-
-	// serialize the user access grant
-	serializedAccess, err := userAccess.Serialize()
-	if err != nil {
-		return nil, err
-	}
 	return &Storage{
-		ctx:              ctx,
-		appAccess:        appAccess,
-		userAccess:       userAccess,
-		userPrefix:       userPrefix,
-		serializedAccess: serializedAccess,
+		ctx:       ctx,
+		appAccess: appAccess,
 	}, nil
 }
 
 // @ Get User from Remote Data Store
 func (s *Storage) GetUser(id string) (*md.User, error) {
-	project, err := uplink.OpenProject(s.ctx, s.userAccess)
+	project, err := uplink.OpenProject(s.ctx, s.appAccess)
 	if err != nil {
 		return nil, err
 	}
@@ -83,7 +57,7 @@ func (s *Storage) GetUser(id string) (*md.User, error) {
 // @ Put User in Remote Data Store
 func (s *Storage) PutUser(u *md.User) error {
 	// Open PRoject
-	project, err := uplink.OpenProject(s.ctx, s.userAccess)
+	project, err := uplink.OpenProject(s.ctx, s.appAccess)
 	if err != nil {
 		return err
 	}

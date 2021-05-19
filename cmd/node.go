@@ -57,6 +57,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	if err != nil {
 		mn.storageEnabled = false
 		log.Println("Storage Disabled")
+		sentry.CaptureException(err)
 	} else {
 		log.Println("Storage Enabled")
 		mn.storageEnabled = true
