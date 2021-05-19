@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+import "user.proto";
+import "data.proto";
+
+// Require Go Package
+option go_package = "/models";
+
+// Remote Topic Data
+message RemoteTopic {
+  string name = 1;
+  Peer user = 2;
+  SonrFile file = 3;
+  map<string, RemotePeer> peers = 4; // Total Data of Active Peers
+
+  // Info is for Joining/Creating a New Topic
+  message Info {
+    bool isJoin = 1;
+    string display = 3;
+    string topic = 4;
+    repeated string words = 5;
+  }
+}
+
+// Local Topic Data
+message LocalTopic {
+  string name = 1;       // Pubsub Address with OLC
+  Location location = 2; // Location of Local
+  Lobby lobby = 3;       // Lobby Reference
+  Peer user = 4;         // Current User Reference
+}
+
+// For Info about Lobby
+message Lobby {
+  int32 size = 1;              // Total Number of Devices in Lobby
+  int32 count = 2;             // Total Devices in Lobby EXCLUDING User
+  map<string, Peer> peers = 3; // Total Data of Active Peers
+}
+
+// Message Sent when peer messages Lobby Topic
+message LobbyEvent {
+  string id = 1;      // Peer ID
+  Event event = 2;    // What Peer is Doing
+  Peer from = 3;      // User Information
+  string to = 4;      // Peer ID for DM
+  string message = 5; // Message being sent
+
+  enum Event {
+    EXCHANGE = 0; // Peer has joined wants Info
+    STANDBY = 1;  // Peer is taking break from lobby
+    RESUME = 2;   // Peer has rejoined Lobby
+    UPDATE = 3;   // Peer has changed position
+    MESSAGE = 4;  // Peer has been messaged by a user
+    EXIT = 5;     // Peer has Exited
+  }
+}

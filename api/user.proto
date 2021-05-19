@@ -67,7 +67,6 @@ message Peer {
   Position position = 4;     // Peers Positional Information
   Profile profile = 5;       // Peers General Information
   Properties properties = 6; // Peer specific options set
-  Status status = 7;         // Status of Peer
 
   // ID References
   message ID {
@@ -82,15 +81,6 @@ message Peer {
     // Whether Peer can use automatic point to Transfer
     bool enabledPointShare = 1;
     bool isFlatMode = 2;
-  }
-
-  // Status
-  enum Status {
-    IDLE = 0;
-    PENDING = 1;
-    ACCEPTED = 2;
-    DECLINED = 3;
-    COMPLETE = 4;
   }
 }
 
@@ -150,5 +140,20 @@ message Position {
     Immediate = 1; // Within 5 Meters
     Near = 2;      // Within 10 Meters
     Distant = 3;   // Within 15 Meters
+  }
+}
+
+// Remote Peer is for Peers not in Local Topic
+message RemotePeer {
+  Peer peer = 1;
+  Status status = 2;
+
+  // Status
+  enum Status {
+    IDLE = 0;
+    APPROVED = 1;
+    KICKED = 2;
+    INPROGRESS = 3;
+    COMPLETE = 4;
   }
 }

@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 import "data.proto";
+import "topic.proto";
 import "user.proto";
 
 // Require Go Package

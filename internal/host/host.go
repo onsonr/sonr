@@ -9,7 +9,9 @@ import (
 	connmgr "github.com/libp2p/go-libp2p-connmgr"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/host"
+	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/libp2p/go-libp2p-core/routing"
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
@@ -121,4 +123,14 @@ func newRelayedHost(ctx context.Context, point string, privateKey crypto.PrivKey
 		Point: point,
 		KDHT:  kdhtRef,
 	}, nil
+}
+
+// ^ Set Stream Handler for Host ^
+func (h *HostNode) HandleStream(pid protocol.ID, handler network.StreamHandler) {
+	h.Host.SetStreamHandler(pid, handler)
+}
+
+// ^ Start Stream for Host ^
+func (h *HostNode) StartStream(p peer.ID, pid protocol.ID) (network.Stream, error) {
+	return h.Host.NewStream(h.ctx, p, pid)
 }
