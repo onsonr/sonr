@@ -40,17 +40,9 @@ func (m *MIME) IsVideo() bool {
 	return m.Type == MIME_VIDEO
 }
 
-// ** ─── InviteRequest MANAGEMENT ────────────────────────────────────────────────────────
-func (r *InviteRequest) GetContact() *Contact {
-	return r.GetData().GetContact()
-}
-
-func (r *InviteRequest) GetFile() *SonrFile {
-	return r.GetData().GetFile()
-}
-
-func (r *InviteRequest) GetUrl() *URLLink {
-	return r.GetData().GetUrl()
+// ** ─── AuthInvite MANAGEMENT ────────────────────────────────────────────────────────
+func (r *AuthReply) HasAcceptedTransfer() bool {
+	return r.Decision && r.Type == AuthReply_Transfer
 }
 
 // ** ─── AuthInvite MANAGEMENT ────────────────────────────────────────────────────────
@@ -64,6 +56,14 @@ func (i *AuthInvite) GetFile() *SonrFile {
 
 func (i *AuthInvite) GetUrl() *URLLink {
 	return i.GetData().GetUrl()
+}
+
+func (i *AuthInvite) IsFlat() bool {
+	return i.Data.Properties.IsFlat
+}
+
+func (i *AuthInvite) IsRemote() bool {
+	return i.Data.Properties.IsRemote
 }
 
 // ** ─── Location MANAGEMENT ────────────────────────────────────────────────────────

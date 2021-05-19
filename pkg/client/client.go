@@ -14,7 +14,7 @@ import (
 // ^ Struct: Main Client handles Networking/Identity/Streams ^
 type Client struct {
 	md.ClientCallback
-	
+
 	// Properties
 	ctx     context.Context
 	call    md.NodeCallback
@@ -66,7 +66,7 @@ func (c *Client) Bootstrap() *md.SonrError {
 }
 
 // ^ Join Lobby Adds Node to Named Topic ^
-func (n *Client) JoinLobby(r *md.RemoteInfo, isCreated bool) (*tpc.TopicManager, *md.SonrError) {
+func (n *Client) JoinLobby(r *md.RemoteResponse, isCreated bool) (*tpc.TopicManager, *md.SonrError) {
 	// @ Check for Topic being Created
 	if isCreated {
 		if t, err := tpc.NewRemote(n.ctx, n.Host, n.user, r, n); err != nil {
@@ -102,17 +102,14 @@ func (n *Client) LeaveLobby(lob *tpc.TopicManager) *md.SonrError {
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Client) InviteLink(req *md.InviteRequest, t *tpc.TopicManager) *md.SonrError {
+func (n *Client) InviteLink(invite *md.AuthInvite, t *tpc.TopicManager) *md.SonrError {
 	// @ 3. Send Invite to Peer
-	if t.HasPeer(req.To.Id.Peer) {
+	if t.HasPeer(invite.To.Id.Peer) {
 		// Get PeerID and Check error
-		id, _, err := t.FindPeerInTopic(req.To.Id.Peer)
+		id, _, err := t.FindPeerInTopic(invite.To.Id.Peer)
 		if err != nil {
 			return md.NewError(err, md.ErrorMessage_PEER_NOT_FOUND_INVITE)
 		}
-
-		// Create Invite
-		invite := n.user.SignInviteWithLink(req)
 
 		// Run Routine
 		go func(inv *md.AuthInvite) {
@@ -120,7 +117,7 @@ func (n *Client) InviteLink(req *md.InviteRequest, t *tpc.TopicManager) *md.Sonr
 			if err != nil {
 				n.call.Error(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
 			}
-		}(&invite)
+		}(invite)
 	} else {
 		return md.NewErrorWithType(md.ErrorMessage_PEER_NOT_FOUND_INVITE)
 	}
@@ -128,23 +125,19 @@ func (n *Client) InviteLink(req *md.InviteRequest, t *tpc.TopicManager) *md.Sonr
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Client) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, c *md.Contact) *md.SonrError {
+func (n *Client) InviteContact(invite *md.AuthInvite, t *tpc.TopicManager, c *md.Contact) *md.SonrError {
 	// @ 3. Send Invite to Peer
-	if t.HasPeer(req.To.Id.Peer) {
+	if t.HasPeer(invite.To.Id.Peer) {
 		// Get PeerID and Check error
-		id, _, err := t.FindPeerInTopic(req.To.Id.Peer)
+		id, _, err := t.FindPeerInTopic(invite.To.Id.Peer)
 		if err != nil {
 			return md.NewError(err, md.ErrorMessage_PEER_NOT_FOUND_INVITE)
 		}
 
-		// Build Invite Message
-		isFlat := req.Payload == md.Payload_FLAT_CONTACT
-		invite := n.user.SignInviteWithContact(req, isFlat)
-
 		// Run Routine
 		go func(inv *md.AuthInvite) {
 			// Direct Invite for Flat
-			if isFlat {
+			if inv.IsFlat() {
 				err = t.Flat(id, inv)
 				if err != nil {
 					n.call.Error(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
@@ -156,7 +149,7 @@ func (n *Client) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, c *md
 					n.call.Error(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
 				}
 			}
-		}(&invite)
+		}(invite)
 	} else {
 		return md.NewErrorWithType(md.ErrorMessage_PEER_NOT_FOUND_INVITE)
 	}
@@ -164,15 +157,12 @@ func (n *Client) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, c *md
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Client) InviteFile(req *md.InviteRequest, t *tpc.TopicManager) *md.SonrError {
+func (n *Client) InviteFile(invite *md.AuthInvite, t *tpc.TopicManager) *md.SonrError {
 	// Start New Session
-	n.session = md.NewOutSession(n.user, req, n.call)
-
-	// Create Invite Message
-	invite := n.user.SignInviteWithFile(req)
+	n.session = md.NewOutSession(n.user, invite, n.call)
 
 	// Get PeerID
-	id, _, err := t.FindPeerInTopic(req.To.Id.Peer)
+	id, _, err := t.FindPeerInTopic(invite.To.Id.Peer)
 	if err != nil {
 		return md.NewError(err, md.ErrorMessage_PEER_NOT_FOUND_INVITE)
 	}
@@ -183,24 +173,13 @@ func (n *Client) InviteFile(req *md.InviteRequest, t *tpc.TopicManager) *md.Sonr
 		if err != nil {
 			n.call.Error(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
 		}
-	}(&invite)
+	}(invite)
 	return nil
 }
 
 // ^ Respond to an Invitation ^ //
-func (n *Client) Respond(req *md.RespondRequest, t *tpc.TopicManager) {
+func (n *Client) Respond(req *md.AuthReply, t *tpc.TopicManager) {
 	t.RespondToInvite(req)
-}
-
-// ^ Send Direct Message to Peer in Lobby ^ //
-func (n *Client) Message(t *tpc.TopicManager, msg string, to *md.Peer) *md.SonrError {
-	if t.HasPeer(to.PeerID()) {
-		// Inform Lobby
-		if err := t.Send(n.user.Peer.SignMessage(msg, to)); err != nil {
-			return md.NewError(err, md.ErrorMessage_TOPIC_MESSAGE)
-		}
-	}
-	return nil
 }
 
 // ^ Update proximity/direction and Notify Lobby ^ //

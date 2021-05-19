@@ -72,7 +72,7 @@ func (ts *TopicService) FlatWith(ctx context.Context, args TopicServiceArgs, rep
 	ts.call.OnInvite(args.Invite)
 
 	// Sign Contact Reply
-	resp := ts.user.SignReplyWithFlat(receivedMessage.GetFrom())
+	resp := ts.user.SignFlatReply(receivedMessage.GetFrom())
 
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(resp)
@@ -205,23 +205,13 @@ func (ts *TopicService) InviteWith(ctx context.Context, args TopicServiceArgs, r
 }
 
 // ^ RespondToInvite to an Invitation ^ //
-func (n *TopicManager) RespondToInvite(req *md.RespondRequest) {
+func (n *TopicManager) RespondToInvite(rep *md.AuthReply) {
 	// Prepare Transfer
-	if req.Decision {
+	if rep.Decision {
 		n.topicHandler.OnResponded(n.service.invite)
 	}
 
 	// @ Pass Contact Back
-	if n.service.invite.Payload == md.Payload_CONTACT {
-		// Create Accept Response
-		resp := n.user.SignReplyWithContact(req)
-		// Send to Channel
-		n.service.respCh <- resp
-	} else {
-		// Create Accept Response
-		resp := n.user.SignReply(req)
-
-		// Send to Channel
-		n.service.respCh <- resp
-	}
+	// Send to Channel
+	n.service.respCh <- rep
 }

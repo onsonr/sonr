@@ -50,7 +50,7 @@ func (n *Client) OnReply(id peer.ID, reply []byte) {
 	// Check if Status is not already transferring
 	if n.user.IsNotStatus(md.Status_INPROGRESS) {
 		// Check for File Transfer
-		if resp.Decision && resp.Type == md.AuthReply_Transfer {
+		if resp.HasAcceptedTransfer() {
 			// Update Status
 			n.call.Status(md.Status_INPROGRESS)
 

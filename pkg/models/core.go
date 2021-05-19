@@ -18,8 +18,8 @@ type NodeCallback interface {
 	Event([]byte)
 	Responded([]byte)
 	Progressed(float32)
-	Received(*TransferCard)
-	Transmitted(*TransferCard)
+	Received(*Transfer)
+	Transmitted(*Transfer)
 	Status(s Status)
 	Error(err *SonrError)
 }
@@ -196,6 +196,13 @@ func (u *URLLink) GetTransfer() *Transfer {
 	}
 }
 
+// Returns URLLink as Transfer_Url Data
+func (u *URLLink) ToData() *Transfer_Url {
+	return &Transfer_Url{
+		Url: u,
+	}
+}
+
 // Returns Transfer for SonrFile
 func (f *SonrFile) GetTransfer() *Transfer {
 	return &Transfer{
@@ -205,12 +212,26 @@ func (f *SonrFile) GetTransfer() *Transfer {
 	}
 }
 
+// Returns SonrFile as Transfer_File Data
+func (f *SonrFile) ToData() *Transfer_File {
+	return &Transfer_File{
+		File: f,
+	}
+}
+
 // Returns Transfer for Contact
 func (c *Contact) GetTransfer() *Transfer {
 	return &Transfer{
 		Data: &Transfer_Contact{
 			Contact: c,
 		},
+	}
+}
+
+// Returns Contact as Transfer_Contact Data
+func (c *Contact) ToData() *Transfer_Contact {
+	return &Transfer_Contact{
+		Contact: c,
 	}
 }
 
@@ -240,7 +261,7 @@ func NewLocalLobby(u *User) *Lobby {
 }
 
 // Creates Remote Lobby from User Data
-func NewRemoteLobby(u *User, r *RemoteInfo) *Lobby {
+func NewRemoteLobby(u *User, r *RemoteResponse) *Lobby {
 	// Create Lobby
 	return &Lobby{
 		// General
@@ -261,8 +282,8 @@ func NewRemoteLobby(u *User, r *RemoteInfo) *Lobby {
 }
 
 // Get Remote Point Info
-func NewRemoteInfo(list []string) *RemoteInfo {
-	return &RemoteInfo{
+func NewRemote(list []string) *RemoteResponse {
+	return &RemoteResponse{
 		Display: fmt.Sprintf("%s %s %s", list[0], list[1], list[2]),
 		Topic:   fmt.Sprintf("%s-%s-%s", list[0], list[1], list[2]),
 		Count:   int32(len(list)),

@@ -30,7 +30,7 @@ type TopicManager struct {
 	topicHandler md.ClientCallback
 }
 
-func JoinRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteInfo, th md.ClientCallback) (*TopicManager, *md.SonrError) {
+func JoinRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteResponse, th md.ClientCallback) (*TopicManager, *md.SonrError) {
 	// Join Topic
 	topic, sub, handler, serr := h.Join(r.Topic)
 	if serr != nil {
@@ -83,7 +83,7 @@ func JoinRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteIn
 }
 
 // ^ Create New Contained Topic Manager ^ //
-func NewRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteInfo, th TopicHandler) (*TopicManager, *md.SonrError) {
+func NewRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteResponse, th md.ClientCallback) (*TopicManager, *md.SonrError) {
 	// Join Topic
 	topic, sub, handler, serr := h.Join(r.Topic)
 	if serr != nil {
@@ -111,7 +111,7 @@ func NewRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteInf
 }
 
 // ^ Create New Contained Topic Manager ^ //
-func NewLocal(ctx context.Context, h *net.HostNode, u *md.User, name string, th TopicHandler) (*TopicManager, *md.SonrError) {
+func NewLocal(ctx context.Context, h *net.HostNode, u *md.User, name string, th md.ClientCallback) (*TopicManager, *md.SonrError) {
 	// Join Topic
 	topic, sub, handler, serr := h.Join(name)
 	if serr != nil {

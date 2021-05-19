@@ -31,7 +31,7 @@ func (mn *Node) invited(data []byte) {
 }
 
 // ^ transmitted Callback middleware post transfer ^ //
-func (mn *Node) transmitted(card *md.TransferCard) {
+func (mn *Node) transmitted(card *md.Transfer) {
 	// Update Status
 	mn.setStatus(md.Status_AVAILABLE)
 
@@ -47,7 +47,7 @@ func (mn *Node) transmitted(card *md.TransferCard) {
 }
 
 // ^ received Callback middleware post transfer ^ //
-func (mn *Node) received(card *md.TransferCard) {
+func (mn *Node) received(card *md.Transfer) {
 	// Update Status
 	mn.setStatus(md.Status_AVAILABLE)
 

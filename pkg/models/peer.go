@@ -80,81 +80,11 @@ func (p *Peer) PeerID() string {
 	return p.Id.Peer
 }
 
-// ^ SignMessage Creates Lobby Event with Message ^
-func (p *Peer) SignMessage(m string, to *Peer) *LobbyEvent {
-	return &LobbyEvent{
-		Event: &LobbyEvent_Local{
-			Local: LobbyEvent_MESSAGE,
-		},
-		From:    p,
-		Id:      p.Id.Peer,
-		Message: m,
-		To:      to.Id.Peer,
-	}
-}
-
-// ^ Generate AuthInvite with Contact Payload from Request, User Peer Data and User Contact ^ //
-func (u *User) SignInviteWithContact(req *InviteRequest, isFlat bool) AuthInvite {
-	// Create Invite
-	return AuthInvite{
-		From:    u.GetPeer(),
-		IsFlat:  isFlat,
-		Data:    u.Contact.GetTransfer(),
-		Payload: req.GetPayload(),
-		To:      req.GetTo(),
-	}
-}
-
-// ^ Generate AuthInvite with Contact Payload from Request, User Peer Data and User Contact ^ //
-func (u *User) SignInviteWithFile(req *InviteRequest) AuthInvite {
-	// Create Invite
-	return AuthInvite{
-		From:    u.GetPeer(),
-		To:      req.GetTo(),
-		Payload: req.GetPayload(),
-		Data:    req.GetData(),
-	}
-}
-
-// ^ Generate AuthInvite with URL Payload from Request and User Peer Data ^ //
-func (u *User) SignInviteWithLink(req *InviteRequest) AuthInvite {
-	// Get URL Data
-	link := req.GetData().GetUrl()
-	link.SetData()
-
-	// Create Invite
-	return AuthInvite{
-		From:    u.GetPeer(),
-		Data:    link.GetTransfer(),
-		Payload: req.GetPayload(),
-		To:      req.GetTo(),
-	}
-}
-
-// ^ SignReply Creates AuthReply ^
-func (u *User) SignReply(req *RespondRequest) *AuthReply {
-	return &AuthReply{
-		From:     u.GetPeer(),
-		Type:     AuthReply_Transfer,
-		Decision: req.GetDecision(),
-		Card: &TransferCard{
-			// SQL Properties
-			Payload:  Payload_NONE,
-			Received: int32(time.Now().Unix()),
-
-			// Owner Properties
-			Owner:    u.GetPeer().Profile,
-			Receiver: req.To.GetProfile(),
-		},
-	}
-}
-
-// ^ SignReplyFlat Creates AuthReply with Contact for Flat Mode  ^
-func (u *User) SignReplyWithFlat(from *Peer) *AuthReply {
+// ^ Signs AuthReply with Flat Contact
+func (u *User) SignFlatReply(from *Peer) *AuthReply {
 	return &AuthReply{
 		From: u.GetPeer(),
-		Type: AuthReply_FlatContact,
-		Card: &TransferCard{
+		Data: &Transfer{
 			// SQL Properties
 			Payload:  Payload_CONTACT,
 			Received: int32(time.Now().Unix()),
@@ -164,27 +94,7 @@ func (u *User) SignReplyWithFlat(from *Peer) *AuthReply {
 			Receiver: from.GetProfile(),
 
 			// Data Properties
-			Contact: u.GetContact(),
-		},
-	}
-}
-
-// ^ SignReply Creates AuthReply with Contact  ^
-func (u *User) SignReplyWithContact(req *RespondRequest) *AuthReply {
-	return &AuthReply{
-		From: u.GetPeer(),
-		Type: AuthReply_Contact,
-		Card: &TransferCard{
-			// SQL Properties
-			Payload:  Payload_CONTACT,
-			Received: int32(time.Now().Unix()),
-
-			// Owner Properties
-			Owner:    u.GetPeer().Profile,
-			Receiver: req.To.GetProfile(),
-
-			// Data Properties
-			Contact: u.GetContact(),
+			Data: u.GetContact().ToData(),
 		},
 	}
 }

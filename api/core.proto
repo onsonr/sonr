@@ -20,10 +20,3 @@ enum Direction {
   Incoming = 1; // Incoming Transfer
   Outgoing = 2; // Outgoing Transfer
 }
-
-message RemoteTopic {
-  User owner = 1;
-  SonrFile file = 2;
-  RemoteInfo info = 3;
-  map<string, Peer> peers = 4;
-}

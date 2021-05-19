@@ -86,7 +86,7 @@ type Session struct {
 }
 
 // ^ Prepare for Outgoing Session ^ //
-func NewOutSession(u *User, req *InviteRequest, tc NodeCallback) *Session {
+func NewOutSession(u *User, req *AuthInvite, tc NodeCallback) *Session {
 	return &Session{
 		file: req.GetFile(),
 		peer: req.GetTo(),
@@ -107,8 +107,8 @@ func NewInSession(u *User, inv *AuthInvite, c NodeCallback) *Session {
 }
 
 // Returns SonrFile as TransferCard given Receiver and Owner
-func (s *Session) Card() *TransferCard {
-	return &TransferCard{
+func (s *Session) Card() *Transfer {
+	return &Transfer{
 		// SQL Properties
 		Payload:  s.file.Payload,
 		Received: int32(time.Now().Unix()),
@@ -118,7 +118,7 @@ func (s *Session) Card() *TransferCard {
 		Receiver: s.peer.GetProfile(),
 
 		// Data Properties
-		File: s.file,
+		Data: s.file.GetTransfer().Data,
 	}
 }
 

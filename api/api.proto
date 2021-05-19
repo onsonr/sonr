@@ -1,32 +1,10 @@
 syntax = "proto3";
 
 import "data.proto";
-import "topic.proto";
 import "user.proto";
 
 // Require Go Package
 option go_package = "/models";
-
-// Client Network Connection Status
-enum Connectivity {
-  None = 0;
-  Mobile = 1;
-  WiFi = 2;
-}
-
-// Status is User Node Situation
-enum Status {
-  IDLE = 0;         // Default Status on Launch
-  CONNECTED = 1;    // Status after starting Host
-  BOOTSTRAPPED = 2; // After Bootstrapping Host
-  AVAILABLE = 3;    // Connected and Visible on Local Lobby
-  SEARCHING = 4;    // File has been Processed ready to Invite
-  PENDING = 5;      // Awaiting Peer Authorization
-  INVITED = 6;      // Has received Invitation
-  INPROGRESS = 7;   // In Middle of Transfer
-  STANDBY = 8;      // Away from Sonr Application
-  FAILED = 9;
-}
 
 // Message for Status Update
 message StatusUpdate {
@@ -53,6 +31,39 @@ message ConnectionRequest {
   }
 }
 
+// Remote Request to Join/Create Remote Transfer
+message RemoteRequest {
+  oneof type {
+    CreateAction create = 1;
+    JoinAction join = 2;
+    LeaveAction leave = 3;
+  }
+
+  message CreateAction {
+    SonrFile file = 1;
+    User user = 2;
+  }
+
+  message JoinAction {
+    repeated string words = 1;
+    User user = 2;
+  }
+
+  message LeaveAction {
+    bool isJoin = 1;
+    string topic = 2;
+  }
+}
+
+// Response from Remote Request
+message RemoteResponse {
+  bool isJoin = 1;
+  int32 count = 2;
+  string display = 3;
+  string topic = 4;
+  repeated string words = 5;
+}
+
 // Request to Access Storj Data
 message StorjRequest {
   // Keys
@@ -68,34 +79,11 @@ message StorjRequest {
 
 // Updated Peer Info Request
 message UpdateRequest {
-  Type type = 1;                  // Type of Update
-  Peer.Properties properties = 2; // Updated Peer Properties
-  Contact contact = 3;            // Users Updated Contact Card
-  Position position = 4;          // Users updated Position
-
-  enum Type {
-    Position = 0;
-    Contact = 1;
-    Properties = 2;
+  oneof data {
+    Peer.Properties properties = 1; // Updated Peer Properties
+    Contact contact = 2;            // Users Updated Contact Card
+    Position position = 3;          // Users updated Position
   }
-}
-
-// Processes Given File and Invites Specified Peer
-message InviteRequest {
-  Payload payload = 1;   // General Payload Type
-  Peer to = 2;           // Receivers Peer Data
-  Peer from = 3;         // Users Peer Data
-  bool isRemote = 4;     // If Transfer is Remote
-  RemoteInfo remote = 5; // Remote Topic Name
-  Transfer data = 6;     // Attached Data
-}
-
-message RespondRequest {
-  Peer from = 1;         // Users Peer Data
-  Peer to = 2;           // Recipient
-  bool decision = 3;     // User Decision
-  bool isRemote = 4;     // If Transfer is Remote
-  RemoteInfo remote = 5; // Remote Topic Name
 }
 
 // Invitation Message sent on RPC
@@ -103,17 +91,16 @@ message AuthInvite {
   Payload payload = 1; // Type of Transfer
   Peer from = 2;       // Users Peer Data
   Peer to = 3;         // Receivers Peer Data
-  bool isFlat = 4;     // For Flat ContactTransfer
-  Transfer data = 5;   // Attached Data
+  Transfer data = 4;   // Attached Data
 }
 
 // Reply Message sent on RPC
 message AuthReply {
-  Type type = 1;         // Type of Transfer Reply
-  Peer from = 2;         // Users Peer Data
-  Peer to = 3;           // Receivers Peer Data
-  bool decision = 4;     // Users Decision for the Invitation
-  TransferCard card = 5; // Card contains all Data Info, Transfer Info
+  Type type = 1;     // Cancel Reply
+  Peer from = 2;     // Users Peer Data
+  Peer to = 3;       // Receivers Peer Data
+  bool decision = 4; // Users Decision for the Invitation
+  Transfer data = 5; // Card contains all Data Info, Transfer Info
 
   enum Type {
     None = 0;

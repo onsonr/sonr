@@ -258,15 +258,6 @@ enum Payload {
   MEDIA = 6;        // Media Payload - (Audio, Photo, Video)
 }
 
-// RemoteInfo is for Joining/Creating a New Topic
-message RemoteInfo {
-  bool isJoin = 1;
-  int32 count = 2;
-  string display = 3;
-  string topic = 4;
-  repeated string words = 5;
-}
-
 // For Transfer File Payload
 message SonrFile {
   // Payload of File
@@ -314,30 +305,24 @@ message Transfer {
   int32 id = 1;        // SQL: Id reference
   Payload payload = 2; // SQL: Type of Data received
   int32 received = 3;  // SQL: UnixTime of received Date/Time
+  Properties properties = 4;
 
-  Profile receiver = 4; // PROFILE: General Receiver Info
-  Profile owner = 5;    // PROFILE: General Sender Info
+  Profile receiver = 5; // PROFILE: General Receiver Info
+  Profile owner = 6;    // PROFILE: General Sender Info
 
   // Attached Data
   oneof data {
-    Contact contact = 6; // DATA(Optional): Received Contact Information
-    SonrFile file = 7;   // DATA(Optional): Received a File
-    URLLink url = 8;     // DATA(Optional): Received a Website Link
+    Contact contact = 7; // DATA(Optional): Received Contact Information
+    SonrFile file = 8;   // DATA(Optional): Received a File
+    URLLink url = 9;     // DATA(Optional): Received a Website Link
   }
-}
 
-// TransferCard holds data passed between Exchange
-message TransferCard {
-  int32 id = 1;        // SQL: Id reference
-  Payload payload = 2; // SQL: Type of Data received
-  int32 received = 3;  // SQL: UnixTime of received Date/Time
-
-  Profile receiver = 4; // PROFILE: General Receiver Info
-  Profile owner = 5;    // PROFILE: General Owner Info
-
-  Contact contact = 6; // DATA(Optional): Received Contact Information
-  SonrFile file = 7;   // DATA(Optional): Received a File
-  URLLink url = 8;     // DATA(Optional): Received a Website Link
+  // Transfer Properties
+  message Properties {
+    bool isRemote = 1;
+    bool isFlat = 2;
+    bool isTransfer = 3;
+  }
 }
 
 // URLLink Contains metadata of provided URL
