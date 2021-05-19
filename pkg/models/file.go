@@ -137,7 +137,6 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 				s.call.Error(NewError(err, ErrorMessage_INCOMING))
 			}
 		}
-		stream.Close()
 		s.call.Received(s.Card())
 	}(msg.NewReader(stream))
 }
