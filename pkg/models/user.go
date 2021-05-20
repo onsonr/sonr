@@ -185,6 +185,11 @@ func NewUser(cr *ConnectionRequest) *User {
 	}
 }
 
+// Method Returns Username
+func (u *User) Username() string {
+	return fmt.Sprintf("%s.snr/", u.Contact.Profile.GetUsername())
+}
+
 // Method Returns Private Key
 func (u *User) PrivateKey() crypto.PrivKey {
 	// Get Key from Buffer

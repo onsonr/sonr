@@ -2,6 +2,7 @@ package host
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"time"
@@ -150,7 +151,7 @@ func (h *HostNode) StartStream(p peer.ID, pid protocol.ID) (network.Stream, erro
 }
 
 // ^ Start New HTTP Stream ^
-func (h *HostNode) HTTPStream(endPoint string, handler func(http.ResponseWriter, *http.Request)) {
+func (h *HostNode) NewHTTP(endPoint string, handler func(http.ResponseWriter, *http.Request)) {
 	listener, _ := gostream.Listen(h.Host, p2phttp.DefaultP2PProtocol)
 	defer listener.Close()
 	go func() {
@@ -158,4 +159,13 @@ func (h *HostNode) HTTPStream(endPoint string, handler func(http.ResponseWriter,
 		server := &http.Server{}
 		server.Serve(listener)
 	}()
+}
+
+// ^ Get HTTP Response from Endpoint ^ //
+func (h *HostNode) GetHTTP(id string, endPoint string) (*http.Response, error) {
+	res, err := h.HTTPClient.Get(fmt.Sprintf("libp2p://%s/%s", id, endPoint))
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
 }

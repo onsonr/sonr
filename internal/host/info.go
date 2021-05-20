@@ -6,7 +6,6 @@ import (
 	ps "github.com/libp2p/go-libp2p-core/peer"
 	"github.com/multiformats/go-multiaddr"
 	md "github.com/sonr-io/core/pkg/models"
-	"google.golang.org/protobuf/proto"
 )
 
 // ^ Returns HostNode Peer Addr Info ^ //
@@ -29,30 +28,25 @@ func (hn *HostNode) MultiAddr() (multiaddr.Multiaddr, *md.SonrError) {
 	return addrs[0], nil
 }
 
-func (hn *HostNode) AddUser(u *md.User) error {
+// ^ Adds Username for PeerID ^ //
+func (hn *HostNode) AddUsername(u string) error {
 	// Marshal User
-	value, err := u.ContactBytes()
+	value, err := hn.Host.ID().MarshalBinary()
 	if err != nil {
 		return err
 	}
 
 	// Place Value
-	hn.KDHT.PutValue(hn.ctx, u.Crypto.Key(), value)
+	hn.KDHT.PutValue(hn.ctx, u, value)
 	return nil
 }
 
-func (hn *HostNode) FindUser(c *md.User_Crypto) (*md.Contact, error) {
+// ^ Finds PeerID from Username
+func (hn *HostNode) FindAddress(u string) (string, error) {
 	// Find Value
-	value, err := hn.KDHT.GetValue(hn.ctx, c.Key())
+	value, err := hn.KDHT.GetValue(hn.ctx, u)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
-
-	// Unmarshal User
-	m := &md.Contact{}
-	err = proto.Unmarshal(value, m)
-	if err != nil {
-		return nil, err
-	}
-	return m, nil
+	return string(value), nil
 }

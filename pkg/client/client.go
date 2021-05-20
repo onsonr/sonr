@@ -62,6 +62,9 @@ func (c *Client) Connect(pk crypto.PrivKey) *md.SonrError {
 
 // ^ Begins Bootstrapping HostNode ^
 func (c *Client) Bootstrap() *md.SonrError {
+	if err := c.Host.AddUsername(c.user.Username()); err != nil {
+		c.call.Error(md.NewError(err, md.ErrorMessage_BOOTSTRAP))
+	}
 	return c.Host.Bootstrap()
 }
 
