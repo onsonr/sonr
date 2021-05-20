@@ -26,14 +26,13 @@ import (
 )
 
 type HostNode struct {
-	ctx        context.Context
-	ID         peer.ID
-	Discovery  *dsc.RoutingDiscovery
-	Host       host.Host
-	HTTPClient *http.Client
-	KDHT       *dht.IpfsDHT
-	Point      string
-	Pubsub     *psub.PubSub
+	ctx       context.Context
+	ID        peer.ID
+	Discovery *dsc.RoutingDiscovery
+	Host      host.Host
+	KDHT      *dht.IpfsDHT
+	Point     string
+	Pubsub    *psub.PubSub
 }
 
 const REFRESH_DURATION = time.Second * 5
@@ -79,18 +78,13 @@ func NewHost(ctx context.Context, point string, privateKey crypto.PrivKey) (*Hos
 		return newRelayedHost(ctx, point, privateKey)
 	}
 
-	tr := &http.Transport{}
-	tr.RegisterProtocol("libp2p", p2phttp.NewTransport(h))
-	httpClient := &http.Client{Transport: tr}
-
 	// Create Host
 	hn := &HostNode{
-		ctx:        ctx,
-		ID:         h.ID(),
-		Host:       h,
-		HTTPClient: httpClient,
-		Point:      point,
-		KDHT:       kdhtRef,
+		ctx:   ctx,
+		ID:    h.ID(),
+		Host:  h,
+		Point: point,
+		KDHT:  kdhtRef,
 	}
 	return hn, nil
 }
@@ -128,17 +122,13 @@ func newRelayedHost(ctx context.Context, point string, privateKey crypto.PrivKey
 	if err != nil {
 		return nil, md.NewError(err, md.ErrorMessage_HOST_START)
 	}
-	tr := &http.Transport{}
-	tr.RegisterProtocol("libp2p", p2phttp.NewTransport(h))
-	httpClient := &http.Client{Transport: tr}
 
 	return &HostNode{
-		ctx:        ctx,
-		ID:         h.ID(),
-		Host:       h,
-		HTTPClient: httpClient,
-		Point:      point,
-		KDHT:       kdhtRef,
+		ctx:   ctx,
+		ID:    h.ID(),
+		Host:  h,
+		Point: point,
+		KDHT:  kdhtRef,
 	}, nil
 }
 
@@ -185,11 +175,18 @@ func (h *HostNode) NewHTTP(point string, handler md.HTTPHandler) {
 
 // ^ Get HTTP Response from Endpoint ^ //
 func (h *HostNode) GetHTTP(id peer.ID, endPoint string) ([]byte, error) {
-	res, err := h.HTTPClient.Get(fmt.Sprintf("libp2p://%s/%s", id.String(), endPoint))
+	// Create Client
+	tr := &http.Transport{}
+	tr.RegisterProtocol("libp2p", p2phttp.NewTransport(h.Host))
+	c := &http.Client{Transport: tr}
+
+	// Perform Request
+	res, err := c.Get(fmt.Sprintf("libp2p://%s/%s", id.String(), endPoint))
 	if err != nil {
 		return nil, err
 	}
 
+	// Return Response Body
 	bytes, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
