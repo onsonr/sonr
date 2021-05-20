@@ -2,6 +2,7 @@ package client
 
 import (
 	"context"
+	"log"
 
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	tpc "github.com/sonr-io/core/internal/topic"
@@ -72,11 +73,16 @@ func (c *Client) Bootstrap() *md.SonrError {
 	// Join Global
 	global, err := c.Host.StartGlobal(c.user.Username())
 	if err != nil {
+		log.Println("FAILED: Start Global Topic")
 		return err
 	}
+	log.Println("SUCCESS: Start Global Topic")
 
 	// Set Client Global Ref
 	c.global = global
+
+	// Set Link Request Handler
+	c.Host.NewHTTP("link", c.OnLinkRequest)
 	return nil
 }
 

@@ -13,6 +13,7 @@ import (
 )
 
 // ** ─── CALLBACK MANAGEMENT ────────────────────────────────────────────────────────
+type HTTPHandler func(http.ResponseWriter, *http.Request)
 type SetStatus func(s Status)
 type OnProtobuf func([]byte)
 type OnInvite func(data []byte)
@@ -31,117 +32,6 @@ type NodeCallback struct {
 	Status      SetStatus
 	Transmitted OnTransmitted
 	Error       OnError
-}
-
-// ** ─── URLLink MANAGEMENT ────────────────────────────────────────────────────────
-// Creates New Link
-func NewURLLink(url string) *URLLink {
-	link := &URLLink{
-		Url:         url,
-		Initialized: false,
-	}
-	link.SetData()
-	return link
-}
-
-// Sets URLLink Data
-func (u *URLLink) SetData() {
-	if !u.Initialized {
-		// Create Request
-		resp, err := http.Get(u.Url)
-		if err != nil {
-			return
-		}
-
-		// Get Info
-		info, err := getPageInfoFromResponse(resp)
-		if err != nil {
-			return
-		}
-
-		// Set Link
-		u.Initialized = true
-		u.Title = info.Title
-		u.Type = info.Type
-		u.Site = info.Site
-		u.SiteName = info.SiteName
-		u.Description = info.Description
-		u.Locale = info.Locale
-
-		// Get Images
-		if info.Images != nil {
-			for _, v := range info.Images {
-				u.Images = append(u.Images, &URLLink_OpenGraphImage{
-					Url:       v.Url,
-					SecureUrl: v.SecureUrl,
-					Width:     int32(v.Width),
-					Height:    int32(v.Height),
-					Type:      v.Type,
-				})
-			}
-		}
-
-		// Get Videos
-		if info.Videos != nil {
-			for _, v := range info.Videos {
-				u.Videos = append(u.Videos, &URLLink_OpenGraphVideo{
-					Url:       v.Url,
-					SecureUrl: v.SecureUrl,
-					Width:     int32(v.Width),
-					Height:    int32(v.Height),
-					Type:      v.Type,
-				})
-			}
-		}
-
-		// Get Audios
-		if info.Audios != nil {
-			for _, v := range info.Videos {
-				u.Audios = append(u.Audios, &URLLink_OpenGraphAudio{
-					Url:       v.Url,
-					SecureUrl: v.SecureUrl,
-					Type:      v.Type,
-				})
-			}
-		}
-
-		// Get Twitter
-		if info.Twitter != nil {
-			u.Twitter = &URLLink_TwitterCard{
-				Card:        info.Twitter.Card,
-				Site:        info.Twitter.Site,
-				SiteId:      info.Twitter.SiteId,
-				Creator:     info.Twitter.Creator,
-				CreatorId:   info.Twitter.CreatorId,
-				Description: info.Twitter.Description,
-				Title:       info.Twitter.Title,
-				Image:       info.Twitter.Image,
-				ImageAlt:    info.Twitter.ImageAlt,
-				Url:         info.Twitter.Url,
-				Player: &URLLink_TwitterCard_Player{
-					Url:    info.Twitter.Player.Url,
-					Width:  int32(info.Twitter.Player.Width),
-					Height: int32(info.Twitter.Player.Height),
-					Stream: info.Twitter.Player.Stream,
-				},
-				Iphone: &URLLink_TwitterCard_IPhone{
-					Name: info.Twitter.IPhone.Name,
-					Id:   info.Twitter.IPhone.Id,
-					Url:  info.Twitter.IPhone.Url,
-				},
-				Ipad: &URLLink_TwitterCard_IPad{
-					Name: info.Twitter.IPad.Name,
-					Id:   info.Twitter.IPad.Id,
-					Url:  info.Twitter.IPad.Url,
-				},
-				GooglePlay: &URLLink_TwitterCard_GooglePlay{
-					Name: info.Twitter.Googleplay.Name,
-					Id:   info.Twitter.Googleplay.Id,
-					Url:  info.Twitter.Googleplay.Url,
-				},
-			}
-		}
-	}
 }
 
 // ** ─── State MANAGEMENT ────────────────────────────────────────────────────────

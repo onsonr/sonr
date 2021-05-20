@@ -1,6 +1,8 @@
 package client
 
 import (
+	"net/http"
+
 	"github.com/libp2p/go-libp2p-core/peer"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
@@ -17,6 +19,11 @@ func (n *Client) OnEvent(e *md.LobbyEvent) {
 
 	// Call Event
 	n.call.Event(bytes)
+}
+
+// ^ OnLinkRequest: When Device is Initiating Link
+func (n *Client) OnLinkRequest(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Hi!"))
 }
 
 // ^ OnRefresh: Topic has Updated ^
