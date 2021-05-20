@@ -83,6 +83,7 @@ func (p *Peer) PeerID() string {
 // ^ Signs AuthReply with Flat Contact
 func (u *User) SignFlatReply(from *Peer) *AuthReply {
 	return &AuthReply{
+		Type: AuthReply_FlatContact,
 		From: u.GetPeer(),
 		Data: &Transfer{
 			// SQL Properties
