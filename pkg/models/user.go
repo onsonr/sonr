@@ -74,47 +74,47 @@ func (d *Device) IsFile(name string) bool {
 	}
 }
 
-// // @ Returns Private key from disk if found
-// func (d *Device) NewPrivateKey() *SonrError {
-// 	K_SONR_PRIV_KEY := "snr-peer.privkey"
+// @ Returns Private key from disk if found
+func (d *Device) NewPrivateKey() *SonrError {
+	K_SONR_PRIV_KEY := "snr-peer.privkey"
 
-// 	// Get Private Key
-// 	if ok := d.IsFile(K_SONR_PRIV_KEY); ok {
-// 		// Get Key File
-// 		buf, serr := d.ReadFile(K_SONR_PRIV_KEY)
-// 		if serr != nil {
-// 			return serr
-// 		}
+	// Get Private Key
+	if ok := d.IsFile(K_SONR_PRIV_KEY); ok {
+		// Get Key File
+		buf, serr := d.ReadFile(K_SONR_PRIV_KEY)
+		if serr != nil {
+			return serr
+		}
 
-// 		// Set Buffer for Key
-// 		d.PrivateKey = buf
+		// Set Buffer for Key
+		d.PrivateKey = buf
 
-// 		// Set Key Ref
-// 		return nil
-// 	} else {
-// 		// Create New Key
-// 		privKey, _, err := crypto.GenerateKeyPair(crypto.Ed25519, -1)
-// 		if err != nil {
-// 			return NewError(err, ErrorMessage_HOST_KEY)
-// 		}
+		// Set Key Ref
+		return nil
+	} else {
+		// Create New Key
+		privKey, _, err := crypto.GenerateKeyPair(crypto.Ed25519, -1)
+		if err != nil {
+			return NewError(err, ErrorMessage_HOST_KEY)
+		}
 
-// 		// Marshal Data
-// 		buf, err := crypto.MarshalPrivateKey(privKey)
-// 		if err != nil {
-// 			return NewError(err, ErrorMessage_MARSHAL)
-// 		}
+		// Marshal Data
+		buf, err := crypto.MarshalPrivateKey(privKey)
+		if err != nil {
+			return NewError(err, ErrorMessage_MARSHAL)
+		}
 
-// 		// Set Buffer for Key
-// 		d.PrivateKey = buf
+		// Set Buffer for Key
+		d.PrivateKey = buf
 
-// 		// Write Key to File
-// 		_, werr := d.WriteFile(K_SONR_PRIV_KEY, buf)
-// 		if werr != nil {
-// 			return NewError(err, ErrorMessage_USER_SAVE)
-// 		}
-// 		return nil
-// 	}
-// }
+		// Write Key to File
+		_, werr := d.WriteFile(K_SONR_PRIV_KEY, buf)
+		if werr != nil {
+			return NewError(err, ErrorMessage_USER_SAVE)
+		}
+		return nil
+	}
+}
 
 // Loads User File
 func (d *Device) ReadFile(name string) ([]byte, *SonrError) {
@@ -158,7 +158,7 @@ func (d *Device) WriteFile(name string, data []byte) (string, *SonrError) {
 func NewUser(cr *ConnectionRequest) *User {
 	// Initialize Device
 	d := cr.GetDevice()
-	// d.NewPrivateKey()
+	d.NewPrivateKey()
 
 	// Get Crypto
 	crypto := cr.GetCrypto()
