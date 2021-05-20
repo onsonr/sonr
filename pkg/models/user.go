@@ -2,7 +2,6 @@ package models
 
 import (
 	"fmt"
-	"log"
 	"math"
 	"os"
 	"path/filepath"
@@ -193,20 +192,10 @@ func (u *User) Username() string {
 // Method Returns Private Key
 func (u *User) PrivateKey() crypto.PrivKey {
 	// Get Key from Buffer
-	derKey := []byte(u.Crypto.GetPrivateKey())
-	key, err := crypto.UnmarshalECDSAPrivateKey(derKey)
+	key, err := crypto.UnmarshalPrivateKey(u.GetDevice().GetPrivateKey())
 	if err != nil {
-		log.Println("Generating Key...")
-
-		// Create New Key
-		privKey, _, err := crypto.GenerateKeyPair(crypto.Ed25519, -1)
-		if err != nil {
-			log.Println("Failed to Generate Key.")
-			return nil
-		}
-		return privKey
+		return nil
 	}
-	log.Println("Using Passed Private Key")
 	return key
 }
 
