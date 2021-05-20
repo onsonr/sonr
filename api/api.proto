@@ -146,7 +146,7 @@ message User {
   message Crypto {
     string prefix = 1;
     string signature = 2;
-    string p2pID = 3;
+    string privateKey = 3; // Private Key Reference, Saved as snr-peer.privkey
   }
 
   // Router Manages Peer Routing for Topics/Transfers - Attached from Node

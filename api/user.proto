@@ -68,7 +68,6 @@ message Device {
   string model = 4;          // Model of Device
   string version = 5;        // Operating System Version
   FileSystem fileSystem = 6; // Directories for this Device
-  bytes privateKey = 7;      // Private Key Reference, Saved as snr-peer.privkey
 }
 
 // FileSystem is for Directores Where Data can be stored

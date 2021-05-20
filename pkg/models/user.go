@@ -2,12 +2,12 @@ package models
 
 import (
 	"fmt"
+	"log"
 	"math"
 	"os"
 	"path/filepath"
 
-	"github.com/alecthomas/jsonschema"
-	crypto "github.com/libp2p/go-libp2p-crypto"
+	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -74,47 +74,47 @@ func (d *Device) IsFile(name string) bool {
 	}
 }
 
-// @ Returns Private key from disk if found
-func (d *Device) NewPrivateKey() *SonrError {
-	K_SONR_PRIV_KEY := "snr-peer.privkey"
+// // @ Returns Private key from disk if found
+// func (d *Device) NewPrivateKey() *SonrError {
+// 	K_SONR_PRIV_KEY := "snr-peer.privkey"
 
-	// Get Private Key
-	if ok := d.IsFile(K_SONR_PRIV_KEY); ok {
-		// Get Key File
-		buf, serr := d.ReadFile(K_SONR_PRIV_KEY)
-		if serr != nil {
-			return serr
-		}
+// 	// Get Private Key
+// 	if ok := d.IsFile(K_SONR_PRIV_KEY); ok {
+// 		// Get Key File
+// 		buf, serr := d.ReadFile(K_SONR_PRIV_KEY)
+// 		if serr != nil {
+// 			return serr
+// 		}
 
-		// Set Buffer for Key
-		d.PrivateKey = buf
+// 		// Set Buffer for Key
+// 		d.PrivateKey = buf
 
-		// Set Key Ref
-		return nil
-	} else {
-		// Create New Key
-		privKey, _, err := crypto.GenerateKeyPair(crypto.Ed25519, -1)
-		if err != nil {
-			return NewError(err, ErrorMessage_HOST_KEY)
-		}
+// 		// Set Key Ref
+// 		return nil
+// 	} else {
+// 		// Create New Key
+// 		privKey, _, err := crypto.GenerateKeyPair(crypto.Ed25519, -1)
+// 		if err != nil {
+// 			return NewError(err, ErrorMessage_HOST_KEY)
+// 		}
 
-		// Marshal Data
-		buf, err := crypto.MarshalPrivateKey(privKey)
-		if err != nil {
-			return NewError(err, ErrorMessage_MARSHAL)
-		}
+// 		// Marshal Data
+// 		buf, err := crypto.MarshalPrivateKey(privKey)
+// 		if err != nil {
+// 			return NewError(err, ErrorMessage_MARSHAL)
+// 		}
 
-		// Set Buffer for Key
-		d.PrivateKey = buf
+// 		// Set Buffer for Key
+// 		d.PrivateKey = buf
 
-		// Write Key to File
-		_, werr := d.WriteFile(K_SONR_PRIV_KEY, buf)
-		if werr != nil {
-			return NewError(err, ErrorMessage_USER_SAVE)
-		}
-		return nil
-	}
-}
+// 		// Write Key to File
+// 		_, werr := d.WriteFile(K_SONR_PRIV_KEY, buf)
+// 		if werr != nil {
+// 			return NewError(err, ErrorMessage_USER_SAVE)
+// 		}
+// 		return nil
+// 	}
+// }
 
 // Loads User File
 func (d *Device) ReadFile(name string) ([]byte, *SonrError) {
@@ -158,7 +158,7 @@ func (d *Device) WriteFile(name string, data []byte) (string, *SonrError) {
 func NewUser(cr *ConnectionRequest) *User {
 	// Initialize Device
 	d := cr.GetDevice()
-	d.NewPrivateKey()
+	// d.NewPrivateKey()
 
 	// Get Crypto
 	crypto := cr.GetCrypto()
@@ -188,12 +188,24 @@ func NewUser(cr *ConnectionRequest) *User {
 // Method Returns Private Key
 func (u *User) PrivateKey() crypto.PrivKey {
 	// Get Key from Buffer
-	key, err := crypto.UnmarshalPrivateKey(u.GetDevice().GetPrivateKey())
+	derKey := []byte(u.Crypto.GetPrivateKey())
+	key, err := crypto.UnmarshalECDSAPrivateKey(derKey)
 	if err != nil {
-		return nil
+		log.Println("Generating Key...")
+
+		// Create New Key
+		privKey, _, err := crypto.GenerateKeyPair(crypto.Ed25519, -1)
+		if err != nil {
+			log.Println("Failed to Generate Key.")
+			return nil
+		}
+		return privKey
 	}
+	log.Println("Using Passed Private Key")
 	return key
 }
+
+// Method Returns Contact as Bytes
 func (u *User) ContactBytes() ([]byte, error) {
 	dat, err := proto.Marshal(u.Contact)
 	if err != nil {
@@ -202,14 +214,9 @@ func (u *User) ContactBytes() ([]byte, error) {
 	return dat, nil
 }
 
+// Method Returns Crypto Prefix With Signature
 func (c *User_Crypto) Key() string {
 	return fmt.Sprintf("%s+%s", c.Prefix, c.Signature)
-}
-
-// Returns User Protobuf as Reflected JSON Schema
-func ReflectUserToJson() *jsonschema.Schema {
-	reflector := jsonschema.Reflector{}
-	return reflector.Reflect(&User{})
 }
 
 // Updates User Peer
