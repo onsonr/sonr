@@ -17,24 +17,58 @@ type Client struct {
 	tpc.ClientCallback
 
 	// Properties
-	ctx     context.Context
-	call    md.NodeCallback
-	global  net.GlobalTopic
-	user    *md.User
-	session *md.Session
+	isLinker bool
+	ctx      context.Context
+	call     md.NodeCallback
+	global   net.GlobalTopic
+	user     *md.User
+	session  *md.Session
 
 	// References
 	Host *net.HostNode
+
+	// Linker Properties
+	linker *md.Linker
 }
 
 // ^ NewClient Initializes Node with Router ^
 func NewClient(ctx context.Context, u *md.User, call md.NodeCallback) *Client {
-	// Returns Storj Enabled Client
 	return &Client{
-		ctx:  ctx,
-		call: call,
-		user: u,
+		ctx:      ctx,
+		call:     call,
+		user:     u,
+		isLinker: false,
 	}
+}
+
+func NewLinkClient(ctx context.Context, lr *md.LinkRequest) (*Client, *md.SonrError) {
+	// Create Linker/Client
+	linker := md.NewLinker(lr)
+	c := &Client{
+		ctx:      ctx,
+		linker:   linker,
+		isLinker: true,
+	}
+
+	// Connect Linker
+	err := c.Connect(linker.PrivateKey())
+	if err != nil {
+		return nil, err
+	}
+
+	// Bootstrap Linker
+	err = c.Bootstrap()
+	if err != nil {
+		return nil, err
+	}
+
+	// Set Linker Peer ID
+	id, serr := c.global.FindPeerID(c.linker.Username)
+	if serr != nil {
+		return nil, md.NewError(serr, md.ErrorMessage_HOST_INFO)
+	}
+	c.linker.UserID = id.String()
+	return c, nil
 }
 
 // ^ Connects Host Node from Private Key ^
@@ -52,10 +86,7 @@ func (c *Client) Connect(pk crypto.PrivKey) *md.SonrError {
 	}
 
 	// Set Peer
-	err = c.user.NewPeer(hn.ID, maddr)
-	if err != nil {
-		return err
-	}
+	c.user.NewPeer(hn.ID, maddr)
 
 	// Set Host
 	c.Host = hn
@@ -112,6 +143,15 @@ func (n *Client) JoinLocal() (*tpc.TopicManager, *md.SonrError) {
 }
 
 // ^ Join Lobby Adds Node to Named Topic ^
+func (n *Client) JoinLinkLocal() (*tpc.TopicManager, *md.SonrError) {
+	if t, err := tpc.NewLocalLink(n.ctx, n.Host, n.linker, n.linker.GetRouter().LocalIPTopic, n); err != nil {
+		return nil, err
+	} else {
+		return t, nil
+	}
+}
+
+// ^ Join Lobby Adds Node to Named Topic ^
 func (n *Client) LeaveLobby(lob *tpc.TopicManager) *md.SonrError {
 	if err := lob.LeaveTopic(); err != nil {
 		return md.NewError(err, md.ErrorMessage_TOPIC_LEAVE)
@@ -120,7 +160,7 @@ func (n *Client) LeaveLobby(lob *tpc.TopicManager) *md.SonrError {
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Client) InviteLink(invite *md.AuthInvite, t *tpc.TopicManager) *md.SonrError {
+func (n *Client) InviteUrl(invite *md.AuthInvite, t *tpc.TopicManager) *md.SonrError {
 	// @ 3. Send Invite to Peer
 	if t.HasPeer(invite.To.Id.Peer) {
 		// Get PeerID and Check error

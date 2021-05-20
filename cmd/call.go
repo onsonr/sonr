@@ -11,6 +11,7 @@ type Callback interface {
 	OnStatus(data []byte)      // Node Status Updates
 	OnRefreshed(data []byte)   // Lobby Updates
 	OnEvent(data []byte)       // Lobby Event
+	OnLink(data []byte)        // Link event
 	OnInvited(data []byte)     // User Invited
 	OnDirected(data []byte)    // User Direct-Invite from another Device
 	OnResponded(data []byte)   // Peer has responded
@@ -35,6 +36,7 @@ func (mn *Node) callbackNode() md.NodeCallback {
 		// Direct
 		Refreshed:  mn.call.OnRefreshed,
 		Event:      mn.call.OnEvent,
+		Linked:     mn.call.OnLink,
 		Responded:  mn.call.OnResponded,
 		Progressed: mn.call.OnProgress,
 

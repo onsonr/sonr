@@ -22,7 +22,8 @@ type OnReceived func(data *Transfer)
 type OnTransmitted func(data *Transfer)
 type OnError func(err *SonrError)
 type NodeCallback struct {
-	Invited     OnInvite
+	Invited     OnProtobuf
+	Linked      OnProtobuf
 	Refreshed   OnProtobuf
 	Event       OnProtobuf
 	RemoteStart OnProtobuf
@@ -207,6 +208,30 @@ func NewLocalLobby(u *User) *Lobby {
 		Type:  Lobby_LOCAL,
 		Peers: make(map[string]*Peer),
 		User:  u.GetPeer(),
+
+		// Info
+		Info: &Lobby_Local{
+			Local: &Lobby_LocalInfo{
+				Name:     topic[12:],
+				Location: loc,
+				Topic:    topic,
+			},
+		},
+	}
+}
+
+// Creates Local Lobby from User Data
+func NewLocalLinkLobby(l *Linker) *Lobby {
+	// Get Info
+	topic := l.Router.LocalIPTopic
+	loc := l.GetRouter().GetLocation()
+
+	// Create Lobby
+	return &Lobby{
+		// General
+		Type:  Lobby_LOCAL,
+		Peers: make(map[string]*Peer),
+		User:  l.GetPeer(),
 
 		// Info
 		Info: &Lobby_Local{

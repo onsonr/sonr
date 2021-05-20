@@ -91,6 +91,29 @@ func Storj(data []byte) []byte {
 	return nil
 }
 
+// @ Handle Link Request
+func (mn *Node) Link(data []byte) []byte {
+	if mn.isReady() {
+		// Get Response
+		response := &md.LinkResponse{}
+		err := proto.Unmarshal(data, response)
+		if err != nil {
+			mn.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
+		}
+
+		// Check Decision
+		if response.Decision {
+			u := mn.user.AddDevice(response)
+			bytes, err := proto.Marshal(u)
+			if err != nil {
+				mn.handleError(md.NewError(err, md.ErrorMessage_MARSHAL))
+			}
+			return bytes
+		}
+	}
+	return nil
+}
+
 // @ Join/Create/Leave Remote Group
 func (mn *Node) Remote(data []byte) []byte {
 	if mn.isReady() {
@@ -181,7 +204,7 @@ func (mn *Node) Invite(data []byte) {
 				return
 			}
 		} else if req.Payload == md.Payload_URL {
-			err := mn.client.InviteLink(req, mn.local)
+			err := mn.client.InviteUrl(req, mn.local)
 			if err != nil {
 				mn.handleError(err)
 				return

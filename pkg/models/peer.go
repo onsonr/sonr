@@ -2,7 +2,6 @@ package models
 
 import (
 	"fmt"
-	"hash/fnv"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -12,33 +11,24 @@ import (
 
 // ** ─── Peer MANAGEMENT ────────────────────────────────────────────────────────
 // ^ Create New Peer from Connection Request and Host ID ^ //
-func (u *User) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) *SonrError {
+func (u *User) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) {
 	// Initialize
 	deviceID := u.Device.GetId()
 	c := u.GetContact()
 	profile := c.GetProfile()
-
-	// Get User ID
-	userID := fnv.New32a()
-	_, err := userID.Write([]byte(profile.GetUsername()))
-	if err != nil {
-		return NewError(err, ErrorMessage_HOST_KEY)
-	}
 
 	// Set Peer
 	u.Peer = &Peer{
 		Id: &Peer_ID{
 			Peer:   id.String(),
 			Device: deviceID,
-			User:   userID.Sum32(),
 		},
 		Profile:  profile,
 		Platform: u.Device.Platform,
 		Model:    u.Device.Model,
 	}
 	// Set Device Topic
-	u.Connection.Router.DeviceTopic = fmt.Sprintf("/sonr/topic/%s", u.Peer.UserID())
-	return nil
+	u.Connection.Router.DeviceTopic = fmt.Sprintf("/sonr/user/%s", u.Username())
 }
 
 // ^ Returns Peer as Buffer ^ //
@@ -48,16 +38,6 @@ func (p *Peer) Buffer() ([]byte, error) {
 		return nil, err
 	}
 	return buf, nil
-}
-
-// ^ Returns Peer User ID ^ //
-func (p *Peer) DeviceID() string {
-	return string(p.Id.GetDevice())
-}
-
-// ^ Returns Peer User ID ^ //
-func (p *Peer) UserID() string {
-	return fmt.Sprintf("%d", p.Id.GetUser())
 }
 
 // ^ Checks for Host Peer ID is Same ^ //
@@ -75,6 +55,11 @@ func (p *Peer) IsNotPeerIDString(pid string) bool {
 	return p.Id.Peer != pid
 }
 
+// ^ Returns Peer User ID ^ //
+func (p *Peer) DeviceID() string {
+	return string(p.Id.GetDevice())
+}
+
 // ^ Checks for Host Peer ID String is not Same ^ //
 func (p *Peer) PeerID() string {
 	return p.Id.Peer
@@ -83,8 +68,10 @@ func (p *Peer) PeerID() string {
 // ^ Signs AuthReply with Flat Contact
 func (u *User) SignFlatReply(from *Peer) *AuthReply {
 	return &AuthReply{
-		Type: AuthReply_FlatContact,
-		From: u.GetPeer(),
+		Type:     AuthReply_FlatContact,
+		From:     u.GetPeer(),
+		To:       from,
+		Decision: true,
 		Data: &Transfer{
 			// SQL Properties
 			Payload:  Payload_CONTACT,
@@ -107,6 +94,6 @@ func (p *Peer) SignUpdate() *LobbyEvent {
 			Local: LobbyEvent_UPDATE,
 		},
 		From: p,
-		Id:   p.Id.Peer,
+		Id:   p.PeerID(),
 	}
 }

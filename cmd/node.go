@@ -13,7 +13,6 @@ import (
 
 // * Struct: Reference for Binded Proxy Node * //
 type Node struct {
-	md.NodeCallback
 	// Properties
 	call Callback
 	ctx  context.Context

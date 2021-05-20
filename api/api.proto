@@ -120,6 +120,39 @@ message AuthReply {
   }
 }
 
+// Link Request for Non-Mobile Clients
+message LinkRequest {
+  Device device = 1;
+  string username = 2;
+  Location location = 3;
+}
+
+// Response After Linking
+message LinkResponse {
+  User user = 1;
+  bool decision = 2;
+  string deviceLabel = 3;
+  Device device = 4;
+}
+
+// Linker Object is used for Temporary host and Linking Devices
+message Linker {
+  Peer peer = 1;
+  Device device = 2;
+  string username = 3;
+  Router router = 4;
+  string userID = 5;
+
+  // Router Manages Peer Routing for Topics/Transfers - Attached from Node
+  // Client
+  message Router {
+    string deviceTopic = 1;
+    string localIPTopic = 2;
+    string rendevouz = 3;
+    Location location = 4;
+  }
+}
+
 // User is the Saved Data from Client that Passes to Proxy, During ConnRequest
 message User {
   string id = 1;                      // User prefix is ID

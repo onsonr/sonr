@@ -184,6 +184,12 @@ func NewUser(cr *ConnectionRequest) *User {
 	}
 }
 
+// Method Adds Device from Link Request, Returns Updated Object
+func (u *User) AddDevice(lr *LinkResponse) *User {
+	u.Devices[lr.DeviceLabel] = lr.GetDevice()
+	return u
+}
+
 // Method Returns Username
 func (u *User) Username() string {
 	return fmt.Sprintf("%s.snr/", u.Contact.Profile.GetUsername())

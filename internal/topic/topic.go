@@ -20,6 +20,7 @@ type ClientCallback interface {
 	OnEvent(*md.LobbyEvent)
 	OnRefresh(*md.Lobby)
 	OnInvite([]byte)
+	OnLink([]byte)
 	OnReply(id peer.ID, data []byte)
 	OnResponded(inv *md.AuthInvite)
 }
@@ -131,6 +132,50 @@ func NewLocal(ctx context.Context, h *net.HostNode, u *md.User, name string, th 
 		user:   u,
 		call:   th,
 		respCh: make(chan *md.AuthReply, 1),
+		linkCh: make(chan *md.LinkResponse, 1),
+	}
+
+	// Register Service
+	err := peersvServer.Register(&psv)
+	if err != nil {
+		return nil, md.NewError(err, md.ErrorMessage_TOPIC_RPC)
+	}
+
+	// Set Service
+	mgr.service = &psv
+	go mgr.handleTopicEvents()
+	go mgr.handleTopicMessages()
+	go mgr.processTopicMessages()
+	return mgr, nil
+}
+
+// ^ Create New Contained Topic Manager ^ //
+func NewLocalLink(ctx context.Context, h *net.HostNode, l *md.Linker, name string, th ClientCallback) (*TopicManager, *md.SonrError) {
+	// Join Topic
+	topic, sub, handler, serr := h.Join(name)
+	if serr != nil {
+		return nil, serr
+	}
+
+	// Create Lobby Manager
+	mgr := &TopicManager{
+		topicHandler: th,
+		ctx:          ctx,
+		host:         h,
+		eventHandler: handler,
+		Lobby:        md.NewLocalLinkLobby(l),
+		Messages:     make(chan *md.LobbyEvent, K_MAX_MESSAGES),
+		subscription: sub,
+		topic:        topic,
+	}
+
+	// Start Exchange Server
+	peersvServer := rpc.NewServer(h.Host, K_SERVICE_PID)
+	psv := TopicService{
+		lobby:  mgr.Lobby,
+		call:   th,
+		respCh: make(chan *md.AuthReply, 1),
+		linkCh: make(chan *md.LinkResponse, 1),
 	}
 
 	// Register Service
