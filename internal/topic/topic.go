@@ -16,6 +16,14 @@ import (
 const K_MAX_MESSAGES = 128
 const K_SERVICE_PID = protocol.ID("/sonr/topic-service/0.1")
 
+type ClientCallback interface {
+	OnEvent(*md.LobbyEvent)
+	OnRefresh(*md.Lobby)
+	OnInvite([]byte)
+	OnReply(id peer.ID, data []byte)
+	OnResponded(inv *md.AuthInvite)
+}
+
 type TopicManager struct {
 	ctx          context.Context
 	host         *net.HostNode
@@ -27,10 +35,10 @@ type TopicManager struct {
 
 	service      *TopicService
 	Messages     chan *md.LobbyEvent
-	topicHandler md.ClientCallback
+	topicHandler ClientCallback
 }
 
-func JoinRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteResponse, th md.ClientCallback) (*TopicManager, *md.SonrError) {
+func JoinRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteResponse, th ClientCallback) (*TopicManager, *md.SonrError) {
 	// Join Topic
 	topic, sub, handler, serr := h.Join(r.Topic)
 	if serr != nil {
@@ -83,7 +91,7 @@ func JoinRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteRe
 }
 
 // ^ Create New Contained Topic Manager ^ //
-func NewRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteResponse, th md.ClientCallback) (*TopicManager, *md.SonrError) {
+func NewRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteResponse, th ClientCallback) (*TopicManager, *md.SonrError) {
 	// Join Topic
 	topic, sub, handler, serr := h.Join(r.Topic)
 	if serr != nil {
@@ -111,7 +119,7 @@ func NewRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteRes
 }
 
 // ^ Create New Contained Topic Manager ^ //
-func NewLocal(ctx context.Context, h *net.HostNode, u *md.User, name string, th md.ClientCallback) (*TopicManager, *md.SonrError) {
+func NewLocal(ctx context.Context, h *net.HostNode, u *md.User, name string, th ClientCallback) (*TopicManager, *md.SonrError) {
 	// Join Topic
 	topic, sub, handler, serr := h.Join(name)
 	if serr != nil {

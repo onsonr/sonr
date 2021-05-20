@@ -32,14 +32,6 @@ type NodeCallback struct {
 	Error       OnError
 }
 
-type ClientCallback interface {
-	OnEvent(*LobbyEvent)
-	OnRefresh(*Lobby)
-	OnInvite([]byte)
-	OnReply(id peer.ID, data []byte)
-	OnResponded(inv *AuthInvite)
-}
-
 // ** ─── URLLink MANAGEMENT ────────────────────────────────────────────────────────
 // Creates New Link
 func NewURLLink(url string) *URLLink {

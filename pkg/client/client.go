@@ -13,7 +13,7 @@ import (
 
 // ^ Struct: Main Client handles Networking/Identity/Streams ^
 type Client struct {
-	md.ClientCallback
+	tpc.ClientCallback
 
 	// Properties
 	ctx     context.Context

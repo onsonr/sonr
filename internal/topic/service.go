@@ -26,7 +26,7 @@ type TopicServiceResponse struct {
 // Service Struct
 type TopicService struct {
 	// Current Data
-	call  md.ClientCallback
+	call  ClientCallback
 	lobby *md.Lobby
 	user  *md.User
 

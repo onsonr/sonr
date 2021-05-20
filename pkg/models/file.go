@@ -117,7 +117,7 @@ func (s *Session) Card() *Transfer {
 		Receiver: s.peer.GetProfile(),
 
 		// Data Properties
-		Data: s.file.GetTransfer().Data,
+		Data: s.file.ToData(),
 	}
 }
 
