@@ -146,6 +146,7 @@ message User {
   message Crypto {
     string prefix = 1;
     string signature = 2;
+    string p2pID = 3;
   }
 
   // Router Manages Peer Routing for Topics/Transfers - Attached from Node

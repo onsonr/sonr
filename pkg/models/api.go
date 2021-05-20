@@ -123,6 +123,11 @@ func (r *User_Router) Transfer(id peer.ID) protocol.ID {
 	return protocol.ID(fmt.Sprintf("/sonr/transfer/%s", id.Pretty()))
 }
 
+// @ Transfer Controller Data Protocol ID
+func (r *User_Router) Remote(id peer.ID) protocol.ID {
+	return protocol.ID(fmt.Sprintf("/sonr/remote/%s", id.Pretty()))
+}
+
 // @ Lobby Topic Protocol ID
 func (r *User_Router) Topic(name string) string {
 	return fmt.Sprintf("/sonr/topic/%s", name)
