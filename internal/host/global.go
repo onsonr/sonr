@@ -99,6 +99,16 @@ func (tm *globalTopic) Exchange(id peer.ID, gloBuf []byte) error {
 	if err != nil {
 		return err
 	}
+
+	// Unmarshal Data
+	rg := &md.Global{}
+	err = proto.Unmarshal(reply.Global, rg)
+	if err != nil {
+		return err
+	}
+
+	// Synchronize Global
+	tm.global.Sync(rg)
 	return nil
 }
 

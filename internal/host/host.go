@@ -20,6 +20,7 @@ import (
 	p2phttp "github.com/libp2p/go-libp2p-http"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	psub "github.com/libp2p/go-libp2p-pubsub"
+	"github.com/multiformats/go-multiaddr"
 	md "github.com/sonr-io/core/pkg/models"
 )
 
@@ -140,6 +141,25 @@ func newRelayedHost(ctx context.Context, point string, privateKey crypto.PrivKey
 	}, nil
 }
 
+// ^ Returns HostNode Peer Addr Info ^ //
+func (hn *HostNode) Info() peer.AddrInfo {
+	peerInfo := peer.AddrInfo{
+		ID:    hn.Host.ID(),
+		Addrs: hn.Host.Addrs(),
+	}
+	return peerInfo
+}
+
+// ^ Returns Host Node MultiAddr ^ //
+func (hn *HostNode) MultiAddr() (multiaddr.Multiaddr, *md.SonrError) {
+	pi := hn.Info()
+	addrs, err := peer.AddrInfoToP2pAddrs(&pi)
+	if err != nil {
+		return nil, md.NewError(err, md.ErrorMessage_HOST_INFO)
+	}
+	return addrs[0], nil
+}
+
 // ^ Set Stream Handler for Host ^
 func (h *HostNode) HandleStream(pid protocol.ID, handler network.StreamHandler) {
 	h.Host.SetStreamHandler(pid, handler)
@@ -162,7 +182,7 @@ func (h *HostNode) NewHTTP(endPoint string, handler func(http.ResponseWriter, *h
 }
 
 // ^ Get HTTP Response from Endpoint ^ //
-func (h *HostNode) GetHTTP(id string, endPoint string) (*http.Response, error) {
+func (h *HostNode) GetHTTP(id peer.ID, endPoint string) (*http.Response, error) {
 	res, err := h.HTTPClient.Get(fmt.Sprintf("libp2p://%s/%s", id, endPoint))
 	if err != nil {
 		return nil, err

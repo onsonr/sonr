@@ -7,13 +7,9 @@ import (
 	"os"
 
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/multiformats/go-multiaddr"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
 )
-
-const K_THREAD_P2P_ID = "12D3KooWBTkp2TGrgZkeK4khoSi9ngiyjpdTtRGMhf88Dpzw4Cqk"
-const K_THREAD_IP = "107.21.72.23"
 
 // ^ Return Bootstrap List Address Info ^ //
 func GetBootstrapAddrInfo() ([]peer.AddrInfo, error) {
@@ -119,12 +115,4 @@ func iPv4Addrs() ([]string, error) {
 		}
 	}
 	return nil, errors.New("No IPV4 found")
-}
-
-func GetRemoteThreadMultiAddr() (ma.Multiaddr, error) {
-	replicatorAddr, err := multiaddr.NewMultiaddr(fmt.Sprintf("/ip4/%s/tcp/4006/p2p/%s", K_THREAD_IP, K_THREAD_P2P_ID))
-	if err != nil {
-		return nil, err
-	}
-	return replicatorAddr, nil
 }

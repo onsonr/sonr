@@ -76,7 +76,7 @@ func (l *Location) MinorOLC() string {
 func (l *Location) MajorOLC() string {
 	lat := l.Latitude()
 	lon := l.Longitude()
-	return olc.Encode(lat, lon, 4)
+	return olc.Encode(lat, lon, 2)
 }
 
 func (l *Location) Latitude() float64 {
