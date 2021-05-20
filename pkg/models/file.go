@@ -2,7 +2,6 @@ package models
 
 import (
 	"path/filepath"
-	"sync"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/network"
@@ -124,13 +123,10 @@ func (s *Session) Card() *Transfer {
 
 // ^ read buffers sent on stream and save to file ^ //
 func (s *Session) ReadFromStream(stream network.Stream) {
-	var wg sync.WaitGroup
-
 	// Concurrent Function
 	go func(rs msg.ReadCloser) {
 		// Read All Files
 		for _, m := range s.file.Items {
-			wg.Add(1)
 			r := m.NewReader(s.user.Device)
 			err := r.ReadFrom(rs)
 			if err != nil {
