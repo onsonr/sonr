@@ -23,7 +23,6 @@ func (tm *TopicManager) handleTopicEvents() {
 		}
 
 		if lobEvent.Type == pubsub.PeerJoin {
-			tm.TestHTTP(lobEvent.Peer)
 			pbuf, err := tm.user.GetPeer().Buffer()
 			if err != nil {
 				continue

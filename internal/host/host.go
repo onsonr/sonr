@@ -2,9 +2,6 @@ package host
 
 import (
 	"context"
-	"fmt"
-	"io/ioutil"
-	"net/http"
 
 	"time"
 
@@ -17,8 +14,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/libp2p/go-libp2p-core/routing"
 	dsc "github.com/libp2p/go-libp2p-discovery"
-	gostream "github.com/libp2p/go-libp2p-gostream"
-	p2phttp "github.com/libp2p/go-libp2p-http"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	psub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/multiformats/go-multiaddr"
@@ -159,37 +154,4 @@ func (h *HostNode) HandleStream(pid protocol.ID, handler network.StreamHandler) 
 // ^ Start Stream for Host ^
 func (h *HostNode) StartStream(p peer.ID, pid protocol.ID) (network.Stream, error) {
 	return h.Host.NewStream(h.ctx, p, pid)
-}
-
-// ^ Start New HTTP Stream ^
-func (h *HostNode) NewHTTP(point string, handler md.HTTPHandler) {
-	endPoint := fmt.Sprintf("/%s", point)
-	listener, _ := gostream.Listen(h.Host, p2phttp.DefaultP2PProtocol)
-	defer listener.Close()
-	go func() {
-		http.HandleFunc(endPoint, handler)
-		server := &http.Server{}
-		server.Serve(listener)
-	}()
-}
-
-// ^ Get HTTP Response from Endpoint ^ //
-func (h *HostNode) GetHTTP(id peer.ID, endPoint string) ([]byte, error) {
-	// Create Client
-	tr := &http.Transport{}
-	tr.RegisterProtocol("libp2p", p2phttp.NewTransport(h.Host))
-	c := &http.Client{Transport: tr}
-
-	// Perform Request
-	res, err := c.Get(fmt.Sprintf("libp2p://%s/%s", id.String(), endPoint))
-	if err != nil {
-		return nil, err
-	}
-
-	// Return Response Body
-	bytes, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		return nil, err
-	}
-	return bytes, nil
 }

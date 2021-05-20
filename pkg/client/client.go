@@ -80,9 +80,6 @@ func (c *Client) Bootstrap() *md.SonrError {
 
 	// Set Client Global Ref
 	c.global = global
-
-	// Set Link Request Handler
-	c.Host.NewHTTP("link", c.OnLinkRequest)
 	return nil
 }
 

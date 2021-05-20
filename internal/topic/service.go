@@ -2,7 +2,6 @@ package topic
 
 import (
 	"context"
-	"log"
 
 	rpc "github.com/libp2p/go-libp2p-gorpc"
 
@@ -203,15 +202,6 @@ func (ts *TopicService) InviteWith(ctx context.Context, args TopicServiceArgs, r
 	case <-ctx.Done():
 		return nil
 	}
-}
-
-func (tm *TopicManager) TestHTTP(id peer.ID) {
-	resp, err := tm.host.GetHTTP(id, "link")
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	log.Println(string(resp))
 }
 
 // ^ RespondToInvite to an Invitation ^ //
