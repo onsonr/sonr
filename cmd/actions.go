@@ -94,32 +94,46 @@ func Storj(data []byte) []byte {
 // @ Join/Create/Leave Remote Group
 func (mn *Node) Remote(data []byte) []byte {
 	if mn.isReady() {
-		// Generate Word List
-		_, wordList, serr := crypto.RandomWords("english", 3)
-		if serr != nil {
-			mn.handleError(serr)
-			return nil
-		}
-		// Create Remote Request and Join Lobby
-		remote := md.NewRemote(wordList)
+		// Get Request
+		request := &md.RemoteRequest{}
+		proto.Unmarshal(data, request)
 
-		// Join Lobby
-		tm, serr := mn.client.JoinLobby(remote, true)
-		if serr != nil {
-			mn.handleError(serr)
-			return nil
-		}
+		switch request.Request.(type) {
+		// @ Create Remote
+		case *md.RemoteRequest_CreateData:
+			// Generate Word List
+			_, wordList, serr := crypto.RandomWords("english", 3)
+			if serr != nil {
+				mn.handleError(serr)
+				return nil
+			}
+			// Create Remote Request and Join Lobby
+			remote := md.NewRemote(mn.user, wordList, request.GetCreateData().GetFile())
 
-		// Set Topic
-		mn.topics[remote.Topic] = tm
+			// Join Lobby
+			tm, serr := mn.client.CreateRemote(remote)
+			if serr != nil {
+				mn.handleError(serr)
+				return nil
+			}
 
-		// Marshal
-		data, err := proto.Marshal(remote)
-		if err != nil {
-			mn.handleError(md.NewError(err, md.ErrorMessage_MARSHAL))
-			return nil
+			// Set Topic
+			mn.topics[remote.Topic()] = tm
+
+			// Marshal
+			data := remote.ToRemoteResponseBytes()
+			return data
+
+		// @ Join Remote
+		case *md.RemoteRequest_JoinData:
+
+		// @ Respond Remote
+		case *md.RemoteRequest_ReplyData:
+
+		// @ Leave Remote
+		case *md.RemoteRequest_LeaveData:
+
 		}
-		return data
 	}
 	return nil
 }

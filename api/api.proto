@@ -33,23 +33,23 @@ message ConnectionRequest {
 
 // Remote Request to Join/Create Remote Transfer
 message RemoteRequest {
-  oneof type {
-    CreateAction create = 1;
-    JoinAction join = 2;
-    LeaveAction leave = 3;
+  oneof request {
+    Create createData = 1;
+    Join joinData = 2;
+    Reply replyData = 3;
+    Leave leaveData = 4;
   }
 
-  message CreateAction {
-    SonrFile file = 1;
-    User user = 2;
+  message Create { SonrFile file = 1; }
+
+  message Join { repeated string words = 1; }
+
+  message Reply {
+    Peer peer = 1;
+    bool decision = 2;
   }
 
-  message JoinAction {
-    repeated string words = 1;
-    User user = 2;
-  }
-
-  message LeaveAction {
+  message Leave {
     bool isJoin = 1;
     string topic = 2;
   }

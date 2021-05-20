@@ -34,6 +34,8 @@ message Lobby {
     string display = 2;
     string topic = 3;
     repeated string words = 4;
+    SonrFile file = 5;
+    Peer owner = 6;
   }
 }
 

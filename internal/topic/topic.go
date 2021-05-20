@@ -61,39 +61,25 @@ func JoinRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteRe
 		ctx:          ctx,
 		host:         h,
 		eventHandler: handler,
-		Lobby:        md.NewRemoteLobby(u, r),
+		Lobby:        md.NewJoinedRemote(u, r),
 		Messages:     make(chan *md.LobbyEvent, K_MAX_MESSAGES),
 		subscription: sub,
 		topic:        topic,
 	}
 
-	// Start Exchange Server
-	peersvServer := rpc.NewServer(h.Host, K_SERVICE_PID)
-	psv := TopicService{
-		lobby:  mgr.Lobby,
-		user:   u,
-		call:   th,
-		respCh: make(chan *md.AuthReply, 1),
-	}
-
-	// Register Service
-	err := peersvServer.Register(&psv)
-	if err != nil {
-		return nil, md.NewError(err, md.ErrorMessage_TOPIC_RPC)
-	}
-
 	// Set Service
-	mgr.service = &psv
-	go mgr.handleTopicEvents()
 	go mgr.handleTopicMessages()
 	go mgr.processTopicMessages()
 	return mgr, nil
 }
 
 // ^ Create New Contained Topic Manager ^ //
-func NewRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteResponse, th ClientCallback) (*TopicManager, *md.SonrError) {
+func NewRemote(ctx context.Context, h *net.HostNode, u *md.User, l *md.Lobby, th ClientCallback) (*TopicManager, *md.SonrError) {
+	// Get Topic Name
+	info := l.GetRemote()
+
 	// Join Topic
-	topic, sub, handler, serr := h.Join(r.Topic)
+	topic, sub, handler, serr := h.Join(info.Topic)
 	if serr != nil {
 		return nil, serr
 	}
@@ -105,14 +91,13 @@ func NewRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteRes
 		ctx:          ctx,
 		host:         h,
 		eventHandler: handler,
-		Lobby:        md.NewRemoteLobby(u, r),
+		Lobby:        l,
 		Messages:     make(chan *md.LobbyEvent, K_MAX_MESSAGES),
 		subscription: sub,
 		topic:        topic,
 	}
 
 	// Set Service
-	go mgr.handleTopicEvents()
 	go mgr.handleTopicMessages()
 	go mgr.processTopicMessages()
 	return mgr, nil

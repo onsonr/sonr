@@ -65,22 +65,22 @@ func (c *Client) Bootstrap() *md.SonrError {
 	return c.Host.Bootstrap()
 }
 
-// ^ Join Lobby Adds Node to Named Topic ^
-func (n *Client) JoinLobby(r *md.RemoteResponse, isCreated bool) (*tpc.TopicManager, *md.SonrError) {
-	// @ Check for Topic being Created
-	if isCreated {
-		if t, err := tpc.NewRemote(n.ctx, n.Host, n.user, r, n); err != nil {
-			return nil, err
-		} else {
-			return t, nil
-		}
+// ^ Creates Remote from Lobby Data ^
+func (n *Client) CreateRemote(l *md.Lobby) (*tpc.TopicManager, *md.SonrError) {
+	if t, err := tpc.NewRemote(n.ctx, n.Host, n.user, l, n); err != nil {
+		return nil, err
 	} else {
-		// @ Returns error if Lobby doesnt Exist
-		if t, err := tpc.JoinRemote(n.ctx, n.Host, n.user, r, n); err != nil {
-			return nil, err
-		} else {
-			return t, nil
-		}
+		return t, nil
+	}
+}
+
+// ^ Join Lobby Adds Node to Named Topic ^
+func (n *Client) JoinRemote(r *md.RemoteResponse) (*tpc.TopicManager, *md.SonrError) {
+	// @ Returns error if Lobby doesnt Exist
+	if t, err := tpc.JoinRemote(n.ctx, n.Host, n.user, r, n); err != nil {
+		return nil, err
+	} else {
+		return t, nil
 	}
 }
 

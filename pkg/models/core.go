@@ -260,8 +260,38 @@ func NewLocalLobby(u *User) *Lobby {
 	}
 }
 
-// Creates Remote Lobby from User Data
-func NewRemoteLobby(u *User, r *RemoteResponse) *Lobby {
+// Get Remote Point Info
+func NewRemote(u *User, list []string, file *SonrFile) *Lobby {
+	r := &RemoteResponse{
+		Display: fmt.Sprintf("%s %s %s", list[0], list[1], list[2]),
+		Topic:   fmt.Sprintf("%s-%s-%s", list[0], list[1], list[2]),
+		Count:   int32(len(list)),
+		IsJoin:  false,
+		Words:   list,
+	}
+
+	// Create Lobby
+	return &Lobby{
+		// General
+		Type:  Lobby_REMOTE,
+		Peers: make(map[string]*Peer),
+		User:  u.GetPeer(),
+
+		// Info
+		Info: &Lobby_Remote{
+			Remote: &Lobby_RemoteInfo{
+				IsJoin:  r.IsJoin,
+				Display: r.Display,
+				Words:   r.GetWords(),
+				Topic:   r.GetTopic(),
+				File:    file,
+				Owner:   u.GetPeer(),
+			},
+		},
+	}
+}
+
+func NewJoinedRemote(u *User, r *RemoteResponse) *Lobby {
 	// Create Lobby
 	return &Lobby{
 		// General
@@ -281,17 +311,6 @@ func NewRemoteLobby(u *User, r *RemoteResponse) *Lobby {
 	}
 }
 
-// Get Remote Point Info
-func NewRemote(list []string) *RemoteResponse {
-	return &RemoteResponse{
-		Display: fmt.Sprintf("%s %s %s", list[0], list[1], list[2]),
-		Topic:   fmt.Sprintf("%s-%s-%s", list[0], list[1], list[2]),
-		Count:   int32(len(list)),
-		IsJoin:  false,
-		Words:   list,
-	}
-}
-
 // Returns Lobby Peer Count
 func (l *Lobby) Count() int {
 	return len(l.Peers)
@@ -300,6 +319,43 @@ func (l *Lobby) Count() int {
 // Returns TOTAL Lobby Size with Peer
 func (l *Lobby) Size() int {
 	return len(l.Peers) + 1
+}
+
+func (l *Lobby) ToRemoteResponseBytes() []byte {
+	switch l.Info.(type) {
+	// @ Join Remote
+	case *Lobby_Remote:
+		// Convert Info to Response
+		i := l.GetRemote()
+		resp := &RemoteResponse{
+			IsJoin:  i.GetIsJoin(),
+			Display: i.GetDisplay(),
+			Topic:   i.GetTopic(),
+			Words:   i.GetWords(),
+		}
+
+		// Marshal Bytes
+		data, err := proto.Marshal(resp)
+		if err != nil {
+			return nil
+		}
+		return data
+	}
+	return nil
+}
+
+// Returns Lobby Topic
+func (l *Lobby) Topic() string {
+	topic := ""
+	switch l.Info.(type) {
+	// @ Create Remote
+	case *Lobby_Local:
+		topic = l.GetLocal().GetTopic()
+	// @ Join Remote
+	case *Lobby_Remote:
+		topic = l.GetRemote().GetTopic()
+	}
+	return topic
 }
 
 // Returns as Lobby Buffer
