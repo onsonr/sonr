@@ -18,6 +18,7 @@ type Client struct {
 	// Properties
 	ctx     context.Context
 	call    md.NodeCallback
+	global  net.GlobalTopic
 	user    *md.User
 	session *md.Session
 
@@ -62,10 +63,21 @@ func (c *Client) Connect(pk crypto.PrivKey) *md.SonrError {
 
 // ^ Begins Bootstrapping HostNode ^
 func (c *Client) Bootstrap() *md.SonrError {
-	if err := c.Host.AddUsername(c.user.Username()); err != nil {
-		c.call.Error(md.NewError(err, md.ErrorMessage_BOOTSTRAP))
+	// Bootstrap Host
+	err := c.Host.Bootstrap()
+	if err != nil {
+		return err
 	}
-	return c.Host.Bootstrap()
+
+	// Join Global
+	global, err := c.Host.StartGlobal(c.user.Username())
+	if err != nil {
+		return err
+	}
+
+	// Set Client Global Ref
+	c.global = global
+	return nil
 }
 
 // ^ Creates Remote from Lobby Data ^

@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -232,6 +233,74 @@ func (c *Contact) GetTransfer() *Transfer {
 func (c *Contact) ToData() *Transfer_Contact {
 	return &Transfer_Contact{
 		Contact: c,
+	}
+}
+
+// ** ─── Global MANAGEMENT ────────────────────────────────────────────────────────
+// Returns as Lobby Buffer
+func (g *Global) Buffer() ([]byte, error) {
+	bytes, err := proto.Marshal(g)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	return bytes, nil
+}
+
+// Remove Peer from Lobby
+func (g *Global) Delete(id peer.ID) {
+	// Find Username
+	u, err := g.FindUsername(id)
+	if err != nil {
+		return
+	}
+
+	// Remove Peer
+	delete(g.Peers, u)
+}
+
+// Method Finds PeerID for Username
+func (g *Global) FindPeerID(u string) (string, error) {
+	for k, v := range g.Peers {
+		if k == u {
+			return v, nil
+		}
+	}
+	return "", errors.New("PeerID not Found")
+}
+
+// Method Finds Username for PeerID
+func (g *Global) FindUsername(id peer.ID) (string, error) {
+	for _, v := range g.Peers {
+		if v == id.String() {
+			return v, nil
+		}
+	}
+	return "", errors.New("Username not Found")
+}
+
+// Method Checks if Global has Username
+func (g *Global) HasUsername(u string) bool {
+	for k := range g.Peers {
+		if k == u {
+			return true
+		}
+	}
+	return false
+}
+
+// Sync Between Remote Peers Lobby
+func (g *Global) Sync(rg *Global) {
+	// Iterate Over Remote Map
+	for username, id := range rg.Peers {
+		if g.UserName != username {
+			g.Peers[username] = id
+		}
+	}
+
+	// Check Self Map
+	if !g.HasUsername(rg.UserName) {
+		g.Peers[rg.UserName] = rg.UserPeerID
 	}
 }
 

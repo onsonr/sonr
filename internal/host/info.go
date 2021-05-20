@@ -27,26 +27,3 @@ func (hn *HostNode) MultiAddr() (multiaddr.Multiaddr, *md.SonrError) {
 	fmt.Println("libp2p node address:", addrs[0])
 	return addrs[0], nil
 }
-
-// ^ Adds Username for PeerID ^ //
-func (hn *HostNode) AddUsername(u string) error {
-	// Marshal User
-	value, err := hn.Host.ID().MarshalBinary()
-	if err != nil {
-		return err
-	}
-
-	// Place Value
-	hn.KDHT.PutValue(hn.ctx, u, value)
-	return nil
-}
-
-// ^ Finds PeerID from Username
-func (hn *HostNode) FindAddress(u string) (string, error) {
-	// Find Value
-	value, err := hn.KDHT.GetValue(hn.ctx, u)
-	if err != nil {
-		return "", err
-	}
-	return string(value), nil
-}
