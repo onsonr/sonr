@@ -162,18 +162,3 @@ message Position {
     Distant = 3;   // Within 15 Meters
   }
 }
-
-// Remote Peer is for Peers not in Local Topic
-message RemotePeer {
-  Peer peer = 1;
-  Status status = 2;
-
-  // Status
-  enum Status {
-    IDLE = 0;
-    APPROVED = 1;
-    KICKED = 2;
-    INPROGRESS = 3;
-    COMPLETE = 4;
-  }
-}
