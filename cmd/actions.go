@@ -141,7 +141,7 @@ func (mn *Node) Remote(data []byte) []byte {
 			}
 
 			// Set Topic
-			mn.topics[remote.Topic()] = tm
+			mn.remotes[remote.Topic()] = tm
 
 			// Marshal
 			data := remote.ToRemoteResponseBytes()

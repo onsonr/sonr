@@ -151,6 +151,13 @@ func (l *Location) IPOLC() string {
 
 // ** ─── Router MANAGEMENT ────────────────────────────────────────────────────────
 // @ Local Lobby Topic Protocol ID
+func (u *User) HasGeo() bool {
+	if u.GetRouter().GetLocation().Geo != nil {
+		return true
+	}
+	return false
+}
+
 func (r *User) LocalIPTopic() string {
 	return fmt.Sprintf("/sonr/topic/%s", r.Location.IPOLC())
 }

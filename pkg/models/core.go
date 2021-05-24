@@ -197,7 +197,7 @@ func (g *Global) Sync(rg *Global) {
 
 // ** ─── Lobby MANAGEMENT ────────────────────────────────────────────────────────
 // Creates Local Lobby from User Data
-func NewLocalLobby(u *User) *Lobby {
+func NewLocalIPLobby(u *User) *Lobby {
 	// Get Info
 	topic := u.LocalIPTopic()
 	loc := u.GetRouter().GetLocation()
@@ -205,7 +205,31 @@ func NewLocalLobby(u *User) *Lobby {
 	// Create Lobby
 	return &Lobby{
 		// General
-		Type:  Lobby_LOCAL,
+		Type:  Lobby_LOCAL_IP,
+		Peers: make(map[string]*Peer),
+		User:  u.GetPeer(),
+
+		// Info
+		Info: &Lobby_Local{
+			Local: &Lobby_LocalInfo{
+				Name:     topic[12:],
+				Location: loc,
+				Topic:    topic,
+			},
+		},
+	}
+}
+
+// Creates Local Lobby from User Data
+func NewLocalGeoLobby(u *User) *Lobby {
+	// Get Info
+	topic := u.LocalIPTopic()
+	loc := u.GetRouter().GetLocation()
+
+	// Create Lobby
+	return &Lobby{
+		// General
+		Type:  Lobby_LOCAL_GEO,
 		Peers: make(map[string]*Peer),
 		User:  u.GetPeer(),
 
@@ -229,7 +253,7 @@ func NewLocalLinkLobby(l *Linker) *Lobby {
 	// Create Lobby
 	return &Lobby{
 		// General
-		Type:  Lobby_LOCAL,
+		Type:  Lobby_LOCAL_IP,
 		Peers: make(map[string]*Peer),
 		User:  l.GetPeer(),
 

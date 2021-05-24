@@ -6,7 +6,7 @@ import (
 
 	"github.com/getsentry/sentry-go"
 	"github.com/pkg/errors"
-	tpc "github.com/sonr-io/core/internal/topic"
+	lct "github.com/sonr-io/core/internal/local"
 	sc "github.com/sonr-io/core/pkg/client"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
@@ -20,7 +20,7 @@ type LinkerNode struct {
 	// Client
 	client *sc.Client
 	device *md.Device
-	local  *tpc.TopicManager
+	local  *lct.LocalManager
 }
 
 // @ Create New Mobile Node
