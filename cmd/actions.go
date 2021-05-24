@@ -66,9 +66,9 @@ func Storj(data []byte) []byte {
 		return bytes
 
 	// @ Get USER
-	case *md.StorjRequest_UserID:
+	case *md.StorjRequest_Prefix:
 		// Get User from Uplink
-		user, err := sc.GetUser(context.Background(), request.StorjApiKey, request.GetUserID())
+		user, err := sc.GetUser(context.Background(), request.StorjApiKey, request.GetPrefix())
 		if err != nil {
 			sentry.CaptureException(err)
 			return nil

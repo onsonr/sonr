@@ -14,12 +14,14 @@ message StatusUpdate {
 
 // Initial Connection Message to Establish Sonr
 message ConnectionRequest {
-  Location location = 1;         // Runtime IP based calculated GeoLocation
-  Device device = 2;             // Users Device
-  Contact contact = 3;           // Users Contact Card
-  Connectivity connectivity = 4; // Client Network Type
-  User.Crypto crypto = 5;        // User Crypto Data
-  ClientKeys clientKeys = 6;     // Client Keys
+  Location location = 1;              // Runtime IP based calculated GeoLocation
+  Device device = 2;                  // Users Device
+  Contact contact = 3;                // Users Contact Card
+  Connectivity connectivity = 4;      // Client Network Type
+  User.Crypto crypto = 5;             // User Crypto Data
+  ClientKeys clientKeys = 6;          // Client Keys
+  map<string, Device> devices = 7;    // User Devices: Name, Device
+  map<string, Settings> settings = 8; // User Specified Preferences
 
   // Client Keys for Services
   message ClientKeys {
@@ -72,7 +74,7 @@ message StorjRequest {
 
   // Data for Get/Put
   oneof data {
-    string userID = 3;
+    string prefix = 3;
     User user = 4;
   }
 }
@@ -163,7 +165,7 @@ message User {
   Contact contact = 6;                // Clients Contact Card
   map<string, Device> devices = 7;    // Clients Devices: Name, Device
   map<string, Settings> settings = 8; // Clients Specified Preferences
-  Crypto crypto = 9;
+  Crypto crypto = 9;                  // User Cryptographic Data
 
   // User Connection Management - Attached from Node Client
   message Connection {
@@ -189,26 +191,5 @@ message User {
     string localIPTopic = 2;
     string rendevouz = 3;
     Location location = 4;
-  }
-
-  message Settings {
-    string key = 1;    // Option as String
-    Value value = 2;   // Value for Setting
-    Option option = 3; // Type of Setting
-
-    // Available Settings Options
-    enum Option {
-      None = 0;              // Arbitrary Zero Value
-      DefaultVideoCall = 1;  // Default App to be used for Video Calls
-      FallbackVideoCall = 2; // Fallback App for Video Calls
-      DarkMode = 3;          // Dark Mode Preference
-      RunInBackground = 4;   // Sonr Background Run Preference
-    }
-
-    // Value of Settings Option
-    message Value {
-      bool enabled = 1; // If Value is for simple enable/disable
-      string value = 2; // If Value is complex
-    }
   }
 }

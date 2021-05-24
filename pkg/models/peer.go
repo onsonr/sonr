@@ -11,24 +11,20 @@ import (
 
 // ** ─── Peer MANAGEMENT ────────────────────────────────────────────────────────
 // ^ Create New Peer from Connection Request and Host ID ^ //
-func (u *User) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) {
-	// Initialize
-	deviceID := u.Device.GetId()
-	c := u.GetContact()
-	profile := c.GetProfile()
-
-	// Set Peer
+func (u *User) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) *SonrError {
 	u.Peer = &Peer{
 		Id: &Peer_ID{
 			Peer:   id.String(),
-			Device: deviceID,
+			Device: u.DeviceID(),
+			Sname:  u.SName(),
 		},
-		Profile:  profile,
+		Profile:  u.Profile(),
 		Platform: u.Device.Platform,
 		Model:    u.Device.Model,
 	}
 	// Set Device Topic
-	u.Connection.Router.DeviceTopic = fmt.Sprintf("/sonr/user/%s", u.Username())
+	u.Connection.Router.DeviceTopic = fmt.Sprintf("/sonr/topic/%s", u.Peer.UserID())
+	return nil
 }
 
 // ^ Returns Peer as Buffer ^ //
@@ -40,38 +36,56 @@ func (p *Peer) Buffer() ([]byte, error) {
 	return buf, nil
 }
 
-// ^ Checks for Host Peer ID is Same ^ //
-func (p *Peer) IsPeerID(pid peer.ID) bool {
-	return p.Id.Peer == pid.String()
-}
-
-// ^ Checks for Host Peer ID String is Same ^ //
-func (p *Peer) IsPeerIDString(pid string) bool {
-	return p.Id.Peer == pid
-}
-
-// ^ Checks for Host Peer ID String is not Same ^ //
-func (p *Peer) IsNotPeerIDString(pid string) bool {
-	return p.Id.Peer != pid
-}
-
 // ^ Returns Peer User ID ^ //
 func (p *Peer) DeviceID() string {
 	return string(p.Id.GetDevice())
 }
 
-// ^ Checks for Host Peer ID String is not Same ^ //
+// ^ Returns Peer ID String Value
 func (p *Peer) PeerID() string {
 	return p.Id.Peer
+}
+
+// ^ Returns Peer User ID ^ //
+func (p *Peer) UserID() string {
+	return p.Id.GetSname()
+}
+
+// ^ Checks if Two Peers are the Same by Device ID and Peer ID
+func (p *Peer) IsSame(other *Peer) bool {
+	return p.PeerID() == other.PeerID() && p.DeviceID() == other.DeviceID() && p.UserID() == other.UserID()
+}
+
+// ^ Checks if PeerDeviceIDID is the Same
+func (p *Peer) IsSameDeviceID(other *Peer) bool {
+	return p.DeviceID() == other.DeviceID()
+}
+
+// ^ Checks if PeerID is the Same
+func (p *Peer) IsSamePeerID(pid peer.ID) bool {
+	return p.PeerID() == pid.String()
+}
+
+// ^ Checks if Two Peers are NOT the Same by Device ID and Peer ID
+func (p *Peer) IsNotSame(other *Peer) bool {
+	return p.PeerID() != other.PeerID() && p.DeviceID() != other.DeviceID() && p.UserID() != other.UserID()
+}
+
+// ^ Checks if DeviceID is NOT the Same
+func (p *Peer) IsNotSameDeviceID(other *Peer) bool {
+	return p.DeviceID() == other.DeviceID()
+}
+
+// ^ Checks if PeerID is NOT the Same
+func (p *Peer) IsNotSamePeerID(pid peer.ID) bool {
+	return p.PeerID() != pid.String()
 }
 
 // ^ Signs AuthReply with Flat Contact
 func (u *User) SignFlatReply(from *Peer) *AuthReply {
 	return &AuthReply{
-		Type:     AuthReply_FlatContact,
-		From:     u.GetPeer(),
-		To:       from,
-		Decision: true,
+		Type: AuthReply_FlatContact,
+		From: u.GetPeer(),
 		Data: &Transfer{
 			// SQL Properties
 			Payload:  Payload_CONTACT,
@@ -94,6 +108,6 @@ func (p *Peer) SignUpdate() *LobbyEvent {
 			Local: LobbyEvent_UPDATE,
 		},
 		From: p,
-		Id:   p.PeerID(),
+		Id:   p.Id.Peer,
 	}
 }

@@ -93,7 +93,8 @@ message Peer {
   message ID {
     string peer = 1;      // Host PeerID
     string device = 2;    // Device ID
-    string multiAddr = 3; // Peer MultiAddr
+    string sname = 3;     // User ID
+    string multiAddr = 4; // Peer MultiAddr
   }
 
   // Properties
@@ -117,7 +118,7 @@ enum Platform {
 
 // General Information about Peer passed during Authentication
 message Profile {
-  string username = 1;   // Sonr Based Username
+  string sname = 1;      // Sonr Based Username
   string firstName = 2;  // General Info
   string lastName = 3;   // General Info
   bytes picture = 4;     // Profile Picture
@@ -160,5 +161,26 @@ message Position {
     Immediate = 1; // Within 5 Meters
     Near = 2;      // Within 10 Meters
     Distant = 3;   // Within 15 Meters
+  }
+}
+
+message Settings {
+  string key = 1;    // Option as String
+  Value value = 2;   // Value for Setting
+  Option option = 3; // Type of Setting
+
+  // Available Settings Options
+  enum Option {
+    None = 0;              // Arbitrary Zero Value
+    DefaultVideoCall = 1;  // Default App to be used for Video Calls
+    FallbackVideoCall = 2; // Fallback App for Video Calls
+    DarkMode = 3;          // Dark Mode Preference
+    RunInBackground = 4;   // Sonr Background Run Preference
+  }
+
+  // Value of Settings Option
+  message Value {
+    bool enabled = 1; // If Value is for simple enable/disable
+    string value = 2; // If Value is complex
   }
 }

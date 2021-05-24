@@ -102,7 +102,7 @@ func (c *Client) Bootstrap() *md.SonrError {
 	}
 
 	// Join Global
-	global, err := c.Host.StartGlobal(c.user.Username())
+	global, err := c.Host.StartGlobal(c.user.SName())
 	if err != nil {
 		log.Println("FAILED: Start Global Topic")
 		return err
