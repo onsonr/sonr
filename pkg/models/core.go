@@ -330,7 +330,9 @@ func (l *Lobby) Buffer() ([]byte, error) {
 // Add/Update Peer in Lobby
 func (l *Lobby) Add(peer *Peer) {
 	// Update Peer with new data
-	l.Peers[peer.Id.Peer] = peer
+	if l.User.IsNotSame(peer) {
+		l.Peers[peer.Id.Peer] = peer
+	}
 }
 
 // Remove Peer from Lobby
@@ -344,8 +346,8 @@ func (l *Lobby) Sync(ref *Lobby, remotePeer *Peer) {
 	// Validate Lobbies are Different
 	if l.Count() != ref.Count() {
 		// Iterate Over List
-		for id, peer := range ref.Peers {
-			if l.User.IsNotPeerIDString(id) {
+		for _, peer := range ref.Peers {
+			if l.User.IsNotSame(peer) {
 				l.Add(peer)
 			}
 		}

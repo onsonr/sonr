@@ -181,6 +181,8 @@ func NewUser(cr *ConnectionRequest) *User {
 			},
 			Status: Status_IDLE,
 		},
+		Devices:  cr.GetDevices(),
+		Settings: cr.GetSettings(),
 	}
 }
 

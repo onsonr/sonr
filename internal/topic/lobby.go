@@ -56,7 +56,7 @@ func (tm *TopicManager) handleTopicMessages() {
 		}
 
 		// Only forward messages delivered by others
-		if tm.user.GetPeer().IsPeerID(msg.ReceivedFrom) {
+		if tm.user.GetPeer().IsSamePeerID(msg.ReceivedFrom) {
 			continue
 		}
 

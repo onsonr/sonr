@@ -55,29 +55,34 @@ func (p *Peer) DeviceID() string {
 	return string(p.Id.GetDevice())
 }
 
+// ^ Returns Peer ID String Value
+func (p *Peer) PeerID() string {
+	return p.Id.Peer
+}
+
 // ^ Returns Peer User ID ^ //
 func (p *Peer) UserID() string {
 	return fmt.Sprintf("%d", p.Id.GetUser())
 }
 
-// ^ Checks for Host Peer ID is Same ^ //
-func (p *Peer) IsPeerID(pid peer.ID) bool {
-	return p.Id.Peer == pid.String()
+// ^ Checks if Two Peers are the Same by Device ID and Peer ID
+func (p *Peer) IsSame(other *Peer) bool {
+	return p.PeerID() == other.PeerID() && p.DeviceID() == other.DeviceID()
 }
 
-// ^ Checks for Host Peer ID String is Same ^ //
-func (p *Peer) IsPeerIDString(pid string) bool {
-	return p.Id.Peer == pid
+// ^ Checks if PeerID is the Same
+func (p *Peer) IsSamePeerID(pid peer.ID) bool {
+	return p.PeerID() == pid.String()
 }
 
-// ^ Checks for Host Peer ID String is not Same ^ //
-func (p *Peer) IsNotPeerIDString(pid string) bool {
-	return p.Id.Peer != pid
+// ^ Checks if Two Peers are NOT the Same by Device ID and Peer ID
+func (p *Peer) IsNotSame(other *Peer) bool {
+	return p.PeerID() != other.PeerID() && p.DeviceID() != other.DeviceID()
 }
 
-// ^ Checks for Host Peer ID String is not Same ^ //
-func (p *Peer) PeerID() string {
-	return p.Id.Peer
+// ^ Checks if PeerID is NOT the Same
+func (p *Peer) IsNotSamePeerID(pid peer.ID) bool {
+	return p.PeerID() != pid.String()
 }
 
 // ^ Signs AuthReply with Flat Contact
