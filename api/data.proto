@@ -54,7 +54,7 @@ message Contact {
   // Field : General Field for Contact field
   message General {
     string bio = 1;      // If this is the Primary field for Kind
-    string username = 2; // Type of Field
+    string sname = 2; // Type of Field
     Name name = 3;
     Date date = 4;
     Gender gender = 5;

@@ -74,7 +74,7 @@ message StorjRequest {
 
   // Data for Get/Put
   oneof data {
-    string userID = 3;
+    string prefix = 3;
     User user = 4;
   }
 }

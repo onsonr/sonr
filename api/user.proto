@@ -93,7 +93,7 @@ message Peer {
   message ID {
     string peer = 1;      // Host PeerID
     string device = 2;    // Device ID
-    uint32 user = 3;      // User ID
+    string sname = 3;     // User ID
     string multiAddr = 4; // Peer MultiAddr
   }
 
@@ -118,7 +118,7 @@ enum Platform {
 
 // General Information about Peer passed during Authentication
 message Profile {
-  string username = 1;   // Sonr Based Username
+  string sname = 1;      // Sonr Based Username
   string firstName = 2;  // General Info
   string lastName = 3;   // General Info
   bytes picture = 4;     // Profile Picture

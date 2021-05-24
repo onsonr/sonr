@@ -2,7 +2,6 @@ package models
 
 import (
 	"fmt"
-	"hash/fnv"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -13,26 +12,13 @@ import (
 // ** ─── Peer MANAGEMENT ────────────────────────────────────────────────────────
 // ^ Create New Peer from Connection Request and Host ID ^ //
 func (u *User) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) *SonrError {
-	// Initialize
-	deviceID := u.Device.GetId()
-	c := u.GetContact()
-	profile := c.GetProfile()
-
-	// Get User ID
-	userID := fnv.New32a()
-	_, err := userID.Write([]byte(profile.GetUsername()))
-	if err != nil {
-		return NewError(err, ErrorMessage_HOST_KEY)
-	}
-
-	// Set Peer
 	u.Peer = &Peer{
 		Id: &Peer_ID{
 			Peer:   id.String(),
-			Device: deviceID,
-			User:   userID.Sum32(),
+			Device: u.DeviceID(),
+			Sname:  u.SName(),
 		},
-		Profile:  profile,
+		Profile:  u.Profile(),
 		Platform: u.Device.Platform,
 		Model:    u.Device.Model,
 	}
@@ -62,12 +48,12 @@ func (p *Peer) PeerID() string {
 
 // ^ Returns Peer User ID ^ //
 func (p *Peer) UserID() string {
-	return fmt.Sprintf("%d", p.Id.GetUser())
+	return p.Id.GetSname()
 }
 
 // ^ Checks if Two Peers are the Same by Device ID and Peer ID
 func (p *Peer) IsSame(other *Peer) bool {
-	return p.PeerID() == other.PeerID() && p.DeviceID() == other.DeviceID()
+	return p.PeerID() == other.PeerID() && p.DeviceID() == other.DeviceID() && p.UserID() == other.UserID()
 }
 
 // ^ Checks if PeerDeviceIDID is the Same
@@ -82,12 +68,12 @@ func (p *Peer) IsSamePeerID(pid peer.ID) bool {
 
 // ^ Checks if Two Peers are NOT the Same by Device ID and Peer ID
 func (p *Peer) IsNotSame(other *Peer) bool {
-	return p.PeerID() != other.PeerID() && p.DeviceID() != other.DeviceID()
+	return p.PeerID() != other.PeerID() && p.DeviceID() != other.DeviceID() && p.UserID() != other.UserID()
 }
 
 // ^ Checks if DeviceID is NOT the Same
 func (p *Peer) IsNotSameDeviceID(other *Peer) bool {
-	return p.DeviceID() != other.DeviceID()
+	return p.DeviceID() == other.DeviceID()
 }
 
 // ^ Checks if PeerID is NOT the Same

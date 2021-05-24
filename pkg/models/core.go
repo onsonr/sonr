@@ -140,7 +140,7 @@ func (g *Global) Buffer() ([]byte, error) {
 // Remove Peer from Lobby
 func (g *Global) Delete(id peer.ID) {
 	// Find Username
-	u, err := g.FindUsername(id)
+	u, err := g.FindSName(id)
 	if err != nil {
 		return
 	}
@@ -160,7 +160,7 @@ func (g *Global) FindPeerID(u string) (string, error) {
 }
 
 // Method Finds Username for PeerID
-func (g *Global) FindUsername(id peer.ID) (string, error) {
+func (g *Global) FindSName(id peer.ID) (string, error) {
 	for _, v := range g.Peers {
 		if v == id.String() {
 			return v, nil
@@ -170,7 +170,7 @@ func (g *Global) FindUsername(id peer.ID) (string, error) {
 }
 
 // Method Checks if Global has Username
-func (g *Global) HasUsername(u string) bool {
+func (g *Global) HasSName(u string) bool {
 	for k := range g.Peers {
 		if k == u {
 			return true
@@ -182,15 +182,15 @@ func (g *Global) HasUsername(u string) bool {
 // Sync Between Remote Peers Lobby
 func (g *Global) Sync(rg *Global) {
 	// Iterate Over Remote Map
-	for username, id := range rg.Peers {
-		if g.UserName != username {
-			g.Peers[username] = id
+	for otherSname, id := range rg.Peers {
+		if g.Sname != otherSname {
+			g.Peers[otherSname] = id
 		}
 	}
 
 	// Check Self Map
-	if !g.HasUsername(rg.UserName) {
-		g.Peers[rg.UserName] = rg.UserPeerID
+	if !g.HasSName(rg.Sname) {
+		g.Peers[rg.Sname] = rg.UserPeerID
 	}
 }
 
@@ -339,28 +339,15 @@ func (l *Lobby) Delete(id peer.ID) {
 	delete(l.Peers, id.String())
 }
 
-// Filters Lobby Peers With Function
-func (l *Lobby) Filter(f func(*Peer) bool) map[string]*Peer {
-	vsf := make(map[string]*Peer, 0)
-	for i, v := range l.Peers {
-		if f(v) {
-			vsf[i] = v
-		}
-	}
-	return vsf
-}
-
-// Maps Lobby Peers to new Map
-func (l *Lobby) Map(f func(*Peer) *Peer) map[string]*Peer {
-	vsm := make(map[string]*Peer, len(l.Peers))
-	for i, v := range l.Peers {
-		vsm[i] = f(v)
-	}
-	return vsm
-}
-
 // Sync Between Remote Peers Lobby
 func (l *Lobby) Sync(ref *Lobby, remotePeer *Peer) {
-	l.Peers = l.Filter(l.User.IsNotSame)
-	l.Add(remotePeer)
+	for _, peer := range ref.Peers {
+		if l.User.IsNotSame(peer) {
+			l.Add(peer)
+		}
+	}
+
+	if l.User.IsNotSame(remotePeer) {
+		l.Add(remotePeer)
+	}
 }

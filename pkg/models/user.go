@@ -7,7 +7,6 @@ import (
 	"path/filepath"
 
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
-	"google.golang.org/protobuf/proto"
 )
 
 // ** ─── DEVICE MANAGEMENT ────────────────────────────────────────────────────────
@@ -186,9 +185,21 @@ func NewUser(cr *ConnectionRequest) *User {
 	}
 }
 
-// Method Returns Username
-func (u *User) Username() string {
-	return fmt.Sprintf("%s.snr/", u.Contact.Profile.GetUsername())
+func (u *User) DeviceID() string {
+	return u.Device.GetId()
+}
+
+func (u *User) ID() *Peer_ID {
+	return u.GetPeer().GetId()
+}
+
+// Method Returns Crypto Prefix With Signature
+func (u *User) Prefix() string {
+	return u.GetCrypto().Prefix
+}
+
+func (u *User) Profile() *Profile {
+	return u.GetContact().GetProfile()
 }
 
 // Method Returns Private Key
@@ -201,18 +212,9 @@ func (u *User) PrivateKey() crypto.PrivKey {
 	return key
 }
 
-// Method Returns Contact as Bytes
-func (u *User) ContactBytes() ([]byte, error) {
-	dat, err := proto.Marshal(u.Contact)
-	if err != nil {
-		return nil, err
-	}
-	return dat, nil
-}
-
-// Method Returns Crypto Prefix With Signature
-func (c *User_Crypto) Key() string {
-	return fmt.Sprintf("%s+%s", c.Prefix, c.Signature)
+// Method Returns SName
+func (u *User) SName() string {
+	return fmt.Sprintf("%s.snr/", u.Profile().GetSname())
 }
 
 // Updates User Peer
