@@ -330,9 +330,7 @@ func (l *Lobby) Buffer() ([]byte, error) {
 // Add/Update Peer in Lobby
 func (l *Lobby) Add(peer *Peer) {
 	// Update Peer with new data
-	if l.User.IsNotSame(peer) {
-		l.Peers[peer.Id.Peer] = peer
-	}
+	l.Peers[peer.PeerID()] = peer
 }
 
 // Remove Peer from Lobby
@@ -341,16 +339,28 @@ func (l *Lobby) Delete(id peer.ID) {
 	delete(l.Peers, id.String())
 }
 
-// Sync Between Remote Peers Lobby
-func (l *Lobby) Sync(ref *Lobby, remotePeer *Peer) {
-	// Validate Lobbies are Different
-	if l.Count() != ref.Count() {
-		// Iterate Over List
-		for _, peer := range ref.Peers {
-			if l.User.IsNotSame(peer) {
-				l.Add(peer)
-			}
+// Filters Lobby Peers With Function
+func (l *Lobby) Filter(f func(*Peer) bool) map[string]*Peer {
+	vsf := make(map[string]*Peer, 0)
+	for i, v := range l.Peers {
+		if f(v) {
+			vsf[i] = v
 		}
 	}
+	return vsf
+}
+
+// Maps Lobby Peers to new Map
+func (l *Lobby) Map(f func(*Peer) *Peer) map[string]*Peer {
+	vsm := make(map[string]*Peer, len(l.Peers))
+	for i, v := range l.Peers {
+		vsm[i] = f(v)
+	}
+	return vsm
+}
+
+// Sync Between Remote Peers Lobby
+func (l *Lobby) Sync(ref *Lobby, remotePeer *Peer) {
+	l.Peers = l.Filter(l.User.IsNotSame)
 	l.Add(remotePeer)
 }

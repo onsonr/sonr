@@ -70,6 +70,11 @@ func (p *Peer) IsSame(other *Peer) bool {
 	return p.PeerID() == other.PeerID() && p.DeviceID() == other.DeviceID()
 }
 
+// ^ Checks if PeerDeviceIDID is the Same
+func (p *Peer) IsSameDeviceID(other *Peer) bool {
+	return p.DeviceID() == other.DeviceID()
+}
+
 // ^ Checks if PeerID is the Same
 func (p *Peer) IsSamePeerID(pid peer.ID) bool {
 	return p.PeerID() == pid.String()
@@ -78,6 +83,11 @@ func (p *Peer) IsSamePeerID(pid peer.ID) bool {
 // ^ Checks if Two Peers are NOT the Same by Device ID and Peer ID
 func (p *Peer) IsNotSame(other *Peer) bool {
 	return p.PeerID() != other.PeerID() && p.DeviceID() != other.DeviceID()
+}
+
+// ^ Checks if DeviceID is NOT the Same
+func (p *Peer) IsNotSameDeviceID(other *Peer) bool {
+	return p.DeviceID() != other.DeviceID()
 }
 
 // ^ Checks if PeerID is NOT the Same
