@@ -3,6 +3,27 @@ syntax = "proto3";
 // Require Go Package
 option go_package = "/models";
 
+// Client Network Connection Status
+enum Connectivity {
+  None = 0;
+  Mobile = 1;
+  WiFi = 2;
+}
+
+// Status is User Node Situation
+enum Status {
+  IDLE = 0;         // Default Status on Launch
+  CONNECTED = 1;    // Status after starting Host
+  BOOTSTRAPPED = 2; // After Bootstrapping Host
+  AVAILABLE = 3;    // Connected and Visible on Local Lobby
+  SEARCHING = 4;    // File has been Processed ready to Invite
+  PENDING = 5;      // Awaiting Peer Authorization
+  INVITED = 6;      // Has received Invitation
+  INPROGRESS = 7;   // In Middle of Transfer
+  STANDBY = 8;      // Away from Sonr Application
+  FAILED = 9;
+}
+
 // Cardinal: Designation for the Compass Direction Value
 enum Cardinal {
   N = 0;     // North
@@ -47,7 +68,7 @@ message Device {
   string model = 4;          // Model of Device
   string version = 5;        // Operating System Version
   FileSystem fileSystem = 6; // Directories for this Device
-  bytes privateKey = 7;      // Private Key Reference, Saved as snr-peer.privkey
+  bytes privateKey = 7;
 }
 
 // FileSystem is for Directores Where Data can be stored
@@ -67,13 +88,12 @@ message Peer {
   Position position = 4;     // Peers Positional Information
   Profile profile = 5;       // Peers General Information
   Properties properties = 6; // Peer specific options set
-  Status status = 7;         // Status of Peer
 
   // ID References
   message ID {
     string peer = 1;      // Host PeerID
     string device = 2;    // Device ID
-    uint32 user = 3;      // User ID
+    string sname = 3;     // User ID
     string multiAddr = 4; // Peer MultiAddr
   }
 
@@ -82,15 +102,6 @@ message Peer {
     // Whether Peer can use automatic point to Transfer
     bool enabledPointShare = 1;
     bool isFlatMode = 2;
-  }
-
-  // Status
-  enum Status {
-    IDLE = 0;
-    PENDING = 1;
-    ACCEPTED = 2;
-    DECLINED = 3;
-    COMPLETE = 4;
   }
 }
 
@@ -107,7 +118,7 @@ enum Platform {
 
 // General Information about Peer passed during Authentication
 message Profile {
-  string username = 1;   // Sonr Based Username
+  string sname = 1;      // Sonr Based Username
   string firstName = 2;  // General Info
   string lastName = 3;   // General Info
   bytes picture = 4;     // Profile Picture
@@ -150,5 +161,26 @@ message Position {
     Immediate = 1; // Within 5 Meters
     Near = 2;      // Within 10 Meters
     Distant = 3;   // Within 15 Meters
+  }
+}
+
+message Settings {
+  string key = 1;    // Option as String
+  Value value = 2;   // Value for Setting
+  Option option = 3; // Type of Setting
+
+  // Available Settings Options
+  enum Option {
+    None = 0;              // Arbitrary Zero Value
+    DefaultVideoCall = 1;  // Default App to be used for Video Calls
+    FallbackVideoCall = 2; // Fallback App for Video Calls
+    DarkMode = 3;          // Dark Mode Preference
+    RunInBackground = 4;   // Sonr Background Run Preference
+  }
+
+  // Value of Settings Option
+  message Value {
+    bool enabled = 1; // If Value is for simple enable/disable
+    string value = 2; // If Value is complex
   }
 }

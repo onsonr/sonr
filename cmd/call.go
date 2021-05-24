@@ -20,6 +20,15 @@ type Callback interface {
 	OnError(data []byte)       // Internal Error
 }
 
+// ^ invite Callback with data for Lifecycle ^ //
+func (mn *Node) invited(data []byte) {
+	// Update Status
+	mn.setStatus(md.Status_INVITED)
+
+	// Callback with Data
+	mn.call.OnInvited(data)
+}
+
 // ^ Passes binded Methods to Node ^
 func (mn *Node) callbackNode() md.NodeCallback {
 	return md.NodeCallback{
@@ -38,17 +47,8 @@ func (mn *Node) callbackNode() md.NodeCallback {
 	}
 }
 
-// ^ invite Callback with data for Lifecycle ^ //
-func (mn *Node) invited(data []byte) {
-	// Update Status
-	mn.setStatus(md.Status_INVITED)
-
-	// Callback with Data
-	mn.call.OnInvited(data)
-}
-
 // ^ transmitted Callback middleware post transfer ^ //
-func (mn *Node) transmitted(card *md.TransferCard) {
+func (mn *Node) transmitted(card *md.Transfer) {
 	// Update Status
 	mn.setStatus(md.Status_AVAILABLE)
 
@@ -64,7 +64,7 @@ func (mn *Node) transmitted(card *md.TransferCard) {
 }
 
 // ^ received Callback middleware post transfer ^ //
-func (mn *Node) received(card *md.TransferCard) {
+func (mn *Node) received(card *md.Transfer) {
 	// Update Status
 	mn.setStatus(md.Status_AVAILABLE)
 

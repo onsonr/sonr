@@ -40,17 +40,9 @@ func (m *MIME) IsVideo() bool {
 	return m.Type == MIME_VIDEO
 }
 
-// ** ─── InviteRequest MANAGEMENT ────────────────────────────────────────────────────────
-func (r *InviteRequest) GetContact() *Contact {
-	return r.GetData().GetContact()
-}
-
-func (r *InviteRequest) GetFile() *SonrFile {
-	return r.GetData().GetFile()
-}
-
-func (r *InviteRequest) GetUrl() *URLLink {
-	return r.GetData().GetUrl()
+// ** ─── AuthInvite MANAGEMENT ────────────────────────────────────────────────────────
+func (r *AuthReply) HasAcceptedTransfer() bool {
+	return r.Decision && r.Type == AuthReply_Transfer
 }
 
 // ** ─── AuthInvite MANAGEMENT ────────────────────────────────────────────────────────
@@ -66,6 +58,14 @@ func (i *AuthInvite) GetUrl() *URLLink {
 	return i.GetData().GetUrl()
 }
 
+func (i *AuthInvite) IsFlat() bool {
+	return i.Data.Properties.IsFlat
+}
+
+func (i *AuthInvite) IsRemote() bool {
+	return i.Data.Properties.IsRemote
+}
+
 // ** ─── Location MANAGEMENT ────────────────────────────────────────────────────────
 func (l *Location) MinorOLC() string {
 	lat := l.Latitude()
@@ -76,7 +76,7 @@ func (l *Location) MinorOLC() string {
 func (l *Location) MajorOLC() string {
 	lat := l.Latitude()
 	lon := l.Longitude()
-	return olc.Encode(lat, lon, 4)
+	return olc.Encode(lat, lon, 2)
 }
 
 func (l *Location) Latitude() float64 {
@@ -121,6 +121,11 @@ func (r *User) LocalGeoTopic() (string, error) {
 // @ Transfer Controller Data Protocol ID
 func (r *User_Router) Transfer(id peer.ID) protocol.ID {
 	return protocol.ID(fmt.Sprintf("/sonr/transfer/%s", id.Pretty()))
+}
+
+// @ Transfer Controller Data Protocol ID
+func (r *User_Router) Remote(id peer.ID) protocol.ID {
+	return protocol.ID(fmt.Sprintf("/sonr/remote/%s", id.Pretty()))
 }
 
 // @ Lobby Topic Protocol ID

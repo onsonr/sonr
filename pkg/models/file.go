@@ -2,7 +2,6 @@ package models
 
 import (
 	"path/filepath"
-	"sync"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/network"
@@ -86,7 +85,7 @@ type Session struct {
 }
 
 // ^ Prepare for Outgoing Session ^ //
-func NewOutSession(u *User, req *InviteRequest, tc NodeCallback) *Session {
+func NewOutSession(u *User, req *AuthInvite, tc NodeCallback) *Session {
 	return &Session{
 		file: req.GetFile(),
 		peer: req.GetTo(),
@@ -107,8 +106,8 @@ func NewInSession(u *User, inv *AuthInvite, c NodeCallback) *Session {
 }
 
 // Returns SonrFile as TransferCard given Receiver and Owner
-func (s *Session) Card() *TransferCard {
-	return &TransferCard{
+func (s *Session) Card() *Transfer {
+	return &Transfer{
 		// SQL Properties
 		Payload:  s.file.Payload,
 		Received: int32(time.Now().Unix()),
@@ -118,26 +117,22 @@ func (s *Session) Card() *TransferCard {
 		Receiver: s.peer.GetProfile(),
 
 		// Data Properties
-		File: s.file,
+		Data: s.file.ToData(),
 	}
 }
 
 // ^ read buffers sent on stream and save to file ^ //
 func (s *Session) ReadFromStream(stream network.Stream) {
-	var wg sync.WaitGroup
-
 	// Concurrent Function
 	go func(rs msg.ReadCloser) {
 		// Read All Files
 		for _, m := range s.file.Items {
-			wg.Add(1)
 			r := m.NewReader(s.user.Device)
 			err := r.ReadFrom(rs)
 			if err != nil {
 				s.call.Error(NewError(err, ErrorMessage_INCOMING))
 			}
 		}
-		stream.Close()
 		s.call.Received(s.Card())
 	}(msg.NewReader(stream))
 }

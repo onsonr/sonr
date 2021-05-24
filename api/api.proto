@@ -6,27 +6,6 @@ import "user.proto";
 // Require Go Package
 option go_package = "/models";
 
-// Client Network Connection Status
-enum Connectivity {
-  None = 0;
-  Mobile = 1;
-  WiFi = 2;
-}
-
-// Status is User Node Situation
-enum Status {
-  IDLE = 0;         // Default Status on Launch
-  CONNECTED = 1;    // Status after starting Host
-  BOOTSTRAPPED = 2; // After Bootstrapping Host
-  AVAILABLE = 3;    // Connected and Visible on Local Lobby
-  SEARCHING = 4;    // File has been Processed ready to Invite
-  PENDING = 5;      // Awaiting Peer Authorization
-  INVITED = 6;      // Has received Invitation
-  INPROGRESS = 7;   // In Middle of Transfer
-  STANDBY = 8;      // Away from Sonr Application
-  FAILED = 9;
-}
-
 // Message for Status Update
 message StatusUpdate {
   Status value = 1;
@@ -35,70 +14,104 @@ message StatusUpdate {
 
 // Initial Connection Message to Establish Sonr
 message ConnectionRequest {
-  Location location = 1;         // Runtime IP based calculated GeoLocation
-  Device device = 2;             // Users Device
-  Contact contact = 3;           // Users Contact Card
-  Connectivity connectivity = 4; // Client Network Type
+  Location location = 1;              // Runtime IP based calculated GeoLocation
+  Device device = 2;                  // Users Device
+  Contact contact = 3;                // Users Contact Card
+  Connectivity connectivity = 4;      // Client Network Type
+  User.Crypto crypto = 5;             // User Crypto Data
+  ClientKeys clientKeys = 6;          // Client Keys
+  map<string, Device> devices = 7;    // User Devices: Name, Device
+  map<string, Settings> settings = 8; // User Specified Preferences
+
+  // Client Keys for Services
+  message ClientKeys {
+    string ipKey = 1;
+    string rapidApiHost = 2;
+    string rapidApiKey = 3;
+    string hsKey = 4;
+    string hsSecret = 5;
+  }
+}
+
+// Remote Request to Join/Create Remote Transfer
+message RemoteRequest {
+  oneof request {
+    Create createData = 1;
+    Join joinData = 2;
+    Reply replyData = 3;
+    Leave leaveData = 4;
+  }
+
+  message Create { SonrFile file = 1; }
+
+  message Join { repeated string words = 1; }
+
+  message Reply {
+    Peer peer = 1;
+    bool decision = 2;
+  }
+
+  message Leave {
+    bool isJoin = 1;
+    string topic = 2;
+  }
+}
+
+// Response from Remote Request
+message RemoteResponse {
+  bool isJoin = 1;
+  int32 count = 2;
+  string display = 3;
+  string topic = 4;
+  repeated string words = 5;
+}
+
+// Request to Access Storj Data
+message StorjRequest {
+  // Keys
+  string storjApiKey = 1;
+  string storjRootPassword = 2;
+
+  // Data for Get/Put
+  oneof data {
+    string prefix = 3;
+    User user = 4;
+  }
+}
+
+// Response Data for Storj
+message StorjResponse {
+  // Data for Get/Put
+  oneof data {
+    bool success = 1;
+    User user = 2;
+  }
 }
 
 // Updated Peer Info Request
 message UpdateRequest {
-  Type type = 1;                  // Type of Update
-  Peer.Properties properties = 2; // Updated Peer Properties
-  Contact contact = 3;            // Users Updated Contact Card
-  Position position = 4;          // Users updated Position
-
-  enum Type {
-    Position = 0;
-    Contact = 1;
-    Properties = 2;
+  oneof data {
+    Peer.Properties properties = 1; // Updated Peer Properties
+    Contact contact = 2;            // Users Updated Contact Card
+    Position position = 3;          // Users updated Position
   }
-}
-
-// Message to Peer Request
-message MessageRequest {
-  Peer from = 1;      // Users Peer Data
-  Peer to = 2;        // Recipient
-  string message = 3; // Message Content
-  string topic = 4;   // Topic Name
-}
-
-// Processes Given File and Invites Specified Peer
-message InviteRequest {
-  Payload payload = 1;   // General Payload Type
-  Peer to = 2;           // Receivers Peer Data
-  Peer from = 3;         // Users Peer Data
-  bool isRemote = 4;     // If Transfer is Remote
-  RemoteInfo remote = 5; // Remote Topic Name
-  Transfer data = 6;     // Attached Data
-}
-
-message RespondRequest {
-  Peer from = 1;         // Users Peer Data
-  Peer to = 2;           // Recipient
-  bool decision = 3;     // User Decision
-  bool isRemote = 4;     // If Transfer is Remote
-  RemoteInfo remote = 5; // Remote Topic Name
 }
 
 // Invitation Message sent on RPC
 message AuthInvite {
-  Payload payload = 1;   // Type of Transfer
-  Peer from = 2;         // Users Peer Data
-  Peer to = 3;           // Receivers Peer Data
-  bool isFlat = 4;       // For Flat ContactTransfer
-  RemoteInfo remote = 5; // Remote Lobby Info
-  Transfer data = 6;     // Attached Data
+  Payload payload = 1; // Type of Transfer
+  Peer from = 2;       // Users Peer Data
+  Peer to = 3;         // Receivers Peer Data
+  Transfer data = 4;   // Attached Data
 }
 
 // Reply Message sent on RPC
 message AuthReply {
-  Type type = 1;         // Type of Transfer Reply
-  Peer from = 2;         // Users Peer Data
-  Peer to = 3;           // Receivers Peer Data
-  bool decision = 4;     // Users Decision for the Invitation
-  TransferCard card = 5; // Card contains all Data Info, Transfer Info
-  RemoteInfo remote = 6;
+  Type type = 1;     // Cancel Reply
+  Peer from = 2;     // Users Peer Data
+  Peer to = 3;       // Receivers Peer Data
+  bool decision = 4; // Users Decision for the Invitation
+  Transfer data = 5; // Card contains all Data Info, Transfer Info
 
   enum Type {
     None = 0;
@@ -111,13 +124,15 @@ message AuthReply {
 
 // User is the Saved Data from Client that Passes to Proxy, During ConnRequest
 message User {
-  Connection connection = 1;          // Clients Connection Reference
-  Peer peer = 2;                      // Clients Peer Reference
+  string id = 1;                      // User prefix is ID
+  Connection connection = 2;          // Clients Connection Reference
+  Peer peer = 3;                      // Clients Peer Reference
   Location location = 4;              // Clients current Location
   Device device = 5;                  // Clients Current Device
   Contact contact = 6;                // Clients Contact Card
   map<string, Device> devices = 7;    // Clients Devices: Name, Device
   map<string, Settings> settings = 8; // Clients Specified Preferences
+  Crypto crypto = 9;                  // User Cryptographic Data
 
   // User Connection Management - Attached from Node Client
   message Connection {
@@ -129,32 +144,19 @@ message User {
     Connectivity connectivity = 6; // Client Network Type
   }
 
+  // Crypto Data to Place in DHT
+  message Crypto {
+    string prefix = 1;
+    string signature = 2;
+    string privateKey = 3; // Private Key Reference, Saved as snr-peer.privkey
+  }
+
   // Router Manages Peer Routing for Topics/Transfers - Attached from Node
   // Client
   message Router {
     string deviceTopic = 1;
     string localIPTopic = 2;
     string rendevouz = 3;
-  }
-
-  message Settings {
-    string key = 1;    // Option as String
-    Value value = 2;   // Value for Setting
-    Option option = 3; // Type of Setting
-
-    // Available Settings Options
-    enum Option {
-      None = 0;              // Arbitrary Zero Value
-      DefaultVideoCall = 1;  // Default App to be used for Video Calls
-      FallbackVideoCall = 2; // Fallback App for Video Calls
-      DarkMode = 3;          // Dark Mode Preference
-      RunInBackground = 4;   // Sonr Background Run Preference
-    }
-
-    // Value of Settings Option
-    message Value {
-      bool enabled = 1; // If Value is for simple enable/disable
-      string value = 2; // If Value is complex
-    }
+    Location location = 4;
   }
 }

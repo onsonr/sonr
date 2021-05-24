@@ -13,6 +13,7 @@ import (
 
 // * Struct: Reference for Binded Proxy Node * //
 type Node struct {
+	md.NodeCallback
 	// Properties
 	call Callback
 	ctx  context.Context
@@ -24,6 +25,9 @@ type Node struct {
 	// Groups
 	local  *tpc.TopicManager
 	topics map[string]*tpc.TopicManager
+
+	// Storage
+	storageEnabled bool
 }
 
 // @ Create New Mobile Node
@@ -47,7 +51,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 		topics: make(map[string]*tpc.TopicManager, 10),
 	}
 
-	// Create New User
+	// Create Users
 	mn.user = md.NewUser(req)
 
 	// Create Client

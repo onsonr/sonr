@@ -1,24 +1,25 @@
 package models
 
 import (
+	"errors"
+	"fmt"
+	"log"
 	"net/http"
 	"sync"
 	"sync/atomic"
+
+	"github.com/libp2p/go-libp2p-core/peer"
+	"google.golang.org/protobuf/proto"
 )
 
-const K_BUF_CHUNK = 32000
-const K_B64_CHUNK = 31998 // Adjusted for Base64 -- has to be divisible by 3
-
 // ** ─── CALLBACK MANAGEMENT ────────────────────────────────────────────────────────
-// Define Function Types
-var callback NodeCallback
-
+type HTTPHandler func(http.ResponseWriter, *http.Request)
 type SetStatus func(s Status)
 type OnProtobuf func([]byte)
 type OnInvite func(data []byte)
 type OnProgress func(data float32)
-type OnReceived func(data *TransferCard)
-type OnTransmitted func(data *TransferCard)
+type OnReceived func(data *Transfer)
+type OnTransmitted func(data *Transfer)
 type OnError func(err *SonrError)
 type NodeCallback struct {
 	Invited     OnInvite
@@ -31,117 +32,6 @@ type NodeCallback struct {
 	Status      SetStatus
 	Transmitted OnTransmitted
 	Error       OnError
-}
-
-// ** ─── URLLink MANAGEMENT ────────────────────────────────────────────────────────
-// Creates New Link
-func NewURLLink(url string) *URLLink {
-	link := &URLLink{
-		Url:         url,
-		Initialized: false,
-	}
-	link.SetData()
-	return link
-}
-
-// Sets URLLink Data
-func (u *URLLink) SetData() {
-	if !u.Initialized {
-		// Create Request
-		resp, err := http.Get(u.Url)
-		if err != nil {
-			return
-		}
-
-		// Get Info
-		info, err := getPageInfoFromResponse(resp)
-		if err != nil {
-			return
-		}
-
-		// Set Link
-		u.Initialized = true
-		u.Title = info.Title
-		u.Type = info.Type
-		u.Site = info.Site
-		u.SiteName = info.SiteName
-		u.Description = info.Description
-		u.Locale = info.Locale
-
-		// Get Images
-		if info.Images != nil {
-			for _, v := range info.Images {
-				u.Images = append(u.Images, &URLLink_OpenGraphImage{
-					Url:       v.Url,
-					SecureUrl: v.SecureUrl,
-					Width:     int32(v.Width),
-					Height:    int32(v.Height),
-					Type:      v.Type,
-				})
-			}
-		}
-
-		// Get Videos
-		if info.Videos != nil {
-			for _, v := range info.Videos {
-				u.Videos = append(u.Videos, &URLLink_OpenGraphVideo{
-					Url:       v.Url,
-					SecureUrl: v.SecureUrl,
-					Width:     int32(v.Width),
-					Height:    int32(v.Height),
-					Type:      v.Type,
-				})
-			}
-		}
-
-		// Get Audios
-		if info.Audios != nil {
-			for _, v := range info.Videos {
-				u.Audios = append(u.Audios, &URLLink_OpenGraphAudio{
-					Url:       v.Url,
-					SecureUrl: v.SecureUrl,
-					Type:      v.Type,
-				})
-			}
-		}
-
-		// Get Twitter
-		if info.Twitter != nil {
-			u.Twitter = &URLLink_TwitterCard{
-				Card:        info.Twitter.Card,
-				Site:        info.Twitter.Site,
-				SiteId:      info.Twitter.SiteId,
-				Creator:     info.Twitter.Creator,
-				CreatorId:   info.Twitter.CreatorId,
-				Description: info.Twitter.Description,
-				Title:       info.Twitter.Title,
-				Image:       info.Twitter.Image,
-				ImageAlt:    info.Twitter.ImageAlt,
-				Url:         info.Twitter.Url,
-				Player: &URLLink_TwitterCard_Player{
-					Url:    info.Twitter.Player.Url,
-					Width:  int32(info.Twitter.Player.Width),
-					Height: int32(info.Twitter.Player.Height),
-					Stream: info.Twitter.Player.Stream,
-				},
-				Iphone: &URLLink_TwitterCard_IPhone{
-					Name: info.Twitter.IPhone.Name,
-					Id:   info.Twitter.IPhone.Id,
-					Url:  info.Twitter.IPhone.Url,
-				},
-				Ipad: &URLLink_TwitterCard_IPad{
-					Name: info.Twitter.IPad.Name,
-					Id:   info.Twitter.IPad.Id,
-					Url:  info.Twitter.IPad.Url,
-				},
-				GooglePlay: &URLLink_TwitterCard_GooglePlay{
-					Name: info.Twitter.Googleplay.Name,
-					Id:   info.Twitter.Googleplay.Id,
-					Url:  info.Twitter.Googleplay.Url,
-				},
-			}
-		}
-	}
 }
 
 // ** ─── State MANAGEMENT ────────────────────────────────────────────────────────
@@ -197,6 +87,13 @@ func (u *URLLink) GetTransfer() *Transfer {
 	}
 }
 
+// Returns URLLink as Transfer_Url Data
+func (u *URLLink) ToData() *Transfer_Url {
+	return &Transfer_Url{
+		Url: u,
+	}
+}
+
 // Returns Transfer for SonrFile
 func (f *SonrFile) GetTransfer() *Transfer {
 	return &Transfer{
@@ -206,11 +103,251 @@ func (f *SonrFile) GetTransfer() *Transfer {
 	}
 }
 
+// Returns SonrFile as Transfer_File Data
+func (f *SonrFile) ToData() *Transfer_File {
+	return &Transfer_File{
+		File: f,
+	}
+}
+
 // Returns Transfer for Contact
 func (c *Contact) GetTransfer() *Transfer {
 	return &Transfer{
 		Data: &Transfer_Contact{
 			Contact: c,
 		},
+	}
+}
+
+// Returns Contact as Transfer_Contact Data
+func (c *Contact) ToData() *Transfer_Contact {
+	return &Transfer_Contact{
+		Contact: c,
+	}
+}
+
+// ** ─── Global MANAGEMENT ────────────────────────────────────────────────────────
+// Returns as Lobby Buffer
+func (g *Global) Buffer() ([]byte, error) {
+	bytes, err := proto.Marshal(g)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	return bytes, nil
+}
+
+// Remove Peer from Lobby
+func (g *Global) Delete(id peer.ID) {
+	// Find Username
+	u, err := g.FindSName(id)
+	if err != nil {
+		return
+	}
+
+	// Remove Peer
+	delete(g.Peers, u)
+}
+
+// Method Finds PeerID for Username
+func (g *Global) FindPeerID(u string) (string, error) {
+	for k, v := range g.Peers {
+		if k == u {
+			return v, nil
+		}
+	}
+	return "", errors.New("PeerID not Found")
+}
+
+// Method Finds Username for PeerID
+func (g *Global) FindSName(id peer.ID) (string, error) {
+	for _, v := range g.Peers {
+		if v == id.String() {
+			return v, nil
+		}
+	}
+	return "", errors.New("Username not Found")
+}
+
+// Method Checks if Global has Username
+func (g *Global) HasSName(u string) bool {
+	for k := range g.Peers {
+		if k == u {
+			return true
+		}
+	}
+	return false
+}
+
+// Sync Between Remote Peers Lobby
+func (g *Global) Sync(rg *Global) {
+	// Iterate Over Remote Map
+	for otherSname, id := range rg.Peers {
+		if g.Sname != otherSname {
+			g.Peers[otherSname] = id
+		}
+	}
+
+	// Check Self Map
+	if !g.HasSName(rg.Sname) {
+		g.Peers[rg.Sname] = rg.UserPeerID
+	}
+}
+
+// ** ─── Lobby MANAGEMENT ────────────────────────────────────────────────────────
+// Creates Local Lobby from User Data
+func NewLocalLobby(u *User) *Lobby {
+	// Get Info
+	topic := u.LocalIPTopic()
+	loc := u.GetRouter().GetLocation()
+
+	// Create Lobby
+	return &Lobby{
+		// General
+		Type:  Lobby_LOCAL,
+		Peers: make(map[string]*Peer),
+		User:  u.GetPeer(),
+
+		// Info
+		Info: &Lobby_Local{
+			Local: &Lobby_LocalInfo{
+				Name:     topic[12:],
+				Location: loc,
+				Topic:    topic,
+			},
+		},
+	}
+}
+
+// Get Remote Point Info
+func NewRemote(u *User, list []string, file *SonrFile) *Lobby {
+	r := &RemoteResponse{
+		Display: fmt.Sprintf("%s %s %s", list[0], list[1], list[2]),
+		Topic:   fmt.Sprintf("%s-%s-%s", list[0], list[1], list[2]),
+		Count:   int32(len(list)),
+		IsJoin:  false,
+		Words:   list,
+	}
+
+	// Create Lobby
+	return &Lobby{
+		// General
+		Type:  Lobby_REMOTE,
+		Peers: make(map[string]*Peer),
+		User:  u.GetPeer(),
+
+		// Info
+		Info: &Lobby_Remote{
+			Remote: &Lobby_RemoteInfo{
+				IsJoin:  r.IsJoin,
+				Display: r.Display,
+				Words:   r.GetWords(),
+				Topic:   r.GetTopic(),
+				File:    file,
+				Owner:   u.GetPeer(),
+			},
+		},
+	}
+}
+
+func NewJoinedRemote(u *User, r *RemoteResponse) *Lobby {
+	// Create Lobby
+	return &Lobby{
+		// General
+		Type:  Lobby_REMOTE,
+		Peers: make(map[string]*Peer),
+		User:  u.GetPeer(),
+
+		// Info
+		Info: &Lobby_Remote{
+			Remote: &Lobby_RemoteInfo{
+				IsJoin:  r.IsJoin,
+				Display: r.Display,
+				Words:   r.GetWords(),
+				Topic:   r.GetTopic(),
+			},
+		},
+	}
+}
+
+// Returns Lobby Peer Count
+func (l *Lobby) Count() int {
+	return len(l.Peers)
+}
+
+// Returns TOTAL Lobby Size with Peer
+func (l *Lobby) Size() int {
+	return len(l.Peers) + 1
+}
+
+func (l *Lobby) ToRemoteResponseBytes() []byte {
+	switch l.Info.(type) {
+	// @ Join Remote
+	case *Lobby_Remote:
+		// Convert Info to Response
+		i := l.GetRemote()
+		resp := &RemoteResponse{
+			IsJoin:  i.GetIsJoin(),
+			Display: i.GetDisplay(),
+			Topic:   i.GetTopic(),
+			Words:   i.GetWords(),
+		}
+
+		// Marshal Bytes
+		data, err := proto.Marshal(resp)
+		if err != nil {
+			return nil
+		}
+		return data
+	}
+	return nil
+}
+
+// Returns Lobby Topic
+func (l *Lobby) Topic() string {
+	topic := ""
+	switch l.Info.(type) {
+	// @ Create Remote
+	case *Lobby_Local:
+		topic = l.GetLocal().GetTopic()
+	// @ Join Remote
+	case *Lobby_Remote:
+		topic = l.GetRemote().GetTopic()
+	}
+	return topic
+}
+
+// Returns as Lobby Buffer
+func (l *Lobby) Buffer() ([]byte, error) {
+	bytes, err := proto.Marshal(l)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	return bytes, nil
+}
+
+// Add/Update Peer in Lobby
+func (l *Lobby) Add(peer *Peer) {
+	// Update Peer with new data
+	l.Peers[peer.PeerID()] = peer
+}
+
+// Remove Peer from Lobby
+func (l *Lobby) Delete(id peer.ID) {
+	// Update Peer with new data
+	delete(l.Peers, id.String())
+}
+
+// Sync Between Remote Peers Lobby
+func (l *Lobby) Sync(ref *Lobby, remotePeer *Peer) {
+	for _, peer := range ref.Peers {
+		if l.User.IsNotSame(peer) {
+			l.Add(peer)
+		}
+	}
+
+	if l.User.IsNotSame(remotePeer) {
+		l.Add(remotePeer)
 	}
 }

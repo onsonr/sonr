@@ -1,4 +1,4 @@
-package network
+package host
 
 import (
 	"fmt"
@@ -9,7 +9,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
-
 )
 
 // ^ Return Bootstrap List Address Info ^ //

@@ -9,14 +9,12 @@ option go_package = "/models";
 message Contact {
   bool isPublic = 1;   // If Contact card is Public
   Profile profile = 2; // General Profile Information
-  string about = 3;    // Bio of User/About Value
-  URLLink link = 4;    // URLLink for Public Card if Applicable
-  Design design = 5;   // Card Design Properties
+  General general = 3; // Base General Contact Fields, Key is Label
+  Design design = 4;   // Card Design Properties
 
-  map<string, Address> addresses = 6; // Address Fields, Key is Label
-  map<string, Field> general = 7;  // Base General Contact Fields, Key is Label
-  map<string, Social> socials = 8; // Social Media Fields, Key is Username
-  map<string, URLLink> websites = 9; // Website Links
+  map<string, Address> addresses = 5; // Address Fields, Key is Label
+  map<string, Social> socials = 6;    // Social Media Fields, Key is Username
+  map<string, URLLink> websites = 7;  // Website Links
 
   // Address: Field for Contact field
   message Address {
@@ -54,20 +52,64 @@ message Contact {
   }
 
   // Field : General Field for Contact field
-  message Field {
-    bool isPrimary = 1; // If this is the Primary field for Kind
-    Kind kind = 2;      // Type of Field
-    string label = 3;   // Identifier for Field
-    string value = 4;   // Convert Values to String
+  message General {
+    string bio = 1;      // If this is the Primary field for Kind
+    string sname = 2; // Type of Field
+    Name name = 3;
+    Date date = 4;
+    Gender gender = 5;
+    Phone phone = 6;
+    Email email = 7;
+    Title title = 8;
 
-    enum Kind {
-      NAME = 0;    // Name type Field
-      DATE = 1;    // DateTime type Field
-      GENDER = 2;  // Gender: Male/Female
-      PHONE = 3;   // Phone Field
-      EMAIL = 4;   // Email Field
-      COMPANY = 5; // Company Type Field
-      TITLE = 6;   // Title Type Field
+    message Name {
+      string prefix = 1;
+      string suffix = 2;
+      string middleName = 3;
+      string nickName = 4;
+    }
+
+    // Date Field - MillisecondsFromEpoch
+    message Date {
+      int32 birthday = 1;           // Birthday
+      map<string, int32> dates = 2; // Additional Dates
+    }
+
+    // Gender
+    message Gender {
+      Options value = 1; // Gender Option Value
+
+      enum Options {
+        Unspecified = 0; // Default
+        Male = 1;
+        Female = 2;
+      }
+    }
+
+    // Phone Numbers
+    message Phone {
+      string primary = 1;              // Primary Phone
+      map<string, string> numbers = 2; // Additional Phones
+    }
+
+    // Email Addresses
+    message Email {
+      Address primary = 1;                // Primary Email
+      map<string, Address> addresses = 2; // Additional Addresses
+
+      // Email Address
+      message Address {
+        string label = 1;    // User Defined Label
+        string value = 2;    // Full Email Value
+        string host = 3;     // Email Hosting Provider
+        string username = 4; // Email Username
+      }
+    }
+
+    // Employment Info
+    message Title {
+      string company = 1;  // Company
+      string position = 2; // Position at Company
     }
   }
 
@@ -75,57 +117,85 @@ message Contact {
   message Social {
     // Properties
     bool isPrimary = 1; // If this is the Primary field for SocialMedia Provider
-    Provider provider = 2;     // Type of Social Provider
-    User user = 3;             // Social User Reference
-    Tile tile = 4;             // Social Tile Position
-    Links links = 5;           // Social Links
-    Visibility visibility = 6; // Is the User's Account Private
+    string name = 2;    // Profile Name Provided
+    string username = 3;       // Username for Social
+    string picture = 4;        // User Social Picture Link
+    Visibility visibility = 5; // Is the User's Account Private
 
-    // Social Provider Links
-    message Links {
-      URLLink feedLink = 1;    // Link to a Social Feed
-      URLLink postLink = 2;    // Link to a Users Post
-      URLLink profileLink = 3; // Link to Users Profile
+    // Display Tile Type
+    oneof tile {
+      Icon icon = 6;
+      Feed feed = 7;
+      Playlist playlist = 8;
+      Post post = 9;
+    }
+
+    // Provider for Social Field
+    oneof provider {
+      Media media = 10;
+      Music music = 11;
+      Payment payment = 12;
+    }
+
+    // Simple Icon Button
+    message Icon {
+      int32 page = 1;   // Page Displayed
+      int32 index = 2;  // Position in Contact Array
+      URLLink link = 3; // Link Provided
+    }
+
+    // Feed Display
+    message Feed {
+      int32 page = 1;   // Page Displayed
+      int32 index = 2;  // Position in Contact Array
+      URLLink link = 3; // Link Provided
+    }
+
+    // Playlist Display
+    message Playlist {
+      int32 page = 1;   // Page Displayed
+      int32 index = 2;  // Position in Contact Array
+      URLLink link = 3; // Link Provided
+    }
+
+    // Post Display
+    message Post {
+      int32 page = 1;   // Page Displayed
+      int32 index = 2;  // Position in Contact Array
+      URLLink link = 3; // Link Provided
     }
 
     // Social Media Service
-    enum Provider {
-      Instagram = 0; // Feed/Post/Link
-      TikTok = 1;    // Post/Link
-      Facebook = 2;  // Link Only
-      YouTube = 3;   // Post/Link
-      Spotify = 4;   // Post/Link
-      Medium = 5;    // Feed/Post/Link
-      Twitter = 6;   // Feed/Post/Link
-      Snapchat = 7;  // Link Only
-      Github = 8;    // Link Only
-      LinkedIn = 9;
+    enum Media {
+      Instagram = 0;  // Feed/Post/Link
+      TikTok = 1;     // Post/Link
+      Facebook = 2;   // Link Only
+      YouTube = 3;    // Post/Link
+      Medium = 5;     // Feed/Post/Link
+      Twitter = 6;    // Feed/Post/Link
+      Snapchat = 7;   // Link Only
+      Github = 8;     // Link Only
+      LinkedIn = 9;   // Link Only
+      Twitch = 10;    // Link Only
+      Pinterest = 11; // Link Only
+      Vimeo = 12;     // Link Only
+      Gumroad = 13;   // Link and Items
     }
 
-    // Tile Display Position
-    message Tile {
-      Display type = 1; // Type of Tile to be Displayed
-      int32 index = 2;  // Position in Contact Array
-      int32 row = 3;    // Row Location
-      int32 column = 4; // Column Location
-      int32 size = 5;   // Size of Tile
-
-      // Social Tile Display Type
-      enum Display {
-        Icon = 0;     // Default Tile Type, Icon for Provider
-        Feed = 1;     // Big Tile Showcases Current User Feed
-        Post = 2;     // Medium Tile Showcases a Featured Post
-        Profile = 3;  // Small Tile is Direct Link to User Profile
-        Playlist = 4; // Playlist type similar to Feed
-      }
+    // Music Service
+    enum Music {
+      Spotify = 0;    // Live Listening
+      AppleMusic = 1; // Last Listening
+      SoundCloud = 2; // Link Only
     }
 
-    // Social User for Provider
-    message User {
-      string name = 1;
-      string username = 2;
-      URLLink picture = 3;
-      string bio = 4;
+    // Payment Service
+    enum Payment {
+      CashApp = 0;  // Link Only
+      Venmo = 1;    // Link Only
+      PayPal = 2;   // Link Only
+      Bitcoin = 3;  // QR Code/ Address
+      Ethereum = 4; // QR Code/ Address
     }
 
     // Social Tile Visibility
@@ -136,41 +206,6 @@ message Contact {
       PrivateHidden = 3; // Private and Hidden
       PublicHidden = 4;  // Public and Hidden
     }
-  }
-}
-
-// For Info about Lobby
-message Lobby {
-  Type type = 1;               // Type of Lobby
-  string name = 2;             // Open Location Code of Lobby
-  string topic = 3;            // Pubsub Address with OLC
-  int32 size = 4;              // Total Number of Devices in Lobby
-  int32 count = 5;             // Total Devices in Lobby EXCLUDING User
-  map<string, Peer> peers = 6; // Total Data of Active Peers
-  Peer user = 7;               // User Peer reference
-
-  enum Type {
-    Local = 0;
-    Remote = 1;
-    User = 2;
-  }
-}
-
-// Message Sent when peer messages Lobby Topic
-message LobbyEvent {
-  string id = 1;      // Peer ID
-  Event event = 2;    // What Peer is Doing
-  Peer from = 3;      // User Information
-  string to = 4;      // Peer ID for DM
-  string message = 5; // Message being sent
-
-  enum Event {
-    EXCHANGE = 0; // Peer has joined wants Info
-    STANDBY = 1;  // Peer is taking break from lobby
-    RESUME = 2;   // Peer has rejoined Lobby
-    UPDATE = 3;   // Peer has changed position
-    MESSAGE = 4;  // Peer has been messaged by a user
-    EXIT = 5;     // Peer has Exited
   }
 }
 
@@ -223,15 +258,6 @@ enum Payload {
   MEDIA = 6;        // Media Payload - (Audio, Photo, Video)
 }
 
-// RemoteInfo is for Joining/Creating a New Topic
-message RemoteInfo {
-  bool isJoin = 1;
-  int32 count = 2;
-  string display = 3;
-  string topic = 4;
-  repeated string words = 5;
-}
-
 // For Transfer File Payload
 message SonrFile {
   // Payload of File
@@ -279,30 +305,24 @@ message Transfer {
   int32 id = 1;        // SQL: Id reference
   Payload payload = 2; // SQL: Type of Data received
   int32 received = 3;  // SQL: UnixTime of received Date/Time
+  Properties properties = 4;
 
-  Profile receiver = 4; // PROFILE: General Receiver Info
-  Profile owner = 5;    // PROFILE: General Sender Info
+  Profile receiver = 5; // PROFILE: General Receiver Info
+  Profile owner = 6;    // PROFILE: General Sender Info
 
   // Attached Data
   oneof data {
-    Contact contact = 6; // DATA(Optional): Received Contact Information
-    SonrFile file = 7;   // DATA(Optional): Received a File
-    URLLink url = 8;     // DATA(Optional): Received a Website Link
+    Contact contact = 7; // DATA(Optional): Received Contact Information
+    SonrFile file = 8;   // DATA(Optional): Received a File
+    URLLink url = 9;     // DATA(Optional): Received a Website Link
   }
-}
 
-// TransferCard holds data passed between Exchange
-message TransferCard {
-  int32 id = 1;        // SQL: Id reference
-  Payload payload = 2; // SQL: Type of Data received
-  int32 received = 3;  // SQL: UnixTime of received Date/Time
-
-  Profile receiver = 4; // PROFILE: General Receiver Info
-  Profile owner = 5;    // PROFILE: General Owner Info
-
-  Contact contact = 6; // DATA(Optional): Received Contact Information
-  SonrFile file = 7;   // DATA(Optional): Received a File
-  URLLink url = 8;     // DATA(Optional): Received a Website Link
+  // Transfer Properties
+  message Properties {
+    bool isRemote = 1;
+    bool isFlat = 2;
+    bool isTransfer = 3;
+  }
 }
 
 // URLLink Contains metadata of provided URL

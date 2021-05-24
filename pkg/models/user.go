@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	crypto "github.com/libp2p/go-libp2p-crypto"
+	crypto "github.com/libp2p/go-libp2p-core/crypto"
 )
 
 // ** ─── DEVICE MANAGEMENT ────────────────────────────────────────────────────────
@@ -158,11 +158,16 @@ func NewUser(cr *ConnectionRequest) *User {
 	d := cr.GetDevice()
 	d.NewPrivateKey()
 
+	// Get Crypto
+	crypto := cr.GetCrypto()
+
 	// Return User
 	return &User{
+		Id:       crypto.GetPrefix(),
 		Device:   d,
 		Contact:  cr.GetContact(),
 		Location: cr.GetLocation(),
+		Crypto:   crypto,
 		Connection: &User_Connection{
 			HasConnected:    false,
 			HasBootstrapped: false,
@@ -171,10 +176,30 @@ func NewUser(cr *ConnectionRequest) *User {
 			Router: &User_Router{
 				Rendevouz:    fmt.Sprintf("/sonr/%s", cr.GetLocation().MajorOLC()),
 				LocalIPTopic: fmt.Sprintf("/sonr/topic/%s", cr.GetLocation().IPOLC()),
+				Location:     cr.GetLocation(),
 			},
 			Status: Status_IDLE,
 		},
+		Devices:  cr.GetDevices(),
+		Settings: cr.GetSettings(),
 	}
+}
+
+func (u *User) DeviceID() string {
+	return u.Device.GetId()
+}
+
+func (u *User) ID() *Peer_ID {
+	return u.GetPeer().GetId()
+}
+
+// Method Returns Crypto Prefix With Signature
+func (u *User) Prefix() string {
+	return u.GetCrypto().Prefix
+}
+
+func (u *User) Profile() *Profile {
+	return u.GetContact().GetProfile()
 }
 
 // Method Returns Private Key
@@ -187,12 +212,19 @@ func (u *User) PrivateKey() crypto.PrivKey {
 	return key
 }
 
+// Method Returns SName
+func (u *User) SName() string {
+	return fmt.Sprintf("%s.snr/", u.Profile().GetSname())
+}
+
 // Updates User Peer
 func (u *User) Update(ur *UpdateRequest) {
-	if ur.Type == UpdateRequest_Position {
+	switch ur.Data.(type) {
+	case *UpdateRequest_Position:
 		// Extract Data
-		facing := ur.Position.GetFacing()
-		heading := ur.Position.GetHeading()
+		pos := ur.GetPosition()
+		facing := pos.GetFacing()
+		heading := pos.GetHeading()
 
 		// Update User Values
 		var faceDir float64
@@ -230,22 +262,20 @@ func (u *User) Update(ur *UpdateRequest) {
 				Antipodal: headAnpd,
 				Cardinal:  Cardinal(headDesg % 32),
 			},
-			Orientation: ur.Position.GetOrientation(),
+			Orientation: pos.GetOrientation(),
 		}
-	}
 
-	// Set Properties
-	if ur.Type == UpdateRequest_Properties {
-		u.Peer.Properties = ur.Properties
-	}
-
-	// Check for New Contact, Update Peer Profile
-	if ur.Type == UpdateRequest_Contact {
+	case *UpdateRequest_Contact:
 		u.Contact = ur.GetContact()
 		u.Peer.Profile = &Profile{
-			FirstName: ur.Contact.GetProfile().GetFirstName(),
-			LastName:  ur.Contact.GetProfile().GetLastName(),
-			Picture:   ur.Contact.GetProfile().GetPicture(),
+			FirstName: u.Contact.GetProfile().GetFirstName(),
+			LastName:  u.Contact.GetProfile().GetLastName(),
+			Picture:   u.Contact.GetProfile().GetPicture(),
 		}
+	case *UpdateRequest_Properties:
+		props := ur.GetProperties()
+		u.Peer.Properties = props
+	default:
+		return
 	}
 }

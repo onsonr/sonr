@@ -1,14 +1,17 @@
 package bind
 
 import (
-	"github.com/sonr-io/core/internal/network"
-	"github.com/sonr-io/core/internal/topic"
+	"context"
+
+	"github.com/getsentry/sentry-go"
+	"github.com/sonr-io/core/internal/crypto"
+	sc "github.com/sonr-io/core/pkg/client"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
 )
 
 // @ Return URLLink
-func GetURLLink(url string) []byte {
+func URLLink(url string) []byte {
 	// Create Link
 	link := md.NewURLLink(url)
 
@@ -20,80 +23,119 @@ func GetURLLink(url string) []byte {
 	return bytes
 }
 
-// @ Join Existing Group
-func (mn *Node) CreateRemote() []byte {
-	if mn.isReady() {
-		// Generate Word List
-		_, wordList, serr := network.RandomWords("english", 3)
-		if serr != nil {
-			mn.handleError(serr)
-			return nil
-		}
-		// Create Remote Request and Join Lobby
-		remote := md.GetRemoteInfo(wordList)
+// @ Gets User from Storj
+func Storj(data []byte) []byte {
+	// Unmarshal Request
+	request := &md.StorjRequest{}
+	proto.Unmarshal(data, request)
 
-		// Join Lobby
-		tm, serr := mn.client.JoinLobby(remote.Topic, true)
-		if serr != nil {
-			mn.handleError(serr)
-			return nil
-		}
+	switch request.Data.(type) {
+	// @ Put USER
+	case *md.StorjRequest_User:
+		// Put User
+		err := sc.PutUser(context.Background(), request.StorjApiKey, request.GetUser())
+		if err != nil {
+			sentry.CaptureException(err)
 
-		// Set Topic
-		mn.topics[remote.Topic] = tm
+			// Create Response
+			resp := &md.StorjResponse{
+				Data: &md.StorjResponse_Success{
+					Success: false,
+				},
+			}
+
+			// Marshal
+			bytes, err := proto.Marshal(resp)
+			if err != nil {
+				return nil
+			}
+			return bytes
+		}
+		// Create Response
+		resp := &md.StorjResponse{
+			Data: &md.StorjResponse_Success{
+				Success: true,
+			},
+		}
 
 		// Marshal
-		data, err := proto.Marshal(&remote)
+		bytes, err := proto.Marshal(resp)
 		if err != nil {
-			mn.handleError(md.NewError(err, md.ErrorMessage_MARSHAL))
 			return nil
 		}
-		return data
+		return bytes
+
+	// @ Get USER
+	case *md.StorjRequest_Prefix:
+		// Get User from Uplink
+		user, err := sc.GetUser(context.Background(), request.StorjApiKey, request.GetPrefix())
+		if err != nil {
+			sentry.CaptureException(err)
+			return nil
+		}
+
+		// Create Response
+		resp := &md.StorjResponse{
+			Data: &md.StorjResponse_User{
+				User: user,
+			},
+		}
+
+		// Marshal
+		bytes, err := proto.Marshal(resp)
+		if err != nil {
+			return nil
+		}
+		return bytes
 	}
 	return nil
 }
 
-// @ Join Existing Group
-func (mn *Node) JoinRemote(data []byte) {
+// @ Join/Create/Leave Remote Group
+func (mn *Node) Remote(data []byte) []byte {
 	if mn.isReady() {
-		// Unpackage Data
-		remote := md.RemoteInfo{}
-		err := proto.Unmarshal(data, &remote)
-		if err != nil {
-			mn.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
-			return
-		}
+		// Get Request
+		request := &md.RemoteRequest{}
+		proto.Unmarshal(data, request)
 
-		// Join Lobby
-		tm, serr := mn.client.JoinLobby(remote.Topic, false)
-		if err != nil {
-			mn.handleError(serr)
-			return
-		}
+		switch request.Request.(type) {
+		// @ Create Remote
+		case *md.RemoteRequest_CreateData:
+			// Generate Word List
+			_, wordList, serr := crypto.RandomWords("english", 3)
+			if serr != nil {
+				mn.handleError(serr)
+				return nil
+			}
+			// Create Remote Request and Join Lobby
+			remote := md.NewRemote(mn.user, wordList, request.GetCreateData().GetFile())
 
-		// Set Topic
-		mn.topics[remote.Topic] = tm
+			// Join Lobby
+			tm, serr := mn.client.CreateRemote(remote)
+			if serr != nil {
+				mn.handleError(serr)
+				return nil
+			}
+
+			// Set Topic
+			mn.topics[remote.Topic()] = tm
+
+			// Marshal
+			data := remote.ToRemoteResponseBytes()
+			return data
+
+		// @ Join Remote
+		case *md.RemoteRequest_JoinData:
+
+		// @ Respond Remote
+		case *md.RemoteRequest_ReplyData:
+
+		// @ Leave Remote
+		case *md.RemoteRequest_LeaveData:
+
+		}
 	}
-}
-
-// @ Leave Existing Group
-func (mn *Node) LeaveRemote(data []byte) {
-	if mn.isReady() {
-		// Unpackage Data
-		remote := md.RemoteInfo{}
-		err := proto.Unmarshal(data, &remote)
-		if err != nil {
-			mn.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
-			return
-		}
-
-		// Join Lobby
-		serr := mn.client.LeaveLobby(mn.topics[remote.Topic])
-		if err != nil {
-			mn.handleError(serr)
-			return
-		}
-	}
+	return nil
 }
 
 // @ Update proximity/direction and Notify Lobby
@@ -118,25 +160,6 @@ func (mn *Node) Update(data []byte) {
 	}
 }
 
-// @ Send Direct Message to Peer in Lobby
-func (mn *Node) Message(data []byte) {
-	if mn.isReady() {
-		// Initialize from Request
-		req := &md.MessageRequest{}
-		if err := proto.Unmarshal(data, req); err != nil {
-			mn.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
-			return
-		}
-
-		// Run Node Action
-		err := mn.client.Message(mn.local, req.Message, req.To)
-		if err != nil {
-			mn.handleError(err)
-			return
-		}
-	}
-}
-
 // @ Invite Processes Data and Sends Invite to Peer
 func (mn *Node) Invite(data []byte) {
 	if mn.isReady() {
@@ -144,36 +167,28 @@ func (mn *Node) Invite(data []byte) {
 		mn.setStatus(md.Status_PENDING)
 
 		// Initialize from Request
-		req := &md.InviteRequest{}
+		req := &md.AuthInvite{}
 		if err := proto.Unmarshal(data, req); err != nil {
 			mn.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
 			return
 		}
 
-		// Retreive Invite Topic
-		var topic *topic.TopicManager
-		if req.IsRemote && req.Remote != nil {
-			topic = mn.topics[req.Remote.Topic]
-		} else {
-			topic = mn.local
-		}
-
 		// @ 2. Check Transfer Type
 		if req.Payload == md.Payload_CONTACT || req.Payload == md.Payload_FLAT_CONTACT {
-			err := mn.client.InviteContact(req, topic, mn.user.Contact)
+			err := mn.client.InviteContact(req, mn.local, mn.user.Contact)
 			if err != nil {
 				mn.handleError(err)
 				return
 			}
 		} else if req.Payload == md.Payload_URL {
-			err := mn.client.InviteLink(req, topic)
+			err := mn.client.InviteLink(req, mn.local)
 			if err != nil {
 				mn.handleError(err)
 				return
 			}
 		} else {
 			// Invite With file
-			err := mn.client.InviteFile(req, topic)
+			err := mn.client.InviteFile(req, mn.local)
 			if err != nil {
 				mn.handleError(err)
 				return
@@ -186,21 +201,13 @@ func (mn *Node) Invite(data []byte) {
 func (mn *Node) Respond(data []byte) {
 	if mn.isReady() {
 		// Initialize from Request
-		req := &md.RespondRequest{}
+		req := &md.AuthReply{}
 		if err := proto.Unmarshal(data, req); err != nil {
 			mn.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
 			return
 		}
 
-		// Retreive Invite Topic
-		var topic *topic.TopicManager
-		if req.IsRemote && req.Remote != nil {
-			topic = mn.topics[req.Remote.Topic]
-		} else {
-			topic = mn.local
-		}
-
-		mn.client.Respond(req, topic)
+		mn.client.Respond(req, mn.local)
 		// Update Status
 		if req.Decision {
 			mn.setStatus(md.Status_INPROGRESS)

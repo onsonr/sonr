@@ -2,6 +2,7 @@ package client
 
 import (
 	"context"
+	"log"
 
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	tpc "github.com/sonr-io/core/internal/topic"
@@ -13,9 +14,12 @@ import (
 
 // ^ Struct: Main Client handles Networking/Identity/Streams ^
 type Client struct {
+	tpc.ClientCallback
+
 	// Properties
 	ctx     context.Context
 	call    md.NodeCallback
+	global  net.GlobalTopic
 	user    *md.User
 	session *md.Session
 
@@ -25,6 +29,7 @@ type Client struct {
 
 // ^ NewClient Initializes Node with Router ^
 func NewClient(ctx context.Context, u *md.User, call md.NodeCallback) *Client {
+	// Returns Storj Enabled Client
 	return &Client{
 		ctx:  ctx,
 		call: call,
@@ -59,31 +64,47 @@ func (c *Client) Connect(pk crypto.PrivKey) *md.SonrError {
 
 // ^ Begins Bootstrapping HostNode ^
 func (c *Client) Bootstrap() *md.SonrError {
-	return c.Host.Bootstrap()
+	// Bootstrap Host
+	err := c.Host.Bootstrap()
+	if err != nil {
+		return err
+	}
+
+	// Join Global
+	global, err := c.Host.StartGlobal(c.user.SName())
+	if err != nil {
+		log.Println("FAILED: Start Global Topic")
+		return err
+	}
+	log.Println("SUCCESS: Start Global Topic")
+
+	// Set Client Global Ref
+	c.global = global
+	return nil
+}
+
+// ^ Creates Remote from Lobby Data ^
+func (n *Client) CreateRemote(l *md.Lobby) (*tpc.TopicManager, *md.SonrError) {
+	if t, err := tpc.NewRemote(n.ctx, n.Host, n.user, l, n); err != nil {
+		return nil, err
+	} else {
+		return t, nil
+	}
 }
 
 // ^ Join Lobby Adds Node to Named Topic ^
-func (n *Client) JoinLobby(name string, isCreated bool) (*tpc.TopicManager, *md.SonrError) {
-	// @ Check for Topic being Created
-	if isCreated {
-		if t, err := tpc.NewTopic(n.ctx, n.Host, n.user, n.user.GetRouter().Topic(name), md.Lobby_Remote, n); err != nil {
-			return nil, err
-		} else {
-			return t, nil
-		}
+func (n *Client) JoinRemote(r *md.RemoteResponse) (*tpc.TopicManager, *md.SonrError) {
+	// @ Returns error if Lobby doesnt Exist
+	if t, err := tpc.JoinRemote(n.ctx, n.Host, n.user, r, n); err != nil {
+		return nil, err
 	} else {
-		// @ Returns error if Lobby doesnt Exist
-		if t, err := tpc.JoinTopic(n.ctx, n.Host, n.user, n.user.GetRouter().Topic(name), md.Lobby_Remote, n); err != nil {
-			return nil, err
-		} else {
-			return t, nil
-		}
+		return t, nil
 	}
 }
 
 // ^ Join Lobby Adds Node to Named Topic ^
 func (n *Client) JoinLocal() (*tpc.TopicManager, *md.SonrError) {
-	if t, err := tpc.NewTopic(n.ctx, n.Host, n.user, n.user.GetRouter().LocalIPTopic, md.Lobby_Local, n); err != nil {
+	if t, err := tpc.NewLocal(n.ctx, n.Host, n.user, n.user.GetRouter().LocalIPTopic, n); err != nil {
 		return nil, err
 	} else {
 		return t, nil
@@ -99,17 +120,14 @@ func (n *Client) LeaveLobby(lob *tpc.TopicManager) *md.SonrError {
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Client) InviteLink(req *md.InviteRequest, t *tpc.TopicManager) *md.SonrError {
+func (n *Client) InviteLink(invite *md.AuthInvite, t *tpc.TopicManager) *md.SonrError {
 	// @ 3. Send Invite to Peer
-	if t.HasPeer(req.To.Id.Peer) {
+	if t.HasPeer(invite.To.Id.Peer) {
 		// Get PeerID and Check error
-		id, _, err := t.FindPeerInTopic(req.To.Id.Peer)
+		id, _, err := t.FindPeerInTopic(invite.To.Id.Peer)
 		if err != nil {
 			return md.NewError(err, md.ErrorMessage_PEER_NOT_FOUND_INVITE)
 		}
-
-		// Create Invite
-		invite := n.user.SignInviteWithLink(req)
 
 		// Run Routine
 		go func(inv *md.AuthInvite) {
@@ -117,7 +135,7 @@ func (n *Client) InviteLink(req *md.InviteRequest, t *tpc.TopicManager) *md.Sonr
 			if err != nil {
 				n.call.Error(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
 			}
-		}(&invite)
+		}(invite)
 	} else {
 		return md.NewErrorWithType(md.ErrorMessage_PEER_NOT_FOUND_INVITE)
 	}
@@ -125,24 +143,20 @@ func (n *Client) InviteLink(req *md.InviteRequest, t *tpc.TopicManager) *md.Sonr
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Client) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, c *md.Contact) *md.SonrError {
+func (n *Client) InviteContact(invite *md.AuthInvite, t *tpc.TopicManager, c *md.Contact) *md.SonrError {
 	// @ 3. Send Invite to Peer
-	if t.HasPeer(req.To.Id.Peer) {
+	if t.HasPeer(invite.To.Id.Peer) {
 		// Get PeerID and Check error
-		id, _, err := t.FindPeerInTopic(req.To.Id.Peer)
+		id, _, err := t.FindPeerInTopic(invite.To.Id.Peer)
 		if err != nil {
 			return md.NewError(err, md.ErrorMessage_PEER_NOT_FOUND_INVITE)
 		}
 
-		// Build Invite Message
-		isFlat := req.Payload == md.Payload_FLAT_CONTACT
-		invite := n.user.SignInviteWithContact(req, isFlat)
-
 		// Run Routine
 		go func(inv *md.AuthInvite) {
 			// Direct Invite for Flat
-			if isFlat {
-				err = t.Direct(id, inv)
+			if inv.IsFlat() {
+				err = t.Flat(id, inv)
 				if err != nil {
 					n.call.Error(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
 				}
@@ -153,7 +167,7 @@ func (n *Client) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, c *md
 					n.call.Error(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
 				}
 			}
-		}(&invite)
+		}(invite)
 	} else {
 		return md.NewErrorWithType(md.ErrorMessage_PEER_NOT_FOUND_INVITE)
 	}
@@ -161,15 +175,12 @@ func (n *Client) InviteContact(req *md.InviteRequest, t *tpc.TopicManager, c *md
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Client) InviteFile(req *md.InviteRequest, t *tpc.TopicManager) *md.SonrError {
+func (n *Client) InviteFile(invite *md.AuthInvite, t *tpc.TopicManager) *md.SonrError {
 	// Start New Session
-	n.session = md.NewOutSession(n.user, req, n.call)
-
-	// Create Invite Message
-	invite := n.user.SignInviteWithFile(req)
+	n.session = md.NewOutSession(n.user, invite, n.call)
 
 	// Get PeerID
-	id, _, err := t.FindPeerInTopic(req.To.Id.Peer)
+	id, _, err := t.FindPeerInTopic(invite.To.Id.Peer)
 	if err != nil {
 		return md.NewError(err, md.ErrorMessage_PEER_NOT_FOUND_INVITE)
 	}
@@ -180,24 +191,13 @@ func (n *Client) InviteFile(req *md.InviteRequest, t *tpc.TopicManager) *md.Sonr
 		if err != nil {
 			n.call.Error(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
 		}
-	}(&invite)
+	}(invite)
 	return nil
 }
 
 // ^ Respond to an Invitation ^ //
-func (n *Client) Respond(req *md.RespondRequest, t *tpc.TopicManager) {
+func (n *Client) Respond(req *md.AuthReply, t *tpc.TopicManager) {
 	t.RespondToInvite(req)
-}
-
-// ^ Send Direct Message to Peer in Lobby ^ //
-func (n *Client) Message(t *tpc.TopicManager, msg string, to *md.Peer) *md.SonrError {
-	if t.HasPeer(to.PeerID()) {
-		// Inform Lobby
-		if err := t.Send(n.user.Peer.SignMessage(msg, to)); err != nil {
-			return md.NewError(err, md.ErrorMessage_TOPIC_MESSAGE)
-		}
-	}
-	return nil
 }
 
 // ^ Update proximity/direction and Notify Lobby ^ //
