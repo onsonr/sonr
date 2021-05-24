@@ -115,7 +115,7 @@ func (tm *RemoteManager) Exchange(id peer.ID, peerBuf []byte, lobBuf []byte) err
 	}
 
 	// Update Peer with new data
-	tm.Lobby.Add(remotePeer)
+	tm.lobby.Add(remotePeer)
 	tm.Refresh()
 	return nil
 }

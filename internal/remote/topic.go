@@ -31,7 +31,7 @@ type RemoteManager struct {
 	subscription *pubsub.Subscription
 	eventHandler *pubsub.TopicEventHandler
 	user         *md.User
-	Lobby        *md.Lobby
+	lobby        *md.SyncLobby
 
 	service      *TopicService
 	Messages     chan *md.LobbyEvent
@@ -61,7 +61,7 @@ func JoinRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteRe
 		ctx:          ctx,
 		host:         h,
 		eventHandler: handler,
-		Lobby:        md.NewJoinedRemote(u, r),
+		lobby:        md.NewJoinedRemote(u, r),
 		Messages:     make(chan *md.LobbyEvent, K_MAX_MESSAGES),
 		subscription: sub,
 		topic:        topic,
@@ -74,7 +74,7 @@ func JoinRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteRe
 }
 
 // ^ Create New Contained Topic Manager ^ //
-func NewRemote(ctx context.Context, h *net.HostNode, u *md.User, l *md.Lobby, th ClientCallback) (*RemoteManager, *md.SonrError) {
+func NewRemote(ctx context.Context, h *net.HostNode, u *md.User, l *md.SyncLobby, th ClientCallback) (*RemoteManager, *md.SonrError) {
 	// Get Topic Name
 	info := l.GetRemote()
 
@@ -91,7 +91,7 @@ func NewRemote(ctx context.Context, h *net.HostNode, u *md.User, l *md.Lobby, th
 		ctx:          ctx,
 		host:         h,
 		eventHandler: handler,
-		Lobby:        l,
+		lobby:        l,
 		Messages:     make(chan *md.LobbyEvent, K_MAX_MESSAGES),
 		subscription: sub,
 		topic:        topic,
@@ -110,15 +110,10 @@ func (tm *RemoteManager) FindPeerInTopic(q string) (peer.ID, *md.Peer, error) {
 	var i peer.ID
 
 	// Iterate Through Peers, Return Matched Peer
-	for _, peer := range tm.Lobby.Peers {
-		// If Found Match
-		if peer.Id.Peer == q {
-			p = peer
-		}
-	}
-
-	// Validate Peer
-	if p == nil {
+	val, ok := tm.lobby.Find(q)
+	if ok {
+		p = val
+	} else {
 		return "", nil, errors.New("Peer data was not found in topic.")
 	}
 

@@ -12,11 +12,9 @@ import (
 // @ Helper: Finds Peer in Lobby
 func (lm *LocalManager) findPeer(q string) (*md.Peer, error) {
 	// Iterate Through Peers, Return Matched Peer
-	for _, peer := range lm.lobby.Peers {
-		// If Found Match
-		if peer.Id.Peer == q {
-			return peer, nil
-		}
+	val, ok := lm.lobby.Find(q)
+	if ok {
+		return val, nil
 	}
 	return nil, errors.New("Peer Data not found in Lobby.")
 }

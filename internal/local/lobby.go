@@ -8,7 +8,7 @@ import (
 
 // ^ Send Updated Lobby ^
 func (tm *LocalManager) Refresh() {
-	tm.callback.OnRefresh(tm.lobby)
+	tm.callback.OnRefresh(tm.lobby.Data())
 }
 
 // ^ handleTopicEvents: listens to Pubsub Events for topic  ^
@@ -39,7 +39,7 @@ func (tm *LocalManager) handleTopicEvents(handler *pubsub.TopicEventHandler) {
 		}
 
 		if lobEvent.Type == pubsub.PeerLeave {
-			tm.lobby.Delete(lobEvent.Peer)
+			tm.lobby.Remove(lobEvent.Peer)
 			tm.Refresh()
 		}
 		md.GetState().NeedsWait()

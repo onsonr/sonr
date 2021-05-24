@@ -28,7 +28,7 @@ type LocalServiceResponse struct {
 type LocalService struct {
 	// Current Data
 	call  ClientCallback
-	lobby *md.Lobby
+	lobby *md.SyncLobby
 	user  *md.User
 
 	respCh chan *md.AuthReply
@@ -137,7 +137,7 @@ func (ts *LocalService) ExchangeWith(ctx context.Context, args LocalServiceArgs,
 
 	// Update Peers with Lobby
 	ts.lobby.Sync(remoteLobbyRef, remotePeer)
-	ts.call.OnRefresh(ts.lobby)
+	ts.call.OnRefresh(ts.lobby.Data())
 
 	// Set Message data and call done
 	buf, err := ts.user.Peer.Buffer()

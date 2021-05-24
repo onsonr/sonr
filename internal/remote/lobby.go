@@ -8,7 +8,7 @@ import (
 
 // ^ Send Updated Lobby ^
 func (tm *RemoteManager) Refresh() {
-	tm.topicHandler.OnRefresh(tm.Lobby)
+	tm.topicHandler.OnRefresh(tm.lobby.Data())
 }
 
 // ^ handleTopicEvents: listens to Pubsub Events for topic  ^
@@ -27,7 +27,7 @@ func (tm *RemoteManager) handleTopicEvents() {
 			if err != nil {
 				continue
 			}
-			lbuf, err := tm.Lobby.Buffer()
+			lbuf, err := tm.lobby.Buffer()
 			if err != nil {
 				continue
 			}
@@ -39,7 +39,7 @@ func (tm *RemoteManager) handleTopicEvents() {
 		}
 
 		if lobEvent.Type == pubsub.PeerLeave {
-			tm.Lobby.Delete(lobEvent.Peer)
+			tm.lobby.Remove(lobEvent.Peer)
 			tm.Refresh()
 		}
 		md.GetState().NeedsWait()
@@ -97,7 +97,7 @@ func (tm *RemoteManager) handleMessage(e *md.LobbyEvent) {
 		event := e.GetLocal()
 		if event == md.LobbyEvent_UPDATE {
 			// Update Peer Data
-			tm.Lobby.Add(e.From)
+			tm.lobby.Add(e.From)
 			tm.Refresh()
 		}
 

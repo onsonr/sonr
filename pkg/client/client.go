@@ -116,7 +116,7 @@ func (c *Client) Bootstrap() *md.SonrError {
 }
 
 // ^ Creates Remote from Lobby Data ^
-func (n *Client) CreateRemote(l *md.Lobby) (*rmt.RemoteManager, *md.SonrError) {
+func (n *Client) CreateRemote(l *md.SyncLobby) (*rmt.RemoteManager, *md.SonrError) {
 	if t, err := rmt.NewRemote(n.ctx, n.Host, n.user, l, n); err != nil {
 		return nil, err
 	} else {

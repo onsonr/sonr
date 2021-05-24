@@ -30,7 +30,7 @@ type LocalManager struct {
 	user     *md.User
 	geoTopic *pubsub.Topic
 	ipTopic  *pubsub.Topic
-	lobby    *md.Lobby
+	lobby    *md.SyncLobby
 	service  *LocalService
 	messages chan *md.LobbyEvent
 	callback ClientCallback
