@@ -11,7 +11,7 @@ import (
 )
 
 // ExchangeArgs is Peer protobuf
-type TopicServiceArgs struct {
+type RemoteServiceArgs struct {
 	Lobby  []byte
 	Peer   []byte
 	Invite []byte
@@ -19,13 +19,13 @@ type TopicServiceArgs struct {
 }
 
 // ExchangeResponse is also Peer protobuf
-type TopicServiceResponse struct {
+type RemoteServiceResponse struct {
 	Reply []byte
 	Peer  []byte
 }
 
 // Service Struct
-type TopicService struct {
+type RemoteService struct {
 	// Current Data
 	call  ClientCallback
 	lobby *md.Lobby
@@ -33,9 +33,6 @@ type TopicService struct {
 
 	respCh chan *md.AuthReply
 	invite *md.AuthInvite
-
-	linkCh  chan *md.LinkResponse
-	linkReq *md.LinkRequest
 }
 
 // ^ Flat: Handles User sent AuthInvite Response on FlatMode ^
@@ -48,8 +45,8 @@ func (tm *RemoteManager) Flat(id peer.ID, inv *md.AuthInvite) error {
 
 	// Initialize Data
 	rpcClient := rpc.NewClient(tm.host.Host, K_SERVICE_PID)
-	var reply TopicServiceResponse
-	var args TopicServiceArgs
+	var reply RemoteServiceResponse
+	var args RemoteServiceArgs
 	args.Invite = msgBytes
 
 	// Call to Peer
@@ -63,7 +60,7 @@ func (tm *RemoteManager) Flat(id peer.ID, inv *md.AuthInvite) error {
 }
 
 // ^ Calls Invite on Remote Peer for Flat Mode and makes Direct Response ^ //
-func (ts *TopicService) FlatWith(ctx context.Context, args TopicServiceArgs, reply *TopicServiceResponse) error {
+func (ts *RemoteService) FlatWith(ctx context.Context, args RemoteServiceArgs, reply *RemoteServiceResponse) error {
 	// Received Message
 	receivedMessage := md.AuthInvite{}
 	err := proto.Unmarshal(args.Invite, &receivedMessage)
@@ -92,8 +89,8 @@ func (ts *TopicService) FlatWith(ctx context.Context, args TopicServiceArgs, rep
 func (tm *RemoteManager) Exchange(id peer.ID, peerBuf []byte, lobBuf []byte) error {
 	// Initialize RPC
 	exchClient := rpc.NewClient(tm.host.Host, K_SERVICE_PID)
-	var reply TopicServiceResponse
-	var args TopicServiceArgs
+	var reply RemoteServiceResponse
+	var args RemoteServiceArgs
 
 	// Set Args
 	args.Lobby = lobBuf
@@ -121,7 +118,7 @@ func (tm *RemoteManager) Exchange(id peer.ID, peerBuf []byte, lobBuf []byte) err
 }
 
 // ^ Calls Invite on Remote Peer ^ //
-func (ts *TopicService) ExchangeWith(ctx context.Context, args TopicServiceArgs, reply *TopicServiceResponse) error {
+func (ts *RemoteService) ExchangeWith(ctx context.Context, args RemoteServiceArgs, reply *RemoteServiceResponse) error {
 	// Peer Data
 	remoteLobbyRef := &md.Lobby{}
 	err := proto.Unmarshal(args.Lobby, remoteLobbyRef)
@@ -158,8 +155,8 @@ func (tm *RemoteManager) Invite(id peer.ID, inv *md.AuthInvite) error {
 
 	// Initialize Data
 	rpcClient := rpc.NewClient(tm.host.Host, K_SERVICE_PID)
-	var reply TopicServiceResponse
-	var args TopicServiceArgs
+	var reply RemoteServiceResponse
+	var args RemoteServiceArgs
 	args.Invite = msgBytes
 
 	// Call to Peer
@@ -176,7 +173,7 @@ func (tm *RemoteManager) Invite(id peer.ID, inv *md.AuthInvite) error {
 }
 
 // ^ Calls Invite on Remote Peer ^ //
-func (ts *TopicService) InviteWith(ctx context.Context, args TopicServiceArgs, reply *TopicServiceResponse) error {
+func (ts *RemoteService) InviteWith(ctx context.Context, args RemoteServiceArgs, reply *RemoteServiceResponse) error {
 	// Received Message
 	receivedMessage := md.AuthInvite{}
 	err := proto.Unmarshal(args.Invite, &receivedMessage)
@@ -218,71 +215,4 @@ func (n *RemoteManager) RespondToInvite(rep *md.AuthReply) {
 	// @ Pass Contact Back
 	// Send to Channel
 	n.service.respCh <- rep
-}
-
-// ^ Invite: Handles User sent AuthInvite Response ^
-func (tm *RemoteManager) Link(id peer.ID, inv *md.LinkRequest) error {
-	// Convert Protobuf to bytes
-	msgBytes, err := proto.Marshal(inv)
-	if err != nil {
-		return err
-	}
-
-	// Initialize Data
-	rpcClient := rpc.NewClient(tm.host.Host, K_SERVICE_PID)
-	var reply TopicServiceResponse
-	var args TopicServiceArgs
-	args.Link = msgBytes
-
-	// Call to Peer
-	done := make(chan *rpc.Call, 1)
-	err = rpcClient.Go(id, "TopicService", "LinkWith", args, &reply, done)
-
-	// Await Response
-	call := <-done
-	if call.Error != nil {
-		return err
-	}
-	tm.topicHandler.OnLink(reply.Reply)
-	return nil
-}
-
-// ^ Calls Invite on Remote Peer ^ //
-func (ts *TopicService) LinkWith(ctx context.Context, args TopicServiceArgs, reply *TopicServiceResponse) error {
-	// Received Message
-	receivedMessage := md.LinkRequest{}
-	err := proto.Unmarshal(args.Link, &receivedMessage)
-	if err != nil {
-		return err
-	}
-
-	// Set Current Message and send Callback
-	ts.linkReq = &receivedMessage
-	ts.call.OnLink(args.Link)
-
-	// Hold Select for Invite Type
-	select {
-	// Received Auth Channel Message
-	case m := <-ts.linkCh:
-		// Convert Protobuf to bytes
-		msgBytes, err := proto.Marshal(m)
-		if err != nil {
-			return err
-		}
-
-		// Set Message data and call done
-		reply.Reply = msgBytes
-		ctx.Done()
-		return nil
-		// Context is Done
-	case <-ctx.Done():
-		return nil
-	}
-}
-
-// ^ RespondToInvite to an Invitation ^ //
-func (n *RemoteManager) RespondToLink(rep *md.LinkResponse) {
-	// @ Pass Contact Back
-	// Send to Channel
-	n.service.linkCh <- rep
 }

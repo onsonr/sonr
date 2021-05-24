@@ -13,7 +13,7 @@ import (
 )
 
 const K_MAX_MESSAGES = 128
-const K_SERVICE_PID = protocol.ID("/sonr/topic-service/0.1")
+const K_SERVICE_PID = protocol.ID("/sonr/remote-service/0.1")
 
 type ClientCallback interface {
 	OnEvent(*md.LobbyEvent)
@@ -33,7 +33,7 @@ type RemoteManager struct {
 	user         *md.User
 	lobby        *md.SyncLobby
 
-	service      *TopicService
+	service      *RemoteService
 	Messages     chan *md.LobbyEvent
 	topicHandler ClientCallback
 }
@@ -104,13 +104,13 @@ func NewRemote(ctx context.Context, h *net.HostNode, u *md.User, l *md.SyncLobby
 }
 
 // ^ Helper: Find returns Pointer to Peer.ID and Peer ^
-func (tm *RemoteManager) FindPeerInTopic(q string) (peer.ID, *md.Peer, error) {
+func (rm *RemoteManager) FindPeerInTopic(q string) (peer.ID, *md.Peer, error) {
 	// Retreive Data
 	var p *md.Peer
 	var i peer.ID
 
 	// Iterate Through Peers, Return Matched Peer
-	val, ok := tm.lobby.Find(q)
+	val, ok := rm.lobby.Find(q)
 	if ok {
 		p = val
 	} else {
@@ -118,7 +118,7 @@ func (tm *RemoteManager) FindPeerInTopic(q string) (peer.ID, *md.Peer, error) {
 	}
 
 	// Iterate through Topic Peers
-	for _, id := range tm.topic.ListPeers() {
+	for _, id := range rm.topic.ListPeers() {
 		// If Found Match
 		if id.String() == q {
 			i = id
@@ -133,9 +133,9 @@ func (tm *RemoteManager) FindPeerInTopic(q string) (peer.ID, *md.Peer, error) {
 }
 
 // ^ Helper: ID returns ONE Peer.ID in Topic ^
-func (tm *RemoteManager) HasPeer(q string) bool {
+func (rm *RemoteManager) HasPeer(q string) bool {
 	// Iterate through PubSub in topic
-	for _, id := range tm.topic.ListPeers() {
+	for _, id := range rm.topic.ListPeers() {
 		// If Found Match
 		if id.String() == q {
 			return true
