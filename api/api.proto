@@ -130,7 +130,7 @@ message User {
   Contact contact = 6;                // Clients Contact Card
   map<string, Device> devices = 7;    // Clients Devices: Name, Device
   map<string, Settings> settings = 8; // Clients Specified Preferences
-  Crypto crypto = 9;
+  Crypto crypto = 9;                  // User Cryptographic Data
 
   // User Connection Management - Attached from Node Client
   message Connection {
