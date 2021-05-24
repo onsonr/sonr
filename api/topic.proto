@@ -19,9 +19,8 @@ message Lobby {
   }
 
   enum Type {
-    LOCAL_IP = 0;
-    LOCAL_GEO = 1;
-    REMOTE = 2;
+    LOCAL = 0;
+    REMOTE = 1;
   }
 
   message LocalInfo {

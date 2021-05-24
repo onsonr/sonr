@@ -44,7 +44,7 @@ func NewLocal(ctx context.Context, h *net.HostNode, u *md.User, th ClientCallbac
 		user:     u,
 		ctx:      ctx,
 		host:     h,
-		lobby:    md.NewLocalIPLobby(u),
+		lobby:    md.NewLocalLobby(u),
 		messages: make(chan *md.LobbyEvent, K_MAX_MESSAGES),
 	}
 
