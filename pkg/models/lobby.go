@@ -195,12 +195,12 @@ func (sl *SyncLobby) Sync(rl *Lobby, rp *Peer) {
 	// Iterate Remote Peers
 	for k, v := range rl.Peers {
 		if v.IsNotSame(sl.internal.User) {
-			sl.syncMap.Store(k, v)
+			sl.syncMap.LoadOrStore(k, v)
 		}
 	}
 
 	// Add Remote Peer
-	sl.syncMap.Store(rp.PeerID(), rp)
+	sl.syncMap.LoadOrStore(rp.PeerID(), rp)
 	sl.syncMap.Range(sl.internal.Sync)
 }
 
