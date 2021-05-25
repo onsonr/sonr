@@ -142,9 +142,6 @@ func (l *Lobby) Buffer() ([]byte, error) {
 }
 
 func (l *Lobby) Sync(key, value interface{}) bool {
-	// Clear Current Peers
-	l.Peers = make(map[string]*Peer)
-
 	// Add All Valid Entries
 	ok, id, peer := validatePeerEntry(key, value)
 	if ok {
@@ -203,7 +200,8 @@ func (sl *SyncLobby) Sync(rl *Lobby, rp *Peer) {
 	}
 
 	// Add Remote Peer
-	sl.Add(rp)
+	sl.syncMap.Store(rp.PeerID(), rp)
+	sl.syncMap.Range(sl.internal.Sync)
 }
 
 // ^ Remove Peer from Sync Map
