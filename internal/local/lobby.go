@@ -1,4 +1,4 @@
-package topic
+package local
 
 import (
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
@@ -7,18 +7,18 @@ import (
 )
 
 // ^ Send Updated Lobby ^
-func (tm *TopicManager) Refresh() {
-	tm.topicHandler.OnRefresh(tm.Lobby)
+func (tm *LocalManager) Refresh() {
+	tm.callback.OnRefresh(tm.lobby.Data())
 }
 
 // ^ handleTopicEvents: listens to Pubsub Events for topic  ^
-func (tm *TopicManager) handleTopicEvents() {
+func (tm *LocalManager) handleTopicEvents(handler *pubsub.TopicEventHandler) {
 	// @ Loop Events
 	for {
 		// Get next event
-		lobEvent, err := tm.eventHandler.NextPeerEvent(tm.ctx)
+		lobEvent, err := handler.NextPeerEvent(tm.ctx)
 		if err != nil {
-			tm.eventHandler.Cancel()
+			handler.Cancel()
 			return
 		}
 
@@ -27,7 +27,7 @@ func (tm *TopicManager) handleTopicEvents() {
 			if err != nil {
 				continue
 			}
-			lbuf, err := tm.Lobby.Buffer()
+			lbuf, err := tm.lobby.Buffer()
 			if err != nil {
 				continue
 			}
@@ -39,7 +39,7 @@ func (tm *TopicManager) handleTopicEvents() {
 		}
 
 		if lobEvent.Type == pubsub.PeerLeave {
-			tm.Lobby.Delete(lobEvent.Peer)
+			tm.lobby.Remove(lobEvent.Peer)
 			tm.Refresh()
 		}
 		md.GetState().NeedsWait()
@@ -47,10 +47,10 @@ func (tm *TopicManager) handleTopicEvents() {
 }
 
 // ^ handleTopicMessages: listens for messages on pubsub topic subscription ^
-func (tm *TopicManager) handleTopicMessages() {
+func (tm *LocalManager) handleTopicMessages(subscription *pubsub.Subscription) {
 	for {
 		// Get next msg from pub/sub
-		msg, err := tm.subscription.Next(tm.ctx)
+		msg, err := subscription.Next(tm.ctx)
 		if err != nil {
 			return
 		}
@@ -69,18 +69,18 @@ func (tm *TopicManager) handleTopicMessages() {
 
 		// Validate Peer in Lobby
 		if tm.HasPeer(m.Id) {
-			tm.Messages <- m
+			tm.messages <- m
 		}
 		md.GetState().NeedsWait()
 	}
 }
 
 // ^ processTopicMessages: pulls messages from channel that have been handled ^
-func (tm *TopicManager) processTopicMessages() {
+func (tm *LocalManager) processTopicMessages() {
 	for {
 		select {
 		// @ when we receive a message from the lobby room
-		case m := <-tm.Messages:
+		case m := <-tm.messages:
 			tm.handleMessage(m)
 		case <-tm.ctx.Done():
 			return
@@ -90,20 +90,20 @@ func (tm *TopicManager) processTopicMessages() {
 }
 
 // ^ handleMessage: performs action for Message Type and Event Kind ^
-func (tm *TopicManager) handleMessage(e *md.LobbyEvent) {
+func (tm *LocalManager) handleMessage(e *md.LobbyEvent) {
 	switch e.Event.(type) {
 	// Local Event
 	case *md.LobbyEvent_Local:
 		event := e.GetLocal()
 		if event == md.LobbyEvent_UPDATE {
 			// Update Peer Data
-			tm.Lobby.Add(e.From)
+			tm.lobby.Add(e.From)
 			tm.Refresh()
 		}
 
 	// Remote Event
 	case *md.LobbyEvent_Remote:
-		tm.topicHandler.OnEvent(e)
+		tm.callback.OnEvent(e)
 
 	default:
 		return

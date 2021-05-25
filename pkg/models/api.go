@@ -5,8 +5,10 @@ import (
 	"fmt"
 
 	olc "github.com/google/open-location-code/go"
+	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
+	"github.com/multiformats/go-multiaddr"
 )
 
 // ************************** //
@@ -66,6 +68,49 @@ func (i *AuthInvite) IsRemote() bool {
 	return i.Data.Properties.IsRemote
 }
 
+// ** ─── Linker MANAGEMENT ────────────────────────────────────────────────────────
+// Creates New Linker from Link Request
+func NewLinker(lr *LinkRequest) *Linker {
+	return &Linker{
+		Device:   lr.Device,
+		Username: lr.Username,
+		Router: &Linker_Router{
+			LocalIPTopic: lr.Location.IPOLC(),
+			Rendevouz:    fmt.Sprintf("/sonr/%s", lr.GetLocation().MajorOLC()),
+			Location:     lr.GetLocation(),
+		},
+	}
+}
+
+// Creates New Peer for Linker
+func (l *Linker) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) {
+	// Initialize
+	deviceID := l.Device.GetId()
+
+	// Set Peer
+	l.Peer = &Peer{
+		Id: &Peer_ID{
+			Peer:   id.String(),
+			Device: deviceID,
+		},
+		Platform: l.Device.Platform,
+		Model:    l.Device.Model,
+	}
+
+	// Set Device Topic
+	l.Router.DeviceTopic = fmt.Sprintf("/sonr/user/%s", l.Username)
+}
+
+// Returns Linker Private Key
+func (l *Linker) PrivateKey() crypto.PrivKey {
+	// Get Key from Buffer
+	key, err := crypto.UnmarshalPrivateKey(l.GetDevice().GetPrivateKey())
+	if err != nil {
+		return nil
+	}
+	return key
+}
+
 // ** ─── Location MANAGEMENT ────────────────────────────────────────────────────────
 func (l *Location) MinorOLC() string {
 	lat := l.Latitude()
@@ -106,6 +151,13 @@ func (l *Location) IPOLC() string {
 
 // ** ─── Router MANAGEMENT ────────────────────────────────────────────────────────
 // @ Local Lobby Topic Protocol ID
+func (u *User) HasGeo() bool {
+	if u.GetRouter().GetLocation().Geo != nil {
+		return true
+	}
+	return false
+}
+
 func (r *User) LocalIPTopic() string {
 	return fmt.Sprintf("/sonr/topic/%s", r.Location.IPOLC())
 }
