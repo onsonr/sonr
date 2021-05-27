@@ -30,8 +30,8 @@ func JoinRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteRe
 		ctx:          ctx,
 		host:         h,
 		eventHandler: handler,
-		Lobby:        md.NewJoinedRemote(u, r),
-		Messages:     make(chan *md.LobbyEvent, K_MAX_MESSAGES),
+		lobby:        md.NewJoinedRemote(u, r),
+		messages:     make(chan *md.LobbyEvent, K_MAX_MESSAGES),
 		subscription: sub,
 		topic:        topic,
 	}
@@ -60,8 +60,8 @@ func NewRemote(ctx context.Context, h *net.HostNode, u *md.User, l *md.Lobby, th
 		ctx:          ctx,
 		host:         h,
 		eventHandler: handler,
-		Lobby:        l,
-		Messages:     make(chan *md.LobbyEvent, K_MAX_MESSAGES),
+		lobby:        l,
+		messages:     make(chan *md.LobbyEvent, K_MAX_MESSAGES),
 		subscription: sub,
 		topic:        topic,
 	}

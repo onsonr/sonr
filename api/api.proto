@@ -34,36 +34,40 @@ message ConnectionRequest {
 }
 
 // Remote Request to Join/Create Remote Transfer
-message RemoteRequest {
-  oneof request {
-    Create createData = 1;
-    Join joinData = 2;
-    Reply replyData = 3;
-    Leave leaveData = 4;
-  }
+message RemoteCreateRequest {
+  SonrFile file = 1;
+  int32 ttl = 2;
+}
 
-  message Create { SonrFile file = 1; }
-
-  message Join { repeated string words = 1; }
-
-  message Reply {
-    Peer peer = 1;
-    bool decision = 2;
-  }
-
-  message Leave {
-    bool isJoin = 1;
-    string topic = 2;
+// Remote Request to Join/Create Remote Transfer
+message RemoteJoinRequest {
+  oneof topic {
+    repeated string words = 1;
+    string name = 2;
   }
 }
 
 // Response from Remote Request
-message RemoteResponse {
+message RemoteCreateResponse {
   bool isJoin = 1;
   int32 count = 2;
   string display = 3;
   string topic = 4;
   repeated string words = 5;
+}
+
+// Response from Remote Request
+message RemoteJoinResponse {
+  Status status = 1;
+  bool isValid = 2;
+
+  enum Status {
+    None = 0;
+    Approved = 1;
+    Declined = 2;
+    InProgress = 3;
+    Complete = 4;
+  }
 }
 
 // Request to Access Storj Data

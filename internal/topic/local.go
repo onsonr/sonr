@@ -31,10 +31,10 @@ type TopicManager struct {
 	subscription *pubsub.Subscription
 	eventHandler *pubsub.TopicEventHandler
 	user         *md.User
-	Lobby        *md.Lobby
+	lobby        *md.Lobby
 
 	service      *TopicService
-	Messages     chan *md.LobbyEvent
+	messages     chan *md.LobbyEvent
 	topicHandler ClientCallback
 }
 
@@ -53,8 +53,8 @@ func NewLocal(ctx context.Context, h *net.HostNode, u *md.User, name string, th 
 		ctx:          ctx,
 		host:         h,
 		eventHandler: handler,
-		Lobby:        md.NewLocalLobby(u),
-		Messages:     make(chan *md.LobbyEvent, K_MAX_MESSAGES),
+		lobby:        md.NewLocalLobby(u),
+		messages:     make(chan *md.LobbyEvent, K_MAX_MESSAGES),
 		subscription: sub,
 		topic:        topic,
 	}
@@ -62,7 +62,7 @@ func NewLocal(ctx context.Context, h *net.HostNode, u *md.User, name string, th 
 	// Start Exchange Server
 	peersvServer := rpc.NewServer(h.Host, K_SERVICE_PID)
 	psv := TopicService{
-		lobby:  mgr.Lobby,
+		lobby:  mgr.lobby,
 		user:   u,
 		call:   th,
 		respCh: make(chan *md.AuthReply, 1),
@@ -89,7 +89,7 @@ func (tm *TopicManager) FindPeerInTopic(q string) (peer.ID, *md.Peer, error) {
 	var i peer.ID
 
 	// Iterate Through Peers, Return Matched Peer
-	for _, peer := range tm.Lobby.Peers {
+	for _, peer := range tm.lobby.Peers {
 		// If Found Match
 		if peer.Id.Peer == q {
 			p = peer

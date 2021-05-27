@@ -111,7 +111,7 @@ func (tm *TopicManager) Exchange(id peer.ID, peerBuf []byte, lobBuf []byte) erro
 	}
 
 	// Update Peer with new data
-	tm.Lobby.Add(remotePeer)
+	tm.lobby.Add(remotePeer)
 	tm.Refresh()
 	return nil
 }
