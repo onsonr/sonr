@@ -5,8 +5,7 @@ import (
 
 	"github.com/getsentry/sentry-go"
 	"github.com/pkg/errors"
-	lct "github.com/sonr-io/core/internal/local"
-	rmt "github.com/sonr-io/core/internal/remote"
+	tpc "github.com/sonr-io/core/internal/topic"
 	sc "github.com/sonr-io/core/pkg/client"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
@@ -14,6 +13,7 @@ import (
 
 // * Struct: Reference for Binded Proxy Node * //
 type Node struct {
+	md.NodeCallback
 	// Properties
 	call Callback
 	ctx  context.Context
@@ -23,8 +23,8 @@ type Node struct {
 	client *sc.Client
 
 	// Groups
-	local   *lct.LocalManager
-	remotes map[string]*rmt.RemoteManager
+	local  *tpc.TopicManager
+	topics map[string]*tpc.TopicManager
 
 	// Storage
 	storageEnabled bool
@@ -46,9 +46,9 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	}
 	// Create Mobile Node
 	mn := &Node{
-		call:    call,
-		ctx:     context.Background(),
-		remotes: make(map[string]*rmt.RemoteManager, 10),
+		call:   call,
+		ctx:    context.Background(),
+		topics: make(map[string]*tpc.TopicManager, 10),
 	}
 
 	// Create Users

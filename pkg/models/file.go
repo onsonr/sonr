@@ -105,7 +105,7 @@ func NewInSession(u *User, inv *AuthInvite, c NodeCallback) *Session {
 	}
 }
 
-// ^ Returns SonrFile as TransferCard given Receiver and Owner ^
+// Returns SonrFile as TransferCard given Receiver and Owner
 func (s *Session) Card() *Transfer {
 	return &Transfer{
 		// SQL Properties

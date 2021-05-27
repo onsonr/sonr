@@ -185,11 +185,6 @@ func NewUser(cr *ConnectionRequest) *User {
 	}
 }
 
-func (u *User) AddDevice(r *LinkResponse) *User {
-	u.Devices[r.GetDeviceLabel()] = r.GetDevice()
-	return u
-}
-
 func (u *User) DeviceID() string {
 	return u.Device.GetId()
 }
