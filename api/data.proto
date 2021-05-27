@@ -53,7 +53,7 @@ message Contact {
 
   // Field : General Field for Contact field
   message General {
-    string bio = 1;      // If this is the Primary field for Kind
+    string bio = 1;   // If this is the Primary field for Kind
     string sname = 2; // Type of Field
     Name name = 3;
     Date date = 4;
@@ -211,21 +211,12 @@ message Contact {
 
 // Location from GeoIP and OLC information
 message Location {
-  IP ip = 1;
-  Geo geo = 2;
-
-  message Geo {
-    double latitude = 1;
-    double longitude = 2;
-  }
-
-  message IP {
-    string state = 1;
-    string continent = 2;
-    string country = 3;
-    double latitude = 4;
-    double longitude = 5;
-  }
+  string city = 1;
+  string state = 2;
+  string continent = 3;
+  string country = 4;
+  double latitude = 5;
+  double longitude = 6;
 }
 
 // Standard MIME with Additional Extensions

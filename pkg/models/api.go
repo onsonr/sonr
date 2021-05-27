@@ -1,7 +1,6 @@
 package models
 
 import (
-	"errors"
 	"fmt"
 
 	olc "github.com/google/open-location-code/go"
@@ -68,54 +67,25 @@ func (i *AuthInvite) IsRemote() bool {
 
 // ** ─── Location MANAGEMENT ────────────────────────────────────────────────────────
 func (l *Location) MinorOLC() string {
-	lat := l.Latitude()
-	lon := l.Longitude()
+	lat := l.GetLatitude()
+	lon := l.GetLongitude()
 	return olc.Encode(lat, lon, 6)
 }
 
 func (l *Location) MajorOLC() string {
-	lat := l.Latitude()
-	lon := l.Longitude()
+	lat := l.GetLatitude()
+	lon := l.GetLongitude()
 	return olc.Encode(lat, lon, 2)
 }
 
-func (l *Location) Latitude() float64 {
-	if l.Geo != nil {
-		return l.Geo.GetLatitude()
-	}
-	return l.Ip.GetLatitude()
-}
-
-func (l *Location) Longitude() float64 {
-	if l.Geo != nil {
-		return l.Geo.GetLongitude()
-	}
-	return l.Ip.GetLongitude()
-}
-
-func (l *Location) GeoOLC() (string, error) {
-	if l.Geo != nil {
-		return "", errors.New("Geo Location doesnt exist")
-	}
-	return olc.Encode(float64(l.Geo.GetLatitude()), float64(l.Geo.GetLongitude()), 5), nil
-}
-
-func (l *Location) IPOLC() string {
-	return olc.Encode(float64(l.Ip.GetLatitude()), float64(l.Ip.GetLongitude()), 5)
+func (l *Location) OLC() string {
+	return olc.Encode(float64(l.GetLatitude()), float64(l.GetLongitude()), 5)
 }
 
 // ** ─── Router MANAGEMENT ────────────────────────────────────────────────────────
 // @ Local Lobby Topic Protocol ID
 func (r *User) LocalIPTopic() string {
-	return fmt.Sprintf("/sonr/topic/%s", r.Location.IPOLC())
-}
-
-func (r *User) LocalGeoTopic() (string, error) {
-	geoOlc, err := r.Location.GeoOLC()
-	if err != nil {
-		return "", err
-	}
-	return fmt.Sprintf("/sonr/topic/%s", geoOlc), nil
+	return fmt.Sprintf("/sonr/topic/%s", r.Location.OLC())
 }
 
 // @ Transfer Controller Data Protocol ID
