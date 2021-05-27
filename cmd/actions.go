@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/getsentry/sentry-go"
-	"github.com/sonr-io/core/internal/crypto"
 	sc "github.com/sonr-io/core/pkg/client"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
@@ -91,48 +90,42 @@ func Storj(data []byte) []byte {
 	return nil
 }
 
-// @ Join/Create/Leave Remote Group
-func (mn *Node) Remote(data []byte) []byte {
+// @ Create Remote Group
+func (mn *Node) RemoteCreate(data []byte) []byte {
 	if mn.isReady() {
 		// Get Request
-		request := &md.RemoteRequest{}
+		request := &md.RemoteCreateRequest{}
 		proto.Unmarshal(data, request)
 
-		switch request.Request.(type) {
-		// @ Create Remote
-		case *md.RemoteRequest_CreateData:
-			// Generate Word List
-			_, wordList, serr := crypto.RandomWords("english", 3)
-			if serr != nil {
-				mn.handleError(serr)
-				return nil
-			}
-			// Create Remote Request and Join Lobby
-			remote := md.NewRemote(mn.user, wordList, request.GetCreateData().GetFile())
+		// Join Lobby
+		tm, resp, serr := mn.client.CreateRemote(request)
+		if serr != nil {
+			mn.handleError(serr)
+			return nil
+		}
 
-			// Join Lobby
-			tm, serr := mn.client.CreateRemote(remote)
-			if serr != nil {
-				mn.handleError(serr)
-				return nil
-			}
+		// Set Topic
+		mn.topics[request.GetTopic()] = tm
 
-			// Set Topic
-			mn.topics[remote.Topic()] = tm
+		// Marshal
+		buff, err := proto.Marshal(resp)
+		if err != nil {
+			mn.handleError(md.NewError(err, md.ErrorMessage_MARSHAL))
+			return nil
+		}
+		return buff
+	}
+	return nil
+}
 
-			// Marshal
-			data := remote.ToRemoteResponseBytes()
-			return data
-
-		// @ Join Remote
-		case *md.RemoteRequest_JoinData:
-
-		// @ Respond Remote
-		case *md.RemoteRequest_ReplyData:
-
-		// @ Leave Remote
-		case *md.RemoteRequest_LeaveData:
-
+// @ Join Remote Group
+func (mn *Node) RemoteJoin(data []byte) []byte {
+	if mn.isReady() {
+		// Get Request
+		request := &md.RemoteJoinRequest{}
+		err := proto.Unmarshal(data, request)
+		if err != nil {
+			return nil
 		}
 	}
 	return nil

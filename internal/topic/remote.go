@@ -7,11 +7,13 @@ import (
 	md "github.com/sonr-io/core/pkg/models"
 )
 
-func JoinRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteJoinRequest, th ClientCallback) (*TopicManager, *md.SonrError) {
+func JoinRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteJoinRequest, th ClientCallback) (*TopicManager, *md.RemoteJoinResponse, *md.SonrError) {
 	// Join Topic
-	topic, sub, handler, serr := h.Join(r.)
+	topic, sub, handler, serr := h.Join(r.GetTopic())
 	if serr != nil {
-		return nil, serr
+		return nil, &md.RemoteJoinResponse{
+			Status: md.RemoteJoinResponse_None,
+		}, serr
 	}
 
 	// Check Peers
@@ -20,7 +22,9 @@ func JoinRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteJo
 		handler.Cancel()
 		sub.Cancel()
 		topic.Close()
-		return nil, md.NewErrorWithType(md.ErrorMessage_TOPIC_INVALID)
+		return nil, &md.RemoteJoinResponse{
+			Status: md.RemoteJoinResponse_Invalid,
+		}, md.NewErrorWithType(md.ErrorMessage_TOPIC_INVALID)
 	}
 
 	// Create Lobby Manager
@@ -30,8 +34,8 @@ func JoinRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteJo
 		ctx:          ctx,
 		host:         h,
 		eventHandler: handler,
-		lobby:        md.NewJoinedRemote(u, r),
-		messages:     make(chan *md.LobbyEvent, K_MAX_MESSAGES),
+		lobby:        r.NewJoinedRemote(u),
+		messages:     make(chan *md.LocalEvent, K_MAX_MESSAGES),
 		subscription: sub,
 		topic:        topic,
 	}
@@ -39,18 +43,18 @@ func JoinRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteJo
 	// Set Service
 	go mgr.handleTopicMessages()
 	go mgr.processTopicMessages()
-	return mgr, nil
+	return mgr, &md.RemoteJoinResponse{
+		Status: md.RemoteJoinResponse_Pending,
+		Lobby:  mgr.lobby,
+	}, nil
 }
 
 // ^ Create New Contained Topic Manager ^ //
-func NewRemote(ctx context.Context, h *net.HostNode, u *md.User, l *md.Lobby, th ClientCallback) (*TopicManager, *md.SonrError) {
-	// Get Topic Name
-	info := l.GetRemote()
-
+func NewRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteCreateRequest, th ClientCallback) (*TopicManager, *md.RemoteCreateResponse, *md.SonrError) {
 	// Join Topic
-	topic, sub, handler, serr := h.Join(info.Topic)
+	topic, sub, handler, serr := h.Join(r.GetTopic())
 	if serr != nil {
-		return nil, serr
+		return nil, nil, serr
 	}
 
 	// Create Lobby Manager
@@ -60,8 +64,8 @@ func NewRemote(ctx context.Context, h *net.HostNode, u *md.User, l *md.Lobby, th
 		ctx:          ctx,
 		host:         h,
 		eventHandler: handler,
-		lobby:        l,
-		messages:     make(chan *md.LobbyEvent, K_MAX_MESSAGES),
+		lobby:        r.NewCreatedRemote(u),
+		messages:     make(chan *md.LocalEvent, K_MAX_MESSAGES),
 		subscription: sub,
 		topic:        topic,
 	}
@@ -69,5 +73,8 @@ func NewRemote(ctx context.Context, h *net.HostNode, u *md.User, l *md.Lobby, th
 	// Set Service
 	go mgr.handleTopicMessages()
 	go mgr.processTopicMessages()
-	return mgr, nil
+	return mgr, &md.RemoteCreateResponse{
+		Success: true,
+		Topic:  mgr.lobby.Topic(),
+	}, nil
 }

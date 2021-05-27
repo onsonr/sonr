@@ -9,7 +9,7 @@ import (
 )
 
 // ^ OnEvent: Specific Lobby Event ^
-func (n *Client) OnEvent(e *md.LobbyEvent) {
+func (n *Client) OnEvent(e *md.LocalEvent) {
 	// Convert Message
 	bytes, err := proto.Marshal(e)
 	if err != nil {

@@ -16,7 +16,7 @@ func (u *User) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) *SonrError {
 		Id: &Peer_ID{
 			Peer:   id.String(),
 			Device: u.DeviceID(),
-			Sname:  u.SName(),
+			SName:  u.SName(),
 		},
 		Profile:  u.Profile(),
 		Platform: u.Device.Platform,
@@ -48,7 +48,7 @@ func (p *Peer) PeerID() string {
 
 // ^ Returns Peer User ID ^ //
 func (p *Peer) UserID() string {
-	return p.Id.GetSname()
+	return p.Id.GetSName()
 }
 
 // ^ Checks if Two Peers are the Same by Device ID and Peer ID
@@ -102,12 +102,10 @@ func (u *User) SignFlatReply(from *Peer) *AuthReply {
 }
 
 // ^ SignUpdate Creates Lobby Event with Peer Data ^
-func (p *Peer) SignUpdate() *LobbyEvent {
-	return &LobbyEvent{
-		Event: &LobbyEvent_Local{
-			Local: LobbyEvent_UPDATE,
-		},
-		From: p,
-		Id:   p.Id.Peer,
+func (p *Peer) SignUpdate() *LocalEvent {
+	return &LocalEvent{
+		Subject: LocalEvent_UPDATE,
+		From:    p,
+		Id:      p.Id.Peer,
 	}
 }

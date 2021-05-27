@@ -17,7 +17,7 @@ const K_MAX_MESSAGES = 128
 const K_SERVICE_PID = protocol.ID("/sonr/topic-service/0.1")
 
 type ClientCallback interface {
-	OnEvent(*md.LobbyEvent)
+	OnEvent(*md.LocalEvent)
 	OnRefresh(*md.Lobby)
 	OnInvite([]byte)
 	OnReply(id peer.ID, data []byte)
@@ -34,7 +34,7 @@ type TopicManager struct {
 	lobby        *md.Lobby
 
 	service      *TopicService
-	messages     chan *md.LobbyEvent
+	messages     chan *md.LocalEvent
 	topicHandler ClientCallback
 }
 
@@ -54,7 +54,7 @@ func NewLocal(ctx context.Context, h *net.HostNode, u *md.User, name string, th 
 		host:         h,
 		eventHandler: handler,
 		lobby:        md.NewLocalLobby(u),
-		messages:     make(chan *md.LobbyEvent, K_MAX_MESSAGES),
+		messages:     make(chan *md.LocalEvent, K_MAX_MESSAGES),
 		subscription: sub,
 		topic:        topic,
 	}
@@ -129,7 +129,7 @@ func (tm *TopicManager) HasPeer(q string) bool {
 }
 
 // ^ Send message to specific peer in topic ^
-func (tm *TopicManager) Send(msg *md.LobbyEvent) error {
+func (tm *TopicManager) Send(msg *md.LocalEvent) error {
 	// Convert Event to Proto Binary
 	bytes, err := proto.Marshal(msg)
 	if err != nil {

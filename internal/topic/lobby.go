@@ -61,7 +61,7 @@ func (tm *TopicManager) handleTopicMessages() {
 		}
 
 		// Construct message
-		m := &md.LobbyEvent{}
+		m := &md.LocalEvent{}
 		err = proto.Unmarshal(msg.Data, m)
 		if err != nil {
 			continue
@@ -90,22 +90,12 @@ func (tm *TopicManager) processTopicMessages() {
 }
 
 // ^ handleMessage: performs action for Message Type and Event Kind ^
-func (tm *TopicManager) handleMessage(e *md.LobbyEvent) {
-	switch e.Event.(type) {
+func (tm *TopicManager) handleMessage(e *md.LocalEvent) {
 	// Local Event
-	case *md.LobbyEvent_Local:
-		event := e.GetLocal()
-		if event == md.LobbyEvent_UPDATE {
-			// Update Peer Data
-			tm.lobby.Add(e.From)
-			tm.Refresh()
-		}
-
-	// Remote Event
-	case *md.LobbyEvent_Remote:
-		tm.topicHandler.OnEvent(e)
-
-	default:
-		return
+	event := e.GetSubject()
+	if event == md.LocalEvent_UPDATE {
+		// Update Peer Data
+		tm.lobby.Add(e.From)
+		tm.Refresh()
 	}
 }
