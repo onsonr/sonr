@@ -14,6 +14,7 @@ import (
 
 const K_MAX_MESSAGES = 256
 const K_SERVICE_PID = protocol.ID("/sonr/local-service/0.2")
+const K_RPC_SERVICE = "LocalService"
 
 type ClientCallback interface {
 	OnEvent(*md.LobbyEvent)
@@ -31,7 +32,7 @@ type LocalManager struct {
 	geoTopic *pubsub.Topic
 	ipTopic  *pubsub.Topic
 	lobby    *md.SyncLobby
-	service  *LocalService
+	service  *TopicService
 	messages chan *md.LobbyEvent
 	callback ClientCallback
 }

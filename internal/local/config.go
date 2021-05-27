@@ -55,7 +55,7 @@ func (lm *LocalManager) joinGeoTopic() (*pubsub.Subscription, *pubsub.TopicEvent
 func (lm *LocalManager) registerService() *md.SonrError {
 	// Start Exchange Server
 	peersvServer := rpc.NewServer(lm.host.Host, K_SERVICE_PID)
-	lsv := LocalService{
+	lsv := TopicService{
 		lobby:  lm.lobby,
 		user:   lm.user,
 		call:   lm.callback,
@@ -64,7 +64,7 @@ func (lm *LocalManager) registerService() *md.SonrError {
 	}
 
 	// Register Service
-	err := peersvServer.Register(&lsv)
+	err := peersvServer.RegisterName(K_RPC_SERVICE, &lsv)
 	if err != nil {
 		return md.NewError(err, md.ErrorMessage_TOPIC_RPC)
 	}

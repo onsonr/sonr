@@ -10,8 +10,10 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+
+
 // ExchangeArgs is Peer protobuf
-type LocalServiceArgs struct {
+type TopicServiceArgs struct {
 	Lobby  []byte
 	Peer   []byte
 	Invite []byte
@@ -19,13 +21,13 @@ type LocalServiceArgs struct {
 }
 
 // ExchangeResponse is also Peer protobuf
-type LocalServiceResponse struct {
+type TopicServiceResponse struct {
 	Reply []byte
 	Peer  []byte
 }
 
 // Service Struct
-type LocalService struct {
+type TopicService struct {
 	// Current Data
 	call  ClientCallback
 	lobby *md.SyncLobby
@@ -48,8 +50,8 @@ func (tm *LocalManager) Flat(id peer.ID, inv *md.AuthInvite) error {
 
 	// Initialize Data
 	rpcClient := rpc.NewClient(tm.host.Host, K_SERVICE_PID)
-	var reply LocalServiceResponse
-	var args LocalServiceArgs
+	var reply TopicServiceResponse
+	var args TopicServiceArgs
 	args.Invite = msgBytes
 
 	// Call to Peer
@@ -63,7 +65,7 @@ func (tm *LocalManager) Flat(id peer.ID, inv *md.AuthInvite) error {
 }
 
 // ^ Calls Invite on Remote Peer for Flat Mode and makes Direct Response ^ //
-func (ts *LocalService) FlatWith(ctx context.Context, args LocalServiceArgs, reply *LocalServiceResponse) error {
+func (ts *TopicService) FlatWith(ctx context.Context, args TopicServiceArgs, reply *TopicServiceResponse) error {
 	// Received Message
 	receivedMessage := md.AuthInvite{}
 	err := proto.Unmarshal(args.Invite, &receivedMessage)
@@ -92,8 +94,8 @@ func (ts *LocalService) FlatWith(ctx context.Context, args LocalServiceArgs, rep
 func (tm *LocalManager) Exchange(id peer.ID, peerBuf []byte, lobBuf []byte) error {
 	// Initialize RPC
 	exchClient := rpc.NewClient(tm.host.Host, K_SERVICE_PID)
-	var reply LocalServiceResponse
-	var args LocalServiceArgs
+	var reply TopicServiceResponse
+	var args TopicServiceArgs
 
 	// Set Args
 	args.Lobby = lobBuf
@@ -121,7 +123,7 @@ func (tm *LocalManager) Exchange(id peer.ID, peerBuf []byte, lobBuf []byte) erro
 }
 
 // ^ Calls Invite on Remote Peer ^ //
-func (ts *LocalService) ExchangeWith(ctx context.Context, args LocalServiceArgs, reply *LocalServiceResponse) error {
+func (ts *TopicService) ExchangeWith(ctx context.Context, args TopicServiceArgs, reply *TopicServiceResponse) error {
 	// Peer Data
 	remoteLobbyRef := &md.Lobby{}
 	err := proto.Unmarshal(args.Lobby, remoteLobbyRef)
@@ -158,8 +160,8 @@ func (tm *LocalManager) Invite(id peer.ID, inv *md.AuthInvite) error {
 
 	// Initialize Data
 	rpcClient := rpc.NewClient(tm.host.Host, K_SERVICE_PID)
-	var reply LocalServiceResponse
-	var args LocalServiceArgs
+	var reply TopicServiceResponse
+	var args TopicServiceArgs
 	args.Invite = msgBytes
 
 	// Call to Peer
@@ -176,7 +178,7 @@ func (tm *LocalManager) Invite(id peer.ID, inv *md.AuthInvite) error {
 }
 
 // ^ Calls Invite on Remote Peer ^ //
-func (ts *LocalService) InviteWith(ctx context.Context, args LocalServiceArgs, reply *LocalServiceResponse) error {
+func (ts *TopicService) InviteWith(ctx context.Context, args TopicServiceArgs, reply *TopicServiceResponse) error {
 	// Received Message
 	receivedMessage := md.AuthInvite{}
 	err := proto.Unmarshal(args.Invite, &receivedMessage)
@@ -230,8 +232,8 @@ func (tm *LocalManager) Link(id peer.ID, inv *md.LinkRequest) error {
 
 	// Initialize Data
 	rpcClient := rpc.NewClient(tm.host.Host, K_SERVICE_PID)
-	var reply LocalServiceResponse
-	var args LocalServiceArgs
+	var reply TopicServiceResponse
+	var args TopicServiceArgs
 	args.Link = msgBytes
 
 	// Call to Peer
@@ -248,7 +250,7 @@ func (tm *LocalManager) Link(id peer.ID, inv *md.LinkRequest) error {
 }
 
 // ^ Calls Invite on Remote Peer ^ //
-func (ts *LocalService) LinkWith(ctx context.Context, args LocalServiceArgs, reply *LocalServiceResponse) error {
+func (ts *TopicService) LinkWith(ctx context.Context, args TopicServiceArgs, reply *TopicServiceResponse) error {
 	// Received Message
 	receivedMessage := md.LinkRequest{}
 	err := proto.Unmarshal(args.Link, &receivedMessage)
