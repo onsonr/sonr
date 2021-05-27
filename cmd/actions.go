@@ -97,7 +97,7 @@ func (mn *Node) RemoteCreate(data []byte) []byte {
 		request := &md.RemoteCreateRequest{}
 		proto.Unmarshal(data, request)
 
-		// Join Lobby
+		// Create Remote
 		tm, resp, serr := mn.client.CreateRemote(request)
 		if serr != nil {
 			mn.handleError(serr)
@@ -127,6 +127,24 @@ func (mn *Node) RemoteJoin(data []byte) []byte {
 		if err != nil {
 			return nil
 		}
+
+		// Create Remote
+		tm, resp, serr := mn.client.JoinRemote(request)
+		if serr != nil {
+			mn.handleError(serr)
+			return nil
+		}
+
+		// Set Topic
+		mn.topics[request.GetTopic()] = tm
+
+		// Marshal
+		buff, err := proto.Marshal(resp)
+		if err != nil {
+			mn.handleError(md.NewError(err, md.ErrorMessage_MARSHAL))
+			return nil
+		}
+		return buff
 	}
 	return nil
 }

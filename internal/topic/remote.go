@@ -5,8 +5,11 @@ import (
 
 	net "github.com/sonr-io/core/internal/host"
 	md "github.com/sonr-io/core/pkg/models"
+	"google.golang.org/protobuf/proto"
 )
 
+
+// ^ Join Existing Remote Topic ^ //
 func JoinRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteJoinRequest, th ClientCallback) (*TopicManager, *md.RemoteJoinResponse, *md.SonrError) {
 	// Join Topic
 	topic, sub, handler, serr := h.Join(r.GetTopic())
@@ -30,12 +33,13 @@ func JoinRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteJo
 	// Create Lobby Manager
 	mgr := &TopicManager{
 		user:         u,
-		topicHandler: th,
+		callback:     th,
 		ctx:          ctx,
 		host:         h,
 		eventHandler: handler,
 		lobby:        r.NewJoinedRemote(u),
-		messages:     make(chan *md.LocalEvent, K_MAX_MESSAGES),
+		lobbyType:    md.Lobby_REMOTE,
+		localEvents:  make(chan *md.LocalEvent, K_MAX_MESSAGES),
 		subscription: sub,
 		topic:        topic,
 	}
@@ -59,13 +63,14 @@ func NewRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteCre
 
 	// Create Lobby Manager
 	mgr := &TopicManager{
-		topicHandler: th,
+		callback:     th,
 		user:         u,
 		ctx:          ctx,
 		host:         h,
 		eventHandler: handler,
 		lobby:        r.NewCreatedRemote(u),
-		messages:     make(chan *md.LocalEvent, K_MAX_MESSAGES),
+		lobbyType:    md.Lobby_REMOTE,
+		localEvents:  make(chan *md.LocalEvent, K_MAX_MESSAGES),
 		subscription: sub,
 		topic:        topic,
 	}
@@ -75,6 +80,22 @@ func NewRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteCre
 	go mgr.processTopicMessages()
 	return mgr, &md.RemoteCreateResponse{
 		Success: true,
-		Topic:  mgr.lobby.Topic(),
+		Topic:   mgr.lobby.Topic(),
 	}, nil
+}
+
+// ^ SendLocal message to specific peer in topic ^
+func (tm *TopicManager) SendRemote(msg *md.RemoteEvent) error {
+	// Convert Event to Proto Binary
+	bytes, err := proto.Marshal(msg)
+	if err != nil {
+		return err
+	}
+
+	// Publish to Topic
+	err = tm.topic.Publish(tm.ctx, bytes)
+	if err != nil {
+		return err
+	}
+	return nil
 }

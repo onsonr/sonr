@@ -84,18 +84,18 @@ func (l *Location) OLC() string {
 
 // ** ─── Router MANAGEMENT ────────────────────────────────────────────────────────
 // @ Local Lobby Topic Protocol ID
-func (r *User) LocalIPTopic() string {
+func (r *User) LocalTopic() string {
 	return fmt.Sprintf("/sonr/topic/%s", r.Location.OLC())
 }
 
-// @ Transfer Controller Data Protocol ID
-func (r *User_Router) Transfer(id peer.ID) protocol.ID {
-	return protocol.ID(fmt.Sprintf("/sonr/transfer/%s", id.Pretty()))
+// @ LocalTransfer Controller Data Protocol ID
+func (r *User_Router) LocalTransfer(id peer.ID) protocol.ID {
+	return protocol.ID(fmt.Sprintf("/sonr/local-transfer/%s", id.Pretty()))
 }
 
 // @ Transfer Controller Data Protocol ID
-func (r *User_Router) Remote(id peer.ID) protocol.ID {
-	return protocol.ID(fmt.Sprintf("/sonr/remote/%s", id.Pretty()))
+func (r *User_Router) RemoteTransfer(id peer.ID) protocol.ID {
+	return protocol.ID(fmt.Sprintf("/sonr/remote-transfer/%s", id.Pretty()))
 }
 
 // @ Lobby Topic Protocol ID

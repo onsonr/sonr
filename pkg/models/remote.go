@@ -3,7 +3,7 @@ package models
 import "fmt"
 
 func (r *RemoteCreateRequest) GetTopic() string {
-	return fmt.Sprintf("%s.transfer.%s.snr/", r.Fingerprint, r.SName)
+	return fmt.Sprintf("%s.remote.%s.snr/", r.Fingerprint, r.SName)
 }
 
 // Get Remote Point Info

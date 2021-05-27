@@ -203,7 +203,7 @@ func (n *Client) Respond(req *md.AuthReply, t *tpc.TopicManager) {
 // ^ Update proximity/direction and Notify Lobby ^ //
 func (n *Client) Update(t *tpc.TopicManager) *md.SonrError {
 	// Inform Lobby
-	if err := t.Send(n.user.Peer.SignUpdate()); err != nil {
+	if err := t.SendLocal(n.user.Peer.SignUpdate()); err != nil {
 		return md.NewError(err, md.ErrorMessage_TOPIC_UPDATE)
 	}
 	return nil

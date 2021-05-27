@@ -8,8 +8,8 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// ^ OnEvent: Specific Lobby Event ^
-func (n *Client) OnEvent(e *md.LocalEvent) {
+// ^ OnLocalEvent: Local Lobby Event ^
+func (n *Client) OnLocalEvent(e *md.LocalEvent) {
 	// Convert Message
 	bytes, err := proto.Marshal(e)
 	if err != nil {
@@ -18,7 +18,20 @@ func (n *Client) OnEvent(e *md.LocalEvent) {
 	}
 
 	// Call Event
-	n.call.Event(bytes)
+	n.call.LocalEvent(bytes)
+}
+
+// ^ OnRemoteEvent: Remote Lobby Event ^
+func (n *Client) OnRemoteEvent(e *md.RemoteEvent) {
+	// Convert Message
+	bytes, err := proto.Marshal(e)
+	if err != nil {
+		n.call.Error(md.NewError(err, md.ErrorMessage_UNMARSHAL))
+		return
+	}
+
+	// Call Event
+	n.call.RemoteEvent(bytes)
 }
 
 // ^ OnLinkRequest: When Device is Initiating Link
@@ -62,7 +75,7 @@ func (n *Client) OnReply(id peer.ID, reply []byte) {
 			n.call.Status(md.Status_INPROGRESS)
 
 			// Create New Auth Stream
-			stream, err := n.Host.StartStream(id, n.user.GetRouter().Transfer(id))
+			stream, err := n.Host.StartStream(id, n.user.GetRouter().LocalTransfer(id))
 			if err != nil {
 				n.call.Error(md.NewError(err, md.ErrorMessage_HOST_STREAM))
 				return
@@ -79,5 +92,5 @@ func (n *Client) OnReply(id peer.ID, reply []byte) {
 // ^ OnResponded: Prepares for Incoming File Transfer when Accepted ^
 func (n *Client) OnResponded(inv *md.AuthInvite) {
 	n.session = md.NewInSession(n.user, inv, n.call)
-	n.Host.HandleStream(n.user.GetRouter().Transfer(n.Host.ID), n.session.ReadFromStream)
+	n.Host.HandleStream(n.user.GetRouter().LocalTransfer(n.Host.ID), n.session.ReadFromStream)
 }
