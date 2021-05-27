@@ -221,7 +221,7 @@ func NewLocalLobby(u *User) *Lobby {
 
 // Get Remote Point Info
 func NewRemote(u *User, list []string, file *SonrFile) *Lobby {
-	r := &RemoteResponse{
+	r := &RemoteCreateResponse{
 		Display: fmt.Sprintf("%s %s %s", list[0], list[1], list[2]),
 		Topic:   fmt.Sprintf("%s-%s-%s", list[0], list[1], list[2]),
 		Count:   int32(len(list)),
@@ -240,7 +240,6 @@ func NewRemote(u *User, list []string, file *SonrFile) *Lobby {
 		Info: &Lobby_Remote{
 			Remote: &Lobby_RemoteInfo{
 				IsJoin:  r.IsJoin,
-				Display: r.Display,
 				Words:   r.GetWords(),
 				Topic:   r.GetTopic(),
 				File:    file,
@@ -250,7 +249,7 @@ func NewRemote(u *User, list []string, file *SonrFile) *Lobby {
 	}
 }
 
-func NewJoinedRemote(u *User, r *RemoteResponse) *Lobby {
+func NewJoinedRemote(u *User, r *RemoteJoinRequest) *Lobby {
 	// Create Lobby
 	return &Lobby{
 		// General
@@ -261,10 +260,9 @@ func NewJoinedRemote(u *User, r *RemoteResponse) *Lobby {
 		// Info
 		Info: &Lobby_Remote{
 			Remote: &Lobby_RemoteInfo{
-				IsJoin:  r.IsJoin,
-				Display: r.Display,
-				Words:   r.GetWords(),
-				Topic:   r.GetTopic(),
+				IsJoin:  true,
+				Words:   r.Words(),
+				Topic:   r.Topic(),
 			},
 		},
 	}
@@ -286,7 +284,7 @@ func (l *Lobby) ToRemoteResponseBytes() []byte {
 	case *Lobby_Remote:
 		// Convert Info to Response
 		i := l.GetRemote()
-		resp := &RemoteResponse{
+		resp := &RemoteCreateResponse{
 			IsJoin:  i.GetIsJoin(),
 			Display: i.GetDisplay(),
 			Topic:   i.GetTopic(),

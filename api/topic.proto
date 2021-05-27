@@ -31,11 +31,10 @@ message Lobby {
 
   message RemoteInfo {
     bool isJoin = 1;
-    string display = 2;
-    string topic = 3;
-    repeated string words = 4;
-    SonrFile file = 5;
-    Peer owner = 6;
+    string topic = 2;
+    repeated string words = 3;
+    SonrFile file = 4;
+    Peer owner = 5;
   }
 }
 

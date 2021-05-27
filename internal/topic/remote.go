@@ -7,9 +7,9 @@ import (
 	md "github.com/sonr-io/core/pkg/models"
 )
 
-func JoinRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteResponse, th ClientCallback) (*TopicManager, *md.SonrError) {
+func JoinRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteJoinRequest, th ClientCallback) (*TopicManager, *md.SonrError) {
 	// Join Topic
-	topic, sub, handler, serr := h.Join(r.Topic)
+	topic, sub, handler, serr := h.Join(r.)
 	if serr != nil {
 		return nil, serr
 	}
