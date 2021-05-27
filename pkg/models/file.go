@@ -151,6 +151,7 @@ func (s *Session) WriteToStream(stream network.Stream) {
 			GetState().NeedsWait()
 		}
 		// Callback
+		stream.Close()
 		s.call.Transmitted(s.Card())
 	}(msg.NewWriter(stream))
 
