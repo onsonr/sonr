@@ -198,7 +198,7 @@ func (g *Global) Sync(rg *Global) {
 // Creates Local Lobby from User Data
 func NewLocalLobby(u *User) *Lobby {
 	// Get Info
-	topic := u.LocalTopic()
+	topic := u.LocalIPTopic()
 	loc := u.GetRouter().GetLocation()
 
 	// Create Lobby

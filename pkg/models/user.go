@@ -174,9 +174,9 @@ func NewUser(cr *ConnectionRequest) *User {
 			HasJoinedLocal:  false,
 			Connectivity:    cr.GetConnectivity(),
 			Router: &User_Router{
-				Rendevouz:    fmt.Sprintf("/sonr/%s", cr.GetLocation().MajorOLC()),
-				LocalTopic: fmt.Sprintf("/sonr/topic/%s", cr.GetLocation().LocalOLC()),
-				Location:     cr.GetLocation(),
+				Rendevouz:  fmt.Sprintf("/sonr/%s", cr.GetLocation().MajorOLC()),
+				LocalTopic: fmt.Sprintf("/sonr/topic/%s", cr.GetLocation().IPOLC()),
+				Location:   cr.GetLocation(),
 			},
 			Status: Status_IDLE,
 		},

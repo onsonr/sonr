@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"fmt"
 
 	olc "github.com/google/open-location-code/go"
@@ -92,17 +93,29 @@ func (l *Location) Longitude() float64 {
 	return l.Ip.GetLongitude()
 }
 
-func (l *Location) LocalOLC() string {
+func (l *Location) GeoOLC() (string, error) {
 	if l.Geo != nil {
-		return olc.Encode(float64(l.Ip.GetLatitude()), float64(l.Ip.GetLongitude()), 5)
+		return "", errors.New("Geo Location doesnt exist")
 	}
-	return olc.Encode(float64(l.Geo.GetLatitude()), float64(l.Geo.GetLongitude()), 5)
+	return olc.Encode(float64(l.Geo.GetLatitude()), float64(l.Geo.GetLongitude()), 5), nil
+}
+
+func (l *Location) IPOLC() string {
+	return olc.Encode(float64(l.Ip.GetLatitude()), float64(l.Ip.GetLongitude()), 5)
 }
 
 // ** ─── Router MANAGEMENT ────────────────────────────────────────────────────────
 // @ Local Lobby Topic Protocol ID
-func (r *User) LocalTopic() string {
-	return fmt.Sprintf("/sonr/topic/%s", r.Location.LocalOLC())
+func (r *User) LocalIPTopic() string {
+	return fmt.Sprintf("/sonr/topic/%s", r.Location.IPOLC())
+}
+
+func (r *User) LocalGeoTopic() (string, error) {
+	geoOlc, err := r.Location.GeoOLC()
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("/sonr/topic/%s", geoOlc), nil
 }
 
 // @ Transfer Controller Data Protocol ID
