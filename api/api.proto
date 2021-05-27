@@ -155,7 +155,7 @@ message User {
   // Client
   message Router {
     string deviceTopic = 1;
-    string localIPTopic = 2;
+    string localTopic = 2;
     string rendevouz = 3;
     Location location = 4;
   }
