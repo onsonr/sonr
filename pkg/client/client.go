@@ -104,7 +104,7 @@ func (n *Client) JoinRemote(r *md.RemoteResponse) (*tpc.TopicManager, *md.SonrEr
 
 // ^ Join Lobby Adds Node to Named Topic ^
 func (n *Client) JoinLocal() (*tpc.TopicManager, *md.SonrError) {
-	if t, err := tpc.NewLocal(n.ctx, n.Host, n.user, n.user.LocalTopic(), n); err != nil {
+	if t, err := tpc.NewLocal(n.ctx, n.Host, n.user, n.user.GetRouter().LocalTopic, n); err != nil {
 		return nil, err
 	} else {
 		return t, nil
