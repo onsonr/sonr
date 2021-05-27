@@ -74,7 +74,7 @@ func (d *Device) IsFile(name string) bool {
 
 // @ Returns Private key from disk if found
 func (d *Device) NewPrivateKey() *SonrError {
-	K_SONR_PRIV_KEY := "snr-peer.privkey"
+	K_SONR_PRIV_KEY := "snr-priv-key"
 
 	// Get Private Key
 	if ok := d.IsFile(K_SONR_PRIV_KEY); ok {
@@ -174,7 +174,7 @@ func NewUser(cr *ConnectionRequest) *User {
 			HasJoinedLocal:  false,
 			Connectivity:    cr.GetConnectivity(),
 			Router: &User_Router{
-				Rendevouz:  fmt.Sprintf("/sonr/%s", cr.GetLocation().MajorOLC()),
+				Rendevouz:  "/sonr/rendevouz/0.9.2",
 				LocalTopic: fmt.Sprintf("/sonr/topic/%s", cr.GetLocation().OLC()),
 				Location:   cr.GetLocation(),
 			},
