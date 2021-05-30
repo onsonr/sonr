@@ -3,13 +3,6 @@ syntax = "proto3";
 // Require Go Package
 option go_package = "/models";
 
-// Client Network Connection Status
-enum Connectivity {
-  None = 0;
-  Mobile = 1;
-  WiFi = 2;
-}
-
 // Status is User Node Situation
 enum Status {
   IDLE = 0;         // Default Status on Launch
