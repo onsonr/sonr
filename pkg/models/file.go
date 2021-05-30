@@ -154,5 +154,4 @@ func (s *Session) WriteToStream(stream network.Stream) {
 		stream.Close()
 		s.call.Transmitted(s.Card())
 	}(msg.NewWriter(stream))
-
 }

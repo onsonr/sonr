@@ -100,8 +100,6 @@ message LinkRequest {
 message LinkResponse {
   User user = 1;
   bool decision = 2;
-  string deviceLabel = 3;
-  Device device = 4;
 }
 
 // Linker Object is used for Temporary host and Linking Devices

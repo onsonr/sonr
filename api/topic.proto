@@ -21,6 +21,7 @@ message Lobby {
   enum Type {
     LOCAL = 0;
     REMOTE = 1;
+    LINKER = 2;
   }
 
   message LocalInfo {

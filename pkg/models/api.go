@@ -133,9 +133,14 @@ func (r *User) LocalTopic() string {
 	return fmt.Sprintf("/sonr/topic/%s", r.Location.OLC())
 }
 
-// @ LocalTransfer Controller Data Protocol ID
-func (r *User_Router) LocalTransfer(id peer.ID) protocol.ID {
+// @ LocalTransferProtocol Controller Data Protocol ID
+func (r *User_Router) LocalTransferProtocol(id peer.ID) protocol.ID {
 	return protocol.ID(fmt.Sprintf("/sonr/local-transfer/%s", id.Pretty()))
+}
+
+// @ Lobby Topic Protocol ID
+func (r *User_Router) LinkProtocol(username string) protocol.ID {
+	return protocol.ID(fmt.Sprintf("/sonr/user-linker/%s", username))
 }
 
 // @ Transfer Controller Data Protocol ID
