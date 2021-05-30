@@ -214,7 +214,7 @@ func (u *User) PrivateKey() crypto.PrivKey {
 
 // Method Returns SName
 func (u *User) SName() string {
-	return fmt.Sprintf("%s.snr/", u.Profile().GetSname())
+	return fmt.Sprintf("%s.snr/", u.Profile().GetSName())
 }
 
 // Updates User Peer

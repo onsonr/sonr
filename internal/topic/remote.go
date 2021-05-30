@@ -5,13 +5,17 @@ import (
 
 	net "github.com/sonr-io/core/internal/host"
 	md "github.com/sonr-io/core/pkg/models"
+	"google.golang.org/protobuf/proto"
 )
 
-func JoinRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteResponse, th ClientCallback) (*TopicManager, *md.SonrError) {
+// ^ Join Existing Remote Topic ^ //
+func JoinRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteJoinRequest, th ClientCallback) (*TopicManager, *md.RemoteJoinResponse, *md.SonrError) {
 	// Join Topic
-	topic, sub, handler, serr := h.Join(r.Topic)
+	topic, sub, handler, serr := h.Join(r.GetTopic())
 	if serr != nil {
-		return nil, serr
+		return nil, &md.RemoteJoinResponse{
+			Status: md.RemoteJoinResponse_None,
+		}, serr
 	}
 
 	// Check Peers
@@ -20,18 +24,21 @@ func JoinRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteRe
 		handler.Cancel()
 		sub.Cancel()
 		topic.Close()
-		return nil, md.NewErrorWithType(md.ErrorMessage_TOPIC_INVALID)
+		return nil, &md.RemoteJoinResponse{
+			Status: md.RemoteJoinResponse_Invalid,
+		}, md.NewErrorWithType(md.ErrorMessage_TOPIC_INVALID)
 	}
 
 	// Create Lobby Manager
 	mgr := &TopicManager{
 		user:         u,
-		topicHandler: th,
+		callback:     th,
 		ctx:          ctx,
 		host:         h,
 		eventHandler: handler,
-		lobby:        md.NewJoinedRemote(u, r),
-		messages:     make(chan *md.LobbyEvent, K_MAX_MESSAGES),
+		lobby:        r.NewJoinedRemote(u),
+		lobbyType:    md.Lobby_REMOTE,
+		remoteEvents: make(chan *md.RemoteEvent, K_MAX_MESSAGES),
 		subscription: sub,
 		topic:        topic,
 	}
@@ -39,29 +46,30 @@ func JoinRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteRe
 	// Set Service
 	go mgr.handleTopicMessages()
 	go mgr.processTopicMessages()
-	return mgr, nil
+	return mgr, &md.RemoteJoinResponse{
+		Status: md.RemoteJoinResponse_Pending,
+		Lobby:  mgr.lobby,
+	}, nil
 }
 
 // ^ Create New Contained Topic Manager ^ //
-func NewRemote(ctx context.Context, h *net.HostNode, u *md.User, l *md.Lobby, th ClientCallback) (*TopicManager, *md.SonrError) {
-	// Get Topic Name
-	info := l.GetRemote()
-
+func NewRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteCreateRequest, th ClientCallback) (*TopicManager, *md.RemoteCreateResponse, *md.SonrError) {
 	// Join Topic
-	topic, sub, handler, serr := h.Join(info.Topic)
+	topic, sub, handler, serr := h.Join(r.GetTopic())
 	if serr != nil {
-		return nil, serr
+		return nil, nil, serr
 	}
 
 	// Create Lobby Manager
 	mgr := &TopicManager{
-		topicHandler: th,
+		callback:     th,
 		user:         u,
 		ctx:          ctx,
 		host:         h,
 		eventHandler: handler,
-		lobby:        l,
-		messages:     make(chan *md.LobbyEvent, K_MAX_MESSAGES),
+		lobby:        r.NewCreatedRemote(u),
+		lobbyType:    md.Lobby_REMOTE,
+		remoteEvents: make(chan *md.RemoteEvent, K_MAX_MESSAGES),
 		subscription: sub,
 		topic:        topic,
 	}
@@ -69,5 +77,24 @@ func NewRemote(ctx context.Context, h *net.HostNode, u *md.User, l *md.Lobby, th
 	// Set Service
 	go mgr.handleTopicMessages()
 	go mgr.processTopicMessages()
-	return mgr, nil
+	return mgr, &md.RemoteCreateResponse{
+		Success: true,
+		Topic:   mgr.lobby.Topic(),
+	}, nil
+}
+
+// ^ SendLocal message to specific peer in topic ^
+func (tm *TopicManager) SendRemote(msg *md.RemoteEvent) error {
+	// Convert Event to Proto Binary
+	bytes, err := proto.Marshal(msg)
+	if err != nil {
+		return err
+	}
+
+	// Publish to Topic
+	err = tm.topic.Publish(tm.ctx, bytes)
+	if err != nil {
+		return err
+	}
+	return nil
 }

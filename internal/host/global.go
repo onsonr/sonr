@@ -30,7 +30,7 @@ type globalTopic struct {
 	service      *GlobalService
 }
 
-func (hn *HostNode) StartGlobal(sname string) (GlobalTopic, *md.SonrError) {
+func (hn *HostNode) StartGlobal(SName string) (GlobalTopic, *md.SonrError) {
 	// Join Global Topic
 	t, s, h, err := hn.Join("sonr-global")
 	if err != nil {
@@ -47,7 +47,7 @@ func (hn *HostNode) StartGlobal(sname string) (GlobalTopic, *md.SonrError) {
 		global: &md.Global{
 			Peers:      make(map[string]string),
 			UserPeerID: hn.Host.ID().String(),
-			Sname:      sname,
+			SName:      SName,
 		},
 	}
 

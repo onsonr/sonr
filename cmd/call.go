@@ -10,7 +10,8 @@ import (
 type Callback interface {
 	OnStatus(data []byte)      // Node Status Updates
 	OnRefreshed(data []byte)   // Lobby Updates
-	OnEvent(data []byte)       // Lobby Event
+	OnLocalEvent(data []byte)  // Local Lobby Event
+	OnRemoteEvent(data []byte) // Local Lobby Event
 	OnLink(data []byte)        // Link event
 	OnInvited(data []byte)     // User Invited
 	OnDirected(data []byte)    // User Direct-Invite from another Device
@@ -34,10 +35,11 @@ func (mn *Node) invited(data []byte) {
 func (mn *Node) callbackNode() md.NodeCallback {
 	return md.NodeCallback{
 		// Direct
-		Refreshed:  mn.call.OnRefreshed,
-		Event:      mn.call.OnEvent,
-		Responded:  mn.call.OnResponded,
-		Progressed: mn.call.OnProgress,
+		Refreshed:   mn.call.OnRefreshed,
+		LocalEvent:  mn.call.OnLocalEvent,
+		RemoteEvent: mn.call.OnRemoteEvent,
+		Responded:   mn.call.OnResponded,
+		Progressed:  mn.call.OnProgress,
 
 		// Middleware
 		Invited:     mn.invited,

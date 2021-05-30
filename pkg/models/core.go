@@ -2,7 +2,6 @@ package models
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"net/http"
 	"sync"
@@ -24,8 +23,8 @@ type OnError func(err *SonrError)
 type NodeCallback struct {
 	Invited     OnInvite
 	Refreshed   OnProtobuf
-	Event       OnProtobuf
-	RemoteStart OnProtobuf
+	LocalEvent  OnProtobuf
+	RemoteEvent OnProtobuf
 	Responded   OnProtobuf
 	Progressed  OnProgress
 	Received    OnReceived
@@ -182,15 +181,15 @@ func (g *Global) HasSName(u string) bool {
 // Sync Between Remote Peers Lobby
 func (g *Global) Sync(rg *Global) {
 	// Iterate Over Remote Map
-	for otherSname, id := range rg.Peers {
-		if g.Sname != otherSname {
-			g.Peers[otherSname] = id
+	for otherSName, id := range rg.Peers {
+		if g.SName != otherSName {
+			g.Peers[otherSName] = id
 		}
 	}
 
 	// Check Self Map
-	if !g.HasSName(rg.Sname) {
-		g.Peers[rg.Sname] = rg.UserPeerID
+	if !g.HasSName(rg.SName) {
+		g.Peers[rg.SName] = rg.UserPeerID
 	}
 }
 
@@ -198,7 +197,7 @@ func (g *Global) Sync(rg *Global) {
 // Creates Local Lobby from User Data
 func NewLocalLobby(u *User) *Lobby {
 	// Get Info
-	topic := u.LocalIPTopic()
+	topic := u.LocalTopic()
 	loc := u.GetRouter().GetLocation()
 
 	// Create Lobby
@@ -219,57 +218,6 @@ func NewLocalLobby(u *User) *Lobby {
 	}
 }
 
-// Get Remote Point Info
-func NewRemote(u *User, list []string, file *SonrFile) *Lobby {
-	r := &RemoteResponse{
-		Display: fmt.Sprintf("%s %s %s", list[0], list[1], list[2]),
-		Topic:   fmt.Sprintf("%s-%s-%s", list[0], list[1], list[2]),
-		Count:   int32(len(list)),
-		IsJoin:  false,
-		Words:   list,
-	}
-
-	// Create Lobby
-	return &Lobby{
-		// General
-		Type:  Lobby_REMOTE,
-		Peers: make(map[string]*Peer),
-		User:  u.GetPeer(),
-
-		// Info
-		Info: &Lobby_Remote{
-			Remote: &Lobby_RemoteInfo{
-				IsJoin:  r.IsJoin,
-				Display: r.Display,
-				Words:   r.GetWords(),
-				Topic:   r.GetTopic(),
-				File:    file,
-				Owner:   u.GetPeer(),
-			},
-		},
-	}
-}
-
-func NewJoinedRemote(u *User, r *RemoteResponse) *Lobby {
-	// Create Lobby
-	return &Lobby{
-		// General
-		Type:  Lobby_REMOTE,
-		Peers: make(map[string]*Peer),
-		User:  u.GetPeer(),
-
-		// Info
-		Info: &Lobby_Remote{
-			Remote: &Lobby_RemoteInfo{
-				IsJoin:  r.IsJoin,
-				Display: r.Display,
-				Words:   r.GetWords(),
-				Topic:   r.GetTopic(),
-			},
-		},
-	}
-}
-
 // Returns Lobby Peer Count
 func (l *Lobby) Count() int {
 	return len(l.Peers)
@@ -278,29 +226,6 @@ func (l *Lobby) Count() int {
 // Returns TOTAL Lobby Size with Peer
 func (l *Lobby) Size() int {
 	return len(l.Peers) + 1
-}
-
-func (l *Lobby) ToRemoteResponseBytes() []byte {
-	switch l.Info.(type) {
-	// @ Join Remote
-	case *Lobby_Remote:
-		// Convert Info to Response
-		i := l.GetRemote()
-		resp := &RemoteResponse{
-			IsJoin:  i.GetIsJoin(),
-			Display: i.GetDisplay(),
-			Topic:   i.GetTopic(),
-			Words:   i.GetWords(),
-		}
-
-		// Marshal Bytes
-		data, err := proto.Marshal(resp)
-		if err != nil {
-			return nil
-		}
-		return data
-	}
-	return nil
 }
 
 // Returns Lobby Topic

@@ -24,48 +24,50 @@ message Lobby {
   }
 
   message LocalInfo {
-    string name = 1;
-    string topic = 2;
-    Location location = 3;
+    string name = 1;       // Topic without Prefix
+    string topic = 2;      // Full Topic Address
+    Location location = 3; // Topic Location
   }
 
   message RemoteInfo {
-    bool isJoin = 1;
-    string display = 2;
-    string topic = 3;
-    repeated string words = 4;
-    SonrFile file = 5;
-    Peer owner = 6;
+    bool isJoin = 1;        // Whether User Created
+    string topic = 2;       // Calculated Topic Name in Link Format
+    string words = 3;       // Bip39 Words
+    string fingerprint = 4; // User Signed Fingerprint for Words
+    SonrFile file = 5;      // File to be transfered
+    Peer owner = 6;         // Owner of File
   }
 }
 
-// Message Sent when peer messages Lobby Topic
-message LobbyEvent {
-  string id = 1;      // Peer ID
-  Peer from = 2;      // User Information
-  string to = 3;      // Peer ID for DM
-  string message = 4; // Message being sent
+// Message Sent when peer messages Remote Topic
+message RemoteEvent {
+  string id = 1;       // Peer ID
+  Peer from = 2;       // User Information
+  Subject subject = 3; // Remote Event Subject
 
-  // Event Type
-  oneof event {
-    LocalEvent local = 5;
-    RemoteEvent remote = 6;
+  // Remote Type Event
+  enum Subject {
+    REQUEST = 0;   // Peer has joined wants Info
+    ACCEPT = 1;    // Peer is taking break from lobby
+    DECLINE = 2;   // Peer has rejoined Lobby
+    COMPLETED = 3; // Peer has changed position
   }
+}
+
+// Message Sent when peer messages Local Topic
+message LocalEvent {
+  string id = 1;       // Peer ID
+  Peer from = 2;       // User Information
+  string to = 3;       // Peer ID for DM
+  string message = 4;  // Message being sent
+  Subject subject = 5; // Local Event Subject
 
   // Local Type Event
-  enum LocalEvent {
+  enum Subject {
     EXCHANGE = 0; // Peer has joined wants Info
     STANDBY = 1;  // Peer is taking break from lobby
     RESUME = 2;   // Peer has rejoined Lobby
     UPDATE = 3;   // Peer has changed position
     EXIT = 4;     // Peer has Exited
-  }
-
-  // Remote Type Event
-  enum RemoteEvent {
-    REQUEST = 0;   // Peer has joined wants Info
-    ACCEPT = 1;    // Peer is taking break from lobby
-    DECLINE = 2;   // Peer has rejoined Lobby
-    COMPLETED = 3; // Peer has changed position
   }
 }

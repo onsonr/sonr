@@ -18,7 +18,8 @@ require (
 	github.com/multiformats/go-multiaddr v0.3.1
 	github.com/pkg/errors v0.9.1
 	github.com/tyler-smith/go-bip39 v1.1.0
-	golang.org/x/net v0.0.0-20210316092652-d523dce5a7f4
+	golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4
+	golang.org/x/tools v0.1.2 // indirect
 	google.golang.org/protobuf v1.26.0
 	storj.io/uplink v1.4.6
 )

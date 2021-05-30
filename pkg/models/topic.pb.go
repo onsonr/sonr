@@ -66,27 +66,80 @@ func (Lobby_Type) EnumDescriptor() ([]byte, []int) {
 	return file_topic_proto_rawDescGZIP(), []int{0, 0}
 }
 
-// Local Type Event
-type LobbyEvent_LocalEvent int32
+// Remote Type Event
+type RemoteEvent_Subject int32
 
 const (
-	LobbyEvent_EXCHANGE LobbyEvent_LocalEvent = 0 // Peer has joined wants Info
-	LobbyEvent_STANDBY  LobbyEvent_LocalEvent = 1 // Peer is taking break from lobby
-	LobbyEvent_RESUME   LobbyEvent_LocalEvent = 2 // Peer has rejoined Lobby
-	LobbyEvent_UPDATE   LobbyEvent_LocalEvent = 3 // Peer has changed position
-	LobbyEvent_EXIT     LobbyEvent_LocalEvent = 4 // Peer has Exited
+	RemoteEvent_REQUEST   RemoteEvent_Subject = 0 // Peer has joined wants Info
+	RemoteEvent_ACCEPT    RemoteEvent_Subject = 1 // Peer is taking break from lobby
+	RemoteEvent_DECLINE   RemoteEvent_Subject = 2 // Peer has rejoined Lobby
+	RemoteEvent_COMPLETED RemoteEvent_Subject = 3 // Peer has changed position
 )
 
-// Enum value maps for LobbyEvent_LocalEvent.
+// Enum value maps for RemoteEvent_Subject.
 var (
-	LobbyEvent_LocalEvent_name = map[int32]string{
+	RemoteEvent_Subject_name = map[int32]string{
+		0: "REQUEST",
+		1: "ACCEPT",
+		2: "DECLINE",
+		3: "COMPLETED",
+	}
+	RemoteEvent_Subject_value = map[string]int32{
+		"REQUEST":   0,
+		"ACCEPT":    1,
+		"DECLINE":   2,
+		"COMPLETED": 3,
+	}
+)
+
+func (x RemoteEvent_Subject) Enum() *RemoteEvent_Subject {
+	p := new(RemoteEvent_Subject)
+	*p = x
+	return p
+}
+
+func (x RemoteEvent_Subject) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (RemoteEvent_Subject) Descriptor() protoreflect.EnumDescriptor {
+	return file_topic_proto_enumTypes[1].Descriptor()
+}
+
+func (RemoteEvent_Subject) Type() protoreflect.EnumType {
+	return &file_topic_proto_enumTypes[1]
+}
+
+func (x RemoteEvent_Subject) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use RemoteEvent_Subject.Descriptor instead.
+func (RemoteEvent_Subject) EnumDescriptor() ([]byte, []int) {
+	return file_topic_proto_rawDescGZIP(), []int{1, 0}
+}
+
+// Local Type Event
+type LocalEvent_Subject int32
+
+const (
+	LocalEvent_EXCHANGE LocalEvent_Subject = 0 // Peer has joined wants Info
+	LocalEvent_STANDBY  LocalEvent_Subject = 1 // Peer is taking break from lobby
+	LocalEvent_RESUME   LocalEvent_Subject = 2 // Peer has rejoined Lobby
+	LocalEvent_UPDATE   LocalEvent_Subject = 3 // Peer has changed position
+	LocalEvent_EXIT     LocalEvent_Subject = 4 // Peer has Exited
+)
+
+// Enum value maps for LocalEvent_Subject.
+var (
+	LocalEvent_Subject_name = map[int32]string{
 		0: "EXCHANGE",
 		1: "STANDBY",
 		2: "RESUME",
 		3: "UPDATE",
 		4: "EXIT",
 	}
-	LobbyEvent_LocalEvent_value = map[string]int32{
+	LocalEvent_Subject_value = map[string]int32{
 		"EXCHANGE": 0,
 		"STANDBY":  1,
 		"RESUME":   2,
@@ -95,84 +148,31 @@ var (
 	}
 )
 
-func (x LobbyEvent_LocalEvent) Enum() *LobbyEvent_LocalEvent {
-	p := new(LobbyEvent_LocalEvent)
+func (x LocalEvent_Subject) Enum() *LocalEvent_Subject {
+	p := new(LocalEvent_Subject)
 	*p = x
 	return p
 }
 
-func (x LobbyEvent_LocalEvent) String() string {
+func (x LocalEvent_Subject) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
-func (LobbyEvent_LocalEvent) Descriptor() protoreflect.EnumDescriptor {
-	return file_topic_proto_enumTypes[1].Descriptor()
-}
-
-func (LobbyEvent_LocalEvent) Type() protoreflect.EnumType {
-	return &file_topic_proto_enumTypes[1]
-}
-
-func (x LobbyEvent_LocalEvent) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use LobbyEvent_LocalEvent.Descriptor instead.
-func (LobbyEvent_LocalEvent) EnumDescriptor() ([]byte, []int) {
-	return file_topic_proto_rawDescGZIP(), []int{1, 0}
-}
-
-// Remote Type Event
-type LobbyEvent_RemoteEvent int32
-
-const (
-	LobbyEvent_REQUEST   LobbyEvent_RemoteEvent = 0 // Peer has joined wants Info
-	LobbyEvent_ACCEPT    LobbyEvent_RemoteEvent = 1 // Peer is taking break from lobby
-	LobbyEvent_DECLINE   LobbyEvent_RemoteEvent = 2 // Peer has rejoined Lobby
-	LobbyEvent_COMPLETED LobbyEvent_RemoteEvent = 3 // Peer has changed position
-)
-
-// Enum value maps for LobbyEvent_RemoteEvent.
-var (
-	LobbyEvent_RemoteEvent_name = map[int32]string{
-		0: "REQUEST",
-		1: "ACCEPT",
-		2: "DECLINE",
-		3: "COMPLETED",
-	}
-	LobbyEvent_RemoteEvent_value = map[string]int32{
-		"REQUEST":   0,
-		"ACCEPT":    1,
-		"DECLINE":   2,
-		"COMPLETED": 3,
-	}
-)
-
-func (x LobbyEvent_RemoteEvent) Enum() *LobbyEvent_RemoteEvent {
-	p := new(LobbyEvent_RemoteEvent)
-	*p = x
-	return p
-}
-
-func (x LobbyEvent_RemoteEvent) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (LobbyEvent_RemoteEvent) Descriptor() protoreflect.EnumDescriptor {
+func (LocalEvent_Subject) Descriptor() protoreflect.EnumDescriptor {
 	return file_topic_proto_enumTypes[2].Descriptor()
 }
 
-func (LobbyEvent_RemoteEvent) Type() protoreflect.EnumType {
+func (LocalEvent_Subject) Type() protoreflect.EnumType {
 	return &file_topic_proto_enumTypes[2]
 }
 
-func (x LobbyEvent_RemoteEvent) Number() protoreflect.EnumNumber {
+func (x LocalEvent_Subject) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
-// Deprecated: Use LobbyEvent_RemoteEvent.Descriptor instead.
-func (LobbyEvent_RemoteEvent) EnumDescriptor() ([]byte, []int) {
-	return file_topic_proto_rawDescGZIP(), []int{1, 1}
+// Deprecated: Use LocalEvent_Subject.Descriptor instead.
+func (LocalEvent_Subject) EnumDescriptor() ([]byte, []int) {
+	return file_topic_proto_rawDescGZIP(), []int{2, 0}
 }
 
 // For Info about Lobby
@@ -282,26 +282,19 @@ func (*Lobby_Local) isLobby_Info() {}
 
 func (*Lobby_Remote) isLobby_Info() {}
 
-// Message Sent when peer messages Lobby Topic
-type LobbyEvent struct {
+// Message Sent when peer messages Remote Topic
+type RemoteEvent struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id      string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`           // Peer ID
-	From    *Peer  `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`       // User Information
-	To      string `protobuf:"bytes,3,opt,name=to,proto3" json:"to,omitempty"`           // Peer ID for DM
-	Message string `protobuf:"bytes,4,opt,name=message,proto3" json:"message,omitempty"` // Message being sent
-	// Event Type
-	//
-	// Types that are assignable to Event:
-	//	*LobbyEvent_Local
-	//	*LobbyEvent_Remote
-	Event isLobbyEvent_Event `protobuf_oneof:"event"`
+	Id      string              `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`                                     // Peer ID
+	From    *Peer               `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`                                 // User Information
+	Subject RemoteEvent_Subject `protobuf:"varint,3,opt,name=subject,proto3,enum=RemoteEvent_Subject" json:"subject,omitempty"` // Remote Event Subject
 }
 
-func (x *LobbyEvent) Reset() {
-	*x = LobbyEvent{}
+func (x *RemoteEvent) Reset() {
+	*x = RemoteEvent{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_topic_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -309,13 +302,13 @@ func (x *LobbyEvent) Reset() {
 	}
 }
 
-func (x *LobbyEvent) String() string {
+func (x *RemoteEvent) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*LobbyEvent) ProtoMessage() {}
+func (*RemoteEvent) ProtoMessage() {}
 
-func (x *LobbyEvent) ProtoReflect() protoreflect.Message {
+func (x *RemoteEvent) ProtoReflect() protoreflect.Message {
 	mi := &file_topic_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -327,90 +320,126 @@ func (x *LobbyEvent) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use LobbyEvent.ProtoReflect.Descriptor instead.
-func (*LobbyEvent) Descriptor() ([]byte, []int) {
+// Deprecated: Use RemoteEvent.ProtoReflect.Descriptor instead.
+func (*RemoteEvent) Descriptor() ([]byte, []int) {
 	return file_topic_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *LobbyEvent) GetId() string {
+func (x *RemoteEvent) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *LobbyEvent) GetFrom() *Peer {
+func (x *RemoteEvent) GetFrom() *Peer {
 	if x != nil {
 		return x.From
 	}
 	return nil
 }
 
-func (x *LobbyEvent) GetTo() string {
+func (x *RemoteEvent) GetSubject() RemoteEvent_Subject {
+	if x != nil {
+		return x.Subject
+	}
+	return RemoteEvent_REQUEST
+}
+
+// Message Sent when peer messages Local Topic
+type LocalEvent struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id      string             `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`                                    // Peer ID
+	From    *Peer              `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`                                // User Information
+	To      string             `protobuf:"bytes,3,opt,name=to,proto3" json:"to,omitempty"`                                    // Peer ID for DM
+	Message string             `protobuf:"bytes,4,opt,name=message,proto3" json:"message,omitempty"`                          // Message being sent
+	Subject LocalEvent_Subject `protobuf:"varint,5,opt,name=subject,proto3,enum=LocalEvent_Subject" json:"subject,omitempty"` // Local Event Subject
+}
+
+func (x *LocalEvent) Reset() {
+	*x = LocalEvent{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_topic_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *LocalEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LocalEvent) ProtoMessage() {}
+
+func (x *LocalEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_topic_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LocalEvent.ProtoReflect.Descriptor instead.
+func (*LocalEvent) Descriptor() ([]byte, []int) {
+	return file_topic_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *LocalEvent) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *LocalEvent) GetFrom() *Peer {
+	if x != nil {
+		return x.From
+	}
+	return nil
+}
+
+func (x *LocalEvent) GetTo() string {
 	if x != nil {
 		return x.To
 	}
 	return ""
 }
 
-func (x *LobbyEvent) GetMessage() string {
+func (x *LocalEvent) GetMessage() string {
 	if x != nil {
 		return x.Message
 	}
 	return ""
 }
 
-func (m *LobbyEvent) GetEvent() isLobbyEvent_Event {
-	if m != nil {
-		return m.Event
+func (x *LocalEvent) GetSubject() LocalEvent_Subject {
+	if x != nil {
+		return x.Subject
 	}
-	return nil
+	return LocalEvent_EXCHANGE
 }
-
-func (x *LobbyEvent) GetLocal() LobbyEvent_LocalEvent {
-	if x, ok := x.GetEvent().(*LobbyEvent_Local); ok {
-		return x.Local
-	}
-	return LobbyEvent_EXCHANGE
-}
-
-func (x *LobbyEvent) GetRemote() LobbyEvent_RemoteEvent {
-	if x, ok := x.GetEvent().(*LobbyEvent_Remote); ok {
-		return x.Remote
-	}
-	return LobbyEvent_REQUEST
-}
-
-type isLobbyEvent_Event interface {
-	isLobbyEvent_Event()
-}
-
-type LobbyEvent_Local struct {
-	Local LobbyEvent_LocalEvent `protobuf:"varint,5,opt,name=local,proto3,enum=LobbyEvent_LocalEvent,oneof"`
-}
-
-type LobbyEvent_Remote struct {
-	Remote LobbyEvent_RemoteEvent `protobuf:"varint,6,opt,name=remote,proto3,enum=LobbyEvent_RemoteEvent,oneof"`
-}
-
-func (*LobbyEvent_Local) isLobbyEvent_Event() {}
-
-func (*LobbyEvent_Remote) isLobbyEvent_Event() {}
 
 type Lobby_LocalInfo struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Name     string    `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Topic    string    `protobuf:"bytes,2,opt,name=topic,proto3" json:"topic,omitempty"`
-	Location *Location `protobuf:"bytes,3,opt,name=location,proto3" json:"location,omitempty"`
+	Name     string    `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`         // Topic without Prefix
+	Topic    string    `protobuf:"bytes,2,opt,name=topic,proto3" json:"topic,omitempty"`       // Full Topic Address
+	Location *Location `protobuf:"bytes,3,opt,name=location,proto3" json:"location,omitempty"` // Topic Location
 }
 
 func (x *Lobby_LocalInfo) Reset() {
 	*x = Lobby_LocalInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_topic_proto_msgTypes[3]
+		mi := &file_topic_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -423,7 +452,7 @@ func (x *Lobby_LocalInfo) String() string {
 func (*Lobby_LocalInfo) ProtoMessage() {}
 
 func (x *Lobby_LocalInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_topic_proto_msgTypes[3]
+	mi := &file_topic_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -465,18 +494,18 @@ type Lobby_RemoteInfo struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	IsJoin  bool      `protobuf:"varint,1,opt,name=isJoin,proto3" json:"isJoin,omitempty"`
-	Display string    `protobuf:"bytes,2,opt,name=display,proto3" json:"display,omitempty"`
-	Topic   string    `protobuf:"bytes,3,opt,name=topic,proto3" json:"topic,omitempty"`
-	Words   []string  `protobuf:"bytes,4,rep,name=words,proto3" json:"words,omitempty"`
-	File    *SonrFile `protobuf:"bytes,5,opt,name=file,proto3" json:"file,omitempty"`
-	Owner   *Peer     `protobuf:"bytes,6,opt,name=owner,proto3" json:"owner,omitempty"`
+	IsJoin      bool      `protobuf:"varint,1,opt,name=isJoin,proto3" json:"isJoin,omitempty"`          // Whether User Created
+	Topic       string    `protobuf:"bytes,2,opt,name=topic,proto3" json:"topic,omitempty"`             // Calculated Topic Name in Link Format
+	Words       string    `protobuf:"bytes,3,opt,name=words,proto3" json:"words,omitempty"`             // Bip39 Words
+	Fingerprint string    `protobuf:"bytes,4,opt,name=fingerprint,proto3" json:"fingerprint,omitempty"` // User Signed Fingerprint for Words
+	File        *SonrFile `protobuf:"bytes,5,opt,name=file,proto3" json:"file,omitempty"`               // File to be transfered
+	Owner       *Peer     `protobuf:"bytes,6,opt,name=owner,proto3" json:"owner,omitempty"`             // Owner of File
 }
 
 func (x *Lobby_RemoteInfo) Reset() {
 	*x = Lobby_RemoteInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_topic_proto_msgTypes[4]
+		mi := &file_topic_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -489,7 +518,7 @@ func (x *Lobby_RemoteInfo) String() string {
 func (*Lobby_RemoteInfo) ProtoMessage() {}
 
 func (x *Lobby_RemoteInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_topic_proto_msgTypes[4]
+	mi := &file_topic_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -512,13 +541,6 @@ func (x *Lobby_RemoteInfo) GetIsJoin() bool {
 	return false
 }
 
-func (x *Lobby_RemoteInfo) GetDisplay() string {
-	if x != nil {
-		return x.Display
-	}
-	return ""
-}
-
 func (x *Lobby_RemoteInfo) GetTopic() string {
 	if x != nil {
 		return x.Topic
@@ -526,11 +548,18 @@ func (x *Lobby_RemoteInfo) GetTopic() string {
 	return ""
 }
 
-func (x *Lobby_RemoteInfo) GetWords() []string {
+func (x *Lobby_RemoteInfo) GetWords() string {
 	if x != nil {
 		return x.Words
 	}
-	return nil
+	return ""
+}
+
+func (x *Lobby_RemoteInfo) GetFingerprint() string {
+	if x != nil {
+		return x.Fingerprint
+	}
+	return ""
 }
 
 func (x *Lobby_RemoteInfo) GetFile() *SonrFile {
@@ -552,7 +581,7 @@ var File_topic_proto protoreflect.FileDescriptor
 var file_topic_proto_rawDesc = []byte{
 	0x0a, 0x0b, 0x74, 0x6f, 0x70, 0x69, 0x63, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x0a, 0x75,
 	0x73, 0x65, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x0a, 0x64, 0x61, 0x74, 0x61, 0x2e,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xb2, 0x04, 0x0a, 0x05, 0x4c, 0x6f, 0x62, 0x62, 0x79, 0x12,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xba, 0x04, 0x0a, 0x05, 0x4c, 0x6f, 0x62, 0x62, 0x79, 0x12,
 	0x1f, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x0b, 0x2e,
 	0x4c, 0x6f, 0x62, 0x62, 0x79, 0x2e, 0x54, 0x79, 0x70, 0x65, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65,
 	0x12, 0x27, 0x0a, 0x05, 0x70, 0x65, 0x65, 0x72, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32,
@@ -574,43 +603,46 @@ var file_topic_proto_rawDesc = []byte{
 	0x05, 0x74, 0x6f, 0x70, 0x69, 0x63, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x6f,
 	0x70, 0x69, 0x63, 0x12, 0x25, 0x0a, 0x08, 0x6c, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18,
 	0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x09, 0x2e, 0x4c, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e,
-	0x52, 0x08, 0x6c, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x1a, 0xa6, 0x01, 0x0a, 0x0a, 0x52,
+	0x52, 0x08, 0x6c, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x1a, 0xae, 0x01, 0x0a, 0x0a, 0x52,
 	0x65, 0x6d, 0x6f, 0x74, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x16, 0x0a, 0x06, 0x69, 0x73, 0x4a,
 	0x6f, 0x69, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x06, 0x69, 0x73, 0x4a, 0x6f, 0x69,
-	0x6e, 0x12, 0x18, 0x0a, 0x07, 0x64, 0x69, 0x73, 0x70, 0x6c, 0x61, 0x79, 0x18, 0x02, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x07, 0x64, 0x69, 0x73, 0x70, 0x6c, 0x61, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x74,
-	0x6f, 0x70, 0x69, 0x63, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x6f, 0x70, 0x69,
-	0x63, 0x12, 0x14, 0x0a, 0x05, 0x77, 0x6f, 0x72, 0x64, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28, 0x09,
-	0x52, 0x05, 0x77, 0x6f, 0x72, 0x64, 0x73, 0x12, 0x1d, 0x0a, 0x04, 0x66, 0x69, 0x6c, 0x65, 0x18,
-	0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x09, 0x2e, 0x53, 0x6f, 0x6e, 0x72, 0x46, 0x69, 0x6c, 0x65,
-	0x52, 0x04, 0x66, 0x69, 0x6c, 0x65, 0x12, 0x1b, 0x0a, 0x05, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x18,
-	0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x05, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x05, 0x6f, 0x77,
-	0x6e, 0x65, 0x72, 0x22, 0x1d, 0x0a, 0x04, 0x54, 0x79, 0x70, 0x65, 0x12, 0x09, 0x0a, 0x05, 0x4c,
-	0x4f, 0x43, 0x41, 0x4c, 0x10, 0x00, 0x12, 0x0a, 0x0a, 0x06, 0x52, 0x45, 0x4d, 0x4f, 0x54, 0x45,
-	0x10, 0x01, 0x42, 0x06, 0x0a, 0x04, 0x69, 0x6e, 0x66, 0x6f, 0x22, 0xdc, 0x02, 0x0a, 0x0a, 0x4c,
-	0x6f, 0x62, 0x62, 0x79, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x19, 0x0a, 0x04, 0x66, 0x72, 0x6f,
-	0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x05, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x04,
-	0x66, 0x72, 0x6f, 0x6d, 0x12, 0x0e, 0x0a, 0x02, 0x74, 0x6f, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x02, 0x74, 0x6f, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18,
-	0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x2e,
-	0x0a, 0x05, 0x6c, 0x6f, 0x63, 0x61, 0x6c, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x16, 0x2e,
-	0x4c, 0x6f, 0x62, 0x62, 0x79, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x2e, 0x4c, 0x6f, 0x63, 0x61, 0x6c,
-	0x45, 0x76, 0x65, 0x6e, 0x74, 0x48, 0x00, 0x52, 0x05, 0x6c, 0x6f, 0x63, 0x61, 0x6c, 0x12, 0x31,
-	0x0a, 0x06, 0x72, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x17,
-	0x2e, 0x4c, 0x6f, 0x62, 0x62, 0x79, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x2e, 0x52, 0x65, 0x6d, 0x6f,
-	0x74, 0x65, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x48, 0x00, 0x52, 0x06, 0x72, 0x65, 0x6d, 0x6f, 0x74,
-	0x65, 0x22, 0x49, 0x0a, 0x0a, 0x4c, 0x6f, 0x63, 0x61, 0x6c, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x12,
-	0x0c, 0x0a, 0x08, 0x45, 0x58, 0x43, 0x48, 0x41, 0x4e, 0x47, 0x45, 0x10, 0x00, 0x12, 0x0b, 0x0a,
-	0x07, 0x53, 0x54, 0x41, 0x4e, 0x44, 0x42, 0x59, 0x10, 0x01, 0x12, 0x0a, 0x0a, 0x06, 0x52, 0x45,
-	0x53, 0x55, 0x4d, 0x45, 0x10, 0x02, 0x12, 0x0a, 0x0a, 0x06, 0x55, 0x50, 0x44, 0x41, 0x54, 0x45,
-	0x10, 0x03, 0x12, 0x08, 0x0a, 0x04, 0x45, 0x58, 0x49, 0x54, 0x10, 0x04, 0x22, 0x42, 0x0a, 0x0b,
-	0x52, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x0b, 0x0a, 0x07, 0x52,
-	0x45, 0x51, 0x55, 0x45, 0x53, 0x54, 0x10, 0x00, 0x12, 0x0a, 0x0a, 0x06, 0x41, 0x43, 0x43, 0x45,
-	0x50, 0x54, 0x10, 0x01, 0x12, 0x0b, 0x0a, 0x07, 0x44, 0x45, 0x43, 0x4c, 0x49, 0x4e, 0x45, 0x10,
-	0x02, 0x12, 0x0d, 0x0a, 0x09, 0x43, 0x4f, 0x4d, 0x50, 0x4c, 0x45, 0x54, 0x45, 0x44, 0x10, 0x03,
-	0x42, 0x07, 0x0a, 0x05, 0x65, 0x76, 0x65, 0x6e, 0x74, 0x42, 0x09, 0x5a, 0x07, 0x2f, 0x6d, 0x6f,
-	0x64, 0x65, 0x6c, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6e, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f, 0x70, 0x69, 0x63, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x05, 0x74, 0x6f, 0x70, 0x69, 0x63, 0x12, 0x14, 0x0a, 0x05, 0x77, 0x6f, 0x72, 0x64, 0x73,
+	0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x77, 0x6f, 0x72, 0x64, 0x73, 0x12, 0x20, 0x0a,
+	0x0b, 0x66, 0x69, 0x6e, 0x67, 0x65, 0x72, 0x70, 0x72, 0x69, 0x6e, 0x74, 0x18, 0x04, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x0b, 0x66, 0x69, 0x6e, 0x67, 0x65, 0x72, 0x70, 0x72, 0x69, 0x6e, 0x74, 0x12,
+	0x1d, 0x0a, 0x04, 0x66, 0x69, 0x6c, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x09, 0x2e,
+	0x53, 0x6f, 0x6e, 0x72, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x04, 0x66, 0x69, 0x6c, 0x65, 0x12, 0x1b,
+	0x0a, 0x05, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x05, 0x2e,
+	0x50, 0x65, 0x65, 0x72, 0x52, 0x05, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x22, 0x1d, 0x0a, 0x04, 0x54,
+	0x79, 0x70, 0x65, 0x12, 0x09, 0x0a, 0x05, 0x4c, 0x4f, 0x43, 0x41, 0x4c, 0x10, 0x00, 0x12, 0x0a,
+	0x0a, 0x06, 0x52, 0x45, 0x4d, 0x4f, 0x54, 0x45, 0x10, 0x01, 0x42, 0x06, 0x0a, 0x04, 0x69, 0x6e,
+	0x66, 0x6f, 0x22, 0xa8, 0x01, 0x0a, 0x0b, 0x52, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x45, 0x76, 0x65,
+	0x6e, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02,
+	0x69, 0x64, 0x12, 0x19, 0x0a, 0x04, 0x66, 0x72, 0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x05, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x04, 0x66, 0x72, 0x6f, 0x6d, 0x12, 0x2e, 0x0a,
+	0x07, 0x73, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x14,
+	0x2e, 0x52, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x2e, 0x53, 0x75, 0x62,
+	0x6a, 0x65, 0x63, 0x74, 0x52, 0x07, 0x73, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x22, 0x3e, 0x0a,
+	0x07, 0x53, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x12, 0x0b, 0x0a, 0x07, 0x52, 0x45, 0x51, 0x55,
+	0x45, 0x53, 0x54, 0x10, 0x00, 0x12, 0x0a, 0x0a, 0x06, 0x41, 0x43, 0x43, 0x45, 0x50, 0x54, 0x10,
+	0x01, 0x12, 0x0b, 0x0a, 0x07, 0x44, 0x45, 0x43, 0x4c, 0x49, 0x4e, 0x45, 0x10, 0x02, 0x12, 0x0d,
+	0x0a, 0x09, 0x43, 0x4f, 0x4d, 0x50, 0x4c, 0x45, 0x54, 0x45, 0x44, 0x10, 0x03, 0x22, 0xd8, 0x01,
+	0x0a, 0x0a, 0x4c, 0x6f, 0x63, 0x61, 0x6c, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x0e, 0x0a, 0x02,
+	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x19, 0x0a, 0x04,
+	0x66, 0x72, 0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x05, 0x2e, 0x50, 0x65, 0x65,
+	0x72, 0x52, 0x04, 0x66, 0x72, 0x6f, 0x6d, 0x12, 0x0e, 0x0a, 0x02, 0x74, 0x6f, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x02, 0x74, 0x6f, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61,
+	0x67, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67,
+	0x65, 0x12, 0x2d, 0x0a, 0x07, 0x73, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x18, 0x05, 0x20, 0x01,
+	0x28, 0x0e, 0x32, 0x13, 0x2e, 0x4c, 0x6f, 0x63, 0x61, 0x6c, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x2e,
+	0x53, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x52, 0x07, 0x73, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74,
+	0x22, 0x46, 0x0a, 0x07, 0x53, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x12, 0x0c, 0x0a, 0x08, 0x45,
+	0x58, 0x43, 0x48, 0x41, 0x4e, 0x47, 0x45, 0x10, 0x00, 0x12, 0x0b, 0x0a, 0x07, 0x53, 0x54, 0x41,
+	0x4e, 0x44, 0x42, 0x59, 0x10, 0x01, 0x12, 0x0a, 0x0a, 0x06, 0x52, 0x45, 0x53, 0x55, 0x4d, 0x45,
+	0x10, 0x02, 0x12, 0x0a, 0x0a, 0x06, 0x55, 0x50, 0x44, 0x41, 0x54, 0x45, 0x10, 0x03, 0x12, 0x08,
+	0x0a, 0x04, 0x45, 0x58, 0x49, 0x54, 0x10, 0x04, 0x42, 0x09, 0x5a, 0x07, 0x2f, 0x6d, 0x6f, 0x64,
+	0x65, 0x6c, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -626,38 +658,40 @@ func file_topic_proto_rawDescGZIP() []byte {
 }
 
 var file_topic_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
-var file_topic_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_topic_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_topic_proto_goTypes = []interface{}{
-	(Lobby_Type)(0),             // 0: Lobby.Type
-	(LobbyEvent_LocalEvent)(0),  // 1: LobbyEvent.LocalEvent
-	(LobbyEvent_RemoteEvent)(0), // 2: LobbyEvent.RemoteEvent
-	(*Lobby)(nil),               // 3: Lobby
-	(*LobbyEvent)(nil),          // 4: LobbyEvent
-	nil,                         // 5: Lobby.PeersEntry
-	(*Lobby_LocalInfo)(nil),     // 6: Lobby.LocalInfo
-	(*Lobby_RemoteInfo)(nil),    // 7: Lobby.RemoteInfo
-	(*Peer)(nil),                // 8: Peer
-	(*Location)(nil),            // 9: Location
-	(*SonrFile)(nil),            // 10: SonrFile
+	(Lobby_Type)(0),          // 0: Lobby.Type
+	(RemoteEvent_Subject)(0), // 1: RemoteEvent.Subject
+	(LocalEvent_Subject)(0),  // 2: LocalEvent.Subject
+	(*Lobby)(nil),            // 3: Lobby
+	(*RemoteEvent)(nil),      // 4: RemoteEvent
+	(*LocalEvent)(nil),       // 5: LocalEvent
+	nil,                      // 6: Lobby.PeersEntry
+	(*Lobby_LocalInfo)(nil),  // 7: Lobby.LocalInfo
+	(*Lobby_RemoteInfo)(nil), // 8: Lobby.RemoteInfo
+	(*Peer)(nil),             // 9: Peer
+	(*Location)(nil),         // 10: Location
+	(*SonrFile)(nil),         // 11: SonrFile
 }
 var file_topic_proto_depIdxs = []int32{
 	0,  // 0: Lobby.type:type_name -> Lobby.Type
-	5,  // 1: Lobby.peers:type_name -> Lobby.PeersEntry
-	8,  // 2: Lobby.user:type_name -> Peer
-	6,  // 3: Lobby.local:type_name -> Lobby.LocalInfo
-	7,  // 4: Lobby.remote:type_name -> Lobby.RemoteInfo
-	8,  // 5: LobbyEvent.from:type_name -> Peer
-	1,  // 6: LobbyEvent.local:type_name -> LobbyEvent.LocalEvent
-	2,  // 7: LobbyEvent.remote:type_name -> LobbyEvent.RemoteEvent
-	8,  // 8: Lobby.PeersEntry.value:type_name -> Peer
-	9,  // 9: Lobby.LocalInfo.location:type_name -> Location
-	10, // 10: Lobby.RemoteInfo.file:type_name -> SonrFile
-	8,  // 11: Lobby.RemoteInfo.owner:type_name -> Peer
-	12, // [12:12] is the sub-list for method output_type
-	12, // [12:12] is the sub-list for method input_type
-	12, // [12:12] is the sub-list for extension type_name
-	12, // [12:12] is the sub-list for extension extendee
-	0,  // [0:12] is the sub-list for field type_name
+	6,  // 1: Lobby.peers:type_name -> Lobby.PeersEntry
+	9,  // 2: Lobby.user:type_name -> Peer
+	7,  // 3: Lobby.local:type_name -> Lobby.LocalInfo
+	8,  // 4: Lobby.remote:type_name -> Lobby.RemoteInfo
+	9,  // 5: RemoteEvent.from:type_name -> Peer
+	1,  // 6: RemoteEvent.subject:type_name -> RemoteEvent.Subject
+	9,  // 7: LocalEvent.from:type_name -> Peer
+	2,  // 8: LocalEvent.subject:type_name -> LocalEvent.Subject
+	9,  // 9: Lobby.PeersEntry.value:type_name -> Peer
+	10, // 10: Lobby.LocalInfo.location:type_name -> Location
+	11, // 11: Lobby.RemoteInfo.file:type_name -> SonrFile
+	9,  // 12: Lobby.RemoteInfo.owner:type_name -> Peer
+	13, // [13:13] is the sub-list for method output_type
+	13, // [13:13] is the sub-list for method input_type
+	13, // [13:13] is the sub-list for extension type_name
+	13, // [13:13] is the sub-list for extension extendee
+	0,  // [0:13] is the sub-list for field type_name
 }
 
 func init() { file_topic_proto_init() }
@@ -681,7 +715,7 @@ func file_topic_proto_init() {
 			}
 		}
 		file_topic_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*LobbyEvent); i {
+			switch v := v.(*RemoteEvent); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -692,8 +726,8 @@ func file_topic_proto_init() {
 				return nil
 			}
 		}
-		file_topic_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Lobby_LocalInfo); i {
+		file_topic_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*LocalEvent); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -705,6 +739,18 @@ func file_topic_proto_init() {
 			}
 		}
 		file_topic_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Lobby_LocalInfo); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_topic_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Lobby_RemoteInfo); i {
 			case 0:
 				return &v.state
@@ -721,17 +767,13 @@ func file_topic_proto_init() {
 		(*Lobby_Local)(nil),
 		(*Lobby_Remote)(nil),
 	}
-	file_topic_proto_msgTypes[1].OneofWrappers = []interface{}{
-		(*LobbyEvent_Local)(nil),
-		(*LobbyEvent_Remote)(nil),
-	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_topic_proto_rawDesc,
 			NumEnums:      3,
-			NumMessages:   5,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

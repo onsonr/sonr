@@ -2,40 +2,41 @@ package topic
 
 import (
 	"context"
-	"errors"
 
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-core/protocol"
 	rpc "github.com/libp2p/go-libp2p-gorpc"
-	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	net "github.com/sonr-io/core/internal/host"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
 )
 
-const K_MAX_MESSAGES = 128
-const K_SERVICE_PID = protocol.ID("/sonr/topic-service/0.1")
+const LOCAL_RPC_SERVICE = "LocalService"
+const LOCAL_METHOD_EXCHANGE = "ExchangeWith"
+const LOCAL_METHOD_FLAT = "FlatWith"
+const LOCAL_METHOD_INVITE = "InviteWith"
 
-type ClientCallback interface {
-	OnEvent(*md.LobbyEvent)
-	OnRefresh(*md.Lobby)
-	OnInvite([]byte)
-	OnReply(id peer.ID, data []byte)
-	OnResponded(inv *md.AuthInvite)
+// ExchangeArgs is Peer protobuf
+type LocalServiceArgs struct {
+	Lobby  []byte
+	Peer   []byte
+	Invite []byte
 }
 
-type TopicManager struct {
-	ctx          context.Context
-	host         *net.HostNode
-	topic        *pubsub.Topic
-	subscription *pubsub.Subscription
-	eventHandler *pubsub.TopicEventHandler
-	user         *md.User
-	lobby        *md.Lobby
+// ExchangeResponse is also Peer protobuf
+type LocalServiceResponse struct {
+	InvReply []byte
+	Peer     []byte
+}
 
-	service      *TopicService
-	messages     chan *md.LobbyEvent
-	topicHandler ClientCallback
+// Service Struct
+type LocalService struct {
+	// Current Data
+	call  ClientCallback
+	lobby *md.Lobby
+	user  *md.User
+
+	respCh chan *md.AuthReply
+	invite *md.AuthInvite
 }
 
 // ^ Create New Contained Topic Manager ^ //
@@ -48,20 +49,21 @@ func NewLocal(ctx context.Context, h *net.HostNode, u *md.User, name string, th 
 
 	// Create Lobby Manager
 	mgr := &TopicManager{
-		topicHandler: th,
+		callback:     th,
 		user:         u,
 		ctx:          ctx,
 		host:         h,
 		eventHandler: handler,
 		lobby:        md.NewLocalLobby(u),
-		messages:     make(chan *md.LobbyEvent, K_MAX_MESSAGES),
+		lobbyType:    md.Lobby_LOCAL,
+		localEvents:  make(chan *md.LocalEvent, K_MAX_MESSAGES),
 		subscription: sub,
 		topic:        topic,
 	}
 
 	// Start Exchange Server
-	peersvServer := rpc.NewServer(h.Host, K_SERVICE_PID)
-	psv := TopicService{
+	localServer := rpc.NewServer(h.Host, LOCAL_SERVICE_PID)
+	psv := LocalService{
 		lobby:  mgr.lobby,
 		user:   u,
 		call:   th,
@@ -69,7 +71,7 @@ func NewLocal(ctx context.Context, h *net.HostNode, u *md.User, name string, th 
 	}
 
 	// Register Service
-	err := peersvServer.Register(&psv)
+	err := localServer.RegisterName(LOCAL_RPC_SERVICE, &psv)
 	if err != nil {
 		return nil, md.NewError(err, md.ErrorMessage_TOPIC_RPC)
 	}
@@ -82,54 +84,13 @@ func NewLocal(ctx context.Context, h *net.HostNode, u *md.User, name string, th 
 	return mgr, nil
 }
 
-// ^ Helper: Find returns Pointer to Peer.ID and Peer ^
-func (tm *TopicManager) FindPeerInTopic(q string) (peer.ID, *md.Peer, error) {
-	// Retreive Data
-	var p *md.Peer
-	var i peer.ID
-
-	// Iterate Through Peers, Return Matched Peer
-	for _, peer := range tm.lobby.Peers {
-		// If Found Match
-		if peer.Id.Peer == q {
-			p = peer
-		}
-	}
-
-	// Validate Peer
-	if p == nil {
-		return "", nil, errors.New("Peer data was not found in topic.")
-	}
-
-	// Iterate through Topic Peers
-	for _, id := range tm.topic.ListPeers() {
-		// If Found Match
-		if id.String() == q {
-			i = id
-		}
-	}
-
-	// Validate ID
-	if i == "" {
-		return "", nil, errors.New("Peer ID was not found in topic.")
-	}
-	return i, p, nil
+// ^ Send Updated Lobby ^
+func (tm *TopicManager) RefreshLobby() {
+	tm.callback.OnRefresh(tm.lobby)
 }
 
-// ^ Helper: ID returns ONE Peer.ID in Topic ^
-func (tm *TopicManager) HasPeer(q string) bool {
-	// Iterate through PubSub in topic
-	for _, id := range tm.topic.ListPeers() {
-		// If Found Match
-		if id.String() == q {
-			return true
-		}
-	}
-	return false
-}
-
-// ^ Send message to specific peer in topic ^
-func (tm *TopicManager) Send(msg *md.LobbyEvent) error {
+// ^ SendLocal message to specific peer in topic ^
+func (tm *TopicManager) SendLocal(msg *md.LocalEvent) error {
 	// Convert Event to Proto Binary
 	bytes, err := proto.Marshal(msg)
 	if err != nil {
@@ -144,9 +105,184 @@ func (tm *TopicManager) Send(msg *md.LobbyEvent) error {
 	return nil
 }
 
-// ^ Leave Current Topic ^
-func (tm *TopicManager) LeaveTopic() error {
-	tm.eventHandler.Cancel()
-	tm.subscription.Cancel()
-	return tm.topic.Close()
+// ^ Flat: Handles User sent AuthInvite Response on FlatMode ^
+func (tm *TopicManager) Flat(id peer.ID, inv *md.AuthInvite) error {
+	// Convert Protobuf to bytes
+	msgBytes, err := proto.Marshal(inv)
+	if err != nil {
+		return err
+	}
+
+	// Initialize Data
+	rpcClient := rpc.NewClient(tm.host.Host, LOCAL_SERVICE_PID)
+	var reply LocalServiceResponse
+	var args LocalServiceArgs
+	args.Invite = msgBytes
+
+	// Call to Peer
+	err = rpcClient.Call(id, LOCAL_RPC_SERVICE, LOCAL_METHOD_FLAT, args, &reply)
+	if err != nil {
+		return err
+	}
+
+	tm.callback.OnReply(id, reply.InvReply)
+	return nil
+}
+
+// ^ Calls Invite on Remote Peer for Flat Mode and makes Direct Response ^ //
+func (ts *LocalService) FlatWith(ctx context.Context, args LocalServiceArgs, reply *LocalServiceResponse) error {
+	// Received Message
+	receivedMessage := md.AuthInvite{}
+	err := proto.Unmarshal(args.Invite, &receivedMessage)
+	if err != nil {
+		return err
+	}
+
+	// Set Current Message and send Callback
+	ts.invite = &receivedMessage
+	ts.call.OnInvite(args.Invite)
+
+	// Sign Contact Reply
+	resp := ts.user.SignFlatReply(receivedMessage.GetFrom())
+
+	// Convert Protobuf to bytes
+	msgBytes, err := proto.Marshal(resp)
+	if err != nil {
+		return err
+	}
+
+	reply.InvReply = msgBytes
+	return nil
+}
+
+// ^ Starts Exchange on Local Peer Join ^ //
+func (tm *TopicManager) Exchange(id peer.ID, peerBuf []byte, lobBuf []byte) error {
+	// Initialize RPC
+	exchClient := rpc.NewClient(tm.host.Host, LOCAL_SERVICE_PID)
+	var reply LocalServiceResponse
+	var args LocalServiceArgs
+
+	// Set Args
+	args.Lobby = lobBuf
+	args.Peer = peerBuf
+
+	// Call to Peer
+	err := exchClient.Call(id, LOCAL_RPC_SERVICE, LOCAL_METHOD_EXCHANGE, args, &reply)
+	if err != nil {
+		return err
+	}
+
+	// Received Message
+	remotePeer := &md.Peer{}
+	err = proto.Unmarshal(reply.Peer, remotePeer)
+
+	// Send Error
+	if err != nil {
+		return err
+	}
+
+	// Update Peer with new data
+	tm.lobby.Add(remotePeer)
+	tm.RefreshLobby()
+	return nil
+}
+
+// ^ Calls Exchange on Local Lobby Peer ^ //
+func (ts *LocalService) ExchangeWith(ctx context.Context, args LocalServiceArgs, reply *LocalServiceResponse) error {
+	// Peer Data
+	remoteLobbyRef := &md.Lobby{}
+	err := proto.Unmarshal(args.Lobby, remoteLobbyRef)
+	if err != nil {
+		return err
+	}
+
+	remotePeer := &md.Peer{}
+	err = proto.Unmarshal(args.Peer, remotePeer)
+	if err != nil {
+		return err
+	}
+
+	// Update Peers with Lobby
+	ts.lobby.Sync(remoteLobbyRef, remotePeer)
+	ts.call.OnRefresh(ts.lobby)
+
+	// Set Message data and call done
+	buf, err := ts.user.Peer.Buffer()
+	if err != nil {
+		return err
+	}
+	reply.Peer = buf
+	return nil
+}
+
+// ^ Invite: Handles User sent AuthInvite Response ^
+func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite) error {
+	// Convert Protobuf to bytes
+	msgBytes, err := proto.Marshal(inv)
+	if err != nil {
+		return err
+	}
+
+	// Initialize Data
+	rpcClient := rpc.NewClient(tm.host.Host, LOCAL_SERVICE_PID)
+	var reply LocalServiceResponse
+	var args LocalServiceArgs
+	args.Invite = msgBytes
+
+	// Call to Peer
+	done := make(chan *rpc.Call, 1)
+	err = rpcClient.Go(id, LOCAL_RPC_SERVICE, LOCAL_METHOD_INVITE, args, &reply, done)
+
+	// Await Response
+	call := <-done
+	if call.Error != nil {
+		return err
+	}
+	tm.callback.OnReply(id, reply.InvReply)
+	return nil
+}
+
+// ^ Calls Invite on Local Lobby Peer ^ //
+func (ts *LocalService) InviteWith(ctx context.Context, args LocalServiceArgs, reply *LocalServiceResponse) error {
+	// Received Message
+	receivedMessage := md.AuthInvite{}
+	err := proto.Unmarshal(args.Invite, &receivedMessage)
+	if err != nil {
+		return err
+	}
+
+	// Set Current Message and send Callback
+	ts.invite = &receivedMessage
+	ts.call.OnInvite(args.Invite)
+
+	// Hold Select for Invite Type
+	select {
+	// Received Auth Channel Message
+	case m := <-ts.respCh:
+		// Convert Protobuf to bytes
+		msgBytes, err := proto.Marshal(m)
+		if err != nil {
+			return err
+		}
+
+		// Set Message data and call done
+		reply.InvReply = msgBytes
+		ctx.Done()
+		return nil
+		// Context is Done
+	case <-ctx.Done():
+		return nil
+	}
+}
+
+// ^ RespondToInvite to an Invitation ^ //
+func (n *TopicManager) RespondToInvite(rep *md.AuthReply) {
+	// Prepare Transfer
+	if rep.Decision {
+		n.callback.OnResponded(n.service.invite)
+	}
+
+	// @ Pass Contact Back
+	// Send to Channel
+	n.service.respCh <- rep
 }

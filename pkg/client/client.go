@@ -84,21 +84,21 @@ func (c *Client) Bootstrap() *md.SonrError {
 }
 
 // ^ Creates Remote from Lobby Data ^
-func (n *Client) CreateRemote(l *md.Lobby) (*tpc.TopicManager, *md.SonrError) {
-	if t, err := tpc.NewRemote(n.ctx, n.Host, n.user, l, n); err != nil {
-		return nil, err
+func (n *Client) CreateRemote(r *md.RemoteCreateRequest) (*tpc.TopicManager, *md.RemoteCreateResponse, *md.SonrError) {
+	if t, resp, err := tpc.NewRemote(n.ctx, n.Host, n.user, r, n); err != nil {
+		return nil, nil, err
 	} else {
-		return t, nil
+		return t, resp, nil
 	}
 }
 
 // ^ Join Lobby Adds Node to Named Topic ^
-func (n *Client) JoinRemote(r *md.RemoteResponse) (*tpc.TopicManager, *md.SonrError) {
+func (n *Client) JoinRemote(r *md.RemoteJoinRequest) (*tpc.TopicManager, *md.RemoteJoinResponse, *md.SonrError) {
 	// @ Returns error if Lobby doesnt Exist
-	if t, err := tpc.JoinRemote(n.ctx, n.Host, n.user, r, n); err != nil {
-		return nil, err
+	if t, resp, err := tpc.JoinRemote(n.ctx, n.Host, n.user, r, n); err != nil {
+		return nil, nil, err
 	} else {
-		return t, nil
+		return t, resp, nil
 	}
 }
 
@@ -203,7 +203,7 @@ func (n *Client) Respond(req *md.AuthReply, t *tpc.TopicManager) {
 // ^ Update proximity/direction and Notify Lobby ^ //
 func (n *Client) Update(t *tpc.TopicManager) *md.SonrError {
 	// Inform Lobby
-	if err := t.Send(n.user.Peer.SignUpdate()); err != nil {
+	if err := t.SendLocal(n.user.Peer.SignUpdate()); err != nil {
 		return md.NewError(err, md.ErrorMessage_TOPIC_UPDATE)
 	}
 	return nil
