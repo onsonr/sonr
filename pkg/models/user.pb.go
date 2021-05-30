@@ -20,56 +20,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Client Network Connection Status
-type Connectivity int32
-
-const (
-	Connectivity_None   Connectivity = 0
-	Connectivity_Mobile Connectivity = 1
-	Connectivity_WiFi   Connectivity = 2
-)
-
-// Enum value maps for Connectivity.
-var (
-	Connectivity_name = map[int32]string{
-		0: "None",
-		1: "Mobile",
-		2: "WiFi",
-	}
-	Connectivity_value = map[string]int32{
-		"None":   0,
-		"Mobile": 1,
-		"WiFi":   2,
-	}
-)
-
-func (x Connectivity) Enum() *Connectivity {
-	p := new(Connectivity)
-	*p = x
-	return p
-}
-
-func (x Connectivity) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (Connectivity) Descriptor() protoreflect.EnumDescriptor {
-	return file_user_proto_enumTypes[0].Descriptor()
-}
-
-func (Connectivity) Type() protoreflect.EnumType {
-	return &file_user_proto_enumTypes[0]
-}
-
-func (x Connectivity) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use Connectivity.Descriptor instead.
-func (Connectivity) EnumDescriptor() ([]byte, []int) {
-	return file_user_proto_rawDescGZIP(), []int{0}
-}
-
 // Status is User Node Situation
 type Status int32
 
@@ -125,11 +75,11 @@ func (x Status) String() string {
 }
 
 func (Status) Descriptor() protoreflect.EnumDescriptor {
-	return file_user_proto_enumTypes[1].Descriptor()
+	return file_user_proto_enumTypes[0].Descriptor()
 }
 
 func (Status) Type() protoreflect.EnumType {
-	return &file_user_proto_enumTypes[1]
+	return &file_user_proto_enumTypes[0]
 }
 
 func (x Status) Number() protoreflect.EnumNumber {
@@ -138,7 +88,7 @@ func (x Status) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use Status.Descriptor instead.
 func (Status) EnumDescriptor() ([]byte, []int) {
-	return file_user_proto_rawDescGZIP(), []int{1}
+	return file_user_proto_rawDescGZIP(), []int{0}
 }
 
 // Cardinal: Designation for the Compass Direction Value
@@ -262,11 +212,11 @@ func (x Cardinal) String() string {
 }
 
 func (Cardinal) Descriptor() protoreflect.EnumDescriptor {
-	return file_user_proto_enumTypes[2].Descriptor()
+	return file_user_proto_enumTypes[1].Descriptor()
 }
 
 func (Cardinal) Type() protoreflect.EnumType {
-	return &file_user_proto_enumTypes[2]
+	return &file_user_proto_enumTypes[1]
 }
 
 func (x Cardinal) Number() protoreflect.EnumNumber {
@@ -275,7 +225,7 @@ func (x Cardinal) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use Cardinal.Descriptor instead.
 func (Cardinal) EnumDescriptor() ([]byte, []int) {
-	return file_user_proto_rawDescGZIP(), []int{2}
+	return file_user_proto_rawDescGZIP(), []int{1}
 }
 
 // Platform is the Operating System of Device
@@ -324,11 +274,11 @@ func (x Platform) String() string {
 }
 
 func (Platform) Descriptor() protoreflect.EnumDescriptor {
-	return file_user_proto_enumTypes[3].Descriptor()
+	return file_user_proto_enumTypes[2].Descriptor()
 }
 
 func (Platform) Type() protoreflect.EnumType {
-	return &file_user_proto_enumTypes[3]
+	return &file_user_proto_enumTypes[2]
 }
 
 func (x Platform) Number() protoreflect.EnumNumber {
@@ -337,7 +287,7 @@ func (x Platform) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use Platform.Descriptor instead.
 func (Platform) EnumDescriptor() ([]byte, []int) {
-	return file_user_proto_rawDescGZIP(), []int{3}
+	return file_user_proto_rawDescGZIP(), []int{2}
 }
 
 // Proximity is the Distance between Peers, from Ultrasonic
@@ -377,11 +327,11 @@ func (x Position_Proximity) String() string {
 }
 
 func (Position_Proximity) Descriptor() protoreflect.EnumDescriptor {
-	return file_user_proto_enumTypes[4].Descriptor()
+	return file_user_proto_enumTypes[3].Descriptor()
 }
 
 func (Position_Proximity) Type() protoreflect.EnumType {
-	return &file_user_proto_enumTypes[4]
+	return &file_user_proto_enumTypes[3]
 }
 
 func (x Position_Proximity) Number() protoreflect.EnumNumber {
@@ -433,11 +383,11 @@ func (x Settings_Option) String() string {
 }
 
 func (Settings_Option) Descriptor() protoreflect.EnumDescriptor {
-	return file_user_proto_enumTypes[5].Descriptor()
+	return file_user_proto_enumTypes[4].Descriptor()
 }
 
 func (Settings_Option) Type() protoreflect.EnumType {
-	return &file_user_proto_enumTypes[5]
+	return &file_user_proto_enumTypes[4]
 }
 
 func (x Settings_Option) Number() protoreflect.EnumNumber {
@@ -1439,10 +1389,7 @@ var file_user_proto_rawDesc = []byte{
 	0x12, 0x15, 0x0a, 0x11, 0x46, 0x61, 0x6c, 0x6c, 0x62, 0x61, 0x63, 0x6b, 0x56, 0x69, 0x64, 0x65,
 	0x6f, 0x43, 0x61, 0x6c, 0x6c, 0x10, 0x02, 0x12, 0x0c, 0x0a, 0x08, 0x44, 0x61, 0x72, 0x6b, 0x4d,
 	0x6f, 0x64, 0x65, 0x10, 0x03, 0x12, 0x13, 0x0a, 0x0f, 0x52, 0x75, 0x6e, 0x49, 0x6e, 0x42, 0x61,
-	0x63, 0x6b, 0x67, 0x72, 0x6f, 0x75, 0x6e, 0x64, 0x10, 0x04, 0x2a, 0x2e, 0x0a, 0x0c, 0x43, 0x6f,
-	0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x76, 0x69, 0x74, 0x79, 0x12, 0x08, 0x0a, 0x04, 0x4e, 0x6f,
-	0x6e, 0x65, 0x10, 0x00, 0x12, 0x0a, 0x0a, 0x06, 0x4d, 0x6f, 0x62, 0x69, 0x6c, 0x65, 0x10, 0x01,
-	0x12, 0x08, 0x0a, 0x04, 0x57, 0x69, 0x46, 0x69, 0x10, 0x02, 0x2a, 0x94, 0x01, 0x0a, 0x06, 0x53,
+	0x63, 0x6b, 0x67, 0x72, 0x6f, 0x75, 0x6e, 0x64, 0x10, 0x04, 0x2a, 0x94, 0x01, 0x0a, 0x06, 0x53,
 	0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x08, 0x0a, 0x04, 0x49, 0x44, 0x4c, 0x45, 0x10, 0x00, 0x12,
 	0x0d, 0x0a, 0x09, 0x43, 0x4f, 0x4e, 0x4e, 0x45, 0x43, 0x54, 0x45, 0x44, 0x10, 0x01, 0x12, 0x10,
 	0x0a, 0x0c, 0x42, 0x4f, 0x4f, 0x54, 0x53, 0x54, 0x52, 0x41, 0x50, 0x50, 0x45, 0x44, 0x10, 0x02,
@@ -1492,46 +1439,45 @@ func file_user_proto_rawDescGZIP() []byte {
 	return file_user_proto_rawDescData
 }
 
-var file_user_proto_enumTypes = make([]protoimpl.EnumInfo, 6)
+var file_user_proto_enumTypes = make([]protoimpl.EnumInfo, 5)
 var file_user_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_user_proto_goTypes = []interface{}{
-	(Connectivity)(0),              // 0: Connectivity
-	(Status)(0),                    // 1: Status
-	(Cardinal)(0),                  // 2: Cardinal
-	(Platform)(0),                  // 3: Platform
-	(Position_Proximity)(0),        // 4: Position.Proximity
-	(Settings_Option)(0),           // 5: Settings.Option
-	(*Device)(nil),                 // 6: Device
-	(*FileSystem)(nil),             // 7: FileSystem
-	(*Peer)(nil),                   // 8: Peer
-	(*Profile)(nil),                // 9: Profile
-	(*Position)(nil),               // 10: Position
-	(*Settings)(nil),               // 11: Settings
-	(*Peer_ID)(nil),                // 12: Peer.ID
-	(*Peer_Properties)(nil),        // 13: Peer.Properties
-	(*Position_Accelerometer)(nil), // 14: Position.Accelerometer
-	(*Position_Compass)(nil),       // 15: Position.Compass
-	(*Position_Orientation)(nil),   // 16: Position.Orientation
-	(*Settings_Value)(nil),         // 17: Settings.Value
+	(Status)(0),                    // 0: Status
+	(Cardinal)(0),                  // 1: Cardinal
+	(Platform)(0),                  // 2: Platform
+	(Position_Proximity)(0),        // 3: Position.Proximity
+	(Settings_Option)(0),           // 4: Settings.Option
+	(*Device)(nil),                 // 5: Device
+	(*FileSystem)(nil),             // 6: FileSystem
+	(*Peer)(nil),                   // 7: Peer
+	(*Profile)(nil),                // 8: Profile
+	(*Position)(nil),               // 9: Position
+	(*Settings)(nil),               // 10: Settings
+	(*Peer_ID)(nil),                // 11: Peer.ID
+	(*Peer_Properties)(nil),        // 12: Peer.Properties
+	(*Position_Accelerometer)(nil), // 13: Position.Accelerometer
+	(*Position_Compass)(nil),       // 14: Position.Compass
+	(*Position_Orientation)(nil),   // 15: Position.Orientation
+	(*Settings_Value)(nil),         // 16: Settings.Value
 }
 var file_user_proto_depIdxs = []int32{
-	3,  // 0: Device.platform:type_name -> Platform
-	7,  // 1: Device.fileSystem:type_name -> FileSystem
-	12, // 2: Peer.id:type_name -> Peer.ID
-	3,  // 3: Peer.platform:type_name -> Platform
-	10, // 4: Peer.position:type_name -> Position
-	9,  // 5: Peer.profile:type_name -> Profile
-	13, // 6: Peer.properties:type_name -> Peer.Properties
-	3,  // 7: Profile.platform:type_name -> Platform
-	15, // 8: Position.facing:type_name -> Position.Compass
-	15, // 9: Position.heading:type_name -> Position.Compass
-	4,  // 10: Position.proximity:type_name -> Position.Proximity
-	14, // 11: Position.accelerometer:type_name -> Position.Accelerometer
-	16, // 12: Position.orientation:type_name -> Position.Orientation
-	17, // 13: Settings.value:type_name -> Settings.Value
-	5,  // 14: Settings.option:type_name -> Settings.Option
-	2,  // 15: Position.Compass.cardinal:type_name -> Cardinal
-	2,  // 16: Position.Compass.antiCardinal:type_name -> Cardinal
+	2,  // 0: Device.platform:type_name -> Platform
+	6,  // 1: Device.fileSystem:type_name -> FileSystem
+	11, // 2: Peer.id:type_name -> Peer.ID
+	2,  // 3: Peer.platform:type_name -> Platform
+	9,  // 4: Peer.position:type_name -> Position
+	8,  // 5: Peer.profile:type_name -> Profile
+	12, // 6: Peer.properties:type_name -> Peer.Properties
+	2,  // 7: Profile.platform:type_name -> Platform
+	14, // 8: Position.facing:type_name -> Position.Compass
+	14, // 9: Position.heading:type_name -> Position.Compass
+	3,  // 10: Position.proximity:type_name -> Position.Proximity
+	13, // 11: Position.accelerometer:type_name -> Position.Accelerometer
+	15, // 12: Position.orientation:type_name -> Position.Orientation
+	16, // 13: Settings.value:type_name -> Settings.Value
+	4,  // 14: Settings.option:type_name -> Settings.Option
+	1,  // 15: Position.Compass.cardinal:type_name -> Cardinal
+	1,  // 16: Position.Compass.antiCardinal:type_name -> Cardinal
 	17, // [17:17] is the sub-list for method output_type
 	17, // [17:17] is the sub-list for method input_type
 	17, // [17:17] is the sub-list for extension type_name
@@ -1695,7 +1641,7 @@ func file_user_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_user_proto_rawDesc,
-			NumEnums:      6,
+			NumEnums:      5,
 			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   0,

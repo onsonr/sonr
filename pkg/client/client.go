@@ -2,7 +2,6 @@ package client
 
 import (
 	"context"
-	"log"
 
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	tpc "github.com/sonr-io/core/internal/topic"
@@ -17,14 +16,18 @@ type Client struct {
 	tpc.ClientCallback
 
 	// Properties
-	ctx     context.Context
-	call    md.NodeCallback
-	global  net.GlobalTopic
-	user    *md.User
-	session *md.Session
+	isLinker bool
+	ctx      context.Context
+	call     md.NodeCallback
+	global   net.GlobalTopic
+	user     *md.User
+	session  *md.Session
 
 	// References
 	Host *net.HostNode
+
+	// Linker Properties
+	linker *md.Linker
 }
 
 // ^ NewClient Initializes Node with Router ^
@@ -35,6 +38,36 @@ func NewClient(ctx context.Context, u *md.User, call md.NodeCallback) *Client {
 		call: call,
 		user: u,
 	}
+}
+
+func NewLinkClient(ctx context.Context, lr *md.LinkRequest) (*Client, *md.SonrError) {
+	// Create Linker/Client
+	linker := md.NewLinker(lr)
+	c := &Client{
+		ctx:      ctx,
+		linker:   linker,
+		isLinker: true,
+	}
+
+	// Connect Linker
+	err := c.Connect(linker.PrivateKey())
+	if err != nil {
+		return nil, err
+	}
+
+	// Bootstrap Linker
+	err = c.Bootstrap()
+	if err != nil {
+		return nil, err
+	}
+
+	// Set Linker Peer ID
+	id, serr := c.global.FindPeerID(c.linker.Username)
+	if serr != nil {
+		return nil, md.NewError(serr, md.ErrorMessage_HOST_INFO)
+	}
+	c.linker.UserID = id.String()
+	return c, nil
 }
 
 // ^ Connects Host Node from Private Key ^
@@ -73,10 +106,8 @@ func (c *Client) Bootstrap() *md.SonrError {
 	// Join Global
 	global, err := c.Host.StartGlobal(c.user.SName())
 	if err != nil {
-		log.Println("FAILED: Start Global Topic")
 		return err
 	}
-	log.Println("SUCCESS: Start Global Topic")
 
 	// Set Client Global Ref
 	c.global = global

@@ -17,11 +17,10 @@ message ConnectionRequest {
   Location location = 1;              // Runtime IP based calculated GeoLocation
   Device device = 2;                  // Users Device
   Contact contact = 3;                // Users Contact Card
-  Connectivity connectivity = 4;      // Client Network Type
-  User.Crypto crypto = 5;             // User Crypto Data
-  ClientKeys clientKeys = 6;          // Client Keys
-  map<string, Device> devices = 7;    // User Devices: Name, Device
-  map<string, Settings> settings = 8; // User Specified Preferences
+  User.Crypto crypto = 4;             // User Crypto Data
+  ClientKeys clientKeys = 5;          // Client Keys
+  map<string, Device> devices = 6;    // User Devices: Name, Device
+  map<string, Settings> settings = 7; // User Specified Preferences
 
   // Client Keys for Services
   message ClientKeys {
@@ -89,6 +88,37 @@ message AuthReply {
   }
 }
 
+// Link Request for Non-Mobile Clients
+message LinkRequest {
+  Device device = 1;
+  string username = 2;
+  Location location = 3;
+}
+
+// Response After Linking
+message LinkResponse {
+  User user = 1;
+  bool decision = 2;
+}
+
+// Linker Object is used for Temporary host and Linking Devices
+message Linker {
+  Peer peer = 1;
+  Device device = 2;
+  string username = 3;
+  Router router = 4;
+  string userID = 5;
+
+  // Router Manages Peer Routing for Topics/Transfers - Attached from Node
+  // Client
+  message Router {
+    string deviceTopic = 1;
+    string localIPTopic = 2;
+    string rendevouz = 3;
+    Location location = 4;
+  }
+}
+
 // User is the Saved Data from Client that Passes to Proxy, During ConnRequest
 message User {
   string id = 1;                      // User prefix is ID
@@ -103,12 +133,11 @@ message User {
 
   // User Connection Management - Attached from Node Client
   message Connection {
-    bool hasConnected = 1;         // Node Host Started
-    bool hasBootstrapped = 2;      // Node Host Bootstrapped
-    bool hasJoinedLocal = 3;       // Node Host Joined Local PubSub
-    Status status = 4;             // Client Node Status
-    Router router = 5;             // Client Routing Information
-    Connectivity connectivity = 6; // Client Network Type
+    bool hasConnected = 1;    // Node Host Started
+    bool hasBootstrapped = 2; // Node Host Bootstrapped
+    bool hasJoinedLocal = 3;  // Node Host Joined Local PubSub
+    Status status = 4;        // Client Node Status
+    Router router = 5;        // Client Routing Information
   }
 
   // Crypto Data to Place in DHT

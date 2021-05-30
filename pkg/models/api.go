@@ -4,8 +4,10 @@ import (
 	"fmt"
 
 	olc "github.com/google/open-location-code/go"
+	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
+	"github.com/multiformats/go-multiaddr"
 )
 
 // ************************** //
@@ -65,6 +67,49 @@ func (i *AuthInvite) IsRemote() bool {
 	return i.Data.Properties.IsRemote
 }
 
+// ** ─── Linker MANAGEMENT ────────────────────────────────────────────────────────
+// Creates New Linker from Link Request
+func NewLinker(lr *LinkRequest) *Linker {
+	return &Linker{
+		Device:   lr.Device,
+		Username: lr.Username,
+		Router: &Linker_Router{
+			LocalIPTopic: lr.Location.OLC(),
+			Rendevouz:    fmt.Sprintf("/sonr/%s", lr.GetLocation().MajorOLC()),
+			Location:     lr.GetLocation(),
+		},
+	}
+}
+
+// Creates New Peer for Linker
+func (l *Linker) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) {
+	// Initialize
+	deviceID := l.Device.GetId()
+
+	// Set Peer
+	l.Peer = &Peer{
+		Id: &Peer_ID{
+			Peer:   id.String(),
+			Device: deviceID,
+		},
+		Platform: l.Device.Platform,
+		Model:    l.Device.Model,
+	}
+
+	// Set Device Topic
+	l.Router.DeviceTopic = fmt.Sprintf("/sonr/user/%s", l.Username)
+}
+
+// Returns Linker Private Key
+func (l *Linker) PrivateKey() crypto.PrivKey {
+	// Get Key from Buffer
+	key, err := crypto.UnmarshalPrivateKey(l.GetDevice().GetPrivateKey())
+	if err != nil {
+		return nil
+	}
+	return key
+}
+
 // ** ─── Location MANAGEMENT ────────────────────────────────────────────────────────
 func (l *Location) MinorOLC() string {
 	lat := l.GetLatitude()
@@ -88,9 +133,14 @@ func (r *User) LocalTopic() string {
 	return fmt.Sprintf("/sonr/topic/%s", r.Location.OLC())
 }
 
-// @ LocalTransfer Controller Data Protocol ID
-func (r *User_Router) LocalTransfer(id peer.ID) protocol.ID {
+// @ LocalTransferProtocol Controller Data Protocol ID
+func (r *User_Router) LocalTransferProtocol(id peer.ID) protocol.ID {
 	return protocol.ID(fmt.Sprintf("/sonr/local-transfer/%s", id.Pretty()))
+}
+
+// @ Lobby Topic Protocol ID
+func (r *User_Router) LinkProtocol(username string) protocol.ID {
+	return protocol.ID(fmt.Sprintf("/sonr/user-linker/%s", username))
 }
 
 // @ Transfer Controller Data Protocol ID
