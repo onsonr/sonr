@@ -8,7 +8,6 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-
 // ^ Join Existing Remote Topic ^ //
 func JoinRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteJoinRequest, th ClientCallback) (*TopicManager, *md.RemoteJoinResponse, *md.SonrError) {
 	// Join Topic
@@ -39,7 +38,7 @@ func JoinRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteJo
 		eventHandler: handler,
 		lobby:        r.NewJoinedRemote(u),
 		lobbyType:    md.Lobby_REMOTE,
-		localEvents:  make(chan *md.LocalEvent, K_MAX_MESSAGES),
+		remoteEvents: make(chan *md.RemoteEvent, K_MAX_MESSAGES),
 		subscription: sub,
 		topic:        topic,
 	}
@@ -70,7 +69,7 @@ func NewRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteCre
 		eventHandler: handler,
 		lobby:        r.NewCreatedRemote(u),
 		lobbyType:    md.Lobby_REMOTE,
-		localEvents:  make(chan *md.LocalEvent, K_MAX_MESSAGES),
+		remoteEvents: make(chan *md.RemoteEvent, K_MAX_MESSAGES),
 		subscription: sub,
 		topic:        topic,
 	}
