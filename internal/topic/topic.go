@@ -121,7 +121,8 @@ func (tm *TopicManager) handleTopicEvents() {
 			return
 		}
 
-		if lobEvent.Type == pubsub.PeerJoin {
+		// Check Event and Validate not User
+		if lobEvent.Type == pubsub.PeerJoin && tm.user.Peer.IsNotSamePeerID(lobEvent.Peer) {
 			pbuf, err := tm.user.GetPeer().Buffer()
 			if err != nil {
 				continue
@@ -137,6 +138,7 @@ func (tm *TopicManager) handleTopicEvents() {
 			tm.RefreshLobby()
 		}
 
+		// Check Leave Eent
 		if lobEvent.Type == pubsub.PeerLeave {
 			tm.lobby.Delete(lobEvent.Peer)
 			tm.RefreshLobby()

@@ -25,14 +25,12 @@ message RemoteJoinRequest {
 message RemoteCreateResponse {
   bool success = 1; // Remote Creation
   string topic = 2; // Topic Name for Give Remote Code
-  string link = 3;  // Full Link with Sonr URL Scheme and Topic Code
 }
 
 // Response from Remote Join Request
 message RemoteJoinResponse {
   Status status = 1; // Remote Join Status will be Pending on Success
-  Lobby lobby = 2; // Lobby Reference for User
-  string link = 3; // Full Link with Sonr URL Scheme and Topic Code
+  Lobby lobby = 2;   // Lobby Reference for User
 
   enum Status {
     None = 0;
