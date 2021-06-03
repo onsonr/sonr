@@ -13,7 +13,7 @@ import (
 )
 
 type ItemReader interface {
-	Progress() (bool, float32)
+	Progress() float32
 	ReadFrom(reader msg.ReadCloser) error
 }
 type itemReader struct {
@@ -25,16 +25,9 @@ type itemReader struct {
 }
 
 // Returns Progress of File, Given the written number of bytes
-func (p *itemReader) Progress() (bool, float32) {
+func (p *itemReader) Progress() float32 {
 	// Calculate Tracking
-	progress := float32(p.size) / float32(p.item.Size)
-	adjusted := int(progress)
-
-	// Check Interval
-	if adjusted&5 == 0 {
-		return true, progress
-	}
-	return false, 0
+	return float32(p.size) / float32(p.item.Size)
 }
 
 func (ir *itemReader) ReadFrom(reader msg.ReadCloser) error {

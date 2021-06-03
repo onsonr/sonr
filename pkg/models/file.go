@@ -2,6 +2,7 @@ package models
 
 import (
 	"path/filepath"
+	sync "sync"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/network"
@@ -123,35 +124,56 @@ func (s *Session) Card() *Transfer {
 
 // ^ read buffers sent on stream and save to file ^ //
 func (s *Session) ReadFromStream(stream network.Stream) {
-	// Concurrent Function
-	go func(rs msg.ReadCloser) {
-		// Read All Files
-		for _, m := range s.file.Items {
-			r := m.NewReader(s.user.Device)
+	// Initialize
+	var wg sync.WaitGroup
+	rs := msg.NewReader(stream)
+
+	// Read All Files
+	for _, m := range s.file.Items {
+		// Initialize Item Reader
+		wg.Add(1)
+		r := m.NewReader(s.user.Device)
+
+		// Concurrent Function
+		go func(r ItemReader, wg *sync.WaitGroup) {
 			err := r.ReadFrom(rs)
 			if err != nil {
 				s.call.Error(NewError(err, ErrorMessage_INCOMING))
 			}
-		}
-		s.call.Received(s.Card())
-	}(msg.NewReader(stream))
+			wg.Done()
+		}(r, &wg)
+		GetState().NeedsWait()
+	}
+
+	// Await Waitgroup Completion
+	wg.Wait()
+	s.call.Received(s.Card())
 }
 
 // ^ write file as Base64 in Msgio to Stream ^ //
 func (s *Session) WriteToStream(stream network.Stream) {
-	// Concurrent Function
-	go func(ws msg.WriteCloser) {
-		// Write All Files
-		for _, m := range s.file.Items {
-			w := m.NewWriter(s.user.Device)
+	// Initialize
+	var wg sync.WaitGroup
+	ws := msg.NewWriter(stream)
+
+	// Write All Files
+	for _, m := range s.file.Items {
+		// Initialize Item Writer
+		wg.Add(1)
+		w := m.NewWriter(s.user.Device)
+
+		// Concurrent Function
+		go func(w ItemWriter, wg *sync.WaitGroup) {
 			err := w.WriteTo(ws)
 			if err != nil {
 				s.call.Error(NewError(err, ErrorMessage_OUTGOING))
 			}
-			GetState().NeedsWait()
-		}
-		// Callback
-		stream.Close()
-		s.call.Transmitted(s.Card())
-	}(msg.NewWriter(stream))
+			wg.Done()
+		}(w, &wg)
+		GetState().NeedsWait()
+	}
+
+	// Await WaitGroup Completion
+	wg.Wait()
+	s.call.Transmitted(s.Card())
 }
