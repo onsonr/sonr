@@ -62,6 +62,7 @@ message Device {
   string version = 5;        // Operating System Version
   FileSystem fileSystem = 6; // Directories for this Device
   bytes privateKey = 7;
+  bytes publicKey = 8;
 }
 
 // FileSystem is for Directores Where Data can be stored

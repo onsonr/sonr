@@ -67,7 +67,7 @@ func NewLocal(ctx context.Context, h *net.HostNode, u *md.User, name string, th 
 		lobby:  mgr.lobby,
 		user:   u,
 		call:   th,
-		respCh: make(chan *md.AuthReply, 1),
+		respCh: make(chan *md.AuthReply, K_MAX_MESSAGES),
 	}
 
 	// Register Service
@@ -217,16 +217,17 @@ func (ts *LocalService) ExchangeWith(ctx context.Context, args LocalServiceArgs,
 
 // ^ Invite: Handles User sent AuthInvite Response ^
 func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite) error {
+	// Initialize Data
+	rpcClient := rpc.NewClient(tm.host.Host, LOCAL_SERVICE_PID)
+	var reply LocalServiceResponse
+	var args LocalServiceArgs
+
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(inv)
 	if err != nil {
 		return err
 	}
 
-	// Initialize Data
-	rpcClient := rpc.NewClient(tm.host.Host, LOCAL_SERVICE_PID)
-	var reply LocalServiceResponse
-	var args LocalServiceArgs
 	args.Invite = msgBytes
 
 	// Call to Peer
@@ -268,9 +269,6 @@ func (ts *LocalService) InviteWith(ctx context.Context, args LocalServiceArgs, r
 		// Set Message data and call done
 		reply.InvReply = msgBytes
 		ctx.Done()
-		return nil
-		// Context is Done
-	case <-ctx.Done():
 		return nil
 	}
 }

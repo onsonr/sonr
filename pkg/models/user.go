@@ -5,8 +5,12 @@ import (
 	"math"
 	"os"
 	"path/filepath"
+	"time"
 
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
+	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/multiformats/go-multiaddr"
+	"google.golang.org/protobuf/proto"
 )
 
 // ** ─── DEVICE MANAGEMENT ────────────────────────────────────────────────────────
@@ -75,6 +79,7 @@ func (d *Device) IsFile(name string) bool {
 // @ Returns Private key from disk if found
 func (d *Device) NewPrivateKey() *SonrError {
 	K_SONR_PRIV_KEY := "snr-priv-key"
+	K_SONR_PUB_KEY := "snr-pub-key"
 
 	// Get Private Key
 	if ok := d.IsFile(K_SONR_PRIV_KEY); ok {
@@ -91,23 +96,36 @@ func (d *Device) NewPrivateKey() *SonrError {
 		return nil
 	} else {
 		// Create New Key
-		privKey, _, err := crypto.GenerateKeyPair(crypto.Ed25519, -1)
+		privKey, pubKey, err := crypto.GenerateKeyPair(crypto.Ed25519, -1)
 		if err != nil {
 			return NewError(err, ErrorMessage_HOST_KEY)
 		}
 
 		// Marshal Data
-		buf, err := crypto.MarshalPrivateKey(privKey)
+		privBuf, err := crypto.MarshalPrivateKey(privKey)
+		if err != nil {
+			return NewError(err, ErrorMessage_MARSHAL)
+		}
+
+		// Marshal Data
+		pubBuf, err := crypto.MarshalPublicKey(pubKey)
 		if err != nil {
 			return NewError(err, ErrorMessage_MARSHAL)
 		}
 
 		// Set Buffer for Key
-		d.PrivateKey = buf
+		d.PrivateKey = privBuf
+		d.PublicKey = pubBuf
 
-		// Write Key to File
-		_, werr := d.WriteFile(K_SONR_PRIV_KEY, buf)
+		// Write Private Key to File
+		_, werr := d.WriteFile(K_SONR_PRIV_KEY, privBuf)
 		if werr != nil {
+			return NewError(err, ErrorMessage_USER_SAVE)
+		}
+
+		// Write Public Key to File
+		_, wpuberr := d.WriteFile(K_SONR_PUB_KEY, pubBuf)
+		if wpuberr != nil {
 			return NewError(err, ErrorMessage_USER_SAVE)
 		}
 		return nil
@@ -276,5 +294,106 @@ func (u *User) Update(ur *UpdateRequest) {
 		u.Peer.Properties = props
 	default:
 		return
+	}
+}
+
+// ** ─── Peer MANAGEMENT ────────────────────────────────────────────────────────
+// ^ Create New Peer from Connection Request and Host ID ^ //
+func (u *User) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) *SonrError {
+	u.Peer = &Peer{
+		Id: &Peer_ID{
+			Peer:   id.String(),
+			Device: u.DeviceID(),
+			SName:  u.SName(),
+		},
+		Profile:  u.Profile(),
+		Platform: u.Device.Platform,
+		Model:    u.Device.Model,
+	}
+	// Set Device Topic
+	u.Connection.Router.DeviceTopic = fmt.Sprintf("/sonr/topic/%s", u.Peer.UserID())
+	return nil
+}
+
+// ^ Returns Peer as Buffer ^ //
+func (p *Peer) Buffer() ([]byte, error) {
+	buf, err := proto.Marshal(p)
+	if err != nil {
+		return nil, err
+	}
+	return buf, nil
+}
+
+// ^ Returns Peer User ID ^ //
+func (p *Peer) DeviceID() string {
+	return string(p.Id.GetDevice())
+}
+
+// ^ Returns Peer ID String Value
+func (p *Peer) PeerID() string {
+	return p.Id.Peer
+}
+
+// ^ Returns Peer User ID ^ //
+func (p *Peer) UserID() string {
+	return p.Id.GetSName()
+}
+
+// ^ Checks if Two Peers are the Same by Device ID and Peer ID
+func (p *Peer) IsSame(other *Peer) bool {
+	return p.PeerID() == other.PeerID() && p.DeviceID() == other.DeviceID() && p.UserID() == other.UserID()
+}
+
+// ^ Checks if PeerDeviceIDID is the Same
+func (p *Peer) IsSameDeviceID(other *Peer) bool {
+	return p.DeviceID() == other.DeviceID()
+}
+
+// ^ Checks if PeerID is the Same
+func (p *Peer) IsSamePeerID(pid peer.ID) bool {
+	return p.PeerID() == pid.String()
+}
+
+// ^ Checks if Two Peers are NOT the Same by Device ID and Peer ID
+func (p *Peer) IsNotSame(other *Peer) bool {
+	return p.PeerID() != other.PeerID() && p.DeviceID() != other.DeviceID() && p.UserID() != other.UserID()
+}
+
+// ^ Checks if DeviceID is NOT the Same
+func (p *Peer) IsNotSameDeviceID(other *Peer) bool {
+	return p.DeviceID() == other.DeviceID()
+}
+
+// ^ Checks if PeerID is NOT the Same
+func (p *Peer) IsNotSamePeerID(pid peer.ID) bool {
+	return p.PeerID() != pid.String()
+}
+
+// ^ Signs AuthReply with Flat Contact
+func (u *User) SignFlatReply(from *Peer) *AuthReply {
+	return &AuthReply{
+		Type: AuthReply_FlatContact,
+		From: u.GetPeer(),
+		Data: &Transfer{
+			// SQL Properties
+			Payload:  Payload_CONTACT,
+			Received: int32(time.Now().Unix()),
+
+			// Owner Properties
+			Owner:    u.GetPeer().Profile,
+			Receiver: from.GetProfile(),
+
+			// Data Properties
+			Data: u.GetContact().ToData(),
+		},
+	}
+}
+
+// ^ SignUpdate Creates Lobby Event with Peer Data ^
+func (p *Peer) SignUpdate() *LocalEvent {
+	return &LocalEvent{
+		Subject: LocalEvent_UPDATE,
+		From:    p,
+		Id:      p.Id.Peer,
 	}
 }

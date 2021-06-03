@@ -226,11 +226,6 @@ func (n *Client) InviteFile(invite *md.AuthInvite, t *tpc.TopicManager) *md.Sonr
 	return nil
 }
 
-// ^ Respond to an Invitation ^ //
-func (n *Client) Respond(req *md.AuthReply, t *tpc.TopicManager) {
-	t.RespondToInvite(req)
-}
-
 // ^ Update proximity/direction and Notify Lobby ^ //
 func (n *Client) Update(t *tpc.TopicManager) *md.SonrError {
 	// Inform Lobby

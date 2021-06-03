@@ -218,7 +218,9 @@ func (mn *Node) Respond(data []byte) {
 			return
 		}
 
-		mn.client.Respond(req, mn.local)
+		// Send Response
+		mn.local.RespondToInvite(req)
+
 		// Update Status
 		if req.Decision {
 			mn.setStatus(md.Status_INPROGRESS)

@@ -107,6 +107,15 @@ func (mn *Node) Location() []byte {
 	return bytes
 }
 
+// @ Returns Node User Protobuf as Bytes
+func (mn *Node) User() []byte {
+	bytes, err := proto.Marshal(mn.user)
+	if err != nil {
+		return nil
+	}
+	return bytes
+}
+
 // **-------------------** //
 // ** LifeCycle Actions ** //
 // **-------------------** //
