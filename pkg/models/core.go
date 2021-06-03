@@ -200,8 +200,9 @@ func (i *SonrFile_Item) NewReader(d *Device) ItemReader {
 
 func (m *SonrFile_Item) NewWriter(d *Device) ItemWriter {
 	return &itemWriter{
-		item: m,
-		size: 0,
+		item:   m,
+		size:   0,
+		device: d,
 	}
 }
 
@@ -275,58 +276,37 @@ func (s *Session) Card() *Transfer {
 
 // ^ read buffers sent on stream and save to file ^ //
 func (s *Session) ReadFromStream(stream network.Stream) {
-	// Initialize
-	var wg sync.WaitGroup
-	rs := msg.NewReader(stream)
-
-	// Read All Files
-	for _, m := range s.file.Items {
-		// Initialize Item Reader
-		wg.Add(1)
-		r := m.NewReader(s.user.Device)
-
-		// Concurrent Function
-		go func(r ItemReader, wg *sync.WaitGroup) {
+	// Concurrent Function
+	go func(rs msg.ReadCloser) {
+		// Read All Files
+		for _, m := range s.file.Items {
+			r := m.NewReader(s.user.Device)
 			err := r.ReadFrom(rs)
 			if err != nil {
 				s.call.Error(NewError(err, ErrorMessage_INCOMING))
 			}
-			wg.Done()
-		}(r, &wg)
-		GetState().NeedsWait()
-	}
-
-	// Await Waitgroup Completion
-	wg.Wait()
-	s.call.Received(s.Card())
+		}
+		stream.Close()
+		s.call.Received(s.Card())
+	}(msg.NewReader(stream))
 }
 
 // ^ write file as Base64 in Msgio to Stream ^ //
 func (s *Session) WriteToStream(stream network.Stream) {
-	// Initialize
-	var wg sync.WaitGroup
-	ws := msg.NewWriter(stream)
-
-	// Write All Files
-	for _, m := range s.file.Items {
-		// Initialize Item Writer
-		wg.Add(1)
-		w := m.NewWriter(s.user.Device)
-
-		// Concurrent Function
-		go func(w ItemWriter, wg *sync.WaitGroup) {
+	// Concurrent Function
+	go func(ws msg.WriteCloser) {
+		// Write All Files
+		for _, m := range s.file.Items {
+			w := m.NewWriter(s.user.Device)
 			err := w.WriteTo(ws)
 			if err != nil {
 				s.call.Error(NewError(err, ErrorMessage_OUTGOING))
 			}
-			wg.Done()
-		}(w, &wg)
-		GetState().NeedsWait()
-	}
-
-	// Await WaitGroup Completion
-	wg.Wait()
-	s.call.Transmitted(s.Card())
+			GetState().NeedsWait()
+		}
+		// Callback
+		s.call.Transmitted(s.Card())
+	}(msg.NewWriter(stream))
 }
 
 // ** ─── Transfer (Reader) MANAGEMENT ────────────────────────────────────────────────────────
@@ -400,8 +380,9 @@ type ItemWriter interface {
 
 type itemWriter struct {
 	ItemWriter
-	item *SonrFile_Item
-	size int
+	item   *SonrFile_Item
+	device *Device
+	size   int
 }
 
 // Returns Progress of File, Given the written number of bytes
