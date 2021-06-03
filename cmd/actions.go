@@ -115,8 +115,10 @@ func (mn *Node) RemoteCreate(data []byte) []byte {
 			return nil
 		}
 		return buff
+	} else {
+		log.Println("--- STATUS NOT READY: CANNOT (RemoteCreate) ---")
+		return nil
 	}
-	return nil
 }
 
 // @ Join Remote Group
@@ -146,8 +148,10 @@ func (mn *Node) RemoteJoin(data []byte) []byte {
 			return nil
 		}
 		return buff
+	} else {
+		log.Println("--- STATUS NOT READY: CANNOT (RemoteJoin) ---")
+		return nil
 	}
-	return nil
 }
 
 // @ Update proximity/direction and Notify Lobby
@@ -206,6 +210,8 @@ func (mn *Node) Invite(data []byte) {
 				return
 			}
 		}
+	} else {
+		log.Println("--- STATUS NOT READY: CANNOT (Invite) ---")
 	}
 }
 
@@ -234,5 +240,7 @@ func (mn *Node) Respond(data []byte) {
 			log.Println("--- Updated Status to Available ---")
 			mn.setStatus(md.Status_AVAILABLE)
 		}
+	} else {
+		log.Println("--- STATUS NOT READY: CANNOT (Respond) ---")
 	}
 }
