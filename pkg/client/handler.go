@@ -1,6 +1,7 @@
 package client
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -72,6 +73,7 @@ func (n *Client) OnReply(id peer.ID, reply []byte) {
 		// Update Status
 		n.call.Status(md.Status_INPROGRESS)
 
+		log.Println("--- Starting Outgoing Stream --- ")
 		// Create New Auth Stream
 		stream, err := n.Host.StartStream(id, n.user.GetRouter().LocalTransferProtocol(id))
 		if err != nil {
@@ -86,6 +88,7 @@ func (n *Client) OnReply(id peer.ID, reply []byte) {
 
 // ^ OnResponded: Prepares for Incoming File Transfer when Accepted ^
 func (n *Client) OnResponded(inv *md.AuthInvite) {
+	log.Println("--- Starting Incoming Stream --- ")
 	n.session = md.NewInSession(n.user, inv, n.call)
 	n.Host.HandleStream(n.user.GetRouter().LocalTransferProtocol(n.Host.ID), n.session.ReadFromStream)
 }
