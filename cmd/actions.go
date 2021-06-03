@@ -223,7 +223,7 @@ func (mn *Node) Respond(data []byte) {
 
 		// Update Status
 		if req.Decision {
-			mn.setStatus(md.Status_INPROGRESS)
+			mn.setStatus(md.Status_TRANSFER)
 		} else {
 			mn.setStatus(md.Status_AVAILABLE)
 		}

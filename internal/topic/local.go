@@ -281,6 +281,10 @@ func (ts *LocalService) InviteWith(ctx context.Context, args LocalServiceArgs, r
 
 // ^ RespondToInvite to an Invitation ^ //
 func (n *TopicManager) RespondToInvite(rep *md.AuthReply) {
+	log.Println("--- Received Response for Invite ---")
+	// Send to Channel
+	n.service.respCh <- rep
+
 	// Prepare Transfer
 	if rep.Decision {
 		log.Println("--- Responding for Accept ---")
@@ -289,6 +293,4 @@ func (n *TopicManager) RespondToInvite(rep *md.AuthReply) {
 		log.Println("--- Responding for Decline ---")
 	}
 
-	// Send to Channel
-	n.service.respCh <- rep
 }

@@ -35,19 +35,6 @@ func (mn *Node) setBootstrapped(val bool) {
 	mn.call.OnStatus(data)
 }
 
-func (mn *Node) setJoinedLocal(val bool) {
-	// Update Status
-	su := mn.user.SetJoinedLocal(val)
-
-	// Callback Status
-	data, err := proto.Marshal(su)
-	if err != nil {
-		mn.handleError(md.NewError(err, md.ErrorMessage_MARSHAL))
-		return
-	}
-	mn.call.OnStatus(data)
-}
-
 func (mn *Node) setStatus(newStatus md.Status) {
 	// Set Status
 	su := mn.user.SetStatus(newStatus)

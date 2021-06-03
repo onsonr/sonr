@@ -56,7 +56,7 @@ func NewLinkClient(ctx context.Context, lr *md.LinkRequest) (*Client, *md.SonrEr
 	}
 
 	// Bootstrap Linker
-	err = c.Bootstrap()
+	_, err = c.Bootstrap()
 	if err != nil {
 		return nil, err
 	}
@@ -96,22 +96,28 @@ func (c *Client) Connect(pk crypto.PrivKey) *md.SonrError {
 }
 
 // ^ Begins Bootstrapping HostNode ^
-func (c *Client) Bootstrap() *md.SonrError {
+func (c *Client) Bootstrap() (*tpc.TopicManager, *md.SonrError) {
 	// Bootstrap Host
 	err := c.Host.Bootstrap()
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// Join Global
 	global, err := c.Host.StartGlobal(c.user.SName())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// Set Client Global Ref
 	c.global = global
-	return nil
+
+	// Join Local Topic
+	if t, err := tpc.NewLocal(c.ctx, c.Host, c.user, c.user.GetRouter().LocalTopic, c); err != nil {
+		return nil, err
+	} else {
+		return t, nil
+	}
 }
 
 // ^ Creates Remote from Lobby Data ^
@@ -130,15 +136,6 @@ func (n *Client) JoinRemote(r *md.RemoteJoinRequest) (*tpc.TopicManager, *md.Rem
 		return nil, nil, err
 	} else {
 		return t, resp, nil
-	}
-}
-
-// ^ Join Lobby Adds Node to Named Topic ^
-func (n *Client) JoinLocal() (*tpc.TopicManager, *md.SonrError) {
-	if t, err := tpc.NewLocal(n.ctx, n.Host, n.user, n.user.GetRouter().LocalTopic, n); err != nil {
-		return nil, err
-	} else {
-		return t, nil
 	}
 }
 

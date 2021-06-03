@@ -199,25 +199,9 @@ func (u *User) SetBootstrapped(value bool) *StatusUpdate {
 
 	// Update Status
 	if value {
-		u.Connection.Status = Status_BOOTSTRAPPED
-	} else {
-		u.Connection.Status = Status_FAILED
-	}
-
-	// Returns Status Update
-	return &StatusUpdate{Value: u.Connection.GetStatus()}
-}
-
-// Update Bootstrap Connection Status
-func (u *User) SetJoinedLocal(value bool) *StatusUpdate {
-	// Set Value
-	u.Connection.HasJoinedLocal = value
-
-	// Update Status
-	if value {
 		u.Connection.Status = Status_AVAILABLE
 	} else {
-		u.Connection.Status = Status_BOOTSTRAPPED
+		u.Connection.Status = Status_FAILED
 	}
 
 	// Returns Status Update

@@ -5,16 +5,14 @@ option go_package = "/models";
 
 // Status is User Node Situation
 enum Status {
-  IDLE = 0;         // Default Status on Launch
-  CONNECTED = 1;    // Status after starting Host
-  BOOTSTRAPPED = 2; // After Bootstrapping Host
-  AVAILABLE = 3;    // Connected and Visible on Local Lobby
-  SEARCHING = 4;    // File has been Processed ready to Invite
-  PENDING = 5;      // Awaiting Peer Authorization
-  INVITED = 6;      // Has received Invitation
-  INPROGRESS = 7;   // In Middle of Transfer
-  STANDBY = 8;      // Away from Sonr Application
-  FAILED = 9;
+  IDLE = 0;      // Default Status on Launch
+  CONNECTED = 1; // Status after starting Host
+  AVAILABLE = 2; // After Bootstrapping Host and Connected on Local Lobby
+  PENDING = 3;   // Awaiting Peer Authorization
+  INVITED = 4;   // Has received Invitation
+  TRANSFER = 5;  // In Progress of Transfer
+  STANDBY = 6;   // Away from Sonr Application
+  FAILED = 7;    // Failed to Connect Host
 }
 
 // Cardinal: Designation for the Compass Direction Value

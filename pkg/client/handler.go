@@ -72,7 +72,7 @@ func (n *Client) OnReply(id peer.ID, reply []byte) {
 	// Check for File Transfer
 	if resp.HasAcceptedTransfer() {
 		// Update Status
-		n.call.Status(md.Status_INPROGRESS)
+		n.call.Status(md.Status_TRANSFER)
 
 		log.Println("--- Starting Outgoing Stream --- ")
 		// Create New Auth Stream
@@ -90,7 +90,6 @@ func (n *Client) OnReply(id peer.ID, reply []byte) {
 // ^ OnResponded: Prepares for Incoming File Transfer when Accepted ^
 func (n *Client) OnResponded(inv *md.AuthInvite) {
 	log.Println("--- Starting Incoming Stream --- ")
-	n.call.Status(md.Status_INPROGRESS)
 	n.session = md.NewInSession(n.user, inv, n.call)
 	n.Host.HandleStream(n.user.GetRouter().LocalTransferProtocol(n.Host.ID), n.session.ReadFromStream)
 }

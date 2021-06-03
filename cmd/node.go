@@ -77,23 +77,13 @@ func (mn *Node) Connect() {
 		}
 
 		// Bootstrap Node
-		err = mn.client.Bootstrap()
+		mn.local, err = mn.client.Bootstrap()
 		if err != nil {
 			mn.handleError(err)
 			mn.setBootstrapped(false)
 			return
 		} else {
 			mn.setBootstrapped(true)
-		}
-
-		// Join Local Lobby
-		mn.local, err = mn.client.JoinLocal()
-		if err != nil {
-			mn.handleError(err)
-			mn.setJoinedLocal(false)
-			return
-		} else {
-			mn.setJoinedLocal(true)
 		}
 	}
 }
