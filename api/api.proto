@@ -135,8 +135,9 @@ message User {
 
   // User Connection Management - Attached from Node Client
   message Connection {
-    Status status = 1; // Client Node Status
-    Router router = 2; // Client Routing Information
+    ConnectionRequest.ClientKeys apiKeys = 1;
+    Status status = 2; // Client Node Status
+    Router router = 3; // Client Routing Information
   }
 
   // Crypto Data to Place in DHT
