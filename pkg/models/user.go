@@ -14,34 +14,42 @@ import (
 )
 
 // ** ─── DEVICE MANAGEMENT ────────────────────────────────────────────────────────
+// Method Checks for Desktop
 func (d *Device) IsDesktop() bool {
 	return d.Platform == Platform_MacOS || d.Platform == Platform_Linux || d.Platform == Platform_Windows
 }
 
+// Method Checks for Mobile
 func (d *Device) IsMobile() bool {
 	return d.Platform == Platform_IOS || d.Platform == Platform_Android
 }
 
+// Method Checks for IOS
 func (d *Device) IsIOS() bool {
 	return d.Platform == Platform_IOS
 }
 
+// Method Checks for Android
 func (d *Device) IsAndroid() bool {
 	return d.Platform == Platform_Android
 }
 
+// Method Checks for MacOS
 func (d *Device) IsMacOS() bool {
 	return d.Platform == Platform_MacOS
 }
 
+// Method Checks for Linux
 func (d *Device) IsLinux() bool {
 	return d.Platform == Platform_Linux
 }
 
+// Method Checks for Web
 func (d *Device) IsWeb() bool {
 	return d.Platform == Platform_Web
 }
 
+// Method Checks for Windows
 func (d *Device) IsWindows() bool {
 	return d.Platform == Platform_Windows
 }
@@ -56,7 +64,7 @@ func (d *Device) DataSavePath(fileName string, IsDesktop bool) string {
 	}
 }
 
-// @ Checks if File Exists
+// Checks if File Exists
 func (d *Device) IsFile(name string) bool {
 	// Initialize
 	var path string
@@ -76,8 +84,8 @@ func (d *Device) IsFile(name string) bool {
 	}
 }
 
-// @ Returns Private key from disk if found
-func (d *Device) NewPrivateKey() *SonrError {
+// Returns Private key from disk if found, Generates if Not
+func (d *Device) NewKeyPair() *SonrError {
 	K_SONR_PRIV_KEY := "snr-priv-key"
 	K_SONR_PUB_KEY := "snr-pub-key"
 
@@ -132,7 +140,7 @@ func (d *Device) NewPrivateKey() *SonrError {
 	}
 }
 
-// Loads User File
+// Loads File from Disk as Buffer
 func (d *Device) ReadFile(name string) ([]byte, *SonrError) {
 	// Initialize
 	var path string
@@ -157,7 +165,7 @@ func (d *Device) ReadFile(name string) ([]byte, *SonrError) {
 	}
 }
 
-// Writes a File to Disk
+// Writes a File to Disk and Returns Path
 func (d *Device) WriteFile(name string, data []byte) (string, *SonrError) {
 	// Create File Path
 	path := d.DataSavePath(name, d.IsDesktop())
@@ -174,7 +182,7 @@ func (d *Device) WriteFile(name string, data []byte) (string, *SonrError) {
 func NewUser(cr *ConnectionRequest) *User {
 	// Initialize Device
 	d := cr.GetDevice()
-	d.NewPrivateKey()
+	d.NewKeyPair()
 
 	// Get Crypto
 	crypto := cr.GetCrypto()
@@ -200,12 +208,24 @@ func NewUser(cr *ConnectionRequest) *User {
 	}
 }
 
+// Method Returns DeviceID
 func (u *User) DeviceID() string {
 	return u.Device.GetId()
 }
 
+// Method Returns Profile First Name
+func (u *User) FirstName() string {
+	return u.GetContact().GetProfile().GetFirstName()
+}
+
+// Method Returns Peer_ID
 func (u *User) ID() *Peer_ID {
 	return u.GetPeer().GetId()
+}
+
+// Method Returns Profile Last Name
+func (u *User) LastName() string {
+	return u.GetContact().GetProfile().GetLastName()
 }
 
 // Method Returns Crypto Prefix With Signature
@@ -213,8 +233,19 @@ func (u *User) Prefix() string {
 	return u.GetCrypto().Prefix
 }
 
+// Method Returns Profile
 func (u *User) Profile() *Profile {
 	return u.GetContact().GetProfile()
+}
+
+// Method Returns Public Key
+func (u *User) PublicKey() crypto.PubKey {
+	// Get Key from Buffer
+	key, err := crypto.UnmarshalPublicKey(u.GetDevice().GetPublicKey())
+	if err != nil {
+		return nil
+	}
+	return key
 }
 
 // Method Returns Private Key
@@ -309,7 +340,7 @@ func (u *User) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) *SonrError {
 		Model:    u.Device.Model,
 	}
 	// Set Device Topic
-	u.Connection.Router.DeviceTopic = fmt.Sprintf("/sonr/topic/%s", u.Peer.UserID())
+	u.Connection.Router.DeviceTopic = fmt.Sprintf("/sonr/topic/%s", u.Peer.SName())
 	return nil
 }
 
@@ -333,13 +364,13 @@ func (p *Peer) PeerID() string {
 }
 
 // ^ Returns Peer User ID ^ //
-func (p *Peer) UserID() string {
+func (p *Peer) SName() string {
 	return p.Id.GetSName()
 }
 
 // ^ Checks if Two Peers are the Same by Device ID and Peer ID
 func (p *Peer) IsSame(other *Peer) bool {
-	return p.PeerID() == other.PeerID() && p.DeviceID() == other.DeviceID() && p.UserID() == other.UserID()
+	return p.PeerID() == other.PeerID() && p.DeviceID() == other.DeviceID() && p.SName() == other.SName()
 }
 
 // ^ Checks if PeerDeviceIDID is the Same
@@ -354,7 +385,7 @@ func (p *Peer) IsSamePeerID(pid peer.ID) bool {
 
 // ^ Checks if Two Peers are NOT the Same by Device ID and Peer ID
 func (p *Peer) IsNotSame(other *Peer) bool {
-	return p.PeerID() != other.PeerID() && p.DeviceID() != other.DeviceID() && p.UserID() != other.UserID()
+	return p.PeerID() != other.PeerID() && p.DeviceID() != other.DeviceID() && p.SName() != other.SName()
 }
 
 // ^ Checks if DeviceID is NOT the Same
