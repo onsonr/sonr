@@ -67,25 +67,20 @@ func (n *Client) OnReply(id peer.ID, reply []byte) {
 		n.call.Error(md.NewError(err, md.ErrorMessage_UNMARSHAL))
 	}
 
-	// Check if Status is not already transferring
-	if n.user.IsNotStatus(md.Status_INPROGRESS) {
-		// Check for File Transfer
-		if resp.HasAcceptedTransfer() {
-			// Update Status
-			n.call.Status(md.Status_INPROGRESS)
+	// Check for File Transfer
+	if resp.HasAcceptedTransfer() {
+		// Update Status
+		n.call.Status(md.Status_INPROGRESS)
 
-			// Create New Auth Stream
-			stream, err := n.Host.StartStream(id, n.user.GetRouter().LocalTransferProtocol(id))
-			if err != nil {
-				n.call.Error(md.NewError(err, md.ErrorMessage_HOST_STREAM))
-				return
-			}
-
-			// Write to Stream on Session
-			n.session.WriteToStream(stream)
+		// Create New Auth Stream
+		stream, err := n.Host.StartStream(id, n.user.GetRouter().LocalTransferProtocol(id))
+		if err != nil {
+			n.call.Error(md.NewError(err, md.ErrorMessage_HOST_STREAM))
+			return
 		}
-	} else {
-		n.call.Error(md.NewErrorWithType(md.ErrorMessage_TRANSFER_START))
+
+		// Write to Stream on Session
+		n.session.WriteToStream(stream)
 	}
 }
 
