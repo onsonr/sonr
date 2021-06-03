@@ -6,7 +6,7 @@ import (
 )
 
 func (mn *Node) isReady() bool {
-	return mn.user.GetConnection().HasBootstrapped && mn.user.GetConnection().HasConnected
+	return mn.user.IsNotStatus(md.Status_STANDBY) || mn.user.IsNotStatus(md.Status_FAILED)
 }
 
 func (mn *Node) setConnected(val bool) {
@@ -22,9 +22,9 @@ func (mn *Node) setConnected(val bool) {
 	mn.call.OnStatus(data)
 }
 
-func (mn *Node) setBootstrapped(val bool) {
+func (mn *Node) setAvailable(val bool) {
 	// Update Status
-	su := mn.user.SetBootstrapped(val)
+	su := mn.user.SetAvailable(val)
 
 	// Callback Status
 	data, err := proto.Marshal(su)

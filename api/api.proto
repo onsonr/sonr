@@ -135,11 +135,8 @@ message User {
 
   // User Connection Management - Attached from Node Client
   message Connection {
-    bool hasConnected = 1;    // Node Host Started
-    bool hasBootstrapped = 2; // Node Host Bootstrapped
-    bool hasJoinedLocal = 3;  // Node Host Joined Local PubSub
-    Status status = 4;        // Client Node Status
-    Router router = 5;        // Client Routing Information
+    Status status = 1; // Client Node Status
+    Router router = 2; // Client Routing Information
   }
 
   // Crypto Data to Place in DHT

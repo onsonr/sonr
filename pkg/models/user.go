@@ -187,9 +187,6 @@ func NewUser(cr *ConnectionRequest) *User {
 		Location: cr.GetLocation(),
 		Crypto:   crypto,
 		Connection: &User_Connection{
-			HasConnected:    false,
-			HasBootstrapped: false,
-			HasJoinedLocal:  false,
 			Router: &User_Router{
 				Rendevouz:  "/sonr/rendevouz/0.9.2",
 				LocalTopic: fmt.Sprintf("/sonr/topic/%s", cr.GetLocation().OLC()),

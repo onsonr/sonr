@@ -64,27 +64,25 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 // **-----------------** //
 // @ Start Host and Connect
 func (mn *Node) Connect() {
-	if !mn.user.Connection.HasConnected {
-		// Connect Host
-		err := mn.client.Connect(mn.user.PrivateKey())
-		if err != nil {
-			mn.handleError(err)
-			mn.setConnected(false)
-			return
-		} else {
-			// Update Status
-			mn.setConnected(true)
-		}
+	// Connect Host
+	err := mn.client.Connect(mn.user.PrivateKey())
+	if err != nil {
+		mn.handleError(err)
+		mn.setConnected(false)
+		return
+	} else {
+		// Update Status
+		mn.setConnected(true)
+	}
 
-		// Bootstrap Node
-		mn.local, err = mn.client.Bootstrap()
-		if err != nil {
-			mn.handleError(err)
-			mn.setBootstrapped(false)
-			return
-		} else {
-			mn.setBootstrapped(true)
-		}
+	// Bootstrap Node
+	mn.local, err = mn.client.Bootstrap()
+	if err != nil {
+		mn.handleError(err)
+		mn.setAvailable(false)
+		return
+	} else {
+		mn.setAvailable(true)
 	}
 }
 

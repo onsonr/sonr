@@ -178,9 +178,6 @@ func (u *User) GetRouter() *User_Router {
 // ** ─── Status MANAGEMENT ────────────────────────────────────────────────────────
 // Update Connected Connection Status
 func (u *User) SetConnected(value bool) *StatusUpdate {
-	// Set Value
-	u.Connection.HasConnected = value
-
 	// Update Status
 	if value {
 		u.Connection.Status = Status_CONNECTED
@@ -193,10 +190,7 @@ func (u *User) SetConnected(value bool) *StatusUpdate {
 }
 
 // Update Bootstrap Connection Status
-func (u *User) SetBootstrapped(value bool) *StatusUpdate {
-	// Set Value
-	u.Connection.HasBootstrapped = value
-
+func (u *User) SetAvailable(value bool) *StatusUpdate {
 	// Update Status
 	if value {
 		u.Connection.Status = Status_AVAILABLE
