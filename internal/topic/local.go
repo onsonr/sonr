@@ -2,6 +2,7 @@ package topic
 
 import (
 	"context"
+	"log"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	rpc "github.com/libp2p/go-libp2p-gorpc"
@@ -237,6 +238,7 @@ func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite) error {
 	// Await Response
 	call := <-done
 	if call.Error != nil {
+		log.Println("Error Occurred: ", err)
 		return err
 	}
 	tm.callback.OnReply(id, reply.InvReply)
@@ -263,6 +265,7 @@ func (ts *LocalService) InviteWith(ctx context.Context, args LocalServiceArgs, r
 		// Convert Protobuf to bytes
 		msgBytes, err := proto.Marshal(m)
 		if err != nil {
+			log.Println("Error Occurred: ", err)
 			return err
 		}
 

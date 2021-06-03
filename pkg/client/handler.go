@@ -58,6 +58,7 @@ func (n *Client) OnInvite(data []byte) {
 
 // ^ OnReply: Begins File Transfer when Accepted ^
 func (n *Client) OnReply(id peer.ID, reply []byte) {
+	log.Println("--- Received Reply --- ")
 	// Call Responded
 	n.call.Responded(reply)
 
