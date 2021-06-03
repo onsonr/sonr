@@ -187,45 +187,6 @@ func (f *SonrFile) Single() *SonrFile_Item {
 	}
 }
 
-// ** ─── SONRFILE_Item MANAGEMENT ────────────────────────────────────────────────────────
-
-func (i *SonrFile_Item) NewReader(d *Device) ItemReader {
-	// Return Reader
-	return &itemReader{
-		item:   i,
-		device: d,
-		size:   0,
-	}
-}
-
-func (m *SonrFile_Item) NewWriter(d *Device) ItemWriter {
-	return &itemWriter{
-		item:   m,
-		size:   0,
-		device: d,
-	}
-}
-
-func (i *SonrFile_Item) SetPath(d *Device) string {
-	// Set Path
-	if i.Mime.IsMedia() {
-		// Check for Desktop
-		if d.IsDesktop() {
-			i.Path = filepath.Join(d.FileSystem.GetDownloads(), i.Name)
-		} else {
-			i.Path = filepath.Join(d.FileSystem.GetTemporary(), i.Name)
-		}
-	} else {
-		// Check for Desktop
-		if d.IsDesktop() {
-			i.Path = filepath.Join(d.FileSystem.GetDownloads(), i.Name)
-		} else {
-			i.Path = filepath.Join(d.FileSystem.GetDocuments(), i.Name)
-		}
-	}
-	return i.Path
-}
-
 // ** ─── Session MANAGEMENT ────────────────────────────────────────────────────────
 type Session struct {
 	// Inherited Properties
@@ -280,13 +241,12 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 	go func(rs msg.ReadCloser) {
 		// Read All Files
 		for _, m := range s.file.Items {
-			r := m.NewReader(s.user.Device)
+			r := m.NewReader(s.user.Device, s.call)
 			err := r.ReadFrom(rs)
 			if err != nil {
 				s.call.Error(NewError(err, ErrorMessage_INCOMING))
 			}
 		}
-		stream.Close()
 		s.call.Received(s.Card())
 	}(msg.NewReader(stream))
 }
@@ -297,16 +257,56 @@ func (s *Session) WriteToStream(stream network.Stream) {
 	go func(ws msg.WriteCloser) {
 		// Write All Files
 		for _, m := range s.file.Items {
-			w := m.NewWriter(s.user.Device)
+			w := m.NewWriter(s.user.Device, s.call)
 			err := w.WriteTo(ws)
 			if err != nil {
 				s.call.Error(NewError(err, ErrorMessage_OUTGOING))
 			}
-			GetState().NeedsWait()
 		}
 		// Callback
 		s.call.Transmitted(s.Card())
 	}(msg.NewWriter(stream))
+}
+
+// ** ─── SONRFILE_Item MANAGEMENT ────────────────────────────────────────────────────────
+
+func (i *SonrFile_Item) NewReader(d *Device, c NodeCallback) ItemReader {
+	// Return Reader
+	return &itemReader{
+		item:     i,
+		device:   d,
+		size:     0,
+		callback: c,
+	}
+}
+
+func (m *SonrFile_Item) NewWriter(d *Device, c NodeCallback) ItemWriter {
+	return &itemWriter{
+		item:     m,
+		size:     0,
+		device:   d,
+		callback: c,
+	}
+}
+
+func (i *SonrFile_Item) SetPath(d *Device) string {
+	// Set Path
+	if i.Mime.IsMedia() {
+		// Check for Desktop
+		if d.IsDesktop() {
+			i.Path = filepath.Join(d.FileSystem.GetDownloads(), i.Name)
+		} else {
+			i.Path = filepath.Join(d.FileSystem.GetTemporary(), i.Name)
+		}
+	} else {
+		// Check for Desktop
+		if d.IsDesktop() {
+			i.Path = filepath.Join(d.FileSystem.GetDownloads(), i.Name)
+		} else {
+			i.Path = filepath.Join(d.FileSystem.GetDocuments(), i.Name)
+		}
+	}
+	return i.Path
 }
 
 // ** ─── Transfer (Reader) MANAGEMENT ────────────────────────────────────────────────────────
@@ -316,10 +316,11 @@ type ItemReader interface {
 }
 type itemReader struct {
 	ItemReader
-	mutex  sync.Mutex
-	item   *SonrFile_Item
-	device *Device
-	size   int
+	mutex    sync.Mutex
+	item     *SonrFile_Item
+	device   *Device
+	size     int
+	callback NodeCallback
 }
 
 // Returns Progress of File, Given the written number of bytes
@@ -356,6 +357,7 @@ func (ir *itemReader) ReadFrom(reader msg.ReadCloser) error {
 			}
 			ir.size = ir.size + n
 			ir.mutex.Unlock()
+			ir.callback.Progressed(ir.Progress())
 		} else {
 			// Flush File Data
 			if err := f.Sync(); err != nil {
@@ -374,28 +376,22 @@ func (ir *itemReader) ReadFrom(reader msg.ReadCloser) error {
 
 // ** ─── Transfer (Writer) MANAGEMENT ────────────────────────────────────────────────────────
 type ItemWriter interface {
-	Progress() (bool, float32)
+	Progress() float32
 	WriteTo(writer msg.WriteCloser) error
 }
 
 type itemWriter struct {
 	ItemWriter
-	item   *SonrFile_Item
-	device *Device
-	size   int
+	item     *SonrFile_Item
+	device   *Device
+	size     int
+	callback NodeCallback
 }
 
 // Returns Progress of File, Given the written number of bytes
-func (p *itemWriter) Progress() (bool, float32) {
+func (p *itemWriter) Progress() float32 {
 	// Calculate Tracking
-	progress := float32(p.size) / float32(p.item.Size)
-	adjusted := int(progress)
-
-	// Check Interval
-	if adjusted&5 == 0 {
-		return true, progress
-	}
-	return false, 0
+	return float32(p.size) / float32(p.item.Size)
 }
 
 func (iw *itemWriter) WriteTo(writer msg.WriteCloser) error {
@@ -443,6 +439,8 @@ func (iw *itemWriter) WriteTo(writer msg.WriteCloser) error {
 		if err != nil && err != io.EOF {
 			return err
 		}
+
+		iw.callback.Progressed(iw.Progress())
 	}
 
 	// Create Block Protobuf from Chunk

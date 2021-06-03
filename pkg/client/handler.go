@@ -90,6 +90,7 @@ func (n *Client) OnReply(id peer.ID, reply []byte) {
 // ^ OnResponded: Prepares for Incoming File Transfer when Accepted ^
 func (n *Client) OnResponded(inv *md.AuthInvite) {
 	log.Println("--- Starting Incoming Stream --- ")
+	n.call.Status(md.Status_INPROGRESS)
 	n.session = md.NewInSession(n.user, inv, n.call)
 	n.Host.HandleStream(n.user.GetRouter().LocalTransferProtocol(n.Host.ID), n.session.ReadFromStream)
 }
