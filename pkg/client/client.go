@@ -13,7 +13,7 @@ import (
 
 // ^ Struct: Main Client handles Networking/Identity/Streams ^
 type Client struct {
-	tpc.ClientCallback
+	tpc.ClientHandler
 
 	// Properties
 	isLinker bool

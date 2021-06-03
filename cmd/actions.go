@@ -2,6 +2,7 @@ package bind
 
 import (
 	"context"
+	"log"
 
 	"github.com/getsentry/sentry-go"
 	sc "github.com/sonr-io/core/pkg/client"
@@ -211,9 +212,13 @@ func (mn *Node) Invite(data []byte) {
 // @ Respond to an Invite with Decision
 func (mn *Node) Respond(data []byte) {
 	if mn.isReady() {
+		// Logging
+		log.Println("--- Received Frontend Action for Response ---")
+
 		// Initialize from Request
 		req := &md.AuthReply{}
 		if err := proto.Unmarshal(data, req); err != nil {
+			log.Println("--- FAILED: To Unmarshal Response ---")
 			mn.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
 			return
 		}
@@ -223,8 +228,10 @@ func (mn *Node) Respond(data []byte) {
 
 		// Update Status
 		if req.Decision {
+			log.Println("--- Updated Status to Transfer ---")
 			mn.setStatus(md.Status_TRANSFER)
 		} else {
+			log.Println("--- Updated Status to Available ---")
 			mn.setStatus(md.Status_AVAILABLE)
 		}
 	}

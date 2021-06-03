@@ -9,7 +9,7 @@ import (
 )
 
 // ^ Join Existing Remote Topic ^ //
-func JoinRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteJoinRequest, th ClientCallback) (*TopicManager, *md.RemoteJoinResponse, *md.SonrError) {
+func JoinRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteJoinRequest, th ClientHandler) (*TopicManager, *md.RemoteJoinResponse, *md.SonrError) {
 	// Join Topic
 	topic, sub, handler, serr := h.Join(r.GetTopic())
 	if serr != nil {
@@ -32,7 +32,7 @@ func JoinRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteJo
 	// Create Lobby Manager
 	mgr := &TopicManager{
 		user:         u,
-		callback:     th,
+		handler:     th,
 		ctx:          ctx,
 		host:         h,
 		eventHandler: handler,
@@ -53,7 +53,7 @@ func JoinRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteJo
 }
 
 // ^ Create New Contained Topic Manager ^ //
-func NewRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteCreateRequest, th ClientCallback) (*TopicManager, *md.RemoteCreateResponse, *md.SonrError) {
+func NewRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteCreateRequest, th ClientHandler) (*TopicManager, *md.RemoteCreateResponse, *md.SonrError) {
 	// Join Topic
 	topic, sub, handler, serr := h.Join(r.GetTopic())
 	if serr != nil {
@@ -62,7 +62,7 @@ func NewRemote(ctx context.Context, h *net.HostNode, u *md.User, r *md.RemoteCre
 
 	// Create Lobby Manager
 	mgr := &TopicManager{
-		callback:     th,
+		handler:     th,
 		user:         u,
 		ctx:          ctx,
 		host:         h,

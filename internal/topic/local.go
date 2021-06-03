@@ -32,7 +32,7 @@ type LocalServiceResponse struct {
 // Service Struct
 type LocalService struct {
 	// Current Data
-	call  ClientCallback
+	call  ClientHandler
 	lobby *md.Lobby
 	user  *md.User
 
@@ -41,7 +41,7 @@ type LocalService struct {
 }
 
 // ^ Create New Contained Topic Manager ^ //
-func NewLocal(ctx context.Context, h *net.HostNode, u *md.User, name string, th ClientCallback) (*TopicManager, *md.SonrError) {
+func NewLocal(ctx context.Context, h *net.HostNode, u *md.User, name string, th ClientHandler) (*TopicManager, *md.SonrError) {
 	// Join Topic
 	topic, sub, handler, serr := h.Join(name)
 	if serr != nil {
@@ -50,7 +50,7 @@ func NewLocal(ctx context.Context, h *net.HostNode, u *md.User, name string, th 
 
 	// Create Lobby Manager
 	mgr := &TopicManager{
-		callback:     th,
+		handler:     th,
 		user:         u,
 		ctx:          ctx,
 		host:         h,
@@ -87,7 +87,7 @@ func NewLocal(ctx context.Context, h *net.HostNode, u *md.User, name string, th 
 
 // ^ Send Updated Lobby ^
 func (tm *TopicManager) RefreshLobby() {
-	tm.callback.OnRefresh(tm.lobby)
+	tm.handler.OnRefresh(tm.lobby)
 }
 
 // ^ SendLocal message to specific peer in topic ^
@@ -126,7 +126,7 @@ func (tm *TopicManager) Flat(id peer.ID, inv *md.AuthInvite) error {
 		return err
 	}
 
-	tm.callback.OnReply(id, reply.InvReply)
+	tm.handler.OnReply(id, reply.InvReply)
 	return nil
 }
 
@@ -242,7 +242,7 @@ func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite) error {
 		return err
 	}
 	log.Println("--- Received Reply ---")
-	tm.callback.OnReply(id, reply.InvReply)
+	tm.handler.OnReply(id, reply.InvReply)
 	return nil
 }
 
@@ -288,7 +288,7 @@ func (n *TopicManager) RespondToInvite(rep *md.AuthReply) {
 	// Prepare Transfer
 	if rep.Decision {
 		log.Println("--- Responding for Accept ---")
-		n.callback.OnResponded(n.service.invite)
+		n.handler.OnResponded(n.service.invite)
 	} else {
 		log.Println("--- Responding for Decline ---")
 	}
