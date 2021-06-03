@@ -241,6 +241,7 @@ func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite) error {
 		log.Println("Error Occurred: ", err)
 		return err
 	}
+	log.Println("--- Received Reply ---")
 	tm.callback.OnReply(id, reply.InvReply)
 	return nil
 }
@@ -257,11 +258,13 @@ func (ts *LocalService) InviteWith(ctx context.Context, args LocalServiceArgs, r
 	// Set Current Message and send Callback
 	ts.invite = &receivedMessage
 	ts.call.OnInvite(args.Invite)
+	log.Println("--- Received Invite ---")
 
 	// Hold Select for Invite Type
 	select {
 	// Received Auth Channel Message
 	case m := <-ts.respCh:
+		log.Println("--- Sending Reply ---")
 		// Convert Protobuf to bytes
 		msgBytes, err := proto.Marshal(m)
 		if err != nil {
@@ -280,10 +283,12 @@ func (ts *LocalService) InviteWith(ctx context.Context, args LocalServiceArgs, r
 func (n *TopicManager) RespondToInvite(rep *md.AuthReply) {
 	// Prepare Transfer
 	if rep.Decision {
+		log.Println("--- Responding for Accept ---")
 		n.callback.OnResponded(n.service.invite)
+	} else {
+		log.Println("--- Responding for Decline ---")
 	}
 
-	// @ Pass Contact Back
 	// Send to Channel
 	n.service.respCh <- rep
 }
