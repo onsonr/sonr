@@ -18,7 +18,6 @@ const LOCAL_METHOD_INVITE = "InviteWith"
 
 // ExchangeArgs is Peer protobuf
 type LocalServiceArgs struct {
-	Lobby  []byte
 	Peer   []byte
 	Invite []byte
 }
@@ -50,7 +49,7 @@ func NewLocal(ctx context.Context, h *net.HostNode, u *md.User, name string, th 
 
 	// Create Lobby Manager
 	mgr := &TopicManager{
-		handler:     th,
+		handler:      th,
 		user:         u,
 		ctx:          ctx,
 		host:         h,
@@ -157,14 +156,13 @@ func (ts *LocalService) FlatWith(ctx context.Context, args LocalServiceArgs, rep
 }
 
 // ^ Starts Exchange on Local Peer Join ^ //
-func (tm *TopicManager) Exchange(id peer.ID, peerBuf []byte, lobBuf []byte) error {
+func (tm *TopicManager) Exchange(id peer.ID, peerBuf []byte) error {
 	// Initialize RPC
 	exchClient := rpc.NewClient(tm.host.Host, LOCAL_SERVICE_PID)
 	var reply LocalServiceResponse
 	var args LocalServiceArgs
 
 	// Set Args
-	args.Lobby = lobBuf
 	args.Peer = peerBuf
 
 	// Call to Peer
@@ -191,20 +189,14 @@ func (tm *TopicManager) Exchange(id peer.ID, peerBuf []byte, lobBuf []byte) erro
 // ^ Calls Exchange on Local Lobby Peer ^ //
 func (ts *LocalService) ExchangeWith(ctx context.Context, args LocalServiceArgs, reply *LocalServiceResponse) error {
 	// Peer Data
-	remoteLobbyRef := &md.Lobby{}
-	err := proto.Unmarshal(args.Lobby, remoteLobbyRef)
-	if err != nil {
-		return err
-	}
-
 	remotePeer := &md.Peer{}
-	err = proto.Unmarshal(args.Peer, remotePeer)
+	err := proto.Unmarshal(args.Peer, remotePeer)
 	if err != nil {
 		return err
 	}
 
 	// Update Peers with Lobby
-	ts.lobby.Sync(remoteLobbyRef, remotePeer)
+	ts.lobby.Add(remotePeer)
 	ts.call.OnRefresh(ts.lobby)
 
 	// Set Message data and call done

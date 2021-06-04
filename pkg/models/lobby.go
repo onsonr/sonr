@@ -146,16 +146,3 @@ func (l *Lobby) Delete(id peer.ID) {
 	// Update Peer with new data
 	delete(l.Peers, id.String())
 }
-
-// Sync Between Remote Peers Lobby
-func (l *Lobby) Sync(ref *Lobby, remotePeer *Peer) {
-	for _, peer := range ref.Peers {
-		if l.User.IsNotSame(peer) {
-			l.Add(peer)
-		}
-	}
-
-	if l.User.IsNotSame(remotePeer) {
-		l.Add(remotePeer)
-	}
-}

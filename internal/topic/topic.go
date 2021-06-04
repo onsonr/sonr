@@ -127,11 +127,7 @@ func (tm *TopicManager) handleTopicEvents() {
 			if err != nil {
 				continue
 			}
-			lbuf, err := tm.lobby.Buffer()
-			if err != nil {
-				continue
-			}
-			err = tm.Exchange(lobEvent.Peer, pbuf, lbuf)
+			err = tm.Exchange(lobEvent.Peer, pbuf)
 			if err != nil {
 				continue
 			}
