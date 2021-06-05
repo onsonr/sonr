@@ -91,16 +91,6 @@ func Storj(data []byte) []byte {
 	return nil
 }
 
-// @ Sends API Response
-func (mn *Node) APIResponse(data []byte) {
-	if mn.isReady() {
-		// Get Request
-		response := &md.RestResponse{}
-		proto.Unmarshal(data, response)
-		log.Println(response.String())
-	}
-}
-
 // @ Create Remote Group
 func (mn *Node) RemoteCreate(data []byte) []byte {
 	if mn.isReady() {
