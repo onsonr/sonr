@@ -189,14 +189,17 @@ func (mn *Node) Invite(data []byte) {
 			return
 		}
 
+		// @ 1. Validate invite
+		req = mn.user.ValidateInvite(req)
+
 		// @ 2. Check Transfer Type
-		if req.Payload == md.Payload_CONTACT || req.Payload == md.Payload_FLAT_CONTACT {
+		if req.IsPayloadContact() {
 			err := mn.client.InviteContact(req, mn.local, mn.user.Contact)
 			if err != nil {
 				mn.handleError(err)
 				return
 			}
-		} else if req.Payload == md.Payload_URL {
+		} else if req.IsPayloadUrl() {
 			err := mn.client.InviteLink(req, mn.local)
 			if err != nil {
 				mn.handleError(err)

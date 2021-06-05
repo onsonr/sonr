@@ -18,24 +18,52 @@ func (r *AuthReply) HasAcceptedTransfer() bool {
 }
 
 // ** ─── AuthInvite MANAGEMENT ────────────────────────────────────────────────────────
+// Returns Invite Contact
 func (i *AuthInvite) GetContact() *Contact {
 	return i.GetData().GetContact()
 }
 
+// Returns Invite File
 func (i *AuthInvite) GetFile() *SonrFile {
 	return i.GetData().GetFile()
 }
 
+// Returns Invite URL
 func (i *AuthInvite) GetUrl() *URLLink {
 	return i.GetData().GetUrl()
 }
 
+// Checks if Payload is Contact
+func (i *AuthInvite) IsPayloadContact() bool {
+	return i.Payload == Payload_CONTACT || i.Payload == Payload_FLAT_CONTACT
+}
+
+// Checks if Payload is File Transfer
+func (i *AuthInvite) IsPayloadFile() bool {
+	return i.Payload == Payload_FILE || i.Payload == Payload_FILES || i.Payload == Payload_MEDIA
+}
+
+// Checks if Payload is Url
+func (i *AuthInvite) IsPayloadUrl() bool {
+	return i.Payload == Payload_URL
+}
+
+// Checks for Flat Invite
 func (i *AuthInvite) IsFlat() bool {
 	return i.Data.Properties.IsFlat
 }
 
+// Checks for Remote Invite
 func (i *AuthInvite) IsRemote() bool {
 	return i.Data.Properties.IsRemote
+}
+
+// Validates AuthInvite has From Parameter
+func (u *User) ValidateInvite(i *AuthInvite) *AuthInvite {
+	if i.From == nil {
+		i.From = u.GetPeer()
+	}
+	return i
 }
 
 // ** ─── REST API MANAGEMENT ────────────────────────────────────────────────────────
