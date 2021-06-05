@@ -103,6 +103,32 @@ message LinkResponse {
   bool decision = 2;
 }
 
+// REST API Request over HTTP
+message RestRequest {
+  RestMethodType type = 1;
+  string method = 2;
+  map<string, string> parameters = 3;
+  oneof host {
+    Peer peer = 4;
+    string id = 5;
+  }
+}
+
+// REST API Response over HTTP
+message RestResponse {
+  RestMethodType type = 1;
+  string method = 2;
+  int32 code = 3;
+  map<string, string> body = 4;
+}
+
+enum RestMethodType {
+  DEFAULT = 0;
+  GET = 1;
+  PUT = 2;
+  POST = 3;
+}
+
 // Linker Object is used for Temporary host and Linking Devices
 message Linker {
   Peer peer = 1;

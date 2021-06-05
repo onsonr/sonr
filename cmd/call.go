@@ -9,6 +9,7 @@ import (
 // * Interface: Callback is implemented from Plugin to receive updates * //
 type Callback interface {
 	OnStatus(data []byte)      // Node Status Updates
+	OnAPIRequest(data []byte)  // Rest Request
 	OnRefreshed(data []byte)   // Lobby Updates
 	OnLocalEvent(data []byte)  // Local Lobby Event
 	OnRemoteEvent(data []byte) // Local Lobby Event
@@ -35,6 +36,7 @@ func (mn *Node) invited(data []byte) {
 func (mn *Node) callbackNode() md.NodeCallback {
 	return md.NodeCallback{
 		// Direct
+		APIRequest:  mn.call.OnAPIRequest,
 		Refreshed:   mn.call.OnRefreshed,
 		LocalEvent:  mn.call.OnLocalEvent,
 		RemoteEvent: mn.call.OnRemoteEvent,

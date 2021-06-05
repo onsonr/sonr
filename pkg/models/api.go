@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"net/http"
 
 	olc "github.com/google/open-location-code/go"
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
@@ -11,7 +12,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// ** ─── AuthInvite MANAGEMENT ────────────────────────────────────────────────────────
+// ** ─── AuthReply MANAGEMENT ────────────────────────────────────────────────────────
 func (r *AuthReply) HasAcceptedTransfer() bool {
 	return r.Decision && r.Type == AuthReply_Transfer
 }
@@ -35,6 +36,25 @@ func (i *AuthInvite) IsFlat() bool {
 
 func (i *AuthInvite) IsRemote() bool {
 	return i.Data.Properties.IsRemote
+}
+
+// ** ─── REST API MANAGEMENT ────────────────────────────────────────────────────────
+// Creates New Proto Request from HTTP Request
+func NewRestRequest(r *http.Request) *RestRequest {
+	// Method Type
+	methodType := RestMethodType_DEFAULT
+
+	// Find Method
+	for k := range RestMethodType_value {
+		if k == r.Method {
+			methodType = RestMethodType(RestMethodType_value[r.Method])
+		}
+	}
+
+	return &RestRequest{
+		Type:   methodType,
+		Method: extractHTTPFunction(r.RequestURI),
+	}
 }
 
 // ** ─── Remote MANAGEMENT ────────────────────────────────────────────────────────

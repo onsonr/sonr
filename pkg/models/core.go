@@ -29,6 +29,7 @@ type OnReceived func(data *Transfer)
 type OnTransmitted func(data *Transfer)
 type OnError func(err *SonrError)
 type NodeCallback struct {
+	APIRequest  OnProtobuf
 	Invited     OnInvite
 	Refreshed   OnProtobuf
 	LocalEvent  OnProtobuf
