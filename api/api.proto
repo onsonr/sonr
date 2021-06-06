@@ -29,6 +29,8 @@ message ConnectionRequest {
     string rapidApiKey = 3;
     string hsKey = 4;
     string hsSecret = 5;
+    string hubKey = 6;
+    string hubSecret = 7;
   }
 }
 
@@ -101,6 +103,32 @@ message LinkResponse {
   bool decision = 2;
 }
 
+// REST API Request over HTTP
+message RestRequest {
+  RestMethodType type = 1;
+  string method = 2;
+  map<string, string> parameters = 3;
+  oneof host {
+    Peer peer = 4;
+    string id = 5;
+  }
+}
+
+// REST API Response over HTTP
+message RestResponse {
+  RestMethodType type = 1;
+  string method = 2;
+  int32 code = 3;
+  map<string, string> body = 4;
+}
+
+enum RestMethodType {
+  DEFAULT = 0;
+  GET = 1;
+  PUT = 2;
+  POST = 3;
+}
+
 // Linker Object is used for Temporary host and Linking Devices
 message Linker {
   Peer peer = 1;
@@ -133,11 +161,9 @@ message User {
 
   // User Connection Management - Attached from Node Client
   message Connection {
-    bool hasConnected = 1;    // Node Host Started
-    bool hasBootstrapped = 2; // Node Host Bootstrapped
-    bool hasJoinedLocal = 3;  // Node Host Joined Local PubSub
-    Status status = 4;        // Client Node Status
-    Router router = 5;        // Client Routing Information
+    ConnectionRequest.ClientKeys apiKeys = 1;
+    Status status = 2; // Client Node Status
+    Router router = 3; // Client Routing Information
   }
 
   // Crypto Data to Place in DHT

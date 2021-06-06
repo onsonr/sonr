@@ -2,6 +2,7 @@ package bind
 
 import (
 	"context"
+	"log"
 
 	"github.com/getsentry/sentry-go"
 	sc "github.com/sonr-io/core/pkg/client"
@@ -114,8 +115,10 @@ func (mn *Node) RemoteCreate(data []byte) []byte {
 			return nil
 		}
 		return buff
+	} else {
+		log.Println("--- STATUS NOT READY: CANNOT (RemoteCreate) ---")
+		return nil
 	}
-	return nil
 }
 
 // @ Join Remote Group
@@ -145,8 +148,10 @@ func (mn *Node) RemoteJoin(data []byte) []byte {
 			return nil
 		}
 		return buff
+	} else {
+		log.Println("--- STATUS NOT READY: CANNOT (RemoteJoin) ---")
+		return nil
 	}
-	return nil
 }
 
 // @ Update proximity/direction and Notify Lobby
@@ -184,14 +189,17 @@ func (mn *Node) Invite(data []byte) {
 			return
 		}
 
+		// @ 1. Validate invite
+		req = mn.user.ValidateInvite(req)
+
 		// @ 2. Check Transfer Type
-		if req.Payload == md.Payload_CONTACT || req.Payload == md.Payload_FLAT_CONTACT {
+		if req.IsPayloadContact() {
 			err := mn.client.InviteContact(req, mn.local, mn.user.Contact)
 			if err != nil {
 				mn.handleError(err)
 				return
 			}
-		} else if req.Payload == md.Payload_URL {
+		} else if req.IsPayloadUrl() {
 			err := mn.client.InviteLink(req, mn.local)
 			if err != nil {
 				mn.handleError(err)
@@ -205,25 +213,37 @@ func (mn *Node) Invite(data []byte) {
 				return
 			}
 		}
+	} else {
+		log.Println("--- STATUS NOT READY: CANNOT (Invite) ---")
 	}
 }
 
 // @ Respond to an Invite with Decision
 func (mn *Node) Respond(data []byte) {
 	if mn.isReady() {
+		// Logging
+		log.Println("--- Received Frontend Action for Response ---")
+
 		// Initialize from Request
 		req := &md.AuthReply{}
 		if err := proto.Unmarshal(data, req); err != nil {
+			log.Println("--- FAILED: To Unmarshal Response ---")
 			mn.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
 			return
 		}
 
-		mn.client.Respond(req, mn.local)
+		// Send Response
+		mn.local.RespondToInvite(req)
+
 		// Update Status
 		if req.Decision {
-			mn.setStatus(md.Status_INPROGRESS)
+			log.Println("--- Updated Status to Transfer ---")
+			mn.setStatus(md.Status_TRANSFER)
 		} else {
+			log.Println("--- Updated Status to Available ---")
 			mn.setStatus(md.Status_AVAILABLE)
 		}
+	} else {
+		log.Println("--- STATUS NOT READY: CANNOT (Respond) ---")
 	}
 }

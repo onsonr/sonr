@@ -13,10 +13,10 @@ import (
 )
 
 const K_MAX_MESSAGES = 128
-const LOCAL_SERVICE_PID = protocol.ID("/sonr/local-service/0.1")
-const REMOTE_SERVICE_PID = protocol.ID("/sonr/remote-service/0.1")
+const LOCAL_SERVICE_PID = protocol.ID("/sonr/local-service/0.2")
+const REMOTE_SERVICE_PID = protocol.ID("/sonr/remote-service/0.2")
 
-type ClientCallback interface {
+type ClientHandler interface {
 	OnLocalEvent(*md.LocalEvent)
 	OnRemoteEvent(*md.RemoteEvent)
 	OnRefresh(*md.Lobby)
@@ -37,7 +37,7 @@ type TopicManager struct {
 	service      *LocalService
 	localEvents  chan *md.LocalEvent
 	remoteEvents chan *md.RemoteEvent
-	callback     ClientCallback
+	handler      ClientHandler
 	lobbyType    md.Lobby_Type
 }
 
@@ -127,11 +127,7 @@ func (tm *TopicManager) handleTopicEvents() {
 			if err != nil {
 				continue
 			}
-			lbuf, err := tm.lobby.Buffer()
-			if err != nil {
-				continue
-			}
-			err = tm.Exchange(lobEvent.Peer, pbuf, lbuf)
+			err = tm.Exchange(lobEvent.Peer, pbuf)
 			if err != nil {
 				continue
 			}
@@ -205,7 +201,7 @@ func (tm *TopicManager) processTopicMessages() {
 
 		// @ Remote Event Channel Updated
 		case m := <-tm.remoteEvents:
-			tm.callback.OnRemoteEvent(m)
+			tm.handler.OnRemoteEvent(m)
 		case <-tm.ctx.Done():
 			return
 		}

@@ -1,15 +1,23 @@
 package models
 
 import (
+	"bufio"
 	"errors"
-	"log"
+	"fmt"
+	"io"
 	"net/http"
+	"os"
+	"path/filepath"
 	"sync"
 	"sync/atomic"
+	"time"
 
-	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-core/network"
+	msg "github.com/libp2p/go-msgio"
 	"google.golang.org/protobuf/proto"
 )
+
+const K_CHUNK_SIZE = 4 * 1024
 
 // ** ─── CALLBACK MANAGEMENT ────────────────────────────────────────────────────────
 type HTTPHandler func(http.ResponseWriter, *http.Request)
@@ -21,6 +29,7 @@ type OnReceived func(data *Transfer)
 type OnTransmitted func(data *Transfer)
 type OnError func(err *SonrError)
 type NodeCallback struct {
+	APIRequest  OnProtobuf
 	Invited     OnInvite
 	Refreshed   OnProtobuf
 	LocalEvent  OnProtobuf
@@ -125,154 +134,371 @@ func (c *Contact) ToData() *Transfer_Contact {
 	}
 }
 
-// ** ─── Global MANAGEMENT ────────────────────────────────────────────────────────
-// Returns as Lobby Buffer
-func (g *Global) Buffer() ([]byte, error) {
-	bytes, err := proto.Marshal(g)
+// ** ─── MIME MANAGEMENT ────────────────────────────────────────────────────────
+// Method adjusts extension for JPEG
+func (m *MIME) Ext() string {
+	if m.Subtype == "jpg" || m.Subtype == "jpeg" {
+		return "jpeg"
+	}
+	return m.Subtype
+}
+
+// Checks if Mime is Audio
+func (m *MIME) IsAudio() bool {
+	return m.Type == MIME_AUDIO
+}
+
+// Checks if Mime is any media
+func (m *MIME) IsMedia() bool {
+	return m.Type == MIME_AUDIO || m.Type == MIME_IMAGE || m.Type == MIME_VIDEO
+}
+
+// Checks if Mime is Image
+func (m *MIME) IsImage() bool {
+	return m.Type == MIME_IMAGE
+}
+
+// Checks if Mime is Video
+func (m *MIME) IsVideo() bool {
+	return m.Type == MIME_VIDEO
+}
+
+// ** ─── SONRFILE MANAGEMENT ────────────────────────────────────────────────────────
+// Checks if File contains single item
+func (f *SonrFile) IsSingle() bool {
+	return len(f.Items) == 1
+}
+
+// Checks if Single File is Media
+func (f *SonrFile) IsMedia() bool {
+	return f.Payload == Payload_MEDIA || (f.IsSingle() && f.Single().Mime.IsMedia())
+}
+
+// Checks if File contains multiple items
+func (f *SonrFile) IsMultiple() bool {
+	return len(f.Items) > 1
+}
+
+// Method Returns Single if Applicable
+func (f *SonrFile) Single() *SonrFile_Item {
+	if f.IsSingle() {
+		return f.Items[0]
+	} else {
+		return nil
+	}
+}
+
+// ** ─── Session MANAGEMENT ────────────────────────────────────────────────────────
+type Session struct {
+	// Inherited Properties
+	file *SonrFile
+	peer *Peer
+	user *User
+
+	// Management
+	call NodeCallback
+}
+
+// ^ Prepare for Outgoing Session ^ //
+func NewOutSession(u *User, req *AuthInvite, tc NodeCallback) *Session {
+	return &Session{
+		file: req.GetFile(),
+		peer: req.GetTo(),
+		user: u,
+		call: tc,
+	}
+}
+
+// ^ Prepare for Incoming Session ^ //
+func NewInSession(u *User, inv *AuthInvite, c NodeCallback) *Session {
+	// Return Session
+	return &Session{
+		file: inv.GetFile(),
+		peer: inv.GetFrom(),
+		user: u,
+		call: c,
+	}
+}
+
+// Returns SonrFile as TransferCard given Receiver and Owner
+func (s *Session) Card() *Transfer {
+	return &Transfer{
+		// SQL Properties
+		Payload:  s.file.Payload,
+		Received: int32(time.Now().Unix()),
+
+		// Owner Properties
+		Owner:    s.user.Peer.GetProfile(),
+		Receiver: s.peer.GetProfile(),
+
+		// Data Properties
+		Data: s.file.ToData(),
+	}
+}
+
+// ^ read buffers sent on stream and save to file ^ //
+func (s *Session) ReadFromStream(stream network.Stream) {
+	// Concurrent Function
+	go func(rs msg.ReadCloser) {
+		// Read All Files
+		for _, m := range s.file.Items {
+			r := m.NewReader(s.user.Device, s.call)
+			err := r.ReadFrom(rs)
+			if err != nil {
+				s.call.Error(NewError(err, ErrorMessage_INCOMING))
+			}
+		}
+		s.call.Received(s.Card())
+	}(msg.NewReader(stream))
+}
+
+// ^ write file as Base64 in Msgio to Stream ^ //
+func (s *Session) WriteToStream(stream network.Stream) {
+	// Concurrent Function
+	go func(ws msg.WriteCloser) {
+		// Write All Files
+		for _, m := range s.file.Items {
+			w := m.NewWriter(s.user.Device, s.call)
+			err := w.WriteTo(ws)
+			if err != nil {
+				s.call.Error(NewError(err, ErrorMessage_OUTGOING))
+			}
+		}
+		// Callback
+		s.call.Transmitted(s.Card())
+	}(msg.NewWriter(stream))
+}
+
+// ** ─── SONRFILE_Item MANAGEMENT ────────────────────────────────────────────────────────
+
+func (i *SonrFile_Item) NewReader(d *Device, c NodeCallback) ItemReader {
+	// Return Reader
+	return &itemReader{
+		item:     i,
+		device:   d,
+		size:     0,
+		callback: c,
+	}
+}
+
+func (m *SonrFile_Item) NewWriter(d *Device, c NodeCallback) ItemWriter {
+	return &itemWriter{
+		item:     m,
+		size:     0,
+		device:   d,
+		callback: c,
+	}
+}
+
+func (i *SonrFile_Item) SetPath(d *Device) string {
+	// Set Path
+	if i.Mime.IsMedia() {
+		// Check for Desktop
+		if d.IsDesktop() {
+			i.Path = filepath.Join(d.FileSystem.GetDownloads(), i.Name)
+		} else {
+			i.Path = filepath.Join(d.FileSystem.GetTemporary(), i.Name)
+		}
+	} else {
+		// Check for Desktop
+		if d.IsDesktop() {
+			i.Path = filepath.Join(d.FileSystem.GetDownloads(), i.Name)
+		} else {
+			i.Path = filepath.Join(d.FileSystem.GetDocuments(), i.Name)
+		}
+	}
+	return i.Path
+}
+
+// ** ─── Transfer (Reader) MANAGEMENT ────────────────────────────────────────────────────────
+type ItemReader interface {
+	Progress() float32
+	ReadFrom(reader msg.ReadCloser) error
+}
+type itemReader struct {
+	ItemReader
+	mutex    sync.Mutex
+	item     *SonrFile_Item
+	device   *Device
+	size     int
+	callback NodeCallback
+}
+
+// Returns Progress of File, Given the written number of bytes
+func (p *itemReader) Progress() float32 {
+	// Calculate Tracking
+	return float32(p.size) / float32(p.item.Size)
+}
+
+func (ir *itemReader) ReadFrom(reader msg.ReadCloser) error {
+	// Return Created File
+	f, err := os.Create(ir.item.SetPath(ir.device))
 	if err != nil {
-		log.Println(err)
-		return nil, err
+		return err
 	}
-	return bytes, nil
+
+	// Route Data from Stream
+	for {
+		// Read Length Fixed Bytes
+		buffer, err := reader.ReadMsg()
+		if err != nil {
+			return err
+		}
+
+		done, buf, err := decodeChunk(buffer)
+		if err != nil {
+			return err
+		}
+
+		if !done {
+			ir.mutex.Lock()
+			n, err := f.Write(buf)
+			if err != nil {
+				return err
+			}
+			ir.size = ir.size + n
+			ir.mutex.Unlock()
+			ir.callback.Progressed(ir.Progress())
+		} else {
+			// Flush File Data
+			if err := f.Sync(); err != nil {
+				return err
+			}
+
+			// Close File
+			if err := f.Close(); err != nil {
+				return err
+			}
+			return nil
+		}
+		GetState().NeedsWait()
+	}
 }
 
-// Remove Peer from Lobby
-func (g *Global) Delete(id peer.ID) {
-	// Find Username
-	u, err := g.FindSName(id)
+// ** ─── Transfer (Writer) MANAGEMENT ────────────────────────────────────────────────────────
+type ItemWriter interface {
+	Progress() float32
+	WriteTo(writer msg.WriteCloser) error
+}
+
+type itemWriter struct {
+	ItemWriter
+	item     *SonrFile_Item
+	device   *Device
+	size     int
+	callback NodeCallback
+}
+
+// Returns Progress of File, Given the written number of bytes
+func (p *itemWriter) Progress() float32 {
+	// Calculate Tracking
+	return float32(p.size) / float32(p.item.Size)
+}
+
+func (iw *itemWriter) WriteTo(writer msg.WriteCloser) error {
+	// Write Item to Stream
+	// @ Open Os File
+	f, err := os.Open(iw.item.Path)
 	if err != nil {
-		return
+		return errors.New(fmt.Sprintf("Error to read Item, %s", err.Error()))
 	}
 
-	// Remove Peer
-	delete(g.Peers, u)
-}
+	// @ Initialize Chunk Data
+	r := bufio.NewReader(f)
+	buf := make([]byte, 0, K_CHUNK_SIZE)
 
-// Method Finds PeerID for Username
-func (g *Global) FindPeerID(u string) (string, error) {
-	for k, v := range g.Peers {
-		if k == u {
-			return v, nil
+	// @ Loop through File
+	for {
+		// Initialize
+		n, err := r.Read(buf[:cap(buf)])
+		buf = buf[:n]
+
+		// Bytes read is zero
+		if n == 0 {
+			if err == nil {
+				continue
+			}
+			if err == io.EOF {
+				break
+			}
+			return err
 		}
-	}
-	return "", errors.New("PeerID not Found")
-}
 
-// Method Finds Username for PeerID
-func (g *Global) FindSName(id peer.ID) (string, error) {
-	for _, v := range g.Peers {
-		if v == id.String() {
-			return v, nil
+		// Create Block Protobuf from Chunk
+		data, err := encodeChunk(buf, false)
+		if err != nil {
+			return err
 		}
-	}
-	return "", errors.New("Username not Found")
-}
 
-// Method Checks if Global has Username
-func (g *Global) HasSName(u string) bool {
-	for k := range g.Peers {
-		if k == u {
-			return true
+		// Write Message Bytes to Stream
+		err = writer.WriteMsg(data)
+		if err != nil {
+			return err
 		}
-	}
-	return false
-}
 
-// Sync Between Remote Peers Lobby
-func (g *Global) Sync(rg *Global) {
-	// Iterate Over Remote Map
-	for otherSName, id := range rg.Peers {
-		if g.SName != otherSName {
-			g.Peers[otherSName] = id
+		// Unexpected Error
+		if err != nil && err != io.EOF {
+			return err
 		}
+
+		iw.callback.Progressed(iw.Progress())
 	}
 
-	// Check Self Map
-	if !g.HasSName(rg.SName) {
-		g.Peers[rg.SName] = rg.UserPeerID
-	}
-}
-
-// ** ─── Lobby MANAGEMENT ────────────────────────────────────────────────────────
-// Creates Local Lobby from User Data
-func NewLocalLobby(u *User) *Lobby {
-	// Get Info
-	topic := u.LocalTopic()
-	loc := u.GetRouter().GetLocation()
-
-	// Create Lobby
-	return &Lobby{
-		// General
-		Type:  Lobby_LOCAL,
-		Peers: make(map[string]*Peer),
-		User:  u.GetPeer(),
-
-		// Info
-		Info: &Lobby_Local{
-			Local: &Lobby_LocalInfo{
-				Name:     topic[12:],
-				Location: loc,
-				Topic:    topic,
-			},
-		},
-	}
-}
-
-// Returns Lobby Peer Count
-func (l *Lobby) Count() int {
-	return len(l.Peers)
-}
-
-// Returns TOTAL Lobby Size with Peer
-func (l *Lobby) Size() int {
-	return len(l.Peers) + 1
-}
-
-// Returns Lobby Topic
-func (l *Lobby) Topic() string {
-	topic := ""
-	switch l.Info.(type) {
-	// @ Create Remote
-	case *Lobby_Local:
-		topic = l.GetLocal().GetTopic()
-	// @ Join Remote
-	case *Lobby_Remote:
-		topic = l.GetRemote().GetTopic()
-	}
-	return topic
-}
-
-// Returns as Lobby Buffer
-func (l *Lobby) Buffer() ([]byte, error) {
-	bytes, err := proto.Marshal(l)
+	// Create Block Protobuf from Chunk
+	data, err := encodeChunk(nil, true)
 	if err != nil {
-		log.Println(err)
-		return nil, err
+		return err
 	}
-	return bytes, nil
+
+	// Write Message Bytes to Stream
+	err = writer.WriteMsg(data)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-// Add/Update Peer in Lobby
-func (l *Lobby) Add(peer *Peer) {
-	// Update Peer with new data
-	l.Peers[peer.PeerID()] = peer
+func decodeChunk(data []byte) (bool, []byte, error) {
+	// Unmarshal Bytes into Proto
+	c := &Chunk{}
+	err := proto.Unmarshal(data, c)
+	if err != nil {
+		return false, nil, err
+	}
+
+	if c.IsComplete {
+		return true, nil, nil
+	} else {
+		return false, c.Buffer, nil
+	}
 }
 
-// Remove Peer from Lobby
-func (l *Lobby) Delete(id peer.ID) {
-	// Update Peer with new data
-	delete(l.Peers, id.String())
-}
-
-// Sync Between Remote Peers Lobby
-func (l *Lobby) Sync(ref *Lobby, remotePeer *Peer) {
-	for _, peer := range ref.Peers {
-		if l.User.IsNotSame(peer) {
-			l.Add(peer)
+func encodeChunk(buffer []byte, completed bool) ([]byte, error) {
+	if !completed {
+		// Create Block Protobuf from Chunk
+		chunk := &Chunk{
+			Size:       int32(len(buffer)),
+			Buffer:     buffer,
+			IsComplete: false,
 		}
-	}
 
-	if l.User.IsNotSame(remotePeer) {
-		l.Add(remotePeer)
+		// Convert to bytes
+		bytes, err := proto.Marshal(chunk)
+		if err != nil {
+			return nil, err
+		}
+		return bytes, nil
+	} else {
+		// Create Block Protobuf from Chunk
+		chunk := &Chunk{
+			IsComplete: true,
+		}
+
+		// Convert to bytes
+		bytes, err := proto.Marshal(chunk)
+		if err != nil {
+			return nil, err
+		}
+		return bytes, nil
 	}
 }

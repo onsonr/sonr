@@ -5,39 +5,51 @@ import (
 	"math"
 	"os"
 	"path/filepath"
+	"time"
 
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
+	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/multiformats/go-multiaddr"
+	"google.golang.org/protobuf/proto"
 )
 
 // ** ─── DEVICE MANAGEMENT ────────────────────────────────────────────────────────
+// Method Checks for Desktop
 func (d *Device) IsDesktop() bool {
 	return d.Platform == Platform_MacOS || d.Platform == Platform_Linux || d.Platform == Platform_Windows
 }
 
+// Method Checks for Mobile
 func (d *Device) IsMobile() bool {
 	return d.Platform == Platform_IOS || d.Platform == Platform_Android
 }
 
+// Method Checks for IOS
 func (d *Device) IsIOS() bool {
 	return d.Platform == Platform_IOS
 }
 
+// Method Checks for Android
 func (d *Device) IsAndroid() bool {
 	return d.Platform == Platform_Android
 }
 
+// Method Checks for MacOS
 func (d *Device) IsMacOS() bool {
 	return d.Platform == Platform_MacOS
 }
 
+// Method Checks for Linux
 func (d *Device) IsLinux() bool {
 	return d.Platform == Platform_Linux
 }
 
+// Method Checks for Web
 func (d *Device) IsWeb() bool {
 	return d.Platform == Platform_Web
 }
 
+// Method Checks for Windows
 func (d *Device) IsWindows() bool {
 	return d.Platform == Platform_Windows
 }
@@ -52,7 +64,7 @@ func (d *Device) DataSavePath(fileName string, IsDesktop bool) string {
 	}
 }
 
-// @ Checks if File Exists
+// Checks if File Exists
 func (d *Device) IsFile(name string) bool {
 	// Initialize
 	var path string
@@ -72,9 +84,10 @@ func (d *Device) IsFile(name string) bool {
 	}
 }
 
-// @ Returns Private key from disk if found
-func (d *Device) NewPrivateKey() *SonrError {
+// Returns Private key from disk if found, Generates if Not
+func (d *Device) NewKeyPair() *SonrError {
 	K_SONR_PRIV_KEY := "snr-priv-key"
+	K_SONR_PUB_KEY := "snr-pub-key"
 
 	// Get Private Key
 	if ok := d.IsFile(K_SONR_PRIV_KEY); ok {
@@ -91,30 +104,43 @@ func (d *Device) NewPrivateKey() *SonrError {
 		return nil
 	} else {
 		// Create New Key
-		privKey, _, err := crypto.GenerateKeyPair(crypto.Ed25519, -1)
+		privKey, pubKey, err := crypto.GenerateKeyPair(crypto.Ed25519, -1)
 		if err != nil {
 			return NewError(err, ErrorMessage_HOST_KEY)
 		}
 
 		// Marshal Data
-		buf, err := crypto.MarshalPrivateKey(privKey)
+		privBuf, err := crypto.MarshalPrivateKey(privKey)
+		if err != nil {
+			return NewError(err, ErrorMessage_MARSHAL)
+		}
+
+		// Marshal Data
+		pubBuf, err := crypto.MarshalPublicKey(pubKey)
 		if err != nil {
 			return NewError(err, ErrorMessage_MARSHAL)
 		}
 
 		// Set Buffer for Key
-		d.PrivateKey = buf
+		d.PrivateKey = privBuf
+		d.PublicKey = pubBuf
 
-		// Write Key to File
-		_, werr := d.WriteFile(K_SONR_PRIV_KEY, buf)
+		// Write Private Key to File
+		_, werr := d.WriteFile(K_SONR_PRIV_KEY, privBuf)
 		if werr != nil {
+			return NewError(err, ErrorMessage_USER_SAVE)
+		}
+
+		// Write Public Key to File
+		_, wpuberr := d.WriteFile(K_SONR_PUB_KEY, pubBuf)
+		if wpuberr != nil {
 			return NewError(err, ErrorMessage_USER_SAVE)
 		}
 		return nil
 	}
 }
 
-// Loads User File
+// Loads File from Disk as Buffer
 func (d *Device) ReadFile(name string) ([]byte, *SonrError) {
 	// Initialize
 	var path string
@@ -139,7 +165,7 @@ func (d *Device) ReadFile(name string) ([]byte, *SonrError) {
 	}
 }
 
-// Writes a File to Disk
+// Writes a File to Disk and Returns Path
 func (d *Device) WriteFile(name string, data []byte) (string, *SonrError) {
 	// Create File Path
 	path := d.DataSavePath(name, d.IsDesktop())
@@ -156,7 +182,7 @@ func (d *Device) WriteFile(name string, data []byte) (string, *SonrError) {
 func NewUser(cr *ConnectionRequest) *User {
 	// Initialize Device
 	d := cr.GetDevice()
-	d.NewPrivateKey()
+	d.NewKeyPair()
 
 	// Get Crypto
 	crypto := cr.GetCrypto()
@@ -169,9 +195,7 @@ func NewUser(cr *ConnectionRequest) *User {
 		Location: cr.GetLocation(),
 		Crypto:   crypto,
 		Connection: &User_Connection{
-			HasConnected:    false,
-			HasBootstrapped: false,
-			HasJoinedLocal:  false,
+			ApiKeys: cr.GetClientKeys(),
 			Router: &User_Router{
 				Rendevouz:  "/sonr/rendevouz/0.9.2",
 				LocalTopic: fmt.Sprintf("/sonr/topic/%s", cr.GetLocation().OLC()),
@@ -184,12 +208,24 @@ func NewUser(cr *ConnectionRequest) *User {
 	}
 }
 
+// Method Returns DeviceID
 func (u *User) DeviceID() string {
 	return u.Device.GetId()
 }
 
+// Method Returns Profile First Name
+func (u *User) FirstName() string {
+	return u.GetContact().GetProfile().GetFirstName()
+}
+
+// Method Returns Peer_ID
 func (u *User) ID() *Peer_ID {
 	return u.GetPeer().GetId()
+}
+
+// Method Returns Profile Last Name
+func (u *User) LastName() string {
+	return u.GetContact().GetProfile().GetLastName()
 }
 
 // Method Returns Crypto Prefix With Signature
@@ -197,8 +233,19 @@ func (u *User) Prefix() string {
 	return u.GetCrypto().Prefix
 }
 
+// Method Returns Profile
 func (u *User) Profile() *Profile {
 	return u.GetContact().GetProfile()
+}
+
+// Method Returns Public Key
+func (u *User) PublicKey() crypto.PubKey {
+	// Get Key from Buffer
+	key, err := crypto.UnmarshalPublicKey(u.GetDevice().GetPublicKey())
+	if err != nil {
+		return nil
+	}
+	return key
 }
 
 // Method Returns Private Key
@@ -276,5 +323,106 @@ func (u *User) Update(ur *UpdateRequest) {
 		u.Peer.Properties = props
 	default:
 		return
+	}
+}
+
+// ** ─── Peer MANAGEMENT ────────────────────────────────────────────────────────
+// ^ Create New Peer from Connection Request and Host ID ^ //
+func (u *User) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) *SonrError {
+	u.Peer = &Peer{
+		Id: &Peer_ID{
+			Peer:   id.String(),
+			Device: u.DeviceID(),
+			SName:  u.SName(),
+		},
+		Profile:  u.Profile(),
+		Platform: u.Device.Platform,
+		Model:    u.Device.Model,
+	}
+	// Set Device Topic
+	u.Connection.Router.DeviceTopic = fmt.Sprintf("/sonr/topic/%s", u.Peer.SName())
+	return nil
+}
+
+// ^ Returns Peer as Buffer ^ //
+func (p *Peer) Buffer() ([]byte, error) {
+	buf, err := proto.Marshal(p)
+	if err != nil {
+		return nil, err
+	}
+	return buf, nil
+}
+
+// ^ Returns Peer User ID ^ //
+func (p *Peer) DeviceID() string {
+	return string(p.Id.GetDevice())
+}
+
+// ^ Returns Peer ID String Value
+func (p *Peer) PeerID() string {
+	return p.Id.Peer
+}
+
+// ^ Returns Peer User ID ^ //
+func (p *Peer) SName() string {
+	return p.Id.GetSName()
+}
+
+// ^ Checks if Two Peers are the Same by Device ID and Peer ID
+func (p *Peer) IsSame(other *Peer) bool {
+	return p.PeerID() == other.PeerID() && p.DeviceID() == other.DeviceID() && p.SName() == other.SName()
+}
+
+// ^ Checks if PeerDeviceIDID is the Same
+func (p *Peer) IsSameDeviceID(other *Peer) bool {
+	return p.DeviceID() == other.DeviceID()
+}
+
+// ^ Checks if PeerID is the Same
+func (p *Peer) IsSamePeerID(pid peer.ID) bool {
+	return p.PeerID() == pid.String()
+}
+
+// ^ Checks if Two Peers are NOT the Same by Device ID and Peer ID
+func (p *Peer) IsNotSame(other *Peer) bool {
+	return p.PeerID() != other.PeerID() && p.DeviceID() != other.DeviceID() && p.SName() != other.SName()
+}
+
+// ^ Checks if DeviceID is NOT the Same
+func (p *Peer) IsNotSameDeviceID(other *Peer) bool {
+	return p.DeviceID() == other.DeviceID()
+}
+
+// ^ Checks if PeerID is NOT the Same
+func (p *Peer) IsNotSamePeerID(pid peer.ID) bool {
+	return p.PeerID() != pid.String()
+}
+
+// ^ Signs AuthReply with Flat Contact
+func (u *User) SignFlatReply(from *Peer) *AuthReply {
+	return &AuthReply{
+		Type: AuthReply_FlatContact,
+		From: u.GetPeer(),
+		Data: &Transfer{
+			// SQL Properties
+			Payload:  Payload_CONTACT,
+			Received: int32(time.Now().Unix()),
+
+			// Owner Properties
+			Owner:    u.GetPeer().Profile,
+			Receiver: from.GetProfile(),
+
+			// Data Properties
+			Data: u.GetContact().ToData(),
+		},
+	}
+}
+
+// ^ SignUpdate Creates Lobby Event with Peer Data ^
+func (p *Peer) SignUpdate() *LocalEvent {
+	return &LocalEvent{
+		Subject: LocalEvent_UPDATE,
+		From:    p,
+		Id:      p.Id.Peer,
 	}
 }

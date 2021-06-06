@@ -64,43 +64,40 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 // **-----------------** //
 // @ Start Host and Connect
 func (mn *Node) Connect() {
-	if !mn.user.Connection.HasConnected {
-		// Connect Host
-		err := mn.client.Connect(mn.user.PrivateKey())
-		if err != nil {
-			mn.handleError(err)
-			mn.setConnected(false)
-			return
-		} else {
-			// Update Status
-			mn.setConnected(true)
-		}
+	// Connect Host
+	err := mn.client.Connect(mn.user.PrivateKey())
+	if err != nil {
+		mn.handleError(err)
+		mn.setConnected(false)
+		return
+	} else {
+		// Update Status
+		mn.setConnected(true)
+	}
 
-		// Bootstrap Node
-		err = mn.client.Bootstrap()
-		if err != nil {
-			mn.handleError(err)
-			mn.setBootstrapped(false)
-			return
-		} else {
-			mn.setBootstrapped(true)
-		}
-
-		// Join Local Lobby
-		mn.local, err = mn.client.JoinLocal()
-		if err != nil {
-			mn.handleError(err)
-			mn.setJoinedLocal(false)
-			return
-		} else {
-			mn.setJoinedLocal(true)
-		}
+	// Bootstrap Node
+	mn.local, err = mn.client.Bootstrap()
+	if err != nil {
+		mn.handleError(err)
+		mn.setAvailable(false)
+		return
+	} else {
+		mn.setAvailable(true)
 	}
 }
 
 // @ Returns Node Location Protobuf as Bytes
 func (mn *Node) Location() []byte {
 	bytes, err := proto.Marshal(mn.user.Location)
+	if err != nil {
+		return nil
+	}
+	return bytes
+}
+
+// @ Returns Node User Protobuf as Bytes
+func (mn *Node) User() []byte {
+	bytes, err := proto.Marshal(mn.user)
 	if err != nil {
 		return nil
 	}
