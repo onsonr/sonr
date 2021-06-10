@@ -7,19 +7,15 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
+// @ Constant Dividers
 const fingerprintDivider = "v=0;fingerprint="
 const authDivider = "._auth."
 
-// ** ─── HSRecord Constructers ────────────────────────────────────────────────────────
-func NewAuthHSRecord(prefix string, name string, fingerprint string) *HSRecord {
-	return &HSRecord{
-		Ttl:   5,
-		Type:  "TXT",
-		Host:  fmt.Sprintf("%s%s%s", prefix, authDivider, name),
-		Value: fmt.Sprintf("%s%s", fingerprintDivider, fingerprint),
-	}
-}
+// @ Constant Name Filters
+var blockedNames = []string{"elon", "vitalik", "prad", "rishi", "brax", "vt", "isa"}
+var restrictedNames = []string{"root", "admin", "mail", "auth", "crypto", "id", "app", "beta", "alpha", "code", "ios", "android", "test", "node", "sonr"}
 
+// ** ─── HSRecord Constructers ────────────────────────────────────────────────────────
 func NewBlankHSRecord() *HSRecord {
 	return &HSRecord{
 		Ttl:   -1,
@@ -51,7 +47,7 @@ func (hs *HSRecord) Fingerprint() []byte {
 // ^ Returns Record Name if Transfer ^
 func (hs *HSRecord) Name() string {
 	if hs.IsAuth() {
-		return extractName(hs.Host)
+		return strings.ToLower(extractName(hs.Host))
 	}
 	return ""
 }
@@ -75,6 +71,26 @@ func (hs *HSRecord) ToMap() map[string]interface{} {
 }
 
 // ** ─── HSRecord Helpers ────────────────────────────────────────────────────────
+// @ Helper: Verifies Unrestricted
+func checkUnrestricted(val string) bool {
+	for _, v := range restrictedNames {
+		if v == val {
+			return false
+		}
+	}
+	return true
+}
+
+// @ Helper: Verifies Unblocked
+func checkUnblocked(val string) bool {
+	for _, v := range blockedNames {
+		if v == val {
+			return false
+		}
+	}
+	return true
+}
+
 // @ Helper: Extracts Fingerprint from `Host`
 func extractFingerprint(value string) []byte {
 	return []byte(substring(value, len(fingerprintDivider), len(value)))
@@ -117,19 +133,26 @@ func NewNamebaseResponse(data []byte) (*NamebaseResponse, error) {
 
 // ^ Method Returns New Namebase Request as JSON Bytes
 func NewNamebaseRequest(record *HSRecord, isDelete bool) *NamebaseRequest {
-	// Create Request
-	request := &NamebaseRequest{
-		Records:       []*HSRecord{},
-		DeleteRecords: []*HSRecord{},
-	}
+	// Verify Non-Empty Name
+	if record.Name() != "" {
+		// Validate Name
+		if checkUnblocked(record.Name()) && checkUnrestricted(record.Name()) {
+			// Create Request
+			request := &NamebaseRequest{
+				Records:       []*HSRecord{},
+				DeleteRecords: []*HSRecord{},
+			}
 
-	// Check for Delete or Create
-	if isDelete {
-		request.DeleteRecords = append(request.DeleteRecords, record)
-	} else {
-		request.Records = append(request.Records, record)
+			// Check for Delete or Create
+			if isDelete {
+				request.DeleteRecords = append(request.DeleteRecords, record)
+			} else {
+				request.Records = append(request.Records, record)
+			}
+			return request
+		}
 	}
-	return request
+	return nil
 }
 
 func (req *NamebaseRequest) JSON() ([]byte, error) {
@@ -142,6 +165,7 @@ func (req *NamebaseRequest) JSON() ([]byte, error) {
 }
 
 // ** ─── UsernameResponse MANAGEMENT ────────────────────────────────────────────────────────
+// Creates New Valid Response
 func NewValidUsernameResponse(prefix string, sname string, mnemonic string) *UsernameResponse {
 	return &UsernameResponse{
 		IsValid:  true,
@@ -151,11 +175,33 @@ func NewValidUsernameResponse(prefix string, sname string, mnemonic string) *Use
 	}
 }
 
+// Creates New Invalid Response
 func NewInvalidUsernameResponse() *UsernameResponse {
 	return &UsernameResponse{
 		IsValid:  false,
 		Prefix:   "-",
 		SName:    "-",
 		Mnemonic: "-",
+	}
+}
+
+// Converts Username Response to User_Crypto
+func (ur *UsernameResponse) ToUserCrypto() *User_Crypto {
+	if ur.GetIsValid() {
+		return &User_Crypto{
+			Prefix:   ur.GetPrefix(),
+			Mnemonic: ur.GetMnemonic(),
+			SName:    ur.GetSName(),
+		}
+	}
+	return nil
+}
+
+func (ur *UsernameRequest) ToHSRecord(prefix string, fingerprint string) *HSRecord {
+	return &HSRecord{
+		Ttl:   5,
+		Type:  "TXT",
+		Host:  fmt.Sprintf("%s%s%s", prefix, authDivider, ur.SName),
+		Value: fmt.Sprintf("%s%s", fingerprintDivider, fingerprint),
 	}
 }

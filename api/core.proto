@@ -49,8 +49,6 @@ message NamebaseResponse {
 
 // Memory Store Key Values
 enum StoreKeys {
-  AUTH_SNAME = 0;
-  AUTH_PREFIX = 1;
-  AUTH_MNEMONIC = 2;
-  USER_DATA = 3;
+  CRYPTO = 0;
+  SETTINGS = 1;
 }

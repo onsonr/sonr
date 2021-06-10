@@ -58,12 +58,12 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	// Create Store - Start Auth Service
 	if s, err := md.InitStore(req); err == nil {
 		mn.store = s
-		mn.auth = ath.NewAuthService(req, s)
 	}
 
 	// Create User
 	if u, err := md.NewUser(req, mn.store); err == nil {
 		mn.user = u
+		mn.auth = ath.NewAuthService(req, u.KeyPair(), mn.store)
 	}
 
 	// Create Client
@@ -77,7 +77,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 // @ Start Host and Connect
 func (mn *Node) Connect() {
 	// Connect Host
-	err := mn.client.Connect(mn.user.PrivateKey())
+	err := mn.client.Connect(mn.user.KeyPrivate())
 	if err != nil {
 		mn.handleError(err)
 		mn.setConnected(false)

@@ -337,21 +337,13 @@ func (d *Device) WriteFile(name string, data []byte) (string, *SonrError) {
 func NewUser(cr *ConnectionRequest, s Store) (*User, *SonrError) {
 	// Initialize Device
 	d := cr.GetDevice()
-	err := d.InitKeyPair()
-	if err != nil {
-		return nil, err
-	}
-
-	// Get Crypto
-	crypto := cr.GetCrypto()
+	d.InitKeyPair()
 
 	// Return User
 	u := &User{
-		Id:       crypto.GetPrefix(),
 		Device:   d,
 		Contact:  cr.GetContact(),
 		Location: cr.GetLocation(),
-		Crypto:   crypto,
 		Connection: &User_Connection{
 			ApiKeys: cr.GetApiKeys(),
 			Router: &User_Router{
@@ -361,24 +353,32 @@ func NewUser(cr *ConnectionRequest, s Store) (*User, *SonrError) {
 			},
 			Status: Status_IDLE,
 		},
-		Devices:  cr.GetDevices(),
-		Settings: cr.GetSettings(),
 	}
 
-	// Marshal Buffer
-	buf, serr := proto.Marshal(u)
-	if serr != nil {
-		return u, nil
-	}
+	// // Marshal Buffer
+	// buf, serr := proto.Marshal(u.GetSettings())
+	// if serr != nil {
+	// 	return u, nil
+	// }
 
-	// Place Store Data
-	s.Put(StoreKeys_USER_DATA, buf)
+	// // Place Store Data
+	// s.Put(StoreKeys_USER_DATA, buf)
 	return u, nil
 }
 
 // Method Returns DeviceID
 func (u *User) DeviceID() string {
 	return u.Device.GetId()
+}
+
+// Returns Device Fingerprint
+func (u *User) Fingerprint(mnemonic string) (string, error) {
+	kp := u.KeyPair()
+	buf, err := kp.Sign([]byte(mnemonic))
+	if err != nil {
+		return "", err
+	}
+	return string(buf), nil
 }
 
 // Method Returns Profile First Name
@@ -391,29 +391,39 @@ func (u *User) ID() *Peer_ID {
 	return u.GetPeer().GetId()
 }
 
+// Method Returns KeyPair
+func (u *User) KeyPair() *KeyPair {
+	return u.GetDevice().GetKeyPair()
+}
+
+// Method Returns Private Key
+func (u *User) KeyPrivate() crypto.PrivKey {
+	return u.GetDevice().GetKeyPair().PrivKey()
+}
+
+// Method Returns Public Key
+func (u *User) KeyPublic() crypto.PubKey {
+	return u.GetDevice().GetKeyPair().PubKey()
+}
+
 // Method Returns Profile Last Name
 func (u *User) LastName() string {
 	return u.GetContact().GetProfile().GetLastName()
 }
 
 // Method Returns Crypto Prefix With Signature
-func (u *User) Prefix() string {
-	return u.GetCrypto().Prefix
+func (u *User) Prefix() (string, error) {
+	kp := u.KeyPair()
+	buf, err := kp.Sign([]byte(u.Profile().GetSName() + u.DeviceID()))
+	if err != nil {
+		return "", err
+	}
+	return substring(string(buf), 0, 16), nil
 }
 
 // Method Returns Profile
 func (u *User) Profile() *Profile {
 	return u.GetContact().GetProfile()
-}
-
-// Method Returns Public Key
-func (u *User) PublicKey() crypto.PubKey {
-	return u.GetDevice().GetKeyPair().PubKey()
-}
-
-// Method Returns Private Key
-func (u *User) PrivateKey() crypto.PrivKey {
-	return u.GetDevice().GetKeyPair().PrivKey()
 }
 
 // Method Returns SName
@@ -482,6 +492,15 @@ func (u *User) Update(ur *UpdateRequest) {
 	default:
 		return
 	}
+}
+
+// Checks if Given Prefix Matches User Prefix
+func (u *User) VerifyPrefix(prefix string) bool {
+	knownPrefix, err := u.Prefix()
+	if err != nil {
+		return false
+	}
+	return prefix == knownPrefix
 }
 
 // ** ─── Peer MANAGEMENT ────────────────────────────────────────────────────────

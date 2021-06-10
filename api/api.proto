@@ -14,14 +14,11 @@ message StatusUpdate {
 
 // Initial Connection Message to Establish Sonr
 message ConnectionRequest {
-  Type type = 1;                      // Connection Request Type
-  Location location = 2;              // Runtime IP based calculated GeoLocation
-  Device device = 3;                  // Users Device
-  Contact contact = 4;                // Users Contact Card
-  User.Crypto crypto = 5;             // User Crypto Data
-  APIKeys apiKeys = 6;                // Client Keys
-  map<string, Device> devices = 7;    // User Devices: Name, Device
-  map<string, Settings> settings = 8; // User Specified Preferences
+  Type type = 1;         // Connection Request Type
+  Location location = 2; // Current Runtime Location
+  Device device = 3;     // Users Device
+  Contact contact = 4;   // Users Contact Card
+  APIKeys apiKeys = 5;   // Client Keys
 
   // Connection Request Type
   enum Type {
@@ -41,8 +38,8 @@ message ConnectionResponse {
 // Request to Create or Return Username
 message UsernameRequest {
   bool isReturning = 1;
-  string mnemonic = 2;
-  string sName = 3;
+  string mnemonic = 2; // Required Frontend Mnemonic
+  string sName = 3;    // Required Frontend SName
 }
 
 // Response for Create or Return Username
@@ -109,19 +106,6 @@ message InviteResponse {
   }
 }
 
-// Link Request for Non-Mobile Clients
-message LinkRequest {
-  Device device = 1;
-  string username = 2;
-  Location location = 3;
-}
-
-// Response After Linking
-message LinkResponse {
-  User user = 1;
-  bool decision = 2;
-}
-
 // REST API Request over HTTP
 message RestRequest {
   RestMethodType type = 1;
@@ -149,35 +133,15 @@ enum RestMethodType {
   POST = 3;
 }
 
-// Linker Object is used for Temporary host and Linking Devices
-message Linker {
-  Peer peer = 1;
-  Device device = 2;
-  string username = 3;
-  Router router = 4;
-  string userID = 5;
-
-  // Router Manages Peer Routing for Topics/Transfers - Attached from Node
-  // Client
-  message Router {
-    string deviceTopic = 1;
-    string localIPTopic = 2;
-    string rendevouz = 3;
-    Location location = 4;
-  }
-}
-
 // User is the Saved Data from Client that Passes to Proxy, During ConnRequest
 message User {
-  string id = 1;                      // User prefix is ID
-  Connection connection = 2;          // Clients Connection Reference
-  Peer peer = 3;                      // Clients Peer Reference
-  Location location = 4;              // Clients current Location
-  Device device = 5;                  // Clients Current Device
-  Contact contact = 6;                // Clients Contact Card
-  map<string, Device> devices = 7;    // Clients Devices: Name, Device
-  map<string, Settings> settings = 8; // Clients Specified Preferences
-  Crypto crypto = 9;                  // User Cryptographic Data
+  Connection connection = 1; // Clients Connection Reference
+  Peer peer = 2;             // Clients Peer Reference
+  Location location = 3;     // Clients current Location
+  Device device = 4;         // Clients Current Device
+  Contact contact = 5;       // Clients Contact Card
+  Crypto crypto = 6;         // User Cryptographic Data
+  Settings settings = 7;
 
   // User Connection Management - Attached from Node Client
   message Connection {
@@ -188,9 +152,9 @@ message User {
 
   // Crypto Data to Place in DHT
   message Crypto {
-    string prefix = 1;
-    string signature = 2;
-    string privateKey = 3; // Private Key Reference, Saved as snr-peer.privkey
+    string prefix = 1;   // Created from DeviceID and SName
+    string mnemonic = 2; // Used to generate fingerprint
+    string sName = 3;    // User Snr Domain
   }
 
   // Router Manages Peer Routing for Topics/Transfers - Attached from Node
@@ -200,5 +164,12 @@ message User {
     string localTopic = 2;
     string rendevouz = 3;
     Location location = 4;
+  }
+
+  // User Settings
+  message Settings {
+    Device primary = 1;
+    map<string, Device> devices = 2;       // Clients Devices: Name, Device
+    map<string, Settings> preferences = 3; // Clients Specified Preferences
   }
 }

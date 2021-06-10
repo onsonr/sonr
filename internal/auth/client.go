@@ -25,19 +25,15 @@ type NamebaseClient interface {
 
 type namebaseClient struct {
 	NamebaseClient
-	apiKeys         *md.APIKeys
-	client          *http.Client
-	restrictedNames []string
-	blockedNames    []string
+	apiKeys *md.APIKeys
+	client  *http.Client
 }
 
 // ^ Method to Create Namebase Client ^ //
 func newNambaseClient(keys *md.APIKeys) NamebaseClient {
 	return &namebaseClient{
-		apiKeys:         keys,
-		client:          &http.Client{},
-		restrictedNames: []string{"elon", "vitalik", "prad", "rishi", "brax", "vt", "isa"},
-		blockedNames:    []string{"root", "admin", "mail", "auth", "crypto", "id", "app", "beta", "alpha", "code", "ios", "android", "test", "node", "sonr"},
+		apiKeys: keys,
+		client:  &http.Client{},
 	}
 }
 

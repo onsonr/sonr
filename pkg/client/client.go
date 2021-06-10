@@ -25,9 +25,6 @@ type Client struct {
 
 	// References
 	Host *net.HostNode
-
-	// Linker Properties
-	linker *md.Linker
 }
 
 // ^ NewClient Initializes Node with Router ^
@@ -38,36 +35,6 @@ func NewClient(ctx context.Context, u *md.User, call md.NodeCallback) *Client {
 		call: call,
 		user: u,
 	}
-}
-
-func NewLinkClient(ctx context.Context, lr *md.LinkRequest) (*Client, *md.SonrError) {
-	// Create Linker/Client
-	linker := md.NewLinker(lr)
-	c := &Client{
-		ctx:      ctx,
-		linker:   linker,
-		isLinker: true,
-	}
-
-	// Connect Linker
-	err := c.Connect(linker.PrivateKey())
-	if err != nil {
-		return nil, err
-	}
-
-	// Bootstrap Linker
-	_, err = c.Bootstrap()
-	if err != nil {
-		return nil, err
-	}
-
-	// Set Linker Peer ID
-	id, serr := c.global.FindPeerID(c.linker.Username)
-	if serr != nil {
-		return nil, md.NewError(serr, md.ErrorMessage_HOST_INFO)
-	}
-	c.linker.UserID = id.String()
-	return c, nil
 }
 
 // ^ Connects Host Node from Private Key ^

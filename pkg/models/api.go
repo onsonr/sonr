@@ -7,7 +7,6 @@ import (
 	olc "github.com/google/open-location-code/go"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
-	"github.com/multiformats/go-multiaddr"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -155,39 +154,6 @@ func (r *RemoteJoinRequest) NewJoinedRemote(u *User) *Lobby {
 			},
 		},
 	}
-}
-
-// ** ─── Linker MANAGEMENT ────────────────────────────────────────────────────────
-// Creates New Linker from Link Request
-func NewLinker(lr *LinkRequest) *Linker {
-	return &Linker{
-		Device:   lr.Device,
-		Username: lr.Username,
-		Router: &Linker_Router{
-			LocalIPTopic: lr.Location.OLC(),
-			Rendevouz:    fmt.Sprintf("/sonr/%s", lr.GetLocation().MajorOLC()),
-			Location:     lr.GetLocation(),
-		},
-	}
-}
-
-// Creates New Peer for Linker
-func (l *Linker) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) {
-	// Initialize
-	deviceID := l.Device.GetId()
-
-	// Set Peer
-	l.Peer = &Peer{
-		Id: &Peer_ID{
-			Peer:   id.String(),
-			Device: deviceID,
-		},
-		Platform: l.Device.Platform,
-		Model:    l.Device.Model,
-	}
-
-	// Set Device Topic
-	l.Router.DeviceTopic = fmt.Sprintf("/sonr/user/%s", l.Username)
 }
 
 // ** ─── Location MANAGEMENT ────────────────────────────────────────────────────────
@@ -365,6 +331,56 @@ func NewErrorJoined(errors ...SonrErrorOpt) *SonrError {
 		return &SonrError{
 			HasError: false,
 		}
+	}
+}
+
+// ^ Returns Proto Marshal Error
+func NewMarshalError(err error) *SonrError {
+	// Return Error
+	// Initialize
+	message, severity := generateError(ErrorMessage_MARSHAL)
+
+	// Set Capture
+	capture := false
+	if severity == ErrorMessage_CRITICAL || severity == ErrorMessage_FATAL {
+		capture = true
+	}
+
+	// Return Error
+	return &SonrError{
+		data: &ErrorMessage{
+			Message:  message,
+			Error:    err.Error(),
+			Type:     ErrorMessage_MARSHAL,
+			Severity: severity,
+		},
+		Capture:  capture,
+		HasError: true,
+	}
+}
+
+// ^ Returns Proto Unmarshal Error
+func NewUnmarshalError(err error) *SonrError {
+	// Return Error
+	// Initialize
+	message, severity := generateError(ErrorMessage_UNMARSHAL)
+
+	// Set Capture
+	capture := false
+	if severity == ErrorMessage_CRITICAL || severity == ErrorMessage_FATAL {
+		capture = true
+	}
+
+	// Return Error
+	return &SonrError{
+		data: &ErrorMessage{
+			Message:  message,
+			Error:    err.Error(),
+			Type:     ErrorMessage_UNMARSHAL,
+			Severity: severity,
+		},
+		Capture:  capture,
+		HasError: true,
 	}
 }
 
