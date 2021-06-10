@@ -36,6 +36,16 @@ func (hs *HSRecord) IsBlank() bool {
 	return hs.Ttl == -1 && hs.Host == "-" && hs.Type == "-" && hs.Value == "-"
 }
 
+// ^ Checks if Record Matches Name ^ //
+func (hs *HSRecord) IsName(name string) bool {
+	return hs.Name() == name
+}
+
+// ^ Checks if Record DOES NOT Match Name ^ //
+func (hs *HSRecord) IsNotName(name string) bool {
+	return hs.Name() != name
+}
+
 // ^ Returns Record Fingerprint if Transfer ^
 func (hs *HSRecord) Fingerprint() []byte {
 	if hs.IsAuth() {
@@ -165,28 +175,8 @@ func (req *NamebaseRequest) JSON() ([]byte, error) {
 }
 
 // ** ─── UsernameResponse MANAGEMENT ────────────────────────────────────────────────────────
-// Creates New Valid Response
-func NewValidUsernameResponse(prefix string, sname string, mnemonic string) *UsernameResponse {
-	return &UsernameResponse{
-		IsValid:  true,
-		Prefix:   prefix,
-		SName:    sname,
-		Mnemonic: mnemonic,
-	}
-}
-
-// Creates New Invalid Response
-func NewInvalidUsernameResponse() *UsernameResponse {
-	return &UsernameResponse{
-		IsValid:  false,
-		Prefix:   "-",
-		SName:    "-",
-		Mnemonic: "-",
-	}
-}
-
 // Converts Username Response to User_Crypto
-func (ur *UsernameResponse) ToUserCrypto() *User_Crypto {
+func (ur *AuthenticationResponse) ToUserCrypto() *User_Crypto {
 	if ur.GetIsValid() {
 		return &User_Crypto{
 			Prefix:   ur.GetPrefix(),
@@ -197,7 +187,8 @@ func (ur *UsernameResponse) ToUserCrypto() *User_Crypto {
 	return nil
 }
 
-func (ur *UsernameRequest) ToHSRecord(prefix string, fingerprint string) *HSRecord {
+// Converts Authentication Request to HSRecord
+func (ur *AuthenticationRequest) ToHSRecord(prefix string, fingerprint string) *HSRecord {
 	return &HSRecord{
 		Ttl:   5,
 		Type:  "TXT",

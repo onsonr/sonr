@@ -366,6 +366,11 @@ func NewUser(cr *ConnectionRequest, s Store) (*User, *SonrError) {
 	return u, nil
 }
 
+// Return Client API Keys
+func (u *User) APIKeys() *APIKeys {
+	return u.GetConnection().GetApiKeys()
+}
+
 // Method Returns DeviceID
 func (u *User) DeviceID() string {
 	return u.Device.GetId()

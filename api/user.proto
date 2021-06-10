@@ -196,12 +196,13 @@ message Settings {
 
 // Status is User Node Situation
 enum Status {
-  IDLE = 0;      // Default Status on Launch
-  CONNECTED = 1; // Status after starting Host
-  AVAILABLE = 2; // After Bootstrapping Host and Connected on Local Lobby
-  PENDING = 3;   // Awaiting Peer Authorization
-  INVITED = 4;   // Has received Invitation
-  TRANSFER = 5;  // In Progress of Transfer
-  STANDBY = 6;   // Away from Sonr Application
-  FAILED = 7;    // Failed to Connect Host
+  IDLE = 0;            // Default Status on Launch
+  UNAUTHENTICATED = 1; // Node has not been Authenticated
+  CONNECTED = 2;       // Status after starting Host
+  AVAILABLE = 3;       // Bootstrapped and Visible Locally
+  PENDING = 4;         // Awaiting Peer Authorization
+  INVITED = 5;         // Has received Invitation
+  TRANSFER = 6;        // In Progress of Transfer
+  STANDBY = 7;         // Away from Sonr Application
+  FAILED = 8;          // Failed to Connect Host
 }

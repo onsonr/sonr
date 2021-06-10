@@ -26,9 +26,9 @@ type store struct {
 }
 
 // Initializes new memory store
-func InitStore(cr *ConnectionRequest) (Store, *SonrError) {
+func InitStore(d *Device) (Store, *SonrError) {
 	// Open Store
-	db, err := bitcask.Open(cr.GetDevice().WorkingFilePath("mem-store-db"))
+	db, err := bitcask.Open(d.WorkingFilePath("mem-store-db"))
 	if err != nil {
 		return nil, NewError(err, ErrorMessage_STORE_INIT)
 	}
@@ -36,7 +36,7 @@ func InitStore(cr *ConnectionRequest) (Store, *SonrError) {
 	// Return Store
 	return &store{
 		database:    db,
-		device:      cr.GetDevice(),
+		device:      d,
 		cryptoKey:   StoreKeys_CRYPTO.Bytes(),
 		settingsKey: StoreKeys_SETTINGS.Bytes(),
 	}, nil

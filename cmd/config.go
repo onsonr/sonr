@@ -6,7 +6,7 @@ import (
 )
 
 func (mn *Node) isReady() bool {
-	return mn.user.IsNotStatus(md.Status_STANDBY) || mn.user.IsNotStatus(md.Status_FAILED)
+	return mn.user.IsNotStatus(md.Status_STANDBY) || mn.user.IsNotStatus(md.Status_FAILED) || mn.user.IsNotStatus(md.Status_UNAUTHENTICATED)
 }
 
 func (mn *Node) setConnected(val bool) {

@@ -34,7 +34,7 @@ type Node struct {
 	store          md.Store
 }
 
-// @ Create New Mobile Node
+// @ Initializes New Node
 func NewNode(reqBytes []byte, call Callback) *Node {
 	// Initialize Sentry
 	sentry.Init(sentry.ClientOptions{
@@ -48,7 +48,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 		sentry.CaptureException(errors.Wrap(err, "Unmarshalling Connection Request"))
 		return nil
 	}
-	// Create Mobile Node
+	// Initialize Node
 	mn := &Node{
 		call:   call,
 		ctx:    context.Background(),
@@ -56,18 +56,54 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	}
 
 	// Create Store - Start Auth Service
-	if s, err := md.InitStore(req); err == nil {
+	if s, err := md.InitStore(req.GetDevice()); err == nil {
 		mn.store = s
 	}
 
 	// Create User
 	if u, err := md.NewUser(req, mn.store); err == nil {
 		mn.user = u
-		mn.auth = ath.NewAuthService(req, u.KeyPair(), mn.store)
 	}
 
 	// Create Client
 	mn.client = sc.NewClient(mn.ctx, mn.user, mn.callbackNode())
+	return mn
+}
+
+// @ Initializes New Node - With Auth
+func NewAuthNode(reqBytes []byte, call Callback) *Node {
+	// Initialize Sentry
+	sentry.Init(sentry.ClientOptions{
+		Dsn: "https://cbf88b01a5a5468fa77101f7dfc54f20@o549479.ingest.sentry.io/5672329",
+	})
+
+	// Unmarshal Request
+	req := &md.AuthenticationRequest{}
+	err := proto.Unmarshal(reqBytes, req)
+	if err != nil {
+		sentry.CaptureException(errors.Wrap(err, "Unmarshalling Connection Request"))
+		return nil
+	}
+
+	// Initialize Node
+	mn := &Node{
+		call:   call,
+		ctx:    context.Background(),
+		topics: make(map[string]*tpc.TopicManager, 10),
+	}
+
+	// Create Store - Start Auth Service
+	if s, err := md.InitStore(req.GetDevice()); err == nil {
+		mn.store = s
+		mn.auth = ath.NewAuthService(req, s, mn.callbackNode())
+	}
+
+	// Verify
+	go func(authReq *md.AuthenticationRequest) {
+		mn.auth.CreateSName(authReq)
+	}(req)
+
+	// Return Node
 	return mn
 }
 

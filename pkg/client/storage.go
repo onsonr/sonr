@@ -69,8 +69,14 @@ func PutUser(ctx context.Context, appAPIKey string, u *md.User) error {
 		return fmt.Errorf("could not ensure bucket: %v", err)
 	}
 
+	// Get Prefix
+	prefix, err := u.Prefix()
+	if err != nil {
+		return err
+	}
+
 	// Create Upload Object
-	object, err := project.UploadObject(ctx, "users", u.GetId(), nil)
+	object, err := project.UploadObject(ctx, "users", prefix, nil)
 	if err != nil {
 		return err
 	}

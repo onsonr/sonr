@@ -8,6 +8,7 @@ import (
 
 // * Interface: Callback is implemented from Plugin to receive updates * //
 type Callback interface {
+	OnAuth(data []byte)
 	OnStatus(data []byte)      // Node Status Updates
 	OnRefreshed(data []byte)   // Lobby Updates
 	OnLocalEvent(data []byte)  // Local Lobby Event

@@ -6,10 +6,22 @@ import "user.proto";
 // Require Go Package
 option go_package = "/models";
 
-// Message for Status Update
-message StatusUpdate {
-  Status value = 1;
-  User user = 2;
+// Request to Create or Return Username
+message AuthenticationRequest {
+  bool isReturning = 1;
+  string mnemonic = 2; // Required Frontend Mnemonic
+  string sName = 3;    // Required Frontend SName
+  Device device = 4;   // Required Field for Handling Keys/ID
+  APIKeys apiKeys = 5; // Client Keys
+}
+
+// Response for Create or Return Username
+message AuthenticationResponse {
+  bool isValid = 1;
+  string prefix = 2;
+  string sName = 3;
+  string mnemonic = 4;
+  User user = 5;
 }
 
 // Initial Connection Message to Establish Sonr
@@ -33,52 +45,6 @@ message ConnectionRequest {
 message ConnectionResponse {
   User user = 1;
   Peer.ID id = 2;
-}
-
-// Request to Create or Return Username
-message UsernameRequest {
-  bool isReturning = 1;
-  string mnemonic = 2; // Required Frontend Mnemonic
-  string sName = 3;    // Required Frontend SName
-}
-
-// Response for Create or Return Username
-message UsernameResponse {
-  bool isValid = 1;
-  string prefix = 2;
-  string sName = 3;
-  string mnemonic = 4;
-}
-
-// Request to Access Storj Data
-message StorjRequest {
-  // Keys
-  string storjApiKey = 1;
-  string storjRootPassword = 2;
-
-  // Data for Get/Put
-  oneof data {
-    string prefix = 3;
-    User user = 4;
-  }
-}
-
-// Response Data for Storj
-message StorjResponse {
-  // Data for Get/Put
-  oneof data {
-    bool success = 1;
-    User user = 2;
-  }
-}
-
-// Updated Peer Info Request
-message UpdateRequest {
-  oneof data {
-    Peer.Properties properties = 1; // Updated Peer Properties
-    Contact contact = 2;            // Users Updated Contact Card
-    Position position = 3;          // Users updated Position
-  }
 }
 
 // Invitation Message sent on RPC
@@ -131,6 +97,43 @@ enum RestMethodType {
   GET = 1;
   PUT = 2;
   POST = 3;
+}
+
+// Message for Status Update
+message StatusUpdate {
+  Status value = 1;
+  User user = 2;
+}
+
+// Request to Access Storj Data
+message StorjRequest {
+  // Keys
+  string storjApiKey = 1;
+  string storjRootPassword = 2;
+
+  // Data for Get/Put
+  oneof data {
+    string prefix = 3;
+    User user = 4;
+  }
+}
+
+// Response Data for Storj
+message StorjResponse {
+  // Data for Get/Put
+  oneof data {
+    bool success = 1;
+    User user = 2;
+  }
+}
+
+// Updated Peer Info Request
+message UpdateRequest {
+  oneof data {
+    Peer.Properties properties = 1; // Updated Peer Properties
+    Contact contact = 2;            // Users Updated Contact Card
+    Position position = 3;          // Users updated Position
+  }
 }
 
 // User is the Saved Data from Client that Passes to Proxy, During ConnRequest
