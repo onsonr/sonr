@@ -334,7 +334,7 @@ func (d *Device) WriteFile(name string, data []byte) (string, *SonrError) {
 
 // ** ─── User MANAGEMENT ────────────────────────────────────────────────────────
 // ^ Method Initializes User Info Struct ^ //
-func NewUser(cr *ConnectionRequest) (*User, *SonrError) {
+func NewUser(cr *ConnectionRequest, s Store) (*User, *SonrError) {
 	// Initialize Device
 	d := cr.GetDevice()
 	err := d.InitKeyPair()
@@ -346,7 +346,7 @@ func NewUser(cr *ConnectionRequest) (*User, *SonrError) {
 	crypto := cr.GetCrypto()
 
 	// Return User
-	return &User{
+	u := &User{
 		Id:       crypto.GetPrefix(),
 		Device:   d,
 		Contact:  cr.GetContact(),
@@ -363,7 +363,17 @@ func NewUser(cr *ConnectionRequest) (*User, *SonrError) {
 		},
 		Devices:  cr.GetDevices(),
 		Settings: cr.GetSettings(),
-	}, nil
+	}
+
+	// Marshal Buffer
+	buf, serr := proto.Marshal(u)
+	if serr != nil {
+		return u, nil
+	}
+
+	// Place Store Data
+	s.Put(StoreKeys_USER_DATA, buf)
+	return u, nil
 }
 
 // Method Returns DeviceID

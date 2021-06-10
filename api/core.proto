@@ -47,3 +47,10 @@ message NamebaseResponse {
   bool success = 2;
 }
 
+// Memory Store Key Values
+enum StoreKeys {
+  AUTH_SNAME = 0;
+  AUTH_PREFIX = 1;
+  AUTH_MNEMONIC = 2;
+  USER_DATA = 3;
+}

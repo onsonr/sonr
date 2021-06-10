@@ -5,6 +5,7 @@ import (
 
 	"github.com/getsentry/sentry-go"
 	"github.com/pkg/errors"
+	ath "github.com/sonr-io/core/internal/auth"
 	tpc "github.com/sonr-io/core/internal/topic"
 	sc "github.com/sonr-io/core/pkg/client"
 	md "github.com/sonr-io/core/pkg/models"
@@ -14,13 +15,15 @@ import (
 // * Struct: Reference for Binded Proxy Node * //
 type Node struct {
 	md.NodeCallback
+
 	// Properties
 	call Callback
 	ctx  context.Context
 
 	// Client
-	user   *md.User
+	auth   ath.AuthService
 	client *sc.Client
+	user   *md.User
 
 	// Groups
 	local  *tpc.TopicManager
@@ -28,6 +31,7 @@ type Node struct {
 
 	// Storage
 	storageEnabled bool
+	store          md.Store
 }
 
 // @ Create New Mobile Node
@@ -51,8 +55,16 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 		topics: make(map[string]*tpc.TopicManager, 10),
 	}
 
-	// Create Users
-	mn.user = md.NewUser(req)
+	// Create Store - Start Auth Service
+	if s, err := md.InitStore(req); err == nil {
+		mn.store = s
+		mn.auth = ath.NewAuthService(req, s)
+	}
+
+	// Create User
+	if u, err := md.NewUser(req, mn.store); err == nil {
+		mn.user = u
+	}
 
 	// Create Client
 	mn.client = sc.NewClient(mn.ctx, mn.user, mn.callbackNode())

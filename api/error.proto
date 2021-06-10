@@ -53,6 +53,10 @@ message ErrorMessage {
     KEY_SET = 38;
     KEY_INVALID = 39;
     KEY_ID = 40;
+    STORE_PUT = 41;
+    STORE_GET = 42;
+    STORE_FIND = 43;
+    STORE_INIT = 44;
   }
 
   enum Severity {

@@ -70,6 +70,59 @@ func (Direction) EnumDescriptor() ([]byte, []int) {
 	return file_core_proto_rawDescGZIP(), []int{0}
 }
 
+// Memory Store Key Values
+type StoreKeys int32
+
+const (
+	StoreKeys_AUTH_SNAME    StoreKeys = 0
+	StoreKeys_AUTH_PREFIX   StoreKeys = 1
+	StoreKeys_AUTH_MNEMONIC StoreKeys = 2
+	StoreKeys_USER_DATA     StoreKeys = 3
+)
+
+// Enum value maps for StoreKeys.
+var (
+	StoreKeys_name = map[int32]string{
+		0: "AUTH_SNAME",
+		1: "AUTH_PREFIX",
+		2: "AUTH_MNEMONIC",
+		3: "USER_DATA",
+	}
+	StoreKeys_value = map[string]int32{
+		"AUTH_SNAME":    0,
+		"AUTH_PREFIX":   1,
+		"AUTH_MNEMONIC": 2,
+		"USER_DATA":     3,
+	}
+)
+
+func (x StoreKeys) Enum() *StoreKeys {
+	p := new(StoreKeys)
+	*p = x
+	return p
+}
+
+func (x StoreKeys) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (StoreKeys) Descriptor() protoreflect.EnumDescriptor {
+	return file_core_proto_enumTypes[1].Descriptor()
+}
+
+func (StoreKeys) Type() protoreflect.EnumType {
+	return &file_core_proto_enumTypes[1]
+}
+
+func (x StoreKeys) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use StoreKeys.Descriptor instead.
+func (StoreKeys) EnumDescriptor() ([]byte, []int) {
+	return file_core_proto_rawDescGZIP(), []int{1}
+}
+
 // Sent on Data Transfer to Add piece of File - Binary
 type Chunk struct {
 	state         protoimpl.MessageState
@@ -423,7 +476,12 @@ var file_core_proto_rawDesc = []byte{
 	0x63, 0x63, 0x65, 0x73, 0x73, 0x2a, 0x34, 0x0a, 0x09, 0x44, 0x69, 0x72, 0x65, 0x63, 0x74, 0x69,
 	0x6f, 0x6e, 0x12, 0x0b, 0x0a, 0x07, 0x44, 0x65, 0x66, 0x61, 0x75, 0x6c, 0x74, 0x10, 0x00, 0x12,
 	0x0c, 0x0a, 0x08, 0x49, 0x6e, 0x63, 0x6f, 0x6d, 0x69, 0x6e, 0x67, 0x10, 0x01, 0x12, 0x0c, 0x0a,
-	0x08, 0x4f, 0x75, 0x74, 0x67, 0x6f, 0x69, 0x6e, 0x67, 0x10, 0x02, 0x42, 0x09, 0x5a, 0x07, 0x2f,
+	0x08, 0x4f, 0x75, 0x74, 0x67, 0x6f, 0x69, 0x6e, 0x67, 0x10, 0x02, 0x2a, 0x4e, 0x0a, 0x09, 0x53,
+	0x74, 0x6f, 0x72, 0x65, 0x4b, 0x65, 0x79, 0x73, 0x12, 0x0e, 0x0a, 0x0a, 0x41, 0x55, 0x54, 0x48,
+	0x5f, 0x53, 0x4e, 0x41, 0x4d, 0x45, 0x10, 0x00, 0x12, 0x0f, 0x0a, 0x0b, 0x41, 0x55, 0x54, 0x48,
+	0x5f, 0x50, 0x52, 0x45, 0x46, 0x49, 0x58, 0x10, 0x01, 0x12, 0x11, 0x0a, 0x0d, 0x41, 0x55, 0x54,
+	0x48, 0x5f, 0x4d, 0x4e, 0x45, 0x4d, 0x4f, 0x4e, 0x49, 0x43, 0x10, 0x02, 0x12, 0x0d, 0x0a, 0x09,
+	0x55, 0x53, 0x45, 0x52, 0x5f, 0x44, 0x41, 0x54, 0x41, 0x10, 0x03, 0x42, 0x09, 0x5a, 0x07, 0x2f,
 	0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
@@ -439,22 +497,23 @@ func file_core_proto_rawDescGZIP() []byte {
 	return file_core_proto_rawDescData
 }
 
-var file_core_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_core_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
 var file_core_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_core_proto_goTypes = []interface{}{
 	(Direction)(0),           // 0: Direction
-	(*Chunk)(nil),            // 1: Chunk
-	(*Global)(nil),           // 2: Global
-	(*HSRecord)(nil),         // 3: HSRecord
-	(*NamebaseRequest)(nil),  // 4: NamebaseRequest
-	(*NamebaseResponse)(nil), // 5: NamebaseResponse
-	nil,                      // 6: Global.PeersEntry
+	(StoreKeys)(0),           // 1: StoreKeys
+	(*Chunk)(nil),            // 2: Chunk
+	(*Global)(nil),           // 3: Global
+	(*HSRecord)(nil),         // 4: HSRecord
+	(*NamebaseRequest)(nil),  // 5: NamebaseRequest
+	(*NamebaseResponse)(nil), // 6: NamebaseResponse
+	nil,                      // 7: Global.PeersEntry
 }
 var file_core_proto_depIdxs = []int32{
-	6, // 0: Global.peers:type_name -> Global.PeersEntry
-	3, // 1: NamebaseRequest.records:type_name -> HSRecord
-	3, // 2: NamebaseRequest.deleteRecords:type_name -> HSRecord
-	3, // 3: NamebaseResponse.records:type_name -> HSRecord
+	7, // 0: Global.peers:type_name -> Global.PeersEntry
+	4, // 1: NamebaseRequest.records:type_name -> HSRecord
+	4, // 2: NamebaseRequest.deleteRecords:type_name -> HSRecord
+	4, // 3: NamebaseResponse.records:type_name -> HSRecord
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name
@@ -536,7 +595,7 @@ func file_core_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_core_proto_rawDesc,
-			NumEnums:      1,
+			NumEnums:      2,
 			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   0,

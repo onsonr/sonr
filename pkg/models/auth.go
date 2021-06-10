@@ -116,7 +116,7 @@ func NewNamebaseResponse(data []byte) (*NamebaseResponse, error) {
 }
 
 // ^ Method Returns New Namebase Request as JSON Bytes
-func NewNamebaseRequest(record *HSRecord, isDelete bool) ([]byte, error) {
+func NewNamebaseRequest(record *HSRecord, isDelete bool) *NamebaseRequest {
 	// Create Request
 	request := &NamebaseRequest{
 		Records:       []*HSRecord{},
@@ -129,11 +129,33 @@ func NewNamebaseRequest(record *HSRecord, isDelete bool) ([]byte, error) {
 	} else {
 		request.Records = append(request.Records, record)
 	}
+	return request
+}
 
+func (req *NamebaseRequest) JSON() ([]byte, error) {
 	// Marshal JSON
-	bytes, err := protojson.Marshal(request)
+	bytes, err := protojson.Marshal(req)
 	if err != nil {
 		return nil, err
 	}
 	return bytes, nil
+}
+
+// ** ─── UsernameResponse MANAGEMENT ────────────────────────────────────────────────────────
+func NewValidUsernameResponse(prefix string, sname string, mnemonic string) *UsernameResponse {
+	return &UsernameResponse{
+		IsValid:  true,
+		Prefix:   prefix,
+		SName:    sname,
+		Mnemonic: mnemonic,
+	}
+}
+
+func NewInvalidUsernameResponse() *UsernameResponse {
+	return &UsernameResponse{
+		IsValid:  false,
+		Prefix:   "-",
+		SName:    "-",
+		Mnemonic: "-",
+	}
 }

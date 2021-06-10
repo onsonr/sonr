@@ -11,6 +11,32 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+// ** ─── ConnectionRequest MANAGEMENT ────────────────────────────────────────────────────────
+// Checks for Auth Type
+func (cr *ConnectionRequest) IsAuth() bool {
+	return cr.GetType() == ConnectionRequest_AUTH
+}
+
+// Checks for Auth Type
+func (cr *ConnectionRequest) IsLink() bool {
+	return cr.GetType() == ConnectionRequest_LINK
+}
+
+// Checks for Auth Type
+func (cr *ConnectionRequest) IsStorj() bool {
+	return cr.GetType() == ConnectionRequest_STORJ
+}
+
+// Checks for Connect Type
+func (cr *ConnectionRequest) IsConnect() bool {
+	return cr.GetType() == ConnectionRequest_CONNECT
+}
+
+// ** ─── Store MANAGEMENT ────────────────────────────────────────────────────────
+func (sk StoreKeys) Bytes() []byte {
+	return []byte(sk.String())
+}
+
 // ** ─── InviteResponse MANAGEMENT ────────────────────────────────────────────────────────
 func (r *InviteResponse) HasAcceptedTransfer() bool {
 	return r.Decision && r.Type == InviteResponse_Transfer
@@ -463,7 +489,15 @@ func generateError(errType ErrorMessage_Type) (string, ErrorMessage_Severity) {
 	case ErrorMessage_KEY_SET:
 		return "Cannot overwrite existing key", ErrorMessage_WARNING
 	case ErrorMessage_KEY_INVALID:
-		return "Key is Invalid, May not Exist", ErrorMessage_CRITICAL
+		return "Key is Invalid, May not Exist", ErrorMessage_FATAL
+	case ErrorMessage_STORE_FIND:
+		return "Failed to Find Key", ErrorMessage_LOG
+	case ErrorMessage_STORE_GET:
+		return "Failed to Get Value for Key", ErrorMessage_WARNING
+	case ErrorMessage_STORE_PUT:
+		return "Failed to Get Value for Key", ErrorMessage_WARNING
+	case ErrorMessage_STORE_INIT:
+		return "Failed to Get Value for Key", ErrorMessage_CRITICAL
 	default:
 		return "Unknown", ErrorMessage_LOG
 	}

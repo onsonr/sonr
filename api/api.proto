@@ -14,13 +14,14 @@ message StatusUpdate {
 
 // Initial Connection Message to Establish Sonr
 message ConnectionRequest {
-  Location location = 1;              // Runtime IP based calculated GeoLocation
-  Device device = 2;                  // Users Device
-  Contact contact = 3;                // Users Contact Card
-  User.Crypto crypto = 4;             // User Crypto Data
-  APIKeys apiKeys = 5;                // Client Keys
-  map<string, Device> devices = 6;    // User Devices: Name, Device
-  map<string, Settings> settings = 7; // User Specified Preferences
+  Type type = 1;                      // Connection Request Type
+  Location location = 2;              // Runtime IP based calculated GeoLocation
+  Device device = 3;                  // Users Device
+  Contact contact = 4;                // Users Contact Card
+  User.Crypto crypto = 5;             // User Crypto Data
+  APIKeys apiKeys = 6;                // Client Keys
+  map<string, Device> devices = 7;    // User Devices: Name, Device
+  map<string, Settings> settings = 8; // User Specified Preferences
 
   // Connection Request Type
   enum Type {

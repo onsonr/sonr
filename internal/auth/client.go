@@ -32,7 +32,7 @@ type namebaseClient struct {
 }
 
 // ^ Method to Create Namebase Client ^ //
-func NewNambaseClient(keys *md.APIKeys) NamebaseClient {
+func newNambaseClient(keys *md.APIKeys) NamebaseClient {
 	return &namebaseClient{
 		apiKeys:         keys,
 		client:          &http.Client{},
@@ -44,7 +44,8 @@ func NewNambaseClient(keys *md.APIKeys) NamebaseClient {
 // ^ Method to Add a HSRecord ^ //
 func (nc *namebaseClient) AddRecord(record *md.HSRecord) (bool, error) {
 	// Create Body
-	json, err := md.NewNamebaseRequest(record, false)
+	nbreq := md.NewNamebaseRequest(record, true)
+	json, err := nbreq.JSON()
 	if err != nil {
 		return false, err
 	}
@@ -81,7 +82,8 @@ func (nc *namebaseClient) AddRecord(record *md.HSRecord) (bool, error) {
 // ^ Method to Add a HSRecord ^ //
 func (nc *namebaseClient) DeleteRecord(record *md.HSRecord) (bool, error) {
 	// Create Body
-	json, err := md.NewNamebaseRequest(record, true)
+	nbreq := md.NewNamebaseRequest(record, true)
+	json, err := nbreq.JSON()
 	if err != nil {
 		return false, err
 	}
