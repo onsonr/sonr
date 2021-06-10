@@ -33,18 +33,6 @@ message KeyPair {
   }
 }
 
-// Status is User Node Situation
-enum Status {
-  IDLE = 0;      // Default Status on Launch
-  CONNECTED = 1; // Status after starting Host
-  AVAILABLE = 2; // After Bootstrapping Host and Connected on Local Lobby
-  PENDING = 3;   // Awaiting Peer Authorization
-  INVITED = 4;   // Has received Invitation
-  TRANSFER = 5;  // In Progress of Transfer
-  STANDBY = 6;   // Away from Sonr Application
-  FAILED = 7;    // Failed to Connect Host
-}
-
 // Cardinal: Designation for the Compass Direction Value
 enum Cardinal {
   N = 0;     // North
@@ -204,4 +192,16 @@ message Settings {
     bool enabled = 1; // If Value is for simple enable/disable
     string value = 2; // If Value is complex
   }
+}
+
+// Status is User Node Situation
+enum Status {
+  IDLE = 0;      // Default Status on Launch
+  CONNECTED = 1; // Status after starting Host
+  AVAILABLE = 2; // After Bootstrapping Host and Connected on Local Lobby
+  PENDING = 3;   // Awaiting Peer Authorization
+  INVITED = 4;   // Has received Invitation
+  TRANSFER = 5;  // In Progress of Transfer
+  STANDBY = 6;   // Away from Sonr Application
+  FAILED = 7;    // Failed to Connect Host
 }
