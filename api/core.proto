@@ -2,7 +2,6 @@ syntax = "proto3";
 
 import "api.proto";
 import "data.proto";
-import "user.proto";
 
 // Require Go Package
 option go_package = "/models";
