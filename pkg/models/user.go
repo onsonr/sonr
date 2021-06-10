@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"fmt"
 	"math"
 	"os"
@@ -8,10 +9,220 @@ import (
 	"time"
 
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
+	cryptopb "github.com/libp2p/go-libp2p-core/crypto/pb"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/multiformats/go-multiaddr"
 	"google.golang.org/protobuf/proto"
 )
+
+// ** ─── KeyPair MANAGEMENT ────────────────────────────────────────────────────────
+// Constructer that Initializes KeyPair without Buffer
+func (d *Device) InitKeyPair() *SonrError {
+	// Initialize
+	var pubBuf []byte
+	var privBuf []byte
+	var serr *SonrError
+
+	// Create Key Pair
+	d.KeyPair = &KeyPair{
+		Public: &KeyPair_Key{
+			Path: d.WorkingFilePath("snr-pub-key"),
+			Type: KeyPair_PUBLIC_KEY,
+		},
+		Private: &KeyPair_Key{
+			Path: d.WorkingFilePath("snr-priv-key"),
+			Type: KeyPair_PRIVATE_KEY,
+		},
+	}
+
+	// Check if Exists
+	if d.KeyPair.Exists() {
+		// Get PubKey File
+		pubBuf, serr = d.ReadFile(d.KeyPair.PubKeyName())
+		if serr != nil {
+			return serr
+		}
+
+		// Get PrivKey File
+		privBuf, serr = d.ReadFile(d.KeyPair.PrivKeyName())
+		if serr != nil {
+			return serr
+		}
+	} else {
+		// Create New Key
+		privKey, pubKey, err := crypto.GenerateKeyPair(crypto.Ed25519, -1)
+		if err != nil {
+			return NewError(err, ErrorMessage_HOST_KEY)
+		}
+
+		// Marshal Data
+		privBuf, err = crypto.MarshalPrivateKey(privKey)
+		if err != nil {
+			return NewError(err, ErrorMessage_MARSHAL)
+		}
+
+		// Marshal Data
+		pubBuf, err = crypto.MarshalPublicKey(pubKey)
+		if err != nil {
+			return NewError(err, ErrorMessage_MARSHAL)
+		}
+
+		// Write Private Key to File
+		_, werr := d.WriteFile(d.KeyPair.PrivKeyName(), privBuf)
+		if werr != nil {
+			return NewError(err, ErrorMessage_USER_SAVE)
+		}
+
+		// Write Public Key to File
+		_, wpuberr := d.WriteFile(d.KeyPair.PubKeyName(), pubBuf)
+		if wpuberr != nil {
+			return NewError(err, ErrorMessage_USER_SAVE)
+		}
+	}
+
+	// Load Key Pair
+	if err := d.LoadKeyPair(pubBuf, privBuf); err != nil {
+		return err
+	}
+	return nil
+}
+
+// Method Adds Public Key/Private Key Buffer
+func (d *Device) LoadKeyPair(pubBuf []byte, privBuf []byte) *SonrError {
+	// Initialize
+	pub := d.KeyPair.GetPublic()
+	priv := d.KeyPair.GetPrivate()
+
+	// Check Current Public
+	if len(pub.GetBuffer()) == 0 {
+		// Set Protobuf
+		d.KeyPair.Public = &KeyPair_Key{
+			Path:   pub.GetPath(),
+			Type:   KeyPair_PUBLIC_KEY,
+			Buffer: pubBuf,
+		}
+	} else {
+		return NewError(errors.New("Buffer already set for Public Key"), ErrorMessage_KEY_SET)
+	}
+
+	// Check Current Private
+	if len(priv.GetBuffer()) == 0 {
+		// Set Protobuf
+		d.KeyPair.Public = &KeyPair_Key{
+			Path:   priv.GetPath(),
+			Type:   KeyPair_PRIVATE_KEY,
+			Buffer: privBuf,
+		}
+	} else {
+		return NewError(errors.New("Buffer already set for Private Key"), ErrorMessage_KEY_SET)
+	}
+	return nil
+}
+
+// Method Checks if KeyPair Exists at Path
+func (kp *KeyPair) Exists() bool {
+	return kp.HasPrivKey() && kp.HasPubKey()
+}
+
+// Method Checks if PubKey Exists at Path
+func (kp *KeyPair) HasPubKey() bool {
+	// Check Path for Public
+	if _, err := os.Stat(kp.Public.Path); os.IsNotExist(err) {
+		return false
+	} else {
+		return true
+	}
+}
+
+// Method Checks if PrivKey Exists at Path
+func (kp *KeyPair) HasPrivKey() bool {
+	// Check Path for Public
+	if _, err := os.Stat(kp.Private.Path); os.IsNotExist(err) {
+		return false
+	} else {
+		return true
+	}
+}
+
+// Method Returns PeerID from Public Key
+func (kp *KeyPair) ID() (peer.ID, *SonrError) {
+	id, err := peer.IDFromPublicKey(kp.PubKey())
+	if err != nil {
+		return "", NewError(err, ErrorMessage_KEY_ID)
+	}
+	return id, nil
+}
+
+// Method Returns KeyPair Type for Crypto Protobuf
+func (kp *KeyPair) KeyType() cryptopb.KeyType {
+	return cryptopb.KeyType_Ed25519
+}
+
+// Method Returns Private Key
+func (kp *KeyPair) PrivKey() crypto.PrivKey {
+	if kp.HasPrivKey() {
+		// Get Key from Buffer
+		key, err := crypto.UnmarshalPrivateKey(kp.Private.GetBuffer())
+		if err != nil {
+			return nil
+		}
+		return key
+	}
+	return nil
+}
+
+// Returns Private Key File Name
+func (kp *KeyPair) PrivKeyName() string {
+	return "snr-priv-key"
+}
+
+// Method Returns Public Key
+func (kp *KeyPair) PubKey() crypto.PubKey {
+	if kp.HasPubKey() {
+		// Get Key from Buffer
+		key, err := crypto.UnmarshalPublicKey(kp.Public.GetBuffer())
+		if err != nil {
+			return nil
+		}
+		return key
+	}
+	return nil
+}
+
+// Returns Public Key File Name
+func (kp *KeyPair) PubKeyName() string {
+	return "snr-pub-key"
+}
+
+// Method Signs given data and returns response
+func (kp *KeyPair) Sign(data []byte) ([]byte, error) {
+	// Check for Private Key
+	if kp.HasPrivKey() {
+		privKey := kp.PrivKey()
+		result, err := privKey.Sign(data)
+		if err != nil {
+			return nil, err
+		}
+		return result, nil
+	}
+	// Return Error
+	return nil, errors.New("Private Key Doesnt Exist")
+}
+
+// Method verifies 'sig' is the signed hash of 'data'
+func (kp *KeyPair) Verify(data []byte, sig []byte) (bool, error) {
+	// Check for Public Key
+	if kp.HasPubKey() {
+		pubkey := kp.PubKey()
+		result, err := pubkey.Verify(data, sig)
+		if err != nil {
+			return false, err
+		}
+		return result, nil
+	}
+	// Return Error
+	return false, errors.New("Public Key Doesnt Exist")
+}
 
 // ** ─── DEVICE MANAGEMENT ────────────────────────────────────────────────────────
 // Method Checks for Desktop
@@ -54,16 +265,6 @@ func (d *Device) IsWindows() bool {
 	return d.Platform == Platform_Windows
 }
 
-// Returns Path for Application/User Data
-func (d *Device) DataSavePath(fileName string, IsDesktop bool) string {
-	// Check for Desktop
-	if IsDesktop {
-		return filepath.Join(d.FileSystem.GetLibrary(), fileName)
-	} else {
-		return filepath.Join(d.FileSystem.GetSupport(), fileName)
-	}
-}
-
 // Checks if File Exists
 func (d *Device) IsFile(name string) bool {
 	// Initialize
@@ -81,62 +282,6 @@ func (d *Device) IsFile(name string) bool {
 		return false
 	} else {
 		return true
-	}
-}
-
-// Returns Private key from disk if found, Generates if Not
-func (d *Device) NewKeyPair() *SonrError {
-	K_SONR_PRIV_KEY := "snr-priv-key"
-	K_SONR_PUB_KEY := "snr-pub-key"
-
-	// Get Private Key
-	if ok := d.IsFile(K_SONR_PRIV_KEY); ok {
-		// Get Key File
-		buf, serr := d.ReadFile(K_SONR_PRIV_KEY)
-		if serr != nil {
-			return serr
-		}
-
-		// Set Buffer for Key
-		d.PrivateKey = buf
-
-		// Set Key Ref
-		return nil
-	} else {
-		// Create New Key
-		privKey, pubKey, err := crypto.GenerateKeyPair(crypto.Ed25519, -1)
-		if err != nil {
-			return NewError(err, ErrorMessage_HOST_KEY)
-		}
-
-		// Marshal Data
-		privBuf, err := crypto.MarshalPrivateKey(privKey)
-		if err != nil {
-			return NewError(err, ErrorMessage_MARSHAL)
-		}
-
-		// Marshal Data
-		pubBuf, err := crypto.MarshalPublicKey(pubKey)
-		if err != nil {
-			return NewError(err, ErrorMessage_MARSHAL)
-		}
-
-		// Set Buffer for Key
-		d.PrivateKey = privBuf
-		d.PublicKey = pubBuf
-
-		// Write Private Key to File
-		_, werr := d.WriteFile(K_SONR_PRIV_KEY, privBuf)
-		if werr != nil {
-			return NewError(err, ErrorMessage_USER_SAVE)
-		}
-
-		// Write Public Key to File
-		_, wpuberr := d.WriteFile(K_SONR_PUB_KEY, pubBuf)
-		if wpuberr != nil {
-			return NewError(err, ErrorMessage_USER_SAVE)
-		}
-		return nil
 	}
 }
 
@@ -165,10 +310,20 @@ func (d *Device) ReadFile(name string) ([]byte, *SonrError) {
 	}
 }
 
+// Returns Path for Application/User Data
+func (d *Device) WorkingFilePath(fileName string) string {
+	// Check for Desktop
+	if d.IsDesktop() {
+		return filepath.Join(d.FileSystem.GetLibrary(), fileName)
+	} else {
+		return filepath.Join(d.FileSystem.GetSupport(), fileName)
+	}
+}
+
 // Writes a File to Disk and Returns Path
 func (d *Device) WriteFile(name string, data []byte) (string, *SonrError) {
 	// Create File Path
-	path := d.DataSavePath(name, d.IsDesktop())
+	path := d.WorkingFilePath(name)
 
 	// Write File to Disk
 	if err := os.WriteFile(path, data, 0644); err != nil {
@@ -179,10 +334,13 @@ func (d *Device) WriteFile(name string, data []byte) (string, *SonrError) {
 
 // ** ─── User MANAGEMENT ────────────────────────────────────────────────────────
 // ^ Method Initializes User Info Struct ^ //
-func NewUser(cr *ConnectionRequest) *User {
+func NewUser(cr *ConnectionRequest) (*User, *SonrError) {
 	// Initialize Device
 	d := cr.GetDevice()
-	d.NewKeyPair()
+	err := d.InitKeyPair()
+	if err != nil {
+		return nil, err
+	}
 
 	// Get Crypto
 	crypto := cr.GetCrypto()
@@ -195,7 +353,7 @@ func NewUser(cr *ConnectionRequest) *User {
 		Location: cr.GetLocation(),
 		Crypto:   crypto,
 		Connection: &User_Connection{
-			ApiKeys: cr.GetClientKeys(),
+			ApiKeys: cr.GetApiKeys(),
 			Router: &User_Router{
 				Rendevouz:  "/sonr/rendevouz/0.9.2",
 				LocalTopic: fmt.Sprintf("/sonr/topic/%s", cr.GetLocation().OLC()),
@@ -205,7 +363,7 @@ func NewUser(cr *ConnectionRequest) *User {
 		},
 		Devices:  cr.GetDevices(),
 		Settings: cr.GetSettings(),
-	}
+	}, nil
 }
 
 // Method Returns DeviceID
@@ -240,22 +398,12 @@ func (u *User) Profile() *Profile {
 
 // Method Returns Public Key
 func (u *User) PublicKey() crypto.PubKey {
-	// Get Key from Buffer
-	key, err := crypto.UnmarshalPublicKey(u.GetDevice().GetPublicKey())
-	if err != nil {
-		return nil
-	}
-	return key
+	return u.GetDevice().GetKeyPair().PubKey()
 }
 
 // Method Returns Private Key
 func (u *User) PrivateKey() crypto.PrivKey {
-	// Get Key from Buffer
-	key, err := crypto.UnmarshalPrivateKey(u.GetDevice().GetPrivateKey())
-	if err != nil {
-		return nil
-	}
-	return key
+	return u.GetDevice().GetKeyPair().PrivKey()
 }
 
 // Method Returns SName
@@ -331,9 +479,10 @@ func (u *User) Update(ur *UpdateRequest) {
 func (u *User) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) *SonrError {
 	u.Peer = &Peer{
 		Id: &Peer_ID{
-			Peer:   id.String(),
-			Device: u.DeviceID(),
-			SName:  u.SName(),
+			Peer:      id.String(),
+			Device:    u.DeviceID(),
+			SName:     u.SName(),
+			MultiAddr: maddr.String(),
 		},
 		Profile:  u.Profile(),
 		Platform: u.Device.Platform,
@@ -398,10 +547,10 @@ func (p *Peer) IsNotSamePeerID(pid peer.ID) bool {
 	return p.PeerID() != pid.String()
 }
 
-// ^ Signs AuthReply with Flat Contact
-func (u *User) SignFlatReply(from *Peer) *AuthReply {
-	return &AuthReply{
-		Type: AuthReply_FlatContact,
+// ^ Signs InviteResponse with Flat Contact
+func (u *User) SignFlatReply(from *Peer) *InviteResponse {
+	return &InviteResponse{
+		Type: InviteResponse_FlatContact,
 		From: u.GetPeer(),
 		Data: &Transfer{
 			// SQL Properties

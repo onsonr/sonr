@@ -134,6 +134,7 @@ func (x *Chunk) GetIsComplete() bool {
 	return false
 }
 
+// Global Topic Reference
 type Global struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -197,6 +198,190 @@ func (x *Global) GetSName() string {
 	return ""
 }
 
+// Handshake Record
+type HSRecord struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Ttl   int32  `protobuf:"varint,1,opt,name=ttl,proto3" json:"ttl,omitempty"`
+	Type  string `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`
+	Host  string `protobuf:"bytes,3,opt,name=host,proto3" json:"host,omitempty"`
+	Value string `protobuf:"bytes,4,opt,name=value,proto3" json:"value,omitempty"`
+}
+
+func (x *HSRecord) Reset() {
+	*x = HSRecord{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_core_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *HSRecord) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HSRecord) ProtoMessage() {}
+
+func (x *HSRecord) ProtoReflect() protoreflect.Message {
+	mi := &file_core_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HSRecord.ProtoReflect.Descriptor instead.
+func (*HSRecord) Descriptor() ([]byte, []int) {
+	return file_core_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *HSRecord) GetTtl() int32 {
+	if x != nil {
+		return x.Ttl
+	}
+	return 0
+}
+
+func (x *HSRecord) GetType() string {
+	if x != nil {
+		return x.Type
+	}
+	return ""
+}
+
+func (x *HSRecord) GetHost() string {
+	if x != nil {
+		return x.Host
+	}
+	return ""
+}
+
+func (x *HSRecord) GetValue() string {
+	if x != nil {
+		return x.Value
+	}
+	return ""
+}
+
+// Namebase Request for HTTP Client
+type NamebaseRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Records       []*HSRecord `protobuf:"bytes,1,rep,name=records,proto3" json:"records,omitempty"`
+	DeleteRecords []*HSRecord `protobuf:"bytes,2,rep,name=deleteRecords,proto3" json:"deleteRecords,omitempty"`
+}
+
+func (x *NamebaseRequest) Reset() {
+	*x = NamebaseRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_core_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *NamebaseRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NamebaseRequest) ProtoMessage() {}
+
+func (x *NamebaseRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_core_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use NamebaseRequest.ProtoReflect.Descriptor instead.
+func (*NamebaseRequest) Descriptor() ([]byte, []int) {
+	return file_core_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *NamebaseRequest) GetRecords() []*HSRecord {
+	if x != nil {
+		return x.Records
+	}
+	return nil
+}
+
+func (x *NamebaseRequest) GetDeleteRecords() []*HSRecord {
+	if x != nil {
+		return x.DeleteRecords
+	}
+	return nil
+}
+
+// Namebase Response for HTTP Client
+type NamebaseResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Records []*HSRecord `protobuf:"bytes,1,rep,name=records,proto3" json:"records,omitempty"`
+	Success bool        `protobuf:"varint,2,opt,name=success,proto3" json:"success,omitempty"`
+}
+
+func (x *NamebaseResponse) Reset() {
+	*x = NamebaseResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_core_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *NamebaseResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NamebaseResponse) ProtoMessage() {}
+
+func (x *NamebaseResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_core_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use NamebaseResponse.ProtoReflect.Descriptor instead.
+func (*NamebaseResponse) Descriptor() ([]byte, []int) {
+	return file_core_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *NamebaseResponse) GetRecords() []*HSRecord {
+	if x != nil {
+		return x.Records
+	}
+	return nil
+}
+
+func (x *NamebaseResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
 var File_core_proto protoreflect.FileDescriptor
 
 var file_core_proto_rawDesc = []byte{
@@ -217,12 +402,29 @@ var file_core_proto_rawDesc = []byte{
 	0x61, 0x6d, 0x65, 0x1a, 0x38, 0x0a, 0x0a, 0x50, 0x65, 0x65, 0x72, 0x73, 0x45, 0x6e, 0x74, 0x72,
 	0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03,
 	0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x2a, 0x34, 0x0a,
-	0x09, 0x44, 0x69, 0x72, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x0b, 0x0a, 0x07, 0x44, 0x65,
-	0x66, 0x61, 0x75, 0x6c, 0x74, 0x10, 0x00, 0x12, 0x0c, 0x0a, 0x08, 0x49, 0x6e, 0x63, 0x6f, 0x6d,
-	0x69, 0x6e, 0x67, 0x10, 0x01, 0x12, 0x0c, 0x0a, 0x08, 0x4f, 0x75, 0x74, 0x67, 0x6f, 0x69, 0x6e,
-	0x67, 0x10, 0x02, 0x42, 0x09, 0x5a, 0x07, 0x2f, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x62, 0x06,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x5a, 0x0a,
+	0x08, 0x48, 0x53, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x12, 0x10, 0x0a, 0x03, 0x74, 0x74, 0x6c,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x03, 0x74, 0x74, 0x6c, 0x12, 0x12, 0x0a, 0x04, 0x74,
+	0x79, 0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12,
+	0x12, 0x0a, 0x04, 0x68, 0x6f, 0x73, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x68,
+	0x6f, 0x73, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x04, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x22, 0x67, 0x0a, 0x0f, 0x4e, 0x61, 0x6d,
+	0x65, 0x62, 0x61, 0x73, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x23, 0x0a, 0x07,
+	0x72, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x09, 0x2e,
+	0x48, 0x53, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x52, 0x07, 0x72, 0x65, 0x63, 0x6f, 0x72, 0x64,
+	0x73, 0x12, 0x2f, 0x0a, 0x0d, 0x64, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52, 0x65, 0x63, 0x6f, 0x72,
+	0x64, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x09, 0x2e, 0x48, 0x53, 0x52, 0x65, 0x63,
+	0x6f, 0x72, 0x64, 0x52, 0x0d, 0x64, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52, 0x65, 0x63, 0x6f, 0x72,
+	0x64, 0x73, 0x22, 0x51, 0x0a, 0x10, 0x4e, 0x61, 0x6d, 0x65, 0x62, 0x61, 0x73, 0x65, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x23, 0x0a, 0x07, 0x72, 0x65, 0x63, 0x6f, 0x72, 0x64,
+	0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x09, 0x2e, 0x48, 0x53, 0x52, 0x65, 0x63, 0x6f,
+	0x72, 0x64, 0x52, 0x07, 0x72, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x73, 0x12, 0x18, 0x0a, 0x07, 0x73,
+	0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75,
+	0x63, 0x63, 0x65, 0x73, 0x73, 0x2a, 0x34, 0x0a, 0x09, 0x44, 0x69, 0x72, 0x65, 0x63, 0x74, 0x69,
+	0x6f, 0x6e, 0x12, 0x0b, 0x0a, 0x07, 0x44, 0x65, 0x66, 0x61, 0x75, 0x6c, 0x74, 0x10, 0x00, 0x12,
+	0x0c, 0x0a, 0x08, 0x49, 0x6e, 0x63, 0x6f, 0x6d, 0x69, 0x6e, 0x67, 0x10, 0x01, 0x12, 0x0c, 0x0a,
+	0x08, 0x4f, 0x75, 0x74, 0x67, 0x6f, 0x69, 0x6e, 0x67, 0x10, 0x02, 0x42, 0x09, 0x5a, 0x07, 0x2f,
+	0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -238,20 +440,26 @@ func file_core_proto_rawDescGZIP() []byte {
 }
 
 var file_core_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_core_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_core_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_core_proto_goTypes = []interface{}{
-	(Direction)(0), // 0: Direction
-	(*Chunk)(nil),  // 1: Chunk
-	(*Global)(nil), // 2: Global
-	nil,            // 3: Global.PeersEntry
+	(Direction)(0),           // 0: Direction
+	(*Chunk)(nil),            // 1: Chunk
+	(*Global)(nil),           // 2: Global
+	(*HSRecord)(nil),         // 3: HSRecord
+	(*NamebaseRequest)(nil),  // 4: NamebaseRequest
+	(*NamebaseResponse)(nil), // 5: NamebaseResponse
+	nil,                      // 6: Global.PeersEntry
 }
 var file_core_proto_depIdxs = []int32{
-	3, // 0: Global.peers:type_name -> Global.PeersEntry
-	1, // [1:1] is the sub-list for method output_type
-	1, // [1:1] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	6, // 0: Global.peers:type_name -> Global.PeersEntry
+	3, // 1: NamebaseRequest.records:type_name -> HSRecord
+	3, // 2: NamebaseRequest.deleteRecords:type_name -> HSRecord
+	3, // 3: NamebaseResponse.records:type_name -> HSRecord
+	4, // [4:4] is the sub-list for method output_type
+	4, // [4:4] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_core_proto_init() }
@@ -286,6 +494,42 @@ func file_core_proto_init() {
 				return nil
 			}
 		}
+		file_core_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*HSRecord); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_core_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*NamebaseRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_core_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*NamebaseResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -293,7 +537,7 @@ func file_core_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_core_proto_rawDesc,
 			NumEnums:      1,
-			NumMessages:   3,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

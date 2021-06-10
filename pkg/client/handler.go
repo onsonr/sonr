@@ -62,8 +62,8 @@ func (n *Client) OnReply(id peer.ID, reply []byte) {
 	// Call Responded
 	n.call.Responded(reply)
 
-	// AuthReply Message
-	resp := md.AuthReply{}
+	// InviteResponse Message
+	resp := md.InviteResponse{}
 	err := proto.Unmarshal(reply, &resp)
 	if err != nil {
 		n.call.Error(md.NewError(err, md.ErrorMessage_UNMARSHAL))
@@ -88,7 +88,7 @@ func (n *Client) OnReply(id peer.ID, reply []byte) {
 }
 
 // ^ OnResponded: Prepares for Incoming File Transfer when Accepted ^
-func (n *Client) OnResponded(inv *md.AuthInvite) {
+func (n *Client) OnResponded(inv *md.InviteRequest) {
 	log.Println("--- Starting Incoming Stream --- ")
 	n.session = md.NewInSession(n.user, inv, n.call)
 	n.Host.HandleStream(n.user.GetRouter().LocalTransferProtocol(n.Host.ID), n.session.ReadFromStream)

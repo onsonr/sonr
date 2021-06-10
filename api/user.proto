@@ -3,6 +3,36 @@ syntax = "proto3";
 // Require Go Package
 option go_package = "/models";
 
+// Client Keys for Services
+message APIKeys {
+  string ipApiKey = 1;
+  string rapidApiHost = 2;
+  string rapidApiKey = 3;
+  string handshakeKey = 4;
+  string handshakeSecret = 5;
+  string hubKey = 6;
+  string hubSecret = 7;
+  string storjApiKey = 8;
+  string storjRootPassword = 9;
+}
+
+// Private Public Key Pair
+message KeyPair {
+  Key private = 1;
+  Key public = 2;
+
+  message Key {
+    string path = 1;
+    bytes buffer = 2;
+    Type type = 3;
+  }
+
+  enum Type {
+    PRIVATE_KEY = 0;
+    PUBLIC_KEY = 1;
+  }
+}
+
 // Status is User Node Situation
 enum Status {
   IDLE = 0;      // Default Status on Launch
@@ -59,8 +89,7 @@ message Device {
   string model = 4;          // Model of Device
   string version = 5;        // Operating System Version
   FileSystem fileSystem = 6; // Directories for this Device
-  bytes privateKey = 7;
-  bytes publicKey = 8;
+  KeyPair keyPair = 7;
 }
 
 // FileSystem is for Directores Where Data can be stored

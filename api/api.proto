@@ -18,20 +18,38 @@ message ConnectionRequest {
   Device device = 2;                  // Users Device
   Contact contact = 3;                // Users Contact Card
   User.Crypto crypto = 4;             // User Crypto Data
-  ClientKeys clientKeys = 5;          // Client Keys
+  APIKeys apiKeys = 5;                // Client Keys
   map<string, Device> devices = 6;    // User Devices: Name, Device
   map<string, Settings> settings = 7; // User Specified Preferences
 
-  // Client Keys for Services
-  message ClientKeys {
-    string ipKey = 1;
-    string rapidApiHost = 2;
-    string rapidApiKey = 3;
-    string hsKey = 4;
-    string hsSecret = 5;
-    string hubKey = 6;
-    string hubSecret = 7;
+  // Connection Request Type
+  enum Type {
+    CONNECT = 0;
+    STORJ = 1;
+    LINK = 2;
+    AUTH = 3;
   }
+}
+
+// Response to Connection Request
+message ConnectionResponse {
+  User user = 1;
+  Peer.ID id = 2;
+}
+
+// Request to Create or Return Username
+message UsernameRequest {
+  bool isReturning = 1;
+  string mnemonic = 2;
+  string sName = 3;
+}
+
+// Response for Create or Return Username
+message UsernameResponse {
+  bool isValid = 1;
+  string prefix = 2;
+  string sName = 3;
+  string mnemonic = 4;
 }
 
 // Request to Access Storj Data
@@ -66,7 +84,7 @@ message UpdateRequest {
 }
 
 // Invitation Message sent on RPC
-message AuthInvite {
+message InviteRequest {
   Payload payload = 1; // Type of Transfer
   Peer from = 2;       // Users Peer Data
   Peer to = 3;         // Receivers Peer Data
@@ -74,7 +92,7 @@ message AuthInvite {
 }
 
 // Reply Message sent on RPC
-message AuthReply {
+message InviteResponse {
   Type type = 1;     // Cancel Reply
   Peer from = 2;     // Users Peer Data
   Peer to = 3;       // Receivers Peer Data
@@ -111,6 +129,7 @@ message RestRequest {
   oneof host {
     Peer peer = 4;
     string id = 5;
+    string sName = 6;
   }
 }
 
@@ -161,7 +180,7 @@ message User {
 
   // User Connection Management - Attached from Node Client
   message Connection {
-    ConnectionRequest.ClientKeys apiKeys = 1;
+    APIKeys apiKeys = 1;
     Status status = 2; // Client Node Status
     Router router = 3; // Client Routing Information
   }

@@ -200,7 +200,7 @@ type Session struct {
 }
 
 // ^ Prepare for Outgoing Session ^ //
-func NewOutSession(u *User, req *AuthInvite, tc NodeCallback) *Session {
+func NewOutSession(u *User, req *InviteRequest, tc NodeCallback) *Session {
 	return &Session{
 		file: req.GetFile(),
 		peer: req.GetTo(),
@@ -210,7 +210,7 @@ func NewOutSession(u *User, req *AuthInvite, tc NodeCallback) *Session {
 }
 
 // ^ Prepare for Incoming Session ^ //
-func NewInSession(u *User, inv *AuthInvite, c NodeCallback) *Session {
+func NewInSession(u *User, inv *InviteRequest, c NodeCallback) *Session {
 	// Return Session
 	return &Session{
 		file: inv.GetFile(),

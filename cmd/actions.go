@@ -183,7 +183,7 @@ func (mn *Node) Invite(data []byte) {
 		mn.setStatus(md.Status_PENDING)
 
 		// Initialize from Request
-		req := &md.AuthInvite{}
+		req := &md.InviteRequest{}
 		if err := proto.Unmarshal(data, req); err != nil {
 			mn.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
 			return
@@ -225,7 +225,7 @@ func (mn *Node) Respond(data []byte) {
 		log.Println("--- Received Frontend Action for Response ---")
 
 		// Initialize from Request
-		req := &md.AuthReply{}
+		req := &md.InviteResponse{}
 		if err := proto.Unmarshal(data, req); err != nil {
 			log.Println("--- FAILED: To Unmarshal Response ---")
 			mn.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))

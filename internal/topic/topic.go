@@ -22,7 +22,7 @@ type ClientHandler interface {
 	OnRefresh(*md.Lobby)
 	OnInvite([]byte)
 	OnReply(id peer.ID, data []byte)
-	OnResponded(inv *md.AuthInvite)
+	OnResponded(inv *md.InviteRequest)
 }
 
 type TopicManager struct {

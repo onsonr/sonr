@@ -35,8 +35,8 @@ type LocalService struct {
 	lobby *md.Lobby
 	user  *md.User
 
-	respCh chan *md.AuthReply
-	invite *md.AuthInvite
+	respCh chan *md.InviteResponse
+	invite *md.InviteRequest
 }
 
 // ^ Create New Contained Topic Manager ^ //
@@ -67,7 +67,7 @@ func NewLocal(ctx context.Context, h *net.HostNode, u *md.User, name string, th 
 		lobby:  mgr.lobby,
 		user:   u,
 		call:   th,
-		respCh: make(chan *md.AuthReply, K_MAX_MESSAGES),
+		respCh: make(chan *md.InviteResponse, K_MAX_MESSAGES),
 	}
 
 	// Register Service
@@ -105,8 +105,8 @@ func (tm *TopicManager) SendLocal(msg *md.LocalEvent) error {
 	return nil
 }
 
-// ^ Flat: Handles User sent AuthInvite Response on FlatMode ^
-func (tm *TopicManager) Flat(id peer.ID, inv *md.AuthInvite) error {
+// ^ Flat: Handles User sent InviteRequest Response on FlatMode ^
+func (tm *TopicManager) Flat(id peer.ID, inv *md.InviteRequest) error {
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(inv)
 	if err != nil {
@@ -132,7 +132,7 @@ func (tm *TopicManager) Flat(id peer.ID, inv *md.AuthInvite) error {
 // ^ Calls Invite on Remote Peer for Flat Mode and makes Direct Response ^ //
 func (ts *LocalService) FlatWith(ctx context.Context, args LocalServiceArgs, reply *LocalServiceResponse) error {
 	// Received Message
-	receivedMessage := md.AuthInvite{}
+	receivedMessage := md.InviteRequest{}
 	err := proto.Unmarshal(args.Invite, &receivedMessage)
 	if err != nil {
 		return err
@@ -208,8 +208,8 @@ func (ts *LocalService) ExchangeWith(ctx context.Context, args LocalServiceArgs,
 	return nil
 }
 
-// ^ Invite: Handles User sent AuthInvite Response ^
-func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite) error {
+// ^ Invite: Handles User sent InviteRequest Response ^
+func (tm *TopicManager) Invite(id peer.ID, inv *md.InviteRequest) error {
 	// Initialize Data
 	rpcClient := rpc.NewClient(tm.host.Host, LOCAL_SERVICE_PID)
 	var reply LocalServiceResponse
@@ -241,7 +241,7 @@ func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite) error {
 // ^ Calls Invite on Local Lobby Peer ^ //
 func (ts *LocalService) InviteWith(ctx context.Context, args LocalServiceArgs, reply *LocalServiceResponse) error {
 	// Received Message
-	receivedMessage := md.AuthInvite{}
+	receivedMessage := md.InviteRequest{}
 	err := proto.Unmarshal(args.Invite, &receivedMessage)
 	if err != nil {
 		return err
@@ -272,7 +272,7 @@ func (ts *LocalService) InviteWith(ctx context.Context, args LocalServiceArgs, r
 }
 
 // ^ RespondToInvite to an Invitation ^ //
-func (n *TopicManager) RespondToInvite(rep *md.AuthReply) {
+func (n *TopicManager) RespondToInvite(rep *md.InviteResponse) {
 	log.Println("--- Received Response for Invite ---")
 	// Send to Channel
 	n.service.respCh <- rep

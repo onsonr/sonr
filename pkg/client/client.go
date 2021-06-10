@@ -148,7 +148,7 @@ func (n *Client) LeaveLobby(lob *tpc.TopicManager) *md.SonrError {
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Client) InviteLink(invite *md.AuthInvite, t *tpc.TopicManager) *md.SonrError {
+func (n *Client) InviteLink(invite *md.InviteRequest, t *tpc.TopicManager) *md.SonrError {
 	// @ 3. Send Invite to Peer
 	if t.HasPeer(invite.To.Id.Peer) {
 		// Get PeerID and Check error
@@ -158,7 +158,7 @@ func (n *Client) InviteLink(invite *md.AuthInvite, t *tpc.TopicManager) *md.Sonr
 		}
 
 		// Run Routine
-		go func(inv *md.AuthInvite) {
+		go func(inv *md.InviteRequest) {
 			err = t.Invite(id, inv)
 			if err != nil {
 				n.call.Error(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
@@ -171,7 +171,7 @@ func (n *Client) InviteLink(invite *md.AuthInvite, t *tpc.TopicManager) *md.Sonr
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Client) InviteContact(invite *md.AuthInvite, t *tpc.TopicManager, c *md.Contact) *md.SonrError {
+func (n *Client) InviteContact(invite *md.InviteRequest, t *tpc.TopicManager, c *md.Contact) *md.SonrError {
 	// @ 3. Send Invite to Peer
 	if t.HasPeer(invite.To.Id.Peer) {
 		// Get PeerID and Check error
@@ -181,7 +181,7 @@ func (n *Client) InviteContact(invite *md.AuthInvite, t *tpc.TopicManager, c *md
 		}
 
 		// Run Routine
-		go func(inv *md.AuthInvite) {
+		go func(inv *md.InviteRequest) {
 			// Direct Invite for Flat
 			if inv.IsFlat() {
 				err = t.Flat(id, inv)
@@ -203,7 +203,7 @@ func (n *Client) InviteContact(invite *md.AuthInvite, t *tpc.TopicManager, c *md
 }
 
 // ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Client) InviteFile(invite *md.AuthInvite, t *tpc.TopicManager) *md.SonrError {
+func (n *Client) InviteFile(invite *md.InviteRequest, t *tpc.TopicManager) *md.SonrError {
 	// Start New Session
 	n.session = md.NewOutSession(n.user, invite, n.call)
 
@@ -214,7 +214,7 @@ func (n *Client) InviteFile(invite *md.AuthInvite, t *tpc.TopicManager) *md.Sonr
 	}
 
 	// Run Routine
-	go func(inv *md.AuthInvite) {
+	go func(inv *md.InviteRequest) {
 		err = t.Invite(id, inv)
 		if err != nil {
 			n.call.Error(md.NewError(err, md.ErrorMessage_TOPIC_RPC))

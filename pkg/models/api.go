@@ -5,61 +5,60 @@ import (
 	"net/http"
 
 	olc "github.com/google/open-location-code/go"
-	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/multiformats/go-multiaddr"
 	"google.golang.org/protobuf/proto"
 )
 
-// ** ─── AuthReply MANAGEMENT ────────────────────────────────────────────────────────
-func (r *AuthReply) HasAcceptedTransfer() bool {
-	return r.Decision && r.Type == AuthReply_Transfer
+// ** ─── InviteResponse MANAGEMENT ────────────────────────────────────────────────────────
+func (r *InviteResponse) HasAcceptedTransfer() bool {
+	return r.Decision && r.Type == InviteResponse_Transfer
 }
 
-// ** ─── AuthInvite MANAGEMENT ────────────────────────────────────────────────────────
+// ** ─── InviteRequest MANAGEMENT ────────────────────────────────────────────────────────
 // Returns Invite Contact
-func (i *AuthInvite) GetContact() *Contact {
+func (i *InviteRequest) GetContact() *Contact {
 	return i.GetData().GetContact()
 }
 
 // Returns Invite File
-func (i *AuthInvite) GetFile() *SonrFile {
+func (i *InviteRequest) GetFile() *SonrFile {
 	return i.GetData().GetFile()
 }
 
 // Returns Invite URL
-func (i *AuthInvite) GetUrl() *URLLink {
+func (i *InviteRequest) GetUrl() *URLLink {
 	return i.GetData().GetUrl()
 }
 
 // Checks if Payload is Contact
-func (i *AuthInvite) IsPayloadContact() bool {
+func (i *InviteRequest) IsPayloadContact() bool {
 	return i.Payload == Payload_CONTACT || i.Payload == Payload_FLAT_CONTACT
 }
 
 // Checks if Payload is File Transfer
-func (i *AuthInvite) IsPayloadFile() bool {
+func (i *InviteRequest) IsPayloadFile() bool {
 	return i.Payload == Payload_FILE || i.Payload == Payload_FILES || i.Payload == Payload_MEDIA
 }
 
 // Checks if Payload is Url
-func (i *AuthInvite) IsPayloadUrl() bool {
+func (i *InviteRequest) IsPayloadUrl() bool {
 	return i.Payload == Payload_URL
 }
 
 // Checks for Flat Invite
-func (i *AuthInvite) IsFlat() bool {
+func (i *InviteRequest) IsFlat() bool {
 	return i.Data.Properties.IsFlat
 }
 
 // Checks for Remote Invite
-func (i *AuthInvite) IsRemote() bool {
+func (i *InviteRequest) IsRemote() bool {
 	return i.Data.Properties.IsRemote
 }
 
-// Validates AuthInvite has From Parameter
-func (u *User) ValidateInvite(i *AuthInvite) *AuthInvite {
+// Validates InviteRequest has From Parameter
+func (u *User) ValidateInvite(i *InviteRequest) *InviteRequest {
 	if i.From == nil {
 		i.From = u.GetPeer()
 	}
@@ -163,16 +162,6 @@ func (l *Linker) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) {
 
 	// Set Device Topic
 	l.Router.DeviceTopic = fmt.Sprintf("/sonr/user/%s", l.Username)
-}
-
-// Returns Linker Private Key
-func (l *Linker) PrivateKey() crypto.PrivKey {
-	// Get Key from Buffer
-	key, err := crypto.UnmarshalPrivateKey(l.GetDevice().GetPrivateKey())
-	if err != nil {
-		return nil
-	}
-	return key
 }
 
 // ** ─── Location MANAGEMENT ────────────────────────────────────────────────────────
@@ -469,6 +458,12 @@ func generateError(errType ErrorMessage_Type) (string, ErrorMessage_Severity) {
 		return "Failed to connect to Nearby Peer", ErrorMessage_WARNING
 	case ErrorMessage_HOST_INFO:
 		return "Failed to generate User Peer Info", ErrorMessage_CRITICAL
+	case ErrorMessage_KEY_ID:
+		return "Cannot get PeerID from Public Key", ErrorMessage_CRITICAL
+	case ErrorMessage_KEY_SET:
+		return "Cannot overwrite existing key", ErrorMessage_WARNING
+	case ErrorMessage_KEY_INVALID:
+		return "Key is Invalid, May not Exist", ErrorMessage_CRITICAL
 	default:
 		return "Unknown", ErrorMessage_LOG
 	}

@@ -50,6 +50,9 @@ message ErrorMessage {
     URL_INFO_RESP = 35;
     FAILED_CONNECTION = 36;
     HOST_INFO = 37;
+    KEY_SET = 38;
+    KEY_INVALID = 39;
+    KEY_ID = 40;
   }
 
   enum Severity {
