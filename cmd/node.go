@@ -86,6 +86,15 @@ func (mn *Node) Connect() {
 	}
 }
 
+// @ Returns User Peer_ID Protobuf as Bytes
+func (mn *Node) ID() []byte {
+	bytes, err := proto.Marshal(mn.user.ID())
+	if err != nil {
+		return nil
+	}
+	return bytes
+}
+
 // @ Returns Node Location Protobuf as Bytes
 func (mn *Node) Location() []byte {
 	bytes, err := proto.Marshal(mn.user.Location)
