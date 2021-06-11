@@ -371,7 +371,6 @@ func NewUser(cr *ConnectionRequest, s Store) (*User, *SonrError) {
 	// Return User
 	u := &User{
 		Device:   d,
-		Contact:  cr.GetContact(),
 		Location: cr.GetLocation(),
 		Connection: &User_Connection{
 			ApiKeys: cr.GetApiKeys(),
@@ -407,7 +406,7 @@ func (u *User) DeviceID() string {
 
 // Method Returns Profile First Name
 func (u *User) FirstName() string {
-	return u.GetContact().GetProfile().GetFirstName()
+	return u.GetPeer().GetProfile().GetFirstName()
 }
 
 // Method Returns Peer_ID
@@ -432,7 +431,7 @@ func (u *User) KeyPublic() crypto.PubKey {
 
 // Method Returns Profile Last Name
 func (u *User) LastName() string {
-	return u.GetContact().GetProfile().GetLastName()
+	return u.GetPeer().GetProfile().GetLastName()
 }
 
 // Method Returns Prefix for User
@@ -446,7 +445,7 @@ func (u *User) Prefix() (string, error) {
 
 // Method Returns Profile
 func (u *User) Profile() *Profile {
-	return u.GetContact().GetProfile()
+	return u.GetPeer().GetProfile()
 }
 
 // Method Returns SName
@@ -503,11 +502,10 @@ func (u *User) Update(ur *UpdateRequest) {
 		}
 
 	case *UpdateRequest_Contact:
-		u.Contact = ur.GetContact()
 		u.Peer.Profile = &Profile{
-			FirstName: u.Contact.GetProfile().GetFirstName(),
-			LastName:  u.Contact.GetProfile().GetLastName(),
-			Picture:   u.Contact.GetProfile().GetPicture(),
+			FirstName: ur.GetContact().GetProfile().GetFirstName(),
+			LastName:  ur.GetContact().GetProfile().GetLastName(),
+			Picture:   ur.GetContact().GetProfile().GetPicture(),
 		}
 	case *UpdateRequest_Properties:
 		props := ur.GetProperties()
@@ -617,4 +615,16 @@ func (p *Peer) SignUpdate() *LocalEvent {
 		From:    p,
 		Id:      p.Id.Peer,
 	}
+}
+
+// @ Helper: Gets Substrings
+func substring(input string, start int, length int) string {
+	asRunes := []rune(input)
+	if start >= len(asRunes) {
+		return ""
+	}
+	if start+length > len(asRunes) {
+		length = len(asRunes) - start
+	}
+	return string(asRunes[start : start+length])
 }

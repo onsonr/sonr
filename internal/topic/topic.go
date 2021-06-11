@@ -18,7 +18,6 @@ const REMOTE_SERVICE_PID = protocol.ID("/sonr/remote-service/0.2")
 
 type ClientHandler interface {
 	OnLocalEvent(*md.LocalEvent)
-	OnRemoteEvent(*md.RemoteEvent)
 	OnRefresh(*md.Lobby)
 	OnInvite([]byte)
 	OnReply(id peer.ID, data []byte)
@@ -34,11 +33,10 @@ type TopicManager struct {
 	user         *md.User
 	lobby        *md.Lobby
 
-	service      *LocalService
-	localEvents  chan *md.LocalEvent
-	remoteEvents chan *md.RemoteEvent
-	handler      ClientHandler
-	lobbyType    md.Lobby_Type
+	service     *LocalService
+	localEvents chan *md.LocalEvent
+	handler     ClientHandler
+	lobbyType   md.Lobby_Type
 }
 
 // ^ Helper: Find returns Pointer to Peer.ID and Peer ^
@@ -90,14 +88,6 @@ func (tm *TopicManager) HasPeer(q string) bool {
 // ^ Check if Local Topic
 func (tm *TopicManager) IsLocal() bool {
 	if tm.lobbyType == md.Lobby_LOCAL {
-		return true
-	}
-	return false
-}
-
-// ^ Check if Remote Topic
-func (tm *TopicManager) IsRemote() bool {
-	if tm.lobbyType == md.Lobby_REMOTE {
 		return true
 	}
 	return false
@@ -158,30 +148,16 @@ func (tm *TopicManager) handleTopicMessages() {
 		}
 
 		// Check Lobby Type
-		if tm.IsLocal() {
-			// Construct message
-			m := &md.LocalEvent{}
-			err = proto.Unmarshal(msg.Data, m)
-			if err != nil {
-				continue
-			}
+		// Construct message
+		m := &md.LocalEvent{}
+		err = proto.Unmarshal(msg.Data, m)
+		if err != nil {
+			continue
+		}
 
-			// Validate Peer in Lobby
-			if tm.HasPeer(m.Id) {
-				tm.localEvents <- m
-			}
-		} else {
-			// Construct message
-			m := &md.RemoteEvent{}
-			err = proto.Unmarshal(msg.Data, m)
-			if err != nil {
-				continue
-			}
-
-			// Validate Peer in Lobby
-			if tm.HasPeer(m.Id) {
-				tm.remoteEvents <- m
-			}
+		// Validate Peer in Lobby
+		if tm.HasPeer(m.Id) {
+			tm.localEvents <- m
 		}
 		md.GetState().NeedsWait()
 	}
@@ -198,10 +174,6 @@ func (tm *TopicManager) processTopicMessages() {
 				tm.lobby.Add(m.From)
 				tm.RefreshLobby()
 			}
-
-		// @ Remote Event Channel Updated
-		case m := <-tm.remoteEvents:
-			tm.handler.OnRemoteEvent(m)
 		case <-tm.ctx.Done():
 			return
 		}

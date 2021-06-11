@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-import "user.proto";
+import "peer.proto";
 
 // Require Go Package
 option go_package = "/models";
@@ -207,16 +207,6 @@ message Contact {
       PublicHidden = 4;  // Public and Hidden
     }
   }
-}
-
-// Location from GeoIP and OLC information
-message Location {
-  string city = 1;
-  string state = 2;
-  string continent = 3;
-  string country = 4;
-  double latitude = 5;
-  double longitude = 6;
 }
 
 // Standard MIME with Additional Extensions

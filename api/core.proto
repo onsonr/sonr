@@ -20,32 +20,6 @@ enum Direction {
   Outgoing = 2; // Outgoing Transfer
 }
 
-// Global Topic Reference
-message Global {
-  map<string, string> peers = 1;
-  string userPeerID = 2;
-  string sName = 3;
-}
-
-// Handshake Record
-message HSRecord {
-  int32 ttl = 1;
-  string type = 2;
-  string host = 3;
-  string value = 4;
-}
-
-// Namebase Request for HTTP Client
-message NamebaseRequest {
-  repeated HSRecord records = 1;
-  repeated HSRecord deleteRecords = 2;
-}
-
-// Namebase Response for HTTP Client
-message NamebaseResponse {
-  repeated HSRecord records = 1;
-  bool success = 2;
-}
 
 // Memory Store Key Values
 enum StoreKeys {

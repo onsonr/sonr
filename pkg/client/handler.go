@@ -22,18 +22,6 @@ func (n *Client) OnLocalEvent(e *md.LocalEvent) {
 	n.call.LocalEvent(bytes)
 }
 
-// ^ OnRemoteEvent: Remote Lobby Event ^
-func (n *Client) OnRemoteEvent(e *md.RemoteEvent) {
-	// Convert Message
-	bytes, err := proto.Marshal(e)
-	if err != nil {
-		n.call.Error(md.NewError(err, md.ErrorMessage_UNMARSHAL))
-		return
-	}
-
-	// Call Event
-	n.call.RemoteEvent(bytes)
-}
 
 // ^ OnLinkRequest: When Device is Initiating Link
 func (n *Client) OnLinkRequest(w http.ResponseWriter, r *http.Request) {

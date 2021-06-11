@@ -91,12 +91,10 @@ func NewLocalLobby(u *User) *Lobby {
 		User:  u.GetPeer(),
 
 		// Info
-		Info: &Lobby_Local{
-			Local: &Lobby_LocalInfo{
-				Name:     topic[12:],
-				Location: loc,
-				Topic:    topic,
-			},
+		Info: &Lobby_LocalInfo{
+			Name:     topic[12:],
+			Location: loc,
+			Topic:    topic,
 		},
 	}
 }
@@ -113,16 +111,7 @@ func (l *Lobby) Size() int {
 
 // Returns Lobby Topic
 func (l *Lobby) Topic() string {
-	topic := ""
-	switch l.Info.(type) {
-	// @ Create Remote
-	case *Lobby_Local:
-		topic = l.GetLocal().GetTopic()
-	// @ Join Remote
-	case *Lobby_Remote:
-		topic = l.GetRemote().GetTopic()
-	}
-	return topic
+	return l.GetInfo().GetTopic()
 }
 
 // Returns as Lobby Buffer

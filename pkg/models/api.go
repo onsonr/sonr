@@ -12,11 +12,6 @@ import (
 
 // ** ─── ConnectionRequest MANAGEMENT ────────────────────────────────────────────────────────
 // Checks for Auth Type
-func (cr *ConnectionRequest) IsAuth() bool {
-	return cr.GetType() == ConnectionRequest_AUTH
-}
-
-// Checks for Auth Type
 func (cr *ConnectionRequest) IsLink() bool {
 	return cr.GetType() == ConnectionRequest_LINK
 }
@@ -106,53 +101,6 @@ func NewRestRequest(r *http.Request) *RestRequest {
 	return &RestRequest{
 		Type:   methodType,
 		Method: extractHTTPFunction(r.RequestURI),
-	}
-}
-
-// ** ─── Remote MANAGEMENT ────────────────────────────────────────────────────────
-// Get Remote Topic
-func (r *RemoteCreateRequest) GetTopic() string {
-	return fmt.Sprintf("%s.remote.%s.snr/", r.Fingerprint, r.SName)
-}
-
-// Get Remote Point Info
-func (r *RemoteCreateRequest) NewCreatedRemote(u *User) *Lobby {
-	// Create Lobby
-	return &Lobby{
-		// General
-		Type:  Lobby_REMOTE,
-		Peers: make(map[string]*Peer),
-		User:  u.GetPeer(),
-
-		// Info
-		Info: &Lobby_Remote{
-			Remote: &Lobby_RemoteInfo{
-				IsJoin:      false,
-				Fingerprint: r.GetFingerprint(),
-				Words:       r.GetWords(),
-				Topic:       r.GetTopic(),
-				File:        r.GetFile(),
-				Owner:       u.GetPeer(),
-			},
-		},
-	}
-}
-
-func (r *RemoteJoinRequest) NewJoinedRemote(u *User) *Lobby {
-	// Create Lobby
-	return &Lobby{
-		// General
-		Type:  Lobby_REMOTE,
-		Peers: make(map[string]*Peer),
-		User:  u.GetPeer(),
-
-		// Info
-		Info: &Lobby_Remote{
-			Remote: &Lobby_RemoteInfo{
-				IsJoin: true,
-				Topic:  r.GetTopic(),
-			},
-		},
 	}
 }
 
