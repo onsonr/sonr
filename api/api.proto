@@ -8,20 +8,27 @@ option go_package = "/models";
 
 // Request to Create or Return Username
 message AuthenticationRequest {
-  bool isReturning = 1;
+  Type type = 1;
   string mnemonic = 2; // Required Frontend Mnemonic
   string sName = 3;    // Required Frontend SName
   Device device = 4;   // Required Field for Handling Keys/ID
   APIKeys apiKeys = 5; // Client Keys
+
+  enum Type {
+    EXISTING = 0;
+    CHECK_NAME = 1;
+    SAVE_NAME = 2;
+  }
 }
 
 // Response for Create or Return Username
 message AuthenticationResponse {
   bool isValid = 1;
-  string prefix = 2;
-  string sName = 3;
-  string mnemonic = 4;
-  User user = 5;
+  bool isSaved = 2;
+  string prefix = 3;
+  string sName = 4;
+  string mnemonic = 5;
+  User user = 6;
 }
 
 // Initial Connection Message to Establish Sonr

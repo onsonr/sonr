@@ -18,8 +18,8 @@ const baseUrl = "https://www.namebase.io"
 const nameDnsPoint = "/api/v0/dns/domains/snr/nameserver"
 
 type NamebaseClient interface {
-	AddRecord(record *md.HSRecord) (bool, error)
-	DeleteRecord(record *md.HSRecord) (bool, error)
+	AddRecord(record *md.HSRecord) bool
+	DeleteRecord(record *md.HSRecord) bool
 	Refresh() ([]*md.HSRecord, error)
 }
 
@@ -38,79 +38,79 @@ func newNambaseClient(keys *md.APIKeys) NamebaseClient {
 }
 
 // ^ Method to Add a HSRecord ^ //
-func (nc *namebaseClient) AddRecord(record *md.HSRecord) (bool, error) {
+func (nc *namebaseClient) AddRecord(record *md.HSRecord) bool {
 	// Create Body
 	nbreq := md.NewNamebaseRequest(record, true)
 	json, err := nbreq.JSON()
 	if err != nil {
-		return false, err
+		return false
 	}
 
 	// Create Request
 	req, err := http.NewRequest("PUT", baseUrl+nameDnsPoint, bytes.NewBuffer(json))
 	if err != nil {
-		return false, err
+		return false
 	}
 
 	// Set Headers and Perform Action
 	req = nc.setHeaders(req)
 	resp, err := nc.client.Do(req)
 	if err != nil {
-		return false, err
+		return false
 	}
 	// Parse Response Body
 	defer resp.Body.Close()
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return false, err
+		return false
 	}
 
 	// Unmarshal Data
 	namebaseResponse, err := md.NewNamebaseResponse(bodyBytes)
 	if err != nil {
-		return false, err
+		return false
 	}
 
 	// Return Records
-	return namebaseResponse.GetSuccess(), nil
+	return namebaseResponse.GetSuccess()
 }
 
 // ^ Method to Add a HSRecord ^ //
-func (nc *namebaseClient) DeleteRecord(record *md.HSRecord) (bool, error) {
+func (nc *namebaseClient) DeleteRecord(record *md.HSRecord) bool {
 	// Create Body
 	nbreq := md.NewNamebaseRequest(record, true)
 	json, err := nbreq.JSON()
 	if err != nil {
-		return false, err
+		return false
 	}
 
 	// Create Request
 	req, err := http.NewRequest("PUT", baseUrl+nameDnsPoint, bytes.NewBuffer(json))
 	if err != nil {
-		return false, err
+		return false
 	}
 
 	// Set Headers and Perform Action
 	req = nc.setHeaders(req)
 	resp, err := nc.client.Do(req)
 	if err != nil {
-		return false, err
+		return false
 	}
 	// Parse Response Body
 	defer resp.Body.Close()
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return false, err
+		return false
 	}
 
 	// Unmarshal Data
 	namebaseResponse, err := md.NewNamebaseResponse(bodyBytes)
 	if err != nil {
-		return false, err
+		return false
 	}
 
 	// Return Records
-	return namebaseResponse.GetSuccess(), nil
+	return namebaseResponse.GetSuccess()
 }
 
 // ^ Method Returns all known Records ^ //

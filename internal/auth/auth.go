@@ -39,6 +39,7 @@ func (as *authService) CheckSName(req *md.AuthenticationRequest) *md.Authenticat
 		SName:    req.GetSName(),
 		Mnemonic: req.GetMnemonic(),
 		IsValid:  true,
+		IsSaved:  false,
 	}
 
 	// Fetch Records
@@ -76,7 +77,12 @@ func (as *authService) SaveSName(req *md.AuthenticationRequest) *md.Authenticati
 
 	// Validate
 	if resp.GetIsValid() {
-		as.nbClient.AddRecord(req.ToHSRecord(prefix, fingerprint))
+		// Save Record, Check Success
+		if ok := as.nbClient.AddRecord(req.ToHSRecord(prefix, fingerprint)); ok {
+			resp.IsSaved = true
+		} else {
+			resp.IsSaved = false
+		}
 	}
 	return resp
 }
