@@ -17,7 +17,7 @@ const LOCAL_SERVICE_PID = protocol.ID("/sonr/local-service/0.2")
 const REMOTE_SERVICE_PID = protocol.ID("/sonr/remote-service/0.2")
 
 type ClientHandler interface {
-	OnLocalEvent(*md.LocalEvent)
+	OnEvent(*md.LocalEvent)
 	OnRefresh(*md.Lobby)
 	OnInvite([]byte)
 	OnReply(id peer.ID, data []byte)

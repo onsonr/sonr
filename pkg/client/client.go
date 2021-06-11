@@ -18,7 +18,7 @@ type Client struct {
 	// Properties
 	isLinker bool
 	ctx      context.Context
-	call     md.NodeCallback
+	call     md.Callback
 	global   net.GlobalTopic
 	user     *md.User
 	session  *md.Session
@@ -28,7 +28,7 @@ type Client struct {
 }
 
 // ^ NewClient Initializes Node with Router ^
-func NewClient(ctx context.Context, u *md.User, call md.NodeCallback) *Client {
+func NewClient(ctx context.Context, u *md.User, call md.Callback) *Client {
 	// Returns Storj Enabled Client
 	return &Client{
 		ctx:  ctx,
@@ -109,7 +109,7 @@ func (n *Client) InviteLink(invite *md.InviteRequest, t *tpc.TopicManager) *md.S
 		go func(inv *md.InviteRequest) {
 			err = t.Invite(id, inv)
 			if err != nil {
-				n.call.Error(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
+				n.call.OnError(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
 			}
 		}(invite)
 	} else {
@@ -134,13 +134,13 @@ func (n *Client) InviteContact(invite *md.InviteRequest, t *tpc.TopicManager, c 
 			if inv.IsFlat() {
 				err = t.Flat(id, inv)
 				if err != nil {
-					n.call.Error(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
+					n.call.OnError(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
 				}
 			} else {
 				// Request Invite for Non Flat
 				err = t.Invite(id, inv)
 				if err != nil {
-					n.call.Error(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
+					n.call.OnError(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
 				}
 			}
 		}(invite)
@@ -165,7 +165,7 @@ func (n *Client) InviteFile(invite *md.InviteRequest, t *tpc.TopicManager) *md.S
 	go func(inv *md.InviteRequest) {
 		err = t.Invite(id, inv)
 		if err != nil {
-			n.call.Error(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
+			n.call.OnError(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
 		}
 	}(invite)
 	return nil

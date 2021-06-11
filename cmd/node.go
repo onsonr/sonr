@@ -14,7 +14,7 @@ import (
 
 // ** ─── Core Main Access Node ────────────────────────────────────────────────────────
 type Node struct {
-	md.NodeCallback
+	md.Callback
 
 	// Properties
 	call    Callback
@@ -74,7 +74,7 @@ func (mn *Node) initialize(req *md.ConnectionRequest) {
 	}
 
 	// Create Client
-	mn.client = sc.NewClient(mn.ctx, mn.user, mn.callbackNode())
+	mn.client = sc.NewClient(mn.ctx, mn.user, mn.callback())
 }
 
 // @ Starts Host and Connects

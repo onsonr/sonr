@@ -12,6 +12,7 @@ import (
 	cryptopb "github.com/libp2p/go-libp2p-core/crypto/pb"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/multiformats/go-multiaddr"
+	util "github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -292,7 +293,7 @@ func (d *Device) Prefix(sName string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return substring(string(buf), 0, 16), nil
+	return util.Substring(string(buf), 0, 16), nil
 }
 
 // Returns Device Fingerprint
@@ -615,16 +616,4 @@ func (p *Peer) SignUpdate() *LocalEvent {
 		From:    p,
 		Id:      p.Id.Peer,
 	}
-}
-
-// @ Helper: Gets Substrings
-func substring(input string, start int, length int) string {
-	asRunes := []rune(input)
-	if start >= len(asRunes) {
-		return ""
-	}
-	if start+length > len(asRunes) {
-		length = len(asRunes) - start
-	}
-	return string(asRunes[start : start+length])
 }

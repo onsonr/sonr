@@ -3,16 +3,13 @@ package bind
 import (
 	"github.com/getsentry/sentry-go"
 	md "github.com/sonr-io/core/pkg/models"
-	"google.golang.org/protobuf/proto"
 )
 
 // * Interface: Callback is implemented from Plugin to receive updates * //
 type Callback interface {
 	OnStatus(data []byte)      // Node Status Updates
 	OnRefreshed(data []byte)   // Lobby Updates
-	OnLocalEvent(data []byte)  // Local Lobby Event
-	OnRemoteEvent(data []byte) // Local Lobby Event
-	OnLink(data []byte)        // Link event
+	OnEvent(data []byte)       // Local Lobby Event
 	OnInvited(data []byte)     // User Invited
 	OnResponded(data []byte)   // Peer has responded
 	OnProgress(data float32)   // File Progress Updated
@@ -21,64 +18,22 @@ type Callback interface {
 	OnError(data []byte)       // Internal Error
 }
 
-// ^ invite Callback with data for Lifecycle ^ //
-func (mn *Node) invited(data []byte) {
-	// Update Status
-	mn.setStatus(md.Status_INVITED)
-
-	// Callback with Data
-	mn.call.OnInvited(data)
-}
-
 // ^ Passes binded Methods to Node ^
-func (mn *Node) callbackNode() md.NodeCallback {
-	return md.NodeCallback{
+func (mn *Node) callback() md.Callback {
+	return md.Callback{
 		// Direct
-		Refreshed:   mn.call.OnRefreshed,
-		LocalEvent:  mn.call.OnLocalEvent,
-		RemoteEvent: mn.call.OnRemoteEvent,
-		Responded:   mn.call.OnResponded,
-		Progressed:  mn.call.OnProgress,
+		OnRefresh:     mn.call.OnRefreshed,
+		OnEvent:       mn.call.OnEvent,
+		OnInvite:      mn.call.OnInvited,
+		OnReply:       mn.call.OnResponded,
+		OnProgress:    mn.call.OnProgress,
+		OnReceived:    mn.call.OnReceived,
+		OnTransmitted: mn.call.OnTransmitted,
 
 		// Middleware
-		Invited:     mn.invited,
-		Received:    mn.received,
-		Status:      mn.setStatus,
-		Transmitted: mn.transmitted,
-		Error:       mn.handleError,
+		OnError:   mn.handleError,
+		SetStatus: mn.setStatus,
 	}
-}
-
-// ^ transmitted Callback middleware post transfer ^ //
-func (mn *Node) transmitted(card *md.Transfer) {
-	// Update Status
-	mn.setStatus(md.Status_AVAILABLE)
-
-	// Convert Protobuf to bytes
-	msgBytes, err := proto.Marshal(card)
-	if err != nil {
-		mn.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
-		return
-	}
-
-	// Callback with Data
-	mn.call.OnTransmitted(msgBytes)
-}
-
-// ^ received Callback middleware post transfer ^ //
-func (mn *Node) received(card *md.Transfer) {
-	// Update Status
-	mn.setStatus(md.Status_AVAILABLE)
-
-	// Convert Protobuf to bytes
-	msgBytes, err := proto.Marshal(card)
-	if err != nil {
-		mn.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
-		return
-	}
-
-	// Callback with Data
-	mn.call.OnReceived(msgBytes)
 }
 
 // ^ handleError Callback with handleError instance, and method ^
@@ -91,7 +46,6 @@ func (mn *Node) handleError(errMsg *md.SonrError) {
 		}
 
 		// Send Callback
-		bytes := errMsg.Bytes()
-		mn.call.OnError(bytes)
+		mn.call.OnError(errMsg.Bytes())
 	}
 }
