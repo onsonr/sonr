@@ -130,7 +130,16 @@ func (mn *Node) Sign(data []byte) []byte {
 		// Unmarshal Data to Request
 		request := &md.SignRequest{}
 		if err := proto.Unmarshal(data, request); err != nil {
+			// Handle Error
 			mn.handleError(md.NewUnmarshalError(err))
+
+			// Send Invalid Response
+			if buf, err := proto.Marshal(md.NewInvalidSignResponse()); err != nil {
+				mn.handleError(md.NewMarshalError(err))
+				return nil
+			} else {
+				return buf
+			}
 		}
 
 		// Initialize Result List
@@ -186,6 +195,49 @@ func (mn *Node) Sign(data []byte) []byte {
 	} else {
 		return buf
 	}
+}
+
+// @ Verification Request for Signed Data
+func (mn *Node) Verify(data []byte) []byte {
+	// Check Ready
+	if mn.isReady() {
+		// Get Key Pair
+		kp := mn.user.KeyPair()
+
+		// Unmarshal Data to Request
+		request := &md.VerifyRequest{}
+		if err := proto.Unmarshal(data, request); err != nil {
+			// Handle Error
+			mn.handleError(md.NewUnmarshalError(err))
+
+			// Send Invalid Response
+			return md.NewInvalidVerifyResponseBuf()
+		}
+
+		// Check type and Verify
+		if request.IsBuffer() {
+			// Verify Result
+			result, err := kp.Verify(request.GetBufferValue(), request.GetSignedBuffer())
+			if err != nil {
+				return md.NewInvalidVerifyResponseBuf()
+			}
+
+			// Return Result
+			return md.NewVerifyResponseBuf(result)
+		} else if request.IsString() {
+			// Verify Result
+			result, err := kp.Verify([]byte(request.GetTextValue()), []byte(request.GetSignedText()))
+			if err != nil {
+				return md.NewInvalidVerifyResponseBuf()
+			}
+
+			// Return Result
+			return md.NewVerifyResponseBuf(result)
+		}
+	}
+
+	// Send Invalid Response
+	return md.NewInvalidVerifyResponseBuf()
 }
 
 // @ Update proximity/direction and Notify Lobby

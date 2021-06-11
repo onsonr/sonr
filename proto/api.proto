@@ -125,8 +125,8 @@ message SignResponse {
   bool isSigned = 1; // If Values were Signed
 
   oneof value {
-    Buffers bufferValue = 2; // Message for List of Bytes
-    Texts textValue = 3;     // Message for List of Strings
+    Buffers signedBuffer = 2; // Message for List of Bytes
+    Texts signedText = 3;     // Message for List of Strings
   }
 
   // Buffers Message: Singular Values are First Index
@@ -138,6 +138,26 @@ message SignResponse {
   message Texts {
     repeated string data = 1; // A List of Strings
   }
+}
+
+// Message for Verification Request
+message VerifyRequest {
+  // Data is the original value
+  oneof data {
+    bytes bufferValue = 1;
+    string textValue = 2;
+  }
+
+  // Sig is the value to be verified against data
+  oneof sig {
+    bytes signedBuffer = 3;
+    string signedText = 4;
+  }
+}
+
+// Message for Verification Response
+message VerifyResponse {
+  bool isVerified = 1; // Result for Verification
 }
 
 // Message for Status Update

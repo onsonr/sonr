@@ -935,8 +935,8 @@ type SignResponse struct {
 
 	IsSigned bool `protobuf:"varint,1,opt,name=isSigned,proto3" json:"isSigned,omitempty"` // If Values were Signed
 	// Types that are assignable to Value:
-	//	*SignResponse_BufferValue
-	//	*SignResponse_TextValue
+	//	*SignResponse_SignedBuffer
+	//	*SignResponse_SignedText
 	Value isSignResponse_Value `protobuf_oneof:"value"`
 }
 
@@ -986,16 +986,16 @@ func (m *SignResponse) GetValue() isSignResponse_Value {
 	return nil
 }
 
-func (x *SignResponse) GetBufferValue() *SignResponse_Buffers {
-	if x, ok := x.GetValue().(*SignResponse_BufferValue); ok {
-		return x.BufferValue
+func (x *SignResponse) GetSignedBuffer() *SignResponse_Buffers {
+	if x, ok := x.GetValue().(*SignResponse_SignedBuffer); ok {
+		return x.SignedBuffer
 	}
 	return nil
 }
 
-func (x *SignResponse) GetTextValue() *SignResponse_Texts {
-	if x, ok := x.GetValue().(*SignResponse_TextValue); ok {
-		return x.TextValue
+func (x *SignResponse) GetSignedText() *SignResponse_Texts {
+	if x, ok := x.GetValue().(*SignResponse_SignedText); ok {
+		return x.SignedText
 	}
 	return nil
 }
@@ -1004,17 +1004,191 @@ type isSignResponse_Value interface {
 	isSignResponse_Value()
 }
 
-type SignResponse_BufferValue struct {
-	BufferValue *SignResponse_Buffers `protobuf:"bytes,2,opt,name=bufferValue,proto3,oneof"` // Message for List of Bytes
+type SignResponse_SignedBuffer struct {
+	SignedBuffer *SignResponse_Buffers `protobuf:"bytes,2,opt,name=signedBuffer,proto3,oneof"` // Message for List of Bytes
 }
 
-type SignResponse_TextValue struct {
-	TextValue *SignResponse_Texts `protobuf:"bytes,3,opt,name=textValue,proto3,oneof"` // Message for List of Strings
+type SignResponse_SignedText struct {
+	SignedText *SignResponse_Texts `protobuf:"bytes,3,opt,name=signedText,proto3,oneof"` // Message for List of Strings
 }
 
-func (*SignResponse_BufferValue) isSignResponse_Value() {}
+func (*SignResponse_SignedBuffer) isSignResponse_Value() {}
 
-func (*SignResponse_TextValue) isSignResponse_Value() {}
+func (*SignResponse_SignedText) isSignResponse_Value() {}
+
+// Message for Verification Request
+type VerifyRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Data is the original value
+	//
+	// Types that are assignable to Data:
+	//	*VerifyRequest_BufferValue
+	//	*VerifyRequest_TextValue
+	Data isVerifyRequest_Data `protobuf_oneof:"data"`
+	// Sig is the value to be verified against data
+	//
+	// Types that are assignable to Sig:
+	//	*VerifyRequest_SignedBuffer
+	//	*VerifyRequest_SignedText
+	Sig isVerifyRequest_Sig `protobuf_oneof:"sig"`
+}
+
+func (x *VerifyRequest) Reset() {
+	*x = VerifyRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *VerifyRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VerifyRequest) ProtoMessage() {}
+
+func (x *VerifyRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VerifyRequest.ProtoReflect.Descriptor instead.
+func (*VerifyRequest) Descriptor() ([]byte, []int) {
+	return file_api_proto_rawDescGZIP(), []int{10}
+}
+
+func (m *VerifyRequest) GetData() isVerifyRequest_Data {
+	if m != nil {
+		return m.Data
+	}
+	return nil
+}
+
+func (x *VerifyRequest) GetBufferValue() []byte {
+	if x, ok := x.GetData().(*VerifyRequest_BufferValue); ok {
+		return x.BufferValue
+	}
+	return nil
+}
+
+func (x *VerifyRequest) GetTextValue() string {
+	if x, ok := x.GetData().(*VerifyRequest_TextValue); ok {
+		return x.TextValue
+	}
+	return ""
+}
+
+func (m *VerifyRequest) GetSig() isVerifyRequest_Sig {
+	if m != nil {
+		return m.Sig
+	}
+	return nil
+}
+
+func (x *VerifyRequest) GetSignedBuffer() []byte {
+	if x, ok := x.GetSig().(*VerifyRequest_SignedBuffer); ok {
+		return x.SignedBuffer
+	}
+	return nil
+}
+
+func (x *VerifyRequest) GetSignedText() string {
+	if x, ok := x.GetSig().(*VerifyRequest_SignedText); ok {
+		return x.SignedText
+	}
+	return ""
+}
+
+type isVerifyRequest_Data interface {
+	isVerifyRequest_Data()
+}
+
+type VerifyRequest_BufferValue struct {
+	BufferValue []byte `protobuf:"bytes,1,opt,name=bufferValue,proto3,oneof"`
+}
+
+type VerifyRequest_TextValue struct {
+	TextValue string `protobuf:"bytes,2,opt,name=textValue,proto3,oneof"`
+}
+
+func (*VerifyRequest_BufferValue) isVerifyRequest_Data() {}
+
+func (*VerifyRequest_TextValue) isVerifyRequest_Data() {}
+
+type isVerifyRequest_Sig interface {
+	isVerifyRequest_Sig()
+}
+
+type VerifyRequest_SignedBuffer struct {
+	SignedBuffer []byte `protobuf:"bytes,3,opt,name=signedBuffer,proto3,oneof"`
+}
+
+type VerifyRequest_SignedText struct {
+	SignedText string `protobuf:"bytes,4,opt,name=signedText,proto3,oneof"`
+}
+
+func (*VerifyRequest_SignedBuffer) isVerifyRequest_Sig() {}
+
+func (*VerifyRequest_SignedText) isVerifyRequest_Sig() {}
+
+// Message for Verification Response
+type VerifyResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	IsVerified bool `protobuf:"varint,1,opt,name=isVerified,proto3" json:"isVerified,omitempty"` // Result for Verification
+}
+
+func (x *VerifyResponse) Reset() {
+	*x = VerifyResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_proto_msgTypes[11]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *VerifyResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VerifyResponse) ProtoMessage() {}
+
+func (x *VerifyResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_msgTypes[11]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VerifyResponse.ProtoReflect.Descriptor instead.
+func (*VerifyResponse) Descriptor() ([]byte, []int) {
+	return file_api_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *VerifyResponse) GetIsVerified() bool {
+	if x != nil {
+		return x.IsVerified
+	}
+	return false
+}
 
 // Message for Status Update
 type StatusUpdate struct {
@@ -1029,7 +1203,7 @@ type StatusUpdate struct {
 func (x *StatusUpdate) Reset() {
 	*x = StatusUpdate{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[10]
+		mi := &file_api_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1042,7 +1216,7 @@ func (x *StatusUpdate) String() string {
 func (*StatusUpdate) ProtoMessage() {}
 
 func (x *StatusUpdate) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[10]
+	mi := &file_api_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1055,7 +1229,7 @@ func (x *StatusUpdate) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StatusUpdate.ProtoReflect.Descriptor instead.
 func (*StatusUpdate) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{10}
+	return file_api_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *StatusUpdate) GetValue() Status {
@@ -1088,7 +1262,7 @@ type UpdateRequest struct {
 func (x *UpdateRequest) Reset() {
 	*x = UpdateRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[11]
+		mi := &file_api_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1101,7 +1275,7 @@ func (x *UpdateRequest) String() string {
 func (*UpdateRequest) ProtoMessage() {}
 
 func (x *UpdateRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[11]
+	mi := &file_api_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1114,7 +1288,7 @@ func (x *UpdateRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateRequest.ProtoReflect.Descriptor instead.
 func (*UpdateRequest) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{11}
+	return file_api_proto_rawDescGZIP(), []int{13}
 }
 
 func (m *UpdateRequest) GetData() isUpdateRequest_Data {
@@ -1179,7 +1353,7 @@ type SignRequest_Buffers struct {
 func (x *SignRequest_Buffers) Reset() {
 	*x = SignRequest_Buffers{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[14]
+		mi := &file_api_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1192,7 +1366,7 @@ func (x *SignRequest_Buffers) String() string {
 func (*SignRequest_Buffers) ProtoMessage() {}
 
 func (x *SignRequest_Buffers) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[14]
+	mi := &file_api_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1227,7 +1401,7 @@ type SignRequest_Texts struct {
 func (x *SignRequest_Texts) Reset() {
 	*x = SignRequest_Texts{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[15]
+		mi := &file_api_proto_msgTypes[17]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1240,7 +1414,7 @@ func (x *SignRequest_Texts) String() string {
 func (*SignRequest_Texts) ProtoMessage() {}
 
 func (x *SignRequest_Texts) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[15]
+	mi := &file_api_proto_msgTypes[17]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1275,7 +1449,7 @@ type SignResponse_Buffers struct {
 func (x *SignResponse_Buffers) Reset() {
 	*x = SignResponse_Buffers{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[16]
+		mi := &file_api_proto_msgTypes[18]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1288,7 +1462,7 @@ func (x *SignResponse_Buffers) String() string {
 func (*SignResponse_Buffers) ProtoMessage() {}
 
 func (x *SignResponse_Buffers) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[16]
+	mi := &file_api_proto_msgTypes[18]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1323,7 +1497,7 @@ type SignResponse_Texts struct {
 func (x *SignResponse_Texts) Reset() {
 	*x = SignResponse_Texts{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[17]
+		mi := &file_api_proto_msgTypes[19]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1336,7 +1510,7 @@ func (x *SignResponse_Texts) String() string {
 func (*SignResponse_Texts) ProtoMessage() {}
 
 func (x *SignResponse_Texts) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[17]
+	mi := &file_api_proto_msgTypes[19]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1473,40 +1647,54 @@ var file_api_proto_rawDesc = []byte{
 	0x64, 0x61, 0x74, 0x61, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0c, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61,
 	0x1a, 0x1b, 0x0a, 0x05, 0x54, 0x65, 0x78, 0x74, 0x73, 0x12, 0x12, 0x0a, 0x04, 0x64, 0x61, 0x74,
 	0x61, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x42, 0x07, 0x0a,
-	0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x22, 0xdf, 0x01, 0x0a, 0x0c, 0x53, 0x69, 0x67, 0x6e, 0x52,
+	0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x22, 0xe3, 0x01, 0x0a, 0x0c, 0x53, 0x69, 0x67, 0x6e, 0x52,
 	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x69, 0x73, 0x53, 0x69, 0x67,
 	0x6e, 0x65, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x08, 0x69, 0x73, 0x53, 0x69, 0x67,
-	0x6e, 0x65, 0x64, 0x12, 0x39, 0x0a, 0x0b, 0x62, 0x75, 0x66, 0x66, 0x65, 0x72, 0x56, 0x61, 0x6c,
-	0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x15, 0x2e, 0x53, 0x69, 0x67, 0x6e, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e, 0x42, 0x75, 0x66, 0x66, 0x65, 0x72, 0x73, 0x48,
-	0x00, 0x52, 0x0b, 0x62, 0x75, 0x66, 0x66, 0x65, 0x72, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x12, 0x33,
-	0x0a, 0x09, 0x74, 0x65, 0x78, 0x74, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28,
-	0x0b, 0x32, 0x13, 0x2e, 0x53, 0x69, 0x67, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x2e, 0x54, 0x65, 0x78, 0x74, 0x73, 0x48, 0x00, 0x52, 0x09, 0x74, 0x65, 0x78, 0x74, 0x56, 0x61,
-	0x6c, 0x75, 0x65, 0x1a, 0x1d, 0x0a, 0x07, 0x42, 0x75, 0x66, 0x66, 0x65, 0x72, 0x73, 0x12, 0x12,
-	0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0c, 0x52, 0x04, 0x64, 0x61,
-	0x74, 0x61, 0x1a, 0x1b, 0x0a, 0x05, 0x54, 0x65, 0x78, 0x74, 0x73, 0x12, 0x12, 0x0a, 0x04, 0x64,
-	0x61, 0x74, 0x61, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x42,
-	0x07, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x22, 0x48, 0x0a, 0x0c, 0x53, 0x74, 0x61, 0x74,
-	0x75, 0x73, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x12, 0x1d, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75,
-	0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x07, 0x2e, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73,
-	0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x12, 0x19, 0x0a, 0x04, 0x75, 0x73, 0x65, 0x72, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x05, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x52, 0x04, 0x75, 0x73,
-	0x65, 0x72, 0x22, 0x9a, 0x01, 0x0a, 0x0d, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x12, 0x32, 0x0a, 0x0a, 0x70, 0x72, 0x6f, 0x70, 0x65, 0x72, 0x74, 0x69,
-	0x65, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x10, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x2e,
-	0x50, 0x72, 0x6f, 0x70, 0x65, 0x72, 0x74, 0x69, 0x65, 0x73, 0x48, 0x00, 0x52, 0x0a, 0x70, 0x72,
-	0x6f, 0x70, 0x65, 0x72, 0x74, 0x69, 0x65, 0x73, 0x12, 0x24, 0x0a, 0x07, 0x63, 0x6f, 0x6e, 0x74,
-	0x61, 0x63, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x08, 0x2e, 0x43, 0x6f, 0x6e, 0x74,
-	0x61, 0x63, 0x74, 0x48, 0x00, 0x52, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x12, 0x27,
-	0x0a, 0x08, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b,
-	0x32, 0x09, 0x2e, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x00, 0x52, 0x08, 0x70,
-	0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x06, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x2a,
-	0x39, 0x0a, 0x0e, 0x52, 0x65, 0x73, 0x74, 0x4d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x54, 0x79, 0x70,
-	0x65, 0x12, 0x0b, 0x0a, 0x07, 0x44, 0x45, 0x46, 0x41, 0x55, 0x4c, 0x54, 0x10, 0x00, 0x12, 0x07,
-	0x0a, 0x03, 0x47, 0x45, 0x54, 0x10, 0x01, 0x12, 0x07, 0x0a, 0x03, 0x50, 0x55, 0x54, 0x10, 0x02,
-	0x12, 0x08, 0x0a, 0x04, 0x50, 0x4f, 0x53, 0x54, 0x10, 0x03, 0x42, 0x09, 0x5a, 0x07, 0x2f, 0x6d,
-	0x6f, 0x64, 0x65, 0x6c, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6e, 0x65, 0x64, 0x12, 0x3b, 0x0a, 0x0c, 0x73, 0x69, 0x67, 0x6e, 0x65, 0x64, 0x42, 0x75, 0x66,
+	0x66, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x15, 0x2e, 0x53, 0x69, 0x67, 0x6e,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e, 0x42, 0x75, 0x66, 0x66, 0x65, 0x72, 0x73,
+	0x48, 0x00, 0x52, 0x0c, 0x73, 0x69, 0x67, 0x6e, 0x65, 0x64, 0x42, 0x75, 0x66, 0x66, 0x65, 0x72,
+	0x12, 0x35, 0x0a, 0x0a, 0x73, 0x69, 0x67, 0x6e, 0x65, 0x64, 0x54, 0x65, 0x78, 0x74, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x13, 0x2e, 0x53, 0x69, 0x67, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x2e, 0x54, 0x65, 0x78, 0x74, 0x73, 0x48, 0x00, 0x52, 0x0a, 0x73, 0x69, 0x67,
+	0x6e, 0x65, 0x64, 0x54, 0x65, 0x78, 0x74, 0x1a, 0x1d, 0x0a, 0x07, 0x42, 0x75, 0x66, 0x66, 0x65,
+	0x72, 0x73, 0x12, 0x12, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0c,
+	0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x1a, 0x1b, 0x0a, 0x05, 0x54, 0x65, 0x78, 0x74, 0x73, 0x12,
+	0x12, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x04, 0x64,
+	0x61, 0x74, 0x61, 0x42, 0x07, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x22, 0xaa, 0x01, 0x0a,
+	0x0d, 0x56, 0x65, 0x72, 0x69, 0x66, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x22,
+	0x0a, 0x0b, 0x62, 0x75, 0x66, 0x66, 0x65, 0x72, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x0c, 0x48, 0x00, 0x52, 0x0b, 0x62, 0x75, 0x66, 0x66, 0x65, 0x72, 0x56, 0x61, 0x6c,
+	0x75, 0x65, 0x12, 0x1e, 0x0a, 0x09, 0x74, 0x65, 0x78, 0x74, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x48, 0x00, 0x52, 0x09, 0x74, 0x65, 0x78, 0x74, 0x56, 0x61, 0x6c,
+	0x75, 0x65, 0x12, 0x24, 0x0a, 0x0c, 0x73, 0x69, 0x67, 0x6e, 0x65, 0x64, 0x42, 0x75, 0x66, 0x66,
+	0x65, 0x72, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0c, 0x48, 0x01, 0x52, 0x0c, 0x73, 0x69, 0x67, 0x6e,
+	0x65, 0x64, 0x42, 0x75, 0x66, 0x66, 0x65, 0x72, 0x12, 0x20, 0x0a, 0x0a, 0x73, 0x69, 0x67, 0x6e,
+	0x65, 0x64, 0x54, 0x65, 0x78, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x48, 0x01, 0x52, 0x0a,
+	0x73, 0x69, 0x67, 0x6e, 0x65, 0x64, 0x54, 0x65, 0x78, 0x74, 0x42, 0x06, 0x0a, 0x04, 0x64, 0x61,
+	0x74, 0x61, 0x42, 0x05, 0x0a, 0x03, 0x73, 0x69, 0x67, 0x22, 0x30, 0x0a, 0x0e, 0x56, 0x65, 0x72,
+	0x69, 0x66, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x1e, 0x0a, 0x0a, 0x69,
+	0x73, 0x56, 0x65, 0x72, 0x69, 0x66, 0x69, 0x65, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52,
+	0x0a, 0x69, 0x73, 0x56, 0x65, 0x72, 0x69, 0x66, 0x69, 0x65, 0x64, 0x22, 0x48, 0x0a, 0x0c, 0x53,
+	0x74, 0x61, 0x74, 0x75, 0x73, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x12, 0x1d, 0x0a, 0x05, 0x76,
+	0x61, 0x6c, 0x75, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x07, 0x2e, 0x53, 0x74, 0x61,
+	0x74, 0x75, 0x73, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x12, 0x19, 0x0a, 0x04, 0x75, 0x73,
+	0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x05, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x52,
+	0x04, 0x75, 0x73, 0x65, 0x72, 0x22, 0x9a, 0x01, 0x0a, 0x0d, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x32, 0x0a, 0x0a, 0x70, 0x72, 0x6f, 0x70, 0x65,
+	0x72, 0x74, 0x69, 0x65, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x10, 0x2e, 0x50, 0x65,
+	0x65, 0x72, 0x2e, 0x50, 0x72, 0x6f, 0x70, 0x65, 0x72, 0x74, 0x69, 0x65, 0x73, 0x48, 0x00, 0x52,
+	0x0a, 0x70, 0x72, 0x6f, 0x70, 0x65, 0x72, 0x74, 0x69, 0x65, 0x73, 0x12, 0x24, 0x0a, 0x07, 0x63,
+	0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x08, 0x2e, 0x43,
+	0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x48, 0x00, 0x52, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x61, 0x63,
+	0x74, 0x12, 0x27, 0x0a, 0x08, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x09, 0x2e, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x00,
+	0x52, 0x08, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x06, 0x0a, 0x04, 0x64, 0x61,
+	0x74, 0x61, 0x2a, 0x39, 0x0a, 0x0e, 0x52, 0x65, 0x73, 0x74, 0x4d, 0x65, 0x74, 0x68, 0x6f, 0x64,
+	0x54, 0x79, 0x70, 0x65, 0x12, 0x0b, 0x0a, 0x07, 0x44, 0x45, 0x46, 0x41, 0x55, 0x4c, 0x54, 0x10,
+	0x00, 0x12, 0x07, 0x0a, 0x03, 0x47, 0x45, 0x54, 0x10, 0x01, 0x12, 0x07, 0x0a, 0x03, 0x50, 0x55,
+	0x54, 0x10, 0x02, 0x12, 0x08, 0x0a, 0x04, 0x50, 0x4f, 0x53, 0x54, 0x10, 0x03, 0x42, 0x09, 0x5a,
+	0x07, 0x2f, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1522,7 +1710,7 @@ func file_api_proto_rawDescGZIP() []byte {
 }
 
 var file_api_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
-var file_api_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
+var file_api_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
 var file_api_proto_goTypes = []interface{}{
 	(RestMethodType)(0),             // 0: RestMethodType
 	(AuthenticationRequest_Type)(0), // 1: AuthenticationRequest.Type
@@ -1538,62 +1726,64 @@ var file_api_proto_goTypes = []interface{}{
 	(*RestResponse)(nil),            // 11: RestResponse
 	(*SignRequest)(nil),             // 12: SignRequest
 	(*SignResponse)(nil),            // 13: SignResponse
-	(*StatusUpdate)(nil),            // 14: StatusUpdate
-	(*UpdateRequest)(nil),           // 15: UpdateRequest
-	nil,                             // 16: RestRequest.ParametersEntry
-	nil,                             // 17: RestResponse.BodyEntry
-	(*SignRequest_Buffers)(nil),     // 18: SignRequest.Buffers
-	(*SignRequest_Texts)(nil),       // 19: SignRequest.Texts
-	(*SignResponse_Buffers)(nil),    // 20: SignResponse.Buffers
-	(*SignResponse_Texts)(nil),      // 21: SignResponse.Texts
-	(*Device)(nil),                  // 22: Device
-	(*APIKeys)(nil),                 // 23: APIKeys
-	(*User_Crypto)(nil),             // 24: User.Crypto
-	(*Location)(nil),                // 25: Location
-	(*Contact)(nil),                 // 26: Contact
-	(*User)(nil),                    // 27: User
-	(*Peer_ID)(nil),                 // 28: Peer.ID
-	(Payload)(0),                    // 29: Payload
-	(*Peer)(nil),                    // 30: Peer
-	(*Transfer)(nil),                // 31: Transfer
-	(Status)(0),                     // 32: Status
-	(*Peer_Properties)(nil),         // 33: Peer.Properties
-	(*Position)(nil),                // 34: Position
+	(*VerifyRequest)(nil),           // 14: VerifyRequest
+	(*VerifyResponse)(nil),          // 15: VerifyResponse
+	(*StatusUpdate)(nil),            // 16: StatusUpdate
+	(*UpdateRequest)(nil),           // 17: UpdateRequest
+	nil,                             // 18: RestRequest.ParametersEntry
+	nil,                             // 19: RestResponse.BodyEntry
+	(*SignRequest_Buffers)(nil),     // 20: SignRequest.Buffers
+	(*SignRequest_Texts)(nil),       // 21: SignRequest.Texts
+	(*SignResponse_Buffers)(nil),    // 22: SignResponse.Buffers
+	(*SignResponse_Texts)(nil),      // 23: SignResponse.Texts
+	(*Device)(nil),                  // 24: Device
+	(*APIKeys)(nil),                 // 25: APIKeys
+	(*User_Crypto)(nil),             // 26: User.Crypto
+	(*Location)(nil),                // 27: Location
+	(*Contact)(nil),                 // 28: Contact
+	(*User)(nil),                    // 29: User
+	(*Peer_ID)(nil),                 // 30: Peer.ID
+	(Payload)(0),                    // 31: Payload
+	(*Peer)(nil),                    // 32: Peer
+	(*Transfer)(nil),                // 33: Transfer
+	(Status)(0),                     // 34: Status
+	(*Peer_Properties)(nil),         // 35: Peer.Properties
+	(*Position)(nil),                // 36: Position
 }
 var file_api_proto_depIdxs = []int32{
 	1,  // 0: AuthenticationRequest.type:type_name -> AuthenticationRequest.Type
-	22, // 1: AuthenticationRequest.device:type_name -> Device
-	23, // 2: AuthenticationRequest.apiKeys:type_name -> APIKeys
-	24, // 3: AuthenticationResponse.crypto:type_name -> User.Crypto
+	24, // 1: AuthenticationRequest.device:type_name -> Device
+	25, // 2: AuthenticationRequest.apiKeys:type_name -> APIKeys
+	26, // 3: AuthenticationResponse.crypto:type_name -> User.Crypto
 	2,  // 4: ConnectionRequest.type:type_name -> ConnectionRequest.Type
-	25, // 5: ConnectionRequest.location:type_name -> Location
-	22, // 6: ConnectionRequest.device:type_name -> Device
-	26, // 7: ConnectionRequest.contact:type_name -> Contact
-	23, // 8: ConnectionRequest.apiKeys:type_name -> APIKeys
-	27, // 9: ConnectionResponse.user:type_name -> User
-	28, // 10: ConnectionResponse.id:type_name -> Peer.ID
-	29, // 11: InviteRequest.payload:type_name -> Payload
-	30, // 12: InviteRequest.from:type_name -> Peer
-	30, // 13: InviteRequest.to:type_name -> Peer
-	31, // 14: InviteRequest.data:type_name -> Transfer
+	27, // 5: ConnectionRequest.location:type_name -> Location
+	24, // 6: ConnectionRequest.device:type_name -> Device
+	28, // 7: ConnectionRequest.contact:type_name -> Contact
+	25, // 8: ConnectionRequest.apiKeys:type_name -> APIKeys
+	29, // 9: ConnectionResponse.user:type_name -> User
+	30, // 10: ConnectionResponse.id:type_name -> Peer.ID
+	31, // 11: InviteRequest.payload:type_name -> Payload
+	32, // 12: InviteRequest.from:type_name -> Peer
+	32, // 13: InviteRequest.to:type_name -> Peer
+	33, // 14: InviteRequest.data:type_name -> Transfer
 	3,  // 15: InviteResponse.type:type_name -> InviteResponse.Type
-	30, // 16: InviteResponse.from:type_name -> Peer
-	30, // 17: InviteResponse.to:type_name -> Peer
-	31, // 18: InviteResponse.data:type_name -> Transfer
+	32, // 16: InviteResponse.from:type_name -> Peer
+	32, // 17: InviteResponse.to:type_name -> Peer
+	33, // 18: InviteResponse.data:type_name -> Transfer
 	0,  // 19: RestRequest.type:type_name -> RestMethodType
-	16, // 20: RestRequest.parameters:type_name -> RestRequest.ParametersEntry
-	30, // 21: RestRequest.peer:type_name -> Peer
+	18, // 20: RestRequest.parameters:type_name -> RestRequest.ParametersEntry
+	32, // 21: RestRequest.peer:type_name -> Peer
 	0,  // 22: RestResponse.type:type_name -> RestMethodType
-	17, // 23: RestResponse.body:type_name -> RestResponse.BodyEntry
-	18, // 24: SignRequest.bufferValue:type_name -> SignRequest.Buffers
-	19, // 25: SignRequest.textValue:type_name -> SignRequest.Texts
-	20, // 26: SignResponse.bufferValue:type_name -> SignResponse.Buffers
-	21, // 27: SignResponse.textValue:type_name -> SignResponse.Texts
-	32, // 28: StatusUpdate.value:type_name -> Status
-	27, // 29: StatusUpdate.user:type_name -> User
-	33, // 30: UpdateRequest.properties:type_name -> Peer.Properties
-	26, // 31: UpdateRequest.contact:type_name -> Contact
-	34, // 32: UpdateRequest.position:type_name -> Position
+	19, // 23: RestResponse.body:type_name -> RestResponse.BodyEntry
+	20, // 24: SignRequest.bufferValue:type_name -> SignRequest.Buffers
+	21, // 25: SignRequest.textValue:type_name -> SignRequest.Texts
+	22, // 26: SignResponse.signedBuffer:type_name -> SignResponse.Buffers
+	23, // 27: SignResponse.signedText:type_name -> SignResponse.Texts
+	34, // 28: StatusUpdate.value:type_name -> Status
+	29, // 29: StatusUpdate.user:type_name -> User
+	35, // 30: UpdateRequest.properties:type_name -> Peer.Properties
+	28, // 31: UpdateRequest.contact:type_name -> Contact
+	36, // 32: UpdateRequest.position:type_name -> Position
 	33, // [33:33] is the sub-list for method output_type
 	33, // [33:33] is the sub-list for method input_type
 	33, // [33:33] is the sub-list for extension type_name
@@ -1731,7 +1921,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*StatusUpdate); i {
+			switch v := v.(*VerifyRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1743,6 +1933,30 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*VerifyResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*StatusUpdate); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*UpdateRequest); i {
 			case 0:
 				return &v.state
@@ -1754,7 +1968,7 @@ func file_api_proto_init() {
 				return nil
 			}
 		}
-		file_api_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+		file_api_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*SignRequest_Buffers); i {
 			case 0:
 				return &v.state
@@ -1766,7 +1980,7 @@ func file_api_proto_init() {
 				return nil
 			}
 		}
-		file_api_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+		file_api_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*SignRequest_Texts); i {
 			case 0:
 				return &v.state
@@ -1778,7 +1992,7 @@ func file_api_proto_init() {
 				return nil
 			}
 		}
-		file_api_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
+		file_api_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*SignResponse_Buffers); i {
 			case 0:
 				return &v.state
@@ -1790,7 +2004,7 @@ func file_api_proto_init() {
 				return nil
 			}
 		}
-		file_api_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
+		file_api_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*SignResponse_Texts); i {
 			case 0:
 				return &v.state
@@ -1813,10 +2027,16 @@ func file_api_proto_init() {
 		(*SignRequest_TextValue)(nil),
 	}
 	file_api_proto_msgTypes[9].OneofWrappers = []interface{}{
-		(*SignResponse_BufferValue)(nil),
-		(*SignResponse_TextValue)(nil),
+		(*SignResponse_SignedBuffer)(nil),
+		(*SignResponse_SignedText)(nil),
 	}
-	file_api_proto_msgTypes[11].OneofWrappers = []interface{}{
+	file_api_proto_msgTypes[10].OneofWrappers = []interface{}{
+		(*VerifyRequest_BufferValue)(nil),
+		(*VerifyRequest_TextValue)(nil),
+		(*VerifyRequest_SignedBuffer)(nil),
+		(*VerifyRequest_SignedText)(nil),
+	}
+	file_api_proto_msgTypes[13].OneofWrappers = []interface{}{
 		(*UpdateRequest_Properties)(nil),
 		(*UpdateRequest_Contact)(nil),
 		(*UpdateRequest_Position)(nil),
@@ -1827,7 +2047,7 @@ func file_api_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_api_proto_rawDesc,
 			NumEnums:      4,
-			NumMessages:   18,
+			NumMessages:   20,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -71,6 +71,27 @@ func (sr *SignRequest) BuffersList() [][]byte {
 	return nil
 }
 
+// ** ─── VerifyRequest MANAGEMENT ────────────────────────────────────────────────────────
+// Checks if VerifyRequest is for String Value
+func (vr *VerifyRequest) IsString() bool {
+	switch vr.Data.(type) {
+	case *VerifyRequest_TextValue:
+		return true
+	default:
+		return false
+	}
+}
+
+// Checks if VerifyRequest is for Buffer Value
+func (vr *VerifyRequest) IsBuffer() bool {
+	switch vr.Data.(type) {
+	case *VerifyRequest_BufferValue:
+		return true
+	default:
+		return false
+	}
+}
+
 // ** ─── SignResponse MANAGEMENT ────────────────────────────────────────────────────────
 // Create Sign Response for String List Values
 func NewInvalidSignResponse() *SignResponse {
@@ -90,15 +111,43 @@ func NewValidSignResponse(dataList [][]byte, isStrings bool) *SignResponse {
 	if isStrings {
 		// Add Data from List
 		for _, v := range dataList {
-			resp.GetTextValue().Data = append(resp.GetTextValue().Data, string(v))
+			resp.GetSignedText().Data = append(resp.GetSignedText().Data, string(v))
 		}
 	} else {
 		// Add Data from List
 		for _, v := range dataList {
-			resp.GetBufferValue().Data = append(resp.GetBufferValue().Data, v)
+			resp.GetSignedBuffer().Data = append(resp.GetSignedBuffer().Data, v)
 		}
 	}
 	return resp
+}
+
+// ** ─── VerifyResponse MANAGEMENT ────────────────────────────────────────────────────────
+// Create Marshalled VerifyResponse as GIVEN VALUE
+func NewVerifyResponseBuf(result bool) []byte {
+	if buf, err := proto.Marshal(&VerifyResponse{IsVerified: result}); err != nil {
+		return nil
+	} else {
+		return buf
+	}
+}
+
+// Create Marshalled VerifyResponse as TRUE
+func NewValidVerifyResponseBuf() []byte {
+	if buf, err := proto.Marshal(&VerifyResponse{IsVerified: true}); err != nil {
+		return nil
+	} else {
+		return buf
+	}
+}
+
+// Create Marshalled VerifyResponse as FALSE
+func NewInvalidVerifyResponseBuf() []byte {
+	if buf, err := proto.Marshal(&VerifyResponse{IsVerified: false}); err != nil {
+		return nil
+	} else {
+		return buf
+	}
 }
 
 // ** ─── URLLink MANAGEMENT ────────────────────────────────────────────────────────
