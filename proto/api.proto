@@ -40,8 +40,7 @@ message ConnectionRequest {
   // Connection Request Type
   enum Type {
     CONNECT = 0;
-    STORJ = 1;
-    LINK = 2;
+    LINK = 1;
   }
 }
 
@@ -101,6 +100,44 @@ enum RestMethodType {
   GET = 1;
   PUT = 2;
   POST = 3;
+}
+
+// Message for Signing Request
+message SignRequest {
+  oneof value {
+    Buffers bufferValue = 1; // Message for List of Bytes
+    Texts textValue = 2;     // Message for List of Strings
+  }
+
+  // Buffers Message: Singular Values are First Index
+  message Buffers {
+    repeated bytes data = 1; // A List of Bytes
+  }
+
+  // Texts Message: Singular Values are First Index
+  message Texts {
+    repeated string data = 1; // A List of Strings
+  }
+}
+
+// Message for Signing Response
+message SignResponse {
+  bool isSigned = 1; // If Values were Signed
+
+  oneof value {
+    Buffers bufferValue = 2; // Message for List of Bytes
+    Texts textValue = 3;     // Message for List of Strings
+  }
+
+  // Buffers Message: Singular Values are First Index
+  message Buffers {
+    repeated bytes data = 1; // A List of Bytes
+  }
+
+  // Texts Message: Singular Values are First Index
+  message Texts {
+    repeated string data = 1; // A List of Strings
+  }
 }
 
 // Message for Status Update

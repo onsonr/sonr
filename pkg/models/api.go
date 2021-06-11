@@ -18,14 +18,87 @@ func (cr *ConnectionRequest) IsLink() bool {
 	return cr.GetType() == ConnectionRequest_LINK
 }
 
-// Checks for Auth Type
-func (cr *ConnectionRequest) IsStorj() bool {
-	return cr.GetType() == ConnectionRequest_STORJ
-}
-
 // Checks for Connect Type
 func (cr *ConnectionRequest) IsConnect() bool {
 	return cr.GetType() == ConnectionRequest_CONNECT
+}
+
+// ** ─── SignRequest MANAGEMENT ────────────────────────────────────────────────────────
+// Returns Count of Required Sign Items
+func (sr *SignRequest) Count() int {
+	if sr.IsStrings() {
+		return len(sr.GetTextValue().GetData())
+	} else if sr.IsBuffers() {
+		return len(sr.GetBufferValue().GetData())
+	} else {
+		return 0
+	}
+}
+
+// Checks if SignRequest is for Strings List
+func (sr *SignRequest) IsStrings() bool {
+	switch sr.Value.(type) {
+	case *SignRequest_TextValue:
+		return true
+	default:
+		return false
+	}
+}
+
+// Checks if SignRequest is for Buffer List
+func (sr *SignRequest) IsBuffers() bool {
+	switch sr.Value.(type) {
+	case *SignRequest_BufferValue:
+		return true
+	default:
+		return false
+	}
+}
+
+// Checks if SignRequest is for Strings List
+func (sr *SignRequest) StringsList() []string {
+	if sr.IsStrings() {
+		return sr.GetTextValue().GetData()
+	}
+	return nil
+}
+
+// Checks if SignRequest is for Buffer List
+func (sr *SignRequest) BuffersList() [][]byte {
+	if sr.IsBuffers() {
+		return sr.GetBufferValue().GetData()
+	}
+	return nil
+}
+
+// ** ─── SignResponse MANAGEMENT ────────────────────────────────────────────────────────
+// Create Sign Response for String List Values
+func NewInvalidSignResponse() *SignResponse {
+	return &SignResponse{
+		IsSigned: false,
+	}
+}
+
+// Create Sign Response for Buffer List Values
+func NewValidSignResponse(dataList [][]byte, isStrings bool) *SignResponse {
+	// Initialize Response
+	resp := &SignResponse{
+		IsSigned: true,
+	}
+
+	// Check Data Type
+	if isStrings {
+		// Add Data from List
+		for _, v := range dataList {
+			resp.GetTextValue().Data = append(resp.GetTextValue().Data, string(v))
+		}
+	} else {
+		// Add Data from List
+		for _, v := range dataList {
+			resp.GetBufferValue().Data = append(resp.GetBufferValue().Data, v)
+		}
+	}
+	return resp
 }
 
 // ** ─── URLLink MANAGEMENT ────────────────────────────────────────────────────────

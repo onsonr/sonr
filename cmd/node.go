@@ -114,12 +114,84 @@ func (mn *Node) Connect() []byte {
 	return bytes
 }
 
+// @ Returns Node Location Protobuf as Bytes
+func (mn *Node) Location() []byte {
+	bytes, err := proto.Marshal(mn.user.Location)
+	if err != nil {
+		return nil
+	}
+	return bytes
+}
+
 // ** ─── Node Binded Actions ────────────────────────────────────────────────────────
+// @ Signing Request for Data
+func (mn *Node) Sign(data []byte) []byte {
+	if mn.isReady() {
+		// Unmarshal Data to Request
+		request := &md.SignRequest{}
+		if err := proto.Unmarshal(data, request); err != nil {
+			mn.handleError(md.NewUnmarshalError(err))
+		}
+
+		// Initialize Result List
+		signedList := make([][]byte, request.Count())
+
+		// Get Key Pair
+		kp := mn.user.KeyPair()
+		if kp != nil {
+			// Check Data Type
+			if request.IsBuffers() {
+				// Iterate Buffer Values
+				for i, v := range request.BuffersList() {
+					// Sign Buffer
+					r, err := kp.Sign(v)
+					if err != nil {
+						break
+					}
+
+					// Set Value
+					signedList[i] = r
+				}
+			} else if request.IsStrings() {
+				// Iterate String Values
+				for i, v := range request.StringsList() {
+					// Sign String
+					r, err := kp.Sign([]byte(v))
+					if err != nil {
+						break
+					}
+
+					// Set Value
+					signedList[i] = r
+				}
+			}
+
+			// Check if Validated
+			if len(signedList) == request.Count() {
+				// Send Valid Response
+				if buf, err := proto.Marshal(md.NewValidSignResponse(signedList, request.IsStrings())); err != nil {
+					mn.handleError(md.NewMarshalError(err))
+					return nil
+				} else {
+					return buf
+				}
+			}
+		}
+	}
+
+	// Send Invalid Response
+	if buf, err := proto.Marshal(md.NewInvalidSignResponse()); err != nil {
+		mn.handleError(md.NewMarshalError(err))
+		return nil
+	} else {
+		return buf
+	}
+}
 
 // @ Update proximity/direction and Notify Lobby
 func (mn *Node) Update(data []byte) {
 	if mn.isReady() {
-		// Initialize from Request
+		// Unmarshal Data to Request
 		update := &md.UpdateRequest{}
 		if err := proto.Unmarshal(data, update); err != nil {
 			mn.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
@@ -144,7 +216,7 @@ func (mn *Node) Invite(data []byte) {
 		// Update Status
 		mn.setStatus(md.Status_PENDING)
 
-		// Initialize from Request
+		// Unmarshal Data to Request
 		req := &md.InviteRequest{}
 		if err := proto.Unmarshal(data, req); err != nil {
 			mn.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
@@ -186,7 +258,7 @@ func (mn *Node) Respond(data []byte) {
 		// Logging
 		log.Println("--- Received Frontend Action for Response ---")
 
-		// Initialize from Request
+		// Unmarshal Data to Request
 		req := &md.InviteResponse{}
 		if err := proto.Unmarshal(data, req); err != nil {
 			log.Println("--- FAILED: To Unmarshal Response ---")
@@ -208,15 +280,6 @@ func (mn *Node) Respond(data []byte) {
 	} else {
 		log.Println("--- STATUS NOT READY: CANNOT (Respond) ---")
 	}
-}
-
-// @ Returns Node Location Protobuf as Bytes
-func (mn *Node) Location() []byte {
-	bytes, err := proto.Marshal(mn.user.Location)
-	if err != nil {
-		return nil
-	}
-	return bytes
 }
 
 // ** ─── Misc Methods ────────────────────────────────────────────────────────

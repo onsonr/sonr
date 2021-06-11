@@ -383,15 +383,6 @@ func NewUser(cr *ConnectionRequest, s Store) (*User, *SonrError) {
 			Status: Status_IDLE,
 		},
 	}
-
-	// // Marshal Buffer
-	// buf, serr := proto.Marshal(u.GetSettings())
-	// if serr != nil {
-	// 	return u, nil
-	// }
-
-	// // Place Store Data
-	// s.Put(StoreKeys_USER_DATA, buf)
 	return u, nil
 }
 
@@ -417,7 +408,14 @@ func (u *User) ID() *Peer_ID {
 
 // Method Returns KeyPair
 func (u *User) KeyPair() *KeyPair {
-	return u.GetDevice().GetKeyPair()
+	// Create New Keypair
+	if u.GetDevice().KeyPair == nil {
+		u.GetDevice().InitKeyPair()
+		return u.GetDevice().KeyPair
+	} else {
+		// Return Existing Keypair
+		return u.GetDevice().GetKeyPair()
+	}
 }
 
 // Method Returns Private Key
