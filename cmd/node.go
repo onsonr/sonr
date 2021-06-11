@@ -17,8 +17,9 @@ type Node struct {
 	md.NodeCallback
 
 	// Properties
-	call Callback
-	ctx  context.Context
+	call    Callback
+	ctx     context.Context
+	reqType md.ConnectionRequest_Type
 
 	// Client
 	auth   ath.AuthService
@@ -54,56 +55,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 		ctx:    context.Background(),
 		topics: make(map[string]*tpc.TopicManager, 10),
 	}
-
-	// Create Store - Start Auth Service
-	if s, err := md.InitStore(req.GetDevice()); err == nil {
-		mn.store = s
-	}
-
-	// Create User
-	if u, err := md.NewUser(req, mn.store); err == nil {
-		mn.user = u
-	}
-
-	// Create Client
-	mn.client = sc.NewClient(mn.ctx, mn.user, mn.callbackNode())
-	return mn
-}
-
-// @ Initializes New Node - With Auth
-func NewAuthNode(reqBytes []byte, call Callback) *Node {
-	// Initialize Sentry
-	sentry.Init(sentry.ClientOptions{
-		Dsn: "https://cbf88b01a5a5468fa77101f7dfc54f20@o549479.ingest.sentry.io/5672329",
-	})
-
-	// Unmarshal Request
-	req := &md.AuthenticationRequest{}
-	err := proto.Unmarshal(reqBytes, req)
-	if err != nil {
-		sentry.CaptureException(errors.Wrap(err, "Unmarshalling Connection Request"))
-		return nil
-	}
-
-	// Initialize Node
-	mn := &Node{
-		call:   call,
-		ctx:    context.Background(),
-		topics: make(map[string]*tpc.TopicManager, 10),
-	}
-
-	// Create Store - Start Auth Service
-	if s, err := md.InitStore(req.GetDevice()); err == nil {
-		mn.store = s
-		mn.auth = ath.NewAuthService(req, s, mn.callbackNode())
-	}
-
-	// Verify
-	go func(authReq *md.AuthenticationRequest) {
-		mn.auth.CreateSName(authReq)
-	}(req)
-
-	// Return Node
+	mn.initialize(req)
 	return mn
 }
 
@@ -111,13 +63,13 @@ func NewAuthNode(reqBytes []byte, call Callback) *Node {
 // ** Network Actions ** //
 // **-----------------** //
 // @ Start Host and Connect
-func (mn *Node) Connect() {
+func (mn *Node) Connect() []byte {
 	// Connect Host
 	err := mn.client.Connect(mn.user.KeyPrivate())
 	if err != nil {
 		mn.handleError(err)
 		mn.setConnected(false)
-		return
+		return nil
 	} else {
 		// Update Status
 		mn.setConnected(true)
@@ -128,16 +80,20 @@ func (mn *Node) Connect() {
 	if err != nil {
 		mn.handleError(err)
 		mn.setAvailable(false)
-		return
+		return nil
 	} else {
 		mn.setAvailable(true)
 	}
-}
 
-// @ Returns User Peer_ID Protobuf as Bytes
-func (mn *Node) ID() []byte {
-	bytes, err := proto.Marshal(mn.user.ID())
-	if err != nil {
+	// Create ConnectResponse
+	bytes, rerr := proto.Marshal(&md.ConnectionResponse{
+		User: mn.user,
+		Id:   mn.user.ID(),
+	})
+
+	// Handle Error
+	if rerr != nil {
+		mn.handleError(md.NewMarshalError(rerr))
 		return nil
 	}
 	return bytes

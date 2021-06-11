@@ -285,6 +285,26 @@ func (d *Device) IsFile(name string) bool {
 	}
 }
 
+// Method Returns Crypto Prefix With Signature
+func (d *Device) Prefix(sName string) (string, error) {
+	kp := d.GetKeyPair()
+	buf, err := kp.Sign([]byte(sName + d.GetId()))
+	if err != nil {
+		return "", err
+	}
+	return substring(string(buf), 0, 16), nil
+}
+
+// Returns Device Fingerprint
+func (d *Device) Fingerprint(mnemonic string) (string, error) {
+	kp := d.GetKeyPair()
+	buf, err := kp.Sign([]byte(mnemonic))
+	if err != nil {
+		return "", err
+	}
+	return string(buf), nil
+}
+
 // Loads File from Disk as Buffer
 func (d *Device) ReadFile(name string) ([]byte, *SonrError) {
 	// Initialize
@@ -308,6 +328,15 @@ func (d *Device) ReadFile(name string) ([]byte, *SonrError) {
 		}
 		return dat, nil
 	}
+}
+
+// Checks if Given Prefix Matches User Prefix
+func (d *Device) VerifyPrefix(prefix string, sName string) bool {
+	knownPrefix, err := d.Prefix(sName)
+	if err != nil {
+		return false
+	}
+	return prefix == knownPrefix
 }
 
 // Returns Path for Application/User Data
@@ -376,16 +405,6 @@ func (u *User) DeviceID() string {
 	return u.Device.GetId()
 }
 
-// Returns Device Fingerprint
-func (u *User) Fingerprint(mnemonic string) (string, error) {
-	kp := u.KeyPair()
-	buf, err := kp.Sign([]byte(mnemonic))
-	if err != nil {
-		return "", err
-	}
-	return string(buf), nil
-}
-
 // Method Returns Profile First Name
 func (u *User) FirstName() string {
 	return u.GetContact().GetProfile().GetFirstName()
@@ -416,14 +435,13 @@ func (u *User) LastName() string {
 	return u.GetContact().GetProfile().GetLastName()
 }
 
-// Method Returns Crypto Prefix With Signature
+// Method Returns Prefix for User
 func (u *User) Prefix() (string, error) {
-	kp := u.KeyPair()
-	buf, err := kp.Sign([]byte(u.Profile().GetSName() + u.DeviceID()))
+	p, err := u.GetDevice().Prefix(u.Profile().GetSName())
 	if err != nil {
 		return "", err
 	}
-	return substring(string(buf), 0, 16), nil
+	return p, nil
 }
 
 // Method Returns Profile
@@ -497,15 +515,6 @@ func (u *User) Update(ur *UpdateRequest) {
 	default:
 		return
 	}
-}
-
-// Checks if Given Prefix Matches User Prefix
-func (u *User) VerifyPrefix(prefix string) bool {
-	knownPrefix, err := u.Prefix()
-	if err != nil {
-		return false
-	}
-	return prefix == knownPrefix
 }
 
 // ** ─── Peer MANAGEMENT ────────────────────────────────────────────────────────

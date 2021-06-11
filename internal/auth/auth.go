@@ -6,10 +6,10 @@ import (
 
 type AuthService interface {
 	BuildPrefix(val string) string
-	CreateSName(req *md.AuthenticationRequest) *md.AuthenticationResponse
+	CheckSName(req *md.AuthenticationRequest) *md.AuthenticationResponse
 	GetUser(prefix string) *md.User
 	PutUser(user *md.User)
-	ValidateUser(sName string, mnemonic string) bool
+	SaveSName(req *md.AuthenticationRequest) *md.AuthenticationResponse
 }
 
 type authService struct {
@@ -22,7 +22,7 @@ type authService struct {
 }
 
 // Creates New Auth Service
-func NewAuthService(req *md.AuthenticationRequest, s md.Store, cb md.NodeCallback) AuthService {
+func NewAuthService(req *md.ConnectionRequest, s md.Store, cb md.NodeCallback) AuthService {
 	// Create NBClient
 	return &authService{
 		store:    s,
@@ -32,7 +32,8 @@ func NewAuthService(req *md.AuthenticationRequest, s md.Store, cb md.NodeCallbac
 	}
 }
 
-func (as *authService) CreateSName(req *md.AuthenticationRequest) *md.AuthenticationResponse {
+// Checks if User can use SName
+func (as *authService) CheckSName(req *md.AuthenticationRequest) *md.AuthenticationResponse {
 	// Initialze Response
 	resp := &md.AuthenticationResponse{
 		SName:    req.GetSName(),
@@ -52,6 +53,30 @@ func (as *authService) CreateSName(req *md.AuthenticationRequest) *md.Authentica
 			resp.IsValid = false
 			break
 		}
+	}
+	return resp
+}
+
+// Saves SName after Validation
+func (as *authService) SaveSName(req *md.AuthenticationRequest) *md.AuthenticationResponse {
+	// Initialze Response
+	resp := as.CheckSName(req)
+
+	// Get Prefix
+	prefix, err := req.Device.Prefix(req.SName)
+	if err != nil {
+		return nil
+	}
+
+	// Get FingerPrint
+	fingerprint, err := req.Device.Fingerprint(req.GetMnemonic())
+	if err != nil {
+		return nil
+	}
+
+	// Validate
+	if resp.GetIsValid() {
+		as.nbClient.AddRecord(req.ToHSRecord(prefix, fingerprint))
 	}
 	return resp
 }

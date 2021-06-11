@@ -7,8 +7,10 @@ import (
 	"os"
 
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/multiformats/go-multiaddr"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
+	md "github.com/sonr-io/core/pkg/models"
 )
 
 // ^ Return Bootstrap List Address Info ^ //
@@ -115,4 +117,23 @@ func iPv4Addrs() ([]string, error) {
 		}
 	}
 	return nil, errors.New("No IPV4 found")
+}
+
+// ^ Returns HostNode Peer Addr Info ^ //
+func (hn *HostNode) Info() peer.AddrInfo {
+	peerInfo := peer.AddrInfo{
+		ID:    hn.Host.ID(),
+		Addrs: hn.Host.Addrs(),
+	}
+	return peerInfo
+}
+
+// ^ Returns Host Node MultiAddr ^ //
+func (hn *HostNode) MultiAddr() (multiaddr.Multiaddr, *md.SonrError) {
+	pi := hn.Info()
+	addrs, err := peer.AddrInfoToP2pAddrs(&pi)
+	if err != nil {
+		return nil, md.NewError(err, md.ErrorMessage_HOST_INFO)
+	}
+	return addrs[0], nil
 }
