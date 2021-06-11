@@ -17,7 +17,6 @@ message APIKeys {
   string textileSecret = 7;
 }
 
-
 // Information about device for User
 message Device {
   string id = 1;             // Device Identifier
@@ -57,15 +56,15 @@ message KeyPair {
 
 // Status is User Node Situation
 enum Status {
-  IDLE = 0;            // Default Status on Launch
-  UNAUTHENTICATED = 1; // Node has not been Authenticated
-  CONNECTED = 2;       // Status after starting Host
-  AVAILABLE = 3;       // Bootstrapped and Visible Locally
-  PENDING = 4;         // Awaiting Peer Authorization
-  INVITED = 5;         // Has received Invitation
-  TRANSFER = 6;        // In Progress of Transfer
-  STANDBY = 7;         // Away from Sonr Application
-  FAILED = 8;          // Failed to Connect Host
+  DEFAULT = 0;   // Default Status on Launch
+  IDLE = 1;      // Node has not been Authenticated
+  CONNECTED = 2; // Status after starting Host
+  AVAILABLE = 3; // Bootstrapped and Visible Locally
+  PENDING = 4;   // Awaiting Peer Authorization
+  INVITED = 5;   // Has received Invitation
+  TRANSFER = 6;  // In Progress of Transfer
+  STANDBY = 7;   // Away from Sonr Application
+  FAILED = 8;    // Failed to Connect Host
 }
 
 // User is the Saved Data from Client that Passes to Proxy, During ConnRequest

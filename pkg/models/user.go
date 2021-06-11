@@ -364,26 +364,35 @@ func (d *Device) WriteFile(name string, data []byte) (string, *SonrError) {
 
 // ** ─── User MANAGEMENT ────────────────────────────────────────────────────────
 // ^ Method Initializes User Info Struct ^ //
-func NewUser(cr *ConnectionRequest, s Store) (*User, *SonrError) {
+func NewUser(ir *InitializeRequest, s Store) *User {
 	// Initialize Device
-	d := cr.GetDevice()
+	d := ir.GetDevice()
 	d.InitKeyPair()
 
 	// Return User
 	u := &User{
-		Device:   d,
-		Location: cr.GetLocation(),
+		Device: d,
 		Connection: &User_Connection{
-			ApiKeys: cr.GetApiKeys(),
-			Router: &User_Router{
-				Rendevouz:  "/sonr/rendevouz/0.9.2",
-				LocalTopic: fmt.Sprintf("/sonr/topic/%s", cr.GetLocation().OLC()),
-				Location:   cr.GetLocation(),
-			},
-			Status: Status_IDLE,
+			ApiKeys: ir.GetApiKeys(),
+			Status:  Status_DEFAULT,
 		},
 	}
-	return u, nil
+	return u
+}
+
+// Set the User with ConnectionRequest
+func (u *User) InitConnection(cr *ConnectionRequest) {
+	apiKeys := u.APIKeys()
+	u.Location = cr.GetLocation()
+	u.Connection = &User_Connection{
+		ApiKeys: apiKeys,
+		Router: &User_Router{
+			Rendevouz:  "/sonr/rendevouz/0.9.2",
+			LocalTopic: fmt.Sprintf("/sonr/topic/%s", cr.GetLocation().OLC()),
+			Location:   cr.GetLocation(),
+		},
+		Status: Status_IDLE,
+	}
 }
 
 // Return Client API Keys

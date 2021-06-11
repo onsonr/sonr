@@ -38,7 +38,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	})
 
 	// Unmarshal Request
-	req := &md.ConnectionRequest{}
+	req := &md.InitializeRequest{}
 	err := proto.Unmarshal(reqBytes, req)
 	if err != nil {
 		sentry.CaptureException(errors.Wrap(err, "Unmarshalling Connection Request"))
@@ -57,9 +57,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	}
 
 	// Create User
-	if u, err := md.NewUser(req, mn.store); err == nil {
-		mn.user = u
-	}
+	mn.user = md.NewUser(req, mn.store)
 
 	// Create Client
 	mn.client = sc.NewClient(mn.ctx, mn.user, mn.callback())
@@ -67,11 +65,22 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 }
 
 // @ Starts Host and Connects
-func (mn *Node) Connect() []byte {
-	// Connect Host
-	err := mn.client.Connect(mn.user.APIKeys(), mn.user.KeyPair())
+func (mn *Node) Connect(data []byte) []byte {
+	// Unmarshal Request
+	req := &md.ConnectionRequest{}
+	err := proto.Unmarshal(data, req)
 	if err != nil {
-		mn.handleError(err)
+		sentry.CaptureException(errors.Wrap(err, "Unmarshalling Connection Request"))
+		return nil
+	}
+
+	// Update User with Connection Request
+	mn.user.InitConnection(req)
+
+	// Connect Host
+	serr := mn.client.Connect(mn.user.APIKeys(), mn.user.KeyPair())
+	if serr != nil {
+		mn.handleError(serr)
 		mn.setConnected(false)
 		return nil
 	} else {
@@ -80,24 +89,23 @@ func (mn *Node) Connect() []byte {
 	}
 
 	// Bootstrap Node
-	mn.local, err = mn.client.Bootstrap()
+	mn.local, serr = mn.client.Bootstrap()
 	if err != nil {
-		mn.handleError(err)
+		mn.handleError(serr)
 		mn.setAvailable(false)
 		return nil
 	} else {
 		mn.setAvailable(true)
 	}
 
-	// Create ConnectResponse
-	bytes, rerr := proto.Marshal(&md.ConnectionResponse{
-		User: mn.user,
-		Id:   mn.user.ID(),
+	// Create ConnectionResponse
+	bytes, err := proto.Marshal(&md.ConnectionResponse{
+		Id: mn.user.ID(),
 	})
 
 	// Handle Error
-	if rerr != nil {
-		mn.handleError(md.NewMarshalError(rerr))
+	if err != nil {
+		mn.handleError(md.NewMarshalError(err))
 		return nil
 	}
 	return bytes

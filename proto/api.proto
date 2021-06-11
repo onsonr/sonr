@@ -8,26 +8,22 @@ import "user.proto";
 // Require Go Package
 option go_package = "/models";
 
-// Initial Connection Message to Establish Sonr
-message ConnectionRequest {
-  Type type = 1;         // Connection Request Type
-  Location location = 2; // Current Runtime Location
-  Device device = 3;     // Users Device
-  Contact contact = 4;   // Users Contact Card
-  APIKeys apiKeys = 5;   // Client Keys
+// First Message Sent with Device and API Keys
+message InitializeRequest {
+  Device device = 1;   // Users Device
+  APIKeys apiKeys = 2; // Client Keys
+}
 
-  // Connection Request Type
-  enum Type {
-    CONNECT = 0;
-    LINK = 1;
-  }
+// Connection Message to Establish Sonr Host/API/Topic
+message ConnectionRequest {
+  Location location = 1; // Current Runtime Location
+  Contact contact = 2;   // Users Contact Card
 }
 
 // Response to Connection Request
 message ConnectionResponse {
-  User user = 1;
-  Peer.ID id = 2;
-  ErrorMessage error = 3; // In Case Error Occurred
+  Peer.ID id = 1;
+  ErrorMessage error = 2; // In Case Error Occurred
 }
 
 // Invitation Message sent on RPC

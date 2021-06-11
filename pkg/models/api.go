@@ -13,17 +13,6 @@ import (
 	util "github.com/sonr-io/core/pkg/util"
 )
 
-// ** ─── ConnectionRequest MANAGEMENT ────────────────────────────────────────────────────────
-// Checks for Auth Type
-func (cr *ConnectionRequest) IsLink() bool {
-	return cr.GetType() == ConnectionRequest_LINK
-}
-
-// Checks for Connect Type
-func (cr *ConnectionRequest) IsConnect() bool {
-	return cr.GetType() == ConnectionRequest_CONNECT
-}
-
 // ** ─── SignRequest MANAGEMENT ────────────────────────────────────────────────────────
 // Returns Count of Required Sign Items
 func (sr *SignRequest) Count() int {
