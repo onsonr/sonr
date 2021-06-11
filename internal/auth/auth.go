@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"log"
+
 	md "github.com/sonr-io/core/pkg/models"
 )
 
@@ -79,7 +81,15 @@ func (as *authService) SaveSName(req *md.AuthenticationRequest) *md.Authenticati
 	if resp.GetIsValid() {
 		// Save Record, Check Success
 		if ok := as.nbClient.AddRecord(req.ToHSRecord(prefix, fingerprint)); ok {
+			// Update Response
 			resp.IsSaved = true
+			resp.Prefix = prefix
+
+			// Save to Store
+			err := as.store.PutCrypto(resp.ToUserCrypto())
+			if err != nil {
+				log.Println(err.String())
+			}
 		} else {
 			resp.IsSaved = false
 		}

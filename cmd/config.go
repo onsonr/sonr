@@ -10,12 +10,12 @@ import (
 // ** ─── Node Type Checkers ────────────────────────────────────────────────────────
 // Check type for Auth
 func (mn *Node) isAuthType() bool {
-	return mn.reqType == md.ConnectionRequest_AUTH
+	return mn.request.GetType() == md.ConnectionRequest_AUTH
 }
 
 // Check Type for connect
 func (mn *Node) isConnectType() bool {
-	return mn.reqType == md.ConnectionRequest_CONNECT
+	return mn.request.GetType() == md.ConnectionRequest_CONNECT
 }
 
 // ** ─── Node Checkers ────────────────────────────────────────────────────────
@@ -65,7 +65,7 @@ func (mn *Node) setStatus(newStatus md.Status) {
 // ** ─── Node Initializers ────────────────────────────────────────────────────────
 func (mn *Node) initialize(req *md.ConnectionRequest) {
 	// Set Type
-	mn.reqType = req.GetType()
+	mn.request = req
 
 	// Create Store - Start Auth Service
 	if s, err := md.InitStore(req.GetDevice()); err == nil {
@@ -85,4 +85,7 @@ func (mn *Node) initialize(req *md.ConnectionRequest) {
 		// Create Client
 		mn.client = sc.NewClient(mn.ctx, mn.user, mn.callbackNode())
 	}
+
+	// Set Initialized
+	mn.initialized = true
 }

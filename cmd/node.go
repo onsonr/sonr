@@ -19,7 +19,7 @@ type Node struct {
 	// Properties
 	call    Callback
 	ctx     context.Context
-	reqType md.ConnectionRequest_Type
+	request *md.ConnectionRequest
 
 	// Client
 	auth   ath.AuthService
@@ -30,7 +30,8 @@ type Node struct {
 	local  *tpc.TopicManager
 	topics map[string]*tpc.TopicManager
 
-	// Storage
+	// Miscellaneous
+	initialized    bool
 	storageEnabled bool
 	store          md.Store
 }
@@ -51,70 +52,13 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	}
 	// Initialize Node
 	mn := &Node{
-		call:   call,
-		ctx:    context.Background(),
-		topics: make(map[string]*tpc.TopicManager, 10),
+		call:        call,
+		ctx:         context.Background(),
+		initialized: false,
+		topics:      make(map[string]*tpc.TopicManager, 10),
 	}
 	mn.initialize(req)
 	return mn
-}
-
-// **-----------------** //
-// ** Network Actions ** //
-// **-----------------** //
-// @ Start Host and Connect
-func (mn *Node) Connect() []byte {
-	// Connect Host
-	err := mn.client.Connect(mn.user.KeyPrivate())
-	if err != nil {
-		mn.handleError(err)
-		mn.setConnected(false)
-		return nil
-	} else {
-		// Update Status
-		mn.setConnected(true)
-	}
-
-	// Bootstrap Node
-	mn.local, err = mn.client.Bootstrap()
-	if err != nil {
-		mn.handleError(err)
-		mn.setAvailable(false)
-		return nil
-	} else {
-		mn.setAvailable(true)
-	}
-
-	// Create ConnectResponse
-	bytes, rerr := proto.Marshal(&md.ConnectionResponse{
-		User: mn.user,
-		Id:   mn.user.ID(),
-	})
-
-	// Handle Error
-	if rerr != nil {
-		mn.handleError(md.NewMarshalError(rerr))
-		return nil
-	}
-	return bytes
-}
-
-// @ Returns Node Location Protobuf as Bytes
-func (mn *Node) Location() []byte {
-	bytes, err := proto.Marshal(mn.user.Location)
-	if err != nil {
-		return nil
-	}
-	return bytes
-}
-
-// @ Returns Node User Protobuf as Bytes
-func (mn *Node) User() []byte {
-	bytes, err := proto.Marshal(mn.user)
-	if err != nil {
-		return nil
-	}
-	return bytes
 }
 
 // **-------------------** //

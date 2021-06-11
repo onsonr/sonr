@@ -7,67 +7,41 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// @ Create Remote Group
-func (mn *Node) RemoteCreate(data []byte) []byte {
-	if mn.isReady() {
-		// Get Request
-		request := &md.RemoteCreateRequest{}
-		proto.Unmarshal(data, request)
-
-		// Create Remote
-		tm, resp, serr := mn.client.CreateRemote(request)
-		if serr != nil {
-			mn.handleError(serr)
-			return nil
-		}
-
-		// Set Topic
-		mn.topics[request.GetTopic()] = tm
-
-		// Marshal
-		buff, err := proto.Marshal(resp)
-		if err != nil {
-			mn.handleError(md.NewError(err, md.ErrorMessage_MARSHAL))
-			return nil
-		}
-		return buff
+// @ Start Host and Connect
+func (mn *Node) Connect() []byte {
+	// Connect Host
+	err := mn.client.Connect(mn.user.KeyPrivate())
+	if err != nil {
+		mn.handleError(err)
+		mn.setConnected(false)
+		return nil
 	} else {
-		log.Println("--- STATUS NOT READY: CANNOT (RemoteCreate) ---")
+		// Update Status
+		mn.setConnected(true)
+	}
+
+	// Bootstrap Node
+	mn.local, err = mn.client.Bootstrap()
+	if err != nil {
+		mn.handleError(err)
+		mn.setAvailable(false)
+		return nil
+	} else {
+		mn.setAvailable(true)
+	}
+
+	// Create ConnectResponse
+	bytes, rerr := proto.Marshal(&md.ConnectionResponse{
+		User: mn.user,
+		Id:   mn.user.ID(),
+	})
+
+	// Handle Error
+	if rerr != nil {
+		mn.handleError(md.NewMarshalError(rerr))
 		return nil
 	}
-}
-
-// @ Join Remote Group
-func (mn *Node) RemoteJoin(data []byte) []byte {
-	if mn.isReady() {
-		// Get Request
-		request := &md.RemoteJoinRequest{}
-		err := proto.Unmarshal(data, request)
-		if err != nil {
-			return nil
-		}
-
-		// Create Remote
-		tm, resp, serr := mn.client.JoinRemote(request)
-		if serr != nil {
-			mn.handleError(serr)
-			return nil
-		}
-
-		// Set Topic
-		mn.topics[request.GetTopic()] = tm
-
-		// Marshal
-		buff, err := proto.Marshal(resp)
-		if err != nil {
-			mn.handleError(md.NewError(err, md.ErrorMessage_MARSHAL))
-			return nil
-		}
-		return buff
-	} else {
-		log.Println("--- STATUS NOT READY: CANNOT (RemoteJoin) ---")
-		return nil
-	}
+	return bytes
 }
 
 // @ Update proximity/direction and Notify Lobby
@@ -162,4 +136,22 @@ func (mn *Node) Respond(data []byte) {
 	} else {
 		log.Println("--- STATUS NOT READY: CANNOT (Respond) ---")
 	}
+}
+
+// @ Returns Node Location Protobuf as Bytes
+func (mn *Node) Location() []byte {
+	bytes, err := proto.Marshal(mn.user.Location)
+	if err != nil {
+		return nil
+	}
+	return bytes
+}
+
+// @ Returns Node User Protobuf as Bytes
+func (mn *Node) User() []byte {
+	bytes, err := proto.Marshal(mn.user)
+	if err != nil {
+		return nil
+	}
+	return bytes
 }
