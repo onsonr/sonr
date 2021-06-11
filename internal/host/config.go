@@ -2,19 +2,68 @@ package host
 
 import (
 	"fmt"
-	"log"
+	"time"
+
 	"net"
 	"os"
 
+	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/multiformats/go-multiaddr"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
 	md "github.com/sonr-io/core/pkg/models"
 )
 
-// ^ Return Bootstrap List Address Info ^ //
-func GetBootstrapAddrInfo() ([]peer.AddrInfo, error) {
+// ** ─── Constants ────────────────────────────────────────────────────────
+// Bootstrap Peer Discovery Interval
+const refreshInterval = time.Second * 5
+
+// Global Service Protocol ID
+const globalProtocol = protocol.ID("/sonr/global-service/0.1")
+
+// Textile Client API URL
+const textileApiUrl = "api.hub.textile.io:443"
+
+// ** ─── HostNode Info/Status Methods ────────────────────────────────────────────────────────
+// Close Libp2p Host
+func (h *hostNode) Close() {
+	h.host.Close()
+}
+
+// Return Host Peer ID
+func (hn *hostNode) ID() peer.ID {
+	return hn.id
+}
+
+// Returns HostNode Peer Addr Info
+func (hn *hostNode) Info() peer.AddrInfo {
+	peerInfo := peer.AddrInfo{
+		ID:    hn.host.ID(),
+		Addrs: hn.host.Addrs(),
+	}
+	return peerInfo
+}
+
+// Returns Instance Host
+func (hn *hostNode) Host() host.Host {
+	return hn.host
+}
+
+// Returns Host Node MultiAddr
+func (hn *hostNode) MultiAddr() (multiaddr.Multiaddr, *md.SonrError) {
+	pi := hn.Info()
+	addrs, err := peer.AddrInfoToP2pAddrs(&pi)
+	if err != nil {
+		return nil, md.NewError(err, md.ErrorMessage_HOST_INFO)
+	}
+	return addrs[0], nil
+}
+
+// ** ─── Address MANAGEMENT ────────────────────────────────────────────────────────
+// Return Bootstrap List Address Info
+func getBootstrapAddrInfo() ([]peer.AddrInfo, error) {
 	// Create Bootstrapper List
 	var bootstrappers []ma.Multiaddr
 	for _, s := range []string{
@@ -44,8 +93,8 @@ func GetBootstrapAddrInfo() ([]peer.AddrInfo, error) {
 	return ds, nil
 }
 
-// ^ GetFreePort asks the kernel for a free open port that is ready to use. ^
-func GetFreePort() (int, error) {
+// getFreePort asks the kernel for a free open port
+func getFreePort() (int, error) {
 	addr, err := net.ResolveTCPAddr("tcp", "localhost:0")
 	if err != nil {
 		return 0, err
@@ -59,18 +108,18 @@ func GetFreePort() (int, error) {
 	return l.Addr().(*net.TCPAddr).Port, nil
 }
 
-// ^ Return Internal Addr Strings ^ //
-func GetInternalAddrStrings() []string {
+// Return Internal Addr Strings ^ //
+func getInternalAddrStrings() []string {
 	// Initialize
-	p, _ := GetFreePort()
+	p, _ := getFreePort()
 	listenAddrs := []string{
 		fmt.Sprintf("/ip4/0.0.0.0/tcp/%d", p),
 	}
 	return listenAddrs
 }
 
-// ^ Return Device Listening Addresses ^ //
-func GetExternalAddrStrings() ([]string, error) {
+// Return Device Listening Addresses ^ //
+func getExternalAddrStrings() ([]string, error) {
 	// Initialize
 	listenAddrs := []string{}
 	hasIpv4 := false
@@ -78,9 +127,7 @@ func GetExternalAddrStrings() ([]string, error) {
 
 	// Get iPv4 Addresses
 	ip4Addrs, err := iPv4Addrs()
-	if err != nil {
-		log.Println(err)
-	} else {
+	if err == nil {
 		hasIpv4 = true
 	}
 
@@ -98,12 +145,12 @@ func GetExternalAddrStrings() ([]string, error) {
 	return listenAddrs, nil
 }
 
-// @ Returns Node Public iPv4 Address
+// Returns Node Public iPv4 Address
 func iPv4Addrs() ([]string, error) {
 	osHost, _ := os.Hostname()
 	addrs, _ := net.LookupIP(osHost)
 
-	p, _ := GetFreePort()
+	p, _ := getFreePort()
 
 	// Iterate through addresses
 	for _, addr := range addrs {
@@ -117,23 +164,4 @@ func iPv4Addrs() ([]string, error) {
 		}
 	}
 	return nil, errors.New("No IPV4 found")
-}
-
-// ^ Returns HostNode Peer Addr Info ^ //
-func (hn *HostNode) Info() peer.AddrInfo {
-	peerInfo := peer.AddrInfo{
-		ID:    hn.Host.ID(),
-		Addrs: hn.Host.Addrs(),
-	}
-	return peerInfo
-}
-
-// ^ Returns Host Node MultiAddr ^ //
-func (hn *HostNode) MultiAddr() (multiaddr.Multiaddr, *md.SonrError) {
-	pi := hn.Info()
-	addrs, err := peer.AddrInfoToP2pAddrs(&pi)
-	if err != nil {
-		return nil, md.NewError(err, md.ErrorMessage_HOST_INFO)
-	}
-	return addrs[0], nil
 }

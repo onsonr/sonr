@@ -2,7 +2,7 @@ package topic
 
 import (
 	"context"
-	"log"
+
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	rpc "github.com/libp2p/go-libp2p-gorpc"
@@ -40,7 +40,7 @@ type LocalService struct {
 }
 
 // ^ Create New Contained Topic Manager ^ //
-func NewLocal(ctx context.Context, h *net.HostNode, u *md.User, name string, th ClientHandler) (*TopicManager, *md.SonrError) {
+func NewLocal(ctx context.Context, h net.HostNode, u *md.User, name string, th ClientHandler) (*TopicManager, *md.SonrError) {
 	// Join Topic
 	topic, sub, handler, serr := h.Join(name)
 	if serr != nil {
@@ -62,7 +62,7 @@ func NewLocal(ctx context.Context, h *net.HostNode, u *md.User, name string, th 
 	}
 
 	// Start Exchange Server
-	localServer := rpc.NewServer(h.Host, LOCAL_SERVICE_PID)
+	localServer := rpc.NewServer(h.Host(), LOCAL_SERVICE_PID)
 	psv := LocalService{
 		lobby:  mgr.lobby,
 		user:   u,
@@ -114,7 +114,7 @@ func (tm *TopicManager) Flat(id peer.ID, inv *md.InviteRequest) error {
 	}
 
 	// Initialize Data
-	rpcClient := rpc.NewClient(tm.host.Host, LOCAL_SERVICE_PID)
+	rpcClient := rpc.NewClient(tm.host.Host(), LOCAL_SERVICE_PID)
 	var reply LocalServiceResponse
 	var args LocalServiceArgs
 	args.Invite = msgBytes
@@ -158,7 +158,7 @@ func (ts *LocalService) FlatWith(ctx context.Context, args LocalServiceArgs, rep
 // ^ Starts Exchange on Local Peer Join ^ //
 func (tm *TopicManager) Exchange(id peer.ID, peerBuf []byte) error {
 	// Initialize RPC
-	exchClient := rpc.NewClient(tm.host.Host, LOCAL_SERVICE_PID)
+	exchClient := rpc.NewClient(tm.host.Host(), LOCAL_SERVICE_PID)
 	var reply LocalServiceResponse
 	var args LocalServiceArgs
 
@@ -211,7 +211,7 @@ func (ts *LocalService) ExchangeWith(ctx context.Context, args LocalServiceArgs,
 // ^ Invite: Handles User sent InviteRequest Response ^
 func (tm *TopicManager) Invite(id peer.ID, inv *md.InviteRequest) error {
 	// Initialize Data
-	rpcClient := rpc.NewClient(tm.host.Host, LOCAL_SERVICE_PID)
+	rpcClient := rpc.NewClient(tm.host.Host(), LOCAL_SERVICE_PID)
 	var reply LocalServiceResponse
 	var args LocalServiceArgs
 
@@ -230,10 +230,8 @@ func (tm *TopicManager) Invite(id peer.ID, inv *md.InviteRequest) error {
 	// Await Response
 	call := <-done
 	if call.Error != nil {
-		log.Println("Error Occurred: ", err)
 		return err
 	}
-	log.Println("--- Received Reply ---")
 	tm.handler.OnReply(id, reply.InvReply)
 	return nil
 }
@@ -250,17 +248,14 @@ func (ts *LocalService) InviteWith(ctx context.Context, args LocalServiceArgs, r
 	// Set Current Message and send Callback
 	ts.invite = &receivedMessage
 	ts.call.OnInvite(args.Invite)
-	log.Println("--- Received Invite ---")
 
 	// Hold Select for Invite Type
 	select {
 	// Received Auth Channel Message
 	case m := <-ts.respCh:
-		log.Println("--- Sending Reply ---")
 		// Convert Protobuf to bytes
 		msgBytes, err := proto.Marshal(m)
 		if err != nil {
-			log.Println("Error Occurred: ", err)
 			return err
 		}
 
@@ -273,16 +268,11 @@ func (ts *LocalService) InviteWith(ctx context.Context, args LocalServiceArgs, r
 
 // ^ RespondToInvite to an Invitation ^ //
 func (n *TopicManager) RespondToInvite(rep *md.InviteResponse) {
-	log.Println("--- Received Response for Invite ---")
 	// Send to Channel
 	n.service.respCh <- rep
 
 	// Prepare Transfer
 	if rep.Decision {
-		log.Println("--- Responding for Accept ---")
 		n.handler.OnResponded(n.service.invite)
-	} else {
-		log.Println("--- Responding for Decline ---")
 	}
-
 }

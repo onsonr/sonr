@@ -3,7 +3,6 @@ package client
 import (
 	"context"
 
-	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	tpc "github.com/sonr-io/core/internal/topic"
 	md "github.com/sonr-io/core/pkg/models"
 
@@ -24,7 +23,7 @@ type Client struct {
 	session  *md.Session
 
 	// References
-	Host *net.HostNode
+	Host net.HostNode
 }
 
 // ^ NewClient Initializes Node with Router ^
@@ -38,9 +37,9 @@ func NewClient(ctx context.Context, u *md.User, call md.Callback) *Client {
 }
 
 // ^ Connects Host Node from Private Key ^
-func (c *Client) Connect(pk crypto.PrivKey) *md.SonrError {
+func (c *Client) Connect(api *md.APIKeys, keys *md.KeyPair) *md.SonrError {
 	// Set Host
-	hn, err := net.NewHost(c.ctx, c.user.GetRouter().Rendevouz, pk)
+	hn, err := net.NewHost(c.ctx, c.user.GetRouter().Rendevouz, api, keys)
 	if err != nil {
 		return err
 	}
@@ -52,7 +51,7 @@ func (c *Client) Connect(pk crypto.PrivKey) *md.SonrError {
 	}
 
 	// Set Peer
-	err = c.user.NewPeer(hn.ID, maddr)
+	err = c.user.NewPeer(hn.ID(), maddr)
 	if err != nil {
 		return err
 	}
@@ -182,5 +181,5 @@ func (n *Client) Update(t *tpc.TopicManager) *md.SonrError {
 
 // ^ Close Ends All Network Communication ^
 func (n *Client) Close() {
-	n.Host.Host.Close()
+	n.Host.Close()
 }

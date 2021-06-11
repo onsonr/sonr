@@ -57,6 +57,7 @@ message ErrorMessage {
     STORE_GET = 42;
     STORE_FIND = 43;
     STORE_INIT = 44;
+    HOST_TEXTILE = 45;
   }
 
   enum Severity {

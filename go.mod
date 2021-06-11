@@ -22,5 +22,6 @@ require (
 	github.com/textileio/textile/v2 v2.6.9
 	golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4
 	golang.org/x/tools v0.1.2 // indirect
+	google.golang.org/grpc v1.35.0
 	google.golang.org/protobuf v1.26.0
 )

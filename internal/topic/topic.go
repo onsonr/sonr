@@ -26,7 +26,7 @@ type ClientHandler interface {
 
 type TopicManager struct {
 	ctx          context.Context
-	host         *net.HostNode
+	host         net.HostNode
 	topic        *pubsub.Topic
 	subscription *pubsub.Subscription
 	eventHandler *pubsub.TopicEventHandler

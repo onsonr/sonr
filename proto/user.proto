@@ -13,10 +13,8 @@ message APIKeys {
   string rapidApiKey = 3;
   string handshakeKey = 4;
   string handshakeSecret = 5;
-  string hubKey = 6;
-  string hubSecret = 7;
-  string storjApiKey = 8;
-  string storjRootPassword = 9;
+  string textileKey = 6;
+  string textileSecret = 7;
 }
 
 

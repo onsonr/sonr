@@ -795,6 +795,8 @@ func generateError(errType ErrorMessage_Type) (string, ErrorMessage_Severity) {
 		return "Failed to Get Value for Key", ErrorMessage_WARNING
 	case ErrorMessage_STORE_INIT:
 		return "Failed to Get Value for Key", ErrorMessage_CRITICAL
+	case ErrorMessage_HOST_TEXTILE:
+		return "Failed to Start Textile Client", ErrorMessage_CRITICAL
 	default:
 		return "Unknown", ErrorMessage_LOG
 	}

@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/libp2p/go-libp2p-core/host"
+	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	rpc "github.com/libp2p/go-libp2p-gorpc"
@@ -13,7 +14,37 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-const K_SERVICE_PID = protocol.ID("/sonr/global-service/0.1")
+// ^ Join New Topic with Name ^
+func (h *hostNode) Join(name string) (*psub.Topic, *psub.Subscription, *psub.TopicEventHandler, *md.SonrError) {
+	// Join Topic
+	topic, err := h.pubsub.Join(name)
+	if err != nil {
+		return nil, nil, nil, md.NewError(err, md.ErrorMessage_TOPIC_JOIN)
+	}
+
+	// Subscribe to Topic
+	sub, err := topic.Subscribe()
+	if err != nil {
+		return nil, nil, nil, md.NewError(err, md.ErrorMessage_TOPIC_SUB)
+	}
+
+	// Create Topic Handler
+	handler, err := topic.EventHandler()
+	if err != nil {
+		return nil, nil, nil, md.NewError(err, md.ErrorMessage_TOPIC_HANDLER)
+	}
+	return topic, sub, handler, nil
+}
+
+// ^ Set Stream Handler for Host ^
+func (h *hostNode) HandleStream(pid protocol.ID, handler network.StreamHandler) {
+	h.host.SetStreamHandler(pid, handler)
+}
+
+// ^ Start Stream for Host ^
+func (h *hostNode) StartStream(p peer.ID, pid protocol.ID) (network.Stream, error) {
+	return h.host.NewStream(h.ctxHost, p, pid)
+}
 
 type GlobalTopic interface {
 	FindPeerID(string) (peer.ID, error)
@@ -30,7 +61,7 @@ type globalTopic struct {
 	service      *GlobalService
 }
 
-func (hn *HostNode) StartGlobal(SName string) (GlobalTopic, *md.SonrError) {
+func (hn *hostNode) StartGlobal(SName string) (GlobalTopic, *md.SonrError) {
 	// Join Global Topic
 	t, s, h, err := hn.Join("sonr-global")
 	if err != nil {
@@ -39,20 +70,20 @@ func (hn *HostNode) StartGlobal(SName string) (GlobalTopic, *md.SonrError) {
 
 	// Create Global Struct
 	gt := &globalTopic{
-		ctx:          hn.ctx,
+		ctx:          hn.ctxHost,
 		topic:        t,
 		subscription: s,
 		handler:      h,
-		host:         hn.Host,
+		host:         hn.host,
 		global: &md.Global{
 			Peers:      make(map[string]string),
-			UserPeerID: hn.Host.ID().String(),
+			UserPeerID: hn.host.ID().String(),
 			SName:      SName,
 		},
 	}
 
 	// Start Exchange Server
-	globalExServer := rpc.NewServer(hn.Host, K_SERVICE_PID)
+	globalExServer := rpc.NewServer(hn.host, globalProtocol)
 	gsv := GlobalService{
 		global: gt.global,
 	}
@@ -87,7 +118,7 @@ type GlobalService struct {
 // ^ Calls Invite on Remote Peer ^ //
 func (tm *globalTopic) Exchange(id peer.ID, gloBuf []byte) error {
 	// Initialize RPC
-	exchClient := rpc.NewClient(tm.host, K_SERVICE_PID)
+	exchClient := rpc.NewClient(tm.host, globalProtocol)
 	var reply GlobalServiceResponse
 	var args GlobalServiceArgs
 

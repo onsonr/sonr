@@ -71,7 +71,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 // @ Starts Host and Connects
 func (mn *Node) Connect() []byte {
 	// Connect Host
-	err := mn.client.Connect(mn.user.KeyPrivate())
+	err := mn.client.Connect(mn.user.APIKeys(), mn.user.KeyPair())
 	if err != nil {
 		mn.handleError(err)
 		mn.setConnected(false)
