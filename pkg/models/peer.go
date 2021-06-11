@@ -2,7 +2,6 @@ package models
 
 import (
 	"errors"
-	"log"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	"google.golang.org/protobuf/proto"
@@ -13,7 +12,6 @@ import (
 func (g *Global) Buffer() ([]byte, error) {
 	bytes, err := proto.Marshal(g)
 	if err != nil {
-		log.Println(err)
 		return nil, err
 	}
 	return bytes, nil
@@ -118,7 +116,6 @@ func (l *Lobby) Topic() string {
 func (l *Lobby) Buffer() ([]byte, error) {
 	bytes, err := proto.Marshal(l)
 	if err != nil {
-		log.Println(err)
 		return nil, err
 	}
 	return bytes, nil

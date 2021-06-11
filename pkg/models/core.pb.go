@@ -70,53 +70,6 @@ func (Direction) EnumDescriptor() ([]byte, []int) {
 	return file_core_proto_rawDescGZIP(), []int{0}
 }
 
-// Memory Store Key Values
-type StoreKeys int32
-
-const (
-	StoreKeys_CRYPTO   StoreKeys = 0
-	StoreKeys_SETTINGS StoreKeys = 1
-)
-
-// Enum value maps for StoreKeys.
-var (
-	StoreKeys_name = map[int32]string{
-		0: "CRYPTO",
-		1: "SETTINGS",
-	}
-	StoreKeys_value = map[string]int32{
-		"CRYPTO":   0,
-		"SETTINGS": 1,
-	}
-)
-
-func (x StoreKeys) Enum() *StoreKeys {
-	p := new(StoreKeys)
-	*p = x
-	return p
-}
-
-func (x StoreKeys) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (StoreKeys) Descriptor() protoreflect.EnumDescriptor {
-	return file_core_proto_enumTypes[1].Descriptor()
-}
-
-func (StoreKeys) Type() protoreflect.EnumType {
-	return &file_core_proto_enumTypes[1]
-}
-
-func (x StoreKeys) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use StoreKeys.Descriptor instead.
-func (StoreKeys) EnumDescriptor() ([]byte, []int) {
-	return file_core_proto_rawDescGZIP(), []int{1}
-}
-
 // Sent on Data Transfer to Add piece of File - Binary
 type Chunk struct {
 	state         protoimpl.MessageState
@@ -194,11 +147,9 @@ var file_core_proto_rawDesc = []byte{
 	0x43, 0x6f, 0x6d, 0x70, 0x6c, 0x65, 0x74, 0x65, 0x2a, 0x34, 0x0a, 0x09, 0x44, 0x69, 0x72, 0x65,
 	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x0b, 0x0a, 0x07, 0x44, 0x65, 0x66, 0x61, 0x75, 0x6c, 0x74,
 	0x10, 0x00, 0x12, 0x0c, 0x0a, 0x08, 0x49, 0x6e, 0x63, 0x6f, 0x6d, 0x69, 0x6e, 0x67, 0x10, 0x01,
-	0x12, 0x0c, 0x0a, 0x08, 0x4f, 0x75, 0x74, 0x67, 0x6f, 0x69, 0x6e, 0x67, 0x10, 0x02, 0x2a, 0x25,
-	0x0a, 0x09, 0x53, 0x74, 0x6f, 0x72, 0x65, 0x4b, 0x65, 0x79, 0x73, 0x12, 0x0a, 0x0a, 0x06, 0x43,
-	0x52, 0x59, 0x50, 0x54, 0x4f, 0x10, 0x00, 0x12, 0x0c, 0x0a, 0x08, 0x53, 0x45, 0x54, 0x54, 0x49,
-	0x4e, 0x47, 0x53, 0x10, 0x01, 0x42, 0x09, 0x5a, 0x07, 0x2f, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73,
-	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x12, 0x0c, 0x0a, 0x08, 0x4f, 0x75, 0x74, 0x67, 0x6f, 0x69, 0x6e, 0x67, 0x10, 0x02, 0x42, 0x09,
+	0x5a, 0x07, 0x2f, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x33,
 }
 
 var (
@@ -213,12 +164,11 @@ func file_core_proto_rawDescGZIP() []byte {
 	return file_core_proto_rawDescData
 }
 
-var file_core_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_core_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_core_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_core_proto_goTypes = []interface{}{
 	(Direction)(0), // 0: Direction
-	(StoreKeys)(0), // 1: StoreKeys
-	(*Chunk)(nil),  // 2: Chunk
+	(*Chunk)(nil),  // 1: Chunk
 }
 var file_core_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
@@ -254,7 +204,7 @@ func file_core_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_core_proto_rawDesc,
-			NumEnums:      2,
+			NumEnums:      1,
 			NumMessages:   1,
 			NumExtensions: 0,
 			NumServices:   0,

@@ -6,23 +6,16 @@ import (
 )
 
 type Store interface {
+	Handle(req *StoreRequest) *StoreResponse
 	Has(key []byte) bool
-	HasCrypto() bool
-	HasSettings() bool
-	Get(key []byte) ([]byte, *SonrError)
-	GetCrypto() (*User_Crypto, *SonrError)
-	GetSettings() (*User_Settings, *SonrError)
-	Put(key []byte, value []byte) *SonrError
-	PutCrypto(*User_Crypto) *SonrError
-	PutSettings(*User_Settings) *SonrError
+	Get(key []byte) (*StoreEntry, *SonrError)
+	Put(value *StoreEntry) *SonrError
 }
 
 type store struct {
 	Store
-	database    *bitcask.Bitcask
-	device      *Device
-	cryptoKey   []byte
-	settingsKey []byte
+	database *bitcask.Bitcask
+	device   *Device
 }
 
 // Initializes new memory store
@@ -35,10 +28,8 @@ func InitStore(d *Device) (Store, *SonrError) {
 
 	// Return Store
 	return &store{
-		database:    db,
-		device:      d,
-		cryptoKey:   StoreKeys_CRYPTO.Bytes(),
-		settingsKey: StoreKeys_SETTINGS.Bytes(),
+		database: db,
+		device:   d,
 	}, nil
 }
 
@@ -50,98 +41,61 @@ func (s *store) Has(key []byte) bool {
 	return false
 }
 
-// Checks if Store Has User_Crypto
-func (s *store) HasCrypto() bool {
-	if s.database.Has(s.cryptoKey) {
-		return true
-	}
-	return false
-}
-
-// Checks if Store Has User_Settings
-func (s *store) HasSettings() bool {
-	if s.database.Has(s.settingsKey) {
-		return true
-	}
-	return false
-}
-
 // Return Value From Store
-func (s *store) Get(key []byte) ([]byte, *SonrError) {
+func (s *store) Get(key []byte) (*StoreEntry, *SonrError) {
+	// Get Value
 	val, err := s.database.Get(key)
 	if err != nil {
 		return nil, NewError(err, ErrorMessage_STORE_GET)
 	}
-	return val, nil
-}
 
-// Return Value From Store
-func (s *store) GetCrypto() (*User_Crypto, *SonrError) {
-	val, err := s.database.Get(s.cryptoKey)
+	// Unmarshal Data
+	entry := &StoreEntry{}
+	err = proto.Unmarshal(val, entry)
 	if err != nil {
-		return nil, NewError(err, ErrorMessage_STORE_GET)
+		return nil, NewUnmarshalError(err)
 	}
-
-	crypto := &User_Crypto{}
-	serr := proto.Unmarshal(val, crypto)
-	if serr != nil {
-		return nil, NewError(err, ErrorMessage_UNMARSHAL)
-	}
-	return crypto, nil
-}
-
-// Return Value From Store
-func (s *store) GetSettings() (*User_Settings, *SonrError) {
-	val, err := s.database.Get(s.settingsKey)
-	if err != nil {
-		return nil, NewError(err, ErrorMessage_STORE_GET)
-	}
-
-	settings := &User_Settings{}
-	serr := proto.Unmarshal(val, settings)
-	if serr != nil {
-		return nil, NewError(err, ErrorMessage_UNMARSHAL)
-	}
-	return settings, nil
+	return entry, nil
 }
 
 // Puts Value in Store
-func (s *store) Put(key []byte, value []byte) *SonrError {
-	err := s.database.Put(key, value)
+func (s *store) Put(entry *StoreEntry) *SonrError {
+	// Get Key
+	key := entry.KeyBytes()
+
+	// Marshal Data
+	value, err := proto.Marshal(entry)
+	if err != nil {
+		return NewMarshalError(err)
+	}
+
+	// Put Value
+	err = s.database.Put(key, value)
 	if err != nil {
 		return NewError(err, ErrorMessage_STORE_PUT)
 	}
 	return nil
 }
 
-// Puts Value in Store
-func (s *store) PutCrypto(data *User_Crypto) *SonrError {
-	// Marshal Object
-	value, serr := proto.Marshal(data)
-	if serr != nil {
-		return NewMarshalError(serr)
+// @ Handle Store Request
+func (s *store) Handle(req *StoreRequest) *StoreResponse {
+	// Check Request Type
+	if req.IsGet() {
+		// Get Request Method
+		entry, err := s.Get(req.KeyBytes())
+		if err != nil {
+			return NewStoreGetResponse(nil, err)
+		}
+		return NewStoreGetResponse(entry, nil)
+	} else if req.IsPut() {
+		// Put Request Method
+		if err := s.Put(req.ValueToEntry()); err != nil {
+			return NewStorePutResponse(false, err)
+		} else {
+			return NewStorePutResponse(true, nil)
+		}
+	} else {
+		// Has Request Method
+		return NewStoreHasResponse(s.Has(req.KeyBytes()))
 	}
-
-	// Place Item
-	err := s.database.Put(s.cryptoKey, value)
-	if err != nil {
-		return NewError(err, ErrorMessage_STORE_PUT)
-	}
-	return nil
-}
-
-// Puts Value in Store
-func (s *store) PutSettings(data *User_Settings) *SonrError {
-	// Marshal Object
-	value, serr := proto.Marshal(data)
-	if serr != nil {
-		return NewMarshalError(serr)
-	}
-
-	// Place Item
-	err := s.database.Put(s.settingsKey, value)
-	if err != nil {
-		return NewError(err, ErrorMessage_STORE_PUT)
-	}
-	return nil
 }

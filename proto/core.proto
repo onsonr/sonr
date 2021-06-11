@@ -19,10 +19,3 @@ enum Direction {
   Incoming = 1; // Incoming Transfer
   Outgoing = 2; // Outgoing Transfer
 }
-
-
-// Memory Store Key Values
-enum StoreKeys {
-  CRYPTO = 0;
-  SETTINGS = 1;
-}

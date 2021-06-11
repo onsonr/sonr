@@ -2,7 +2,6 @@ package bind
 
 import (
 	"context"
-	"log"
 
 	"github.com/getsentry/sentry-go"
 	"github.com/pkg/errors"
@@ -17,9 +16,8 @@ type Node struct {
 	md.Callback
 
 	// Properties
-	call    Callback
-	ctx     context.Context
-	request *md.ConnectionRequest
+	call Callback
+	ctx  context.Context
 
 	// Client
 	client *sc.Client
@@ -53,15 +51,6 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 		ctx:    context.Background(),
 		topics: make(map[string]*tpc.TopicManager, 10),
 	}
-	mn.initialize(req)
-	return mn
-}
-
-// ** ─── Node Initializers ────────────────────────────────────────────────────────
-// # Initializes Node with Client and Memory Store
-func (mn *Node) initialize(req *md.ConnectionRequest) {
-	// Set Type
-	mn.request = req
 
 	// Create Store - Start Auth Service
 	if s, err := md.InitStore(req.GetDevice()); err == nil {
@@ -75,8 +64,10 @@ func (mn *Node) initialize(req *md.ConnectionRequest) {
 
 	// Create Client
 	mn.client = sc.NewClient(mn.ctx, mn.user, mn.callback())
+	return mn
 }
 
+// ** ─── Node Initializers ────────────────────────────────────────────────────────
 // @ Starts Host and Connects
 func (mn *Node) Connect() []byte {
 	// Connect Host
@@ -197,6 +188,40 @@ func (mn *Node) Sign(data []byte) []byte {
 	}
 }
 
+// @ Store Request for Payload into MemoryStore
+func (mn *Node) Store(data []byte) []byte {
+	// Unmarshal Data to Request
+	request := &md.StoreRequest{}
+	if err := proto.Unmarshal(data, request); err != nil {
+		// Handle Error
+		mn.handleError(md.NewUnmarshalError(err))
+
+		// Create Error Response
+		resp := &md.StoreResponse{
+			Error: md.NewUnmarshalError(err).Message(),
+		}
+
+		// Marshal Data
+		bytes, err := proto.Marshal(resp)
+		if err != nil {
+			return nil
+		}
+
+		// Send Invalid Response
+		return bytes
+	}
+
+	// Handle Request with Store
+	resp := mn.store.Handle(request)
+
+	// Marshal Data
+	bytes, err := proto.Marshal(resp)
+	if err != nil {
+		return nil
+	}
+	return bytes
+}
+
 // @ Verification Request for Signed Data
 func (mn *Node) Verify(data []byte) []byte {
 	// Check Ready
@@ -299,21 +324,16 @@ func (mn *Node) Invite(data []byte) {
 				return
 			}
 		}
-	} else {
-		log.Println("--- STATUS NOT READY: CANNOT (Invite) ---")
 	}
 }
 
 // @ Respond to an Invite with Decision
 func (mn *Node) Respond(data []byte) {
 	if mn.isReady() {
-		// Logging
-		log.Println("--- Received Frontend Action for Response ---")
-
 		// Unmarshal Data to Request
 		req := &md.InviteResponse{}
 		if err := proto.Unmarshal(data, req); err != nil {
-			log.Println("--- FAILED: To Unmarshal Response ---")
+
 			mn.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
 			return
 		}
@@ -323,14 +343,12 @@ func (mn *Node) Respond(data []byte) {
 
 		// Update Status
 		if req.Decision {
-			log.Println("--- Updated Status to Transfer ---")
+
 			mn.setStatus(md.Status_TRANSFER)
 		} else {
-			log.Println("--- Updated Status to Available ---")
+
 			mn.setStatus(md.Status_AVAILABLE)
 		}
-	} else {
-		log.Println("--- STATUS NOT READY: CANNOT (Respond) ---")
 	}
 }
 

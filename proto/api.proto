@@ -1,33 +1,12 @@
 syntax = "proto3";
 
 import "data.proto";
+import "error.proto";
 import "peer.proto";
 import "user.proto";
 
 // Require Go Package
 option go_package = "/models";
-
-// Request to Create or Return Username
-message AuthenticationRequest {
-  Type type = 1;
-  string mnemonic = 2; // Required Frontend Mnemonic
-  string sName = 3;    // Required Frontend SName
-  Device device = 4;   // Required Field for Handling Keys/ID
-  APIKeys apiKeys = 5; // Client Keys
-
-  enum Type {
-    EXISTING = 0;
-    CHECK_NAME = 1;
-    SAVE_NAME = 2;
-  }
-}
-
-// Response for Create or Return Username
-message AuthenticationResponse {
-  bool isValid = 1;
-  bool isSaved = 2;
-  User.Crypto crypto = 3;
-}
 
 // Initial Connection Message to Establish Sonr
 message ConnectionRequest {
@@ -48,6 +27,7 @@ message ConnectionRequest {
 message ConnectionResponse {
   User user = 1;
   Peer.ID id = 2;
+  ErrorMessage error = 3; // In Case Error Occurred
 }
 
 // Invitation Message sent on RPC
@@ -60,11 +40,12 @@ message InviteRequest {
 
 // Reply Message sent on RPC
 message InviteResponse {
-  Type type = 1;     // Cancel Reply
-  Peer from = 2;     // Users Peer Data
-  Peer to = 3;       // Receivers Peer Data
-  bool decision = 4; // Users Decision for the Invitation
-  Transfer data = 5; // Card contains all Data Info, Transfer Info
+  Type type = 1;          // Cancel Reply
+  Peer from = 2;          // Users Peer Data
+  Peer to = 3;            // Receivers Peer Data
+  bool decision = 4;      // Users Decision for the Invitation
+  Transfer data = 5;      // Card contains all Data Info, Transfer Info
+  ErrorMessage error = 6; // In Case Error Occurred
 
   enum Type {
     None = 0;
@@ -77,33 +58,45 @@ message InviteResponse {
 
 // REST API Request over HTTP
 message RestRequest {
-  RestMethodType type = 1;
-  string method = 2;
-  map<string, string> parameters = 3;
-  oneof host {
-    Peer peer = 4;
-    string id = 5;
-    string sName = 6;
+  Method method = 1;                  // HTTP Method
+  string function = 2;                // Sonr Api Function
+  map<string, string> parameters = 3; // Parameters for Function
+
+  // User Address to Perform Method on
+  oneof address {
+    Peer peer = 4;    // Peer Data Reference
+    string id = 5;    // Libp2p ID
+    string sName = 6; // SonrName which retreives id from DB
+  }
+
+  enum Method {
+    GET = 0;    // Retreive Resource
+    POST = 1;   // Create new subordinate resources
+    PUT = 2;    // Update existing resource
+    DELETE = 3; // Delete resource
+    PATCH = 4;  // Partial Update to Resource
   }
 }
 
 // REST API Response over HTTP
 message RestResponse {
-  RestMethodType type = 1;
-  string method = 2;
-  int32 code = 3;
-  map<string, string> body = 4;
-}
+  Method method = 1;            // HTTP Method Type
+  string function = 2;          // Function called for Sonr API
+  int32 code = 3;               // See https://mzl.la/3gg3lti
+  map<string, string> body = 4; // Response Body
 
-enum RestMethodType {
-  DEFAULT = 0;
-  GET = 1;
-  PUT = 2;
-  POST = 3;
+  enum Method {
+    GET = 0;    // Retreive Resource
+    POST = 1;   // Create new subordinate resources
+    PUT = 2;    // Update existing resource
+    DELETE = 3; // Delete resource
+    PATCH = 4;  // Partial Update to Resource
+  }
 }
 
 // Message for Signing Request
 message SignRequest {
+  // Value to be signed
   oneof value {
     Buffers bufferValue = 1; // Message for List of Bytes
     Texts textValue = 2;     // Message for List of Strings
@@ -122,11 +115,13 @@ message SignRequest {
 
 // Message for Signing Response
 message SignResponse {
-  bool isSigned = 1; // If Values were Signed
+  bool isSigned = 1;      // If Values were Signed
+  ErrorMessage error = 2; // In Case Error Occurred
 
+  // Resulting Signed Values
   oneof value {
-    Buffers signedBuffer = 2; // Message for List of Bytes
-    Texts signedText = 3;     // Message for List of Strings
+    Buffers signedBuffer = 3; // Message for List of Bytes
+    Texts signedText = 4;     // Message for List of Strings
   }
 
   // Buffers Message: Singular Values are First Index
@@ -137,6 +132,80 @@ message SignResponse {
   // Texts Message: Singular Values are First Index
   message Texts {
     repeated string data = 1; // A List of Strings
+  }
+}
+
+// Message for Individual Entry in Store
+message StoreEntry {
+  // Key of Store Entry - Either Enum Type or Text Value
+  oneof key {
+    Type typeKey = 1;   // Enum Based Key
+    string textKey = 2; // Text Based Key
+  }
+
+  // Stored Value for Key
+  oneof value {
+    string textValue = 3;  // Text Based Value
+    bytes bufferValue = 4; // Buffer Based Value
+  }
+
+  // Enum based Type for Entry
+  enum Type {
+    PREFIX = 0;      // User_Crypto Prefix -> sname + deviceID / Signed
+    FINGERPRINT = 1; // Signed Value of Mnemonic
+    MNEMONIC = 2;    // User Backup Code
+    SNAME = 3;       // User Subdomain
+  }
+}
+
+// Message for MemoryStore Method Request
+message StoreRequest {
+  Method method = 1; // Store Method to Perform
+
+  // Key of Store Entry
+  oneof key {
+    StoreEntry.Type typeKey = 2; // Enum Based Key
+    string textKey = 3;          // Text Based Key
+  }
+
+  // Value to be Stored
+  oneof value {
+    string textValue = 4;  // Value is Text
+    bytes bufferValue = 5; // Value is Buffer
+  }
+
+  enum Method {
+    HAS = 0; // Checks if Key exists
+    PUT = 1; // Puts value for key
+    GET = 2; // Gets value for key
+  }
+}
+
+// Message for MemoryStore Method Response
+message StoreResponse {
+  Method method = 1;      // Store Method Performed
+  ErrorMessage error = 2; // In Case Error Occurred
+
+  // Resulting Value for Method
+  oneof result {
+    bool hasValue = 3;
+    bool putValue = 4;
+    StoreEntry entry = 5;
+  }
+
+  enum Method {
+    HAS = 0; // Checks if Key exists
+    PUT = 1; // Puts value for key
+    GET = 2; // Gets value for key
+  }
+}
+
+// Updated Peer Info Request
+message UpdateRequest {
+  oneof data {
+    Peer.Properties properties = 1; // Updated Peer Properties
+    Contact contact = 2;            // Users Updated Contact Card
+    Position position = 3;          // Users updated Position
   }
 }
 
@@ -157,20 +226,12 @@ message VerifyRequest {
 
 // Message for Verification Response
 message VerifyResponse {
-  bool isVerified = 1; // Result for Verification
+  bool isVerified = 1;    // Result for Verification
+  ErrorMessage error = 2; // In Case Error Occurred
 }
 
 // Message for Status Update
 message StatusUpdate {
   Status value = 1;
   User user = 2;
-}
-
-// Updated Peer Info Request
-message UpdateRequest {
-  oneof data {
-    Peer.Properties properties = 1; // Updated Peer Properties
-    Contact contact = 2;            // Users Updated Contact Card
-    Position position = 3;          // Users updated Position
-  }
 }

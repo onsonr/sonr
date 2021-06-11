@@ -8,7 +8,7 @@ import (
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/textileio/go-threads/api/client"
 	"github.com/textileio/go-threads/core/thread"
-	"github.com/textileio/textile/api/common"
+	"github.com/textileio/textile/v2/api/common"
 )
 
 func GetRandomUser() (thread.Identity, error) {

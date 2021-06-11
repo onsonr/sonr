@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+
 	"net/http"
 
 	olc "github.com/google/open-location-code/go"
@@ -261,11 +262,6 @@ func (u *URLLink) SetData() {
 	}
 }
 
-// ** ─── Store MANAGEMENT ────────────────────────────────────────────────────────
-func (sk StoreKeys) Bytes() []byte {
-	return []byte(sk.String())
-}
-
 // ** ─── InviteResponse MANAGEMENT ────────────────────────────────────────────────────────
 func (r *InviteResponse) HasAcceptedTransfer() bool {
 	return r.Decision && r.Type == InviteResponse_Transfer
@@ -320,23 +316,120 @@ func (u *User) ValidateInvite(i *InviteRequest) *InviteRequest {
 	return i
 }
 
-// ** ─── REST API MANAGEMENT ────────────────────────────────────────────────────────
-// Creates New Proto Request from HTTP Request
-func NewRestRequest(r *http.Request) *RestRequest {
-	// Method Type
-	methodType := RestMethodType_DEFAULT
+// ** ─── StoreEntry MANAGEMENT ────────────────────────────────────────────────────────
+// Returns Byte List for Key Field
+func (se *StoreEntry) KeyBytes() []byte {
+	switch se.Key.(type) {
+	case *StoreEntry_TextKey:
+		return []byte(se.GetTextKey())
+	case *StoreEntry_TypeKey:
+		return []byte(se.GetTypeKey().String())
+	}
+	return nil
+}
 
-	// Find Method
-	for k := range RestMethodType_value {
-		if k == r.Method {
-			methodType = RestMethodType(RestMethodType_value[r.Method])
+// ** ─── StoreRequest MANAGEMENT ────────────────────────────────────────────────────────
+// Checks if Method is `GET`
+func (sr *StoreRequest) IsGet() bool {
+	return sr.Method == StoreRequest_GET
+}
+
+// Checks if Method is `HAS`
+func (sr *StoreRequest) IsHas() bool {
+	return sr.Method == StoreRequest_HAS
+}
+
+// Checks if Method is `PUT`
+func (sr *StoreRequest) IsPut() bool {
+	return sr.Method == StoreRequest_PUT
+}
+
+// Returns Byte List for Key Field
+func (sr *StoreRequest) KeyBytes() []byte {
+	switch sr.Key.(type) {
+	case *StoreRequest_TextKey:
+		return []byte(sr.GetTextKey())
+	case *StoreRequest_TypeKey:
+		return []byte(sr.GetTypeKey().String())
+	}
+	return nil
+}
+
+// Returns Request Key,Value Pair as StoreEntry
+func (sr *StoreRequest) ValueToEntry() *StoreEntry {
+	// Initialize
+	entry := &StoreEntry{}
+
+	// Set Key
+	switch sr.Key.(type) {
+	case *StoreRequest_TextKey:
+		entry.Key = &StoreEntry_TextKey{
+			TextKey: sr.GetTextKey(),
+		}
+	case *StoreRequest_TypeKey:
+		entry.Key = &StoreEntry_TypeKey{
+			TypeKey: sr.GetTypeKey(),
 		}
 	}
 
-	return &RestRequest{
-		Type:   methodType,
-		Method: util.ExtractHttpFunction(r.RequestURI),
+	// Set Value
+	switch sr.Value.(type) {
+	case *StoreRequest_TextValue:
+		entry.Value = &StoreEntry_TextValue{
+			TextValue: sr.GetTextValue(),
+		}
+	case *StoreRequest_BufferValue:
+		entry.Value = &StoreEntry_BufferValue{
+			BufferValue: sr.GetBufferValue(),
+		}
 	}
+	return entry
+}
+
+// ** ─── StoreResponse MANAGEMENT ────────────────────────────────────────────────────────
+// Create New Response for GET Method
+func NewStoreGetResponse(e *StoreEntry, err *SonrError) *StoreResponse {
+	// Initialize
+	resp := &StoreResponse{
+		Method: StoreResponse_GET,
+		Result: &StoreResponse_Entry{
+			Entry: e,
+		},
+	}
+
+	// Check Error
+	if err != nil {
+		resp.Error = err.data
+	}
+	return resp
+}
+
+// Create New Response for HAS Method
+func NewStoreHasResponse(result bool) *StoreResponse {
+	// Initialize
+	return &StoreResponse{
+		Method: StoreResponse_HAS,
+		Result: &StoreResponse_HasValue{
+			HasValue: result,
+		},
+	}
+}
+
+// Create New Response for PUT Method
+func NewStorePutResponse(result bool, err *SonrError) *StoreResponse {
+	// Initialize
+	resp := &StoreResponse{
+		Method: StoreResponse_PUT,
+		Result: &StoreResponse_PutValue{
+			PutValue: result,
+		},
+	}
+
+	// Check Error
+	if err != nil {
+		resp.Error = err.data
+	}
+	return resp
 }
 
 // ** ─── Location MANAGEMENT ────────────────────────────────────────────────────────
@@ -597,6 +690,11 @@ func (errWrap *SonrError) Bytes() []byte {
 		return nil
 	}
 	return bytes
+}
+
+// @ Return Protobuf Message for Error
+func (errWrap *SonrError) Message() *ErrorMessage {
+	return errWrap.data
 }
 
 // @ Return Message as String ^ //
