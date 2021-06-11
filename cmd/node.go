@@ -11,7 +11,6 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// ** ─── Core Main Access Node ────────────────────────────────────────────────────────
 type Node struct {
 	md.Callback
 
@@ -31,7 +30,7 @@ type Node struct {
 	store md.Store
 }
 
-// @ Initializes New Node
+// ^ Initializes New Node ^ //
 func NewNode(reqBytes []byte, call Callback) *Node {
 	// Initialize Sentry
 	sentry.Init(sentry.ClientOptions{
@@ -67,7 +66,6 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	return mn
 }
 
-// ** ─── Node Initializers ────────────────────────────────────────────────────────
 // @ Starts Host and Connects
 func (mn *Node) Connect() []byte {
 	// Connect Host
@@ -100,15 +98,6 @@ func (mn *Node) Connect() []byte {
 	// Handle Error
 	if rerr != nil {
 		mn.handleError(md.NewMarshalError(rerr))
-		return nil
-	}
-	return bytes
-}
-
-// @ Returns Node Location Protobuf as Bytes
-func (mn *Node) Location() []byte {
-	bytes, err := proto.Marshal(mn.user.Location)
-	if err != nil {
 		return nil
 	}
 	return bytes
@@ -360,6 +349,15 @@ func URLLink(url string) []byte {
 
 	// Marshal
 	bytes, err := proto.Marshal(link)
+	if err != nil {
+		return nil
+	}
+	return bytes
+}
+
+// @ Returns Node Location Protobuf as Bytes
+func (mn *Node) Location() []byte {
+	bytes, err := proto.Marshal(mn.user.Location)
 	if err != nil {
 		return nil
 	}

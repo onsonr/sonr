@@ -39,7 +39,7 @@ type TopicManager struct {
 	lobbyType   md.Lobby_Type
 }
 
-// ^ Helper: Find returns Pointer to Peer.ID and Peer ^
+// @ Helper: Find returns Pointer to Peer.ID and Peer
 func (tm *TopicManager) FindPeerInTopic(q string) (peer.ID, *md.Peer, error) {
 	// Retreive Data
 	var p *md.Peer
@@ -73,7 +73,7 @@ func (tm *TopicManager) FindPeerInTopic(q string) (peer.ID, *md.Peer, error) {
 	return i, p, nil
 }
 
-// ^ Helper: ID returns ONE Peer.ID in Topic ^
+// @ Helper: ID returns ONE Peer.ID in Topic
 func (tm *TopicManager) HasPeer(q string) bool {
 	// Iterate through PubSub in topic
 	for _, id := range tm.topic.ListPeers() {
@@ -85,7 +85,7 @@ func (tm *TopicManager) HasPeer(q string) bool {
 	return false
 }
 
-// ^ Check if Local Topic
+// @ Check if Local Topic
 func (tm *TopicManager) IsLocal() bool {
 	if tm.lobbyType == md.Lobby_LOCAL {
 		return true
@@ -93,14 +93,14 @@ func (tm *TopicManager) IsLocal() bool {
 	return false
 }
 
-// ^ Leave Current Topic ^
+// @ Leave Current Topic
 func (tm *TopicManager) LeaveTopic() error {
 	tm.eventHandler.Cancel()
 	tm.subscription.Cancel()
 	return tm.topic.Close()
 }
 
-// ^ handleTopicEvents: listens to Pubsub Events for topic  ^
+// # handleTopicEvents: listens to Pubsub Events for topic
 func (tm *TopicManager) handleTopicEvents() {
 	// @ Loop Events
 	for {
@@ -133,7 +133,7 @@ func (tm *TopicManager) handleTopicEvents() {
 	}
 }
 
-// ^ handleTopicMessages: listens for messages on pubsub topic subscription ^
+// # handleTopicMessages: listens for messages on pubsub topic subscription
 func (tm *TopicManager) handleTopicMessages() {
 	for {
 		// Get next msg from pub/sub
@@ -163,7 +163,7 @@ func (tm *TopicManager) handleTopicMessages() {
 	}
 }
 
-// ^ processTopicMessages: pulls messages from channel that have been handled ^
+// # processTopicMessages: pulls messages from channel that have been handled
 func (tm *TopicManager) processTopicMessages() {
 	for {
 		select {

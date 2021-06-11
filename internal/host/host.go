@@ -27,6 +27,7 @@ import (
 type HostNode interface {
 	Bootstrap() *md.SonrError
 	Close()
+	FindPeerID(string) (peer.ID, error)
 	ID() peer.ID
 	Info() peer.AddrInfo
 	Host() host.Host
@@ -34,7 +35,7 @@ type HostNode interface {
 	HandleStream(pid protocol.ID, handler network.StreamHandler)
 	MultiAddr() (multiaddr.Multiaddr, *md.SonrError)
 	StartStream(p peer.ID, pid protocol.ID) (network.Stream, error)
-	StartGlobal(SName string) (GlobalTopic, *md.SonrError)
+	StartGlobal(SName string) *md.SonrError
 	StartTextile() *md.SonrError
 }
 
@@ -56,12 +57,18 @@ type hostNode struct {
 	point  string
 	pubsub *psub.PubSub
 
+	// Global
+	global        *md.Global
+	globalTopic   *psub.Topic
+	globalHandler *psub.TopicEventHandler
+	globalSub     *psub.Subscription
+	globalService *GlobalService
+
 	// Textile
 	tileIdentity thread.Identity
 	tileClient   *client.Client
 }
 
-// ** ─── HostNode Initializers ────────────────────────────────────────────────────────
 // ^ Start Begins Assigning Host Parameters ^
 func NewHost(ctx context.Context, point string, api *md.APIKeys, keys *md.KeyPair) (HostNode, *md.SonrError) {
 	// Initialize DHT
@@ -116,7 +123,7 @@ func NewHost(ctx context.Context, point string, api *md.APIKeys, keys *md.KeyPai
 	return hn, nil
 }
 
-// @ Failsafe when unable to bind to External IP Address ^ //
+// # Failsafe when unable to bind to External IP Address ^ //
 func newRelayedHost(ctx context.Context, point string, api *md.APIKeys, keys *md.KeyPair) (HostNode, *md.SonrError) {
 	// Initialize DHT
 	var kdhtRef *dht.IpfsDHT
@@ -160,7 +167,7 @@ func newRelayedHost(ctx context.Context, point string, api *md.APIKeys, keys *md
 }
 
 // ** ─── HostNode Connection Methods ────────────────────────────────────────────────────────
-// Bootstrap begins bootstrap with peers
+// @ Bootstrap begins bootstrap with peers
 func (h *hostNode) Bootstrap() *md.SonrError {
 	// Create Bootstrapper Info
 	bootstrappers, err := getBootstrapAddrInfo()
@@ -197,7 +204,7 @@ func (h *hostNode) Bootstrap() *md.SonrError {
 	return nil
 }
 
-// @ handleDHTPeers: Connects to Peers in DHT
+// # handleDHTPeers: Connects to Peers in DHT
 func (h *hostNode) handleDHTPeers(routingDiscovery *dsc.RoutingDiscovery) {
 	for {
 		// Find peers in DHT

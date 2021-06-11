@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 
-	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
@@ -14,7 +13,8 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// ^ Join New Topic with Name ^
+// ** ─── Stream/Pubsub Methods ────────────────────────────────────────────────────────
+// Join New Topic with Name
 func (h *hostNode) Join(name string) (*psub.Topic, *psub.Subscription, *psub.TopicEventHandler, *md.SonrError) {
 	// Join Topic
 	topic, err := h.pubsub.Join(name)
@@ -36,69 +36,51 @@ func (h *hostNode) Join(name string) (*psub.Topic, *psub.Subscription, *psub.Top
 	return topic, sub, handler, nil
 }
 
-// ^ Set Stream Handler for Host ^
+// Set Stream Handler for Host
 func (h *hostNode) HandleStream(pid protocol.ID, handler network.StreamHandler) {
 	h.host.SetStreamHandler(pid, handler)
 }
 
-// ^ Start Stream for Host ^
+// Start Stream for Host
 func (h *hostNode) StartStream(p peer.ID, pid protocol.ID) (network.Stream, error) {
 	return h.host.NewStream(h.ctxHost, p, pid)
 }
 
-type GlobalTopic interface {
-	FindPeerID(string) (peer.ID, error)
-}
-
-type globalTopic struct {
-	GlobalTopic
-	ctx          context.Context
-	global       *md.Global
-	topic        *psub.Topic
-	handler      *psub.TopicEventHandler
-	subscription *psub.Subscription
-	host         host.Host
-	service      *GlobalService
-}
-
-func (hn *hostNode) StartGlobal(SName string) (GlobalTopic, *md.SonrError) {
+// Starts Global Topic
+func (hn *hostNode) StartGlobal(SName string) *md.SonrError {
 	// Join Global Topic
-	t, s, h, err := hn.Join("sonr-global")
+	var err *md.SonrError
+	hn.globalTopic, hn.globalSub, hn.globalHandler, err = hn.Join("sonr-global")
 	if err != nil {
-		return &globalTopic{}, err
+		return err
 	}
 
 	// Create Global Struct
-	gt := &globalTopic{
-		ctx:          hn.ctxHost,
-		topic:        t,
-		subscription: s,
-		handler:      h,
-		host:         hn.host,
-		global: &md.Global{
-			Peers:      make(map[string]string),
-			UserPeerID: hn.host.ID().String(),
-			SName:      SName,
-		},
+	hn.global = &md.Global{
+		Peers:      make(map[string]string),
+		UserPeerID: hn.host.ID().String(),
+		SName:      SName,
 	}
 
 	// Start Exchange Server
 	globalExServer := rpc.NewServer(hn.host, globalProtocol)
 	gsv := GlobalService{
-		global: gt.global,
+		global: hn.global,
 	}
 
 	// Register Service
 	serr := globalExServer.Register(&gsv)
 	if serr != nil {
-		return nil, md.NewError(serr, md.ErrorMessage_TOPIC_RPC)
+		return md.NewError(serr, md.ErrorMessage_TOPIC_RPC)
 	}
 
 	// Return Global
-	gt.service = &gsv
-	go gt.handleEvents()
-	return gt, nil
+	hn.globalService = &gsv
+	go hn.handleGlobalEvents()
+	return nil
 }
+
+// ** ─── Global Service ────────────────────────────────────────────────────────
 
 // ExchangeArgs is Peer protobuf
 type GlobalServiceArgs struct {
@@ -115,8 +97,8 @@ type GlobalService struct {
 	global *md.Global
 }
 
-// ^ Calls Invite on Remote Peer ^ //
-func (tm *globalTopic) Exchange(id peer.ID, gloBuf []byte) error {
+// Calls Invite on Remote Peer
+func (tm *hostNode) Exchange(id peer.ID, gloBuf []byte) error {
 	// Initialize RPC
 	exchClient := rpc.NewClient(tm.host, globalProtocol)
 	var reply GlobalServiceResponse
@@ -143,7 +125,7 @@ func (tm *globalTopic) Exchange(id peer.ID, gloBuf []byte) error {
 	return nil
 }
 
-// ^ Calls Invite on Remote Peer ^ //
+// Calls Invite on Remote Peer
 func (ts *GlobalService) ExchangeWith(ctx context.Context, args GlobalServiceArgs, reply *GlobalServiceResponse) error {
 	// Unmarshal Data
 	rg := &md.Global{}
@@ -164,8 +146,8 @@ func (ts *GlobalService) ExchangeWith(ctx context.Context, args GlobalServiceArg
 	return nil
 }
 
-// ^ Method Finds PeerID in Topic ^ //
-func (g *globalTopic) FindPeerID(u string) (peer.ID, error) {
+// Method Finds PeerID in Topic
+func (g *hostNode) FindPeerID(u string) (peer.ID, error) {
 	// Find ID from Map
 	id, err := g.global.FindPeerID(u)
 	if err != nil {
@@ -173,7 +155,7 @@ func (g *globalTopic) FindPeerID(u string) (peer.ID, error) {
 	}
 
 	// Find PeerID from Topic
-	for _, v := range g.topic.ListPeers() {
+	for _, v := range g.globalTopic.ListPeers() {
 		if v.String() == id {
 			return v, nil
 		}
@@ -181,14 +163,14 @@ func (g *globalTopic) FindPeerID(u string) (peer.ID, error) {
 	return "", errors.New("PeerID not found in Topic")
 }
 
-// ^ handleEvents: listens to Pubsub Events for topic  ^
-func (g *globalTopic) handleEvents() {
+// @ handleEvents: listens to Pubsub Events for topic
+func (g *hostNode) handleGlobalEvents() {
 	// @ Loop Events
 	for {
 		// Get next event
-		lobEvent, err := g.handler.NextPeerEvent(g.ctx)
+		lobEvent, err := g.globalHandler.NextPeerEvent(g.ctxHost)
 		if err != nil {
-			g.handler.Cancel()
+			g.globalHandler.Cancel()
 			return
 		}
 

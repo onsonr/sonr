@@ -84,12 +84,12 @@ func NewLocal(ctx context.Context, h net.HostNode, u *md.User, name string, th C
 	return mgr, nil
 }
 
-// ^ Send Updated Lobby ^
+// @ Send Updated Lobby
 func (tm *TopicManager) RefreshLobby() {
 	tm.handler.OnRefresh(tm.lobby)
 }
 
-// ^ SendLocal message to specific peer in topic ^
+// @ SendLocal message to specific peer in topic
 func (tm *TopicManager) SendLocal(msg *md.LocalEvent) error {
 	// Convert Event to Proto Binary
 	bytes, err := proto.Marshal(msg)
@@ -105,7 +105,7 @@ func (tm *TopicManager) SendLocal(msg *md.LocalEvent) error {
 	return nil
 }
 
-// ^ Flat: Handles User sent InviteRequest Response on FlatMode ^
+// @ Flat: Handles User sent InviteRequest Response on FlatMode
 func (tm *TopicManager) Flat(id peer.ID, inv *md.InviteRequest) error {
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(inv)
@@ -129,7 +129,7 @@ func (tm *TopicManager) Flat(id peer.ID, inv *md.InviteRequest) error {
 	return nil
 }
 
-// ^ Calls Invite on Remote Peer for Flat Mode and makes Direct Response ^ //
+// # Calls Invite on Remote Peer for Flat Mode - Skips Auth
 func (ts *LocalService) FlatWith(ctx context.Context, args LocalServiceArgs, reply *LocalServiceResponse) error {
 	// Received Message
 	receivedMessage := md.InviteRequest{}
@@ -155,7 +155,7 @@ func (ts *LocalService) FlatWith(ctx context.Context, args LocalServiceArgs, rep
 	return nil
 }
 
-// ^ Starts Exchange on Local Peer Join ^ //
+// @ Starts Exchange on Local Peer Join
 func (tm *TopicManager) Exchange(id peer.ID, peerBuf []byte) error {
 	// Initialize RPC
 	exchClient := rpc.NewClient(tm.host.Host(), LOCAL_SERVICE_PID)
@@ -186,7 +186,7 @@ func (tm *TopicManager) Exchange(id peer.ID, peerBuf []byte) error {
 	return nil
 }
 
-// ^ Calls Exchange on Local Lobby Peer ^ //
+// # Calls Exchange on Local Lobby Peer
 func (ts *LocalService) ExchangeWith(ctx context.Context, args LocalServiceArgs, reply *LocalServiceResponse) error {
 	// Peer Data
 	remotePeer := &md.Peer{}
@@ -208,7 +208,7 @@ func (ts *LocalService) ExchangeWith(ctx context.Context, args LocalServiceArgs,
 	return nil
 }
 
-// ^ Invite: Handles User sent InviteRequest Response ^
+// @ Invite: Handles User sent InviteRequest Response
 func (tm *TopicManager) Invite(id peer.ID, inv *md.InviteRequest) error {
 	// Initialize Data
 	rpcClient := rpc.NewClient(tm.host.Host(), LOCAL_SERVICE_PID)
@@ -236,7 +236,7 @@ func (tm *TopicManager) Invite(id peer.ID, inv *md.InviteRequest) error {
 	return nil
 }
 
-// ^ Calls Invite on Local Lobby Peer ^ //
+// # Calls Invite on Local Lobby Peer
 func (ts *LocalService) InviteWith(ctx context.Context, args LocalServiceArgs, reply *LocalServiceResponse) error {
 	// Received Message
 	receivedMessage := md.InviteRequest{}
@@ -266,7 +266,7 @@ func (ts *LocalService) InviteWith(ctx context.Context, args LocalServiceArgs, r
 	}
 }
 
-// ^ RespondToInvite to an Invitation ^ //
+// @ RespondToInvite to an Invitation
 func (n *TopicManager) RespondToInvite(rep *md.InviteResponse) {
 	// Send to Channel
 	n.service.respCh <- rep

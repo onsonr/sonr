@@ -18,7 +18,7 @@ type Callback interface {
 	OnError(data []byte)       // Internal Error
 }
 
-// ^ Passes binded Methods to Node ^
+// # Passes binded Methods to Node
 func (mn *Node) callback() md.Callback {
 	return md.Callback{
 		// Direct
@@ -36,7 +36,7 @@ func (mn *Node) callback() md.Callback {
 	}
 }
 
-// ^ handleError Callback with handleError instance, and method ^
+// # handleError Callback with handleError instance, and method
 func (mn *Node) handleError(errMsg *md.SonrError) {
 	// Check for Error
 	if errMsg.HasError {

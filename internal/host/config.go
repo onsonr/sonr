@@ -27,17 +27,17 @@ const globalProtocol = protocol.ID("/sonr/global-service/0.1")
 const textileApiUrl = "api.hub.textile.io:443"
 
 // ** ─── HostNode Info/Status Methods ────────────────────────────────────────────────────────
-// Close Libp2p Host
+// @ Close Libp2p Host
 func (h *hostNode) Close() {
 	h.host.Close()
 }
 
-// Return Host Peer ID
+// @ Return Host Peer ID
 func (hn *hostNode) ID() peer.ID {
 	return hn.id
 }
 
-// Returns HostNode Peer Addr Info
+// @ Returns HostNode Peer Addr Info
 func (hn *hostNode) Info() peer.AddrInfo {
 	peerInfo := peer.AddrInfo{
 		ID:    hn.host.ID(),
@@ -46,12 +46,12 @@ func (hn *hostNode) Info() peer.AddrInfo {
 	return peerInfo
 }
 
-// Returns Instance Host
+// @ Returns Instance Host
 func (hn *hostNode) Host() host.Host {
 	return hn.host
 }
 
-// Returns Host Node MultiAddr
+// @ Returns Host Node MultiAddr
 func (hn *hostNode) MultiAddr() (multiaddr.Multiaddr, *md.SonrError) {
 	pi := hn.Info()
 	addrs, err := peer.AddrInfoToP2pAddrs(&pi)
@@ -62,7 +62,7 @@ func (hn *hostNode) MultiAddr() (multiaddr.Multiaddr, *md.SonrError) {
 }
 
 // ** ─── Address MANAGEMENT ────────────────────────────────────────────────────────
-// Return Bootstrap List Address Info
+// # Return Bootstrap List Address Info
 func getBootstrapAddrInfo() ([]peer.AddrInfo, error) {
 	// Create Bootstrapper List
 	var bootstrappers []ma.Multiaddr
@@ -93,7 +93,7 @@ func getBootstrapAddrInfo() ([]peer.AddrInfo, error) {
 	return ds, nil
 }
 
-// getFreePort asks the kernel for a free open port
+// # getFreePort asks the kernel for a free open port
 func getFreePort() (int, error) {
 	addr, err := net.ResolveTCPAddr("tcp", "localhost:0")
 	if err != nil {
@@ -108,7 +108,7 @@ func getFreePort() (int, error) {
 	return l.Addr().(*net.TCPAddr).Port, nil
 }
 
-// Return Internal Addr Strings ^ //
+// # Return Internal Addr Strings ^ //
 func getInternalAddrStrings() []string {
 	// Initialize
 	p, _ := getFreePort()
@@ -118,7 +118,7 @@ func getInternalAddrStrings() []string {
 	return listenAddrs
 }
 
-// Return Device Listening Addresses ^ //
+// # Return Device Listening Addresses ^ //
 func getExternalAddrStrings() ([]string, error) {
 	// Initialize
 	listenAddrs := []string{}
@@ -145,7 +145,7 @@ func getExternalAddrStrings() ([]string, error) {
 	return listenAddrs, nil
 }
 
-// Returns Node Public iPv4 Address
+// # Returns Node Public iPv4 Address
 func iPv4Addrs() ([]string, error) {
 	osHost, _ := os.Hostname()
 	addrs, _ := net.LookupIP(osHost)

@@ -14,17 +14,7 @@ import (
 	"google.golang.org/grpc/credentials"
 )
 
-
-
-type textile struct {
-	tileIdentity thread.Identity
-	tileClient   *client.Client
-
-	ctxTileAuth  context.Context
-	ctxTileToken context.Context
-}
-
-// ^ Initializes New Textile Instance ^ //
+// @ Initializes New Textile Instance
 func (hn *hostNode) StartTextile() *md.SonrError {
 	// Initialize
 	var err error
@@ -60,13 +50,13 @@ func (hn *hostNode) StartTextile() *md.SonrError {
 	return nil
 }
 
-// @ Helper: Gets Thread Identity from Private Key
+// # Helper: Gets Thread Identity from Private Key
 func getIdentity(privateKey crypto.PrivKey) (thread.Identity, error) {
 	myIdentity := thread.NewLibp2pIdentity(privateKey)
 	return myIdentity, nil
 }
 
-// @ Helper: Creates User Auth Context from API Keys
+// # Helper: Creates User Auth Context from API Keys
 func newUserAuthCtx(ctx context.Context, keys *md.APIKeys) (context.Context, error) {
 	// Add our user group key to the context
 	ctx = common.NewAPIKeyContext(ctx, keys.TextileKey)
@@ -75,7 +65,7 @@ func newUserAuthCtx(ctx context.Context, keys *md.APIKeys) (context.Context, err
 	return common.CreateAPISigContext(ctx, time.Now().Add(time.Minute), keys.TextileSecret)
 }
 
-// @ Helper: Creates Auth Token Context from AuthContext, Client, Identity
+// # Helper: Creates Auth Token Context from AuthContext, Client, Identity
 func (hn *hostNode) newTokenCtx() (context.Context, error) {
 	// Generate a new token for the user
 	token, err := hn.tileClient.GetToken(hn.ctxTileAuth, hn.tileIdentity)
