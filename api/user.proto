@@ -39,18 +39,17 @@ message FileSystem {
 
 // Private Public Key Pair
 message KeyPair {
-  Key private = 1;
-  Key public = 2;
+  Private private = 1;
+  Public public = 2;
 
-  message Key {
+  message Private {
     string path = 1;
     bytes buffer = 2;
-    Type type = 3;
   }
 
-  enum Type {
-    PRIVATE_KEY = 0;
-    PUBLIC_KEY = 1;
+  message Public {
+    string id = 1;
+    bytes buffer = 2;
   }
 }
 

@@ -16,11 +16,48 @@ import (
 
 // ** ─── KeyPair MANAGEMENT ────────────────────────────────────────────────────────
 // Key File Name Constants
-const privKeyFileName = "sonr_privKey"
+const KEY_FILE_NAME = ".sonr_private_key"
 
 // Constructer that Initializes KeyPair without Buffer
-func (d *Device) InitKeyPair() *SonrError {
-	if _, err := os.Stat(d.WorkingFilePath(privKeyFileName)); os.IsNotExist(err) {
+func (d *Device) SetKeyPair() *SonrError {
+	if d.HasKeys() {
+		// Get PrivKey File
+		privBuf, serr := d.ReadKey()
+		if serr != nil {
+			return serr
+		}
+
+		// Get Private Key from Buffer
+		privKey, err := crypto.UnmarshalPrivateKey(privBuf)
+		if err != nil {
+			return NewError(err, ErrorMessage_KEY_INVALID)
+		}
+
+		// Get Public Key from Private and Marshal
+		pubKey := privKey.GetPublic()
+		pubBuf, err := crypto.MarshalPublicKey(pubKey)
+		if err != nil {
+			return NewError(err, ErrorMessage_KEY_SET)
+		}
+
+		// Get ID from Pub Key
+		id, err := peer.IDFromPublicKey(pubKey)
+		if err != nil {
+			return NewError(err, ErrorMessage_KEY_ID)
+		}
+
+		// Set Key Pair
+		d.KeyPair = &KeyPair{
+			Public: &KeyPair_Public{
+				Id:     id.String(),
+				Buffer: pubBuf,
+			},
+			Private: &KeyPair_Private{
+				Path:   d.WorkingKeyPath(),
+				Buffer: privBuf,
+			},
+		}
+	} else {
 		// Create New Key
 		privKey, pubKey, err := crypto.GenerateKeyPair(crypto.Ed25519, -1)
 		if err != nil {
@@ -40,58 +77,30 @@ func (d *Device) InitKeyPair() *SonrError {
 		}
 
 		// Write Private Key to File
-		_, werr := d.WriteFile(privKeyFileName, privBuf)
+		path, werr := d.WriteKey(privBuf)
 		if werr != nil {
 			return NewError(err, ErrorMessage_USER_SAVE)
 		}
 
-		// Set Key Pair
+		// Get ID from Pub Key
+		id, err := peer.IDFromPublicKey(pubKey)
+		if err != nil {
+			return NewError(err, ErrorMessage_KEY_ID)
+		}
+
+		// Set Keys
 		d.KeyPair = &KeyPair{
-			Public: &KeyPair_Key{
-				Type:   KeyPair_PUBLIC_KEY,
+			Public: &KeyPair_Public{
+				Id:     id.String(),
 				Buffer: pubBuf,
 			},
-			Private: &KeyPair_Key{
-				Path:   d.WorkingFilePath(privKeyFileName),
-				Type:   KeyPair_PRIVATE_KEY,
+			Private: &KeyPair_Private{
+				Path:   path,
 				Buffer: privBuf,
 			},
 		}
-		return nil
-	} else {
-		// Get PrivKey File
-		privBuf, serr := d.ReadFile(privKeyFileName)
-		if serr != nil {
-			return serr
-		}
-
-		// Get Private Key from Buffer
-		privKey, err := crypto.UnmarshalPrivateKey(privBuf)
-		if err != nil {
-			return NewError(err, ErrorMessage_KEY_INVALID)
-		}
-
-		// Get Public Key from Private and Marshal
-		pubKey := privKey.GetPublic()
-		pubBuf, err := crypto.MarshalPublicKey(pubKey)
-		if err != nil {
-			return NewError(err, ErrorMessage_KEY_SET)
-		}
-
-		// Set Key Pair
-		d.KeyPair = &KeyPair{
-			Public: &KeyPair_Key{
-				Type:   KeyPair_PUBLIC_KEY,
-				Buffer: pubBuf,
-			},
-			Private: &KeyPair_Key{
-				Path:   d.WorkingFilePath(privKeyFileName),
-				Type:   KeyPair_PRIVATE_KEY,
-				Buffer: privBuf,
-			},
-		}
-		return nil
 	}
+	return nil
 }
 
 // Method Returns PeerID from Public Key
@@ -155,7 +164,7 @@ func (kp *KeyPair) Verify(data []byte, sig []byte) (bool, error) {
 // ** ─── DEVICE MANAGEMENT ────────────────────────────────────────────────────────
 // Method Checks if Device has Keys
 func (d *Device) HasKeys() bool {
-	if _, err := os.Stat(d.WorkingFilePath(privKeyFileName)); os.IsNotExist(err) {
+	if _, err := os.Stat(d.WorkingFilePath(KEY_FILE_NAME)); os.IsNotExist(err) {
 		return false
 	}
 	return true
@@ -221,6 +230,15 @@ func (d *Device) IsFile(name string) bool {
 	}
 }
 
+// Loads Private Key Buf from Device FS Directory
+func (d *Device) ReadKey() ([]byte, *SonrError) {
+	dat, err := os.ReadFile(d.WorkingKeyPath())
+	if err != nil {
+		return nil, NewError(err, ErrorMessage_USER_LOAD)
+	}
+	return dat, nil
+}
+
 // Loads File from Disk as Buffer
 func (d *Device) ReadFile(name string) ([]byte, *SonrError) {
 	// Initialize
@@ -246,17 +264,39 @@ func (d *Device) ReadFile(name string) ([]byte, *SonrError) {
 	}
 }
 
+// Returns Path for Private Key File
+func (d *Device) WorkingKeyPath() string {
+	// Check for Desktop
+	if d.IsDesktop() {
+		return filepath.Join(d.FileSystem.GetLibrary(), KEY_FILE_NAME)
+	} else {
+		return filepath.Join(d.FileSystem.GetSupport(), KEY_FILE_NAME)
+	}
+}
+
 // Returns Path for Application/User Data
 func (d *Device) WorkingFilePath(fileName string) string {
 	// Check for Desktop
 	if d.IsDesktop() {
-		return filepath.Join(d.FileSystem.GetLibrary(), fileName)
+		return filepath.Join(d.FileSystem.GetDownloads(), fileName)
 	} else {
-		return filepath.Join(d.FileSystem.GetSupport(), fileName)
+		return filepath.Join(d.FileSystem.GetDocuments(), fileName)
 	}
 }
 
 // Writes a File to Disk and Returns Path
+func (d *Device) WriteKey(data []byte) (string, *SonrError) {
+	// Create File Path
+	path := d.WorkingKeyPath()
+
+	// Write File to Disk
+	if err := os.WriteFile(path, data, 0644); err != nil {
+		return "", NewError(err, ErrorMessage_USER_FS)
+	}
+	return path, nil
+}
+
+// Writes a File to Disk and Returns Path for Downloads/Documents
 func (d *Device) WriteFile(name string, data []byte) (string, *SonrError) {
 	// Create File Path
 	path := d.WorkingFilePath(name)
@@ -271,16 +311,20 @@ func (d *Device) WriteFile(name string, data []byte) (string, *SonrError) {
 // ** ─── User MANAGEMENT ────────────────────────────────────────────────────────
 // ^ Method Initializes User Info Struct ^ //
 func NewUser(ir *InitializeRequest, s Store) (*User, *SonrError) {
-	// Return User
-	u := &User{
-		Device:  ir.GetDevice(),
-		ApiKeys: ir.GetApiKeys(),
-		Status:  Status_DEFAULT,
+	// Initialize Device
+	d := ir.GetDevice()
+
+	// Fetch Key Pair
+	err := d.SetKeyPair()
+	if err != nil {
+		return nil, err
 	}
 
-	// Initialize Device KeyPair
-	if err := u.Device.InitKeyPair(); err != nil {
-		return nil, err
+	// Return User
+	u := &User{
+		Device:  d,
+		ApiKeys: ir.GetApiKeys(),
+		Status:  Status_DEFAULT,
 	}
 	return u, nil
 }
