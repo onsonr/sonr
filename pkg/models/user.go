@@ -9,17 +9,14 @@ import (
 	"time"
 
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
-	cryptopb "github.com/libp2p/go-libp2p-core/crypto/pb"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/multiformats/go-multiaddr"
-	util "github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/proto"
 )
 
 // ** ─── KeyPair MANAGEMENT ────────────────────────────────────────────────────────
 // Key File Name Constants
-const pubKeyFileName = ".snr-pub-key"
-const privKeyFileName = ".snr-priv-key"
+const privKeyFileName = "sonr_privKey"
 
 // Constructer that Initializes KeyPair without Buffer
 func (d *Device) InitKeyPair() *SonrError {
@@ -84,7 +81,6 @@ func (d *Device) InitKeyPair() *SonrError {
 		// Set Key Pair
 		d.KeyPair = &KeyPair{
 			Public: &KeyPair_Key{
-				Path:   d.WorkingFilePath(pubKeyFileName),
 				Type:   KeyPair_PUBLIC_KEY,
 				Buffer: pubBuf,
 			},
@@ -107,15 +103,10 @@ func (kp *KeyPair) ID() (peer.ID, *SonrError) {
 	return id, nil
 }
 
-// Method Returns KeyPair Type for Crypto Protobuf
-func (kp *KeyPair) KeyType() cryptopb.KeyType {
-	return cryptopb.KeyType_Ed25519
-}
-
 // Method Returns Private Key
 func (kp *KeyPair) PrivKey() crypto.PrivKey {
 	// Get Key from Buffer
-	key, err := crypto.UnmarshalPrivateKey(kp.Private.GetBuffer())
+	key, err := crypto.UnmarshalPrivateKey(kp.GetPrivate().GetBuffer())
 	if err != nil {
 		return nil
 	}
@@ -125,7 +116,7 @@ func (kp *KeyPair) PrivKey() crypto.PrivKey {
 // Method Returns Public Key
 func (kp *KeyPair) PubKey() crypto.PubKey {
 	// Get Key from Buffer
-	privKey, err := crypto.UnmarshalPrivateKey(kp.Private.GetBuffer())
+	privKey, err := crypto.UnmarshalPrivateKey(kp.GetPrivate().GetBuffer())
 	if err != nil {
 		return nil
 	}
@@ -230,26 +221,6 @@ func (d *Device) IsFile(name string) bool {
 	}
 }
 
-// Method Returns Crypto Prefix With Signature
-func (d *Device) Prefix(sName string) (string, error) {
-	kp := d.GetKeyPair()
-	buf, err := kp.Sign([]byte(sName + d.GetId()))
-	if err != nil {
-		return "", err
-	}
-	return util.Substring(string(buf), 0, 16), nil
-}
-
-// Returns Device Fingerprint
-func (d *Device) Fingerprint(mnemonic string) (string, error) {
-	kp := d.GetKeyPair()
-	buf, err := kp.Sign([]byte(mnemonic))
-	if err != nil {
-		return "", err
-	}
-	return string(buf), nil
-}
-
 // Loads File from Disk as Buffer
 func (d *Device) ReadFile(name string) ([]byte, *SonrError) {
 	// Initialize
@@ -273,15 +244,6 @@ func (d *Device) ReadFile(name string) ([]byte, *SonrError) {
 		}
 		return dat, nil
 	}
-}
-
-// Checks if Given Prefix Matches User Prefix
-func (d *Device) VerifyPrefix(prefix string, sName string) bool {
-	knownPrefix, err := d.Prefix(sName)
-	if err != nil {
-		return false
-	}
-	return prefix == knownPrefix
 }
 
 // Returns Path for Application/User Data
@@ -362,15 +324,6 @@ func (u *User) KeyPair() *KeyPair {
 // Method Returns Profile Last Name
 func (u *User) LastName() string {
 	return u.GetPeer().GetProfile().GetLastName()
-}
-
-// Method Returns Prefix for User
-func (u *User) Prefix() (string, error) {
-	p, err := u.GetDevice().Prefix(u.Profile().GetSName())
-	if err != nil {
-		return "", err
-	}
-	return p, nil
 }
 
 // Method Returns Profile
