@@ -23,7 +23,45 @@ const privKeyFileName = ".snr-priv-key"
 
 // Constructer that Initializes KeyPair without Buffer
 func (d *Device) InitKeyPair() *SonrError {
-	if d.KeyPair.Exists() {
+	if _, err := os.Stat(d.WorkingFilePath(privKeyFileName)); os.IsNotExist(err) {
+		// Create New Key
+		privKey, pubKey, err := crypto.GenerateKeyPair(crypto.Ed25519, -1)
+		if err != nil {
+			return NewError(err, ErrorMessage_HOST_KEY)
+		}
+
+		// Marshal Data
+		privBuf, err := crypto.MarshalPrivateKey(privKey)
+		if err != nil {
+			return NewError(err, ErrorMessage_MARSHAL)
+		}
+
+		// Marshal Data
+		pubBuf, err := crypto.MarshalPublicKey(pubKey)
+		if err != nil {
+			return NewError(err, ErrorMessage_MARSHAL)
+		}
+
+		// Write Private Key to File
+		_, werr := d.WriteFile(privKeyFileName, privBuf)
+		if werr != nil {
+			return NewError(err, ErrorMessage_USER_SAVE)
+		}
+
+		// Set Key Pair
+		d.KeyPair = &KeyPair{
+			Public: &KeyPair_Key{
+				Type:   KeyPair_PUBLIC_KEY,
+				Buffer: pubBuf,
+			},
+			Private: &KeyPair_Key{
+				Path:   d.WorkingFilePath(privKeyFileName),
+				Type:   KeyPair_PRIVATE_KEY,
+				Buffer: privBuf,
+			},
+		}
+		return nil
+	} else {
 		// Get PrivKey File
 		privBuf, serr := d.ReadFile(privKeyFileName)
 		if serr != nil {
@@ -58,53 +96,6 @@ func (d *Device) InitKeyPair() *SonrError {
 		}
 		return nil
 	}
-	// Create New Key
-	privKey, pubKey, err := crypto.GenerateKeyPair(crypto.Ed25519, -1)
-	if err != nil {
-		return NewError(err, ErrorMessage_HOST_KEY)
-	}
-
-	// Marshal Data
-	privBuf, err := crypto.MarshalPrivateKey(privKey)
-	if err != nil {
-		return NewError(err, ErrorMessage_MARSHAL)
-	}
-
-	// Marshal Data
-	pubBuf, err := crypto.MarshalPublicKey(pubKey)
-	if err != nil {
-		return NewError(err, ErrorMessage_MARSHAL)
-	}
-
-	// Write Private Key to File
-	_, werr := d.WriteFile(privKeyFileName, privBuf)
-	if werr != nil {
-		return NewError(err, ErrorMessage_USER_SAVE)
-	}
-
-	// Set Key Pair
-	d.KeyPair = &KeyPair{
-		Public: &KeyPair_Key{
-			Type:   KeyPair_PUBLIC_KEY,
-			Buffer: pubBuf,
-		},
-		Private: &KeyPair_Key{
-			Path:   d.WorkingFilePath(privKeyFileName),
-			Type:   KeyPair_PRIVATE_KEY,
-			Buffer: privBuf,
-		},
-	}
-	return nil
-}
-
-// Method Checks if KeyPair Exists at Path
-func (kp *KeyPair) Exists() bool {
-	// Check Path for Public
-	if _, err := os.Stat(kp.Private.Path); os.IsNotExist(err) {
-		return false
-	} else {
-		return true
-	}
 }
 
 // Method Returns PeerID from Public Key
@@ -123,28 +114,22 @@ func (kp *KeyPair) KeyType() cryptopb.KeyType {
 
 // Method Returns Private Key
 func (kp *KeyPair) PrivKey() crypto.PrivKey {
-	if kp.Exists() {
-		// Get Key from Buffer
-		key, err := crypto.UnmarshalPrivateKey(kp.Private.GetBuffer())
-		if err != nil {
-			return nil
-		}
-		return key
+	// Get Key from Buffer
+	key, err := crypto.UnmarshalPrivateKey(kp.Private.GetBuffer())
+	if err != nil {
+		return nil
 	}
-	return nil
+	return key
 }
 
 // Method Returns Public Key
 func (kp *KeyPair) PubKey() crypto.PubKey {
-	if kp.Exists() {
-		// Get Key from Buffer
-		privKey, err := crypto.UnmarshalPrivateKey(kp.Private.GetBuffer())
-		if err != nil {
-			return nil
-		}
-		return privKey.GetPublic()
+	// Get Key from Buffer
+	privKey, err := crypto.UnmarshalPrivateKey(kp.Private.GetBuffer())
+	if err != nil {
+		return nil
 	}
-	return nil
+	return privKey.GetPublic()
 }
 
 // Method Signs given data and returns response
@@ -177,6 +162,14 @@ func (kp *KeyPair) Verify(data []byte, sig []byte) (bool, error) {
 }
 
 // ** ─── DEVICE MANAGEMENT ────────────────────────────────────────────────────────
+// Method Checks if Device has Keys
+func (d *Device) HasKeys() bool {
+	if _, err := os.Stat(d.WorkingFilePath(privKeyFileName)); os.IsNotExist(err) {
+		return false
+	}
+	return true
+}
+
 // Method Checks for Desktop
 func (d *Device) IsDesktop() bool {
 	return d.Platform == Platform_MacOS || d.Platform == Platform_Linux || d.Platform == Platform_Windows
