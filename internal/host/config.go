@@ -26,6 +26,9 @@ const globalProtocol = protocol.ID("/sonr/global-service/0.1")
 // Textile Client API URL
 const textileApiUrl = "api.hub.textile.io:443"
 
+// Textile Miner Index Target
+const textileMinerIdx = "f022352"
+
 // ** ─── HostNode Info/Status Methods ────────────────────────────────────────────────────────
 // @ Close Libp2p Host
 func (h *hostNode) Close() {

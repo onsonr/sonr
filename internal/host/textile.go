@@ -10,6 +10,8 @@ import (
 	"github.com/textileio/go-threads/api/client"
 	"github.com/textileio/go-threads/core/thread"
 	"github.com/textileio/textile/v2/api/common"
+	"github.com/textileio/textile/v2/cmd"
+	"github.com/textileio/textile/v2/mail/local"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 )
@@ -45,8 +47,19 @@ func (hn *hostNode) StartTextile() *md.SonrError {
 	if err != nil {
 		return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
 	}
+	// Setup the mail lib
+	hn.tileMail = local.NewMail(cmd.NewClients(textileApiUrl, true, textileMinerIdx), local.DefaultConfConfig())
 
-	// Return Instance
+	// Create a new mailbox with config
+	hn.tileMailbox, err = hn.tileMail.NewMailbox(context.Background(), local.Config{
+		Path:      "path/to/mail/folder", // Usually a global location like ~/.textile/mail
+		Identity:  hn.tileIdentity,
+		APIKey:    hn.apiKeys.TextileKey,
+		APISecret: hn.apiKeys.TextileSecret,
+	})
+	if err != nil {
+		return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+	}
 	return nil
 }
 

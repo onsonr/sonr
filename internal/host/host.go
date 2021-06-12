@@ -21,6 +21,7 @@ import (
 	md "github.com/sonr-io/core/pkg/models"
 	"github.com/textileio/go-threads/api/client"
 	"github.com/textileio/go-threads/core/thread"
+	"github.com/textileio/textile/v2/mail/local"
 )
 
 // ** ─── Interface MANAGEMENT ────────────────────────────────────────────────────────
@@ -67,6 +68,8 @@ type hostNode struct {
 	// Textile
 	tileIdentity thread.Identity
 	tileClient   *client.Client
+	tileMail     *local.Mail
+	tileMailbox  *local.Mailbox
 }
 
 // ^ Start Begins Assigning Host Parameters ^
