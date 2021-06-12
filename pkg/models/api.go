@@ -464,55 +464,51 @@ func (r *User_Router) Topic(name string) string {
 	return fmt.Sprintf("/sonr/topic/%s", name)
 }
 
-// @ Major Rendevouz Advertising Point
-func (u *User) GetRouter() *User_Router {
-	return u.GetConnection().GetRouter()
-}
 
 // ** ─── Status MANAGEMENT ────────────────────────────────────────────────────────
 // Update Connected Connection Status
 func (u *User) SetConnected(value bool) *StatusUpdate {
 	// Update Status
 	if value {
-		u.Connection.Status = Status_CONNECTED
+		u.Status = Status_CONNECTED
 	} else {
-		u.Connection.Status = Status_FAILED
+		u.Status = Status_FAILED
 	}
 
 	// Returns Status Update
-	return &StatusUpdate{Value: u.Connection.GetStatus()}
+	return &StatusUpdate{Value: u.GetStatus()}
 }
 
 // Update Bootstrap Connection Status
 func (u *User) SetAvailable(value bool) *StatusUpdate {
 	// Update Status
 	if value {
-		u.Connection.Status = Status_AVAILABLE
+		u.Status = Status_AVAILABLE
 	} else {
-		u.Connection.Status = Status_FAILED
+		u.Status = Status_FAILED
 	}
 
 	// Returns Status Update
-	return &StatusUpdate{Value: u.Connection.GetStatus()}
+	return &StatusUpdate{Value: u.GetStatus()}
 }
 
 // Update Node Status
 func (u *User) SetStatus(ns Status) *StatusUpdate {
 	// Set Value
-	u.Connection.Status = ns
+	u.Status = ns
 
 	// Returns Status Update
-	return &StatusUpdate{Value: u.Connection.GetStatus()}
+	return &StatusUpdate{Value: u.GetStatus()}
 }
 
 // Checks if Status is Given Value
 func (u *User) IsStatus(gs Status) bool {
-	return u.GetConnection().GetStatus() == gs
+	return u.GetStatus() == gs
 }
 
 // Checks if Status is Not Given Value
 func (u *User) IsNotStatus(gs Status) bool {
-	return u.GetConnection().GetStatus() != gs
+	return u.GetStatus() != gs
 }
 
 // ** ─── Error MANAGEMENT ────────────────────────────────────────────────────────

@@ -52,12 +52,18 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	}
 
 	// Create Store - Start Auth Service
-	if s, err := md.InitStore(req.GetDevice()); err == nil {
+	if s, err := md.InitStore(req.GetDevice()); err != nil {
+		mn.handleError(err)
+	} else {
 		mn.store = s
 	}
 
 	// Create User
-	mn.user = md.NewUser(req, mn.store)
+	if u, err := md.NewUser(req, mn.store); err != nil {
+		mn.handleError(err)
+	} else {
+		mn.user = u
+	}
 
 	// Create Client
 	mn.client = sc.NewClient(mn.ctx, mn.user, mn.callback())
@@ -65,13 +71,12 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 }
 
 // @ Starts Host and Connects
-func (mn *Node) Connect(data []byte) []byte {
+func (mn *Node) Connect(data []byte) {
 	// Unmarshal Request
 	req := &md.ConnectionRequest{}
 	err := proto.Unmarshal(data, req)
 	if err != nil {
 		sentry.CaptureException(errors.Wrap(err, "Unmarshalling Connection Request"))
-		return nil
 	}
 
 	// Update User with Connection Request
@@ -82,7 +87,6 @@ func (mn *Node) Connect(data []byte) []byte {
 	if serr != nil {
 		mn.handleError(serr)
 		mn.setConnected(false)
-		return nil
 	} else {
 		// Update Status
 		mn.setConnected(true)
@@ -93,22 +97,9 @@ func (mn *Node) Connect(data []byte) []byte {
 	if err != nil {
 		mn.handleError(serr)
 		mn.setAvailable(false)
-		return nil
 	} else {
 		mn.setAvailable(true)
 	}
-
-	// Create ConnectionResponse
-	bytes, err := proto.Marshal(&md.ConnectionResponse{
-		Id: mn.user.ID(),
-	})
-
-	// Handle Error
-	if err != nil {
-		mn.handleError(md.NewMarshalError(err))
-		return nil
-	}
-	return bytes
 }
 
 // ** ─── Node Binded Actions ────────────────────────────────────────────────────────

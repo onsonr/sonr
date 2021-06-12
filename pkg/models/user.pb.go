@@ -187,7 +187,7 @@ func (x User_Settings_Option_Type) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use User_Settings_Option_Type.Descriptor instead.
 func (User_Settings_Option_Type) EnumDescriptor() ([]byte, []int) {
-	return file_user_proto_rawDescGZIP(), []int{4, 3, 2, 0}
+	return file_user_proto_rawDescGZIP(), []int{4, 2, 2, 0}
 }
 
 // Client Keys for Services
@@ -524,13 +524,17 @@ type User struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Connection *User_Connection `protobuf:"bytes,1,opt,name=connection,proto3" json:"connection,omitempty"` // Clients Connection Reference
-	Peer       *Peer            `protobuf:"bytes,2,opt,name=peer,proto3" json:"peer,omitempty"`             // Clients Peer Reference
-	Location   *Location        `protobuf:"bytes,3,opt,name=location,proto3" json:"location,omitempty"`     // Clients current Location
-	Device     *Device          `protobuf:"bytes,4,opt,name=device,proto3" json:"device,omitempty"`         // Clients Current Device
-	Crypto     *User_Crypto     `protobuf:"bytes,5,opt,name=crypto,proto3" json:"crypto,omitempty"`         // User Cryptographic Data
-	Settings   *User_Settings   `protobuf:"bytes,6,opt,name=settings,proto3" json:"settings,omitempty"`     // User Settings
-	Contact    *Contact         `protobuf:"bytes,7,opt,name=contact,proto3" json:"contact,omitempty"`
+	// From InitializeRequest
+	ApiKeys *APIKeys `protobuf:"bytes,1,opt,name=apiKeys,proto3" json:"apiKeys,omitempty"`            // App Env Variables for API Keys
+	Status  Status   `protobuf:"varint,2,opt,name=status,proto3,enum=Status" json:"status,omitempty"` // Client Node Status
+	Device  *Device  `protobuf:"bytes,3,opt,name=device,proto3" json:"device,omitempty"`              // Clients Current Device
+	// From ConnectionRequest
+	Peer     *Peer          `protobuf:"bytes,4,opt,name=peer,proto3" json:"peer,omitempty"`         // Clients Peer Reference
+	Location *Location      `protobuf:"bytes,5,opt,name=location,proto3" json:"location,omitempty"` // Clients current Location
+	Crypto   *User_Crypto   `protobuf:"bytes,6,opt,name=crypto,proto3" json:"crypto,omitempty"`     // User Cryptographic Data
+	Settings *User_Settings `protobuf:"bytes,7,opt,name=settings,proto3" json:"settings,omitempty"` // User Settings
+	Contact  *Contact       `protobuf:"bytes,8,opt,name=contact,proto3" json:"contact,omitempty"`   // Users Contact Card
+	Router   *User_Router   `protobuf:"bytes,9,opt,name=router,proto3" json:"router,omitempty"`     // Client Routing Information
 }
 
 func (x *User) Reset() {
@@ -565,9 +569,23 @@ func (*User) Descriptor() ([]byte, []int) {
 	return file_user_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *User) GetConnection() *User_Connection {
+func (x *User) GetApiKeys() *APIKeys {
 	if x != nil {
-		return x.Connection
+		return x.ApiKeys
+	}
+	return nil
+}
+
+func (x *User) GetStatus() Status {
+	if x != nil {
+		return x.Status
+	}
+	return Status_DEFAULT
+}
+
+func (x *User) GetDevice() *Device {
+	if x != nil {
+		return x.Device
 	}
 	return nil
 }
@@ -582,13 +600,6 @@ func (x *User) GetPeer() *Peer {
 func (x *User) GetLocation() *Location {
 	if x != nil {
 		return x.Location
-	}
-	return nil
-}
-
-func (x *User) GetDevice() *Device {
-	if x != nil {
-		return x.Device
 	}
 	return nil
 }
@@ -610,6 +621,13 @@ func (x *User) GetSettings() *User_Settings {
 func (x *User) GetContact() *Contact {
 	if x != nil {
 		return x.Contact
+	}
+	return nil
+}
+
+func (x *User) GetRouter() *User_Router {
+	if x != nil {
+		return x.Router
 	}
 	return nil
 }
@@ -677,70 +695,6 @@ func (x *KeyPair_Key) GetType() KeyPair_Type {
 	return KeyPair_PRIVATE_KEY
 }
 
-// User Connection Management - Attached from Node Client
-type User_Connection struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	ApiKeys *APIKeys     `protobuf:"bytes,1,opt,name=apiKeys,proto3" json:"apiKeys,omitempty"`
-	Status  Status       `protobuf:"varint,2,opt,name=status,proto3,enum=Status" json:"status,omitempty"` // Client Node Status
-	Router  *User_Router `protobuf:"bytes,3,opt,name=router,proto3" json:"router,omitempty"`              // Client Routing Information
-}
-
-func (x *User_Connection) Reset() {
-	*x = User_Connection{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_user_proto_msgTypes[6]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *User_Connection) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*User_Connection) ProtoMessage() {}
-
-func (x *User_Connection) ProtoReflect() protoreflect.Message {
-	mi := &file_user_proto_msgTypes[6]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use User_Connection.ProtoReflect.Descriptor instead.
-func (*User_Connection) Descriptor() ([]byte, []int) {
-	return file_user_proto_rawDescGZIP(), []int{4, 0}
-}
-
-func (x *User_Connection) GetApiKeys() *APIKeys {
-	if x != nil {
-		return x.ApiKeys
-	}
-	return nil
-}
-
-func (x *User_Connection) GetStatus() Status {
-	if x != nil {
-		return x.Status
-	}
-	return Status_DEFAULT
-}
-
-func (x *User_Connection) GetRouter() *User_Router {
-	if x != nil {
-		return x.Router
-	}
-	return nil
-}
-
 // Crypto Data to Place in DHT
 type User_Crypto struct {
 	state         protoimpl.MessageState
@@ -755,7 +709,7 @@ type User_Crypto struct {
 func (x *User_Crypto) Reset() {
 	*x = User_Crypto{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_user_proto_msgTypes[7]
+		mi := &file_user_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -768,7 +722,7 @@ func (x *User_Crypto) String() string {
 func (*User_Crypto) ProtoMessage() {}
 
 func (x *User_Crypto) ProtoReflect() protoreflect.Message {
-	mi := &file_user_proto_msgTypes[7]
+	mi := &file_user_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -781,7 +735,7 @@ func (x *User_Crypto) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use User_Crypto.ProtoReflect.Descriptor instead.
 func (*User_Crypto) Descriptor() ([]byte, []int) {
-	return file_user_proto_rawDescGZIP(), []int{4, 1}
+	return file_user_proto_rawDescGZIP(), []int{4, 0}
 }
 
 func (x *User_Crypto) GetPrefix() string {
@@ -821,7 +775,7 @@ type User_Router struct {
 func (x *User_Router) Reset() {
 	*x = User_Router{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_user_proto_msgTypes[8]
+		mi := &file_user_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -834,7 +788,7 @@ func (x *User_Router) String() string {
 func (*User_Router) ProtoMessage() {}
 
 func (x *User_Router) ProtoReflect() protoreflect.Message {
-	mi := &file_user_proto_msgTypes[8]
+	mi := &file_user_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -847,7 +801,7 @@ func (x *User_Router) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use User_Router.ProtoReflect.Descriptor instead.
 func (*User_Router) Descriptor() ([]byte, []int) {
-	return file_user_proto_rawDescGZIP(), []int{4, 2}
+	return file_user_proto_rawDescGZIP(), []int{4, 1}
 }
 
 func (x *User_Router) GetDeviceTopic() string {
@@ -892,7 +846,7 @@ type User_Settings struct {
 func (x *User_Settings) Reset() {
 	*x = User_Settings{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_user_proto_msgTypes[9]
+		mi := &file_user_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -905,7 +859,7 @@ func (x *User_Settings) String() string {
 func (*User_Settings) ProtoMessage() {}
 
 func (x *User_Settings) ProtoReflect() protoreflect.Message {
-	mi := &file_user_proto_msgTypes[9]
+	mi := &file_user_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -918,7 +872,7 @@ func (x *User_Settings) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use User_Settings.ProtoReflect.Descriptor instead.
 func (*User_Settings) Descriptor() ([]byte, []int) {
-	return file_user_proto_rawDescGZIP(), []int{4, 3}
+	return file_user_proto_rawDescGZIP(), []int{4, 2}
 }
 
 func (x *User_Settings) GetPrimary() *Device {
@@ -958,7 +912,7 @@ type User_Settings_Option struct {
 func (x *User_Settings_Option) Reset() {
 	*x = User_Settings_Option{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_user_proto_msgTypes[12]
+		mi := &file_user_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -971,7 +925,7 @@ func (x *User_Settings_Option) String() string {
 func (*User_Settings_Option) ProtoMessage() {}
 
 func (x *User_Settings_Option) ProtoReflect() protoreflect.Message {
-	mi := &file_user_proto_msgTypes[12]
+	mi := &file_user_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -984,7 +938,7 @@ func (x *User_Settings_Option) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use User_Settings_Option.ProtoReflect.Descriptor instead.
 func (*User_Settings_Option) Descriptor() ([]byte, []int) {
-	return file_user_proto_rawDescGZIP(), []int{4, 3, 2}
+	return file_user_proto_rawDescGZIP(), []int{4, 2, 2}
 }
 
 func (x *User_Settings_Option) GetType() User_Settings_Option_Type {
@@ -1096,30 +1050,26 @@ var file_user_proto_rawDesc = []byte{
 	0x54, 0x79, 0x70, 0x65, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x22, 0x27, 0x0a, 0x04, 0x54, 0x79,
 	0x70, 0x65, 0x12, 0x0f, 0x0a, 0x0b, 0x50, 0x52, 0x49, 0x56, 0x41, 0x54, 0x45, 0x5f, 0x4b, 0x45,
 	0x59, 0x10, 0x00, 0x12, 0x0e, 0x0a, 0x0a, 0x50, 0x55, 0x42, 0x4c, 0x49, 0x43, 0x5f, 0x4b, 0x45,
-	0x59, 0x10, 0x01, 0x22, 0xa0, 0x09, 0x0a, 0x04, 0x55, 0x73, 0x65, 0x72, 0x12, 0x30, 0x0a, 0x0a,
-	0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b,
-	0x32, 0x10, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x2e, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69,
-	0x6f, 0x6e, 0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x19,
-	0x0a, 0x04, 0x70, 0x65, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x05, 0x2e, 0x50,
-	0x65, 0x65, 0x72, 0x52, 0x04, 0x70, 0x65, 0x65, 0x72, 0x12, 0x25, 0x0a, 0x08, 0x6c, 0x6f, 0x63,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x09, 0x2e, 0x4c, 0x6f,
-	0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x08, 0x6c, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e,
-	0x12, 0x1f, 0x0a, 0x06, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b,
-	0x32, 0x07, 0x2e, 0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x52, 0x06, 0x64, 0x65, 0x76, 0x69, 0x63,
-	0x65, 0x12, 0x24, 0x0a, 0x06, 0x63, 0x72, 0x79, 0x70, 0x74, 0x6f, 0x18, 0x05, 0x20, 0x01, 0x28,
-	0x0b, 0x32, 0x0c, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x2e, 0x43, 0x72, 0x79, 0x70, 0x74, 0x6f, 0x52,
-	0x06, 0x63, 0x72, 0x79, 0x70, 0x74, 0x6f, 0x12, 0x2a, 0x0a, 0x08, 0x73, 0x65, 0x74, 0x74, 0x69,
-	0x6e, 0x67, 0x73, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x55, 0x73, 0x65, 0x72,
-	0x2e, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x52, 0x08, 0x73, 0x65, 0x74, 0x74, 0x69,
-	0x6e, 0x67, 0x73, 0x12, 0x22, 0x0a, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x18, 0x07,
-	0x20, 0x01, 0x28, 0x0b, 0x32, 0x08, 0x2e, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x52, 0x07,
-	0x63, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x1a, 0x77, 0x0a, 0x0a, 0x43, 0x6f, 0x6e, 0x6e, 0x65,
-	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x22, 0x0a, 0x07, 0x61, 0x70, 0x69, 0x4b, 0x65, 0x79, 0x73,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x08, 0x2e, 0x41, 0x50, 0x49, 0x4b, 0x65, 0x79, 0x73,
-	0x52, 0x07, 0x61, 0x70, 0x69, 0x4b, 0x65, 0x79, 0x73, 0x12, 0x1f, 0x0a, 0x06, 0x73, 0x74, 0x61,
-	0x74, 0x75, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x07, 0x2e, 0x53, 0x74, 0x61, 0x74,
-	0x75, 0x73, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x24, 0x0a, 0x06, 0x72, 0x6f,
-	0x75, 0x74, 0x65, 0x72, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x55, 0x73, 0x65,
+	0x59, 0x10, 0x01, 0x22, 0xe0, 0x08, 0x0a, 0x04, 0x55, 0x73, 0x65, 0x72, 0x12, 0x22, 0x0a, 0x07,
+	0x61, 0x70, 0x69, 0x4b, 0x65, 0x79, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x08, 0x2e,
+	0x41, 0x50, 0x49, 0x4b, 0x65, 0x79, 0x73, 0x52, 0x07, 0x61, 0x70, 0x69, 0x4b, 0x65, 0x79, 0x73,
+	0x12, 0x1f, 0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0e,
+	0x32, 0x07, 0x2e, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75,
+	0x73, 0x12, 0x1f, 0x0a, 0x06, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x07, 0x2e, 0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x52, 0x06, 0x64, 0x65, 0x76, 0x69,
+	0x63, 0x65, 0x12, 0x19, 0x0a, 0x04, 0x70, 0x65, 0x65, 0x72, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x05, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x04, 0x70, 0x65, 0x65, 0x72, 0x12, 0x25, 0x0a,
+	0x08, 0x6c, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x09, 0x2e, 0x4c, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x08, 0x6c, 0x6f, 0x63, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x12, 0x24, 0x0a, 0x06, 0x63, 0x72, 0x79, 0x70, 0x74, 0x6f, 0x18, 0x06,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x2e, 0x43, 0x72, 0x79, 0x70,
+	0x74, 0x6f, 0x52, 0x06, 0x63, 0x72, 0x79, 0x70, 0x74, 0x6f, 0x12, 0x2a, 0x0a, 0x08, 0x73, 0x65,
+	0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x18, 0x07, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x55,
+	0x73, 0x65, 0x72, 0x2e, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x52, 0x08, 0x73, 0x65,
+	0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x12, 0x22, 0x0a, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x61, 0x63,
+	0x74, 0x18, 0x08, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x08, 0x2e, 0x43, 0x6f, 0x6e, 0x74, 0x61, 0x63,
+	0x74, 0x52, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x61, 0x63, 0x74, 0x12, 0x24, 0x0a, 0x06, 0x72, 0x6f,
+	0x75, 0x74, 0x65, 0x72, 0x18, 0x09, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x55, 0x73, 0x65,
 	0x72, 0x2e, 0x52, 0x6f, 0x75, 0x74, 0x65, 0x72, 0x52, 0x06, 0x72, 0x6f, 0x75, 0x74, 0x65, 0x72,
 	0x1a, 0x52, 0x0a, 0x06, 0x43, 0x72, 0x79, 0x70, 0x74, 0x6f, 0x12, 0x16, 0x0a, 0x06, 0x70, 0x72,
 	0x65, 0x66, 0x69, 0x78, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x70, 0x72, 0x65, 0x66,
@@ -1195,7 +1145,7 @@ func file_user_proto_rawDescGZIP() []byte {
 }
 
 var file_user_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
-var file_user_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_user_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_user_proto_goTypes = []interface{}{
 	(Status)(0),                    // 0: Status
 	(KeyPair_Type)(0),              // 1: KeyPair.Type
@@ -1206,47 +1156,45 @@ var file_user_proto_goTypes = []interface{}{
 	(*KeyPair)(nil),                // 6: KeyPair
 	(*User)(nil),                   // 7: User
 	(*KeyPair_Key)(nil),            // 8: KeyPair.Key
-	(*User_Connection)(nil),        // 9: User.Connection
-	(*User_Crypto)(nil),            // 10: User.Crypto
-	(*User_Router)(nil),            // 11: User.Router
-	(*User_Settings)(nil),          // 12: User.Settings
-	nil,                            // 13: User.Settings.DevicesEntry
-	nil,                            // 14: User.Settings.PreferencesEntry
-	(*User_Settings_Option)(nil),   // 15: User.Settings.Option
-	(Platform)(0),                  // 16: Platform
-	(*Peer)(nil),                   // 17: Peer
-	(*Location)(nil),               // 18: Location
-	(*Contact)(nil),                // 19: Contact
+	(*User_Crypto)(nil),            // 9: User.Crypto
+	(*User_Router)(nil),            // 10: User.Router
+	(*User_Settings)(nil),          // 11: User.Settings
+	nil,                            // 12: User.Settings.DevicesEntry
+	nil,                            // 13: User.Settings.PreferencesEntry
+	(*User_Settings_Option)(nil),   // 14: User.Settings.Option
+	(Platform)(0),                  // 15: Platform
+	(*Peer)(nil),                   // 16: Peer
+	(*Location)(nil),               // 17: Location
+	(*Contact)(nil),                // 18: Contact
 }
 var file_user_proto_depIdxs = []int32{
-	16, // 0: Device.platform:type_name -> Platform
+	15, // 0: Device.platform:type_name -> Platform
 	5,  // 1: Device.fileSystem:type_name -> FileSystem
 	6,  // 2: Device.keyPair:type_name -> KeyPair
 	8,  // 3: KeyPair.private:type_name -> KeyPair.Key
 	8,  // 4: KeyPair.public:type_name -> KeyPair.Key
-	9,  // 5: User.connection:type_name -> User.Connection
-	17, // 6: User.peer:type_name -> Peer
-	18, // 7: User.location:type_name -> Location
-	4,  // 8: User.device:type_name -> Device
-	10, // 9: User.crypto:type_name -> User.Crypto
-	12, // 10: User.settings:type_name -> User.Settings
-	19, // 11: User.contact:type_name -> Contact
-	1,  // 12: KeyPair.Key.type:type_name -> KeyPair.Type
-	3,  // 13: User.Connection.apiKeys:type_name -> APIKeys
-	0,  // 14: User.Connection.status:type_name -> Status
-	11, // 15: User.Connection.router:type_name -> User.Router
-	18, // 16: User.Router.location:type_name -> Location
-	4,  // 17: User.Settings.primary:type_name -> Device
-	13, // 18: User.Settings.devices:type_name -> User.Settings.DevicesEntry
-	14, // 19: User.Settings.preferences:type_name -> User.Settings.PreferencesEntry
-	4,  // 20: User.Settings.DevicesEntry.value:type_name -> Device
-	15, // 21: User.Settings.PreferencesEntry.value:type_name -> User.Settings.Option
-	2,  // 22: User.Settings.Option.type:type_name -> User.Settings.Option.Type
-	23, // [23:23] is the sub-list for method output_type
-	23, // [23:23] is the sub-list for method input_type
-	23, // [23:23] is the sub-list for extension type_name
-	23, // [23:23] is the sub-list for extension extendee
-	0,  // [0:23] is the sub-list for field type_name
+	3,  // 5: User.apiKeys:type_name -> APIKeys
+	0,  // 6: User.status:type_name -> Status
+	4,  // 7: User.device:type_name -> Device
+	16, // 8: User.peer:type_name -> Peer
+	17, // 9: User.location:type_name -> Location
+	9,  // 10: User.crypto:type_name -> User.Crypto
+	11, // 11: User.settings:type_name -> User.Settings
+	18, // 12: User.contact:type_name -> Contact
+	10, // 13: User.router:type_name -> User.Router
+	1,  // 14: KeyPair.Key.type:type_name -> KeyPair.Type
+	17, // 15: User.Router.location:type_name -> Location
+	4,  // 16: User.Settings.primary:type_name -> Device
+	12, // 17: User.Settings.devices:type_name -> User.Settings.DevicesEntry
+	13, // 18: User.Settings.preferences:type_name -> User.Settings.PreferencesEntry
+	4,  // 19: User.Settings.DevicesEntry.value:type_name -> Device
+	14, // 20: User.Settings.PreferencesEntry.value:type_name -> User.Settings.Option
+	2,  // 21: User.Settings.Option.type:type_name -> User.Settings.Option.Type
+	22, // [22:22] is the sub-list for method output_type
+	22, // [22:22] is the sub-list for method input_type
+	22, // [22:22] is the sub-list for extension type_name
+	22, // [22:22] is the sub-list for extension extendee
+	0,  // [0:22] is the sub-list for field type_name
 }
 
 func init() { file_user_proto_init() }
@@ -1330,18 +1278,6 @@ func file_user_proto_init() {
 			}
 		}
 		file_user_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*User_Connection); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_user_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*User_Crypto); i {
 			case 0:
 				return &v.state
@@ -1353,7 +1289,7 @@ func file_user_proto_init() {
 				return nil
 			}
 		}
-		file_user_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+		file_user_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*User_Router); i {
 			case 0:
 				return &v.state
@@ -1365,7 +1301,7 @@ func file_user_proto_init() {
 				return nil
 			}
 		}
-		file_user_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+		file_user_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*User_Settings); i {
 			case 0:
 				return &v.state
@@ -1377,7 +1313,7 @@ func file_user_proto_init() {
 				return nil
 			}
 		}
-		file_user_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+		file_user_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*User_Settings_Option); i {
 			case 0:
 				return &v.state
@@ -1390,7 +1326,7 @@ func file_user_proto_init() {
 			}
 		}
 	}
-	file_user_proto_msgTypes[12].OneofWrappers = []interface{}{
+	file_user_proto_msgTypes[11].OneofWrappers = []interface{}{
 		(*User_Settings_Option_Enabled)(nil),
 		(*User_Settings_Option_Text)(nil),
 	}
@@ -1400,7 +1336,7 @@ func file_user_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_user_proto_rawDesc,
 			NumEnums:      3,
-			NumMessages:   13,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

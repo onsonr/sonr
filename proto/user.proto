@@ -69,20 +69,18 @@ enum Status {
 
 // User is the Saved Data from Client that Passes to Proxy, During ConnRequest
 message User {
-  Connection connection = 1; // Clients Connection Reference
-  Peer peer = 2;             // Clients Peer Reference
-  Location location = 3;     // Clients current Location
-  Device device = 4;         // Clients Current Device
-  Crypto crypto = 5;         // User Cryptographic Data
-  Settings settings = 6;     // User Settings
-  Contact contact = 7;
+  // From InitializeRequest
+  APIKeys apiKeys = 1; // App Env Variables for API Keys
+  Status status = 2;   // Client Node Status
+  Device device = 3;   // Clients Current Device
 
-  // User Connection Management - Attached from Node Client
-  message Connection {
-    APIKeys apiKeys = 1;
-    Status status = 2; // Client Node Status
-    Router router = 3; // Client Routing Information
-  }
+  // From ConnectionRequest
+  Peer peer = 4;         // Clients Peer Reference
+  Location location = 5; // Clients current Location
+  Crypto crypto = 6;     // User Cryptographic Data
+  Settings settings = 7; // User Settings
+  Contact contact = 8;   // Users Contact Card
+  Router router = 9;     // Client Routing Information
 
   // Crypto Data to Place in DHT
   message Crypto {

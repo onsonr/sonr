@@ -17,126 +17,88 @@ import (
 )
 
 // ** ─── KeyPair MANAGEMENT ────────────────────────────────────────────────────────
+// Key File Name Constants
+const pubKeyFileName = ".snr-pub-key"
+const privKeyFileName = ".snr-priv-key"
+
 // Constructer that Initializes KeyPair without Buffer
 func (d *Device) InitKeyPair() *SonrError {
-	// Initialize
-	var pubBuf []byte
-	var privBuf []byte
-	var serr *SonrError
+	if d.KeyPair.Exists() {
+		// Get PrivKey File
+		privBuf, serr := d.ReadFile(privKeyFileName)
+		if serr != nil {
+			return serr
+		}
 
-	// Create Key Pair
+		// Get Private Key from Buffer
+		privKey, err := crypto.UnmarshalPrivateKey(privBuf)
+		if err != nil {
+			return NewError(err, ErrorMessage_KEY_INVALID)
+		}
+
+		// Get Public Key from Private and Marshal
+		pubKey := privKey.GetPublic()
+		pubBuf, err := crypto.MarshalPublicKey(pubKey)
+		if err != nil {
+			return NewError(err, ErrorMessage_KEY_SET)
+		}
+
+		// Set Key Pair
+		d.KeyPair = &KeyPair{
+			Public: &KeyPair_Key{
+				Path:   d.WorkingFilePath(pubKeyFileName),
+				Type:   KeyPair_PUBLIC_KEY,
+				Buffer: pubBuf,
+			},
+			Private: &KeyPair_Key{
+				Path:   d.WorkingFilePath(privKeyFileName),
+				Type:   KeyPair_PRIVATE_KEY,
+				Buffer: privBuf,
+			},
+		}
+		return nil
+	}
+	// Create New Key
+	privKey, pubKey, err := crypto.GenerateKeyPair(crypto.Ed25519, -1)
+	if err != nil {
+		return NewError(err, ErrorMessage_HOST_KEY)
+	}
+
+	// Marshal Data
+	privBuf, err := crypto.MarshalPrivateKey(privKey)
+	if err != nil {
+		return NewError(err, ErrorMessage_MARSHAL)
+	}
+
+	// Marshal Data
+	pubBuf, err := crypto.MarshalPublicKey(pubKey)
+	if err != nil {
+		return NewError(err, ErrorMessage_MARSHAL)
+	}
+
+	// Write Private Key to File
+	_, werr := d.WriteFile(privKeyFileName, privBuf)
+	if werr != nil {
+		return NewError(err, ErrorMessage_USER_SAVE)
+	}
+
+	// Set Key Pair
 	d.KeyPair = &KeyPair{
 		Public: &KeyPair_Key{
-			Path: d.WorkingFilePath("snr-pub-key"),
-			Type: KeyPair_PUBLIC_KEY,
-		},
-		Private: &KeyPair_Key{
-			Path: d.WorkingFilePath("snr-priv-key"),
-			Type: KeyPair_PRIVATE_KEY,
-		},
-	}
-
-	// Check if Exists
-	if d.KeyPair.Exists() {
-		// Get PubKey File
-		pubBuf, serr = d.ReadFile(d.KeyPair.PubKeyName())
-		if serr != nil {
-			return serr
-		}
-
-		// Get PrivKey File
-		privBuf, serr = d.ReadFile(d.KeyPair.PrivKeyName())
-		if serr != nil {
-			return serr
-		}
-	} else {
-		// Create New Key
-		privKey, pubKey, err := crypto.GenerateKeyPair(crypto.Ed25519, -1)
-		if err != nil {
-			return NewError(err, ErrorMessage_HOST_KEY)
-		}
-
-		// Marshal Data
-		privBuf, err = crypto.MarshalPrivateKey(privKey)
-		if err != nil {
-			return NewError(err, ErrorMessage_MARSHAL)
-		}
-
-		// Marshal Data
-		pubBuf, err = crypto.MarshalPublicKey(pubKey)
-		if err != nil {
-			return NewError(err, ErrorMessage_MARSHAL)
-		}
-
-		// Write Private Key to File
-		_, werr := d.WriteFile(d.KeyPair.PrivKeyName(), privBuf)
-		if werr != nil {
-			return NewError(err, ErrorMessage_USER_SAVE)
-		}
-
-		// Write Public Key to File
-		_, wpuberr := d.WriteFile(d.KeyPair.PubKeyName(), pubBuf)
-		if wpuberr != nil {
-			return NewError(err, ErrorMessage_USER_SAVE)
-		}
-	}
-
-	// Load Key Pair
-	if err := d.LoadKeyPair(pubBuf, privBuf); err != nil {
-		return err
-	}
-	return nil
-}
-
-// Method Adds Public Key/Private Key Buffer
-func (d *Device) LoadKeyPair(pubBuf []byte, privBuf []byte) *SonrError {
-	// Initialize
-	pub := d.KeyPair.GetPublic()
-	priv := d.KeyPair.GetPrivate()
-
-	// Check Current Public
-	if len(pub.GetBuffer()) == 0 {
-		// Set Protobuf
-		d.KeyPair.Public = &KeyPair_Key{
-			Path:   pub.GetPath(),
 			Type:   KeyPair_PUBLIC_KEY,
 			Buffer: pubBuf,
-		}
-	} else {
-		return NewError(errors.New("Buffer already set for Public Key"), ErrorMessage_KEY_SET)
-	}
-
-	// Check Current Private
-	if len(priv.GetBuffer()) == 0 {
-		// Set Protobuf
-		d.KeyPair.Public = &KeyPair_Key{
-			Path:   priv.GetPath(),
+		},
+		Private: &KeyPair_Key{
+			Path:   d.WorkingFilePath(privKeyFileName),
 			Type:   KeyPair_PRIVATE_KEY,
 			Buffer: privBuf,
-		}
-	} else {
-		return NewError(errors.New("Buffer already set for Private Key"), ErrorMessage_KEY_SET)
+		},
 	}
 	return nil
 }
 
 // Method Checks if KeyPair Exists at Path
 func (kp *KeyPair) Exists() bool {
-	return kp.HasPrivKey() && kp.HasPubKey()
-}
-
-// Method Checks if PubKey Exists at Path
-func (kp *KeyPair) HasPubKey() bool {
-	// Check Path for Public
-	if _, err := os.Stat(kp.Public.Path); os.IsNotExist(err) {
-		return false
-	} else {
-		return true
-	}
-}
-
-// Method Checks if PrivKey Exists at Path
-func (kp *KeyPair) HasPrivKey() bool {
 	// Check Path for Public
 	if _, err := os.Stat(kp.Private.Path); os.IsNotExist(err) {
 		return false
@@ -161,7 +123,7 @@ func (kp *KeyPair) KeyType() cryptopb.KeyType {
 
 // Method Returns Private Key
 func (kp *KeyPair) PrivKey() crypto.PrivKey {
-	if kp.HasPrivKey() {
+	if kp.Exists() {
 		// Get Key from Buffer
 		key, err := crypto.UnmarshalPrivateKey(kp.Private.GetBuffer())
 		if err != nil {
@@ -172,40 +134,30 @@ func (kp *KeyPair) PrivKey() crypto.PrivKey {
 	return nil
 }
 
-// Returns Private Key File Name
-func (kp *KeyPair) PrivKeyName() string {
-	return "snr-priv-key"
-}
-
 // Method Returns Public Key
 func (kp *KeyPair) PubKey() crypto.PubKey {
-	if kp.HasPubKey() {
+	if kp.Exists() {
 		// Get Key from Buffer
-		key, err := crypto.UnmarshalPublicKey(kp.Public.GetBuffer())
+		privKey, err := crypto.UnmarshalPrivateKey(kp.Private.GetBuffer())
 		if err != nil {
 			return nil
 		}
-		return key
+		return privKey.GetPublic()
 	}
 	return nil
-}
-
-// Returns Public Key File Name
-func (kp *KeyPair) PubKeyName() string {
-	return "snr-pub-key"
 }
 
 // Method Signs given data and returns response
 func (kp *KeyPair) Sign(data []byte) ([]byte, error) {
 	// Check for Private Key
-	if kp.HasPrivKey() {
-		privKey := kp.PrivKey()
+	if privKey := kp.PrivKey(); privKey != nil {
 		result, err := privKey.Sign(data)
 		if err != nil {
 			return nil, err
 		}
 		return result, nil
 	}
+
 	// Return Error
 	return nil, errors.New("Private Key Doesnt Exist")
 }
@@ -213,9 +165,8 @@ func (kp *KeyPair) Sign(data []byte) ([]byte, error) {
 // Method verifies 'sig' is the signed hash of 'data'
 func (kp *KeyPair) Verify(data []byte, sig []byte) (bool, error) {
 	// Check for Public Key
-	if kp.HasPubKey() {
-		pubkey := kp.PubKey()
-		result, err := pubkey.Verify(data, sig)
+	if pubKey := kp.PubKey(); pubKey != nil {
+		result, err := pubKey.Verify(data, sig)
 		if err != nil {
 			return false, err
 		}
@@ -364,40 +315,35 @@ func (d *Device) WriteFile(name string, data []byte) (string, *SonrError) {
 
 // ** ─── User MANAGEMENT ────────────────────────────────────────────────────────
 // ^ Method Initializes User Info Struct ^ //
-func NewUser(ir *InitializeRequest, s Store) *User {
-	// Initialize Device
-	d := ir.GetDevice()
-	d.InitKeyPair()
-
+func NewUser(ir *InitializeRequest, s Store) (*User, *SonrError) {
 	// Return User
 	u := &User{
-		Device: d,
-		Connection: &User_Connection{
-			ApiKeys: ir.GetApiKeys(),
-			Status:  Status_DEFAULT,
-		},
+		Device:  ir.GetDevice(),
+		ApiKeys: ir.GetApiKeys(),
+		Status:  Status_DEFAULT,
 	}
-	return u
+
+	// Initialize Device KeyPair
+	if err := u.Device.InitKeyPair(); err != nil {
+		return nil, err
+	}
+	return u, nil
 }
 
 // Set the User with ConnectionRequest
 func (u *User) InitConnection(cr *ConnectionRequest) {
-	apiKeys := u.APIKeys()
 	u.Location = cr.GetLocation()
-	u.Connection = &User_Connection{
-		ApiKeys: apiKeys,
-		Router: &User_Router{
-			Rendevouz:  "/sonr/rendevouz/0.9.2",
-			LocalTopic: fmt.Sprintf("/sonr/topic/%s", cr.GetLocation().OLC()),
-			Location:   cr.GetLocation(),
-		},
-		Status: Status_IDLE,
+	u.Router = &User_Router{
+		Rendevouz:  "/sonr/rendevouz/0.9.2",
+		LocalTopic: fmt.Sprintf("/sonr/topic/%s", cr.GetLocation().OLC()),
+		Location:   cr.GetLocation(),
 	}
+	u.Status = Status_IDLE
 }
 
 // Return Client API Keys
 func (u *User) APIKeys() *APIKeys {
-	return u.GetConnection().GetApiKeys()
+	return u.GetApiKeys()
 }
 
 // Method Returns DeviceID
@@ -417,24 +363,7 @@ func (u *User) ID() *Peer_ID {
 
 // Method Returns KeyPair
 func (u *User) KeyPair() *KeyPair {
-	// Create New Keypair
-	if u.GetDevice().KeyPair == nil {
-		u.GetDevice().InitKeyPair()
-		return u.GetDevice().KeyPair
-	} else {
-		// Return Existing Keypair
-		return u.GetDevice().GetKeyPair()
-	}
-}
-
-// Method Returns Private Key
-func (u *User) KeyPrivate() crypto.PrivKey {
-	return u.GetDevice().GetKeyPair().PrivKey()
-}
-
-// Method Returns Public Key
-func (u *User) KeyPublic() crypto.PubKey {
-	return u.GetDevice().GetKeyPair().PubKey()
+	return u.GetDevice().GetKeyPair()
 }
 
 // Method Returns Profile Last Name
@@ -538,7 +467,7 @@ func (u *User) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) *SonrError {
 		Model:    u.Device.Model,
 	}
 	// Set Device Topic
-	u.Connection.Router.DeviceTopic = fmt.Sprintf("/sonr/topic/%s", u.Peer.SName())
+	u.Router.DeviceTopic = fmt.Sprintf("/sonr/topic/%s", u.Peer.SName())
 	return nil
 }
 
