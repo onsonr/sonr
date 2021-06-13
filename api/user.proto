@@ -37,10 +37,19 @@ message FileSystem {
   string temporary = 5; // Temporary Storage - Mobile
 }
 
+// KeyPair Encryption Type
+enum KeyType {
+  RSA = 0;
+  Ed25519 = 1;
+  Secp256k1 = 2;
+  ECDSA = 3;
+}
+
 // Private Public Key Pair
 message KeyPair {
   Private private = 1;
   Public public = 2;
+  KeyType type = 3;
 
   message Private {
     string path = 1;

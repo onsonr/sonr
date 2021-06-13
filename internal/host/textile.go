@@ -3,7 +3,6 @@ package host
 import (
 	"context"
 	"crypto/tls"
-	"log"
 	"time"
 
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
@@ -59,9 +58,6 @@ func (hn *hostNode) StartTextile(d *md.Device) *md.SonrError {
 	if err != nil {
 		return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
 	}
-
-	// Handle Events
-	hn.handleMailboxEvents()
 	return nil
 }
 
@@ -131,26 +127,4 @@ func (hn *hostNode) newTokenCtx() (context.Context, error) {
 		return nil, err
 	}
 	return thread.NewTokenContext(hn.ctxTileAuth, token), nil
-}
-
-// # Helper: Handles Mailbox Events when Offline
-func (hn *hostNode) handleMailboxEvents() {
-	// Handle mailbox events as they arrive
-	events := make(chan local.MailboxEvent)
-	defer close(events)
-	go func() {
-		for e := range events {
-			switch e.Type {
-			case local.NewMessage:
-				log.Println("New Message")
-			case local.MessageRead:
-				log.Println("Message Read")
-			case local.MessageDeleted:
-				log.Println("Message Deleted")
-			}
-		}
-	}()
-
-	// Start watching
-	hn.tileMailbox.WatchInbox(context.Background(), events, true)
 }

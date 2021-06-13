@@ -6,7 +6,6 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"log"
 	"math"
 	"os"
 	"path/filepath"
@@ -53,6 +52,7 @@ func (d *Device) SetKeyPair() *SonrError {
 
 		// Set Key Pair
 		d.KeyPair = &KeyPair{
+			Type: KeyType_Ed25519,
 			Public: &KeyPair_Public{
 				Id:     id.String(),
 				Buffer: pubBuf,
@@ -95,6 +95,7 @@ func (d *Device) SetKeyPair() *SonrError {
 
 		// Set Keys
 		d.KeyPair = &KeyPair{
+			Type: KeyType_Ed25519,
 			Public: &KeyPair_Public{
 				Id:     id.String(),
 				Buffer: pubBuf,
@@ -398,20 +399,13 @@ func (u *User) Sign(req *SignRequest) *SignResponse {
 	fingerprint := u.KeyPair().Sign(req.GetMnemonic())
 
 	// Get ID from Public Key
-	identity, err := u.KeyPair().ID()
-	if err != nil {
-		log.Println(err)
-		return &SignResponse{
-			SignedPrefix:      prefix,
-			SignedFingerprint: fingerprint,
-		}
-	}
+	identity := u.KeyPair().GetPublic().GetId()
 
 	// Return Response
 	return &SignResponse{
 		SignedPrefix:      prefix,
 		SignedFingerprint: fingerprint,
-		PublicIdentity:    identity.String(),
+		PublicIdentity:    identity,
 	}
 }
 
