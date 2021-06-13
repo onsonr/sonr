@@ -52,6 +52,49 @@ message InviteResponse {
   }
 }
 
+// Mailbox Entry Message
+message MailEntry {
+  Subject subject = 1; // Type of Mail
+  Peer from = 2;       // Peer Sending Mail
+  Peer to = 3;         // Peer Receiving Mail
+
+  // Content to be pushed - If Send
+  oneof body {
+    InviteRequest invite = 4; // Remote Invite
+    string message = 5;       // Text Message
+  }
+
+  enum Subject {
+    NONE = 0;   // Default
+    INVITE = 1; // InviteRequest Mail Type - Remote
+    TEXT = 2;   // Text Message Mail Type
+  }
+}
+
+// Mailbox Request Message
+message MailRequest {
+  Method method = 1;   // Mailbox Method
+  MailEntry entry = 2; // Mail Entry Content - If SEND
+
+  enum Method {
+    NONE = 0; // Default
+    SEND = 1; // Send Mail to Peer
+    READ = 2; // Read Mailbox
+  }
+}
+
+// Mailbox Response Message
+message MailResponse {
+  Result result = 1;              // Result of Request
+  repeated MailEntry entries = 2; // List of Mail - If READ
+
+  enum Result {
+    NONE = 0;    // Default
+    SUCCESS = 1; // Method Performed without Error
+    ERROR = 2;   // Error Occurred
+  }
+}
+
 // REST API Request over HTTP
 message RestRequest {
   Method method = 1;                  // HTTP Method

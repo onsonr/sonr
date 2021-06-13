@@ -3,6 +3,7 @@ package host
 import (
 	"context"
 	"crypto/tls"
+	"log"
 	"time"
 
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
@@ -14,10 +15,11 @@ import (
 	"github.com/textileio/textile/v2/mail/local"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/protobuf/proto"
 )
 
 // @ Initializes New Textile Instance
-func (hn *hostNode) StartTextile() *md.SonrError {
+func (hn *hostNode) StartTextile(d *md.Device) *md.SonrError {
 	// Initialize
 	var err error
 	creds := credentials.NewTLS(&tls.Config{})
@@ -31,10 +33,7 @@ func (hn *hostNode) StartTextile() *md.SonrError {
 	}
 
 	// Get Identity
-	hn.tileIdentity, err = getIdentity(hn.keyPair.PrivKey())
-	if err != nil {
-		return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
-	}
+	hn.tileIdentity = getIdentity(hn.keyPair.PrivKey())
 
 	// Create Auth Context
 	hn.ctxTileAuth, err = newUserAuthCtx(context.Background(), hn.apiKeys)
@@ -52,7 +51,7 @@ func (hn *hostNode) StartTextile() *md.SonrError {
 
 	// Create a new mailbox with config
 	hn.tileMailbox, err = hn.tileMail.NewMailbox(context.Background(), local.Config{
-		Path:      "path/to/mail/folder", // Usually a global location like ~/.textile/mail
+		Path:      d.WorkingSupportPath(".mailbox"),
 		Identity:  hn.tileIdentity,
 		APIKey:    hn.apiKeys.TextileKey,
 		APISecret: hn.apiKeys.TextileSecret,
@@ -60,13 +59,59 @@ func (hn *hostNode) StartTextile() *md.SonrError {
 	if err != nil {
 		return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
 	}
+
+	// Handle Events
+	hn.handleMailboxEvents()
+	return nil
+}
+
+// @ Method Reads Inbox and Returns List of Mail Entries
+func (hn *hostNode) ReadMail() ([]*md.MailEntry, *md.SonrError) {
+	// List the recipient's inbox
+	inbox, err := hn.tileMailbox.ListInboxMessages(context.Background())
+
+	if err != nil {
+		return nil, md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+	}
+
+	// Initialize Entry List
+	entries := make([]*md.MailEntry, len(inbox))
+
+	// Iterate over Entries
+	for i, v := range inbox {
+		// Open decrypts the message body
+		body, err := v.Open(context.Background(), hn.tileIdentity)
+		if err != nil {
+			return nil, md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+		}
+
+		// Unmarshal Body to entry
+		entry := &md.MailEntry{}
+		err = proto.Unmarshal(body, entry)
+		if err != nil {
+			return nil, md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+		}
+		entries[i] = entry
+	}
+	return entries, nil
+}
+
+// @ Method Sends Mail Entry to Peer
+func (hn *hostNode) SendMail(e *md.MailEntry) *md.SonrError {
+	// Send Message to Mailbox
+	_, err := hn.tileMailbox.SendMessage(context.Background(), e.ToPubKey(), e.Buffer())
+
+	// Check Error
+	if err != nil {
+		return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+	}
 	return nil
 }
 
 // # Helper: Gets Thread Identity from Private Key
-func getIdentity(privateKey crypto.PrivKey) (thread.Identity, error) {
+func getIdentity(privateKey crypto.PrivKey) thread.Identity {
 	myIdentity := thread.NewLibp2pIdentity(privateKey)
-	return myIdentity, nil
+	return myIdentity
 }
 
 // # Helper: Creates User Auth Context from API Keys
@@ -86,4 +131,26 @@ func (hn *hostNode) newTokenCtx() (context.Context, error) {
 		return nil, err
 	}
 	return thread.NewTokenContext(hn.ctxTileAuth, token), nil
+}
+
+// # Helper: Handles Mailbox Events when Offline
+func (hn *hostNode) handleMailboxEvents() {
+	// Handle mailbox events as they arrive
+	events := make(chan local.MailboxEvent)
+	defer close(events)
+	go func() {
+		for e := range events {
+			switch e.Type {
+			case local.NewMessage:
+				log.Println("New Message")
+			case local.MessageRead:
+				log.Println("Message Read")
+			case local.MessageDeleted:
+				log.Println("Message Deleted")
+			}
+		}
+	}()
+
+	// Start watching
+	hn.tileMailbox.WatchInbox(context.Background(), events, true)
 }

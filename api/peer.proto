@@ -108,6 +108,7 @@ message Peer {
     string device = 2;    // Device ID
     string sName = 3;     // User ID
     string multiAddr = 4; // Peer MultiAddr
+    bytes publicKey = 5;  // Public Key of Peer
   }
 
   // Properties

@@ -284,6 +284,16 @@ func (d *Device) WorkingFilePath(fileName string) string {
 	}
 }
 
+// Returns Path for Application/User Data
+func (d *Device) WorkingSupportPath(fileName string) string {
+	// Check for Desktop
+	if d.IsDesktop() {
+		return filepath.Join(d.FileSystem.GetLibrary(), fileName)
+	} else {
+		return filepath.Join(d.FileSystem.GetSupport(), fileName)
+	}
+}
+
 // Writes a File to Disk and Returns Path
 func (d *Device) WriteKey(data []byte) (string, *SonrError) {
 	// Create File Path
@@ -451,6 +461,7 @@ func (u *User) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) *SonrError {
 			Device:    u.DeviceID(),
 			SName:     u.SName(),
 			MultiAddr: maddr.String(),
+			PublicKey: u.KeyPair().GetPublic().GetBuffer(),
 		},
 		Profile:  u.Profile(),
 		Platform: u.Device.Platform,
@@ -478,6 +489,17 @@ func (p *Peer) DeviceID() string {
 // ^ Returns Peer ID String Value
 func (p *Peer) PeerID() string {
 	return p.Id.Peer
+}
+
+// ^ Returns Peer Public Key ^ //
+func (p *Peer) PublicKey() crypto.PubKey {
+	buf := p.GetId().GetPublicKey()
+	// Get Key from Buffer
+	pubKey, err := crypto.UnmarshalPublicKey(buf)
+	if err != nil {
+		return nil
+	}
+	return pubKey
 }
 
 // ^ Returns Peer User ID ^ //

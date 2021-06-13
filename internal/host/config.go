@@ -14,6 +14,7 @@ import (
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
 	md "github.com/sonr-io/core/pkg/models"
+	"github.com/textileio/go-threads/core/thread"
 )
 
 // ** ─── Constants ────────────────────────────────────────────────────────
@@ -62,6 +63,11 @@ func (hn *hostNode) MultiAddr() (multiaddr.Multiaddr, *md.SonrError) {
 		return nil, md.NewError(err, md.ErrorMessage_HOST_INFO)
 	}
 	return addrs[0], nil
+}
+
+// @ Returns Instance Host
+func (hn *hostNode) PubKey() thread.PubKey {
+	return hn.tileIdentity.GetPublic()
 }
 
 // ** ─── Address MANAGEMENT ────────────────────────────────────────────────────────

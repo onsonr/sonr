@@ -2,6 +2,7 @@ package client
 
 import (
 	"context"
+	"errors"
 
 	tpc "github.com/sonr-io/core/internal/topic"
 	md "github.com/sonr-io/core/pkg/models"
@@ -69,7 +70,7 @@ func (c *Client) Bootstrap() (*tpc.TopicManager, *md.SonrError) {
 	}
 
 	// Start Textile
-	err = c.Host.StartTextile()
+	err = c.Host.StartTextile(c.user.GetDevice())
 	if err != nil {
 		return nil, err
 	}
@@ -86,14 +87,6 @@ func (c *Client) Bootstrap() (*tpc.TopicManager, *md.SonrError) {
 	} else {
 		return t, nil
 	}
-}
-
-// @ Join Lobby Adds Node to Named Topic
-func (n *Client) LeaveLobby(lob *tpc.TopicManager) *md.SonrError {
-	if err := lob.LeaveTopic(); err != nil {
-		return md.NewError(err, md.ErrorMessage_TOPIC_LEAVE)
-	}
-	return nil
 }
 
 // @ Invite Processes Data and Sends Invite to Peer
@@ -170,6 +163,16 @@ func (n *Client) InviteFile(invite *md.InviteRequest, t *tpc.TopicManager) *md.S
 		}
 	}(invite)
 	return nil
+}
+
+// @ Handle a MailRequest from Node
+func (c *Client) Mail(mr *md.MailRequest) *md.SonrError {
+	if mr.Method == md.MailRequest_READ {
+		
+	} else if mr.Method == md.MailRequest_SEND {
+
+	}
+	return md.NewError(errors.New("Invalid MailRequest Method"), md.ErrorMessage_HOST_TEXTILE)
 }
 
 // @ Update proximity/direction and Notify Lobby

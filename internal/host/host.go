@@ -35,9 +35,12 @@ type HostNode interface {
 	Join(name string) (*psub.Topic, *psub.Subscription, *psub.TopicEventHandler, *md.SonrError)
 	HandleStream(pid protocol.ID, handler network.StreamHandler)
 	MultiAddr() (multiaddr.Multiaddr, *md.SonrError)
+	PubKey() thread.PubKey
 	StartStream(p peer.ID, pid protocol.ID) (network.Stream, error)
 	StartGlobal(SName string) *md.SonrError
-	StartTextile() *md.SonrError
+	StartTextile(d *md.Device) *md.SonrError
+	SendMail(*md.MailEntry) *md.SonrError
+	ReadMail() ([]*md.MailEntry, *md.SonrError)
 }
 
 type hostNode struct {
