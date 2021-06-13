@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"log"
 	"math"
 	"os"
 	"path/filepath"
@@ -14,6 +15,7 @@ import (
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/multiformats/go-multiaddr"
+	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -141,18 +143,11 @@ func (kp *KeyPair) PubKey() crypto.PubKey {
 }
 
 // Method Signs given data and returns response
-func (kp *KeyPair) Sign(value string) (string, error) {
-
-	// Check for Private Key
-	if privKey := kp.PrivBuffer(); privKey != nil {
-		h := hmac.New(sha256.New, privKey)
-		h.Write([]byte(value))
-		sha := hex.EncodeToString(h.Sum(nil))
-		return sha, nil
-	}
-
-	// Return Error
-	return "", errors.New("Private Key Doesnt Exist")
+func (kp *KeyPair) Sign(value string) string {
+	h := hmac.New(sha256.New, kp.PrivBuffer())
+	h.Write([]byte(value))
+	sha := hex.EncodeToString(h.Sum(nil))
+	return sha
 }
 
 // Method verifies 'sig' is the signed hash of 'data'
@@ -394,12 +389,30 @@ func (u *User) Profile() *Profile {
 }
 
 // Method Signs Data with KeyPair
-func (u *User) Sign(data string) (string, *SonrError) {
-	result, err := u.KeyPair().Sign(data)
+func (u *User) Sign(req *SignRequest) *SignResponse {
+	// Create Prefix
+	prefixResult := u.KeyPair().Sign(fmt.Sprintf("%s%s", req.GetSName(), u.DeviceID()))
+	prefix := util.Substring(prefixResult, 0, 16)
+
+	// Get FingerPrint from Mnemonic
+	fingerprint := u.KeyPair().Sign(req.GetMnemonic())
+
+	// Get ID from Public Key
+	identity, err := u.KeyPair().ID()
 	if err != nil {
-		return "", NewError(err, ErrorMessage_KEY_INVALID)
+		log.Println(err)
+		return &SignResponse{
+			SignedPrefix:      prefix,
+			SignedFingerprint: fingerprint,
+		}
 	}
-	return result, nil
+
+	// Return Response
+	return &SignResponse{
+		SignedPrefix:      prefix,
+		SignedFingerprint: fingerprint,
+		PublicIdentity:    identity.String(),
+	}
 }
 
 // Method Returns SName

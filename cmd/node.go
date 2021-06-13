@@ -106,11 +106,6 @@ func (mn *Node) Connect(data []byte) {
 // ** ─── Node Binded Actions ────────────────────────────────────────────────────────
 // @ Signing Request for Data
 func (mn *Node) Sign(data []byte) []byte {
-	// Initialize invalid Response
-	invalidResp := md.SignResponse{
-		IsSigned: false,
-	}
-
 	// Unmarshal Data to Request
 	request := &md.SignRequest{}
 	err := proto.Unmarshal(data, request)
@@ -119,6 +114,11 @@ func (mn *Node) Sign(data []byte) []byte {
 
 		// Handle Error
 		mn.handleError(md.NewUnmarshalError(err))
+
+		// Initialize invalid Response
+		invalidResp := md.SignResponse{
+			IsSigned: false,
+		}
 
 		// Send Invalid Response
 		buf, err := proto.Marshal(&invalidResp)
@@ -130,29 +130,8 @@ func (mn *Node) Sign(data []byte) []byte {
 	}
 
 	// Sign Buffer
-	result, serr := mn.user.Sign(request.GetValue())
-	if serr != nil {
-		// Log error
-		log.Println("Failed to Sign Data from Request")
-		mn.handleError(serr)
-
-		// Send Invalid Response
-		buf, err := proto.Marshal(&invalidResp)
-		if err != nil {
-			mn.handleError(md.NewMarshalError(err))
-			return nil
-		}
-		return buf
-	}
-
-	// Create Response
-	resp := md.SignResponse{
-		IsSigned:    true,
-		SignedValue: result,
-	}
-
-	// Marshal and Return
-	buf, err := proto.Marshal(&resp)
+	result := mn.user.Sign(request)
+	buf, err := proto.Marshal(result)
 	if err != nil {
 		mn.handleError(md.NewMarshalError(err))
 		return nil
