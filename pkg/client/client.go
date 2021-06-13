@@ -69,11 +69,11 @@ func (c *Client) Bootstrap() (*tpc.TopicManager, *md.SonrError) {
 		return nil, err
 	}
 
-	// Start Textile
-	err = c.Host.StartTextile(c.user.GetDevice())
-	if err != nil {
-		return nil, err
-	}
+	// // Start Textile
+	// err = c.Host.StartTextile(c.user.GetDevice())
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	// Join Global
 	err = c.Host.StartGlobal(c.user.SName())
@@ -168,7 +168,7 @@ func (n *Client) InviteFile(invite *md.InviteRequest, t *tpc.TopicManager) *md.S
 // @ Handle a MailRequest from Node
 func (c *Client) Mail(mr *md.MailRequest) *md.SonrError {
 	if mr.Method == md.MailRequest_READ {
-		
+
 	} else if mr.Method == md.MailRequest_SEND {
 
 	}
