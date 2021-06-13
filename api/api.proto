@@ -145,10 +145,7 @@ message SignRequest {
   }
 
   // Value to be signed
-  oneof value {
-    bytes bufferValue = 4; // Message for List of Bytes
-    string textValue = 5;  // Message for List of Strings
-  }
+  bytes value = 4; // Message for List of Bytes
 }
 
 // Message for Signing Response
@@ -158,10 +155,7 @@ message SignResponse {
   ErrorMessage error = 3; // In Case Error Occurred
 
   // Resulting Signed Values
-  oneof value {
-    bytes signedBuffer = 4; // Message for List of Bytes
-    string signedText = 5;  // Message for List of Strings
-  }
+  bytes signedValue = 4; // Message for List of Bytes
 }
 
 // Message for Individual Entry in Store

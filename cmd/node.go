@@ -107,7 +107,7 @@ func (mn *Node) Connect(data []byte) {
 // @ Signing Request for Data
 func (mn *Node) Sign(data []byte) []byte {
 	// Initialize invalid Response
-	invalidResp := &md.SignResponse{
+	invalidResp := md.SignResponse{
 		IsSigned: false,
 	}
 
@@ -121,7 +121,7 @@ func (mn *Node) Sign(data []byte) []byte {
 		mn.handleError(md.NewUnmarshalError(err))
 
 		// Send Invalid Response
-		buf, err := proto.Marshal(invalidResp)
+		buf, err := proto.Marshal(&invalidResp)
 		if err != nil {
 			mn.handleError(md.NewMarshalError(err))
 			return nil
@@ -130,14 +130,14 @@ func (mn *Node) Sign(data []byte) []byte {
 	}
 
 	// Sign Buffer
-	result, serr := mn.user.Sign(request.DataValue())
+	result, serr := mn.user.Sign(request.GetValue())
 	if serr != nil {
 		// Log error
 		log.Println("Failed to Sign Data from Request")
 		mn.handleError(serr)
 
 		// Send Invalid Response
-		buf, err := proto.Marshal(invalidResp)
+		buf, err := proto.Marshal(&invalidResp)
 		if err != nil {
 			mn.handleError(md.NewMarshalError(err))
 			return nil
@@ -145,40 +145,19 @@ func (mn *Node) Sign(data []byte) []byte {
 		return buf
 	}
 
-	// Check Data Type and Send Valid Response
-	if request.IsString() {
-		// Create Response
-		resp := &md.SignResponse{
-			IsSigned: true,
-			Value: &md.SignResponse_SignedText{
-				SignedText: string(result),
-			},
-		}
-
-		// Marshal and Return
-		buf, err := proto.Marshal(resp)
-		if err != nil {
-			mn.handleError(md.NewMarshalError(err))
-			return nil
-		}
-		return buf
-	} else {
-		// Create Response
-		resp := &md.SignResponse{
-			IsSigned: true,
-			Value: &md.SignResponse_SignedBuffer{
-				SignedBuffer: result,
-			},
-		}
-
-		// Marshal and Return
-		buf, err := proto.Marshal(resp)
-		if err != nil {
-			mn.handleError(md.NewMarshalError(err))
-			return nil
-		}
-		return buf
+	// Create Response
+	resp := md.SignResponse{
+		IsSigned:    true,
+		SignedValue: result,
 	}
+
+	// Marshal and Return
+	buf, err := proto.Marshal(&resp)
+	if err != nil {
+		mn.handleError(md.NewMarshalError(err))
+		return nil
+	}
+	return buf
 }
 
 // @ Store Request for Payload into MemoryStore

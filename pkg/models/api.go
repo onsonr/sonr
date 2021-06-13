@@ -15,36 +15,6 @@ import (
 	util "github.com/sonr-io/core/pkg/util"
 )
 
-// ** ─── SignRequest MANAGEMENT ────────────────────────────────────────────────────────
-// Checks if SignRequest is for Strings List
-func (sr *SignRequest) IsString() bool {
-	switch sr.Value.(type) {
-	case *SignRequest_TextValue:
-		return true
-	default:
-		return false
-	}
-}
-
-// Checks if SignRequest is for Buffer List
-func (sr *SignRequest) IsBuffer() bool {
-	switch sr.Value.(type) {
-	case *SignRequest_BufferValue:
-		return true
-	default:
-		return false
-	}
-}
-
-// Returns DataValue as Bytes
-func (sr *SignRequest) DataValue() []byte {
-	if sr.IsBuffer() {
-		return sr.GetBufferValue()
-	} else {
-		return []byte(sr.GetTextValue())
-	}
-}
-
 // ** ─── VerifyRequest MANAGEMENT ────────────────────────────────────────────────────────
 // Checks if VerifyRequest is for String Value
 func (vr *VerifyRequest) IsString() bool {
