@@ -133,7 +133,7 @@ message RestResponse {
   }
 }
 
-// Message for Signing Request
+// Message for Signing Request (Hmac Sha256)
 message SignRequest {
   // If signed value should be stored
   bool withStore = 1;
@@ -145,17 +145,17 @@ message SignRequest {
   }
 
   // Value to be signed
-  bytes value = 4; // Message for List of Bytes
+  string value = 4; // Message for List of Bytes
 }
 
-// Message for Signing Response
+// Message for Signing Response (Hmac Sha256)
 message SignResponse {
   bool isSigned = 1;      // If Values were Signed
   bool isStored = 2;      // Whether signed value was stored
   ErrorMessage error = 3; // In Case Error Occurred
 
   // Resulting Signed Values
-  bytes signedValue = 4; // Message for List of Bytes
+  string signedValue = 4; // Message for List of Bytes
 }
 
 // Message for Individual Entry in Store

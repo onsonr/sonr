@@ -1,6 +1,9 @@
 package models
 
 import (
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"math"
@@ -122,6 +125,11 @@ func (kp *KeyPair) PrivKey() crypto.PrivKey {
 	return key
 }
 
+// Method Returns Private Key
+func (kp *KeyPair) PrivBuffer() []byte {
+	return kp.GetPrivate().GetBuffer()
+}
+
 // Method Returns Public Key
 func (kp *KeyPair) PubKey() crypto.PubKey {
 	// Get Key from Buffer
@@ -133,18 +141,18 @@ func (kp *KeyPair) PubKey() crypto.PubKey {
 }
 
 // Method Signs given data and returns response
-func (kp *KeyPair) Sign(data []byte) ([]byte, error) {
+func (kp *KeyPair) Sign(value string) (string, error) {
+
 	// Check for Private Key
-	if privKey := kp.PrivKey(); privKey != nil {
-		result, err := privKey.Sign(data)
-		if err != nil {
-			return nil, err
-		}
-		return result, nil
+	if privKey := kp.PrivBuffer(); privKey != nil {
+		h := hmac.New(sha256.New, privKey)
+		h.Write([]byte(value))
+		sha := hex.EncodeToString(h.Sum(nil))
+		return sha, nil
 	}
 
 	// Return Error
-	return nil, errors.New("Private Key Doesnt Exist")
+	return "", errors.New("Private Key Doesnt Exist")
 }
 
 // Method verifies 'sig' is the signed hash of 'data'
@@ -386,10 +394,10 @@ func (u *User) Profile() *Profile {
 }
 
 // Method Signs Data with KeyPair
-func (u *User) Sign(data []byte) ([]byte, *SonrError) {
+func (u *User) Sign(data string) (string, *SonrError) {
 	result, err := u.KeyPair().Sign(data)
 	if err != nil {
-		return nil, NewError(err, ErrorMessage_KEY_INVALID)
+		return "", NewError(err, ErrorMessage_KEY_INVALID)
 	}
 	return result, nil
 }
