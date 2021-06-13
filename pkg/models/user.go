@@ -385,6 +385,15 @@ func (u *User) Profile() *Profile {
 	return u.GetPeer().GetProfile()
 }
 
+// Method Signs Data with KeyPair
+func (u *User) Sign(data []byte) ([]byte, *SonrError) {
+	result, err := u.KeyPair().Sign(data)
+	if err != nil {
+		return nil, NewError(err, ErrorMessage_KEY_INVALID)
+	}
+	return result, nil
+}
+
 // Method Returns SName
 func (u *User) SName() string {
 	return fmt.Sprintf("%s.snr/", u.Profile().GetSName())

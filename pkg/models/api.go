@@ -15,19 +15,8 @@ import (
 )
 
 // ** ─── SignRequest MANAGEMENT ────────────────────────────────────────────────────────
-// Returns Count of Required Sign Items
-func (sr *SignRequest) Count() int {
-	if sr.IsStrings() {
-		return len(sr.GetTextValue().GetData())
-	} else if sr.IsBuffers() {
-		return len(sr.GetBufferValue().GetData())
-	} else {
-		return 0
-	}
-}
-
 // Checks if SignRequest is for Strings List
-func (sr *SignRequest) IsStrings() bool {
+func (sr *SignRequest) IsString() bool {
 	switch sr.Value.(type) {
 	case *SignRequest_TextValue:
 		return true
@@ -37,7 +26,7 @@ func (sr *SignRequest) IsStrings() bool {
 }
 
 // Checks if SignRequest is for Buffer List
-func (sr *SignRequest) IsBuffers() bool {
+func (sr *SignRequest) IsBuffer() bool {
 	switch sr.Value.(type) {
 	case *SignRequest_BufferValue:
 		return true
@@ -46,20 +35,13 @@ func (sr *SignRequest) IsBuffers() bool {
 	}
 }
 
-// Checks if SignRequest is for Strings List
-func (sr *SignRequest) StringsList() []string {
-	if sr.IsStrings() {
-		return sr.GetTextValue().GetData()
+// Returns DataValue as Bytes
+func (sr *SignRequest) DataValue() []byte {
+	if sr.IsBuffer() {
+		return sr.GetBufferValue()
+	} else {
+		return []byte(sr.GetTextValue())
 	}
-	return nil
-}
-
-// Checks if SignRequest is for Buffer List
-func (sr *SignRequest) BuffersList() [][]byte {
-	if sr.IsBuffers() {
-		return sr.GetBufferValue().GetData()
-	}
-	return nil
 }
 
 // ** ─── VerifyRequest MANAGEMENT ────────────────────────────────────────────────────────
@@ -92,25 +74,23 @@ func NewInvalidSignResponse() *SignResponse {
 }
 
 // Create Sign Response for Buffer List Values
-func NewValidSignResponse(dataList [][]byte, isStrings bool) *SignResponse {
-	// Initialize Response
-	resp := &SignResponse{
-		IsSigned: true,
-	}
-
+func NewValidSignResponse(data []byte, isStrings bool) *SignResponse {
 	// Check Data Type
 	if isStrings {
-		// Add Data from List
-		for _, v := range dataList {
-			resp.GetSignedText().Data = append(resp.GetSignedText().Data, string(v))
+		return &SignResponse{
+			IsSigned: true,
+			Value: &SignResponse_SignedText{
+				SignedText: string(data),
+			},
 		}
 	} else {
-		// Add Data from List
-		for _, v := range dataList {
-			resp.GetSignedBuffer().Data = append(resp.GetSignedBuffer().Data, v)
+		return &SignResponse{
+			IsSigned: true,
+			Value: &SignResponse_SignedBuffer{
+				SignedBuffer: data,
+			},
 		}
 	}
-	return resp
 }
 
 // ** ─── VerifyResponse MANAGEMENT ────────────────────────────────────────────────────────

@@ -135,42 +135,32 @@ message RestResponse {
 
 // Message for Signing Request
 message SignRequest {
+  // If signed value should be stored
+  bool withStore = 1;
+
+  // Key of Store Entry - Either Enum Type or Text Value
+  oneof key {
+    StoreEntry.Type typeKey = 2; // Enum Based Key
+    string textKey = 3;          // Text Based Key
+  }
+
   // Value to be signed
   oneof value {
-    Buffers bufferValue = 1; // Message for List of Bytes
-    Texts textValue = 2;     // Message for List of Strings
-  }
-
-  // Buffers Message: Singular Values are First Index
-  message Buffers {
-    repeated bytes data = 1; // A List of Bytes
-  }
-
-  // Texts Message: Singular Values are First Index
-  message Texts {
-    repeated string data = 1; // A List of Strings
+    bytes bufferValue = 4; // Message for List of Bytes
+    string textValue = 5;  // Message for List of Strings
   }
 }
 
 // Message for Signing Response
 message SignResponse {
   bool isSigned = 1;      // If Values were Signed
-  ErrorMessage error = 2; // In Case Error Occurred
+  bool isStored = 2;      // Whether signed value was stored
+  ErrorMessage error = 3; // In Case Error Occurred
 
   // Resulting Signed Values
   oneof value {
-    Buffers signedBuffer = 3; // Message for List of Bytes
-    Texts signedText = 4;     // Message for List of Strings
-  }
-
-  // Buffers Message: Singular Values are First Index
-  message Buffers {
-    repeated bytes data = 1; // A List of Bytes
-  }
-
-  // Texts Message: Singular Values are First Index
-  message Texts {
-    repeated string data = 1; // A List of Strings
+    bytes signedBuffer = 4; // Message for List of Bytes
+    string signedText = 5;  // Message for List of Strings
   }
 }
 

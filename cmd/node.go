@@ -105,70 +105,35 @@ func (mn *Node) Connect(data []byte) {
 // ** ─── Node Binded Actions ────────────────────────────────────────────────────────
 // @ Signing Request for Data
 func (mn *Node) Sign(data []byte) []byte {
-	if mn.isReady() {
-		// Unmarshal Data to Request
-		request := &md.SignRequest{}
-		if err := proto.Unmarshal(data, request); err != nil {
-			// Handle Error
-			mn.handleError(md.NewUnmarshalError(err))
+	// Unmarshal Data to Request
+	request := &md.SignRequest{}
+	if err := proto.Unmarshal(data, request); err != nil {
+		// Handle Error
+		mn.handleError(md.NewUnmarshalError(err))
 
-			// Send Invalid Response
-			if buf, err := proto.Marshal(md.NewInvalidSignResponse()); err != nil {
-				mn.handleError(md.NewMarshalError(err))
-				return nil
-			} else {
-				return buf
-			}
-		}
-
-		// Initialize Result List
-		signedList := make([][]byte, request.Count())
-
-		// Get Key Pair
-		kp := mn.user.KeyPair()
-		if kp != nil {
-			// Check Data Type
-			if request.IsBuffers() {
-				// Iterate Buffer Values
-				for i, v := range request.BuffersList() {
-					// Sign Buffer
-					r, err := kp.Sign(v)
-					if err != nil {
-						break
-					}
-
-					// Set Value
-					signedList[i] = r
-				}
-			} else if request.IsStrings() {
-				// Iterate String Values
-				for i, v := range request.StringsList() {
-					// Sign String
-					r, err := kp.Sign([]byte(v))
-					if err != nil {
-						break
-					}
-
-					// Set Value
-					signedList[i] = r
-				}
-			}
-
-			// Check if Validated
-			if len(signedList) == request.Count() {
-				// Send Valid Response
-				if buf, err := proto.Marshal(md.NewValidSignResponse(signedList, request.IsStrings())); err != nil {
-					mn.handleError(md.NewMarshalError(err))
-					return nil
-				} else {
-					return buf
-				}
-			}
+		// Send Invalid Response
+		if buf, err := proto.Marshal(md.NewInvalidSignResponse()); err != nil {
+			mn.handleError(md.NewMarshalError(err))
+			return nil
+		} else {
+			return buf
 		}
 	}
 
-	// Send Invalid Response
-	if buf, err := proto.Marshal(md.NewInvalidSignResponse()); err != nil {
+	// Sign Buffer
+	r, err := mn.user.Sign(request.DataValue())
+	if err != nil {
+		// Send Invalid Response
+		if buf, err := proto.Marshal(md.NewInvalidSignResponse()); err != nil {
+			mn.handleError(md.NewMarshalError(err))
+			return nil
+		} else {
+			return buf
+		}
+	}
+
+	// Send Valid Response
+	if buf, err := proto.Marshal(md.NewValidSignResponse(r, request.IsString())); err != nil {
 		mn.handleError(md.NewMarshalError(err))
 		return nil
 	} else {
