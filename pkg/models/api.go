@@ -66,34 +66,6 @@ func (vr *VerifyRequest) IsBuffer() bool {
 	}
 }
 
-// ** ─── SignResponse MANAGEMENT ────────────────────────────────────────────────────────
-// Create Sign Response for String List Values
-func NewInvalidSignResponse() *SignResponse {
-	return &SignResponse{
-		IsSigned: false,
-	}
-}
-
-// Create Sign Response for Buffer List Values
-func NewValidSignResponse(data []byte, isStrings bool) *SignResponse {
-	// Check Data Type
-	if isStrings {
-		return &SignResponse{
-			IsSigned: true,
-			Value: &SignResponse_SignedText{
-				SignedText: string(data),
-			},
-		}
-	} else {
-		return &SignResponse{
-			IsSigned: true,
-			Value: &SignResponse_SignedBuffer{
-				SignedBuffer: data,
-			},
-		}
-	}
-}
-
 // ** ─── VerifyResponse MANAGEMENT ────────────────────────────────────────────────────────
 // Create Marshalled VerifyResponse as GIVEN VALUE
 func NewVerifyResponseBuf(result bool) []byte {

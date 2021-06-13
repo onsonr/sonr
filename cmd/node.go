@@ -2,6 +2,7 @@ package bind
 
 import (
 	"context"
+	"log"
 
 	"github.com/getsentry/sentry-go"
 	"github.com/pkg/errors"
@@ -105,38 +106,77 @@ func (mn *Node) Connect(data []byte) {
 // ** ─── Node Binded Actions ────────────────────────────────────────────────────────
 // @ Signing Request for Data
 func (mn *Node) Sign(data []byte) []byte {
+	// Initialize invalid Response
+	invalidResp := &md.SignResponse{
+		IsSigned: false,
+	}
+
 	// Unmarshal Data to Request
 	request := &md.SignRequest{}
-	if err := proto.Unmarshal(data, request); err != nil {
+	err := proto.Unmarshal(data, request)
+	if err != nil {
+		log.Println("Failed to Unmarshal Sign Request")
+
 		// Handle Error
 		mn.handleError(md.NewUnmarshalError(err))
 
 		// Send Invalid Response
-		if buf, err := proto.Marshal(md.NewInvalidSignResponse()); err != nil {
+		buf, err := proto.Marshal(invalidResp)
+		if err != nil {
 			mn.handleError(md.NewMarshalError(err))
 			return nil
-		} else {
-			return buf
 		}
+		return buf
 	}
 
 	// Sign Buffer
-	r, err := mn.user.Sign(request.DataValue())
-	if err != nil {
+	result, serr := mn.user.Sign(request.DataValue())
+	if serr != nil {
+		// Log error
+		log.Println("Failed to Sign Data from Request")
+		mn.handleError(serr)
+
 		// Send Invalid Response
-		if buf, err := proto.Marshal(md.NewInvalidSignResponse()); err != nil {
+		buf, err := proto.Marshal(invalidResp)
+		if err != nil {
 			mn.handleError(md.NewMarshalError(err))
 			return nil
-		} else {
-			return buf
 		}
+		return buf
 	}
 
-	// Send Valid Response
-	if buf, err := proto.Marshal(md.NewValidSignResponse(r, request.IsString())); err != nil {
-		mn.handleError(md.NewMarshalError(err))
-		return nil
+	// Check Data Type and Send Valid Response
+	if request.IsString() {
+		// Create Response
+		resp := &md.SignResponse{
+			IsSigned: true,
+			Value: &md.SignResponse_SignedText{
+				SignedText: string(result),
+			},
+		}
+
+		// Marshal and Return
+		buf, err := proto.Marshal(resp)
+		if err != nil {
+			mn.handleError(md.NewMarshalError(err))
+			return nil
+		}
+		return buf
 	} else {
+		// Create Response
+		resp := &md.SignResponse{
+			IsSigned: true,
+			Value: &md.SignResponse_SignedBuffer{
+				SignedBuffer: result,
+			},
+		}
+
+		// Marshal and Return
+		buf, err := proto.Marshal(resp)
+		if err != nil {
+			mn.handleError(md.NewMarshalError(err))
+			return nil
+		}
 		return buf
 	}
 }
