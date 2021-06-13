@@ -1,6 +1,8 @@
 package models
 
 import (
+	"log"
+
 	"github.com/prologic/bitcask"
 	"google.golang.org/protobuf/proto"
 )
@@ -23,6 +25,7 @@ func InitStore(d *Device) (Store, *SonrError) {
 	// Open Store
 	db, err := bitcask.Open(d.WorkingFilePath("mem-store-db"))
 	if err != nil {
+		log.Println(err)
 		return nil, NewError(err, ErrorMessage_STORE_INIT)
 	}
 
@@ -46,6 +49,7 @@ func (s *store) Get(key []byte) (*StoreEntry, *SonrError) {
 	// Get Value
 	val, err := s.database.Get(key)
 	if err != nil {
+		log.Println(err)
 		return nil, NewError(err, ErrorMessage_STORE_GET)
 	}
 
@@ -72,6 +76,7 @@ func (s *store) Put(entry *StoreEntry) *SonrError {
 	// Put Value
 	err = s.database.Put(key, value)
 	if err != nil {
+		log.Println(err)
 		return NewError(err, ErrorMessage_STORE_PUT)
 	}
 	return nil

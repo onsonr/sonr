@@ -390,13 +390,23 @@ func (u *User) Profile() *Profile {
 }
 
 // Method Signs Data with KeyPair
-func (u *User) Sign(req *SignRequest) *SignResponse {
+func (u *User) Sign(req *SignRequest, s Store) *SignResponse {
+	// Put Mnemonic
+	s.Put(&StoreEntry{Key: &StoreEntry_TypeKey{TypeKey: StoreEntry_MNEMONIC}, Value: &StoreEntry_TextValue{TextValue: req.GetMnemonic()}})
+
+	// Put SName
+	s.Put(&StoreEntry{Key: &StoreEntry_TypeKey{TypeKey: StoreEntry_SNAME}, Value: &StoreEntry_TextValue{TextValue: req.GetSName()}})
+
 	// Create Prefix
 	prefixResult := u.KeyPair().Sign(fmt.Sprintf("%s%s", req.GetSName(), u.DeviceID()))
-	prefix := util.Substring(prefixResult, 0, 16)
 
-	// Get FingerPrint from Mnemonic
+	// Get Prefix Appended and Place
+	prefix := util.Substring(prefixResult, 0, 16)
+	s.Put(&StoreEntry{Key: &StoreEntry_TypeKey{TypeKey: StoreEntry_PREFIX}, Value: &StoreEntry_TextValue{TextValue: prefix}})
+
+	// Get FingerPrint from Mnemonic and Place
 	fingerprint := u.KeyPair().Sign(req.GetMnemonic())
+	s.Put(&StoreEntry{Key: &StoreEntry_TypeKey{TypeKey: StoreEntry_FINGERPRINT}, Value: &StoreEntry_TextValue{TextValue: fingerprint}})
 
 	// Get ID from Public Key
 	identity := u.KeyPair().GetPublic().GetId()

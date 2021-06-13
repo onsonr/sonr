@@ -130,7 +130,7 @@ func (mn *Node) Sign(data []byte) []byte {
 	}
 
 	// Sign Buffer
-	result := mn.user.Sign(request)
+	result := mn.user.Sign(request, mn.store)
 	buf, err := proto.Marshal(result)
 	if err != nil {
 		mn.handleError(md.NewMarshalError(err))
