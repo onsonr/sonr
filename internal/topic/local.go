@@ -2,7 +2,7 @@ package topic
 
 import (
 	"context"
-	"log"
+
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	rpc "github.com/libp2p/go-libp2p-gorpc"
@@ -35,12 +35,12 @@ type LocalService struct {
 	lobby *md.Lobby
 	user  *md.User
 
-	respCh chan *md.AuthReply
-	invite *md.AuthInvite
+	respCh chan *md.InviteResponse
+	invite *md.InviteRequest
 }
 
 // ^ Create New Contained Topic Manager ^ //
-func NewLocal(ctx context.Context, h *net.HostNode, u *md.User, name string, th ClientHandler) (*TopicManager, *md.SonrError) {
+func NewLocal(ctx context.Context, h net.HostNode, u *md.User, name string, th ClientHandler) (*TopicManager, *md.SonrError) {
 	// Join Topic
 	topic, sub, handler, serr := h.Join(name)
 	if serr != nil {
@@ -62,12 +62,12 @@ func NewLocal(ctx context.Context, h *net.HostNode, u *md.User, name string, th 
 	}
 
 	// Start Exchange Server
-	localServer := rpc.NewServer(h.Host, LOCAL_SERVICE_PID)
+	localServer := rpc.NewServer(h.Host(), LOCAL_SERVICE_PID)
 	psv := LocalService{
 		lobby:  mgr.lobby,
 		user:   u,
 		call:   th,
-		respCh: make(chan *md.AuthReply, K_MAX_MESSAGES),
+		respCh: make(chan *md.InviteResponse, K_MAX_MESSAGES),
 	}
 
 	// Register Service
@@ -84,12 +84,12 @@ func NewLocal(ctx context.Context, h *net.HostNode, u *md.User, name string, th 
 	return mgr, nil
 }
 
-// ^ Send Updated Lobby ^
+// @ Send Updated Lobby
 func (tm *TopicManager) RefreshLobby() {
 	tm.handler.OnRefresh(tm.lobby)
 }
 
-// ^ SendLocal message to specific peer in topic ^
+// @ SendLocal message to specific peer in topic
 func (tm *TopicManager) SendLocal(msg *md.LocalEvent) error {
 	// Convert Event to Proto Binary
 	bytes, err := proto.Marshal(msg)
@@ -105,8 +105,8 @@ func (tm *TopicManager) SendLocal(msg *md.LocalEvent) error {
 	return nil
 }
 
-// ^ Flat: Handles User sent AuthInvite Response on FlatMode ^
-func (tm *TopicManager) Flat(id peer.ID, inv *md.AuthInvite) error {
+// @ Flat: Handles User sent InviteRequest Response on FlatMode
+func (tm *TopicManager) Flat(id peer.ID, inv *md.InviteRequest) error {
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(inv)
 	if err != nil {
@@ -114,7 +114,7 @@ func (tm *TopicManager) Flat(id peer.ID, inv *md.AuthInvite) error {
 	}
 
 	// Initialize Data
-	rpcClient := rpc.NewClient(tm.host.Host, LOCAL_SERVICE_PID)
+	rpcClient := rpc.NewClient(tm.host.Host(), LOCAL_SERVICE_PID)
 	var reply LocalServiceResponse
 	var args LocalServiceArgs
 	args.Invite = msgBytes
@@ -129,10 +129,10 @@ func (tm *TopicManager) Flat(id peer.ID, inv *md.AuthInvite) error {
 	return nil
 }
 
-// ^ Calls Invite on Remote Peer for Flat Mode and makes Direct Response ^ //
+// # Calls Invite on Remote Peer for Flat Mode - Skips Auth
 func (ts *LocalService) FlatWith(ctx context.Context, args LocalServiceArgs, reply *LocalServiceResponse) error {
 	// Received Message
-	receivedMessage := md.AuthInvite{}
+	receivedMessage := md.InviteRequest{}
 	err := proto.Unmarshal(args.Invite, &receivedMessage)
 	if err != nil {
 		return err
@@ -155,10 +155,10 @@ func (ts *LocalService) FlatWith(ctx context.Context, args LocalServiceArgs, rep
 	return nil
 }
 
-// ^ Starts Exchange on Local Peer Join ^ //
+// @ Starts Exchange on Local Peer Join
 func (tm *TopicManager) Exchange(id peer.ID, peerBuf []byte) error {
 	// Initialize RPC
-	exchClient := rpc.NewClient(tm.host.Host, LOCAL_SERVICE_PID)
+	exchClient := rpc.NewClient(tm.host.Host(), LOCAL_SERVICE_PID)
 	var reply LocalServiceResponse
 	var args LocalServiceArgs
 
@@ -186,7 +186,7 @@ func (tm *TopicManager) Exchange(id peer.ID, peerBuf []byte) error {
 	return nil
 }
 
-// ^ Calls Exchange on Local Lobby Peer ^ //
+// # Calls Exchange on Local Lobby Peer
 func (ts *LocalService) ExchangeWith(ctx context.Context, args LocalServiceArgs, reply *LocalServiceResponse) error {
 	// Peer Data
 	remotePeer := &md.Peer{}
@@ -208,10 +208,10 @@ func (ts *LocalService) ExchangeWith(ctx context.Context, args LocalServiceArgs,
 	return nil
 }
 
-// ^ Invite: Handles User sent AuthInvite Response ^
-func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite) error {
+// @ Invite: Handles User sent InviteRequest Response
+func (tm *TopicManager) Invite(id peer.ID, inv *md.InviteRequest) error {
 	// Initialize Data
-	rpcClient := rpc.NewClient(tm.host.Host, LOCAL_SERVICE_PID)
+	rpcClient := rpc.NewClient(tm.host.Host(), LOCAL_SERVICE_PID)
 	var reply LocalServiceResponse
 	var args LocalServiceArgs
 
@@ -230,18 +230,16 @@ func (tm *TopicManager) Invite(id peer.ID, inv *md.AuthInvite) error {
 	// Await Response
 	call := <-done
 	if call.Error != nil {
-		log.Println("Error Occurred: ", err)
 		return err
 	}
-	log.Println("--- Received Reply ---")
 	tm.handler.OnReply(id, reply.InvReply)
 	return nil
 }
 
-// ^ Calls Invite on Local Lobby Peer ^ //
+// # Calls Invite on Local Lobby Peer
 func (ts *LocalService) InviteWith(ctx context.Context, args LocalServiceArgs, reply *LocalServiceResponse) error {
 	// Received Message
-	receivedMessage := md.AuthInvite{}
+	receivedMessage := md.InviteRequest{}
 	err := proto.Unmarshal(args.Invite, &receivedMessage)
 	if err != nil {
 		return err
@@ -250,17 +248,14 @@ func (ts *LocalService) InviteWith(ctx context.Context, args LocalServiceArgs, r
 	// Set Current Message and send Callback
 	ts.invite = &receivedMessage
 	ts.call.OnInvite(args.Invite)
-	log.Println("--- Received Invite ---")
 
 	// Hold Select for Invite Type
 	select {
 	// Received Auth Channel Message
 	case m := <-ts.respCh:
-		log.Println("--- Sending Reply ---")
 		// Convert Protobuf to bytes
 		msgBytes, err := proto.Marshal(m)
 		if err != nil {
-			log.Println("Error Occurred: ", err)
 			return err
 		}
 
@@ -271,18 +266,13 @@ func (ts *LocalService) InviteWith(ctx context.Context, args LocalServiceArgs, r
 	}
 }
 
-// ^ RespondToInvite to an Invitation ^ //
-func (n *TopicManager) RespondToInvite(rep *md.AuthReply) {
-	log.Println("--- Received Response for Invite ---")
+// @ RespondToInvite to an Invitation
+func (n *TopicManager) RespondToInvite(rep *md.InviteResponse) {
 	// Send to Channel
 	n.service.respCh <- rep
 
 	// Prepare Transfer
 	if rep.Decision {
-		log.Println("--- Responding for Accept ---")
 		n.handler.OnResponded(n.service.invite)
-	} else {
-		log.Println("--- Responding for Decline ---")
 	}
-
 }

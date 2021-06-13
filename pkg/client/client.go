@@ -2,8 +2,8 @@ package client
 
 import (
 	"context"
+	"errors"
 
-	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	tpc "github.com/sonr-io/core/internal/topic"
 	md "github.com/sonr-io/core/pkg/models"
 
@@ -11,27 +11,23 @@ import (
 	net "github.com/sonr-io/core/internal/host"
 )
 
-// ^ Struct: Main Client handles Networking/Identity/Streams ^
+// Struct: Main Client handles Networking/Identity/Streams
 type Client struct {
 	tpc.ClientHandler
 
 	// Properties
 	isLinker bool
 	ctx      context.Context
-	call     md.NodeCallback
-	global   net.GlobalTopic
+	call     md.Callback
 	user     *md.User
 	session  *md.Session
 
 	// References
-	Host *net.HostNode
-
-	// Linker Properties
-	linker *md.Linker
+	Host net.HostNode
 }
 
 // ^ NewClient Initializes Node with Router ^
-func NewClient(ctx context.Context, u *md.User, call md.NodeCallback) *Client {
+func NewClient(ctx context.Context, u *md.User, call md.Callback) *Client {
 	// Returns Storj Enabled Client
 	return &Client{
 		ctx:  ctx,
@@ -40,40 +36,10 @@ func NewClient(ctx context.Context, u *md.User, call md.NodeCallback) *Client {
 	}
 }
 
-func NewLinkClient(ctx context.Context, lr *md.LinkRequest) (*Client, *md.SonrError) {
-	// Create Linker/Client
-	linker := md.NewLinker(lr)
-	c := &Client{
-		ctx:      ctx,
-		linker:   linker,
-		isLinker: true,
-	}
-
-	// Connect Linker
-	err := c.Connect(linker.PrivateKey())
-	if err != nil {
-		return nil, err
-	}
-
-	// Bootstrap Linker
-	_, err = c.Bootstrap()
-	if err != nil {
-		return nil, err
-	}
-
-	// Set Linker Peer ID
-	id, serr := c.global.FindPeerID(c.linker.Username)
-	if serr != nil {
-		return nil, md.NewError(serr, md.ErrorMessage_HOST_INFO)
-	}
-	c.linker.UserID = id.String()
-	return c, nil
-}
-
-// ^ Connects Host Node from Private Key ^
-func (c *Client) Connect(pk crypto.PrivKey) *md.SonrError {
+// @ Connects Host Node from Private Key
+func (c *Client) Connect(api *md.APIKeys, keys *md.KeyPair) *md.SonrError {
 	// Set Host
-	hn, err := net.NewHost(c.ctx, c.user.GetRouter().Rendevouz, pk)
+	hn, err := net.NewHost(c.ctx, c.user.GetRouter().Rendevouz, api, keys)
 	if err != nil {
 		return err
 	}
@@ -85,7 +51,7 @@ func (c *Client) Connect(pk crypto.PrivKey) *md.SonrError {
 	}
 
 	// Set Peer
-	err = c.user.NewPeer(hn.ID, maddr)
+	err = c.user.NewPeer(hn.ID(), maddr)
 	if err != nil {
 		return err
 	}
@@ -95,7 +61,7 @@ func (c *Client) Connect(pk crypto.PrivKey) *md.SonrError {
 	return nil
 }
 
-// ^ Begins Bootstrapping HostNode ^
+// @ Begins Bootstrapping HostNode
 func (c *Client) Bootstrap() (*tpc.TopicManager, *md.SonrError) {
 	// Bootstrap Host
 	err := c.Host.Bootstrap()
@@ -103,16 +69,19 @@ func (c *Client) Bootstrap() (*tpc.TopicManager, *md.SonrError) {
 		return nil, err
 	}
 
-	// Join Global
-	global, err := c.Host.StartGlobal(c.user.SName())
+	// Start Textile
+	err = c.Host.StartTextile(c.user.GetDevice())
 	if err != nil {
 		return nil, err
 	}
 
-	// Set Client Global Ref
-	c.global = global
+	// Join Global
+	err = c.Host.StartGlobal(c.user.SName())
+	if err != nil {
+		return nil, err
+	}
 
-	// Join Local Topic
+	// Join Local
 	if t, err := tpc.NewLocal(c.ctx, c.Host, c.user, c.user.GetRouter().LocalTopic, c); err != nil {
 		return nil, err
 	} else {
@@ -120,35 +89,8 @@ func (c *Client) Bootstrap() (*tpc.TopicManager, *md.SonrError) {
 	}
 }
 
-// ^ Creates Remote from Lobby Data ^
-func (n *Client) CreateRemote(r *md.RemoteCreateRequest) (*tpc.TopicManager, *md.RemoteCreateResponse, *md.SonrError) {
-	if t, resp, err := tpc.NewRemote(n.ctx, n.Host, n.user, r, n); err != nil {
-		return nil, nil, err
-	} else {
-		return t, resp, nil
-	}
-}
-
-// ^ Join Lobby Adds Node to Named Topic ^
-func (n *Client) JoinRemote(r *md.RemoteJoinRequest) (*tpc.TopicManager, *md.RemoteJoinResponse, *md.SonrError) {
-	// @ Returns error if Lobby doesnt Exist
-	if t, resp, err := tpc.JoinRemote(n.ctx, n.Host, n.user, r, n); err != nil {
-		return nil, nil, err
-	} else {
-		return t, resp, nil
-	}
-}
-
-// ^ Join Lobby Adds Node to Named Topic ^
-func (n *Client) LeaveLobby(lob *tpc.TopicManager) *md.SonrError {
-	if err := lob.LeaveTopic(); err != nil {
-		return md.NewError(err, md.ErrorMessage_TOPIC_LEAVE)
-	}
-	return nil
-}
-
-// ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Client) InviteLink(invite *md.AuthInvite, t *tpc.TopicManager) *md.SonrError {
+// @ Invite Processes Data and Sends Invite to Peer
+func (n *Client) InviteLink(invite *md.InviteRequest, t *tpc.TopicManager) *md.SonrError {
 	// @ 3. Send Invite to Peer
 	if t.HasPeer(invite.To.Id.Peer) {
 		// Get PeerID and Check error
@@ -158,10 +100,10 @@ func (n *Client) InviteLink(invite *md.AuthInvite, t *tpc.TopicManager) *md.Sonr
 		}
 
 		// Run Routine
-		go func(inv *md.AuthInvite) {
+		go func(inv *md.InviteRequest) {
 			err = t.Invite(id, inv)
 			if err != nil {
-				n.call.Error(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
+				n.call.OnError(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
 			}
 		}(invite)
 	} else {
@@ -170,8 +112,8 @@ func (n *Client) InviteLink(invite *md.AuthInvite, t *tpc.TopicManager) *md.Sonr
 	return nil
 }
 
-// ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Client) InviteContact(invite *md.AuthInvite, t *tpc.TopicManager, c *md.Contact) *md.SonrError {
+// @ Invite Processes Data and Sends Invite to Peer
+func (n *Client) InviteContact(invite *md.InviteRequest, t *tpc.TopicManager, c *md.Contact) *md.SonrError {
 	// @ 3. Send Invite to Peer
 	if t.HasPeer(invite.To.Id.Peer) {
 		// Get PeerID and Check error
@@ -181,18 +123,18 @@ func (n *Client) InviteContact(invite *md.AuthInvite, t *tpc.TopicManager, c *md
 		}
 
 		// Run Routine
-		go func(inv *md.AuthInvite) {
+		go func(inv *md.InviteRequest) {
 			// Direct Invite for Flat
 			if inv.IsFlat() {
 				err = t.Flat(id, inv)
 				if err != nil {
-					n.call.Error(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
+					n.call.OnError(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
 				}
 			} else {
 				// Request Invite for Non Flat
 				err = t.Invite(id, inv)
 				if err != nil {
-					n.call.Error(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
+					n.call.OnError(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
 				}
 			}
 		}(invite)
@@ -202,8 +144,8 @@ func (n *Client) InviteContact(invite *md.AuthInvite, t *tpc.TopicManager, c *md
 	return nil
 }
 
-// ^ Invite Processes Data and Sends Invite to Peer ^ //
-func (n *Client) InviteFile(invite *md.AuthInvite, t *tpc.TopicManager) *md.SonrError {
+// @ Invite Processes Data and Sends Invite to Peer
+func (n *Client) InviteFile(invite *md.InviteRequest, t *tpc.TopicManager) *md.SonrError {
 	// Start New Session
 	n.session = md.NewOutSession(n.user, invite, n.call)
 
@@ -214,16 +156,26 @@ func (n *Client) InviteFile(invite *md.AuthInvite, t *tpc.TopicManager) *md.Sonr
 	}
 
 	// Run Routine
-	go func(inv *md.AuthInvite) {
+	go func(inv *md.InviteRequest) {
 		err = t.Invite(id, inv)
 		if err != nil {
-			n.call.Error(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
+			n.call.OnError(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
 		}
 	}(invite)
 	return nil
 }
 
-// ^ Update proximity/direction and Notify Lobby ^ //
+// @ Handle a MailRequest from Node
+func (c *Client) Mail(mr *md.MailRequest) *md.SonrError {
+	if mr.Method == md.MailRequest_READ {
+
+	} else if mr.Method == md.MailRequest_SEND {
+
+	}
+	return md.NewError(errors.New("Invalid MailRequest Method"), md.ErrorMessage_HOST_TEXTILE)
+}
+
+// @ Update proximity/direction and Notify Lobby
 func (n *Client) Update(t *tpc.TopicManager) *md.SonrError {
 	// Inform Lobby
 	if err := t.SendLocal(n.user.Peer.SignUpdate()); err != nil {
@@ -232,7 +184,7 @@ func (n *Client) Update(t *tpc.TopicManager) *md.SonrError {
 	return nil
 }
 
-// ^ Close Ends All Network Communication ^
+// @ Close Ends All Network Communication
 func (n *Client) Close() {
-	n.Host.Host.Close()
+	n.Host.Close()
 }

@@ -19,9 +19,3 @@ enum Direction {
   Incoming = 1; // Incoming Transfer
   Outgoing = 2; // Outgoing Transfer
 }
-
-message Global {
-  map<string, string> peers = 1;
-  string userPeerID = 2;
-  string sName = 3;
-}

@@ -23,23 +23,18 @@ const K_CHUNK_SIZE = 4 * 1024
 type HTTPHandler func(http.ResponseWriter, *http.Request)
 type SetStatus func(s Status)
 type OnProtobuf func([]byte)
-type OnInvite func(data []byte)
 type OnProgress func(data float32)
-type OnReceived func(data *Transfer)
-type OnTransmitted func(data *Transfer)
 type OnError func(err *SonrError)
-type NodeCallback struct {
-	APIRequest  OnProtobuf
-	Invited     OnInvite
-	Refreshed   OnProtobuf
-	LocalEvent  OnProtobuf
-	RemoteEvent OnProtobuf
-	Responded   OnProtobuf
-	Progressed  OnProgress
-	Received    OnReceived
-	Status      SetStatus
-	Transmitted OnTransmitted
-	Error       OnError
+type Callback struct {
+	OnInvite      OnProtobuf
+	OnRefresh     OnProtobuf
+	OnEvent       OnProtobuf
+	OnReply       OnProtobuf
+	OnProgress    OnProgress
+	OnReceived    OnProtobuf
+	OnTransmitted OnProtobuf
+	OnError       OnError
+	SetStatus     SetStatus
 }
 
 // ** ─── State MANAGEMENT ────────────────────────────────────────────────────────
@@ -196,11 +191,11 @@ type Session struct {
 	user *User
 
 	// Management
-	call NodeCallback
+	call Callback
 }
 
 // ^ Prepare for Outgoing Session ^ //
-func NewOutSession(u *User, req *AuthInvite, tc NodeCallback) *Session {
+func NewOutSession(u *User, req *InviteRequest, tc Callback) *Session {
 	return &Session{
 		file: req.GetFile(),
 		peer: req.GetTo(),
@@ -210,7 +205,7 @@ func NewOutSession(u *User, req *AuthInvite, tc NodeCallback) *Session {
 }
 
 // ^ Prepare for Incoming Session ^ //
-func NewInSession(u *User, inv *AuthInvite, c NodeCallback) *Session {
+func NewInSession(u *User, inv *InviteRequest, c Callback) *Session {
 	// Return Session
 	return &Session{
 		file: inv.GetFile(),
@@ -245,10 +240,11 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 			r := m.NewReader(s.user.Device, s.call)
 			err := r.ReadFrom(rs)
 			if err != nil {
-				s.call.Error(NewError(err, ErrorMessage_INCOMING))
+				s.call.OnError(NewError(err, ErrorMessage_INCOMING))
 			}
 		}
-		s.call.Received(s.Card())
+		// Set Status
+		s.handleReceived()
 	}(msg.NewReader(stream))
 }
 
@@ -261,17 +257,49 @@ func (s *Session) WriteToStream(stream network.Stream) {
 			w := m.NewWriter(s.user.Device, s.call)
 			err := w.WriteTo(ws)
 			if err != nil {
-				s.call.Error(NewError(err, ErrorMessage_OUTGOING))
+				s.call.OnError(NewError(err, ErrorMessage_OUTGOING))
 			}
 		}
-		// Callback
-		s.call.Transmitted(s.Card())
+		// Handle Complete
+		s.handleTransmitted()
 	}(msg.NewWriter(stream))
+}
+
+// @ Helper: Handles Succesful Received
+func (s *Session) handleReceived() {
+	// Set Status
+	s.call.SetStatus(Status_AVAILABLE)
+
+	// Marshal Data
+	buf, err := proto.Marshal(s.Card())
+	if err != nil {
+		s.call.OnError(NewMarshalError(err))
+		return
+	}
+
+	// Callback Data
+	s.call.OnReceived(buf)
+}
+
+// @ Helper: Handles Succesful Transmitted
+func (s *Session) handleTransmitted() {
+	// Set Status
+	s.call.SetStatus(Status_AVAILABLE)
+
+	// Marshal Data
+	buf, err := proto.Marshal(s.Card())
+	if err != nil {
+		s.call.OnError(NewMarshalError(err))
+		return
+	}
+
+	// Callback Data
+	s.call.OnTransmitted(buf)
 }
 
 // ** ─── SONRFILE_Item MANAGEMENT ────────────────────────────────────────────────────────
 
-func (i *SonrFile_Item) NewReader(d *Device, c NodeCallback) ItemReader {
+func (i *SonrFile_Item) NewReader(d *Device, c Callback) ItemReader {
 	// Return Reader
 	return &itemReader{
 		item:     i,
@@ -281,7 +309,7 @@ func (i *SonrFile_Item) NewReader(d *Device, c NodeCallback) ItemReader {
 	}
 }
 
-func (m *SonrFile_Item) NewWriter(d *Device, c NodeCallback) ItemWriter {
+func (m *SonrFile_Item) NewWriter(d *Device, c Callback) ItemWriter {
 	return &itemWriter{
 		item:     m,
 		size:     0,
@@ -321,7 +349,7 @@ type itemReader struct {
 	item     *SonrFile_Item
 	device   *Device
 	size     int
-	callback NodeCallback
+	callback Callback
 }
 
 // Returns Progress of File, Given the written number of bytes
@@ -358,7 +386,7 @@ func (ir *itemReader) ReadFrom(reader msg.ReadCloser) error {
 			}
 			ir.size = ir.size + n
 			ir.mutex.Unlock()
-			ir.callback.Progressed(ir.Progress())
+			ir.callback.OnProgress(ir.Progress())
 		} else {
 			// Flush File Data
 			if err := f.Sync(); err != nil {
@@ -386,7 +414,7 @@ type itemWriter struct {
 	item     *SonrFile_Item
 	device   *Device
 	size     int
-	callback NodeCallback
+	callback Callback
 }
 
 // Returns Progress of File, Given the written number of bytes
@@ -441,7 +469,7 @@ func (iw *itemWriter) WriteTo(writer msg.WriteCloser) error {
 			return err
 		}
 
-		iw.callback.Progressed(iw.Progress())
+		iw.callback.OnProgress(iw.Progress())
 	}
 
 	// Create Block Protobuf from Chunk

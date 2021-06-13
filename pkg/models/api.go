@@ -2,177 +2,372 @@ package models
 
 import (
 	"fmt"
+	"log"
+
 	"net/http"
 
 	olc "github.com/google/open-location-code/go"
-	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
-	"github.com/multiformats/go-multiaddr"
+	"github.com/textileio/go-threads/core/thread"
 	"google.golang.org/protobuf/proto"
+
+	util "github.com/sonr-io/core/pkg/util"
 )
 
-// ** ─── AuthReply MANAGEMENT ────────────────────────────────────────────────────────
-func (r *AuthReply) HasAcceptedTransfer() bool {
-	return r.Decision && r.Type == AuthReply_Transfer
+// ** ─── VerifyRequest MANAGEMENT ────────────────────────────────────────────────────────
+// Checks if VerifyRequest is for String Value
+func (vr *VerifyRequest) IsString() bool {
+	switch vr.Data.(type) {
+	case *VerifyRequest_TextValue:
+		return true
+	default:
+		return false
+	}
 }
 
-// ** ─── AuthInvite MANAGEMENT ────────────────────────────────────────────────────────
+// Checks if VerifyRequest is for Buffer Value
+func (vr *VerifyRequest) IsBuffer() bool {
+	switch vr.Data.(type) {
+	case *VerifyRequest_BufferValue:
+		return true
+	default:
+		return false
+	}
+}
+
+// ** ─── VerifyResponse MANAGEMENT ────────────────────────────────────────────────────────
+// Create Marshalled VerifyResponse as GIVEN VALUE
+func NewVerifyResponseBuf(result bool) []byte {
+	if buf, err := proto.Marshal(&VerifyResponse{IsVerified: result}); err != nil {
+		return nil
+	} else {
+		return buf
+	}
+}
+
+// Create Marshalled VerifyResponse as TRUE
+func NewValidVerifyResponseBuf() []byte {
+	if buf, err := proto.Marshal(&VerifyResponse{IsVerified: true}); err != nil {
+		return nil
+	} else {
+		return buf
+	}
+}
+
+// Create Marshalled VerifyResponse as FALSE
+func NewInvalidVerifyResponseBuf() []byte {
+	if buf, err := proto.Marshal(&VerifyResponse{IsVerified: false}); err != nil {
+		return nil
+	} else {
+		return buf
+	}
+}
+
+// ** ─── URLLink MANAGEMENT ────────────────────────────────────────────────────────
+// Creates New Link
+func NewURLLink(url string) *URLLink {
+	link := &URLLink{
+		Url:         url,
+		Initialized: false,
+	}
+	link.SetData()
+	return link
+}
+
+// Sets URLLink Data
+func (u *URLLink) SetData() {
+	if !u.Initialized {
+		// Create Request
+		resp, err := http.Get(u.Url)
+		if err != nil {
+			return
+		}
+
+		// Get Info
+		info, err := util.GetPageData(resp)
+		if err != nil {
+			return
+		}
+
+		// Set Link
+		u.Initialized = true
+		u.Title = info.Title
+		u.Type = info.Type
+		u.Site = info.Site
+		u.SiteName = info.SiteName
+		u.Description = info.Description
+		u.Locale = info.Locale
+
+		// Get Images
+		if info.Images != nil {
+			for _, v := range info.Images {
+				u.Images = append(u.Images, &URLLink_OpenGraphImage{
+					Url:       v.Url,
+					SecureUrl: v.SecureUrl,
+					Width:     int32(v.Width),
+					Height:    int32(v.Height),
+					Type:      v.Type,
+				})
+			}
+		}
+
+		// Get Videos
+		if info.Videos != nil {
+			for _, v := range info.Videos {
+				u.Videos = append(u.Videos, &URLLink_OpenGraphVideo{
+					Url:       v.Url,
+					SecureUrl: v.SecureUrl,
+					Width:     int32(v.Width),
+					Height:    int32(v.Height),
+					Type:      v.Type,
+				})
+			}
+		}
+
+		// Get Audios
+		if info.Audios != nil {
+			for _, v := range info.Videos {
+				u.Audios = append(u.Audios, &URLLink_OpenGraphAudio{
+					Url:       v.Url,
+					SecureUrl: v.SecureUrl,
+					Type:      v.Type,
+				})
+			}
+		}
+
+		// Get Twitter
+		if info.Twitter != nil {
+			u.Twitter = &URLLink_TwitterCard{
+				Card:        info.Twitter.Card,
+				Site:        info.Twitter.Site,
+				SiteId:      info.Twitter.SiteId,
+				Creator:     info.Twitter.Creator,
+				CreatorId:   info.Twitter.CreatorId,
+				Description: info.Twitter.Description,
+				Title:       info.Twitter.Title,
+				Image:       info.Twitter.Image,
+				ImageAlt:    info.Twitter.ImageAlt,
+				Url:         info.Twitter.Url,
+				Player: &URLLink_TwitterCard_Player{
+					Url:    info.Twitter.Player.Url,
+					Width:  int32(info.Twitter.Player.Width),
+					Height: int32(info.Twitter.Player.Height),
+					Stream: info.Twitter.Player.Stream,
+				},
+				Iphone: &URLLink_TwitterCard_IPhone{
+					Name: info.Twitter.IPhone.Name,
+					Id:   info.Twitter.IPhone.Id,
+					Url:  info.Twitter.IPhone.Url,
+				},
+				Ipad: &URLLink_TwitterCard_IPad{
+					Name: info.Twitter.IPad.Name,
+					Id:   info.Twitter.IPad.Id,
+					Url:  info.Twitter.IPad.Url,
+				},
+				GooglePlay: &URLLink_TwitterCard_GooglePlay{
+					Name: info.Twitter.Googleplay.Name,
+					Id:   info.Twitter.Googleplay.Id,
+					Url:  info.Twitter.Googleplay.Url,
+				},
+			}
+		}
+	}
+}
+
+// ** ─── InviteResponse MANAGEMENT ────────────────────────────────────────────────────────
+func (r *InviteResponse) HasAcceptedTransfer() bool {
+	return r.Decision && r.Type == InviteResponse_Transfer
+}
+
+// ** ─── InviteRequest MANAGEMENT ────────────────────────────────────────────────────────
 // Returns Invite Contact
-func (i *AuthInvite) GetContact() *Contact {
+func (i *InviteRequest) GetContact() *Contact {
 	return i.GetData().GetContact()
 }
 
 // Returns Invite File
-func (i *AuthInvite) GetFile() *SonrFile {
+func (i *InviteRequest) GetFile() *SonrFile {
 	return i.GetData().GetFile()
 }
 
 // Returns Invite URL
-func (i *AuthInvite) GetUrl() *URLLink {
+func (i *InviteRequest) GetUrl() *URLLink {
 	return i.GetData().GetUrl()
 }
 
 // Checks if Payload is Contact
-func (i *AuthInvite) IsPayloadContact() bool {
+func (i *InviteRequest) IsPayloadContact() bool {
 	return i.Payload == Payload_CONTACT || i.Payload == Payload_FLAT_CONTACT
 }
 
 // Checks if Payload is File Transfer
-func (i *AuthInvite) IsPayloadFile() bool {
+func (i *InviteRequest) IsPayloadFile() bool {
 	return i.Payload == Payload_FILE || i.Payload == Payload_FILES || i.Payload == Payload_MEDIA
 }
 
 // Checks if Payload is Url
-func (i *AuthInvite) IsPayloadUrl() bool {
+func (i *InviteRequest) IsPayloadUrl() bool {
 	return i.Payload == Payload_URL
 }
 
 // Checks for Flat Invite
-func (i *AuthInvite) IsFlat() bool {
+func (i *InviteRequest) IsFlat() bool {
 	return i.Data.Properties.IsFlat
 }
 
 // Checks for Remote Invite
-func (i *AuthInvite) IsRemote() bool {
+func (i *InviteRequest) IsRemote() bool {
 	return i.Data.Properties.IsRemote
 }
 
-// Validates AuthInvite has From Parameter
-func (u *User) ValidateInvite(i *AuthInvite) *AuthInvite {
+// Validates InviteRequest has From Parameter
+func (u *User) ValidateInvite(i *InviteRequest) *InviteRequest {
 	if i.From == nil {
 		i.From = u.GetPeer()
 	}
 	return i
 }
 
-// ** ─── REST API MANAGEMENT ────────────────────────────────────────────────────────
-// Creates New Proto Request from HTTP Request
-func NewRestRequest(r *http.Request) *RestRequest {
-	// Method Type
-	methodType := RestMethodType_DEFAULT
-
-	// Find Method
-	for k := range RestMethodType_value {
-		if k == r.Method {
-			methodType = RestMethodType(RestMethodType_value[r.Method])
-		}
-	}
-
-	return &RestRequest{
-		Type:   methodType,
-		Method: extractHTTPFunction(r.RequestURI),
-	}
-}
-
-// ** ─── Remote MANAGEMENT ────────────────────────────────────────────────────────
-// Get Remote Topic
-func (r *RemoteCreateRequest) GetTopic() string {
-	return fmt.Sprintf("%s.remote.%s.snr/", r.Fingerprint, r.SName)
-}
-
-// Get Remote Point Info
-func (r *RemoteCreateRequest) NewCreatedRemote(u *User) *Lobby {
-	// Create Lobby
-	return &Lobby{
-		// General
-		Type:  Lobby_REMOTE,
-		Peers: make(map[string]*Peer),
-		User:  u.GetPeer(),
-
-		// Info
-		Info: &Lobby_Remote{
-			Remote: &Lobby_RemoteInfo{
-				IsJoin:      false,
-				Fingerprint: r.GetFingerprint(),
-				Words:       r.GetWords(),
-				Topic:       r.GetTopic(),
-				File:        r.GetFile(),
-				Owner:       u.GetPeer(),
-			},
-		},
-	}
-}
-
-func (r *RemoteJoinRequest) NewJoinedRemote(u *User) *Lobby {
-	// Create Lobby
-	return &Lobby{
-		// General
-		Type:  Lobby_REMOTE,
-		Peers: make(map[string]*Peer),
-		User:  u.GetPeer(),
-
-		// Info
-		Info: &Lobby_Remote{
-			Remote: &Lobby_RemoteInfo{
-				IsJoin: true,
-				Topic:  r.GetTopic(),
-			},
-		},
-	}
-}
-
-// ** ─── Linker MANAGEMENT ────────────────────────────────────────────────────────
-// Creates New Linker from Link Request
-func NewLinker(lr *LinkRequest) *Linker {
-	return &Linker{
-		Device:   lr.Device,
-		Username: lr.Username,
-		Router: &Linker_Router{
-			LocalIPTopic: lr.Location.OLC(),
-			Rendevouz:    fmt.Sprintf("/sonr/%s", lr.GetLocation().MajorOLC()),
-			Location:     lr.GetLocation(),
-		},
-	}
-}
-
-// Creates New Peer for Linker
-func (l *Linker) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) {
-	// Initialize
-	deviceID := l.Device.GetId()
-
-	// Set Peer
-	l.Peer = &Peer{
-		Id: &Peer_ID{
-			Peer:   id.String(),
-			Device: deviceID,
-		},
-		Platform: l.Device.Platform,
-		Model:    l.Device.Model,
-	}
-
-	// Set Device Topic
-	l.Router.DeviceTopic = fmt.Sprintf("/sonr/user/%s", l.Username)
-}
-
-// Returns Linker Private Key
-func (l *Linker) PrivateKey() crypto.PrivKey {
-	// Get Key from Buffer
-	key, err := crypto.UnmarshalPrivateKey(l.GetDevice().GetPrivateKey())
+// ** ─── MailEntry MANAGEMENT ────────────────────────────────────────────────────────
+// Returns Mail Entry as Buffer
+func (me *MailEntry) Buffer() []byte {
+	buf, err := proto.Marshal(me)
 	if err != nil {
 		return nil
 	}
-	return key
+	return buf
+}
+
+// Checks if MailEntry is Invite
+func (me *MailEntry) IsInvite() bool {
+	return me.GetSubject() == MailEntry_INVITE
+}
+
+// Checks if MailEntry is Text
+func (me *MailEntry) IsText() bool {
+	return me.GetSubject() == MailEntry_TEXT
+}
+
+// Returns Peer Recipient Thread Public Key
+func (me *MailEntry) ToPubKey() thread.PubKey {
+	return thread.NewLibp2pPubKey(me.GetTo().PublicKey())
+}
+
+// ** ─── StoreEntry MANAGEMENT ────────────────────────────────────────────────────────
+// Returns Byte List for Key Field
+func (se *StoreEntry) KeyBytes() []byte {
+	switch se.Key.(type) {
+	case *StoreEntry_TextKey:
+		return []byte(se.GetTextKey())
+	case *StoreEntry_TypeKey:
+		return []byte(se.GetTypeKey().String())
+	}
+	return nil
+}
+
+// ** ─── StoreRequest MANAGEMENT ────────────────────────────────────────────────────────
+// Checks if Method is `GET`
+func (sr *StoreRequest) IsGet() bool {
+	return sr.Method == StoreRequest_GET
+}
+
+// Checks if Method is `HAS`
+func (sr *StoreRequest) IsHas() bool {
+	return sr.Method == StoreRequest_HAS
+}
+
+// Checks if Method is `PUT`
+func (sr *StoreRequest) IsPut() bool {
+	return sr.Method == StoreRequest_PUT
+}
+
+// Returns Byte List for Key Field
+func (sr *StoreRequest) KeyBytes() []byte {
+	switch sr.Key.(type) {
+	case *StoreRequest_TextKey:
+		return []byte(sr.GetTextKey())
+	case *StoreRequest_TypeKey:
+		return []byte(sr.GetTypeKey().String())
+	}
+	return nil
+}
+
+// Returns Request Key,Value Pair as StoreEntry
+func (sr *StoreRequest) ValueToEntry() *StoreEntry {
+	// Initialize
+	entry := &StoreEntry{}
+
+	// Set Key
+	switch sr.Key.(type) {
+	case *StoreRequest_TextKey:
+		entry.Key = &StoreEntry_TextKey{
+			TextKey: sr.GetTextKey(),
+		}
+	case *StoreRequest_TypeKey:
+		entry.Key = &StoreEntry_TypeKey{
+			TypeKey: sr.GetTypeKey(),
+		}
+	}
+
+	// Set Value
+	switch sr.Value.(type) {
+	case *StoreRequest_TextValue:
+		entry.Value = &StoreEntry_TextValue{
+			TextValue: sr.GetTextValue(),
+		}
+	case *StoreRequest_BufferValue:
+		entry.Value = &StoreEntry_BufferValue{
+			BufferValue: sr.GetBufferValue(),
+		}
+	}
+	return entry
+}
+
+// ** ─── StoreResponse MANAGEMENT ────────────────────────────────────────────────────────
+// Create New Response for GET Method
+func NewStoreGetResponse(e *StoreEntry, err *SonrError) *StoreResponse {
+	// Initialize
+	resp := &StoreResponse{
+		Method: StoreResponse_GET,
+		Result: &StoreResponse_Entry{
+			Entry: e,
+		},
+	}
+
+	// Check Error
+	if err != nil {
+		resp.Error = err.data
+	}
+	return resp
+}
+
+// Create New Response for HAS Method
+func NewStoreHasResponse(result bool) *StoreResponse {
+	// Initialize
+	return &StoreResponse{
+		Method: StoreResponse_HAS,
+		Result: &StoreResponse_HasValue{
+			HasValue: result,
+		},
+	}
+}
+
+// Create New Response for PUT Method
+func NewStorePutResponse(result bool, err *SonrError) *StoreResponse {
+	// Initialize
+	resp := &StoreResponse{
+		Method: StoreResponse_PUT,
+		Result: &StoreResponse_PutValue{
+			PutValue: result,
+		},
+	}
+
+	// Check Error
+	if err != nil {
+		resp.Error = err.data
+	}
+	return resp
 }
 
 // ** ─── Location MANAGEMENT ────────────────────────────────────────────────────────
@@ -218,55 +413,50 @@ func (r *User_Router) Topic(name string) string {
 	return fmt.Sprintf("/sonr/topic/%s", name)
 }
 
-// @ Major Rendevouz Advertising Point
-func (u *User) GetRouter() *User_Router {
-	return u.GetConnection().GetRouter()
-}
-
 // ** ─── Status MANAGEMENT ────────────────────────────────────────────────────────
 // Update Connected Connection Status
 func (u *User) SetConnected(value bool) *StatusUpdate {
 	// Update Status
 	if value {
-		u.Connection.Status = Status_CONNECTED
+		u.Status = Status_CONNECTED
 	} else {
-		u.Connection.Status = Status_FAILED
+		u.Status = Status_FAILED
 	}
 
 	// Returns Status Update
-	return &StatusUpdate{Value: u.Connection.GetStatus()}
+	return &StatusUpdate{Value: u.GetStatus()}
 }
 
 // Update Bootstrap Connection Status
 func (u *User) SetAvailable(value bool) *StatusUpdate {
 	// Update Status
 	if value {
-		u.Connection.Status = Status_AVAILABLE
+		u.Status = Status_AVAILABLE
 	} else {
-		u.Connection.Status = Status_FAILED
+		u.Status = Status_FAILED
 	}
 
 	// Returns Status Update
-	return &StatusUpdate{Value: u.Connection.GetStatus()}
+	return &StatusUpdate{Value: u.GetStatus()}
 }
 
 // Update Node Status
 func (u *User) SetStatus(ns Status) *StatusUpdate {
 	// Set Value
-	u.Connection.Status = ns
+	u.Status = ns
 
 	// Returns Status Update
-	return &StatusUpdate{Value: u.Connection.GetStatus()}
+	return &StatusUpdate{Value: u.GetStatus()}
 }
 
 // Checks if Status is Given Value
 func (u *User) IsStatus(gs Status) bool {
-	return u.GetConnection().GetStatus() == gs
+	return u.GetStatus() == gs
 }
 
 // Checks if Status is Not Given Value
 func (u *User) IsNotStatus(gs Status) bool {
-	return u.GetConnection().GetStatus() != gs
+	return u.GetStatus() != gs
 }
 
 // ** ─── Error MANAGEMENT ────────────────────────────────────────────────────────
@@ -353,6 +543,56 @@ func NewErrorJoined(errors ...SonrErrorOpt) *SonrError {
 	}
 }
 
+// ^ Returns Proto Marshal Error
+func NewMarshalError(err error) *SonrError {
+	// Return Error
+	// Initialize
+	message, severity := generateError(ErrorMessage_MARSHAL)
+
+	// Set Capture
+	capture := false
+	if severity == ErrorMessage_CRITICAL || severity == ErrorMessage_FATAL {
+		capture = true
+	}
+
+	// Return Error
+	return &SonrError{
+		data: &ErrorMessage{
+			Message:  message,
+			Error:    err.Error(),
+			Type:     ErrorMessage_MARSHAL,
+			Severity: severity,
+		},
+		Capture:  capture,
+		HasError: true,
+	}
+}
+
+// ^ Returns Proto Unmarshal Error
+func NewUnmarshalError(err error) *SonrError {
+	// Return Error
+	// Initialize
+	message, severity := generateError(ErrorMessage_UNMARSHAL)
+
+	// Set Capture
+	capture := false
+	if severity == ErrorMessage_CRITICAL || severity == ErrorMessage_FATAL {
+		capture = true
+	}
+
+	// Return Error
+	return &SonrError{
+		data: &ErrorMessage{
+			Message:  message,
+			Error:    err.Error(),
+			Type:     ErrorMessage_UNMARSHAL,
+			Severity: severity,
+		},
+		Capture:  capture,
+		HasError: true,
+	}
+}
+
 // ^ Returns New Error based on Type Only
 func NewErrorWithType(errType ErrorMessage_Type) *SonrError {
 	// Initialize
@@ -383,6 +623,16 @@ func (errWrap *SonrError) Bytes() []byte {
 		return nil
 	}
 	return bytes
+}
+
+// @ Method Prints Error
+func (errWrap *SonrError) Print() {
+	log.Printf("ERROR: %s", errWrap.String())
+}
+
+// @ Return Protobuf Message for Error
+func (errWrap *SonrError) Message() *ErrorMessage {
+	return errWrap.data
 }
 
 // @ Return Message as String ^ //
@@ -469,6 +719,22 @@ func generateError(errType ErrorMessage_Type) (string, ErrorMessage_Severity) {
 		return "Failed to connect to Nearby Peer", ErrorMessage_WARNING
 	case ErrorMessage_HOST_INFO:
 		return "Failed to generate User Peer Info", ErrorMessage_CRITICAL
+	case ErrorMessage_KEY_ID:
+		return "Cannot get PeerID from Public Key", ErrorMessage_CRITICAL
+	case ErrorMessage_KEY_SET:
+		return "Cannot overwrite existing key", ErrorMessage_WARNING
+	case ErrorMessage_KEY_INVALID:
+		return "Key is Invalid, May not Exist", ErrorMessage_FATAL
+	case ErrorMessage_STORE_FIND:
+		return "Failed to Find Key", ErrorMessage_LOG
+	case ErrorMessage_STORE_GET:
+		return "Failed to Get Value for Key", ErrorMessage_WARNING
+	case ErrorMessage_STORE_PUT:
+		return "Failed to Get Value for Key", ErrorMessage_WARNING
+	case ErrorMessage_STORE_INIT:
+		return "Failed to Get Value for Key", ErrorMessage_CRITICAL
+	case ErrorMessage_HOST_TEXTILE:
+		return "Failed to Start Textile Client", ErrorMessage_CRITICAL
 	default:
 		return "Unknown", ErrorMessage_LOG
 	}

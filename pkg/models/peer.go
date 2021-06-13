@@ -2,7 +2,6 @@ package models
 
 import (
 	"errors"
-	"log"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	"google.golang.org/protobuf/proto"
@@ -13,7 +12,6 @@ import (
 func (g *Global) Buffer() ([]byte, error) {
 	bytes, err := proto.Marshal(g)
 	if err != nil {
-		log.Println(err)
 		return nil, err
 	}
 	return bytes, nil
@@ -91,12 +89,10 @@ func NewLocalLobby(u *User) *Lobby {
 		User:  u.GetPeer(),
 
 		// Info
-		Info: &Lobby_Local{
-			Local: &Lobby_LocalInfo{
-				Name:     topic[12:],
-				Location: loc,
-				Topic:    topic,
-			},
+		Info: &Lobby_LocalInfo{
+			Name:     topic[12:],
+			Location: loc,
+			Topic:    topic,
 		},
 	}
 }
@@ -113,23 +109,13 @@ func (l *Lobby) Size() int {
 
 // Returns Lobby Topic
 func (l *Lobby) Topic() string {
-	topic := ""
-	switch l.Info.(type) {
-	// @ Create Remote
-	case *Lobby_Local:
-		topic = l.GetLocal().GetTopic()
-	// @ Join Remote
-	case *Lobby_Remote:
-		topic = l.GetRemote().GetTopic()
-	}
-	return topic
+	return l.GetInfo().GetTopic()
 }
 
 // Returns as Lobby Buffer
 func (l *Lobby) Buffer() ([]byte, error) {
 	bytes, err := proto.Marshal(l)
 	if err != nil {
-		log.Println(err)
 		return nil, err
 	}
 	return bytes, nil

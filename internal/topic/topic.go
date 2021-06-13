@@ -17,31 +17,29 @@ const LOCAL_SERVICE_PID = protocol.ID("/sonr/local-service/0.2")
 const REMOTE_SERVICE_PID = protocol.ID("/sonr/remote-service/0.2")
 
 type ClientHandler interface {
-	OnLocalEvent(*md.LocalEvent)
-	OnRemoteEvent(*md.RemoteEvent)
+	OnEvent(*md.LocalEvent)
 	OnRefresh(*md.Lobby)
 	OnInvite([]byte)
 	OnReply(id peer.ID, data []byte)
-	OnResponded(inv *md.AuthInvite)
+	OnResponded(inv *md.InviteRequest)
 }
 
 type TopicManager struct {
 	ctx          context.Context
-	host         *net.HostNode
+	host         net.HostNode
 	topic        *pubsub.Topic
 	subscription *pubsub.Subscription
 	eventHandler *pubsub.TopicEventHandler
 	user         *md.User
 	lobby        *md.Lobby
 
-	service      *LocalService
-	localEvents  chan *md.LocalEvent
-	remoteEvents chan *md.RemoteEvent
-	handler      ClientHandler
-	lobbyType    md.Lobby_Type
+	service     *LocalService
+	localEvents chan *md.LocalEvent
+	handler     ClientHandler
+	lobbyType   md.Lobby_Type
 }
 
-// ^ Helper: Find returns Pointer to Peer.ID and Peer ^
+// @ Helper: Find returns Pointer to Peer.ID and Peer
 func (tm *TopicManager) FindPeerInTopic(q string) (peer.ID, *md.Peer, error) {
 	// Retreive Data
 	var p *md.Peer
@@ -75,7 +73,7 @@ func (tm *TopicManager) FindPeerInTopic(q string) (peer.ID, *md.Peer, error) {
 	return i, p, nil
 }
 
-// ^ Helper: ID returns ONE Peer.ID in Topic ^
+// @ Helper: ID returns ONE Peer.ID in Topic
 func (tm *TopicManager) HasPeer(q string) bool {
 	// Iterate through PubSub in topic
 	for _, id := range tm.topic.ListPeers() {
@@ -87,7 +85,7 @@ func (tm *TopicManager) HasPeer(q string) bool {
 	return false
 }
 
-// ^ Check if Local Topic
+// @ Check if Local Topic
 func (tm *TopicManager) IsLocal() bool {
 	if tm.lobbyType == md.Lobby_LOCAL {
 		return true
@@ -95,22 +93,14 @@ func (tm *TopicManager) IsLocal() bool {
 	return false
 }
 
-// ^ Check if Remote Topic
-func (tm *TopicManager) IsRemote() bool {
-	if tm.lobbyType == md.Lobby_REMOTE {
-		return true
-	}
-	return false
-}
-
-// ^ Leave Current Topic ^
+// @ Leave Current Topic
 func (tm *TopicManager) LeaveTopic() error {
 	tm.eventHandler.Cancel()
 	tm.subscription.Cancel()
 	return tm.topic.Close()
 }
 
-// ^ handleTopicEvents: listens to Pubsub Events for topic  ^
+// # handleTopicEvents: listens to Pubsub Events for topic
 func (tm *TopicManager) handleTopicEvents() {
 	// @ Loop Events
 	for {
@@ -143,7 +133,7 @@ func (tm *TopicManager) handleTopicEvents() {
 	}
 }
 
-// ^ handleTopicMessages: listens for messages on pubsub topic subscription ^
+// # handleTopicMessages: listens for messages on pubsub topic subscription
 func (tm *TopicManager) handleTopicMessages() {
 	for {
 		// Get next msg from pub/sub
@@ -158,36 +148,22 @@ func (tm *TopicManager) handleTopicMessages() {
 		}
 
 		// Check Lobby Type
-		if tm.IsLocal() {
-			// Construct message
-			m := &md.LocalEvent{}
-			err = proto.Unmarshal(msg.Data, m)
-			if err != nil {
-				continue
-			}
+		// Construct message
+		m := &md.LocalEvent{}
+		err = proto.Unmarshal(msg.Data, m)
+		if err != nil {
+			continue
+		}
 
-			// Validate Peer in Lobby
-			if tm.HasPeer(m.Id) {
-				tm.localEvents <- m
-			}
-		} else {
-			// Construct message
-			m := &md.RemoteEvent{}
-			err = proto.Unmarshal(msg.Data, m)
-			if err != nil {
-				continue
-			}
-
-			// Validate Peer in Lobby
-			if tm.HasPeer(m.Id) {
-				tm.remoteEvents <- m
-			}
+		// Validate Peer in Lobby
+		if tm.HasPeer(m.Id) {
+			tm.localEvents <- m
 		}
 		md.GetState().NeedsWait()
 	}
 }
 
-// ^ processTopicMessages: pulls messages from channel that have been handled ^
+// # processTopicMessages: pulls messages from channel that have been handled
 func (tm *TopicManager) processTopicMessages() {
 	for {
 		select {
@@ -198,10 +174,6 @@ func (tm *TopicManager) processTopicMessages() {
 				tm.lobby.Add(m.From)
 				tm.RefreshLobby()
 			}
-
-		// @ Remote Event Channel Updated
-		case m := <-tm.remoteEvents:
-			tm.handler.OnRemoteEvent(m)
 		case <-tm.ctx.Done():
 			return
 		}

@@ -1,58 +1,228 @@
 syntax = "proto3";
 
 import "data.proto";
+import "error.proto";
+import "peer.proto";
 import "user.proto";
 
 // Require Go Package
 option go_package = "/models";
 
-// Message for Status Update
-message StatusUpdate {
-  Status value = 1;
-  User user = 2;
+// First Message Sent with Device and API Keys
+message InitializeRequest {
+  Device device = 1;   // Users Device
+  APIKeys apiKeys = 2; // Client Keys
 }
 
-// Initial Connection Message to Establish Sonr
+// Connection Message to Establish Sonr Host/API/Topic
 message ConnectionRequest {
-  Location location = 1;              // Runtime IP based calculated GeoLocation
-  Device device = 2;                  // Users Device
-  Contact contact = 3;                // Users Contact Card
-  User.Crypto crypto = 4;             // User Crypto Data
-  ClientKeys clientKeys = 5;          // Client Keys
-  map<string, Device> devices = 6;    // User Devices: Name, Device
-  map<string, Settings> settings = 7; // User Specified Preferences
+  Location location = 1; // Current Runtime Location
+  Contact contact = 2;   // Users Contact Card
+}
 
-  // Client Keys for Services
-  message ClientKeys {
-    string ipKey = 1;
-    string rapidApiHost = 2;
-    string rapidApiKey = 3;
-    string hsKey = 4;
-    string hsSecret = 5;
-    string hubKey = 6;
-    string hubSecret = 7;
+// Response to Connection Request
+message ConnectionResponse {
+  Peer.ID id = 1;
+  ErrorMessage error = 2; // In Case Error Occurred
+}
+
+// Invitation Message sent on RPC
+message InviteRequest {
+  Payload payload = 1; // Type of Transfer
+  Peer from = 2;       // Users Peer Data
+  Peer to = 3;         // Receivers Peer Data
+  Transfer data = 4;   // Attached Data
+}
+
+// Reply Message sent on RPC
+message InviteResponse {
+  Type type = 1;          // Cancel Reply
+  Peer from = 2;          // Users Peer Data
+  Peer to = 3;            // Receivers Peer Data
+  bool decision = 4;      // Users Decision for the Invitation
+  Transfer data = 5;      // Card contains all Data Info, Transfer Info
+  ErrorMessage error = 6; // In Case Error Occurred
+
+  enum Type {
+    None = 0;
+    Transfer = 1;
+    Contact = 2;
+    FlatContact = 3;
+    Cancel = 4;
   }
 }
 
-// Request to Access Storj Data
-message StorjRequest {
-  // Keys
-  string storjApiKey = 1;
-  string storjRootPassword = 2;
+// Mailbox Entry Message
+message MailEntry {
+  Subject subject = 1; // Type of Mail
+  Peer from = 2;       // Peer Sending Mail
+  Peer to = 3;         // Peer Receiving Mail
 
-  // Data for Get/Put
-  oneof data {
-    string prefix = 3;
-    User user = 4;
+  // Content to be pushed - If Send
+  oneof body {
+    InviteRequest invite = 4; // Remote Invite
+    string message = 5;       // Text Message
+  }
+
+  enum Subject {
+    NONE = 0;   // Default
+    INVITE = 1; // InviteRequest Mail Type - Remote
+    TEXT = 2;   // Text Message Mail Type
   }
 }
 
-// Response Data for Storj
-message StorjResponse {
-  // Data for Get/Put
-  oneof data {
-    bool success = 1;
-    User user = 2;
+// Mailbox Request Message
+message MailRequest {
+  Method method = 1;   // Mailbox Method
+  MailEntry entry = 2; // Mail Entry Content - If SEND
+
+  enum Method {
+    NONE = 0; // Default
+    SEND = 1; // Send Mail to Peer
+    READ = 2; // Read Mailbox
+  }
+}
+
+// Mailbox Response Message
+message MailResponse {
+  Result result = 1;              // Result of Request
+  repeated MailEntry entries = 2; // List of Mail - If READ
+
+  enum Result {
+    NONE = 0;    // Default
+    SUCCESS = 1; // Method Performed without Error
+    ERROR = 2;   // Error Occurred
+  }
+}
+
+// REST API Request over HTTP
+message RestRequest {
+  Method method = 1;                  // HTTP Method
+  string function = 2;                // Sonr Api Function
+  map<string, string> parameters = 3; // Parameters for Function
+
+  // User Address to Perform Method on
+  oneof address {
+    Peer peer = 4;    // Peer Data Reference
+    string id = 5;    // Libp2p ID
+    string sName = 6; // SonrName which retreives id from DB
+  }
+
+  enum Method {
+    GET = 0;    // Retreive Resource
+    POST = 1;   // Create new subordinate resources
+    PUT = 2;    // Update existing resource
+    DELETE = 3; // Delete resource
+    PATCH = 4;  // Partial Update to Resource
+  }
+}
+
+// REST API Response over HTTP
+message RestResponse {
+  Method method = 1;            // HTTP Method Type
+  string function = 2;          // Function called for Sonr API
+  int32 code = 3;               // See https://mzl.la/3gg3lti
+  map<string, string> body = 4; // Response Body
+
+  enum Method {
+    GET = 0;    // Retreive Resource
+    POST = 1;   // Create new subordinate resources
+    PUT = 2;    // Update existing resource
+    DELETE = 3; // Delete resource
+    PATCH = 4;  // Partial Update to Resource
+  }
+}
+
+// Message for Signing Request (Hmac Sha256)
+message SignRequest {
+  // If signed value should be stored
+  bool withStore = 1;
+
+  // Key of Store Entry - Either Enum Type or Text Value
+  oneof key {
+    StoreEntry.Type typeKey = 2; // Enum Based Key
+    string textKey = 3;          // Text Based Key
+  }
+
+  // Value to be signed
+  string sName = 4;    // SName combined with Device ID and Hashed
+  string mnemonic = 5; // Mnemonic Hashed with private key for fingerprint
+}
+
+// Message for Signing Response (Hmac Sha256)
+message SignResponse {
+  bool isSigned = 1;      // If Values were Signed
+  bool isStored = 2;      // Whether signed value was stored
+  ErrorMessage error = 3; // In Case Error Occurred
+
+  // Resulting Signed Values
+  string signedPrefix = 4;      // Message for List of Bytes
+  string signedFingerprint = 5; // Fingerprint Value
+  string publicIdentity = 6;    // Peer ID from Public Key
+}
+
+// Message for Individual Entry in Store
+message StoreEntry {
+  // Key of Store Entry - Either Enum Type or Text Value
+  oneof key {
+    Type typeKey = 1;   // Enum Based Key
+    string textKey = 2; // Text Based Key
+  }
+
+  // Stored Value for Key
+  oneof value {
+    string textValue = 3;  // Text Based Value
+    bytes bufferValue = 4; // Buffer Based Value
+  }
+
+  // Enum based Type for Entry
+  enum Type {
+    PREFIX = 0;      // User_Crypto Prefix -> sname + deviceID / Signed
+    FINGERPRINT = 1; // Signed Value of Mnemonic
+    MNEMONIC = 2;    // User Backup Code
+    SNAME = 3;       // User Subdomain
+  }
+}
+
+// Message for MemoryStore Method Request
+message StoreRequest {
+  Method method = 1; // Store Method to Perform
+
+  // Key of Store Entry
+  oneof key {
+    StoreEntry.Type typeKey = 2; // Enum Based Key
+    string textKey = 3;          // Text Based Key
+  }
+
+  // Value to be Stored
+  oneof value {
+    string textValue = 4;  // Value is Text
+    bytes bufferValue = 5; // Value is Buffer
+  }
+
+  enum Method {
+    HAS = 0; // Checks if Key exists
+    PUT = 1; // Puts value for key
+    GET = 2; // Gets value for key
+  }
+}
+
+// Message for MemoryStore Method Response
+message StoreResponse {
+  Method method = 1;      // Store Method Performed
+  ErrorMessage error = 2; // In Case Error Occurred
+
+  // Resulting Value for Method
+  oneof result {
+    bool hasValue = 3;
+    bool putValue = 4;
+    StoreEntry entry = 5;
+  }
+
+  enum Method {
+    HAS = 0; // Checks if Key exists
+    PUT = 1; // Puts value for key
+    GET = 2; // Gets value for key
   }
 }
 
@@ -65,120 +235,29 @@ message UpdateRequest {
   }
 }
 
-// Invitation Message sent on RPC
-message AuthInvite {
-  Payload payload = 1; // Type of Transfer
-  Peer from = 2;       // Users Peer Data
-  Peer to = 3;         // Receivers Peer Data
-  Transfer data = 4;   // Attached Data
-}
+// Message for Verification Request
+message VerifyRequest {
+  // Data is the original value
+  oneof data {
+    bytes bufferValue = 1;
+    string textValue = 2;
+  }
 
-// Reply Message sent on RPC
-message AuthReply {
-  Type type = 1;     // Cancel Reply
-  Peer from = 2;     // Users Peer Data
-  Peer to = 3;       // Receivers Peer Data
-  bool decision = 4; // Users Decision for the Invitation
-  Transfer data = 5; // Card contains all Data Info, Transfer Info
-
-  enum Type {
-    None = 0;
-    Transfer = 1;
-    Contact = 2;
-    FlatContact = 3;
-    Cancel = 4;
+  // Sig is the value to be verified against data
+  oneof sig {
+    bytes signedBuffer = 3;
+    string signedText = 4;
   }
 }
 
-// Link Request for Non-Mobile Clients
-message LinkRequest {
-  Device device = 1;
-  string username = 2;
-  Location location = 3;
+// Message for Verification Response
+message VerifyResponse {
+  bool isVerified = 1;    // Result for Verification
+  ErrorMessage error = 2; // In Case Error Occurred
 }
 
-// Response After Linking
-message LinkResponse {
-  User user = 1;
-  bool decision = 2;
-}
-
-// REST API Request over HTTP
-message RestRequest {
-  RestMethodType type = 1;
-  string method = 2;
-  map<string, string> parameters = 3;
-  oneof host {
-    Peer peer = 4;
-    string id = 5;
-  }
-}
-
-// REST API Response over HTTP
-message RestResponse {
-  RestMethodType type = 1;
-  string method = 2;
-  int32 code = 3;
-  map<string, string> body = 4;
-}
-
-enum RestMethodType {
-  DEFAULT = 0;
-  GET = 1;
-  PUT = 2;
-  POST = 3;
-}
-
-// Linker Object is used for Temporary host and Linking Devices
-message Linker {
-  Peer peer = 1;
-  Device device = 2;
-  string username = 3;
-  Router router = 4;
-  string userID = 5;
-
-  // Router Manages Peer Routing for Topics/Transfers - Attached from Node
-  // Client
-  message Router {
-    string deviceTopic = 1;
-    string localIPTopic = 2;
-    string rendevouz = 3;
-    Location location = 4;
-  }
-}
-
-// User is the Saved Data from Client that Passes to Proxy, During ConnRequest
-message User {
-  string id = 1;                      // User prefix is ID
-  Connection connection = 2;          // Clients Connection Reference
-  Peer peer = 3;                      // Clients Peer Reference
-  Location location = 4;              // Clients current Location
-  Device device = 5;                  // Clients Current Device
-  Contact contact = 6;                // Clients Contact Card
-  map<string, Device> devices = 7;    // Clients Devices: Name, Device
-  map<string, Settings> settings = 8; // Clients Specified Preferences
-  Crypto crypto = 9;                  // User Cryptographic Data
-
-  // User Connection Management - Attached from Node Client
-  message Connection {
-    ConnectionRequest.ClientKeys apiKeys = 1;
-    Status status = 2; // Client Node Status
-    Router router = 3; // Client Routing Information
-  }
-
-  // Crypto Data to Place in DHT
-  message Crypto {
-    string prefix = 1;
-    string signature = 2;
-    string privateKey = 3; // Private Key Reference, Saved as snr-peer.privkey
-  }
-
-  // Router Manages Peer Routing for Topics/Transfers - Attached from Node
-  // Client
-  message Router {
-    string deviceTopic = 1;
-    string localTopic = 2;
-    string rendevouz = 3;
-    Location location = 4;
-  }
+// Message for Status Update
+message StatusUpdate {
+  Status value = 1;
+  User user = 2;
 }

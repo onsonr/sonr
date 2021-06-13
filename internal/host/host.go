@@ -7,7 +7,7 @@ import (
 
 	"github.com/libp2p/go-libp2p"
 	connmgr "github.com/libp2p/go-libp2p-connmgr"
-	"github.com/libp2p/go-libp2p-core/crypto"
+	dscl "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -16,38 +16,81 @@ import (
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	psub "github.com/libp2p/go-libp2p-pubsub"
+	swr "github.com/libp2p/go-libp2p-swarm"
 	"github.com/multiformats/go-multiaddr"
 	md "github.com/sonr-io/core/pkg/models"
+	"github.com/textileio/go-threads/api/client"
+	"github.com/textileio/go-threads/core/thread"
+	"github.com/textileio/textile/v2/mail/local"
 )
 
-type HostNode struct {
-	ctx       context.Context
-	ID        peer.ID
-	Discovery *dsc.RoutingDiscovery
-	Host      host.Host
-	KDHT      *dht.IpfsDHT
-	Point     string
-	Pubsub    *psub.PubSub
+// ** ─── Interface MANAGEMENT ────────────────────────────────────────────────────────
+type HostNode interface {
+	Bootstrap() *md.SonrError
+	Close()
+	FindPeerID(string) (peer.ID, error)
+	ID() peer.ID
+	Info() peer.AddrInfo
+	Host() host.Host
+	Join(name string) (*psub.Topic, *psub.Subscription, *psub.TopicEventHandler, *md.SonrError)
+	HandleStream(pid protocol.ID, handler network.StreamHandler)
+	MultiAddr() (multiaddr.Multiaddr, *md.SonrError)
+	PubKey() thread.PubKey
+	StartStream(p peer.ID, pid protocol.ID) (network.Stream, error)
+	StartGlobal(SName string) *md.SonrError
+	StartTextile(d *md.Device) *md.SonrError
+	SendMail(*md.MailEntry) *md.SonrError
+	ReadMail() ([]*md.MailEntry, *md.SonrError)
 }
 
-const REFRESH_DURATION = time.Second * 5
+type hostNode struct {
+	HostNode
+
+	// Properties
+	apiKeys      *md.APIKeys
+	keyPair      *md.KeyPair
+	ctxHost      context.Context
+	ctxTileAuth  context.Context
+	ctxTileToken context.Context
+
+	// Libp2p
+	id     peer.ID
+	disc   *dsc.RoutingDiscovery
+	host   host.Host
+	kdht   *dht.IpfsDHT
+	point  string
+	pubsub *psub.PubSub
+
+	// Global
+	global        *md.Global
+	globalTopic   *psub.Topic
+	globalHandler *psub.TopicEventHandler
+	globalSub     *psub.Subscription
+	globalService *GlobalService
+
+	// Textile
+	tileIdentity thread.Identity
+	tileClient   *client.Client
+	tileMail     *local.Mail
+	tileMailbox  *local.Mailbox
+}
 
 // ^ Start Begins Assigning Host Parameters ^
-func NewHost(ctx context.Context, point string, privateKey crypto.PrivKey) (*HostNode, *md.SonrError) {
+func NewHost(ctx context.Context, point string, api *md.APIKeys, keys *md.KeyPair) (HostNode, *md.SonrError) {
 	// Initialize DHT
 	var kdhtRef *dht.IpfsDHT
 
 	// Find Listen Addresses
-	addrs, err := GetExternalAddrStrings()
+	addrs, err := getExternalAddrStrings()
 	if err != nil {
-		return newRelayedHost(ctx, point, privateKey)
+		return newRelayedHost(ctx, point, api, keys)
 	}
 
 	// Start Host
 	h, err := libp2p.New(
 		ctx,
 		libp2p.ListenAddrStrings(addrs...),
-		libp2p.Identity(privateKey),
+		libp2p.Identity(keys.PrivKey()),
 		libp2p.DefaultTransports,
 		libp2p.ConnectionManager(connmgr.NewConnManager(
 			10,          // Lowwater
@@ -70,29 +113,31 @@ func NewHost(ctx context.Context, point string, privateKey crypto.PrivKey) (*Hos
 
 	// Set Host for Node
 	if err != nil {
-		return newRelayedHost(ctx, point, privateKey)
+		return newRelayedHost(ctx, point, api, keys)
 	}
 
 	// Create Host
-	hn := &HostNode{
-		ctx:   ctx,
-		ID:    h.ID(),
-		Host:  h,
-		Point: point,
-		KDHT:  kdhtRef,
+	hn := &hostNode{
+		ctxHost: ctx,
+		apiKeys: api,
+		keyPair: keys,
+		id:      h.ID(),
+		host:    h,
+		point:   point,
+		kdht:    kdhtRef,
 	}
 	return hn, nil
 }
 
-// @ Failsafe when unable to bind to External IP Address ^ //
-func newRelayedHost(ctx context.Context, point string, privateKey crypto.PrivKey) (*HostNode, *md.SonrError) {
+// # Failsafe when unable to bind to External IP Address ^ //
+func newRelayedHost(ctx context.Context, point string, api *md.APIKeys, keys *md.KeyPair) (HostNode, *md.SonrError) {
 	// Initialize DHT
 	var kdhtRef *dht.IpfsDHT
 
 	// Start Host
 	h, err := libp2p.New(
 		ctx,
-		libp2p.Identity(privateKey),
+		libp2p.Identity(keys.PrivKey()),
 		libp2p.DefaultTransports,
 		libp2p.ConnectionManager(connmgr.NewConnManager(
 			10,          // Lowwater
@@ -118,40 +163,82 @@ func newRelayedHost(ctx context.Context, point string, privateKey crypto.PrivKey
 		return nil, md.NewError(err, md.ErrorMessage_HOST_START)
 	}
 
-	return &HostNode{
-		ctx:   ctx,
-		ID:    h.ID(),
-		Host:  h,
-		Point: point,
-		KDHT:  kdhtRef,
+	return &hostNode{
+		ctxHost: ctx,
+		id:      h.ID(),
+		host:    h,
+		point:   point,
+		kdht:    kdhtRef,
 	}, nil
 }
 
-// ^ Returns HostNode Peer Addr Info ^ //
-func (hn *HostNode) Info() peer.AddrInfo {
-	peerInfo := peer.AddrInfo{
-		ID:    hn.Host.ID(),
-		Addrs: hn.Host.Addrs(),
-	}
-	return peerInfo
-}
-
-// ^ Returns Host Node MultiAddr ^ //
-func (hn *HostNode) MultiAddr() (multiaddr.Multiaddr, *md.SonrError) {
-	pi := hn.Info()
-	addrs, err := peer.AddrInfoToP2pAddrs(&pi)
+// ** ─── HostNode Connection Methods ────────────────────────────────────────────────────────
+// @ Bootstrap begins bootstrap with peers
+func (h *hostNode) Bootstrap() *md.SonrError {
+	// Create Bootstrapper Info
+	bootstrappers, err := getBootstrapAddrInfo()
 	if err != nil {
-		return nil, md.NewError(err, md.ErrorMessage_HOST_INFO)
+		return md.NewError(err, md.ErrorMessage_BOOTSTRAP)
 	}
-	return addrs[0], nil
+
+	// Bootstrap DHT
+	if err := h.kdht.Bootstrap(h.ctxHost); err != nil {
+		return md.NewError(err, md.ErrorMessage_BOOTSTRAP)
+	}
+
+	// Connect to bootstrap nodes, if any
+	for _, pi := range bootstrappers {
+		if err := h.host.Connect(h.ctxHost, pi); err != nil {
+			continue
+		} else {
+			break
+		}
+	}
+
+	// Set Routing Discovery, Find Peers
+	routingDiscovery := dsc.NewRoutingDiscovery(h.kdht)
+	dsc.Advertise(h.ctxHost, routingDiscovery, h.point, dscl.TTL(time.Second*4))
+	h.disc = routingDiscovery
+
+	// Create Pub Sub
+	ps, err := psub.NewGossipSub(h.ctxHost, h.host, psub.WithDiscovery(routingDiscovery))
+	if err != nil {
+		return md.NewError(err, md.ErrorMessage_HOST_PUBSUB)
+	}
+	h.pubsub = ps
+	go h.handleDHTPeers(routingDiscovery)
+	return nil
 }
 
-// ^ Set Stream Handler for Host ^
-func (h *HostNode) HandleStream(pid protocol.ID, handler network.StreamHandler) {
-	h.Host.SetStreamHandler(pid, handler)
-}
+// # handleDHTPeers: Connects to Peers in DHT
+func (h *hostNode) handleDHTPeers(routingDiscovery *dsc.RoutingDiscovery) {
+	for {
+		// Find peers in DHT
+		peersChan, err := routingDiscovery.FindPeers(
+			h.ctxHost,
+			h.point,
+		)
+		if err != nil {
+			return
+		}
 
-// ^ Start Stream for Host ^
-func (h *HostNode) StartStream(p peer.ID, pid protocol.ID) (network.Stream, error) {
-	return h.Host.NewStream(h.ctx, p, pid)
+		// Iterate over Channel
+		for pi := range peersChan {
+			// Validate not Self
+			if pi.ID != h.host.ID() {
+				// Connect to Peer
+				if err := h.host.Connect(h.ctxHost, pi); err != nil {
+					// Remove Peer Reference
+					h.host.Peerstore().ClearAddrs(pi.ID)
+					if sw, ok := h.host.Network().(*swr.Swarm); ok {
+						sw.Backoff().Clear(pi.ID)
+					}
+				}
+			}
+		}
+
+		// Refresh table every 5 seconds
+		md.GetState().NeedsWait()
+		time.Sleep(refreshInterval)
+	}
 }

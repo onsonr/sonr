@@ -50,6 +50,14 @@ message ErrorMessage {
     URL_INFO_RESP = 35;
     FAILED_CONNECTION = 36;
     HOST_INFO = 37;
+    KEY_SET = 38;
+    KEY_INVALID = 39;
+    KEY_ID = 40;
+    STORE_PUT = 41;
+    STORE_GET = 42;
+    STORE_FIND = 43;
+    STORE_INIT = 44;
+    HOST_TEXTILE = 45;
   }
 
   enum Severity {
