@@ -28,7 +28,6 @@ import (
 type HostNode interface {
 	Bootstrap() *md.SonrError
 	Close()
-	FindPeerID(string) (peer.ID, error)
 	ID() peer.ID
 	Info() peer.AddrInfo
 	Host() host.Host
@@ -37,7 +36,6 @@ type HostNode interface {
 	MultiAddr() (multiaddr.Multiaddr, *md.SonrError)
 	PubKey() thread.PubKey
 	StartStream(p peer.ID, pid protocol.ID) (network.Stream, error)
-	StartGlobal(SName string) *md.SonrError
 	StartTextile(d *md.Device) *md.SonrError
 	SendMail(*md.MailEntry) *md.SonrError
 	ReadMail() ([]*md.MailEntry, *md.SonrError)
@@ -60,13 +58,6 @@ type hostNode struct {
 	kdht   *dht.IpfsDHT
 	point  string
 	pubsub *psub.PubSub
-
-	// Global
-	global        *md.Global
-	globalTopic   *psub.Topic
-	globalHandler *psub.TopicEventHandler
-	globalSub     *psub.Subscription
-	globalService *GlobalService
 
 	// Textile
 	tileIdentity thread.Identity

@@ -16,11 +16,10 @@ type Client struct {
 	tpc.ClientHandler
 
 	// Properties
-	isLinker bool
-	ctx      context.Context
-	call     md.Callback
-	user     *md.User
-	session  *md.Session
+	ctx     context.Context
+	call    md.Callback
+	user    *md.User
+	session *md.Session
 
 	// References
 	Host net.HostNode
@@ -69,17 +68,11 @@ func (c *Client) Bootstrap() (*tpc.TopicManager, *md.SonrError) {
 		return nil, err
 	}
 
-	// Start Textile
-	err = c.Host.StartTextile(c.user.GetDevice())
-	if err != nil {
-		return nil, err
-	}
-
-	// Join Global
-	err = c.Host.StartGlobal(c.user.SName())
-	if err != nil {
-		return nil, err
-	}
+	// // Start Textile
+	// err = c.Host.StartTextile(c.user.GetDevice())
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	// Join Local
 	if t, err := tpc.NewLocal(c.ctx, c.Host, c.user, c.user.GetRouter().LocalTopic, c); err != nil {
