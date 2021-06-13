@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"log"
 
 	"net/http"
 
@@ -680,6 +681,11 @@ func (errWrap *SonrError) Bytes() []byte {
 		return nil
 	}
 	return bytes
+}
+
+// @ Method Prints Error
+func (errWrap *SonrError) Print() {
+	log.Printf("ERROR: %s", errWrap.String())
 }
 
 // @ Return Protobuf Message for Error
