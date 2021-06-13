@@ -47,18 +47,25 @@ enum KeyType {
 
 // Private Public Key Pair
 message KeyPair {
-  Private private = 1;
-  Public public = 2;
-  KeyType type = 3;
+  Private private = 1; // Private Key Ref
+  Public public = 2;   // Public Key Ref
+  KeyType type = 3;    // Type of Key Encryption
 
+  // User Private Key Saved to Disk
   message Private {
-    string path = 1;
-    bytes buffer = 2;
+    string path = 1;  // Private Key Path
+    bytes buffer = 2; // Key Buffer
   }
 
+  // Public Key for Thread ID/ Libp2p ID
   message Public {
-    string id = 1;
-    bytes buffer = 2;
+    string id = 1;    // P2P Id derived from Public Key
+    bytes buffer = 2; // Public Key Buffer
+  }
+
+  // Shared Key for Device Linking
+  message Shared {
+    bytes ephermal = 1; // Public Ephermal Key Generated from "P-256" Curve
   }
 }
 
