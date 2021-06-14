@@ -23,7 +23,7 @@ type store struct {
 // Initializes new memory store
 func InitStore(d *Device) (Store, *SonrError) {
 	// Open Store
-	db, err := bitcask.Open(d.WorkingFilePath("mem-store-db"))
+	db, err := bitcask.Open(d.WorkingSupportPath("mem-store-db"))
 	if err != nil {
 		log.Println(err)
 		return nil, NewError(err, ErrorMessage_STORE_INIT)
