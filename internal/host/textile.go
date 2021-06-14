@@ -3,6 +3,7 @@ package host
 import (
 	"context"
 	"crypto/tls"
+	"log"
 	"time"
 
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
@@ -43,19 +44,17 @@ func (hn *hostNode) StartTextile(d *md.Device) *md.SonrError {
 	if err != nil {
 		return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
 	}
-	// // Setup the mail lib
-	// hn.tileMail = local.NewMail(cmd.NewClients(textileApiUrl, true, textileMinerIdx), local.DefaultConfConfig())
+	// Generate a new thread ID
+	threadID := thread.NewIDV1(thread.Raw, 32)
 
-	// // Create a new mailbox with config
-	// hn.tileMailbox, err = hn.tileMail.NewMailbox(context.Background(), local.Config{
-	// 	Path:      d.WorkingSupportPath(".mailbox"),
-	// 	Identity:  hn.tileIdentity,
-	// 	APIKey:    hn.apiKeys.TextileKey,
-	// 	APISecret: hn.apiKeys.TextileSecret,
-	// })
-	// if err != nil {
-	// 	return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
-	// }
+	// Create your new thread
+	err = hn.tileClient.NewDB(hn.ctxTileToken, threadID)
+	if err != nil {
+		panic(err)
+	}
+
+	log.Println("> Success!")
+	log.Println(threadID.String())
 	return nil
 }
 

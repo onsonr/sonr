@@ -68,11 +68,11 @@ func (c *Client) Bootstrap() (*tpc.TopicManager, *md.SonrError) {
 		return nil, err
 	}
 
-	// // Start Textile
-	// err = c.Host.StartTextile(c.user.GetDevice())
-	// if err != nil {
-	// 	return nil, err
-	// }
+	// Start Textile
+	err = c.Host.StartTextile(c.user.GetDevice())
+	if err != nil {
+		return nil, err
+	}
 
 	// Join Local
 	if t, err := tpc.NewLocal(c.ctx, c.Host, c.user, c.user.GetRouter().LocalTopic, c); err != nil {
