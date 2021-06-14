@@ -114,7 +114,7 @@ func newUserAuthCtx(ctx context.Context, keys *md.APIKeys) (context.Context, err
 	ctx = common.NewAPIKeyContext(ctx, keys.TextileKey)
 
 	// Add a signature using our user group secret
-	return common.CreateAPISigContext(ctx, time.Now().Add(time.Minute), keys.TextileSecret)
+	return common.CreateAPISigContext(ctx, time.Now().Add(time.Hour), keys.TextileSecret)
 }
 
 // # Helper: Creates Auth Token Context from AuthContext, Client, Identity
