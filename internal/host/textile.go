@@ -18,93 +18,107 @@ import (
 
 // @ Initializes New Textile Instance
 func (hn *hostNode) StartTextile(d *md.Device) *md.SonrError {
-	// Initialize
-	var err error
-	creds := credentials.NewTLS(&tls.Config{})
-	auth := common.Credentials{}
+	// Check Textile Enabled
+	if hn.tileOptions.GetIsEnabled() {
+		// Initialize
+		var err error
+		creds := credentials.NewTLS(&tls.Config{})
+		auth := common.Credentials{}
 
-	// Dial GRPC
-	opts := []grpc.DialOption{grpc.WithTransportCredentials(creds), grpc.WithPerRPCCredentials(auth)}
-	hn.tileClient, err = client.NewClient(util.TEXTILE_API_URL, opts...)
-	if err != nil {
-		return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+		// Dial GRPC
+		opts := []grpc.DialOption{grpc.WithTransportCredentials(creds), grpc.WithPerRPCCredentials(auth)}
+		hn.tileClient, err = client.NewClient(util.TEXTILE_API_URL, opts...)
+		if err != nil {
+			return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+		}
+
+		// Get Identity
+		hn.tileIdentity = getIdentity(hn.keyPair.PrivKey())
+
+		// Create Auth Context
+		hn.ctxTileAuth, err = newUserAuthCtx(context.Background(), hn.apiKeys)
+		if err != nil {
+			return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+		}
+
+		// Create Token Context
+		hn.ctxTileToken, err = hn.newTokenCtx()
+		if err != nil {
+			return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+		}
+
+		// Check Thread Enabled
+		if hn.tileOptions.GetWithThreads() {
+			// // Generate a new thread ID
+			// threadID := thread.NewIDV1(thread.Raw, 32)
+
+			// // Create your new thread
+			// err = hn.tileClient.NewDB(hn.ctxTileToken, threadID, db.WithNewManagedName("Sonr-Users"))
+			// if err != nil {
+			// 	return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+			// }
+
+			// // Get DB Info
+			// info, err := hn.tileClient.GetDBInfo(hn.ctxTileToken, threadID)
+			// if err != nil {
+			// 	return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+			// }
+
+			// // Log DB Info
+			// log.Println("> Success!")
+			// log.Println(fmt.Sprintf("ID: %s \n Maddr: %s \n Key: %s \n Name: %s \n", threadID.String(), info.Addrs, info.Key.String(), info.Name))
+		}
 	}
-
-	// Get Identity
-	hn.tileIdentity = getIdentity(hn.keyPair.PrivKey())
-
-	// Create Auth Context
-	hn.ctxTileAuth, err = newUserAuthCtx(context.Background(), hn.apiKeys)
-	if err != nil {
-		return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
-	}
-
-	// Create Token Context
-	hn.ctxTileToken, err = hn.newTokenCtx()
-	if err != nil {
-		return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
-	}
-	// }
-	// // Generate a new thread ID
-	// threadID := thread.NewIDV1(thread.Raw, 32)
-
-	// // Create your new thread
-	// err = hn.tileClient.NewDB(hn.ctxTileToken, threadID, db.WithNewManagedName("Sonr-Users"))
-	// if err != nil {
-	// 	return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
-	// }
-
-	// // Get DB Info
-	// info, err := hn.tileClient.GetDBInfo(hn.ctxTileToken, threadID)
-	// if err != nil {
-	// 	return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
-	// }
-
-	// // Log DB Info
-	// log.Println("> Success!")
-	// log.Println(fmt.Sprintf("ID: %s \n Maddr: %s \n Key: %s \n Name: %s \n", threadID.String(), info.Addrs, info.Key.String(), info.Name))
 	return nil
 }
 
 // @ Method Reads Inbox and Returns List of Mail Entries
 func (hn *hostNode) ReadMail() ([]*md.MailEntry, *md.SonrError) {
-	// List the recipient's inbox
-	inbox, err := hn.tileMailbox.ListInboxMessages(context.Background())
+	// Check Mail Enabled
+	if hn.tileOptions.GetWithMailbox() {
+		// List the recipient's inbox
+		inbox, err := hn.tileMailbox.ListInboxMessages(context.Background())
 
-	if err != nil {
-		return nil, md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
-	}
-
-	// Initialize Entry List
-	entries := make([]*md.MailEntry, len(inbox))
-
-	// Iterate over Entries
-	for i, v := range inbox {
-		// Open decrypts the message body
-		body, err := v.Open(context.Background(), hn.tileIdentity)
 		if err != nil {
 			return nil, md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
 		}
 
-		// Unmarshal Body to entry
-		entry := &md.MailEntry{}
-		err = proto.Unmarshal(body, entry)
-		if err != nil {
-			return nil, md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+		// Initialize Entry List
+		entries := make([]*md.MailEntry, len(inbox))
+
+		// Iterate over Entries
+		for i, v := range inbox {
+			// Open decrypts the message body
+			body, err := v.Open(context.Background(), hn.tileIdentity)
+			if err != nil {
+				return nil, md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+			}
+
+			// Unmarshal Body to entry
+			entry := &md.MailEntry{}
+			err = proto.Unmarshal(body, entry)
+			if err != nil {
+				return nil, md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+			}
+			entries[i] = entry
 		}
-		entries[i] = entry
+		return entries, nil
 	}
-	return entries, nil
+	return nil, nil
 }
 
 // @ Method Sends Mail Entry to Peer
 func (hn *hostNode) SendMail(e *md.MailEntry) *md.SonrError {
-	// Send Message to Mailbox
-	_, err := hn.tileMailbox.SendMessage(context.Background(), e.ToPubKey(), e.Buffer())
+	// Check Mail Enabled
+	if hn.tileOptions.GetWithMailbox() {
+		// Send Message to Mailbox
+		_, err := hn.tileMailbox.SendMessage(context.Background(), e.ToPubKey(), e.Buffer())
 
-	// Check Error
-	if err != nil {
-		return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+		// Check Error
+		if err != nil {
+			return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+		}
+		return nil
 	}
 	return nil
 }

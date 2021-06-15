@@ -36,9 +36,9 @@ func NewClient(ctx context.Context, u *md.User, call md.Callback) *Client {
 }
 
 // @ Connects Host Node from Private Key
-func (c *Client) Connect(api *md.APIKeys, keys *md.KeyPair) *md.SonrError {
+func (c *Client) Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrError {
 	// Set Host
-	hn, err := net.NewHost(c.ctx, c.user.GetRouter().Rendevouz, api, keys)
+	hn, err := net.NewHost(c.ctx, cr, keys)
 	if err != nil {
 		return err
 	}

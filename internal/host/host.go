@@ -70,24 +70,25 @@ type hostNode struct {
 	tileClient   *client.Client
 	tileMail     *local.Mail
 	tileMailbox  *local.Mailbox
+	tileOptions  *md.ConnectionRequest_TextileOptions
 }
 
 // ^ Start Begins Assigning Host Parameters ^
-func NewHost(ctx context.Context, point string, api *md.APIKeys, keys *md.KeyPair) (HostNode, *md.SonrError) {
+func NewHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair) (HostNode, *md.SonrError) {
 	// Initialize DHT
 	var kdhtRef *dht.IpfsDHT
 
 	// Find Listen Addresses
 	addrs, err := getExternalAddrStrings()
 	if err != nil {
-		return newRelayedHost(ctx, point, api, keys)
+		return newRelayedHost(ctx, req, keyPair)
 	}
 
 	// Start Host
 	h, err := libp2p.New(
 		ctx,
 		libp2p.ListenAddrStrings(addrs...),
-		libp2p.Identity(keys.PrivKey()),
+		libp2p.Identity(keyPair.PrivKey()),
 		libp2p.DefaultTransports,
 		libp2p.ConnectionManager(connmgr.NewConnManager(
 			10,          // Lowwater
@@ -110,31 +111,32 @@ func NewHost(ctx context.Context, point string, api *md.APIKeys, keys *md.KeyPai
 
 	// Set Host for Node
 	if err != nil {
-		return newRelayedHost(ctx, point, api, keys)
+		return newRelayedHost(ctx, req, keyPair)
 	}
 
 	// Create Host
 	hn := &hostNode{
-		ctxHost: ctx,
-		apiKeys: api,
-		keyPair: keys,
-		id:      h.ID(),
-		host:    h,
-		point:   point,
-		kdht:    kdhtRef,
+		ctxHost:     ctx,
+		apiKeys:     req.ApiKeys,
+		keyPair:     keyPair,
+		id:          h.ID(),
+		host:        h,
+		point:       req.Point,
+		kdht:        kdhtRef,
+		tileOptions: req.GetTextileOptions(),
 	}
 	return hn, nil
 }
 
 // # Failsafe when unable to bind to External IP Address ^ //
-func newRelayedHost(ctx context.Context, point string, api *md.APIKeys, keys *md.KeyPair) (HostNode, *md.SonrError) {
+func newRelayedHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair) (HostNode, *md.SonrError) {
 	// Initialize DHT
 	var kdhtRef *dht.IpfsDHT
 
 	// Start Host
 	h, err := libp2p.New(
 		ctx,
-		libp2p.Identity(keys.PrivKey()),
+		libp2p.Identity(keyPair.PrivKey()),
 		libp2p.DefaultTransports,
 		libp2p.ConnectionManager(connmgr.NewConnManager(
 			10,          // Lowwater
@@ -164,7 +166,7 @@ func newRelayedHost(ctx context.Context, point string, api *md.APIKeys, keys *md
 		ctxHost: ctx,
 		id:      h.ID(),
 		host:    h,
-		point:   point,
+		point:   req.Point,
 		kdht:    kdhtRef,
 	}, nil
 }

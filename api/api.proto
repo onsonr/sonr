@@ -33,8 +33,19 @@ message InitializeRequest {
 
 // Connection Message to Establish Sonr Host/API/Topic
 message ConnectionRequest {
-  Location location = 1; // Current Runtime Location
-  Contact contact = 2;   // Users Contact Card
+  APIKeys apiKeys = 1;               // Client Keys
+  Location location = 2;             // Current Runtime Location
+  Contact contact = 3;               // Users Contact Card
+  TextileOptions textileOptions = 4; // Textile Client Config
+  string point = 5;                  // Rendevouz Point
+
+  // Textile Configuration
+  message TextileOptions {
+    bool isEnabled = 1;   // Enable Textile Client
+    bool withMailbox = 2; // Enable Mailbox
+    bool withThreads = 3; // Enable Threads
+    bool withBuckets = 4; // Enable Buckets
+  }
 }
 
 // Invitation Message sent on RPC
