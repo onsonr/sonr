@@ -1,6 +1,7 @@
 package models
 
 import (
+	"github.com/alecthomas/jsonschema"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"google.golang.org/protobuf/proto"
 )
@@ -62,4 +63,24 @@ func (l *Lobby) Add(peer *Peer) {
 func (l *Lobby) Delete(id peer.ID) {
 	// Update Peer with new data
 	delete(l.Peers, id.String())
+}
+
+// ** ─── Peer Instance MANAGEMENT ────────────────────────────────────────────────────────
+// Converts Peer to PeerInstance for Threads Storage
+func (p *Peer) ToInstance() *PeerInstance {
+	return &PeerInstance{
+		SName:       p.GetSName(),
+		PeerID:      p.PeerID(),
+		MultiAddr:   p.Id.GetMultiAddr(),
+		Platform:    p.GetPlatform(),
+		Profile:     p.GetProfile(),
+		IsActive:    true,
+		IsReachable: true,
+	}
+}
+
+// Return Peer Model JSON Schema
+func PeerSchema() *jsonschema.Schema {
+	reflector := jsonschema.Reflector{}
+	return reflector.Reflect(&PeerInstance{})
 }

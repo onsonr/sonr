@@ -6,7 +6,6 @@ import (
 
 	"net/http"
 
-	"github.com/alecthomas/jsonschema"
 	olc "github.com/google/open-location-code/go"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
@@ -457,11 +456,6 @@ func (u *User) IsNotStatus(gs Status) bool {
 }
 
 // ** ─── Schema MANAGEMENT ────────────────────────────────────────────────────────
-// Return Peer Model JSON Schema
-func PeerSchema() *jsonschema.Schema {
-	reflector := jsonschema.Reflector{}
-	return reflector.Reflect(&Peer{})
-}
 
 // ** ─── Error MANAGEMENT ────────────────────────────────────────────────────────
 type SonrError struct {
