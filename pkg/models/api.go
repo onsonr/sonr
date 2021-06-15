@@ -6,6 +6,7 @@ import (
 
 	"net/http"
 
+	"github.com/alecthomas/jsonschema"
 	olc "github.com/google/open-location-code/go"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
@@ -453,6 +454,13 @@ func (u *User) IsStatus(gs Status) bool {
 // Checks if Status is Not Given Value
 func (u *User) IsNotStatus(gs Status) bool {
 	return u.GetStatus() != gs
+}
+
+// ** ─── Schema MANAGEMENT ────────────────────────────────────────────────────────
+// Return Peer Model JSON Schema
+func PeerSchema() *jsonschema.Schema {
+	reflector := jsonschema.Reflector{}
+	return reflector.Reflect(&Peer{})
 }
 
 // ** ─── Error MANAGEMENT ────────────────────────────────────────────────────────

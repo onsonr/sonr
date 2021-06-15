@@ -342,6 +342,7 @@ func NewUser(ir *InitializeRequest, s Store) (*User, *SonrError) {
 
 // Set the User with ConnectionRequest
 func (u *User) InitConnection(cr *ConnectionRequest) {
+	u.SName = cr.GetContact().Profile.SName
 	u.Router = &User_Router{
 		Rendevouz:  "/sonr/rendevouz/0.9.2",
 		LocalTopic: fmt.Sprintf("/sonr/topic/%s", cr.GetLocation().OLC()),
@@ -386,7 +387,7 @@ func (u *User) Profile() *Profile {
 }
 
 // Method Signs Data with KeyPair
-func (u *User) Sign(req *SignRequest, s Store) *SignResponse {
+func (u *User) Sign(req *AuthRequest, s Store) *AuthResponse {
 	// Put Mnemonic
 	s.Put(&StoreEntry{Key: &StoreEntry_TypeKey{TypeKey: StoreEntry_MNEMONIC}, Value: &StoreEntry_TextValue{TextValue: req.GetMnemonic()}})
 
@@ -408,7 +409,7 @@ func (u *User) Sign(req *SignRequest, s Store) *SignResponse {
 	identity := u.KeyPair().GetPublic().GetId()
 
 	// Return Response
-	return &SignResponse{
+	return &AuthResponse{
 		SignedPrefix:      prefix,
 		SignedFingerprint: fingerprint,
 		PublicIdentity:    identity,
@@ -416,7 +417,7 @@ func (u *User) Sign(req *SignRequest, s Store) *SignResponse {
 }
 
 // Method Returns SName
-func (u *User) SName() string {
+func (u *User) PrettySName() string {
 	return fmt.Sprintf("%s.snr/", u.Profile().GetSName())
 }
 
@@ -486,10 +487,10 @@ func (u *User) Update(ur *UpdateRequest) {
 // ^ Create New Peer from Connection Request and Host ID ^ //
 func (u *User) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) *SonrError {
 	u.Peer = &Peer{
+		SName: u.SName,
 		Id: &Peer_ID{
 			Peer:      id.String(),
 			Device:    u.DeviceID(),
-			SName:     u.SName(),
 			MultiAddr: maddr.String(),
 			PublicKey: u.KeyPair().GetPublic().GetBuffer(),
 		},
@@ -498,7 +499,7 @@ func (u *User) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) *SonrError {
 		Model:    u.Device.Model,
 	}
 	// Set Device Topic
-	u.Router.DeviceTopic = fmt.Sprintf("/sonr/topic/%s", u.Peer.SName())
+	u.Router.DeviceTopic = fmt.Sprintf("/sonr/topic/%s", u.Peer.GetSName())
 	return nil
 }
 
@@ -532,14 +533,9 @@ func (p *Peer) PublicKey() crypto.PubKey {
 	return pubKey
 }
 
-// ^ Returns Peer User ID ^ //
-func (p *Peer) SName() string {
-	return p.Id.GetSName()
-}
-
 // ^ Checks if Two Peers are the Same by Device ID and Peer ID
 func (p *Peer) IsSame(other *Peer) bool {
-	return p.PeerID() == other.PeerID() && p.DeviceID() == other.DeviceID() && p.SName() == other.SName()
+	return p.PeerID() == other.PeerID() && p.DeviceID() == other.DeviceID() && p.GetSName() == other.GetSName()
 }
 
 // ^ Checks if PeerDeviceIDID is the Same
@@ -554,7 +550,7 @@ func (p *Peer) IsSamePeerID(pid peer.ID) bool {
 
 // ^ Checks if Two Peers are NOT the Same by Device ID and Peer ID
 func (p *Peer) IsNotSame(other *Peer) bool {
-	return p.PeerID() != other.PeerID() && p.DeviceID() != other.DeviceID() && p.SName() != other.SName()
+	return p.PeerID() != other.PeerID() && p.DeviceID() != other.DeviceID() && p.GetSName() != other.GetSName()
 }
 
 // ^ Checks if DeviceID is NOT the Same

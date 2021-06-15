@@ -107,7 +107,7 @@ func (mn *Node) Connect(data []byte) {
 // @ Signing Request for Data
 func (mn *Node) Sign(data []byte) []byte {
 	// Unmarshal Data to Request
-	request := &md.SignRequest{}
+	request := &md.AuthRequest{}
 	err := proto.Unmarshal(data, request)
 	if err != nil {
 		log.Println("Failed to Unmarshal Sign Request")
@@ -116,7 +116,7 @@ func (mn *Node) Sign(data []byte) []byte {
 		mn.handleError(md.NewUnmarshalError(err))
 
 		// Initialize invalid Response
-		invalidResp := md.SignResponse{
+		invalidResp := md.AuthResponse{
 			IsSigned: false,
 		}
 

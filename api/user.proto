@@ -84,23 +84,24 @@ enum Status {
 
 // User is the Saved Data from Client that Passes to Proxy, During ConnRequest
 message User {
+  string sName = 1; // User Snr Domain
+
   // From InitializeRequest
-  APIKeys apiKeys = 1; // App Env Variables for API Keys
-  Status status = 2;   // Client Node Status
-  Device device = 3;   // Clients Current Device
+  APIKeys apiKeys = 2; // App Env Variables for API Keys
+  Status status = 3;   // Client Node Status
+  Device device = 4;   // Clients Current Device
 
   // From ConnectionRequest
-  Peer peer = 4;         // Clients Peer Reference
-  Crypto crypto = 5;     // User Cryptographic Data
-  Settings settings = 6; // User Settings
-  Contact contact = 7;   // Users Contact Card
-  Router router = 8;     // Client Routing Information
+  Peer peer = 5;         // Clients Peer Reference
+  Crypto crypto = 6;     // User Cryptographic Data
+  Settings settings = 7; // User Settings
+  Contact contact = 8;   // Users Contact Card
+  Router router = 9;     // Client Routing Information
 
   // Crypto Data to Place in DHT
   message Crypto {
     string prefix = 1;   // Created from DeviceID and SName
     string mnemonic = 2; // Used to generate fingerprint
-    string sName = 3;    // User Snr Domain
   }
 
   // Router Manages Peer Routing for Topics/Transfers - Attached from Node
