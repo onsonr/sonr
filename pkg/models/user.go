@@ -19,9 +19,6 @@ import (
 )
 
 // ** ─── KeyPair MANAGEMENT ────────────────────────────────────────────────────────
-// Key File Name Constants
-const KEY_FILE_NAME = ".sonr_private_key"
-
 // Constructer that Initializes KeyPair without Buffer
 func (d *Device) SetKeyPair() *SonrError {
 	if d.HasKeys() {
@@ -168,7 +165,7 @@ func (kp *KeyPair) Verify(data []byte, sig []byte) (bool, error) {
 // ** ─── DEVICE MANAGEMENT ────────────────────────────────────────────────────────
 // Method Checks if Device has Keys
 func (d *Device) HasKeys() bool {
-	if _, err := os.Stat(d.WorkingFilePath(KEY_FILE_NAME)); os.IsNotExist(err) {
+	if _, err := os.Stat(d.WorkingFilePath(util.KEY_FILE_NAME)); os.IsNotExist(err) {
 		return false
 	}
 	return true
@@ -272,9 +269,9 @@ func (d *Device) ReadFile(name string) ([]byte, *SonrError) {
 func (d *Device) WorkingKeyPath() string {
 	// Check for Desktop
 	if d.IsDesktop() {
-		return filepath.Join(d.FileSystem.GetLibrary(), KEY_FILE_NAME)
+		return filepath.Join(d.FileSystem.GetLibrary(), util.KEY_FILE_NAME)
 	} else {
-		return filepath.Join(d.FileSystem.GetSupport(), KEY_FILE_NAME)
+		return filepath.Join(d.FileSystem.GetSupport(), util.KEY_FILE_NAME)
 	}
 }
 
@@ -345,7 +342,6 @@ func NewUser(ir *InitializeRequest, s Store) (*User, *SonrError) {
 
 // Set the User with ConnectionRequest
 func (u *User) InitConnection(cr *ConnectionRequest) {
-	u.Location = cr.GetLocation()
 	u.Router = &User_Router{
 		Rendevouz:  "/sonr/rendevouz/0.9.2",
 		LocalTopic: fmt.Sprintf("/sonr/topic/%s", cr.GetLocation().OLC()),
@@ -574,9 +570,10 @@ func (p *Peer) IsNotSamePeerID(pid peer.ID) bool {
 // ^ Signs InviteResponse with Flat Contact
 func (u *User) SignFlatReply(from *Peer) *InviteResponse {
 	return &InviteResponse{
-		Type: InviteResponse_FlatContact,
-		From: u.GetPeer(),
-		Data: &Transfer{
+		Type:     InviteResponse_Contact,
+		FlatMode: true,
+		From:     u.GetPeer(),
+		Transfer: &Transfer{
 			// SQL Properties
 			Payload:  Payload_CONTACT,
 			Received: int32(time.Now().Unix()),

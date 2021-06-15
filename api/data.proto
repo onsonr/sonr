@@ -230,13 +230,13 @@ message MIME {
 
 // Payload is type of Data being transferred
 enum Payload {
-  NONE = 0;         // Not Specified
-  CONTACT = 1;      // Sonr Based Contact
-  FLAT_CONTACT = 2; // Send File as Flat Exchange Automatically Swaps
-  FILE = 3;         // File Transfer
-  FILES = 4;        // Multiple Files
-  URL = 5;          // Link to Site
-  MEDIA = 6;        // Media Payload - (Audio, Photo, Video)
+  NONE = 0;    // Not Specified
+  CONTACT = 1; // Sonr Based Contact
+  FILE = 2;    // File Transfer
+  FILES = 3;   // Multiple Files
+  URL = 4;     // Link to Site
+  MEDIA = 5;   // Media Payload - (Audio, Photo, Video)
+  ALBUM = 6;   // Multiple Media Transfer
 }
 
 // For Transfer File Payload
@@ -286,23 +286,15 @@ message Transfer {
   int32 id = 1;        // SQL: Id reference
   Payload payload = 2; // SQL: Type of Data received
   int32 received = 3;  // SQL: UnixTime of received Date/Time
-  Properties properties = 4;
 
-  Profile receiver = 5; // PROFILE: General Receiver Info
-  Profile owner = 6;    // PROFILE: General Sender Info
+  Profile receiver = 4; // PROFILE: General Receiver Info
+  Profile owner = 5;    // PROFILE: General Sender Info
 
   // Attached Data
   oneof data {
-    Contact contact = 7; // DATA(Optional): Received Contact Information
-    SonrFile file = 8;   // DATA(Optional): Received a File
-    URLLink url = 9;     // DATA(Optional): Received a Website Link
-  }
-
-  // Transfer Properties
-  message Properties {
-    bool isRemote = 1;
-    bool isFlat = 2;
-    bool isTransfer = 3;
+    Contact contact = 6; // DATA(Optional): Received Contact Information
+    SonrFile file = 7;   // DATA(Optional): Received a File
+    URLLink url = 8;     // DATA(Optional): Received a Website Link
   }
 }
 

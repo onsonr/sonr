@@ -255,25 +255,10 @@ func (mn *Node) Invite(data []byte) {
 		req = mn.user.ValidateInvite(req)
 
 		// @ 2. Check Transfer Type
-		if req.IsPayloadContact() {
-			err := mn.client.InviteContact(req, mn.local, req.GetContact())
-			if err != nil {
-				mn.handleError(err)
-				return
-			}
-		} else if req.IsPayloadUrl() {
-			err := mn.client.InviteLink(req, mn.local)
-			if err != nil {
-				mn.handleError(err)
-				return
-			}
-		} else {
-			// Invite With file
-			err := mn.client.InviteFile(req, mn.local)
-			if err != nil {
-				mn.handleError(err)
-				return
-			}
+		err := mn.client.Invite(req, mn.local)
+		if err != nil {
+			mn.handleError(err)
+			return
 		}
 	}
 }
@@ -319,7 +304,7 @@ func URLLink(url string) []byte {
 
 // @ Returns Node Location Protobuf as Bytes
 func (mn *Node) Location() []byte {
-	bytes, err := proto.Marshal(mn.user.Location)
+	bytes, err := proto.Marshal(mn.user.Router.GetLocation())
 	if err != nil {
 		return nil
 	}

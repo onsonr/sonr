@@ -5,16 +5,11 @@ import (
 	"errors"
 
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-core/protocol"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	net "github.com/sonr-io/core/internal/host"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
 )
-
-const K_MAX_MESSAGES = 128
-const LOCAL_SERVICE_PID = protocol.ID("/sonr/local-service/0.2")
-const REMOTE_SERVICE_PID = protocol.ID("/sonr/remote-service/0.2")
 
 type ClientHandler interface {
 	OnEvent(*md.LocalEvent)
@@ -148,7 +143,6 @@ func (tm *TopicManager) handleTopicMessages() {
 		}
 
 		// Check Lobby Type
-		// Construct message
 		m := &md.LocalEvent{}
 		err = proto.Unmarshal(msg.Data, m)
 		if err != nil {

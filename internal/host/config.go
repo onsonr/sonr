@@ -2,33 +2,18 @@ package host
 
 import (
 	"fmt"
-	"time"
 
 	"net"
 	"os"
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/multiformats/go-multiaddr"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
 	md "github.com/sonr-io/core/pkg/models"
 	"github.com/textileio/go-threads/core/thread"
 )
-
-// ** ─── Constants ────────────────────────────────────────────────────────
-// Bootstrap Peer Discovery Interval
-const refreshInterval = time.Second * 5
-
-// Global Service Protocol ID
-const globalProtocol = protocol.ID("/sonr/global-service/0.1")
-
-// Textile Client API URL
-const textileApiUrl = "api.hub.textile.io:443"
-
-// Textile Miner Index Target
-const textileMinerIdx = "f022352"
 
 // ** ─── HostNode Info/Status Methods ────────────────────────────────────────────────────────
 // @ Close Libp2p Host

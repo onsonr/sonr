@@ -16,6 +16,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/protobuf/proto"
+	"github.com/sonr-io/core/pkg/util"
 )
 
 // @ Initializes New Textile Instance
@@ -27,7 +28,7 @@ func (hn *hostNode) StartTextile(d *md.Device) *md.SonrError {
 
 	// Dial GRPC
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(creds), grpc.WithPerRPCCredentials(auth)}
-	hn.tileClient, err = client.NewClient(textileApiUrl, opts...)
+	hn.tileClient, err = client.NewClient(util.TEXTILE_API_URL, opts...)
 	if err != nil {
 		return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
 	}

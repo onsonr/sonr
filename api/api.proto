@@ -20,35 +20,28 @@ message ConnectionRequest {
   Contact contact = 2;   // Users Contact Card
 }
 
-// Response to Connection Request
-message ConnectionResponse {
-  Peer.ID id = 1;
-  ErrorMessage error = 2; // In Case Error Occurred
-}
-
 // Invitation Message sent on RPC
 message InviteRequest {
-  Payload payload = 1; // Type of Transfer
-  Peer from = 2;       // Users Peer Data
-  Peer to = 3;         // Receivers Peer Data
-  Transfer data = 4;   // Attached Data
+  Payload payload = 1;   // Type of Transfer
+  Peer from = 2;         // Users Peer Data
+  Peer to = 3;           // Receivers Peer Data
+  Transfer transfer = 4; // Attached Data
+  bool flatMode = 5;     // Flat Transfer
 }
 
 // Reply Message sent on RPC
 message InviteResponse {
-  Type type = 1;          // Cancel Reply
-  Peer from = 2;          // Users Peer Data
-  Peer to = 3;            // Receivers Peer Data
-  bool decision = 4;      // Users Decision for the Invitation
-  Transfer data = 5;      // Card contains all Data Info, Transfer Info
-  ErrorMessage error = 6; // In Case Error Occurred
+  Type type = 1;         // Cancel Reply
+  bool decision = 2;     // Users Decision for the Invitation
+  Peer from = 3;         // Users Peer Data
+  Peer to = 4;           // Receivers Peer Data
+  bool flatMode = 5;     // Flat Transfer
+  Transfer transfer = 6; // Card contains all Data Info, Transfer Info
 
   enum Type {
-    None = 0;
-    Transfer = 1;
-    Contact = 2;
-    FlatContact = 3;
-    Cancel = 4;
+    Default = 0;
+    Contact = 1;
+    Cancel = 2;
   }
 }
 
@@ -135,30 +128,26 @@ message RestResponse {
 
 // Message for Signing Request (Hmac Sha256)
 message SignRequest {
-  // If signed value should be stored
-  bool withStore = 1;
-
   // Key of Store Entry - Either Enum Type or Text Value
   oneof key {
-    StoreEntry.Type typeKey = 2; // Enum Based Key
-    string textKey = 3;          // Text Based Key
+    StoreEntry.Type typeKey = 1; // Enum Based Key
+    string textKey = 2;          // Text Based Key
   }
 
   // Value to be signed
-  string sName = 4;    // SName combined with Device ID and Hashed
-  string mnemonic = 5; // Mnemonic Hashed with private key for fingerprint
+  string sName = 3;    // SName combined with Device ID and Hashed
+  string mnemonic = 4; // Mnemonic Hashed with private key for fingerprint
 }
 
 // Message for Signing Response (Hmac Sha256)
 message SignResponse {
   bool isSigned = 1;      // If Values were Signed
-  bool isStored = 2;      // Whether signed value was stored
-  ErrorMessage error = 3; // In Case Error Occurred
+  ErrorMessage error = 2; // In Case Error Occurred
 
   // Resulting Signed Values
-  string signedPrefix = 4;      // Message for List of Bytes
-  string signedFingerprint = 5; // Fingerprint Value
-  string publicIdentity = 6;    // Peer ID from Public Key
+  string signedPrefix = 3;      // Message for List of Bytes
+  string signedFingerprint = 4; // Fingerprint Value
+  string publicIdentity = 5;    // Peer ID from Public Key
 }
 
 // Message for Individual Entry in Store

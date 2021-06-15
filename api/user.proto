@@ -91,11 +91,10 @@ message User {
 
   // From ConnectionRequest
   Peer peer = 4;         // Clients Peer Reference
-  Location location = 5; // Clients current Location
-  Crypto crypto = 6;     // User Cryptographic Data
-  Settings settings = 7; // User Settings
-  Contact contact = 8;   // Users Contact Card
-  Router router = 9;     // Client Routing Information
+  Crypto crypto = 5;     // User Cryptographic Data
+  Settings settings = 6; // User Settings
+  Contact contact = 7;   // Users Contact Card
+  Router router = 8;     // Client Routing Information
 
   // Crypto Data to Place in DHT
   message Crypto {

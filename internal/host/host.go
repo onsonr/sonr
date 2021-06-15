@@ -19,6 +19,7 @@ import (
 	swr "github.com/libp2p/go-libp2p-swarm"
 	"github.com/multiformats/go-multiaddr"
 	md "github.com/sonr-io/core/pkg/models"
+	"github.com/sonr-io/core/pkg/util"
 	"github.com/textileio/go-threads/api/client"
 	"github.com/textileio/go-threads/core/thread"
 	"github.com/textileio/textile/v2/mail/local"
@@ -230,6 +231,6 @@ func (h *hostNode) handleDHTPeers(routingDiscovery *dsc.RoutingDiscovery) {
 
 		// Refresh table every 5 seconds
 		md.GetState().NeedsWait()
-		time.Sleep(refreshInterval)
+		time.Sleep(util.REFRESH_INTERVAL)
 	}
 }

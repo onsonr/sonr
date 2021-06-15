@@ -177,33 +177,33 @@ func (u *URLLink) SetData() {
 
 // ** ─── InviteResponse MANAGEMENT ────────────────────────────────────────────────────────
 func (r *InviteResponse) HasAcceptedTransfer() bool {
-	return r.Decision && r.Type == InviteResponse_Transfer
+	return r.Decision && r.Type == InviteResponse_Default
 }
 
 // ** ─── InviteRequest MANAGEMENT ────────────────────────────────────────────────────────
 // Returns Invite Contact
 func (i *InviteRequest) GetContact() *Contact {
-	return i.GetData().GetContact()
+	return i.GetTransfer().GetContact()
 }
 
 // Returns Invite File
 func (i *InviteRequest) GetFile() *SonrFile {
-	return i.GetData().GetFile()
+	return i.GetTransfer().GetFile()
 }
 
 // Returns Invite URL
 func (i *InviteRequest) GetUrl() *URLLink {
-	return i.GetData().GetUrl()
+	return i.GetTransfer().GetUrl()
 }
 
 // Checks if Payload is Contact
 func (i *InviteRequest) IsPayloadContact() bool {
-	return i.Payload == Payload_CONTACT || i.Payload == Payload_FLAT_CONTACT
+	return i.Payload == Payload_CONTACT
 }
 
 // Checks if Payload is File Transfer
 func (i *InviteRequest) IsPayloadFile() bool {
-	return i.Payload == Payload_FILE || i.Payload == Payload_FILES || i.Payload == Payload_MEDIA
+	return i.Payload == Payload_FILE || i.Payload == Payload_FILES || i.Payload == Payload_MEDIA || i.Payload == Payload_ALBUM
 }
 
 // Checks if Payload is Url
@@ -212,17 +212,13 @@ func (i *InviteRequest) IsPayloadUrl() bool {
 }
 
 // Checks for Flat Invite
-func (i *InviteRequest) IsFlat() bool {
-	return i.Data.Properties.IsFlat
-}
-
-// Checks for Remote Invite
-func (i *InviteRequest) IsRemote() bool {
-	return i.Data.Properties.IsRemote
+func (i *InviteRequest) IsFlatInvite() bool {
+	return i.GetFlatMode()
 }
 
 // Validates InviteRequest has From Parameter
 func (u *User) ValidateInvite(i *InviteRequest) *InviteRequest {
+	// Set From
 	if i.From == nil {
 		i.From = u.GetPeer()
 	}
@@ -390,7 +386,7 @@ func (l *Location) OLC() string {
 // ** ─── Router MANAGEMENT ────────────────────────────────────────────────────────
 // @ Local Lobby Topic Protocol ID
 func (r *User) LocalTopic() string {
-	return fmt.Sprintf("/sonr/topic/%s", r.Location.OLC())
+	return fmt.Sprintf("/sonr/topic/%s", r.Router.Location.OLC())
 }
 
 // @ LocalTransferProtocol Controller Data Protocol ID
@@ -399,12 +395,12 @@ func (r *User_Router) LocalTransferProtocol(id peer.ID) protocol.ID {
 }
 
 // @ Lobby Topic Protocol ID
-func (r *User_Router) LinkProtocol(username string) protocol.ID {
+func (r *User_Router) LinkDeviceProtocol(username string) protocol.ID {
 	return protocol.ID(fmt.Sprintf("/sonr/user-linker/%s", username))
 }
 
 // @ Transfer Controller Data Protocol ID
-func (r *User_Router) RemoteTransfer(id peer.ID) protocol.ID {
+func (r *User_Router) RemoteTransferProtocol(id peer.ID) protocol.ID {
 	return protocol.ID(fmt.Sprintf("/sonr/remote-transfer/%s", id.Pretty()))
 }
 

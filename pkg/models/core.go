@@ -11,13 +11,11 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
-
+"github.com/sonr-io/core/pkg/util"
 	"github.com/libp2p/go-libp2p-core/network"
 	msg "github.com/libp2p/go-msgio"
 	"google.golang.org/protobuf/proto"
 )
-
-const K_CHUNK_SIZE = 4 * 1024
 
 // ** ─── CALLBACK MANAGEMENT ────────────────────────────────────────────────────────
 type HTTPHandler func(http.ResponseWriter, *http.Request)
@@ -433,7 +431,7 @@ func (iw *itemWriter) WriteTo(writer msg.WriteCloser) error {
 
 	// @ Initialize Chunk Data
 	r := bufio.NewReader(f)
-	buf := make([]byte, 0, K_CHUNK_SIZE)
+	buf := make([]byte, 0, util.TRANSFER_CHUNK_SIZE)
 
 	// @ Loop through File
 	for {

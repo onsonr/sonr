@@ -3,18 +3,13 @@ package topic
 import (
 	"context"
 
-
 	"github.com/libp2p/go-libp2p-core/peer"
 	rpc "github.com/libp2p/go-libp2p-gorpc"
 	net "github.com/sonr-io/core/internal/host"
 	md "github.com/sonr-io/core/pkg/models"
+	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/proto"
 )
-
-const LOCAL_RPC_SERVICE = "LocalService"
-const LOCAL_METHOD_EXCHANGE = "ExchangeWith"
-const LOCAL_METHOD_FLAT = "FlatWith"
-const LOCAL_METHOD_INVITE = "InviteWith"
 
 // ExchangeArgs is Peer protobuf
 type LocalServiceArgs struct {
@@ -56,22 +51,22 @@ func NewLocal(ctx context.Context, h net.HostNode, u *md.User, name string, th C
 		eventHandler: handler,
 		lobby:        md.NewLocalLobby(u),
 		lobbyType:    md.Lobby_LOCAL,
-		localEvents:  make(chan *md.LocalEvent, K_MAX_MESSAGES),
+		localEvents:  make(chan *md.LocalEvent, util.TOPIC_MAX_MESSAGES),
 		subscription: sub,
 		topic:        topic,
 	}
 
 	// Start Exchange Server
-	localServer := rpc.NewServer(h.Host(), LOCAL_SERVICE_PID)
+	localServer := rpc.NewServer(h.Host(), util.LOCAL_PROTOCOL)
 	psv := LocalService{
 		lobby:  mgr.lobby,
 		user:   u,
 		call:   th,
-		respCh: make(chan *md.InviteResponse, K_MAX_MESSAGES),
+		respCh: make(chan *md.InviteResponse, util.TOPIC_MAX_MESSAGES),
 	}
 
 	// Register Service
-	err := localServer.RegisterName(LOCAL_RPC_SERVICE, &psv)
+	err := localServer.RegisterName(util.LOCAL_RPC_SERVICE, &psv)
 	if err != nil {
 		return nil, md.NewError(err, md.ErrorMessage_TOPIC_RPC)
 	}
@@ -105,60 +100,10 @@ func (tm *TopicManager) SendLocal(msg *md.LocalEvent) error {
 	return nil
 }
 
-// @ Flat: Handles User sent InviteRequest Response on FlatMode
-func (tm *TopicManager) Flat(id peer.ID, inv *md.InviteRequest) error {
-	// Convert Protobuf to bytes
-	msgBytes, err := proto.Marshal(inv)
-	if err != nil {
-		return err
-	}
-
-	// Initialize Data
-	rpcClient := rpc.NewClient(tm.host.Host(), LOCAL_SERVICE_PID)
-	var reply LocalServiceResponse
-	var args LocalServiceArgs
-	args.Invite = msgBytes
-
-	// Call to Peer
-	err = rpcClient.Call(id, LOCAL_RPC_SERVICE, LOCAL_METHOD_FLAT, args, &reply)
-	if err != nil {
-		return err
-	}
-
-	tm.handler.OnReply(id, reply.InvReply)
-	return nil
-}
-
-// # Calls Invite on Remote Peer for Flat Mode - Skips Auth
-func (ts *LocalService) FlatWith(ctx context.Context, args LocalServiceArgs, reply *LocalServiceResponse) error {
-	// Received Message
-	receivedMessage := md.InviteRequest{}
-	err := proto.Unmarshal(args.Invite, &receivedMessage)
-	if err != nil {
-		return err
-	}
-
-	// Set Current Message and send Callback
-	ts.invite = &receivedMessage
-	ts.call.OnInvite(args.Invite)
-
-	// Sign Contact Reply
-	resp := ts.user.SignFlatReply(receivedMessage.GetFrom())
-
-	// Convert Protobuf to bytes
-	msgBytes, err := proto.Marshal(resp)
-	if err != nil {
-		return err
-	}
-
-	reply.InvReply = msgBytes
-	return nil
-}
-
 // @ Starts Exchange on Local Peer Join
 func (tm *TopicManager) Exchange(id peer.ID, peerBuf []byte) error {
 	// Initialize RPC
-	exchClient := rpc.NewClient(tm.host.Host(), LOCAL_SERVICE_PID)
+	exchClient := rpc.NewClient(tm.host.Host(), util.LOCAL_PROTOCOL)
 	var reply LocalServiceResponse
 	var args LocalServiceArgs
 
@@ -166,7 +111,7 @@ func (tm *TopicManager) Exchange(id peer.ID, peerBuf []byte) error {
 	args.Peer = peerBuf
 
 	// Call to Peer
-	err := exchClient.Call(id, LOCAL_RPC_SERVICE, LOCAL_METHOD_EXCHANGE, args, &reply)
+	err := exchClient.Call(id, util.LOCAL_RPC_SERVICE, util.LOCAL_METHOD_EXCHANGE, args, &reply)
 	if err != nil {
 		return err
 	}
@@ -211,7 +156,8 @@ func (ts *LocalService) ExchangeWith(ctx context.Context, args LocalServiceArgs,
 // @ Invite: Handles User sent InviteRequest Response
 func (tm *TopicManager) Invite(id peer.ID, inv *md.InviteRequest) error {
 	// Initialize Data
-	rpcClient := rpc.NewClient(tm.host.Host(), LOCAL_SERVICE_PID)
+	isFlat := inv.IsFlatInvite()
+	rpcClient := rpc.NewClient(tm.host.Host(), util.LOCAL_PROTOCOL)
 	var reply LocalServiceResponse
 	var args LocalServiceArgs
 
@@ -221,48 +167,77 @@ func (tm *TopicManager) Invite(id peer.ID, inv *md.InviteRequest) error {
 		return err
 	}
 
+	// Set Args
 	args.Invite = msgBytes
 
-	// Call to Peer
-	done := make(chan *rpc.Call, 1)
-	err = rpcClient.Go(id, LOCAL_RPC_SERVICE, LOCAL_METHOD_INVITE, args, &reply, done)
+	// Check Invite for Flat/Default
+	if isFlat {
+		// Call to Peer
+		err = rpcClient.Call(id, util.LOCAL_RPC_SERVICE, util.LOCAL_METHOD_INVITE, args, &reply)
+		if err != nil {
+			return err
+		}
 
-	// Await Response
-	call := <-done
-	if call.Error != nil {
-		return err
+		tm.handler.OnReply(id, reply.InvReply)
+		return nil
+	} else {
+		// Call to Peer
+		done := make(chan *rpc.Call, 1)
+		err = rpcClient.Go(id, util.LOCAL_RPC_SERVICE, util.LOCAL_METHOD_INVITE, args, &reply, done)
+
+		// Await Response
+		call := <-done
+		if call.Error != nil {
+			return err
+		}
+		tm.handler.OnReply(id, reply.InvReply)
+		return nil
 	}
-	tm.handler.OnReply(id, reply.InvReply)
-	return nil
 }
 
 // # Calls Invite on Local Lobby Peer
 func (ts *LocalService) InviteWith(ctx context.Context, args LocalServiceArgs, reply *LocalServiceResponse) error {
 	// Received Message
-	receivedMessage := md.InviteRequest{}
-	err := proto.Unmarshal(args.Invite, &receivedMessage)
+	inv := md.InviteRequest{}
+	err := proto.Unmarshal(args.Invite, &inv)
 	if err != nil {
 		return err
 	}
 
 	// Set Current Message and send Callback
-	ts.invite = &receivedMessage
+	isFlat := inv.IsFlatInvite()
+	ts.invite = &inv
 	ts.call.OnInvite(args.Invite)
 
-	// Hold Select for Invite Type
-	select {
-	// Received Auth Channel Message
-	case m := <-ts.respCh:
+	// Check Invite for Flat/Default
+	if isFlat {
+		// Sign Contact Reply
+		resp := ts.user.SignFlatReply(inv.GetFrom())
+
 		// Convert Protobuf to bytes
-		msgBytes, err := proto.Marshal(m)
+		msgBytes, err := proto.Marshal(resp)
 		if err != nil {
 			return err
 		}
 
-		// Set Message data and call done
 		reply.InvReply = msgBytes
-		ctx.Done()
 		return nil
+	} else {
+		// Hold Select for Invite Type
+		select {
+		// Received Auth Channel Message
+		case m := <-ts.respCh:
+			// Convert Protobuf to bytes
+			msgBytes, err := proto.Marshal(m)
+			if err != nil {
+				return err
+			}
+
+			// Set Message data and call done
+			reply.InvReply = msgBytes
+			ctx.Done()
+			return nil
+		}
 	}
 }
 
