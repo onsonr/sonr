@@ -3,7 +3,6 @@ package models
 import (
 	"fmt"
 
-	"github.com/alecthomas/jsonschema"
 	"github.com/libp2p/go-libp2p-core/peer"
 
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
@@ -83,11 +82,11 @@ func (p *Peer) ToInstance() *PeerInstance {
 	}
 }
 
-// Return Peer Model JSON Schema
-func PeerSchema() *jsonschema.Schema {
-	reflector := jsonschema.Reflector{}
-	return reflector.Reflect(&PeerInstance{})
-}
+// // Return Peer Model JSON Schema
+// func PeerSchema() *jsonschema.Schema {
+// 	reflector := jsonschema.Reflector{}
+// 	return reflector.Reflect(&PeerInstance{})
+// }
 
 // ** ─── Peer MANAGEMENT ────────────────────────────────────────────────────────
 // ^ Create New Peer from Connection Request and Host ID ^ //
