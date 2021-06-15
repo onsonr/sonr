@@ -114,13 +114,12 @@ message Peer {
 
 // Record of Peer stored in Threads DB
 message PeerInstance {
-  string sName = 1;      // User Sonr Domain
-  string peerID = 2;     // Libp2p Peer ID
-  string multiAddr = 3;  // Peer MultiAddress Format
-  Platform platform = 4; // Peer Platform
-  Profile profile = 5;   // Peer Profile
-  bool isActive = 6;     // If Peer is Active Now
-  bool isReachable = 7;  // If Peer has allowed Remote Calls
+  string sName = 1;     // User Sonr Domain
+  string peerID = 2;    // Libp2p Peer ID
+  string multiAddr = 3; // Peer MultiAddress Format
+  string firstName = 4; // Peer First Name
+  bool isActive = 5;    // If Peer is Active Now
+  bool isReachable = 6; // If Peer has allowed Remote Calls
 }
 
 // Platform is the Operating System of Device

@@ -77,8 +77,7 @@ func (p *Peer) ToInstance() *PeerInstance {
 		SName:       p.GetSName(),
 		PeerID:      p.PeerID(),
 		MultiAddr:   p.Id.GetMultiAddr(),
-		Platform:    p.GetPlatform(),
-		Profile:     p.GetProfile(),
+		FirstName:   p.Profile.GetFirstName(),
 		IsActive:    true,
 		IsReachable: true,
 	}
