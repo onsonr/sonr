@@ -3,20 +3,17 @@ package host
 import (
 	"context"
 	"crypto/tls"
-	"fmt"
-	"log"
 	"time"
 
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	md "github.com/sonr-io/core/pkg/models"
+	"github.com/sonr-io/core/pkg/util"
 	"github.com/textileio/go-threads/api/client"
 	"github.com/textileio/go-threads/core/thread"
-	"github.com/textileio/go-threads/db"
 	"github.com/textileio/textile/v2/api/common"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/protobuf/proto"
-	"github.com/sonr-io/core/pkg/util"
 )
 
 // @ Initializes New Textile Instance
@@ -47,24 +44,25 @@ func (hn *hostNode) StartTextile(d *md.Device) *md.SonrError {
 	if err != nil {
 		return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
 	}
-	// Generate a new thread ID
-	threadID := thread.NewIDV1(thread.Raw, 32)
+	// }
+	// // Generate a new thread ID
+	// threadID := thread.NewIDV1(thread.Raw, 32)
 
-	// Create your new thread
-	err = hn.tileClient.NewDB(hn.ctxTileToken, threadID, db.WithNewManagedName("Sonr-Users"))
-	if err != nil {
-		return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
-	}
+	// // Create your new thread
+	// err = hn.tileClient.NewDB(hn.ctxTileToken, threadID, db.WithNewManagedName("Sonr-Users"))
+	// if err != nil {
+	// 	return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+	// }
 
-	// Get DB Info
-	info, err := hn.tileClient.GetDBInfo(hn.ctxTileToken, threadID)
-	if err != nil {
-		return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
-	}
+	// // Get DB Info
+	// info, err := hn.tileClient.GetDBInfo(hn.ctxTileToken, threadID)
+	// if err != nil {
+	// 	return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+	// }
 
-	// Log DB Info
-	log.Println("> Success!")
-	log.Println(fmt.Sprintf("ID: %s \n Maddr: %s \n Key: %s \n Name: %s \n", threadID.String(), info.Addrs, info.Key.String(), info.Name))
+	// // Log DB Info
+	// log.Println("> Success!")
+	// log.Println(fmt.Sprintf("ID: %s \n Maddr: %s \n Key: %s \n Name: %s \n", threadID.String(), info.Addrs, info.Key.String(), info.Name))
 	return nil
 }
 
