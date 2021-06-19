@@ -11,9 +11,10 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
-"github.com/sonr-io/core/pkg/util"
+
 	"github.com/libp2p/go-libp2p-core/network"
 	msg "github.com/libp2p/go-msgio"
+	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -243,6 +244,7 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 		}
 		// Set Status
 		s.handleReceived()
+		stream.Reset()
 	}(msg.NewReader(stream))
 }
 
@@ -260,6 +262,7 @@ func (s *Session) WriteToStream(stream network.Stream) {
 		}
 		// Handle Complete
 		s.handleTransmitted()
+		stream.CloseWrite()
 	}(msg.NewWriter(stream))
 }
 
