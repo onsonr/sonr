@@ -82,12 +82,6 @@ func (p *Peer) ToInstance() *PeerInstance {
 	}
 }
 
-// // Return Peer Model JSON Schema
-// func PeerSchema() *jsonschema.Schema {
-// 	reflector := jsonschema.Reflector{}
-// 	return reflector.Reflect(&PeerInstance{})
-// }
-
 // ** ─── Peer MANAGEMENT ────────────────────────────────────────────────────────
 // ^ Create New Peer from Connection Request and Host ID ^ //
 func (u *User) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) *SonrError {
@@ -130,6 +124,7 @@ func (p *Peer) PeerID() string {
 // ^ Returns Peer Public Key ^ //
 func (p *Peer) PublicKey() crypto.PubKey {
 	buf := p.GetId().GetPublicKey()
+
 	// Get Key from Buffer
 	pubKey, err := crypto.UnmarshalPublicKey(buf)
 	if err != nil {
