@@ -10,7 +10,7 @@ import (
 
 // ** ─── Variables ────────────────────────────────────────────────────────
 // Bootstrap Peer Discovery Interval
-const REFRESH_INTERVAL = time.Second * 5
+const REFRESH_INTERVAL = time.Second * 4
 
 // Pubsub Topic Max Messages
 const TOPIC_MAX_MESSAGES = 128
