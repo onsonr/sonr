@@ -14,10 +14,9 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/network"
 	msg "github.com/libp2p/go-msgio"
+	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/proto"
 )
-
-const K_CHUNK_SIZE = 4 * 1024
 
 // ** ─── CALLBACK MANAGEMENT ────────────────────────────────────────────────────────
 type HTTPHandler func(http.ResponseWriter, *http.Request)
@@ -245,6 +244,7 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 		}
 		// Set Status
 		s.handleReceived()
+		stream.Reset()
 	}(msg.NewReader(stream))
 }
 
@@ -262,6 +262,7 @@ func (s *Session) WriteToStream(stream network.Stream) {
 		}
 		// Handle Complete
 		s.handleTransmitted()
+		stream.CloseWrite()
 	}(msg.NewWriter(stream))
 }
 
@@ -433,7 +434,7 @@ func (iw *itemWriter) WriteTo(writer msg.WriteCloser) error {
 
 	// @ Initialize Chunk Data
 	r := bufio.NewReader(f)
-	buf := make([]byte, 0, K_CHUNK_SIZE)
+	buf := make([]byte, 0, util.TRANSFER_CHUNK_SIZE)
 
 	// @ Loop through File
 	for {

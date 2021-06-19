@@ -36,9 +36,9 @@ func NewClient(ctx context.Context, u *md.User, call md.Callback) *Client {
 }
 
 // @ Connects Host Node from Private Key
-func (c *Client) Connect(api *md.APIKeys, keys *md.KeyPair) *md.SonrError {
+func (c *Client) Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrError {
 	// Set Host
-	hn, err := net.NewHost(c.ctx, c.user.GetRouter().Rendevouz, api, keys)
+	hn, err := net.NewHost(c.ctx, cr, keys)
 	if err != nil {
 		return err
 	}
@@ -68,11 +68,11 @@ func (c *Client) Bootstrap() (*tpc.TopicManager, *md.SonrError) {
 		return nil, err
 	}
 
-	// // Start Textile
-	// err = c.Host.StartTextile(c.user.GetDevice())
-	// if err != nil {
-	// 	return nil, err
-	// }
+	// Start Textile
+	err = c.Host.StartTextile(c.user.GetDevice())
+	if err != nil {
+		return nil, err
+	}
 
 	// Join Local
 	if t, err := tpc.NewLocal(c.ctx, c.Host, c.user, c.user.GetRouter().LocalTopic, c); err != nil {
@@ -83,9 +83,15 @@ func (c *Client) Bootstrap() (*tpc.TopicManager, *md.SonrError) {
 }
 
 // @ Invite Processes Data and Sends Invite to Peer
-func (n *Client) InviteLink(invite *md.InviteRequest, t *tpc.TopicManager) *md.SonrError {
-	// @ 3. Send Invite to Peer
+func (n *Client) Invite(invite *md.InviteRequest, t *tpc.TopicManager) *md.SonrError {
+	// Check for Peer
 	if t.HasPeer(invite.To.Id.Peer) {
+		// Initialize Session if transfer
+		if invite.IsPayloadFile() {
+			// Start New Session
+			n.session = md.NewOutSession(n.user, invite, n.call)
+		}
+
 		// Get PeerID and Check error
 		id, _, err := t.FindPeerInTopic(invite.To.Id.Peer)
 		if err != nil {
@@ -94,6 +100,7 @@ func (n *Client) InviteLink(invite *md.InviteRequest, t *tpc.TopicManager) *md.S
 
 		// Run Routine
 		go func(inv *md.InviteRequest) {
+			// Send Invite
 			err = t.Invite(id, inv)
 			if err != nil {
 				n.call.OnError(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
@@ -102,59 +109,6 @@ func (n *Client) InviteLink(invite *md.InviteRequest, t *tpc.TopicManager) *md.S
 	} else {
 		return md.NewErrorWithType(md.ErrorMessage_PEER_NOT_FOUND_INVITE)
 	}
-	return nil
-}
-
-// @ Invite Processes Data and Sends Invite to Peer
-func (n *Client) InviteContact(invite *md.InviteRequest, t *tpc.TopicManager, c *md.Contact) *md.SonrError {
-	// @ 3. Send Invite to Peer
-	if t.HasPeer(invite.To.Id.Peer) {
-		// Get PeerID and Check error
-		id, _, err := t.FindPeerInTopic(invite.To.Id.Peer)
-		if err != nil {
-			return md.NewError(err, md.ErrorMessage_PEER_NOT_FOUND_INVITE)
-		}
-
-		// Run Routine
-		go func(inv *md.InviteRequest) {
-			// Direct Invite for Flat
-			if inv.IsFlat() {
-				err = t.Flat(id, inv)
-				if err != nil {
-					n.call.OnError(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
-				}
-			} else {
-				// Request Invite for Non Flat
-				err = t.Invite(id, inv)
-				if err != nil {
-					n.call.OnError(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
-				}
-			}
-		}(invite)
-	} else {
-		return md.NewErrorWithType(md.ErrorMessage_PEER_NOT_FOUND_INVITE)
-	}
-	return nil
-}
-
-// @ Invite Processes Data and Sends Invite to Peer
-func (n *Client) InviteFile(invite *md.InviteRequest, t *tpc.TopicManager) *md.SonrError {
-	// Start New Session
-	n.session = md.NewOutSession(n.user, invite, n.call)
-
-	// Get PeerID
-	id, _, err := t.FindPeerInTopic(invite.To.Id.Peer)
-	if err != nil {
-		return md.NewError(err, md.ErrorMessage_PEER_NOT_FOUND_INVITE)
-	}
-
-	// Run Routine
-	go func(inv *md.InviteRequest) {
-		err = t.Invite(id, inv)
-		if err != nil {
-			n.call.OnError(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
-		}
-	}(invite)
 	return nil
 }
 

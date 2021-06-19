@@ -13,15 +13,10 @@ import (
 
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/multiformats/go-multiaddr"
 	"github.com/sonr-io/core/pkg/util"
-	"google.golang.org/protobuf/proto"
 )
 
 // ** ─── KeyPair MANAGEMENT ────────────────────────────────────────────────────────
-// Key File Name Constants
-const KEY_FILE_NAME = ".sonr_private_key"
-
 // Constructer that Initializes KeyPair without Buffer
 func (d *Device) SetKeyPair() *SonrError {
 	if d.HasKeys() {
@@ -168,7 +163,7 @@ func (kp *KeyPair) Verify(data []byte, sig []byte) (bool, error) {
 // ** ─── DEVICE MANAGEMENT ────────────────────────────────────────────────────────
 // Method Checks if Device has Keys
 func (d *Device) HasKeys() bool {
-	if _, err := os.Stat(d.WorkingFilePath(KEY_FILE_NAME)); os.IsNotExist(err) {
+	if _, err := os.Stat(d.WorkingFilePath(util.KEY_FILE_NAME)); os.IsNotExist(err) {
 		return false
 	}
 	return true
@@ -272,9 +267,9 @@ func (d *Device) ReadFile(name string) ([]byte, *SonrError) {
 func (d *Device) WorkingKeyPath() string {
 	// Check for Desktop
 	if d.IsDesktop() {
-		return filepath.Join(d.FileSystem.GetLibrary(), KEY_FILE_NAME)
+		return filepath.Join(d.FileSystem.GetLibrary(), util.KEY_FILE_NAME)
 	} else {
-		return filepath.Join(d.FileSystem.GetSupport(), KEY_FILE_NAME)
+		return filepath.Join(d.FileSystem.GetSupport(), util.KEY_FILE_NAME)
 	}
 }
 
@@ -345,7 +340,8 @@ func NewUser(ir *InitializeRequest, s Store) (*User, *SonrError) {
 
 // Set the User with ConnectionRequest
 func (u *User) InitConnection(cr *ConnectionRequest) {
-	u.Location = cr.GetLocation()
+	u.Contact = cr.GetContact()
+	u.SName = u.Contact.Profile.SName
 	u.Router = &User_Router{
 		Rendevouz:  "/sonr/rendevouz/0.9.2",
 		LocalTopic: fmt.Sprintf("/sonr/topic/%s", cr.GetLocation().OLC()),
@@ -390,7 +386,7 @@ func (u *User) Profile() *Profile {
 }
 
 // Method Signs Data with KeyPair
-func (u *User) Sign(req *SignRequest, s Store) *SignResponse {
+func (u *User) Sign(req *AuthRequest, s Store) *AuthResponse {
 	// Put Mnemonic
 	s.Put(&StoreEntry{Key: &StoreEntry_TypeKey{TypeKey: StoreEntry_MNEMONIC}, Value: &StoreEntry_TextValue{TextValue: req.GetMnemonic()}})
 
@@ -412,7 +408,7 @@ func (u *User) Sign(req *SignRequest, s Store) *SignResponse {
 	identity := u.KeyPair().GetPublic().GetId()
 
 	// Return Response
-	return &SignResponse{
+	return &AuthResponse{
 		SignedPrefix:      prefix,
 		SignedFingerprint: fingerprint,
 		PublicIdentity:    identity,
@@ -420,7 +416,7 @@ func (u *User) Sign(req *SignRequest, s Store) *SignResponse {
 }
 
 // Method Returns SName
-func (u *User) SName() string {
+func (u *User) PrettySName() string {
 	return fmt.Sprintf("%s.snr/", u.Profile().GetSName())
 }
 
@@ -486,97 +482,13 @@ func (u *User) Update(ur *UpdateRequest) {
 	}
 }
 
-// ** ─── Peer MANAGEMENT ────────────────────────────────────────────────────────
-// ^ Create New Peer from Connection Request and Host ID ^ //
-func (u *User) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) *SonrError {
-	u.Peer = &Peer{
-		Id: &Peer_ID{
-			Peer:      id.String(),
-			Device:    u.DeviceID(),
-			SName:     u.SName(),
-			MultiAddr: maddr.String(),
-			PublicKey: u.KeyPair().GetPublic().GetBuffer(),
-		},
-		Profile:  u.Profile(),
-		Platform: u.Device.Platform,
-		Model:    u.Device.Model,
-	}
-	// Set Device Topic
-	u.Router.DeviceTopic = fmt.Sprintf("/sonr/topic/%s", u.Peer.SName())
-	return nil
-}
-
-// ^ Returns Peer as Buffer ^ //
-func (p *Peer) Buffer() ([]byte, error) {
-	buf, err := proto.Marshal(p)
-	if err != nil {
-		return nil, err
-	}
-	return buf, nil
-}
-
-// ^ Returns Peer User ID ^ //
-func (p *Peer) DeviceID() string {
-	return string(p.Id.GetDevice())
-}
-
-// ^ Returns Peer ID String Value
-func (p *Peer) PeerID() string {
-	return p.Id.Peer
-}
-
-// ^ Returns Peer Public Key ^ //
-func (p *Peer) PublicKey() crypto.PubKey {
-	buf := p.GetId().GetPublicKey()
-	// Get Key from Buffer
-	pubKey, err := crypto.UnmarshalPublicKey(buf)
-	if err != nil {
-		return nil
-	}
-	return pubKey
-}
-
-// ^ Returns Peer User ID ^ //
-func (p *Peer) SName() string {
-	return p.Id.GetSName()
-}
-
-// ^ Checks if Two Peers are the Same by Device ID and Peer ID
-func (p *Peer) IsSame(other *Peer) bool {
-	return p.PeerID() == other.PeerID() && p.DeviceID() == other.DeviceID() && p.SName() == other.SName()
-}
-
-// ^ Checks if PeerDeviceIDID is the Same
-func (p *Peer) IsSameDeviceID(other *Peer) bool {
-	return p.DeviceID() == other.DeviceID()
-}
-
-// ^ Checks if PeerID is the Same
-func (p *Peer) IsSamePeerID(pid peer.ID) bool {
-	return p.PeerID() == pid.String()
-}
-
-// ^ Checks if Two Peers are NOT the Same by Device ID and Peer ID
-func (p *Peer) IsNotSame(other *Peer) bool {
-	return p.PeerID() != other.PeerID() && p.DeviceID() != other.DeviceID() && p.SName() != other.SName()
-}
-
-// ^ Checks if DeviceID is NOT the Same
-func (p *Peer) IsNotSameDeviceID(other *Peer) bool {
-	return p.DeviceID() == other.DeviceID()
-}
-
-// ^ Checks if PeerID is NOT the Same
-func (p *Peer) IsNotSamePeerID(pid peer.ID) bool {
-	return p.PeerID() != pid.String()
-}
-
 // ^ Signs InviteResponse with Flat Contact
 func (u *User) SignFlatReply(from *Peer) *InviteResponse {
 	return &InviteResponse{
-		Type: InviteResponse_FlatContact,
-		From: u.GetPeer(),
-		Data: &Transfer{
+		Type:     InviteResponse_Contact,
+		FlatMode: true,
+		From:     u.GetPeer(),
+		Transfer: &Transfer{
 			// SQL Properties
 			Payload:  Payload_CONTACT,
 			Received: int32(time.Now().Unix()),

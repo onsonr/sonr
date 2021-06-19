@@ -88,18 +88,18 @@ message Location {
 
 // Basic Info Sent to Peers to Establish Connections
 message Peer {
-  ID id = 1;                 // ID references
-  Platform platform = 2;     // Peers Device Platform
-  string model = 3;          // Peers Device Model
-  Position position = 4;     // Peers Positional Information
-  Profile profile = 5;       // Peers General Information
-  Properties properties = 6; // Peer specific options set
+  string sName = 1;          // User Sonr Domain
+  ID id = 2;                 // ID references
+  Platform platform = 3;     // Peers Device Platform
+  string model = 4;          // Peers Device Model
+  Position position = 5;     // Peers Positional Information
+  Profile profile = 6;       // Peers General Information
+  Properties properties = 7; // Peer specific options set
 
   // ID References
   message ID {
     string peer = 1;      // Host PeerID
     string device = 2;    // Device ID
-    string sName = 3;     // User ID
     string multiAddr = 4; // Peer MultiAddr
     bytes publicKey = 5;  // Public Key of Peer
   }
@@ -110,6 +110,16 @@ message Peer {
     bool enabledPointShare = 1;
     bool isFlatMode = 2;
   }
+}
+
+// Record of Peer stored in Threads DB
+message PeerInstance {
+  string sName = 1;     // User Sonr Domain
+  string peerID = 2;    // Libp2p Peer ID
+  string multiAddr = 3; // Peer MultiAddress Format
+  string firstName = 4; // Peer First Name
+  bool isActive = 5;    // If Peer is Active Now
+  bool isReachable = 6; // If Peer has allowed Remote Calls
 }
 
 // Platform is the Operating System of Device

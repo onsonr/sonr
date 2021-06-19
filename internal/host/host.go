@@ -19,8 +19,10 @@ import (
 	swr "github.com/libp2p/go-libp2p-swarm"
 	"github.com/multiformats/go-multiaddr"
 	md "github.com/sonr-io/core/pkg/models"
+	"github.com/sonr-io/core/pkg/util"
 	"github.com/textileio/go-threads/api/client"
 	"github.com/textileio/go-threads/core/thread"
+	"github.com/textileio/go-threads/db"
 	"github.com/textileio/textile/v2/mail/local"
 )
 
@@ -51,6 +53,10 @@ type hostNode struct {
 	ctxTileAuth  context.Context
 	ctxTileToken context.Context
 
+	// Database
+	dbInfo     db.Info
+	dbThreadID thread.ID
+
 	// Libp2p
 	id     peer.ID
 	disc   *dsc.RoutingDiscovery
@@ -64,24 +70,25 @@ type hostNode struct {
 	tileClient   *client.Client
 	tileMail     *local.Mail
 	tileMailbox  *local.Mailbox
+	tileOptions  *md.ConnectionRequest_TextileOptions
 }
 
 // ^ Start Begins Assigning Host Parameters ^
-func NewHost(ctx context.Context, point string, api *md.APIKeys, keys *md.KeyPair) (HostNode, *md.SonrError) {
+func NewHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair) (HostNode, *md.SonrError) {
 	// Initialize DHT
 	var kdhtRef *dht.IpfsDHT
 
 	// Find Listen Addresses
 	addrs, err := getExternalAddrStrings()
 	if err != nil {
-		return newRelayedHost(ctx, point, api, keys)
+		return newRelayedHost(ctx, req, keyPair)
 	}
 
 	// Start Host
 	h, err := libp2p.New(
 		ctx,
 		libp2p.ListenAddrStrings(addrs...),
-		libp2p.Identity(keys.PrivKey()),
+		libp2p.Identity(keyPair.PrivKey()),
 		libp2p.DefaultTransports,
 		libp2p.ConnectionManager(connmgr.NewConnManager(
 			10,          // Lowwater
@@ -104,31 +111,32 @@ func NewHost(ctx context.Context, point string, api *md.APIKeys, keys *md.KeyPai
 
 	// Set Host for Node
 	if err != nil {
-		return newRelayedHost(ctx, point, api, keys)
+		return newRelayedHost(ctx, req, keyPair)
 	}
 
 	// Create Host
 	hn := &hostNode{
-		ctxHost: ctx,
-		apiKeys: api,
-		keyPair: keys,
-		id:      h.ID(),
-		host:    h,
-		point:   point,
-		kdht:    kdhtRef,
+		ctxHost:     ctx,
+		apiKeys:     req.ApiKeys,
+		keyPair:     keyPair,
+		id:          h.ID(),
+		host:        h,
+		point:       req.Point,
+		kdht:        kdhtRef,
+		tileOptions: req.GetTextileOptions(),
 	}
 	return hn, nil
 }
 
 // # Failsafe when unable to bind to External IP Address ^ //
-func newRelayedHost(ctx context.Context, point string, api *md.APIKeys, keys *md.KeyPair) (HostNode, *md.SonrError) {
+func newRelayedHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair) (HostNode, *md.SonrError) {
 	// Initialize DHT
 	var kdhtRef *dht.IpfsDHT
 
 	// Start Host
 	h, err := libp2p.New(
 		ctx,
-		libp2p.Identity(keys.PrivKey()),
+		libp2p.Identity(keyPair.PrivKey()),
 		libp2p.DefaultTransports,
 		libp2p.ConnectionManager(connmgr.NewConnManager(
 			10,          // Lowwater
@@ -158,7 +166,7 @@ func newRelayedHost(ctx context.Context, point string, api *md.APIKeys, keys *md
 		ctxHost: ctx,
 		id:      h.ID(),
 		host:    h,
-		point:   point,
+		point:   req.Point,
 		kdht:    kdhtRef,
 	}, nil
 }
@@ -201,6 +209,39 @@ func (h *hostNode) Bootstrap() *md.SonrError {
 	return nil
 }
 
+// ** ─── Stream/Pubsub Methods ────────────────────────────────────────────────────────
+// Join New Topic with Name
+func (h *hostNode) Join(name string) (*psub.Topic, *psub.Subscription, *psub.TopicEventHandler, *md.SonrError) {
+	// Join Topic
+	topic, err := h.pubsub.Join(name)
+	if err != nil {
+		return nil, nil, nil, md.NewError(err, md.ErrorMessage_TOPIC_JOIN)
+	}
+
+	// Subscribe to Topic
+	sub, err := topic.Subscribe()
+	if err != nil {
+		return nil, nil, nil, md.NewError(err, md.ErrorMessage_TOPIC_SUB)
+	}
+
+	// Create Topic Handler
+	handler, err := topic.EventHandler()
+	if err != nil {
+		return nil, nil, nil, md.NewError(err, md.ErrorMessage_TOPIC_HANDLER)
+	}
+	return topic, sub, handler, nil
+}
+
+// Set Stream Handler for Host
+func (h *hostNode) HandleStream(pid protocol.ID, handler network.StreamHandler) {
+	h.host.SetStreamHandler(pid, handler)
+}
+
+// Start Stream for Host
+func (h *hostNode) StartStream(p peer.ID, pid protocol.ID) (network.Stream, error) {
+	return h.host.NewStream(h.ctxHost, p, pid)
+}
+
 // # handleDHTPeers: Connects to Peers in DHT
 func (h *hostNode) handleDHTPeers(routingDiscovery *dsc.RoutingDiscovery) {
 	for {
@@ -230,6 +271,6 @@ func (h *hostNode) handleDHTPeers(routingDiscovery *dsc.RoutingDiscovery) {
 
 		// Refresh table every 5 seconds
 		md.GetState().NeedsWait()
-		time.Sleep(refreshInterval)
+		time.Sleep(util.REFRESH_INTERVAL)
 	}
 }

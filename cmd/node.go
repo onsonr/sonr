@@ -82,9 +82,11 @@ func (mn *Node) Connect(data []byte) {
 
 	// Update User with Connection Request
 	mn.user.InitConnection(req)
+	req.ApiKeys = mn.user.APIKeys()
+	req.Point = mn.user.GetRouter().Rendevouz
 
 	// Connect Host
-	serr := mn.client.Connect(mn.user.APIKeys(), mn.user.KeyPair())
+	serr := mn.client.Connect(req, mn.user.KeyPair())
 	if serr != nil {
 		mn.handleError(serr)
 		mn.setConnected(false)
@@ -107,7 +109,7 @@ func (mn *Node) Connect(data []byte) {
 // @ Signing Request for Data
 func (mn *Node) Sign(data []byte) []byte {
 	// Unmarshal Data to Request
-	request := &md.SignRequest{}
+	request := &md.AuthRequest{}
 	err := proto.Unmarshal(data, request)
 	if err != nil {
 		log.Println("Failed to Unmarshal Sign Request")
@@ -116,7 +118,7 @@ func (mn *Node) Sign(data []byte) []byte {
 		mn.handleError(md.NewUnmarshalError(err))
 
 		// Initialize invalid Response
-		invalidResp := md.SignResponse{
+		invalidResp := md.AuthResponse{
 			IsSigned: false,
 		}
 
@@ -255,25 +257,10 @@ func (mn *Node) Invite(data []byte) {
 		req = mn.user.ValidateInvite(req)
 
 		// @ 2. Check Transfer Type
-		if req.IsPayloadContact() {
-			err := mn.client.InviteContact(req, mn.local, req.GetContact())
-			if err != nil {
-				mn.handleError(err)
-				return
-			}
-		} else if req.IsPayloadUrl() {
-			err := mn.client.InviteLink(req, mn.local)
-			if err != nil {
-				mn.handleError(err)
-				return
-			}
-		} else {
-			// Invite With file
-			err := mn.client.InviteFile(req, mn.local)
-			if err != nil {
-				mn.handleError(err)
-				return
-			}
+		err := mn.client.Invite(req, mn.local)
+		if err != nil {
+			mn.handleError(err)
+			return
 		}
 	}
 }
@@ -319,7 +306,7 @@ func URLLink(url string) []byte {
 
 // @ Returns Node Location Protobuf as Bytes
 func (mn *Node) Location() []byte {
-	bytes, err := proto.Marshal(mn.user.Location)
+	bytes, err := proto.Marshal(mn.user.Router.GetLocation())
 	if err != nil {
 		return nil
 	}
