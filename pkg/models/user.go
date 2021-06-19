@@ -340,7 +340,8 @@ func NewUser(ir *InitializeRequest, s Store) (*User, *SonrError) {
 
 // Set the User with ConnectionRequest
 func (u *User) InitConnection(cr *ConnectionRequest) {
-	u.SName = cr.GetContact().Profile.SName
+	u.Contact = cr.GetContact()
+	u.SName = u.Contact.Profile.SName
 	u.Router = &User_Router{
 		Rendevouz:  "/sonr/rendevouz/0.9.2",
 		LocalTopic: fmt.Sprintf("/sonr/topic/%s", cr.GetLocation().OLC()),
