@@ -124,6 +124,13 @@ message MailResponse {
   }
 }
 
+// Transfer Progress Update
+message ProgressUpdate {
+  int32 current = 1;
+  int32 total = 2;
+  double progress = 3;
+}
+
 // REST API Request over HTTP
 message RestRequest {
   Method method = 1;                  // HTTP Method

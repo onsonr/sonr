@@ -12,7 +12,7 @@ type Callback interface {
 	OnEvent(data []byte)       // Local Lobby Event
 	OnInvited(data []byte)     // User Invited
 	OnResponded(data []byte)   // Peer has responded
-	OnProgress(data float32)   // File Progress Updated
+	OnProgress(data []byte)   // File Progress Updated
 	OnReceived(data []byte)    // User Received File
 	OnTransmitted(data []byte) // User Sent File
 	OnError(data []byte)       // Internal Error

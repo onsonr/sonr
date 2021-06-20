@@ -22,14 +22,13 @@ import (
 type HTTPHandler func(http.ResponseWriter, *http.Request)
 type SetStatus func(s Status)
 type OnProtobuf func([]byte)
-type OnProgress func(data float32)
 type OnError func(err *SonrError)
 type Callback struct {
 	OnInvite      OnProtobuf
 	OnRefresh     OnProtobuf
 	OnEvent       OnProtobuf
 	OnReply       OnProtobuf
-	OnProgress    OnProgress
+	OnProgress    OnProtobuf
 	OnReceived    OnProtobuf
 	OnTransmitted OnProtobuf
 	OnError       OnError
@@ -173,6 +172,16 @@ func (f *SonrFile) IsMultiple() bool {
 	return len(f.Items) > 1
 }
 
+// Returns Index of Item from File
+func (f *SonrFile) IndexOf(item *SonrFile_Item) int {
+	for i, v := range f.Items {
+		if v == item {
+			return i
+		}
+	}
+	return -1
+}
+
 // Method Returns Single if Applicable
 func (f *SonrFile) Single() *SonrFile_Item {
 	if f.IsSingle() {
@@ -235,8 +244,8 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 	// Concurrent Function
 	go func(rs msg.ReadCloser) {
 		// Read All Files
-		for _, m := range s.file.Items {
-			r := m.NewReader(s.user.Device, s.call)
+		for i, m := range s.file.Items {
+			r := m.NewReader(s.user.Device, i, int(s.file.GetCount()), s.call)
 			err := r.ReadFrom(rs)
 			if err != nil {
 				s.call.OnError(NewError(err, ErrorMessage_INCOMING))
@@ -253,8 +262,8 @@ func (s *Session) WriteToStream(stream network.Stream) {
 	// Concurrent Function
 	go func(ws msg.WriteCloser) {
 		// Write All Files
-		for _, m := range s.file.Items {
-			w := m.NewWriter(s.user.Device, s.call)
+		for i, m := range s.file.Items {
+			w := m.NewWriter(s.user.Device, i, int(s.file.GetCount()), s.call)
 			err := w.WriteTo(ws)
 			if err != nil {
 				s.call.OnError(NewError(err, ErrorMessage_OUTGOING))
@@ -300,22 +309,26 @@ func (s *Session) handleTransmitted() {
 
 // ** ─── SONRFILE_Item MANAGEMENT ────────────────────────────────────────────────────────
 
-func (i *SonrFile_Item) NewReader(d *Device, c Callback) ItemReader {
+func (i *SonrFile_Item) NewReader(d *Device, index int, total int, c Callback) ItemReader {
 	// Return Reader
 	return &itemReader{
 		item:     i,
 		device:   d,
 		size:     0,
 		callback: c,
+		index:    index,
+		total:    total,
 	}
 }
 
-func (m *SonrFile_Item) NewWriter(d *Device, c Callback) ItemWriter {
+func (m *SonrFile_Item) NewWriter(d *Device, index int, total int, c Callback) ItemWriter {
 	return &itemWriter{
 		item:     m,
 		size:     0,
 		device:   d,
 		callback: c,
+		index:    index,
+		total:    total,
 	}
 }
 
@@ -341,22 +354,38 @@ func (i *SonrFile_Item) SetPath(d *Device) string {
 
 // ** ─── Transfer (Reader) MANAGEMENT ────────────────────────────────────────────────────────
 type ItemReader interface {
-	Progress() float32
+	Progress() []byte
 	ReadFrom(reader msg.ReadCloser) error
 }
 type itemReader struct {
 	ItemReader
+	callback Callback
 	mutex    sync.Mutex
 	item     *SonrFile_Item
 	device   *Device
+	index    int
 	size     int
-	callback Callback
+	total    int
 }
 
 // Returns Progress of File, Given the written number of bytes
-func (p *itemReader) Progress() float32 {
+func (p *itemReader) Progress() []byte {
 	// Calculate Tracking
-	return float32(p.size) / float32(p.item.Size)
+	currentProgress := float32(p.size) / float32(p.item.Size)
+
+	// Create Update
+	update := &ProgressUpdate{
+		Progress: float64(currentProgress),
+		Current:  int32(p.index),
+		Total:    int32(p.total),
+	}
+
+	// Marshal and Return
+	buf, err := proto.Marshal(update)
+	if err != nil {
+		return nil
+	}
+	return buf
 }
 
 func (ir *itemReader) ReadFrom(reader msg.ReadCloser) error {
@@ -406,22 +435,38 @@ func (ir *itemReader) ReadFrom(reader msg.ReadCloser) error {
 
 // ** ─── Transfer (Writer) MANAGEMENT ────────────────────────────────────────────────────────
 type ItemWriter interface {
-	Progress() float32
+	Progress() []byte
 	WriteTo(writer msg.WriteCloser) error
 }
 
 type itemWriter struct {
 	ItemWriter
+	callback Callback
 	item     *SonrFile_Item
 	device   *Device
+	index    int
 	size     int
-	callback Callback
+	total    int
 }
 
 // Returns Progress of File, Given the written number of bytes
-func (p *itemWriter) Progress() float32 {
+func (p *itemWriter) Progress() []byte {
 	// Calculate Tracking
-	return float32(p.size) / float32(p.item.Size)
+	currentProgress := float32(p.size) / float32(p.item.Size)
+
+	// Create Update
+	update := &ProgressUpdate{
+		Progress: float64(currentProgress),
+		Current:  int32(p.index),
+		Total:    int32(p.total),
+	}
+
+	// Marshal and Return
+	buf, err := proto.Marshal(update)
+	if err != nil {
+		return nil
+	}
+	return buf
 }
 
 func (iw *itemWriter) WriteTo(writer msg.WriteCloser) error {
