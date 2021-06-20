@@ -38,6 +38,14 @@ message ConnectionRequest {
   Contact contact = 3;               // Users Contact Card
   TextileOptions textileOptions = 4; // Textile Client Config
   string point = 5;                  // Rendevouz Point
+  InternetType type = 6;             // Internet Connection Type
+
+  // Internet Connection Type
+  enum InternetType {
+    None = 0;
+    Wifi = 1;
+    Mobile = 2;
+  }
 
   // Textile Configuration
   message TextileOptions {

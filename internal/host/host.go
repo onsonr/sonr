@@ -2,12 +2,12 @@ package host
 
 import (
 	"context"
+	"log"
 
 	"time"
 
 	"github.com/libp2p/go-libp2p"
 	connmgr "github.com/libp2p/go-libp2p-connmgr"
-	dscl "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -16,10 +16,9 @@ import (
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	psub "github.com/libp2p/go-libp2p-pubsub"
-	swr "github.com/libp2p/go-libp2p-swarm"
+	discovery "github.com/libp2p/go-libp2p/p2p/discovery"
 	"github.com/multiformats/go-multiaddr"
 	md "github.com/sonr-io/core/pkg/models"
-	"github.com/sonr-io/core/pkg/util"
 	"github.com/textileio/go-threads/api/client"
 	"github.com/textileio/go-threads/core/thread"
 	"github.com/textileio/go-threads/db"
@@ -62,6 +61,7 @@ type hostNode struct {
 	disc   *dsc.RoutingDiscovery
 	host   host.Host
 	kdht   *dht.IpfsDHT
+	mdns   discovery.Service
 	point  string
 	pubsub *psub.PubSub
 
@@ -125,6 +125,12 @@ func NewHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair
 		kdht:        kdhtRef,
 		tileOptions: req.GetTextileOptions(),
 	}
+
+	// Check Connection
+	if req.GetType() == md.ConnectionRequest_Wifi {
+		err := hn.MDNS()
+		log.Println("MDNS ERROR: " + err.Error())
+	}
 	return hn, nil
 }
 
@@ -162,51 +168,21 @@ func newRelayedHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.
 		return nil, md.NewError(err, md.ErrorMessage_HOST_START)
 	}
 
-	return &hostNode{
+	// Create Struct
+	hn := &hostNode{
 		ctxHost: ctx,
 		id:      h.ID(),
 		host:    h,
 		point:   req.Point,
 		kdht:    kdhtRef,
-	}, nil
-}
-
-// ** ─── HostNode Connection Methods ────────────────────────────────────────────────────────
-// @ Bootstrap begins bootstrap with peers
-func (h *hostNode) Bootstrap() *md.SonrError {
-	// Create Bootstrapper Info
-	bootstrappers, err := getBootstrapAddrInfo()
-	if err != nil {
-		return md.NewError(err, md.ErrorMessage_BOOTSTRAP)
 	}
 
-	// Bootstrap DHT
-	if err := h.kdht.Bootstrap(h.ctxHost); err != nil {
-		return md.NewError(err, md.ErrorMessage_BOOTSTRAP)
+	// Check Connection
+	if req.GetType() == md.ConnectionRequest_Wifi {
+		err := hn.MDNS()
+		log.Println("MDNS ERROR: " + err.Error())
 	}
-
-	// Connect to bootstrap nodes, if any
-	for _, pi := range bootstrappers {
-		if err := h.host.Connect(h.ctxHost, pi); err != nil {
-			continue
-		} else {
-			break
-		}
-	}
-
-	// Set Routing Discovery, Find Peers
-	routingDiscovery := dsc.NewRoutingDiscovery(h.kdht)
-	dsc.Advertise(h.ctxHost, routingDiscovery, h.point, dscl.TTL(time.Second*4))
-	h.disc = routingDiscovery
-
-	// Create Pub Sub
-	ps, err := psub.NewGossipSub(h.ctxHost, h.host, psub.WithDiscovery(routingDiscovery))
-	if err != nil {
-		return md.NewError(err, md.ErrorMessage_HOST_PUBSUB)
-	}
-	h.pubsub = ps
-	go h.handleDHTPeers(routingDiscovery)
-	return nil
+	return hn, nil
 }
 
 // ** ─── Stream/Pubsub Methods ────────────────────────────────────────────────────────
@@ -240,37 +216,4 @@ func (h *hostNode) HandleStream(pid protocol.ID, handler network.StreamHandler) 
 // Start Stream for Host
 func (h *hostNode) StartStream(p peer.ID, pid protocol.ID) (network.Stream, error) {
 	return h.host.NewStream(h.ctxHost, p, pid)
-}
-
-// # handleDHTPeers: Connects to Peers in DHT
-func (h *hostNode) handleDHTPeers(routingDiscovery *dsc.RoutingDiscovery) {
-	for {
-		// Find peers in DHT
-		peersChan, err := routingDiscovery.FindPeers(
-			h.ctxHost,
-			h.point,
-		)
-		if err != nil {
-			return
-		}
-
-		// Iterate over Channel
-		for pi := range peersChan {
-			// Validate not Self
-			if pi.ID != h.host.ID() {
-				// Connect to Peer
-				if err := h.host.Connect(h.ctxHost, pi); err != nil {
-					// Remove Peer Reference
-					h.host.Peerstore().ClearAddrs(pi.ID)
-					if sw, ok := h.host.Network().(*swr.Swarm); ok {
-						sw.Backoff().Clear(pi.ID)
-					}
-				}
-			}
-		}
-
-		// Refresh table every 5 seconds
-		md.GetState().NeedsWait()
-		time.Sleep(util.REFRESH_INTERVAL)
-	}
 }
