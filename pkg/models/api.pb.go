@@ -1188,6 +1188,7 @@ func (x *MailResponse) GetEntries() []*MailEntry {
 	return nil
 }
 
+// Transfer Progress Update
 type ProgressUpdate struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
