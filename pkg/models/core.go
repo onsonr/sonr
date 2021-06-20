@@ -396,7 +396,7 @@ func (ir *itemReader) ReadFrom(reader msg.ReadCloser) error {
 	}
 
 	// Route Data from Stream
-	for {
+	for i := 0; ; i++ {
 		// Read Length Fixed Bytes
 		buffer, err := reader.ReadMsg()
 		if err != nil {
@@ -416,7 +416,10 @@ func (ir *itemReader) ReadFrom(reader msg.ReadCloser) error {
 			}
 			ir.size = ir.size + n
 			ir.mutex.Unlock()
-			ir.callback.OnProgress(ir.Progress())
+
+			if i%10 == 0 {
+				ir.callback.OnProgress(ir.Progress())
+			}
 		} else {
 			// Flush File Data
 			if err := f.Sync(); err != nil {
@@ -482,7 +485,7 @@ func (iw *itemWriter) WriteTo(writer msg.WriteCloser) error {
 	buf := make([]byte, 0, util.TRANSFER_CHUNK_SIZE)
 
 	// @ Loop through File
-	for {
+	for i := 0; ; i++ {
 		// Initialize
 		n, err := r.Read(buf[:cap(buf)])
 		buf = buf[:n]
@@ -515,7 +518,9 @@ func (iw *itemWriter) WriteTo(writer msg.WriteCloser) error {
 			return err
 		}
 
-		iw.callback.OnProgress(iw.Progress())
+		if i%10 == 0 {
+			iw.callback.OnProgress(iw.Progress())
+		}
 	}
 
 	// Create Block Protobuf from Chunk
