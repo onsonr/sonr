@@ -40,6 +40,7 @@ func NewLocal(ctx context.Context, h net.HostNode, u *md.User, name string, th C
 	if serr != nil {
 		return nil, serr
 	}
+	topic.Relay()
 
 	// Create Lobby Manager
 	mgr := &TopicManager{
@@ -48,8 +49,8 @@ func NewLocal(ctx context.Context, h net.HostNode, u *md.User, name string, th C
 		ctx:          ctx,
 		host:         h,
 		eventHandler: handler,
-		lobbyType:    md.Lobby_LOCAL,
-		localEvents:  make(chan *md.LocalEvent, util.TOPIC_MAX_MESSAGES),
+		topicType:    md.TopicType_LOCAL,
+		localEvents:  make(chan *md.LobbyEvent, util.TOPIC_MAX_MESSAGES),
 		subscription: sub,
 		topic:        topic,
 	}
@@ -77,12 +78,12 @@ func NewLocal(ctx context.Context, h net.HostNode, u *md.User, name string, th C
 }
 
 // @ Send Updated Lobby
-func (tm *TopicManager) RefreshLobby(event *md.LocalEvent) {
+func (tm *TopicManager) PushEvent(event *md.LobbyEvent) {
 	tm.handler.OnEvent(event)
 }
 
 // @ SendLocal message to specific peer in topic
-func (tm *TopicManager) SendLocal(msg *md.LocalEvent) error {
+func (tm *TopicManager) SendLocal(msg *md.LobbyEvent) error {
 	// Convert Event to Proto Binary
 	bytes, err := proto.Marshal(msg)
 	if err != nil {
@@ -123,7 +124,7 @@ func (tm *TopicManager) Exchange(id peer.ID, peerBuf []byte) error {
 	}
 
 	// Update Peer with new data
-	tm.RefreshLobby(md.NewJoinLocalEvent(remotePeer))
+	tm.PushEvent(md.NewJoinLocalEvent(remotePeer))
 	return nil
 }
 

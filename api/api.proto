@@ -27,18 +27,26 @@ message AuthResponse {
 
 // First Message Sent with Device and API Keys
 message InitializeRequest {
-  Device device = 1;   // Users Device
-  APIKeys apiKeys = 2; // Client Keys
+  Device device = 1;     // Users Device
+  APIKeys apiKeys = 2;   // Client Keys
+  UserStatus status = 3; // User Status
+
+  enum UserStatus {
+    RETURNING = 0; // Returning User
+    NEW = 1;       // New User no Keys yet
+  }
 }
 
 // Connection Message to Establish Sonr Host/API/Topic
 message ConnectionRequest {
   APIKeys apiKeys = 1;               // Client Keys
   Location location = 2;             // Current Runtime Location
-  Contact contact = 3;               // Users Contact Card
-  TextileOptions textileOptions = 4; // Textile Client Config
-  string point = 5;                  // Rendevouz Point
-  InternetType type = 6;             // Internet Connection Type
+  string point = 3;                  // Rendevouz Point
+  Contact contact = 4;               // Users Contact Card
+  InternetType type = 5;             // Internet Connection Type
+  HostOptions hostOptions = 6;       // Libp2p Host config
+  PubsubOptions pubsubOptions = 7;   // Pubsub Configuration
+  TextileOptions textileOptions = 8; // Textile Client Config
 
   // Internet Connection Type
   enum InternetType {
@@ -47,12 +55,27 @@ message ConnectionRequest {
     Mobile = 2;
   }
 
+  // Libp2p Host Options
+  message HostOptions {
+    bool autoRelay = 1;
+    bool defaultAddresses = 2;
+    bool quicTransport = 3;
+    bool torTransport = 4;
+    bool httpTransport = 5;
+    bool mdnsDiscovery = 6;
+  }
+
+  // Pubsub Topic Configuration
+  message PubsubOptions {
+    bool relay = 1; // Relay Topic Messages
+  }
+
   // Textile Configuration
   message TextileOptions {
-    bool isEnabled = 1;   // Enable Textile Client
-    bool withMailbox = 2; // Enable Mailbox
-    bool withThreads = 3; // Enable Threads
-    bool withBuckets = 4; // Enable Buckets
+    bool enabled = 1; // Enable Textile Client
+    bool mailbox = 2; // Enable Mailbox
+    bool threads = 3; // Enable Threads
+    bool buckets = 4; // Enable Buckets
   }
 }
 

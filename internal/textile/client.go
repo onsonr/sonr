@@ -1,4 +1,4 @@
-package host
+package textile
 
 import (
 	"context"
@@ -7,21 +7,55 @@ import (
 	"log"
 	"time"
 
-	crypto "github.com/libp2p/go-libp2p-core/crypto"
+	crypto "github.com/libp2p/go-libp2p-crypto"
+	"github.com/sonr-io/core/internal/host"
 	md "github.com/sonr-io/core/pkg/models"
 	"github.com/sonr-io/core/pkg/util"
 	"github.com/textileio/go-threads/api/client"
 	"github.com/textileio/go-threads/core/thread"
 	"github.com/textileio/textile/v2/api/common"
+	"github.com/textileio/textile/v2/mail/local"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/protobuf/proto"
 )
 
+type TextileNode interface {
+	PubKey() thread.PubKey
+	SendMail(*md.MailEntry) *md.SonrError
+	ReadMail() ([]*md.MailEntry, *md.SonrError)
+}
+
+type textileNode struct {
+	TextileNode
+	ctxAuth  context.Context
+	ctxToken context.Context
+
+	// Parameters
+	apiKeys *md.APIKeys
+	host    host.HostNode
+	keyPair *md.KeyPair
+	options *md.ConnectionRequest_TextileOptions
+
+	// Properties
+	identity thread.Identity
+	client   *client.Client
+	mail     *local.Mail
+	mailbox  *local.Mailbox
+}
+
 // @ Initializes New Textile Instance
-func (hn *hostNode) StartTextile(d *md.Device) *md.SonrError {
+func NewTextile(hn host.HostNode, req *md.ConnectionRequest, keyPair *md.KeyPair) (TextileNode, *md.SonrError) {
+	// Initialize
+	node := &textileNode{
+		keyPair: keyPair,
+		options: req.GetTextileOptions(),
+		apiKeys: req.GetApiKeys(),
+		host:    hn,
+	}
+
 	// Check Textile Enabled
-	if hn.tileOptions.GetIsEnabled() {
+	if node.options.GetEnabled() {
 		// Initialize
 		var err error
 		creds := credentials.NewTLS(&tls.Config{})
@@ -29,41 +63,41 @@ func (hn *hostNode) StartTextile(d *md.Device) *md.SonrError {
 
 		// Dial GRPC
 		opts := []grpc.DialOption{grpc.WithTransportCredentials(creds), grpc.WithPerRPCCredentials(auth)}
-		hn.tileClient, err = client.NewClient(util.TEXTILE_API_URL, opts...)
+		node.client, err = client.NewClient(util.TEXTILE_API_URL, opts...)
 		if err != nil {
-			return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+			return nil, md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
 		}
 
 		// Get Identity
-		hn.tileIdentity = getIdentity(hn.keyPair.PrivKey())
+		node.identity = getIdentity(node.keyPair.PrivKey())
 
 		// Create Auth Context
-		hn.ctxTileAuth, err = newUserAuthCtx(context.Background(), hn.apiKeys)
+		node.ctxAuth, err = newUserAuthCtx(context.Background(), node.apiKeys)
 		if err != nil {
-			return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+			return nil, md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
 		}
 
 		// Create Token Context
-		hn.ctxTileToken, err = hn.newTokenCtx()
+		node.ctxToken, err = node.newTokenCtx()
 		if err != nil {
-			return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+			return nil, md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
 		}
 
 		// Check Thread Enabled
-		if hn.tileOptions.GetWithThreads() {
+		if node.options.GetThreads() {
 			// Generate a new thread ID
 			threadID := thread.NewIDV1(thread.Raw, 32)
 
 			// Create your new thread
-			err = hn.tileClient.NewDB(hn.ctxTileToken, threadID)
+			err = node.client.NewDB(node.ctxToken, threadID)
 			if err != nil {
-				return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+				return nil, md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
 			}
 
 			// Get DB Info
-			info, err := hn.tileClient.GetDBInfo(hn.ctxTileToken, threadID)
+			info, err := node.client.GetDBInfo(node.ctxToken, threadID)
 			if err != nil {
-				return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+				return nil, md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
 			}
 
 			// Log DB Info
@@ -71,15 +105,20 @@ func (hn *hostNode) StartTextile(d *md.Device) *md.SonrError {
 			log.Println(fmt.Sprintf("ID: %s \n Maddr: %s \n Key: %s \n Name: %s \n", threadID.String(), info.Addrs, info.Key.String(), info.Name))
 		}
 	}
-	return nil
+	return node, nil
+}
+
+// @ Returns Instance Host
+func (hn *textileNode) PubKey() thread.PubKey {
+	return hn.identity.GetPublic()
 }
 
 // @ Method Reads Inbox and Returns List of Mail Entries
-func (hn *hostNode) ReadMail() ([]*md.MailEntry, *md.SonrError) {
+func (hn *textileNode) ReadMail() ([]*md.MailEntry, *md.SonrError) {
 	// Check Mail Enabled
-	if hn.tileOptions.GetWithMailbox() {
+	if hn.options.GetMailbox() {
 		// List the recipient's inbox
-		inbox, err := hn.tileMailbox.ListInboxMessages(context.Background())
+		inbox, err := hn.mailbox.ListInboxMessages(context.Background())
 
 		if err != nil {
 			return nil, md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
@@ -91,7 +130,7 @@ func (hn *hostNode) ReadMail() ([]*md.MailEntry, *md.SonrError) {
 		// Iterate over Entries
 		for i, v := range inbox {
 			// Open decrypts the message body
-			body, err := v.Open(context.Background(), hn.tileIdentity)
+			body, err := v.Open(context.Background(), hn.identity)
 			if err != nil {
 				return nil, md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
 			}
@@ -110,11 +149,11 @@ func (hn *hostNode) ReadMail() ([]*md.MailEntry, *md.SonrError) {
 }
 
 // @ Method Sends Mail Entry to Peer
-func (hn *hostNode) SendMail(e *md.MailEntry) *md.SonrError {
+func (hn *textileNode) SendMail(e *md.MailEntry) *md.SonrError {
 	// Check Mail Enabled
-	if hn.tileOptions.GetWithMailbox() {
+	if hn.options.GetMailbox() {
 		// Send Message to Mailbox
-		_, err := hn.tileMailbox.SendMessage(context.Background(), e.ToPubKey(), e.Buffer())
+		_, err := hn.mailbox.SendMessage(context.Background(), e.ToPubKey(), e.Buffer())
 
 		// Check Error
 		if err != nil {
@@ -141,11 +180,11 @@ func newUserAuthCtx(ctx context.Context, keys *md.APIKeys) (context.Context, err
 }
 
 // # Helper: Creates Auth Token Context from AuthContext, Client, Identity
-func (hn *hostNode) newTokenCtx() (context.Context, error) {
+func (hn *textileNode) newTokenCtx() (context.Context, error) {
 	// Generate a new token for the user
-	token, err := hn.tileClient.GetToken(hn.ctxTileAuth, hn.tileIdentity)
+	token, err := hn.client.GetToken(hn.ctxAuth, hn.identity)
 	if err != nil {
 		return nil, err
 	}
-	return thread.NewTokenContext(hn.ctxTileAuth, token), nil
+	return thread.NewTokenContext(hn.ctxAuth, token), nil
 }

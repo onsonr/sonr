@@ -504,9 +504,9 @@ func (u *User) SignFlatReply(from *Peer) *InviteResponse {
 }
 
 // ^ SignUpdate Creates Lobby Event with Peer Data ^
-func (p *Peer) SignUpdate() *LocalEvent {
-	return &LocalEvent{
-		Subject: LocalEvent_UPDATE,
+func (p *Peer) SignUpdate() *LobbyEvent {
+	return &LobbyEvent{
+		Subject: LobbyEvent_UPDATE,
 		Peer:    p,
 		Id:      p.Id.Peer,
 	}

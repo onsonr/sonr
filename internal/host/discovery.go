@@ -128,6 +128,7 @@ func (h *hostNode) handleDHTPeers(routingDiscovery *dsc.RoutingDiscovery) {
 	}
 }
 
+// # Handle MDNS Peers: Connect to Local MDNS Peers
 func (h *hostNode) handleMDNSPeers(peerChan chan peer.AddrInfo) {
 	for {
 		pi := <-peerChan

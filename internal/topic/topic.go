@@ -12,7 +12,7 @@ import (
 )
 
 type ClientHandler interface {
-	OnEvent(*md.LocalEvent)
+	OnEvent(*md.LobbyEvent)
 	OnRefresh(*md.Lobby)
 	OnInvite([]byte)
 	OnReply(id peer.ID, data []byte)
@@ -28,9 +28,9 @@ type TopicManager struct {
 	user         *md.User
 
 	service     *LocalService
-	localEvents chan *md.LocalEvent
+	localEvents chan *md.LobbyEvent
 	handler     ClientHandler
-	lobbyType   md.Lobby_Type
+	topicType   md.TopicType
 }
 
 // @ Helper: Find returns Pointer to Peer.ID and Peer
@@ -67,7 +67,7 @@ func (tm *TopicManager) HasPeer(q string) bool {
 
 // @ Check if Local Topic
 func (tm *TopicManager) IsLocal() bool {
-	if tm.lobbyType == md.Lobby_LOCAL {
+	if tm.topicType == md.TopicType_LOCAL {
 		return true
 	}
 	return false
@@ -94,11 +94,8 @@ func (tm *TopicManager) handleTopicEvents(ctx context.Context) {
 			if err != nil {
 				continue
 			}
-		}
-
-		// Check Leave Eent
-		if lobEvent.Type == pubsub.PeerLeave {
-			tm.RefreshLobby(md.NewExitLocalEvent(lobEvent.Peer.String()))
+		} else if lobEvent.Type == pubsub.PeerLeave {
+			tm.PushEvent(md.NewExitLocalEvent(lobEvent.Peer.String()))
 		}
 		md.GetState().NeedsWait()
 	}
@@ -119,7 +116,7 @@ func (tm *TopicManager) handleTopicMessages(ctx context.Context) {
 		}
 
 		// Check Lobby Type
-		m := &md.LocalEvent{}
+		m := &md.LobbyEvent{}
 		err = proto.Unmarshal(msg.Data, m)
 		if err != nil {
 			continue
@@ -139,7 +136,7 @@ func (tm *TopicManager) processTopicMessages(ctx context.Context) {
 		select {
 		// @ Local Event Channel Updated
 		case m := <-tm.localEvents:
-			tm.RefreshLobby(m)
+			tm.PushEvent(m)
 		case <-ctx.Done():
 			return
 		}

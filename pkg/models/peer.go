@@ -20,12 +20,12 @@ func NewLocalLobby(u *User) *Lobby {
 	// Create Lobby
 	return &Lobby{
 		// General
-		Type:  Lobby_LOCAL,
+		Type:  TopicType_LOCAL,
 		Peers: make(map[string]*Peer),
 		User:  u.GetPeer(),
 
 		// Info
-		Info: &Lobby_LocalInfo{
+		Info: &Lobby_Info{
 			Name:     topic[12:],
 			Location: loc,
 			Topic:    topic,
@@ -71,28 +71,31 @@ func (l *Lobby) Delete(id peer.ID) {
 
 // ** ─── Local Event MANAGEMENT ────────────────────────────────────────────────────────
 // Creates New Exit Local Event
-func NewJoinLocalEvent(peer *Peer) *LocalEvent {
-	return &LocalEvent{
+func NewJoinLocalEvent(peer *Peer) *LobbyEvent {
+	return &LobbyEvent{
 		Id:      peer.Id.Peer,
 		Peer:    peer,
-		Subject: LocalEvent_JOIN,
+		Subject: LobbyEvent_JOIN,
+		Type:    TopicType_LOCAL,
 	}
 }
 
 // Creates New Exit Local Event
-func NewUpdateLocalEvent(peer *Peer) *LocalEvent {
-	return &LocalEvent{
+func NewUpdateLocalEvent(peer *Peer) *LobbyEvent {
+	return &LobbyEvent{
 		Id:      peer.Id.Peer,
 		Peer:    peer,
-		Subject: LocalEvent_UPDATE,
+		Subject: LobbyEvent_UPDATE,
+		Type:    TopicType_LOCAL,
 	}
 }
 
 // Creates New Exit Local Event
-func NewExitLocalEvent(id string) *LocalEvent {
-	return &LocalEvent{
+func NewExitLocalEvent(id string) *LobbyEvent {
+	return &LobbyEvent{
 		Id:      id,
-		Subject: LocalEvent_EXIT,
+		Subject: LobbyEvent_EXIT,
+		Type:    TopicType_LOCAL,
 	}
 }
 

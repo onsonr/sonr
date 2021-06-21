@@ -4,11 +4,10 @@ import (
 	"context"
 	"errors"
 
+	net "github.com/sonr-io/core/internal/host"
+	txt "github.com/sonr-io/core/internal/textile"
 	tpc "github.com/sonr-io/core/internal/topic"
 	md "github.com/sonr-io/core/pkg/models"
-
-	// Local
-	net "github.com/sonr-io/core/internal/host"
 )
 
 // Struct: Main Client handles Networking/Identity/Streams
@@ -20,9 +19,11 @@ type Client struct {
 	call    md.Callback
 	user    *md.User
 	session *md.Session
+	request *md.ConnectionRequest
 
 	// References
-	Host net.HostNode
+	Host    net.HostNode
+	Textile txt.TextileNode
 }
 
 // ^ NewClient Initializes Node with Router ^
@@ -37,6 +38,9 @@ func NewClient(ctx context.Context, u *md.User, call md.Callback) *Client {
 
 // @ Connects Host Node from Private Key
 func (c *Client) Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrError {
+	// Set Request
+	c.request = cr
+
 	// Set Host
 	hn, err := net.NewHost(c.ctx, cr, keys)
 	if err != nil {
@@ -57,6 +61,19 @@ func (c *Client) Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrErr
 
 	// Set Host
 	c.Host = hn
+
+	// Check Textile Option
+	if c.request.GetTextileOptions().GetEnabled() {
+		// Create Textile Node
+		txtNode, err := txt.NewTextile(c.Host, c.request, keys)
+		if err != nil {
+			c.call.OnError(err)
+			return nil
+		}
+
+		// Set Node
+		c.Textile = txtNode
+	}
 	return nil
 }
 
@@ -64,12 +81,6 @@ func (c *Client) Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrErr
 func (c *Client) Bootstrap() (*tpc.TopicManager, *md.SonrError) {
 	// Bootstrap Host
 	err := c.Host.Bootstrap()
-	if err != nil {
-		return nil, err
-	}
-
-	// Start Textile
-	err = c.Host.StartTextile(c.user.GetDevice())
 	if err != nil {
 		return nil, err
 	}
