@@ -26,7 +26,6 @@ type TopicManager struct {
 	subscription *pubsub.Subscription
 	eventHandler *pubsub.TopicEventHandler
 	user         *md.User
-	lobby        *md.Lobby
 
 	service     *LocalService
 	localEvents chan *md.LocalEvent
@@ -35,23 +34,9 @@ type TopicManager struct {
 }
 
 // @ Helper: Find returns Pointer to Peer.ID and Peer
-func (tm *TopicManager) FindPeerInTopic(q string) (peer.ID, *md.Peer, error) {
+func (tm *TopicManager) FindPeerInTopic(q string) (peer.ID, error) {
 	// Retreive Data
-	var p *md.Peer
 	var i peer.ID
-
-	// Iterate Through Peers, Return Matched Peer
-	for _, peer := range tm.lobby.Peers {
-		// If Found Match
-		if peer.Id.Peer == q {
-			p = peer
-		}
-	}
-
-	// Validate Peer
-	if p == nil {
-		return "", nil, errors.New("Peer data was not found in topic.")
-	}
 
 	// Iterate through Topic Peers
 	for _, id := range tm.topic.ListPeers() {
@@ -63,9 +48,9 @@ func (tm *TopicManager) FindPeerInTopic(q string) (peer.ID, *md.Peer, error) {
 
 	// Validate ID
 	if i == "" {
-		return "", nil, errors.New("Peer ID was not found in topic.")
+		return "", errors.New("Peer ID was not found in topic.")
 	}
-	return i, p, nil
+	return i, nil
 }
 
 // @ Helper: ID returns ONE Peer.ID in Topic
@@ -100,7 +85,7 @@ func (tm *TopicManager) handleTopicEvents(ctx context.Context) {
 		}
 
 		// Check Event and Validate not User
-		if lobEvent.Type == pubsub.PeerJoin && tm.user.Peer.IsNotSamePeerID(lobEvent.Peer) {
+		if lobEvent.Type == pubsub.PeerJoin && lobEvent.Peer != tm.host.ID() {
 			pbuf, err := tm.user.GetPeer().Buffer()
 			if err != nil {
 				continue
@@ -109,13 +94,11 @@ func (tm *TopicManager) handleTopicEvents(ctx context.Context) {
 			if err != nil {
 				continue
 			}
-			tm.RefreshLobby()
 		}
 
 		// Check Leave Eent
 		if lobEvent.Type == pubsub.PeerLeave {
-			tm.lobby.Delete(lobEvent.Peer)
-			tm.RefreshLobby()
+			tm.RefreshLobby(md.NewExitLocalEvent(lobEvent.Peer.String()))
 		}
 		md.GetState().NeedsWait()
 	}
@@ -156,11 +139,7 @@ func (tm *TopicManager) processTopicMessages(ctx context.Context) {
 		select {
 		// @ Local Event Channel Updated
 		case m := <-tm.localEvents:
-			if m.Subject == md.LocalEvent_UPDATE {
-				// Update Peer Data
-				tm.lobby.Add(m.From)
-				tm.RefreshLobby()
-			}
+			tm.RefreshLobby(m)
 		case <-ctx.Done():
 			return
 		}

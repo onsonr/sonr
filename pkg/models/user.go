@@ -507,7 +507,7 @@ func (u *User) SignFlatReply(from *Peer) *InviteResponse {
 func (p *Peer) SignUpdate() *LocalEvent {
 	return &LocalEvent{
 		Subject: LocalEvent_UPDATE,
-		From:    p,
+		Peer:    p,
 		Id:      p.Id.Peer,
 	}
 }

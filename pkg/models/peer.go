@@ -69,6 +69,33 @@ func (l *Lobby) Delete(id peer.ID) {
 	delete(l.Peers, id.String())
 }
 
+// ** ─── Local Event MANAGEMENT ────────────────────────────────────────────────────────
+// Creates New Exit Local Event
+func NewJoinLocalEvent(peer *Peer) *LocalEvent {
+	return &LocalEvent{
+		Id:      peer.Id.Peer,
+		Peer:    peer,
+		Subject: LocalEvent_JOIN,
+	}
+}
+
+// Creates New Exit Local Event
+func NewUpdateLocalEvent(peer *Peer) *LocalEvent {
+	return &LocalEvent{
+		Id:      peer.Id.Peer,
+		Peer:    peer,
+		Subject: LocalEvent_UPDATE,
+	}
+}
+
+// Creates New Exit Local Event
+func NewExitLocalEvent(id string) *LocalEvent {
+	return &LocalEvent{
+		Id:      id,
+		Subject: LocalEvent_EXIT,
+	}
+}
+
 // ** ─── Peer Instance MANAGEMENT ────────────────────────────────────────────────────────
 // Converts Peer to PeerInstance for Threads Storage
 func (p *Peer) ToInstance() *PeerInstance {

@@ -26,9 +26,8 @@ type LocalServiceResponse struct {
 // Service Struct
 type LocalService struct {
 	// Current Data
-	call  ClientHandler
-	lobby *md.Lobby
-	user  *md.User
+	call ClientHandler
+	user *md.User
 
 	respCh chan *md.InviteResponse
 	invite *md.InviteRequest
@@ -49,7 +48,6 @@ func NewLocal(ctx context.Context, h net.HostNode, u *md.User, name string, th C
 		ctx:          ctx,
 		host:         h,
 		eventHandler: handler,
-		lobby:        md.NewLocalLobby(u),
 		lobbyType:    md.Lobby_LOCAL,
 		localEvents:  make(chan *md.LocalEvent, util.TOPIC_MAX_MESSAGES),
 		subscription: sub,
@@ -59,7 +57,6 @@ func NewLocal(ctx context.Context, h net.HostNode, u *md.User, name string, th C
 	// Start Exchange Server
 	localServer := rpc.NewServer(h.Host(), util.LOCAL_PROTOCOL)
 	psv := LocalService{
-		lobby:  mgr.lobby,
 		user:   u,
 		call:   th,
 		respCh: make(chan *md.InviteResponse, util.TOPIC_MAX_MESSAGES),
@@ -80,8 +77,8 @@ func NewLocal(ctx context.Context, h net.HostNode, u *md.User, name string, th C
 }
 
 // @ Send Updated Lobby
-func (tm *TopicManager) RefreshLobby() {
-	tm.handler.OnRefresh(tm.lobby)
+func (tm *TopicManager) RefreshLobby(event *md.LocalEvent) {
+	tm.handler.OnEvent(event)
 }
 
 // @ SendLocal message to specific peer in topic
@@ -126,8 +123,7 @@ func (tm *TopicManager) Exchange(id peer.ID, peerBuf []byte) error {
 	}
 
 	// Update Peer with new data
-	tm.lobby.Add(remotePeer)
-	tm.RefreshLobby()
+	tm.RefreshLobby(md.NewJoinLocalEvent(remotePeer))
 	return nil
 }
 
@@ -141,8 +137,7 @@ func (ts *LocalService) ExchangeWith(ctx context.Context, args LocalServiceArgs,
 	}
 
 	// Update Peers with Lobby
-	ts.lobby.Add(remotePeer)
-	ts.call.OnRefresh(ts.lobby)
+	ts.call.OnEvent(md.NewJoinLocalEvent(remotePeer))
 
 	// Set Message data and call done
 	buf, err := ts.user.Peer.Buffer()

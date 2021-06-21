@@ -93,7 +93,7 @@ func (n *Client) Invite(invite *md.InviteRequest, t *tpc.TopicManager) *md.SonrE
 		}
 
 		// Get PeerID and Check error
-		id, _, err := t.FindPeerInTopic(invite.To.Id.Peer)
+		id, err := t.FindPeerInTopic(invite.To.Id.Peer)
 		if err != nil {
 			return md.NewError(err, md.ErrorMessage_PEER_NOT_FOUND_INVITE)
 		}
