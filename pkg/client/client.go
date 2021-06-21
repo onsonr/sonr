@@ -3,16 +3,36 @@ package client
 import (
 	"context"
 	"errors"
+	"log"
 
+	"github.com/libp2p/go-libp2p-core/peer"
 	net "github.com/sonr-io/core/internal/host"
 	txt "github.com/sonr-io/core/internal/textile"
 	tpc "github.com/sonr-io/core/internal/topic"
 	md "github.com/sonr-io/core/pkg/models"
 )
 
+// Interface: Main Client handles Networking/Identity/Streams
+type Client interface {
+	// Client Methods
+	Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrError
+	Bootstrap() (*tpc.TopicManager, *md.SonrError)
+	Invite(invite *md.InviteRequest, t *tpc.TopicManager) *md.SonrError
+	Mail(mr *md.MailRequest) *md.SonrError
+	Update(t *tpc.TopicManager) *md.SonrError
+	Close(t *tpc.TopicManager)
+
+	// Topic Callbacks
+	OnEvent(*md.LobbyEvent)
+	OnRefresh(*md.Lobby)
+	OnInvite([]byte)
+	OnReply(id peer.ID, data []byte)
+	OnResponded(inv *md.InviteRequest)
+}
+
 // Struct: Main Client handles Networking/Identity/Streams
-type Client struct {
-	tpc.ClientHandler
+type client struct {
+	Client
 
 	// Properties
 	ctx     context.Context
@@ -27,9 +47,9 @@ type Client struct {
 }
 
 // ^ NewClient Initializes Node with Router ^
-func NewClient(ctx context.Context, u *md.User, call md.Callback) *Client {
+func NewClient(ctx context.Context, u *md.User, call md.Callback) Client {
 	// Returns Storj Enabled Client
-	return &Client{
+	return &client{
 		ctx:  ctx,
 		call: call,
 		user: u,
@@ -37,7 +57,7 @@ func NewClient(ctx context.Context, u *md.User, call md.Callback) *Client {
 }
 
 // @ Connects Host Node from Private Key
-func (c *Client) Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrError {
+func (c *client) Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrError {
 	// Set Request
 	c.request = cr
 
@@ -78,7 +98,7 @@ func (c *Client) Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrErr
 }
 
 // @ Begins Bootstrapping HostNode
-func (c *Client) Bootstrap() (*tpc.TopicManager, *md.SonrError) {
+func (c *client) Bootstrap() (*tpc.TopicManager, *md.SonrError) {
 	// Bootstrap Host
 	err := c.Host.Bootstrap()
 	if err != nil {
@@ -94,7 +114,7 @@ func (c *Client) Bootstrap() (*tpc.TopicManager, *md.SonrError) {
 }
 
 // @ Invite Processes Data and Sends Invite to Peer
-func (n *Client) Invite(invite *md.InviteRequest, t *tpc.TopicManager) *md.SonrError {
+func (n *client) Invite(invite *md.InviteRequest, t *tpc.TopicManager) *md.SonrError {
 	// Check for Peer
 	if t.HasPeer(invite.To.Id.Peer) {
 		// Initialize Session if transfer
@@ -124,7 +144,7 @@ func (n *Client) Invite(invite *md.InviteRequest, t *tpc.TopicManager) *md.SonrE
 }
 
 // @ Handle a MailRequest from Node
-func (c *Client) Mail(mr *md.MailRequest) *md.SonrError {
+func (c *client) Mail(mr *md.MailRequest) *md.SonrError {
 	if mr.Method == md.MailRequest_READ {
 
 	} else if mr.Method == md.MailRequest_SEND {
@@ -134,15 +154,19 @@ func (c *Client) Mail(mr *md.MailRequest) *md.SonrError {
 }
 
 // @ Update proximity/direction and Notify Lobby
-func (n *Client) Update(t *tpc.TopicManager) *md.SonrError {
+func (n *client) Update(t *tpc.TopicManager) *md.SonrError {
 	// Inform Lobby
-	if err := t.SendLocal(n.user.Peer.SignUpdate()); err != nil {
+	if err := t.Publish(n.user.Peer.NewUpdateEvent()); err != nil {
 		return md.NewError(err, md.ErrorMessage_TOPIC_UPDATE)
 	}
 	return nil
 }
 
 // @ Close Ends All Network Communication
-func (n *Client) Close() {
+func (n *client) Close(t *tpc.TopicManager) {
+	// Inform Lobby
+	if err := t.Publish(n.user.Peer.NewUpdateEvent()); err != nil {
+		log.Println(md.NewError(err, md.ErrorMessage_TOPIC_UPDATE))
+	}
 	n.Host.Close()
 }

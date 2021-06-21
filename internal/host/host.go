@@ -29,7 +29,6 @@ type HostNode interface {
 	Join(name string) (*psub.Topic, *psub.Subscription, *psub.TopicEventHandler, *md.SonrError)
 	HandleStream(pid protocol.ID, handler network.StreamHandler)
 	MultiAddr() (multiaddr.Multiaddr, *md.SonrError)
-	PubKey() thread.PubKey
 	StartStream(p peer.ID, pid protocol.ID) (network.Stream, error)
 }
 
@@ -95,7 +94,6 @@ func NewHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair
 	}
 	return hn, nil
 }
-
 
 // ** ─── Host Info ────────────────────────────────────────────────────────
 // @ Close Libp2p Host

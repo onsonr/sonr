@@ -483,7 +483,7 @@ func (u *User) Update(ur *UpdateRequest) {
 }
 
 // ^ Signs InviteResponse with Flat Contact
-func (u *User) SignFlatReply(from *Peer) *InviteResponse {
+func (u *User) ReplyToFlat(from *Peer) *InviteResponse {
 	return &InviteResponse{
 		Type:     InviteResponse_Contact,
 		FlatMode: true,
@@ -503,10 +503,19 @@ func (u *User) SignFlatReply(from *Peer) *InviteResponse {
 	}
 }
 
-// ^ SignUpdate Creates Lobby Event with Peer Data ^
-func (p *Peer) SignUpdate() *LobbyEvent {
+// ^ NewUpdateEvent Creates Lobby Event with Peer Data ^
+func (p *Peer) NewUpdateEvent() *LobbyEvent {
 	return &LobbyEvent{
 		Subject: LobbyEvent_UPDATE,
+		Peer:    p,
+		Id:      p.Id.Peer,
+	}
+}
+
+// ^ NewUpdateEvent Creates Lobby Event with Peer Data ^
+func (p *Peer) NewExitEvent() *LobbyEvent {
+	return &LobbyEvent{
+		Subject: LobbyEvent_EXIT,
 		Peer:    p,
 		Id:      p.Id.Peer,
 	}

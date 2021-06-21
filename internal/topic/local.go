@@ -82,8 +82,8 @@ func (tm *TopicManager) PushEvent(event *md.LobbyEvent) {
 	tm.handler.OnEvent(event)
 }
 
-// @ SendLocal message to specific peer in topic
-func (tm *TopicManager) SendLocal(msg *md.LobbyEvent) error {
+// @ Publish message to specific peer in topic
+func (tm *TopicManager) Publish(msg *md.LobbyEvent) error {
 	// Convert Event to Proto Binary
 	bytes, err := proto.Marshal(msg)
 	if err != nil {
@@ -208,7 +208,7 @@ func (ts *LocalService) InviteWith(ctx context.Context, args LocalServiceArgs, r
 	// Check Invite for Flat/Default
 	if isFlat {
 		// Sign Contact Reply
-		resp := ts.user.SignFlatReply(inv.GetFrom())
+		resp := ts.user.ReplyToFlat(inv.GetFrom())
 
 		// Convert Protobuf to bytes
 		msgBytes, err := proto.Marshal(resp)

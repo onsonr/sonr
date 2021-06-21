@@ -109,16 +109,16 @@ func NewTextile(hn host.HostNode, req *md.ConnectionRequest, keyPair *md.KeyPair
 }
 
 // @ Returns Instance Host
-func (hn *textileNode) PubKey() thread.PubKey {
-	return hn.identity.GetPublic()
+func (tn *textileNode) PubKey() thread.PubKey {
+	return tn.identity.GetPublic()
 }
 
 // @ Method Reads Inbox and Returns List of Mail Entries
-func (hn *textileNode) ReadMail() ([]*md.MailEntry, *md.SonrError) {
+func (tn *textileNode) ReadMail() ([]*md.MailEntry, *md.SonrError) {
 	// Check Mail Enabled
-	if hn.options.GetMailbox() {
+	if tn.options.GetMailbox() {
 		// List the recipient's inbox
-		inbox, err := hn.mailbox.ListInboxMessages(context.Background())
+		inbox, err := tn.mailbox.ListInboxMessages(context.Background())
 
 		if err != nil {
 			return nil, md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
@@ -130,7 +130,7 @@ func (hn *textileNode) ReadMail() ([]*md.MailEntry, *md.SonrError) {
 		// Iterate over Entries
 		for i, v := range inbox {
 			// Open decrypts the message body
-			body, err := v.Open(context.Background(), hn.identity)
+			body, err := v.Open(context.Background(), tn.identity)
 			if err != nil {
 				return nil, md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
 			}
@@ -149,11 +149,11 @@ func (hn *textileNode) ReadMail() ([]*md.MailEntry, *md.SonrError) {
 }
 
 // @ Method Sends Mail Entry to Peer
-func (hn *textileNode) SendMail(e *md.MailEntry) *md.SonrError {
+func (tn *textileNode) SendMail(e *md.MailEntry) *md.SonrError {
 	// Check Mail Enabled
-	if hn.options.GetMailbox() {
+	if tn.options.GetMailbox() {
 		// Send Message to Mailbox
-		_, err := hn.mailbox.SendMessage(context.Background(), e.ToPubKey(), e.Buffer())
+		_, err := tn.mailbox.SendMessage(context.Background(), e.ToPubKey(), e.Buffer())
 
 		// Check Error
 		if err != nil {
@@ -180,11 +180,11 @@ func newUserAuthCtx(ctx context.Context, keys *md.APIKeys) (context.Context, err
 }
 
 // # Helper: Creates Auth Token Context from AuthContext, Client, Identity
-func (hn *textileNode) newTokenCtx() (context.Context, error) {
+func (tn *textileNode) newTokenCtx() (context.Context, error) {
 	// Generate a new token for the user
-	token, err := hn.client.GetToken(hn.ctxAuth, hn.identity)
+	token, err := tn.client.GetToken(tn.ctxAuth, tn.identity)
 	if err != nil {
 		return nil, err
 	}
-	return thread.NewTokenContext(hn.ctxAuth, token), nil
+	return thread.NewTokenContext(tn.ctxAuth, token), nil
 }

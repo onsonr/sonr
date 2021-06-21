@@ -7,7 +7,7 @@ import (
 )
 
 // ^ OnEvent: Local Lobby Event ^
-func (n *Client) OnEvent(e *md.LobbyEvent) {
+func (n *client) OnEvent(e *md.LobbyEvent) {
 	// Convert Message
 	bytes, err := proto.Marshal(e)
 	if err != nil {
@@ -20,7 +20,7 @@ func (n *Client) OnEvent(e *md.LobbyEvent) {
 }
 
 // ^ OnRefresh: Topic has Updated ^
-func (n *Client) OnRefresh(l *md.Lobby) {
+func (n *client) OnRefresh(l *md.Lobby) {
 	bytes, err := proto.Marshal(l)
 	if err != nil {
 		n.call.OnError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
@@ -30,7 +30,7 @@ func (n *Client) OnRefresh(l *md.Lobby) {
 }
 
 // ^ OnInvite: User Received Invite ^
-func (n *Client) OnInvite(data []byte) {
+func (n *client) OnInvite(data []byte) {
 	// Update Status
 	n.call.SetStatus(md.Status_INVITED)
 
@@ -39,7 +39,7 @@ func (n *Client) OnInvite(data []byte) {
 }
 
 // ^ OnReply: Begins File Transfer when Accepted ^
-func (n *Client) OnReply(id peer.ID, reply []byte) {
+func (n *client) OnReply(id peer.ID, reply []byte) {
 
 	// Call Responded
 	n.call.OnReply(reply)
@@ -71,7 +71,7 @@ func (n *Client) OnReply(id peer.ID, reply []byte) {
 }
 
 // ^ OnResponded: Prepares for Incoming File Transfer when Accepted ^
-func (n *Client) OnResponded(inv *md.InviteRequest) {
+func (n *client) OnResponded(inv *md.InviteRequest) {
 	n.session = md.NewInSession(n.user, inv, n.call)
 	n.Host.HandleStream(n.user.GetRouter().LocalTransferProtocol(n.Host.ID()), n.session.ReadFromStream)
 }
