@@ -61,6 +61,7 @@ type hostNode struct {
 	disc   *dsc.RoutingDiscovery
 	host   host.Host
 	kdht   *dht.IpfsDHT
+	known  []peer.ID
 	mdns   discovery.Service
 	point  string
 	pubsub *psub.PubSub
@@ -124,6 +125,7 @@ func NewHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair
 		point:       req.Point,
 		kdht:        kdhtRef,
 		tileOptions: req.GetTextileOptions(),
+		known:       make([]peer.ID, 0),
 	}
 
 	// Check Connection
@@ -170,11 +172,15 @@ func newRelayedHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.
 
 	// Create Struct
 	hn := &hostNode{
-		ctxHost: ctx,
-		id:      h.ID(),
-		host:    h,
-		point:   req.Point,
-		kdht:    kdhtRef,
+		ctxHost:     ctx,
+		apiKeys:     req.ApiKeys,
+		keyPair:     keyPair,
+		id:          h.ID(),
+		host:        h,
+		point:       req.Point,
+		kdht:        kdhtRef,
+		tileOptions: req.GetTextileOptions(),
+		known:       make([]peer.ID, 0),
 	}
 
 	// Check Connection

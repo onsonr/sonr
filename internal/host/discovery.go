@@ -75,6 +75,33 @@ func (h *hostNode) MDNS() error {
 	return nil
 }
 
+// # Helper Method checks if Peer AddrInfo is Unknown
+func (h *hostNode) checkUnknown(pi peer.AddrInfo) bool {
+	// Iterate and Check
+	for _, v := range h.known {
+		if pi.ID == v || pi.ID == h.host.ID() {
+			return false
+		}
+	}
+
+	// Add To List
+	h.known = append(h.known, pi.ID)
+	return true
+}
+
+// # Helper Method Deletes Peer Addr Info from Known List
+func (h *hostNode) deleteKnown(pi peer.AddrInfo) {
+	// Remove from Peer Store
+	h.host.Peerstore().ClearAddrs(pi.ID)
+
+	// Iterate and Check
+	for i, v := range h.known {
+		if pi.ID == v || pi.ID == h.host.ID() {
+			h.known[i] = ""
+		}
+	}
+}
+
 // # handleDHTPeers: Connects to Peers in DHT
 func (h *hostNode) handleDHTPeers(routingDiscovery *dsc.RoutingDiscovery) {
 	for {
@@ -90,20 +117,14 @@ func (h *hostNode) handleDHTPeers(routingDiscovery *dsc.RoutingDiscovery) {
 		// Iterate over Channel
 		for pi := range peersChan {
 			// Validate not Self
-			if pi.ID != h.host.ID() {
+			if h.checkUnknown(pi) {
 				// Connect to Peer
 				if err := h.host.Connect(h.ctxHost, pi); err != nil {
-					// Remove Peer Reference
-					h.host.Peerstore().ClearAddrs(pi.ID)
-					if sw, ok := h.host.Network().(*swr.Swarm); ok {
-						sw.Backoff().Clear(pi.ID)
-					}
+					h.deleteKnown(pi)
+					continue
 				}
 			}
 		}
-
-		// Refresh table every 5 seconds
-		md.GetState().NeedsWait()
 	}
 }
 
@@ -117,6 +138,5 @@ func (h *hostNode) handleMDNSPeers(peerChan chan peer.AddrInfo) {
 				sw.Backoff().Clear(pi.ID)
 			}
 		}
-		md.GetState().NeedsWait()
 	}
 }

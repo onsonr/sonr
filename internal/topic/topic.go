@@ -88,19 +88,12 @@ func (tm *TopicManager) IsLocal() bool {
 	return false
 }
 
-// @ Leave Current Topic
-func (tm *TopicManager) LeaveTopic() error {
-	tm.eventHandler.Cancel()
-	tm.subscription.Cancel()
-	return tm.topic.Close()
-}
-
 // # handleTopicEvents: listens to Pubsub Events for topic
-func (tm *TopicManager) handleTopicEvents() {
+func (tm *TopicManager) handleTopicEvents(ctx context.Context) {
 	// @ Loop Events
 	for {
 		// Get next event
-		lobEvent, err := tm.eventHandler.NextPeerEvent(tm.ctx)
+		lobEvent, err := tm.eventHandler.NextPeerEvent(ctx)
 		if err != nil {
 			tm.eventHandler.Cancel()
 			return
@@ -129,10 +122,10 @@ func (tm *TopicManager) handleTopicEvents() {
 }
 
 // # handleTopicMessages: listens for messages on pubsub topic subscription
-func (tm *TopicManager) handleTopicMessages() {
+func (tm *TopicManager) handleTopicMessages(ctx context.Context) {
 	for {
 		// Get next msg from pub/sub
-		msg, err := tm.subscription.Next(tm.ctx)
+		msg, err := tm.subscription.Next(ctx)
 		if err != nil {
 			return
 		}
@@ -158,7 +151,7 @@ func (tm *TopicManager) handleTopicMessages() {
 }
 
 // # processTopicMessages: pulls messages from channel that have been handled
-func (tm *TopicManager) processTopicMessages() {
+func (tm *TopicManager) processTopicMessages(ctx context.Context) {
 	for {
 		select {
 		// @ Local Event Channel Updated
@@ -168,7 +161,7 @@ func (tm *TopicManager) processTopicMessages() {
 				tm.lobby.Add(m.From)
 				tm.RefreshLobby()
 			}
-		case <-tm.ctx.Done():
+		case <-ctx.Done():
 			return
 		}
 		md.GetState().NeedsWait()

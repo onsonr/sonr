@@ -73,9 +73,9 @@ func NewLocal(ctx context.Context, h net.HostNode, u *md.User, name string, th C
 
 	// Set Service
 	mgr.service = &psv
-	go mgr.handleTopicEvents()
-	go mgr.handleTopicMessages()
-	go mgr.processTopicMessages()
+	go mgr.handleTopicEvents(context.Background())
+	go mgr.handleTopicMessages(context.Background())
+	go mgr.processTopicMessages(context.Background())
 	return mgr, nil
 }
 
