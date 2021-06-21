@@ -85,7 +85,7 @@ func NewHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair
 	}
 
 	// MDNS Discovery
-	if hostOpts.MdnsDiscovery {
+	if hostOpts.GetMdnsDiscovery() {
 		// Check Connection
 		if req.GetType() == md.ConnectionRequest_Wifi {
 			err := hn.MDNS()

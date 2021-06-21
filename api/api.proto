@@ -63,6 +63,8 @@ message ConnectionRequest {
     bool torTransport = 4;
     bool httpTransport = 5;
     bool mdnsDiscovery = 6;
+    bool natPortMap = 7;
+    bool pingService = 8;
   }
 
   // Pubsub Topic Configuration

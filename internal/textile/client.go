@@ -3,8 +3,6 @@ package textile
 import (
 	"context"
 	"crypto/tls"
-	"fmt"
-	"log"
 	"time"
 
 	crypto "github.com/libp2p/go-libp2p-crypto"
@@ -17,17 +15,18 @@ import (
 	"github.com/textileio/textile/v2/mail/local"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
-	"google.golang.org/protobuf/proto"
 )
 
 type TextileNode interface {
+	InitThreads() *md.SonrError
 	PubKey() thread.PubKey
-	SendMail(*md.MailEntry) *md.SonrError
 	ReadMail() ([]*md.MailEntry, *md.SonrError)
+	SendMail(*md.MailEntry) *md.SonrError
 }
 
 type textileNode struct {
 	TextileNode
+	active   bool
 	ctxAuth  context.Context
 	ctxToken context.Context
 
@@ -52,6 +51,7 @@ func NewTextile(hn host.HostNode, req *md.ConnectionRequest, keyPair *md.KeyPair
 		options: req.GetTextileOptions(),
 		apiKeys: req.GetApiKeys(),
 		host:    hn,
+		active:  false,
 	}
 
 	// Check Textile Enabled
@@ -82,28 +82,7 @@ func NewTextile(hn host.HostNode, req *md.ConnectionRequest, keyPair *md.KeyPair
 		if err != nil {
 			return nil, md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
 		}
-
-		// Check Thread Enabled
-		if node.options.GetThreads() {
-			// Generate a new thread ID
-			threadID := thread.NewIDV1(thread.Raw, 32)
-
-			// Create your new thread
-			err = node.client.NewDB(node.ctxToken, threadID)
-			if err != nil {
-				return nil, md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
-			}
-
-			// Get DB Info
-			info, err := node.client.GetDBInfo(node.ctxToken, threadID)
-			if err != nil {
-				return nil, md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
-			}
-
-			// Log DB Info
-			log.Println("> Success!")
-			log.Println(fmt.Sprintf("ID: %s \n Maddr: %s \n Key: %s \n Name: %s \n", threadID.String(), info.Addrs, info.Key.String(), info.Name))
-		}
+		node.active = true
 	}
 	return node, nil
 }
@@ -111,57 +90,6 @@ func NewTextile(hn host.HostNode, req *md.ConnectionRequest, keyPair *md.KeyPair
 // @ Returns Instance Host
 func (tn *textileNode) PubKey() thread.PubKey {
 	return tn.identity.GetPublic()
-}
-
-// @ Method Reads Inbox and Returns List of Mail Entries
-func (tn *textileNode) ReadMail() ([]*md.MailEntry, *md.SonrError) {
-	// Check Mail Enabled
-	if tn.options.GetMailbox() {
-		// List the recipient's inbox
-		inbox, err := tn.mailbox.ListInboxMessages(context.Background())
-
-		if err != nil {
-			return nil, md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
-		}
-
-		// Initialize Entry List
-		entries := make([]*md.MailEntry, len(inbox))
-
-		// Iterate over Entries
-		for i, v := range inbox {
-			// Open decrypts the message body
-			body, err := v.Open(context.Background(), tn.identity)
-			if err != nil {
-				return nil, md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
-			}
-
-			// Unmarshal Body to entry
-			entry := &md.MailEntry{}
-			err = proto.Unmarshal(body, entry)
-			if err != nil {
-				return nil, md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
-			}
-			entries[i] = entry
-		}
-		return entries, nil
-	}
-	return nil, nil
-}
-
-// @ Method Sends Mail Entry to Peer
-func (tn *textileNode) SendMail(e *md.MailEntry) *md.SonrError {
-	// Check Mail Enabled
-	if tn.options.GetMailbox() {
-		// Send Message to Mailbox
-		_, err := tn.mailbox.SendMessage(context.Background(), e.ToPubKey(), e.Buffer())
-
-		// Check Error
-		if err != nil {
-			return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
-		}
-		return nil
-	}
-	return nil
 }
 
 // # Helper: Gets Thread Identity from Private Key

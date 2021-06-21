@@ -130,12 +130,12 @@ func libp2pConfig(ctx context.Context, kdhtRef *dht.IpfsDHT, keyPair *md.KeyPair
 	// Create Standard Options
 	config := []libp2p.Option{
 		libp2p.Identity(keyPair.PrivKey()),
-		libp2p.DefaultTransports,
 		libp2p.ConnectionManager(connmgr.NewConnManager(
 			100,         // Lowwater
 			400,         // HighWater,
 			time.Minute, // GracePeriod
 		)),
+		libp2p.Ping(opts.GetPingService()),
 		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
 			// Create DHT
 			kdht, err := dht.New(ctx, h)
@@ -149,13 +149,8 @@ func libp2pConfig(ctx context.Context, kdhtRef *dht.IpfsDHT, keyPair *md.KeyPair
 		}),
 	}
 
-	// Set Auto Relay
-	if opts.AutoRelay {
-		config = append(config, libp2p.EnableAutoRelay())
-	}
-
 	// Add Addresses
-	if !opts.DefaultAddresses {
+	if !opts.GetDefaultAddresses() {
 		// Find Listen Addresses
 		addrs, err := getExternalAddrStrings()
 		if err == nil {
@@ -164,8 +159,21 @@ func libp2pConfig(ctx context.Context, kdhtRef *dht.IpfsDHT, keyPair *md.KeyPair
 	}
 
 	// Add QUIC Transport
-	if opts.QuicTransport {
+	if opts.GetQuicTransport() {
 		config = append(config, libp2p.Transport(libp2pquic.NewTransport))
 	}
+
+	// Set Auto Relay
+	if opts.GetAutoRelay() {
+		config = append(config, libp2p.EnableAutoRelay())
+	}
+
+	// Set NAT Port Map
+	if opts.GetNatPortMap() {
+		config = append(config, libp2p.NATPortMap())
+	}
+
+	// Set Default Transports
+	config = append(config, libp2p.DefaultTransports)
 	return config
 }
