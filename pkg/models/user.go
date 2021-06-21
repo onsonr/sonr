@@ -382,7 +382,7 @@ func (u *User) LastName() string {
 
 // Method Returns Profile
 func (u *User) Profile() *Profile {
-	return u.GetPeer().GetProfile()
+	return u.GetContact().GetProfile()
 }
 
 // Method Signs Data with KeyPair
