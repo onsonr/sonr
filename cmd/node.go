@@ -334,7 +334,6 @@ func (n *Node) Resume() {
 func (n *Node) Stop() {
 	n.state = md.LifecycleState_Stopped
 	n.client.Lifecycle(n.state, n.local)
-	n.ctx.Done()
 }
 
 // ** ─── Node Status Checks ────────────────────────────────────────────────────────

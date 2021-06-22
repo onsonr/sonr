@@ -163,13 +163,12 @@ func (n *client) Update(t *tpc.Manager) *md.SonrError {
 }
 
 // @ Handle Network Communication from Lifecycle State Network Communication
-func (c *client) LifeCycle(state md.LifecycleState, t *tpc.Manager) {
+func (c *client) Lifecycle(state md.LifecycleState, t *tpc.Manager) {
 	if state == md.LifecycleState_Active {
 		// Inform Lobby
 		if err := t.Publish(c.user.Peer.NewUpdateEvent()); err != nil {
 			log.Println(md.NewError(err, md.ErrorMessage_TOPIC_UPDATE))
 		}
-		c.Host.Close()
 	} else if state == md.LifecycleState_Paused {
 		// Inform Lobby
 		if err := t.Publish(c.user.Peer.NewExitEvent()); err != nil {
