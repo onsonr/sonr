@@ -62,8 +62,7 @@ type hostNode struct {
 func NewHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair) (HostNode, *md.SonrError) {
 	// Initialize
 	hostOpts := req.GetHostOptions()
-	var kdhtRef *dht.IpfsDHT
-	opts := libp2pConfig(ctx, kdhtRef, keyPair, hostOpts)
+	opts, kdhtRef := libp2pConfig(ctx, keyPair, hostOpts)
 
 	// Start Host
 	h, err := libp2p.New(ctx, opts...)

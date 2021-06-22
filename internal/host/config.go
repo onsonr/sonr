@@ -126,7 +126,10 @@ func iPv4Addrs() ([]string, error) {
 }
 
 // # Builds Libp2p Host Configuration Options
-func libp2pConfig(ctx context.Context, kdhtRef *dht.IpfsDHT, keyPair *md.KeyPair, opts *md.ConnectionRequest_HostOptions) []libp2p.Option {
+func libp2pConfig(ctx context.Context, keyPair *md.KeyPair, opts *md.ConnectionRequest_HostOptions) ([]libp2p.Option, *dht.IpfsDHT) {
+	// Init DHT
+	var kdhtRef *dht.IpfsDHT
+
 	// Create Standard Options
 	config := []libp2p.Option{
 		libp2p.Identity(keyPair.PrivKey()),
@@ -175,5 +178,5 @@ func libp2pConfig(ctx context.Context, kdhtRef *dht.IpfsDHT, keyPair *md.KeyPair
 
 	// Set Default Transports
 	config = append(config, libp2p.DefaultTransports)
-	return config
+	return config, kdhtRef
 }
