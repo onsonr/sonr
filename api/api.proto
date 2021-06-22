@@ -57,14 +57,11 @@ message ConnectionRequest {
 
   // Libp2p Host Options
   message HostOptions {
-    bool autoRelay = 1;
-    bool defaultAddresses = 2;
-    bool quicTransport = 3;
-    bool torTransport = 4;
-    bool httpTransport = 5;
-    bool mdnsDiscovery = 6;
-    bool natPortMap = 7;
-    bool pingService = 8;
+    bool quicTransport = 1;
+    bool torTransport = 2;
+    bool httpTransport = 3;
+    bool mdnsDiscovery = 4;
+    bool natPortMap = 5;
   }
 
   // Pubsub Topic Configuration

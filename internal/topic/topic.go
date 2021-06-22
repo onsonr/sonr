@@ -36,22 +36,14 @@ type Manager struct {
 
 // FindPeerInTopic @ Helper: Find returns Pointer to Peer.ID and Peer
 func (tm *Manager) FindPeerInTopic(q string) (peer.ID, error) {
-	// Retrieve Data
-	var i peer.ID
-
 	// Iterate through Topic Peers
 	for _, id := range tm.topic.ListPeers() {
 		// If Found Match
 		if id.String() == q {
-			i = id
+			return id, nil
 		}
 	}
-
-	// Validate ID
-	if i == "" {
-		return "", errors.New("Peer ID was not found in topic")
-	}
-	return i, nil
+	return "", errors.New("Peer ID was not found in topic")
 }
 
 // HasPeer @ Helper: ID returns ONE Peer.ID in Topic

@@ -58,16 +58,6 @@ func getFreePort() (int, error) {
 	return l.Addr().(*net.TCPAddr).Port, nil
 }
 
-// # Return Internal Addr Strings ^ //
-func getInternalAddrStrings() []string {
-	// Initialize
-	p, _ := getFreePort()
-	listenAddrs := []string{
-		fmt.Sprintf("/ip4/0.0.0.0/tcp/%d", p),
-	}
-	return listenAddrs
-}
-
 // # Return Device Listening Addresses ^ //
 func getExternalAddrStrings() ([]string, error) {
 	// Initialize
