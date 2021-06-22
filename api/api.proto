@@ -88,11 +88,12 @@ message ConnectionResponse {
 
 // Invitation Message sent on RPC
 message InviteRequest {
-  Payload payload = 1;   // Type of Transfer
-  Peer from = 2;         // Users Peer Data
-  Peer to = 3;           // Receivers Peer Data
-  Transfer transfer = 4; // Attached Data
-  bool flatMode = 5;     // Flat Transfer
+  Lobby.Info info = 1;   // Lobby Info for Peer
+  Payload payload = 2;   // Type of Transfer
+  Peer from = 3;         // Users Peer Data
+  Peer to = 4;           // Receivers Peer Data
+  Transfer transfer = 5; // Attached Data
+  bool flatMode = 6;     // Flat Transfer
 }
 
 // Reply Message sent on RPC
