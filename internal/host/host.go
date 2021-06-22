@@ -18,8 +18,6 @@ import (
 	discovery "github.com/libp2p/go-libp2p/p2p/discovery"
 	"github.com/multiformats/go-multiaddr"
 	md "github.com/sonr-io/core/pkg/models"
-	"github.com/textileio/go-threads/core/thread"
-	"github.com/textileio/go-threads/db"
 )
 
 // ** ─── Interface MANAGEMENT ────────────────────────────────────────────────────────
@@ -44,10 +42,6 @@ type hostNode struct {
 	ctxHost      context.Context
 	ctxTileAuth  context.Context
 	ctxTileToken context.Context
-
-	// Database
-	dbInfo     db.Info
-	dbThreadID thread.ID
 
 	// Libp2p
 	id      peer.ID
@@ -83,6 +77,7 @@ func NewHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair
 			400,         // HighWater,
 			time.Minute, // GracePeriod
 		)),
+		libp2p.DefaultStaticRelays(),
 		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
 			// Create DHT
 			kdht, err := dht.New(ctx, h)
