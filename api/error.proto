@@ -8,7 +8,8 @@ message ErrorMessage {
   Type type = 1;         // Error Type Occurred
   Severity severity = 2; // 1-4 Scale of Error
   string message = 3;    // Client Error Message
-  string error = 4;      // Received Error
+  string data = 4;       // Any Attached Error Data
+  string error = 5;      // Received Error
 
   // Error Type from Enum
   enum Type {

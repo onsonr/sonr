@@ -1,8 +1,5 @@
 syntax = "proto3";
 
-import "api.proto";
-import "data.proto";
-
 // Require Go Package
 option go_package = "/models";
 
@@ -18,4 +15,11 @@ enum Direction {
   Default = 0;  // From Memory/Viewing
   Incoming = 1; // Incoming Transfer
   Outgoing = 2; // Outgoing Transfer
+}
+
+// Current Node Lifecycle State
+enum LifecycleState {
+  Active = 0;  // Resume or Start
+  Paused = 1;  // User Paused
+  Stopped = 2; // User Quit
 }

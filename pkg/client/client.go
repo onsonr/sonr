@@ -3,32 +3,53 @@ package client
 import (
 	"context"
 	"errors"
+	"log"
 
+	"github.com/libp2p/go-libp2p-core/peer"
+	net "github.com/sonr-io/core/internal/host"
+	txt "github.com/sonr-io/core/internal/textile"
 	tpc "github.com/sonr-io/core/internal/topic"
 	md "github.com/sonr-io/core/pkg/models"
-
-	// Local
-	net "github.com/sonr-io/core/internal/host"
 )
 
+// Interface: Main Client handles Networking/Identity/Streams
+type Client interface {
+	// Client Methods
+	Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrError
+	Bootstrap() (*tpc.Manager, *md.SonrError)
+	Invite(invite *md.InviteRequest, t *tpc.Manager) *md.SonrError
+	Mail(mr *md.MailRequest) *md.SonrError
+	Update(t *tpc.Manager) *md.SonrError
+	Lifecycle(state md.LifecycleState, t *tpc.Manager)
+
+	// Topic Callbacks
+	OnConnected(*md.ConnectionResponse)
+	OnEvent(*md.LobbyEvent)
+	OnInvite([]byte)
+	OnReply(id peer.ID, data []byte)
+	OnResponded(inv *md.InviteRequest)
+}
+
 // Struct: Main Client handles Networking/Identity/Streams
-type Client struct {
-	tpc.ClientHandler
+type client struct {
+	Client
 
 	// Properties
-	ctx     context.Context
-	call    md.Callback
-	user    *md.User
-	session *md.Session
+	ctx       context.Context
+	call      md.Callback
+	localInfo *md.Lobby_Info
+	user      *md.User
+	session   *md.Session
+	request   *md.ConnectionRequest
 
 	// References
-	Host net.HostNode
+	Host    net.HostNode
+	Textile txt.TextileNode
 }
 
 // ^ NewClient Initializes Node with Router ^
-func NewClient(ctx context.Context, u *md.User, call md.Callback) *Client {
-	// Returns Storj Enabled Client
-	return &Client{
+func NewClient(ctx context.Context, u *md.User, call md.Callback) Client {
+	return &client{
 		ctx:  ctx,
 		call: call,
 		user: u,
@@ -36,9 +57,12 @@ func NewClient(ctx context.Context, u *md.User, call md.Callback) *Client {
 }
 
 // @ Connects Host Node from Private Key
-func (c *Client) Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrError {
+func (c *client) Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrError {
+	// Set Request
+	c.request = cr
+
 	// Set Host
-	hn, err := net.NewHost(c.ctx, cr, keys)
+	hn, err := net.NewHost(c.ctx, cr, keys, c)
 	if err != nil {
 		return err
 	}
@@ -57,19 +81,26 @@ func (c *Client) Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrErr
 
 	// Set Host
 	c.Host = hn
+
+	// Check Textile Option
+	if c.request.GetTextileOptions().GetEnabled() {
+		// Create Textile Node
+		txtNode, err := txt.NewTextile(c.Host, c.request, keys)
+		if err != nil {
+			c.call.OnError(err)
+			return nil
+		}
+
+		// Set Node
+		c.Textile = txtNode
+	}
 	return nil
 }
 
 // @ Begins Bootstrapping HostNode
-func (c *Client) Bootstrap() (*tpc.TopicManager, *md.SonrError) {
+func (c *client) Bootstrap() (*tpc.Manager, *md.SonrError) {
 	// Bootstrap Host
 	err := c.Host.Bootstrap()
-	if err != nil {
-		return nil, err
-	}
-
-	// Start Textile
-	err = c.Host.StartTextile(c.user.GetDevice())
 	if err != nil {
 		return nil, err
 	}
@@ -83,7 +114,7 @@ func (c *Client) Bootstrap() (*tpc.TopicManager, *md.SonrError) {
 }
 
 // @ Invite Processes Data and Sends Invite to Peer
-func (n *Client) Invite(invite *md.InviteRequest, t *tpc.TopicManager) *md.SonrError {
+func (n *client) Invite(invite *md.InviteRequest, t *tpc.Manager) *md.SonrError {
 	// Check for Peer
 	if t.HasPeer(invite.To.Id.Peer) {
 		// Initialize Session if transfer
@@ -93,9 +124,9 @@ func (n *Client) Invite(invite *md.InviteRequest, t *tpc.TopicManager) *md.SonrE
 		}
 
 		// Get PeerID and Check error
-		id, _, err := t.FindPeerInTopic(invite.To.Id.Peer)
+		id, err := t.FindPeerInTopic(invite.To.Id.Peer)
 		if err != nil {
-			return md.NewError(err, md.ErrorMessage_PEER_NOT_FOUND_INVITE)
+			return md.NewPeerFoundError(err, invite.GetTo().GetId().GetPeer())
 		}
 
 		// Run Routine
@@ -113,7 +144,7 @@ func (n *Client) Invite(invite *md.InviteRequest, t *tpc.TopicManager) *md.SonrE
 }
 
 // @ Handle a MailRequest from Node
-func (c *Client) Mail(mr *md.MailRequest) *md.SonrError {
+func (c *client) Mail(mr *md.MailRequest) *md.SonrError {
 	if mr.Method == md.MailRequest_READ {
 
 	} else if mr.Method == md.MailRequest_SEND {
@@ -123,15 +154,31 @@ func (c *Client) Mail(mr *md.MailRequest) *md.SonrError {
 }
 
 // @ Update proximity/direction and Notify Lobby
-func (n *Client) Update(t *tpc.TopicManager) *md.SonrError {
+func (n *client) Update(t *tpc.Manager) *md.SonrError {
 	// Inform Lobby
-	if err := t.SendLocal(n.user.Peer.SignUpdate()); err != nil {
+	if err := t.Publish(n.user.Peer.NewUpdateEvent()); err != nil {
 		return md.NewError(err, md.ErrorMessage_TOPIC_UPDATE)
 	}
 	return nil
 }
 
-// @ Close Ends All Network Communication
-func (n *Client) Close() {
-	n.Host.Close()
+// @ Handle Network Communication from Lifecycle State Network Communication
+func (c *client) Lifecycle(state md.LifecycleState, t *tpc.Manager) {
+	if state == md.LifecycleState_Active {
+		// Inform Lobby
+		if err := t.Publish(c.user.Peer.NewUpdateEvent()); err != nil {
+			log.Println(md.NewError(err, md.ErrorMessage_TOPIC_UPDATE))
+		}
+	} else if state == md.LifecycleState_Paused {
+		// Inform Lobby
+		// if err := t.Publish(c.user.Peer.NewExitEvent()); err != nil {
+		// 	log.Println(md.NewError(err, md.ErrorMessage_TOPIC_UPDATE))
+		// }
+	} else if state == md.LifecycleState_Stopped {
+		// Inform Lobby
+		if err := t.Publish(c.user.Peer.NewExitEvent()); err != nil {
+			log.Println(md.NewError(err, md.ErrorMessage_TOPIC_UPDATE))
+		}
+		c.Host.Close()
+	}
 }

@@ -5,37 +5,37 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	rpc "github.com/libp2p/go-libp2p-gorpc"
+	"google.golang.org/protobuf/proto"
+
 	net "github.com/sonr-io/core/internal/host"
 	md "github.com/sonr-io/core/pkg/models"
 	"github.com/sonr-io/core/pkg/util"
-	"google.golang.org/protobuf/proto"
 )
 
-// ExchangeArgs is Peer protobuf
+// LocalServiceArgs ExchangeArgs is Peer protobuf
 type LocalServiceArgs struct {
 	Peer   []byte
 	Invite []byte
 }
 
-// ExchangeResponse is also Peer protobuf
+// LocalServiceResponse ExchangeResponse is also Peer protobuf
 type LocalServiceResponse struct {
 	InvReply []byte
 	Peer     []byte
 }
 
-// Service Struct
+// LocalService Service Struct
 type LocalService struct {
 	// Current Data
-	call  ClientHandler
-	lobby *md.Lobby
-	user  *md.User
+	call TopicHandler
+	user *md.User
 
 	respCh chan *md.InviteResponse
 	invite *md.InviteRequest
 }
 
-// ^ Create New Contained Topic Manager ^ //
-func NewLocal(ctx context.Context, h net.HostNode, u *md.User, name string, th ClientHandler) (*TopicManager, *md.SonrError) {
+// NewLocal ^ Create New Contained Topic Manager ^ //
+func NewLocal(ctx context.Context, h net.HostNode, u *md.User, name string, th TopicHandler) (*Manager, *md.SonrError) {
 	// Join Topic
 	topic, sub, handler, serr := h.Join(name)
 	if serr != nil {
@@ -43,15 +43,14 @@ func NewLocal(ctx context.Context, h net.HostNode, u *md.User, name string, th C
 	}
 
 	// Create Lobby Manager
-	mgr := &TopicManager{
+	mgr := &Manager{
 		handler:      th,
 		user:         u,
 		ctx:          ctx,
 		host:         h,
 		eventHandler: handler,
-		lobby:        md.NewLocalLobby(u),
-		lobbyType:    md.Lobby_LOCAL,
-		localEvents:  make(chan *md.LocalEvent, util.TOPIC_MAX_MESSAGES),
+		topicType:    md.TopicType_LOCAL,
+		localEvents:  make(chan *md.LobbyEvent, util.TOPIC_MAX_MESSAGES),
 		subscription: sub,
 		topic:        topic,
 	}
@@ -59,7 +58,6 @@ func NewLocal(ctx context.Context, h net.HostNode, u *md.User, name string, th C
 	// Start Exchange Server
 	localServer := rpc.NewServer(h.Host(), util.LOCAL_PROTOCOL)
 	psv := LocalService{
-		lobby:  mgr.lobby,
 		user:   u,
 		call:   th,
 		respCh: make(chan *md.InviteResponse, util.TOPIC_MAX_MESSAGES),
@@ -79,13 +77,13 @@ func NewLocal(ctx context.Context, h net.HostNode, u *md.User, name string, th C
 	return mgr, nil
 }
 
-// @ Send Updated Lobby
-func (tm *TopicManager) RefreshLobby() {
-	tm.handler.OnRefresh(tm.lobby)
+// PushEvent @ Send Updated Lobby
+func (tm *Manager) PushEvent(event *md.LobbyEvent) {
+	tm.handler.OnEvent(event)
 }
 
-// @ SendLocal message to specific peer in topic
-func (tm *TopicManager) SendLocal(msg *md.LocalEvent) error {
+// Publish @ Publish message to specific peer in topic
+func (tm *Manager) Publish(msg *md.LobbyEvent) error {
 	// Convert Event to Proto Binary
 	bytes, err := proto.Marshal(msg)
 	if err != nil {
@@ -100,8 +98,8 @@ func (tm *TopicManager) SendLocal(msg *md.LocalEvent) error {
 	return nil
 }
 
-// @ Starts Exchange on Local Peer Join
-func (tm *TopicManager) Exchange(id peer.ID, peerBuf []byte) error {
+// Exchange @ Starts Exchange on Local Peer Join
+func (tm *Manager) Exchange(id peer.ID, peerBuf []byte) error {
 	// Initialize RPC
 	exchClient := rpc.NewClient(tm.host.Host(), util.LOCAL_PROTOCOL)
 	var reply LocalServiceResponse
@@ -126,12 +124,11 @@ func (tm *TopicManager) Exchange(id peer.ID, peerBuf []byte) error {
 	}
 
 	// Update Peer with new data
-	tm.lobby.Add(remotePeer)
-	tm.RefreshLobby()
+	tm.PushEvent(md.NewJoinLocalEvent(remotePeer))
 	return nil
 }
 
-// # Calls Exchange on Local Lobby Peer
+// ExchangeWith # Calls Exchange on Local Lobby Peer
 func (ts *LocalService) ExchangeWith(ctx context.Context, args LocalServiceArgs, reply *LocalServiceResponse) error {
 	// Peer Data
 	remotePeer := &md.Peer{}
@@ -141,8 +138,7 @@ func (ts *LocalService) ExchangeWith(ctx context.Context, args LocalServiceArgs,
 	}
 
 	// Update Peers with Lobby
-	ts.lobby.Add(remotePeer)
-	ts.call.OnRefresh(ts.lobby)
+	ts.call.OnEvent(md.NewJoinLocalEvent(remotePeer))
 
 	// Set Message data and call done
 	buf, err := ts.user.Peer.Buffer()
@@ -153,8 +149,8 @@ func (ts *LocalService) ExchangeWith(ctx context.Context, args LocalServiceArgs,
 	return nil
 }
 
-// @ Invite: Handles User sent InviteRequest Response
-func (tm *TopicManager) Invite(id peer.ID, inv *md.InviteRequest) error {
+// Invite @ Invite: Handles User sent InviteRequest Response
+func (tm *Manager) Invite(id peer.ID, inv *md.InviteRequest) error {
 	// Initialize Data
 	isFlat := inv.IsFlatInvite()
 	rpcClient := rpc.NewClient(tm.host.Host(), util.LOCAL_PROTOCOL)
@@ -195,7 +191,7 @@ func (tm *TopicManager) Invite(id peer.ID, inv *md.InviteRequest) error {
 	}
 }
 
-// # Calls Invite on Local Lobby Peer
+// InviteWith # Calls Invite on Local Lobby Peer
 func (ts *LocalService) InviteWith(ctx context.Context, args LocalServiceArgs, reply *LocalServiceResponse) error {
 	// Received Message
 	inv := md.InviteRequest{}
@@ -212,7 +208,7 @@ func (ts *LocalService) InviteWith(ctx context.Context, args LocalServiceArgs, r
 	// Check Invite for Flat/Default
 	if isFlat {
 		// Sign Contact Reply
-		resp := ts.user.SignFlatReply(inv.GetFrom())
+		resp := ts.user.ReplyToFlat(inv.GetFrom())
 
 		// Convert Protobuf to bytes
 		msgBytes, err := proto.Marshal(resp)
@@ -241,13 +237,13 @@ func (ts *LocalService) InviteWith(ctx context.Context, args LocalServiceArgs, r
 	}
 }
 
-// @ RespondToInvite to an Invitation
-func (n *TopicManager) RespondToInvite(rep *md.InviteResponse) {
+// RespondToInvite @ RespondToInvite to an Invitation
+func (tm *Manager) RespondToInvite(rep *md.InviteResponse) {
 	// Send to Channel
-	n.service.respCh <- rep
+	tm.service.respCh <- rep
 
 	// Prepare Transfer
 	if rep.Decision {
-		n.handler.OnResponded(n.service.invite)
+		tm.handler.OnResponded(tm.service.invite)
 	}
 }

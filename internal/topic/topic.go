@@ -6,70 +6,47 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	"google.golang.org/protobuf/proto"
+
 	net "github.com/sonr-io/core/internal/host"
 	md "github.com/sonr-io/core/pkg/models"
-	"google.golang.org/protobuf/proto"
 )
 
-type ClientHandler interface {
-	OnEvent(*md.LocalEvent)
-	OnRefresh(*md.Lobby)
+type TopicHandler interface {
+	OnEvent(*md.LobbyEvent)
 	OnInvite([]byte)
 	OnReply(id peer.ID, data []byte)
 	OnResponded(inv *md.InviteRequest)
 }
 
-type TopicManager struct {
+type Manager struct {
 	ctx          context.Context
 	host         net.HostNode
 	topic        *pubsub.Topic
 	subscription *pubsub.Subscription
 	eventHandler *pubsub.TopicEventHandler
 	user         *md.User
-	lobby        *md.Lobby
 
 	service     *LocalService
-	localEvents chan *md.LocalEvent
-	handler     ClientHandler
-	lobbyType   md.Lobby_Type
+	localEvents chan *md.LobbyEvent
+	handler     TopicHandler
+	topicType   md.TopicType
 }
 
-// @ Helper: Find returns Pointer to Peer.ID and Peer
-func (tm *TopicManager) FindPeerInTopic(q string) (peer.ID, *md.Peer, error) {
-	// Retreive Data
-	var p *md.Peer
-	var i peer.ID
-
-	// Iterate Through Peers, Return Matched Peer
-	for _, peer := range tm.lobby.Peers {
-		// If Found Match
-		if peer.Id.Peer == q {
-			p = peer
-		}
-	}
-
-	// Validate Peer
-	if p == nil {
-		return "", nil, errors.New("Peer data was not found in topic.")
-	}
-
+// FindPeerInTopic @ Helper: Find returns Pointer to Peer.ID and Peer
+func (tm *Manager) FindPeerInTopic(q string) (peer.ID, error) {
 	// Iterate through Topic Peers
 	for _, id := range tm.topic.ListPeers() {
 		// If Found Match
 		if id.String() == q {
-			i = id
+			return id, nil
 		}
 	}
-
-	// Validate ID
-	if i == "" {
-		return "", nil, errors.New("Peer ID was not found in topic.")
-	}
-	return i, p, nil
+	return "", errors.New("Peer ID was not found in topic")
 }
 
-// @ Helper: ID returns ONE Peer.ID in Topic
-func (tm *TopicManager) HasPeer(q string) bool {
+// HasPeer @ Helper: ID returns ONE Peer.ID in Topic
+func (tm *Manager) HasPeer(q string) bool {
 	// Iterate through PubSub in topic
 	for _, id := range tm.topic.ListPeers() {
 		// If Found Match
@@ -80,16 +57,16 @@ func (tm *TopicManager) HasPeer(q string) bool {
 	return false
 }
 
-// @ Check if Local Topic
-func (tm *TopicManager) IsLocal() bool {
-	if tm.lobbyType == md.Lobby_LOCAL {
+// IsLocal @ Check if Local Topic
+func (tm *Manager) IsLocal() bool {
+	if tm.topicType == md.TopicType_LOCAL {
 		return true
 	}
 	return false
 }
 
 // # handleTopicEvents: listens to Pubsub Events for topic
-func (tm *TopicManager) handleTopicEvents(ctx context.Context) {
+func (tm *Manager) handleTopicEvents(ctx context.Context) {
 	// @ Loop Events
 	for {
 		// Get next event
@@ -100,7 +77,7 @@ func (tm *TopicManager) handleTopicEvents(ctx context.Context) {
 		}
 
 		// Check Event and Validate not User
-		if lobEvent.Type == pubsub.PeerJoin && tm.user.Peer.IsNotSamePeerID(lobEvent.Peer) {
+		if lobEvent.Type == pubsub.PeerJoin && lobEvent.Peer != tm.host.ID() {
 			pbuf, err := tm.user.GetPeer().Buffer()
 			if err != nil {
 				continue
@@ -109,20 +86,15 @@ func (tm *TopicManager) handleTopicEvents(ctx context.Context) {
 			if err != nil {
 				continue
 			}
-			tm.RefreshLobby()
-		}
-
-		// Check Leave Eent
-		if lobEvent.Type == pubsub.PeerLeave {
-			tm.lobby.Delete(lobEvent.Peer)
-			tm.RefreshLobby()
+		} else if lobEvent.Type == pubsub.PeerLeave {
+			tm.PushEvent(md.NewExitLocalEvent(lobEvent.Peer.String()))
 		}
 		md.GetState().NeedsWait()
 	}
 }
 
 // # handleTopicMessages: listens for messages on pubsub topic subscription
-func (tm *TopicManager) handleTopicMessages(ctx context.Context) {
+func (tm *Manager) handleTopicMessages(ctx context.Context) {
 	for {
 		// Get next msg from pub/sub
 		msg, err := tm.subscription.Next(ctx)
@@ -136,7 +108,7 @@ func (tm *TopicManager) handleTopicMessages(ctx context.Context) {
 		}
 
 		// Check Lobby Type
-		m := &md.LocalEvent{}
+		m := &md.LobbyEvent{}
 		err = proto.Unmarshal(msg.Data, m)
 		if err != nil {
 			continue
@@ -151,16 +123,12 @@ func (tm *TopicManager) handleTopicMessages(ctx context.Context) {
 }
 
 // # processTopicMessages: pulls messages from channel that have been handled
-func (tm *TopicManager) processTopicMessages(ctx context.Context) {
+func (tm *Manager) processTopicMessages(ctx context.Context) {
 	for {
 		select {
 		// @ Local Event Channel Updated
 		case m := <-tm.localEvents:
-			if m.Subject == md.LocalEvent_UPDATE {
-				// Update Peer Data
-				tm.lobby.Add(m.From)
-				tm.RefreshLobby()
-			}
+			tm.PushEvent(m)
 		case <-ctx.Done():
 			return
 		}

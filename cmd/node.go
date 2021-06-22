@@ -4,8 +4,6 @@ import (
 	"context"
 	"log"
 
-	"github.com/getsentry/sentry-go"
-	"github.com/pkg/errors"
 	tpc "github.com/sonr-io/core/internal/topic"
 	sc "github.com/sonr-io/core/pkg/client"
 	md "github.com/sonr-io/core/pkg/models"
@@ -20,12 +18,13 @@ type Node struct {
 	ctx  context.Context
 
 	// Client
-	client *sc.Client
+	client sc.Client
+	state  md.LifecycleState
 	user   *md.User
 
 	// Groups
-	local  *tpc.TopicManager
-	topics map[string]*tpc.TopicManager
+	local  *tpc.Manager
+	topics map[string]*tpc.Manager
 
 	// Miscellaneous
 	store md.Store
@@ -33,23 +32,20 @@ type Node struct {
 
 // ^ Initializes New Node ^ //
 func NewNode(reqBytes []byte, call Callback) *Node {
-	// Initialize Sentry
-	sentry.Init(sentry.ClientOptions{
-		Dsn: "https://cbf88b01a5a5468fa77101f7dfc54f20@o549479.ingest.sentry.io/5672329",
-	})
 
 	// Unmarshal Request
 	req := &md.InitializeRequest{}
 	err := proto.Unmarshal(reqBytes, req)
 	if err != nil {
-		sentry.CaptureException(errors.Wrap(err, "Unmarshalling Connection Request"))
+		log.Println(err)
 		return nil
 	}
 	// Initialize Node
 	mn := &Node{
 		call:   call,
 		ctx:    context.Background(),
-		topics: make(map[string]*tpc.TopicManager, 10),
+		topics: make(map[string]*tpc.Manager, 10),
+		state:  md.LifecycleState_Active,
 	}
 
 	// Create Store - Start Auth Service
@@ -72,42 +68,42 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 }
 
 // @ Starts Host and Connects
-func (mn *Node) Connect(data []byte) {
+func (n *Node) Connect(data []byte) {
 	// Unmarshal Request
 	req := &md.ConnectionRequest{}
 	err := proto.Unmarshal(data, req)
 	if err != nil {
-		sentry.CaptureException(errors.Wrap(err, "Unmarshalling Connection Request"))
+		log.Println(err)
 	}
 
 	// Update User with Connection Request
-	mn.user.InitConnection(req)
-	req.ApiKeys = mn.user.APIKeys()
-	req.Point = mn.user.GetRouter().Rendevouz
+	n.user.InitConnection(req)
+	req.ApiKeys = n.user.APIKeys()
+	req.Point = n.user.GetRouter().Rendevouz
 
 	// Connect Host
-	serr := mn.client.Connect(req, mn.user.KeyPair())
+	serr := n.client.Connect(req, n.user.KeyPair())
 	if serr != nil {
-		mn.handleError(serr)
-		mn.setConnected(false)
+		n.handleError(serr)
+		n.setConnected(false)
 	} else {
 		// Update Status
-		mn.setConnected(true)
+		n.setConnected(true)
 	}
 
 	// Bootstrap Node
-	mn.local, serr = mn.client.Bootstrap()
+	n.local, serr = n.client.Bootstrap()
 	if err != nil {
-		mn.handleError(serr)
-		mn.setAvailable(false)
+		n.handleError(serr)
+		n.setAvailable(false)
 	} else {
-		mn.setAvailable(true)
+		n.setAvailable(true)
 	}
 }
 
 // ** ─── Node Binded Actions ────────────────────────────────────────────────────────
 // @ Signing Request for Data
-func (mn *Node) Sign(data []byte) []byte {
+func (n *Node) Sign(data []byte) []byte {
 	// Unmarshal Data to Request
 	request := &md.AuthRequest{}
 	err := proto.Unmarshal(data, request)
@@ -115,7 +111,7 @@ func (mn *Node) Sign(data []byte) []byte {
 		log.Println("Failed to Unmarshal Sign Request")
 
 		// Handle Error
-		mn.handleError(md.NewUnmarshalError(err))
+		n.handleError(md.NewUnmarshalError(err))
 
 		// Initialize invalid Response
 		invalidResp := md.AuthResponse{
@@ -125,29 +121,29 @@ func (mn *Node) Sign(data []byte) []byte {
 		// Send Invalid Response
 		buf, err := proto.Marshal(&invalidResp)
 		if err != nil {
-			mn.handleError(md.NewMarshalError(err))
+			n.handleError(md.NewMarshalError(err))
 			return nil
 		}
 		return buf
 	}
 
 	// Sign Buffer
-	result := mn.user.Sign(request, mn.store)
+	result := n.user.Sign(request, n.store)
 	buf, err := proto.Marshal(result)
 	if err != nil {
-		mn.handleError(md.NewMarshalError(err))
+		n.handleError(md.NewMarshalError(err))
 		return nil
 	}
 	return buf
 }
 
 // @ Store Request for Payload into MemoryStore
-func (mn *Node) Store(data []byte) []byte {
+func (n *Node) Store(data []byte) []byte {
 	// Unmarshal Data to Request
 	request := &md.StoreRequest{}
 	if err := proto.Unmarshal(data, request); err != nil {
 		// Handle Error
-		mn.handleError(md.NewUnmarshalError(err))
+		n.handleError(md.NewUnmarshalError(err))
 
 		// Create Error Response
 		resp := &md.StoreResponse{
@@ -165,7 +161,7 @@ func (mn *Node) Store(data []byte) []byte {
 	}
 
 	// Handle Request with Store
-	resp := mn.store.Handle(request)
+	resp := n.store.Handle(request)
 
 	// Marshal Data
 	bytes, err := proto.Marshal(resp)
@@ -176,17 +172,17 @@ func (mn *Node) Store(data []byte) []byte {
 }
 
 // @ Verification Request for Signed Data
-func (mn *Node) Verify(data []byte) []byte {
+func (n *Node) Verify(data []byte) []byte {
 	// Check Ready
-	if mn.isReady() {
+	if n.isReady() {
 		// Get Key Pair
-		kp := mn.user.KeyPair()
+		kp := n.user.KeyPair()
 
 		// Unmarshal Data to Request
 		request := &md.VerifyRequest{}
 		if err := proto.Unmarshal(data, request); err != nil {
 			// Handle Error
-			mn.handleError(md.NewUnmarshalError(err))
+			n.handleError(md.NewUnmarshalError(err))
 
 			// Send Invalid Response
 			return md.NewInvalidVerifyResponseBuf()
@@ -219,73 +215,71 @@ func (mn *Node) Verify(data []byte) []byte {
 }
 
 // @ Update proximity/direction and Notify Lobby
-func (mn *Node) Update(data []byte) {
-	if mn.isReady() {
+func (n *Node) Update(data []byte) {
+	if n.isReady() {
 		// Unmarshal Data to Request
 		update := &md.UpdateRequest{}
 		if err := proto.Unmarshal(data, update); err != nil {
-			mn.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
+			n.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
 			return
 		}
 
 		// Update Peer
-		mn.user.Update(update)
+		n.user.Update(update)
 
 		// Notify Local Lobby
-		err := mn.client.Update(mn.local)
+		err := n.client.Update(n.local)
 		if err != nil {
-			mn.handleError(err)
+			n.handleError(err)
 			return
 		}
 	}
 }
 
 // @ Invite Processes Data and Sends Invite to Peer
-func (mn *Node) Invite(data []byte) {
-	if mn.isReady() {
+func (n *Node) Invite(data []byte) {
+	if n.isReady() {
 		// Update Status
-		mn.setStatus(md.Status_PENDING)
+		n.setStatus(md.Status_PENDING)
 
 		// Unmarshal Data to Request
 		req := &md.InviteRequest{}
 		if err := proto.Unmarshal(data, req); err != nil {
-			mn.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
+			n.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
 			return
 		}
 
 		// @ 1. Validate invite
-		req = mn.user.ValidateInvite(req)
+		req = n.user.ValidateInvite(req)
 
 		// @ 2. Check Transfer Type
-		err := mn.client.Invite(req, mn.local)
+		err := n.client.Invite(req, n.local)
 		if err != nil {
-			mn.handleError(err)
+			n.handleError(err)
 			return
 		}
 	}
 }
 
 // @ Respond to an Invite with Decision
-func (mn *Node) Respond(data []byte) {
-	if mn.isReady() {
+func (n *Node) Respond(data []byte) {
+	if n.isReady() {
 		// Unmarshal Data to Request
 		req := &md.InviteResponse{}
 		if err := proto.Unmarshal(data, req); err != nil {
-
-			mn.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
+			n.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
 			return
 		}
 
 		// Send Response
-		mn.local.RespondToInvite(req)
+		n.local.RespondToInvite(req)
 
 		// Update Status
 		if req.Decision {
-
-			mn.setStatus(md.Status_TRANSFER)
+			n.setStatus(md.Status_TRANSFER)
 		} else {
 
-			mn.setStatus(md.Status_AVAILABLE)
+			n.setStatus(md.Status_AVAILABLE)
 		}
 	}
 }
@@ -305,8 +299,8 @@ func URLLink(url string) []byte {
 }
 
 // @ Returns Node Location Protobuf as Bytes
-func (mn *Node) Location() []byte {
-	bytes, err := proto.Marshal(mn.user.Router.GetLocation())
+func (n *Node) Location() []byte {
+	bytes, err := proto.Marshal(n.user.Router.GetLocation())
 	if err != nil {
 		return nil
 	}
@@ -315,65 +309,69 @@ func (mn *Node) Location() []byte {
 
 // ** ─── LifeCycle Actions ────────────────────────────────────────────────────────
 // @ Close Ends All Network Communication
-func (mn *Node) Pause() {
+func (n *Node) Pause() {
+	n.state = md.LifecycleState_Paused
+	n.client.Lifecycle(n.state, n.local)
 	md.GetState().Pause()
 }
 
 // @ Close Ends All Network Communication
-func (mn *Node) Resume() {
+func (n *Node) Resume() {
+	n.state = md.LifecycleState_Active
+	n.client.Lifecycle(n.state, n.local)
 	md.GetState().Resume()
 }
 
 // @ Close Ends All Network Communication
-func (mn *Node) Stop() {
-	mn.client.Close()
-	mn.ctx.Done()
+func (n *Node) Stop() {
+	n.state = md.LifecycleState_Stopped
+	n.client.Lifecycle(n.state, n.local)
 }
 
 // ** ─── Node Status Checks ────────────────────────────────────────────────────────
 // # Checks if Node is Ready for Actions
-func (mn *Node) isReady() bool {
-	return mn.user.IsNotStatus(md.Status_STANDBY) || mn.user.IsNotStatus(md.Status_FAILED)
+func (n *Node) isReady() bool {
+	return n.user.IsNotStatus(md.Status_STANDBY) || n.user.IsNotStatus(md.Status_FAILED)
 }
 
 // # Sets Node to be Connected Status
-func (mn *Node) setConnected(val bool) {
+func (n *Node) setConnected(val bool) {
 	// Update Status
-	su := mn.user.SetConnected(val)
+	su := n.user.SetConnected(val)
 
 	// Callback Status
 	data, err := proto.Marshal(su)
 	if err != nil {
-		mn.handleError(md.NewError(err, md.ErrorMessage_MARSHAL))
+		n.handleError(md.NewError(err, md.ErrorMessage_MARSHAL))
 		return
 	}
-	mn.call.OnStatus(data)
+	n.call.OnStatus(data)
 }
 
 // # Sets Node to be Available Status
-func (mn *Node) setAvailable(val bool) {
+func (n *Node) setAvailable(val bool) {
 	// Update Status
-	su := mn.user.SetAvailable(val)
+	su := n.user.SetAvailable(val)
 
 	// Callback Status
 	data, err := proto.Marshal(su)
 	if err != nil {
-		mn.handleError(md.NewError(err, md.ErrorMessage_MARSHAL))
+		n.handleError(md.NewError(err, md.ErrorMessage_MARSHAL))
 		return
 	}
-	mn.call.OnStatus(data)
+	n.call.OnStatus(data)
 }
 
 // # Sets Node to be (Provided) Status
-func (mn *Node) setStatus(newStatus md.Status) {
+func (n *Node) setStatus(newStatus md.Status) {
 	// Set Status
-	su := mn.user.SetStatus(newStatus)
+	su := n.user.SetStatus(newStatus)
 
 	// Callback Status
 	data, err := proto.Marshal(su)
 	if err != nil {
-		mn.handleError(md.NewError(err, md.ErrorMessage_MARSHAL))
+		n.handleError(md.NewError(err, md.ErrorMessage_MARSHAL))
 		return
 	}
-	mn.call.OnStatus(data)
+	n.call.OnStatus(data)
 }

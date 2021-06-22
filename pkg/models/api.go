@@ -409,6 +409,15 @@ func (r *User_Router) Topic(name string) string {
 	return fmt.Sprintf("/sonr/topic/%s", name)
 }
 
+// @ Returns Lobby_Info for Local Lobby
+func (r *User_Router) LocalInfo() *Lobby_Info {
+	return &Lobby_Info{
+		Name:     r.GetLocation().OLC(),
+		Topic:    r.GetLocalTopic(),
+		Location: r.GetLocation(),
+	}
+}
+
 // ** ─── Status MANAGEMENT ────────────────────────────────────────────────────────
 // Update Connected Connection Status
 func (u *User) SetConnected(value bool) *StatusUpdate {
@@ -454,8 +463,6 @@ func (u *User) IsStatus(gs Status) bool {
 func (u *User) IsNotStatus(gs Status) bool {
 	return u.GetStatus() != gs
 }
-
-// ** ─── Schema MANAGEMENT ────────────────────────────────────────────────────────
 
 // ** ─── Error MANAGEMENT ────────────────────────────────────────────────────────
 type SonrError struct {
@@ -503,7 +510,7 @@ func NewError(err error, errType ErrorMessage_Type) *SonrError {
 }
 
 // ^ Checks for Error With Type ^ //
-func NewErrorJoined(errors ...SonrErrorOpt) *SonrError {
+func NewErrorGroup(errors ...SonrErrorOpt) *SonrError {
 	if len(errors) > 0 {
 		// Create Slice
 		joined := []*ErrorMessage{}
@@ -541,9 +548,33 @@ func NewErrorJoined(errors ...SonrErrorOpt) *SonrError {
 	}
 }
 
+// ^ Return New Peer Not Found Error with Peer ID as Data ^ //
+func NewPeerFoundError(err error, peer string) *SonrError {
+	// Initialize
+	message, severity := generateError(ErrorMessage_PEER_NOT_FOUND_INVITE)
+
+	// Set Capture
+	capture := false
+	if severity == ErrorMessage_CRITICAL || severity == ErrorMessage_FATAL {
+		capture = true
+	}
+
+	// Return Error
+	return &SonrError{
+		data: &ErrorMessage{
+			Message:  message,
+			Error:    err.Error(),
+			Type:     ErrorMessage_MARSHAL,
+			Severity: severity,
+			Data:     peer,
+		},
+		Capture:  capture,
+		HasError: true,
+	}
+}
+
 // ^ Returns Proto Marshal Error
 func NewMarshalError(err error) *SonrError {
-	// Return Error
 	// Initialize
 	message, severity := generateError(ErrorMessage_MARSHAL)
 
