@@ -409,6 +409,7 @@ func (r *User_Router) Topic(name string) string {
 	return fmt.Sprintf("/sonr/topic/%s", name)
 }
 
+// @ Returns Lobby_Info for Local Lobby
 func (r *User_Router) LocalInfo() *Lobby_Info {
 	return &Lobby_Info{
 		Name:     r.GetLocation().OLC(),
