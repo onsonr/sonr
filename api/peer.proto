@@ -44,7 +44,14 @@ message Lobby {
   TopicType type = 1;          // Type of Lobby
   map<string, Peer> peers = 2; // Total Data of Active Peers
   Peer user = 3;               // User Peer reference
-  Info info = 4;
+  Info info = 4;               // Lobby Info
+  Status status = 5;
+
+  enum Status {
+    Empty = 0; // When there are No Peers in Local Topic
+    Few = 1;   // When there are <= 5 Peers in Local Topic
+    Many = 2;  // When there are > 5 Peers in Local Topic
+  }
 
   message Info {
     string name = 1;       // Topic without Prefix

@@ -24,8 +24,8 @@ type Node struct {
 	user   *md.User
 
 	// Groups
-	local  *tpc.TopicManager
-	topics map[string]*tpc.TopicManager
+	local  *tpc.Manager
+	topics map[string]*tpc.Manager
 
 	// Miscellaneous
 	store md.Store
@@ -49,7 +49,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	mn := &Node{
 		call:   call,
 		ctx:    context.Background(),
-		topics: make(map[string]*tpc.TopicManager, 10),
+		topics: make(map[string]*tpc.Manager, 10),
 	}
 
 	// Create Store - Start Auth Service

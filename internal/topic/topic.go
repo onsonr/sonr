@@ -6,9 +6,10 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	"google.golang.org/protobuf/proto"
+
 	net "github.com/sonr-io/core/internal/host"
 	md "github.com/sonr-io/core/pkg/models"
-	"google.golang.org/protobuf/proto"
 )
 
 type ClientHandler interface {
@@ -19,7 +20,7 @@ type ClientHandler interface {
 	OnResponded(inv *md.InviteRequest)
 }
 
-type TopicManager struct {
+type Manager struct {
 	ctx          context.Context
 	host         net.HostNode
 	topic        *pubsub.Topic
@@ -33,9 +34,9 @@ type TopicManager struct {
 	topicType   md.TopicType
 }
 
-// @ Helper: Find returns Pointer to Peer.ID and Peer
-func (tm *TopicManager) FindPeerInTopic(q string) (peer.ID, error) {
-	// Retreive Data
+// FindPeerInTopic @ Helper: Find returns Pointer to Peer.ID and Peer
+func (tm *Manager) FindPeerInTopic(q string) (peer.ID, error) {
+	// Retrieve Data
 	var i peer.ID
 
 	// Iterate through Topic Peers
@@ -48,13 +49,13 @@ func (tm *TopicManager) FindPeerInTopic(q string) (peer.ID, error) {
 
 	// Validate ID
 	if i == "" {
-		return "", errors.New("Peer ID was not found in topic.")
+		return "", errors.New("Peer ID was not found in topic")
 	}
 	return i, nil
 }
 
-// @ Helper: ID returns ONE Peer.ID in Topic
-func (tm *TopicManager) HasPeer(q string) bool {
+// HasPeer @ Helper: ID returns ONE Peer.ID in Topic
+func (tm *Manager) HasPeer(q string) bool {
 	// Iterate through PubSub in topic
 	for _, id := range tm.topic.ListPeers() {
 		// If Found Match
@@ -65,8 +66,8 @@ func (tm *TopicManager) HasPeer(q string) bool {
 	return false
 }
 
-// @ Check if Local Topic
-func (tm *TopicManager) IsLocal() bool {
+// IsLocal @ Check if Local Topic
+func (tm *Manager) IsLocal() bool {
 	if tm.topicType == md.TopicType_LOCAL {
 		return true
 	}
@@ -74,7 +75,7 @@ func (tm *TopicManager) IsLocal() bool {
 }
 
 // # handleTopicEvents: listens to Pubsub Events for topic
-func (tm *TopicManager) handleTopicEvents(ctx context.Context) {
+func (tm *Manager) handleTopicEvents(ctx context.Context) {
 	// @ Loop Events
 	for {
 		// Get next event
@@ -102,7 +103,7 @@ func (tm *TopicManager) handleTopicEvents(ctx context.Context) {
 }
 
 // # handleTopicMessages: listens for messages on pubsub topic subscription
-func (tm *TopicManager) handleTopicMessages(ctx context.Context) {
+func (tm *Manager) handleTopicMessages(ctx context.Context) {
 	for {
 		// Get next msg from pub/sub
 		msg, err := tm.subscription.Next(ctx)
@@ -131,7 +132,7 @@ func (tm *TopicManager) handleTopicMessages(ctx context.Context) {
 }
 
 // # processTopicMessages: pulls messages from channel that have been handled
-func (tm *TopicManager) processTopicMessages(ctx context.Context) {
+func (tm *Manager) processTopicMessages(ctx context.Context) {
 	for {
 		select {
 		// @ Local Event Channel Updated

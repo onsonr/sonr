@@ -16,11 +16,11 @@ import (
 type Client interface {
 	// Client Methods
 	Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrError
-	Bootstrap() (*tpc.TopicManager, *md.SonrError)
-	Invite(invite *md.InviteRequest, t *tpc.TopicManager) *md.SonrError
+	Bootstrap() (*tpc.Manager, *md.SonrError)
+	Invite(invite *md.InviteRequest, t *tpc.Manager) *md.SonrError
 	Mail(mr *md.MailRequest) *md.SonrError
-	Update(t *tpc.TopicManager) *md.SonrError
-	Close(t *tpc.TopicManager)
+	Update(t *tpc.Manager) *md.SonrError
+	Close(t *tpc.Manager)
 
 	// Topic Callbacks
 	OnEvent(*md.LobbyEvent)
@@ -98,7 +98,7 @@ func (c *client) Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrErr
 }
 
 // @ Begins Bootstrapping HostNode
-func (c *client) Bootstrap() (*tpc.TopicManager, *md.SonrError) {
+func (c *client) Bootstrap() (*tpc.Manager, *md.SonrError) {
 	// Bootstrap Host
 	err := c.Host.Bootstrap()
 	if err != nil {
@@ -114,7 +114,7 @@ func (c *client) Bootstrap() (*tpc.TopicManager, *md.SonrError) {
 }
 
 // @ Invite Processes Data and Sends Invite to Peer
-func (n *client) Invite(invite *md.InviteRequest, t *tpc.TopicManager) *md.SonrError {
+func (n *client) Invite(invite *md.InviteRequest, t *tpc.Manager) *md.SonrError {
 	// Check for Peer
 	if t.HasPeer(invite.To.Id.Peer) {
 		// Initialize Session if transfer
@@ -126,7 +126,7 @@ func (n *client) Invite(invite *md.InviteRequest, t *tpc.TopicManager) *md.SonrE
 		// Get PeerID and Check error
 		id, err := t.FindPeerInTopic(invite.To.Id.Peer)
 		if err != nil {
-			return md.NewError(err, md.ErrorMessage_PEER_NOT_FOUND_INVITE)
+			return md.NewPeerFoundError(err, invite.GetTo().GetId().GetPeer())
 		}
 
 		// Run Routine
@@ -154,7 +154,7 @@ func (c *client) Mail(mr *md.MailRequest) *md.SonrError {
 }
 
 // @ Update proximity/direction and Notify Lobby
-func (n *client) Update(t *tpc.TopicManager) *md.SonrError {
+func (n *client) Update(t *tpc.Manager) *md.SonrError {
 	// Inform Lobby
 	if err := t.Publish(n.user.Peer.NewUpdateEvent()); err != nil {
 		return md.NewError(err, md.ErrorMessage_TOPIC_UPDATE)
@@ -163,7 +163,7 @@ func (n *client) Update(t *tpc.TopicManager) *md.SonrError {
 }
 
 // @ Close Ends All Network Communication
-func (n *client) Close(t *tpc.TopicManager) {
+func (n *client) Close(t *tpc.Manager) {
 	// Inform Lobby
 	if err := t.Publish(n.user.Peer.NewUpdateEvent()); err != nil {
 		log.Println(md.NewError(err, md.ErrorMessage_TOPIC_UPDATE))
