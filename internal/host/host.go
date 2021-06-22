@@ -3,12 +3,15 @@ package host
 import (
 	"context"
 	"log"
+	"time"
 
 	"github.com/libp2p/go-libp2p"
+	connmgr "github.com/libp2p/go-libp2p-connmgr"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
+	"github.com/libp2p/go-libp2p-core/routing"
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	psub "github.com/libp2p/go-libp2p-pubsub"
@@ -60,14 +63,43 @@ type hostNode struct {
 
 // ^ Start Begins Assigning Host Parameters ^
 func NewHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair) (HostNode, *md.SonrError) {
-	// Initialize
-	hostOpts := req.GetHostOptions()
-	opts, kdhtRef := libp2pConfig(ctx, keyPair, hostOpts)
+	// Initialize DHT
+	var kdhtRef *dht.IpfsDHT
+
+	// Find Listen Addresses
+	addrs, err := getExternalAddrStrings()
+	if err != nil {
+		return newRelayedHost(ctx, req, keyPair)
+	}
 
 	// Start Host
-	h, err := libp2p.New(ctx, opts...)
+	h, err := libp2p.New(
+		ctx,
+		libp2p.ListenAddrStrings(addrs...),
+		libp2p.Identity(keyPair.PrivKey()),
+		libp2p.DefaultTransports,
+		libp2p.ConnectionManager(connmgr.NewConnManager(
+			100,         // Lowwater
+			400,         // HighWater,
+			time.Minute, // GracePeriod
+		)),
+		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
+			// Create DHT
+			kdht, err := dht.New(ctx, h)
+			if err != nil {
+				return nil, err
+			}
+
+			// Set DHT
+			kdhtRef = kdht
+			return kdht, err
+		}),
+		libp2p.EnableAutoRelay(),
+	)
+
+	// Set Host for Node
 	if err != nil {
-		return nil, md.NewError(err, md.ErrorMessage_HOST_START)
+		return newRelayedHost(ctx, req, keyPair)
 	}
 
 	// Create Host
@@ -77,19 +109,69 @@ func NewHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair
 		keyPair: keyPair,
 		id:      h.ID(),
 		host:    h,
-		options: hostOpts,
 		point:   req.Point,
 		kdht:    kdhtRef,
 		known:   make([]peer.ID, 0),
 	}
 
-	// MDNS Discovery
-	if hostOpts.GetMdnsDiscovery() {
-		// Check Connection
-		if req.GetType() == md.ConnectionRequest_Wifi {
-			err := hn.MDNS()
-			log.Println("MDNS ERROR: " + err.Error())
-		}
+	// Check Connection
+	if req.GetType() == md.ConnectionRequest_Wifi {
+		err := hn.MDNS()
+		log.Println("MDNS ERROR: " + err.Error())
+	}
+	return hn, nil
+}
+
+// # Failsafe when unable to bind to External IP Address ^ //
+func newRelayedHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair) (HostNode, *md.SonrError) {
+	// Initialize DHT
+	var kdhtRef *dht.IpfsDHT
+
+	// Start Host
+	h, err := libp2p.New(
+		ctx,
+		libp2p.Identity(keyPair.PrivKey()),
+		libp2p.DefaultTransports,
+		libp2p.ConnectionManager(connmgr.NewConnManager(
+			10,          // Lowwater
+			15,          // HighWater,
+			time.Minute, // GracePeriod
+		)),
+		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
+			// Create DHT
+			kdht, err := dht.New(ctx, h)
+			if err != nil {
+				return nil, err
+			}
+
+			// Set DHT
+			kdhtRef = kdht
+			return kdht, err
+		}),
+		libp2p.EnableAutoRelay(),
+	)
+
+	// Set Host for Node
+	if err != nil {
+		return nil, md.NewError(err, md.ErrorMessage_HOST_START)
+	}
+
+	// Create Struct
+	hn := &hostNode{
+		ctxHost: ctx,
+		apiKeys: req.ApiKeys,
+		keyPair: keyPair,
+		id:      h.ID(),
+		host:    h,
+		point:   req.Point,
+		kdht:    kdhtRef,
+		known:   make([]peer.ID, 0),
+	}
+
+	// Check Connection
+	if req.GetType() == md.ConnectionRequest_Wifi {
+		err := hn.MDNS()
+		log.Println("MDNS ERROR: " + err.Error())
 	}
 	return hn, nil
 }

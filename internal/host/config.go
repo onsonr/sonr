@@ -1,23 +1,14 @@
 package host
 
 import (
-	"context"
 	"fmt"
-	"time"
 
 	"net"
 	"os"
 
-	"github.com/libp2p/go-libp2p"
-	connmgr "github.com/libp2p/go-libp2p-connmgr"
-	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-core/routing"
-	dht "github.com/libp2p/go-libp2p-kad-dht"
-	libp2pquic "github.com/libp2p/go-libp2p-quic-transport"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
-	md "github.com/sonr-io/core/pkg/models"
 )
 
 // ** ─── Address MANAGEMENT ────────────────────────────────────────────────────────
@@ -123,59 +114,4 @@ func iPv4Addrs() ([]string, error) {
 		}
 	}
 	return nil, errors.New("No IPV4 found")
-}
-
-// # Builds Libp2p Host Configuration Options
-func libp2pConfig(ctx context.Context, keyPair *md.KeyPair, opts *md.ConnectionRequest_HostOptions) ([]libp2p.Option, *dht.IpfsDHT) {
-	// Init DHT
-	var kdhtRef *dht.IpfsDHT
-
-	// Create Standard Options
-	config := []libp2p.Option{
-		libp2p.Identity(keyPair.PrivKey()),
-		libp2p.ConnectionManager(connmgr.NewConnManager(
-			100,         // Lowwater
-			400,         // HighWater,
-			time.Minute, // GracePeriod
-		)),
-		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
-			// Create DHT
-			kdht, err := dht.New(ctx, h)
-			if err != nil {
-				return nil, err
-			}
-
-			// Set DHT
-			kdhtRef = kdht
-			return kdht, err
-		}),
-	}
-
-	// Add Addresses
-	if !opts.GetDefaultAddresses() {
-		// Find Listen Addresses
-		addrs, err := getExternalAddrStrings()
-		if err == nil {
-			config = append(config, libp2p.ListenAddrStrings(addrs...))
-		}
-	}
-
-	// Add QUIC Transport
-	if opts.GetQuicTransport() {
-		config = append(config, libp2p.Transport(libp2pquic.NewTransport))
-	}
-
-	// Set Auto Relay
-	if opts.GetAutoRelay() {
-		config = append(config, libp2p.EnableAutoRelay())
-	}
-
-	// Set NAT Port Map
-	if opts.GetNatPortMap() {
-		config = append(config, libp2p.NATPortMap())
-	}
-
-	// Set Default Transports
-	config = append(config, libp2p.DefaultTransports)
-	return config, kdhtRef
 }
