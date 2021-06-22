@@ -9,6 +9,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
+	md "github.com/sonr-io/core/pkg/models"
 )
 
 // ** ─── Address MANAGEMENT ────────────────────────────────────────────────────────
@@ -104,4 +105,13 @@ func iPv4Addrs() ([]string, error) {
 		}
 	}
 	return nil, errors.New("No IPV4 found")
+}
+
+// # Handle Post-Connection result on hostNode
+func handleConnectionResult(hh HostHandler, hostActive bool, textileActive bool, mdnsActive bool) {
+	hh.OnConnected(&md.ConnectionResponse{
+		HostActive:    hostActive,
+		MdnsActive:    mdnsActive,
+		TextileActive: textileActive,
+	})
 }

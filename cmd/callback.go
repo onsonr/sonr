@@ -8,11 +8,11 @@ import (
 // * Interface: Callback is implemented from Plugin to receive updates * //
 type Callback interface {
 	OnStatus(data []byte)      // Node Status Updates
-	OnRefreshed(data []byte)   // Lobby Updates
+	OnConnected(data []byte)   // Connection Response
 	OnEvent(data []byte)       // Local Lobby Event
 	OnInvited(data []byte)     // User Invited
 	OnResponded(data []byte)   // Peer has responded
-	OnProgress(data []byte)   // File Progress Updated
+	OnProgress(data []byte)    // File Progress Updated
 	OnReceived(data []byte)    // User Received File
 	OnTransmitted(data []byte) // User Sent File
 	OnError(data []byte)       // Internal Error
@@ -22,7 +22,7 @@ type Callback interface {
 func (mn *Node) callback() md.Callback {
 	return md.Callback{
 		// Direct
-		OnRefresh:     mn.call.OnRefreshed,
+		OnConnected:   mn.call.OnConnected,
 		OnEvent:       mn.call.OnEvent,
 		OnInvite:      mn.call.OnInvited,
 		OnReply:       mn.call.OnResponded,

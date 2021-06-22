@@ -23,8 +23,8 @@ type Client interface {
 	Close(t *tpc.Manager)
 
 	// Topic Callbacks
+	OnConnected(*md.ConnectionResponse)
 	OnEvent(*md.LobbyEvent)
-	OnRefresh(*md.Lobby)
 	OnInvite([]byte)
 	OnReply(id peer.ID, data []byte)
 	OnResponded(inv *md.InviteRequest)
@@ -35,11 +35,12 @@ type client struct {
 	Client
 
 	// Properties
-	ctx     context.Context
-	call    md.Callback
-	user    *md.User
-	session *md.Session
-	request *md.ConnectionRequest
+	ctx       context.Context
+	call      md.Callback
+	localInfo *md.Lobby_Info
+	user      *md.User
+	session   *md.Session
+	request   *md.ConnectionRequest
 
 	// References
 	Host    net.HostNode
@@ -48,7 +49,6 @@ type client struct {
 
 // ^ NewClient Initializes Node with Router ^
 func NewClient(ctx context.Context, u *md.User, call md.Callback) Client {
-	// Returns Storj Enabled Client
 	return &client{
 		ctx:  ctx,
 		call: call,
@@ -62,7 +62,7 @@ func (c *client) Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrErr
 	c.request = cr
 
 	// Set Host
-	hn, err := net.NewHost(c.ctx, cr, keys)
+	hn, err := net.NewHost(c.ctx, cr, keys, c)
 	if err != nil {
 		return err
 	}

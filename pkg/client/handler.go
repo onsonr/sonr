@@ -6,6 +6,23 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+// ^ OnConnected: HostNode Connection Response ^
+func (c *client) OnConnected(r *md.ConnectionResponse) {
+	// Set Local Info
+	if r.LocalInfo == nil {
+		r.LocalInfo = c.user.GetRouter().LocalInfo()
+	}
+
+	// Convert Message
+	bytes, err := proto.Marshal(r)
+	if err != nil {
+		c.call.OnError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
+		return
+	}
+	// Call Event
+	c.call.OnConnected(bytes)
+}
+
 // ^ OnEvent: Local Lobby Event ^
 func (n *client) OnEvent(e *md.LobbyEvent) {
 	// Convert Message
@@ -17,16 +34,6 @@ func (n *client) OnEvent(e *md.LobbyEvent) {
 
 	// Call Event
 	n.call.OnEvent(bytes)
-}
-
-// ^ OnRefresh: Topic has Updated ^
-func (n *client) OnRefresh(l *md.Lobby) {
-	bytes, err := proto.Marshal(l)
-	if err != nil {
-		n.call.OnError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
-		return
-	}
-	n.call.OnRefresh(bytes)
 }
 
 // ^ OnInvite: User Received Invite ^

@@ -27,7 +27,7 @@ type LocalServiceResponse struct {
 // LocalService Service Struct
 type LocalService struct {
 	// Current Data
-	call ClientHandler
+	call TopicHandler
 	user *md.User
 
 	respCh chan *md.InviteResponse
@@ -35,13 +35,12 @@ type LocalService struct {
 }
 
 // NewLocal ^ Create New Contained Topic Manager ^ //
-func NewLocal(ctx context.Context, h net.HostNode, u *md.User, name string, th ClientHandler) (*Manager, *md.SonrError) {
+func NewLocal(ctx context.Context, h net.HostNode, u *md.User, name string, th TopicHandler) (*Manager, *md.SonrError) {
 	// Join Topic
 	topic, sub, handler, serr := h.Join(name)
 	if serr != nil {
 		return nil, serr
 	}
-	topic.Relay()
 
 	// Create Lobby Manager
 	mgr := &Manager{

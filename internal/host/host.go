@@ -33,6 +33,10 @@ type HostNode interface {
 	StartStream(p peer.ID, pid protocol.ID) (network.Stream, error)
 }
 
+type HostHandler interface {
+	OnConnected(*md.ConnectionResponse)
+}
+
 type hostNode struct {
 	HostNode
 
@@ -46,6 +50,7 @@ type hostNode struct {
 	// Libp2p
 	id      peer.ID
 	disc    *dsc.RoutingDiscovery
+	handler HostHandler
 	host    host.Host
 	kdht    *dht.IpfsDHT
 	known   []peer.ID
@@ -56,14 +61,14 @@ type hostNode struct {
 }
 
 // ^ Start Begins Assigning Host Parameters ^
-func NewHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair) (HostNode, *md.SonrError) {
+func NewHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair, hh HostHandler) (HostNode, *md.SonrError) {
 	// Initialize DHT
 	var kdhtRef *dht.IpfsDHT
 
 	// Find Listen Addresses
 	addrs, err := getExternalAddrStrings()
 	if err != nil {
-		return newRelayedHost(ctx, req, keyPair)
+		return newRelayedHost(ctx, req, keyPair, hh)
 	}
 
 	// Start Host
@@ -94,7 +99,7 @@ func NewHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair
 
 	// Set Host for Node
 	if err != nil {
-		return newRelayedHost(ctx, req, keyPair)
+		return newRelayedHost(ctx, req, keyPair, hh)
 	}
 
 	// Create Host
@@ -102,6 +107,7 @@ func NewHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair
 		ctxHost: ctx,
 		apiKeys: req.ApiKeys,
 		keyPair: keyPair,
+		handler: hh,
 		id:      h.ID(),
 		host:    h,
 		point:   req.Point,
@@ -112,13 +118,18 @@ func NewHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair
 	// Check Connection
 	if req.GetType() == md.ConnectionRequest_Wifi {
 		err := hn.MDNS()
-		log.Println("MDNS ERROR: " + err.Error())
+		if err != nil {
+			log.Println("MDNS ERROR: " + err.Error())
+			handleConnectionResult(hh, true, false, false)
+		} else {
+			handleConnectionResult(hh, true, false, true)
+		}
 	}
 	return hn, nil
 }
 
 // # Failsafe when unable to bind to External IP Address ^ //
-func newRelayedHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair) (HostNode, *md.SonrError) {
+func newRelayedHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair, hh HostHandler) (HostNode, *md.SonrError) {
 	// Initialize DHT
 	var kdhtRef *dht.IpfsDHT
 
@@ -132,6 +143,7 @@ func newRelayedHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.
 			15,          // HighWater,
 			time.Minute, // GracePeriod
 		)),
+		libp2p.DefaultStaticRelays(),
 		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
 			// Create DHT
 			kdht, err := dht.New(ctx, h)
@@ -148,6 +160,7 @@ func newRelayedHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.
 
 	// Set Host for Node
 	if err != nil {
+		handleConnectionResult(hh, false, false, false)
 		return nil, md.NewError(err, md.ErrorMessage_HOST_START)
 	}
 
@@ -156,6 +169,7 @@ func newRelayedHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.
 		ctxHost: ctx,
 		apiKeys: req.ApiKeys,
 		keyPair: keyPair,
+		handler: hh,
 		id:      h.ID(),
 		host:    h,
 		point:   req.Point,
@@ -166,7 +180,12 @@ func newRelayedHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.
 	// Check Connection
 	if req.GetType() == md.ConnectionRequest_Wifi {
 		err := hn.MDNS()
-		log.Println("MDNS ERROR: " + err.Error())
+		if err != nil {
+			log.Println("MDNS ERROR: " + err.Error())
+			handleConnectionResult(hh, true, false, false)
+		} else {
+			handleConnectionResult(hh, true, false, true)
+		}
 	}
 	return hn, nil
 }

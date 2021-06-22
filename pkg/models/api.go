@@ -409,6 +409,14 @@ func (r *User_Router) Topic(name string) string {
 	return fmt.Sprintf("/sonr/topic/%s", name)
 }
 
+func (r *User_Router) LocalInfo() *Lobby_Info {
+	return &Lobby_Info{
+		Name:     r.GetLocation().OLC(),
+		Topic:    r.GetLocalTopic(),
+		Location: r.GetLocation(),
+	}
+}
+
 // ** ─── Status MANAGEMENT ────────────────────────────────────────────────────────
 // Update Connected Connection Status
 func (u *User) SetConnected(value bool) *StatusUpdate {

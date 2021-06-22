@@ -78,6 +78,14 @@ message ConnectionRequest {
   }
 }
 
+// Response from Connection Request
+message ConnectionResponse {
+  bool hostActive = 1;
+  bool mdnsActive = 2;
+  bool textileActive = 3;
+  Lobby.Info localInfo = 4;
+}
+
 // Invitation Message sent on RPC
 message InviteRequest {
   Payload payload = 1;   // Type of Transfer

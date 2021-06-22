@@ -25,7 +25,7 @@ type OnProtobuf func([]byte)
 type OnError func(err *SonrError)
 type Callback struct {
 	OnInvite      OnProtobuf
-	OnRefresh     OnProtobuf
+	OnConnected     OnProtobuf
 	OnEvent       OnProtobuf
 	OnReply       OnProtobuf
 	OnProgress    OnProtobuf

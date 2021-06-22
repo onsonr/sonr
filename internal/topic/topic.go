@@ -12,9 +12,8 @@ import (
 	md "github.com/sonr-io/core/pkg/models"
 )
 
-type ClientHandler interface {
+type TopicHandler interface {
 	OnEvent(*md.LobbyEvent)
-	OnRefresh(*md.Lobby)
 	OnInvite([]byte)
 	OnReply(id peer.ID, data []byte)
 	OnResponded(inv *md.InviteRequest)
@@ -30,7 +29,7 @@ type Manager struct {
 
 	service     *LocalService
 	localEvents chan *md.LobbyEvent
-	handler     ClientHandler
+	handler     TopicHandler
 	topicType   md.TopicType
 }
 
