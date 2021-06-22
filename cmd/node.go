@@ -319,21 +319,21 @@ func (n *Node) Location() []byte {
 // @ Close Ends All Network Communication
 func (n *Node) Pause() {
 	n.state = md.LifecycleState_Paused
-	n.client.LifeCycle(n.state, n.local)
+	n.client.Lifecycle(n.state, n.local)
 	md.GetState().Pause()
 }
 
 // @ Close Ends All Network Communication
 func (n *Node) Resume() {
 	n.state = md.LifecycleState_Active
-	n.client.LifeCycle(n.state, n.local)
+	n.client.Lifecycle(n.state, n.local)
 	md.GetState().Resume()
 }
 
 // @ Close Ends All Network Communication
 func (n *Node) Stop() {
 	n.state = md.LifecycleState_Stopped
-	n.client.LifeCycle(n.state, n.local)
+	n.client.Lifecycle(n.state, n.local)
 	n.ctx.Done()
 }
 

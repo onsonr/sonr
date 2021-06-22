@@ -20,7 +20,7 @@ type Client interface {
 	Invite(invite *md.InviteRequest, t *tpc.Manager) *md.SonrError
 	Mail(mr *md.MailRequest) *md.SonrError
 	Update(t *tpc.Manager) *md.SonrError
-	LifeCycle(state md.LifecycleState, t *tpc.Manager)
+	Lifecycle(state md.LifecycleState, t *tpc.Manager)
 
 	// Topic Callbacks
 	OnConnected(*md.ConnectionResponse)
