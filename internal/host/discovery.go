@@ -7,7 +7,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	psub "github.com/libp2p/go-libp2p-pubsub"
-	swr "github.com/libp2p/go-libp2p-swarm"
 	discovery "github.com/libp2p/go-libp2p/p2p/discovery"
 	md "github.com/sonr-io/core/pkg/models"
 	"github.com/sonr-io/core/pkg/util"
@@ -60,6 +59,7 @@ func (h *hostNode) Bootstrap() *md.SonrError {
 	return nil
 }
 
+// @ Method Begins MDNS Discovery
 func (h *hostNode) MDNS() error {
 	ser, err := discovery.NewMdnsService(h.ctxHost, h.host, util.REFRESH_INTERVAL, h.point)
 	if err != nil {
@@ -132,11 +132,12 @@ func (h *hostNode) handleDHTPeers(routingDiscovery *dsc.RoutingDiscovery) {
 func (h *hostNode) handleMDNSPeers(peerChan chan peer.AddrInfo) {
 	for {
 		pi := <-peerChan
-		if err := h.host.Connect(h.ctxHost, pi); err != nil {
-			// Remove Peer Reference
-			h.host.Peerstore().ClearAddrs(pi.ID)
-			if sw, ok := h.host.Network().(*swr.Swarm); ok {
-				sw.Backoff().Clear(pi.ID)
+		// Validate not Self
+		if h.checkUnknown(pi) {
+			// Connect to Peer
+			if err := h.host.Connect(h.ctxHost, pi); err != nil {
+				h.deleteKnown(pi)
+				continue
 			}
 		}
 	}
