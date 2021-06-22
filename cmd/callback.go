@@ -1,7 +1,6 @@
 package bind
 
 import (
-	"github.com/getsentry/sentry-go"
 	md "github.com/sonr-io/core/pkg/models"
 )
 
@@ -40,11 +39,6 @@ func (mn *Node) callback() md.Callback {
 func (mn *Node) handleError(errMsg *md.SonrError) {
 	// Check for Error
 	if errMsg.HasError {
-		// Capture Error
-		if errMsg.Capture {
-			sentry.CaptureMessage(errMsg.String())
-		}
-
 		// Send Callback
 		mn.call.OnError(errMsg.Bytes())
 	}

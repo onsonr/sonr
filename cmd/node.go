@@ -4,8 +4,6 @@ import (
 	"context"
 	"log"
 
-	"github.com/getsentry/sentry-go"
-	"github.com/pkg/errors"
 	tpc "github.com/sonr-io/core/internal/topic"
 	sc "github.com/sonr-io/core/pkg/client"
 	md "github.com/sonr-io/core/pkg/models"
@@ -34,16 +32,12 @@ type Node struct {
 
 // ^ Initializes New Node ^ //
 func NewNode(reqBytes []byte, call Callback) *Node {
-	// Initialize Sentry
-	sentry.Init(sentry.ClientOptions{
-		Dsn: "https://cbf88b01a5a5468fa77101f7dfc54f20@o549479.ingest.sentry.io/5672329",
-	})
 
 	// Unmarshal Request
 	req := &md.InitializeRequest{}
 	err := proto.Unmarshal(reqBytes, req)
 	if err != nil {
-		sentry.CaptureException(errors.Wrap(err, "Unmarshalling Connection Request"))
+		log.Println(err)
 		return nil
 	}
 	// Initialize Node
@@ -79,7 +73,7 @@ func (n *Node) Connect(data []byte) {
 	req := &md.ConnectionRequest{}
 	err := proto.Unmarshal(data, req)
 	if err != nil {
-		sentry.CaptureException(errors.Wrap(err, "Unmarshalling Connection Request"))
+		log.Println(err)
 	}
 
 	// Update User with Connection Request
@@ -273,7 +267,6 @@ func (n *Node) Respond(data []byte) {
 		// Unmarshal Data to Request
 		req := &md.InviteResponse{}
 		if err := proto.Unmarshal(data, req); err != nil {
-
 			n.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
 			return
 		}
@@ -283,7 +276,6 @@ func (n *Node) Respond(data []byte) {
 
 		// Update Status
 		if req.Decision {
-
 			n.setStatus(md.Status_TRANSFER)
 		} else {
 
