@@ -171,10 +171,9 @@ func (c *client) Lifecycle(state md.LifecycleState, t *tpc.Manager) {
 		}
 	} else if state == md.LifecycleState_Paused {
 		// Inform Lobby
-		if err := t.Publish(c.user.Peer.NewExitEvent()); err != nil {
-			log.Println(md.NewError(err, md.ErrorMessage_TOPIC_UPDATE))
-		}
-		c.Host.Close()
+		// if err := t.Publish(c.user.Peer.NewExitEvent()); err != nil {
+		// 	log.Println(md.NewError(err, md.ErrorMessage_TOPIC_UPDATE))
+		// }
 	} else if state == md.LifecycleState_Stopped {
 		// Inform Lobby
 		if err := t.Publish(c.user.Peer.NewExitEvent()); err != nil {
