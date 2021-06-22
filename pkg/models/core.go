@@ -418,7 +418,7 @@ func (ir *itemReader) ReadFrom(reader msg.ReadCloser) error {
 			ir.mutex.Unlock()
 
 			if i%10 == 0 {
-				ir.callback.OnProgress(ir.Progress())
+				go ir.callback.OnProgress(ir.Progress())
 			}
 		} else {
 			// Flush File Data
@@ -519,7 +519,7 @@ func (iw *itemWriter) WriteTo(writer msg.WriteCloser) error {
 		}
 
 		if i%10 == 0 {
-			iw.callback.OnProgress(iw.Progress())
+			go iw.callback.OnProgress(iw.Progress())
 		}
 	}
 
