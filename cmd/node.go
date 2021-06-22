@@ -21,6 +21,7 @@ type Node struct {
 
 	// Client
 	client sc.Client
+	state  md.LifecycleState
 	user   *md.User
 
 	// Groups
@@ -50,6 +51,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 		call:   call,
 		ctx:    context.Background(),
 		topics: make(map[string]*tpc.Manager, 10),
+		state:  md.LifecycleState_Active,
 	}
 
 	// Create Store - Start Auth Service
@@ -316,17 +318,22 @@ func (n *Node) Location() []byte {
 // ** ─── LifeCycle Actions ────────────────────────────────────────────────────────
 // @ Close Ends All Network Communication
 func (n *Node) Pause() {
+	n.state = md.LifecycleState_Paused
+	n.client.LifeCycle(n.state, n.local)
 	md.GetState().Pause()
 }
 
 // @ Close Ends All Network Communication
 func (n *Node) Resume() {
+	n.state = md.LifecycleState_Active
+	n.client.LifeCycle(n.state, n.local)
 	md.GetState().Resume()
 }
 
 // @ Close Ends All Network Communication
 func (n *Node) Stop() {
-	n.client.Close(n.local)
+	n.state = md.LifecycleState_Stopped
+	n.client.LifeCycle(n.state, n.local)
 	n.ctx.Done()
 }
 

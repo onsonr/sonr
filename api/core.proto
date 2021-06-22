@@ -16,3 +16,10 @@ enum Direction {
   Incoming = 1; // Incoming Transfer
   Outgoing = 2; // Outgoing Transfer
 }
+
+// Current Node Lifecycle State
+enum LifecycleState {
+  Active = 0;  // Resume or Start
+  Paused = 1;  // User Paused
+  Stopped = 2; // User Quit
+}

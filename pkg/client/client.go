@@ -20,7 +20,7 @@ type Client interface {
 	Invite(invite *md.InviteRequest, t *tpc.Manager) *md.SonrError
 	Mail(mr *md.MailRequest) *md.SonrError
 	Update(t *tpc.Manager) *md.SonrError
-	Close(t *tpc.Manager)
+	LifeCycle(state md.LifecycleState, t *tpc.Manager)
 
 	// Topic Callbacks
 	OnConnected(*md.ConnectionResponse)
@@ -162,11 +162,25 @@ func (n *client) Update(t *tpc.Manager) *md.SonrError {
 	return nil
 }
 
-// @ Close Ends All Network Communication
-func (n *client) Close(t *tpc.Manager) {
-	// Inform Lobby
-	if err := t.Publish(n.user.Peer.NewUpdateEvent()); err != nil {
-		log.Println(md.NewError(err, md.ErrorMessage_TOPIC_UPDATE))
+// @ Handle Network Communication from Lifecycle State Network Communication
+func (c *client) LifeCycle(state md.LifecycleState, t *tpc.Manager) {
+	if state == md.LifecycleState_Active {
+		// Inform Lobby
+		if err := t.Publish(c.user.Peer.NewUpdateEvent()); err != nil {
+			log.Println(md.NewError(err, md.ErrorMessage_TOPIC_UPDATE))
+		}
+		c.Host.Close()
+	} else if state == md.LifecycleState_Paused {
+		// Inform Lobby
+		if err := t.Publish(c.user.Peer.NewExitEvent()); err != nil {
+			log.Println(md.NewError(err, md.ErrorMessage_TOPIC_UPDATE))
+		}
+		c.Host.Close()
+	} else if state == md.LifecycleState_Stopped {
+		// Inform Lobby
+		if err := t.Publish(c.user.Peer.NewExitEvent()); err != nil {
+			log.Println(md.NewError(err, md.ErrorMessage_TOPIC_UPDATE))
+		}
+		c.Host.Close()
 	}
-	n.Host.Close()
 }
