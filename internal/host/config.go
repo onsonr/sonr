@@ -138,7 +138,6 @@ func libp2pConfig(ctx context.Context, keyPair *md.KeyPair, opts *md.ConnectionR
 			400,         // HighWater,
 			time.Minute, // GracePeriod
 		)),
-		libp2p.Ping(opts.GetPingService()),
 		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
 			// Create DHT
 			kdht, err := dht.New(ctx, h)
