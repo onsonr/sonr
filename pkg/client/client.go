@@ -21,6 +21,7 @@ type Client interface {
 	Mail(mr *md.MailRequest) *md.SonrError
 	Update(t *tpc.Manager) *md.SonrError
 	Lifecycle(state md.LifecycleState, t *tpc.Manager)
+	Restart(ur *md.UpdateRequest, keys *md.KeyPair) (*tpc.Manager, *md.SonrError)
 
 	// Topic Callbacks
 	OnConnected(*md.ConnectionResponse)
@@ -195,4 +196,30 @@ func (c *client) Lifecycle(state md.LifecycleState, t *tpc.Manager) {
 		}
 		c.Host.Close()
 	}
+}
+
+// @ Restart HostNode on Network Change
+func (c *client) Restart(ur *md.UpdateRequest, keys *md.KeyPair) (*tpc.Manager, *md.SonrError) {
+	switch ur.Data.(type) {
+	case *md.UpdateRequest_Connectivity:
+		if c.request != nil {
+			// Update Request
+			newRequest := c.request
+			newRequest.Type = ur.GetConnectivity()
+
+			// Connect
+			err := c.Connect(newRequest, keys)
+			if err != nil {
+				return nil, err
+			}
+
+			// Bootstrap
+			tpc, err := c.Bootstrap()
+			if err != nil {
+				return nil, err
+			}
+			return tpc, nil
+		}
+	}
+	return nil, nil
 }

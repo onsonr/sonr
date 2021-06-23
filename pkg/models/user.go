@@ -425,66 +425,65 @@ func (u *User) PrettySName() string {
 	return fmt.Sprintf("%s.snr/", u.Profile().GetSName())
 }
 
-// Updates User Peer
-func (u *User) Update(ur *UpdateRequest) {
-	switch ur.Data.(type) {
-	case *UpdateRequest_Position:
-		// Extract Data
-		pos := ur.GetPosition()
-		facing := pos.GetFacing()
-		heading := pos.GetHeading()
-
-		// Update User Values
-		var faceDir float64
-		var faceAnpd float64
-		var headDir float64
-		var headAnpd float64
-		faceDir = math.Round(facing.Direction*100) / 100
-		headDir = math.Round(heading.Direction*100) / 100
-		faceDesg := int((facing.Direction / 11.25) + 0.25)
-		headDesg := int((heading.Direction / 11.25) + 0.25)
-
-		// Find Antipodal
-		if facing.Direction > 180 {
-			faceAnpd = math.Round((facing.Direction-180)*100) / 100
-		} else {
-			faceAnpd = math.Round((facing.Direction+180)*100) / 100
-		}
-
-		// Find Antipodal
-		if heading.Direction > 180 {
-			headAnpd = math.Round((heading.Direction-180)*100) / 100
-		} else {
-			headAnpd = math.Round((heading.Direction+180)*100) / 100
-		}
-
-		// Set Position
-		u.Peer.Position = &Position{
-			Facing: &Position_Compass{
-				Direction: faceDir,
-				Antipodal: faceAnpd,
-				Cardinal:  Cardinal(faceDesg % 32),
-			},
-			Heading: &Position_Compass{
-				Direction: headDir,
-				Antipodal: headAnpd,
-				Cardinal:  Cardinal(headDesg % 32),
-			},
-			Orientation: pos.GetOrientation(),
-		}
-
-	case *UpdateRequest_Contact:
-		u.Peer.Profile = &Profile{
-			FirstName: ur.GetContact().GetProfile().GetFirstName(),
-			LastName:  ur.GetContact().GetProfile().GetLastName(),
-			Picture:   ur.GetContact().GetProfile().GetPicture(),
-		}
-	case *UpdateRequest_Properties:
-		props := ur.GetProperties()
-		u.Peer.Properties = props
-	default:
-		return
+// Method Updates User Contact
+func (u *User) UpdateContact(c *Contact) {
+	u.Peer.Profile = &Profile{
+		SName:     c.GetProfile().GetSName(),
+		FirstName: c.GetProfile().GetFirstName(),
+		LastName:  c.GetProfile().GetLastName(),
+		Picture:   c.GetProfile().GetPicture(),
+		Platform:  c.GetProfile().GetPlatform(),
 	}
+}
+
+// Method Updates User Position
+func (u *User) UpdatePosition(pos *Position) {
+	facing := pos.GetFacing()
+	heading := pos.GetHeading()
+
+	// Update User Values
+	var faceDir float64
+	var faceAnpd float64
+	var headDir float64
+	var headAnpd float64
+	faceDir = math.Round(facing.Direction*100) / 100
+	headDir = math.Round(heading.Direction*100) / 100
+	faceDesg := int((facing.Direction / 11.25) + 0.25)
+	headDesg := int((heading.Direction / 11.25) + 0.25)
+
+	// Find Antipodal
+	if facing.Direction > 180 {
+		faceAnpd = math.Round((facing.Direction-180)*100) / 100
+	} else {
+		faceAnpd = math.Round((facing.Direction+180)*100) / 100
+	}
+
+	// Find Antipodal
+	if heading.Direction > 180 {
+		headAnpd = math.Round((heading.Direction-180)*100) / 100
+	} else {
+		headAnpd = math.Round((heading.Direction+180)*100) / 100
+	}
+
+	// Set Position
+	u.Peer.Position = &Position{
+		Facing: &Position_Compass{
+			Direction: faceDir,
+			Antipodal: faceAnpd,
+			Cardinal:  Cardinal(faceDesg % 32),
+		},
+		Heading: &Position_Compass{
+			Direction: headDir,
+			Antipodal: headAnpd,
+			Cardinal:  Cardinal(headDesg % 32),
+		},
+		Orientation: pos.GetOrientation(),
+	}
+}
+
+// Method Updates User Contact
+func (u *User) UpdateProperties(props *Peer_Properties) {
+	u.Peer.Properties = props
 }
 
 // ^ Signs InviteResponse with Flat Contact

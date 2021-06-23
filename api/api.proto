@@ -271,6 +271,7 @@ message UpdateRequest {
     Peer.Properties properties = 1; // Updated Peer Properties
     Contact contact = 2;            // Users Updated Contact Card
     Position position = 3;          // Users updated Position
+    ConnectionRequest.InternetType connectivity = 4; // Internet Type Changed
   }
 }
 

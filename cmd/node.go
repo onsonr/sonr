@@ -224,8 +224,28 @@ func (n *Node) Update(data []byte) {
 			return
 		}
 
-		// Update Peer
-		n.user.Update(update)
+		// Check Update Request Type
+		switch update.Data.(type) {
+		// Update Position
+		case *md.UpdateRequest_Position:
+			n.user.UpdatePosition(update.GetPosition())
+
+		// Update Contact
+		case *md.UpdateRequest_Contact:
+			n.user.UpdateContact(update.GetContact())
+
+		// Update Peer Properties
+		case *md.UpdateRequest_Properties:
+			n.user.UpdateProperties(update.GetProperties())
+
+		// Restart Connection
+		case *md.UpdateRequest_Connectivity:
+			local, err := n.client.Restart(update, n.user.KeyPair())
+			if err != nil {
+				n.handleError(err)
+			}
+			n.local = local
+		}
 
 		// Notify Local Lobby
 		err := n.client.Update(n.local)
