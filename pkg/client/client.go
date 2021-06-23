@@ -114,50 +114,58 @@ func (c *client) Bootstrap() (*tpc.Manager, *md.SonrError) {
 }
 
 // @ Invite Processes Data and Sends Invite to Peer
-func (n *client) Invite(invite *md.InviteRequest, t *tpc.Manager) *md.SonrError {
-	// Check for Peer
-	if t.HasPeer(invite.To.Id.Peer) {
-		// Initialize Session if transfer
-		if invite.IsPayloadFile() {
-			// Start New Session
-			n.session = md.NewOutSession(n.user, invite, n.call)
-		}
-
-		// Get PeerID and Check error
-		id, err := t.FindPeerInTopic(invite.To.Id.Peer)
-		if err != nil {
-			return md.NewPeerFoundError(err, invite.GetTo().GetId().GetPeer())
-		}
-
-		// Run Routine
-		go func(inv *md.InviteRequest) {
-			// Send Invite
-			err = t.Invite(id, inv)
-			if err != nil {
-				n.call.OnError(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
+func (c *client) Invite(invite *md.InviteRequest, t *tpc.Manager) *md.SonrError {
+	if c.user.IsReady() {
+		// Check for Peer
+		if t.HasPeer(invite.To.Id.Peer) {
+			// Initialize Session if transfer
+			if invite.IsPayloadFile() {
+				// Start New Session
+				c.session = md.NewOutSession(c.user, invite, c.call)
 			}
-		}(invite)
-	} else {
-		return md.NewErrorWithType(md.ErrorMessage_PEER_NOT_FOUND_INVITE)
+
+			// Get PeerID and Check error
+			id, err := t.FindPeerInTopic(invite.To.Id.Peer)
+			if err != nil {
+				return md.NewPeerFoundError(err, invite.GetTo().GetId().GetPeer())
+			}
+
+			// Run Routine
+			go func(inv *md.InviteRequest) {
+				// Send Invite
+				err = t.Invite(id, inv)
+				if err != nil {
+					c.call.OnError(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
+				}
+			}(invite)
+		} else {
+			return md.NewErrorWithType(md.ErrorMessage_PEER_NOT_FOUND_INVITE)
+		}
+		return nil
 	}
 	return nil
 }
 
 // @ Handle a MailRequest from Node
 func (c *client) Mail(mr *md.MailRequest) *md.SonrError {
-	if mr.Method == md.MailRequest_READ {
+	if c.user.IsReady() {
+		if mr.Method == md.MailRequest_READ {
 
-	} else if mr.Method == md.MailRequest_SEND {
+		} else if mr.Method == md.MailRequest_SEND {
 
+		}
+		return md.NewError(errors.New("Invalid MailRequest Method"), md.ErrorMessage_HOST_TEXTILE)
 	}
-	return md.NewError(errors.New("Invalid MailRequest Method"), md.ErrorMessage_HOST_TEXTILE)
+	return nil
 }
 
 // @ Update proximity/direction and Notify Lobby
-func (n *client) Update(t *tpc.Manager) *md.SonrError {
-	// Inform Lobby
-	if err := t.Publish(n.user.Peer.NewUpdateEvent()); err != nil {
-		return md.NewError(err, md.ErrorMessage_TOPIC_UPDATE)
+func (c *client) Update(t *tpc.Manager) *md.SonrError {
+	if c.user.IsReady() {
+		// Inform Lobby
+		if err := t.Publish(c.user.Peer.NewUpdateEvent()); err != nil {
+			return md.NewError(err, md.ErrorMessage_TOPIC_UPDATE)
+		}
 	}
 	return nil
 }
@@ -166,18 +174,24 @@ func (n *client) Update(t *tpc.Manager) *md.SonrError {
 func (c *client) Lifecycle(state md.LifecycleState, t *tpc.Manager) {
 	if state == md.LifecycleState_Active {
 		// Inform Lobby
-		if err := t.Publish(c.user.Peer.NewUpdateEvent()); err != nil {
-			log.Println(md.NewError(err, md.ErrorMessage_TOPIC_UPDATE))
+		if c.user.IsReady() {
+			if err := t.Publish(c.user.Peer.NewUpdateEvent()); err != nil {
+				log.Println(md.NewError(err, md.ErrorMessage_TOPIC_UPDATE))
+			}
 		}
 	} else if state == md.LifecycleState_Paused {
 		// Inform Lobby
-		// if err := t.Publish(c.user.Peer.NewExitEvent()); err != nil {
-		// 	log.Println(md.NewError(err, md.ErrorMessage_TOPIC_UPDATE))
-		// }
+		if c.user.IsReady() {
+			// if err := t.Publish(c.user.Peer.NewExitEvent()); err != nil {
+			// 	log.Println(md.NewError(err, md.ErrorMessage_TOPIC_UPDATE))
+			// }
+		}
 	} else if state == md.LifecycleState_Stopped {
 		// Inform Lobby
-		if err := t.Publish(c.user.Peer.NewExitEvent()); err != nil {
-			log.Println(md.NewError(err, md.ErrorMessage_TOPIC_UPDATE))
+		if c.user.IsReady() {
+			if err := t.Publish(c.user.Peer.NewExitEvent()); err != nil {
+				log.Println(md.NewError(err, md.ErrorMessage_TOPIC_UPDATE))
+			}
 		}
 		c.Host.Close()
 	}

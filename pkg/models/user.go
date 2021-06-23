@@ -350,6 +350,11 @@ func (u *User) InitConnection(cr *ConnectionRequest) {
 	u.Status = Status_IDLE
 }
 
+// Checks Whether User is Ready to Communicate
+func (u *User) IsReady() bool {
+	return u.Contact != nil && u.SName != "" && u.Router != nil && u.Status != Status_DEFAULT
+}
+
 // Return Client API Keys
 func (u *User) APIKeys() *APIKeys {
 	return u.GetApiKeys()
