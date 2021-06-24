@@ -25,9 +25,6 @@ const KEY_FILE_NAME = ".sonr_private_key"
 // Auth Service Protocol
 const AUTH_PROTOCOL = protocol.ID("/sonr/auth-service/0.2")
 
-// Global Service Protocol ID
-const GLOBAL_PROTOCOL = protocol.ID("/sonr/global-service/0.2")
-
 // Exchange Service Protocol
 const EXCHANGE_PROTOCOL = protocol.ID("/sonr/exchange-service/0.2")
 

@@ -106,14 +106,14 @@ func (c *client) Bootstrap() (*net.TopicManager, *md.SonrError) {
 	}
 
 	// Start Services
-	if s, err := srv.NewService(c.ctx, c.Host, c.user, c); err != nil {
+	s, err := srv.NewService(c.ctx, c.Host, c.user, c)
+	if err != nil {
 		return nil, err
-	} else {
-		c.Service = s
 	}
+	c.Service = s
 
 	// Join Local
-	if t, err := c.Host.JoinTopic(c.ctx, c.user, c.user.GetRouter().LocalTopic, c); err != nil {
+	if t, err := c.Host.JoinTopic(c.ctx, c.user, c.user.LocalTopic(), c); err != nil {
 		return nil, err
 	} else {
 		return t, nil
