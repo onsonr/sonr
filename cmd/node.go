@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	tpc "github.com/sonr-io/core/internal/topic"
+	net "github.com/sonr-io/core/internal/host"
 	sc "github.com/sonr-io/core/pkg/client"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
@@ -23,8 +23,8 @@ type Node struct {
 	user   *md.User
 
 	// Groups
-	local  *tpc.Manager
-	topics map[string]*tpc.Manager
+	local  *net.TopicManager
+	topics map[string]*net.TopicManager
 
 	// Miscellaneous
 	store md.Store
@@ -44,7 +44,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	mn := &Node{
 		call:   call,
 		ctx:    context.Background(),
-		topics: make(map[string]*tpc.Manager, 10),
+		topics: make(map[string]*net.TopicManager, 10),
 		state:  md.LifecycleState_Active,
 	}
 
@@ -285,17 +285,17 @@ func (n *Node) Invite(data []byte) {
 func (n *Node) Respond(data []byte) {
 	if n.isReady() {
 		// Unmarshal Data to Request
-		req := &md.InviteResponse{}
-		if err := proto.Unmarshal(data, req); err != nil {
+		resp := &md.InviteResponse{}
+		if err := proto.Unmarshal(data, resp); err != nil {
 			n.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
 			return
 		}
 
 		// Send Response
-		n.local.RespondToInvite(req)
+		n.client.Respond(resp)
 
 		// Update Status
-		if req.Decision {
+		if resp.Decision {
 			n.setStatus(md.Status_TRANSFER)
 		} else {
 

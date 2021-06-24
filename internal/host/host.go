@@ -27,7 +27,7 @@ type HostNode interface {
 	ID() peer.ID
 	Info() peer.AddrInfo
 	Host() host.Host
-	Join(name string) (*psub.Topic, *psub.Subscription, *psub.TopicEventHandler, *md.SonrError)
+	JoinTopic(ctx context.Context, u *md.User, name string, th TopicHandler) (*TopicManager, *md.SonrError)
 	HandleStream(pid protocol.ID, handler network.StreamHandler)
 	MultiAddr() (multiaddr.Multiaddr, *md.SonrError)
 	StartStream(p peer.ID, pid protocol.ID) (network.Stream, error)

@@ -7,8 +7,8 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	net "github.com/sonr-io/core/internal/host"
+	srv "github.com/sonr-io/core/internal/service"
 	txt "github.com/sonr-io/core/internal/textile"
-	tpc "github.com/sonr-io/core/internal/topic"
 	md "github.com/sonr-io/core/pkg/models"
 )
 
@@ -16,12 +16,13 @@ import (
 type Client interface {
 	// Client Methods
 	Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrError
-	Bootstrap() (*tpc.Manager, *md.SonrError)
-	Invite(invite *md.InviteRequest, t *tpc.Manager) *md.SonrError
+	Bootstrap() (*net.TopicManager, *md.SonrError)
+	Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrError
+	Respond(r *md.InviteResponse)
 	Mail(mr *md.MailRequest) *md.SonrError
-	Update(t *tpc.Manager) *md.SonrError
-	Lifecycle(state md.LifecycleState, t *tpc.Manager)
-	Restart(ur *md.UpdateRequest, keys *md.KeyPair) (*tpc.Manager, *md.SonrError)
+	Update(t *net.TopicManager) *md.SonrError
+	Lifecycle(state md.LifecycleState, t *net.TopicManager)
+	Restart(ur *md.UpdateRequest, keys *md.KeyPair) (*net.TopicManager, *md.SonrError)
 
 	// Topic Callbacks
 	OnConnected(*md.ConnectionResponse)
@@ -45,6 +46,7 @@ type client struct {
 
 	// References
 	Host    net.HostNode
+	Service srv.ServiceClient
 	Textile txt.TextileNode
 }
 
@@ -99,15 +101,22 @@ func (c *client) Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrErr
 }
 
 // @ Begins Bootstrapping HostNode
-func (c *client) Bootstrap() (*tpc.Manager, *md.SonrError) {
+func (c *client) Bootstrap() (*net.TopicManager, *md.SonrError) {
 	// Bootstrap Host
 	err := c.Host.Bootstrap()
 	if err != nil {
 		return nil, err
 	}
 
+	// Start Services
+	if s, err := srv.NewService(c.ctx, c.Host, c.user, c); err != nil {
+		return nil, err
+	} else {
+		c.Service = s
+	}
+
 	// Join Local
-	if t, err := tpc.NewLocal(c.ctx, c.Host, c.user, c.user.GetRouter().LocalTopic, c); err != nil {
+	if t, err := c.Host.JoinTopic(c.ctx, c.user, c.user.GetRouter().LocalTopic, c); err != nil {
 		return nil, err
 	} else {
 		return t, nil
@@ -115,7 +124,7 @@ func (c *client) Bootstrap() (*tpc.Manager, *md.SonrError) {
 }
 
 // @ Invite Processes Data and Sends Invite to Peer
-func (c *client) Invite(invite *md.InviteRequest, t *tpc.Manager) *md.SonrError {
+func (c *client) Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrError {
 	if c.user.IsReady() {
 		// Check for Peer
 		if t.HasPeer(invite.To.Id.Peer) {
@@ -134,7 +143,7 @@ func (c *client) Invite(invite *md.InviteRequest, t *tpc.Manager) *md.SonrError 
 			// Run Routine
 			go func(inv *md.InviteRequest) {
 				// Send Invite
-				err = t.Invite(id, inv)
+				err = c.Service.Invite(id, inv)
 				if err != nil {
 					c.call.OnError(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
 				}
@@ -145,6 +154,11 @@ func (c *client) Invite(invite *md.InviteRequest, t *tpc.Manager) *md.SonrError 
 		return nil
 	}
 	return nil
+}
+
+// @ Respond Sends a Response to Service
+func (c *client) Respond(r *md.InviteResponse) {
+	c.Service.Respond(r)
 }
 
 // @ Handle a MailRequest from Node
@@ -161,7 +175,7 @@ func (c *client) Mail(mr *md.MailRequest) *md.SonrError {
 }
 
 // @ Update proximity/direction and Notify Lobby
-func (c *client) Update(t *tpc.Manager) *md.SonrError {
+func (c *client) Update(t *net.TopicManager) *md.SonrError {
 	if c.user.IsReady() {
 		// Inform Lobby
 		if err := t.Publish(c.user.Peer.NewUpdateEvent()); err != nil {
@@ -172,7 +186,7 @@ func (c *client) Update(t *tpc.Manager) *md.SonrError {
 }
 
 // @ Handle Network Communication from Lifecycle State Network Communication
-func (c *client) Lifecycle(state md.LifecycleState, t *tpc.Manager) {
+func (c *client) Lifecycle(state md.LifecycleState, t *net.TopicManager) {
 	if state == md.LifecycleState_Active {
 		// Inform Lobby
 		if c.user.IsReady() {
@@ -199,7 +213,7 @@ func (c *client) Lifecycle(state md.LifecycleState, t *tpc.Manager) {
 }
 
 // @ Restart HostNode on Network Change
-func (c *client) Restart(ur *md.UpdateRequest, keys *md.KeyPair) (*tpc.Manager, *md.SonrError) {
+func (c *client) Restart(ur *md.UpdateRequest, keys *md.KeyPair) (*net.TopicManager, *md.SonrError) {
 	switch ur.Data.(type) {
 	case *md.UpdateRequest_Connectivity:
 		if c.request != nil {

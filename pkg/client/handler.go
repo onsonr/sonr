@@ -78,7 +78,7 @@ func (n *client) OnReply(id peer.ID, reply []byte) {
 }
 
 // ^ OnResponded: Prepares for Incoming File Transfer when Accepted ^
-func (n *client) OnResponded(inv *md.InviteRequest) {
+func (n *client) OnConfirmed(inv *md.InviteRequest) {
 	n.session = md.NewInSession(n.user, inv, n.call)
 	n.Host.HandleStream(n.user.GetRouter().LocalTransferProtocol(n.Host.ID()), n.session.ReadFromStream)
 }
