@@ -10,6 +10,20 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+// ** ─── Topic MANAGEMENT ────────────────────────────────────────────────────────
+func (t *Topic) IsLocal() bool {
+	return t.Type == Topic_LOCAL
+}
+
+// @ Local Lobby Topic Protocol ID
+func (r *User) NewLocalTopic() *Topic {
+	name := fmt.Sprintf("/sonr/topic/%s", r.Router.Location.OLC())
+	return &Topic{
+		Name: name,
+		Type: Topic_LOCAL,
+	}
+}
+
 // ** ─── Peer Instance MANAGEMENT ────────────────────────────────────────────────────────
 // Converts Peer to PeerInstance for Threads Storage
 func (p *Peer) ToInstance() *PeerInstance {
@@ -41,6 +55,35 @@ func (u *User) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) *SonrError {
 	// Set Device Topic
 	u.Router.DeviceTopic = fmt.Sprintf("/sonr/topic/%s", u.Peer.GetSName())
 	return nil
+}
+
+// ** ─── Local Event MANAGEMENT ────────────────────────────────────────────────────────
+// Creates New Exit Local Event
+func NewJoinLocalEvent(peer *Peer) *LobbyEvent {
+	return &LobbyEvent{
+		Id:      peer.Id.Peer,
+		Peer:    peer,
+		Subject: LobbyEvent_JOIN,
+	}
+}
+
+// Creates New Exit Local Event
+func NewUpdateLocalEvent(peer *Peer, topic *Topic) *LobbyEvent {
+	return &LobbyEvent{
+		Id:      peer.Id.Peer,
+		Peer:    peer,
+		Subject: LobbyEvent_UPDATE,
+		Topic:   topic,
+	}
+}
+
+// Creates New Exit Local Event
+func NewExitLocalEvent(id string, topic *Topic) *LobbyEvent {
+	return &LobbyEvent{
+		Id:      id,
+		Subject: LobbyEvent_EXIT,
+		Topic:   topic,
+	}
 }
 
 // ^ Returns Peer as Buffer ^ //

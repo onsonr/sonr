@@ -37,11 +37,11 @@ type client struct {
 	Client
 
 	// Properties
-	ctx       context.Context
-	call      md.Callback
-	user      *md.User
-	session   *md.Session
-	request   *md.ConnectionRequest
+	ctx     context.Context
+	call    md.Callback
+	user    *md.User
+	session *md.Session
+	request *md.ConnectionRequest
 
 	// References
 	Host    net.HostNode
@@ -112,7 +112,7 @@ func (c *client) Bootstrap() (*net.TopicManager, *md.SonrError) {
 	c.Service = s
 
 	// Join Local
-	if t, err := c.Host.JoinTopic(c.ctx, c.user, c.user.LocalTopic(), c); err != nil {
+	if t, err := c.Host.JoinTopic(c.ctx, c.user, c.user.NewLocalTopic(), c); err != nil {
 		return nil, err
 	} else {
 		return t, nil
@@ -174,7 +174,7 @@ func (c *client) Mail(mr *md.MailRequest) *md.SonrError {
 func (c *client) Update(t *net.TopicManager) *md.SonrError {
 	if c.user.IsReady() {
 		// Inform Lobby
-		if err := t.Publish(c.user.Peer.NewUpdateEvent()); err != nil {
+		if err := t.Publish(c.user.Peer.NewUpdateEvent(t.Topic())); err != nil {
 			return md.NewError(err, md.ErrorMessage_TOPIC_UPDATE)
 		}
 	}
@@ -186,7 +186,7 @@ func (c *client) Lifecycle(state md.LifecycleState, t *net.TopicManager) {
 	if state == md.LifecycleState_Active {
 		// Inform Lobby
 		if c.user.IsReady() {
-			if err := t.Publish(c.user.Peer.NewUpdateEvent()); err != nil {
+			if err := t.Publish(c.user.Peer.NewUpdateEvent(t.Topic())); err != nil {
 				log.Println(md.NewError(err, md.ErrorMessage_TOPIC_UPDATE))
 			}
 		}
@@ -200,7 +200,7 @@ func (c *client) Lifecycle(state md.LifecycleState, t *net.TopicManager) {
 	} else if state == md.LifecycleState_Stopped {
 		// Inform Lobby
 		if c.user.IsReady() {
-			if err := t.Publish(c.user.Peer.NewExitEvent()); err != nil {
+			if err := t.Publish(c.user.Peer.NewExitEvent(t.Topic())); err != nil {
 				log.Println(md.NewError(err, md.ErrorMessage_TOPIC_UPDATE))
 			}
 		}

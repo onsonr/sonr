@@ -47,12 +47,13 @@ type TopicManager struct {
 	events    chan *md.LobbyEvent
 	exchange  *ExchangeService
 	handler   TopicHandler
-	topicType md.TopicType
+	topicData *md.Topic
 }
 
 // NewLocal ^ Create New Contained Topic Manager ^ //
-func (h *hostNode) JoinTopic(ctx context.Context, u *md.User, name string, th TopicHandler) (*TopicManager, *md.SonrError) {
+func (h *hostNode) JoinTopic(ctx context.Context, u *md.User, topicData *md.Topic, th TopicHandler) (*TopicManager, *md.SonrError) {
 	// Join Topic
+	name := topicData.GetName()
 	topic, err := h.pubsub.Join(name)
 	if err != nil {
 		return nil, md.NewError(err, md.ErrorMessage_TOPIC_JOIN)
@@ -77,7 +78,7 @@ func (h *hostNode) JoinTopic(ctx context.Context, u *md.User, name string, th To
 		ctx:          ctx,
 		host:         h,
 		eventHandler: handler,
-		topicType:    md.TopicType_LOCAL,
+		topicData:    topicData,
 		events:       make(chan *md.LobbyEvent, util.TOPIC_MAX_MESSAGES),
 		subscription: sub,
 		topic:        topic,
@@ -137,6 +138,11 @@ func (tm *TopicManager) Publish(msg *md.LobbyEvent) error {
 	return nil
 }
 
+// Returns Topic Data instance
+func (tm *TopicManager) Topic() *md.Topic {
+	return tm.topicData
+}
+
 // HasPeer @ Helper: ID returns ONE Peer.ID in Topic
 func (tm *TopicManager) HasPeer(q string) bool {
 	// Iterate through PubSub in topic
@@ -145,14 +151,6 @@ func (tm *TopicManager) HasPeer(q string) bool {
 		if id.String() == q {
 			return true
 		}
-	}
-	return false
-}
-
-// IsLocal @ Check if Local Topic
-func (tm *TopicManager) IsLocal() bool {
-	if tm.topicType == md.TopicType_LOCAL {
-		return true
 	}
 	return false
 }
@@ -230,7 +228,7 @@ func (tm *TopicManager) handleTopicEvents(ctx context.Context) {
 				continue
 			}
 		} else if lobEvent.Type == pubsub.PeerLeave {
-			tm.PushEvent(md.NewExitLocalEvent(lobEvent.Peer.String()))
+			tm.PushEvent(md.NewExitLocalEvent(lobEvent.Peer.String(), tm.topicData))
 		}
 		md.GetState().NeedsWait()
 	}
