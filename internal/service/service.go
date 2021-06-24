@@ -30,7 +30,7 @@ type serviceClient struct {
 	user    *md.User
 
 	// Services
-	Local  *LocalService
+	Local  *AuthService
 	Device *DeviceService
 }
 

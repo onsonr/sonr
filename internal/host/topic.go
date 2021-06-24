@@ -84,7 +84,7 @@ func (h *hostNode) JoinTopic(ctx context.Context, u *md.User, name string, th To
 	}
 
 	// Start Exchange Server
-	exchangeServer := rpc.NewServer(h.Host(), util.LOCAL_PROTOCOL)
+	exchangeServer := rpc.NewServer(h.Host(), util.AUTH_PROTOCOL)
 	psv := ExchangeService{
 		user: u,
 		call: th,

@@ -10,20 +10,19 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// LocalServiceArgs ExchangeArgs is Peer protobuf
-type LocalServiceArgs struct {
+// AuthServiceArgs ExchangeArgs is Peer protobuf
+type AuthServiceArgs struct {
 	Peer   []byte
 	Invite []byte
 }
 
-// LocalServiceResponse ExchangeResponse is also Peer protobuf
-type LocalServiceResponse struct {
+// AuthServiceResponse ExchangeResponse is also Peer protobuf
+type AuthServiceResponse struct {
 	InvReply []byte
 	Peer     []byte
 }
 
-type LocalService struct {
-	ServiceClient
+type AuthService struct {
 	handler ServiceHandler
 	user    *md.User
 	respCh  chan *md.InviteResponse
@@ -32,15 +31,15 @@ type LocalService struct {
 
 func (sc *serviceClient) StartLocal() *md.SonrError {
 	// Start Exchange Server
-	localServer := rpc.NewServer(sc.host.Host(), util.LOCAL_PROTOCOL)
-	psv := LocalService{
+	localServer := rpc.NewServer(sc.host.Host(), util.AUTH_PROTOCOL)
+	psv := AuthService{
 		user:    sc.user,
 		handler: sc.handler,
 		respCh:  make(chan *md.InviteResponse, util.TOPIC_MAX_MESSAGES),
 	}
 
 	// Register Service
-	err := localServer.RegisterName(util.LOCAL_RPC_SERVICE, &psv)
+	err := localServer.RegisterName(util.AUTH_RPC_SERVICE, &psv)
 	if err != nil {
 		return md.NewError(err, md.ErrorMessage_TOPIC_RPC)
 	}
@@ -52,9 +51,9 @@ func (sc *serviceClient) StartLocal() *md.SonrError {
 func (tm *serviceClient) Invite(id peer.ID, inv *md.InviteRequest) error {
 	// Initialize Data
 	isFlat := inv.IsFlatInvite()
-	rpcClient := rpc.NewClient(tm.host.Host(), util.LOCAL_PROTOCOL)
-	var reply LocalServiceResponse
-	var args LocalServiceArgs
+	rpcClient := rpc.NewClient(tm.host.Host(), util.AUTH_PROTOCOL)
+	var reply AuthServiceResponse
+	var args AuthServiceArgs
 
 	// Convert Protobuf to bytes
 	msgBytes, err := proto.Marshal(inv)
@@ -68,7 +67,7 @@ func (tm *serviceClient) Invite(id peer.ID, inv *md.InviteRequest) error {
 	// Check Invite for Flat/Default
 	if isFlat {
 		// Call to Peer
-		err = rpcClient.Call(id, util.LOCAL_RPC_SERVICE, util.LOCAL_METHOD_INVITE, args, &reply)
+		err = rpcClient.Call(id, util.AUTH_RPC_SERVICE, util.AUTH_METHOD_INVITE, args, &reply)
 		if err != nil {
 			return err
 		}
@@ -78,7 +77,7 @@ func (tm *serviceClient) Invite(id peer.ID, inv *md.InviteRequest) error {
 	} else {
 		// Call to Peer
 		done := make(chan *rpc.Call, 1)
-		err = rpcClient.Go(id, util.LOCAL_RPC_SERVICE, util.LOCAL_METHOD_INVITE, args, &reply, done)
+		err = rpcClient.Go(id, util.AUTH_RPC_SERVICE, util.AUTH_METHOD_INVITE, args, &reply, done)
 
 		// Await Response
 		call := <-done
@@ -91,7 +90,7 @@ func (tm *serviceClient) Invite(id peer.ID, inv *md.InviteRequest) error {
 }
 
 // InviteWith # Calls Invite on Local Lobby Peer
-func (ts *LocalService) InviteWith(ctx context.Context, args LocalServiceArgs, reply *LocalServiceResponse) error {
+func (ts *AuthService) InviteWith(ctx context.Context, args AuthServiceArgs, reply *AuthServiceResponse) error {
 	// Received Message
 	inv := md.InviteRequest{}
 	err := proto.Unmarshal(args.Invite, &inv)
