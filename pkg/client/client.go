@@ -39,7 +39,6 @@ type client struct {
 	// Properties
 	ctx       context.Context
 	call      md.Callback
-	localInfo *md.Lobby_Info
 	user      *md.User
 	session   *md.Session
 	request   *md.ConnectionRequest
@@ -106,7 +105,7 @@ func (c *client) Bootstrap() (*net.TopicManager, *md.SonrError) {
 	}
 
 	// Start Services
-	s, err := srv.NewService(c.ctx, c.Host, c.user, c)
+	s, err := srv.NewService(c.ctx, c.Host, c.user, c.request, c)
 	if err != nil {
 		return nil, err
 	}

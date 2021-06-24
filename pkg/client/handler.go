@@ -8,11 +8,6 @@ import (
 
 // ^ OnConnected: HostNode Connection Response ^
 func (c *client) OnConnected(r *md.ConnectionResponse) {
-	// Set Local Info
-	if r.LocalInfo == nil {
-		r.LocalInfo = c.user.GetRouter().LocalInfo()
-	}
-
 	// Convert Message
 	bytes, err := proto.Marshal(r)
 	if err != nil {

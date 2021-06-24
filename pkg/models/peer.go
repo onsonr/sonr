@@ -10,36 +10,6 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// ** ─── Local Event MANAGEMENT ────────────────────────────────────────────────────────
-// Creates New Exit Local Event
-func NewJoinLocalEvent(peer *Peer) *LobbyEvent {
-	return &LobbyEvent{
-		Id:      peer.Id.Peer,
-		Peer:    peer,
-		Subject: LobbyEvent_JOIN,
-		Type:    TopicType_LOCAL,
-	}
-}
-
-// Creates New Exit Local Event
-func NewUpdateLocalEvent(peer *Peer) *LobbyEvent {
-	return &LobbyEvent{
-		Id:      peer.Id.Peer,
-		Peer:    peer,
-		Subject: LobbyEvent_UPDATE,
-		Type:    TopicType_LOCAL,
-	}
-}
-
-// Creates New Exit Local Event
-func NewExitLocalEvent(id string) *LobbyEvent {
-	return &LobbyEvent{
-		Id:      id,
-		Subject: LobbyEvent_EXIT,
-		Type:    TopicType_LOCAL,
-	}
-}
-
 // ** ─── Peer Instance MANAGEMENT ────────────────────────────────────────────────────────
 // Converts Peer to PeerInstance for Threads Storage
 func (p *Peer) ToInstance() *PeerInstance {

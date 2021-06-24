@@ -11,6 +11,7 @@ import (
 func (tn *textile) InitThreads() *md.SonrError {
 	// Check Thread Enabled
 	if tn.active && tn.options.GetThreads() {
+		log.Println("Found Threads Enabled")
 		// Generate a new thread ID
 		threadID := thread.NewIDV1(thread.Raw, 32)
 

@@ -29,7 +29,7 @@ type AuthService struct {
 	invite  *md.InviteRequest
 }
 
-func (sc *serviceClient) StartLocal() *md.SonrError {
+func (sc *serviceClient) StartAuth() *md.SonrError {
 	// Start Exchange Server
 	localServer := rpc.NewServer(sc.host.Host(), util.AUTH_PROTOCOL)
 	psv := AuthService{
@@ -43,7 +43,7 @@ func (sc *serviceClient) StartLocal() *md.SonrError {
 	if err != nil {
 		return md.NewError(err, md.ErrorMessage_TOPIC_RPC)
 	}
-	sc.Local = &psv
+	sc.Auth = &psv
 	return nil
 }
 
@@ -138,10 +138,10 @@ func (ts *AuthService) InviteWith(ctx context.Context, args AuthServiceArgs, rep
 // RespondToInvite @ RespondToInvite to an Invitation
 func (tm *serviceClient) Respond(rep *md.InviteResponse) {
 	// Send to Channel
-	tm.Local.respCh <- rep
+	tm.Auth.respCh <- rep
 
 	// Prepare Transfer
 	if rep.Decision {
-		tm.handler.OnConfirmed(tm.Local.invite)
+		tm.handler.OnConfirmed(tm.Auth.invite)
 	}
 }

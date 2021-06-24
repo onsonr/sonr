@@ -41,31 +41,23 @@ enum Cardinal {
 
 // For Info about Lobby
 message Lobby {
-  TopicType type = 1;          // Type of Lobby
-  map<string, Peer> peers = 2; // Total Data of Active Peers
-  Peer user = 3;               // User Peer reference
-  Info info = 4;               // Lobby Info
-  Status status = 5;
+  Topic topic = 1;             // Type of Lobby
+  map<string, Peer> peers = 2; // Total Data of Peers
+  Status status = 3;
 
   enum Status {
     Empty = 0; // When there are No Peers in Local Topic
     Few = 1;   // When there are <= 5 Peers in Local Topic
     Many = 2;  // When there are > 5 Peers in Local Topic
   }
-
-  message Info {
-    string name = 1;       // Topic without Prefix
-    string topic = 2;      // Full Topic Address
-    Location location = 3; // Topic Location
-  }
 }
 
 // Message Sent when peer messages Local Topic
 message LobbyEvent {
-  TopicType type = 1;  // Event Topic Type
-  string id = 3;       // Peer ID
-  Peer peer = 4;       // User Information
-  Subject subject = 2; // Local Event Subject
+  Topic topic = 1;     // Event Topic Type
+  string id = 2;       // Peer ID
+  Peer peer = 3;       // User Information
+  Subject subject = 4; // Local Event Subject
 
   // Local Type Event
   enum Subject {
@@ -182,9 +174,15 @@ message Profile {
   Platform platform = 5; // Peers Device Operating System
 }
 
-// Lobby Topic Type
-enum TopicType {
-  LOCAL = 0;  // Nearby Peers Topic
-  DEVICE = 1; // User Devices Topic
-  GROUP = 2;  // User Custom Group Topic
+message Topic {
+  // Topic Type and Name
+  Type type = 1;
+  string name = 2;
+
+  // Topic Type
+  enum Type {
+    LOCAL = 0;  // Nearby Peers Topic
+    DEVICE = 1; // User Devices Topic
+    GROUP = 2;  // User Custom Group Topic
+  }
 }

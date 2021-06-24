@@ -25,9 +25,6 @@ type Node struct {
 	// Groups
 	local  *net.TopicManager
 	topics map[string]*net.TopicManager
-
-	// Miscellaneous
-	store md.Store
 }
 
 // ^ Initializes New Node ^ //
@@ -48,15 +45,9 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 		state:  md.LifecycleState_Active,
 	}
 
-	// Create Store - Start Auth Service
-	if s, err := md.InitStore(req.GetDevice()); err != nil {
-		mn.handleError(err)
-	} else {
-		mn.store = s
-	}
 
 	// Create User
-	if u, err := md.NewUser(req, mn.store); err != nil {
+	if u, err := md.NewUser(req); err != nil {
 		mn.handleError(err)
 	} else {
 		mn.user = u
@@ -128,47 +119,13 @@ func (n *Node) Sign(data []byte) []byte {
 	}
 
 	// Sign Buffer
-	result := n.user.Sign(request, n.store)
+	result := n.user.Sign(request)
 	buf, err := proto.Marshal(result)
 	if err != nil {
 		n.handleError(md.NewMarshalError(err))
 		return nil
 	}
 	return buf
-}
-
-// @ Store Request for Payload into MemoryStore
-func (n *Node) Store(data []byte) []byte {
-	// Unmarshal Data to Request
-	request := &md.StoreRequest{}
-	if err := proto.Unmarshal(data, request); err != nil {
-		// Handle Error
-		n.handleError(md.NewUnmarshalError(err))
-
-		// Create Error Response
-		resp := &md.StoreResponse{
-			Error: md.NewUnmarshalError(err).Message(),
-		}
-
-		// Marshal Data
-		bytes, err := proto.Marshal(resp)
-		if err != nil {
-			return nil
-		}
-
-		// Send Invalid Response
-		return bytes
-	}
-
-	// Handle Request with Store
-	resp := n.store.Handle(request)
-
-	// Marshal Data
-	bytes, err := proto.Marshal(resp)
-	if err != nil {
-		return nil
-	}
-	return bytes
 }
 
 // @ Verification Request for Signed Data
