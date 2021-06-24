@@ -87,6 +87,8 @@ func (c *client) Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrErr
 
 	// Check Textile Option
 	if c.request.GetTextileOptions().GetEnabled() {
+		log.Println("Found Textile Enabled")
+
 		// Create Textile Node
 		txtNode, err := txt.NewTextile(c.Host, c.request, keys)
 		if err != nil {

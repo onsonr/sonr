@@ -298,7 +298,6 @@ func (n *Node) Respond(data []byte) {
 		if resp.Decision {
 			n.setStatus(md.Status_TRANSFER)
 		} else {
-
 			n.setStatus(md.Status_AVAILABLE)
 		}
 	}

@@ -3,6 +3,7 @@ package textile
 import (
 	"context"
 	"crypto/tls"
+	"log"
 	"time"
 
 	crypto "github.com/libp2p/go-libp2p-crypto"
@@ -83,6 +84,7 @@ func NewTextile(hn host.HostNode, req *md.ConnectionRequest, keyPair *md.KeyPair
 			return nil, md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
 		}
 		node.active = true
+		log.Println("Activated Textile")
 	}
 	return node, nil
 }
