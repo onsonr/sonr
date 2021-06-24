@@ -47,7 +47,7 @@ type client struct {
 	// References
 	Host    net.HostNode
 	Service srv.ServiceClient
-	Textile txt.TextileNode
+	Textile txt.Textile
 }
 
 // ^ NewClient Initializes Node with Router ^
@@ -85,20 +85,15 @@ func (c *client) Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrErr
 	// Set Host
 	c.Host = hn
 
-	// Check Textile Option
-	if c.request.GetTextileOptions().GetEnabled() {
-		log.Println("Found Textile Enabled")
+	// Create Textile Node
+	txtNode, err := txt.NewTextile(c.Host, c.request, keys)
+	if err != nil {
 
-		// Create Textile Node
-		txtNode, err := txt.NewTextile(c.Host, c.request, keys)
-		if err != nil {
-			c.call.OnError(err)
-			return nil
-		}
-
-		// Set Node
-		c.Textile = txtNode
+		return err
 	}
+
+	// Set Node
+	c.Textile = txtNode
 	return nil
 }
 

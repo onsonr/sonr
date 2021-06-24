@@ -18,15 +18,15 @@ import (
 	"google.golang.org/grpc/credentials"
 )
 
-type TextileNode interface {
+type Textile interface {
 	InitThreads() *md.SonrError
 	PubKey() thread.PubKey
 	ReadMail() ([]*md.MailEntry, *md.SonrError)
 	SendMail(*md.MailEntry) *md.SonrError
 }
 
-type textileNode struct {
-	TextileNode
+type textile struct {
+	Textile
 	active   bool
 	ctxAuth  context.Context
 	ctxToken context.Context
@@ -45,9 +45,9 @@ type textileNode struct {
 }
 
 // @ Initializes New Textile Instance
-func NewTextile(hn host.HostNode, req *md.ConnectionRequest, keyPair *md.KeyPair) (TextileNode, *md.SonrError) {
+func NewTextile(hn host.HostNode, req *md.ConnectionRequest, keyPair *md.KeyPair) (Textile, *md.SonrError) {
 	// Initialize
-	node := &textileNode{
+	node := &textile{
 		keyPair: keyPair,
 		options: req.GetTextileOptions(),
 		apiKeys: req.GetApiKeys(),
@@ -57,6 +57,8 @@ func NewTextile(hn host.HostNode, req *md.ConnectionRequest, keyPair *md.KeyPair
 
 	// Check Textile Enabled
 	if node.options.GetEnabled() {
+		log.Println("Found Textile Enabled")
+		
 		// Initialize
 		var err error
 		creds := credentials.NewTLS(&tls.Config{})
@@ -90,7 +92,7 @@ func NewTextile(hn host.HostNode, req *md.ConnectionRequest, keyPair *md.KeyPair
 }
 
 // @ Returns Instance Host
-func (tn *textileNode) PubKey() thread.PubKey {
+func (tn *textile) PubKey() thread.PubKey {
 	return tn.identity.GetPublic()
 }
 
@@ -110,7 +112,7 @@ func newUserAuthCtx(ctx context.Context, keys *md.APIKeys) (context.Context, err
 }
 
 // # Helper: Creates Auth Token Context from AuthContext, Client, Identity
-func (tn *textileNode) newTokenCtx() (context.Context, error) {
+func (tn *textile) newTokenCtx() (context.Context, error) {
 	// Generate a new token for the user
 	token, err := tn.client.GetToken(tn.ctxAuth, tn.identity)
 	if err != nil {

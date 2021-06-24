@@ -8,7 +8,7 @@ import (
 	"github.com/textileio/go-threads/core/thread"
 )
 
-func (tn *textileNode) InitThreads() *md.SonrError {
+func (tn *textile) InitThreads() *md.SonrError {
 	// Check Thread Enabled
 	if tn.active && tn.options.GetThreads() {
 		// Generate a new thread ID

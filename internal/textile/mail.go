@@ -8,7 +8,7 @@ import (
 )
 
 // @ Method Reads Inbox and Returns List of Mail Entries
-func (tn *textileNode) ReadMail() ([]*md.MailEntry, *md.SonrError) {
+func (tn *textile) ReadMail() ([]*md.MailEntry, *md.SonrError) {
 	// Check Mail Enabled
 	if tn.active && tn.options.GetMailbox() {
 		// List the recipient's inbox
@@ -43,7 +43,7 @@ func (tn *textileNode) ReadMail() ([]*md.MailEntry, *md.SonrError) {
 }
 
 // @ Method Sends Mail Entry to Peer
-func (tn *textileNode) SendMail(e *md.MailEntry) *md.SonrError {
+func (tn *textile) SendMail(e *md.MailEntry) *md.SonrError {
 	// Check Mail Enabled
 	if tn.active && tn.options.GetMailbox() {
 		// Send Message to Mailbox
