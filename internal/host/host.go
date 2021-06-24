@@ -224,3 +224,14 @@ func (hn *hostNode) MultiAddr() (multiaddr.Multiaddr, *md.SonrError) {
 	}
 	return addrs[0], nil
 }
+
+// ** ─── Stream/Pubsub Methods ────────────────────────────────────────────────────────
+// Set Stream Handler for Host
+func (h *hostNode) HandleStream(pid protocol.ID, handler network.StreamHandler) {
+	h.host.SetStreamHandler(pid, handler)
+}
+
+// Start Stream for Host
+func (h *hostNode) StartStream(p peer.ID, pid protocol.ID) (network.Stream, error) {
+	return h.host.NewStream(h.ctxHost, p, pid)
+}

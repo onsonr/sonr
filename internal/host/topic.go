@@ -53,9 +53,21 @@ type TopicManager struct {
 // NewLocal ^ Create New Contained Topic Manager ^ //
 func (h *hostNode) JoinTopic(ctx context.Context, u *md.User, name string, th TopicHandler) (*TopicManager, *md.SonrError) {
 	// Join Topic
-	topic, sub, handler, serr := h.Join(name)
-	if serr != nil {
-		return nil, serr
+	topic, err := h.pubsub.Join(name)
+	if err != nil {
+		return nil, md.NewError(err, md.ErrorMessage_TOPIC_JOIN)
+	}
+
+	// Subscribe to Topic
+	sub, err := topic.Subscribe()
+	if err != nil {
+		return nil, md.NewError(err, md.ErrorMessage_TOPIC_SUB)
+	}
+
+	// Create Topic Handler
+	handler, err := topic.EventHandler()
+	if err != nil {
+		return nil, md.NewError(err, md.ErrorMessage_TOPIC_HANDLER)
 	}
 
 	// Create Lobby Manager
@@ -79,7 +91,7 @@ func (h *hostNode) JoinTopic(ctx context.Context, u *md.User, name string, th To
 	}
 
 	// Register Service
-	err := exchangeServer.RegisterName(util.EXCHANGE_RPC_SERVICE, &psv)
+	err = exchangeServer.RegisterName(util.EXCHANGE_RPC_SERVICE, &psv)
 	if err != nil {
 		return nil, md.NewError(err, md.ErrorMessage_TOPIC_RPC)
 	}
