@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"log"
 
 	"time"
 
@@ -64,10 +65,11 @@ func NewService(ctx context.Context, h net.HostNode, u *md.User, req *md.Connect
 	}
 
 	// Begin Textile Service
-	err = client.StartTextile()
-	if err != nil {
-		return nil, err
-	}
+	go func(c *serviceClient) {
+		if err := c.StartTextile(); err != nil {
+			log.Println(err)
+		}
+	}(client)
 
 	// Return Instance
 	return client, nil
