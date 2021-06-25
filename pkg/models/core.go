@@ -25,7 +25,7 @@ type OnProtobuf func([]byte)
 type OnError func(err *SonrError)
 type Callback struct {
 	OnInvite      OnProtobuf
-	OnConnected     OnProtobuf
+	OnConnected   OnProtobuf
 	OnEvent       OnProtobuf
 	OnReply       OnProtobuf
 	OnProgress    OnProtobuf
@@ -374,7 +374,7 @@ func (p *itemReader) Progress() []byte {
 	currentProgress := float32(p.size) / float32(p.item.Size)
 
 	// Create Update
-	update := &ProgressUpdate{
+	update := &ProgressEvent{
 		Progress: float64(currentProgress),
 		Current:  int32(p.index),
 		Total:    int32(p.total),
@@ -458,7 +458,7 @@ func (p *itemWriter) Progress() []byte {
 	currentProgress := float32(p.size) / float32(p.item.Size)
 
 	// Create Update
-	update := &ProgressUpdate{
+	update := &ProgressEvent{
 		Progress: float64(currentProgress),
 		Current:  int32(p.index),
 		Total:    int32(p.total),

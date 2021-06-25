@@ -10,33 +10,17 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// ** ─── Local Event MANAGEMENT ────────────────────────────────────────────────────────
-// Creates New Exit Local Event
-func NewJoinLocalEvent(peer *Peer) *LobbyEvent {
-	return &LobbyEvent{
-		Id:      peer.Id.Peer,
-		Peer:    peer,
-		Subject: LobbyEvent_JOIN,
-		Type:    TopicType_LOCAL,
-	}
+// ** ─── Topic MANAGEMENT ────────────────────────────────────────────────────────
+func (t *Topic) IsLocal() bool {
+	return t.Type == Topic_LOCAL
 }
 
-// Creates New Exit Local Event
-func NewUpdateLocalEvent(peer *Peer) *LobbyEvent {
-	return &LobbyEvent{
-		Id:      peer.Id.Peer,
-		Peer:    peer,
-		Subject: LobbyEvent_UPDATE,
-		Type:    TopicType_LOCAL,
-	}
-}
-
-// Creates New Exit Local Event
-func NewExitLocalEvent(id string) *LobbyEvent {
-	return &LobbyEvent{
-		Id:      id,
-		Subject: LobbyEvent_EXIT,
-		Type:    TopicType_LOCAL,
+// @ Local Lobby Topic Protocol ID
+func (r *User) NewLocalTopic() *Topic {
+	name := fmt.Sprintf("/sonr/topic/%s", r.Router.Location.OLC())
+	return &Topic{
+		Name: name,
+		Type: Topic_LOCAL,
 	}
 }
 
@@ -71,6 +55,35 @@ func (u *User) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) *SonrError {
 	// Set Device Topic
 	u.Router.DeviceTopic = fmt.Sprintf("/sonr/topic/%s", u.Peer.GetSName())
 	return nil
+}
+
+// ** ─── Local Event MANAGEMENT ────────────────────────────────────────────────────────
+// Creates New Exit Local Event
+func NewJoinLocalEvent(peer *Peer) *LobbyEvent {
+	return &LobbyEvent{
+		Id:      peer.Id.Peer,
+		Peer:    peer,
+		Subject: LobbyEvent_JOIN,
+	}
+}
+
+// Creates New Exit Local Event
+func NewUpdateLocalEvent(peer *Peer, topic *Topic) *LobbyEvent {
+	return &LobbyEvent{
+		Id:      peer.Id.Peer,
+		Peer:    peer,
+		Subject: LobbyEvent_UPDATE,
+		Topic:   topic,
+	}
+}
+
+// Creates New Exit Local Event
+func NewExitLocalEvent(id string, topic *Topic) *LobbyEvent {
+	return &LobbyEvent{
+		Id:      id,
+		Subject: LobbyEvent_EXIT,
+		Topic:   topic,
+	}
 }
 
 // ^ Returns Peer as Buffer ^ //

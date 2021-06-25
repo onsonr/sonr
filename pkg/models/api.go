@@ -250,122 +250,6 @@ func (me *MailEntry) ToPubKey() thread.PubKey {
 	return thread.NewLibp2pPubKey(me.GetTo().PublicKey())
 }
 
-// ** ─── StoreEntry MANAGEMENT ────────────────────────────────────────────────────────
-// Returns Byte List for Key Field
-func (se *StoreEntry) KeyBytes() []byte {
-	switch se.Key.(type) {
-	case *StoreEntry_TextKey:
-		return []byte(se.GetTextKey())
-	case *StoreEntry_TypeKey:
-		return []byte(se.GetTypeKey().String())
-	}
-	return nil
-}
-
-// ** ─── StoreRequest MANAGEMENT ────────────────────────────────────────────────────────
-// Checks if Method is `GET`
-func (sr *StoreRequest) IsGet() bool {
-	return sr.Method == StoreRequest_GET
-}
-
-// Checks if Method is `HAS`
-func (sr *StoreRequest) IsHas() bool {
-	return sr.Method == StoreRequest_HAS
-}
-
-// Checks if Method is `PUT`
-func (sr *StoreRequest) IsPut() bool {
-	return sr.Method == StoreRequest_PUT
-}
-
-// Returns Byte List for Key Field
-func (sr *StoreRequest) KeyBytes() []byte {
-	switch sr.Key.(type) {
-	case *StoreRequest_TextKey:
-		return []byte(sr.GetTextKey())
-	case *StoreRequest_TypeKey:
-		return []byte(sr.GetTypeKey().String())
-	}
-	return nil
-}
-
-// Returns Request Key,Value Pair as StoreEntry
-func (sr *StoreRequest) ValueToEntry() *StoreEntry {
-	// Initialize
-	entry := &StoreEntry{}
-
-	// Set Key
-	switch sr.Key.(type) {
-	case *StoreRequest_TextKey:
-		entry.Key = &StoreEntry_TextKey{
-			TextKey: sr.GetTextKey(),
-		}
-	case *StoreRequest_TypeKey:
-		entry.Key = &StoreEntry_TypeKey{
-			TypeKey: sr.GetTypeKey(),
-		}
-	}
-
-	// Set Value
-	switch sr.Value.(type) {
-	case *StoreRequest_TextValue:
-		entry.Value = &StoreEntry_TextValue{
-			TextValue: sr.GetTextValue(),
-		}
-	case *StoreRequest_BufferValue:
-		entry.Value = &StoreEntry_BufferValue{
-			BufferValue: sr.GetBufferValue(),
-		}
-	}
-	return entry
-}
-
-// ** ─── StoreResponse MANAGEMENT ────────────────────────────────────────────────────────
-// Create New Response for GET Method
-func NewStoreGetResponse(e *StoreEntry, err *SonrError) *StoreResponse {
-	// Initialize
-	resp := &StoreResponse{
-		Method: StoreResponse_GET,
-		Result: &StoreResponse_Entry{
-			Entry: e,
-		},
-	}
-
-	// Check Error
-	if err != nil {
-		resp.Error = err.data
-	}
-	return resp
-}
-
-// Create New Response for HAS Method
-func NewStoreHasResponse(result bool) *StoreResponse {
-	// Initialize
-	return &StoreResponse{
-		Method: StoreResponse_HAS,
-		Result: &StoreResponse_HasValue{
-			HasValue: result,
-		},
-	}
-}
-
-// Create New Response for PUT Method
-func NewStorePutResponse(result bool, err *SonrError) *StoreResponse {
-	// Initialize
-	resp := &StoreResponse{
-		Method: StoreResponse_PUT,
-		Result: &StoreResponse_PutValue{
-			PutValue: result,
-		},
-	}
-
-	// Check Error
-	if err != nil {
-		resp.Error = err.data
-	}
-	return resp
-}
-
 // ** ─── Location MANAGEMENT ────────────────────────────────────────────────────────
 func (l *Location) MinorOLC() string {
 	lat := l.GetLatitude()
@@ -384,11 +268,6 @@ func (l *Location) OLC() string {
 }
 
 // ** ─── Router MANAGEMENT ────────────────────────────────────────────────────────
-// @ Local Lobby Topic Protocol ID
-func (r *User) LocalTopic() string {
-	return fmt.Sprintf("/sonr/topic/%s", r.Router.Location.OLC())
-}
-
 // @ LocalTransferProtocol Controller Data Protocol ID
 func (r *User_Router) LocalTransferProtocol(id peer.ID) protocol.ID {
 	return protocol.ID(fmt.Sprintf("/sonr/local-transfer/%s", id.Pretty()))
@@ -407,15 +286,6 @@ func (r *User_Router) RemoteTransferProtocol(id peer.ID) protocol.ID {
 // @ Lobby Topic Protocol ID
 func (r *User_Router) Topic(name string) string {
 	return fmt.Sprintf("/sonr/topic/%s", name)
-}
-
-// @ Returns Lobby_Info for Local Lobby
-func (r *User_Router) LocalInfo() *Lobby_Info {
-	return &Lobby_Info{
-		Name:     r.GetLocation().OLC(),
-		Topic:    r.GetLocalTopic(),
-		Location: r.GetLocation(),
-	}
 }
 
 // ** ─── Status MANAGEMENT ────────────────────────────────────────────────────────

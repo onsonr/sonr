@@ -27,7 +27,7 @@ type HostNode interface {
 	ID() peer.ID
 	Info() peer.AddrInfo
 	Host() host.Host
-	Join(name string) (*psub.Topic, *psub.Subscription, *psub.TopicEventHandler, *md.SonrError)
+	JoinTopic(ctx context.Context, u *md.User, topicData *md.Topic, th TopicHandler) (*TopicManager, *md.SonrError)
 	HandleStream(pid protocol.ID, handler network.StreamHandler)
 	MultiAddr() (multiaddr.Multiaddr, *md.SonrError)
 	StartStream(p peer.ID, pid protocol.ID) (network.Stream, error)
@@ -223,4 +223,15 @@ func (hn *hostNode) MultiAddr() (multiaddr.Multiaddr, *md.SonrError) {
 		return nil, md.NewError(err, md.ErrorMessage_HOST_INFO)
 	}
 	return addrs[0], nil
+}
+
+// ** ─── Stream/Pubsub Methods ────────────────────────────────────────────────────────
+// Set Stream Handler for Host
+func (h *hostNode) HandleStream(pid protocol.ID, handler network.StreamHandler) {
+	h.host.SetStreamHandler(pid, handler)
+}
+
+// Start Stream for Host
+func (h *hostNode) StartStream(p peer.ID, pid protocol.ID) (network.Stream, error) {
+	return h.host.NewStream(h.ctxHost, p, pid)
 }

@@ -4,6 +4,7 @@ SONR_ROOT_DIR=/Users/prad/Sonr
 
 # Set this -->[/Users/xxxx/Sonr/]<-- to Folder of Sonr Repos
 PROTO_DEF_PATH=/Users/prad/Sonr/core/api
+APP_ROOT_DIR =/Users/prad/Sonr/app
 
 # @ Packaging Vars/Commands
 GOMOBILE=gomobile
@@ -101,6 +102,11 @@ proto:
 	@echo "--------------------------------------------------------------"
 	@echo ""
 
+## [upgrade]   :   Binds Binary, Creates Protobufs, and Updates App
+upgrade: bind
+	cd $(APP_ROOT_DIR) && make update
+
+
 ## [clean]     :   Reinitializes Gomobile and Removes Framworks from Plugin
 clean:
 	cd $(BIND_DIR) && $(GOCLEAN)
@@ -119,9 +125,11 @@ clean:
 ##               └─ (bi) => bind.ios
 ##               └─ (ba) => bind.android
 ##               (p) => proto
+##               (u) => upgrade
 ##               (c) => clean
 b:bind
 bi:bind.ios
 ba:bind.android
 p:proto
+u:upgrade
 c:clean

@@ -293,6 +293,15 @@ func (d *Device) WorkingSupportPath(fileName string) string {
 	}
 }
 
+// Returns Directory for Device Working Support Folder
+func (d *Device) WorkingSupportDirectory() string {
+	if d.IsDesktop() {
+		return d.FileSystem.GetLibrary()
+	} else {
+		return d.FileSystem.GetSupport()
+	}
+}
+
 // Writes a File to Disk and Returns Path
 func (d *Device) WriteKey(data []byte) (string, *SonrError) {
 	// Create File Path
@@ -319,7 +328,7 @@ func (d *Device) WriteFile(name string, data []byte) (string, *SonrError) {
 
 // ** ─── User MANAGEMENT ────────────────────────────────────────────────────────
 // ^ Method Initializes User Info Struct ^ //
-func NewUser(ir *InitializeRequest, s Store) (*User, *SonrError) {
+func NewUser(ir *InitializeRequest) (*User, *SonrError) {
 	// Initialize Device
 	d := ir.GetDevice()
 
@@ -391,23 +400,14 @@ func (u *User) Profile() *Profile {
 }
 
 // Method Signs Data with KeyPair
-func (u *User) Sign(req *AuthRequest, s Store) *AuthResponse {
-	// Put Mnemonic
-	s.Put(&StoreEntry{Key: &StoreEntry_TypeKey{TypeKey: StoreEntry_MNEMONIC}, Value: &StoreEntry_TextValue{TextValue: req.GetMnemonic()}})
-
-	// Put SName
-	s.Put(&StoreEntry{Key: &StoreEntry_TypeKey{TypeKey: StoreEntry_SNAME}, Value: &StoreEntry_TextValue{TextValue: req.GetSName()}})
-
+func (u *User) Sign(req *AuthRequest) *AuthResponse {
 	// Create Prefix
 	prefixResult := u.KeyPair().Sign(fmt.Sprintf("%s%s", req.GetSName(), u.DeviceID()))
 
 	// Get Prefix Appended and Place
 	prefix := util.Substring(prefixResult, 0, 16)
-	s.Put(&StoreEntry{Key: &StoreEntry_TypeKey{TypeKey: StoreEntry_PREFIX}, Value: &StoreEntry_TextValue{TextValue: prefix}})
-
 	// Get FingerPrint from Mnemonic and Place
 	fingerprint := u.KeyPair().Sign(req.GetMnemonic())
-	s.Put(&StoreEntry{Key: &StoreEntry_TypeKey{TypeKey: StoreEntry_FINGERPRINT}, Value: &StoreEntry_TextValue{TextValue: fingerprint}})
 
 	// Get ID from Public Key
 	identity := u.KeyPair().GetPublic().GetId()
@@ -508,19 +508,21 @@ func (u *User) ReplyToFlat(from *Peer) *InviteResponse {
 }
 
 // ^ NewUpdateEvent Creates Lobby Event with Peer Data ^
-func (p *Peer) NewUpdateEvent() *LobbyEvent {
+func (p *Peer) NewUpdateEvent(topic *Topic) *LobbyEvent {
 	return &LobbyEvent{
 		Subject: LobbyEvent_UPDATE,
 		Peer:    p,
 		Id:      p.Id.Peer,
+		Topic:   topic,
 	}
 }
 
 // ^ NewUpdateEvent Creates Lobby Event with Peer Data ^
-func (p *Peer) NewExitEvent() *LobbyEvent {
+func (p *Peer) NewExitEvent(topic *Topic) *LobbyEvent {
 	return &LobbyEvent{
 		Subject: LobbyEvent_EXIT,
 		Peer:    p,
 		Id:      p.Id.Peer,
+		Topic:   topic,
 	}
 }

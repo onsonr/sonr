@@ -22,11 +22,11 @@ const TRANSFER_CHUNK_SIZE = 4 * 1024
 const KEY_FILE_NAME = ".sonr_private_key"
 
 // ** ─── Protocols ────────────────────────────────────────────────────────
-// Global Service Protocol ID
-const GLOBAL_PROTOCOL = protocol.ID("/sonr/global-service/0.2")
+// Auth Service Protocol
+const AUTH_PROTOCOL = protocol.ID("/sonr/auth-service/0.2")
 
-// Local Service Protocol
-const LOCAL_PROTOCOL = protocol.ID("/sonr/local-service/0.2")
+// Exchange Service Protocol
+const EXCHANGE_PROTOCOL = protocol.ID("/sonr/exchange-service/0.2")
 
 // Remote Service Protocol
 const REMOTE_PROTOCOL = protocol.ID("/sonr/remote-service/0.2")
@@ -40,13 +40,16 @@ const TEXTILE_MINER_IDX = "f022352"
 
 // ** ─── Services ────────────────────────────────────────────────────────
 // Local RPC Service Name
-const LOCAL_RPC_SERVICE = "LocalService"
+const EXCHANGE_RPC_SERVICE = "ExchangeService"
 
 // Local RPC Service Method for Exchange
-const LOCAL_METHOD_EXCHANGE = "ExchangeWith"
+const EXCHANGE_METHOD_EXCHANGE = "ExchangeWith"
+
+// Local RPC Service Name
+const AUTH_RPC_SERVICE = "AuthService"
 
 // Local RPC Service Method for Invite
-const LOCAL_METHOD_INVITE = "InviteWith"
+const AUTH_METHOD_INVITE = "InviteWith"
 
 // ^ ─── Methods ────────────────────────────────────────────────────────
 // Construct New Protocol ID given Method Name String and Value String

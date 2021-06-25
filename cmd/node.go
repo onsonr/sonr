@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	tpc "github.com/sonr-io/core/internal/topic"
+	net "github.com/sonr-io/core/internal/host"
 	sc "github.com/sonr-io/core/pkg/client"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
@@ -23,11 +23,8 @@ type Node struct {
 	user   *md.User
 
 	// Groups
-	local  *tpc.Manager
-	topics map[string]*tpc.Manager
-
-	// Miscellaneous
-	store md.Store
+	local  *net.TopicManager
+	topics map[string]*net.TopicManager
 }
 
 // ^ Initializes New Node ^ //
@@ -44,19 +41,13 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	mn := &Node{
 		call:   call,
 		ctx:    context.Background(),
-		topics: make(map[string]*tpc.Manager, 10),
+		topics: make(map[string]*net.TopicManager, 10),
 		state:  md.LifecycleState_Active,
 	}
 
-	// Create Store - Start Auth Service
-	if s, err := md.InitStore(req.GetDevice()); err != nil {
-		mn.handleError(err)
-	} else {
-		mn.store = s
-	}
 
 	// Create User
-	if u, err := md.NewUser(req, mn.store); err != nil {
+	if u, err := md.NewUser(req); err != nil {
 		mn.handleError(err)
 	} else {
 		mn.user = u
@@ -128,47 +119,13 @@ func (n *Node) Sign(data []byte) []byte {
 	}
 
 	// Sign Buffer
-	result := n.user.Sign(request, n.store)
+	result := n.user.Sign(request)
 	buf, err := proto.Marshal(result)
 	if err != nil {
 		n.handleError(md.NewMarshalError(err))
 		return nil
 	}
 	return buf
-}
-
-// @ Store Request for Payload into MemoryStore
-func (n *Node) Store(data []byte) []byte {
-	// Unmarshal Data to Request
-	request := &md.StoreRequest{}
-	if err := proto.Unmarshal(data, request); err != nil {
-		// Handle Error
-		n.handleError(md.NewUnmarshalError(err))
-
-		// Create Error Response
-		resp := &md.StoreResponse{
-			Error: md.NewUnmarshalError(err).Message(),
-		}
-
-		// Marshal Data
-		bytes, err := proto.Marshal(resp)
-		if err != nil {
-			return nil
-		}
-
-		// Send Invalid Response
-		return bytes
-	}
-
-	// Handle Request with Store
-	resp := n.store.Handle(request)
-
-	// Marshal Data
-	bytes, err := proto.Marshal(resp)
-	if err != nil {
-		return nil
-	}
-	return bytes
 }
 
 // @ Verification Request for Signed Data
@@ -285,20 +242,19 @@ func (n *Node) Invite(data []byte) {
 func (n *Node) Respond(data []byte) {
 	if n.isReady() {
 		// Unmarshal Data to Request
-		req := &md.InviteResponse{}
-		if err := proto.Unmarshal(data, req); err != nil {
+		resp := &md.InviteResponse{}
+		if err := proto.Unmarshal(data, resp); err != nil {
 			n.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
 			return
 		}
 
 		// Send Response
-		n.local.RespondToInvite(req)
+		n.client.Respond(resp)
 
 		// Update Status
-		if req.Decision {
+		if resp.Decision {
 			n.setStatus(md.Status_TRANSFER)
 		} else {
-
 			n.setStatus(md.Status_AVAILABLE)
 		}
 	}
