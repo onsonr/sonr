@@ -61,7 +61,12 @@ func NewService(ctx context.Context, h net.HostNode, u *md.User, req *md.Connect
 	}
 
 	// Begin Textile Service
+	err = client.StartTextile()
+	if err != nil {
+		return nil, err
+	}
 
+	// Return Instance
 	return client, nil
 }
 

@@ -155,8 +155,8 @@ message MailResponse {
   }
 }
 
-// Transfer Progress Update
-message ProgressUpdate {
+// Transfer Progress Event
+message ProgressEvent {
   int32 current = 1;
   int32 total = 2;
   double progress = 3;

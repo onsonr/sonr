@@ -12,6 +12,7 @@ import (
 	"github.com/textileio/go-threads/api/client"
 	"github.com/textileio/go-threads/core/thread"
 	"github.com/textileio/textile/v2/api/common"
+	"github.com/textileio/textile/v2/cmd"
 	"github.com/textileio/textile/v2/mail/local"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -46,6 +47,7 @@ func (sc *serviceClient) StartTextile() *md.SonrError {
 		host:    sc.host,
 		active:  false,
 	}
+	sc.Textile = textile
 
 	// Check Textile Enabled
 	if textile.options.GetEnabled() {
@@ -80,13 +82,22 @@ func (sc *serviceClient) StartTextile() *md.SonrError {
 		textile.active = true
 		log.Println("Activated Textile")
 
-		// Initialize Thread
+		// Initialize Threads
 		if textile.options.GetThreads() {
 			log.Println("Found Threads Enabled")
 			textile.InitThreads()
+		} else {
+			log.Println("Found Threads DISABLED")
+		}
+
+		// Initialize Mailbox
+		if textile.options.GetMailbox() {
+			log.Println("Found Mailbox Enabled")
+			textile.InitMail(sc.user.GetDevice())
+		} else {
+			log.Println("Found Mailbox DISABLED")
 		}
 	}
-	sc.Textile = textile
 	return nil
 }
 
@@ -95,8 +106,8 @@ func (tn *TextileService) PubKey() thread.PubKey {
 	return tn.identity.GetPublic()
 }
 
+// @ Initializes Threads
 func (tn *TextileService) InitThreads() *md.SonrError {
-	// Check Thread Enabled
 	// Generate a new thread ID
 	threadID := thread.NewIDV1(thread.Raw, 32)
 
@@ -115,6 +126,28 @@ func (tn *TextileService) InitThreads() *md.SonrError {
 	// Log DB Info
 	log.Println("> Success!")
 	log.Println(fmt.Sprintf("ID: %s \n Maddr: %s \n Key: %s \n Name: %s \n", threadID.String(), info.Addrs, info.Key.String(), info.Name))
+	return nil
+}
+
+// @ Initializes Mailbox
+func (tn *TextileService) InitMail(d *md.Device) *md.SonrError {
+	// Setup the mail lib
+	mail := local.NewMail(cmd.NewClients(util.TEXTILE_API_URL, true, util.TEXTILE_MINER_IDX), local.DefaultConfConfig())
+	tn.mail = mail
+
+	// Create a new mailbox with config
+	mailbox, err := mail.NewMailbox(context.Background(), local.Config{
+		Path:      d.WorkingSupportDirectory(),
+		Identity:  tn.identity,
+		APIKey:    tn.apiKeys.GetTextileKey(),
+		APISecret: tn.apiKeys.GetTextileSecret(),
+	})
+
+	// Check Error
+	if err != nil {
+		return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+	}
+	tn.mailbox = mailbox
 	return nil
 }
 

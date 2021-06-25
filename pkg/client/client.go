@@ -8,7 +8,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	net "github.com/sonr-io/core/internal/host"
 	srv "github.com/sonr-io/core/internal/service"
-	txt "github.com/sonr-io/core/internal/textile"
 	md "github.com/sonr-io/core/pkg/models"
 )
 
@@ -46,7 +45,6 @@ type client struct {
 	// References
 	Host    net.HostNode
 	Service srv.ServiceClient
-	Textile txt.Textile
 }
 
 // ^ NewClient Initializes Node with Router ^
@@ -83,16 +81,6 @@ func (c *client) Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrErr
 
 	// Set Host
 	c.Host = hn
-
-	// Create Textile Node
-	txtNode, err := txt.NewTextile(c.Host, c.request, keys)
-	if err != nil {
-
-		return err
-	}
-
-	// Set Node
-	c.Textile = txtNode
 	return nil
 }
 

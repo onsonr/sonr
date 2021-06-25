@@ -293,6 +293,15 @@ func (d *Device) WorkingSupportPath(fileName string) string {
 	}
 }
 
+// Returns Directory for Device Working Support Folder
+func (d *Device) WorkingSupportDirectory() string {
+	if d.IsDesktop() {
+		return d.FileSystem.GetLibrary()
+	} else {
+		return d.FileSystem.GetSupport()
+	}
+}
+
 // Writes a File to Disk and Returns Path
 func (d *Device) WriteKey(data []byte) (string, *SonrError) {
 	// Create File Path
