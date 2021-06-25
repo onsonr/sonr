@@ -71,10 +71,11 @@ message ConnectionRequest {
 
   // Textile Configuration
   message TextileOptions {
-    bool enabled = 1; // Enable Textile Client
-    bool mailbox = 2; // Enable Mailbox
-    bool threads = 3; // Enable Threads
-    bool buckets = 4; // Enable Buckets
+    bool enabled = 1;    // Enable Textile Client
+    bool mailbox = 2;    // Enable Mailbox
+    bool threads = 3;    // Enable Threads
+    bool buckets = 4;    // Enable Buckets
+    string threadDB = 5; // Address for Database
   }
 }
 
@@ -102,7 +103,13 @@ message InviteRequest {
   Peer from = 3;         // Users Peer Data
   Peer to = 4;           // Receivers Peer Data
   Transfer transfer = 5; // Attached Data
-  bool flatMode = 6;     // Flat Transfer
+  Type type = 6;         // Type of Invite
+
+  enum Type {
+    Local = 0;
+    Flat = 1;
+    Remote = 2;
+  }
 }
 
 // Reply Message sent on RPC

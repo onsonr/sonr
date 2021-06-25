@@ -113,8 +113,6 @@ func (tn *TextileService) PubKey() thread.PubKey {
 func (tn *TextileService) InitThreads() *md.SonrError {
 	// Generate a new thread ID
 	threadID := thread.NewIDV1(thread.Raw, 32)
-
-	// Create your new thread
 	err := tn.client.NewDB(tn.ctxToken, threadID)
 	if err != nil {
 		return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
@@ -162,11 +160,11 @@ func (tn *TextileService) InitMail(d *md.Device) *md.SonrError {
 }
 
 // @ Method Reads Inbox and Returns List of Mail Entries
-func (tn *TextileService) ReadMail() ([]*md.MailEntry, *md.SonrError) {
+func (sc *serviceClient) ReadMail() ([]*md.MailEntry, *md.SonrError) {
 	// Check Mail Enabled
-	if tn.active && tn.options.GetMailbox() {
+	if sc.Textile.active && sc.Textile.options.GetMailbox() {
 		// List the recipient's inbox
-		inbox, err := tn.mailbox.ListInboxMessages(context.Background())
+		inbox, err := sc.Textile.mailbox.ListInboxMessages(context.Background())
 
 		if err != nil {
 			return nil, md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
@@ -178,7 +176,7 @@ func (tn *TextileService) ReadMail() ([]*md.MailEntry, *md.SonrError) {
 		// Iterate over Entries
 		for i, v := range inbox {
 			// Open decrypts the message body
-			body, err := v.Open(context.Background(), tn.identity)
+			body, err := v.Open(context.Background(), sc.Textile.identity)
 			if err != nil {
 				return nil, md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
 			}
@@ -197,11 +195,11 @@ func (tn *TextileService) ReadMail() ([]*md.MailEntry, *md.SonrError) {
 }
 
 // @ Method Sends Mail Entry to Peer
-func (tn *TextileService) SendMail(e *md.MailEntry) *md.SonrError {
+func (sc *serviceClient) SendMail(e *md.MailEntry) *md.SonrError {
 	// Check Mail Enabled
-	if tn.active && tn.options.GetMailbox() {
+	if sc.Textile.active && sc.Textile.options.GetMailbox() {
 		// Send Message to Mailbox
-		_, err := tn.mailbox.SendMessage(context.Background(), e.ToPubKey(), e.Buffer())
+		_, err := sc.Textile.mailbox.SendMessage(context.Background(), e.ToPubKey(), e.Buffer())
 
 		// Check Error
 		if err != nil {

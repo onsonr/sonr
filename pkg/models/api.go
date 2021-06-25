@@ -181,6 +181,20 @@ func (r *InviteResponse) HasAcceptedTransfer() bool {
 }
 
 // ** ─── InviteRequest MANAGEMENT ────────────────────────────────────────────────────────
+// Converts Invite Request to MailRequest
+func (i *InviteRequest) ToMailRequest() *MailRequest {
+	return &MailRequest{
+		Method: MailRequest_SEND,
+		Entry: &MailEntry{
+			From: i.GetFrom(),
+			To:   i.GetTo(),
+			Body: &MailEntry_Invite{
+				Invite: i,
+			},
+		},
+	}
+}
+
 // Returns Invite Contact
 func (i *InviteRequest) GetContact() *Contact {
 	return i.GetTransfer().GetContact()
@@ -213,7 +227,7 @@ func (i *InviteRequest) IsPayloadUrl() bool {
 
 // Checks for Flat Invite
 func (i *InviteRequest) IsFlatInvite() bool {
-	return i.GetFlatMode()
+	return i.GetType() == InviteRequest_Flat
 }
 
 // Validates InviteRequest has From Parameter

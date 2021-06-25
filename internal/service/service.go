@@ -24,6 +24,8 @@ type ServiceHandler interface {
 type ServiceClient interface {
 	Invite(id peer.ID, inv *md.InviteRequest) error
 	Respond(rep *md.InviteResponse)
+	SendMail(e *md.MailEntry) *md.SonrError
+	ReadMail() ([]*md.MailEntry, *md.SonrError)
 	Close()
 }
 
