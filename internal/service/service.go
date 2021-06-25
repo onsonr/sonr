@@ -33,12 +33,12 @@ type serviceClient struct {
 	ServiceClient
 
 	// Common
-	ctx         context.Context
-	apiKeys     *md.APIKeys
-	handler     ServiceHandler
-	host        net.HostNode
-	textileOpts *md.ConnectionRequest_TextileOptions
-	user        *md.User
+	ctx     context.Context
+	apiKeys *md.APIKeys
+	handler ServiceHandler
+	host    net.HostNode
+	request *md.ConnectionRequest
+	user    *md.User
 
 	// Services
 	Auth    *AuthService
@@ -49,12 +49,12 @@ type serviceClient struct {
 func NewService(ctx context.Context, h net.HostNode, u *md.User, req *md.ConnectionRequest, sh ServiceHandler) (ServiceClient, *md.SonrError) {
 	// Create Client
 	client := &serviceClient{
-		ctx:         ctx,
-		apiKeys:     req.GetApiKeys(),
-		handler:     sh,
-		host:        h,
-		textileOpts: req.GetTextileOptions(),
-		user:        u,
+		ctx:     ctx,
+		apiKeys: req.GetApiKeys(),
+		handler: sh,
+		host:    h,
+		request: req,
+		user:    u,
 	}
 
 	// Begin Auth Service

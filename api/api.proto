@@ -27,14 +27,8 @@ message AuthResponse {
 
 // First Message Sent with Device and API Keys
 message InitializeRequest {
-  Device device = 1;     // Users Device
-  APIKeys apiKeys = 2;   // Client Keys
-  UserStatus status = 3; // User Status
-
-  enum UserStatus {
-    RETURNING = 0; // Returning User
-    NEW = 1;       // New User no Keys yet
-  }
+  Device device = 1;   // Users Device
+  APIKeys apiKeys = 2; // Client Keys
 }
 
 // Connection Message to Establish Sonr Host/API/Topic
@@ -47,6 +41,7 @@ message ConnectionRequest {
   HostOptions hostOptions = 6;       // Libp2p Host config
   PubsubOptions pubsubOptions = 7;   // Pubsub Configuration
   TextileOptions textileOptions = 8; // Textile Client Config
+  UserStatus status = 9;             // User Status
 
   // Internet Connection Type
   enum InternetType {
@@ -76,6 +71,12 @@ message ConnectionRequest {
     bool threads = 3;    // Enable Threads
     bool buckets = 4;    // Enable Buckets
     string threadDB = 5; // Address for Database
+  }
+
+  // User is Returning or New
+  enum UserStatus {
+    RETURNING = 0; // Returning User
+    NEW = 1;       // New User no Keys yet
   }
 }
 

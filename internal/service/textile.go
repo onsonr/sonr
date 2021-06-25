@@ -44,7 +44,7 @@ func (sc *serviceClient) StartTextile() *md.SonrError {
 	// Initialize
 	textile := &TextileService{
 		keyPair:     sc.user.KeyPair(),
-		options:     sc.textileOpts,
+		options:     sc.request.GetTextileOptions(),
 		apiKeys:     sc.apiKeys,
 		host:        sc.host,
 		active:      false,
@@ -96,7 +96,7 @@ func (sc *serviceClient) StartTextile() *md.SonrError {
 		// Initialize Mailbox
 		if textile.options.GetMailbox() {
 			log.Println("Found Mailbox Enabled")
-			textile.InitMail(sc.user.GetDevice())
+			textile.InitMail(sc.user.GetDevice(), sc.request.GetStatus())
 		} else {
 			log.Println("Found Mailbox DISABLED")
 		}
@@ -133,29 +133,52 @@ func (tn *TextileService) InitThreads() *md.SonrError {
 	if err != nil {
 		return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
 	}
+
+	// Logging
+	log.Println("ALL DBS: ")
+	for k, v := range result {
+		log.Println(fmt.Sprintf("ID: %s \n Maddr: %s \n Key: %s \n Name: %s \n", k.String(), v.Addrs, v.Key.String(), v.Name))
+	}
+
 	tn.handleInitialized(result)
 	return nil
 }
 
 // @ Initializes Mailbox
-func (tn *TextileService) InitMail(d *md.Device) *md.SonrError {
+func (tn *TextileService) InitMail(d *md.Device, us md.ConnectionRequest_UserStatus) *md.SonrError {
 	// Setup the mail lib
 	mail := local.NewMail(cmd.NewClients(util.TEXTILE_API_URL, true, util.TEXTILE_MINER_IDX), local.DefaultConfConfig())
 	tn.mail = mail
 
-	// Create a new mailbox with config
-	mailbox, err := mail.NewMailbox(context.Background(), local.Config{
-		Path:      d.WorkingSupportDirectory(),
-		Identity:  tn.identity,
-		APIKey:    tn.apiKeys.GetTextileKey(),
-		APISecret: tn.apiKeys.GetTextileSecret(),
-	})
+	// Create New Mailbox
+	if us == md.ConnectionRequest_NEW {
+		// Create a new mailbox with config
+		mailbox, err := mail.NewMailbox(context.Background(), local.Config{
+			Path:      d.WorkingSupportDirectory(),
+			Identity:  tn.identity,
+			APIKey:    tn.apiKeys.GetTextileKey(),
+			APISecret: tn.apiKeys.GetTextileSecret(),
+		})
 
-	// Check Error
-	if err != nil {
-		return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+		// Check Error
+		if err != nil {
+			return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+		}
+
+		// Set Mailbox
+		tn.mailbox = mailbox
+	} else {
+		// Return Existing Mailbox
+		mailbox, err := mail.GetLocalMailbox(context.Background(), d.WorkingSupportDirectory())
+
+		// Check Error
+		if err != nil {
+			return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+		}
+
+		// Set Mailbox
+		tn.mailbox = mailbox
 	}
-	tn.mailbox = mailbox
 	return nil
 }
 
