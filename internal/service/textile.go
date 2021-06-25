@@ -11,7 +11,6 @@ import (
 	"github.com/sonr-io/core/pkg/util"
 	"github.com/textileio/go-threads/api/client"
 	"github.com/textileio/go-threads/core/thread"
-	"github.com/textileio/go-threads/db"
 	"github.com/textileio/textile/v2/api/common"
 	"github.com/textileio/textile/v2/cmd"
 	"github.com/textileio/textile/v2/mail/local"
@@ -88,7 +87,10 @@ func (sc *serviceClient) StartTextile() *md.SonrError {
 		// Initialize Threads
 		if textile.options.GetThreads() {
 			log.Println("Found Threads Enabled")
-			textile.InitThreads()
+			err := textile.InitThreads()
+			if err != nil {
+				return err
+			}
 		} else {
 			log.Println("Found Threads DISABLED")
 		}
@@ -96,7 +98,10 @@ func (sc *serviceClient) StartTextile() *md.SonrError {
 		// Initialize Mailbox
 		if textile.options.GetMailbox() {
 			log.Println("Found Mailbox Enabled")
-			textile.InitMail(sc.user.GetDevice(), sc.request.GetStatus())
+			err := textile.InitMail(sc.user.GetDevice(), sc.request.GetStatus())
+			if err != nil {
+				return err
+			}
 		} else {
 			log.Println("Found Mailbox DISABLED")
 		}
@@ -127,20 +132,6 @@ func (tn *TextileService) InitThreads() *md.SonrError {
 	// Log DB Info
 	log.Println("> Success!")
 	log.Println(fmt.Sprintf("ID: %s \n Maddr: %s \n Key: %s \n Name: %s \n", threadID.String(), info.Addrs, info.Key.String(), info.Name))
-
-	// Return List Of Dbs
-	result, err := tn.client.ListDBs(tn.ctxToken)
-	if err != nil {
-		return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
-	}
-
-	// Logging
-	log.Println("ALL DBS: ")
-	for k, v := range result {
-		log.Println(fmt.Sprintf("ID: %s \n Maddr: %s \n Key: %s \n Name: %s \n", k.String(), v.Addrs, v.Key.String(), v.Name))
-	}
-
-	tn.handleInitialized(result)
 	return nil
 }
 
@@ -230,23 +221,4 @@ func (sc *serviceClient) SendMail(e *md.MailEntry) *md.SonrError {
 		}
 	}
 	return nil
-}
-
-// # Helper: To Callback Info
-func (t *TextileService) handleInitialized(dbs map[thread.ID]db.Info) {
-	// Init Map
-	threads := make(map[string]*md.ConnectionResponse_TextileThread)
-
-	// Iterate Through DB Info
-	for k, v := range dbs {
-		threads[k.String()] = &md.ConnectionResponse_TextileThread{
-			Id:        k.String(),
-			Multiaddr: v.Addrs[0].String(),
-			Key:       v.Key.String(),
-			Name:      v.Name,
-		}
-	}
-
-	// Callback Data
-	t.onConnected(&md.ConnectionResponse{Threads: threads})
 }
