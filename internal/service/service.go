@@ -15,6 +15,7 @@ import (
 )
 
 type ServiceHandler interface {
+	OnConnected(r *md.ConnectionResponse)
 	OnInvite([]byte)
 	OnReply(id peer.ID, data []byte)
 	OnConfirmed(inv *md.InviteRequest)

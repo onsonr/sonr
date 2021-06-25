@@ -11,6 +11,7 @@ import (
 	"github.com/sonr-io/core/pkg/util"
 	"github.com/textileio/go-threads/api/client"
 	"github.com/textileio/go-threads/core/thread"
+	"github.com/textileio/go-threads/db"
 	"github.com/textileio/textile/v2/api/common"
 	"github.com/textileio/textile/v2/cmd"
 	"github.com/textileio/textile/v2/mail/local"
@@ -25,10 +26,11 @@ type TextileService struct {
 	ctxToken context.Context
 
 	// Parameters
-	apiKeys *md.APIKeys
-	host    host.HostNode
-	keyPair *md.KeyPair
-	options *md.ConnectionRequest_TextileOptions
+	apiKeys     *md.APIKeys
+	host        host.HostNode
+	keyPair     *md.KeyPair
+	options     *md.ConnectionRequest_TextileOptions
+	onConnected md.OnConnected
 
 	// Properties
 	identity thread.Identity
@@ -41,11 +43,12 @@ type TextileService struct {
 func (sc *serviceClient) StartTextile() *md.SonrError {
 	// Initialize
 	textile := &TextileService{
-		keyPair: sc.user.KeyPair(),
-		options: sc.textileOpts,
-		apiKeys: sc.apiKeys,
-		host:    sc.host,
-		active:  false,
+		keyPair:     sc.user.KeyPair(),
+		options:     sc.textileOpts,
+		apiKeys:     sc.apiKeys,
+		host:        sc.host,
+		active:      false,
+		onConnected: sc.handler.OnConnected,
 	}
 	sc.Textile = textile
 
@@ -126,6 +129,13 @@ func (tn *TextileService) InitThreads() *md.SonrError {
 	// Log DB Info
 	log.Println("> Success!")
 	log.Println(fmt.Sprintf("ID: %s \n Maddr: %s \n Key: %s \n Name: %s \n", threadID.String(), info.Addrs, info.Key.String(), info.Name))
+
+	// Return List Of Dbs
+	result, err := tn.client.ListDBs(tn.ctxToken)
+	if err != nil {
+		return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+	}
+	tn.handleInitialized(result)
 	return nil
 }
 
@@ -199,4 +209,23 @@ func (tn *TextileService) SendMail(e *md.MailEntry) *md.SonrError {
 		}
 	}
 	return nil
+}
+
+// # Helper: To Callback Info
+func (t *TextileService) handleInitialized(dbs map[thread.ID]db.Info) {
+	// Init Map
+	threads := make(map[string]*md.ConnectionResponse_TextileThread)
+
+	// Iterate Through DB Info
+	for k, v := range dbs {
+		threads[k.String()] = &md.ConnectionResponse_TextileThread{
+			Id:        k.String(),
+			Multiaddr: v.Addrs[0].String(),
+			Key:       v.Key.String(),
+			Name:      v.Name,
+		}
+	}
+
+	// Callback Data
+	t.onConnected(&md.ConnectionResponse{Threads: threads})
 }

@@ -84,6 +84,15 @@ message ConnectionResponse {
   bool mdnsActive = 2;
   bool textileActive = 3;
   Topic localTopic = 4;
+  map<string, TextileThread> threads = 5; // ID, Thread
+
+  // Textile Thread
+  message TextileThread {
+    string id = 1;        // ThreadID
+    string multiaddr = 2; // Thread MultiAddr
+    string key = 3;       // Thread Key
+    string name = 4;      // Thread Name
+  }
 }
 
 // Invitation Message sent on RPC

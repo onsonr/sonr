@@ -726,10 +726,11 @@ type ConnectionResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	HostActive    bool   `protobuf:"varint,1,opt,name=hostActive,proto3" json:"hostActive,omitempty"`
-	MdnsActive    bool   `protobuf:"varint,2,opt,name=mdnsActive,proto3" json:"mdnsActive,omitempty"`
-	TextileActive bool   `protobuf:"varint,3,opt,name=textileActive,proto3" json:"textileActive,omitempty"`
-	LocalTopic    *Topic `protobuf:"bytes,4,opt,name=localTopic,proto3" json:"localTopic,omitempty"`
+	HostActive    bool                                         `protobuf:"varint,1,opt,name=hostActive,proto3" json:"hostActive,omitempty"`
+	MdnsActive    bool                                         `protobuf:"varint,2,opt,name=mdnsActive,proto3" json:"mdnsActive,omitempty"`
+	TextileActive bool                                         `protobuf:"varint,3,opt,name=textileActive,proto3" json:"textileActive,omitempty"`
+	LocalTopic    *Topic                                       `protobuf:"bytes,4,opt,name=localTopic,proto3" json:"localTopic,omitempty"`
+	Threads       map[string]*ConnectionResponse_TextileThread `protobuf:"bytes,5,rep,name=threads,proto3" json:"threads,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"` // ID, Thread
 }
 
 func (x *ConnectionResponse) Reset() {
@@ -788,6 +789,13 @@ func (x *ConnectionResponse) GetTextileActive() bool {
 func (x *ConnectionResponse) GetLocalTopic() *Topic {
 	if x != nil {
 		return x.LocalTopic
+	}
+	return nil
+}
+
+func (x *ConnectionResponse) GetThreads() map[string]*ConnectionResponse_TextileThread {
+	if x != nil {
+		return x.Threads
 	}
 	return nil
 }
@@ -1991,6 +1999,78 @@ func (x *ConnectionRequest_TextileOptions) GetBuckets() bool {
 	return false
 }
 
+// Textile Thread
+type ConnectionResponse_TextileThread struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id        string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`               // ThreadID
+	Multiaddr string `protobuf:"bytes,2,opt,name=multiaddr,proto3" json:"multiaddr,omitempty"` // Thread MultiAddr
+	Key       string `protobuf:"bytes,3,opt,name=key,proto3" json:"key,omitempty"`             // Thread Key
+	Name      string `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`           // Thread Name
+}
+
+func (x *ConnectionResponse_TextileThread) Reset() {
+	*x = ConnectionResponse_TextileThread{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_proto_msgTypes[21]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ConnectionResponse_TextileThread) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ConnectionResponse_TextileThread) ProtoMessage() {}
+
+func (x *ConnectionResponse_TextileThread) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_msgTypes[21]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ConnectionResponse_TextileThread.ProtoReflect.Descriptor instead.
+func (*ConnectionResponse_TextileThread) Descriptor() ([]byte, []int) {
+	return file_api_proto_rawDescGZIP(), []int{4, 1}
+}
+
+func (x *ConnectionResponse_TextileThread) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *ConnectionResponse_TextileThread) GetMultiaddr() string {
+	if x != nil {
+		return x.Multiaddr
+	}
+	return ""
+}
+
+func (x *ConnectionResponse_TextileThread) GetKey() string {
+	if x != nil {
+		return x.Key
+	}
+	return ""
+}
+
+func (x *ConnectionResponse_TextileThread) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
 var File_api_proto protoreflect.FileDescriptor
 
 var file_api_proto_rawDesc = []byte{
@@ -2075,7 +2155,7 @@ var file_api_proto_rawDesc = []byte{
 	0x07, 0x62, 0x75, 0x63, 0x6b, 0x65, 0x74, 0x73, 0x22, 0x2e, 0x0a, 0x0c, 0x49, 0x6e, 0x74, 0x65,
 	0x72, 0x6e, 0x65, 0x74, 0x54, 0x79, 0x70, 0x65, 0x12, 0x08, 0x0a, 0x04, 0x4e, 0x6f, 0x6e, 0x65,
 	0x10, 0x00, 0x12, 0x08, 0x0a, 0x04, 0x57, 0x69, 0x66, 0x69, 0x10, 0x01, 0x12, 0x0a, 0x0a, 0x06,
-	0x4d, 0x6f, 0x62, 0x69, 0x6c, 0x65, 0x10, 0x02, 0x22, 0xa2, 0x01, 0x0a, 0x12, 0x43, 0x6f, 0x6e,
+	0x4d, 0x6f, 0x62, 0x69, 0x6c, 0x65, 0x10, 0x02, 0x22, 0xa2, 0x03, 0x0a, 0x12, 0x43, 0x6f, 0x6e,
 	0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
 	0x1e, 0x0a, 0x0a, 0x68, 0x6f, 0x73, 0x74, 0x41, 0x63, 0x74, 0x69, 0x76, 0x65, 0x18, 0x01, 0x20,
 	0x01, 0x28, 0x08, 0x52, 0x0a, 0x68, 0x6f, 0x73, 0x74, 0x41, 0x63, 0x74, 0x69, 0x76, 0x65, 0x12,
@@ -2085,7 +2165,23 @@ var file_api_proto_rawDesc = []byte{
 	0x18, 0x03, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0d, 0x74, 0x65, 0x78, 0x74, 0x69, 0x6c, 0x65, 0x41,
 	0x63, 0x74, 0x69, 0x76, 0x65, 0x12, 0x26, 0x0a, 0x0a, 0x6c, 0x6f, 0x63, 0x61, 0x6c, 0x54, 0x6f,
 	0x70, 0x69, 0x63, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x06, 0x2e, 0x54, 0x6f, 0x70, 0x69,
-	0x63, 0x52, 0x0a, 0x6c, 0x6f, 0x63, 0x61, 0x6c, 0x54, 0x6f, 0x70, 0x69, 0x63, 0x22, 0xc6, 0x01,
+	0x63, 0x52, 0x0a, 0x6c, 0x6f, 0x63, 0x61, 0x6c, 0x54, 0x6f, 0x70, 0x69, 0x63, 0x12, 0x3a, 0x0a,
+	0x07, 0x74, 0x68, 0x72, 0x65, 0x61, 0x64, 0x73, 0x18, 0x05, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x20,
+	0x2e, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x2e, 0x54, 0x68, 0x72, 0x65, 0x61, 0x64, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79,
+	0x52, 0x07, 0x74, 0x68, 0x72, 0x65, 0x61, 0x64, 0x73, 0x1a, 0x5d, 0x0a, 0x0c, 0x54, 0x68, 0x72,
+	0x65, 0x61, 0x64, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x37, 0x0a, 0x05, 0x76,
+	0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x21, 0x2e, 0x43, 0x6f, 0x6e,
+	0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e,
+	0x54, 0x65, 0x78, 0x74, 0x69, 0x6c, 0x65, 0x54, 0x68, 0x72, 0x65, 0x61, 0x64, 0x52, 0x05, 0x76,
+	0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x1a, 0x63, 0x0a, 0x0d, 0x54, 0x65, 0x78, 0x74,
+	0x69, 0x6c, 0x65, 0x54, 0x68, 0x72, 0x65, 0x61, 0x64, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x1c, 0x0a, 0x09, 0x6d, 0x75, 0x6c,
+	0x74, 0x69, 0x61, 0x64, 0x64, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x6d, 0x75,
+	0x6c, 0x74, 0x69, 0x61, 0x64, 0x64, 0x72, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d,
+	0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x22, 0xc6, 0x01,
 	0x0a, 0x0d, 0x49, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
 	0x1c, 0x0a, 0x05, 0x74, 0x6f, 0x70, 0x69, 0x63, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x06,
 	0x2e, 0x54, 0x6f, 0x70, 0x69, 0x63, 0x52, 0x05, 0x74, 0x6f, 0x70, 0x69, 0x63, 0x12, 0x22, 0x0a,
@@ -2243,7 +2339,7 @@ func file_api_proto_rawDescGZIP() []byte {
 }
 
 var file_api_proto_enumTypes = make([]protoimpl.EnumInfo, 8)
-var file_api_proto_msgTypes = make([]protoimpl.MessageInfo, 22)
+var file_api_proto_msgTypes = make([]protoimpl.MessageInfo, 24)
 var file_api_proto_goTypes = []interface{}{
 	(InitializeRequest_UserStatus)(0),        // 0: InitializeRequest.UserStatus
 	(ConnectionRequest_InternetType)(0),      // 1: ConnectionRequest.InternetType
@@ -2273,68 +2369,72 @@ var file_api_proto_goTypes = []interface{}{
 	(*ConnectionRequest_HostOptions)(nil),    // 25: ConnectionRequest.HostOptions
 	(*ConnectionRequest_PubsubOptions)(nil),  // 26: ConnectionRequest.PubsubOptions
 	(*ConnectionRequest_TextileOptions)(nil), // 27: ConnectionRequest.TextileOptions
-	nil,                                      // 28: RestRequest.ParametersEntry
-	nil,                                      // 29: RestResponse.BodyEntry
-	(*Device)(nil),                           // 30: Device
-	(*APIKeys)(nil),                          // 31: APIKeys
-	(*Location)(nil),                         // 32: Location
-	(*Contact)(nil),                          // 33: Contact
-	(*Topic)(nil),                            // 34: Topic
-	(Payload)(0),                             // 35: Payload
-	(*Peer)(nil),                             // 36: Peer
-	(*Transfer)(nil),                         // 37: Transfer
-	(*Peer_Properties)(nil),                  // 38: Peer.Properties
-	(*Position)(nil),                         // 39: Position
-	(*ErrorMessage)(nil),                     // 40: ErrorMessage
-	(Status)(0),                              // 41: Status
-	(*User)(nil),                             // 42: User
+	nil,                                      // 28: ConnectionResponse.ThreadsEntry
+	(*ConnectionResponse_TextileThread)(nil), // 29: ConnectionResponse.TextileThread
+	nil,                                      // 30: RestRequest.ParametersEntry
+	nil,                                      // 31: RestResponse.BodyEntry
+	(*Device)(nil),                           // 32: Device
+	(*APIKeys)(nil),                          // 33: APIKeys
+	(*Location)(nil),                         // 34: Location
+	(*Contact)(nil),                          // 35: Contact
+	(*Topic)(nil),                            // 36: Topic
+	(Payload)(0),                             // 37: Payload
+	(*Peer)(nil),                             // 38: Peer
+	(*Transfer)(nil),                         // 39: Transfer
+	(*Peer_Properties)(nil),                  // 40: Peer.Properties
+	(*Position)(nil),                         // 41: Position
+	(*ErrorMessage)(nil),                     // 42: ErrorMessage
+	(Status)(0),                              // 43: Status
+	(*User)(nil),                             // 44: User
 }
 var file_api_proto_depIdxs = []int32{
-	30, // 0: InitializeRequest.device:type_name -> Device
-	31, // 1: InitializeRequest.apiKeys:type_name -> APIKeys
+	32, // 0: InitializeRequest.device:type_name -> Device
+	33, // 1: InitializeRequest.apiKeys:type_name -> APIKeys
 	0,  // 2: InitializeRequest.status:type_name -> InitializeRequest.UserStatus
-	31, // 3: ConnectionRequest.apiKeys:type_name -> APIKeys
-	32, // 4: ConnectionRequest.location:type_name -> Location
-	33, // 5: ConnectionRequest.contact:type_name -> Contact
+	33, // 3: ConnectionRequest.apiKeys:type_name -> APIKeys
+	34, // 4: ConnectionRequest.location:type_name -> Location
+	35, // 5: ConnectionRequest.contact:type_name -> Contact
 	1,  // 6: ConnectionRequest.type:type_name -> ConnectionRequest.InternetType
 	25, // 7: ConnectionRequest.hostOptions:type_name -> ConnectionRequest.HostOptions
 	26, // 8: ConnectionRequest.pubsubOptions:type_name -> ConnectionRequest.PubsubOptions
 	27, // 9: ConnectionRequest.textileOptions:type_name -> ConnectionRequest.TextileOptions
-	34, // 10: ConnectionResponse.localTopic:type_name -> Topic
-	34, // 11: InviteRequest.topic:type_name -> Topic
-	35, // 12: InviteRequest.payload:type_name -> Payload
-	36, // 13: InviteRequest.from:type_name -> Peer
-	36, // 14: InviteRequest.to:type_name -> Peer
-	37, // 15: InviteRequest.transfer:type_name -> Transfer
-	2,  // 16: InviteResponse.type:type_name -> InviteResponse.Type
-	36, // 17: InviteResponse.from:type_name -> Peer
-	36, // 18: InviteResponse.to:type_name -> Peer
-	37, // 19: InviteResponse.transfer:type_name -> Transfer
-	3,  // 20: MailEntry.subject:type_name -> MailEntry.Subject
-	36, // 21: MailEntry.from:type_name -> Peer
-	36, // 22: MailEntry.to:type_name -> Peer
-	13, // 23: MailEntry.invite:type_name -> InviteRequest
-	4,  // 24: MailRequest.method:type_name -> MailRequest.Method
-	15, // 25: MailRequest.entry:type_name -> MailEntry
-	5,  // 26: MailResponse.result:type_name -> MailResponse.Result
-	15, // 27: MailResponse.entries:type_name -> MailEntry
-	6,  // 28: RestRequest.method:type_name -> RestRequest.Method
-	28, // 29: RestRequest.parameters:type_name -> RestRequest.ParametersEntry
-	36, // 30: RestRequest.peer:type_name -> Peer
-	7,  // 31: RestResponse.method:type_name -> RestResponse.Method
-	29, // 32: RestResponse.body:type_name -> RestResponse.BodyEntry
-	38, // 33: UpdateRequest.properties:type_name -> Peer.Properties
-	33, // 34: UpdateRequest.contact:type_name -> Contact
-	39, // 35: UpdateRequest.position:type_name -> Position
-	1,  // 36: UpdateRequest.connectivity:type_name -> ConnectionRequest.InternetType
-	40, // 37: VerifyResponse.error:type_name -> ErrorMessage
-	41, // 38: StatusUpdate.value:type_name -> Status
-	42, // 39: StatusUpdate.user:type_name -> User
-	40, // [40:40] is the sub-list for method output_type
-	40, // [40:40] is the sub-list for method input_type
-	40, // [40:40] is the sub-list for extension type_name
-	40, // [40:40] is the sub-list for extension extendee
-	0,  // [0:40] is the sub-list for field type_name
+	36, // 10: ConnectionResponse.localTopic:type_name -> Topic
+	28, // 11: ConnectionResponse.threads:type_name -> ConnectionResponse.ThreadsEntry
+	36, // 12: InviteRequest.topic:type_name -> Topic
+	37, // 13: InviteRequest.payload:type_name -> Payload
+	38, // 14: InviteRequest.from:type_name -> Peer
+	38, // 15: InviteRequest.to:type_name -> Peer
+	39, // 16: InviteRequest.transfer:type_name -> Transfer
+	2,  // 17: InviteResponse.type:type_name -> InviteResponse.Type
+	38, // 18: InviteResponse.from:type_name -> Peer
+	38, // 19: InviteResponse.to:type_name -> Peer
+	39, // 20: InviteResponse.transfer:type_name -> Transfer
+	3,  // 21: MailEntry.subject:type_name -> MailEntry.Subject
+	38, // 22: MailEntry.from:type_name -> Peer
+	38, // 23: MailEntry.to:type_name -> Peer
+	13, // 24: MailEntry.invite:type_name -> InviteRequest
+	4,  // 25: MailRequest.method:type_name -> MailRequest.Method
+	15, // 26: MailRequest.entry:type_name -> MailEntry
+	5,  // 27: MailResponse.result:type_name -> MailResponse.Result
+	15, // 28: MailResponse.entries:type_name -> MailEntry
+	6,  // 29: RestRequest.method:type_name -> RestRequest.Method
+	30, // 30: RestRequest.parameters:type_name -> RestRequest.ParametersEntry
+	38, // 31: RestRequest.peer:type_name -> Peer
+	7,  // 32: RestResponse.method:type_name -> RestResponse.Method
+	31, // 33: RestResponse.body:type_name -> RestResponse.BodyEntry
+	40, // 34: UpdateRequest.properties:type_name -> Peer.Properties
+	35, // 35: UpdateRequest.contact:type_name -> Contact
+	41, // 36: UpdateRequest.position:type_name -> Position
+	1,  // 37: UpdateRequest.connectivity:type_name -> ConnectionRequest.InternetType
+	42, // 38: VerifyResponse.error:type_name -> ErrorMessage
+	43, // 39: StatusUpdate.value:type_name -> Status
+	44, // 40: StatusUpdate.user:type_name -> User
+	29, // 41: ConnectionResponse.ThreadsEntry.value:type_name -> ConnectionResponse.TextileThread
+	42, // [42:42] is the sub-list for method output_type
+	42, // [42:42] is the sub-list for method input_type
+	42, // [42:42] is the sub-list for extension type_name
+	42, // [42:42] is the sub-list for extension extendee
+	0,  // [0:42] is the sub-list for field type_name
 }
 
 func init() { file_api_proto_init() }
@@ -2587,6 +2687,18 @@ func file_api_proto_init() {
 				return nil
 			}
 		}
+		file_api_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ConnectionResponse_TextileThread); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	file_api_proto_msgTypes[7].OneofWrappers = []interface{}{
 		(*MailEntry_Invite)(nil),
@@ -2615,7 +2727,7 @@ func file_api_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_api_proto_rawDesc,
 			NumEnums:      8,
-			NumMessages:   22,
+			NumMessages:   24,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
