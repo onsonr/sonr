@@ -138,13 +138,13 @@ func (tn *TextileService) InitThreads() *md.SonrError {
 // @ Initializes Mailbox
 func (tn *TextileService) InitMail(d *md.Device, us md.ConnectionRequest_UserStatus) *md.SonrError {
 	// Setup the mail lib
-	mail := local.NewMail(cmd.NewClients(util.TEXTILE_API_URL, true, util.TEXTILE_MINER_IDX), local.DefaultConfConfig())
+	mail := local.NewMail(cmd.NewClients("api.textile.io:443", true, util.TEXTILE_MINER_IDX), local.DefaultConfConfig())
 	tn.mail = mail
 
 	// Create New Mailbox
 	if us == md.ConnectionRequest_NEW {
 		// Create a new mailbox with config
-		mailbox, err := mail.NewMailbox(context.Background(), local.Config{
+		mailbox, err := mail.NewMailbox(tn.ctxToken, local.Config{
 			Path:      d.WorkingSupportDirectory(),
 			Identity:  tn.identity,
 			APIKey:    tn.apiKeys.GetTextileKey(),
@@ -160,7 +160,7 @@ func (tn *TextileService) InitMail(d *md.Device, us md.ConnectionRequest_UserSta
 		tn.mailbox = mailbox
 	} else {
 		// Return Existing Mailbox
-		mailbox, err := mail.GetLocalMailbox(context.Background(), d.WorkingSupportDirectory())
+		mailbox, err := mail.GetLocalMailbox(tn.ctxToken, d.WorkingSupportDirectory())
 
 		// Check Error
 		if err != nil {
