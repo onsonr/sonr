@@ -61,8 +61,7 @@ func (sc *serviceClient) StartTextile() *md.SonrError {
 		auth := common.Credentials{}
 
 		// Dial GRPC
-		opts := []grpc.DialOption{grpc.WithTransportCredentials(creds), grpc.WithPerRPCCredentials(auth)}
-		textile.client, err = client.NewClient(util.TEXTILE_API_URL, opts...)
+		textile.client, err = client.NewClient(util.TEXTILE_API_URL, grpc.WithTransportCredentials(creds), grpc.WithPerRPCCredentials(auth))
 		if err != nil {
 			return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
 		}
