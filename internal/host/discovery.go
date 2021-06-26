@@ -46,7 +46,7 @@ func (h *hostNode) Bootstrap() *md.SonrError {
 
 	// Set Routing Discovery, Find Peers
 	routingDiscovery := dsc.NewRoutingDiscovery(h.kdht)
-	dsc.Advertise(h.ctxHost, routingDiscovery, h.point, dscl.TTL(time.Second*4))
+	dsc.Advertise(h.ctxHost, routingDiscovery, util.HOST_RENDEVOUZ_POINT, dscl.TTL(time.Second*4))
 	h.disc = routingDiscovery
 
 	// Create Pub Sub
@@ -54,6 +54,8 @@ func (h *hostNode) Bootstrap() *md.SonrError {
 	if err != nil {
 		return md.NewError(err, md.ErrorMessage_HOST_PUBSUB)
 	}
+
+	// Handle DHT
 	h.pubsub = ps
 	go h.handleDHTPeers(routingDiscovery)
 	return nil
@@ -61,15 +63,18 @@ func (h *hostNode) Bootstrap() *md.SonrError {
 
 // @ Method Begins MDNS Discovery
 func (h *hostNode) MDNS() error {
-	ser, err := discovery.NewMdnsService(h.ctxHost, h.host, util.REFRESH_INTERVAL, h.point)
+	// Create MDNS Service
+	ser, err := discovery.NewMdnsService(h.ctxHost, h.host, util.REFRESH_INTERVAL, util.HOST_RENDEVOUZ_POINT)
 	if err != nil {
 		return err
 	}
 	h.mdns = ser
-	//register with service so that we get notified about peer discovery
+
+	// Register Notifier
 	n := &discoveryNotifee{}
 	n.PeerChan = make(chan peer.AddrInfo)
 
+	// Handle Events
 	ser.RegisterNotifee(n)
 	go h.handleMDNSPeers(n.PeerChan)
 	return nil
@@ -108,7 +113,7 @@ func (h *hostNode) handleDHTPeers(routingDiscovery *dsc.RoutingDiscovery) {
 		// Find peers in DHT
 		peersChan, err := routingDiscovery.FindPeers(
 			h.ctxHost,
-			h.point,
+			util.HOST_RENDEVOUZ_POINT,
 		)
 		if err != nil {
 			return

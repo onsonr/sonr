@@ -79,6 +79,27 @@ func (c *state) Pause() {
 	}
 }
 
+// ** ─── ServiceStatus MANAGEMENT ────────────────────────────────────────────────────────
+// Create New Service Status
+func NewServiceStatus(authStatus bool, deviceStatus bool) *ServiceStatus {
+	return &ServiceStatus{
+		Auth:    authStatus,
+		Device:  deviceStatus,
+		Textile: ServiceStatus_DISABLED,
+	}
+}
+
+// Update Textile Status
+func (ss *ServiceStatus) EnableTextile(hasThreads bool, hasMailbox bool) {
+	if hasThreads && hasMailbox {
+		ss.Textile = ServiceStatus_FULL
+	} else if hasThreads {
+		ss.Textile = ServiceStatus_THREADS_ONLY
+	} else {
+		ss.Textile = ServiceStatus_DISABLED
+	}
+}
+
 // ** ─── Transfer MANAGEMENT ────────────────────────────────────────────────────────
 // Returns Transfer for URLLink
 func (u *URLLink) GetTransfer() *Transfer {

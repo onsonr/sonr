@@ -69,7 +69,6 @@ func (n *Node) Connect(data []byte) {
 	// Update User with Connection Request
 	n.user.InitConnection(req)
 	req.ApiKeys = n.user.APIKeys()
-	req.Point = n.user.GetRouter().Rendevouz
 
 	// Connect Host
 	serr := n.client.Connect(req, n.user.KeyPair())

@@ -31,9 +31,6 @@ type ExchangeService struct {
 
 type TopicHandler interface {
 	OnEvent(*md.LobbyEvent)
-	OnInvite([]byte)
-	OnReply(id peer.ID, data []byte)
-	OnResponded(inv *md.InviteRequest)
 }
 
 type TopicManager struct {
@@ -86,19 +83,22 @@ func (h *hostNode) JoinTopic(ctx context.Context, u *md.User, topicData *md.Topi
 
 	// Start Exchange Server
 	exchangeServer := rpc.NewServer(h.Host(), util.EXCHANGE_PROTOCOL)
-	psv := ExchangeService{
+	esv := ExchangeService{
 		user: u,
 		call: th,
 	}
 
 	// Register Service
-	err = exchangeServer.RegisterName(util.EXCHANGE_RPC_SERVICE, &psv)
+	err = exchangeServer.RegisterName(util.EXCHANGE_RPC_SERVICE, &esv)
 	if err != nil {
 		return nil, md.NewError(err, md.ErrorMessage_TOPIC_RPC)
 	}
 
 	// Set Service
-	mgr.exchange = &psv
+	mgr.exchange = &esv
+	h.topics = append(h.topics, mgr)
+
+	// Handle Events
 	go mgr.handleTopicEvents(context.Background())
 	go mgr.handleTopicMessages(context.Background())
 	go mgr.processTopicMessages(context.Background())

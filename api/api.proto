@@ -35,13 +35,12 @@ message InitializeRequest {
 message ConnectionRequest {
   APIKeys apiKeys = 1;               // Client Keys
   Location location = 2;             // Current Runtime Location
-  string point = 3;                  // Rendevouz Point
-  Contact contact = 4;               // Users Contact Card
-  InternetType type = 5;             // Internet Connection Type
-  HostOptions hostOptions = 6;       // Libp2p Host config
-  PubsubOptions pubsubOptions = 7;   // Pubsub Configuration
-  TextileOptions textileOptions = 8; // Textile Client Config
-  UserStatus status = 9;             // User Status
+  Contact contact = 3;               // Users Contact Card
+  InternetType type = 4;             // Internet Connection Type
+  HostOptions hostOptions = 5;       // Libp2p Host config
+  PubsubOptions pubsubOptions = 6;   // Pubsub Configuration
+  TextileOptions textileOptions = 7; // Textile Client Config
+  UserStatus status = 8;             // User Status
 
   // Internet Connection Type
   enum InternetType {

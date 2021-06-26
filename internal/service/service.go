@@ -39,6 +39,7 @@ type serviceClient struct {
 	handler ServiceHandler
 	host    net.HostNode
 	request *md.ConnectionRequest
+	status  *md.ServiceStatus
 	user    *md.User
 
 	// Services
@@ -55,6 +56,7 @@ func NewService(ctx context.Context, h net.HostNode, u *md.User, req *md.Connect
 		handler: sh,
 		host:    h,
 		request: req,
+		status: md.NewServiceStatus(true, false),
 		user:    u,
 	}
 

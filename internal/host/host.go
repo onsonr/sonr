@@ -18,6 +18,7 @@ import (
 	discovery "github.com/libp2p/go-libp2p/p2p/discovery"
 	"github.com/multiformats/go-multiaddr"
 	md "github.com/sonr-io/core/pkg/models"
+
 )
 
 // ** ─── Interface MANAGEMENT ────────────────────────────────────────────────────────
@@ -56,8 +57,10 @@ type hostNode struct {
 	known   []peer.ID
 	mdns    discovery.Service
 	options *md.ConnectionRequest_HostOptions
-	point   string
-	pubsub  *psub.PubSub
+
+	// Topics
+	pubsub *psub.PubSub
+	topics []*TopicManager
 }
 
 // ^ Start Begins Assigning Host Parameters ^
@@ -110,9 +113,9 @@ func NewHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair
 		handler: hh,
 		id:      h.ID(),
 		host:    h,
-		point:   req.Point,
 		kdht:    kdhtRef,
 		known:   make([]peer.ID, 0),
+		topics:  make([]*TopicManager, 0),
 	}
 
 	// Check Connection
@@ -172,7 +175,6 @@ func newRelayedHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.
 		handler: hh,
 		id:      h.ID(),
 		host:    h,
-		point:   req.Point,
 		kdht:    kdhtRef,
 		known:   make([]peer.ID, 0),
 	}

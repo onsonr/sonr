@@ -23,3 +23,16 @@ enum LifecycleState {
   Paused = 1;  // User Paused
   Stopped = 2; // User Quit
 }
+
+// Current Node Service Client State
+message ServiceStatus {
+  bool auth = 1;       // Auth Service
+  bool device = 2;     // Device Service
+  Textile textile = 3; // Textile Service
+
+  enum Textile {
+    DISABLED = 0;     // Textile Disabled
+    THREADS_ONLY = 1; // Textile Enabled (Threads)
+    FULL = 2;         // Textile Enabled (Threads + Mailbox)
+  }
+}
