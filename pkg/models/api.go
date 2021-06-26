@@ -201,7 +201,7 @@ func (i *InviteRequest) GetContact() *Contact {
 }
 
 // Returns Invite File
-func (i *InviteRequest) GetFile() *SonrFile {
+func (i *InviteRequest) GetFile() *SFile {
 	return i.GetTransfer().GetFile()
 }
 
