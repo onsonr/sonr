@@ -144,7 +144,7 @@ func (tn *TextileService) InitMail(d *md.Device, us md.ConnectionRequest_UserSta
 	// Create New Mailbox
 	if us == md.ConnectionRequest_NEW {
 		// Create a new mailbox with config
-		mailbox, err := mail.NewMailbox(tn.ctxToken, local.Config{
+		mailbox, err := mail.NewMailbox(context.Background(), local.Config{
 			Path:      d.WorkingSupportDirectory(),
 			Identity:  tn.identity,
 			APIKey:    tn.apiKeys.GetTextileKey(),
@@ -160,7 +160,7 @@ func (tn *TextileService) InitMail(d *md.Device, us md.ConnectionRequest_UserSta
 		tn.mailbox = mailbox
 	} else {
 		// Return Existing Mailbox
-		mailbox, err := mail.GetLocalMailbox(tn.ctxToken, d.WorkingSupportDirectory())
+		mailbox, err := mail.GetLocalMailbox(context.Background(), d.WorkingSupportDirectory())
 
 		// Check Error
 		if err != nil {
