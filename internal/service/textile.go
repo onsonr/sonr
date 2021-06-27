@@ -143,7 +143,12 @@ func (tn *TextileService) InitMail(d *md.Device, us md.ConnectionRequest_UserSta
 		log.Println("ACTIVATE: Textile Mailbox")
 
 		// Setup the mail lib
-		mail := local.NewMail(tn.clients, local.DefaultConfConfig())
+		mail := local.NewMail(tn.clients, cmd.ConfConfig{
+			Dir:       d.WorkingSupportDirectory(),
+			Name:      "config",
+			Type:      "yaml",
+			EnvPrefix: "MAIL",
+		})
 		tn.mail = mail
 
 		// Create a new mailbox with config
