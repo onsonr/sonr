@@ -314,13 +314,13 @@ func (d *Device) WorkingConfigDirectory() string {
 	var path string
 	if d.IsDesktop() {
 		path = filepath.Join(d.FileSystem.GetLibrary(), ".textile")
+		err := os.MkdirAll(path, os.ModePerm)
+		if err != nil {
+			log.Println(err)
+		}
 	} else {
 		path = filepath.Join(d.FileSystem.GetSupport(), ".textile")
-	}
-
-	// Create Path if it Doesnt Exist
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		err := os.Mkdir(path, 0700)
+		err := os.MkdirAll(path, os.ModePerm)
 		if err != nil {
 			log.Println(err)
 		}
