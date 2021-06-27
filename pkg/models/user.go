@@ -320,7 +320,7 @@ func (d *Device) WorkingConfigDirectory() string {
 
 	// Create Path if it Doesnt Exist
 	if _, err := os.Stat(path); os.IsNotExist(err) {
-		err := os.Mkdir(path, os.ModePerm)
+		err := os.Mkdir(path, 0700)
 		if err != nil {
 			log.Println(err)
 		}
