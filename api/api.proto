@@ -27,26 +27,20 @@ message AuthResponse {
 
 // First Message Sent with Device and API Keys
 message InitializeRequest {
-  Device device = 1;     // Users Device
-  APIKeys apiKeys = 2;   // Client Keys
-  UserStatus status = 3; // User Status
-
-  enum UserStatus {
-    RETURNING = 0; // Returning User
-    NEW = 1;       // New User no Keys yet
-  }
+  Device device = 1;   // Users Device
+  APIKeys apiKeys = 2; // Client Keys
 }
 
 // Connection Message to Establish Sonr Host/API/Topic
 message ConnectionRequest {
   APIKeys apiKeys = 1;               // Client Keys
   Location location = 2;             // Current Runtime Location
-  string point = 3;                  // Rendevouz Point
-  Contact contact = 4;               // Users Contact Card
-  InternetType type = 5;             // Internet Connection Type
-  HostOptions hostOptions = 6;       // Libp2p Host config
-  PubsubOptions pubsubOptions = 7;   // Pubsub Configuration
-  TextileOptions textileOptions = 8; // Textile Client Config
+  Contact contact = 3;               // Users Contact Card
+  InternetType type = 4;             // Internet Connection Type
+  HostOptions hostOptions = 5;       // Libp2p Host config
+  PubsubOptions pubsubOptions = 6;   // Pubsub Configuration
+  TextileOptions textileOptions = 7; // Textile Client Config
+  UserStatus status = 8;             // User Status
 
   // Internet Connection Type
   enum InternetType {
@@ -71,10 +65,17 @@ message ConnectionRequest {
 
   // Textile Configuration
   message TextileOptions {
-    bool enabled = 1; // Enable Textile Client
-    bool mailbox = 2; // Enable Mailbox
-    bool threads = 3; // Enable Threads
-    bool buckets = 4; // Enable Buckets
+    bool enabled = 1;    // Enable Textile Client
+    bool mailbox = 2;    // Enable Mailbox
+    bool threads = 3;    // Enable Threads
+    bool buckets = 4;    // Enable Buckets
+    string threadDB = 5; // Address for Database
+  }
+
+  // User is Returning or New
+  enum UserStatus {
+    RETURNING = 0; // Returning User
+    NEW = 1;       // New User no Keys yet
   }
 }
 
@@ -102,7 +103,13 @@ message InviteRequest {
   Peer from = 3;         // Users Peer Data
   Peer to = 4;           // Receivers Peer Data
   Transfer transfer = 5; // Attached Data
-  bool flatMode = 6;     // Flat Transfer
+  Type type = 6;         // Type of Invite
+
+  enum Type {
+    Local = 0;
+    Flat = 1;
+    Remote = 2;
+  }
 }
 
 // Reply Message sent on RPC

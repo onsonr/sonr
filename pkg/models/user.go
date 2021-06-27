@@ -6,11 +6,13 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"log"
 	"math"
 	"os"
 	"path/filepath"
 	"time"
 
+	"github.com/denisbrodbeck/machineid"
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/pkg/util"
@@ -161,6 +163,20 @@ func (kp *KeyPair) Verify(data []byte, sig []byte) (bool, error) {
 }
 
 // ** ─── DEVICE MANAGEMENT ────────────────────────────────────────────────────────
+// Method Initializes Device
+func (d *Device) Initialize() {
+	if d.GetId() == "" {
+		id, err := machineid.ID()
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		// Set ID
+		d.Id = id
+	}
+}
+
 // Method Checks if Device has Keys
 func (d *Device) HasKeys() bool {
 	if _, err := os.Stat(d.WorkingFilePath(util.KEY_FILE_NAME)); os.IsNotExist(err) {
@@ -331,6 +347,7 @@ func (d *Device) WriteFile(name string, data []byte) (string, *SonrError) {
 func NewUser(ir *InitializeRequest) (*User, *SonrError) {
 	// Initialize Device
 	d := ir.GetDevice()
+	d.Initialize()
 
 	// Fetch Key Pair
 	err := d.SetKeyPair()

@@ -240,7 +240,7 @@ enum Payload {
 }
 
 // For Transfer File Payload
-message SonrFile {
+message SFile {
   // Payload of File
   Payload payload = 1;
 
@@ -293,7 +293,7 @@ message Transfer {
   // Attached Data
   oneof data {
     Contact contact = 6; // DATA(Optional): Received Contact Information
-    SonrFile file = 7;   // DATA(Optional): Received a File
+    SFile file = 7;   // DATA(Optional): Received a File
     URLLink url = 8;     // DATA(Optional): Received a Website Link
   }
 }

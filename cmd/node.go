@@ -45,7 +45,6 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 		state:  md.LifecycleState_Active,
 	}
 
-
 	// Create User
 	if u, err := md.NewUser(req); err != nil {
 		mn.handleError(err)
@@ -70,7 +69,6 @@ func (n *Node) Connect(data []byte) {
 	// Update User with Connection Request
 	n.user.InitConnection(req)
 	req.ApiKeys = n.user.APIKeys()
-	req.Point = n.user.GetRouter().Rendevouz
 
 	// Connect Host
 	serr := n.client.Connect(req, n.user.KeyPair())
@@ -225,16 +223,22 @@ func (n *Node) Invite(data []byte) {
 			n.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
 			return
 		}
-
 		// @ 1. Validate invite
 		req = n.user.ValidateInvite(req)
 
-		// @ 2. Check Transfer Type
-		err := n.client.Invite(req, n.local)
-		if err != nil {
-			n.handleError(err)
-			return
+		// @ 2. Check Invite Type
+		if req.GetType() == md.InviteRequest_Local {
+			// Send To Local Topic
+			err := n.client.Invite(req, n.local)
+			if err != nil {
+				n.handleError(err)
+				return
+			}
+		} else if req.GetType() == md.InviteRequest_Remote {
+			// Send Mail Request
+			n.client.Mail(req.ToMailRequest())
 		}
+
 	}
 }
 

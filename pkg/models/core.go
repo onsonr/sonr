@@ -79,6 +79,27 @@ func (c *state) Pause() {
 	}
 }
 
+// ** ─── ServiceStatus MANAGEMENT ────────────────────────────────────────────────────────
+// Create New Service Status
+func NewServiceStatus(authStatus bool, deviceStatus bool) *ServiceStatus {
+	return &ServiceStatus{
+		Auth:    authStatus,
+		Device:  deviceStatus,
+		Textile: ServiceStatus_DISABLED,
+	}
+}
+
+// Update Textile Status
+func (ss *ServiceStatus) EnableTextile(hasThreads bool, hasMailbox bool) {
+	if hasThreads && hasMailbox {
+		ss.Textile = ServiceStatus_FULL
+	} else if hasThreads {
+		ss.Textile = ServiceStatus_THREADS_ONLY
+	} else {
+		ss.Textile = ServiceStatus_DISABLED
+	}
+}
+
 // ** ─── Transfer MANAGEMENT ────────────────────────────────────────────────────────
 // Returns Transfer for URLLink
 func (u *URLLink) GetTransfer() *Transfer {
@@ -96,8 +117,8 @@ func (u *URLLink) ToData() *Transfer_Url {
 	}
 }
 
-// Returns Transfer for SonrFile
-func (f *SonrFile) GetTransfer() *Transfer {
+// Returns Transfer for SFile
+func (f *SFile) GetTransfer() *Transfer {
 	return &Transfer{
 		Data: &Transfer_File{
 			File: f,
@@ -105,8 +126,8 @@ func (f *SonrFile) GetTransfer() *Transfer {
 	}
 }
 
-// Returns SonrFile as Transfer_File Data
-func (f *SonrFile) ToData() *Transfer_File {
+// Returns SFile as Transfer_File Data
+func (f *SFile) ToData() *Transfer_File {
 	return &Transfer_File{
 		File: f,
 	}
@@ -157,24 +178,24 @@ func (m *MIME) IsVideo() bool {
 	return m.Type == MIME_VIDEO
 }
 
-// ** ─── SONRFILE MANAGEMENT ────────────────────────────────────────────────────────
+// ** ─── SFile MANAGEMENT ────────────────────────────────────────────────────────
 // Checks if File contains single item
-func (f *SonrFile) IsSingle() bool {
+func (f *SFile) IsSingle() bool {
 	return len(f.Items) == 1
 }
 
 // Checks if Single File is Media
-func (f *SonrFile) IsMedia() bool {
+func (f *SFile) IsMedia() bool {
 	return f.Payload == Payload_MEDIA || (f.IsSingle() && f.Single().Mime.IsMedia())
 }
 
 // Checks if File contains multiple items
-func (f *SonrFile) IsMultiple() bool {
+func (f *SFile) IsMultiple() bool {
 	return len(f.Items) > 1
 }
 
 // Returns Index of Item from File
-func (f *SonrFile) IndexOf(item *SonrFile_Item) int {
+func (f *SFile) IndexOf(item *SFile_Item) int {
 	for i, v := range f.Items {
 		if v == item {
 			return i
@@ -184,7 +205,7 @@ func (f *SonrFile) IndexOf(item *SonrFile_Item) int {
 }
 
 // Method Returns Single if Applicable
-func (f *SonrFile) Single() *SonrFile_Item {
+func (f *SFile) Single() *SFile_Item {
 	if f.IsSingle() {
 		return f.Items[0]
 	} else {
@@ -195,7 +216,7 @@ func (f *SonrFile) Single() *SonrFile_Item {
 // ** ─── Session MANAGEMENT ────────────────────────────────────────────────────────
 type Session struct {
 	// Inherited Properties
-	file *SonrFile
+	file *SFile
 	peer *Peer
 	user *User
 
@@ -224,7 +245,7 @@ func NewInSession(u *User, inv *InviteRequest, c Callback) *Session {
 	}
 }
 
-// Returns SonrFile as TransferCard given Receiver and Owner
+// Returns SFile as TransferCard given Receiver and Owner
 func (s *Session) Card() *Transfer {
 	return &Transfer{
 		// SQL Properties
@@ -308,9 +329,9 @@ func (s *Session) handleTransmitted() {
 	s.call.OnTransmitted(buf)
 }
 
-// ** ─── SONRFILE_Item MANAGEMENT ────────────────────────────────────────────────────────
+// ** ─── SFile_Item MANAGEMENT ────────────────────────────────────────────────────────
 
-func (i *SonrFile_Item) NewReader(d *Device, index int, total int, c Callback) ItemReader {
+func (i *SFile_Item) NewReader(d *Device, index int, total int, c Callback) ItemReader {
 	// Return Reader
 	return &itemReader{
 		item:     i,
@@ -322,7 +343,7 @@ func (i *SonrFile_Item) NewReader(d *Device, index int, total int, c Callback) I
 	}
 }
 
-func (m *SonrFile_Item) NewWriter(d *Device, index int, total int, c Callback) ItemWriter {
+func (m *SFile_Item) NewWriter(d *Device, index int, total int, c Callback) ItemWriter {
 	return &itemWriter{
 		item:     m,
 		size:     0,
@@ -333,7 +354,7 @@ func (m *SonrFile_Item) NewWriter(d *Device, index int, total int, c Callback) I
 	}
 }
 
-func (i *SonrFile_Item) SetPath(d *Device) string {
+func (i *SFile_Item) SetPath(d *Device) string {
 	// Set Path
 	if i.Mime.IsMedia() {
 		// Check for Desktop
@@ -362,7 +383,7 @@ type itemReader struct {
 	ItemReader
 	callback Callback
 	mutex    sync.Mutex
-	item     *SonrFile_Item
+	item     *SFile_Item
 	device   *Device
 	index    int
 	size     int
@@ -446,7 +467,7 @@ type ItemWriter interface {
 type itemWriter struct {
 	ItemWriter
 	callback Callback
-	item     *SonrFile_Item
+	item     *SFile_Item
 	device   *Device
 	index    int
 	size     int

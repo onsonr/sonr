@@ -151,7 +151,7 @@ func (c *client) Mail(mr *md.MailRequest) *md.SonrError {
 		if mr.Method == md.MailRequest_READ {
 
 		} else if mr.Method == md.MailRequest_SEND {
-
+			c.Service.SendMail(mr.GetEntry())
 		}
 		return md.NewError(errors.New("Invalid MailRequest Method"), md.ErrorMessage_HOST_TEXTILE)
 	}

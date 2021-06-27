@@ -36,7 +36,7 @@ const REMOTE_PROTOCOL = protocol.ID("/sonr/remote-service/0.2")
 const TEXTILE_API_URL = "api.hub.textile.io:443"
 
 // Textile Miner Index Target
-const TEXTILE_MINER_IDX = "f022352"
+const TEXTILE_MINER_IDX = "api.minerindex.hub.textile.io:443"
 
 // ** ─── Services ────────────────────────────────────────────────────────
 // Local RPC Service Name
@@ -50,6 +50,10 @@ const AUTH_RPC_SERVICE = "AuthService"
 
 // Local RPC Service Method for Invite
 const AUTH_METHOD_INVITE = "InviteWith"
+
+// ** ─── Host ────────────────────────────────────────────────────────
+// Libp2p Host Rendevouz Point
+const HOST_RENDEVOUZ_POINT = "/sonr/rendevouz/0.9.2"
 
 // ^ ─── Methods ────────────────────────────────────────────────────────
 // Construct New Protocol ID given Method Name String and Value String

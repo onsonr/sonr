@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"log"
 
 	"time"
 
@@ -24,6 +25,8 @@ type ServiceHandler interface {
 type ServiceClient interface {
 	Invite(id peer.ID, inv *md.InviteRequest) error
 	Respond(rep *md.InviteResponse)
+	SendMail(e *md.MailEntry) *md.SonrError
+	ReadMail() ([]*md.MailEntry, *md.SonrError)
 	Close()
 }
 
@@ -31,12 +34,13 @@ type serviceClient struct {
 	ServiceClient
 
 	// Common
-	ctx         context.Context
-	apiKeys     *md.APIKeys
-	handler     ServiceHandler
-	host        net.HostNode
-	textileOpts *md.ConnectionRequest_TextileOptions
-	user        *md.User
+	ctx     context.Context
+	apiKeys *md.APIKeys
+	handler ServiceHandler
+	host    net.HostNode
+	request *md.ConnectionRequest
+	status  *md.ServiceStatus
+	user    *md.User
 
 	// Services
 	Auth    *AuthService
@@ -47,12 +51,13 @@ type serviceClient struct {
 func NewService(ctx context.Context, h net.HostNode, u *md.User, req *md.ConnectionRequest, sh ServiceHandler) (ServiceClient, *md.SonrError) {
 	// Create Client
 	client := &serviceClient{
-		ctx:         ctx,
-		apiKeys:     req.GetApiKeys(),
-		handler:     sh,
-		host:        h,
-		textileOpts: req.GetTextileOptions(),
-		user:        u,
+		ctx:     ctx,
+		apiKeys: req.GetApiKeys(),
+		handler: sh,
+		host:    h,
+		request: req,
+		status: md.NewServiceStatus(true, false),
+		user:    u,
 	}
 
 	// Begin Auth Service
@@ -62,10 +67,11 @@ func NewService(ctx context.Context, h net.HostNode, u *md.User, req *md.Connect
 	}
 
 	// Begin Textile Service
-	err = client.StartTextile()
-	if err != nil {
-		return nil, err
-	}
+	go func(c *serviceClient) {
+		if err := c.StartTextile(); err != nil {
+			log.Println(err)
+		}
+	}(client)
 
 	// Return Instance
 	return client, nil

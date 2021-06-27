@@ -112,7 +112,6 @@ clean:
 	cd $(BIND_DIR) && $(GOCLEAN)
 	go mod tidy
 	go clean -cache -x
-	go clean -modcache -x
 	rm -rf $(BIND_DIR_IOS)
 	rm -rf $(BIND_DIR_ANDROID)
 	mkdir -p $(BIND_DIR_IOS)
