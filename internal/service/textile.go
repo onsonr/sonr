@@ -146,37 +146,37 @@ func (tn *TextileService) InitMail(d *md.Device, us md.ConnectionRequest_UserSta
 		mail := local.NewMail(tn.clients, local.DefaultConfConfig())
 		tn.mail = mail
 
-		// Create New Mailbox
-		if us == md.ConnectionRequest_NEW {
-			// Create a new mailbox with config
-			mailbox, err := mail.NewMailbox(context.Background(), local.Config{
-				Path:      d.WorkingSupportDirectory(),
-				Identity:  tn.identity,
-				APIKey:    tn.apiKeys.GetTextileKey(),
-				APISecret: tn.apiKeys.GetTextileSecret(),
-			})
+		// Create a new mailbox with config
+		mailbox, err := mail.NewMailbox(context.Background(), local.Config{
+			Path:      d.WorkingSupportDirectory(),
+			Identity:  tn.identity,
+			APIKey:    tn.apiKeys.GetTextileKey(),
+			APISecret: tn.apiKeys.GetTextileSecret(),
+		})
 
-			// Check Error
-			if err != nil {
-				return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
-			}
-
-			// Set Mailbox and Update Status
-			tn.mailbox = mailbox
-			sc.status.EnableTextile(true, true)
-		} else {
-			// Return Existing Mailbox
-			mailbox, err := mail.GetLocalMailbox(context.Background(), d.WorkingSupportDirectory())
-
-			// Check Error
-			if err != nil {
-				return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
-			}
-
-			// Set Mailbox and Update Status
-			tn.mailbox = mailbox
-			sc.status.EnableTextile(true, true)
+		// Check Error
+		if err != nil {
+			return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
 		}
+
+		// Set Mailbox and Update Status
+		tn.mailbox = mailbox
+		sc.status.EnableTextile(true, true)
+		// if us == md.ConnectionRequest_NEW {
+
+		// } else {
+		// 	// Return Existing Mailbox
+		// 	mailbox, err := mail.GetLocalMailbox(context.Background(), d.WorkingSupportDirectory())
+
+		// 	// Check Error
+		// 	if err != nil {
+		// 		return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+		// 	}
+
+		// 	// Set Mailbox and Update Status
+		// 	tn.mailbox = mailbox
+		// 	sc.status.EnableTextile(true, true)
+		// }
 	}
 	return nil
 }
