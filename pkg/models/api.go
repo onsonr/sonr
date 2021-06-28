@@ -278,7 +278,7 @@ func (l *Location) MajorOLC() string {
 }
 
 func (l *Location) OLC() string {
-	return olc.Encode(float64(l.GetLatitude()), float64(l.GetLongitude()), 5)
+	return olc.Encode(float64(l.GetLatitude()), float64(l.GetLongitude()), 8)
 }
 
 // ** ─── Router MANAGEMENT ────────────────────────────────────────────────────────
