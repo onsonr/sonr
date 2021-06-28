@@ -33,9 +33,8 @@ type TextileService struct {
 	// Properties
 	identity thread.Identity
 	client   *client.Client
-	//clients  *cmd.Clients
-	mail    *local.Mail
-	mailbox *local.Mailbox
+	mail     *local.Mail
+	mailbox  *local.Mailbox
 }
 
 // @ Initializes New Textile Instance
@@ -140,13 +139,13 @@ func (tn *TextileService) InitMail(d *md.Device, us md.ConnectionRequest_UserSta
 		log.Println("ACTIVATE: Textile Mailbox")
 
 		// Setup the mail lib
-		tn.mail = local.NewMail(cmd.NewClients(util.TEXTILE_API_URL, false, util.TEXTILE_MINER_IDX), local.DefaultConfConfig())
+		tn.mail = local.NewMail(cmd.NewClients(util.TEXTILE_API_URL, true, util.TEXTILE_MINER_IDX), local.DefaultConfConfig())
 
 		// Create New Mailbox
 		if us == md.ConnectionRequest_NEW {
 			// Create a new mailbox with config
 			mailbox, err := tn.mail.NewMailbox(context.Background(), local.Config{
-				Path:      d.WorkingConfigDirectory(),
+				Path:      d.WorkingSupportDir(),
 				Identity:  tn.identity,
 				APIKey:    tn.apiKeys.GetTextileKey(),
 				APISecret: tn.apiKeys.GetTextileSecret(),
@@ -163,7 +162,7 @@ func (tn *TextileService) InitMail(d *md.Device, us md.ConnectionRequest_UserSta
 			sc.status.EnableTextile(true, true)
 		} else {
 			// Return Existing Mailbox
-			mailbox, err := tn.mail.GetLocalMailbox(context.Background(), d.WorkingConfigDirectory())
+			mailbox, err := tn.mail.GetLocalMailbox(context.Background(), d.WorkingSupportDir())
 			if err != nil {
 				sc.status.EnableTextile(true, false)
 				return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
