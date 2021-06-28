@@ -120,7 +120,7 @@ func (tn *TextileService) InitThreads(sc *serviceClient) *md.SonrError {
 		}
 
 		// Log DB Info
-		log.Println("> Success!")
+		log.Println("> Success!: Textile Threads Enabled")
 		log.Println(fmt.Sprintf("ID: %s \n Maddr: %s \n Key: %s \n Name: %s \n", threadID.String(), info.Addrs, info.Key.String(), info.Name))
 	}
 
@@ -159,6 +159,7 @@ func (tn *TextileService) InitMail(d *md.Device, us md.ConnectionRequest_UserSta
 
 			// Set Mailbox and Update Status
 			tn.mailbox = mailbox
+			log.Println("> Success!: Textile Mailbox Enabled, New Mailbox")
 			sc.status.EnableTextile(true, true)
 		} else {
 			// Return Existing Mailbox
@@ -170,6 +171,7 @@ func (tn *TextileService) InitMail(d *md.Device, us md.ConnectionRequest_UserSta
 
 			// Set Mailbox and Update Status
 			tn.mailbox = mailbox
+			log.Println("> Success!: Textile Mailbox Enabled, Existing Mailbox")
 			sc.status.EnableTextile(true, true)
 		}
 	}
