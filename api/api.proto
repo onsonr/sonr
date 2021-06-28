@@ -8,21 +8,15 @@ import "user.proto";
 // Require Go Package
 option go_package = "/models";
 
+// ----------------------------- //
+// -------- Requests ----------- //
+// ----------------------------- //
+
 // Message for Signing Request (Hmac Sha256)
 message AuthRequest {
   // Value to be signed
   string sName = 1;    // SName combined with Device ID and Hashed
   string mnemonic = 2; // Mnemonic Hashed with private key for fingerprint
-}
-
-// Message for Signing Response (Hmac Sha256)
-message AuthResponse {
-  bool isSigned = 1; // If Values were Signed
-
-  // Resulting Signed Values
-  string signedPrefix = 2;      // Message for List of Bytes
-  string signedFingerprint = 3; // Fingerprint Value
-  string publicIdentity = 4;    // Peer ID from Public Key
 }
 
 // First Message Sent with Device and API Keys
@@ -79,23 +73,6 @@ message ConnectionRequest {
   }
 }
 
-// Response from Connection Request
-message ConnectionResponse {
-  bool hostActive = 1;
-  bool mdnsActive = 2;
-  bool textileActive = 3;
-  Topic localTopic = 4;
-  map<string, TextileThread> threads = 5; // ID, Thread
-
-  // Textile Thread
-  message TextileThread {
-    string id = 1;        // ThreadID
-    string multiaddr = 2; // Thread MultiAddr
-    string key = 3;       // Thread Key
-    string name = 4;      // Thread Name
-  }
-}
-
 // Invitation Message sent on RPC
 message InviteRequest {
   Topic topic = 1;       // Lobby Info for Peer
@@ -109,22 +86,6 @@ message InviteRequest {
     Local = 0;
     Flat = 1;
     Remote = 2;
-  }
-}
-
-// Reply Message sent on RPC
-message InviteResponse {
-  Type type = 1;         // Cancel Reply
-  bool decision = 2;     // Users Decision for the Invitation
-  Peer from = 3;         // Users Peer Data
-  Peer to = 4;           // Receivers Peer Data
-  bool flatMode = 5;     // Flat Transfer
-  Transfer transfer = 6; // Card contains all Data Info, Transfer Info
-
-  enum Type {
-    Default = 0;
-    Contact = 1;
-    Cancel = 2;
   }
 }
 
@@ -159,25 +120,6 @@ message MailRequest {
   }
 }
 
-// Mailbox Response Message
-message MailResponse {
-  Result result = 1;              // Result of Request
-  repeated MailEntry entries = 2; // List of Mail - If READ
-
-  enum Result {
-    NONE = 0;    // Default
-    SUCCESS = 1; // Method Performed without Error
-    ERROR = 2;   // Error Occurred
-  }
-}
-
-// Transfer Progress Event
-message ProgressEvent {
-  int32 current = 1;
-  int32 total = 2;
-  double progress = 3;
-}
-
 // REST API Request over HTTP
 message RestRequest {
   Method method = 1;                  // HTTP Method
@@ -190,22 +132,6 @@ message RestRequest {
     string id = 5;    // Libp2p ID
     string sName = 6; // SonrName which retreives id from DB
   }
-
-  enum Method {
-    GET = 0;    // Retreive Resource
-    POST = 1;   // Create new subordinate resources
-    PUT = 2;    // Update existing resource
-    DELETE = 3; // Delete resource
-    PATCH = 4;  // Partial Update to Resource
-  }
-}
-
-// REST API Response over HTTP
-message RestResponse {
-  Method method = 1;            // HTTP Method Type
-  string function = 2;          // Function called for Sonr API
-  int32 code = 3;               // See https://mzl.la/3gg3lti
-  map<string, string> body = 4; // Response Body
 
   enum Method {
     GET = 0;    // Retreive Resource
@@ -241,14 +167,115 @@ message VerifyRequest {
   }
 }
 
+// ------------------------------ //
+// -------- Responses ----------- //
+// ------------------------------ //
+// Message for Signing Response (Hmac Sha256)
+message AuthResponse {
+  bool isSigned = 1; // If Values were Signed
+
+  // Resulting Signed Values
+  string signedPrefix = 2;      // Message for List of Bytes
+  string signedFingerprint = 3; // Fingerprint Value
+  string publicIdentity = 4;    // Peer ID from Public Key
+}
+
+// Response from Connection Request
+message ConnectionResponse {
+  bool hostActive = 1;
+  bool mdnsActive = 2;
+  bool textileActive = 3;
+  Topic localTopic = 4;
+  map<string, TextileThread> threads = 5; // ID, Thread
+
+  // Textile Thread
+  message TextileThread {
+    string id = 1;        // ThreadID
+    string multiaddr = 2; // Thread MultiAddr
+    string key = 3;       // Thread Key
+    string name = 4;      // Thread Name
+  }
+}
+
+// Reply Message sent on RPC
+message InviteResponse {
+  Type type = 1;         // Cancel Reply
+  bool decision = 2;     // Users Decision for the Invitation
+  Peer from = 3;         // Users Peer Data
+  Peer to = 4;           // Receivers Peer Data
+  bool flatMode = 5;     // Flat Transfer
+  Transfer transfer = 6; // Card contains all Data Info, Transfer Info
+
+  enum Type {
+    Default = 0;
+    Contact = 1;
+    Cancel = 2;
+  }
+}
+
+// Mailbox Response Message
+message MailResponse {
+  Result result = 1;              // Result of Request
+  repeated MailEntry entries = 2; // List of Mail - If READ
+
+  enum Result {
+    NONE = 0;    // Default
+    SUCCESS = 1; // Method Performed without Error
+    ERROR = 2;   // Error Occurred
+  }
+}
+
+// REST API Response over HTTP
+message RestResponse {
+  Method method = 1;            // HTTP Method Type
+  string function = 2;          // Function called for Sonr API
+  int32 code = 3;               // See https://mzl.la/3gg3lti
+  map<string, string> body = 4; // Response Body
+
+  enum Method {
+    GET = 0;    // Retreive Resource
+    POST = 1;   // Create new subordinate resources
+    PUT = 2;    // Update existing resource
+    DELETE = 3; // Delete resource
+    PATCH = 4;  // Partial Update to Resource
+  }
+}
+
 // Message for Verification Response
 message VerifyResponse {
   bool isVerified = 1;    // Result for Verification
   ErrorMessage error = 2; // In Case Error Occurred
 }
 
-// Message for Status Update
-message StatusUpdate {
+// --------------------------- //
+// -------- Events ----------- //
+// --------------------------- //
+// Message Sent when peer messages Local Topic
+message LobbyEvent {
+  Topic topic = 1;     // Event Topic Type
+  string id = 2;       // Peer ID
+  Peer peer = 3;       // User Information
+  Subject subject = 4; // Local Event Subject
+
+  // Local Type Event
+  enum Subject {
+    JOIN = 0;    // Peer has joined wants Info
+    STANDBY = 1; // Peer is taking break from lobby
+    RESUME = 2;  // Peer has rejoined Lobby
+    UPDATE = 3;  // Peer has changed position
+    EXIT = 4;    // Peer has Exited
+  }
+}
+
+// Transfer Progress Event
+message ProgressEvent {
+  int32 current = 1;
+  int32 total = 2;
+  double progress = 3;
+}
+
+// Message for Status Update Event
+message StatusEvent {
   Status value = 1;
   User user = 2;
 }

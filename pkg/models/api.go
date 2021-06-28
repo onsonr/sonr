@@ -304,7 +304,7 @@ func (r *User_Router) Topic(name string) string {
 
 // ** ─── Status MANAGEMENT ────────────────────────────────────────────────────────
 // Update Connected Connection Status
-func (u *User) SetConnected(value bool) *StatusUpdate {
+func (u *User) SetConnected(value bool) *StatusEvent {
 	// Update Status
 	if value {
 		u.Status = Status_CONNECTED
@@ -313,11 +313,11 @@ func (u *User) SetConnected(value bool) *StatusUpdate {
 	}
 
 	// Returns Status Update
-	return &StatusUpdate{Value: u.GetStatus()}
+	return &StatusEvent{Value: u.GetStatus()}
 }
 
 // Update Bootstrap Connection Status
-func (u *User) SetAvailable(value bool) *StatusUpdate {
+func (u *User) SetAvailable(value bool) *StatusEvent {
 	// Update Status
 	if value {
 		u.Status = Status_AVAILABLE
@@ -326,16 +326,16 @@ func (u *User) SetAvailable(value bool) *StatusUpdate {
 	}
 
 	// Returns Status Update
-	return &StatusUpdate{Value: u.GetStatus()}
+	return &StatusEvent{Value: u.GetStatus()}
 }
 
 // Update Node Status
-func (u *User) SetStatus(ns Status) *StatusUpdate {
+func (u *User) SetStatus(ns Status) *StatusEvent {
 	// Set Value
 	u.Status = ns
 
 	// Returns Status Update
-	return &StatusUpdate{Value: u.GetStatus()}
+	return &StatusEvent{Value: u.GetStatus()}
 }
 
 // Checks if Status is Given Value
