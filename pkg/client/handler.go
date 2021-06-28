@@ -20,15 +20,18 @@ func (c *client) OnConnected(r *md.ConnectionResponse) {
 
 // ^ OnEvent: Local Lobby Event ^
 func (n *client) OnEvent(e *md.LobbyEvent) {
-	// Convert Message
-	bytes, err := proto.Marshal(e)
-	if err != nil {
-		n.call.OnError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
-		return
-	}
+	// Only Callback when not in Transfer
+	if n.user.IsNotStatus(md.Status_TRANSFER) {
+		// Convert Message
+		bytes, err := proto.Marshal(e)
+		if err != nil {
+			n.call.OnError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
+			return
+		}
 
-	// Call Event
-	n.call.OnEvent(bytes)
+		// Call Event
+		n.call.OnEvent(bytes)
+	}
 }
 
 // ^ OnInvite: User Received Invite ^
@@ -42,7 +45,6 @@ func (n *client) OnInvite(data []byte) {
 
 // ^ OnReply: Begins File Transfer when Accepted ^
 func (n *client) OnReply(id peer.ID, reply []byte) {
-
 	// Call Responded
 	n.call.OnReply(reply)
 
