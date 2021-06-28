@@ -9,7 +9,6 @@ import (
 	olc "github.com/google/open-location-code/go"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
-	"github.com/textileio/go-threads/core/thread"
 	"google.golang.org/protobuf/proto"
 
 	util "github.com/sonr-io/core/pkg/util"
@@ -181,20 +180,6 @@ func (r *InviteResponse) HasAcceptedTransfer() bool {
 }
 
 // ** ─── InviteRequest MANAGEMENT ────────────────────────────────────────────────────────
-// Converts Invite Request to MailRequest
-func (i *InviteRequest) ToMailRequest() *MailRequest {
-	return &MailRequest{
-		Method: MailRequest_SEND,
-		Entry: &MailEntry{
-			From: i.GetFrom(),
-			To:   i.GetTo(),
-			Body: &MailEntry_Invite{
-				Invite: i,
-			},
-		},
-	}
-}
-
 // Returns Invite Contact
 func (i *InviteRequest) GetContact() *Contact {
 	return i.GetTransfer().GetContact()
@@ -237,31 +222,6 @@ func (u *User) ValidateInvite(i *InviteRequest) *InviteRequest {
 		i.From = u.GetPeer()
 	}
 	return i
-}
-
-// ** ─── MailEntry MANAGEMENT ────────────────────────────────────────────────────────
-// Returns Mail Entry as Buffer
-func (me *MailEntry) Buffer() []byte {
-	buf, err := proto.Marshal(me)
-	if err != nil {
-		return nil
-	}
-	return buf
-}
-
-// Checks if MailEntry is Invite
-func (me *MailEntry) IsInvite() bool {
-	return me.GetSubject() == MailEntry_INVITE
-}
-
-// Checks if MailEntry is Text
-func (me *MailEntry) IsText() bool {
-	return me.GetSubject() == MailEntry_TEXT
-}
-
-// Returns Peer Recipient Thread Public Key
-func (me *MailEntry) ToPubKey() thread.PubKey {
-	return thread.NewLibp2pPubKey(me.GetTo().PublicKey())
 }
 
 // ** ─── Location MANAGEMENT ────────────────────────────────────────────────────────

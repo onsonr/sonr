@@ -2,7 +2,6 @@ package client
 
 import (
 	"context"
-	"errors"
 	"log"
 
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -18,7 +17,6 @@ type Client interface {
 	Bootstrap() (*net.TopicManager, *md.SonrError)
 	Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrError
 	Respond(r *md.InviteResponse)
-	Mail(mr *md.MailRequest) *md.SonrError
 	Update(t *net.TopicManager) *md.SonrError
 	Lifecycle(state md.LifecycleState, t *net.TopicManager)
 	Restart(ur *md.UpdateRequest, keys *md.KeyPair) (*net.TopicManager, *md.SonrError)
@@ -93,7 +91,7 @@ func (c *client) Bootstrap() (*net.TopicManager, *md.SonrError) {
 	}
 
 	// Start Services
-	s, err := srv.NewService(c.ctx, c.Host, c.user, c.request, c)
+	s, err := srv.NewService(c.ctx, c.Host, c.user, c.request, c.call, c)
 	if err != nil {
 		return nil, err
 	}
@@ -105,6 +103,8 @@ func (c *client) Bootstrap() (*net.TopicManager, *md.SonrError) {
 	} else {
 		return t, nil
 	}
+
+	// Read any Mail
 }
 
 // @ Invite Processes Data and Sends Invite to Peer
@@ -133,7 +133,14 @@ func (c *client) Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrE
 				}
 			}(invite)
 		} else {
-			return md.NewErrorWithType(md.ErrorMessage_PEER_NOT_FOUND_INVITE)
+			// Check for Remote Invite
+			if invite.GetType() == md.InviteRequest_Remote {
+				c.Service.SendMail(invite)
+			} else {
+				// Return Error
+				return md.NewErrorWithType(md.ErrorMessage_PEER_NOT_FOUND_INVITE)
+			}
+
 		}
 		return nil
 	}
@@ -143,19 +150,6 @@ func (c *client) Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrE
 // @ Respond Sends a Response to Service
 func (c *client) Respond(r *md.InviteResponse) {
 	c.Service.Respond(r)
-}
-
-// @ Handle a MailRequest from Node
-func (c *client) Mail(mr *md.MailRequest) *md.SonrError {
-	if c.user.IsReady() {
-		if mr.Method == md.MailRequest_READ {
-
-		} else if mr.Method == md.MailRequest_SEND {
-			c.Service.SendMail(mr.GetEntry())
-		}
-		return md.NewError(errors.New("Invalid MailRequest Method"), md.ErrorMessage_HOST_TEXTILE)
-	}
-	return nil
 }
 
 // @ Update proximity/direction and Notify Lobby

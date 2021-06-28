@@ -223,22 +223,15 @@ func (n *Node) Invite(data []byte) {
 			n.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
 			return
 		}
-		// @ 1. Validate invite
+		// Validate invite
 		req = n.user.ValidateInvite(req)
 
-		// @ 2. Check Invite Type
-		if req.GetType() == md.InviteRequest_Local {
-			// Send To Local Topic
-			err := n.client.Invite(req, n.local)
-			if err != nil {
-				n.handleError(err)
-				return
-			}
-		} else if req.GetType() == md.InviteRequest_Remote {
-			// Send Mail Request
-			n.client.Mail(req.ToMailRequest())
+		// Send Invite
+		err := n.client.Invite(req, n.local)
+		if err != nil {
+			n.handleError(err)
+			return
 		}
-
 	}
 }
 

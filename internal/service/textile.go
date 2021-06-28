@@ -179,7 +179,7 @@ func (tn *TextileService) InitMail(d *md.Device, us md.ConnectionRequest_UserSta
 }
 
 // @ Method Reads Inbox and Returns List of Mail Entries
-func (sc *serviceClient) ReadMail() ([]*md.MailEntry, *md.SonrError) {
+func (sc *serviceClient) ReadMail() (*md.MailEvent, *md.SonrError) {
 	// Check Mail Enabled
 	if sc.HasMailbox() {
 		// List the recipient's inbox
@@ -190,7 +190,7 @@ func (sc *serviceClient) ReadMail() ([]*md.MailEntry, *md.SonrError) {
 		}
 
 		// Initialize Entry List
-		entries := make([]*md.MailEntry, len(inbox))
+		entries := make([]*md.InviteRequest, len(inbox))
 
 		// Iterate over Entries
 		for i, v := range inbox {
@@ -201,24 +201,33 @@ func (sc *serviceClient) ReadMail() ([]*md.MailEntry, *md.SonrError) {
 			}
 
 			// Unmarshal Body to entry
-			entry := &md.MailEntry{}
+			entry := &md.InviteRequest{}
 			err = proto.Unmarshal(body, entry)
 			if err != nil {
 				return nil, md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
 			}
 			entries[i] = entry
 		}
-		return entries, nil
+
+		return &md.MailEvent{
+			Invites: entries,
+		}, nil
 	}
 	return nil, nil
 }
 
 // @ Method Sends Mail Entry to Peer
-func (sc *serviceClient) SendMail(e *md.MailEntry) *md.SonrError {
+func (sc *serviceClient) SendMail(e *md.InviteRequest) *md.SonrError {
 	// Check Mail Enabled
 	if sc.HasMailbox() {
+		pubKey := e.GetTo().ThreadKey()
+
+		buf, err := proto.Marshal(e)
+		if err != nil {
+			return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+		}
 		// Send Message to Mailbox
-		_, err := sc.Textile.mailbox.SendMessage(context.Background(), e.ToPubKey(), e.Buffer())
+		_, err = sc.Textile.mailbox.SendMessage(context.Background(), pubKey, buf)
 
 		// Check Error
 		if err != nil {
