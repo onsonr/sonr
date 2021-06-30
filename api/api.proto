@@ -59,11 +59,10 @@ message ConnectionRequest {
 
   // Textile Configuration
   message TextileOptions {
-    bool enabled = 1;    // Enable Textile Client
+    bool enabled = 1;    // Enable Textile Client and Threads
     bool mailbox = 2;    // Enable Mailbox
-    bool threads = 3;    // Enable Threads
-    bool buckets = 4;    // Enable Buckets
-    string threadDB = 5; // Address for Database
+    bool buckets = 3;    // Enable Buckets
+    string threadDB = 4; // Address for Database
   }
 
   // User is Returning or New

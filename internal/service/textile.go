@@ -102,7 +102,7 @@ func (tn *TextileService) PubKey() thread.PubKey {
 // @ Initializes Threads
 func (tn *TextileService) InitThreads(sc *serviceClient) *md.SonrError {
 	// Verify Ready to Init
-	if tn.options.GetThreads() && tn.ctxToken != nil {
+	if tn.ctxToken != nil {
 		// Log
 		log.Println("ACTIVATE: Textile Threads")
 
@@ -239,16 +239,8 @@ func (sc *serviceClient) SendMail(e *md.InviteRequest) *md.SonrError {
 
 // @ Helper: Checks if Mailbox Enabled
 func (sc *serviceClient) HasMailbox() bool {
-	if sc.Textile.options.GetMailbox() && sc.Textile.options.GetThreads() && sc.Textile.options.GetEnabled() {
+	if sc.Textile.options.GetMailbox() && sc.Textile.options.GetEnabled() {
 		return sc.status.Textile == md.ServiceStatus_FULL
-	}
-	return false
-}
-
-// @ Helper: Checks if Threads Enabled
-func (sc *serviceClient) HasThreads() bool {
-	if sc.Textile.options.GetThreads() && sc.Textile.options.GetEnabled() {
-		return sc.status.Textile == md.ServiceStatus_THREADS_ONLY || sc.status.Textile == md.ServiceStatus_FULL
 	}
 	return false
 }
