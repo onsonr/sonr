@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/textileio/go-threads/core/thread"
 
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/multiformats/go-multiaddr"
@@ -145,4 +146,9 @@ func (p *Peer) IsNotSameDeviceID(other *Peer) bool {
 // ^ Checks if PeerID is NOT the Same
 func (p *Peer) IsNotSamePeerID(pid peer.ID) bool {
 	return p.PeerID() != pid.String()
+}
+
+// ^ Converts Peer Public Key into Thread Key
+func (p *Peer) ThreadKey() thread.PubKey {
+	return thread.NewLibp2pPubKey(p.PublicKey())
 }

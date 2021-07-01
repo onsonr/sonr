@@ -310,24 +310,15 @@ func (d *Device) WorkingSupportPath(fileName string) string {
 }
 
 // Returns Directory for Device Working Support Folder
-func (d *Device) WorkingConfigDirectory() string {
-	var path string
+func (d *Device) WorkingSupportDir() string {
 	if d.IsDesktop() {
-		path = filepath.Join(d.FileSystem.GetLibrary(), ".textile")
-		err := os.MkdirAll(path, os.ModePerm)
-		if err != nil {
-			log.Println(err)
-		}
+		return d.GetFileSystem().GetLibrary()
 	} else {
-		path = filepath.Join(d.FileSystem.GetSupport(), ".textile")
-		err := os.MkdirAll(path, os.ModePerm)
-		if err != nil {
-			log.Println(err)
+		if d.IsAndroid() {
+			return d.GetFileSystem().GetDocuments()
 		}
+		return d.GetFileSystem().GetSupport()
 	}
-
-	// Return Path
-	return path
 }
 
 // Writes a File to Disk and Returns Path

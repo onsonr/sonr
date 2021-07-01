@@ -9,6 +9,7 @@ type Callback interface {
 	OnStatus(data []byte)      // Node Status Updates
 	OnConnected(data []byte)   // Connection Response
 	OnEvent(data []byte)       // Local Lobby Event
+	OnMail(data []byte)        // Mailbox Event
 	OnInvited(data []byte)     // User Invited
 	OnResponded(data []byte)   // Peer has responded
 	OnProgress(data []byte)    // File Progress Updated
@@ -28,6 +29,7 @@ func (mn *Node) callback() md.Callback {
 		OnProgress:    mn.call.OnProgress,
 		OnReceived:    mn.call.OnReceived,
 		OnTransmitted: mn.call.OnTransmitted,
+		OnMail:        mn.call.OnMail,
 
 		// Middleware
 		OnError:   mn.handleError,

@@ -28,6 +28,7 @@ type Callback struct {
 	OnInvite      OnProtobuf
 	OnConnected   OnProtobuf
 	OnEvent       OnProtobuf
+	OnMail        OnProtobuf
 	OnReply       OnProtobuf
 	OnProgress    OnProtobuf
 	OnReceived    OnProtobuf

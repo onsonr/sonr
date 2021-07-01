@@ -9,7 +9,6 @@ import (
 	olc "github.com/google/open-location-code/go"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
-	"github.com/textileio/go-threads/core/thread"
 	"google.golang.org/protobuf/proto"
 
 	util "github.com/sonr-io/core/pkg/util"
@@ -181,20 +180,6 @@ func (r *InviteResponse) HasAcceptedTransfer() bool {
 }
 
 // ** ─── InviteRequest MANAGEMENT ────────────────────────────────────────────────────────
-// Converts Invite Request to MailRequest
-func (i *InviteRequest) ToMailRequest() *MailRequest {
-	return &MailRequest{
-		Method: MailRequest_SEND,
-		Entry: &MailEntry{
-			From: i.GetFrom(),
-			To:   i.GetTo(),
-			Body: &MailEntry_Invite{
-				Invite: i,
-			},
-		},
-	}
-}
-
 // Returns Invite Contact
 func (i *InviteRequest) GetContact() *Contact {
 	return i.GetTransfer().GetContact()
@@ -239,31 +224,6 @@ func (u *User) ValidateInvite(i *InviteRequest) *InviteRequest {
 	return i
 }
 
-// ** ─── MailEntry MANAGEMENT ────────────────────────────────────────────────────────
-// Returns Mail Entry as Buffer
-func (me *MailEntry) Buffer() []byte {
-	buf, err := proto.Marshal(me)
-	if err != nil {
-		return nil
-	}
-	return buf
-}
-
-// Checks if MailEntry is Invite
-func (me *MailEntry) IsInvite() bool {
-	return me.GetSubject() == MailEntry_INVITE
-}
-
-// Checks if MailEntry is Text
-func (me *MailEntry) IsText() bool {
-	return me.GetSubject() == MailEntry_TEXT
-}
-
-// Returns Peer Recipient Thread Public Key
-func (me *MailEntry) ToPubKey() thread.PubKey {
-	return thread.NewLibp2pPubKey(me.GetTo().PublicKey())
-}
-
 // ** ─── Location MANAGEMENT ────────────────────────────────────────────────────────
 func (l *Location) MinorOLC() string {
 	lat := l.GetLatitude()
@@ -278,7 +238,7 @@ func (l *Location) MajorOLC() string {
 }
 
 func (l *Location) OLC() string {
-	return olc.Encode(float64(l.GetLatitude()), float64(l.GetLongitude()), 5)
+	return olc.Encode(float64(l.GetLatitude()), float64(l.GetLongitude()), 8)
 }
 
 // ** ─── Router MANAGEMENT ────────────────────────────────────────────────────────
@@ -304,7 +264,7 @@ func (r *User_Router) Topic(name string) string {
 
 // ** ─── Status MANAGEMENT ────────────────────────────────────────────────────────
 // Update Connected Connection Status
-func (u *User) SetConnected(value bool) *StatusUpdate {
+func (u *User) SetConnected(value bool) *StatusEvent {
 	// Update Status
 	if value {
 		u.Status = Status_CONNECTED
@@ -313,11 +273,11 @@ func (u *User) SetConnected(value bool) *StatusUpdate {
 	}
 
 	// Returns Status Update
-	return &StatusUpdate{Value: u.GetStatus()}
+	return &StatusEvent{Value: u.GetStatus()}
 }
 
 // Update Bootstrap Connection Status
-func (u *User) SetAvailable(value bool) *StatusUpdate {
+func (u *User) SetAvailable(value bool) *StatusEvent {
 	// Update Status
 	if value {
 		u.Status = Status_AVAILABLE
@@ -326,16 +286,16 @@ func (u *User) SetAvailable(value bool) *StatusUpdate {
 	}
 
 	// Returns Status Update
-	return &StatusUpdate{Value: u.GetStatus()}
+	return &StatusEvent{Value: u.GetStatus()}
 }
 
 // Update Node Status
-func (u *User) SetStatus(ns Status) *StatusUpdate {
+func (u *User) SetStatus(ns Status) *StatusEvent {
 	// Set Value
 	u.Status = ns
 
 	// Returns Status Update
-	return &StatusUpdate{Value: u.GetStatus()}
+	return &StatusEvent{Value: u.GetStatus()}
 }
 
 // Checks if Status is Given Value

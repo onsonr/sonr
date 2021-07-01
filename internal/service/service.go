@@ -20,13 +20,14 @@ type ServiceHandler interface {
 	OnInvite([]byte)
 	OnReply(id peer.ID, data []byte)
 	OnConfirmed(inv *md.InviteRequest)
+	OnMail(mail *md.MailEvent)
 }
 
 type ServiceClient interface {
 	Invite(id peer.ID, inv *md.InviteRequest) error
 	Respond(rep *md.InviteResponse)
-	SendMail(e *md.MailEntry) *md.SonrError
-	ReadMail() ([]*md.MailEntry, *md.SonrError)
+	SendMail(e *md.InviteRequest) *md.SonrError
+	ReadMail() (*md.MailEvent, *md.SonrError)
 	Close()
 }
 
@@ -48,7 +49,7 @@ type serviceClient struct {
 	Textile *TextileService
 }
 
-func NewService(ctx context.Context, h net.HostNode, u *md.User, req *md.ConnectionRequest, sh ServiceHandler) (ServiceClient, *md.SonrError) {
+func NewService(ctx context.Context, h net.HostNode, u *md.User, req *md.ConnectionRequest, call md.Callback, sh ServiceHandler) (ServiceClient, *md.SonrError) {
 	// Create Client
 	client := &serviceClient{
 		ctx:     ctx,
@@ -56,7 +57,7 @@ func NewService(ctx context.Context, h net.HostNode, u *md.User, req *md.Connect
 		handler: sh,
 		host:    h,
 		request: req,
-		status: md.NewServiceStatus(true, false),
+		status:  md.NewServiceStatus(true, false),
 		user:    u,
 	}
 
@@ -70,6 +71,7 @@ func NewService(ctx context.Context, h net.HostNode, u *md.User, req *md.Connect
 	go func(c *serviceClient) {
 		if err := c.StartTextile(); err != nil {
 			log.Println(err)
+			return
 		}
 	}(client)
 
