@@ -174,6 +174,13 @@ func (tn *TextileService) InitMail(d *md.Device, us md.ConnectionRequest_UserSta
 			log.Println("> Success!: Textile Mailbox Enabled, Existing Mailbox")
 			sc.status.EnableTextile(true, true)
 		}
+
+		// Read Existing Mai.
+		mailevent, err := sc.ReadMail()
+		if err != nil {
+			log.Println(err)
+		}
+		sc.handler.OnMail(mailevent)
 	}
 	return nil
 }

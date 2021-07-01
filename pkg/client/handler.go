@@ -79,3 +79,12 @@ func (n *client) OnConfirmed(inv *md.InviteRequest) {
 	n.session = md.NewInSession(n.user, inv, n.call)
 	n.Host.HandleStream(n.user.GetRouter().LocalTransferProtocol(n.Host.ID()), n.session.ReadFromStream)
 }
+
+// ^ OnMail: Callback for Mail Event
+func (n *client) OnMail(mail *md.MailEvent) {
+	buf, err := proto.Marshal(mail)
+	if err != nil {
+		n.call.OnError(md.NewUnmarshalError(err))
+	}
+	n.call.OnMail(buf)
+}
