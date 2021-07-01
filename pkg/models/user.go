@@ -312,9 +312,12 @@ func (d *Device) WorkingSupportPath(fileName string) string {
 // Returns Directory for Device Working Support Folder
 func (d *Device) WorkingSupportDir() string {
 	if d.IsDesktop() {
-		return d.FileSystem.GetLibrary()
+		return d.GetFileSystem().GetLibrary()
 	} else {
-		return d.FileSystem.GetSupport()
+		if d.IsAndroid() {
+			return d.GetFileSystem().GetDocuments()
+		}
+		return d.GetFileSystem().GetSupport()
 	}
 }
 
