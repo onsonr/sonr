@@ -176,24 +176,24 @@ func (tn *TextileService) InitMail(d *md.Device, us md.ConnectionRequest_UserSta
 		}
 
 		// Read Existing Mai.
-		mailevent, err := sc.ReadMail()
+		err := sc.ReadMail()
 		if err != nil {
 			log.Println(err)
+			return err
 		}
-		sc.handler.OnMail(mailevent)
 	}
 	return nil
 }
 
 // @ Method Reads Inbox and Returns List of Mail Entries
-func (sc *serviceClient) ReadMail() (*md.MailEvent, *md.SonrError) {
+func (sc *serviceClient) ReadMail() *md.SonrError {
 	// Check Mail Enabled
 	if sc.HasMailbox() {
 		// List the recipient's inbox
 		inbox, err := sc.Textile.mailbox.ListInboxMessages(context.Background())
 
 		if err != nil {
-			return nil, textileError(err)
+			return textileError(err)
 		}
 
 		// Initialize Entry List
@@ -204,23 +204,26 @@ func (sc *serviceClient) ReadMail() (*md.MailEvent, *md.SonrError) {
 			// Open decrypts the message body
 			body, err := v.Open(context.Background(), sc.Textile.identity)
 			if err != nil {
-				return nil, textileError(err)
+				return textileError(err)
 			}
 
 			// Unmarshal Body to entry
 			entry := &md.InviteRequest{}
 			err = proto.Unmarshal(body, entry)
 			if err != nil {
-				return nil, textileError(err)
+				return textileError(err)
 			}
 			entries[i] = entry
 		}
 
-		return &md.MailEvent{
-			Invites: entries,
-		}, nil
+		// Check Entries
+		if len(entries) > 0 {
+			sc.handler.OnMail(&md.MailEvent{
+				Invites: entries,
+			})
+		}
 	}
-	return nil, nil
+	return nil
 }
 
 // @ Method Sends Mail Entry to Peer

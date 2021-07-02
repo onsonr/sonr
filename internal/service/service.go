@@ -27,7 +27,7 @@ type ServiceClient interface {
 	Invite(id peer.ID, inv *md.InviteRequest) error
 	Respond(rep *md.InviteResponse)
 	SendMail(e *md.InviteRequest) *md.SonrError
-	ReadMail() (*md.MailEvent, *md.SonrError)
+	ReadMail() *md.SonrError
 	Close()
 }
 
