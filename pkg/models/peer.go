@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -9,6 +10,10 @@ import (
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/multiformats/go-multiaddr"
 	"google.golang.org/protobuf/proto"
+)
+
+var (
+	NoPubKey = errors.New("Public Key not found from Peer Protobuf.")
 )
 
 // ** ─── Topic MANAGEMENT ────────────────────────────────────────────────────────
@@ -22,19 +27,6 @@ func (r *User) NewLocalTopic() *Topic {
 	return &Topic{
 		Name: name,
 		Type: Topic_LOCAL,
-	}
-}
-
-// ** ─── Peer Instance MANAGEMENT ────────────────────────────────────────────────────────
-// Converts Peer to PeerInstance for Threads Storage
-func (p *Peer) ToInstance() *PeerInstance {
-	return &PeerInstance{
-		SName:       p.GetSName(),
-		PeerID:      p.PeerID(),
-		MultiAddr:   p.Id.GetMultiAddr(),
-		FirstName:   p.Profile.GetFirstName(),
-		IsActive:    true,
-		IsReachable: true,
 	}
 }
 
@@ -108,6 +100,7 @@ func (p *Peer) PeerID() string {
 
 // ^ Returns Peer Public Key ^ //
 func (p *Peer) PublicKey() crypto.PubKey {
+	// Get ID from Public Key
 	buf := p.GetId().GetPublicKey()
 
 	// Get Key from Buffer
@@ -149,6 +142,9 @@ func (p *Peer) IsNotSamePeerID(pid peer.ID) bool {
 }
 
 // ^ Converts Peer Public Key into Thread Key
-func (p *Peer) ThreadKey() thread.PubKey {
-	return thread.NewLibp2pPubKey(p.PublicKey())
+func (p *Peer) ThreadKey() (thread.PubKey, error) {
+	if len(p.GetId().PublicKey) == 0 {
+		return thread.NewLibp2pPubKey(p.PublicKey()), nil
+	}
+	return nil, NoPubKey
 }

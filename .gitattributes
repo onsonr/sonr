@@ -1,3 +1,0 @@
-ios/Frameworks/Core.framework/Versions/A/Core filter=lfs diff=lfs merge=lfs -text
-android/libs/io.sonr.core.aar filter=lfs diff=lfs merge=lfs -text
-android/libs/io.sonr.core-sources.jar filter=lfs diff=lfs merge=lfs -text

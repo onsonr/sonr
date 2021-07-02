@@ -154,7 +154,7 @@ func (tn *TextileService) InitMail(d *md.Device, us md.ConnectionRequest_UserSta
 			// Check Error
 			if err != nil {
 				sc.status.EnableTextile(true, false)
-				return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+				return textileError(err)
 			}
 
 			// Set Mailbox and Update Status
@@ -166,7 +166,7 @@ func (tn *TextileService) InitMail(d *md.Device, us md.ConnectionRequest_UserSta
 			mailbox, err := tn.mail.GetLocalMailbox(context.Background(), d.WorkingSupportDir())
 			if err != nil {
 				sc.status.EnableTextile(true, false)
-				return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+				return textileError(err)
 			}
 
 			// Set Mailbox and Update Status
@@ -193,7 +193,7 @@ func (sc *serviceClient) ReadMail() (*md.MailEvent, *md.SonrError) {
 		inbox, err := sc.Textile.mailbox.ListInboxMessages(context.Background())
 
 		if err != nil {
-			return nil, md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+			return nil, textileError(err)
 		}
 
 		// Initialize Entry List
@@ -204,14 +204,14 @@ func (sc *serviceClient) ReadMail() (*md.MailEvent, *md.SonrError) {
 			// Open decrypts the message body
 			body, err := v.Open(context.Background(), sc.Textile.identity)
 			if err != nil {
-				return nil, md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+				return nil, textileError(err)
 			}
 
 			// Unmarshal Body to entry
 			entry := &md.InviteRequest{}
 			err = proto.Unmarshal(body, entry)
 			if err != nil {
-				return nil, md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+				return nil, textileError(err)
 			}
 			entries[i] = entry
 		}
@@ -227,27 +227,40 @@ func (sc *serviceClient) ReadMail() (*md.MailEvent, *md.SonrError) {
 func (sc *serviceClient) SendMail(e *md.InviteRequest) *md.SonrError {
 	// Check Mail Enabled
 	if sc.HasMailbox() {
-		pubKey := e.GetTo().ThreadKey()
+		pubKey, err := e.GetTo().ThreadKey()
+		if err != nil {
+			return textileError(err)
+		}
 
 		buf, err := proto.Marshal(e)
 		if err != nil {
-			return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+			return textileError(err)
 		}
 		// Send Message to Mailbox
-		_, err = sc.Textile.mailbox.SendMessage(context.Background(), pubKey, buf)
-
-		// Check Error
+		msg, err := sc.Textile.mailbox.SendMessage(context.Background(), pubKey, buf)
 		if err != nil {
-			return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+			log.Println(err)
+			return textileError(err)
 		}
+
+		// Logging
+		log.Println("-- Mail Sent --")
+		log.Println(fmt.Sprintf("TO: %s", msg.To))
+		log.Println(fmt.Sprintf("SENT_AT: %s", msg.CreatedAt))
+		log.Println(fmt.Sprintf("BODY: %s", msg.Body))
 	}
 	return nil
 }
 
-// @ Helper: Checks if Mailbox Enabled
+// @ Checks if Mailbox Enabled
 func (sc *serviceClient) HasMailbox() bool {
 	if sc.Textile.options.GetMailbox() && sc.Textile.options.GetEnabled() {
 		return sc.status.Textile == md.ServiceStatus_FULL
 	}
 	return false
+}
+
+// # Helper: Builds Textile Error
+func textileError(err error) *md.SonrError {
+	return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
 }

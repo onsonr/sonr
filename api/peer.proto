@@ -52,7 +52,6 @@ message Lobby {
   }
 }
 
-
 // Location from GeoIP and OLC information
 message Location {
   string city = 1;
@@ -87,16 +86,6 @@ message Peer {
     bool enabledPointShare = 1;
     bool isFlatMode = 2;
   }
-}
-
-// Record of Peer stored in Threads DB
-message PeerInstance {
-  string sName = 1;     // User Sonr Domain
-  string peerID = 2;    // Libp2p Peer ID
-  string multiAddr = 3; // Peer MultiAddress Format
-  string firstName = 4; // Peer First Name
-  bool isActive = 5;    // If Peer is Active Now
-  bool isReachable = 6; // If Peer has allowed Remote Calls
 }
 
 // Platform is the Operating System of Device
