@@ -30,9 +30,8 @@ message Device {
   string localeName = 5;        // The name of the current locale.
   string name = 6;              // User Defined Name
   int32 numberOfProcessors = 7; // The number of machine execution units.
-
-  string model = 8;           // Model of Device
-  string operatingSystem = 9; // Representation of the host OS or platform.
+  string model = 8;             // Model of Device
+  string operatingSystem = 9;   // Representation of the host OS or platform.
   string operatingSystemVersion = 10; // Version of the host OS or platform.
 }
 
