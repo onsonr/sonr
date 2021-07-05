@@ -9,12 +9,13 @@ option go_package = "/models";
 // Client Keys for Services
 message APIKeys {
   string ipApiKey = 1;
-  string rapidApiHost = 2;
-  string rapidApiKey = 3;
-  string handshakeKey = 4;
-  string handshakeSecret = 5;
-  string textileKey = 6;
-  string textileSecret = 7;
+  string rapidApiKey = 2;
+  string handshakeKey = 3;
+  string handshakeSecret = 4;
+  string mapQuestKey = 5;
+  string mapQuestSecret = 6;
+  string textileKey = 7;
+  string textileSecret = 8;
 }
 
 // Information about device for User

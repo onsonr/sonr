@@ -54,12 +54,51 @@ message Lobby {
 
 // Location from GeoIP and OLC information
 message Location {
-  string city = 1;
-  string state = 2;
-  string continent = 3;
-  string country = 4;
-  double latitude = 5;
-  double longitude = 6;
+  // Location Latitude
+  double latitude = 1;
+
+  // Location Longitude
+  double longitude = 2;
+
+  // Location Placemark Information - Generated
+  Placemark placemark = 3;
+
+  // Contains detailed placemark information.
+  message Placemark {
+    // The name associated with the placemark.
+    string name = 1;
+
+    // The street associated with the placemark.
+    string street = 2;
+
+    // The abbreviated country name, according to the two letter (alpha-2) [ISO
+    // standard](https://www.iso.org/iso-3166-country-codes.html).
+    string isoCountryCode = 3;
+
+    // The name of the country associated with the placemark.
+    string country = 4;
+
+    // The postal code associated with the placemark.
+    string postalCode = 5;
+
+    // The name of the state or province associated with the placemark.
+    string administrativeArea = 6;
+
+    // Additional administrative area information for the placemark.
+    string subAdministrativeArea = 7;
+
+    // The name of the city associated with the placemark.
+    string locality = 8;
+
+    // Additional city-level information for the placemark.
+    string subLocality = 9;
+
+    // The street address associated with the placemark.
+    string thoroughfare = 10;
+
+    // Additional street address information for the placemark.
+    string subThoroughfare = 11;
+  }
 }
 
 // Basic Info Sent to Peers to Establish Connections
