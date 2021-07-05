@@ -20,13 +20,21 @@ message APIKeys {
 
 // Information about device for User
 message Device {
-  string id = 1;             // Device Identifier
-  string name = 2;           // User Defined Name
-  Platform platform = 3;     // Operating System
-  string model = 4;          // Model of Device
-  string version = 5;        // Operating System Version
-  FileSystem fileSystem = 6; // Directories for this Device
-  KeyPair keyPair = 7;
+  // Management
+  FileSystem fileSystem = 1; // Directories for this Device
+  KeyPair keyPair = 2;       // User Public Private Key-Pair
+
+  // Identification
+  Platform platform = 3;        // Operating System
+  string id = 4;                // Device Identifier
+  string localHostname = 5;     // The local hostname for the system.
+  string localeName = 6;        // The name of the current locale.
+  string name = 7;              // User Defined Name
+  int32 numberOfProcessors = 8; // The number of machine execution units.
+
+  string model = 9;            // Model of Device
+  string operatingSystem = 10; // Representation of the host OS or platform.
+  string operatingSystemVersion = 11; // Version of the host OS or platform.
 }
 
 // FileSystem is for Directores Where Data can be stored
