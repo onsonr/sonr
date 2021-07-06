@@ -314,9 +314,6 @@ func (d *Device) WorkingSupportDir() string {
 	if d.IsDesktop() {
 		return d.GetFileSystem().GetLibrary()
 	} else {
-		if d.IsAndroid() {
-			return d.GetFileSystem().GetDocuments()
-		}
 		return d.GetFileSystem().GetSupport()
 	}
 }
