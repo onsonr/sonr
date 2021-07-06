@@ -12,10 +12,8 @@ message APIKeys {
   string rapidApiKey = 2;
   string handshakeKey = 3;
   string handshakeSecret = 4;
-  string mapQuestKey = 5;
-  string mapQuestSecret = 6;
-  string textileKey = 7;
-  string textileSecret = 8;
+  string textileKey = 5;
+  string textileSecret = 6;
 }
 
 // Information about device for User
