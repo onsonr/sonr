@@ -314,6 +314,9 @@ func (d *Device) WorkingSupportDir() string {
 	if d.IsDesktop() {
 		return d.GetFileSystem().GetLibrary()
 	} else {
+		if d.IsAndroid() {
+			return fmt.Sprintf(d.GetFileSystem().GetSupport()+"%s", "/.textile/")
+		}
 		return d.GetFileSystem().GetSupport()
 	}
 }
