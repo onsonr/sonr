@@ -81,10 +81,6 @@ func (n *client) OnConfirmed(inv *md.InviteRequest) {
 }
 
 // ^ OnMail: Callback for Mail Event
-func (n *client) OnMail(mail *md.MailEvent) {
-	buf, err := proto.Marshal(mail)
-	if err != nil {
-		n.call.OnError(md.NewUnmarshalError(err))
-	}
+func (n *client) OnMail(buf []byte) {
 	n.call.OnMail(buf)
 }

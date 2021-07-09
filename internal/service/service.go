@@ -20,7 +20,7 @@ type ServiceHandler interface {
 	OnInvite([]byte)
 	OnReply(id peer.ID, data []byte)
 	OnConfirmed(inv *md.InviteRequest)
-	OnMail(mail *md.MailEvent)
+	OnMail([]byte)
 }
 
 type ServiceClient interface {

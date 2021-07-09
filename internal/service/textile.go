@@ -216,11 +216,21 @@ func (sc *serviceClient) ReadMail() *md.SonrError {
 			}
 		}
 
-		// Callback
-		sc.handler.OnMail(&md.MailEvent{
+		// Create Mail
+		mail := &md.MailEvent{
 			Invites:    entries,
 			HasNewMail: hasNewMail,
-		})
+		}
+
+		// Marshal Data
+		buf, err := proto.Marshal(mail)
+		if err != nil {
+			log.Println(err)
+			return textileError(err)
+		}
+
+		// Callback Event
+		sc.handler.OnMail(buf)
 	}
 	return nil
 }
