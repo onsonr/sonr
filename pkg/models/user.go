@@ -265,19 +265,19 @@ func (d *FileSystem_Directory) ReadFile(name string) ([]byte, *SonrError) {
 // Returns Path for Private Key File
 func (d *Device) WorkingKeyPath() string {
 	// Check for Desktop
-	return filepath.Join(d.FileSystem.GetSupport().GetPath(), util.KEY_FILE_NAME)
+	return filepath.Join(d.GetFileSystem().GetSupport().GetPath(), util.KEY_FILE_NAME)
 }
 
 // Returns Path for Application/User Data
 func (d *Device) WorkingFilePath(fileName string) string {
 	// Check for Desktop
-	return filepath.Join(d.FileSystem.GetDownloads().GetPath(), fileName)
+	return filepath.Join(d.GetFileSystem().GetDownloads().GetPath(), fileName)
 }
 
 // Returns Path for Application/User Data
 func (d *Device) WorkingSupportPath(fileName string) string {
 	// Check for Desktop
-	return filepath.Join(d.FileSystem.GetSupport().GetPath(), fileName)
+	return filepath.Join(d.GetFileSystem().GetSupport().GetPath(), fileName)
 }
 
 // Returns Directory for Device Working Support Folder
@@ -334,7 +334,7 @@ func NewUser(ir *InitializeRequest) (*User, *SonrError) {
 // Set the User with ConnectionRequest
 func (u *User) InitConnection(cr *ConnectionRequest) {
 	u.Contact = cr.GetContact()
-	u.SName = u.Contact.Profile.SName
+	u.SName = cr.GetContact().GetProfile().GetSName()
 	u.Location = cr.GetLocation()
 	u.Status = Status_IDLE
 }

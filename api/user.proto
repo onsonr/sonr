@@ -44,9 +44,11 @@ message FileSystem {
     string path = 1;
     Type type = 2;
     enum Type {
-      Temporary = 0; // Temporary Cache Storage (Media for Mobile)
-      Downloads = 1; // Transferred Files, Documents for Mobile
-      Support = 2; // Persistent Non Exposed Files, Library for Desktop, Support
+      Temporary = 0; // Temporary Cache Storage
+      Downloads = 1; // Transferred Files - Desktop
+      Support = 2;   // Persistent Non Exposed Files - Mobile
+      Library = 3;   // Persistent Non Exposed Files - Desktop
+      Documents = 4; // Transferred Files - Mobile
     }
   }
 }
