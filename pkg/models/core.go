@@ -360,17 +360,12 @@ func (i *SFile_Item) SetPath(d *Device) string {
 	if i.Mime.IsMedia() {
 		// Check for Desktop
 		if d.IsDesktop() {
-			i.Path = filepath.Join(d.FileSystem.GetDownloads(), i.Name)
+			i.Path = filepath.Join(d.FileSystem.GetDownloads().GetPath(), i.Name)
 		} else {
-			i.Path = filepath.Join(d.FileSystem.GetTemporary(), i.Name)
+			i.Path = filepath.Join(d.FileSystem.GetTemporary().GetPath(), i.Name)
 		}
 	} else {
-		// Check for Desktop
-		if d.IsDesktop() {
-			i.Path = filepath.Join(d.FileSystem.GetDownloads(), i.Name)
-		} else {
-			i.Path = filepath.Join(d.FileSystem.GetDocuments(), i.Name)
-		}
+		i.Path = filepath.Join(d.FileSystem.GetDownloads().GetPath(), i.Name)
 	}
 	return i.Path
 }

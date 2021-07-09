@@ -23,7 +23,7 @@ func (t *Topic) IsLocal() bool {
 
 // @ Local Lobby Topic Protocol ID
 func (r *User) NewLocalTopic() *Topic {
-	name := fmt.Sprintf("/sonr/topic/%s", r.Router.Location.OLC())
+	name := fmt.Sprintf("/sonr/topic/%s", r.Location.OLC())
 	return &Topic{
 		Name: name,
 		Type: Topic_LOCAL,
@@ -45,8 +45,6 @@ func (u *User) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) *SonrError {
 		Platform: u.Device.Platform,
 		Model:    u.Device.Model,
 	}
-	// Set Device Topic
-	u.Router.DeviceTopic = fmt.Sprintf("/sonr/topic/%s", u.Peer.GetSName())
 	return nil
 }
 

@@ -226,19 +226,9 @@ func (d *Device) IsWindows() bool {
 }
 
 // Checks if File Exists
-func (d *Device) IsFile(name string) bool {
-	// Initialize
-	var path string
-
-	// Create File Path
-	if d.IsDesktop() {
-		path = filepath.Join(d.FileSystem.GetLibrary(), name)
-	} else {
-		path = filepath.Join(d.FileSystem.GetDocuments(), name)
-	}
-
+func (d *FileSystem_Directory) IsFile(name string) bool {
 	// Check Path
-	if _, err := os.Stat(path); os.IsNotExist(err) {
+	if _, err := os.Stat(filepath.Join(d.GetPath(), name)); os.IsNotExist(err) {
 		return false
 	} else {
 		return true
@@ -255,16 +245,9 @@ func (d *Device) ReadKey() ([]byte, *SonrError) {
 }
 
 // Loads File from Disk as Buffer
-func (d *Device) ReadFile(name string) ([]byte, *SonrError) {
+func (d *FileSystem_Directory) ReadFile(name string) ([]byte, *SonrError) {
 	// Initialize
-	var path string
-
-	// Create File Path
-	if d.IsDesktop() {
-		path = filepath.Join(d.FileSystem.GetLibrary(), name)
-	} else {
-		path = filepath.Join(d.FileSystem.GetDocuments(), name)
-	}
+	path := filepath.Join(d.GetPath(), name)
 
 	// @ Check for Path
 	if _, err := os.Stat(path); os.IsNotExist(err) {
@@ -282,43 +265,24 @@ func (d *Device) ReadFile(name string) ([]byte, *SonrError) {
 // Returns Path for Private Key File
 func (d *Device) WorkingKeyPath() string {
 	// Check for Desktop
-	if d.IsDesktop() {
-		return filepath.Join(d.FileSystem.GetLibrary(), util.KEY_FILE_NAME)
-	} else {
-		return filepath.Join(d.FileSystem.GetSupport(), util.KEY_FILE_NAME)
-	}
+	return filepath.Join(d.FileSystem.GetSupport().GetPath(), util.KEY_FILE_NAME)
 }
 
 // Returns Path for Application/User Data
 func (d *Device) WorkingFilePath(fileName string) string {
 	// Check for Desktop
-	if d.IsDesktop() {
-		return filepath.Join(d.FileSystem.GetDownloads(), fileName)
-	} else {
-		return filepath.Join(d.FileSystem.GetDocuments(), fileName)
-	}
+	return filepath.Join(d.FileSystem.GetDownloads().GetPath(), fileName)
 }
 
 // Returns Path for Application/User Data
 func (d *Device) WorkingSupportPath(fileName string) string {
 	// Check for Desktop
-	if d.IsDesktop() {
-		return filepath.Join(d.FileSystem.GetLibrary(), fileName)
-	} else {
-		return filepath.Join(d.FileSystem.GetSupport(), fileName)
-	}
+	return filepath.Join(d.FileSystem.GetSupport().GetPath(), fileName)
 }
 
 // Returns Directory for Device Working Support Folder
 func (d *Device) WorkingSupportDir() string {
-	if d.IsDesktop() {
-		return d.GetFileSystem().GetLibrary()
-	} else {
-		if d.IsAndroid() {
-			return d.GetFileSystem().GetDocuments()
-		}
-		return d.GetFileSystem().GetSupport()
-	}
+	return d.GetFileSystem().GetSupport().GetPath()
 }
 
 // Writes a File to Disk and Returns Path
@@ -371,17 +335,13 @@ func NewUser(ir *InitializeRequest) (*User, *SonrError) {
 func (u *User) InitConnection(cr *ConnectionRequest) {
 	u.Contact = cr.GetContact()
 	u.SName = u.Contact.Profile.SName
-	u.Router = &User_Router{
-		Rendevouz:  "/sonr/rendevouz/0.9.2",
-		LocalTopic: fmt.Sprintf("/sonr/topic/%s", cr.GetLocation().OLC()),
-		Location:   cr.GetLocation(),
-	}
+	u.Location = cr.GetLocation()
 	u.Status = Status_IDLE
 }
 
 // Checks Whether User is Ready to Communicate
 func (u *User) IsReady() bool {
-	return u.Contact != nil && u.SName != "" && u.Router != nil && u.Status != Status_DEFAULT
+	return u.Contact != nil && u.SName != "" && u.Location != nil && u.Status != Status_DEFAULT
 }
 
 // Return Client API Keys

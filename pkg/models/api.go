@@ -242,24 +242,32 @@ func (l *Location) OLC() string {
 }
 
 // ** ─── Router MANAGEMENT ────────────────────────────────────────────────────────
-// @ LocalTransferProtocol Controller Data Protocol ID
-func (r *User_Router) LocalTransferProtocol(id peer.ID) protocol.ID {
-	return protocol.ID(fmt.Sprintf("/sonr/local-transfer/%s", id.Pretty()))
+// Construct New Protocol ID given Method Name String and id Peer.ID
+func (p SonrProtocol) NewIDProtocol(id peer.ID) protocol.ID {
+	return protocol.ID(fmt.Sprintf("/sonr/%s/%s", p.Method(), id.Pretty()))
 }
 
-// @ Lobby Topic Protocol ID
-func (r *User_Router) LinkDeviceProtocol(username string) protocol.ID {
-	return protocol.ID(fmt.Sprintf("/sonr/user-linker/%s", username))
+// Construct New Protocol ID given Method Name String and Value String
+func (p SonrProtocol) NewValueProtocol(value string) protocol.ID {
+	return protocol.ID(fmt.Sprintf("/sonr/%s/%s", p.Method(), value))
 }
 
-// @ Transfer Controller Data Protocol ID
-func (r *User_Router) RemoteTransferProtocol(id peer.ID) protocol.ID {
-	return protocol.ID(fmt.Sprintf("/sonr/remote-transfer/%s", id.Pretty()))
-}
-
-// @ Lobby Topic Protocol ID
-func (r *User_Router) Topic(name string) string {
-	return fmt.Sprintf("/sonr/topic/%s", name)
+// Returns Method Name for this Protocol
+func (p SonrProtocol) Method() string {
+	switch p {
+	case SonrProtocol_Authorize:
+		return "auth-service"
+	case SonrProtocol_Devices:
+		return "user-devices"
+	case SonrProtocol_Linker:
+		return "user-linker"
+	case SonrProtocol_LocalTransfer:
+		return "local-transfer"
+	case SonrProtocol_RemoteTransfer:
+		return "remote-transfer"
+	default:
+		return ""
+	}
 }
 
 // ** ─── Status MANAGEMENT ────────────────────────────────────────────────────────

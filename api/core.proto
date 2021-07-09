@@ -36,3 +36,13 @@ message ServiceStatus {
     FULL = 2;         // Textile Enabled (Threads + Mailbox)
   }
 }
+
+// Sonr Default Protocols
+enum SonrProtocol {
+  Unspecified = 0;    // Default Value
+  Authorize = 1;      // Auth Protocol for Invite/Response
+  Devices = 2;        // Device Protocol for User Linked Devices
+  Linker = 3;         // Protocol for Linking Device to User
+  LocalTransfer = 4;  // Protocol for Local Transfer to Peer
+  RemoteTransfer = 5; // Protocol for Remote Transfer to Peer
+}

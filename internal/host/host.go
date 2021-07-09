@@ -18,7 +18,6 @@ import (
 	discovery "github.com/libp2p/go-libp2p/p2p/discovery"
 	"github.com/multiformats/go-multiaddr"
 	md "github.com/sonr-io/core/pkg/models"
-
 )
 
 // ** ─── Interface MANAGEMENT ────────────────────────────────────────────────────────

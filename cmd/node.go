@@ -283,7 +283,7 @@ func URLLink(url string) []byte {
 
 // @ Returns Node Location Protobuf as Bytes
 func (n *Node) Location() []byte {
-	bytes, err := proto.Marshal(n.user.Router.GetLocation())
+	bytes, err := proto.Marshal(n.user.GetLocation())
 	if err != nil {
 		return nil
 	}
