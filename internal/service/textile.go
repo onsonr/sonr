@@ -11,6 +11,7 @@ import (
 	"github.com/sonr-io/core/pkg/util"
 	"github.com/textileio/go-threads/api/client"
 	"github.com/textileio/go-threads/core/thread"
+	"github.com/textileio/go-threads/db"
 	"github.com/textileio/textile/v2/api/common"
 	"github.com/textileio/textile/v2/cmd"
 	"github.com/textileio/textile/v2/mail/local"
@@ -51,8 +52,6 @@ func (sc *serviceClient) StartTextile() *md.SonrError {
 
 	// Check Textile Enabled
 	if textile.options.GetEnabled() {
-		log.Println("ENABLE: Textile Service")
-
 		// Initialize
 		var err error
 		creds := credentials.NewTLS(&tls.Config{})
@@ -103,12 +102,9 @@ func (tn *TextileService) PubKey() thread.PubKey {
 func (tn *TextileService) InitThreads(sc *serviceClient) *md.SonrError {
 	// Verify Ready to Init
 	if tn.ctxToken != nil {
-		// Log
-		log.Println("ACTIVATE: Textile Threads")
-
 		// Generate a new thread ID
 		threadID := thread.NewIDV1(thread.Raw, 32)
-		err := tn.client.NewDB(tn.ctxToken, threadID)
+		err := tn.client.NewDB(tn.ctxToken, threadID, db.WithNewManagedName("Sonr-Users"))
 		if err != nil {
 			return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
 		}
@@ -191,37 +187,40 @@ func (sc *serviceClient) ReadMail() *md.SonrError {
 	if sc.HasMailbox() {
 		// List the recipient's inbox
 		inbox, err := sc.Textile.mailbox.ListInboxMessages(context.Background())
-
 		if err != nil {
 			return textileError(err)
 		}
 
 		// Initialize Entry List
-		entries := make([]*md.InviteRequest, len(inbox))
+		hasNewMail := false
+		count := len(inbox)
+		entries := make([]*md.InviteRequest, count)
+		if count > 0 {
+			hasNewMail = true
 
-		// Iterate over Entries
-		for i, v := range inbox {
-			// Open decrypts the message body
-			body, err := v.Open(context.Background(), sc.Textile.identity)
-			if err != nil {
-				return textileError(err)
-			}
+			// Iterate over Entries
+			for i, v := range inbox {
+				// Open decrypts the message body
+				body, err := v.Open(context.Background(), sc.Textile.identity)
+				if err != nil {
+					return textileError(err)
+				}
 
-			// Unmarshal Body to entry
-			entry := &md.InviteRequest{}
-			err = proto.Unmarshal(body, entry)
-			if err != nil {
-				return textileError(err)
+				// Unmarshal Body to entry
+				entry := &md.InviteRequest{}
+				err = proto.Unmarshal(body, entry)
+				if err != nil {
+					return textileError(err)
+				}
+				entries[i] = entry
 			}
-			entries[i] = entry
 		}
 
-		// Check Entries
-		if len(entries) > 0 {
-			sc.handler.OnMail(&md.MailEvent{
-				Invites: entries,
-			})
-		}
+		// Callback
+		sc.handler.OnMail(&md.MailEvent{
+			Invites:    entries,
+			HasNewMail: hasNewMail,
+		})
 	}
 	return nil
 }

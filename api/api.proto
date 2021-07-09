@@ -224,7 +224,8 @@ message LobbyEvent {
 
 // List of Pending Invites through Mailbox
 message MailEvent {
-  repeated InviteRequest invites = 1; // User Received Invites
+  bool hasNewMail = 1;
+  repeated InviteRequest invites = 2; // User Received Invites
 }
 
 // Transfer Progress Event

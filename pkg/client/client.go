@@ -16,6 +16,7 @@ type Client interface {
 	Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrError
 	Bootstrap() (*net.TopicManager, *md.SonrError)
 	Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrError
+	ReadMail() *md.SonrError
 	Respond(r *md.InviteResponse)
 	Update(t *net.TopicManager) *md.SonrError
 	Lifecycle(state md.LifecycleState, t *net.TopicManager)
@@ -111,36 +112,38 @@ func (c *client) Bootstrap() (*net.TopicManager, *md.SonrError) {
 func (c *client) Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrError {
 	if c.user.IsReady() {
 		// Check for Peer
-		if t.HasPeer(invite.To.Id.Peer) {
-			// Initialize Session if transfer
-			if invite.IsPayloadFile() {
-				// Start New Session
-				c.session = md.NewOutSession(c.user, invite, c.call)
-			}
-
-			// Get PeerID and Check error
-			id, err := t.FindPeerInTopic(invite.To.Id.Peer)
+		if invite.GetType() == md.InviteRequest_Remote {
+			err := c.Service.SendMail(invite)
 			if err != nil {
-				return md.NewPeerFoundError(err, invite.GetTo().GetId().GetPeer())
+				log.Println(err)
+				return err
 			}
-
-			// Run Routine
-			go func(inv *md.InviteRequest) {
-				// Send Invite
-				err = c.Service.Invite(id, inv)
-				if err != nil {
-					c.call.OnError(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
-				}
-			}(invite)
 		} else {
-			// Check for Remote Invite
-			if invite.GetType() == md.InviteRequest_Remote {
-				c.Service.SendMail(invite)
+			if t.HasPeer(invite.To.Id.Peer) {
+				// Initialize Session if transfer
+				if invite.IsPayloadFile() {
+					// Start New Session
+					c.session = md.NewOutSession(c.user, invite, c.call)
+				}
+
+				// Get PeerID and Check error
+				id, err := t.FindPeerInTopic(invite.To.Id.Peer)
+				if err != nil {
+					return md.NewPeerFoundError(err, invite.GetTo().GetId().GetPeer())
+				}
+
+				// Run Routine
+				go func(inv *md.InviteRequest) {
+					// Send Invite
+					err = c.Service.Invite(id, inv)
+					if err != nil {
+						c.call.OnError(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
+						return
+					}
+				}(invite)
 			} else {
-				// Return Error
 				return md.NewErrorWithType(md.ErrorMessage_PEER_NOT_FOUND_INVITE)
 			}
-
 		}
 		return nil
 	}
@@ -150,6 +153,11 @@ func (c *client) Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrE
 // @ Respond Sends a Response to Service
 func (c *client) Respond(r *md.InviteResponse) {
 	c.Service.Respond(r)
+}
+
+// @ Method Calls to Read Local Mailbox
+func (c *client) ReadMail() *md.SonrError {
+	return c.Service.ReadMail()
 }
 
 // @ Update proximity/direction and Notify Lobby

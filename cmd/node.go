@@ -235,6 +235,16 @@ func (n *Node) Invite(data []byte) {
 	}
 }
 
+// @ ReadMail Reads the Textile Mailbox for this Node
+func (n *Node) ReadMail() {
+	if n.isReady() {
+		err := n.client.ReadMail()
+		if err != nil {
+			n.handleError(err)
+		}
+	}
+}
+
 // @ Respond to an Invite with Decision
 func (n *Node) Respond(data []byte) {
 	if n.isReady() {
