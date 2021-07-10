@@ -110,14 +110,18 @@ func (tn *TextileService) InitThreads(sc *serviceClient) *md.SonrError {
 		}
 
 		// Get DB Info
-		info, err := tn.client.GetDBInfo(tn.ctxToken, threadID)
+		allInfo, err := tn.client.ListDBs(tn.ctxToken)
 		if err != nil {
-			return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+			log.Println(err)
+			return nil
 		}
 
 		// Log DB Info
-		log.Println("> Success!: Textile Threads Enabled")
-		log.Println(fmt.Sprintf("ID: %s \n Maddr: %s \n Key: %s \n Name: %s \n", threadID.String(), info.Addrs, info.Key.String(), info.Name))
+		log.Println("> Success!: Textile Threads Enabled -- > ALL DBs")
+		for k, v := range allInfo {
+			log.Println(fmt.Sprintf("Key: %s", k.String()))
+			log.Println(fmt.Sprintf("ID: %s \n Maddr: %s \n Key: %s \n Name: %s \n", threadID.String(), v.Addrs, v.Key.String(), v.Name))
+		}
 	}
 
 	// Update Status
@@ -217,13 +221,13 @@ func (sc *serviceClient) ReadMail() *md.SonrError {
 		}
 
 		// Create Mail
-		mail := &md.MailEvent{
+		mail := md.MailEvent{
 			Invites:    entries,
 			HasNewMail: hasNewMail,
 		}
 
 		// Marshal Data
-		buf, err := proto.Marshal(mail)
+		buf, err := proto.Marshal(&mail)
 		if err != nil {
 			log.Println(err)
 			return textileError(err)
@@ -241,11 +245,13 @@ func (sc *serviceClient) SendMail(e *md.InviteRequest) *md.SonrError {
 	if sc.HasMailbox() {
 		pubKey, err := e.GetTo().ThreadKey()
 		if err != nil {
+			log.Println(err)
 			return textileError(err)
 		}
 
 		buf, err := proto.Marshal(e)
 		if err != nil {
+			log.Println(err)
 			return textileError(err)
 		}
 		// Send Message to Mailbox
@@ -266,10 +272,7 @@ func (sc *serviceClient) SendMail(e *md.InviteRequest) *md.SonrError {
 
 // @ Checks if Mailbox Enabled
 func (sc *serviceClient) HasMailbox() bool {
-	if sc.Textile.options.GetMailbox() && sc.Textile.options.GetEnabled() {
-		return sc.status.Textile == md.ServiceStatus_FULL
-	}
-	return false
+	return sc.Textile.options.GetMailbox() && sc.Textile.options.GetEnabled()
 }
 
 // # Helper: Builds Textile Error
