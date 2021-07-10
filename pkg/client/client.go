@@ -4,10 +4,13 @@ import (
 	"context"
 	"log"
 
+	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-core/protocol"
 	net "github.com/sonr-io/core/internal/host"
 	srv "github.com/sonr-io/core/internal/service"
 	md "github.com/sonr-io/core/pkg/models"
+	"google.golang.org/protobuf/proto"
 )
 
 // Interface: Main Client handles Networking/Identity/Streams
@@ -28,6 +31,7 @@ type Client interface {
 	OnInvite([]byte)
 	OnReply(id peer.ID, data []byte)
 	OnResponded(inv *md.InviteRequest)
+	OnCompleted(stream network.Stream, pid protocol.ID, buf []byte)
 }
 
 // Struct: Main Client handles Networking/Identity/Streams
@@ -120,16 +124,18 @@ func (c *client) Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrE
 			}
 		} else {
 			if t.HasPeer(invite.To.Id.Peer) {
-				// Initialize Session if transfer
-				if invite.IsPayloadFile() {
-					// Start New Session
-					c.session = md.NewOutSession(c.user, invite, c.call)
-				}
-
 				// Get PeerID and Check error
 				id, err := t.FindPeerInTopic(invite.To.Id.Peer)
 				if err != nil {
+					c.newExitEvent(invite)
 					return md.NewPeerFoundError(err, invite.GetTo().GetId().GetPeer())
+				}
+
+				pid := md.SonrProtocol_LocalTransfer.NewIDProtocol(id)
+				// Initialize Session if transfer
+				if invite.IsPayloadFile() {
+					// Start New Session
+					c.session = md.NewOutSession(c.user, invite, pid, c.call)
 				}
 
 				// Run Routine
@@ -142,6 +148,7 @@ func (c *client) Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrE
 					}
 				}(invite)
 			} else {
+				c.newExitEvent(invite)
 				return md.NewErrorWithType(md.ErrorMessage_PEER_NOT_FOUND_INVITE)
 			}
 		}
@@ -222,4 +229,23 @@ func (c *client) Restart(ur *md.UpdateRequest, keys *md.KeyPair) (*net.TopicMana
 		}
 	}
 	return nil, nil
+}
+
+func (c *client) newExitEvent(inv *md.InviteRequest) {
+	// Create Exit Event
+	event := md.LobbyEvent{
+		Id:      inv.To.Id.Peer,
+		Subject: md.LobbyEvent_EXIT,
+		Peer:    inv.To,
+	}
+
+	// Marshal Data
+	buf, err := proto.Marshal(&event)
+	if err != nil {
+		return
+	}
+
+	// Callback Event and Return Peer Error
+	c.call.OnEvent(buf)
+	return
 }

@@ -1,7 +1,9 @@
 package client
 
 import (
+	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-core/protocol"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -76,11 +78,16 @@ func (n *client) OnReply(id peer.ID, reply []byte) {
 
 // ^ OnResponded: Prepares for Incoming File Transfer when Accepted ^
 func (n *client) OnConfirmed(inv *md.InviteRequest) {
-	n.session = md.NewInSession(n.user, inv, n.call)
-	n.Host.HandleStream(md.SonrProtocol_LocalTransfer.NewIDProtocol(n.Host.ID()), n.session.ReadFromStream)
+	pid := md.SonrProtocol_LocalTransfer.NewIDProtocol(n.Host.ID())
+	n.session = md.NewInSession(n.user, inv, pid, n.call)
+	n.Host.HandleStream(pid, n.session.ReadFromStream)
 }
 
 // ^ OnMail: Callback for Mail Event
 func (n *client) OnMail(buf []byte) {
 	n.call.OnMail(buf)
+}
+
+func (n *client) OnCompleted(stream network.Stream, pid protocol.ID, buf []byte) {
+
 }

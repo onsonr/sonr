@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/network"
+	"github.com/libp2p/go-libp2p-core/protocol"
 	msg "github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/proto"
@@ -219,6 +220,7 @@ type Session struct {
 	// Inherited Properties
 	file *SFile
 	peer *Peer
+	pid  protocol.ID
 	user *User
 
 	// Management
@@ -226,22 +228,24 @@ type Session struct {
 }
 
 // ^ Prepare for Outgoing Session ^ //
-func NewOutSession(u *User, req *InviteRequest, tc Callback) *Session {
+func NewOutSession(u *User, req *InviteRequest, pid protocol.ID, tc Callback) *Session {
 	return &Session{
 		file: req.GetFile(),
 		peer: req.GetTo(),
 		user: u,
+		pid:  pid,
 		call: tc,
 	}
 }
 
 // ^ Prepare for Incoming Session ^ //
-func NewInSession(u *User, inv *InviteRequest, c Callback) *Session {
+func NewInSession(u *User, inv *InviteRequest, pid protocol.ID, c Callback) *Session {
 	// Return Session
 	return &Session{
 		file: inv.GetFile(),
 		peer: inv.GetFrom(),
 		user: u,
+		pid:  pid,
 		call: c,
 	}
 }
@@ -275,8 +279,7 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 			}
 		}
 		// Set Status
-		s.handleReceived()
-		stream.Close()
+		s.handleReceived(stream)
 	}(msg.NewReader(stream))
 }
 
@@ -298,10 +301,7 @@ func (s *Session) WriteToStream(stream network.Stream) {
 }
 
 // @ Helper: Handles Succesful Received
-func (s *Session) handleReceived() {
-	// Set Status
-	s.call.SetStatus(Status_AVAILABLE)
-
+func (s *Session) handleReceived(stream network.Stream) {
 	// Marshal Data
 	buf, err := proto.Marshal(s.Card())
 	if err != nil {
@@ -311,6 +311,10 @@ func (s *Session) handleReceived() {
 
 	// Callback Data
 	s.call.OnReceived(buf)
+
+	// Set Status
+	stream.Close()
+	s.call.SetStatus(Status_AVAILABLE)
 }
 
 // @ Helper: Handles Succesful Transmitted
