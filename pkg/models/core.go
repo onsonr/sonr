@@ -276,7 +276,7 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 		}
 		// Set Status
 		s.handleReceived()
-		stream.Reset()
+		stream.Close()
 	}(msg.NewReader(stream))
 }
 
@@ -294,7 +294,6 @@ func (s *Session) WriteToStream(stream network.Stream) {
 		}
 		// Handle Complete
 		s.handleTransmitted()
-		stream.CloseWrite()
 	}(msg.NewWriter(stream))
 }
 
