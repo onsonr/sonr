@@ -9,9 +9,8 @@ import (
 	olc "github.com/google/open-location-code/go"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
-	"google.golang.org/protobuf/proto"
-
 	util "github.com/sonr-io/core/pkg/util"
+	"google.golang.org/protobuf/proto"
 )
 
 // ** ─── VerifyRequest MANAGEMENT ────────────────────────────────────────────────────────
@@ -176,7 +175,7 @@ func (u *URLLink) SetData() {
 
 // ** ─── InviteResponse MANAGEMENT ────────────────────────────────────────────────────────
 func (r *InviteResponse) HasAcceptedTransfer() bool {
-	return r.Decision && r.Type == InviteResponse_Default
+	return r.GetDecision() && r.GetType() == InviteResponse_Default
 }
 
 // ** ─── InviteRequest MANAGEMENT ────────────────────────────────────────────────────────
@@ -244,7 +243,7 @@ func (l *Location) OLC() string {
 // ** ─── Router MANAGEMENT ────────────────────────────────────────────────────────
 // Construct New Protocol ID given Method Name String and id Peer.ID
 func (p SonrProtocol) NewIDProtocol(id peer.ID) protocol.ID {
-	return protocol.ID(fmt.Sprintf("/sonr/%s/%s", p.Method(), id.Pretty()))
+	return protocol.ID(fmt.Sprintf("/sonr/%s/%s", p.Method(), id.String()))
 }
 
 // Construct New Protocol ID given Method Name String and Value String

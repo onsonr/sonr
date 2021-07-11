@@ -44,6 +44,7 @@ func (sc *serviceClient) StartAuth() *md.SonrError {
 		return md.NewError(err, md.ErrorMessage_TOPIC_RPC)
 	}
 	sc.Auth = &psv
+	sc.SetAuthStatus(true)
 	return nil
 }
 

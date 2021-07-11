@@ -26,15 +26,12 @@ enum LifecycleState {
 
 // Current Node Service Client State
 message ServiceStatus {
-  bool auth = 1;       // Auth Service
-  bool device = 2;     // Device Service
-  Textile textile = 3; // Textile Service
-
-  enum Textile {
-    DISABLED = 0;     // Textile Disabled
-    THREADS_ONLY = 1; // Textile Enabled (Threads)
-    FULL = 2;         // Textile Enabled (Threads + Mailbox)
-  }
+  bool auth = 1;    // Auth Service
+  bool device = 2;  // Device Service
+  bool mailbox = 3; // Textile-Mailbox Service
+  bool threads = 4; // Textile-Threads Service
+  bool buckets = 5; // Textile-Buckets Service
+  bool http = 6;    // HTTP Service
 }
 
 // Sonr Default Protocols

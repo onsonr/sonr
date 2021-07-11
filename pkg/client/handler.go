@@ -50,27 +50,32 @@ func (n *client) OnReply(id peer.ID, reply []byte) {
 	// Call Responded
 	n.call.OnReply(reply)
 
-	// InviteResponse Message
-	resp := md.InviteResponse{}
-	err := proto.Unmarshal(reply, &resp)
-	if err != nil {
-		n.call.OnError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
-	}
-
-	// Check for File Transfer
-	if resp.HasAcceptedTransfer() {
-		// Update Status
-		n.call.SetStatus(md.Status_TRANSFER)
-
-		// Create New Auth Stream
-		stream, err := n.Host.StartStream(id, md.SonrProtocol_LocalTransfer.NewIDProtocol(id))
+	// Check Peer ID
+	if id != "" {
+		// InviteResponse Message
+		resp := md.InviteResponse{}
+		err := proto.Unmarshal(reply, &resp)
 		if err != nil {
-			n.call.OnError(md.NewError(err, md.ErrorMessage_HOST_STREAM))
-			return
+			n.call.OnError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
 		}
 
-		// Write to Stream on Session
-		n.session.WriteToStream(stream)
+		// Check for File Transfer
+		if resp.HasAcceptedTransfer() {
+			// Update Status
+			n.call.SetStatus(md.Status_TRANSFER)
+
+			// Create New Auth Stream
+			stream, err := n.Host.StartStream(id, md.SonrProtocol_LocalTransfer.NewIDProtocol(id))
+			if err != nil {
+				n.call.OnError(md.NewError(err, md.ErrorMessage_HOST_STREAM))
+				return
+			}
+
+			// Write to Stream on Session
+			n.session.WriteToStream(stream)
+		} else {
+			n.call.SetStatus(md.Status_AVAILABLE)
+		}
 	} else {
 		n.call.SetStatus(md.Status_AVAILABLE)
 	}

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/host"
 	md "github.com/sonr-io/core/pkg/models"
 	"github.com/sonr-io/core/pkg/util"
@@ -122,11 +123,7 @@ func (tn *TextileService) InitThreads(sc *serviceClient) *md.SonrError {
 			log.Println(fmt.Sprintf("Key: %s", k.String()))
 			log.Println(fmt.Sprintf("ID: %s \n Maddr: %s \n Key: %s \n Name: %s \n", threadID.String(), v.Addrs, v.Key.String(), v.Name))
 		}
-	}
-
-	// Update Status
-	if !tn.options.GetMailbox() {
-		sc.status.EnableTextile(true, false)
+		sc.SetThreadsStatus(true)
 	}
 	return nil
 }
@@ -153,26 +150,24 @@ func (tn *TextileService) InitMail(d *md.Device, us md.ConnectionRequest_UserSta
 
 			// Check Error
 			if err != nil {
-				sc.status.EnableTextile(true, false)
 				return textileError(err)
 			}
 
 			// Set Mailbox and Update Status
 			tn.mailbox = mailbox
 			log.Println("> Success!: Textile Mailbox Enabled, New Mailbox")
-			sc.status.EnableTextile(true, true)
+			sc.SetMailboxStatus(true)
 		} else {
 			// Return Existing Mailbox
 			mailbox, err := tn.mail.GetLocalMailbox(context.Background(), d.WorkingSupportDir())
 			if err != nil {
-				sc.status.EnableTextile(true, false)
 				return textileError(err)
 			}
 
 			// Set Mailbox and Update Status
 			tn.mailbox = mailbox
 			log.Println("> Success!: Textile Mailbox Enabled, Existing Mailbox")
-			sc.status.EnableTextile(true, true)
+			sc.SetMailboxStatus(true)
 		}
 
 		// Read Existing Mai.
@@ -185,45 +180,59 @@ func (tn *TextileService) InitMail(d *md.Device, us md.ConnectionRequest_UserSta
 	return nil
 }
 
+// @ Read Mailbox Mail
+func (tn *TextileService) ReadMail() (*md.MailEvent, *md.SonrError) {
+	// List the recipient's inbox
+	inbox, err := tn.mailbox.ListInboxMessages(context.Background())
+	if err != nil {
+		return nil, textileError(err)
+	}
+
+	// Initialize Entry List
+	hasNewMail := false
+	count := len(inbox)
+
+	// Set Vars
+	entries := make([][]byte, count)
+	if count > 0 {
+		hasNewMail = true
+	}
+
+	// Iterate over Entries
+	for i, v := range inbox {
+		// Open decrypts the message body
+		body, err := v.Open(context.Background(), tn.identity)
+		if err != nil {
+			return nil, textileError(err)
+		}
+		entries[i] = body
+	}
+	// Create Mail and Marshal Data
+	if err != nil {
+		log.Println(err)
+		return nil, textileError(err)
+	}
+	return &md.MailEvent{
+		Invites:    entries,
+		HasNewMail: hasNewMail,
+	}, nil
+}
+
 // @ Method Reads Inbox and Returns List of Mail Entries
 func (sc *serviceClient) ReadMail() *md.SonrError {
 	// Check Mail Enabled
-	if sc.HasMailbox() {
-		// List the recipient's inbox
-		inbox, err := sc.Textile.mailbox.ListInboxMessages(context.Background())
+	if sc.IsMailboxReady() {
+		// Fetch Mail Event
+		event, serr := sc.Textile.ReadMail()
+
+		if serr != nil {
+			serr.Print()
+			return serr
+		}
+		// Create Mail and Marshal Data
+		buf, err := proto.Marshal(event)
 		if err != nil {
-			return textileError(err)
-		}
-
-		// Initialize Entry List
-		hasNewMail := false
-		count := len(inbox)
-		entries := make([][]byte, count)
-		if count > 0 {
-			hasNewMail = true
-
-			// Iterate over Entries
-			for i, v := range inbox {
-				// Open decrypts the message body
-				body, err := v.Open(context.Background(), sc.Textile.identity)
-				if err != nil {
-					return textileError(err)
-				}
-				entries[i] = body
-			}
-		}
-
-		// Create Mail
-		mail := md.MailEvent{
-			Invites:    entries,
-			HasNewMail: hasNewMail,
-		}
-
-		// Marshal Data
-		buf, err := proto.Marshal(&mail)
-		if err != nil {
-			log.Println(err)
-			return textileError(err)
+			return md.NewMarshalError(err)
 		}
 
 		// Callback Event
@@ -232,40 +241,61 @@ func (sc *serviceClient) ReadMail() *md.SonrError {
 	return nil
 }
 
+func (ts *TextileService) SendMail(to thread.PubKey, buf []byte) ([]byte, *md.SonrError) {
+	// Send Message to Mailbox
+	msg, err := ts.mailbox.SendMessage(context.Background(), to, buf)
+	if err != nil {
+		log.Println(err)
+		return nil, textileError(err)
+	}
+
+	// Marshal Response
+	buf, err = proto.Marshal(&md.InviteResponse{
+		Type: md.InviteResponse_Mailbox,
+		MailInfo: &md.InviteResponse_MailInfo{
+			To:        msg.To.String(),
+			From:      msg.From.String(),
+			CreatedAt: int32(msg.CreatedAt.Unix()),
+			ReadAt:    int32(msg.ReadAt.Unix()),
+			Body:      msg.Body,
+			Signature: msg.Signature,
+		},
+	})
+	if err != nil {
+		return nil, md.NewMarshalError(err)
+	}
+
+	// Return Message Info
+	return buf, nil
+}
+
 // @ Method Sends Mail Entry to Peer
 func (sc *serviceClient) SendMail(e *md.InviteRequest) *md.SonrError {
 	// Check Mail Enabled
-	if sc.HasMailbox() {
+	if sc.IsMailboxReady() {
+		// Fetch Peer Thread Key
 		pubKey, err := e.GetTo().ThreadKey()
 		if err != nil {
 			log.Println(err)
 			return textileError(err)
 		}
 
+		// Marshal Data
 		buf, err := proto.Marshal(e)
 		if err != nil {
 			log.Println(err)
 			return textileError(err)
 		}
-		// Send Message to Mailbox
-		msg, err := sc.Textile.mailbox.SendMessage(context.Background(), pubKey, buf)
-		if err != nil {
-			log.Println(err)
-			return textileError(err)
-		}
 
-		// Logging
-		log.Println("-- Mail Sent --")
-		log.Println(fmt.Sprintf("TO: %s", msg.To))
-		log.Println(fmt.Sprintf("SENT_AT: %s", msg.CreatedAt))
-		log.Println(fmt.Sprintf("BODY: %s", msg.Body))
+		// Send to Mailbox
+		resp, serr := sc.Textile.SendMail(pubKey, buf)
+		if serr != nil {
+			return serr
+		}
+		sc.handler.OnReply(peer.ID(""), resp)
+		return nil
 	}
 	return nil
-}
-
-// @ Checks if Mailbox Enabled
-func (sc *serviceClient) HasMailbox() bool {
-	return sc.Textile.options.GetMailbox() && sc.Textile.options.GetEnabled()
 }
 
 // # Helper: Builds Textile Error

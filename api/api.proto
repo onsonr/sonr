@@ -182,11 +182,22 @@ message InviteResponse {
   Peer to = 4;           // Receivers Peer Data
   bool flatMode = 5;     // Flat Transfer
   Transfer transfer = 6; // Card contains all Data Info, Transfer Info
+  MailInfo mailInfo = 7; // Mail Info for Mailbox Invite
+
+  message MailInfo {
+    int32 createdAt = 1;
+    string to = 2;
+    bytes body = 3;
+    string from = 4;
+    int32 readAt = 5;
+    bytes signature = 6;
+  }
 
   enum Type {
     Default = 0;
     Contact = 1;
-    Cancel = 2;
+    Mailbox = 2;
+    Cancel = 3;
   }
 }
 

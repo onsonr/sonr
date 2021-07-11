@@ -57,8 +57,15 @@ func NewService(ctx context.Context, h net.HostNode, u *md.User, req *md.Connect
 		handler: sh,
 		host:    h,
 		request: req,
-		status:  md.NewServiceStatus(true, false),
-		user:    u,
+		status: &md.ServiceStatus{
+			Auth:    false,
+			Device:  false,
+			Mailbox: false,
+			Threads: false,
+			Buckets: false,
+			Http:    false,
+		},
+		user: u,
 	}
 
 	// Begin Auth Service
@@ -102,4 +109,76 @@ func (tn *TextileService) newTokenCtx() (context.Context, error) {
 		return nil, err
 	}
 	return thread.NewTokenContext(tn.ctxAuth, token), nil
+}
+
+// ^ Check if Status Enabled for Auth
+func (sc *serviceClient) IsAuthReady() bool {
+	return sc.status.GetAuth()
+}
+
+// ^ Check if Status Enabled for uckets
+func (sc *serviceClient) IsBucketsReady() bool {
+	return sc.status.GetBuckets()
+}
+
+// ^ Check if Status Enabled for Device
+func (sc *serviceClient) IsDeviceReady() bool {
+	return sc.status.GetDevice()
+}
+
+// ^ Check if Status Enabled for HTTP
+func (sc *serviceClient) IsHTTPReady() bool {
+	return sc.status.GetHttp()
+}
+
+// ^ Check if Status Enabled for Mailbox
+func (sc *serviceClient) IsMailboxReady() bool {
+	return sc.status.GetMailbox()
+}
+
+// ^ Check if Status Enabled for Threads
+func (sc *serviceClient) IsThreadsReady() bool {
+	return sc.status.GetThreads()
+}
+
+// @ Set Service Status for Auth
+func (sc *serviceClient) SetAuthStatus(val bool) {
+	if sc.status != nil {
+		sc.status.Auth = val
+	}
+}
+
+// @ Set Service Status for Device
+func (sc *serviceClient) SetDeviceStatus(val bool) {
+	if sc.status != nil {
+		sc.status.Device = val
+	}
+}
+
+// @ Set Service Status for Buckets
+func (sc *serviceClient) SetBucketsStatus(val bool) {
+	if sc.status != nil {
+		sc.status.Buckets = val
+	}
+}
+
+// @ Set Service Status for HTTP
+func (sc *serviceClient) SetHTTPStatus(val bool) {
+	if sc.status != nil {
+		sc.status.Http = val
+	}
+}
+
+// @ Set Service Status for Mailbox
+func (sc *serviceClient) SetMailboxStatus(val bool) {
+	if sc.status != nil {
+		sc.status.Mailbox = val
+	}
+}
+
+// @ Set Service Status for Threads
+func (sc *serviceClient) SetThreadsStatus(val bool) {
+	if sc.status != nil {
+		sc.status.Threads = val
+	}
 }
