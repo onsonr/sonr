@@ -3,6 +3,7 @@ package models
 import (
 	"crypto/hmac"
 	"crypto/sha256"
+	"encoding/base64"
 	"encoding/hex"
 	"errors"
 	"fmt"
@@ -138,6 +139,23 @@ func (kp *KeyPair) PubKey() crypto.PubKey {
 		return nil
 	}
 	return privKey.GetPublic()
+}
+
+// Method Returns Public Key
+func (kp *KeyPair) PubKeyAsString() string {
+	// Get Key from Buffer
+	privKey, err := crypto.UnmarshalPrivateKey(kp.GetPrivate().GetBuffer())
+	if err != nil {
+		return ""
+	}
+
+	// Get Buffer From Key
+	buf, err := privKey.GetPublic().Bytes()
+	if err != nil {
+		return ""
+	}
+
+	return base64.StdEncoding.EncodeToString(buf)
 }
 
 // Method Signs given data and returns response
@@ -464,6 +482,14 @@ func (u *User) UpdatePosition(pos *Position) {
 // Method Updates User Contact
 func (u *User) UpdateProperties(props *Peer_Properties) {
 	u.Peer.Properties = props
+}
+
+// Method Updates User Contact
+func (u *User) VerifyRead() *VerifyResponse {
+	kp := u.KeyPair()
+	return &VerifyResponse{
+		PublicKey: kp.PubKeyAsString(),
+	}
 }
 
 // ^ Signs InviteResponse with Flat Contact

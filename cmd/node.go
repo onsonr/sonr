@@ -142,26 +142,37 @@ func (n *Node) Verify(data []byte) []byte {
 			return md.NewInvalidVerifyResponseBuf()
 		}
 
-		// Check type and Verify
-		if request.IsBuffer() {
-			// Verify Result
-			result, err := kp.Verify(request.GetBufferValue(), request.GetSignedBuffer())
-			if err != nil {
-				return md.NewInvalidVerifyResponseBuf()
-			}
+		// Check Request Type
+		if request.GetType() == md.VerifyRequest_VERIFY {
+			// Check type and Verify
+			if request.IsBuffer() {
+				// Verify Result
+				result, err := kp.Verify(request.GetBufferValue(), request.GetSignedBuffer())
+				if err != nil {
+					return md.NewInvalidVerifyResponseBuf()
+				}
 
-			// Return Result
-			return md.NewVerifyResponseBuf(result)
-		} else if request.IsString() {
-			// Verify Result
-			result, err := kp.Verify([]byte(request.GetTextValue()), []byte(request.GetSignedText()))
-			if err != nil {
-				return md.NewInvalidVerifyResponseBuf()
-			}
+				// Return Result
+				return md.NewVerifyResponseBuf(result)
+			} else if request.IsString() {
+				// Verify Result
+				result, err := kp.Verify([]byte(request.GetTextValue()), []byte(request.GetSignedText()))
+				if err != nil {
+					return md.NewInvalidVerifyResponseBuf()
+				}
 
-			// Return Result
-			return md.NewVerifyResponseBuf(result)
+				// Return Result
+				return md.NewVerifyResponseBuf(result)
+			}
+		} else {
+			resp := n.user.VerifyRead()
+			buf, err := proto.Marshal(resp)
+			if err != nil {
+				n.handleError(md.NewMarshalError(err))
+			}
+			return buf
 		}
+
 	}
 
 	// Send Invalid Response

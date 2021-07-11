@@ -132,6 +132,14 @@ message VerifyRequest {
     bytes signedBuffer = 3;
     string signedText = 4;
   }
+
+  Type type = 5; // Either Signing New Mnemonic or Reading Existing
+
+  // Request Type
+  enum Type {
+    VERIFY = 0;
+    READ = 1;
+  }
 }
 
 // ------------------------------ //
@@ -145,6 +153,7 @@ message AuthResponse {
   string signedPrefix = 2;      // Message for List of Bytes
   string signedFingerprint = 3; // Fingerprint Value
   string publicIdentity = 4;    // Peer ID from Public Key
+  string publicKey = 5;         // Base64 Encoded Public Key
 }
 
 // Response from Connection Request
@@ -199,7 +208,8 @@ message RestResponse {
 // Message for Verification Response
 message VerifyResponse {
   bool isVerified = 1;    // Result for Verification
-  ErrorMessage error = 2; // In Case Error Occurred
+  string publicKey = 2;   // Base64 Encoded Public Key
+  ErrorMessage error = 3; // In Case Error Occurred
 }
 
 // --------------------------- //

@@ -1,6 +1,7 @@
 package models
 
 import (
+	"encoding/base64"
 	"errors"
 	"fmt"
 
@@ -39,7 +40,7 @@ func (u *User) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) *SonrError {
 			Peer:      id.String(),
 			Device:    u.DeviceID(),
 			MultiAddr: maddr.String(),
-			PublicKey: u.KeyPair().GetPublic().GetBuffer(),
+			PublicKey: u.KeyPair().PubKeyAsString(),
 		},
 		Profile:  u.Profile(),
 		Platform: u.Device.Platform,
@@ -99,7 +100,11 @@ func (p *Peer) PeerID() string {
 // ^ Returns Peer Public Key ^ //
 func (p *Peer) PublicKey() crypto.PubKey {
 	// Get ID from Public Key
-	buf := p.GetId().GetPublicKey()
+	id := p.GetId().GetPublicKey()
+	buf, err := base64.StdEncoding.DecodeString(id)
+	if err != nil {
+		return nil
+	}
 
 	// Get Key from Buffer
 	pubKey, err := crypto.UnmarshalPublicKey(buf)
