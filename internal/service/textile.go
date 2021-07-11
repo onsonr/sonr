@@ -198,7 +198,7 @@ func (sc *serviceClient) ReadMail() *md.SonrError {
 		// Initialize Entry List
 		hasNewMail := false
 		count := len(inbox)
-		entries := make([]*md.InviteRequest, count)
+		entries := make([][]byte, count)
 		if count > 0 {
 			hasNewMail = true
 
@@ -209,14 +209,7 @@ func (sc *serviceClient) ReadMail() *md.SonrError {
 				if err != nil {
 					return textileError(err)
 				}
-
-				// Unmarshal Body to entry
-				entry := &md.InviteRequest{}
-				err = proto.Unmarshal(body, entry)
-				if err != nil {
-					return textileError(err)
-				}
-				entries[i] = entry
+				entries[i] = body
 			}
 		}
 
