@@ -408,13 +408,15 @@ func (u *User) Sign(req *AuthRequest) *AuthResponse {
 	fingerprint := u.KeyPair().Sign(req.GetMnemonic())
 
 	// Get ID from Public Key
-	identity := u.KeyPair().GetPublic().GetId()
+	pubkey := u.KeyPair().PubKeyAsString()
 
 	// Return Response
 	return &AuthResponse{
 		SignedPrefix:      prefix,
 		SignedFingerprint: fingerprint,
-		PublicIdentity:    identity,
+		PublicKey:         pubkey,
+		GivenSName:        req.GetSName(),
+		GivenMnemonic:     req.GetMnemonic(),
 	}
 }
 
