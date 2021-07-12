@@ -29,7 +29,7 @@ type Client interface {
 	OnConnected(*md.ConnectionResponse)
 	OnEvent(*md.LobbyEvent)
 	OnError(err *md.SonrError)
-	OnInvite([]byte)
+	OnInvite(buf []byte)
 	OnReply(id peer.ID, data []byte)
 	OnResponded(inv *md.InviteRequest)
 	OnProgress(buf []byte)
@@ -110,8 +110,6 @@ func (c *client) Bootstrap() (*net.TopicManager, *md.SonrError) {
 	} else {
 		return t, nil
 	}
-
-	// Read any Mail
 }
 
 // @ Invite Processes Data and Sends Invite to Peer
@@ -192,9 +190,9 @@ func (c *client) Lifecycle(state md.LifecycleState, t *net.TopicManager) {
 	} else if state == md.LifecycleState_Paused {
 		// Inform Lobby
 		if c.user.IsReady() {
-			// if err := t.Publish(c.user.Peer.NewExitEvent()); err != nil {
-			// 	log.Println(md.NewError(err, md.ErrorMessage_TOPIC_UPDATE))
-			// }
+			if err := t.Publish(c.user.Peer.NewExitEvent(t.Topic())); err != nil {
+				log.Println(md.NewError(err, md.ErrorMessage_TOPIC_UPDATE))
+			}
 		}
 	} else if state == md.LifecycleState_Stopped {
 		// Inform Lobby
@@ -249,5 +247,6 @@ func (c *client) newExitEvent(inv *md.InviteRequest) {
 
 	// Callback Event and Return Peer Error
 	c.call.OnEvent(buf)
+	c.call.SetStatus(md.Status_AVAILABLE)
 	return
 }

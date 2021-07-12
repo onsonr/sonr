@@ -61,7 +61,7 @@ func (sc *serviceClient) StartTextile() *md.SonrError {
 		// Dial GRPC
 		textile.client, err = client.NewClient(util.TEXTILE_API_URL, grpc.WithTransportCredentials(creds), grpc.WithPerRPCCredentials(auth))
 		if err != nil {
-			return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+			return md.NewError(err, md.ErrorMessage_TEXTILE_START_CLIENT)
 		}
 
 		// Get Identity
@@ -70,13 +70,13 @@ func (sc *serviceClient) StartTextile() *md.SonrError {
 		// Create Auth Context
 		textile.ctxAuth, err = newUserAuthCtx(context.Background(), textile.apiKeys)
 		if err != nil {
-			return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+			return md.NewError(err, md.ErrorMessage_TEXTILE_USER_CTX)
 		}
 
 		// Create Token Context
 		textile.ctxToken, err = textile.newTokenCtx()
 		if err != nil {
-			return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+			return md.NewError(err, md.ErrorMessage_TEXTILE_TOKEN_CTX)
 		}
 
 		// Initialize Threads
@@ -107,14 +107,14 @@ func (tn *TextileService) InitThreads(sc *serviceClient) *md.SonrError {
 		threadID := thread.NewIDV1(thread.Raw, 32)
 		err := tn.client.NewDB(tn.ctxToken, threadID, db.WithNewManagedName("Sonr-Users"))
 		if err != nil {
-			return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
+			return md.NewError(err, md.ErrorMessage_THREADS_START_NEW)
 		}
 
 		// Get DB Info
 		allInfo, err := tn.client.ListDBs(tn.ctxToken)
 		if err != nil {
 			log.Println(err)
-			return nil
+			return md.NewError(err, md.ErrorMessage_THREADS_LIST_ALL)
 		}
 
 		// Log DB Info
@@ -150,7 +150,7 @@ func (tn *TextileService) InitMail(d *md.Device, us md.ConnectionRequest_UserSta
 
 			// Check Error
 			if err != nil {
-				return textileError(err)
+				return md.NewError(err, md.ErrorMessage_MAILBOX_START_NEW)
 			}
 
 			// Set Mailbox and Update Status
@@ -161,7 +161,7 @@ func (tn *TextileService) InitMail(d *md.Device, us md.ConnectionRequest_UserSta
 			// Return Existing Mailbox
 			mailbox, err := tn.mail.GetLocalMailbox(context.Background(), d.WorkingSupportDir())
 			if err != nil {
-				return textileError(err)
+				return md.NewError(err, md.ErrorMessage_MAILBOX_START_EXISTING)
 			}
 
 			// Set Mailbox and Update Status
@@ -181,11 +181,11 @@ func (tn *TextileService) InitMail(d *md.Device, us md.ConnectionRequest_UserSta
 }
 
 // @ Read Mailbox Mail
-func (tn *TextileService) ReadMail() (*md.MailEvent, *md.SonrError) {
+func (tn *TextileService) readMail() (*md.MailEvent, *md.SonrError) {
 	// List the recipient's inbox
 	inbox, err := tn.mailbox.ListInboxMessages(context.Background())
 	if err != nil {
-		return nil, textileError(err)
+		return nil, md.NewError(err, md.ErrorMessage_MAILBOX_LIST_ALL)
 	}
 
 	// Initialize Entry List
@@ -203,14 +203,9 @@ func (tn *TextileService) ReadMail() (*md.MailEvent, *md.SonrError) {
 		// Open decrypts the message body
 		body, err := v.Open(context.Background(), tn.identity)
 		if err != nil {
-			return nil, textileError(err)
+			return nil, md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_OPEN)
 		}
 		entries[i] = body
-	}
-	// Create Mail and Marshal Data
-	if err != nil {
-		log.Println(err)
-		return nil, textileError(err)
 	}
 	return &md.MailEvent{
 		Invites:    entries,
@@ -223,8 +218,7 @@ func (sc *serviceClient) ReadMail() *md.SonrError {
 	// Check Mail Enabled
 	if sc.isMailReady {
 		// Fetch Mail Event
-		event, serr := sc.Textile.ReadMail()
-
+		event, serr := sc.Textile.readMail()
 		if serr != nil {
 			serr.Print()
 			return serr
@@ -241,12 +235,12 @@ func (sc *serviceClient) ReadMail() *md.SonrError {
 	return nil
 }
 
-func (ts *TextileService) SendMail(to thread.PubKey, buf []byte) ([]byte, *md.SonrError) {
+func (ts *TextileService) sendMail(to thread.PubKey, buf []byte) ([]byte, *md.SonrError) {
 	// Send Message to Mailbox
 	msg, err := ts.mailbox.SendMessage(context.Background(), to, buf)
 	if err != nil {
 		log.Println(err)
-		return nil, textileError(err)
+		return nil, md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_SEND)
 	}
 
 	// Marshal Response
@@ -277,18 +271,18 @@ func (sc *serviceClient) SendMail(e *md.InviteRequest) *md.SonrError {
 		pubKey, err := e.GetTo().ThreadKey()
 		if err != nil {
 			log.Println(err)
-			return textileError(err)
+			return md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_SEND)
 		}
 
 		// Marshal Data
 		buf, err := proto.Marshal(e)
 		if err != nil {
 			log.Println(err)
-			return textileError(err)
+			return md.NewMarshalError(err)
 		}
 
 		// Send to Mailbox
-		resp, serr := sc.Textile.SendMail(pubKey, buf)
+		resp, serr := sc.Textile.sendMail(pubKey, buf)
 		if serr != nil {
 			return serr
 		}
@@ -296,9 +290,4 @@ func (sc *serviceClient) SendMail(e *md.InviteRequest) *md.SonrError {
 		return nil
 	}
 	return nil
-}
-
-// # Helper: Builds Textile Error
-func textileError(err error) *md.SonrError {
-	return md.NewError(err, md.ErrorMessage_HOST_TEXTILE)
 }

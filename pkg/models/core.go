@@ -198,7 +198,8 @@ func (f *SFile) Single() *SFile_Item {
 type Session struct {
 	// Inherited Properties
 	file      *SFile
-	peer      *Peer
+	owner     *Peer
+	receiver  *Peer
 	pid       protocol.ID
 	user      *User
 	direction Direction
@@ -217,7 +218,8 @@ type SessionHandler interface {
 func NewOutSession(u *User, req *InviteRequest, sh SessionHandler) *Session {
 	return &Session{
 		file:      req.GetFile(),
-		peer:      req.GetTo(),
+		owner:     req.GetFrom(),
+		receiver:  req.GetTo(),
 		pid:       req.ProtocolID(),
 		user:      u,
 		direction: Direction_Outgoing,
@@ -230,7 +232,8 @@ func NewInSession(u *User, inv *InviteRequest, sh SessionHandler) *Session {
 	// Return Session
 	return &Session{
 		file:      inv.GetFile(),
-		peer:      inv.GetFrom(),
+		owner:     inv.GetFrom(),
+		receiver:  inv.GetTo(),
 		pid:       inv.ProtocolID(),
 		user:      u,
 		direction: Direction_Incoming,
@@ -238,16 +241,17 @@ func NewInSession(u *User, inv *InviteRequest, sh SessionHandler) *Session {
 	}
 }
 
-// Returns SFile as TransferCard given Receiver and Owner
+// ^ Returns SFile as TransferCard given Receiver and Owner
 func (s *Session) Card() *Transfer {
+	// Receiving Card
 	return &Transfer{
 		// SQL Properties
 		Payload:  s.file.Payload,
 		Received: int32(time.Now().Unix()),
 
 		// Owner Properties
-		Owner:    s.user.Peer.GetProfile(),
-		Receiver: s.peer.GetProfile(),
+		Owner:    s.owner.GetProfile(),
+		Receiver: s.receiver.GetProfile(),
 
 		// Data Properties
 		Data: s.file.ToData(),

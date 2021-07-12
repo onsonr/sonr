@@ -13,11 +13,14 @@ message ErrorMessage {
 
   // Error Type from Enum
   enum Type {
+    // General
     MARSHAL = 0;
     UNMARSHAL = 1;
     IP_RESOLVE = 2;
     IP_LOCATE = 3;
     BOOTSTRAP = 4;
+
+    // Lobby
     TOPIC_JOIN = 5;
     TOPIC_CREATE = 6;
     TOPIC_INVALID = 7;
@@ -27,23 +30,31 @@ message ErrorMessage {
     TOPIC_LEAVE = 11;
     TOPIC_MESSAGE = 12;
     TOPIC_UPDATE = 13;
-    TRANSFER_START = 14;
-    TRANSFER_CHUNK = 15;
-    TRANSFER_END = 16;
+
+    // User
     USER_CREATE = 17;
     USER_SAVE = 18;
     USER_LOAD = 19;
     USER_FS = 20;
     USER_UPDATE = 21;
+
+    // Transfer
+    TRANSFER_START = 14;
+    TRANSFER_CHUNK = 15;
+    TRANSFER_END = 16;
     INCOMING = 22;
     OUTGOING = 23;
     SESSION = 24;
+
+    // Host
     HOST_DHT = 25;
     HOST_KEY = 26;
     HOST_STREAM = 27;
     HOST_START = 28;
     HOST_PUBSUB = 29;
     CRYPTO_GEN = 30;
+
+    // Peer
     PEER_NOT_FOUND_INVITE = 31;
     PEER_NOT_FOUND_REPLY = 32;
     PEER_NOT_FOUND_TRANSFER = 33;
@@ -51,14 +62,30 @@ message ErrorMessage {
     URL_INFO_RESP = 35;
     FAILED_CONNECTION = 36;
     HOST_INFO = 37;
+
+    // Key Pair
     KEY_SET = 38;
     KEY_INVALID = 39;
     KEY_ID = 40;
+
+    // Memory Store
     STORE_PUT = 41;
     STORE_GET = 42;
     STORE_FIND = 43;
     STORE_INIT = 44;
-    HOST_TEXTILE = 45;
+
+    // Textile Service
+    TEXTILE_START_CLIENT = 45;
+    TEXTILE_USER_CTX = 46;
+    TEXTILE_TOKEN_CTX = 47;
+    THREADS_START_NEW = 48;
+    THREADS_START_EXISTING = 49;
+    THREADS_LIST_ALL = 50;
+    MAILBOX_START_NEW = 51;
+    MAILBOX_START_EXISTING = 52;
+    MAILBOX_LIST_ALL = 53;
+    MAILBOX_MESSAGE_OPEN = 54;
+    MAILBOX_MESSAGE_SEND = 55;
   }
 
   enum Severity {
