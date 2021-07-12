@@ -174,8 +174,14 @@ func (u *URLLink) SetData() {
 }
 
 // ** ─── InviteResponse MANAGEMENT ────────────────────────────────────────────────────────
+// Checks if Peer Accepted Transfer
 func (r *InviteResponse) HasAcceptedTransfer() bool {
 	return r.GetDecision() && r.GetType() == InviteResponse_Default
+}
+
+// Returns Protocol ID Set by Peer
+func (r *InviteResponse) ProtocolID() protocol.ID {
+	return protocol.ID(r.GetProtocol())
 }
 
 // ** ─── InviteRequest MANAGEMENT ────────────────────────────────────────────────────────
@@ -200,7 +206,7 @@ func (i *InviteRequest) IsPayloadContact() bool {
 }
 
 // Checks if Payload is File Transfer
-func (i *InviteRequest) IsPayloadFile() bool {
+func (i *InviteRequest) IsPayloadTransfer() bool {
 	return i.Payload == Payload_FILE || i.Payload == Payload_FILES || i.Payload == Payload_MEDIA || i.Payload == Payload_ALBUM
 }
 
@@ -212,6 +218,18 @@ func (i *InviteRequest) IsPayloadUrl() bool {
 // Checks for Flat Invite
 func (i *InviteRequest) IsFlatInvite() bool {
 	return i.GetType() == InviteRequest_Flat
+}
+
+// Returns Protocol ID Set by Peer
+func (r *InviteRequest) ProtocolID() protocol.ID {
+	return protocol.ID(r.GetProtocol())
+}
+
+// Set Protocol for Invite and Return ID
+func (i *InviteRequest) SetProtocol(p SonrProtocol, id peer.ID) protocol.ID {
+	protocolName := fmt.Sprintf("/sonr/%s/%s", p.Method(), id.String())
+	i.Protocol = protocolName
+	return protocol.ID(protocolName)
 }
 
 // Validates InviteRequest has From Parameter

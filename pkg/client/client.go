@@ -28,10 +28,12 @@ type Client interface {
 	// Topic Callbacks
 	OnConnected(*md.ConnectionResponse)
 	OnEvent(*md.LobbyEvent)
+	OnError(err *md.SonrError)
 	OnInvite([]byte)
 	OnReply(id peer.ID, data []byte)
 	OnResponded(inv *md.InviteRequest)
-	OnCompleted(stream network.Stream, pid protocol.ID, buf []byte)
+	OnProgress(buf []byte)
+	OnCompleted(stream network.Stream, pid protocol.ID, buf []byte, direction md.Direction)
 }
 
 // Struct: Main Client handles Networking/Identity/Streams
@@ -131,11 +133,11 @@ func (c *client) Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrE
 					return md.NewPeerFoundError(err, invite.GetTo().GetId().GetPeer())
 				}
 
-				pid := md.SonrProtocol_LocalTransfer.NewIDProtocol(id)
 				// Initialize Session if transfer
-				if invite.IsPayloadFile() {
+				if invite.IsPayloadTransfer() {
 					// Start New Session
-					c.session = md.NewOutSession(c.user, invite, pid, c.call)
+					invite.SetProtocol(md.SonrProtocol_LocalTransfer, id)
+					c.session = md.NewOutSession(c.user, invite, c)
 				}
 
 				// Run Routine

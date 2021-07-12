@@ -65,7 +65,7 @@ func (n *client) OnReply(id peer.ID, reply []byte) {
 			n.call.SetStatus(md.Status_TRANSFER)
 
 			// Create New Auth Stream
-			stream, err := n.Host.StartStream(id, md.SonrProtocol_LocalTransfer.NewIDProtocol(id))
+			stream, err := n.Host.StartStream(id, resp.ProtocolID())
 			if err != nil {
 				n.call.OnError(md.NewError(err, md.ErrorMessage_HOST_STREAM))
 				return
@@ -83,9 +83,8 @@ func (n *client) OnReply(id peer.ID, reply []byte) {
 
 // ^ OnResponded: Prepares for Incoming File Transfer when Accepted ^
 func (n *client) OnConfirmed(inv *md.InviteRequest) {
-	pid := md.SonrProtocol_LocalTransfer.NewIDProtocol(n.Host.ID())
-	n.session = md.NewInSession(n.user, inv, pid, n.call)
-	n.Host.HandleStream(pid, n.session.ReadFromStream)
+	n.session = md.NewInSession(n.user, inv, n)
+	n.Host.HandleStream(inv.ProtocolID(), n.session.ReadFromStream)
 }
 
 // ^ OnMail: Callback for Mail Event
@@ -93,6 +92,25 @@ func (n *client) OnMail(buf []byte) {
 	n.call.OnMail(buf)
 }
 
-func (n *client) OnCompleted(stream network.Stream, pid protocol.ID, buf []byte) {
+// ^ OnProgress: Callback Progress Update
+func (n *client) OnProgress(buf []byte) {
+	// Marshal and Return
+	n.call.OnProgress(buf)
+}
 
+// ^ OnMail: Callback for Error Event
+func (n *client) OnError(err *md.SonrError) {
+	n.call.OnError(err)
+}
+
+// ^ OnCompleted: Callback Completed Transfer
+func (n *client) OnCompleted(stream network.Stream, pid protocol.ID, buf []byte, direction md.Direction) {
+	if direction == md.Direction_Incoming {
+		n.call.OnReceived(buf)
+		n.call.SetStatus(md.Status_AVAILABLE)
+		n.Host.CloseStream(pid, stream)
+	} else if direction == md.Direction_Outgoing {
+		n.call.OnTransmitted(buf)
+		n.call.SetStatus(md.Status_AVAILABLE)
+	}
 }

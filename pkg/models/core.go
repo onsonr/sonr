@@ -197,35 +197,44 @@ func (f *SFile) Single() *SFile_Item {
 // ** ─── Session MANAGEMENT ────────────────────────────────────────────────────────
 type Session struct {
 	// Inherited Properties
-	file *SFile
-	peer *Peer
-	pid  protocol.ID
-	user *User
+	file      *SFile
+	peer      *Peer
+	pid       protocol.ID
+	user      *User
+	direction Direction
 
 	// Management
-	call Callback
+	call SessionHandler
+}
+
+type SessionHandler interface {
+	OnCompleted(stream network.Stream, pid protocol.ID, buf []byte, direction Direction)
+	OnProgress(buf []byte)
+	OnError(err *SonrError)
 }
 
 // ^ Prepare for Outgoing Session ^ //
-func NewOutSession(u *User, req *InviteRequest, pid protocol.ID, tc Callback) *Session {
+func NewOutSession(u *User, req *InviteRequest, sh SessionHandler) *Session {
 	return &Session{
-		file: req.GetFile(),
-		peer: req.GetTo(),
-		user: u,
-		pid:  pid,
-		call: tc,
+		file:      req.GetFile(),
+		peer:      req.GetTo(),
+		pid:       req.ProtocolID(),
+		user:      u,
+		direction: Direction_Outgoing,
+		call:      sh,
 	}
 }
 
 // ^ Prepare for Incoming Session ^ //
-func NewInSession(u *User, inv *InviteRequest, pid protocol.ID, c Callback) *Session {
+func NewInSession(u *User, inv *InviteRequest, sh SessionHandler) *Session {
 	// Return Session
 	return &Session{
-		file: inv.GetFile(),
-		peer: inv.GetFrom(),
-		user: u,
-		pid:  pid,
-		call: c,
+		file:      inv.GetFile(),
+		peer:      inv.GetFrom(),
+		pid:       inv.ProtocolID(),
+		user:      u,
+		direction: Direction_Incoming,
+		call:      sh,
 	}
 }
 
@@ -275,7 +284,7 @@ func (s *Session) WriteToStream(stream network.Stream) {
 			}
 		}
 		// Handle Complete
-		s.handleTransmitted()
+		s.handleTransmitted(stream)
 	}(msg.NewWriter(stream))
 }
 
@@ -289,18 +298,11 @@ func (s *Session) handleReceived(stream network.Stream) {
 	}
 
 	// Callback Data
-	s.call.OnReceived(buf)
-
-	// Set Status
-	stream.Close()
-	s.call.SetStatus(Status_AVAILABLE)
+	s.call.OnCompleted(stream, s.pid, buf, s.direction)
 }
 
 // @ Helper: Handles Succesful Transmitted
-func (s *Session) handleTransmitted() {
-	// Set Status
-	s.call.SetStatus(Status_AVAILABLE)
-
+func (s *Session) handleTransmitted(stream network.Stream) {
 	// Marshal Data
 	buf, err := proto.Marshal(s.Card())
 	if err != nil {
@@ -309,12 +311,12 @@ func (s *Session) handleTransmitted() {
 	}
 
 	// Callback Data
-	s.call.OnTransmitted(buf)
+	s.call.OnCompleted(stream, s.pid, buf, s.direction)
 }
 
 // ** ─── SFile_Item MANAGEMENT ────────────────────────────────────────────────────────
 
-func (i *SFile_Item) NewReader(d *Device, index int, total int, c Callback) ItemReader {
+func (i *SFile_Item) NewReader(d *Device, index int, total int, c SessionHandler) ItemReader {
 	// Return Reader
 	return &itemReader{
 		item:     i,
@@ -326,12 +328,12 @@ func (i *SFile_Item) NewReader(d *Device, index int, total int, c Callback) Item
 	}
 }
 
-func (m *SFile_Item) NewWriter(d *Device, index int, total int, c Callback) ItemWriter {
+func (m *SFile_Item) NewWriter(d *Device, index int, total int, sh SessionHandler) ItemWriter {
 	return &itemWriter{
 		item:     m,
 		size:     0,
 		device:   d,
-		callback: c,
+		callback: sh,
 		index:    index,
 		total:    total,
 	}
@@ -359,7 +361,7 @@ type ItemReader interface {
 }
 type itemReader struct {
 	ItemReader
-	callback Callback
+	callback SessionHandler
 	mutex    sync.Mutex
 	item     *SFile_Item
 	device   *Device
@@ -444,7 +446,7 @@ type ItemWriter interface {
 
 type itemWriter struct {
 	ItemWriter
-	callback Callback
+	callback SessionHandler
 	item     *SFile_Item
 	device   *Device
 	index    int

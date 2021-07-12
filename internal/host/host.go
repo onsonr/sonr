@@ -30,6 +30,7 @@ type HostNode interface {
 	JoinTopic(ctx context.Context, u *md.User, topicData *md.Topic, th TopicHandler) (*TopicManager, *md.SonrError)
 	HandleStream(pid protocol.ID, handler network.StreamHandler)
 	MultiAddr() (multiaddr.Multiaddr, *md.SonrError)
+	CloseStream(pid protocol.ID, stream network.Stream)
 	StartStream(p peer.ID, pid protocol.ID) (network.Stream, error)
 }
 
