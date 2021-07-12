@@ -9,6 +9,7 @@ import (
 	olc "github.com/google/open-location-code/go"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
+	gonanoid "github.com/matoous/go-nanoid"
 	util "github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/proto"
 )
@@ -227,7 +228,16 @@ func (r *InviteRequest) ProtocolID() protocol.ID {
 
 // Set Protocol for Invite and Return ID
 func (i *InviteRequest) SetProtocol(p SonrProtocol, id peer.ID) protocol.ID {
+	// Initialize
 	protocolName := fmt.Sprintf("/sonr/%s/%s", p.Method(), id.String())
+
+	// Get Nano ID
+	nanoid, err := gonanoid.Generate(id.Pretty(), 24)
+	if err == nil {
+		protocolName = fmt.Sprintf("/sonr/%s/%s", p.Method(), nanoid)
+	}
+
+	// Set Name and Return ID
 	i.Protocol = protocolName
 	return protocol.ID(protocolName)
 }
