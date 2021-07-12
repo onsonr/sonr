@@ -170,7 +170,7 @@ func (tn *TextileService) InitMail(d *md.Device, us md.ConnectionRequest_UserSta
 			sc.SetMailboxStatus(true)
 		}
 
-		// Read Existing Mai.
+		// Read Existing Mail
 		err := sc.ReadMail()
 		if err != nil {
 			log.Println(err)
@@ -221,7 +221,7 @@ func (tn *TextileService) ReadMail() (*md.MailEvent, *md.SonrError) {
 // @ Method Reads Inbox and Returns List of Mail Entries
 func (sc *serviceClient) ReadMail() *md.SonrError {
 	// Check Mail Enabled
-	if sc.IsMailboxReady() {
+	if sc.isMailReady {
 		// Fetch Mail Event
 		event, serr := sc.Textile.ReadMail()
 
@@ -272,7 +272,7 @@ func (ts *TextileService) SendMail(to thread.PubKey, buf []byte) ([]byte, *md.So
 // @ Method Sends Mail Entry to Peer
 func (sc *serviceClient) SendMail(e *md.InviteRequest) *md.SonrError {
 	// Check Mail Enabled
-	if sc.IsMailboxReady() {
+	if sc.isMailReady {
 		// Fetch Peer Thread Key
 		pubKey, err := e.GetTo().ThreadKey()
 		if err != nil {

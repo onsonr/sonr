@@ -24,16 +24,6 @@ enum LifecycleState {
   Stopped = 2; // User Quit
 }
 
-// Current Node Service Client State
-message ServiceStatus {
-  bool auth = 1;    // Auth Service
-  bool device = 2;  // Device Service
-  bool mailbox = 3; // Textile-Mailbox Service
-  bool threads = 4; // Textile-Threads Service
-  bool buckets = 5; // Textile-Buckets Service
-  bool http = 6;    // HTTP Service
-}
-
 // Sonr Default Protocols
 enum SonrProtocol {
   Unspecified = 0;    // Default Value

@@ -40,32 +40,37 @@ type serviceClient struct {
 	handler ServiceHandler
 	host    net.HostNode
 	request *md.ConnectionRequest
-	status  *md.ServiceStatus
 	user    *md.User
 
 	// Services
 	Auth    *AuthService
 	Device  *DeviceService
 	Textile *TextileService
+
+	// Status's
+	isAuthReady    bool
+	isDeviceReady  bool
+	isMailReady    bool
+	isThreadsReady bool
+	isBucketsReady bool
+	isHttpReady    bool
 }
 
 func NewService(ctx context.Context, h net.HostNode, u *md.User, req *md.ConnectionRequest, call md.Callback, sh ServiceHandler) (ServiceClient, *md.SonrError) {
 	// Create Client
 	client := &serviceClient{
-		ctx:     ctx,
-		apiKeys: req.GetApiKeys(),
-		handler: sh,
-		host:    h,
-		request: req,
-		status: &md.ServiceStatus{
-			Auth:    false,
-			Device:  false,
-			Mailbox: false,
-			Threads: false,
-			Buckets: false,
-			Http:    false,
-		},
-		user: u,
+		ctx:            ctx,
+		apiKeys:        req.GetApiKeys(),
+		handler:        sh,
+		host:           h,
+		request:        req,
+		isAuthReady:    false,
+		isDeviceReady:  false,
+		isMailReady:    false,
+		isThreadsReady: false,
+		isBucketsReady: false,
+		isHttpReady:    false,
+		user:           u,
 	}
 
 	// Begin Auth Service
@@ -111,74 +116,32 @@ func (tn *TextileService) newTokenCtx() (context.Context, error) {
 	return thread.NewTokenContext(tn.ctxAuth, token), nil
 }
 
-// ^ Check if Status Enabled for Auth
-func (sc *serviceClient) IsAuthReady() bool {
-	return sc.status.GetAuth()
-}
-
-// ^ Check if Status Enabled for uckets
-func (sc *serviceClient) IsBucketsReady() bool {
-	return sc.status.GetBuckets()
-}
-
-// ^ Check if Status Enabled for Device
-func (sc *serviceClient) IsDeviceReady() bool {
-	return sc.status.GetDevice()
-}
-
-// ^ Check if Status Enabled for HTTP
-func (sc *serviceClient) IsHTTPReady() bool {
-	return sc.status.GetHttp()
-}
-
-// ^ Check if Status Enabled for Mailbox
-func (sc *serviceClient) IsMailboxReady() bool {
-	return sc.status.GetMailbox()
-}
-
-// ^ Check if Status Enabled for Threads
-func (sc *serviceClient) IsThreadsReady() bool {
-	return sc.status.GetThreads()
-}
-
 // @ Set Service Status for Auth
 func (sc *serviceClient) SetAuthStatus(val bool) {
-	if sc.status != nil {
-		sc.status.Auth = val
-	}
+	sc.isAuthReady = val
 }
 
 // @ Set Service Status for Device
 func (sc *serviceClient) SetDeviceStatus(val bool) {
-	if sc.status != nil {
-		sc.status.Device = val
-	}
+	sc.isDeviceReady = val
 }
 
 // @ Set Service Status for Buckets
 func (sc *serviceClient) SetBucketsStatus(val bool) {
-	if sc.status != nil {
-		sc.status.Buckets = val
-	}
+	sc.isBucketsReady = val
 }
 
 // @ Set Service Status for HTTP
 func (sc *serviceClient) SetHTTPStatus(val bool) {
-	if sc.status != nil {
-		sc.status.Http = val
-	}
+	sc.isHttpReady = val
 }
 
 // @ Set Service Status for Mailbox
 func (sc *serviceClient) SetMailboxStatus(val bool) {
-	if sc.status != nil {
-		sc.status.Mailbox = val
-	}
+	sc.isMailReady = val
 }
 
 // @ Set Service Status for Threads
 func (sc *serviceClient) SetThreadsStatus(val bool) {
-	if sc.status != nil {
-		sc.status.Threads = val
-	}
+	sc.isThreadsReady = val
 }
