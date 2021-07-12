@@ -30,7 +30,7 @@ type ExchangeService struct {
 }
 
 type TopicHandler interface {
-	OnEvent(*md.LobbyEvent)
+	OnEvent(*md.TopicEvent)
 }
 
 type TopicManager struct {
@@ -41,7 +41,7 @@ type TopicManager struct {
 	eventHandler *pubsub.TopicEventHandler
 	user         *md.User
 
-	events    chan *md.LobbyEvent
+	events    chan *md.TopicEvent
 	exchange  *ExchangeService
 	handler   TopicHandler
 	topicData *md.Topic
@@ -76,7 +76,7 @@ func (h *hostNode) JoinTopic(ctx context.Context, u *md.User, topicData *md.Topi
 		host:         h,
 		eventHandler: handler,
 		topicData:    topicData,
-		events:       make(chan *md.LobbyEvent, util.TOPIC_MAX_MESSAGES),
+		events:       make(chan *md.TopicEvent, util.TOPIC_MAX_MESSAGES),
 		subscription: sub,
 		topic:        topic,
 	}
@@ -118,12 +118,12 @@ func (tm *TopicManager) FindPeerInTopic(q string) (peer.ID, error) {
 }
 
 // PushEvent @ Send Updated Lobby
-func (tm *TopicManager) PushEvent(event *md.LobbyEvent) {
+func (tm *TopicManager) PushEvent(event *md.TopicEvent) {
 	tm.handler.OnEvent(event)
 }
 
 // Publish @ Publish message to specific peer in topic
-func (tm *TopicManager) Publish(msg *md.LobbyEvent) error {
+func (tm *TopicManager) Publish(msg *md.TopicEvent) error {
 	// Convert Event to Proto Binary
 	bytes, err := proto.Marshal(msg)
 	if err != nil {
@@ -249,7 +249,7 @@ func (tm *TopicManager) handleTopicMessages(ctx context.Context) {
 		}
 
 		// Check Lobby Type
-		m := &md.LobbyEvent{}
+		m := &md.TopicEvent{}
 		err = proto.Unmarshal(msg.Data, m)
 		if err != nil {
 			continue

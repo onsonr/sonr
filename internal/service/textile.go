@@ -271,7 +271,7 @@ func (sc *serviceClient) SendMail(e *md.InviteRequest) *md.SonrError {
 		pubKey, err := e.GetTo().ThreadKey()
 		if err != nil {
 			log.Println(err)
-			return md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_SEND)
+			return md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_PEER_PUBKEY)
 		}
 
 		// Marshal Data
@@ -284,6 +284,7 @@ func (sc *serviceClient) SendMail(e *md.InviteRequest) *md.SonrError {
 		// Send to Mailbox
 		resp, serr := sc.Textile.sendMail(pubKey, buf)
 		if serr != nil {
+			log.Println(err)
 			return serr
 		}
 		sc.handler.OnReply(peer.ID(""), resp)

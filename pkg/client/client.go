@@ -27,7 +27,7 @@ type Client interface {
 
 	// Topic Callbacks
 	OnConnected(*md.ConnectionResponse)
-	OnEvent(*md.LobbyEvent)
+	OnEvent(*md.TopicEvent)
 	OnError(err *md.SonrError)
 	OnInvite(buf []byte)
 	OnReply(id peer.ID, data []byte)
@@ -233,9 +233,9 @@ func (c *client) Restart(ur *md.UpdateRequest, keys *md.KeyPair) (*net.TopicMana
 
 func (c *client) newExitEvent(inv *md.InviteRequest) {
 	// Create Exit Event
-	event := md.LobbyEvent{
+	event := md.TopicEvent{
 		Id:      inv.To.Id.Peer,
-		Subject: md.LobbyEvent_EXIT,
+		Subject: md.TopicEvent_EXIT,
 		Peer:    inv.To,
 	}
 

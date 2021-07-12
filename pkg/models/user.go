@@ -516,9 +516,9 @@ func (u *User) ReplyToFlat(from *Peer) *InviteResponse {
 }
 
 // ^ NewUpdateEvent Creates Lobby Event with Peer Data ^
-func (p *Peer) NewUpdateEvent(topic *Topic) *LobbyEvent {
-	return &LobbyEvent{
-		Subject: LobbyEvent_UPDATE,
+func (p *Peer) NewUpdateEvent(topic *Topic) *TopicEvent {
+	return &TopicEvent{
+		Subject: TopicEvent_UPDATE,
 		Peer:    p,
 		Id:      p.Id.Peer,
 		Topic:   topic,
@@ -526,9 +526,9 @@ func (p *Peer) NewUpdateEvent(topic *Topic) *LobbyEvent {
 }
 
 // ^ NewUpdateEvent Creates Lobby Event with Peer Data ^
-func (p *Peer) NewExitEvent(topic *Topic) *LobbyEvent {
-	return &LobbyEvent{
-		Subject: LobbyEvent_EXIT,
+func (p *Peer) NewExitEvent(topic *Topic) *TopicEvent {
+	return &TopicEvent{
+		Subject: TopicEvent_EXIT,
 		Peer:    p,
 		Id:      p.Id.Peer,
 		Topic:   topic,

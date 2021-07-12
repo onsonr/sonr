@@ -305,11 +305,11 @@ func generateError(errType ErrorMessage_Type) (string, ErrorMessage_Severity) {
 	case ErrorMessage_STORE_INIT:
 		return "Failed to Get Value for Key", ErrorMessage_CRITICAL
 	case ErrorMessage_TEXTILE_START_CLIENT:
-		return "Failed to Start Textile Client", ErrorMessage_CRITICAL
+		return "Failed to Start Textile Client", ErrorMessage_FATAL
 	case ErrorMessage_TEXTILE_TOKEN_CTX:
-		return "Failed to Retreive Textile Token", ErrorMessage_CRITICAL
+		return "Failed to Retreive Textile Token", ErrorMessage_FATAL
 	case ErrorMessage_TEXTILE_USER_CTX:
-		return "Failed to Retreive Textile User", ErrorMessage_CRITICAL
+		return "Failed to Retreive Textile User", ErrorMessage_FATAL
 	case ErrorMessage_THREADS_START_NEW:
 		return "Failed to Start New Textile Threads", ErrorMessage_WARNING
 	case ErrorMessage_THREADS_START_EXISTING:
@@ -317,16 +317,17 @@ func generateError(errType ErrorMessage_Type) (string, ErrorMessage_Severity) {
 	case ErrorMessage_THREADS_LIST_ALL:
 		return "Failed to List All Threads", ErrorMessage_WARNING
 	case ErrorMessage_MAILBOX_START_NEW:
-		return "Failed to Start New Mailbox", ErrorMessage_CRITICAL
+		return "Failed to Start New Mailbox", ErrorMessage_FATAL
 	case ErrorMessage_MAILBOX_START_EXISTING:
-		return "Failed to Start Existing Mailbox", ErrorMessage_CRITICAL
+		return "Failed to Start Existing Mailbox", ErrorMessage_FATAL
 	case ErrorMessage_MAILBOX_LIST_ALL:
 		return "Failed to List All Mailbox Messages", ErrorMessage_WARNING
 	case ErrorMessage_MAILBOX_MESSAGE_OPEN:
-		return "Failed to Open Mailbox Message", ErrorMessage_WARNING
+		return "Failed to Open Mailbox Message", ErrorMessage_CRITICAL
 	case ErrorMessage_MAILBOX_MESSAGE_SEND:
-		return "Failed to Send Mailbox Message", ErrorMessage_WARNING
-
+		return "Failed to Send Mailbox Message", ErrorMessage_CRITICAL
+	case ErrorMessage_MAILBOX_MESSAGE_PEER_PUBKEY:
+		return "Failed to Find Peers Public Key", ErrorMessage_CRITICAL
 	default:
 		return "Unknown", ErrorMessage_LOG
 	}

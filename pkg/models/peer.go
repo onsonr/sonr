@@ -51,29 +51,29 @@ func (u *User) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) *SonrError {
 
 // ** ─── Local Event MANAGEMENT ────────────────────────────────────────────────────────
 // Creates New Exit Local Event
-func NewJoinLocalEvent(peer *Peer) *LobbyEvent {
-	return &LobbyEvent{
+func NewJoinLocalEvent(peer *Peer) *TopicEvent {
+	return &TopicEvent{
 		Id:      peer.Id.Peer,
 		Peer:    peer,
-		Subject: LobbyEvent_JOIN,
+		Subject: TopicEvent_JOIN,
 	}
 }
 
 // Creates New Exit Local Event
-func NewUpdateLocalEvent(peer *Peer, topic *Topic) *LobbyEvent {
-	return &LobbyEvent{
+func NewUpdateLocalEvent(peer *Peer, topic *Topic) *TopicEvent {
+	return &TopicEvent{
 		Id:      peer.Id.Peer,
 		Peer:    peer,
-		Subject: LobbyEvent_UPDATE,
+		Subject: TopicEvent_UPDATE,
 		Topic:   topic,
 	}
 }
 
 // Creates New Exit Local Event
-func NewExitLocalEvent(id string, topic *Topic) *LobbyEvent {
-	return &LobbyEvent{
+func NewExitLocalEvent(id string, topic *Topic) *TopicEvent {
+	return &TopicEvent{
 		Id:      id,
-		Subject: LobbyEvent_EXIT,
+		Subject: TopicEvent_EXIT,
 		Topic:   topic,
 	}
 }

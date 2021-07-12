@@ -20,7 +20,7 @@ message ErrorMessage {
     IP_LOCATE = 3;
     BOOTSTRAP = 4;
 
-    // Lobby
+    // Topic
     TOPIC_JOIN = 5;
     TOPIC_CREATE = 6;
     TOPIC_INVALID = 7;
@@ -74,18 +74,23 @@ message ErrorMessage {
     STORE_FIND = 43;
     STORE_INIT = 44;
 
-    // Textile Service
+    // Textile Client
     TEXTILE_START_CLIENT = 45;
     TEXTILE_USER_CTX = 46;
     TEXTILE_TOKEN_CTX = 47;
+
+    // Threads Service
     THREADS_START_NEW = 48;
     THREADS_START_EXISTING = 49;
     THREADS_LIST_ALL = 50;
+
+    // Mailbox Service
     MAILBOX_START_NEW = 51;
     MAILBOX_START_EXISTING = 52;
     MAILBOX_LIST_ALL = 53;
     MAILBOX_MESSAGE_OPEN = 54;
     MAILBOX_MESSAGE_SEND = 55;
+    MAILBOX_MESSAGE_PEER_PUBKEY = 56;
   }
 
   enum Severity {
