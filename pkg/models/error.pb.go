@@ -30,7 +30,7 @@ const (
 	ErrorMessage_IP_RESOLVE ErrorMessage_Type = 2
 	ErrorMessage_IP_LOCATE  ErrorMessage_Type = 3
 	ErrorMessage_BOOTSTRAP  ErrorMessage_Type = 4
-	// Lobby
+	// Topic
 	ErrorMessage_TOPIC_JOIN    ErrorMessage_Type = 5
 	ErrorMessage_TOPIC_CREATE  ErrorMessage_Type = 6
 	ErrorMessage_TOPIC_INVALID ErrorMessage_Type = 7
@@ -77,13 +77,15 @@ const (
 	ErrorMessage_STORE_GET  ErrorMessage_Type = 42
 	ErrorMessage_STORE_FIND ErrorMessage_Type = 43
 	ErrorMessage_STORE_INIT ErrorMessage_Type = 44
-	// Textile Service
-	ErrorMessage_TEXTILE_START_CLIENT        ErrorMessage_Type = 45
-	ErrorMessage_TEXTILE_USER_CTX            ErrorMessage_Type = 46
-	ErrorMessage_TEXTILE_TOKEN_CTX           ErrorMessage_Type = 47
-	ErrorMessage_THREADS_START_NEW           ErrorMessage_Type = 48
-	ErrorMessage_THREADS_START_EXISTING      ErrorMessage_Type = 49
-	ErrorMessage_THREADS_LIST_ALL            ErrorMessage_Type = 50
+	// Textile Client
+	ErrorMessage_TEXTILE_START_CLIENT ErrorMessage_Type = 45
+	ErrorMessage_TEXTILE_USER_CTX     ErrorMessage_Type = 46
+	ErrorMessage_TEXTILE_TOKEN_CTX    ErrorMessage_Type = 47
+	// Threads Service
+	ErrorMessage_THREADS_START_NEW      ErrorMessage_Type = 48
+	ErrorMessage_THREADS_START_EXISTING ErrorMessage_Type = 49
+	ErrorMessage_THREADS_LIST_ALL       ErrorMessage_Type = 50
+	// Mailbox Service
 	ErrorMessage_MAILBOX_START_NEW           ErrorMessage_Type = 51
 	ErrorMessage_MAILBOX_START_EXISTING      ErrorMessage_Type = 52
 	ErrorMessage_MAILBOX_LIST_ALL            ErrorMessage_Type = 53
