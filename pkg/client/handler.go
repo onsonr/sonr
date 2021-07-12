@@ -65,7 +65,7 @@ func (n *client) OnReply(id peer.ID, reply []byte) {
 			n.call.SetStatus(md.Status_TRANSFER)
 
 			// Create New Auth Stream
-			stream, err := n.Host.StartStream(id, resp.ProtocolID())
+			stream, err := n.Host.StartStream(id, md.SonrProtocol_LocalTransfer.NewIDProtocol(id))
 			if err != nil {
 				n.call.OnError(md.NewError(err, md.ErrorMessage_HOST_STREAM))
 				return
@@ -84,7 +84,7 @@ func (n *client) OnReply(id peer.ID, reply []byte) {
 // ^ OnResponded: Prepares for Incoming File Transfer when Accepted ^
 func (n *client) OnConfirmed(inv *md.InviteRequest) {
 	n.session = md.NewInSession(n.user, inv, n)
-	n.Host.HandleStream(inv.ProtocolID(), n.session.ReadFromStream)
+	n.Host.HandleStream(md.SonrProtocol_LocalTransfer.NewIDProtocol(n.Host.ID()), n.session.ReadFromStream)
 }
 
 // ^ OnMail: Callback for Mail Event
