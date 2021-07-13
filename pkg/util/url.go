@@ -299,7 +299,7 @@ func getPageData(doc *goquery.Document, data interface{}) error {
 }
 
 var (
-	Logger = log.New(ioutil.Discard, "[readability] ", log.LstdFlags)
+	URLLogger = log.New(ioutil.Discard, "[readability] ", log.LstdFlags)
 
 	replaceBrsRegexp   = regexp.MustCompile(`(?i)(<br[^>]*>[ \n\r\t]*){2,}`)
 	replaceFontsRegexp = regexp.MustCompile(`(?i)<(\/?)\s*font[^>]*?>`)
@@ -412,7 +412,7 @@ func (d *Document) Content() string {
 			}
 
 			if retry {
-				Logger.Printf("Retrying with length %d < retry length %d\n", length, d.RetryLength)
+				URLLogger.Printf("Retrying with length %d < retry length %d\n", length, d.RetryLength)
 				err := d.initializeHtml(d.input)
 				if err != nil {
 					return ""
@@ -522,7 +522,7 @@ func (d *Document) removeUnlikelyCandidates() {
 		str := class + id
 
 		if blacklistCandidatesRegexp.MatchString(str) || (unlikelyCandidatesRegexp.MatchString(str) && !okMaybeItsACandidateRegexp.MatchString(str)) {
-			Logger.Printf("Removing unlikely candidate - %s\n", str)
+			URLLogger.Printf("Removing unlikely candidate - %s\n", str)
 			removeNodes(s)
 		}
 	})
@@ -532,7 +532,7 @@ func (d *Document) transformMisusedDivsIntoParagraphs() {
 	d.document.Find("div").Each(func(i int, s *goquery.Selection) {
 		html, err := s.Html()
 		if err != nil {
-			Logger.Printf("Unable to transform div to p %s\n", err)
+			URLLogger.Printf("Unable to transform div to p %s\n", err)
 			return
 		}
 
@@ -540,7 +540,7 @@ func (d *Document) transformMisusedDivsIntoParagraphs() {
 		if !divToPElementsRegexp.MatchString(html) {
 			class, _ := s.Attr("class")
 			id, _ := s.Attr("id")
-			Logger.Printf("Altering div(#%s.%s) to p\n", id, class)
+			URLLogger.Printf("Altering div(#%s.%s) to p\n", id, class)
 
 			node := s.Get(0)
 			node.Data = "p"
@@ -656,7 +656,7 @@ func (d *Document) scoreNode(s *goquery.Selection) *candidate {
 func (d *Document) sanitize(article string) string {
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(article))
 	if err != nil {
-		Logger.Println("Unable to create document", err)
+		URLLogger.Println("Unable to create document", err)
 		return ""
 	}
 
@@ -767,7 +767,7 @@ func (d *Document) cleanConditionally(s *goquery.Selection, selector string) {
 
 		if weight+contentScore < 0 {
 			removeNodes(s)
-			Logger.Printf("Conditionally cleaned %s%s with weight %f and content score %f\n", node.Data, getName(s), weight, contentScore)
+			URLLogger.Printf("Conditionally cleaned %s%s with weight %f and content score %f\n", node.Data, getName(s), weight, contentScore)
 			return
 		}
 
@@ -811,7 +811,7 @@ func (d *Document) cleanConditionally(s *goquery.Selection, selector string) {
 			}
 
 			if remove {
-				Logger.Printf("Conditionally cleaned %s%s with weight %f and content score %f because it has %s\n", node.Data, getName(s), weight, contentScore, reason)
+				URLLogger.Printf("Conditionally cleaned %s%s with weight %f and content score %f because it has %s\n", node.Data, getName(s), weight, contentScore, reason)
 				removeNodes(s)
 			}
 		}

@@ -2,7 +2,6 @@ package client
 
 import (
 	"context"
-	"log"
 
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -119,7 +118,6 @@ func (c *client) Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrE
 		if invite.GetType() == md.InviteRequest_Remote {
 			err := c.Service.SendMail(invite)
 			if err != nil {
-				log.Println(err)
 				return err
 			}
 		} else {
@@ -187,21 +185,21 @@ func (c *client) Lifecycle(state md.LifecycleState, t *net.TopicManager) {
 		// Inform Lobby
 		if c.user.IsReady() {
 			if err := t.Publish(c.user.Peer.NewUpdateEvent(t.Topic())); err != nil {
-				log.Println(md.NewError(err, md.ErrorMessage_TOPIC_UPDATE))
+				md.NewError(err, md.ErrorMessage_TOPIC_UPDATE)
 			}
 		}
 	} else if state == md.LifecycleState_Paused {
 		// Inform Lobby
 		if c.user.IsReady() {
 			if err := t.Publish(c.user.Peer.NewExitEvent(t.Topic())); err != nil {
-				log.Println(md.NewError(err, md.ErrorMessage_TOPIC_UPDATE))
+				md.NewError(err, md.ErrorMessage_TOPIC_UPDATE)
 			}
 		}
 	} else if state == md.LifecycleState_Stopped {
 		// Inform Lobby
 		if c.user.IsReady() {
 			if err := t.Publish(c.user.Peer.NewExitEvent(t.Topic())); err != nil {
-				log.Println(md.NewError(err, md.ErrorMessage_TOPIC_UPDATE))
+				md.NewError(err, md.ErrorMessage_TOPIC_UPDATE)
 			}
 		}
 		c.Host.Close()

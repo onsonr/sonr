@@ -2,8 +2,6 @@ package service
 
 import (
 	"context"
-	"log"
-
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -48,23 +46,23 @@ type serviceClient struct {
 	Textile *TextileService
 
 	// Status's
-	isAuthReady    bool
-	isDeviceReady  bool
-	isHttpReady    bool
+	isAuthReady   bool
+	isDeviceReady bool
+	isHttpReady   bool
 }
 
 func NewService(ctx context.Context, h net.HostNode, u *md.User, req *md.ConnectionRequest, call md.Callback, sh ServiceHandler) (ServiceClient, *md.SonrError) {
 	// Create Client
 	client := &serviceClient{
-		ctx:            ctx,
-		apiKeys:        req.GetApiKeys(),
-		handler:        sh,
-		host:           h,
-		request:        req,
-		isAuthReady:    false,
-		isDeviceReady:  false,
-		isHttpReady:    false,
-		user:           u,
+		ctx:           ctx,
+		apiKeys:       req.GetApiKeys(),
+		handler:       sh,
+		host:          h,
+		request:       req,
+		isAuthReady:   false,
+		isDeviceReady: false,
+		isHttpReady:   false,
+		user:          u,
 	}
 
 	// Begin Auth Service
@@ -76,7 +74,6 @@ func NewService(ctx context.Context, h net.HostNode, u *md.User, req *md.Connect
 	// Begin Textile Service
 	go func(c *serviceClient) {
 		if err := c.StartTextile(); err != nil {
-			log.Println(err)
 			return
 		}
 	}(client)
@@ -120,9 +117,7 @@ func (sc *serviceClient) SetDeviceStatus(val bool) {
 	sc.isDeviceReady = val
 }
 
-
 // @ Set Service Status for HTTP
 func (sc *serviceClient) SetHTTPStatus(val bool) {
 	sc.isHttpReady = val
 }
-

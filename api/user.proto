@@ -75,8 +75,8 @@ message KeyPair {
 
   // Public Key for Thread ID/ Libp2p ID
   message Public {
-    string id = 1;    // P2P Id derived from Public Key
-    bytes buffer = 2; // Public Key Buffer
+    string base64 = 1; // Base64 Representation of Keys
+    bytes buffer = 2;  // Public Key Buffer
   }
 
   // Shared Key for Device Linking

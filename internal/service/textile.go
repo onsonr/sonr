@@ -4,7 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
-	"log"
+	"github.com/phuslu/log"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/host"
@@ -131,15 +131,14 @@ func (tn *TextileService) InitThreads(sc *serviceClient) *md.SonrError {
 		// Get DB Info
 		allInfo, err := tn.client.ListDBs(tn.ctxToken)
 		if err != nil {
-			log.Println(err)
 			return md.NewError(err, md.ErrorMessage_THREADS_LIST_ALL)
 		}
 
 		// Log DB Info
-		log.Println("> Success!: Textile Threads Enabled -- > ALL DBs")
+		log.Info().Msg("> Success!: Textile Threads Enabled -- > ALL DBs")
 		for k, v := range allInfo {
-			log.Println(fmt.Sprintf("Key: %s", k.String()))
-			log.Println(fmt.Sprintf("ID: %s \n Maddr: %s \n Key: %s \n Name: %s \n", threadID.String(), v.Addrs, v.Key.String(), v.Name))
+			log.Info().Msg(fmt.Sprintf("Key: %s", k.String()))
+			log.Info().Msg(fmt.Sprintf("ID: %s \n Maddr: %s \n Key: %s \n Name: %s \n", threadID.String(), v.Addrs, v.Key.String(), v.Name))
 		}
 		tn.SetThreadsStatus(true)
 	}
@@ -151,7 +150,7 @@ func (tn *TextileService) InitMail(d *md.Device, us md.ConnectionRequest_UserSta
 	// Verify Ready to Initialize
 	if tn.options.GetMailbox() {
 		// Log
-		log.Println("ACTIVATE: Textile Mailbox")
+		log.Info().Msg("ACTIVATE: Textile Mailbox")
 
 		// Setup the mail lib
 		tn.mail = local.NewMail(cmd.NewClients(util.TEXTILE_API_URL, true, util.TEXTILE_MINER_IDX), local.DefaultConfConfig())
@@ -174,7 +173,7 @@ func (tn *TextileService) InitMail(d *md.Device, us md.ConnectionRequest_UserSta
 
 			// Set Mailbox and Update Status
 			tn.mailbox = mailbox
-			log.Println("> Success!: Textile Mailbox Enabled, New Mailbox")
+			log.Info().Msg("> Success!: Textile Mailbox Enabled, New Mailbox")
 			tn.SetMailboxStatus(true)
 		} else {
 			// Return Existing Mailbox
@@ -186,14 +185,13 @@ func (tn *TextileService) InitMail(d *md.Device, us md.ConnectionRequest_UserSta
 
 			// Set Mailbox and Update Status
 			tn.mailbox = mailbox
-			log.Println("> Success!: Textile Mailbox Enabled, Existing Mailbox")
+			log.Info().Msg("> Success!: Textile Mailbox Enabled, Existing Mailbox")
 			tn.SetMailboxStatus(true)
 		}
 
 		// Read Existing Mail
 		err := sc.ReadMail()
 		if err != nil {
-			log.Println(err)
 			return err
 		}
 	}
@@ -240,7 +238,6 @@ func (sc *serviceClient) ReadMail() *md.SonrError {
 		// Fetch Mail Event
 		event, serr := sc.Textile.readMail()
 		if serr != nil {
-			serr.Print()
 			return serr
 		}
 		// Create Mail and Marshal Data
@@ -259,7 +256,6 @@ func (ts *TextileService) sendMail(to thread.PubKey, buf []byte) ([]byte, *md.So
 	// Send Message to Mailbox
 	msg, err := ts.mailbox.SendMessage(context.Background(), to, buf)
 	if err != nil {
-		log.Println(err)
 		return nil, md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_SEND)
 	}
 
@@ -284,31 +280,32 @@ func (ts *TextileService) sendMail(to thread.PubKey, buf []byte) ([]byte, *md.So
 }
 
 // @ Method Sends Mail Entry to Peer
-func (sc *serviceClient) SendMail(e *md.InviteRequest) *md.SonrError {
+func (sc *serviceClient) SendMail(inv *md.InviteRequest) *md.SonrError {
 	// Check Mail Enabled
 	if sc.Textile.options.GetMailbox() {
 		// Fetch Peer Thread Key
-		pubKey := e.ToThreadKey()
-		log.Println(pubKey)
+		pubKey, serr := inv.GetTo().ThreadKey()
+		if serr != nil {
+			return serr
+		}
+		log.Info().Msg("To Public Key: " + pubKey.String())
 
 		// Marshal Data
-		buf, err := proto.Marshal(e)
+		buf, err := proto.Marshal(inv)
 		if err != nil {
-			log.Println(err)
 			return md.NewMarshalError(err)
 		}
 
 		// Send to Mailbox
 		resp, serr := sc.Textile.sendMail(pubKey, buf)
 		if serr != nil {
-			log.Println(err)
 			return serr
 		}
 		sc.handler.OnReply(peer.ID(""), resp)
-		log.Println("SUCCESS: Mail has been sent")
+		log.Info().Msg("SUCCESS: Mail has been sent")
 		return nil
 	} else {
-		log.Println("Mail is not Ready")
+		log.Info().Msg("Mail is not Ready")
 	}
 	return nil
 }

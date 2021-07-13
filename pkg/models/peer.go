@@ -3,7 +3,6 @@ package models
 import (
 	"errors"
 	"fmt"
-	"log"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/textileio/go-threads/core/thread"
@@ -40,7 +39,7 @@ func (u *User) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) *SonrError {
 			Peer:      id.String(),
 			Device:    u.DeviceID(),
 			MultiAddr: maddr.String(),
-			PublicKey: u.KeyPair().PubKeyAsString(),
+			PublicKey: u.KeyPair().PubKeyBase64(),
 		},
 		Profile:  u.Profile(),
 		Platform: u.Device.Platform,
@@ -98,15 +97,19 @@ func (p *Peer) PeerID() string {
 }
 
 // ^ Returns Peer Public Key ^ //
-func (p *Peer) PublicKey() crypto.PubKey {
+func (p *Peer) PublicKey() (crypto.PubKey, *SonrError) {
 	// Get ID from Public Key
-	idBuf := []byte(p.GetId().GetPublicKey())
-	pubKey, err := crypto.UnmarshalPublicKey(idBuf)
+	buf, err := crypto.ConfigDecodeKey(p.GetId().GetPublicKey())
 	if err != nil {
-		log.Println(err)
-		return nil
+		return nil, NewError(err, ErrorMessage_PEER_PUBKEY_DECODE)
 	}
-	return pubKey
+
+	// Unmarshal Public Key
+	pubKey, err := crypto.UnmarshalPublicKey(buf)
+	if err != nil {
+		return nil, NewError(err, ErrorMessage_PEER_PUBKEY_UNMARSHAL)
+	}
+	return pubKey, nil
 }
 
 // ^ Checks if Two Peers are the Same by Device ID and Peer ID
@@ -140,9 +143,14 @@ func (p *Peer) IsNotSamePeerID(pid peer.ID) bool {
 }
 
 // ^ Converts Peer Public Key into Thread Key
-func (p *Peer) ThreadKey() (thread.PubKey, error) {
-	if len(p.GetId().PublicKey) != 0 {
-		return thread.NewLibp2pPubKey(p.PublicKey()), nil
+func (p *Peer) ThreadKey() (thread.PubKey, *SonrError) {
+	// Get Pub Key
+	pubKey, err := p.PublicKey()
+	if err != nil {
+		return nil, err
 	}
-	return nil, NoPubKey
+
+	// Create Thread Pub Key
+	threadKey := thread.NewLibp2pPubKey(pubKey)
+	return threadKey, nil
 }

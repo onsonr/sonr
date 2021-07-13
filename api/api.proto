@@ -21,8 +21,16 @@ message AuthRequest {
 
 // First Message Sent with Device and API Keys
 message InitializeRequest {
-  Device device = 1;   // Users Device
-  APIKeys apiKeys = 2; // Client Keys
+  Device device = 1;       // Users Device
+  APIKeys apiKeys = 2;     // Client Keys
+  BuildMode buildMode = 3; // Current Build Mode
+  bool isTestDevice = 4;   // Tester Device
+
+  enum BuildMode {
+    Debug = 0;
+    Beta = 1;
+    Production = 2;
+  }
 }
 
 // Connection Message to Establish Sonr Host/API/Topic

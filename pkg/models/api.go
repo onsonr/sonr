@@ -2,7 +2,6 @@ package models
 
 import (
 	"fmt"
-	"log"
 
 	"net/http"
 
@@ -10,7 +9,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	util "github.com/sonr-io/core/pkg/util"
-	"github.com/textileio/go-threads/core/thread"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -186,16 +184,6 @@ func (r *InviteResponse) ProtocolID() protocol.ID {
 }
 
 // ** ─── InviteRequest MANAGEMENT ────────────────────────────────────────────────────────
-// Returns Peer Thread Key
-func (r *InviteRequest) ToThreadKey() thread.PubKey {
-	key, err := r.GetTo().ThreadKey()
-	if err != nil {
-		log.Println(err)
-		return thread.NewLibp2pPubKey(r.GetTo().PublicKey())
-	}
-	return key
-}
-
 // Returns Invite Contact
 func (i *InviteRequest) GetContact() *Contact {
 	return i.GetTransfer().GetContact()

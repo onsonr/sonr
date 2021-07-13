@@ -16,6 +16,7 @@ require (
 	github.com/libp2p/go-libp2p-pubsub v0.4.1
 	github.com/libp2p/go-msgio v0.0.6
 	github.com/multiformats/go-multiaddr v0.3.1
+	github.com/phuslu/log v1.0.74
 	github.com/pkg/errors v0.9.1
 	github.com/textileio/go-threads v1.1.0-rc1.0.20210317163541-37a104610bac
 	github.com/textileio/textile/v2 v2.6.9
@@ -23,5 +24,4 @@ require (
 	golang.org/x/tools v0.1.2 // indirect
 	google.golang.org/grpc v1.35.0
 	google.golang.org/protobuf v1.26.0
-	gopkg.in/gookit/color.v1 v1.1.6
 )

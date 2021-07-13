@@ -2,7 +2,6 @@ package host
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"github.com/libp2p/go-libp2p"
@@ -122,7 +121,7 @@ func NewHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair
 	if req.GetType() == md.ConnectionRequest_Wifi {
 		err := hn.MDNS()
 		if err != nil {
-			log.Println("MDNS ERROR: " + err.Error())
+			md.NewError(err, md.ErrorMessage_HOST_MDNS)
 			handleConnectionResult(hh, true, false, false)
 		} else {
 			handleConnectionResult(hh, true, false, true)
@@ -183,7 +182,7 @@ func newRelayedHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.
 	if req.GetType() == md.ConnectionRequest_Wifi {
 		err := hn.MDNS()
 		if err != nil {
-			log.Println("MDNS ERROR: " + err.Error())
+			md.NewError(err, md.ErrorMessage_HOST_MDNS)
 			handleConnectionResult(hh, true, false, false)
 		} else {
 			handleConnectionResult(hh, true, false, true)

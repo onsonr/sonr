@@ -2,13 +2,13 @@ package bind
 
 import (
 	"context"
-	"log"
+
+	"github.com/phuslu/log"
 
 	net "github.com/sonr-io/core/internal/host"
 	sc "github.com/sonr-io/core/pkg/client"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
-	"gopkg.in/gookit/color.v1"
 )
 
 type Node struct {
@@ -28,45 +28,25 @@ type Node struct {
 	topics map[string]*net.TopicManager
 }
 
-func main() {
-	// simple usage
-	color.Cyan.Printf("Simple to use %s\n", "color")
-	// use like func
-	red := color.FgRed.Render
-	green := color.FgGreen.Render
-	log.Printf("%s line %s library\n", red("Command"), green("color"))
-	// custom color
-	color.New(color.FgWhite, color.BgBlack).Println("custom color style")
-	// can also:
-	color.Style{color.FgCyan, color.OpBold}.Println("custom color style")
-	// internal theme/style:
-	color.Info.Tips("message")
-	color.Info.Prompt("message")
-	color.Info.Println("message")
-	color.Warn.Println("message")
-	color.Error.Println("message")
-	// use style tag
-	color.Print("<suc>he</><comment>llo</>, <cyan>wel</><red>come</>\n")
-	// apply a style tag
-	color.Tag("info").Println("info style text")
-	// prompt message
-	color.Info.Prompt("prompt style message")
-	color.Warn.Prompt("prompt style message")
-	// tips message
-	color.Info.Tips("tips style message")
-	color.Warn.Tips("tips style message")
-}
-
 // ^ Initializes New Node ^ //
 func NewNode(reqBytes []byte, call Callback) *Node {
-
 	// Unmarshal Request
 	req := &md.InitializeRequest{}
 	err := proto.Unmarshal(reqBytes, req)
 	if err != nil {
-		log.Println(err)
+		// Initialize Regardless of Mode
+		md.InitLogger()
+
+		// Log Fatal Error
+		log.Fatal().Msg(err.Error())
 		return nil
 	}
+
+	// Check Build Mode and Initialize Logger
+	if req.GetBuildMode() == md.InitializeRequest_Debug {
+		md.InitLogger()
+	}
+
 	// Initialize Node
 	mn := &Node{
 		call:   call,
@@ -93,7 +73,11 @@ func (n *Node) Connect(data []byte) {
 	req := &md.ConnectionRequest{}
 	err := proto.Unmarshal(data, req)
 	if err != nil {
-		log.Println(err)
+		// Initialize Regardless of Mode
+		md.InitLogger()
+
+		// Log Fatal Error
+		log.Fatal().Msg(err.Error())
 	}
 
 	// Update User with Connection Request
@@ -126,8 +110,6 @@ func (n *Node) Sign(data []byte) []byte {
 	request := &md.AuthRequest{}
 	err := proto.Unmarshal(data, request)
 	if err != nil {
-		log.Println("Failed to Unmarshal Sign Request")
-
 		// Handle Error
 		n.handleError(md.NewUnmarshalError(err))
 

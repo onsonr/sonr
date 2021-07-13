@@ -19,6 +19,7 @@ message ErrorMessage {
     IP_RESOLVE = 2;
     IP_LOCATE = 3;
     BOOTSTRAP = 4;
+    DEVICE_ID = 60;
 
     // Topic
     TOPIC_JOIN = 5;
@@ -52,16 +53,19 @@ message ErrorMessage {
     HOST_STREAM = 27;
     HOST_START = 28;
     HOST_PUBSUB = 29;
+    HOST_INFO = 37;
+    HOST_MDNS = 57;
     CRYPTO_GEN = 30;
 
     // Peer
     PEER_NOT_FOUND_INVITE = 31;
     PEER_NOT_FOUND_REPLY = 32;
     PEER_NOT_FOUND_TRANSFER = 33;
+    PEER_PUBKEY_DECODE = 58;
+    PEER_PUBKEY_UNMARSHAL = 59;
     URL_HTTP_GET = 34;
     URL_INFO_RESP = 35;
     FAILED_CONNECTION = 36;
-    HOST_INFO = 37;
 
     // Key Pair
     KEY_SET = 38;

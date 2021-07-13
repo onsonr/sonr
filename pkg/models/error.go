@@ -1,8 +1,12 @@
 package models
 
 import (
-	"log"
+	"fmt"
+	"io"
+	"os"
+	"strings"
 
+	"github.com/phuslu/log"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -21,6 +25,28 @@ type SonrErrorOpt struct {
 	Type  ErrorMessage_Type
 }
 
+var loggerEnabled = false
+
+// ^ Initializes Pretty Logger
+func InitLogger() {
+	if log.IsTerminal(os.Stderr.Fd()) && !loggerEnabled {
+		log.DefaultLogger = log.Logger{
+			TimeFormat: "15:04:05",
+			Caller:     1,
+			Writer: &log.ConsoleWriter{
+				ColorOutput:    true,
+				QuoteString:    true,
+				EndWithMessage: true,
+				Formatter: func(w io.Writer, a *log.FormatterArgs) (int, error) {
+					return fmt.Fprintf(w, "(sonr_core) %c%s %s] %s\n%s", strings.ToUpper(a.Level)[0],
+						a.Time, a.Caller, a.Message, a.Stack)
+				},
+			},
+		}
+		loggerEnabled = true
+	}
+}
+
 // ^ Checks for Error With Type ^ //
 func NewError(err error, errType ErrorMessage_Type) *SonrError {
 	if err != nil {
@@ -33,8 +59,8 @@ func NewError(err error, errType ErrorMessage_Type) *SonrError {
 			capture = true
 		}
 
-		// Return Error
-		return &SonrError{
+		// Create Error
+		serr := &SonrError{
 			data: &ErrorMessage{
 				Message:  message,
 				Error:    err.Error(),
@@ -44,6 +70,10 @@ func NewError(err error, errType ErrorMessage_Type) *SonrError {
 			Capture:  capture,
 			HasError: true,
 		}
+
+		// Handle Logging
+		serr.Log()
+		return serr
 	}
 	// Return Error
 	return &SonrError{
@@ -75,13 +105,17 @@ func NewErrorGroup(errors ...SonrErrorOpt) *SonrError {
 			})
 		}
 
-		// Return Joined Error
-		return &SonrError{
+		// Create Joined Error
+		serr := &SonrError{
 			IsJoined: true,
 			HasError: true,
 			Capture:  capture,
 			Joined:   joined,
 		}
+
+		// Handle Logging
+		serr.Log()
+		return serr
 	} else {
 		// Return Error
 		return &SonrError{
@@ -101,8 +135,8 @@ func NewPeerFoundError(err error, peer string) *SonrError {
 		capture = true
 	}
 
-	// Return Error
-	return &SonrError{
+	// Create Error
+	serr := &SonrError{
 		data: &ErrorMessage{
 			Message:  message,
 			Error:    err.Error(),
@@ -113,6 +147,10 @@ func NewPeerFoundError(err error, peer string) *SonrError {
 		Capture:  capture,
 		HasError: true,
 	}
+
+	// Handle Logging
+	serr.Log()
+	return serr
 }
 
 // ^ Returns Proto Marshal Error
@@ -126,8 +164,8 @@ func NewMarshalError(err error) *SonrError {
 		capture = true
 	}
 
-	// Return Error
-	return &SonrError{
+	// Create Error
+	serr := &SonrError{
 		data: &ErrorMessage{
 			Message:  message,
 			Error:    err.Error(),
@@ -137,6 +175,10 @@ func NewMarshalError(err error) *SonrError {
 		Capture:  capture,
 		HasError: true,
 	}
+
+	// Handle Logging
+	serr.Log()
+	return serr
 }
 
 // ^ Returns Proto Unmarshal Error
@@ -151,8 +193,8 @@ func NewUnmarshalError(err error) *SonrError {
 		capture = true
 	}
 
-	// Return Error
-	return &SonrError{
+	// Create Error
+	serr := &SonrError{
 		data: &ErrorMessage{
 			Message:  message,
 			Error:    err.Error(),
@@ -162,6 +204,10 @@ func NewUnmarshalError(err error) *SonrError {
 		Capture:  capture,
 		HasError: true,
 	}
+
+	// Handle Logging
+	serr.Log()
+	return serr
 }
 
 // ^ Returns New Error based on Type Only
@@ -176,7 +222,7 @@ func NewErrorWithType(errType ErrorMessage_Type) *SonrError {
 	}
 
 	// Return Error
-	return &SonrError{
+	serr := &SonrError{
 		data: &ErrorMessage{
 			Message:  message,
 			Type:     errType,
@@ -185,6 +231,10 @@ func NewErrorWithType(errType ErrorMessage_Type) *SonrError {
 		Capture:  capture,
 		HasError: true,
 	}
+
+	// Handle Logging
+	serr.Log()
+	return serr
 }
 
 // @ Return Message as Bytes ^ //
@@ -197,8 +247,19 @@ func (errWrap *SonrError) Bytes() []byte {
 }
 
 // @ Method Prints Error
-func (errWrap *SonrError) Print() {
-	log.Printf("ERROR: %s", errWrap.String())
+func (err *SonrError) Log() {
+	if loggerEnabled {
+		switch err.Message().Severity {
+		case ErrorMessage_LOG:
+			log.Info().Msgf("%s -> %s", err.Message().GetType().String(), err.Message().Error)
+		case ErrorMessage_WARNING:
+			log.Warn().Msgf("%s -> %s", err.Message().GetType().String(), err.Message().Error)
+		case ErrorMessage_CRITICAL:
+			log.Error().Msgf("%s -> %s", err.Message().GetType().String(), err.Message().Error)
+		case ErrorMessage_FATAL:
+			log.Panic().Msgf("%s -> %s", err.Message().GetType().String(), err.Message().Error)
+		}
+	}
 }
 
 // @ Return Protobuf Message for Error
@@ -328,6 +389,14 @@ func generateError(errType ErrorMessage_Type) (string, ErrorMessage_Severity) {
 		return "Failed to Send Mailbox Message", ErrorMessage_CRITICAL
 	case ErrorMessage_MAILBOX_MESSAGE_PEER_PUBKEY:
 		return "Failed to Find Peers Public Key", ErrorMessage_CRITICAL
+	case ErrorMessage_HOST_MDNS:
+		return "Failed to Start Host MDNS Discovery", ErrorMessage_WARNING
+	case ErrorMessage_PEER_PUBKEY_DECODE:
+		return "Failed to Decode Peer Public Key from String", ErrorMessage_WARNING
+	case ErrorMessage_PEER_PUBKEY_UNMARSHAL:
+		return "Failed to Unmarshal Public Key from Peers String representation", ErrorMessage_WARNING
+	case ErrorMessage_DEVICE_ID:
+		return "Failed to retreive Device's machine ID.", ErrorMessage_CRITICAL
 	default:
 		return "Unknown", ErrorMessage_LOG
 	}

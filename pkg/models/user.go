@@ -6,7 +6,6 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"log"
 	"math"
 	"os"
 	"path/filepath"
@@ -41,17 +40,11 @@ func (d *Device) SetKeyPair() *SonrError {
 			return NewError(err, ErrorMessage_KEY_SET)
 		}
 
-		// Get ID from Pub Key
-		id, err := peer.IDFromPublicKey(pubKey)
-		if err != nil {
-			return NewError(err, ErrorMessage_KEY_ID)
-		}
-
 		// Set Key Pair
 		d.KeyPair = &KeyPair{
 			Type: KeyType_Ed25519,
 			Public: &KeyPair_Public{
-				Id:     id.String(),
+				Base64: crypto.ConfigEncodeKey(pubBuf),
 				Buffer: pubBuf,
 			},
 			Private: &KeyPair_Private{
@@ -84,17 +77,11 @@ func (d *Device) SetKeyPair() *SonrError {
 			return NewError(err, ErrorMessage_USER_SAVE)
 		}
 
-		// Get ID from Pub Key
-		id, err := peer.IDFromPublicKey(pubKey)
-		if err != nil {
-			return NewError(err, ErrorMessage_KEY_ID)
-		}
-
 		// Set Keys
 		d.KeyPair = &KeyPair{
 			Type: KeyType_Ed25519,
 			Public: &KeyPair_Public{
-				Id:     id.String(),
+				Base64: crypto.ConfigEncodeKey(pubBuf),
 				Buffer: pubBuf,
 			},
 			Private: &KeyPair_Private{
@@ -140,20 +127,9 @@ func (kp *KeyPair) PubKey() crypto.PubKey {
 	return privKey.GetPublic()
 }
 
-// Method Returns Public Key
-func (kp *KeyPair) PubKeyAsString() string {
-	// Get Key from Buffer
-	privKey, err := crypto.UnmarshalPrivateKey(kp.GetPrivate().GetBuffer())
-	if err != nil {
-		return ""
-	}
-
-	// Get Buffer From Key
-	buf, err := crypto.MarshalPublicKey(privKey.GetPublic())
-	if err != nil {
-		return ""
-	}
-	return string(buf)
+// Method Returns Public Key as Base64 String
+func (kp *KeyPair) PubKeyBase64() string {
+	return kp.GetPublic().GetBase64()
 }
 
 // Method Signs given data and returns response
@@ -184,7 +160,7 @@ func (d *Device) Initialize() {
 	if d.GetId() == "" {
 		id, err := machineid.ID()
 		if err != nil {
-			log.Println(err)
+			NewError(err, ErrorMessage_DEVICE_ID)
 			return
 		}
 
@@ -404,15 +380,13 @@ func (u *User) Sign(req *AuthRequest) *AuthResponse {
 	prefix := util.Substring(prefixResult, 0, 16)
 	// Get FingerPrint from Mnemonic and Place
 	fingerprint := u.KeyPair().Sign(req.GetMnemonic())
-
-	// Get ID from Public Key
-	pubkey := u.KeyPair().PubKeyAsString()
+	pubKey := u.KeyPair().PubKeyBase64()
 
 	// Return Response
 	return &AuthResponse{
 		SignedPrefix:      prefix,
 		SignedFingerprint: fingerprint,
-		PublicKey:         pubkey,
+		PublicKey:         pubKey,
 		GivenSName:        req.GetSName(),
 		GivenMnemonic:     req.GetMnemonic(),
 	}
@@ -488,7 +462,7 @@ func (u *User) UpdateProperties(props *Peer_Properties) {
 func (u *User) VerifyRead() *VerifyResponse {
 	kp := u.KeyPair()
 	return &VerifyResponse{
-		PublicKey: kp.PubKeyAsString(),
+		PublicKey: kp.PubKeyBase64(),
 	}
 }
 
