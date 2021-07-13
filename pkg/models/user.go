@@ -4,7 +4,6 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
-	"encoding/pem"
 	"errors"
 	"fmt"
 	"log"
@@ -154,15 +153,7 @@ func (kp *KeyPair) PubKeyAsString() string {
 	if err != nil {
 		return ""
 	}
-
-	// Encode to Memory
-	pubkey_pem := pem.EncodeToMemory(
-		&pem.Block{
-			Type:  "Ed25519 PUBLIC KEY",
-			Bytes: buf,
-		},
-	)
-	return string(pubkey_pem)
+	return string(buf)
 }
 
 // Method Signs given data and returns response

@@ -1,7 +1,6 @@
 package models
 
 import (
-	"encoding/pem"
 	"errors"
 	"fmt"
 	"log"
@@ -102,17 +101,9 @@ func (p *Peer) PeerID() string {
 func (p *Peer) PublicKey() crypto.PubKey {
 	// Get ID from Public Key
 	idBuf := []byte(p.GetId().GetPublicKey())
-	pubkeyPem, rest := pem.Decode(idBuf)
-
-	// Check Rest
-	if rest != nil {
-		log.Println("Pem Buf has had Rest")
-		return nil
-	}
-
-	// Get Key From Buffer
-	pubKey, err := crypto.UnmarshalPublicKey(pubkeyPem.Bytes)
+	pubKey, err := crypto.UnmarshalPublicKey(idBuf)
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	return pubKey
