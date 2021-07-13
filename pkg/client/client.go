@@ -133,6 +133,9 @@ func (c *client) Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrE
 
 				// Initialize Session if transfer
 				if invite.IsPayloadTransfer() {
+					// Update Status
+					c.call.SetStatus(md.Status_PENDING)
+
 					// Start New Session
 					invite.SetProtocol(md.SonrProtocol_LocalTransfer, id)
 					c.session = md.NewOutSession(c.user, invite, c)

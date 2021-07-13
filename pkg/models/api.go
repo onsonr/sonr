@@ -175,7 +175,7 @@ func (u *URLLink) SetData() {
 // ** ─── InviteResponse MANAGEMENT ────────────────────────────────────────────────────────
 // Checks if Peer Accepted Transfer
 func (r *InviteResponse) HasAcceptedTransfer() bool {
-	return r.GetDecision() && r.GetType() == InviteResponse_Default
+	return r.GetDecision() && r.GetType() == InviteResponse_Transfer
 }
 
 // Returns Protocol ID Set by Peer
@@ -241,10 +241,15 @@ func (i *InviteRequest) SetProtocol(p SonrProtocol, id peer.ID) protocol.ID {
 }
 
 // Validates InviteRequest has From Parameter
-func (u *User) ValidateInvite(i *InviteRequest) *InviteRequest {
+func (u *User) SignInvite(i *InviteRequest) *InviteRequest {
 	// Set From
 	if i.From == nil {
 		i.From = u.GetPeer()
+	}
+
+	// Set Type
+	if i.Type == InviteRequest_None {
+		i.Type = InviteRequest_Local
 	}
 	return i
 }

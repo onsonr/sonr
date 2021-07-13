@@ -82,9 +82,10 @@ message InviteRequest {
   string protocol = 6;   // Name of Protocol
 
   enum Type {
-    Local = 0;
-    Flat = 1;
-    Remote = 2;
+    None = 0;
+    Local = 1;
+    Flat = 2;
+    Remote = 3;
   }
 }
 
@@ -196,10 +197,10 @@ message InviteResponse {
   }
 
   enum Type {
-    Default = 0;
-    Contact = 1;
-    Mailbox = 2;
-    Cancel = 3;
+    None = 0;
+    Transfer = 1;
+    Contact = 2;
+    Mailbox = 3;
   }
 }
 

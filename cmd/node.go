@@ -224,9 +224,6 @@ func (n *Node) Update(data []byte) {
 // @ Invite Processes Data and Sends Invite to Peer
 func (n *Node) Invite(data []byte) {
 	if n.isReady() {
-		// Update Status
-		n.setStatus(md.Status_PENDING)
-
 		// Unmarshal Data to Request
 		req := &md.InviteRequest{}
 		if err := proto.Unmarshal(data, req); err != nil {
@@ -234,7 +231,7 @@ func (n *Node) Invite(data []byte) {
 			return
 		}
 		// Validate invite
-		req = n.user.ValidateInvite(req)
+		req = n.user.SignInvite(req)
 
 		// Send Invite
 		err := n.client.Invite(req, n.local)

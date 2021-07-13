@@ -288,7 +288,10 @@ func (sc *serviceClient) SendMail(e *md.InviteRequest) *md.SonrError {
 			return serr
 		}
 		sc.handler.OnReply(peer.ID(""), resp)
+		log.Println("SUCCESS: Mail has been sent")
 		return nil
+	} else {
+		log.Println("Mail is not Ready")
 	}
 	return nil
 }
