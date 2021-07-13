@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"log"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/textileio/go-threads/core/thread"
@@ -103,12 +104,14 @@ func (p *Peer) PublicKey() crypto.PubKey {
 	id := p.GetId().GetPublicKey()
 	buf, err := base64.StdEncoding.DecodeString(id)
 	if err != nil {
+		log.Println("Peer Public Key Base64 Decode:" + err.Error())
 		return nil
 	}
 
 	// Get Key from Buffer
-	pubKey, err := crypto.UnmarshalPublicKey(buf)
+	pubKey, err := crypto.UnmarshalEd25519PublicKey(buf)
 	if err != nil {
+		log.Println("Peer Public Key Unmarshal:" + err.Error())
 		return nil
 	}
 	return pubKey
