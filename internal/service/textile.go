@@ -33,10 +33,28 @@ type TextileService struct {
 	onConnected md.OnConnected
 
 	// Properties
-	identity thread.Identity
-	client   *client.Client
-	mail     *local.Mail
-	mailbox  *local.Mailbox
+	identity       thread.Identity
+	client         *client.Client
+	mail           *local.Mail
+	mailbox        *local.Mailbox
+	isMailReady    bool
+	isThreadsReady bool
+	isBucketsReady bool
+}
+
+// @ Set Service Status for Buckets
+func (sc *TextileService) SetBucketsStatus(val bool) {
+	sc.isBucketsReady = val
+}
+
+// @ Set Service Status for Mailbox
+func (sc *TextileService) SetMailboxStatus(val bool) {
+	sc.isMailReady = val
+}
+
+// @ Set Service Status for Threads
+func (sc *TextileService) SetThreadsStatus(val bool) {
+	sc.isThreadsReady = val
 }
 
 // @ Initializes New Textile Instance
@@ -123,7 +141,7 @@ func (tn *TextileService) InitThreads(sc *serviceClient) *md.SonrError {
 			log.Println(fmt.Sprintf("Key: %s", k.String()))
 			log.Println(fmt.Sprintf("ID: %s \n Maddr: %s \n Key: %s \n Name: %s \n", threadID.String(), v.Addrs, v.Key.String(), v.Name))
 		}
-		sc.SetThreadsStatus(true)
+		tn.SetThreadsStatus(true)
 	}
 	return nil
 }
@@ -156,7 +174,7 @@ func (tn *TextileService) InitMail(d *md.Device, us md.ConnectionRequest_UserSta
 			// Set Mailbox and Update Status
 			tn.mailbox = mailbox
 			log.Println("> Success!: Textile Mailbox Enabled, New Mailbox")
-			sc.SetMailboxStatus(true)
+			tn.SetMailboxStatus(true)
 		} else {
 			// Return Existing Mailbox
 			mailbox, err := tn.mail.GetLocalMailbox(context.Background(), d.WorkingSupportDir())
@@ -167,7 +185,7 @@ func (tn *TextileService) InitMail(d *md.Device, us md.ConnectionRequest_UserSta
 			// Set Mailbox and Update Status
 			tn.mailbox = mailbox
 			log.Println("> Success!: Textile Mailbox Enabled, Existing Mailbox")
-			sc.SetMailboxStatus(true)
+			tn.SetMailboxStatus(true)
 		}
 
 		// Read Existing Mail
@@ -216,7 +234,7 @@ func (tn *TextileService) readMail() (*md.MailEvent, *md.SonrError) {
 // @ Method Reads Inbox and Returns List of Mail Entries
 func (sc *serviceClient) ReadMail() *md.SonrError {
 	// Check Mail Enabled
-	if sc.isMailReady {
+	if sc.Textile.options.GetMailbox() {
 		// Fetch Mail Event
 		event, serr := sc.Textile.readMail()
 		if serr != nil {
@@ -266,7 +284,7 @@ func (ts *TextileService) sendMail(to thread.PubKey, buf []byte) ([]byte, *md.So
 // @ Method Sends Mail Entry to Peer
 func (sc *serviceClient) SendMail(e *md.InviteRequest) *md.SonrError {
 	// Check Mail Enabled
-	if sc.isMailReady {
+	if sc.Textile.options.GetMailbox() {
 		// Fetch Peer Thread Key
 		pubKey, err := e.GetTo().ThreadKey()
 		if err != nil {

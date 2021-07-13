@@ -50,9 +50,6 @@ type serviceClient struct {
 	// Status's
 	isAuthReady    bool
 	isDeviceReady  bool
-	isMailReady    bool
-	isThreadsReady bool
-	isBucketsReady bool
 	isHttpReady    bool
 }
 
@@ -66,9 +63,6 @@ func NewService(ctx context.Context, h net.HostNode, u *md.User, req *md.Connect
 		request:        req,
 		isAuthReady:    false,
 		isDeviceReady:  false,
-		isMailReady:    false,
-		isThreadsReady: false,
-		isBucketsReady: false,
 		isHttpReady:    false,
 		user:           u,
 	}
@@ -126,22 +120,9 @@ func (sc *serviceClient) SetDeviceStatus(val bool) {
 	sc.isDeviceReady = val
 }
 
-// @ Set Service Status for Buckets
-func (sc *serviceClient) SetBucketsStatus(val bool) {
-	sc.isBucketsReady = val
-}
 
 // @ Set Service Status for HTTP
 func (sc *serviceClient) SetHTTPStatus(val bool) {
 	sc.isHttpReady = val
 }
 
-// @ Set Service Status for Mailbox
-func (sc *serviceClient) SetMailboxStatus(val bool) {
-	sc.isMailReady = val
-}
-
-// @ Set Service Status for Threads
-func (sc *serviceClient) SetThreadsStatus(val bool) {
-	sc.isThreadsReady = val
-}
