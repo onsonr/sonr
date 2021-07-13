@@ -233,11 +233,13 @@ func (h *hostNode) HandleStream(pid protocol.ID, handler network.StreamHandler) 
 }
 
 func (h *hostNode) CloseStream(pid protocol.ID, stream network.Stream) {
+	md.LogInfo("Removing Stream Handler")
 	h.host.RemoveStreamHandler(pid)
 	stream.Close()
 }
 
 // Start Stream for Host
 func (h *hostNode) StartStream(p peer.ID, pid protocol.ID) (network.Stream, error) {
+	md.LogActivate("New Stream")
 	return h.host.NewStream(h.ctxHost, p, pid)
 }

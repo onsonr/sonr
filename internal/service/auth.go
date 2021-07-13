@@ -29,7 +29,11 @@ type AuthService struct {
 	invite  *md.InviteRequest
 }
 
+// @ Starts New Auth Instance
 func (sc *serviceClient) StartAuth() *md.SonrError {
+	// Logging
+	md.LogActivate("Auth Service")
+
 	// Start Exchange Server
 	localServer := rpc.NewServer(sc.host.Host(), util.AUTH_PROTOCOL)
 	psv := AuthService{
@@ -44,7 +48,6 @@ func (sc *serviceClient) StartAuth() *md.SonrError {
 		return md.NewError(err, md.ErrorMessage_TOPIC_RPC)
 	}
 	sc.Auth = &psv
-	sc.SetAuthStatus(true)
 	return nil
 }
 

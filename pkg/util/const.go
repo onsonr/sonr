@@ -38,6 +38,9 @@ const TEXTILE_API_URL = "api.hub.textile.io:443"
 // Textile Miner Index Target
 const TEXTILE_MINER_IDX = "api.minerindex.hub.textile.io:443"
 
+// Textile Mailbox Directory
+const TEXTILE_MAILBOX_DIR = ".textile"
+
 // ** ─── Services ────────────────────────────────────────────────────────
 // Local RPC Service Name
 const EXCHANGE_RPC_SERVICE = "ExchangeService"

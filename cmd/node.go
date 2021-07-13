@@ -3,8 +3,6 @@ package bind
 import (
 	"context"
 
-	"github.com/phuslu/log"
-
 	net "github.com/sonr-io/core/internal/host"
 	sc "github.com/sonr-io/core/pkg/client"
 	md "github.com/sonr-io/core/pkg/models"
@@ -34,11 +32,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 	req := &md.InitializeRequest{}
 	err := proto.Unmarshal(reqBytes, req)
 	if err != nil {
-		// Initialize Regardless of Mode
-		md.InitLogger()
-
-		// Log Fatal Error
-		log.Fatal().Msg(err.Error())
+		md.LogFatal(err)
 		return nil
 	}
 
@@ -73,11 +67,7 @@ func (n *Node) Connect(data []byte) {
 	req := &md.ConnectionRequest{}
 	err := proto.Unmarshal(data, req)
 	if err != nil {
-		// Initialize Regardless of Mode
-		md.InitLogger()
-
-		// Log Fatal Error
-		log.Fatal().Msg(err.Error())
+		md.LogFatal(err)
 	}
 
 	// Update User with Connection Request

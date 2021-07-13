@@ -38,12 +38,41 @@ func InitLogger() {
 				QuoteString:    true,
 				EndWithMessage: true,
 				Formatter: func(w io.Writer, a *log.FormatterArgs) (int, error) {
-					return fmt.Fprintf(w, "(sonr_core) %c%s %s] %s\n%s", strings.ToUpper(a.Level)[0],
+					return fmt.Fprintf(w, "(sonr_core - %s) [%s %s] %s\n Stack: \n%s", strings.ToUpper(a.Level),
 						a.Time, a.Caller, a.Message, a.Stack)
 				},
 			},
 		}
 		loggerEnabled = true
+	}
+}
+
+// ^ Method Logs a Info Message
+func LogFatal(err error) {
+	if !loggerEnabled {
+		InitLogger()
+	}
+	log.Fatal().Msgf("💀 %s", err.Error())
+}
+
+// ^ Method Logs a Info Message
+func LogInfo(msg string) {
+	if loggerEnabled {
+		log.Info().Msgf("💡  %s", msg)
+	}
+}
+
+// ^ Method Logs a Activate Message
+func LogActivate(msg string) {
+	if loggerEnabled {
+		log.Info().Msgf("⛷  Activating %s...", msg)
+	}
+}
+
+// ^ Method Logs a Success Message
+func LogSuccess(msg string) {
+	if loggerEnabled {
+		log.Info().Msgf("✅  %s Succesful", msg)
 	}
 }
 
@@ -249,16 +278,33 @@ func (errWrap *SonrError) Bytes() []byte {
 // @ Method Prints Error
 func (err *SonrError) Log() {
 	if loggerEnabled {
-		switch err.Message().Severity {
+		// Fetch Data
+		errSeverity := err.Message().GetSeverity()
+		errType := err.Message().GetType().String()
+		errMsg := err.Message().GetError()
+
+		// Start Line Break
+		log.Info().Msg("\n")
+
+		// Check Severity
+		switch errSeverity {
 		case ErrorMessage_LOG:
-			log.Info().Msgf("%s -> %s", err.Message().GetType().String(), err.Message().Error)
+			log.Info().Msgf("😬 (%s, %s) \n Message: %s", errType, errSeverity.String(), errMsg)
 		case ErrorMessage_WARNING:
-			log.Warn().Msgf("%s -> %s", err.Message().GetType().String(), err.Message().Error)
+			log.Warn().Msgf("⚠️ (%s, %s) \n Message: %s", errType, errSeverity.String(), errMsg)
+			log.Info().Msg("\n")
 		case ErrorMessage_CRITICAL:
-			log.Error().Msgf("%s -> %s", err.Message().GetType().String(), err.Message().Error)
+			log.Info().Msg("\n")
+			log.Error().Msgf("🚨 (%s, %s) \n Message: %s", errType, errSeverity.String(), errMsg)
+			log.Info().Msg("\n")
 		case ErrorMessage_FATAL:
-			log.Panic().Msgf("%s -> %s", err.Message().GetType().String(), err.Message().Error)
+			log.Info().Msg("\n")
+			log.Fatal().Msgf("💀 (%s, %s) \n Message: %s", errType, errSeverity.String(), errMsg)
+			log.Info().Msg("\n")
 		}
+
+		// End Line Break
+		log.Info().Msg("\n")
 	}
 }
 

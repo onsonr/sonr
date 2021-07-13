@@ -2,15 +2,12 @@ package service
 
 import (
 	"context"
-	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	net "github.com/sonr-io/core/internal/host"
+	"google.golang.org/protobuf/proto"
 
-	crypto "github.com/libp2p/go-libp2p-crypto"
 	md "github.com/sonr-io/core/pkg/models"
-	"github.com/textileio/go-threads/core/thread"
-	"github.com/textileio/textile/v2/api/common"
 )
 
 type ServiceHandler interface {
@@ -44,25 +41,18 @@ type serviceClient struct {
 	Auth    *AuthService
 	Device  *DeviceService
 	Textile *TextileService
-
-	// Status's
-	isAuthReady   bool
-	isDeviceReady bool
-	isHttpReady   bool
 }
 
+// @ Creates New Service Interface
 func NewService(ctx context.Context, h net.HostNode, u *md.User, req *md.ConnectionRequest, call md.Callback, sh ServiceHandler) (ServiceClient, *md.SonrError) {
 	// Create Client
 	client := &serviceClient{
-		ctx:           ctx,
-		apiKeys:       req.GetApiKeys(),
-		handler:       sh,
-		host:          h,
-		request:       req,
-		isAuthReady:   false,
-		isDeviceReady: false,
-		isHttpReady:   false,
-		user:          u,
+		ctx:     ctx,
+		apiKeys: req.GetApiKeys(),
+		handler: sh,
+		host:    h,
+		request: req,
+		user:    u,
 	}
 
 	// Begin Auth Service
@@ -82,42 +72,57 @@ func NewService(ctx context.Context, h net.HostNode, u *md.User, req *md.Connect
 	return client, nil
 }
 
-// # Helper: Gets Thread Identity from Private Key
-func getIdentity(privateKey crypto.PrivKey) thread.Identity {
-	myIdentity := thread.NewLibp2pIdentity(privateKey)
-	return myIdentity
-}
+// @ Method Reads Inbox and Returns List of Mail Entries
+func (sc *serviceClient) ReadMail() *md.SonrError {
+	// Check Mail Enabled
+	if sc.Textile.options.GetMailbox() {
+		// Fetch Mail Event
+		event, serr := sc.Textile.readMail()
+		if serr != nil {
+			return serr
+		}
+		// Create Mail and Marshal Data
+		buf, err := proto.Marshal(event)
+		if err != nil {
+			return md.NewMarshalError(err)
+		}
 
-// # Helper: Creates User Auth Context from API Keys
-func newUserAuthCtx(ctx context.Context, keys *md.APIKeys) (context.Context, error) {
-	// Add our user group key to the context
-	ctx = common.NewAPIKeyContext(ctx, keys.TextileKey)
-
-	// Add a signature using our user group secret
-	return common.CreateAPISigContext(ctx, time.Now().Add(time.Hour), keys.TextileSecret)
-}
-
-// # Helper: Creates Auth Token Context from AuthContext, Client, Identity
-func (tn *TextileService) newTokenCtx() (context.Context, error) {
-	// Generate a new token for the user
-	token, err := tn.client.GetToken(tn.ctxAuth, tn.identity)
-	if err != nil {
-		return nil, err
+		// Callback Event
+		sc.handler.OnMail(buf)
+		md.LogSuccess("Reading Mail")
+		return nil
 	}
-	return thread.NewTokenContext(tn.ctxAuth, token), nil
+	md.LogInfo("Mail is not Ready")
+	return nil
 }
 
-// @ Set Service Status for Auth
-func (sc *serviceClient) SetAuthStatus(val bool) {
-	sc.isAuthReady = val
-}
+// @ Method Sends Mail Entry to Peer
+func (sc *serviceClient) SendMail(inv *md.InviteRequest) *md.SonrError {
+	// Check Mail Enabled
+	if sc.Textile.options.GetMailbox() {
+		// Fetch Peer Thread Key
+		pubKey, serr := inv.GetTo().ThreadKey()
+		if serr != nil {
+			return serr
+		}
+		md.LogInfo("To Public Key: " + pubKey.String())
 
-// @ Set Service Status for Device
-func (sc *serviceClient) SetDeviceStatus(val bool) {
-	sc.isDeviceReady = val
-}
+		// Marshal Data
+		buf, err := proto.Marshal(inv)
+		if err != nil {
+			return md.NewMarshalError(err)
+		}
 
-// @ Set Service Status for HTTP
-func (sc *serviceClient) SetHTTPStatus(val bool) {
-	sc.isHttpReady = val
+		// Send to Mailbox
+		resp, serr := sc.Textile.sendMail(pubKey, buf)
+		if serr != nil {
+			return serr
+		}
+		sc.handler.OnReply(peer.ID(""), resp)
+		md.LogSuccess("Sending Mail")
+		return nil
+	} else {
+		md.LogInfo("Mail is not Ready")
+	}
+	return nil
 }

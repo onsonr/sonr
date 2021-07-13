@@ -227,6 +227,16 @@ func (d *FileSystem_Directory) IsFile(name string) bool {
 	}
 }
 
+// Checks if File Exists
+func (d *FileSystem) IsDirectory(rootDir *FileSystem_Directory, subDir string) bool {
+	// Check Path
+	if _, err := os.Stat(filepath.Join(rootDir.GetPath(), subDir)); os.IsNotExist(err) {
+		return false
+	} else {
+		return true
+	}
+}
+
 // Loads Private Key Buf from Device FS Directory
 func (d *Device) ReadKey() ([]byte, *SonrError) {
 	dat, err := os.ReadFile(d.WorkingKeyPath())

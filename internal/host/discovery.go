@@ -63,6 +63,9 @@ func (h *hostNode) Bootstrap() *md.SonrError {
 
 // @ Method Begins MDNS Discovery
 func (h *hostNode) MDNS() error {
+	// Logging
+	md.LogActivate("MDNS")
+
 	// Create MDNS Service
 	ser, err := discovery.NewMdnsService(h.ctxHost, h.host, util.REFRESH_INTERVAL, util.HOST_RENDEVOUZ_POINT)
 	if err != nil {
@@ -96,6 +99,9 @@ func (h *hostNode) checkUnknown(pi peer.AddrInfo) bool {
 
 // # Helper Method Deletes Peer Addr Info from Known List
 func (h *hostNode) deleteKnown(pi peer.AddrInfo) {
+	// Logging
+	md.LogInfo("Deleting known peer.")
+
 	// Remove from Peer Store
 	h.host.Peerstore().ClearAddrs(pi.ID)
 
