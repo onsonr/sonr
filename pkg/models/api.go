@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"log"
 
 	"net/http"
 
@@ -187,7 +188,12 @@ func (r *InviteResponse) ProtocolID() protocol.ID {
 // ** ─── InviteRequest MANAGEMENT ────────────────────────────────────────────────────────
 // Returns Peer Thread Key
 func (r *InviteRequest) ToThreadKey() thread.PubKey {
-	return thread.NewLibp2pPubKey(r.To.PublicKey())
+	key, err := r.GetTo().ThreadKey()
+	if err != nil {
+		log.Println(err)
+		return thread.NewLibp2pPubKey(r.GetTo().PublicKey())
+	}
+	return key
 }
 
 // Returns Invite Contact

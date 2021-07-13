@@ -23,4 +23,5 @@ require (
 	golang.org/x/tools v0.1.2 // indirect
 	google.golang.org/grpc v1.35.0
 	google.golang.org/protobuf v1.26.0
+	gopkg.in/gookit/color.v1 v1.1.6
 )

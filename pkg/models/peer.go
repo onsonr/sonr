@@ -1,7 +1,7 @@
 package models
 
 import (
-	"encoding/base64"
+	"encoding/pem"
 	"errors"
 	"fmt"
 	"log"
@@ -101,17 +101,18 @@ func (p *Peer) PeerID() string {
 // ^ Returns Peer Public Key ^ //
 func (p *Peer) PublicKey() crypto.PubKey {
 	// Get ID from Public Key
-	id := p.GetId().GetPublicKey()
-	buf, err := base64.StdEncoding.DecodeString(id)
-	if err != nil {
-		log.Println("Peer Public Key Base64 Decode:" + err.Error())
+	idBuf := []byte(p.GetId().GetPublicKey())
+	pubkeyPem, rest := pem.Decode(idBuf)
+
+	// Check Rest
+	if rest != nil {
+		log.Println("Pem Buf has had Rest")
 		return nil
 	}
 
-	// Get Key from Buffer
-	pubKey, err := crypto.UnmarshalEd25519PublicKey(buf)
+	// Get Key From Buffer
+	pubKey, err := crypto.UnmarshalPublicKey(pubkeyPem.Bytes)
 	if err != nil {
-		log.Println("Peer Public Key Unmarshal:" + err.Error())
 		return nil
 	}
 	return pubKey
@@ -149,7 +150,7 @@ func (p *Peer) IsNotSamePeerID(pid peer.ID) bool {
 
 // ^ Converts Peer Public Key into Thread Key
 func (p *Peer) ThreadKey() (thread.PubKey, error) {
-	if len(p.GetId().PublicKey) == 0 {
+	if len(p.GetId().PublicKey) != 0 {
 		return thread.NewLibp2pPubKey(p.PublicKey()), nil
 	}
 	return nil, NoPubKey

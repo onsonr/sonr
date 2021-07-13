@@ -3,8 +3,8 @@ package models
 import (
 	"crypto/hmac"
 	"crypto/sha256"
-	"encoding/base64"
 	"encoding/hex"
+	"encoding/pem"
 	"errors"
 	"fmt"
 	"log"
@@ -150,12 +150,19 @@ func (kp *KeyPair) PubKeyAsString() string {
 	}
 
 	// Get Buffer From Key
-	buf, err := privKey.GetPublic().Bytes()
+	buf, err := crypto.MarshalPublicKey(privKey.GetPublic())
 	if err != nil {
 		return ""
 	}
 
-	return base64.StdEncoding.EncodeToString(buf)
+	// Encode to Memory
+	pubkey_pem := pem.EncodeToMemory(
+		&pem.Block{
+			Type:  "Ed25519 PUBLIC KEY",
+			Bytes: buf,
+		},
+	)
+	return string(pubkey_pem)
 }
 
 // Method Signs given data and returns response

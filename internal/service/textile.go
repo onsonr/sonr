@@ -289,6 +289,7 @@ func (sc *serviceClient) SendMail(e *md.InviteRequest) *md.SonrError {
 	if sc.Textile.options.GetMailbox() {
 		// Fetch Peer Thread Key
 		pubKey := e.ToThreadKey()
+		log.Println(pubKey)
 
 		// Marshal Data
 		buf, err := proto.Marshal(e)
