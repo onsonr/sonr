@@ -168,6 +168,7 @@ func (tn *TextileService) InitMail(d *md.Device, us md.ConnectionRequest_UserSta
 
 			// Check Error
 			if err != nil {
+				tn.SetMailboxStatus(false)
 				return md.NewError(err, md.ErrorMessage_MAILBOX_START_NEW)
 			}
 
@@ -179,6 +180,7 @@ func (tn *TextileService) InitMail(d *md.Device, us md.ConnectionRequest_UserSta
 			// Return Existing Mailbox
 			mailbox, err := tn.mail.GetLocalMailbox(context.Background(), d.WorkingSupportDir())
 			if err != nil {
+				tn.SetMailboxStatus(false)
 				return md.NewError(err, md.ErrorMessage_MAILBOX_START_EXISTING)
 			}
 
