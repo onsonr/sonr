@@ -53,7 +53,6 @@ type hostNode struct {
 	handler HostHandler
 	host    host.Host
 	kdht    *dht.IpfsDHT
-	known   []peer.ID
 	mdns    discovery.Service
 	options *md.ConnectionRequest_HostOptions
 
@@ -113,7 +112,6 @@ func NewHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair
 		id:      h.ID(),
 		host:    h,
 		kdht:    kdhtRef,
-		known:   make([]peer.ID, 0),
 		topics:  make([]*TopicManager, 0),
 	}
 
@@ -175,7 +173,6 @@ func newRelayedHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.
 		id:      h.ID(),
 		host:    h,
 		kdht:    kdhtRef,
-		known:   make([]peer.ID, 0),
 	}
 
 	// Check Connection
