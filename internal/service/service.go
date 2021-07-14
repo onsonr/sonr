@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	net "github.com/sonr-io/core/internal/host"
@@ -44,7 +45,7 @@ type serviceClient struct {
 }
 
 // @ Creates New Service Interface
-func NewService(ctx context.Context, h net.HostNode, u *md.User, req *md.ConnectionRequest, call md.Callback, sh ServiceHandler) (ServiceClient, *md.SonrError) {
+func NewService(ctx context.Context, h net.HostNode, u *md.User, req *md.ConnectionRequest, sh ServiceHandler) (ServiceClient, *md.SonrError) {
 	// Create Client
 	client := &serviceClient{
 		ctx:     ctx,
@@ -82,9 +83,13 @@ func (sc *serviceClient) ReadMail() *md.SonrError {
 			return serr
 		}
 
-		// Callback Event
-		sc.handler.OnMail(event)
-		md.LogSuccess("Reading Mail")
+		// Logging
+		md.LogSuccess(fmt.Sprintf("Reading Mail: %s", event.String()))
+
+		// Check Mail and Callback Event
+		if event.GetHasNewMail() {
+			sc.handler.OnMail(event)
+		}
 		return nil
 	}
 	md.LogInfo("Mail is not Ready")
@@ -100,7 +105,6 @@ func (sc *serviceClient) SendMail(inv *md.InviteRequest) *md.SonrError {
 		if serr != nil {
 			return serr
 		}
-		md.LogInfo("To Public Key: " + pubKey.String())
 
 		// Marshal Data
 		buf, err := proto.Marshal(inv)

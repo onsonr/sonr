@@ -197,22 +197,31 @@ func (ts *TextileService) readMail() (*md.MailEvent, *md.SonrError) {
 
 	// Initialize Entry List
 	hasNewMail := false
-	count := len(inbox)
-
-	// Set Vars
-	entries := make([][]byte, count)
-	if count > 0 {
+	if len(inbox) > 0 {
 		hasNewMail = true
 	}
 
+	// Initialize Entry List
+	entries := []*md.InviteRequest{}
+
 	// Iterate over Entries
-	for i, v := range inbox {
+	for _, v := range inbox {
 		// Open decrypts the message body
 		body, err := v.Open(context.Background(), ts.identity)
 		if err != nil {
 			return nil, md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_OPEN)
 		}
-		entries[i] = body
+
+		// Unmarshal Invitation
+		invite := &md.InviteRequest{}
+		err = proto.Unmarshal(body, invite)
+		if err != nil {
+			md.NewUnmarshalError(err)
+			continue
+		}
+
+		// Append Entries
+		entries = append(entries, invite)
 	}
 	return &md.MailEvent{
 		Invites:    entries,

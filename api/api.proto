@@ -245,7 +245,7 @@ message VerifyResponse {
 // List of Pending Invites through Mailbox
 message MailEvent {
   bool hasNewMail = 1;
-  repeated bytes invites = 2; // User Received Invites
+  repeated InviteRequest invites = 2; // User Received Invites
 }
 
 // Transfer Progress Event

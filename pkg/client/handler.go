@@ -93,6 +93,7 @@ func (n *client) OnMail(e *md.MailEvent) {
 	buf, err := proto.Marshal(e)
 	if err != nil {
 		md.NewMarshalError(err)
+		return
 	}
 	n.call.OnMail(buf)
 }
