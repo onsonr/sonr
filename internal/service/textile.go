@@ -187,21 +187,28 @@ func (ts *TextileService) handleMailboxEvents() {
 		for e := range events {
 			switch e.Type {
 			case local.NewMessage:
-				// handle new message
-				invite := &md.InviteRequest{}
-				err := proto.Unmarshal(e.Message.Body, invite)
+				// Open Message Body
+				body, err := e.Message.Open(context.Background(), ts.mailbox.Identity())
 				if err != nil {
 					ts.handler.OnError(md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_OPEN))
 					continue
 				}
 
-				// Callback Invite
-				ts.handler.OnInvite(e.Message.Body)
+				// Handle New Message
+				invite := md.InviteRequest{}
+				err = proto.Unmarshal(body, &invite)
+				if err != nil {
+					ts.handler.OnError(md.NewUnmarshalError(err))
+					continue
+				}
 
-				// Marshal Mail Event
+				// Callback Marshalled Invite
+				ts.handler.OnInvite(body)
+
+				// Callback Mail Event
 				ts.handler.OnMail(&md.MailEvent{
 					HasNewMail: true,
-					Invites:    []*md.InviteRequest{invite},
+					Invites:    []*md.InviteRequest{&invite},
 				})
 
 			case local.MessageRead:

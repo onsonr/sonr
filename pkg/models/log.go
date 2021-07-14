@@ -94,7 +94,7 @@ func LogActivate(msg string) {
 // ^ Method Logs a Success Message
 func LogSuccess(msg string) {
 	if loggerEnabled && loggerInfoEnabled {
-		log.Info().Msgf("✅  %s Succesful", msg)
+		log.Info().Msgf("✅  %s Successful", msg)
 	}
 }
 
