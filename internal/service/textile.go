@@ -155,13 +155,13 @@ func (ts *TextileService) InitMail() *md.SonrError {
 				return md.NewError(err, md.ErrorMessage_MAILBOX_START_EXISTING)
 			}
 
-			// Handle Mailbox Events
-			ts.handleMailboxEvents(mailbox)
-
 			// Set Mailbox and Update Status
 			ts.mailbox = mailbox
 			isMailReady = true
 			md.LogSuccess("Mailbox Activation")
+
+			// Handle Mailbox Events
+			ts.handleMailboxEvents()
 		} else {
 			// Logging
 			md.LogInfo("Mailbox not found, creating new one...")
@@ -172,20 +172,20 @@ func (ts *TextileService) InitMail() *md.SonrError {
 				return md.NewError(err, md.ErrorMessage_MAILBOX_START_NEW)
 			}
 
-			// Handle Mailbox Events
-			ts.handleMailboxEvents(mailbox)
-
 			// Set Mailbox and Update Status
 			ts.mailbox = mailbox
 			isMailReady = true
 			md.LogSuccess("Mailbox Activation")
+
+			// Handle Mailbox Events
+			ts.handleMailboxEvents()
 		}
 	}
 	return nil
 }
 
 // @ Handle Mailbox Events
-func (ts *TextileService) handleMailboxEvents(mailbox *local.Mailbox) {
+func (ts *TextileService) handleMailboxEvents() {
 	// Handle mailbox events as they arrive
 	events := make(chan local.MailboxEvent)
 	defer close(events)
@@ -219,11 +219,14 @@ func (ts *TextileService) handleMailboxEvents(mailbox *local.Mailbox) {
 	}()
 
 	// Start watching (the third param indicates we want to keep watching when offline)
-	state, err := mailbox.WatchInbox(context.Background(), events, true)
+	state, err := ts.mailbox.WatchInbox(context.Background(), events, true)
 	if err != nil {
 		md.NewError(err, md.ErrorMessage_MAILBOX_EVENT_STATE)
 		return
 	}
+
+	// Handle Mailbox State
+	md.LogSuccess("Mailbox State Handling")
 	for s := range state {
 		// handle connectivity state
 		switch s.State {
