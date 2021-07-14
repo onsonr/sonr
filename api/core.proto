@@ -10,12 +10,6 @@ message Chunk {
   bool isComplete = 3; // Whether this is final chunk
 }
 
-// Traffic Direction of Session
-enum Direction {
-  Default = 0;  // From Memory/Viewing
-  Incoming = 1; // Incoming Transfer
-  Outgoing = 2; // Outgoing Transfer
-}
 
 // Current Node Lifecycle State
 enum LifecycleState {

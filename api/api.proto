@@ -241,7 +241,18 @@ message VerifyResponse {
 // --------------------------- //
 // -------- Events ----------- //
 // --------------------------- //
+// Message Sent after Completed Transfer
+message CompleteEvent {
+  Direction direction = 1; // Transfer Direction
+  Transfer transfer = 2;   // Transfer Data
 
+  // Traffic Direction of Session
+  enum Direction {
+    Default = 0;  // From Memory/Viewing
+    Incoming = 1; // Incoming Transfer
+    Outgoing = 2; // Outgoing Transfer
+  }
+}
 // List of Pending Invites through Mailbox
 message MailEvent {
   bool hasNewMail = 1;
@@ -275,5 +286,46 @@ message TopicEvent {
     RESUME = 2;  // Peer has rejoined Lobby
     UPDATE = 3;  // Peer has changed position
     EXIT = 4;    // Peer has Exited
+  }
+}
+
+// ------------------------------------------- //
+// -------- Callback Generic Types ----------- //
+// ------------------------------------------- //
+// Generic Request Message
+message Request {
+  Type type = 1;  // Type of Request
+  bytes data = 2; // Data for Request
+
+  enum Type {
+    INVITE = 0; // Invite Request
+    REST = 1;   // REST API Request
+    VERIFY = 2; // Verify Request
+  }
+}
+
+// Generic Response Message
+message Response {
+  Type type = 1;  // Type of Response
+  bytes data = 2; // Data for Response
+
+  enum Type {
+    CONNECTION = 0; // Connection Response
+    INVITE = 1;     // Invite Response
+    REST = 2;       // REST API Response
+  }
+}
+
+// Generic Event Message
+message Event {
+  Type type = 1;  // Type of Event
+  bytes data = 2; // Data for Event
+
+  // Type of Event
+  enum Type {
+    COMPLETE = 0; // Transfer Completed
+    MAIL = 1;     // New Mailbox Invite
+    PROGRESS = 2; // Transfer Progress
+    TOPIC = 3;    // Local Topic Update
   }
 }

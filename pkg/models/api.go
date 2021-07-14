@@ -394,3 +394,225 @@ func (u *User) IsStatus(gs Status) bool {
 func (u *User) IsNotStatus(gs Status) bool {
 	return u.GetStatus() != gs
 }
+
+// ** ─── Generic Callback MANAGEMENT ───────────────────────────────────────────
+
+// Create New Generic CONNECTION Response Message
+func (o *ConnectionResponse) ToGeneric() ([]byte, error) {
+	// Marshal Original
+	ogBuf, err := proto.Marshal(o)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create Generic
+	generic := &Response{
+		Type: Response_CONNECTION,
+		Data: ogBuf,
+	}
+
+	// Marshal Generic
+	genBuf, err := proto.Marshal(generic)
+	if err != nil {
+		return nil, err
+	}
+	return genBuf, nil
+}
+
+// Create New Generic INVITE Request Message
+func (o *InviteRequest) ToGeneric() ([]byte, error) {
+	// Marshal Original
+	ogBuf, err := proto.Marshal(o)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create Generic
+	generic := &Request{
+		Type: Request_INVITE,
+		Data: ogBuf,
+	}
+
+	// Marshal Generic
+	genBuf, err := proto.Marshal(generic)
+	if err != nil {
+		return nil, err
+	}
+	return genBuf, nil
+}
+
+// Create New Generic INVITE Response Message
+func (o *InviteResponse) ToGeneric() ([]byte, error) {
+	// Marshal Original
+	ogBuf, err := proto.Marshal(o)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create Generic
+	generic := &Response{
+		Type: Response_INVITE,
+		Data: ogBuf,
+	}
+
+	// Marshal Generic
+	genBuf, err := proto.Marshal(generic)
+	if err != nil {
+		return nil, err
+	}
+	return genBuf, nil
+}
+
+// Create New Generic REST Request Message
+func (o *RestRequest) ToGeneric() ([]byte, error) {
+	// Marshal Original
+	ogBuf, err := proto.Marshal(o)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create Generic
+	generic := &Request{
+		Type: Request_REST,
+		Data: ogBuf,
+	}
+
+	// Marshal Generic
+	genBuf, err := proto.Marshal(generic)
+	if err != nil {
+		return nil, err
+	}
+	return genBuf, nil
+}
+
+// Create New Generic REST Response Message
+func (o *RestResponse) ToGeneric() ([]byte, error) {
+	// Marshal Original
+	ogBuf, err := proto.Marshal(o)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create Generic
+	generic := &Response{
+		Type: Response_REST,
+		Data: ogBuf,
+	}
+
+	// Marshal Generic
+	genBuf, err := proto.Marshal(generic)
+	if err != nil {
+		return nil, err
+	}
+	return genBuf, nil
+}
+
+// Create New Generic VERIFY Request Message
+func (o *VerifyRequest) ToGeneric() ([]byte, error) {
+	// Marshal Original
+	ogBuf, err := proto.Marshal(o)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create Generic
+	generic := &Request{
+		Type: Request_VERIFY,
+		Data: ogBuf,
+	}
+
+	// Marshal Generic
+	genBuf, err := proto.Marshal(generic)
+	if err != nil {
+		return nil, err
+	}
+	return genBuf, nil
+}
+
+// Create New Generic COMPLETE Event Message
+func (o *CompleteEvent) ToGeneric() ([]byte, error) {
+	// Marshal Original
+	ogBuf, err := proto.Marshal(o)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create Generic
+	generic := &Event{
+		Type: Event_COMPLETE,
+		Data: ogBuf,
+	}
+
+	// Marshal Generic
+	genBuf, err := proto.Marshal(generic)
+	if err != nil {
+		return nil, err
+	}
+	return genBuf, nil
+}
+
+// Create New Generic MAIL Event Message
+func (o *MailEvent) ToGeneric() ([]byte, error) {
+	// Marshal Original
+	ogBuf, err := proto.Marshal(o)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create Generic
+	generic := &Event{
+		Type: Event_MAIL,
+		Data: ogBuf,
+	}
+
+	// Marshal Generic
+	genBuf, err := proto.Marshal(generic)
+	if err != nil {
+		return nil, err
+	}
+	return genBuf, nil
+}
+
+// Create New Generic PROGRESS Event Message
+func (o *ProgressEvent) ToGeneric() ([]byte, error) {
+	// Marshal Original
+	ogBuf, err := proto.Marshal(o)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create Generic
+	generic := &Event{
+		Type: Event_PROGRESS,
+		Data: ogBuf,
+	}
+
+	// Marshal Generic
+	genBuf, err := proto.Marshal(generic)
+	if err != nil {
+		return nil, err
+	}
+	return genBuf, nil
+}
+
+// Create New Generic TOPIC Event Message
+func (o *TopicEvent) ToGeneric() ([]byte, error) {
+	// Marshal Original
+	ogBuf, err := proto.Marshal(o)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create Generic
+	generic := &Event{
+		Type: Event_TOPIC,
+		Data: ogBuf,
+	}
+
+	// Marshal Generic
+	genBuf, err := proto.Marshal(generic)
+	if err != nil {
+		return nil, err
+	}
+	return genBuf, nil
+}

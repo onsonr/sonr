@@ -6,30 +6,27 @@ import (
 
 // * Interface: Callback is implemented from Plugin to receive updates * //
 type Callback interface {
-	OnStatus(data []byte)      // Node Status Updates
-	OnConnected(data []byte)   // Connection Response
-	OnEvent(data []byte)       // Local Lobby Event
-	OnMail(data []byte)        // Mailbox Event
-	OnInvited(data []byte)     // User Invited
-	OnResponded(data []byte)   // Peer has responded
-	OnProgress(data []byte)    // File Progress Updated
-	OnReceived(data []byte)    // User Received File
-	OnTransmitted(data []byte) // User Sent File
-	OnError(data []byte)       // Internal Error
+	OnStatus(data []byte) // Node Status Updates
+	// OnConnected(data []byte) // Connection Response
+	OnEvent(data []byte) // Local Lobby Event
+	// OnMail(data []byte)        // Mailbox Event
+	// OnInvited(data []byte)     // User Invited
+	// OnResponded(data []byte)   // Peer has responded
+	// OnProgress(data []byte)    // File Progress Updated
+	// OnReceived(data []byte)    // User Received File
+	// OnTransmitted(data []byte) // User Sent File
+	OnResponse(data []byte) // Generic Response Callback
+	OnRequest(data []byte)  // Generic Request Callback
+	OnError(data []byte)    // Internal Error
 }
 
 // # Passes binded Methods to Node
 func (mn *Node) callback() md.Callback {
 	return md.Callback{
 		// Direct
-		OnConnected:   mn.call.OnConnected,
-		OnEvent:       mn.call.OnEvent,
-		OnInvite:      mn.call.OnInvited,
-		OnReply:       mn.call.OnResponded,
-		OnProgress:    mn.call.OnProgress,
-		OnReceived:    mn.call.OnReceived,
-		OnTransmitted: mn.call.OnTransmitted,
-		OnMail:        mn.call.OnMail,
+		OnEvent:    mn.call.OnEvent,
+		OnResponse: mn.call.OnResponse,
+		OnRequest:  mn.call.OnRequest,
 
 		// Middleware
 		OnError:   mn.handleError,

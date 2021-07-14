@@ -437,6 +437,56 @@ func (RestResponse_Method) EnumDescriptor() ([]byte, []int) {
 	return file_api_proto_rawDescGZIP(), []int{10, 0}
 }
 
+// Traffic Direction of Session
+type CompleteEvent_Direction int32
+
+const (
+	CompleteEvent_Default  CompleteEvent_Direction = 0 // From Memory/Viewing
+	CompleteEvent_Incoming CompleteEvent_Direction = 1 // Incoming Transfer
+	CompleteEvent_Outgoing CompleteEvent_Direction = 2 // Outgoing Transfer
+)
+
+// Enum value maps for CompleteEvent_Direction.
+var (
+	CompleteEvent_Direction_name = map[int32]string{
+		0: "Default",
+		1: "Incoming",
+		2: "Outgoing",
+	}
+	CompleteEvent_Direction_value = map[string]int32{
+		"Default":  0,
+		"Incoming": 1,
+		"Outgoing": 2,
+	}
+)
+
+func (x CompleteEvent_Direction) Enum() *CompleteEvent_Direction {
+	p := new(CompleteEvent_Direction)
+	*p = x
+	return p
+}
+
+func (x CompleteEvent_Direction) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (CompleteEvent_Direction) Descriptor() protoreflect.EnumDescriptor {
+	return file_api_proto_enumTypes[8].Descriptor()
+}
+
+func (CompleteEvent_Direction) Type() protoreflect.EnumType {
+	return &file_api_proto_enumTypes[8]
+}
+
+func (x CompleteEvent_Direction) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use CompleteEvent_Direction.Descriptor instead.
+func (CompleteEvent_Direction) EnumDescriptor() ([]byte, []int) {
+	return file_api_proto_rawDescGZIP(), []int{12, 0}
+}
+
 // Local Type Event
 type TopicEvent_Subject int32
 
@@ -477,11 +527,11 @@ func (x TopicEvent_Subject) String() string {
 }
 
 func (TopicEvent_Subject) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_proto_enumTypes[8].Descriptor()
+	return file_api_proto_enumTypes[9].Descriptor()
 }
 
 func (TopicEvent_Subject) Type() protoreflect.EnumType {
-	return &file_api_proto_enumTypes[8]
+	return &file_api_proto_enumTypes[9]
 }
 
 func (x TopicEvent_Subject) Number() protoreflect.EnumNumber {
@@ -490,7 +540,158 @@ func (x TopicEvent_Subject) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use TopicEvent_Subject.Descriptor instead.
 func (TopicEvent_Subject) EnumDescriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{15, 0}
+	return file_api_proto_rawDescGZIP(), []int{16, 0}
+}
+
+type Request_Type int32
+
+const (
+	Request_INVITE Request_Type = 0 // Invite Request
+	Request_REST   Request_Type = 1 // REST API Request
+	Request_VERIFY Request_Type = 2 // Verify Request
+)
+
+// Enum value maps for Request_Type.
+var (
+	Request_Type_name = map[int32]string{
+		0: "INVITE",
+		1: "REST",
+		2: "VERIFY",
+	}
+	Request_Type_value = map[string]int32{
+		"INVITE": 0,
+		"REST":   1,
+		"VERIFY": 2,
+	}
+)
+
+func (x Request_Type) Enum() *Request_Type {
+	p := new(Request_Type)
+	*p = x
+	return p
+}
+
+func (x Request_Type) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Request_Type) Descriptor() protoreflect.EnumDescriptor {
+	return file_api_proto_enumTypes[10].Descriptor()
+}
+
+func (Request_Type) Type() protoreflect.EnumType {
+	return &file_api_proto_enumTypes[10]
+}
+
+func (x Request_Type) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use Request_Type.Descriptor instead.
+func (Request_Type) EnumDescriptor() ([]byte, []int) {
+	return file_api_proto_rawDescGZIP(), []int{17, 0}
+}
+
+type Response_Type int32
+
+const (
+	Response_CONNECTION Response_Type = 0 // Connection Response
+	Response_INVITE     Response_Type = 1 // Invite Response
+	Response_REST       Response_Type = 2 // REST API Response
+)
+
+// Enum value maps for Response_Type.
+var (
+	Response_Type_name = map[int32]string{
+		0: "CONNECTION",
+		1: "INVITE",
+		2: "REST",
+	}
+	Response_Type_value = map[string]int32{
+		"CONNECTION": 0,
+		"INVITE":     1,
+		"REST":       2,
+	}
+)
+
+func (x Response_Type) Enum() *Response_Type {
+	p := new(Response_Type)
+	*p = x
+	return p
+}
+
+func (x Response_Type) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Response_Type) Descriptor() protoreflect.EnumDescriptor {
+	return file_api_proto_enumTypes[11].Descriptor()
+}
+
+func (Response_Type) Type() protoreflect.EnumType {
+	return &file_api_proto_enumTypes[11]
+}
+
+func (x Response_Type) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use Response_Type.Descriptor instead.
+func (Response_Type) EnumDescriptor() ([]byte, []int) {
+	return file_api_proto_rawDescGZIP(), []int{18, 0}
+}
+
+// Type of Event
+type Event_Type int32
+
+const (
+	Event_COMPLETE Event_Type = 0 // Transfer Completed
+	Event_MAIL     Event_Type = 1 // New Mailbox Invite
+	Event_PROGRESS Event_Type = 2 // Transfer Progress
+	Event_TOPIC    Event_Type = 3 // Local Topic Update
+)
+
+// Enum value maps for Event_Type.
+var (
+	Event_Type_name = map[int32]string{
+		0: "COMPLETE",
+		1: "MAIL",
+		2: "PROGRESS",
+		3: "TOPIC",
+	}
+	Event_Type_value = map[string]int32{
+		"COMPLETE": 0,
+		"MAIL":     1,
+		"PROGRESS": 2,
+		"TOPIC":    3,
+	}
+)
+
+func (x Event_Type) Enum() *Event_Type {
+	p := new(Event_Type)
+	*p = x
+	return p
+}
+
+func (x Event_Type) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Event_Type) Descriptor() protoreflect.EnumDescriptor {
+	return file_api_proto_enumTypes[12].Descriptor()
+}
+
+func (Event_Type) Type() protoreflect.EnumType {
+	return &file_api_proto_enumTypes[12]
+}
+
+func (x Event_Type) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use Event_Type.Descriptor instead.
+func (Event_Type) EnumDescriptor() ([]byte, []int) {
+	return file_api_proto_rawDescGZIP(), []int{19, 0}
 }
 
 // Message for Signing Request (Hmac Sha256)
@@ -1582,6 +1783,65 @@ func (x *VerifyResponse) GetError() *ErrorMessage {
 	return nil
 }
 
+// --------------------------- //
+// -------- Events ----------- //
+// --------------------------- //
+// Message Sent after Completed Transfer
+type CompleteEvent struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Direction CompleteEvent_Direction `protobuf:"varint,1,opt,name=direction,proto3,enum=CompleteEvent_Direction" json:"direction,omitempty"` // Transfer Direction
+	Transfer  *Transfer               `protobuf:"bytes,2,opt,name=transfer,proto3" json:"transfer,omitempty"`                                 // Transfer Data
+}
+
+func (x *CompleteEvent) Reset() {
+	*x = CompleteEvent{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_proto_msgTypes[12]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CompleteEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CompleteEvent) ProtoMessage() {}
+
+func (x *CompleteEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_msgTypes[12]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CompleteEvent.ProtoReflect.Descriptor instead.
+func (*CompleteEvent) Descriptor() ([]byte, []int) {
+	return file_api_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *CompleteEvent) GetDirection() CompleteEvent_Direction {
+	if x != nil {
+		return x.Direction
+	}
+	return CompleteEvent_Default
+}
+
+func (x *CompleteEvent) GetTransfer() *Transfer {
+	if x != nil {
+		return x.Transfer
+	}
+	return nil
+}
+
 // List of Pending Invites through Mailbox
 type MailEvent struct {
 	state         protoimpl.MessageState
@@ -1595,7 +1855,7 @@ type MailEvent struct {
 func (x *MailEvent) Reset() {
 	*x = MailEvent{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[12]
+		mi := &file_api_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1608,7 +1868,7 @@ func (x *MailEvent) String() string {
 func (*MailEvent) ProtoMessage() {}
 
 func (x *MailEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[12]
+	mi := &file_api_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1621,7 +1881,7 @@ func (x *MailEvent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MailEvent.ProtoReflect.Descriptor instead.
 func (*MailEvent) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{12}
+	return file_api_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *MailEvent) GetHasNewMail() bool {
@@ -1652,7 +1912,7 @@ type ProgressEvent struct {
 func (x *ProgressEvent) Reset() {
 	*x = ProgressEvent{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[13]
+		mi := &file_api_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1665,7 +1925,7 @@ func (x *ProgressEvent) String() string {
 func (*ProgressEvent) ProtoMessage() {}
 
 func (x *ProgressEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[13]
+	mi := &file_api_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1678,7 +1938,7 @@ func (x *ProgressEvent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ProgressEvent.ProtoReflect.Descriptor instead.
 func (*ProgressEvent) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{13}
+	return file_api_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *ProgressEvent) GetCurrent() int32 {
@@ -1715,7 +1975,7 @@ type StatusEvent struct {
 func (x *StatusEvent) Reset() {
 	*x = StatusEvent{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[14]
+		mi := &file_api_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1728,7 +1988,7 @@ func (x *StatusEvent) String() string {
 func (*StatusEvent) ProtoMessage() {}
 
 func (x *StatusEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[14]
+	mi := &file_api_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1741,7 +2001,7 @@ func (x *StatusEvent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StatusEvent.ProtoReflect.Descriptor instead.
 func (*StatusEvent) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{14}
+	return file_api_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *StatusEvent) GetValue() Status {
@@ -1773,7 +2033,7 @@ type TopicEvent struct {
 func (x *TopicEvent) Reset() {
 	*x = TopicEvent{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[15]
+		mi := &file_api_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1786,7 +2046,7 @@ func (x *TopicEvent) String() string {
 func (*TopicEvent) ProtoMessage() {}
 
 func (x *TopicEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[15]
+	mi := &file_api_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1799,7 +2059,7 @@ func (x *TopicEvent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TopicEvent.ProtoReflect.Descriptor instead.
 func (*TopicEvent) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{15}
+	return file_api_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *TopicEvent) GetTopic() *Topic {
@@ -1830,6 +2090,177 @@ func (x *TopicEvent) GetSubject() TopicEvent_Subject {
 	return TopicEvent_JOIN
 }
 
+// ------------------------------------------- //
+// -------- Callback Generic Types ----------- //
+// ------------------------------------------- //
+// Generic Request Message
+type Request struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Type Request_Type `protobuf:"varint,1,opt,name=type,proto3,enum=Request_Type" json:"type,omitempty"` // Type of Request
+	Data []byte       `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`                    // Data for Request
+}
+
+func (x *Request) Reset() {
+	*x = Request{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_proto_msgTypes[17]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Request) ProtoMessage() {}
+
+func (x *Request) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_msgTypes[17]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Request.ProtoReflect.Descriptor instead.
+func (*Request) Descriptor() ([]byte, []int) {
+	return file_api_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *Request) GetType() Request_Type {
+	if x != nil {
+		return x.Type
+	}
+	return Request_INVITE
+}
+
+func (x *Request) GetData() []byte {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+// Generic Response Message
+type Response struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Type Response_Type `protobuf:"varint,1,opt,name=type,proto3,enum=Response_Type" json:"type,omitempty"` // Type of Response
+	Data []byte        `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`                     // Data for Response
+}
+
+func (x *Response) Reset() {
+	*x = Response{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_proto_msgTypes[18]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Response) ProtoMessage() {}
+
+func (x *Response) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_msgTypes[18]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Response.ProtoReflect.Descriptor instead.
+func (*Response) Descriptor() ([]byte, []int) {
+	return file_api_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *Response) GetType() Response_Type {
+	if x != nil {
+		return x.Type
+	}
+	return Response_CONNECTION
+}
+
+func (x *Response) GetData() []byte {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+// Generic Event Message
+type Event struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Type Event_Type `protobuf:"varint,1,opt,name=type,proto3,enum=Event_Type" json:"type,omitempty"` // Type of Event
+	Data []byte     `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`                  // Data for Event
+}
+
+func (x *Event) Reset() {
+	*x = Event{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_proto_msgTypes[19]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Event) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Event) ProtoMessage() {}
+
+func (x *Event) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_msgTypes[19]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Event.ProtoReflect.Descriptor instead.
+func (*Event) Descriptor() ([]byte, []int) {
+	return file_api_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *Event) GetType() Event_Type {
+	if x != nil {
+		return x.Type
+	}
+	return Event_COMPLETE
+}
+
+func (x *Event) GetData() []byte {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
 // Libp2p Host Options
 type ConnectionRequest_HostOptions struct {
 	state         protoimpl.MessageState
@@ -1846,7 +2277,7 @@ type ConnectionRequest_HostOptions struct {
 func (x *ConnectionRequest_HostOptions) Reset() {
 	*x = ConnectionRequest_HostOptions{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[16]
+		mi := &file_api_proto_msgTypes[20]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1859,7 +2290,7 @@ func (x *ConnectionRequest_HostOptions) String() string {
 func (*ConnectionRequest_HostOptions) ProtoMessage() {}
 
 func (x *ConnectionRequest_HostOptions) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[16]
+	mi := &file_api_proto_msgTypes[20]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1922,7 +2353,7 @@ type ConnectionRequest_PubsubOptions struct {
 func (x *ConnectionRequest_PubsubOptions) Reset() {
 	*x = ConnectionRequest_PubsubOptions{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[17]
+		mi := &file_api_proto_msgTypes[21]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1935,7 +2366,7 @@ func (x *ConnectionRequest_PubsubOptions) String() string {
 func (*ConnectionRequest_PubsubOptions) ProtoMessage() {}
 
 func (x *ConnectionRequest_PubsubOptions) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[17]
+	mi := &file_api_proto_msgTypes[21]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1973,7 +2404,7 @@ type ConnectionRequest_TextileOptions struct {
 func (x *ConnectionRequest_TextileOptions) Reset() {
 	*x = ConnectionRequest_TextileOptions{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[18]
+		mi := &file_api_proto_msgTypes[22]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1986,7 +2417,7 @@ func (x *ConnectionRequest_TextileOptions) String() string {
 func (*ConnectionRequest_TextileOptions) ProtoMessage() {}
 
 func (x *ConnectionRequest_TextileOptions) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[18]
+	mi := &file_api_proto_msgTypes[22]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2045,7 +2476,7 @@ type ConnectionResponse_TextileThread struct {
 func (x *ConnectionResponse_TextileThread) Reset() {
 	*x = ConnectionResponse_TextileThread{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[21]
+		mi := &file_api_proto_msgTypes[25]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2058,7 +2489,7 @@ func (x *ConnectionResponse_TextileThread) String() string {
 func (*ConnectionResponse_TextileThread) ProtoMessage() {}
 
 func (x *ConnectionResponse_TextileThread) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[21]
+	mi := &file_api_proto_msgTypes[25]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2118,7 +2549,7 @@ type InviteResponse_MailInfo struct {
 func (x *InviteResponse_MailInfo) Reset() {
 	*x = InviteResponse_MailInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[22]
+		mi := &file_api_proto_msgTypes[26]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2131,7 +2562,7 @@ func (x *InviteResponse_MailInfo) String() string {
 func (*InviteResponse_MailInfo) ProtoMessage() {}
 
 func (x *InviteResponse_MailInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[22]
+	mi := &file_api_proto_msgTypes[26]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2434,37 +2865,69 @@ var file_api_proto_rawDesc = []byte{
 	0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x70,
 	0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x12, 0x23, 0x0a, 0x05, 0x65, 0x72, 0x72, 0x6f,
 	0x72, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x4d,
-	0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x52, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x22, 0x55, 0x0a,
-	0x09, 0x4d, 0x61, 0x69, 0x6c, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x1e, 0x0a, 0x0a, 0x68, 0x61,
-	0x73, 0x4e, 0x65, 0x77, 0x4d, 0x61, 0x69, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0a,
-	0x68, 0x61, 0x73, 0x4e, 0x65, 0x77, 0x4d, 0x61, 0x69, 0x6c, 0x12, 0x28, 0x0a, 0x07, 0x69, 0x6e,
-	0x76, 0x69, 0x74, 0x65, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x49, 0x6e,
-	0x76, 0x69, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x52, 0x07, 0x69, 0x6e, 0x76,
-	0x69, 0x74, 0x65, 0x73, 0x22, 0x5b, 0x0a, 0x0d, 0x50, 0x72, 0x6f, 0x67, 0x72, 0x65, 0x73, 0x73,
-	0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x75, 0x72, 0x72, 0x65, 0x6e, 0x74,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x07, 0x63, 0x75, 0x72, 0x72, 0x65, 0x6e, 0x74, 0x12,
-	0x14, 0x0a, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x05,
-	0x74, 0x6f, 0x74, 0x61, 0x6c, 0x12, 0x1a, 0x0a, 0x08, 0x70, 0x72, 0x6f, 0x67, 0x72, 0x65, 0x73,
-	0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x01, 0x52, 0x08, 0x70, 0x72, 0x6f, 0x67, 0x72, 0x65, 0x73,
-	0x73, 0x22, 0x47, 0x0a, 0x0b, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x45, 0x76, 0x65, 0x6e, 0x74,
-	0x12, 0x1d, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32,
-	0x07, 0x2e, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x12,
-	0x19, 0x0a, 0x04, 0x75, 0x73, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x05, 0x2e,
-	0x55, 0x73, 0x65, 0x72, 0x52, 0x04, 0x75, 0x73, 0x65, 0x72, 0x22, 0xc8, 0x01, 0x0a, 0x0a, 0x54,
-	0x6f, 0x70, 0x69, 0x63, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x1c, 0x0a, 0x05, 0x74, 0x6f, 0x70,
-	0x69, 0x63, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x06, 0x2e, 0x54, 0x6f, 0x70, 0x69, 0x63,
-	0x52, 0x05, 0x74, 0x6f, 0x70, 0x69, 0x63, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x19, 0x0a, 0x04, 0x70, 0x65, 0x65, 0x72, 0x18,
-	0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x05, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x04, 0x70, 0x65,
-	0x65, 0x72, 0x12, 0x2d, 0x0a, 0x07, 0x73, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x18, 0x04, 0x20,
-	0x01, 0x28, 0x0e, 0x32, 0x13, 0x2e, 0x54, 0x6f, 0x70, 0x69, 0x63, 0x45, 0x76, 0x65, 0x6e, 0x74,
-	0x2e, 0x53, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x52, 0x07, 0x73, 0x75, 0x62, 0x6a, 0x65, 0x63,
-	0x74, 0x22, 0x42, 0x0a, 0x07, 0x53, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x12, 0x08, 0x0a, 0x04,
-	0x4a, 0x4f, 0x49, 0x4e, 0x10, 0x00, 0x12, 0x0b, 0x0a, 0x07, 0x53, 0x54, 0x41, 0x4e, 0x44, 0x42,
-	0x59, 0x10, 0x01, 0x12, 0x0a, 0x0a, 0x06, 0x52, 0x45, 0x53, 0x55, 0x4d, 0x45, 0x10, 0x02, 0x12,
-	0x0a, 0x0a, 0x06, 0x55, 0x50, 0x44, 0x41, 0x54, 0x45, 0x10, 0x03, 0x12, 0x08, 0x0a, 0x04, 0x45,
-	0x58, 0x49, 0x54, 0x10, 0x04, 0x42, 0x09, 0x5a, 0x07, 0x2f, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73,
-	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x52, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x22, 0xa4, 0x01,
+	0x0a, 0x0d, 0x43, 0x6f, 0x6d, 0x70, 0x6c, 0x65, 0x74, 0x65, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x12,
+	0x36, 0x0a, 0x09, 0x64, 0x69, 0x72, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0e, 0x32, 0x18, 0x2e, 0x43, 0x6f, 0x6d, 0x70, 0x6c, 0x65, 0x74, 0x65, 0x45, 0x76, 0x65,
+	0x6e, 0x74, 0x2e, 0x44, 0x69, 0x72, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x09, 0x64, 0x69,
+	0x72, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x25, 0x0a, 0x08, 0x74, 0x72, 0x61, 0x6e, 0x73,
+	0x66, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x09, 0x2e, 0x54, 0x72, 0x61, 0x6e,
+	0x73, 0x66, 0x65, 0x72, 0x52, 0x08, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x66, 0x65, 0x72, 0x22, 0x34,
+	0x0a, 0x09, 0x44, 0x69, 0x72, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x0b, 0x0a, 0x07, 0x44,
+	0x65, 0x66, 0x61, 0x75, 0x6c, 0x74, 0x10, 0x00, 0x12, 0x0c, 0x0a, 0x08, 0x49, 0x6e, 0x63, 0x6f,
+	0x6d, 0x69, 0x6e, 0x67, 0x10, 0x01, 0x12, 0x0c, 0x0a, 0x08, 0x4f, 0x75, 0x74, 0x67, 0x6f, 0x69,
+	0x6e, 0x67, 0x10, 0x02, 0x22, 0x55, 0x0a, 0x09, 0x4d, 0x61, 0x69, 0x6c, 0x45, 0x76, 0x65, 0x6e,
+	0x74, 0x12, 0x1e, 0x0a, 0x0a, 0x68, 0x61, 0x73, 0x4e, 0x65, 0x77, 0x4d, 0x61, 0x69, 0x6c, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0a, 0x68, 0x61, 0x73, 0x4e, 0x65, 0x77, 0x4d, 0x61, 0x69,
+	0x6c, 0x12, 0x28, 0x0a, 0x07, 0x69, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x73, 0x18, 0x02, 0x20, 0x03,
+	0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x49, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x52, 0x07, 0x69, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x73, 0x22, 0x5b, 0x0a, 0x0d, 0x50,
+	0x72, 0x6f, 0x67, 0x72, 0x65, 0x73, 0x73, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x18, 0x0a, 0x07,
+	0x63, 0x75, 0x72, 0x72, 0x65, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x07, 0x63,
+	0x75, 0x72, 0x72, 0x65, 0x6e, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x12, 0x1a, 0x0a, 0x08,
+	0x70, 0x72, 0x6f, 0x67, 0x72, 0x65, 0x73, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x01, 0x52, 0x08,
+	0x70, 0x72, 0x6f, 0x67, 0x72, 0x65, 0x73, 0x73, 0x22, 0x47, 0x0a, 0x0b, 0x53, 0x74, 0x61, 0x74,
+	0x75, 0x73, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x1d, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x07, 0x2e, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52,
+	0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x12, 0x19, 0x0a, 0x04, 0x75, 0x73, 0x65, 0x72, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x05, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x52, 0x04, 0x75, 0x73, 0x65,
+	0x72, 0x22, 0xc8, 0x01, 0x0a, 0x0a, 0x54, 0x6f, 0x70, 0x69, 0x63, 0x45, 0x76, 0x65, 0x6e, 0x74,
+	0x12, 0x1c, 0x0a, 0x05, 0x74, 0x6f, 0x70, 0x69, 0x63, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x06, 0x2e, 0x54, 0x6f, 0x70, 0x69, 0x63, 0x52, 0x05, 0x74, 0x6f, 0x70, 0x69, 0x63, 0x12, 0x0e,
+	0x0a, 0x02, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x19,
+	0x0a, 0x04, 0x70, 0x65, 0x65, 0x72, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x05, 0x2e, 0x50,
+	0x65, 0x65, 0x72, 0x52, 0x04, 0x70, 0x65, 0x65, 0x72, 0x12, 0x2d, 0x0a, 0x07, 0x73, 0x75, 0x62,
+	0x6a, 0x65, 0x63, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x13, 0x2e, 0x54, 0x6f, 0x70,
+	0x69, 0x63, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x2e, 0x53, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x52,
+	0x07, 0x73, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x22, 0x42, 0x0a, 0x07, 0x53, 0x75, 0x62, 0x6a,
+	0x65, 0x63, 0x74, 0x12, 0x08, 0x0a, 0x04, 0x4a, 0x4f, 0x49, 0x4e, 0x10, 0x00, 0x12, 0x0b, 0x0a,
+	0x07, 0x53, 0x54, 0x41, 0x4e, 0x44, 0x42, 0x59, 0x10, 0x01, 0x12, 0x0a, 0x0a, 0x06, 0x52, 0x45,
+	0x53, 0x55, 0x4d, 0x45, 0x10, 0x02, 0x12, 0x0a, 0x0a, 0x06, 0x55, 0x50, 0x44, 0x41, 0x54, 0x45,
+	0x10, 0x03, 0x12, 0x08, 0x0a, 0x04, 0x45, 0x58, 0x49, 0x54, 0x10, 0x04, 0x22, 0x6a, 0x0a, 0x07,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x21, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x0d, 0x2e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x2e,
+	0x54, 0x79, 0x70, 0x65, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x64, 0x61,
+	0x74, 0x61, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x22, 0x28,
+	0x0a, 0x04, 0x54, 0x79, 0x70, 0x65, 0x12, 0x0a, 0x0a, 0x06, 0x49, 0x4e, 0x56, 0x49, 0x54, 0x45,
+	0x10, 0x00, 0x12, 0x08, 0x0a, 0x04, 0x52, 0x45, 0x53, 0x54, 0x10, 0x01, 0x12, 0x0a, 0x0a, 0x06,
+	0x56, 0x45, 0x52, 0x49, 0x46, 0x59, 0x10, 0x02, 0x22, 0x70, 0x0a, 0x08, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x22, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0e, 0x32, 0x0e, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e, 0x54, 0x79,
+	0x70, 0x65, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x22, 0x2c, 0x0a, 0x04,
+	0x54, 0x79, 0x70, 0x65, 0x12, 0x0e, 0x0a, 0x0a, 0x43, 0x4f, 0x4e, 0x4e, 0x45, 0x43, 0x54, 0x49,
+	0x4f, 0x4e, 0x10, 0x00, 0x12, 0x0a, 0x0a, 0x06, 0x49, 0x4e, 0x56, 0x49, 0x54, 0x45, 0x10, 0x01,
+	0x12, 0x08, 0x0a, 0x04, 0x52, 0x45, 0x53, 0x54, 0x10, 0x02, 0x22, 0x75, 0x0a, 0x05, 0x45, 0x76,
+	0x65, 0x6e, 0x74, 0x12, 0x1f, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x0e, 0x32, 0x0b, 0x2e, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x2e, 0x54, 0x79, 0x70, 0x65, 0x52, 0x04,
+	0x74, 0x79, 0x70, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x0c, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x22, 0x37, 0x0a, 0x04, 0x54, 0x79, 0x70, 0x65,
+	0x12, 0x0c, 0x0a, 0x08, 0x43, 0x4f, 0x4d, 0x50, 0x4c, 0x45, 0x54, 0x45, 0x10, 0x00, 0x12, 0x08,
+	0x0a, 0x04, 0x4d, 0x41, 0x49, 0x4c, 0x10, 0x01, 0x12, 0x0c, 0x0a, 0x08, 0x50, 0x52, 0x4f, 0x47,
+	0x52, 0x45, 0x53, 0x53, 0x10, 0x02, 0x12, 0x09, 0x0a, 0x05, 0x54, 0x4f, 0x50, 0x49, 0x43, 0x10,
+	0x03, 0x42, 0x09, 0x5a, 0x07, 0x2f, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x62, 0x06, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -2479,8 +2942,8 @@ func file_api_proto_rawDescGZIP() []byte {
 	return file_api_proto_rawDescData
 }
 
-var file_api_proto_enumTypes = make([]protoimpl.EnumInfo, 9)
-var file_api_proto_msgTypes = make([]protoimpl.MessageInfo, 24)
+var file_api_proto_enumTypes = make([]protoimpl.EnumInfo, 13)
+var file_api_proto_msgTypes = make([]protoimpl.MessageInfo, 28)
 var file_api_proto_goTypes = []interface{}{
 	(InitializeRequest_LogLevel)(0),          // 0: InitializeRequest.LogLevel
 	(ConnectionRequest_InternetType)(0),      // 1: ConnectionRequest.InternetType
@@ -2490,92 +2953,105 @@ var file_api_proto_goTypes = []interface{}{
 	(VerifyRequest_Type)(0),                  // 5: VerifyRequest.Type
 	(InviteResponse_Type)(0),                 // 6: InviteResponse.Type
 	(RestResponse_Method)(0),                 // 7: RestResponse.Method
-	(TopicEvent_Subject)(0),                  // 8: TopicEvent.Subject
-	(*AuthRequest)(nil),                      // 9: AuthRequest
-	(*InitializeRequest)(nil),                // 10: InitializeRequest
-	(*ConnectionRequest)(nil),                // 11: ConnectionRequest
-	(*InviteRequest)(nil),                    // 12: InviteRequest
-	(*RestRequest)(nil),                      // 13: RestRequest
-	(*UpdateRequest)(nil),                    // 14: UpdateRequest
-	(*VerifyRequest)(nil),                    // 15: VerifyRequest
-	(*AuthResponse)(nil),                     // 16: AuthResponse
-	(*ConnectionResponse)(nil),               // 17: ConnectionResponse
-	(*InviteResponse)(nil),                   // 18: InviteResponse
-	(*RestResponse)(nil),                     // 19: RestResponse
-	(*VerifyResponse)(nil),                   // 20: VerifyResponse
-	(*MailEvent)(nil),                        // 21: MailEvent
-	(*ProgressEvent)(nil),                    // 22: ProgressEvent
-	(*StatusEvent)(nil),                      // 23: StatusEvent
-	(*TopicEvent)(nil),                       // 24: TopicEvent
-	(*ConnectionRequest_HostOptions)(nil),    // 25: ConnectionRequest.HostOptions
-	(*ConnectionRequest_PubsubOptions)(nil),  // 26: ConnectionRequest.PubsubOptions
-	(*ConnectionRequest_TextileOptions)(nil), // 27: ConnectionRequest.TextileOptions
-	nil,                                      // 28: RestRequest.ParametersEntry
-	nil,                                      // 29: ConnectionResponse.ThreadsEntry
-	(*ConnectionResponse_TextileThread)(nil), // 30: ConnectionResponse.TextileThread
-	(*InviteResponse_MailInfo)(nil),          // 31: InviteResponse.MailInfo
-	nil,                                      // 32: RestResponse.BodyEntry
-	(*Device)(nil),                           // 33: Device
-	(*APIKeys)(nil),                          // 34: APIKeys
-	(*Location)(nil),                         // 35: Location
-	(*Contact)(nil),                          // 36: Contact
-	(Payload)(0),                             // 37: Payload
-	(*Peer)(nil),                             // 38: Peer
-	(*Transfer)(nil),                         // 39: Transfer
-	(*Peer_Properties)(nil),                  // 40: Peer.Properties
-	(*Position)(nil),                         // 41: Position
-	(*Topic)(nil),                            // 42: Topic
-	(*ErrorMessage)(nil),                     // 43: ErrorMessage
-	(Status)(0),                              // 44: Status
-	(*User)(nil),                             // 45: User
+	(CompleteEvent_Direction)(0),             // 8: CompleteEvent.Direction
+	(TopicEvent_Subject)(0),                  // 9: TopicEvent.Subject
+	(Request_Type)(0),                        // 10: Request.Type
+	(Response_Type)(0),                       // 11: Response.Type
+	(Event_Type)(0),                          // 12: Event.Type
+	(*AuthRequest)(nil),                      // 13: AuthRequest
+	(*InitializeRequest)(nil),                // 14: InitializeRequest
+	(*ConnectionRequest)(nil),                // 15: ConnectionRequest
+	(*InviteRequest)(nil),                    // 16: InviteRequest
+	(*RestRequest)(nil),                      // 17: RestRequest
+	(*UpdateRequest)(nil),                    // 18: UpdateRequest
+	(*VerifyRequest)(nil),                    // 19: VerifyRequest
+	(*AuthResponse)(nil),                     // 20: AuthResponse
+	(*ConnectionResponse)(nil),               // 21: ConnectionResponse
+	(*InviteResponse)(nil),                   // 22: InviteResponse
+	(*RestResponse)(nil),                     // 23: RestResponse
+	(*VerifyResponse)(nil),                   // 24: VerifyResponse
+	(*CompleteEvent)(nil),                    // 25: CompleteEvent
+	(*MailEvent)(nil),                        // 26: MailEvent
+	(*ProgressEvent)(nil),                    // 27: ProgressEvent
+	(*StatusEvent)(nil),                      // 28: StatusEvent
+	(*TopicEvent)(nil),                       // 29: TopicEvent
+	(*Request)(nil),                          // 30: Request
+	(*Response)(nil),                         // 31: Response
+	(*Event)(nil),                            // 32: Event
+	(*ConnectionRequest_HostOptions)(nil),    // 33: ConnectionRequest.HostOptions
+	(*ConnectionRequest_PubsubOptions)(nil),  // 34: ConnectionRequest.PubsubOptions
+	(*ConnectionRequest_TextileOptions)(nil), // 35: ConnectionRequest.TextileOptions
+	nil,                                      // 36: RestRequest.ParametersEntry
+	nil,                                      // 37: ConnectionResponse.ThreadsEntry
+	(*ConnectionResponse_TextileThread)(nil), // 38: ConnectionResponse.TextileThread
+	(*InviteResponse_MailInfo)(nil),          // 39: InviteResponse.MailInfo
+	nil,                                      // 40: RestResponse.BodyEntry
+	(*Device)(nil),                           // 41: Device
+	(*APIKeys)(nil),                          // 42: APIKeys
+	(*Location)(nil),                         // 43: Location
+	(*Contact)(nil),                          // 44: Contact
+	(Payload)(0),                             // 45: Payload
+	(*Peer)(nil),                             // 46: Peer
+	(*Transfer)(nil),                         // 47: Transfer
+	(*Peer_Properties)(nil),                  // 48: Peer.Properties
+	(*Position)(nil),                         // 49: Position
+	(*Topic)(nil),                            // 50: Topic
+	(*ErrorMessage)(nil),                     // 51: ErrorMessage
+	(Status)(0),                              // 52: Status
+	(*User)(nil),                             // 53: User
 }
 var file_api_proto_depIdxs = []int32{
-	33, // 0: InitializeRequest.device:type_name -> Device
-	34, // 1: InitializeRequest.apiKeys:type_name -> APIKeys
+	41, // 0: InitializeRequest.device:type_name -> Device
+	42, // 1: InitializeRequest.apiKeys:type_name -> APIKeys
 	0,  // 2: InitializeRequest.logLevel:type_name -> InitializeRequest.LogLevel
-	34, // 3: ConnectionRequest.apiKeys:type_name -> APIKeys
-	35, // 4: ConnectionRequest.location:type_name -> Location
-	36, // 5: ConnectionRequest.contact:type_name -> Contact
+	42, // 3: ConnectionRequest.apiKeys:type_name -> APIKeys
+	43, // 4: ConnectionRequest.location:type_name -> Location
+	44, // 5: ConnectionRequest.contact:type_name -> Contact
 	1,  // 6: ConnectionRequest.type:type_name -> ConnectionRequest.InternetType
-	25, // 7: ConnectionRequest.hostOptions:type_name -> ConnectionRequest.HostOptions
-	26, // 8: ConnectionRequest.pubsubOptions:type_name -> ConnectionRequest.PubsubOptions
-	27, // 9: ConnectionRequest.textileOptions:type_name -> ConnectionRequest.TextileOptions
+	33, // 7: ConnectionRequest.hostOptions:type_name -> ConnectionRequest.HostOptions
+	34, // 8: ConnectionRequest.pubsubOptions:type_name -> ConnectionRequest.PubsubOptions
+	35, // 9: ConnectionRequest.textileOptions:type_name -> ConnectionRequest.TextileOptions
 	2,  // 10: ConnectionRequest.status:type_name -> ConnectionRequest.UserStatus
-	37, // 11: InviteRequest.payload:type_name -> Payload
-	38, // 12: InviteRequest.from:type_name -> Peer
-	38, // 13: InviteRequest.to:type_name -> Peer
-	39, // 14: InviteRequest.transfer:type_name -> Transfer
+	45, // 11: InviteRequest.payload:type_name -> Payload
+	46, // 12: InviteRequest.from:type_name -> Peer
+	46, // 13: InviteRequest.to:type_name -> Peer
+	47, // 14: InviteRequest.transfer:type_name -> Transfer
 	3,  // 15: InviteRequest.type:type_name -> InviteRequest.Type
 	4,  // 16: RestRequest.method:type_name -> RestRequest.Method
-	28, // 17: RestRequest.parameters:type_name -> RestRequest.ParametersEntry
-	38, // 18: RestRequest.peer:type_name -> Peer
-	40, // 19: UpdateRequest.properties:type_name -> Peer.Properties
-	36, // 20: UpdateRequest.contact:type_name -> Contact
-	41, // 21: UpdateRequest.position:type_name -> Position
+	36, // 17: RestRequest.parameters:type_name -> RestRequest.ParametersEntry
+	46, // 18: RestRequest.peer:type_name -> Peer
+	48, // 19: UpdateRequest.properties:type_name -> Peer.Properties
+	44, // 20: UpdateRequest.contact:type_name -> Contact
+	49, // 21: UpdateRequest.position:type_name -> Position
 	1,  // 22: UpdateRequest.connectivity:type_name -> ConnectionRequest.InternetType
 	5,  // 23: VerifyRequest.type:type_name -> VerifyRequest.Type
-	42, // 24: ConnectionResponse.localTopic:type_name -> Topic
-	29, // 25: ConnectionResponse.threads:type_name -> ConnectionResponse.ThreadsEntry
+	50, // 24: ConnectionResponse.localTopic:type_name -> Topic
+	37, // 25: ConnectionResponse.threads:type_name -> ConnectionResponse.ThreadsEntry
 	6,  // 26: InviteResponse.type:type_name -> InviteResponse.Type
-	38, // 27: InviteResponse.from:type_name -> Peer
-	38, // 28: InviteResponse.to:type_name -> Peer
-	39, // 29: InviteResponse.transfer:type_name -> Transfer
-	31, // 30: InviteResponse.mailInfo:type_name -> InviteResponse.MailInfo
+	46, // 27: InviteResponse.from:type_name -> Peer
+	46, // 28: InviteResponse.to:type_name -> Peer
+	47, // 29: InviteResponse.transfer:type_name -> Transfer
+	39, // 30: InviteResponse.mailInfo:type_name -> InviteResponse.MailInfo
 	7,  // 31: RestResponse.method:type_name -> RestResponse.Method
-	32, // 32: RestResponse.body:type_name -> RestResponse.BodyEntry
-	43, // 33: VerifyResponse.error:type_name -> ErrorMessage
-	12, // 34: MailEvent.invites:type_name -> InviteRequest
-	44, // 35: StatusEvent.value:type_name -> Status
-	45, // 36: StatusEvent.user:type_name -> User
-	42, // 37: TopicEvent.topic:type_name -> Topic
-	38, // 38: TopicEvent.peer:type_name -> Peer
-	8,  // 39: TopicEvent.subject:type_name -> TopicEvent.Subject
-	30, // 40: ConnectionResponse.ThreadsEntry.value:type_name -> ConnectionResponse.TextileThread
-	41, // [41:41] is the sub-list for method output_type
-	41, // [41:41] is the sub-list for method input_type
-	41, // [41:41] is the sub-list for extension type_name
-	41, // [41:41] is the sub-list for extension extendee
-	0,  // [0:41] is the sub-list for field type_name
+	40, // 32: RestResponse.body:type_name -> RestResponse.BodyEntry
+	51, // 33: VerifyResponse.error:type_name -> ErrorMessage
+	8,  // 34: CompleteEvent.direction:type_name -> CompleteEvent.Direction
+	47, // 35: CompleteEvent.transfer:type_name -> Transfer
+	16, // 36: MailEvent.invites:type_name -> InviteRequest
+	52, // 37: StatusEvent.value:type_name -> Status
+	53, // 38: StatusEvent.user:type_name -> User
+	50, // 39: TopicEvent.topic:type_name -> Topic
+	46, // 40: TopicEvent.peer:type_name -> Peer
+	9,  // 41: TopicEvent.subject:type_name -> TopicEvent.Subject
+	10, // 42: Request.type:type_name -> Request.Type
+	11, // 43: Response.type:type_name -> Response.Type
+	12, // 44: Event.type:type_name -> Event.Type
+	38, // 45: ConnectionResponse.ThreadsEntry.value:type_name -> ConnectionResponse.TextileThread
+	46, // [46:46] is the sub-list for method output_type
+	46, // [46:46] is the sub-list for method input_type
+	46, // [46:46] is the sub-list for extension type_name
+	46, // [46:46] is the sub-list for extension extendee
+	0,  // [0:46] is the sub-list for field type_name
 }
 
 func init() { file_api_proto_init() }
@@ -2733,7 +3209,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MailEvent); i {
+			switch v := v.(*CompleteEvent); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2745,7 +3221,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProgressEvent); i {
+			switch v := v.(*MailEvent); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2757,7 +3233,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*StatusEvent); i {
+			switch v := v.(*ProgressEvent); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2769,7 +3245,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TopicEvent); i {
+			switch v := v.(*StatusEvent); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2781,7 +3257,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ConnectionRequest_HostOptions); i {
+			switch v := v.(*TopicEvent); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2793,7 +3269,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ConnectionRequest_PubsubOptions); i {
+			switch v := v.(*Request); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2805,7 +3281,31 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ConnectionRequest_TextileOptions); i {
+			switch v := v.(*Response); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Event); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ConnectionRequest_HostOptions); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2817,7 +3317,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ConnectionResponse_TextileThread); i {
+			switch v := v.(*ConnectionRequest_PubsubOptions); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2829,6 +3329,30 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ConnectionRequest_TextileOptions); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ConnectionResponse_TextileThread); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_proto_msgTypes[26].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*InviteResponse_MailInfo); i {
 			case 0:
 				return &v.state
@@ -2863,8 +3387,8 @@ func file_api_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_api_proto_rawDesc,
-			NumEnums:      9,
-			NumMessages:   24,
+			NumEnums:      13,
+			NumMessages:   28,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

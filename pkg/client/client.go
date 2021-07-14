@@ -33,7 +33,7 @@ type Client interface {
 	OnReply(id peer.ID, data []byte)
 	OnResponded(inv *md.InviteRequest)
 	OnProgress(buf []byte)
-	OnCompleted(stream network.Stream, pid protocol.ID, buf []byte, direction md.Direction)
+	OnCompleted(stream network.Stream, pid protocol.ID, completeEvent *md.CompleteEvent)
 }
 
 // Struct: Main Client handles Networking/Identity/Streams

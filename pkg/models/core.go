@@ -26,16 +26,16 @@ type SetStatus func(s Status)
 type OnProtobuf func([]byte)
 type OnError func(err *SonrError)
 type Callback struct {
-	OnInvite      OnProtobuf
-	OnConnected   OnProtobuf
-	OnEvent       OnProtobuf
-	OnMail        OnProtobuf
-	OnReply       OnProtobuf
-	OnProgress    OnProtobuf
-	OnReceived    OnProtobuf
-	OnTransmitted OnProtobuf
-	OnError       OnError
-	SetStatus     SetStatus
+	// OnInvite      OnProtobuf
+	// OnConnected   OnProtobuf
+	OnEvent OnProtobuf
+	// OnMail        OnProtobuf
+	// OnReply       OnProtobuf
+	// OnProgress    OnProtobuf
+	OnRequest  OnProtobuf
+	OnResponse OnProtobuf
+	OnError    OnError
+	SetStatus  SetStatus
 }
 
 // ** ─── State MANAGEMENT ────────────────────────────────────────────────────────
@@ -202,14 +202,14 @@ type Session struct {
 	receiver  *Peer
 	pid       protocol.ID
 	user      *User
-	direction Direction
+	direction CompleteEvent_Direction
 
 	// Management
 	call SessionHandler
 }
 
 type SessionHandler interface {
-	OnCompleted(stream network.Stream, pid protocol.ID, buf []byte, direction Direction)
+	OnCompleted(stream network.Stream, pid protocol.ID, completeEvent *CompleteEvent)
 	OnProgress(buf []byte)
 	OnError(err *SonrError)
 }
@@ -222,7 +222,7 @@ func NewOutSession(u *User, req *InviteRequest, sh SessionHandler) *Session {
 		receiver:  req.GetTo(),
 		pid:       req.ProtocolID(),
 		user:      u,
-		direction: Direction_Outgoing,
+		direction: CompleteEvent_Outgoing,
 		call:      sh,
 	}
 }
@@ -236,25 +236,27 @@ func NewInSession(u *User, inv *InviteRequest, sh SessionHandler) *Session {
 		receiver:  inv.GetTo(),
 		pid:       inv.ProtocolID(),
 		user:      u,
-		direction: Direction_Incoming,
+		direction: CompleteEvent_Incoming,
 		call:      sh,
 	}
 }
 
 // ^ Returns SFile as TransferCard given Receiver and Owner
-func (s *Session) Card() *Transfer {
-	// Receiving Card
-	return &Transfer{
-		// SQL Properties
-		Payload:  s.file.Payload,
-		Received: int32(time.Now().Unix()),
+func (s *Session) Event() *CompleteEvent {
+	return &CompleteEvent{
+		Direction: s.direction,
+		Transfer: &Transfer{
+			// SQL Properties
+			Payload:  s.file.Payload,
+			Received: int32(time.Now().Unix()),
 
-		// Owner Properties
-		Owner:    s.owner.GetProfile(),
-		Receiver: s.receiver.GetProfile(),
+			// Owner Properties
+			Owner:    s.owner.GetProfile(),
+			Receiver: s.receiver.GetProfile(),
 
-		// Data Properties
-		Data: s.file.ToData(),
+			// Data Properties
+			Data: s.file.ToData(),
+		},
 	}
 }
 
@@ -271,7 +273,7 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 			}
 		}
 		// Set Status
-		s.handleReceived(stream)
+		s.call.OnCompleted(stream, s.pid, s.Event())
 	}(msg.NewReader(stream))
 }
 
@@ -288,34 +290,8 @@ func (s *Session) WriteToStream(stream network.Stream) {
 			}
 		}
 		// Handle Complete
-		s.handleTransmitted(stream)
+		s.call.OnCompleted(stream, s.pid, s.Event())
 	}(msg.NewWriter(stream))
-}
-
-// @ Helper: Handles Succesful Received
-func (s *Session) handleReceived(stream network.Stream) {
-	// Marshal Data
-	buf, err := proto.Marshal(s.Card())
-	if err != nil {
-		s.call.OnError(NewMarshalError(err))
-		return
-	}
-
-	// Callback Data
-	s.call.OnCompleted(stream, s.pid, buf, s.direction)
-}
-
-// @ Helper: Handles Succesful Transmitted
-func (s *Session) handleTransmitted(stream network.Stream) {
-	// Marshal Data
-	buf, err := proto.Marshal(s.Card())
-	if err != nil {
-		s.call.OnError(NewMarshalError(err))
-		return
-	}
-
-	// Callback Data
-	s.call.OnCompleted(stream, s.pid, buf, s.direction)
 }
 
 // ** ─── SFile_Item MANAGEMENT ────────────────────────────────────────────────────────
@@ -387,7 +363,7 @@ func (p *itemReader) Progress() []byte {
 	}
 
 	// Marshal and Return
-	buf, err := proto.Marshal(update)
+	buf, err := update.ToGeneric()
 	if err != nil {
 		return nil
 	}

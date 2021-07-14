@@ -11,13 +11,13 @@ import (
 // ^ OnConnected: HostNode Connection Response ^
 func (c *client) OnConnected(r *md.ConnectionResponse) {
 	// Convert Message
-	bytes, err := proto.Marshal(r)
+	bytes, err := r.ToGeneric()
 	if err != nil {
 		c.call.OnError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
 		return
 	}
 	// Call Event
-	c.call.OnConnected(bytes)
+	c.call.OnResponse(bytes)
 }
 
 // ^ OnEvent: Local Lobby Event ^
@@ -25,7 +25,7 @@ func (n *client) OnEvent(e *md.TopicEvent) {
 	// Only Callback when not in Transfer
 	if n.user.IsNotStatus(md.Status_TRANSFER) {
 		// Convert Message
-		bytes, err := proto.Marshal(e)
+		bytes, err := e.ToGeneric()
 		if err != nil {
 			n.call.OnError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
 			return
@@ -41,14 +41,40 @@ func (n *client) OnInvite(data []byte) {
 	// Update Status
 	n.call.SetStatus(md.Status_INVITED)
 
+	// Create Request
+	req := md.Request{
+		Type: md.Request_INVITE,
+		Data: data,
+	}
+
+	// Marshal Request
+	buf, err := proto.Marshal(&req)
+	if err != nil {
+		n.call.OnError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
+		return
+	}
+
 	// Send Callback
-	n.call.OnInvite(data)
+	n.call.OnRequest(buf)
 }
 
 // ^ OnReply: Begins File Transfer when Accepted ^
 func (n *client) OnReply(id peer.ID, reply []byte) {
+	// Create Response
+	req := md.Response{
+		Type: md.Response_INVITE,
+		Data: reply,
+	}
+
+	// Marshal Request
+	buf, err := proto.Marshal(&req)
+	if err != nil {
+		n.call.OnError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
+		return
+	}
+
 	// Call Responded
-	n.call.OnReply(reply)
+	n.call.OnResponse(buf)
 
 	// Check Peer ID
 	if id != "" {
@@ -90,18 +116,18 @@ func (n *client) OnConfirmed(inv *md.InviteRequest) {
 // ^ OnMail: Callback for Mail Event
 func (n *client) OnMail(e *md.MailEvent) {
 	// Create Mail and Marshal Data
-	buf, err := proto.Marshal(e)
+	buf, err := e.ToGeneric()
 	if err != nil {
 		md.NewMarshalError(err)
 		return
 	}
-	n.call.OnMail(buf)
+	n.call.OnEvent(buf)
 }
 
 // ^ OnProgress: Callback Progress Update
 func (n *client) OnProgress(buf []byte) {
 	// Marshal and Return
-	n.call.OnProgress(buf)
+	n.call.OnEvent(buf)
 }
 
 // ^ OnMail: Callback for Error Event
@@ -110,13 +136,29 @@ func (n *client) OnError(err *md.SonrError) {
 }
 
 // ^ OnCompleted: Callback Completed Transfer
-func (n *client) OnCompleted(stream network.Stream, pid protocol.ID, buf []byte, direction md.Direction) {
-	if direction == md.Direction_Incoming {
-		n.call.OnReceived(buf)
+func (n *client) OnCompleted(stream network.Stream, pid protocol.ID, completeEvent *md.CompleteEvent) {
+	if completeEvent.Direction == md.CompleteEvent_Incoming {
+		// Convert to Generic
+		buf, err := completeEvent.ToGeneric()
+		if err != nil {
+			n.call.OnError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
+			return
+		}
+
+		// Call Event
+		n.call.OnEvent(buf)
 		n.call.SetStatus(md.Status_AVAILABLE)
 		n.Host.CloseStream(pid, stream)
-	} else if direction == md.Direction_Outgoing {
-		n.call.OnTransmitted(buf)
+	} else if completeEvent.Direction == md.CompleteEvent_Outgoing {
+		// Convert to Generic
+		buf, err := completeEvent.ToGeneric()
+		if err != nil {
+			n.call.OnError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
+			return
+		}
+
+		// Call Event
+		n.call.OnEvent(buf)
 		n.call.SetStatus(md.Status_AVAILABLE)
 	}
 }
