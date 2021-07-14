@@ -300,7 +300,6 @@ message Request {
   enum Type {
     INVITE = 0; // Invite Request
     REST = 1;   // REST API Request
-    VERIFY = 2; // Verify Request
   }
 }
 

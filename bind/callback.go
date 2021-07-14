@@ -7,14 +7,7 @@ import (
 // * Interface: Callback is implemented from Plugin to receive updates * //
 type Callback interface {
 	OnStatus(data []byte) // Node Status Updates
-	// OnConnected(data []byte) // Connection Response
 	OnEvent(data []byte) // Local Lobby Event
-	// OnMail(data []byte)        // Mailbox Event
-	// OnInvited(data []byte)     // User Invited
-	// OnResponded(data []byte)   // Peer has responded
-	// OnProgress(data []byte)    // File Progress Updated
-	// OnReceived(data []byte)    // User Received File
-	// OnTransmitted(data []byte) // User Sent File
 	OnResponse(data []byte) // Generic Response Callback
 	OnRequest(data []byte)  // Generic Request Callback
 	OnError(data []byte)    // Internal Error

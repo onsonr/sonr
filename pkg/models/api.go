@@ -507,28 +507,6 @@ func (o *RestResponse) ToGeneric() ([]byte, error) {
 	return genBuf, nil
 }
 
-// Create New Generic VERIFY Request Message
-func (o *VerifyRequest) ToGeneric() ([]byte, error) {
-	// Marshal Original
-	ogBuf, err := proto.Marshal(o)
-	if err != nil {
-		return nil, err
-	}
-
-	// Create Generic
-	generic := &Request{
-		Type: Request_VERIFY,
-		Data: ogBuf,
-	}
-
-	// Marshal Generic
-	genBuf, err := proto.Marshal(generic)
-	if err != nil {
-		return nil, err
-	}
-	return genBuf, nil
-}
-
 // Create New Generic COMPLETE Event Message
 func (o *CompleteEvent) ToGeneric() ([]byte, error) {
 	// Marshal Original
