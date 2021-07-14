@@ -17,6 +17,7 @@ type ServiceHandler interface {
 	OnReply(id peer.ID, data []byte)
 	OnConfirmed(inv *md.InviteRequest)
 	OnMail(e *md.MailEvent)
+	OnError(err *md.SonrError)
 }
 
 type ServiceClient interface {

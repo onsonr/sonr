@@ -7,7 +7,6 @@ import (
 	"time"
 
 	crypto "github.com/libp2p/go-libp2p-crypto"
-	"github.com/phuslu/log"
 
 	"github.com/sonr-io/core/internal/host"
 	md "github.com/sonr-io/core/pkg/models"
@@ -40,6 +39,7 @@ type TextileService struct {
 	keyPair     *md.KeyPair
 	options     *md.ConnectionRequest_TextileOptions
 	onConnected md.OnConnected
+	handler     ServiceHandler
 
 	// Properties
 	identity thread.Identity
@@ -61,6 +61,7 @@ func (sc *serviceClient) StartTextile() *md.SonrError {
 		host:        sc.host,
 		onConnected: sc.handler.OnConnected,
 		device:      sc.user.GetDevice(),
+		handler:     sc.handler,
 	}
 	sc.Textile = textile
 
@@ -129,18 +130,8 @@ func (ts *TextileService) InitThreads(sc *serviceClient) *md.SonrError {
 			return md.NewError(err, md.ErrorMessage_THREADS_START_NEW)
 		}
 
-		// Get DB Info
-		allInfo, err := ts.client.ListDBs(ts.ctxToken)
-		if err != nil {
-			return md.NewError(err, md.ErrorMessage_THREADS_LIST_ALL)
-		}
-
 		// Log DB Info
 		md.LogSuccess("Threads Activation")
-		for k, v := range allInfo {
-			log.Info().Msg(fmt.Sprintf("Key: %s", k.String()))
-			log.Info().Msg(fmt.Sprintf("ID: %s \n Maddr: %s \n Key: %s \n Name: %s \n", threadID.String(), v.Addrs, v.Key.String(), v.Name))
-		}
 		isThreadsReady = true
 	}
 	return nil
@@ -164,6 +155,9 @@ func (ts *TextileService) InitMail() *md.SonrError {
 				return md.NewError(err, md.ErrorMessage_MAILBOX_START_EXISTING)
 			}
 
+			// Handle Mailbox Events
+			ts.handleMailboxEvents(mailbox)
+
 			// Set Mailbox and Update Status
 			ts.mailbox = mailbox
 			isMailReady = true
@@ -178,6 +172,9 @@ func (ts *TextileService) InitMail() *md.SonrError {
 				return md.NewError(err, md.ErrorMessage_MAILBOX_START_NEW)
 			}
 
+			// Handle Mailbox Events
+			ts.handleMailboxEvents(mailbox)
+
 			// Set Mailbox and Update Status
 			ts.mailbox = mailbox
 			isMailReady = true
@@ -185,6 +182,57 @@ func (ts *TextileService) InitMail() *md.SonrError {
 		}
 	}
 	return nil
+}
+
+// @ Handle Mailbox Events
+func (ts *TextileService) handleMailboxEvents(mailbox *local.Mailbox) {
+	// Handle mailbox events as they arrive
+	events := make(chan local.MailboxEvent)
+	defer close(events)
+	go func() {
+		for e := range events {
+			switch e.Type {
+			case local.NewMessage:
+				// handle new message
+				invite := &md.InviteRequest{}
+				err := proto.Unmarshal(e.Message.Body, invite)
+				if err != nil {
+					ts.handler.OnError(md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_OPEN))
+					continue
+				}
+
+				// Callback Invite
+				ts.handler.OnInvite(e.Message.Body)
+
+				// Marshal Mail Event
+				ts.handler.OnMail(&md.MailEvent{
+					HasNewMail: true,
+					Invites:    []*md.InviteRequest{invite},
+				})
+
+			case local.MessageRead:
+				// handle message read (inbox only)
+			case local.MessageDeleted:
+				// handle message deleted
+			}
+		}
+	}()
+
+	// Start watching (the third param indicates we want to keep watching when offline)
+	state, err := mailbox.WatchInbox(context.Background(), events, true)
+	if err != nil {
+		md.NewError(err, md.ErrorMessage_MAILBOX_EVENT_STATE)
+		return
+	}
+	for s := range state {
+		// handle connectivity state
+		switch s.State {
+		case cmd.Online:
+			md.LogInfo(fmt.Sprintf("Mailbox is Online: %s", s.State.String()))
+		case cmd.Offline:
+			md.LogInfo(fmt.Sprintf("Mailbox is Offline: %s", s.State.String()))
+		}
+	}
 }
 
 // @ Read Mailbox Mail
@@ -207,7 +255,7 @@ func (ts *TextileService) readMail() (*md.MailEvent, *md.SonrError) {
 	// Iterate over Entries
 	for _, v := range inbox {
 		// Open decrypts the message body
-		body, err := v.Open(context.Background(), ts.identity)
+		body, err := v.Open(context.Background(), ts.mailbox.Identity())
 		if err != nil {
 			return nil, md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_OPEN)
 		}

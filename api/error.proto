@@ -95,6 +95,7 @@ message ErrorMessage {
     MAILBOX_MESSAGE_OPEN = 54;
     MAILBOX_MESSAGE_SEND = 55;
     MAILBOX_MESSAGE_PEER_PUBKEY = 56;
+    MAILBOX_EVENT_STATE = 61;
   }
 
   enum Severity {
