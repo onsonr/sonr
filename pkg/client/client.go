@@ -166,7 +166,8 @@ func (c *client) Respond(r *md.InviteResponse) {
 
 // @ Method Calls to Read Local Mailbox
 func (c *client) ReadMail() *md.SonrError {
-	return c.Service.ReadMail()
+	//return c.Service.ReadMail()
+	return nil
 }
 
 // @ Update proximity/direction and Notify Lobby

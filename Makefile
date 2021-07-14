@@ -15,7 +15,7 @@ GOBIND_IOS=$(GOBIND) -target=ios -bundleid=io.sonr.core
 # GOBINDTOR=$(GOMOBILE) bind -ldflags='-s -w' -tscags=embedTor -v
 
 # @ Bind Directories
-BIND_DIR_CORE=$(SONR_ROOT_DIR)/core/cmd
+BIND_DIR_CORE=$(SONR_ROOT_DIR)/core/bind
 BIND_DIR_ANDROID=$(SONR_ROOT_DIR)/plugin/android/libs
 BIND_DIR_IOS=$(SONR_ROOT_DIR)/plugin/ios/Frameworks
 BIND_IOS_ARTIFACT= $(BIND_DIR_IOS)/Core.framework

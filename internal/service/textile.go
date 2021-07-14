@@ -104,12 +104,6 @@ func (sc *serviceClient) StartTextile() *md.SonrError {
 		if err != nil {
 			return serr
 		}
-
-		// Read Existing Mail
-		serr = sc.ReadMail()
-		if err != nil {
-			return serr
-		}
 	}
 	return nil
 }
