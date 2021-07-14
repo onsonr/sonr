@@ -25,11 +25,34 @@ type SonrErrorOpt struct {
 	Type  ErrorMessage_Type
 }
 
-var loggerEnabled = false
+// Logger Based Settings
+var loggerEnabled = true
+var loggerInfoEnabled = true
+var loggerDebugEnabled = true
+var loggerWarningEnabled = true
+var loggerCriticalEnabled = true
+var loggerFatalEnabled = true
 
 // ^ Initializes Pretty Logger
-func InitLogger() {
+func InitLogger(req *InitializeRequest) {
+	// Check Terminal
 	if log.IsTerminal(os.Stderr.Fd()) && !loggerEnabled {
+		// Check Request
+		if req != nil {
+			// Set Logging by Preferences
+			loggerEnabled = req.IsLoggingEnabled()
+			loggerInfoEnabled = req.HasInfoLog()
+			loggerDebugEnabled = req.HasDebugLog()
+			loggerWarningEnabled = req.HasWarningLog()
+			loggerCriticalEnabled = req.HasCriticalLog()
+			loggerFatalEnabled = req.HasFatalLog()
+		} else {
+			loggerEnabled = true
+		}
+	}
+
+	// Configure Logger from Enabled
+	if loggerEnabled {
 		log.DefaultLogger = log.Logger{
 			TimeFormat: "15:04:05",
 			Caller:     1,
@@ -43,35 +66,34 @@ func InitLogger() {
 				},
 			},
 		}
-		loggerEnabled = true
 	}
 }
 
 // ^ Method Logs a Info Message
 func LogFatal(err error) {
 	if !loggerEnabled {
-		InitLogger()
+		InitLogger(nil)
 	}
 	log.Fatal().Msgf("💀 %s", err.Error())
 }
 
 // ^ Method Logs a Info Message
 func LogInfo(msg string) {
-	if loggerEnabled {
+	if loggerEnabled && loggerInfoEnabled {
 		log.Info().Msgf("💡  %s", msg)
 	}
 }
 
 // ^ Method Logs a Activate Message
 func LogActivate(msg string) {
-	if loggerEnabled {
+	if loggerEnabled && loggerInfoEnabled {
 		log.Info().Msgf("⛷  Activating %s...", msg)
 	}
 }
 
 // ^ Method Logs a Success Message
 func LogSuccess(msg string) {
-	if loggerEnabled {
+	if loggerEnabled && loggerInfoEnabled {
 		log.Info().Msgf("✅  %s Succesful", msg)
 	}
 }
@@ -277,7 +299,7 @@ func (errWrap *SonrError) Bytes() []byte {
 
 // @ Method Prints Error
 func (err *SonrError) Log() {
-	if loggerEnabled {
+	if loggerEnabled && loggerInfoEnabled {
 		// Fetch Data
 		errSeverity := err.Message().GetSeverity()
 		errType := err.Message().GetType().String()
@@ -291,16 +313,22 @@ func (err *SonrError) Log() {
 		case ErrorMessage_LOG:
 			log.Info().Msgf("😬 (%s, %s) \n Message: %s", errType, errSeverity.String(), errMsg)
 		case ErrorMessage_WARNING:
-			log.Warn().Msgf("⚠️ (%s, %s) \n Message: %s", errType, errSeverity.String(), errMsg)
-			log.Info().Msg("\n")
+			if loggerWarningEnabled {
+				log.Warn().Msgf("⚠️ (%s, %s) \n Message: %s", errType, errSeverity.String(), errMsg)
+				log.Info().Msg("\n")
+			}
 		case ErrorMessage_CRITICAL:
-			log.Info().Msg("\n")
-			log.Error().Msgf("🚨 (%s, %s) \n Message: %s", errType, errSeverity.String(), errMsg)
-			log.Info().Msg("\n")
+			if loggerCriticalEnabled {
+				log.Info().Msg("\n")
+				log.Error().Msgf("🚨 (%s, %s) \n Message: %s", errType, errSeverity.String(), errMsg)
+				log.Info().Msg("\n")
+			}
 		case ErrorMessage_FATAL:
-			log.Info().Msg("\n")
-			log.Fatal().Msgf("💀 (%s, %s) \n Message: %s", errType, errSeverity.String(), errMsg)
-			log.Info().Msg("\n")
+			if loggerFatalEnabled {
+				log.Info().Msg("\n")
+				log.Fatal().Msgf("💀 (%s, %s) \n Message: %s", errType, errSeverity.String(), errMsg)
+				log.Info().Msg("\n")
+			}
 		}
 
 		// End Line Break

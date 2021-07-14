@@ -36,10 +36,8 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 		return nil
 	}
 
-	// Check Build Mode and Initialize Logger
-	if req.GetBuildMode() == md.InitializeRequest_Debug {
-		md.InitLogger()
-	}
+	// Initialize Logger
+	md.InitLogger(req)
 
 	// Initialize Node
 	mn := &Node{

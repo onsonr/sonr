@@ -21,15 +21,18 @@ message AuthRequest {
 
 // First Message Sent with Device and API Keys
 message InitializeRequest {
-  Device device = 1;       // Users Device
-  APIKeys apiKeys = 2;     // Client Keys
-  BuildMode buildMode = 3; // Current Build Mode
-  bool isTestDevice = 4;   // Tester Device
+  Device device = 1;     // Users Device
+  APIKeys apiKeys = 2;   // Client Keys
+  LogLevel logLevel = 3; // Set Logging Config
 
-  // Flutter Build Mode
-  enum BuildMode {
-    Debug = 0;
-    Release = 1;
+  // Logging Details
+  enum LogLevel {
+    FATAL = 0;
+    CRITICAL = 1;
+    WARNING = 2;
+    DEBUG = 3;
+    INFO = 4;
+    NONE = 5;
   }
 }
 

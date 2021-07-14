@@ -61,6 +61,55 @@ func NewInvalidVerifyResponseBuf() []byte {
 	}
 }
 
+// ** ─── InitializeRequest MANAGEMENT ────────────────────────────────────────────────────────
+// Check for Logging Enabled
+func (i *InitializeRequest) IsLoggingEnabled() bool {
+	if i.GetLogLevel() != InitializeRequest_NONE {
+		return true
+	}
+	return false
+}
+
+// Check if Info Log Enabled
+func (i *InitializeRequest) HasInfoLog() bool {
+	if i.GetLogLevel() >= InitializeRequest_INFO {
+		return true
+	}
+	return false
+}
+
+// Check if Debug Log Enabled
+func (i *InitializeRequest) HasDebugLog() bool {
+	if i.GetLogLevel() >= InitializeRequest_DEBUG {
+		return true
+	}
+	return false
+}
+
+// Check if Debug Log Enabled
+func (i *InitializeRequest) HasWarningLog() bool {
+	if i.GetLogLevel() >= InitializeRequest_WARNING {
+		return true
+	}
+	return false
+}
+
+// Check if Debug Log Enabled
+func (i *InitializeRequest) HasCriticalLog() bool {
+	if i.GetLogLevel() >= InitializeRequest_CRITICAL {
+		return true
+	}
+	return false
+}
+
+// Check if Debug Log Enabled
+func (i *InitializeRequest) HasFatalLog() bool {
+	if i.GetLogLevel() >= InitializeRequest_FATAL {
+		return true
+	}
+	return false
+}
+
 // ** ─── URLLink MANAGEMENT ────────────────────────────────────────────────────────
 // Creates New Link
 func NewURLLink(url string) *URLLink {
