@@ -188,7 +188,7 @@ func (ts *TextileService) handleMailboxEvents() {
 			switch e.Type {
 			case local.NewMessage:
 				// Open Message Body
-				body, err := e.Message.Open(context.Background(), ts.mailbox.Identity())
+				body, err := e.Message.Open(context.Background(), ts.identity)
 				if err != nil {
 					ts.handler.OnError(md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_OPEN))
 					continue
