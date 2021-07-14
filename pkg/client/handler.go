@@ -88,7 +88,12 @@ func (n *client) OnConfirmed(inv *md.InviteRequest) {
 }
 
 // ^ OnMail: Callback for Mail Event
-func (n *client) OnMail(buf []byte) {
+func (n *client) OnMail(e *md.MailEvent) {
+	// Create Mail and Marshal Data
+	buf, err := proto.Marshal(e)
+	if err != nil {
+		md.NewMarshalError(err)
+	}
 	n.call.OnMail(buf)
 }
 

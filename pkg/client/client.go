@@ -29,6 +29,7 @@ type Client interface {
 	OnEvent(*md.TopicEvent)
 	OnError(err *md.SonrError)
 	OnInvite(buf []byte)
+	OnMail(e *md.MailEvent)
 	OnReply(id peer.ID, data []byte)
 	OnResponded(inv *md.InviteRequest)
 	OnProgress(buf []byte)

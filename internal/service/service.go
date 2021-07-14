@@ -15,7 +15,7 @@ type ServiceHandler interface {
 	OnInvite([]byte)
 	OnReply(id peer.ID, data []byte)
 	OnConfirmed(inv *md.InviteRequest)
-	OnMail([]byte)
+	OnMail(e *md.MailEvent)
 }
 
 type ServiceClient interface {
@@ -81,14 +81,9 @@ func (sc *serviceClient) ReadMail() *md.SonrError {
 		if serr != nil {
 			return serr
 		}
-		// Create Mail and Marshal Data
-		buf, err := proto.Marshal(event)
-		if err != nil {
-			return md.NewMarshalError(err)
-		}
 
 		// Callback Event
-		sc.handler.OnMail(buf)
+		sc.handler.OnMail(event)
 		md.LogSuccess("Reading Mail")
 		return nil
 	}
