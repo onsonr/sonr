@@ -15,6 +15,7 @@ import (
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/pkg/util"
+	"github.com/textileio/go-threads/core/thread"
 )
 
 // ** ─── KeyPair MANAGEMENT ────────────────────────────────────────────────────────
@@ -215,6 +216,11 @@ func (d *Device) IsWeb() bool {
 // Method Checks for Windows
 func (d *Device) IsWindows() bool {
 	return d.Platform == Platform_Windows
+}
+
+// Method returns Thread Identity for Device
+func (d *Device) ThreadIdentity() thread.Identity {
+	return thread.NewLibp2pIdentity(d.KeyPair.PrivKey())
 }
 
 // Checks if File Exists

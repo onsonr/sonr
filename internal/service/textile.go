@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"time"
 
-	crypto "github.com/libp2p/go-libp2p-crypto"
-
 	"github.com/sonr-io/core/internal/host"
 	md "github.com/sonr-io/core/pkg/models"
 	"github.com/sonr-io/core/pkg/util"
@@ -36,16 +34,14 @@ type TextileService struct {
 	apiKeys     *md.APIKeys
 	device      *md.Device
 	host        host.HostNode
-	keyPair     *md.KeyPair
 	options     *md.ConnectionRequest_TextileOptions
 	onConnected md.OnConnected
 	handler     ServiceHandler
 
 	// Properties
-	identity thread.Identity
-	client   *client.Client
-	mail     *local.Mail
-	mailbox  *local.Mailbox
+	client  *client.Client
+	mail    *local.Mail
+	mailbox *local.Mailbox
 }
 
 // @ Starts New Textile Instance
@@ -55,7 +51,6 @@ func (sc *serviceClient) StartTextile() *md.SonrError {
 
 	// Initialize
 	textile := &TextileService{
-		keyPair:     sc.user.KeyPair(),
 		options:     sc.request.GetTextileOptions(),
 		apiKeys:     sc.apiKeys,
 		host:        sc.host,
@@ -77,9 +72,6 @@ func (sc *serviceClient) StartTextile() *md.SonrError {
 		if err != nil {
 			return md.NewError(err, md.ErrorMessage_TEXTILE_START_CLIENT)
 		}
-
-		// Get Identity
-		textile.identity = getIdentity(textile.keyPair.PrivKey())
 
 		// Create Auth Context
 		textile.ctxAuth, err = newUserAuthCtx(context.Background(), textile.apiKeys)
@@ -110,7 +102,7 @@ func (sc *serviceClient) StartTextile() *md.SonrError {
 
 // @ Returns Instance Host
 func (ts *TextileService) PubKey() thread.PubKey {
-	return ts.identity.GetPublic()
+	return ts.device.ThreadIdentity().GetPublic()
 }
 
 // @ Initializes Threads
@@ -187,34 +179,8 @@ func (ts *TextileService) handleMailboxEvents() {
 		for e := range events {
 			switch e.Type {
 			case local.NewMessage:
-				// Open Message Body
-				body, err := e.Message.Open(context.Background(), ts.identity)
-				if err != nil {
-					ts.handler.OnError(md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_OPEN))
-					continue
-				}
-
-				// Handle New Message
-				invite := md.InviteRequest{}
-				err = proto.Unmarshal(body, &invite)
-				if err != nil {
-					ts.handler.OnError(md.NewUnmarshalError(err))
-					continue
-				}
-
-				// Callback Marshalled Invite
-				ts.handler.OnInvite(body)
-
-				// Callback Mail Event
-				ts.handler.OnMail(&md.MailEvent{
-					HasNewMail: true,
-					Invites:    []*md.InviteRequest{&invite},
-				})
-
-			case local.MessageRead:
-				// handle message read (inbox only)
-			case local.MessageDeleted:
-				// handle message deleted
+				ts.onNewMessage(e)
+				continue
 			}
 		}
 	}()
@@ -232,11 +198,35 @@ func (ts *TextileService) handleMailboxEvents() {
 		// handle connectivity state
 		switch s.State {
 		case cmd.Online:
-			md.LogInfo(fmt.Sprintf("Mailbox is Online: %s", s.State.String()))
+			md.LogInfo(fmt.Sprintf("Mailbox is Online: %s", s.Err))
 		case cmd.Offline:
-			md.LogInfo(fmt.Sprintf("Mailbox is Offline: %s", s.State.String()))
+			md.LogInfo(fmt.Sprintf("Mailbox is Offline: %s", s.Err))
 		}
 	}
+}
+
+// @ Handle New Mailbox Message
+func (ts *TextileService) onNewMessage(e local.MailboxEvent) {
+	// Open Message Body
+	body, err := e.Message.Open(context.Background(), ts.mailbox.Identity())
+	if err != nil {
+		ts.handler.OnError(md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_OPEN))
+		return
+	}
+
+	// Handle New Message
+	invite := md.InviteRequest{}
+	err = proto.Unmarshal(body, &invite)
+	if err != nil {
+		ts.handler.OnError(md.NewUnmarshalError(err))
+		return
+	}
+
+	// Callback Mail Event
+	ts.handler.OnMail(&md.MailEvent{
+		HasNewMail: true,
+		Invites:    []*md.InviteRequest{&invite},
+	})
 }
 
 // @ Read Mailbox Mail
@@ -281,6 +271,7 @@ func (ts *TextileService) readMail() (*md.MailEvent, *md.SonrError) {
 	}, nil
 }
 
+// @ Send Mail to Recipient
 func (ts *TextileService) sendMail(to thread.PubKey, buf []byte) ([]byte, *md.SonrError) {
 	// Send Message to Mailbox
 	msg, err := ts.mailbox.SendMessage(context.Background(), to, buf)
@@ -308,10 +299,19 @@ func (ts *TextileService) sendMail(to thread.PubKey, buf []byte) ([]byte, *md.So
 	return buf, nil
 }
 
-// # Helper: Gets Thread Identity from Private Key
-func getIdentity(privateKey crypto.PrivKey) thread.Identity {
-	myIdentity := thread.NewLibp2pIdentity(privateKey)
-	return myIdentity
+// # Helper: Creates New Textile Mailbox Config
+func (ts *TextileService) defaultMailConfig() local.Config {
+	return local.Config{
+		Path:      ts.device.WorkingSupportDir(),
+		Identity:  ts.device.ThreadIdentity(),
+		APIKey:    ts.apiKeys.GetTextileKey(),
+		APISecret: ts.apiKeys.GetTextileSecret(),
+	}
+}
+
+// # Helper: Checks if Device Has Mailbox Directory
+func (ts *TextileService) hasMailboxDirectory() bool {
+	return ts.device.GetFileSystem().IsDirectory(ts.device.FileSystem.Support, util.TEXTILE_MAILBOX_DIR)
 }
 
 // # Helper: Creates User Auth Context from API Keys
@@ -326,24 +326,9 @@ func newUserAuthCtx(ctx context.Context, keys *md.APIKeys) (context.Context, err
 // # Helper: Creates Auth Token Context from AuthContext, Client, Identity
 func (ts *TextileService) newTokenCtx() (context.Context, error) {
 	// Generate a new token for the user
-	token, err := ts.client.GetToken(ts.ctxAuth, ts.identity)
+	token, err := ts.client.GetToken(ts.ctxAuth, ts.device.ThreadIdentity())
 	if err != nil {
 		return nil, err
 	}
 	return thread.NewTokenContext(ts.ctxAuth, token), nil
-}
-
-// # Helper: Creates New Textile Mailbox Config
-func (ts *TextileService) defaultMailConfig() local.Config {
-	return local.Config{
-		Path:      ts.device.WorkingSupportDir(),
-		Identity:  ts.identity,
-		APIKey:    ts.apiKeys.GetTextileKey(),
-		APISecret: ts.apiKeys.GetTextileSecret(),
-	}
-}
-
-// # Helper: Checks if Device Has Mailbox Directory
-func (ts *TextileService) hasMailboxDirectory() bool {
-	return ts.device.GetFileSystem().IsDirectory(ts.device.FileSystem.Support, util.TEXTILE_MAILBOX_DIR)
 }
