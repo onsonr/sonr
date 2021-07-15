@@ -25,6 +25,8 @@ type ServiceClient interface {
 	Respond(rep *md.InviteResponse)
 	SendMail(e *md.InviteRequest) *md.SonrError
 	ReadMail() *md.SonrError
+	PushSingle(*md.PushMessage) *md.SonrError
+	PushMultiple(*md.PushMessage, []*md.Peer) *md.SonrError
 	Close()
 }
 
@@ -42,6 +44,7 @@ type serviceClient struct {
 	// Services
 	Auth    *AuthService
 	Device  *DeviceService
+	Push    *PushService
 	Textile *TextileService
 }
 
@@ -59,6 +62,12 @@ func NewService(ctx context.Context, h net.HostNode, u *md.User, req *md.Connect
 
 	// Begin Auth Service
 	err := client.StartAuth()
+	if err != nil {
+		return nil, err
+	}
+
+	// Begin Push Service
+	err = client.StartPush()
 	if err != nil {
 		return nil, err
 	}
@@ -123,6 +132,22 @@ func (sc *serviceClient) SendMail(inv *md.InviteRequest) *md.SonrError {
 		return nil
 	} else {
 		md.LogInfo("Mail is not Ready")
+	}
+	return nil
+}
+
+// @ Method Sends Push Notification to Peer
+func (sc *serviceClient) PushSingle(msg *md.PushMessage) *md.SonrError {
+	if isPushEnabled {
+		return sc.Push.push(msg)
+	}
+	return nil
+}
+
+// @ Method Send Multiple Push Notifications to Peers
+func (sc *serviceClient) PushMultiple(msg *md.PushMessage, peers []*md.Peer) *md.SonrError {
+	if isPushEnabled {
+		return sc.Push.pushMulti(msg, peers)
 	}
 	return nil
 }

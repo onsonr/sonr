@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "peer.proto";
+
 // Require Go Package
 option go_package = "/models";
 
@@ -9,7 +11,6 @@ message Chunk {
   int32 size = 2;      // Size of this Chunk
   bool isComplete = 3; // Whether this is final chunk
 }
-
 
 // Current Node Lifecycle State
 enum LifecycleState {
@@ -26,4 +27,9 @@ enum SonrProtocol {
   Linker = 3;         // Protocol for Linking Device to User
   LocalTransfer = 4;  // Protocol for Local Transfer to Peer
   RemoteTransfer = 5; // Protocol for Remote Transfer to Peer
+}
+
+message PushMessage {
+  Peer peer = 1;
+  map<string, string> data = 2;
 }

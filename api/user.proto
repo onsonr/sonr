@@ -12,8 +12,9 @@ message APIKeys {
   string rapidApiKey = 2;
   string handshakeKey = 3;
   string handshakeSecret = 4;
-  string textileKey = 5;
-  string textileSecret = 6;
+  string pushRegistrationKey = 5;
+  string textileKey = 6;
+  string textileSecret = 7;
 }
 
 // Information about device for User
@@ -113,6 +114,7 @@ message User {
   Settings settings = 7; // User Settings
   Contact contact = 8;   // Users Contact Card
   Location location = 9; // Client Location for Routing
+  string pushToken = 10; // Push Notification Token
 
   // Crypto Data to Place in DHT
   message Crypto {

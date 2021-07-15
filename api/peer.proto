@@ -117,6 +117,7 @@ message Peer {
     string device = 2;    // Device ID
     string multiAddr = 4; // Peer MultiAddr
     string publicKey = 5; // Public Key of Peer
+    string pushToken = 6; // Push Notification token
   }
 
   // Properties

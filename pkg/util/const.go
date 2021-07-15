@@ -54,6 +54,9 @@ const AUTH_RPC_SERVICE = "AuthService"
 // Local RPC Service Method for Invite
 const AUTH_METHOD_INVITE = "InviteWith"
 
+// Firebase Project ID
+const FIRE_PROJECT_ID = "trans-density-315704"
+
 // ** ─── Host ────────────────────────────────────────────────────────
 // Libp2p Host Rendevouz Point
 const HOST_RENDEVOUZ_POINT = "/sonr/rendevouz/0.9.2"

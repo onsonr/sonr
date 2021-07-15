@@ -406,8 +406,8 @@ func (o *ConnectionResponse) ToGeneric() ([]byte, error) {
 	}
 
 	// Create Generic
-	generic := &Response{
-		Type: Response_CONNECTION,
+	generic := &GenericResponse{
+		Type: GenericResponse_CONNECTION,
 		Data: ogBuf,
 	}
 
@@ -428,8 +428,8 @@ func (o *InviteRequest) ToGeneric() ([]byte, error) {
 	}
 
 	// Create Generic
-	generic := &Request{
-		Type: Request_INVITE,
+	generic := &GenericRequest{
+		Type: GenericRequest_INVITE,
 		Data: ogBuf,
 	}
 
@@ -450,8 +450,8 @@ func (o *InviteResponse) ToGeneric() ([]byte, error) {
 	}
 
 	// Create Generic
-	generic := &Response{
-		Type: Response_INVITE,
+	generic := &GenericResponse{
+		Type: GenericResponse_INVITE,
 		Data: ogBuf,
 	}
 
@@ -472,8 +472,8 @@ func (o *RestRequest) ToGeneric() ([]byte, error) {
 	}
 
 	// Create Generic
-	generic := &Request{
-		Type: Request_REST,
+	generic := &GenericRequest{
+		Type: GenericRequest_REST,
 		Data: ogBuf,
 	}
 
@@ -494,8 +494,8 @@ func (o *RestResponse) ToGeneric() ([]byte, error) {
 	}
 
 	// Create Generic
-	generic := &Response{
-		Type: Response_REST,
+	generic := &GenericResponse{
+		Type: GenericResponse_REST,
 		Data: ogBuf,
 	}
 
@@ -516,8 +516,8 @@ func (o *CompleteEvent) ToGeneric() ([]byte, error) {
 	}
 
 	// Create Generic
-	generic := &Event{
-		Type: Event_COMPLETE,
+	generic := &GenericEvent{
+		Type: GenericEvent_COMPLETE,
 		Data: ogBuf,
 	}
 
@@ -538,8 +538,8 @@ func (o *MailEvent) ToGeneric() ([]byte, error) {
 	}
 
 	// Create Generic
-	generic := &Event{
-		Type: Event_MAIL,
+	generic := &GenericEvent{
+		Type: GenericEvent_MAIL,
 		Data: ogBuf,
 	}
 
@@ -560,8 +560,8 @@ func (o *ProgressEvent) ToGeneric() ([]byte, error) {
 	}
 
 	// Create Generic
-	generic := &Event{
-		Type: Event_PROGRESS,
+	generic := &GenericEvent{
+		Type: GenericEvent_PROGRESS,
 		Data: ogBuf,
 	}
 
@@ -582,8 +582,8 @@ func (o *TopicEvent) ToGeneric() ([]byte, error) {
 	}
 
 	// Create Generic
-	generic := &Event{
-		Type: Event_TOPIC,
+	generic := &GenericEvent{
+		Type: GenericEvent_TOPIC,
 		Data: ogBuf,
 	}
 

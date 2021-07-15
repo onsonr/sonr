@@ -46,6 +46,7 @@ message ConnectionRequest {
   PubsubOptions pubsubOptions = 6;   // Pubsub Configuration
   TextileOptions textileOptions = 7; // Textile Client Config
   UserStatus status = 8;             // User Status
+  string pushToken = 9;              // Push Notification Token
 
   // Internet Connection Type
   enum InternetType {
@@ -129,6 +130,7 @@ message UpdateRequest {
     Contact contact = 2;            // Users Updated Contact Card
     Position position = 3;          // Users updated Position
     ConnectionRequest.InternetType connectivity = 4; // Internet Type Changed
+    string pushToken = 5;                            // Push Notification token
   }
 }
 
@@ -293,7 +295,7 @@ message TopicEvent {
 // -------- Callback Generic Types ----------- //
 // ------------------------------------------- //
 // Generic Request Message
-message Request {
+message GenericRequest {
   Type type = 1;  // Type of Request
   bytes data = 2; // Data for Request
 
@@ -304,7 +306,7 @@ message Request {
 }
 
 // Generic Response Message
-message Response {
+message GenericResponse {
   Type type = 1;  // Type of Response
   bytes data = 2; // Data for Response
 
@@ -316,7 +318,7 @@ message Response {
 }
 
 // Generic Event Message
-message Event {
+message GenericEvent {
   Type type = 1;  // Type of Event
   bytes data = 2; // Data for Event
 

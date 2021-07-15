@@ -42,8 +42,8 @@ func (n *client) OnInvite(data []byte) {
 	n.call.SetStatus(md.Status_INVITED)
 
 	// Create Request
-	req := md.Request{
-		Type: md.Request_INVITE,
+	req := md.GenericRequest{
+		Type: md.GenericRequest_INVITE,
 		Data: data,
 	}
 
@@ -61,8 +61,8 @@ func (n *client) OnInvite(data []byte) {
 // ^ OnReply: Begins File Transfer when Accepted ^
 func (n *client) OnReply(id peer.ID, reply []byte) {
 	// Create Response
-	req := md.Response{
-		Type: md.Response_INVITE,
+	req := md.GenericResponse{
+		Type: md.GenericResponse_INVITE,
 		Data: reply,
 	}
 

@@ -471,6 +471,14 @@ func generateError(errType ErrorMessage_Type) (string, ErrorMessage_Severity) {
 		return "Failed to Unmarshal Public Key from Peers String representation", ErrorMessage_WARNING
 	case ErrorMessage_DEVICE_ID:
 		return "Failed to retreive Device's machine ID.", ErrorMessage_CRITICAL
+	case ErrorMessage_PUSH_SINGLE:
+		return "Failed to send Push Notification to peer.", ErrorMessage_WARNING
+	case ErrorMessage_PUSH_MULTIPLE:
+		return "Failed to send any Push Notifications to peers.", ErrorMessage_WARNING
+	case ErrorMessage_PUSH_START_APP:
+		return "Failed to start Firebase application.", ErrorMessage_CRITICAL
+	case ErrorMessage_PUSH_START_MESSAGING:
+		return "Failed to start Firebase push notification messaging.", ErrorMessage_CRITICAL
 	default:
 		return "Unknown", ErrorMessage_LOG
 	}

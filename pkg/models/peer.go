@@ -40,6 +40,7 @@ func (u *User) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) *SonrError {
 			Device:    u.DeviceID(),
 			MultiAddr: maddr.String(),
 			PublicKey: u.KeyPair().PubKeyBase64(),
+			PushToken: u.GetPushToken(),
 		},
 		Profile:  u.Profile(),
 		Platform: u.Device.Platform,

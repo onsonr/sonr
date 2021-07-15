@@ -341,6 +341,7 @@ func NewUser(ir *InitializeRequest) (*User, *SonrError) {
 
 // Set the User with ConnectionRequest
 func (u *User) InitConnection(cr *ConnectionRequest) {
+	u.PushToken = cr.GetPushToken()
 	u.Contact = cr.GetContact()
 	u.SName = cr.GetContact().GetProfile().GetSName()
 	u.Location = cr.GetLocation()
