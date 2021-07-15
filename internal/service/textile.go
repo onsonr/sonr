@@ -208,31 +208,41 @@ func (ts *TextileService) handleMailboxEvents() {
 func (ts *TextileService) onNewMessage(e local.MailboxEvent) {
 	// Logging Received
 	md.LogInfo(fmt.Sprintf("Received new message: %s", e.Message.From))
+	inbox, err := ts.mailbox.ListInboxMessages(context.Background())
+	if err != nil {
+		md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_OPEN)
+		return
+	}
+
+	body, err := inbox[0].Open(context.Background(), ts.mailbox.Identity())
+	if err != nil {
+		md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_OPEN)
+		return
+	}
 
 	// Validate Message Body
-	if len(e.Message.Body) > 0 {
+	if len(body) > 0 {
 		// Log Valid Lobby Length
-		md.LogInfo(fmt.Sprintf("Valid Body Length: %d", len(e.Message.Body)))
-
-		// Open Message Body
-		body, err := ts.device.ThreadIdentity().Decrypt(context.Background(), e.Message.Body)
-		if err != nil {
-			md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_OPEN)
-			return
-		}
+		md.LogInfo(fmt.Sprintf("Valid Body Length: %d", len(body)))
 
 		// Create Mail Event
 		mail := &md.MailEvent{
-			To:        e.Message.To.String(),
-			From:      e.Message.From.String(),
-			CreatedAt: int32(e.Message.CreatedAt.Unix()),
-			ReadAt:    int32(e.Message.ReadAt.Unix()),
+			To:        inbox[0].To.String(),
+			From:      inbox[0].From.String(),
+			CreatedAt: int32(inbox[0].CreatedAt.Unix()),
+			ReadAt:    int32(inbox[0].ReadAt.Unix()),
 			Body:      body,
-			Signature: e.Message.Signature,
+			Signature: inbox[0].Signature,
 		}
 
 		// Callback Mail Event
 		ts.handler.OnMail(mail)
+
+		// Mark Item as Read
+		err = ts.mailbox.ReadInboxMessage(context.Background(), inbox[0].ID)
+		if err != nil {
+			md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_READ)
+		}
 	} else {
 		md.LogInfo("Empty Mailbox Message")
 	}
