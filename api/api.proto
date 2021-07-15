@@ -43,10 +43,9 @@ message ConnectionRequest {
   Contact contact = 3;               // Users Contact Card
   InternetType type = 4;             // Internet Connection Type
   HostOptions hostOptions = 5;       // Libp2p Host config
-  PubsubOptions pubsubOptions = 6;   // Pubsub Configuration
-  ServiceOptions serviceOptions = 7; // Service Config
-  UserStatus status = 8;             // User Status
-  string pushToken = 9;              // Push Notification Token
+  ServiceOptions serviceOptions = 6; // Service Config
+  UserStatus status = 7;             // User Status
+  string pushToken = 8;              // Push Notification Token
 
   // Internet Connection Type
   enum InternetType {
@@ -62,11 +61,6 @@ message ConnectionRequest {
     bool httpTransport = 3;
     bool mdnsDiscovery = 4;
     bool natPortMap = 5;
-  }
-
-  // Pubsub Topic Configuration
-  message PubsubOptions {
-    bool relay = 1; // Relay Topic Messages
   }
 
   // Service Configuration
