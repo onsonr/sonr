@@ -2,6 +2,7 @@ package models
 
 import (
 	"crypto/hmac"
+	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
 	"errors"
@@ -19,79 +20,120 @@ import (
 )
 
 // ** ─── KeyPair MANAGEMENT ────────────────────────────────────────────────────────
-// Constructer that Initializes KeyPair without Buffer
-func (d *Device) SetKeyPair() *SonrError {
-	if d.HasKeys() {
-		// Get PrivKey File
-		privBuf, serr := d.ReadKey()
-		if serr != nil {
-			return serr
-		}
-
-		// Get Private Key from Buffer
-		privKey, err := crypto.UnmarshalEd25519PrivateKey(privBuf)
+// Method Initializes Device
+func (d *Device) Initialize(r *InitializeRequest) *SonrError {
+	// Get Machine ID of Device
+	if d.GetId() == "" {
+		id, err := machineid.ID()
 		if err != nil {
-			return NewError(err, ErrorMessage_KEY_INVALID)
+			return NewError(err, ErrorMessage_DEVICE_ID)
 		}
 
-		// Get Public Key from Private and Marshal
-		pubKey := privKey.GetPublic()
-		pubBuf, err := crypto.MarshalPublicKey(pubKey)
-		if err != nil {
-			return NewError(err, ErrorMessage_KEY_SET)
-		}
+		// Set ID
+		d.Id = id
+	}
 
-		// Set Key Pair
-		d.KeyPair = &KeyPair{
-			Type: KeyType_Ed25519,
-			Public: &KeyPair_Public{
-				Base64: crypto.ConfigEncodeKey(pubBuf),
-				Buffer: pubBuf,
-			},
-			Private: &KeyPair_Private{
-				Path:   d.WorkingKeyPath(),
-				Buffer: privBuf,
-			},
-		}
+	// Check for Key Reset
+	if r.GetResetKeys() {
+		return d.resetKeyPair()
 	} else {
-		// Create New Key
-		privKey, pubKey, err := crypto.GenerateKeyPair(crypto.Ed25519, -1)
-		if err != nil {
-			return NewError(err, ErrorMessage_HOST_KEY)
-		}
-
-		// Marshal Data
-		privBuf, err := crypto.MarshalPrivateKey(privKey)
-		if err != nil {
-			return NewError(err, ErrorMessage_MARSHAL)
-		}
-
-		// Marshal Data
-		pubBuf, err := crypto.MarshalPublicKey(pubKey)
-		if err != nil {
-			return NewError(err, ErrorMessage_MARSHAL)
-		}
-
-		// Write Private Key to File
-		path, werr := d.WriteKey(privBuf)
-		if werr != nil {
-			return NewError(err, ErrorMessage_USER_SAVE)
-		}
-
-		// Set Keys
-		d.KeyPair = &KeyPair{
-			Type: KeyType_Ed25519,
-			Public: &KeyPair_Public{
-				Base64: crypto.ConfigEncodeKey(pubBuf),
-				Buffer: pubBuf,
-			},
-			Private: &KeyPair_Private{
-				Path:   path,
-				Buffer: privBuf,
-			},
+		// Set KeyPair
+		if d.HasKeys() {
+			return d.loadKeyPair()
+		} else {
+			return d.newKeyPair()
 		}
 	}
 	return nil
+}
+
+// Method Loads Existing Key Pair
+func (d *Device) loadKeyPair() *SonrError {
+	// Get PrivKey File
+	privBuf, serr := d.ReadKey()
+	if serr != nil {
+		return serr
+	}
+
+	// Get Private Key from Buffer
+	privKey, err := crypto.UnmarshalPrivateKey(privBuf)
+	if err != nil {
+		return NewError(err, ErrorMessage_KEY_INVALID)
+	}
+
+	// Get Public Key from Private and Marshal
+	pubKey := privKey.GetPublic()
+	pubBuf, err := crypto.MarshalPublicKey(pubKey)
+	if err != nil {
+		return NewError(err, ErrorMessage_KEY_SET)
+	}
+
+	// Set Key Pair
+	d.KeyPair = &KeyPair{
+		Type: KeyType_Ed25519,
+		Public: &KeyPair_Public{
+			Base64: crypto.ConfigEncodeKey(pubBuf),
+			Buffer: pubBuf,
+		},
+		Private: &KeyPair_Private{
+			Path:   d.WorkingKeyPath(),
+			Buffer: privBuf,
+		},
+	}
+	return nil
+}
+
+// Method Creates New Key Pair
+func (d *Device) newKeyPair() *SonrError {
+	// Create New Key
+	privKey, pubKey, err := crypto.GenerateEd25519Key(rand.Reader)
+	if err != nil {
+		return NewError(err, ErrorMessage_HOST_KEY)
+	}
+
+	// Marshal Data
+	privBuf, err := crypto.MarshalPrivateKey(privKey)
+	if err != nil {
+		return NewError(err, ErrorMessage_MARSHAL)
+	}
+
+	// Marshal Data
+	pubBuf, err := crypto.MarshalPublicKey(pubKey)
+	if err != nil {
+		return NewError(err, ErrorMessage_MARSHAL)
+	}
+
+	// Write Private Key to File
+	path, werr := d.WriteKey(privBuf)
+	if werr != nil {
+		return NewError(err, ErrorMessage_USER_SAVE)
+	}
+
+	// Set Keys
+	d.KeyPair = &KeyPair{
+		Type: KeyType_Ed25519,
+		Public: &KeyPair_Public{
+			Base64: crypto.ConfigEncodeKey(pubBuf),
+			Buffer: pubBuf,
+		},
+		Private: &KeyPair_Private{
+			Path:   path,
+			Buffer: privBuf,
+		},
+	}
+	return nil
+}
+
+// Method Deletes Existing Keys and Creates New Pair
+func (d *Device) resetKeyPair() *SonrError {
+	// Delete Key Pair
+	err := os.Remove(d.WorkingKeyPath())
+	if err != nil {
+		LogInfo("ERROR: " + err.Error())
+	}
+
+	// Create New Key
+	return d.newKeyPair()
 }
 
 // Method Returns PeerID from Public Key
@@ -106,7 +148,7 @@ func (kp *KeyPair) ID() (peer.ID, *SonrError) {
 // Method Returns Private Key
 func (kp *KeyPair) PrivKey() crypto.PrivKey {
 	// Get Key from Buffer
-	key, err := crypto.UnmarshalEd25519PrivateKey(kp.GetPrivate().GetBuffer())
+	key, err := crypto.UnmarshalPrivateKey(kp.GetPrivate().GetBuffer())
 	if err != nil {
 		return nil
 	}
@@ -121,7 +163,7 @@ func (kp *KeyPair) PrivBuffer() []byte {
 // Method Returns Public Key
 func (kp *KeyPair) PubKey() crypto.PubKey {
 	// Get Key from Buffer
-	privKey, err := crypto.UnmarshalEd25519PrivateKey(kp.GetPrivate().GetBuffer())
+	privKey, err := crypto.UnmarshalPrivateKey(kp.GetPrivate().GetBuffer())
 	if err != nil {
 		return nil
 	}
@@ -156,20 +198,6 @@ func (kp *KeyPair) Verify(data []byte, sig []byte) (bool, error) {
 }
 
 // ** ─── DEVICE MANAGEMENT ────────────────────────────────────────────────────────
-// Method Initializes Device
-func (d *Device) Initialize() {
-	if d.GetId() == "" {
-		id, err := machineid.ID()
-		if err != nil {
-			NewError(err, ErrorMessage_DEVICE_ID)
-			return
-		}
-
-		// Set ID
-		d.Id = id
-	}
-}
-
 // Method Checks if Device has Keys
 func (d *Device) HasKeys() bool {
 	if _, err := os.Stat(d.WorkingFilePath(util.KEY_FILE_NAME)); os.IsNotExist(err) {
@@ -220,7 +248,7 @@ func (d *Device) IsWindows() bool {
 
 // Method returns Thread Identity for Device
 func (d *Device) ThreadIdentity() thread.Identity {
-	return thread.NewLibp2pIdentity(d.GetKeyPair().PrivKey())
+	return thread.NewLibp2pIdentity(d.KeyPair.PrivKey())
 }
 
 // Checks if File Exists
@@ -322,10 +350,9 @@ func (d *Device) WriteFile(name string, data []byte) (string, *SonrError) {
 func NewUser(ir *InitializeRequest) (*User, *SonrError) {
 	// Initialize Device
 	d := ir.GetDevice()
-	d.Initialize()
 
 	// Fetch Key Pair
-	err := d.SetKeyPair()
+	err := d.Initialize(ir)
 	if err != nil {
 		return nil, err
 	}

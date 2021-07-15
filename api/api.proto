@@ -24,6 +24,7 @@ message InitializeRequest {
   Device device = 1;     // Users Device
   APIKeys apiKeys = 2;   // Client Keys
   LogLevel logLevel = 3; // Set Logging Config
+  bool resetKeys = 4;    // Reset KeyPair for Migration
 
   // Logging Details
   enum LogLevel {
