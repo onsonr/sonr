@@ -14,43 +14,49 @@ import (
 var isPushEnabled = false
 
 type PushService struct {
-	ctx    context.Context
-	key    string
-	app    *firebase.App
-	client *messaging.Client
+	ctx     context.Context
+	key     string
+	app     *firebase.App
+	client  *messaging.Client
+	options *md.ConnectionRequest_ServiceOptions
 }
 
 // Returns New Push Client
 func (sc *serviceClient) StartPush() *md.SonrError {
-	// Logging
-	md.LogActivate("Push Service")
+	// Initialize
+	opts := sc.request.GetServiceOptions()
+	if opts.Push {
+		// Logging
+		md.LogActivate("Push Service")
 
-	// Obtain a messaging.Client from the App.
-	ctx := context.Background()
-	opt := option.WithCredentialsFile(sc.request.GetApiKeys().GetPushKeyPath())
-	config := &firebase.Config{ProjectID: util.FIRE_PROJECT_ID}
+		// Obtain a messaging.Client from the App.
+		ctx := context.Background()
+		opt := option.WithCredentialsFile(sc.request.GetApiKeys().GetPushKeyPath())
+		config := &firebase.Config{ProjectID: util.FIRE_PROJECT_ID}
 
-	// Create New Firebase Client
-	app, err := firebase.NewApp(context.Background(), config, opt)
-	if err != nil {
-		return md.NewError(err, md.ErrorMessage_PUSH_START_APP)
+		// Create New Firebase Client
+		app, err := firebase.NewApp(context.Background(), config, opt)
+		if err != nil {
+			return md.NewError(err, md.ErrorMessage_PUSH_START_APP)
+		}
+
+		// Create New Push Client
+		client, err := app.Messaging(ctx)
+		if err != nil {
+			return md.NewError(err, md.ErrorMessage_PUSH_START_MESSAGING)
+		}
+
+		// Return Push Interface
+		sc.Push = &PushService{
+			key:     sc.request.GetApiKeys().GetPushKeyPath(),
+			app:     app,
+			client:  client,
+			ctx:     ctx,
+			options: opts,
+		}
+		isPushEnabled = true
+		md.LogSuccess("Push Notifications Activation")
 	}
-
-	// Create New Push Client
-	client, err := app.Messaging(ctx)
-	if err != nil {
-		return md.NewError(err, md.ErrorMessage_PUSH_START_MESSAGING)
-	}
-
-	// Return Push Interface
-	sc.Push = &PushService{
-		key:    sc.request.GetApiKeys().GetPushKeyPath(),
-		app:    app,
-		client: client,
-		ctx:    ctx,
-	}
-	isPushEnabled = true
-	md.LogSuccess("Push Notifications Activation")
 	return nil
 }
 

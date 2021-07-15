@@ -34,7 +34,7 @@ type TextileService struct {
 	apiKeys     *md.APIKeys
 	device      *md.Device
 	host        host.HostNode
-	options     *md.ConnectionRequest_TextileOptions
+	options     *md.ConnectionRequest_ServiceOptions
 	onConnected md.OnConnected
 	handler     ServiceHandler
 
@@ -51,7 +51,7 @@ func (sc *serviceClient) StartTextile() *md.SonrError {
 
 	// Initialize
 	textile := &TextileService{
-		options:     sc.request.GetTextileOptions(),
+		options:     sc.request.GetServiceOptions(),
 		apiKeys:     sc.apiKeys,
 		host:        sc.host,
 		onConnected: sc.handler.OnConnected,
@@ -61,7 +61,7 @@ func (sc *serviceClient) StartTextile() *md.SonrError {
 	sc.Textile = textile
 
 	// Check Textile Enabled
-	if textile.options.GetEnabled() {
+	if textile.options.GetTextile() {
 		// Initialize
 		var err error
 		creds := credentials.NewTLS(&tls.Config{})

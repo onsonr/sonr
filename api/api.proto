@@ -44,7 +44,7 @@ message ConnectionRequest {
   InternetType type = 4;             // Internet Connection Type
   HostOptions hostOptions = 5;       // Libp2p Host config
   PubsubOptions pubsubOptions = 6;   // Pubsub Configuration
-  TextileOptions textileOptions = 7; // Textile Client Config
+  ServiceOptions serviceOptions = 7; // Service Config
   UserStatus status = 8;             // User Status
   string pushToken = 9;              // Push Notification Token
 
@@ -69,12 +69,13 @@ message ConnectionRequest {
     bool relay = 1; // Relay Topic Messages
   }
 
-  // Textile Configuration
-  message TextileOptions {
-    bool enabled = 1;    // Enable Textile Client and Threads
+  // Service Configuration
+  message ServiceOptions {
+    bool textile = 1;    // Enable Textile Client and Threads
     bool mailbox = 2;    // Enable Mailbox
     bool buckets = 3;    // Enable Buckets
-    string threadDB = 4; // Address for Database
+    bool push = 4;       // Enable Push Notifications
+    string threadDB = 5; // Address for Database
   }
 
   // User is Returning or New
