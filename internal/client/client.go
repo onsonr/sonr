@@ -17,8 +17,8 @@ type Client interface {
 	// Client Methods
 	Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrError
 	Bootstrap() (*net.TopicManager, *md.SonrError)
+	Mail(req *md.MailboxRequest) (*md.MailboxResponse, *md.SonrError)
 	Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrError
-	ReadMail() *md.SonrError
 	Respond(r *md.InviteResponse)
 	Update(t *net.TopicManager) *md.SonrError
 	Lifecycle(state md.LifecycleState, t *net.TopicManager)
@@ -112,6 +112,11 @@ func (c *client) Bootstrap() (*net.TopicManager, *md.SonrError) {
 	}
 }
 
+// @ Handle a Mailbox Request from Node
+func (c *client) Mail(req *md.MailboxRequest) (*md.MailboxResponse, *md.SonrError) {
+	return c.Service.HandleMailbox(req)
+}
+
 // @ Invite Processes Data and Sends Invite to Peer
 func (c *client) Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrError {
 	if c.user.IsReady() {
@@ -162,12 +167,6 @@ func (c *client) Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrE
 // @ Respond Sends a Response to Service
 func (c *client) Respond(r *md.InviteResponse) {
 	c.Service.Respond(r)
-}
-
-// @ Method Calls to Read Local Mailbox
-func (c *client) ReadMail() *md.SonrError {
-	//return c.Service.ReadMail()
-	return nil
 }
 
 // @ Update proximity/direction and Notify Lobby

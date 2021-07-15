@@ -23,7 +23,7 @@ type ServiceClient interface {
 	Invite(id peer.ID, inv *md.InviteRequest) error
 	Respond(rep *md.InviteResponse)
 	SendMail(e *md.InviteRequest) *md.SonrError
-	ReadMail() *md.SonrError
+	HandleMailbox(req *md.MailboxRequest) (*md.MailboxResponse, *md.SonrError)
 	PushSingle(*md.PushMessage) *md.SonrError
 	PushMultiple(*md.PushMessage, []*md.Peer) *md.SonrError
 	Close()
@@ -109,6 +109,43 @@ func (sc *serviceClient) SendMail(inv *md.InviteRequest) *md.SonrError {
 		md.LogInfo("Mail is not Ready")
 	}
 	return nil
+}
+
+func (sc *serviceClient) HandleMailbox(req *md.MailboxRequest) (*md.MailboxResponse, *md.SonrError) {
+	if req.Action == md.MailboxRequest_READ {
+		// Set Mailbox Message as Read
+		err := sc.Textile.readMessage(req.ID)
+		if err != nil {
+			return &md.MailboxResponse{
+				Success: false,
+				Action:  md.MailboxResponse_Action(req.Action),
+			}, err
+		}
+
+		// Return Success
+		return &md.MailboxResponse{
+			Success: true,
+			Action:  md.MailboxResponse_Action(req.Action),
+		}, nil
+	} else if req.Action == md.MailboxRequest_DELETE {
+		// Delete Mailbox Message
+		err := sc.Textile.deleteMessage(req.ID)
+		if err != nil {
+			return &md.MailboxResponse{
+				Success: false,
+				Action:  md.MailboxResponse_Action(req.Action),
+			}, err
+		}
+		return &md.MailboxResponse{
+			Success: true,
+			Action:  md.MailboxResponse_Action(req.Action),
+		}, nil
+	} else {
+		return &md.MailboxResponse{
+			Success: false,
+			Action:  md.MailboxResponse_Action(req.Action),
+		}, md.NewErrorWithType(md.ErrorMessage_MAILBOX_ACTION_INVALID)
+	}
 }
 
 // @ Method Sends Push Notification to Peer

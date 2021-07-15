@@ -483,6 +483,10 @@ func generateError(errType ErrorMessage_Type) (string, ErrorMessage_Severity) {
 		return "Failed to read Mailbox message.", ErrorMessage_WARNING
 	case ErrorMessage_MAILBOX_MESSAGE_UNMARSHAL:
 		return "Failed to Unmarshal Mailbox Message body.", ErrorMessage_WARNING
+	case ErrorMessage_MAILBOX_MESSAGE_DELETE:
+		return "Failed to delete Mailbox message.", ErrorMessage_WARNING
+	case ErrorMessage_MAILBOX_ACTION_INVALID:
+		return "Invalid Mailbox Action.", ErrorMessage_LOG
 	default:
 		return "Unknown", ErrorMessage_LOG
 	}

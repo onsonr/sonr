@@ -3,8 +3,8 @@ package bind
 import (
 	"context"
 
-	net "github.com/sonr-io/core/internal/host"
 	sc "github.com/sonr-io/core/internal/client"
+	net "github.com/sonr-io/core/internal/host"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -243,13 +243,34 @@ func (n *Node) Invite(data []byte) {
 }
 
 // @ ReadMail Reads the Textile Mailbox for this Node
-func (n *Node) ReadMail() {
+func (n *Node) Mail(data []byte) []byte {
+	// Check Ready
 	if n.isReady() {
-		err := n.client.ReadMail()
-		if err != nil {
-			n.handleError(err)
+		// Unmarshal Data to Request
+		req := &md.MailboxRequest{}
+		if err := proto.Unmarshal(data, req); err != nil {
+			n.handleError(md.NewUnmarshalError(err))
+			return nil
 		}
+
+		// Read Mail
+		resp, serr := n.client.Mail(req)
+		if serr != nil {
+			n.handleError(serr)
+			return nil
+		}
+
+		// Marshal Response
+		buf, err := proto.Marshal(resp)
+		if err != nil {
+			n.handleError(md.NewMarshalError(err))
+			return nil
+		}
+
+		// Return Response
+		return buf
 	}
+	return nil
 }
 
 // @ Respond to an Invite with Decision

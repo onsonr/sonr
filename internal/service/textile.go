@@ -207,7 +207,7 @@ func (ts *TextileService) handleMailboxEvents() {
 
 // @ Handle New Mailbox Message
 func (ts *TextileService) onNewMessage(e local.MailboxEvent) {
-	// Logging Received
+	// List Total Inbox
 	inbox, err := ts.mailbox.ListInboxMessages(context.Background())
 	if err != nil {
 		md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_OPEN)
@@ -240,16 +240,12 @@ func (ts *TextileService) onNewMessage(e local.MailboxEvent) {
 		ReadAt:    int32(inbox[0].ReadAt.Unix()),
 		Invite:    &invite,
 		Signature: inbox[0].Signature,
+		ID:        inbox[0].ID,
 	}
 
 	// Callback Mail Event
 	ts.handler.OnMail(mail)
 
-	// Mark Item as Read
-	err = ts.mailbox.ReadInboxMessage(context.Background(), inbox[0].ID)
-	if err != nil {
-		md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_READ)
-	}
 }
 
 // @ Send Mail to Recipient
@@ -261,6 +257,26 @@ func (ts *TextileService) sendMail(to thread.PubKey, buf []byte) *md.SonrError {
 	}
 
 	// Return Message Info
+	return nil
+}
+
+// Method sets message in inbox as read
+func (ts *TextileService) deleteMessage(id string) *md.SonrError {
+	// Mark Item as Read
+	err := ts.mailbox.DeleteInboxMessage(context.Background(), id)
+	if err != nil {
+		return md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_DELETE)
+	}
+	return nil
+}
+
+// Method sets message in inbox as read
+func (ts *TextileService) readMessage(id string) *md.SonrError {
+	// Mark Item as Read
+	err := ts.mailbox.ReadInboxMessage(context.Background(), id)
+	if err != nil {
+		return md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_READ)
+	}
 	return nil
 }
 

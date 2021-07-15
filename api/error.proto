@@ -98,6 +98,8 @@ message ErrorMessage {
     MAILBOX_EVENT_STATE = 61;
     MAILBOX_MESSAGE_READ = 66;
     MAILBOX_MESSAGE_UNMARSHAL = 67;
+    MAILBOX_MESSAGE_DELETE = 68;
+    MAILBOX_ACTION_INVALID = 69;
 
     // Push Notifications
     PUSH_SINGLE = 62;

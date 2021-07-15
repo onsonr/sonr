@@ -96,6 +96,19 @@ message InviteRequest {
   }
 }
 
+// Mailbox message handling
+message MailboxRequest {
+  string iD = 1;     // Unique ID for Message
+  Action action = 2; // Action to be performed on Message
+
+  // Mailbox Action
+  enum Action {
+    NONE = 0;
+    READ = 1;
+    DELETE = 2;
+  }
+}
+
 // REST API Request over HTTP
 message RestRequest {
   Method method = 1;                  // HTTP Method
@@ -201,6 +214,20 @@ message InviteResponse {
   }
 }
 
+// Mailbox message handling
+message MailboxResponse {
+  string iD = 1;     // Unique ID for Message
+  Action action = 2; // Action to be performed on Message
+  bool success = 3;  // Successful Action
+
+  // Mailbox Action
+  enum Action {
+    NONE = 0;
+    READ = 1;
+    DELETE = 2;
+  }
+}
+
 // REST API Response over HTTP
 message RestResponse {
   Method method = 1;            // HTTP Method Type
@@ -247,6 +274,7 @@ message MailEvent {
   string from = 4;
   int32 readAt = 5;
   bytes signature = 6;
+  string iD = 7;
 }
 
 // Transfer Progress Event
