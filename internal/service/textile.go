@@ -206,18 +206,36 @@ func (ts *TextileService) handleMailboxEvents() {
 
 // @ Handle New Mailbox Message
 func (ts *TextileService) onNewMessage(e local.MailboxEvent) {
-	// Create Mail Event
-	mail := &md.MailEvent{
-		To:        e.Message.To.String(),
-		From:      e.Message.From.String(),
-		CreatedAt: int32(e.Message.CreatedAt.Unix()),
-		ReadAt:    int32(e.Message.ReadAt.Unix()),
-		Body:      e.Message.Body,
-		Signature: e.Message.Signature,
-	}
+	// Logging Received
+	md.LogInfo(fmt.Sprintf("Received new message: %s", e.Message.From))
 
-	// Callback Mail Event
-	ts.handler.OnMail(mail)
+	// Validate Message Body
+	if len(e.Message.Body) > 0 {
+		// Log Valid Lobby Length
+		md.LogInfo(fmt.Sprintf("Valid Body Length: %d", len(e.Message.Body)))
+
+		// Open Message Body
+		body, err := ts.device.ThreadIdentity().Decrypt(context.Background(), e.Message.Body)
+		if err != nil {
+			md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_OPEN)
+			return
+		}
+
+		// Create Mail Event
+		mail := &md.MailEvent{
+			To:        e.Message.To.String(),
+			From:      e.Message.From.String(),
+			CreatedAt: int32(e.Message.CreatedAt.Unix()),
+			ReadAt:    int32(e.Message.ReadAt.Unix()),
+			Body:      body,
+			Signature: e.Message.Signature,
+		}
+
+		// Callback Mail Event
+		ts.handler.OnMail(mail)
+	} else {
+		md.LogInfo("Empty Mailbox Message")
+	}
 }
 
 // @ Send Mail to Recipient
