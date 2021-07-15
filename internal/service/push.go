@@ -24,8 +24,7 @@ type PushService struct {
 // Returns New Push Client
 func (sc *serviceClient) StartPush() *md.SonrError {
 	// Initialize
-	opts := sc.request.GetServiceOptions()
-	if opts.Push {
+	if sc.request.GetServiceOptions().GetPush() {
 		// Logging
 		md.LogActivate("Push Service")
 
@@ -52,7 +51,7 @@ func (sc *serviceClient) StartPush() *md.SonrError {
 			app:     app,
 			client:  client,
 			ctx:     ctx,
-			options: opts,
+			options: sc.request.GetServiceOptions(),
 		}
 		isPushEnabled = true
 		md.LogSuccess("Push Notifications Activation")
