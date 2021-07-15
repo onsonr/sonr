@@ -2,11 +2,11 @@ package models
 
 import (
 	"crypto/hmac"
+	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"log"
 	"math"
 	"os"
 	"path/filepath"
@@ -16,94 +16,123 @@ import (
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/pkg/util"
+	"github.com/textileio/go-threads/core/thread"
 )
 
 // ** ─── KeyPair MANAGEMENT ────────────────────────────────────────────────────────
-// Constructer that Initializes KeyPair without Buffer
-func (d *Device) SetKeyPair() *SonrError {
-	if d.HasKeys() {
-		// Get PrivKey File
-		privBuf, serr := d.ReadKey()
-		if serr != nil {
-			return serr
-		}
-
-		// Get Private Key from Buffer
-		privKey, err := crypto.UnmarshalPrivateKey(privBuf)
+// Method Initializes Device
+func (d *Device) Initialize(r *InitializeRequest) *SonrError {
+	// Get Machine ID of Device
+	if d.GetId() == "" {
+		id, err := machineid.ID()
 		if err != nil {
-			return NewError(err, ErrorMessage_KEY_INVALID)
+			return NewError(err, ErrorMessage_DEVICE_ID)
 		}
 
-		// Get Public Key from Private and Marshal
-		pubKey := privKey.GetPublic()
-		pubBuf, err := crypto.MarshalPublicKey(pubKey)
-		if err != nil {
-			return NewError(err, ErrorMessage_KEY_SET)
-		}
+		// Set ID
+		d.Id = id
+	}
 
-		// Get ID from Pub Key
-		id, err := peer.IDFromPublicKey(pubKey)
-		if err != nil {
-			return NewError(err, ErrorMessage_KEY_ID)
-		}
-
-		// Set Key Pair
-		d.KeyPair = &KeyPair{
-			Type: KeyType_Ed25519,
-			Public: &KeyPair_Public{
-				Id:     id.String(),
-				Buffer: pubBuf,
-			},
-			Private: &KeyPair_Private{
-				Path:   d.WorkingKeyPath(),
-				Buffer: privBuf,
-			},
-		}
+	// Check for Key Reset
+	if r.GetResetKeys() {
+		return d.resetKeyPair()
 	} else {
-		// Create New Key
-		privKey, pubKey, err := crypto.GenerateKeyPair(crypto.Ed25519, -1)
-		if err != nil {
-			return NewError(err, ErrorMessage_HOST_KEY)
-		}
-
-		// Marshal Data
-		privBuf, err := crypto.MarshalPrivateKey(privKey)
-		if err != nil {
-			return NewError(err, ErrorMessage_MARSHAL)
-		}
-
-		// Marshal Data
-		pubBuf, err := crypto.MarshalPublicKey(pubKey)
-		if err != nil {
-			return NewError(err, ErrorMessage_MARSHAL)
-		}
-
-		// Write Private Key to File
-		path, werr := d.WriteKey(privBuf)
-		if werr != nil {
-			return NewError(err, ErrorMessage_USER_SAVE)
-		}
-
-		// Get ID from Pub Key
-		id, err := peer.IDFromPublicKey(pubKey)
-		if err != nil {
-			return NewError(err, ErrorMessage_KEY_ID)
-		}
-
-		// Set Keys
-		d.KeyPair = &KeyPair{
-			Type: KeyType_Ed25519,
-			Public: &KeyPair_Public{
-				Id:     id.String(),
-				Buffer: pubBuf,
-			},
-			Private: &KeyPair_Private{
-				Path:   path,
-				Buffer: privBuf,
-			},
+		// Set KeyPair
+		if d.HasKeys() {
+			return d.loadKeyPair()
+		} else {
+			return d.newKeyPair()
 		}
 	}
+}
+
+// Method Loads Existing Key Pair
+func (d *Device) loadKeyPair() *SonrError {
+	// Get PrivKey File
+	privBuf, serr := d.ReadKey()
+	if serr != nil {
+		return serr
+	}
+
+	// Get Private Key from Buffer
+	privKey, err := crypto.UnmarshalPrivateKey(privBuf)
+	if err != nil {
+		return NewError(err, ErrorMessage_KEY_INVALID)
+	}
+
+	// Get Public Key from Private and Marshal
+	pubKey := privKey.GetPublic()
+	pubBuf, err := crypto.MarshalPublicKey(pubKey)
+	if err != nil {
+		return NewError(err, ErrorMessage_KEY_SET)
+	}
+
+	// Set Key Pair
+	d.KeyPair = &KeyPair{
+		Type: KeyType_Ed25519,
+		Public: &KeyPair_Public{
+			Base64: crypto.ConfigEncodeKey(pubBuf),
+			Buffer: pubBuf,
+		},
+		Private: &KeyPair_Private{
+			Path:   d.WorkingKeyPath(),
+			Buffer: privBuf,
+		},
+	}
 	return nil
+}
+
+// Method Creates New Key Pair
+func (d *Device) newKeyPair() *SonrError {
+	// Create New Key
+	privKey, pubKey, err := crypto.GenerateEd25519Key(rand.Reader)
+	if err != nil {
+		return NewError(err, ErrorMessage_HOST_KEY)
+	}
+
+	// Marshal Data
+	privBuf, err := crypto.MarshalPrivateKey(privKey)
+	if err != nil {
+		return NewError(err, ErrorMessage_MARSHAL)
+	}
+
+	// Marshal Data
+	pubBuf, err := crypto.MarshalPublicKey(pubKey)
+	if err != nil {
+		return NewError(err, ErrorMessage_MARSHAL)
+	}
+
+	// Write Private Key to File
+	path, werr := d.WriteKey(privBuf)
+	if werr != nil {
+		return NewError(err, ErrorMessage_USER_SAVE)
+	}
+
+	// Set Keys
+	d.KeyPair = &KeyPair{
+		Type: KeyType_Ed25519,
+		Public: &KeyPair_Public{
+			Base64: crypto.ConfigEncodeKey(pubBuf),
+			Buffer: pubBuf,
+		},
+		Private: &KeyPair_Private{
+			Path:   path,
+			Buffer: privBuf,
+		},
+	}
+	return nil
+}
+
+// Method Deletes Existing Keys and Creates New Pair
+func (d *Device) resetKeyPair() *SonrError {
+	// Delete Key Pair
+	err := os.Remove(d.WorkingKeyPath())
+	if err != nil {
+		LogInfo("ERROR: " + err.Error())
+	}
+
+	// Create New Key
+	return d.newKeyPair()
 }
 
 // Method Returns PeerID from Public Key
@@ -140,6 +169,11 @@ func (kp *KeyPair) PubKey() crypto.PubKey {
 	return privKey.GetPublic()
 }
 
+// Method Returns Public Key as Base64 String
+func (kp *KeyPair) PubKeyBase64() string {
+	return kp.GetPublic().GetBase64()
+}
+
 // Method Signs given data and returns response
 func (kp *KeyPair) Sign(value string) string {
 	h := hmac.New(sha256.New, kp.PrivBuffer())
@@ -163,20 +197,6 @@ func (kp *KeyPair) Verify(data []byte, sig []byte) (bool, error) {
 }
 
 // ** ─── DEVICE MANAGEMENT ────────────────────────────────────────────────────────
-// Method Initializes Device
-func (d *Device) Initialize() {
-	if d.GetId() == "" {
-		id, err := machineid.ID()
-		if err != nil {
-			log.Println(err)
-			return
-		}
-
-		// Set ID
-		d.Id = id
-	}
-}
-
 // Method Checks if Device has Keys
 func (d *Device) HasKeys() bool {
 	if _, err := os.Stat(d.WorkingFilePath(util.KEY_FILE_NAME)); os.IsNotExist(err) {
@@ -225,20 +245,25 @@ func (d *Device) IsWindows() bool {
 	return d.Platform == Platform_Windows
 }
 
+// Method returns Thread Identity for Device
+func (d *Device) ThreadIdentity() thread.Identity {
+	return thread.NewLibp2pIdentity(d.KeyPair.PrivKey())
+}
+
 // Checks if File Exists
-func (d *Device) IsFile(name string) bool {
-	// Initialize
-	var path string
-
-	// Create File Path
-	if d.IsDesktop() {
-		path = filepath.Join(d.FileSystem.GetLibrary(), name)
-	} else {
-		path = filepath.Join(d.FileSystem.GetDocuments(), name)
-	}
-
+func (d *FileSystem_Directory) IsFile(name string) bool {
 	// Check Path
-	if _, err := os.Stat(path); os.IsNotExist(err) {
+	if _, err := os.Stat(filepath.Join(d.GetPath(), name)); os.IsNotExist(err) {
+		return false
+	} else {
+		return true
+	}
+}
+
+// Checks if File Exists
+func (d *FileSystem) IsDirectory(rootDir *FileSystem_Directory, subDir string) bool {
+	// Check Path
+	if _, err := os.Stat(filepath.Join(rootDir.GetPath(), subDir)); os.IsNotExist(err) {
 		return false
 	} else {
 		return true
@@ -255,16 +280,9 @@ func (d *Device) ReadKey() ([]byte, *SonrError) {
 }
 
 // Loads File from Disk as Buffer
-func (d *Device) ReadFile(name string) ([]byte, *SonrError) {
+func (d *FileSystem_Directory) ReadFile(name string) ([]byte, *SonrError) {
 	// Initialize
-	var path string
-
-	// Create File Path
-	if d.IsDesktop() {
-		path = filepath.Join(d.FileSystem.GetLibrary(), name)
-	} else {
-		path = filepath.Join(d.FileSystem.GetDocuments(), name)
-	}
+	path := filepath.Join(d.GetPath(), name)
 
 	// @ Check for Path
 	if _, err := os.Stat(path); os.IsNotExist(err) {
@@ -282,40 +300,24 @@ func (d *Device) ReadFile(name string) ([]byte, *SonrError) {
 // Returns Path for Private Key File
 func (d *Device) WorkingKeyPath() string {
 	// Check for Desktop
-	if d.IsDesktop() {
-		return filepath.Join(d.FileSystem.GetLibrary(), util.KEY_FILE_NAME)
-	} else {
-		return filepath.Join(d.FileSystem.GetSupport(), util.KEY_FILE_NAME)
-	}
+	return filepath.Join(d.GetFileSystem().GetSupport().GetPath(), util.KEY_FILE_NAME)
 }
 
 // Returns Path for Application/User Data
 func (d *Device) WorkingFilePath(fileName string) string {
 	// Check for Desktop
-	if d.IsDesktop() {
-		return filepath.Join(d.FileSystem.GetDownloads(), fileName)
-	} else {
-		return filepath.Join(d.FileSystem.GetDocuments(), fileName)
-	}
+	return filepath.Join(d.GetFileSystem().GetDownloads().GetPath(), fileName)
 }
 
 // Returns Path for Application/User Data
 func (d *Device) WorkingSupportPath(fileName string) string {
 	// Check for Desktop
-	if d.IsDesktop() {
-		return filepath.Join(d.FileSystem.GetLibrary(), fileName)
-	} else {
-		return filepath.Join(d.FileSystem.GetSupport(), fileName)
-	}
+	return filepath.Join(d.GetFileSystem().GetSupport().GetPath(), fileName)
 }
 
 // Returns Directory for Device Working Support Folder
 func (d *Device) WorkingSupportDir() string {
-	if d.IsDesktop() {
-		return d.GetFileSystem().GetLibrary()
-	} else {
-		return d.GetFileSystem().GetSupport()
-	}
+	return d.GetFileSystem().GetSupport().GetPath()
 }
 
 // Writes a File to Disk and Returns Path
@@ -347,10 +349,9 @@ func (d *Device) WriteFile(name string, data []byte) (string, *SonrError) {
 func NewUser(ir *InitializeRequest) (*User, *SonrError) {
 	// Initialize Device
 	d := ir.GetDevice()
-	d.Initialize()
 
 	// Fetch Key Pair
-	err := d.SetKeyPair()
+	err := d.Initialize(ir)
 	if err != nil {
 		return nil, err
 	}
@@ -366,19 +367,16 @@ func NewUser(ir *InitializeRequest) (*User, *SonrError) {
 
 // Set the User with ConnectionRequest
 func (u *User) InitConnection(cr *ConnectionRequest) {
+	u.PushToken = cr.GetPushToken()
 	u.Contact = cr.GetContact()
-	u.SName = u.Contact.Profile.SName
-	u.Router = &User_Router{
-		Rendevouz:  "/sonr/rendevouz/0.9.2",
-		LocalTopic: fmt.Sprintf("/sonr/topic/%s", cr.GetLocation().OLC()),
-		Location:   cr.GetLocation(),
-	}
+	u.SName = cr.GetContact().GetProfile().GetSName()
+	u.Location = cr.GetLocation()
 	u.Status = Status_IDLE
 }
 
 // Checks Whether User is Ready to Communicate
 func (u *User) IsReady() bool {
-	return u.Contact != nil && u.SName != "" && u.Router != nil && u.Status != Status_DEFAULT
+	return u.Contact != nil && u.SName != "" && u.Location != nil && u.Status != Status_DEFAULT
 }
 
 // Return Client API Keys
@@ -425,15 +423,15 @@ func (u *User) Sign(req *AuthRequest) *AuthResponse {
 	prefix := util.Substring(prefixResult, 0, 16)
 	// Get FingerPrint from Mnemonic and Place
 	fingerprint := u.KeyPair().Sign(req.GetMnemonic())
-
-	// Get ID from Public Key
-	identity := u.KeyPair().GetPublic().GetId()
+	pubKey := u.KeyPair().PubKeyBase64()
 
 	// Return Response
 	return &AuthResponse{
 		SignedPrefix:      prefix,
 		SignedFingerprint: fingerprint,
-		PublicIdentity:    identity,
+		PublicKey:         pubKey,
+		GivenSName:        req.GetSName(),
+		GivenMnemonic:     req.GetMnemonic(),
 	}
 }
 
@@ -503,6 +501,14 @@ func (u *User) UpdateProperties(props *Peer_Properties) {
 	u.Peer.Properties = props
 }
 
+// Method Updates User Contact
+func (u *User) VerifyRead() *VerifyResponse {
+	kp := u.KeyPair()
+	return &VerifyResponse{
+		PublicKey: kp.PubKeyBase64(),
+	}
+}
+
 // ^ Signs InviteResponse with Flat Contact
 func (u *User) ReplyToFlat(from *Peer) *InviteResponse {
 	return &InviteResponse{
@@ -525,9 +531,9 @@ func (u *User) ReplyToFlat(from *Peer) *InviteResponse {
 }
 
 // ^ NewUpdateEvent Creates Lobby Event with Peer Data ^
-func (p *Peer) NewUpdateEvent(topic *Topic) *LobbyEvent {
-	return &LobbyEvent{
-		Subject: LobbyEvent_UPDATE,
+func (p *Peer) NewUpdateEvent(topic *Topic) *TopicEvent {
+	return &TopicEvent{
+		Subject: TopicEvent_UPDATE,
 		Peer:    p,
 		Id:      p.Id.Peer,
 		Topic:   topic,
@@ -535,9 +541,9 @@ func (p *Peer) NewUpdateEvent(topic *Topic) *LobbyEvent {
 }
 
 // ^ NewUpdateEvent Creates Lobby Event with Peer Data ^
-func (p *Peer) NewExitEvent(topic *Topic) *LobbyEvent {
-	return &LobbyEvent{
-		Subject: LobbyEvent_EXIT,
+func (p *Peer) NewExitEvent(topic *Topic) *TopicEvent {
+	return &TopicEvent{
+		Subject: TopicEvent_EXIT,
 		Peer:    p,
 		Id:      p.Id.Peer,
 		Topic:   topic,

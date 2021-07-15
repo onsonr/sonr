@@ -12,8 +12,9 @@ message APIKeys {
   string rapidApiKey = 2;
   string handshakeKey = 3;
   string handshakeSecret = 4;
-  string textileKey = 5;
-  string textileSecret = 6;
+  string pushKeyPath = 5;
+  string textileKey = 6;
+  string textileSecret = 7;
 }
 
 // Information about device for User
@@ -35,11 +36,22 @@ message Device {
 
 // FileSystem is for Directores Where Data can be stored
 message FileSystem {
-  string documents = 1; // User Generated Files - Both
-  string downloads = 2; // Downloaded Files - Desktop
-  string library = 3;   // Persistent Non Exposed Files - Desktop
-  string support = 4;   // Non Exposed Support Files - Mobile
-  string temporary = 5; // Temporary Storage - Mobile
+  Directory downloads = 1; // Downloaded Files
+  Directory support = 2;   // Non Exposed Support Files
+  Directory temporary = 3; // Temporary Storage
+
+  // Directory in FileSystem
+  message Directory {
+    string path = 1;
+    Type type = 2;
+    enum Type {
+      Temporary = 0; // Temporary Cache Storage
+      Downloads = 1; // Transferred Files - Desktop
+      Support = 2;   // Persistent Non Exposed Files - Mobile
+      Library = 3;   // Persistent Non Exposed Files - Desktop
+      Documents = 4; // Transferred Files - Mobile
+    }
+  }
 }
 
 // KeyPair Encryption Type
@@ -64,8 +76,8 @@ message KeyPair {
 
   // Public Key for Thread ID/ Libp2p ID
   message Public {
-    string id = 1;    // P2P Id derived from Public Key
-    bytes buffer = 2; // Public Key Buffer
+    string base64 = 1; // Base64 Representation of Keys
+    bytes buffer = 2;  // Public Key Buffer
   }
 
   // Shared Key for Device Linking
@@ -101,21 +113,13 @@ message User {
   Crypto crypto = 6;     // User Cryptographic Data
   Settings settings = 7; // User Settings
   Contact contact = 8;   // Users Contact Card
-  Router router = 9;     // Client Routing Information
+  Location location = 9; // Client Location for Routing
+  string pushToken = 10; // Push Notification Token
 
   // Crypto Data to Place in DHT
   message Crypto {
     string prefix = 1;   // Created from DeviceID and SName
     string mnemonic = 2; // Used to generate fingerprint
-  }
-
-  // Router Manages Peer Routing for Topics/Transfers - Attached from Node
-  // Client
-  message Router {
-    string deviceTopic = 1;
-    string localTopic = 2;
-    string rendevouz = 3;
-    Location location = 4;
   }
 
   // User Settings

@@ -21,8 +21,20 @@ message AuthRequest {
 
 // First Message Sent with Device and API Keys
 message InitializeRequest {
-  Device device = 1;   // Users Device
-  APIKeys apiKeys = 2; // Client Keys
+  Device device = 1;     // Users Device
+  APIKeys apiKeys = 2;   // Client Keys
+  LogLevel logLevel = 3; // Set Logging Config
+  bool resetKeys = 4;    // Reset KeyPair for Migration
+
+  // Logging Details
+  enum LogLevel {
+    FATAL = 0;
+    CRITICAL = 1;
+    WARNING = 2;
+    DEBUG = 3;
+    INFO = 4;
+    NONE = 5;
+  }
 }
 
 // Connection Message to Establish Sonr Host/API/Topic
@@ -32,9 +44,9 @@ message ConnectionRequest {
   Contact contact = 3;               // Users Contact Card
   InternetType type = 4;             // Internet Connection Type
   HostOptions hostOptions = 5;       // Libp2p Host config
-  PubsubOptions pubsubOptions = 6;   // Pubsub Configuration
-  TextileOptions textileOptions = 7; // Textile Client Config
-  UserStatus status = 8;             // User Status
+  ServiceOptions serviceOptions = 6; // Service Config
+  UserStatus status = 7;             // User Status
+  string pushToken = 8;              // Push Notification Token
 
   // Internet Connection Type
   enum InternetType {
@@ -49,20 +61,15 @@ message ConnectionRequest {
     bool torTransport = 2;
     bool httpTransport = 3;
     bool mdnsDiscovery = 4;
-    bool natPortMap = 5;
   }
 
-  // Pubsub Topic Configuration
-  message PubsubOptions {
-    bool relay = 1; // Relay Topic Messages
-  }
-
-  // Textile Configuration
-  message TextileOptions {
-    bool enabled = 1;    // Enable Textile Client and Threads
+  // Service Configuration
+  message ServiceOptions {
+    bool textile = 1;    // Enable Textile Client and Threads
     bool mailbox = 2;    // Enable Mailbox
     bool buckets = 3;    // Enable Buckets
-    string threadDB = 4; // Address for Database
+    bool push = 4;       // Enable Push Notifications
+    string threadDB = 5; // Address for Database
   }
 
   // User is Returning or New
@@ -79,11 +86,13 @@ message InviteRequest {
   Peer to = 3;           // Receivers Peer Data
   Transfer transfer = 4; // Attached Data
   Type type = 5;         // Type of Invite
+  string protocol = 6;   // Name of Protocol
 
   enum Type {
-    Local = 0;
-    Flat = 1;
-    Remote = 2;
+    None = 0;
+    Local = 1;
+    Flat = 2;
+    Remote = 3;
   }
 }
 
@@ -116,6 +125,7 @@ message UpdateRequest {
     Contact contact = 2;            // Users Updated Contact Card
     Position position = 3;          // Users updated Position
     ConnectionRequest.InternetType connectivity = 4; // Internet Type Changed
+    string pushToken = 5;                            // Push Notification token
   }
 }
 
@@ -132,6 +142,14 @@ message VerifyRequest {
     bytes signedBuffer = 3;
     string signedText = 4;
   }
+
+  Type type = 5; // Either Signing New Mnemonic or Reading Existing
+
+  // Request Type
+  enum Type {
+    VERIFY = 0;
+    READ = 1;
+  }
 }
 
 // ------------------------------ //
@@ -144,7 +162,9 @@ message AuthResponse {
   // Resulting Signed Values
   string signedPrefix = 2;      // Message for List of Bytes
   string signedFingerprint = 3; // Fingerprint Value
-  string publicIdentity = 4;    // Peer ID from Public Key
+  string publicKey = 4;         // Base64 Encoded Public Key
+  string givenSName = 5;        // Provided SName
+  string givenMnemonic = 6;     // Provided Mnemonic
 }
 
 // Response from Connection Request
@@ -172,11 +192,12 @@ message InviteResponse {
   Peer to = 4;           // Receivers Peer Data
   bool flatMode = 5;     // Flat Transfer
   Transfer transfer = 6; // Card contains all Data Info, Transfer Info
+  string protocol = 7;   // Name of Protocol
 
   enum Type {
-    Default = 0;
-    Contact = 1;
-    Cancel = 2;
+    None = 0;
+    Transfer = 1;
+    Contact = 2;
   }
 }
 
@@ -199,14 +220,50 @@ message RestResponse {
 // Message for Verification Response
 message VerifyResponse {
   bool isVerified = 1;    // Result for Verification
-  ErrorMessage error = 2; // In Case Error Occurred
+  string publicKey = 2;   // Base64 Encoded Public Key
+  ErrorMessage error = 3; // In Case Error Occurred
 }
 
 // --------------------------- //
 // -------- Events ----------- //
 // --------------------------- //
+// Message Sent after Completed Transfer
+message CompleteEvent {
+  Direction direction = 1; // Transfer Direction
+  Transfer transfer = 2;   // Transfer Data
+
+  // Traffic Direction of Session
+  enum Direction {
+    Default = 0;  // From Memory/Viewing
+    Incoming = 1; // Incoming Transfer
+    Outgoing = 2; // Outgoing Transfer
+  }
+}
+// List of Pending Invites through Mailbox
+message MailEvent {
+  int32 createdAt = 1;
+  string to = 2;
+  bytes body = 3;
+  string from = 4;
+  int32 readAt = 5;
+  bytes signature = 6;
+}
+
+// Transfer Progress Event
+message ProgressEvent {
+  int32 current = 1;
+  int32 total = 2;
+  double progress = 3;
+}
+
+// Message for Status Update Event
+message StatusEvent {
+  Status value = 1;
+  User user = 2;
+}
+
 // Message Sent when peer messages Local Topic
-message LobbyEvent {
+message TopicEvent {
   Topic topic = 1;     // Event Topic Type
   string id = 2;       // Peer ID
   Peer peer = 3;       // User Information
@@ -222,20 +279,42 @@ message LobbyEvent {
   }
 }
 
-// List of Pending Invites through Mailbox
-message MailEvent {
-  repeated InviteRequest invites = 1; // User Received Invites
+// ------------------------------------------- //
+// -------- Callback Generic Types ----------- //
+// ------------------------------------------- //
+// Generic Request Message
+message GenericRequest {
+  Type type = 1;  // Type of Request
+  bytes data = 2; // Data for Request
+
+  enum Type {
+    INVITE = 0; // Invite Request
+    REST = 1;   // REST API Request
+  }
 }
 
-// Transfer Progress Event
-message ProgressEvent {
-  int32 current = 1;
-  int32 total = 2;
-  double progress = 3;
+// Generic Response Message
+message GenericResponse {
+  Type type = 1;  // Type of Response
+  bytes data = 2; // Data for Response
+
+  enum Type {
+    CONNECTION = 0; // Connection Response
+    INVITE = 1;     // Invite Response
+    REST = 2;       // REST API Response
+  }
 }
 
-// Message for Status Update Event
-message StatusEvent {
-  Status value = 1;
-  User user = 2;
+// Generic Event Message
+message GenericEvent {
+  Type type = 1;  // Type of Event
+  bytes data = 2; // Data for Event
+
+  // Type of Event
+  enum Type {
+    COMPLETE = 0; // Transfer Completed
+    MAIL = 1;     // New Mailbox Invite
+    PROGRESS = 2; // Transfer Progress
+    TOPIC = 3;    // Local Topic Update
+  }
 }

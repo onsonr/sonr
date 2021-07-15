@@ -2,10 +2,9 @@ package bind
 
 import (
 	"context"
-	"log"
 
 	net "github.com/sonr-io/core/internal/host"
-	sc "github.com/sonr-io/core/pkg/client"
+	sc "github.com/sonr-io/core/internal/client"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -29,14 +28,17 @@ type Node struct {
 
 // ^ Initializes New Node ^ //
 func NewNode(reqBytes []byte, call Callback) *Node {
-
 	// Unmarshal Request
 	req := &md.InitializeRequest{}
 	err := proto.Unmarshal(reqBytes, req)
 	if err != nil {
-		log.Println(err)
+		md.LogFatal(err)
 		return nil
 	}
+
+	// Initialize Logger
+	md.InitLogger(req)
+
 	// Initialize Node
 	mn := &Node{
 		call:   call,
@@ -63,12 +65,11 @@ func (n *Node) Connect(data []byte) {
 	req := &md.ConnectionRequest{}
 	err := proto.Unmarshal(data, req)
 	if err != nil {
-		log.Println(err)
+		md.LogFatal(err)
 	}
 
 	// Update User with Connection Request
 	n.user.InitConnection(req)
-	req.ApiKeys = n.user.APIKeys()
 
 	// Connect Host
 	serr := n.client.Connect(req, n.user.KeyPair())
@@ -97,8 +98,6 @@ func (n *Node) Sign(data []byte) []byte {
 	request := &md.AuthRequest{}
 	err := proto.Unmarshal(data, request)
 	if err != nil {
-		log.Println("Failed to Unmarshal Sign Request")
-
 		// Handle Error
 		n.handleError(md.NewUnmarshalError(err))
 
@@ -143,26 +142,37 @@ func (n *Node) Verify(data []byte) []byte {
 			return md.NewInvalidVerifyResponseBuf()
 		}
 
-		// Check type and Verify
-		if request.IsBuffer() {
-			// Verify Result
-			result, err := kp.Verify(request.GetBufferValue(), request.GetSignedBuffer())
-			if err != nil {
-				return md.NewInvalidVerifyResponseBuf()
-			}
+		// Check Request Type
+		if request.GetType() == md.VerifyRequest_VERIFY {
+			// Check type and Verify
+			if request.IsBuffer() {
+				// Verify Result
+				result, err := kp.Verify(request.GetBufferValue(), request.GetSignedBuffer())
+				if err != nil {
+					return md.NewInvalidVerifyResponseBuf()
+				}
 
-			// Return Result
-			return md.NewVerifyResponseBuf(result)
-		} else if request.IsString() {
-			// Verify Result
-			result, err := kp.Verify([]byte(request.GetTextValue()), []byte(request.GetSignedText()))
-			if err != nil {
-				return md.NewInvalidVerifyResponseBuf()
-			}
+				// Return Result
+				return md.NewVerifyResponseBuf(result)
+			} else if request.IsString() {
+				// Verify Result
+				result, err := kp.Verify([]byte(request.GetTextValue()), []byte(request.GetSignedText()))
+				if err != nil {
+					return md.NewInvalidVerifyResponseBuf()
+				}
 
-			// Return Result
-			return md.NewVerifyResponseBuf(result)
+				// Return Result
+				return md.NewVerifyResponseBuf(result)
+			}
+		} else {
+			resp := n.user.VerifyRead()
+			buf, err := proto.Marshal(resp)
+			if err != nil {
+				n.handleError(md.NewMarshalError(err))
+			}
+			return buf
 		}
+
 	}
 
 	// Send Invalid Response
@@ -214,9 +224,6 @@ func (n *Node) Update(data []byte) {
 // @ Invite Processes Data and Sends Invite to Peer
 func (n *Node) Invite(data []byte) {
 	if n.isReady() {
-		// Update Status
-		n.setStatus(md.Status_PENDING)
-
 		// Unmarshal Data to Request
 		req := &md.InviteRequest{}
 		if err := proto.Unmarshal(data, req); err != nil {
@@ -224,13 +231,23 @@ func (n *Node) Invite(data []byte) {
 			return
 		}
 		// Validate invite
-		req = n.user.ValidateInvite(req)
+		req = n.user.SignInvite(req)
 
 		// Send Invite
 		err := n.client.Invite(req, n.local)
 		if err != nil {
 			n.handleError(err)
 			return
+		}
+	}
+}
+
+// @ ReadMail Reads the Textile Mailbox for this Node
+func (n *Node) ReadMail() {
+	if n.isReady() {
+		err := n.client.ReadMail()
+		if err != nil {
+			n.handleError(err)
 		}
 	}
 }
@@ -273,7 +290,7 @@ func URLLink(url string) []byte {
 
 // @ Returns Node Location Protobuf as Bytes
 func (n *Node) Location() []byte {
-	bytes, err := proto.Marshal(n.user.Router.GetLocation())
+	bytes, err := proto.Marshal(n.user.GetLocation())
 	if err != nil {
 		return nil
 	}

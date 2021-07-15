@@ -2,7 +2,6 @@ package host
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"github.com/libp2p/go-libp2p"
@@ -18,7 +17,6 @@ import (
 	discovery "github.com/libp2p/go-libp2p/p2p/discovery"
 	"github.com/multiformats/go-multiaddr"
 	md "github.com/sonr-io/core/pkg/models"
-
 )
 
 // ** ─── Interface MANAGEMENT ────────────────────────────────────────────────────────
@@ -31,6 +29,7 @@ type HostNode interface {
 	JoinTopic(ctx context.Context, u *md.User, topicData *md.Topic, th TopicHandler) (*TopicManager, *md.SonrError)
 	HandleStream(pid protocol.ID, handler network.StreamHandler)
 	MultiAddr() (multiaddr.Multiaddr, *md.SonrError)
+	CloseStream(pid protocol.ID, stream network.Stream)
 	StartStream(p peer.ID, pid protocol.ID) (network.Stream, error)
 }
 
@@ -54,7 +53,6 @@ type hostNode struct {
 	handler HostHandler
 	host    host.Host
 	kdht    *dht.IpfsDHT
-	known   []peer.ID
 	mdns    discovery.Service
 	options *md.ConnectionRequest_HostOptions
 
@@ -114,7 +112,6 @@ func NewHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair
 		id:      h.ID(),
 		host:    h,
 		kdht:    kdhtRef,
-		known:   make([]peer.ID, 0),
 		topics:  make([]*TopicManager, 0),
 	}
 
@@ -122,7 +119,7 @@ func NewHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair
 	if req.GetType() == md.ConnectionRequest_Wifi {
 		err := hn.MDNS()
 		if err != nil {
-			log.Println("MDNS ERROR: " + err.Error())
+			md.NewError(err, md.ErrorMessage_HOST_MDNS)
 			handleConnectionResult(hh, true, false, false)
 		} else {
 			handleConnectionResult(hh, true, false, true)
@@ -176,14 +173,13 @@ func newRelayedHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.
 		id:      h.ID(),
 		host:    h,
 		kdht:    kdhtRef,
-		known:   make([]peer.ID, 0),
 	}
 
 	// Check Connection
 	if req.GetType() == md.ConnectionRequest_Wifi {
 		err := hn.MDNS()
 		if err != nil {
-			log.Println("MDNS ERROR: " + err.Error())
+			md.NewError(err, md.ErrorMessage_HOST_MDNS)
 			handleConnectionResult(hh, true, false, false)
 		} else {
 			handleConnectionResult(hh, true, false, true)
@@ -233,7 +229,14 @@ func (h *hostNode) HandleStream(pid protocol.ID, handler network.StreamHandler) 
 	h.host.SetStreamHandler(pid, handler)
 }
 
+func (h *hostNode) CloseStream(pid protocol.ID, stream network.Stream) {
+	md.LogInfo("Removing Stream Handler")
+	h.host.RemoveStreamHandler(pid)
+	stream.Close()
+}
+
 // Start Stream for Host
 func (h *hostNode) StartStream(p peer.ID, pid protocol.ID) (network.Stream, error) {
+	md.LogActivate("New Stream")
 	return h.host.NewStream(h.ctxHost, p, pid)
 }

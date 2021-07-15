@@ -2,17 +2,12 @@ package service
 
 import (
 	"context"
-	"log"
-
-	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	net "github.com/sonr-io/core/internal/host"
+	"google.golang.org/protobuf/encoding/protojson"
 
-	crypto "github.com/libp2p/go-libp2p-crypto"
 	md "github.com/sonr-io/core/pkg/models"
-	"github.com/textileio/go-threads/core/thread"
-	"github.com/textileio/textile/v2/api/common"
 )
 
 type ServiceHandler interface {
@@ -20,7 +15,8 @@ type ServiceHandler interface {
 	OnInvite([]byte)
 	OnReply(id peer.ID, data []byte)
 	OnConfirmed(inv *md.InviteRequest)
-	OnMail(mail *md.MailEvent)
+	OnMail(e *md.MailEvent)
+	OnError(err *md.SonrError)
 }
 
 type ServiceClient interface {
@@ -28,6 +24,8 @@ type ServiceClient interface {
 	Respond(rep *md.InviteResponse)
 	SendMail(e *md.InviteRequest) *md.SonrError
 	ReadMail() *md.SonrError
+	PushSingle(*md.PushMessage) *md.SonrError
+	PushMultiple(*md.PushMessage, []*md.Peer) *md.SonrError
 	Close()
 }
 
@@ -40,16 +38,17 @@ type serviceClient struct {
 	handler ServiceHandler
 	host    net.HostNode
 	request *md.ConnectionRequest
-	status  *md.ServiceStatus
 	user    *md.User
 
 	// Services
 	Auth    *AuthService
 	Device  *DeviceService
+	Push    *PushService
 	Textile *TextileService
 }
 
-func NewService(ctx context.Context, h net.HostNode, u *md.User, req *md.ConnectionRequest, call md.Callback, sh ServiceHandler) (ServiceClient, *md.SonrError) {
+// @ Creates New Service Interface
+func NewService(ctx context.Context, h net.HostNode, u *md.User, req *md.ConnectionRequest, sh ServiceHandler) (ServiceClient, *md.SonrError) {
 	// Create Client
 	client := &serviceClient{
 		ctx:     ctx,
@@ -57,7 +56,6 @@ func NewService(ctx context.Context, h net.HostNode, u *md.User, req *md.Connect
 		handler: sh,
 		host:    h,
 		request: req,
-		status:  md.NewServiceStatus(true, false),
 		user:    u,
 	}
 
@@ -67,10 +65,15 @@ func NewService(ctx context.Context, h net.HostNode, u *md.User, req *md.Connect
 		return nil, err
 	}
 
+	// Begin Push Service
+	err = client.StartPush()
+	if err != nil {
+		return nil, err
+	}
+
 	// Begin Textile Service
 	go func(c *serviceClient) {
 		if err := c.StartTextile(); err != nil {
-			log.Println(err)
 			return
 		}
 	}(client)
@@ -79,27 +82,53 @@ func NewService(ctx context.Context, h net.HostNode, u *md.User, req *md.Connect
 	return client, nil
 }
 
-// # Helper: Gets Thread Identity from Private Key
-func getIdentity(privateKey crypto.PrivKey) thread.Identity {
-	myIdentity := thread.NewLibp2pIdentity(privateKey)
-	return myIdentity
-}
+// @ Method Sends Mail Entry to Peer
+func (sc *serviceClient) SendMail(inv *md.InviteRequest) *md.SonrError {
+	// Check Mail Enabled
+	if sc.Textile.options.GetMailbox() {
+		// Fetch Peer Thread Key
+		pubKey, serr := inv.GetTo().ThreadKey()
+		if serr != nil {
+			return serr
+		}
 
-// # Helper: Creates User Auth Context from API Keys
-func newUserAuthCtx(ctx context.Context, keys *md.APIKeys) (context.Context, error) {
-	// Add our user group key to the context
-	ctx = common.NewAPIKeyContext(ctx, keys.TextileKey)
+		// Marshal Data
+		buf, err := protojson.Marshal(inv)
+		if err != nil {
+			return md.NewMarshalError(err)
+		}
 
-	// Add a signature using our user group secret
-	return common.CreateAPISigContext(ctx, time.Now().Add(time.Hour), keys.TextileSecret)
-}
+		// Send to Mailbox
+		serr = sc.Textile.sendMail(pubKey, []byte("Hello Mailbox Test"))
+		if serr != nil {
+			return serr
+		}
 
-// # Helper: Creates Auth Token Context from AuthContext, Client, Identity
-func (tn *TextileService) newTokenCtx() (context.Context, error) {
-	// Generate a new token for the user
-	token, err := tn.client.GetToken(tn.ctxAuth, tn.identity)
-	if err != nil {
-		return nil, err
+		// Send to Mailbox
+		serr = sc.Textile.sendMail(pubKey, buf)
+		if serr != nil {
+			return serr
+		}
+		md.LogSuccess("Sending Mail")
+		return nil
+	} else {
+		md.LogInfo("Mail is not Ready")
 	}
-	return thread.NewTokenContext(tn.ctxAuth, token), nil
+	return nil
+}
+
+// @ Method Sends Push Notification to Peer
+func (sc *serviceClient) PushSingle(msg *md.PushMessage) *md.SonrError {
+	if isPushEnabled {
+		return sc.Push.push(msg)
+	}
+	return nil
+}
+
+// @ Method Send Multiple Push Notifications to Peers
+func (sc *serviceClient) PushMultiple(msg *md.PushMessage, peers []*md.Peer) *md.SonrError {
+	if isPushEnabled {
+		return sc.Push.pushMulti(msg, peers)
+	}
+	return nil
 }

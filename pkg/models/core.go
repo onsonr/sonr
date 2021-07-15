@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/network"
+	"github.com/libp2p/go-libp2p-core/protocol"
 	msg "github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/proto"
@@ -25,16 +26,16 @@ type SetStatus func(s Status)
 type OnProtobuf func([]byte)
 type OnError func(err *SonrError)
 type Callback struct {
-	OnInvite      OnProtobuf
-	OnConnected   OnProtobuf
-	OnEvent       OnProtobuf
-	OnMail        OnProtobuf
-	OnReply       OnProtobuf
-	OnProgress    OnProtobuf
-	OnReceived    OnProtobuf
-	OnTransmitted OnProtobuf
-	OnError       OnError
-	SetStatus     SetStatus
+	// OnInvite      OnProtobuf
+	// OnConnected   OnProtobuf
+	OnEvent OnProtobuf
+	// OnMail        OnProtobuf
+	// OnReply       OnProtobuf
+	// OnProgress    OnProtobuf
+	OnRequest  OnProtobuf
+	OnResponse OnProtobuf
+	OnError    OnError
+	SetStatus  SetStatus
 }
 
 // ** ─── State MANAGEMENT ────────────────────────────────────────────────────────
@@ -77,27 +78,6 @@ func (c *state) Pause() {
 	if atomic.LoadUint64(&c.flag) == 0 {
 		atomic.StoreUint64(&c.flag, 1)
 		c.chn = make(chan bool)
-	}
-}
-
-// ** ─── ServiceStatus MANAGEMENT ────────────────────────────────────────────────────────
-// Create New Service Status
-func NewServiceStatus(authStatus bool, deviceStatus bool) *ServiceStatus {
-	return &ServiceStatus{
-		Auth:    authStatus,
-		Device:  deviceStatus,
-		Textile: ServiceStatus_DISABLED,
-	}
-}
-
-// Update Textile Status
-func (ss *ServiceStatus) EnableTextile(hasThreads bool, hasMailbox bool) {
-	if hasThreads && hasMailbox {
-		ss.Textile = ServiceStatus_FULL
-	} else if hasThreads {
-		ss.Textile = ServiceStatus_THREADS_ONLY
-	} else {
-		ss.Textile = ServiceStatus_DISABLED
 	}
 }
 
@@ -217,48 +197,66 @@ func (f *SFile) Single() *SFile_Item {
 // ** ─── Session MANAGEMENT ────────────────────────────────────────────────────────
 type Session struct {
 	// Inherited Properties
-	file *SFile
-	peer *Peer
-	user *User
+	file      *SFile
+	owner     *Peer
+	receiver  *Peer
+	pid       protocol.ID
+	user      *User
+	direction CompleteEvent_Direction
 
 	// Management
-	call Callback
+	call SessionHandler
+}
+
+type SessionHandler interface {
+	OnCompleted(stream network.Stream, pid protocol.ID, completeEvent *CompleteEvent)
+	OnProgress(buf []byte)
+	OnError(err *SonrError)
 }
 
 // ^ Prepare for Outgoing Session ^ //
-func NewOutSession(u *User, req *InviteRequest, tc Callback) *Session {
+func NewOutSession(u *User, req *InviteRequest, sh SessionHandler) *Session {
 	return &Session{
-		file: req.GetFile(),
-		peer: req.GetTo(),
-		user: u,
-		call: tc,
+		file:      req.GetFile(),
+		owner:     req.GetFrom(),
+		receiver:  req.GetTo(),
+		pid:       req.ProtocolID(),
+		user:      u,
+		direction: CompleteEvent_Outgoing,
+		call:      sh,
 	}
 }
 
 // ^ Prepare for Incoming Session ^ //
-func NewInSession(u *User, inv *InviteRequest, c Callback) *Session {
+func NewInSession(u *User, inv *InviteRequest, sh SessionHandler) *Session {
 	// Return Session
 	return &Session{
-		file: inv.GetFile(),
-		peer: inv.GetFrom(),
-		user: u,
-		call: c,
+		file:      inv.GetFile(),
+		owner:     inv.GetFrom(),
+		receiver:  inv.GetTo(),
+		pid:       inv.ProtocolID(),
+		user:      u,
+		direction: CompleteEvent_Incoming,
+		call:      sh,
 	}
 }
 
-// Returns SFile as TransferCard given Receiver and Owner
-func (s *Session) Card() *Transfer {
-	return &Transfer{
-		// SQL Properties
-		Payload:  s.file.Payload,
-		Received: int32(time.Now().Unix()),
+// ^ Returns SFile as TransferCard given Receiver and Owner
+func (s *Session) Event() *CompleteEvent {
+	return &CompleteEvent{
+		Direction: s.direction,
+		Transfer: &Transfer{
+			// SQL Properties
+			Payload:  s.file.Payload,
+			Received: int32(time.Now().Unix()),
 
-		// Owner Properties
-		Owner:    s.user.Peer.GetProfile(),
-		Receiver: s.peer.GetProfile(),
+			// Owner Properties
+			Owner:    s.owner.GetProfile(),
+			Receiver: s.receiver.GetProfile(),
 
-		// Data Properties
-		Data: s.file.ToData(),
+			// Data Properties
+			Data: s.file.ToData(),
+		},
 	}
 }
 
@@ -275,8 +273,7 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 			}
 		}
 		// Set Status
-		s.handleReceived()
-		stream.Reset()
+		s.call.OnCompleted(stream, s.pid, s.Event())
 	}(msg.NewReader(stream))
 }
 
@@ -293,46 +290,13 @@ func (s *Session) WriteToStream(stream network.Stream) {
 			}
 		}
 		// Handle Complete
-		s.handleTransmitted()
-		stream.CloseWrite()
+		s.call.OnCompleted(stream, s.pid, s.Event())
 	}(msg.NewWriter(stream))
-}
-
-// @ Helper: Handles Succesful Received
-func (s *Session) handleReceived() {
-	// Set Status
-	s.call.SetStatus(Status_AVAILABLE)
-
-	// Marshal Data
-	buf, err := proto.Marshal(s.Card())
-	if err != nil {
-		s.call.OnError(NewMarshalError(err))
-		return
-	}
-
-	// Callback Data
-	s.call.OnReceived(buf)
-}
-
-// @ Helper: Handles Succesful Transmitted
-func (s *Session) handleTransmitted() {
-	// Set Status
-	s.call.SetStatus(Status_AVAILABLE)
-
-	// Marshal Data
-	buf, err := proto.Marshal(s.Card())
-	if err != nil {
-		s.call.OnError(NewMarshalError(err))
-		return
-	}
-
-	// Callback Data
-	s.call.OnTransmitted(buf)
 }
 
 // ** ─── SFile_Item MANAGEMENT ────────────────────────────────────────────────────────
 
-func (i *SFile_Item) NewReader(d *Device, index int, total int, c Callback) ItemReader {
+func (i *SFile_Item) NewReader(d *Device, index int, total int, c SessionHandler) ItemReader {
 	// Return Reader
 	return &itemReader{
 		item:     i,
@@ -344,12 +308,12 @@ func (i *SFile_Item) NewReader(d *Device, index int, total int, c Callback) Item
 	}
 }
 
-func (m *SFile_Item) NewWriter(d *Device, index int, total int, c Callback) ItemWriter {
+func (m *SFile_Item) NewWriter(d *Device, index int, total int, sh SessionHandler) ItemWriter {
 	return &itemWriter{
 		item:     m,
 		size:     0,
 		device:   d,
-		callback: c,
+		callback: sh,
 		index:    index,
 		total:    total,
 	}
@@ -360,17 +324,12 @@ func (i *SFile_Item) SetPath(d *Device) string {
 	if i.Mime.IsMedia() {
 		// Check for Desktop
 		if d.IsDesktop() {
-			i.Path = filepath.Join(d.FileSystem.GetDownloads(), i.Name)
+			i.Path = filepath.Join(d.FileSystem.GetDownloads().GetPath(), i.Name)
 		} else {
-			i.Path = filepath.Join(d.FileSystem.GetTemporary(), i.Name)
+			i.Path = filepath.Join(d.FileSystem.GetTemporary().GetPath(), i.Name)
 		}
 	} else {
-		// Check for Desktop
-		if d.IsDesktop() {
-			i.Path = filepath.Join(d.FileSystem.GetDownloads(), i.Name)
-		} else {
-			i.Path = filepath.Join(d.FileSystem.GetDocuments(), i.Name)
-		}
+		i.Path = filepath.Join(d.FileSystem.GetDownloads().GetPath(), i.Name)
 	}
 	return i.Path
 }
@@ -382,7 +341,7 @@ type ItemReader interface {
 }
 type itemReader struct {
 	ItemReader
-	callback Callback
+	callback SessionHandler
 	mutex    sync.Mutex
 	item     *SFile_Item
 	device   *Device
@@ -404,7 +363,7 @@ func (p *itemReader) Progress() []byte {
 	}
 
 	// Marshal and Return
-	buf, err := proto.Marshal(update)
+	buf, err := update.ToGeneric()
 	if err != nil {
 		return nil
 	}
@@ -467,7 +426,7 @@ type ItemWriter interface {
 
 type itemWriter struct {
 	ItemWriter
-	callback Callback
+	callback SessionHandler
 	item     *SFile_Item
 	device   *Device
 	index    int

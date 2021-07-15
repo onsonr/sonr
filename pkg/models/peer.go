@@ -23,7 +23,7 @@ func (t *Topic) IsLocal() bool {
 
 // @ Local Lobby Topic Protocol ID
 func (r *User) NewLocalTopic() *Topic {
-	name := fmt.Sprintf("/sonr/topic/%s", r.Router.Location.OLC())
+	name := fmt.Sprintf("/sonr/topic/%s", r.Location.OLC())
 	return &Topic{
 		Name: name,
 		Type: Topic_LOCAL,
@@ -39,42 +39,41 @@ func (u *User) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) *SonrError {
 			Peer:      id.String(),
 			Device:    u.DeviceID(),
 			MultiAddr: maddr.String(),
-			PublicKey: u.KeyPair().GetPublic().GetBuffer(),
+			PublicKey: u.KeyPair().PubKeyBase64(),
+			PushToken: u.GetPushToken(),
 		},
 		Profile:  u.Profile(),
 		Platform: u.Device.Platform,
 		Model:    u.Device.Model,
 	}
-	// Set Device Topic
-	u.Router.DeviceTopic = fmt.Sprintf("/sonr/topic/%s", u.Peer.GetSName())
 	return nil
 }
 
 // ** ─── Local Event MANAGEMENT ────────────────────────────────────────────────────────
 // Creates New Exit Local Event
-func NewJoinLocalEvent(peer *Peer) *LobbyEvent {
-	return &LobbyEvent{
+func NewJoinLocalEvent(peer *Peer) *TopicEvent {
+	return &TopicEvent{
 		Id:      peer.Id.Peer,
 		Peer:    peer,
-		Subject: LobbyEvent_JOIN,
+		Subject: TopicEvent_JOIN,
 	}
 }
 
 // Creates New Exit Local Event
-func NewUpdateLocalEvent(peer *Peer, topic *Topic) *LobbyEvent {
-	return &LobbyEvent{
+func NewUpdateLocalEvent(peer *Peer, topic *Topic) *TopicEvent {
+	return &TopicEvent{
 		Id:      peer.Id.Peer,
 		Peer:    peer,
-		Subject: LobbyEvent_UPDATE,
+		Subject: TopicEvent_UPDATE,
 		Topic:   topic,
 	}
 }
 
 // Creates New Exit Local Event
-func NewExitLocalEvent(id string, topic *Topic) *LobbyEvent {
-	return &LobbyEvent{
+func NewExitLocalEvent(id string, topic *Topic) *TopicEvent {
+	return &TopicEvent{
 		Id:      id,
-		Subject: LobbyEvent_EXIT,
+		Subject: TopicEvent_EXIT,
 		Topic:   topic,
 	}
 }
@@ -99,16 +98,19 @@ func (p *Peer) PeerID() string {
 }
 
 // ^ Returns Peer Public Key ^ //
-func (p *Peer) PublicKey() crypto.PubKey {
+func (p *Peer) PublicKey() (crypto.PubKey, *SonrError) {
 	// Get ID from Public Key
-	buf := p.GetId().GetPublicKey()
+	buf, err := crypto.ConfigDecodeKey(p.GetId().GetPublicKey())
+	if err != nil {
+		return nil, NewError(err, ErrorMessage_PEER_PUBKEY_DECODE)
+	}
 
-	// Get Key from Buffer
+	// Unmarshal Public Key
 	pubKey, err := crypto.UnmarshalPublicKey(buf)
 	if err != nil {
-		return nil
+		return nil, NewError(err, ErrorMessage_PEER_PUBKEY_UNMARSHAL)
 	}
-	return pubKey
+	return pubKey, nil
 }
 
 // ^ Checks if Two Peers are the Same by Device ID and Peer ID
@@ -142,9 +144,14 @@ func (p *Peer) IsNotSamePeerID(pid peer.ID) bool {
 }
 
 // ^ Converts Peer Public Key into Thread Key
-func (p *Peer) ThreadKey() (thread.PubKey, error) {
-	if len(p.GetId().PublicKey) == 0 {
-		return thread.NewLibp2pPubKey(p.PublicKey()), nil
+func (p *Peer) ThreadKey() (thread.PubKey, *SonrError) {
+	// Get Pub Key
+	pubKey, err := p.PublicKey()
+	if err != nil {
+		return nil, err
 	}
-	return nil, NoPubKey
+
+	// Create Thread Pub Key
+	threadKey := thread.NewLibp2pPubKey(pubKey)
+	return threadKey, nil
 }

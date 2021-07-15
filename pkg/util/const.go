@@ -38,6 +38,9 @@ const TEXTILE_API_URL = "api.hub.textile.io:443"
 // Textile Miner Index Target
 const TEXTILE_MINER_IDX = "api.minerindex.hub.textile.io:443"
 
+// Textile Mailbox Directory
+const TEXTILE_MAILBOX_DIR = ".textile"
+
 // ** ─── Services ────────────────────────────────────────────────────────
 // Local RPC Service Name
 const EXCHANGE_RPC_SERVICE = "ExchangeService"
@@ -50,6 +53,9 @@ const AUTH_RPC_SERVICE = "AuthService"
 
 // Local RPC Service Method for Invite
 const AUTH_METHOD_INVITE = "InviteWith"
+
+// Firebase Project ID
+const FIRE_PROJECT_ID = "trans-density-315704"
 
 // ** ─── Host ────────────────────────────────────────────────────────
 // Libp2p Host Rendevouz Point

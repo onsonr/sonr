@@ -2,12 +2,14 @@ package client
 
 import (
 	"context"
-	"log"
 
+	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-core/protocol"
 	net "github.com/sonr-io/core/internal/host"
 	srv "github.com/sonr-io/core/internal/service"
 	md "github.com/sonr-io/core/pkg/models"
+	"google.golang.org/protobuf/proto"
 )
 
 // Interface: Main Client handles Networking/Identity/Streams
@@ -16,6 +18,7 @@ type Client interface {
 	Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrError
 	Bootstrap() (*net.TopicManager, *md.SonrError)
 	Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrError
+	ReadMail() *md.SonrError
 	Respond(r *md.InviteResponse)
 	Update(t *net.TopicManager) *md.SonrError
 	Lifecycle(state md.LifecycleState, t *net.TopicManager)
@@ -23,10 +26,14 @@ type Client interface {
 
 	// Topic Callbacks
 	OnConnected(*md.ConnectionResponse)
-	OnEvent(*md.LobbyEvent)
-	OnInvite([]byte)
+	OnEvent(*md.TopicEvent)
+	OnError(err *md.SonrError)
+	OnInvite(buf []byte)
+	OnMail(e *md.MailEvent)
 	OnReply(id peer.ID, data []byte)
 	OnResponded(inv *md.InviteRequest)
+	OnProgress(buf []byte)
+	OnCompleted(stream network.Stream, pid protocol.ID, completeEvent *md.CompleteEvent)
 }
 
 // Struct: Main Client handles Networking/Identity/Streams
@@ -91,7 +98,7 @@ func (c *client) Bootstrap() (*net.TopicManager, *md.SonrError) {
 	}
 
 	// Start Services
-	s, err := srv.NewService(c.ctx, c.Host, c.user, c.request, c.call, c)
+	s, err := srv.NewService(c.ctx, c.Host, c.user, c.request, c)
 	if err != nil {
 		return nil, err
 	}
@@ -103,44 +110,49 @@ func (c *client) Bootstrap() (*net.TopicManager, *md.SonrError) {
 	} else {
 		return t, nil
 	}
-
-	// Read any Mail
 }
 
 // @ Invite Processes Data and Sends Invite to Peer
 func (c *client) Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrError {
 	if c.user.IsReady() {
 		// Check for Peer
-		if t.HasPeer(invite.To.Id.Peer) {
-			// Initialize Session if transfer
-			if invite.IsPayloadFile() {
-				// Start New Session
-				c.session = md.NewOutSession(c.user, invite, c.call)
-			}
-
-			// Get PeerID and Check error
-			id, err := t.FindPeerInTopic(invite.To.Id.Peer)
+		if invite.GetType() == md.InviteRequest_Remote {
+			err := c.Service.SendMail(invite)
 			if err != nil {
-				return md.NewPeerFoundError(err, invite.GetTo().GetId().GetPeer())
+				return err
 			}
-
-			// Run Routine
-			go func(inv *md.InviteRequest) {
-				// Send Invite
-				err = c.Service.Invite(id, inv)
-				if err != nil {
-					c.call.OnError(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
-				}
-			}(invite)
 		} else {
-			// Check for Remote Invite
-			if invite.GetType() == md.InviteRequest_Remote {
-				c.Service.SendMail(invite)
+			if t.HasPeer(invite.To.Id.Peer) {
+				// Get PeerID and Check error
+				id, err := t.FindPeerInTopic(invite.To.Id.Peer)
+				if err != nil {
+					c.newExitEvent(invite)
+					return md.NewPeerFoundError(err, invite.GetTo().GetId().GetPeer())
+				}
+
+				// Initialize Session if transfer
+				if invite.IsPayloadTransfer() {
+					// Update Status
+					c.call.SetStatus(md.Status_PENDING)
+
+					// Start New Session
+					invite.SetProtocol(md.SonrProtocol_LocalTransfer, id)
+					c.session = md.NewOutSession(c.user, invite, c)
+				}
+
+				// Run Routine
+				go func(inv *md.InviteRequest) {
+					// Send Invite
+					err = c.Service.Invite(id, inv)
+					if err != nil {
+						c.call.OnError(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
+						return
+					}
+				}(invite)
 			} else {
-				// Return Error
+				c.newExitEvent(invite)
 				return md.NewErrorWithType(md.ErrorMessage_PEER_NOT_FOUND_INVITE)
 			}
-
 		}
 		return nil
 	}
@@ -150,6 +162,12 @@ func (c *client) Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrE
 // @ Respond Sends a Response to Service
 func (c *client) Respond(r *md.InviteResponse) {
 	c.Service.Respond(r)
+}
+
+// @ Method Calls to Read Local Mailbox
+func (c *client) ReadMail() *md.SonrError {
+	//return c.Service.ReadMail()
+	return nil
 }
 
 // @ Update proximity/direction and Notify Lobby
@@ -169,21 +187,21 @@ func (c *client) Lifecycle(state md.LifecycleState, t *net.TopicManager) {
 		// Inform Lobby
 		if c.user.IsReady() {
 			if err := t.Publish(c.user.Peer.NewUpdateEvent(t.Topic())); err != nil {
-				log.Println(md.NewError(err, md.ErrorMessage_TOPIC_UPDATE))
+				md.NewError(err, md.ErrorMessage_TOPIC_UPDATE)
 			}
 		}
 	} else if state == md.LifecycleState_Paused {
 		// Inform Lobby
 		if c.user.IsReady() {
-			// if err := t.Publish(c.user.Peer.NewExitEvent()); err != nil {
-			// 	log.Println(md.NewError(err, md.ErrorMessage_TOPIC_UPDATE))
-			// }
+			if err := t.Publish(c.user.Peer.NewExitEvent(t.Topic())); err != nil {
+				md.NewError(err, md.ErrorMessage_TOPIC_UPDATE)
+			}
 		}
 	} else if state == md.LifecycleState_Stopped {
 		// Inform Lobby
 		if c.user.IsReady() {
 			if err := t.Publish(c.user.Peer.NewExitEvent(t.Topic())); err != nil {
-				log.Println(md.NewError(err, md.ErrorMessage_TOPIC_UPDATE))
+				md.NewError(err, md.ErrorMessage_TOPIC_UPDATE)
 			}
 		}
 		c.Host.Close()
@@ -214,4 +232,24 @@ func (c *client) Restart(ur *md.UpdateRequest, keys *md.KeyPair) (*net.TopicMana
 		}
 	}
 	return nil, nil
+}
+
+func (c *client) newExitEvent(inv *md.InviteRequest) {
+	// Create Exit Event
+	event := md.TopicEvent{
+		Id:      inv.To.Id.Peer,
+		Subject: md.TopicEvent_EXIT,
+		Peer:    inv.To,
+	}
+
+	// Marshal Data
+	buf, err := proto.Marshal(&event)
+	if err != nil {
+		return
+	}
+
+	// Callback Event and Return Peer Error
+	c.call.OnEvent(buf)
+	c.call.SetStatus(md.Status_AVAILABLE)
+	return
 }

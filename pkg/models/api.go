@@ -2,16 +2,14 @@ package models
 
 import (
 	"fmt"
-	"log"
 
 	"net/http"
 
 	olc "github.com/google/open-location-code/go"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
-	"google.golang.org/protobuf/proto"
-
 	util "github.com/sonr-io/core/pkg/util"
+	"google.golang.org/protobuf/proto"
 )
 
 // ** ─── VerifyRequest MANAGEMENT ────────────────────────────────────────────────────────
@@ -61,6 +59,55 @@ func NewInvalidVerifyResponseBuf() []byte {
 	} else {
 		return buf
 	}
+}
+
+// ** ─── InitializeRequest MANAGEMENT ────────────────────────────────────────────────────────
+// Check for Logging Enabled
+func (i *InitializeRequest) IsLoggingEnabled() bool {
+	if i.GetLogLevel() != InitializeRequest_NONE {
+		return true
+	}
+	return false
+}
+
+// Check if Info Log Enabled
+func (i *InitializeRequest) HasInfoLog() bool {
+	if i.GetLogLevel() >= InitializeRequest_INFO {
+		return true
+	}
+	return false
+}
+
+// Check if Debug Log Enabled
+func (i *InitializeRequest) HasDebugLog() bool {
+	if i.GetLogLevel() >= InitializeRequest_DEBUG {
+		return true
+	}
+	return false
+}
+
+// Check if Debug Log Enabled
+func (i *InitializeRequest) HasWarningLog() bool {
+	if i.GetLogLevel() >= InitializeRequest_WARNING {
+		return true
+	}
+	return false
+}
+
+// Check if Debug Log Enabled
+func (i *InitializeRequest) HasCriticalLog() bool {
+	if i.GetLogLevel() >= InitializeRequest_CRITICAL {
+		return true
+	}
+	return false
+}
+
+// Check if Debug Log Enabled
+func (i *InitializeRequest) HasFatalLog() bool {
+	if i.GetLogLevel() >= InitializeRequest_FATAL {
+		return true
+	}
+	return false
 }
 
 // ** ─── URLLink MANAGEMENT ────────────────────────────────────────────────────────
@@ -175,8 +222,14 @@ func (u *URLLink) SetData() {
 }
 
 // ** ─── InviteResponse MANAGEMENT ────────────────────────────────────────────────────────
+// Checks if Peer Accepted Transfer
 func (r *InviteResponse) HasAcceptedTransfer() bool {
-	return r.Decision && r.Type == InviteResponse_Default
+	return r.GetDecision() && r.GetType() == InviteResponse_Transfer
+}
+
+// Returns Protocol ID Set by Peer
+func (r *InviteResponse) ProtocolID() protocol.ID {
+	return protocol.ID(r.GetProtocol())
 }
 
 // ** ─── InviteRequest MANAGEMENT ────────────────────────────────────────────────────────
@@ -201,7 +254,7 @@ func (i *InviteRequest) IsPayloadContact() bool {
 }
 
 // Checks if Payload is File Transfer
-func (i *InviteRequest) IsPayloadFile() bool {
+func (i *InviteRequest) IsPayloadTransfer() bool {
 	return i.Payload == Payload_FILE || i.Payload == Payload_FILES || i.Payload == Payload_MEDIA || i.Payload == Payload_ALBUM
 }
 
@@ -215,11 +268,37 @@ func (i *InviteRequest) IsFlatInvite() bool {
 	return i.GetType() == InviteRequest_Flat
 }
 
+// Returns Protocol ID Set by Peer
+func (r *InviteRequest) ProtocolID() protocol.ID {
+	return protocol.ID(r.GetProtocol())
+}
+
+// Set Protocol for Invite and Return ID
+func (i *InviteRequest) SetProtocol(p SonrProtocol, id peer.ID) protocol.ID {
+	// Initialize
+	protocolName := fmt.Sprintf("/sonr/%s/%s", p.Method(), id.String())
+
+	// // Get Nano ID
+	// nanoid, err := gonanoid.Generate(id.Pretty(), 24)
+	// if err == nil {
+	// 	protocolName = fmt.Sprintf("/sonr/%s/%s", p.Method(), nanoid)
+	// }
+
+	// Set Name and Return ID
+	i.Protocol = protocolName
+	return protocol.ID(protocolName)
+}
+
 // Validates InviteRequest has From Parameter
-func (u *User) ValidateInvite(i *InviteRequest) *InviteRequest {
+func (u *User) SignInvite(i *InviteRequest) *InviteRequest {
 	// Set From
 	if i.From == nil {
 		i.From = u.GetPeer()
+	}
+
+	// Set Type
+	if i.Type == InviteRequest_None {
+		i.Type = InviteRequest_Local
 	}
 	return i
 }
@@ -242,24 +321,32 @@ func (l *Location) OLC() string {
 }
 
 // ** ─── Router MANAGEMENT ────────────────────────────────────────────────────────
-// @ LocalTransferProtocol Controller Data Protocol ID
-func (r *User_Router) LocalTransferProtocol(id peer.ID) protocol.ID {
-	return protocol.ID(fmt.Sprintf("/sonr/local-transfer/%s", id.Pretty()))
+// Construct New Protocol ID given Method Name String and id Peer.ID
+func (p SonrProtocol) NewIDProtocol(id peer.ID) protocol.ID {
+	return protocol.ID(fmt.Sprintf("/sonr/%s/%s", p.Method(), id.String()))
 }
 
-// @ Lobby Topic Protocol ID
-func (r *User_Router) LinkDeviceProtocol(username string) protocol.ID {
-	return protocol.ID(fmt.Sprintf("/sonr/user-linker/%s", username))
+// Construct New Protocol ID given Method Name String and Value String
+func (p SonrProtocol) NewValueProtocol(value string) protocol.ID {
+	return protocol.ID(fmt.Sprintf("/sonr/%s/%s", p.Method(), value))
 }
 
-// @ Transfer Controller Data Protocol ID
-func (r *User_Router) RemoteTransferProtocol(id peer.ID) protocol.ID {
-	return protocol.ID(fmt.Sprintf("/sonr/remote-transfer/%s", id.Pretty()))
-}
-
-// @ Lobby Topic Protocol ID
-func (r *User_Router) Topic(name string) string {
-	return fmt.Sprintf("/sonr/topic/%s", name)
+// Returns Method Name for this Protocol
+func (p SonrProtocol) Method() string {
+	switch p {
+	case SonrProtocol_Authorize:
+		return "auth-service"
+	case SonrProtocol_Devices:
+		return "user-devices"
+	case SonrProtocol_Linker:
+		return "user-linker"
+	case SonrProtocol_LocalTransfer:
+		return "local-transfer"
+	case SonrProtocol_RemoteTransfer:
+		return "remote-transfer"
+	default:
+		return ""
+	}
 }
 
 // ** ─── Status MANAGEMENT ────────────────────────────────────────────────────────
@@ -308,307 +395,202 @@ func (u *User) IsNotStatus(gs Status) bool {
 	return u.GetStatus() != gs
 }
 
-// ** ─── Error MANAGEMENT ────────────────────────────────────────────────────────
-type SonrError struct {
-	data     *ErrorMessage
-	Capture  bool
-	HasError bool
-	IsJoined bool
-	Error    error
-	Joined   []*ErrorMessage
-}
+// ** ─── Generic Callback MANAGEMENT ───────────────────────────────────────────
 
-type SonrErrorOpt struct {
-	Error error
-	Type  ErrorMessage_Type
-}
-
-// ^ Checks for Error With Type ^ //
-func NewError(err error, errType ErrorMessage_Type) *SonrError {
+// Create New Generic CONNECTION Response Message
+func (o *ConnectionResponse) ToGeneric() ([]byte, error) {
+	// Marshal Original
+	ogBuf, err := proto.Marshal(o)
 	if err != nil {
-		// Initialize
-		message, severity := generateError(errType)
-
-		// Set Capture
-		capture := false
-		if severity == ErrorMessage_CRITICAL || severity == ErrorMessage_FATAL {
-			capture = true
-		}
-
-		// Return Error
-		return &SonrError{
-			data: &ErrorMessage{
-				Message:  message,
-				Error:    err.Error(),
-				Type:     errType,
-				Severity: severity,
-			},
-			Capture:  capture,
-			HasError: true,
-		}
-	}
-	// Return Error
-	return &SonrError{
-		HasError: false,
-	}
-}
-
-// ^ Checks for Error With Type ^ //
-func NewErrorGroup(errors ...SonrErrorOpt) *SonrError {
-	if len(errors) > 0 {
-		// Create Slice
-		joined := []*ErrorMessage{}
-		capture := false
-
-		// Loop Errors
-		for _, err := range errors {
-			// Generate Message
-			message, severity := generateError(err.Type)
-			if severity == ErrorMessage_CRITICAL || severity == ErrorMessage_FATAL {
-				capture = true
-			}
-
-			// Add Joined Message
-			joined = append(joined, &ErrorMessage{
-				Message:  message,
-				Error:    err.Error.Error(),
-				Type:     err.Type,
-				Severity: severity,
-			})
-		}
-
-		// Return Joined Error
-		return &SonrError{
-			IsJoined: true,
-			HasError: true,
-			Capture:  capture,
-			Joined:   joined,
-		}
-	} else {
-		// Return Error
-		return &SonrError{
-			HasError: false,
-		}
-	}
-}
-
-// ^ Return New Peer Not Found Error with Peer ID as Data ^ //
-func NewPeerFoundError(err error, peer string) *SonrError {
-	// Initialize
-	message, severity := generateError(ErrorMessage_PEER_NOT_FOUND_INVITE)
-
-	// Set Capture
-	capture := false
-	if severity == ErrorMessage_CRITICAL || severity == ErrorMessage_FATAL {
-		capture = true
+		return nil, err
 	}
 
-	// Return Error
-	return &SonrError{
-		data: &ErrorMessage{
-			Message:  message,
-			Error:    err.Error(),
-			Type:     ErrorMessage_MARSHAL,
-			Severity: severity,
-			Data:     peer,
-		},
-		Capture:  capture,
-		HasError: true,
-	}
-}
-
-// ^ Returns Proto Marshal Error
-func NewMarshalError(err error) *SonrError {
-	// Initialize
-	message, severity := generateError(ErrorMessage_MARSHAL)
-
-	// Set Capture
-	capture := false
-	if severity == ErrorMessage_CRITICAL || severity == ErrorMessage_FATAL {
-		capture = true
+	// Create Generic
+	generic := &GenericResponse{
+		Type: GenericResponse_CONNECTION,
+		Data: ogBuf,
 	}
 
-	// Return Error
-	return &SonrError{
-		data: &ErrorMessage{
-			Message:  message,
-			Error:    err.Error(),
-			Type:     ErrorMessage_MARSHAL,
-			Severity: severity,
-		},
-		Capture:  capture,
-		HasError: true,
-	}
-}
-
-// ^ Returns Proto Unmarshal Error
-func NewUnmarshalError(err error) *SonrError {
-	// Return Error
-	// Initialize
-	message, severity := generateError(ErrorMessage_UNMARSHAL)
-
-	// Set Capture
-	capture := false
-	if severity == ErrorMessage_CRITICAL || severity == ErrorMessage_FATAL {
-		capture = true
-	}
-
-	// Return Error
-	return &SonrError{
-		data: &ErrorMessage{
-			Message:  message,
-			Error:    err.Error(),
-			Type:     ErrorMessage_UNMARSHAL,
-			Severity: severity,
-		},
-		Capture:  capture,
-		HasError: true,
-	}
-}
-
-// ^ Returns New Error based on Type Only
-func NewErrorWithType(errType ErrorMessage_Type) *SonrError {
-	// Initialize
-	message, severity := generateError(errType)
-
-	// Set Capture
-	capture := false
-	if severity == ErrorMessage_CRITICAL || severity == ErrorMessage_FATAL {
-		capture = true
-	}
-
-	// Return Error
-	return &SonrError{
-		data: &ErrorMessage{
-			Message:  message,
-			Type:     errType,
-			Severity: severity,
-		},
-		Capture:  capture,
-		HasError: true,
-	}
-}
-
-// @ Return Message as Bytes ^ //
-func (errWrap *SonrError) Bytes() []byte {
-	bytes, err := proto.Marshal(errWrap.data)
+	// Marshal Generic
+	genBuf, err := proto.Marshal(generic)
 	if err != nil {
-		return nil
+		return nil, err
 	}
-	return bytes
+	return genBuf, nil
 }
 
-// @ Method Prints Error
-func (errWrap *SonrError) Print() {
-	log.Printf("ERROR: %s", errWrap.String())
-}
-
-// @ Return Protobuf Message for Error
-func (errWrap *SonrError) Message() *ErrorMessage {
-	return errWrap.data
-}
-
-// @ Return Message as String ^ //
-func (errWrap *SonrError) String() string {
-	return errWrap.data.String()
-}
-
-// # Helper Method to Generate Client Message, Severity with Type
-func generateError(errType ErrorMessage_Type) (string, ErrorMessage_Severity) {
-	switch errType {
-	case ErrorMessage_HOST_PUBSUB:
-		return "Failed to start communication with peers", ErrorMessage_FATAL
-	case ErrorMessage_HOST_START:
-		return "Failed to start networking host", ErrorMessage_FATAL
-	case ErrorMessage_BOOTSTRAP:
-		return "Failed to bootstrap to peers", ErrorMessage_FATAL
-	case ErrorMessage_CRYPTO_GEN:
-		return "Failed to generate secret words", ErrorMessage_CRITICAL
-	case ErrorMessage_HOST_DHT:
-		return "Error occurred handling DHT", ErrorMessage_FATAL
-	case ErrorMessage_HOST_KEY:
-		return "Error occured managing Private Key", ErrorMessage_CRITICAL
-	case ErrorMessage_HOST_STREAM:
-		return "Error occurred handling Network Stream", ErrorMessage_CRITICAL
-	case ErrorMessage_INCOMING:
-		return "Error occurred handling Incoming File", ErrorMessage_CRITICAL
-	case ErrorMessage_IP_LOCATE:
-		return "Error occurred locating User", ErrorMessage_CRITICAL
-	case ErrorMessage_IP_RESOLVE:
-		return "Error occurred managing IP Address", ErrorMessage_FATAL
-	case ErrorMessage_MARSHAL:
-		return "Failed to Marshal Data", ErrorMessage_WARNING
-	case ErrorMessage_OUTGOING:
-		return "Error occurred handling Outgoing File", ErrorMessage_CRITICAL
-	case ErrorMessage_SESSION:
-		return "Error occurred managing Session", ErrorMessage_CRITICAL
-	case ErrorMessage_TOPIC_HANDLER:
-		return "Error occurred handling Lobby Peers", ErrorMessage_WARNING
-	case ErrorMessage_TOPIC_INVALID:
-		return "This Code does not exist", ErrorMessage_WARNING
-	case ErrorMessage_TOPIC_JOIN:
-		return "Failed to join Lobby", ErrorMessage_WARNING
-	case ErrorMessage_TOPIC_CREATE:
-		return "Failed to join Lobby", ErrorMessage_LOG
-	case ErrorMessage_TOPIC_LEAVE:
-		return "Failed to leave Lobby", ErrorMessage_LOG
-	case ErrorMessage_TOPIC_MESSAGE:
-		return "Failed to Send Message", ErrorMessage_WARNING
-	case ErrorMessage_TOPIC_UPDATE:
-		return "Failed to Send Update", ErrorMessage_LOG
-	case ErrorMessage_TOPIC_RPC:
-		return "Error occurred exchanging data", ErrorMessage_CRITICAL
-	case ErrorMessage_TOPIC_SUB:
-		return "Error occurred subscribing to Topic", ErrorMessage_CRITICAL
-	case ErrorMessage_TRANSFER_CHUNK:
-		return "Error occurred during Transfer", ErrorMessage_CRITICAL
-	case ErrorMessage_TRANSFER_END:
-		return "Error occurred finishing Transfer", ErrorMessage_CRITICAL
-	case ErrorMessage_TRANSFER_START:
-		return "Error occurred starting Transfer", ErrorMessage_CRITICAL
-	case ErrorMessage_UNMARSHAL:
-		return "Error occured Unmarshalling data", ErrorMessage_WARNING
-	case ErrorMessage_USER_CREATE:
-		return "Error occurred Creating User", ErrorMessage_FATAL
-	case ErrorMessage_USER_FS:
-		return "Error occurred Accessing File System", ErrorMessage_FATAL
-	case ErrorMessage_USER_SAVE:
-		return "Error occurred Saving User", ErrorMessage_CRITICAL
-	case ErrorMessage_USER_LOAD:
-		return "Error occurred Loading User", ErrorMessage_CRITICAL
-	case ErrorMessage_USER_UPDATE:
-		return "Error occurred Sending Update", ErrorMessage_WARNING
-	case ErrorMessage_PEER_NOT_FOUND_INVITE:
-		return "Invited Peer was not Found", ErrorMessage_LOG
-	case ErrorMessage_PEER_NOT_FOUND_REPLY:
-		return "Could not send Reply, Peer Not Found", ErrorMessage_LOG
-	case ErrorMessage_PEER_NOT_FOUND_TRANSFER:
-		return "Could not start Transfer, Peer not Found", ErrorMessage_LOG
-	case ErrorMessage_URL_HTTP_GET:
-		return "Invalid URL", ErrorMessage_WARNING
-	case ErrorMessage_URL_INFO_RESP:
-		return "Failed to parse URL Response", ErrorMessage_WARNING
-	case ErrorMessage_FAILED_CONNECTION:
-		return "Failed to connect to Nearby Peer", ErrorMessage_WARNING
-	case ErrorMessage_HOST_INFO:
-		return "Failed to generate User Peer Info", ErrorMessage_CRITICAL
-	case ErrorMessage_KEY_ID:
-		return "Cannot get PeerID from Public Key", ErrorMessage_CRITICAL
-	case ErrorMessage_KEY_SET:
-		return "Cannot overwrite existing key", ErrorMessage_WARNING
-	case ErrorMessage_KEY_INVALID:
-		return "Key is Invalid, May not Exist", ErrorMessage_FATAL
-	case ErrorMessage_STORE_FIND:
-		return "Failed to Find Key", ErrorMessage_LOG
-	case ErrorMessage_STORE_GET:
-		return "Failed to Get Value for Key", ErrorMessage_WARNING
-	case ErrorMessage_STORE_PUT:
-		return "Failed to Get Value for Key", ErrorMessage_WARNING
-	case ErrorMessage_STORE_INIT:
-		return "Failed to Get Value for Key", ErrorMessage_CRITICAL
-	case ErrorMessage_HOST_TEXTILE:
-		return "Failed to Start Textile Client", ErrorMessage_CRITICAL
-	default:
-		return "Unknown", ErrorMessage_LOG
+// Create New Generic INVITE Request Message
+func (o *InviteRequest) ToGeneric() ([]byte, error) {
+	// Marshal Original
+	ogBuf, err := proto.Marshal(o)
+	if err != nil {
+		return nil, err
 	}
+
+	// Create Generic
+	generic := &GenericRequest{
+		Type: GenericRequest_INVITE,
+		Data: ogBuf,
+	}
+
+	// Marshal Generic
+	genBuf, err := proto.Marshal(generic)
+	if err != nil {
+		return nil, err
+	}
+	return genBuf, nil
+}
+
+// Create New Generic INVITE Response Message
+func (o *InviteResponse) ToGeneric() ([]byte, error) {
+	// Marshal Original
+	ogBuf, err := proto.Marshal(o)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create Generic
+	generic := &GenericResponse{
+		Type: GenericResponse_INVITE,
+		Data: ogBuf,
+	}
+
+	// Marshal Generic
+	genBuf, err := proto.Marshal(generic)
+	if err != nil {
+		return nil, err
+	}
+	return genBuf, nil
+}
+
+// Create New Generic REST Request Message
+func (o *RestRequest) ToGeneric() ([]byte, error) {
+	// Marshal Original
+	ogBuf, err := proto.Marshal(o)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create Generic
+	generic := &GenericRequest{
+		Type: GenericRequest_REST,
+		Data: ogBuf,
+	}
+
+	// Marshal Generic
+	genBuf, err := proto.Marshal(generic)
+	if err != nil {
+		return nil, err
+	}
+	return genBuf, nil
+}
+
+// Create New Generic REST Response Message
+func (o *RestResponse) ToGeneric() ([]byte, error) {
+	// Marshal Original
+	ogBuf, err := proto.Marshal(o)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create Generic
+	generic := &GenericResponse{
+		Type: GenericResponse_REST,
+		Data: ogBuf,
+	}
+
+	// Marshal Generic
+	genBuf, err := proto.Marshal(generic)
+	if err != nil {
+		return nil, err
+	}
+	return genBuf, nil
+}
+
+// Create New Generic COMPLETE Event Message
+func (o *CompleteEvent) ToGeneric() ([]byte, error) {
+	// Marshal Original
+	ogBuf, err := proto.Marshal(o)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create Generic
+	generic := &GenericEvent{
+		Type: GenericEvent_COMPLETE,
+		Data: ogBuf,
+	}
+
+	// Marshal Generic
+	genBuf, err := proto.Marshal(generic)
+	if err != nil {
+		return nil, err
+	}
+	return genBuf, nil
+}
+
+// Create New Generic MAIL Event Message
+func (o *MailEvent) ToGeneric() ([]byte, error) {
+	// Marshal Original
+	ogBuf, err := proto.Marshal(o)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create Generic
+	generic := &GenericEvent{
+		Type: GenericEvent_MAIL,
+		Data: ogBuf,
+	}
+
+	// Marshal Generic
+	genBuf, err := proto.Marshal(generic)
+	if err != nil {
+		return nil, err
+	}
+	return genBuf, nil
+}
+
+// Create New Generic PROGRESS Event Message
+func (o *ProgressEvent) ToGeneric() ([]byte, error) {
+	// Marshal Original
+	ogBuf, err := proto.Marshal(o)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create Generic
+	generic := &GenericEvent{
+		Type: GenericEvent_PROGRESS,
+		Data: ogBuf,
+	}
+
+	// Marshal Generic
+	genBuf, err := proto.Marshal(generic)
+	if err != nil {
+		return nil, err
+	}
+	return genBuf, nil
+}
+
+// Create New Generic TOPIC Event Message
+func (o *TopicEvent) ToGeneric() ([]byte, error) {
+	// Marshal Original
+	ogBuf, err := proto.Marshal(o)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create Generic
+	generic := &GenericEvent{
+		Type: GenericEvent_TOPIC,
+		Data: ogBuf,
+	}
+
+	// Marshal Generic
+	genBuf, err := proto.Marshal(generic)
+	if err != nil {
+		return nil, err
+	}
+	return genBuf, nil
 }

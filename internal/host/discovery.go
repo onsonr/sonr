@@ -5,6 +5,7 @@ import (
 
 	dscl "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/peer"
+	peerstore "github.com/libp2p/go-libp2p-core/peerstore"
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	psub "github.com/libp2p/go-libp2p-pubsub"
 	discovery "github.com/libp2p/go-libp2p/p2p/discovery"
@@ -24,6 +25,8 @@ func (n *discoveryNotifee) HandlePeerFound(pi peer.AddrInfo) {
 // ** ─── HostNode Connection Methods ────────────────────────────────────────────────────────
 // @ Bootstrap begins bootstrap with peers
 func (h *hostNode) Bootstrap() *md.SonrError {
+	// Add Host Address to Peerstore
+	h.host.Peerstore().AddAddrs(h.ID(), h.host.Addrs(), peerstore.PermanentAddrTTL)
 	// Create Bootstrapper Info
 	bootstrappers, err := getBootstrapAddrInfo()
 	if err != nil {
@@ -63,6 +66,9 @@ func (h *hostNode) Bootstrap() *md.SonrError {
 
 // @ Method Begins MDNS Discovery
 func (h *hostNode) MDNS() error {
+	// Logging
+	md.LogActivate("MDNS")
+
 	// Create MDNS Service
 	ser, err := discovery.NewMdnsService(h.ctxHost, h.host, util.REFRESH_INTERVAL, util.HOST_RENDEVOUZ_POINT)
 	if err != nil {
@@ -83,28 +89,25 @@ func (h *hostNode) MDNS() error {
 // # Helper Method checks if Peer AddrInfo is Unknown
 func (h *hostNode) checkUnknown(pi peer.AddrInfo) bool {
 	// Iterate and Check
-	for _, v := range h.known {
-		if pi.ID == v || pi.ID == h.host.ID() {
-			return false
-		}
+	if len(h.host.Peerstore().Addrs(pi.ID)) > 0 {
+		return false
 	}
 
-	// Add To List
-	h.known = append(h.known, pi.ID)
+	// Logging
+	md.LogInfo("Adding unknown peer.")
+
+	// Add to PeerStore
+	h.host.Peerstore().AddAddrs(pi.ID, pi.Addrs, time.Minute*4)
 	return true
 }
 
 // # Helper Method Deletes Peer Addr Info from Known List
 func (h *hostNode) deleteKnown(pi peer.AddrInfo) {
+	// Logging
+	md.LogInfo("Deleting known peer.")
+
 	// Remove from Peer Store
 	h.host.Peerstore().ClearAddrs(pi.ID)
-
-	// Iterate and Check
-	for i, v := range h.known {
-		if pi.ID == v || pi.ID == h.host.ID() {
-			h.known[i] = ""
-		}
-	}
 }
 
 // # handleDHTPeers: Connects to Peers in DHT
