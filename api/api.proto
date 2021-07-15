@@ -192,23 +192,12 @@ message InviteResponse {
   Peer to = 4;           // Receivers Peer Data
   bool flatMode = 5;     // Flat Transfer
   Transfer transfer = 6; // Card contains all Data Info, Transfer Info
-  MailInfo mailInfo = 7; // Mail Info for Mailbox Invite
-  string protocol = 8;   // Name of Protocol
-
-  message MailInfo {
-    int32 createdAt = 1;
-    string to = 2;
-    bytes body = 3;
-    string from = 4;
-    int32 readAt = 5;
-    bytes signature = 6;
-  }
+  string protocol = 7;   // Name of Protocol
 
   enum Type {
     None = 0;
     Transfer = 1;
     Contact = 2;
-    Mailbox = 3;
   }
 }
 
@@ -252,9 +241,12 @@ message CompleteEvent {
 }
 // List of Pending Invites through Mailbox
 message MailEvent {
-  bool hasNewMail = 1;
-  repeated InviteRequest invites = 2; // User Received Invites
-  string message = 3;                 // Message from Mailbox
+  int32 createdAt = 1;
+  string to = 2;
+  bytes body = 3;
+  string from = 4;
+  int32 readAt = 5;
+  bytes signature = 6;
 }
 
 // Transfer Progress Event

@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	net "github.com/sonr-io/core/internal/host"
@@ -83,29 +82,6 @@ func NewService(ctx context.Context, h net.HostNode, u *md.User, req *md.Connect
 	return client, nil
 }
 
-// @ Method Reads Inbox and Returns List of Mail Entries
-func (sc *serviceClient) ReadMail() *md.SonrError {
-	// Check Mail Enabled
-	if sc.Textile.options.GetMailbox() {
-		// Fetch Mail Event
-		event, serr := sc.Textile.readMail()
-		if serr != nil {
-			return serr
-		}
-
-		// Logging
-		md.LogSuccess(fmt.Sprintf("Reading Mail: %s", event.String()))
-
-		// Check Mail and Callback Event
-		if event.GetHasNewMail() {
-			sc.handler.OnMail(event)
-		}
-		return nil
-	}
-	md.LogInfo("Mail is not Ready")
-	return nil
-}
-
 // @ Method Sends Mail Entry to Peer
 func (sc *serviceClient) SendMail(inv *md.InviteRequest) *md.SonrError {
 	// Check Mail Enabled
@@ -123,18 +99,16 @@ func (sc *serviceClient) SendMail(inv *md.InviteRequest) *md.SonrError {
 		}
 
 		// Send to Mailbox
-		respTest, serr := sc.Textile.sendMail(pubKey, []byte("Hello Mailbox Test"))
+		serr = sc.Textile.sendMail(pubKey, []byte("Hello Mailbox Test"))
 		if serr != nil {
 			return serr
 		}
-		sc.handler.OnReply(peer.ID(""), respTest)
 
 		// Send to Mailbox
-		resp, serr := sc.Textile.sendMail(pubKey, buf)
+		serr = sc.Textile.sendMail(pubKey, buf)
 		if serr != nil {
 			return serr
 		}
-		sc.handler.OnReply(peer.ID(""), resp)
 		md.LogSuccess("Sending Mail")
 		return nil
 	} else {

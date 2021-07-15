@@ -17,8 +17,6 @@ import (
 	"github.com/textileio/textile/v2/mail/local"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
-	"google.golang.org/protobuf/encoding/protojson"
-	"google.golang.org/protobuf/proto"
 )
 
 var (
@@ -208,101 +206,30 @@ func (ts *TextileService) handleMailboxEvents() {
 
 // @ Handle New Mailbox Message
 func (ts *TextileService) onNewMessage(e local.MailboxEvent) {
-	// Open Message Body
-	body, err := e.Message.Open(ts.ctxToken, ts.mailbox.Identity())
-	if err != nil {
-		ts.handler.OnError(md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_OPEN))
-		return
-	}
-
-	// Handle New Message
-	invite := md.InviteRequest{}
-	err = protojson.Unmarshal(body, &invite)
-	if err != nil {
-		ts.handler.OnMail(&md.MailEvent{
-			HasNewMail: true,
-			Message:    string(body),
-		})
-
-		ts.handler.OnError(md.NewUnmarshalError(err))
-		return
+	// Create Mail Event
+	mail := &md.MailEvent{
+		To:        e.Message.To.String(),
+		From:      e.Message.From.String(),
+		CreatedAt: int32(e.Message.CreatedAt.Unix()),
+		ReadAt:    int32(e.Message.ReadAt.Unix()),
+		Body:      e.Message.Body,
+		Signature: e.Message.Signature,
 	}
 
 	// Callback Mail Event
-	ts.handler.OnMail(&md.MailEvent{
-		HasNewMail: true,
-		Invites:    []*md.InviteRequest{&invite},
-	})
-}
-
-// @ Read Mailbox Mail
-func (ts *TextileService) readMail() (*md.MailEvent, *md.SonrError) {
-	// List the recipient's inbox
-	inbox, err := ts.mailbox.ListInboxMessages(context.Background())
-	if err != nil {
-		return nil, md.NewError(err, md.ErrorMessage_MAILBOX_LIST_ALL)
-	}
-
-	// Initialize Entry List
-	hasNewMail := false
-	if len(inbox) > 0 {
-		hasNewMail = true
-	}
-
-	// Initialize Entry List
-	entries := []*md.InviteRequest{}
-
-	// Iterate over Entries
-	for _, v := range inbox {
-		// Open decrypts the message body
-		body, err := v.Open(ts.ctxToken, ts.mailbox.Identity())
-		if err != nil {
-			return nil, md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_OPEN)
-		}
-
-		// Unmarshal Invitation
-		invite := &md.InviteRequest{}
-		err = protojson.Unmarshal(body, invite)
-		if err != nil {
-			md.NewUnmarshalError(err)
-			continue
-		}
-
-		// Append Entries
-		entries = append(entries, invite)
-	}
-	return &md.MailEvent{
-		Invites:    entries,
-		HasNewMail: hasNewMail,
-	}, nil
+	ts.handler.OnMail(mail)
 }
 
 // @ Send Mail to Recipient
-func (ts *TextileService) sendMail(to thread.PubKey, buf []byte) ([]byte, *md.SonrError) {
+func (ts *TextileService) sendMail(to thread.PubKey, buf []byte) *md.SonrError {
 	// Send Message to Mailbox
-	msg, err := ts.mailbox.SendMessage(context.Background(), to, buf)
+	_, err := ts.mailbox.SendMessage(context.Background(), to, buf)
 	if err != nil {
-		return nil, md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_SEND)
-	}
-
-	// Marshal Response
-	buf, err = proto.Marshal(&md.InviteResponse{
-		Type: md.InviteResponse_Mailbox,
-		MailInfo: &md.InviteResponse_MailInfo{
-			To:        msg.To.String(),
-			From:      msg.From.String(),
-			CreatedAt: int32(msg.CreatedAt.Unix()),
-			ReadAt:    int32(msg.ReadAt.Unix()),
-			Body:      msg.Body,
-			Signature: msg.Signature,
-		},
-	})
-	if err != nil {
-		return nil, md.NewMarshalError(err)
+		return md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_SEND)
 	}
 
 	// Return Message Info
-	return buf, nil
+	return nil
 }
 
 // # Helper: Creates New Textile Mailbox Config
