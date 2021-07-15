@@ -44,7 +44,6 @@ func (d *Device) Initialize(r *InitializeRequest) *SonrError {
 			return d.newKeyPair()
 		}
 	}
-	return nil
 }
 
 // Method Loads Existing Key Pair
