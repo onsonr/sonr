@@ -29,7 +29,7 @@ func (d *Device) SetKeyPair() *SonrError {
 		}
 
 		// Get Private Key from Buffer
-		privKey, err := crypto.UnmarshalPrivateKey(privBuf)
+		privKey, err := crypto.UnmarshalEd25519PrivateKey(privBuf)
 		if err != nil {
 			return NewError(err, ErrorMessage_KEY_INVALID)
 		}
@@ -106,7 +106,7 @@ func (kp *KeyPair) ID() (peer.ID, *SonrError) {
 // Method Returns Private Key
 func (kp *KeyPair) PrivKey() crypto.PrivKey {
 	// Get Key from Buffer
-	key, err := crypto.UnmarshalPrivateKey(kp.GetPrivate().GetBuffer())
+	key, err := crypto.UnmarshalEd25519PrivateKey(kp.GetPrivate().GetBuffer())
 	if err != nil {
 		return nil
 	}
@@ -121,7 +121,7 @@ func (kp *KeyPair) PrivBuffer() []byte {
 // Method Returns Public Key
 func (kp *KeyPair) PubKey() crypto.PubKey {
 	// Get Key from Buffer
-	privKey, err := crypto.UnmarshalPrivateKey(kp.GetPrivate().GetBuffer())
+	privKey, err := crypto.UnmarshalEd25519PrivateKey(kp.GetPrivate().GetBuffer())
 	if err != nil {
 		return nil
 	}
@@ -220,7 +220,7 @@ func (d *Device) IsWindows() bool {
 
 // Method returns Thread Identity for Device
 func (d *Device) ThreadIdentity() thread.Identity {
-	return thread.NewLibp2pIdentity(d.KeyPair.PrivKey())
+	return thread.NewLibp2pIdentity(d.GetKeyPair().PrivKey())
 }
 
 // Checks if File Exists

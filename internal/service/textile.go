@@ -208,7 +208,7 @@ func (ts *TextileService) handleMailboxEvents() {
 // @ Handle New Mailbox Message
 func (ts *TextileService) onNewMessage(e local.MailboxEvent) {
 	// Open Message Body
-	body, err := e.Message.Open(context.Background(), ts.mailbox.Identity())
+	body, err := e.Message.Open(ts.ctxToken, ts.device.ThreadIdentity())
 	if err != nil {
 		ts.handler.OnError(md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_OPEN))
 		return
@@ -249,7 +249,7 @@ func (ts *TextileService) readMail() (*md.MailEvent, *md.SonrError) {
 	// Iterate over Entries
 	for _, v := range inbox {
 		// Open decrypts the message body
-		body, err := v.Open(context.Background(), ts.mailbox.Identity())
+		body, err := v.Open(ts.ctxToken, ts.device.ThreadIdentity())
 		if err != nil {
 			return nil, md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_OPEN)
 		}
