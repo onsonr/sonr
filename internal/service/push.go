@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"fmt"
-	"log"
 
 	firebase "firebase.google.com/go/v4"
 	"firebase.google.com/go/v4/messaging"
@@ -28,29 +27,30 @@ func (sc *serviceClient) StartPush() *md.SonrError {
 
 	// Obtain a messaging.Client from the App.
 	ctx := context.Background()
-	opt := option.WithAPIKey(sc.request.GetApiKeys().GetPushRegistrationKey())
+	opt := option.WithCredentialsFile(sc.request.GetApiKeys().GetPushKeyPath())
 	config := &firebase.Config{ProjectID: util.FIRE_PROJECT_ID}
 
 	// Create New Firebase Client
 	app, err := firebase.NewApp(context.Background(), config, opt)
 	if err != nil {
-		log.Fatalf("error initializing app: %v\n", err)
+		return md.NewError(err, md.ErrorMessage_PUSH_START_APP)
 	}
 
 	// Create New Push Client
 	client, err := app.Messaging(ctx)
 	if err != nil {
-		log.Fatalf("error initializing messaging client: %v\n", err)
+		return md.NewError(err, md.ErrorMessage_PUSH_START_MESSAGING)
 	}
 
 	// Return Push Interface
 	sc.Push = &PushService{
-		key:    sc.request.GetApiKeys().GetPushRegistrationKey(),
+		key:    sc.request.GetApiKeys().GetPushKeyPath(),
 		app:    app,
 		client: client,
 		ctx:    ctx,
 	}
 	isPushEnabled = true
+	md.LogSuccess("Push Notifications Activation")
 	return nil
 }
 
@@ -69,7 +69,7 @@ func (pc *PushService) push(msg *md.PushMessage) *md.SonrError {
 	}
 
 	// Logging
-	md.LogInfo(result)
+	md.LogSuccess("Pushed Message: " + result)
 	return nil
 }
 

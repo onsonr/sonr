@@ -12,7 +12,7 @@ message APIKeys {
   string rapidApiKey = 2;
   string handshakeKey = 3;
   string handshakeSecret = 4;
-  string pushRegistrationKey = 5;
+  string pushKeyPath = 5;
   string textileKey = 6;
   string textileSecret = 7;
 }
