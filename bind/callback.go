@@ -32,6 +32,6 @@ func (mn *Node) handleError(errMsg *md.SonrError) {
 	// Check for Error
 	if errMsg.HasError {
 		// Send Callback
-		mn.call.OnError(errMsg.Bytes())
+		mn.call.OnError(errMsg.Marshal())
 	}
 }

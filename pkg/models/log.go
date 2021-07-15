@@ -288,8 +288,8 @@ func NewErrorWithType(errType ErrorMessage_Type) *SonrError {
 	return serr
 }
 
-// @ Return Message as Bytes ^ //
-func (errWrap *SonrError) Bytes() []byte {
+// @ Return Message as Marshalled Bytes ^ //
+func (errWrap *SonrError) Marshal() []byte {
 	bytes, err := proto.Marshal(errWrap.data)
 	if err != nil {
 		return nil
