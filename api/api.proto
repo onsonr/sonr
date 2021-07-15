@@ -254,6 +254,7 @@ message CompleteEvent {
 message MailEvent {
   bool hasNewMail = 1;
   repeated InviteRequest invites = 2; // User Received Invites
+  string message = 3;                 // Message from Mailbox
 }
 
 // Transfer Progress Event

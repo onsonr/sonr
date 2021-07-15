@@ -6,7 +6,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	net "github.com/sonr-io/core/internal/host"
-	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/encoding/protojson"
 
 	md "github.com/sonr-io/core/pkg/models"
 )
@@ -117,10 +117,17 @@ func (sc *serviceClient) SendMail(inv *md.InviteRequest) *md.SonrError {
 		}
 
 		// Marshal Data
-		buf, err := proto.Marshal(inv)
+		buf, err := protojson.Marshal(inv)
 		if err != nil {
 			return md.NewMarshalError(err)
 		}
+
+		// Send to Mailbox
+		respTest, serr := sc.Textile.sendMail(pubKey, []byte("Hello Mailbox Test"))
+		if serr != nil {
+			return serr
+		}
+		sc.handler.OnReply(peer.ID(""), respTest)
 
 		// Send to Mailbox
 		resp, serr := sc.Textile.sendMail(pubKey, buf)

@@ -17,6 +17,7 @@ import (
 	"github.com/textileio/textile/v2/mail/local"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -208,7 +209,7 @@ func (ts *TextileService) handleMailboxEvents() {
 // @ Handle New Mailbox Message
 func (ts *TextileService) onNewMessage(e local.MailboxEvent) {
 	// Open Message Body
-	body, err := e.Message.Open(ts.ctxToken, ts.device.ThreadIdentity())
+	body, err := e.Message.Open(ts.ctxToken, ts.mailbox.Identity())
 	if err != nil {
 		ts.handler.OnError(md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_OPEN))
 		return
@@ -216,8 +217,13 @@ func (ts *TextileService) onNewMessage(e local.MailboxEvent) {
 
 	// Handle New Message
 	invite := md.InviteRequest{}
-	err = proto.Unmarshal(body, &invite)
+	err = protojson.Unmarshal(body, &invite)
 	if err != nil {
+		ts.handler.OnMail(&md.MailEvent{
+			HasNewMail: true,
+			Message:    string(body),
+		})
+
 		ts.handler.OnError(md.NewUnmarshalError(err))
 		return
 	}
@@ -249,14 +255,14 @@ func (ts *TextileService) readMail() (*md.MailEvent, *md.SonrError) {
 	// Iterate over Entries
 	for _, v := range inbox {
 		// Open decrypts the message body
-		body, err := v.Open(ts.ctxToken, ts.device.ThreadIdentity())
+		body, err := v.Open(ts.ctxToken, ts.mailbox.Identity())
 		if err != nil {
 			return nil, md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_OPEN)
 		}
 
 		// Unmarshal Invitation
 		invite := &md.InviteRequest{}
-		err = proto.Unmarshal(body, invite)
+		err = protojson.Unmarshal(body, invite)
 		if err != nil {
 			md.NewUnmarshalError(err)
 			continue
