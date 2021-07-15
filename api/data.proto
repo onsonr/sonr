@@ -1,5 +1,5 @@
 syntax = "proto3";
-
+package models;
 import "peer.proto";
 
 // Require Go Package

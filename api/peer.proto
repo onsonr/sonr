@@ -1,5 +1,5 @@
 syntax = "proto3";
-
+package models;
 // Require Go Package
 option go_package = "/models";
 

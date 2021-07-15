@@ -6,7 +6,9 @@ require (
 	firebase.google.com/go/v4 v4.6.0
 	github.com/PuerkitoBio/goquery v1.6.1
 	github.com/denisbrodbeck/machineid v1.0.1
+	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/open-location-code/go v0.0.0-20201229230907-d47d9f9b95e9
+	github.com/johanbrandhorst/protobuf v0.7.1 // indirect
 	github.com/libp2p/go-libp2p v0.14.2
 	github.com/libp2p/go-libp2p-connmgr v0.2.4
 	github.com/libp2p/go-libp2p-core v0.8.5

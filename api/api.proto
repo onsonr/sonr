@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package models;
+
 import "data.proto";
 import "error.proto";
 import "peer.proto";
