@@ -4,7 +4,7 @@ import (
 	"context"
 
 	net "github.com/sonr-io/core/internal/host"
-	sc "github.com/sonr-io/core/pkg/client"
+	sc "github.com/sonr-io/core/internal/client"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
 )
