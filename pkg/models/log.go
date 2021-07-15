@@ -481,6 +481,8 @@ func generateError(errType ErrorMessage_Type) (string, ErrorMessage_Severity) {
 		return "Failed to start Firebase push notification messaging.", ErrorMessage_CRITICAL
 	case ErrorMessage_MAILBOX_MESSAGE_READ:
 		return "Failed to read Mailbox message.", ErrorMessage_WARNING
+	case ErrorMessage_MAILBOX_MESSAGE_UNMARSHAL:
+		return "Failed to Unmarshal Mailbox Message body.", ErrorMessage_WARNING
 	default:
 		return "Unknown", ErrorMessage_LOG
 	}

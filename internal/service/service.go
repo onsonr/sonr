@@ -99,12 +99,6 @@ func (sc *serviceClient) SendMail(inv *md.InviteRequest) *md.SonrError {
 		}
 
 		// Send to Mailbox
-		serr = sc.Textile.sendMail(pubKey, []byte("Hello Mailbox Test"))
-		if serr != nil {
-			return serr
-		}
-
-		// Send to Mailbox
 		serr = sc.Textile.sendMail(pubKey, buf)
 		if serr != nil {
 			return serr

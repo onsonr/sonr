@@ -17,6 +17,7 @@ import (
 	"github.com/textileio/textile/v2/mail/local"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/protobuf/encoding/protojson"
 )
 
 var (
@@ -224,13 +225,20 @@ func (ts *TextileService) onNewMessage(e local.MailboxEvent) {
 	// Log Valid Lobby Length
 	md.LogInfo(fmt.Sprintf("Valid Body Length: %d", len(body)))
 
+	// Unmarshal InviteRequest from JSON
+	invite := md.InviteRequest{}
+	err = protojson.Unmarshal(body, &invite)
+	if err != nil {
+		md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_UNMARSHAL)
+	}
+
 	// Create Mail Event
 	mail := &md.MailEvent{
 		To:        inbox[0].To.String(),
 		From:      inbox[0].From.String(),
 		CreatedAt: int32(inbox[0].CreatedAt.Unix()),
 		ReadAt:    int32(inbox[0].ReadAt.Unix()),
-		Body:      body,
+		Invite:    &invite,
 		Signature: inbox[0].Signature,
 	}
 

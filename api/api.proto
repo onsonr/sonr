@@ -243,7 +243,7 @@ message CompleteEvent {
 message MailEvent {
   int32 createdAt = 1;
   string to = 2;
-  bytes body = 3;
+  InviteRequest invite = 3;
   string from = 4;
   int32 readAt = 5;
   bytes signature = 6;
