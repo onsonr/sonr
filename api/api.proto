@@ -60,7 +60,6 @@ message ConnectionRequest {
     bool torTransport = 2;
     bool httpTransport = 3;
     bool mdnsDiscovery = 4;
-    bool natPortMap = 5;
   }
 
   // Service Configuration
