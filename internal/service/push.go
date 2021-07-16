@@ -14,11 +14,12 @@ import (
 var isPushEnabled = false
 
 type PushService struct {
-	ctx     context.Context
-	key     string
-	app     *firebase.App
-	client  *messaging.Client
-	options *md.ConnectionRequest_ServiceOptions
+	ctx       context.Context
+	key       string
+	app       *firebase.App
+	client    *messaging.Client
+	options   *md.ConnectionRequest_ServiceOptions
+	pushToken string
 }
 
 // Returns New Push Client
@@ -47,11 +48,12 @@ func (sc *serviceClient) StartPush() *md.SonrError {
 
 		// Return Push Interface
 		sc.Push = &PushService{
-			key:     sc.request.GetApiKeys().GetPushKeyPath(),
-			app:     app,
-			client:  client,
-			ctx:     ctx,
-			options: sc.request.GetServiceOptions(),
+			key:       sc.request.GetApiKeys().GetPushKeyPath(),
+			app:       app,
+			client:    client,
+			ctx:       ctx,
+			pushToken: sc.pushToken,
+			options:   sc.request.GetServiceOptions(),
 		}
 		isPushEnabled = true
 		md.LogSuccess("Push Notifications Activation")
@@ -100,5 +102,24 @@ func (pc *PushService) pushMulti(msg *md.PushMessage, peers []*md.Peer) *md.Sonr
 
 	// Logging
 	md.LogInfo(fmt.Sprintf("Succesful Push Count: %v \n Failed Push Count: %v", result.SuccessCount, result.FailureCount))
+	return nil
+}
+
+// pushSelf method sends push notification to own device
+func (pc *PushService) pushSelf(msg *md.PushMessage) *md.SonrError {
+	// Create Message
+	pushMsg := &messaging.Message{
+		Token: pc.pushToken,
+		Data:  msg.GetData(),
+	}
+
+	// Send Message
+	result, err := pc.client.Send(pc.ctx, pushMsg)
+	if err != nil {
+		return md.NewError(err, md.ErrorMessage_PUSH_SINGLE)
+	}
+
+	// Logging
+	md.LogSuccess("Pushed Message: " + result)
 	return nil
 }
