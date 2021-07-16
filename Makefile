@@ -12,7 +12,6 @@ GOCLEAN=$(GOMOBILE) clean
 GOBIND=$(GOMOBILE) bind -ldflags='-s -w' -v
 GOBIND_ANDROID=$(GOBIND) -target=android
 GOBIND_IOS=$(GOBIND) -target=ios -bundleid=io.sonr.core
-# GOBINDTOR=$(GOMOBILE) bind -ldflags='-s -w' -tscags=embedTor -v
 
 # @ Bind Directories
 BIND_DIR_CORE=$(SONR_ROOT_DIR)/core/bind
