@@ -1894,9 +1894,6 @@ func (m *VerifyRequest) Unmarshal(rawBytes []byte) (*VerifyRequest, error) {
 	return m, nil
 }
 
-// ------------------------------ //
-// -------- Responses ----------- //
-// ------------------------------ //
 // Message for Signing Response (Hmac Sha256)
 type AuthResponse struct {
 	IsSigned bool
@@ -3323,9 +3320,6 @@ func (m *TopicEvent) Unmarshal(rawBytes []byte) (*TopicEvent, error) {
 	return m, nil
 }
 
-// ------------------------------------------- //
-// -------- Callback Generic Types ----------- //
-// ------------------------------------------- //
 // Generic Request Message
 type GenericRequest struct {
 	Type GenericRequest_Type

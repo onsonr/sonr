@@ -1543,9 +1543,6 @@ func (*VerifyRequest_SignedBuffer) isVerifyRequest_Sig() {}
 
 func (*VerifyRequest_SignedText) isVerifyRequest_Sig() {}
 
-// ------------------------------ //
-// -------- Responses ----------- //
-// ------------------------------ //
 // Message for Signing Response (Hmac Sha256)
 type AuthResponse struct {
 	state         protoimpl.MessageState
@@ -2358,9 +2355,6 @@ func (x *TopicEvent) GetSubject() TopicEvent_Subject {
 	return TopicEvent_JOIN
 }
 
-// ------------------------------------------- //
-// -------- Callback Generic Types ----------- //
-// ------------------------------------------- //
 // Generic Request Message
 type GenericRequest struct {
 	state         protoimpl.MessageState
