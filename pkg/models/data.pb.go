@@ -162,8 +162,8 @@ type Contact_General_Gender_Options int32
 
 const (
 	Contact_General_Gender_Unspecified Contact_General_Gender_Options = 0 // Default
-	Contact_General_Gender_Male        Contact_General_Gender_Options = 1
-	Contact_General_Gender_Female      Contact_General_Gender_Options = 2
+	Contact_General_Gender_Male        Contact_General_Gender_Options = 1 // Male Gender
+	Contact_General_Gender_Female      Contact_General_Gender_Options = 2 // Female Gender
 )
 
 // Enum value maps for Contact_General_Gender_Options.
@@ -1215,14 +1215,14 @@ type Contact_General struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Bio    string                  `protobuf:"bytes,1,opt,name=bio,proto3" json:"bio,omitempty"`     // If this is the Primary field for Kind
-	SName  string                  `protobuf:"bytes,2,opt,name=sName,proto3" json:"sName,omitempty"` // Type of Field
-	Name   *Contact_General_Name   `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
-	Date   *Contact_General_Date   `protobuf:"bytes,4,opt,name=date,proto3" json:"date,omitempty"`
-	Gender *Contact_General_Gender `protobuf:"bytes,5,opt,name=gender,proto3" json:"gender,omitempty"`
-	Phone  *Contact_General_Phone  `protobuf:"bytes,6,opt,name=phone,proto3" json:"phone,omitempty"`
-	Email  *Contact_General_Email  `protobuf:"bytes,7,opt,name=email,proto3" json:"email,omitempty"`
-	Title  *Contact_General_Title  `protobuf:"bytes,8,opt,name=title,proto3" json:"title,omitempty"`
+	Bio    string                  `protobuf:"bytes,1,opt,name=bio,proto3" json:"bio,omitempty"`       // If this is the Primary field for Kind
+	SName  string                  `protobuf:"bytes,2,opt,name=sName,proto3" json:"sName,omitempty"`   // Type of Field
+	Name   *Contact_General_Name   `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`     // Name of Field
+	Date   *Contact_General_Date   `protobuf:"bytes,4,opt,name=date,proto3" json:"date,omitempty"`     // Date of Field
+	Gender *Contact_General_Gender `protobuf:"bytes,5,opt,name=gender,proto3" json:"gender,omitempty"` // User Gender
+	Phone  *Contact_General_Phone  `protobuf:"bytes,6,opt,name=phone,proto3" json:"phone,omitempty"`   // User Phone Number
+	Email  *Contact_General_Email  `protobuf:"bytes,7,opt,name=email,proto3" json:"email,omitempty"`   // User Email Address
+	Title  *Contact_General_Title  `protobuf:"bytes,8,opt,name=title,proto3" json:"title,omitempty"`   // User Work Title
 }
 
 func (x *Contact_General) Reset() {
@@ -1505,15 +1505,15 @@ type isContact_Social_Provider interface {
 }
 
 type Contact_Social_Media_ struct {
-	Media Contact_Social_Media `protobuf:"varint,10,opt,name=media,proto3,enum=models.Contact_Social_Media,oneof"`
+	Media Contact_Social_Media `protobuf:"varint,10,opt,name=media,proto3,enum=models.Contact_Social_Media,oneof"` // Media Provider
 }
 
 type Contact_Social_Music_ struct {
-	Music Contact_Social_Music `protobuf:"varint,11,opt,name=music,proto3,enum=models.Contact_Social_Music,oneof"`
+	Music Contact_Social_Music `protobuf:"varint,11,opt,name=music,proto3,enum=models.Contact_Social_Music,oneof"` // Music Provider
 }
 
 type Contact_Social_Payment_ struct {
-	Payment Contact_Social_Payment `protobuf:"varint,12,opt,name=payment,proto3,enum=models.Contact_Social_Payment,oneof"`
+	Payment Contact_Social_Payment `protobuf:"varint,12,opt,name=payment,proto3,enum=models.Contact_Social_Payment,oneof"` // Payment Provider
 }
 
 func (*Contact_Social_Media_) isContact_Social_Provider() {}
@@ -1527,10 +1527,10 @@ type Contact_General_Name struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Prefix     string `protobuf:"bytes,1,opt,name=prefix,proto3" json:"prefix,omitempty"`
-	Suffix     string `protobuf:"bytes,2,opt,name=suffix,proto3" json:"suffix,omitempty"`
-	MiddleName string `protobuf:"bytes,3,opt,name=middleName,proto3" json:"middleName,omitempty"`
-	NickName   string `protobuf:"bytes,4,opt,name=nickName,proto3" json:"nickName,omitempty"`
+	Prefix     string `protobuf:"bytes,1,opt,name=prefix,proto3" json:"prefix,omitempty"`         // Name Prefix
+	Suffix     string `protobuf:"bytes,2,opt,name=suffix,proto3" json:"suffix,omitempty"`         // Name Suffix
+	MiddleName string `protobuf:"bytes,3,opt,name=middleName,proto3" json:"middleName,omitempty"` // Middlename
+	NickName   string `protobuf:"bytes,4,opt,name=nickName,proto3" json:"nickName,omitempty"`     // Nickname
 }
 
 func (x *Contact_General_Name) Reset() {

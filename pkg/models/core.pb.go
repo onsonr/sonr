@@ -198,8 +198,8 @@ type PushMessage struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Peer *Peer             `protobuf:"bytes,1,opt,name=peer,proto3" json:"peer,omitempty"`
-	Data map[string]string `protobuf:"bytes,2,rep,name=data,proto3" json:"data,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	Peer *Peer             `protobuf:"bytes,1,opt,name=peer,proto3" json:"peer,omitempty"`                                                                                         // Peer to send to
+	Data map[string]string `protobuf:"bytes,2,rep,name=data,proto3" json:"data,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"` // Data to send
 }
 
 func (x *PushMessage) Reset() {

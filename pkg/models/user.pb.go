@@ -24,10 +24,10 @@ const (
 type KeyType int32
 
 const (
-	KeyType_RSA       KeyType = 0
-	KeyType_Ed25519   KeyType = 1
-	KeyType_Secp256k1 KeyType = 2
-	KeyType_ECDSA     KeyType = 3
+	KeyType_RSA       KeyType = 0 // RSA Encryption
+	KeyType_Ed25519   KeyType = 1 // Ed25519 Encryption
+	KeyType_Secp256k1 KeyType = 2 // Secp256k1 Encryption
+	KeyType_ECDSA     KeyType = 3 // ECDSA Encryption
 )
 
 // Enum value maps for KeyType.
@@ -258,13 +258,13 @@ type APIKeys struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	IpApiKey        string `protobuf:"bytes,1,opt,name=ipApiKey,proto3" json:"ipApiKey,omitempty"`
-	RapidApiKey     string `protobuf:"bytes,2,opt,name=rapidApiKey,proto3" json:"rapidApiKey,omitempty"`
-	HandshakeKey    string `protobuf:"bytes,3,opt,name=handshakeKey,proto3" json:"handshakeKey,omitempty"`
-	HandshakeSecret string `protobuf:"bytes,4,opt,name=handshakeSecret,proto3" json:"handshakeSecret,omitempty"`
-	PushKeyPath     string `protobuf:"bytes,5,opt,name=pushKeyPath,proto3" json:"pushKeyPath,omitempty"`
-	TextileKey      string `protobuf:"bytes,6,opt,name=textileKey,proto3" json:"textileKey,omitempty"`
-	TextileSecret   string `protobuf:"bytes,7,opt,name=textileSecret,proto3" json:"textileSecret,omitempty"`
+	IpApiKey        string `protobuf:"bytes,1,opt,name=ipApiKey,proto3" json:"ipApiKey,omitempty"`               // API Key for the IP Service
+	RapidApiKey     string `protobuf:"bytes,2,opt,name=rapidApiKey,proto3" json:"rapidApiKey,omitempty"`         // API Key for the Rapid API Service
+	HandshakeKey    string `protobuf:"bytes,3,opt,name=handshakeKey,proto3" json:"handshakeKey,omitempty"`       // API Key for the Handshake Service
+	HandshakeSecret string `protobuf:"bytes,4,opt,name=handshakeSecret,proto3" json:"handshakeSecret,omitempty"` // API Key for the Handshake Service
+	PushKeyPath     string `protobuf:"bytes,5,opt,name=pushKeyPath,proto3" json:"pushKeyPath,omitempty"`         // Path to the push key
+	TextileKey      string `protobuf:"bytes,6,opt,name=textileKey,proto3" json:"textileKey,omitempty"`           // Key for the Textile Service
+	TextileSecret   string `protobuf:"bytes,7,opt,name=textileSecret,proto3" json:"textileSecret,omitempty"`     // Secret for the Textile Service
 }
 
 func (x *APIKeys) Reset() {
@@ -726,8 +726,8 @@ type FileSystem_Directory struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Path string                    `protobuf:"bytes,1,opt,name=path,proto3" json:"path,omitempty"`
-	Type FileSystem_Directory_Type `protobuf:"varint,2,opt,name=type,proto3,enum=models.FileSystem_Directory_Type" json:"type,omitempty"`
+	Path string                    `protobuf:"bytes,1,opt,name=path,proto3" json:"path,omitempty"`                                        // Path to Directory
+	Type FileSystem_Directory_Type `protobuf:"varint,2,opt,name=type,proto3,enum=models.FileSystem_Directory_Type" json:"type,omitempty"` // Type of Directory
 }
 
 func (x *FileSystem_Directory) Reset() {
@@ -998,7 +998,7 @@ type User_Settings struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Primary     *Device                          `protobuf:"bytes,1,opt,name=primary,proto3" json:"primary,omitempty"`
+	Primary     *Device                          `protobuf:"bytes,1,opt,name=primary,proto3" json:"primary,omitempty"`                                                                                                 // Primary Device
 	Devices     map[string]*Device               `protobuf:"bytes,2,rep,name=devices,proto3" json:"devices,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`         // Clients Devices: Name, Device
 	Preferences map[string]*User_Settings_Option `protobuf:"bytes,3,rep,name=preferences,proto3" json:"preferences,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"` // Clients Specified Preferences
 }

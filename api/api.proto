@@ -30,12 +30,12 @@ message InitializeRequest {
 
   // Logging Details
   enum LogLevel {
-    FATAL = 0;
-    CRITICAL = 1;
-    WARNING = 2;
-    DEBUG = 3;
-    INFO = 4;
-    NONE = 5;
+    FATAL = 0;    // Only show FATAL Errors
+    CRITICAL = 1; // Only show CRITICAL Errors
+    WARNING = 2;  // Only show WARNING Errors
+    DEBUG = 3;    // Show all Errors
+    INFO = 4;     // Show all Errors
+    NONE = 5;     // No Logging
   }
 }
 
@@ -52,17 +52,18 @@ message ConnectionRequest {
 
   // Internet Connection Type
   enum InternetType {
-    None = 0;
-    Wifi = 1;
-    Mobile = 2;
+    None = 0;   // No Internet Connection
+    Wifi = 1;   // Wifi Connection
+    Mobile = 2; // Mobile Connection
   }
 
   // Libp2p Host Options
   message HostOptions {
-    bool quicTransport = 1;
-    bool torTransport = 2;
-    bool httpTransport = 3;
-    bool mdnsDiscovery = 4;
+    bool quicTransport = 1;   // Enable QUIC Transport
+    bool torTransport = 2;    // Enable TOR Transport
+    bool httpTransport = 3;   // Enable HTTP Transport
+    bool webrtcTransport = 4; // Enable WebRTC Transport
+    bool mdnsDiscovery = 5;   // Enable MDNS Discovery
   }
 
   // Service Configuration
@@ -91,10 +92,10 @@ message InviteRequest {
   string protocol = 6;   // Name of Protocol
 
   enum Type {
-    None = 0;
-    Local = 1;
-    Flat = 2;
-    Remote = 3;
+    None = 0;   // No Type
+    Local = 1;  // Local Transfer
+    Flat = 2;   // Flat Transfer
+    Remote = 3; // Remote Transfer
   }
 }
 
@@ -105,9 +106,9 @@ message MailboxRequest {
 
   // Mailbox Action
   enum Action {
-    NONE = 0;
-    READ = 1;
-    DELETE = 2;
+    NONE = 0;   // No Action
+    READ = 1;   // Read Message
+    DELETE = 2; // Delete Message
   }
 }
 
@@ -148,22 +149,22 @@ message UpdateRequest {
 message VerifyRequest {
   // Data is the original value
   oneof data {
-    bytes bufferValue = 1;
-    string textValue = 2;
+    bytes bufferValue = 1; // Buffer Value
+    string textValue = 2;  // Text Value
   }
 
   // Sig is the value to be verified against data
   oneof sig {
-    bytes signedBuffer = 3;
-    string signedText = 4;
+    bytes signedBuffer = 3; // Signed Buffer
+    string signedText = 4;  // Signed Text
   }
 
   Type type = 5; // Either Signing New Mnemonic or Reading Existing
 
   // Request Type
   enum Type {
-    VERIFY = 0;
-    READ = 1;
+    VERIFY = 0; // Verify Signature
+    READ = 1;   // Read Value
   }
 }
 
@@ -184,10 +185,10 @@ message AuthResponse {
 
 // Response from Connection Request
 message ConnectionResponse {
-  bool hostActive = 1;
-  bool mdnsActive = 2;
-  bool textileActive = 3;
-  Topic localTopic = 4;
+  bool hostActive = 1;                    // True if Host is Active
+  bool mdnsActive = 2;                    // True if MDNS is Active
+  bool textileActive = 3;                 // True if Textile is Active
+  Topic localTopic = 4;                   // Local Topic
   map<string, TextileThread> threads = 5; // ID, Thread
 
   // Textile Thread
@@ -210,9 +211,9 @@ message InviteResponse {
   string protocol = 7;   // Name of Protocol
 
   enum Type {
-    None = 0;
-    Transfer = 1;
-    Contact = 2;
+    None = 0;     // No Type
+    Transfer = 1; // Transfer
+    Contact = 2;  // Contact
   }
 }
 
@@ -224,9 +225,9 @@ message MailboxResponse {
 
   // Mailbox Action
   enum Action {
-    NONE = 0;
-    READ = 1;
-    DELETE = 2;
+    NONE = 0;   // No Action
+    READ = 1;   // Read Message
+    DELETE = 2; // Delete Message
   }
 }
 
@@ -270,26 +271,26 @@ message CompleteEvent {
 }
 // List of Pending Invites through Mailbox
 message MailEvent {
-  int32 createdAt = 1;
-  string to = 2;
-  InviteRequest invite = 3;
-  string from = 4;
-  int32 readAt = 5;
-  bytes signature = 6;
-  string iD = 7;
+  int32 createdAt = 1;      // Time of Creation
+  string to = 2;            // Recipient
+  InviteRequest invite = 3; // Invite Request
+  string from = 4;          // Sender
+  int32 readAt = 5;         // Time of Read
+  bytes signature = 6;      // Signature for Verification
+  string iD = 7;            // Unique ID for Message
 }
 
 // Transfer Progress Event
 message ProgressEvent {
-  int32 current = 1;
-  int32 total = 2;
-  double progress = 3;
+  int32 current = 1;   // Current Transfer Item
+  int32 total = 2;     // Total Transfer Progress
+  double progress = 3; // Current Transfer Progress
 }
 
 // Message for Status Update Event
 message StatusEvent {
-  Status value = 1;
-  User user = 2;
+  Status value = 1; // Status Value
+  User user = 2;    // User Data
 }
 
 // Message Sent when peer messages Local Topic

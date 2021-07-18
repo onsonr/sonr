@@ -826,10 +826,11 @@ func (m *ConnectionRequest) Unmarshal(rawBytes []byte) (*ConnectionRequest, erro
 
 // Libp2p Host Options
 type ConnectionRequest_HostOptions struct {
-	QuicTransport bool
-	TorTransport  bool
-	HttpTransport bool
-	MdnsDiscovery bool
+	QuicTransport   bool
+	TorTransport    bool
+	HttpTransport   bool
+	WebrtcTransport bool
+	MdnsDiscovery   bool
 }
 
 // GetQuicTransport gets the QuicTransport of the ConnectionRequest_HostOptions.
@@ -854,6 +855,14 @@ func (m *ConnectionRequest_HostOptions) GetHttpTransport() (x bool) {
 		return x
 	}
 	return m.HttpTransport
+}
+
+// GetWebrtcTransport gets the WebrtcTransport of the ConnectionRequest_HostOptions.
+func (m *ConnectionRequest_HostOptions) GetWebrtcTransport() (x bool) {
+	if m == nil {
+		return x
+	}
+	return m.WebrtcTransport
 }
 
 // GetMdnsDiscovery gets the MdnsDiscovery of the ConnectionRequest_HostOptions.
@@ -882,8 +891,12 @@ func (m *ConnectionRequest_HostOptions) MarshalToWriter(writer jspb.Writer) {
 		writer.WriteBool(3, m.HttpTransport)
 	}
 
+	if m.WebrtcTransport {
+		writer.WriteBool(4, m.WebrtcTransport)
+	}
+
 	if m.MdnsDiscovery {
-		writer.WriteBool(4, m.MdnsDiscovery)
+		writer.WriteBool(5, m.MdnsDiscovery)
 	}
 
 	return
@@ -911,6 +924,8 @@ func (m *ConnectionRequest_HostOptions) UnmarshalFromReader(reader jspb.Reader) 
 		case 3:
 			m.HttpTransport = reader.ReadBool()
 		case 4:
+			m.WebrtcTransport = reader.ReadBool()
+		case 5:
 			m.MdnsDiscovery = reader.ReadBool()
 		default:
 			reader.SkipField()

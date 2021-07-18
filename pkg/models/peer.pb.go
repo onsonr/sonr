@@ -161,13 +161,13 @@ func (Cardinal) EnumDescriptor() ([]byte, []int) {
 type Platform int32
 
 const (
-	Platform_Undefined Platform = 0
-	Platform_Android   Platform = 1
-	Platform_IOS       Platform = 2
-	Platform_MacOS     Platform = 3
-	Platform_Windows   Platform = 4
-	Platform_Linux     Platform = 5
-	Platform_Web       Platform = 6
+	Platform_Undefined Platform = 0 // Undefined
+	Platform_Android   Platform = 1 // Android Operating System
+	Platform_IOS       Platform = 2 // iOS Operating System
+	Platform_MacOS     Platform = 3 // Mac Operating System
+	Platform_Windows   Platform = 4 // Windows Operating System
+	Platform_Linux     Platform = 5 // Linux Operating System
+	Platform_Web       Platform = 6 // Web Platform
 )
 
 // Enum value maps for Platform.
@@ -764,8 +764,8 @@ type Topic struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Topic Type and Name
-	Type Topic_Type `protobuf:"varint,1,opt,name=type,proto3,enum=models.Topic_Type" json:"type,omitempty"`
-	Name string     `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Type Topic_Type `protobuf:"varint,1,opt,name=type,proto3,enum=models.Topic_Type" json:"type,omitempty"` // Type of Topic
+	Name string     `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`                         // Topic Name
 }
 
 func (x *Topic) Reset() {
@@ -1233,9 +1233,9 @@ type Position_Orientation struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Pitch float64 `protobuf:"fixed64,1,opt,name=pitch,proto3" json:"pitch,omitempty"`
-	Roll  float64 `protobuf:"fixed64,2,opt,name=roll,proto3" json:"roll,omitempty"`
-	Yaw   float64 `protobuf:"fixed64,3,opt,name=yaw,proto3" json:"yaw,omitempty"`
+	Pitch float64 `protobuf:"fixed64,1,opt,name=pitch,proto3" json:"pitch,omitempty"` // Pitch Angle
+	Roll  float64 `protobuf:"fixed64,2,opt,name=roll,proto3" json:"roll,omitempty"`   // Roll Angle
+	Yaw   float64 `protobuf:"fixed64,3,opt,name=yaw,proto3" json:"yaw,omitempty"`     // Yaw Angle
 }
 
 func (x *Position_Orientation) Reset() {

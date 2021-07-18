@@ -25,87 +25,87 @@ type ErrorMessage_Type int32
 
 const (
 	// General
-	ErrorMessage_MARSHAL    ErrorMessage_Type = 0
-	ErrorMessage_UNMARSHAL  ErrorMessage_Type = 1
-	ErrorMessage_IP_RESOLVE ErrorMessage_Type = 2
-	ErrorMessage_IP_LOCATE  ErrorMessage_Type = 3
-	ErrorMessage_BOOTSTRAP  ErrorMessage_Type = 4
-	ErrorMessage_DEVICE_ID  ErrorMessage_Type = 60
+	ErrorMessage_MARSHAL    ErrorMessage_Type = 0  // Error occurred during marshalling
+	ErrorMessage_UNMARSHAL  ErrorMessage_Type = 1  // Error occurred during unmarshalling
+	ErrorMessage_IP_RESOLVE ErrorMessage_Type = 2  // Error occurred during IP Address Resolution
+	ErrorMessage_IP_LOCATE  ErrorMessage_Type = 3  // Error occurred during IP Address Location
+	ErrorMessage_BOOTSTRAP  ErrorMessage_Type = 4  // Error occurred during Bootstrapping
+	ErrorMessage_DEVICE_ID  ErrorMessage_Type = 60 // Error occurred during Device ID Generation
 	// Topic
-	ErrorMessage_TOPIC_JOIN    ErrorMessage_Type = 5
-	ErrorMessage_TOPIC_CREATE  ErrorMessage_Type = 6
-	ErrorMessage_TOPIC_INVALID ErrorMessage_Type = 7
-	ErrorMessage_TOPIC_RPC     ErrorMessage_Type = 8
-	ErrorMessage_TOPIC_SUB     ErrorMessage_Type = 9
-	ErrorMessage_TOPIC_HANDLER ErrorMessage_Type = 10
-	ErrorMessage_TOPIC_LEAVE   ErrorMessage_Type = 11
-	ErrorMessage_TOPIC_MESSAGE ErrorMessage_Type = 12
-	ErrorMessage_TOPIC_UPDATE  ErrorMessage_Type = 13
+	ErrorMessage_TOPIC_JOIN    ErrorMessage_Type = 5  // Error occurred during Topic Join
+	ErrorMessage_TOPIC_CREATE  ErrorMessage_Type = 6  // Error occurred during Topic Creation
+	ErrorMessage_TOPIC_INVALID ErrorMessage_Type = 7  // Error occurred during Topic Invalid
+	ErrorMessage_TOPIC_RPC     ErrorMessage_Type = 8  // Error occurred during Topic RPC
+	ErrorMessage_TOPIC_SUB     ErrorMessage_Type = 9  // Error occurred during Topic Subscription
+	ErrorMessage_TOPIC_HANDLER ErrorMessage_Type = 10 // Error occurred during Topic Handler
+	ErrorMessage_TOPIC_LEAVE   ErrorMessage_Type = 11 // Error occurred during Topic Leave
+	ErrorMessage_TOPIC_MESSAGE ErrorMessage_Type = 12 // Error occurred during Topic Message
+	ErrorMessage_TOPIC_UPDATE  ErrorMessage_Type = 13 // Error occurred during Topic Update
 	// User
-	ErrorMessage_USER_CREATE ErrorMessage_Type = 17
-	ErrorMessage_USER_SAVE   ErrorMessage_Type = 18
-	ErrorMessage_USER_LOAD   ErrorMessage_Type = 19
-	ErrorMessage_USER_FS     ErrorMessage_Type = 20
-	ErrorMessage_USER_UPDATE ErrorMessage_Type = 21
+	ErrorMessage_USER_CREATE ErrorMessage_Type = 17 // Error occurred during User Creation
+	ErrorMessage_USER_SAVE   ErrorMessage_Type = 18 // Error occurred during User Save
+	ErrorMessage_USER_LOAD   ErrorMessage_Type = 19 // Error occurred during User Load
+	ErrorMessage_USER_FS     ErrorMessage_Type = 20 // Error occurred during User File System
+	ErrorMessage_USER_UPDATE ErrorMessage_Type = 21 // Error occurred during User Update
 	// Transfer
-	ErrorMessage_TRANSFER_START ErrorMessage_Type = 14
-	ErrorMessage_TRANSFER_CHUNK ErrorMessage_Type = 15
-	ErrorMessage_TRANSFER_END   ErrorMessage_Type = 16
-	ErrorMessage_INCOMING       ErrorMessage_Type = 22
-	ErrorMessage_OUTGOING       ErrorMessage_Type = 23
-	ErrorMessage_SESSION        ErrorMessage_Type = 24
+	ErrorMessage_TRANSFER_START ErrorMessage_Type = 14 // Error occurred during Transfer Start
+	ErrorMessage_TRANSFER_CHUNK ErrorMessage_Type = 15 // Error occurred during Transfer Chunk
+	ErrorMessage_TRANSFER_END   ErrorMessage_Type = 16 // Error occurred during Transfer End
+	ErrorMessage_INCOMING       ErrorMessage_Type = 22 // Error occurred during Incoming Transfer
+	ErrorMessage_OUTGOING       ErrorMessage_Type = 23 // Error occurred during Outgoing Transfer
+	ErrorMessage_SESSION        ErrorMessage_Type = 24 // Error occurred during Session Transfer
 	// Host
-	ErrorMessage_HOST_DHT    ErrorMessage_Type = 25
-	ErrorMessage_HOST_KEY    ErrorMessage_Type = 26
-	ErrorMessage_HOST_STREAM ErrorMessage_Type = 27
-	ErrorMessage_HOST_START  ErrorMessage_Type = 28
-	ErrorMessage_HOST_PUBSUB ErrorMessage_Type = 29
-	ErrorMessage_HOST_INFO   ErrorMessage_Type = 37
-	ErrorMessage_HOST_MDNS   ErrorMessage_Type = 57
-	ErrorMessage_CRYPTO_GEN  ErrorMessage_Type = 30
+	ErrorMessage_HOST_DHT    ErrorMessage_Type = 25 // Error occurred during DHT Host
+	ErrorMessage_HOST_KEY    ErrorMessage_Type = 26 // Error occurred during Host Key Generation
+	ErrorMessage_HOST_STREAM ErrorMessage_Type = 27 // Error occurred during Host Stream
+	ErrorMessage_HOST_START  ErrorMessage_Type = 28 // Error occurred during Host Start
+	ErrorMessage_HOST_PUBSUB ErrorMessage_Type = 29 // Error occurred during Host PubSub
+	ErrorMessage_HOST_INFO   ErrorMessage_Type = 37 // Error occurred during Host Info
+	ErrorMessage_HOST_MDNS   ErrorMessage_Type = 57 // Error occurred during Host MDNS
+	ErrorMessage_CRYPTO_GEN  ErrorMessage_Type = 30 // Error occurred during Crypto Generation
 	// Peer
-	ErrorMessage_PEER_NOT_FOUND_INVITE   ErrorMessage_Type = 31
-	ErrorMessage_PEER_NOT_FOUND_REPLY    ErrorMessage_Type = 32
-	ErrorMessage_PEER_NOT_FOUND_TRANSFER ErrorMessage_Type = 33
-	ErrorMessage_PEER_PUBKEY_DECODE      ErrorMessage_Type = 58
-	ErrorMessage_PEER_PUBKEY_UNMARSHAL   ErrorMessage_Type = 59
-	ErrorMessage_URL_HTTP_GET            ErrorMessage_Type = 34
-	ErrorMessage_URL_INFO_RESP           ErrorMessage_Type = 35
-	ErrorMessage_FAILED_CONNECTION       ErrorMessage_Type = 36
+	ErrorMessage_PEER_NOT_FOUND_INVITE   ErrorMessage_Type = 31 // Error occurred during Peer Invitation
+	ErrorMessage_PEER_NOT_FOUND_REPLY    ErrorMessage_Type = 32 // Error occurred during Peer Reply
+	ErrorMessage_PEER_NOT_FOUND_TRANSFER ErrorMessage_Type = 33 // Error occurred during Peer Transfer
+	ErrorMessage_PEER_PUBKEY_DECODE      ErrorMessage_Type = 58 // Error occurred during Peer Public Key Decode
+	ErrorMessage_PEER_PUBKEY_UNMARSHAL   ErrorMessage_Type = 59 // Error occurred during Peer Public Key Unmarshal
+	ErrorMessage_URL_HTTP_GET            ErrorMessage_Type = 34 // Error occurred during URL HTTP GET
+	ErrorMessage_URL_INFO_RESP           ErrorMessage_Type = 35 // Error occurred during URL Info Response
+	ErrorMessage_FAILED_CONNECTION       ErrorMessage_Type = 36 // Error occurred during Failed Connection
 	// Key Pair
-	ErrorMessage_KEY_SET     ErrorMessage_Type = 38
-	ErrorMessage_KEY_INVALID ErrorMessage_Type = 39
-	ErrorMessage_KEY_ID      ErrorMessage_Type = 40
+	ErrorMessage_KEY_SET     ErrorMessage_Type = 38 // Error occurred during Key Pair Set
+	ErrorMessage_KEY_INVALID ErrorMessage_Type = 39 // Error occurred during Key Pair Invalid
+	ErrorMessage_KEY_ID      ErrorMessage_Type = 40 // Error occurred during Key Pair ID
 	// Memory Store
-	ErrorMessage_STORE_PUT  ErrorMessage_Type = 41
-	ErrorMessage_STORE_GET  ErrorMessage_Type = 42
-	ErrorMessage_STORE_FIND ErrorMessage_Type = 43
-	ErrorMessage_STORE_INIT ErrorMessage_Type = 44
+	ErrorMessage_STORE_PUT  ErrorMessage_Type = 41 // Error occurred during Memory Store Put
+	ErrorMessage_STORE_GET  ErrorMessage_Type = 42 // Error occurred during Memory Store Get
+	ErrorMessage_STORE_FIND ErrorMessage_Type = 43 // Error occurred during Memory Store Find
+	ErrorMessage_STORE_INIT ErrorMessage_Type = 44 // Error occurred during Memory Store Init
 	// Textile Client
-	ErrorMessage_TEXTILE_START_CLIENT ErrorMessage_Type = 45
-	ErrorMessage_TEXTILE_USER_CTX     ErrorMessage_Type = 46
-	ErrorMessage_TEXTILE_TOKEN_CTX    ErrorMessage_Type = 47
+	ErrorMessage_TEXTILE_START_CLIENT ErrorMessage_Type = 45 // Error occurred during Textile Client Start
+	ErrorMessage_TEXTILE_USER_CTX     ErrorMessage_Type = 46 // Error occurred during Textile User Context
+	ErrorMessage_TEXTILE_TOKEN_CTX    ErrorMessage_Type = 47 // Error occurred during Textile Token Context
 	// Threads Service
-	ErrorMessage_THREADS_START_NEW      ErrorMessage_Type = 48
-	ErrorMessage_THREADS_START_EXISTING ErrorMessage_Type = 49
-	ErrorMessage_THREADS_LIST_ALL       ErrorMessage_Type = 50
+	ErrorMessage_THREADS_START_NEW      ErrorMessage_Type = 48 // Error occurred during Threads Service Start New
+	ErrorMessage_THREADS_START_EXISTING ErrorMessage_Type = 49 // Error occurred during Threads Service Start Existing
+	ErrorMessage_THREADS_LIST_ALL       ErrorMessage_Type = 50 // Error occurred during Threads Service List All
 	// Mailbox Service
-	ErrorMessage_MAILBOX_START_NEW           ErrorMessage_Type = 51
-	ErrorMessage_MAILBOX_START_EXISTING      ErrorMessage_Type = 52
-	ErrorMessage_MAILBOX_LIST_ALL            ErrorMessage_Type = 53
-	ErrorMessage_MAILBOX_MESSAGE_OPEN        ErrorMessage_Type = 54
-	ErrorMessage_MAILBOX_MESSAGE_SEND        ErrorMessage_Type = 55
-	ErrorMessage_MAILBOX_MESSAGE_PEER_PUBKEY ErrorMessage_Type = 56
-	ErrorMessage_MAILBOX_EVENT_STATE         ErrorMessage_Type = 61
-	ErrorMessage_MAILBOX_MESSAGE_READ        ErrorMessage_Type = 66
-	ErrorMessage_MAILBOX_MESSAGE_UNMARSHAL   ErrorMessage_Type = 67
-	ErrorMessage_MAILBOX_MESSAGE_DELETE      ErrorMessage_Type = 68
-	ErrorMessage_MAILBOX_ACTION_INVALID      ErrorMessage_Type = 69
+	ErrorMessage_MAILBOX_START_NEW           ErrorMessage_Type = 51 // Error occurred during Mailbox Service Start New
+	ErrorMessage_MAILBOX_START_EXISTING      ErrorMessage_Type = 52 // Error occurred during Mailbox Service Start Existing
+	ErrorMessage_MAILBOX_LIST_ALL            ErrorMessage_Type = 53 // Error occurred during Mailbox Service List All
+	ErrorMessage_MAILBOX_MESSAGE_OPEN        ErrorMessage_Type = 54 // Error occurred during Mailbox Service Message Open
+	ErrorMessage_MAILBOX_MESSAGE_SEND        ErrorMessage_Type = 55 // Error occurred during Mailbox Service Message Send
+	ErrorMessage_MAILBOX_MESSAGE_PEER_PUBKEY ErrorMessage_Type = 56 // Error occurred during Mailbox Service Message Peer Public Key
+	ErrorMessage_MAILBOX_EVENT_STATE         ErrorMessage_Type = 61 // Error occurred during Mailbox Service Event State
+	ErrorMessage_MAILBOX_MESSAGE_READ        ErrorMessage_Type = 66 // Error occurred during Mailbox Service Message Read
+	ErrorMessage_MAILBOX_MESSAGE_UNMARSHAL   ErrorMessage_Type = 67 // Error occurred during Mailbox Service Message Unmarshal
+	ErrorMessage_MAILBOX_MESSAGE_DELETE      ErrorMessage_Type = 68 // Error occurred during Mailbox Service Message Delete
+	ErrorMessage_MAILBOX_ACTION_INVALID      ErrorMessage_Type = 69 // Error occurred during Mailbox Service Action Invalid
 	// Push Notifications
-	ErrorMessage_PUSH_SINGLE          ErrorMessage_Type = 62
-	ErrorMessage_PUSH_MULTIPLE        ErrorMessage_Type = 63
-	ErrorMessage_PUSH_START_APP       ErrorMessage_Type = 64
-	ErrorMessage_PUSH_START_MESSAGING ErrorMessage_Type = 65
+	ErrorMessage_PUSH_SINGLE          ErrorMessage_Type = 62 // Error occurred during Push Notifications Single
+	ErrorMessage_PUSH_MULTIPLE        ErrorMessage_Type = 63 // Error occurred during Push Notifications Multiple
+	ErrorMessage_PUSH_START_APP       ErrorMessage_Type = 64 // Error occurred during Push Notifications Start App
+	ErrorMessage_PUSH_START_MESSAGING ErrorMessage_Type = 65 // Error occurred during Push Notifications Start Messaging
 )
 
 // Enum value maps for ErrorMessage_Type.
@@ -286,10 +286,10 @@ func (ErrorMessage_Type) EnumDescriptor() ([]byte, []int) {
 type ErrorMessage_Severity int32
 
 const (
-	ErrorMessage_LOG      ErrorMessage_Severity = 0
-	ErrorMessage_WARNING  ErrorMessage_Severity = 1
-	ErrorMessage_CRITICAL ErrorMessage_Severity = 2
-	ErrorMessage_FATAL    ErrorMessage_Severity = 3
+	ErrorMessage_LOG      ErrorMessage_Severity = 0 // Log Level Severity
+	ErrorMessage_WARNING  ErrorMessage_Severity = 1 // Warning Level Severity
+	ErrorMessage_CRITICAL ErrorMessage_Severity = 2 // Critical Level Severity
+	ErrorMessage_FATAL    ErrorMessage_Severity = 3 // Fatal Level Severity
 )
 
 // Enum value maps for ErrorMessage_Severity.
