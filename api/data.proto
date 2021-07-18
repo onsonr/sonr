@@ -1,5 +1,5 @@
 syntax = "proto3";
-
+package models;
 import "peer.proto";
 
 // Require Go Package
@@ -53,20 +53,20 @@ message Contact {
 
   // Field : General Field for Contact field
   message General {
-    string bio = 1;   // If this is the Primary field for Kind
-    string sName = 2; // Type of Field
-    Name name = 3;
-    Date date = 4;
-    Gender gender = 5;
-    Phone phone = 6;
-    Email email = 7;
-    Title title = 8;
+    string bio = 1;    // If this is the Primary field for Kind
+    string sName = 2;  // Type of Field
+    Name name = 3;     // Name of Field
+    Date date = 4;     // Date of Field
+    Gender gender = 5; // User Gender
+    Phone phone = 6;   // User Phone Number
+    Email email = 7;   // User Email Address
+    Title title = 8;   // User Work Title
 
     message Name {
-      string prefix = 1;
-      string suffix = 2;
-      string middleName = 3;
-      string nickName = 4;
+      string prefix = 1;     // Name Prefix
+      string suffix = 2;     // Name Suffix
+      string middleName = 3; // Middlename
+      string nickName = 4;   // Nickname
     }
 
     // Date Field - MillisecondsFromEpoch
@@ -81,8 +81,8 @@ message Contact {
 
       enum Options {
         Unspecified = 0; // Default
-        Male = 1;
-        Female = 2;
+        Male = 1;        // Male Gender
+        Female = 2;      // Female Gender
       }
     }
 
@@ -132,9 +132,9 @@ message Contact {
 
     // Provider for Social Field
     oneof provider {
-      Media media = 10;
-      Music music = 11;
-      Payment payment = 12;
+      Media media = 10;     // Media Provider
+      Music music = 11;     // Music Provider
+      Payment payment = 12; // Payment Provider
     }
 
     // Simple Icon Button
@@ -293,7 +293,7 @@ message Transfer {
   // Attached Data
   oneof data {
     Contact contact = 6; // DATA(Optional): Received Contact Information
-    SFile file = 7;   // DATA(Optional): Received a File
+    SFile file = 7;      // DATA(Optional): Received a File
     URLLink url = 8;     // DATA(Optional): Received a Website Link
   }
 }

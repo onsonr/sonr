@@ -12,7 +12,6 @@ GOCLEAN=$(GOMOBILE) clean
 GOBIND=$(GOMOBILE) bind -ldflags='-s -w' -v
 GOBIND_ANDROID=$(GOBIND) -target=android
 GOBIND_IOS=$(GOBIND) -target=ios -bundleid=io.sonr.core
-# GOBINDTOR=$(GOMOBILE) bind -ldflags='-s -w' -tscags=embedTor -v
 
 # @ Bind Directories
 BIND_DIR_CORE=$(SONR_ROOT_DIR)/core/bind
@@ -23,17 +22,19 @@ BIND_ANDROID_ARTIFACT= $(BIND_DIR_ANDROID)/io.sonr.core.aar
 
 # @ Proto Directories
 PROTO_DIR_CORE=$(SONR_ROOT_DIR)/core/pkg
+PROTO_DIR_CMD=$(SONR_ROOT_DIR)/core/cmd/models
 PROTO_DIR_PLUGIN=$(SONR_ROOT_DIR)/plugin/lib/src/data/protobuf
 PROTO_DIR_DOCS=$(SONR_ROOT_DIR)/docs
 
 # @ Proto Items Lists
 PROTO_LIST_ALL=api.proto data.proto core.proto peer.proto error.proto user.proto
-PROTO_LIST_DART=api.proto data.proto peer.proto error.proto user.proto
+PROTO_LIST_CLIENT=api.proto data.proto peer.proto error.proto user.proto
 
 # @ Proto Build Commands
 PROTO_GEN_GO="--go_out=$(PROTO_DIR_CORE)"
+PROTO_GEN_JS="--gopherjs_out=$(PROTO_DIR_CMD)"
 PROTO_GEN_DART="--dart_out=$(PROTO_DIR_PLUGIN)"
-PROTO_GEN_DOCS="--doc_out=$(PROTO_DIR_DOCS) --doc_opt=html,index.html"
+PROTO_GEN_DOCS="--doc_out=$(PROTO_DIR_DOCS)"
 
 all: Makefile
 	@figlet -f larry3d Sonr Core
@@ -93,9 +94,10 @@ proto:
 	@echo "--------------------------------------------------------------"
 	@echo "------------- 🛸 START PROTOBUFS COMPILE 🛸 -------------------"
 	@echo "--------------------------------------------------------------"
-
+	@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_DOCS) $(PROTO_LIST_ALL)
 	@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_GO) $(PROTO_LIST_ALL)
-	@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_DART) $(PROTO_LIST_DART)
+	@cd cmd && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_JS) $(PROTO_LIST_CLIENT)
+	@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_DART) $(PROTO_LIST_CLIENT)
 	@echo "Finished Compiling ➡ " && date
 	@echo "--------------------------------------------------------------"
 	@echo "------------- 🛸 COMPILED ALL PROTOBUFS 🛸 --------------------"

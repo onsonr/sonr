@@ -1,5 +1,5 @@
 syntax = "proto3";
-
+package models;
 import "peer.proto";
 
 // Require Go Package
@@ -30,6 +30,6 @@ enum SonrProtocol {
 }
 
 message PushMessage {
-  Peer peer = 1;
-  map<string, string> data = 2;
+  Peer peer = 1;                // Peer to send to
+  map<string, string> data = 2; // Data to send
 }

@@ -1,5 +1,5 @@
 syntax = "proto3";
-
+package models;
 // Require Go Package
 option go_package = "/models";
 
@@ -130,13 +130,13 @@ message Peer {
 
 // Platform is the Operating System of Device
 enum Platform {
-  Undefined = 0;
-  Android = 1;
-  IOS = 2;
-  MacOS = 3;
-  Windows = 4;
-  Linux = 5;
-  Web = 6;
+  Undefined = 0; // Undefined
+  Android = 1;   // Android Operating System
+  IOS = 2;       // iOS Operating System
+  MacOS = 3;     // Mac Operating System
+  Windows = 4;   // Windows Operating System
+  Linux = 5;     // Linux Operating System
+  Web = 6;       // Web Platform
 }
 
 // Position Includes All Directional Info of Peer
@@ -164,9 +164,9 @@ message Position {
 
   // Euler Angle Orientation
   message Orientation {
-    double pitch = 1;
-    double roll = 2;
-    double yaw = 3;
+    double pitch = 1; // Pitch Angle
+    double roll = 2;  // Roll Angle
+    double yaw = 3;   // Yaw Angle
   }
 
   // Proximity is the Distance between Peers, from Ultrasonic
@@ -189,8 +189,8 @@ message Profile {
 
 message Topic {
   // Topic Type and Name
-  Type type = 1;
-  string name = 2;
+  Type type = 1;   // Type of Topic
+  string name = 2; // Topic Name
 
   // Topic Type
   enum Type {

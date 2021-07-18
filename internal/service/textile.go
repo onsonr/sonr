@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/sonr-io/core/internal/host"
@@ -37,6 +38,7 @@ type TextileService struct {
 	options     *md.ConnectionRequest_ServiceOptions
 	onConnected md.OnConnected
 	handler     ServiceHandler
+	pushService *PushService
 
 	// Properties
 	client  *client.Client
@@ -57,6 +59,7 @@ func (sc *serviceClient) StartTextile() *md.SonrError {
 		onConnected: sc.handler.OnConnected,
 		device:      sc.user.GetDevice(),
 		handler:     sc.handler,
+		pushService: sc.Push,
 	}
 	sc.Textile = textile
 
@@ -172,6 +175,9 @@ func (ts *TextileService) InitMail() *md.SonrError {
 
 // @ Handle Mailbox Events
 func (ts *TextileService) handleMailboxEvents() {
+	// Initialize State
+	connState := cmd.Online
+
 	// Handle mailbox events as they arrive
 	events := make(chan local.MailboxEvent)
 	defer close(events)
@@ -179,7 +185,7 @@ func (ts *TextileService) handleMailboxEvents() {
 		for e := range events {
 			switch e.Type {
 			case local.NewMessage:
-				ts.onNewMessage(e)
+				ts.onNewMessage(e, connState)
 				continue
 			}
 		}
@@ -195,6 +201,9 @@ func (ts *TextileService) handleMailboxEvents() {
 	// Handle Mailbox State
 	md.LogSuccess("Mailbox State Handling")
 	for s := range state {
+		// Update Connection State
+		connState = s.State
+
 		// handle connectivity state
 		switch s.State {
 		case cmd.Online:
@@ -206,7 +215,7 @@ func (ts *TextileService) handleMailboxEvents() {
 }
 
 // @ Handle New Mailbox Message
-func (ts *TextileService) onNewMessage(e local.MailboxEvent) {
+func (ts *TextileService) onNewMessage(e local.MailboxEvent, state cmd.ConnectionState) {
 	// List Total Inbox
 	inbox, err := ts.mailbox.ListInboxMessages(context.Background())
 	if err != nil {
@@ -232,19 +241,35 @@ func (ts *TextileService) onNewMessage(e local.MailboxEvent) {
 		md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_UNMARSHAL)
 	}
 
-	// Create Mail Event
-	mail := &md.MailEvent{
-		To:        inbox[0].To.String(),
-		From:      inbox[0].From.String(),
-		CreatedAt: int32(inbox[0].CreatedAt.Unix()),
-		ReadAt:    int32(inbox[0].ReadAt.Unix()),
-		Invite:    &invite,
-		Signature: inbox[0].Signature,
-		ID:        inbox[0].ID,
-	}
+	// Send Foreground Event
+	if state == cmd.Online {
+		// Create Mail Event
+		mail := &md.MailEvent{
+			To:        inbox[0].To.String(),
+			From:      inbox[0].From.String(),
+			CreatedAt: int32(inbox[0].CreatedAt.Unix()),
+			ReadAt:    int32(inbox[0].ReadAt.Unix()),
+			Invite:    &invite,
+			Signature: inbox[0].Signature,
+			ID:        inbox[0].ID,
+		}
+		// Callback Mail Event
+		ts.handler.OnMail(mail)
+	} else {
+		// Create Mail Event
+		msg := &md.PushMessage{
+			Data: map[string]string{
+				"From":      inbox[0].From.String(),
+				"To":        inbox[0].To.String(),
+				"CreatedAt": strconv.Itoa(int(inbox[0].CreatedAt.Unix())),
+				"ReadAt":    strconv.Itoa(int(inbox[0].ReadAt.Unix())),
+				"Invite":    invite.String(),
+			},
+		}
 
-	// Callback Mail Event
-	ts.handler.OnMail(mail)
+		// Send Push Notification
+		ts.pushService.pushSelf(msg)
+	}
 
 }
 
