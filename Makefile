@@ -34,7 +34,7 @@ PROTO_LIST_CLIENT=api.proto data.proto peer.proto error.proto user.proto
 PROTO_GEN_GO="--go_out=$(PROTO_DIR_CORE)"
 PROTO_GEN_JS="--gopherjs_out=$(PROTO_DIR_CMD)"
 PROTO_GEN_DART="--dart_out=$(PROTO_DIR_PLUGIN)"
-PROTO_GEN_DOCS="--doc_out=$(PROTO_DIR_DOCS) --doc_opt=html,index.html"
+PROTO_GEN_DOCS="--doc_out=$(PROTO_DIR_DOCS)"
 
 all: Makefile
 	@figlet -f larry3d Sonr Core
@@ -94,7 +94,7 @@ proto:
 	@echo "--------------------------------------------------------------"
 	@echo "------------- 🛸 START PROTOBUFS COMPILE 🛸 -------------------"
 	@echo "--------------------------------------------------------------"
-
+	@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_DOCS) $(PROTO_LIST_ALL)
 	@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_GO) $(PROTO_LIST_ALL)
 	@cd cmd && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_JS) $(PROTO_LIST_CLIENT)
 	@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_DART) $(PROTO_LIST_CLIENT)
