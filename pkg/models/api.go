@@ -303,6 +303,23 @@ func (u *User) SignInvite(i *InviteRequest) *InviteRequest {
 	return i
 }
 
+// Convert Invite Request to Push Message
+func (req *InviteRequest) ToPushMessage() *PushMessage {
+	// Initialize Map
+	pushMap := make(map[string]string)
+	pushMap["payload"] = req.Payload.String()
+	pushMap["protocol"] = req.Protocol
+	pushMap["type"] = req.Type.String()
+	pushMap["from"] = req.From.String()
+	pushMap["to"] = req.To.String()
+
+	// Return Push Map
+	return &PushMessage{
+		Peer: req.GetTo(),
+		Data: pushMap,
+	}
+}
+
 // ** ─── Location MANAGEMENT ────────────────────────────────────────────────────────
 func (l *Location) MinorOLC() string {
 	lat := l.GetLatitude()

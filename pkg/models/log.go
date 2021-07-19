@@ -487,6 +487,8 @@ func generateError(errType ErrorMessage_Type) (string, ErrorMessage_Severity) {
 		return "Failed to delete Mailbox message.", ErrorMessage_WARNING
 	case ErrorMessage_MAILBOX_ACTION_INVALID:
 		return "Invalid Mailbox Action.", ErrorMessage_LOG
+	case ErrorMessage_PEER_PUSH_TOKEN_EMPTY:
+		return "Peer's Push Token is Empty.", ErrorMessage_WARNING
 	default:
 		return "Unknown", ErrorMessage_LOG
 	}

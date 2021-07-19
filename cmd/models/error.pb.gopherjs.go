@@ -91,10 +91,11 @@ const (
 	ErrorMessage_MAILBOX_MESSAGE_DELETE      ErrorMessage_Type = 68
 	ErrorMessage_MAILBOX_ACTION_INVALID      ErrorMessage_Type = 69
 	// Push Notifications
-	ErrorMessage_PUSH_SINGLE          ErrorMessage_Type = 62
-	ErrorMessage_PUSH_MULTIPLE        ErrorMessage_Type = 63
-	ErrorMessage_PUSH_START_APP       ErrorMessage_Type = 64
-	ErrorMessage_PUSH_START_MESSAGING ErrorMessage_Type = 65
+	ErrorMessage_PUSH_SINGLE           ErrorMessage_Type = 62
+	ErrorMessage_PUSH_MULTIPLE         ErrorMessage_Type = 63
+	ErrorMessage_PUSH_START_APP        ErrorMessage_Type = 64
+	ErrorMessage_PUSH_START_MESSAGING  ErrorMessage_Type = 65
+	ErrorMessage_PEER_PUSH_TOKEN_EMPTY ErrorMessage_Type = 70
 )
 
 var ErrorMessage_Type_name = map[int]string{
@@ -168,6 +169,7 @@ var ErrorMessage_Type_name = map[int]string{
 	63: "PUSH_MULTIPLE",
 	64: "PUSH_START_APP",
 	65: "PUSH_START_MESSAGING",
+	70: "PEER_PUSH_TOKEN_EMPTY",
 }
 var ErrorMessage_Type_value = map[string]int{
 	"MARSHAL":                     0,
@@ -240,6 +242,7 @@ var ErrorMessage_Type_value = map[string]int{
 	"PUSH_MULTIPLE":               63,
 	"PUSH_START_APP":              64,
 	"PUSH_START_MESSAGING":        65,
+	"PEER_PUSH_TOKEN_EMPTY":       70,
 }
 
 func (x ErrorMessage_Type) String() string {

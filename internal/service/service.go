@@ -110,6 +110,12 @@ func (sc *serviceClient) SendMail(inv *md.InviteRequest) *md.SonrError {
 	} else {
 		md.LogInfo("Mail is not Ready")
 	}
+
+	// Send Push Message
+	serr := sc.Push.push(inv.ToPushMessage())
+	if serr != nil {
+		return serr
+	}
 	return nil
 }
 

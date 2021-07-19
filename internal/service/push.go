@@ -63,9 +63,15 @@ func (sc *serviceClient) StartPush() *md.SonrError {
 
 // Push pushes a single message to a single Peer
 func (pc *PushService) push(msg *md.PushMessage) *md.SonrError {
+	// Check for Push Token
+	pushToken, serr := msg.GetPeer().PushToken()
+	if serr != nil {
+		return serr
+	}
+
 	// Create Message
 	pushMsg := &messaging.Message{
-		Token: msg.Peer.Id.GetPushToken(),
+		Token: pushToken,
 		Data:  msg.GetData(),
 	}
 

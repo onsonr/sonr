@@ -118,6 +118,7 @@ message ErrorMessage {
     PUSH_START_APP = 64; // Error occurred during Push Notifications Start App
     PUSH_START_MESSAGING =
         65; // Error occurred during Push Notifications Start Messaging
+    PEER_PUSH_TOKEN_EMPTY = 70; // Error occurred during Peer Push Token Empty
   }
 
   enum Severity {
