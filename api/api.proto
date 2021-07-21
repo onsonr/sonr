@@ -56,10 +56,9 @@ message ConnectionRequest {
   // Libp2p Host Options
   message HostOptions {
     bool quicTransport = 1;   // Enable QUIC Transport
-    bool torTransport = 2;    // Enable TOR Transport
-    bool httpTransport = 3;   // Enable HTTP Transport
-    bool webrtcTransport = 4; // Enable WebRTC Transport
-    bool mdnsDiscovery = 5;   // Enable MDNS Discovery
+    bool httpTransport = 2;   // Enable HTTP Transport
+    bool webrtcTransport = 3; // Enable WebRTC Transport
+    bool mdnsDiscovery = 4;   // Enable MDNS Discovery
   }
 
   // Service Configuration

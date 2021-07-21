@@ -107,36 +107,6 @@ func (x FileSystem_Directory_Type) String() string {
 	return FileSystem_Directory_Type_name[int(x)]
 }
 
-// Available Settings Options
-type User_Settings_Option_Type int
-
-const (
-	User_Settings_Option_None              User_Settings_Option_Type = 0
-	User_Settings_Option_DefaultVideoCall  User_Settings_Option_Type = 1
-	User_Settings_Option_FallbackVideoCall User_Settings_Option_Type = 2
-	User_Settings_Option_DarkMode          User_Settings_Option_Type = 3
-	User_Settings_Option_RunInBackground   User_Settings_Option_Type = 4
-)
-
-var User_Settings_Option_Type_name = map[int]string{
-	0: "None",
-	1: "DefaultVideoCall",
-	2: "FallbackVideoCall",
-	3: "DarkMode",
-	4: "RunInBackground",
-}
-var User_Settings_Option_Type_value = map[string]int{
-	"None":              0,
-	"DefaultVideoCall":  1,
-	"FallbackVideoCall": 2,
-	"DarkMode":          3,
-	"RunInBackground":   4,
-}
-
-func (x User_Settings_Option_Type) String() string {
-	return User_Settings_Option_Type_name[int(x)]
-}
-
 // Client Keys for Services
 type APIKeys struct {
 	IpApiKey        string
@@ -1019,7 +989,6 @@ type User struct {
 	// From ConnectionRequest
 	Peer      *Peer
 	Crypto    *User_Crypto
-	Settings  *User_Settings
 	Contact   *Contact
 	Location  *Location
 	PushToken string
@@ -1071,14 +1040,6 @@ func (m *User) GetCrypto() (x *User_Crypto) {
 		return x
 	}
 	return m.Crypto
-}
-
-// GetSettings gets the Settings of the User.
-func (m *User) GetSettings() (x *User_Settings) {
-	if m == nil {
-		return x
-	}
-	return m.Settings
 }
 
 // GetContact gets the Contact of the User.
@@ -1143,26 +1104,20 @@ func (m *User) MarshalToWriter(writer jspb.Writer) {
 		})
 	}
 
-	if m.Settings != nil {
-		writer.WriteMessage(7, func() {
-			m.Settings.MarshalToWriter(writer)
-		})
-	}
-
 	if m.Contact != nil {
-		writer.WriteMessage(8, func() {
+		writer.WriteMessage(7, func() {
 			m.Contact.MarshalToWriter(writer)
 		})
 	}
 
 	if m.Location != nil {
-		writer.WriteMessage(9, func() {
+		writer.WriteMessage(8, func() {
 			m.Location.MarshalToWriter(writer)
 		})
 	}
 
 	if len(m.PushToken) > 0 {
-		writer.WriteString(10, m.PushToken)
+		writer.WriteString(9, m.PushToken)
 	}
 
 	return
@@ -1205,17 +1160,13 @@ func (m *User) UnmarshalFromReader(reader jspb.Reader) *User {
 			})
 		case 7:
 			reader.ReadMessage(func() {
-				m.Settings = m.Settings.UnmarshalFromReader(reader)
+				m.Contact = m.Contact.UnmarshalFromReader(reader)
 			})
 		case 8:
 			reader.ReadMessage(func() {
-				m.Contact = m.Contact.UnmarshalFromReader(reader)
-			})
-		case 9:
-			reader.ReadMessage(func() {
 				m.Location = m.Location.UnmarshalFromReader(reader)
 			})
-		case 10:
+		case 9:
 			m.PushToken = reader.ReadString()
 		default:
 			reader.SkipField()
@@ -1306,293 +1257,6 @@ func (m *User_Crypto) UnmarshalFromReader(reader jspb.Reader) *User_Crypto {
 
 // Unmarshal unmarshals a User_Crypto from a slice of bytes.
 func (m *User_Crypto) Unmarshal(rawBytes []byte) (*User_Crypto, error) {
-	reader := jspb.NewReader(rawBytes)
-
-	m = m.UnmarshalFromReader(reader)
-
-	if err := reader.Err(); err != nil {
-		return nil, err
-	}
-
-	return m, nil
-}
-
-// User Settings
-type User_Settings struct {
-	Primary     *Device
-	Devices     map[string]*Device
-	Preferences map[string]*User_Settings_Option
-}
-
-// GetPrimary gets the Primary of the User_Settings.
-func (m *User_Settings) GetPrimary() (x *Device) {
-	if m == nil {
-		return x
-	}
-	return m.Primary
-}
-
-// GetDevices gets the Devices of the User_Settings.
-func (m *User_Settings) GetDevices() (x map[string]*Device) {
-	if m == nil {
-		return x
-	}
-	return m.Devices
-}
-
-// GetPreferences gets the Preferences of the User_Settings.
-func (m *User_Settings) GetPreferences() (x map[string]*User_Settings_Option) {
-	if m == nil {
-		return x
-	}
-	return m.Preferences
-}
-
-// MarshalToWriter marshals User_Settings to the provided writer.
-func (m *User_Settings) MarshalToWriter(writer jspb.Writer) {
-	if m == nil {
-		return
-	}
-
-	if m.Primary != nil {
-		writer.WriteMessage(1, func() {
-			m.Primary.MarshalToWriter(writer)
-		})
-	}
-
-	if len(m.Devices) > 0 {
-		for key, value := range m.Devices {
-			writer.WriteMessage(2, func() {
-				writer.WriteString(1, key)
-				writer.WriteMessage(2, func() {
-					value.MarshalToWriter(writer)
-				})
-			})
-		}
-	}
-
-	if len(m.Preferences) > 0 {
-		for key, value := range m.Preferences {
-			writer.WriteMessage(3, func() {
-				writer.WriteString(1, key)
-				writer.WriteMessage(2, func() {
-					value.MarshalToWriter(writer)
-				})
-			})
-		}
-	}
-
-	return
-}
-
-// Marshal marshals User_Settings to a slice of bytes.
-func (m *User_Settings) Marshal() []byte {
-	writer := jspb.NewWriter()
-	m.MarshalToWriter(writer)
-	return writer.GetResult()
-}
-
-// UnmarshalFromReader unmarshals a User_Settings from the provided reader.
-func (m *User_Settings) UnmarshalFromReader(reader jspb.Reader) *User_Settings {
-	for reader.Next() {
-		if m == nil {
-			m = &User_Settings{}
-		}
-
-		switch reader.GetFieldNumber() {
-		case 1:
-			reader.ReadMessage(func() {
-				m.Primary = m.Primary.UnmarshalFromReader(reader)
-			})
-		case 2:
-			if m.Devices == nil {
-				m.Devices = map[string]*Device{}
-			}
-			reader.ReadMessage(func() {
-				var key string
-				var value *Device
-				for reader.Next() {
-					switch reader.GetFieldNumber() {
-					case 1:
-						key = reader.ReadString()
-					case 2:
-						reader.ReadMessage(func() {
-							value = new(Device).UnmarshalFromReader(reader)
-						})
-					}
-					m.Devices[key] = value
-				}
-			})
-		case 3:
-			if m.Preferences == nil {
-				m.Preferences = map[string]*User_Settings_Option{}
-			}
-			reader.ReadMessage(func() {
-				var key string
-				var value *User_Settings_Option
-				for reader.Next() {
-					switch reader.GetFieldNumber() {
-					case 1:
-						key = reader.ReadString()
-					case 2:
-						reader.ReadMessage(func() {
-							value = new(User_Settings_Option).UnmarshalFromReader(reader)
-						})
-					}
-					m.Preferences[key] = value
-				}
-			})
-		default:
-			reader.SkipField()
-		}
-	}
-
-	return m
-}
-
-// Unmarshal unmarshals a User_Settings from a slice of bytes.
-func (m *User_Settings) Unmarshal(rawBytes []byte) (*User_Settings, error) {
-	reader := jspb.NewReader(rawBytes)
-
-	m = m.UnmarshalFromReader(reader)
-
-	if err := reader.Err(); err != nil {
-		return nil, err
-	}
-
-	return m, nil
-}
-
-type User_Settings_Option struct {
-	Type User_Settings_Option_Type
-	Key  string
-	// Types that are valid to be assigned to Value:
-	//	*User_Settings_Option_Enabled
-	//	*User_Settings_Option_Text
-	Value isUser_Settings_Option_Value
-}
-
-// isUser_Settings_Option_Value is used to distinguish types assignable to Value
-type isUser_Settings_Option_Value interface{ isUser_Settings_Option_Value() }
-
-// User_Settings_Option_Enabled is assignable to Value
-type User_Settings_Option_Enabled struct {
-	Enabled bool
-}
-
-// User_Settings_Option_Text is assignable to Value
-type User_Settings_Option_Text struct {
-	Text string
-}
-
-func (*User_Settings_Option_Enabled) isUser_Settings_Option_Value() {}
-func (*User_Settings_Option_Text) isUser_Settings_Option_Value()    {}
-
-// GetValue gets the Value of the User_Settings_Option.
-func (m *User_Settings_Option) GetValue() (x isUser_Settings_Option_Value) {
-	if m == nil {
-		return x
-	}
-	return m.Value
-}
-
-// GetType gets the Type of the User_Settings_Option.
-func (m *User_Settings_Option) GetType() (x User_Settings_Option_Type) {
-	if m == nil {
-		return x
-	}
-	return m.Type
-}
-
-// GetKey gets the Key of the User_Settings_Option.
-func (m *User_Settings_Option) GetKey() (x string) {
-	if m == nil {
-		return x
-	}
-	return m.Key
-}
-
-// GetEnabled gets the Enabled of the User_Settings_Option.
-func (m *User_Settings_Option) GetEnabled() (x bool) {
-	if v, ok := m.GetValue().(*User_Settings_Option_Enabled); ok {
-		return v.Enabled
-	}
-	return x
-}
-
-// GetText gets the Text of the User_Settings_Option.
-func (m *User_Settings_Option) GetText() (x string) {
-	if v, ok := m.GetValue().(*User_Settings_Option_Text); ok {
-		return v.Text
-	}
-	return x
-}
-
-// MarshalToWriter marshals User_Settings_Option to the provided writer.
-func (m *User_Settings_Option) MarshalToWriter(writer jspb.Writer) {
-	if m == nil {
-		return
-	}
-
-	switch t := m.Value.(type) {
-	case *User_Settings_Option_Enabled:
-		if t.Enabled {
-			writer.WriteBool(3, t.Enabled)
-		}
-	case *User_Settings_Option_Text:
-		if len(t.Text) > 0 {
-			writer.WriteString(4, t.Text)
-		}
-	}
-
-	if int(m.Type) != 0 {
-		writer.WriteEnum(1, int(m.Type))
-	}
-
-	if len(m.Key) > 0 {
-		writer.WriteString(2, m.Key)
-	}
-
-	return
-}
-
-// Marshal marshals User_Settings_Option to a slice of bytes.
-func (m *User_Settings_Option) Marshal() []byte {
-	writer := jspb.NewWriter()
-	m.MarshalToWriter(writer)
-	return writer.GetResult()
-}
-
-// UnmarshalFromReader unmarshals a User_Settings_Option from the provided reader.
-func (m *User_Settings_Option) UnmarshalFromReader(reader jspb.Reader) *User_Settings_Option {
-	for reader.Next() {
-		if m == nil {
-			m = &User_Settings_Option{}
-		}
-
-		switch reader.GetFieldNumber() {
-		case 1:
-			m.Type = User_Settings_Option_Type(reader.ReadEnum())
-		case 2:
-			m.Key = reader.ReadString()
-		case 3:
-			m.Value = &User_Settings_Option_Enabled{
-				Enabled: reader.ReadBool(),
-			}
-		case 4:
-			m.Value = &User_Settings_Option_Text{
-				Text: reader.ReadString(),
-			}
-		default:
-			reader.SkipField()
-		}
-	}
-
-	return m
-}
-
-// Unmarshal unmarshals a User_Settings_Option from a slice of bytes.
-func (m *User_Settings_Option) Unmarshal(rawBytes []byte) (*User_Settings_Option, error) {
 	reader := jspb.NewReader(rawBytes)
 
 	m = m.UnmarshalFromReader(reader)

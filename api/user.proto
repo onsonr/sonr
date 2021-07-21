@@ -111,39 +111,13 @@ message User {
   // From ConnectionRequest
   Peer peer = 5;         // Clients Peer Reference
   Crypto crypto = 6;     // User Cryptographic Data
-  Settings settings = 7; // User Settings
-  Contact contact = 8;   // Users Contact Card
-  Location location = 9; // Client Location for Routing
-  string pushToken = 10; // Push Notification Token
+  Contact contact = 7;   // Users Contact Card
+  Location location = 8; // Client Location for Routing
+  string pushToken = 9;  // Push Notification Token
 
   // Crypto Data to Place in DHT
   message Crypto {
     string prefix = 1;   // Created from DeviceID and SName
     string mnemonic = 2; // Used to generate fingerprint
-  }
-
-  // User Settings
-  message Settings {
-    Device primary = 1;                  // Primary Device
-    map<string, Device> devices = 2;     // Clients Devices: Name, Device
-    map<string, Option> preferences = 3; // Clients Specified Preferences
-
-    message Option {
-      Type type = 1;  // Type of Option
-      string key = 2; // Option as String
-      oneof value {
-        bool enabled = 3; // If Value is for simple enable/disable
-        string text = 4;  // If Value is complex
-      }
-
-      // Available Settings Options
-      enum Type {
-        None = 0;              // Arbitrary Zero Value
-        DefaultVideoCall = 1;  // Default App to be used for Video Calls
-        FallbackVideoCall = 2; // Fallback App for Video Calls
-        DarkMode = 3;          // Dark Mode Preference
-        RunInBackground = 4;   // Sonr Background Run Preference
-      }
-    }
   }
 }
