@@ -117,27 +117,6 @@ func (x ConnectionRequest_InternetType) String() string {
 	return ConnectionRequest_InternetType_name[int(x)]
 }
 
-// User is Returning or New
-type ConnectionRequest_UserStatus int
-
-const (
-	ConnectionRequest_RETURNING ConnectionRequest_UserStatus = 0
-	ConnectionRequest_NEW       ConnectionRequest_UserStatus = 1
-)
-
-var ConnectionRequest_UserStatus_name = map[int]string{
-	0: "RETURNING",
-	1: "NEW",
-}
-var ConnectionRequest_UserStatus_value = map[string]int{
-	"RETURNING": 0,
-	"NEW":       1,
-}
-
-func (x ConnectionRequest_UserStatus) String() string {
-	return ConnectionRequest_UserStatus_name[int(x)]
-}
-
 type InviteRequest_Type int
 
 const (
@@ -643,7 +622,6 @@ type ConnectionRequest struct {
 	Type           ConnectionRequest_InternetType
 	HostOptions    *ConnectionRequest_HostOptions
 	ServiceOptions *ConnectionRequest_ServiceOptions
-	Status         ConnectionRequest_UserStatus
 	PushToken      string
 }
 
@@ -695,14 +673,6 @@ func (m *ConnectionRequest) GetServiceOptions() (x *ConnectionRequest_ServiceOpt
 	return m.ServiceOptions
 }
 
-// GetStatus gets the Status of the ConnectionRequest.
-func (m *ConnectionRequest) GetStatus() (x ConnectionRequest_UserStatus) {
-	if m == nil {
-		return x
-	}
-	return m.Status
-}
-
 // GetPushToken gets the PushToken of the ConnectionRequest.
 func (m *ConnectionRequest) GetPushToken() (x string) {
 	if m == nil {
@@ -751,12 +721,8 @@ func (m *ConnectionRequest) MarshalToWriter(writer jspb.Writer) {
 		})
 	}
 
-	if int(m.Status) != 0 {
-		writer.WriteEnum(7, int(m.Status))
-	}
-
 	if len(m.PushToken) > 0 {
-		writer.WriteString(8, m.PushToken)
+		writer.WriteString(7, m.PushToken)
 	}
 
 	return
@@ -800,8 +766,6 @@ func (m *ConnectionRequest) UnmarshalFromReader(reader jspb.Reader) *ConnectionR
 				m.ServiceOptions = m.ServiceOptions.UnmarshalFromReader(reader)
 			})
 		case 7:
-			m.Status = ConnectionRequest_UserStatus(reader.ReadEnum())
-		case 8:
 			m.PushToken = reader.ReadString()
 		default:
 			reader.SkipField()

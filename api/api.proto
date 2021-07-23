@@ -43,8 +43,7 @@ message ConnectionRequest {
   InternetType type = 4;             // Internet Connection Type
   HostOptions hostOptions = 5;       // Libp2p Host config
   ServiceOptions serviceOptions = 6; // Service Config
-  UserStatus status = 7;             // User Status
-  string pushToken = 8;              // Push Notification Token
+  string pushToken = 7;              // Push Notification Token
 
   // Internet Connection Type
   enum InternetType {
@@ -68,12 +67,6 @@ message ConnectionRequest {
     bool buckets = 3;    // Enable Buckets
     bool push = 4;       // Enable Push Notifications
     string threadDB = 5; // Address for Database
-  }
-
-  // User is Returning or New
-  enum UserStatus {
-    RETURNING = 0; // Returning User
-    NEW = 1;       // New User no Keys yet
   }
 }
 
