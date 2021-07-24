@@ -1,16 +1,20 @@
-<div align="center">
-    <img src=".meta/header.png" alt="Sonr-Core-Header"/>
-  <br>
-</div>
 
-# Description
+<p align="center">
+<img width="500" src="https://uploads-ssl.webflow.com/60e4b57e5960f8d0456720e7/60fbafc283193d883f3ccc45_Github%20-%20Core.png">
+</p>
 
-> Core Framework that manages the Sonr Libp2p node in Go, Handles File Management, Connection to Peer, Pub-Sub for Lobby, and Graph Data Structure.
+*By [Sonr](https://www.sonr.io), creators of [The Sonr App](https://www.twitter.com/TheSonrApp)*
 
-# Build
-> Use `make` with `ios` or `android` or `all` command in root directory, then `flutter` run in [plugin]("https://github.com/sonr-io/plugin") `$HOME/Sonr/plugin/example`
+---
 
-## Compatible types
+**Core Framework** that manages the Sonr `Libp2p` node in Go, Handles *File Management, Connection to Peer, Pub-Sub for Lobby, and Graph Data Structure*.
+
+#
+## 🔷 Build
+Use `make` with `ios` or `android` or `all` command in root directory, then `flutter` run in [plugin]("https://github.com/sonr-io/plugin") `$HOME/Sonr/plugin/example`
+
+#
+## 🔷 Compatible Types
 
 - Signed integer and floating point types.
 - `int` `uint` `int16` `int32` `uint32` `int64` `uint64` `uintptr`
@@ -35,7 +39,8 @@ Any struct type, all of whose exported methods have
   supported function types and all of whose exported fields
   have supported types.
 
-## ProtoBuf Types
+#
+## 🔷 Protobuf Types
 
 | .proto Type | Notes                                                                                                                                           | Java Type  | Go Type | Dart Type |
 |-------------|-------------------------------------------------------------------------------------------------------------------------------------------------|------------|---------|-----------|
