@@ -62,6 +62,12 @@ package js
 
 import jspb "github.com/johanbrandhorst/protobuf/jspb"
 
+import (
+	context "context"
+
+	grpcweb "github.com/johanbrandhorst/protobuf/grpcweb"
+)
+
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the jspb package it is being compiled against.
 const _ = jspb.JspbPackageIsVersion2
@@ -3714,4 +3720,102 @@ func (m *Response) Unmarshal(rawBytes []byte) (*Response, error) {
 	}
 
 	return m, nil
+}
+
+// Reference imports to suppress errors if they are not otherwise used.
+var _ context.Context
+var _ grpcweb.Client
+
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the grpcweb package it is being compiled against.
+const _ = grpcweb.GrpcWebPackageIsVersion3
+
+// Client API for AuthService service
+
+// RPC Service for Auth
+type AuthServiceClient interface {
+	Sign(ctx context.Context, in *AuthRequest, opts ...grpcweb.CallOption) (*AuthResponse, error)
+}
+
+type authServiceClient struct {
+	client *grpcweb.Client
+}
+
+// NewAuthServiceClient creates a new gRPC-Web client.
+func NewAuthServiceClient(hostname string, opts ...grpcweb.DialOption) AuthServiceClient {
+	return &authServiceClient{
+		client: grpcweb.NewClient(hostname, "models.AuthService", opts...),
+	}
+}
+
+func (c *authServiceClient) Sign(ctx context.Context, in *AuthRequest, opts ...grpcweb.CallOption) (*AuthResponse, error) {
+	resp, err := c.client.RPCCall(ctx, "Sign", in.Marshal(), opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	return new(AuthResponse).Unmarshal(resp)
+}
+
+// Client API for ConnectionService service
+
+// RPC Service for Managing Connection Requests
+type ConnectionServiceClient interface {
+	Connect(ctx context.Context, in *ConnectionRequest, opts ...grpcweb.CallOption) (*ConnectionResponse, error)
+}
+
+type connectionServiceClient struct {
+	client *grpcweb.Client
+}
+
+// NewConnectionServiceClient creates a new gRPC-Web client.
+func NewConnectionServiceClient(hostname string, opts ...grpcweb.DialOption) ConnectionServiceClient {
+	return &connectionServiceClient{
+		client: grpcweb.NewClient(hostname, "models.ConnectionService", opts...),
+	}
+}
+
+func (c *connectionServiceClient) Connect(ctx context.Context, in *ConnectionRequest, opts ...grpcweb.CallOption) (*ConnectionResponse, error) {
+	resp, err := c.client.RPCCall(ctx, "Connect", in.Marshal(), opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	return new(ConnectionResponse).Unmarshal(resp)
+}
+
+// Client API for ChatService service
+
+type ChatServiceClient interface {
+	SayHello(ctx context.Context, in *Message, opts ...grpcweb.CallOption) (*Response, error)
+	GetDetails(ctx context.Context, in *Details, opts ...grpcweb.CallOption) (*Response, error)
+}
+
+type chatServiceClient struct {
+	client *grpcweb.Client
+}
+
+// NewChatServiceClient creates a new gRPC-Web client.
+func NewChatServiceClient(hostname string, opts ...grpcweb.DialOption) ChatServiceClient {
+	return &chatServiceClient{
+		client: grpcweb.NewClient(hostname, "models.ChatService", opts...),
+	}
+}
+
+func (c *chatServiceClient) SayHello(ctx context.Context, in *Message, opts ...grpcweb.CallOption) (*Response, error) {
+	resp, err := c.client.RPCCall(ctx, "SayHello", in.Marshal(), opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	return new(Response).Unmarshal(resp)
+}
+
+func (c *chatServiceClient) GetDetails(ctx context.Context, in *Details, opts ...grpcweb.CallOption) (*Response, error) {
+	resp, err := c.client.RPCCall(ctx, "GetDetails", in.Marshal(), opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	return new(Response).Unmarshal(resp)
 }
