@@ -9,11 +9,9 @@
 
 **Core Framework** that manages the Sonr `Libp2p` node in Go, Handles *File Management, Connection to Peer, Pub-Sub for Lobby, and Graph Data Structure*.
 
-#
 ## 🔷 Build
 Use `make` with `ios` or `android` or `all` command in root directory, then `flutter` run in [plugin]("https://github.com/sonr-io/plugin") `$HOME/Sonr/plugin/example`
 
-#
 ## 🔷 Compatible Types
 
 - Signed integer and floating point types.
@@ -26,22 +24,21 @@ Use `make` with `ios` or `android` or `all` command in root directory, then `flu
   - `byte // alias for uint8`  `rune // alias for int32, represents a Unicode code point`
   - `complex64` `complex128`
 
-**Any function type all of whose parameters and results have
+- **Any function type all of whose parameters and results have
   supported types.**
-  Functions must return either no results,
+  - Functions must return either no results,
   one result, or two results where the type of the second is
   the built-in 'error' type.
 
-Any interface type, all of whose exported methods have
+  - Any interface type, all of whose exported methods have
   supported function types.
 
-Any struct type, all of whose exported methods have
+  - Any struct type, all of whose exported methods have
   supported function types and all of whose exported fields
   have supported types.
 
-#
 ## 🔷 Protobuf Types
-
+```
 | .proto Type | Notes                                                                                                                                           | Java Type  | Go Type | Dart Type |
 | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ------- | --------- |
 | double      |                                                                                                                                                 | double     | float64 | double    |
@@ -59,3 +56,4 @@ Any struct type, all of whose exported methods have
 | bool        |                                                                                                                                                 | boolean    | bool    | bool      |
 | string      | A string must always contain UTF-8 encoded or 7-bit ASCII text, and cannot be longer than 232.                                                  | String     | string  | String    |
 | bytes       | May contain any arbitrary sequence of bytes no longer than 232.                                                                                 | ByteString | []byte  | List      |
+```
