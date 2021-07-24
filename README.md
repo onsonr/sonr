@@ -1,6 +1,6 @@
 
 <p align="center">
-<img width="500" src="https://uploads-ssl.webflow.com/60e4b57e5960f8d0456720e7/60fbafc283193d883f3ccc45_Github%20-%20Core.png">
+<img width="500" src="https://uploads-ssl.webflow.com/60e4b57e5960f8d0456720e7/60fbc0e3fcdf204c7ed9946b_Github%20-%20Core.png">
 </p>
 
 *By [Sonr](https://www.sonr.io), creators of [The Sonr App](https://www.twitter.com/TheSonrApp)*
@@ -43,7 +43,7 @@ Any struct type, all of whose exported methods have
 ## 🔷 Protobuf Types
 
 | .proto Type | Notes                                                                                                                                           | Java Type  | Go Type | Dart Type |
-|-------------|-------------------------------------------------------------------------------------------------------------------------------------------------|------------|---------|-----------|
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ------- | --------- |
 | double      |                                                                                                                                                 | double     | float64 | double    |
 | float       |                                                                                                                                                 | float      | float32 | double    |
 | int32       | Uses variable-length encoding. Inefficient for encoding negative numbers – if your field is likely to have negative values, use sint32 instead. | int        | int32   | int       |
