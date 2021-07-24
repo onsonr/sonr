@@ -21,9 +21,9 @@ BIND_IOS_ARTIFACT= $(BIND_DIR_IOS)/Core.framework
 BIND_ANDROID_ARTIFACT= $(BIND_DIR_ANDROID)/io.sonr.core.aar
 
 # @ Proto Directories
-PROTO_DIR_CORE=$(SONR_ROOT_DIR)/core/pkg
-PROTO_DIR_CMD=$(SONR_ROOT_DIR)/core/cmd/models
-PROTO_DIR_PLUGIN=$(SONR_ROOT_DIR)/plugin/lib/src/data/protobuf
+PROTO_DIR_GO=$(SONR_ROOT_DIR)/core/pkg
+PROTO_DIR_JS=$(SONR_ROOT_DIR)/core/pkg/models/js
+PROTO_DIR_DART=$(SONR_ROOT_DIR)/plugin/lib/src/data/protobuf
 PROTO_DIR_DOCS=$(SONR_ROOT_DIR)/docs
 
 # @ Proto Items Lists
@@ -31,9 +31,9 @@ PROTO_LIST_ALL=api.proto data.proto core.proto peer.proto error.proto user.proto
 PROTO_LIST_CLIENT=api.proto data.proto peer.proto error.proto user.proto
 
 # @ Proto Build Commands
-PROTO_GEN_GO="--go_out=$(PROTO_DIR_CORE)"
-PROTO_GEN_JS="--gopherjs_out=$(PROTO_DIR_CMD)"
-PROTO_GEN_DART="--dart_out=$(PROTO_DIR_PLUGIN)"
+PROTO_GEN_GO="--go_out=$(PROTO_DIR_GO)"
+PROTO_GEN_JS="--gopherjs_out==plugins=grpc,import_path=js:$(PROTO_DIR_JS)"
+PROTO_GEN_DART="--dart_out=$(PROTO_DIR_DART)"
 PROTO_GEN_DOCS="--doc_out=$(PROTO_DIR_DOCS)"
 
 all: Makefile
@@ -44,11 +44,11 @@ all: Makefile
 ## bind        :   Binds Android and iOS for Plugin Path
 bind: proto bind.ios bind.android
 	@go mod tidy
-	@cd /System/Library/Sounds && afplay Hero.aiff
+	@cd /System/Library/Sounds && afplay Glass.aiff
 	@echo ""
 	@echo ""
 	@echo "----------------------------------------------------------------"
-	@echo "-------- ✅ ✅ ✅   FINISHED MOBILE BIND  ✅ ✅ ✅  --------------"
+	@echo "-------- ✅ ✅ ✅  SUCCESFUL MOBILE BIND  ✅ ✅ ✅  --------------"
 	@echo "----------------------------------------------------------------"
 
 
@@ -57,16 +57,12 @@ bind.android:
 	@echo ""
 	@echo ""
 	@echo "--------------------------------------------------------------"
-	@echo "--------------- 🤖 BEGIN ANDROID BIND 🤖 ----------------------"
+	@echo "--------------- 🤖 START ANDROID BIND 🤖 ----------------------"
 	@echo "--------------------------------------------------------------"
 	@go get golang.org/x/mobile/bind
 	@gomobile init
 	cd $(BIND_DIR_CORE) && $(GOBIND_ANDROID) -o $(BIND_ANDROID_ARTIFACT)
-	@cd /System/Library/Sounds && afplay Glass.aiff
-	@echo "Finished Binding ➡ " && date
-	@echo "--------------------------------------------------------------"
-	@echo "------------- 🤖  COMPLETE ANDROID BIND 🤖  -------------------"
-	@echo "--------------------------------------------------------------"
+	@echo "✅ Finished Binding ➡ " && date
 	@echo ""
 
 
@@ -75,15 +71,11 @@ bind.ios:
 	@echo ""
 	@echo ""
 	@echo "--------------------------------------------------------------"
-	@echo "-------------- 📱 BEGIN IOS BIND 📱 ---------------------------"
+	@echo "-------------- 📱 START IOS BIND 📱 ---------------------------"
 	@echo "--------------------------------------------------------------"
 	@go get golang.org/x/mobile/bind
 	cd $(BIND_DIR_CORE) && $(GOBIND_IOS) -o $(BIND_IOS_ARTIFACT)
-	@cd /System/Library/Sounds && afplay Glass.aiff
-	@echo "Finished Binding ➡ " && date
-	@echo "--------------------------------------------------------------"
-	@echo "-------------- 📱 COMPLETE IOS BIND 📱 ------------------------"
-	@echo "--------------------------------------------------------------"
+	@echo "✅ Finished Binding ➡ " && date
 	@echo ""
 
 ##
@@ -96,17 +88,18 @@ proto:
 	@echo "--------------------------------------------------------------"
 	@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_DOCS) $(PROTO_LIST_ALL)
 	@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_GO) $(PROTO_LIST_ALL)
-	@cd cmd && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_JS) $(PROTO_LIST_CLIENT)
+	@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_JS) $(PROTO_LIST_ALL)
 	@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_DART) $(PROTO_LIST_CLIENT)
-	@echo "Finished Compiling ➡ " && date
-	@echo "--------------------------------------------------------------"
-	@echo "------------- 🛸 COMPILED ALL PROTOBUFS 🛸 --------------------"
-	@echo "--------------------------------------------------------------"
+	@echo "✅ Finished Compiling ➡ " && date
 	@echo ""
 
 ## [upgrade]   :   Binds Binary, Creates Protobufs, and Updates App
-upgrade: bind
+upgrade: proto bind.ios bind.android
+	@echo "-----------------------------------------------------------"
+	@echo "------------- 🔄  START PLUGIN UPDATE 🔄 -------------------"
+	@echo "------------------------------------------------------------"
 	cd $(APP_ROOT_DIR) && make update
+	@echo ""
 
 
 ## [clean]     :   Reinitializes Gomobile and Removes Framworks from Plugin

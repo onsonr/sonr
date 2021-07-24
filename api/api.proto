@@ -17,6 +17,23 @@ message AuthRequest {
   string mnemonic = 2; // Mnemonic Hashed with private key for fingerprint
 }
 
+// Message for Signing Response (Hmac Sha256)
+message AuthResponse {
+  bool isSigned = 1; // If Values were Signed
+
+  // Resulting Signed Values
+  string signedPrefix = 2;      // Message for List of Bytes
+  string signedFingerprint = 3; // Fingerprint Value
+  string publicKey = 4;         // Base64 Encoded Public Key
+  string givenSName = 5;        // Provided SName
+  string givenMnemonic = 6;     // Provided Mnemonic
+}
+
+// RPC Service for Auth
+service AuthService {
+  rpc Sign(AuthRequest) returns (AuthResponse) {}
+}
+
 // First Message Sent with Device and API Keys
 message InitializeRequest {
   Device device = 1;     // Users Device
@@ -70,6 +87,28 @@ message ConnectionRequest {
   }
 }
 
+// Response from Connection Request
+message ConnectionResponse {
+  bool hostActive = 1;                    // True if Host is Active
+  bool mdnsActive = 2;                    // True if MDNS is Active
+  bool textileActive = 3;                 // True if Textile is Active
+  Topic localTopic = 4;                   // Local Topic
+  map<string, TextileThread> threads = 5; // ID, Thread
+
+  // Textile Thread
+  message TextileThread {
+    string id = 1;        // ThreadID
+    string multiaddr = 2; // Thread MultiAddr
+    string key = 3;       // Thread Key
+    string name = 4;      // Thread Name
+  }
+}
+
+// RPC Service for Managing Connection Requests
+service ConnectionService {
+  rpc Connect(ConnectionRequest) returns (ConnectionResponse) {}
+}
+
 // Invitation Message sent on RPC
 message InviteRequest {
   Payload payload = 1;   // Type of Transfer
@@ -87,10 +126,41 @@ message InviteRequest {
   }
 }
 
+// Reply Message sent on RPC
+message InviteResponse {
+  Type type = 1;         // Cancel Reply
+  bool decision = 2;     // Users Decision for the Invitation
+  Peer from = 3;         // Users Peer Data
+  Peer to = 4;           // Receivers Peer Data
+  bool flatMode = 5;     // Flat Transfer
+  Transfer transfer = 6; // Card contains all Data Info, Transfer Info
+  string protocol = 7;   // Name of Protocol
+
+  enum Type {
+    None = 0;     // No Type
+    Transfer = 1; // Transfer
+    Contact = 2;  // Contact
+  }
+}
+
 // Mailbox message handling
 message MailboxRequest {
   string iD = 1;     // Unique ID for Message
   Action action = 2; // Action to be performed on Message
+
+  // Mailbox Action
+  enum Action {
+    NONE = 0;   // No Action
+    READ = 1;   // Read Message
+    DELETE = 2; // Delete Message
+  }
+}
+
+// Mailbox message handling
+message MailboxResponse {
+  string iD = 1;     // Unique ID for Message
+  Action action = 2; // Action to be performed on Message
+  bool success = 3;  // Successful Action
 
   // Mailbox Action
   enum Action {
@@ -112,6 +182,22 @@ message RestRequest {
     string id = 5;    // Libp2p ID
     string sName = 6; // SonrName which retreives id from DB
   }
+
+  enum Method {
+    GET = 0;    // Retreive Resource
+    POST = 1;   // Create new subordinate resources
+    PUT = 2;    // Update existing resource
+    DELETE = 3; // Delete resource
+    PATCH = 4;  // Partial Update to Resource
+  }
+}
+
+// REST API Response over HTTP
+message RestResponse {
+  Method method = 1;            // HTTP Method Type
+  string function = 2;          // Function called for Sonr API
+  int32 code = 3;               // See https://mzl.la/3gg3lti
+  map<string, string> body = 4; // Response Body
 
   enum Method {
     GET = 0;    // Retreive Resource
@@ -153,82 +239,6 @@ message VerifyRequest {
   enum Type {
     VERIFY = 0; // Verify Signature
     READ = 1;   // Read Value
-  }
-}
-
-// Message for Signing Response (Hmac Sha256)
-message AuthResponse {
-  bool isSigned = 1; // If Values were Signed
-
-  // Resulting Signed Values
-  string signedPrefix = 2;      // Message for List of Bytes
-  string signedFingerprint = 3; // Fingerprint Value
-  string publicKey = 4;         // Base64 Encoded Public Key
-  string givenSName = 5;        // Provided SName
-  string givenMnemonic = 6;     // Provided Mnemonic
-}
-
-// Response from Connection Request
-message ConnectionResponse {
-  bool hostActive = 1;                    // True if Host is Active
-  bool mdnsActive = 2;                    // True if MDNS is Active
-  bool textileActive = 3;                 // True if Textile is Active
-  Topic localTopic = 4;                   // Local Topic
-  map<string, TextileThread> threads = 5; // ID, Thread
-
-  // Textile Thread
-  message TextileThread {
-    string id = 1;        // ThreadID
-    string multiaddr = 2; // Thread MultiAddr
-    string key = 3;       // Thread Key
-    string name = 4;      // Thread Name
-  }
-}
-
-// Reply Message sent on RPC
-message InviteResponse {
-  Type type = 1;         // Cancel Reply
-  bool decision = 2;     // Users Decision for the Invitation
-  Peer from = 3;         // Users Peer Data
-  Peer to = 4;           // Receivers Peer Data
-  bool flatMode = 5;     // Flat Transfer
-  Transfer transfer = 6; // Card contains all Data Info, Transfer Info
-  string protocol = 7;   // Name of Protocol
-
-  enum Type {
-    None = 0;     // No Type
-    Transfer = 1; // Transfer
-    Contact = 2;  // Contact
-  }
-}
-
-// Mailbox message handling
-message MailboxResponse {
-  string iD = 1;     // Unique ID for Message
-  Action action = 2; // Action to be performed on Message
-  bool success = 3;  // Successful Action
-
-  // Mailbox Action
-  enum Action {
-    NONE = 0;   // No Action
-    READ = 1;   // Read Message
-    DELETE = 2; // Delete Message
-  }
-}
-
-// REST API Response over HTTP
-message RestResponse {
-  Method method = 1;            // HTTP Method Type
-  string function = 2;          // Function called for Sonr API
-  int32 code = 3;               // See https://mzl.la/3gg3lti
-  map<string, string> body = 4; // Response Body
-
-  enum Method {
-    GET = 0;    // Retreive Resource
-    POST = 1;   // Create new subordinate resources
-    PUT = 2;    // Update existing resource
-    DELETE = 3; // Delete resource
-    PATCH = 4;  // Partial Update to Resource
   }
 }
 
@@ -330,4 +340,23 @@ message GenericEvent {
     PROGRESS = 2; // Transfer Progress
     TOPIC = 3;    // Local Topic Update
   }
+}
+
+
+message Message {
+  string body = 1;
+}
+
+message Details {
+  string name = 1;
+  int32 age = 2;
+}
+
+message Response {
+  string body = 1;
+}
+
+service ChatService {
+  rpc SayHello(Message) returns (Response) {}
+  rpc GetDetails(Details) returns (Response) {}
 }

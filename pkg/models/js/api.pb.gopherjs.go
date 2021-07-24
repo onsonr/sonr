@@ -2,29 +2,30 @@
 // source: api.proto
 
 /*
-	Package models is a generated protocol buffer package.
+	Package js is a generated protocol buffer package.
 
 	It is generated from these files:
 		api.proto
 		data.proto
+		core.proto
 		peer.proto
 		error.proto
 		user.proto
 
 	It has these top-level messages:
 		AuthRequest
+		AuthResponse
 		InitializeRequest
 		ConnectionRequest
+		ConnectionResponse
 		InviteRequest
+		InviteResponse
 		MailboxRequest
+		MailboxResponse
 		RestRequest
+		RestResponse
 		UpdateRequest
 		VerifyRequest
-		AuthResponse
-		ConnectionResponse
-		InviteResponse
-		MailboxResponse
-		RestResponse
 		VerifyResponse
 		CompleteEvent
 		MailEvent
@@ -34,11 +35,16 @@
 		GenericRequest
 		GenericResponse
 		GenericEvent
+		Message
+		Details
+		Response
 		Contact
 		MIME
 		SFile
 		Transfer
 		URLLink
+		Chunk
+		PushMessage
 		Lobby
 		Location
 		Peer
@@ -52,7 +58,7 @@
 		KeyPair
 		User
 */
-package models
+package js
 
 import jspb "github.com/johanbrandhorst/protobuf/jspb"
 
@@ -143,6 +149,29 @@ func (x InviteRequest_Type) String() string {
 	return InviteRequest_Type_name[int(x)]
 }
 
+type InviteResponse_Type int
+
+const (
+	InviteResponse_None     InviteResponse_Type = 0
+	InviteResponse_Transfer InviteResponse_Type = 1
+	InviteResponse_Contact  InviteResponse_Type = 2
+)
+
+var InviteResponse_Type_name = map[int]string{
+	0: "None",
+	1: "Transfer",
+	2: "Contact",
+}
+var InviteResponse_Type_value = map[string]int{
+	"None":     0,
+	"Transfer": 1,
+	"Contact":  2,
+}
+
+func (x InviteResponse_Type) String() string {
+	return InviteResponse_Type_name[int(x)]
+}
+
 // Mailbox Action
 type MailboxRequest_Action int
 
@@ -165,6 +194,30 @@ var MailboxRequest_Action_value = map[string]int{
 
 func (x MailboxRequest_Action) String() string {
 	return MailboxRequest_Action_name[int(x)]
+}
+
+// Mailbox Action
+type MailboxResponse_Action int
+
+const (
+	MailboxResponse_NONE   MailboxResponse_Action = 0
+	MailboxResponse_READ   MailboxResponse_Action = 1
+	MailboxResponse_DELETE MailboxResponse_Action = 2
+)
+
+var MailboxResponse_Action_name = map[int]string{
+	0: "NONE",
+	1: "READ",
+	2: "DELETE",
+}
+var MailboxResponse_Action_value = map[string]int{
+	"NONE":   0,
+	"READ":   1,
+	"DELETE": 2,
+}
+
+func (x MailboxResponse_Action) String() string {
+	return MailboxResponse_Action_name[int(x)]
 }
 
 type RestRequest_Method int
@@ -196,74 +249,6 @@ func (x RestRequest_Method) String() string {
 	return RestRequest_Method_name[int(x)]
 }
 
-// Request Type
-type VerifyRequest_Type int
-
-const (
-	VerifyRequest_VERIFY VerifyRequest_Type = 0
-	VerifyRequest_READ   VerifyRequest_Type = 1
-)
-
-var VerifyRequest_Type_name = map[int]string{
-	0: "VERIFY",
-	1: "READ",
-}
-var VerifyRequest_Type_value = map[string]int{
-	"VERIFY": 0,
-	"READ":   1,
-}
-
-func (x VerifyRequest_Type) String() string {
-	return VerifyRequest_Type_name[int(x)]
-}
-
-type InviteResponse_Type int
-
-const (
-	InviteResponse_None     InviteResponse_Type = 0
-	InviteResponse_Transfer InviteResponse_Type = 1
-	InviteResponse_Contact  InviteResponse_Type = 2
-)
-
-var InviteResponse_Type_name = map[int]string{
-	0: "None",
-	1: "Transfer",
-	2: "Contact",
-}
-var InviteResponse_Type_value = map[string]int{
-	"None":     0,
-	"Transfer": 1,
-	"Contact":  2,
-}
-
-func (x InviteResponse_Type) String() string {
-	return InviteResponse_Type_name[int(x)]
-}
-
-// Mailbox Action
-type MailboxResponse_Action int
-
-const (
-	MailboxResponse_NONE   MailboxResponse_Action = 0
-	MailboxResponse_READ   MailboxResponse_Action = 1
-	MailboxResponse_DELETE MailboxResponse_Action = 2
-)
-
-var MailboxResponse_Action_name = map[int]string{
-	0: "NONE",
-	1: "READ",
-	2: "DELETE",
-}
-var MailboxResponse_Action_value = map[string]int{
-	"NONE":   0,
-	"READ":   1,
-	"DELETE": 2,
-}
-
-func (x MailboxResponse_Action) String() string {
-	return MailboxResponse_Action_name[int(x)]
-}
-
 type RestResponse_Method int
 
 const (
@@ -291,6 +276,27 @@ var RestResponse_Method_value = map[string]int{
 
 func (x RestResponse_Method) String() string {
 	return RestResponse_Method_name[int(x)]
+}
+
+// Request Type
+type VerifyRequest_Type int
+
+const (
+	VerifyRequest_VERIFY VerifyRequest_Type = 0
+	VerifyRequest_READ   VerifyRequest_Type = 1
+)
+
+var VerifyRequest_Type_name = map[int]string{
+	0: "VERIFY",
+	1: "READ",
+}
+var VerifyRequest_Type_value = map[string]int{
+	"VERIFY": 0,
+	"READ":   1,
+}
+
+func (x VerifyRequest_Type) String() string {
+	return VerifyRequest_Type_name[int(x)]
 }
 
 // Traffic Direction of Session
@@ -486,6 +492,146 @@ func (m *AuthRequest) UnmarshalFromReader(reader jspb.Reader) *AuthRequest {
 
 // Unmarshal unmarshals a AuthRequest from a slice of bytes.
 func (m *AuthRequest) Unmarshal(rawBytes []byte) (*AuthRequest, error) {
+	reader := jspb.NewReader(rawBytes)
+
+	m = m.UnmarshalFromReader(reader)
+
+	if err := reader.Err(); err != nil {
+		return nil, err
+	}
+
+	return m, nil
+}
+
+// Message for Signing Response (Hmac Sha256)
+type AuthResponse struct {
+	IsSigned bool
+	// Resulting Signed Values
+	SignedPrefix      string
+	SignedFingerprint string
+	PublicKey         string
+	GivenSName        string
+	GivenMnemonic     string
+}
+
+// GetIsSigned gets the IsSigned of the AuthResponse.
+func (m *AuthResponse) GetIsSigned() (x bool) {
+	if m == nil {
+		return x
+	}
+	return m.IsSigned
+}
+
+// GetSignedPrefix gets the SignedPrefix of the AuthResponse.
+func (m *AuthResponse) GetSignedPrefix() (x string) {
+	if m == nil {
+		return x
+	}
+	return m.SignedPrefix
+}
+
+// GetSignedFingerprint gets the SignedFingerprint of the AuthResponse.
+func (m *AuthResponse) GetSignedFingerprint() (x string) {
+	if m == nil {
+		return x
+	}
+	return m.SignedFingerprint
+}
+
+// GetPublicKey gets the PublicKey of the AuthResponse.
+func (m *AuthResponse) GetPublicKey() (x string) {
+	if m == nil {
+		return x
+	}
+	return m.PublicKey
+}
+
+// GetGivenSName gets the GivenSName of the AuthResponse.
+func (m *AuthResponse) GetGivenSName() (x string) {
+	if m == nil {
+		return x
+	}
+	return m.GivenSName
+}
+
+// GetGivenMnemonic gets the GivenMnemonic of the AuthResponse.
+func (m *AuthResponse) GetGivenMnemonic() (x string) {
+	if m == nil {
+		return x
+	}
+	return m.GivenMnemonic
+}
+
+// MarshalToWriter marshals AuthResponse to the provided writer.
+func (m *AuthResponse) MarshalToWriter(writer jspb.Writer) {
+	if m == nil {
+		return
+	}
+
+	if m.IsSigned {
+		writer.WriteBool(1, m.IsSigned)
+	}
+
+	if len(m.SignedPrefix) > 0 {
+		writer.WriteString(2, m.SignedPrefix)
+	}
+
+	if len(m.SignedFingerprint) > 0 {
+		writer.WriteString(3, m.SignedFingerprint)
+	}
+
+	if len(m.PublicKey) > 0 {
+		writer.WriteString(4, m.PublicKey)
+	}
+
+	if len(m.GivenSName) > 0 {
+		writer.WriteString(5, m.GivenSName)
+	}
+
+	if len(m.GivenMnemonic) > 0 {
+		writer.WriteString(6, m.GivenMnemonic)
+	}
+
+	return
+}
+
+// Marshal marshals AuthResponse to a slice of bytes.
+func (m *AuthResponse) Marshal() []byte {
+	writer := jspb.NewWriter()
+	m.MarshalToWriter(writer)
+	return writer.GetResult()
+}
+
+// UnmarshalFromReader unmarshals a AuthResponse from the provided reader.
+func (m *AuthResponse) UnmarshalFromReader(reader jspb.Reader) *AuthResponse {
+	for reader.Next() {
+		if m == nil {
+			m = &AuthResponse{}
+		}
+
+		switch reader.GetFieldNumber() {
+		case 1:
+			m.IsSigned = reader.ReadBool()
+		case 2:
+			m.SignedPrefix = reader.ReadString()
+		case 3:
+			m.SignedFingerprint = reader.ReadString()
+		case 4:
+			m.PublicKey = reader.ReadString()
+		case 5:
+			m.GivenSName = reader.ReadString()
+		case 6:
+			m.GivenMnemonic = reader.ReadString()
+		default:
+			reader.SkipField()
+		}
+	}
+
+	return m
+}
+
+// Unmarshal unmarshals a AuthResponse from a slice of bytes.
+func (m *AuthResponse) Unmarshal(rawBytes []byte) (*AuthResponse, error) {
 	reader := jspb.NewReader(rawBytes)
 
 	m = m.UnmarshalFromReader(reader)
@@ -1021,6 +1167,267 @@ func (m *ConnectionRequest_ServiceOptions) Unmarshal(rawBytes []byte) (*Connecti
 	return m, nil
 }
 
+// Response from Connection Request
+type ConnectionResponse struct {
+	HostActive    bool
+	MdnsActive    bool
+	TextileActive bool
+	LocalTopic    *Topic
+	Threads       map[string]*ConnectionResponse_TextileThread
+}
+
+// GetHostActive gets the HostActive of the ConnectionResponse.
+func (m *ConnectionResponse) GetHostActive() (x bool) {
+	if m == nil {
+		return x
+	}
+	return m.HostActive
+}
+
+// GetMdnsActive gets the MdnsActive of the ConnectionResponse.
+func (m *ConnectionResponse) GetMdnsActive() (x bool) {
+	if m == nil {
+		return x
+	}
+	return m.MdnsActive
+}
+
+// GetTextileActive gets the TextileActive of the ConnectionResponse.
+func (m *ConnectionResponse) GetTextileActive() (x bool) {
+	if m == nil {
+		return x
+	}
+	return m.TextileActive
+}
+
+// GetLocalTopic gets the LocalTopic of the ConnectionResponse.
+func (m *ConnectionResponse) GetLocalTopic() (x *Topic) {
+	if m == nil {
+		return x
+	}
+	return m.LocalTopic
+}
+
+// GetThreads gets the Threads of the ConnectionResponse.
+func (m *ConnectionResponse) GetThreads() (x map[string]*ConnectionResponse_TextileThread) {
+	if m == nil {
+		return x
+	}
+	return m.Threads
+}
+
+// MarshalToWriter marshals ConnectionResponse to the provided writer.
+func (m *ConnectionResponse) MarshalToWriter(writer jspb.Writer) {
+	if m == nil {
+		return
+	}
+
+	if m.HostActive {
+		writer.WriteBool(1, m.HostActive)
+	}
+
+	if m.MdnsActive {
+		writer.WriteBool(2, m.MdnsActive)
+	}
+
+	if m.TextileActive {
+		writer.WriteBool(3, m.TextileActive)
+	}
+
+	if m.LocalTopic != nil {
+		writer.WriteMessage(4, func() {
+			m.LocalTopic.MarshalToWriter(writer)
+		})
+	}
+
+	if len(m.Threads) > 0 {
+		for key, value := range m.Threads {
+			writer.WriteMessage(5, func() {
+				writer.WriteString(1, key)
+				writer.WriteMessage(2, func() {
+					value.MarshalToWriter(writer)
+				})
+			})
+		}
+	}
+
+	return
+}
+
+// Marshal marshals ConnectionResponse to a slice of bytes.
+func (m *ConnectionResponse) Marshal() []byte {
+	writer := jspb.NewWriter()
+	m.MarshalToWriter(writer)
+	return writer.GetResult()
+}
+
+// UnmarshalFromReader unmarshals a ConnectionResponse from the provided reader.
+func (m *ConnectionResponse) UnmarshalFromReader(reader jspb.Reader) *ConnectionResponse {
+	for reader.Next() {
+		if m == nil {
+			m = &ConnectionResponse{}
+		}
+
+		switch reader.GetFieldNumber() {
+		case 1:
+			m.HostActive = reader.ReadBool()
+		case 2:
+			m.MdnsActive = reader.ReadBool()
+		case 3:
+			m.TextileActive = reader.ReadBool()
+		case 4:
+			reader.ReadMessage(func() {
+				m.LocalTopic = m.LocalTopic.UnmarshalFromReader(reader)
+			})
+		case 5:
+			if m.Threads == nil {
+				m.Threads = map[string]*ConnectionResponse_TextileThread{}
+			}
+			reader.ReadMessage(func() {
+				var key string
+				var value *ConnectionResponse_TextileThread
+				for reader.Next() {
+					switch reader.GetFieldNumber() {
+					case 1:
+						key = reader.ReadString()
+					case 2:
+						reader.ReadMessage(func() {
+							value = new(ConnectionResponse_TextileThread).UnmarshalFromReader(reader)
+						})
+					}
+					m.Threads[key] = value
+				}
+			})
+		default:
+			reader.SkipField()
+		}
+	}
+
+	return m
+}
+
+// Unmarshal unmarshals a ConnectionResponse from a slice of bytes.
+func (m *ConnectionResponse) Unmarshal(rawBytes []byte) (*ConnectionResponse, error) {
+	reader := jspb.NewReader(rawBytes)
+
+	m = m.UnmarshalFromReader(reader)
+
+	if err := reader.Err(); err != nil {
+		return nil, err
+	}
+
+	return m, nil
+}
+
+// Textile Thread
+type ConnectionResponse_TextileThread struct {
+	Id        string
+	Multiaddr string
+	Key       string
+	Name      string
+}
+
+// GetId gets the Id of the ConnectionResponse_TextileThread.
+func (m *ConnectionResponse_TextileThread) GetId() (x string) {
+	if m == nil {
+		return x
+	}
+	return m.Id
+}
+
+// GetMultiaddr gets the Multiaddr of the ConnectionResponse_TextileThread.
+func (m *ConnectionResponse_TextileThread) GetMultiaddr() (x string) {
+	if m == nil {
+		return x
+	}
+	return m.Multiaddr
+}
+
+// GetKey gets the Key of the ConnectionResponse_TextileThread.
+func (m *ConnectionResponse_TextileThread) GetKey() (x string) {
+	if m == nil {
+		return x
+	}
+	return m.Key
+}
+
+// GetName gets the Name of the ConnectionResponse_TextileThread.
+func (m *ConnectionResponse_TextileThread) GetName() (x string) {
+	if m == nil {
+		return x
+	}
+	return m.Name
+}
+
+// MarshalToWriter marshals ConnectionResponse_TextileThread to the provided writer.
+func (m *ConnectionResponse_TextileThread) MarshalToWriter(writer jspb.Writer) {
+	if m == nil {
+		return
+	}
+
+	if len(m.Id) > 0 {
+		writer.WriteString(1, m.Id)
+	}
+
+	if len(m.Multiaddr) > 0 {
+		writer.WriteString(2, m.Multiaddr)
+	}
+
+	if len(m.Key) > 0 {
+		writer.WriteString(3, m.Key)
+	}
+
+	if len(m.Name) > 0 {
+		writer.WriteString(4, m.Name)
+	}
+
+	return
+}
+
+// Marshal marshals ConnectionResponse_TextileThread to a slice of bytes.
+func (m *ConnectionResponse_TextileThread) Marshal() []byte {
+	writer := jspb.NewWriter()
+	m.MarshalToWriter(writer)
+	return writer.GetResult()
+}
+
+// UnmarshalFromReader unmarshals a ConnectionResponse_TextileThread from the provided reader.
+func (m *ConnectionResponse_TextileThread) UnmarshalFromReader(reader jspb.Reader) *ConnectionResponse_TextileThread {
+	for reader.Next() {
+		if m == nil {
+			m = &ConnectionResponse_TextileThread{}
+		}
+
+		switch reader.GetFieldNumber() {
+		case 1:
+			m.Id = reader.ReadString()
+		case 2:
+			m.Multiaddr = reader.ReadString()
+		case 3:
+			m.Key = reader.ReadString()
+		case 4:
+			m.Name = reader.ReadString()
+		default:
+			reader.SkipField()
+		}
+	}
+
+	return m
+}
+
+// Unmarshal unmarshals a ConnectionResponse_TextileThread from a slice of bytes.
+func (m *ConnectionResponse_TextileThread) Unmarshal(rawBytes []byte) (*ConnectionResponse_TextileThread, error) {
+	reader := jspb.NewReader(rawBytes)
+
+	m = m.UnmarshalFromReader(reader)
+
+	if err := reader.Err(); err != nil {
+		return nil, err
+	}
+
+	return m, nil
+}
+
 // Invitation Message sent on RPC
 type InviteRequest struct {
 	Payload  Payload
@@ -1172,6 +1579,172 @@ func (m *InviteRequest) Unmarshal(rawBytes []byte) (*InviteRequest, error) {
 	return m, nil
 }
 
+// Reply Message sent on RPC
+type InviteResponse struct {
+	Type     InviteResponse_Type
+	Decision bool
+	From     *Peer
+	To       *Peer
+	FlatMode bool
+	Transfer *Transfer
+	Protocol string
+}
+
+// GetType gets the Type of the InviteResponse.
+func (m *InviteResponse) GetType() (x InviteResponse_Type) {
+	if m == nil {
+		return x
+	}
+	return m.Type
+}
+
+// GetDecision gets the Decision of the InviteResponse.
+func (m *InviteResponse) GetDecision() (x bool) {
+	if m == nil {
+		return x
+	}
+	return m.Decision
+}
+
+// GetFrom gets the From of the InviteResponse.
+func (m *InviteResponse) GetFrom() (x *Peer) {
+	if m == nil {
+		return x
+	}
+	return m.From
+}
+
+// GetTo gets the To of the InviteResponse.
+func (m *InviteResponse) GetTo() (x *Peer) {
+	if m == nil {
+		return x
+	}
+	return m.To
+}
+
+// GetFlatMode gets the FlatMode of the InviteResponse.
+func (m *InviteResponse) GetFlatMode() (x bool) {
+	if m == nil {
+		return x
+	}
+	return m.FlatMode
+}
+
+// GetTransfer gets the Transfer of the InviteResponse.
+func (m *InviteResponse) GetTransfer() (x *Transfer) {
+	if m == nil {
+		return x
+	}
+	return m.Transfer
+}
+
+// GetProtocol gets the Protocol of the InviteResponse.
+func (m *InviteResponse) GetProtocol() (x string) {
+	if m == nil {
+		return x
+	}
+	return m.Protocol
+}
+
+// MarshalToWriter marshals InviteResponse to the provided writer.
+func (m *InviteResponse) MarshalToWriter(writer jspb.Writer) {
+	if m == nil {
+		return
+	}
+
+	if int(m.Type) != 0 {
+		writer.WriteEnum(1, int(m.Type))
+	}
+
+	if m.Decision {
+		writer.WriteBool(2, m.Decision)
+	}
+
+	if m.From != nil {
+		writer.WriteMessage(3, func() {
+			m.From.MarshalToWriter(writer)
+		})
+	}
+
+	if m.To != nil {
+		writer.WriteMessage(4, func() {
+			m.To.MarshalToWriter(writer)
+		})
+	}
+
+	if m.FlatMode {
+		writer.WriteBool(5, m.FlatMode)
+	}
+
+	if m.Transfer != nil {
+		writer.WriteMessage(6, func() {
+			m.Transfer.MarshalToWriter(writer)
+		})
+	}
+
+	if len(m.Protocol) > 0 {
+		writer.WriteString(7, m.Protocol)
+	}
+
+	return
+}
+
+// Marshal marshals InviteResponse to a slice of bytes.
+func (m *InviteResponse) Marshal() []byte {
+	writer := jspb.NewWriter()
+	m.MarshalToWriter(writer)
+	return writer.GetResult()
+}
+
+// UnmarshalFromReader unmarshals a InviteResponse from the provided reader.
+func (m *InviteResponse) UnmarshalFromReader(reader jspb.Reader) *InviteResponse {
+	for reader.Next() {
+		if m == nil {
+			m = &InviteResponse{}
+		}
+
+		switch reader.GetFieldNumber() {
+		case 1:
+			m.Type = InviteResponse_Type(reader.ReadEnum())
+		case 2:
+			m.Decision = reader.ReadBool()
+		case 3:
+			reader.ReadMessage(func() {
+				m.From = m.From.UnmarshalFromReader(reader)
+			})
+		case 4:
+			reader.ReadMessage(func() {
+				m.To = m.To.UnmarshalFromReader(reader)
+			})
+		case 5:
+			m.FlatMode = reader.ReadBool()
+		case 6:
+			reader.ReadMessage(func() {
+				m.Transfer = m.Transfer.UnmarshalFromReader(reader)
+			})
+		case 7:
+			m.Protocol = reader.ReadString()
+		default:
+			reader.SkipField()
+		}
+	}
+
+	return m
+}
+
+// Unmarshal unmarshals a InviteResponse from a slice of bytes.
+func (m *InviteResponse) Unmarshal(rawBytes []byte) (*InviteResponse, error) {
+	reader := jspb.NewReader(rawBytes)
+
+	m = m.UnmarshalFromReader(reader)
+
+	if err := reader.Err(); err != nil {
+		return nil, err
+	}
+
+	return m, nil
+}
+
 // Mailbox message handling
 type MailboxRequest struct {
 	ID     string
@@ -1240,6 +1813,100 @@ func (m *MailboxRequest) UnmarshalFromReader(reader jspb.Reader) *MailboxRequest
 
 // Unmarshal unmarshals a MailboxRequest from a slice of bytes.
 func (m *MailboxRequest) Unmarshal(rawBytes []byte) (*MailboxRequest, error) {
+	reader := jspb.NewReader(rawBytes)
+
+	m = m.UnmarshalFromReader(reader)
+
+	if err := reader.Err(); err != nil {
+		return nil, err
+	}
+
+	return m, nil
+}
+
+// Mailbox message handling
+type MailboxResponse struct {
+	ID      string
+	Action  MailboxResponse_Action
+	Success bool
+}
+
+// GetID gets the ID of the MailboxResponse.
+func (m *MailboxResponse) GetID() (x string) {
+	if m == nil {
+		return x
+	}
+	return m.ID
+}
+
+// GetAction gets the Action of the MailboxResponse.
+func (m *MailboxResponse) GetAction() (x MailboxResponse_Action) {
+	if m == nil {
+		return x
+	}
+	return m.Action
+}
+
+// GetSuccess gets the Success of the MailboxResponse.
+func (m *MailboxResponse) GetSuccess() (x bool) {
+	if m == nil {
+		return x
+	}
+	return m.Success
+}
+
+// MarshalToWriter marshals MailboxResponse to the provided writer.
+func (m *MailboxResponse) MarshalToWriter(writer jspb.Writer) {
+	if m == nil {
+		return
+	}
+
+	if len(m.ID) > 0 {
+		writer.WriteString(1, m.ID)
+	}
+
+	if int(m.Action) != 0 {
+		writer.WriteEnum(2, int(m.Action))
+	}
+
+	if m.Success {
+		writer.WriteBool(3, m.Success)
+	}
+
+	return
+}
+
+// Marshal marshals MailboxResponse to a slice of bytes.
+func (m *MailboxResponse) Marshal() []byte {
+	writer := jspb.NewWriter()
+	m.MarshalToWriter(writer)
+	return writer.GetResult()
+}
+
+// UnmarshalFromReader unmarshals a MailboxResponse from the provided reader.
+func (m *MailboxResponse) UnmarshalFromReader(reader jspb.Reader) *MailboxResponse {
+	for reader.Next() {
+		if m == nil {
+			m = &MailboxResponse{}
+		}
+
+		switch reader.GetFieldNumber() {
+		case 1:
+			m.ID = reader.ReadString()
+		case 2:
+			m.Action = MailboxResponse_Action(reader.ReadEnum())
+		case 3:
+			m.Success = reader.ReadBool()
+		default:
+			reader.SkipField()
+		}
+	}
+
+	return m
+}
+
+// Unmarshal unmarshals a MailboxResponse from a slice of bytes.
+func (m *MailboxResponse) Unmarshal(rawBytes []byte) (*MailboxResponse, error) {
 	reader := jspb.NewReader(rawBytes)
 
 	m = m.UnmarshalFromReader(reader)
@@ -1446,6 +2113,135 @@ func (m *RestRequest) UnmarshalFromReader(reader jspb.Reader) *RestRequest {
 
 // Unmarshal unmarshals a RestRequest from a slice of bytes.
 func (m *RestRequest) Unmarshal(rawBytes []byte) (*RestRequest, error) {
+	reader := jspb.NewReader(rawBytes)
+
+	m = m.UnmarshalFromReader(reader)
+
+	if err := reader.Err(); err != nil {
+		return nil, err
+	}
+
+	return m, nil
+}
+
+// REST API Response over HTTP
+type RestResponse struct {
+	Method   RestResponse_Method
+	Function string
+	Code     int32
+	Body     map[string]string
+}
+
+// GetMethod gets the Method of the RestResponse.
+func (m *RestResponse) GetMethod() (x RestResponse_Method) {
+	if m == nil {
+		return x
+	}
+	return m.Method
+}
+
+// GetFunction gets the Function of the RestResponse.
+func (m *RestResponse) GetFunction() (x string) {
+	if m == nil {
+		return x
+	}
+	return m.Function
+}
+
+// GetCode gets the Code of the RestResponse.
+func (m *RestResponse) GetCode() (x int32) {
+	if m == nil {
+		return x
+	}
+	return m.Code
+}
+
+// GetBody gets the Body of the RestResponse.
+func (m *RestResponse) GetBody() (x map[string]string) {
+	if m == nil {
+		return x
+	}
+	return m.Body
+}
+
+// MarshalToWriter marshals RestResponse to the provided writer.
+func (m *RestResponse) MarshalToWriter(writer jspb.Writer) {
+	if m == nil {
+		return
+	}
+
+	if int(m.Method) != 0 {
+		writer.WriteEnum(1, int(m.Method))
+	}
+
+	if len(m.Function) > 0 {
+		writer.WriteString(2, m.Function)
+	}
+
+	if m.Code != 0 {
+		writer.WriteInt32(3, m.Code)
+	}
+
+	if len(m.Body) > 0 {
+		for key, value := range m.Body {
+			writer.WriteMessage(4, func() {
+				writer.WriteString(1, key)
+				writer.WriteString(2, value)
+			})
+		}
+	}
+
+	return
+}
+
+// Marshal marshals RestResponse to a slice of bytes.
+func (m *RestResponse) Marshal() []byte {
+	writer := jspb.NewWriter()
+	m.MarshalToWriter(writer)
+	return writer.GetResult()
+}
+
+// UnmarshalFromReader unmarshals a RestResponse from the provided reader.
+func (m *RestResponse) UnmarshalFromReader(reader jspb.Reader) *RestResponse {
+	for reader.Next() {
+		if m == nil {
+			m = &RestResponse{}
+		}
+
+		switch reader.GetFieldNumber() {
+		case 1:
+			m.Method = RestResponse_Method(reader.ReadEnum())
+		case 2:
+			m.Function = reader.ReadString()
+		case 3:
+			m.Code = reader.ReadInt32()
+		case 4:
+			if m.Body == nil {
+				m.Body = map[string]string{}
+			}
+			reader.ReadMessage(func() {
+				var key string
+				var value string
+				for reader.Next() {
+					switch reader.GetFieldNumber() {
+					case 1:
+						key = reader.ReadString()
+					case 2:
+						value = reader.ReadString()
+					}
+					m.Body[key] = value
+				}
+			})
+		default:
+			reader.SkipField()
+		}
+	}
+
+	return m
+}
+
+// Unmarshal unmarshals a RestResponse from a slice of bytes.
+func (m *RestResponse) Unmarshal(rawBytes []byte) (*RestResponse, error) {
 	reader := jspb.NewReader(rawBytes)
 
 	m = m.UnmarshalFromReader(reader)
@@ -1832,796 +2628,6 @@ func (m *VerifyRequest) UnmarshalFromReader(reader jspb.Reader) *VerifyRequest {
 
 // Unmarshal unmarshals a VerifyRequest from a slice of bytes.
 func (m *VerifyRequest) Unmarshal(rawBytes []byte) (*VerifyRequest, error) {
-	reader := jspb.NewReader(rawBytes)
-
-	m = m.UnmarshalFromReader(reader)
-
-	if err := reader.Err(); err != nil {
-		return nil, err
-	}
-
-	return m, nil
-}
-
-// Message for Signing Response (Hmac Sha256)
-type AuthResponse struct {
-	IsSigned bool
-	// Resulting Signed Values
-	SignedPrefix      string
-	SignedFingerprint string
-	PublicKey         string
-	GivenSName        string
-	GivenMnemonic     string
-}
-
-// GetIsSigned gets the IsSigned of the AuthResponse.
-func (m *AuthResponse) GetIsSigned() (x bool) {
-	if m == nil {
-		return x
-	}
-	return m.IsSigned
-}
-
-// GetSignedPrefix gets the SignedPrefix of the AuthResponse.
-func (m *AuthResponse) GetSignedPrefix() (x string) {
-	if m == nil {
-		return x
-	}
-	return m.SignedPrefix
-}
-
-// GetSignedFingerprint gets the SignedFingerprint of the AuthResponse.
-func (m *AuthResponse) GetSignedFingerprint() (x string) {
-	if m == nil {
-		return x
-	}
-	return m.SignedFingerprint
-}
-
-// GetPublicKey gets the PublicKey of the AuthResponse.
-func (m *AuthResponse) GetPublicKey() (x string) {
-	if m == nil {
-		return x
-	}
-	return m.PublicKey
-}
-
-// GetGivenSName gets the GivenSName of the AuthResponse.
-func (m *AuthResponse) GetGivenSName() (x string) {
-	if m == nil {
-		return x
-	}
-	return m.GivenSName
-}
-
-// GetGivenMnemonic gets the GivenMnemonic of the AuthResponse.
-func (m *AuthResponse) GetGivenMnemonic() (x string) {
-	if m == nil {
-		return x
-	}
-	return m.GivenMnemonic
-}
-
-// MarshalToWriter marshals AuthResponse to the provided writer.
-func (m *AuthResponse) MarshalToWriter(writer jspb.Writer) {
-	if m == nil {
-		return
-	}
-
-	if m.IsSigned {
-		writer.WriteBool(1, m.IsSigned)
-	}
-
-	if len(m.SignedPrefix) > 0 {
-		writer.WriteString(2, m.SignedPrefix)
-	}
-
-	if len(m.SignedFingerprint) > 0 {
-		writer.WriteString(3, m.SignedFingerprint)
-	}
-
-	if len(m.PublicKey) > 0 {
-		writer.WriteString(4, m.PublicKey)
-	}
-
-	if len(m.GivenSName) > 0 {
-		writer.WriteString(5, m.GivenSName)
-	}
-
-	if len(m.GivenMnemonic) > 0 {
-		writer.WriteString(6, m.GivenMnemonic)
-	}
-
-	return
-}
-
-// Marshal marshals AuthResponse to a slice of bytes.
-func (m *AuthResponse) Marshal() []byte {
-	writer := jspb.NewWriter()
-	m.MarshalToWriter(writer)
-	return writer.GetResult()
-}
-
-// UnmarshalFromReader unmarshals a AuthResponse from the provided reader.
-func (m *AuthResponse) UnmarshalFromReader(reader jspb.Reader) *AuthResponse {
-	for reader.Next() {
-		if m == nil {
-			m = &AuthResponse{}
-		}
-
-		switch reader.GetFieldNumber() {
-		case 1:
-			m.IsSigned = reader.ReadBool()
-		case 2:
-			m.SignedPrefix = reader.ReadString()
-		case 3:
-			m.SignedFingerprint = reader.ReadString()
-		case 4:
-			m.PublicKey = reader.ReadString()
-		case 5:
-			m.GivenSName = reader.ReadString()
-		case 6:
-			m.GivenMnemonic = reader.ReadString()
-		default:
-			reader.SkipField()
-		}
-	}
-
-	return m
-}
-
-// Unmarshal unmarshals a AuthResponse from a slice of bytes.
-func (m *AuthResponse) Unmarshal(rawBytes []byte) (*AuthResponse, error) {
-	reader := jspb.NewReader(rawBytes)
-
-	m = m.UnmarshalFromReader(reader)
-
-	if err := reader.Err(); err != nil {
-		return nil, err
-	}
-
-	return m, nil
-}
-
-// Response from Connection Request
-type ConnectionResponse struct {
-	HostActive    bool
-	MdnsActive    bool
-	TextileActive bool
-	LocalTopic    *Topic
-	Threads       map[string]*ConnectionResponse_TextileThread
-}
-
-// GetHostActive gets the HostActive of the ConnectionResponse.
-func (m *ConnectionResponse) GetHostActive() (x bool) {
-	if m == nil {
-		return x
-	}
-	return m.HostActive
-}
-
-// GetMdnsActive gets the MdnsActive of the ConnectionResponse.
-func (m *ConnectionResponse) GetMdnsActive() (x bool) {
-	if m == nil {
-		return x
-	}
-	return m.MdnsActive
-}
-
-// GetTextileActive gets the TextileActive of the ConnectionResponse.
-func (m *ConnectionResponse) GetTextileActive() (x bool) {
-	if m == nil {
-		return x
-	}
-	return m.TextileActive
-}
-
-// GetLocalTopic gets the LocalTopic of the ConnectionResponse.
-func (m *ConnectionResponse) GetLocalTopic() (x *Topic) {
-	if m == nil {
-		return x
-	}
-	return m.LocalTopic
-}
-
-// GetThreads gets the Threads of the ConnectionResponse.
-func (m *ConnectionResponse) GetThreads() (x map[string]*ConnectionResponse_TextileThread) {
-	if m == nil {
-		return x
-	}
-	return m.Threads
-}
-
-// MarshalToWriter marshals ConnectionResponse to the provided writer.
-func (m *ConnectionResponse) MarshalToWriter(writer jspb.Writer) {
-	if m == nil {
-		return
-	}
-
-	if m.HostActive {
-		writer.WriteBool(1, m.HostActive)
-	}
-
-	if m.MdnsActive {
-		writer.WriteBool(2, m.MdnsActive)
-	}
-
-	if m.TextileActive {
-		writer.WriteBool(3, m.TextileActive)
-	}
-
-	if m.LocalTopic != nil {
-		writer.WriteMessage(4, func() {
-			m.LocalTopic.MarshalToWriter(writer)
-		})
-	}
-
-	if len(m.Threads) > 0 {
-		for key, value := range m.Threads {
-			writer.WriteMessage(5, func() {
-				writer.WriteString(1, key)
-				writer.WriteMessage(2, func() {
-					value.MarshalToWriter(writer)
-				})
-			})
-		}
-	}
-
-	return
-}
-
-// Marshal marshals ConnectionResponse to a slice of bytes.
-func (m *ConnectionResponse) Marshal() []byte {
-	writer := jspb.NewWriter()
-	m.MarshalToWriter(writer)
-	return writer.GetResult()
-}
-
-// UnmarshalFromReader unmarshals a ConnectionResponse from the provided reader.
-func (m *ConnectionResponse) UnmarshalFromReader(reader jspb.Reader) *ConnectionResponse {
-	for reader.Next() {
-		if m == nil {
-			m = &ConnectionResponse{}
-		}
-
-		switch reader.GetFieldNumber() {
-		case 1:
-			m.HostActive = reader.ReadBool()
-		case 2:
-			m.MdnsActive = reader.ReadBool()
-		case 3:
-			m.TextileActive = reader.ReadBool()
-		case 4:
-			reader.ReadMessage(func() {
-				m.LocalTopic = m.LocalTopic.UnmarshalFromReader(reader)
-			})
-		case 5:
-			if m.Threads == nil {
-				m.Threads = map[string]*ConnectionResponse_TextileThread{}
-			}
-			reader.ReadMessage(func() {
-				var key string
-				var value *ConnectionResponse_TextileThread
-				for reader.Next() {
-					switch reader.GetFieldNumber() {
-					case 1:
-						key = reader.ReadString()
-					case 2:
-						reader.ReadMessage(func() {
-							value = new(ConnectionResponse_TextileThread).UnmarshalFromReader(reader)
-						})
-					}
-					m.Threads[key] = value
-				}
-			})
-		default:
-			reader.SkipField()
-		}
-	}
-
-	return m
-}
-
-// Unmarshal unmarshals a ConnectionResponse from a slice of bytes.
-func (m *ConnectionResponse) Unmarshal(rawBytes []byte) (*ConnectionResponse, error) {
-	reader := jspb.NewReader(rawBytes)
-
-	m = m.UnmarshalFromReader(reader)
-
-	if err := reader.Err(); err != nil {
-		return nil, err
-	}
-
-	return m, nil
-}
-
-// Textile Thread
-type ConnectionResponse_TextileThread struct {
-	Id        string
-	Multiaddr string
-	Key       string
-	Name      string
-}
-
-// GetId gets the Id of the ConnectionResponse_TextileThread.
-func (m *ConnectionResponse_TextileThread) GetId() (x string) {
-	if m == nil {
-		return x
-	}
-	return m.Id
-}
-
-// GetMultiaddr gets the Multiaddr of the ConnectionResponse_TextileThread.
-func (m *ConnectionResponse_TextileThread) GetMultiaddr() (x string) {
-	if m == nil {
-		return x
-	}
-	return m.Multiaddr
-}
-
-// GetKey gets the Key of the ConnectionResponse_TextileThread.
-func (m *ConnectionResponse_TextileThread) GetKey() (x string) {
-	if m == nil {
-		return x
-	}
-	return m.Key
-}
-
-// GetName gets the Name of the ConnectionResponse_TextileThread.
-func (m *ConnectionResponse_TextileThread) GetName() (x string) {
-	if m == nil {
-		return x
-	}
-	return m.Name
-}
-
-// MarshalToWriter marshals ConnectionResponse_TextileThread to the provided writer.
-func (m *ConnectionResponse_TextileThread) MarshalToWriter(writer jspb.Writer) {
-	if m == nil {
-		return
-	}
-
-	if len(m.Id) > 0 {
-		writer.WriteString(1, m.Id)
-	}
-
-	if len(m.Multiaddr) > 0 {
-		writer.WriteString(2, m.Multiaddr)
-	}
-
-	if len(m.Key) > 0 {
-		writer.WriteString(3, m.Key)
-	}
-
-	if len(m.Name) > 0 {
-		writer.WriteString(4, m.Name)
-	}
-
-	return
-}
-
-// Marshal marshals ConnectionResponse_TextileThread to a slice of bytes.
-func (m *ConnectionResponse_TextileThread) Marshal() []byte {
-	writer := jspb.NewWriter()
-	m.MarshalToWriter(writer)
-	return writer.GetResult()
-}
-
-// UnmarshalFromReader unmarshals a ConnectionResponse_TextileThread from the provided reader.
-func (m *ConnectionResponse_TextileThread) UnmarshalFromReader(reader jspb.Reader) *ConnectionResponse_TextileThread {
-	for reader.Next() {
-		if m == nil {
-			m = &ConnectionResponse_TextileThread{}
-		}
-
-		switch reader.GetFieldNumber() {
-		case 1:
-			m.Id = reader.ReadString()
-		case 2:
-			m.Multiaddr = reader.ReadString()
-		case 3:
-			m.Key = reader.ReadString()
-		case 4:
-			m.Name = reader.ReadString()
-		default:
-			reader.SkipField()
-		}
-	}
-
-	return m
-}
-
-// Unmarshal unmarshals a ConnectionResponse_TextileThread from a slice of bytes.
-func (m *ConnectionResponse_TextileThread) Unmarshal(rawBytes []byte) (*ConnectionResponse_TextileThread, error) {
-	reader := jspb.NewReader(rawBytes)
-
-	m = m.UnmarshalFromReader(reader)
-
-	if err := reader.Err(); err != nil {
-		return nil, err
-	}
-
-	return m, nil
-}
-
-// Reply Message sent on RPC
-type InviteResponse struct {
-	Type     InviteResponse_Type
-	Decision bool
-	From     *Peer
-	To       *Peer
-	FlatMode bool
-	Transfer *Transfer
-	Protocol string
-}
-
-// GetType gets the Type of the InviteResponse.
-func (m *InviteResponse) GetType() (x InviteResponse_Type) {
-	if m == nil {
-		return x
-	}
-	return m.Type
-}
-
-// GetDecision gets the Decision of the InviteResponse.
-func (m *InviteResponse) GetDecision() (x bool) {
-	if m == nil {
-		return x
-	}
-	return m.Decision
-}
-
-// GetFrom gets the From of the InviteResponse.
-func (m *InviteResponse) GetFrom() (x *Peer) {
-	if m == nil {
-		return x
-	}
-	return m.From
-}
-
-// GetTo gets the To of the InviteResponse.
-func (m *InviteResponse) GetTo() (x *Peer) {
-	if m == nil {
-		return x
-	}
-	return m.To
-}
-
-// GetFlatMode gets the FlatMode of the InviteResponse.
-func (m *InviteResponse) GetFlatMode() (x bool) {
-	if m == nil {
-		return x
-	}
-	return m.FlatMode
-}
-
-// GetTransfer gets the Transfer of the InviteResponse.
-func (m *InviteResponse) GetTransfer() (x *Transfer) {
-	if m == nil {
-		return x
-	}
-	return m.Transfer
-}
-
-// GetProtocol gets the Protocol of the InviteResponse.
-func (m *InviteResponse) GetProtocol() (x string) {
-	if m == nil {
-		return x
-	}
-	return m.Protocol
-}
-
-// MarshalToWriter marshals InviteResponse to the provided writer.
-func (m *InviteResponse) MarshalToWriter(writer jspb.Writer) {
-	if m == nil {
-		return
-	}
-
-	if int(m.Type) != 0 {
-		writer.WriteEnum(1, int(m.Type))
-	}
-
-	if m.Decision {
-		writer.WriteBool(2, m.Decision)
-	}
-
-	if m.From != nil {
-		writer.WriteMessage(3, func() {
-			m.From.MarshalToWriter(writer)
-		})
-	}
-
-	if m.To != nil {
-		writer.WriteMessage(4, func() {
-			m.To.MarshalToWriter(writer)
-		})
-	}
-
-	if m.FlatMode {
-		writer.WriteBool(5, m.FlatMode)
-	}
-
-	if m.Transfer != nil {
-		writer.WriteMessage(6, func() {
-			m.Transfer.MarshalToWriter(writer)
-		})
-	}
-
-	if len(m.Protocol) > 0 {
-		writer.WriteString(7, m.Protocol)
-	}
-
-	return
-}
-
-// Marshal marshals InviteResponse to a slice of bytes.
-func (m *InviteResponse) Marshal() []byte {
-	writer := jspb.NewWriter()
-	m.MarshalToWriter(writer)
-	return writer.GetResult()
-}
-
-// UnmarshalFromReader unmarshals a InviteResponse from the provided reader.
-func (m *InviteResponse) UnmarshalFromReader(reader jspb.Reader) *InviteResponse {
-	for reader.Next() {
-		if m == nil {
-			m = &InviteResponse{}
-		}
-
-		switch reader.GetFieldNumber() {
-		case 1:
-			m.Type = InviteResponse_Type(reader.ReadEnum())
-		case 2:
-			m.Decision = reader.ReadBool()
-		case 3:
-			reader.ReadMessage(func() {
-				m.From = m.From.UnmarshalFromReader(reader)
-			})
-		case 4:
-			reader.ReadMessage(func() {
-				m.To = m.To.UnmarshalFromReader(reader)
-			})
-		case 5:
-			m.FlatMode = reader.ReadBool()
-		case 6:
-			reader.ReadMessage(func() {
-				m.Transfer = m.Transfer.UnmarshalFromReader(reader)
-			})
-		case 7:
-			m.Protocol = reader.ReadString()
-		default:
-			reader.SkipField()
-		}
-	}
-
-	return m
-}
-
-// Unmarshal unmarshals a InviteResponse from a slice of bytes.
-func (m *InviteResponse) Unmarshal(rawBytes []byte) (*InviteResponse, error) {
-	reader := jspb.NewReader(rawBytes)
-
-	m = m.UnmarshalFromReader(reader)
-
-	if err := reader.Err(); err != nil {
-		return nil, err
-	}
-
-	return m, nil
-}
-
-// Mailbox message handling
-type MailboxResponse struct {
-	ID      string
-	Action  MailboxResponse_Action
-	Success bool
-}
-
-// GetID gets the ID of the MailboxResponse.
-func (m *MailboxResponse) GetID() (x string) {
-	if m == nil {
-		return x
-	}
-	return m.ID
-}
-
-// GetAction gets the Action of the MailboxResponse.
-func (m *MailboxResponse) GetAction() (x MailboxResponse_Action) {
-	if m == nil {
-		return x
-	}
-	return m.Action
-}
-
-// GetSuccess gets the Success of the MailboxResponse.
-func (m *MailboxResponse) GetSuccess() (x bool) {
-	if m == nil {
-		return x
-	}
-	return m.Success
-}
-
-// MarshalToWriter marshals MailboxResponse to the provided writer.
-func (m *MailboxResponse) MarshalToWriter(writer jspb.Writer) {
-	if m == nil {
-		return
-	}
-
-	if len(m.ID) > 0 {
-		writer.WriteString(1, m.ID)
-	}
-
-	if int(m.Action) != 0 {
-		writer.WriteEnum(2, int(m.Action))
-	}
-
-	if m.Success {
-		writer.WriteBool(3, m.Success)
-	}
-
-	return
-}
-
-// Marshal marshals MailboxResponse to a slice of bytes.
-func (m *MailboxResponse) Marshal() []byte {
-	writer := jspb.NewWriter()
-	m.MarshalToWriter(writer)
-	return writer.GetResult()
-}
-
-// UnmarshalFromReader unmarshals a MailboxResponse from the provided reader.
-func (m *MailboxResponse) UnmarshalFromReader(reader jspb.Reader) *MailboxResponse {
-	for reader.Next() {
-		if m == nil {
-			m = &MailboxResponse{}
-		}
-
-		switch reader.GetFieldNumber() {
-		case 1:
-			m.ID = reader.ReadString()
-		case 2:
-			m.Action = MailboxResponse_Action(reader.ReadEnum())
-		case 3:
-			m.Success = reader.ReadBool()
-		default:
-			reader.SkipField()
-		}
-	}
-
-	return m
-}
-
-// Unmarshal unmarshals a MailboxResponse from a slice of bytes.
-func (m *MailboxResponse) Unmarshal(rawBytes []byte) (*MailboxResponse, error) {
-	reader := jspb.NewReader(rawBytes)
-
-	m = m.UnmarshalFromReader(reader)
-
-	if err := reader.Err(); err != nil {
-		return nil, err
-	}
-
-	return m, nil
-}
-
-// REST API Response over HTTP
-type RestResponse struct {
-	Method   RestResponse_Method
-	Function string
-	Code     int32
-	Body     map[string]string
-}
-
-// GetMethod gets the Method of the RestResponse.
-func (m *RestResponse) GetMethod() (x RestResponse_Method) {
-	if m == nil {
-		return x
-	}
-	return m.Method
-}
-
-// GetFunction gets the Function of the RestResponse.
-func (m *RestResponse) GetFunction() (x string) {
-	if m == nil {
-		return x
-	}
-	return m.Function
-}
-
-// GetCode gets the Code of the RestResponse.
-func (m *RestResponse) GetCode() (x int32) {
-	if m == nil {
-		return x
-	}
-	return m.Code
-}
-
-// GetBody gets the Body of the RestResponse.
-func (m *RestResponse) GetBody() (x map[string]string) {
-	if m == nil {
-		return x
-	}
-	return m.Body
-}
-
-// MarshalToWriter marshals RestResponse to the provided writer.
-func (m *RestResponse) MarshalToWriter(writer jspb.Writer) {
-	if m == nil {
-		return
-	}
-
-	if int(m.Method) != 0 {
-		writer.WriteEnum(1, int(m.Method))
-	}
-
-	if len(m.Function) > 0 {
-		writer.WriteString(2, m.Function)
-	}
-
-	if m.Code != 0 {
-		writer.WriteInt32(3, m.Code)
-	}
-
-	if len(m.Body) > 0 {
-		for key, value := range m.Body {
-			writer.WriteMessage(4, func() {
-				writer.WriteString(1, key)
-				writer.WriteString(2, value)
-			})
-		}
-	}
-
-	return
-}
-
-// Marshal marshals RestResponse to a slice of bytes.
-func (m *RestResponse) Marshal() []byte {
-	writer := jspb.NewWriter()
-	m.MarshalToWriter(writer)
-	return writer.GetResult()
-}
-
-// UnmarshalFromReader unmarshals a RestResponse from the provided reader.
-func (m *RestResponse) UnmarshalFromReader(reader jspb.Reader) *RestResponse {
-	for reader.Next() {
-		if m == nil {
-			m = &RestResponse{}
-		}
-
-		switch reader.GetFieldNumber() {
-		case 1:
-			m.Method = RestResponse_Method(reader.ReadEnum())
-		case 2:
-			m.Function = reader.ReadString()
-		case 3:
-			m.Code = reader.ReadInt32()
-		case 4:
-			if m.Body == nil {
-				m.Body = map[string]string{}
-			}
-			reader.ReadMessage(func() {
-				var key string
-				var value string
-				for reader.Next() {
-					switch reader.GetFieldNumber() {
-					case 1:
-						key = reader.ReadString()
-					case 2:
-						value = reader.ReadString()
-					}
-					m.Body[key] = value
-				}
-			})
-		default:
-			reader.SkipField()
-		}
-	}
-
-	return m
-}
-
-// Unmarshal unmarshals a RestResponse from a slice of bytes.
-func (m *RestResponse) Unmarshal(rawBytes []byte) (*RestResponse, error) {
 	reader := jspb.NewReader(rawBytes)
 
 	m = m.UnmarshalFromReader(reader)
@@ -3495,6 +3501,210 @@ func (m *GenericEvent) UnmarshalFromReader(reader jspb.Reader) *GenericEvent {
 
 // Unmarshal unmarshals a GenericEvent from a slice of bytes.
 func (m *GenericEvent) Unmarshal(rawBytes []byte) (*GenericEvent, error) {
+	reader := jspb.NewReader(rawBytes)
+
+	m = m.UnmarshalFromReader(reader)
+
+	if err := reader.Err(); err != nil {
+		return nil, err
+	}
+
+	return m, nil
+}
+
+type Message struct {
+	Body string
+}
+
+// GetBody gets the Body of the Message.
+func (m *Message) GetBody() (x string) {
+	if m == nil {
+		return x
+	}
+	return m.Body
+}
+
+// MarshalToWriter marshals Message to the provided writer.
+func (m *Message) MarshalToWriter(writer jspb.Writer) {
+	if m == nil {
+		return
+	}
+
+	if len(m.Body) > 0 {
+		writer.WriteString(1, m.Body)
+	}
+
+	return
+}
+
+// Marshal marshals Message to a slice of bytes.
+func (m *Message) Marshal() []byte {
+	writer := jspb.NewWriter()
+	m.MarshalToWriter(writer)
+	return writer.GetResult()
+}
+
+// UnmarshalFromReader unmarshals a Message from the provided reader.
+func (m *Message) UnmarshalFromReader(reader jspb.Reader) *Message {
+	for reader.Next() {
+		if m == nil {
+			m = &Message{}
+		}
+
+		switch reader.GetFieldNumber() {
+		case 1:
+			m.Body = reader.ReadString()
+		default:
+			reader.SkipField()
+		}
+	}
+
+	return m
+}
+
+// Unmarshal unmarshals a Message from a slice of bytes.
+func (m *Message) Unmarshal(rawBytes []byte) (*Message, error) {
+	reader := jspb.NewReader(rawBytes)
+
+	m = m.UnmarshalFromReader(reader)
+
+	if err := reader.Err(); err != nil {
+		return nil, err
+	}
+
+	return m, nil
+}
+
+type Details struct {
+	Name string
+	Age  int32
+}
+
+// GetName gets the Name of the Details.
+func (m *Details) GetName() (x string) {
+	if m == nil {
+		return x
+	}
+	return m.Name
+}
+
+// GetAge gets the Age of the Details.
+func (m *Details) GetAge() (x int32) {
+	if m == nil {
+		return x
+	}
+	return m.Age
+}
+
+// MarshalToWriter marshals Details to the provided writer.
+func (m *Details) MarshalToWriter(writer jspb.Writer) {
+	if m == nil {
+		return
+	}
+
+	if len(m.Name) > 0 {
+		writer.WriteString(1, m.Name)
+	}
+
+	if m.Age != 0 {
+		writer.WriteInt32(2, m.Age)
+	}
+
+	return
+}
+
+// Marshal marshals Details to a slice of bytes.
+func (m *Details) Marshal() []byte {
+	writer := jspb.NewWriter()
+	m.MarshalToWriter(writer)
+	return writer.GetResult()
+}
+
+// UnmarshalFromReader unmarshals a Details from the provided reader.
+func (m *Details) UnmarshalFromReader(reader jspb.Reader) *Details {
+	for reader.Next() {
+		if m == nil {
+			m = &Details{}
+		}
+
+		switch reader.GetFieldNumber() {
+		case 1:
+			m.Name = reader.ReadString()
+		case 2:
+			m.Age = reader.ReadInt32()
+		default:
+			reader.SkipField()
+		}
+	}
+
+	return m
+}
+
+// Unmarshal unmarshals a Details from a slice of bytes.
+func (m *Details) Unmarshal(rawBytes []byte) (*Details, error) {
+	reader := jspb.NewReader(rawBytes)
+
+	m = m.UnmarshalFromReader(reader)
+
+	if err := reader.Err(); err != nil {
+		return nil, err
+	}
+
+	return m, nil
+}
+
+type Response struct {
+	Body string
+}
+
+// GetBody gets the Body of the Response.
+func (m *Response) GetBody() (x string) {
+	if m == nil {
+		return x
+	}
+	return m.Body
+}
+
+// MarshalToWriter marshals Response to the provided writer.
+func (m *Response) MarshalToWriter(writer jspb.Writer) {
+	if m == nil {
+		return
+	}
+
+	if len(m.Body) > 0 {
+		writer.WriteString(1, m.Body)
+	}
+
+	return
+}
+
+// Marshal marshals Response to a slice of bytes.
+func (m *Response) Marshal() []byte {
+	writer := jspb.NewWriter()
+	m.MarshalToWriter(writer)
+	return writer.GetResult()
+}
+
+// UnmarshalFromReader unmarshals a Response from the provided reader.
+func (m *Response) UnmarshalFromReader(reader jspb.Reader) *Response {
+	for reader.Next() {
+		if m == nil {
+			m = &Response{}
+		}
+
+		switch reader.GetFieldNumber() {
+		case 1:
+			m.Body = reader.ReadString()
+		default:
+			reader.SkipField()
+		}
+	}
+
+	return m
+}
+
+// Unmarshal unmarshals a Response from a slice of bytes.
+func (m *Response) Unmarshal(rawBytes []byte) (*Response, error) {
 	reader := jspb.NewReader(rawBytes)
 
 	m = m.UnmarshalFromReader(reader)

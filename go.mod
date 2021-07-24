@@ -7,6 +7,7 @@ require (
 	github.com/PuerkitoBio/goquery v1.6.1
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/google/open-location-code/go v0.0.0-20201229230907-d47d9f9b95e9
+	github.com/johanbrandhorst/protobuf v0.7.1
 	github.com/libp2p/go-libp2p v0.14.2
 	github.com/libp2p/go-libp2p-connmgr v0.2.4
 	github.com/libp2p/go-libp2p-core v0.8.5
