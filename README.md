@@ -12,6 +12,29 @@
 ## 🔷 Build
 Use `make` with `ios` or `android` or `all` command in root directory, then `flutter` run in [plugin]("https://github.com/sonr-io/plugin") `$HOME/Sonr/plugin/example`
 
+
+## 🔷 Usage
+This project contains a `makefile` with the following commands:
+```bash
+# Binds Android and iOS for Plugin Path
+make bind
+
+# Binds iOS Framework ONLY
+make bind.ios
+
+# Binds AAR for Android ONLY
+make bind.android
+
+# Compiles Protobuf models for Core Library and Plugin
+make proto
+
+# Binds Binary, Creates Protobufs, and Updates App
+make upgrade
+
+# Reinitializes Gomobile and Removes Framworks from Plugin
+make clean
+```
+
 ## 🔷 Compatible Types
 
 - Signed integer and floating point types.
@@ -36,24 +59,3 @@ Use `make` with `ios` or `android` or `all` command in root directory, then `flu
   - Any struct type, all of whose exported methods have
   supported function types and all of whose exported fields
   have supported types.
-
-## 🔷 Protobuf Types
-```
-| .proto Type | Notes                                                                                                                                           | Java Type  | Go Type | Dart Type |
-| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ------- | --------- |
-| double      |                                                                                                                                                 | double     | float64 | double    |
-| float       |                                                                                                                                                 | float      | float32 | double    |
-| int32       | Uses variable-length encoding. Inefficient for encoding negative numbers – if your field is likely to have negative values, use sint32 instead. | int        | int32   | int       |
-| int64       | Uses variable-length encoding. Inefficient for encoding negative numbers – if your field is likely to have negative values, use sint64 instead. | long       | int64   | Int64     |
-| uint32      | Uses variable-length encoding.                                                                                                                  | int[1]     | uint32  | int       |
-| uint64      | Uses variable-length encoding.                                                                                                                  | long[1]    | uint64  | Int64     |
-| sint32      | Uses variable-length encoding. Signed int value. These more efficiently encode negative numbers than regular int32s.                            | int        | int32   | int       |
-| sint64      | Uses variable-length encoding. Signed int value. These more efficiently encode negative numbers than regular int64s.                            | long       | int64   | Int64     |
-| fixed32     | Always four bytes. More efficient than uint32 if values are often greater than 228.                                                             | int[1]     | uint32  | int       |
-| fixed64     | Always eight bytes. More efficient than uint64 if values are often greater than 256.                                                            | long[1]    | uint64  | Int64     |
-| sfixed32    | Always four bytes.                                                                                                                              | int        | int32   | int       |
-| sfixed64    | Always eight bytes.                                                                                                                             | long       | int64   | Int64     |
-| bool        |                                                                                                                                                 | boolean    | bool    | bool      |
-| string      | A string must always contain UTF-8 encoded or 7-bit ASCII text, and cannot be longer than 232.                                                  | String     | string  | String    |
-| bytes       | May contain any arbitrary sequence of bytes no longer than 232.                                                                                 | ByteString | []byte  | List      |
-```
