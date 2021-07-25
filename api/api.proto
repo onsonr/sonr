@@ -29,11 +29,6 @@ message AuthResponse {
   string givenMnemonic = 6;     // Provided Mnemonic
 }
 
-// RPC Service for Auth
-service AuthService {
-  rpc Sign(AuthRequest) returns (AuthResponse) {}
-}
-
 // First Message Sent with Device and API Keys
 message InitializeRequest {
   Device device = 1;     // Users Device
@@ -50,6 +45,12 @@ message InitializeRequest {
     INFO = 4;     // Show all Errors
     NONE = 5;     // No Logging
   }
+}
+
+// Response for Initialize Request
+message InitializeResponse {
+  bool success = 1; // If Request was successful
+  string body = 2;  // Response Body
 }
 
 // Connection Message to Establish Sonr Host/API/Topic
@@ -102,11 +103,6 @@ message ConnectionResponse {
     string key = 3;       // Thread Key
     string name = 4;      // Thread Name
   }
-}
-
-// RPC Service for Managing Connection Requests
-service ConnectionService {
-  rpc Connect(ConnectionRequest) returns (ConnectionResponse) {}
 }
 
 // Invitation Message sent on RPC
@@ -170,42 +166,27 @@ message MailboxResponse {
   }
 }
 
-// REST API Request over HTTP
-message RestRequest {
-  Method method = 1;                  // HTTP Method
-  string function = 2;                // Sonr Api Function
-  map<string, string> parameters = 3; // Parameters for Function
+// Request to Respond to Invite (RPC Only)
+message RespondRequest {
+  Type type = 1;         // Cancel Reply
+  bool decision = 2;     // Users Decision for the Invitation
+  Peer from = 3;         // Users Peer Data
+  Peer to = 4;           // Receivers Peer Data
+  bool flatMode = 5;     // Flat Transfer
+  Transfer transfer = 6; // Card contains all Data Info, Transfer Info
+  string protocol = 7;   // Name of Protocol
 
-  // User Address to Perform Method on
-  oneof address {
-    Peer peer = 4;    // Peer Data Reference
-    string id = 5;    // Libp2p ID
-    string sName = 6; // SonrName which retreives id from DB
-  }
-
-  enum Method {
-    GET = 0;    // Retreive Resource
-    POST = 1;   // Create new subordinate resources
-    PUT = 2;    // Update existing resource
-    DELETE = 3; // Delete resource
-    PATCH = 4;  // Partial Update to Resource
+  enum Type {
+    None = 0;     // No Type
+    Transfer = 1; // Transfer
+    Contact = 2;  // Contact
   }
 }
 
-// REST API Response over HTTP
-message RestResponse {
-  Method method = 1;            // HTTP Method Type
-  string function = 2;          // Function called for Sonr API
-  int32 code = 3;               // See https://mzl.la/3gg3lti
-  map<string, string> body = 4; // Response Body
-
-  enum Method {
-    GET = 0;    // Retreive Resource
-    POST = 1;   // Create new subordinate resources
-    PUT = 2;    // Update existing resource
-    DELETE = 3; // Delete resource
-    PATCH = 4;  // Partial Update to Resource
-  }
+// Response to RespondRequest
+message RespondResponse {
+  bool success = 1; // Successful Action
+  string body = 2;  // Response Body
 }
 
 // Updated Peer Info Request
@@ -217,6 +198,12 @@ message UpdateRequest {
     ConnectionRequest.InternetType connectivity = 4; // Internet Type Changed
     string pushToken = 5;                            // Push Notification token
   }
+}
+
+// Response for Update Request
+message UpdateResponse {
+  bool success = 1; // If Request was successful
+  string body = 2;  // Response Body
 }
 
 // Message for Verification Request
@@ -341,5 +328,3 @@ message GenericEvent {
     TOPIC = 3;    // Local Topic Update
   }
 }
-
-

@@ -480,50 +480,6 @@ func (o *InviteResponse) ToGeneric() ([]byte, error) {
 	return genBuf, nil
 }
 
-// Create New Generic REST Request Message
-func (o *RestRequest) ToGeneric() ([]byte, error) {
-	// Marshal Original
-	ogBuf, err := proto.Marshal(o)
-	if err != nil {
-		return nil, err
-	}
-
-	// Create Generic
-	generic := &GenericRequest{
-		Type: GenericRequest_REST,
-		Data: ogBuf,
-	}
-
-	// Marshal Generic
-	genBuf, err := proto.Marshal(generic)
-	if err != nil {
-		return nil, err
-	}
-	return genBuf, nil
-}
-
-// Create New Generic REST Response Message
-func (o *RestResponse) ToGeneric() ([]byte, error) {
-	// Marshal Original
-	ogBuf, err := proto.Marshal(o)
-	if err != nil {
-		return nil, err
-	}
-
-	// Create Generic
-	generic := &GenericResponse{
-		Type: GenericResponse_REST,
-		Data: ogBuf,
-	}
-
-	// Marshal Generic
-	genBuf, err := proto.Marshal(generic)
-	if err != nil {
-		return nil, err
-	}
-	return genBuf, nil
-}
-
 // Create New Generic COMPLETE Event Message
 func (o *CompleteEvent) ToGeneric() ([]byte, error) {
 	// Marshal Original
