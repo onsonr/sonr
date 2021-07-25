@@ -39,7 +39,7 @@ func (sc *serviceClient) StartAuth() *md.SonrError {
 	psv := AuthService{
 		user:    sc.user,
 		handler: sc.handler,
-		respCh:  make(chan *md.InviteResponse, util.TOPIC_MAX_MESSAGES),
+		respCh:  make(chan *md.InviteResponse, util.MAX_CHAN_DATA),
 	}
 
 	// Register Service

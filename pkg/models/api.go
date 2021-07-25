@@ -34,6 +34,11 @@ func (vr *VerifyRequest) IsBuffer() bool {
 }
 
 // ** ─── VerifyResponse MANAGEMENT ────────────────────────────────────────────────────────
+// Create  VerifyResponse as GIVEN VALUE
+func NewVerifyResponse(result bool) *VerifyResponse {
+	return &VerifyResponse{IsVerified: result}
+}
+
 // Create Marshalled VerifyResponse as GIVEN VALUE
 func NewVerifyResponseBuf(result bool) []byte {
 	if buf, err := proto.Marshal(&VerifyResponse{IsVerified: result}); err != nil {
@@ -458,7 +463,7 @@ func (o *InviteRequest) ToGeneric() ([]byte, error) {
 	return genBuf, nil
 }
 
-// Create New Generic INVITE Response Message
+// Create New Generic REPLY Response Message
 func (o *InviteResponse) ToGeneric() ([]byte, error) {
 	// Marshal Original
 	ogBuf, err := proto.Marshal(o)
@@ -468,7 +473,7 @@ func (o *InviteResponse) ToGeneric() ([]byte, error) {
 
 	// Create Generic
 	generic := &GenericResponse{
-		Type: GenericResponse_INVITE,
+		Type: GenericResponse_REPLY,
 		Data: ogBuf,
 	}
 

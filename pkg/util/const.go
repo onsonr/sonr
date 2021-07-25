@@ -13,10 +13,10 @@ import (
 const REFRESH_INTERVAL = time.Second * 4
 
 // Pubsub Topic Max Messages
-const TOPIC_MAX_MESSAGES = 128
+const MAX_CHAN_DATA = 128
 
 // Maximum Chunk Size During Transfer
-const TRANSFER_CHUNK_SIZE = 4 * 1024
+const CHUNK_SIZE = 4 * 1024
 
 // Private Key File Name
 const KEY_FILE_NAME = ".sonr_private_key"

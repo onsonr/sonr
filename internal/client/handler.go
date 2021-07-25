@@ -62,7 +62,7 @@ func (n *client) OnInvite(data []byte) {
 func (n *client) OnReply(id peer.ID, reply []byte) {
 	// Create Response
 	req := md.GenericResponse{
-		Type: md.GenericResponse_INVITE,
+		Type: md.GenericResponse_REPLY,
 		Data: reply,
 	}
 

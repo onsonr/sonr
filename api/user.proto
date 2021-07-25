@@ -86,6 +86,13 @@ message KeyPair {
   }
 }
 
+// Current Node Lifecycle State
+enum Lifecycle {
+  Active = 0;  // Resume or Start
+  Paused = 1;  // User Paused
+  Stopped = 2; // User Quit
+}
+
 // Status is User Node Situation
 enum Status {
   DEFAULT = 0;   // Default Status on Launch

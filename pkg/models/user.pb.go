@@ -73,6 +73,56 @@ func (KeyType) EnumDescriptor() ([]byte, []int) {
 	return file_user_proto_rawDescGZIP(), []int{0}
 }
 
+// Current Node Lifecycle State
+type Lifecycle int32
+
+const (
+	Lifecycle_Active  Lifecycle = 0 // Resume or Start
+	Lifecycle_Paused  Lifecycle = 1 // User Paused
+	Lifecycle_Stopped Lifecycle = 2 // User Quit
+)
+
+// Enum value maps for Lifecycle.
+var (
+	Lifecycle_name = map[int32]string{
+		0: "Active",
+		1: "Paused",
+		2: "Stopped",
+	}
+	Lifecycle_value = map[string]int32{
+		"Active":  0,
+		"Paused":  1,
+		"Stopped": 2,
+	}
+)
+
+func (x Lifecycle) Enum() *Lifecycle {
+	p := new(Lifecycle)
+	*p = x
+	return p
+}
+
+func (x Lifecycle) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Lifecycle) Descriptor() protoreflect.EnumDescriptor {
+	return file_user_proto_enumTypes[1].Descriptor()
+}
+
+func (Lifecycle) Type() protoreflect.EnumType {
+	return &file_user_proto_enumTypes[1]
+}
+
+func (x Lifecycle) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use Lifecycle.Descriptor instead.
+func (Lifecycle) EnumDescriptor() ([]byte, []int) {
+	return file_user_proto_rawDescGZIP(), []int{1}
+}
+
 // Status is User Node Situation
 type Status int32
 
@@ -125,11 +175,11 @@ func (x Status) String() string {
 }
 
 func (Status) Descriptor() protoreflect.EnumDescriptor {
-	return file_user_proto_enumTypes[1].Descriptor()
+	return file_user_proto_enumTypes[2].Descriptor()
 }
 
 func (Status) Type() protoreflect.EnumType {
-	return &file_user_proto_enumTypes[1]
+	return &file_user_proto_enumTypes[2]
 }
 
 func (x Status) Number() protoreflect.EnumNumber {
@@ -138,7 +188,7 @@ func (x Status) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use Status.Descriptor instead.
 func (Status) EnumDescriptor() ([]byte, []int) {
-	return file_user_proto_rawDescGZIP(), []int{1}
+	return file_user_proto_rawDescGZIP(), []int{2}
 }
 
 type FileSystem_Directory_Type int32
@@ -180,11 +230,11 @@ func (x FileSystem_Directory_Type) String() string {
 }
 
 func (FileSystem_Directory_Type) Descriptor() protoreflect.EnumDescriptor {
-	return file_user_proto_enumTypes[2].Descriptor()
+	return file_user_proto_enumTypes[3].Descriptor()
 }
 
 func (FileSystem_Directory_Type) Type() protoreflect.EnumType {
-	return &file_user_proto_enumTypes[2]
+	return &file_user_proto_enumTypes[3]
 }
 
 func (x FileSystem_Directory_Type) Number() protoreflect.EnumNumber {
@@ -1044,16 +1094,19 @@ var file_user_proto_rawDesc = []byte{
 	0x2a, 0x39, 0x0a, 0x07, 0x4b, 0x65, 0x79, 0x54, 0x79, 0x70, 0x65, 0x12, 0x07, 0x0a, 0x03, 0x52,
 	0x53, 0x41, 0x10, 0x00, 0x12, 0x0b, 0x0a, 0x07, 0x45, 0x64, 0x32, 0x35, 0x35, 0x31, 0x39, 0x10,
 	0x01, 0x12, 0x0d, 0x0a, 0x09, 0x53, 0x65, 0x63, 0x70, 0x32, 0x35, 0x36, 0x6b, 0x31, 0x10, 0x02,
-	0x12, 0x09, 0x0a, 0x05, 0x45, 0x43, 0x44, 0x53, 0x41, 0x10, 0x03, 0x2a, 0x7e, 0x0a, 0x06, 0x53,
-	0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x0b, 0x0a, 0x07, 0x44, 0x45, 0x46, 0x41, 0x55, 0x4c, 0x54,
-	0x10, 0x00, 0x12, 0x08, 0x0a, 0x04, 0x49, 0x44, 0x4c, 0x45, 0x10, 0x01, 0x12, 0x0d, 0x0a, 0x09,
-	0x43, 0x4f, 0x4e, 0x4e, 0x45, 0x43, 0x54, 0x45, 0x44, 0x10, 0x02, 0x12, 0x0d, 0x0a, 0x09, 0x41,
-	0x56, 0x41, 0x49, 0x4c, 0x41, 0x42, 0x4c, 0x45, 0x10, 0x03, 0x12, 0x0b, 0x0a, 0x07, 0x50, 0x45,
-	0x4e, 0x44, 0x49, 0x4e, 0x47, 0x10, 0x04, 0x12, 0x0b, 0x0a, 0x07, 0x49, 0x4e, 0x56, 0x49, 0x54,
-	0x45, 0x44, 0x10, 0x05, 0x12, 0x0c, 0x0a, 0x08, 0x54, 0x52, 0x41, 0x4e, 0x53, 0x46, 0x45, 0x52,
-	0x10, 0x06, 0x12, 0x0b, 0x0a, 0x07, 0x53, 0x54, 0x41, 0x4e, 0x44, 0x42, 0x59, 0x10, 0x07, 0x12,
-	0x0a, 0x0a, 0x06, 0x46, 0x41, 0x49, 0x4c, 0x45, 0x44, 0x10, 0x08, 0x42, 0x09, 0x5a, 0x07, 0x2f,
-	0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x12, 0x09, 0x0a, 0x05, 0x45, 0x43, 0x44, 0x53, 0x41, 0x10, 0x03, 0x2a, 0x30, 0x0a, 0x09, 0x4c,
+	0x69, 0x66, 0x65, 0x63, 0x79, 0x63, 0x6c, 0x65, 0x12, 0x0a, 0x0a, 0x06, 0x41, 0x63, 0x74, 0x69,
+	0x76, 0x65, 0x10, 0x00, 0x12, 0x0a, 0x0a, 0x06, 0x50, 0x61, 0x75, 0x73, 0x65, 0x64, 0x10, 0x01,
+	0x12, 0x0b, 0x0a, 0x07, 0x53, 0x74, 0x6f, 0x70, 0x70, 0x65, 0x64, 0x10, 0x02, 0x2a, 0x7e, 0x0a,
+	0x06, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x0b, 0x0a, 0x07, 0x44, 0x45, 0x46, 0x41, 0x55,
+	0x4c, 0x54, 0x10, 0x00, 0x12, 0x08, 0x0a, 0x04, 0x49, 0x44, 0x4c, 0x45, 0x10, 0x01, 0x12, 0x0d,
+	0x0a, 0x09, 0x43, 0x4f, 0x4e, 0x4e, 0x45, 0x43, 0x54, 0x45, 0x44, 0x10, 0x02, 0x12, 0x0d, 0x0a,
+	0x09, 0x41, 0x56, 0x41, 0x49, 0x4c, 0x41, 0x42, 0x4c, 0x45, 0x10, 0x03, 0x12, 0x0b, 0x0a, 0x07,
+	0x50, 0x45, 0x4e, 0x44, 0x49, 0x4e, 0x47, 0x10, 0x04, 0x12, 0x0b, 0x0a, 0x07, 0x49, 0x4e, 0x56,
+	0x49, 0x54, 0x45, 0x44, 0x10, 0x05, 0x12, 0x0c, 0x0a, 0x08, 0x54, 0x52, 0x41, 0x4e, 0x53, 0x46,
+	0x45, 0x52, 0x10, 0x06, 0x12, 0x0b, 0x0a, 0x07, 0x53, 0x54, 0x41, 0x4e, 0x44, 0x42, 0x59, 0x10,
+	0x07, 0x12, 0x0a, 0x0a, 0x06, 0x46, 0x41, 0x49, 0x4c, 0x45, 0x44, 0x10, 0x08, 0x42, 0x09, 0x5a,
+	0x07, 0x2f, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1068,45 +1121,46 @@ func file_user_proto_rawDescGZIP() []byte {
 	return file_user_proto_rawDescData
 }
 
-var file_user_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
+var file_user_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
 var file_user_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_user_proto_goTypes = []interface{}{
 	(KeyType)(0),                   // 0: models.KeyType
-	(Status)(0),                    // 1: models.Status
-	(FileSystem_Directory_Type)(0), // 2: models.FileSystem.Directory.Type
-	(*APIKeys)(nil),                // 3: models.APIKeys
-	(*Device)(nil),                 // 4: models.Device
-	(*FileSystem)(nil),             // 5: models.FileSystem
-	(*KeyPair)(nil),                // 6: models.KeyPair
-	(*User)(nil),                   // 7: models.User
-	(*FileSystem_Directory)(nil),   // 8: models.FileSystem.Directory
-	(*KeyPair_Private)(nil),        // 9: models.KeyPair.Private
-	(*KeyPair_Public)(nil),         // 10: models.KeyPair.Public
-	(*KeyPair_Shared)(nil),         // 11: models.KeyPair.Shared
-	(*User_Crypto)(nil),            // 12: models.User.Crypto
-	(Platform)(0),                  // 13: models.Platform
-	(*Peer)(nil),                   // 14: models.Peer
-	(*Contact)(nil),                // 15: models.Contact
-	(*Location)(nil),               // 16: models.Location
+	(Lifecycle)(0),                 // 1: models.Lifecycle
+	(Status)(0),                    // 2: models.Status
+	(FileSystem_Directory_Type)(0), // 3: models.FileSystem.Directory.Type
+	(*APIKeys)(nil),                // 4: models.APIKeys
+	(*Device)(nil),                 // 5: models.Device
+	(*FileSystem)(nil),             // 6: models.FileSystem
+	(*KeyPair)(nil),                // 7: models.KeyPair
+	(*User)(nil),                   // 8: models.User
+	(*FileSystem_Directory)(nil),   // 9: models.FileSystem.Directory
+	(*KeyPair_Private)(nil),        // 10: models.KeyPair.Private
+	(*KeyPair_Public)(nil),         // 11: models.KeyPair.Public
+	(*KeyPair_Shared)(nil),         // 12: models.KeyPair.Shared
+	(*User_Crypto)(nil),            // 13: models.User.Crypto
+	(Platform)(0),                  // 14: models.Platform
+	(*Peer)(nil),                   // 15: models.Peer
+	(*Contact)(nil),                // 16: models.Contact
+	(*Location)(nil),               // 17: models.Location
 }
 var file_user_proto_depIdxs = []int32{
-	5,  // 0: models.Device.fileSystem:type_name -> models.FileSystem
-	6,  // 1: models.Device.keyPair:type_name -> models.KeyPair
-	13, // 2: models.Device.platform:type_name -> models.Platform
-	8,  // 3: models.FileSystem.downloads:type_name -> models.FileSystem.Directory
-	8,  // 4: models.FileSystem.support:type_name -> models.FileSystem.Directory
-	8,  // 5: models.FileSystem.temporary:type_name -> models.FileSystem.Directory
-	9,  // 6: models.KeyPair.private:type_name -> models.KeyPair.Private
-	10, // 7: models.KeyPair.public:type_name -> models.KeyPair.Public
+	6,  // 0: models.Device.fileSystem:type_name -> models.FileSystem
+	7,  // 1: models.Device.keyPair:type_name -> models.KeyPair
+	14, // 2: models.Device.platform:type_name -> models.Platform
+	9,  // 3: models.FileSystem.downloads:type_name -> models.FileSystem.Directory
+	9,  // 4: models.FileSystem.support:type_name -> models.FileSystem.Directory
+	9,  // 5: models.FileSystem.temporary:type_name -> models.FileSystem.Directory
+	10, // 6: models.KeyPair.private:type_name -> models.KeyPair.Private
+	11, // 7: models.KeyPair.public:type_name -> models.KeyPair.Public
 	0,  // 8: models.KeyPair.type:type_name -> models.KeyType
-	3,  // 9: models.User.apiKeys:type_name -> models.APIKeys
-	1,  // 10: models.User.status:type_name -> models.Status
-	4,  // 11: models.User.device:type_name -> models.Device
-	14, // 12: models.User.peer:type_name -> models.Peer
-	12, // 13: models.User.crypto:type_name -> models.User.Crypto
-	15, // 14: models.User.contact:type_name -> models.Contact
-	16, // 15: models.User.location:type_name -> models.Location
-	2,  // 16: models.FileSystem.Directory.type:type_name -> models.FileSystem.Directory.Type
+	4,  // 9: models.User.apiKeys:type_name -> models.APIKeys
+	2,  // 10: models.User.status:type_name -> models.Status
+	5,  // 11: models.User.device:type_name -> models.Device
+	15, // 12: models.User.peer:type_name -> models.Peer
+	13, // 13: models.User.crypto:type_name -> models.User.Crypto
+	16, // 14: models.User.contact:type_name -> models.Contact
+	17, // 15: models.User.location:type_name -> models.Location
+	3,  // 16: models.FileSystem.Directory.type:type_name -> models.FileSystem.Directory.Type
 	17, // [17:17] is the sub-list for method output_type
 	17, // [17:17] is the sub-list for method input_type
 	17, // [17:17] is the sub-list for extension type_name
@@ -1248,7 +1302,7 @@ func file_user_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_user_proto_rawDesc,
-			NumEnums:      3,
+			NumEnums:      4,
 			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   0,

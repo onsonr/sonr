@@ -18,7 +18,7 @@ type Node struct {
 
 	// Client
 	client sc.Client
-	state  md.LifecycleState
+	state  md.Lifecycle
 	user   *md.User
 
 	// Groups
@@ -27,7 +27,7 @@ type Node struct {
 }
 
 // ^ Initializes New Node ^ //
-func NewNode(reqBytes []byte, call Callback) *Node {
+func Initialize(reqBytes []byte, call Callback) *Node {
 	// Unmarshal Request
 	req := &md.InitializeRequest{}
 	err := proto.Unmarshal(reqBytes, req)
@@ -44,7 +44,7 @@ func NewNode(reqBytes []byte, call Callback) *Node {
 		call:   call,
 		ctx:    context.Background(),
 		topics: make(map[string]*net.TopicManager, 10),
-		state:  md.LifecycleState_Active,
+		state:  md.Lifecycle_Active,
 	}
 
 	// Create User
@@ -83,7 +83,7 @@ func (n *Node) Connect(data []byte) {
 
 	// Bootstrap Node
 	n.local, serr = n.client.Bootstrap()
-	if err != nil {
+	if serr != nil {
 		n.handleError(serr)
 		n.setAvailable(false)
 	} else {
@@ -230,6 +230,7 @@ func (n *Node) Invite(data []byte) {
 			n.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
 			return
 		}
+
 		// Validate invite
 		req = n.user.SignInvite(req)
 
@@ -253,7 +254,7 @@ func (n *Node) Mail(data []byte) []byte {
 			return nil
 		}
 
-		// Read Mail
+		// Handle Mail
 		resp, serr := n.client.Mail(req)
 		if serr != nil {
 			n.handleError(serr)
@@ -296,47 +297,133 @@ func (n *Node) Respond(data []byte) {
 }
 
 // ** ─── Misc Methods ────────────────────────────────────────────────────────
-// @ Return URLLink
-func URLLink(url string) []byte {
-	// Create Link
-	link := md.NewURLLink(url)
-
-	// Marshal
-	bytes, err := proto.Marshal(link)
-	if err != nil {
+// Action method handles misceallaneous actions for node
+func (s *Node) Action(buf []byte) []byte {
+	// Unmarshal Data to Request
+	req := &md.ActionRequest{}
+	if err := proto.Unmarshal(buf, req); err != nil {
+		s.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
 		return nil
 	}
-	return bytes
-}
 
-// @ Returns Node Location Protobuf as Bytes
-func (n *Node) Location() []byte {
-	bytes, err := proto.Marshal(n.user.GetLocation())
-	if err != nil {
-		return nil
+	// Check Action
+	switch req.Action {
+	case md.Action_PING:
+		// Ping
+		resp := &md.ActionResponse{
+			Success: true,
+			Action:  md.Action_PING,
+		}
+
+		// Marshal Response
+		bytes, err := proto.Marshal(resp)
+		if err != nil {
+			s.handleError(md.NewMarshalError(err))
+			return nil
+		}
+		return bytes
+	case md.Action_LOCATION:
+		// Location
+		resp := &md.ActionResponse{
+			Success: true,
+			Action:  md.Action_LOCATION,
+			Data: &md.ActionResponse_Location{
+				Location: s.user.GetLocation(),
+			},
+		}
+
+		// Marshal Response
+		bytes, err := proto.Marshal(resp)
+		if err != nil {
+			s.handleError(md.NewMarshalError(err))
+			return nil
+		}
+		return bytes
+	case md.Action_URL_LINK:
+		// URL Link
+		resp := &md.ActionResponse{
+			Success: true,
+			Action:  md.Action_URL_LINK,
+			Data: &md.ActionResponse_UrlLink{
+				UrlLink: md.NewURLLink(req.GetData()),
+			},
+		}
+
+		// Marshal Response
+		bytes, err := proto.Marshal(resp)
+		if err != nil {
+			s.handleError(md.NewMarshalError(err))
+			return nil
+		}
+		return bytes
+	case md.Action_PAUSE:
+		// Pause
+		md.LogInfo("Lifecycle Pause Called")
+		s.state = md.Lifecycle_Paused
+		s.client.Lifecycle(s.state, s.local)
+		md.GetState().Pause()
+		resp := &md.ActionResponse{
+			Success: true,
+			Action:  md.Action_PAUSE,
+			Data: &md.ActionResponse_Lifecycle{
+				Lifecycle: s.state,
+			},
+		}
+
+		// Marshal Response
+		bytes, err := proto.Marshal(resp)
+		if err != nil {
+			s.handleError(md.NewMarshalError(err))
+			return nil
+		}
+		return bytes
+	case md.Action_RESUME:
+		// Resume
+		md.LogInfo("Lifecycle Resume Called")
+		s.state = md.Lifecycle_Active
+		s.client.Lifecycle(s.state, s.local)
+		md.GetState().Resume()
+
+		// Create Response
+		resp := &md.ActionResponse{
+			Success: true,
+			Action:  md.Action_RESUME,
+			Data: &md.ActionResponse_Lifecycle{
+				Lifecycle: s.state,
+			},
+		}
+
+		// Marshal Response
+		bytes, err := proto.Marshal(resp)
+		if err != nil {
+			s.handleError(md.NewMarshalError(err))
+			return nil
+		}
+		return bytes
+	case md.Action_STOP:
+		// Stop
+		md.LogInfo("Lifecycle Stop Called")
+		s.state = md.Lifecycle_Stopped
+		s.client.Lifecycle(s.state, s.local)
+
+		// Create Response
+		resp := &md.ActionResponse{
+			Success: true,
+			Action:  md.Action_STOP,
+			Data: &md.ActionResponse_Lifecycle{
+				Lifecycle: s.state,
+			},
+		}
+
+		// Marshal Response
+		bytes, err := proto.Marshal(resp)
+		if err != nil {
+			s.handleError(md.NewMarshalError(err))
+			return nil
+		}
+		return bytes
 	}
-	return bytes
-}
-
-// ** ─── LifeCycle Actions ────────────────────────────────────────────────────────
-// @ Close Ends All Network Communication
-func (n *Node) Pause() {
-	n.state = md.LifecycleState_Paused
-	n.client.Lifecycle(n.state, n.local)
-	md.GetState().Pause()
-}
-
-// @ Close Ends All Network Communication
-func (n *Node) Resume() {
-	n.state = md.LifecycleState_Active
-	n.client.Lifecycle(n.state, n.local)
-	md.GetState().Resume()
-}
-
-// @ Close Ends All Network Communication
-func (n *Node) Stop() {
-	n.state = md.LifecycleState_Stopped
-	n.client.Lifecycle(n.state, n.local)
+	return nil
 }
 
 // ** ─── Node Status Checks ────────────────────────────────────────────────────────

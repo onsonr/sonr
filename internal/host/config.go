@@ -44,8 +44,8 @@ func getBootstrapAddrInfo() ([]peer.AddrInfo, error) {
 	return ds, nil
 }
 
-// # getFreePort asks the kernel for a free open port
-func getFreePort() (int, error) {
+// # FreePort asks the kernel for a free open port
+func FreePort() (int, error) {
 	addr, err := net.ResolveTCPAddr("tcp", "localhost:0")
 	if err != nil {
 		return 0, err
@@ -91,7 +91,7 @@ func iPv4Addrs() ([]string, error) {
 	osHost, _ := os.Hostname()
 	addrs, _ := net.LookupIP(osHost)
 
-	p, _ := getFreePort()
+	p, _ := FreePort()
 
 	// Iterate through addresses
 	for _, addr := range addrs {

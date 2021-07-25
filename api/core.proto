@@ -12,13 +12,6 @@ message Chunk {
   bool isComplete = 3; // Whether this is final chunk
 }
 
-// Current Node Lifecycle State
-enum LifecycleState {
-  Active = 0;  // Resume or Start
-  Paused = 1;  // User Paused
-  Stopped = 2; // User Quit
-}
-
 // Sonr Default Protocols
 enum SonrProtocol {
   Unspecified = 0;    // Default Value

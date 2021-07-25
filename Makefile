@@ -24,7 +24,7 @@ BIND_ANDROID_ARTIFACT= $(BIND_DIR_ANDROID)/io.sonr.core.aar
 PROTO_DIR_GO=$(SONR_ROOT_DIR)/core/pkg
 PROTO_DIR_DART=$(SONR_ROOT_DIR)/plugin/lib/src/data/protobuf
 PROTO_DIR_DOCS=$(SONR_ROOT_DIR)/docs
-PROTO_DIR_JS=$(SONR_ROOT_DIR)/electron/proto
+PROTO_DIR_JS=$(SONR_ROOT_DIR)/electron/src/data/proto
 
 # @ Proto Items Lists
 PROTO_LIST_ALL=api.proto data.proto core.proto peer.proto error.proto rpc.proto user.proto
@@ -35,7 +35,7 @@ PROTO_GEN_GO="--go_out=$(PROTO_DIR_GO)"
 PROTO_GEN_RPC="--go-grpc_out=$(PROTO_DIR_GO)"
 PROTO_GEN_DART="--dart_out=$(PROTO_DIR_DART)"
 PROTO_GEN_DOCS="--doc_out=$(PROTO_DIR_DOCS)"
-PROTO_CP_JS=${PROTO_DEF_PATH}/{api.proto,data.proto,peer.proto,error.proto,rpc.proto,user.proto}
+PROTO_CP_JS=$(PROTO_DEF_PATH)/{api.proto,data.proto,peer.proto,error.proto,rpc.proto,user.proto}
 
 all: Makefile
 	@figlet -f larry3d Sonr Core
@@ -91,7 +91,7 @@ proto:
 	@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_GO) $(PROTO_LIST_ALL)
 	@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_RPC) $(PROTO_LIST_ALL)
 	@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_DART) $(PROTO_LIST_CLIENT)
-	@cp ${PROTO_CP_JS} $(PROTO_DIR_JS)
+	@cp $(PROTO_CP_JS) $(PROTO_DIR_JS)
 	@echo "✅ Finished Compiling ➡ " && date
 	@echo ""
 

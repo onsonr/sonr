@@ -3,31 +3,27 @@ syntax = "proto3";
 package models;
 
 import "api.proto";
+import "error.proto";
 
 // Require Go Package
 option go_package = "/models";
 
-message DropRequest { repeated string filePaths = 1; }
-message DropResponse {
-  bool success = 1;
-  string body = 2;
-}
-message PingRequest { string body = 1; }
-message PingResponse { string body = 1; }
-
 service NodeService {
-  rpc Ping(PingRequest) returns (PingResponse) {}
-  rpc Initialize(InitializeRequest) returns (InitializeResponse) {}
-  rpc Connect(ConnectionRequest) returns (ConnectionResponse) {}
+  rpc Initialize(InitializeRequest) returns (GenericResponse) {}
+  rpc Connect(ConnectionRequest) returns (GenericResponse) {}
+  rpc Action(ActionRequest) returns (ActionResponse) {}
   rpc Sign(AuthRequest) returns (AuthResponse) {}
   rpc Verify(VerifyRequest) returns (VerifyResponse) {}
-  rpc Update(UpdateRequest) returns (UpdateResponse) {}
-  rpc Invite(InviteRequest) returns (InviteResponse) {}
-  rpc Respond(RespondRequest) returns (RespondResponse) {}
+  rpc Update(UpdateRequest) returns (GenericResponse) {}
+  rpc Invite(InviteRequest) returns (GenericResponse) {}
+  rpc Respond(InviteResponse) returns (GenericResponse) {}
   rpc Mail(MailboxRequest) returns (MailboxResponse) {}
-  rpc OnComplete(InitializeRequest) returns (stream CompleteEvent) {}
-  rpc OnMail(InitializeRequest) returns (stream MailEvent) {}
-  rpc OnProgress(InitializeRequest) returns (stream ProgressEvent) {}
-  rpc OnStatus(InitializeRequest) returns (stream StatusEvent) {}
-  rpc OnTopic(InitializeRequest) returns (stream TopicEvent) {}
+  rpc OnComplete(GenericRequest) returns (stream CompleteEvent) {}
+  rpc OnInvite(GenericRequest) returns (stream InviteRequest) {}
+  rpc OnReply(GenericRequest) returns (stream InviteResponse) {}
+  rpc OnMail(GenericRequest) returns (stream MailEvent) {}
+  rpc OnProgress(GenericRequest) returns (stream ProgressEvent) {}
+  rpc OnStatus(GenericRequest) returns (stream StatusEvent) {}
+  rpc OnTopic(GenericRequest) returns (stream TopicEvent) {}
+  rpc OnError(GenericRequest) returns (stream ErrorMessage) {}
 }
