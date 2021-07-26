@@ -61,6 +61,9 @@ const FIRE_PROJECT_ID = "trans-density-315704"
 // Libp2p Host Rendevouz Point
 const HOST_RENDEVOUZ_POINT = "/sonr/rendevouz/0.9.2"
 
+// RPC Server Localhost Port
+const RPC_SERVER_PORT = 60214
+
 // ^ ─── Methods ────────────────────────────────────────────────────────
 // Construct New Protocol ID given Method Name String and Value String
 func NewValueProtocol(method string, value string) protocol.ID {

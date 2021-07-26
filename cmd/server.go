@@ -41,16 +41,8 @@ type NodeServer struct {
 }
 
 func main() {
-	// Find Open Port
-	port, err := sh.FreePort()
-	if err != nil {
-		port = 9000
-		md.LogFatal(err)
-	}
-	logRPC("port", port)
-
 	// Create a new gRPC server
-	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", util.RPC_SERVER_PORT))
 	if err != nil {
 		logRPC("online", false)
 		log.Fatal(err)
