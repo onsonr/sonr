@@ -103,6 +103,7 @@ release:
 	@bump minor
 	@cd cmd && goreleaser release --rm-dist
 	@git push origin --tags
+	@git push
 
 ## [upgrade]   :   Binds Binary, Creates Protobufs, and Updates App
 upgrade: proto bind.ios bind.android
