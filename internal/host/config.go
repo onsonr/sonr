@@ -14,7 +14,7 @@ import (
 
 // ** ─── Address MANAGEMENT ────────────────────────────────────────────────────────
 // # Return Bootstrap List Address Info
-func getBootstrapAddrInfo() ([]peer.AddrInfo, error) {
+func BootstrapAddrInfo() ([]peer.AddrInfo, error) {
 	// Create Bootstrapper List
 	var bootstrappers []ma.Multiaddr
 	for _, s := range []string{
@@ -60,7 +60,7 @@ func FreePort() (int, error) {
 }
 
 // # Return Device Listening Addresses ^ //
-func getExternalAddrStrings() ([]string, error) {
+func PublicAddrStrs() ([]string, error) {
 	// Initialize
 	listenAddrs := []string{}
 	hasIpv4 := false

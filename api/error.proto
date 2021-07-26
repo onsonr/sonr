@@ -3,13 +3,12 @@ package models;
 // Require Go Package
 option go_package = "/models";
 
-// Error Message returned from Core Library
-message ErrorMessage {
+// Error Event returned from Core Library
+message ErrorEvent {
   Type type = 1;         // Error Type Occurred
   Severity severity = 2; // 1-4 Scale of Error
   string message = 3;    // Client Error Message
-  string data = 4;       // Any Attached Error Data
-  string error = 5;      // Received Error
+  string error = 4;      // Received Error
 
   // Error Type from Enum
   enum Type {

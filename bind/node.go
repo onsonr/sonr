@@ -185,7 +185,7 @@ func (n *Node) Update(data []byte) {
 		// Unmarshal Data to Request
 		update := &md.UpdateRequest{}
 		if err := proto.Unmarshal(data, update); err != nil {
-			n.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
+			n.handleError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
 			return
 		}
 
@@ -202,14 +202,6 @@ func (n *Node) Update(data []byte) {
 		// Update Peer Properties
 		case *md.UpdateRequest_Properties:
 			n.user.UpdateProperties(update.GetProperties())
-
-		// Restart Connection
-		case *md.UpdateRequest_Connectivity:
-			local, err := n.client.Restart(update, n.user.KeyPair())
-			if err != nil {
-				n.handleError(err)
-			}
-			n.local = local
 		}
 
 		// Notify Local Lobby
@@ -227,7 +219,7 @@ func (n *Node) Invite(data []byte) {
 		// Unmarshal Data to Request
 		req := &md.InviteRequest{}
 		if err := proto.Unmarshal(data, req); err != nil {
-			n.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
+			n.handleError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
 			return
 		}
 
@@ -243,7 +235,7 @@ func (n *Node) Invite(data []byte) {
 	}
 }
 
-// @ ReadMail Reads the Textile Mailbox for this Node
+// @ Mail handles request for a message in Mailbox
 func (n *Node) Mail(data []byte) []byte {
 	// Check Ready
 	if n.isReady() {
@@ -280,7 +272,7 @@ func (n *Node) Respond(data []byte) {
 		// Unmarshal Data to Request
 		resp := &md.InviteResponse{}
 		if err := proto.Unmarshal(data, resp); err != nil {
-			n.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
+			n.handleError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
 			return
 		}
 
@@ -302,7 +294,7 @@ func (s *Node) Action(buf []byte) []byte {
 	// Unmarshal Data to Request
 	req := &md.ActionRequest{}
 	if err := proto.Unmarshal(buf, req); err != nil {
-		s.handleError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
+		s.handleError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
 		return nil
 	}
 
@@ -440,7 +432,7 @@ func (n *Node) setConnected(val bool) {
 	// Callback Status
 	data, err := proto.Marshal(su)
 	if err != nil {
-		n.handleError(md.NewError(err, md.ErrorMessage_MARSHAL))
+		n.handleError(md.NewError(err, md.ErrorEvent_MARSHAL))
 		return
 	}
 	n.call.OnStatus(data)
@@ -454,7 +446,7 @@ func (n *Node) setAvailable(val bool) {
 	// Callback Status
 	data, err := proto.Marshal(su)
 	if err != nil {
-		n.handleError(md.NewError(err, md.ErrorMessage_MARSHAL))
+		n.handleError(md.NewError(err, md.ErrorEvent_MARSHAL))
 		return
 	}
 	n.call.OnStatus(data)
@@ -468,7 +460,7 @@ func (n *Node) setStatus(newStatus md.Status) {
 	// Callback Status
 	data, err := proto.Marshal(su)
 	if err != nil {
-		n.handleError(md.NewError(err, md.ErrorMessage_MARSHAL))
+		n.handleError(md.NewError(err, md.ErrorEvent_MARSHAL))
 		return
 	}
 	n.call.OnStatus(data)

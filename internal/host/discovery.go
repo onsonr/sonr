@@ -28,14 +28,14 @@ func (h *hostNode) Bootstrap() *md.SonrError {
 	// Add Host Address to Peerstore
 	h.host.Peerstore().AddAddrs(h.ID(), h.host.Addrs(), peerstore.PermanentAddrTTL)
 	// Create Bootstrapper Info
-	bootstrappers, err := getBootstrapAddrInfo()
+	bootstrappers, err := BootstrapAddrInfo()
 	if err != nil {
-		return md.NewError(err, md.ErrorMessage_BOOTSTRAP)
+		return md.NewError(err, md.ErrorEvent_BOOTSTRAP)
 	}
 
 	// Bootstrap DHT
 	if err := h.kdht.Bootstrap(h.ctxHost); err != nil {
-		return md.NewError(err, md.ErrorMessage_BOOTSTRAP)
+		return md.NewError(err, md.ErrorEvent_BOOTSTRAP)
 	}
 
 	// Connect to bootstrap nodes, if any
@@ -55,7 +55,7 @@ func (h *hostNode) Bootstrap() *md.SonrError {
 	// Create Pub Sub
 	ps, err := psub.NewGossipSub(h.ctxHost, h.host, psub.WithDiscovery(routingDiscovery))
 	if err != nil {
-		return md.NewError(err, md.ErrorMessage_HOST_PUBSUB)
+		return md.NewError(err, md.ErrorEvent_HOST_PUBSUB)
 	}
 
 	// Handle DHT
@@ -93,21 +93,9 @@ func (h *hostNode) checkUnknown(pi peer.AddrInfo) bool {
 		return false
 	}
 
-	// Logging
-	md.LogInfo("Adding unknown peer.")
-
 	// Add to PeerStore
 	h.host.Peerstore().AddAddrs(pi.ID, pi.Addrs, time.Minute*4)
 	return true
-}
-
-// # Helper Method Deletes Peer Addr Info from Known List
-func (h *hostNode) deleteKnown(pi peer.AddrInfo) {
-	// Logging
-	md.LogInfo("Deleting known peer.")
-
-	// Remove from Peer Store
-	h.host.Peerstore().ClearAddrs(pi.ID)
 }
 
 // # handleDHTPeers: Connects to Peers in DHT
@@ -128,7 +116,7 @@ func (h *hostNode) handleDHTPeers(routingDiscovery *dsc.RoutingDiscovery) {
 			if h.checkUnknown(pi) {
 				// Connect to Peer
 				if err := h.host.Connect(h.ctxHost, pi); err != nil {
-					h.deleteKnown(pi)
+					h.host.Peerstore().ClearAddrs(pi.ID)
 					continue
 				}
 			}
@@ -144,7 +132,7 @@ func (h *hostNode) handleMDNSPeers(peerChan chan peer.AddrInfo) {
 		if h.checkUnknown(pi) {
 			// Connect to Peer
 			if err := h.host.Connect(h.ctxHost, pi); err != nil {
-				h.deleteKnown(pi)
+				h.host.Peerstore().ClearAddrs(pi.ID)
 				continue
 			}
 		}

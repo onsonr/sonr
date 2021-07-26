@@ -53,19 +53,19 @@ func (h *hostNode) JoinTopic(ctx context.Context, u *md.User, topicData *md.Topi
 	name := topicData.GetName()
 	topic, err := h.pubsub.Join(name)
 	if err != nil {
-		return nil, md.NewError(err, md.ErrorMessage_TOPIC_JOIN)
+		return nil, md.NewError(err, md.ErrorEvent_TOPIC_JOIN)
 	}
 
 	// Subscribe to Topic
 	sub, err := topic.Subscribe()
 	if err != nil {
-		return nil, md.NewError(err, md.ErrorMessage_TOPIC_SUB)
+		return nil, md.NewError(err, md.ErrorEvent_TOPIC_SUB)
 	}
 
 	// Create Topic Handler
 	handler, err := topic.EventHandler()
 	if err != nil {
-		return nil, md.NewError(err, md.ErrorMessage_TOPIC_HANDLER)
+		return nil, md.NewError(err, md.ErrorEvent_TOPIC_HANDLER)
 	}
 
 	// Create Lobby Manager
@@ -91,7 +91,7 @@ func (h *hostNode) JoinTopic(ctx context.Context, u *md.User, topicData *md.Topi
 	// Register Service
 	err = exchangeServer.RegisterName(util.EXCHANGE_RPC_SERVICE, &esv)
 	if err != nil {
-		return nil, md.NewError(err, md.ErrorMessage_TOPIC_RPC)
+		return nil, md.NewError(err, md.ErrorEvent_TOPIC_RPC)
 	}
 
 	// Set Service

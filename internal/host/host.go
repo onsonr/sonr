@@ -67,7 +67,7 @@ func NewHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair
 	var kdhtRef *dht.IpfsDHT
 
 	// Find Listen Addresses
-	addrs, err := getExternalAddrStrings()
+	addrs, err := PublicAddrStrs()
 	if err != nil {
 		return newRelayedHost(ctx, req, keyPair, hh)
 	}
@@ -119,7 +119,7 @@ func NewHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair
 	if req.GetType() == md.ConnectionRequest_Wifi {
 		err := hn.MDNS()
 		if err != nil {
-			md.NewError(err, md.ErrorMessage_HOST_MDNS)
+			md.NewError(err, md.ErrorEvent_HOST_MDNS)
 			handleConnectionResult(hh, true, false, false)
 		} else {
 			handleConnectionResult(hh, true, false, true)
@@ -161,7 +161,7 @@ func newRelayedHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.
 	// Set Host for Node
 	if err != nil {
 		handleConnectionResult(hh, false, false, false)
-		return nil, md.NewError(err, md.ErrorMessage_HOST_START)
+		return nil, md.NewError(err, md.ErrorEvent_HOST_START)
 	}
 
 	// Create Struct
@@ -179,7 +179,7 @@ func newRelayedHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.
 	if req.GetType() == md.ConnectionRequest_Wifi {
 		err := hn.MDNS()
 		if err != nil {
-			md.NewError(err, md.ErrorMessage_HOST_MDNS)
+			md.NewError(err, md.ErrorEvent_HOST_MDNS)
 			handleConnectionResult(hh, true, false, false)
 		} else {
 			handleConnectionResult(hh, true, false, true)
@@ -218,7 +218,7 @@ func (hn *hostNode) MultiAddr() (multiaddr.Multiaddr, *md.SonrError) {
 	pi := hn.Info()
 	addrs, err := peer.AddrInfoToP2pAddrs(&pi)
 	if err != nil {
-		return nil, md.NewError(err, md.ErrorMessage_HOST_INFO)
+		return nil, md.NewError(err, md.ErrorEvent_HOST_INFO)
 	}
 	return addrs[0], nil
 }

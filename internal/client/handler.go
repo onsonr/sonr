@@ -13,7 +13,7 @@ func (c *client) OnConnected(r *md.ConnectionResponse) {
 	// Convert Message
 	bytes, err := r.ToGeneric()
 	if err != nil {
-		c.call.OnError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
+		c.call.OnError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
 		return
 	}
 	// Call Event
@@ -27,7 +27,7 @@ func (n *client) OnEvent(e *md.TopicEvent) {
 		// Convert Message
 		bytes, err := e.ToGeneric()
 		if err != nil {
-			n.call.OnError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
+			n.call.OnError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
 			return
 		}
 
@@ -50,7 +50,7 @@ func (n *client) OnInvite(data []byte) {
 	// Marshal Request
 	buf, err := proto.Marshal(&req)
 	if err != nil {
-		n.call.OnError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
+		n.call.OnError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
 		return
 	}
 
@@ -69,7 +69,7 @@ func (n *client) OnReply(id peer.ID, reply []byte) {
 	// Marshal Request
 	buf, err := proto.Marshal(&req)
 	if err != nil {
-		n.call.OnError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
+		n.call.OnError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
 		return
 	}
 
@@ -82,7 +82,7 @@ func (n *client) OnReply(id peer.ID, reply []byte) {
 		resp := md.InviteResponse{}
 		err := proto.Unmarshal(reply, &resp)
 		if err != nil {
-			n.call.OnError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
+			n.call.OnError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
 		}
 
 		// Check for File Transfer
@@ -93,7 +93,7 @@ func (n *client) OnReply(id peer.ID, reply []byte) {
 			// Create New Auth Stream
 			stream, err := n.Host.StartStream(id, md.SonrProtocol_LocalTransfer.NewIDProtocol(id))
 			if err != nil {
-				n.call.OnError(md.NewError(err, md.ErrorMessage_HOST_STREAM))
+				n.call.OnError(md.NewError(err, md.ErrorEvent_HOST_STREAM))
 				return
 			}
 
@@ -137,11 +137,11 @@ func (n *client) OnError(err *md.SonrError) {
 
 // ^ OnCompleted: Callback Completed Transfer
 func (n *client) OnCompleted(stream network.Stream, pid protocol.ID, completeEvent *md.CompleteEvent) {
-	if completeEvent.Direction == md.CompleteEvent_Incoming {
+	if completeEvent.Direction == md.CompleteEvent_INCOMING {
 		// Convert to Generic
 		buf, err := completeEvent.ToGeneric()
 		if err != nil {
-			n.call.OnError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
+			n.call.OnError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
 			return
 		}
 
@@ -149,11 +149,11 @@ func (n *client) OnCompleted(stream network.Stream, pid protocol.ID, completeEve
 		n.call.OnEvent(buf)
 		n.call.SetStatus(md.Status_AVAILABLE)
 		n.Host.CloseStream(pid, stream)
-	} else if completeEvent.Direction == md.CompleteEvent_Outgoing {
+	} else if completeEvent.Direction == md.CompleteEvent_OUTGOING {
 		// Convert to Generic
 		buf, err := completeEvent.ToGeneric()
 		if err != nil {
-			n.call.OnError(md.NewError(err, md.ErrorMessage_UNMARSHAL))
+			n.call.OnError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
 			return
 		}
 

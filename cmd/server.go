@@ -32,7 +32,7 @@ type NodeServer struct {
 	completeEvents      chan *md.CompleteEvent
 	inviteRequests      chan *md.InviteRequest
 	inviteResponses     chan *md.InviteResponse
-	errorMessages       chan *md.ErrorMessage
+	ErrorEvents         chan *md.ErrorEvent
 	mailEvents          chan *md.MailEvent
 	progressEvents      chan *md.ProgressEvent
 	statusEvents        chan *md.StatusEvent
@@ -66,7 +66,7 @@ func main() {
 		progressEvents:      make(chan *md.ProgressEvent, util.MAX_CHAN_DATA),
 		completeEvents:      make(chan *md.CompleteEvent, util.MAX_CHAN_DATA),
 		statusEvents:        make(chan *md.StatusEvent, util.MAX_CHAN_DATA),
-		errorMessages:       make(chan *md.ErrorMessage, util.MAX_CHAN_DATA),
+		ErrorEvents:         make(chan *md.ErrorEvent, util.MAX_CHAN_DATA),
 		inviteRequests:      make(chan *md.InviteRequest, util.MAX_CHAN_DATA),
 		inviteResponses:     make(chan *md.InviteResponse, util.MAX_CHAN_DATA),
 		connectionResponses: make(chan *md.ConnectionResponse, util.MAX_CHAN_DATA),
@@ -158,7 +158,7 @@ func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.Act
 }
 
 // Initialize method is called when a new node is created
-func (s *NodeServer) Initialize(ctx context.Context, req *md.InitializeRequest) (*md.GenericResponse, error) {
+func (s *NodeServer) Initialize(ctx context.Context, req *md.InitializeRequest) (*md.NoResponse, error) {
 	// Initialize Logger
 	md.InitLogger(req)
 
@@ -178,7 +178,7 @@ func (s *NodeServer) Initialize(ctx context.Context, req *md.InitializeRequest) 
 }
 
 // Connect method starts this nodes host
-func (s *NodeServer) Connect(ctx context.Context, req *md.ConnectionRequest) (*md.GenericResponse, error) {
+func (s *NodeServer) Connect(ctx context.Context, req *md.ConnectionRequest) (*md.NoResponse, error) {
 	// Update User with Connection Request
 	s.user.InitConnection(req)
 
@@ -248,7 +248,7 @@ func (s *NodeServer) Verify(ctx context.Context, req *md.VerifyRequest) (*md.Ver
 }
 
 // Update proximity/direction/contact/properties and notify Lobby
-func (s *NodeServer) Update(ctx context.Context, req *md.UpdateRequest) (*md.GenericResponse, error) {
+func (s *NodeServer) Update(ctx context.Context, req *md.UpdateRequest) (*md.NoResponse, error) {
 	// Verify Node is Ready
 	if s.isReady() {
 		// Check Update Request Type
@@ -264,14 +264,6 @@ func (s *NodeServer) Update(ctx context.Context, req *md.UpdateRequest) (*md.Gen
 		// Update Peer Properties
 		case *md.UpdateRequest_Properties:
 			s.user.UpdateProperties(req.GetProperties())
-
-		// Restart Connection
-		case *md.UpdateRequest_Connectivity:
-			local, err := s.client.Restart(req, s.user.KeyPair())
-			if err != nil {
-				s.handleError(err)
-			}
-			s.local = local
 		}
 
 		// Notify Local Lobby
@@ -287,7 +279,7 @@ func (s *NodeServer) Update(ctx context.Context, req *md.UpdateRequest) (*md.Gen
 }
 
 // Invite pushes Invite request to Peer
-func (s *NodeServer) Invite(ctx context.Context, req *md.InviteRequest) (*md.GenericResponse, error) {
+func (s *NodeServer) Invite(ctx context.Context, req *md.InviteRequest) (*md.NoResponse, error) {
 	// Verify Node is Ready
 	if s.isReady() {
 		// Validate invite
@@ -305,7 +297,7 @@ func (s *NodeServer) Invite(ctx context.Context, req *md.InviteRequest) (*md.Gen
 }
 
 // Respond handles a respond request
-func (s *NodeServer) Respond(ctx context.Context, req *md.InviteResponse) (*md.GenericResponse, error) {
+func (s *NodeServer) Respond(ctx context.Context, req *md.InviteResponse) (*md.NoResponse, error) {
 	// Verify Node is Ready
 	if s.isReady() {
 		// Send Response
@@ -342,7 +334,7 @@ func (s *NodeServer) Mail(ctx context.Context, req *md.MailboxRequest) (*md.Mail
 }
 
 // OnComplete is called when a complete event is received
-func (s *NodeServer) OnComplete(req *md.GenericRequest, stream md.NodeService_OnCompleteServer) error {
+func (s *NodeServer) OnComplete(req *md.NoRequest, stream md.NodeService_OnCompleteServer) error {
 	for {
 		select {
 		case m := <-s.completeEvents:
@@ -355,7 +347,7 @@ func (s *NodeServer) OnComplete(req *md.GenericRequest, stream md.NodeService_On
 }
 
 // OnInvite is called when user is invited by a Peer
-func (s *NodeServer) OnInvite(req *md.GenericRequest, stream md.NodeService_OnInviteServer) error {
+func (s *NodeServer) OnInvite(req *md.NoRequest, stream md.NodeService_OnInviteServer) error {
 	for {
 		select {
 		case m := <-s.inviteRequests:
@@ -368,7 +360,7 @@ func (s *NodeServer) OnInvite(req *md.GenericRequest, stream md.NodeService_OnIn
 }
 
 // OnReply is called when a peer responds to invite
-func (s *NodeServer) OnReply(req *md.GenericRequest, stream md.NodeService_OnReplyServer) error {
+func (s *NodeServer) OnReply(req *md.NoRequest, stream md.NodeService_OnReplyServer) error {
 	for {
 		select {
 		case m := <-s.inviteResponses:
@@ -380,8 +372,8 @@ func (s *NodeServer) OnReply(req *md.GenericRequest, stream md.NodeService_OnRep
 	}
 }
 
-// OnMail is called when a new mail is received
-func (s *NodeServer) OnMail(req *md.GenericRequest, stream md.NodeService_OnMailServer) error {
+// OnMail is called when a new mail is received from User
+func (s *NodeServer) OnMail(req *md.NoRequest, stream md.NodeService_OnMailServer) error {
 	for {
 		select {
 		case m := <-s.mailEvents:
@@ -394,7 +386,7 @@ func (s *NodeServer) OnMail(req *md.GenericRequest, stream md.NodeService_OnMail
 }
 
 // OnProgress is called when a file is being transferred
-func (s *NodeServer) OnProgress(req *md.GenericRequest, stream md.NodeService_OnProgressServer) error {
+func (s *NodeServer) OnProgress(req *md.NoRequest, stream md.NodeService_OnProgressServer) error {
 	for {
 		select {
 		case m := <-s.progressEvents:
@@ -407,7 +399,7 @@ func (s *NodeServer) OnProgress(req *md.GenericRequest, stream md.NodeService_On
 }
 
 // OnStatus is called when the node receives a status event
-func (s *NodeServer) OnStatus(req *md.GenericRequest, stream md.NodeService_OnStatusServer) error {
+func (s *NodeServer) OnStatus(req *md.NoRequest, stream md.NodeService_OnStatusServer) error {
 	for {
 		select {
 		case m := <-s.statusEvents:
@@ -420,7 +412,7 @@ func (s *NodeServer) OnStatus(req *md.GenericRequest, stream md.NodeService_OnSt
 }
 
 // OnTopic is called when Topic Event is received
-func (s *NodeServer) OnTopic(req *md.GenericRequest, stream md.NodeService_OnTopicServer) error {
+func (s *NodeServer) OnTopic(req *md.NoRequest, stream md.NodeService_OnTopicServer) error {
 	for {
 		select {
 		case m := <-s.topicEvents:
@@ -600,6 +592,6 @@ func (s *NodeServer) handleError(errMsg *md.SonrError) {
 	// Check for Error
 	if errMsg.HasError {
 		// Send Callback
-		s.errorMessages <- errMsg.Message()
+		s.ErrorEvents <- errMsg.Message()
 	}
 }

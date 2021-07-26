@@ -102,13 +102,13 @@ func (p *Peer) PublicKey() (crypto.PubKey, *SonrError) {
 	// Get ID from Public Key
 	buf, err := crypto.ConfigDecodeKey(p.GetId().GetPublicKey())
 	if err != nil {
-		return nil, NewError(err, ErrorMessage_PEER_PUBKEY_DECODE)
+		return nil, NewError(err, ErrorEvent_PEER_PUBKEY_DECODE)
 	}
 
 	// Unmarshal Public Key
 	pubKey, err := crypto.UnmarshalPublicKey(buf)
 	if err != nil {
-		return nil, NewError(err, ErrorMessage_PEER_PUBKEY_UNMARSHAL)
+		return nil, NewError(err, ErrorEvent_PEER_PUBKEY_UNMARSHAL)
 	}
 	return pubKey, nil
 }
@@ -159,7 +159,7 @@ func (p *Peer) ThreadKey() (thread.PubKey, *SonrError) {
 // ^ Returns Peer Push Token
 func (p *Peer) PushToken() (string, *SonrError) {
 	if p.Id.GetPushToken() == "" {
-		return "", NewError(nil, ErrorMessage_PEER_PUSH_TOKEN_EMPTY)
+		return "", NewError(nil, ErrorEvent_PEER_PUSH_TOKEN_EMPTY)
 	}
 	return p.Id.GetPushToken(), nil
 }

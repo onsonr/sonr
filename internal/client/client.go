@@ -22,7 +22,6 @@ type Client interface {
 	Respond(r *md.InviteResponse)
 	Update(t *net.TopicManager) *md.SonrError
 	Lifecycle(state md.Lifecycle, t *net.TopicManager)
-	Restart(ur *md.UpdateRequest, keys *md.KeyPair) (*net.TopicManager, *md.SonrError)
 
 	// Topic Callbacks
 	OnConnected(*md.ConnectionResponse)
@@ -150,13 +149,13 @@ func (c *client) Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrE
 					// Send Invite
 					err = c.Service.Invite(id, inv)
 					if err != nil {
-						c.call.OnError(md.NewError(err, md.ErrorMessage_TOPIC_RPC))
+						c.call.OnError(md.NewError(err, md.ErrorEvent_TOPIC_RPC))
 						return
 					}
 				}(invite)
 			} else {
 				c.newExitEvent(invite)
-				return md.NewErrorWithType(md.ErrorMessage_PEER_NOT_FOUND_INVITE)
+				return md.NewErrorWithType(md.ErrorEvent_PEER_NOT_FOUND_INVITE)
 			}
 		}
 		return nil
@@ -174,7 +173,7 @@ func (c *client) Update(t *net.TopicManager) *md.SonrError {
 	if c.user.IsReady() {
 		// Inform Lobby
 		if err := t.Publish(c.user.Peer.NewUpdateEvent(t.Topic())); err != nil {
-			return md.NewError(err, md.ErrorMessage_TOPIC_UPDATE)
+			return md.NewError(err, md.ErrorEvent_TOPIC_UPDATE)
 		}
 	}
 	return nil
@@ -186,51 +185,25 @@ func (c *client) Lifecycle(state md.Lifecycle, t *net.TopicManager) {
 		// Inform Lobby
 		if c.user.IsReady() {
 			if err := t.Publish(c.user.Peer.NewUpdateEvent(t.Topic())); err != nil {
-				md.NewError(err, md.ErrorMessage_TOPIC_UPDATE)
+				md.NewError(err, md.ErrorEvent_TOPIC_UPDATE)
 			}
 		}
 	} else if state == md.Lifecycle_Paused {
 		// Inform Lobby
 		if c.user.IsReady() {
 			if err := t.Publish(c.user.Peer.NewExitEvent(t.Topic())); err != nil {
-				md.NewError(err, md.ErrorMessage_TOPIC_UPDATE)
+				md.NewError(err, md.ErrorEvent_TOPIC_UPDATE)
 			}
 		}
 	} else if state == md.Lifecycle_Stopped {
 		// Inform Lobby
 		if c.user.IsReady() {
 			if err := t.Publish(c.user.Peer.NewExitEvent(t.Topic())); err != nil {
-				md.NewError(err, md.ErrorMessage_TOPIC_UPDATE)
+				md.NewError(err, md.ErrorEvent_TOPIC_UPDATE)
 			}
 		}
 		c.Host.Close()
 	}
-}
-
-// @ Restart HostNode on Network Change
-func (c *client) Restart(ur *md.UpdateRequest, keys *md.KeyPair) (*net.TopicManager, *md.SonrError) {
-	switch ur.Data.(type) {
-	case *md.UpdateRequest_Connectivity:
-		if c.request != nil {
-			// Update Request
-			newRequest := c.request
-			newRequest.Type = ur.GetConnectivity()
-
-			// Connect
-			err := c.Connect(newRequest, keys)
-			if err != nil {
-				return nil, err
-			}
-
-			// Bootstrap
-			tpc, err := c.Bootstrap()
-			if err != nil {
-				return nil, err
-			}
-			return tpc, nil
-		}
-	}
-	return nil, nil
 }
 
 func (c *client) newExitEvent(inv *md.InviteRequest) {
