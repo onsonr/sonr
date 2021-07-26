@@ -21,7 +21,7 @@ build/
 .github/
 node_modules/
 build/
-dist/
+
 
 
 ### Node ###
@@ -109,9 +109,15 @@ web_modules/
 .next
 out
 
-# Nuxt.js build / generate output
-.nuxt
-dist
+# Distribution Builds
+*/dist/*.md
+*/dist/*.txt
+*/dist/*.tar.gz
+*/dist/sonr-rpc_darwin_amd64/
+*/dist/sonr-rpc_darwin_arm64/
+*/dist/sonr-rpc_linux_amd64/
+*/dist/sonr-rpc_linux_arm64/
+*/dist/sonr-rpc_windows_amd64/
 
 # Gatsby files
 .cache/
