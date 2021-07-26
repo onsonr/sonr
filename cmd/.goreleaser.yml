@@ -1,5 +1,6 @@
 # This is an example .goreleaser.yml file with some sane defaults.
 # Make sure to check the documentation at http://goreleaser.com
+project_name: sonr-rpc
 before:
   hooks:
     # You may remove this if you don't use go modules.
@@ -35,3 +36,5 @@ blobs:
 - provider: s3
   region: us-west-1
   bucket: sonr-rpc-releases
+release:
+  disable: true

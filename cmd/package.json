@@ -1,0 +1,26 @@
+{
+  "name": "@pradn/sonr-rpc",
+  "version": "0.9.53",
+  "description": "RPC Client for Sonr",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonr-io/core.git"
+  },
+  "goBinary": {
+    "name": "sonr-rpc",
+    "path": "./bin"
+  },
+  "scripts": {
+    "postinstall": "node postinstall.js install",
+    "preuninstall": "node postinstall.js uninstall"
+  },
+  "author": "Prad Nukala",
+  "license": "ISC",
+  "dependencies": {
+    "mkdirp": "^1.0.4"
+  },
+"files": [
+    "dist",
+    "postinstall.js"
+  ]
+}
