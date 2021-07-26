@@ -102,6 +102,7 @@ release:
 	@git commit -m "Updated RPC Binary Release"
 	@bump minor
 	@cd cmd && goreleaser release --rm-dist
+	@git push origin --tags
 
 ## [upgrade]   :   Binds Binary, Creates Protobufs, and Updates App
 upgrade: proto bind.ios bind.android
@@ -110,7 +111,6 @@ upgrade: proto bind.ios bind.android
 	@echo "------------------------------------------------------------"
 	cd $(APP_ROOT_DIR) && make update
 	@echo ""
-
 
 ## [clean]     :   Reinitializes Gomobile and Removes Framworks from Plugin
 clean:
