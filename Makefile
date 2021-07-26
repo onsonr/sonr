@@ -1,6 +1,8 @@
 SHELL=/bin/zsh # Set Shell
 # Set this -->[/Users/xxxx/Sonr/]<-- to Folder of Sonr Repos
 SONR_ROOT_DIR=/Users/prad/Sonr
+CORE_DIR=$(SONR_ROOT_DIR)/core
+CORE_CMD_DIR=$(SONR_ROOT_DIR)/core/cmd
 
 # Set this -->[/Users/xxxx/Sonr/]<-- to Folder of Sonr Repos
 PROTO_DEF_PATH=/Users/prad/Sonr/core/api
@@ -108,13 +110,13 @@ proto:
 ## [release]   :   Upload RPC Binary Artifact to S3
 release:
 	@echo "Bumping Release Version..."
-	@git add .
-	@git commit -m "Updated RPC Binary Release"
-	@bump patch
+	@cd $(CORE_DIR) && git add .
+	@cd $(CORE_DIR) && git commit -m "Updated RPC Binary Release"
+	@cd $(CORE_DIR) && bump patch
 	@echo "Building Artifacts..."
-	@cd cmd && goreleaser release --rm-dist
-	@git push origin --tags
-	@git push
+	@cd $(CORE_CMD_DIR) && goreleaser release --rm-dist
+	@cd $(CORE_DIR) && git push origin --tags
+	@cd $(CORE_DIR) && git push
 	@echo "Cleaning up build cache..."
 	@rm -rf $(DIST_DIR_DARWIN_AMD)
 	@rm -rf $(DIST_DIR_DARWIN_ARM)

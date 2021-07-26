@@ -54,6 +54,14 @@ archives:
   - goos: windows
     format: zip
   files:
+  - licence*
+  - LICENCE*
+  - license*
+  - LICENSE*
+  - readme*
+  - README*
+  - changelog*
+  - CHANGELOG*
   allow_different_binary_count: false
 snapshot:
   name_template: '{{ .Tag }}-next'
