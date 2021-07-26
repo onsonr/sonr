@@ -124,7 +124,6 @@ release: proto
 	@rm -rf $(DIST_DIR_LINUX_AMD)
 	@rm -rf $(DIST_DIR_LINUX_ARM)
 	@rm -rf $(DIST_DIR_WIN)
-	@rm -rf $(DIST_ZIP_WIN)
 
 ## [upgrade]   :   Binds Binary, Creates Protobufs, and Updates App
 upgrade: proto bind.ios bind.android
