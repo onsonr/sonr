@@ -29,5 +29,6 @@ blobs:
 - provider: s3
   region: us-west-1
   bucket: sonr-rpc-releases
+  folder: '{{ .Tag }}'
 release:
   disable: true
