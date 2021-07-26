@@ -37,6 +37,15 @@ PROTO_GEN_DART="--dart_out=$(PROTO_DIR_DART)"
 PROTO_GEN_DOCS="--doc_out=$(PROTO_DIR_DOCS)"
 PROTO_CP_JS=$(PROTO_DEF_PATH)/{api.proto,data.proto,peer.proto,error.proto,user.proto}
 
+# @ Distribution Release Variables
+DIST_DIR=$(SONR_ROOT_DIR)/core/cmd/dist
+DIST_DIR_DARWIN_AMD=$(DIST_DIR)/sonr-rpc_darwin_amd64
+DIST_DIR_DARWIN_ARM=$(DIST_DIR)/sonr-rpc_darwin_arm64
+DIST_DIR_LINUX_AMD=$(DIST_DIR)/sonr-rpc_linux_amd64
+DIST_DIR_LINUX_ARM=$(DIST_DIR)/sonr-rpc_linux_arm64
+DIST_DIR_WIN=$(DIST_DIR)/sonr-rpc_windows_amd64
+DIST_ZIP_WIN=$(DIST_DIR)/*.zip
+
 all: Makefile
 	@figlet -f larry3d Sonr Core
 	@echo ''
@@ -98,12 +107,21 @@ proto:
 ##
 ## [release]   :   Upload RPC Binary Artifact to S3
 release:
+	@echo "Bumping Release Version..."
 	@git add .
 	@git commit -m "Updated RPC Binary Release"
-	@bump minor
+	@bump patch
+	@echo "Building Artifacts..."
 	@cd cmd && goreleaser release --rm-dist
 	@git push origin --tags
 	@git push
+	@echo "Cleaning up build cache..."
+	@rm -rf $(DIST_DIR_DARWIN_AMD)
+	@rm -rf $(DIST_DIR_DARWIN_ARM)
+	@rm -rf $(DIST_DIR_LINUX_AMD)
+	@rm -rf $(DIST_DIR_LINUX_ARM)
+	@rm -rf $(DIST_DIR_WIN)
+	@rm -rf $(DIST_ZIP_WIN)
 
 ## [upgrade]   :   Binds Binary, Creates Protobufs, and Updates App
 upgrade: proto bind.ios bind.android
