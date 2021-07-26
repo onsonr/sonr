@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"strings"
 
 	sc "github.com/sonr-io/core/internal/client"
 	sh "github.com/sonr-io/core/internal/host"
@@ -46,15 +47,15 @@ func main() {
 		port = 9000
 		md.LogFatal(err)
 	}
-	log.Println(fmt.Sprintf("(SONR_RPC)-PORT=%d", port))
+	logRPC("port", port)
 
 	// Create a new gRPC server
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
 	if err != nil {
-		log.Println("(SONR_RPC)-ONLINE=false")
+		logRPC("online", false)
 		log.Fatal(err)
 	}
-	log.Println("(SONR_RPC)-ONLINE=true")
+	logRPC("online", true)
 
 	// Set GRPC Server
 	chatServer := NodeServer{
@@ -77,8 +78,10 @@ func main() {
 	// Register the gRPC service
 	md.RegisterNodeServiceServer(grpcServer, &chatServer)
 	if err := grpcServer.Serve(listener); err != nil {
+		logRPC("serve", false)
 		log.Fatal(err)
 	}
+	logRPC("serve", true)
 }
 
 // Action method handles misceallaneous actions for node
@@ -87,14 +90,14 @@ func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.Act
 	switch req.Action {
 	case md.Action_PING:
 		// Ping
-		log.Println("Action: Ping Called")
+		logRPC("action", "ping")
 		return &md.ActionResponse{
 			Success: true,
 			Action:  md.Action_PING,
 		}, nil
 	case md.Action_LOCATION:
 		// Location
-		log.Println("Action: Location Called")
+		logRPC("action", "location")
 		return &md.ActionResponse{
 			Success: true,
 			Action:  md.Action_LOCATION,
@@ -104,7 +107,7 @@ func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.Act
 		}, nil
 	case md.Action_URL_LINK:
 		// URL Link
-		log.Println("Action: URL Link Called")
+		logRPC("action", "url")
 		return &md.ActionResponse{
 			Success: true,
 			Action:  md.Action_URL_LINK,
@@ -114,7 +117,7 @@ func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.Act
 		}, nil
 	case md.Action_PAUSE:
 		// Pause
-		log.Println("Action: Lifecycle-Pause Called")
+		logRPC("action", "pause")
 		s.state = md.Lifecycle_Paused
 		s.client.Lifecycle(s.state, s.local)
 		md.GetState().Pause()
@@ -127,7 +130,7 @@ func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.Act
 		}, nil
 	case md.Action_RESUME:
 		// Resume
-		log.Println("Action: Lifecycle-Resume Called")
+		logRPC("action", "resume")
 		s.state = md.Lifecycle_Active
 		s.client.Lifecycle(s.state, s.local)
 		md.GetState().Resume()
@@ -141,7 +144,7 @@ func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.Act
 		}, nil
 	case md.Action_STOP:
 		// Stop
-		log.Println("Lifecycle-Stop Called")
+		logRPC("action", "stop")
 		s.state = md.Lifecycle_Stopped
 		s.client.Lifecycle(s.state, s.local)
 		return &md.ActionResponse{
@@ -152,7 +155,7 @@ func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.Act
 			},
 		}, nil
 	default:
-		log.Println(fmt.Sprintf("Action: %s not supported", req.Action))
+		logRPC("action", false)
 		return nil, fmt.Errorf("Action: %s not supported", req.Action)
 	}
 }
@@ -594,4 +597,11 @@ func (s *NodeServer) handleError(errMsg *md.SonrError) {
 		// Send Callback
 		s.ErrorEvents <- errMsg.Message()
 	}
+}
+
+// logRPC is a helper function to log RPC events
+func logRPC(event string, value interface{}) {
+	ev := strings.ToUpper(event)
+	val := fmt.Sprint(value)
+	log.Println(fmt.Sprintf("(SONR_RPC)-%s=%s", ev, val))
 }
