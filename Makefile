@@ -96,9 +96,12 @@ proto:
 	@echo ""
 
 ##
-## [run]       :   Run GRPC Server for Desktop Development
-run:
-	@cd cmd && go run server.go
+## [release]   :   Upload RPC Binary Artifact to S3
+release:
+	@git add .
+	@git commit -m "Updated RPC Binary Release"
+	@bump minor
+	@cd cmd && goreleaser release --rm-dist
 
 ## [upgrade]   :   Binds Binary, Creates Protobufs, and Updates App
 upgrade: proto bind.ios bind.android
@@ -126,11 +129,13 @@ clean:
 ##               └─ (bi) => bind.ios
 ##               └─ (ba) => bind.android
 ##               (p) => proto
+##               (r) => release
 ##               (u) => upgrade
 ##               (c) => clean
 b:bind
 bi:bind.ios
 ba:bind.android
 p:proto
+r:release
 u:upgrade
 c:clean
