@@ -46,15 +46,15 @@ func main() {
 		port = 9000
 		md.LogFatal(err)
 	}
-	md.LogInfo(fmt.Sprintf("(SONR_RPC)-PORT=%d", port))
+	log.Println(fmt.Sprintf("(SONR_RPC)-PORT=%d", port))
 
 	// Create a new gRPC server
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
 	if err != nil {
-		md.LogInfo("(SONR_RPC)-ONLINE=false")
+		log.Println("(SONR_RPC)-ONLINE=false")
 		log.Fatal(err)
 	}
-	md.LogInfo("(SONR_RPC)-ONLINE=true")
+	log.Println("(SONR_RPC)-ONLINE=true")
 
 	// Set GRPC Server
 	chatServer := NodeServer{
@@ -87,14 +87,14 @@ func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.Act
 	switch req.Action {
 	case md.Action_PING:
 		// Ping
-		md.LogInfo("Action: Ping Called")
+		log.Println("Action: Ping Called")
 		return &md.ActionResponse{
 			Success: true,
 			Action:  md.Action_PING,
 		}, nil
 	case md.Action_LOCATION:
 		// Location
-		md.LogInfo("Action: Location Called")
+		log.Println("Action: Location Called")
 		return &md.ActionResponse{
 			Success: true,
 			Action:  md.Action_LOCATION,
@@ -104,7 +104,7 @@ func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.Act
 		}, nil
 	case md.Action_URL_LINK:
 		// URL Link
-		md.LogInfo("Action: URL Link Called")
+		log.Println("Action: URL Link Called")
 		return &md.ActionResponse{
 			Success: true,
 			Action:  md.Action_URL_LINK,
@@ -114,7 +114,7 @@ func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.Act
 		}, nil
 	case md.Action_PAUSE:
 		// Pause
-		md.LogInfo("Action: Lifecycle Pause Called")
+		log.Println("Action: Lifecycle Pause Called")
 		s.state = md.Lifecycle_Paused
 		s.client.Lifecycle(s.state, s.local)
 		md.GetState().Pause()
@@ -127,7 +127,7 @@ func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.Act
 		}, nil
 	case md.Action_RESUME:
 		// Resume
-		md.LogInfo("Action: Lifecycle Resume Called")
+		log.Println("Action: Lifecycle Resume Called")
 		s.state = md.Lifecycle_Active
 		s.client.Lifecycle(s.state, s.local)
 		md.GetState().Resume()
@@ -141,7 +141,7 @@ func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.Act
 		}, nil
 	case md.Action_STOP:
 		// Stop
-		md.LogInfo("Lifecycle Stop Called")
+		log.Println("Lifecycle Stop Called")
 		s.state = md.Lifecycle_Stopped
 		s.client.Lifecycle(s.state, s.local)
 		return &md.ActionResponse{
@@ -170,7 +170,7 @@ func (s *NodeServer) Initialize(ctx context.Context, req *md.InitializeRequest) 
 
 	// Create Client
 	s.client = sc.NewClient(s.ctx, s.user, s.callback())
-	
+
 	// Return Blank Response
 	return nil, nil
 }
@@ -205,7 +205,7 @@ func (s *NodeServer) Connect(ctx context.Context, req *md.ConnectionRequest) (*m
 
 // Sign method signs data with user's private key
 func (s *NodeServer) Sign(ctx context.Context, req *md.AuthRequest) (*md.AuthResponse, error) {
-	md.LogInfo("Sign Called")
+	log.Println("Sign Called")
 	return s.user.Sign(req), nil
 }
 
