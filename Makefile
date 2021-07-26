@@ -26,7 +26,7 @@ BIND_ANDROID_ARTIFACT= $(BIND_DIR_ANDROID)/io.sonr.core.aar
 PROTO_DIR_GO=$(SONR_ROOT_DIR)/core/pkg
 PROTO_DIR_DART=$(SONR_ROOT_DIR)/plugin/lib/src/data/protobuf
 PROTO_DIR_DOCS=$(SONR_ROOT_DIR)/docs
-PROTO_DIR_JS=$(SONR_ROOT_DIR)/electron/src/client/proto
+PROTO_DIR_JS=$(SONR_ROOT_DIR)/electron/src/assets/proto
 
 # @ Proto Items Lists
 PROTO_LIST_ALL=api.proto data.proto core.proto peer.proto error.proto user.proto
@@ -108,7 +108,7 @@ proto:
 
 ##
 ## [release]   :   Upload RPC Binary Artifact to S3
-release:
+release: proto
 	@echo "Bumping Release Version..."
 	@cd $(CORE_DIR) && git add .
 	@cd $(CORE_DIR) && git commit -m "Updated RPC Binary Release"
@@ -118,6 +118,7 @@ release:
 	@cd $(CORE_DIR) && git push origin --tags
 	@cd $(CORE_DIR) && git push
 	@echo "Cleaning up build cache..."
+	@cd $(CORE_DIR) && go mod tidy
 	@rm -rf $(DIST_DIR_DARWIN_AMD)
 	@rm -rf $(DIST_DIR_DARWIN_ARM)
 	@rm -rf $(DIST_DIR_LINUX_AMD)
@@ -127,6 +128,7 @@ release:
 
 ## [upgrade]   :   Binds Binary, Creates Protobufs, and Updates App
 upgrade: proto bind.ios bind.android
+	@go mod tidy
 	@echo "-----------------------------------------------------------"
 	@echo "------------- 🔄  START PLUGIN UPDATE 🔄 -------------------"
 	@echo "------------------------------------------------------------"
