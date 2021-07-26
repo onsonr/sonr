@@ -21,7 +21,7 @@ type Client interface {
 	Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrError
 	Respond(r *md.InviteResponse)
 	Update(t *net.TopicManager) *md.SonrError
-	Lifecycle(state md.LifecycleState, t *net.TopicManager)
+	Lifecycle(state md.Lifecycle, t *net.TopicManager)
 	Restart(ur *md.UpdateRequest, keys *md.KeyPair) (*net.TopicManager, *md.SonrError)
 
 	// Topic Callbacks
@@ -181,22 +181,22 @@ func (c *client) Update(t *net.TopicManager) *md.SonrError {
 }
 
 // @ Handle Network Communication from Lifecycle State Network Communication
-func (c *client) Lifecycle(state md.LifecycleState, t *net.TopicManager) {
-	if state == md.LifecycleState_Active {
+func (c *client) Lifecycle(state md.Lifecycle, t *net.TopicManager) {
+	if state == md.Lifecycle_Active {
 		// Inform Lobby
 		if c.user.IsReady() {
 			if err := t.Publish(c.user.Peer.NewUpdateEvent(t.Topic())); err != nil {
 				md.NewError(err, md.ErrorMessage_TOPIC_UPDATE)
 			}
 		}
-	} else if state == md.LifecycleState_Paused {
+	} else if state == md.Lifecycle_Paused {
 		// Inform Lobby
 		if c.user.IsReady() {
 			if err := t.Publish(c.user.Peer.NewExitEvent(t.Topic())); err != nil {
 				md.NewError(err, md.ErrorMessage_TOPIC_UPDATE)
 			}
 		}
-	} else if state == md.LifecycleState_Stopped {
+	} else if state == md.Lifecycle_Stopped {
 		// Inform Lobby
 		if c.user.IsReady() {
 			if err := t.Publish(c.user.Peer.NewExitEvent(t.Topic())); err != nil {

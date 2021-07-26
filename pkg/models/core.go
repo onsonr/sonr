@@ -26,12 +26,7 @@ type SetStatus func(s Status)
 type OnProtobuf func([]byte)
 type OnError func(err *SonrError)
 type Callback struct {
-	// OnInvite      OnProtobuf
-	// OnConnected   OnProtobuf
-	OnEvent OnProtobuf
-	// OnMail        OnProtobuf
-	// OnReply       OnProtobuf
-	// OnProgress    OnProtobuf
+	OnEvent    OnProtobuf
 	OnRequest  OnProtobuf
 	OnResponse OnProtobuf
 	OnError    OnError
@@ -464,7 +459,7 @@ func (iw *itemWriter) WriteTo(writer msg.WriteCloser) error {
 
 	// @ Initialize Chunk Data
 	r := bufio.NewReader(f)
-	buf := make([]byte, 0, util.TRANSFER_CHUNK_SIZE)
+	buf := make([]byte, 0, util.CHUNK_SIZE)
 
 	// @ Loop through File
 	for i := 0; ; i++ {

@@ -10,6 +10,37 @@ import "user.proto";
 // Require Go Package
 option go_package = "/models";
 
+// Method enum for Node to Perform
+enum Action {
+  BLANK = 0;    // No Action
+  PING = 1;     // Ping Node
+  LOCATION = 2; // Get Location
+  URL_LINK = 3; // Get URL Link
+  PAUSE = 4;    // Pause Node
+  RESUME = 5;   // Resume Node
+  STOP = 6;     // Stop Node
+  RESTART = 7;  // Restart Node
+}
+
+// ActionRequest performs action on Node
+message ActionRequest {
+  Action action = 1; // required action
+  string data = 2;   // optional data (String for URL)
+}
+
+// ActionResponse returns result of action
+message ActionResponse {
+  Action action = 1; // provided action
+  bool success = 2;  // success or failure
+
+  // Returned Data
+  oneof data {
+    Location location = 3;   // location of node
+    URLLink urlLink = 4;     // URL Link of node
+    Lifecycle lifecycle = 5; // current state of node
+  }
+}
+
 // Message for Signing Request (Hmac Sha256)
 message AuthRequest {
   // Value to be signed
@@ -45,12 +76,6 @@ message InitializeRequest {
     INFO = 4;     // Show all Errors
     NONE = 5;     // No Logging
   }
-}
-
-// Response for Initialize Request
-message InitializeResponse {
-  bool success = 1; // If Request was successful
-  string body = 2;  // Response Body
 }
 
 // Connection Message to Establish Sonr Host/API/Topic
@@ -166,29 +191,6 @@ message MailboxResponse {
   }
 }
 
-// Request to Respond to Invite (RPC Only)
-message RespondRequest {
-  Type type = 1;         // Cancel Reply
-  bool decision = 2;     // Users Decision for the Invitation
-  Peer from = 3;         // Users Peer Data
-  Peer to = 4;           // Receivers Peer Data
-  bool flatMode = 5;     // Flat Transfer
-  Transfer transfer = 6; // Card contains all Data Info, Transfer Info
-  string protocol = 7;   // Name of Protocol
-
-  enum Type {
-    None = 0;     // No Type
-    Transfer = 1; // Transfer
-    Contact = 2;  // Contact
-  }
-}
-
-// Response to RespondRequest
-message RespondResponse {
-  bool success = 1; // Successful Action
-  string body = 2;  // Response Body
-}
-
 // Updated Peer Info Request
 message UpdateRequest {
   oneof data {
@@ -198,12 +200,6 @@ message UpdateRequest {
     ConnectionRequest.InternetType connectivity = 4; // Internet Type Changed
     string pushToken = 5;                            // Push Notification token
   }
-}
-
-// Response for Update Request
-message UpdateResponse {
-  bool success = 1; // If Request was successful
-  string body = 2;  // Response Body
 }
 
 // Message for Verification Request
@@ -298,8 +294,8 @@ message GenericRequest {
   bytes data = 2; // Data for Request
 
   enum Type {
-    INVITE = 0; // Invite Request
-    REST = 1;   // REST API Request
+    NONE = 0;   // Blank Request
+    INVITE = 1; // Invite Request
   }
 }
 
@@ -309,9 +305,9 @@ message GenericResponse {
   bytes data = 2; // Data for Response
 
   enum Type {
-    CONNECTION = 0; // Connection Response
-    INVITE = 1;     // Invite Response
-    REST = 2;       // REST API Response
+    NONE = 0;       // Blank Response
+    CONNECTION = 1; // Connection Response
+    REPLY = 2;      // Invite Response
   }
 }
 
@@ -322,9 +318,33 @@ message GenericEvent {
 
   // Type of Event
   enum Type {
-    COMPLETE = 0; // Transfer Completed
-    MAIL = 1;     // New Mailbox Invite
-    PROGRESS = 2; // Transfer Progress
-    TOPIC = 3;    // Local Topic Update
+    BLANK = 0;    // Blank Event
+    COMPLETE = 1; // Transfer Completed
+    MAIL = 2;     // New Mailbox Invite
+    PROGRESS = 3; // Transfer Progress
+    TOPIC = 4;    // Local Topic Update
   }
+}
+
+// -------------------------------- //
+// -------- RPC Service ----------- //
+// -------------------------------- //
+service NodeService {
+  rpc Initialize(InitializeRequest) returns (GenericResponse) {}
+  rpc Connect(ConnectionRequest) returns (GenericResponse) {}
+  rpc Action(ActionRequest) returns (ActionResponse) {}
+  rpc Sign(AuthRequest) returns (AuthResponse) {}
+  rpc Verify(VerifyRequest) returns (VerifyResponse) {}
+  rpc Update(UpdateRequest) returns (GenericResponse) {}
+  rpc Invite(InviteRequest) returns (GenericResponse) {}
+  rpc Respond(InviteResponse) returns (GenericResponse) {}
+  rpc Mail(MailboxRequest) returns (MailboxResponse) {}
+  rpc OnComplete(GenericRequest) returns (stream CompleteEvent) {}
+  rpc OnInvite(GenericRequest) returns (stream InviteRequest) {}
+  rpc OnReply(GenericRequest) returns (stream InviteResponse) {}
+  rpc OnMail(GenericRequest) returns (stream MailEvent) {}
+  rpc OnProgress(GenericRequest) returns (stream ProgressEvent) {}
+  rpc OnStatus(GenericRequest) returns (stream StatusEvent) {}
+  rpc OnTopic(GenericRequest) returns (stream TopicEvent) {}
+  rpc OnError(GenericRequest) returns (stream ErrorMessage) {}
 }

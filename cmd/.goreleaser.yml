@@ -1,0 +1,29 @@
+project_name: sonr-rpc
+before:
+  hooks:
+    # You may remove this if you don't use go modules.
+    - go mod tidy
+    # you may remove this if you don't need go generate
+    - go generate ./...
+builds:
+  - binary: sonr-rpc
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+archives:
+  - format: binary
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ .Tag }}-next"
+blobs:
+- provider: s3
+  region: us-west-1
+  bucket: sonr-rpc-releases
+  folder: '{{ .Tag }}'
+release:
+  disable: true

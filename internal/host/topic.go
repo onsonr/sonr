@@ -76,7 +76,7 @@ func (h *hostNode) JoinTopic(ctx context.Context, u *md.User, topicData *md.Topi
 		host:         h,
 		eventHandler: handler,
 		topicData:    topicData,
-		events:       make(chan *md.TopicEvent, util.TOPIC_MAX_MESSAGES),
+		events:       make(chan *md.TopicEvent, util.MAX_CHAN_DATA),
 		subscription: sub,
 		topic:        topic,
 	}

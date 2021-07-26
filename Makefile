@@ -1,6 +1,8 @@
 SHELL=/bin/zsh # Set Shell
 # Set this -->[/Users/xxxx/Sonr/]<-- to Folder of Sonr Repos
 SONR_ROOT_DIR=/Users/prad/Sonr
+CORE_DIR=$(SONR_ROOT_DIR)/core
+CORE_CMD_DIR=$(SONR_ROOT_DIR)/core/cmd
 
 # Set this -->[/Users/xxxx/Sonr/]<-- to Folder of Sonr Repos
 PROTO_DEF_PATH=/Users/prad/Sonr/core/api
@@ -24,10 +26,10 @@ BIND_ANDROID_ARTIFACT= $(BIND_DIR_ANDROID)/io.sonr.core.aar
 PROTO_DIR_GO=$(SONR_ROOT_DIR)/core/pkg
 PROTO_DIR_DART=$(SONR_ROOT_DIR)/plugin/lib/src/data/protobuf
 PROTO_DIR_DOCS=$(SONR_ROOT_DIR)/docs
-PROTO_DIR_JS=$(SONR_ROOT_DIR)/electron/proto
+PROTO_DIR_JS=$(SONR_ROOT_DIR)/electron/src/assets/proto
 
 # @ Proto Items Lists
-PROTO_LIST_ALL=api.proto data.proto core.proto peer.proto error.proto rpc.proto user.proto
+PROTO_LIST_ALL=api.proto data.proto core.proto peer.proto error.proto user.proto
 PROTO_LIST_CLIENT=api.proto data.proto peer.proto error.proto user.proto
 
 # @ Proto Build Commands
@@ -35,7 +37,16 @@ PROTO_GEN_GO="--go_out=$(PROTO_DIR_GO)"
 PROTO_GEN_RPC="--go-grpc_out=$(PROTO_DIR_GO)"
 PROTO_GEN_DART="--dart_out=$(PROTO_DIR_DART)"
 PROTO_GEN_DOCS="--doc_out=$(PROTO_DIR_DOCS)"
-PROTO_CP_JS=${PROTO_DEF_PATH}/{api.proto,data.proto,peer.proto,error.proto,rpc.proto,user.proto}
+PROTO_CP_JS=$(PROTO_DEF_PATH)/{api.proto,data.proto,peer.proto,error.proto,user.proto}
+
+# @ Distribution Release Variables
+DIST_DIR=$(SONR_ROOT_DIR)/core/cmd/dist
+DIST_DIR_DARWIN_AMD=$(DIST_DIR)/sonr-rpc_darwin_amd64
+DIST_DIR_DARWIN_ARM=$(DIST_DIR)/sonr-rpc_darwin_arm64
+DIST_DIR_LINUX_AMD=$(DIST_DIR)/sonr-rpc_linux_amd64
+DIST_DIR_LINUX_ARM=$(DIST_DIR)/sonr-rpc_linux_arm64
+DIST_DIR_WIN=$(DIST_DIR)/sonr-rpc_windows_amd64
+DIST_ZIP_WIN=$(DIST_DIR)/*.zip
 
 all: Makefile
 	@figlet -f larry3d Sonr Core
@@ -91,23 +102,37 @@ proto:
 	@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_GO) $(PROTO_LIST_ALL)
 	@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_RPC) $(PROTO_LIST_ALL)
 	@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_DART) $(PROTO_LIST_CLIENT)
-	@cp ${PROTO_CP_JS} $(PROTO_DIR_JS)
+	@cp $(PROTO_CP_JS) $(PROTO_DIR_JS)
 	@echo "✅ Finished Compiling ➡ " && date
 	@echo ""
 
 ##
-## [run]       :   Run GRPC Server for Desktop Development
-run:
-	@cd cmd && go run server.go
+## [release]   :   Upload RPC Binary Artifact to S3
+release: proto
+	@echo "Bumping Release Version..."
+	@cd $(CORE_DIR) && git add .
+	@cd $(CORE_DIR) && git commit -m "Updated RPC Binary Release"
+	@cd $(CORE_DIR) && bump patch
+	@echo "Building Artifacts..."
+	@cd $(CORE_CMD_DIR) && goreleaser release --rm-dist
+	@cd $(CORE_DIR) && git push origin --tags
+	@cd $(CORE_DIR) && git push
+	@echo "Cleaning up build cache..."
+	@cd $(CORE_DIR) && go mod tidy
+	@rm -rf $(DIST_DIR_DARWIN_AMD)
+	@rm -rf $(DIST_DIR_DARWIN_ARM)
+	@rm -rf $(DIST_DIR_LINUX_AMD)
+	@rm -rf $(DIST_DIR_LINUX_ARM)
+	@rm -rf $(DIST_DIR_WIN)
 
 ## [upgrade]   :   Binds Binary, Creates Protobufs, and Updates App
 upgrade: proto bind.ios bind.android
+	@go mod tidy
 	@echo "-----------------------------------------------------------"
 	@echo "------------- 🔄  START PLUGIN UPDATE 🔄 -------------------"
 	@echo "------------------------------------------------------------"
 	cd $(APP_ROOT_DIR) && make update
 	@echo ""
-
 
 ## [clean]     :   Reinitializes Gomobile and Removes Framworks from Plugin
 clean:
@@ -126,11 +151,13 @@ clean:
 ##               └─ (bi) => bind.ios
 ##               └─ (ba) => bind.android
 ##               (p) => proto
+##               (r) => release
 ##               (u) => upgrade
 ##               (c) => clean
 b:bind
 bi:bind.ios
 ba:bind.android
 p:proto
+r:release
 u:upgrade
 c:clean
