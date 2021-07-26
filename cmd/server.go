@@ -170,7 +170,7 @@ func (s *NodeServer) Initialize(ctx context.Context, req *md.InitializeRequest) 
 
 	// Create Client
 	s.client = sc.NewClient(s.ctx, s.user, s.callback())
-
+	
 	// Return Blank Response
 	return nil, nil
 }
