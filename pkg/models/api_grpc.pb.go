@@ -890,5 +890,5 @@ var NodeService_ServiceDesc = grpc.ServiceDesc{
 			ServerStreams: true,
 		},
 	},
-	Metadata: "rpc.proto",
+	Metadata: "api.proto",
 }
