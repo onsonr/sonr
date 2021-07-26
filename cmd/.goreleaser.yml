@@ -1,5 +1,3 @@
-# This is an example .goreleaser.yml file with some sane defaults.
-# Make sure to check the documentation at http://goreleaser.com
 project_name: sonr-rpc
 before:
   hooks:
@@ -18,9 +16,6 @@ builds:
       - arm64
 archives:
   - format: binary
-    format_overrides:
-    - goos: windows
-      format: zip
 checksum:
   name_template: 'checksums.txt'
 snapshot:

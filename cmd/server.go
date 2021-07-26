@@ -114,7 +114,7 @@ func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.Act
 		}, nil
 	case md.Action_PAUSE:
 		// Pause
-		log.Println("Action: Lifecycle Pause Called")
+		log.Println("Action: Lifecycle-Pause Called")
 		s.state = md.Lifecycle_Paused
 		s.client.Lifecycle(s.state, s.local)
 		md.GetState().Pause()
@@ -127,7 +127,7 @@ func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.Act
 		}, nil
 	case md.Action_RESUME:
 		// Resume
-		log.Println("Action: Lifecycle Resume Called")
+		log.Println("Action: Lifecycle-Resume Called")
 		s.state = md.Lifecycle_Active
 		s.client.Lifecycle(s.state, s.local)
 		md.GetState().Resume()
@@ -141,7 +141,7 @@ func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.Act
 		}, nil
 	case md.Action_STOP:
 		// Stop
-		log.Println("Lifecycle Stop Called")
+		log.Println("Lifecycle-Stop Called")
 		s.state = md.Lifecycle_Stopped
 		s.client.Lifecycle(s.state, s.local)
 		return &md.ActionResponse{
@@ -151,8 +151,10 @@ func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.Act
 				Lifecycle: s.state,
 			},
 		}, nil
+	default:
+		log.Println(fmt.Sprintf("Action: %s not supported", req.Action))
+		return nil, fmt.Errorf("Action: %s not supported", req.Action)
 	}
-	return nil, nil
 }
 
 // Initialize method is called when a new node is created
