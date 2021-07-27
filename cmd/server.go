@@ -33,7 +33,7 @@ type NodeServer struct {
 	completeEvents      chan *md.CompleteEvent
 	inviteRequests      chan *md.InviteRequest
 	inviteResponses     chan *md.InviteResponse
-	ErrorEvents         chan *md.ErrorEvent
+	errorEvents         chan *md.ErrorEvent
 	mailEvents          chan *md.MailEvent
 	progressEvents      chan *md.ProgressEvent
 	statusEvents        chan *md.StatusEvent
@@ -59,7 +59,7 @@ func main() {
 		progressEvents:      make(chan *md.ProgressEvent, util.MAX_CHAN_DATA),
 		completeEvents:      make(chan *md.CompleteEvent, util.MAX_CHAN_DATA),
 		statusEvents:        make(chan *md.StatusEvent, util.MAX_CHAN_DATA),
-		ErrorEvents:         make(chan *md.ErrorEvent, util.MAX_CHAN_DATA),
+		errorEvents:         make(chan *md.ErrorEvent, util.MAX_CHAN_DATA),
 		inviteRequests:      make(chan *md.InviteRequest, util.MAX_CHAN_DATA),
 		inviteResponses:     make(chan *md.InviteResponse, util.MAX_CHAN_DATA),
 		connectionResponses: make(chan *md.ConnectionResponse, util.MAX_CHAN_DATA),
@@ -419,6 +419,19 @@ func (s *NodeServer) OnTopic(req *md.NoRequest, stream md.NodeService_OnTopicSer
 	}
 }
 
+// OnError is called when Internal Node Error occurs
+func (s *NodeServer) OnError(req *md.NoRequest, stream md.NodeService_OnErrorServer) error {
+	for {
+		select {
+		case m := <-s.errorEvents:
+			stream.Send(m)
+		case <-s.ctx.Done():
+			return nil
+		}
+		md.GetState().NeedsWait()
+	}
+}
+
 // # Passes binded Methods to Node
 func (s *NodeServer) callback() md.Callback {
 	return md.Callback{
@@ -587,7 +600,7 @@ func (s *NodeServer) handleError(errMsg *md.SonrError) {
 	// Check for Error
 	if errMsg.HasError {
 		// Send Callback
-		s.ErrorEvents <- errMsg.Message()
+		s.errorEvents <- errMsg.Message()
 	}
 }
 
