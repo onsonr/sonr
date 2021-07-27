@@ -3,7 +3,6 @@ package host
 import (
 	"time"
 
-	dscl "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/peer"
 	peerstore "github.com/libp2p/go-libp2p-core/peerstore"
 	dsc "github.com/libp2p/go-libp2p-discovery"
@@ -48,8 +47,9 @@ func (h *hostNode) Bootstrap() *md.SonrError {
 	}
 
 	// Set Routing Discovery, Find Peers
+	p, d := util.DHT_OPTS()
 	routingDiscovery := dsc.NewRoutingDiscovery(h.kdht)
-	dsc.Advertise(h.ctxHost, routingDiscovery, util.HOST_RENDEVOUZ_POINT, dscl.TTL(time.Second*4))
+	dsc.Advertise(h.ctxHost, routingDiscovery, p, d)
 	h.disc = routingDiscovery
 
 	// Create Pub Sub
@@ -58,9 +58,13 @@ func (h *hostNode) Bootstrap() *md.SonrError {
 		return md.NewError(err, md.ErrorEvent_HOST_PUBSUB)
 	}
 
-	// Handle DHT
+	// Handle DHT Peers
 	h.pubsub = ps
-	go h.handleDHTPeers(routingDiscovery)
+	peersChan, err := routingDiscovery.FindPeers(h.ctxHost, p, d)
+	if err != nil {
+		return md.NewError(err, md.ErrorEvent_HOST_PUBSUB)
+	}
+	go h.handleDiscoveredPeers(peersChan)
 	return nil
 }
 
@@ -70,7 +74,8 @@ func (h *hostNode) MDNS() error {
 	md.LogActivate("MDNS")
 
 	// Create MDNS Service
-	ser, err := discovery.NewMdnsService(h.ctxHost, h.host, util.REFRESH_INTERVAL, util.HOST_RENDEVOUZ_POINT)
+	d, p := util.MDNS_OPTS()
+	ser, err := discovery.NewMdnsService(h.ctxHost, h.host, d, p)
 	if err != nil {
 		return err
 	}
@@ -82,7 +87,7 @@ func (h *hostNode) MDNS() error {
 
 	// Handle Events
 	ser.RegisterNotifee(n)
-	go h.handleMDNSPeers(n.PeerChan)
+	go h.handleDiscoveredPeers(n.PeerChan)
 	return nil
 }
 
@@ -98,20 +103,11 @@ func (h *hostNode) checkUnknown(pi peer.AddrInfo) bool {
 	return true
 }
 
-// # handleDHTPeers: Connects to Peers in DHT
-func (h *hostNode) handleDHTPeers(routingDiscovery *dsc.RoutingDiscovery) {
+// # Handle MDNS Peers: Connect to Local MDNS Peers
+func (h *hostNode) handleDiscoveredPeers(peerChan <-chan peer.AddrInfo) {
 	for {
-		// Find peers in DHT
-		peersChan, err := routingDiscovery.FindPeers(
-			h.ctxHost,
-			util.HOST_RENDEVOUZ_POINT,
-		)
-		if err != nil {
-			return
-		}
-
-		// Iterate over Channel
-		for pi := range peersChan {
+		select {
+		case pi := <-peerChan:
 			// Validate not Self
 			if h.checkUnknown(pi) {
 				// Connect to Peer
@@ -120,21 +116,9 @@ func (h *hostNode) handleDHTPeers(routingDiscovery *dsc.RoutingDiscovery) {
 					continue
 				}
 			}
+		case <-h.ctxHost.Done():
+			return
 		}
-	}
-}
-
-// # Handle MDNS Peers: Connect to Local MDNS Peers
-func (h *hostNode) handleMDNSPeers(peerChan chan peer.AddrInfo) {
-	for {
-		pi := <-peerChan
-		// Validate not Self
-		if h.checkUnknown(pi) {
-			// Connect to Peer
-			if err := h.host.Connect(h.ctxHost, pi); err != nil {
-				h.host.Peerstore().ClearAddrs(pi.ID)
-				continue
-			}
-		}
+		md.GetState()
 	}
 }

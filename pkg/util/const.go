@@ -4,13 +4,24 @@ import (
 	"fmt"
 	"time"
 
+	dscl "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 )
 
 // ** ─── Variables ────────────────────────────────────────────────────────
-// Bootstrap Peer Discovery Interval
+// Bootstrap MDNS Peer Discovery Interval
 const REFRESH_INTERVAL = time.Second * 4
+
+// Method Returns MDNS Discovery Options
+func MDNS_OPTS() (time.Duration, string) {
+	return REFRESH_INTERVAL, HOST_RENDEVOUZ_POINT
+}
+
+// Method Returns DHT Discovery Options
+func DHT_OPTS() (string, dscl.Option) {
+	return HOST_RENDEVOUZ_POINT, dscl.TTL(REFRESH_INTERVAL)
+}
 
 // Pubsub Topic Max Messages
 const MAX_CHAN_DATA = 128
