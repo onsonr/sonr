@@ -31,9 +31,6 @@ type AuthService struct {
 
 // @ Starts New Auth Instance
 func (sc *serviceClient) StartAuth() *md.SonrError {
-	// Logging
-	md.LogActivate("Auth Service")
-
 	// Start Exchange Server
 	localServer := rpc.NewServer(sc.host.Host(), util.AUTH_PROTOCOL)
 	psv := AuthService{

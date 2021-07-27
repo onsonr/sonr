@@ -6,6 +6,7 @@ import (
 	"log"
 	"net"
 	"strings"
+	"time"
 
 	sc "github.com/sonr-io/core/internal/client"
 	sh "github.com/sonr-io/core/internal/host"
@@ -197,6 +198,7 @@ func (s *NodeServer) Connect(ctx context.Context, req *md.ConnectionRequest) (*m
 	}
 
 	// Return Blank Response - Needs No Response Struct
+	go s.sendPeriodicTopicEvents()
 	return &md.NoResponse{}, nil
 }
 
@@ -613,6 +615,19 @@ func (s *NodeServer) handleError(errMsg *md.SonrError) {
 	if errMsg.HasError {
 		// Send Callback
 		s.errorEvents <- errMsg.Message()
+	}
+}
+
+// # Helper: Background Process to continuously ping nearby peers
+func (s *NodeServer) sendPeriodicTopicEvents() {
+	for {
+		if s.isReady() {
+			if err := s.local.Publish(s.user.Peer.NewUpdateEvent(s.local.Topic())); err != nil {
+				s.handleError(md.NewError(err, md.ErrorEvent_TOPIC_UPDATE))
+			}
+		}
+		time.Sleep(3 * time.Second)
+		md.GetState()
 	}
 }
 
