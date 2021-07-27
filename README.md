@@ -9,6 +9,8 @@
 
 **Core Framework** that manages the Sonr `Libp2p` node in Go, Handles *File Management, Connection to Peer, Pub-Sub for Lobby, and Graph Data Structure*.
 
+> Also Manages Sonr RPC Server
+
 ## 🔷 Build
 Use `make` with `ios` or `android` or `all` command in root directory, then `flutter` run in [plugin]("https://github.com/sonr-io/plugin") `$HOME/Sonr/plugin/example`
 
