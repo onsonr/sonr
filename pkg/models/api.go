@@ -376,7 +376,7 @@ func (u *User) SetConnected(value bool) *StatusEvent {
 	}
 
 	// Returns Status Update
-	return &StatusEvent{Value: u.GetStatus()}
+	return &StatusEvent{Value: u.Status}
 }
 
 // Update Bootstrap Connection Status
@@ -389,7 +389,7 @@ func (u *User) SetAvailable(value bool) *StatusEvent {
 	}
 
 	// Returns Status Update
-	return &StatusEvent{Value: u.GetStatus()}
+	return &StatusEvent{Value: u.Status}
 }
 
 // Update Node Status
@@ -398,17 +398,17 @@ func (u *User) SetStatus(ns Status) *StatusEvent {
 	u.Status = ns
 
 	// Returns Status Update
-	return &StatusEvent{Value: u.GetStatus()}
+	return &StatusEvent{Value: u.Status}
 }
 
 // Checks if Status is Given Value
 func (u *User) IsStatus(gs Status) bool {
-	return u.GetStatus() == gs
+	return u.Status == gs
 }
 
 // Checks if Status is Not Given Value
 func (u *User) IsNotStatus(gs Status) bool {
-	return u.GetStatus() != gs
+	return u.Status != gs
 }
 
 // ** ─── Generic Callback MANAGEMENT ───────────────────────────────────────────

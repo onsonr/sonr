@@ -333,7 +333,9 @@ func (s *NodeServer) OnComplete(req *md.NoRequest, stream md.NodeService_OnCompl
 	for {
 		select {
 		case m := <-s.completeEvents:
-			stream.Send(m)
+			if m != nil {
+				stream.Send(m)
+			}
 		case <-s.ctx.Done():
 			return nil
 		}
@@ -346,7 +348,9 @@ func (s *NodeServer) OnInvite(req *md.NoRequest, stream md.NodeService_OnInviteS
 	for {
 		select {
 		case m := <-s.inviteRequests:
-			stream.Send(m)
+			if m != nil {
+				stream.Send(m)
+			}
 		case <-s.ctx.Done():
 			return nil
 		}
@@ -359,7 +363,9 @@ func (s *NodeServer) OnReply(req *md.NoRequest, stream md.NodeService_OnReplySer
 	for {
 		select {
 		case m := <-s.inviteResponses:
-			stream.Send(m)
+			if m != nil {
+				stream.Send(m)
+			}
 		case <-s.ctx.Done():
 			return nil
 		}
@@ -372,7 +378,9 @@ func (s *NodeServer) OnMail(req *md.NoRequest, stream md.NodeService_OnMailServe
 	for {
 		select {
 		case m := <-s.mailEvents:
-			stream.Send(m)
+			if m != nil {
+				stream.Send(m)
+			}
 		case <-s.ctx.Done():
 			return nil
 		}
@@ -385,7 +393,9 @@ func (s *NodeServer) OnProgress(req *md.NoRequest, stream md.NodeService_OnProgr
 	for {
 		select {
 		case m := <-s.progressEvents:
-			stream.Send(m)
+			if m != nil {
+				stream.Send(m)
+			}
 		case <-s.ctx.Done():
 			return nil
 		}
@@ -398,7 +408,9 @@ func (s *NodeServer) OnStatus(req *md.NoRequest, stream md.NodeService_OnStatusS
 	for {
 		select {
 		case m := <-s.statusEvents:
-			stream.Send(m)
+			if m != nil {
+				stream.Send(m)
+			}
 		case <-s.ctx.Done():
 			return nil
 		}
