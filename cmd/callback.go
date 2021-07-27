@@ -143,7 +143,8 @@ func (s *NodeServer) handleEvent(buf []byte) {
 	}
 
 	// Switch case event type
-	switch event.GetType() {
+	eventType := event.GetType()
+	switch eventType {
 	case md.GenericEvent_COMPLETE:
 		// Unmarshal Complete Event
 		ce := &md.CompleteEvent{}
@@ -152,6 +153,9 @@ func (s *NodeServer) handleEvent(buf []byte) {
 			md.LogFatal(err)
 			return
 		}
+
+		// Logging
+		eventType.Log(ce.String())
 
 		// Send Event to Channel
 		s.completeEvents <- ce
@@ -175,6 +179,9 @@ func (s *NodeServer) handleEvent(buf []byte) {
 			return
 		}
 
+		// Logging
+		eventType.Log(te.String())
+
 		// Send Event to Channel
 		s.topicEvents <- te
 
@@ -186,6 +193,9 @@ func (s *NodeServer) handleEvent(buf []byte) {
 			md.LogFatal(err)
 			return
 		}
+
+		// Logging
+		eventType.Log(me.String())
 
 		// Send Event to Channel
 		s.mailEvents <- me
@@ -201,8 +211,12 @@ func (s *NodeServer) handleRequest(buf []byte) {
 		md.LogFatal(err)
 		return
 	}
+
+	// Get Type
+	requestType := request.GetType()
+
 	// Switch case request type
-	switch request.GetType() {
+	switch requestType {
 	case md.GenericRequest_INVITE:
 		// Unmarshal Invite Request
 		ir := &md.InviteRequest{}
@@ -211,6 +225,10 @@ func (s *NodeServer) handleRequest(buf []byte) {
 			md.LogFatal(err)
 			return
 		}
+
+		// Logging
+		requestType.Log(ir.String())
+
 		// Send Request to Channel
 		s.inviteRequests <- ir
 	}
@@ -225,8 +243,11 @@ func (s *NodeServer) handleResponse(buf []byte) {
 		md.LogFatal(err)
 		return
 	}
+	// Get Type
+	requestType := response.GetType()
+
 	// Switch case response type
-	switch response.GetType() {
+	switch requestType {
 	case md.GenericResponse_CONNECTION:
 		// Unmarshal Connection Response
 		cr := &md.ConnectionResponse{}
@@ -235,6 +256,9 @@ func (s *NodeServer) handleResponse(buf []byte) {
 			md.LogFatal(err)
 			return
 		}
+
+		// Logging
+		requestType.Log(cr.String())
 
 		// Send Response to Channel
 		s.connectionResponses <- cr
@@ -246,6 +270,10 @@ func (s *NodeServer) handleResponse(buf []byte) {
 			md.LogFatal(err)
 			return
 		}
+
+		// Logging
+		requestType.Log(rr.String())
+
 		// Send Response to Channel
 		s.inviteResponses <- rr
 	}

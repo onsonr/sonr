@@ -3,6 +3,7 @@ package models
 import (
 	"fmt"
 	"io"
+	defaultLogger "log"
 	"os"
 	"strings"
 
@@ -61,15 +62,39 @@ func InitLogger(req *InitializeRequest) {
 				QuoteString:    true,
 				EndWithMessage: true,
 				Formatter: func(w io.Writer, a *log.FormatterArgs) (int, error) {
-					return fmt.Fprintf(w, "(sonr_core - %s) [%s %s] %s\n Stack: \n%s", strings.ToUpper(a.Level),
-						a.Time, a.Caller, a.Message, a.Stack)
+					return fmt.Fprintf(w, "(sonr_core - %s) [%s %s] \n%s", strings.ToUpper(a.Level),
+						a.Time, a.Caller, a.Message)
 				},
 			},
 		}
 	}
 }
 
-// ^ Method Logs a Info Message
+// ^ Method Logs a Info Message for Event
+func (t GenericEvent_Type) Log(message string) {
+	if loggerEnabled && loggerInfoEnabled {
+		log.Info().Msgf("⚡️  %s", t.String())
+		defaultLogger.Println("\t" + message + "\n")
+	}
+}
+
+// ^ Method Logs a Info Message for Response
+func (t GenericResponse_Type) Log(message string) {
+	if loggerEnabled && loggerInfoEnabled {
+		log.Info().Msgf("⚡️  %s", t.String())
+		defaultLogger.Println("\t" + message + "\n")
+	}
+}
+
+// ^ Method Logs a Info Message for Request
+func (t GenericRequest_Type) Log(message string) {
+	if loggerEnabled && loggerInfoEnabled {
+		log.Info().Msgf("⚡️  %s", t.String())
+		defaultLogger.Println("\t" + message + "\n")
+	}
+}
+
+// ^ Method Logs an Error Message
 func LogError(err error) {
 	if loggerEnabled && loggerWarningEnabled {
 		log.Error().Msgf("💣  %s", err.Error())
