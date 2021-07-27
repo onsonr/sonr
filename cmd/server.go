@@ -196,7 +196,7 @@ func (s *NodeServer) Connect(ctx context.Context, req *md.ConnectionRequest) (*m
 		s.setAvailable(true)
 	}
 
-	// Return Blank Response
+	// Return Blank Response - Needs No Response Struct
 	return &md.NoResponse{}, nil
 }
 
