@@ -12,6 +12,28 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+// ** ─── ConnectionRequest MANAGEMENT ────────────────────────────────────────────────────────
+// Method Checks if this Address is IPv4 and not a Loopback
+func (ip *ConnectionRequest_IPAddress) IsIPv4() bool {
+	return ip.GetFamily() == ConnectionRequest_IPAddress_IPv4 && !ip.GetInternal()
+}
+
+// Method Checks if this Address is IPv6 and not a Loopback
+func (ip *ConnectionRequest_IPAddress) IsIPv6() bool {
+	return ip.GetFamily() == ConnectionRequest_IPAddress_IPv6 && !ip.GetInternal()
+}
+
+// Method Converts this IPAddress into a MultiAddress String
+func (ip *ConnectionRequest_IPAddress) MultiAddrStr(port int) (string, error) {
+	if ip.IsIPv4() {
+		return fmt.Sprintf("/ip4/%s/tcp/%d", ip.GetValue(), port), nil
+	} else if ip.IsIPv6() {
+		return fmt.Sprintf("/ip6/%s/tcp/%d", ip.GetValue(), port), nil
+	} else {
+		return "", fmt.Errorf("Invalid IP Address")
+	}
+}
+
 // ** ─── VerifyRequest MANAGEMENT ────────────────────────────────────────────────────────
 // Checks if VerifyRequest is for String Value
 func (vr *VerifyRequest) IsString() bool {

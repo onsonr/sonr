@@ -70,6 +70,13 @@ func InitLogger(req *InitializeRequest) {
 }
 
 // ^ Method Logs a Info Message
+func LogError(err error) {
+	if loggerEnabled && loggerWarningEnabled {
+		log.Error().Msgf("💣  %s", err.Error())
+	}
+}
+
+// ^ Method Logs a Info Message
 func LogFatal(err error) {
 	if !loggerEnabled {
 		InitLogger(nil)

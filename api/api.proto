@@ -103,10 +103,12 @@ message ConnectionRequest {
 
   // Libp2p Host Options
   message HostOptions {
-    bool quicTransport = 1;   // Enable QUIC Transport
-    bool httpTransport = 2;   // Enable HTTP Transport
-    bool webrtcTransport = 3; // Enable WebRTC Transport
-    bool mdnsDiscovery = 4;   // Enable MDNS Discovery
+    bool quicTransport = 1;             // Enable QUIC Transport
+    bool httpTransport = 2;             // Enable HTTP Transport
+    bool webrtcTransport = 3;           // Enable WebRTC Transport
+    bool mdnsDiscovery = 4;             // Enable MDNS Discovery
+    int32 listenPort = 5;               // Listen Port for Libp2p
+    repeated IPAddress listenAddrs = 6; // List of Listen Addresses (optional)
   }
 
   // Service Configuration
@@ -116,6 +118,20 @@ message ConnectionRequest {
     bool buckets = 3;    // Enable Buckets
     bool push = 4;       // Enable Push Notifications
     string threadDB = 5; // Address for Database
+  }
+
+  // IP Address Interface
+  message IPAddress {
+    string name = 1;   // Name of Interface
+    string value = 2;  // IP Address of Interface
+    string mac = 3;    // Mac Address of Interface
+    bool internal = 4; // Wether it is a Loopback Interface
+    Family family = 5; // Address Family
+
+    enum Family {
+      IPv4 = 0; // IPv4 Address
+      IPv6 = 1; // IPv6 Address
+    }
   }
 }
 

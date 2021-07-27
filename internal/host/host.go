@@ -67,7 +67,7 @@ func NewHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair
 	var kdhtRef *dht.IpfsDHT
 
 	// Find Listen Addresses
-	addrs, err := PublicAddrStrs()
+	addrs, err := PublicAddrStrs(req)
 	if err != nil {
 		return newRelayedHost(ctx, req, keyPair, hh)
 	}

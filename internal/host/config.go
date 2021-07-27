@@ -60,26 +60,58 @@ func FreePort() (int, error) {
 }
 
 // # Return Device Listening Addresses ^ //
-func PublicAddrStrs() ([]string, error) {
+func PublicAddrStrs(cr *md.ConnectionRequest) ([]string, error) {
 	// Initialize
 	listenAddrs := []string{}
 	hasIpv4 := false
 	hasIpv6 := false
 
-	// Get iPv4 Addresses
-	ip4Addrs, err := iPv4Addrs()
-	if err == nil {
-		hasIpv4 = true
+	// Set Initial Port
+	port := 52006
+
+	// Check for Port
+	if cr.GetHostOptions().GetListenPort() != 0 {
+		// Set Port from Options
+		port = int(cr.GetHostOptions().GetListenPort())
+	} else {
+		// Set Port
+		p, err := FreePort()
+		if err != nil {
+			md.LogError(err)
+		} else {
+			port = p
+		}
 	}
 
-	// Add iPv4 Addresses
-	if hasIpv4 {
-		listenAddrs = append(listenAddrs, ip4Addrs...)
-	}
+	// Check for Listen Addresses
+	if len(cr.GetHostOptions().GetListenAddrs()) == 0 {
+		// Get iPv4 Addresses
+		ip4Addrs, err := iPv4Addrs(port)
+		if err == nil {
+			hasIpv4 = true
+		}
 
-	// Neither iPv6 nor iPv4 found
-	if !hasIpv4 && !hasIpv6 {
-		return nil, errors.New("No IP Addresses found")
+		// Add iPv4 Addresses
+		if hasIpv4 {
+			listenAddrs = append(listenAddrs, ip4Addrs...)
+		}
+
+		// Neither iPv6 nor iPv4 found
+		if !hasIpv4 && !hasIpv6 {
+			return nil, errors.New("No IP Addresses found")
+		}
+	} else {
+		for _, addr := range cr.GetHostOptions().GetListenAddrs() {
+			// Get Address String
+			addrStr, err := addr.MultiAddrStr(port)
+			if err != nil {
+				md.LogError(err)
+				continue // Skip this address
+			}
+
+			// Append Address List
+			listenAddrs = append(listenAddrs, addrStr)
+		}
 	}
 
 	// Return Listen Addr Strings
@@ -87,11 +119,20 @@ func PublicAddrStrs() ([]string, error) {
 }
 
 // # Returns Node Public iPv4 Address
-func iPv4Addrs() ([]string, error) {
-	osHost, _ := os.Hostname()
-	addrs, _ := net.LookupIP(osHost)
+func iPv4Addrs(port int) ([]string, error) {
+	// Find Hos
+	osHost, err := os.Hostname()
+	if err != nil {
+		md.LogError(err)
+		return nil, err
+	}
 
-	p, _ := FreePort()
+	// Find Public Address Strings
+	addrs, err := net.LookupIP(osHost)
+	if err != nil {
+		md.LogError(err)
+		return nil, err
+	}
 
 	// Iterate through addresses
 	for _, addr := range addrs {
@@ -99,11 +140,12 @@ func iPv4Addrs() ([]string, error) {
 		if ipv4 := addr.To4(); ipv4 != nil {
 			ip4 := ipv4.String()
 			return []string{
-				fmt.Sprintf("/ip4/%s/tcp/%d", ip4, p),
+				fmt.Sprintf("/ip4/%s/tcp/%d", ip4, port),
 			}, nil
 
 		}
 	}
+
 	return nil, errors.New("No IPV4 found")
 }
 
