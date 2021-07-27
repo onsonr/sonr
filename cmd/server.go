@@ -53,7 +53,7 @@ func main() {
 	chatServer := NodeServer{
 		ctx:                 context.Background(),
 		topics:              make(map[string]*sh.TopicManager, 10),
-		state:               md.Lifecycle_Active,
+		state:               md.Lifecycle_ACTIVE,
 		topicEvents:         make(chan *md.TopicEvent, util.MAX_CHAN_DATA),
 		mailEvents:          make(chan *md.MailEvent, util.MAX_CHAN_DATA),
 		progressEvents:      make(chan *md.ProgressEvent, util.MAX_CHAN_DATA),
@@ -110,7 +110,7 @@ func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.Act
 	case md.Action_PAUSE:
 		// Pause
 		logRPC("action", "pause")
-		s.state = md.Lifecycle_Paused
+		s.state = md.Lifecycle_PAUSED
 		s.client.Lifecycle(s.state, s.local)
 		md.GetState().Pause()
 		return &md.ActionResponse{
@@ -123,7 +123,7 @@ func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.Act
 	case md.Action_RESUME:
 		// Resume
 		logRPC("action", "resume")
-		s.state = md.Lifecycle_Active
+		s.state = md.Lifecycle_ACTIVE
 		s.client.Lifecycle(s.state, s.local)
 		md.GetState().Resume()
 
@@ -137,7 +137,7 @@ func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.Act
 	case md.Action_STOP:
 		// Stop
 		logRPC("action", "stop")
-		s.state = md.Lifecycle_Stopped
+		s.state = md.Lifecycle_STOPPED
 		s.client.Lifecycle(s.state, s.local)
 		return &md.ActionResponse{
 			Success: true,

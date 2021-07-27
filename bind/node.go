@@ -44,7 +44,7 @@ func Initialize(reqBytes []byte, call Callback) *Node {
 		call:   call,
 		ctx:    context.Background(),
 		topics: make(map[string]*net.TopicManager, 10),
-		state:  md.Lifecycle_Active,
+		state:  md.Lifecycle_ACTIVE,
 	}
 
 	// Create User
@@ -351,7 +351,7 @@ func (s *Node) Action(buf []byte) []byte {
 	case md.Action_PAUSE:
 		// Pause
 		md.LogInfo("Lifecycle Pause Called")
-		s.state = md.Lifecycle_Paused
+		s.state = md.Lifecycle_PAUSED
 		s.client.Lifecycle(s.state, s.local)
 		md.GetState().Pause()
 		resp := &md.ActionResponse{
@@ -372,7 +372,7 @@ func (s *Node) Action(buf []byte) []byte {
 	case md.Action_RESUME:
 		// Resume
 		md.LogInfo("Lifecycle Resume Called")
-		s.state = md.Lifecycle_Active
+		s.state = md.Lifecycle_ACTIVE
 		s.client.Lifecycle(s.state, s.local)
 		md.GetState().Resume()
 
@@ -395,7 +395,7 @@ func (s *Node) Action(buf []byte) []byte {
 	case md.Action_STOP:
 		// Stop
 		md.LogInfo("Lifecycle Stop Called")
-		s.state = md.Lifecycle_Stopped
+		s.state = md.Lifecycle_STOPPED
 		s.client.Lifecycle(s.state, s.local)
 
 		// Create Response

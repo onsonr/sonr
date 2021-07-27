@@ -45,11 +45,11 @@ message FileSystem {
     string path = 1; // Path to Directory
     Type type = 2;   // Type of Directory
     enum Type {
-      Temporary = 0; // Temporary Cache Storage
-      Downloads = 1; // Transferred Files - Desktop
-      Support = 2;   // Persistent Non Exposed Files - Mobile
-      Library = 3;   // Persistent Non Exposed Files - Desktop
-      Documents = 4; // Transferred Files - Mobile
+      TEMPORARY = 0; // Temporary Cache Storage
+      DOWNLOADS = 1; // Transferred Files - Desktop
+      SUPPORT = 2;   // Persistent Non Exposed Files - Mobile
+      LIBRARY = 3;   // Persistent Non Exposed Files - Desktop
+      DOCUMENTS = 4; // Transferred Files - Mobile
     }
   }
 }
@@ -88,9 +88,9 @@ message KeyPair {
 
 // Current Node Lifecycle State
 enum Lifecycle {
-  Active = 0;  // Resume or Start
-  Paused = 1;  // User Paused
-  Stopped = 2; // User Quit
+  ACTIVE = 0;  // Resume or Start
+  PAUSED = 1;  // User Paused
+  STOPPED = 2; // User Quit
 }
 
 // Status is User Node Situation

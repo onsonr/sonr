@@ -120,7 +120,7 @@ func (c *client) Mail(req *md.MailboxRequest) (*md.MailboxResponse, *md.SonrErro
 func (c *client) Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrError {
 	if c.user.IsReady() {
 		// Check for Peer
-		if invite.GetType() == md.InviteRequest_Remote {
+		if invite.GetType() == md.InviteRequest_REMOTE {
 			err := c.Service.SendMail(invite)
 			if err != nil {
 				return err
@@ -181,21 +181,21 @@ func (c *client) Update(t *net.TopicManager) *md.SonrError {
 
 // @ Handle Network Communication from Lifecycle State Network Communication
 func (c *client) Lifecycle(state md.Lifecycle, t *net.TopicManager) {
-	if state == md.Lifecycle_Active {
+	if state == md.Lifecycle_ACTIVE {
 		// Inform Lobby
 		if c.user.IsReady() {
 			if err := t.Publish(c.user.Peer.NewUpdateEvent(t.Topic())); err != nil {
 				md.NewError(err, md.ErrorEvent_TOPIC_UPDATE)
 			}
 		}
-	} else if state == md.Lifecycle_Paused {
+	} else if state == md.Lifecycle_PAUSED {
 		// Inform Lobby
 		if c.user.IsReady() {
 			if err := t.Publish(c.user.Peer.NewExitEvent(t.Topic())); err != nil {
 				md.NewError(err, md.ErrorEvent_TOPIC_UPDATE)
 			}
 		}
-	} else if state == md.Lifecycle_Stopped {
+	} else if state == md.Lifecycle_STOPPED {
 		// Inform Lobby
 		if c.user.IsReady() {
 			if err := t.Publish(c.user.Peer.NewExitEvent(t.Topic())); err != nil {

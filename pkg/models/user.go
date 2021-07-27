@@ -512,7 +512,7 @@ func (u *User) VerifyRead() *VerifyResponse {
 // ^ Signs InviteResponse with Flat Contact
 func (u *User) ReplyToFlat(from *Peer) *InviteResponse {
 	return &InviteResponse{
-		Type:    InviteResponse_Flat,
+		Type:    InviteResponse_FLAT,
 		To:      from,
 		Payload: Payload_CONTACT,
 		From:    u.GetPeer(),

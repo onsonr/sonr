@@ -96,9 +96,9 @@ message ConnectionRequest {
 
   // Internet Connection Type
   enum InternetType {
-    None = 0;   // No Internet Connection
-    Wifi = 1;   // Wifi Connection
-    Mobile = 2; // Mobile Connection
+    OFFLINE = 0; // No Internet Connection
+    WIFI = 1;    // Wifi Connection
+    MOBILE = 2;  // Mobile Connection
   }
 
   // Libp2p Host Options
@@ -146,10 +146,10 @@ message InviteRequest {
   string protocol = 6;   // Protocol for Invite
 
   enum Type {
-    None = 0;   // No Type
-    Local = 1;  // Local Transfer
-    Flat = 2;   // Flat Transfer
-    Remote = 3; // Remote Transfer
+    NONE = 0;   // No Type
+    LOCAL = 1;  // Local Transfer
+    FLAT = 2;   // Flat Transfer
+    REMOTE = 3; // Remote Transfer
   }
 }
 
@@ -164,10 +164,10 @@ message InviteResponse {
   string protocol = 7;   // Protocol for Invite
 
   enum Type {
-    None = 0;   // No Type
-    Local = 1;  // Local Transfer
-    Flat = 2;   // Flat Transfer
-    Remote = 3; // Remote Transfer
+    NONE = 0;   // No Type
+    LOCAL = 1;  // Local Transfer
+    FLAT = 2;   // Flat Transfer
+    REMOTE = 3; // Remote Transfer
   }
 }
 

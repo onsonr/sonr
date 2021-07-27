@@ -46,9 +46,9 @@ message Lobby {
   Status status = 3;
 
   enum Status {
-    Empty = 0; // When there are No Peers in Local Topic
-    Few = 1;   // When there are <= 5 Peers in Local Topic
-    Many = 2;  // When there are > 5 Peers in Local Topic
+    EMPTY = 0; // When there are No Peers in Local Topic
+    FEW = 1;   // When there are <= 5 Peers in Local Topic
+    MANY = 2;  // When there are > 5 Peers in Local Topic
   }
 }
 

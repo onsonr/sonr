@@ -116,7 +116,7 @@ func NewHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair
 	}
 
 	// Check Connection
-	if req.GetType() == md.ConnectionRequest_Wifi {
+	if req.GetType() == md.ConnectionRequest_WIFI {
 		err := hn.MDNS()
 		if err != nil {
 			md.NewError(err, md.ErrorEvent_HOST_MDNS)
@@ -176,7 +176,7 @@ func newRelayedHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.
 	}
 
 	// Check Connection
-	if req.GetType() == md.ConnectionRequest_Wifi {
+	if req.GetType() == md.ConnectionRequest_WIFI {
 		err := hn.MDNS()
 		if err != nil {
 			md.NewError(err, md.ErrorEvent_HOST_MDNS)

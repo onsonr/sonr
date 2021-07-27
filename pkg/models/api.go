@@ -270,7 +270,7 @@ func (i *InviteRequest) IsPayloadUrl() bool {
 
 // Checks for Flat Invite
 func (i *InviteRequest) IsFlatInvite() bool {
-	return i.GetType() == InviteRequest_Flat
+	return i.GetType() == InviteRequest_FLAT
 }
 
 // Returns Protocol ID Set by Peer
@@ -296,8 +296,8 @@ func (u *User) SignInvite(i *InviteRequest) *InviteRequest {
 	}
 
 	// Set Type
-	if i.Type == InviteRequest_None {
-		i.Type = InviteRequest_Local
+	if i.Type == InviteRequest_NONE {
+		i.Type = InviteRequest_LOCAL
 	}
 	return i
 }
