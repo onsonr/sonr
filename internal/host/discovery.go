@@ -104,6 +104,7 @@ func (h *hostNode) checkUnknown(pi peer.AddrInfo) bool {
 }
 
 // # Handle MDNS Peers: Connect to Local MDNS Peers
+// Params: **Read Only** Peer AddrInfo Channel
 func (h *hostNode) handleDiscoveredPeers(peerChan <-chan peer.AddrInfo) {
 	for {
 		select {
