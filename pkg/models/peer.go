@@ -31,8 +31,9 @@ func (r *User) NewLocalTopic() *Topic {
 }
 
 // ** ─── Peer MANAGEMENT ────────────────────────────────────────────────────────
-// ^ Create New Peer from Connection Request and Host ID ^ //
-func (u *User) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) *SonrError {
+// ^ Set Peer from Connection Request and Host ID ^ //
+func (u *User) SetPeer(id peer.ID, maddr multiaddr.Multiaddr) *SonrError {
+	// Set Peer
 	u.Peer = &Peer{
 		SName: u.SName,
 		Id: &Peer_ID{
@@ -46,12 +47,51 @@ func (u *User) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) *SonrError {
 		Platform: u.Device.Platform,
 		Model:    u.Device.Model,
 	}
+
+	// Log Peer
+	LogInfo(u.Peer.String())
 	return nil
+}
+
+// ** ─── Position MANAGEMENT ────────────────────────────────────────────────────────
+func DefaultPosition() *Position {
+	return &Position{
+		Heading: &Position_Compass{
+			Direction: 0,
+			Antipodal: 180,
+			Cardinal:  Cardinal_N,
+		},
+		Facing: &Position_Compass{
+			Direction: 0,
+			Antipodal: 180,
+			Cardinal:  Cardinal_N,
+		},
+		Orientation: &Position_Orientation{
+			Pitch: 0.0,
+			Roll:  0.0,
+			Yaw:   0.0,
+		},
+	}
+}
+
+// Returns Facing Direction
+func (p *Position) FaceDirection() float64 {
+	return p.GetFacing().GetDirection()
+}
+
+// Returns Heading Direction
+func (p *Position) HeadDirection() float64 {
+	return p.GetHeading().GetDirection()
+}
+
+// Returns Values Needed to Update Peer Instance
+func (p *Position) Parameters() (float64, float64, *Position_Orientation) {
+	return p.HeadDirection(), p.FaceDirection(), p.GetOrientation()
 }
 
 // ** ─── Local Event MANAGEMENT ────────────────────────────────────────────────────────
 // Creates New Exit Local Event
-func NewJoinLocalEvent(peer *Peer) *TopicEvent {
+func NewJoinEvent(peer *Peer) *TopicEvent {
 	return &TopicEvent{
 		Id:      peer.Id.Peer,
 		Peer:    peer,
@@ -60,7 +100,7 @@ func NewJoinLocalEvent(peer *Peer) *TopicEvent {
 }
 
 // Creates New Exit Local Event
-func NewUpdateLocalEvent(peer *Peer, topic *Topic) *TopicEvent {
+func NewUpdateEvent(peer *Peer, topic *Topic) *TopicEvent {
 	return &TopicEvent{
 		Id:      peer.Id.Peer,
 		Peer:    peer,
@@ -70,7 +110,7 @@ func NewUpdateLocalEvent(peer *Peer, topic *Topic) *TopicEvent {
 }
 
 // Creates New Exit Local Event
-func NewExitLocalEvent(id string, topic *Topic) *TopicEvent {
+func NewExitEvent(id string, topic *Topic) *TopicEvent {
 	return &TopicEvent{
 		Id:      id,
 		Subject: TopicEvent_EXIT,

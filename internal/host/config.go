@@ -62,6 +62,7 @@ func FreePort() (int, error) {
 // # Return Device Listening Addresses ^ //
 func PublicAddrStrs(cr *md.ConnectionRequest) ([]string, error) {
 	// Initialize
+	opts := cr.GetHostOptions()
 	listenAddrs := []string{}
 	hasIpv4 := false
 	hasIpv6 := false
@@ -70,9 +71,9 @@ func PublicAddrStrs(cr *md.ConnectionRequest) ([]string, error) {
 	port := 52006
 
 	// Check for Port
-	if cr.GetHostOptions().GetListenPort() != 0 {
+	if opts.GetListenPort() != 0 {
 		// Set Port from Options
-		port = int(cr.GetHostOptions().GetListenPort())
+		port = int(opts.GetListenPort())
 	} else {
 		// Set Port
 		p, err := FreePort()
@@ -84,7 +85,7 @@ func PublicAddrStrs(cr *md.ConnectionRequest) ([]string, error) {
 	}
 
 	// Check for Listen Addresses
-	if len(cr.GetHostOptions().GetListenAddrs()) == 0 {
+	if len(opts.GetListenAddrs()) == 0 {
 		// Get iPv4 Addresses
 		ip4Addrs, err := iPv4Addrs(port)
 		if err == nil {
@@ -101,9 +102,9 @@ func PublicAddrStrs(cr *md.ConnectionRequest) ([]string, error) {
 			return nil, errors.New("No IP Addresses found")
 		}
 	} else {
-		for _, addr := range cr.GetHostOptions().GetListenAddrs() {
+		for _, addr := range opts.GetListenAddrs() {
 			// Get Address String
-			addrStr, err := addr.MultiAddrStr(port)
+			addrStr, err := addr.MultiAddrStr(opts.GetIpv4Only(), port)
 			if err != nil {
 				md.LogError(err)
 				continue // Skip this address

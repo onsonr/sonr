@@ -13,25 +13,33 @@ import (
 )
 
 // ** ─── ConnectionRequest MANAGEMENT ────────────────────────────────────────────────────────
+// Method Returns Formatted Info for Address
+func (ip *ConnectionRequest_IPAddress) Info() string {
+	return fmt.Sprintf("%s \n \t(%s) \n \t\tAddress: %s \n \t\tMac: %s \n \t\tIs Internal: %t \n", ip.GetName(), ip.GetFamily().String(), ip.GetValue(), ip.GetMac(), ip.GetInternal())
+}
+
 // Method Checks if this Address is IPv4 and not a Loopback
 func (ip *ConnectionRequest_IPAddress) IsIPv4() bool {
-	return ip.GetFamily() == ConnectionRequest_IPAddress_IPv4 && !ip.GetInternal()
+	return ip.GetFamily() == ConnectionRequest_IPAddress_IPV4 && !ip.GetInternal()
 }
 
 // Method Checks if this Address is IPv6 and not a Loopback
 func (ip *ConnectionRequest_IPAddress) IsIPv6() bool {
-	return ip.GetFamily() == ConnectionRequest_IPAddress_IPv6 && !ip.GetInternal()
+	return ip.GetFamily() == ConnectionRequest_IPAddress_IPV6 && !ip.GetInternal()
 }
 
 // Method Converts this IPAddress into a MultiAddress String
-func (ip *ConnectionRequest_IPAddress) MultiAddrStr(port int) (string, error) {
+func (ip *ConnectionRequest_IPAddress) MultiAddrStr(onlyIPv4 bool, port int) (string, error) {
 	if ip.IsIPv4() {
+		LogInfo(ip.Info())
 		return fmt.Sprintf("/ip4/%s/tcp/%d", ip.GetValue(), port), nil
-	} else if ip.IsIPv6() {
+	} else if ip.IsIPv6() && !onlyIPv4 {
+		LogInfo(ip.Info())
 		return fmt.Sprintf("/ip6/%s/tcp/%d", ip.GetValue(), port), nil
 	} else {
 		return "", fmt.Errorf("Invalid IP Address")
 	}
+
 }
 
 // ** ─── VerifyRequest MANAGEMENT ────────────────────────────────────────────────────────

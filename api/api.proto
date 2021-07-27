@@ -107,17 +107,18 @@ message ConnectionRequest {
     bool httpTransport = 2;             // Enable HTTP Transport
     bool webrtcTransport = 3;           // Enable WebRTC Transport
     bool mdnsDiscovery = 4;             // Enable MDNS Discovery
-    int32 listenPort = 5;               // Listen Port for Libp2p
-    repeated IPAddress listenAddrs = 6; // List of Listen Addresses (optional)
+    bool ipv4Only = 5;                  // Enable IPv4 Only
+    int32 listenPort = 6;               // Listen Port for Libp2p
+    repeated IPAddress listenAddrs = 7; // List of Listen Addresses (optional)
   }
 
   // Service Configuration
   message ServiceOptions {
-    bool textile = 1;    // Enable Textile Client and Threads
-    bool mailbox = 2;    // Enable Mailbox
-    bool buckets = 3;    // Enable Buckets
-    bool push = 4;       // Enable Push Notifications
-    string threadDB = 5; // Address for Database
+    bool textile = 1;          // Enable Textile Client and Threads
+    bool mailbox = 2;          // Enable Mailbox
+    bool buckets = 3;          // Enable Buckets
+    bool push = 4;             // Enable Push Notifications
+    bool autoUpdateEvents = 5; // Enable Auto Update Events
   }
 
   // IP Address Interface
@@ -129,8 +130,8 @@ message ConnectionRequest {
     Family family = 5; // Address Family
 
     enum Family {
-      IPv4 = 0; // IPv4 Address
-      IPv6 = 1; // IPv6 Address
+      IPV4 = 0; // IPv4 Address
+      IPV6 = 1; // IPv6 Address
     }
   }
 }

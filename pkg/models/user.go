@@ -452,32 +452,27 @@ func (u *User) UpdateContact(c *Contact) {
 }
 
 // Method Updates User Position
-func (u *User) UpdatePosition(pos *Position) {
-	facing := pos.GetFacing()
-	heading := pos.GetHeading()
-
+func (u *User) UpdatePosition(faceDir float64, headDir float64, orientation *Position_Orientation) {
 	// Update User Values
-	var faceDir float64
 	var faceAnpd float64
-	var headDir float64
 	var headAnpd float64
-	faceDir = math.Round(facing.Direction*100) / 100
-	headDir = math.Round(heading.Direction*100) / 100
-	faceDesg := int((facing.Direction / 11.25) + 0.25)
-	headDesg := int((heading.Direction / 11.25) + 0.25)
+	faceDir = math.Round(faceDir*100) / 100
+	headDir = math.Round(headDir*100) / 100
+	faceDesg := int((faceDir / 11.25) + 0.25)
+	headDesg := int((headDir / 11.25) + 0.25)
 
 	// Find Antipodal
-	if facing.Direction > 180 {
-		faceAnpd = math.Round((facing.Direction-180)*100) / 100
+	if faceDir > 180 {
+		faceAnpd = math.Round((faceDir-180)*100) / 100
 	} else {
-		faceAnpd = math.Round((facing.Direction+180)*100) / 100
+		faceAnpd = math.Round((faceDir+180)*100) / 100
 	}
 
 	// Find Antipodal
-	if heading.Direction > 180 {
-		headAnpd = math.Round((heading.Direction-180)*100) / 100
+	if headDir > 180 {
+		headAnpd = math.Round((headDir-180)*100) / 100
 	} else {
-		headAnpd = math.Round((heading.Direction+180)*100) / 100
+		headAnpd = math.Round((headDir+180)*100) / 100
 	}
 
 	// Set Position
@@ -492,7 +487,7 @@ func (u *User) UpdatePosition(pos *Position) {
 			Antipodal: headAnpd,
 			Cardinal:  Cardinal(headDesg % 32),
 		},
-		Orientation: pos.GetOrientation(),
+		Orientation: orientation,
 	}
 }
 
@@ -532,21 +527,35 @@ func (u *User) ReplyToFlat(from *Peer) *InviteResponse {
 }
 
 // ^ NewUpdateEvent Creates Lobby Event with Peer Data ^
-func (p *Peer) NewUpdateEvent(topic *Topic) *TopicEvent {
+func (u *User) NewUpdateEvent(topic *Topic, id peer.ID) *TopicEvent {
 	return &TopicEvent{
 		Subject: TopicEvent_UPDATE,
-		Peer:    p,
-		Id:      p.Id.Peer,
+		Peer:    u.GetPeer(),
+		Id:      id.String(),
+		Topic:   topic,
+	}
+}
+
+// ^ NewDefaultUpdateEvent Updates Peer with Default Position and Returns Lobby Event with Peer Data ^
+func (u *User) NewDefaultUpdateEvent(topic *Topic, id peer.ID) *TopicEvent {
+	// Update Peer
+	u.UpdatePosition(DefaultPosition().Parameters())
+
+	// Return Event
+	return &TopicEvent{
+		Subject: TopicEvent_UPDATE,
+		Peer:    u.GetPeer(),
+		Id:      id.String(),
 		Topic:   topic,
 	}
 }
 
 // ^ NewUpdateEvent Creates Lobby Event with Peer Data ^
-func (p *Peer) NewExitEvent(topic *Topic) *TopicEvent {
+func (u *User) NewExitEvent(topic *Topic, id peer.ID) *TopicEvent {
 	return &TopicEvent{
 		Subject: TopicEvent_EXIT,
-		Peer:    p,
-		Id:      p.Id.Peer,
+		Peer:    u.GetPeer(),
+		Id:      id.String(),
 		Topic:   topic,
 	}
 }

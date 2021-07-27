@@ -181,7 +181,7 @@ func (tm *TopicManager) Exchange(id peer.ID, peerBuf []byte) error {
 	}
 
 	// Update Peer with new data
-	tm.PushEvent(md.NewJoinLocalEvent(remotePeer))
+	tm.PushEvent(md.NewJoinEvent(remotePeer))
 	return nil
 }
 
@@ -195,7 +195,7 @@ func (ts *ExchangeService) ExchangeWith(ctx context.Context, args ExchangeServic
 	}
 
 	// Update Peers with Lobby
-	ts.call.OnEvent(md.NewJoinLocalEvent(remotePeer))
+	ts.call.OnEvent(md.NewJoinEvent(remotePeer))
 
 	// Set Message data and call done
 	buf, err := ts.user.Peer.Buffer()
@@ -228,7 +228,7 @@ func (tm *TopicManager) handleTopicEvents(ctx context.Context) {
 				continue
 			}
 		} else if lobEvent.Type == pubsub.PeerLeave {
-			tm.PushEvent(md.NewExitLocalEvent(lobEvent.Peer.String(), tm.topicData))
+			tm.PushEvent(md.NewExitEvent(lobEvent.Peer.String(), tm.topicData))
 		}
 		md.GetState().NeedsWait()
 	}
