@@ -169,7 +169,7 @@ func (s *NodeServer) Initialize(ctx context.Context, req *md.InitializeRequest) 
 	s.client = sc.NewClient(s.ctx, s.user, s.callback())
 
 	// Return Blank Response
-	return nil, nil
+	return &md.NoResponse{}, nil
 }
 
 // Connect method starts this nodes host
@@ -197,7 +197,7 @@ func (s *NodeServer) Connect(ctx context.Context, req *md.ConnectionRequest) (*m
 	}
 
 	// Return Blank Response
-	return nil, nil
+	return &md.NoResponse{}, nil
 }
 
 // Sign method signs data with user's private key
@@ -270,7 +270,7 @@ func (s *NodeServer) Update(ctx context.Context, req *md.UpdateRequest) (*md.NoR
 	}
 
 	// Return Blank Response
-	return nil, nil
+	return &md.NoResponse{}, nil
 }
 
 // Invite pushes Invite request to Peer
@@ -288,7 +288,7 @@ func (s *NodeServer) Invite(ctx context.Context, req *md.InviteRequest) (*md.NoR
 		}
 	}
 	// Return Blank Response
-	return nil, nil
+	return &md.NoResponse{}, nil
 }
 
 // Respond handles a respond request
