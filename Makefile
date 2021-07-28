@@ -114,6 +114,7 @@ release:
 	@echo "Bumping Release Version..."
 	@cd $(CORE_DIR) && gitmoji -c
 	@cd $(CORE_DIR) && bump patch
+	@echo "Bumping Release Version... DONE"
 	@echo "Building Artifacts..."
 	@cd $(CORE_CMD_DIR) && goreleaser release --rm-dist
 	@cd $(CORE_DIR) && git push origin --tags
