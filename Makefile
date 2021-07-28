@@ -111,10 +111,9 @@ proto:
 
 ##
 ## [release]   :   Upload RPC Binary Artifact to S3
-release: proto
+release:
 	@echo "Bumping Release Version..."
-	@cd $(CORE_DIR) && git add .
-	@cd $(CORE_DIR) && git commit -m "Updated RPC Binary Release"
+	@cd $(CORE_DIR) && gitmoji -c
 	@cd $(CORE_DIR) && bump patch
 	@echo "Building Artifacts..."
 	@cd $(CORE_CMD_DIR) && goreleaser release --rm-dist
@@ -127,9 +126,11 @@ release: proto
 	@rm -rf $(DIST_DIR_LINUX_AMD)
 	@rm -rf $(DIST_DIR_LINUX_ARM)
 	@rm -rf $(DIST_DIR_WIN)
+	@echo "✅ Finished Releasing RPC Binary ➡ " && date
+	@cd /System/Library/Sounds && afplay Glass.aiff
 
 ## [upgrade]   :   Binds Binary, Creates Protobufs, and Updates App
-upgrade: proto bind.ios bind.android
+upgrade: proto bind.ios bind.android release
 	@go mod tidy
 	@echo "-----------------------------------------------------------"
 	@echo "------------- 🔄  START PLUGIN UPDATE 🔄 -------------------"

@@ -350,20 +350,8 @@ func (req *InviteRequest) ToPushMessage() *PushMessage {
 }
 
 // ** ─── Location MANAGEMENT ────────────────────────────────────────────────────────
-func (l *Location) MinorOLC() string {
-	lat := l.GetLatitude()
-	lon := l.GetLongitude()
-	return olc.Encode(lat, lon, 6)
-}
-
-func (l *Location) MajorOLC() string {
-	lat := l.GetLatitude()
-	lon := l.GetLongitude()
-	return olc.Encode(lat, lon, 2)
-}
-
-func (l *Location) OLC() string {
-	return olc.Encode(float64(l.GetLatitude()), float64(l.GetLongitude()), 8)
+func (l *Location) OLC(scope int) string {
+	return olc.Encode(float64(l.GetLatitude()), float64(l.GetLongitude()), scope)
 }
 
 // ** ─── Router MANAGEMENT ────────────────────────────────────────────────────────

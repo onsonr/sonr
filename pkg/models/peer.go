@@ -22,10 +22,16 @@ func (t *Topic) IsLocal() bool {
 }
 
 // @ Local Lobby Topic Protocol ID
-func (r *User) NewLocalTopic() *Topic {
-	name := fmt.Sprintf("/sonr/topic/%s", r.Location.OLC())
+func (r *User) NewLocalTopic(opts *ConnectionRequest_ServiceOptions) *Topic {
+	// Initialize Set OLC Range
+	scope := 6
+	if opts.GetOlcRange() > 0 {
+		scope = int(opts.GetOlcRange())
+	}
+
+	// Return Topic
 	return &Topic{
-		Name: name,
+		Name: fmt.Sprintf("/sonr/topic/%s", r.Location.OLC(scope)),
 		Type: Topic_LOCAL,
 	}
 }

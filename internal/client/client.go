@@ -105,11 +105,12 @@ func (c *client) Bootstrap(cr *md.ConnectionRequest) (*net.TopicManager, *md.Son
 	c.Service = s
 
 	// Join Local
-	if t, err := c.Host.JoinTopic(c.ctx, c.user, c.user.NewLocalTopic(), c); err != nil {
+	topicName := c.user.NewLocalTopic(cr.GetServiceOptions())
+	if t, err := c.Host.JoinTopic(c.ctx, c.user, topicName, c); err != nil {
 		return nil, err
 	} else {
 		// Check if Auto Update Events
-		if cr.GetServiceOptions().GetAutoUpdateEvents() {
+		if cr.GetServiceOptions().GetAutoUpdate() {
 			go c.sendPeriodicTopicEvents(t)
 		}
 		return t, nil

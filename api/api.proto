@@ -114,11 +114,12 @@ message ConnectionRequest {
 
   // Service Configuration
   message ServiceOptions {
-    bool textile = 1;          // Enable Textile Client and Threads
-    bool mailbox = 2;          // Enable Mailbox
-    bool buckets = 3;          // Enable Buckets
-    bool push = 4;             // Enable Push Notifications
-    bool autoUpdateEvents = 5; // Enable Auto Update Events
+    bool textile = 1;    // Enable Textile Client and Threads
+    bool mailbox = 2;    // Enable Mailbox
+    bool buckets = 3;    // Enable Buckets
+    bool push = 4;       // Enable Push Notifications
+    bool autoUpdate = 5; // Enable Auto Update Events
+    int32 olcRange = 6;  // OLC Range Value for Local Topic (Default: 6)
   }
 
   // IP Address Interface
