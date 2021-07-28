@@ -37,13 +37,13 @@ func (sc *serviceClient) StartPush() *md.SonrError {
 		// Create New Firebase Client
 		app, err := firebase.NewApp(context.Background(), config, opt)
 		if err != nil {
-			return md.NewError(err, md.ErrorMessage_PUSH_START_APP)
+			return md.NewError(err, md.ErrorEvent_PUSH_START_APP)
 		}
 
 		// Create New Push Client
 		client, err := app.Messaging(ctx)
 		if err != nil {
-			return md.NewError(err, md.ErrorMessage_PUSH_START_MESSAGING)
+			return md.NewError(err, md.ErrorEvent_PUSH_START_MESSAGING)
 		}
 
 		// Return Push Interface
@@ -78,7 +78,7 @@ func (pc *PushService) push(msg *md.PushMessage) *md.SonrError {
 	// Send Message
 	result, err := pc.client.Send(pc.ctx, pushMsg)
 	if err != nil {
-		return md.NewError(err, md.ErrorMessage_PUSH_SINGLE)
+		return md.NewError(err, md.ErrorEvent_PUSH_SINGLE)
 	}
 
 	// Logging
@@ -103,7 +103,7 @@ func (pc *PushService) pushMulti(msg *md.PushMessage, peers []*md.Peer) *md.Sonr
 	// Send Message
 	result, err := pc.client.SendMulticast(pc.ctx, multiPushMsg)
 	if err != nil {
-		return md.NewError(err, md.ErrorMessage_PUSH_SINGLE)
+		return md.NewError(err, md.ErrorEvent_PUSH_SINGLE)
 	}
 
 	// Logging
@@ -122,7 +122,7 @@ func (pc *PushService) pushSelf(msg *md.PushMessage) *md.SonrError {
 	// Send Message
 	result, err := pc.client.Send(pc.ctx, pushMsg)
 	if err != nil {
-		return md.NewError(err, md.ErrorMessage_PUSH_SINGLE)
+		return md.NewError(err, md.ErrorEvent_PUSH_SINGLE)
 	}
 
 	// Logging

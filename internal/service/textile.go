@@ -73,19 +73,19 @@ func (sc *serviceClient) StartTextile() *md.SonrError {
 		// Dial GRPC
 		textile.client, err = client.NewClient(util.TEXTILE_API_URL, grpc.WithTransportCredentials(creds), grpc.WithPerRPCCredentials(auth))
 		if err != nil {
-			return md.NewError(err, md.ErrorMessage_TEXTILE_START_CLIENT)
+			return md.NewError(err, md.ErrorEvent_TEXTILE_START_CLIENT)
 		}
 
 		// Create Auth Context
 		textile.ctxAuth, err = newUserAuthCtx(context.Background(), textile.apiKeys)
 		if err != nil {
-			return md.NewError(err, md.ErrorMessage_TEXTILE_USER_CTX)
+			return md.NewError(err, md.ErrorEvent_TEXTILE_USER_CTX)
 		}
 
 		// Create Token Context
 		textile.ctxToken, err = textile.newTokenCtx()
 		if err != nil {
-			return md.NewError(err, md.ErrorMessage_TEXTILE_TOKEN_CTX)
+			return md.NewError(err, md.ErrorEvent_TEXTILE_TOKEN_CTX)
 		}
 
 		// Initialize Threads
@@ -116,7 +116,7 @@ func (ts *TextileService) InitThreads(sc *serviceClient) *md.SonrError {
 		threadID := thread.NewIDV1(thread.Raw, 32)
 		err := ts.client.NewDB(ts.ctxToken, threadID, db.WithNewManagedName("Sonr-Users"))
 		if err != nil {
-			return md.NewError(err, md.ErrorMessage_THREADS_START_NEW)
+			return md.NewError(err, md.ErrorEvent_THREADS_START_NEW)
 		}
 
 		// Log DB Info
@@ -141,7 +141,7 @@ func (ts *TextileService) InitMail() *md.SonrError {
 			// Return Existing Mailbox
 			mailbox, err := ts.mail.GetLocalMailbox(context.Background(), ts.device.WorkingSupportDir())
 			if err != nil {
-				return md.NewError(err, md.ErrorMessage_MAILBOX_START_EXISTING)
+				return md.NewError(err, md.ErrorEvent_MAILBOX_START_EXISTING)
 			}
 
 			// Set Mailbox and Update Status
@@ -158,7 +158,7 @@ func (ts *TextileService) InitMail() *md.SonrError {
 			// Create a new mailbox with config
 			mailbox, err := ts.mail.NewMailbox(context.Background(), ts.defaultMailConfig())
 			if err != nil {
-				return md.NewError(err, md.ErrorMessage_MAILBOX_START_NEW)
+				return md.NewError(err, md.ErrorEvent_MAILBOX_START_NEW)
 			}
 
 			// Set Mailbox and Update Status
@@ -194,7 +194,7 @@ func (ts *TextileService) handleMailboxEvents() {
 	// Start watching (the third param indicates we want to keep watching when offline)
 	state, err := ts.mailbox.WatchInbox(context.Background(), events, true)
 	if err != nil {
-		md.NewError(err, md.ErrorMessage_MAILBOX_EVENT_STATE)
+		md.NewError(err, md.ErrorEvent_MAILBOX_EVENT_STATE)
 		return
 	}
 
@@ -219,7 +219,7 @@ func (ts *TextileService) onNewMessage(e local.MailboxEvent, state cmd.Connectio
 	// List Total Inbox
 	inbox, err := ts.mailbox.ListInboxMessages(context.Background())
 	if err != nil {
-		md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_OPEN)
+		md.NewError(err, md.ErrorEvent_MAILBOX_MESSAGE_OPEN)
 		return
 	}
 
@@ -227,7 +227,7 @@ func (ts *TextileService) onNewMessage(e local.MailboxEvent, state cmd.Connectio
 	md.LogInfo(fmt.Sprintf("Received new message: %s", inbox[0].From))
 	body, err := inbox[0].Open(context.Background(), ts.mailbox.Identity())
 	if err != nil {
-		md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_OPEN)
+		md.NewError(err, md.ErrorEvent_MAILBOX_MESSAGE_OPEN)
 		return
 	}
 
@@ -238,7 +238,7 @@ func (ts *TextileService) onNewMessage(e local.MailboxEvent, state cmd.Connectio
 	invite := md.InviteRequest{}
 	err = protojson.Unmarshal(body, &invite)
 	if err != nil {
-		md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_UNMARSHAL)
+		md.NewError(err, md.ErrorEvent_MAILBOX_MESSAGE_UNMARSHAL)
 	}
 
 	// Send Foreground Event
@@ -278,7 +278,7 @@ func (ts *TextileService) sendMail(to thread.PubKey, buf []byte) *md.SonrError {
 	// Send Message to Mailbox
 	_, err := ts.mailbox.SendMessage(context.Background(), to, buf)
 	if err != nil {
-		return md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_SEND)
+		return md.NewError(err, md.ErrorEvent_MAILBOX_MESSAGE_SEND)
 	}
 
 	// Return Message Info
@@ -290,7 +290,7 @@ func (ts *TextileService) deleteMessage(id string) *md.SonrError {
 	// Mark Item as Read
 	err := ts.mailbox.DeleteInboxMessage(context.Background(), id)
 	if err != nil {
-		return md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_DELETE)
+		return md.NewError(err, md.ErrorEvent_MAILBOX_MESSAGE_DELETE)
 	}
 	return nil
 }
@@ -300,7 +300,7 @@ func (ts *TextileService) readMessage(id string) *md.SonrError {
 	// Mark Item as Read
 	err := ts.mailbox.ReadInboxMessage(context.Background(), id)
 	if err != nil {
-		return md.NewError(err, md.ErrorMessage_MAILBOX_MESSAGE_READ)
+		return md.NewError(err, md.ErrorEvent_MAILBOX_MESSAGE_READ)
 	}
 	return nil
 }

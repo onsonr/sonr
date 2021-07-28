@@ -4,13 +4,24 @@ import (
 	"fmt"
 	"time"
 
+	dscl "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 )
 
 // ** ─── Variables ────────────────────────────────────────────────────────
-// Bootstrap Peer Discovery Interval
+// Bootstrap MDNS Peer Discovery Interval
 const REFRESH_INTERVAL = time.Second * 4
+
+// Method Returns MDNS Discovery Options
+func MDNS_OPTS() (time.Duration, string) {
+	return REFRESH_INTERVAL, HOST_RENDEVOUZ_POINT
+}
+
+// Method Returns DHT Discovery Options
+func DHT_OPTS() (string, dscl.Option) {
+	return HOST_RENDEVOUZ_POINT, dscl.TTL(REFRESH_INTERVAL)
+}
 
 // Pubsub Topic Max Messages
 const MAX_CHAN_DATA = 128
@@ -60,6 +71,9 @@ const FIRE_PROJECT_ID = "trans-density-315704"
 // ** ─── Host ────────────────────────────────────────────────────────
 // Libp2p Host Rendevouz Point
 const HOST_RENDEVOUZ_POINT = "/sonr/rendevouz/0.9.2"
+
+// RPC Server Localhost Port
+const RPC_SERVER_PORT = 60214
 
 // ^ ─── Methods ────────────────────────────────────────────────────────
 // Construct New Protocol ID given Method Name String and Value String

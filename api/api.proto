@@ -12,14 +12,13 @@ option go_package = "/models";
 
 // Method enum for Node to Perform
 enum Action {
-  BLANK = 0;    // No Action
-  PING = 1;     // Ping Node
-  LOCATION = 2; // Get Location
-  URL_LINK = 3; // Get URL Link
-  PAUSE = 4;    // Pause Node
-  RESUME = 5;   // Resume Node
-  STOP = 6;     // Stop Node
-  RESTART = 7;  // Restart Node
+  PING = 0;     // Ping Node
+  LOCATION = 1; // Get Location
+  URL_LINK = 2; // Get URL Link
+  PAUSE = 3;    // Pause Node
+  RESUME = 4;   // Resume Node
+  STOP = 5;     // Stop Node
+  RESTART = 6;  // Restart Node
 }
 
 // ActionRequest performs action on Node
@@ -66,6 +65,13 @@ message InitializeRequest {
   APIKeys apiKeys = 2;   // Client Keys
   LogLevel logLevel = 3; // Set Logging Config
   bool resetKeys = 4;    // Reset KeyPair for Migration
+  Client client = 5;     // Client Type
+
+  // Client Type
+  enum Client {
+    DART = 0; // Dart Client from Binded Framework
+    RPC = 1;  // gRPC Client from Other Language
+  }
 
   // Logging Details
   enum LogLevel {
@@ -90,17 +96,20 @@ message ConnectionRequest {
 
   // Internet Connection Type
   enum InternetType {
-    None = 0;   // No Internet Connection
-    Wifi = 1;   // Wifi Connection
-    Mobile = 2; // Mobile Connection
+    OFFLINE = 0; // No Internet Connection
+    WIFI = 1;    // Wifi Connection
+    MOBILE = 2;  // Mobile Connection
   }
 
   // Libp2p Host Options
   message HostOptions {
-    bool quicTransport = 1;   // Enable QUIC Transport
-    bool httpTransport = 2;   // Enable HTTP Transport
-    bool webrtcTransport = 3; // Enable WebRTC Transport
-    bool mdnsDiscovery = 4;   // Enable MDNS Discovery
+    bool quicTransport = 1;             // Enable QUIC Transport
+    bool httpTransport = 2;             // Enable HTTP Transport
+    bool webrtcTransport = 3;           // Enable WebRTC Transport
+    bool mdnsDiscovery = 4;             // Enable MDNS Discovery
+    bool ipv4Only = 5;                  // Enable IPv4 Only
+    int32 listenPort = 6;               // Listen Port for Libp2p
+    repeated IPAddress listenAddrs = 7; // List of Listen Addresses (optional)
   }
 
   // Service Configuration
@@ -109,7 +118,22 @@ message ConnectionRequest {
     bool mailbox = 2;    // Enable Mailbox
     bool buckets = 3;    // Enable Buckets
     bool push = 4;       // Enable Push Notifications
-    string threadDB = 5; // Address for Database
+    bool autoUpdate = 5; // Enable Auto Update Events
+    int32 olcRange = 6;  // OLC Range Value for Local Topic (Default: 6)
+  }
+
+  // IP Address Interface
+  message IPAddress {
+    string name = 1;   // Name of Interface
+    string value = 2;  // IP Address of Interface
+    string mac = 3;    // Mac Address of Interface
+    bool internal = 4; // Wether it is a Loopback Interface
+    Family family = 5; // Address Family
+
+    enum Family {
+      IPV4 = 0; // IPv4 Address
+      IPV6 = 1; // IPv6 Address
+    }
   }
 }
 
@@ -137,30 +161,31 @@ message InviteRequest {
   Peer to = 3;           // Receivers Peer Data
   Transfer transfer = 4; // Attached Data
   Type type = 5;         // Type of Invite
-  string protocol = 6;   // Name of Protocol
+  string protocol = 6;   // Protocol for Invite
 
   enum Type {
-    None = 0;   // No Type
-    Local = 1;  // Local Transfer
-    Flat = 2;   // Flat Transfer
-    Remote = 3; // Remote Transfer
+    NONE = 0;   // No Type
+    LOCAL = 1;  // Local Transfer
+    FLAT = 2;   // Flat Transfer
+    REMOTE = 3; // Remote Transfer
   }
 }
 
 // Reply Message sent on RPC
 message InviteResponse {
-  Type type = 1;         // Cancel Reply
-  bool decision = 2;     // Users Decision for the Invitation
+  bool decision = 1;     // Peer Decision for Invite Request
+  Payload payload = 2;   // Type of Transfer
   Peer from = 3;         // Users Peer Data
   Peer to = 4;           // Receivers Peer Data
-  bool flatMode = 5;     // Flat Transfer
-  Transfer transfer = 6; // Card contains all Data Info, Transfer Info
-  string protocol = 7;   // Name of Protocol
+  Transfer transfer = 5; // Attached Data
+  Type type = 6;         // Type of Invite
+  string protocol = 7;   // Protocol for Invite
 
   enum Type {
-    None = 0;     // No Type
-    Transfer = 1; // Transfer
-    Contact = 2;  // Contact
+    NONE = 0;   // No Type
+    LOCAL = 1;  // Local Transfer
+    FLAT = 2;   // Flat Transfer
+    REMOTE = 3; // Remote Transfer
   }
 }
 
@@ -197,8 +222,7 @@ message UpdateRequest {
     Peer.Properties properties = 1; // Updated Peer Properties
     Contact contact = 2;            // Users Updated Contact Card
     Position position = 3;          // Users updated Position
-    ConnectionRequest.InternetType connectivity = 4; // Internet Type Changed
-    string pushToken = 5;                            // Push Notification token
+    string pushToken = 4;           // Push Notification token
   }
 }
 
@@ -227,9 +251,8 @@ message VerifyRequest {
 
 // Message for Verification Response
 message VerifyResponse {
-  bool isVerified = 1;    // Result for Verification
-  string publicKey = 2;   // Base64 Encoded Public Key
-  ErrorMessage error = 3; // In Case Error Occurred
+  bool isVerified = 1;  // Result for Verification
+  string publicKey = 2; // Base64 Encoded Public Key
 }
 
 // --------------------------- //
@@ -242,12 +265,13 @@ message CompleteEvent {
 
   // Traffic Direction of Session
   enum Direction {
-    Default = 0;  // From Memory/Viewing
-    Incoming = 1; // Incoming Transfer
-    Outgoing = 2; // Outgoing Transfer
+    DEFAULT = 0;  // From Memory/Viewing
+    INCOMING = 1; // Incoming Transfer
+    OUTGOING = 2; // Outgoing Transfer
   }
 }
-// List of Pending Invites through Mailbox
+
+// Received Mail Event
 message MailEvent {
   int32 createdAt = 1;      // Time of Creation
   string to = 2;            // Recipient
@@ -329,22 +353,48 @@ message GenericEvent {
 // -------------------------------- //
 // -------- RPC Service ----------- //
 // -------------------------------- //
+// Blank Message for Nil Request
+message NoRequest {}
+
+// Blank Message for Nil Response
+message NoResponse {}
+
+// RPC Service with Equivalent Methods of a binded Node
 service NodeService {
-  rpc Initialize(InitializeRequest) returns (GenericResponse) {}
-  rpc Connect(ConnectionRequest) returns (GenericResponse) {}
+  // Initializes New Node
+  rpc Initialize(InitializeRequest) returns (NoResponse) {}
+
+  // Starts Method Host and Connects to Network
+  rpc Connect(ConnectionRequest) returns (NoResponse) {}
+
+  // Action method handles misceallaneous actions for node
   rpc Action(ActionRequest) returns (ActionResponse) {}
+
+  // Signing Method Request for Data
   rpc Sign(AuthRequest) returns (AuthResponse) {}
+
+  // Verification Method Request for Signed Data
   rpc Verify(VerifyRequest) returns (VerifyResponse) {}
-  rpc Update(UpdateRequest) returns (GenericResponse) {}
-  rpc Invite(InviteRequest) returns (GenericResponse) {}
-  rpc Respond(InviteResponse) returns (GenericResponse) {}
+
+  // Update Method proximity/direction and Notify Lobby
+  rpc Update(UpdateRequest) returns (NoResponse) {}
+
+  // Invite Method Processes Data and Sends Invite to Peer
+  rpc Invite(InviteRequest) returns (NoResponse) {}
+
+  // Respond Method to an Invite with Decision
+  rpc Respond(InviteResponse) returns (NoResponse) {}
+
+  // Mail Method handles request for a message in Mailbox
   rpc Mail(MailboxRequest) returns (MailboxResponse) {}
-  rpc OnComplete(GenericRequest) returns (stream CompleteEvent) {}
-  rpc OnInvite(GenericRequest) returns (stream InviteRequest) {}
-  rpc OnReply(GenericRequest) returns (stream InviteResponse) {}
-  rpc OnMail(GenericRequest) returns (stream MailEvent) {}
-  rpc OnProgress(GenericRequest) returns (stream ProgressEvent) {}
-  rpc OnStatus(GenericRequest) returns (stream StatusEvent) {}
-  rpc OnTopic(GenericRequest) returns (stream TopicEvent) {}
-  rpc OnError(GenericRequest) returns (stream ErrorMessage) {}
+
+  //
+  rpc OnStatus(NoRequest) returns (stream StatusEvent) {}
+  rpc OnTopic(NoRequest) returns (stream TopicEvent) {}
+  rpc OnInvite(NoRequest) returns (stream InviteRequest) {}
+  rpc OnReply(NoRequest) returns (stream InviteResponse) {}
+  rpc OnMail(NoRequest) returns (stream MailEvent) {}
+  rpc OnProgress(NoRequest) returns (stream ProgressEvent) {}
+  rpc OnComplete(NoRequest) returns (stream CompleteEvent) {}
+  rpc OnError(NoRequest) returns (stream ErrorEvent) {}
 }

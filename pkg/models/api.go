@@ -12,6 +12,36 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+// ** ─── ConnectionRequest MANAGEMENT ────────────────────────────────────────────────────────
+// Method Returns Formatted Info for Address
+func (ip *ConnectionRequest_IPAddress) Info() string {
+	return fmt.Sprintf("%s \n \t(%s) \n \t\tAddress: %s \n \t\tMac: %s \n \t\tIs Internal: %t \n", ip.GetName(), ip.GetFamily().String(), ip.GetValue(), ip.GetMac(), ip.GetInternal())
+}
+
+// Method Checks if this Address is IPv4 and not a Loopback
+func (ip *ConnectionRequest_IPAddress) IsIPv4() bool {
+	return ip.GetFamily() == ConnectionRequest_IPAddress_IPV4 && !ip.GetInternal()
+}
+
+// Method Checks if this Address is IPv6 and not a Loopback
+func (ip *ConnectionRequest_IPAddress) IsIPv6() bool {
+	return ip.GetFamily() == ConnectionRequest_IPAddress_IPV6 && !ip.GetInternal()
+}
+
+// Method Converts this IPAddress into a MultiAddress String
+func (ip *ConnectionRequest_IPAddress) MultiAddrStr(onlyIPv4 bool, port int) (string, error) {
+	if ip.IsIPv4() {
+		LogInfo(ip.Info())
+		return fmt.Sprintf("/ip4/%s/tcp/%d", ip.GetValue(), port), nil
+	} else if ip.IsIPv6() && !onlyIPv4 {
+		LogInfo(ip.Info())
+		return fmt.Sprintf("/ip6/%s/tcp/%d", ip.GetValue(), port), nil
+	} else {
+		return "", fmt.Errorf("Invalid IP Address")
+	}
+
+}
+
 // ** ─── VerifyRequest MANAGEMENT ────────────────────────────────────────────────────────
 // Checks if VerifyRequest is for String Value
 func (vr *VerifyRequest) IsString() bool {
@@ -229,7 +259,7 @@ func (u *URLLink) SetData() {
 // ** ─── InviteResponse MANAGEMENT ────────────────────────────────────────────────────────
 // Checks if Peer Accepted Transfer
 func (r *InviteResponse) HasAcceptedTransfer() bool {
-	return r.GetDecision() && r.GetType() == InviteResponse_Transfer
+	return r.GetDecision() && r.GetPayload().IsTransfer()
 }
 
 // Returns Protocol ID Set by Peer
@@ -270,7 +300,7 @@ func (i *InviteRequest) IsPayloadUrl() bool {
 
 // Checks for Flat Invite
 func (i *InviteRequest) IsFlatInvite() bool {
-	return i.GetType() == InviteRequest_Flat
+	return i.GetType() == InviteRequest_FLAT
 }
 
 // Returns Protocol ID Set by Peer
@@ -282,12 +312,6 @@ func (r *InviteRequest) ProtocolID() protocol.ID {
 func (i *InviteRequest) SetProtocol(p SonrProtocol, id peer.ID) protocol.ID {
 	// Initialize
 	protocolName := fmt.Sprintf("/sonr/%s/%s", p.Method(), id.String())
-
-	// // Get Nano ID
-	// nanoid, err := gonanoid.Generate(id.Pretty(), 24)
-	// if err == nil {
-	// 	protocolName = fmt.Sprintf("/sonr/%s/%s", p.Method(), nanoid)
-	// }
 
 	// Set Name and Return ID
 	i.Protocol = protocolName
@@ -302,8 +326,8 @@ func (u *User) SignInvite(i *InviteRequest) *InviteRequest {
 	}
 
 	// Set Type
-	if i.Type == InviteRequest_None {
-		i.Type = InviteRequest_Local
+	if i.Type == InviteRequest_NONE {
+		i.Type = InviteRequest_LOCAL
 	}
 	return i
 }
@@ -326,20 +350,8 @@ func (req *InviteRequest) ToPushMessage() *PushMessage {
 }
 
 // ** ─── Location MANAGEMENT ────────────────────────────────────────────────────────
-func (l *Location) MinorOLC() string {
-	lat := l.GetLatitude()
-	lon := l.GetLongitude()
-	return olc.Encode(lat, lon, 6)
-}
-
-func (l *Location) MajorOLC() string {
-	lat := l.GetLatitude()
-	lon := l.GetLongitude()
-	return olc.Encode(lat, lon, 2)
-}
-
-func (l *Location) OLC() string {
-	return olc.Encode(float64(l.GetLatitude()), float64(l.GetLongitude()), 8)
+func (l *Location) OLC(scope int) string {
+	return olc.Encode(float64(l.GetLatitude()), float64(l.GetLongitude()), scope)
 }
 
 // ** ─── Router MANAGEMENT ────────────────────────────────────────────────────────
@@ -382,7 +394,7 @@ func (u *User) SetConnected(value bool) *StatusEvent {
 	}
 
 	// Returns Status Update
-	return &StatusEvent{Value: u.GetStatus()}
+	return &StatusEvent{Value: u.Status}
 }
 
 // Update Bootstrap Connection Status
@@ -395,7 +407,7 @@ func (u *User) SetAvailable(value bool) *StatusEvent {
 	}
 
 	// Returns Status Update
-	return &StatusEvent{Value: u.GetStatus()}
+	return &StatusEvent{Value: u.Status}
 }
 
 // Update Node Status
@@ -404,17 +416,17 @@ func (u *User) SetStatus(ns Status) *StatusEvent {
 	u.Status = ns
 
 	// Returns Status Update
-	return &StatusEvent{Value: u.GetStatus()}
+	return &StatusEvent{Value: u.Status}
 }
 
 // Checks if Status is Given Value
 func (u *User) IsStatus(gs Status) bool {
-	return u.GetStatus() == gs
+	return u.Status == gs
 }
 
 // Checks if Status is Not Given Value
 func (u *User) IsNotStatus(gs Status) bool {
-	return u.GetStatus() != gs
+	return u.Status != gs
 }
 
 // ** ─── Generic Callback MANAGEMENT ───────────────────────────────────────────

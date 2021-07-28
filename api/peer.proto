@@ -46,9 +46,9 @@ message Lobby {
   Status status = 3;
 
   enum Status {
-    Empty = 0; // When there are No Peers in Local Topic
-    Few = 1;   // When there are <= 5 Peers in Local Topic
-    Many = 2;  // When there are > 5 Peers in Local Topic
+    EMPTY = 0; // When there are No Peers in Local Topic
+    FEW = 1;   // When there are <= 5 Peers in Local Topic
+    MANY = 2;  // When there are > 5 Peers in Local Topic
   }
 }
 
@@ -115,9 +115,9 @@ message Peer {
   message ID {
     string peer = 1;      // Host PeerID
     string device = 2;    // Device ID
-    string multiAddr = 4; // Peer MultiAddr
-    string publicKey = 5; // Public Key of Peer
-    string pushToken = 6; // Push Notification token
+    string multiAddr = 3; // Peer MultiAddr
+    string publicKey = 4; // Public Key of Peer
+    string pushToken = 5; // Push Notification token
   }
 
   // Properties
@@ -187,6 +187,7 @@ message Profile {
   Platform platform = 5; // Peers Device Operating System
 }
 
+// Topic Information
 message Topic {
   // Topic Type and Name
   Type type = 1;   // Type of Topic

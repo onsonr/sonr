@@ -119,6 +119,7 @@ func (sc *serviceClient) SendMail(inv *md.InviteRequest) *md.SonrError {
 	return nil
 }
 
+// Method Handles a given Mailbox Request for a Message
 func (sc *serviceClient) HandleMailbox(req *md.MailboxRequest) (*md.MailboxResponse, *md.SonrError) {
 	if req.Action == md.MailboxRequest_READ {
 		// Set Mailbox Message as Read
@@ -152,7 +153,7 @@ func (sc *serviceClient) HandleMailbox(req *md.MailboxRequest) (*md.MailboxRespo
 		return &md.MailboxResponse{
 			Success: false,
 			Action:  md.MailboxResponse_Action(req.Action),
-		}, md.NewErrorWithType(md.ErrorMessage_MAILBOX_ACTION_INVALID)
+		}, md.NewErrorWithType(md.ErrorEvent_MAILBOX_ACTION_INVALID)
 	}
 }
 

@@ -26,7 +26,8 @@ BIND_ANDROID_ARTIFACT= $(BIND_DIR_ANDROID)/io.sonr.core.aar
 PROTO_DIR_GO=$(SONR_ROOT_DIR)/core/pkg
 PROTO_DIR_DART=$(SONR_ROOT_DIR)/plugin/lib/src/data/protobuf
 PROTO_DIR_DOCS=$(SONR_ROOT_DIR)/docs
-PROTO_DIR_JS=$(SONR_ROOT_DIR)/electron/src/assets/proto
+#PROTO_DIR_JS=$(SONR_ROOT_DIR)/electron/src/assets/models
+PROTO_DIR_RPC=$(SONR_ROOT_DIR)/electron/src/assets/proto
 
 # @ Proto Items Lists
 PROTO_LIST_ALL=api.proto data.proto core.proto peer.proto error.proto user.proto
@@ -37,7 +38,8 @@ PROTO_GEN_GO="--go_out=$(PROTO_DIR_GO)"
 PROTO_GEN_RPC="--go-grpc_out=$(PROTO_DIR_GO)"
 PROTO_GEN_DART="--dart_out=$(PROTO_DIR_DART)"
 PROTO_GEN_DOCS="--doc_out=$(PROTO_DIR_DOCS)"
-PROTO_CP_JS=$(PROTO_DEF_PATH)/{api.proto,data.proto,peer.proto,error.proto,user.proto}
+#PROTO_GEN_JS="--js_out=import_style=commonjs,binary:$(PROTO_DIR_JS)"
+PROTO_CP_RPC=$(PROTO_DEF_PATH)/{api.proto,data.proto,peer.proto,error.proto,user.proto}
 
 # @ Distribution Release Variables
 DIST_DIR=$(SONR_ROOT_DIR)/core/cmd/dist
@@ -102,16 +104,16 @@ proto:
 	@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_GO) $(PROTO_LIST_ALL)
 	@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_RPC) $(PROTO_LIST_ALL)
 	@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_DART) $(PROTO_LIST_CLIENT)
-	@cp $(PROTO_CP_JS) $(PROTO_DIR_JS)
+#@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_JS) $(PROTO_LIST_CLIENT)
+	@cp $(PROTO_CP_RPC) $(PROTO_DIR_RPC)
 	@echo "✅ Finished Compiling ➡ " && date
 	@echo ""
 
 ##
 ## [release]   :   Upload RPC Binary Artifact to S3
-release: proto
+release:
 	@echo "Bumping Release Version..."
-	@cd $(CORE_DIR) && git add .
-	@cd $(CORE_DIR) && git commit -m "Updated RPC Binary Release"
+	@cd $(CORE_DIR) && gitmoji -c
 	@cd $(CORE_DIR) && bump patch
 	@echo "Building Artifacts..."
 	@cd $(CORE_CMD_DIR) && goreleaser release --rm-dist
@@ -124,9 +126,11 @@ release: proto
 	@rm -rf $(DIST_DIR_LINUX_AMD)
 	@rm -rf $(DIST_DIR_LINUX_ARM)
 	@rm -rf $(DIST_DIR_WIN)
+	@echo "✅ Finished Releasing RPC Binary ➡ " && date
+	@cd /System/Library/Sounds && afplay Glass.aiff
 
 ## [upgrade]   :   Binds Binary, Creates Protobufs, and Updates App
-upgrade: proto bind.ios bind.android
+upgrade: proto bind.ios bind.android release
 	@go mod tidy
 	@echo "-----------------------------------------------------------"
 	@echo "------------- 🔄  START PLUGIN UPDATE 🔄 -------------------"

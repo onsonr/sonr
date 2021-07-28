@@ -26,7 +26,7 @@ func (d *Device) Initialize(r *InitializeRequest) *SonrError {
 	if d.GetId() == "" {
 		id, err := machineid.ID()
 		if err != nil {
-			return NewError(err, ErrorMessage_DEVICE_ID)
+			return NewError(err, ErrorEvent_DEVICE_ID)
 		}
 
 		// Set ID
@@ -57,14 +57,14 @@ func (d *Device) loadKeyPair() *SonrError {
 	// Get Private Key from Buffer
 	privKey, err := crypto.UnmarshalPrivateKey(privBuf)
 	if err != nil {
-		return NewError(err, ErrorMessage_KEY_INVALID)
+		return NewError(err, ErrorEvent_KEY_INVALID)
 	}
 
 	// Get Public Key from Private and Marshal
 	pubKey := privKey.GetPublic()
 	pubBuf, err := crypto.MarshalPublicKey(pubKey)
 	if err != nil {
-		return NewError(err, ErrorMessage_KEY_SET)
+		return NewError(err, ErrorEvent_KEY_SET)
 	}
 
 	// Set Key Pair
@@ -87,25 +87,25 @@ func (d *Device) newKeyPair() *SonrError {
 	// Create New Key
 	privKey, pubKey, err := crypto.GenerateEd25519Key(rand.Reader)
 	if err != nil {
-		return NewError(err, ErrorMessage_HOST_KEY)
+		return NewError(err, ErrorEvent_HOST_KEY)
 	}
 
 	// Marshal Data
 	privBuf, err := crypto.MarshalPrivateKey(privKey)
 	if err != nil {
-		return NewError(err, ErrorMessage_MARSHAL)
+		return NewError(err, ErrorEvent_MARSHAL)
 	}
 
 	// Marshal Data
 	pubBuf, err := crypto.MarshalPublicKey(pubKey)
 	if err != nil {
-		return NewError(err, ErrorMessage_MARSHAL)
+		return NewError(err, ErrorEvent_MARSHAL)
 	}
 
 	// Write Private Key to File
 	path, werr := d.WriteKey(privBuf)
 	if werr != nil {
-		return NewError(err, ErrorMessage_USER_SAVE)
+		return NewError(err, ErrorEvent_USER_SAVE)
 	}
 
 	// Set Keys
@@ -139,7 +139,7 @@ func (d *Device) resetKeyPair() *SonrError {
 func (kp *KeyPair) ID() (peer.ID, *SonrError) {
 	id, err := peer.IDFromPublicKey(kp.PubKey())
 	if err != nil {
-		return "", NewError(err, ErrorMessage_KEY_ID)
+		return "", NewError(err, ErrorEvent_KEY_ID)
 	}
 	return id, nil
 }
@@ -274,7 +274,7 @@ func (d *FileSystem) IsDirectory(rootDir *FileSystem_Directory, subDir string) b
 func (d *Device) ReadKey() ([]byte, *SonrError) {
 	dat, err := os.ReadFile(d.WorkingKeyPath())
 	if err != nil {
-		return nil, NewError(err, ErrorMessage_USER_LOAD)
+		return nil, NewError(err, ErrorEvent_USER_LOAD)
 	}
 	return dat, nil
 }
@@ -286,12 +286,12 @@ func (d *FileSystem_Directory) ReadFile(name string) ([]byte, *SonrError) {
 
 	// @ Check for Path
 	if _, err := os.Stat(path); os.IsNotExist(err) {
-		return nil, NewError(err, ErrorMessage_USER_LOAD)
+		return nil, NewError(err, ErrorEvent_USER_LOAD)
 	} else {
 		// @ Read User Data File
 		dat, err := os.ReadFile(path)
 		if err != nil {
-			return nil, NewError(err, ErrorMessage_USER_LOAD)
+			return nil, NewError(err, ErrorEvent_USER_LOAD)
 		}
 		return dat, nil
 	}
@@ -327,7 +327,7 @@ func (d *Device) WriteKey(data []byte) (string, *SonrError) {
 
 	// Write File to Disk
 	if err := os.WriteFile(path, data, 0644); err != nil {
-		return "", NewError(err, ErrorMessage_USER_FS)
+		return "", NewError(err, ErrorEvent_USER_FS)
 	}
 	return path, nil
 }
@@ -339,7 +339,7 @@ func (d *Device) WriteFile(name string, data []byte) (string, *SonrError) {
 
 	// Write File to Disk
 	if err := os.WriteFile(path, data, 0644); err != nil {
-		return "", NewError(err, ErrorMessage_USER_FS)
+		return "", NewError(err, ErrorEvent_USER_FS)
 	}
 	return path, nil
 }
@@ -452,32 +452,27 @@ func (u *User) UpdateContact(c *Contact) {
 }
 
 // Method Updates User Position
-func (u *User) UpdatePosition(pos *Position) {
-	facing := pos.GetFacing()
-	heading := pos.GetHeading()
-
+func (u *User) UpdatePosition(faceDir float64, headDir float64, orientation *Position_Orientation) {
 	// Update User Values
-	var faceDir float64
 	var faceAnpd float64
-	var headDir float64
 	var headAnpd float64
-	faceDir = math.Round(facing.Direction*100) / 100
-	headDir = math.Round(heading.Direction*100) / 100
-	faceDesg := int((facing.Direction / 11.25) + 0.25)
-	headDesg := int((heading.Direction / 11.25) + 0.25)
+	faceDir = math.Round(faceDir*100) / 100
+	headDir = math.Round(headDir*100) / 100
+	faceDesg := int((faceDir / 11.25) + 0.25)
+	headDesg := int((headDir / 11.25) + 0.25)
 
 	// Find Antipodal
-	if facing.Direction > 180 {
-		faceAnpd = math.Round((facing.Direction-180)*100) / 100
+	if faceDir > 180 {
+		faceAnpd = math.Round((faceDir-180)*100) / 100
 	} else {
-		faceAnpd = math.Round((facing.Direction+180)*100) / 100
+		faceAnpd = math.Round((faceDir+180)*100) / 100
 	}
 
 	// Find Antipodal
-	if heading.Direction > 180 {
-		headAnpd = math.Round((heading.Direction-180)*100) / 100
+	if headDir > 180 {
+		headAnpd = math.Round((headDir-180)*100) / 100
 	} else {
-		headAnpd = math.Round((heading.Direction+180)*100) / 100
+		headAnpd = math.Round((headDir+180)*100) / 100
 	}
 
 	// Set Position
@@ -492,7 +487,7 @@ func (u *User) UpdatePosition(pos *Position) {
 			Antipodal: headAnpd,
 			Cardinal:  Cardinal(headDesg % 32),
 		},
-		Orientation: pos.GetOrientation(),
+		Orientation: orientation,
 	}
 }
 
@@ -512,9 +507,10 @@ func (u *User) VerifyRead() *VerifyResponse {
 // ^ Signs InviteResponse with Flat Contact
 func (u *User) ReplyToFlat(from *Peer) *InviteResponse {
 	return &InviteResponse{
-		Type:     InviteResponse_Contact,
-		FlatMode: true,
-		From:     u.GetPeer(),
+		Type:    InviteResponse_FLAT,
+		To:      from,
+		Payload: Payload_CONTACT,
+		From:    u.GetPeer(),
 		Transfer: &Transfer{
 			// SQL Properties
 			Payload:  Payload_CONTACT,
@@ -531,21 +527,35 @@ func (u *User) ReplyToFlat(from *Peer) *InviteResponse {
 }
 
 // ^ NewUpdateEvent Creates Lobby Event with Peer Data ^
-func (p *Peer) NewUpdateEvent(topic *Topic) *TopicEvent {
+func (u *User) NewUpdateEvent(topic *Topic, id peer.ID) *TopicEvent {
 	return &TopicEvent{
 		Subject: TopicEvent_UPDATE,
-		Peer:    p,
-		Id:      p.Id.Peer,
+		Peer:    u.GetPeer(),
+		Id:      id.String(),
+		Topic:   topic,
+	}
+}
+
+// ^ NewDefaultUpdateEvent Updates Peer with Default Position and Returns Lobby Event with Peer Data ^
+func (u *User) NewDefaultUpdateEvent(topic *Topic, id peer.ID) *TopicEvent {
+	// Update Peer
+	u.UpdatePosition(DefaultPosition().Parameters())
+
+	// Return Event
+	return &TopicEvent{
+		Subject: TopicEvent_UPDATE,
+		Peer:    u.GetPeer(),
+		Id:      id.String(),
 		Topic:   topic,
 	}
 }
 
 // ^ NewUpdateEvent Creates Lobby Event with Peer Data ^
-func (p *Peer) NewExitEvent(topic *Topic) *TopicEvent {
+func (u *User) NewExitEvent(topic *Topic, id peer.ID) *TopicEvent {
 	return &TopicEvent{
 		Subject: TopicEvent_EXIT,
-		Peer:    p,
-		Id:      p.Id.Peer,
+		Peer:    u.GetPeer(),
+		Id:      id.String(),
 		Topic:   topic,
 	}
 }

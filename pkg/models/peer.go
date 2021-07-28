@@ -22,17 +22,24 @@ func (t *Topic) IsLocal() bool {
 }
 
 // @ Local Lobby Topic Protocol ID
-func (r *User) NewLocalTopic() *Topic {
-	name := fmt.Sprintf("/sonr/topic/%s", r.Location.OLC())
+func (r *User) NewLocalTopic(opts *ConnectionRequest_ServiceOptions) *Topic {
+	// Initialize Set OLC Range
+	scope := 6
+	if opts.GetOlcRange() > 0 {
+		scope = int(opts.GetOlcRange())
+	}
+
+	// Return Topic
 	return &Topic{
-		Name: name,
+		Name: fmt.Sprintf("/sonr/topic/%s", r.Location.OLC(scope)),
 		Type: Topic_LOCAL,
 	}
 }
 
 // ** ─── Peer MANAGEMENT ────────────────────────────────────────────────────────
-// ^ Create New Peer from Connection Request and Host ID ^ //
-func (u *User) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) *SonrError {
+// ^ Set Peer from Connection Request and Host ID ^ //
+func (u *User) SetPeer(id peer.ID, maddr multiaddr.Multiaddr) *SonrError {
+	// Set Peer
 	u.Peer = &Peer{
 		SName: u.SName,
 		Id: &Peer_ID{
@@ -46,12 +53,51 @@ func (u *User) NewPeer(id peer.ID, maddr multiaddr.Multiaddr) *SonrError {
 		Platform: u.Device.Platform,
 		Model:    u.Device.Model,
 	}
+
+	// Log Peer
+	LogInfo(u.Peer.String())
 	return nil
+}
+
+// ** ─── Position MANAGEMENT ────────────────────────────────────────────────────────
+func DefaultPosition() *Position {
+	return &Position{
+		Heading: &Position_Compass{
+			Direction: 0,
+			Antipodal: 180,
+			Cardinal:  Cardinal_N,
+		},
+		Facing: &Position_Compass{
+			Direction: 0,
+			Antipodal: 180,
+			Cardinal:  Cardinal_N,
+		},
+		Orientation: &Position_Orientation{
+			Pitch: 0.0,
+			Roll:  0.0,
+			Yaw:   0.0,
+		},
+	}
+}
+
+// Returns Facing Direction
+func (p *Position) FaceDirection() float64 {
+	return p.GetFacing().GetDirection()
+}
+
+// Returns Heading Direction
+func (p *Position) HeadDirection() float64 {
+	return p.GetHeading().GetDirection()
+}
+
+// Returns Values Needed to Update Peer Instance
+func (p *Position) Parameters() (float64, float64, *Position_Orientation) {
+	return p.HeadDirection(), p.FaceDirection(), p.GetOrientation()
 }
 
 // ** ─── Local Event MANAGEMENT ────────────────────────────────────────────────────────
 // Creates New Exit Local Event
-func NewJoinLocalEvent(peer *Peer) *TopicEvent {
+func NewJoinEvent(peer *Peer) *TopicEvent {
 	return &TopicEvent{
 		Id:      peer.Id.Peer,
 		Peer:    peer,
@@ -60,7 +106,7 @@ func NewJoinLocalEvent(peer *Peer) *TopicEvent {
 }
 
 // Creates New Exit Local Event
-func NewUpdateLocalEvent(peer *Peer, topic *Topic) *TopicEvent {
+func NewUpdateEvent(peer *Peer, topic *Topic) *TopicEvent {
 	return &TopicEvent{
 		Id:      peer.Id.Peer,
 		Peer:    peer,
@@ -70,7 +116,7 @@ func NewUpdateLocalEvent(peer *Peer, topic *Topic) *TopicEvent {
 }
 
 // Creates New Exit Local Event
-func NewExitLocalEvent(id string, topic *Topic) *TopicEvent {
+func NewExitEvent(id string, topic *Topic) *TopicEvent {
 	return &TopicEvent{
 		Id:      id,
 		Subject: TopicEvent_EXIT,
@@ -102,13 +148,13 @@ func (p *Peer) PublicKey() (crypto.PubKey, *SonrError) {
 	// Get ID from Public Key
 	buf, err := crypto.ConfigDecodeKey(p.GetId().GetPublicKey())
 	if err != nil {
-		return nil, NewError(err, ErrorMessage_PEER_PUBKEY_DECODE)
+		return nil, NewError(err, ErrorEvent_PEER_PUBKEY_DECODE)
 	}
 
 	// Unmarshal Public Key
 	pubKey, err := crypto.UnmarshalPublicKey(buf)
 	if err != nil {
-		return nil, NewError(err, ErrorMessage_PEER_PUBKEY_UNMARSHAL)
+		return nil, NewError(err, ErrorEvent_PEER_PUBKEY_UNMARSHAL)
 	}
 	return pubKey, nil
 }
@@ -159,7 +205,7 @@ func (p *Peer) ThreadKey() (thread.PubKey, *SonrError) {
 // ^ Returns Peer Push Token
 func (p *Peer) PushToken() (string, *SonrError) {
 	if p.Id.GetPushToken() == "" {
-		return "", NewError(nil, ErrorMessage_PEER_PUSH_TOKEN_EMPTY)
+		return "", NewError(nil, ErrorEvent_PEER_PUSH_TOKEN_EMPTY)
 	}
 	return p.Id.GetPushToken(), nil
 }
