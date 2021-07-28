@@ -25,53 +25,48 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-        #        if: startsWith(github.ref, 'refs/tags/')
         with:
           fetch-depth: 0
 
       # Setup Go Enviornment
       - uses: actions/setup-go@v1
-      #        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          go-version: 1.16.6
 
       # Download and Initialize Gomobile
       - name: Setup Gomobile
-        #        if: startsWith(github.ref, 'refs/tags/')
         run: |
           go get golang.org/x/mobile/bind
           gomobile init
 
       # Create a Build Directory
       - name: Create Build Directory
-        #        if: startsWith(github.ref, 'refs/tags/')
         run: |
           mkdir -p ${{ github.workspace }}/build/ios
           mkdir -p ${{ github.workspace }}/build/android
 
       # Bind iOS Framework to Plugin
       - name: Bind iOS Framework
-        #        if: startsWith(github.ref, 'refs/tags/')
         run: |
           cd ${{ github.workspace }}/bind && gomobile bind -ldflags='-s -w' -v -target=ios -bundleid=io.sonr.core -o ${{ github.workspace }}/build/ios/Core.framework
 
       # Bind Android Framework to Plugin
       - name: Bind Android Framework
-        #        if: startsWith(github.ref, 'refs/tags/')
         run: |
           cd ${{ github.workspace }}/bind && gomobile bind -ldflags='-s -w' -v -target=android -o ${{ github.workspace }}/build/android/io.sonr.core.aar
 
       # Change Directory to cmd
       - name: Change Directory to cmd
-        #        if: startsWith(github.ref, 'refs/tags/')
         run: cd ${{ github.workspace }}/cmd
 
       # Build Cmd with Goreleaser
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
-        #        if: startsWith(github.ref, 'refs/tags/')
         with:
-          # either 'goreleaser' (default) or 'goreleaser-pro'
           distribution: goreleaser
           version: latest
           args: release --rm-dist
         env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
