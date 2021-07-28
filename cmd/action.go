@@ -14,14 +14,14 @@ func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.Act
 	switch req.Action {
 	case md.Action_PING:
 		// Ping
-		logRPC("action", "ping")
+		md.LogRPC("action", "ping")
 		return &md.ActionResponse{
 			Success: true,
 			Action:  md.Action_PING,
 		}, nil
 	case md.Action_LOCATION:
 		// Location
-		logRPC("action", "location")
+		md.LogRPC("action", "location")
 		return &md.ActionResponse{
 			Success: true,
 			Action:  md.Action_LOCATION,
@@ -31,7 +31,7 @@ func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.Act
 		}, nil
 	case md.Action_URL_LINK:
 		// URL Link
-		logRPC("action", "url")
+		md.LogRPC("action", "url")
 		return &md.ActionResponse{
 			Success: true,
 			Action:  md.Action_URL_LINK,
@@ -41,7 +41,7 @@ func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.Act
 		}, nil
 	case md.Action_PAUSE:
 		// Pause
-		logRPC("action", "pause")
+		md.LogRPC("action", "pause")
 		s.state = md.Lifecycle_PAUSED
 		s.client.Lifecycle(s.state, s.local)
 		md.GetState().Pause()
@@ -54,7 +54,7 @@ func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.Act
 		}, nil
 	case md.Action_RESUME:
 		// Resume
-		logRPC("action", "resume")
+		md.LogRPC("action", "resume")
 		s.state = md.Lifecycle_ACTIVE
 		s.client.Lifecycle(s.state, s.local)
 		md.GetState().Resume()
@@ -68,7 +68,7 @@ func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.Act
 		}, nil
 	case md.Action_STOP:
 		// Stop
-		logRPC("action", "stop")
+		md.LogRPC("action", "stop")
 		s.state = md.Lifecycle_STOPPED
 		s.client.Lifecycle(s.state, s.local)
 		return &md.ActionResponse{
@@ -79,7 +79,7 @@ func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.Act
 			},
 		}, nil
 	default:
-		logRPC("action", false)
+		md.LogRPC("action", false)
 		return nil, fmt.Errorf("Action: %s not supported", req.Action)
 	}
 }

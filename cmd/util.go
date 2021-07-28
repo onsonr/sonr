@@ -1,10 +1,6 @@
 package main
 
 import (
-	"fmt"
-	"log"
-	"strings"
-
 	md "github.com/sonr-io/core/pkg/models"
 )
 
@@ -39,11 +35,4 @@ func (s *NodeServer) setStatus(newStatus md.Status) {
 
 	// Callback Status
 	s.statusEvents <- su
-}
-
-// logRPC is a helper function to log RPC events
-func logRPC(event string, value interface{}) {
-	ev := strings.ToUpper(event)
-	val := fmt.Sprint(value)
-	log.Println(fmt.Sprintf("(SONR_RPC)-%s=%s", ev, val))
 }

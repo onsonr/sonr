@@ -42,17 +42,17 @@ func main() {
 	// Create a new gRPC server
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", util.RPC_SERVER_PORT))
 	if err != nil {
-		logRPC("online", false)
+		md.LogRPC("online", false)
 		log.Fatal(err)
 	}
-	logRPC("online", true)
+	md.LogRPC("online", true)
 
 	// Set GRPC Server
 	chatServer := NodeServer{
 		// Defaults
-		ctx:                 context.Background(),
-		topics:              make(map[string]*sh.TopicManager, 10),
-		state:               md.Lifecycle_ACTIVE,
+		ctx:    context.Background(),
+		topics: make(map[string]*sh.TopicManager, 10),
+		state:  md.Lifecycle_ACTIVE,
 
 		// Event Channels
 		topicEvents:         make(chan *md.TopicEvent, util.MAX_CHAN_DATA),
@@ -71,10 +71,10 @@ func main() {
 	// Register the gRPC service
 	md.RegisterNodeServiceServer(grpcServer, &chatServer)
 	if err := grpcServer.Serve(listener); err != nil {
-		logRPC("serve", false)
+		md.LogRPC("serve", false)
 		log.Fatal(err)
 	}
-	logRPC("serve", true)
+	md.LogRPC("serve", true)
 }
 
 // Initialize method is called when a new node is created

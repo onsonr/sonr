@@ -123,6 +123,13 @@ func LogActivate(msg string) {
 	}
 }
 
+// ^ Method Logs a RPC Server Message
+func LogRPC(event string, value interface{}) {
+	ev := strings.ToUpper(event)
+	val := fmt.Sprint(value)
+	defaultLogger.Println(fmt.Sprintf("(SONR_RPC)-%s=%s", ev, val))
+}
+
 // ^ Method Logs a Success Message
 func LogSuccess(msg string) {
 	if loggerEnabled && loggerInfoEnabled {
