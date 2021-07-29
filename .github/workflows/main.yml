@@ -20,10 +20,11 @@ jobs:
 
     # Env Variables for the job
     env:
-      GOPATH: ${{ github.workspace }}
       GO111MODULE: on
       GONOPROXY: "github.com/sonr-io/*"
-      
+      GOPRIVATE: "github.com/sonr-io/*"
+      GOMOD: ${{ github.workspace }}/go.mod
+
     strategy:
       matrix:
         go-version: [1.16.x]
@@ -58,7 +59,7 @@ jobs:
       - name: Setup Gomobile
         run: |
           go get golang.org/x/mobile/bind
-          gomobile init
+          cd ${{ github.workspace }}/bind && gomobile init
 
       # Bind iOS Framework to Plugin
       - name: Bind iOS Framework
