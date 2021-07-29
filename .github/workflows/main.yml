@@ -14,9 +14,9 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # Runs the `build` job
-  build:
-    name: Build Frameworks and Binaries
+  # Runs the `gomobile bind -android` job
+  build-android:
+    name: Build Android AAR
 
     # Env Variables for the job
     env:
@@ -27,6 +27,39 @@ jobs:
     runs-on: macos-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      # Setup Go Enviornment
+      - name: Setup Go Env
+        uses: ibrt/golang-github-action@v1
+        with:
+          go-version: 1.16.6
+          go-packages: |
+            golang.org/x/mobile/cmd/gomobile
+
+      # Bind Android Framework to Plugin
+      - name: Setup and Bind AAR
+        run: |
+          go get golang.org/x/mobile && gomobile init
+          mkdir -p ${{ github.workspace }}/build/android
+          cd ${{ github.workspace }}/bind && gomobile bind -ldflags='-s -w' -v -target=android -o ${{ github.workspace }}/build/android/io.sonr.core.aar
+
+  # Runs the `gomobile bind -ios` job
+  build-ios:
+    name: Build iOS Framework
+
+    # Env Variables for the job
+    env:
+      GO111MODULE: on
+      GOMOD: ${{ github.workspace }}/go.mod
+
+    # The type of runner that the job will run on
+    runs-on: macos-latest
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout Repository
@@ -42,39 +75,38 @@ jobs:
           go-packages: |
             golang.org/x/mobile/cmd/gomobile
 
-      # Download and Initialize Gomobile
-      - name: Setup Gomobile
+      # Bind iOS Framework to Plugin
+      - name: Setup and Bind
         run: |
           go get golang.org/x/mobile && gomobile init
-
-      # Create a Build Directory
-      - name: Create Build Directory
-        run: |
           mkdir -p ${{ github.workspace }}/build/ios
-          mkdir -p ${{ github.workspace }}/build/android
-
-      # Bind iOS Framework to Plugin
-      - name: Bind iOS Framework
-        run: |
           cd ${{ github.workspace }}/bind && gomobile bind -ldflags='-s -w' -v -target=ios -bundleid=io.sonr.core -o ${{ github.workspace }}/build/ios/Core.framework
 
-      # Bind Android Framework to Plugin
-      - name: Bind Android Framework
-        run: |
-          cd ${{ github.workspace }}/bind && gomobile bind -ldflags='-s -w' -v -target=android -o ${{ github.workspace }}/build/android/io.sonr.core.aar
+  # Runs the `gomobile bind -ios` job
+  build-rpc:
+    name: Build RPC Binary
 
-      # Change Directory to cmd
-      - name: Change Directory to cmd
-        run: cd ${{ github.workspace }}/cmd
+    # Env Variables for the job
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+    # The type of runner that the job will run on
+    runs-on: macos-latest
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       # Build Cmd with Goreleaser
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
         with:
+          workdir: ${{ github.workspace }}/cmd
           distribution: goreleaser
           version: latest
           args: release --rm-dist
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
