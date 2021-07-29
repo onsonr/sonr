@@ -66,7 +66,7 @@ checksum:
   name_template: checksums.txt
   algorithm: sha256
 blobs:
-- bucket: sonr-rpc-releases
+- bucket: rpc-releases
   provider: s3
   region: us-west-1
   folder: '{{ .Tag }}'
