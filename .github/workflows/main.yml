@@ -18,6 +18,11 @@ jobs:
   build:
     name: Build Frameworks and Binaries
 
+    # Env Variables for the job
+    env:
+      GO111MODULE: on
+      GOMOD: ${{ github.workspace }}/go.mod
+
     # The type of runner that the job will run on
     runs-on: macos-latest
 
