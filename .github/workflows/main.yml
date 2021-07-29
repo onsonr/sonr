@@ -4,7 +4,8 @@ name: Core Workflow
 on:
   # Triggers the workflow on push or pull request events but only for the release branch
   push:
-    branches: [release]
+    tags:
+      - v*
 
   pull_request:
     branches: [release]
@@ -102,11 +103,6 @@ jobs:
   build-rpc:
     name: "RPC Daemon  🔨 "
 
-    # Env Variables for the job
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
     # The type of runner that the job will run on
     runs-on: macos-latest
     steps:
@@ -132,3 +128,5 @@ jobs:
           args: release --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
