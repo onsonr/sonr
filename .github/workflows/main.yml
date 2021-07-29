@@ -16,13 +16,10 @@ on:
 jobs:
   # Runs the `build` job
   build:
-    name: Setup Go and Dependencies
+    name: Build Frameworks and Binaries
 
     # The type of runner that the job will run on
     runs-on: macos-latest
-    strategy:
-      matrix:
-        go-version: [1.16.x]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -36,7 +33,7 @@ jobs:
       - name: Setup Go Environment
         uses: ibrt/golang-github-action@v1
         with:
-          go-version: ${{ matrix.go-version }}
+          go-version: 1.16.6
           go-packages: |
             golang.org/x/mobile/cmd/gomobile
 
