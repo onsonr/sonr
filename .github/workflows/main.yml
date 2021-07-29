@@ -20,15 +20,6 @@ jobs:
 
     # The type of runner that the job will run on
     runs-on: macos-latest
-
-    # Env Variables for the job
-    env:
-      GO111MODULE: on
-      GONOPROXY: "github.com/sonr-io/*"
-      GOPRIVATE: "github.com/sonr-io/*"
-      GOROOT: ${HOME}/goroot
-      GOPATH: ${{ github.workspace }}
-
     strategy:
       matrix:
         go-version: [1.16.x]
@@ -36,30 +27,28 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v2
         with:
           fetch-depth: 0
 
       # Setup Go Enviornment
-      - uses: actions/setup-go@v1
+      - name: Setup Go Environment
+        uses: ibrt/golang-github-action@v1
         with:
           go-version: ${{ matrix.go-version }}
+          go-packages: |
+            golang.org/x/mobile/cmd/gomobile
 
-      - name: Set env vars
-        run: |
-          echo "CGO_ENABLED=0" >> $GITHUB_ENV
-          echo "${HOME}/goroot/bin" >> $GITHUB_PATH
+      # Download and Initialize Gomobile
+      - name: Setup Gomobile
+        run: gomobile init
 
       # Create a Build Directory
       - name: Create Build Directory
         run: |
           mkdir -p ${{ github.workspace }}/build/ios
           mkdir -p ${{ github.workspace }}/build/android
-
-      # Download and Initialize Gomobile
-      - name: Setup Gomobile
-        run: |
-          go get -u golang.org/x/mobile/bind
 
       # Bind iOS Framework to Plugin
       - name: Bind iOS Framework
