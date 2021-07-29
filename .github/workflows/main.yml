@@ -44,7 +44,8 @@ jobs:
 
       # Download and Initialize Gomobile
       - name: Setup Gomobile
-        run: gomobile init
+        run: |
+          go get golang.org/x/mobile && gomobile init
 
       # Create a Build Directory
       - name: Create Build Directory
