@@ -15,9 +15,15 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # Runs the `build` job
-  pre-build:
+  build:
     name: Setup Go and Dependencies
 
+    # Env Variables for the job
+    env:
+      GOPATH: ${{ github.workspace }}
+      GO111MODULE: on
+      GONOPROXY: "github.com/sonr-io/*"
+      
     strategy:
       matrix:
         go-version: [1.16.x]
@@ -36,7 +42,6 @@ jobs:
       - uses: actions/setup-go@v1
         with:
           go-version: ${{ matrix.go-version }}
-
 
       - name: Set env vars
         run: |
@@ -80,12 +85,3 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  build:
-    name: "Build Frameworks and Binary"
-    env:
-      GOPATH: ${{ github.workspace }}
-      GO111MODULE: off
-    defaults:
-      run:
-        working-directory: ${{ env.GOPATH }}/src/github.com/${{ github.repository }}
