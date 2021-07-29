@@ -51,13 +51,11 @@ jobs:
           cd ${{ github.workspace }}/bind
           gomobile bind -ldflags='-s -w' -v -target=android -o ${{ github.workspace }}/build/android/io.sonr.core.aar
 
-      - name: Upload S3
-        uses: shallwefootball/s3-upload-action@master
+      # Upload AAR to Artifacts
+      - uses: actions/upload-artifact@master
         with:
-          aws_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
-          aws_bucket: android-aar-releases
-          source_dir: "build/android"
+          name: android aar
+          path: build/android
 
   # Runs the `gomobile bind -ios` job
   build-ios:
@@ -94,14 +92,11 @@ jobs:
           cd ${{ github.workspace }}/bind
           gomobile bind -ldflags='-s -w' -v -target=ios -bundleid=io.sonr.core -o ${{ github.workspace }}/build/ios/Core.framework
 
-      - uses: shallwefootball/s3-upload-action@master
-        name: Upload S3
-        id: S3
+      # Upload AAR to Artifacts
+      - uses: actions/upload-artifact@master
         with:
-          aws_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
-          aws_bucket: ios-framework-releases
-          source_dir: "build/ios"
+          name: ios framework
+          path: build/ios
 
   # Runs the `gomobile bind -ios` job
   build-rpc:
