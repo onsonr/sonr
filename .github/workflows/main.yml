@@ -26,8 +26,8 @@ jobs:
       GO111MODULE: on
       GONOPROXY: "github.com/sonr-io/*"
       GOPRIVATE: "github.com/sonr-io/*"
-      GOMOD: ${{ github.workspace }}/go.mod
       GOROOT: ${HOME}/goroot
+      GOPATH: ${{ github.workspace }}
 
     strategy:
       matrix:
@@ -59,8 +59,7 @@ jobs:
       # Download and Initialize Gomobile
       - name: Setup Gomobile
         run: |
-          go get golang.org/x/mobile/bind
-          cd ${{ github.workspace }}/bind && gomobile init
+          go get -u golang.org/x/mobile/bind
 
       # Bind iOS Framework to Plugin
       - name: Bind iOS Framework
