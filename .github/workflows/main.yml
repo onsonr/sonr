@@ -16,7 +16,7 @@ on:
 jobs:
   # Runs the `gomobile bind -android` job
   build-android:
-    name: Bind Android AAR
+    name: "🔗 Android AAR"
 
     # Env Variables for the job
     env:
@@ -49,9 +49,18 @@ jobs:
           mkdir -p ${{ github.workspace }}/build/android
           cd ${{ github.workspace }}/bind && gomobile bind -ldflags='-s -w' -v -target=android -o ${{ github.workspace }}/build/android/io.sonr.core.aar
 
+      - uses: shallwefootball/s3-upload-action@master
+        name: Upload S3
+        id: S3
+        with:
+          aws_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
+          aws_bucket: android-aar-releases
+          source_dir: ${{ github.workspace }}/build/android
+
   # Runs the `gomobile bind -ios` job
   build-ios:
-    name: Bind iOS Framework
+    name: "🔗 iOS Framework"
 
     # Env Variables for the job
     env:
@@ -82,9 +91,18 @@ jobs:
           mkdir -p ${{ github.workspace }}/build/ios
           cd ${{ github.workspace }}/bind && gomobile bind -ldflags='-s -w' -v -target=ios -bundleid=io.sonr.core -o ${{ github.workspace }}/build/ios/Core.framework
 
+      - uses: shallwefootball/s3-upload-action@master
+        name: Upload S3
+        id: S3
+        with:
+          aws_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
+          aws_bucket: ios-framework-releases
+          source_dir: ${{ github.workspace }}/build/ios
+
   # Runs the `gomobile bind -ios` job
   build-rpc:
-    name: Build RPC Binary
+    name: "🔨 RPC Daemon"
 
     # Env Variables for the job
     env:
