@@ -15,8 +15,12 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # Runs the `build` job
-  build:
-    name: Build Frameworks and Binary
+  pre-build:
+    name: Setup Go and Dependencies
+
+    strategy:
+      matrix:
+        go-version: [1.16.x]
 
     # The type of runner that the job will run on
     runs-on: macos-latest
@@ -31,19 +35,25 @@ jobs:
       # Setup Go Enviornment
       - uses: actions/setup-go@v1
         with:
-          go-version: 1.16.6
+          go-version: ${{ matrix.go-version }}
 
-      # Download and Initialize Gomobile
-      - name: Setup Gomobile
+
+      - name: Set env vars
         run: |
-          go get golang.org/x/mobile/bind
-          gomobile init
+          echo "CGO_ENABLED=0" >> $GITHUB_ENV
+          echo "${HOME}/goroot/bin" >> $GITHUB_PATH
 
       # Create a Build Directory
       - name: Create Build Directory
         run: |
           mkdir -p ${{ github.workspace }}/build/ios
           mkdir -p ${{ github.workspace }}/build/android
+
+      # Download and Initialize Gomobile
+      - name: Setup Gomobile
+        run: |
+          go get golang.org/x/mobile/bind
+          gomobile init
 
       # Bind iOS Framework to Plugin
       - name: Bind iOS Framework
@@ -70,3 +80,12 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build:
+    name: "Build Frameworks and Binary"
+    env:
+      GOPATH: ${{ github.workspace }}
+      GO111MODULE: off
+    defaults:
+      run:
+        working-directory: ${{ env.GOPATH }}/src/github.com/${{ github.repository }}
