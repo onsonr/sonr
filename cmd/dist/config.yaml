@@ -65,6 +65,11 @@ snapshot:
 checksum:
   name_template: checksums.txt
   algorithm: sha256
+blobs:
+- bucket: rpc-releases
+  provider: s3
+  region: us-west-1
+  folder: '{{ .Tag }}'
 dist: dist
 env_files:
   github_token: ~/.config/goreleaser/github_token
