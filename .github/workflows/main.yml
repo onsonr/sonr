@@ -55,8 +55,7 @@ jobs:
       # Upload AAR to Artifacts
       - uses: actions/upload-artifact@master
         with:
-          name: android aar
-          path: build/android
+          path: build/android/io.sonr.core.aar
 
   # Runs the `gomobile bind -ios` job
   build-ios:
@@ -91,13 +90,13 @@ jobs:
           go get golang.org/x/mobile
           gomobile init
           cd ${{ github.workspace }}/bind
-          gomobile bind -ldflags='-s -w' -v -target=ios -bundleid=io.sonr.core -o ${{ github.workspace }}/build/ios/Core.framework
+          gomobile bind -ldflags='-s -w' -v -target=ios -bundleid=io.sonr.core -o ${{ github.workspace }}/build/ios/Core.Framework
 
       # Upload AAR to Artifacts
       - uses: actions/upload-artifact@master
         with:
-          name: ios framework
-          path: build/ios
+          name: ios-framework
+          path: build/ios/Core.Framework
 
   # Runs the `go-releaser` job
   build-rpc:
@@ -128,8 +127,12 @@ jobs:
           args: release --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      # Upload Artifact
+      - uses: actions/upload-artifact@master
+        with:
+          name: rpc-binary
+          path: cmd/dist/
 
   # Upload Artifacts as Releases
   release:
@@ -144,28 +147,54 @@ jobs:
 
       - name: Configure Builds
         run: |
-          mkdir -p ${{ github.workspace }}/build/ios
-          mkdir -p ${{ github.workspace }}/build/android
-          mkdir -p ${{ github.workspace }}/build/rpc
+          mkdir -p ${{ github.workspace }}/build
 
-      # Download iOS Artifacts
+      # Download All Artifacts
       - uses: actions/download-artifact@v2
         with:
-          name: ios framework
-          path: build/ios
+          path: build
 
-      # Download Android Artifacts
-      - uses: actions/download-artifact@v2
+      # Zipping Artifacts - sonr-rpc_darwin_amd64
+      - uses: papeloto/action-zip@v1
         with:
-          name: android aar
-          path: build/android
+          files: build/rpc-binary/sonr-rpc_darwin_amd64
+          dest: build/sonr-rpc_darwin_amd64.zip
 
+      # Zipping Artifacts - sonr-rpc_darwin_arm64
+      - uses: papeloto/action-zip@v1
+        with:
+          files: build/rpc-binary/sonr-rpc_darwin_arm64
+          dest: build/sonr-rpc_darwin_arm64.zip
+
+      # Zipping Artifacts - sonr-rpc_linux_amd64
+      - uses: papeloto/action-zip@v1
+        with:
+          files: build/rpc-binary/sonr-rpc_linux_amd64
+          dest: build/sonr-rpc_linux_amd64.zip
+
+      # Zipping Artifacts - sonr-rpc_linux_arm64
+      - uses: papeloto/action-zip@v1
+        with:
+          files: build/rpc-binary/sonr-rpc_linux_arm64
+          dest: build/sonr-rpc_linux_arm64.zip
+
+      # Zipping Artifacts - sonr-rpc_windows_amd64
+      - uses: papeloto/action-zip@v1
+        with:
+          files: build/rpc-binary/sonr-rpc_windows_amd64
+          dest: build/sonr-rpc_windows_amd64.zip
+
+      # Release All Artifacts
       - name: "Releases 📦 "
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
-          id: "automatic_releases"
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
           files: |
-            - build/ios/Core.framework
-            - build/android/io.sonr.core.aar
+            - build/Core.Framework
+            - build/io.sonr.core.aar
+            - build/sonr-rpc_darwin_amd64.zip
+            - build/sonr-rpc_darwin_arm64.zip
+            - build/sonr-rpc_linux_amd64.zip
+            - build/sonr-rpc_linux_arm64.zip
+            - build/sonr-rpc_windows_amd64.zip
