@@ -17,8 +17,13 @@ builds:
 archives:
   - format: binary
 checksum:
-  name_template: 'checksums.txt'
+  name_template: "checksums.txt"
 snapshot:
   name_template: "{{ .Tag }}-next"
+blobs:
+  - provider: s3
+    region: us-west-1
+    bucket: rpc-releases
+    folder: "{{ .Tag }}"
 release:
   disable: true
