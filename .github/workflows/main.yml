@@ -99,7 +99,7 @@ jobs:
           name: ios framework
           path: build/ios
 
-  # Runs the `gomobile bind -ios` job
+  # Runs the `go-releaser` job
   build-rpc:
     name: "RPC Daemon  🔨 "
 
@@ -130,3 +130,42 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+  # Upload Artifacts as Releases
+  release:
+    # Await for Other Jobs to Complete
+    needs: [build-rpc, build-ios, build-android]
+
+    # The type of runner that the job will run on
+    runs-on: macos-latest
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: Configure Builds
+        run: |
+          mkdir -p ${{ github.workspace }}/build/ios
+          mkdir -p ${{ github.workspace }}/build/android
+          mkdir -p ${{ github.workspace }}/build/rpc
+
+      # Download iOS Artifacts
+      - uses: actions/download-artifact@v2
+        with:
+          name: ios framework
+          path: build/ios
+
+      # Download Android Artifacts
+      - uses: actions/download-artifact@v2
+        with:
+          name: android aar
+          path: build/android
+
+      - name: "Releases 📦 "
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          id: "automatic_releases"
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          files: |
+            - build/ios/Core.framework
+            - build/android/io.sonr.core.aar
