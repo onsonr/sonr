@@ -25,7 +25,7 @@ jobs:
       GOMOD: ${{ github.workspace }}/go.mod
 
     # The type of runner that the job will run on
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -90,13 +90,13 @@ jobs:
           go get golang.org/x/mobile
           gomobile init
           cd ${{ github.workspace }}/bind
-          gomobile bind -ldflags='-s -w' -v -target=ios -bundleid=io.sonr.core -o ${{ github.workspace }}/build/ios/Core.Framework
+          gomobile bind -ldflags='-s -w' -v -target=ios -bundleid=io.sonr.core -o ${{ github.workspace }}/build/ios/Core.framework
 
       # Upload AAR to Artifacts
       - uses: actions/upload-artifact@master
         with:
           name: ios-framework
-          path: build/ios/Core.Framework
+          path: build/ios/Core.framework
 
   # Runs the `go-releaser` job
   build-rpc:
@@ -140,7 +140,7 @@ jobs:
     needs: [build-rpc, build-ios, build-android]
 
     # The type of runner that the job will run on
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
@@ -191,7 +191,7 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
           files: |
-            - build/Core.Framework
+            - build/Core.framework
             - build/io.sonr.core.aar
             - build/sonr-rpc_darwin_amd64.zip
             - build/sonr-rpc_darwin_arm64.zip
