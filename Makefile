@@ -104,7 +104,7 @@ proto:
 	@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_GO) $(PROTO_LIST_ALL)
 	@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_RPC) $(PROTO_LIST_ALL)
 	@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_DART) $(PROTO_LIST_CLIENT)
-	@cp $(PROTO_CP_RPC) $(PROTO_DIR_RPC)
+#@cp $(PROTO_CP_RPC) $(PROTO_DIR_RPC)
 	@echo "✅ Finished Compiling ➡ " && date
 	@echo ""
 
