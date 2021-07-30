@@ -55,6 +55,7 @@ jobs:
       # Upload AAR to Artifacts
       - uses: actions/upload-artifact@master
         with:
+          name: io.sonr.core.aar
           path: build/android/io.sonr.core.aar
 
   # Runs the `gomobile bind -ios` job
@@ -95,7 +96,7 @@ jobs:
       # Upload AAR to Artifacts
       - uses: actions/upload-artifact@master
         with:
-          name: ios-framework
+          name: Core.framework
           path: build/ios/Core.framework
 
   # Runs the `go-releaser` job
@@ -128,11 +129,35 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Upload Artifact
+      # Upload Artifact - rpc_darwin_amd64
       - uses: actions/upload-artifact@master
         with:
-          name: rpc-binary
-          path: cmd/dist/
+          name: sonr-rpc_darwin_amd64
+          path: cmd/dist/sonr-rpc_darwin_amd64/sonr-rpc
+
+      # Upload Artifact - rpc_darwin_arm64
+      - uses: actions/upload-artifact@master
+        with:
+          name: sonr-rpc_darwin_arm64
+          path: cmd/dist/sonr-rpc_darwin_arm64/sonr-rpc
+
+      # Upload Artifact - rpc_linux_amd64
+      - uses: actions/upload-artifact@master
+        with:
+          name: sonr-rpc_linux_amd64
+          path: cmd/dist/sonr-rpc_linux_amd64/sonr-rpc
+
+      # Upload Artifact - rpc_linux_arm64
+      - uses: actions/upload-artifact@master
+        with:
+          name: sonr-rpc_linux_arm64
+          path: cmd/dist/sonr-rpc_linux_arm64/sonr-rpc
+
+      # Upload Artifact - rpc_windows_amd64
+      - uses: actions/upload-artifact@master
+        with:
+          name: sonr-rpc_windows_amd64
+          path: cmd/dist/sonr-rpc_windows_amd64/sonr-rpc
 
   # Upload Artifacts as Releases
   release:
@@ -150,42 +175,13 @@ jobs:
           mkdir -p ${{ github.workspace }}/build
 
       # Download All Artifacts
-      - uses: actions/download-artifact@v2
+      - name: "Download Artifacts ⬇️"
+        uses: actions/download-artifact@v2
         with:
           path: build
 
-      # Zipping Artifacts - sonr-rpc_darwin_amd64
-      - uses: papeloto/action-zip@v1
-        with:
-          files: build/rpc-binary/sonr-rpc_darwin_amd64
-          dest: build/sonr-rpc_darwin_amd64.zip
-
-      # Zipping Artifacts - sonr-rpc_darwin_arm64
-      - uses: papeloto/action-zip@v1
-        with:
-          files: build/rpc-binary/sonr-rpc_darwin_arm64
-          dest: build/sonr-rpc_darwin_arm64.zip
-
-      # Zipping Artifacts - sonr-rpc_linux_amd64
-      - uses: papeloto/action-zip@v1
-        with:
-          files: build/rpc-binary/sonr-rpc_linux_amd64
-          dest: build/sonr-rpc_linux_amd64.zip
-
-      # Zipping Artifacts - sonr-rpc_linux_arm64
-      - uses: papeloto/action-zip@v1
-        with:
-          files: build/rpc-binary/sonr-rpc_linux_arm64
-          dest: build/sonr-rpc_linux_arm64.zip
-
-      # Zipping Artifacts - sonr-rpc_windows_amd64
-      - uses: papeloto/action-zip@v1
-        with:
-          files: build/rpc-binary/sonr-rpc_windows_amd64
-          dest: build/sonr-rpc_windows_amd64.zip
-
       # Release All Artifacts
-      - name: "Releases 📦 "
+      - name: "Package Release 📦 "
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
@@ -193,8 +189,8 @@ jobs:
           files: |
             - build/Core.framework
             - build/io.sonr.core.aar
-            - build/sonr-rpc_darwin_amd64.zip
-            - build/sonr-rpc_darwin_arm64.zip
-            - build/sonr-rpc_linux_amd64.zip
-            - build/sonr-rpc_linux_arm64.zip
-            - build/sonr-rpc_windows_amd64.zip
+            - build/sonr-rpc_darwin_amd64
+            - build/sonr-rpc_darwin_arm64
+            - build/sonr-rpc_linux_amd64
+            - build/sonr-rpc_linux_arm64
+            - build/sonr-rpc_windows_amd64
