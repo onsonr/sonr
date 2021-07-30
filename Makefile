@@ -111,7 +111,7 @@ proto:
 ##
 ## [release]   :   Upload RPC Binary Artifact to S3
 release:
-	@echo "Bumping Release Version..."
+	@echo "Bumping Release Version.."
 	@cd $(CORE_DIR) && gitmoji -c
 	@cd $(CORE_DIR) && bump patch
 	@echo "Bumping Release Version... DONE"
