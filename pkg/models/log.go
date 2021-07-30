@@ -72,7 +72,7 @@ func InitLogger(req *InitializeRequest) {
 
 // ^ Method Logs a Info Message for Event
 func (t GenericEvent_Type) Log(message string) {
-	if loggerEnabled && loggerInfoEnabled {
+	if loggerEnabled && loggerInfoEnabled && t != GenericEvent_TOPIC {
 		log.Info().Msgf("⚡️  %s", t.String())
 		defaultLogger.Println("\t" + message + "\n")
 	}
