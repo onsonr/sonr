@@ -104,7 +104,7 @@ proto:
 	@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_GO) $(PROTO_LIST_ALL)
 	@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_RPC) $(PROTO_LIST_ALL)
 	@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_DART) $(PROTO_LIST_CLIENT)
-	@cp $(PROTO_CP_RPC) $(PROTO_DIR_RPC)
+#@cp $(PROTO_CP_RPC) $(PROTO_DIR_RPC)
 	@echo "✅ Finished Compiling ➡ " && date
 	@echo ""
 
@@ -130,7 +130,7 @@ release:
 	@cd /System/Library/Sounds && afplay Glass.aiff
 
 ## [upgrade]   :   Binds Binary, Creates Protobufs, and Updates App
-upgrade: proto bind.ios bind.android release
+upgrade: proto bind.ios bind.android
 	@go mod tidy
 	@echo "-----------------------------------------------------------"
 	@echo "------------- 🔄  START PLUGIN UPDATE 🔄 -------------------"
