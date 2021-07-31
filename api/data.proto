@@ -273,10 +273,11 @@ message SFile {
       bool isImage = 2;      // If File is Image
       bool isVideo = 3;      // If File is Video
       bool hasThumbnail = 4; // If File has thumbnail
+      bool isThumbPath = 5;  // If Thumbnail Path is Provided
 
-      int32 width = 5;    // Media Width
-      int32 height = 6;   // Media Height
-      int32 duration = 7; // Length of Video - Optional
+      int32 width = 6;    // Media Width
+      int32 height = 7;   // Media Height
+      int32 duration = 8; // Length of Video - Optional
     }
   }
 }

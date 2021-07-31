@@ -39,7 +39,7 @@ PROTO_GEN_RPC="--go-grpc_out=$(PROTO_DIR_GO)"
 PROTO_GEN_DART="--dart_out=$(PROTO_DIR_DART)"
 PROTO_GEN_DOCS="--doc_out=$(PROTO_DIR_DOCS)"
 #PROTO_GEN_JS="--js_out=import_style=commonjs,binary:$(PROTO_DIR_JS)"
-PROTO_CP_RPC=$(PROTO_DEF_PATH)/{api.proto,data.proto,peer.proto,error.proto,user.proto}
+PROTO_CP_RPC=/Users/prad/Sonr/core/api/{api.proto,data.proto,peer.proto,error.proto,user.proto}
 
 # @ Distribution Release Variables
 DIST_DIR=$(SONR_ROOT_DIR)/core/cmd/dist
@@ -104,7 +104,7 @@ proto:
 	@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_GO) $(PROTO_LIST_ALL)
 	@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_RPC) $(PROTO_LIST_ALL)
 	@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_DART) $(PROTO_LIST_CLIENT)
-#@cp $(PROTO_CP_RPC) $(PROTO_DIR_RPC)
+	@cp $(PROTO_CP_RPC) $(PROTO_DIR_RPC)
 	@echo "✅ Finished Compiling ➡ " && date
 	@echo ""
 

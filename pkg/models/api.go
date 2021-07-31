@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"io/ioutil"
 
 	"net/http"
 
@@ -323,6 +324,43 @@ func (u *User) SignInvite(i *InviteRequest) *InviteRequest {
 	// Set From
 	if i.From == nil {
 		i.From = u.GetPeer()
+	}
+
+	// Convert all Thumbnails to Buffers
+	if i.IsPayloadTransfer() {
+		// Get File
+		f := i.GetFile()
+		if f != nil {
+			// Convert Thumbnails to Buffers
+			for _, t := range f.Items {
+				if t.GetProperties().GetIsThumbPath() {
+					// Fetch Buffer from Path
+					buffer, err := ioutil.ReadFile(t.GetThumbPath())
+					if err != nil {
+						LogError(err)
+						continue
+					}
+
+					// Set Buffer
+					t.Thumbnail = &SFile_Item_ThumbBuffer{
+						ThumbBuffer: buffer,
+					}
+
+					// Update Properties
+					oldProps := t.GetProperties()
+					t.Properties = &SFile_Item_Properties{
+						IsThumbPath:  false,
+						IsAudio:      oldProps.GetIsAudio(),
+						IsVideo:      oldProps.GetIsVideo(),
+						IsImage:      oldProps.GetIsImage(),
+						HasThumbnail: oldProps.GetHasThumbnail(),
+						Width:        oldProps.GetWidth(),
+						Height:       oldProps.GetHeight(),
+						Duration:     oldProps.GetDuration(),
+					}
+				}
+			}
+		}
 	}
 
 	// Set Type
