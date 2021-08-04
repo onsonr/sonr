@@ -121,6 +121,7 @@ message User {
   Contact contact = 7;   // Users Contact Card
   Location location = 8; // Client Location for Routing
   string pushToken = 9;  // Push Notification Token
+  bool isLinker = 10;    // Is Linker Node
 
   // Crypto Data to Place in DHT
   message Crypto {

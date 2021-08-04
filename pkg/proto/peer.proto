@@ -110,6 +110,7 @@ message Peer {
   Position position = 5;     // Peers Positional Information
   Profile profile = 6;       // Peers General Information
   Properties properties = 7; // Peer specific options set
+  Status status = 8;         // Peer Status
 
   // ID References
   message ID {
@@ -118,6 +119,14 @@ message Peer {
     string multiAddr = 3; // Peer MultiAddr
     string publicKey = 4; // Public Key of Peer
     string pushToken = 5; // Push Notification token
+  }
+
+  enum Status {
+    DEFAULT = 0; // Offline - Not Online or Not a Full Node
+    ONLINE = 1;  // Online - Full Node Available
+    AWAY = 2;    // Away - Not Online, but has a full node
+    BUSY = 3;    // Busy - Online, but busy with Transfer
+    LINKER = 4;  // Linker - Online/Connected but only for Linking
   }
 
   // Properties

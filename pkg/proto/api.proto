@@ -93,6 +93,7 @@ message ConnectionRequest {
   HostOptions hostOptions = 5;       // Libp2p Host config
   ServiceOptions serviceOptions = 6; // Service Config
   string pushToken = 7;              // Push Notification Token
+  bool isLinker = 8;                 // Is Linker Node and not a Full Peer
 
   // Internet Connection Type
   enum InternetType {
@@ -162,12 +163,14 @@ message InviteRequest {
   Transfer transfer = 4; // Attached Data
   Type type = 5;         // Type of Invite
   string protocol = 6;   // Protocol for Invite
+  Device device = 7;     // Device for Link-Invite Request
 
   enum Type {
     NONE = 0;   // No Type
     LOCAL = 1;  // Local Transfer
     FLAT = 2;   // Flat Transfer
     REMOTE = 3; // Remote Transfer
+    LINK = 4;   // Link Request
   }
 }
 

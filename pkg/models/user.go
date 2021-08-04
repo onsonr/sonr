@@ -371,6 +371,7 @@ func (u *User) InitConnection(cr *ConnectionRequest) {
 	u.Contact = cr.GetContact()
 	u.SName = cr.GetContact().GetProfile().GetSName()
 	u.Location = cr.GetLocation()
+	u.IsLinker = cr.GetIsLinker()
 	u.Status = Status_IDLE
 }
 

@@ -270,8 +270,10 @@ func (tm *TopicManager) handleTopicMessages(ctx context.Context) {
 				continue
 			}
 
-			// Send Event to User
-			tm.handler.OnEvent(m)
+			// Check Peer is Online, if not ignore
+			if m.Peer.GetStatus() == md.Peer_ONLINE {
+				tm.handler.OnEvent(m)
+			}
 		}
 		md.GetState().NeedsWait()
 	}

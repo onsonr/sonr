@@ -54,6 +54,13 @@ func (u *User) SetPeer(id peer.ID, maddr multiaddr.Multiaddr) *SonrError {
 		Model:    u.Device.Model,
 	}
 
+	// Set Status
+	if u.GetIsLinker() == true {
+		u.Peer.Status = Peer_LINKER
+	} else {
+		u.Peer.Status = Peer_ONLINE
+	}
+
 	// Log Peer
 	LogInfo(u.Peer.String())
 	return nil
