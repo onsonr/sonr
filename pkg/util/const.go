@@ -65,6 +65,12 @@ const AUTH_RPC_SERVICE = "AuthService"
 // Local RPC Service Method for Invite
 const AUTH_METHOD_INVITE = "InviteWith"
 
+// Local RPC Service Name
+const DEVICE_RPC_SERVICE = "DeviceService"
+
+// Local RPC Service Method for Push
+const DEVICE_METHOD_PUSH = "PushWith"
+
 // Firebase Project ID
 const FIRE_PROJECT_ID = "trans-density-315704"
 

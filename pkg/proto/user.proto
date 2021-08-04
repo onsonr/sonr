@@ -22,16 +22,17 @@ message Device {
   // Management
   FileSystem fileSystem = 1; // Directories for this Device
   KeyPair keyPair = 2;       // User Public Private Key-Pair
+  Platform platform = 3;     // Operating System
 
   // Identification
-  Platform platform = 3;        // Operating System
-  string id = 4;                // Device Identifier
-  string localeName = 5;        // The name of the current locale.
-  string name = 6;              // User Defined Name
-  int32 numberOfProcessors = 7; // The number of machine execution units.
-  string model = 8;             // Model of Device
-  string operatingSystem = 9;   // Representation of the host OS or platform.
-  string operatingSystemVersion = 10; // Version of the host OS or platform.
+  string id = 4;       // Device ID
+  string label = 5;    // User Defined Label for this Device
+  string hostName = 6; // The hostname of the device.
+
+  // Miscelaneous
+  string model = 7;           // Model of Device
+  string operatingSystem = 8; // Representation of the host OS or platform.
+  string operatingSystemVersion = 9; // Version of the host OS or platform.
 }
 
 // FileSystem is for Directores Where Data can be stored
@@ -79,11 +80,6 @@ message KeyPair {
     string base64 = 1; // Base64 Representation of Keys
     bytes buffer = 2;  // Public Key Buffer
   }
-
-  // Shared Key for Device Linking
-  message Shared {
-    bytes ephermal = 1; // Public Ephermal Key Generated from "P-256" Curve
-  }
 }
 
 // Current Node Lifecycle State
@@ -121,11 +117,18 @@ message User {
   Contact contact = 7;   // Users Contact Card
   Location location = 8; // Client Location for Routing
   string pushToken = 9;  // Push Notification Token
-  bool isLinker = 10;    // Is Linker Node
+  Info info = 10;        // User Info
 
   // Crypto Data to Place in DHT
   message Crypto {
     string prefix = 1;   // Created from DeviceID and SName
     string mnemonic = 2; // Used to generate fingerprint
+  }
+
+  // User Device(s) Info
+  message Info {
+    Device primary = 1;          // Primary Device
+    repeated Device devices = 2; // List of Devices
+    KeyPair linkKeys = 3;        // KeyPair for User Device Link
   }
 }

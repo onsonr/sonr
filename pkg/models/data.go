@@ -55,7 +55,6 @@ func (p Payload) IsNotTransfer() bool {
 }
 
 // ** ─── SFile_Item MANAGEMENT ────────────────────────────────────────────────────────
-
 func (i *SFile_Item) NewReader(d *Device, index int, total int, c SessionHandler) ItemReader {
 	// Return Reader
 	return &itemReader{

@@ -118,6 +118,10 @@ message ErrorEvent {
     PUSH_START_MESSAGING =
         65; // Error occurred during Push Notifications Start Messaging
     PEER_PUSH_TOKEN_EMPTY = 70; // Error occurred during Peer Push Token Empty
+
+    // Device Linking
+    LINK_GENERATE = 71;   // Error occurred Generating Shared Key Func
+    LINK_SHARED_KEY = 72; // Error occurred retreiving Shared Key
   }
 
   enum Severity {

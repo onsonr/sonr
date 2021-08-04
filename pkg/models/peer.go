@@ -36,9 +36,19 @@ func (r *User) NewLocalTopic(opts *ConnectionRequest_ServiceOptions) *Topic {
 	}
 }
 
+// @ Local Lobby Topic Protocol ID
+func (r *User) NewDeviceTopic() *Topic {
+
+	// Return Topic
+	return &Topic{
+		Name: fmt.Sprintf("/sonr/%s/%s", r.SName, r.DeviceID()),
+		Type: Topic_LOCAL,
+	}
+}
+
 // ** ─── Peer MANAGEMENT ────────────────────────────────────────────────────────
 // ^ Set Peer from Connection Request and Host ID ^ //
-func (u *User) SetPeer(id peer.ID, maddr multiaddr.Multiaddr) *SonrError {
+func (u *User) SetPeer(id peer.ID, maddr multiaddr.Multiaddr, isLinker bool) *SonrError {
 	// Set Peer
 	u.Peer = &Peer{
 		SName: u.SName,
@@ -51,11 +61,12 @@ func (u *User) SetPeer(id peer.ID, maddr multiaddr.Multiaddr) *SonrError {
 		},
 		Profile:  u.Profile(),
 		Platform: u.Device.Platform,
-		Model:    u.Device.Model,
+		Model:    u.GetDevice().GetModel(),
+		HostName: u.GetDevice().GetHostName(),
 	}
 
 	// Set Status
-	if u.GetIsLinker() == true {
+	if isLinker {
 		u.Peer.Status = Peer_LINKER
 	} else {
 		u.Peer.Status = Peer_ONLINE

@@ -79,7 +79,7 @@ func (c *client) Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrErr
 	}
 
 	// Set Peer
-	err = c.user.SetPeer(hn.ID(), maddr)
+	err = c.user.SetPeer(hn.ID(), maddr, cr.GetIsLinker())
 	if err != nil {
 		return err
 	}
@@ -92,7 +92,7 @@ func (c *client) Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrErr
 // @ Begins Bootstrapping HostNode
 func (c *client) Bootstrap(cr *md.ConnectionRequest) (*net.TopicManager, *md.SonrError) {
 	// Bootstrap Host
-	err := c.Host.Bootstrap()
+	err := c.Host.Bootstrap(c.user.GetDevice().GetId())
 	if err != nil {
 		return nil, err
 	}

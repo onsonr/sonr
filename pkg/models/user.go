@@ -33,6 +33,15 @@ func (d *Device) Initialize(r *InitializeRequest) *SonrError {
 		d.Id = id
 	}
 
+	// Get Hostname of Device
+	if d.GetHostName() == "" {
+		name, err := os.Hostname()
+		if err != nil {
+			return NewError(err, ErrorEvent_DEVICE_ID)
+		}
+		d.HostName = name
+	}
+
 	// Check for Key Reset
 	if r.GetResetKeys() {
 		return d.resetKeyPair()
@@ -199,7 +208,14 @@ func (kp *KeyPair) Verify(data []byte, sig []byte) (bool, error) {
 // ** ─── DEVICE MANAGEMENT ────────────────────────────────────────────────────────
 // Method Checks if Device has Keys
 func (d *Device) HasKeys() bool {
-	if _, err := os.Stat(d.WorkingFilePath(util.KEY_FILE_NAME)); os.IsNotExist(err) {
+	if _, err := os.Stat(d.WorkingKeyPath()); os.IsNotExist(err) {
+		return false
+	}
+	return true
+}
+
+func (d *Device) HasKeysDir() bool {
+	if _, err := os.Stat(d.WorkingKeyPath()); os.IsNotExist(err) {
 		return false
 	}
 	return true
@@ -207,12 +223,12 @@ func (d *Device) HasKeys() bool {
 
 // Method Checks for Desktop
 func (d *Device) IsDesktop() bool {
-	return d.Platform == Platform_MacOS || d.Platform == Platform_Linux || d.Platform == Platform_Windows
+	return d.Platform == Platform_MACOS || d.Platform == Platform_LINUX || d.Platform == Platform_WINDOWS
 }
 
 // Method Checks for Mobile
 func (d *Device) IsMobile() bool {
-	return d.Platform == Platform_IOS || d.Platform == Platform_Android
+	return d.Platform == Platform_IOS || d.Platform == Platform_ANDROID
 }
 
 // Method Checks for IOS
@@ -222,27 +238,27 @@ func (d *Device) IsIOS() bool {
 
 // Method Checks for Android
 func (d *Device) IsAndroid() bool {
-	return d.Platform == Platform_Android
+	return d.Platform == Platform_ANDROID
 }
 
 // Method Checks for MacOS
 func (d *Device) IsMacOS() bool {
-	return d.Platform == Platform_MacOS
+	return d.Platform == Platform_MACOS
 }
 
 // Method Checks for Linux
 func (d *Device) IsLinux() bool {
-	return d.Platform == Platform_Linux
+	return d.Platform == Platform_LINUX
 }
 
 // Method Checks for Web
 func (d *Device) IsWeb() bool {
-	return d.Platform == Platform_Web
+	return d.Platform == Platform_WEB
 }
 
 // Method Checks for Windows
 func (d *Device) IsWindows() bool {
-	return d.Platform == Platform_Windows
+	return d.Platform == Platform_WINDOWS
 }
 
 // Method returns Thread Identity for Device
@@ -367,12 +383,16 @@ func NewUser(ir *InitializeRequest) (*User, *SonrError) {
 
 // Set the User with ConnectionRequest
 func (u *User) InitConnection(cr *ConnectionRequest) {
+	// Initialize Params
 	u.PushToken = cr.GetPushToken()
-	u.Contact = cr.GetContact()
 	u.SName = cr.GetContact().GetProfile().GetSName()
 	u.Location = cr.GetLocation()
-	u.IsLinker = cr.GetIsLinker()
 	u.Status = Status_IDLE
+
+	// Set Profile
+	c := cr.GetContact()
+	c.Profile.Platform = u.Device.Platform
+	u.Contact = c
 }
 
 // Checks Whether User is Ready to Communicate
@@ -413,6 +433,50 @@ func (u *User) LastName() string {
 // Method Returns Profile
 func (u *User) Profile() *Profile {
 	return u.GetContact().GetProfile()
+}
+
+func (u *User) Link(r *LinkRequest) (*LinkResponse, *SonrError) {
+	if r.Subject == LinkRequest_ACCEPT {
+		// Shared Key from Curve
+		pubKey, sharedKeyFunc, err := crypto.GenerateEKeyPair("P-256")
+		if err != nil {
+			return nil, NewError(err, ErrorEvent_LINK_GENERATE)
+		}
+
+		// Generate Shared Key
+		sharedKey, err := sharedKeyFunc(u.KeyPair().PrivBuffer())
+		if err != nil {
+			return nil, NewError(err, ErrorEvent_LINK_SHARED_KEY)
+		}
+
+		// Add Devices to User
+		u.Info = &User_Info{
+			LinkKeys: &KeyPair{
+				Public: &KeyPair_Public{
+					Buffer: pubKey,
+				},
+				Private: &KeyPair_Private{
+					Buffer: sharedKey,
+				},
+			},
+		}
+
+		// Generate Shared Key Response
+		sharedKeyResponse := &LinkResponse{
+			Success: true,
+			SharedKey: &KeyPair{
+				Public: &KeyPair_Public{
+					Buffer: pubKey,
+				},
+				Private: &KeyPair_Private{
+					Buffer: sharedKey,
+				},
+			},
+			Device: r.GetDevice(),
+		}
+		return sharedKeyResponse, nil
+	}
+	return nil, nil
 }
 
 // Method Signs Data with KeyPair

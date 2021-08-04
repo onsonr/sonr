@@ -111,6 +111,7 @@ message Peer {
   Profile profile = 6;       // Peers General Information
   Properties properties = 7; // Peer specific options set
   Status status = 8;         // Peer Status
+  string hostName = 9;       // Peer Host Name
 
   // ID References
   message ID {
@@ -139,13 +140,13 @@ message Peer {
 
 // Platform is the Operating System of Device
 enum Platform {
-  Undefined = 0; // Undefined
-  Android = 1;   // Android Operating System
-  IOS = 2;       // iOS Operating System
-  MacOS = 3;     // Mac Operating System
-  Windows = 4;   // Windows Operating System
-  Linux = 5;     // Linux Operating System
-  Web = 6;       // Web Platform
+  OTHER = 0;   // Other/Unknown User Agent
+  ANDROID = 1; // Android Operating System
+  IOS = 2;     // iOS Operating System
+  MACOS = 3;   // Mac Operating System
+  WINDOWS = 4; // Windows Operating System
+  LINUX = 5;   // Linux Operating System
+  WEB = 6;     // Web Platform
 }
 
 // Position Includes All Directional Info of Peer

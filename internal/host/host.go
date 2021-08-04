@@ -21,7 +21,7 @@ import (
 
 // ** ─── Interface MANAGEMENT ────────────────────────────────────────────────────────
 type HostNode interface {
-	Bootstrap() *md.SonrError
+	Bootstrap(deviceId string) *md.SonrError
 	Close()
 	ID() peer.ID
 	Info() peer.AddrInfo

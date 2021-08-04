@@ -155,6 +155,21 @@ message ConnectionResponse {
   }
 }
 
+// Message for Linking Request (Hmac Sha256)
+message LinkRequest {
+  string body = 1; // Short ID - Calculated with Device ID
+  Peer from = 2;   // Peer Linking from
+  Peer to = 3;     // Peer Linking to
+}
+
+// Message for Linking Response (Hmac Sha256)
+message LinkResponse {
+  bool success = 1;      // ID of Device to Link
+  Device device = 2;     // Device of Peer to Link
+  Topic topic = 3;       // Topic of User Network
+  KeyPair sharedKey = 4; // Shared Key between Devices
+}
+
 // Invitation Message sent on RPC
 message InviteRequest {
   Payload payload = 1;   // Type of Transfer
@@ -256,6 +271,7 @@ message VerifyRequest {
 message VerifyResponse {
   bool isVerified = 1;  // Result for Verification
   string publicKey = 2; // Base64 Encoded Public Key
+  string shortID = 3;   // Short ID generated from HMac and Device
 }
 
 // --------------------------- //
