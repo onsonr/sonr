@@ -5,7 +5,7 @@ CORE_DIR=$(SONR_ROOT_DIR)/core
 CORE_CMD_DIR=$(SONR_ROOT_DIR)/core/cmd
 
 # Set this -->[/Users/xxxx/Sonr/]<-- to Folder of Sonr Repos
-PROTO_DEF_PATH=/Users/prad/Sonr/core/api
+PROTO_DEF_PATH=/Users/prad/Sonr/core/pkg/proto
 APP_ROOT_DIR =/Users/prad/Sonr/app
 
 # @ Packaging Vars/Commands
@@ -26,8 +26,7 @@ BIND_ANDROID_ARTIFACT= $(BIND_DIR_ANDROID)/io.sonr.core.aar
 PROTO_DIR_GO=$(SONR_ROOT_DIR)/core/pkg
 PROTO_DIR_DART=$(SONR_ROOT_DIR)/plugin/lib/src/data/protobuf
 PROTO_DIR_DOCS=$(SONR_ROOT_DIR)/docs
-#PROTO_DIR_JS=$(SONR_ROOT_DIR)/electron/src/assets/models
-PROTO_DIR_RPC=$(SONR_ROOT_DIR)/electron/src/assets/proto
+PROTO_DIR_RPC=$(SONR_ROOT_DIR)/electron/assets/proto
 
 # @ Proto Items Lists
 PROTO_LIST_ALL=api.proto data.proto core.proto peer.proto error.proto user.proto
@@ -38,8 +37,6 @@ PROTO_GEN_GO="--go_out=$(PROTO_DIR_GO)"
 PROTO_GEN_RPC="--go-grpc_out=$(PROTO_DIR_GO)"
 PROTO_GEN_DART="--dart_out=$(PROTO_DIR_DART)"
 PROTO_GEN_DOCS="--doc_out=$(PROTO_DIR_DOCS)"
-#PROTO_GEN_JS="--js_out=import_style=commonjs,binary:$(PROTO_DIR_JS)"
-PROTO_CP_RPC=/Users/prad/Sonr/core/api/{api.proto,data.proto,peer.proto,error.proto,user.proto}
 
 # @ Distribution Release Variables
 DIST_DIR=$(SONR_ROOT_DIR)/core/cmd/dist
@@ -100,11 +97,10 @@ proto:
 	@echo "--------------------------------------------------------------"
 	@echo "------------- 🛸 START PROTOBUFS COMPILE 🛸 -------------------"
 	@echo "--------------------------------------------------------------"
-	@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_DOCS) $(PROTO_LIST_ALL)
-	@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_GO) $(PROTO_LIST_ALL)
-	@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_RPC) $(PROTO_LIST_ALL)
-	@cd api && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_DART) $(PROTO_LIST_CLIENT)
-#@cp $(PROTO_CP_RPC) $(PROTO_DIR_RPC)
+	@cd $(PROTO_DEF_PATH) && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_DOCS) $(PROTO_LIST_ALL)
+	@cd $(PROTO_DEF_PATH) && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_GO) $(PROTO_LIST_ALL)
+	@cd $(PROTO_DEF_PATH) && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_DART) $(PROTO_LIST_CLIENT)
+	@cp -R $(PROTO_DEF_PATH) $(PROTO_DIR_RPC)
 	@echo "✅ Finished Compiling ➡ " && date
 	@echo ""
 

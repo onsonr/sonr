@@ -125,7 +125,7 @@ jobs:
           workdir: ${{ github.workspace }}/cmd
           distribution: goreleaser
           version: latest
-          args: release --rm-dist
+          args: release --rm-dist --skip-publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -182,15 +182,8 @@ jobs:
 
       # Release All Artifacts
       - name: "Package Release 📦 "
-        uses: "marvinpinto/action-automatic-releases@latest"
+        uses: ncipollo/release-action@v1
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
-          files: |
-            - build/Core.framework
-            - build/io.sonr.core.aar
-            - build/sonr-rpc_darwin_amd64
-            - build/sonr-rpc_darwin_arm64
-            - build/sonr-rpc_linux_amd64
-            - build/sonr-rpc_linux_arm64
-            - build/sonr-rpc_windows_amd64
+          artifacts: "build/Core.framework, build/io.sonr.core.aar, build/sonr-rpc_darwin_amd64, build/sonr-rpc_darwin_arm64,     build/sonr-rpc_linux_amd64, build/sonr-rpc_linux_arm64, build/sonr-rpc_windows_amd64"
