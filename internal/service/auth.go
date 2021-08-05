@@ -189,7 +189,7 @@ func (tm *serviceClient) Respond(rep *md.InviteResponse) {
 	tm.Auth.respCh <- rep
 
 	// Prepare Transfer
-	if rep.Decision {
+	if rep.Decision.Accepted() {
 		tm.handler.OnConfirmed(tm.Auth.invite)
 	}
 }

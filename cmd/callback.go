@@ -5,6 +5,21 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+// CallActionResponse is called when Auth Response is received
+func (s *NodeServer) CallActionResponse(rsp *md.NoRequest, stream md.NodeService_CallActionResponseServer) error {
+	for {
+		select {
+		case m := <-s.actionResponses:
+			if m != nil {
+				stream.Send(m)
+			}
+		case <-s.ctx.Done():
+			return nil
+		}
+		md.GetState().NeedsWait()
+	}
+}
+
 // OnComplete is called when a complete event is received
 func (s *NodeServer) OnComplete(req *md.NoRequest, stream md.NodeService_OnCompleteServer) error {
 	for {

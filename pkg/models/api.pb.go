@@ -85,6 +85,59 @@ func (Action) EnumDescriptor() ([]byte, []int) {
 	return file_api_proto_rawDescGZIP(), []int{0}
 }
 
+// Enum for Decision to Perform
+type Decision int32
+
+const (
+	Decision_ACCEPT  Decision = 0 // Accept Invite
+	Decision_DECLINE Decision = 1 // Decline Invite
+	Decision_IGNORE  Decision = 2 // Ignore Invite
+	Decision_CANCEL  Decision = 3 // Cancel Invite
+)
+
+// Enum value maps for Decision.
+var (
+	Decision_name = map[int32]string{
+		0: "ACCEPT",
+		1: "DECLINE",
+		2: "IGNORE",
+		3: "CANCEL",
+	}
+	Decision_value = map[string]int32{
+		"ACCEPT":  0,
+		"DECLINE": 1,
+		"IGNORE":  2,
+		"CANCEL":  3,
+	}
+)
+
+func (x Decision) Enum() *Decision {
+	p := new(Decision)
+	*p = x
+	return p
+}
+
+func (x Decision) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Decision) Descriptor() protoreflect.EnumDescriptor {
+	return file_api_proto_enumTypes[1].Descriptor()
+}
+
+func (Decision) Type() protoreflect.EnumType {
+	return &file_api_proto_enumTypes[1]
+}
+
+func (x Decision) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use Decision.Descriptor instead.
+func (Decision) EnumDescriptor() ([]byte, []int) {
+	return file_api_proto_rawDescGZIP(), []int{1}
+}
+
 // Client Type
 type InitializeRequest_Client int32
 
@@ -116,11 +169,11 @@ func (x InitializeRequest_Client) String() string {
 }
 
 func (InitializeRequest_Client) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_proto_enumTypes[1].Descriptor()
+	return file_api_proto_enumTypes[2].Descriptor()
 }
 
 func (InitializeRequest_Client) Type() protoreflect.EnumType {
-	return &file_api_proto_enumTypes[1]
+	return &file_api_proto_enumTypes[2]
 }
 
 func (x InitializeRequest_Client) Number() protoreflect.EnumNumber {
@@ -175,11 +228,11 @@ func (x InitializeRequest_LogLevel) String() string {
 }
 
 func (InitializeRequest_LogLevel) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_proto_enumTypes[2].Descriptor()
+	return file_api_proto_enumTypes[3].Descriptor()
 }
 
 func (InitializeRequest_LogLevel) Type() protoreflect.EnumType {
-	return &file_api_proto_enumTypes[2]
+	return &file_api_proto_enumTypes[3]
 }
 
 func (x InitializeRequest_LogLevel) Number() protoreflect.EnumNumber {
@@ -225,11 +278,11 @@ func (x ConnectionRequest_InternetType) String() string {
 }
 
 func (ConnectionRequest_InternetType) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_proto_enumTypes[3].Descriptor()
+	return file_api_proto_enumTypes[4].Descriptor()
 }
 
 func (ConnectionRequest_InternetType) Type() protoreflect.EnumType {
-	return &file_api_proto_enumTypes[3]
+	return &file_api_proto_enumTypes[4]
 }
 
 func (x ConnectionRequest_InternetType) Number() protoreflect.EnumNumber {
@@ -271,11 +324,11 @@ func (x ConnectionRequest_IPAddress_Family) String() string {
 }
 
 func (ConnectionRequest_IPAddress_Family) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_proto_enumTypes[4].Descriptor()
+	return file_api_proto_enumTypes[5].Descriptor()
 }
 
 func (ConnectionRequest_IPAddress_Family) Type() protoreflect.EnumType {
-	return &file_api_proto_enumTypes[4]
+	return &file_api_proto_enumTypes[5]
 }
 
 func (x ConnectionRequest_IPAddress_Family) Number() protoreflect.EnumNumber {
@@ -285,6 +338,58 @@ func (x ConnectionRequest_IPAddress_Family) Number() protoreflect.EnumNumber {
 // Deprecated: Use ConnectionRequest_IPAddress_Family.Descriptor instead.
 func (ConnectionRequest_IPAddress_Family) EnumDescriptor() ([]byte, []int) {
 	return file_api_proto_rawDescGZIP(), []int{5, 2, 0}
+}
+
+type DecisionRequest_Type int32
+
+const (
+	DecisionRequest_NONE   DecisionRequest_Type = 0 // No Type
+	DecisionRequest_LOCAL  DecisionRequest_Type = 1 // Local Transfer
+	DecisionRequest_FLAT   DecisionRequest_Type = 2 // Flat Transfer
+	DecisionRequest_REMOTE DecisionRequest_Type = 3 // Remote Transfer
+)
+
+// Enum value maps for DecisionRequest_Type.
+var (
+	DecisionRequest_Type_name = map[int32]string{
+		0: "NONE",
+		1: "LOCAL",
+		2: "FLAT",
+		3: "REMOTE",
+	}
+	DecisionRequest_Type_value = map[string]int32{
+		"NONE":   0,
+		"LOCAL":  1,
+		"FLAT":   2,
+		"REMOTE": 3,
+	}
+)
+
+func (x DecisionRequest_Type) Enum() *DecisionRequest_Type {
+	p := new(DecisionRequest_Type)
+	*p = x
+	return p
+}
+
+func (x DecisionRequest_Type) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (DecisionRequest_Type) Descriptor() protoreflect.EnumDescriptor {
+	return file_api_proto_enumTypes[6].Descriptor()
+}
+
+func (DecisionRequest_Type) Type() protoreflect.EnumType {
+	return &file_api_proto_enumTypes[6]
+}
+
+func (x DecisionRequest_Type) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use DecisionRequest_Type.Descriptor instead.
+func (DecisionRequest_Type) EnumDescriptor() ([]byte, []int) {
+	return file_api_proto_rawDescGZIP(), []int{7, 0}
 }
 
 type InviteRequest_Type int32
@@ -326,11 +431,11 @@ func (x InviteRequest_Type) String() string {
 }
 
 func (InviteRequest_Type) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_proto_enumTypes[5].Descriptor()
+	return file_api_proto_enumTypes[7].Descriptor()
 }
 
 func (InviteRequest_Type) Type() protoreflect.EnumType {
-	return &file_api_proto_enumTypes[5]
+	return &file_api_proto_enumTypes[7]
 }
 
 func (x InviteRequest_Type) Number() protoreflect.EnumNumber {
@@ -339,7 +444,7 @@ func (x InviteRequest_Type) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use InviteRequest_Type.Descriptor instead.
 func (InviteRequest_Type) EnumDescriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{7, 0}
+	return file_api_proto_rawDescGZIP(), []int{9, 0}
 }
 
 type InviteResponse_Type int32
@@ -378,11 +483,11 @@ func (x InviteResponse_Type) String() string {
 }
 
 func (InviteResponse_Type) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_proto_enumTypes[6].Descriptor()
+	return file_api_proto_enumTypes[8].Descriptor()
 }
 
 func (InviteResponse_Type) Type() protoreflect.EnumType {
-	return &file_api_proto_enumTypes[6]
+	return &file_api_proto_enumTypes[8]
 }
 
 func (x InviteResponse_Type) Number() protoreflect.EnumNumber {
@@ -391,7 +496,7 @@ func (x InviteResponse_Type) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use InviteResponse_Type.Descriptor instead.
 func (InviteResponse_Type) EnumDescriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{8, 0}
+	return file_api_proto_rawDescGZIP(), []int{10, 0}
 }
 
 // Mailbox Action
@@ -428,11 +533,11 @@ func (x MailboxRequest_Action) String() string {
 }
 
 func (MailboxRequest_Action) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_proto_enumTypes[7].Descriptor()
+	return file_api_proto_enumTypes[9].Descriptor()
 }
 
 func (MailboxRequest_Action) Type() protoreflect.EnumType {
-	return &file_api_proto_enumTypes[7]
+	return &file_api_proto_enumTypes[9]
 }
 
 func (x MailboxRequest_Action) Number() protoreflect.EnumNumber {
@@ -441,7 +546,7 @@ func (x MailboxRequest_Action) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use MailboxRequest_Action.Descriptor instead.
 func (MailboxRequest_Action) EnumDescriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{9, 0}
+	return file_api_proto_rawDescGZIP(), []int{11, 0}
 }
 
 // Mailbox Action
@@ -478,11 +583,11 @@ func (x MailboxResponse_Action) String() string {
 }
 
 func (MailboxResponse_Action) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_proto_enumTypes[8].Descriptor()
+	return file_api_proto_enumTypes[10].Descriptor()
 }
 
 func (MailboxResponse_Action) Type() protoreflect.EnumType {
-	return &file_api_proto_enumTypes[8]
+	return &file_api_proto_enumTypes[10]
 }
 
 func (x MailboxResponse_Action) Number() protoreflect.EnumNumber {
@@ -491,7 +596,7 @@ func (x MailboxResponse_Action) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use MailboxResponse_Action.Descriptor instead.
 func (MailboxResponse_Action) EnumDescriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{10, 0}
+	return file_api_proto_rawDescGZIP(), []int{12, 0}
 }
 
 // Request Type
@@ -525,11 +630,11 @@ func (x VerifyRequest_Type) String() string {
 }
 
 func (VerifyRequest_Type) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_proto_enumTypes[9].Descriptor()
+	return file_api_proto_enumTypes[11].Descriptor()
 }
 
 func (VerifyRequest_Type) Type() protoreflect.EnumType {
-	return &file_api_proto_enumTypes[9]
+	return &file_api_proto_enumTypes[11]
 }
 
 func (x VerifyRequest_Type) Number() protoreflect.EnumNumber {
@@ -538,7 +643,7 @@ func (x VerifyRequest_Type) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use VerifyRequest_Type.Descriptor instead.
 func (VerifyRequest_Type) EnumDescriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{12, 0}
+	return file_api_proto_rawDescGZIP(), []int{14, 0}
 }
 
 // Traffic Direction of Session
@@ -575,11 +680,11 @@ func (x CompleteEvent_Direction) String() string {
 }
 
 func (CompleteEvent_Direction) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_proto_enumTypes[10].Descriptor()
+	return file_api_proto_enumTypes[12].Descriptor()
 }
 
 func (CompleteEvent_Direction) Type() protoreflect.EnumType {
-	return &file_api_proto_enumTypes[10]
+	return &file_api_proto_enumTypes[12]
 }
 
 func (x CompleteEvent_Direction) Number() protoreflect.EnumNumber {
@@ -588,7 +693,7 @@ func (x CompleteEvent_Direction) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use CompleteEvent_Direction.Descriptor instead.
 func (CompleteEvent_Direction) EnumDescriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{14, 0}
+	return file_api_proto_rawDescGZIP(), []int{16, 0}
 }
 
 // Local Type Event
@@ -631,11 +736,11 @@ func (x TopicEvent_Subject) String() string {
 }
 
 func (TopicEvent_Subject) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_proto_enumTypes[11].Descriptor()
+	return file_api_proto_enumTypes[13].Descriptor()
 }
 
 func (TopicEvent_Subject) Type() protoreflect.EnumType {
-	return &file_api_proto_enumTypes[11]
+	return &file_api_proto_enumTypes[13]
 }
 
 func (x TopicEvent_Subject) Number() protoreflect.EnumNumber {
@@ -644,7 +749,7 @@ func (x TopicEvent_Subject) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use TopicEvent_Subject.Descriptor instead.
 func (TopicEvent_Subject) EnumDescriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{19, 0}
+	return file_api_proto_rawDescGZIP(), []int{21, 0}
 }
 
 type GenericRequest_Type int32
@@ -677,11 +782,11 @@ func (x GenericRequest_Type) String() string {
 }
 
 func (GenericRequest_Type) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_proto_enumTypes[12].Descriptor()
+	return file_api_proto_enumTypes[14].Descriptor()
 }
 
 func (GenericRequest_Type) Type() protoreflect.EnumType {
-	return &file_api_proto_enumTypes[12]
+	return &file_api_proto_enumTypes[14]
 }
 
 func (x GenericRequest_Type) Number() protoreflect.EnumNumber {
@@ -690,7 +795,7 @@ func (x GenericRequest_Type) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use GenericRequest_Type.Descriptor instead.
 func (GenericRequest_Type) EnumDescriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{20, 0}
+	return file_api_proto_rawDescGZIP(), []int{22, 0}
 }
 
 type GenericResponse_Type int32
@@ -726,11 +831,11 @@ func (x GenericResponse_Type) String() string {
 }
 
 func (GenericResponse_Type) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_proto_enumTypes[13].Descriptor()
+	return file_api_proto_enumTypes[15].Descriptor()
 }
 
 func (GenericResponse_Type) Type() protoreflect.EnumType {
-	return &file_api_proto_enumTypes[13]
+	return &file_api_proto_enumTypes[15]
 }
 
 func (x GenericResponse_Type) Number() protoreflect.EnumNumber {
@@ -739,7 +844,7 @@ func (x GenericResponse_Type) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use GenericResponse_Type.Descriptor instead.
 func (GenericResponse_Type) EnumDescriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{21, 0}
+	return file_api_proto_rawDescGZIP(), []int{23, 0}
 }
 
 // Type of Event
@@ -785,11 +890,11 @@ func (x GenericEvent_Type) String() string {
 }
 
 func (GenericEvent_Type) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_proto_enumTypes[14].Descriptor()
+	return file_api_proto_enumTypes[16].Descriptor()
 }
 
 func (GenericEvent_Type) Type() protoreflect.EnumType {
-	return &file_api_proto_enumTypes[14]
+	return &file_api_proto_enumTypes[16]
 }
 
 func (x GenericEvent_Type) Number() protoreflect.EnumNumber {
@@ -798,7 +903,7 @@ func (x GenericEvent_Type) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use GenericEvent_Type.Descriptor instead.
 func (GenericEvent_Type) EnumDescriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{22, 0}
+	return file_api_proto_rawDescGZIP(), []int{24, 0}
 }
 
 // ActionRequest performs action on Node
@@ -1394,6 +1499,158 @@ func (x *ConnectionResponse) GetThreads() map[string]*ConnectionResponse_Textile
 	return nil
 }
 
+// Message for a Response to an Invite Request
+type DecisionRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Decision Decision             `protobuf:"varint,1,opt,name=decision,proto3,enum=models.Decision" json:"decision,omitempty"`     // Value to be Decided
+	Payload  Payload              `protobuf:"varint,2,opt,name=payload,proto3,enum=models.Payload" json:"payload,omitempty"`        // Type of Transfer
+	From     *Peer                `protobuf:"bytes,3,opt,name=from,proto3" json:"from,omitempty"`                                   // Users Peer Data
+	To       *Peer                `protobuf:"bytes,4,opt,name=to,proto3" json:"to,omitempty"`                                       // Receivers Peer Data
+	Transfer *Transfer            `protobuf:"bytes,5,opt,name=transfer,proto3" json:"transfer,omitempty"`                           // Attached Data
+	Type     DecisionRequest_Type `protobuf:"varint,6,opt,name=type,proto3,enum=models.DecisionRequest_Type" json:"type,omitempty"` // Type of Invite
+	Protocol string               `protobuf:"bytes,7,opt,name=protocol,proto3" json:"protocol,omitempty"`                           // Protocol for Invite
+}
+
+func (x *DecisionRequest) Reset() {
+	*x = DecisionRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DecisionRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DecisionRequest) ProtoMessage() {}
+
+func (x *DecisionRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DecisionRequest.ProtoReflect.Descriptor instead.
+func (*DecisionRequest) Descriptor() ([]byte, []int) {
+	return file_api_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *DecisionRequest) GetDecision() Decision {
+	if x != nil {
+		return x.Decision
+	}
+	return Decision_ACCEPT
+}
+
+func (x *DecisionRequest) GetPayload() Payload {
+	if x != nil {
+		return x.Payload
+	}
+	return Payload_NONE
+}
+
+func (x *DecisionRequest) GetFrom() *Peer {
+	if x != nil {
+		return x.From
+	}
+	return nil
+}
+
+func (x *DecisionRequest) GetTo() *Peer {
+	if x != nil {
+		return x.To
+	}
+	return nil
+}
+
+func (x *DecisionRequest) GetTransfer() *Transfer {
+	if x != nil {
+		return x.Transfer
+	}
+	return nil
+}
+
+func (x *DecisionRequest) GetType() DecisionRequest_Type {
+	if x != nil {
+		return x.Type
+	}
+	return DecisionRequest_NONE
+}
+
+func (x *DecisionRequest) GetProtocol() string {
+	if x != nil {
+		return x.Protocol
+	}
+	return ""
+}
+
+// Message for a Response to an DecisionRequest
+type DecisionResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Success bool   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"` // True if Decision was Successful
+	Body    string `protobuf:"bytes,2,opt,name=body,proto3" json:"body,omitempty"`        // Response Body
+}
+
+func (x *DecisionResponse) Reset() {
+	*x = DecisionResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DecisionResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DecisionResponse) ProtoMessage() {}
+
+func (x *DecisionResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DecisionResponse.ProtoReflect.Descriptor instead.
+func (*DecisionResponse) Descriptor() ([]byte, []int) {
+	return file_api_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *DecisionResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *DecisionResponse) GetBody() string {
+	if x != nil {
+		return x.Body
+	}
+	return ""
+}
+
 // Invitation Message sent on RPC
 type InviteRequest struct {
 	state         protoimpl.MessageState
@@ -1412,7 +1669,7 @@ type InviteRequest struct {
 func (x *InviteRequest) Reset() {
 	*x = InviteRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[7]
+		mi := &file_api_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1425,7 +1682,7 @@ func (x *InviteRequest) String() string {
 func (*InviteRequest) ProtoMessage() {}
 
 func (x *InviteRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[7]
+	mi := &file_api_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1438,7 +1695,7 @@ func (x *InviteRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use InviteRequest.ProtoReflect.Descriptor instead.
 func (*InviteRequest) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{7}
+	return file_api_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *InviteRequest) GetPayload() Payload {
@@ -1496,7 +1753,7 @@ type InviteResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Decision bool                `protobuf:"varint,1,opt,name=decision,proto3" json:"decision,omitempty"`                         // Peer Decision for Invite Request
+	Decision Decision            `protobuf:"varint,1,opt,name=decision,proto3,enum=models.Decision" json:"decision,omitempty"`    // Peer Decision for Invite Request
 	Payload  Payload             `protobuf:"varint,2,opt,name=payload,proto3,enum=models.Payload" json:"payload,omitempty"`       // Type of Transfer
 	From     *Peer               `protobuf:"bytes,3,opt,name=from,proto3" json:"from,omitempty"`                                  // Users Peer Data
 	To       *Peer               `protobuf:"bytes,4,opt,name=to,proto3" json:"to,omitempty"`                                      // Receivers Peer Data
@@ -1508,7 +1765,7 @@ type InviteResponse struct {
 func (x *InviteResponse) Reset() {
 	*x = InviteResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[8]
+		mi := &file_api_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1521,7 +1778,7 @@ func (x *InviteResponse) String() string {
 func (*InviteResponse) ProtoMessage() {}
 
 func (x *InviteResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[8]
+	mi := &file_api_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1534,14 +1791,14 @@ func (x *InviteResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use InviteResponse.ProtoReflect.Descriptor instead.
 func (*InviteResponse) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{8}
+	return file_api_proto_rawDescGZIP(), []int{10}
 }
 
-func (x *InviteResponse) GetDecision() bool {
+func (x *InviteResponse) GetDecision() Decision {
 	if x != nil {
 		return x.Decision
 	}
-	return false
+	return Decision_ACCEPT
 }
 
 func (x *InviteResponse) GetPayload() Payload {
@@ -1599,7 +1856,7 @@ type MailboxRequest struct {
 func (x *MailboxRequest) Reset() {
 	*x = MailboxRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[9]
+		mi := &file_api_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1612,7 +1869,7 @@ func (x *MailboxRequest) String() string {
 func (*MailboxRequest) ProtoMessage() {}
 
 func (x *MailboxRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[9]
+	mi := &file_api_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1625,7 +1882,7 @@ func (x *MailboxRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MailboxRequest.ProtoReflect.Descriptor instead.
 func (*MailboxRequest) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{9}
+	return file_api_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *MailboxRequest) GetID() string {
@@ -1656,7 +1913,7 @@ type MailboxResponse struct {
 func (x *MailboxResponse) Reset() {
 	*x = MailboxResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[10]
+		mi := &file_api_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1669,7 +1926,7 @@ func (x *MailboxResponse) String() string {
 func (*MailboxResponse) ProtoMessage() {}
 
 func (x *MailboxResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[10]
+	mi := &file_api_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1682,7 +1939,7 @@ func (x *MailboxResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MailboxResponse.ProtoReflect.Descriptor instead.
 func (*MailboxResponse) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{10}
+	return file_api_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *MailboxResponse) GetID() string {
@@ -1723,7 +1980,7 @@ type UpdateRequest struct {
 func (x *UpdateRequest) Reset() {
 	*x = UpdateRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[11]
+		mi := &file_api_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1736,7 +1993,7 @@ func (x *UpdateRequest) String() string {
 func (*UpdateRequest) ProtoMessage() {}
 
 func (x *UpdateRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[11]
+	mi := &file_api_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1749,7 +2006,7 @@ func (x *UpdateRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateRequest.ProtoReflect.Descriptor instead.
 func (*UpdateRequest) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{11}
+	return file_api_proto_rawDescGZIP(), []int{13}
 }
 
 func (m *UpdateRequest) GetData() isUpdateRequest_Data {
@@ -1839,7 +2096,7 @@ type VerifyRequest struct {
 func (x *VerifyRequest) Reset() {
 	*x = VerifyRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[12]
+		mi := &file_api_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1852,7 +2109,7 @@ func (x *VerifyRequest) String() string {
 func (*VerifyRequest) ProtoMessage() {}
 
 func (x *VerifyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[12]
+	mi := &file_api_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1865,7 +2122,7 @@ func (x *VerifyRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VerifyRequest.ProtoReflect.Descriptor instead.
 func (*VerifyRequest) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{12}
+	return file_api_proto_rawDescGZIP(), []int{14}
 }
 
 func (m *VerifyRequest) GetData() isVerifyRequest_Data {
@@ -1963,7 +2220,7 @@ type VerifyResponse struct {
 func (x *VerifyResponse) Reset() {
 	*x = VerifyResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[13]
+		mi := &file_api_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1976,7 +2233,7 @@ func (x *VerifyResponse) String() string {
 func (*VerifyResponse) ProtoMessage() {}
 
 func (x *VerifyResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[13]
+	mi := &file_api_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1989,7 +2246,7 @@ func (x *VerifyResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VerifyResponse.ProtoReflect.Descriptor instead.
 func (*VerifyResponse) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{13}
+	return file_api_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *VerifyResponse) GetIsVerified() bool {
@@ -2029,7 +2286,7 @@ type CompleteEvent struct {
 func (x *CompleteEvent) Reset() {
 	*x = CompleteEvent{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[14]
+		mi := &file_api_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2042,7 +2299,7 @@ func (x *CompleteEvent) String() string {
 func (*CompleteEvent) ProtoMessage() {}
 
 func (x *CompleteEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[14]
+	mi := &file_api_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2055,7 +2312,7 @@ func (x *CompleteEvent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CompleteEvent.ProtoReflect.Descriptor instead.
 func (*CompleteEvent) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{14}
+	return file_api_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *CompleteEvent) GetDirection() CompleteEvent_Direction {
@@ -2088,7 +2345,7 @@ type LinkEvent struct {
 func (x *LinkEvent) Reset() {
 	*x = LinkEvent{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[15]
+		mi := &file_api_proto_msgTypes[17]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2101,7 +2358,7 @@ func (x *LinkEvent) String() string {
 func (*LinkEvent) ProtoMessage() {}
 
 func (x *LinkEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[15]
+	mi := &file_api_proto_msgTypes[17]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2114,7 +2371,7 @@ func (x *LinkEvent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LinkEvent.ProtoReflect.Descriptor instead.
 func (*LinkEvent) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{15}
+	return file_api_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *LinkEvent) GetSuccess() bool {
@@ -2170,7 +2427,7 @@ type MailEvent struct {
 func (x *MailEvent) Reset() {
 	*x = MailEvent{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[16]
+		mi := &file_api_proto_msgTypes[18]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2183,7 +2440,7 @@ func (x *MailEvent) String() string {
 func (*MailEvent) ProtoMessage() {}
 
 func (x *MailEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[16]
+	mi := &file_api_proto_msgTypes[18]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2196,7 +2453,7 @@ func (x *MailEvent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MailEvent.ProtoReflect.Descriptor instead.
 func (*MailEvent) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{16}
+	return file_api_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *MailEvent) GetCreatedAt() int32 {
@@ -2262,7 +2519,7 @@ type ProgressEvent struct {
 func (x *ProgressEvent) Reset() {
 	*x = ProgressEvent{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[17]
+		mi := &file_api_proto_msgTypes[19]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2275,7 +2532,7 @@ func (x *ProgressEvent) String() string {
 func (*ProgressEvent) ProtoMessage() {}
 
 func (x *ProgressEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[17]
+	mi := &file_api_proto_msgTypes[19]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2288,7 +2545,7 @@ func (x *ProgressEvent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ProgressEvent.ProtoReflect.Descriptor instead.
 func (*ProgressEvent) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{17}
+	return file_api_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *ProgressEvent) GetCurrent() int32 {
@@ -2325,7 +2582,7 @@ type StatusEvent struct {
 func (x *StatusEvent) Reset() {
 	*x = StatusEvent{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[18]
+		mi := &file_api_proto_msgTypes[20]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2338,7 +2595,7 @@ func (x *StatusEvent) String() string {
 func (*StatusEvent) ProtoMessage() {}
 
 func (x *StatusEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[18]
+	mi := &file_api_proto_msgTypes[20]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2351,7 +2608,7 @@ func (x *StatusEvent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StatusEvent.ProtoReflect.Descriptor instead.
 func (*StatusEvent) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{18}
+	return file_api_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *StatusEvent) GetValue() Status {
@@ -2383,7 +2640,7 @@ type TopicEvent struct {
 func (x *TopicEvent) Reset() {
 	*x = TopicEvent{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[19]
+		mi := &file_api_proto_msgTypes[21]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2396,7 +2653,7 @@ func (x *TopicEvent) String() string {
 func (*TopicEvent) ProtoMessage() {}
 
 func (x *TopicEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[19]
+	mi := &file_api_proto_msgTypes[21]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2409,7 +2666,7 @@ func (x *TopicEvent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TopicEvent.ProtoReflect.Descriptor instead.
 func (*TopicEvent) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{19}
+	return file_api_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *TopicEvent) GetTopic() *Topic {
@@ -2453,7 +2710,7 @@ type GenericRequest struct {
 func (x *GenericRequest) Reset() {
 	*x = GenericRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[20]
+		mi := &file_api_proto_msgTypes[22]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2466,7 +2723,7 @@ func (x *GenericRequest) String() string {
 func (*GenericRequest) ProtoMessage() {}
 
 func (x *GenericRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[20]
+	mi := &file_api_proto_msgTypes[22]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2479,7 +2736,7 @@ func (x *GenericRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GenericRequest.ProtoReflect.Descriptor instead.
 func (*GenericRequest) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{20}
+	return file_api_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *GenericRequest) GetType() GenericRequest_Type {
@@ -2509,7 +2766,7 @@ type GenericResponse struct {
 func (x *GenericResponse) Reset() {
 	*x = GenericResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[21]
+		mi := &file_api_proto_msgTypes[23]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2522,7 +2779,7 @@ func (x *GenericResponse) String() string {
 func (*GenericResponse) ProtoMessage() {}
 
 func (x *GenericResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[21]
+	mi := &file_api_proto_msgTypes[23]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2535,7 +2792,7 @@ func (x *GenericResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GenericResponse.ProtoReflect.Descriptor instead.
 func (*GenericResponse) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{21}
+	return file_api_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *GenericResponse) GetType() GenericResponse_Type {
@@ -2565,7 +2822,7 @@ type GenericEvent struct {
 func (x *GenericEvent) Reset() {
 	*x = GenericEvent{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[22]
+		mi := &file_api_proto_msgTypes[24]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2578,7 +2835,7 @@ func (x *GenericEvent) String() string {
 func (*GenericEvent) ProtoMessage() {}
 
 func (x *GenericEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[22]
+	mi := &file_api_proto_msgTypes[24]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2591,7 +2848,7 @@ func (x *GenericEvent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GenericEvent.ProtoReflect.Descriptor instead.
 func (*GenericEvent) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{22}
+	return file_api_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *GenericEvent) GetType() GenericEvent_Type {
@@ -2621,7 +2878,7 @@ type NoRequest struct {
 func (x *NoRequest) Reset() {
 	*x = NoRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[23]
+		mi := &file_api_proto_msgTypes[25]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2634,7 +2891,7 @@ func (x *NoRequest) String() string {
 func (*NoRequest) ProtoMessage() {}
 
 func (x *NoRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[23]
+	mi := &file_api_proto_msgTypes[25]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2647,7 +2904,7 @@ func (x *NoRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NoRequest.ProtoReflect.Descriptor instead.
 func (*NoRequest) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{23}
+	return file_api_proto_rawDescGZIP(), []int{25}
 }
 
 // Blank Message for Nil Response
@@ -2660,7 +2917,7 @@ type NoResponse struct {
 func (x *NoResponse) Reset() {
 	*x = NoResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[24]
+		mi := &file_api_proto_msgTypes[26]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2673,7 +2930,7 @@ func (x *NoResponse) String() string {
 func (*NoResponse) ProtoMessage() {}
 
 func (x *NoResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[24]
+	mi := &file_api_proto_msgTypes[26]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2686,7 +2943,7 @@ func (x *NoResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NoResponse.ProtoReflect.Descriptor instead.
 func (*NoResponse) Descriptor() ([]byte, []int) {
-	return file_api_proto_rawDescGZIP(), []int{24}
+	return file_api_proto_rawDescGZIP(), []int{26}
 }
 
 // Libp2p Host Options
@@ -2707,7 +2964,7 @@ type ConnectionRequest_HostOptions struct {
 func (x *ConnectionRequest_HostOptions) Reset() {
 	*x = ConnectionRequest_HostOptions{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[25]
+		mi := &file_api_proto_msgTypes[27]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2720,7 +2977,7 @@ func (x *ConnectionRequest_HostOptions) String() string {
 func (*ConnectionRequest_HostOptions) ProtoMessage() {}
 
 func (x *ConnectionRequest_HostOptions) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[25]
+	mi := &file_api_proto_msgTypes[27]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2802,7 +3059,7 @@ type ConnectionRequest_ServiceOptions struct {
 func (x *ConnectionRequest_ServiceOptions) Reset() {
 	*x = ConnectionRequest_ServiceOptions{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[26]
+		mi := &file_api_proto_msgTypes[28]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2815,7 +3072,7 @@ func (x *ConnectionRequest_ServiceOptions) String() string {
 func (*ConnectionRequest_ServiceOptions) ProtoMessage() {}
 
 func (x *ConnectionRequest_ServiceOptions) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[26]
+	mi := &file_api_proto_msgTypes[28]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2889,7 +3146,7 @@ type ConnectionRequest_IPAddress struct {
 func (x *ConnectionRequest_IPAddress) Reset() {
 	*x = ConnectionRequest_IPAddress{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[27]
+		mi := &file_api_proto_msgTypes[29]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2902,7 +3159,7 @@ func (x *ConnectionRequest_IPAddress) String() string {
 func (*ConnectionRequest_IPAddress) ProtoMessage() {}
 
 func (x *ConnectionRequest_IPAddress) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[27]
+	mi := &file_api_proto_msgTypes[29]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2968,7 +3225,7 @@ type ConnectionResponse_TextileThread struct {
 func (x *ConnectionResponse_TextileThread) Reset() {
 	*x = ConnectionResponse_TextileThread{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_proto_msgTypes[29]
+		mi := &file_api_proto_msgTypes[31]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2981,7 +3238,7 @@ func (x *ConnectionResponse_TextileThread) String() string {
 func (*ConnectionResponse_TextileThread) ProtoMessage() {}
 
 func (x *ConnectionResponse_TextileThread) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_msgTypes[29]
+	mi := &file_api_proto_msgTypes[31]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3195,31 +3452,58 @@ var file_api_proto_rawDesc = []byte{
 	0x6c, 0x74, 0x69, 0x61, 0x64, 0x64, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x6d,
 	0x75, 0x6c, 0x74, 0x69, 0x61, 0x64, 0x64, 0x72, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18,
 	0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61,
-	0x6d, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x22, 0xcd,
-	0x02, 0x0a, 0x0d, 0x49, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x12, 0x29, 0x0a, 0x07, 0x70, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x6d, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x22, 0xd9,
+	0x02, 0x0a, 0x0f, 0x44, 0x65, 0x63, 0x69, 0x73, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x12, 0x2c, 0x0a, 0x08, 0x64, 0x65, 0x63, 0x69, 0x73, 0x69, 0x6f, 0x6e, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x0e, 0x32, 0x10, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x44, 0x65,
+	0x63, 0x69, 0x73, 0x69, 0x6f, 0x6e, 0x52, 0x08, 0x64, 0x65, 0x63, 0x69, 0x73, 0x69, 0x6f, 0x6e,
+	0x12, 0x29, 0x0a, 0x07, 0x70, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28,
 	0x0e, 0x32, 0x0f, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x50, 0x61, 0x79, 0x6c, 0x6f,
 	0x61, 0x64, 0x52, 0x07, 0x70, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x12, 0x20, 0x0a, 0x04, 0x66,
-	0x72, 0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x6d, 0x6f, 0x64, 0x65,
+	0x72, 0x6f, 0x6d, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x6d, 0x6f, 0x64, 0x65,
 	0x6c, 0x73, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x04, 0x66, 0x72, 0x6f, 0x6d, 0x12, 0x1c, 0x0a,
-	0x02, 0x74, 0x6f, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x6d, 0x6f, 0x64, 0x65,
+	0x02, 0x74, 0x6f, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x6d, 0x6f, 0x64, 0x65,
 	0x6c, 0x73, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x02, 0x74, 0x6f, 0x12, 0x2c, 0x0a, 0x08, 0x74,
-	0x72, 0x61, 0x6e, 0x73, 0x66, 0x65, 0x72, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x10, 0x2e,
+	0x72, 0x61, 0x6e, 0x73, 0x66, 0x65, 0x72, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x10, 0x2e,
 	0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x66, 0x65, 0x72, 0x52,
-	0x08, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x66, 0x65, 0x72, 0x12, 0x2e, 0x0a, 0x04, 0x74, 0x79, 0x70,
-	0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x1a, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73,
-	0x2e, 0x49, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x2e, 0x54,
-	0x79, 0x70, 0x65, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x68, 0x6f, 0x72, 0x74, 0x49, 0x44,
-	0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x73, 0x68, 0x6f, 0x72, 0x74, 0x49, 0x44, 0x22,
-	0x3d, 0x0a, 0x04, 0x54, 0x79, 0x70, 0x65, 0x12, 0x08, 0x0a, 0x04, 0x4e, 0x4f, 0x4e, 0x45, 0x10,
-	0x00, 0x12, 0x09, 0x0a, 0x05, 0x4c, 0x4f, 0x43, 0x41, 0x4c, 0x10, 0x01, 0x12, 0x0a, 0x0a, 0x06,
-	0x44, 0x49, 0x52, 0x45, 0x43, 0x54, 0x10, 0x02, 0x12, 0x0a, 0x0a, 0x06, 0x52, 0x45, 0x4d, 0x4f,
-	0x54, 0x45, 0x10, 0x03, 0x12, 0x08, 0x0a, 0x04, 0x4c, 0x49, 0x4e, 0x4b, 0x10, 0x04, 0x22, 0xc5,
-	0x02, 0x0a, 0x0e, 0x49, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x12, 0x1a, 0x0a, 0x08, 0x64, 0x65, 0x63, 0x69, 0x73, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x08, 0x52, 0x08, 0x64, 0x65, 0x63, 0x69, 0x73, 0x69, 0x6f, 0x6e, 0x12, 0x29, 0x0a,
+	0x08, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x66, 0x65, 0x72, 0x12, 0x30, 0x0a, 0x04, 0x74, 0x79, 0x70,
+	0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x1c, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73,
+	0x2e, 0x44, 0x65, 0x63, 0x69, 0x73, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x2e, 0x54, 0x79, 0x70, 0x65, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x22, 0x31, 0x0a, 0x04, 0x54, 0x79, 0x70, 0x65, 0x12,
+	0x08, 0x0a, 0x04, 0x4e, 0x4f, 0x4e, 0x45, 0x10, 0x00, 0x12, 0x09, 0x0a, 0x05, 0x4c, 0x4f, 0x43,
+	0x41, 0x4c, 0x10, 0x01, 0x12, 0x08, 0x0a, 0x04, 0x46, 0x4c, 0x41, 0x54, 0x10, 0x02, 0x12, 0x0a,
+	0x0a, 0x06, 0x52, 0x45, 0x4d, 0x4f, 0x54, 0x45, 0x10, 0x03, 0x22, 0x40, 0x0a, 0x10, 0x44, 0x65,
+	0x63, 0x69, 0x73, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18,
+	0x0a, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52,
+	0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x12, 0x12, 0x0a, 0x04, 0x62, 0x6f, 0x64, 0x79,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x62, 0x6f, 0x64, 0x79, 0x22, 0xcd, 0x02, 0x0a,
+	0x0d, 0x49, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x29,
+	0x0a, 0x07, 0x70, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32,
+	0x0f, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x50, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64,
+	0x52, 0x07, 0x70, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x12, 0x20, 0x0a, 0x04, 0x66, 0x72, 0x6f,
+	0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73,
+	0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x04, 0x66, 0x72, 0x6f, 0x6d, 0x12, 0x1c, 0x0a, 0x02, 0x74,
+	0x6f, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73,
+	0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x02, 0x74, 0x6f, 0x12, 0x2c, 0x0a, 0x08, 0x74, 0x72, 0x61,
+	0x6e, 0x73, 0x66, 0x65, 0x72, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x10, 0x2e, 0x6d, 0x6f,
+	0x64, 0x65, 0x6c, 0x73, 0x2e, 0x54, 0x72, 0x61, 0x6e, 0x73, 0x66, 0x65, 0x72, 0x52, 0x08, 0x74,
+	0x72, 0x61, 0x6e, 0x73, 0x66, 0x65, 0x72, 0x12, 0x2e, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18,
+	0x05, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x1a, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x49,
+	0x6e, 0x76, 0x69, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x2e, 0x54, 0x79, 0x70,
+	0x65, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x63, 0x6f, 0x6c, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x63, 0x6f, 0x6c, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x68, 0x6f, 0x72, 0x74, 0x49, 0x44, 0x18, 0x07,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x73, 0x68, 0x6f, 0x72, 0x74, 0x49, 0x44, 0x22, 0x3d, 0x0a,
+	0x04, 0x54, 0x79, 0x70, 0x65, 0x12, 0x08, 0x0a, 0x04, 0x4e, 0x4f, 0x4e, 0x45, 0x10, 0x00, 0x12,
+	0x09, 0x0a, 0x05, 0x4c, 0x4f, 0x43, 0x41, 0x4c, 0x10, 0x01, 0x12, 0x0a, 0x0a, 0x06, 0x44, 0x49,
+	0x52, 0x45, 0x43, 0x54, 0x10, 0x02, 0x12, 0x0a, 0x0a, 0x06, 0x52, 0x45, 0x4d, 0x4f, 0x54, 0x45,
+	0x10, 0x03, 0x12, 0x08, 0x0a, 0x04, 0x4c, 0x49, 0x4e, 0x4b, 0x10, 0x04, 0x22, 0xd7, 0x02, 0x0a,
+	0x0e, 0x49, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
+	0x2c, 0x0a, 0x08, 0x64, 0x65, 0x63, 0x69, 0x73, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x0e, 0x32, 0x10, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x69, 0x73,
+	0x69, 0x6f, 0x6e, 0x52, 0x08, 0x64, 0x65, 0x63, 0x69, 0x73, 0x69, 0x6f, 0x6e, 0x12, 0x29, 0x0a,
 	0x07, 0x70, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x0f,
 	0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x50, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x52,
 	0x07, 0x70, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x12, 0x20, 0x0a, 0x04, 0x66, 0x72, 0x6f, 0x6d,
@@ -3387,73 +3671,102 @@ var file_api_proto_rawDesc = []byte{
 	0x10, 0x03, 0x12, 0x0a, 0x0a, 0x06, 0x52, 0x45, 0x53, 0x55, 0x4d, 0x45, 0x10, 0x04, 0x12, 0x08,
 	0x0a, 0x04, 0x53, 0x54, 0x4f, 0x50, 0x10, 0x05, 0x12, 0x0b, 0x0a, 0x07, 0x52, 0x45, 0x53, 0x54,
 	0x41, 0x52, 0x54, 0x10, 0x06, 0x12, 0x10, 0x0a, 0x0c, 0x4c, 0x49, 0x53, 0x54, 0x5f, 0x4c, 0x49,
-	0x4e, 0x4b, 0x45, 0x52, 0x53, 0x10, 0x07, 0x32, 0x91, 0x08, 0x0a, 0x0b, 0x4e, 0x6f, 0x64, 0x65,
-	0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x41, 0x0a, 0x0a, 0x49, 0x6e, 0x69, 0x74, 0x69,
-	0x61, 0x6c, 0x69, 0x7a, 0x65, 0x12, 0x19, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x49,
-	0x6e, 0x69, 0x74, 0x69, 0x61, 0x6c, 0x69, 0x7a, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x1a, 0x16, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x56, 0x65, 0x72, 0x69, 0x66, 0x79,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x3a, 0x0a, 0x07, 0x43, 0x6f,
-	0x6e, 0x6e, 0x65, 0x63, 0x74, 0x12, 0x19, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x43,
-	0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x1a, 0x12, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x4e, 0x6f, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x39, 0x0a, 0x06, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e,
-	0x12, 0x15, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73,
-	0x2e, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
-	0x00, 0x12, 0x33, 0x0a, 0x04, 0x53, 0x69, 0x67, 0x6e, 0x12, 0x13, 0x2e, 0x6d, 0x6f, 0x64, 0x65,
-	0x6c, 0x73, 0x2e, 0x41, 0x75, 0x74, 0x68, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x14,
-	0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x41, 0x75, 0x74, 0x68, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x39, 0x0a, 0x06, 0x56, 0x65, 0x72, 0x69, 0x66, 0x79,
-	0x12, 0x15, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x56, 0x65, 0x72, 0x69, 0x66, 0x79,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73,
-	0x2e, 0x56, 0x65, 0x72, 0x69, 0x66, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
-	0x00, 0x12, 0x35, 0x0a, 0x06, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x12, 0x15, 0x2e, 0x6d, 0x6f,
-	0x64, 0x65, 0x6c, 0x73, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x1a, 0x12, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x4e, 0x6f, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x35, 0x0a, 0x06, 0x49, 0x6e, 0x76, 0x69,
-	0x74, 0x65, 0x12, 0x15, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x49, 0x6e, 0x76, 0x69,
-	0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x12, 0x2e, 0x6d, 0x6f, 0x64, 0x65,
+	0x4e, 0x4b, 0x45, 0x52, 0x53, 0x10, 0x07, 0x2a, 0x3b, 0x0a, 0x08, 0x44, 0x65, 0x63, 0x69, 0x73,
+	0x69, 0x6f, 0x6e, 0x12, 0x0a, 0x0a, 0x06, 0x41, 0x43, 0x43, 0x45, 0x50, 0x54, 0x10, 0x00, 0x12,
+	0x0b, 0x0a, 0x07, 0x44, 0x45, 0x43, 0x4c, 0x49, 0x4e, 0x45, 0x10, 0x01, 0x12, 0x0a, 0x0a, 0x06,
+	0x49, 0x47, 0x4e, 0x4f, 0x52, 0x45, 0x10, 0x02, 0x12, 0x0a, 0x0a, 0x06, 0x43, 0x41, 0x4e, 0x43,
+	0x45, 0x4c, 0x10, 0x03, 0x32, 0x9b, 0x0b, 0x0a, 0x0b, 0x4e, 0x6f, 0x64, 0x65, 0x53, 0x65, 0x72,
+	0x76, 0x69, 0x63, 0x65, 0x12, 0x3d, 0x0a, 0x0a, 0x49, 0x6e, 0x69, 0x74, 0x69, 0x61, 0x6c, 0x69,
+	0x7a, 0x65, 0x12, 0x19, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x49, 0x6e, 0x69, 0x74,
+	0x69, 0x61, 0x6c, 0x69, 0x7a, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x12, 0x2e,
+	0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x4e, 0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x22, 0x00, 0x12, 0x3a, 0x0a, 0x07, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x12, 0x19,
+	0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69,
+	0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x12, 0x2e, 0x6d, 0x6f, 0x64, 0x65,
 	0x6c, 0x73, 0x2e, 0x4e, 0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12,
-	0x37, 0x0a, 0x07, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x64, 0x12, 0x16, 0x2e, 0x6d, 0x6f, 0x64,
-	0x65, 0x6c, 0x73, 0x2e, 0x49, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x1a, 0x12, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x4e, 0x6f, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x39, 0x0a, 0x04, 0x4d, 0x61, 0x69, 0x6c,
+	0x35, 0x0a, 0x06, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x15, 0x2e, 0x6d, 0x6f, 0x64, 0x65,
+	0x6c, 0x73, 0x2e, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x1a, 0x12, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x4e, 0x6f, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x31, 0x0a, 0x04, 0x53, 0x69, 0x67, 0x6e, 0x12, 0x13,
+	0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x41, 0x75, 0x74, 0x68, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x1a, 0x12, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x4e, 0x6f, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x35, 0x0a, 0x06, 0x56, 0x65, 0x72,
+	0x69, 0x66, 0x79, 0x12, 0x15, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x56, 0x65, 0x72,
+	0x69, 0x66, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x12, 0x2e, 0x6d, 0x6f, 0x64,
+	0x65, 0x6c, 0x73, 0x2e, 0x4e, 0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00,
+	0x12, 0x35, 0x0a, 0x06, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x12, 0x15, 0x2e, 0x6d, 0x6f, 0x64,
+	0x65, 0x6c, 0x73, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x1a, 0x12, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x4e, 0x6f, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x35, 0x0a, 0x06, 0x49, 0x6e, 0x76, 0x69, 0x74,
+	0x65, 0x12, 0x15, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x49, 0x6e, 0x76, 0x69, 0x74,
+	0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x12, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c,
+	0x73, 0x2e, 0x4e, 0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x38,
+	0x0a, 0x07, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x64, 0x12, 0x17, 0x2e, 0x6d, 0x6f, 0x64, 0x65,
+	0x6c, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x69, 0x73, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x1a, 0x12, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x4e, 0x6f, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x34, 0x0a, 0x04, 0x4d, 0x61, 0x69, 0x6c,
 	0x12, 0x16, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f,
-	0x78, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x17, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c,
-	0x73, 0x2e, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x22, 0x00, 0x12, 0x36, 0x0a, 0x08, 0x4f, 0x6e, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12,
-	0x11, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x4e, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x1a, 0x13, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x53, 0x74, 0x61, 0x74,
-	0x75, 0x73, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x22, 0x00, 0x30, 0x01, 0x12, 0x32, 0x0a, 0x06, 0x4f,
-	0x6e, 0x4c, 0x69, 0x6e, 0x6b, 0x12, 0x11, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x4e,
-	0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x11, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c,
-	0x73, 0x2e, 0x4c, 0x69, 0x6e, 0x6b, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x22, 0x00, 0x30, 0x01, 0x12,
-	0x34, 0x0a, 0x07, 0x4f, 0x6e, 0x54, 0x6f, 0x70, 0x69, 0x63, 0x12, 0x11, 0x2e, 0x6d, 0x6f, 0x64,
-	0x65, 0x6c, 0x73, 0x2e, 0x4e, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x12, 0x2e,
-	0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x54, 0x6f, 0x70, 0x69, 0x63, 0x45, 0x76, 0x65, 0x6e,
-	0x74, 0x22, 0x00, 0x30, 0x01, 0x12, 0x38, 0x0a, 0x08, 0x4f, 0x6e, 0x49, 0x6e, 0x76, 0x69, 0x74,
+	0x78, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x12, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c,
+	0x73, 0x2e, 0x4e, 0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x3d,
+	0x0a, 0x10, 0x43, 0x61, 0x6c, 0x6c, 0x41, 0x75, 0x74, 0x68, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x11, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x4e, 0x6f, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x14, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x41,
+	0x75, 0x74, 0x68, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x43, 0x0a,
+	0x12, 0x43, 0x61, 0x6c, 0x6c, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x12, 0x11, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x4e, 0x6f, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e,
+	0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00,
+	0x30, 0x01, 0x12, 0x47, 0x0a, 0x14, 0x43, 0x61, 0x6c, 0x6c, 0x44, 0x65, 0x63, 0x69, 0x73, 0x69,
+	0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x11, 0x2e, 0x6d, 0x6f, 0x64,
+	0x65, 0x6c, 0x73, 0x2e, 0x4e, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x18, 0x2e,
+	0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x44, 0x65, 0x63, 0x69, 0x73, 0x69, 0x6f, 0x6e, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x30, 0x01, 0x12, 0x43, 0x0a, 0x12, 0x43,
+	0x61, 0x6c, 0x6c, 0x49, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
 	0x65, 0x12, 0x11, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x4e, 0x6f, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x1a, 0x15, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x49, 0x6e,
-	0x76, 0x69, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x00, 0x30, 0x01, 0x12,
-	0x38, 0x0a, 0x07, 0x4f, 0x6e, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x12, 0x11, 0x2e, 0x6d, 0x6f, 0x64,
-	0x65, 0x6c, 0x73, 0x2e, 0x4e, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e,
-	0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x49, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x30, 0x01, 0x12, 0x32, 0x0a, 0x06, 0x4f, 0x6e, 0x4d,
-	0x61, 0x69, 0x6c, 0x12, 0x11, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x4e, 0x6f, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x11, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e,
-	0x4d, 0x61, 0x69, 0x6c, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x22, 0x00, 0x30, 0x01, 0x12, 0x3a, 0x0a,
-	0x0a, 0x4f, 0x6e, 0x50, 0x72, 0x6f, 0x67, 0x72, 0x65, 0x73, 0x73, 0x12, 0x11, 0x2e, 0x6d, 0x6f,
-	0x64, 0x65, 0x6c, 0x73, 0x2e, 0x4e, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x15,
-	0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x50, 0x72, 0x6f, 0x67, 0x72, 0x65, 0x73, 0x73,
-	0x45, 0x76, 0x65, 0x6e, 0x74, 0x22, 0x00, 0x30, 0x01, 0x12, 0x3a, 0x0a, 0x0a, 0x4f, 0x6e, 0x43,
-	0x6f, 0x6d, 0x70, 0x6c, 0x65, 0x74, 0x65, 0x12, 0x11, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73,
-	0x2e, 0x4e, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x15, 0x2e, 0x6d, 0x6f, 0x64,
-	0x65, 0x6c, 0x73, 0x2e, 0x43, 0x6f, 0x6d, 0x70, 0x6c, 0x65, 0x74, 0x65, 0x45, 0x76, 0x65, 0x6e,
-	0x74, 0x22, 0x00, 0x30, 0x01, 0x12, 0x34, 0x0a, 0x07, 0x4f, 0x6e, 0x45, 0x72, 0x72, 0x6f, 0x72,
-	0x12, 0x11, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x4e, 0x6f, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x1a, 0x12, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x45, 0x72, 0x72,
-	0x6f, 0x72, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x22, 0x00, 0x30, 0x01, 0x42, 0x09, 0x5a, 0x07, 0x2f,
-	0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x49, 0x6e,
+	0x76, 0x69, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x30, 0x01,
+	0x12, 0x43, 0x0a, 0x13, 0x43, 0x61, 0x6c, 0x6c, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x11, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73,
+	0x2e, 0x4e, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x17, 0x2e, 0x6d, 0x6f, 0x64,
+	0x65, 0x6c, 0x73, 0x2e, 0x4d, 0x61, 0x69, 0x6c, 0x62, 0x6f, 0x78, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x43, 0x0a, 0x12, 0x43, 0x61, 0x6c, 0x6c, 0x56, 0x65, 0x72,
+	0x69, 0x66, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x11, 0x2e, 0x6d, 0x6f,
+	0x64, 0x65, 0x6c, 0x73, 0x2e, 0x4e, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16,
+	0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x56, 0x65, 0x72, 0x69, 0x66, 0x79, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x30, 0x01, 0x12, 0x36, 0x0a, 0x08, 0x4f, 0x6e,
+	0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x11, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e,
+	0x4e, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x13, 0x2e, 0x6d, 0x6f, 0x64, 0x65,
+	0x6c, 0x73, 0x2e, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x22, 0x00,
+	0x30, 0x01, 0x12, 0x32, 0x0a, 0x06, 0x4f, 0x6e, 0x4c, 0x69, 0x6e, 0x6b, 0x12, 0x11, 0x2e, 0x6d,
+	0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x4e, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
+	0x11, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x4c, 0x69, 0x6e, 0x6b, 0x45, 0x76, 0x65,
+	0x6e, 0x74, 0x22, 0x00, 0x30, 0x01, 0x12, 0x34, 0x0a, 0x07, 0x4f, 0x6e, 0x54, 0x6f, 0x70, 0x69,
+	0x63, 0x12, 0x11, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x4e, 0x6f, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x1a, 0x12, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x54, 0x6f,
+	0x70, 0x69, 0x63, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x22, 0x00, 0x30, 0x01, 0x12, 0x38, 0x0a, 0x08,
+	0x4f, 0x6e, 0x49, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x12, 0x11, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c,
+	0x73, 0x2e, 0x4e, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x15, 0x2e, 0x6d, 0x6f,
+	0x64, 0x65, 0x6c, 0x73, 0x2e, 0x49, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x22, 0x00, 0x30, 0x01, 0x12, 0x38, 0x0a, 0x07, 0x4f, 0x6e, 0x52, 0x65, 0x70, 0x6c,
+	0x79, 0x12, 0x11, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x4e, 0x6f, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x49, 0x6e,
+	0x76, 0x69, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x30, 0x01,
+	0x12, 0x32, 0x0a, 0x06, 0x4f, 0x6e, 0x4d, 0x61, 0x69, 0x6c, 0x12, 0x11, 0x2e, 0x6d, 0x6f, 0x64,
+	0x65, 0x6c, 0x73, 0x2e, 0x4e, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x11, 0x2e,
+	0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x4d, 0x61, 0x69, 0x6c, 0x45, 0x76, 0x65, 0x6e, 0x74,
+	0x22, 0x00, 0x30, 0x01, 0x12, 0x3a, 0x0a, 0x0a, 0x4f, 0x6e, 0x50, 0x72, 0x6f, 0x67, 0x72, 0x65,
+	0x73, 0x73, 0x12, 0x11, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x4e, 0x6f, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x15, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x50,
+	0x72, 0x6f, 0x67, 0x72, 0x65, 0x73, 0x73, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x22, 0x00, 0x30, 0x01,
+	0x12, 0x3a, 0x0a, 0x0a, 0x4f, 0x6e, 0x43, 0x6f, 0x6d, 0x70, 0x6c, 0x65, 0x74, 0x65, 0x12, 0x11,
+	0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x4e, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x1a, 0x15, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x43, 0x6f, 0x6d, 0x70, 0x6c,
+	0x65, 0x74, 0x65, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x22, 0x00, 0x30, 0x01, 0x12, 0x34, 0x0a, 0x07,
+	0x4f, 0x6e, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x12, 0x11, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73,
+	0x2e, 0x4e, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x12, 0x2e, 0x6d, 0x6f, 0x64,
+	0x65, 0x6c, 0x73, 0x2e, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x22, 0x00,
+	0x30, 0x01, 0x42, 0x09, 0x5a, 0x07, 0x2f, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x62, 0x06, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -3468,166 +3781,189 @@ func file_api_proto_rawDescGZIP() []byte {
 	return file_api_proto_rawDescData
 }
 
-var file_api_proto_enumTypes = make([]protoimpl.EnumInfo, 15)
-var file_api_proto_msgTypes = make([]protoimpl.MessageInfo, 30)
+var file_api_proto_enumTypes = make([]protoimpl.EnumInfo, 17)
+var file_api_proto_msgTypes = make([]protoimpl.MessageInfo, 32)
 var file_api_proto_goTypes = []interface{}{
 	(Action)(0),                              // 0: models.Action
-	(InitializeRequest_Client)(0),            // 1: models.InitializeRequest.Client
-	(InitializeRequest_LogLevel)(0),          // 2: models.InitializeRequest.LogLevel
-	(ConnectionRequest_InternetType)(0),      // 3: models.ConnectionRequest.InternetType
-	(ConnectionRequest_IPAddress_Family)(0),  // 4: models.ConnectionRequest.IPAddress.Family
-	(InviteRequest_Type)(0),                  // 5: models.InviteRequest.Type
-	(InviteResponse_Type)(0),                 // 6: models.InviteResponse.Type
-	(MailboxRequest_Action)(0),               // 7: models.MailboxRequest.Action
-	(MailboxResponse_Action)(0),              // 8: models.MailboxResponse.Action
-	(VerifyRequest_Type)(0),                  // 9: models.VerifyRequest.Type
-	(CompleteEvent_Direction)(0),             // 10: models.CompleteEvent.Direction
-	(TopicEvent_Subject)(0),                  // 11: models.TopicEvent.Subject
-	(GenericRequest_Type)(0),                 // 12: models.GenericRequest.Type
-	(GenericResponse_Type)(0),                // 13: models.GenericResponse.Type
-	(GenericEvent_Type)(0),                   // 14: models.GenericEvent.Type
-	(*ActionRequest)(nil),                    // 15: models.ActionRequest
-	(*ActionResponse)(nil),                   // 16: models.ActionResponse
-	(*AuthRequest)(nil),                      // 17: models.AuthRequest
-	(*AuthResponse)(nil),                     // 18: models.AuthResponse
-	(*InitializeRequest)(nil),                // 19: models.InitializeRequest
-	(*ConnectionRequest)(nil),                // 20: models.ConnectionRequest
-	(*ConnectionResponse)(nil),               // 21: models.ConnectionResponse
-	(*InviteRequest)(nil),                    // 22: models.InviteRequest
-	(*InviteResponse)(nil),                   // 23: models.InviteResponse
-	(*MailboxRequest)(nil),                   // 24: models.MailboxRequest
-	(*MailboxResponse)(nil),                  // 25: models.MailboxResponse
-	(*UpdateRequest)(nil),                    // 26: models.UpdateRequest
-	(*VerifyRequest)(nil),                    // 27: models.VerifyRequest
-	(*VerifyResponse)(nil),                   // 28: models.VerifyResponse
-	(*CompleteEvent)(nil),                    // 29: models.CompleteEvent
-	(*LinkEvent)(nil),                        // 30: models.LinkEvent
-	(*MailEvent)(nil),                        // 31: models.MailEvent
-	(*ProgressEvent)(nil),                    // 32: models.ProgressEvent
-	(*StatusEvent)(nil),                      // 33: models.StatusEvent
-	(*TopicEvent)(nil),                       // 34: models.TopicEvent
-	(*GenericRequest)(nil),                   // 35: models.GenericRequest
-	(*GenericResponse)(nil),                  // 36: models.GenericResponse
-	(*GenericEvent)(nil),                     // 37: models.GenericEvent
-	(*NoRequest)(nil),                        // 38: models.NoRequest
-	(*NoResponse)(nil),                       // 39: models.NoResponse
-	(*ConnectionRequest_HostOptions)(nil),    // 40: models.ConnectionRequest.HostOptions
-	(*ConnectionRequest_ServiceOptions)(nil), // 41: models.ConnectionRequest.ServiceOptions
-	(*ConnectionRequest_IPAddress)(nil),      // 42: models.ConnectionRequest.IPAddress
-	nil,                                      // 43: models.ConnectionResponse.ThreadsEntry
-	(*ConnectionResponse_TextileThread)(nil), // 44: models.ConnectionResponse.TextileThread
-	(*Location)(nil),                         // 45: models.Location
-	(*URLLink)(nil),                          // 46: models.URLLink
-	(Lifecycle)(0),                           // 47: models.Lifecycle
-	(*Linkers)(nil),                          // 48: models.Linkers
-	(*Device)(nil),                           // 49: models.Device
-	(*APIKeys)(nil),                          // 50: models.APIKeys
-	(*Contact)(nil),                          // 51: models.Contact
-	(*Topic)(nil),                            // 52: models.Topic
-	(Payload)(0),                             // 53: models.Payload
-	(*Peer)(nil),                             // 54: models.Peer
-	(*Transfer)(nil),                         // 55: models.Transfer
-	(*Peer_Properties)(nil),                  // 56: models.Peer.Properties
-	(*Position)(nil),                         // 57: models.Position
-	(*KeyPair)(nil),                          // 58: models.KeyPair
-	(Status)(0),                              // 59: models.Status
-	(*User)(nil),                             // 60: models.User
-	(*ErrorEvent)(nil),                       // 61: models.ErrorEvent
+	(Decision)(0),                            // 1: models.Decision
+	(InitializeRequest_Client)(0),            // 2: models.InitializeRequest.Client
+	(InitializeRequest_LogLevel)(0),          // 3: models.InitializeRequest.LogLevel
+	(ConnectionRequest_InternetType)(0),      // 4: models.ConnectionRequest.InternetType
+	(ConnectionRequest_IPAddress_Family)(0),  // 5: models.ConnectionRequest.IPAddress.Family
+	(DecisionRequest_Type)(0),                // 6: models.DecisionRequest.Type
+	(InviteRequest_Type)(0),                  // 7: models.InviteRequest.Type
+	(InviteResponse_Type)(0),                 // 8: models.InviteResponse.Type
+	(MailboxRequest_Action)(0),               // 9: models.MailboxRequest.Action
+	(MailboxResponse_Action)(0),              // 10: models.MailboxResponse.Action
+	(VerifyRequest_Type)(0),                  // 11: models.VerifyRequest.Type
+	(CompleteEvent_Direction)(0),             // 12: models.CompleteEvent.Direction
+	(TopicEvent_Subject)(0),                  // 13: models.TopicEvent.Subject
+	(GenericRequest_Type)(0),                 // 14: models.GenericRequest.Type
+	(GenericResponse_Type)(0),                // 15: models.GenericResponse.Type
+	(GenericEvent_Type)(0),                   // 16: models.GenericEvent.Type
+	(*ActionRequest)(nil),                    // 17: models.ActionRequest
+	(*ActionResponse)(nil),                   // 18: models.ActionResponse
+	(*AuthRequest)(nil),                      // 19: models.AuthRequest
+	(*AuthResponse)(nil),                     // 20: models.AuthResponse
+	(*InitializeRequest)(nil),                // 21: models.InitializeRequest
+	(*ConnectionRequest)(nil),                // 22: models.ConnectionRequest
+	(*ConnectionResponse)(nil),               // 23: models.ConnectionResponse
+	(*DecisionRequest)(nil),                  // 24: models.DecisionRequest
+	(*DecisionResponse)(nil),                 // 25: models.DecisionResponse
+	(*InviteRequest)(nil),                    // 26: models.InviteRequest
+	(*InviteResponse)(nil),                   // 27: models.InviteResponse
+	(*MailboxRequest)(nil),                   // 28: models.MailboxRequest
+	(*MailboxResponse)(nil),                  // 29: models.MailboxResponse
+	(*UpdateRequest)(nil),                    // 30: models.UpdateRequest
+	(*VerifyRequest)(nil),                    // 31: models.VerifyRequest
+	(*VerifyResponse)(nil),                   // 32: models.VerifyResponse
+	(*CompleteEvent)(nil),                    // 33: models.CompleteEvent
+	(*LinkEvent)(nil),                        // 34: models.LinkEvent
+	(*MailEvent)(nil),                        // 35: models.MailEvent
+	(*ProgressEvent)(nil),                    // 36: models.ProgressEvent
+	(*StatusEvent)(nil),                      // 37: models.StatusEvent
+	(*TopicEvent)(nil),                       // 38: models.TopicEvent
+	(*GenericRequest)(nil),                   // 39: models.GenericRequest
+	(*GenericResponse)(nil),                  // 40: models.GenericResponse
+	(*GenericEvent)(nil),                     // 41: models.GenericEvent
+	(*NoRequest)(nil),                        // 42: models.NoRequest
+	(*NoResponse)(nil),                       // 43: models.NoResponse
+	(*ConnectionRequest_HostOptions)(nil),    // 44: models.ConnectionRequest.HostOptions
+	(*ConnectionRequest_ServiceOptions)(nil), // 45: models.ConnectionRequest.ServiceOptions
+	(*ConnectionRequest_IPAddress)(nil),      // 46: models.ConnectionRequest.IPAddress
+	nil,                                      // 47: models.ConnectionResponse.ThreadsEntry
+	(*ConnectionResponse_TextileThread)(nil), // 48: models.ConnectionResponse.TextileThread
+	(*Location)(nil),                         // 49: models.Location
+	(*URLLink)(nil),                          // 50: models.URLLink
+	(Lifecycle)(0),                           // 51: models.Lifecycle
+	(*Linkers)(nil),                          // 52: models.Linkers
+	(*Device)(nil),                           // 53: models.Device
+	(*APIKeys)(nil),                          // 54: models.APIKeys
+	(*Contact)(nil),                          // 55: models.Contact
+	(*Topic)(nil),                            // 56: models.Topic
+	(Payload)(0),                             // 57: models.Payload
+	(*Peer)(nil),                             // 58: models.Peer
+	(*Transfer)(nil),                         // 59: models.Transfer
+	(*Peer_Properties)(nil),                  // 60: models.Peer.Properties
+	(*Position)(nil),                         // 61: models.Position
+	(*KeyPair)(nil),                          // 62: models.KeyPair
+	(Status)(0),                              // 63: models.Status
+	(*User)(nil),                             // 64: models.User
+	(*ErrorEvent)(nil),                       // 65: models.ErrorEvent
 }
 var file_api_proto_depIdxs = []int32{
 	0,  // 0: models.ActionRequest.action:type_name -> models.Action
 	0,  // 1: models.ActionResponse.action:type_name -> models.Action
-	45, // 2: models.ActionResponse.location:type_name -> models.Location
-	46, // 3: models.ActionResponse.urlLink:type_name -> models.URLLink
-	47, // 4: models.ActionResponse.lifecycle:type_name -> models.Lifecycle
-	48, // 5: models.ActionResponse.linkers:type_name -> models.Linkers
-	49, // 6: models.InitializeRequest.device:type_name -> models.Device
-	50, // 7: models.InitializeRequest.apiKeys:type_name -> models.APIKeys
-	2,  // 8: models.InitializeRequest.logLevel:type_name -> models.InitializeRequest.LogLevel
-	1,  // 9: models.InitializeRequest.client:type_name -> models.InitializeRequest.Client
-	50, // 10: models.ConnectionRequest.apiKeys:type_name -> models.APIKeys
-	45, // 11: models.ConnectionRequest.location:type_name -> models.Location
-	51, // 12: models.ConnectionRequest.contact:type_name -> models.Contact
-	3,  // 13: models.ConnectionRequest.type:type_name -> models.ConnectionRequest.InternetType
-	40, // 14: models.ConnectionRequest.hostOptions:type_name -> models.ConnectionRequest.HostOptions
-	41, // 15: models.ConnectionRequest.serviceOptions:type_name -> models.ConnectionRequest.ServiceOptions
-	52, // 16: models.ConnectionResponse.localTopic:type_name -> models.Topic
-	43, // 17: models.ConnectionResponse.threads:type_name -> models.ConnectionResponse.ThreadsEntry
-	53, // 18: models.InviteRequest.payload:type_name -> models.Payload
-	54, // 19: models.InviteRequest.from:type_name -> models.Peer
-	54, // 20: models.InviteRequest.to:type_name -> models.Peer
-	55, // 21: models.InviteRequest.transfer:type_name -> models.Transfer
-	5,  // 22: models.InviteRequest.type:type_name -> models.InviteRequest.Type
-	53, // 23: models.InviteResponse.payload:type_name -> models.Payload
-	54, // 24: models.InviteResponse.from:type_name -> models.Peer
-	54, // 25: models.InviteResponse.to:type_name -> models.Peer
-	55, // 26: models.InviteResponse.transfer:type_name -> models.Transfer
-	6,  // 27: models.InviteResponse.type:type_name -> models.InviteResponse.Type
-	7,  // 28: models.MailboxRequest.action:type_name -> models.MailboxRequest.Action
-	8,  // 29: models.MailboxResponse.action:type_name -> models.MailboxResponse.Action
-	56, // 30: models.UpdateRequest.properties:type_name -> models.Peer.Properties
-	51, // 31: models.UpdateRequest.contact:type_name -> models.Contact
-	57, // 32: models.UpdateRequest.position:type_name -> models.Position
-	9,  // 33: models.VerifyRequest.type:type_name -> models.VerifyRequest.Type
-	10, // 34: models.CompleteEvent.direction:type_name -> models.CompleteEvent.Direction
-	55, // 35: models.CompleteEvent.transfer:type_name -> models.Transfer
-	49, // 36: models.LinkEvent.device:type_name -> models.Device
-	52, // 37: models.LinkEvent.topic:type_name -> models.Topic
-	58, // 38: models.LinkEvent.sharedKey:type_name -> models.KeyPair
-	51, // 39: models.LinkEvent.contact:type_name -> models.Contact
-	22, // 40: models.MailEvent.invite:type_name -> models.InviteRequest
-	59, // 41: models.StatusEvent.value:type_name -> models.Status
-	60, // 42: models.StatusEvent.user:type_name -> models.User
-	52, // 43: models.TopicEvent.topic:type_name -> models.Topic
-	54, // 44: models.TopicEvent.peer:type_name -> models.Peer
-	11, // 45: models.TopicEvent.subject:type_name -> models.TopicEvent.Subject
-	12, // 46: models.GenericRequest.type:type_name -> models.GenericRequest.Type
-	13, // 47: models.GenericResponse.type:type_name -> models.GenericResponse.Type
-	14, // 48: models.GenericEvent.type:type_name -> models.GenericEvent.Type
-	42, // 49: models.ConnectionRequest.HostOptions.listenAddrs:type_name -> models.ConnectionRequest.IPAddress
-	4,  // 50: models.ConnectionRequest.IPAddress.family:type_name -> models.ConnectionRequest.IPAddress.Family
-	44, // 51: models.ConnectionResponse.ThreadsEntry.value:type_name -> models.ConnectionResponse.TextileThread
-	19, // 52: models.NodeService.Initialize:input_type -> models.InitializeRequest
-	20, // 53: models.NodeService.Connect:input_type -> models.ConnectionRequest
-	15, // 54: models.NodeService.Action:input_type -> models.ActionRequest
-	17, // 55: models.NodeService.Sign:input_type -> models.AuthRequest
-	27, // 56: models.NodeService.Verify:input_type -> models.VerifyRequest
-	26, // 57: models.NodeService.Update:input_type -> models.UpdateRequest
-	22, // 58: models.NodeService.Invite:input_type -> models.InviteRequest
-	23, // 59: models.NodeService.Respond:input_type -> models.InviteResponse
-	24, // 60: models.NodeService.Mail:input_type -> models.MailboxRequest
-	38, // 61: models.NodeService.OnStatus:input_type -> models.NoRequest
-	38, // 62: models.NodeService.OnLink:input_type -> models.NoRequest
-	38, // 63: models.NodeService.OnTopic:input_type -> models.NoRequest
-	38, // 64: models.NodeService.OnInvite:input_type -> models.NoRequest
-	38, // 65: models.NodeService.OnReply:input_type -> models.NoRequest
-	38, // 66: models.NodeService.OnMail:input_type -> models.NoRequest
-	38, // 67: models.NodeService.OnProgress:input_type -> models.NoRequest
-	38, // 68: models.NodeService.OnComplete:input_type -> models.NoRequest
-	38, // 69: models.NodeService.OnError:input_type -> models.NoRequest
-	28, // 70: models.NodeService.Initialize:output_type -> models.VerifyResponse
-	39, // 71: models.NodeService.Connect:output_type -> models.NoResponse
-	16, // 72: models.NodeService.Action:output_type -> models.ActionResponse
-	18, // 73: models.NodeService.Sign:output_type -> models.AuthResponse
-	28, // 74: models.NodeService.Verify:output_type -> models.VerifyResponse
-	39, // 75: models.NodeService.Update:output_type -> models.NoResponse
-	39, // 76: models.NodeService.Invite:output_type -> models.NoResponse
-	39, // 77: models.NodeService.Respond:output_type -> models.NoResponse
-	25, // 78: models.NodeService.Mail:output_type -> models.MailboxResponse
-	33, // 79: models.NodeService.OnStatus:output_type -> models.StatusEvent
-	30, // 80: models.NodeService.OnLink:output_type -> models.LinkEvent
-	34, // 81: models.NodeService.OnTopic:output_type -> models.TopicEvent
-	22, // 82: models.NodeService.OnInvite:output_type -> models.InviteRequest
-	23, // 83: models.NodeService.OnReply:output_type -> models.InviteResponse
-	31, // 84: models.NodeService.OnMail:output_type -> models.MailEvent
-	32, // 85: models.NodeService.OnProgress:output_type -> models.ProgressEvent
-	29, // 86: models.NodeService.OnComplete:output_type -> models.CompleteEvent
-	61, // 87: models.NodeService.OnError:output_type -> models.ErrorEvent
-	70, // [70:88] is the sub-list for method output_type
-	52, // [52:70] is the sub-list for method input_type
-	52, // [52:52] is the sub-list for extension type_name
-	52, // [52:52] is the sub-list for extension extendee
-	0,  // [0:52] is the sub-list for field type_name
+	49, // 2: models.ActionResponse.location:type_name -> models.Location
+	50, // 3: models.ActionResponse.urlLink:type_name -> models.URLLink
+	51, // 4: models.ActionResponse.lifecycle:type_name -> models.Lifecycle
+	52, // 5: models.ActionResponse.linkers:type_name -> models.Linkers
+	53, // 6: models.InitializeRequest.device:type_name -> models.Device
+	54, // 7: models.InitializeRequest.apiKeys:type_name -> models.APIKeys
+	3,  // 8: models.InitializeRequest.logLevel:type_name -> models.InitializeRequest.LogLevel
+	2,  // 9: models.InitializeRequest.client:type_name -> models.InitializeRequest.Client
+	54, // 10: models.ConnectionRequest.apiKeys:type_name -> models.APIKeys
+	49, // 11: models.ConnectionRequest.location:type_name -> models.Location
+	55, // 12: models.ConnectionRequest.contact:type_name -> models.Contact
+	4,  // 13: models.ConnectionRequest.type:type_name -> models.ConnectionRequest.InternetType
+	44, // 14: models.ConnectionRequest.hostOptions:type_name -> models.ConnectionRequest.HostOptions
+	45, // 15: models.ConnectionRequest.serviceOptions:type_name -> models.ConnectionRequest.ServiceOptions
+	56, // 16: models.ConnectionResponse.localTopic:type_name -> models.Topic
+	47, // 17: models.ConnectionResponse.threads:type_name -> models.ConnectionResponse.ThreadsEntry
+	1,  // 18: models.DecisionRequest.decision:type_name -> models.Decision
+	57, // 19: models.DecisionRequest.payload:type_name -> models.Payload
+	58, // 20: models.DecisionRequest.from:type_name -> models.Peer
+	58, // 21: models.DecisionRequest.to:type_name -> models.Peer
+	59, // 22: models.DecisionRequest.transfer:type_name -> models.Transfer
+	6,  // 23: models.DecisionRequest.type:type_name -> models.DecisionRequest.Type
+	57, // 24: models.InviteRequest.payload:type_name -> models.Payload
+	58, // 25: models.InviteRequest.from:type_name -> models.Peer
+	58, // 26: models.InviteRequest.to:type_name -> models.Peer
+	59, // 27: models.InviteRequest.transfer:type_name -> models.Transfer
+	7,  // 28: models.InviteRequest.type:type_name -> models.InviteRequest.Type
+	1,  // 29: models.InviteResponse.decision:type_name -> models.Decision
+	57, // 30: models.InviteResponse.payload:type_name -> models.Payload
+	58, // 31: models.InviteResponse.from:type_name -> models.Peer
+	58, // 32: models.InviteResponse.to:type_name -> models.Peer
+	59, // 33: models.InviteResponse.transfer:type_name -> models.Transfer
+	8,  // 34: models.InviteResponse.type:type_name -> models.InviteResponse.Type
+	9,  // 35: models.MailboxRequest.action:type_name -> models.MailboxRequest.Action
+	10, // 36: models.MailboxResponse.action:type_name -> models.MailboxResponse.Action
+	60, // 37: models.UpdateRequest.properties:type_name -> models.Peer.Properties
+	55, // 38: models.UpdateRequest.contact:type_name -> models.Contact
+	61, // 39: models.UpdateRequest.position:type_name -> models.Position
+	11, // 40: models.VerifyRequest.type:type_name -> models.VerifyRequest.Type
+	12, // 41: models.CompleteEvent.direction:type_name -> models.CompleteEvent.Direction
+	59, // 42: models.CompleteEvent.transfer:type_name -> models.Transfer
+	53, // 43: models.LinkEvent.device:type_name -> models.Device
+	56, // 44: models.LinkEvent.topic:type_name -> models.Topic
+	62, // 45: models.LinkEvent.sharedKey:type_name -> models.KeyPair
+	55, // 46: models.LinkEvent.contact:type_name -> models.Contact
+	26, // 47: models.MailEvent.invite:type_name -> models.InviteRequest
+	63, // 48: models.StatusEvent.value:type_name -> models.Status
+	64, // 49: models.StatusEvent.user:type_name -> models.User
+	56, // 50: models.TopicEvent.topic:type_name -> models.Topic
+	58, // 51: models.TopicEvent.peer:type_name -> models.Peer
+	13, // 52: models.TopicEvent.subject:type_name -> models.TopicEvent.Subject
+	14, // 53: models.GenericRequest.type:type_name -> models.GenericRequest.Type
+	15, // 54: models.GenericResponse.type:type_name -> models.GenericResponse.Type
+	16, // 55: models.GenericEvent.type:type_name -> models.GenericEvent.Type
+	46, // 56: models.ConnectionRequest.HostOptions.listenAddrs:type_name -> models.ConnectionRequest.IPAddress
+	5,  // 57: models.ConnectionRequest.IPAddress.family:type_name -> models.ConnectionRequest.IPAddress.Family
+	48, // 58: models.ConnectionResponse.ThreadsEntry.value:type_name -> models.ConnectionResponse.TextileThread
+	21, // 59: models.NodeService.Initialize:input_type -> models.InitializeRequest
+	22, // 60: models.NodeService.Connect:input_type -> models.ConnectionRequest
+	17, // 61: models.NodeService.Action:input_type -> models.ActionRequest
+	19, // 62: models.NodeService.Sign:input_type -> models.AuthRequest
+	31, // 63: models.NodeService.Verify:input_type -> models.VerifyRequest
+	30, // 64: models.NodeService.Update:input_type -> models.UpdateRequest
+	26, // 65: models.NodeService.Invite:input_type -> models.InviteRequest
+	24, // 66: models.NodeService.Respond:input_type -> models.DecisionRequest
+	28, // 67: models.NodeService.Mail:input_type -> models.MailboxRequest
+	42, // 68: models.NodeService.CallAuthResponse:input_type -> models.NoRequest
+	42, // 69: models.NodeService.CallActionResponse:input_type -> models.NoRequest
+	42, // 70: models.NodeService.CallDecisionResponse:input_type -> models.NoRequest
+	42, // 71: models.NodeService.CallInviteResponse:input_type -> models.NoRequest
+	42, // 72: models.NodeService.CallMailboxResponse:input_type -> models.NoRequest
+	42, // 73: models.NodeService.CallVerifyResponse:input_type -> models.NoRequest
+	42, // 74: models.NodeService.OnStatus:input_type -> models.NoRequest
+	42, // 75: models.NodeService.OnLink:input_type -> models.NoRequest
+	42, // 76: models.NodeService.OnTopic:input_type -> models.NoRequest
+	42, // 77: models.NodeService.OnInvite:input_type -> models.NoRequest
+	42, // 78: models.NodeService.OnReply:input_type -> models.NoRequest
+	42, // 79: models.NodeService.OnMail:input_type -> models.NoRequest
+	42, // 80: models.NodeService.OnProgress:input_type -> models.NoRequest
+	42, // 81: models.NodeService.OnComplete:input_type -> models.NoRequest
+	42, // 82: models.NodeService.OnError:input_type -> models.NoRequest
+	43, // 83: models.NodeService.Initialize:output_type -> models.NoResponse
+	43, // 84: models.NodeService.Connect:output_type -> models.NoResponse
+	43, // 85: models.NodeService.Action:output_type -> models.NoResponse
+	43, // 86: models.NodeService.Sign:output_type -> models.NoResponse
+	43, // 87: models.NodeService.Verify:output_type -> models.NoResponse
+	43, // 88: models.NodeService.Update:output_type -> models.NoResponse
+	43, // 89: models.NodeService.Invite:output_type -> models.NoResponse
+	43, // 90: models.NodeService.Respond:output_type -> models.NoResponse
+	43, // 91: models.NodeService.Mail:output_type -> models.NoResponse
+	20, // 92: models.NodeService.CallAuthResponse:output_type -> models.AuthResponse
+	18, // 93: models.NodeService.CallActionResponse:output_type -> models.ActionResponse
+	25, // 94: models.NodeService.CallDecisionResponse:output_type -> models.DecisionResponse
+	27, // 95: models.NodeService.CallInviteResponse:output_type -> models.InviteResponse
+	29, // 96: models.NodeService.CallMailboxResponse:output_type -> models.MailboxResponse
+	32, // 97: models.NodeService.CallVerifyResponse:output_type -> models.VerifyResponse
+	37, // 98: models.NodeService.OnStatus:output_type -> models.StatusEvent
+	34, // 99: models.NodeService.OnLink:output_type -> models.LinkEvent
+	38, // 100: models.NodeService.OnTopic:output_type -> models.TopicEvent
+	26, // 101: models.NodeService.OnInvite:output_type -> models.InviteRequest
+	27, // 102: models.NodeService.OnReply:output_type -> models.InviteResponse
+	35, // 103: models.NodeService.OnMail:output_type -> models.MailEvent
+	36, // 104: models.NodeService.OnProgress:output_type -> models.ProgressEvent
+	33, // 105: models.NodeService.OnComplete:output_type -> models.CompleteEvent
+	65, // 106: models.NodeService.OnError:output_type -> models.ErrorEvent
+	83, // [83:107] is the sub-list for method output_type
+	59, // [59:83] is the sub-list for method input_type
+	59, // [59:59] is the sub-list for extension type_name
+	59, // [59:59] is the sub-list for extension extendee
+	0,  // [0:59] is the sub-list for field type_name
 }
 
 func init() { file_api_proto_init() }
@@ -3725,7 +4061,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*InviteRequest); i {
+			switch v := v.(*DecisionRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3737,7 +4073,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*InviteResponse); i {
+			switch v := v.(*DecisionResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3749,7 +4085,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MailboxRequest); i {
+			switch v := v.(*InviteRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3761,7 +4097,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MailboxResponse); i {
+			switch v := v.(*InviteResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3773,7 +4109,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UpdateRequest); i {
+			switch v := v.(*MailboxRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3785,7 +4121,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*VerifyRequest); i {
+			switch v := v.(*MailboxResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3797,7 +4133,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*VerifyResponse); i {
+			switch v := v.(*UpdateRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3809,7 +4145,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CompleteEvent); i {
+			switch v := v.(*VerifyRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3821,7 +4157,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*LinkEvent); i {
+			switch v := v.(*VerifyResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3833,7 +4169,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MailEvent); i {
+			switch v := v.(*CompleteEvent); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3845,7 +4181,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProgressEvent); i {
+			switch v := v.(*LinkEvent); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3857,7 +4193,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*StatusEvent); i {
+			switch v := v.(*MailEvent); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3869,7 +4205,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TopicEvent); i {
+			switch v := v.(*ProgressEvent); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3881,7 +4217,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GenericRequest); i {
+			switch v := v.(*StatusEvent); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3893,7 +4229,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GenericResponse); i {
+			switch v := v.(*TopicEvent); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3905,7 +4241,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GenericEvent); i {
+			switch v := v.(*GenericRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3917,7 +4253,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*NoRequest); i {
+			switch v := v.(*GenericResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3929,7 +4265,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[24].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*NoResponse); i {
+			switch v := v.(*GenericEvent); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3941,7 +4277,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ConnectionRequest_HostOptions); i {
+			switch v := v.(*NoRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3953,7 +4289,7 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[26].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ConnectionRequest_ServiceOptions); i {
+			switch v := v.(*NoResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3965,7 +4301,19 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[27].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ConnectionRequest_IPAddress); i {
+			switch v := v.(*ConnectionRequest_HostOptions); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_proto_msgTypes[28].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ConnectionRequest_ServiceOptions); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3977,6 +4325,18 @@ func file_api_proto_init() {
 			}
 		}
 		file_api_proto_msgTypes[29].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ConnectionRequest_IPAddress); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_proto_msgTypes[31].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ConnectionResponse_TextileThread); i {
 			case 0:
 				return &v.state
@@ -3995,13 +4355,13 @@ func file_api_proto_init() {
 		(*ActionResponse_Lifecycle)(nil),
 		(*ActionResponse_Linkers)(nil),
 	}
-	file_api_proto_msgTypes[11].OneofWrappers = []interface{}{
+	file_api_proto_msgTypes[13].OneofWrappers = []interface{}{
 		(*UpdateRequest_Properties)(nil),
 		(*UpdateRequest_Contact)(nil),
 		(*UpdateRequest_Position)(nil),
 		(*UpdateRequest_PushToken)(nil),
 	}
-	file_api_proto_msgTypes[12].OneofWrappers = []interface{}{
+	file_api_proto_msgTypes[14].OneofWrappers = []interface{}{
 		(*VerifyRequest_BufferValue)(nil),
 		(*VerifyRequest_TextValue)(nil),
 		(*VerifyRequest_SignedBuffer)(nil),
@@ -4012,8 +4372,8 @@ func file_api_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_api_proto_rawDesc,
-			NumEnums:      15,
-			NumMessages:   30,
+			NumEnums:      17,
+			NumMessages:   32,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

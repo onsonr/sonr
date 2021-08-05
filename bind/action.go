@@ -184,17 +184,17 @@ func (n *Node) Mail(data []byte) []byte {
 func (n *Node) Respond(data []byte) {
 	if n.isReady() {
 		// Unmarshal Data to Request
-		resp := &md.InviteResponse{}
+		resp := &md.DecisionRequest{}
 		if err := proto.Unmarshal(data, resp); err != nil {
 			n.handleError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
 			return
 		}
 
 		// Send Response
-		n.client.Respond(resp)
+		n.client.Respond(resp.ToResponse())
 
 		// Update Status
-		if resp.Decision {
+		if resp.Decision.Accepted() {
 			n.setStatus(md.Status_TRANSFER)
 		} else {
 			n.setStatus(md.Status_AVAILABLE)

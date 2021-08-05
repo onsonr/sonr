@@ -257,10 +257,44 @@ func (u *URLLink) SetData() {
 	}
 }
 
+// ** ─── DecisionRequest MANAGEMENT ────────────────────────────────────────────────────────
+// The Response of DecisionRequest is ACCEPT
+func (d Decision) Accepted() bool {
+	return d == Decision_ACCEPT
+}
+
+// The Response of DecisionRequest is DECLINE
+func (d Decision) Declined() bool {
+	return d == Decision_DECLINE
+}
+
+// The Response of DecisionRequest is IGNORE
+func (d Decision) Ignored() bool {
+	return d == Decision_IGNORE
+}
+
+// The Response of DecisionRequest is CANCEL
+func (d Decision) Cancelled() bool {
+	return d == Decision_CANCEL
+}
+
+// Convert this DecisionRequest InviteResponse
+func (dr *DecisionRequest) ToResponse() *InviteResponse {
+	return &InviteResponse{
+		Decision: dr.Decision,
+		To:       dr.GetTo(),
+		From:     dr.GetFrom(),
+		Transfer: dr.GetTransfer(),
+		Type:     InviteResponse_Type(dr.GetType()),
+		Payload:  dr.GetPayload(),
+		Protocol: dr.GetProtocol(),
+	}
+}
+
 // ** ─── InviteResponse MANAGEMENT ────────────────────────────────────────────────────────
 // Checks if Peer Accepted Transfer
 func (r *InviteResponse) HasAcceptedTransfer() bool {
-	return r.GetDecision() && r.GetPayload().IsTransfer()
+	return r.GetDecision().Accepted() && r.GetPayload().IsTransfer()
 }
 
 // Returns Protocol ID Set by Peer

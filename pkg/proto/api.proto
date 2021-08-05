@@ -157,6 +157,38 @@ message ConnectionResponse {
   }
 }
 
+// Enum for Decision to Perform
+enum Decision {
+  ACCEPT = 0;  // Accept Invite
+  DECLINE = 1; // Decline Invite
+  IGNORE = 2;  // Ignore Invite
+  CANCEL = 3;  // Cancel Invite
+}
+
+// Message for a Response to an Invite Request
+message DecisionRequest {
+  Decision decision = 1; // Value to be Decided
+  Payload payload = 2;   // Type of Transfer
+  Peer from = 3;         // Users Peer Data
+  Peer to = 4;           // Receivers Peer Data
+  Transfer transfer = 5; // Attached Data
+  Type type = 6;         // Type of Invite
+  string protocol = 7;   // Protocol for Invite
+
+  enum Type {
+    NONE = 0;   // No Type
+    LOCAL = 1;  // Local Transfer
+    FLAT = 2;   // Flat Transfer
+    REMOTE = 3; // Remote Transfer
+  }
+}
+
+// Message for a Response to an DecisionRequest
+message DecisionResponse {
+  bool success = 1; // True if Decision was Successful
+  string body = 2;  // Response Body
+}
+
 // Invitation Message sent on RPC
 message InviteRequest {
   Payload payload = 1;   // Type of Transfer
@@ -178,7 +210,7 @@ message InviteRequest {
 
 // Reply Message sent on RPC
 message InviteResponse {
-  bool decision = 1;     // Peer Decision for Invite Request
+  Decision decision = 1; // Peer Decision for Invite Request
   Payload payload = 2;   // Type of Transfer
   Peer from = 3;         // Users Peer Data
   Peer to = 4;           // Receivers Peer Data
@@ -378,19 +410,19 @@ message NoResponse {}
 // RPC Service with Equivalent Methods of a binded Node
 service NodeService {
   // Initializes New Node
-  rpc Initialize(InitializeRequest) returns (VerifyResponse) {}
+  rpc Initialize(InitializeRequest) returns (NoResponse) {}
 
   // Starts Method Host and Connects to Network
   rpc Connect(ConnectionRequest) returns (NoResponse) {}
 
   // Action method handles misceallaneous actions for node
-  rpc Action(ActionRequest) returns (ActionResponse) {}
+  rpc Action(ActionRequest) returns (NoResponse) {}
 
   // Signing Method Request for Data
-  rpc Sign(AuthRequest) returns (AuthResponse) {}
+  rpc Sign(AuthRequest) returns (NoResponse) {}
 
   // Verification Method Request for Signed Data
-  rpc Verify(VerifyRequest) returns (VerifyResponse) {}
+  rpc Verify(VerifyRequest) returns (NoResponse) {}
 
   // Update Method proximity/direction and Notify Lobby
   rpc Update(UpdateRequest) returns (NoResponse) {}
@@ -399,10 +431,18 @@ service NodeService {
   rpc Invite(InviteRequest) returns (NoResponse) {}
 
   // Respond Method to an Invite with Decision
-  rpc Respond(InviteResponse) returns (NoResponse) {}
+  rpc Respond(DecisionRequest) returns (NoResponse) {}
 
   // Mail Method handles request for a message in Mailbox
-  rpc Mail(MailboxRequest) returns (MailboxResponse) {}
+  rpc Mail(MailboxRequest) returns (NoResponse) {}
+
+  // Response Streams
+  rpc CallAuthResponse(NoRequest) returns (AuthResponse) {}
+  rpc CallActionResponse(NoRequest) returns (stream ActionResponse) {}
+  rpc CallDecisionResponse(NoRequest) returns (stream DecisionResponse) {}
+  rpc CallInviteResponse(NoRequest) returns (stream InviteResponse) {}
+  rpc CallMailboxResponse(NoRequest) returns (MailboxResponse) {}
+  rpc CallVerifyResponse(NoRequest) returns (stream VerifyResponse) {}
 
   // Events Streams
   rpc OnStatus(NoRequest) returns (stream StatusEvent) {}
