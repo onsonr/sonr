@@ -320,7 +320,26 @@ func (d *Device) ShortID() string {
 		// Write Device ID as New sha256 String
 		h := hmac.New(sha256.New, d.KeyPair.PrivBuffer())
 		h.Write([]byte(d.GetId()))
-		return hex.EncodeToString(h.Sum(nil))
+		hexCode := hex.EncodeToString(h.Sum(nil))
+
+		// Fetch Length of ID
+		nLen := 0
+		for i := 0; i < len(hexCode); i++ {
+			if b := hexCode[i]; '0' <= b && b <= '9' {
+				nLen++
+			}
+		}
+
+		// Iterate Over Coded String
+		var n = make([]int, 0, nLen)
+		for i := 0; i < len(hexCode); i++ {
+			if b := hexCode[i]; '0' <= b && b <= '9' {
+				n = append(n, int(b)-'0')
+			}
+		}
+
+		// Convert int array into string
+		return fmt.Sprintf("%x", n)
 	} else {
 		LogError(errors.New("Device does not have a Key Pair"))
 		return ""

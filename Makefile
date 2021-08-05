@@ -108,7 +108,7 @@ proto:
 
 ##
 ## [release]   :   Upload RPC Binary Artifact to S3
-release:
+release: proto
 	@echo "Bumping Release Version.."
 	@cd $(CORE_DIR) && bump patch
 	@echo "Bumping Release Version... DONE"

@@ -41,11 +41,12 @@ type client struct {
 	Client
 
 	// Properties
-	ctx     context.Context
-	call    md.Callback
-	user    *md.User
-	session *md.Session
-	request *md.ConnectionRequest
+	ctx      context.Context
+	call     md.Callback
+	isLinker bool
+	user     *md.User
+	session  *md.Session
+	request  *md.ConnectionRequest
 
 	// References
 	Host    net.HostNode
@@ -65,6 +66,7 @@ func NewClient(ctx context.Context, u *md.User, call md.Callback) Client {
 func (c *client) Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrError {
 	// Set Request
 	c.request = cr
+	c.isLinker = cr.GetIsLinker()
 
 	// Set Host
 	hn, err := net.NewHost(c.ctx, cr, keys, c)
@@ -258,15 +260,15 @@ func (c *client) newExitEvent(inv *md.InviteRequest) {
 }
 
 // # Helper: Background Process to continuously ping nearby peers
-func (s *client) sendPeriodicTopicEvents(t *net.TopicManager) {
+func (c *client) sendPeriodicTopicEvents(t *net.TopicManager) {
 	for {
-		if s.user.IsReady() {
+		if c.user.IsReady() && !c.isLinker {
 			// Create Event
-			ev := s.user.NewDefaultUpdateEvent(t.Topic(), s.Host.ID())
+			ev := c.user.NewDefaultUpdateEvent(t.Topic(), c.Host.ID())
 
 			// Send Update
 			if err := t.Publish(ev); err != nil {
-				s.call.OnError(md.NewError(err, md.ErrorEvent_TOPIC_UPDATE))
+				c.call.OnError(md.NewError(err, md.ErrorEvent_TOPIC_UPDATE))
 				continue
 			}
 		}

@@ -5,11 +5,56 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// CallActionResponse is called when Auth Response is received
+// CallAuthResponse is called when Auth Response is received
+func (s *NodeServer) CallAuthResponse(rsp *md.NoRequest, stream md.NodeService_CallAuthResponseServer) error {
+	for {
+		select {
+		case m := <-s.authResponses:
+			if m != nil {
+				stream.Send(m)
+			}
+		case <-s.ctx.Done():
+			return nil
+		}
+		md.GetState().NeedsWait()
+	}
+}
+
+// CallActionResponse is called when Action Response is received
 func (s *NodeServer) CallActionResponse(rsp *md.NoRequest, stream md.NodeService_CallActionResponseServer) error {
 	for {
 		select {
 		case m := <-s.actionResponses:
+			if m != nil {
+				stream.Send(m)
+			}
+		case <-s.ctx.Done():
+			return nil
+		}
+		md.GetState().NeedsWait()
+	}
+}
+
+// CallDecisionResponse is called when Action Response is received
+func (s *NodeServer) CallDecisionResponse(rsp *md.NoRequest, stream md.NodeService_CallDecisionResponseServer) error {
+	for {
+		select {
+		case m := <-s.decisionResponses:
+			if m != nil {
+				stream.Send(m)
+			}
+		case <-s.ctx.Done():
+			return nil
+		}
+		md.GetState().NeedsWait()
+	}
+}
+
+// CallMailboxResponse is called when Action Response is received
+func (s *NodeServer) CallMailboxResponse(rsp *md.NoRequest, stream md.NodeService_CallMailboxResponseServer) error {
+	for {
+		select {
+		case m := <-s.mailboxResponses:
 			if m != nil {
 				stream.Send(m)
 			}

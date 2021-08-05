@@ -437,11 +437,11 @@ service NodeService {
   rpc Mail(MailboxRequest) returns (NoResponse) {}
 
   // Response Streams
-  rpc CallAuthResponse(NoRequest) returns (AuthResponse) {}
+  rpc CallAuthResponse(NoRequest) returns (stream AuthResponse) {}
   rpc CallActionResponse(NoRequest) returns (stream ActionResponse) {}
   rpc CallDecisionResponse(NoRequest) returns (stream DecisionResponse) {}
   rpc CallInviteResponse(NoRequest) returns (stream InviteResponse) {}
-  rpc CallMailboxResponse(NoRequest) returns (MailboxResponse) {}
+  rpc CallMailboxResponse(NoRequest) returns (stream MailboxResponse) {}
   rpc CallVerifyResponse(NoRequest) returns (stream VerifyResponse) {}
 
   // Events Streams
