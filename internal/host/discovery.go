@@ -53,7 +53,7 @@ func (h *hostNode) Bootstrap(deviceId string) *md.SonrError {
 	h.disc = routingDiscovery
 
 	// Create Pub Sub
-	ps, err := psub.NewGossipSub(h.ctxHost, h.host, psub.WithDiscovery(routingDiscovery), psub.WithMessageAuthor(peer.ID(deviceId)))
+	ps, err := psub.NewGossipSub(h.ctxHost, h.host, psub.WithDiscovery(routingDiscovery))
 	if err != nil {
 		return md.NewError(err, md.ErrorEvent_HOST_PUBSUB)
 	}
