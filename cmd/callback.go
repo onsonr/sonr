@@ -50,6 +50,21 @@ func (s *NodeServer) OnReply(req *md.NoRequest, stream md.NodeService_OnReplySer
 	}
 }
 
+// OnLink is called when a Link Event has completed for User
+func (s *NodeServer) OnLink(req *md.NoRequest, stream md.NodeService_OnLinkServer) error {
+	for {
+		select {
+		case m := <-s.linkEvents:
+			if m != nil {
+				stream.Send(m)
+			}
+		case <-s.ctx.Done():
+			return nil
+		}
+		md.GetState().NeedsWait()
+	}
+}
+
 // OnMail is called when a new mail is received from User
 func (s *NodeServer) OnMail(req *md.NoRequest, stream md.NodeService_OnMailServer) error {
 	for {
@@ -199,6 +214,21 @@ func (s *NodeServer) handleEvent(buf []byte) {
 
 		// Send Event to Channel
 		s.mailEvents <- me
+
+	case md.GenericEvent_LINK:
+		// Unmarshal Link Event
+		le := &md.LinkEvent{}
+		err = proto.Unmarshal(event.GetData(), le)
+		if err != nil {
+			md.LogFatal(err)
+			return
+		}
+
+		// Logging
+		eventType.Log(le.String())
+
+		// Send Event to Channel
+		s.linkEvents <- le
 	}
 }
 

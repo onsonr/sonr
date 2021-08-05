@@ -404,8 +404,9 @@ service NodeService {
   // Mail Method handles request for a message in Mailbox
   rpc Mail(MailboxRequest) returns (MailboxResponse) {}
 
-  //
+  // Events Streams
   rpc OnStatus(NoRequest) returns (stream StatusEvent) {}
+  rpc OnLink(NoRequest) returns (stream LinkEvent) {}
   rpc OnTopic(NoRequest) returns (stream TopicEvent) {}
   rpc OnInvite(NoRequest) returns (stream InviteRequest) {}
   rpc OnReply(NoRequest) returns (stream InviteResponse) {}

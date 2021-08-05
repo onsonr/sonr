@@ -36,8 +36,9 @@ type NodeServiceClient interface {
 	Respond(ctx context.Context, in *InviteResponse, opts ...grpc.CallOption) (*NoResponse, error)
 	// Mail Method handles request for a message in Mailbox
 	Mail(ctx context.Context, in *MailboxRequest, opts ...grpc.CallOption) (*MailboxResponse, error)
-	//
+	// Events Streams
 	OnStatus(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnStatusClient, error)
+	OnLink(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnLinkClient, error)
 	OnTopic(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnTopicClient, error)
 	OnInvite(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnInviteClient, error)
 	OnReply(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnReplyClient, error)
@@ -168,8 +169,40 @@ func (x *nodeServiceOnStatusClient) Recv() (*StatusEvent, error) {
 	return m, nil
 }
 
+func (c *nodeServiceClient) OnLink(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnLinkClient, error) {
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[1], "/models.NodeService/OnLink", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &nodeServiceOnLinkClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type NodeService_OnLinkClient interface {
+	Recv() (*LinkEvent, error)
+	grpc.ClientStream
+}
+
+type nodeServiceOnLinkClient struct {
+	grpc.ClientStream
+}
+
+func (x *nodeServiceOnLinkClient) Recv() (*LinkEvent, error) {
+	m := new(LinkEvent)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 func (c *nodeServiceClient) OnTopic(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnTopicClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[1], "/models.NodeService/OnTopic", opts...)
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[2], "/models.NodeService/OnTopic", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -201,7 +234,7 @@ func (x *nodeServiceOnTopicClient) Recv() (*TopicEvent, error) {
 }
 
 func (c *nodeServiceClient) OnInvite(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnInviteClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[2], "/models.NodeService/OnInvite", opts...)
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[3], "/models.NodeService/OnInvite", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -233,7 +266,7 @@ func (x *nodeServiceOnInviteClient) Recv() (*InviteRequest, error) {
 }
 
 func (c *nodeServiceClient) OnReply(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnReplyClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[3], "/models.NodeService/OnReply", opts...)
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[4], "/models.NodeService/OnReply", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -265,7 +298,7 @@ func (x *nodeServiceOnReplyClient) Recv() (*InviteResponse, error) {
 }
 
 func (c *nodeServiceClient) OnMail(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnMailClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[4], "/models.NodeService/OnMail", opts...)
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[5], "/models.NodeService/OnMail", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -297,7 +330,7 @@ func (x *nodeServiceOnMailClient) Recv() (*MailEvent, error) {
 }
 
 func (c *nodeServiceClient) OnProgress(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnProgressClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[5], "/models.NodeService/OnProgress", opts...)
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[6], "/models.NodeService/OnProgress", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -329,7 +362,7 @@ func (x *nodeServiceOnProgressClient) Recv() (*ProgressEvent, error) {
 }
 
 func (c *nodeServiceClient) OnComplete(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnCompleteClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[6], "/models.NodeService/OnComplete", opts...)
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[7], "/models.NodeService/OnComplete", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -361,7 +394,7 @@ func (x *nodeServiceOnCompleteClient) Recv() (*CompleteEvent, error) {
 }
 
 func (c *nodeServiceClient) OnError(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnErrorClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[7], "/models.NodeService/OnError", opts...)
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[8], "/models.NodeService/OnError", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -414,8 +447,9 @@ type NodeServiceServer interface {
 	Respond(context.Context, *InviteResponse) (*NoResponse, error)
 	// Mail Method handles request for a message in Mailbox
 	Mail(context.Context, *MailboxRequest) (*MailboxResponse, error)
-	//
+	// Events Streams
 	OnStatus(*NoRequest, NodeService_OnStatusServer) error
+	OnLink(*NoRequest, NodeService_OnLinkServer) error
 	OnTopic(*NoRequest, NodeService_OnTopicServer) error
 	OnInvite(*NoRequest, NodeService_OnInviteServer) error
 	OnReply(*NoRequest, NodeService_OnReplyServer) error
@@ -459,6 +493,9 @@ func (UnimplementedNodeServiceServer) Mail(context.Context, *MailboxRequest) (*M
 }
 func (UnimplementedNodeServiceServer) OnStatus(*NoRequest, NodeService_OnStatusServer) error {
 	return status.Errorf(codes.Unimplemented, "method OnStatus not implemented")
+}
+func (UnimplementedNodeServiceServer) OnLink(*NoRequest, NodeService_OnLinkServer) error {
+	return status.Errorf(codes.Unimplemented, "method OnLink not implemented")
 }
 func (UnimplementedNodeServiceServer) OnTopic(*NoRequest, NodeService_OnTopicServer) error {
 	return status.Errorf(codes.Unimplemented, "method OnTopic not implemented")
@@ -677,6 +714,27 @@ func (x *nodeServiceOnStatusServer) Send(m *StatusEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
+func _NodeService_OnLink_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(NoRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(NodeServiceServer).OnLink(m, &nodeServiceOnLinkServer{stream})
+}
+
+type NodeService_OnLinkServer interface {
+	Send(*LinkEvent) error
+	grpc.ServerStream
+}
+
+type nodeServiceOnLinkServer struct {
+	grpc.ServerStream
+}
+
+func (x *nodeServiceOnLinkServer) Send(m *LinkEvent) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 func _NodeService_OnTopic_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(NoRequest)
 	if err := stream.RecvMsg(m); err != nil {
@@ -872,6 +930,11 @@ var NodeService_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "OnStatus",
 			Handler:       _NodeService_OnStatus_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "OnLink",
+			Handler:       _NodeService_OnLink_Handler,
 			ServerStreams: true,
 		},
 		{

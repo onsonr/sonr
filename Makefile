@@ -99,6 +99,7 @@ proto:
 	@echo "--------------------------------------------------------------"
 	@cd $(PROTO_DEF_PATH) && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_DOCS) $(PROTO_LIST_ALL)
 	@cd $(PROTO_DEF_PATH) && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_GO) $(PROTO_LIST_ALL)
+	@cd $(PROTO_DEF_PATH) && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_RPC) $(PROTO_LIST_ALL)
 	@cd $(PROTO_DEF_PATH) && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_DART) $(PROTO_LIST_CLIENT)
 	@cp -R $(PROTO_DEF_PATH) $(PROTO_DIR_RPC)
 	@echo "✅ Finished Compiling ➡ " && date

@@ -33,6 +33,7 @@ type NodeServer struct {
 	inviteResponses     chan *md.InviteResponse
 	errorEvents         chan *md.ErrorEvent
 	mailEvents          chan *md.MailEvent
+	linkEvents          chan *md.LinkEvent
 	progressEvents      chan *md.ProgressEvent
 	statusEvents        chan *md.StatusEvent
 	topicEvents         chan *md.TopicEvent
