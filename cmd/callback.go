@@ -20,6 +20,21 @@ func (s *NodeServer) CallActionResponse(rsp *md.NoRequest, stream md.NodeService
 	}
 }
 
+// CallActionResponse is called when Auth Response is received
+func (s *NodeServer) CallVerifyResponse(rsp *md.NoRequest, stream md.NodeService_CallVerifyResponseServer) error {
+	for {
+		select {
+		case m := <-s.verifyResponses:
+			if m != nil {
+				stream.Send(m)
+			}
+		case <-s.ctx.Done():
+			return nil
+		}
+		md.GetState().NeedsWait()
+	}
+}
+
 // OnComplete is called when a complete event is received
 func (s *NodeServer) OnComplete(req *md.NoRequest, stream md.NodeService_OnCompleteServer) error {
 	for {

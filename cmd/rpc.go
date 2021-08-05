@@ -110,7 +110,7 @@ func (s *NodeServer) Initialize(ctx context.Context, req *md.InitializeRequest) 
 	s.client = sc.NewClient(s.ctx, s.user, s.callback())
 	s.verifyResponses <- s.user.VerifyRead()
 	// Return Blank Response
-	return nil, nil
+	return &md.NoResponse{}, nil
 }
 
 // Connect method starts this nodes host
