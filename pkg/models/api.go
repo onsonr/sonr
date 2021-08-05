@@ -294,14 +294,18 @@ func (i *InviteRequest) IsPayloadTransfer() bool {
 	return i.Payload == Payload_FILE || i.Payload == Payload_FILES || i.Payload == Payload_MEDIA || i.Payload == Payload_ALBUM
 }
 
+func (i *InviteRequest) IsLinkInvite() bool {
+	return i.GetType() == InviteRequest_LINK
+}
+
 // Checks if Payload is Url
 func (i *InviteRequest) IsPayloadUrl() bool {
 	return i.Payload == Payload_URL
 }
 
 // Checks for Flat Invite
-func (i *InviteRequest) IsFlatInvite() bool {
-	return i.GetType() == InviteRequest_FLAT
+func (i *InviteRequest) IsDirectInvite() bool {
+	return i.GetType() == InviteRequest_DIRECT
 }
 
 // Returns Protocol ID Set by Peer

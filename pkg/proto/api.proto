@@ -12,13 +12,14 @@ option go_package = "/models";
 
 // Method enum for Node to Perform
 enum Action {
-  PING = 0;     // Ping Node
-  LOCATION = 1; // Get Location
-  URL_LINK = 2; // Get URL Link
-  PAUSE = 3;    // Pause Node
-  RESUME = 4;   // Resume Node
-  STOP = 5;     // Stop Node
-  RESTART = 6;  // Restart Node
+  PING = 0;         // Ping Node
+  LOCATION = 1;     // Get Location
+  URL_LINK = 2;     // Get URL Link
+  PAUSE = 3;        // Pause Node
+  RESUME = 4;       // Resume Node
+  STOP = 5;         // Stop Node
+  RESTART = 6;      // Restart Node
+  LIST_LINKERS = 7; // List Linkers
 }
 
 // ActionRequest performs action on Node
@@ -37,6 +38,7 @@ message ActionResponse {
     Location location = 3;   // location of node
     URLLink urlLink = 4;     // URL Link of node
     Lifecycle lifecycle = 5; // current state of node
+    Linkers linkers = 6;     // list of linkers
   }
 }
 
@@ -155,21 +157,6 @@ message ConnectionResponse {
   }
 }
 
-// Message for Linking Request (Hmac Sha256)
-message LinkRequest {
-  string body = 1; // Short ID - Calculated with Device ID
-  Peer from = 2;   // Peer Linking from
-  Peer to = 3;     // Peer Linking to
-}
-
-// Message for Linking Response (Hmac Sha256)
-message LinkResponse {
-  bool success = 1;      // ID of Device to Link
-  Device device = 2;     // Device of Peer to Link
-  Topic topic = 3;       // Topic of User Network
-  KeyPair sharedKey = 4; // Shared Key between Devices
-}
-
 // Invitation Message sent on RPC
 message InviteRequest {
   Payload payload = 1;   // Type of Transfer
@@ -178,12 +165,12 @@ message InviteRequest {
   Transfer transfer = 4; // Attached Data
   Type type = 5;         // Type of Invite
   string protocol = 6;   // Protocol for Invite
-  Device device = 7;     // Device for Link-Invite Request
+  string shortID = 7;    // Short ID - Calculated with Device ID for Linking
 
   enum Type {
     NONE = 0;   // No Type
     LOCAL = 1;  // Local Transfer
-    FLAT = 2;   // Flat Transfer
+    DIRECT = 2; // Direct Transfer
     REMOTE = 3; // Remote Transfer
     LINK = 4;   // Link Request
   }
@@ -290,6 +277,15 @@ message CompleteEvent {
   }
 }
 
+// Message for Linking Response (Hmac Sha256)
+message LinkEvent {
+  bool success = 1;      // ID of Device to Link
+  Device device = 2;     // Device of Peer to Link
+  Topic topic = 3;       // Topic of User Network
+  KeyPair sharedKey = 4; // Shared Key between Devices
+  Contact contact = 5;   // Contact Card of User
+}
+
 // Received Mail Event
 message MailEvent {
   int32 createdAt = 1;      // Time of Creation
@@ -366,6 +362,7 @@ message GenericEvent {
     MAIL = 2;     // New Mailbox Invite
     PROGRESS = 3; // Transfer Progress
     TOPIC = 4;    // Local Topic Update
+    LINK = 5;     // Linking Response
   }
 }
 

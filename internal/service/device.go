@@ -8,14 +8,12 @@ import (
 
 // LocalServiceArgs ExchangeArgs is Peer protobuf
 type DeviceServiceArgs struct {
-	Peer   []byte
-	Invite []byte
+	Direct []byte
 }
 
 // LocalServiceResponse ExchangeResponse is also Peer protobuf
 type DeviceServiceResponse struct {
-	InvReply []byte
-	Peer     []byte
+	Result []byte
 }
 
 type DeviceService struct {

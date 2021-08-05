@@ -152,14 +152,32 @@ func (c *client) Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrE
 
 				// Run Routine
 				go func(inv *md.InviteRequest) {
-					// Send Invite
-					err = c.Service.Invite(id, inv)
-					if err != nil {
-						c.call.OnError(md.NewError(err, md.ErrorEvent_TOPIC_RPC))
-						return
+					// Check Invite for Link
+					if inv.GetType() == md.InviteRequest_LINK {
+						// Send Default Invite
+						err = c.Service.Link(id, inv)
+						if err != nil {
+							c.call.OnError(md.NewError(err, md.ErrorEvent_TOPIC_RPC))
+							return
+						}
+					} else {
+						// Send Default Invite
+						err = c.Service.Invite(id, inv)
+						if err != nil {
+							c.call.OnError(md.NewError(err, md.ErrorEvent_TOPIC_RPC))
+							return
+						}
 					}
+
 				}(invite)
 			} else {
+				// Send Mail to Offline Peer
+				err := c.Service.SendMail(invite)
+				if err != nil {
+					return err
+				}
+
+				// Record Peer is Offline
 				c.newExitEvent(invite)
 				return md.NewErrorWithType(md.ErrorEvent_PEER_NOT_FOUND_INVITE)
 			}

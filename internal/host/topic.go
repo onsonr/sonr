@@ -44,6 +44,7 @@ type TopicManager struct {
 	events    chan *md.TopicEvent
 	exchange  *ExchangeService
 	handler   TopicHandler
+	linkers   []*md.Peer
 	topicData *md.Topic
 }
 
@@ -76,6 +77,7 @@ func (h *hostNode) JoinTopic(ctx context.Context, u *md.User, topicData *md.Topi
 		host:         h,
 		eventHandler: handler,
 		topicData:    topicData,
+		linkers:      make([]*md.Peer, 0),
 		events:       make(chan *md.TopicEvent, util.MAX_CHAN_DATA),
 		subscription: sub,
 		topic:        topic,
@@ -161,6 +163,13 @@ func (tm *TopicManager) HasPeerID(q peer.ID) bool {
 		}
 	}
 	return false
+}
+
+// Returns List of Linkers in Topic
+func (tm *TopicManager) ListLinkers() *md.Linkers {
+	return &md.Linkers{
+		List: tm.linkers,
+	}
 }
 
 // Exchange @ Starts Exchange on Local Peer Join
@@ -273,6 +282,8 @@ func (tm *TopicManager) handleTopicMessages(ctx context.Context) {
 			// Check Peer is Online, if not ignore
 			if m.Peer.GetStatus() == md.Peer_ONLINE {
 				tm.handler.OnEvent(m)
+			} else if m.Peer.GetStatus() == md.Peer_LINKER {
+				tm.linkers = append(tm.linkers, m.Peer)
 			}
 		}
 		md.GetState().NeedsWait()

@@ -1,6 +1,8 @@
 package client
 
 import (
+	"fmt"
+
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
@@ -34,6 +36,12 @@ func (n *client) OnEvent(e *md.TopicEvent) {
 		// Call Event
 		n.call.OnEvent(bytes)
 	}
+}
+
+// ^ OnLink: Handle Result of Link Request ^
+func (n *client) OnLink(success bool, id peer.ID, from *md.Peer, to *md.Peer) {
+	// Logging
+	md.LogInfo(fmt.Sprintf("Link Request \n Result: %v \n From: %s \n To: %s \n", success, from.String(), to.String()))
 }
 
 // ^ OnInvite: User Received Invite ^

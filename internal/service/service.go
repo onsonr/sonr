@@ -12,6 +12,7 @@ import (
 
 type ServiceHandler interface {
 	OnConnected(r *md.ConnectionResponse)
+	OnLink(success bool, id peer.ID, from *md.Peer, to *md.Peer)
 	OnInvite([]byte)
 	OnReply(id peer.ID, data []byte)
 	OnConfirmed(inv *md.InviteRequest)
@@ -20,6 +21,7 @@ type ServiceHandler interface {
 }
 
 type ServiceClient interface {
+	Link(id peer.ID, inv *md.InviteRequest) error
 	Invite(id peer.ID, inv *md.InviteRequest) error
 	Respond(rep *md.InviteResponse)
 	SendMail(e *md.InviteRequest) *md.SonrError

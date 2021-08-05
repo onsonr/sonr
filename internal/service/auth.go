@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	rpc "github.com/libp2p/go-libp2p-gorpc"
@@ -14,12 +15,14 @@ import (
 type AuthServiceArgs struct {
 	Peer   []byte
 	Invite []byte
+	Link   []byte
 }
 
 // AuthServiceResponse ExchangeResponse is also Peer protobuf
 type AuthServiceResponse struct {
-	InvReply []byte
-	Peer     []byte
+	InvReply   []byte
+	Peer       []byte
+	LinkResult bool
 }
 
 type AuthService struct {
@@ -51,7 +54,7 @@ func (sc *serviceClient) StartAuth() *md.SonrError {
 // Invite @ Invite: Handles User sent InviteRequest Response
 func (tm *serviceClient) Invite(id peer.ID, inv *md.InviteRequest) error {
 	// Initialize Data
-	isFlat := inv.IsFlatInvite()
+	isDirect := inv.IsDirectInvite()
 	rpcClient := rpc.NewClient(tm.host.Host(), util.AUTH_PROTOCOL)
 	var reply AuthServiceResponse
 	var args AuthServiceArgs
@@ -65,8 +68,8 @@ func (tm *serviceClient) Invite(id peer.ID, inv *md.InviteRequest) error {
 	// Set Args
 	args.Invite = msgBytes
 
-	// Check Invite for Flat/Default
-	if isFlat {
+	// Check Invite for Direct transfer
+	if isDirect {
 		// Call to Peer
 		err = rpcClient.Call(id, util.AUTH_RPC_SERVICE, util.AUTH_METHOD_INVITE, args, &reply)
 		if err != nil {
@@ -100,7 +103,7 @@ func (ts *AuthService) InviteWith(ctx context.Context, args AuthServiceArgs, rep
 	}
 
 	// Set Current Message and send Callback
-	isFlat := inv.IsFlatInvite()
+	isFlat := inv.IsDirectInvite()
 	ts.invite = &inv
 	ts.handler.OnInvite(args.Invite)
 
@@ -134,6 +137,50 @@ func (ts *AuthService) InviteWith(ctx context.Context, args AuthServiceArgs, rep
 			return nil
 		}
 	}
+}
+
+// Sends Link Request to Linker type Peer
+func (tm *serviceClient) Link(id peer.ID, inv *md.InviteRequest) error {
+	// Check Invite
+	if inv.IsLinkInvite() {
+		// Initialize Data
+		rpcClient := rpc.NewClient(tm.host.Host(), util.AUTH_PROTOCOL)
+		var reply AuthServiceResponse
+		var args AuthServiceArgs
+
+		// Convert Protobuf to bytes
+		msgBytes, err := proto.Marshal(inv)
+		if err != nil {
+			return err
+		}
+
+		// Set Args
+		args.Link = msgBytes
+
+		// Call to Peer
+		err = rpcClient.Call(id, util.AUTH_RPC_SERVICE, util.AUTH_METHOD_LINK, args, &reply)
+		if err != nil {
+			tm.handler.OnLink(false, id, inv.GetFrom(), inv.GetTo())
+			return err
+		}
+		tm.handler.OnLink(reply.LinkResult, id, inv.GetFrom(), inv.GetTo())
+		return nil
+	}
+	return errors.New("Invite is not a Link Invite")
+}
+
+// InviteWith # Calls Invite on Local Lobby Peer
+func (ts *AuthService) LinkWith(ctx context.Context, args AuthServiceArgs, reply *AuthServiceResponse) error {
+	// Received Message
+	inv := md.InviteRequest{}
+	err := proto.Unmarshal(args.Invite, &inv)
+	if err != nil {
+		return err
+	}
+
+	reply.LinkResult = inv.GetShortID() == ts.user.GetDevice().ShortID()
+	ts.handler.OnLink(reply.LinkResult, peer.ID(inv.GetFrom().PeerID()), inv.GetFrom(), inv.GetTo())
+	return nil
 }
 
 // RespondToInvite @ RespondToInvite to an Invitation

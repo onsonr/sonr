@@ -262,6 +262,23 @@ func (s *Node) Action(buf []byte) []byte {
 			return nil
 		}
 		return bytes
+	case md.Action_LIST_LINKERS:
+		// List Linkers
+		resp := &md.ActionResponse{
+			Success: true,
+			Action:  md.Action_LIST_LINKERS,
+			Data: &md.ActionResponse_Linkers{
+				Linkers: s.local.ListLinkers(),
+			},
+		}
+
+		// Marshal Response
+		bytes, err := proto.Marshal(resp)
+		if err != nil {
+			s.handleError(md.NewMarshalError(err))
+			return nil
+		}
+		return bytes
 	case md.Action_PAUSE:
 		// Pause
 		md.LogInfo("Lifecycle Pause Called")

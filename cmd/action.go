@@ -78,6 +78,15 @@ func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.Act
 				Lifecycle: s.state,
 			},
 		}, nil
+	case md.Action_LIST_LINKERS:
+		// List Linkers
+		return &md.ActionResponse{
+			Success: true,
+			Action:  md.Action_LIST_LINKERS,
+			Data: &md.ActionResponse_Linkers{
+				Linkers: s.local.ListLinkers(),
+			},
+		}, nil
 	default:
 		md.LogRPC("action", false)
 		return nil, fmt.Errorf("Action: %s not supported", req.Action)

@@ -65,6 +65,9 @@ const AUTH_RPC_SERVICE = "AuthService"
 // Local RPC Service Method for Invite
 const AUTH_METHOD_INVITE = "InviteWith"
 
+// Local RPC Service Method for Invite
+const AUTH_METHOD_LINK = "LinkWith"
+
 // Local RPC Service Name
 const DEVICE_RPC_SERVICE = "DeviceService"
 

@@ -39,6 +39,9 @@ enum Cardinal {
   NbW = 31;  // North by West
 }
 
+// List of Linker Peers
+message Linkers { repeated Peer list = 1; }
+
 // For Info about Lobby
 message Lobby {
   Topic topic = 1;             // Type of Lobby

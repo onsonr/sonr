@@ -10,6 +10,7 @@ import (
 	"math"
 	"os"
 	"path/filepath"
+	"regexp"
 	"time"
 
 	"github.com/denisbrodbeck/machineid"
@@ -313,6 +314,24 @@ func (d *FileSystem_Directory) ReadFile(name string) ([]byte, *SonrError) {
 	}
 }
 
+// Returns Short ID for this Device
+func (d *Device) ShortID() string {
+	// Check for Keys
+	if d.HasKeys() {
+		// Write Device ID as New sha256 String
+		h := hmac.New(sha256.New, d.KeyPair.PrivBuffer())
+		h.Write([]byte(d.GetId()))
+		sha := hex.EncodeToString(h.Sum(nil))
+
+		// Select only 6 Numeric Chars
+		re := regexp.MustCompile("[0-9]+")
+		return re.FindString(sha)[:6]
+	} else {
+		LogError(errors.New("Device does not have a Key Pair"))
+		return ""
+	}
+}
+
 // Returns Path for Private Key File
 func (d *Device) WorkingKeyPath() string {
 	// Check for Desktop
@@ -435,50 +454,6 @@ func (u *User) Profile() *Profile {
 	return u.GetContact().GetProfile()
 }
 
-func (u *User) Link(r *LinkRequest) (*LinkResponse, *SonrError) {
-	if r.Subject == LinkRequest_ACCEPT {
-		// Shared Key from Curve
-		pubKey, sharedKeyFunc, err := crypto.GenerateEKeyPair("P-256")
-		if err != nil {
-			return nil, NewError(err, ErrorEvent_LINK_GENERATE)
-		}
-
-		// Generate Shared Key
-		sharedKey, err := sharedKeyFunc(u.KeyPair().PrivBuffer())
-		if err != nil {
-			return nil, NewError(err, ErrorEvent_LINK_SHARED_KEY)
-		}
-
-		// Add Devices to User
-		u.Info = &User_Info{
-			LinkKeys: &KeyPair{
-				Public: &KeyPair_Public{
-					Buffer: pubKey,
-				},
-				Private: &KeyPair_Private{
-					Buffer: sharedKey,
-				},
-			},
-		}
-
-		// Generate Shared Key Response
-		sharedKeyResponse := &LinkResponse{
-			Success: true,
-			SharedKey: &KeyPair{
-				Public: &KeyPair_Public{
-					Buffer: pubKey,
-				},
-				Private: &KeyPair_Private{
-					Buffer: sharedKey,
-				},
-			},
-			Device: r.GetDevice(),
-		}
-		return sharedKeyResponse, nil
-	}
-	return nil, nil
-}
-
 // Method Signs Data with KeyPair
 func (u *User) Sign(req *AuthRequest) *AuthResponse {
 	// Create Prefix
@@ -566,6 +541,7 @@ func (u *User) VerifyRead() *VerifyResponse {
 	kp := u.KeyPair()
 	return &VerifyResponse{
 		PublicKey: kp.PubKeyBase64(),
+		ShortID:   u.GetDevice().ShortID(),
 	}
 }
 
