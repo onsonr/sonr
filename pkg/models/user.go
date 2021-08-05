@@ -339,7 +339,15 @@ func (d *Device) ShortID() string {
 		}
 
 		// Convert int array into string
-		return fmt.Sprintf("%x", n)
+		result := ""
+		for _, v := range n {
+			if v < 10 {
+				result = result + fmt.Sprintf("%d", v)
+			}
+		}
+
+		// Return Short ID
+		return result
 	} else {
 		LogError(errors.New("Device does not have a Key Pair"))
 		return ""
