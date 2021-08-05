@@ -10,7 +10,6 @@ import (
 	"math"
 	"os"
 	"path/filepath"
-	"regexp"
 	"time"
 
 	"github.com/denisbrodbeck/machineid"
@@ -321,11 +320,7 @@ func (d *Device) ShortID() string {
 		// Write Device ID as New sha256 String
 		h := hmac.New(sha256.New, d.KeyPair.PrivBuffer())
 		h.Write([]byte(d.GetId()))
-		sha := hex.EncodeToString(h.Sum(nil))
-
-		// Select only 6 Numeric Chars
-		re := regexp.MustCompile("[0-9]+")
-		return re.FindString(sha)
+		return hex.EncodeToString(h.Sum(nil))
 	} else {
 		LogError(errors.New("Device does not have a Key Pair"))
 		return ""
