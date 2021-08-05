@@ -80,7 +80,7 @@ func main() {
 }
 
 // Initialize method is called when a new node is created
-func (s *NodeServer) Initialize(ctx context.Context, req *md.InitializeRequest) (*md.NoResponse, error) {
+func (s *NodeServer) Initialize(ctx context.Context, req *md.InitializeRequest) (*md.VerifyResponse, error) {
 	// Initialize Logger
 	md.InitLogger(req)
 
@@ -96,7 +96,7 @@ func (s *NodeServer) Initialize(ctx context.Context, req *md.InitializeRequest) 
 	s.client = sc.NewClient(s.ctx, s.user, s.callback())
 
 	// Return Blank Response
-	return &md.NoResponse{}, nil
+	return s.user.VerifyRead(), nil
 }
 
 // Connect method starts this nodes host

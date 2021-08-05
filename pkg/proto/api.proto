@@ -378,7 +378,7 @@ message NoResponse {}
 // RPC Service with Equivalent Methods of a binded Node
 service NodeService {
   // Initializes New Node
-  rpc Initialize(InitializeRequest) returns (NoResponse) {}
+  rpc Initialize(InitializeRequest) returns (VerifyResponse) {}
 
   // Starts Method Host and Connects to Network
   rpc Connect(ConnectionRequest) returns (NoResponse) {}

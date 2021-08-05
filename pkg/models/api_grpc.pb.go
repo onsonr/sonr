@@ -19,7 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type NodeServiceClient interface {
 	// Initializes New Node
-	Initialize(ctx context.Context, in *InitializeRequest, opts ...grpc.CallOption) (*NoResponse, error)
+	Initialize(ctx context.Context, in *InitializeRequest, opts ...grpc.CallOption) (*VerifyResponse, error)
 	// Starts Method Host and Connects to Network
 	Connect(ctx context.Context, in *ConnectionRequest, opts ...grpc.CallOption) (*NoResponse, error)
 	// Action method handles misceallaneous actions for node
@@ -56,8 +56,8 @@ func NewNodeServiceClient(cc grpc.ClientConnInterface) NodeServiceClient {
 	return &nodeServiceClient{cc}
 }
 
-func (c *nodeServiceClient) Initialize(ctx context.Context, in *InitializeRequest, opts ...grpc.CallOption) (*NoResponse, error) {
-	out := new(NoResponse)
+func (c *nodeServiceClient) Initialize(ctx context.Context, in *InitializeRequest, opts ...grpc.CallOption) (*VerifyResponse, error) {
+	out := new(VerifyResponse)
 	err := c.cc.Invoke(ctx, "/models.NodeService/Initialize", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -430,7 +430,7 @@ func (x *nodeServiceOnErrorClient) Recv() (*ErrorEvent, error) {
 // for forward compatibility
 type NodeServiceServer interface {
 	// Initializes New Node
-	Initialize(context.Context, *InitializeRequest) (*NoResponse, error)
+	Initialize(context.Context, *InitializeRequest) (*VerifyResponse, error)
 	// Starts Method Host and Connects to Network
 	Connect(context.Context, *ConnectionRequest) (*NoResponse, error)
 	// Action method handles misceallaneous actions for node
@@ -464,7 +464,7 @@ type NodeServiceServer interface {
 type UnimplementedNodeServiceServer struct {
 }
 
-func (UnimplementedNodeServiceServer) Initialize(context.Context, *InitializeRequest) (*NoResponse, error) {
+func (UnimplementedNodeServiceServer) Initialize(context.Context, *InitializeRequest) (*VerifyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Initialize not implemented")
 }
 func (UnimplementedNodeServiceServer) Connect(context.Context, *ConnectionRequest) (*NoResponse, error) {
