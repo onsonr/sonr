@@ -65,6 +65,7 @@ func main() {
 		inviteRequests:      make(chan *md.InviteRequest, util.MAX_CHAN_DATA),
 		inviteResponses:     make(chan *md.InviteResponse, util.MAX_CHAN_DATA),
 		connectionResponses: make(chan *md.ConnectionResponse, util.MAX_CHAN_DATA),
+		linkEvents:          make(chan *md.LinkEvent, util.MAX_CHAN_DATA),
 	}
 
 	grpcServer := grpc.NewServer()

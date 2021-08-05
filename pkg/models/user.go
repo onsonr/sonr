@@ -406,12 +406,8 @@ func (u *User) InitConnection(cr *ConnectionRequest) {
 	u.PushToken = cr.GetPushToken()
 	u.SName = cr.GetContact().GetProfile().GetSName()
 	u.Location = cr.GetLocation()
+	u.Contact = cr.GetContact()
 	u.Status = Status_IDLE
-
-	// Set Profile
-	c := cr.GetContact()
-	c.Profile.Platform = u.Device.Platform
-	u.Contact = c
 }
 
 // Checks Whether User is Ready to Communicate

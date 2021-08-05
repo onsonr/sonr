@@ -101,38 +101,33 @@ func (s *NodeServer) Sign(ctx context.Context, req *md.AuthRequest) (*md.AuthRes
 
 // Verify validates user Keys
 func (s *NodeServer) Verify(ctx context.Context, req *md.VerifyRequest) (*md.VerifyResponse, error) {
-	// Verify Node is Ready
-	if s.isReady() {
-		// Get Key Pair
-		kp := s.user.KeyPair()
+	// Get Key Pair
+	kp := s.user.KeyPair()
 
-		// Check Request Type
-		if req.GetType() == md.VerifyRequest_VERIFY {
-			// Check type and Verify
-			if req.IsBuffer() {
-				// Verify Result
-				result, err := kp.Verify(req.GetBufferValue(), req.GetSignedBuffer())
-				if err != nil {
-					return &md.VerifyResponse{IsVerified: false}, err
-				}
-
-				// Return Result
-				return &md.VerifyResponse{IsVerified: result}, nil
-			} else if req.IsString() {
-				// Verify Result
-				result, err := kp.Verify([]byte(req.GetTextValue()), []byte(req.GetSignedText()))
-				if err != nil {
-					return &md.VerifyResponse{IsVerified: false}, err
-				}
-
-				// Return Result
-				return &md.VerifyResponse{IsVerified: result}, nil
+	// Check Request Type
+	if req.GetType() == md.VerifyRequest_VERIFY {
+		// Check type and Verify
+		if req.IsBuffer() {
+			// Verify Result
+			result, err := kp.Verify(req.GetBufferValue(), req.GetSignedBuffer())
+			if err != nil {
+				return &md.VerifyResponse{IsVerified: false}, err
 			}
-		} else {
-			return s.user.VerifyRead(), nil
+
+			// Return Result
+			return &md.VerifyResponse{IsVerified: result}, nil
+		} else if req.IsString() {
+			// Verify Result
+			result, err := kp.Verify([]byte(req.GetTextValue()), []byte(req.GetSignedText()))
+			if err != nil {
+				return &md.VerifyResponse{IsVerified: false}, err
+			}
+
+			// Return Result
+			return &md.VerifyResponse{IsVerified: result}, nil
 		}
 	}
-	return &md.VerifyResponse{IsVerified: false}, fmt.Errorf("Node is not ready")
+	return s.user.VerifyRead(), nil
 }
 
 // Update proximity/direction/contact/properties and notify Lobby

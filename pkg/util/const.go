@@ -74,6 +74,9 @@ const DEVICE_RPC_SERVICE = "DeviceService"
 // Local RPC Service Method for Push
 const DEVICE_METHOD_PUSH = "PushWith"
 
+// Local RPC Service Method for Sync
+const DEVICE_METHOD_SYNC = "SyncWith"
+
 // Firebase Project ID
 const FIRE_PROJECT_ID = "trans-density-315704"
 

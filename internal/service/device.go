@@ -28,17 +28,17 @@ type DeviceService struct {
 func (sc *serviceClient) StartDevices() *md.SonrError {
 	// Start Exchange Server
 	localServer := rpc.NewServer(sc.host.Host(), util.AUTH_PROTOCOL)
-	psv := AuthService{
+	dsv := DeviceService{
 		user:    sc.user,
 		handler: sc.handler,
 		respCh:  make(chan *md.InviteResponse, util.MAX_CHAN_DATA),
 	}
 
 	// Register Service
-	err := localServer.RegisterName(util.AUTH_RPC_SERVICE, &psv)
+	err := localServer.RegisterName(util.DEVICE_RPC_SERVICE, &dsv)
 	if err != nil {
 		return md.NewError(err, md.ErrorEvent_TOPIC_RPC)
 	}
-	sc.Auth = &psv
+	sc.Device = &dsv
 	return nil
 }

@@ -141,6 +141,15 @@ func (tm *TopicManager) Topic() *md.Topic {
 	return tm.topicData
 }
 
+func (tm *TopicManager) HasLinker(q string) bool {
+	for _, p := range tm.linkers {
+		if p.PeerID() == q {
+			return true
+		}
+	}
+	return false
+}
+
 // HasPeer Method Checks if Peer ID String is Subscribed to Topic
 func (tm *TopicManager) HasPeer(q string) bool {
 	// Iterate through PubSub in topic
@@ -283,7 +292,11 @@ func (tm *TopicManager) handleTopicMessages(ctx context.Context) {
 			if m.Peer.GetStatus() == md.Peer_ONLINE {
 				tm.handler.OnEvent(m)
 			} else if m.Peer.GetStatus() == md.Peer_LINKER {
-				tm.linkers = append(tm.linkers, m.Peer)
+				// Validate Linker not Already Set
+				if !tm.HasLinker(m.Peer.PeerID()) {
+					// Append Linkers
+					tm.linkers = append(tm.linkers, m.Peer)
+				}
 			}
 		}
 		md.GetState().NeedsWait()
