@@ -26,7 +26,7 @@ BIND_ANDROID_ARTIFACT= $(BIND_DIR_ANDROID)/io.sonr.core.aar
 PROTO_DIR_GO=$(SONR_ROOT_DIR)/core/pkg
 PROTO_DIR_DART=$(SONR_ROOT_DIR)/plugin/lib/src/data/protobuf
 PROTO_DIR_DOCS=$(SONR_ROOT_DIR)/docs
-PROTO_DIR_RPC=$(SONR_ROOT_DIR)/electron/assets/proto
+PROTO_DIR_RPC=$(SONR_ROOT_DIR)/electron/assets
 
 # @ Proto Items Lists
 PROTO_LIST_ALL=api.proto data.proto core.proto peer.proto error.proto user.proto
@@ -101,7 +101,8 @@ proto:
 	@cd $(PROTO_DEF_PATH) && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_GO) $(PROTO_LIST_ALL)
 	@cd $(PROTO_DEF_PATH) && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_RPC) $(PROTO_LIST_ALL)
 	@cd $(PROTO_DEF_PATH) && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_DART) $(PROTO_LIST_CLIENT)
-	@cp -R $(PROTO_DEF_PATH) $(PROTO_DIR_RPC)
+	@rm -rf $(PROTO_DIR_RPC)/proto
+	@cp -R $(PROTO_DEF_PATH) $(PROTO_DIR_RPC)/proto
 	@echo "✅ Finished Compiling ➡ " && date
 	@echo ""
 
