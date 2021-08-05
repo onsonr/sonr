@@ -325,7 +325,7 @@ func (d *Device) ShortID() string {
 
 		// Select only 6 Numeric Chars
 		re := regexp.MustCompile("[0-9]+")
-		return re.FindString(sha)[:6]
+		return re.FindString(sha)
 	} else {
 		LogError(errors.New("Device does not have a Key Pair"))
 		return ""
