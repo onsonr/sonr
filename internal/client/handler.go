@@ -41,7 +41,7 @@ func (n *client) OnEvent(e *md.TopicEvent) {
 // OnLink: Handle Result of Link Request ^
 func (n *client) OnLink(success bool, id peer.ID, from *md.Peer, to *md.Peer) {
 	// Logging
-	md.LogInfo(fmt.Sprintf("Link Request \n Result: %v \n From: %s \n To: %s \n", success, from.String(), to.String()))
+	md.LogInfo(fmt.Sprintf("- Link Request - \n Result: %v \n From: %s \n To: %s \n", success, from.String(), to.String()))
 }
 
 // OnInvite: User Received Invite ^

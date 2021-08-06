@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	rpc "github.com/libp2p/go-libp2p-gorpc"
@@ -178,8 +179,11 @@ func (ts *AuthService) LinkWith(ctx context.Context, args AuthServiceArgs, reply
 		return err
 	}
 
-	reply.LinkResult = inv.GetShortID() == ts.user.GetDevice().ShortID()
-	ts.handler.OnLink(reply.LinkResult, peer.ID(inv.GetFrom().PeerID()), inv.GetFrom(), inv.GetTo())
+	// Handle Status
+	result := inv.GetShortID() == ts.user.GetDevice().ShortID()
+	reply.LinkResult = result
+	md.LogInfo(fmt.Sprintf("Link Result: %v", result))
+	ts.handler.OnLink(result, peer.ID(inv.GetFrom().PeerID()), inv.GetFrom(), inv.GetTo())
 	return nil
 }
 

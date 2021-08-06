@@ -10,6 +10,7 @@ import (
 	net "github.com/sonr-io/core/internal/host"
 	srv "github.com/sonr-io/core/internal/service"
 	md "github.com/sonr-io/core/pkg/models"
+	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -273,7 +274,7 @@ func (c *client) sendPeriodicTopicEvents(t *net.TopicManager) {
 				continue
 			}
 		}
-		time.Sleep(3 * time.Second)
+		time.Sleep(util.AUTOUPDATE_INTERVAL)
 		md.GetState()
 	}
 }

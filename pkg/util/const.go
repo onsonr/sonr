@@ -13,6 +13,9 @@ import (
 // Bootstrap MDNS Peer Discovery Interval
 const REFRESH_INTERVAL = time.Second * 4
 
+// RPC Binary AutoUpdate Interval
+const AUTOUPDATE_INTERVAL = time.Second * 3
+
 // Method Returns MDNS Discovery Options
 func MDNS_OPTS() (time.Duration, string) {
 	return REFRESH_INTERVAL, HOST_RENDEVOUZ_POINT
