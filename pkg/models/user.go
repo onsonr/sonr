@@ -300,11 +300,11 @@ func (d *FileSystem_Directory) ReadFile(name string) ([]byte, *SonrError) {
 	// Initialize
 	path := filepath.Join(d.GetPath(), name)
 
-	// @ Check for Path
+	// Check for Path
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		return nil, NewError(err, ErrorEvent_USER_LOAD)
 	} else {
-		// @ Read User Data File
+		// Read User Data File
 		dat, err := os.ReadFile(path)
 		if err != nil {
 			return nil, NewError(err, ErrorEvent_USER_LOAD)
@@ -402,7 +402,7 @@ func (d *Device) WriteFile(name string, data []byte) (string, *SonrError) {
 }
 
 // ** ─── User MANAGEMENT ────────────────────────────────────────────────────────
-// ^ Method Initializes User Info Struct ^ //
+// Method Initializes User Info Struct ^ //
 func NewUser(ir *InitializeRequest) (*User, *SonrError) {
 	// Initialize Device
 	d := ir.GetDevice()
@@ -563,7 +563,7 @@ func (u *User) VerifyRead() *VerifyResponse {
 	}
 }
 
-// ^ Signs InviteResponse with Flat Contact
+// Signs InviteResponse with Flat Contact
 func (u *User) ReplyToFlat(from *Peer) *InviteResponse {
 	return &InviteResponse{
 		Type:    InviteResponse_FLAT,
@@ -585,7 +585,7 @@ func (u *User) ReplyToFlat(from *Peer) *InviteResponse {
 	}
 }
 
-// ^ NewUpdateEvent Creates Lobby Event with Peer Data ^
+// NewUpdateEvent Creates Lobby Event with Peer Data ^
 func (u *User) NewUpdateEvent(topic *Topic, id peer.ID) *TopicEvent {
 	return &TopicEvent{
 		Subject: TopicEvent_UPDATE,
@@ -595,7 +595,7 @@ func (u *User) NewUpdateEvent(topic *Topic, id peer.ID) *TopicEvent {
 	}
 }
 
-// ^ NewDefaultUpdateEvent Updates Peer with Default Position and Returns Lobby Event with Peer Data ^
+// NewDefaultUpdateEvent Updates Peer with Default Position and Returns Lobby Event with Peer Data ^
 func (u *User) NewDefaultUpdateEvent(topic *Topic, id peer.ID) *TopicEvent {
 	// Update Peer
 	u.UpdatePosition(DefaultPosition().Parameters())
@@ -609,7 +609,7 @@ func (u *User) NewDefaultUpdateEvent(topic *Topic, id peer.ID) *TopicEvent {
 	}
 }
 
-// ^ NewUpdateEvent Creates Lobby Event with Peer Data ^
+// NewUpdateEvent Creates Lobby Event with Peer Data ^
 func (u *User) NewExitEvent(topic *Topic, id peer.ID) *TopicEvent {
 	return &TopicEvent{
 		Subject: TopicEvent_EXIT,

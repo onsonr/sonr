@@ -34,7 +34,7 @@ var loggerWarningEnabled = true
 var loggerCriticalEnabled = true
 var loggerFatalEnabled = true
 
-// ^ Initializes Pretty Logger
+// Initializes Pretty Logger
 func InitLogger(req *InitializeRequest) {
 	// Check Terminal
 	if log.IsTerminal(os.Stderr.Fd()) && !loggerEnabled {
@@ -70,7 +70,7 @@ func InitLogger(req *InitializeRequest) {
 	}
 }
 
-// ^ Method Logs a Info Message for Event
+// Method Logs a Info Message for Event
 func (t GenericEvent_Type) Log(message string) {
 	if loggerEnabled && loggerInfoEnabled && t != GenericEvent_TOPIC {
 		log.Info().Msgf("⚡️  %s", t.String())
@@ -78,7 +78,7 @@ func (t GenericEvent_Type) Log(message string) {
 	}
 }
 
-// ^ Method Logs a Info Message for Response
+// Method Logs a Info Message for Response
 func (t GenericResponse_Type) Log(message string) {
 	if loggerEnabled && loggerInfoEnabled {
 		log.Info().Msgf("⚡️  %s", t.String())
@@ -86,7 +86,7 @@ func (t GenericResponse_Type) Log(message string) {
 	}
 }
 
-// ^ Method Logs a Info Message for Request
+// Method Logs a Info Message for Request
 func (t GenericRequest_Type) Log(message string) {
 	if loggerEnabled && loggerInfoEnabled {
 		log.Info().Msgf("⚡️  %s", t.String())
@@ -94,14 +94,14 @@ func (t GenericRequest_Type) Log(message string) {
 	}
 }
 
-// ^ Method Logs an Error Message
+// Method Logs an Error Message
 func LogError(err error) {
 	if loggerEnabled && loggerWarningEnabled {
 		log.Error().Msgf("💣  %s", err.Error())
 	}
 }
 
-// ^ Method Logs a Info Message
+// Method Logs a Info Message
 func LogFatal(err error) {
 	if !loggerEnabled {
 		InitLogger(nil)
@@ -109,35 +109,35 @@ func LogFatal(err error) {
 	log.Fatal().Msgf("💀 %s", err.Error())
 }
 
-// ^ Method Logs a Info Message
+// Method Logs a Info Message
 func LogInfo(msg string) {
 	if loggerEnabled && loggerInfoEnabled {
 		log.Info().Msgf("💡  %s", msg)
 	}
 }
 
-// ^ Method Logs a Activate Message
+// Method Logs a Activate Message
 func LogActivate(msg string) {
 	if loggerEnabled && loggerInfoEnabled {
 		log.Info().Msgf("⛷  Activating %s...", msg)
 	}
 }
 
-// ^ Method Logs a RPC Server Message
+// Method Logs a RPC Server Message
 func LogRPC(event string, value interface{}) {
 	ev := strings.ToUpper(event)
 	val := fmt.Sprint(value)
 	defaultLogger.Println(fmt.Sprintf("(SONR_RPC)-%s=%s", ev, val))
 }
 
-// ^ Method Logs a Success Message
+// Method Logs a Success Message
 func LogSuccess(msg string) {
 	if loggerEnabled && loggerInfoEnabled {
 		log.Info().Msgf("✅  %s Successful", msg)
 	}
 }
 
-// ^ Checks for Error With Type ^ //
+// Checks for Error With Type ^ //
 func NewError(err error, errType ErrorEvent_Type) *SonrError {
 	if err != nil {
 		// Initialize
@@ -171,7 +171,7 @@ func NewError(err error, errType ErrorEvent_Type) *SonrError {
 	}
 }
 
-// ^ Checks for Error With Type ^ //
+// Checks for Error With Type ^ //
 func NewErrorGroup(errors ...SonrErrorOpt) *SonrError {
 	if len(errors) > 0 {
 		// Create Slice
@@ -214,7 +214,7 @@ func NewErrorGroup(errors ...SonrErrorOpt) *SonrError {
 	}
 }
 
-// ^ Return New Peer Not Found Error with Peer ID as Data ^ //
+// Return New Peer Not Found Error with Peer ID as Data ^ //
 func NewPeerFoundError(err error, peer string) *SonrError {
 	// Initialize
 	severity := ErrorEvent_PEER_NOT_FOUND_INVITE.Severity()
@@ -242,7 +242,7 @@ func NewPeerFoundError(err error, peer string) *SonrError {
 	return serr
 }
 
-// ^ Returns Proto Marshal Error
+// Returns Proto Marshal Error
 func NewMarshalError(err error) *SonrError {
 	// Initialize
 	severity := ErrorEvent_MARSHAL.Severity()
@@ -270,7 +270,7 @@ func NewMarshalError(err error) *SonrError {
 	return serr
 }
 
-// ^ Returns Proto Unmarshal Error
+// Returns Proto Unmarshal Error
 func NewUnmarshalError(err error) *SonrError {
 	// Return Error
 	// Initialize
@@ -299,7 +299,7 @@ func NewUnmarshalError(err error) *SonrError {
 	return serr
 }
 
-// ^ Returns New Error based on Type Only
+// Returns New Error based on Type Only
 func NewErrorWithType(errType ErrorEvent_Type) *SonrError {
 	// Initialize
 	severity := errType.Severity()
@@ -326,7 +326,7 @@ func NewErrorWithType(errType ErrorEvent_Type) *SonrError {
 	return serr
 }
 
-// @ Return Message as Marshalled Bytes ^ //
+// Return Message as Marshalled Bytes ^ //
 func (errWrap *SonrError) Marshal() []byte {
 	bytes, err := proto.Marshal(errWrap.data)
 	if err != nil {
@@ -335,7 +335,7 @@ func (errWrap *SonrError) Marshal() []byte {
 	return bytes
 }
 
-// @ Method Prints Error
+// Method Prints Error
 func (err *SonrError) Log() {
 	if loggerEnabled && loggerInfoEnabled {
 		// Fetch Data
@@ -374,12 +374,12 @@ func (err *SonrError) Log() {
 	}
 }
 
-// @ Return Protobuf Message for Error
+// Return Protobuf Message for Error
 func (errWrap *SonrError) Message() *ErrorEvent {
 	return errWrap.data
 }
 
-// @ Return Message as String ^ //
+// Return Message as String ^ //
 func (errWrap *SonrError) String() string {
 	return errWrap.data.String()
 }

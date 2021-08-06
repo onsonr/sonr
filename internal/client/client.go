@@ -53,7 +53,7 @@ type client struct {
 	Service srv.ServiceClient
 }
 
-// ^ NewClient Initializes Node with Router ^
+// NewClient Initializes Node with Router ^
 func NewClient(ctx context.Context, u *md.User, call md.Callback) Client {
 	return &client{
 		ctx:  ctx,
@@ -62,7 +62,7 @@ func NewClient(ctx context.Context, u *md.User, call md.Callback) Client {
 	}
 }
 
-// @ Connects Host Node from Private Key
+// Connects Host Node from Private Key
 func (c *client) Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrError {
 	// Set Request
 	c.request = cr
@@ -91,7 +91,7 @@ func (c *client) Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrErr
 	return nil
 }
 
-// @ Begins Bootstrapping HostNode
+// Begins Bootstrapping HostNode
 func (c *client) Bootstrap(cr *md.ConnectionRequest) (*net.TopicManager, *md.SonrError) {
 	// Bootstrap Host
 	err := c.Host.Bootstrap(c.user.GetDevice().GetId())
@@ -119,12 +119,12 @@ func (c *client) Bootstrap(cr *md.ConnectionRequest) (*net.TopicManager, *md.Son
 	}
 }
 
-// @ Handle a Mailbox Request from Node
+// Handle a Mailbox Request from Node
 func (c *client) Mail(req *md.MailboxRequest) (*md.MailboxResponse, *md.SonrError) {
 	return c.Service.HandleMailbox(req)
 }
 
-// @ Invite Processes Data and Sends Invite to Peer
+// Invite Processes Data and Sends Invite to Peer
 func (c *client) Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrError {
 	if c.user.IsReady() {
 		// Check for Peer
@@ -189,12 +189,12 @@ func (c *client) Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrE
 	return nil
 }
 
-// @ Respond Sends a Response to Service
+// Respond Sends a Response to Service
 func (c *client) Respond(r *md.InviteResponse) {
 	c.Service.Respond(r)
 }
 
-// @ Update proximity/direction and Notify Lobby
+// Update proximity/direction and Notify Lobby
 func (c *client) Update(t *net.TopicManager) *md.SonrError {
 	if c.user.IsReady() {
 		// Create Event
@@ -208,7 +208,7 @@ func (c *client) Update(t *net.TopicManager) *md.SonrError {
 	return nil
 }
 
-// @ Handle Network Communication from Lifecycle State Network Communication
+// Handle Network Communication from Lifecycle State Network Communication
 func (c *client) Lifecycle(state md.Lifecycle, t *net.TopicManager) {
 	if state == md.Lifecycle_ACTIVE {
 		// Inform Lobby
@@ -239,6 +239,7 @@ func (c *client) Lifecycle(state md.Lifecycle, t *net.TopicManager) {
 	return
 }
 
+// Helper: Creates new Exit Event
 func (c *client) newExitEvent(inv *md.InviteRequest) {
 	// Create Exit Event
 	event := md.TopicEvent{
@@ -259,7 +260,7 @@ func (c *client) newExitEvent(inv *md.InviteRequest) {
 	return
 }
 
-// # Helper: Background Process to continuously ping nearby peers
+// Helper: Background Process to continuously ping nearby peers
 func (c *client) sendPeriodicTopicEvents(t *net.TopicManager) {
 	for {
 		if c.user.IsReady() {

@@ -122,7 +122,7 @@ jobs:
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
         with:
-          workdir: ${{ github.workspace }}/cmd
+          workdir: ${{ github.workspace }}/lib
           distribution: goreleaser
           version: latest
           args: release --rm-dist --skip-publish
@@ -133,31 +133,31 @@ jobs:
       - uses: actions/upload-artifact@master
         with:
           name: sonr-rpc_darwin_amd64
-          path: cmd/dist/sonr-rpc_darwin_amd64/sonr-rpc
+          path: lib/dist/sonr-rpc_darwin_amd64/sonr-rpc
 
       # Upload Artifact - rpc_darwin_arm64
       - uses: actions/upload-artifact@master
         with:
           name: sonr-rpc_darwin_arm64
-          path: cmd/dist/sonr-rpc_darwin_arm64/sonr-rpc
+          path: lib/dist/sonr-rpc_darwin_arm64/sonr-rpc
 
       # Upload Artifact - rpc_linux_amd64
       - uses: actions/upload-artifact@master
         with:
           name: sonr-rpc_linux_amd64
-          path: cmd/dist/sonr-rpc_linux_amd64/sonr-rpc
+          path: lib/dist/sonr-rpc_linux_amd64/sonr-rpc
 
       # Upload Artifact - rpc_linux_arm64
       - uses: actions/upload-artifact@master
         with:
           name: sonr-rpc_linux_arm64
-          path: cmd/dist/sonr-rpc_linux_arm64/sonr-rpc
+          path: lib/dist/sonr-rpc_linux_arm64/sonr-rpc
 
       # Upload Artifact - rpc_windows_amd64
       - uses: actions/upload-artifact@master
         with:
           name: sonr-rpc_windows_amd64
-          path: cmd/dist/sonr-rpc_windows_amd64/sonr-rpc
+          path: lib/dist/sonr-rpc_windows_amd64/sonr-rpc
 
   # Upload Artifacts as Releases
   release:

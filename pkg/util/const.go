@@ -87,7 +87,7 @@ const HOST_RENDEVOUZ_POINT = "/sonr/rendevouz/0.9.2"
 // RPC Server Localhost Port
 const RPC_SERVER_PORT = 60214
 
-// ^ ─── Methods ────────────────────────────────────────────────────────
+// ─── Methods ────────────────────────────────────────────────────────
 // Construct New Protocol ID given Method Name String and Value String
 func NewValueProtocol(method string, value string) protocol.ID {
 	return protocol.ID(fmt.Sprintf("/sonr/%s/%s", method, value))

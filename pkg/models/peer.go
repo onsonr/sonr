@@ -21,7 +21,7 @@ func (t *Topic) IsLocal() bool {
 	return t.Type == Topic_LOCAL
 }
 
-// @ Local Lobby Topic Protocol ID
+// Local Lobby Topic Protocol ID
 func (r *User) NewLocalTopic(opts *ConnectionRequest_ServiceOptions) *Topic {
 	// Initialize Set OLC Range
 	scope := 6
@@ -36,7 +36,7 @@ func (r *User) NewLocalTopic(opts *ConnectionRequest_ServiceOptions) *Topic {
 	}
 }
 
-// @ Local Lobby Topic Protocol ID
+// Local Lobby Topic Protocol ID
 func (r *User) NewDeviceTopic() *Topic {
 
 	// Return Topic
@@ -47,7 +47,7 @@ func (r *User) NewDeviceTopic() *Topic {
 }
 
 // ** ─── Peer MANAGEMENT ────────────────────────────────────────────────────────
-// ^ Set Peer from Connection Request and Host ID ^ //
+// Set Peer from Connection Request and Host ID ^ //
 func (u *User) SetPeer(id peer.ID, maddr multiaddr.Multiaddr, isLinker bool) *SonrError {
 	// Set Peer
 	u.Peer = &Peer{
@@ -142,7 +142,7 @@ func NewExitEvent(id string, topic *Topic) *TopicEvent {
 	}
 }
 
-// ^ Returns Peer as Buffer ^ //
+// Returns Peer as Buffer ^ //
 func (p *Peer) Buffer() ([]byte, error) {
 	buf, err := proto.Marshal(p)
 	if err != nil {
@@ -151,17 +151,17 @@ func (p *Peer) Buffer() ([]byte, error) {
 	return buf, nil
 }
 
-// ^ Returns Peer User ID ^ //
+// Returns Peer User ID ^ //
 func (p *Peer) DeviceID() string {
 	return string(p.Id.GetDevice())
 }
 
-// ^ Returns Peer ID String Value
+// Returns Peer ID String Value
 func (p *Peer) PeerID() string {
 	return p.Id.Peer
 }
 
-// ^ Returns Peer Public Key ^ //
+// Returns Peer Public Key ^ //
 func (p *Peer) PublicKey() (crypto.PubKey, *SonrError) {
 	// Get ID from Public Key
 	buf, err := crypto.ConfigDecodeKey(p.GetId().GetPublicKey())
@@ -177,37 +177,37 @@ func (p *Peer) PublicKey() (crypto.PubKey, *SonrError) {
 	return pubKey, nil
 }
 
-// ^ Checks if Two Peers are the Same by Device ID and Peer ID
+// Checks if Two Peers are the Same by Device ID and Peer ID
 func (p *Peer) IsSame(other *Peer) bool {
 	return p.PeerID() == other.PeerID() && p.DeviceID() == other.DeviceID() && p.GetSName() == other.GetSName()
 }
 
-// ^ Checks if PeerDeviceIDID is the Same
+// Checks if PeerDeviceIDID is the Same
 func (p *Peer) IsSameDeviceID(other *Peer) bool {
 	return p.DeviceID() == other.DeviceID()
 }
 
-// ^ Checks if PeerID is the Same
+// Checks if PeerID is the Same
 func (p *Peer) IsSamePeerID(pid peer.ID) bool {
 	return p.PeerID() == pid.String()
 }
 
-// ^ Checks if Two Peers are NOT the Same by Device ID and Peer ID
+// Checks if Two Peers are NOT the Same by Device ID and Peer ID
 func (p *Peer) IsNotSame(other *Peer) bool {
 	return p.PeerID() != other.PeerID() && p.DeviceID() != other.DeviceID() && p.GetSName() != other.GetSName()
 }
 
-// ^ Checks if DeviceID is NOT the Same
+// Checks if DeviceID is NOT the Same
 func (p *Peer) IsNotSameDeviceID(other *Peer) bool {
 	return p.DeviceID() == other.DeviceID()
 }
 
-// ^ Checks if PeerID is NOT the Same
+// Checks if PeerID is NOT the Same
 func (p *Peer) IsNotSamePeerID(pid peer.ID) bool {
 	return p.PeerID() != pid.String()
 }
 
-// ^ Converts Peer Public Key into Thread Key
+// Converts Peer Public Key into Thread Key
 func (p *Peer) ThreadKey() (thread.PubKey, *SonrError) {
 	// Get Pub Key
 	pubKey, err := p.PublicKey()
@@ -220,7 +220,7 @@ func (p *Peer) ThreadKey() (thread.PubKey, *SonrError) {
 	return threadKey, nil
 }
 
-// ^ Returns Peer Push Token
+// Returns Peer Push Token
 func (p *Peer) PushToken() (string, *SonrError) {
 	if p.Id.GetPushToken() == "" {
 		return "", NewError(nil, ErrorEvent_PEER_PUSH_TOKEN_EMPTY)

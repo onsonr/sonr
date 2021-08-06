@@ -137,7 +137,7 @@ func iPv4Addrs(port int) ([]string, error) {
 
 	// Iterate through addresses
 	for _, addr := range addrs {
-		// @ Set IPv4
+		// Set IPv4
 		if ipv4 := addr.To4(); ipv4 != nil {
 			ip4 := ipv4.String()
 			return []string{

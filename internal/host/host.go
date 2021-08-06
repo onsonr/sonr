@@ -61,7 +61,7 @@ type hostNode struct {
 	topics []*TopicManager
 }
 
-// ^ Start Begins Assigning Host Parameters ^
+// Start Begins Assigning Host Parameters ^
 func NewHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair, hh HostHandler) (HostNode, *md.SonrError) {
 	// Initialize DHT
 	var kdhtRef *dht.IpfsDHT
@@ -189,17 +189,17 @@ func newRelayedHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.
 }
 
 // ** ─── Host Info ────────────────────────────────────────────────────────
-// @ Close Libp2p Host
+// Close Libp2p Host
 func (h *hostNode) Close() {
 	h.host.Close()
 }
 
-// @ Return Host Peer ID
+// Return Host Peer ID
 func (hn *hostNode) ID() peer.ID {
 	return hn.id
 }
 
-// @ Returns HostNode Peer Addr Info
+// Returns HostNode Peer Addr Info
 func (hn *hostNode) Info() peer.AddrInfo {
 	peerInfo := peer.AddrInfo{
 		ID:    hn.host.ID(),
@@ -208,12 +208,12 @@ func (hn *hostNode) Info() peer.AddrInfo {
 	return peerInfo
 }
 
-// @ Returns Instance Host
+// Returns Instance Host
 func (hn *hostNode) Host() host.Host {
 	return hn.host
 }
 
-// @ Returns Host Node MultiAddr
+// Returns Host Node MultiAddr
 func (hn *hostNode) MultiAddr() (multiaddr.Multiaddr, *md.SonrError) {
 	pi := hn.Info()
 	addrs, err := peer.AddrInfoToP2pAddrs(&pi)

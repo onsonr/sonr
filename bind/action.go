@@ -6,7 +6,7 @@ import (
 )
 
 // ** ─── Node Binded Actions ────────────────────────────────────────────────────────
-// @ Signing Request for Data
+// Signing Request for Data
 func (n *Node) Sign(data []byte) []byte {
 	// Unmarshal Data to Request
 	request := &md.AuthRequest{}
@@ -39,7 +39,7 @@ func (n *Node) Sign(data []byte) []byte {
 	return buf
 }
 
-// @ Verification Request for Signed Data
+// Verification Request for Signed Data
 func (n *Node) Verify(data []byte) []byte {
 	// Check Ready
 	if n.isReady() {
@@ -93,7 +93,7 @@ func (n *Node) Verify(data []byte) []byte {
 	return md.NewInvalidVerifyResponseBuf()
 }
 
-// @ Update proximity/direction and Notify Lobby
+// Update proximity/direction and Notify Lobby
 func (n *Node) Update(data []byte) {
 	if n.isReady() {
 		// Unmarshal Data to Request
@@ -127,7 +127,7 @@ func (n *Node) Update(data []byte) {
 	}
 }
 
-// @ Invite Processes Data and Sends Invite to Peer
+// Invite Processes Data and Sends Invite to Peer
 func (n *Node) Invite(data []byte) {
 	if n.isReady() {
 		// Unmarshal Data to Request
@@ -149,7 +149,7 @@ func (n *Node) Invite(data []byte) {
 	}
 }
 
-// @ Mail handles request for a message in Mailbox
+// Mail handles request for a message in Mailbox
 func (n *Node) Mail(data []byte) []byte {
 	// Check Ready
 	if n.isReady() {
@@ -180,7 +180,7 @@ func (n *Node) Mail(data []byte) []byte {
 	return nil
 }
 
-// @ Respond to an Invite with Decision
+// Respond to an Invite with Decision
 func (n *Node) Respond(data []byte) {
 	if n.isReady() {
 		// Unmarshal Data to Request

@@ -2,7 +2,7 @@ SHELL=/bin/zsh # Set Shell
 # Set this -->[/Users/xxxx/Sonr/]<-- to Folder of Sonr Repos
 SONR_ROOT_DIR=/Users/prad/Sonr
 CORE_DIR=$(SONR_ROOT_DIR)/core
-CORE_CMD_DIR=$(SONR_ROOT_DIR)/core/cmd
+CORE_LIB_DIR=$(SONR_ROOT_DIR)/core/lib
 
 # Set this -->[/Users/xxxx/Sonr/]<-- to Folder of Sonr Repos
 PROTO_DEF_PATH=/Users/prad/Sonr/core/pkg/proto
@@ -113,7 +113,7 @@ release: proto
 	@cd $(CORE_DIR) && bump patch
 	@echo "Bumping Release Version... DONE"
 	@echo "Building Artifacts..."
-	@cd $(CORE_CMD_DIR) && goreleaser release --rm-dist
+	@cd $(CORE_LIB_DIR) && goreleaser release --rm-dist
 	@cd $(CORE_DIR) && git push origin --tags
 	@cd $(CORE_DIR) && git push
 	@echo "Cleaning up build cache..."

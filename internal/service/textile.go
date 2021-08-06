@@ -46,7 +46,7 @@ type TextileService struct {
 	mailbox *local.Mailbox
 }
 
-// @ Starts New Textile Instance
+// Starts New Textile Instance
 func (sc *serviceClient) StartTextile() *md.SonrError {
 	// Logging
 	md.LogActivate("Textile Service")
@@ -103,12 +103,12 @@ func (sc *serviceClient) StartTextile() *md.SonrError {
 	return nil
 }
 
-// @ Returns Instance Host
+// Returns Instance Host
 func (ts *TextileService) PubKey() thread.PubKey {
 	return ts.device.ThreadIdentity().GetPublic()
 }
 
-// @ Initializes Threads
+// Initializes Threads
 func (ts *TextileService) InitThreads(sc *serviceClient) *md.SonrError {
 	// Verify Ready to Init
 	if ts.ctxToken != nil {
@@ -126,7 +126,7 @@ func (ts *TextileService) InitThreads(sc *serviceClient) *md.SonrError {
 	return nil
 }
 
-// @ Initializes Mailbox
+// Initializes Mailbox
 func (ts *TextileService) InitMail() *md.SonrError {
 	// Verify Ready to Initialize
 	if ts.options.GetMailbox() {
@@ -173,7 +173,7 @@ func (ts *TextileService) InitMail() *md.SonrError {
 	return nil
 }
 
-// @ Handle Mailbox Events
+// Handle Mailbox Events
 func (ts *TextileService) handleMailboxEvents() {
 	// Initialize State
 	connState := cmd.Online
@@ -214,7 +214,7 @@ func (ts *TextileService) handleMailboxEvents() {
 	}
 }
 
-// @ Handle New Mailbox Message
+// Handle New Mailbox Message
 func (ts *TextileService) onNewMessage(e local.MailboxEvent, state cmd.ConnectionState) {
 	// List Total Inbox
 	inbox, err := ts.mailbox.ListInboxMessages(context.Background())
@@ -273,7 +273,7 @@ func (ts *TextileService) onNewMessage(e local.MailboxEvent, state cmd.Connectio
 
 }
 
-// @ Send Mail to Recipient
+// Send Mail to Recipient
 func (ts *TextileService) sendMail(to thread.PubKey, buf []byte) *md.SonrError {
 	// Send Message to Mailbox
 	_, err := ts.mailbox.SendMessage(context.Background(), to, buf)

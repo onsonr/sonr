@@ -32,7 +32,7 @@ type AuthService struct {
 	invite  *md.InviteRequest
 }
 
-// @ Starts New Auth Instance
+// Starts New Auth Instance
 func (sc *serviceClient) StartAuth() *md.SonrError {
 	// Start Exchange Server
 	localServer := rpc.NewServer(sc.host.Host(), util.AUTH_PROTOCOL)

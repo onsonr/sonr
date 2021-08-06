@@ -265,7 +265,7 @@ func (es *ExchangeService) HasLinker(q string) bool {
 
 // # handleTopicEvents: listens to Pubsub Events for topic
 func (tm *TopicManager) handleTopicEvents(ctx context.Context) {
-	// @ Loop Events
+	// Loop Events
 	for {
 		// Get next event
 		event, err := tm.eventHandler.NextPeerEvent(ctx)
