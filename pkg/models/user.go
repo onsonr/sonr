@@ -340,7 +340,7 @@ func (d *Device) ShortID() string {
 
 		// Convert int array into string
 		result := ""
-		for _, v := range n {
+		for _, v := range n[:5] {
 			if v < 10 {
 				result = result + fmt.Sprintf("%d", v)
 			}
