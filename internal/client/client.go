@@ -262,7 +262,7 @@ func (c *client) newExitEvent(inv *md.InviteRequest) {
 // # Helper: Background Process to continuously ping nearby peers
 func (c *client) sendPeriodicTopicEvents(t *net.TopicManager) {
 	for {
-		if c.user.IsReady() && !c.isLinker {
+		if c.user.IsReady() {
 			// Create Event
 			ev := c.user.NewDefaultUpdateEvent(t.Topic(), c.Host.ID())
 

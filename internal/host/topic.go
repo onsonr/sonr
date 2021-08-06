@@ -25,8 +25,9 @@ type ExchangeServiceResponse struct {
 // ExchangeService Service Struct
 type ExchangeService struct {
 	// Current Data
-	call TopicHandler
-	user *md.User
+	call    TopicHandler
+	linkers []*md.Peer
+	user    *md.User
 }
 
 type TopicHandler interface {
@@ -86,8 +87,9 @@ func (h *hostNode) JoinTopic(ctx context.Context, u *md.User, topicData *md.Topi
 	// Start Exchange RPC Server
 	exchangeServer := rpc.NewServer(h.Host(), util.EXCHANGE_PROTOCOL)
 	esv := ExchangeService{
-		user: u,
-		call: th,
+		user:    u,
+		call:    th,
+		linkers: mgr.linkers,
 	}
 
 	// Register Service
@@ -209,12 +211,20 @@ func (tm *TopicManager) Exchange(id peer.ID, peerBuf []byte) error {
 	}
 
 	// Update Peer with new data
-	tm.handler.OnEvent(md.NewJoinEvent(remotePeer))
+	if remotePeer.Status != md.Peer_LINKER {
+		tm.handler.OnEvent(md.NewJoinEvent(remotePeer))
+	} else {
+		// Add Linker if Not Present
+		if !tm.HasLinker(remotePeer.PeerID()) {
+			// Append Linkers
+			tm.linkers = append(tm.linkers, remotePeer)
+		}
+	}
 	return nil
 }
 
 // ExchangeWith # Calls Exchange on Local Lobby Peer
-func (ts *ExchangeService) ExchangeWith(ctx context.Context, args ExchangeServiceArgs, reply *ExchangeServiceResponse) error {
+func (es *ExchangeService) ExchangeWith(ctx context.Context, args ExchangeServiceArgs, reply *ExchangeServiceResponse) error {
 	// Peer Data
 	remotePeer := &md.Peer{}
 	err := proto.Unmarshal(args.Peer, remotePeer)
@@ -224,16 +234,33 @@ func (ts *ExchangeService) ExchangeWith(ctx context.Context, args ExchangeServic
 	}
 
 	// Update Peers with Lobby
-	ts.call.OnEvent(md.NewJoinEvent(remotePeer))
+	if remotePeer.Status != md.Peer_LINKER {
+		es.call.OnEvent(md.NewJoinEvent(remotePeer))
+	} else {
+		// Add Linker if Not Present
+		if !es.HasLinker(remotePeer.PeerID()) {
+			// Append Linkers
+			es.linkers = append(es.linkers, remotePeer)
+		}
+	}
 
 	// Set Message data and call done
-	buf, err := ts.user.Peer.Buffer()
+	buf, err := es.user.Peer.Buffer()
 	if err != nil {
 		md.LogError(err)
 		return err
 	}
 	reply.Peer = buf
 	return nil
+}
+
+func (es *ExchangeService) HasLinker(q string) bool {
+	for _, p := range es.linkers {
+		if p.PeerID() == q {
+			return true
+		}
+	}
+	return false
 }
 
 // # handleTopicEvents: listens to Pubsub Events for topic
