@@ -174,7 +174,7 @@ func (tm *serviceClient) Link(id peer.ID, inv *md.InviteRequest) error {
 func (ts *AuthService) LinkWith(ctx context.Context, args AuthServiceArgs, reply *AuthServiceResponse) error {
 	// Received Message
 	inv := md.InviteRequest{}
-	err := proto.Unmarshal(args.Invite, &inv)
+	err := proto.Unmarshal(args.Link, &inv)
 	if err != nil {
 		return err
 	}
