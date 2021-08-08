@@ -563,6 +563,15 @@ func (u *User) VerifyRead() *VerifyResponse {
 	}
 }
 
+// Method Updates User Contact
+func (u *User) VerifyLinkReceive(req *LinkRequest) *LinkResponse {
+	return &LinkResponse{
+		Success: true,
+		Type:    LinkResponse_Type(req.GetType()),
+		ShortID: u.GetDevice().ShortID(),
+	}
+}
+
 // Signs InviteResponse with Flat Contact
 func (u *User) ReplyToFlat(from *Peer) *InviteResponse {
 	return &InviteResponse{

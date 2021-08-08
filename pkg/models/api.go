@@ -67,12 +67,12 @@ func (vr *VerifyRequest) IsBuffer() bool {
 // ** ─── VerifyResponse MANAGEMENT ────────────────────────────────────────────────────────
 // Create  VerifyResponse as GIVEN VALUE
 func NewVerifyResponse(result bool) *VerifyResponse {
-	return &VerifyResponse{IsVerified: result}
+	return &VerifyResponse{Success: result}
 }
 
 // Create Marshalled VerifyResponse as GIVEN VALUE
 func NewVerifyResponseBuf(result bool) []byte {
-	if buf, err := proto.Marshal(&VerifyResponse{IsVerified: result}); err != nil {
+	if buf, err := proto.Marshal(&VerifyResponse{Success: result}); err != nil {
 		return nil
 	} else {
 		return buf
@@ -81,7 +81,7 @@ func NewVerifyResponseBuf(result bool) []byte {
 
 // Create Marshalled VerifyResponse as TRUE
 func NewValidVerifyResponseBuf() []byte {
-	if buf, err := proto.Marshal(&VerifyResponse{IsVerified: true}); err != nil {
+	if buf, err := proto.Marshal(&VerifyResponse{Success: true}); err != nil {
 		return nil
 	} else {
 		return buf
@@ -90,7 +90,7 @@ func NewValidVerifyResponseBuf() []byte {
 
 // Create Marshalled VerifyResponse as FALSE
 func NewInvalidVerifyResponseBuf() []byte {
-	if buf, err := proto.Marshal(&VerifyResponse{IsVerified: false}); err != nil {
+	if buf, err := proto.Marshal(&VerifyResponse{Success: false}); err != nil {
 		return nil
 	} else {
 		return buf
@@ -291,6 +291,22 @@ func (dr *DecisionRequest) ToResponse() *InviteResponse {
 	}
 }
 
+// ** ─── LinkRequest MANAGEMENT ────────────────────────────────────────────────────────
+// Checks if LinkRequest is SEND type
+func (r *LinkRequest) IsSend() bool {
+	return r.Type == LinkRequest_SEND
+}
+
+// Checks if LinkRequest is RECEIVE type
+func (r *LinkRequest) IsReceive() bool {
+	return r.Type == LinkRequest_RECEIVE
+}
+
+// Checks if LinkRequest is CANCEL type
+func (r *LinkRequest) IsCancel() bool {
+	return r.Type == LinkRequest_CANCEL
+}
+
 // ** ─── InviteResponse MANAGEMENT ────────────────────────────────────────────────────────
 // Checks if Peer Accepted Transfer
 func (r *InviteResponse) HasAcceptedTransfer() bool {
@@ -326,10 +342,6 @@ func (i *InviteRequest) IsPayloadContact() bool {
 // Checks if Payload is File Transfer
 func (i *InviteRequest) IsPayloadTransfer() bool {
 	return i.Payload == Payload_FILE || i.Payload == Payload_FILES || i.Payload == Payload_MEDIA || i.Payload == Payload_ALBUM
-}
-
-func (i *InviteRequest) IsLinkInvite() bool {
-	return i.GetType() == InviteRequest_LINK
 }
 
 // Checks if Payload is Url

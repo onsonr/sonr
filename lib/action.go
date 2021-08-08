@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 
 	md "github.com/sonr-io/core/pkg/models"
 )
@@ -96,13 +95,30 @@ func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.NoR
 
 // Sign method signs data with user's private key
 func (s *NodeServer) Sign(ctx context.Context, req *md.AuthRequest) (*md.NoResponse, error) {
-	log.Println("Sign Called")
+	md.LogRPC("Sign", req)
 	s.authResponses <- s.user.Sign(req)
+	return &md.NoResponse{}, nil
+}
+
+// Link method starts device linking channel
+func (s *NodeServer) Link(ctx context.Context, req *md.LinkRequest) (*md.NoResponse, error) {
+	md.LogRPC("Link", req)
+
+	// Check Link Request Type
+	resp, err := s.client.Link(req, s.local)
+	if err != nil {
+		s.handleError(err)
+		return nil, err.Error
+	}
+
+	// Return Link Response
+	s.linkResponses <- resp
 	return &md.NoResponse{}, nil
 }
 
 // Verify validates user Keys
 func (s *NodeServer) Verify(ctx context.Context, req *md.VerifyRequest) (*md.NoResponse, error) {
+	md.LogRPC("Verify", req)
 	// Get Key Pair
 	kp := s.user.KeyPair()
 
@@ -113,22 +129,22 @@ func (s *NodeServer) Verify(ctx context.Context, req *md.VerifyRequest) (*md.NoR
 			// Verify Result
 			result, err := kp.Verify(req.GetBufferValue(), req.GetSignedBuffer())
 			if err != nil {
-				s.verifyResponses <- &md.VerifyResponse{IsVerified: false}
+				s.verifyResponses <- &md.VerifyResponse{Success: false}
 			}
 
 			// Return Result
-			s.verifyResponses <- &md.VerifyResponse{IsVerified: result}
+			s.verifyResponses <- &md.VerifyResponse{Success: result}
 			return &md.NoResponse{}, nil
 		} else if req.IsString() {
 			// Verify Result
 			result, err := kp.Verify([]byte(req.GetTextValue()), []byte(req.GetSignedText()))
 			if err != nil {
-				s.verifyResponses <- &md.VerifyResponse{IsVerified: false}
+				s.verifyResponses <- &md.VerifyResponse{Success: false}
 				return &md.NoResponse{}, nil
 			}
 
 			// Return Result
-			s.verifyResponses <- &md.VerifyResponse{IsVerified: result}
+			s.verifyResponses <- &md.VerifyResponse{Success: result}
 			return &md.NoResponse{}, nil
 		}
 	}

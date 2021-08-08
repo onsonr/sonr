@@ -100,6 +100,7 @@ enum Status {
   TRANSFER = 6;  // In Progress of Transfer
   STANDBY = 7;   // Away from Sonr Application
   FAILED = 8;    // Failed to Connect Host
+  LINKER = 9;    // Linker Status
 }
 
 // User is the Saved Data from Client that Passes to Proxy, During ConnRequest

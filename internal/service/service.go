@@ -21,7 +21,8 @@ type ServiceHandler interface {
 }
 
 type ServiceClient interface {
-	Link(id peer.ID, inv *md.InviteRequest) error
+	HandleLinking(req *md.LinkRequest)
+	Link(id peer.ID, inv *md.LinkRequest) error
 	Invite(id peer.ID, inv *md.InviteRequest) error
 	Respond(rep *md.InviteResponse)
 	SendMail(e *md.InviteRequest) *md.SonrError

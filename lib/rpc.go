@@ -42,6 +42,7 @@ type NodeServer struct {
 	actionResponses     chan *md.ActionResponse
 	connectionResponses chan *md.ConnectionResponse
 	decisionResponses   chan *md.DecisionResponse
+	linkResponses       chan *md.LinkResponse
 	mailboxResponses    chan *md.MailboxResponse
 	verifyResponses     chan *md.VerifyResponse
 }
@@ -78,6 +79,7 @@ func main() {
 		actionResponses:     make(chan *md.ActionResponse, util.MAX_CHAN_DATA),
 		connectionResponses: make(chan *md.ConnectionResponse, util.MAX_CHAN_DATA),
 		decisionResponses:   make(chan *md.DecisionResponse, util.MAX_CHAN_DATA),
+		linkResponses:       make(chan *md.LinkResponse, util.MAX_CHAN_DATA),
 		mailboxResponses:    make(chan *md.MailboxResponse, util.MAX_CHAN_DATA),
 		verifyResponses:     make(chan *md.VerifyResponse, util.MAX_CHAN_DATA),
 	}

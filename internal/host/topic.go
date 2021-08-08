@@ -108,8 +108,8 @@ func (h *hostNode) JoinTopic(ctx context.Context, u *md.User, topicData *md.Topi
 	return mgr, nil
 }
 
-// FindPeerInTopic @ Helper: Find returns Pointer to Peer.ID and Peer
-func (tm *TopicManager) FindPeerInTopic(q string) (peer.ID, error) {
+// FindPeer @ Helper: Find returns Pointer to Peer.ID and Peer
+func (tm *TopicManager) FindPeer(q string) (peer.ID, error) {
 	// Iterate through Topic Peers
 	for _, id := range tm.topic.ListPeers() {
 		// If Found Match

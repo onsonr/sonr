@@ -27,10 +27,12 @@ type AuthServiceResponse struct {
 }
 
 type AuthService struct {
-	handler ServiceHandler
-	user    *md.User
-	respCh  chan *md.InviteResponse
-	invite  *md.InviteRequest
+	handler         ServiceHandler
+	user            *md.User
+	respCh          chan *md.InviteResponse
+	linkCh          chan *md.LinkRequest
+	invite          *md.InviteRequest
+	isLinkingActive bool
 }
 
 // Starts New Auth Instance
@@ -41,6 +43,7 @@ func (sc *serviceClient) StartAuth() *md.SonrError {
 		user:    sc.user,
 		handler: sc.handler,
 		respCh:  make(chan *md.InviteResponse, util.MAX_CHAN_DATA),
+		linkCh:  make(chan *md.LinkRequest, util.MAX_CHAN_DATA),
 	}
 
 	// Register Service
@@ -49,7 +52,13 @@ func (sc *serviceClient) StartAuth() *md.SonrError {
 		return md.NewError(err, md.ErrorEvent_TOPIC_RPC)
 	}
 	sc.Auth = &psv
+	go sc.Auth.handleLinkRequests()
 	return nil
+}
+
+// Enable/Disable Linking from LinkRequest
+func (sc *serviceClient) HandleLinking(req *md.LinkRequest) {
+	sc.Auth.linkCh <- req
 }
 
 // Invite @ Invite: Handles User sent InviteRequest Response
@@ -141,9 +150,9 @@ func (ts *AuthService) InviteWith(ctx context.Context, args AuthServiceArgs, rep
 }
 
 // Sends Link Request to Linker type Peer
-func (tm *serviceClient) Link(id peer.ID, inv *md.InviteRequest) error {
+func (tm *serviceClient) Link(id peer.ID, inv *md.LinkRequest) error {
 	// Check Invite
-	if inv.IsLinkInvite() {
+	if inv.Type == md.LinkRequest_SEND {
 		// Initialize Data
 		rpcClient := rpc.NewClient(tm.host.Host(), util.AUTH_PROTOCOL)
 		var reply AuthServiceResponse
@@ -173,14 +182,14 @@ func (tm *serviceClient) Link(id peer.ID, inv *md.InviteRequest) error {
 // InviteWith # Calls Invite on Local Lobby Peer
 func (ts *AuthService) LinkWith(ctx context.Context, args AuthServiceArgs, reply *AuthServiceResponse) error {
 	// Received Message
-	inv := md.InviteRequest{}
+	inv := md.LinkRequest{}
 	err := proto.Unmarshal(args.Link, &inv)
 	if err != nil {
 		return err
 	}
 
 	// Handle Status
-	result := inv.GetShortID() == ts.user.GetDevice().ShortID()
+	result := ts.user.VerifyShortID(&inv, ts.isLinkingActive)
 	reply.LinkResult = result
 	md.LogInfo(fmt.Sprintf("Link Result: %v", result))
 	ts.handler.OnLink(result, peer.ID(inv.GetFrom().PeerID()), inv.GetFrom(), inv.GetTo())
@@ -195,5 +204,21 @@ func (tm *serviceClient) Respond(rep *md.InviteResponse) {
 	// Prepare Transfer
 	if rep.Decision.Accepted() {
 		tm.handler.OnConfirmed(tm.Auth.invite)
+	}
+}
+
+// handleLinkRequests @ Handles Link Requests from Received
+func (ts *AuthService) handleLinkRequests() {
+	for {
+		select {
+		// Received Auth Channel Message
+		case m := <-ts.linkCh:
+			// Check Linker Type
+			if m.Type == md.LinkRequest_RECEIVE {
+				ts.isLinkingActive = true
+			} else if m.Type == md.LinkRequest_CANCEL {
+				ts.isLinkingActive = false
+			}
+		}
 	}
 }

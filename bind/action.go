@@ -149,6 +149,31 @@ func (n *Node) Invite(data []byte) {
 	}
 }
 
+// Link method starts device linking channel
+func (n *Node) Link(data []byte) []byte {
+	// Unmarshal Data to Request
+	req := &md.LinkRequest{}
+	if err := proto.Unmarshal(data, req); err != nil {
+		n.handleError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
+		return nil
+	}
+
+	// Send to Client
+	resp, serr := n.client.Link(req, n.local)
+	if serr != nil {
+		n.handleError(serr)
+		return nil
+	}
+
+	// Marshal Response
+	buf, err := proto.Marshal(resp)
+	if err != nil {
+		n.handleError(md.NewMarshalError(err))
+		return nil
+	}
+	return buf
+}
+
 // Mail handles request for a message in Mailbox
 func (n *Node) Mail(data []byte) []byte {
 	// Check Ready

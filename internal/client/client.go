@@ -20,6 +20,7 @@ type Client interface {
 	Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrError
 	Bootstrap(cr *md.ConnectionRequest) (*net.TopicManager, *md.SonrError)
 	Mail(req *md.MailboxRequest) (*md.MailboxResponse, *md.SonrError)
+	Link(invite *md.LinkRequest, t *net.TopicManager) (*md.LinkResponse, *md.SonrError)
 	Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrError
 	Respond(r *md.InviteResponse)
 	Update(t *net.TopicManager) *md.SonrError
@@ -125,6 +126,32 @@ func (c *client) Mail(req *md.MailboxRequest) (*md.MailboxResponse, *md.SonrErro
 	return c.Service.HandleMailbox(req)
 }
 
+// Link handles a LinkRequest
+func (c *client) Link(req *md.LinkRequest, t *net.TopicManager) (*md.LinkResponse, *md.SonrError) {
+	// Check Request Type
+	if req.IsSend() {
+		// Find Peer
+		if t.HasPeer(req.To.Id.Peer) && t.HasLinker(req.To.Id.Peer) {
+			// Get PeerID and Check error
+			id, err := t.FindPeer(req.To.Id.Peer)
+			if err != nil {
+				return nil, md.NewPeerFoundError(err, req.GetTo().GetId().GetPeer())
+			}
+
+			// Send Default Invite
+			err = c.Service.Link(id, req)
+			if err != nil {
+				return nil, md.NewError(err, md.ErrorEvent_TOPIC_RPC)
+			}
+			return c.user.VerifyLinkReceive(req), nil
+		}
+		return nil, md.NewErrorWithType(md.ErrorEvent_PEER_NOT_FOUND_INVITE)
+	} else {
+		c.Service.HandleLinking(req)
+		return c.user.VerifyLinkReceive(req), nil
+	}
+}
+
 // Invite Processes Data and Sends Invite to Peer
 func (c *client) Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrError {
 	if c.user.IsReady() {
@@ -137,7 +164,7 @@ func (c *client) Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrE
 		} else {
 			if t.HasPeer(invite.To.Id.Peer) {
 				// Get PeerID and Check error
-				id, err := t.FindPeerInTopic(invite.To.Id.Peer)
+				id, err := t.FindPeer(invite.To.Id.Peer)
 				if err != nil {
 					c.newExitEvent(invite)
 					return md.NewPeerFoundError(err, invite.GetTo().GetId().GetPeer())
@@ -155,23 +182,12 @@ func (c *client) Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrE
 
 				// Run Routine
 				go func(inv *md.InviteRequest) {
-					// Check Invite for Link
-					if inv.GetType() == md.InviteRequest_LINK {
-						// Send Default Invite
-						err = c.Service.Link(id, inv)
-						if err != nil {
-							c.call.OnError(md.NewError(err, md.ErrorEvent_TOPIC_RPC))
-							return
-						}
-					} else {
-						// Send Default Invite
-						err = c.Service.Invite(id, inv)
-						if err != nil {
-							c.call.OnError(md.NewError(err, md.ErrorEvent_TOPIC_RPC))
-							return
-						}
+					// Send Default Invite
+					err = c.Service.Invite(id, inv)
+					if err != nil {
+						c.call.OnError(md.NewError(err, md.ErrorEvent_TOPIC_RPC))
+						return
 					}
-
 				}(invite)
 			} else {
 				// Send Mail to Offline Peer

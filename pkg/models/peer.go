@@ -50,31 +50,57 @@ func (r *User) NewDeviceTopic() *Topic {
 // Set Peer from Connection Request and Host ID ^ //
 func (u *User) SetPeer(id peer.ID, maddr multiaddr.Multiaddr, isLinker bool) *SonrError {
 	// Set Peer
-	u.Peer = &Peer{
-		SName: u.SName,
-		Id: &Peer_ID{
-			Peer:      id.String(),
-			Device:    u.DeviceID(),
-			MultiAddr: maddr.String(),
-			PublicKey: u.KeyPair().PubKeyBase64(),
-			PushToken: u.GetPushToken(),
-		},
-		Profile:  u.Profile(),
-		Platform: u.Device.Platform,
-		Model:    u.GetDevice().GetModel(),
-		HostName: u.GetDevice().GetHostName(),
-	}
 
 	// Set Status
 	if isLinker {
-		u.Peer.Status = Peer_LINKER
+		u.Peer = &Peer{
+			Id: &Peer_ID{
+				Peer:      id.String(),
+				Device:    u.DeviceID(),
+				MultiAddr: maddr.String(),
+				PublicKey: u.KeyPair().PubKeyBase64(),
+			},
+			Platform: u.Device.Platform,
+			Model:    u.GetDevice().GetModel(),
+			HostName: u.GetDevice().GetHostName(),
+			Status:   Peer_LINKER,
+		}
 	} else {
-		u.Peer.Status = Peer_ONLINE
+		u.Peer = &Peer{
+			SName: u.SName,
+			Id: &Peer_ID{
+				Peer:      id.String(),
+				Device:    u.DeviceID(),
+				MultiAddr: maddr.String(),
+				PublicKey: u.KeyPair().PubKeyBase64(),
+				PushToken: u.GetPushToken(),
+			},
+			Profile:  u.Profile(),
+			Platform: u.Device.Platform,
+			Model:    u.GetDevice().GetModel(),
+			HostName: u.GetDevice().GetHostName(),
+			Status:   Peer_ONLINE,
+		}
 	}
 
 	// Log Peer
 	LogInfo(u.Peer.String())
 	return nil
+}
+
+// Checks if User Peer is a Linker
+func (u *User) IsLinker() bool {
+	return u.Peer.Status == Peer_LINKER
+}
+
+// Verify if Passed ShortID is Correct
+func (u *User) VerifyShortID(req *LinkRequest, isLinkingActive bool) bool {
+	// Check if User is Linker
+	if u.IsLinker() && isLinkingActive {
+		// Verify Strings
+		return req.GetShortID() == u.GetDevice().ShortID()
+	}
+	return false
 }
 
 // ** ─── Position MANAGEMENT ────────────────────────────────────────────────────────

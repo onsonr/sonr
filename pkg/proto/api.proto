@@ -189,6 +189,37 @@ message DecisionResponse {
   string body = 2;  // Response Body
 }
 
+//  Message for a LinkRequest
+message LinkRequest {
+  Type type = 1;      // Type of Link
+  string shortID = 2; // Short ID of Link
+  Peer from = 3;      // Users Peer Data
+  Peer to = 4;        // Receivers Peer Data
+
+  // Type of Link
+  enum Type {
+    NONE = 0;    // No Type
+    RECEIVE = 1; // Receive Link
+    SEND = 2;    // Send Link
+    CANCEL = 3;  // Cancel Link
+  }
+}
+
+// Message for Verification Response
+message LinkResponse {
+  bool success = 1;   // Result for Verification
+  Type type = 2;      // Type of Link
+  string shortID = 3; // Short ID generated from HMac and Device
+
+  // Type of Link
+  enum Type {
+    NONE = 0;    // No Type
+    RECEIVE = 1; // Receive Link
+    SEND = 2;    // Send Link
+    CANCEL = 3;  // Cancel Link
+  }
+}
+
 // Invitation Message sent on RPC
 message InviteRequest {
   Payload payload = 1;   // Type of Transfer
@@ -204,7 +235,6 @@ message InviteRequest {
     LOCAL = 1;  // Local Transfer
     DIRECT = 2; // Direct Transfer
     REMOTE = 3; // Remote Transfer
-    LINK = 4;   // Link Request
   }
 }
 
@@ -288,7 +318,7 @@ message VerifyRequest {
 
 // Message for Verification Response
 message VerifyResponse {
-  bool isVerified = 1;  // Result for Verification
+  bool success = 1;     // Result for Verification
   string publicKey = 2; // Base64 Encoded Public Key
   string shortID = 3;   // Short ID generated from HMac and Device
 }

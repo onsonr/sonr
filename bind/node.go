@@ -17,9 +17,9 @@ type Node struct {
 	ctx  context.Context
 
 	// Client
-	client sc.Client
-	state  md.Lifecycle
-	user   *md.User
+	client    sc.Client
+	state     md.Lifecycle
+	user      *md.User
 
 	// Groups
 	local  *net.TopicManager
