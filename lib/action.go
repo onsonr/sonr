@@ -103,6 +103,7 @@ func (s *NodeServer) Sign(ctx context.Context, req *md.AuthRequest) (*md.NoRespo
 // Link method starts device linking channel
 func (s *NodeServer) Link(ctx context.Context, req *md.LinkRequest) (*md.NoResponse, error) {
 	md.LogRPC("Link", req)
+	req = s.user.SignLink(req)
 
 	// Check Link Request Type
 	resp, err := s.client.Link(req, s.local)

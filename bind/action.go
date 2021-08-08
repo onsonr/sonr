@@ -157,6 +157,7 @@ func (n *Node) Link(data []byte) []byte {
 		n.handleError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
 		return nil
 	}
+	req = n.user.SignLink(req)
 
 	// Send to Client
 	resp, serr := n.client.Link(req, n.local)

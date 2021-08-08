@@ -420,6 +420,25 @@ func (u *User) SignInvite(i *InviteRequest) *InviteRequest {
 	return i
 }
 
+// Validates LinkRequest has From Parameter
+func (u *User) SignLink(i *LinkRequest) *LinkRequest {
+	// Set From
+	if i.From == nil {
+		i.From = u.GetPeer()
+	}
+
+	// Set Type
+	if i.Type == LinkRequest_NONE {
+		if u.IsLinker() {
+			i.Type = LinkRequest_RECEIVE
+
+		} else {
+			i.Type = LinkRequest_SEND
+		}
+	}
+	return i
+}
+
 // Convert Invite Request to Push Message
 func (req *InviteRequest) ToPushMessage() *PushMessage {
 	// Initialize Map
