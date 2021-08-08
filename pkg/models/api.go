@@ -639,6 +639,28 @@ func (o *ProgressEvent) ToGeneric() ([]byte, error) {
 	return genBuf, nil
 }
 
+// Create New Generic LINK Event Message
+func (o *LinkEvent) ToGeneric() ([]byte, error) {
+	// Marshal Original
+	ogBuf, err := proto.Marshal(o)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create Generic
+	generic := &GenericEvent{
+		Type: GenericEvent_LINK,
+		Data: ogBuf,
+	}
+
+	// Marshal Generic
+	genBuf, err := proto.Marshal(generic)
+	if err != nil {
+		return nil, err
+	}
+	return genBuf, nil
+}
+
 // Create New Generic TOPIC Event Message
 func (o *TopicEvent) ToGeneric() ([]byte, error) {
 	// Marshal Original

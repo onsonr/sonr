@@ -1,8 +1,6 @@
 package client
 
 import (
-	"fmt"
-
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
@@ -40,8 +38,36 @@ func (n *client) OnEvent(e *md.TopicEvent) {
 
 // OnLink: Handle Result of Link Request ^
 func (n *client) OnLink(success bool, id peer.ID, from *md.Peer, to *md.Peer) {
-	// Logging
-	md.LogInfo(fmt.Sprintf("- Link Request - \n Result: %v \n From: %s \n To: %s \n", success, from.String(), to.String()))
+	// Check Success
+	if success {
+		// Create link Event
+		link := &md.LinkEvent{
+			Success: success,
+			Device:  n.user.GetDevice(),
+			Contact: n.user.GetContact(),
+		}
+
+		// Marshal Link Event
+		buf, err := link.ToGeneric()
+		if err != nil {
+			n.call.OnError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
+			return
+		}
+		n.call.OnEvent(buf)
+	} else {
+		// Unsuccessful Link Request
+		link := &md.LinkEvent{
+			Success: success,
+		}
+
+		// Marshal Link Event
+		buf, err := link.ToGeneric()
+		if err != nil {
+			n.call.OnError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
+			return
+		}
+		n.call.OnEvent(buf)
+	}
 }
 
 // OnInvite: User Received Invite ^
