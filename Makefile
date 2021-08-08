@@ -113,7 +113,7 @@ release: proto
 	@cd $(CORE_DIR) && bump patch
 	@echo "Bumping Release Version... DONE"
 	@echo "Building Artifacts..."
-	@cd $(CORE_LIB_DIR) && goreleaser release --rm-dist --skip-publish
+	@cd $(CORE_LIB_DIR) && goreleaser release --rm-dist
 	@cd $(CORE_DIR) && git push origin --tags
 	@cd $(CORE_DIR) && git push
 	@echo "Cleaning up build cache..."
