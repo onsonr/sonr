@@ -5,6 +5,96 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+// CallAuthResponse is called when Auth Response is received
+func (s *NodeServer) CallAuthResponse(rsp *md.NoRequest, stream md.NodeService_CallAuthResponseServer) error {
+	for {
+		select {
+		case m := <-s.authResponses:
+			if m != nil {
+				stream.Send(m)
+			}
+		case <-s.ctx.Done():
+			return nil
+		}
+		md.GetState().NeedsWait()
+	}
+}
+
+// CallActionResponse is called when Action Response is received
+func (s *NodeServer) CallActionResponse(rsp *md.NoRequest, stream md.NodeService_CallActionResponseServer) error {
+	for {
+		select {
+		case m := <-s.actionResponses:
+			if m != nil {
+				stream.Send(m)
+			}
+		case <-s.ctx.Done():
+			return nil
+		}
+		md.GetState().NeedsWait()
+	}
+}
+
+// CallDecisionResponse is called when Action Response is received
+func (s *NodeServer) CallDecisionResponse(rsp *md.NoRequest, stream md.NodeService_CallDecisionResponseServer) error {
+	for {
+		select {
+		case m := <-s.decisionResponses:
+			if m != nil {
+				stream.Send(m)
+			}
+		case <-s.ctx.Done():
+			return nil
+		}
+		md.GetState().NeedsWait()
+	}
+}
+
+// CallLinkResponse is called when Link Response is received
+func (s *NodeServer) CallLinkResponse(rsp *md.NoRequest, stream md.NodeService_CallLinkResponseServer) error {
+	for {
+		select {
+		case m := <-s.linkResponses:
+			if m != nil {
+				stream.Send(m)
+			}
+		case <-s.ctx.Done():
+			return nil
+		}
+		md.GetState().NeedsWait()
+	}
+}
+
+// CallMailboxResponse is called when Action Response is received
+func (s *NodeServer) CallMailboxResponse(rsp *md.NoRequest, stream md.NodeService_CallMailboxResponseServer) error {
+	for {
+		select {
+		case m := <-s.mailboxResponses:
+			if m != nil {
+				stream.Send(m)
+			}
+		case <-s.ctx.Done():
+			return nil
+		}
+		md.GetState().NeedsWait()
+	}
+}
+
+// CallActionResponse is called when Auth Response is received
+func (s *NodeServer) CallVerifyResponse(rsp *md.NoRequest, stream md.NodeService_CallVerifyResponseServer) error {
+	for {
+		select {
+		case m := <-s.verifyResponses:
+			if m != nil {
+				stream.Send(m)
+			}
+		case <-s.ctx.Done():
+			return nil
+		}
+		md.GetState().NeedsWait()
+	}
+}
+
 // OnComplete is called when a complete event is received
 func (s *NodeServer) OnComplete(req *md.NoRequest, stream md.NodeService_OnCompleteServer) error {
 	for {
@@ -40,6 +130,21 @@ func (s *NodeServer) OnReply(req *md.NoRequest, stream md.NodeService_OnReplySer
 	for {
 		select {
 		case m := <-s.inviteResponses:
+			if m != nil {
+				stream.Send(m)
+			}
+		case <-s.ctx.Done():
+			return nil
+		}
+		md.GetState().NeedsWait()
+	}
+}
+
+// OnLink is called when a Link Event has completed for User
+func (s *NodeServer) OnLink(req *md.NoRequest, stream md.NodeService_OnLinkServer) error {
+	for {
+		select {
+		case m := <-s.linkEvents:
 			if m != nil {
 				stream.Send(m)
 			}
@@ -199,6 +304,21 @@ func (s *NodeServer) handleEvent(buf []byte) {
 
 		// Send Event to Channel
 		s.mailEvents <- me
+
+	case md.GenericEvent_LINK:
+		// Unmarshal Link Event
+		le := &md.LinkEvent{}
+		err = proto.Unmarshal(event.GetData(), le)
+		if err != nil {
+			md.LogFatal(err)
+			return
+		}
+
+		// Logging
+		eventType.Log(le.String())
+
+		// Send Event to Channel
+		s.linkEvents <- le
 	}
 }
 

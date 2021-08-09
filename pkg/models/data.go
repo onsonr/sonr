@@ -55,7 +55,6 @@ func (p Payload) IsNotTransfer() bool {
 }
 
 // ** ─── SFile_Item MANAGEMENT ────────────────────────────────────────────────────────
-
 func (i *SFile_Item) NewReader(d *Device, index int, total int, c SessionHandler) ItemReader {
 	// Return Reader
 	return &itemReader{
@@ -216,17 +215,17 @@ func (p *itemWriter) Progress() []byte {
 
 func (iw *itemWriter) WriteTo(writer msg.WriteCloser) error {
 	// Write Item to Stream
-	// @ Open Os File
+	// Open Os File
 	f, err := os.Open(iw.item.Path)
 	if err != nil {
 		return errors.New(fmt.Sprintf("Error to read Item, %s", err.Error()))
 	}
 
-	// @ Initialize Chunk Data
+	// Initialize Chunk Data
 	r := bufio.NewReader(f)
 	buf := make([]byte, 0, util.CHUNK_SIZE)
 
-	// @ Loop through File
+	// Loop through File
 	for i := 0; ; i++ {
 		// Initialize
 		n, err := r.Read(buf[:cap(buf)])

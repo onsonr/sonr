@@ -26,16 +26,25 @@ type NodeServer struct {
 	local  *sh.TopicManager
 	topics map[string]*sh.TopicManager
 
+	// Event Channels
+	completeEvents  chan *md.CompleteEvent
+	errorEvents     chan *md.ErrorEvent
+	mailEvents      chan *md.MailEvent
+	linkEvents      chan *md.LinkEvent
+	progressEvents  chan *md.ProgressEvent
+	statusEvents    chan *md.StatusEvent
+	topicEvents     chan *md.TopicEvent
+	inviteRequests  chan *md.InviteRequest
+	inviteResponses chan *md.InviteResponse
+
 	// Callback Channels
+	authResponses       chan *md.AuthResponse
+	actionResponses     chan *md.ActionResponse
 	connectionResponses chan *md.ConnectionResponse
-	completeEvents      chan *md.CompleteEvent
-	inviteRequests      chan *md.InviteRequest
-	inviteResponses     chan *md.InviteResponse
-	errorEvents         chan *md.ErrorEvent
-	mailEvents          chan *md.MailEvent
-	progressEvents      chan *md.ProgressEvent
-	statusEvents        chan *md.StatusEvent
-	topicEvents         chan *md.TopicEvent
+	decisionResponses   chan *md.DecisionResponse
+	linkResponses       chan *md.LinkResponse
+	mailboxResponses    chan *md.MailboxResponse
+	verifyResponses     chan *md.VerifyResponse
 }
 
 func main() {
@@ -55,15 +64,24 @@ func main() {
 		state:  md.Lifecycle_ACTIVE,
 
 		// Event Channels
-		topicEvents:         make(chan *md.TopicEvent, util.MAX_CHAN_DATA),
-		mailEvents:          make(chan *md.MailEvent, util.MAX_CHAN_DATA),
-		progressEvents:      make(chan *md.ProgressEvent, util.MAX_CHAN_DATA),
-		completeEvents:      make(chan *md.CompleteEvent, util.MAX_CHAN_DATA),
-		statusEvents:        make(chan *md.StatusEvent, util.MAX_CHAN_DATA),
-		errorEvents:         make(chan *md.ErrorEvent, util.MAX_CHAN_DATA),
-		inviteRequests:      make(chan *md.InviteRequest, util.MAX_CHAN_DATA),
-		inviteResponses:     make(chan *md.InviteResponse, util.MAX_CHAN_DATA),
+		topicEvents:     make(chan *md.TopicEvent, util.MAX_CHAN_DATA),
+		mailEvents:      make(chan *md.MailEvent, util.MAX_CHAN_DATA),
+		progressEvents:  make(chan *md.ProgressEvent, util.MAX_CHAN_DATA),
+		completeEvents:  make(chan *md.CompleteEvent, util.MAX_CHAN_DATA),
+		statusEvents:    make(chan *md.StatusEvent, util.MAX_CHAN_DATA),
+		errorEvents:     make(chan *md.ErrorEvent, util.MAX_CHAN_DATA),
+		inviteRequests:  make(chan *md.InviteRequest, util.MAX_CHAN_DATA),
+		inviteResponses: make(chan *md.InviteResponse, util.MAX_CHAN_DATA),
+		linkEvents:      make(chan *md.LinkEvent, util.MAX_CHAN_DATA),
+
+		// Callback Channels
+		authResponses:       make(chan *md.AuthResponse, util.MAX_CHAN_DATA),
+		actionResponses:     make(chan *md.ActionResponse, util.MAX_CHAN_DATA),
 		connectionResponses: make(chan *md.ConnectionResponse, util.MAX_CHAN_DATA),
+		decisionResponses:   make(chan *md.DecisionResponse, util.MAX_CHAN_DATA),
+		linkResponses:       make(chan *md.LinkResponse, util.MAX_CHAN_DATA),
+		mailboxResponses:    make(chan *md.MailboxResponse, util.MAX_CHAN_DATA),
+		verifyResponses:     make(chan *md.VerifyResponse, util.MAX_CHAN_DATA),
 	}
 
 	grpcServer := grpc.NewServer()
@@ -92,7 +110,7 @@ func (s *NodeServer) Initialize(ctx context.Context, req *md.InitializeRequest) 
 
 	// Create Client
 	s.client = sc.NewClient(s.ctx, s.user, s.callback())
-
+	s.verifyResponses <- s.user.VerifyRead()
 	// Return Blank Response
 	return &md.NoResponse{}, nil
 }

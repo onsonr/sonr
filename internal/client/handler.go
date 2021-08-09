@@ -8,7 +8,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// ^ OnConnected: HostNode Connection Response ^
+// OnConnected: HostNode Connection Response ^
 func (c *client) OnConnected(r *md.ConnectionResponse) {
 	// Convert Message
 	bytes, err := r.ToGeneric()
@@ -20,7 +20,7 @@ func (c *client) OnConnected(r *md.ConnectionResponse) {
 	c.call.OnResponse(bytes)
 }
 
-// ^ OnEvent: Local Lobby Event ^
+// OnEvent: Local Lobby Event ^
 func (n *client) OnEvent(e *md.TopicEvent) {
 	// Only Callback when not in Transfer
 	if n.user.IsNotStatus(md.Status_TRANSFER) {
@@ -36,7 +36,49 @@ func (n *client) OnEvent(e *md.TopicEvent) {
 	}
 }
 
-// ^ OnInvite: User Received Invite ^
+// OnLink: Handle Result of Link Request ^
+func (n *client) OnLink(success bool, id peer.ID, data []byte) {
+	// Unmarshal Link Response
+	resp := md.LinkResponse{}
+	err := proto.Unmarshal(data, &resp)
+	if err != nil {
+		n.call.OnError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
+		return
+	}
+
+	// Check Success
+	if success {
+		// Create link Event
+		link := &md.LinkEvent{
+			Success: success,
+			Device:  resp.GetDevice(),
+			Contact: resp.GetContact(),
+		}
+
+		// Marshal Link Event
+		buf, err := link.ToGeneric()
+		if err != nil {
+			n.call.OnError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
+			return
+		}
+		n.call.OnEvent(buf)
+	} else {
+		// Unsuccessful Link Request
+		link := &md.LinkEvent{
+			Success: success,
+		}
+
+		// Marshal Link Event
+		buf, err := link.ToGeneric()
+		if err != nil {
+			n.call.OnError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
+			return
+		}
+		n.call.OnEvent(buf)
+	}
+}
+
+// OnInvite: User Received Invite ^
 func (n *client) OnInvite(data []byte) {
 	// Update Status
 	n.call.SetStatus(md.Status_INVITED)
@@ -58,7 +100,7 @@ func (n *client) OnInvite(data []byte) {
 	n.call.OnRequest(buf)
 }
 
-// ^ OnReply: Begins File Transfer when Accepted ^
+// OnReply: Begins File Transfer when Accepted ^
 func (n *client) OnReply(id peer.ID, reply []byte) {
 	// Create Response
 	req := md.GenericResponse{
@@ -107,13 +149,13 @@ func (n *client) OnReply(id peer.ID, reply []byte) {
 	}
 }
 
-// ^ OnResponded: Prepares for Incoming File Transfer when Accepted ^
+// OnResponded: Prepares for Incoming File Transfer when Accepted ^
 func (n *client) OnConfirmed(inv *md.InviteRequest) {
 	n.session = md.NewInSession(n.user, inv, n)
 	n.Host.HandleStream(md.SonrProtocol_LocalTransfer.NewIDProtocol(n.Host.ID()), n.session.ReadFromStream)
 }
 
-// ^ OnMail: Callback for Mail Event
+// OnMail: Callback for Mail Event
 func (n *client) OnMail(e *md.MailEvent) {
 	// Create Mail and Marshal Data
 	buf, err := e.ToGeneric()
@@ -124,18 +166,18 @@ func (n *client) OnMail(e *md.MailEvent) {
 	n.call.OnEvent(buf)
 }
 
-// ^ OnProgress: Callback Progress Update
+// OnProgress: Callback Progress Update
 func (n *client) OnProgress(buf []byte) {
 	// Marshal and Return
 	n.call.OnEvent(buf)
 }
 
-// ^ OnMail: Callback for Error Event
+// OnMail: Callback for Error Event
 func (n *client) OnError(err *md.SonrError) {
 	n.call.OnError(err)
 }
 
-// ^ OnCompleted: Callback Completed Transfer
+// OnCompleted: Callback Completed Transfer
 func (n *client) OnCompleted(stream network.Stream, pid protocol.ID, completeEvent *md.CompleteEvent) {
 	if completeEvent.Direction == md.CompleteEvent_INCOMING {
 		// Convert to Generic

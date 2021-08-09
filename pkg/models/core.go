@@ -201,7 +201,7 @@ type SessionHandler interface {
 	OnError(err *SonrError)
 }
 
-// ^ Prepare for Outgoing Session ^ //
+// Prepare for Outgoing Session ^ //
 func NewOutSession(u *User, req *InviteRequest, sh SessionHandler) *Session {
 	return &Session{
 		file:      req.GetFile(),
@@ -214,7 +214,7 @@ func NewOutSession(u *User, req *InviteRequest, sh SessionHandler) *Session {
 	}
 }
 
-// ^ Prepare for Incoming Session ^ //
+// Prepare for Incoming Session ^ //
 func NewInSession(u *User, inv *InviteRequest, sh SessionHandler) *Session {
 	// Return Session
 	return &Session{
@@ -228,7 +228,7 @@ func NewInSession(u *User, inv *InviteRequest, sh SessionHandler) *Session {
 	}
 }
 
-// ^ Returns SFile as TransferCard given Receiver and Owner
+// Returns SFile as TransferCard given Receiver and Owner
 func (s *Session) Event() *CompleteEvent {
 	return &CompleteEvent{
 		Direction: s.direction,
@@ -247,7 +247,7 @@ func (s *Session) Event() *CompleteEvent {
 	}
 }
 
-// ^ read buffers sent on stream and save to file ^ //
+// read buffers sent on stream and save to file ^ //
 func (s *Session) ReadFromStream(stream network.Stream) {
 	// Concurrent Function
 	go func(rs msg.ReadCloser) {
@@ -264,7 +264,7 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 	}(msg.NewReader(stream))
 }
 
-// ^ write file as Base64 in Msgio to Stream ^ //
+// write file as Base64 in Msgio to Stream ^ //
 func (s *Session) WriteToStream(stream network.Stream) {
 	// Concurrent Function
 	go func(ws msg.WriteCloser) {

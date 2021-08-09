@@ -25,8 +25,9 @@ type ExchangeServiceResponse struct {
 // ExchangeService Service Struct
 type ExchangeService struct {
 	// Current Data
-	call TopicHandler
-	user *md.User
+	call    TopicHandler
+	linkers []*md.Peer
+	user    *md.User
 }
 
 type TopicHandler interface {
@@ -44,6 +45,7 @@ type TopicManager struct {
 	events    chan *md.TopicEvent
 	exchange  *ExchangeService
 	handler   TopicHandler
+	linkers   []*md.Peer
 	topicData *md.Topic
 }
 
@@ -76,6 +78,7 @@ func (h *hostNode) JoinTopic(ctx context.Context, u *md.User, topicData *md.Topi
 		host:         h,
 		eventHandler: handler,
 		topicData:    topicData,
+		linkers:      make([]*md.Peer, 0),
 		events:       make(chan *md.TopicEvent, util.MAX_CHAN_DATA),
 		subscription: sub,
 		topic:        topic,
@@ -84,8 +87,9 @@ func (h *hostNode) JoinTopic(ctx context.Context, u *md.User, topicData *md.Topi
 	// Start Exchange RPC Server
 	exchangeServer := rpc.NewServer(h.Host(), util.EXCHANGE_PROTOCOL)
 	esv := ExchangeService{
-		user: u,
-		call: th,
+		user:    u,
+		call:    th,
+		linkers: mgr.linkers,
 	}
 
 	// Register Service
@@ -104,8 +108,8 @@ func (h *hostNode) JoinTopic(ctx context.Context, u *md.User, topicData *md.Topi
 	return mgr, nil
 }
 
-// FindPeerInTopic @ Helper: Find returns Pointer to Peer.ID and Peer
-func (tm *TopicManager) FindPeerInTopic(q string) (peer.ID, error) {
+// FindPeer @ Helper: Find returns Pointer to Peer.ID and Peer
+func (tm *TopicManager) FindPeer(q string) (peer.ID, error) {
 	// Iterate through Topic Peers
 	for _, id := range tm.topic.ListPeers() {
 		// If Found Match
@@ -139,6 +143,15 @@ func (tm *TopicManager) Topic() *md.Topic {
 	return tm.topicData
 }
 
+func (tm *TopicManager) HasLinker(q string) bool {
+	for _, p := range tm.linkers {
+		if p.PeerID() == q {
+			return true
+		}
+	}
+	return false
+}
+
 // HasPeer Method Checks if Peer ID String is Subscribed to Topic
 func (tm *TopicManager) HasPeer(q string) bool {
 	// Iterate through PubSub in topic
@@ -161,6 +174,13 @@ func (tm *TopicManager) HasPeerID(q peer.ID) bool {
 		}
 	}
 	return false
+}
+
+// Returns List of Linkers in Topic
+func (tm *TopicManager) ListLinkers() *md.Linkers {
+	return &md.Linkers{
+		List: tm.linkers,
+	}
 }
 
 // Exchange @ Starts Exchange on Local Peer Join
@@ -191,12 +211,20 @@ func (tm *TopicManager) Exchange(id peer.ID, peerBuf []byte) error {
 	}
 
 	// Update Peer with new data
-	tm.handler.OnEvent(md.NewJoinEvent(remotePeer))
+	if remotePeer.Status != md.Peer_LINKER {
+		tm.handler.OnEvent(md.NewJoinEvent(remotePeer))
+	} else {
+		// Add Linker if Not Present
+		if !tm.HasLinker(remotePeer.PeerID()) {
+			// Append Linkers
+			tm.linkers = append(tm.linkers, remotePeer)
+		}
+	}
 	return nil
 }
 
 // ExchangeWith # Calls Exchange on Local Lobby Peer
-func (ts *ExchangeService) ExchangeWith(ctx context.Context, args ExchangeServiceArgs, reply *ExchangeServiceResponse) error {
+func (es *ExchangeService) ExchangeWith(ctx context.Context, args ExchangeServiceArgs, reply *ExchangeServiceResponse) error {
 	// Peer Data
 	remotePeer := &md.Peer{}
 	err := proto.Unmarshal(args.Peer, remotePeer)
@@ -206,10 +234,18 @@ func (ts *ExchangeService) ExchangeWith(ctx context.Context, args ExchangeServic
 	}
 
 	// Update Peers with Lobby
-	ts.call.OnEvent(md.NewJoinEvent(remotePeer))
+	if remotePeer.Status != md.Peer_LINKER {
+		es.call.OnEvent(md.NewJoinEvent(remotePeer))
+	} else {
+		// Add Linker if Not Present
+		if !es.HasLinker(remotePeer.PeerID()) {
+			// Append Linkers
+			es.linkers = append(es.linkers, remotePeer)
+		}
+	}
 
 	// Set Message data and call done
-	buf, err := ts.user.Peer.Buffer()
+	buf, err := es.user.Peer.Buffer()
 	if err != nil {
 		md.LogError(err)
 		return err
@@ -218,9 +254,18 @@ func (ts *ExchangeService) ExchangeWith(ctx context.Context, args ExchangeServic
 	return nil
 }
 
+func (es *ExchangeService) HasLinker(q string) bool {
+	for _, p := range es.linkers {
+		if p.PeerID() == q {
+			return true
+		}
+	}
+	return false
+}
+
 // # handleTopicEvents: listens to Pubsub Events for topic
 func (tm *TopicManager) handleTopicEvents(ctx context.Context) {
-	// @ Loop Events
+	// Loop Events
 	for {
 		// Get next event
 		event, err := tm.eventHandler.NextPeerEvent(ctx)
@@ -270,8 +315,16 @@ func (tm *TopicManager) handleTopicMessages(ctx context.Context) {
 				continue
 			}
 
-			// Send Event to User
-			tm.handler.OnEvent(m)
+			// Check Peer is Online, if not ignore
+			if m.Peer.GetStatus() == md.Peer_ONLINE {
+				tm.handler.OnEvent(m)
+			} else if m.Peer.GetStatus() == md.Peer_LINKER {
+				// Validate Linker not Already Set
+				if !tm.HasLinker(m.Peer.PeerID()) {
+					// Append Linkers
+					tm.linkers = append(tm.linkers, m.Peer)
+				}
+			}
 		}
 		md.GetState().NeedsWait()
 	}

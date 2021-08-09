@@ -39,6 +39,9 @@ enum Cardinal {
   NbW = 31;  // North by West
 }
 
+// List of Linker Peers
+message Linkers { repeated Peer list = 1; }
+
 // For Info about Lobby
 message Lobby {
   Topic topic = 1;             // Type of Lobby
@@ -110,6 +113,8 @@ message Peer {
   Position position = 5;     // Peers Positional Information
   Profile profile = 6;       // Peers General Information
   Properties properties = 7; // Peer specific options set
+  Status status = 8;         // Peer Status
+  string hostName = 9;       // Peer Host Name
 
   // ID References
   message ID {
@@ -118,6 +123,14 @@ message Peer {
     string multiAddr = 3; // Peer MultiAddr
     string publicKey = 4; // Public Key of Peer
     string pushToken = 5; // Push Notification token
+  }
+
+  enum Status {
+    DEFAULT = 0; // Offline - Not Online or Not a Full Node
+    ONLINE = 1;  // Online - Full Node Available
+    AWAY = 2;    // Away - Not Online, but has a full node
+    BUSY = 3;    // Busy - Online, but busy with Transfer
+    LINKER = 4;  // Linker - Online/Connected but only for Linking
   }
 
   // Properties
@@ -130,13 +143,13 @@ message Peer {
 
 // Platform is the Operating System of Device
 enum Platform {
-  Undefined = 0; // Undefined
-  Android = 1;   // Android Operating System
-  IOS = 2;       // iOS Operating System
-  MacOS = 3;     // Mac Operating System
-  Windows = 4;   // Windows Operating System
-  Linux = 5;     // Linux Operating System
-  Web = 6;       // Web Platform
+  OTHER = 0;   // Other/Unknown User Agent
+  ANDROID = 1; // Android Operating System
+  IOS = 2;     // iOS Operating System
+  MACOS = 3;   // Mac Operating System
+  WINDOWS = 4; // Windows Operating System
+  LINUX = 5;   // Linux Operating System
+  WEB = 6;     // Web Platform
 }
 
 // Position Includes All Directional Info of Peer

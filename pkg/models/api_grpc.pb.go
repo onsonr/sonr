@@ -23,21 +23,32 @@ type NodeServiceClient interface {
 	// Starts Method Host and Connects to Network
 	Connect(ctx context.Context, in *ConnectionRequest, opts ...grpc.CallOption) (*NoResponse, error)
 	// Action method handles misceallaneous actions for node
-	Action(ctx context.Context, in *ActionRequest, opts ...grpc.CallOption) (*ActionResponse, error)
+	Action(ctx context.Context, in *ActionRequest, opts ...grpc.CallOption) (*NoResponse, error)
+	// Link Method Request for Data
+	Link(ctx context.Context, in *LinkRequest, opts ...grpc.CallOption) (*NoResponse, error)
 	// Signing Method Request for Data
-	Sign(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthResponse, error)
+	Sign(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*NoResponse, error)
 	// Verification Method Request for Signed Data
-	Verify(ctx context.Context, in *VerifyRequest, opts ...grpc.CallOption) (*VerifyResponse, error)
+	Verify(ctx context.Context, in *VerifyRequest, opts ...grpc.CallOption) (*NoResponse, error)
 	// Update Method proximity/direction and Notify Lobby
 	Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*NoResponse, error)
 	// Invite Method Processes Data and Sends Invite to Peer
 	Invite(ctx context.Context, in *InviteRequest, opts ...grpc.CallOption) (*NoResponse, error)
 	// Respond Method to an Invite with Decision
-	Respond(ctx context.Context, in *InviteResponse, opts ...grpc.CallOption) (*NoResponse, error)
+	Respond(ctx context.Context, in *DecisionRequest, opts ...grpc.CallOption) (*NoResponse, error)
 	// Mail Method handles request for a message in Mailbox
-	Mail(ctx context.Context, in *MailboxRequest, opts ...grpc.CallOption) (*MailboxResponse, error)
-	//
+	Mail(ctx context.Context, in *MailboxRequest, opts ...grpc.CallOption) (*NoResponse, error)
+	// Response Streams
+	CallAuthResponse(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_CallAuthResponseClient, error)
+	CallActionResponse(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_CallActionResponseClient, error)
+	CallLinkResponse(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_CallLinkResponseClient, error)
+	CallDecisionResponse(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_CallDecisionResponseClient, error)
+	CallInviteResponse(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_CallInviteResponseClient, error)
+	CallMailboxResponse(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_CallMailboxResponseClient, error)
+	CallVerifyResponse(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_CallVerifyResponseClient, error)
+	// Events Streams
 	OnStatus(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnStatusClient, error)
+	OnLink(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnLinkClient, error)
 	OnTopic(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnTopicClient, error)
 	OnInvite(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnInviteClient, error)
 	OnReply(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnReplyClient, error)
@@ -73,8 +84,8 @@ func (c *nodeServiceClient) Connect(ctx context.Context, in *ConnectionRequest, 
 	return out, nil
 }
 
-func (c *nodeServiceClient) Action(ctx context.Context, in *ActionRequest, opts ...grpc.CallOption) (*ActionResponse, error) {
-	out := new(ActionResponse)
+func (c *nodeServiceClient) Action(ctx context.Context, in *ActionRequest, opts ...grpc.CallOption) (*NoResponse, error) {
+	out := new(NoResponse)
 	err := c.cc.Invoke(ctx, "/models.NodeService/Action", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -82,8 +93,17 @@ func (c *nodeServiceClient) Action(ctx context.Context, in *ActionRequest, opts 
 	return out, nil
 }
 
-func (c *nodeServiceClient) Sign(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthResponse, error) {
-	out := new(AuthResponse)
+func (c *nodeServiceClient) Link(ctx context.Context, in *LinkRequest, opts ...grpc.CallOption) (*NoResponse, error) {
+	out := new(NoResponse)
+	err := c.cc.Invoke(ctx, "/models.NodeService/Link", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *nodeServiceClient) Sign(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*NoResponse, error) {
+	out := new(NoResponse)
 	err := c.cc.Invoke(ctx, "/models.NodeService/Sign", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -91,8 +111,8 @@ func (c *nodeServiceClient) Sign(ctx context.Context, in *AuthRequest, opts ...g
 	return out, nil
 }
 
-func (c *nodeServiceClient) Verify(ctx context.Context, in *VerifyRequest, opts ...grpc.CallOption) (*VerifyResponse, error) {
-	out := new(VerifyResponse)
+func (c *nodeServiceClient) Verify(ctx context.Context, in *VerifyRequest, opts ...grpc.CallOption) (*NoResponse, error) {
+	out := new(NoResponse)
 	err := c.cc.Invoke(ctx, "/models.NodeService/Verify", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -118,7 +138,7 @@ func (c *nodeServiceClient) Invite(ctx context.Context, in *InviteRequest, opts 
 	return out, nil
 }
 
-func (c *nodeServiceClient) Respond(ctx context.Context, in *InviteResponse, opts ...grpc.CallOption) (*NoResponse, error) {
+func (c *nodeServiceClient) Respond(ctx context.Context, in *DecisionRequest, opts ...grpc.CallOption) (*NoResponse, error) {
 	out := new(NoResponse)
 	err := c.cc.Invoke(ctx, "/models.NodeService/Respond", in, out, opts...)
 	if err != nil {
@@ -127,8 +147,8 @@ func (c *nodeServiceClient) Respond(ctx context.Context, in *InviteResponse, opt
 	return out, nil
 }
 
-func (c *nodeServiceClient) Mail(ctx context.Context, in *MailboxRequest, opts ...grpc.CallOption) (*MailboxResponse, error) {
-	out := new(MailboxResponse)
+func (c *nodeServiceClient) Mail(ctx context.Context, in *MailboxRequest, opts ...grpc.CallOption) (*NoResponse, error) {
+	out := new(NoResponse)
 	err := c.cc.Invoke(ctx, "/models.NodeService/Mail", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -136,8 +156,232 @@ func (c *nodeServiceClient) Mail(ctx context.Context, in *MailboxRequest, opts .
 	return out, nil
 }
 
+func (c *nodeServiceClient) CallAuthResponse(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_CallAuthResponseClient, error) {
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[0], "/models.NodeService/CallAuthResponse", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &nodeServiceCallAuthResponseClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type NodeService_CallAuthResponseClient interface {
+	Recv() (*AuthResponse, error)
+	grpc.ClientStream
+}
+
+type nodeServiceCallAuthResponseClient struct {
+	grpc.ClientStream
+}
+
+func (x *nodeServiceCallAuthResponseClient) Recv() (*AuthResponse, error) {
+	m := new(AuthResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *nodeServiceClient) CallActionResponse(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_CallActionResponseClient, error) {
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[1], "/models.NodeService/CallActionResponse", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &nodeServiceCallActionResponseClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type NodeService_CallActionResponseClient interface {
+	Recv() (*ActionResponse, error)
+	grpc.ClientStream
+}
+
+type nodeServiceCallActionResponseClient struct {
+	grpc.ClientStream
+}
+
+func (x *nodeServiceCallActionResponseClient) Recv() (*ActionResponse, error) {
+	m := new(ActionResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *nodeServiceClient) CallLinkResponse(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_CallLinkResponseClient, error) {
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[2], "/models.NodeService/CallLinkResponse", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &nodeServiceCallLinkResponseClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type NodeService_CallLinkResponseClient interface {
+	Recv() (*LinkResponse, error)
+	grpc.ClientStream
+}
+
+type nodeServiceCallLinkResponseClient struct {
+	grpc.ClientStream
+}
+
+func (x *nodeServiceCallLinkResponseClient) Recv() (*LinkResponse, error) {
+	m := new(LinkResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *nodeServiceClient) CallDecisionResponse(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_CallDecisionResponseClient, error) {
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[3], "/models.NodeService/CallDecisionResponse", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &nodeServiceCallDecisionResponseClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type NodeService_CallDecisionResponseClient interface {
+	Recv() (*DecisionResponse, error)
+	grpc.ClientStream
+}
+
+type nodeServiceCallDecisionResponseClient struct {
+	grpc.ClientStream
+}
+
+func (x *nodeServiceCallDecisionResponseClient) Recv() (*DecisionResponse, error) {
+	m := new(DecisionResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *nodeServiceClient) CallInviteResponse(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_CallInviteResponseClient, error) {
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[4], "/models.NodeService/CallInviteResponse", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &nodeServiceCallInviteResponseClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type NodeService_CallInviteResponseClient interface {
+	Recv() (*InviteResponse, error)
+	grpc.ClientStream
+}
+
+type nodeServiceCallInviteResponseClient struct {
+	grpc.ClientStream
+}
+
+func (x *nodeServiceCallInviteResponseClient) Recv() (*InviteResponse, error) {
+	m := new(InviteResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *nodeServiceClient) CallMailboxResponse(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_CallMailboxResponseClient, error) {
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[5], "/models.NodeService/CallMailboxResponse", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &nodeServiceCallMailboxResponseClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type NodeService_CallMailboxResponseClient interface {
+	Recv() (*MailboxResponse, error)
+	grpc.ClientStream
+}
+
+type nodeServiceCallMailboxResponseClient struct {
+	grpc.ClientStream
+}
+
+func (x *nodeServiceCallMailboxResponseClient) Recv() (*MailboxResponse, error) {
+	m := new(MailboxResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *nodeServiceClient) CallVerifyResponse(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_CallVerifyResponseClient, error) {
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[6], "/models.NodeService/CallVerifyResponse", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &nodeServiceCallVerifyResponseClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type NodeService_CallVerifyResponseClient interface {
+	Recv() (*VerifyResponse, error)
+	grpc.ClientStream
+}
+
+type nodeServiceCallVerifyResponseClient struct {
+	grpc.ClientStream
+}
+
+func (x *nodeServiceCallVerifyResponseClient) Recv() (*VerifyResponse, error) {
+	m := new(VerifyResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 func (c *nodeServiceClient) OnStatus(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnStatusClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[0], "/models.NodeService/OnStatus", opts...)
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[7], "/models.NodeService/OnStatus", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -168,8 +412,40 @@ func (x *nodeServiceOnStatusClient) Recv() (*StatusEvent, error) {
 	return m, nil
 }
 
+func (c *nodeServiceClient) OnLink(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnLinkClient, error) {
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[8], "/models.NodeService/OnLink", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &nodeServiceOnLinkClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type NodeService_OnLinkClient interface {
+	Recv() (*LinkEvent, error)
+	grpc.ClientStream
+}
+
+type nodeServiceOnLinkClient struct {
+	grpc.ClientStream
+}
+
+func (x *nodeServiceOnLinkClient) Recv() (*LinkEvent, error) {
+	m := new(LinkEvent)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 func (c *nodeServiceClient) OnTopic(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnTopicClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[1], "/models.NodeService/OnTopic", opts...)
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[9], "/models.NodeService/OnTopic", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -201,7 +477,7 @@ func (x *nodeServiceOnTopicClient) Recv() (*TopicEvent, error) {
 }
 
 func (c *nodeServiceClient) OnInvite(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnInviteClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[2], "/models.NodeService/OnInvite", opts...)
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[10], "/models.NodeService/OnInvite", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -233,7 +509,7 @@ func (x *nodeServiceOnInviteClient) Recv() (*InviteRequest, error) {
 }
 
 func (c *nodeServiceClient) OnReply(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnReplyClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[3], "/models.NodeService/OnReply", opts...)
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[11], "/models.NodeService/OnReply", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -265,7 +541,7 @@ func (x *nodeServiceOnReplyClient) Recv() (*InviteResponse, error) {
 }
 
 func (c *nodeServiceClient) OnMail(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnMailClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[4], "/models.NodeService/OnMail", opts...)
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[12], "/models.NodeService/OnMail", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -297,7 +573,7 @@ func (x *nodeServiceOnMailClient) Recv() (*MailEvent, error) {
 }
 
 func (c *nodeServiceClient) OnProgress(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnProgressClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[5], "/models.NodeService/OnProgress", opts...)
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[13], "/models.NodeService/OnProgress", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -329,7 +605,7 @@ func (x *nodeServiceOnProgressClient) Recv() (*ProgressEvent, error) {
 }
 
 func (c *nodeServiceClient) OnComplete(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnCompleteClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[6], "/models.NodeService/OnComplete", opts...)
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[14], "/models.NodeService/OnComplete", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -361,7 +637,7 @@ func (x *nodeServiceOnCompleteClient) Recv() (*CompleteEvent, error) {
 }
 
 func (c *nodeServiceClient) OnError(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnErrorClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[7], "/models.NodeService/OnError", opts...)
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[15], "/models.NodeService/OnError", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -401,21 +677,32 @@ type NodeServiceServer interface {
 	// Starts Method Host and Connects to Network
 	Connect(context.Context, *ConnectionRequest) (*NoResponse, error)
 	// Action method handles misceallaneous actions for node
-	Action(context.Context, *ActionRequest) (*ActionResponse, error)
+	Action(context.Context, *ActionRequest) (*NoResponse, error)
+	// Link Method Request for Data
+	Link(context.Context, *LinkRequest) (*NoResponse, error)
 	// Signing Method Request for Data
-	Sign(context.Context, *AuthRequest) (*AuthResponse, error)
+	Sign(context.Context, *AuthRequest) (*NoResponse, error)
 	// Verification Method Request for Signed Data
-	Verify(context.Context, *VerifyRequest) (*VerifyResponse, error)
+	Verify(context.Context, *VerifyRequest) (*NoResponse, error)
 	// Update Method proximity/direction and Notify Lobby
 	Update(context.Context, *UpdateRequest) (*NoResponse, error)
 	// Invite Method Processes Data and Sends Invite to Peer
 	Invite(context.Context, *InviteRequest) (*NoResponse, error)
 	// Respond Method to an Invite with Decision
-	Respond(context.Context, *InviteResponse) (*NoResponse, error)
+	Respond(context.Context, *DecisionRequest) (*NoResponse, error)
 	// Mail Method handles request for a message in Mailbox
-	Mail(context.Context, *MailboxRequest) (*MailboxResponse, error)
-	//
+	Mail(context.Context, *MailboxRequest) (*NoResponse, error)
+	// Response Streams
+	CallAuthResponse(*NoRequest, NodeService_CallAuthResponseServer) error
+	CallActionResponse(*NoRequest, NodeService_CallActionResponseServer) error
+	CallLinkResponse(*NoRequest, NodeService_CallLinkResponseServer) error
+	CallDecisionResponse(*NoRequest, NodeService_CallDecisionResponseServer) error
+	CallInviteResponse(*NoRequest, NodeService_CallInviteResponseServer) error
+	CallMailboxResponse(*NoRequest, NodeService_CallMailboxResponseServer) error
+	CallVerifyResponse(*NoRequest, NodeService_CallVerifyResponseServer) error
+	// Events Streams
 	OnStatus(*NoRequest, NodeService_OnStatusServer) error
+	OnLink(*NoRequest, NodeService_OnLinkServer) error
 	OnTopic(*NoRequest, NodeService_OnTopicServer) error
 	OnInvite(*NoRequest, NodeService_OnInviteServer) error
 	OnReply(*NoRequest, NodeService_OnReplyServer) error
@@ -436,13 +723,16 @@ func (UnimplementedNodeServiceServer) Initialize(context.Context, *InitializeReq
 func (UnimplementedNodeServiceServer) Connect(context.Context, *ConnectionRequest) (*NoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Connect not implemented")
 }
-func (UnimplementedNodeServiceServer) Action(context.Context, *ActionRequest) (*ActionResponse, error) {
+func (UnimplementedNodeServiceServer) Action(context.Context, *ActionRequest) (*NoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Action not implemented")
 }
-func (UnimplementedNodeServiceServer) Sign(context.Context, *AuthRequest) (*AuthResponse, error) {
+func (UnimplementedNodeServiceServer) Link(context.Context, *LinkRequest) (*NoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Link not implemented")
+}
+func (UnimplementedNodeServiceServer) Sign(context.Context, *AuthRequest) (*NoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Sign not implemented")
 }
-func (UnimplementedNodeServiceServer) Verify(context.Context, *VerifyRequest) (*VerifyResponse, error) {
+func (UnimplementedNodeServiceServer) Verify(context.Context, *VerifyRequest) (*NoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Verify not implemented")
 }
 func (UnimplementedNodeServiceServer) Update(context.Context, *UpdateRequest) (*NoResponse, error) {
@@ -451,14 +741,38 @@ func (UnimplementedNodeServiceServer) Update(context.Context, *UpdateRequest) (*
 func (UnimplementedNodeServiceServer) Invite(context.Context, *InviteRequest) (*NoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Invite not implemented")
 }
-func (UnimplementedNodeServiceServer) Respond(context.Context, *InviteResponse) (*NoResponse, error) {
+func (UnimplementedNodeServiceServer) Respond(context.Context, *DecisionRequest) (*NoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Respond not implemented")
 }
-func (UnimplementedNodeServiceServer) Mail(context.Context, *MailboxRequest) (*MailboxResponse, error) {
+func (UnimplementedNodeServiceServer) Mail(context.Context, *MailboxRequest) (*NoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Mail not implemented")
+}
+func (UnimplementedNodeServiceServer) CallAuthResponse(*NoRequest, NodeService_CallAuthResponseServer) error {
+	return status.Errorf(codes.Unimplemented, "method CallAuthResponse not implemented")
+}
+func (UnimplementedNodeServiceServer) CallActionResponse(*NoRequest, NodeService_CallActionResponseServer) error {
+	return status.Errorf(codes.Unimplemented, "method CallActionResponse not implemented")
+}
+func (UnimplementedNodeServiceServer) CallLinkResponse(*NoRequest, NodeService_CallLinkResponseServer) error {
+	return status.Errorf(codes.Unimplemented, "method CallLinkResponse not implemented")
+}
+func (UnimplementedNodeServiceServer) CallDecisionResponse(*NoRequest, NodeService_CallDecisionResponseServer) error {
+	return status.Errorf(codes.Unimplemented, "method CallDecisionResponse not implemented")
+}
+func (UnimplementedNodeServiceServer) CallInviteResponse(*NoRequest, NodeService_CallInviteResponseServer) error {
+	return status.Errorf(codes.Unimplemented, "method CallInviteResponse not implemented")
+}
+func (UnimplementedNodeServiceServer) CallMailboxResponse(*NoRequest, NodeService_CallMailboxResponseServer) error {
+	return status.Errorf(codes.Unimplemented, "method CallMailboxResponse not implemented")
+}
+func (UnimplementedNodeServiceServer) CallVerifyResponse(*NoRequest, NodeService_CallVerifyResponseServer) error {
+	return status.Errorf(codes.Unimplemented, "method CallVerifyResponse not implemented")
 }
 func (UnimplementedNodeServiceServer) OnStatus(*NoRequest, NodeService_OnStatusServer) error {
 	return status.Errorf(codes.Unimplemented, "method OnStatus not implemented")
+}
+func (UnimplementedNodeServiceServer) OnLink(*NoRequest, NodeService_OnLinkServer) error {
+	return status.Errorf(codes.Unimplemented, "method OnLink not implemented")
 }
 func (UnimplementedNodeServiceServer) OnTopic(*NoRequest, NodeService_OnTopicServer) error {
 	return status.Errorf(codes.Unimplemented, "method OnTopic not implemented")
@@ -548,6 +862,24 @@ func _NodeService_Action_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _NodeService_Link_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LinkRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NodeServiceServer).Link(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/models.NodeService/Link",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NodeServiceServer).Link(ctx, req.(*LinkRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _NodeService_Sign_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AuthRequest)
 	if err := dec(in); err != nil {
@@ -621,7 +953,7 @@ func _NodeService_Invite_Handler(srv interface{}, ctx context.Context, dec func(
 }
 
 func _NodeService_Respond_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(InviteResponse)
+	in := new(DecisionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -633,7 +965,7 @@ func _NodeService_Respond_Handler(srv interface{}, ctx context.Context, dec func
 		FullMethod: "/models.NodeService/Respond",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NodeServiceServer).Respond(ctx, req.(*InviteResponse))
+		return srv.(NodeServiceServer).Respond(ctx, req.(*DecisionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -656,6 +988,153 @@ func _NodeService_Mail_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _NodeService_CallAuthResponse_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(NoRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(NodeServiceServer).CallAuthResponse(m, &nodeServiceCallAuthResponseServer{stream})
+}
+
+type NodeService_CallAuthResponseServer interface {
+	Send(*AuthResponse) error
+	grpc.ServerStream
+}
+
+type nodeServiceCallAuthResponseServer struct {
+	grpc.ServerStream
+}
+
+func (x *nodeServiceCallAuthResponseServer) Send(m *AuthResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _NodeService_CallActionResponse_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(NoRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(NodeServiceServer).CallActionResponse(m, &nodeServiceCallActionResponseServer{stream})
+}
+
+type NodeService_CallActionResponseServer interface {
+	Send(*ActionResponse) error
+	grpc.ServerStream
+}
+
+type nodeServiceCallActionResponseServer struct {
+	grpc.ServerStream
+}
+
+func (x *nodeServiceCallActionResponseServer) Send(m *ActionResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _NodeService_CallLinkResponse_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(NoRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(NodeServiceServer).CallLinkResponse(m, &nodeServiceCallLinkResponseServer{stream})
+}
+
+type NodeService_CallLinkResponseServer interface {
+	Send(*LinkResponse) error
+	grpc.ServerStream
+}
+
+type nodeServiceCallLinkResponseServer struct {
+	grpc.ServerStream
+}
+
+func (x *nodeServiceCallLinkResponseServer) Send(m *LinkResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _NodeService_CallDecisionResponse_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(NoRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(NodeServiceServer).CallDecisionResponse(m, &nodeServiceCallDecisionResponseServer{stream})
+}
+
+type NodeService_CallDecisionResponseServer interface {
+	Send(*DecisionResponse) error
+	grpc.ServerStream
+}
+
+type nodeServiceCallDecisionResponseServer struct {
+	grpc.ServerStream
+}
+
+func (x *nodeServiceCallDecisionResponseServer) Send(m *DecisionResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _NodeService_CallInviteResponse_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(NoRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(NodeServiceServer).CallInviteResponse(m, &nodeServiceCallInviteResponseServer{stream})
+}
+
+type NodeService_CallInviteResponseServer interface {
+	Send(*InviteResponse) error
+	grpc.ServerStream
+}
+
+type nodeServiceCallInviteResponseServer struct {
+	grpc.ServerStream
+}
+
+func (x *nodeServiceCallInviteResponseServer) Send(m *InviteResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _NodeService_CallMailboxResponse_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(NoRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(NodeServiceServer).CallMailboxResponse(m, &nodeServiceCallMailboxResponseServer{stream})
+}
+
+type NodeService_CallMailboxResponseServer interface {
+	Send(*MailboxResponse) error
+	grpc.ServerStream
+}
+
+type nodeServiceCallMailboxResponseServer struct {
+	grpc.ServerStream
+}
+
+func (x *nodeServiceCallMailboxResponseServer) Send(m *MailboxResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _NodeService_CallVerifyResponse_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(NoRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(NodeServiceServer).CallVerifyResponse(m, &nodeServiceCallVerifyResponseServer{stream})
+}
+
+type NodeService_CallVerifyResponseServer interface {
+	Send(*VerifyResponse) error
+	grpc.ServerStream
+}
+
+type nodeServiceCallVerifyResponseServer struct {
+	grpc.ServerStream
+}
+
+func (x *nodeServiceCallVerifyResponseServer) Send(m *VerifyResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 func _NodeService_OnStatus_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(NoRequest)
 	if err := stream.RecvMsg(m); err != nil {
@@ -674,6 +1153,27 @@ type nodeServiceOnStatusServer struct {
 }
 
 func (x *nodeServiceOnStatusServer) Send(m *StatusEvent) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _NodeService_OnLink_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(NoRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(NodeServiceServer).OnLink(m, &nodeServiceOnLinkServer{stream})
+}
+
+type NodeService_OnLinkServer interface {
+	Send(*LinkEvent) error
+	grpc.ServerStream
+}
+
+type nodeServiceOnLinkServer struct {
+	grpc.ServerStream
+}
+
+func (x *nodeServiceOnLinkServer) Send(m *LinkEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
@@ -844,6 +1344,10 @@ var NodeService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _NodeService_Action_Handler,
 		},
 		{
+			MethodName: "Link",
+			Handler:    _NodeService_Link_Handler,
+		},
+		{
 			MethodName: "Sign",
 			Handler:    _NodeService_Sign_Handler,
 		},
@@ -870,8 +1374,48 @@ var NodeService_ServiceDesc = grpc.ServiceDesc{
 	},
 	Streams: []grpc.StreamDesc{
 		{
+			StreamName:    "CallAuthResponse",
+			Handler:       _NodeService_CallAuthResponse_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "CallActionResponse",
+			Handler:       _NodeService_CallActionResponse_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "CallLinkResponse",
+			Handler:       _NodeService_CallLinkResponse_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "CallDecisionResponse",
+			Handler:       _NodeService_CallDecisionResponse_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "CallInviteResponse",
+			Handler:       _NodeService_CallInviteResponse_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "CallMailboxResponse",
+			Handler:       _NodeService_CallMailboxResponse_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "CallVerifyResponse",
+			Handler:       _NodeService_CallVerifyResponse_Handler,
+			ServerStreams: true,
+		},
+		{
 			StreamName:    "OnStatus",
 			Handler:       _NodeService_OnStatus_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "OnLink",
+			Handler:       _NodeService_OnLink_Handler,
 			ServerStreams: true,
 		},
 		{

@@ -10,6 +10,7 @@ import (
 	net "github.com/sonr-io/core/internal/host"
 	srv "github.com/sonr-io/core/internal/service"
 	md "github.com/sonr-io/core/pkg/models"
+	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -19,6 +20,7 @@ type Client interface {
 	Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrError
 	Bootstrap(cr *md.ConnectionRequest) (*net.TopicManager, *md.SonrError)
 	Mail(req *md.MailboxRequest) (*md.MailboxResponse, *md.SonrError)
+	Link(invite *md.LinkRequest, t *net.TopicManager) (*md.LinkResponse, *md.SonrError)
 	Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrError
 	Respond(r *md.InviteResponse)
 	Update(t *net.TopicManager) *md.SonrError
@@ -41,18 +43,19 @@ type client struct {
 	Client
 
 	// Properties
-	ctx     context.Context
-	call    md.Callback
-	user    *md.User
-	session *md.Session
-	request *md.ConnectionRequest
+	ctx      context.Context
+	call     md.Callback
+	isLinker bool
+	user     *md.User
+	session  *md.Session
+	request  *md.ConnectionRequest
 
 	// References
 	Host    net.HostNode
 	Service srv.ServiceClient
 }
 
-// ^ NewClient Initializes Node with Router ^
+// NewClient Initializes Node with Router ^
 func NewClient(ctx context.Context, u *md.User, call md.Callback) Client {
 	return &client{
 		ctx:  ctx,
@@ -61,10 +64,11 @@ func NewClient(ctx context.Context, u *md.User, call md.Callback) Client {
 	}
 }
 
-// @ Connects Host Node from Private Key
+// Connects Host Node from Private Key
 func (c *client) Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrError {
 	// Set Request
 	c.request = cr
+	c.isLinker = cr.GetIsLinker()
 
 	// Set Host
 	hn, err := net.NewHost(c.ctx, cr, keys, c)
@@ -79,7 +83,7 @@ func (c *client) Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrErr
 	}
 
 	// Set Peer
-	err = c.user.SetPeer(hn.ID(), maddr)
+	err = c.user.SetPeer(hn.ID(), maddr, cr.GetIsLinker())
 	if err != nil {
 		return err
 	}
@@ -89,10 +93,10 @@ func (c *client) Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrErr
 	return nil
 }
 
-// @ Begins Bootstrapping HostNode
+// Begins Bootstrapping HostNode
 func (c *client) Bootstrap(cr *md.ConnectionRequest) (*net.TopicManager, *md.SonrError) {
 	// Bootstrap Host
-	err := c.Host.Bootstrap()
+	err := c.Host.Bootstrap(c.user.GetDevice().GetId())
 	if err != nil {
 		return nil, err
 	}
@@ -117,12 +121,38 @@ func (c *client) Bootstrap(cr *md.ConnectionRequest) (*net.TopicManager, *md.Son
 	}
 }
 
-// @ Handle a Mailbox Request from Node
+// Handle a Mailbox Request from Node
 func (c *client) Mail(req *md.MailboxRequest) (*md.MailboxResponse, *md.SonrError) {
 	return c.Service.HandleMailbox(req)
 }
 
-// @ Invite Processes Data and Sends Invite to Peer
+// Link handles a LinkRequest
+func (c *client) Link(req *md.LinkRequest, t *net.TopicManager) (*md.LinkResponse, *md.SonrError) {
+	// Check Request Type
+	if req.IsSend() {
+		// Find Peer
+		if t.HasPeer(req.To.Id.Peer) && t.HasLinker(req.To.Id.Peer) {
+			// Get PeerID and Check error
+			id, err := t.FindPeer(req.To.Id.Peer)
+			if err != nil {
+				return nil, md.NewPeerFoundError(err, req.GetTo().GetId().GetPeer())
+			}
+
+			// Send Default Invite
+			err = c.Service.Link(id, req)
+			if err != nil {
+				return nil, md.NewError(err, md.ErrorEvent_TOPIC_RPC)
+			}
+			return c.user.VerifyLinkReceive(req), nil
+		}
+		return nil, md.NewErrorWithType(md.ErrorEvent_PEER_NOT_FOUND_INVITE)
+	} else {
+		c.Service.HandleLinking(req)
+		return c.user.VerifyLinkReceive(req), nil
+	}
+}
+
+// Invite Processes Data and Sends Invite to Peer
 func (c *client) Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrError {
 	if c.user.IsReady() {
 		// Check for Peer
@@ -134,7 +164,7 @@ func (c *client) Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrE
 		} else {
 			if t.HasPeer(invite.To.Id.Peer) {
 				// Get PeerID and Check error
-				id, err := t.FindPeerInTopic(invite.To.Id.Peer)
+				id, err := t.FindPeer(invite.To.Id.Peer)
 				if err != nil {
 					c.newExitEvent(invite)
 					return md.NewPeerFoundError(err, invite.GetTo().GetId().GetPeer())
@@ -152,7 +182,7 @@ func (c *client) Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrE
 
 				// Run Routine
 				go func(inv *md.InviteRequest) {
-					// Send Invite
+					// Send Default Invite
 					err = c.Service.Invite(id, inv)
 					if err != nil {
 						c.call.OnError(md.NewError(err, md.ErrorEvent_TOPIC_RPC))
@@ -160,6 +190,13 @@ func (c *client) Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrE
 					}
 				}(invite)
 			} else {
+				// Send Mail to Offline Peer
+				err := c.Service.SendMail(invite)
+				if err != nil {
+					return err
+				}
+
+				// Record Peer is Offline
 				c.newExitEvent(invite)
 				return md.NewErrorWithType(md.ErrorEvent_PEER_NOT_FOUND_INVITE)
 			}
@@ -169,12 +206,12 @@ func (c *client) Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrE
 	return nil
 }
 
-// @ Respond Sends a Response to Service
+// Respond Sends a Response to Service
 func (c *client) Respond(r *md.InviteResponse) {
 	c.Service.Respond(r)
 }
 
-// @ Update proximity/direction and Notify Lobby
+// Update proximity/direction and Notify Lobby
 func (c *client) Update(t *net.TopicManager) *md.SonrError {
 	if c.user.IsReady() {
 		// Create Event
@@ -188,7 +225,7 @@ func (c *client) Update(t *net.TopicManager) *md.SonrError {
 	return nil
 }
 
-// @ Handle Network Communication from Lifecycle State Network Communication
+// Handle Network Communication from Lifecycle State Network Communication
 func (c *client) Lifecycle(state md.Lifecycle, t *net.TopicManager) {
 	if state == md.Lifecycle_ACTIVE {
 		// Inform Lobby
@@ -219,6 +256,7 @@ func (c *client) Lifecycle(state md.Lifecycle, t *net.TopicManager) {
 	return
 }
 
+// Helper: Creates new Exit Event
 func (c *client) newExitEvent(inv *md.InviteRequest) {
 	// Create Exit Event
 	event := md.TopicEvent{
@@ -239,20 +277,20 @@ func (c *client) newExitEvent(inv *md.InviteRequest) {
 	return
 }
 
-// # Helper: Background Process to continuously ping nearby peers
-func (s *client) sendPeriodicTopicEvents(t *net.TopicManager) {
+// Helper: Background Process to continuously ping nearby peers
+func (c *client) sendPeriodicTopicEvents(t *net.TopicManager) {
 	for {
-		if s.user.IsReady() {
+		if c.user.IsReady() {
 			// Create Event
-			ev := s.user.NewDefaultUpdateEvent(t.Topic(), s.Host.ID())
+			ev := c.user.NewDefaultUpdateEvent(t.Topic(), c.Host.ID())
 
 			// Send Update
 			if err := t.Publish(ev); err != nil {
-				s.call.OnError(md.NewError(err, md.ErrorEvent_TOPIC_UPDATE))
+				c.call.OnError(md.NewError(err, md.ErrorEvent_TOPIC_UPDATE))
 				continue
 			}
 		}
-		time.Sleep(3 * time.Second)
+		time.Sleep(util.AUTOUPDATE_INTERVAL)
 		md.GetState()
 	}
 }

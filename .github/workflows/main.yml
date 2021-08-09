@@ -53,10 +53,17 @@ jobs:
           gomobile bind -ldflags='-s -w' -v -target=android -o ${{ github.workspace }}/build/android/io.sonr.core.aar
 
       # Upload AAR to Artifacts
-      - uses: actions/upload-artifact@master
+      - name: Pushes to Plugin
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: io.sonr.core.aar
-          path: build/android/io.sonr.core.aar
+          source-directory: ${{ github.workspace }}/build/android/io.sonr.core.aar
+          destination-github-username: "sonr-io"
+          destination-repository-name: "plugin"
+          user-email: prnk28@gmail.com
+          commit-message: "Update Android Framework"
+          target-branch: release
 
   # Runs the `gomobile bind -ios` job
   build-ios:
@@ -93,11 +100,17 @@ jobs:
           cd ${{ github.workspace }}/bind
           gomobile bind -ldflags='-s -w' -v -target=ios -bundleid=io.sonr.core -o ${{ github.workspace }}/build/ios/Core.framework
 
-      # Upload AAR to Artifacts
-      - uses: actions/upload-artifact@master
+      - name: Pushes to Plugin
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: Core.framework
-          path: build/ios/Core.framework
+          source-directory: ${{ github.workspace }}/build/ios/Core.framework
+          destination-github-username: "sonr-io"
+          destination-repository-name: "plugin"
+          user-email: prnk28@gmail.com
+          commit-message: "Update iOS Framework"
+          target-branch: release
 
   # Runs the `go-releaser` job
   build-rpc:
@@ -122,68 +135,9 @@ jobs:
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
         with:
-          workdir: ${{ github.workspace }}/cmd
+          workdir: ${{ github.workspace }}/lib
           distribution: goreleaser
           version: latest
-          args: release --rm-dist --skip-publish
+          args: release --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # Upload Artifact - rpc_darwin_amd64
-      - uses: actions/upload-artifact@master
-        with:
-          name: sonr-rpc_darwin_amd64
-          path: cmd/dist/sonr-rpc_darwin_amd64/sonr-rpc
-
-      # Upload Artifact - rpc_darwin_arm64
-      - uses: actions/upload-artifact@master
-        with:
-          name: sonr-rpc_darwin_arm64
-          path: cmd/dist/sonr-rpc_darwin_arm64/sonr-rpc
-
-      # Upload Artifact - rpc_linux_amd64
-      - uses: actions/upload-artifact@master
-        with:
-          name: sonr-rpc_linux_amd64
-          path: cmd/dist/sonr-rpc_linux_amd64/sonr-rpc
-
-      # Upload Artifact - rpc_linux_arm64
-      - uses: actions/upload-artifact@master
-        with:
-          name: sonr-rpc_linux_arm64
-          path: cmd/dist/sonr-rpc_linux_arm64/sonr-rpc
-
-      # Upload Artifact - rpc_windows_amd64
-      - uses: actions/upload-artifact@master
-        with:
-          name: sonr-rpc_windows_amd64
-          path: cmd/dist/sonr-rpc_windows_amd64/sonr-rpc
-
-  # Upload Artifacts as Releases
-  release:
-    # Await for Other Jobs to Complete
-    needs: [build-rpc, build-ios, build-android]
-
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-
-      - name: Configure Builds
-        run: |
-          mkdir -p ${{ github.workspace }}/build
-
-      # Download All Artifacts
-      - name: "Download Artifacts ⬇️"
-        uses: actions/download-artifact@v2
-        with:
-          path: build
-
-      # Release All Artifacts
-      - name: "Package Release 📦 "
-        uses: ncipollo/release-action@v1
-        with:
-          token: "${{ secrets.GITHUB_TOKEN }}"
-          prerelease: false
-          artifacts: "build/Core.framework, build/io.sonr.core.aar, build/sonr-rpc_darwin_amd64, build/sonr-rpc_darwin_arm64,     build/sonr-rpc_linux_amd64, build/sonr-rpc_linux_arm64, build/sonr-rpc_windows_amd64"

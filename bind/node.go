@@ -17,16 +17,16 @@ type Node struct {
 	ctx  context.Context
 
 	// Client
-	client sc.Client
-	state  md.Lifecycle
-	user   *md.User
+	client    sc.Client
+	state     md.Lifecycle
+	user      *md.User
 
 	// Groups
 	local  *net.TopicManager
 	topics map[string]*net.TopicManager
 }
 
-// ^ Initializes New Node ^ //
+// Initializes New Node ^ //
 func Initialize(reqBytes []byte, call Callback) *Node {
 	// Unmarshal Request
 	req := &md.InitializeRequest{}
@@ -59,7 +59,7 @@ func Initialize(reqBytes []byte, call Callback) *Node {
 	return mn
 }
 
-// @ Starts Host and Connects
+// Starts Host and Connects
 func (n *Node) Connect(data []byte) {
 	// Unmarshal Request
 	req := &md.ConnectionRequest{}

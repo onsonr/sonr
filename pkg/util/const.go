@@ -13,6 +13,9 @@ import (
 // Bootstrap MDNS Peer Discovery Interval
 const REFRESH_INTERVAL = time.Second * 4
 
+// RPC Binary AutoUpdate Interval
+const AUTOUPDATE_INTERVAL = time.Second * 3
+
 // Method Returns MDNS Discovery Options
 func MDNS_OPTS() (time.Duration, string) {
 	return REFRESH_INTERVAL, HOST_RENDEVOUZ_POINT
@@ -65,6 +68,18 @@ const AUTH_RPC_SERVICE = "AuthService"
 // Local RPC Service Method for Invite
 const AUTH_METHOD_INVITE = "InviteWith"
 
+// Local RPC Service Method for Invite
+const AUTH_METHOD_LINK = "LinkWith"
+
+// Local RPC Service Name
+const DEVICE_RPC_SERVICE = "DeviceService"
+
+// Local RPC Service Method for Push
+const DEVICE_METHOD_PUSH = "PushWith"
+
+// Local RPC Service Method for Sync
+const DEVICE_METHOD_SYNC = "SyncWith"
+
 // Firebase Project ID
 const FIRE_PROJECT_ID = "trans-density-315704"
 
@@ -75,7 +90,7 @@ const HOST_RENDEVOUZ_POINT = "/sonr/rendevouz/0.9.2"
 // RPC Server Localhost Port
 const RPC_SERVER_PORT = 60214
 
-// ^ ─── Methods ────────────────────────────────────────────────────────
+// ─── Methods ────────────────────────────────────────────────────────
 // Construct New Protocol ID given Method Name String and Value String
 func NewValueProtocol(method string, value string) protocol.ID {
 	return protocol.ID(fmt.Sprintf("/sonr/%s/%s", method, value))

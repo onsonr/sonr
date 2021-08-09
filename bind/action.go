@@ -6,7 +6,7 @@ import (
 )
 
 // ** ─── Node Binded Actions ────────────────────────────────────────────────────────
-// @ Signing Request for Data
+// Signing Request for Data
 func (n *Node) Sign(data []byte) []byte {
 	// Unmarshal Data to Request
 	request := &md.AuthRequest{}
@@ -39,7 +39,7 @@ func (n *Node) Sign(data []byte) []byte {
 	return buf
 }
 
-// @ Verification Request for Signed Data
+// Verification Request for Signed Data
 func (n *Node) Verify(data []byte) []byte {
 	// Check Ready
 	if n.isReady() {
@@ -93,7 +93,7 @@ func (n *Node) Verify(data []byte) []byte {
 	return md.NewInvalidVerifyResponseBuf()
 }
 
-// @ Update proximity/direction and Notify Lobby
+// Update proximity/direction and Notify Lobby
 func (n *Node) Update(data []byte) {
 	if n.isReady() {
 		// Unmarshal Data to Request
@@ -127,7 +127,7 @@ func (n *Node) Update(data []byte) {
 	}
 }
 
-// @ Invite Processes Data and Sends Invite to Peer
+// Invite Processes Data and Sends Invite to Peer
 func (n *Node) Invite(data []byte) {
 	if n.isReady() {
 		// Unmarshal Data to Request
@@ -149,7 +149,33 @@ func (n *Node) Invite(data []byte) {
 	}
 }
 
-// @ Mail handles request for a message in Mailbox
+// Link method starts device linking channel
+func (n *Node) Link(data []byte) []byte {
+	// Unmarshal Data to Request
+	req := &md.LinkRequest{}
+	if err := proto.Unmarshal(data, req); err != nil {
+		n.handleError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
+		return nil
+	}
+	req = n.user.SignLink(req)
+
+	// Send to Client
+	resp, serr := n.client.Link(req, n.local)
+	if serr != nil {
+		n.handleError(serr)
+		return nil
+	}
+
+	// Marshal Response
+	buf, err := proto.Marshal(resp)
+	if err != nil {
+		n.handleError(md.NewMarshalError(err))
+		return nil
+	}
+	return buf
+}
+
+// Mail handles request for a message in Mailbox
 func (n *Node) Mail(data []byte) []byte {
 	// Check Ready
 	if n.isReady() {
@@ -180,21 +206,21 @@ func (n *Node) Mail(data []byte) []byte {
 	return nil
 }
 
-// @ Respond to an Invite with Decision
+// Respond to an Invite with Decision
 func (n *Node) Respond(data []byte) {
 	if n.isReady() {
 		// Unmarshal Data to Request
-		resp := &md.InviteResponse{}
+		resp := &md.DecisionRequest{}
 		if err := proto.Unmarshal(data, resp); err != nil {
 			n.handleError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
 			return
 		}
 
 		// Send Response
-		n.client.Respond(resp)
+		n.client.Respond(resp.ToResponse())
 
 		// Update Status
-		if resp.Decision {
+		if resp.Decision.Accepted() {
 			n.setStatus(md.Status_TRANSFER)
 		} else {
 			n.setStatus(md.Status_AVAILABLE)
@@ -252,6 +278,23 @@ func (s *Node) Action(buf []byte) []byte {
 			Action:  md.Action_URL_LINK,
 			Data: &md.ActionResponse_UrlLink{
 				UrlLink: md.NewURLLink(req.GetData()),
+			},
+		}
+
+		// Marshal Response
+		bytes, err := proto.Marshal(resp)
+		if err != nil {
+			s.handleError(md.NewMarshalError(err))
+			return nil
+		}
+		return bytes
+	case md.Action_LIST_LINKERS:
+		// List Linkers
+		resp := &md.ActionResponse{
+			Success: true,
+			Action:  md.Action_LIST_LINKERS,
+			Data: &md.ActionResponse_Linkers{
+				Linkers: s.local.ListLinkers(),
 			},
 		}
 

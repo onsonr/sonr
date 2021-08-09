@@ -12,6 +12,7 @@ import (
 
 type ServiceHandler interface {
 	OnConnected(r *md.ConnectionResponse)
+	OnLink(success bool, id peer.ID, resp []byte)
 	OnInvite([]byte)
 	OnReply(id peer.ID, data []byte)
 	OnConfirmed(inv *md.InviteRequest)
@@ -20,6 +21,8 @@ type ServiceHandler interface {
 }
 
 type ServiceClient interface {
+	HandleLinking(req *md.LinkRequest)
+	Link(id peer.ID, inv *md.LinkRequest) error
 	Invite(id peer.ID, inv *md.InviteRequest) error
 	Respond(rep *md.InviteResponse)
 	SendMail(e *md.InviteRequest) *md.SonrError
@@ -48,7 +51,7 @@ type serviceClient struct {
 	Textile *TextileService
 }
 
-// @ Creates New Service Interface
+// Creates New Service Interface
 func NewService(ctx context.Context, h net.HostNode, u *md.User, req *md.ConnectionRequest, sh ServiceHandler) (ServiceClient, *md.SonrError) {
 	// Create Client
 	client := &serviceClient{
@@ -84,7 +87,7 @@ func NewService(ctx context.Context, h net.HostNode, u *md.User, req *md.Connect
 	return client, nil
 }
 
-// @ Method Sends Mail Entry to Peer
+// Method Sends Mail Entry to Peer
 func (sc *serviceClient) SendMail(inv *md.InviteRequest) *md.SonrError {
 	// Check Mail Enabled
 	if sc.Textile.options.GetMailbox() {
@@ -157,7 +160,7 @@ func (sc *serviceClient) HandleMailbox(req *md.MailboxRequest) (*md.MailboxRespo
 	}
 }
 
-// @ Method Sends Push Notification to Peer
+// Method Sends Push Notification to Peer
 func (sc *serviceClient) PushSingle(msg *md.PushMessage) *md.SonrError {
 	if isPushEnabled {
 		return sc.Push.push(msg)
@@ -165,7 +168,7 @@ func (sc *serviceClient) PushSingle(msg *md.PushMessage) *md.SonrError {
 	return nil
 }
 
-// @ Method Send Multiple Push Notifications to Peers
+// Method Send Multiple Push Notifications to Peers
 func (sc *serviceClient) PushMultiple(msg *md.PushMessage, peers []*md.Peer) *md.SonrError {
 	if isPushEnabled {
 		return sc.Push.pushMulti(msg, peers)

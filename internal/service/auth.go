@@ -2,6 +2,8 @@ package service
 
 import (
 	"context"
+	"errors"
+	"fmt"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	rpc "github.com/libp2p/go-libp2p-gorpc"
@@ -14,22 +16,27 @@ import (
 type AuthServiceArgs struct {
 	Peer   []byte
 	Invite []byte
+	Link   []byte
 }
 
 // AuthServiceResponse ExchangeResponse is also Peer protobuf
 type AuthServiceResponse struct {
-	InvReply []byte
-	Peer     []byte
+	InvReply     []byte
+	Peer         []byte
+	LinkResponse []byte
+	LinkResult   bool
 }
 
 type AuthService struct {
-	handler ServiceHandler
-	user    *md.User
-	respCh  chan *md.InviteResponse
-	invite  *md.InviteRequest
+	handler         ServiceHandler
+	user            *md.User
+	respCh          chan *md.InviteResponse
+	linkCh          chan *md.LinkRequest
+	invite          *md.InviteRequest
+	isLinkingActive bool
 }
 
-// @ Starts New Auth Instance
+// Starts New Auth Instance
 func (sc *serviceClient) StartAuth() *md.SonrError {
 	// Start Exchange Server
 	localServer := rpc.NewServer(sc.host.Host(), util.AUTH_PROTOCOL)
@@ -37,6 +44,7 @@ func (sc *serviceClient) StartAuth() *md.SonrError {
 		user:    sc.user,
 		handler: sc.handler,
 		respCh:  make(chan *md.InviteResponse, util.MAX_CHAN_DATA),
+		linkCh:  make(chan *md.LinkRequest, util.MAX_CHAN_DATA),
 	}
 
 	// Register Service
@@ -48,10 +56,22 @@ func (sc *serviceClient) StartAuth() *md.SonrError {
 	return nil
 }
 
+// Enable/Disable Linking from LinkRequest
+func (sc *serviceClient) HandleLinking(req *md.LinkRequest) {
+	// Check Link Request Type
+	if req.Type == md.LinkRequest_RECEIVE {
+		// Set Active
+		sc.Auth.isLinkingActive = true
+	} else if req.Type == md.LinkRequest_CANCEL {
+		// Set Inactive
+		sc.Auth.isLinkingActive = false
+	}
+}
+
 // Invite @ Invite: Handles User sent InviteRequest Response
 func (tm *serviceClient) Invite(id peer.ID, inv *md.InviteRequest) error {
 	// Initialize Data
-	isFlat := inv.IsFlatInvite()
+	isDirect := inv.IsDirectInvite()
 	rpcClient := rpc.NewClient(tm.host.Host(), util.AUTH_PROTOCOL)
 	var reply AuthServiceResponse
 	var args AuthServiceArgs
@@ -65,8 +85,8 @@ func (tm *serviceClient) Invite(id peer.ID, inv *md.InviteRequest) error {
 	// Set Args
 	args.Invite = msgBytes
 
-	// Check Invite for Flat/Default
-	if isFlat {
+	// Check Invite for Direct transfer
+	if isDirect {
 		// Call to Peer
 		err = rpcClient.Call(id, util.AUTH_RPC_SERVICE, util.AUTH_METHOD_INVITE, args, &reply)
 		if err != nil {
@@ -100,7 +120,7 @@ func (ts *AuthService) InviteWith(ctx context.Context, args AuthServiceArgs, rep
 	}
 
 	// Set Current Message and send Callback
-	isFlat := inv.IsFlatInvite()
+	isFlat := inv.IsDirectInvite()
 	ts.invite = &inv
 	ts.handler.OnInvite(args.Invite)
 
@@ -136,13 +156,74 @@ func (ts *AuthService) InviteWith(ctx context.Context, args AuthServiceArgs, rep
 	}
 }
 
+// Sends Link Request to Linker type Peer
+func (tm *serviceClient) Link(id peer.ID, inv *md.LinkRequest) error {
+	// Check Invite
+	if inv.Type == md.LinkRequest_SEND {
+		// Initialize Data
+		rpcClient := rpc.NewClient(tm.host.Host(), util.AUTH_PROTOCOL)
+		var reply AuthServiceResponse
+		var args AuthServiceArgs
+
+		// Convert Protobuf to bytes
+		msgBytes, err := proto.Marshal(inv)
+		if err != nil {
+			return err
+		}
+
+		// Set Args
+		args.Link = msgBytes
+
+		// Call to Peer
+		err = rpcClient.Call(id, util.AUTH_RPC_SERVICE, util.AUTH_METHOD_LINK, args, &reply)
+		if err != nil {
+			tm.handler.OnLink(false, id, nil)
+			return err
+		}
+		tm.handler.OnLink(reply.LinkResult, id, reply.LinkResponse)
+		return nil
+	}
+	return errors.New("Invite is not a Link Invite")
+}
+
+// InviteWith # Calls Invite on Local Lobby Peer
+func (ts *AuthService) LinkWith(ctx context.Context, args AuthServiceArgs, reply *AuthServiceResponse) error {
+	if ts.isLinkingActive {
+		// Received Message
+		inv := md.LinkRequest{}
+		err := proto.Unmarshal(args.Link, &inv)
+		if err != nil {
+			return err
+		}
+
+		// Handle Status
+		ok, result := ts.user.VerifyLink(&inv)
+		buf, err := proto.Marshal(result)
+		if err != nil {
+			return err
+		}
+
+		// Update Properties
+		reply.LinkResponse = buf
+		reply.LinkResult = ok
+		ts.isLinkingActive = !reply.LinkResult
+
+		// Return Result
+		md.LogInfo(fmt.Sprintf("Link Result: %v", result))
+		ts.handler.OnLink(ok, peer.ID(inv.GetFrom().PeerID()), reply.LinkResponse)
+		return nil
+	} else {
+		return errors.New("Linking is not Active")
+	}
+}
+
 // RespondToInvite @ RespondToInvite to an Invitation
 func (tm *serviceClient) Respond(rep *md.InviteResponse) {
 	// Send to Channel
 	tm.Auth.respCh <- rep
 
 	// Prepare Transfer
-	if rep.Decision {
+	if rep.Decision.Accepted() {
 		tm.handler.OnConfirmed(tm.Auth.invite)
 	}
 }

@@ -22,8 +22,8 @@ func (n *discoveryNotifee) HandlePeerFound(pi peer.AddrInfo) {
 }
 
 // ** ─── HostNode Connection Methods ────────────────────────────────────────────────────────
-// @ Bootstrap begins bootstrap with peers
-func (h *hostNode) Bootstrap() *md.SonrError {
+// Bootstrap begins bootstrap with peers
+func (h *hostNode) Bootstrap(deviceId string) *md.SonrError {
 	// Add Host Address to Peerstore
 	h.host.Peerstore().AddAddrs(h.ID(), h.host.Addrs(), peerstore.PermanentAddrTTL)
 	// Create Bootstrapper Info
@@ -68,7 +68,7 @@ func (h *hostNode) Bootstrap() *md.SonrError {
 	return nil
 }
 
-// @ Method Begins MDNS Discovery
+// Method Begins MDNS Discovery
 func (h *hostNode) MDNS() error {
 	// Logging
 	md.LogActivate("MDNS")

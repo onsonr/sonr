@@ -67,12 +67,12 @@ func (vr *VerifyRequest) IsBuffer() bool {
 // ** ─── VerifyResponse MANAGEMENT ────────────────────────────────────────────────────────
 // Create  VerifyResponse as GIVEN VALUE
 func NewVerifyResponse(result bool) *VerifyResponse {
-	return &VerifyResponse{IsVerified: result}
+	return &VerifyResponse{Success: result}
 }
 
 // Create Marshalled VerifyResponse as GIVEN VALUE
 func NewVerifyResponseBuf(result bool) []byte {
-	if buf, err := proto.Marshal(&VerifyResponse{IsVerified: result}); err != nil {
+	if buf, err := proto.Marshal(&VerifyResponse{Success: result}); err != nil {
 		return nil
 	} else {
 		return buf
@@ -81,7 +81,7 @@ func NewVerifyResponseBuf(result bool) []byte {
 
 // Create Marshalled VerifyResponse as TRUE
 func NewValidVerifyResponseBuf() []byte {
-	if buf, err := proto.Marshal(&VerifyResponse{IsVerified: true}); err != nil {
+	if buf, err := proto.Marshal(&VerifyResponse{Success: true}); err != nil {
 		return nil
 	} else {
 		return buf
@@ -90,7 +90,7 @@ func NewValidVerifyResponseBuf() []byte {
 
 // Create Marshalled VerifyResponse as FALSE
 func NewInvalidVerifyResponseBuf() []byte {
-	if buf, err := proto.Marshal(&VerifyResponse{IsVerified: false}); err != nil {
+	if buf, err := proto.Marshal(&VerifyResponse{Success: false}); err != nil {
 		return nil
 	} else {
 		return buf
@@ -257,10 +257,60 @@ func (u *URLLink) SetData() {
 	}
 }
 
+// ** ─── DecisionRequest MANAGEMENT ────────────────────────────────────────────────────────
+// The Response of DecisionRequest is ACCEPT
+func (d Decision) Accepted() bool {
+	return d == Decision_ACCEPT
+}
+
+// The Response of DecisionRequest is DECLINE
+func (d Decision) Declined() bool {
+	return d == Decision_DECLINE
+}
+
+// The Response of DecisionRequest is IGNORE
+func (d Decision) Ignored() bool {
+	return d == Decision_IGNORE
+}
+
+// The Response of DecisionRequest is CANCEL
+func (d Decision) Cancelled() bool {
+	return d == Decision_CANCEL
+}
+
+// Convert this DecisionRequest InviteResponse
+func (dr *DecisionRequest) ToResponse() *InviteResponse {
+	return &InviteResponse{
+		Decision: dr.Decision,
+		To:       dr.GetTo(),
+		From:     dr.GetFrom(),
+		Transfer: dr.GetTransfer(),
+		Type:     InviteResponse_Type(dr.GetType()),
+		Payload:  dr.GetPayload(),
+		Protocol: dr.GetProtocol(),
+	}
+}
+
+// ** ─── LinkRequest MANAGEMENT ────────────────────────────────────────────────────────
+// Checks if LinkRequest is SEND type
+func (r *LinkRequest) IsSend() bool {
+	return r.Type == LinkRequest_SEND
+}
+
+// Checks if LinkRequest is RECEIVE type
+func (r *LinkRequest) IsReceive() bool {
+	return r.Type == LinkRequest_RECEIVE
+}
+
+// Checks if LinkRequest is CANCEL type
+func (r *LinkRequest) IsCancel() bool {
+	return r.Type == LinkRequest_CANCEL
+}
+
 // ** ─── InviteResponse MANAGEMENT ────────────────────────────────────────────────────────
 // Checks if Peer Accepted Transfer
 func (r *InviteResponse) HasAcceptedTransfer() bool {
-	return r.GetDecision() && r.GetPayload().IsTransfer()
+	return r.GetDecision().Accepted() && r.GetPayload().IsTransfer()
 }
 
 // Returns Protocol ID Set by Peer
@@ -300,8 +350,8 @@ func (i *InviteRequest) IsPayloadUrl() bool {
 }
 
 // Checks for Flat Invite
-func (i *InviteRequest) IsFlatInvite() bool {
-	return i.GetType() == InviteRequest_FLAT
+func (i *InviteRequest) IsDirectInvite() bool {
+	return i.GetType() == InviteRequest_DIRECT
 }
 
 // Returns Protocol ID Set by Peer
@@ -366,6 +416,30 @@ func (u *User) SignInvite(i *InviteRequest) *InviteRequest {
 	// Set Type
 	if i.Type == InviteRequest_NONE {
 		i.Type = InviteRequest_LOCAL
+	}
+	return i
+}
+
+// Validates LinkRequest has From Parameter
+func (u *User) SignLink(i *LinkRequest) *LinkRequest {
+	// Set From
+	if i.From == nil {
+		i.From = u.GetPeer()
+	}
+
+	// Set Type
+	if i.Type == LinkRequest_NONE {
+		if u.IsLinker() {
+			i.Type = LinkRequest_RECEIVE
+
+		} else {
+			i.Type = LinkRequest_SEND
+		}
+	}
+
+	// Set Contact
+	if i.Contact == nil {
+		i.Contact = u.GetContact()
 	}
 	return i
 }
@@ -590,6 +664,28 @@ func (o *ProgressEvent) ToGeneric() ([]byte, error) {
 	// Create Generic
 	generic := &GenericEvent{
 		Type: GenericEvent_PROGRESS,
+		Data: ogBuf,
+	}
+
+	// Marshal Generic
+	genBuf, err := proto.Marshal(generic)
+	if err != nil {
+		return nil, err
+	}
+	return genBuf, nil
+}
+
+// Create New Generic LINK Event Message
+func (o *LinkEvent) ToGeneric() ([]byte, error) {
+	// Marshal Original
+	ogBuf, err := proto.Marshal(o)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create Generic
+	generic := &GenericEvent{
+		Type: GenericEvent_LINK,
 		Data: ogBuf,
 	}
 

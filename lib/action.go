@@ -3,55 +3,54 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 
 	md "github.com/sonr-io/core/pkg/models"
 )
 
 // Action method handles misceallaneous actions for node
-func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.ActionResponse, error) {
+func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.NoResponse, error) {
 	// Check Action
 	switch req.Action {
 	case md.Action_PING:
 		// Ping
 		md.LogRPC("action", "ping")
-		return &md.ActionResponse{
+		s.actionResponses <- &md.ActionResponse{
 			Success: true,
 			Action:  md.Action_PING,
-		}, nil
+		}
 	case md.Action_LOCATION:
 		// Location
 		md.LogRPC("action", "location")
-		return &md.ActionResponse{
+		s.actionResponses <- &md.ActionResponse{
 			Success: true,
 			Action:  md.Action_LOCATION,
 			Data: &md.ActionResponse_Location{
 				Location: s.user.GetLocation(),
 			},
-		}, nil
+		}
 	case md.Action_URL_LINK:
 		// URL Link
 		md.LogRPC("action", "url")
-		return &md.ActionResponse{
+		s.actionResponses <- &md.ActionResponse{
 			Success: true,
 			Action:  md.Action_URL_LINK,
 			Data: &md.ActionResponse_UrlLink{
 				UrlLink: md.NewURLLink(req.GetData()),
 			},
-		}, nil
+		}
 	case md.Action_PAUSE:
 		// Pause
 		md.LogRPC("action", "pause")
 		s.state = md.Lifecycle_PAUSED
 		s.client.Lifecycle(s.state, s.local)
 		md.GetState().Pause()
-		return &md.ActionResponse{
+		s.actionResponses <- &md.ActionResponse{
 			Success: true,
 			Action:  md.Action_PAUSE,
 			Data: &md.ActionResponse_Lifecycle{
 				Lifecycle: s.state,
 			},
-		}, nil
+		}
 	case md.Action_RESUME:
 		// Resume
 		md.LogRPC("action", "resume")
@@ -59,71 +58,99 @@ func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.Act
 		s.client.Lifecycle(s.state, s.local)
 		md.GetState().Resume()
 
-		return &md.ActionResponse{
+		s.actionResponses <- &md.ActionResponse{
 			Success: true,
 			Action:  md.Action_RESUME,
 			Data: &md.ActionResponse_Lifecycle{
 				Lifecycle: s.state,
 			},
-		}, nil
+		}
 	case md.Action_STOP:
 		// Stop
 		md.LogRPC("action", "stop")
 		s.state = md.Lifecycle_STOPPED
 		s.client.Lifecycle(s.state, s.local)
-		return &md.ActionResponse{
+		s.actionResponses <- &md.ActionResponse{
 			Success: true,
 			Action:  md.Action_STOP,
 			Data: &md.ActionResponse_Lifecycle{
 				Lifecycle: s.state,
 			},
-		}, nil
+		}
+	case md.Action_LIST_LINKERS:
+		// List Linkers
+		s.actionResponses <- &md.ActionResponse{
+			Success: true,
+			Action:  md.Action_LIST_LINKERS,
+			Data: &md.ActionResponse_Linkers{
+				Linkers: s.local.ListLinkers(),
+			},
+		}
 	default:
 		md.LogRPC("action", false)
 		return nil, fmt.Errorf("Action: %s not supported", req.Action)
 	}
+	return &md.NoResponse{}, nil
 }
 
 // Sign method signs data with user's private key
-func (s *NodeServer) Sign(ctx context.Context, req *md.AuthRequest) (*md.AuthResponse, error) {
-	log.Println("Sign Called")
-	return s.user.Sign(req), nil
+func (s *NodeServer) Sign(ctx context.Context, req *md.AuthRequest) (*md.NoResponse, error) {
+	md.LogRPC("Sign", req)
+	s.authResponses <- s.user.Sign(req)
+	return &md.NoResponse{}, nil
+}
+
+// Link method starts device linking channel
+func (s *NodeServer) Link(ctx context.Context, req *md.LinkRequest) (*md.NoResponse, error) {
+	md.LogRPC("Link", req)
+	req = s.user.SignLink(req)
+
+	// Check Link Request Type
+	resp, err := s.client.Link(req, s.local)
+	if err != nil {
+		s.handleError(err)
+		return nil, err.Error
+	}
+
+	// Return Link Response
+	s.linkResponses <- resp
+	return &md.NoResponse{}, nil
 }
 
 // Verify validates user Keys
-func (s *NodeServer) Verify(ctx context.Context, req *md.VerifyRequest) (*md.VerifyResponse, error) {
-	// Verify Node is Ready
-	if s.isReady() {
-		// Get Key Pair
-		kp := s.user.KeyPair()
+func (s *NodeServer) Verify(ctx context.Context, req *md.VerifyRequest) (*md.NoResponse, error) {
+	md.LogRPC("Verify", req)
+	// Get Key Pair
+	kp := s.user.KeyPair()
 
-		// Check Request Type
-		if req.GetType() == md.VerifyRequest_VERIFY {
-			// Check type and Verify
-			if req.IsBuffer() {
-				// Verify Result
-				result, err := kp.Verify(req.GetBufferValue(), req.GetSignedBuffer())
-				if err != nil {
-					return &md.VerifyResponse{IsVerified: false}, err
-				}
-
-				// Return Result
-				return &md.VerifyResponse{IsVerified: result}, nil
-			} else if req.IsString() {
-				// Verify Result
-				result, err := kp.Verify([]byte(req.GetTextValue()), []byte(req.GetSignedText()))
-				if err != nil {
-					return &md.VerifyResponse{IsVerified: false}, err
-				}
-
-				// Return Result
-				return &md.VerifyResponse{IsVerified: result}, nil
+	// Check Request Type
+	if req.GetType() == md.VerifyRequest_VERIFY {
+		// Check type and Verify
+		if req.IsBuffer() {
+			// Verify Result
+			result, err := kp.Verify(req.GetBufferValue(), req.GetSignedBuffer())
+			if err != nil {
+				s.verifyResponses <- &md.VerifyResponse{Success: false}
 			}
-		} else {
-			return s.user.VerifyRead(), nil
+
+			// Return Result
+			s.verifyResponses <- &md.VerifyResponse{Success: result}
+			return &md.NoResponse{}, nil
+		} else if req.IsString() {
+			// Verify Result
+			result, err := kp.Verify([]byte(req.GetTextValue()), []byte(req.GetSignedText()))
+			if err != nil {
+				s.verifyResponses <- &md.VerifyResponse{Success: false}
+				return &md.NoResponse{}, nil
+			}
+
+			// Return Result
+			s.verifyResponses <- &md.VerifyResponse{Success: result}
+			return &md.NoResponse{}, nil
 		}
 	}
-	return &md.VerifyResponse{IsVerified: false}, fmt.Errorf("Node is not ready")
+	s.verifyResponses <- s.user.VerifyRead()
+	return &md.NoResponse{}, nil
 }
 
 // Update proximity/direction/contact/properties and notify Lobby
@@ -176,14 +203,14 @@ func (s *NodeServer) Invite(ctx context.Context, req *md.InviteRequest) (*md.NoR
 }
 
 // Respond handles a respond request
-func (s *NodeServer) Respond(ctx context.Context, req *md.InviteResponse) (*md.NoResponse, error) {
+func (s *NodeServer) Respond(ctx context.Context, req *md.DecisionRequest) (*md.NoResponse, error) {
 	// Verify Node is Ready
 	if s.isReady() {
 		// Send Response
-		s.client.Respond(req)
+		s.client.Respond(req.ToResponse())
 
 		// Update Status
-		if req.Decision {
+		if req.Decision.Accepted() {
 			s.setStatus(md.Status_TRANSFER)
 		} else {
 			s.setStatus(md.Status_AVAILABLE)
@@ -196,7 +223,7 @@ func (s *NodeServer) Respond(ctx context.Context, req *md.InviteResponse) (*md.N
 }
 
 // Mail method handles a mail request
-func (s *NodeServer) Mail(ctx context.Context, req *md.MailboxRequest) (*md.MailboxResponse, error) {
+func (s *NodeServer) Mail(ctx context.Context, req *md.MailboxRequest) (*md.NoResponse, error) {
 	// Verify Node is Ready
 	if s.isReady() {
 		// Handle Mail
@@ -206,8 +233,9 @@ func (s *NodeServer) Mail(ctx context.Context, req *md.MailboxRequest) (*md.Mail
 			return nil, serr.Error
 		}
 
+		s.mailboxResponses <- resp
 		// Return Response
-		return resp, nil
+		return &md.NoResponse{}, nil
 	}
 	return nil, fmt.Errorf("Node is not ready")
 }

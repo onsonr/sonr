@@ -33,6 +33,15 @@ func (d *Device) Initialize(r *InitializeRequest) *SonrError {
 		d.Id = id
 	}
 
+	// Get Hostname of Device
+	if d.GetHostName() == "" {
+		name, err := os.Hostname()
+		if err != nil {
+			return NewError(err, ErrorEvent_DEVICE_ID)
+		}
+		d.HostName = name
+	}
+
 	// Check for Key Reset
 	if r.GetResetKeys() {
 		return d.resetKeyPair()
@@ -199,7 +208,14 @@ func (kp *KeyPair) Verify(data []byte, sig []byte) (bool, error) {
 // ** ─── DEVICE MANAGEMENT ────────────────────────────────────────────────────────
 // Method Checks if Device has Keys
 func (d *Device) HasKeys() bool {
-	if _, err := os.Stat(d.WorkingFilePath(util.KEY_FILE_NAME)); os.IsNotExist(err) {
+	if _, err := os.Stat(d.WorkingKeyPath()); os.IsNotExist(err) {
+		return false
+	}
+	return true
+}
+
+func (d *Device) HasKeysDir() bool {
+	if _, err := os.Stat(d.WorkingKeyPath()); os.IsNotExist(err) {
 		return false
 	}
 	return true
@@ -207,12 +223,12 @@ func (d *Device) HasKeys() bool {
 
 // Method Checks for Desktop
 func (d *Device) IsDesktop() bool {
-	return d.Platform == Platform_MacOS || d.Platform == Platform_Linux || d.Platform == Platform_Windows
+	return d.Platform == Platform_MACOS || d.Platform == Platform_LINUX || d.Platform == Platform_WINDOWS
 }
 
 // Method Checks for Mobile
 func (d *Device) IsMobile() bool {
-	return d.Platform == Platform_IOS || d.Platform == Platform_Android
+	return d.Platform == Platform_IOS || d.Platform == Platform_ANDROID
 }
 
 // Method Checks for IOS
@@ -222,27 +238,27 @@ func (d *Device) IsIOS() bool {
 
 // Method Checks for Android
 func (d *Device) IsAndroid() bool {
-	return d.Platform == Platform_Android
+	return d.Platform == Platform_ANDROID
 }
 
 // Method Checks for MacOS
 func (d *Device) IsMacOS() bool {
-	return d.Platform == Platform_MacOS
+	return d.Platform == Platform_MACOS
 }
 
 // Method Checks for Linux
 func (d *Device) IsLinux() bool {
-	return d.Platform == Platform_Linux
+	return d.Platform == Platform_LINUX
 }
 
 // Method Checks for Web
 func (d *Device) IsWeb() bool {
-	return d.Platform == Platform_Web
+	return d.Platform == Platform_WEB
 }
 
 // Method Checks for Windows
 func (d *Device) IsWindows() bool {
-	return d.Platform == Platform_Windows
+	return d.Platform == Platform_WINDOWS
 }
 
 // Method returns Thread Identity for Device
@@ -284,16 +300,57 @@ func (d *FileSystem_Directory) ReadFile(name string) ([]byte, *SonrError) {
 	// Initialize
 	path := filepath.Join(d.GetPath(), name)
 
-	// @ Check for Path
+	// Check for Path
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		return nil, NewError(err, ErrorEvent_USER_LOAD)
 	} else {
-		// @ Read User Data File
+		// Read User Data File
 		dat, err := os.ReadFile(path)
 		if err != nil {
 			return nil, NewError(err, ErrorEvent_USER_LOAD)
 		}
 		return dat, nil
+	}
+}
+
+// Returns Short ID for this Device
+func (d *Device) ShortID() string {
+	// Check for Keys
+	if d.HasKeys() {
+		// Write Device ID as New sha256 String
+		h := hmac.New(sha256.New, d.KeyPair.PrivBuffer())
+		h.Write([]byte(d.GetId()))
+		hexCode := hex.EncodeToString(h.Sum(nil))
+
+		// Fetch Length of ID
+		nLen := 0
+		for i := 0; i < len(hexCode); i++ {
+			if b := hexCode[i]; '0' <= b && b <= '9' {
+				nLen++
+			}
+		}
+
+		// Iterate Over Coded String
+		var n = make([]int, 0, nLen)
+		for i := 0; i < len(hexCode); i++ {
+			if b := hexCode[i]; '0' <= b && b <= '9' {
+				n = append(n, int(b)-'0')
+			}
+		}
+
+		// Convert int array into string
+		result := ""
+		for _, v := range n[:6] {
+			if v < 10 {
+				result = result + fmt.Sprintf("%d", v)
+			}
+		}
+
+		// Return Short ID
+		return result
+	} else {
+		LogError(errors.New("Device does not have a Key Pair"))
+		return ""
 	}
 }
 
@@ -345,7 +402,7 @@ func (d *Device) WriteFile(name string, data []byte) (string, *SonrError) {
 }
 
 // ** ─── User MANAGEMENT ────────────────────────────────────────────────────────
-// ^ Method Initializes User Info Struct ^ //
+// Method Initializes User Info Struct ^ //
 func NewUser(ir *InitializeRequest) (*User, *SonrError) {
 	// Initialize Device
 	d := ir.GetDevice()
@@ -361,16 +418,18 @@ func NewUser(ir *InitializeRequest) (*User, *SonrError) {
 		Device:  d,
 		ApiKeys: ir.GetApiKeys(),
 		Status:  Status_DEFAULT,
+		Info:    &User_Info{},
 	}
 	return u, nil
 }
 
 // Set the User with ConnectionRequest
 func (u *User) InitConnection(cr *ConnectionRequest) {
+	// Initialize Params
 	u.PushToken = cr.GetPushToken()
-	u.Contact = cr.GetContact()
 	u.SName = cr.GetContact().GetProfile().GetSName()
 	u.Location = cr.GetLocation()
+	u.Contact = cr.GetContact()
 	u.Status = Status_IDLE
 }
 
@@ -501,10 +560,20 @@ func (u *User) VerifyRead() *VerifyResponse {
 	kp := u.KeyPair()
 	return &VerifyResponse{
 		PublicKey: kp.PubKeyBase64(),
+		ShortID:   u.GetDevice().ShortID(),
 	}
 }
 
-// ^ Signs InviteResponse with Flat Contact
+// Method Updates User Contact
+func (u *User) VerifyLinkReceive(req *LinkRequest) *LinkResponse {
+	return &LinkResponse{
+		Success: true,
+		Type:    LinkResponse_Type(req.GetType()),
+		ShortID: u.GetDevice().ShortID(),
+	}
+}
+
+// Signs InviteResponse with Flat Contact
 func (u *User) ReplyToFlat(from *Peer) *InviteResponse {
 	return &InviteResponse{
 		Type:    InviteResponse_FLAT,
@@ -526,7 +595,7 @@ func (u *User) ReplyToFlat(from *Peer) *InviteResponse {
 	}
 }
 
-// ^ NewUpdateEvent Creates Lobby Event with Peer Data ^
+// NewUpdateEvent Creates Lobby Event with Peer Data ^
 func (u *User) NewUpdateEvent(topic *Topic, id peer.ID) *TopicEvent {
 	return &TopicEvent{
 		Subject: TopicEvent_UPDATE,
@@ -536,21 +605,33 @@ func (u *User) NewUpdateEvent(topic *Topic, id peer.ID) *TopicEvent {
 	}
 }
 
-// ^ NewDefaultUpdateEvent Updates Peer with Default Position and Returns Lobby Event with Peer Data ^
+// NewDefaultUpdateEvent Updates Peer with Default Position and Returns Lobby Event with Peer Data ^
 func (u *User) NewDefaultUpdateEvent(topic *Topic, id peer.ID) *TopicEvent {
 	// Update Peer
 	u.UpdatePosition(DefaultPosition().Parameters())
 
-	// Return Event
-	return &TopicEvent{
-		Subject: TopicEvent_UPDATE,
-		Peer:    u.GetPeer(),
-		Id:      id.String(),
-		Topic:   topic,
+	// Check if User is Linker
+	if u.IsLinker() {
+		// Return Event
+		return &TopicEvent{
+			Subject: TopicEvent_LINKER,
+			Peer:    u.GetPeer(),
+			Id:      id.String(),
+			Topic:   topic,
+		}
+	} else {
+		// Return Event
+		return &TopicEvent{
+			Subject: TopicEvent_UPDATE,
+			Peer:    u.GetPeer(),
+			Id:      id.String(),
+			Topic:   topic,
+		}
 	}
+
 }
 
-// ^ NewUpdateEvent Creates Lobby Event with Peer Data ^
+// NewUpdateEvent Creates Lobby Event with Peer Data ^
 func (u *User) NewExitEvent(topic *Topic, id peer.ID) *TopicEvent {
 	return &TopicEvent{
 		Subject: TopicEvent_EXIT,
