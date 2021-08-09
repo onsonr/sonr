@@ -49,8 +49,6 @@ func (r *User) NewDeviceTopic() *Topic {
 // ** ─── Peer MANAGEMENT ────────────────────────────────────────────────────────
 // Set Peer from Connection Request and Host ID ^ //
 func (u *User) SetPeer(id peer.ID, maddr multiaddr.Multiaddr, isLinker bool) *SonrError {
-	// Set Peer
-
 	// Set Status
 	if isLinker {
 		u.Peer = &Peer{
