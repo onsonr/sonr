@@ -37,14 +37,22 @@ func (n *client) OnEvent(e *md.TopicEvent) {
 }
 
 // OnLink: Handle Result of Link Request ^
-func (n *client) OnLink(success bool, id peer.ID, from *md.Peer, to *md.Peer) {
+func (n *client) OnLink(success bool, id peer.ID, data []byte) {
+	// Unmarshal Link Response
+	resp := md.LinkResponse{}
+	err := proto.Unmarshal(data, &resp)
+	if err != nil {
+		n.call.OnError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
+		return
+	}
+
 	// Check Success
 	if success {
 		// Create link Event
 		link := &md.LinkEvent{
 			Success: success,
-			Device:  n.user.GetDevice(),
-			Contact: n.user.GetContact(),
+			Device:  resp.GetDevice(),
+			Contact: resp.GetContact(),
 		}
 
 		// Marshal Link Event

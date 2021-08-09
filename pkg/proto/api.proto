@@ -191,10 +191,11 @@ message DecisionResponse {
 
 //  Message for a LinkRequest
 message LinkRequest {
-  Type type = 1;      // Type of Link
-  string shortID = 2; // Short ID of Link
-  Peer from = 3;      // Users Peer Data
-  Peer to = 4;        // Receivers Peer Data
+  Type type = 1;       // Type of Link
+  string shortID = 2;  // Short ID of Link
+  Peer from = 3;       // Users Peer Data
+  Peer to = 4;         // Receivers Peer Data
+  Contact contact = 5; // Users Contact Card
 
   // Type of Link
   enum Type {
@@ -207,9 +208,13 @@ message LinkRequest {
 
 // Message for Verification Response
 message LinkResponse {
-  bool success = 1;   // Result for Verification
-  Type type = 2;      // Type of Link
-  string shortID = 3; // Short ID generated from HMac and Device
+  bool success = 1;    // Result for Verification
+  Type type = 2;       // Type of Link
+  string shortID = 3;  // Short ID generated from HMac and Device
+  Device device = 4;   // Device used for Link
+  Peer from = 5;       // Users Peer Data
+  Peer to = 6;         // Receivers Peer Data
+  Contact contact = 7; // Users Contact Card
 
   // Type of Link
   enum Type {
@@ -385,7 +390,8 @@ message TopicEvent {
     STANDBY = 1; // Peer is taking break from lobby
     RESUME = 2;  // Peer has rejoined Lobby
     UPDATE = 3;  // Peer has changed position
-    EXIT = 4;    // Peer has Exited
+    LINKER = 4;  // Peer is a Linker
+    EXIT = 5;    // Peer has Exited
   }
 }
 

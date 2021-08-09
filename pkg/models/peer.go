@@ -94,13 +94,25 @@ func (u *User) IsLinker() bool {
 }
 
 // Verify if Passed ShortID is Correct
-func (u *User) VerifyShortID(req *LinkRequest, isLinkingActive bool) bool {
-	// Check if User is Linker
-	if u.IsLinker() && isLinkingActive {
+func (u *User) VerifyLink(req *LinkRequest) (bool, *LinkResponse) {
+	// Check if Peer is Linker
+	if u.IsLinker() {
 		// Verify Strings
-		return req.GetShortID() == u.GetDevice().ShortID()
+		success := req.GetShortID() == u.GetDevice().ShortID()
+		if success {
+			return true, &LinkResponse{
+				Type:   LinkResponse_Type(req.Type),
+				To:     req.GetTo(),
+				From:   req.GetFrom(),
+				Device: u.GetDevice(),
+			}
+		}
 	}
-	return false
+
+	// Return Response
+	return false, &LinkResponse{
+		Success: false,
+	}
 }
 
 // ** ─── Position MANAGEMENT ────────────────────────────────────────────────────────
@@ -140,7 +152,7 @@ func (p *Position) Parameters() (float64, float64, *Position_Orientation) {
 }
 
 // ** ─── Local Event MANAGEMENT ────────────────────────────────────────────────────────
-// Creates New Exit Local Event
+// Creates New Join Topic Event
 func NewJoinEvent(peer *Peer) *TopicEvent {
 	return &TopicEvent{
 		Id:      peer.Id.Peer,
@@ -149,7 +161,7 @@ func NewJoinEvent(peer *Peer) *TopicEvent {
 	}
 }
 
-// Creates New Exit Local Event
+// Creates New Update Topic Event
 func NewUpdateEvent(peer *Peer, topic *Topic) *TopicEvent {
 	return &TopicEvent{
 		Id:      peer.Id.Peer,
@@ -159,7 +171,17 @@ func NewUpdateEvent(peer *Peer, topic *Topic) *TopicEvent {
 	}
 }
 
-// Creates New Exit Local Event
+// Creates New Update Topic Event
+func NewLinkerEvent(peer *Peer, topic *Topic) *TopicEvent {
+	return &TopicEvent{
+		Id:      peer.Id.Peer,
+		Peer:    peer,
+		Subject: TopicEvent_LINKER,
+		Topic:   topic,
+	}
+}
+
+// Creates New Exit Topic Event
 func NewExitEvent(id string, topic *Topic) *TopicEvent {
 	return &TopicEvent{
 		Id:      id,

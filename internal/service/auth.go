@@ -21,9 +21,10 @@ type AuthServiceArgs struct {
 
 // AuthServiceResponse ExchangeResponse is also Peer protobuf
 type AuthServiceResponse struct {
-	InvReply   []byte
-	Peer       []byte
-	LinkResult bool
+	InvReply     []byte
+	Peer         []byte
+	LinkResponse []byte
+	LinkResult   bool
 }
 
 type AuthService struct {
@@ -176,10 +177,10 @@ func (tm *serviceClient) Link(id peer.ID, inv *md.LinkRequest) error {
 		// Call to Peer
 		err = rpcClient.Call(id, util.AUTH_RPC_SERVICE, util.AUTH_METHOD_LINK, args, &reply)
 		if err != nil {
-			tm.handler.OnLink(false, id, inv.GetFrom(), inv.GetTo())
+			tm.handler.OnLink(false, id, nil)
 			return err
 		}
-		tm.handler.OnLink(reply.LinkResult, id, inv.GetFrom(), inv.GetTo())
+		tm.handler.OnLink(reply.LinkResult, id, reply.LinkResponse)
 		return nil
 	}
 	return errors.New("Invite is not a Link Invite")
@@ -196,17 +197,20 @@ func (ts *AuthService) LinkWith(ctx context.Context, args AuthServiceArgs, reply
 		}
 
 		// Handle Status
-		result := ts.user.VerifyShortID(&inv, ts.isLinkingActive)
-		reply.LinkResult = result
-
-		// Set Linking to Inactive
-		if result {
-			ts.isLinkingActive = false
+		ok, result := ts.user.VerifyLink(&inv)
+		buf, err := proto.Marshal(result)
+		if err != nil {
+			return err
 		}
+
+		// Update Properties
+		reply.LinkResponse = buf
+		reply.LinkResult = ok
+		ts.isLinkingActive = !reply.LinkResult
 
 		// Return Result
 		md.LogInfo(fmt.Sprintf("Link Result: %v", result))
-		ts.handler.OnLink(result, peer.ID(inv.GetFrom().PeerID()), inv.GetFrom(), inv.GetTo())
+		ts.handler.OnLink(ok, peer.ID(inv.GetFrom().PeerID()), reply.LinkResponse)
 		return nil
 	} else {
 		return errors.New("Linking is not Active")

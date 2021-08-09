@@ -418,6 +418,15 @@ func NewUser(ir *InitializeRequest) (*User, *SonrError) {
 		Device:  d,
 		ApiKeys: ir.GetApiKeys(),
 		Status:  Status_DEFAULT,
+		Info: &User_Info{
+			
+		},
+	}
+
+	// Check Device Platform for Position
+	if d.IsDesktop() {
+		// Update Peer
+		u.UpdatePosition(DefaultPosition().Parameters())
 	}
 	return u, nil
 }
@@ -606,16 +615,25 @@ func (u *User) NewUpdateEvent(topic *Topic, id peer.ID) *TopicEvent {
 
 // NewDefaultUpdateEvent Updates Peer with Default Position and Returns Lobby Event with Peer Data ^
 func (u *User) NewDefaultUpdateEvent(topic *Topic, id peer.ID) *TopicEvent {
-	// Update Peer
-	u.UpdatePosition(DefaultPosition().Parameters())
-
-	// Return Event
-	return &TopicEvent{
-		Subject: TopicEvent_UPDATE,
-		Peer:    u.GetPeer(),
-		Id:      id.String(),
-		Topic:   topic,
+	// Check if User is Linker
+	if u.IsLinker() {
+		// Return Event
+		return &TopicEvent{
+			Subject: TopicEvent_LINKER,
+			Peer:    u.GetPeer(),
+			Id:      id.String(),
+			Topic:   topic,
+		}
+	} else {
+		// Return Event
+		return &TopicEvent{
+			Subject: TopicEvent_UPDATE,
+			Peer:    u.GetPeer(),
+			Id:      id.String(),
+			Topic:   topic,
+		}
 	}
+
 }
 
 // NewUpdateEvent Creates Lobby Event with Peer Data ^

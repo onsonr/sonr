@@ -436,6 +436,11 @@ func (u *User) SignLink(i *LinkRequest) *LinkRequest {
 			i.Type = LinkRequest_SEND
 		}
 	}
+
+	// Set Contact
+	if i.Contact == nil {
+		i.Contact = u.GetContact()
+	}
 	return i
 }
 
