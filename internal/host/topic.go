@@ -211,7 +211,7 @@ func (tm *TopicManager) Exchange(id peer.ID, peerBuf []byte) error {
 	}
 
 	// Update Peer with new data
-	if remotePeer.Status != md.Peer_LINKER {
+	if remotePeer.Status != md.Peer_PAIRING {
 		tm.handler.OnEvent(md.NewJoinEvent(remotePeer))
 	} else {
 		// Add Linker if Not Present
@@ -234,7 +234,7 @@ func (es *ExchangeService) ExchangeWith(ctx context.Context, args ExchangeServic
 	}
 
 	// Update Peers with Lobby
-	if remotePeer.Status != md.Peer_LINKER {
+	if remotePeer.Status != md.Peer_PAIRING {
 		es.call.OnEvent(md.NewJoinEvent(remotePeer))
 	} else {
 		// Add Linker if Not Present
@@ -318,7 +318,7 @@ func (tm *TopicManager) handleTopicMessages(ctx context.Context) {
 			// Check Peer is Online, if not ignore
 			if m.Peer.GetStatus() == md.Peer_ONLINE {
 				tm.handler.OnEvent(m)
-			} else if m.Peer.GetStatus() == md.Peer_LINKER {
+			} else if m.Peer.GetStatus() == md.Peer_PAIRING {
 				// Validate Linker not Already Set
 				if !tm.HasLinker(m.Peer.PeerID()) {
 					// Append Linkers

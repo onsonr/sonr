@@ -115,6 +115,7 @@ message Peer {
   Properties properties = 7; // Peer specific options set
   Status status = 8;         // Peer Status
   string hostName = 9;       // Peer Host Name
+  Role role = 10;            // Peer Role
 
   // ID References
   message ID {
@@ -125,12 +126,19 @@ message Peer {
     string pushToken = 5; // Push Notification token
   }
 
+  // Peers Device Role
+  enum Role {
+    PRIMARY = 0; // Primary Peer
+    LINKED = 1;  // Linked Peer Device
+  }
+
+  // Peers Active Status
   enum Status {
     DEFAULT = 0; // Offline - Not Online or Not a Full Node
     ONLINE = 1;  // Online - Full Node Available
     AWAY = 2;    // Away - Not Online, but has a full node
     BUSY = 3;    // Busy - Online, but busy with Transfer
-    LINKER = 4;  // Linker - Online/Connected but only for Linking
+    PAIRING = 4; // PAIRING - Online/Connected but only for Linking
   }
 
   // Properties

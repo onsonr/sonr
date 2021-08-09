@@ -61,7 +61,7 @@ func (u *User) SetPeer(id peer.ID, maddr multiaddr.Multiaddr, isLinker bool) *So
 			Platform: u.Device.Platform,
 			Model:    u.GetDevice().GetModel(),
 			HostName: u.GetDevice().GetHostName(),
-			Status:   Peer_LINKER,
+			Status:   Peer_PAIRING,
 		}
 	} else {
 		u.Peer = &Peer{
@@ -88,7 +88,7 @@ func (u *User) SetPeer(id peer.ID, maddr multiaddr.Multiaddr, isLinker bool) *So
 
 // Checks if User Peer is a Linker
 func (u *User) IsLinker() bool {
-	return u.Peer.Status == Peer_LINKER
+	return u.Peer.Status == Peer_PAIRING
 }
 
 // Verify if Passed ShortID is Correct
