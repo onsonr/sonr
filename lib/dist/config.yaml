@@ -75,10 +75,6 @@ env_files:
   github_token: ~/.config/goreleaser/github_token
   gitlab_token: ~/.config/goreleaser/gitlab_token
   gitea_token: ~/.config/goreleaser/gitea_token
-before:
-  hooks:
-  - go mod tidy
-  - go generate ./...
 source:
   name_template: '{{ .ProjectName }}-{{ .Version }}'
   format: tar.gz
