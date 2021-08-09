@@ -448,6 +448,9 @@ service NodeService {
   // Action method handles misceallaneous actions for node
   rpc Action(ActionRequest) returns (NoResponse) {}
 
+  // Link Method Request for Data
+  rpc Link(LinkRequest) returns (NoResponse) {}
+
   // Signing Method Request for Data
   rpc Sign(AuthRequest) returns (NoResponse) {}
 
@@ -469,6 +472,7 @@ service NodeService {
   // Response Streams
   rpc CallAuthResponse(NoRequest) returns (stream AuthResponse) {}
   rpc CallActionResponse(NoRequest) returns (stream ActionResponse) {}
+  rpc CallLinkResponse(NoRequest) returns (stream LinkResponse) {}
   rpc CallDecisionResponse(NoRequest) returns (stream DecisionResponse) {}
   rpc CallInviteResponse(NoRequest) returns (stream InviteResponse) {}
   rpc CallMailboxResponse(NoRequest) returns (stream MailboxResponse) {}
