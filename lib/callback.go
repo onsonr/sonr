@@ -50,6 +50,21 @@ func (s *NodeServer) CallDecisionResponse(rsp *md.NoRequest, stream md.NodeServi
 	}
 }
 
+// CallLinkResponse is called when Link Response is received
+func (s *NodeServer) CallLinkResponse(rsp *md.NoRequest, stream md.NodeService_CallLinkResponseServer) error {
+	for {
+		select {
+		case m := <-s.linkResponses:
+			if m != nil {
+				stream.Send(m)
+			}
+		case <-s.ctx.Done():
+			return nil
+		}
+		md.GetState().NeedsWait()
+	}
+}
+
 // CallMailboxResponse is called when Action Response is received
 func (s *NodeServer) CallMailboxResponse(rsp *md.NoRequest, stream md.NodeService_CallMailboxResponseServer) error {
 	for {
