@@ -101,10 +101,11 @@ func (u *User) VerifyLink(req *LinkRequest) (bool, *LinkResponse) {
 		success := req.GetShortID() == u.GetDevice().ShortID()
 		if success {
 			return true, &LinkResponse{
-				Type:   LinkResponse_Type(req.Type),
-				To:     req.GetTo(),
-				From:   req.GetFrom(),
-				Device: u.GetDevice(),
+				Type:    LinkResponse_Type(req.Type),
+				To:      req.GetTo(),
+				From:    req.GetFrom(),
+				Device:  u.GetDevice(),
+				Contact: req.GetContact(),
 			}
 		}
 	}
