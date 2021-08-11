@@ -7,10 +7,7 @@ jobs:
   clean-runner-history:
     runs-on: ubuntu-latest
     steps:
-      - name: "Make SH Executable"
+      - name: "Make SH Executable and Run Script"
       - run: |
-        chmod +x "${GITHUB_WORKSPACE}/.github/scripts/delete-runs.sh"
-
-      - name: "Run Script"
-      - run: |
-        "${GITHUB_WORKSPACE}/.github/scripts/delete-runs.sh"
+         chmod +x "${GITHUB_WORKSPACE}/.github/scripts/delete-runs.sh"
+         ${GITHUB_WORKSPACE}/.github/scripts/delete-runs.sh
