@@ -5,11 +5,9 @@
 *.so
 *.dylib
 *.DS_Store
-
-.github/
 .vscode/
 build/
-cmd/dist
+lib/dist
 
 # Test binary, built with `go test -c`
 *.test
@@ -19,7 +17,6 @@ cmd/dist
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
-.github/
 node_modules/
 build/
 
