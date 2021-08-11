@@ -3,7 +3,7 @@ package bind
 import (
 	"context"
 
-	sc "github.com/sonr-io/core/internal/client"
+	sc "github.com/sonr-io/core/pkg/client"
 	net "github.com/sonr-io/core/internal/host"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"

@@ -6,8 +6,8 @@ import (
 	"log"
 	"net"
 
-	sc "github.com/sonr-io/core/internal/client"
 	sh "github.com/sonr-io/core/internal/host"
+	sc "github.com/sonr-io/core/pkg/client"
 	md "github.com/sonr-io/core/pkg/models"
 	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/grpc"

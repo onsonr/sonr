@@ -21,6 +21,7 @@ import (
 
 // ** ─── Interface MANAGEMENT ────────────────────────────────────────────────────────
 type HostNode interface {
+	AddTopic(tm *TopicManager)
 	Bootstrap(deviceId string) *md.SonrError
 	Close()
 	ID() peer.ID
@@ -29,6 +30,7 @@ type HostNode interface {
 	JoinTopic(ctx context.Context, u *md.User, topicData *md.Topic, th TopicHandler) (*TopicManager, *md.SonrError)
 	HandleStream(pid protocol.ID, handler network.StreamHandler)
 	MultiAddr() (multiaddr.Multiaddr, *md.SonrError)
+	Pubsub() *psub.PubSub
 	CloseStream(pid protocol.ID, stream network.Stream)
 	StartStream(p peer.ID, pid protocol.ID) (network.Stream, error)
 }
@@ -189,6 +191,11 @@ func newRelayedHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.
 }
 
 // ** ─── Host Info ────────────────────────────────────────────────────────
+// Add Topic to Host Topic List
+func (h *hostNode) AddTopic(tm *TopicManager) {
+	h.topics = append(h.topics, tm)
+}
+
 // Close Libp2p Host
 func (h *hostNode) Close() {
 	h.host.Close()
@@ -221,6 +228,11 @@ func (hn *hostNode) MultiAddr() (multiaddr.Multiaddr, *md.SonrError) {
 		return nil, md.NewError(err, md.ErrorEvent_HOST_INFO)
 	}
 	return addrs[0], nil
+}
+
+// Returns Host Node MultiAddr
+func (hn *hostNode) Pubsub() *psub.PubSub {
+	return hn.pubsub
 }
 
 // ** ─── Stream/Pubsub Methods ────────────────────────────────────────────────────────
