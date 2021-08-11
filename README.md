@@ -6,7 +6,7 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/sonr-io/core/badge/release?s=ee02a1b599502678b3d583aa5b6d1f55d2137ded)](https://www.codefactor.io/repository/github/sonr-io/core/overview/release)
 
 
-*By [Sonr](https://www.sonr.io), creators of [The Sonr App](https://www.twitter.com/TheSonrApp)* 
+*By [Sonr](https://www.sonr.io), creators of [The Sonr App](https://www.twitter.com/TheSonrApp)*
 
 ---
 
@@ -64,3 +64,5 @@ make clean
   - Any struct type, all of whose exported methods have
   supported function types and all of whose exported fields
   have supported types.
+
+gh api repos/sonr-io/core/actions/runs --paginate -q '.workflow_runs[] | select(.head_branch != "master") | "\(.id)"' | xargs -n1 -I % gh api repos/sonr-io/core/actions/runs/% -X DELETE

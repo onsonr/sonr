@@ -1,0 +1,16 @@
+name: Clean Runners Workflow
+
+on:
+  workflow_dispatch:
+
+jobs:
+  clean-runner-history:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Make SH Executable"
+      - run: |
+        chmod +x "${GITHUB_WORKSPACE}/.github/scripts/delete-runs.sh"
+
+      - name: "Run Script"
+      - run: |
+        "${GITHUB_WORKSPACE}/.github/scripts/delete-runs.sh"
