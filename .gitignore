@@ -8,6 +8,8 @@
 .vscode/
 build/
 lib/dist
+lib/package-lock.json
+lib/node_modules
 
 # Test binary, built with `go test -c`
 *.test
