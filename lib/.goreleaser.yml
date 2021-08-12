@@ -21,4 +21,6 @@ blobs:
     bucket: rpc-releases
     folder: "{{ .Tag }}"
 release:
-  disable: true
+  github:
+    owner: sonr-io
+    name: core
