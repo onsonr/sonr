@@ -1,6 +1,6 @@
 project_name: sonr-rpc
 builds:
-  - binary: sonr-rpc_{{ .Tag}}_{{ .OS }}_{{ .Arch }}
+  - binary: sonr-rpc_{{ .Tag }}_{{ .Os }}_{{ .Arch }}
     goos:
       - linux
       - windows
