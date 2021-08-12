@@ -19,12 +19,3 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout Repo
         uses: actions/checkout@v2
-
-      - name: Generate changelog
-        id: changelog
-        uses: metcalfc/changelog-generator@v1.0.0
-        with:
-          myToken: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Get the changelog
-        run: echo "${{ steps.changelog.outputs.changelog }}"

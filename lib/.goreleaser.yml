@@ -1,6 +1,6 @@
 project_name: sonr-rpc
 builds:
-  - binary: sonr-rpc_{{ .Tag }}_{{ .Os }}_{{ .Arch }}
+  - binary: sonr-rpc
     goos:
       - linux
       - windows
@@ -8,18 +8,12 @@ builds:
     goarch:
       - amd64
       - arm64
-    no_unique_dist_dir: true
 archives:
   - format: binary
 checksum:
   name_template: "checksums.txt"
 snapshot:
   name_template: "{{ .Tag }}-next"
-blobs:
-  - provider: s3
-    region: us-west-1
-    bucket: rpc-releases
-    folder: "{{ .Tag }}"
 release:
   github:
     owner: sonr-io
