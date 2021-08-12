@@ -22,9 +22,10 @@ type Node struct {
 	device  *md.Device
 	state   md.Lifecycle
 
-	// Groups
-	local *tp.RoomManager
-	Rooms map[string]*tp.RoomManager
+	// Rooms
+	local   *tp.RoomManager
+	devices *tp.RoomManager
+	groups  map[string]*tp.RoomManager
 }
 
 // Initializes New Node ^ //
@@ -45,10 +46,10 @@ func Initialize(reqBytes []byte, call Callback) *Node {
 
 	// Initialize Node
 	mn := &Node{
-		call:  call,
-		ctx:   context.Background(),
-		Rooms: make(map[string]*tp.RoomManager, 10),
-		state: md.Lifecycle_ACTIVE,
+		call:   call,
+		ctx:    context.Background(),
+		groups: make(map[string]*tp.RoomManager, 10),
+		state:  md.Lifecycle_ACTIVE,
 		device: device,
 	}
 

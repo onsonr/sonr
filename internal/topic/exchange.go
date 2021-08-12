@@ -10,8 +10,6 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-
-
 // ExchangeServiceArgs ExchangeArgs is Peer protobuf
 type ExchangeServiceArgs struct {
 	Peer []byte
@@ -28,7 +26,7 @@ type ExchangeService struct {
 	call    RoomHandler
 	linkers []*md.Peer
 	room    GetRoomFunc
-	user    *md.Device
+	device  *md.Device
 }
 
 // Initialize Exchange Service by Room Type
@@ -36,7 +34,7 @@ func (rm *RoomManager) initExchange() *md.SonrError {
 	// Start Exchange RPC Server
 	exchangeServer := rpc.NewServer(rm.host.Host(), util.EXCHANGE_PROTOCOL)
 	esv := ExchangeService{
-		user:    rm.user,
+		device:  rm.device,
 		call:    rm.handler,
 		linkers: rm.linkers,
 		room:    rm.Room,
@@ -50,6 +48,10 @@ func (rm *RoomManager) initExchange() *md.SonrError {
 
 	// Set Service
 	rm.exchange = &esv
+
+	// Handle Events
+	go rm.handleExchangeEvents(context.Background())
+	go rm.handleExchangeMessages(context.Background())
 	return nil
 }
 
@@ -115,7 +117,7 @@ func (es *ExchangeService) ExchangeWith(ctx context.Context, args ExchangeServic
 	}
 
 	// Set Message data and call done
-	buf, err := es.user.GetPeer().Buffer()
+	buf, err := es.device.GetPeer().Buffer()
 	if err != nil {
 		md.LogError(err)
 		return err
@@ -147,7 +149,7 @@ func (rm *RoomManager) handleExchangeEvents(ctx context.Context) {
 
 		// Check Event and Validate not User
 		if rm.isEventJoin(event) {
-			pbuf, err := rm.user.GetPeer().Buffer()
+			pbuf, err := rm.device.GetPeer().Buffer()
 			if err != nil {
 				md.LogError(err)
 				continue

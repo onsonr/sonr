@@ -93,7 +93,7 @@ func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.NoR
 	return &md.NoResponse{}, nil
 }
 
-// Sign method signs data with user's private key
+// Sign method signs data with device's private key
 func (s *NodeServer) Sign(ctx context.Context, req *md.AuthRequest) (*md.NoResponse, error) {
 	md.LogRPC("Sign", req)
 	s.authResponses <- s.account.Sign(req)
@@ -117,7 +117,7 @@ func (s *NodeServer) Link(ctx context.Context, req *md.LinkRequest) (*md.NoRespo
 	return &md.NoResponse{}, nil
 }
 
-// Verify validates user Keys
+// Verify validates device Keys
 func (s *NodeServer) Verify(ctx context.Context, req *md.VerifyRequest) (*md.NoResponse, error) {
 	md.LogRPC("Verify", req)
 	// Get Key Pair

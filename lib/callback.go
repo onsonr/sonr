@@ -110,7 +110,7 @@ func (s *NodeServer) OnComplete(req *md.NoRequest, stream md.NodeService_OnCompl
 	}
 }
 
-// OnInvite is called when user is invited by a Peer
+// OnInvite is called when device is invited by a Peer
 func (s *NodeServer) OnInvite(req *md.NoRequest, stream md.NodeService_OnInviteServer) error {
 	for {
 		select {

@@ -19,7 +19,7 @@ type DeviceServiceResponse struct {
 type DeviceService struct {
 	ServiceClient
 	handler ServiceHandler
-	user    *md.Device
+	device  *md.Device
 	respCh  chan *md.InviteResponse
 	invite  *md.InviteRequest
 }
@@ -29,7 +29,7 @@ func (sc *serviceClient) StartDevices() *md.SonrError {
 	// Start Exchange Server
 	localServer := rpc.NewServer(sc.host.Host(), util.AUTH_PROTOCOL)
 	dsv := DeviceService{
-		user:    sc.user,
+		device:  sc.device,
 		handler: sc.handler,
 		respCh:  make(chan *md.InviteResponse, util.MAX_CHAN_DATA),
 	}

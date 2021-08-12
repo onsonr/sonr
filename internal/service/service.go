@@ -42,7 +42,7 @@ type serviceClient struct {
 	host      net.HostNode
 	pushToken string
 	request   *md.ConnectionRequest
-	user      *md.Device
+	device    *md.Device
 
 	// Services
 	Auth    *AuthService
@@ -61,7 +61,7 @@ func NewService(ctx context.Context, h net.HostNode, u *md.Device, req *md.Conne
 		host:      h,
 		pushToken: req.GetPushToken(),
 		request:   req,
-		user:      u,
+		device:    u,
 	}
 
 	// Begin Auth Service

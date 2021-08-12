@@ -29,7 +29,7 @@ type AuthServiceResponse struct {
 
 type AuthService struct {
 	handler         ServiceHandler
-	user            *md.Device
+	device          *md.Device
 	respCh          chan *md.InviteResponse
 	linkCh          chan *md.LinkRequest
 	invite          *md.InviteRequest
@@ -41,7 +41,7 @@ func (sc *serviceClient) StartAuth() *md.SonrError {
 	// Start Exchange Server
 	localServer := rpc.NewServer(sc.host.Host(), util.AUTH_PROTOCOL)
 	psv := AuthService{
-		user:    sc.user,
+		device:  sc.device,
 		handler: sc.handler,
 		respCh:  make(chan *md.InviteResponse, util.MAX_CHAN_DATA),
 		linkCh:  make(chan *md.LinkRequest, util.MAX_CHAN_DATA),
@@ -127,7 +127,7 @@ func (ts *AuthService) InviteWith(ctx context.Context, args AuthServiceArgs, rep
 	// Check Invite for Flat/Default
 	if isFlat {
 		// Sign Contact Reply
-		resp := ts.user.ReplyToFlat(inv.GetFrom())
+		resp := ts.device.ReplyToFlat(inv.GetFrom())
 
 		// Convert Protobuf to bytes
 		msgBytes, err := proto.Marshal(resp)
@@ -197,7 +197,7 @@ func (ts *AuthService) LinkWith(ctx context.Context, args AuthServiceArgs, reply
 		}
 
 		// Handle Status
-		ok, result := ts.user.VerifyLink(&inv)
+		ok, result := ts.device.VerifyLink(&inv)
 		buf, err := proto.Marshal(result)
 		if err != nil {
 			return err

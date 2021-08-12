@@ -17,8 +17,19 @@ var (
 )
 
 // ** ─── Room MANAGEMENT ────────────────────────────────────────────────────────
+// Checks if Room Type is Local
 func (t *Room) IsLocal() bool {
 	return t.Type == Room_LOCAL
+}
+
+// Checks if Room Type is Devices
+func (t *Room) IsDevices() bool {
+	return t.Type == Room_DEVICE
+}
+
+// Checks if Room Type is Group
+func (t *Room) IsGroup() bool {
+	return t.Type == Room_GROUP
 }
 
 // Local Lobby Room Protocol ID
@@ -43,6 +54,16 @@ func (r *Account) NewDeviceRoom() *Room {
 	return &Room{
 		Name: fmt.Sprintf("/sonr/device/%s", r.SName),
 		Type: Room_DEVICE,
+	}
+}
+
+// Local Lobby Room Protocol ID
+func (r *Account) NewGroupRoom(name string) *Room {
+
+	// Return Room
+	return &Room{
+		Name: fmt.Sprintf("/sonr/group/%s", name),
+		Type: Room_GROUP,
 	}
 }
 

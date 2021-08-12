@@ -19,7 +19,7 @@ type SyncServiceArgs struct {
 
 // SyncServiceRssponse ExchangeRssponse is Member protobuf
 type SyncServiceResponse struct {
-	Succsss bool
+	Success bool
 	Contact []byte
 	Device  []byte
 	Peer    []byte
@@ -28,9 +28,9 @@ type SyncServiceResponse struct {
 // SyncService Service Struct
 type SyncService struct {
 	// Current Data
-	call    RoomHandler
-	room    GetRoomFunc
-	user    *md.Device
+	call   RoomHandler
+	room   GetRoomFunc
+	device *md.Device
 }
 
 // Initialize Exchange Service by Room Type
@@ -38,9 +38,9 @@ func (rm *RoomManager) initSync() *md.SonrError {
 	// Start Exchange RPC Server
 	syncServer := rpc.NewServer(rm.host.Host(), util.SYNC_PROTOCOL)
 	syncService := SyncService{
-		user:    rm.user,
-		call:    rm.handler,
-		room:    rm.Room,
+		device: rm.device,
+		call:   rm.handler,
+		room:   rm.Room,
 	}
 
 	// Register Service
@@ -96,7 +96,7 @@ func (ss *SyncService) SyncWith(ctx context.Context, args SyncServiceArgs, reply
 	ss.call.OnRoomEvent(ss.room().NewJoinEvent(remotePeer))
 
 	// Set Msssage data and call done
-	buf, err := ss.user.GetPeer().Buffer()
+	buf, err := ss.device.GetPeer().Buffer()
 	if err != nil {
 		md.LogError(err)
 		return err
@@ -119,7 +119,7 @@ func (rm *RoomManager) handleSyncEvents(ctx context.Context) {
 
 		// Check Event and Validate not User
 		if rm.isEventJoin(event) {
-			pbuf, err := rm.user.GetPeer().Buffer()
+			pbuf, err := rm.device.GetPeer().Buffer()
 			if err != nil {
 				md.LogError(err)
 				continue

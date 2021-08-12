@@ -5,13 +5,13 @@ import (
 	"errors"
 
 	"github.com/libp2p/go-libp2p-core/peer"
-	rpc "github.com/libp2p/go-libp2p-gorpc"
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	sh "github.com/sonr-io/core/internal/host"
 	md "github.com/sonr-io/core/pkg/models"
 	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/proto"
 )
+
 type GetRoomFunc func() *md.Room
 
 type RoomHandler interface {
@@ -20,20 +20,25 @@ type RoomHandler interface {
 }
 
 type RoomManager struct {
+	// General
 	ctx          context.Context
 	host         sh.HostNode
 	Topic        *ps.Topic
 	subscription *ps.Subscription
 	eventHandler *ps.TopicEventHandler
-	user         *md.Device
+	device       *md.Device
+	handler      RoomHandler
 
-	roomEvents chan *md.RoomEvent
+	// Sync
 	syncEvents chan *md.SyncEvent
-	exchange   *ExchangeService
 	sync       *SyncService
-	handler    RoomHandler
-	linkers    []*md.Peer
-	room       *md.Room
+
+	// Exchange
+	exchange   *ExchangeService
+	roomEvents chan *md.RoomEvent
+
+	linkers []*md.Peer
+	room    *md.Room
 }
 
 // NewLocal ^ Create New Contained Room Manager ^ //
@@ -60,7 +65,7 @@ func JoinRoom(ctx context.Context, h sh.HostNode, u *md.Device, room *md.Room, t
 	// Create Lobby Manager
 	mgr := &RoomManager{
 		handler:      th,
-		user:         u,
+		device:       u,
 		ctx:          ctx,
 		host:         h,
 		eventHandler: handler,
@@ -71,27 +76,28 @@ func JoinRoom(ctx context.Context, h sh.HostNode, u *md.Device, room *md.Room, t
 		Topic:        topic,
 	}
 
-	// Start Exchange RPC Server
-	exchangeServer := rpc.NewServer(h.Host(), util.EXCHANGE_PROTOCOL)
-	esv := ExchangeService{
-		user:    u,
-		call:    th,
-		linkers: mgr.linkers,
+	// Check Topic type
+	if room.IsLocal() {
+		// Start Exchange
+		err := mgr.initExchange()
+		if err != nil {
+			return nil, err
+		}
+
+		// Return Manager
+		return mgr, nil
+	} else if room.IsDevices() {
+		// Start Sync
+		err := mgr.initSync()
+		if err != nil {
+			return nil, err
+		}
+
+		// Return Manager
+		return mgr, nil
+	} else {
+		return nil, md.NewError(errors.New("Invalid Room Type"), md.ErrorEvent_ROOM_JOIN)
 	}
-
-	// Register Service
-	err = exchangeServer.RegisterName(util.EXCHANGE_RPC_SERVICE, &esv)
-	if err != nil {
-		return nil, md.NewError(err, md.ErrorEvent_ROOM_RPC)
-	}
-
-	// Set Service
-	mgr.exchange = &esv
-
-	// Handle Events
-	go mgr.handleExchangeEvents(context.Background())
-	go mgr.handleExchangeMessages(context.Background())
-	return mgr, nil
 }
 
 // FindPeer @ Helper: Find returns Pointer to Peer.ID and Peer
