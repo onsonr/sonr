@@ -25,7 +25,7 @@ type RoomManager struct {
 	Topic        *ps.Topic
 	subscription *ps.Subscription
 	eventHandler *ps.TopicEventHandler
-	user         *md.User
+	user         *md.Device
 
 	roomEvents chan *md.RoomEvent
 	syncEvents chan *md.SyncEvent
@@ -37,7 +37,7 @@ type RoomManager struct {
 }
 
 // NewLocal ^ Create New Contained Room Manager ^ //
-func JoinRoom(ctx context.Context, h sh.HostNode, u *md.User, room *md.Room, th RoomHandler) (*RoomManager, *md.SonrError) {
+func JoinRoom(ctx context.Context, h sh.HostNode, u *md.Device, room *md.Room, th RoomHandler) (*RoomManager, *md.SonrError) {
 	// Join Room
 	name := room.GetName()
 	topic, err := h.Pubsub().Join(name)

@@ -61,21 +61,21 @@ type hostNode struct {
 }
 
 // Start Begins Assigning Host Parameters ^
-func NewHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair, hh HostHandler) (HostNode, *md.SonrError) {
+func NewHost(ctx context.Context, req *md.ConnectionRequest, kp *md.KeyPair, hh HostHandler) (HostNode, *md.SonrError) {
 	// Initialize DHT
 	var kdhtRef *dht.IpfsDHT
 
 	// Find Listen Addresses
 	addrs, err := PublicAddrStrs(req)
 	if err != nil {
-		return newRelayedHost(ctx, req, keyPair, hh)
+		return newRelayedHost(ctx, req, kp, hh)
 	}
 
 	// Start Host
 	h, err := libp2p.New(
 		ctx,
 		libp2p.ListenAddrStrings(addrs...),
-		libp2p.Identity(keyPair.PrivKey()),
+		libp2p.Identity(kp.PrivKey()),
 		libp2p.DefaultTransports,
 		libp2p.ConnectionManager(connmgr.NewConnManager(
 			100,         // Lowwater
@@ -99,14 +99,14 @@ func NewHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair
 
 	// Set Host for Node
 	if err != nil {
-		return newRelayedHost(ctx, req, keyPair, hh)
+		return newRelayedHost(ctx, req, kp, hh)
 	}
 
 	// Create Host
 	hn := &hostNode{
 		ctxHost: ctx,
 		apiKeys: req.ApiKeys,
-		keyPair: keyPair,
+		keyPair: kp,
 		handler: hh,
 		id:      h.ID(),
 		host:    h,

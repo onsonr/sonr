@@ -8,13 +8,13 @@ import (
 // ** ─── Node Status Checks ────────────────────────────────────────────────────────
 // # Checks if Node is Ready for Actions
 func (n *Node) isReady() bool {
-	return n.user.IsNotStatus(md.Status_STANDBY) || n.user.IsNotStatus(md.Status_FAILED)
+	return n.device.IsNotStatus(md.Status_STANDBY) || n.device.IsNotStatus(md.Status_FAILED)
 }
 
 // # Sets Node to be Connected Status
 func (n *Node) setConnected(val bool) {
 	// Update Status
-	su := n.user.SetConnected(val)
+	su := n.device.SetConnected(val)
 
 	// Callback Status
 	data, err := proto.Marshal(su)
@@ -28,7 +28,7 @@ func (n *Node) setConnected(val bool) {
 // # Sets Node to be Available Status
 func (n *Node) setAvailable(val bool) {
 	// Update Status
-	su := n.user.SetAvailable(val)
+	su := n.device.SetAvailable(val)
 
 	// Callback Status
 	data, err := proto.Marshal(su)
@@ -42,7 +42,7 @@ func (n *Node) setAvailable(val bool) {
 // # Sets Node to be (Provided) Status
 func (n *Node) setStatus(newStatus md.Status) {
 	// Set Status
-	su := n.user.SetStatus(newStatus)
+	su := n.device.SetStatus(newStatus)
 
 	// Callback Status
 	data, err := proto.Marshal(su)

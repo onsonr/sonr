@@ -21,7 +21,6 @@ type Node struct {
 	client  sc.Client
 	device  *md.Device
 	state   md.Lifecycle
-	user    *md.User
 
 	// Groups
 	local *tp.RoomManager
@@ -41,23 +40,28 @@ func Initialize(reqBytes []byte, call Callback) *Node {
 	// Initialize Logger
 	md.InitLogger(req)
 
+	// Initialize Device
+	device := req.GetDevice()
+
 	// Initialize Node
 	mn := &Node{
 		call:  call,
 		ctx:   context.Background(),
 		Rooms: make(map[string]*tp.RoomManager, 10),
 		state: md.Lifecycle_ACTIVE,
+		device: device,
 	}
 
 	// Create User
-	if u, err := md.NewUser(req); err != nil {
+	if u, err := md.InitAccount(req, device); err != nil {
 		mn.handleError(err)
 	} else {
-		mn.user = u
+		mn.account = u
+		mn.device = device
 	}
 
 	// Create Client
-	mn.client = sc.NewClient(mn.ctx, mn.user, mn.callback())
+	mn.client = sc.NewClient(mn.ctx, mn.device, mn.callback())
 	return mn
 }
 
@@ -71,16 +75,18 @@ func (n *Node) Connect(data []byte) {
 	}
 
 	// Update User with Connection Request
-	n.user.InitConnection(req)
+	n.account.SetConnection(req)
+	n.device.SetConnection(req)
 
 	// Connect Host
-	serr := n.client.Connect(req, n.user.KeyPair())
+	peer, isPrimary, serr := n.client.Connect(req)
 	if serr != nil {
 		n.handleError(serr)
 		n.setConnected(false)
 	} else {
 		// Update Status
 		n.setConnected(true)
+		n.account.HandleSetPeer(peer, isPrimary)
 	}
 
 	// Bootstrap Node

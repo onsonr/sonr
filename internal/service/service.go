@@ -42,7 +42,7 @@ type serviceClient struct {
 	host      net.HostNode
 	pushToken string
 	request   *md.ConnectionRequest
-	user      *md.User
+	user      *md.Device
 
 	// Services
 	Auth    *AuthService
@@ -52,7 +52,7 @@ type serviceClient struct {
 }
 
 // Creates New Service Interface
-func NewService(ctx context.Context, h net.HostNode, u *md.User, req *md.ConnectionRequest, sh ServiceHandler) (ServiceClient, *md.SonrError) {
+func NewService(ctx context.Context, h net.HostNode, u *md.Device, req *md.ConnectionRequest, sh ServiceHandler) (ServiceClient, *md.SonrError) {
 	// Create Client
 	client := &serviceClient{
 		ctx:       ctx,

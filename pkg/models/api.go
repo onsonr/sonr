@@ -396,10 +396,10 @@ func (i *InviteRequest) SetProtocol(p SonrProtocol, id peer.ID) protocol.ID {
 }
 
 // Validates InviteRequest has From Parameter
-func (u *User) SignInvite(i *InviteRequest) *InviteRequest {
+func (u *Device) SignInvite(i *InviteRequest) *InviteRequest {
 	// Set From
 	if i.From == nil {
-		i.From = u.GetPrimary()
+		i.From = u.GetPeer()
 	}
 
 	// Convert all Thumbnails to Buffers
@@ -447,10 +447,10 @@ func (u *User) SignInvite(i *InviteRequest) *InviteRequest {
 }
 
 // Validates LinkRequest has From Parameter
-func (u *User) SignLink(i *LinkRequest) *LinkRequest {
+func (u *Device) SignLink(i *LinkRequest) *LinkRequest {
 	// Set From
 	if i.From == nil {
-		i.From = u.GetPrimary()
+		i.From = u.GetPeer()
 	}
 
 	// Set Type
@@ -523,7 +523,7 @@ func (p SonrProtocol) Method() string {
 
 // ** ─── Status MANAGEMENT ────────────────────────────────────────────────────────
 // Update Connected Connection Status
-func (u *User) SetConnected(value bool) *StatusEvent {
+func (u *Device) SetConnected(value bool) *StatusEvent {
 	// Update Status
 	if value {
 		u.Status = Status_CONNECTED
@@ -536,7 +536,7 @@ func (u *User) SetConnected(value bool) *StatusEvent {
 }
 
 // Update Bootstrap Connection Status
-func (u *User) SetAvailable(value bool) *StatusEvent {
+func (u *Device) SetAvailable(value bool) *StatusEvent {
 	// Update Status
 	if value {
 		u.Status = Status_AVAILABLE
@@ -549,7 +549,7 @@ func (u *User) SetAvailable(value bool) *StatusEvent {
 }
 
 // Update Node Status
-func (u *User) SetStatus(ns Status) *StatusEvent {
+func (u *Device) SetStatus(ns Status) *StatusEvent {
 	// Set Value
 	u.Status = ns
 
@@ -558,12 +558,12 @@ func (u *User) SetStatus(ns Status) *StatusEvent {
 }
 
 // Checks if Status is Given Value
-func (u *User) IsStatus(gs Status) bool {
+func (u *Device) IsStatus(gs Status) bool {
 	return u.Status == gs
 }
 
 // Checks if Status is Not Given Value
-func (u *User) IsNotStatus(gs Status) bool {
+func (u *Device) IsNotStatus(gs Status) bool {
 	return u.Status != gs
 }
 

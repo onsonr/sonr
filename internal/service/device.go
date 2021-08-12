@@ -19,7 +19,7 @@ type DeviceServiceResponse struct {
 type DeviceService struct {
 	ServiceClient
 	handler ServiceHandler
-	user    *md.User
+	user    *md.Device
 	respCh  chan *md.InviteResponse
 	invite  *md.InviteRequest
 }

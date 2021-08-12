@@ -22,7 +22,7 @@ func (t *Room) IsLocal() bool {
 }
 
 // Local Lobby Room Protocol ID
-func (r *User) NewLocalRoom(opts *ConnectionRequest_ServiceOptions) *Room {
+func (r *Device) NewLocalRoom(opts *ConnectionRequest_ServiceOptions) *Room {
 	// Initialize Set OLC Range
 	scope := 6
 	if opts.GetOlcRange() > 0 {
@@ -37,7 +37,7 @@ func (r *User) NewLocalRoom(opts *ConnectionRequest_ServiceOptions) *Room {
 }
 
 // Local Lobby Room Protocol ID
-func (r *User) NewDeviceRoom() *Room {
+func (r *Account) NewDeviceRoom() *Room {
 
 	// Return Room
 	return &Room{
@@ -74,7 +74,7 @@ func (m *Member) UpdateProfile(c *Contact) {
 }
 
 // Return Users Primary Peer
-func (u *User) GetPrimary() *Peer {
+func (u *Account) PrimaryPeer() *Peer {
 	return u.GetMember().GetPrimary()
 }
 
@@ -120,70 +120,24 @@ func (d *Device) SetPeer(id peer.ID, maddr multiaddr.Multiaddr, isLinker bool) (
 }
 
 // ** ─── Peer MANAGEMENT ────────────────────────────────────────────────────────
-// Set Peer from Connection Request and Host ID ^ //
-func (u *User) SetPeer(id peer.ID, maddr multiaddr.Multiaddr, isLinker bool) *SonrError {
-	// Set Status
-	if isLinker {
-		u.Member = &Member{
-			SName: u.SName,
-			Primary: &Peer{
-				Id: &Peer_ID{
-					Peer:      id.String(),
-					Device:    u.DeviceID(),
-					MultiAddr: maddr.String(),
-					PublicKey: u.KeyPair().PubKeyBase64(),
-				},
-				Platform: u.Device.Platform,
-				Model:    u.GetDevice().GetModel(),
-				HostName: u.GetDevice().GetHostName(),
-				Status:   Peer_PAIRING,
-			},
-			Reach: Member_ONLINE,
-		}
-	} else {
-		u.Member = &Member{
-			SName: u.SName,
-			Primary: &Peer{
-				SName: u.SName,
-				Id: &Peer_ID{
-					Peer:      id.String(),
-					Device:    u.DeviceID(),
-					MultiAddr: maddr.String(),
-					PublicKey: u.KeyPair().PubKeyBase64(),
-					PushToken: u.GetPushToken(),
-				},
-				Profile:  u.Profile(),
-				Platform: u.Device.Platform,
-				Model:    u.GetDevice().GetModel(),
-				HostName: u.GetDevice().GetHostName(),
-				Status:   Peer_ONLINE,
-			},
-			Reach: Member_ONLINE,
-		}
-	}
-
-	// Log Peer
-	LogInfo(u.GetPrimary().String())
-	return nil
-}
 
 // Checks if User Peer is a Linker
-func (u *User) IsLinker() bool {
-	return u.GetPrimary().Status == Peer_PAIRING
+func (u *Device) IsLinker() bool {
+	return u.GetPeer().Status == Peer_PAIRING
 }
 
 // Verify if Passed ShortID is Correct
-func (u *User) VerifyLink(req *LinkRequest) (bool, *LinkResponse) {
+func (u *Device) VerifyLink(req *LinkRequest) (bool, *LinkResponse) {
 	// Check if Peer is Linker
 	if u.IsLinker() {
 		// Verify Strings
-		success := req.GetShortID() == u.GetDevice().ShortID()
+		success := req.GetShortID() == u.ShortID()
 		if success {
 			return true, &LinkResponse{
 				Type:    LinkResponse_Type(req.Type),
 				To:      req.GetTo(),
 				From:    req.GetFrom(),
-				Device:  u.GetDevice(),
+				Device:  u,
 				Contact: req.GetContact(),
 			}
 		}

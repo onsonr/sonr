@@ -188,7 +188,7 @@ type Session struct {
 	owner     *Peer
 	receiver  *Peer
 	pid       protocol.ID
-	user      *User
+	device      *Device
 	direction CompleteEvent_Direction
 
 	// Management
@@ -202,27 +202,27 @@ type SessionHandler interface {
 }
 
 // Prepare for Outgoing Session ^ //
-func NewOutSession(u *User, req *InviteRequest, sh SessionHandler) *Session {
+func NewOutSession(u *Device, req *InviteRequest, sh SessionHandler) *Session {
 	return &Session{
 		file:      req.GetFile(),
 		owner:     req.GetFrom(),
 		receiver:  req.GetTo(),
 		pid:       req.ProtocolID(),
-		user:      u,
+		device:      u,
 		direction: CompleteEvent_OUTGOING,
 		call:      sh,
 	}
 }
 
 // Prepare for Incoming Session ^ //
-func NewInSession(u *User, inv *InviteRequest, sh SessionHandler) *Session {
+func NewInSession(u *Device, inv *InviteRequest, sh SessionHandler) *Session {
 	// Return Session
 	return &Session{
 		file:      inv.GetFile(),
 		owner:     inv.GetFrom(),
 		receiver:  inv.GetTo(),
 		pid:       inv.ProtocolID(),
-		user:      u,
+		device:      u,
 		direction: CompleteEvent_INCOMING,
 		call:      sh,
 	}
@@ -253,7 +253,7 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 	go func(rs msg.ReadCloser) {
 		// Read All Files
 		for i, m := range s.file.Items {
-			r := m.NewReader(s.user.Device, i, int(s.file.GetCount()), s.call)
+			r := m.NewReader(s.device, i, int(s.file.GetCount()), s.call)
 			err := r.ReadFrom(rs)
 			if err != nil {
 				s.call.OnError(NewError(err, ErrorEvent_INCOMING))
@@ -270,7 +270,7 @@ func (s *Session) WriteToStream(stream network.Stream) {
 	go func(ws msg.WriteCloser) {
 		// Write All Files
 		for i, m := range s.file.Items {
-			w := m.NewWriter(s.user.Device, i, int(s.file.GetCount()), s.call)
+			w := m.NewWriter(s.device, i, int(s.file.GetCount()), s.call)
 			err := w.WriteTo(ws)
 			if err != nil {
 				s.call.OnError(NewError(err, ErrorEvent_OUTGOING))

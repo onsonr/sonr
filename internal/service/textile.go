@@ -57,7 +57,7 @@ func (sc *serviceClient) StartTextile() *md.SonrError {
 		apiKeys:     sc.apiKeys,
 		host:        sc.host,
 		onConnected: sc.handler.OnConnected,
-		device:      sc.user.GetDevice(),
+		device:      sc.user,
 		handler:     sc.handler,
 		pushService: sc.Push,
 	}
