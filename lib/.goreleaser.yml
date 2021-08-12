@@ -1,6 +1,6 @@
 project_name: sonr-rpc
 builds:
-  - binary: sonr-rpc
+  - binary: sonr-rpc_{{ .Tag}}_{{ .OS }}_{{ .Arch }}
     goos:
       - linux
       - windows
@@ -8,6 +8,7 @@ builds:
     goarch:
       - amd64
       - arm64
+    no_unique_dist_dir: true
 archives:
   - format: binary
 checksum:
@@ -18,6 +19,6 @@ blobs:
   - provider: s3
     region: us-west-1
     bucket: rpc-releases
-    folder: "{{ .Tag }}/{{ .Os }}/{{ .Arch }}"
+    folder: "{{ .Tag }}"
 release:
   disable: true
