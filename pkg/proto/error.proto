@@ -20,16 +20,16 @@ message ErrorEvent {
     BOOTSTRAP = 4;  // Error occurred during Bootstrapping
     DEVICE_ID = 60; // Error occurred during Device ID Generation
 
-    // Topic
-    TOPIC_JOIN = 5;     // Error occurred during Topic Join
-    TOPIC_CREATE = 6;   // Error occurred during Topic Creation
-    TOPIC_INVALID = 7;  // Error occurred during Topic Invalid
-    TOPIC_RPC = 8;      // Error occurred during Topic RPC
-    TOPIC_SUB = 9;      // Error occurred during Topic Subscription
-    TOPIC_HANDLER = 10; // Error occurred during Topic Handler
-    TOPIC_LEAVE = 11;   // Error occurred during Topic Leave
-    TOPIC_MESSAGE = 12; // Error occurred during Topic Message
-    TOPIC_UPDATE = 13;  // Error occurred during Topic Update
+    // Room
+    ROOM_JOIN = 5;     // Error occurred during Room Join
+    ROOM_CREATE = 6;   // Error occurred during Room Creation
+    ROOM_INVALID = 7;  // Error occurred during Room Invalid
+    ROOM_RPC = 8;      // Error occurred during Room RPC
+    ROOM_SUB = 9;      // Error occurred during Room Subscription
+    ROOM_HANDLER = 10; // Error occurred during Room Handler
+    ROOM_LEAVE = 11;   // Error occurred during Room Leave
+    ROOM_MESSAGE = 12; // Error occurred during Room Message
+    ROOM_UPDATE = 13;  // Error occurred during Room Update
 
     // User
     USER_CREATE = 17; // Error occurred during User Creation

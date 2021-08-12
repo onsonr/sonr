@@ -141,7 +141,7 @@ func (c *client) Link(req *md.LinkRequest, t *net.RoomManager) (*md.LinkResponse
 			// Send Default Invite
 			err = c.Service.Link(id, req)
 			if err != nil {
-				return nil, md.NewError(err, md.ErrorEvent_TOPIC_RPC)
+				return nil, md.NewError(err, md.ErrorEvent_ROOM_RPC)
 			}
 			return c.user.VerifyLinkReceive(req), nil
 		}
@@ -185,7 +185,7 @@ func (c *client) Invite(invite *md.InviteRequest, t *net.RoomManager) *md.SonrEr
 					// Send Default Invite
 					err = c.Service.Invite(id, inv)
 					if err != nil {
-						c.call.OnError(md.NewError(err, md.ErrorEvent_TOPIC_RPC))
+						c.call.OnError(md.NewError(err, md.ErrorEvent_ROOM_RPC))
 						return
 					}
 				}(invite)
@@ -219,7 +219,7 @@ func (c *client) Update(t *net.RoomManager) *md.SonrError {
 
 		// Inform Lobby
 		if err := t.Publish(ev); err != nil {
-			return md.NewError(err, md.ErrorEvent_TOPIC_UPDATE)
+			return md.NewError(err, md.ErrorEvent_ROOM_UPDATE)
 		}
 	}
 	return nil
@@ -232,7 +232,7 @@ func (c *client) Lifecycle(state md.Lifecycle, t *net.RoomManager) {
 		if c.user.IsReady() {
 			ev := c.user.NewUpdateEvent(t.RoomData(), c.Host.ID())
 			if err := t.Publish(ev); err != nil {
-				md.NewError(err, md.ErrorEvent_TOPIC_UPDATE)
+				md.NewError(err, md.ErrorEvent_ROOM_UPDATE)
 			}
 		}
 	} else if state == md.Lifecycle_PAUSED {
@@ -240,7 +240,7 @@ func (c *client) Lifecycle(state md.Lifecycle, t *net.RoomManager) {
 		if c.user.IsReady() {
 			ev := c.user.NewExitEvent(t.RoomData(), c.Host.ID())
 			if err := t.Publish(ev); err != nil {
-				md.NewError(err, md.ErrorEvent_TOPIC_UPDATE)
+				md.NewError(err, md.ErrorEvent_ROOM_UPDATE)
 			}
 		}
 	} else if state == md.Lifecycle_STOPPED {
@@ -248,7 +248,7 @@ func (c *client) Lifecycle(state md.Lifecycle, t *net.RoomManager) {
 		if c.user.IsReady() {
 			ev := c.user.NewExitEvent(t.RoomData(), c.Host.ID())
 			if err := t.Publish(ev); err != nil {
-				md.NewError(err, md.ErrorEvent_TOPIC_UPDATE)
+				md.NewError(err, md.ErrorEvent_ROOM_UPDATE)
 			}
 		}
 		c.Host.Close()
@@ -286,7 +286,7 @@ func (c *client) sendPeriodicRoomEvents(t *net.RoomManager) {
 
 			// Send Update
 			if err := t.Publish(ev); err != nil {
-				c.call.OnError(md.NewError(err, md.ErrorEvent_TOPIC_UPDATE))
+				c.call.OnError(md.NewError(err, md.ErrorEvent_ROOM_UPDATE))
 				continue
 			}
 		}

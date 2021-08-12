@@ -412,23 +412,23 @@ func (et ErrorEvent_Type) Severity() ErrorEvent_Severity {
 		return ErrorEvent_CRITICAL
 	case ErrorEvent_SESSION:
 		return ErrorEvent_CRITICAL
-	case ErrorEvent_TOPIC_HANDLER:
+	case ErrorEvent_ROOM_HANDLER:
 		return ErrorEvent_WARNING
-	case ErrorEvent_TOPIC_INVALID:
+	case ErrorEvent_ROOM_INVALID:
 		return ErrorEvent_WARNING
-	case ErrorEvent_TOPIC_JOIN:
+	case ErrorEvent_ROOM_JOIN:
 		return ErrorEvent_WARNING
-	case ErrorEvent_TOPIC_CREATE:
+	case ErrorEvent_ROOM_CREATE:
 		return ErrorEvent_LOG
-	case ErrorEvent_TOPIC_LEAVE:
+	case ErrorEvent_ROOM_LEAVE:
 		return ErrorEvent_LOG
-	case ErrorEvent_TOPIC_MESSAGE:
+	case ErrorEvent_ROOM_MESSAGE:
 		return ErrorEvent_WARNING
-	case ErrorEvent_TOPIC_UPDATE:
+	case ErrorEvent_ROOM_UPDATE:
 		return ErrorEvent_LOG
-	case ErrorEvent_TOPIC_RPC:
+	case ErrorEvent_ROOM_RPC:
 		return ErrorEvent_CRITICAL
-	case ErrorEvent_TOPIC_SUB:
+	case ErrorEvent_ROOM_SUB:
 		return ErrorEvent_CRITICAL
 	case ErrorEvent_TRANSFER_CHUNK:
 		return ErrorEvent_CRITICAL
@@ -563,23 +563,23 @@ func (et ErrorEvent_Type) Message() string {
 		return "Error occurred handling Outgoing File"
 	case ErrorEvent_SESSION:
 		return "Error occurred managing Session"
-	case ErrorEvent_TOPIC_HANDLER:
+	case ErrorEvent_ROOM_HANDLER:
 		return "Error occurred handling Lobby Peers"
-	case ErrorEvent_TOPIC_INVALID:
+	case ErrorEvent_ROOM_INVALID:
 		return "This Code does not exist"
-	case ErrorEvent_TOPIC_JOIN:
+	case ErrorEvent_ROOM_JOIN:
 		return "Failed to join Lobby"
-	case ErrorEvent_TOPIC_CREATE:
+	case ErrorEvent_ROOM_CREATE:
 		return "Failed to join Lobby"
-	case ErrorEvent_TOPIC_LEAVE:
+	case ErrorEvent_ROOM_LEAVE:
 		return "Failed to leave Lobby"
-	case ErrorEvent_TOPIC_MESSAGE:
+	case ErrorEvent_ROOM_MESSAGE:
 		return "Failed to Send Message"
-	case ErrorEvent_TOPIC_UPDATE:
+	case ErrorEvent_ROOM_UPDATE:
 		return "Failed to Send Update"
-	case ErrorEvent_TOPIC_RPC:
+	case ErrorEvent_ROOM_RPC:
 		return "Error occurred exchanging data"
-	case ErrorEvent_TOPIC_SUB:
+	case ErrorEvent_ROOM_SUB:
 		return "Error occurred subscribing to Room"
 	case ErrorEvent_TRANSFER_CHUNK:
 		return "Error occurred during Transfer"
