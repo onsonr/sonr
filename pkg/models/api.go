@@ -718,3 +718,25 @@ func (o *RoomEvent) ToGeneric() ([]byte, error) {
 	}
 	return genBuf, nil
 }
+
+// Create New Generic LINK Event Message
+func (o *SyncEvent) ToGeneric() ([]byte, error) {
+	// Marshal Original
+	ogBuf, err := proto.Marshal(o)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create Generic
+	generic := &GenericEvent{
+		Type: GenericEvent_SYNC,
+		Data: ogBuf,
+	}
+
+	// Marshal Generic
+	genBuf, err := proto.Marshal(generic)
+	if err != nil {
+		return nil, err
+	}
+	return genBuf, nil
+}

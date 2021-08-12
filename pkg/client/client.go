@@ -3,7 +3,7 @@ package client
 import (
 	"context"
 	"time"
-
+tp "github.com/sonr-io/core/internal/topic"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
@@ -18,24 +18,25 @@ import (
 type Client interface {
 	// Client Methods
 	Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrError
-	Bootstrap(cr *md.ConnectionRequest) (*net.RoomManager, *md.SonrError)
+	Bootstrap(cr *md.ConnectionRequest) (*tp.RoomManager, *md.SonrError)
 	Mail(req *md.MailboxRequest) (*md.MailboxResponse, *md.SonrError)
-	Link(invite *md.LinkRequest, t *net.RoomManager) (*md.LinkResponse, *md.SonrError)
-	Invite(invite *md.InviteRequest, t *net.RoomManager) *md.SonrError
+	Link(invite *md.LinkRequest, t *tp.RoomManager) (*md.LinkResponse, *md.SonrError)
+	Invite(invite *md.InviteRequest, t *tp.RoomManager) *md.SonrError
 	Respond(r *md.InviteResponse)
-	Update(t *net.RoomManager) *md.SonrError
-	Lifecycle(state md.Lifecycle, t *net.RoomManager)
+	Update(t *tp.RoomManager) *md.SonrError
+	Lifecycle(state md.Lifecycle, t *tp.RoomManager)
 
 	// Room Callbacks
 	OnConnected(*md.ConnectionResponse)
-	OnEvent(*md.RoomEvent)
-	OnError(err *md.SonrError)
-	OnInvite(buf []byte)
-	OnMail(e *md.MailEvent)
-	OnReply(id peer.ID, data []byte)
-	OnResponded(inv *md.InviteRequest)
-	OnProgress(buf []byte)
-	OnCompleted(stream network.Stream, pid protocol.ID, completeEvent *md.CompleteEvent)
+	OnRoomEvent(*md.RoomEvent)
+	OnSyncEvent(*md.SyncEvent)
+	OnError(*md.SonrError)
+	OnInvite([]byte)
+	OnMail(*md.MailEvent)
+	OnReply(peer.ID, []byte)
+	OnResponded(*md.InviteRequest)
+	OnProgress([]byte)
+	OnCompleted(network.Stream, protocol.ID, *md.CompleteEvent)
 }
 
 // Struct: Main Client handles Networking/Identity/Streams
@@ -94,7 +95,7 @@ func (c *client) Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrErr
 }
 
 // Begins Bootstrapping HostNode
-func (c *client) Bootstrap(cr *md.ConnectionRequest) (*net.RoomManager, *md.SonrError) {
+func (c *client) Bootstrap(cr *md.ConnectionRequest) (*tp.RoomManager, *md.SonrError) {
 	// Bootstrap Host
 	err := c.Host.Bootstrap(c.user.GetDevice().GetId())
 	if err != nil {
@@ -110,7 +111,7 @@ func (c *client) Bootstrap(cr *md.ConnectionRequest) (*net.RoomManager, *md.Sonr
 
 	// Join Local
 	RoomName := c.user.NewLocalRoom(cr.GetServiceOptions())
-	if t, err := c.Host.JoinRoom(c.ctx, c.user, RoomName, c); err != nil {
+	if t, err := tp.JoinRoom(c.ctx, c.Host, c.user, RoomName, c); err != nil {
 		return nil, err
 	} else {
 		// Check if Auto Update Events
@@ -127,7 +128,7 @@ func (c *client) Mail(req *md.MailboxRequest) (*md.MailboxResponse, *md.SonrErro
 }
 
 // Link handles a LinkRequest
-func (c *client) Link(req *md.LinkRequest, t *net.RoomManager) (*md.LinkResponse, *md.SonrError) {
+func (c *client) Link(req *md.LinkRequest, t *tp.RoomManager) (*md.LinkResponse, *md.SonrError) {
 	// Check Request Type
 	if req.IsSend() {
 		// Find Peer
@@ -153,7 +154,7 @@ func (c *client) Link(req *md.LinkRequest, t *net.RoomManager) (*md.LinkResponse
 }
 
 // Invite Processes Data and Sends Invite to Peer
-func (c *client) Invite(invite *md.InviteRequest, t *net.RoomManager) *md.SonrError {
+func (c *client) Invite(invite *md.InviteRequest, t *tp.RoomManager) *md.SonrError {
 	if c.user.IsReady() {
 		// Check for Peer
 		if invite.GetType() == md.InviteRequest_REMOTE {
@@ -212,10 +213,10 @@ func (c *client) Respond(r *md.InviteResponse) {
 }
 
 // Update proximity/direction and Notify Lobby
-func (c *client) Update(t *net.RoomManager) *md.SonrError {
+func (c *client) Update(t *tp.RoomManager) *md.SonrError {
 	if c.user.IsReady() {
 		// Create Event
-		ev := c.user.NewUpdateEvent(t.RoomData(), c.Host.ID())
+		ev := c.user.NewUpdateEvent(t.Room(), c.Host.ID())
 
 		// Inform Lobby
 		if err := t.Publish(ev); err != nil {
@@ -226,11 +227,11 @@ func (c *client) Update(t *net.RoomManager) *md.SonrError {
 }
 
 // Handle Network Communication from Lifecycle State Network Communication
-func (c *client) Lifecycle(state md.Lifecycle, t *net.RoomManager) {
+func (c *client) Lifecycle(state md.Lifecycle, t *tp.RoomManager) {
 	if state == md.Lifecycle_ACTIVE {
 		// Inform Lobby
 		if c.user.IsReady() {
-			ev := c.user.NewUpdateEvent(t.RoomData(), c.Host.ID())
+			ev := c.user.NewUpdateEvent(t.Room(), c.Host.ID())
 			if err := t.Publish(ev); err != nil {
 				md.NewError(err, md.ErrorEvent_ROOM_UPDATE)
 			}
@@ -238,7 +239,7 @@ func (c *client) Lifecycle(state md.Lifecycle, t *net.RoomManager) {
 	} else if state == md.Lifecycle_PAUSED {
 		// Inform Lobby
 		if c.user.IsReady() {
-			ev := c.user.NewExitEvent(t.RoomData(), c.Host.ID())
+			ev := c.user.NewExitEvent(t.Room(), c.Host.ID())
 			if err := t.Publish(ev); err != nil {
 				md.NewError(err, md.ErrorEvent_ROOM_UPDATE)
 			}
@@ -246,7 +247,7 @@ func (c *client) Lifecycle(state md.Lifecycle, t *net.RoomManager) {
 	} else if state == md.Lifecycle_STOPPED {
 		// Inform Lobby
 		if c.user.IsReady() {
-			ev := c.user.NewExitEvent(t.RoomData(), c.Host.ID())
+			ev := c.user.NewExitEvent(t.Room(), c.Host.ID())
 			if err := t.Publish(ev); err != nil {
 				md.NewError(err, md.ErrorEvent_ROOM_UPDATE)
 			}
@@ -278,11 +279,11 @@ func (c *client) newExitEvent(inv *md.InviteRequest) {
 }
 
 // Helper: Background Process to continuously ping nearby peers
-func (c *client) sendPeriodicRoomEvents(t *net.RoomManager) {
+func (c *client) sendPeriodicRoomEvents(t *tp.RoomManager) {
 	for {
 		if c.user.IsReady() {
 			// Create Event
-			ev := c.user.NewDefaultUpdateEvent(t.RoomData(), c.Host.ID())
+			ev := c.user.NewDefaultUpdateEvent(t.Room(), c.Host.ID())
 
 			// Send Update
 			if err := t.Publish(ev); err != nil {

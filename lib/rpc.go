@@ -6,7 +6,7 @@ import (
 	"log"
 	"net"
 
-	sh "github.com/sonr-io/core/internal/host"
+	tp "github.com/sonr-io/core/internal/topic"
 	sc "github.com/sonr-io/core/pkg/client"
 	md "github.com/sonr-io/core/pkg/models"
 	"github.com/sonr-io/core/pkg/util"
@@ -23,8 +23,8 @@ type NodeServer struct {
 	user   *md.User
 
 	// Groups
-	local *sh.RoomManager
-	Rooms map[string]*sh.RoomManager
+	local *tp.RoomManager
+	Rooms map[string]*tp.RoomManager
 
 	// Event Channels
 	completeEvents  chan *md.CompleteEvent
@@ -60,7 +60,7 @@ func main() {
 	chatServer := NodeServer{
 		// Defaults
 		ctx:   context.Background(),
-		Rooms: make(map[string]*sh.RoomManager, 10),
+		Rooms: make(map[string]*tp.RoomManager, 10),
 		state: md.Lifecycle_ACTIVE,
 
 		// Event Channels

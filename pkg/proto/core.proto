@@ -26,7 +26,3 @@ message PushMessage {
   Peer peer = 1;                // Peer to send to
   map<string, string> data = 2; // Data to send
 }
-
-message SyncEvent {
-  
-}

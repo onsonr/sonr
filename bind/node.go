@@ -3,7 +3,7 @@ package bind
 import (
 	"context"
 
-	net "github.com/sonr-io/core/internal/host"
+	tp "github.com/sonr-io/core/internal/topic"
 	sc "github.com/sonr-io/core/pkg/client"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
@@ -22,8 +22,8 @@ type Node struct {
 	user   *md.User
 
 	// Groups
-	local *net.RoomManager
-	Rooms map[string]*net.RoomManager
+	local *tp.RoomManager
+	Rooms map[string]*tp.RoomManager
 }
 
 // Initializes New Node ^ //
@@ -43,7 +43,7 @@ func Initialize(reqBytes []byte, call Callback) *Node {
 	mn := &Node{
 		call:  call,
 		ctx:   context.Background(),
-		Rooms: make(map[string]*net.RoomManager, 10),
+		Rooms: make(map[string]*tp.RoomManager, 10),
 		state: md.Lifecycle_ACTIVE,
 	}
 

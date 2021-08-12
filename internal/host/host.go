@@ -26,7 +26,6 @@ type HostNode interface {
 	ID() peer.ID
 	Info() peer.AddrInfo
 	Host() host.Host
-	JoinRoom(ctx context.Context, u *md.User, RoomData *md.Room, th RoomHandler) (*RoomManager, *md.SonrError)
 	HandleStream(pid protocol.ID, handler network.StreamHandler)
 	MultiAddr() (multiaddr.Multiaddr, *md.SonrError)
 	Pubsub() *psub.PubSub

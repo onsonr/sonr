@@ -371,12 +371,6 @@ message ProgressEvent {
   double progress = 3; // Current Transfer Progress
 }
 
-// Message for Status Update Event
-message StatusEvent {
-  Status value = 1; // Status Value
-  User user = 2;    // User Data
-}
-
 // Message Sent when peer messages Local Room
 message RoomEvent {
   Room room = 1;       // Event Room Type
@@ -392,6 +386,27 @@ message RoomEvent {
     UPDATE = 3;  // Peer has changed position
     LINKER = 4;  // Peer is a Linker
     EXIT = 5;    // Peer has Exited
+  }
+}
+
+// Message for Status Update Event
+message StatusEvent {
+  Status value = 1; // Status Value
+  User user = 2;    // User Data
+}
+
+// Message for Sync Device Event - Sent from Primary Device
+message SyncEvent {
+  Room room = 1;         // Event Room Type
+  Member member = 2;     // Member of Sync
+  Contact contact = 3;   // Latest Contact Card of User
+  int32 lastUpdated = 4; // Last Updated Time
+  Subject subject = 5;   // Subject of Event
+
+  // Local Type Event
+  enum Subject {
+    UPDATE = 0; // Peer has changed position
+    EXIT = 1;   // Peer has Exited
   }
 }
 
@@ -431,6 +446,7 @@ message GenericEvent {
     PROGRESS = 3; // Transfer Progress
     ROOM = 4;     // Local Room Update
     LINK = 5;     // Linking Response
+    SYNC = 6;     // Sync Response
   }
 }
 

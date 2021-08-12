@@ -235,40 +235,41 @@ func (p *Position) Parameters() (float64, float64, *Position_Orientation) {
 
 // ** ─── Local Event MANAGEMENT ────────────────────────────────────────────────────────
 // Creates New Join Room Event
-func NewJoinEvent(peer *Peer) *RoomEvent {
+func (r *Room) NewJoinEvent(peer *Peer) *RoomEvent {
 	return &RoomEvent{
 		Id:      peer.Id.Peer,
 		Peer:    peer,
 		Subject: RoomEvent_JOIN,
+		Room:    r,
 	}
 }
 
 // Creates New Update Room Event
-func NewUpdateEvent(peer *Peer, room *Room) *RoomEvent {
+func (r *Room) NewUpdateEvent(peer *Peer) *RoomEvent {
 	return &RoomEvent{
 		Id:      peer.Id.Peer,
 		Peer:    peer,
 		Subject: RoomEvent_UPDATE,
-		Room:   room,
+		Room:    r,
 	}
 }
 
 // Creates New Update Room Event
-func NewLinkerEvent(peer *Peer, room *Room) *RoomEvent {
+func (r *Room) NewLinkerEvent(peer *Peer) *RoomEvent {
 	return &RoomEvent{
 		Id:      peer.Id.Peer,
 		Peer:    peer,
 		Subject: RoomEvent_LINKER,
-		Room:   room,
+		Room:    r,
 	}
 }
 
 // Creates New Exit Room Event
-func NewExitEvent(id string, room *Room) *RoomEvent {
+func (r *Room) NewExitEvent(id string) *RoomEvent {
 	return &RoomEvent{
 		Id:      id,
 		Subject: RoomEvent_EXIT,
-		Room:   room,
+		Room:    r,
 	}
 }
 

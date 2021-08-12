@@ -36,6 +36,18 @@ func (n *client) OnRoomEvent(e *md.RoomEvent) {
 	}
 }
 
+func (n *client) OnSyncEvent(e *md.SyncEvent) {
+			// Convert Message
+		bytes, err := e.ToGeneric()
+		if err != nil {
+			n.call.OnError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
+			return
+		}
+
+		// Call Event
+		n.call.OnEvent(bytes)
+}
+
 // OnLink: Handle Result of Link Request ^
 func (n *client) OnLink(success bool, id peer.ID, data []byte) {
 	// Unmarshal Link Response
