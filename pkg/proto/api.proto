@@ -86,7 +86,7 @@ message InitializeRequest {
   }
 }
 
-// Connection Message to Establish Sonr Host/API/Topic
+// Connection Message to Establish Sonr Host/API/Room
 message ConnectionRequest {
   APIKeys apiKeys = 1;               // Client Keys
   Location location = 2;             // Current Runtime Location
@@ -122,7 +122,7 @@ message ConnectionRequest {
     bool buckets = 3;    // Enable Buckets
     bool push = 4;       // Enable Push Notifications
     bool autoUpdate = 5; // Enable Auto Update Events
-    int32 olcRange = 6;  // OLC Range Value for Local Topic (Default: 6)
+    int32 olcRange = 6;  // OLC Range Value for Local Room (Default: 6)
   }
 
   // IP Address Interface
@@ -145,7 +145,7 @@ message ConnectionResponse {
   bool hostActive = 1;                    // True if Host is Active
   bool mdnsActive = 2;                    // True if MDNS is Active
   bool textileActive = 3;                 // True if Textile is Active
-  Topic localTopic = 4;                   // Local Topic
+  Room localRoom = 4;                     // Local Room
   map<string, TextileThread> threads = 5; // ID, Thread
 
   // Textile Thread
@@ -348,7 +348,7 @@ message CompleteEvent {
 message LinkEvent {
   bool success = 1;      // ID of Device to Link
   Device device = 2;     // Device of Peer to Link
-  Topic topic = 3;       // Topic of User Network
+  Room Room = 3;         // Room of User Network
   KeyPair sharedKey = 4; // Shared Key between Devices
   Contact contact = 5;   // Contact Card of User
 }
@@ -377,9 +377,9 @@ message StatusEvent {
   User user = 2;    // User Data
 }
 
-// Message Sent when peer messages Local Topic
-message TopicEvent {
-  Topic topic = 1;     // Event Topic Type
+// Message Sent when peer messages Local Room
+message RoomEvent {
+  Room room = 1;       // Event Room Type
   string id = 2;       // Peer ID
   Peer peer = 3;       // User Information
   Subject subject = 4; // Local Event Subject
@@ -429,7 +429,7 @@ message GenericEvent {
     COMPLETE = 1; // Transfer Completed
     MAIL = 2;     // New Mailbox Invite
     PROGRESS = 3; // Transfer Progress
-    TOPIC = 4;    // Local Topic Update
+    ROOM = 4;     // Local Room Update
     LINK = 5;     // Linking Response
   }
 }
@@ -487,7 +487,7 @@ service NodeService {
   // Events Streams
   rpc OnStatus(NoRequest) returns (stream StatusEvent) {}
   rpc OnLink(NoRequest) returns (stream LinkEvent) {}
-  rpc OnTopic(NoRequest) returns (stream TopicEvent) {}
+  rpc OnRoom(NoRequest) returns (stream RoomEvent) {}
   rpc OnInvite(NoRequest) returns (stream InviteRequest) {}
   rpc OnReply(NoRequest) returns (stream InviteResponse) {}
   rpc OnMail(NoRequest) returns (stream MailEvent) {}

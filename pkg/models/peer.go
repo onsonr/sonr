@@ -16,44 +16,42 @@ var (
 	NoPubKey = errors.New("Public Key not found from Peer Protobuf.")
 )
 
-// ** ─── Topic MANAGEMENT ────────────────────────────────────────────────────────
-func (t *Topic) IsLocal() bool {
-	return t.Type == Topic_LOCAL
+// ** ─── Room MANAGEMENT ────────────────────────────────────────────────────────
+func (t *Room) IsLocal() bool {
+	return t.Type == Room_LOCAL
 }
 
-// Local Lobby Topic Protocol ID
-func (r *User) NewLocalTopic(opts *ConnectionRequest_ServiceOptions) *Topic {
+// Local Lobby Room Protocol ID
+func (r *User) NewLocalRoom(opts *ConnectionRequest_ServiceOptions) *Room {
 	// Initialize Set OLC Range
 	scope := 6
 	if opts.GetOlcRange() > 0 {
 		scope = int(opts.GetOlcRange())
 	}
 
-	// Return Topic
-	return &Topic{
-		Name: fmt.Sprintf("/sonr/topic/%s", r.Location.OLC(scope)),
-		Type: Topic_LOCAL,
+	// Return Room
+	return &Room{
+		Name: fmt.Sprintf("/sonr/local/%s", r.Location.OLC(scope)),
+		Type: Room_LOCAL,
 	}
 }
 
-// Local Lobby Topic Protocol ID
-func (r *User) NewDeviceTopic() *Topic {
+// Local Lobby Room Protocol ID
+func (r *User) NewDeviceRoom() *Room {
 
-	// Return Topic
-	return &Topic{
-		Name: fmt.Sprintf("/sonr/%s/%s", r.SName, r.DeviceID()),
-		Type: Topic_LOCAL,
+	// Return Room
+	return &Room{
+		Name: fmt.Sprintf("/sonr/device/%s", r.SName),
+		Type: Room_DEVICE,
 	}
 }
 
 // ** ─── Member MANAGEMENT ────────────────────────────────────────────────────────
-// Update Position for Primary Peer in Member
-func (m *Member) UpdatePosition(p *Position) {
-	m.GetPrimary().Position = p
-}
-
 // Update Peer Profiles for Member
 func (m *Member) UpdateProfile(c *Contact) {
+	// Update General
+	m.SName = c.GetProfile().GetSName()
+
 	// Update Primary
 	m.GetPrimary().Profile = &Profile{
 		SName:     c.GetProfile().GetSName(),
@@ -236,41 +234,41 @@ func (p *Position) Parameters() (float64, float64, *Position_Orientation) {
 }
 
 // ** ─── Local Event MANAGEMENT ────────────────────────────────────────────────────────
-// Creates New Join Topic Event
-func NewJoinEvent(peer *Peer) *TopicEvent {
-	return &TopicEvent{
+// Creates New Join Room Event
+func NewJoinEvent(peer *Peer) *RoomEvent {
+	return &RoomEvent{
 		Id:      peer.Id.Peer,
 		Peer:    peer,
-		Subject: TopicEvent_JOIN,
+		Subject: RoomEvent_JOIN,
 	}
 }
 
-// Creates New Update Topic Event
-func NewUpdateEvent(peer *Peer, topic *Topic) *TopicEvent {
-	return &TopicEvent{
+// Creates New Update Room Event
+func NewUpdateEvent(peer *Peer, room *Room) *RoomEvent {
+	return &RoomEvent{
 		Id:      peer.Id.Peer,
 		Peer:    peer,
-		Subject: TopicEvent_UPDATE,
-		Topic:   topic,
+		Subject: RoomEvent_UPDATE,
+		Room:   room,
 	}
 }
 
-// Creates New Update Topic Event
-func NewLinkerEvent(peer *Peer, topic *Topic) *TopicEvent {
-	return &TopicEvent{
+// Creates New Update Room Event
+func NewLinkerEvent(peer *Peer, room *Room) *RoomEvent {
+	return &RoomEvent{
 		Id:      peer.Id.Peer,
 		Peer:    peer,
-		Subject: TopicEvent_LINKER,
-		Topic:   topic,
+		Subject: RoomEvent_LINKER,
+		Room:   room,
 	}
 }
 
-// Creates New Exit Topic Event
-func NewExitEvent(id string, topic *Topic) *TopicEvent {
-	return &TopicEvent{
+// Creates New Exit Room Event
+func NewExitEvent(id string, room *Room) *RoomEvent {
+	return &RoomEvent{
 		Id:      id,
-		Subject: TopicEvent_EXIT,
-		Topic:   topic,
+		Subject: RoomEvent_EXIT,
+		Room:   room,
 	}
 }
 

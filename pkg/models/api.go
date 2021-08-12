@@ -697,8 +697,8 @@ func (o *LinkEvent) ToGeneric() ([]byte, error) {
 	return genBuf, nil
 }
 
-// Create New Generic TOPIC Event Message
-func (o *TopicEvent) ToGeneric() ([]byte, error) {
+// Create New Generic Room Event Message
+func (o *RoomEvent) ToGeneric() ([]byte, error) {
 	// Marshal Original
 	ogBuf, err := proto.Marshal(o)
 	if err != nil {
@@ -707,7 +707,7 @@ func (o *TopicEvent) ToGeneric() ([]byte, error) {
 
 	// Create Generic
 	generic := &GenericEvent{
-		Type: GenericEvent_TOPIC,
+		Type: GenericEvent_ROOM,
 		Data: ogBuf,
 	}
 

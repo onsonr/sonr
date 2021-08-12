@@ -72,7 +72,7 @@ func InitLogger(req *InitializeRequest) {
 
 // Method Logs a Info Message for Event
 func (t GenericEvent_Type) Log(message string) {
-	if loggerEnabled && loggerInfoEnabled && t != GenericEvent_TOPIC {
+	if loggerEnabled && loggerInfoEnabled && t != GenericEvent_ROOM {
 		log.Info().Msgf("⚡️  %s", t.String())
 		defaultLogger.Println("\t" + message + "\n")
 	}
@@ -580,7 +580,7 @@ func (et ErrorEvent_Type) Message() string {
 	case ErrorEvent_TOPIC_RPC:
 		return "Error occurred exchanging data"
 	case ErrorEvent_TOPIC_SUB:
-		return "Error occurred subscribing to Topic"
+		return "Error occurred subscribing to Room"
 	case ErrorEvent_TRANSFER_CHUNK:
 		return "Error occurred during Transfer"
 	case ErrorEvent_TRANSFER_END:

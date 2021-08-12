@@ -23,8 +23,8 @@ type NodeServer struct {
 	user   *md.User
 
 	// Groups
-	local  *sh.TopicManager
-	topics map[string]*sh.TopicManager
+	local *sh.RoomManager
+	Rooms map[string]*sh.RoomManager
 
 	// Event Channels
 	completeEvents  chan *md.CompleteEvent
@@ -33,7 +33,7 @@ type NodeServer struct {
 	linkEvents      chan *md.LinkEvent
 	progressEvents  chan *md.ProgressEvent
 	statusEvents    chan *md.StatusEvent
-	topicEvents     chan *md.TopicEvent
+	RoomEvents      chan *md.RoomEvent
 	inviteRequests  chan *md.InviteRequest
 	inviteResponses chan *md.InviteResponse
 
@@ -59,12 +59,12 @@ func main() {
 	// Set GRPC Server
 	chatServer := NodeServer{
 		// Defaults
-		ctx:    context.Background(),
-		topics: make(map[string]*sh.TopicManager, 10),
-		state:  md.Lifecycle_ACTIVE,
+		ctx:   context.Background(),
+		Rooms: make(map[string]*sh.RoomManager, 10),
+		state: md.Lifecycle_ACTIVE,
 
 		// Event Channels
-		topicEvents:     make(chan *md.TopicEvent, util.MAX_CHAN_DATA),
+		RoomEvents:      make(chan *md.RoomEvent, util.MAX_CHAN_DATA),
 		mailEvents:      make(chan *md.MailEvent, util.MAX_CHAN_DATA),
 		progressEvents:  make(chan *md.ProgressEvent, util.MAX_CHAN_DATA),
 		completeEvents:  make(chan *md.CompleteEvent, util.MAX_CHAN_DATA),

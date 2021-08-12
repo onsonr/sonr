@@ -26,7 +26,7 @@ func DHT_OPTS() (string, dscl.Option) {
 	return HOST_RENDEVOUZ_POINT, dscl.TTL(REFRESH_INTERVAL)
 }
 
-// Pubsub Topic Max Messages
+// Pubsub Room Max Messages
 const MAX_CHAN_DATA = 128
 
 // Maximum Chunk Size During Transfer
@@ -45,6 +45,9 @@ const EXCHANGE_PROTOCOL = protocol.ID("/sonr/exchange-service/0.2")
 // Remote Service Protocol
 const REMOTE_PROTOCOL = protocol.ID("/sonr/remote-service/0.2")
 
+// Exchange Service Protocol
+const SYNC_PROTOCOL = protocol.ID("/sonr/sync-service/0.2")
+
 // ** ─── API ────────────────────────────────────────────────────────
 // Textile Client API URL
 const TEXTILE_API_URL = "api.hub.textile.io:443"
@@ -56,12 +59,6 @@ const TEXTILE_MINER_IDX = "api.minerindex.hub.textile.io:443"
 const TEXTILE_MAILBOX_DIR = ".textile"
 
 // ** ─── Services ────────────────────────────────────────────────────────
-// Local RPC Service Name
-const EXCHANGE_RPC_SERVICE = "ExchangeService"
-
-// Local RPC Service Method for Exchange
-const EXCHANGE_METHOD_EXCHANGE = "ExchangeWith"
-
 // Local RPC Service Name
 const AUTH_RPC_SERVICE = "AuthService"
 
@@ -75,13 +72,22 @@ const AUTH_METHOD_LINK = "LinkWith"
 const DEVICE_RPC_SERVICE = "DeviceService"
 
 // Local RPC Service Method for Push
-const DEVICE_METHOD_PUSH = "PushWith"
+const DEVICE_METHOD_DIRECT = "DirectWith"
 
-// Local RPC Service Method for Sync
-const DEVICE_METHOD_SYNC = "SyncWith"
+// Local RPC Service Method for Push
+const DEVICE_METHOD_MODIFY = "ModifyWith"
 
-// Firebase Project ID
-const FIRE_PROJECT_ID = "trans-density-315704"
+// Local RPC Service Name
+const EXCHANGE_RPC_SERVICE = "ExchangeService"
+
+// Local RPC Service Method for Exchange
+const EXCHANGE_METHOD_EXCHANGE = "ExchangeWith"
+
+// Local RPC Service Name
+const SYNC_RPC_SERVICE = "SyncService"
+
+// Local RPC Service Method for Exchange
+const SYNC_METHOD_SYNC = "SyncWith"
 
 // ** ─── Host ────────────────────────────────────────────────────────
 // Libp2p Host Rendevouz Point

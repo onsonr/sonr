@@ -501,6 +501,7 @@ func (u *User) PrettySName() string {
 
 // Method Updates User Contact
 func (u *User) UpdateContact(c *Contact) {
+	u.Contact = c
 	u.GetMember().UpdateProfile(c)
 }
 
@@ -593,47 +594,47 @@ func (u *User) ReplyToFlat(from *Peer) *InviteResponse {
 }
 
 // NewUpdateEvent Creates Lobby Event with Peer Data ^
-func (u *User) NewUpdateEvent(topic *Topic, id peer.ID) *TopicEvent {
-	return &TopicEvent{
-		Subject: TopicEvent_UPDATE,
+func (u *User) NewUpdateEvent(room *Room, id peer.ID) *RoomEvent {
+	return &RoomEvent{
+		Subject: RoomEvent_UPDATE,
 		Peer:    u.GetPrimary(),
 		Id:      id.String(),
-		Topic:   topic,
+		Room:   room,
 	}
 }
 
 // NewDefaultUpdateEvent Updates Peer with Default Position and Returns Lobby Event with Peer Data ^
-func (u *User) NewDefaultUpdateEvent(topic *Topic, id peer.ID) *TopicEvent {
+func (u *User) NewDefaultUpdateEvent(room *Room, id peer.ID) *RoomEvent {
 	// Update Peer
 	u.UpdatePosition(DefaultPosition().Parameters())
 
 	// Check if User is Linker
 	if u.IsLinker() {
 		// Return Event
-		return &TopicEvent{
-			Subject: TopicEvent_LINKER,
+		return &RoomEvent{
+			Subject: RoomEvent_LINKER,
 			Peer:    u.GetPrimary(),
 			Id:      id.String(),
-			Topic:   topic,
+			Room:   room,
 		}
 	} else {
 		// Return Event
-		return &TopicEvent{
-			Subject: TopicEvent_UPDATE,
+		return &RoomEvent{
+			Subject: RoomEvent_UPDATE,
 			Peer:    u.GetPrimary(),
 			Id:      id.String(),
-			Topic:   topic,
+			Room:   room,
 		}
 	}
 
 }
 
 // NewUpdateEvent Creates Lobby Event with Peer Data ^
-func (u *User) NewExitEvent(topic *Topic, id peer.ID) *TopicEvent {
-	return &TopicEvent{
-		Subject: TopicEvent_EXIT,
+func (u *User) NewExitEvent(room *Room, id peer.ID) *RoomEvent {
+	return &RoomEvent{
+		Subject: RoomEvent_EXIT,
 		Peer:    u.GetPrimary(),
 		Id:      id.String(),
-		Topic:   topic,
+		Room:   room,
 	}
 }

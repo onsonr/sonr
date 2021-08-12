@@ -26,7 +26,7 @@ type HostNode interface {
 	ID() peer.ID
 	Info() peer.AddrInfo
 	Host() host.Host
-	JoinTopic(ctx context.Context, u *md.User, topicData *md.Topic, th TopicHandler) (*TopicManager, *md.SonrError)
+	JoinRoom(ctx context.Context, u *md.User, RoomData *md.Room, th RoomHandler) (*RoomManager, *md.SonrError)
 	HandleStream(pid protocol.ID, handler network.StreamHandler)
 	MultiAddr() (multiaddr.Multiaddr, *md.SonrError)
 	Pubsub() *psub.PubSub
@@ -57,7 +57,7 @@ type hostNode struct {
 	mdns    discovery.Service
 	options *md.ConnectionRequest_HostOptions
 
-	// Topics
+	// Rooms
 	pubsub *psub.PubSub
 }
 

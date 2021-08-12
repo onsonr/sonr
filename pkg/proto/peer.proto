@@ -44,14 +44,14 @@ message Linkers { repeated Peer list = 1; }
 
 // For Info about Lobby
 message Lobby {
-  Topic topic = 1;             // Type of Lobby
+  Room room = 1;             // Type of Lobby
   map<string, Peer> peers = 2; // Total Data of Peers
   Status status = 3;
 
   enum Status {
-    EMPTY = 0; // When there are No Peers in Local Topic
-    FEW = 1;   // When there are <= 5 Peers in Local Topic
-    MANY = 2;  // When there are > 5 Peers in Local Topic
+    EMPTY = 0; // When there are No Peers in Local Room
+    FEW = 1;   // When there are <= 5 Peers in Local Room
+    MANY = 2;  // When there are > 5 Peers in Local Room
   }
 }
 
@@ -226,16 +226,16 @@ enum Role {
   TERTIARY = 2;  // Linked Peer Peripheral device
 }
 
-// Topic Information
-message Topic {
-  // Topic Type and Name
-  Type type = 1;   // Type of Topic
-  string name = 2; // Topic Name
+// Room Information
+message Room {
+  // Room Type and Name
+  Type type = 1;   // Type of Room
+  string name = 2; // Room Name
 
-  // Topic Type
+  // Room Type
   enum Type {
-    LOCAL = 0;  // Nearby Peers Topic
-    DEVICE = 1; // User Devices Topic
-    GROUP = 2;  // User Custom Group Topic
+    LOCAL = 0;  // Nearby Peers Room
+    DEVICE = 1; // User Devices Room
+    GROUP = 2;  // User Custom Group Room
   }
 }

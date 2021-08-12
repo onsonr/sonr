@@ -18,17 +18,17 @@ import (
 type Client interface {
 	// Client Methods
 	Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrError
-	Bootstrap(cr *md.ConnectionRequest) (*net.TopicManager, *md.SonrError)
+	Bootstrap(cr *md.ConnectionRequest) (*net.RoomManager, *md.SonrError)
 	Mail(req *md.MailboxRequest) (*md.MailboxResponse, *md.SonrError)
-	Link(invite *md.LinkRequest, t *net.TopicManager) (*md.LinkResponse, *md.SonrError)
-	Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrError
+	Link(invite *md.LinkRequest, t *net.RoomManager) (*md.LinkResponse, *md.SonrError)
+	Invite(invite *md.InviteRequest, t *net.RoomManager) *md.SonrError
 	Respond(r *md.InviteResponse)
-	Update(t *net.TopicManager) *md.SonrError
-	Lifecycle(state md.Lifecycle, t *net.TopicManager)
+	Update(t *net.RoomManager) *md.SonrError
+	Lifecycle(state md.Lifecycle, t *net.RoomManager)
 
-	// Topic Callbacks
+	// Room Callbacks
 	OnConnected(*md.ConnectionResponse)
-	OnEvent(*md.TopicEvent)
+	OnEvent(*md.RoomEvent)
 	OnError(err *md.SonrError)
 	OnInvite(buf []byte)
 	OnMail(e *md.MailEvent)
@@ -94,7 +94,7 @@ func (c *client) Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrErr
 }
 
 // Begins Bootstrapping HostNode
-func (c *client) Bootstrap(cr *md.ConnectionRequest) (*net.TopicManager, *md.SonrError) {
+func (c *client) Bootstrap(cr *md.ConnectionRequest) (*net.RoomManager, *md.SonrError) {
 	// Bootstrap Host
 	err := c.Host.Bootstrap(c.user.GetDevice().GetId())
 	if err != nil {
@@ -109,13 +109,13 @@ func (c *client) Bootstrap(cr *md.ConnectionRequest) (*net.TopicManager, *md.Son
 	c.Service = s
 
 	// Join Local
-	topicName := c.user.NewLocalTopic(cr.GetServiceOptions())
-	if t, err := c.Host.JoinTopic(c.ctx, c.user, topicName, c); err != nil {
+	RoomName := c.user.NewLocalRoom(cr.GetServiceOptions())
+	if t, err := c.Host.JoinRoom(c.ctx, c.user, RoomName, c); err != nil {
 		return nil, err
 	} else {
 		// Check if Auto Update Events
 		if cr.GetServiceOptions().GetAutoUpdate() {
-			go c.sendPeriodicTopicEvents(t)
+			go c.sendPeriodicRoomEvents(t)
 		}
 		return t, nil
 	}
@@ -127,7 +127,7 @@ func (c *client) Mail(req *md.MailboxRequest) (*md.MailboxResponse, *md.SonrErro
 }
 
 // Link handles a LinkRequest
-func (c *client) Link(req *md.LinkRequest, t *net.TopicManager) (*md.LinkResponse, *md.SonrError) {
+func (c *client) Link(req *md.LinkRequest, t *net.RoomManager) (*md.LinkResponse, *md.SonrError) {
 	// Check Request Type
 	if req.IsSend() {
 		// Find Peer
@@ -153,7 +153,7 @@ func (c *client) Link(req *md.LinkRequest, t *net.TopicManager) (*md.LinkRespons
 }
 
 // Invite Processes Data and Sends Invite to Peer
-func (c *client) Invite(invite *md.InviteRequest, t *net.TopicManager) *md.SonrError {
+func (c *client) Invite(invite *md.InviteRequest, t *net.RoomManager) *md.SonrError {
 	if c.user.IsReady() {
 		// Check for Peer
 		if invite.GetType() == md.InviteRequest_REMOTE {
@@ -212,10 +212,10 @@ func (c *client) Respond(r *md.InviteResponse) {
 }
 
 // Update proximity/direction and Notify Lobby
-func (c *client) Update(t *net.TopicManager) *md.SonrError {
+func (c *client) Update(t *net.RoomManager) *md.SonrError {
 	if c.user.IsReady() {
 		// Create Event
-		ev := c.user.NewUpdateEvent(t.TopicData(), c.Host.ID())
+		ev := c.user.NewUpdateEvent(t.RoomData(), c.Host.ID())
 
 		// Inform Lobby
 		if err := t.Publish(ev); err != nil {
@@ -226,11 +226,11 @@ func (c *client) Update(t *net.TopicManager) *md.SonrError {
 }
 
 // Handle Network Communication from Lifecycle State Network Communication
-func (c *client) Lifecycle(state md.Lifecycle, t *net.TopicManager) {
+func (c *client) Lifecycle(state md.Lifecycle, t *net.RoomManager) {
 	if state == md.Lifecycle_ACTIVE {
 		// Inform Lobby
 		if c.user.IsReady() {
-			ev := c.user.NewUpdateEvent(t.TopicData(), c.Host.ID())
+			ev := c.user.NewUpdateEvent(t.RoomData(), c.Host.ID())
 			if err := t.Publish(ev); err != nil {
 				md.NewError(err, md.ErrorEvent_TOPIC_UPDATE)
 			}
@@ -238,7 +238,7 @@ func (c *client) Lifecycle(state md.Lifecycle, t *net.TopicManager) {
 	} else if state == md.Lifecycle_PAUSED {
 		// Inform Lobby
 		if c.user.IsReady() {
-			ev := c.user.NewExitEvent(t.TopicData(), c.Host.ID())
+			ev := c.user.NewExitEvent(t.RoomData(), c.Host.ID())
 			if err := t.Publish(ev); err != nil {
 				md.NewError(err, md.ErrorEvent_TOPIC_UPDATE)
 			}
@@ -246,7 +246,7 @@ func (c *client) Lifecycle(state md.Lifecycle, t *net.TopicManager) {
 	} else if state == md.Lifecycle_STOPPED {
 		// Inform Lobby
 		if c.user.IsReady() {
-			ev := c.user.NewExitEvent(t.TopicData(), c.Host.ID())
+			ev := c.user.NewExitEvent(t.RoomData(), c.Host.ID())
 			if err := t.Publish(ev); err != nil {
 				md.NewError(err, md.ErrorEvent_TOPIC_UPDATE)
 			}
@@ -259,9 +259,9 @@ func (c *client) Lifecycle(state md.Lifecycle, t *net.TopicManager) {
 // Helper: Creates new Exit Event
 func (c *client) newExitEvent(inv *md.InviteRequest) {
 	// Create Exit Event
-	event := md.TopicEvent{
+	event := md.RoomEvent{
 		Id:      inv.To.Id.Peer,
-		Subject: md.TopicEvent_EXIT,
+		Subject: md.RoomEvent_EXIT,
 		Peer:    inv.To,
 	}
 
@@ -278,11 +278,11 @@ func (c *client) newExitEvent(inv *md.InviteRequest) {
 }
 
 // Helper: Background Process to continuously ping nearby peers
-func (c *client) sendPeriodicTopicEvents(t *net.TopicManager) {
+func (c *client) sendPeriodicRoomEvents(t *net.RoomManager) {
 	for {
 		if c.user.IsReady() {
 			// Create Event
-			ev := c.user.NewDefaultUpdateEvent(t.TopicData(), c.Host.ID())
+			ev := c.user.NewDefaultUpdateEvent(t.RoomData(), c.Host.ID())
 
 			// Send Update
 			if err := t.Publish(ev); err != nil {

@@ -200,11 +200,11 @@ func (s *NodeServer) OnStatus(req *md.NoRequest, stream md.NodeService_OnStatusS
 	}
 }
 
-// OnTopic is called when Topic Event is received
-func (s *NodeServer) OnTopic(req *md.NoRequest, stream md.NodeService_OnTopicServer) error {
+// OnRoom is called when Room Event is received
+func (s *NodeServer) OnRoom(req *md.NoRequest, stream md.NodeService_OnRoomServer) error {
 	for {
 		select {
-		case m := <-s.topicEvents:
+		case m := <-s.RoomEvents:
 			stream.Send(m)
 		case <-s.ctx.Done():
 			return nil
@@ -275,9 +275,9 @@ func (s *NodeServer) handleEvent(buf []byte) {
 
 		// Send Event to Channel
 		s.progressEvents <- pe
-	case md.GenericEvent_TOPIC:
-		// Unmarshal Topic Event
-		te := &md.TopicEvent{}
+	case md.GenericEvent_ROOM:
+		// Unmarshal Room Event
+		te := &md.RoomEvent{}
 		err = proto.Unmarshal(event.GetData(), te)
 		if err != nil {
 			md.LogFatal(err)
@@ -288,7 +288,7 @@ func (s *NodeServer) handleEvent(buf []byte) {
 		eventType.Log(te.String())
 
 		// Send Event to Channel
-		s.topicEvents <- te
+		s.RoomEvents <- te
 
 	case md.GenericEvent_MAIL:
 		// Unmarshal Mail Event

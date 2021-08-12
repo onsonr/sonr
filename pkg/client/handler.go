@@ -21,7 +21,7 @@ func (c *client) OnConnected(r *md.ConnectionResponse) {
 }
 
 // OnEvent: Local Lobby Event ^
-func (n *client) OnEvent(e *md.TopicEvent) {
+func (n *client) OnRoomEvent(e *md.RoomEvent) {
 	// Only Callback when not in Transfer
 	if n.user.IsNotStatus(md.Status_TRANSFER) {
 		// Convert Message

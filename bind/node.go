@@ -3,8 +3,8 @@ package bind
 import (
 	"context"
 
-	sc "github.com/sonr-io/core/pkg/client"
 	net "github.com/sonr-io/core/internal/host"
+	sc "github.com/sonr-io/core/pkg/client"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -17,13 +17,13 @@ type Node struct {
 	ctx  context.Context
 
 	// Client
-	client    sc.Client
-	state     md.Lifecycle
-	user      *md.User
+	client sc.Client
+	state  md.Lifecycle
+	user   *md.User
 
 	// Groups
-	local  *net.TopicManager
-	topics map[string]*net.TopicManager
+	local *net.RoomManager
+	Rooms map[string]*net.RoomManager
 }
 
 // Initializes New Node ^ //
@@ -41,10 +41,10 @@ func Initialize(reqBytes []byte, call Callback) *Node {
 
 	// Initialize Node
 	mn := &Node{
-		call:   call,
-		ctx:    context.Background(),
-		topics: make(map[string]*net.TopicManager, 10),
-		state:  md.Lifecycle_ACTIVE,
+		call:  call,
+		ctx:   context.Background(),
+		Rooms: make(map[string]*net.RoomManager, 10),
+		state: md.Lifecycle_ACTIVE,
 	}
 
 	// Create User
