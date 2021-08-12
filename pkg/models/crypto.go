@@ -78,16 +78,16 @@ func (d *Device) loadKeyChain() (*KeyChain, *SonrError) {
 		return nil, err
 	}
 
-	// Set Device Key Values
-	d.LinkPubKey = deviceKeys.GetPublic()
-	d.AccountKeys = accountKeys
-	d.GroupKeys = groupKeys
-
-	return &KeyChain{
+	// Create Key Chain
+	kc := &KeyChain{
 		Account: accountKeys,
 		Device:  deviceKeys,
 		Group:   groupKeys,
-	}, nil
+	}
+
+	// Return Keychain
+	d.KeyChain = kc
+	return kc, nil
 }
 
 // Method Loads Existing Key Pair
@@ -152,17 +152,16 @@ func (d *Device) newKeyChain() (*KeyChain, *SonrError) {
 		return nil, err
 	}
 
-	// Set Device Key Values
-	d.LinkPubKey = deviceKeys.GetPublic()
-	d.AccountKeys = accountKeys
-	d.GroupKeys = groupKeys
-
-	// Return Key Chain
-	return &KeyChain{
+	// Create Key Chain
+	kc := &KeyChain{
 		Account: accountKeys,
 		Device:  deviceKeys,
 		Group:   groupKeys,
-	}, nil
+	}
+
+	// Return Keychain
+	d.KeyChain = kc
+	return kc, nil
 }
 
 // Method Creates New Key Pair
@@ -214,13 +213,14 @@ func (d *Device) tempKeyChain() (*KeyChain, *SonrError) {
 		return nil, err
 	}
 
-	// Set Device Key Values
-	d.AccountKeys = tempKeys
-
-	// Return Key Chain
-	return &KeyChain{
+	// Create Key Chain
+	kc := &KeyChain{
 		Account: tempKeys,
-	}, nil
+	}
+
+	// Return Keychain
+	d.KeyChain = kc
+	return kc, nil
 }
 
 // Method Deletes Existing Keys and Creates New Pair
@@ -348,12 +348,27 @@ func (d *Device) HasTemporaryKeys() bool {
 	return true
 }
 
+// Returns Device AccountKeys -- Maybe temporary
+func (d *Device) AccountKeys() *KeyPair {
+	return d.GetKeyChain().GetAccount()
+}
+
+// Returns Device deviceKeys
+func (d *Device) DeviceKeys() *KeyPair {
+	return d.GetKeyChain().GetDevice()
+}
+
+// Returns Device groupKeys
+func (d *Device) GroupKeys() *KeyPair {
+	return d.GetKeyChain().GetGroup()
+}
+
 // Returns Short ID for this Device
 func (d *Device) ShortID() string {
 	// Check for Keys
 	if d.HasTemporaryKeys() {
 		// Write Device ID as New sha256 String
-		h := hmac.New(sha256.New, d.AccountKeys.PrivBuffer())
+		h := hmac.New(sha256.New, d.AccountKeys().PrivBuffer())
 		h.Write([]byte(d.GetId()))
 		hexCode := hex.EncodeToString(h.Sum(nil))
 
@@ -391,7 +406,7 @@ func (d *Device) ShortID() string {
 
 // Method returns Thread Identity for Device
 func (d *Device) ThreadIdentity() thread.Identity {
-	return thread.NewLibp2pIdentity(d.AccountKeys.PrivKey())
+	return thread.NewLibp2pIdentity(d.AccountKeys().PrivKey())
 }
 
 // Returns FileName of a Given KeyPair Type

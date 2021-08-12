@@ -78,46 +78,44 @@ func (u *User) GetPrimary() *Peer {
 	return u.GetMember().GetPrimary()
 }
 
-// Set Primary Peer for Member
-func (u *User) SetPrimary(id peer.ID, maddr multiaddr.Multiaddr, isLinker bool) {
+// Set Primary Peer for Member. Returns Peer Ref and if Primary Peer
+func (d *Device) SetPeer(id peer.ID, maddr multiaddr.Multiaddr, isLinker bool) (*Peer, bool) {
 	// Set Status
 	if isLinker {
-		u.Member = &Member{
-			SName: u.SName,
-			Primary: &Peer{
-				Id: &Peer_ID{
-					Peer:      id.String(),
-					Device:    u.DeviceID(),
-					MultiAddr: maddr.String(),
-					PublicKey: u.KeyPair().PubKeyBase64(),
-				},
-				Platform: u.Device.Platform,
-				Model:    u.GetDevice().GetModel(),
-				HostName: u.GetDevice().GetHostName(),
-				Status:   Peer_PAIRING,
+		peer := &Peer{
+			Id: &Peer_ID{
+				Peer:      id.String(),
+				Device:    d.Id,
+				MultiAddr: maddr.String(),
+				PublicKey: d.AccountKeys().PubKeyBase64(),
 			},
-			Status: Member_GHOST,
+			Platform: d.Platform,
+			Model:    d.GetModel(),
+			HostName: d.GetHostName(),
+			Status:   Peer_PAIRING,
 		}
+
+		// Set Primary
+		d.Peer = peer
+		return peer, d.HasDeviceKeys()
+
 	} else {
-		u.Member = &Member{
-			SName: u.SName,
-			Primary: &Peer{
-				SName: u.SName,
-				Id: &Peer_ID{
-					Peer:      id.String(),
-					Device:    u.DeviceID(),
-					MultiAddr: maddr.String(),
-					PublicKey: u.KeyPair().PubKeyBase64(),
-					PushToken: u.GetPushToken(),
-				},
-				Profile:  u.Profile(),
-				Platform: u.Device.Platform,
-				Model:    u.GetDevice().GetModel(),
-				HostName: u.GetDevice().GetHostName(),
-				Status:   Peer_ONLINE,
+		peer := &Peer{
+			Id: &Peer_ID{
+				Peer:      id.String(),
+				Device:    d.Id,
+				MultiAddr: maddr.String(),
+				PublicKey: d.AccountKeys().PubKeyBase64(),
 			},
-			Status: Member_ONLINE,
+			Platform: d.Platform,
+			Model:    d.GetModel(),
+			HostName: d.GetHostName(),
+			Status:   Peer_ONLINE,
 		}
+
+		// Set Primary
+		d.Peer = peer
+		return peer, d.HasDeviceKeys()
 	}
 }
 
@@ -140,7 +138,7 @@ func (u *User) SetPeer(id peer.ID, maddr multiaddr.Multiaddr, isLinker bool) *So
 				HostName: u.GetDevice().GetHostName(),
 				Status:   Peer_PAIRING,
 			},
-			Status: Member_GHOST,
+			Reach: Member_ONLINE,
 		}
 	} else {
 		u.Member = &Member{
@@ -160,7 +158,7 @@ func (u *User) SetPeer(id peer.ID, maddr multiaddr.Multiaddr, isLinker bool) *So
 				HostName: u.GetDevice().GetHostName(),
 				Status:   Peer_ONLINE,
 			},
-			Status: Member_ONLINE,
+			Reach: Member_ONLINE,
 		}
 	}
 

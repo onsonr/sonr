@@ -99,7 +99,6 @@ func (d *Device) IsWindows() bool {
 	return d.Platform == Platform_WINDOWS
 }
 
-
 // Method Updates User Position
 func (u *Device) UpdatePosition(faceDir float64, headDir float64, orientation *Position_Orientation) {
 	// Update User Values
@@ -255,6 +254,51 @@ func (u *Device) ReplyToFlat(from *Peer) *InviteResponse {
 	}
 }
 
+// NewUpdateEvent Creates Lobby Event with Peer Data ^
+func (u *Device) NewUpdateEvent(room *Room, id peer.ID) *RoomEvent {
+	return &RoomEvent{
+		Subject: RoomEvent_UPDATE,
+		Peer:    u.GetPeer(),
+		Id:      id.String(),
+		Room:    room,
+	}
+}
+
+// NewDefaultUpdateEvent Updates Peer with Default Position and Returns Lobby Event with Peer Data ^
+func (u *Device) NewDefaultUpdateEvent(room *Room, id peer.ID) *RoomEvent {
+	// Update Peer
+	u.UpdatePosition(DefaultPosition().Parameters())
+
+	// Check if User is Linker
+	if u.Status == Status_LINKER {
+		// Return Event
+		return &RoomEvent{
+			Subject: RoomEvent_LINKER,
+			Peer:    u.GetPeer(),
+			Id:      id.String(),
+			Room:    room,
+		}
+	} else {
+		// Return Event
+		return &RoomEvent{
+			Subject: RoomEvent_UPDATE,
+			Peer:    u.GetPeer(),
+			Id:      id.String(),
+			Room:    room,
+		}
+	}
+
+}
+
+// NewUpdateEvent Creates Lobby Event with Peer Data ^
+func (u *Device) NewExitEvent(room *Room, id peer.ID) *RoomEvent {
+	return &RoomEvent{
+		Subject: RoomEvent_EXIT,
+		Peer:    u.GetPeer(),
+		Id:      id.String(),
+		Room:    room,
+	}
+}
 
 // Returns Path for Private Key File
 func (d *Device) WorkingKeyPath(t KeyPair_Type) string {
@@ -310,7 +354,7 @@ func NewUser(ir *InitializeRequest) (*User, *SonrError) {
 	d := ir.GetDevice()
 
 	// Fetch Key Pair
-	err := d.Initialize(ir)
+	_, err := d.Initialize(ir)
 	if err != nil {
 		return nil, err
 	}
@@ -361,7 +405,7 @@ func (u *User) ID() *Peer_ID {
 
 // Method Returns KeyPair
 func (u *User) KeyPair() *KeyPair {
-	return u.GetDevice().GetAccountKeys()
+	return u.GetDevice().AccountKeys()
 }
 
 // Method Returns Profile Last Name
@@ -393,11 +437,6 @@ func (u *User) Sign(req *AuthRequest) *AuthResponse {
 		GivenSName:        req.GetSName(),
 		GivenMnemonic:     req.GetMnemonic(),
 	}
-}
-
-// Method Returns SName
-func (u *User) PrettySName() string {
-	return fmt.Sprintf("%s.snr/", u.Profile().GetSName())
 }
 
 // Method Updates User Contact

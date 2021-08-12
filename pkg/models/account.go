@@ -25,6 +25,10 @@ func InitAccount(ir *InitializeRequest) (*Account, *SonrError) {
 		ApiKeys:  ir.GetApiKeys(),
 		State:    ir.AccountState(),
 		Devices:  make([]*Device, 0),
+		Member: &Member{
+			Reach:      Member_ONLINE,
+			Associated: make([]*Peer, 0),
+		},
 	}
 	return u, nil
 }
@@ -35,6 +39,16 @@ func (u *Account) SetConnection(cr *ConnectionRequest) {
 	u.PushToken = cr.GetPushToken()
 	u.SName = cr.GetContact().GetProfile().GetSName()
 	u.Contact = cr.GetContact()
+	u.Member.PushToken = cr.GetPushToken()
+}
+
+// Update Account after Device Peer set for Member
+func (u *Account) HandleSetPeer(p *Peer, isPrimary bool) {
+	if isPrimary {
+		u.Member.Primary = p
+	} else {
+		u.Member.Associated = append(u.Member.Associated, p)
+	}
 }
 
 // Checks Whether User is Ready to Communicate

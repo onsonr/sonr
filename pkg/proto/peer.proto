@@ -44,7 +44,7 @@ message Linkers { repeated Peer list = 1; }
 
 // For Info about Lobby
 message Lobby {
-  Room room = 1;             // Type of Lobby
+  Room room = 1;               // Type of Lobby
   map<string, Peer> peers = 2; // Total Data of Peers
   Status status = 3;
 
@@ -108,12 +108,12 @@ message Location {
 message Member {
   string sName = 1;             // Member Sonr Domain
   Peer primary = 2;             // Members Primary Peer
-  Status status = 3;            // Member Status
+  Reach reach = 3;              // Member Reach
   string pushToken = 4;         // Member Push Token
   repeated Peer associated = 5; // Associated Peers
 
   // Status of Member
-  enum Status {
+  enum Reach {
     ONLINE = 0;  // Member is Online
     OFFLINE = 1; // Member is Offline
     GHOST = 2;   // Member is Ghost Mode (Not Receiving)

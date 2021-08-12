@@ -17,9 +17,11 @@ type Node struct {
 	ctx  context.Context
 
 	// Client
-	client sc.Client
-	state  md.Lifecycle
-	user   *md.User
+	account *md.Account
+	client  sc.Client
+	device  *md.Device
+	state   md.Lifecycle
+	user    *md.User
 
 	// Groups
 	local *tp.RoomManager

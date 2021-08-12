@@ -164,7 +164,7 @@ func (i *InitializeRequest) ShouldResetKeys() bool {
 // Get Assumed Account State
 func (i *InitializeRequest) AccountState() Account_State {
 	if i.ShouldCreateTempKeys() {
-		return Account_LINKER
+		return Account_UNVERIFIED
 	} else if i.ShouldLoadKeychain() {
 		return Account_VERIFIED
 	} else {
