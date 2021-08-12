@@ -32,8 +32,9 @@ const MAX_CHAN_DATA = 128
 // Maximum Chunk Size During Transfer
 const CHUNK_SIZE = 4 * 1024
 
-// Private Key File Name
-const KEY_FILE_NAME = ".sonr_private_key"
+// Directory Name of Private Key Folder
+const PRIVATE_KEY_DIR = ".sonr_private"
+
 
 // ** ─── Protocols ────────────────────────────────────────────────────────
 // Auth Service Protocol

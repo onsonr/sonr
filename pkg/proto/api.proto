@@ -66,7 +66,7 @@ message InitializeRequest {
   Device device = 1;     // Users Device
   APIKeys apiKeys = 2;   // Client Keys
   LogLevel logLevel = 3; // Set Logging Config
-  bool resetKeys = 4;    // Reset KeyPair for Migration
+  Options options = 4;   // Reset KeyPair for Migration
   Client client = 5;     // Client Type
 
   // Client Type
@@ -83,6 +83,14 @@ message InitializeRequest {
     DEBUG = 3;    // Show all Errors
     INFO = 4;     // Show all Errors
     NONE = 5;     // No Logging
+  }
+
+  // Keychain/Account Options
+  message Options {
+    bool isVerified = 1; // Is Account Verified on Frontend
+    bool isPairing = 2;  // Is Device Pairing Enabled for Linkers
+    bool resetKeys = 3;  // Reset KeyPair for Migration
+    string mnemonic = 4; // Mnemonic for Fingerprint
   }
 }
 
@@ -210,11 +218,10 @@ message LinkRequest {
 message LinkResponse {
   bool success = 1;    // Result for Verification
   Type type = 2;       // Type of Link
-  string shortID = 3;  // Short ID generated from HMac and Device
-  Device device = 4;   // Device used for Link
-  Peer from = 5;       // Users Peer Data
-  Peer to = 6;         // Receivers Peer Data
-  Contact contact = 7; // Users Contact Card
+  Device device = 3;   // Device used for Link
+  Peer from = 4;       // Users Peer Data
+  Peer to = 5;         // Receivers Peer Data
+  Contact contact = 6; // Users Contact Card
 
   // Type of Link
   enum Type {

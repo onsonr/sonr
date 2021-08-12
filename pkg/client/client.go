@@ -3,12 +3,13 @@ package client
 import (
 	"context"
 	"time"
-tp "github.com/sonr-io/core/internal/topic"
+
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	net "github.com/sonr-io/core/internal/host"
 	srv "github.com/sonr-io/core/internal/service"
+	tp "github.com/sonr-io/core/internal/topic"
 	md "github.com/sonr-io/core/pkg/models"
 	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/proto"
@@ -144,12 +145,18 @@ func (c *client) Link(req *md.LinkRequest, t *tp.RoomManager) (*md.LinkResponse,
 			if err != nil {
 				return nil, md.NewError(err, md.ErrorEvent_ROOM_RPC)
 			}
-			return c.user.VerifyLinkReceive(req), nil
+			return &md.LinkResponse{
+				Success: false,
+				Type:    md.LinkResponse_Type(req.GetType()),
+			}, nil
 		}
 		return nil, md.NewErrorWithType(md.ErrorEvent_PEER_NOT_FOUND_INVITE)
 	} else {
 		c.Service.HandleLinking(req)
-		return c.user.VerifyLinkReceive(req), nil
+		return &md.LinkResponse{
+			Success: false,
+			Type:    md.LinkResponse_Type(req.GetType()),
+		}, nil
 	}
 }
 

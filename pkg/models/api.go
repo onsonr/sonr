@@ -146,6 +146,32 @@ func (i *InitializeRequest) HasFatalLog() bool {
 	return false
 }
 
+// Check if Request requires temporary keys
+func (i *InitializeRequest) ShouldCreateTempKeys() bool {
+	return i.GetClient() == InitializeRequest_RPC && i.GetOptions().GetIsPairing()
+}
+
+// Check if Request is Existing User and Verified
+func (i *InitializeRequest) ShouldLoadKeychain() bool {
+	return i.GetOptions().GetIsVerified()
+}
+
+// Check if Request is to Reset all keys
+func (i *InitializeRequest) ShouldResetKeys() bool {
+	return i.GetOptions().GetResetKeys()
+}
+
+// Get Assumed Account State
+func (i *InitializeRequest) AccountState() Account_State {
+	if i.ShouldCreateTempKeys() {
+		return Account_LINKER
+	} else if i.ShouldLoadKeychain() {
+		return Account_VERIFIED
+	} else {
+		return Account_UNVERIFIED
+	}
+}
+
 // ** ─── URLLink MANAGEMENT ────────────────────────────────────────────────────────
 // Creates New Link
 func NewURLLink(url string) *URLLink {
