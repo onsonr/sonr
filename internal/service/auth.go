@@ -29,7 +29,7 @@ type AuthServiceResponse struct {
 
 type AuthService struct {
 	handler         ServiceHandler
-	user            *md.User
+	user            *md.Device
 	respCh          chan *md.InviteResponse
 	linkCh          chan *md.LinkRequest
 	invite          *md.InviteRequest

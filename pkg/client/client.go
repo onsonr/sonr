@@ -18,7 +18,7 @@ import (
 // Interface: Main Client handles Networking/Identity/Streams
 type Client interface {
 	// Client Methods
-	Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrError
+	Connect(cr *md.ConnectionRequest) (*md.Peer, bool, *md.SonrError)
 	Bootstrap(cr *md.ConnectionRequest) (*tp.RoomManager, *md.SonrError)
 	Mail(req *md.MailboxRequest) (*md.MailboxResponse, *md.SonrError)
 	Link(invite *md.LinkRequest, t *tp.RoomManager) (*md.LinkResponse, *md.SonrError)
@@ -48,7 +48,7 @@ type client struct {
 	ctx      context.Context
 	call     md.Callback
 	isLinker bool
-	user     *md.User
+	device   *md.Device
 	session  *md.Session
 	request  *md.ConnectionRequest
 
@@ -58,61 +58,58 @@ type client struct {
 }
 
 // NewClient Initializes Node with Router ^
-func NewClient(ctx context.Context, u *md.User, call md.Callback) Client {
+func NewClient(ctx context.Context, u *md.Device, call md.Callback) Client {
 	return &client{
-		ctx:  ctx,
-		call: call,
-		user: u,
+		ctx:    ctx,
+		call:   call,
+		device: u,
 	}
 }
 
 // Connects Host Node from Private Key
-func (c *client) Connect(cr *md.ConnectionRequest, keys *md.KeyPair) *md.SonrError {
+func (c *client) Connect(cr *md.ConnectionRequest) (*md.Peer, bool, *md.SonrError) {
 	// Set Request
 	c.request = cr
 	c.isLinker = cr.GetIsLinker()
 
 	// Set Host
-	hn, err := net.NewHost(c.ctx, cr, keys, c)
+	hn, err := net.NewHost(c.ctx, cr, c.device.AccountKeys(), c)
 	if err != nil {
-		return err
+		return nil, false, err
 	}
 
 	// Get MultiAddrs
 	maddr, err := hn.MultiAddr()
 	if err != nil {
-		return err
+		return nil, false, err
 	}
 
 	// Set Peer
-	err = c.user.SetPeer(hn.ID(), maddr, cr.GetIsLinker())
-	if err != nil {
-		return err
-	}
+	peer, isPrimary := c.device.SetPeer(hn.ID(), maddr, cr.GetIsLinker())
 
 	// Set Host
 	c.Host = hn
-	return nil
+	return peer, isPrimary, nil
 }
 
 // Begins Bootstrapping HostNode
 func (c *client) Bootstrap(cr *md.ConnectionRequest) (*tp.RoomManager, *md.SonrError) {
 	// Bootstrap Host
-	err := c.Host.Bootstrap(c.user.GetDevice().GetId())
+	err := c.Host.Bootstrap(c.device.GetId())
 	if err != nil {
 		return nil, err
 	}
 
 	// Start Services
-	s, err := srv.NewService(c.ctx, c.Host, c.user, c.request, c)
+	s, err := srv.NewService(c.ctx, c.Host, c.device, c.request, c)
 	if err != nil {
 		return nil, err
 	}
 	c.Service = s
 
 	// Join Local
-	RoomName := c.user.NewLocalRoom(cr.GetServiceOptions())
-	if t, err := tp.JoinRoom(c.ctx, c.Host, c.user, RoomName, c); err != nil {
+	RoomName := c.device.NewLocalRoom(cr.GetServiceOptions())
+	if t, err := tp.JoinRoom(c.ctx, c.Host, c.device, RoomName, c); err != nil {
 		return nil, err
 	} else {
 		// Check if Auto Update Events
@@ -162,7 +159,7 @@ func (c *client) Link(req *md.LinkRequest, t *tp.RoomManager) (*md.LinkResponse,
 
 // Invite Processes Data and Sends Invite to Peer
 func (c *client) Invite(invite *md.InviteRequest, t *tp.RoomManager) *md.SonrError {
-	if c.user.IsReady() {
+	if c.device.IsReady() {
 		// Check for Peer
 		if invite.GetType() == md.InviteRequest_REMOTE {
 			err := c.Service.SendMail(invite)
@@ -185,7 +182,7 @@ func (c *client) Invite(invite *md.InviteRequest, t *tp.RoomManager) *md.SonrErr
 
 					// Start New Session
 					invite.SetProtocol(md.SonrProtocol_LocalTransfer, id)
-					c.session = md.NewOutSession(c.user, invite, c)
+					c.session = md.NewOutSession(c.device, invite, c)
 				}
 
 				// Run Routine
@@ -221,9 +218,9 @@ func (c *client) Respond(r *md.InviteResponse) {
 
 // Update proximity/direction and Notify Lobby
 func (c *client) Update(t *tp.RoomManager) *md.SonrError {
-	if c.user.IsReady() {
+	if c.device.IsReady() {
 		// Create Event
-		ev := c.user.NewUpdateEvent(t.Room(), c.Host.ID())
+		ev := c.device.NewUpdateEvent(t.Room(), c.Host.ID())
 
 		// Inform Lobby
 		if err := t.Publish(ev); err != nil {
@@ -237,24 +234,24 @@ func (c *client) Update(t *tp.RoomManager) *md.SonrError {
 func (c *client) Lifecycle(state md.Lifecycle, t *tp.RoomManager) {
 	if state == md.Lifecycle_ACTIVE {
 		// Inform Lobby
-		if c.user.IsReady() {
-			ev := c.user.NewUpdateEvent(t.Room(), c.Host.ID())
+		if c.device.IsReady() {
+			ev := c.device.NewUpdateEvent(t.Room(), c.Host.ID())
 			if err := t.Publish(ev); err != nil {
 				md.NewError(err, md.ErrorEvent_ROOM_UPDATE)
 			}
 		}
 	} else if state == md.Lifecycle_PAUSED {
 		// Inform Lobby
-		if c.user.IsReady() {
-			ev := c.user.NewExitEvent(t.Room(), c.Host.ID())
+		if c.device.IsReady() {
+			ev := c.device.NewExitEvent(t.Room(), c.Host.ID())
 			if err := t.Publish(ev); err != nil {
 				md.NewError(err, md.ErrorEvent_ROOM_UPDATE)
 			}
 		}
 	} else if state == md.Lifecycle_STOPPED {
 		// Inform Lobby
-		if c.user.IsReady() {
-			ev := c.user.NewExitEvent(t.Room(), c.Host.ID())
+		if c.device.IsReady() {
+			ev := c.device.NewExitEvent(t.Room(), c.Host.ID())
 			if err := t.Publish(ev); err != nil {
 				md.NewError(err, md.ErrorEvent_ROOM_UPDATE)
 			}
@@ -288,9 +285,9 @@ func (c *client) newExitEvent(inv *md.InviteRequest) {
 // Helper: Background Process to continuously ping nearby peers
 func (c *client) sendPeriodicRoomEvents(t *tp.RoomManager) {
 	for {
-		if c.user.IsReady() {
+		if c.device.IsReady() {
 			// Create Event
-			ev := c.user.NewDefaultUpdateEvent(t.Room(), c.Host.ID())
+			ev := c.device.NewDefaultUpdateEvent(t.Room(), c.Host.ID())
 
 			// Send Update
 			if err := t.Publish(ev); err != nil {

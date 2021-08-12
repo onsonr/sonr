@@ -8,10 +8,7 @@ import (
 )
 
 // Method Initializes User Info Struct ^ //
-func InitAccount(ir *InitializeRequest) (*Account, *SonrError) {
-	// Initialize Device
-	d := ir.GetDevice()
-
+func InitAccount(ir *InitializeRequest, d *Device) (*Account, *SonrError) {
 	// Fetch Key Pair
 	keychain, err := d.Initialize(ir)
 	if err != nil {
@@ -52,8 +49,8 @@ func (u *Account) HandleSetPeer(p *Peer, isPrimary bool) {
 }
 
 // Checks Whether User is Ready to Communicate
-func (u *Account) IsReady() bool {
-	return u.Contact != nil && u.SName != "" && u.Primary.Location != nil && u.Primary.Status != Status_DEFAULT
+func (u *Device) IsReady() bool {
+	return u.Contact != nil && u.Location != nil && u.Status != Status_DEFAULT
 }
 
 // Return Client API Keys

@@ -23,7 +23,7 @@ func (c *client) OnConnected(r *md.ConnectionResponse) {
 // OnEvent: Local Lobby Event ^
 func (n *client) OnRoomEvent(e *md.RoomEvent) {
 	// Only Callback when not in Transfer
-	if n.user.IsNotStatus(md.Status_TRANSFER) {
+	if n.device.IsNotStatus(md.Status_TRANSFER) {
 		// Convert Message
 		bytes, err := e.ToGeneric()
 		if err != nil {
@@ -163,7 +163,7 @@ func (n *client) OnReply(id peer.ID, reply []byte) {
 
 // OnResponded: Prepares for Incoming File Transfer when Accepted ^
 func (n *client) OnConfirmed(inv *md.InviteRequest) {
-	n.session = md.NewInSession(n.user, inv, n)
+	n.session = md.NewInSession(n.device, inv, n)
 	n.Host.HandleStream(md.SonrProtocol_LocalTransfer.NewIDProtocol(n.Host.ID()), n.session.ReadFromStream)
 }
 

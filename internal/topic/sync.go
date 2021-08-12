@@ -30,7 +30,7 @@ type SyncService struct {
 	// Current Data
 	call    RoomHandler
 	room    GetRoomFunc
-	user    *md.User
+	user    *md.Device
 }
 
 // Initialize Exchange Service by Room Type
@@ -96,7 +96,7 @@ func (ss *SyncService) SyncWith(ctx context.Context, args SyncServiceArgs, reply
 	ss.call.OnRoomEvent(ss.room().NewJoinEvent(remotePeer))
 
 	// Set Msssage data and call done
-	buf, err := ss.user.GetPrimary().Buffer()
+	buf, err := ss.user.GetPeer().Buffer()
 	if err != nil {
 		md.LogError(err)
 		return err
@@ -119,7 +119,7 @@ func (rm *RoomManager) handleSyncEvents(ctx context.Context) {
 
 		// Check Event and Validate not User
 		if rm.isEventJoin(event) {
-			pbuf, err := rm.user.GetPrimary().Buffer()
+			pbuf, err := rm.user.GetPeer().Buffer()
 			if err != nil {
 				md.LogError(err)
 				continue

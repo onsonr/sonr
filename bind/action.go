@@ -30,7 +30,7 @@ func (n *Node) Sign(data []byte) []byte {
 	}
 
 	// Sign Buffer
-	result := n.user.Sign(request)
+	result := n.account.Sign(request)
 	buf, err := proto.Marshal(result)
 	if err != nil {
 		n.handleError(md.NewMarshalError(err))
@@ -44,7 +44,7 @@ func (n *Node) Verify(data []byte) []byte {
 	// Check Ready
 	if n.isReady() {
 		// Get Key Pair
-		kp := n.user.KeyPair()
+		kp := n.device.AccountKeys()
 
 		// Unmarshal Data to Request
 		request := &md.VerifyRequest{}
@@ -79,7 +79,7 @@ func (n *Node) Verify(data []byte) []byte {
 				return md.NewVerifyResponseBuf(result)
 			}
 		} else {
-			resp := n.user.VerifyRead()
+			resp := n.account.VerifyRead()
 			buf, err := proto.Marshal(resp)
 			if err != nil {
 				n.handleError(md.NewMarshalError(err))
@@ -107,15 +107,15 @@ func (n *Node) Update(data []byte) {
 		switch update.Data.(type) {
 		// Update Position
 		case *md.UpdateRequest_Position:
-			n.user.UpdatePosition(update.GetPosition().Parameters())
+			n.device.UpdatePosition(update.GetPosition().Parameters())
 
 		// Update Contact
 		case *md.UpdateRequest_Contact:
-			n.user.UpdateContact(update.GetContact())
+			n.account.UpdateContact(update.GetContact())
 
 		// Update Peer Properties
 		case *md.UpdateRequest_Properties:
-			n.user.UpdateProperties(update.GetProperties())
+			n.device.UpdateProperties(update.GetProperties())
 		}
 
 		// Notify Local Lobby
@@ -138,7 +138,7 @@ func (n *Node) Invite(data []byte) {
 		}
 
 		// Validate invite
-		req = n.user.SignInvite(req)
+		req = n.device.SignInvite(req)
 
 		// Send Invite
 		err := n.client.Invite(req, n.local)
@@ -157,7 +157,7 @@ func (n *Node) Link(data []byte) []byte {
 		n.handleError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
 		return nil
 	}
-	req = n.user.SignLink(req)
+	req = n.device.SignLink(req)
 
 	// Send to Client
 	resp, serr := n.client.Link(req, n.local)
@@ -260,7 +260,7 @@ func (s *Node) Action(buf []byte) []byte {
 			Success: true,
 			Action:  md.Action_LOCATION,
 			Data: &md.ActionResponse_Location{
-				Location: s.user.GetLocation(),
+				Location: s.device.GetLocation(),
 			},
 		}
 

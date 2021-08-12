@@ -28,7 +28,7 @@ type ExchangeService struct {
 	call    RoomHandler
 	linkers []*md.Peer
 	room    GetRoomFunc
-	user    *md.User
+	user    *md.Device
 }
 
 // Initialize Exchange Service by Room Type
@@ -115,7 +115,7 @@ func (es *ExchangeService) ExchangeWith(ctx context.Context, args ExchangeServic
 	}
 
 	// Set Message data and call done
-	buf, err := es.user.GetPrimary().Buffer()
+	buf, err := es.user.GetPeer().Buffer()
 	if err != nil {
 		md.LogError(err)
 		return err
@@ -147,7 +147,7 @@ func (rm *RoomManager) handleExchangeEvents(ctx context.Context) {
 
 		// Check Event and Validate not User
 		if rm.isEventJoin(event) {
-			pbuf, err := rm.user.GetPrimary().Buffer()
+			pbuf, err := rm.user.GetPeer().Buffer()
 			if err != nil {
 				md.LogError(err)
 				continue

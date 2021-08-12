@@ -147,19 +147,3 @@ enum Status {
   FAILED = 8;    // Failed to Connect Host
   LINKER = 9;    // Linker Status
 }
-
-// User is the Saved Data from Client that Passes to Proxy, During ConnRequest
-message User {
-  string sName = 1; // User Snr Domain
-
-  // From InitializeRequest
-  APIKeys apiKeys = 2; // App Env Variables for API Keys
-  Status status = 3;   // Client Node Status
-  Device device = 4;   // Clients Current Device
-
-  // From ConnectionRequest
-  Member member = 5;     // Clients Member Reference
-  Contact contact = 7;   // Users Contact Card
-  Location location = 8; // Client Location for Routing
-  string pushToken = 9;  // Push Notification Token
-}
