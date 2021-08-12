@@ -46,49 +46,134 @@ func (r *User) NewDeviceTopic() *Topic {
 	}
 }
 
+// ** ─── Member MANAGEMENT ────────────────────────────────────────────────────────
+// Update Position for Primary Peer in Member
+func (m *Member) UpdatePosition(p *Position) {
+	m.GetPrimary().Position = p
+}
+
+// Update Peer Profiles for Member
+func (m *Member) UpdateProfile(c *Contact) {
+	// Update Primary
+	m.GetPrimary().Profile = &Profile{
+		SName:     c.GetProfile().GetSName(),
+		FirstName: c.GetProfile().GetFirstName(),
+		LastName:  c.GetProfile().GetLastName(),
+		Picture:   c.GetProfile().GetPicture(),
+		Platform:  c.GetProfile().GetPlatform(),
+	}
+
+	// Update Associated
+	for _, a := range m.GetAssociated() {
+		a.Profile = &Profile{
+			SName:     c.GetProfile().GetSName(),
+			FirstName: c.GetProfile().GetFirstName(),
+			LastName:  c.GetProfile().GetLastName(),
+			Picture:   c.GetProfile().GetPicture(),
+			Platform:  c.GetProfile().GetPlatform(),
+		}
+	}
+}
+
+// Return Users Primary Peer
+func (u *User) GetPrimary() *Peer {
+	return u.GetMember().GetPrimary()
+}
+
+// Set Primary Peer for Member
+func (u *User) SetPrimary(id peer.ID, maddr multiaddr.Multiaddr, isLinker bool) {
+	// Set Status
+	if isLinker {
+		u.Member = &Member{
+			SName: u.SName,
+			Primary: &Peer{
+				Id: &Peer_ID{
+					Peer:      id.String(),
+					Device:    u.DeviceID(),
+					MultiAddr: maddr.String(),
+					PublicKey: u.KeyPair().PubKeyBase64(),
+				},
+				Platform: u.Device.Platform,
+				Model:    u.GetDevice().GetModel(),
+				HostName: u.GetDevice().GetHostName(),
+				Status:   Peer_PAIRING,
+			},
+			Status: Member_GHOST,
+		}
+	} else {
+		u.Member = &Member{
+			SName: u.SName,
+			Primary: &Peer{
+				SName: u.SName,
+				Id: &Peer_ID{
+					Peer:      id.String(),
+					Device:    u.DeviceID(),
+					MultiAddr: maddr.String(),
+					PublicKey: u.KeyPair().PubKeyBase64(),
+					PushToken: u.GetPushToken(),
+				},
+				Profile:  u.Profile(),
+				Platform: u.Device.Platform,
+				Model:    u.GetDevice().GetModel(),
+				HostName: u.GetDevice().GetHostName(),
+				Status:   Peer_ONLINE,
+			},
+			Status: Member_ONLINE,
+		}
+	}
+}
+
 // ** ─── Peer MANAGEMENT ────────────────────────────────────────────────────────
 // Set Peer from Connection Request and Host ID ^ //
 func (u *User) SetPeer(id peer.ID, maddr multiaddr.Multiaddr, isLinker bool) *SonrError {
 	// Set Status
 	if isLinker {
-		u.Peer = &Peer{
-			Id: &Peer_ID{
-				Peer:      id.String(),
-				Device:    u.DeviceID(),
-				MultiAddr: maddr.String(),
-				PublicKey: u.KeyPair().PubKeyBase64(),
+		u.Member = &Member{
+			SName: u.SName,
+			Primary: &Peer{
+				Id: &Peer_ID{
+					Peer:      id.String(),
+					Device:    u.DeviceID(),
+					MultiAddr: maddr.String(),
+					PublicKey: u.KeyPair().PubKeyBase64(),
+				},
+				Platform: u.Device.Platform,
+				Model:    u.GetDevice().GetModel(),
+				HostName: u.GetDevice().GetHostName(),
+				Status:   Peer_PAIRING,
 			},
-			Platform: u.Device.Platform,
-			Model:    u.GetDevice().GetModel(),
-			HostName: u.GetDevice().GetHostName(),
-			Status:   Peer_PAIRING,
+			Status: Member_GHOST,
 		}
 	} else {
-		u.Peer = &Peer{
+		u.Member = &Member{
 			SName: u.SName,
-			Id: &Peer_ID{
-				Peer:      id.String(),
-				Device:    u.DeviceID(),
-				MultiAddr: maddr.String(),
-				PublicKey: u.KeyPair().PubKeyBase64(),
-				PushToken: u.GetPushToken(),
+			Primary: &Peer{
+				SName: u.SName,
+				Id: &Peer_ID{
+					Peer:      id.String(),
+					Device:    u.DeviceID(),
+					MultiAddr: maddr.String(),
+					PublicKey: u.KeyPair().PubKeyBase64(),
+					PushToken: u.GetPushToken(),
+				},
+				Profile:  u.Profile(),
+				Platform: u.Device.Platform,
+				Model:    u.GetDevice().GetModel(),
+				HostName: u.GetDevice().GetHostName(),
+				Status:   Peer_ONLINE,
 			},
-			Profile:  u.Profile(),
-			Platform: u.Device.Platform,
-			Model:    u.GetDevice().GetModel(),
-			HostName: u.GetDevice().GetHostName(),
-			Status:   Peer_ONLINE,
+			Status: Member_ONLINE,
 		}
 	}
 
 	// Log Peer
-	LogInfo(u.Peer.String())
+	LogInfo(u.GetPrimary().String())
 	return nil
 }
 
 // Checks if User Peer is a Linker
 func (u *User) IsLinker() bool {
-	return u.Peer.Status == Peer_PAIRING
+	return u.GetPrimary().Status == Peer_PAIRING
 }
 
 // Verify if Passed ShortID is Correct

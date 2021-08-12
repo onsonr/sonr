@@ -113,7 +113,7 @@ message User {
   Device device = 4;   // Clients Current Device
 
   // From ConnectionRequest
-  Peer peer = 5;         // Clients Peer Reference
+  Member member = 5;     // Clients Member Reference
   Crypto crypto = 6;     // User Cryptographic Data
   Contact contact = 7;   // Users Contact Card
   Location location = 8; // Client Location for Routing

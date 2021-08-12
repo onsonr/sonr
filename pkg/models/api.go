@@ -373,7 +373,7 @@ func (i *InviteRequest) SetProtocol(p SonrProtocol, id peer.ID) protocol.ID {
 func (u *User) SignInvite(i *InviteRequest) *InviteRequest {
 	// Set From
 	if i.From == nil {
-		i.From = u.GetPeer()
+		i.From = u.GetPrimary()
 	}
 
 	// Convert all Thumbnails to Buffers
@@ -424,7 +424,7 @@ func (u *User) SignInvite(i *InviteRequest) *InviteRequest {
 func (u *User) SignLink(i *LinkRequest) *LinkRequest {
 	// Set From
 	if i.From == nil {
-		i.From = u.GetPeer()
+		i.From = u.GetPrimary()
 	}
 
 	// Set Type

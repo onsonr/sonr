@@ -104,6 +104,22 @@ message Location {
   }
 }
 
+// Holistic Info with all Peer Data
+message Member {
+  string sName = 1;             // Member Sonr Domain
+  Peer primary = 2;             // Members Primary Peer
+  Status status = 3;            // Member Status
+  string pushToken = 4;         // Member Push Token
+  repeated Peer associated = 5; // Associated Peers
+
+  // Status of Member
+  enum Status {
+    ONLINE = 0;  // Member is Online
+    OFFLINE = 1; // Member is Offline
+    GHOST = 2;   // Member is Ghost Mode (Not Receiving)
+  }
+}
+
 // Basic Info Sent to Peers to Establish Connections
 message Peer {
   string sName = 1;          // User Sonr Domain
@@ -126,19 +142,14 @@ message Peer {
     string pushToken = 5; // Push Notification token
   }
 
-  // Peers Device Role
-  enum Role {
-    PRIMARY = 0; // Primary Peer
-    LINKED = 1;  // Linked Peer Device
-  }
-
   // Peers Active Status
   enum Status {
-    DEFAULT = 0; // Offline - Not Online or Not a Full Node
+    OFFLINE = 0; // Offline - Not Online or Not a Full Node
     ONLINE = 1;  // Online - Full Node Available
     AWAY = 2;    // Away - Not Online, but has a full node
     BUSY = 3;    // Busy - Online, but busy with Transfer
     PAIRING = 4; // PAIRING - Online/Connected but only for Linking
+    GHOST = 5;   // User is Ghost Mode (Not Receiving)
   }
 
   // Properties
@@ -206,6 +217,13 @@ message Profile {
   string lastName = 3;   // General Info
   bytes picture = 4;     // Profile Picture
   Platform platform = 5; // Peers Device Operating System
+}
+
+// Peers Device Role
+enum Role {
+  PRIMARY = 0;   // Primary Peer
+  SECONDARY = 1; // Linked Peer Desktop device
+  TERTIARY = 2;  // Linked Peer Peripheral device
 }
 
 // Topic Information

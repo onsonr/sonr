@@ -450,12 +450,12 @@ func (u *User) DeviceID() string {
 
 // Method Returns Profile First Name
 func (u *User) FirstName() string {
-	return u.GetPeer().GetProfile().GetFirstName()
+	return u.GetPrimary().GetProfile().GetFirstName()
 }
 
 // Method Returns Peer_ID
 func (u *User) ID() *Peer_ID {
-	return u.GetPeer().GetId()
+	return u.GetPrimary().GetId()
 }
 
 // Method Returns KeyPair
@@ -465,7 +465,7 @@ func (u *User) KeyPair() *KeyPair {
 
 // Method Returns Profile Last Name
 func (u *User) LastName() string {
-	return u.GetPeer().GetProfile().GetLastName()
+	return u.GetPrimary().GetProfile().GetLastName()
 }
 
 // Method Returns Profile
@@ -501,13 +501,7 @@ func (u *User) PrettySName() string {
 
 // Method Updates User Contact
 func (u *User) UpdateContact(c *Contact) {
-	u.Peer.Profile = &Profile{
-		SName:     c.GetProfile().GetSName(),
-		FirstName: c.GetProfile().GetFirstName(),
-		LastName:  c.GetProfile().GetLastName(),
-		Picture:   c.GetProfile().GetPicture(),
-		Platform:  c.GetProfile().GetPlatform(),
-	}
+	u.GetMember().UpdateProfile(c)
 }
 
 // Method Updates User Position
@@ -535,7 +529,7 @@ func (u *User) UpdatePosition(faceDir float64, headDir float64, orientation *Pos
 	}
 
 	// Set Position
-	u.Peer.Position = &Position{
+	pos := &Position{
 		Facing: &Position_Compass{
 			Direction: faceDir,
 			Antipodal: faceAnpd,
@@ -548,11 +542,14 @@ func (u *User) UpdatePosition(faceDir float64, headDir float64, orientation *Pos
 		},
 		Orientation: orientation,
 	}
+
+	// Update Position
+	u.GetPrimary().Position = pos
 }
 
 // Method Updates User Contact
 func (u *User) UpdateProperties(props *Peer_Properties) {
-	u.Peer.Properties = props
+	u.GetPrimary().Properties = props
 }
 
 // Method Updates User Contact
@@ -579,14 +576,14 @@ func (u *User) ReplyToFlat(from *Peer) *InviteResponse {
 		Type:    InviteResponse_FLAT,
 		To:      from,
 		Payload: Payload_CONTACT,
-		From:    u.GetPeer(),
+		From:    u.GetPrimary(),
 		Transfer: &Transfer{
 			// SQL Properties
 			Payload:  Payload_CONTACT,
 			Received: int32(time.Now().Unix()),
 
 			// Owner Properties
-			Owner:    u.GetPeer().Profile,
+			Owner:    u.GetPrimary().Profile,
 			Receiver: from.GetProfile(),
 
 			// Data Properties
@@ -599,7 +596,7 @@ func (u *User) ReplyToFlat(from *Peer) *InviteResponse {
 func (u *User) NewUpdateEvent(topic *Topic, id peer.ID) *TopicEvent {
 	return &TopicEvent{
 		Subject: TopicEvent_UPDATE,
-		Peer:    u.GetPeer(),
+		Peer:    u.GetPrimary(),
 		Id:      id.String(),
 		Topic:   topic,
 	}
@@ -615,7 +612,7 @@ func (u *User) NewDefaultUpdateEvent(topic *Topic, id peer.ID) *TopicEvent {
 		// Return Event
 		return &TopicEvent{
 			Subject: TopicEvent_LINKER,
-			Peer:    u.GetPeer(),
+			Peer:    u.GetPrimary(),
 			Id:      id.String(),
 			Topic:   topic,
 		}
@@ -623,7 +620,7 @@ func (u *User) NewDefaultUpdateEvent(topic *Topic, id peer.ID) *TopicEvent {
 		// Return Event
 		return &TopicEvent{
 			Subject: TopicEvent_UPDATE,
-			Peer:    u.GetPeer(),
+			Peer:    u.GetPrimary(),
 			Id:      id.String(),
 			Topic:   topic,
 		}
@@ -635,7 +632,7 @@ func (u *User) NewDefaultUpdateEvent(topic *Topic, id peer.ID) *TopicEvent {
 func (u *User) NewExitEvent(topic *Topic, id peer.ID) *TopicEvent {
 	return &TopicEvent{
 		Subject: TopicEvent_EXIT,
-		Peer:    u.GetPeer(),
+		Peer:    u.GetPrimary(),
 		Id:      id.String(),
 		Topic:   topic,
 	}
