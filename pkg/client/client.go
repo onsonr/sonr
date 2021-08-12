@@ -215,7 +215,7 @@ func (c *client) Respond(r *md.InviteResponse) {
 func (c *client) Update(t *net.TopicManager) *md.SonrError {
 	if c.user.IsReady() {
 		// Create Event
-		ev := c.user.NewUpdateEvent(t.Topic(), c.Host.ID())
+		ev := c.user.NewUpdateEvent(t.TopicData(), c.Host.ID())
 
 		// Inform Lobby
 		if err := t.Publish(ev); err != nil {
@@ -230,7 +230,7 @@ func (c *client) Lifecycle(state md.Lifecycle, t *net.TopicManager) {
 	if state == md.Lifecycle_ACTIVE {
 		// Inform Lobby
 		if c.user.IsReady() {
-			ev := c.user.NewUpdateEvent(t.Topic(), c.Host.ID())
+			ev := c.user.NewUpdateEvent(t.TopicData(), c.Host.ID())
 			if err := t.Publish(ev); err != nil {
 				md.NewError(err, md.ErrorEvent_TOPIC_UPDATE)
 			}
@@ -238,7 +238,7 @@ func (c *client) Lifecycle(state md.Lifecycle, t *net.TopicManager) {
 	} else if state == md.Lifecycle_PAUSED {
 		// Inform Lobby
 		if c.user.IsReady() {
-			ev := c.user.NewExitEvent(t.Topic(), c.Host.ID())
+			ev := c.user.NewExitEvent(t.TopicData(), c.Host.ID())
 			if err := t.Publish(ev); err != nil {
 				md.NewError(err, md.ErrorEvent_TOPIC_UPDATE)
 			}
@@ -246,7 +246,7 @@ func (c *client) Lifecycle(state md.Lifecycle, t *net.TopicManager) {
 	} else if state == md.Lifecycle_STOPPED {
 		// Inform Lobby
 		if c.user.IsReady() {
-			ev := c.user.NewExitEvent(t.Topic(), c.Host.ID())
+			ev := c.user.NewExitEvent(t.TopicData(), c.Host.ID())
 			if err := t.Publish(ev); err != nil {
 				md.NewError(err, md.ErrorEvent_TOPIC_UPDATE)
 			}
@@ -282,7 +282,7 @@ func (c *client) sendPeriodicTopicEvents(t *net.TopicManager) {
 	for {
 		if c.user.IsReady() {
 			// Create Event
-			ev := c.user.NewDefaultUpdateEvent(t.Topic(), c.Host.ID())
+			ev := c.user.NewDefaultUpdateEvent(t.TopicData(), c.Host.ID())
 
 			// Send Update
 			if err := t.Publish(ev); err != nil {

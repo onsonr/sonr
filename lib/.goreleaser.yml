@@ -18,6 +18,6 @@ blobs:
   - provider: s3
     region: us-west-1
     bucket: rpc-releases
-    folder: "{{ .Tag }}"
+    folder: "{{ .Tag }}/{{ .Os }}/{{ .Arch }}"
 release:
   disable: true

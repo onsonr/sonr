@@ -37,7 +37,7 @@ type TopicHandler interface {
 type TopicManager struct {
 	ctx          context.Context
 	host         HostNode
-	topic        *ps.Topic
+	Topic        *ps.Topic
 	subscription *ps.Subscription
 	eventHandler *ps.TopicEventHandler
 	user         *md.User
@@ -81,7 +81,7 @@ func (h *hostNode) JoinTopic(ctx context.Context, u *md.User, topicData *md.Topi
 		linkers:      make([]*md.Peer, 0),
 		events:       make(chan *md.TopicEvent, util.MAX_CHAN_DATA),
 		subscription: sub,
-		topic:        topic,
+		Topic:        topic,
 	}
 
 	// Start Exchange RPC Server
@@ -100,7 +100,6 @@ func (h *hostNode) JoinTopic(ctx context.Context, u *md.User, topicData *md.Topi
 
 	// Set Service
 	mgr.exchange = &esv
-	h.topics = append(h.topics, mgr)
 
 	// Handle Events
 	go mgr.handleTopicEvents(context.Background())
@@ -111,7 +110,7 @@ func (h *hostNode) JoinTopic(ctx context.Context, u *md.User, topicData *md.Topi
 // FindPeer @ Helper: Find returns Pointer to Peer.ID and Peer
 func (tm *TopicManager) FindPeer(q string) (peer.ID, error) {
 	// Iterate through Topic Peers
-	for _, id := range tm.topic.ListPeers() {
+	for _, id := range tm.Topic.ListPeers() {
 		// If Found Match
 		if id.String() == q {
 			return id, nil
@@ -130,7 +129,7 @@ func (tm *TopicManager) Publish(msg *md.TopicEvent) error {
 	}
 
 	// Publish to Topic
-	err = tm.topic.Publish(tm.ctx, bytes)
+	err = tm.Topic.Publish(tm.ctx, bytes)
 	if err != nil {
 		md.LogError(err)
 		return err
@@ -138,8 +137,8 @@ func (tm *TopicManager) Publish(msg *md.TopicEvent) error {
 	return nil
 }
 
-// Returns Topic Data instance
-func (tm *TopicManager) Topic() *md.Topic {
+// Returns TopicData Data instance
+func (tm *TopicManager) TopicData() *md.Topic {
 	return tm.topicData
 }
 
@@ -155,7 +154,7 @@ func (tm *TopicManager) HasLinker(q string) bool {
 // HasPeer Method Checks if Peer ID String is Subscribed to Topic
 func (tm *TopicManager) HasPeer(q string) bool {
 	// Iterate through PubSub in topic
-	for _, id := range tm.topic.ListPeers() {
+	for _, id := range tm.Topic.ListPeers() {
 		// If Found Match
 		if id.String() == q {
 			return true
@@ -167,7 +166,7 @@ func (tm *TopicManager) HasPeer(q string) bool {
 // HasPeer Method Checks if Peer ID is Subscribed to Topic
 func (tm *TopicManager) HasPeerID(q peer.ID) bool {
 	// Iterate through PubSub in topic
-	for _, id := range tm.topic.ListPeers() {
+	for _, id := range tm.Topic.ListPeers() {
 		// If Found Match
 		if id == q {
 			return true

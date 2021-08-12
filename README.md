@@ -64,5 +64,3 @@ make clean
   - Any struct type, all of whose exported methods have
   supported function types and all of whose exported fields
   have supported types.
-
-gh api repos/sonr-io/core/actions/runs --paginate -q '.workflow_runs[] | select(.head_branch != "master") | "\(.id)"' | xargs -n1 -I % gh api repos/sonr-io/core/actions/runs/% -X DELETE

@@ -21,7 +21,6 @@ import (
 
 // ** ─── Interface MANAGEMENT ────────────────────────────────────────────────────────
 type HostNode interface {
-	AddTopic(tm *TopicManager)
 	Bootstrap(deviceId string) *md.SonrError
 	Close()
 	ID() peer.ID
@@ -60,7 +59,6 @@ type hostNode struct {
 
 	// Topics
 	pubsub *psub.PubSub
-	topics []*TopicManager
 }
 
 // Start Begins Assigning Host Parameters ^
@@ -114,7 +112,6 @@ func NewHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair
 		id:      h.ID(),
 		host:    h,
 		kdht:    kdhtRef,
-		topics:  make([]*TopicManager, 0),
 	}
 
 	// Check Connection
@@ -191,10 +188,6 @@ func newRelayedHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.
 }
 
 // ** ─── Host Info ────────────────────────────────────────────────────────
-// Add Topic to Host Topic List
-func (h *hostNode) AddTopic(tm *TopicManager) {
-	h.topics = append(h.topics, tm)
-}
 
 // Close Libp2p Host
 func (h *hostNode) Close() {
