@@ -98,7 +98,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ios-framework
-          path: ${{ github.workspace }}/build/Core.framework
+          path: ${{ github.workspace }}/build/Core.framework/
 
   release-frameworks:
     needs: [build-android, build-ios]
@@ -106,7 +106,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: mkdir -p ${{ github.workspace }}/build/Core.framework
+    - run: mkdir -p ${{ github.workspace }}/build
 
     - name: Download Android AAR
       uses: actions/download-artifact@v2
@@ -118,7 +118,7 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: ios-framework
-        path: ${{ github.workspace }}/build/Core.framework
+        path: ${{ github.workspace }}/build
 
     - name: Display structure of downloaded files
       run: ls -R
@@ -127,6 +127,6 @@ jobs:
     - uses: ncipollo/release-action@v1
       with:
         allowUpdates: true
-        artifacts: "${{ github.workspace }}/build/Core.framework, ${{ github.workspace }}/build/io.sonr.core.aar"
+        artifacts: "${{ github.workspace }}/build/Core.framework/, ${{ github.workspace }}/build/io.sonr.core.aar"
         replacesArtifacts: false
         token: ${{ secrets.GITHUB_TOKEN }}
