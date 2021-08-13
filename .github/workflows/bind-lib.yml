@@ -106,7 +106,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: mkdir -p ${{ github.workspace }}/build
+    - run: mkdir -p ${{ github.workspace }}/build/Core.framework
 
     - name: Download Android AAR
       uses: actions/download-artifact@v2
@@ -118,7 +118,7 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: ios-framework
-        path: ${{ github.workspace }}/build
+        path: ${{ github.workspace }}/build/Core.framework
 
     - name: Display structure of downloaded files
       run: ls -R
