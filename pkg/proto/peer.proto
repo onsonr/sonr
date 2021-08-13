@@ -44,14 +44,14 @@ message Linkers { repeated Peer list = 1; }
 
 // For Info about Lobby
 message Lobby {
-  Topic topic = 1;             // Type of Lobby
+  Room room = 1;               // Type of Lobby
   map<string, Peer> peers = 2; // Total Data of Peers
   Status status = 3;
 
   enum Status {
-    EMPTY = 0; // When there are No Peers in Local Topic
-    FEW = 1;   // When there are <= 5 Peers in Local Topic
-    MANY = 2;  // When there are > 5 Peers in Local Topic
+    EMPTY = 0; // When there are No Peers in Local Room
+    FEW = 1;   // When there are <= 5 Peers in Local Room
+    MANY = 2;  // When there are > 5 Peers in Local Room
   }
 }
 
@@ -104,6 +104,24 @@ message Location {
   }
 }
 
+// Holistic Info with all Peer Data
+message Member {
+  string sName = 1;     // Member Sonr Domain
+  string pushToken = 2; // Member Push Token
+  Reach reach = 3;      // Member Reach
+  Peer active = 4; // Defaults to Primary Device if Online, otherwise uses the
+                   // most recent active device.
+  repeated Peer associated = 5; // If Primary Device is Online, additional
+                                // devices will be grouped here.
+
+  // Status of Member
+  enum Reach {
+    ONLINE = 0;  // Member is Online
+    OFFLINE = 1; // Member is Offline
+    GHOST = 2;   // Member is Ghost Mode (Not Receiving)
+  }
+}
+
 // Basic Info Sent to Peers to Establish Connections
 message Peer {
   string sName = 1;          // User Sonr Domain
@@ -115,6 +133,7 @@ message Peer {
   Properties properties = 7; // Peer specific options set
   Status status = 8;         // Peer Status
   string hostName = 9;       // Peer Host Name
+  Role role = 10;            // Peer Role
 
   // ID References
   message ID {
@@ -125,12 +144,14 @@ message Peer {
     string pushToken = 5; // Push Notification token
   }
 
+  // Peers Active Status
   enum Status {
-    DEFAULT = 0; // Offline - Not Online or Not a Full Node
+    OFFLINE = 0; // Offline - Not Online or Not a Full Node
     ONLINE = 1;  // Online - Full Node Available
     AWAY = 2;    // Away - Not Online, but has a full node
     BUSY = 3;    // Busy - Online, but busy with Transfer
-    LINKER = 4;  // Linker - Online/Connected but only for Linking
+    PAIRING = 4; // PAIRING - Online/Connected but only for Linking
+    GHOST = 5;   // User is Ghost Mode (Not Receiving)
   }
 
   // Properties
@@ -200,16 +221,23 @@ message Profile {
   Platform platform = 5; // Peers Device Operating System
 }
 
-// Topic Information
-message Topic {
-  // Topic Type and Name
-  Type type = 1;   // Type of Topic
-  string name = 2; // Topic Name
+// Peers Device Role
+enum Role {
+  PRIMARY = 0;   // Primary Peer
+  SECONDARY = 1; // Linked Peer Desktop device
+  TERTIARY = 2;  // Linked Peer Peripheral device
+}
 
-  // Topic Type
+// Room Information
+message Room {
+  // Room Type and Name
+  Type type = 1;   // Type of Room
+  string name = 2; // Room Name
+
+  // Room Type
   enum Type {
-    LOCAL = 0;  // Nearby Peers Topic
-    DEVICE = 1; // User Devices Topic
-    GROUP = 2;  // User Custom Group Topic
+    LOCAL = 0;  // Nearby Peers Room
+    DEVICE = 1; // User Devices Room
+    GROUP = 2;  // User Custom Group Room
   }
 }

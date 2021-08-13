@@ -29,7 +29,7 @@ type AuthServiceResponse struct {
 
 type AuthService struct {
 	handler         ServiceHandler
-	user            *md.User
+	device          *md.Device
 	respCh          chan *md.InviteResponse
 	linkCh          chan *md.LinkRequest
 	invite          *md.InviteRequest
@@ -41,7 +41,7 @@ func (sc *serviceClient) StartAuth() *md.SonrError {
 	// Start Exchange Server
 	localServer := rpc.NewServer(sc.host.Host(), util.AUTH_PROTOCOL)
 	psv := AuthService{
-		user:    sc.user,
+		device:  sc.device,
 		handler: sc.handler,
 		respCh:  make(chan *md.InviteResponse, util.MAX_CHAN_DATA),
 		linkCh:  make(chan *md.LinkRequest, util.MAX_CHAN_DATA),
@@ -50,7 +50,7 @@ func (sc *serviceClient) StartAuth() *md.SonrError {
 	// Register Service
 	err := localServer.RegisterName(util.AUTH_RPC_SERVICE, &psv)
 	if err != nil {
-		return md.NewError(err, md.ErrorEvent_TOPIC_RPC)
+		return md.NewError(err, md.ErrorEvent_ROOM_RPC)
 	}
 	sc.Auth = &psv
 	return nil
@@ -127,7 +127,7 @@ func (ts *AuthService) InviteWith(ctx context.Context, args AuthServiceArgs, rep
 	// Check Invite for Flat/Default
 	if isFlat {
 		// Sign Contact Reply
-		resp := ts.user.ReplyToFlat(inv.GetFrom())
+		resp := ts.device.ReplyToFlat(inv.GetFrom())
 
 		// Convert Protobuf to bytes
 		msgBytes, err := proto.Marshal(resp)
@@ -177,10 +177,10 @@ func (tm *serviceClient) Link(id peer.ID, inv *md.LinkRequest) error {
 		// Call to Peer
 		err = rpcClient.Call(id, util.AUTH_RPC_SERVICE, util.AUTH_METHOD_LINK, args, &reply)
 		if err != nil {
-			tm.handler.OnLink(false, id, nil)
+			tm.handler.OnLink(false, false, id, nil)
 			return err
 		}
-		tm.handler.OnLink(reply.LinkResult, id, reply.LinkResponse)
+		tm.handler.OnLink(reply.LinkResult, false, id, reply.LinkResponse)
 		return nil
 	}
 	return errors.New("Invite is not a Link Invite")
@@ -197,7 +197,7 @@ func (ts *AuthService) LinkWith(ctx context.Context, args AuthServiceArgs, reply
 		}
 
 		// Handle Status
-		ok, result := ts.user.VerifyLink(&inv)
+		ok, result := ts.device.VerifyLink(&inv)
 		buf, err := proto.Marshal(result)
 		if err != nil {
 			return err
@@ -210,7 +210,7 @@ func (ts *AuthService) LinkWith(ctx context.Context, args AuthServiceArgs, reply
 
 		// Return Result
 		md.LogInfo(fmt.Sprintf("Link Result: %v", result))
-		ts.handler.OnLink(ok, peer.ID(inv.GetFrom().PeerID()), reply.LinkResponse)
+		ts.handler.OnLink(ok, true, peer.ID(inv.GetFrom().PeerID()), reply.LinkResponse)
 		return nil
 	} else {
 		return errors.New("Linking is not Active")

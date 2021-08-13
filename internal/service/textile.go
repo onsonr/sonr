@@ -57,7 +57,7 @@ func (sc *serviceClient) StartTextile() *md.SonrError {
 		apiKeys:     sc.apiKeys,
 		host:        sc.host,
 		onConnected: sc.handler.OnConnected,
-		device:      sc.user.GetDevice(),
+		device:      sc.device,
 		handler:     sc.handler,
 		pushService: sc.Push,
 	}
@@ -322,16 +322,16 @@ func (ts *TextileService) hasMailboxDirectory() bool {
 
 // # Helper: Creates User Auth Context from API Keys
 func newUserAuthCtx(ctx context.Context, keys *md.APIKeys) (context.Context, error) {
-	// Add our user group key to the context
+	// Add our device group key to the context
 	ctx = common.NewAPIKeyContext(ctx, keys.TextileKey)
 
-	// Add a signature using our user group secret
+	// Add a signature using our device group secret
 	return common.CreateAPISigContext(ctx, time.Now().Add(time.Hour), keys.TextileSecret)
 }
 
 // # Helper: Creates Auth Token Context from AuthContext, Client, Identity
 func (ts *TextileService) newTokenCtx() (context.Context, error) {
-	// Generate a new token for the user
+	// Generate a new token for the device
 	token, err := ts.client.GetToken(ts.ctxAuth, ts.device.ThreadIdentity())
 	if err != nil {
 		return nil, err

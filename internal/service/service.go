@@ -12,7 +12,7 @@ import (
 
 type ServiceHandler interface {
 	OnConnected(r *md.ConnectionResponse)
-	OnLink(success bool, id peer.ID, resp []byte)
+	OnLink(success bool, incoming bool, id peer.ID, resp []byte)
 	OnInvite([]byte)
 	OnReply(id peer.ID, data []byte)
 	OnConfirmed(inv *md.InviteRequest)
@@ -42,7 +42,7 @@ type serviceClient struct {
 	host      net.HostNode
 	pushToken string
 	request   *md.ConnectionRequest
-	user      *md.User
+	device    *md.Device
 
 	// Services
 	Auth    *AuthService
@@ -52,7 +52,7 @@ type serviceClient struct {
 }
 
 // Creates New Service Interface
-func NewService(ctx context.Context, h net.HostNode, u *md.User, req *md.ConnectionRequest, sh ServiceHandler) (ServiceClient, *md.SonrError) {
+func NewService(ctx context.Context, h net.HostNode, u *md.Device, req *md.ConnectionRequest, sh ServiceHandler) (ServiceClient, *md.SonrError) {
 	// Create Client
 	client := &serviceClient{
 		ctx:       ctx,
@@ -61,7 +61,7 @@ func NewService(ctx context.Context, h net.HostNode, u *md.User, req *md.Connect
 		host:      h,
 		pushToken: req.GetPushToken(),
 		request:   req,
-		user:      u,
+		device:    u,
 	}
 
 	// Begin Auth Service

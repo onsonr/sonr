@@ -17,22 +17,49 @@ message APIKeys {
   string textileSecret = 7;   // Secret for the Textile Service
 }
 
+// User Account Info, Saved to Disk as account.snr
+message Account {
+  State state = 1;       // User's current state
+  string sName = 2;      // User's SName
+  APIKeys apiKeys = 3;   // App Env Variables for API Keys
+  KeyChain keyChain = 4; // Account Keychain
+  string pushToken = 5;  // Push Notification Token
+
+  // User's Contact/Member
+  Contact contact = 6; // User's Contact
+  Member member = 7;   // User's Member Reference
+
+  // Device Info
+  Device primary = 8;           // Primary Device
+  Device current = 9;           // Current Device
+  repeated Device devices = 10; // List of Devices
+
+  // State of users account
+  enum State {
+    UNVERIFIED = 0; // User is unverified - Setup Default node
+    VERIFIED = 1;   // User has verified their account
+    BLOCKED = 2;    // User is blocked from Sonr Network
+  }
+}
+
 // Information about device for User
 message Device {
   // Management
   FileSystem fileSystem = 1; // Directories for this Device
-  KeyPair keyPair = 2;       // User Public Private Key-Pair
-  Platform platform = 3;     // Operating System
+  Platform platform = 2;     // Operating System
+  KeyChain keyChain = 3;     // User Keychain
 
   // Identification
   string id = 4;       // Device ID
   string label = 5;    // User Defined Label for this Device
   string hostName = 6; // The hostname of the device.
+  string model = 7;    // Model of Device
 
-  // Miscelaneous
-  string model = 7;           // Model of Device
-  string operatingSystem = 8; // Representation of the host OS or platform.
-  string operatingSystemVersion = 9; // Version of the host OS or platform.
+  // Connection
+  Status status = 8;     // Status of the User Node
+  Location location = 9; // Location of the Device User
+  Peer peer = 10;        // Peer of the Device
+  Contact contact = 11;  // Contact Card of the Device User
 }
 
 // FileSystem is for Directores Where Data can be stored
@@ -40,6 +67,7 @@ message FileSystem {
   Directory downloads = 1; // Downloaded Files
   Directory support = 2;   // Non Exposed Support Files
   Directory temporary = 3; // Temporary Storage
+  Directory private = 4;   // Locked Folder to Private Key Files
 
   // Directory in FileSystem
   message Directory {
@@ -51,12 +79,21 @@ message FileSystem {
       SUPPORT = 2;   // Persistent Non Exposed Files - Mobile
       LIBRARY = 3;   // Persistent Non Exposed Files - Desktop
       DOCUMENTS = 4; // Transferred Files - Mobile
+      PRIVATE = 5;   // Private Key Files
     }
   }
 }
 
-// KeyPair Encryption Type
-enum KeyType {
+// Account KeyPair Set for a User
+message KeyChain {
+  KeyPair account = 1; // KeyPair for handshake - stored on all user devices
+  KeyPair device = 2;  // KeyPair for linking - stored on Primary Device
+  KeyPair group = 3;   // KeyPair for groups - stored on all user Devices
+  KeyPair.Public deviceLinkPubKey = 4; // Public Key if linked
+}
+
+// KeyPair Signature Type
+enum Signature {
   RSA = 0;       // RSA Encryption
   Ed25519 = 1;   // Ed25519 Encryption
   Secp256k1 = 2; // Secp256k1 Encryption
@@ -65,9 +102,10 @@ enum KeyType {
 
 // Private Public Key Pair
 message KeyPair {
-  Private private = 1; // Private Key Ref
-  Public public = 2;   // Public Key Ref
-  KeyType type = 3;    // Type of Key Encryption
+  Private private = 1;     // Private Key Ref
+  Public public = 2;       // Public Key Ref
+  Signature signature = 3; // Type of Key Signature
+  Type type = 4;           // Type of Key
 
   // User Private Key Saved to Disk
   message Private {
@@ -79,6 +117,14 @@ message KeyPair {
   message Public {
     string base64 = 1; // Base64 Representation of Keys
     bytes buffer = 2;  // Public Key Buffer
+  }
+
+  // Purposes of KeyPair
+  enum Type {
+    ACCOUNT = 0;   // Account KeyPair
+    DEVICE = 1;    // Device KeyPair
+    GROUP = 2;     // Group KeyPair
+    TEMPORARY = 3; // Temporary KeyPair for Pre Device Link
   }
 }
 
@@ -101,35 +147,4 @@ enum Status {
   STANDBY = 7;   // Away from Sonr Application
   FAILED = 8;    // Failed to Connect Host
   LINKER = 9;    // Linker Status
-}
-
-// User is the Saved Data from Client that Passes to Proxy, During ConnRequest
-message User {
-  string sName = 1; // User Snr Domain
-
-  // From InitializeRequest
-  APIKeys apiKeys = 2; // App Env Variables for API Keys
-  Status status = 3;   // Client Node Status
-  Device device = 4;   // Clients Current Device
-
-  // From ConnectionRequest
-  Peer peer = 5;         // Clients Peer Reference
-  Crypto crypto = 6;     // User Cryptographic Data
-  Contact contact = 7;   // Users Contact Card
-  Location location = 8; // Client Location for Routing
-  string pushToken = 9;  // Push Notification Token
-  Info info = 10;        // User Info
-
-  // Crypto Data to Place in DHT
-  message Crypto {
-    string prefix = 1;   // Created from DeviceID and SName
-    string mnemonic = 2; // Used to generate fingerprint
-  }
-
-  // User Device(s) Info
-  message Info {
-    Device primary = 1;          // Primary Device
-    repeated Device devices = 2; // List of Devices
-    KeyPair linkKeys = 3;        // KeyPair for User Device Link
-  }
 }

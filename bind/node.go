@@ -3,8 +3,8 @@ package bind
 import (
 	"context"
 
-	sc "github.com/sonr-io/core/internal/client"
-	net "github.com/sonr-io/core/internal/host"
+	tp "github.com/sonr-io/core/internal/topic"
+	sc "github.com/sonr-io/core/pkg/client"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
 )
@@ -17,13 +17,15 @@ type Node struct {
 	ctx  context.Context
 
 	// Client
-	client    sc.Client
-	state     md.Lifecycle
-	user      *md.User
+	account *md.Account
+	client  sc.Client
+	device  *md.Device
+	state   md.Lifecycle
 
-	// Groups
-	local  *net.TopicManager
-	topics map[string]*net.TopicManager
+	// Rooms
+	local   *tp.RoomManager
+	devices *tp.RoomManager
+	groups  map[string]*tp.RoomManager
 }
 
 // Initializes New Node ^ //
@@ -39,23 +41,28 @@ func Initialize(reqBytes []byte, call Callback) *Node {
 	// Initialize Logger
 	md.InitLogger(req)
 
+	// Initialize Device
+	device := req.GetDevice()
+
 	// Initialize Node
 	mn := &Node{
 		call:   call,
 		ctx:    context.Background(),
-		topics: make(map[string]*net.TopicManager, 10),
+		groups: make(map[string]*tp.RoomManager, 10),
 		state:  md.Lifecycle_ACTIVE,
+		device: device,
 	}
 
 	// Create User
-	if u, err := md.NewUser(req); err != nil {
+	if u, err := md.InitAccount(req, device); err != nil {
 		mn.handleError(err)
 	} else {
-		mn.user = u
+		mn.account = u
+		mn.device = device
 	}
 
 	// Create Client
-	mn.client = sc.NewClient(mn.ctx, mn.user, mn.callback())
+	mn.client = sc.NewClient(mn.ctx, mn.device, mn.callback())
 	return mn
 }
 
@@ -69,16 +76,18 @@ func (n *Node) Connect(data []byte) {
 	}
 
 	// Update User with Connection Request
-	n.user.InitConnection(req)
+	n.account.SetConnection(req)
+	n.device.SetConnection(req)
 
 	// Connect Host
-	serr := n.client.Connect(req, n.user.KeyPair())
+	peer, isPrimary, serr := n.client.Connect(req, n.account)
 	if serr != nil {
 		n.handleError(serr)
 		n.setConnected(false)
 	} else {
 		// Update Status
 		n.setConnected(true)
+		n.account.HandleSetPeer(peer, isPrimary)
 	}
 
 	// Bootstrap Node

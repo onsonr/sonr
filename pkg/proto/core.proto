@@ -1,6 +1,7 @@
 syntax = "proto3";
 package models;
 import "peer.proto";
+import "user.proto";
 
 // Require Go Package
 option go_package = "/models";
@@ -25,4 +26,10 @@ enum SonrProtocol {
 message PushMessage {
   Peer peer = 1;                // Peer to send to
   map<string, string> data = 2; // Data to send
+}
+
+message LinkPacket {
+  Device primary = 1;    // Primary Device
+  Device secondary = 2;  // Secondary Device
+  KeyChain keyChain = 3; // KeyChain for Linking
 }

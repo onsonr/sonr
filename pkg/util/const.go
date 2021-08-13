@@ -26,14 +26,17 @@ func DHT_OPTS() (string, dscl.Option) {
 	return HOST_RENDEVOUZ_POINT, dscl.TTL(REFRESH_INTERVAL)
 }
 
-// Pubsub Topic Max Messages
+// Pubsub Room Max Messages
 const MAX_CHAN_DATA = 128
 
 // Maximum Chunk Size During Transfer
 const CHUNK_SIZE = 4 * 1024
 
-// Private Key File Name
-const KEY_FILE_NAME = ".sonr_private_key"
+// Directory Name of Private Key Folder
+const PRIVATE_KEY_DIR = ".sonr_private"
+
+// Filename for Account
+const ACCOUNT_FILE = "account.snr"
 
 // ** ─── Protocols ────────────────────────────────────────────────────────
 // Auth Service Protocol
@@ -44,6 +47,9 @@ const EXCHANGE_PROTOCOL = protocol.ID("/sonr/exchange-service/0.2")
 
 // Remote Service Protocol
 const REMOTE_PROTOCOL = protocol.ID("/sonr/remote-service/0.2")
+
+// Exchange Service Protocol
+const VERIFY_PROTOCOL = protocol.ID("/sonr/verify-protocol/0.2")
 
 // ** ─── API ────────────────────────────────────────────────────────
 // Textile Client API URL
@@ -57,12 +63,6 @@ const TEXTILE_MAILBOX_DIR = ".textile"
 
 // ** ─── Services ────────────────────────────────────────────────────────
 // Local RPC Service Name
-const EXCHANGE_RPC_SERVICE = "ExchangeService"
-
-// Local RPC Service Method for Exchange
-const EXCHANGE_METHOD_EXCHANGE = "ExchangeWith"
-
-// Local RPC Service Name
 const AUTH_RPC_SERVICE = "AuthService"
 
 // Local RPC Service Method for Invite
@@ -75,13 +75,22 @@ const AUTH_METHOD_LINK = "LinkWith"
 const DEVICE_RPC_SERVICE = "DeviceService"
 
 // Local RPC Service Method for Push
-const DEVICE_METHOD_PUSH = "PushWith"
+const DEVICE_METHOD_DIRECT = "DirectWith"
 
-// Local RPC Service Method for Sync
-const DEVICE_METHOD_SYNC = "SyncWith"
+// Local RPC Service Method for Push
+const DEVICE_METHOD_MODIFY = "ModifyWith"
 
-// Firebase Project ID
-const FIRE_PROJECT_ID = "trans-density-315704"
+// Local RPC Service Name
+const EXCHANGE_RPC_SERVICE = "ExchangeService"
+
+// Local RPC Service Method for Exchange
+const EXCHANGE_METHOD_EXCHANGE = "ExchangeWith"
+
+// Local RPC Service Name
+const VERIFY_RPC_SERVICE = "VerifyService"
+
+// Local RPC Service Method for Exchange
+const VERIFY_METHOD_VERIFY = "VerifyWith"
 
 // ** ─── Host ────────────────────────────────────────────────────────
 // Libp2p Host Rendevouz Point

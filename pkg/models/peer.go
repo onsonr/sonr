@@ -16,93 +16,149 @@ var (
 	NoPubKey = errors.New("Public Key not found from Peer Protobuf.")
 )
 
-// ** ─── Topic MANAGEMENT ────────────────────────────────────────────────────────
-func (t *Topic) IsLocal() bool {
-	return t.Type == Topic_LOCAL
+// ** ─── Room MANAGEMENT ────────────────────────────────────────────────────────
+// Checks if Room Type is Local
+func (t *Room) IsLocal() bool {
+	return t.Type == Room_LOCAL
 }
 
-// Local Lobby Topic Protocol ID
-func (r *User) NewLocalTopic(opts *ConnectionRequest_ServiceOptions) *Topic {
+// Checks if Room Type is Devices
+func (t *Room) IsDevices() bool {
+	return t.Type == Room_DEVICE
+}
+
+// Checks if Room Type is Group
+func (t *Room) IsGroup() bool {
+	return t.Type == Room_GROUP
+}
+
+// Local Lobby Room Protocol ID
+func (r *Device) NewLocalRoom(opts *ConnectionRequest_ServiceOptions) *Room {
 	// Initialize Set OLC Range
 	scope := 6
 	if opts.GetOlcRange() > 0 {
 		scope = int(opts.GetOlcRange())
 	}
 
-	// Return Topic
-	return &Topic{
-		Name: fmt.Sprintf("/sonr/topic/%s", r.Location.OLC(scope)),
-		Type: Topic_LOCAL,
+	// Return Room
+	return &Room{
+		Name: fmt.Sprintf("/sonr/local/%s", r.Location.OLC(scope)),
+		Type: Room_LOCAL,
 	}
 }
 
-// Local Lobby Topic Protocol ID
-func (r *User) NewDeviceTopic() *Topic {
+// Local Lobby Room Protocol ID
+func (r *Account) NewDeviceRoom() *Room {
 
-	// Return Topic
-	return &Topic{
-		Name: fmt.Sprintf("/sonr/%s/%s", r.SName, r.DeviceID()),
-		Type: Topic_LOCAL,
+	// Return Room
+	return &Room{
+		Name: fmt.Sprintf("/sonr/device/%s", r.SName),
+		Type: Room_DEVICE,
+	}
+}
+
+// Local Lobby Room Protocol ID
+func (r *Account) NewGroupRoom(name string) *Room {
+
+	// Return Room
+	return &Room{
+		Name: fmt.Sprintf("/sonr/group/%s", name),
+		Type: Room_GROUP,
+	}
+}
+
+// ** ─── Member MANAGEMENT ────────────────────────────────────────────────────────
+// Update Peer Profiles for Member
+func (m *Member) UpdateProfile(c *Contact) {
+	// Update General
+	m.SName = c.GetProfile().GetSName()
+
+	// Update Primary
+	m.GetPrimary().Profile = &Profile{
+		SName:     c.GetProfile().GetSName(),
+		FirstName: c.GetProfile().GetFirstName(),
+		LastName:  c.GetProfile().GetLastName(),
+		Picture:   c.GetProfile().GetPicture(),
+		Platform:  c.GetProfile().GetPlatform(),
+	}
+
+	// Update Associated
+	for _, a := range m.GetAssociated() {
+		a.Profile = &Profile{
+			SName:     c.GetProfile().GetSName(),
+			FirstName: c.GetProfile().GetFirstName(),
+			LastName:  c.GetProfile().GetLastName(),
+			Picture:   c.GetProfile().GetPicture(),
+			Platform:  c.GetProfile().GetPlatform(),
+		}
+	}
+}
+
+// Return Users Primary Peer
+func (u *Account) PrimaryPeer() *Peer {
+	return u.GetMember().GetPrimary()
+}
+
+// Set Primary Peer for Member. Returns Peer Ref and if Primary Peer
+func (d *Device) SetPeer(id peer.ID, maddr multiaddr.Multiaddr, isLinker bool) (*Peer, bool) {
+	// Set Status
+	if isLinker {
+		peer := &Peer{
+			Id: &Peer_ID{
+				Peer:      id.String(),
+				Device:    d.Id,
+				MultiAddr: maddr.String(),
+				PublicKey: d.AccountKeys().PubKeyBase64(),
+			},
+			Platform: d.Platform,
+			Model:    d.GetModel(),
+			HostName: d.GetHostName(),
+			Status:   Peer_PAIRING,
+		}
+
+		// Set Primary
+		d.Peer = peer
+		return peer, d.HasDeviceKeys()
+
+	} else {
+		peer := &Peer{
+			Id: &Peer_ID{
+				Peer:      id.String(),
+				Device:    d.Id,
+				MultiAddr: maddr.String(),
+				PublicKey: d.AccountKeys().PubKeyBase64(),
+			},
+			Platform: d.Platform,
+			Model:    d.GetModel(),
+			HostName: d.GetHostName(),
+			Status:   Peer_ONLINE,
+		}
+
+		// Set Primary
+		d.Peer = peer
+		return peer, d.HasDeviceKeys()
 	}
 }
 
 // ** ─── Peer MANAGEMENT ────────────────────────────────────────────────────────
-// Set Peer from Connection Request and Host ID ^ //
-func (u *User) SetPeer(id peer.ID, maddr multiaddr.Multiaddr, isLinker bool) *SonrError {
-	// Set Status
-	if isLinker {
-		u.Peer = &Peer{
-			Id: &Peer_ID{
-				Peer:      id.String(),
-				Device:    u.DeviceID(),
-				MultiAddr: maddr.String(),
-				PublicKey: u.KeyPair().PubKeyBase64(),
-			},
-			Platform: u.Device.Platform,
-			Model:    u.GetDevice().GetModel(),
-			HostName: u.GetDevice().GetHostName(),
-			Status:   Peer_LINKER,
-		}
-	} else {
-		u.Peer = &Peer{
-			SName: u.SName,
-			Id: &Peer_ID{
-				Peer:      id.String(),
-				Device:    u.DeviceID(),
-				MultiAddr: maddr.String(),
-				PublicKey: u.KeyPair().PubKeyBase64(),
-				PushToken: u.GetPushToken(),
-			},
-			Profile:  u.Profile(),
-			Platform: u.Device.Platform,
-			Model:    u.GetDevice().GetModel(),
-			HostName: u.GetDevice().GetHostName(),
-			Status:   Peer_ONLINE,
-		}
-	}
-
-	// Log Peer
-	LogInfo(u.Peer.String())
-	return nil
-}
 
 // Checks if User Peer is a Linker
-func (u *User) IsLinker() bool {
-	return u.Peer.Status == Peer_LINKER
+func (u *Device) IsLinker() bool {
+	return u.GetPeer().Status == Peer_PAIRING
 }
 
 // Verify if Passed ShortID is Correct
-func (u *User) VerifyLink(req *LinkRequest) (bool, *LinkResponse) {
+func (u *Device) VerifyLink(req *LinkRequest) (bool, *LinkResponse) {
 	// Check if Peer is Linker
 	if u.IsLinker() {
 		// Verify Strings
-		success := req.GetShortID() == u.GetDevice().ShortID()
+		success := req.GetShortID() == u.ShortID()
 		if success {
 			return true, &LinkResponse{
 				Type:    LinkResponse_Type(req.Type),
 				To:      req.GetTo(),
 				From:    req.GetFrom(),
-				Device:  u.GetDevice(),
+				Device:  u,
 				Contact: req.GetContact(),
 			}
 		}
@@ -151,41 +207,42 @@ func (p *Position) Parameters() (float64, float64, *Position_Orientation) {
 }
 
 // ** ─── Local Event MANAGEMENT ────────────────────────────────────────────────────────
-// Creates New Join Topic Event
-func NewJoinEvent(peer *Peer) *TopicEvent {
-	return &TopicEvent{
+// Creates New Join Room Event
+func (r *Room) NewJoinEvent(peer *Peer) *RoomEvent {
+	return &RoomEvent{
 		Id:      peer.Id.Peer,
 		Peer:    peer,
-		Subject: TopicEvent_JOIN,
+		Subject: RoomEvent_JOIN,
+		Room:    r,
 	}
 }
 
-// Creates New Update Topic Event
-func NewUpdateEvent(peer *Peer, topic *Topic) *TopicEvent {
-	return &TopicEvent{
+// Creates New Update Room Event
+func (r *Room) NewUpdateEvent(peer *Peer) *RoomEvent {
+	return &RoomEvent{
 		Id:      peer.Id.Peer,
 		Peer:    peer,
-		Subject: TopicEvent_UPDATE,
-		Topic:   topic,
+		Subject: RoomEvent_UPDATE,
+		Room:    r,
 	}
 }
 
-// Creates New Update Topic Event
-func NewLinkerEvent(peer *Peer, topic *Topic) *TopicEvent {
-	return &TopicEvent{
+// Creates New Update Room Event
+func (r *Room) NewLinkerEvent(peer *Peer) *RoomEvent {
+	return &RoomEvent{
 		Id:      peer.Id.Peer,
 		Peer:    peer,
-		Subject: TopicEvent_LINKER,
-		Topic:   topic,
+		Subject: RoomEvent_LINKER,
+		Room:    r,
 	}
 }
 
-// Creates New Exit Topic Event
-func NewExitEvent(id string, topic *Topic) *TopicEvent {
-	return &TopicEvent{
+// Creates New Exit Room Event
+func (r *Room) NewExitEvent(id string) *RoomEvent {
+	return &RoomEvent{
 		Id:      id,
-		Subject: TopicEvent_EXIT,
-		Topic:   topic,
+		Subject: RoomEvent_EXIT,
+		Room:    r,
 	}
 }
 

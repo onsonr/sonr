@@ -6,8 +6,8 @@ import (
 	"log"
 	"net"
 
-	sc "github.com/sonr-io/core/internal/client"
-	sh "github.com/sonr-io/core/internal/host"
+	tp "github.com/sonr-io/core/internal/topic"
+	sc "github.com/sonr-io/core/pkg/client"
 	md "github.com/sonr-io/core/pkg/models"
 	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/grpc"
@@ -18,13 +18,14 @@ type NodeServer struct {
 	ctx context.Context
 
 	// Client
-	client sc.Client
-	state  md.Lifecycle
-	user   *md.User
+	account *md.Account
+	client  sc.Client
+	device  *md.Device
+	state   md.Lifecycle
 
 	// Groups
-	local  *sh.TopicManager
-	topics map[string]*sh.TopicManager
+	local *tp.RoomManager
+	Rooms map[string]*tp.RoomManager
 
 	// Event Channels
 	completeEvents  chan *md.CompleteEvent
@@ -33,7 +34,7 @@ type NodeServer struct {
 	linkEvents      chan *md.LinkEvent
 	progressEvents  chan *md.ProgressEvent
 	statusEvents    chan *md.StatusEvent
-	topicEvents     chan *md.TopicEvent
+	RoomEvents      chan *md.RoomEvent
 	inviteRequests  chan *md.InviteRequest
 	inviteResponses chan *md.InviteResponse
 
@@ -59,12 +60,12 @@ func main() {
 	// Set GRPC Server
 	chatServer := NodeServer{
 		// Defaults
-		ctx:    context.Background(),
-		topics: make(map[string]*sh.TopicManager, 10),
-		state:  md.Lifecycle_ACTIVE,
+		ctx:   context.Background(),
+		Rooms: make(map[string]*tp.RoomManager, 10),
+		state: md.Lifecycle_ACTIVE,
 
 		// Event Channels
-		topicEvents:     make(chan *md.TopicEvent, util.MAX_CHAN_DATA),
+		RoomEvents:      make(chan *md.RoomEvent, util.MAX_CHAN_DATA),
 		mailEvents:      make(chan *md.MailEvent, util.MAX_CHAN_DATA),
 		progressEvents:  make(chan *md.ProgressEvent, util.MAX_CHAN_DATA),
 		completeEvents:  make(chan *md.CompleteEvent, util.MAX_CHAN_DATA),
@@ -100,17 +101,21 @@ func (s *NodeServer) Initialize(ctx context.Context, req *md.InitializeRequest) 
 	// Initialize Logger
 	md.InitLogger(req)
 
+	// Initialize Device
+	device := req.GetDevice()
+
 	// Create User
-	if u, err := md.NewUser(req); err != nil {
+	if u, err := md.InitAccount(req, device); err != nil {
 		s.handleError(err)
 		return nil, err.Error
 	} else {
-		s.user = u
+		s.account = u
+		s.device = device
 	}
 
 	// Create Client
-	s.client = sc.NewClient(s.ctx, s.user, s.callback())
-	s.verifyResponses <- s.user.VerifyRead()
+	s.client = sc.NewClient(s.ctx, s.device, s.callback())
+	s.verifyResponses <- s.account.VerifyRead()
 	// Return Blank Response
 	return &md.NoResponse{}, nil
 }
@@ -118,16 +123,18 @@ func (s *NodeServer) Initialize(ctx context.Context, req *md.InitializeRequest) 
 // Connect method starts this nodes host
 func (s *NodeServer) Connect(ctx context.Context, req *md.ConnectionRequest) (*md.NoResponse, error) {
 	// Update User with Connection Request
-	s.user.InitConnection(req)
+	s.account.SetConnection(req)
+	s.device.SetConnection(req)
 
 	// Connect Host
-	serr := s.client.Connect(req, s.user.KeyPair())
+	peer, isPrimary, serr := s.client.Connect(req, s.account)
 	if serr != nil {
 		s.handleError(serr)
 		s.setConnected(false)
 	} else {
 		// Update Status
 		s.setConnected(true)
+		s.account.HandleSetPeer(peer, isPrimary)
 	}
 
 	// Bootstrap Node

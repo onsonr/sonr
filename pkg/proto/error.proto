@@ -20,16 +20,16 @@ message ErrorEvent {
     BOOTSTRAP = 4;  // Error occurred during Bootstrapping
     DEVICE_ID = 60; // Error occurred during Device ID Generation
 
-    // Topic
-    TOPIC_JOIN = 5;     // Error occurred during Topic Join
-    TOPIC_CREATE = 6;   // Error occurred during Topic Creation
-    TOPIC_INVALID = 7;  // Error occurred during Topic Invalid
-    TOPIC_RPC = 8;      // Error occurred during Topic RPC
-    TOPIC_SUB = 9;      // Error occurred during Topic Subscription
-    TOPIC_HANDLER = 10; // Error occurred during Topic Handler
-    TOPIC_LEAVE = 11;   // Error occurred during Topic Leave
-    TOPIC_MESSAGE = 12; // Error occurred during Topic Message
-    TOPIC_UPDATE = 13;  // Error occurred during Topic Update
+    // Room
+    ROOM_JOIN = 5;     // Error occurred during Room Join
+    ROOM_CREATE = 6;   // Error occurred during Room Creation
+    ROOM_INVALID = 7;  // Error occurred during Room Invalid
+    ROOM_RPC = 8;      // Error occurred during Room RPC
+    ROOM_SUB = 9;      // Error occurred during Room Subscription
+    ROOM_HANDLER = 10; // Error occurred during Room Handler
+    ROOM_LEAVE = 11;   // Error occurred during Room Leave
+    ROOM_MESSAGE = 12; // Error occurred during Room Message
+    ROOM_UPDATE = 13;  // Error occurred during Room Update
 
     // User
     USER_CREATE = 17; // Error occurred during User Creation
@@ -122,6 +122,11 @@ message ErrorEvent {
     // Device Linking
     LINK_GENERATE = 71;   // Error occurred Generating Shared Key Func
     LINK_SHARED_KEY = 72; // Error occurred retreiving Shared Key
+
+    // Account Management
+    ACCOUNT_CREATE = 73; // Error occurred during Account Creation
+    ACCOUNT_LOAD = 74;   // Error occurred during Account Deletion
+    ACCOUNT_SAVE = 75;   // Error occurred during Account Deletion
   }
 
   enum Severity {

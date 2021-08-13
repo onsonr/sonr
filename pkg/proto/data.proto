@@ -15,6 +15,7 @@ message Contact {
   map<string, Address> addresses = 5; // Address Fields, Key is Label
   map<string, Social> socials = 6;    // Social Media Fields, Key is Username
   map<string, URLLink> websites = 7;  // Website Links
+  int32 lastUpdated = 8;              // UnixTime of last Updated
 
   // Address: Field for Contact field
   message Address {

@@ -25,7 +25,7 @@ func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.NoR
 			Success: true,
 			Action:  md.Action_LOCATION,
 			Data: &md.ActionResponse_Location{
-				Location: s.user.GetLocation(),
+				Location: s.device.GetLocation(),
 			},
 		}
 	case md.Action_URL_LINK:
@@ -93,17 +93,17 @@ func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.NoR
 	return &md.NoResponse{}, nil
 }
 
-// Sign method signs data with user's private key
+// Sign method signs data with device's private key
 func (s *NodeServer) Sign(ctx context.Context, req *md.AuthRequest) (*md.NoResponse, error) {
 	md.LogRPC("Sign", req)
-	s.authResponses <- s.user.Sign(req)
+	s.authResponses <- s.account.Sign(req)
 	return &md.NoResponse{}, nil
 }
 
 // Link method starts device linking channel
 func (s *NodeServer) Link(ctx context.Context, req *md.LinkRequest) (*md.NoResponse, error) {
 	md.LogRPC("Link", req)
-	req = s.user.SignLink(req)
+	req = s.device.SignLink(req)
 
 	// Check Link Request Type
 	resp, err := s.client.Link(req, s.local)
@@ -117,11 +117,11 @@ func (s *NodeServer) Link(ctx context.Context, req *md.LinkRequest) (*md.NoRespo
 	return &md.NoResponse{}, nil
 }
 
-// Verify validates user Keys
+// Verify validates device Keys
 func (s *NodeServer) Verify(ctx context.Context, req *md.VerifyRequest) (*md.NoResponse, error) {
 	md.LogRPC("Verify", req)
 	// Get Key Pair
-	kp := s.user.KeyPair()
+	kp := s.device.AccountKeys()
 
 	// Check Request Type
 	if req.GetType() == md.VerifyRequest_VERIFY {
@@ -149,7 +149,7 @@ func (s *NodeServer) Verify(ctx context.Context, req *md.VerifyRequest) (*md.NoR
 			return &md.NoResponse{}, nil
 		}
 	}
-	s.verifyResponses <- s.user.VerifyRead()
+	s.verifyResponses <- s.account.VerifyRead()
 	return &md.NoResponse{}, nil
 }
 
@@ -161,15 +161,15 @@ func (s *NodeServer) Update(ctx context.Context, req *md.UpdateRequest) (*md.NoR
 		switch req.Data.(type) {
 		// Update Position
 		case *md.UpdateRequest_Position:
-			s.user.UpdatePosition(req.GetPosition().Parameters())
+			s.device.UpdatePosition(req.GetPosition().Parameters())
 
 		// Update Contact
 		case *md.UpdateRequest_Contact:
-			s.user.UpdateContact(req.GetContact())
+			s.account.UpdateContact(req.GetContact())
 
 		// Update Peer Properties
 		case *md.UpdateRequest_Properties:
-			s.user.UpdateProperties(req.GetProperties())
+			s.device.UpdateProperties(req.GetProperties())
 		}
 
 		// Notify Local Lobby
@@ -189,7 +189,7 @@ func (s *NodeServer) Invite(ctx context.Context, req *md.InviteRequest) (*md.NoR
 	// Verify Node is Ready
 	if s.isReady() {
 		// Validate invite
-		req = s.user.SignInvite(req)
+		req = s.device.SignInvite(req)
 
 		// Send Invite
 		err := s.client.Invite(req, s.local)

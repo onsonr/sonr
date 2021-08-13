@@ -109,13 +109,8 @@ proto:
 ##
 ## [release]   :   Upload RPC Binary Artifact to S3
 release: proto
-	@echo "Bumping Release Version.."
-	@cd $(CORE_DIR) && bump patch
-	@echo "Bumping Release Version... DONE"
 	@echo "Building Artifacts..."
 	@cd $(CORE_LIB_DIR) && goreleaser release --rm-dist
-	@cd $(CORE_DIR) && git push origin --tags
-	@cd $(CORE_DIR) && git push
 	@echo "Cleaning up build cache..."
 	@cd $(CORE_DIR) && go mod tidy
 	@rm -rf $(DIST_DIR_DARWIN_AMD)

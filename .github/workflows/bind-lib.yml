@@ -1,0 +1,125 @@
+name: Bind Workflow
+
+# Controls when the action will run.
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # Runs the `gomobile bind -android` job
+  build-android:
+    name: "Android AAR  🔗 "
+
+    # Env Variables for the job
+    env:
+      GO111MODULE: on
+      GOMOD: ${{ github.workspace }}/go.mod
+
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      # Setup Go Enviornment
+      - name: Setup Go Env
+        uses: ibrt/golang-github-action@v1
+        with:
+          go-version: 1.16.6
+          go-packages: |
+            golang.org/x/mobile/cmd/gomobile
+
+      - run: mkdir -p ${{ github.workspace }}/build
+
+      # Bind Android Framework to Plugin
+      - name: Setup and Bind AAR
+        run: |
+          go get golang.org/x/mobile
+          gomobile init
+          cd ${{ github.workspace }}/bind
+          gomobile bind -ldflags='-s -w' -v -target=android -o ${{ github.workspace }}/build/io.sonr.core.aar
+
+      - name: Upload AAR to GitHub
+        uses: actions/upload-artifact@v2
+        with:
+          name: android-aar
+          path: ${{ github.workspace }}/build/io.sonr.core.aar
+
+  # Runs the `gomobile bind -ios` job
+  build-ios:
+    name: "iOS Framework  🔗 "
+
+    # Env Variables for the job
+    env:
+      GO111MODULE: on
+      GOMOD: ${{ github.workspace }}/go.mod
+
+    # The type of runner that the job will run on
+    runs-on: macos-latest
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      # Setup Go Enviornment
+      - name: Setup Go Environment
+        uses: ibrt/golang-github-action@v1
+        with:
+          go-version: 1.16.6
+          go-packages: |
+            golang.org/x/mobile/cmd/gomobile
+
+      - run: mkdir -p ${{ github.workspace }}/build
+
+      # Bind iOS Framework to Plugin
+      - name: Setup and Bind
+        run: |
+          go get golang.org/x/mobile
+          gomobile init
+          cd ${{ github.workspace }}/bind
+          gomobile bind -ldflags='-s -w' -v -target=ios -bundleid=io.sonr.core -o ${{ github.workspace }}/build/Core.framework
+
+      - name: Upload Framework to GitHub
+        uses: actions/upload-artifact@v2
+        with:
+          name: ios-framework
+          path: ${{ github.workspace }}/build/Core.framework
+
+  release-frameworks:
+    needs: [build-android, build-ios]
+    name: "Release Frameworks 🎉 "
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: mkdir -p ${{ github.workspace }}/build
+
+    - name: Download Android AAR
+      uses: actions/download-artifact@v2
+      with:
+        name: android-aar
+        path: ${{ github.workspace }}/build
+
+    - name: Download iOS Framework
+      uses: actions/download-artifact@v2
+      with:
+        name: ios-framework
+        path: ${{ github.workspace }}/build
+
+    - name: Display structure of downloaded files
+      run: ls -R
+      working-directory: ${{ github.workspace }}/build
+
+    - name: Create Release in Plugin
+      uses: ncipollo/release-action@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        repo: plugin
+        owner: sonr

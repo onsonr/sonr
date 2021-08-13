@@ -7,9 +7,11 @@ import (
 	firebase "firebase.google.com/go/v4"
 	"firebase.google.com/go/v4/messaging"
 	md "github.com/sonr-io/core/pkg/models"
-	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/api/option"
 )
+
+// Firebase Project ID
+const FIRE_PROJECT_ID = "trans-density-315704"
 
 var isPushEnabled = false
 
@@ -32,7 +34,7 @@ func (sc *serviceClient) StartPush() *md.SonrError {
 		// Obtain a messaging.Client from the App.
 		ctx := context.Background()
 		opt := option.WithCredentialsFile(sc.request.GetApiKeys().GetPushKeyPath())
-		config := &firebase.Config{ProjectID: util.FIRE_PROJECT_ID}
+		config := &firebase.Config{ProjectID: FIRE_PROJECT_ID}
 
 		// Create New Firebase Client
 		app, err := firebase.NewApp(context.Background(), config, opt)

@@ -49,7 +49,7 @@ type NodeServiceClient interface {
 	// Events Streams
 	OnStatus(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnStatusClient, error)
 	OnLink(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnLinkClient, error)
-	OnTopic(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnTopicClient, error)
+	OnRoom(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnRoomClient, error)
 	OnInvite(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnInviteClient, error)
 	OnReply(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnReplyClient, error)
 	OnMail(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnMailClient, error)
@@ -444,12 +444,12 @@ func (x *nodeServiceOnLinkClient) Recv() (*LinkEvent, error) {
 	return m, nil
 }
 
-func (c *nodeServiceClient) OnTopic(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnTopicClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[9], "/models.NodeService/OnTopic", opts...)
+func (c *nodeServiceClient) OnRoom(ctx context.Context, in *NoRequest, opts ...grpc.CallOption) (NodeService_OnRoomClient, error) {
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[9], "/models.NodeService/OnRoom", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &nodeServiceOnTopicClient{stream}
+	x := &nodeServiceOnRoomClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -459,17 +459,17 @@ func (c *nodeServiceClient) OnTopic(ctx context.Context, in *NoRequest, opts ...
 	return x, nil
 }
 
-type NodeService_OnTopicClient interface {
-	Recv() (*TopicEvent, error)
+type NodeService_OnRoomClient interface {
+	Recv() (*RoomEvent, error)
 	grpc.ClientStream
 }
 
-type nodeServiceOnTopicClient struct {
+type nodeServiceOnRoomClient struct {
 	grpc.ClientStream
 }
 
-func (x *nodeServiceOnTopicClient) Recv() (*TopicEvent, error) {
-	m := new(TopicEvent)
+func (x *nodeServiceOnRoomClient) Recv() (*RoomEvent, error) {
+	m := new(RoomEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -703,7 +703,7 @@ type NodeServiceServer interface {
 	// Events Streams
 	OnStatus(*NoRequest, NodeService_OnStatusServer) error
 	OnLink(*NoRequest, NodeService_OnLinkServer) error
-	OnTopic(*NoRequest, NodeService_OnTopicServer) error
+	OnRoom(*NoRequest, NodeService_OnRoomServer) error
 	OnInvite(*NoRequest, NodeService_OnInviteServer) error
 	OnReply(*NoRequest, NodeService_OnReplyServer) error
 	OnMail(*NoRequest, NodeService_OnMailServer) error
@@ -774,8 +774,8 @@ func (UnimplementedNodeServiceServer) OnStatus(*NoRequest, NodeService_OnStatusS
 func (UnimplementedNodeServiceServer) OnLink(*NoRequest, NodeService_OnLinkServer) error {
 	return status.Errorf(codes.Unimplemented, "method OnLink not implemented")
 }
-func (UnimplementedNodeServiceServer) OnTopic(*NoRequest, NodeService_OnTopicServer) error {
-	return status.Errorf(codes.Unimplemented, "method OnTopic not implemented")
+func (UnimplementedNodeServiceServer) OnRoom(*NoRequest, NodeService_OnRoomServer) error {
+	return status.Errorf(codes.Unimplemented, "method OnRoom not implemented")
 }
 func (UnimplementedNodeServiceServer) OnInvite(*NoRequest, NodeService_OnInviteServer) error {
 	return status.Errorf(codes.Unimplemented, "method OnInvite not implemented")
@@ -1177,24 +1177,24 @@ func (x *nodeServiceOnLinkServer) Send(m *LinkEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _NodeService_OnTopic_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _NodeService_OnRoom_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(NoRequest)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(NodeServiceServer).OnTopic(m, &nodeServiceOnTopicServer{stream})
+	return srv.(NodeServiceServer).OnRoom(m, &nodeServiceOnRoomServer{stream})
 }
 
-type NodeService_OnTopicServer interface {
-	Send(*TopicEvent) error
+type NodeService_OnRoomServer interface {
+	Send(*RoomEvent) error
 	grpc.ServerStream
 }
 
-type nodeServiceOnTopicServer struct {
+type nodeServiceOnRoomServer struct {
 	grpc.ServerStream
 }
 
-func (x *nodeServiceOnTopicServer) Send(m *TopicEvent) error {
+func (x *nodeServiceOnRoomServer) Send(m *RoomEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
@@ -1419,8 +1419,8 @@ var NodeService_ServiceDesc = grpc.ServiceDesc{
 			ServerStreams: true,
 		},
 		{
-			StreamName:    "OnTopic",
-			Handler:       _NodeService_OnTopic_Handler,
+			StreamName:    "OnRoom",
+			Handler:       _NodeService_OnRoom_Handler,
 			ServerStreams: true,
 		},
 		{

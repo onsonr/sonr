@@ -21,9 +21,9 @@ func (c *client) OnConnected(r *md.ConnectionResponse) {
 }
 
 // OnEvent: Local Lobby Event ^
-func (n *client) OnEvent(e *md.TopicEvent) {
+func (n *client) OnRoomEvent(e *md.RoomEvent) {
 	// Only Callback when not in Transfer
-	if n.user.IsNotStatus(md.Status_TRANSFER) {
+	if n.device.IsNotStatus(md.Status_TRANSFER) {
 		// Convert Message
 		bytes, err := e.ToGeneric()
 		if err != nil {
@@ -36,8 +36,20 @@ func (n *client) OnEvent(e *md.TopicEvent) {
 	}
 }
 
+func (n *client) OnSyncEvent(e *md.SyncEvent) {
+	// Convert Message
+	bytes, err := e.ToGeneric()
+	if err != nil {
+		n.call.OnError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
+		return
+	}
+
+	// Call Event
+	n.call.OnEvent(bytes)
+}
+
 // OnLink: Handle Result of Link Request ^
-func (n *client) OnLink(success bool, id peer.ID, data []byte) {
+func (n *client) OnLink(success bool, incoming bool, id peer.ID, data []byte) {
 	// Unmarshal Link Response
 	resp := md.LinkResponse{}
 	err := proto.Unmarshal(data, &resp)
@@ -62,6 +74,27 @@ func (n *client) OnLink(success bool, id peer.ID, data []byte) {
 			return
 		}
 		n.call.OnEvent(buf)
+
+		// Pass Keys with Linker
+		if incoming {
+			// Open Stream if Incoming
+			pid := md.SonrProtocol_Linker.NewIDProtocol(n.Host.ID())
+			linker := md.NewInLinker(pid, n.account)
+			n.Host.HandleStream(pid, linker.ReadFromStream)
+		} else {
+			// Create Stream if Outgoing
+			pid := md.SonrProtocol_Linker.NewIDProtocol(id)
+			lp := n.account.SignLinkPacket(&resp)
+			linker := md.NewOutLinker(pid, n.account, lp)
+
+			// Write Stream
+			stream, err := n.Host.StartStream(id, pid)
+			if err != nil {
+				n.call.OnError(md.NewError(err, md.ErrorEvent_HOST_STREAM))
+				return
+			}
+			linker.WriteToStream(stream)
+		}
 	} else {
 		// Unsuccessful Link Request
 		link := &md.LinkEvent{
@@ -151,7 +184,7 @@ func (n *client) OnReply(id peer.ID, reply []byte) {
 
 // OnResponded: Prepares for Incoming File Transfer when Accepted ^
 func (n *client) OnConfirmed(inv *md.InviteRequest) {
-	n.session = md.NewInSession(n.user, inv, n)
+	n.session = md.NewInSession(n.device, inv, n)
 	n.Host.HandleStream(md.SonrProtocol_LocalTransfer.NewIDProtocol(n.Host.ID()), n.session.ReadFromStream)
 }
 

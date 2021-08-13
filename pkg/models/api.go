@@ -146,6 +146,32 @@ func (i *InitializeRequest) HasFatalLog() bool {
 	return false
 }
 
+// Check if Request requires temporary keys
+func (i *InitializeRequest) ShouldCreateTempKeys() bool {
+	return i.GetClient() == InitializeRequest_RPC && i.GetOptions().GetIsPairing()
+}
+
+// Check if Request is Existing User and Verified
+func (i *InitializeRequest) ShouldLoadKeychain() bool {
+	return i.GetOptions().GetIsVerified()
+}
+
+// Check if Request is to Reset all keys
+func (i *InitializeRequest) ShouldResetKeys() bool {
+	return i.GetOptions().GetResetKeys()
+}
+
+// Get Assumed Account State
+func (i *InitializeRequest) AccountState() Account_State {
+	if i.ShouldCreateTempKeys() {
+		return Account_UNVERIFIED
+	} else if i.ShouldLoadKeychain() {
+		return Account_VERIFIED
+	} else {
+		return Account_UNVERIFIED
+	}
+}
+
 // ** ─── URLLink MANAGEMENT ────────────────────────────────────────────────────────
 // Creates New Link
 func NewURLLink(url string) *URLLink {
@@ -370,7 +396,7 @@ func (i *InviteRequest) SetProtocol(p SonrProtocol, id peer.ID) protocol.ID {
 }
 
 // Validates InviteRequest has From Parameter
-func (u *User) SignInvite(i *InviteRequest) *InviteRequest {
+func (u *Device) SignInvite(i *InviteRequest) *InviteRequest {
 	// Set From
 	if i.From == nil {
 		i.From = u.GetPeer()
@@ -421,7 +447,7 @@ func (u *User) SignInvite(i *InviteRequest) *InviteRequest {
 }
 
 // Validates LinkRequest has From Parameter
-func (u *User) SignLink(i *LinkRequest) *LinkRequest {
+func (u *Device) SignLink(i *LinkRequest) *LinkRequest {
 	// Set From
 	if i.From == nil {
 		i.From = u.GetPeer()
@@ -497,7 +523,7 @@ func (p SonrProtocol) Method() string {
 
 // ** ─── Status MANAGEMENT ────────────────────────────────────────────────────────
 // Update Connected Connection Status
-func (u *User) SetConnected(value bool) *StatusEvent {
+func (u *Device) SetConnected(value bool) *StatusEvent {
 	// Update Status
 	if value {
 		u.Status = Status_CONNECTED
@@ -510,7 +536,7 @@ func (u *User) SetConnected(value bool) *StatusEvent {
 }
 
 // Update Bootstrap Connection Status
-func (u *User) SetAvailable(value bool) *StatusEvent {
+func (u *Device) SetAvailable(value bool) *StatusEvent {
 	// Update Status
 	if value {
 		u.Status = Status_AVAILABLE
@@ -523,7 +549,7 @@ func (u *User) SetAvailable(value bool) *StatusEvent {
 }
 
 // Update Node Status
-func (u *User) SetStatus(ns Status) *StatusEvent {
+func (u *Device) SetStatus(ns Status) *StatusEvent {
 	// Set Value
 	u.Status = ns
 
@@ -532,12 +558,12 @@ func (u *User) SetStatus(ns Status) *StatusEvent {
 }
 
 // Checks if Status is Given Value
-func (u *User) IsStatus(gs Status) bool {
+func (u *Device) IsStatus(gs Status) bool {
 	return u.Status == gs
 }
 
 // Checks if Status is Not Given Value
-func (u *User) IsNotStatus(gs Status) bool {
+func (u *Device) IsNotStatus(gs Status) bool {
 	return u.Status != gs
 }
 
@@ -697,8 +723,8 @@ func (o *LinkEvent) ToGeneric() ([]byte, error) {
 	return genBuf, nil
 }
 
-// Create New Generic TOPIC Event Message
-func (o *TopicEvent) ToGeneric() ([]byte, error) {
+// Create New Generic Room Event Message
+func (o *RoomEvent) ToGeneric() ([]byte, error) {
 	// Marshal Original
 	ogBuf, err := proto.Marshal(o)
 	if err != nil {
@@ -707,7 +733,29 @@ func (o *TopicEvent) ToGeneric() ([]byte, error) {
 
 	// Create Generic
 	generic := &GenericEvent{
-		Type: GenericEvent_TOPIC,
+		Type: GenericEvent_ROOM,
+		Data: ogBuf,
+	}
+
+	// Marshal Generic
+	genBuf, err := proto.Marshal(generic)
+	if err != nil {
+		return nil, err
+	}
+	return genBuf, nil
+}
+
+// Create New Generic LINK Event Message
+func (o *SyncEvent) ToGeneric() ([]byte, error) {
+	// Marshal Original
+	ogBuf, err := proto.Marshal(o)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create Generic
+	generic := &GenericEvent{
+		Type: GenericEvent_SYNC,
 		Data: ogBuf,
 	}
 

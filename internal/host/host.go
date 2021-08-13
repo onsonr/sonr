@@ -26,9 +26,9 @@ type HostNode interface {
 	ID() peer.ID
 	Info() peer.AddrInfo
 	Host() host.Host
-	JoinTopic(ctx context.Context, u *md.User, topicData *md.Topic, th TopicHandler) (*TopicManager, *md.SonrError)
 	HandleStream(pid protocol.ID, handler network.StreamHandler)
 	MultiAddr() (multiaddr.Multiaddr, *md.SonrError)
+	Pubsub() *psub.PubSub
 	CloseStream(pid protocol.ID, stream network.Stream)
 	StartStream(p peer.ID, pid protocol.ID) (network.Stream, error)
 }
@@ -56,27 +56,26 @@ type hostNode struct {
 	mdns    discovery.Service
 	options *md.ConnectionRequest_HostOptions
 
-	// Topics
+	// Rooms
 	pubsub *psub.PubSub
-	topics []*TopicManager
 }
 
 // Start Begins Assigning Host Parameters ^
-func NewHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair, hh HostHandler) (HostNode, *md.SonrError) {
+func NewHost(ctx context.Context, req *md.ConnectionRequest, kp *md.KeyPair, hh HostHandler) (HostNode, *md.SonrError) {
 	// Initialize DHT
 	var kdhtRef *dht.IpfsDHT
 
 	// Find Listen Addresses
 	addrs, err := PublicAddrStrs(req)
 	if err != nil {
-		return newRelayedHost(ctx, req, keyPair, hh)
+		return newRelayedHost(ctx, req, kp, hh)
 	}
 
 	// Start Host
 	h, err := libp2p.New(
 		ctx,
 		libp2p.ListenAddrStrings(addrs...),
-		libp2p.Identity(keyPair.PrivKey()),
+		libp2p.Identity(kp.PrivKey()),
 		libp2p.DefaultTransports,
 		libp2p.ConnectionManager(connmgr.NewConnManager(
 			100,         // Lowwater
@@ -100,19 +99,18 @@ func NewHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair
 
 	// Set Host for Node
 	if err != nil {
-		return newRelayedHost(ctx, req, keyPair, hh)
+		return newRelayedHost(ctx, req, kp, hh)
 	}
 
 	// Create Host
 	hn := &hostNode{
 		ctxHost: ctx,
 		apiKeys: req.ApiKeys,
-		keyPair: keyPair,
+		keyPair: kp,
 		handler: hh,
 		id:      h.ID(),
 		host:    h,
 		kdht:    kdhtRef,
-		topics:  make([]*TopicManager, 0),
 	}
 
 	// Check Connection
@@ -189,6 +187,7 @@ func newRelayedHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.
 }
 
 // ** ─── Host Info ────────────────────────────────────────────────────────
+
 // Close Libp2p Host
 func (h *hostNode) Close() {
 	h.host.Close()
@@ -221,6 +220,11 @@ func (hn *hostNode) MultiAddr() (multiaddr.Multiaddr, *md.SonrError) {
 		return nil, md.NewError(err, md.ErrorEvent_HOST_INFO)
 	}
 	return addrs[0], nil
+}
+
+// Returns Host Node MultiAddr
+func (hn *hostNode) Pubsub() *psub.PubSub {
+	return hn.pubsub
 }
 
 // ** ─── Stream/Pubsub Methods ────────────────────────────────────────────────────────
