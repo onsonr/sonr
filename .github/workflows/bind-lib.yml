@@ -96,7 +96,7 @@ jobs:
   release-frameworks:
     needs: [build-android, build-ios]
     name: "Release Frameworks 🎉 "
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - run: mkdir -p ${{ github.workspace }}/build
