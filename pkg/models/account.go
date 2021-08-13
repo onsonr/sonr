@@ -78,7 +78,7 @@ func (u *Account) SetConnection(cr *ConnectionRequest) {
 // Update Account after Device Peer set for Member
 func (u *Account) HandleSetPeer(p *Peer, isPrimary bool) {
 	if isPrimary {
-		u.Member.Primary = p
+		u.Member.Active = p
 	} else {
 		u.Member.Associated = append(u.Member.Associated, p)
 	}

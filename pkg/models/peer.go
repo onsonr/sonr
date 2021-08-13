@@ -74,7 +74,7 @@ func (m *Member) UpdateProfile(c *Contact) {
 	m.SName = c.GetProfile().GetSName()
 
 	// Update Primary
-	m.GetPrimary().Profile = &Profile{
+	m.GetActive().Profile = &Profile{
 		SName:     c.GetProfile().GetSName(),
 		FirstName: c.GetProfile().GetFirstName(),
 		LastName:  c.GetProfile().GetLastName(),
@@ -95,8 +95,8 @@ func (m *Member) UpdateProfile(c *Contact) {
 }
 
 // Return Users Primary Peer
-func (u *Account) PrimaryPeer() *Peer {
-	return u.GetMember().GetPrimary()
+func (u *Account) ActivePeer() *Peer {
+	return u.GetMember().GetActive()
 }
 
 // Set Primary Peer for Member. Returns Peer Ref and if Primary Peer
