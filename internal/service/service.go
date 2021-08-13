@@ -12,7 +12,7 @@ import (
 
 type ServiceHandler interface {
 	OnConnected(r *md.ConnectionResponse)
-	OnLink(success bool, id peer.ID, resp []byte)
+	OnLink(success bool, incoming bool, id peer.ID, resp []byte)
 	OnInvite([]byte)
 	OnReply(id peer.ID, data []byte)
 	OnConfirmed(inv *md.InviteRequest)

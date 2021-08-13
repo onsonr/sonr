@@ -16,48 +16,6 @@ import (
 
 // ** ─── KeyPair MANAGEMENT ────────────────────────────────────────────────────────
 
-// Method Creates New Key Pair
-func (d *Device) copyKeyPair(kp *KeyPair) (*KeyPair, *SonrError) {
-	if d.HasKeys(kp.GetType()) {
-		// Fetch Private, Public Keys
-		privKey, pubKey := kp.PrivPubKeys()
-
-		// Marshal Data
-		privBuf, err := crypto.MarshalPrivateKey(privKey)
-		if err != nil {
-			return nil, NewError(err, ErrorEvent_MARSHAL)
-		}
-
-		// Marshal Data
-		pubBuf, err := crypto.MarshalPublicKey(pubKey)
-		if err != nil {
-			return nil, NewError(err, ErrorEvent_MARSHAL)
-		}
-
-		// Write Private Key to File
-		path, werr := d.WriteKey(privBuf, kp.GetType())
-		if werr != nil {
-			return nil, NewError(err, ErrorEvent_USER_SAVE)
-		}
-
-		// Set Keys
-		return &KeyPair{
-			Type:      kp.GetType(),
-			Signature: kp.GetSignature(),
-			Public: &KeyPair_Public{
-				Base64: crypto.ConfigEncodeKey(pubBuf),
-				Buffer: pubBuf,
-			},
-			Private: &KeyPair_Private{
-				Path:   path,
-				Buffer: privBuf,
-			},
-		}, nil
-	} else {
-		return nil, NewError(errors.New("Key Pair Already exists for this type at path. To replace delete keys first."), ErrorEvent_USER_CREATE)
-	}
-}
-
 // Method to Load all keys in Device
 func (d *Device) loadKeyChain() (*KeyChain, *SonrError) {
 	// Load AccountKeys
@@ -203,6 +161,62 @@ func (d *Device) newKeyPair(t KeyPair_Type) (*KeyPair, *SonrError) {
 			Buffer: privBuf,
 		},
 	}, nil
+}
+
+// Method Replaces Current Keychain with New Keychain
+func (d *Device) replaceKeyChain(kc *KeyChain) {
+	// Replace KeyPairs
+	newAccountKey := d.replaceKeyPair(kc.GetAccount())
+	newDeviceKey := d.replaceKeyPair(kc.GetDevice())
+	newGroupKey := d.replaceKeyPair(kc.GetGroup())
+
+	// Set new KeyChain
+	d.KeyChain = &KeyChain{
+		Account: newAccountKey,
+		Device:  newDeviceKey,
+		Group:   newGroupKey,
+	}
+}
+
+// Method Creates New Key Pair
+func (d *Device) replaceKeyPair(kp *KeyPair) *KeyPair {
+	// Delete Old Key
+	if d.HasKeys(kp.GetType()) {
+		d.deleteKeyPair(kp.GetType())
+	}
+
+	// Fetch Private, Public Keys
+	privKey, pubKey := kp.PrivPubKeys()
+	privBuf, err := crypto.MarshalPrivateKey(privKey)
+	if err != nil {
+		return nil
+	}
+
+	// Marshal Data
+	pubBuf, err := crypto.MarshalPublicKey(pubKey)
+	if err != nil {
+		return nil
+	}
+
+	// Write Private Key to File
+	path, werr := d.WriteKey(privBuf, kp.GetType())
+	if werr != nil {
+		return nil
+	}
+
+	// Set Keys
+	return &KeyPair{
+		Type:      kp.GetType(),
+		Signature: kp.GetSignature(),
+		Public: &KeyPair_Public{
+			Base64: crypto.ConfigEncodeKey(pubBuf),
+			Buffer: pubBuf,
+		},
+		Private: &KeyPair_Private{
+			Path:   path,
+			Buffer: privBuf,
+		},
+	}
 }
 
 // Method to Create all keys in Device
@@ -356,6 +370,16 @@ func (d *Device) AccountKeys() *KeyPair {
 // Returns Device deviceKeys
 func (d *Device) DeviceKeys() *KeyPair {
 	return d.GetKeyChain().GetDevice()
+}
+
+// Returns Device deviceKeys public key
+func (d *Device) DevicePubKey() crypto.PubKey {
+	return d.GetKeyChain().GetDevice().PubKey()
+}
+
+// Returns Device deviceKeys public key
+func (d *Device) DevicePubKeyBuf() []byte {
+	return d.GetKeyChain().GetDevice().GetPublic().GetBuffer()
 }
 
 // Returns Device groupKeys

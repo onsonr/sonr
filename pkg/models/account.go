@@ -4,7 +4,11 @@ import (
 	"fmt"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
+	"github.com/libp2p/go-libp2p-core/network"
+	"github.com/libp2p/go-libp2p-core/protocol"
+	msg "github.com/libp2p/go-msgio"
 	util "github.com/sonr-io/core/pkg/util"
+	"google.golang.org/protobuf/proto"
 )
 
 // Method Initializes User Info Struct ^ //
@@ -18,6 +22,7 @@ func InitAccount(ir *InitializeRequest, d *Device) (*Account, *SonrError) {
 	// Return User
 	u := &Account{
 		KeyChain: keychain,
+		Current:  d,
 		Primary:  d,
 		ApiKeys:  ir.GetApiKeys(),
 		State:    ir.AccountState(),
@@ -48,6 +53,13 @@ func (u *Account) HandleSetPeer(p *Peer, isPrimary bool) {
 	}
 }
 
+// Update Account after LinkPacket is received
+func (u *Account) HandleLinkPacket(lp *LinkPacket) {
+	u.Primary = lp.Primary
+	u.Devices = append(u.Devices, lp.Secondary)
+	u.GetCurrent().replaceKeyChain(lp.GetKeyChain())
+}
+
 // Checks Whether User is Ready to Communicate
 func (u *Device) IsReady() bool {
 	return u.Contact != nil && u.Location != nil && u.Status != Status_DEFAULT
@@ -60,7 +72,7 @@ func (u *Account) APIKeys() *APIKeys {
 
 // Method Returns DeviceID
 func (u *Account) DeviceID() string {
-	return u.GetPrimary().GetId()
+	return u.GetCurrent().GetId()
 }
 
 // Method Returns Profile First Name
@@ -80,18 +92,31 @@ func (u *Account) Profile() *Profile {
 
 // Method Returns Account KeyPair
 func (u *Account) AccountKeys() *KeyPair {
-	if u.Primary.HasAccountKeys() {
-		return u.GetKeyChain().GetAccount()
-	}
-	return nil
+	return u.GetKeyChain().GetAccount()
+}
+
+// Method Returns Device KeyPair
+func (u *Account) DeviceKeys() *KeyPair {
+	return u.GetKeyChain().GetDevice()
 }
 
 // Method Returns Device Link Public Key
 func (u *Account) DevicePubKey() *KeyPair_Public {
-	if u.Primary.HasDeviceKeys() {
-		return u.GetKeyChain().GetDevice().GetPublic()
+	return u.GetKeyChain().GetDevice().GetPublic()
+}
+
+// Method Returns Group KeyPair
+func (u *Account) GroupKeys() *KeyPair {
+	return u.GetKeyChain().GetGroup()
+}
+
+// Method Returns Exportable Keychain for Linked Devices
+func (u *Account) ExportKeychain() *KeyChain {
+	return &KeyChain{
+		Account: u.AccountKeys(),
+		Device:  u.DeviceKeys(),
+		Group:   u.GroupKeys(),
 	}
-	return nil
 }
 
 // Method Signs Data with KeyPair
@@ -116,6 +141,15 @@ func (u *Account) Sign(req *AuthRequest) *AuthResponse {
 	}
 }
 
+// Method Signs Packet with Keys
+func (u *Account) SignLinkPacket(resp *LinkResponse) *LinkPacket {
+	return &LinkPacket{
+		Primary:   u.GetPrimary(),
+		Secondary: resp.GetDevice(),
+		KeyChain:  u.ExportKeychain(),
+	}
+}
+
 // Method Updates User Contact
 func (u *Account) UpdateContact(c *Contact) {
 	u.Contact = c
@@ -132,6 +166,78 @@ func (u *Account) VerifyRead() *VerifyResponse {
 	kp := u.GetKeyChain().GetAccount()
 	return &VerifyResponse{
 		PublicKey: kp.PubKeyBase64(),
-		ShortID:   u.GetPrimary().ShortID(),
+		ShortID:   u.GetCurrent().ShortID(),
 	}
+}
+
+// ** ─── Linker MANAGEMENT ────────────────────────────────────────────────────────
+
+type Linker struct {
+	// Inherited Properties
+	pid        protocol.ID
+	account    *Account
+	primary    *Device
+	associated *Device
+	linkPacket *LinkPacket
+}
+
+// Node Device is Sending Primary Account Information
+func NewOutLinker(pid protocol.ID, account *Account, lp *LinkPacket) *Linker {
+	return &Linker{
+		pid:        pid,
+		account:    account,
+		primary:    account.GetCurrent(),
+		linkPacket: lp,
+	}
+}
+
+// RPC Device is Receiving Primary Account Information
+func NewInLinker(pid protocol.ID, account *Account) *Linker {
+	return &Linker{
+		pid:        pid,
+		account:    account,
+		associated: account.GetCurrent(),
+	}
+}
+
+// Read Buffer sent from Stream to Handle Linker
+func (s *Linker) ReadFromStream(stream network.Stream) {
+	// Concurrent Function
+	go func(rs msg.ReadCloser, stream network.Stream) {
+		buf, err := rs.ReadMsg()
+		if err != nil {
+			LogError(err)
+			return
+		}
+
+		// Unmarshal linkPacket
+		lp := &LinkPacket{}
+		err = proto.Unmarshal(buf, lp)
+		if err != nil {
+			LogError(err)
+			return
+		}
+
+		// Callback on Linked
+		s.account.HandleLinkPacket(lp)
+		stream.Close()
+	}(msg.NewReader(stream), stream)
+}
+
+// Write Buffer onto from Stream to New Associated Device
+func (s *Linker) WriteToStream(stream network.Stream) {
+	// Marshal linkPacket
+	buf, err := proto.Marshal(s.linkPacket)
+	if err != nil {
+		LogError(err)
+		return
+	}
+
+	// Concurrent Function
+	go func(ws msg.WriteCloser) {
+		err := ws.WriteMsg(buf)
+		if err != nil {
+			LogError(err)
+		}
+	}(msg.NewWriter(stream))
 }

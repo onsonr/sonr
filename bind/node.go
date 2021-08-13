@@ -80,7 +80,7 @@ func (n *Node) Connect(data []byte) {
 	n.device.SetConnection(req)
 
 	// Connect Host
-	peer, isPrimary, serr := n.client.Connect(req)
+	peer, isPrimary, serr := n.client.Connect(req, n.account)
 	if serr != nil {
 		n.handleError(serr)
 		n.setConnected(false)

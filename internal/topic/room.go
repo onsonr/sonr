@@ -130,6 +130,24 @@ func (tm *RoomManager) Publish(msg *md.RoomEvent) error {
 	return nil
 }
 
+// Publish @ Publish message to specific peer in room
+func (tm *RoomManager) Sync(msg *md.RoomEvent) error {
+	// Convert Event to Proto Binary
+	bytes, err := proto.Marshal(msg)
+	if err != nil {
+		md.LogError(err)
+		return err
+	}
+
+	// Publish to Room
+	err = tm.Topic.Publish(tm.ctx, bytes)
+	if err != nil {
+		md.LogError(err)
+		return err
+	}
+	return nil
+}
+
 // HasLinker Method Checks if Peer ID String is a listed Linker
 func (tm *RoomManager) HasLinker(q string) bool {
 	for _, p := range tm.linkers {

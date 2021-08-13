@@ -127,7 +127,7 @@ func (s *NodeServer) Connect(ctx context.Context, req *md.ConnectionRequest) (*m
 	s.device.SetConnection(req)
 
 	// Connect Host
-	peer, isPrimary, serr := s.client.Connect(req)
+	peer, isPrimary, serr := s.client.Connect(req, s.account)
 	if serr != nil {
 		s.handleError(serr)
 		s.setConnected(false)

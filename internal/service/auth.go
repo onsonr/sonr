@@ -177,10 +177,10 @@ func (tm *serviceClient) Link(id peer.ID, inv *md.LinkRequest) error {
 		// Call to Peer
 		err = rpcClient.Call(id, util.AUTH_RPC_SERVICE, util.AUTH_METHOD_LINK, args, &reply)
 		if err != nil {
-			tm.handler.OnLink(false, id, nil)
+			tm.handler.OnLink(false, false, id, nil)
 			return err
 		}
-		tm.handler.OnLink(reply.LinkResult, id, reply.LinkResponse)
+		tm.handler.OnLink(reply.LinkResult, false, id, reply.LinkResponse)
 		return nil
 	}
 	return errors.New("Invite is not a Link Invite")
@@ -210,7 +210,7 @@ func (ts *AuthService) LinkWith(ctx context.Context, args AuthServiceArgs, reply
 
 		// Return Result
 		md.LogInfo(fmt.Sprintf("Link Result: %v", result))
-		ts.handler.OnLink(ok, peer.ID(inv.GetFrom().PeerID()), reply.LinkResponse)
+		ts.handler.OnLink(ok, true, peer.ID(inv.GetFrom().PeerID()), reply.LinkResponse)
 		return nil
 	} else {
 		return errors.New("Linking is not Active")

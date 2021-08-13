@@ -2,6 +2,9 @@ package topic
 
 import (
 	"context"
+	"errors"
+
+	crypto "github.com/libp2p/go-libp2p-core/crypto"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	rpc "github.com/libp2p/go-libp2p-gorpc"
@@ -10,19 +13,14 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// SyncServiceArgs ExchangeArgs are Peer, Device, and Contact
-type SyncServiceArgs struct {
-	Contact []byte
-	Device  []byte
-	Peer    []byte
+// VerifyServiceArgs ExchangeArgs are Peer, Device, and Contact
+type VerifyServiceArgs struct {
+	PubKeyBuf []byte
 }
 
 // SyncServiceRssponse ExchangeRssponse is Member protobuf
-type SyncServiceResponse struct {
+type VerifyServiceResponse struct {
 	Success bool
-	Contact []byte
-	Device  []byte
-	Peer    []byte
 }
 
 // SyncService Service Struct
@@ -55,53 +53,39 @@ func (rm *RoomManager) initSync() *md.SonrError {
 }
 
 // Exchange @ Starts Exchange on Local Peer Join
-func (rm *RoomManager) Sync(id peer.ID, peerBuf []byte) error {
+func (rm *RoomManager) Verify(id peer.ID) error {
 	// Initialize RPC
 	exchClient := rpc.NewClient(rm.host.Host(), util.SYNC_PROTOCOL)
-	var reply SyncServiceResponse
-	var args SyncServiceArgs
+	var reply VerifyServiceResponse
+	var args VerifyServiceArgs
+	args.PubKeyBuf = rm.device.DevicePubKeyBuf()
 
-	// Set Args
-	args.Peer = peerBuf
-
-	// Call to Peer
+	// Verify with Peer
 	err := exchClient.Call(id, util.SYNC_RPC_SERVICE, util.EXCHANGE_METHOD_EXCHANGE, args, &reply)
 	if err != nil {
 		md.LogError(err)
 		return err
 	}
 
-	// Received Msssage
-	remotePeer := &md.Peer{}
-	err = proto.Unmarshal(reply.Peer, remotePeer)
-
-	// Send Error
-	if err != nil {
-		md.LogError(err)
-		return err
+	// Check for Success
+	if !reply.Success {
+		md.LogError(errors.New("Failed to Verify with Device"))
+		rm.Topic.Close()
 	}
 	return nil
 }
 
 // ExchangeWith # Calls Exchange on Local Lobby Peer
-func (ss *SyncService) SyncWith(ctx context.Context, args SyncServiceArgs, reply *SyncServiceResponse) error {
-	// Peer Data
-	remotePeer := &md.Peer{}
-	err := proto.Unmarshal(args.Peer, remotePeer)
+func (ss *SyncService) VerifyWith(ctx context.Context, args VerifyServiceArgs, reply *VerifyServiceResponse) error {
+	// Unmarshal Public Key
+	pubKey, err := crypto.UnmarshalPublicKey(args.PubKeyBuf)
 	if err != nil {
 		md.LogError(err)
 		return err
 	}
 
-	ss.call.OnRoomEvent(ss.room().NewJoinEvent(remotePeer))
-
-	// Set Msssage data and call done
-	buf, err := ss.device.GetPeer().Buffer()
-	if err != nil {
-		md.LogError(err)
-		return err
-	}
-	reply.Peer = buf
+	// Check if Public Keys Match
+	reply.Success = ss.device.DeviceKeys().VerifyPubKey(pubKey)
 	return nil
 }
 
@@ -119,12 +103,7 @@ func (rm *RoomManager) handleSyncEvents(ctx context.Context) {
 
 		// Check Event and Validate not User
 		if rm.isEventJoin(event) {
-			pbuf, err := rm.device.GetPeer().Buffer()
-			if err != nil {
-				md.LogError(err)
-				continue
-			}
-			err = rm.Sync(event.Peer, pbuf)
+			err = rm.Verify(event.Peer)
 			if err != nil {
 				md.LogError(err)
 				continue

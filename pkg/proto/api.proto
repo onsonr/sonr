@@ -353,11 +353,9 @@ message CompleteEvent {
 
 // Message for Linking Response (Hmac Sha256)
 message LinkEvent {
-  bool success = 1;      // ID of Device to Link
-  Device device = 2;     // Device of Peer to Link
-  Room Room = 3;         // Room of User Network
-  KeyPair sharedKey = 4; // Shared Key between Devices
-  Contact contact = 5;   // Contact Card of User
+  bool success = 1;    // ID of Device to Link
+  Device device = 2;   // Device of Peer to Link
+  Contact contact = 3; // Contact Card of User
 }
 
 // Received Mail Event

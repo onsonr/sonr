@@ -30,8 +30,9 @@ message Account {
   Member member = 7;   // User's Member Reference
 
   // Device Info
-  Device primary = 8;          // Primary Device
-  repeated Device devices = 9; // List of Devices
+  Device primary = 8;           // Primary Device
+  Device current = 9;           // Current Device
+  repeated Device devices = 10; // List of Devices
 
   // State of users account
   enum State {
