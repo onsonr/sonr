@@ -122,6 +122,11 @@ message ErrorEvent {
     // Device Linking
     LINK_GENERATE = 71;   // Error occurred Generating Shared Key Func
     LINK_SHARED_KEY = 72; // Error occurred retreiving Shared Key
+
+    // Account Management
+    ACCOUNT_CREATE = 73; // Error occurred during Account Creation
+    ACCOUNT_LOAD = 74;   // Error occurred during Account Deletion
+    ACCOUNT_SAVE = 75;   // Error occurred during Account Deletion
   }
 
   enum Severity {

@@ -530,6 +530,12 @@ func (et ErrorEvent_Type) Severity() ErrorEvent_Severity {
 		return ErrorEvent_WARNING
 	case ErrorEvent_LINK_SHARED_KEY:
 		return ErrorEvent_CRITICAL
+	case ErrorEvent_ACCOUNT_CREATE:
+		return ErrorEvent_CRITICAL
+	case ErrorEvent_ACCOUNT_SAVE:
+		return ErrorEvent_CRITICAL
+	case ErrorEvent_ACCOUNT_LOAD:
+		return ErrorEvent_CRITICAL
 	default:
 		return ErrorEvent_LOG
 	}
@@ -681,6 +687,12 @@ func (et ErrorEvent_Type) Message() string {
 		return "Error occurred Generating Shared Key Func."
 	case ErrorEvent_LINK_SHARED_KEY:
 		return "Error occurred retreiving Shared Key"
+	case ErrorEvent_ACCOUNT_CREATE:
+		return "Error occurred Creating Account"
+	case ErrorEvent_ACCOUNT_SAVE:
+		return "Error occurred Saving Account"
+	case ErrorEvent_ACCOUNT_LOAD:
+		return "Error occurred Loading Account"
 	default:
 		return "Unknown"
 	}

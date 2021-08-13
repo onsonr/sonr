@@ -23,8 +23,8 @@ type VerifyServiceResponse struct {
 	Success bool
 }
 
-// SyncService Service Struct
-type SyncService struct {
+// VerifyService Service Struct
+type VerifyService struct {
 	// Current Data
 	call   RoomHandler
 	room   GetRoomFunc
@@ -34,34 +34,34 @@ type SyncService struct {
 // Initialize Exchange Service by Room Type
 func (rm *RoomManager) initSync() *md.SonrError {
 	// Start Exchange RPC Server
-	syncServer := rpc.NewServer(rm.host.Host(), util.SYNC_PROTOCOL)
-	syncService := SyncService{
+	verifyServer := rpc.NewServer(rm.host.Host(), util.VERIFY_PROTOCOL)
+	verifyService := VerifyService{
 		device: rm.device,
 		call:   rm.handler,
 		room:   rm.Room,
 	}
 
 	// Register Service
-	err := syncServer.RegisterName(util.SYNC_RPC_SERVICE, &syncService)
+	err := verifyServer.RegisterName(util.VERIFY_RPC_SERVICE, &verifyService)
 	if err != nil {
 		return md.NewError(err, md.ErrorEvent_ROOM_RPC)
 	}
 
 	// Set Service
-	rm.sync = &syncService
+	rm.verify = &verifyService
 	return nil
 }
 
 // Exchange @ Starts Exchange on Local Peer Join
 func (rm *RoomManager) Verify(id peer.ID) error {
 	// Initialize RPC
-	exchClient := rpc.NewClient(rm.host.Host(), util.SYNC_PROTOCOL)
+	exchClient := rpc.NewClient(rm.host.Host(), util.VERIFY_PROTOCOL)
 	var reply VerifyServiceResponse
 	var args VerifyServiceArgs
 	args.PubKeyBuf = rm.device.DevicePubKeyBuf()
 
 	// Verify with Peer
-	err := exchClient.Call(id, util.SYNC_RPC_SERVICE, util.EXCHANGE_METHOD_EXCHANGE, args, &reply)
+	err := exchClient.Call(id, util.VERIFY_RPC_SERVICE, util.VERIFY_METHOD_VERIFY, args, &reply)
 	if err != nil {
 		md.LogError(err)
 		return err
@@ -76,7 +76,7 @@ func (rm *RoomManager) Verify(id peer.ID) error {
 }
 
 // ExchangeWith # Calls Exchange on Local Lobby Peer
-func (ss *SyncService) VerifyWith(ctx context.Context, args VerifyServiceArgs, reply *VerifyServiceResponse) error {
+func (ss *VerifyService) VerifyWith(ctx context.Context, args VerifyServiceArgs, reply *VerifyServiceResponse) error {
 	// Unmarshal Public Key
 	pubKey, err := crypto.UnmarshalPublicKey(args.PubKeyBuf)
 	if err != nil {

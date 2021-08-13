@@ -2,6 +2,8 @@ package models
 
 import (
 	"fmt"
+	"os"
+	"path"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -19,20 +21,48 @@ func InitAccount(ir *InitializeRequest, d *Device) (*Account, *SonrError) {
 		return nil, err
 	}
 
-	// Return User
-	u := &Account{
-		KeyChain: keychain,
-		Current:  d,
-		Primary:  d,
-		ApiKeys:  ir.GetApiKeys(),
-		State:    ir.AccountState(),
-		Devices:  make([]*Device, 0),
-		Member: &Member{
-			Reach:      Member_ONLINE,
-			Associated: make([]*Peer, 0),
-		},
+	// Check for existing account
+	if d.GetFileSystem().GetSupport().IsFile(util.ACCOUNT_FILE) {
+		// Load Account
+		buf, err := d.GetFileSystem().GetSupport().ReadFile(util.ACCOUNT_FILE)
+		if err != nil {
+			return nil, err
+		}
+
+		// Unmarshal Account
+		loadedAccount := &Account{}
+		serr := proto.Unmarshal(buf, loadedAccount)
+		if serr != nil {
+			return nil, NewError(serr, ErrorEvent_ACCOUNT_LOAD)
+		}
+
+		LogInfo(fmt.Sprintf("LoadedAccount: %s", loadedAccount.String()))
+
+		// Set Account
+		loadedAccount.KeyChain = keychain
+		loadedAccount.Current = d
+		loadedAccount.ApiKeys = ir.GetApiKeys()
+		loadedAccount.State = ir.AccountState()
+		return loadedAccount, nil
+	} else {
+		// Return User
+		u := &Account{
+			KeyChain: keychain,
+			Current:  d,
+			ApiKeys:  ir.GetApiKeys(),
+			State:    ir.AccountState(),
+			Devices:  make([]*Device, 0),
+			Member: &Member{
+				Reach:      Member_ONLINE,
+				Associated: make([]*Peer, 0),
+			},
+		}
+		err := u.Save()
+		if err != nil {
+			return nil, NewError(err, ErrorEvent_ACCOUNT_SAVE)
+		}
+		return u, nil
 	}
-	return u, nil
 }
 
 // Set the User with ConnectionRequest
@@ -42,6 +72,7 @@ func (u *Account) SetConnection(cr *ConnectionRequest) {
 	u.SName = cr.GetContact().GetProfile().GetSName()
 	u.Contact = cr.GetContact()
 	u.Member.PushToken = cr.GetPushToken()
+	u.Save()
 }
 
 // Update Account after Device Peer set for Member
@@ -51,6 +82,7 @@ func (u *Account) HandleSetPeer(p *Peer, isPrimary bool) {
 	} else {
 		u.Member.Associated = append(u.Member.Associated, p)
 	}
+	u.Save()
 }
 
 // Update Account after LinkPacket is received
@@ -58,6 +90,7 @@ func (u *Account) HandleLinkPacket(lp *LinkPacket) {
 	u.Primary = lp.Primary
 	u.Devices = append(u.Devices, lp.Secondary)
 	u.GetCurrent().replaceKeyChain(lp.GetKeyChain())
+	u.Save()
 }
 
 // Checks Whether User is Ready to Communicate
@@ -119,6 +152,32 @@ func (u *Account) ExportKeychain() *KeyChain {
 	}
 }
 
+func (u *Account) Save() error {
+	// Marshal Account to Protobuf
+	data, err := proto.Marshal(u)
+	if err != nil {
+		return err
+	}
+
+	// Open File at Path
+	f, err := os.OpenFile(u.AccountFilePath(), os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
+	if err != nil {
+		return err
+	}
+
+	// Write Data to File
+	_, err = f.Write(data)
+	if err != nil {
+		return err
+	}
+
+	// Close File
+	if err := f.Close(); err != nil {
+		return err
+	}
+	return nil
+}
+
 // Method Signs Data with KeyPair
 func (u *Account) Sign(req *AuthRequest) *AuthResponse {
 	// Create Prefix
@@ -150,10 +209,16 @@ func (u *Account) SignLinkPacket(resp *LinkResponse) *LinkPacket {
 	}
 }
 
+// Method Returns support directory file for account
+func (u *Account) AccountFilePath() string {
+	return path.Join(u.GetCurrent().GetFileSystem().GetSupport().GetPath(), util.ACCOUNT_FILE)
+}
+
 // Method Updates User Contact
 func (u *Account) UpdateContact(c *Contact) {
 	u.Contact = c
 	u.GetMember().UpdateProfile(c)
+	u.Save()
 }
 
 // Method Verifies the Device Link Public Key

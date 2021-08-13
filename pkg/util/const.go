@@ -35,6 +35,8 @@ const CHUNK_SIZE = 4 * 1024
 // Directory Name of Private Key Folder
 const PRIVATE_KEY_DIR = ".sonr_private"
 
+// Filename for Account
+const ACCOUNT_FILE = "account.snr"
 
 // ** ─── Protocols ────────────────────────────────────────────────────────
 // Auth Service Protocol
@@ -47,7 +49,7 @@ const EXCHANGE_PROTOCOL = protocol.ID("/sonr/exchange-service/0.2")
 const REMOTE_PROTOCOL = protocol.ID("/sonr/remote-service/0.2")
 
 // Exchange Service Protocol
-const SYNC_PROTOCOL = protocol.ID("/sonr/sync-service/0.2")
+const VERIFY_PROTOCOL = protocol.ID("/sonr/verify-protocol/0.2")
 
 // ** ─── API ────────────────────────────────────────────────────────
 // Textile Client API URL
@@ -85,10 +87,10 @@ const EXCHANGE_RPC_SERVICE = "ExchangeService"
 const EXCHANGE_METHOD_EXCHANGE = "ExchangeWith"
 
 // Local RPC Service Name
-const SYNC_RPC_SERVICE = "SyncService"
+const VERIFY_RPC_SERVICE = "VerifyService"
 
 // Local RPC Service Method for Exchange
-const SYNC_METHOD_SYNC = "SyncWith"
+const VERIFY_METHOD_VERIFY = "VerifyWith"
 
 // ** ─── Host ────────────────────────────────────────────────────────
 // Libp2p Host Rendevouz Point

@@ -30,8 +30,8 @@ type RoomManager struct {
 	handler      RoomHandler
 
 	// Sync
+	verify     *VerifyService
 	syncEvents chan *md.SyncEvent
-	sync       *SyncService
 
 	// Exchange
 	exchange   *ExchangeService
@@ -114,36 +114,40 @@ func (tm *RoomManager) FindPeer(q string) (peer.ID, error) {
 
 // Publish @ Publish message to specific peer in room
 func (tm *RoomManager) Publish(msg *md.RoomEvent) error {
-	// Convert Event to Proto Binary
-	bytes, err := proto.Marshal(msg)
-	if err != nil {
-		md.LogError(err)
-		return err
-	}
+	if tm.room.IsLocal() || tm.room.IsGroup() {
+		// Convert Event to Proto Binary
+		bytes, err := proto.Marshal(msg)
+		if err != nil {
+			md.LogError(err)
+			return err
+		}
 
-	// Publish to Room
-	err = tm.Topic.Publish(tm.ctx, bytes)
-	if err != nil {
-		md.LogError(err)
-		return err
+		// Publish to Room
+		err = tm.Topic.Publish(tm.ctx, bytes)
+		if err != nil {
+			md.LogError(err)
+			return err
+		}
 	}
 	return nil
 }
 
 // Publish @ Publish message to specific peer in room
-func (tm *RoomManager) Sync(msg *md.RoomEvent) error {
-	// Convert Event to Proto Binary
-	bytes, err := proto.Marshal(msg)
-	if err != nil {
-		md.LogError(err)
-		return err
-	}
+func (tm *RoomManager) Sync(msg *md.SyncEvent) error {
+	if tm.room.IsDevices() {
+		// Convert Event to Proto Binary
+		bytes, err := proto.Marshal(msg)
+		if err != nil {
+			md.LogError(err)
+			return err
+		}
 
-	// Publish to Room
-	err = tm.Topic.Publish(tm.ctx, bytes)
-	if err != nil {
-		md.LogError(err)
-		return err
+		// Publish to Room
+		err = tm.Topic.Publish(tm.ctx, bytes)
+		if err != nil {
+			md.LogError(err)
+			return err
+		}
 	}
 	return nil
 }
