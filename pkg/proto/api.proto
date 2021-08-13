@@ -200,10 +200,20 @@ message DecisionResponse {
 // Message to manage user Device Service
 message DeviceRequest {
   Device device = 1; // Users Device
+  Method method = 2; // Method to be Used
+  string data = 3;   // Data to be Used (Optional) - URL or File
 
   enum Method {
-    
+    OPEN = 0;   // Open File or URL on Device
+    GHOST = 1;  // Set Device as Ghost Mode
+    ACTIVE = 2; // Set Device as Active Mode
   }
+}
+
+// Message for DeviceRequest Response
+message DeviceResponse {
+  bool success = 1; // True if Device was Successful
+  string body = 2;  // Response Body
 }
 
 //  Message for a LinkRequest

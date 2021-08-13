@@ -1,4 +1,4 @@
-SHELL=/bin/zsh # Set Shell
+SHELL=/usr/local/bin/fish # Set Shell
 # Set this -->[/Users/xxxx/Sonr/]<-- to Folder of Sonr Repos
 SONR_ROOT_DIR=/Users/prad/Sonr
 CORE_DIR=$(SONR_ROOT_DIR)/core
