@@ -126,6 +126,7 @@ jobs:
 
     - uses: ncipollo/release-action@v1
       with:
-        artifacts: ${{ github.workspace }}/build/**
-        repo: "plugin"
+        allowUpdates: true
+        artifacts: "${{ github.workspace }}/build/Core.framework, ${{ github.workspace }}/build/io.sonr.core.aar"
+        replacesArtifacts: false
         token: ${{ secrets.GITHUB_TOKEN }}
