@@ -116,10 +116,3 @@ jobs:
     - name: Display structure of downloaded files
       run: ls -R
       working-directory: ${{ github.workspace }}/build
-
-    - name: Create Release in Plugin
-      uses: ncipollo/release-action@v1
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        repo: plugin
-        owner: sonr
