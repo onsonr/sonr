@@ -124,9 +124,23 @@ jobs:
       run: ls -R
       working-directory: ${{ github.workspace }}/build
 
+    - id: get_version
+      uses: battila7/get-version-action@v2
+
+    - name: Zip up Android AAR and iOS Framework
+      run: |
+        zip -r $ANDROID_ZIP ${{ github.workspace }}/build/io.sonr.core.aar
+        mv $ANDROID_ZIP ${{ github.workspace }}/build/
+        zip -r $IOS_ZIP ${{ github.workspace }}/build/Core.framework
+        mv $IOS_ZIP ${{ github.workspace }}/build/
+        ls -R
+      env:
+        ANDROID_ZIP: sonr-node_${{ steps.get_version.outputs.version-without-v }}_android.zip
+        IOS_ZIP: sonr-node_${{ steps.get_version.outputs.version-without-v }}_ios.zip
+
     - uses: ncipollo/release-action@v1
       with:
         allowUpdates: true
-        artifacts: "${{ github.workspace }}/build/Core.framework/, ${{ github.workspace }}/build/io.sonr.core.aar"
+        artifacts: "${{ github.workspace }}/build/*.zip"
         replacesArtifacts: false
         token: ${{ secrets.GITHUB_TOKEN }}
