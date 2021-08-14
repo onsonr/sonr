@@ -4,6 +4,7 @@ import (
 	"context"
 
 	tp "github.com/sonr-io/core/internal/topic"
+	ac "github.com/sonr-io/core/pkg/account"
 	sc "github.com/sonr-io/core/pkg/client"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
@@ -17,7 +18,7 @@ type Node struct {
 	ctx  context.Context
 
 	// Client
-	account *md.Account
+	account ac.Account
 	client  sc.Client
 	device  *md.Device
 	state   md.Lifecycle
@@ -54,12 +55,14 @@ func Initialize(reqBytes []byte, call Callback) *Node {
 	}
 
 	// Create User
-	if u, err := md.InitAccount(req, device); err != nil {
-		mn.handleError(err)
-	} else {
-		mn.account = u
-		mn.device = device
+	u, serr := ac.OpenAccount(req, device)
+	if serr != nil {
+		mn.handleError(serr)
+		return nil
 	}
+
+	mn.account = u
+	mn.device = device
 
 	// Create Client
 	mn.client = sc.NewClient(mn.ctx, mn.device, mn.callback())

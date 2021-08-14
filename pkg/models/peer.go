@@ -48,7 +48,7 @@ func (r *Device) NewLocalRoom(opts *ConnectionRequest_ServiceOptions) *Room {
 }
 
 // Local Lobby Room Protocol ID
-func (r *Account) NewDeviceRoom() *Room {
+func (r *User) NewDeviceRoom() *Room {
 
 	// Return Room
 	return &Room{
@@ -58,7 +58,7 @@ func (r *Account) NewDeviceRoom() *Room {
 }
 
 // Local Lobby Room Protocol ID
-func (r *Account) NewGroupRoom(name string) *Room {
+func (r *User) NewGroupRoom(name string) *Room {
 
 	// Return Room
 	return &Room{
@@ -95,7 +95,7 @@ func (m *Member) UpdateProfile(c *Contact) {
 }
 
 // Return Users Primary Peer
-func (u *Account) ActivePeer() *Peer {
+func (u *User) ActivePeer() *Peer {
 	return u.GetMember().GetActive()
 }
 

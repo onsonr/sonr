@@ -88,6 +88,11 @@ func (d *Device) IsLinux() bool {
 	return d.Platform == Platform_LINUX
 }
 
+// // Checks Whether User is Ready to Communicate
+func (u *Device) IsReady() bool {
+	return u.Contact != nil && u.Location != nil && u.Status != Status_DEFAULT
+}
+
 // Method Checks for Web
 func (d *Device) IsWeb() bool {
 	return d.Platform == Platform_WEB

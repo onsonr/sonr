@@ -161,14 +161,14 @@ func (i *InitializeRequest) ShouldResetKeys() bool {
 	return i.GetOptions().GetResetKeys()
 }
 
-// Get Assumed Account State
-func (i *InitializeRequest) AccountState() Account_State {
+// Get Assumed User State
+func (i *InitializeRequest) UserState() User_State {
 	if i.ShouldCreateTempKeys() {
-		return Account_UNVERIFIED
+		return User_UNVERIFIED
 	} else if i.ShouldLoadKeychain() {
-		return Account_VERIFIED
+		return User_VERIFIED
 	} else {
-		return Account_UNVERIFIED
+		return User_UNVERIFIED
 	}
 }
 

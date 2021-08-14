@@ -7,6 +7,7 @@ import (
 	"net"
 
 	tp "github.com/sonr-io/core/internal/topic"
+	ac "github.com/sonr-io/core/pkg/account"
 	sc "github.com/sonr-io/core/pkg/client"
 	md "github.com/sonr-io/core/pkg/models"
 	"github.com/sonr-io/core/pkg/util"
@@ -18,7 +19,7 @@ type NodeServer struct {
 	ctx context.Context
 
 	// Client
-	account *md.Account
+	account ac.Account
 	client  sc.Client
 	device  *md.Device
 	state   md.Lifecycle
@@ -105,13 +106,14 @@ func (s *NodeServer) Initialize(ctx context.Context, req *md.InitializeRequest) 
 	device := req.GetDevice()
 
 	// Create User
-	if u, err := md.InitAccount(req, device); err != nil {
-		s.handleError(err)
-		return nil, err.Error
-	} else {
-		s.account = u
-		s.device = device
+	u, serr := ac.OpenAccount(req, device)
+	if serr != nil {
+		s.handleError(serr)
+		return &md.NoResponse{}, serr.Error
 	}
+
+	s.account = u
+	s.device = device
 
 	// Create Client
 	s.client = sc.NewClient(s.ctx, s.device, s.callback())

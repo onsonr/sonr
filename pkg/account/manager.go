@@ -8,20 +8,21 @@ import (
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	ps "github.com/libp2p/go-libp2p-pubsub"
+	msg "github.com/libp2p/go-msgio"
 	sh "github.com/sonr-io/core/internal/host"
 	md "github.com/sonr-io/core/pkg/models"
 	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/proto"
 )
 
-type AccountManager interface {
+type Account interface {
 	// Config
 	APIKeys() *md.APIKeys
 	FilePath() string
 	HandleSetPeer(peer *md.Peer, isPrimary bool)
 	Save() error
 	SetConnection(cr *md.ConnectionRequest)
-	JoinDeviceRoom(h sh.HostNode) *md.SonrError
+	JoinNetwork(h sh.HostNode) *md.SonrError
 
 	// Information
 	Member() *md.Member
@@ -44,6 +45,7 @@ type AccountManager interface {
 	VerifyRead() *md.VerifyResponse
 
 	// Linker Stream
+	PrepareToLink(resp *md.LinkResponse)
 	HandleLinkPacket(packet *md.LinkPacket)
 	ReadFromLink(stream network.Stream)
 	WriteToLink(stream network.Stream)
@@ -51,8 +53,8 @@ type AccountManager interface {
 
 type accountLinker struct {
 	// General
-	AccountManager
-	account  *md.Account
+	Account
+	account  *md.User
 	protocol protocol.ID
 
 	// Networking
@@ -63,14 +65,18 @@ type accountLinker struct {
 	eventHandler *ps.TopicEventHandler
 
 	// Sync
-	verify        *DeviceService
+	service       *DeviceService
 	syncEvents    chan *md.SyncEvent
 	activeDevices []*md.Device
 	room          *md.Room
+	lastUpdated   int32
+
+	// Linker Stream
+	linkPacket *md.LinkPacket
 }
 
 // Start Begins Account Manager
-func StartAccount(ir *md.InitializeRequest, d *md.Device) (AccountManager, *md.SonrError) {
+func OpenAccount(ir *md.InitializeRequest, d *md.Device) (Account, *md.SonrError) {
 	// Fetch Key Pair
 	keychain, err := d.Initialize(ir)
 	if err != nil {
@@ -86,7 +92,7 @@ func StartAccount(ir *md.InitializeRequest, d *md.Device) (AccountManager, *md.S
 		}
 
 		// Unmarshal Account
-		loadedAccount := &md.Account{}
+		loadedAccount := &md.User{}
 		serr := proto.Unmarshal(buf, loadedAccount)
 		if serr != nil {
 			return nil, md.NewError(serr, md.ErrorEvent_ACCOUNT_LOAD)
@@ -98,7 +104,7 @@ func StartAccount(ir *md.InitializeRequest, d *md.Device) (AccountManager, *md.S
 		loadedAccount.KeyChain = keychain
 		loadedAccount.Current = d
 		loadedAccount.ApiKeys = ir.GetApiKeys()
-		loadedAccount.State = ir.AccountState()
+		loadedAccount.State = ir.UserState()
 
 		// Create Account Linker
 		linker := &accountLinker{
@@ -107,31 +113,31 @@ func StartAccount(ir *md.InitializeRequest, d *md.Device) (AccountManager, *md.S
 		return linker, nil
 	} else {
 		// Return User
-		u := &md.Account{
+		u := &md.User{
 			KeyChain: keychain,
 			Current:  d,
 			ApiKeys:  ir.GetApiKeys(),
-			State:    ir.AccountState(),
+			State:    ir.UserState(),
 			Devices:  make([]*md.Device, 0),
 			Member: &md.Member{
 				Reach:      md.Member_ONLINE,
 				Associated: make([]*md.Peer, 0),
 			},
 		}
-		err := u.Save()
-		if err != nil {
-			return nil, md.NewError(err, md.ErrorEvent_ACCOUNT_SAVE)
-		}
 
 		// Create Account Linker
 		linker := &accountLinker{
 			account: u,
 		}
+		err := linker.Save()
+		if err != nil {
+			return nil, md.NewError(err, md.ErrorEvent_ACCOUNT_SAVE)
+		}
 		return linker, nil
 	}
 }
 
-func (al *accountLinker) JoinDeviceRoom(h sh.HostNode) *md.SonrError {
+func (al *accountLinker) JoinNetwork(h sh.HostNode) *md.SonrError {
 	// Join Room
 	topic, err := h.Pubsub().Join(al.room.GetName())
 	if err != nil {
@@ -171,7 +177,7 @@ func (al *accountLinker) HandleSetPeer(p *md.Peer, isPrimary bool) {
 	} else {
 		u.Member.Associated = append(u.Member.Associated, p)
 	}
-	u.Save()
+	al.Save()
 }
 
 // Update Account after LinkPacket is received
@@ -180,14 +186,47 @@ func (al *accountLinker) HandleLinkPacket(lp *md.LinkPacket) {
 	u.Primary = lp.Primary
 	u.Devices = append(u.Devices, lp.Secondary)
 	u.GetCurrent().ReplaceKeyChain(lp.GetKeyChain())
-	u.Save()
+	al.Save()
+}
+
+// Node Device is Sending Primary Account Information
+func (al *accountLinker) PrepareToLink(resp *md.LinkResponse) {
+	u := al.account
+	al.linkPacket = &md.LinkPacket{
+		Primary:   u.GetPrimary(),
+		Secondary: resp.GetDevice(),
+		KeyChain:  al.ExportKeychain(),
+	}
+}
+
+func (al *accountLinker) ReadFromLink(stream network.Stream) {
+	// Concurrent Function
+	go func(rs msg.ReadCloser, stream network.Stream) {
+		buf, err := rs.ReadMsg()
+		if err != nil {
+			md.LogError(err)
+			return
+		}
+
+		// Unmarshal linkPacket
+		lp := &md.LinkPacket{}
+		err = proto.Unmarshal(buf, lp)
+		if err != nil {
+			md.LogError(err)
+			return
+		}
+
+		// Callback on Linked
+		al.HandleLinkPacket(lp)
+		stream.Close()
+	}(msg.NewReader(stream), stream)
 }
 
 // Method Signs Data with KeyPair
 func (al *accountLinker) SignAuth(req *md.AuthRequest) *md.AuthResponse {
 	u := al.account
 	// Create Prefix
-	prefixResult := u.GetKeyChain().GetAccount().Sign(fmt.Sprintf("%s%s", req.GetSName(), u.DeviceID()))
+	prefixResult := u.GetKeyChain().GetAccount().Sign(fmt.Sprintf("%s%s", req.GetSName(), al.DeviceID()))
 
 	// Get Prefix Appended and Place
 	prefix := util.Substring(prefixResult, 0, 16)
@@ -212,7 +251,7 @@ func (al *accountLinker) SignLinkPacket(resp *md.LinkResponse) *md.LinkPacket {
 	return &md.LinkPacket{
 		Primary:   u.GetPrimary(),
 		Secondary: resp.GetDevice(),
-		KeyChain:  u.ExportKeychain(),
+		KeyChain:  al.ExportKeychain(),
 	}
 }
 
@@ -221,7 +260,7 @@ func (al *accountLinker) UpdateContact(c *md.Contact) {
 	u := al.account
 	u.Contact = c
 	u.GetMember().UpdateProfile(c)
-	u.Save()
+	al.Save()
 }
 
 // Method Verifies the Device Link Public Key
@@ -238,4 +277,22 @@ func (al *accountLinker) VerifyRead() *md.VerifyResponse {
 		PublicKey: kp.PubKeyBase64(),
 		ShortID:   u.GetCurrent().ShortID(),
 	}
+}
+
+// Write Buffer onto from Stream to New Associated Device
+func (al *accountLinker) WriteToLink(stream network.Stream) {
+	// Marshal linkPacket
+	buf, err := proto.Marshal(al.linkPacket)
+	if err != nil {
+		md.LogError(err)
+		return
+	}
+
+	// Concurrent Function
+	go func(ws msg.WriteCloser) {
+		err := ws.WriteMsg(buf)
+		if err != nil {
+			md.LogError(err)
+		}
+	}(msg.NewWriter(stream))
 }

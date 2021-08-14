@@ -18,7 +18,7 @@ func (al *accountLinker) SetConnection(cr *md.ConnectionRequest) {
 	u.SName = cr.GetContact().GetProfile().GetSName()
 	u.Contact = cr.GetContact()
 	u.Member.PushToken = cr.GetPushToken()
-	u.Save()
+	al.Save()
 
 	// Initialize Linker Params
 	al.ctx = context.Background()
@@ -65,11 +65,10 @@ func (al *accountLinker) FilePath() string {
 
 // Method Returns Exportable Keychain for Linked Devices
 func (al *accountLinker) ExportKeychain() *md.KeyChain {
-	u := al.account
 	return &md.KeyChain{
-		Account: u.AccountKeys(),
-		Device:  u.DeviceKeys(),
-		Group:   u.GroupKeys(),
+		Account: al.AccountKeys(),
+		Device:  al.DeviceKeys(),
+		Group:   al.GroupKeys(),
 	}
 }
 
@@ -112,7 +111,7 @@ func (al *accountLinker) Save() error {
 	}
 
 	// Open File at Path
-	f, err := os.OpenFile(u.FilePath(), os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
+	f, err := os.OpenFile(al.FilePath(), os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
 	if err != nil {
 		return err
 	}

@@ -7,7 +7,7 @@ import (
 	md "github.com/sonr-io/core/pkg/models"
 )
 
-// Action method handles misceallaneous actions for node
+// Action method handles miscellaneous actions for node
 func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.NoResponse, error) {
 	// Check Action
 	switch req.Action {

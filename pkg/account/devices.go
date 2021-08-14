@@ -59,6 +59,7 @@ func (tm *accountLinker) Sync(msg *md.SyncEvent) error {
 			md.LogError(err)
 			return err
 		}
+
 	}
 	return nil
 }

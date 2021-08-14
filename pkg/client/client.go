@@ -7,6 +7,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
+		ac "github.com/sonr-io/core/pkg/account"
 	net "github.com/sonr-io/core/internal/host"
 	srv "github.com/sonr-io/core/internal/service"
 	tp "github.com/sonr-io/core/internal/topic"
@@ -18,7 +19,7 @@ import (
 // Interface: Main Client handles Networking/Identity/Streams
 type Client interface {
 	// Client Methods
-	Connect(cr *md.ConnectionRequest, a *md.Account) (*md.Peer, bool, *md.SonrError)
+	Connect(cr *md.ConnectionRequest, a ac.Account) (*md.Peer, bool, *md.SonrError)
 	Bootstrap(cr *md.ConnectionRequest) (*tp.RoomManager, *md.SonrError)
 	Mail(req *md.MailboxRequest) (*md.MailboxResponse, *md.SonrError)
 	Link(invite *md.LinkRequest, t *tp.RoomManager) (*md.LinkResponse, *md.SonrError)
@@ -48,7 +49,7 @@ type client struct {
 	ctx      context.Context
 	call     md.Callback
 	isLinker bool
-	account  *md.Account
+	account  ac.Account
 	device   *md.Device
 	session  *md.Session
 	request  *md.ConnectionRequest
@@ -68,7 +69,7 @@ func NewClient(ctx context.Context, u *md.Device, call md.Callback) Client {
 }
 
 // Connects Host Node from Private Key
-func (c *client) Connect(cr *md.ConnectionRequest, a *md.Account) (*md.Peer, bool, *md.SonrError) {
+func (c *client) Connect(cr *md.ConnectionRequest, a ac.Account) (*md.Peer, bool, *md.SonrError) {
 	// Set Request
 	c.request = cr
 	c.isLinker = cr.GetIsLinker()

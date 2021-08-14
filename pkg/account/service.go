@@ -18,7 +18,7 @@ type DeviceServiceArgs struct {
 	PubKeyBuf []byte
 }
 
-// SyncServiceRssponse ExchangeRssponse is Member protobuf
+// SyncServiceResponse ExchangeResponse is Member protobuf
 type DeviceServiceResponse struct {
 	Success bool
 }
@@ -26,7 +26,7 @@ type DeviceServiceResponse struct {
 // DeviceService Service Struct
 type DeviceService struct {
 	// Current Data
-	call   AccountManager
+	call   Account
 	room   GetRoomFunc
 	device *md.Device
 }
@@ -48,7 +48,7 @@ func (rm *accountLinker) initService() *md.SonrError {
 	}
 
 	// Set Service
-	rm.verify = &verifyService
+	rm.service = &verifyService
 	go rm.handleVerifyEvents(rm.ctx)
 	go rm.handleVerifyMessages(rm.ctx)
 	return nil
