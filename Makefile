@@ -53,7 +53,7 @@ all: Makefile
 	@sed -n 's/^##//p ' $<
 
 ## bind        :   Binds Android and iOS for Plugin Path
-bind: proto bind.ios bind.android
+bind: protobuf bind.ios bind.android
 	@go mod tidy
 	@cd /System/Library/Sounds && afplay Glass.aiff
 	@echo ""
@@ -90,8 +90,8 @@ bind.ios:
 	@echo ""
 
 ##
-## [proto]     :   Compiles Protobuf models for Core Library and Plugin
-proto:
+## [protobuf]     :   Compiles Protobuf models for Core Library and Plugin
+protobuf:
 	@echo ""
 	@echo ""
 	@echo "--------------------------------------------------------------"
@@ -108,7 +108,7 @@ proto:
 
 ##
 ## [release]   :   Upload RPC Binary Artifact to S3
-release: proto
+release: protobuf
 	@echo "Building Artifacts..."
 	@cd $(CORE_LIB_DIR) && goreleaser release --rm-dist
 	@echo "Cleaning up build cache..."
@@ -122,7 +122,7 @@ release: proto
 	@cd /System/Library/Sounds && afplay Glass.aiff
 
 ## [upgrade]   :   Binds Binary, Creates Protobufs, and Updates App
-upgrade: proto bind.ios bind.android
+upgrade: protobuf bind.ios bind.android
 	@go mod tidy
 	@echo "-----------------------------------------------------------"
 	@echo "------------- 🔄  START PLUGIN UPDATE 🔄 -------------------"
@@ -146,14 +146,14 @@ clean:
 ## Shortcuts   : (b) => bind
 ##               └─ (bi) => bind.ios
 ##               └─ (ba) => bind.android
-##               (p) => proto
+##               (p) => protobuf
 ##               (r) => release
 ##               (u) => upgrade
 ##               (c) => clean
 b:bind
 bi:bind.ios
 ba:bind.android
-p:proto
+p:protobuf
 r:release
 u:upgrade
 c:clean
