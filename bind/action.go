@@ -30,7 +30,7 @@ func (n *Node) Sign(data []byte) []byte {
 	}
 
 	// Sign Buffer
-	result := n.account.Sign(request)
+	result := n.account.SignAuth(request)
 	buf, err := proto.Marshal(result)
 	if err != nil {
 		n.handleError(md.NewMarshalError(err))

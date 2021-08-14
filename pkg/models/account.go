@@ -89,7 +89,7 @@ func (u *Account) HandleSetPeer(p *Peer, isPrimary bool) {
 func (u *Account) HandleLinkPacket(lp *LinkPacket) {
 	u.Primary = lp.Primary
 	u.Devices = append(u.Devices, lp.Secondary)
-	u.GetCurrent().replaceKeyChain(lp.GetKeyChain())
+	u.GetCurrent().ReplaceKeyChain(lp.GetKeyChain())
 	u.Save()
 }
 
@@ -160,7 +160,7 @@ func (u *Account) Save() error {
 	}
 
 	// Open File at Path
-	f, err := os.OpenFile(u.AccountFilePath(), os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
+	f, err := os.OpenFile(u.FilePath(), os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
 	if err != nil {
 		return err
 	}
@@ -179,7 +179,7 @@ func (u *Account) Save() error {
 }
 
 // Method Signs Data with KeyPair
-func (u *Account) Sign(req *AuthRequest) *AuthResponse {
+func (u *Account) SignAuth(req *AuthRequest) *AuthResponse {
 	// Create Prefix
 	prefixResult := u.GetKeyChain().GetAccount().Sign(fmt.Sprintf("%s%s", req.GetSName(), u.DeviceID()))
 
@@ -210,7 +210,7 @@ func (u *Account) SignLinkPacket(resp *LinkResponse) *LinkPacket {
 }
 
 // Method Returns support directory file for account
-func (u *Account) AccountFilePath() string {
+func (u *Account) FilePath() string {
 	return path.Join(u.GetCurrent().GetFileSystem().GetSupport().GetPath(), util.ACCOUNT_FILE)
 }
 

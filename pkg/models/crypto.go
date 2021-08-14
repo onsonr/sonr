@@ -164,7 +164,7 @@ func (d *Device) newKeyPair(t KeyPair_Type) (*KeyPair, *SonrError) {
 }
 
 // Method Replaces Current Keychain with New Keychain
-func (d *Device) replaceKeyChain(kc *KeyChain) {
+func (d *Device) ReplaceKeyChain(kc *KeyChain) {
 	// Replace KeyPairs
 	newAccountKey := d.replaceKeyPair(kc.GetAccount())
 	newDeviceKey := d.replaceKeyPair(kc.GetDevice())

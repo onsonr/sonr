@@ -96,7 +96,7 @@ func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.NoR
 // Sign method signs data with device's private key
 func (s *NodeServer) Sign(ctx context.Context, req *md.AuthRequest) (*md.NoResponse, error) {
 	md.LogRPC("Sign", req)
-	s.authResponses <- s.account.Sign(req)
+	s.authResponses <- s.account.SignAuth(req)
 	return &md.NoResponse{}, nil
 }
 
