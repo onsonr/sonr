@@ -29,7 +29,7 @@
 <br />
 
 
-         
+
 
 
 *By [Sonr](https://www.sonr.io), creators of [The Sonr App](https://www.twitter.com/TheSonrApp)*
@@ -171,10 +171,11 @@ Project Link: [Github](https://github.com/sonr-io/core) - [Discord](https://gith
 <!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements
 
-* [Libp2p]()
-* [Textile]()
-* [HNS]()
-* [Flutter]()
+* [Libp2p](https://libp2p.io/)
+* [Textile](https://www.textile.io/)
+* [Handshake](https://handshake.org/)
+* [Flutter](https://flutter.dev/)
+* [Gitmoji-CLI](https://github.com/carloscuesta/gitmoji-cli)
 
 
 
