@@ -1,0 +1,9 @@
+tasks:
+  - init: |
+      go get golang.org/x/mobile/bind
+      gomobile init
+    command: |
+      ./mycli --help
+vscode:
+  extensions:
+    - golang.go
