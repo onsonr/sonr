@@ -6,6 +6,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/network"
+	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	msg "github.com/libp2p/go-msgio"
@@ -34,6 +35,7 @@ type Account interface {
 
 	// Keychain Management
 	AccountKeys() *md.KeyPair
+	CurrentDeviceKeys() *md.KeyPair
 	DeviceKeys() *md.KeyPair
 	DevicePubKey() *md.KeyPair_Public
 	GroupKeys() *md.KeyPair
@@ -45,34 +47,31 @@ type Account interface {
 	VerifyRead() *md.VerifyResponse
 
 	// Linker Stream
-	PrepareToLink(resp *md.LinkResponse)
 	HandleLinkPacket(packet *md.LinkPacket)
 	ReadFromLink(stream network.Stream)
-	WriteToLink(stream network.Stream)
+	WriteToLink(stream network.Stream, resp *md.LinkResponse)
 }
 
-type accountLinker struct {
+type userLinker struct {
 	// General
 	Account
-	account  *md.User
-	protocol protocol.ID
+	currentDevice *md.Device
+	user          *md.User
+	protocol      protocol.ID
 
 	// Networking
 	ctx          context.Context
 	host         sh.HostNode
-	Topic        *ps.Topic
+	topic        *ps.Topic
 	subscription *ps.Subscription
 	eventHandler *ps.TopicEventHandler
 
 	// Sync
 	service       *DeviceService
 	syncEvents    chan *md.SyncEvent
-	activeDevices []*md.Device
+	activeDevices map[peer.ID]*md.Device
 	room          *md.Room
 	lastUpdated   int32
-
-	// Linker Stream
-	linkPacket *md.LinkPacket
 }
 
 // Start Begins Account Manager
@@ -107,8 +106,9 @@ func OpenAccount(ir *md.InitializeRequest, d *md.Device) (Account, *md.SonrError
 		loadedAccount.State = ir.UserState()
 
 		// Create Account Linker
-		linker := &accountLinker{
-			account: loadedAccount,
+		linker := &userLinker{
+			user:          loadedAccount,
+			currentDevice: ir.GetDevice(),
 		}
 		return linker, nil
 	} else {
@@ -126,8 +126,9 @@ func OpenAccount(ir *md.InitializeRequest, d *md.Device) (Account, *md.SonrError
 		}
 
 		// Create Account Linker
-		linker := &accountLinker{
-			account: u,
+		linker := &userLinker{
+			user:          u,
+			currentDevice: ir.GetDevice(),
 		}
 		err := linker.Save()
 		if err != nil {
@@ -137,7 +138,7 @@ func OpenAccount(ir *md.InitializeRequest, d *md.Device) (Account, *md.SonrError
 	}
 }
 
-func (al *accountLinker) JoinNetwork(h sh.HostNode) *md.SonrError {
+func (al *userLinker) JoinNetwork(h sh.HostNode) *md.SonrError {
 	// Join Room
 	topic, err := h.Pubsub().Join(al.room.GetName())
 	if err != nil {
@@ -158,7 +159,7 @@ func (al *accountLinker) JoinNetwork(h sh.HostNode) *md.SonrError {
 
 	// Create Lobby Manager
 	al.eventHandler = handler
-	al.Topic = topic
+	al.topic = topic
 	al.subscription = sub
 
 	// Start Sync
@@ -170,8 +171,8 @@ func (al *accountLinker) JoinNetwork(h sh.HostNode) *md.SonrError {
 }
 
 // Update Account after Device Peer set for Member
-func (al *accountLinker) HandleSetPeer(p *md.Peer, isPrimary bool) {
-	u := al.account
+func (al *userLinker) HandleSetPeer(p *md.Peer, isPrimary bool) {
+	u := al.user
 	if isPrimary {
 		u.Member.Active = p
 	} else {
@@ -180,26 +181,17 @@ func (al *accountLinker) HandleSetPeer(p *md.Peer, isPrimary bool) {
 	al.Save()
 }
 
-// Update Account after LinkPacket is received
-func (al *accountLinker) HandleLinkPacket(lp *md.LinkPacket) {
-	u := al.account
+// HandleLinkPacket Updates Account after LinkPacket is received
+func (al *userLinker) HandleLinkPacket(lp *md.LinkPacket) {
+	u := al.user
 	u.Primary = lp.Primary
 	u.Devices = append(u.Devices, lp.Secondary)
 	u.GetCurrent().ReplaceKeyChain(lp.GetKeyChain())
 	al.Save()
 }
 
-// Node Device is Sending Primary Account Information
-func (al *accountLinker) PrepareToLink(resp *md.LinkResponse) {
-	u := al.account
-	al.linkPacket = &md.LinkPacket{
-		Primary:   u.GetPrimary(),
-		Secondary: resp.GetDevice(),
-		KeyChain:  al.ExportKeychain(),
-	}
-}
-
-func (al *accountLinker) ReadFromLink(stream network.Stream) {
+// ReadFromLink reads stream for link packet
+func (al *userLinker) ReadFromLink(stream network.Stream) {
 	// Concurrent Function
 	go func(rs msg.ReadCloser, stream network.Stream) {
 		buf, err := rs.ReadMsg()
@@ -222,9 +214,9 @@ func (al *accountLinker) ReadFromLink(stream network.Stream) {
 	}(msg.NewReader(stream), stream)
 }
 
-// Method Signs Data with KeyPair
-func (al *accountLinker) SignAuth(req *md.AuthRequest) *md.AuthResponse {
-	u := al.account
+// SignAuth Method Signs Data with KeyPair
+func (al *userLinker) SignAuth(req *md.AuthRequest) *md.AuthResponse {
+	u := al.user
 	// Create Prefix
 	prefixResult := u.GetKeyChain().GetAccount().Sign(fmt.Sprintf("%s%s", req.GetSName(), al.DeviceID()))
 
@@ -245,44 +237,25 @@ func (al *accountLinker) SignAuth(req *md.AuthRequest) *md.AuthResponse {
 	}
 }
 
-// Method Signs Packet with Keys
-func (al *accountLinker) SignLinkPacket(resp *md.LinkResponse) *md.LinkPacket {
-	u := al.account
-	return &md.LinkPacket{
-		Primary:   u.GetPrimary(),
-		Secondary: resp.GetDevice(),
-		KeyChain:  al.ExportKeychain(),
-	}
-}
-
-// Method Updates User Contact
-func (al *accountLinker) UpdateContact(c *md.Contact) {
-	u := al.account
+// UpdateContact Method Updates User Contact
+func (al *userLinker) UpdateContact(c *md.Contact) {
+	u := al.user
 	u.Contact = c
 	u.GetMember().UpdateProfile(c)
 	al.Save()
 }
 
-// Method Verifies the Device Link Public Key
-func (al *accountLinker) VerifyDevicePubKey(pub crypto.PubKey) bool {
-	u := al.account
-	return u.GetKeyChain().Device.VerifyPubKey(pub)
-}
-
-// Method Updates User Contact
-func (al *accountLinker) VerifyRead() *md.VerifyResponse {
-	u := al.account
-	kp := u.GetKeyChain().GetAccount()
-	return &md.VerifyResponse{
-		PublicKey: kp.PubKeyBase64(),
-		ShortID:   u.GetCurrent().ShortID(),
+// WriteToLink writes Buffer onto from Stream to New Associated Device
+func (al *userLinker) WriteToLink(stream network.Stream, resp *md.LinkResponse) {
+	// Create Link Packet and Send
+	linkPacket := &md.LinkPacket{
+		Primary:   al.user.GetPrimary(),
+		Secondary: resp.GetDevice(),
+		KeyChain:  al.ExportKeychain(),
 	}
-}
 
-// Write Buffer onto from Stream to New Associated Device
-func (al *accountLinker) WriteToLink(stream network.Stream) {
 	// Marshal linkPacket
-	buf, err := proto.Marshal(al.linkPacket)
+	buf, err := proto.Marshal(linkPacket)
 	if err != nil {
 		md.LogError(err)
 		return

@@ -1,20 +1,26 @@
 package account
 
 import (
+	"context"
 	"errors"
 
 	"github.com/libp2p/go-libp2p-core/peer"
-	ps "github.com/libp2p/go-libp2p-pubsub"
 	md "github.com/sonr-io/core/pkg/models"
 	"google.golang.org/protobuf/proto"
 )
 
 type GetRoomFunc func() *md.Room
 
-// FindPeer @ Helper: Find returns Pointer to Peer.ID and Peer
-func (tm *accountLinker) FindPeer(q string) (peer.ID, error) {
+// AddDevice adds a Device Peer to the Room
+func (tm *userLinker) AddDevice(peerID peer.ID, d *md.Device) {
+	// Add Device to Map
+	tm.activeDevices[peerID] = d
+}
+
+// FindPeerreturns Pointer to Peer.ID and Peer
+func (tm *userLinker) FindPeer(q string) (peer.ID, error) {
 	// Iterate through Room Peers
-	for _, id := range tm.Topic.ListPeers() {
+	for _, id := range tm.topic.ListPeers() {
 		// If Found Match
 		if id.String() == q {
 			return id, nil
@@ -23,28 +29,14 @@ func (tm *accountLinker) FindPeer(q string) (peer.ID, error) {
 	return "", errors.New("Peer ID was not found in room")
 }
 
-// Publish @ Publish message to specific peer in room
-func (tm *accountLinker) Publish(msg *md.RoomEvent) error {
-	if tm.room.IsLocal() || tm.room.IsGroup() {
-		// Convert Event to Proto Binary
-		bytes, err := proto.Marshal(msg)
-		if err != nil {
-			md.LogError(err)
-			return err
-		}
-
-		// Publish to Room
-		err = tm.Topic.Publish(tm.ctx, bytes)
-		if err != nil {
-			md.LogError(err)
-			return err
-		}
-	}
-	return nil
+// RemoveDevice removes a Device Peer from the Room
+func (tm *userLinker) RemoveDevice(peerID peer.ID) {
+	// Add Device to Map
+	delete(tm.activeDevices, peerID)
 }
 
-// Publish @ Publish message to specific peer in room
-func (tm *accountLinker) Sync(msg *md.SyncEvent) error {
+// Sync Publishes message to User Device room
+func (tm *userLinker) Sync(msg *md.SyncEvent) error {
 	if tm.room.IsDevices() {
 		// Convert Event to Proto Binary
 		bytes, err := proto.Marshal(msg)
@@ -54,7 +46,7 @@ func (tm *accountLinker) Sync(msg *md.SyncEvent) error {
 		}
 
 		// Publish to Room
-		err = tm.Topic.Publish(tm.ctx, bytes)
+		err = tm.topic.Publish(tm.ctx, bytes)
 		if err != nil {
 			md.LogError(err)
 			return err
@@ -65,9 +57,9 @@ func (tm *accountLinker) Sync(msg *md.SyncEvent) error {
 }
 
 // HasPeer Method Checks if Peer ID String is Subscribed to Room
-func (tm *accountLinker) HasPeer(q string) bool {
+func (tm *userLinker) HasPeer(q string) bool {
 	// Iterate through PubSub in room
-	for _, id := range tm.Topic.ListPeers() {
+	for _, id := range tm.topic.ListPeers() {
 		// If Found Match
 		if id.String() == q {
 			return true
@@ -76,10 +68,10 @@ func (tm *accountLinker) HasPeer(q string) bool {
 	return false
 }
 
-// HasPeer Method Checks if Peer ID is Subscribed to Room
-func (tm *accountLinker) HasPeerID(q peer.ID) bool {
+// HasPeerID Method Checks if Peer ID is Subscribed to Room
+func (tm *userLinker) HasPeerID(q peer.ID) bool {
 	// Iterate through PubSub in room
-	for _, id := range tm.Topic.ListPeers() {
+	for _, id := range tm.topic.ListPeers() {
 		// If Found Match
 		if id == q {
 			return true
@@ -88,28 +80,64 @@ func (tm *accountLinker) HasPeerID(q peer.ID) bool {
 	return false
 }
 
-// # Check if PeerEvent is Join and NOT User
-func (tm *accountLinker) isEventJoin(ev ps.PeerEvent) bool {
-	return ev.Type == ps.PeerJoin && ev.Peer != tm.host.ID()
+// handleTopicEvents listens to Pubsub Events for room
+func (rm *userLinker) handleTopicEvents(ctx context.Context) {
+	// Loop Events
+	for {
+		// Get next event
+		event, err := rm.eventHandler.NextPeerEvent(ctx)
+		if err != nil {
+			md.LogError(err)
+			rm.eventHandler.Cancel()
+			return
+		}
+
+		// Check Event and Validate not User
+		if rm.isEventJoin(event) {
+			err = rm.Verify(event.Peer)
+			if err != nil {
+				md.LogError(err)
+				continue
+			}
+		} else if rm.isEventExit(event) {
+
+		}
+		md.GetState().NeedsWait()
+	}
 }
 
-// # Check if PeerEvent is Exit and NOT User
-func (tm *accountLinker) isEventExit(ev ps.PeerEvent) bool {
-	return ev.Type == ps.PeerLeave && ev.Peer != tm.host.ID()
-}
+// handleTopicMessages listens for messages in room subscription
+func (rm *userLinker) handleTopicMessages(ctx context.Context) {
+	for {
+		// Get next msg from pub/sub
+		msg, err := rm.subscription.Next(ctx)
+		if err != nil {
+			md.LogError(err)
+			return
+		}
 
-// # Check if Message is NOT from User
-func (tm *accountLinker) isValidMessage(msg *ps.Message) bool {
-	return tm.host.ID() != msg.ReceivedFrom && tm.HasPeerID(msg.ReceivedFrom)
+		// Only forward messages delivered by others
+		if rm.isValidMessage(msg) {
+			// Unmarshal RoomEvent
+			m := &md.SyncEvent{}
+			err = proto.Unmarshal(msg.Data, m)
+			if err != nil {
+				md.LogError(err)
+				continue
+			}
+
+			// Check Peer is Online, if not ignore
+			rm.OnSyncEvent(m)
+		}
+		md.GetState().NeedsWait()
+	}
 }
 
 // Returns RoomData Data instance
-func (tm *accountLinker) Room() *md.Room {
+func (tm *userLinker) Room() *md.Room {
 	return tm.room
 }
 
-func (al *accountLinker) OnSyncEvent(*md.SyncEvent) {
-}
+func (al *userLinker) OnSyncEvent(*md.SyncEvent) {
 
-func (al *accountLinker) OnRoomEvent(*md.RoomEvent) {
 }

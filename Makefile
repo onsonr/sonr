@@ -5,7 +5,7 @@ CORE_DIR=$(SONR_ROOT_DIR)/core
 CORE_LIB_DIR=$(SONR_ROOT_DIR)/core/lib
 
 # Set this -->[/Users/xxxx/Sonr/]<-- to Folder of Sonr Repos
-PROTO_DEF_PATH=/Users/prad/Sonr/core/pkg/proto
+PROTO_DEF_PATH=/Users/prad/Sonr/core/proto
 APP_ROOT_DIR =/Users/prad/Sonr/app
 
 # @ Packaging Vars/Commands

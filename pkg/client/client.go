@@ -7,10 +7,10 @@ import (
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
-		ac "github.com/sonr-io/core/pkg/account"
 	net "github.com/sonr-io/core/internal/host"
 	srv "github.com/sonr-io/core/internal/service"
 	tp "github.com/sonr-io/core/internal/topic"
+	ac "github.com/sonr-io/core/pkg/account"
 	md "github.com/sonr-io/core/pkg/models"
 	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/proto"
@@ -109,6 +109,11 @@ func (c *client) Bootstrap(cr *md.ConnectionRequest) (*tp.RoomManager, *md.SonrE
 		return nil, err
 	}
 	c.Service = s
+
+	// Join Account Network
+	if err := c.account.JoinNetwork(c.Host); err != nil {
+		return nil, err
+	}
 
 	// Join Local
 	RoomName := c.device.NewLocalRoom(cr.GetServiceOptions())

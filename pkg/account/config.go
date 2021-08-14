@@ -5,66 +5,72 @@ import (
 	"os"
 	"path"
 
+	"github.com/libp2p/go-libp2p-core/peer"
 	md "github.com/sonr-io/core/pkg/models"
 	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/proto"
 )
 
 // Set the User with ConnectionRequest
-func (al *accountLinker) SetConnection(cr *md.ConnectionRequest) {
-	u := al.account
+func (al *userLinker) SetConnection(cr *md.ConnectionRequest) {
+
 	// Initialize Account Params
-	u.PushToken = cr.GetPushToken()
-	u.SName = cr.GetContact().GetProfile().GetSName()
-	u.Contact = cr.GetContact()
-	u.Member.PushToken = cr.GetPushToken()
+	al.user.PushToken = cr.GetPushToken()
+	al.user.SName = cr.GetContact().GetProfile().GetSName()
+	al.user.Contact = cr.GetContact()
+	al.user.Member.PushToken = cr.GetPushToken()
 	al.Save()
 
 	// Initialize Linker Params
 	al.ctx = context.Background()
-	al.room = al.account.NewDeviceRoom()
-	al.activeDevices = make([]*md.Device, 0)
+	al.room = al.user.NewDeviceRoom()
+	al.activeDevices = make(map[peer.ID]*md.Device, 0)
 	al.syncEvents = make(chan *md.SyncEvent)
 }
 
 // Method Returns Account KeyPair
-func (al *accountLinker) AccountKeys() *md.KeyPair {
-	u := al.account
-	return u.GetKeyChain().GetAccount()
+func (al *userLinker) AccountKeys() *md.KeyPair {
+
+	return al.user.GetKeyChain().GetAccount()
 }
 
 // Return Client API Keys
-func (al *accountLinker) APIKeys() *md.APIKeys {
-	u := al.account
-	return u.GetApiKeys()
-}
+func (al *userLinker) APIKeys() *md.APIKeys {
 
-// Method Returns DeviceID
-func (al *accountLinker) DeviceID() string {
-	u := al.account
-	return u.GetCurrent().GetId()
+	return al.user.GetApiKeys()
 }
 
 // Method Returns Device KeyPair
-func (al *accountLinker) DeviceKeys() *md.KeyPair {
-	u := al.account
-	return u.GetKeyChain().GetDevice()
+func (al *userLinker) CurrentDeviceKeys() *md.KeyPair {
+	return al.currentDevice.AccountKeys()
+}
+
+// Method Returns DeviceID
+func (al *userLinker) DeviceID() string {
+
+	return al.user.GetCurrent().GetId()
+}
+
+// Method Returns Device KeyPair
+func (al *userLinker) DeviceKeys() *md.KeyPair {
+
+	return al.user.GetKeyChain().GetDevice()
 }
 
 // Method Returns Device Link Public Key
-func (al *accountLinker) DevicePubKey() *md.KeyPair_Public {
-	u := al.account
-	return u.GetKeyChain().GetDevice().GetPublic()
+func (al *userLinker) DevicePubKey() *md.KeyPair_Public {
+
+	return al.user.GetKeyChain().GetDevice().GetPublic()
 }
 
 // Method Returns support directory file for account
-func (al *accountLinker) FilePath() string {
-	u := al.account
-	return path.Join(u.GetCurrent().GetFileSystem().GetSupport().GetPath(), util.ACCOUNT_FILE)
+func (al *userLinker) FilePath() string {
+
+	return path.Join(al.user.GetCurrent().GetFileSystem().GetSupport().GetPath(), util.ACCOUNT_FILE)
 }
 
 // Method Returns Exportable Keychain for Linked Devices
-func (al *accountLinker) ExportKeychain() *md.KeyChain {
+func (al *userLinker) ExportKeychain() *md.KeyChain {
 	return &md.KeyChain{
 		Account: al.AccountKeys(),
 		Device:  al.DeviceKeys(),
@@ -73,39 +79,38 @@ func (al *accountLinker) ExportKeychain() *md.KeyChain {
 }
 
 // Method Returns Profile First Name
-func (al *accountLinker) FirstName() string {
-	u := al.account
-	return u.GetContact().GetProfile().GetFirstName()
+func (al *userLinker) FirstName() string {
+
+	return al.user.GetContact().GetProfile().GetFirstName()
 }
 
 // Method Returns Group KeyPair
-func (al *accountLinker) GroupKeys() *md.KeyPair {
-	u := al.account
-	return u.GetKeyChain().GetGroup()
+func (al *userLinker) GroupKeys() *md.KeyPair {
+
+	return al.user.GetKeyChain().GetGroup()
 }
 
 // Method Returns Profile Last Name
-func (al *accountLinker) LastName() string {
-	u := al.account
-	return u.GetContact().GetProfile().GetLastName()
+func (al *userLinker) LastName() string {
+
+	return al.user.GetContact().GetProfile().GetLastName()
 }
 
 // Method Returns Member
-func (al *accountLinker) Member() *md.Member {
-	u := al.account
-	return u.GetMember()
+func (al *userLinker) Member() *md.Member {
+	return al.user.GetMember()
 }
 
 // Method Returns Profile
-func (al *accountLinker) Profile() *md.Profile {
-	u := al.account
-	return u.GetContact().GetProfile()
+func (al *userLinker) Profile() *md.Profile {
+
+	return al.user.GetContact().GetProfile()
 }
 
-func (al *accountLinker) Save() error {
-	u := al.account
+func (al *userLinker) Save() error {
+
 	// Marshal Account to Protobuf
-	data, err := proto.Marshal(u)
+	data, err := proto.Marshal(al.user)
 	if err != nil {
 		return err
 	}

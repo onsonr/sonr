@@ -83,14 +83,13 @@ func (n *client) OnLink(success bool, incoming bool, id peer.ID, data []byte) {
 		} else {
 			// Create Stream if Outgoing
 			pid := md.SonrProtocol_Linker.NewIDProtocol(id)
-			n.account.PrepareToLink(&resp)
 			// Write Stream
 			stream, err := n.Host.StartStream(id, pid)
 			if err != nil {
 				n.call.OnError(md.NewError(err, md.ErrorEvent_HOST_STREAM))
 				return
 			}
-			n.account.WriteToLink(stream)
+			n.account.WriteToLink(stream, &resp)
 		}
 	} else {
 		// Unsuccessful Link Request
