@@ -30,7 +30,7 @@ type RoomManager struct {
 	handler      RoomHandler
 
 	// Sync
-	verify     *VerifyService
+
 	syncEvents chan *md.SyncEvent
 
 	// Exchange
@@ -80,15 +80,6 @@ func JoinRoom(ctx context.Context, h sh.HostNode, u *md.Device, room *md.Room, t
 	if room.IsLocal() {
 		// Start Exchange
 		err := mgr.initExchange()
-		if err != nil {
-			return nil, err
-		}
-
-		// Return Manager
-		return mgr, nil
-	} else if room.IsDevices() {
-		// Start Sync
-		err := mgr.initSync()
 		if err != nil {
 			return nil, err
 		}

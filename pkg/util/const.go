@@ -49,7 +49,7 @@ const EXCHANGE_PROTOCOL = protocol.ID("/sonr/exchange-service/0.2")
 const REMOTE_PROTOCOL = protocol.ID("/sonr/remote-service/0.2")
 
 // Exchange Service Protocol
-const VERIFY_PROTOCOL = protocol.ID("/sonr/verify-protocol/0.2")
+const ACCOUNT_PROTOCOL = protocol.ID("/sonr/account-protocol/0.2")
 
 // ** ─── API ────────────────────────────────────────────────────────
 // Textile Client API URL
@@ -80,17 +80,14 @@ const DEVICE_METHOD_DIRECT = "DirectWith"
 // Local RPC Service Method for Push
 const DEVICE_METHOD_MODIFY = "ModifyWith"
 
+// Local RPC Service Method for Exchange
+const DEVICE_METHOD_VERIFY = "VerifyWith"
+
 // Local RPC Service Name
 const EXCHANGE_RPC_SERVICE = "ExchangeService"
 
 // Local RPC Service Method for Exchange
 const EXCHANGE_METHOD_EXCHANGE = "ExchangeWith"
-
-// Local RPC Service Name
-const VERIFY_RPC_SERVICE = "VerifyService"
-
-// Local RPC Service Method for Exchange
-const VERIFY_METHOD_VERIFY = "VerifyWith"
 
 // ** ─── Host ────────────────────────────────────────────────────────
 // Libp2p Host Rendevouz Point

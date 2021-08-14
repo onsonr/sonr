@@ -207,6 +207,7 @@ message DeviceRequest {
     OPEN = 0;   // Open File or URL on Device
     GHOST = 1;  // Set Device as Ghost Mode
     ACTIVE = 2; // Set Device as Active Mode
+    PUSH = 3;   // Push Data to Device
   }
 }
 

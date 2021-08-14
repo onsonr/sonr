@@ -106,3 +106,9 @@ func (tm *accountLinker) isValidMessage(msg *ps.Message) bool {
 func (tm *accountLinker) Room() *md.Room {
 	return tm.room
 }
+
+func (al *accountLinker) OnSyncEvent(*md.SyncEvent) {
+}
+
+func (al *accountLinker) OnRoomEvent(*md.RoomEvent) {
+}
