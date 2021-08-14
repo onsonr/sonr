@@ -1,4 +1,4 @@
-package topic
+package account
 
 import (
 	"context"
@@ -13,55 +13,57 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// VerifyServiceArgs ExchangeArgs are Peer, Device, and Contact
-type VerifyServiceArgs struct {
+// DeviceServiceArgs ExchangeArgs are Peer, Device, and Contact
+type DeviceServiceArgs struct {
 	PubKeyBuf []byte
 }
 
 // SyncServiceRssponse ExchangeRssponse is Member protobuf
-type VerifyServiceResponse struct {
+type DeviceServiceResponse struct {
 	Success bool
 }
 
-// VerifyService Service Struct
-type VerifyService struct {
+// DeviceService Service Struct
+type DeviceService struct {
 	// Current Data
-	call   RoomHandler
+	call   AccountManager
 	room   GetRoomFunc
 	device *md.Device
 }
 
 // Initialize Exchange Service by Room Type
-func (rm *RoomManager) initSync() *md.SonrError {
+func (rm *accountLinker) initService() *md.SonrError {
 	// Start Exchange RPC Server
-	verifyServer := rpc.NewServer(rm.host.Host(), util.VERIFY_PROTOCOL)
-	verifyService := VerifyService{
-		device: rm.device,
-		call:   rm.handler,
+	verifyServer := rpc.NewServer(rm.host.Host(), util.ACCOUNT_PROTOCOL)
+	verifyService := DeviceService{
+		device: rm.account.Current,
+		call:   rm,
 		room:   rm.Room,
 	}
 
 	// Register Service
-	err := verifyServer.RegisterName(util.VERIFY_RPC_SERVICE, &verifyService)
+	err := verifyServer.RegisterName(util.DEVICE_RPC_SERVICE, &verifyService)
 	if err != nil {
 		return md.NewError(err, md.ErrorEvent_ROOM_RPC)
 	}
 
 	// Set Service
 	rm.verify = &verifyService
+	go rm.handleVerifyEvents(rm.ctx)
+	go rm.handleVerifyMessages(rm.ctx)
 	return nil
 }
 
 // Exchange @ Starts Exchange on Local Peer Join
-func (rm *RoomManager) Verify(id peer.ID) error {
+func (rm *accountLinker) Verify(id peer.ID) error {
 	// Initialize RPC
-	exchClient := rpc.NewClient(rm.host.Host(), util.VERIFY_PROTOCOL)
-	var reply VerifyServiceResponse
-	var args VerifyServiceArgs
-	args.PubKeyBuf = rm.device.DevicePubKeyBuf()
+	exchClient := rpc.NewClient(rm.host.Host(), util.ACCOUNT_PROTOCOL)
+	var reply DeviceServiceResponse
+	var args DeviceServiceArgs
+	args.PubKeyBuf = rm.account.GetCurrent().DevicePubKeyBuf()
 
 	// Verify with Peer
-	err := exchClient.Call(id, util.VERIFY_RPC_SERVICE, util.VERIFY_METHOD_VERIFY, args, &reply)
+	err := exchClient.Call(id, util.DEVICE_RPC_SERVICE, util.DEVICE_METHOD_VERIFY, args, &reply)
 	if err != nil {
 		md.LogError(err)
 		return err
@@ -76,7 +78,7 @@ func (rm *RoomManager) Verify(id peer.ID) error {
 }
 
 // ExchangeWith # Calls Exchange on Local Lobby Peer
-func (ss *VerifyService) VerifyWith(ctx context.Context, args VerifyServiceArgs, reply *VerifyServiceResponse) error {
+func (ss *DeviceService) VerifyWith(ctx context.Context, args DeviceServiceArgs, reply *DeviceServiceResponse) error {
 	// Unmarshal Public Key
 	pubKey, err := crypto.UnmarshalPublicKey(args.PubKeyBuf)
 	if err != nil {
@@ -90,7 +92,7 @@ func (ss *VerifyService) VerifyWith(ctx context.Context, args VerifyServiceArgs,
 }
 
 // # handleRoomEvents: listens to Pubsub Events for room
-func (rm *RoomManager) handleSyncEvents(ctx context.Context) {
+func (rm *accountLinker) handleVerifyEvents(ctx context.Context) {
 	// Loop Events
 	for {
 		// Get next event
@@ -109,7 +111,7 @@ func (rm *RoomManager) handleSyncEvents(ctx context.Context) {
 				continue
 			}
 		} else if rm.isEventExit(event) {
-			rm.handler.OnRoomEvent(rm.room.NewExitEvent(event.Peer.String()))
+			rm.OnRoomEvent(rm.room.NewExitEvent(event.Peer.String()))
 
 		}
 		md.GetState().NeedsWait()
@@ -117,7 +119,7 @@ func (rm *RoomManager) handleSyncEvents(ctx context.Context) {
 }
 
 // # handleRoomMsssagss: listens for msssagss on pubsub room subscription
-func (rm *RoomManager) handleSyncMessages(ctx context.Context) {
+func (rm *accountLinker) handleVerifyMessages(ctx context.Context) {
 	for {
 		// Get next msg from pub/sub
 		msg, err := rm.subscription.Next(ctx)
@@ -137,15 +139,7 @@ func (rm *RoomManager) handleSyncMessages(ctx context.Context) {
 			}
 
 			// Check Peer is Online, if not ignore
-			if m.Peer.GetStatus() == md.Peer_ONLINE {
-				rm.handler.OnRoomEvent(m)
-			} else if m.Peer.GetStatus() == md.Peer_PAIRING {
-				// Validate Linker not Already Set
-				if !rm.HasLinker(m.Peer.PeerID()) {
-					// Append Linkers
-					rm.linkers = append(rm.linkers, m.Peer)
-				}
-			}
+			rm.OnRoomEvent(m)
 		}
 		md.GetState().NeedsWait()
 	}

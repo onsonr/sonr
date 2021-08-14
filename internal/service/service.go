@@ -46,7 +46,6 @@ type serviceClient struct {
 
 	// Services
 	Auth    *AuthService
-	Device  *DeviceService
 	Push    *PushService
 	Textile *TextileService
 }
