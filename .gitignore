@@ -5,7 +5,6 @@
 *.so
 *.dylib
 *.DS_Store
-.vscode/
 build/
 lib/dist
 lib/package-lock.json
