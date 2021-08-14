@@ -1,6 +1,6 @@
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
+[![CodeFactor](https://www.codefactor.io/repository/github/sonr-io/core/badge/release?s=ee02a1b599502678b3d583aa5b6d1f55d2137ded)](https://www.codefactor.io/repository/github/sonr-io/core/overview/release)  
+ [![Bind Workflow](https://github.com/sonr-io/core/actions/workflows/bind-lib.yml/badge.svg)](https://github.com/sonr-io/core/actions/workflows/bind-lib.yml)
+[![Build Workflow](https://github.com/sonr-io/core/actions/workflows/build-lib.yml/badge.svg)](https://github.com/sonr-io/core/actions/workflows/build-lib.yml)
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
@@ -31,7 +31,7 @@
 <br />
 
 
-[![CodeFactor](https://www.codefactor.io/repository/github/sonr-io/core/badge/release?s=ee02a1b599502678b3d583aa5b6d1f55d2137ded)](https://www.codefactor.io/repository/github/sonr-io/core/overview/release)      [![Bind Workflow](https://github.com/sonr-io/core/actions/workflows/bind-lib.yml/badge.svg)](https://github.com/sonr-io/core/actions/workflows/bind-lib.yml)      [![Build Workflow](https://github.com/sonr-io/core/actions/workflows/build-lib.yml/badge.svg)](https://github.com/sonr-io/core/actions/workflows/build-lib.yml)
+         
 
 
 *By [Sonr](https://www.sonr.io), creators of [The Sonr App](https://www.twitter.com/TheSonrApp)*
