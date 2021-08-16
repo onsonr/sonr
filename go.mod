@@ -21,7 +21,7 @@ require (
 	github.com/textileio/go-threads v1.1.0-rc1.0.20210317163541-37a104610bac
 	github.com/textileio/textile/v2 v2.6.9
 	golang.org/x/net v0.0.0-20210805182204-aaa1db679c0d
-	google.golang.org/api v0.53.0
+	google.golang.org/api v0.54.0
 	google.golang.org/grpc v1.40.0
 	google.golang.org/protobuf v1.27.1
 )
