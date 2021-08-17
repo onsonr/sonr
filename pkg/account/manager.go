@@ -139,6 +139,10 @@ func OpenAccount(ir *md.InitializeRequest, d *md.Device) (Account, *md.SonrError
 }
 
 func (al *userLinker) JoinNetwork(h sh.HostNode) *md.SonrError {
+	// Set host and context
+	al.host = h
+	al.ctx = context.Background()
+
 	// Join Room
 	topic, err := h.Pubsub().Join(al.room.GetName())
 	if err != nil {
