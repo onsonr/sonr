@@ -38,7 +38,7 @@ jobs:
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
         with:
-          workdir: ${{ github.workspace }}/lib
+          workdir: ${{ github.workspace }}/cmd/rpc
           distribution: goreleaser
           version: latest
           args: release --rm-dist

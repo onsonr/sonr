@@ -1,8 +1,8 @@
-SHELL=/usr/local/bin/fish # Set Shell
 # Set this -->[/Users/xxxx/Sonr/]<-- to Folder of Sonr Repos
 SONR_ROOT_DIR=/Users/prad/Sonr
 CORE_DIR=$(SONR_ROOT_DIR)/core
-CORE_LIB_DIR=$(SONR_ROOT_DIR)/core/lib
+CORE_RPC_DIR=$(SONR_ROOT_DIR)/core/cmd/rpc
+
 
 # Set this -->[/Users/xxxx/Sonr/]<-- to Folder of Sonr Repos
 PROTO_DEF_PATH=/Users/prad/Sonr/core/proto
@@ -16,7 +16,7 @@ GOBIND_ANDROID=$(GOBIND) -target=android
 GOBIND_IOS=$(GOBIND) -target=ios -bundleid=io.sonr.core
 
 # @ Bind Directories
-BIND_DIR_CORE=$(SONR_ROOT_DIR)/core/bind
+BIND_DIR_CORE=$(SONR_ROOT_DIR)/core/cmd/bind
 BIND_DIR_ANDROID=$(SONR_ROOT_DIR)/plugin/android/libs
 BIND_DIR_IOS=$(SONR_ROOT_DIR)/plugin/ios/Frameworks
 BIND_IOS_ARTIFACT= $(BIND_DIR_IOS)/Core.framework
@@ -39,7 +39,7 @@ PROTO_GEN_DART="--dart_out=$(PROTO_DIR_DART)"
 PROTO_GEN_DOCS="--doc_out=$(PROTO_DIR_DOCS)"
 
 # @ Distribution Release Variables
-DIST_DIR=$(SONR_ROOT_DIR)/core/cmd/dist
+DIST_DIR=$(SONR_ROOT_DIR)/core/cmd/rpc/dist
 DIST_DIR_DARWIN_AMD=$(DIST_DIR)/sonr-rpc_darwin_amd64
 DIST_DIR_DARWIN_ARM=$(DIST_DIR)/sonr-rpc_darwin_arm64
 DIST_DIR_LINUX_AMD=$(DIST_DIR)/sonr-rpc_linux_amd64
@@ -110,7 +110,7 @@ protobuf:
 ## [release]   :   Upload RPC Binary Artifact to S3
 release: protobuf
 	@echo "Building Artifacts..."
-	@cd $(CORE_LIB_DIR) && goreleaser release --rm-dist
+	@cd $(CORE_RPC_DIR) && goreleaser release --rm-dist
 	@echo "Cleaning up build cache..."
 	@cd $(CORE_DIR) && go mod tidy
 	@rm -rf $(DIST_DIR_DARWIN_AMD)
@@ -120,15 +120,6 @@ release: protobuf
 	@rm -rf $(DIST_DIR_WIN)
 	@echo "✅ Finished Releasing RPC Binary ➡ " && date
 	@cd /System/Library/Sounds && afplay Glass.aiff
-
-## [upgrade]   :   Binds Binary, Creates Protobufs, and Updates App
-upgrade: protobuf bind.ios bind.android
-	@go mod tidy
-	@echo "-----------------------------------------------------------"
-	@echo "------------- 🔄  START PLUGIN UPDATE 🔄 -------------------"
-	@echo "------------------------------------------------------------"
-	cd $(APP_ROOT_DIR) && make update
-	@echo ""
 
 ## [clean]     :   Reinitializes Gomobile and Removes Framworks from Plugin
 clean:

@@ -49,7 +49,7 @@ jobs:
         run: |
           go get golang.org/x/mobile
           gomobile init
-          cd ${{ github.workspace }}/bind
+          cd ${{ github.workspace }}/cmd/bind
           gomobile bind -ldflags='-s -w' -v -target=android -o ${{ github.workspace }}/build/io.sonr.core.aar
 
       - name: Upload AAR to GitHub
@@ -91,7 +91,7 @@ jobs:
         run: |
           go get golang.org/x/mobile
           gomobile init
-          cd ${{ github.workspace }}/bind
+          cd ${{ github.workspace }}/cmd/bind
           gomobile bind -ldflags='-s -w' -v -target=ios -bundleid=io.sonr.core -o ${{ github.workspace }}/build/Core.framework
 
       - name: Upload Framework to GitHub
