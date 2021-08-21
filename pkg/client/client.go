@@ -90,6 +90,14 @@ func (c *client) Connect(cr *md.ConnectionRequest, a ac.Account) (*md.Peer, bool
 	// Set Peer
 	peer, isPrimary := c.device.SetPeer(hn.ID(), maddr, cr.GetIsLinker())
 
+	// Join Account Network
+	if err := c.account.JoinNetwork(c.Host); err != nil {
+		return nil, false, err
+	}
+
+	// Set Peer for Account
+	c.account.HandleSetPeer(peer, isPrimary)
+
 	// Set Host
 	c.Host = hn
 	return peer, isPrimary, nil
@@ -109,11 +117,6 @@ func (c *client) Bootstrap(cr *md.ConnectionRequest) (*tp.RoomManager, *md.SonrE
 		return nil, err
 	}
 	c.Service = s
-
-	// Join Account Network
-	if err := c.account.JoinNetwork(c.Host); err != nil {
-		return nil, err
-	}
 
 	// Join Local
 	RoomName := c.device.NewLocalRoom(cr.GetServiceOptions())
