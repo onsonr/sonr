@@ -35,6 +35,7 @@ type Account interface {
 
 	// Keychain Management
 	AccountKeys() *md.KeyPair
+	CurrentDevice() *md.Device
 	CurrentDeviceKeys() *md.KeyPair
 	DeviceKeys() *md.KeyPair
 	DevicePubKey() *md.KeyPair_Public
@@ -50,6 +51,11 @@ type Account interface {
 	HandleLinkPacket(packet *md.LinkPacket)
 	ReadFromLink(stream network.Stream)
 	WriteToLink(stream network.Stream, resp *md.LinkResponse)
+
+	// Room Management
+	NewDefaultUpdateEvent(room *md.Room, id peer.ID) *md.RoomEvent
+	NewUpdateEvent(room *md.Room, id peer.ID) *md.RoomEvent
+	NewExitEvent(room *md.Room, id peer.ID) *md.RoomEvent
 }
 
 type userLinker struct {
@@ -137,7 +143,6 @@ func OpenAccount(ir *md.InitializeRequest, d *md.Device) (Account, *md.SonrError
 		return linker, nil
 	}
 }
-
 
 func (al *userLinker) JoinNetwork(h sh.HostNode) *md.SonrError {
 	// Set host and context
@@ -247,6 +252,7 @@ func (al *userLinker) UpdateContact(c *md.Contact) {
 	u := al.user
 	u.Contact = c
 	u.GetMember().UpdateProfile(c)
+	u.Member.UpdateProfile(c)
 	al.Save()
 }
 

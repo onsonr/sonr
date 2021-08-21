@@ -107,7 +107,7 @@ func (n *Node) Update(data []byte) {
 		switch update.Data.(type) {
 		// Update Position
 		case *md.UpdateRequest_Position:
-			n.device.UpdatePosition(update.GetPosition().Parameters())
+			n.account.CurrentDevice().UpdatePosition(update.GetPosition().Parameters())
 
 		// Update Contact
 		case *md.UpdateRequest_Contact:
@@ -115,7 +115,7 @@ func (n *Node) Update(data []byte) {
 
 		// Update Peer Properties
 		case *md.UpdateRequest_Properties:
-			n.device.UpdateProperties(update.GetProperties())
+			n.account.CurrentDevice().UpdateProperties(update.GetProperties())
 		}
 
 		// Notify Local Lobby

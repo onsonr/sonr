@@ -400,7 +400,7 @@ message ProgressEvent {
 message RoomEvent {
   Room room = 1;       // Event Room Type
   string id = 2;       // Peer ID
-  Peer peer = 3;       // User Information
+  Member member = 3;   // User Information
   Subject subject = 4; // Local Event Subject
 
   // Local Type Event

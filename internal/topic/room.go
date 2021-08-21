@@ -7,6 +7,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	sh "github.com/sonr-io/core/internal/host"
+	ac "github.com/sonr-io/core/pkg/account"
 	md "github.com/sonr-io/core/pkg/models"
 	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/proto"
@@ -26,6 +27,7 @@ type RoomManager struct {
 	Topic        *ps.Topic
 	subscription *ps.Subscription
 	eventHandler *ps.TopicEventHandler
+	account      ac.Account
 	device       *md.Device
 	handler      RoomHandler
 
@@ -42,7 +44,7 @@ type RoomManager struct {
 }
 
 // NewLocal ^ Create New Contained Room Manager ^ //
-func JoinRoom(ctx context.Context, h sh.HostNode, u *md.Device, room *md.Room, th RoomHandler) (*RoomManager, *md.SonrError) {
+func JoinRoom(ctx context.Context, h sh.HostNode, ac ac.Account, room *md.Room, th RoomHandler) (*RoomManager, *md.SonrError) {
 	// Join Room
 	name := room.GetName()
 	topic, err := h.Pubsub().Join(name)
@@ -65,7 +67,7 @@ func JoinRoom(ctx context.Context, h sh.HostNode, u *md.Device, room *md.Room, t
 	// Create Lobby Manager
 	mgr := &RoomManager{
 		handler:      th,
-		device:       u,
+		device:       ac.CurrentDevice(),
 		ctx:          ctx,
 		host:         h,
 		eventHandler: handler,

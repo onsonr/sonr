@@ -117,7 +117,7 @@ func (c *client) Bootstrap(cr *md.ConnectionRequest) (*tp.RoomManager, *md.SonrE
 
 	// Join Local
 	RoomName := c.device.NewLocalRoom(cr.GetServiceOptions())
-	if t, err := tp.JoinRoom(c.ctx, c.Host, c.device, RoomName, c); err != nil {
+	if t, err := tp.JoinRoom(c.ctx, c.Host, c.account, RoomName, c); err != nil {
 		return nil, err
 	} else {
 		// Check if Auto Update Events
@@ -228,7 +228,7 @@ func (c *client) Respond(r *md.InviteResponse) {
 func (c *client) Update(t *tp.RoomManager) *md.SonrError {
 	if c.device.IsReady() {
 		// Create Event
-		ev := c.device.NewUpdateEvent(t.Room(), c.Host.ID())
+		ev := c.account.NewUpdateEvent(t.Room(), c.Host.ID())
 
 		// Inform Lobby
 		if err := t.Publish(ev); err != nil {
@@ -243,7 +243,7 @@ func (c *client) Lifecycle(state md.Lifecycle, t *tp.RoomManager) {
 	if state == md.Lifecycle_ACTIVE {
 		// Inform Lobby
 		if c.device.IsReady() {
-			ev := c.device.NewUpdateEvent(t.Room(), c.Host.ID())
+			ev := c.account.NewUpdateEvent(t.Room(), c.Host.ID())
 			if err := t.Publish(ev); err != nil {
 				md.NewError(err, md.ErrorEvent_ROOM_UPDATE)
 			}
@@ -251,7 +251,7 @@ func (c *client) Lifecycle(state md.Lifecycle, t *tp.RoomManager) {
 	} else if state == md.Lifecycle_PAUSED {
 		// Inform Lobby
 		if c.device.IsReady() {
-			ev := c.device.NewExitEvent(t.Room(), c.Host.ID())
+			ev := c.account.NewExitEvent(t.Room(), c.Host.ID())
 			if err := t.Publish(ev); err != nil {
 				md.NewError(err, md.ErrorEvent_ROOM_UPDATE)
 			}
@@ -259,7 +259,7 @@ func (c *client) Lifecycle(state md.Lifecycle, t *tp.RoomManager) {
 	} else if state == md.Lifecycle_STOPPED {
 		// Inform Lobby
 		if c.device.IsReady() {
-			ev := c.device.NewExitEvent(t.Room(), c.Host.ID())
+			ev := c.account.NewExitEvent(t.Room(), c.Host.ID())
 			if err := t.Publish(ev); err != nil {
 				md.NewError(err, md.ErrorEvent_ROOM_UPDATE)
 			}
@@ -275,7 +275,6 @@ func (c *client) newExitEvent(inv *md.InviteRequest) {
 	event := md.RoomEvent{
 		Id:      inv.To.Id.Peer,
 		Subject: md.RoomEvent_EXIT,
-		Peer:    inv.To,
 	}
 
 	// Marshal Data
@@ -295,7 +294,7 @@ func (c *client) sendPeriodicRoomEvents(t *tp.RoomManager) {
 	for {
 		if c.device.IsReady() {
 			// Create Event
-			ev := c.device.NewDefaultUpdateEvent(t.Room(), c.Host.ID())
+			ev := c.account.NewDefaultUpdateEvent(t.Room(), c.Host.ID())
 
 			// Send Update
 			if err := t.Publish(ev); err != nil {

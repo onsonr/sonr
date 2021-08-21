@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/denisbrodbeck/machineid"
-	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/pkg/util"
 )
 
@@ -255,52 +254,6 @@ func (u *Device) ReplyToFlat(from *Peer) *InviteResponse {
 			// Data Properties
 			Data: u.GetContact().ToData(),
 		},
-	}
-}
-
-// NewUpdateEvent Creates Lobby Event with Peer Data ^
-func (u *Device) NewUpdateEvent(room *Room, id peer.ID) *RoomEvent {
-	return &RoomEvent{
-		Subject: RoomEvent_UPDATE,
-		Peer:    u.GetPeer(),
-		Id:      id.String(),
-		Room:    room,
-	}
-}
-
-// NewDefaultUpdateEvent Updates Peer with Default Position and Returns Lobby Event with Peer Data ^
-func (u *Device) NewDefaultUpdateEvent(room *Room, id peer.ID) *RoomEvent {
-	// Update Peer
-	u.UpdatePosition(DefaultPosition().Parameters())
-
-	// Check if User is Linker
-	if u.Status == Status_LINKER {
-		// Return Event
-		return &RoomEvent{
-			Subject: RoomEvent_LINKER,
-			Peer:    u.GetPeer(),
-			Id:      id.String(),
-			Room:    room,
-		}
-	} else {
-		// Return Event
-		return &RoomEvent{
-			Subject: RoomEvent_UPDATE,
-			Peer:    u.GetPeer(),
-			Id:      id.String(),
-			Room:    room,
-		}
-	}
-
-}
-
-// NewUpdateEvent Creates Lobby Event with Peer Data ^
-func (u *Device) NewExitEvent(room *Room, id peer.ID) *RoomEvent {
-	return &RoomEvent{
-		Subject: RoomEvent_EXIT,
-		Peer:    u.GetPeer(),
-		Id:      id.String(),
-		Room:    room,
 	}
 }
 

@@ -2,7 +2,7 @@
 SONR_ROOT_DIR=/Users/prad/Sonr
 CORE_DIR=$(SONR_ROOT_DIR)/core
 CORE_RPC_DIR=$(SONR_ROOT_DIR)/core/cmd/rpc
-
+CORE_BIND_DIR=$(SONR_ROOT_DIR)/core/cmd/bind
 
 # Set this -->[/Users/xxxx/Sonr/]<-- to Folder of Sonr Repos
 PROTO_DEF_PATH=/Users/prad/Sonr/core/proto
@@ -16,7 +16,7 @@ GOBIND_ANDROID=$(GOBIND) -target=android
 GOBIND_IOS=$(GOBIND) -target=ios -bundleid=io.sonr.core
 
 # @ Bind Directories
-BIND_DIR_CORE=$(SONR_ROOT_DIR)/core/cmd/bind
+
 BIND_DIR_ANDROID=$(SONR_ROOT_DIR)/plugin/android/libs
 BIND_DIR_IOS=$(SONR_ROOT_DIR)/plugin/ios/Frameworks
 BIND_IOS_ARTIFACT= $(BIND_DIR_IOS)/Core.framework
@@ -72,7 +72,7 @@ bind.android:
 	@echo "--------------------------------------------------------------"
 	@go get golang.org/x/mobile/bind
 	@gomobile init
-	cd $(BIND_DIR_CORE) && $(GOBIND_ANDROID) -o $(BIND_ANDROID_ARTIFACT)
+	cd $(CORE_BIND_DIR) && $(GOBIND_ANDROID) -o $(BIND_ANDROID_ARTIFACT)
 	@echo "✅ Finished Binding ➡ " && date
 	@echo ""
 
@@ -85,7 +85,7 @@ bind.ios:
 	@echo "-------------- 📱 START IOS BIND 📱 ---------------------------"
 	@echo "--------------------------------------------------------------"
 	@go get golang.org/x/mobile/bind
-	cd $(BIND_DIR_CORE) && $(GOBIND_IOS) -o $(BIND_IOS_ARTIFACT)
+	cd $(CORE_BIND_DIR) && $(GOBIND_IOS) -o $(BIND_IOS_ARTIFACT)
 	@echo "✅ Finished Binding ➡ " && date
 	@echo ""
 
@@ -123,14 +123,14 @@ release: protobuf
 
 ## [clean]     :   Reinitializes Gomobile and Removes Framworks from Plugin
 clean:
-	cd $(BIND_DIR) && $(GOCLEAN)
+	cd $(CORE_BIND_DIR) && $(GOCLEAN)
 	go mod tidy
 	go clean -cache -x
 	rm -rf $(BIND_DIR_IOS)
 	rm -rf $(BIND_DIR_ANDROID)
 	mkdir -p $(BIND_DIR_IOS)
 	mkdir -p $(BIND_DIR_ANDROID)
-	cd $(BIND_DIR_CORE) && gomobile init
+	cd $(CORE_BIND_DIR) && gomobile init
 
 ##
 ##

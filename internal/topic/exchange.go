@@ -12,12 +12,12 @@ import (
 
 // ExchangeServiceArgs ExchangeArgs is Peer protobuf
 type ExchangeServiceArgs struct {
-	Peer []byte
+	Member []byte
 }
 
 // ExchangeServiceResponse ExchangeResponse is also Peer protobuf
 type ExchangeServiceResponse struct {
-	Peer []byte
+	Member []byte
 }
 
 // ExchangeService Service Struct
@@ -63,7 +63,7 @@ func (rm *RoomManager) Exchange(id peer.ID, peerBuf []byte) error {
 	var args ExchangeServiceArgs
 
 	// Set Args
-	args.Peer = peerBuf
+	args.Member = peerBuf
 
 	// Call to Peer
 	err := exchClient.Call(id, util.EXCHANGE_RPC_SERVICE, util.EXCHANGE_METHOD_EXCHANGE, args, &reply)
@@ -73,8 +73,8 @@ func (rm *RoomManager) Exchange(id peer.ID, peerBuf []byte) error {
 	}
 
 	// Received Message
-	remotePeer := &md.Peer{}
-	err = proto.Unmarshal(reply.Peer, remotePeer)
+	remotePeer := &md.Member{}
+	err = proto.Unmarshal(reply.Member, remotePeer)
 
 	// Send Error
 	if err != nil {
@@ -83,13 +83,13 @@ func (rm *RoomManager) Exchange(id peer.ID, peerBuf []byte) error {
 	}
 
 	// Update Peer with new data
-	if remotePeer.Status != md.Peer_PAIRING {
+	if remotePeer.Active.Status != md.Peer_PAIRING {
 		rm.handler.OnRoomEvent(rm.room.NewJoinEvent(remotePeer))
 	} else {
 		// Add Linker if Not Present
-		if !rm.HasLinker(remotePeer.PeerID()) {
+		if !rm.HasLinker(remotePeer.Active.PeerID()) {
 			// Append Linkers
-			rm.linkers = append(rm.linkers, remotePeer)
+			rm.linkers = append(rm.linkers, remotePeer.Active)
 		}
 	}
 	return nil
@@ -98,21 +98,21 @@ func (rm *RoomManager) Exchange(id peer.ID, peerBuf []byte) error {
 // ExchangeWith # Calls Exchange on Local Lobby Peer
 func (es *ExchangeService) ExchangeWith(ctx context.Context, args ExchangeServiceArgs, reply *ExchangeServiceResponse) error {
 	// Peer Data
-	remotePeer := &md.Peer{}
-	err := proto.Unmarshal(args.Peer, remotePeer)
+	remotePeer := &md.Member{}
+	err := proto.Unmarshal(args.Member, remotePeer)
 	if err != nil {
 		md.LogError(err)
 		return err
 	}
 
 	// Update Peers with Lobby
-	if remotePeer.Status != md.Peer_PAIRING {
+	if remotePeer.Active.Status != md.Peer_PAIRING {
 		es.call.OnRoomEvent(es.room().NewJoinEvent(remotePeer))
 	} else {
 		// Add Linker if Not Present
-		if !es.HasLinker(remotePeer.PeerID()) {
+		if !es.HasLinker(remotePeer.Active.PeerID()) {
 			// Append Linkers
-			es.linkers = append(es.linkers, remotePeer)
+			es.linkers = append(es.linkers, remotePeer.Active)
 		}
 	}
 
@@ -122,7 +122,7 @@ func (es *ExchangeService) ExchangeWith(ctx context.Context, args ExchangeServic
 		md.LogError(err)
 		return err
 	}
-	reply.Peer = buf
+	reply.Member = buf
 	return nil
 }
 
@@ -188,13 +188,13 @@ func (rm *RoomManager) handleExchangeMessages(ctx context.Context) {
 			}
 
 			// Check Peer is Online, if not ignore
-			if m.Peer.GetStatus() == md.Peer_ONLINE {
+			if m.Member.Active.GetStatus() == md.Peer_ONLINE {
 				rm.handler.OnRoomEvent(m)
-			} else if m.Peer.GetStatus() == md.Peer_PAIRING {
+			} else if m.Member.Active.GetStatus() == md.Peer_PAIRING {
 				// Validate Linker not Already Set
-				if !rm.HasLinker(m.Peer.PeerID()) {
+				if !rm.HasLinker(m.Member.Active.PeerID()) {
 					// Append Linkers
-					rm.linkers = append(rm.linkers, m.Peer)
+					rm.linkers = append(rm.linkers, m.Member.GetActive())
 				}
 			}
 		}

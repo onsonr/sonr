@@ -161,7 +161,7 @@ func (s *NodeServer) Update(ctx context.Context, req *md.UpdateRequest) (*md.NoR
 		switch req.Data.(type) {
 		// Update Position
 		case *md.UpdateRequest_Position:
-			s.device.UpdatePosition(req.GetPosition().Parameters())
+			s.account.CurrentDevice().UpdatePosition(req.GetPosition().Parameters())
 
 		// Update Contact
 		case *md.UpdateRequest_Contact:
@@ -169,7 +169,7 @@ func (s *NodeServer) Update(ctx context.Context, req *md.UpdateRequest) (*md.NoR
 
 		// Update Peer Properties
 		case *md.UpdateRequest_Properties:
-			s.device.UpdateProperties(req.GetProperties())
+			s.account.CurrentDevice().UpdateProperties(req.GetProperties())
 		}
 
 		// Notify Local Lobby

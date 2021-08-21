@@ -40,6 +40,11 @@ func (al *userLinker) APIKeys() *md.APIKeys {
 	return al.user.GetApiKeys()
 }
 
+// Method Returns Current Device
+func (al *userLinker) CurrentDevice() *md.Device {
+	return al.currentDevice
+}
+
 // Method Returns Device KeyPair
 func (al *userLinker) CurrentDeviceKeys() *md.KeyPair {
 	return al.currentDevice.AccountKeys()
@@ -132,4 +137,49 @@ func (al *userLinker) Save() error {
 		return err
 	}
 	return nil
+}
+
+// NewUpdateEvent Creates Lobby Event with Peer Data ^
+func (al *userLinker) NewUpdateEvent(room *md.Room, id peer.ID) *md.RoomEvent {
+	return &md.RoomEvent{
+		Subject: md.RoomEvent_UPDATE,
+		Member:  al.Member(),
+		Id:      id.String(),
+		Room:    room,
+	}
+}
+
+// NewDefaultUpdateEvent Updates Peer with Default Position and Returns Lobby Event with Peer Data ^
+func (al *userLinker) NewDefaultUpdateEvent(room *md.Room, id peer.ID) *md.RoomEvent {
+	// Update Peer
+	al.currentDevice.UpdatePosition(md.DefaultPosition().Parameters())
+
+	// Check if User is Linker
+	if al.currentDevice.GetStatus() == md.Status_LINKER {
+		// Return Event
+		return &md.RoomEvent{
+			Subject: md.RoomEvent_LINKER,
+			Member:  al.Member(),
+			Id:      id.String(),
+			Room:    room,
+		}
+	} else {
+		// Return Event
+		return &md.RoomEvent{
+			Subject: md.RoomEvent_UPDATE,
+			Member:  al.Member(),
+			Id:      id.String(),
+			Room:    room,
+		}
+	}
+
+}
+
+// NewUpdateEvent Creates Lobby Event with Peer Data ^
+func (al *userLinker) NewExitEvent(room *md.Room, id peer.ID) *md.RoomEvent {
+	return &md.RoomEvent{
+		Subject: md.RoomEvent_EXIT,
+		Id:      id.String(),
+		Room:    room,
+	}
 }
