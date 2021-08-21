@@ -36,7 +36,6 @@ func (al *userLinker) AccountKeys() *md.KeyPair {
 
 // Return Client API Keys
 func (al *userLinker) APIKeys() *md.APIKeys {
-
 	return al.user.GetApiKeys()
 }
 
