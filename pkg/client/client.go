@@ -226,14 +226,12 @@ func (c *client) Respond(r *md.InviteResponse) {
 
 // Update proximity/direction and Notify Lobby
 func (c *client) Update(t *tp.RoomManager) *md.SonrError {
-	if c.device.IsReady() {
-		// Create Event
-		ev := c.account.NewUpdateEvent(t.Room(), c.Host.ID())
+	// Create Event
+	ev := c.account.NewUpdateEvent(t.Room(), c.Host.ID())
 
-		// Inform Lobby
-		if err := t.Publish(ev); err != nil {
-			return md.NewError(err, md.ErrorEvent_ROOM_UPDATE)
-		}
+	// Inform Lobby
+	if err := t.Publish(ev); err != nil {
+		return md.NewError(err, md.ErrorEvent_ROOM_UPDATE)
 	}
 	return nil
 }
