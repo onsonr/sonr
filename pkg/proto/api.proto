@@ -197,15 +197,6 @@ message DecisionResponse {
   string body = 2;  // Response Body
 }
 
-// Message to manage user Device Service
-message DeviceRequest {
-  Device device = 1; // Users Device
-
-  enum Method {
-    
-  }
-}
-
 //  Message for a LinkRequest
 message LinkRequest {
   Type type = 1;       // Type of Link
