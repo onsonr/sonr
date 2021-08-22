@@ -167,7 +167,7 @@ func (c *client) Link(req *md.LinkRequest, t *tp.RoomManager) (*md.LinkResponse,
 
 // Invite Processes Data and Sends Invite to Peer
 func (c *client) Invite(invite *md.InviteRequest, t *tp.RoomManager) *md.SonrError {
-	if c.device.IsReady() {
+	if c.account.IsReady() {
 		// Check for Peer
 		if invite.GetType() == md.InviteRequest_REMOTE {
 			err := c.Service.SendMail(invite)
@@ -226,12 +226,14 @@ func (c *client) Respond(r *md.InviteResponse) {
 
 // Update proximity/direction and Notify Lobby
 func (c *client) Update(t *tp.RoomManager) *md.SonrError {
-	// Create Event
-	ev := c.account.NewUpdateEvent(t.Room(), c.Host.ID())
+	if c.account.IsReady() {
+		// Create Event
+		ev := c.account.NewUpdateEvent(t.Room(), c.Host.ID())
 
-	// Inform Lobby
-	if err := t.Publish(ev); err != nil {
-		return md.NewError(err, md.ErrorEvent_ROOM_UPDATE)
+		// Inform Lobby
+		if err := t.Publish(ev); err != nil {
+			return md.NewError(err, md.ErrorEvent_ROOM_UPDATE)
+		}
 	}
 	return nil
 }
@@ -240,7 +242,7 @@ func (c *client) Update(t *tp.RoomManager) *md.SonrError {
 func (c *client) Lifecycle(state md.Lifecycle, t *tp.RoomManager) {
 	if state == md.Lifecycle_ACTIVE {
 		// Inform Lobby
-		if c.device.IsReady() {
+		if c.account.IsReady() {
 			ev := c.account.NewUpdateEvent(t.Room(), c.Host.ID())
 			if err := t.Publish(ev); err != nil {
 				md.NewError(err, md.ErrorEvent_ROOM_UPDATE)
@@ -248,7 +250,7 @@ func (c *client) Lifecycle(state md.Lifecycle, t *tp.RoomManager) {
 		}
 	} else if state == md.Lifecycle_PAUSED {
 		// Inform Lobby
-		if c.device.IsReady() {
+		if c.account.IsReady() {
 			ev := c.account.NewExitEvent(t.Room(), c.Host.ID())
 			if err := t.Publish(ev); err != nil {
 				md.NewError(err, md.ErrorEvent_ROOM_UPDATE)
@@ -256,7 +258,7 @@ func (c *client) Lifecycle(state md.Lifecycle, t *tp.RoomManager) {
 		}
 	} else if state == md.Lifecycle_STOPPED {
 		// Inform Lobby
-		if c.device.IsReady() {
+		if c.account.IsReady() {
 			ev := c.account.NewExitEvent(t.Room(), c.Host.ID())
 			if err := t.Publish(ev); err != nil {
 				md.NewError(err, md.ErrorEvent_ROOM_UPDATE)
@@ -290,7 +292,7 @@ func (c *client) newExitEvent(inv *md.InviteRequest) {
 // Helper: Background Process to continuously ping nearby peers
 func (c *client) sendPeriodicRoomEvents(t *tp.RoomManager) {
 	for {
-		if c.device.IsReady() {
+		if c.account.IsReady() {
 			// Create Event
 			ev := c.account.NewDefaultUpdateEvent(t.Room(), c.Host.ID())
 

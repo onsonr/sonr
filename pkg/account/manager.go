@@ -40,6 +40,7 @@ type Account interface {
 	DeviceKeys() *md.KeyPair
 	DevicePubKey() *md.KeyPair_Public
 	GroupKeys() *md.KeyPair
+	IsReady() bool
 	KeyChain() *md.KeyChain
 	SignLinkPacket(resp *md.LinkResponse) *md.LinkPacket
 	SignAuth(req *md.AuthRequest) *md.AuthResponse

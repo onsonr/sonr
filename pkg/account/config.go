@@ -84,7 +84,6 @@ func (al *userLinker) ExportKeychain() *md.KeyChain {
 
 // Method Returns Profile First Name
 func (al *userLinker) FirstName() string {
-
 	return al.user.GetContact().GetProfile().GetFirstName()
 }
 
@@ -92,6 +91,11 @@ func (al *userLinker) FirstName() string {
 func (al *userLinker) GroupKeys() *md.KeyPair {
 
 	return al.user.GetKeyChain().GetGroup()
+}
+
+// Method IsReady checks if Active Device Data is ready
+func (al *userLinker) IsReady() bool {
+	return al.CurrentDevice().IsReady()
 }
 
 // Method Returns Profile Last Name
