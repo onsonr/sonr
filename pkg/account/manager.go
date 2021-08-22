@@ -115,6 +115,7 @@ func OpenAccount(ir *md.InitializeRequest, d *md.Device) (Account, *md.SonrError
 		linker := &userLinker{
 			user:          loadedAccount,
 			currentDevice: ir.GetDevice(),
+			room:          loadedAccount.NewDeviceRoom(),
 		}
 		return linker, nil
 	} else {
@@ -135,6 +136,7 @@ func OpenAccount(ir *md.InitializeRequest, d *md.Device) (Account, *md.SonrError
 		linker := &userLinker{
 			user:          u,
 			currentDevice: ir.GetDevice(),
+			room:          u.NewDeviceRoom(),
 		}
 		err := linker.Save()
 		if err != nil {
@@ -150,7 +152,7 @@ func (al *userLinker) JoinNetwork(h sh.HostNode) *md.SonrError {
 	al.ctx = context.Background()
 
 	// Join Room
-	topic, err := h.Pubsub().Join(al.user.NewDeviceRoom().GetName())
+	topic, err := h.Pubsub().Join(al.room.GetName())
 	if err != nil {
 		return md.NewError(err, md.ErrorEvent_ROOM_JOIN)
 	}

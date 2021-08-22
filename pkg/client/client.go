@@ -91,7 +91,7 @@ func (c *client) Connect(cr *md.ConnectionRequest, a ac.Account) (*md.Peer, bool
 	peer, isPrimary := c.device.SetPeer(hn.ID(), maddr, cr.GetIsLinker())
 
 	// Join Account Network
-	if err := c.account.JoinNetwork(c.Host); err != nil {
+	if err := c.account.JoinNetwork(hn); err != nil {
 		return nil, false, err
 	}
 

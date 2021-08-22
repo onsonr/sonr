@@ -49,10 +49,9 @@ func (r *Device) NewLocalRoom(opts *ConnectionRequest_ServiceOptions) *Room {
 
 // Local Lobby Room Protocol ID
 func (r *User) NewDeviceRoom() *Room {
-
 	// Return Room
 	return &Room{
-		Name: fmt.Sprintf("/sonr/device/%s", r.SName),
+		Name: fmt.Sprintf("/sonr/device/%s", r.GetSName()),
 		Type: Room_DEVICE,
 	}
 }
