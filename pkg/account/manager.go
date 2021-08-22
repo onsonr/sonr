@@ -152,7 +152,7 @@ func (al *userLinker) JoinNetwork(h sh.HostNode) *md.SonrError {
 	al.ctx = context.Background()
 
 	// Join Room
-	topic, err := h.Pubsub().Join(al.room.GetName())
+	topic, err := al.host.Pubsub().Join(fmt.Sprintf("/sonr/device/%s", al.user.GetSName()))
 	if err != nil {
 		return md.NewError(err, md.ErrorEvent_ROOM_JOIN)
 	}
