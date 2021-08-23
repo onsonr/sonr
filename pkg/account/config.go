@@ -95,7 +95,7 @@ func (al *userLinker) Profile() *data.Profile {
 func (al *userLinker) Save() error {
 
 	// Marshal Account to Protobuf
-	res, err := proto.Marshal(al.user)
+	buf, err := proto.Marshal(al.user)
 	if err != nil {
 		return err
 	}
@@ -107,7 +107,7 @@ func (al *userLinker) Save() error {
 	}
 
 	// Write Data to File
-	_, err = f.Write(data)
+	_, err = f.Write(buf)
 	if err != nil {
 		return err
 	}

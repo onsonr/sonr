@@ -1,4 +1,4 @@
-package topic
+package room
 
 import (
 	"context"

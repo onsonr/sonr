@@ -163,54 +163,51 @@ func (c *client) Link(req *data.LinkRequest, t *room.RoomManager) (*data.LinkRes
 
 // Invite Processes Data and Sends Invite to Peer
 func (c *client) Invite(invite *data.InviteRequest, t *room.RoomManager) *data.SonrError {
-	if c.account.IsReady() {
-		// Check for Peer
-		if invite.GetType() == data.InviteRequest_REMOTE {
+	// Check for Peer
+	if invite.GetType() == data.InviteRequest_REMOTE {
+		err := c.Service.SendMail(invite)
+		if err != nil {
+			return err
+		}
+	} else {
+		if t.HasPeer(invite.To.Id.Peer) {
+			// Get PeerID and Check error
+			id, err := t.FindPeer(invite.To.Id.Peer)
+			if err != nil {
+				c.newExitEvent(invite)
+				return data.NewPeerFoundError(err, invite.GetTo().GetId().GetPeer())
+			}
+
+			// Initialize Session if transfer
+			if invite.IsPayloadTransfer() {
+				// Update Status
+				c.call.SetStatus(data.Status_PENDING)
+
+				// Start New Session
+				invite.SetProtocol(data.SonrProtocol_LocalTransfer, id)
+				c.session = data.NewOutSession(c.account.CurrentDevice(), invite, c)
+			}
+
+			// Run Routine
+			go func(inv *data.InviteRequest) {
+				// Send Default Invite
+				err = c.Service.Invite(id, inv)
+				if err != nil {
+					c.call.OnError(data.NewError(err, data.ErrorEvent_ROOM_RPC))
+					return
+				}
+			}(invite)
+		} else {
+			// Send Mail to Offline Peer
 			err := c.Service.SendMail(invite)
 			if err != nil {
 				return err
 			}
-		} else {
-			if t.HasPeer(invite.To.Id.Peer) {
-				// Get PeerID and Check error
-				id, err := t.FindPeer(invite.To.Id.Peer)
-				if err != nil {
-					c.newExitEvent(invite)
-					return data.NewPeerFoundError(err, invite.GetTo().GetId().GetPeer())
-				}
 
-				// Initialize Session if transfer
-				if invite.IsPayloadTransfer() {
-					// Update Status
-					c.call.SetStatus(data.Status_PENDING)
-
-					// Start New Session
-					invite.SetProtocol(data.SonrProtocol_LocalTransfer, id)
-					c.session = data.NewOutSession(c.account.CurrentDevice(), invite, c)
-				}
-
-				// Run Routine
-				go func(inv *data.InviteRequest) {
-					// Send Default Invite
-					err = c.Service.Invite(id, inv)
-					if err != nil {
-						c.call.OnError(data.NewError(err, data.ErrorEvent_ROOM_RPC))
-						return
-					}
-				}(invite)
-			} else {
-				// Send Mail to Offline Peer
-				err := c.Service.SendMail(invite)
-				if err != nil {
-					return err
-				}
-
-				// Record Peer is Offline
-				c.newExitEvent(invite)
-				return data.NewErrorWithType(data.ErrorEvent_PEER_NOT_FOUND_INVITE)
-			}
+			// Record Peer is Offline
+			c.newExitEvent(invite)
+			return data.NewErrorWithType(data.ErrorEvent_PEER_NOT_FOUND_INVITE)
 		}
-		return nil
 	}
 	return nil
 }
@@ -222,14 +219,12 @@ func (c *client) Respond(r *data.InviteResponse) {
 
 // Update proximity/direction and Notify Lobby
 func (c *client) Update(t *room.RoomManager) *data.SonrError {
-	if c.account.IsReady() {
-		// Create Event
-		ev := c.account.NewUpdateEvent(t.Room(), c.Host.ID())
+	// Create Event
+	ev := c.account.NewUpdateEvent(t.Room(), c.Host.ID())
 
-		// Inform Lobby
-		if err := t.Publish(ev); err != nil {
-			return data.NewError(err, data.ErrorEvent_ROOM_UPDATE)
-		}
+	// Inform Lobby
+	if err := t.Publish(ev); err != nil {
+		return data.NewError(err, data.ErrorEvent_ROOM_UPDATE)
 	}
 	return nil
 }
@@ -288,15 +283,13 @@ func (c *client) newExitEvent(inv *data.InviteRequest) {
 // Helper: Background Process to continuously ping nearby peers
 func (c *client) sendPeriodicRoomEvents(t *room.RoomManager) {
 	for {
-		if c.account.IsReady() {
-			// Create Event
-			ev := c.account.NewDefaultUpdateEvent(t.Room(), c.Host.ID())
+		// Create Event
+		ev := c.account.NewDefaultUpdateEvent(t.Room(), c.Host.ID())
 
-			// Send Update
-			if err := t.Publish(ev); err != nil {
-				c.call.OnError(data.NewError(err, data.ErrorEvent_ROOM_UPDATE))
-				continue
-			}
+		// Send Update
+		if err := t.Publish(ev); err != nil {
+			c.call.OnError(data.NewError(err, data.ErrorEvent_ROOM_UPDATE))
+			continue
 		}
 		time.Sleep(util.AUTOUPDATE_INTERVAL)
 		data.GetState()

@@ -307,7 +307,7 @@ func (kp *KeyPair) Sign(value string) string {
 func (kp *KeyPair) Verify(buf []byte, sig []byte) (bool, error) {
 	// Check for Public Key
 	if pubKey := kp.PubKey(); pubKey != nil {
-		result, err := pubKey.Verify(data, sig)
+		result, err := pubKey.Verify(buf, sig)
 		if err != nil {
 			return false, err
 		}

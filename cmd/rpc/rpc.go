@@ -6,9 +6,9 @@ import (
 	"log"
 	"net"
 
-	room "github.com/sonr-io/core/internal/room"
-	account "github.com/sonr-io/core/pkg/account"
-	client "github.com/sonr-io/core/pkg/client"
+	"github.com/sonr-io/core/internal/room"
+	"github.com/sonr-io/core/pkg/account"
+	"github.com/sonr-io/core/pkg/client"
 	"github.com/sonr-io/core/pkg/data"
 	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/grpc"

@@ -116,7 +116,7 @@ func (n *client) OnInvite(buf []byte) {
 	// Create Request
 	req := data.GenericRequest{
 		Type: data.GenericRequest_INVITE,
-		Data: data,
+		Data: buf,
 	}
 
 	// Marshal Request

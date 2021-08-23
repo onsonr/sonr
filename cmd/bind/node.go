@@ -3,7 +3,7 @@ package bind
 import (
 	"context"
 
-	room "github.com/sonr-io/core/internal/room"
+	"github.com/sonr-io/core/internal/room"
 	ac "github.com/sonr-io/core/pkg/account"
 	sc "github.com/sonr-io/core/pkg/client"
 	"github.com/sonr-io/core/pkg/data"

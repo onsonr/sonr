@@ -1,4 +1,4 @@
-package topic
+package room
 
 import (
 	ps "github.com/libp2p/go-libp2p-pubsub"

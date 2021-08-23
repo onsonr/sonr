@@ -279,7 +279,7 @@ func (d *Device) WriteKey(buf []byte, t KeyPair_Type) (string, *SonrError) {
 	path := d.WorkingKeyPath(t)
 
 	// Write File to Disk
-	if err := os.WriteFile(path, data, 0644); err != nil {
+	if err := os.WriteFile(path, buf, 0644); err != nil {
 		return "", NewError(err, ErrorEvent_USER_FS)
 	}
 	return path, nil
@@ -291,7 +291,7 @@ func (d *Device) WriteFile(name string, buf []byte) (string, *SonrError) {
 	path := d.WorkingFilePath(name)
 
 	// Write File to Disk
-	if err := os.WriteFile(path, data, 0644); err != nil {
+	if err := os.WriteFile(path, buf, 0644); err != nil {
 		return "", NewError(err, ErrorEvent_USER_FS)
 	}
 	return path, nil
