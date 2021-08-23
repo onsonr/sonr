@@ -1,11 +1,11 @@
-SHELL=/bin/zsh # Set Shell
 # Set this -->[/Users/xxxx/Sonr/]<-- to Folder of Sonr Repos
 SONR_ROOT_DIR=/Users/prad/Sonr
 CORE_DIR=$(SONR_ROOT_DIR)/core
-CORE_LIB_DIR=$(SONR_ROOT_DIR)/core/lib
+CORE_RPC_DIR=$(SONR_ROOT_DIR)/core/cmd/rpc
+CORE_BIND_DIR=$(SONR_ROOT_DIR)/core/cmd/bind
 
 # Set this -->[/Users/xxxx/Sonr/]<-- to Folder of Sonr Repos
-PROTO_DEF_PATH=/Users/prad/Sonr/core/pkg/proto
+PROTO_DEF_PATH=/Users/prad/Sonr/core/proto
 APP_ROOT_DIR =/Users/prad/Sonr/app
 
 # @ Packaging Vars/Commands
@@ -16,7 +16,7 @@ GOBIND_ANDROID=$(GOBIND) -target=android
 GOBIND_IOS=$(GOBIND) -target=ios -bundleid=io.sonr.core
 
 # @ Bind Directories
-BIND_DIR_CORE=$(SONR_ROOT_DIR)/core/bind
+
 BIND_DIR_ANDROID=$(SONR_ROOT_DIR)/plugin/android/libs
 BIND_DIR_IOS=$(SONR_ROOT_DIR)/plugin/ios/Frameworks
 BIND_IOS_ARTIFACT= $(BIND_DIR_IOS)/Core.framework
@@ -39,7 +39,7 @@ PROTO_GEN_DART="--dart_out=$(PROTO_DIR_DART)"
 PROTO_GEN_DOCS="--doc_out=$(PROTO_DIR_DOCS)"
 
 # @ Distribution Release Variables
-DIST_DIR=$(SONR_ROOT_DIR)/core/cmd/dist
+DIST_DIR=$(SONR_ROOT_DIR)/core/cmd/rpc/dist
 DIST_DIR_DARWIN_AMD=$(DIST_DIR)/sonr-rpc_darwin_amd64
 DIST_DIR_DARWIN_ARM=$(DIST_DIR)/sonr-rpc_darwin_arm64
 DIST_DIR_LINUX_AMD=$(DIST_DIR)/sonr-rpc_linux_amd64
@@ -53,7 +53,7 @@ all: Makefile
 	@sed -n 's/^##//p ' $<
 
 ## bind        :   Binds Android and iOS for Plugin Path
-bind: proto bind.ios bind.android
+bind: protobuf bind.ios bind.android
 	@go mod tidy
 	@cd /System/Library/Sounds && afplay Glass.aiff
 	@echo ""
@@ -72,7 +72,7 @@ bind.android:
 	@echo "--------------------------------------------------------------"
 	@go get golang.org/x/mobile/bind
 	@gomobile init
-	cd $(BIND_DIR_CORE) && $(GOBIND_ANDROID) -o $(BIND_ANDROID_ARTIFACT)
+	cd $(CORE_BIND_DIR) && $(GOBIND_ANDROID) -o $(BIND_ANDROID_ARTIFACT)
 	@echo "✅ Finished Binding ➡ " && date
 	@echo ""
 
@@ -85,13 +85,13 @@ bind.ios:
 	@echo "-------------- 📱 START IOS BIND 📱 ---------------------------"
 	@echo "--------------------------------------------------------------"
 	@go get golang.org/x/mobile/bind
-	cd $(BIND_DIR_CORE) && $(GOBIND_IOS) -o $(BIND_IOS_ARTIFACT)
+	cd $(CORE_BIND_DIR) && $(GOBIND_IOS) -o $(BIND_IOS_ARTIFACT)
 	@echo "✅ Finished Binding ➡ " && date
 	@echo ""
 
 ##
-## [proto]     :   Compiles Protobuf models for Core Library and Plugin
-proto:
+## [protobuf]     :   Compiles Protobuf models for Core Library and Plugin
+protobuf:
 	@echo ""
 	@echo ""
 	@echo "--------------------------------------------------------------"
@@ -108,9 +108,9 @@ proto:
 
 ##
 ## [release]   :   Upload RPC Binary Artifact to S3
-release: proto
+release: protobuf
 	@echo "Building Artifacts..."
-	@cd $(CORE_LIB_DIR) && goreleaser release --rm-dist
+	@cd $(CORE_RPC_DIR) && goreleaser release --rm-dist
 	@echo "Cleaning up build cache..."
 	@cd $(CORE_DIR) && go mod tidy
 	@rm -rf $(DIST_DIR_DARWIN_AMD)
@@ -121,39 +121,30 @@ release: proto
 	@echo "✅ Finished Releasing RPC Binary ➡ " && date
 	@cd /System/Library/Sounds && afplay Glass.aiff
 
-## [upgrade]   :   Binds Binary, Creates Protobufs, and Updates App
-upgrade: proto bind.ios bind.android
-	@go mod tidy
-	@echo "-----------------------------------------------------------"
-	@echo "------------- 🔄  START PLUGIN UPDATE 🔄 -------------------"
-	@echo "------------------------------------------------------------"
-	cd $(APP_ROOT_DIR) && make update
-	@echo ""
-
 ## [clean]     :   Reinitializes Gomobile and Removes Framworks from Plugin
 clean:
-	cd $(BIND_DIR) && $(GOCLEAN)
+	cd $(CORE_BIND_DIR) && $(GOCLEAN)
 	go mod tidy
 	go clean -cache -x
 	rm -rf $(BIND_DIR_IOS)
 	rm -rf $(BIND_DIR_ANDROID)
 	mkdir -p $(BIND_DIR_IOS)
 	mkdir -p $(BIND_DIR_ANDROID)
-	cd $(BIND_DIR_CORE) && gomobile init
+	cd $(CORE_BIND_DIR) && gomobile init
 
 ##
 ##
 ## Shortcuts   : (b) => bind
 ##               └─ (bi) => bind.ios
 ##               └─ (ba) => bind.android
-##               (p) => proto
+##               (p) => protobuf
 ##               (r) => release
 ##               (u) => upgrade
 ##               (c) => clean
 b:bind
 bi:bind.ios
 ba:bind.android
-p:proto
+p:protobuf
 r:release
 u:upgrade
 c:clean
