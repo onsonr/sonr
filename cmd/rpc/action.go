@@ -25,7 +25,7 @@ func (s *NodeServer) Action(ctx context.Context, req *md.ActionRequest) (*md.NoR
 			Success: true,
 			Action:  md.Action_LOCATION,
 			Data: &md.ActionResponse_Location{
-				Location: s.device.GetLocation(),
+				Location: s.account.CurrentDevice().GetLocation(),
 			},
 		}
 	case md.Action_URL_LINK:
@@ -103,7 +103,7 @@ func (s *NodeServer) Sign(ctx context.Context, req *md.AuthRequest) (*md.NoRespo
 // Link method starts device linking channel
 func (s *NodeServer) Link(ctx context.Context, req *md.LinkRequest) (*md.NoResponse, error) {
 	md.LogRPC("Link", req)
-	req = s.device.SignLink(req)
+	req = s.account.CurrentDevice().SignLink(req)
 
 	// Check Link Request Type
 	resp, err := s.client.Link(req, s.local)
@@ -121,7 +121,7 @@ func (s *NodeServer) Link(ctx context.Context, req *md.LinkRequest) (*md.NoRespo
 func (s *NodeServer) Verify(ctx context.Context, req *md.VerifyRequest) (*md.NoResponse, error) {
 	md.LogRPC("Verify", req)
 	// Get Key Pair
-	kp := s.device.AccountKeys()
+	kp := s.account.AccountKeys()
 
 	// Check Request Type
 	if req.GetType() == md.VerifyRequest_VERIFY {
@@ -156,7 +156,7 @@ func (s *NodeServer) Verify(ctx context.Context, req *md.VerifyRequest) (*md.NoR
 // Update proximity/direction/contact/properties and notify Lobby
 func (s *NodeServer) Update(ctx context.Context, req *md.UpdateRequest) (*md.NoResponse, error) {
 	// Verify Node is Ready
-	if s.isReady() {
+	if s.account.IsReady() {
 		// Check Update Request Type
 		switch req.Data.(type) {
 		// Update Position
@@ -187,9 +187,9 @@ func (s *NodeServer) Update(ctx context.Context, req *md.UpdateRequest) (*md.NoR
 // Invite pushes Invite request to Peer
 func (s *NodeServer) Invite(ctx context.Context, req *md.InviteRequest) (*md.NoResponse, error) {
 	// Verify Node is Ready
-	if s.isReady() {
+	if s.account.IsReady() {
 		// Validate invite
-		req = s.device.SignInvite(req)
+		req = s.account.CurrentDevice().SignInvite(req)
 
 		// Send Invite
 		err := s.client.Invite(req, s.local)
@@ -205,7 +205,7 @@ func (s *NodeServer) Invite(ctx context.Context, req *md.InviteRequest) (*md.NoR
 // Respond handles a respond request
 func (s *NodeServer) Respond(ctx context.Context, req *md.DecisionRequest) (*md.NoResponse, error) {
 	// Verify Node is Ready
-	if s.isReady() {
+	if s.account.IsReady() {
 		// Send Response
 		s.client.Respond(req.ToResponse())
 
@@ -225,7 +225,7 @@ func (s *NodeServer) Respond(ctx context.Context, req *md.DecisionRequest) (*md.
 // Mail method handles a mail request
 func (s *NodeServer) Mail(ctx context.Context, req *md.MailboxRequest) (*md.NoResponse, error) {
 	// Verify Node is Ready
-	if s.isReady() {
+	if s.account.IsReady() {
 		// Handle Mail
 		resp, serr := s.client.Mail(req)
 		if serr != nil {

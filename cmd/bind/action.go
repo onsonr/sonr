@@ -42,9 +42,9 @@ func (n *Node) Sign(data []byte) []byte {
 // Verification Request for Signed Data
 func (n *Node) Verify(data []byte) []byte {
 	// Check Ready
-	if n.isReady() {
+	if n.account.IsReady() {
 		// Get Key Pair
-		kp := n.device.AccountKeys()
+		kp := n.account.AccountKeys()
 
 		// Unmarshal Data to Request
 		request := &md.VerifyRequest{}
@@ -95,7 +95,7 @@ func (n *Node) Verify(data []byte) []byte {
 
 // Update proximity/direction and Notify Lobby
 func (n *Node) Update(data []byte) {
-	if n.isReady() {
+	if n.account.IsReady() {
 		// Unmarshal Data to Request
 		update := &md.UpdateRequest{}
 		if err := proto.Unmarshal(data, update); err != nil {
@@ -129,7 +129,7 @@ func (n *Node) Update(data []byte) {
 
 // Invite Processes Data and Sends Invite to Peer
 func (n *Node) Invite(data []byte) {
-	if n.isReady() {
+	if n.account.IsReady() {
 		// Unmarshal Data to Request
 		req := &md.InviteRequest{}
 		if err := proto.Unmarshal(data, req); err != nil {
@@ -138,7 +138,7 @@ func (n *Node) Invite(data []byte) {
 		}
 
 		// Validate invite
-		req = n.device.SignInvite(req)
+		req = n.account.CurrentDevice().SignInvite(req)
 
 		// Send Invite
 		err := n.client.Invite(req, n.local)
@@ -157,7 +157,7 @@ func (n *Node) Link(data []byte) []byte {
 		n.handleError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
 		return nil
 	}
-	req = n.device.SignLink(req)
+	req = n.account.CurrentDevice().SignLink(req)
 
 	// Send to Client
 	resp, serr := n.client.Link(req, n.local)
@@ -178,7 +178,7 @@ func (n *Node) Link(data []byte) []byte {
 // Mail handles request for a message in Mailbox
 func (n *Node) Mail(data []byte) []byte {
 	// Check Ready
-	if n.isReady() {
+	if n.account.IsReady() {
 		// Unmarshal Data to Request
 		req := &md.MailboxRequest{}
 		if err := proto.Unmarshal(data, req); err != nil {
@@ -208,7 +208,7 @@ func (n *Node) Mail(data []byte) []byte {
 
 // Respond to an Invite with Decision
 func (n *Node) Respond(data []byte) {
-	if n.isReady() {
+	if n.account.IsReady() {
 		// Unmarshal Data to Request
 		resp := &md.DecisionRequest{}
 		if err := proto.Unmarshal(data, resp); err != nil {
@@ -260,7 +260,7 @@ func (s *Node) Action(buf []byte) []byte {
 			Success: true,
 			Action:  md.Action_LOCATION,
 			Data: &md.ActionResponse_Location{
-				Location: s.device.GetLocation(),
+				Location: s.account.CurrentDevice().GetLocation(),
 			},
 		}
 

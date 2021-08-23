@@ -21,7 +21,6 @@ type NodeServer struct {
 	// Client
 	account ac.Account
 	client  sc.Client
-	device  *md.Device
 	state   md.Lifecycle
 
 	// Groups
@@ -100,35 +99,28 @@ func main() {
 // Initialize method is called when a new node is created
 func (s *NodeServer) Initialize(ctx context.Context, req *md.InitializeRequest) (*md.NoResponse, error) {
 	// Initialize Logger
+	var serr *md.SonrError
 	md.InitLogger(req)
 
-	// Initialize Device
-	device := req.GetDevice()
-
 	// Create User
-	u, serr := ac.OpenAccount(req, device)
+	s.account, serr = ac.OpenAccount(req, req.GetDevice())
 	if serr != nil {
 		s.handleError(serr)
 		return &md.NoResponse{}, serr.Error
 	}
 
-	s.account = u
-	s.device = device
-
 	// Create Client
-	s.client = sc.NewClient(s.ctx, s.device, s.callback())
+	s.client = sc.NewClient(s.ctx, s.account, s.callback())
 	s.verifyResponses <- s.account.VerifyRead()
+
 	// Return Blank Response
 	return &md.NoResponse{}, nil
 }
 
 // Connect method starts this nodes host
 func (s *NodeServer) Connect(ctx context.Context, req *md.ConnectionRequest) (*md.NoResponse, error) {
-	// Update User with Connection Request
-	s.device.SetConnection(req)
-
 	// Connect Host
-	peer, serr := s.client.Connect(req, s.account)
+	peer, serr := s.client.Connect(req)
 	if serr != nil {
 		s.handleError(serr)
 		s.setConnected(false)
@@ -154,4 +146,32 @@ func (s *NodeServer) Connect(ctx context.Context, req *md.ConnectionRequest) (*m
 
 	// Return Blank Response - Needs No Response Struc
 	return &md.NoResponse{}, nil
+}
+
+// ** ─── Node Status Checks ────────────────────────────────────────────────────────
+// Sets Node to be Connected Status
+func (s *NodeServer) setConnected(val bool) {
+	// Update Status
+	su := s.account.SetConnected(val)
+
+	// Callback Status
+	s.statusEvents <- su
+}
+
+// Sets Node to be Available Status
+func (s *NodeServer) setAvailable(val bool) {
+	// Update Status
+	su := s.account.SetAvailable(val)
+
+	// Callback Status
+	s.statusEvents <- su
+}
+
+// Sets Node to be (Provided) Status
+func (s *NodeServer) setStatus(newStatus md.Status) {
+	// Set Status
+	su := s.account.SetStatus(newStatus)
+
+	// Callback Status
+	s.statusEvents <- su
 }

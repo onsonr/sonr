@@ -21,6 +21,26 @@ func (tm *userLinker) isValidMessage(msg *ps.Message) bool {
 	return tm.host.ID() != msg.ReceivedFrom && tm.HasPeerID(msg.ReceivedFrom)
 }
 
+// Method IsReady checks if Active Device Data is ready
+func (al *userLinker) IsReady() bool {
+	return al.CurrentDevice().IsReady()
+}
+
+// SetAvailable Method Sets Account to be Available
+func (al *userLinker) SetAvailable(val bool) *md.StatusEvent {
+	return al.currentDevice.SetAvailable(val)
+}
+
+// SetConnected Method Sets Account to be Connected
+func (al *userLinker) SetConnected(val bool) *md.StatusEvent {
+	return al.currentDevice.SetConnected(val)
+}
+
+// SetStatus Method Updates Status of Account
+func (al *userLinker) SetStatus(newStatus md.Status) *md.StatusEvent {
+	return al.currentDevice.SetStatus(newStatus)
+}
+
 // SignLinkPacket Method Signs Packet with Keys
 func (al *userLinker) SignLinkPacket(resp *md.LinkResponse) *md.LinkPacket {
 	u := al.user

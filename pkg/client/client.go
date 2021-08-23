@@ -19,7 +19,7 @@ import (
 // Interface: Main Client handles Networking/Identity/Streams
 type Client interface {
 	// Client Methods
-	Connect(cr *md.ConnectionRequest, a ac.Account) (*md.Peer, *md.SonrError)
+	Connect(cr *md.ConnectionRequest) (*md.Peer, *md.SonrError)
 	Bootstrap(cr *md.ConnectionRequest) (*tp.RoomManager, *md.SonrError)
 	Mail(req *md.MailboxRequest) (*md.MailboxResponse, *md.SonrError)
 	Link(invite *md.LinkRequest, t *tp.RoomManager) (*md.LinkResponse, *md.SonrError)
@@ -53,7 +53,6 @@ type client struct {
 	call     md.Callback
 	isLinker bool
 	account  ac.Account
-	device   *md.Device
 	session  *md.Session
 	request  *md.ConnectionRequest
 
@@ -63,23 +62,22 @@ type client struct {
 }
 
 // NewClient Initializes Node with Router ^
-func NewClient(ctx context.Context, u *md.Device, call md.Callback) Client {
+func NewClient(ctx context.Context, a ac.Account, call md.Callback) Client {
 	return &client{
 		ctx:    ctx,
 		call:   call,
-		device: u,
+		account: a,
 	}
 }
 
 // Connects Host Node from Private Key
-func (c *client) Connect(cr *md.ConnectionRequest, a ac.Account) (*md.Peer, *md.SonrError) {
+func (c *client) Connect(cr *md.ConnectionRequest) (*md.Peer, *md.SonrError) {
 	// Set Request
 	c.request = cr
 	c.isLinker = cr.GetIsLinker()
-	c.account = a
 
 	// Set Host
-	hn, err := net.NewHost(c.ctx, cr, c.device.AccountKeys(), c)
+	hn, err := net.NewHost(c.ctx, cr, c.account.AccountKeys(), c)
 	if err != nil {
 		return nil, err
 	}
@@ -91,7 +89,7 @@ func (c *client) Connect(cr *md.ConnectionRequest, a ac.Account) (*md.Peer, *md.
 	}
 
 	// Set Peer
-	peer, _ := c.device.SetPeer(hn.ID(), maddr, cr.GetIsLinker())
+	peer, _ := c.account.CurrentDevice().SetPeer(hn.ID(), maddr, cr.GetIsLinker())
 
 	// Set Host
 	c.Host = hn
@@ -101,20 +99,20 @@ func (c *client) Connect(cr *md.ConnectionRequest, a ac.Account) (*md.Peer, *md.
 // Begins Bootstrapping HostNode
 func (c *client) Bootstrap(cr *md.ConnectionRequest) (*tp.RoomManager, *md.SonrError) {
 	// Bootstrap Host
-	err := c.Host.Bootstrap(c.device.GetId())
+	err := c.Host.Bootstrap(c.account.CurrentDevice().GetId())
 	if err != nil {
 		return nil, err
 	}
 
 	// Start Services
-	s, err := srv.NewService(c.ctx, c.Host, c.device, c.request, c)
+	s, err := srv.NewService(c.ctx, c.Host, c.account.CurrentDevice(), c.request, c)
 	if err != nil {
 		return nil, err
 	}
 	c.Service = s
 
 	// Join Local
-	RoomName := c.device.NewLocalRoom(cr.GetServiceOptions())
+	RoomName := c.account.CurrentDevice().NewLocalRoom(cr.GetServiceOptions())
 	if t, err := tp.JoinRoom(c.ctx, c.Host, c.account, RoomName, c); err != nil {
 		return nil, err
 	} else {
@@ -188,7 +186,7 @@ func (c *client) Invite(invite *md.InviteRequest, t *tp.RoomManager) *md.SonrErr
 
 					// Start New Session
 					invite.SetProtocol(md.SonrProtocol_LocalTransfer, id)
-					c.session = md.NewOutSession(c.device, invite, c)
+					c.session = md.NewOutSession(c.account.CurrentDevice(), invite, c)
 				}
 
 				// Run Routine

@@ -75,10 +75,6 @@ func (al *userLinker) GroupKeys() *md.KeyPair {
 	return al.user.GetKeyChain().GetGroup()
 }
 
-// Method IsReady checks if Active Device Data is ready
-func (al *userLinker) IsReady() bool {
-	return al.CurrentDevice().IsReady()
-}
 
 // Method Returns Profile Last Name
 func (al *userLinker) LastName() string {

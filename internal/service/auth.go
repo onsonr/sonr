@@ -90,6 +90,7 @@ func (tm *serviceClient) Invite(id peer.ID, inv *md.InviteRequest) error {
 		// Call to Peer
 		err = rpcClient.Call(id, util.AUTH_RPC_SERVICE, util.AUTH_METHOD_INVITE, args, &reply)
 		if err != nil {
+			md.LogError(err)
 			return err
 		}
 
@@ -103,6 +104,7 @@ func (tm *serviceClient) Invite(id peer.ID, inv *md.InviteRequest) error {
 		// Await Response
 		call := <-done
 		if call.Error != nil {
+			md.LogError(err)
 			return err
 		}
 		tm.handler.OnReply(id, reply.InvReply)
@@ -116,6 +118,7 @@ func (ts *AuthService) InviteWith(ctx context.Context, args AuthServiceArgs, rep
 	inv := md.InviteRequest{}
 	err := proto.Unmarshal(args.Invite, &inv)
 	if err != nil {
+		md.LogError(err)
 		return err
 	}
 
@@ -132,6 +135,7 @@ func (ts *AuthService) InviteWith(ctx context.Context, args AuthServiceArgs, rep
 		// Convert Protobuf to bytes
 		msgBytes, err := proto.Marshal(resp)
 		if err != nil {
+			md.LogError(err)
 			return err
 		}
 
@@ -145,6 +149,7 @@ func (ts *AuthService) InviteWith(ctx context.Context, args AuthServiceArgs, rep
 			// Convert Protobuf to bytes
 			msgBytes, err := proto.Marshal(m)
 			if err != nil {
+				md.LogError(err)
 				return err
 			}
 

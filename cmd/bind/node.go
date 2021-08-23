@@ -20,7 +20,6 @@ type Node struct {
 	// Client
 	account ac.Account
 	client  sc.Client
-	device  *md.Device
 	state   md.Lifecycle
 
 	// Rooms
@@ -42,30 +41,23 @@ func Initialize(reqBytes []byte, call Callback) *Node {
 	// Initialize Logger
 	md.InitLogger(req)
 
-	// Initialize Device
-	device := req.GetDevice()
-
-	// Initialize Node
-	mn := &Node{
-		call:   call,
-		ctx:    context.Background(),
-		groups: make(map[string]*tp.RoomManager, 10),
-		state:  md.Lifecycle_ACTIVE,
-		device: device,
-	}
-
 	// Create User
-	u, serr := ac.OpenAccount(req, device)
+	u, serr := ac.OpenAccount(req, req.GetDevice())
 	if serr != nil {
-		mn.handleError(serr)
+		md.LogError(serr.Error)
 		return nil
 	}
-
-	mn.account = u
-	mn.device = device
+	// Initialize Node
+	mn := &Node{
+		call:    call,
+		ctx:     context.Background(),
+		groups:  make(map[string]*tp.RoomManager, 10),
+		state:   md.Lifecycle_ACTIVE,
+		account: u,
+	}
 
 	// Create Client
-	mn.client = sc.NewClient(mn.ctx, mn.device, mn.callback())
+	mn.client = sc.NewClient(mn.ctx, mn.account, mn.callback())
 	return mn
 }
 
@@ -78,11 +70,8 @@ func (n *Node) Connect(data []byte) {
 		md.LogFatal(err)
 	}
 
-	// Update User with Connection Request
-	n.device.SetConnection(req)
-
 	// Connect Host
-	peer, serr := n.client.Connect(req, n.account)
+	peer, serr := n.client.Connect(req)
 	if serr != nil {
 		n.handleError(serr)
 		n.setConnected(false)
@@ -105,4 +94,47 @@ func (n *Node) Connect(data []byte) {
 		n.handleError(err)
 		n.setAvailable(false)
 	}
+}
+
+// ** ─── Node Status Checks ────────────────────────────────────────────────────────
+// Sets Node to be Connected Status
+func (n *Node) setConnected(val bool) {
+	// Update Status
+	su := n.account.SetConnected(val)
+
+	// Callback Status
+	data, err := proto.Marshal(su)
+	if err != nil {
+		n.handleError(md.NewError(err, md.ErrorEvent_MARSHAL))
+		return
+	}
+	n.call.OnStatus(data)
+}
+
+// Sets Node to be Available Status
+func (n *Node) setAvailable(val bool) {
+	// Update Status
+	su := n.account.SetAvailable(val)
+
+	// Callback Status
+	data, err := proto.Marshal(su)
+	if err != nil {
+		n.handleError(md.NewError(err, md.ErrorEvent_MARSHAL))
+		return
+	}
+	n.call.OnStatus(data)
+}
+
+// Sets Node to be (Provided) Status
+func (n *Node) setStatus(newStatus md.Status) {
+	// Set Status
+	su := n.account.SetStatus(newStatus)
+
+	// Callback Status
+	data, err := proto.Marshal(su)
+	if err != nil {
+		n.handleError(md.NewError(err, md.ErrorEvent_MARSHAL))
+		return
+	}
+	n.call.OnStatus(data)
 }

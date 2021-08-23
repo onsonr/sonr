@@ -38,7 +38,6 @@ type Account interface {
 	DeviceKeys() *md.KeyPair
 	DevicePubKey() *md.KeyPair_Public
 	GroupKeys() *md.KeyPair
-	IsReady() bool
 	KeyChain() *md.KeyChain
 	SignLinkPacket(resp *md.LinkResponse) *md.LinkPacket
 	SignAuth(req *md.AuthRequest) *md.AuthResponse
@@ -55,6 +54,12 @@ type Account interface {
 	NewDefaultUpdateEvent(room *md.Room, id peer.ID) *md.RoomEvent
 	NewUpdateEvent(room *md.Room, id peer.ID) *md.RoomEvent
 	NewExitEvent(room *md.Room, id peer.ID) *md.RoomEvent
+
+	// Status Management
+	IsReady() bool
+	SetAvailable(val bool) *md.StatusEvent
+	SetConnected(val bool) *md.StatusEvent
+	SetStatus(newStatus md.Status) *md.StatusEvent
 }
 
 type userLinker struct {
@@ -151,6 +156,7 @@ func (al *userLinker) JoinNetwork(h sh.HostNode, cr *md.ConnectionRequest, p *md
 	al.user.PushToken = cr.GetPushToken()
 	al.user.SName = cr.GetContact().GetProfile().GetSName()
 	al.user.Contact = cr.GetContact()
+	al.currentDevice.SetConnection(cr)
 
 	// Set Member
 	al.user.Member.Active = p
