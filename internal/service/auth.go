@@ -203,7 +203,7 @@ func (ts *AuthService) LinkWith(ctx context.Context, args AuthServiceArgs, reply
 
 		// Handle Status
 		ok, result := ts.device.VerifyLink(&inv)
-		res, err := proto.Marshal(result)
+		buf, err := proto.Marshal(result)
 		if err != nil {
 			return err
 		}
