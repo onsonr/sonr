@@ -5,6 +5,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	rpc "github.com/libp2p/go-libp2p-gorpc"
+	ac "github.com/sonr-io/core/pkg/account"
 	md "github.com/sonr-io/core/pkg/models"
 	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/proto"
@@ -26,7 +27,7 @@ type ExchangeService struct {
 	call    RoomHandler
 	linkers []*md.Peer
 	room    GetRoomFunc
-	device  *md.Device
+	account ac.Account
 }
 
 // Initialize Exchange Service by Room Type
@@ -34,7 +35,7 @@ func (rm *RoomManager) initExchange() *md.SonrError {
 	// Start Exchange RPC Server
 	exchangeServer := rpc.NewServer(rm.host.Host(), util.EXCHANGE_PROTOCOL)
 	esv := ExchangeService{
-		device:  rm.device,
+		account: rm.account,
 		call:    rm.handler,
 		linkers: rm.linkers,
 		room:    rm.Room,
@@ -117,7 +118,7 @@ func (es *ExchangeService) ExchangeWith(ctx context.Context, args ExchangeServic
 	}
 
 	// Set Message data and call done
-	buf, err := es.device.GetPeer().Buffer()
+	buf, err := proto.Marshal(es.account.Member())
 	if err != nil {
 		md.LogError(err)
 		return err

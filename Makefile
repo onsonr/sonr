@@ -131,20 +131,3 @@ clean:
 	mkdir -p $(BIND_DIR_IOS)
 	mkdir -p $(BIND_DIR_ANDROID)
 	cd $(CORE_BIND_DIR) && gomobile init
-
-##
-##
-## Shortcuts   : (b) => bind
-##               └─ (bi) => bind.ios
-##               └─ (ba) => bind.android
-##               (p) => protobuf
-##               (r) => release
-##               (u) => upgrade
-##               (c) => clean
-b:bind
-bi:bind.ios
-ba:bind.android
-p:protobuf
-r:release
-u:upgrade
-c:clean

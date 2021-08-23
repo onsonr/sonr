@@ -130,6 +130,7 @@ func OpenAccount(ir *md.InitializeRequest, d *md.Device) (Account, *md.SonrError
 			Member: &md.Member{
 				Reach:      md.Member_ONLINE,
 				Associated: make([]*md.Peer, 0),
+				
 			},
 		}
 
@@ -185,12 +186,7 @@ func (al *userLinker) JoinNetwork(h sh.HostNode) *md.SonrError {
 
 // Update Account after Device Peer set for Member
 func (al *userLinker) HandleSetPeer(p *md.Peer, isPrimary bool) {
-	u := al.user
-	if isPrimary {
-		u.Member.Active = p
-	} else {
-		u.Member.Associated = append(u.Member.Associated, p)
-	}
+	al.user.Member.Active = p
 	al.Save()
 }
 
@@ -252,10 +248,9 @@ func (al *userLinker) SignAuth(req *md.AuthRequest) *md.AuthResponse {
 
 // UpdateContact Method Updates User Contact
 func (al *userLinker) UpdateContact(c *md.Contact) {
-	u := al.user
-	u.Contact = c
-	u.GetMember().UpdateProfile(c)
-	u.Member.UpdateProfile(c)
+	al.user.Contact = c
+	al.user.GetMember().UpdateProfile(c)
+	al.user.Member.UpdateProfile(c)
 	al.Save()
 }
 

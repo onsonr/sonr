@@ -13,12 +13,14 @@ import (
 
 // Set the User with ConnectionRequest
 func (al *userLinker) SetConnection(cr *md.ConnectionRequest) {
-
 	// Initialize Account Params
 	al.user.PushToken = cr.GetPushToken()
 	al.user.SName = cr.GetContact().GetProfile().GetSName()
 	al.user.Contact = cr.GetContact()
+
+	// Set Member
 	al.user.Member.PushToken = cr.GetPushToken()
+	al.user.Member.SName = cr.GetContact().GetProfile().GetSName()
 	al.Save()
 
 	// Initialize Linker Params
