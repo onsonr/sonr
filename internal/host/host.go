@@ -126,7 +126,7 @@ func NewHost(ctx context.Context, req *md.ConnectionRequest, kp *md.KeyPair, hh 
 	return hn, nil
 }
 
-// # Failsafe when unable to bind to External IP Address ^ //
+// Failsafe when unable to bind to External IP Address ^ //
 func newRelayedHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair, hh HostHandler) (HostNode, *md.SonrError) {
 	// Initialize DHT
 	var kdhtRef *dht.IpfsDHT

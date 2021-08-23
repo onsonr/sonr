@@ -6,12 +6,12 @@ import (
 )
 
 // ** ─── Node Status Checks ────────────────────────────────────────────────────────
-// # Checks if Node is Ready for Actions
+// Checks if Node is Ready for Actions
 func (n *Node) isReady() bool {
 	return n.device.IsNotStatus(md.Status_STANDBY) || n.device.IsNotStatus(md.Status_FAILED)
 }
 
-// # Sets Node to be Connected Status
+// Sets Node to be Connected Status
 func (n *Node) setConnected(val bool) {
 	// Update Status
 	su := n.device.SetConnected(val)
@@ -25,7 +25,7 @@ func (n *Node) setConnected(val bool) {
 	n.call.OnStatus(data)
 }
 
-// # Sets Node to be Available Status
+// Sets Node to be Available Status
 func (n *Node) setAvailable(val bool) {
 	// Update Status
 	su := n.device.SetAvailable(val)
@@ -39,7 +39,7 @@ func (n *Node) setAvailable(val bool) {
 	n.call.OnStatus(data)
 }
 
-// # Sets Node to be (Provided) Status
+// Sets Node to be (Provided) Status
 func (n *Node) setStatus(newStatus md.Status) {
 	// Set Status
 	su := n.device.SetStatus(newStatus)

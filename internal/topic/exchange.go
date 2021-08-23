@@ -30,7 +30,7 @@ type ExchangeService struct {
 	account ac.Account
 }
 
-// Initialize Exchange Service by Room Type
+// initExchange Initializes Exchange Service by Room Type
 func (rm *RoomManager) initExchange() *md.SonrError {
 	// Start Exchange RPC Server
 	exchangeServer := rpc.NewServer(rm.host.Host(), util.EXCHANGE_PROTOCOL)
@@ -56,7 +56,7 @@ func (rm *RoomManager) initExchange() *md.SonrError {
 	return nil
 }
 
-// Exchange @ Starts Exchange on Local Peer Join
+// Exchange method Starts Exchange on Local Peer Join
 func (rm *RoomManager) Exchange(id peer.ID, peerBuf []byte) error {
 	// Initialize RPC
 	exchClient := rpc.NewClient(rm.host.Host(), util.EXCHANGE_PROTOCOL)
@@ -96,7 +96,7 @@ func (rm *RoomManager) Exchange(id peer.ID, peerBuf []byte) error {
 	return nil
 }
 
-// ExchangeWith # Calls Exchange on Local Lobby Peer
+// ExchangeWith method Calls Exchange on Local Lobby Peer
 func (es *ExchangeService) ExchangeWith(ctx context.Context, args ExchangeServiceArgs, reply *ExchangeServiceResponse) error {
 	// Peer Data
 	remotePeer := &md.Member{}
@@ -136,7 +136,7 @@ func (es *ExchangeService) HasLinker(q string) bool {
 	return false
 }
 
-// # handleExchangeEvents: listens to Pubsub Events for room
+// handleExchangeEvents method listens to Pubsub Events for room
 func (rm *RoomManager) handleExchangeEvents(ctx context.Context) {
 	// Loop Events
 	for {
@@ -150,7 +150,7 @@ func (rm *RoomManager) handleExchangeEvents(ctx context.Context) {
 
 		// Check Event and Validate not User
 		if rm.isEventJoin(event) {
-			pbuf, err := rm.device.GetPeer().Buffer()
+			pbuf, err := proto.Marshal(rm.account.Member())
 			if err != nil {
 				md.LogError(err)
 				continue
@@ -168,7 +168,7 @@ func (rm *RoomManager) handleExchangeEvents(ctx context.Context) {
 	}
 }
 
-// # handleExchangeMessages: listens for messages on pubsub room subscription
+// handleExchangeMessages method listens for messages on pubsub room subscription
 func (rm *RoomManager) handleExchangeMessages(ctx context.Context) {
 	for {
 		// Get next msg from pub/sub

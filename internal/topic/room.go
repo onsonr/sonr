@@ -28,12 +28,7 @@ type RoomManager struct {
 	subscription *ps.Subscription
 	eventHandler *ps.TopicEventHandler
 	account      ac.Account
-	device       *md.Device
 	handler      RoomHandler
-
-	// Sync
-
-	syncEvents chan *md.SyncEvent
 
 	// Exchange
 	exchange   *ExchangeService
@@ -67,7 +62,7 @@ func JoinRoom(ctx context.Context, h sh.HostNode, ac ac.Account, room *md.Room, 
 	// Create Lobby Manager
 	mgr := &RoomManager{
 		handler:      th,
-		device:       ac.CurrentDevice(),
+		account:      ac,
 		ctx:          ctx,
 		host:         h,
 		eventHandler: handler,

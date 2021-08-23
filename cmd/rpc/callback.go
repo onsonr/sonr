@@ -226,7 +226,7 @@ func (s *NodeServer) OnError(req *md.NoRequest, stream md.NodeService_OnErrorSer
 	}
 }
 
-// # Passes binded Methods to Node
+// Passes binded Methods to Node
 func (s *NodeServer) callback() md.Callback {
 	return md.Callback{
 		OnEvent:    s.handleEvent,
@@ -399,7 +399,7 @@ func (s *NodeServer) handleResponse(buf []byte) {
 	}
 }
 
-// # handleError Callback with handleError instance, and method
+// handleError Callback with handleError instance, and method
 func (s *NodeServer) handleError(errMsg *md.SonrError) {
 	// Check for Error
 	if errMsg.HasError {

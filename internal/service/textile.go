@@ -305,7 +305,7 @@ func (ts *TextileService) readMessage(id string) *md.SonrError {
 	return nil
 }
 
-// # Helper: Creates New Textile Mailbox Config
+// Helper: Creates New Textile Mailbox Config
 func (ts *TextileService) defaultMailConfig() local.Config {
 	return local.Config{
 		Path:      ts.device.WorkingSupportDir(),
@@ -315,12 +315,12 @@ func (ts *TextileService) defaultMailConfig() local.Config {
 	}
 }
 
-// # Helper: Checks if Device Has Mailbox Directory
+// Helper: Checks if Device Has Mailbox Directory
 func (ts *TextileService) hasMailboxDirectory() bool {
 	return ts.device.GetFileSystem().IsDirectory(ts.device.FileSystem.Support, util.TEXTILE_MAILBOX_DIR)
 }
 
-// # Helper: Creates User Auth Context from API Keys
+// Helper: Creates User Auth Context from API Keys
 func newUserAuthCtx(ctx context.Context, keys *md.APIKeys) (context.Context, error) {
 	// Add our device group key to the context
 	ctx = common.NewAPIKeyContext(ctx, keys.TextileKey)
@@ -329,7 +329,7 @@ func newUserAuthCtx(ctx context.Context, keys *md.APIKeys) (context.Context, err
 	return common.CreateAPISigContext(ctx, time.Now().Add(time.Hour), keys.TextileSecret)
 }
 
-// # Helper: Creates Auth Token Context from AuthContext, Client, Identity
+// Helper: Creates Auth Token Context from AuthContext, Client, Identity
 func (ts *TextileService) newTokenCtx() (context.Context, error) {
 	// Generate a new token for the device
 	token, err := ts.client.GetToken(ts.ctxAuth, ts.device.ThreadIdentity())

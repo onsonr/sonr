@@ -91,7 +91,7 @@ func (h *hostNode) MDNS() error {
 	return nil
 }
 
-// # Helper Method checks if Peer AddrInfo is Unknown
+// Helper Method checks if Peer AddrInfo is Unknown
 func (h *hostNode) checkUnknown(pi peer.AddrInfo) bool {
 	// Iterate and Check
 	if len(h.host.Peerstore().Addrs(pi.ID)) > 0 {
@@ -103,7 +103,7 @@ func (h *hostNode) checkUnknown(pi peer.AddrInfo) bool {
 	return true
 }
 
-// # Handle MDNS Peers: Connect to Local MDNS Peers
+// Handle MDNS Peers: Connect to Local MDNS Peers
 // Params: **Read Only** Peer AddrInfo Channel
 func (h *hostNode) handleDiscoveredPeers(peerChan <-chan peer.AddrInfo) {
 	for {
