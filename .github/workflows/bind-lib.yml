@@ -1,4 +1,4 @@
-name: Bind Workflow
+name: Bind Framework Workflow 📦
 
 # Controls when the action will run.
 on:
@@ -135,12 +135,12 @@ jobs:
         mv $IOS_ZIP ${{ github.workspace }}/build/
         ls -R
       env:
-        ANDROID_ZIP: sonr-node_${{ steps.get_version.outputs.version-without-v }}_android.zip
-        IOS_ZIP: sonr-node_${{ steps.get_version.outputs.version-without-v }}_ios.zip
+        ANDROID_ZIP: sonr-bind_${{ steps.get_version.outputs.version-without-v }}_android.zip
+        IOS_ZIP: sonr-bind_${{ steps.get_version.outputs.version-without-v }}_ios.zip
 
     - uses: ncipollo/release-action@v1
       with:
         allowUpdates: true
         artifacts: "${{ github.workspace }}/build/*.zip"
         replacesArtifacts: false
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.PAT_GITHUB_TOKEN }}
