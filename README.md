@@ -164,7 +164,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 Prad Nukala - [TheSonrApp](https://twitter.com/TheSonrApp) - pradn@sonr.io
 
-Project Link: [Github](https://github.com/sonr-io/core) - [Discord](https://github.com/sonr-io/core) - [Website](https://github.com/sonr-io/core)
+Project Link: [Github](https://github.com/sonr-io/core) - [Discord](https://sonr.io) - [Website](https://sonr.io)
 
 
 

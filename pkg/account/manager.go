@@ -20,10 +20,8 @@ type Account interface {
 	// Config
 	APIKeys() *md.APIKeys
 	FilePath() string
-	HandleSetPeer(peer *md.Peer, isPrimary bool)
 	Save() error
-	SetConnection(cr *md.ConnectionRequest)
-	JoinNetwork(h sh.HostNode) *md.SonrError
+	JoinNetwork(h sh.HostNode, cr *md.ConnectionRequest, p *md.Peer) *md.SonrError
 
 	// Information
 	Member() *md.Member
@@ -130,7 +128,6 @@ func OpenAccount(ir *md.InitializeRequest, d *md.Device) (Account, *md.SonrError
 			Member: &md.Member{
 				Reach:      md.Member_ONLINE,
 				Associated: make([]*md.Peer, 0),
-				
 			},
 		}
 
@@ -148,10 +145,24 @@ func OpenAccount(ir *md.InitializeRequest, d *md.Device) (Account, *md.SonrError
 	}
 }
 
-func (al *userLinker) JoinNetwork(h sh.HostNode) *md.SonrError {
-	// Set host and context
-	al.host = h
+// JoinNetwork Method Joins Network, Updates Profile, Sets Membership
+func (al *userLinker) JoinNetwork(h sh.HostNode, cr *md.ConnectionRequest, p *md.Peer) *md.SonrError {
+	// Initialize Account Params
+	al.user.PushToken = cr.GetPushToken()
+	al.user.SName = cr.GetContact().GetProfile().GetSName()
+	al.user.Contact = cr.GetContact()
+
+	// Set Member
+	al.user.Member.Active = p
+	al.user.Member.UpdateProfile(cr.GetContact())
+	al.Save()
+
+	// Initialize Service Params
 	al.ctx = context.Background()
+	al.host = h
+	al.room = al.user.NewDeviceRoom()
+	al.activeDevices = make(map[peer.ID]*md.Device, 0)
+	al.syncEvents = make(chan *md.SyncEvent)
 
 	// Join Room
 	topic, err := al.host.Pubsub().Join(fmt.Sprintf("/sonr/device/%s", al.user.GetSName()))
@@ -182,12 +193,6 @@ func (al *userLinker) JoinNetwork(h sh.HostNode) *md.SonrError {
 		return serr
 	}
 	return nil
-}
-
-// Update Account after Device Peer set for Member
-func (al *userLinker) HandleSetPeer(p *md.Peer, isPrimary bool) {
-	al.user.Member.Active = p
-	al.Save()
 }
 
 // HandleLinkPacket Updates Account after LinkPacket is received

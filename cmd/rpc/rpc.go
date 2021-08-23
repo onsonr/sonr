@@ -125,18 +125,16 @@ func (s *NodeServer) Initialize(ctx context.Context, req *md.InitializeRequest) 
 // Connect method starts this nodes host
 func (s *NodeServer) Connect(ctx context.Context, req *md.ConnectionRequest) (*md.NoResponse, error) {
 	// Update User with Connection Request
-	s.account.SetConnection(req)
 	s.device.SetConnection(req)
 
 	// Connect Host
-	peer, isPrimary, serr := s.client.Connect(req, s.account)
+	peer, serr := s.client.Connect(req, s.account)
 	if serr != nil {
 		s.handleError(serr)
 		s.setConnected(false)
 	} else {
 		// Update Status
 		s.setConnected(true)
-		s.account.HandleSetPeer(peer, isPrimary)
 	}
 
 	// Bootstrap Node
@@ -146,6 +144,12 @@ func (s *NodeServer) Connect(ctx context.Context, req *md.ConnectionRequest) (*m
 		s.setAvailable(false)
 	} else {
 		s.setAvailable(true)
+	}
+
+	// Join Account Network
+	if err := s.account.JoinNetwork(s.client.GetHost(), req, peer); err != nil {
+		s.handleError(err)
+		s.setAvailable(false)
 	}
 
 	// Return Blank Response - Needs No Response Struc

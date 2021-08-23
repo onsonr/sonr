@@ -19,7 +19,7 @@ import (
 // Interface: Main Client handles Networking/Identity/Streams
 type Client interface {
 	// Client Methods
-	Connect(cr *md.ConnectionRequest, a ac.Account) (*md.Peer, bool, *md.SonrError)
+	Connect(cr *md.ConnectionRequest, a ac.Account) (*md.Peer, *md.SonrError)
 	Bootstrap(cr *md.ConnectionRequest) (*tp.RoomManager, *md.SonrError)
 	Mail(req *md.MailboxRequest) (*md.MailboxResponse, *md.SonrError)
 	Link(invite *md.LinkRequest, t *tp.RoomManager) (*md.LinkResponse, *md.SonrError)
@@ -39,6 +39,9 @@ type Client interface {
 	OnResponded(*md.InviteRequest)
 	OnProgress([]byte)
 	OnCompleted(network.Stream, protocol.ID, *md.CompleteEvent)
+
+	// Properties
+	GetHost() net.HostNode
 }
 
 // Struct: Main Client handles Networking/Identity/Streams
@@ -69,7 +72,7 @@ func NewClient(ctx context.Context, u *md.Device, call md.Callback) Client {
 }
 
 // Connects Host Node from Private Key
-func (c *client) Connect(cr *md.ConnectionRequest, a ac.Account) (*md.Peer, bool, *md.SonrError) {
+func (c *client) Connect(cr *md.ConnectionRequest, a ac.Account) (*md.Peer, *md.SonrError) {
 	// Set Request
 	c.request = cr
 	c.isLinker = cr.GetIsLinker()
@@ -78,21 +81,21 @@ func (c *client) Connect(cr *md.ConnectionRequest, a ac.Account) (*md.Peer, bool
 	// Set Host
 	hn, err := net.NewHost(c.ctx, cr, c.device.AccountKeys(), c)
 	if err != nil {
-		return nil, false, err
+		return nil, err
 	}
 
 	// Get MultiAddrs
 	maddr, err := hn.MultiAddr()
 	if err != nil {
-		return nil, false, err
+		return nil, err
 	}
 
 	// Set Peer
-	peer, isPrimary := c.device.SetPeer(hn.ID(), maddr, cr.GetIsLinker())
+	peer, _ := c.device.SetPeer(hn.ID(), maddr, cr.GetIsLinker())
 
 	// Set Host
 	c.Host = hn
-	return peer, isPrimary, nil
+	return peer, nil
 }
 
 // Begins Bootstrapping HostNode
@@ -109,11 +112,6 @@ func (c *client) Bootstrap(cr *md.ConnectionRequest) (*tp.RoomManager, *md.SonrE
 		return nil, err
 	}
 	c.Service = s
-
-	// Join Account Network
-	if err := c.account.JoinNetwork(c.Host); err != nil {
-		return nil, err
-	}
 
 	// Join Local
 	RoomName := c.device.NewLocalRoom(cr.GetServiceOptions())
@@ -305,4 +303,9 @@ func (c *client) sendPeriodicRoomEvents(t *tp.RoomManager) {
 		time.Sleep(util.AUTOUPDATE_INTERVAL)
 		md.GetState()
 	}
+}
+
+// Respond Sends a Response to Service
+func (c *client) GetHost() net.HostNode {
+	return c.Host
 }

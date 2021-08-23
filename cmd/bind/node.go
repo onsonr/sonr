@@ -79,18 +79,16 @@ func (n *Node) Connect(data []byte) {
 	}
 
 	// Update User with Connection Request
-	n.account.SetConnection(req)
 	n.device.SetConnection(req)
 
 	// Connect Host
-	peer, isPrimary, serr := n.client.Connect(req, n.account)
+	peer, serr := n.client.Connect(req, n.account)
 	if serr != nil {
 		n.handleError(serr)
 		n.setConnected(false)
 	} else {
 		// Update Status
 		n.setConnected(true)
-		n.account.HandleSetPeer(peer, isPrimary)
 	}
 
 	// Bootstrap Node
@@ -100,5 +98,11 @@ func (n *Node) Connect(data []byte) {
 		n.setAvailable(false)
 	} else {
 		n.setAvailable(true)
+	}
+
+	// Join Account Network
+	if err := n.account.JoinNetwork(n.client.GetHost(), req, peer); err != nil {
+		n.handleError(err)
+		n.setAvailable(false)
 	}
 }

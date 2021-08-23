@@ -1,7 +1,6 @@
 package account
 
 import (
-	"context"
 	"os"
 	"path"
 
@@ -10,25 +9,6 @@ import (
 	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/proto"
 )
-
-// Set the User with ConnectionRequest
-func (al *userLinker) SetConnection(cr *md.ConnectionRequest) {
-	// Initialize Account Params
-	al.user.PushToken = cr.GetPushToken()
-	al.user.SName = cr.GetContact().GetProfile().GetSName()
-	al.user.Contact = cr.GetContact()
-
-	// Set Member
-	al.user.Member.PushToken = cr.GetPushToken()
-	al.user.Member.SName = cr.GetContact().GetProfile().GetSName()
-	al.Save()
-
-	// Initialize Linker Params
-	al.ctx = context.Background()
-	al.room = al.user.NewDeviceRoom()
-	al.activeDevices = make(map[peer.ID]*md.Device, 0)
-	al.syncEvents = make(chan *md.SyncEvent)
-}
 
 // Method Returns Account KeyPair
 func (al *userLinker) AccountKeys() *md.KeyPair {
