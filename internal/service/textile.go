@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/sonr-io/core/internal/host"
-	md "github.com/sonr-io/core/pkg/models"
+	"github.com/sonr-io/core/pkg/data"
 	"github.com/sonr-io/core/pkg/util"
 	"github.com/textileio/go-threads/api/client"
 	"github.com/textileio/go-threads/core/thread"
@@ -32,11 +32,11 @@ type TextileService struct {
 	ctxToken context.Context
 
 	// Parameters
-	apiKeys     *md.APIKeys
-	device      *md.Device
+	apiKeys     *data.APIKeys
+	device      *data.Device
 	host        host.HostNode
-	options     *md.ConnectionRequest_ServiceOptions
-	onConnected md.OnConnected
+	options     *data.ConnectionRequest_ServiceOptions
+	onConnected data.OnConnected
 	handler     ServiceHandler
 	pushService *PushService
 
@@ -47,9 +47,9 @@ type TextileService struct {
 }
 
 // Starts New Textile Instance
-func (sc *serviceClient) StartTextile() *md.SonrError {
+func (sc *serviceClient) StartTextile() *data.SonrError {
 	// Logging
-	md.LogActivate("Textile Service")
+	data.LogActivate("Textile Service")
 
 	// Initialize
 	textile := &TextileService{
@@ -73,19 +73,19 @@ func (sc *serviceClient) StartTextile() *md.SonrError {
 		// Dial GRPC
 		textile.client, err = client.NewClient(util.TEXTILE_API_URL, grpc.WithTransportCredentials(creds), grpc.WithPerRPCCredentials(auth))
 		if err != nil {
-			return md.NewError(err, md.ErrorEvent_TEXTILE_START_CLIENT)
+			return data.NewError(err, data.ErrorEvent_TEXTILE_START_CLIENT)
 		}
 
 		// Create Auth Context
 		textile.ctxAuth, err = newUserAuthCtx(context.Background(), textile.apiKeys)
 		if err != nil {
-			return md.NewError(err, md.ErrorEvent_TEXTILE_USER_CTX)
+			return data.NewError(err, data.ErrorEvent_TEXTILE_USER_CTX)
 		}
 
 		// Create Token Context
 		textile.ctxToken, err = textile.newTokenCtx()
 		if err != nil {
-			return md.NewError(err, md.ErrorEvent_TEXTILE_TOKEN_CTX)
+			return data.NewError(err, data.ErrorEvent_TEXTILE_TOKEN_CTX)
 		}
 
 		// Initialize Threads
@@ -109,29 +109,29 @@ func (ts *TextileService) PubKey() thread.PubKey {
 }
 
 // Initializes Threads
-func (ts *TextileService) InitThreads(sc *serviceClient) *md.SonrError {
+func (ts *TextileService) InitThreads(sc *serviceClient) *data.SonrError {
 	// Verify Ready to Init
 	if ts.ctxToken != nil {
 		// Generate a new thread ID
 		threadID := thread.NewIDV1(thread.Raw, 32)
 		err := ts.client.NewDB(ts.ctxToken, threadID, db.WithNewManagedName("Sonr-Users"))
 		if err != nil {
-			return md.NewError(err, md.ErrorEvent_THREADS_START_NEW)
+			return data.NewError(err, data.ErrorEvent_THREADS_START_NEW)
 		}
 
 		// Log DB Info
-		md.LogSuccess("Threads Activation")
+		data.LogSuccess("Threads Activation")
 		isThreadsReady = true
 	}
 	return nil
 }
 
 // Initializes Mailbox
-func (ts *TextileService) InitMail() *md.SonrError {
+func (ts *TextileService) InitMail() *data.SonrError {
 	// Verify Ready to Initialize
 	if ts.options.GetMailbox() {
 		// Log
-		md.LogActivate("Textile Mailbox")
+		data.LogActivate("Textile Mailbox")
 
 		// Setup the mail lib
 		ts.mail = local.NewMail(cmd.NewClients(util.TEXTILE_API_URL, true, util.TEXTILE_MINER_IDX), local.DefaultConfConfig())
@@ -141,30 +141,30 @@ func (ts *TextileService) InitMail() *md.SonrError {
 			// Return Existing Mailbox
 			mailbox, err := ts.mail.GetLocalMailbox(context.Background(), ts.device.WorkingSupportDir())
 			if err != nil {
-				return md.NewError(err, md.ErrorEvent_MAILBOX_START_EXISTING)
+				return data.NewError(err, data.ErrorEvent_MAILBOX_START_EXISTING)
 			}
 
 			// Set Mailbox and Update Status
 			ts.mailbox = mailbox
 			isMailReady = true
-			md.LogSuccess("Mailbox Activation")
+			data.LogSuccess("Mailbox Activation")
 
 			// Handle Mailbox Events
 			ts.handleMailboxEvents()
 		} else {
 			// Logging
-			md.LogInfo("Mailbox not found, creating new one...")
+			data.LogInfo("Mailbox not found, creating new one...")
 
 			// Create a new mailbox with config
 			mailbox, err := ts.mail.NewMailbox(context.Background(), ts.defaultMailConfig())
 			if err != nil {
-				return md.NewError(err, md.ErrorEvent_MAILBOX_START_NEW)
+				return data.NewError(err, data.ErrorEvent_MAILBOX_START_NEW)
 			}
 
 			// Set Mailbox and Update Status
 			ts.mailbox = mailbox
 			isMailReady = true
-			md.LogSuccess("Mailbox Activation")
+			data.LogSuccess("Mailbox Activation")
 
 			// Handle Mailbox Events
 			ts.handleMailboxEvents()
@@ -194,12 +194,12 @@ func (ts *TextileService) handleMailboxEvents() {
 	// Start watching (the third param indicates we want to keep watching when offline)
 	state, err := ts.mailbox.WatchInbox(context.Background(), events, true)
 	if err != nil {
-		md.NewError(err, md.ErrorEvent_MAILBOX_EVENT_STATE)
+		data.NewError(err, data.ErrorEvent_MAILBOX_EVENT_STATE)
 		return
 	}
 
 	// Handle Mailbox State
-	md.LogSuccess("Mailbox State Handling")
+	data.LogSuccess("Mailbox State Handling")
 	for s := range state {
 		// Update Connection State
 		connState = s.State
@@ -207,9 +207,9 @@ func (ts *TextileService) handleMailboxEvents() {
 		// handle connectivity state
 		switch s.State {
 		case cmd.Online:
-			md.LogInfo(fmt.Sprintf("Mailbox is Online: %s", s.Err))
+			data.LogInfo(fmt.Sprintf("Mailbox is Online: %s", s.Err))
 		case cmd.Offline:
-			md.LogInfo(fmt.Sprintf("Mailbox is Offline: %s", s.Err))
+			data.LogInfo(fmt.Sprintf("Mailbox is Offline: %s", s.Err))
 		}
 	}
 }
@@ -219,32 +219,32 @@ func (ts *TextileService) onNewMessage(e local.MailboxEvent, state cmd.Connectio
 	// List Total Inbox
 	inbox, err := ts.mailbox.ListInboxMessages(context.Background())
 	if err != nil {
-		md.NewError(err, md.ErrorEvent_MAILBOX_MESSAGE_OPEN)
+		data.NewError(err, data.ErrorEvent_MAILBOX_MESSAGE_OPEN)
 		return
 	}
 
 	// Logging and Open Body
-	md.LogInfo(fmt.Sprintf("Received new message: %s", inbox[0].From))
+	data.LogInfo(fmt.Sprintf("Received new message: %s", inbox[0].From))
 	body, err := inbox[0].Open(context.Background(), ts.mailbox.Identity())
 	if err != nil {
-		md.NewError(err, md.ErrorEvent_MAILBOX_MESSAGE_OPEN)
+		data.NewError(err, data.ErrorEvent_MAILBOX_MESSAGE_OPEN)
 		return
 	}
 
 	// Log Valid Lobby Length
-	md.LogInfo(fmt.Sprintf("Valid Body Length: %d", len(body)))
+	data.LogInfo(fmt.Sprintf("Valid Body Length: %d", len(body)))
 
 	// Unmarshal InviteRequest from JSON
-	invite := md.InviteRequest{}
+	invite := data.InviteRequest{}
 	err = protojson.Unmarshal(body, &invite)
 	if err != nil {
-		md.NewError(err, md.ErrorEvent_MAILBOX_MESSAGE_UNMARSHAL)
+		data.NewError(err, data.ErrorEvent_MAILBOX_MESSAGE_UNMARSHAL)
 	}
 
 	// Send Foreground Event
 	if state == cmd.Online {
 		// Create Mail Event
-		mail := &md.MailEvent{
+		mail := &data.MailEvent{
 			To:        inbox[0].To.String(),
 			From:      inbox[0].From.String(),
 			CreatedAt: int32(inbox[0].CreatedAt.Unix()),
@@ -257,7 +257,7 @@ func (ts *TextileService) onNewMessage(e local.MailboxEvent, state cmd.Connectio
 		ts.handler.OnMail(mail)
 	} else {
 		// Create Mail Event
-		msg := &md.PushMessage{
+		msg := &data.PushMessage{
 			Data: map[string]string{
 				"From":      inbox[0].From.String(),
 				"To":        inbox[0].To.String(),
@@ -274,11 +274,11 @@ func (ts *TextileService) onNewMessage(e local.MailboxEvent, state cmd.Connectio
 }
 
 // Send Mail to Recipient
-func (ts *TextileService) sendMail(to thread.PubKey, buf []byte) *md.SonrError {
+func (ts *TextileService) sendMail(to thread.PubKey, buf []byte) *data.SonrError {
 	// Send Message to Mailbox
 	_, err := ts.mailbox.SendMessage(context.Background(), to, buf)
 	if err != nil {
-		return md.NewError(err, md.ErrorEvent_MAILBOX_MESSAGE_SEND)
+		return data.NewError(err, data.ErrorEvent_MAILBOX_MESSAGE_SEND)
 	}
 
 	// Return Message Info
@@ -286,21 +286,21 @@ func (ts *TextileService) sendMail(to thread.PubKey, buf []byte) *md.SonrError {
 }
 
 // Method sets message in inbox as read
-func (ts *TextileService) deleteMessage(id string) *md.SonrError {
+func (ts *TextileService) deleteMessage(id string) *data.SonrError {
 	// Mark Item as Read
 	err := ts.mailbox.DeleteInboxMessage(context.Background(), id)
 	if err != nil {
-		return md.NewError(err, md.ErrorEvent_MAILBOX_MESSAGE_DELETE)
+		return data.NewError(err, data.ErrorEvent_MAILBOX_MESSAGE_DELETE)
 	}
 	return nil
 }
 
 // Method sets message in inbox as read
-func (ts *TextileService) readMessage(id string) *md.SonrError {
+func (ts *TextileService) readMessage(id string) *data.SonrError {
 	// Mark Item as Read
 	err := ts.mailbox.ReadInboxMessage(context.Background(), id)
 	if err != nil {
-		return md.NewError(err, md.ErrorEvent_MAILBOX_MESSAGE_READ)
+		return data.NewError(err, data.ErrorEvent_MAILBOX_MESSAGE_READ)
 	}
 	return nil
 }
@@ -321,7 +321,7 @@ func (ts *TextileService) hasMailboxDirectory() bool {
 }
 
 // Helper: Creates User Auth Context from API Keys
-func newUserAuthCtx(ctx context.Context, keys *md.APIKeys) (context.Context, error) {
+func newUserAuthCtx(ctx context.Context, keys *data.APIKeys) (context.Context, error) {
 	// Add our device group key to the context
 	ctx = common.NewAPIKeyContext(ctx, keys.TextileKey)
 

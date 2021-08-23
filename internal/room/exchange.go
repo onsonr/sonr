@@ -6,7 +6,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	rpc "github.com/libp2p/go-libp2p-gorpc"
 	ac "github.com/sonr-io/core/pkg/account"
-	md "github.com/sonr-io/core/pkg/models"
+	"github.com/sonr-io/core/pkg/data"
 	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/proto"
 )
@@ -25,13 +25,13 @@ type ExchangeServiceResponse struct {
 type ExchangeService struct {
 	// Current Data
 	call    RoomHandler
-	linkers []*md.Peer
+	linkers []*data.Peer
 	room    GetRoomFunc
 	account ac.Account
 }
 
 // initExchange Initializes Exchange Service by Room Type
-func (rm *RoomManager) initExchange() *md.SonrError {
+func (rm *RoomManager) initExchange() *data.SonrError {
 	// Start Exchange RPC Server
 	exchangeServer := rpc.NewServer(rm.host.Host(), util.EXCHANGE_PROTOCOL)
 	esv := ExchangeService{
@@ -44,7 +44,7 @@ func (rm *RoomManager) initExchange() *md.SonrError {
 	// Register Service
 	err := exchangeServer.RegisterName(util.EXCHANGE_RPC_SERVICE, &esv)
 	if err != nil {
-		return md.NewError(err, md.ErrorEvent_ROOM_RPC)
+		return data.NewError(err, data.ErrorEvent_ROOM_RPC)
 	}
 
 	// Set Service
@@ -69,22 +69,22 @@ func (rm *RoomManager) Exchange(id peer.ID, peerBuf []byte) error {
 	// Call to Peer
 	err := exchClient.Call(id, util.EXCHANGE_RPC_SERVICE, util.EXCHANGE_METHOD_EXCHANGE, args, &reply)
 	if err != nil {
-		md.LogError(err)
+		data.LogError(err)
 		return err
 	}
 
 	// Received Message
-	remotePeer := &md.Member{}
+	remotePeer := &data.Member{}
 	err = proto.Unmarshal(reply.Member, remotePeer)
 
 	// Send Error
 	if err != nil {
-		md.LogError(err)
+		data.LogError(err)
 		return err
 	}
 
 	// Update Peer with new data
-	if remotePeer.Active.Status != md.Peer_PAIRING {
+	if remotePeer.Active.Status != data.Peer_PAIRING {
 		rm.handler.OnRoomEvent(rm.room.NewJoinEvent(remotePeer))
 	} else {
 		// Add Linker if Not Present
@@ -99,15 +99,15 @@ func (rm *RoomManager) Exchange(id peer.ID, peerBuf []byte) error {
 // ExchangeWith method Calls Exchange on Local Lobby Peer
 func (es *ExchangeService) ExchangeWith(ctx context.Context, args ExchangeServiceArgs, reply *ExchangeServiceResponse) error {
 	// Peer Data
-	remotePeer := &md.Member{}
+	remotePeer := &data.Member{}
 	err := proto.Unmarshal(args.Member, remotePeer)
 	if err != nil {
-		md.LogError(err)
+		data.LogError(err)
 		return err
 	}
 
 	// Update Peers with Lobby
-	if remotePeer.Active.Status != md.Peer_PAIRING {
+	if remotePeer.Active.Status != data.Peer_PAIRING {
 		es.call.OnRoomEvent(es.room().NewJoinEvent(remotePeer))
 	} else {
 		// Add Linker if Not Present
@@ -120,7 +120,7 @@ func (es *ExchangeService) ExchangeWith(ctx context.Context, args ExchangeServic
 	// Set Message data and call done
 	buf, err := proto.Marshal(es.account.Member())
 	if err != nil {
-		md.LogError(err)
+		data.LogError(err)
 		return err
 	}
 	reply.Member = buf
@@ -143,7 +143,7 @@ func (rm *RoomManager) handleExchangeEvents(ctx context.Context) {
 		// Get next event
 		event, err := rm.eventHandler.NextPeerEvent(ctx)
 		if err != nil {
-			md.LogError(err)
+			data.LogError(err)
 			rm.eventHandler.Cancel()
 			return
 		}
@@ -152,19 +152,19 @@ func (rm *RoomManager) handleExchangeEvents(ctx context.Context) {
 		if rm.isEventJoin(event) {
 			pbuf, err := proto.Marshal(rm.account.Member())
 			if err != nil {
-				md.LogError(err)
+				data.LogError(err)
 				continue
 			}
 			err = rm.Exchange(event.Peer, pbuf)
 			if err != nil {
-				md.LogError(err)
+				data.LogError(err)
 				continue
 			}
 		} else if rm.isEventExit(event) {
 			rm.handler.OnRoomEvent(rm.room.NewExitEvent(event.Peer.String()))
 
 		}
-		md.GetState().NeedsWait()
+		data.GetState().NeedsWait()
 	}
 }
 
@@ -174,24 +174,24 @@ func (rm *RoomManager) handleExchangeMessages(ctx context.Context) {
 		// Get next msg from pub/sub
 		msg, err := rm.subscription.Next(ctx)
 		if err != nil {
-			md.LogError(err)
+			data.LogError(err)
 			return
 		}
 
 		// Only forward messages delivered by others
 		if rm.isValidMessage(msg) {
 			// Unmarshal RoomEvent
-			m := &md.RoomEvent{}
+			m := &data.RoomEvent{}
 			err = proto.Unmarshal(msg.Data, m)
 			if err != nil {
-				md.LogError(err)
+				data.LogError(err)
 				continue
 			}
 
 			// Check Peer is Online, if not ignore
-			if m.Member.Active.GetStatus() == md.Peer_ONLINE {
+			if m.Member.Active.GetStatus() == data.Peer_ONLINE {
 				rm.handler.OnRoomEvent(m)
-			} else if m.Member.Active.GetStatus() == md.Peer_PAIRING {
+			} else if m.Member.Active.GetStatus() == data.Peer_PAIRING {
 				// Validate Linker not Already Set
 				if !rm.HasLinker(m.Member.Active.PeerID()) {
 					// Append Linkers
@@ -199,6 +199,6 @@ func (rm *RoomManager) handleExchangeMessages(ctx context.Context) {
 				}
 			}
 		}
-		md.GetState().NeedsWait()
+		data.GetState().NeedsWait()
 	}
 }

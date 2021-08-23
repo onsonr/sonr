@@ -1,4 +1,4 @@
-package models
+package data
 
 import (
 	"bufio"
@@ -278,10 +278,10 @@ func (iw *itemWriter) WriteTo(writer msg.WriteCloser) error {
 	return nil
 }
 
-func decodeChunk(data []byte) (bool, []byte, error) {
+func decodeChunk(buf []byte) (bool, []byte, error) {
 	// Unmarshal Bytes into Proto
 	c := &Chunk{}
-	err := proto.Unmarshal(data, c)
+	err := proto.Unmarshal(buf, c)
 	if err != nil {
 		return false, nil, err
 	}

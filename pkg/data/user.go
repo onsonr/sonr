@@ -1,4 +1,4 @@
-package models
+package data
 
 import (
 	"math"
@@ -48,13 +48,6 @@ func (d *Device) Initialize(r *InitializeRequest) (*KeyChain, *SonrError) {
 	} else {
 		return d.newKeyChain()
 	}
-}
-
-// Method Sets Connection for Device
-func (d *Device) SetConnection(cr *ConnectionRequest) {
-	// Initialize Params
-	d.Location = cr.GetLocation()
-	d.Status = Status_IDLE
 }
 
 // Method Checks for Desktop
@@ -281,7 +274,7 @@ func (d *Device) WorkingSupportDir() string {
 }
 
 // Writes a File to Disk and Returns Path
-func (d *Device) WriteKey(data []byte, t KeyPair_Type) (string, *SonrError) {
+func (d *Device) WriteKey(buf []byte, t KeyPair_Type) (string, *SonrError) {
 	// Create File Path
 	path := d.WorkingKeyPath(t)
 
@@ -293,7 +286,7 @@ func (d *Device) WriteKey(data []byte, t KeyPair_Type) (string, *SonrError) {
 }
 
 // Writes a File to Disk and Returns Path for Downloads/Documents
-func (d *Device) WriteFile(name string, data []byte) (string, *SonrError) {
+func (d *Device) WriteFile(name string, buf []byte) (string, *SonrError) {
 	// Create File Path
 	path := d.WorkingFilePath(name)
 

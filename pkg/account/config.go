@@ -5,30 +5,30 @@ import (
 	"path"
 
 	"github.com/libp2p/go-libp2p-core/peer"
-	md "github.com/sonr-io/core/pkg/models"
+	"github.com/sonr-io/core/pkg/data"
 	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/proto"
 )
 
 // Method Returns Account KeyPair
-func (al *userLinker) AccountKeys() *md.KeyPair {
+func (al *userLinker) AccountKeys() *data.KeyPair {
 
 	return al.user.GetKeyChain().GetAccount()
 }
 
 // Return Client API Keys
-func (al *userLinker) APIKeys() *md.APIKeys {
+func (al *userLinker) APIKeys() *data.APIKeys {
 	return al.user.GetApiKeys()
 }
 
 // Method Returns Current Device
-func (al *userLinker) CurrentDevice() *md.Device {
-	return al.currentDevice
+func (al *userLinker) CurrentDevice() *data.Device {
+	return al.user.GetCurrent()
 }
 
 // Method Returns Device KeyPair
-func (al *userLinker) CurrentDeviceKeys() *md.KeyPair {
-	return al.currentDevice.AccountKeys()
+func (al *userLinker) CurrentDeviceKeys() *data.KeyPair {
+	return al.user.GetCurrent().AccountKeys()
 }
 
 // Method Returns DeviceID
@@ -38,13 +38,13 @@ func (al *userLinker) DeviceID() string {
 }
 
 // Method Returns Device KeyPair
-func (al *userLinker) DeviceKeys() *md.KeyPair {
+func (al *userLinker) DeviceKeys() *data.KeyPair {
 
 	return al.user.GetKeyChain().GetDevice()
 }
 
 // Method Returns Device Link Public Key
-func (al *userLinker) DevicePubKey() *md.KeyPair_Public {
+func (al *userLinker) DevicePubKey() *data.KeyPair_Public {
 
 	return al.user.GetKeyChain().GetDevice().GetPublic()
 }
@@ -56,8 +56,8 @@ func (al *userLinker) FilePath() string {
 }
 
 // Method Returns Exportable Keychain for Linked Devices
-func (al *userLinker) ExportKeychain() *md.KeyChain {
-	return &md.KeyChain{
+func (al *userLinker) ExportKeychain() *data.KeyChain {
+	return &data.KeyChain{
 		Account: al.AccountKeys(),
 		Device:  al.DeviceKeys(),
 		Group:   al.GroupKeys(),
@@ -70,11 +70,10 @@ func (al *userLinker) FirstName() string {
 }
 
 // Method Returns Group KeyPair
-func (al *userLinker) GroupKeys() *md.KeyPair {
+func (al *userLinker) GroupKeys() *data.KeyPair {
 
 	return al.user.GetKeyChain().GetGroup()
 }
-
 
 // Method Returns Profile Last Name
 func (al *userLinker) LastName() string {
@@ -83,12 +82,12 @@ func (al *userLinker) LastName() string {
 }
 
 // Method Returns Member
-func (al *userLinker) Member() *md.Member {
+func (al *userLinker) Member() *data.Member {
 	return al.user.GetMember()
 }
 
 // Method Returns Profile
-func (al *userLinker) Profile() *md.Profile {
+func (al *userLinker) Profile() *data.Profile {
 
 	return al.user.GetContact().GetProfile()
 }
@@ -96,7 +95,7 @@ func (al *userLinker) Profile() *md.Profile {
 func (al *userLinker) Save() error {
 
 	// Marshal Account to Protobuf
-	data, err := proto.Marshal(al.user)
+	res, err := proto.Marshal(al.user)
 	if err != nil {
 		return err
 	}
@@ -121,9 +120,9 @@ func (al *userLinker) Save() error {
 }
 
 // NewUpdateEvent Creates Lobby Event with Peer Data ^
-func (al *userLinker) NewUpdateEvent(room *md.Room, id peer.ID) *md.RoomEvent {
-	return &md.RoomEvent{
-		Subject: md.RoomEvent_UPDATE,
+func (al *userLinker) NewUpdateEvent(room *data.Room, id peer.ID) *data.RoomEvent {
+	return &data.RoomEvent{
+		Subject: data.RoomEvent_UPDATE,
 		Member:  al.Member(),
 		Id:      id.String(),
 		Room:    room,
@@ -131,23 +130,23 @@ func (al *userLinker) NewUpdateEvent(room *md.Room, id peer.ID) *md.RoomEvent {
 }
 
 // NewDefaultUpdateEvent Updates Peer with Default Position and Returns Lobby Event with Peer Data ^
-func (al *userLinker) NewDefaultUpdateEvent(room *md.Room, id peer.ID) *md.RoomEvent {
+func (al *userLinker) NewDefaultUpdateEvent(room *data.Room, id peer.ID) *data.RoomEvent {
 	// Update Peer
-	al.currentDevice.UpdatePosition(md.DefaultPosition().Parameters())
+	al.user.GetCurrent().UpdatePosition(data.DefaultPosition().Parameters())
 
 	// Check if User is Linker
-	if al.currentDevice.GetStatus() == md.Status_LINKER {
+	if al.user.GetCurrent().GetStatus() == data.Status_LINKER {
 		// Return Event
-		return &md.RoomEvent{
-			Subject: md.RoomEvent_LINKER,
+		return &data.RoomEvent{
+			Subject: data.RoomEvent_LINKER,
 			Member:  al.Member(),
 			Id:      id.String(),
 			Room:    room,
 		}
 	} else {
 		// Return Event
-		return &md.RoomEvent{
-			Subject: md.RoomEvent_UPDATE,
+		return &data.RoomEvent{
+			Subject: data.RoomEvent_UPDATE,
 			Member:  al.Member(),
 			Id:      id.String(),
 			Room:    room,
@@ -157,9 +156,9 @@ func (al *userLinker) NewDefaultUpdateEvent(room *md.Room, id peer.ID) *md.RoomE
 }
 
 // NewUpdateEvent Creates Lobby Event with Peer Data ^
-func (al *userLinker) NewExitEvent(room *md.Room, id peer.ID) *md.RoomEvent {
-	return &md.RoomEvent{
-		Subject: md.RoomEvent_EXIT,
+func (al *userLinker) NewExitEvent(room *data.Room, id peer.ID) *data.RoomEvent {
+	return &data.RoomEvent{
+		Subject: data.RoomEvent_EXIT,
 		Id:      id.String(),
 		Room:    room,
 	}

@@ -1,9 +1,8 @@
-package models
+package data
 
 import (
 	"fmt"
 	"io/ioutil"
-
 	"net/http"
 
 	olc "github.com/google/open-location-code/go"

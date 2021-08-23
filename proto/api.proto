@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package models;
+package data;
 
 import "data.proto";
 import "error.proto";
@@ -8,7 +8,7 @@ import "peer.proto";
 import "user.proto";
 
 // Require Go Package
-option go_package = "/models";
+option go_package = "/data";
 
 // Method enum for Node to Perform
 enum Action {

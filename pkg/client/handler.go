@@ -4,16 +4,17 @@ import (
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
-	md "github.com/sonr-io/core/pkg/models"
+	data "github.com/sonr-io/core/pkg/data"
+
 	"google.golang.org/protobuf/proto"
 )
 
 // OnConnected: HostNode Connection Response ^
-func (c *client) OnConnected(r *md.ConnectionResponse) {
+func (c *client) OnConnected(r *data.ConnectionResponse) {
 	// Convert Message
 	bytes, err := r.ToGeneric()
 	if err != nil {
-		c.call.OnError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
+		c.call.OnError(data.NewError(err, data.ErrorEvent_UNMARSHAL))
 		return
 	}
 	// Call Event
@@ -21,13 +22,13 @@ func (c *client) OnConnected(r *md.ConnectionResponse) {
 }
 
 // OnEvent: Local Lobby Event ^
-func (n *client) OnRoomEvent(e *md.RoomEvent) {
+func (n *client) OnRoomEvent(e *data.RoomEvent) {
 	// Only Callback when not in Transfer
-	if n.account.CurrentDevice().IsNotStatus(md.Status_TRANSFER) {
+	if n.account.CurrentDevice().IsNotStatus(data.Status_TRANSFER) {
 		// Convert Message
 		bytes, err := e.ToGeneric()
 		if err != nil {
-			n.call.OnError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
+			n.call.OnError(data.NewError(err, data.ErrorEvent_UNMARSHAL))
 			return
 		}
 
@@ -36,11 +37,11 @@ func (n *client) OnRoomEvent(e *md.RoomEvent) {
 	}
 }
 
-func (n *client) OnSyncEvent(e *md.SyncEvent) {
+func (n *client) OnSyncEvent(e *data.SyncEvent) {
 	// Convert Message
 	bytes, err := e.ToGeneric()
 	if err != nil {
-		n.call.OnError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
+		n.call.OnError(data.NewError(err, data.ErrorEvent_UNMARSHAL))
 		return
 	}
 
@@ -49,19 +50,19 @@ func (n *client) OnSyncEvent(e *md.SyncEvent) {
 }
 
 // OnLink: Handle Result of Link Request ^
-func (n *client) OnLink(success bool, incoming bool, id peer.ID, data []byte) {
+func (n *client) OnLink(success bool, incoming bool, id peer.ID, buf []byte) {
 	// Unmarshal Link Response
-	resp := md.LinkResponse{}
-	err := proto.Unmarshal(data, &resp)
+	resp := data.LinkResponse{}
+	err := proto.Unmarshal(buf, &resp)
 	if err != nil {
-		n.call.OnError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
+		n.call.OnError(data.NewError(err, data.ErrorEvent_UNMARSHAL))
 		return
 	}
 
 	// Check Success
 	if success {
 		// Create link Event
-		link := &md.LinkEvent{
+		link := &data.LinkEvent{
 			Success: success,
 			Device:  resp.GetDevice(),
 			Contact: resp.GetContact(),
@@ -70,7 +71,7 @@ func (n *client) OnLink(success bool, incoming bool, id peer.ID, data []byte) {
 		// Marshal Link Event
 		buf, err := link.ToGeneric()
 		if err != nil {
-			n.call.OnError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
+			n.call.OnError(data.NewError(err, data.ErrorEvent_UNMARSHAL))
 			return
 		}
 		n.call.OnEvent(buf)
@@ -78,29 +79,29 @@ func (n *client) OnLink(success bool, incoming bool, id peer.ID, data []byte) {
 		// Pass Keys with Linker
 		if incoming {
 			// Open Stream if Incoming
-			pid := md.SonrProtocol_Linker.NewIDProtocol(n.Host.ID())
+			pid := data.SonrProtocol_Linker.NewIDProtocol(n.Host.ID())
 			n.Host.HandleStream(pid, n.account.ReadFromLink)
 		} else {
 			// Create Stream if Outgoing
-			pid := md.SonrProtocol_Linker.NewIDProtocol(id)
+			pid := data.SonrProtocol_Linker.NewIDProtocol(id)
 			// Write Stream
 			stream, err := n.Host.StartStream(id, pid)
 			if err != nil {
-				n.call.OnError(md.NewError(err, md.ErrorEvent_HOST_STREAM))
+				n.call.OnError(data.NewError(err, data.ErrorEvent_HOST_STREAM))
 				return
 			}
 			n.account.WriteToLink(stream, &resp)
 		}
 	} else {
 		// Unsuccessful Link Request
-		link := &md.LinkEvent{
+		link := &data.LinkEvent{
 			Success: success,
 		}
 
 		// Marshal Link Event
 		buf, err := link.ToGeneric()
 		if err != nil {
-			n.call.OnError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
+			n.call.OnError(data.NewError(err, data.ErrorEvent_UNMARSHAL))
 			return
 		}
 		n.call.OnEvent(buf)
@@ -108,20 +109,20 @@ func (n *client) OnLink(success bool, incoming bool, id peer.ID, data []byte) {
 }
 
 // OnInvite: User Received Invite ^
-func (n *client) OnInvite(data []byte) {
+func (n *client) OnInvite(buf []byte) {
 	// Update Status
-	n.call.SetStatus(md.Status_INVITED)
+	n.call.SetStatus(data.Status_INVITED)
 
 	// Create Request
-	req := md.GenericRequest{
-		Type: md.GenericRequest_INVITE,
+	req := data.GenericRequest{
+		Type: data.GenericRequest_INVITE,
 		Data: data,
 	}
 
 	// Marshal Request
 	buf, err := proto.Marshal(&req)
 	if err != nil {
-		n.call.OnError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
+		n.call.OnError(data.NewError(err, data.ErrorEvent_UNMARSHAL))
 		return
 	}
 
@@ -132,15 +133,15 @@ func (n *client) OnInvite(data []byte) {
 // OnReply: Begins File Transfer when Accepted ^
 func (n *client) OnReply(id peer.ID, reply []byte) {
 	// Create Response
-	req := md.GenericResponse{
-		Type: md.GenericResponse_REPLY,
+	req := data.GenericResponse{
+		Type: data.GenericResponse_REPLY,
 		Data: reply,
 	}
 
 	// Marshal Request
 	buf, err := proto.Marshal(&req)
 	if err != nil {
-		n.call.OnError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
+		n.call.OnError(data.NewError(err, data.ErrorEvent_UNMARSHAL))
 		return
 	}
 
@@ -150,46 +151,46 @@ func (n *client) OnReply(id peer.ID, reply []byte) {
 	// Check Peer ID
 	if id != "" {
 		// InviteResponse Message
-		resp := md.InviteResponse{}
+		resp := data.InviteResponse{}
 		err := proto.Unmarshal(reply, &resp)
 		if err != nil {
-			n.call.OnError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
+			n.call.OnError(data.NewError(err, data.ErrorEvent_UNMARSHAL))
 		}
 
 		// Check for File Transfer
 		if resp.HasAcceptedTransfer() {
 			// Update Status
-			n.call.SetStatus(md.Status_TRANSFER)
+			n.call.SetStatus(data.Status_TRANSFER)
 
 			// Create New Auth Stream
-			stream, err := n.Host.StartStream(id, md.SonrProtocol_LocalTransfer.NewIDProtocol(id))
+			stream, err := n.Host.StartStream(id, data.SonrProtocol_LocalTransfer.NewIDProtocol(id))
 			if err != nil {
-				n.call.OnError(md.NewError(err, md.ErrorEvent_HOST_STREAM))
+				n.call.OnError(data.NewError(err, data.ErrorEvent_HOST_STREAM))
 				return
 			}
 
 			// Write to Stream on Session
 			n.session.WriteToStream(stream)
 		} else {
-			n.call.SetStatus(md.Status_AVAILABLE)
+			n.call.SetStatus(data.Status_AVAILABLE)
 		}
 	} else {
-		n.call.SetStatus(md.Status_AVAILABLE)
+		n.call.SetStatus(data.Status_AVAILABLE)
 	}
 }
 
 // OnResponded: Prepares for Incoming File Transfer when Accepted ^
-func (n *client) OnConfirmed(inv *md.InviteRequest) {
-	n.session = md.NewInSession(n.account.CurrentDevice(), inv, n)
-	n.Host.HandleStream(md.SonrProtocol_LocalTransfer.NewIDProtocol(n.Host.ID()), n.session.ReadFromStream)
+func (n *client) OnConfirmed(inv *data.InviteRequest) {
+	n.session = data.NewInSession(n.account.CurrentDevice(), inv, n)
+	n.Host.HandleStream(data.SonrProtocol_LocalTransfer.NewIDProtocol(n.Host.ID()), n.session.ReadFromStream)
 }
 
 // OnMail: Callback for Mail Event
-func (n *client) OnMail(e *md.MailEvent) {
+func (n *client) OnMail(e *data.MailEvent) {
 	// Create Mail and Marshal Data
 	buf, err := e.ToGeneric()
 	if err != nil {
-		md.NewMarshalError(err)
+		data.NewMarshalError(err)
 		return
 	}
 	n.call.OnEvent(buf)
@@ -202,34 +203,34 @@ func (n *client) OnProgress(buf []byte) {
 }
 
 // OnMail: Callback for Error Event
-func (n *client) OnError(err *md.SonrError) {
+func (n *client) OnError(err *data.SonrError) {
 	n.call.OnError(err)
 }
 
 // OnCompleted: Callback Completed Transfer
-func (n *client) OnCompleted(stream network.Stream, pid protocol.ID, completeEvent *md.CompleteEvent) {
-	if completeEvent.Direction == md.CompleteEvent_INCOMING {
+func (n *client) OnCompleted(stream network.Stream, pid protocol.ID, completeEvent *data.CompleteEvent) {
+	if completeEvent.Direction == data.CompleteEvent_INCOMING {
 		// Convert to Generic
 		buf, err := completeEvent.ToGeneric()
 		if err != nil {
-			n.call.OnError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
+			n.call.OnError(data.NewError(err, data.ErrorEvent_UNMARSHAL))
 			return
 		}
 
 		// Call Event
 		n.call.OnEvent(buf)
-		n.call.SetStatus(md.Status_AVAILABLE)
+		n.call.SetStatus(data.Status_AVAILABLE)
 		n.Host.CloseStream(pid, stream)
-	} else if completeEvent.Direction == md.CompleteEvent_OUTGOING {
+	} else if completeEvent.Direction == data.CompleteEvent_OUTGOING {
 		// Convert to Generic
 		buf, err := completeEvent.ToGeneric()
 		if err != nil {
-			n.call.OnError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
+			n.call.OnError(data.NewError(err, data.ErrorEvent_UNMARSHAL))
 			return
 		}
 
 		// Call Event
 		n.call.OnEvent(buf)
-		n.call.SetStatus(md.Status_AVAILABLE)
+		n.call.SetStatus(data.Status_AVAILABLE)
 	}
 }

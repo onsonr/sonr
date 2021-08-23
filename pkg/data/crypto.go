@@ -1,4 +1,4 @@
-package models
+package data
 
 import (
 	"crypto/hmac"
@@ -304,7 +304,7 @@ func (kp *KeyPair) Sign(value string) string {
 }
 
 // Method verifies 'sig' is the signed hash of 'data'
-func (kp *KeyPair) Verify(data []byte, sig []byte) (bool, error) {
+func (kp *KeyPair) Verify(buf []byte, sig []byte) (bool, error) {
 	// Check for Public Key
 	if pubKey := kp.PubKey(); pubKey != nil {
 		result, err := pubKey.Verify(data, sig)

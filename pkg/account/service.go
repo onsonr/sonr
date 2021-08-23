@@ -8,7 +8,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	rpc "github.com/libp2p/go-libp2p-gorpc"
-	md "github.com/sonr-io/core/pkg/models"
+	"github.com/sonr-io/core/pkg/data"
 	"github.com/sonr-io/core/pkg/util"
 )
 
@@ -32,7 +32,7 @@ type DeviceService struct {
 }
 
 // Initialize Exchange Service by Room Type
-func (rm *userLinker) initService() *md.SonrError {
+func (rm *userLinker) initService() *data.SonrError {
 	// Start Exchange RPC Server
 	verifyServer := rpc.NewServer(rm.host.Host(), util.ACCOUNT_PROTOCOL)
 	verifyService := DeviceService{
@@ -43,7 +43,7 @@ func (rm *userLinker) initService() *md.SonrError {
 	// Register Service
 	err := verifyServer.RegisterName(util.DEVICE_RPC_SERVICE, &verifyService)
 	if err != nil {
-		return md.NewError(err, md.ErrorEvent_ROOM_RPC)
+		return data.NewError(err, data.ErrorEvent_ROOM_RPC)
 	}
 
 	// Set Service
@@ -64,13 +64,13 @@ func (rm *userLinker) Verify(id peer.ID) error {
 	// Verify with Peer
 	err := exchClient.Call(id, util.DEVICE_RPC_SERVICE, util.DEVICE_METHOD_VERIFY, args, &reply)
 	if err != nil {
-		md.LogError(err)
+		data.LogError(err)
 		return err
 	}
 
 	// Check for Success
 	if !reply.Success {
-		md.LogError(errors.New("Failed to Verify with Device"))
+		data.LogError(errors.New("Failed to Verify with Device"))
 		rm.topic.Close()
 	}
 	return nil
@@ -81,7 +81,7 @@ func (ss *DeviceService) VerifyWith(ctx context.Context, args DeviceServiceArgs,
 	// Unmarshal Public Key
 	pubKey, err := crypto.UnmarshalPublicKey(args.PubKeyBuf)
 	if err != nil {
-		md.LogError(err)
+		data.LogError(err)
 		return err
 	}
 

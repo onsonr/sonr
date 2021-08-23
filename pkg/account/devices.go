@@ -5,14 +5,14 @@ import (
 	"errors"
 
 	"github.com/libp2p/go-libp2p-core/peer"
-	md "github.com/sonr-io/core/pkg/models"
+	"github.com/sonr-io/core/pkg/data"
 	"google.golang.org/protobuf/proto"
 )
 
-type GetRoomFunc func() *md.Room
+type GetRoomFunc func() *data.Room
 
 // AddDevice adds a Device Peer to the Room
-func (tm *userLinker) AddDevice(peerID peer.ID, d *md.Device) {
+func (tm *userLinker) AddDevice(peerID peer.ID, d *data.Device) {
 	// Add Device to Map
 	tm.activeDevices[peerID] = d
 }
@@ -36,19 +36,19 @@ func (tm *userLinker) RemoveDevice(peerID peer.ID) {
 }
 
 // Sync Publishes message to User Device room
-func (tm *userLinker) Sync(msg *md.SyncEvent) error {
+func (tm *userLinker) Sync(msg *data.SyncEvent) error {
 	if tm.room.IsDevices() {
 		// Convert Event to Proto Binary
 		bytes, err := proto.Marshal(msg)
 		if err != nil {
-			md.LogError(err)
+			data.LogError(err)
 			return err
 		}
 
 		// Publish to Room
 		err = tm.topic.Publish(tm.ctx, bytes)
 		if err != nil {
-			md.LogError(err)
+			data.LogError(err)
 			return err
 		}
 
@@ -87,7 +87,7 @@ func (rm *userLinker) handleTopicEvents(ctx context.Context) {
 		// Get next event
 		event, err := rm.eventHandler.NextPeerEvent(ctx)
 		if err != nil {
-			md.LogError(err)
+			data.LogError(err)
 			rm.eventHandler.Cancel()
 			return
 		}
@@ -96,13 +96,13 @@ func (rm *userLinker) handleTopicEvents(ctx context.Context) {
 		if rm.isEventJoin(event) {
 			err = rm.Verify(event.Peer)
 			if err != nil {
-				md.LogError(err)
+				data.LogError(err)
 				continue
 			}
 		} else if rm.isEventExit(event) {
 
 		}
-		md.GetState().NeedsWait()
+		data.GetState().NeedsWait()
 	}
 }
 
@@ -112,32 +112,32 @@ func (rm *userLinker) handleTopicMessages(ctx context.Context) {
 		// Get next msg from pub/sub
 		msg, err := rm.subscription.Next(ctx)
 		if err != nil {
-			md.LogError(err)
+			data.LogError(err)
 			return
 		}
 
 		// Only forward messages delivered by others
 		if rm.isValidMessage(msg) {
 			// Unmarshal RoomEvent
-			m := &md.SyncEvent{}
+			m := &data.SyncEvent{}
 			err = proto.Unmarshal(msg.Data, m)
 			if err != nil {
-				md.LogError(err)
+				data.LogError(err)
 				continue
 			}
 
 			// Check Peer is Online, if not ignore
 			rm.OnSyncEvent(m)
 		}
-		md.GetState().NeedsWait()
+		data.GetState().NeedsWait()
 	}
 }
 
 // Returns RoomData Data instance
-func (tm *userLinker) Room() *md.Room {
+func (tm *userLinker) Room() *data.Room {
 	return tm.room
 }
 
-func (al *userLinker) OnSyncEvent(*md.SyncEvent) {
+func (al *userLinker) OnSyncEvent(*data.SyncEvent) {
 
 }

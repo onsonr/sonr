@@ -1,21 +1,19 @@
 package bind
 
-import (
-	md "github.com/sonr-io/core/pkg/models"
-)
+import "github.com/sonr-io/core/pkg/data"
 
 // * Interface: Callback is implemented from Plugin to receive updates * //
 type Callback interface {
-	OnStatus(data []byte)   // Node Status Updates
-	OnEvent(data []byte)    // Local Lobby Event
-	OnResponse(data []byte) // Generic Response Callback
-	OnRequest(data []byte)  // Generic Request Callback
-	OnError(data []byte)    // Internal Error
+	OnStatus(buf []byte)   // Node Status Updates
+	OnEvent(buf []byte)    // Local Lobby Event
+	OnResponse(buf []byte) // Generic Response Callback
+	OnRequest(buf []byte)  // Generic Request Callback
+	OnError(buf []byte)    // Internal Error
 }
 
 // Passes binded Methods to Node
-func (mn *Node) callback() md.Callback {
-	return md.Callback{
+func (mn *Node) callback() data.Callback {
+	return data.Callback{
 		// Direct
 		OnEvent:    mn.call.OnEvent,
 		OnResponse: mn.call.OnResponse,
@@ -28,7 +26,7 @@ func (mn *Node) callback() md.Callback {
 }
 
 // handleError Callback with handleError instance, and method
-func (mn *Node) handleError(errMsg *md.SonrError) {
+func (mn *Node) handleError(errMsg *data.SonrError) {
 	// Check for Error
 	if errMsg.HasError {
 		// Send Callback

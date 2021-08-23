@@ -6,11 +6,6 @@
         ]
     },
     "files.exclude": {
-        "**/build/": true,
-        "**/pkg/models/**/**.pb.**": true,
-    },
-    "cSpell.words": [
-        "pbuf",
-        "serr"
-    ]
+        "**/**.pb.**": true,
+    }
 }

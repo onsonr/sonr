@@ -2,7 +2,7 @@ package topic
 
 import (
 	ps "github.com/libp2p/go-libp2p-pubsub"
-	md "github.com/sonr-io/core/pkg/models"
+	"github.com/sonr-io/core/pkg/data"
 )
 
 // Check if PeerEvent is Join and NOT User
@@ -21,6 +21,6 @@ func (tm *RoomManager) isValidMessage(msg *ps.Message) bool {
 }
 
 // Returns RoomData Data instance
-func (tm *RoomManager) Room() *md.Room {
+func (tm *RoomManager) Room() *data.Room {
 	return tm.room
 }

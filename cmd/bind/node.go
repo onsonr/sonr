@@ -3,15 +3,16 @@ package bind
 import (
 	"context"
 
-	tp "github.com/sonr-io/core/internal/topic"
+	room "github.com/sonr-io/core/internal/room"
 	ac "github.com/sonr-io/core/pkg/account"
 	sc "github.com/sonr-io/core/pkg/client"
-	md "github.com/sonr-io/core/pkg/models"
+	"github.com/sonr-io/core/pkg/data"
+
 	"google.golang.org/protobuf/proto"
 )
 
 type Node struct {
-	md.Callback
+	data.Callback
 
 	// Properties
 	call Callback
@@ -20,39 +21,39 @@ type Node struct {
 	// Client
 	account ac.Account
 	client  sc.Client
-	state   md.Lifecycle
+	state   data.Lifecycle
 
 	// Rooms
-	local   *tp.RoomManager
-	devices *tp.RoomManager
-	groups  map[string]*tp.RoomManager
+	local   *room.RoomManager
+	devices *room.RoomManager
+	groups  map[string]*room.RoomManager
 }
 
 // Initializes New Node ^ //
 func Initialize(reqBytes []byte, call Callback) *Node {
 	// Unmarshal Request
-	req := &md.InitializeRequest{}
+	req := &data.InitializeRequest{}
 	err := proto.Unmarshal(reqBytes, req)
 	if err != nil {
-		md.LogFatal(err)
+		data.LogFatal(err)
 		return nil
 	}
 
 	// Initialize Logger
-	md.InitLogger(req)
+	data.InitLogger(req)
 
 	// Create User
 	u, serr := ac.OpenAccount(req, req.GetDevice())
 	if serr != nil {
-		md.LogError(serr.Error)
+		data.LogError(serr.Error)
 		return nil
 	}
 	// Initialize Node
 	mn := &Node{
 		call:    call,
 		ctx:     context.Background(),
-		groups:  make(map[string]*tp.RoomManager, 10),
-		state:   md.Lifecycle_ACTIVE,
+		groups:  make(map[string]*room.RoomManager, 10),
+		state:   data.Lifecycle_ACTIVE,
 		account: u,
 	}
 
@@ -62,12 +63,12 @@ func Initialize(reqBytes []byte, call Callback) *Node {
 }
 
 // Starts Host and Connects
-func (n *Node) Connect(data []byte) {
+func (n *Node) Connect(buf []byte) {
 	// Unmarshal Request
-	req := &md.ConnectionRequest{}
-	err := proto.Unmarshal(data, req)
+	req := &data.ConnectionRequest{}
+	err := proto.Unmarshal(buf, req)
 	if err != nil {
-		md.LogFatal(err)
+		data.LogFatal(err)
 	}
 
 	// Connect Host
@@ -103,12 +104,12 @@ func (n *Node) setConnected(val bool) {
 	su := n.account.SetConnected(val)
 
 	// Callback Status
-	data, err := proto.Marshal(su)
+	res, err := proto.Marshal(su)
 	if err != nil {
-		n.handleError(md.NewError(err, md.ErrorEvent_MARSHAL))
+		n.handleError(data.NewError(err, data.ErrorEvent_MARSHAL))
 		return
 	}
-	n.call.OnStatus(data)
+	n.call.OnStatus(res)
 }
 
 // Sets Node to be Available Status
@@ -117,24 +118,24 @@ func (n *Node) setAvailable(val bool) {
 	su := n.account.SetAvailable(val)
 
 	// Callback Status
-	data, err := proto.Marshal(su)
+	res, err := proto.Marshal(su)
 	if err != nil {
-		n.handleError(md.NewError(err, md.ErrorEvent_MARSHAL))
+		n.handleError(data.NewError(err, data.ErrorEvent_MARSHAL))
 		return
 	}
-	n.call.OnStatus(data)
+	n.call.OnStatus(res)
 }
 
 // Sets Node to be (Provided) Status
-func (n *Node) setStatus(newStatus md.Status) {
+func (n *Node) setStatus(newStatus data.Status) {
 	// Set Status
 	su := n.account.SetStatus(newStatus)
 
 	// Callback Status
-	data, err := proto.Marshal(su)
+	res, err := proto.Marshal(su)
 	if err != nil {
-		n.handleError(md.NewError(err, md.ErrorEvent_MARSHAL))
+		n.handleError(data.NewError(err, data.ErrorEvent_MARSHAL))
 		return
 	}
-	n.call.OnStatus(data)
+	n.call.OnStatus(res)
 }

@@ -6,7 +6,7 @@ import (
 
 	firebase "firebase.google.com/go/v4"
 	"firebase.google.com/go/v4/messaging"
-	md "github.com/sonr-io/core/pkg/models"
+	"github.com/sonr-io/core/pkg/data"
 	"google.golang.org/api/option"
 )
 
@@ -20,16 +20,16 @@ type PushService struct {
 	key       string
 	app       *firebase.App
 	client    *messaging.Client
-	options   *md.ConnectionRequest_ServiceOptions
+	options   *data.ConnectionRequest_ServiceOptions
 	pushToken string
 }
 
 // Returns New Push Client
-func (sc *serviceClient) StartPush() *md.SonrError {
+func (sc *serviceClient) StartPush() *data.SonrError {
 	// Initialize
 	if sc.request.GetServiceOptions().GetPush() {
 		// Logging
-		md.LogActivate("Push Service")
+		data.LogActivate("Push Service")
 
 		// Obtain a messaging.Client from the App.
 		ctx := context.Background()
@@ -39,13 +39,13 @@ func (sc *serviceClient) StartPush() *md.SonrError {
 		// Create New Firebase Client
 		app, err := firebase.NewApp(context.Background(), config, opt)
 		if err != nil {
-			return md.NewError(err, md.ErrorEvent_PUSH_START_APP)
+			return data.NewError(err, data.ErrorEvent_PUSH_START_APP)
 		}
 
 		// Create New Push Client
 		client, err := app.Messaging(ctx)
 		if err != nil {
-			return md.NewError(err, md.ErrorEvent_PUSH_START_MESSAGING)
+			return data.NewError(err, data.ErrorEvent_PUSH_START_MESSAGING)
 		}
 
 		// Return Push Interface
@@ -58,13 +58,13 @@ func (sc *serviceClient) StartPush() *md.SonrError {
 			options:   sc.request.GetServiceOptions(),
 		}
 		isPushEnabled = true
-		md.LogSuccess("Push Notifications Activation")
+		data.LogSuccess("Push Notifications Activation")
 	}
 	return nil
 }
 
 // Push pushes a single message to a single Peer
-func (pc *PushService) push(msg *md.PushMessage) *md.SonrError {
+func (pc *PushService) push(msg *data.PushMessage) *data.SonrError {
 	// Check for Push Token
 	pushToken, serr := msg.GetPeer().PushToken()
 	if serr != nil {
@@ -80,16 +80,16 @@ func (pc *PushService) push(msg *md.PushMessage) *md.SonrError {
 	// Send Message
 	result, err := pc.client.Send(pc.ctx, pushMsg)
 	if err != nil {
-		return md.NewError(err, md.ErrorEvent_PUSH_SINGLE)
+		return data.NewError(err, data.ErrorEvent_PUSH_SINGLE)
 	}
 
 	// Logging
-	md.LogSuccess("Pushed Message: " + result)
+	data.LogSuccess("Pushed Message: " + result)
 	return nil
 }
 
 // PushMulti pushes Multiple messages to list of Peers
-func (pc *PushService) pushMulti(msg *md.PushMessage, peers []*md.Peer) *md.SonrError {
+func (pc *PushService) pushMulti(msg *data.PushMessage, peers []*data.Peer) *data.SonrError {
 	// Initialize List of Tokens
 	tokens := make([]string, len(peers))
 	for i, peer := range peers {
@@ -105,16 +105,16 @@ func (pc *PushService) pushMulti(msg *md.PushMessage, peers []*md.Peer) *md.Sonr
 	// Send Message
 	result, err := pc.client.SendMulticast(pc.ctx, multiPushMsg)
 	if err != nil {
-		return md.NewError(err, md.ErrorEvent_PUSH_SINGLE)
+		return data.NewError(err, data.ErrorEvent_PUSH_SINGLE)
 	}
 
 	// Logging
-	md.LogInfo(fmt.Sprintf("Succesful Push Count: %v \n Failed Push Count: %v", result.SuccessCount, result.FailureCount))
+	data.LogInfo(fmt.Sprintf("Succesful Push Count: %v \n Failed Push Count: %v", result.SuccessCount, result.FailureCount))
 	return nil
 }
 
 // pushSelf method sends push notification to own device
-func (pc *PushService) pushSelf(msg *md.PushMessage) *md.SonrError {
+func (pc *PushService) pushSelf(msg *data.PushMessage) *data.SonrError {
 	// Create Message
 	pushMsg := &messaging.Message{
 		Token: pc.pushToken,
@@ -124,10 +124,10 @@ func (pc *PushService) pushSelf(msg *md.PushMessage) *md.SonrError {
 	// Send Message
 	result, err := pc.client.Send(pc.ctx, pushMsg)
 	if err != nil {
-		return md.NewError(err, md.ErrorEvent_PUSH_SINGLE)
+		return data.NewError(err, data.ErrorEvent_PUSH_SINGLE)
 	}
 
 	// Logging
-	md.LogSuccess("Pushed Message: " + result)
+	data.LogSuccess("Pushed Message: " + result)
 	return nil
 }

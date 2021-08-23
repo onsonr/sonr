@@ -1,4 +1,4 @@
-package models
+package data
 
 import (
 	"net/http"
@@ -188,7 +188,7 @@ type Session struct {
 	owner     *Peer
 	receiver  *Peer
 	pid       protocol.ID
-	device      *Device
+	device    *Device
 	direction CompleteEvent_Direction
 
 	// Management
@@ -208,7 +208,7 @@ func NewOutSession(u *Device, req *InviteRequest, sh SessionHandler) *Session {
 		owner:     req.GetFrom(),
 		receiver:  req.GetTo(),
 		pid:       req.ProtocolID(),
-		device:      u,
+		device:    u,
 		direction: CompleteEvent_OUTGOING,
 		call:      sh,
 	}
@@ -222,7 +222,7 @@ func NewInSession(u *Device, inv *InviteRequest, sh SessionHandler) *Session {
 		owner:     inv.GetFrom(),
 		receiver:  inv.GetTo(),
 		pid:       inv.ProtocolID(),
-		device:      u,
+		device:    u,
 		direction: CompleteEvent_INCOMING,
 		call:      sh,
 	}

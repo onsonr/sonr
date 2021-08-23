@@ -1,29 +1,29 @@
 package bind
 
 import (
-	md "github.com/sonr-io/core/pkg/models"
+	"github.com/sonr-io/core/pkg/data"
 	"google.golang.org/protobuf/proto"
 )
 
 // ** ─── Node Binded Actions ────────────────────────────────────────────────────────
 // Signing Request for Data
-func (n *Node) Sign(data []byte) []byte {
+func (n *Node) Sign(buf []byte) []byte {
 	// Unmarshal Data to Request
-	request := &md.AuthRequest{}
-	err := proto.Unmarshal(data, request)
+	request := &data.AuthRequest{}
+	err := proto.Unmarshal(buf, request)
 	if err != nil {
 		// Handle Error
-		n.handleError(md.NewUnmarshalError(err))
+		n.handleError(data.NewUnmarshalError(err))
 
 		// Initialize invalid Response
-		invalidResp := md.AuthResponse{
+		invalidResp := data.AuthResponse{
 			IsSigned: false,
 		}
 
 		// Send Invalid Response
 		buf, err := proto.Marshal(&invalidResp)
 		if err != nil {
-			n.handleError(md.NewMarshalError(err))
+			n.handleError(data.NewMarshalError(err))
 			return nil
 		}
 		return buf
@@ -31,58 +31,58 @@ func (n *Node) Sign(data []byte) []byte {
 
 	// Sign Buffer
 	result := n.account.SignAuth(request)
-	buf, err := proto.Marshal(result)
+	res, err := proto.Marshal(result)
 	if err != nil {
-		n.handleError(md.NewMarshalError(err))
+		n.handleError(data.NewMarshalError(err))
 		return nil
 	}
-	return buf
+	return res
 }
 
 // Verification Request for Signed Data
-func (n *Node) Verify(data []byte) []byte {
+func (n *Node) Verify(buf []byte) []byte {
 	// Check Ready
 	if n.account.IsReady() {
 		// Get Key Pair
 		kp := n.account.AccountKeys()
 
 		// Unmarshal Data to Request
-		request := &md.VerifyRequest{}
-		if err := proto.Unmarshal(data, request); err != nil {
+		request := &data.VerifyRequest{}
+		if err := proto.Unmarshal(buf, request); err != nil {
 			// Handle Error
-			n.handleError(md.NewUnmarshalError(err))
+			n.handleError(data.NewUnmarshalError(err))
 
 			// Send Invalid Response
-			return md.NewInvalidVerifyResponseBuf()
+			return data.NewInvalidVerifyResponseBuf()
 		}
 
 		// Check Request Type
-		if request.GetType() == md.VerifyRequest_VERIFY {
+		if request.GetType() == data.VerifyRequest_VERIFY {
 			// Check type and Verify
 			if request.IsBuffer() {
 				// Verify Result
 				result, err := kp.Verify(request.GetBufferValue(), request.GetSignedBuffer())
 				if err != nil {
-					return md.NewInvalidVerifyResponseBuf()
+					return data.NewInvalidVerifyResponseBuf()
 				}
 
 				// Return Result
-				return md.NewVerifyResponseBuf(result)
+				return data.NewVerifyResponseBuf(result)
 			} else if request.IsString() {
 				// Verify Result
 				result, err := kp.Verify([]byte(request.GetTextValue()), []byte(request.GetSignedText()))
 				if err != nil {
-					return md.NewInvalidVerifyResponseBuf()
+					return data.NewInvalidVerifyResponseBuf()
 				}
 
 				// Return Result
-				return md.NewVerifyResponseBuf(result)
+				return data.NewVerifyResponseBuf(result)
 			}
 		} else {
 			resp := n.account.VerifyRead()
 			buf, err := proto.Marshal(resp)
 			if err != nil {
-				n.handleError(md.NewMarshalError(err))
+				n.handleError(data.NewMarshalError(err))
 			}
 			return buf
 		}
@@ -90,31 +90,31 @@ func (n *Node) Verify(data []byte) []byte {
 	}
 
 	// Send Invalid Response
-	return md.NewInvalidVerifyResponseBuf()
+	return data.NewInvalidVerifyResponseBuf()
 }
 
 // Update proximity/direction and Notify Lobby
-func (n *Node) Update(data []byte) {
+func (n *Node) Update(buf []byte) {
 	if n.account.IsReady() {
 		// Unmarshal Data to Request
-		update := &md.UpdateRequest{}
-		if err := proto.Unmarshal(data, update); err != nil {
-			n.handleError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
+		update := &data.UpdateRequest{}
+		if err := proto.Unmarshal(buf, update); err != nil {
+			n.handleError(data.NewError(err, data.ErrorEvent_UNMARSHAL))
 			return
 		}
 
 		// Check Update Request Type
 		switch update.Data.(type) {
 		// Update Position
-		case *md.UpdateRequest_Position:
+		case *data.UpdateRequest_Position:
 			n.account.CurrentDevice().UpdatePosition(update.GetPosition().Parameters())
 
 		// Update Contact
-		case *md.UpdateRequest_Contact:
+		case *data.UpdateRequest_Contact:
 			n.account.UpdateContact(update.GetContact())
 
 		// Update Peer Properties
-		case *md.UpdateRequest_Properties:
+		case *data.UpdateRequest_Properties:
 			n.account.CurrentDevice().UpdateProperties(update.GetProperties())
 		}
 
@@ -128,12 +128,12 @@ func (n *Node) Update(data []byte) {
 }
 
 // Invite Processes Data and Sends Invite to Peer
-func (n *Node) Invite(data []byte) {
+func (n *Node) Invite(buf []byte) {
 	if n.account.IsReady() {
 		// Unmarshal Data to Request
-		req := &md.InviteRequest{}
-		if err := proto.Unmarshal(data, req); err != nil {
-			n.handleError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
+		req := &data.InviteRequest{}
+		if err := proto.Unmarshal(buf, req); err != nil {
+			n.handleError(data.NewError(err, data.ErrorEvent_UNMARSHAL))
 			return
 		}
 
@@ -150,11 +150,11 @@ func (n *Node) Invite(data []byte) {
 }
 
 // Link method starts device linking channel
-func (n *Node) Link(data []byte) []byte {
+func (n *Node) Link(buf []byte) []byte {
 	// Unmarshal Data to Request
-	req := &md.LinkRequest{}
-	if err := proto.Unmarshal(data, req); err != nil {
-		n.handleError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
+	req := &data.LinkRequest{}
+	if err := proto.Unmarshal(buf, req); err != nil {
+		n.handleError(data.NewError(err, data.ErrorEvent_UNMARSHAL))
 		return nil
 	}
 	req = n.account.CurrentDevice().SignLink(req)
@@ -169,20 +169,20 @@ func (n *Node) Link(data []byte) []byte {
 	// Marshal Response
 	buf, err := proto.Marshal(resp)
 	if err != nil {
-		n.handleError(md.NewMarshalError(err))
+		n.handleError(data.NewMarshalError(err))
 		return nil
 	}
 	return buf
 }
 
 // Mail handles request for a message in Mailbox
-func (n *Node) Mail(data []byte) []byte {
+func (n *Node) Mail(buf []byte) []byte {
 	// Check Ready
 	if n.account.IsReady() {
 		// Unmarshal Data to Request
-		req := &md.MailboxRequest{}
-		if err := proto.Unmarshal(data, req); err != nil {
-			n.handleError(md.NewUnmarshalError(err))
+		req := &data.MailboxRequest{}
+		if err := proto.Unmarshal(buf, req); err != nil {
+			n.handleError(data.NewUnmarshalError(err))
 			return nil
 		}
 
@@ -196,7 +196,7 @@ func (n *Node) Mail(data []byte) []byte {
 		// Marshal Response
 		buf, err := proto.Marshal(resp)
 		if err != nil {
-			n.handleError(md.NewMarshalError(err))
+			n.handleError(data.NewMarshalError(err))
 			return nil
 		}
 
@@ -207,12 +207,12 @@ func (n *Node) Mail(data []byte) []byte {
 }
 
 // Respond to an Invite with Decision
-func (n *Node) Respond(data []byte) {
+func (n *Node) Respond(buf []byte) {
 	if n.account.IsReady() {
 		// Unmarshal Data to Request
-		resp := &md.DecisionRequest{}
-		if err := proto.Unmarshal(data, resp); err != nil {
-			n.handleError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
+		resp := &data.DecisionRequest{}
+		if err := proto.Unmarshal(buf, resp); err != nil {
+			n.handleError(data.NewError(err, data.ErrorEvent_UNMARSHAL))
 			return
 		}
 
@@ -221,9 +221,9 @@ func (n *Node) Respond(data []byte) {
 
 		// Update Status
 		if resp.Decision.Accepted() {
-			n.setStatus(md.Status_TRANSFER)
+			n.setStatus(data.Status_TRANSFER)
 		} else {
-			n.setStatus(md.Status_AVAILABLE)
+			n.setStatus(data.Status_AVAILABLE)
 		}
 	}
 }
@@ -232,34 +232,34 @@ func (n *Node) Respond(data []byte) {
 // Action method handles misceallaneous actions for node
 func (s *Node) Action(buf []byte) []byte {
 	// Unmarshal Data to Request
-	req := &md.ActionRequest{}
+	req := &data.ActionRequest{}
 	if err := proto.Unmarshal(buf, req); err != nil {
-		s.handleError(md.NewError(err, md.ErrorEvent_UNMARSHAL))
+		s.handleError(data.NewError(err, data.ErrorEvent_UNMARSHAL))
 		return nil
 	}
 
 	// Check Action
 	switch req.Action {
-	case md.Action_PING:
+	case data.Action_PING:
 		// Ping
-		resp := &md.ActionResponse{
+		resp := &data.ActionResponse{
 			Success: true,
-			Action:  md.Action_PING,
+			Action:  data.Action_PING,
 		}
 
 		// Marshal Response
 		bytes, err := proto.Marshal(resp)
 		if err != nil {
-			s.handleError(md.NewMarshalError(err))
+			s.handleError(data.NewMarshalError(err))
 			return nil
 		}
 		return bytes
-	case md.Action_LOCATION:
+	case data.Action_LOCATION:
 		// Location
-		resp := &md.ActionResponse{
+		resp := &data.ActionResponse{
 			Success: true,
-			Action:  md.Action_LOCATION,
-			Data: &md.ActionResponse_Location{
+			Action:  data.Action_LOCATION,
+			Data: &data.ActionResponse_Location{
 				Location: s.account.CurrentDevice().GetLocation(),
 			},
 		}
@@ -267,33 +267,33 @@ func (s *Node) Action(buf []byte) []byte {
 		// Marshal Response
 		bytes, err := proto.Marshal(resp)
 		if err != nil {
-			s.handleError(md.NewMarshalError(err))
+			s.handleError(data.NewMarshalError(err))
 			return nil
 		}
 		return bytes
-	case md.Action_URL_LINK:
+	case data.Action_URL_LINK:
 		// URL Link
-		resp := &md.ActionResponse{
+		resp := &data.ActionResponse{
 			Success: true,
-			Action:  md.Action_URL_LINK,
-			Data: &md.ActionResponse_UrlLink{
-				UrlLink: md.NewURLLink(req.GetData()),
+			Action:  data.Action_URL_LINK,
+			Data: &data.ActionResponse_UrlLink{
+				UrlLink: data.NewURLLink(req.GetData()),
 			},
 		}
 
 		// Marshal Response
 		bytes, err := proto.Marshal(resp)
 		if err != nil {
-			s.handleError(md.NewMarshalError(err))
+			s.handleError(data.NewMarshalError(err))
 			return nil
 		}
 		return bytes
-	case md.Action_LIST_LINKERS:
+	case data.Action_LIST_LINKERS:
 		// List Linkers
-		resp := &md.ActionResponse{
+		resp := &data.ActionResponse{
 			Success: true,
-			Action:  md.Action_LIST_LINKERS,
-			Data: &md.ActionResponse_Linkers{
+			Action:  data.Action_LIST_LINKERS,
+			Data: &data.ActionResponse_Linkers{
 				Linkers: s.local.ListLinkers(),
 			},
 		}
@@ -301,20 +301,20 @@ func (s *Node) Action(buf []byte) []byte {
 		// Marshal Response
 		bytes, err := proto.Marshal(resp)
 		if err != nil {
-			s.handleError(md.NewMarshalError(err))
+			s.handleError(data.NewMarshalError(err))
 			return nil
 		}
 		return bytes
-	case md.Action_PAUSE:
+	case data.Action_PAUSE:
 		// Pause
-		md.LogInfo("Lifecycle Pause Called")
-		s.state = md.Lifecycle_PAUSED
+		data.LogInfo("Lifecycle Pause Called")
+		s.state = data.Lifecycle_PAUSED
 		s.client.Lifecycle(s.state, s.local)
-		md.GetState().Pause()
-		resp := &md.ActionResponse{
+		data.GetState().Pause()
+		resp := &data.ActionResponse{
 			Success: true,
-			Action:  md.Action_PAUSE,
-			Data: &md.ActionResponse_Lifecycle{
+			Action:  data.Action_PAUSE,
+			Data: &data.ActionResponse_Lifecycle{
 				Lifecycle: s.state,
 			},
 		}
@@ -322,22 +322,22 @@ func (s *Node) Action(buf []byte) []byte {
 		// Marshal Response
 		bytes, err := proto.Marshal(resp)
 		if err != nil {
-			s.handleError(md.NewMarshalError(err))
+			s.handleError(data.NewMarshalError(err))
 			return nil
 		}
 		return bytes
-	case md.Action_RESUME:
+	case data.Action_RESUME:
 		// Resume
-		md.LogInfo("Lifecycle Resume Called")
-		s.state = md.Lifecycle_ACTIVE
+		data.LogInfo("Lifecycle Resume Called")
+		s.state = data.Lifecycle_ACTIVE
 		s.client.Lifecycle(s.state, s.local)
-		md.GetState().Resume()
+		data.GetState().Resume()
 
 		// Create Response
-		resp := &md.ActionResponse{
+		resp := &data.ActionResponse{
 			Success: true,
-			Action:  md.Action_RESUME,
-			Data: &md.ActionResponse_Lifecycle{
+			Action:  data.Action_RESUME,
+			Data: &data.ActionResponse_Lifecycle{
 				Lifecycle: s.state,
 			},
 		}
@@ -345,21 +345,21 @@ func (s *Node) Action(buf []byte) []byte {
 		// Marshal Response
 		bytes, err := proto.Marshal(resp)
 		if err != nil {
-			s.handleError(md.NewMarshalError(err))
+			s.handleError(data.NewMarshalError(err))
 			return nil
 		}
 		return bytes
-	case md.Action_STOP:
+	case data.Action_STOP:
 		// Stop
-		md.LogInfo("Lifecycle Stop Called")
-		s.state = md.Lifecycle_STOPPED
+		data.LogInfo("Lifecycle Stop Called")
+		s.state = data.Lifecycle_STOPPED
 		s.client.Lifecycle(s.state, s.local)
 
 		// Create Response
-		resp := &md.ActionResponse{
+		resp := &data.ActionResponse{
 			Success: true,
-			Action:  md.Action_STOP,
-			Data: &md.ActionResponse_Lifecycle{
+			Action:  data.Action_STOP,
+			Data: &data.ActionResponse_Lifecycle{
 				Lifecycle: s.state,
 			},
 		}
@@ -367,7 +367,7 @@ func (s *Node) Action(buf []byte) []byte {
 		// Marshal Response
 		bytes, err := proto.Marshal(resp)
 		if err != nil {
-			s.handleError(md.NewMarshalError(err))
+			s.handleError(data.NewMarshalError(err))
 			return nil
 		}
 		return bytes

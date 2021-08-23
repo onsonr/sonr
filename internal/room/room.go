@@ -8,16 +8,16 @@ import (
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	sh "github.com/sonr-io/core/internal/host"
 	ac "github.com/sonr-io/core/pkg/account"
-	md "github.com/sonr-io/core/pkg/models"
+	"github.com/sonr-io/core/pkg/data"
 	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/proto"
 )
 
-type GetRoomFunc func() *md.Room
+type GetRoomFunc func() *data.Room
 
 type RoomHandler interface {
-	OnRoomEvent(*md.RoomEvent)
-	OnSyncEvent(*md.SyncEvent)
+	OnRoomEvent(*data.RoomEvent)
+	OnSyncEvent(*data.SyncEvent)
 }
 
 type RoomManager struct {
@@ -32,31 +32,31 @@ type RoomManager struct {
 
 	// Exchange
 	exchange   *ExchangeService
-	roomEvents chan *md.RoomEvent
+	roomEvents chan *data.RoomEvent
 
-	linkers []*md.Peer
-	room    *md.Room
+	linkers []*data.Peer
+	room    *data.Room
 }
 
 // NewLocal ^ Create New Contained Room Manager ^ //
-func JoinRoom(ctx context.Context, h sh.HostNode, ac ac.Account, room *md.Room, th RoomHandler) (*RoomManager, *md.SonrError) {
+func JoinRoom(ctx context.Context, h sh.HostNode, ac ac.Account, room *data.Room, th RoomHandler) (*RoomManager, *data.SonrError) {
 	// Join Room
 	name := room.GetName()
 	topic, err := h.Pubsub().Join(name)
 	if err != nil {
-		return nil, md.NewError(err, md.ErrorEvent_ROOM_JOIN)
+		return nil, data.NewError(err, data.ErrorEvent_ROOM_JOIN)
 	}
 
 	// Subscribe to Room
 	sub, err := topic.Subscribe()
 	if err != nil {
-		return nil, md.NewError(err, md.ErrorEvent_ROOM_SUB)
+		return nil, data.NewError(err, data.ErrorEvent_ROOM_SUB)
 	}
 
 	// Create Room Handler
 	handler, err := topic.EventHandler()
 	if err != nil {
-		return nil, md.NewError(err, md.ErrorEvent_ROOM_HANDLER)
+		return nil, data.NewError(err, data.ErrorEvent_ROOM_HANDLER)
 	}
 
 	// Create Lobby Manager
@@ -67,8 +67,8 @@ func JoinRoom(ctx context.Context, h sh.HostNode, ac ac.Account, room *md.Room, 
 		host:         h,
 		eventHandler: handler,
 		room:         room,
-		linkers:      make([]*md.Peer, 0),
-		roomEvents:   make(chan *md.RoomEvent, util.MAX_CHAN_DATA),
+		linkers:      make([]*data.Peer, 0),
+		roomEvents:   make(chan *data.RoomEvent, util.MAX_CHAN_DATA),
 		subscription: sub,
 		Topic:        topic,
 	}
@@ -84,7 +84,7 @@ func JoinRoom(ctx context.Context, h sh.HostNode, ac ac.Account, room *md.Room, 
 		// Return Manager
 		return mgr, nil
 	} else {
-		return nil, md.NewError(errors.New("Invalid Room Type"), md.ErrorEvent_ROOM_JOIN)
+		return nil, data.NewError(errors.New("Invalid Room Type"), data.ErrorEvent_ROOM_JOIN)
 	}
 }
 
@@ -101,19 +101,19 @@ func (tm *RoomManager) FindPeer(q string) (peer.ID, error) {
 }
 
 // Publish @ Publish message to specific peer in room
-func (tm *RoomManager) Publish(msg *md.RoomEvent) error {
+func (tm *RoomManager) Publish(msg *data.RoomEvent) error {
 	if tm.room.IsLocal() || tm.room.IsGroup() {
 		// Convert Event to Proto Binary
 		bytes, err := proto.Marshal(msg)
 		if err != nil {
-			md.LogError(err)
+			data.LogError(err)
 			return err
 		}
 
 		// Publish to Room
 		err = tm.Topic.Publish(tm.ctx, bytes)
 		if err != nil {
-			md.LogError(err)
+			data.LogError(err)
 			return err
 		}
 	}
@@ -121,19 +121,19 @@ func (tm *RoomManager) Publish(msg *md.RoomEvent) error {
 }
 
 // Publish @ Publish message to specific peer in room
-func (tm *RoomManager) Sync(msg *md.SyncEvent) error {
+func (tm *RoomManager) Sync(msg *data.SyncEvent) error {
 	if tm.room.IsDevices() {
 		// Convert Event to Proto Binary
 		bytes, err := proto.Marshal(msg)
 		if err != nil {
-			md.LogError(err)
+			data.LogError(err)
 			return err
 		}
 
 		// Publish to Room
 		err = tm.Topic.Publish(tm.ctx, bytes)
 		if err != nil {
-			md.LogError(err)
+			data.LogError(err)
 			return err
 		}
 	}
@@ -175,8 +175,8 @@ func (tm *RoomManager) HasPeerID(q peer.ID) bool {
 }
 
 // Returns List of Linkers in Room
-func (tm *RoomManager) ListLinkers() *md.Linkers {
-	return &md.Linkers{
+func (tm *RoomManager) ListLinkers() *data.Linkers {
+	return &data.Linkers{
 		List: tm.linkers,
 	}
 }

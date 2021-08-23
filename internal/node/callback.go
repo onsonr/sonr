@@ -1,4 +1,5 @@
-package main
+package node
+
 
 import (
 	"github.com/sonr-io/core/pkg/data"

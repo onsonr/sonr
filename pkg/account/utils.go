@@ -3,7 +3,7 @@ package account
 import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	ps "github.com/libp2p/go-libp2p-pubsub"
-	md "github.com/sonr-io/core/pkg/models"
+	"github.com/sonr-io/core/pkg/data"
 )
 
 // isEventJoin Checks if PeerEvent is Join and NOT User
@@ -27,24 +27,24 @@ func (al *userLinker) IsReady() bool {
 }
 
 // SetAvailable Method Sets Account to be Available
-func (al *userLinker) SetAvailable(val bool) *md.StatusEvent {
-	return al.currentDevice.SetAvailable(val)
+func (al *userLinker) SetAvailable(val bool) *data.StatusEvent {
+	return al.user.GetCurrent().SetAvailable(val)
 }
 
 // SetConnected Method Sets Account to be Connected
-func (al *userLinker) SetConnected(val bool) *md.StatusEvent {
-	return al.currentDevice.SetConnected(val)
+func (al *userLinker) SetConnected(val bool) *data.StatusEvent {
+	return al.user.GetCurrent().SetConnected(val)
 }
 
 // SetStatus Method Updates Status of Account
-func (al *userLinker) SetStatus(newStatus md.Status) *md.StatusEvent {
-	return al.currentDevice.SetStatus(newStatus)
+func (al *userLinker) SetStatus(newStatus data.Status) *data.StatusEvent {
+	return al.user.GetCurrent().SetStatus(newStatus)
 }
 
 // SignLinkPacket Method Signs Packet with Keys
-func (al *userLinker) SignLinkPacket(resp *md.LinkResponse) *md.LinkPacket {
+func (al *userLinker) SignLinkPacket(resp *data.LinkResponse) *data.LinkPacket {
 	u := al.user
-	return &md.LinkPacket{
+	return &data.LinkPacket{
 		Primary:   u.GetPrimary(),
 		Secondary: resp.GetDevice(),
 		KeyChain:  al.ExportKeychain(),
@@ -58,10 +58,10 @@ func (al *userLinker) VerifyDevicePubKey(pub crypto.PubKey) bool {
 }
 
 // VerifyRead Method Returns Keychain Info to Client
-func (al *userLinker) VerifyRead() *md.VerifyResponse {
+func (al *userLinker) VerifyRead() *data.VerifyResponse {
 	u := al.user
 	kp := u.GetKeyChain().GetAccount()
-	return &md.VerifyResponse{
+	return &data.VerifyResponse{
 		PublicKey: kp.PubKeyBase64(),
 		ShortID:   u.GetCurrent().ShortID(),
 	}

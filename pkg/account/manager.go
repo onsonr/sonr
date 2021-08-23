@@ -11,63 +11,62 @@ import (
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	msg "github.com/libp2p/go-msgio"
 	sh "github.com/sonr-io/core/internal/host"
-	md "github.com/sonr-io/core/pkg/models"
+	"github.com/sonr-io/core/pkg/data"
 	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/proto"
 )
 
 type Account interface {
 	// Config
-	APIKeys() *md.APIKeys
+	APIKeys() *data.APIKeys
 	FilePath() string
 	Save() error
-	JoinNetwork(h sh.HostNode, cr *md.ConnectionRequest, p *md.Peer) *md.SonrError
+	JoinNetwork(h sh.HostNode, cr *data.ConnectionRequest, p *data.Peer) *data.SonrError
 
 	// Information
-	Member() *md.Member
+	Member() *data.Member
 	DeviceID() string
 	FirstName() string
 	LastName() string
-	Profile() *md.Profile
-	UpdateContact(contact *md.Contact)
+	Profile() *data.Profile
+	UpdateContact(contact *data.Contact)
 
 	// Keychain Management
-	AccountKeys() *md.KeyPair
-	CurrentDevice() *md.Device
-	CurrentDeviceKeys() *md.KeyPair
-	DeviceKeys() *md.KeyPair
-	DevicePubKey() *md.KeyPair_Public
-	GroupKeys() *md.KeyPair
-	KeyChain() *md.KeyChain
-	SignLinkPacket(resp *md.LinkResponse) *md.LinkPacket
-	SignAuth(req *md.AuthRequest) *md.AuthResponse
+	AccountKeys() *data.KeyPair
+	CurrentDevice() *data.Device
+	CurrentDeviceKeys() *data.KeyPair
+	DeviceKeys() *data.KeyPair
+	DevicePubKey() *data.KeyPair_Public
+	GroupKeys() *data.KeyPair
+	KeyChain() *data.KeyChain
+	SignLinkPacket(resp *data.LinkResponse) *data.LinkPacket
+	SignAuth(req *data.AuthRequest) *data.AuthResponse
 	VerifyDevicePubKey(pub crypto.PubKey) bool
 	VerifyGroupPubKey(pub crypto.PubKey) bool
-	VerifyRead() *md.VerifyResponse
+	VerifyRead() *data.VerifyResponse
 
 	// Linker Stream
-	HandleLinkPacket(packet *md.LinkPacket)
+	HandleLinkPacket(packet *data.LinkPacket)
 	ReadFromLink(stream network.Stream)
-	WriteToLink(stream network.Stream, resp *md.LinkResponse)
+	WriteToLink(stream network.Stream, resp *data.LinkResponse)
 
 	// Room Management
-	NewDefaultUpdateEvent(room *md.Room, id peer.ID) *md.RoomEvent
-	NewUpdateEvent(room *md.Room, id peer.ID) *md.RoomEvent
-	NewExitEvent(room *md.Room, id peer.ID) *md.RoomEvent
+	NewDefaultUpdateEvent(room *data.Room, id peer.ID) *data.RoomEvent
+	NewUpdateEvent(room *data.Room, id peer.ID) *data.RoomEvent
+	NewExitEvent(room *data.Room, id peer.ID) *data.RoomEvent
 
 	// Status Management
 	IsReady() bool
-	SetAvailable(val bool) *md.StatusEvent
-	SetConnected(val bool) *md.StatusEvent
-	SetStatus(newStatus md.Status) *md.StatusEvent
+	SetAvailable(val bool) *data.StatusEvent
+	SetConnected(val bool) *data.StatusEvent
+	SetStatus(newStatus data.Status) *data.StatusEvent
 }
 
 type userLinker struct {
 	// General
 	Account
-	currentDevice *md.Device
-	user          *md.User
-	protocol      protocol.ID
+	user     *data.User
+	protocol protocol.ID
 
 	// Networking
 	ctx          context.Context
@@ -78,14 +77,14 @@ type userLinker struct {
 
 	// Sync
 	service       *DeviceService
-	syncEvents    chan *md.SyncEvent
-	activeDevices map[peer.ID]*md.Device
-	room          *md.Room
+	syncEvents    chan *data.SyncEvent
+	activeDevices map[peer.ID]*data.Device
+	room          *data.Room
 	lastUpdated   int32
 }
 
 // Start Begins Account Manager
-func OpenAccount(ir *md.InitializeRequest, d *md.Device) (Account, *md.SonrError) {
+func OpenAccount(ir *data.InitializeRequest, d *data.Device) (Account, *data.SonrError) {
 	// Fetch Key Pair
 	keychain, err := d.Initialize(ir)
 	if err != nil {
@@ -101,13 +100,13 @@ func OpenAccount(ir *md.InitializeRequest, d *md.Device) (Account, *md.SonrError
 		}
 
 		// Unmarshal Account
-		loadedAccount := &md.User{}
+		loadedAccount := &data.User{}
 		serr := proto.Unmarshal(buf, loadedAccount)
 		if serr != nil {
-			return nil, md.NewError(serr, md.ErrorEvent_ACCOUNT_LOAD)
+			return nil, data.NewError(serr, data.ErrorEvent_ACCOUNT_LOAD)
 		}
 
-		md.LogInfo(fmt.Sprintf("LoadedAccount: %s", loadedAccount.String()))
+		data.LogInfo(fmt.Sprintf("LoadedAccount: %s", loadedAccount.String()))
 
 		// Set Account
 		loadedAccount.KeyChain = keychain
@@ -117,75 +116,75 @@ func OpenAccount(ir *md.InitializeRequest, d *md.Device) (Account, *md.SonrError
 
 		// Create Account Linker
 		linker := &userLinker{
-			user:          loadedAccount,
-			currentDevice: ir.GetDevice(),
-			room:          loadedAccount.NewDeviceRoom(),
+			user: loadedAccount,
+			room: loadedAccount.NewDeviceRoom(),
 		}
 		return linker, nil
 	} else {
 		// Return User
-		u := &md.User{
+		u := &data.User{
 			KeyChain: keychain,
 			Current:  d,
 			ApiKeys:  ir.GetApiKeys(),
 			State:    ir.UserState(),
-			Devices:  make([]*md.Device, 0),
-			Member: &md.Member{
-				Reach:      md.Member_ONLINE,
-				Associated: make([]*md.Peer, 0),
+			Devices:  make([]*data.Device, 0),
+			Member: &data.Member{
+				Reach:      data.Member_ONLINE,
+				Associated: make([]*data.Peer, 0),
 			},
 		}
 
 		// Create Account Linker
 		linker := &userLinker{
-			user:          u,
-			currentDevice: ir.GetDevice(),
-			room:          u.NewDeviceRoom(),
+			user: u,
+			room: u.NewDeviceRoom(),
 		}
 		err := linker.Save()
 		if err != nil {
-			return nil, md.NewError(err, md.ErrorEvent_ACCOUNT_SAVE)
+			return nil, data.NewError(err, data.ErrorEvent_ACCOUNT_SAVE)
 		}
 		return linker, nil
 	}
 }
 
 // JoinNetwork Method Joins Network, Updates Profile, Sets Membership
-func (al *userLinker) JoinNetwork(h sh.HostNode, cr *md.ConnectionRequest, p *md.Peer) *md.SonrError {
+func (al *userLinker) JoinNetwork(h sh.HostNode, cr *data.ConnectionRequest, p *data.Peer) *data.SonrError {
+	// Initialize Networking Param
+	al.ctx = context.Background()
+	al.host = h
+
 	// Initialize Account Params
+	al.user.Current.Location = cr.GetLocation()
+	al.user.Current.Status = data.Status_AVAILABLE
 	al.user.PushToken = cr.GetPushToken()
 	al.user.SName = cr.GetContact().GetProfile().GetSName()
 	al.user.Contact = cr.GetContact()
-	al.currentDevice.SetConnection(cr)
 
 	// Set Member
 	al.user.Member.Active = p
 	al.user.Member.UpdateProfile(cr.GetContact())
 	al.Save()
 
-	// Initialize Service Params
-	al.ctx = context.Background()
-	al.host = h
 	al.room = al.user.NewDeviceRoom()
-	al.activeDevices = make(map[peer.ID]*md.Device, 0)
-	al.syncEvents = make(chan *md.SyncEvent)
+	al.activeDevices = make(map[peer.ID]*data.Device, 0)
+	al.syncEvents = make(chan *data.SyncEvent)
 
 	// Join Room
 	topic, err := al.host.Pubsub().Join(fmt.Sprintf("/sonr/device/%s", al.user.GetSName()))
 	if err != nil {
-		return md.NewError(err, md.ErrorEvent_ROOM_JOIN)
+		return data.NewError(err, data.ErrorEvent_ROOM_JOIN)
 	}
 
 	// Subscribe to Room
 	sub, err := topic.Subscribe()
 	if err != nil {
-		return md.NewError(err, md.ErrorEvent_ROOM_SUB)
+		return data.NewError(err, data.ErrorEvent_ROOM_SUB)
 	}
 
 	// Create Room Handler
 	handler, err := topic.EventHandler()
 	if err != nil {
-		return md.NewError(err, md.ErrorEvent_ROOM_HANDLER)
+		return data.NewError(err, data.ErrorEvent_ROOM_HANDLER)
 	}
 
 	// Create Lobby Manager
@@ -202,7 +201,7 @@ func (al *userLinker) JoinNetwork(h sh.HostNode, cr *md.ConnectionRequest, p *md
 }
 
 // HandleLinkPacket Updates Account after LinkPacket is received
-func (al *userLinker) HandleLinkPacket(lp *md.LinkPacket) {
+func (al *userLinker) HandleLinkPacket(lp *data.LinkPacket) {
 	u := al.user
 	u.Primary = lp.Primary
 	u.Devices = append(u.Devices, lp.Secondary)
@@ -216,15 +215,15 @@ func (al *userLinker) ReadFromLink(stream network.Stream) {
 	go func(rs msg.ReadCloser, stream network.Stream) {
 		buf, err := rs.ReadMsg()
 		if err != nil {
-			md.LogError(err)
+			data.LogError(err)
 			return
 		}
 
 		// Unmarshal linkPacket
-		lp := &md.LinkPacket{}
+		lp := &data.LinkPacket{}
 		err = proto.Unmarshal(buf, lp)
 		if err != nil {
-			md.LogError(err)
+			data.LogError(err)
 			return
 		}
 
@@ -235,7 +234,7 @@ func (al *userLinker) ReadFromLink(stream network.Stream) {
 }
 
 // SignAuth Method Signs Data with KeyPair
-func (al *userLinker) SignAuth(req *md.AuthRequest) *md.AuthResponse {
+func (al *userLinker) SignAuth(req *data.AuthRequest) *data.AuthResponse {
 	u := al.user
 	// Create Prefix
 	prefixResult := u.GetKeyChain().GetAccount().Sign(fmt.Sprintf("%s%s", req.GetSName(), al.DeviceID()))
@@ -248,7 +247,7 @@ func (al *userLinker) SignAuth(req *md.AuthRequest) *md.AuthResponse {
 	pubKey := u.GetKeyChain().GetAccount().PubKeyBase64()
 
 	// Return Response
-	return &md.AuthResponse{
+	return &data.AuthResponse{
 		SignedPrefix:      prefix,
 		SignedFingerprint: fingerprint,
 		PublicKey:         pubKey,
@@ -258,7 +257,7 @@ func (al *userLinker) SignAuth(req *md.AuthRequest) *md.AuthResponse {
 }
 
 // UpdateContact Method Updates User Contact
-func (al *userLinker) UpdateContact(c *md.Contact) {
+func (al *userLinker) UpdateContact(c *data.Contact) {
 	al.user.Contact = c
 	al.user.GetMember().UpdateProfile(c)
 	al.user.Member.UpdateProfile(c)
@@ -266,9 +265,9 @@ func (al *userLinker) UpdateContact(c *md.Contact) {
 }
 
 // WriteToLink writes Buffer onto from Stream to New Associated Device
-func (al *userLinker) WriteToLink(stream network.Stream, resp *md.LinkResponse) {
+func (al *userLinker) WriteToLink(stream network.Stream, resp *data.LinkResponse) {
 	// Create Link Packet and Send
-	linkPacket := &md.LinkPacket{
+	linkPacket := &data.LinkPacket{
 		Primary:   al.user.GetPrimary(),
 		Secondary: resp.GetDevice(),
 		KeyChain:  al.ExportKeychain(),
@@ -277,7 +276,7 @@ func (al *userLinker) WriteToLink(stream network.Stream, resp *md.LinkResponse) 
 	// Marshal linkPacket
 	buf, err := proto.Marshal(linkPacket)
 	if err != nil {
-		md.LogError(err)
+		data.LogError(err)
 		return
 	}
 
@@ -285,7 +284,7 @@ func (al *userLinker) WriteToLink(stream network.Stream, resp *md.LinkResponse) 
 	go func(ws msg.WriteCloser) {
 		err := ws.WriteMsg(buf)
 		if err != nil {
-			md.LogError(err)
+			data.LogError(err)
 		}
 	}(msg.NewWriter(stream))
 }
