@@ -1,4 +1,4 @@
-name: Bind Framework Workflow 📦
+name: Build/Release Workflow 📦
 
 # Controls when the action will run.
 on:
@@ -8,33 +8,26 @@ on:
 
   pull_request:
     branches: [release]
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # Runs the `gomobile bind -android` job
   build-android:
+    # Configuration
     name: "Android AAR  🔗 "
-
-    # Env Variables for the job
     env:
       GO111MODULE: on
       GOMOD: ${{ github.workspace }}/go.mod
-
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    # Steps
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      # 1. Checkout the branch
       - name: Checkout Repo
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
 
-      # Setup Go Enviornment
+      # 2. Setup Go environment
       - name: Setup Go Env
         uses: ibrt/golang-github-action@v1
         with:
@@ -44,101 +37,153 @@ jobs:
 
       - run: mkdir -p ${{ github.workspace }}/build
 
-      # Bind Android Framework to Plugin
+      # 3. Bind Android Framework to Plugin
       - name: Setup and Bind AAR
         run: |
+          cd ${{ github.workspace }} && go mod tidy
           go get golang.org/x/mobile
           gomobile init
           cd ${{ github.workspace }}/cmd/bind
           gomobile bind -ldflags='-s -w' -v -target=android -o ${{ github.workspace }}/build/io.sonr.core.aar
 
+      # 4. Upload AAR
       - name: Upload AAR to GitHub
         uses: actions/upload-artifact@v2
         with:
           name: android-aar
           path: ${{ github.workspace }}/build/io.sonr.core.aar
 
-  # Runs the `gomobile bind -ios` job
+  # Bind iOS Framework
   build-ios:
+    # Configuration
     name: "iOS Framework  🔗 "
-
-    # Env Variables for the job
     env:
       GO111MODULE: on
       GOMOD: ${{ github.workspace }}/go.mod
-
-    # The type of runner that the job will run on
     runs-on: macos-latest
+
+    # Steps
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      # 1. Checkout the branch
       - name: Checkout Repository
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
-      # Setup Go Enviornment
+      # 2. Setup Go Enviornment
       - name: Setup Go Environment
         uses: ibrt/golang-github-action@v1
         with:
-          go-version: 1.17
+          go-version: 1.16.6
           go-packages: |
             golang.org/x/mobile/cmd/gomobile
 
       - run: mkdir -p ${{ github.workspace }}/build
 
-      # Bind iOS Framework to Plugin
+      # 3. Bind iOS Framework to Plugin
       - name: Setup and Bind
         run: |
+          cd ${{ github.workspace }} && go mod tidy
           go get golang.org/x/mobile
           gomobile init
           cd ${{ github.workspace }}/cmd/bind
           gomobile bind -ldflags='-s -w' -v -target=ios -bundleid=io.sonr.core -o ${{ github.workspace }}/build/Core.framework
 
+      # 4. Upload Framework
       - name: Upload Framework to GitHub
         uses: actions/upload-artifact@v2
         with:
           name: ios-framework
           path: ${{ github.workspace }}/build/Core.framework/
 
+  # Build Daemon for Desktops
+  build-rpc:
+    # Configuration
+    name: "RPC Daemon  🔨 "
+    runs-on: macos-latest
+
+    # Steps
+    steps:
+      # 1. Checkout the branch
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      # 2. Setup Go Enviornment
+      - name: Setup Go Environment
+        uses: ibrt/golang-github-action@v1
+        with:
+          go-version: 1.16.6
+
+      # 3. Build Daemon
+      - name: Release Daemons 🎉
+        uses: goreleaser/goreleaser-action@v2
+        with:
+          workdir: ${{ github.workspace }}/cmd/rpc
+          distribution: goreleaser
+          version: latest
+          args: release --rm-dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
+
+      # 4. Dispatch Electron
+      - name: Call Dispatch for Electron ⚡️
+        run: gh workflow run main.yml --repo 'sonr-io/electron'
+        env:
+          GITHUB_TOKEN: ${{secrets.PAT_GITHUB_TOKEN}}
+
+  # Add Frameworks to Release
   release-frameworks:
+    # Configuration
     needs: [build-android, build-ios]
     name: "Release Frameworks 🎉 "
     runs-on: ubuntu-latest
+
+    # Steps
     steps:
+      # 1. Checkout the branch
     - uses: actions/checkout@v2
     - run: mkdir -p ${{ github.workspace }}/build/Core.framework
 
+      # 2. Download AAR Artifact
     - name: Download Android AAR
       uses: actions/download-artifact@v2
       with:
         name: android-aar
         path: ${{ github.workspace }}/build
 
+      # 3. Download Framework Artifact
     - name: Download iOS Framework
       uses: actions/download-artifact@v2
       with:
         name: ios-framework
         path: ${{ github.workspace }}/build/Core.framework
 
-    - name: Display structure of downloaded files
-      run: ls -R
-      working-directory: ${{ github.workspace }}/build
-
+      # 4. Get Version
     - id: get_version
       uses: battila7/get-version-action@v2
 
-    - name: Zip up Android AAR and iOS Framework
+      # 5. Zip Framework and AAR
+    - name: Zip Android AAR and iOS Framework
       run: |
-        zip -r $ANDROID_ZIP ${{ github.workspace }}/build/io.sonr.core.aar
-        mv $ANDROID_ZIP ${{ github.workspace }}/build/
-        zip -r $IOS_ZIP ${{ github.workspace }}/build/Core.framework
-        mv $IOS_ZIP ${{ github.workspace }}/build/
-        ls -R
+        cd ${{ github.workspace }}/build
+        zip -r $ANDROID_ZIP io.sonr.core.aar
+        zip -r $IOS_ZIP Core.framework
       env:
         ANDROID_ZIP: sonr-bind_${{ steps.get_version.outputs.version-without-v }}_android.zip
         IOS_ZIP: sonr-bind_${{ steps.get_version.outputs.version-without-v }}_ios.zip
 
+      # 6. Upload AAR and Framework to Release
     - uses: ncipollo/release-action@v1
       with:
         allowUpdates: true
         artifacts: "${{ github.workspace }}/build/*.zip"
         replacesArtifacts: false
         token: ${{ secrets.PAT_GITHUB_TOKEN }}
+
+      # 7. Dispatch Plugin
+    - name: Call Dispatch for Plugin ⚡️
+      run: gh workflow run main.yml --repo 'sonr-io/plugin'
+      env:
+        GITHUB_TOKEN: ${{secrets.PAT_GITHUB_TOKEN}}
