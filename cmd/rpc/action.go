@@ -190,7 +190,7 @@ func (s *NodeServer) Invite(ctx context.Context, req *data.InviteRequest) (*data
 	if s.account.IsReady() {
 		// Validate invite
 		req = s.account.CurrentDevice().SignInvite(req)
-
+    
 		// Send Invite
 		err := s.client.Invite(req, s.local)
 		if err != nil {

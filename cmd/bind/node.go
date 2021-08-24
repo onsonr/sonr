@@ -13,7 +13,6 @@ import (
 
 type Node struct {
 	data.Callback
-
 	// Properties
 	call Callback
 	ctx  context.Context

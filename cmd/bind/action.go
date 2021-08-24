@@ -2,11 +2,11 @@ package bind
 
 import (
 	"github.com/sonr-io/core/pkg/data"
-	"google.golang.org/protobuf/proto"
 )
 
 // ** ─── Node Binded Actions ────────────────────────────────────────────────────────
 // Signing Request for Data
+
 func (n *Node) Sign(buf []byte) []byte {
 	// Unmarshal Data to Request
 	request := &data.AuthRequest{}

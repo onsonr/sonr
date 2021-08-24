@@ -1,5 +1,6 @@
 syntax = "proto3";
 package data;
+
 import "peer.proto";
 import "user.proto";
 

@@ -209,6 +209,7 @@ func (s *NodeServer) OnRoom(req *data.NoRequest, stream data.NodeService_OnRoomS
 		case <-s.ctx.Done():
 			return nil
 		}
+
 		data.GetState().NeedsWait()
 	}
 }
@@ -270,7 +271,12 @@ func (s *NodeServer) handleEvent(buf []byte) {
 		err = proto.Unmarshal(event.GetData(), pe)
 		if err != nil {
 			data.LogFatal(err)
-			return
+	case md.GenericEvent_PROGRESS:
+		// Unmarshal Progress Event
+		pe := &md.ProgressEvent{}
+		err = proto.Unmarshal(event.GetData(), pe)
+		if err != nil {
+			md.LogFatal(err)
 		}
 
 		// Send Event to Channel
@@ -357,7 +363,7 @@ func (s *NodeServer) handleRequest(buf []byte) {
 // Handle Request and Send to Channel after unmarshal
 func (s *NodeServer) handleResponse(buf []byte) {
 	// Unmarshal Generic Response
-	response := &data.GenericResponse{}
+  response := &data.GenericResponse{}
 	err := proto.Unmarshal(buf, response)
 	if err != nil {
 		data.LogFatal(err)

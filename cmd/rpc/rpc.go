@@ -174,4 +174,5 @@ func (s *NodeServer) setStatus(newStatus data.Status) {
 
 	// Callback Status
 	s.statusEvents <- su
+	return &md.NoResponse{}, nil
 }

@@ -3,6 +3,7 @@ package data;
 // Require Go Package
 option go_package = "/data";
 
+
 // Error Event returned from Core Library
 message ErrorEvent {
   Type type = 1;         // Error Type Occurred

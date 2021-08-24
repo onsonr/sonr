@@ -197,7 +197,7 @@ message DecisionResponse {
   string body = 2;  // Response Body
 }
 
-// Message to manage user Device Service
+
 message DeviceRequest {
   Device device = 1; // Users Device
   Method method = 2; // Method to be Used
