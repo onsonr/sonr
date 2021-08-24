@@ -1859,7 +1859,6 @@ func (x *DecisionResponse) GetBody() string {
 	return ""
 }
 
-// Message to manage user Device Service
 type DeviceRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

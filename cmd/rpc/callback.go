@@ -271,7 +271,13 @@ func (s *NodeServer) handleEvent(buf []byte) {
 		err = proto.Unmarshal(event.GetData(), pe)
 		if err != nil {
 			data.LogFatal(err)
+			return
 		}
+
+		// Logging
+		eventType.Log(pe.String())
+
+		// Send Event to Channel
 		s.progressEvents <- pe
 	case data.GenericEvent_ROOM:
 		// Unmarshal Room Event
