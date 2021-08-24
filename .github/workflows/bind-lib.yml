@@ -73,14 +73,12 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout Repository
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
 
       # Setup Go Enviornment
       - name: Setup Go Environment
         uses: ibrt/golang-github-action@v1
         with:
-          go-version: 1.16.6
+          go-version: 1.17
           go-packages: |
             golang.org/x/mobile/cmd/gomobile
 
