@@ -5,30 +5,29 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	net "github.com/sonr-io/core/internal/host"
+	"github.com/sonr-io/core/pkg/data"
 	"google.golang.org/protobuf/encoding/protojson"
-
-	md "github.com/sonr-io/core/pkg/models"
 )
 
 type ServiceHandler interface {
-	OnConnected(r *md.ConnectionResponse)
+	OnConnected(r *data.ConnectionResponse)
 	OnLink(success bool, incoming bool, id peer.ID, resp []byte)
 	OnInvite([]byte)
-	OnReply(id peer.ID, data []byte)
-	OnConfirmed(inv *md.InviteRequest)
-	OnMail(e *md.MailEvent)
-	OnError(err *md.SonrError)
+	OnReply(id peer.ID, buf []byte)
+	OnConfirmed(inv *data.InviteRequest)
+	OnMail(e *data.MailEvent)
+	OnError(err *data.SonrError)
 }
 
 type ServiceClient interface {
-	HandleLinking(req *md.LinkRequest)
-	Link(id peer.ID, inv *md.LinkRequest) error
-	Invite(id peer.ID, inv *md.InviteRequest) error
-	Respond(rep *md.InviteResponse)
-	SendMail(e *md.InviteRequest) *md.SonrError
-	HandleMailbox(req *md.MailboxRequest) (*md.MailboxResponse, *md.SonrError)
-	PushSingle(*md.PushMessage) *md.SonrError
-	PushMultiple(*md.PushMessage, []*md.Peer) *md.SonrError
+	HandleLinking(req *data.LinkRequest)
+	Link(id peer.ID, inv *data.LinkRequest) error
+	Invite(id peer.ID, inv *data.InviteRequest) error
+	Respond(rep *data.InviteResponse)
+	SendMail(e *data.InviteRequest) *data.SonrError
+	HandleMailbox(req *data.MailboxRequest) (*data.MailboxResponse, *data.SonrError)
+	PushSingle(*data.PushMessage) *data.SonrError
+	PushMultiple(*data.PushMessage, []*data.Peer) *data.SonrError
 	Close()
 }
 
@@ -37,22 +36,21 @@ type serviceClient struct {
 
 	// Common
 	ctx       context.Context
-	apiKeys   *md.APIKeys
+	apiKeys   *data.APIKeys
 	handler   ServiceHandler
 	host      net.HostNode
 	pushToken string
-	request   *md.ConnectionRequest
-	device    *md.Device
+	request   *data.ConnectionRequest
+	device    *data.Device
 
 	// Services
 	Auth    *AuthService
-	Device  *DeviceService
 	Push    *PushService
 	Textile *TextileService
 }
 
 // Creates New Service Interface
-func NewService(ctx context.Context, h net.HostNode, u *md.Device, req *md.ConnectionRequest, sh ServiceHandler) (ServiceClient, *md.SonrError) {
+func NewService(ctx context.Context, h net.HostNode, u *data.Device, req *data.ConnectionRequest, sh ServiceHandler) (ServiceClient, *data.SonrError) {
 	// Create Client
 	client := &serviceClient{
 		ctx:       ctx,
@@ -88,7 +86,7 @@ func NewService(ctx context.Context, h net.HostNode, u *md.Device, req *md.Conne
 }
 
 // Method Sends Mail Entry to Peer
-func (sc *serviceClient) SendMail(inv *md.InviteRequest) *md.SonrError {
+func (sc *serviceClient) SendMail(inv *data.InviteRequest) *data.SonrError {
 	// Check Mail Enabled
 	if sc.Textile.options.GetMailbox() {
 		// Fetch Peer Thread Key
@@ -100,7 +98,7 @@ func (sc *serviceClient) SendMail(inv *md.InviteRequest) *md.SonrError {
 		// Marshal Data
 		buf, err := protojson.Marshal(inv)
 		if err != nil {
-			return md.NewMarshalError(err)
+			return data.NewMarshalError(err)
 		}
 
 		// Send to Mailbox
@@ -108,10 +106,10 @@ func (sc *serviceClient) SendMail(inv *md.InviteRequest) *md.SonrError {
 		if serr != nil {
 			return serr
 		}
-		md.LogSuccess("Sending Mail")
+		data.LogSuccess("Sending Mail")
 		return nil
 	} else {
-		md.LogInfo("Mail is not Ready")
+		data.LogInfo("Mail is not Ready")
 	}
 
 	// Send Push Message
@@ -123,45 +121,45 @@ func (sc *serviceClient) SendMail(inv *md.InviteRequest) *md.SonrError {
 }
 
 // Method Handles a given Mailbox Request for a Message
-func (sc *serviceClient) HandleMailbox(req *md.MailboxRequest) (*md.MailboxResponse, *md.SonrError) {
-	if req.Action == md.MailboxRequest_READ {
+func (sc *serviceClient) HandleMailbox(req *data.MailboxRequest) (*data.MailboxResponse, *data.SonrError) {
+	if req.Action == data.MailboxRequest_READ {
 		// Set Mailbox Message as Read
 		err := sc.Textile.readMessage(req.ID)
 		if err != nil {
-			return &md.MailboxResponse{
+			return &data.MailboxResponse{
 				Success: false,
-				Action:  md.MailboxResponse_Action(req.Action),
+				Action:  data.MailboxResponse_Action(req.Action),
 			}, err
 		}
 
 		// Return Success
-		return &md.MailboxResponse{
+		return &data.MailboxResponse{
 			Success: true,
-			Action:  md.MailboxResponse_Action(req.Action),
+			Action:  data.MailboxResponse_Action(req.Action),
 		}, nil
-	} else if req.Action == md.MailboxRequest_DELETE {
+	} else if req.Action == data.MailboxRequest_DELETE {
 		// Delete Mailbox Message
 		err := sc.Textile.deleteMessage(req.ID)
 		if err != nil {
-			return &md.MailboxResponse{
+			return &data.MailboxResponse{
 				Success: false,
-				Action:  md.MailboxResponse_Action(req.Action),
+				Action:  data.MailboxResponse_Action(req.Action),
 			}, err
 		}
-		return &md.MailboxResponse{
+		return &data.MailboxResponse{
 			Success: true,
-			Action:  md.MailboxResponse_Action(req.Action),
+			Action:  data.MailboxResponse_Action(req.Action),
 		}, nil
 	} else {
-		return &md.MailboxResponse{
+		return &data.MailboxResponse{
 			Success: false,
-			Action:  md.MailboxResponse_Action(req.Action),
-		}, md.NewErrorWithType(md.ErrorEvent_MAILBOX_ACTION_INVALID)
+			Action:  data.MailboxResponse_Action(req.Action),
+		}, data.NewErrorWithType(data.ErrorEvent_MAILBOX_ACTION_INVALID)
 	}
 }
 
 // Method Sends Push Notification to Peer
-func (sc *serviceClient) PushSingle(msg *md.PushMessage) *md.SonrError {
+func (sc *serviceClient) PushSingle(msg *data.PushMessage) *data.SonrError {
 	if isPushEnabled {
 		return sc.Push.push(msg)
 	}
@@ -169,7 +167,7 @@ func (sc *serviceClient) PushSingle(msg *md.PushMessage) *md.SonrError {
 }
 
 // Method Send Multiple Push Notifications to Peers
-func (sc *serviceClient) PushMultiple(msg *md.PushMessage, peers []*md.Peer) *md.SonrError {
+func (sc *serviceClient) PushMultiple(msg *data.PushMessage, peers []*data.Peer) *data.SonrError {
 	if isPushEnabled {
 		return sc.Push.pushMulti(msg, peers)
 	}

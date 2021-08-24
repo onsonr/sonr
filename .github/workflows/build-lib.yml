@@ -1,4 +1,4 @@
-name: Build Workflow
+name: Build Daemon Workflow 🧠
 
 # Controls when the action will run.
 on:
@@ -38,12 +38,14 @@ jobs:
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
         with:
-          workdir: ${{ github.workspace }}/lib
+          workdir: ${{ github.workspace }}/cmd/rpc
           distribution: goreleaser
           version: latest
           args: release --rm-dist
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
 
+      - name: Call Dispatch for Electron ⚡️
+        run: gh workflow run dist.yml --repo 'sonr-io/electron'
+        env:
+          GITHUB_TOKEN: ${{secrets.PAT_GITHUB_TOKEN}}

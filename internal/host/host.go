@@ -16,33 +16,33 @@ import (
 	psub "github.com/libp2p/go-libp2p-pubsub"
 	discovery "github.com/libp2p/go-libp2p/p2p/discovery"
 	"github.com/multiformats/go-multiaddr"
-	md "github.com/sonr-io/core/pkg/models"
+	"github.com/sonr-io/core/pkg/data"
 )
 
 // ** ─── Interface MANAGEMENT ────────────────────────────────────────────────────────
 type HostNode interface {
-	Bootstrap(deviceId string) *md.SonrError
+	Bootstrap(deviceId string) *data.SonrError
 	Close()
 	ID() peer.ID
 	Info() peer.AddrInfo
 	Host() host.Host
 	HandleStream(pid protocol.ID, handler network.StreamHandler)
-	MultiAddr() (multiaddr.Multiaddr, *md.SonrError)
+	MultiAddr() (multiaddr.Multiaddr, *data.SonrError)
 	Pubsub() *psub.PubSub
 	CloseStream(pid protocol.ID, stream network.Stream)
 	StartStream(p peer.ID, pid protocol.ID) (network.Stream, error)
 }
 
 type HostHandler interface {
-	OnConnected(*md.ConnectionResponse)
+	OnConnected(*data.ConnectionResponse)
 }
 
 type hostNode struct {
 	HostNode
 
 	// Properties
-	apiKeys      *md.APIKeys
-	keyPair      *md.KeyPair
+	apiKeys      *data.APIKeys
+	keyPair      *data.KeyPair
 	ctxHost      context.Context
 	ctxTileAuth  context.Context
 	ctxTileToken context.Context
@@ -54,14 +54,14 @@ type hostNode struct {
 	host    host.Host
 	kdht    *dht.IpfsDHT
 	mdns    discovery.Service
-	options *md.ConnectionRequest_HostOptions
+	options *data.ConnectionRequest_HostOptions
 
 	// Rooms
 	pubsub *psub.PubSub
 }
 
 // Start Begins Assigning Host Parameters ^
-func NewHost(ctx context.Context, req *md.ConnectionRequest, kp *md.KeyPair, hh HostHandler) (HostNode, *md.SonrError) {
+func NewHost(ctx context.Context, req *data.ConnectionRequest, kp *data.KeyPair, hh HostHandler) (HostNode, *data.SonrError) {
 	// Initialize DHT
 	var kdhtRef *dht.IpfsDHT
 
@@ -114,10 +114,10 @@ func NewHost(ctx context.Context, req *md.ConnectionRequest, kp *md.KeyPair, hh 
 	}
 
 	// Check Connection
-	if req.GetType() == md.ConnectionRequest_WIFI {
+	if req.GetType() == data.ConnectionRequest_WIFI {
 		err := hn.MDNS()
 		if err != nil {
-			md.NewError(err, md.ErrorEvent_HOST_MDNS)
+			data.NewError(err, data.ErrorEvent_HOST_MDNS)
 			handleConnectionResult(hh, true, false, false)
 		} else {
 			handleConnectionResult(hh, true, false, true)
@@ -126,8 +126,8 @@ func NewHost(ctx context.Context, req *md.ConnectionRequest, kp *md.KeyPair, hh 
 	return hn, nil
 }
 
-// # Failsafe when unable to bind to External IP Address ^ //
-func newRelayedHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.KeyPair, hh HostHandler) (HostNode, *md.SonrError) {
+// Failsafe when unable to bind to External IP Address ^ //
+func newRelayedHost(ctx context.Context, req *data.ConnectionRequest, keyPair *data.KeyPair, hh HostHandler) (HostNode, *data.SonrError) {
 	// Initialize DHT
 	var kdhtRef *dht.IpfsDHT
 
@@ -159,7 +159,7 @@ func newRelayedHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.
 	// Set Host for Node
 	if err != nil {
 		handleConnectionResult(hh, false, false, false)
-		return nil, md.NewError(err, md.ErrorEvent_HOST_START)
+		return nil, data.NewError(err, data.ErrorEvent_HOST_START)
 	}
 
 	// Create Struct
@@ -174,10 +174,10 @@ func newRelayedHost(ctx context.Context, req *md.ConnectionRequest, keyPair *md.
 	}
 
 	// Check Connection
-	if req.GetType() == md.ConnectionRequest_WIFI {
+	if req.GetType() == data.ConnectionRequest_WIFI {
 		err := hn.MDNS()
 		if err != nil {
-			md.NewError(err, md.ErrorEvent_HOST_MDNS)
+			data.NewError(err, data.ErrorEvent_HOST_MDNS)
 			handleConnectionResult(hh, true, false, false)
 		} else {
 			handleConnectionResult(hh, true, false, true)
@@ -213,11 +213,11 @@ func (hn *hostNode) Host() host.Host {
 }
 
 // Returns Host Node MultiAddr
-func (hn *hostNode) MultiAddr() (multiaddr.Multiaddr, *md.SonrError) {
+func (hn *hostNode) MultiAddr() (multiaddr.Multiaddr, *data.SonrError) {
 	pi := hn.Info()
 	addrs, err := peer.AddrInfoToP2pAddrs(&pi)
 	if err != nil {
-		return nil, md.NewError(err, md.ErrorEvent_HOST_INFO)
+		return nil, data.NewError(err, data.ErrorEvent_HOST_INFO)
 	}
 	return addrs[0], nil
 }
@@ -234,13 +234,13 @@ func (h *hostNode) HandleStream(pid protocol.ID, handler network.StreamHandler) 
 }
 
 func (h *hostNode) CloseStream(pid protocol.ID, stream network.Stream) {
-	md.LogInfo("Removing Stream Handler")
+	data.LogInfo("Removing Stream Handler")
 	h.host.RemoveStreamHandler(pid)
 	stream.Close()
 }
 
 // Start Stream for Host
 func (h *hostNode) StartStream(p peer.ID, pid protocol.ID) (network.Stream, error) {
-	md.LogActivate("New Stream")
+	data.LogActivate("New Stream")
 	return h.host.NewStream(h.ctxHost, p, pid)
 }

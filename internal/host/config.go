@@ -9,11 +9,11 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
-	md "github.com/sonr-io/core/pkg/models"
+	"github.com/sonr-io/core/pkg/data"
 )
 
 // ** ─── Address MANAGEMENT ────────────────────────────────────────────────────────
-// # Return Bootstrap List Address Info
+// Return Bootstrap List Address Info
 func BootstrapAddrInfo() ([]peer.AddrInfo, error) {
 	// Create Bootstrapper List
 	var bootstrappers []ma.Multiaddr
@@ -44,7 +44,7 @@ func BootstrapAddrInfo() ([]peer.AddrInfo, error) {
 	return ds, nil
 }
 
-// # FreePort asks the kernel for a free open port
+// FreePort asks the kernel for a free open port
 func FreePort() (int, error) {
 	addr, err := net.ResolveTCPAddr("tcp", "localhost:0")
 	if err != nil {
@@ -59,8 +59,8 @@ func FreePort() (int, error) {
 	return l.Addr().(*net.TCPAddr).Port, nil
 }
 
-// # Return Device Listening Addresses ^ //
-func PublicAddrStrs(cr *md.ConnectionRequest) ([]string, error) {
+// Return Device Listening Addresses ^ //
+func PublicAddrStrs(cr *data.ConnectionRequest) ([]string, error) {
 	// Initialize
 	opts := cr.GetHostOptions()
 	listenAddrs := []string{}
@@ -78,7 +78,7 @@ func PublicAddrStrs(cr *md.ConnectionRequest) ([]string, error) {
 		// Set Port
 		p, err := FreePort()
 		if err != nil {
-			md.LogError(err)
+			data.LogError(err)
 		} else {
 			port = p
 		}
@@ -106,7 +106,7 @@ func PublicAddrStrs(cr *md.ConnectionRequest) ([]string, error) {
 			// Get Address String
 			addrStr, err := addr.MultiAddrStr(opts.GetIpv4Only(), port)
 			if err != nil {
-				md.LogError(err)
+				data.LogError(err)
 				continue // Skip this address
 			}
 
@@ -119,19 +119,19 @@ func PublicAddrStrs(cr *md.ConnectionRequest) ([]string, error) {
 	return listenAddrs, nil
 }
 
-// # Returns Node Public iPv4 Address
+// Returns Node Public iPv4 Address
 func iPv4Addrs(port int) ([]string, error) {
 	// Find Hos
 	osHost, err := os.Hostname()
 	if err != nil {
-		md.LogError(err)
+		data.LogError(err)
 		return nil, err
 	}
 
 	// Find Public Address Strings
 	addrs, err := net.LookupIP(osHost)
 	if err != nil {
-		md.LogError(err)
+		data.LogError(err)
 		return nil, err
 	}
 
@@ -150,9 +150,9 @@ func iPv4Addrs(port int) ([]string, error) {
 	return nil, errors.New("No IPV4 found")
 }
 
-// # Handle Post-Connection result on hostNode
+// Handle Post-Connection result on hostNode
 func handleConnectionResult(hh HostHandler, hostActive bool, textileActive bool, mdnsActive bool) {
-	hh.OnConnected(&md.ConnectionResponse{
+	hh.OnConnected(&data.ConnectionResponse{
 		HostActive:    hostActive,
 		MdnsActive:    mdnsActive,
 		TextileActive: textileActive,

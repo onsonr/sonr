@@ -16,7 +16,6 @@ GOBIND_ANDROID=$(GOBIND) -target=android
 GOBIND_IOS=$(GOBIND) -target=ios -bundleid=io.sonr.core
 
 # @ Bind Directories
-
 BIND_DIR_ANDROID=$(SONR_ROOT_DIR)/plugin/android/libs
 BIND_DIR_IOS=$(SONR_ROOT_DIR)/plugin/ios/Frameworks
 BIND_IOS_ARTIFACT= $(BIND_DIR_IOS)/Core.framework
@@ -131,20 +130,3 @@ clean:
 	mkdir -p $(BIND_DIR_IOS)
 	mkdir -p $(BIND_DIR_ANDROID)
 	cd $(CORE_BIND_DIR) && gomobile init
-
-##
-##
-## Shortcuts   : (b) => bind
-##               └─ (bi) => bind.ios
-##               └─ (ba) => bind.android
-##               (p) => protobuf
-##               (r) => release
-##               (u) => upgrade
-##               (c) => clean
-b:bind
-bi:bind.ios
-ba:bind.android
-p:protobuf
-r:release
-u:upgrade
-c:clean

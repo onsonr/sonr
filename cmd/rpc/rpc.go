@@ -6,135 +6,127 @@ import (
 	"log"
 	"net"
 
-	tp "github.com/sonr-io/core/internal/topic"
-	sc "github.com/sonr-io/core/pkg/client"
-	md "github.com/sonr-io/core/pkg/models"
+	"github.com/sonr-io/core/internal/room"
+	"github.com/sonr-io/core/pkg/account"
+	"github.com/sonr-io/core/pkg/client"
+	"github.com/sonr-io/core/pkg/data"
 	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/grpc"
 )
 
 type NodeServer struct {
-	md.NodeServiceServer
+	data.NodeServiceServer
 	ctx context.Context
 
 	// Client
-	account *md.Account
-	client  sc.Client
-	device  *md.Device
-	state   md.Lifecycle
+	account account.Account
+	client  client.Client
+	state   data.Lifecycle
 
 	// Groups
-	local *tp.RoomManager
-	Rooms map[string]*tp.RoomManager
+	local *room.RoomManager
+	Rooms map[string]*room.RoomManager
 
 	// Event Channels
-	completeEvents  chan *md.CompleteEvent
-	errorEvents     chan *md.ErrorEvent
-	mailEvents      chan *md.MailEvent
-	linkEvents      chan *md.LinkEvent
-	progressEvents  chan *md.ProgressEvent
-	statusEvents    chan *md.StatusEvent
-	RoomEvents      chan *md.RoomEvent
-	inviteRequests  chan *md.InviteRequest
-	inviteResponses chan *md.InviteResponse
+	completeEvents  chan *data.CompleteEvent
+	errorEvents     chan *data.ErrorEvent
+	mailEvents      chan *data.MailEvent
+	linkEvents      chan *data.LinkEvent
+	progressEvents  chan *data.ProgressEvent
+	statusEvents    chan *data.StatusEvent
+	RoomEvents      chan *data.RoomEvent
+	inviteRequests  chan *data.InviteRequest
+	inviteResponses chan *data.InviteResponse
 
 	// Callback Channels
-	authResponses       chan *md.AuthResponse
-	actionResponses     chan *md.ActionResponse
-	connectionResponses chan *md.ConnectionResponse
-	decisionResponses   chan *md.DecisionResponse
-	linkResponses       chan *md.LinkResponse
-	mailboxResponses    chan *md.MailboxResponse
-	verifyResponses     chan *md.VerifyResponse
+	authResponses       chan *data.AuthResponse
+	actionResponses     chan *data.ActionResponse
+	connectionResponses chan *data.ConnectionResponse
+	decisionResponses   chan *data.DecisionResponse
+	linkResponses       chan *data.LinkResponse
+	mailboxResponses    chan *data.MailboxResponse
+	verifyResponses     chan *data.VerifyResponse
 }
 
 func main() {
 	// Create a new gRPC server
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", util.RPC_SERVER_PORT))
 	if err != nil {
-		md.LogRPC("online", false)
+		data.LogRPC("online", false)
 		log.Fatal(err)
 	}
-	md.LogRPC("online", true)
+	data.LogRPC("online", true)
 
 	// Set GRPC Server
 	chatServer := NodeServer{
 		// Defaults
 		ctx:   context.Background(),
-		Rooms: make(map[string]*tp.RoomManager, 10),
-		state: md.Lifecycle_ACTIVE,
+		Rooms: make(map[string]*room.RoomManager, 10),
+		state: data.Lifecycle_ACTIVE,
 
 		// Event Channels
-		RoomEvents:      make(chan *md.RoomEvent, util.MAX_CHAN_DATA),
-		mailEvents:      make(chan *md.MailEvent, util.MAX_CHAN_DATA),
-		progressEvents:  make(chan *md.ProgressEvent, util.MAX_CHAN_DATA),
-		completeEvents:  make(chan *md.CompleteEvent, util.MAX_CHAN_DATA),
-		statusEvents:    make(chan *md.StatusEvent, util.MAX_CHAN_DATA),
-		errorEvents:     make(chan *md.ErrorEvent, util.MAX_CHAN_DATA),
-		inviteRequests:  make(chan *md.InviteRequest, util.MAX_CHAN_DATA),
-		inviteResponses: make(chan *md.InviteResponse, util.MAX_CHAN_DATA),
-		linkEvents:      make(chan *md.LinkEvent, util.MAX_CHAN_DATA),
+		RoomEvents:      make(chan *data.RoomEvent, util.MAX_CHAN_DATA),
+		mailEvents:      make(chan *data.MailEvent, util.MAX_CHAN_DATA),
+		progressEvents:  make(chan *data.ProgressEvent, util.MAX_CHAN_DATA),
+		completeEvents:  make(chan *data.CompleteEvent, util.MAX_CHAN_DATA),
+		statusEvents:    make(chan *data.StatusEvent, util.MAX_CHAN_DATA),
+		errorEvents:     make(chan *data.ErrorEvent, util.MAX_CHAN_DATA),
+		inviteRequests:  make(chan *data.InviteRequest, util.MAX_CHAN_DATA),
+		inviteResponses: make(chan *data.InviteResponse, util.MAX_CHAN_DATA),
+		linkEvents:      make(chan *data.LinkEvent, util.MAX_CHAN_DATA),
 
 		// Callback Channels
-		authResponses:       make(chan *md.AuthResponse, util.MAX_CHAN_DATA),
-		actionResponses:     make(chan *md.ActionResponse, util.MAX_CHAN_DATA),
-		connectionResponses: make(chan *md.ConnectionResponse, util.MAX_CHAN_DATA),
-		decisionResponses:   make(chan *md.DecisionResponse, util.MAX_CHAN_DATA),
-		linkResponses:       make(chan *md.LinkResponse, util.MAX_CHAN_DATA),
-		mailboxResponses:    make(chan *md.MailboxResponse, util.MAX_CHAN_DATA),
-		verifyResponses:     make(chan *md.VerifyResponse, util.MAX_CHAN_DATA),
+		authResponses:       make(chan *data.AuthResponse, util.MAX_CHAN_DATA),
+		actionResponses:     make(chan *data.ActionResponse, util.MAX_CHAN_DATA),
+		connectionResponses: make(chan *data.ConnectionResponse, util.MAX_CHAN_DATA),
+		decisionResponses:   make(chan *data.DecisionResponse, util.MAX_CHAN_DATA),
+		linkResponses:       make(chan *data.LinkResponse, util.MAX_CHAN_DATA),
+		mailboxResponses:    make(chan *data.MailboxResponse, util.MAX_CHAN_DATA),
+		verifyResponses:     make(chan *data.VerifyResponse, util.MAX_CHAN_DATA),
 	}
 
 	grpcServer := grpc.NewServer()
 
 	// Register the gRPC service
-	md.RegisterNodeServiceServer(grpcServer, &chatServer)
+	data.RegisterNodeServiceServer(grpcServer, &chatServer)
 	if err := grpcServer.Serve(listener); err != nil {
-		md.LogRPC("serve", false)
+		data.LogRPC("serve", false)
 		log.Fatal(err)
 	}
-	md.LogRPC("serve", true)
+	data.LogRPC("serve", true)
 }
 
 // Initialize method is called when a new node is created
-func (s *NodeServer) Initialize(ctx context.Context, req *md.InitializeRequest) (*md.NoResponse, error) {
+func (s *NodeServer) Initialize(ctx context.Context, req *data.InitializeRequest) (*data.NoResponse, error) {
 	// Initialize Logger
-	md.InitLogger(req)
-
-	// Initialize Device
-	device := req.GetDevice()
+	var serr *data.SonrError
+	data.InitLogger(req)
 
 	// Create User
-	if u, err := md.InitAccount(req, device); err != nil {
-		s.handleError(err)
-		return nil, err.Error
-	} else {
-		s.account = u
-		s.device = device
+	s.account, serr = account.OpenAccount(req, req.GetDevice())
+	if serr != nil {
+		s.handleError(serr)
+		return &data.NoResponse{}, serr.Error
 	}
 
 	// Create Client
-	s.client = sc.NewClient(s.ctx, s.device, s.callback())
+	s.client = client.NewClient(s.ctx, s.account, s.callback())
 	s.verifyResponses <- s.account.VerifyRead()
+
 	// Return Blank Response
-	return &md.NoResponse{}, nil
+	return &data.NoResponse{}, nil
 }
 
 // Connect method starts this nodes host
-func (s *NodeServer) Connect(ctx context.Context, req *md.ConnectionRequest) (*md.NoResponse, error) {
-	// Update User with Connection Request
-	s.account.SetConnection(req)
-	s.device.SetConnection(req)
-
+func (s *NodeServer) Connect(ctx context.Context, req *data.ConnectionRequest) (*data.NoResponse, error) {
 	// Connect Host
-	peer, isPrimary, serr := s.client.Connect(req, s.account)
+	peer, serr := s.client.Connect(req)
 	if serr != nil {
 		s.handleError(serr)
 		s.setConnected(false)
 	} else {
 		// Update Status
 		s.setConnected(true)
-		s.account.HandleSetPeer(peer, isPrimary)
 	}
 
 	// Bootstrap Node
@@ -146,6 +138,41 @@ func (s *NodeServer) Connect(ctx context.Context, req *md.ConnectionRequest) (*m
 		s.setAvailable(true)
 	}
 
+	// Join Account Network
+	if err := s.account.JoinNetwork(s.client.GetHost(), req, peer); err != nil {
+		s.handleError(err)
+		s.setAvailable(false)
+	}
+
 	// Return Blank Response - Needs No Response Struc
+	return &data.NoResponse{}, nil
+}
+
+// ** ─── Node Status Checks ────────────────────────────────────────────────────────
+// Sets Node to be Connected Status
+func (s *NodeServer) setConnected(val bool) {
+	// Update Status
+	su := s.account.SetConnected(val)
+
+	// Callback Status
+	s.statusEvents <- su
+}
+
+// Sets Node to be Available Status
+func (s *NodeServer) setAvailable(val bool) {
+	// Update Status
+	su := s.account.SetAvailable(val)
+
+	// Callback Status
+	s.statusEvents <- su
+}
+
+// Sets Node to be (Provided) Status
+func (s *NodeServer) setStatus(newStatus data.Status) {
+	// Set Status
+	su := s.account.SetStatus(newStatus)
+
+	// Callback Status
+	s.statusEvents <- su
 	return &md.NoResponse{}, nil
 }

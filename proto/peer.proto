@@ -1,7 +1,7 @@
 syntax = "proto3";
-package models;
+package data;
 // Require Go Package
-option go_package = "/models";
+option go_package = "/data";
 
 // Cardinal: Designation for the Compass Direction Value
 enum Cardinal {
@@ -44,8 +44,8 @@ message Linkers { repeated Peer list = 1; }
 
 // For Info about Lobby
 message Lobby {
-  Room room = 1;               // Type of Lobby
-  map<string, Peer> peers = 2; // Total Data of Peers
+  Room room = 1;                   // Type of Lobby
+  map<string, Member> members = 2; // Total Data of Peers
   Status status = 3;
 
   enum Status {

@@ -3,91 +3,81 @@ package bind
 import (
 	"context"
 
-	tp "github.com/sonr-io/core/internal/topic"
+	"github.com/sonr-io/core/internal/room"
+	ac "github.com/sonr-io/core/pkg/account"
 	sc "github.com/sonr-io/core/pkg/client"
-	md "github.com/sonr-io/core/pkg/models"
+	"github.com/sonr-io/core/pkg/data"
+
 	"google.golang.org/protobuf/proto"
 )
 
 type Node struct {
-	md.Callback
-
+	data.Callback
 	// Properties
 	call Callback
 	ctx  context.Context
 
 	// Client
-	account *md.Account
+	account ac.Account
 	client  sc.Client
-	device  *md.Device
-	state   md.Lifecycle
+	state   data.Lifecycle
 
 	// Rooms
-	local   *tp.RoomManager
-	devices *tp.RoomManager
-	groups  map[string]*tp.RoomManager
+	local   *room.RoomManager
+	devices *room.RoomManager
+	groups  map[string]*room.RoomManager
 }
 
 // Initializes New Node ^ //
 func Initialize(reqBytes []byte, call Callback) *Node {
 	// Unmarshal Request
-	req := &md.InitializeRequest{}
+	req := &data.InitializeRequest{}
 	err := proto.Unmarshal(reqBytes, req)
 	if err != nil {
-		md.LogFatal(err)
+		data.LogFatal(err)
 		return nil
 	}
 
 	// Initialize Logger
-	md.InitLogger(req)
-
-	// Initialize Device
-	device := req.GetDevice()
-
-	// Initialize Node
-	mn := &Node{
-		call:   call,
-		ctx:    context.Background(),
-		groups: make(map[string]*tp.RoomManager, 10),
-		state:  md.Lifecycle_ACTIVE,
-		device: device,
-	}
+	data.InitLogger(req)
 
 	// Create User
-	if u, err := md.InitAccount(req, device); err != nil {
-		mn.handleError(err)
-	} else {
-		mn.account = u
-		mn.device = device
+	u, serr := ac.OpenAccount(req, req.GetDevice())
+	if serr != nil {
+		data.LogError(serr.Error)
+		return nil
+	}
+	// Initialize Node
+	mn := &Node{
+		call:    call,
+		ctx:     context.Background(),
+		groups:  make(map[string]*room.RoomManager, 10),
+		state:   data.Lifecycle_ACTIVE,
+		account: u,
 	}
 
 	// Create Client
-	mn.client = sc.NewClient(mn.ctx, mn.device, mn.callback())
+	mn.client = sc.NewClient(mn.ctx, mn.account, mn.callback())
 	return mn
 }
 
 // Starts Host and Connects
-func (n *Node) Connect(data []byte) {
+func (n *Node) Connect(buf []byte) {
 	// Unmarshal Request
-	req := &md.ConnectionRequest{}
-	err := proto.Unmarshal(data, req)
+	req := &data.ConnectionRequest{}
+	err := proto.Unmarshal(buf, req)
 	if err != nil {
-		md.LogFatal(err)
+		data.LogFatal(err)
 	}
 
-	// Update User with Connection Request
-	n.account.SetConnection(req)
-	n.device.SetConnection(req)
-
 	// Connect Host
-	peer, isPrimary, serr := n.client.Connect(req, n.account)
+	peer, serr := n.client.Connect(req)
 	if serr != nil {
 		n.handleError(serr)
 		n.setConnected(false)
 	} else {
 		// Update Status
 		n.setConnected(true)
-		n.account.HandleSetPeer(peer, isPrimary)
 	}
 
 	// Bootstrap Node
@@ -98,4 +88,53 @@ func (n *Node) Connect(data []byte) {
 	} else {
 		n.setAvailable(true)
 	}
+
+	// Join Account Network
+	if err := n.account.JoinNetwork(n.client.GetHost(), req, peer); err != nil {
+		n.handleError(err)
+		n.setAvailable(false)
+	}
+}
+
+// ** ─── Node Status Checks ────────────────────────────────────────────────────────
+// Sets Node to be Connected Status
+func (n *Node) setConnected(val bool) {
+	// Update Status
+	su := n.account.SetConnected(val)
+
+	// Callback Status
+	res, err := proto.Marshal(su)
+	if err != nil {
+		n.handleError(data.NewError(err, data.ErrorEvent_MARSHAL))
+		return
+	}
+	n.call.OnStatus(res)
+}
+
+// Sets Node to be Available Status
+func (n *Node) setAvailable(val bool) {
+	// Update Status
+	su := n.account.SetAvailable(val)
+
+	// Callback Status
+	res, err := proto.Marshal(su)
+	if err != nil {
+		n.handleError(data.NewError(err, data.ErrorEvent_MARSHAL))
+		return
+	}
+	n.call.OnStatus(res)
+}
+
+// Sets Node to be (Provided) Status
+func (n *Node) setStatus(newStatus data.Status) {
+	// Set Status
+	su := n.account.SetStatus(newStatus)
+
+	// Callback Status
+	res, err := proto.Marshal(su)
+	if err != nil {
+		n.handleError(data.NewError(err, data.ErrorEvent_MARSHAL))
+		return
+	}
+	n.call.OnStatus(res)
 }

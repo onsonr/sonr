@@ -1,10 +1,13 @@
 syntax = "proto3";
-package models;
+package data;
+
+
 import "peer.proto";
 import "data.proto";
 
 // Require Go Package
-option go_package = "/models";
+option go_package = "/data";
+
 
 // Client Keys for Services
 message APIKeys {
@@ -16,6 +19,7 @@ message APIKeys {
   string textileKey = 6;      // Key for the Textile Service
   string textileSecret = 7;   // Secret for the Textile Service
 }
+
 
 // User Account Info, Saved to Disk as account.snr
 message Account {
@@ -147,4 +151,29 @@ enum Status {
   STANDBY = 7;   // Away from Sonr Application
   FAILED = 8;    // Failed to Connect Host
   LINKER = 9;    // Linker Status
+}
+
+// User Info, Saved to Disk as account.snr
+message User {
+  State state = 1;       // User's current state
+  string sName = 2;      // User's SName
+  APIKeys apiKeys = 3;   // App Env Variables for API Keys
+  KeyChain keyChain = 4; // Account Keychain
+  string pushToken = 5;  // Push Notification Token
+
+  // User's Contact/Member
+  Contact contact = 6; // User's Contact
+  Member member = 7;   // User's Member Reference
+
+  // Device Info
+  Device primary = 8;           // Primary Device
+  Device current = 9;           // Current Device
+  repeated Device devices = 10; // List of Devices
+
+  // State of users account
+  enum State {
+    UNVERIFIED = 0; // User is unverified - Setup Default node
+    VERIFIED = 1;   // User has verified their account
+    BLOCKED = 2;    // User is blocked from Sonr Network
+  }
 }

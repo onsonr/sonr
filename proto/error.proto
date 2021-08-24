@@ -1,7 +1,8 @@
 syntax = "proto3";
-package models;
+package data;
 // Require Go Package
-option go_package = "/models";
+option go_package = "/data";
+
 
 // Error Event returned from Core Library
 message ErrorEvent {

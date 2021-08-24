@@ -1,0 +1,11 @@
+{
+    "protoc": {
+        "path": "/usr/local/bin/protoc",
+        "options": [
+            "--proto_path=internal/models",
+        ]
+    },
+    "files.exclude": {
+        "**/**.pb.**": true,
+    }
+}

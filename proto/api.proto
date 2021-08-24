@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package models;
+package data;
 
 import "data.proto";
 import "error.proto";
@@ -8,7 +8,7 @@ import "peer.proto";
 import "user.proto";
 
 // Require Go Package
-option go_package = "/models";
+option go_package = "/data";
 
 // Method enum for Node to Perform
 enum Action {
@@ -197,6 +197,26 @@ message DecisionResponse {
   string body = 2;  // Response Body
 }
 
+
+message DeviceRequest {
+  Device device = 1; // Users Device
+  Method method = 2; // Method to be Used
+  string data = 3;   // Data to be Used (Optional) - URL or File
+
+  enum Method {
+    OPEN = 0;   // Open File or URL on Device
+    GHOST = 1;  // Set Device as Ghost Mode
+    ACTIVE = 2; // Set Device as Active Mode
+    PUSH = 3;   // Push Data to Device
+  }
+}
+
+// Message for DeviceRequest Response
+message DeviceResponse {
+  bool success = 1; // True if Device was Successful
+  string body = 2;  // Response Body
+}
+
 //  Message for a LinkRequest
 message LinkRequest {
   Type type = 1;       // Type of Link
@@ -380,7 +400,7 @@ message ProgressEvent {
 message RoomEvent {
   Room room = 1;       // Event Room Type
   string id = 2;       // Peer ID
-  Peer peer = 3;       // User Information
+  Member member = 3;   // User Information
   Subject subject = 4; // Local Event Subject
 
   // Local Type Event
