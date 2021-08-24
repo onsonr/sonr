@@ -1,4 +1,4 @@
-name: Build/Release Workflow 📦
+name: CI Workflow 🐿
 
 # Controls when the action will run.
 on:

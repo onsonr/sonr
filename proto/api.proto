@@ -107,9 +107,10 @@ message ConnectionRequest {
 
   // Internet Connection Type
   enum InternetType {
-    OFFLINE = 0; // No Internet Connection
-    WIFI = 1;    // Wifi Connection
-    MOBILE = 2;  // Mobile Connection
+    OFFLINE = 0;  // No Internet Connection
+    WIFI = 1;     // Wifi Connection
+    MOBILE = 2;   // Mobile Connection
+    ETHERNET = 3; // Ethernet Connection
   }
 
   // Libp2p Host Options
@@ -196,7 +197,6 @@ message DecisionResponse {
   bool success = 1; // True if Decision was Successful
   string body = 2;  // Response Body
 }
-
 
 message DeviceRequest {
   Device device = 1; // Users Device
