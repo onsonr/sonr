@@ -16,3 +16,9 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout Repo
         uses: actions/checkout@v2
+
+  notify-discord:
+    runs-on: ubuntu-latest
+
+  notify-email:
+    runs-on: ubuntu-latest

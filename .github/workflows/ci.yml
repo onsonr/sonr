@@ -129,7 +129,7 @@ jobs:
 
       # 4. Dispatch Electron
       - name: Call Dispatch for Electron ⚡️
-        run: gh workflow run main.yml --repo 'sonr-io/electron'
+        run: gh workflow run ci.yml --repo 'sonr-io/electron'
         env:
           GITHUB_TOKEN: ${{secrets.PAT_GITHUB_TOKEN}}
 
