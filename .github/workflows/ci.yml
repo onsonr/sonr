@@ -17,6 +17,8 @@ jobs:
     env:
       GO111MODULE: on
       GOMOD: ${{ github.workspace }}/go.mod
+      MOD_CACHE: ~/go/pkg/mod
+      BUILD_CACHE: ~/.cache/go-build
     runs-on: ubuntu-latest
 
     # Steps
@@ -37,7 +39,18 @@ jobs:
 
       - run: mkdir -p ${{ github.workspace }}/build
 
-      # 3. Bind Android Framework to Plugin
+      # 3. Cache Go Modules
+      - name: Cache Dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            $MOD_CACHE
+            $BUILD_CACHE
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      # 4. Bind Android Framework to Plugin
       - name: Setup and Bind AAR
         run: |
           cd ${{ github.workspace }} && go mod tidy
@@ -46,7 +59,7 @@ jobs:
           cd ${{ github.workspace }}/cmd/bind
           gomobile bind -ldflags='-s -w' -v -target=android -o ${{ github.workspace }}/build/io.sonr.core.aar
 
-      # 4. Upload AAR
+      # 5. Upload AAR
       - name: Upload AAR to GitHub
         uses: actions/upload-artifact@v2
         with:
@@ -60,6 +73,8 @@ jobs:
     env:
       GO111MODULE: on
       GOMOD: ${{ github.workspace }}/go.mod
+      MOD_CACHE: ~/go/pkg/mod
+      BUILD_CACHE: ~/Library/Caches/go-build
     runs-on: macos-latest
 
     # Steps
@@ -80,7 +95,18 @@ jobs:
 
       - run: mkdir -p ${{ github.workspace }}/build
 
-      # 3. Bind iOS Framework to Plugin
+      # 3. Cache Go Modules
+      - name: Cache Dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            $MOD_CACHE
+            $BUILD_CACHE
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      # 4. Bind iOS Framework to Plugin
       - name: Setup and Bind
         run: |
           cd ${{ github.workspace }} && go mod tidy
@@ -89,7 +115,7 @@ jobs:
           cd ${{ github.workspace }}/cmd/bind
           gomobile bind -ldflags='-s -w' -v -target=ios -bundleid=io.sonr.core -o ${{ github.workspace }}/build/Core.framework
 
-      # 4. Upload Framework
+      # 5. Upload Framework
       - name: Upload Framework to GitHub
         uses: actions/upload-artifact@v2
         with:
@@ -101,6 +127,9 @@ jobs:
     # Configuration
     name: "RPC Daemon  🔨 "
     runs-on: macos-latest
+    env:
+      MOD_CACHE: ~/go/pkg/mod
+      BUILD_CACHE: ~/Library/Caches/go-build
 
     # Steps
     steps:
@@ -116,7 +145,18 @@ jobs:
         with:
           go-version: 1.16.6
 
-      # 3. Build Daemon
+      # 3. Cache Go Modules
+      - name: Cache Dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            $MOD_CACHE
+            $BUILD_CACHE
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      # 4. Build Daemon
       - name: Release Daemons 🎉
         uses: goreleaser/goreleaser-action@v2
         with:
@@ -127,7 +167,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
 
-      # 4. Dispatch Electron
+      # 5. Dispatch Electron
       - name: Call Dispatch for Electron ⚡️
         run: gh workflow run ci.yml --repo 'sonr-io/electron'
         env:
