@@ -1,9 +1,5 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/sonr-io/core/badge/release?s=ee02a1b599502678b3d583aa5b6d1f55d2137ded)](https://www.codefactor.io/repository/github/sonr-io/core/overview/release)
-[![Bind Workflow](https://github.com/sonr-io/core/actions/workflows/bind-lib.yml/badge.svg)](https://github.com/sonr-io/core/actions/workflows/bind-lib.yml)
-[![Build Workflow](https://github.com/sonr-io/core/actions/workflows/build-lib.yml/badge.svg)](https://github.com/sonr-io/core/actions/workflows/build-lib.yml)
-
-
-
+[![Build/Release Workflow 📦](https://github.com/sonr-io/core/actions/workflows/main.yml/badge.svg?branch=release)](https://github.com/sonr-io/core/actions/workflows/main.yml)
 
 <!-- PROJECT LOGO -->
 <br />
