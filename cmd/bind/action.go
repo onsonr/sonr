@@ -2,6 +2,7 @@ package bind
 
 import (
 	"github.com/sonr-io/core/pkg/data"
+	"google.golang.org/protobuf/proto"
 )
 
 // ** ─── Node Binded Actions ────────────────────────────────────────────────────────

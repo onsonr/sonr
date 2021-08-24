@@ -271,15 +271,7 @@ func (s *NodeServer) handleEvent(buf []byte) {
 		err = proto.Unmarshal(event.GetData(), pe)
 		if err != nil {
 			data.LogFatal(err)
-	case md.GenericEvent_PROGRESS:
-		// Unmarshal Progress Event
-		pe := &md.ProgressEvent{}
-		err = proto.Unmarshal(event.GetData(), pe)
-		if err != nil {
-			md.LogFatal(err)
 		}
-
-		// Send Event to Channel
 		s.progressEvents <- pe
 	case data.GenericEvent_ROOM:
 		// Unmarshal Room Event
@@ -363,7 +355,7 @@ func (s *NodeServer) handleRequest(buf []byte) {
 // Handle Request and Send to Channel after unmarshal
 func (s *NodeServer) handleResponse(buf []byte) {
 	// Unmarshal Generic Response
-  response := &data.GenericResponse{}
+	response := &data.GenericResponse{}
 	err := proto.Unmarshal(buf, response)
 	if err != nil {
 		data.LogFatal(err)
