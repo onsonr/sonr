@@ -1,31 +1,44 @@
-name: CD Workflow 📣
+name: CD Core Workflow
 
 # Controls when the action will run.
 on:
-  workflow_dispatch:
+  workflow_run:
+    workflows: ["CI Core Workflow"]
+    branches: [release]
+    types:
+      - completed
+
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # Runs the `gomobile bind -android` job
-  announce-twitter:
-    # The type of runner that the job will run on
+  # Checks if Build has succeeded.
+  # Returns: `needs.result.outputs.is_success == 'failure' |  `success``
+  status:
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    outputs:
+      result: ${{ steps.status.outputs.result }}
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: Checkout Repo
-        uses: actions/checkout@v2
+      - name: Determine Status
+        id: status
+        run: echo "::set-output name=result::${{ github.event.workflow_run.conclusion }}"
 
-  notify-discord:
+  # Posts Build Status to Discord
+  notify-result:
+    needs: [status]
     runs-on: ubuntu-latest
     steps:
-      - name: Discord notification
+      - name: Discord Success Notification
+        if: ${{ needs.status.outputs.result == 'success' }}
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master
         with:
-          args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed.'
+          args: 'Core build succeeded!.'
 
-  notify-email:
-    runs-on: ubuntu-latest
+      - name: Discord Failed Notification
+        if: ${{ needs.status.outputs.result == 'success' }}
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: 'Failed to build Core.'

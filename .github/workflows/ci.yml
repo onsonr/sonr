@@ -1,4 +1,4 @@
-name: CI Workflow 🐿
+name: CI Core Workflow
 
 # Controls when the action will run.
 on:
@@ -167,11 +167,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
 
+      # 5. Get Version
+      - id: get_version
+        uses: battila7/get-version-action@v2
+
       # 5. Dispatch Electron
       - name: Call Dispatch for Electron ⚡️
-        run: gh workflow run ci.yml --repo 'sonr-io/electron'
+        run: echo '{"version":$VERSION, "isRelease":$IS_RELEASE}' | gh workflow run ci.yml --repo 'sonr-io/electron'
         env:
           GITHUB_TOKEN: ${{secrets.PAT_GITHUB_TOKEN}}
+          VERSION: ${{ steps.get_version.outputs.version-without-v }}
+          IS_RELEASE: contains(steps.get_version.outputs.prerelease, "v*")
 
   # Add Frameworks to Release
   release-frameworks:
@@ -224,6 +230,10 @@ jobs:
 
       # 7. Dispatch Plugin
     - name: Call Dispatch for Plugin ⚡️
-      run: gh workflow run main.yml --repo 'sonr-io/plugin'
+      run: echo '{"version":$VERSION, "isRelease":$IS_RELEASE}' | gh workflow run ci.yml --repo 'sonr-io/plugin'
       env:
         GITHUB_TOKEN: ${{secrets.PAT_GITHUB_TOKEN}}
+        VERSION: ${{ steps.get_version.outputs.version-without-v }}
+        IS_RELEASE: contains(steps.get_version.outputs.prerelease, "v*")
+
+
