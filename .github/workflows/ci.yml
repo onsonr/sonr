@@ -174,7 +174,7 @@ jobs:
           token: ${{secrets.PAT_GITHUB_TOKEN}}
           repository: sonr-io/electron
           event-type: build-electron
-          client-payload: '{"version":"${{ steps.get_version.outputs.version-without-v }}", "isRelease":contains(steps.get_version.outputs.prerelease, "v*")}'
+          client-payload: '{"version":"${{ steps.get_version.outputs.version-without-v }}"}'
 
   # Add Frameworks to Release
   release-frameworks:
@@ -231,5 +231,5 @@ jobs:
           token: ${{secrets.PAT_GITHUB_TOKEN}}
           repository: sonr-io/plugin
           event-type: update-plugin
-          client-payload: '{"version":"${{ steps.get_version.outputs.version-without-v }}", "isRelease":contains(steps.get_version.outputs.prerelease, "v*")}'
+          client-payload: '{"version":"${{ steps.get_version.outputs.version-without-v }}"}'
 
