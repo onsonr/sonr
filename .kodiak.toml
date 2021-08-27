@@ -1,0 +1,10 @@
+# .kodiak.toml
+# Minimal config. version is the only required field.
+version = 1
+
+[merge]
+prioritize_ready_to_merge = true
+
+[update]
+always = true # default: false
+require_automerge_label = false # default: true
