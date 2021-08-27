@@ -4,7 +4,6 @@ name: CD Core Workflow
 on:
   workflow_run:
     workflows: ["CI Core Workflow"]
-    branches: [release]
     types:
       - completed
 
@@ -36,7 +35,7 @@ jobs:
           args: 'Core build succeeded!.'
 
       - name: Discord Failed Notification
-        if: ${{ needs.status.outputs.result == 'success' }}
+        if: ${{ needs.status.outputs.result != 'success' }}
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master

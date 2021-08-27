@@ -5,7 +5,7 @@ on:
   push:
     tags:
       - v*
-      
+
 jobs:
   build-android:
     # Configuration
@@ -169,11 +169,12 @@ jobs:
 
       # 5. Dispatch Electron
       - name: Call Dispatch for Electron ⚡️
-        run: echo '{"version":$VERSION, "isRelease":$IS_RELEASE}' | gh workflow run ci.yml --repo 'sonr-io/electron'
-        env:
-          GITHUB_TOKEN: ${{secrets.PAT_GITHUB_TOKEN}}
-          VERSION: ${{ steps.get_version.outputs.version-without-v }}
-          IS_RELEASE: contains(steps.get_version.outputs.prerelease, "v*")
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{secrets.PAT_GITHUB_TOKEN}}
+          repository: sonr-io/electron
+          event-type: build-electron
+          client-payload: '{"version":"${{ steps.get_version.outputs.version-without-v }}"}'
 
   # Add Frameworks to Release
   release-frameworks:
@@ -224,12 +225,11 @@ jobs:
         replacesArtifacts: false
         token: ${{ secrets.PAT_GITHUB_TOKEN }}
 
-      # 7. Dispatch Plugin
     - name: Call Dispatch for Plugin ⚡️
-      run: echo '{"version":$VERSION, "isRelease":$IS_RELEASE}' | gh workflow run ci.yml --repo 'sonr-io/plugin'
-      env:
-        GITHUB_TOKEN: ${{secrets.PAT_GITHUB_TOKEN}}
-        VERSION: ${{ steps.get_version.outputs.version-without-v }}
-        IS_RELEASE: contains(steps.get_version.outputs.prerelease, "v*")
-
+      uses: peter-evans/repository-dispatch@v1
+      with:
+          token: ${{secrets.PAT_GITHUB_TOKEN}}
+          repository: sonr-io/plugin
+          event-type: update-plugin
+          client-payload: '{"version":"${{ steps.get_version.outputs.version-without-v }}"}'
 
