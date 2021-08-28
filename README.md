@@ -1,11 +1,5 @@
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
-
-
+[![CodeFactor](https://www.codefactor.io/repository/github/sonr-io/core/badge/release?s=ee02a1b599502678b3d583aa5b6d1f55d2137ded)](https://www.codefactor.io/repository/github/sonr-io/core/overview/release)
+[![CI Workflow 🐿](https://github.com/sonr-io/core/actions/workflows/ci.yml/badge.svg)](https://github.com/sonr-io/core/actions/workflows/ci.yml)
 
 <!-- PROJECT LOGO -->
 <br />
@@ -31,7 +25,7 @@
 <br />
 
 
-[![CodeFactor](https://www.codefactor.io/repository/github/sonr-io/core/badge/release?s=ee02a1b599502678b3d583aa5b6d1f55d2137ded)](https://www.codefactor.io/repository/github/sonr-io/core/overview/release)      [![Bind Workflow](https://github.com/sonr-io/core/actions/workflows/bind-lib.yml/badge.svg)](https://github.com/sonr-io/core/actions/workflows/bind-lib.yml)      [![Build Workflow](https://github.com/sonr-io/core/actions/workflows/build-lib.yml/badge.svg)](https://github.com/sonr-io/core/actions/workflows/build-lib.yml)
+
 
 
 *By [Sonr](https://www.sonr.io), creators of [The Sonr App](https://www.twitter.com/TheSonrApp)*
@@ -166,17 +160,18 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 Prad Nukala - [TheSonrApp](https://twitter.com/TheSonrApp) - pradn@sonr.io
 
-Project Link: [Github](https://github.com/sonr-io/core) - [Discord](https://github.com/sonr-io/core) - [Website](https://github.com/sonr-io/core)
+Project Link: [Github](https://github.com/sonr-io/core) - [Discord](https://sonr.io) - [Website](https://sonr.io)
 
 
 
 <!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements
 
-* [Libp2p]()
-* [Textile]()
-* [HNS]()
-* [Flutter]()
+* [Libp2p](https://libp2p.io/)
+* [Textile](https://www.textile.io/)
+* [Handshake](https://handshake.org/)
+* [Flutter](https://flutter.dev/)
+* [Gitmoji-CLI](https://github.com/carloscuesta/gitmoji-cli)
 
 
 
