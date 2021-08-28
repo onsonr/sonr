@@ -1,0 +1,44 @@
+name: CD Core Workflow
+
+# Controls when the action will run.
+on:
+  workflow_run:
+    workflows: ["CI Core Workflow"]
+    branches: [release]
+    types:
+      - completed
+
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # Checks if Build has succeeded.
+  # Returns: `needs.result.outputs.is_success == 'failure' |  `success``
+  status:
+    runs-on: ubuntu-latest
+    outputs:
+      result: ${{ steps.status.outputs.result }}
+    steps:
+      - name: Determine Status
+        id: status
+        run: echo "::set-output name=result::${{ github.event.workflow_run.conclusion }}"
+
+  # Posts Build Status to Discord
+  notify-result:
+    needs: [status]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Discord Success Notification
+        if: ${{ needs.status.outputs.result == 'success' }}
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: 'Core build succeeded!.'
+
+      - name: Discord Failed Notification
+        if: ${{ needs.status.outputs.result == 'success' }}
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: 'Failed to build Core.'
