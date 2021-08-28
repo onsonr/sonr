@@ -1,0 +1,150 @@
+syntax = "proto3";
+package data;
+import "peer.proto";
+import "data.proto";
+
+// Require Go Package
+option go_package = "/data";
+
+// Client Keys for Services
+message APIKeys {
+  string ipApiKey = 1;        // API Key for the IP Service
+  string rapidApiKey = 2;     // API Key for the Rapid API Service
+  string handshakeKey = 3;    // API Key for the Handshake Service
+  string handshakeSecret = 4; // API Key for the Handshake Service
+  string pushKeyPath = 5;     // Path to the push key
+  string textileKey = 6;      // Key for the Textile Service
+  string textileSecret = 7;   // Secret for the Textile Service
+}
+
+// User Account Info, Saved to Disk as account.snr
+message Account {
+  State state = 1;       // User's current state
+  string sName = 2;      // User's SName
+  APIKeys apiKeys = 3;   // App Env Variables for API Keys
+  KeyChain keyChain = 4; // Account Keychain
+  string pushToken = 5;  // Push Notification Token
+
+  // User's Contact/Member
+  Contact contact = 6; // User's Contact
+  Member member = 7;   // User's Member Reference
+
+  // Device Info
+  Device primary = 8;           // Primary Device
+  Device current = 9;           // Current Device
+  repeated Device devices = 10; // List of Devices
+
+  // State of users account
+  enum State {
+    UNVERIFIED = 0; // User is unverified - Setup Default node
+    VERIFIED = 1;   // User has verified their account
+    BLOCKED = 2;    // User is blocked from Sonr Network
+  }
+}
+
+// Information about device for User
+message Device {
+  // Management
+  FileSystem fileSystem = 1; // Directories for this Device
+  Platform platform = 2;     // Operating System
+  KeyChain keyChain = 3;     // User Keychain
+
+  // Identification
+  string id = 4;       // Device ID
+  string label = 5;    // User Defined Label for this Device
+  string hostName = 6; // The hostname of the device.
+  string model = 7;    // Model of Device
+
+  // Connection
+  Status status = 8;     // Status of the User Node
+  Location location = 9; // Location of the Device User
+  Peer peer = 10;        // Peer of the Device
+  Contact contact = 11;  // Contact Card of the Device User
+}
+
+// FileSystem is for Directores Where Data can be stored
+message FileSystem {
+  Directory downloads = 1; // Downloaded Files
+  Directory support = 2;   // Non Exposed Support Files
+  Directory temporary = 3; // Temporary Storage
+  Directory private = 4;   // Locked Folder to Private Key Files
+
+  // Directory in FileSystem
+  message Directory {
+    string path = 1; // Path to Directory
+    Type type = 2;   // Type of Directory
+    enum Type {
+      TEMPORARY = 0; // Temporary Cache Storage
+      DOWNLOADS = 1; // Transferred Files - Desktop
+      SUPPORT = 2;   // Persistent Non Exposed Files - Mobile
+      LIBRARY = 3;   // Persistent Non Exposed Files - Desktop
+      DOCUMENTS = 4; // Transferred Files - Mobile
+      PRIVATE = 5;   // Private Key Files
+    }
+  }
+}
+
+// Account KeyPair Set for a User
+message KeyChain {
+  KeyPair account = 1; // KeyPair for handshake - stored on all user devices
+  KeyPair device = 2;  // KeyPair for linking - stored on Primary Device
+  KeyPair group = 3;   // KeyPair for groups - stored on all user Devices
+  KeyPair.Public deviceLinkPubKey = 4; // Public Key if linked
+}
+
+// KeyPair Signature Type
+enum Signature {
+  RSA = 0;       // RSA Encryption
+  Ed25519 = 1;   // Ed25519 Encryption
+  Secp256k1 = 2; // Secp256k1 Encryption
+  ECDSA = 3;     // ECDSA Encryption
+}
+
+// Private Public Key Pair
+message KeyPair {
+  Private private = 1;     // Private Key Ref
+  Public public = 2;       // Public Key Ref
+  Signature signature = 3; // Type of Key Signature
+  Type type = 4;           // Type of Key
+
+  // User Private Key Saved to Disk
+  message Private {
+    string path = 1;  // Private Key Path
+    bytes buffer = 2; // Key Buffer
+  }
+
+  // Public Key for Thread ID/ Libp2p ID
+  message Public {
+    string base64 = 1; // Base64 Representation of Keys
+    bytes buffer = 2;  // Public Key Buffer
+  }
+
+  // Purposes of KeyPair
+  enum Type {
+    ACCOUNT = 0;   // Account KeyPair
+    DEVICE = 1;    // Device KeyPair
+    GROUP = 2;     // Group KeyPair
+    TEMPORARY = 3; // Temporary KeyPair for Pre Device Link
+  }
+}
+
+// Current Node Lifecycle State
+enum Lifecycle {
+  ACTIVE = 0;  // Resume or Start
+  PAUSED = 1;  // User Paused
+  STOPPED = 2; // User Quit
+}
+
+// Status is User Node Situation
+enum Status {
+  DEFAULT = 0;   // Default Status on Launch
+  IDLE = 1;      // Node has not been Authenticated
+  CONNECTED = 2; // Status after starting Host
+  AVAILABLE = 3; // Bootstrapped and Visible Locally
+  PENDING = 4;   // Awaiting Peer Authorization
+  INVITED = 5;   // Has received Invitation
+  TRANSFER = 6;  // In Progress of Transfer
+  STANDBY = 7;   // Away from Sonr Application
+  FAILED = 8;    // Failed to Connect Host
+  LINKER = 9;    // Linker Status
+}

@@ -9,7 +9,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
-	md "github.com/sonr-io/core/pkg/models"
+	md "github.com/sonr-io/core/pkg/data"
 )
 
 // ** ─── Address MANAGEMENT ────────────────────────────────────────────────────────

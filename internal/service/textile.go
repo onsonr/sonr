@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/sonr-io/core/internal/host"
-	md "github.com/sonr-io/core/pkg/models"
+	md "github.com/sonr-io/core/pkg/data"
 	"github.com/sonr-io/core/pkg/util"
 	"github.com/textileio/go-threads/api/client"
 	"github.com/textileio/go-threads/core/thread"

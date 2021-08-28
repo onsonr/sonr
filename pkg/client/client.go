@@ -10,7 +10,7 @@ import (
 	net "github.com/sonr-io/core/internal/host"
 	srv "github.com/sonr-io/core/internal/service"
 	tp "github.com/sonr-io/core/internal/topic"
-	md "github.com/sonr-io/core/pkg/models"
+	md "github.com/sonr-io/core/pkg/data"
 	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/proto"
 )

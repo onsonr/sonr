@@ -7,7 +7,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	rpc "github.com/libp2p/go-libp2p-gorpc"
-	md "github.com/sonr-io/core/pkg/models"
+	md "github.com/sonr-io/core/pkg/data"
 	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/proto"
 )

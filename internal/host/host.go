@@ -16,7 +16,7 @@ import (
 	psub "github.com/libp2p/go-libp2p-pubsub"
 	discovery "github.com/libp2p/go-libp2p/p2p/discovery"
 	"github.com/multiformats/go-multiaddr"
-	md "github.com/sonr-io/core/pkg/models"
+	md "github.com/sonr-io/core/pkg/data"
 )
 
 // ** ─── Interface MANAGEMENT ────────────────────────────────────────────────────────

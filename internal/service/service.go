@@ -7,7 +7,7 @@ import (
 	net "github.com/sonr-io/core/internal/host"
 	"google.golang.org/protobuf/encoding/protojson"
 
-	md "github.com/sonr-io/core/pkg/models"
+	md "github.com/sonr-io/core/pkg/data"
 )
 
 type ServiceHandler interface {

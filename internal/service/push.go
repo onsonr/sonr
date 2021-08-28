@@ -6,7 +6,7 @@ import (
 
 	firebase "firebase.google.com/go/v4"
 	"firebase.google.com/go/v4/messaging"
-	md "github.com/sonr-io/core/pkg/models"
+	md "github.com/sonr-io/core/pkg/data"
 	"google.golang.org/api/option"
 )
 

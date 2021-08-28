@@ -8,7 +8,7 @@ import (
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	psub "github.com/libp2p/go-libp2p-pubsub"
 	discovery "github.com/libp2p/go-libp2p/p2p/discovery"
-	md "github.com/sonr-io/core/pkg/models"
+	md "github.com/sonr-io/core/pkg/data"
 	"github.com/sonr-io/core/pkg/util"
 )
 

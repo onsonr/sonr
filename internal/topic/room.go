@@ -7,7 +7,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	sh "github.com/sonr-io/core/internal/host"
-	md "github.com/sonr-io/core/pkg/models"
+	md "github.com/sonr-io/core/pkg/data"
 	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/proto"
 )
@@ -191,4 +191,24 @@ func (tm *RoomManager) ListLinkers() *md.Linkers {
 	return &md.Linkers{
 		List: tm.linkers,
 	}
+}
+
+// # Check if PeerEvent is Join and NOT User
+func (tm *RoomManager) isEventJoin(ev ps.PeerEvent) bool {
+	return ev.Type == ps.PeerJoin && ev.Peer != tm.host.ID()
+}
+
+// # Check if PeerEvent is Exit and NOT User
+func (tm *RoomManager) isEventExit(ev ps.PeerEvent) bool {
+	return ev.Type == ps.PeerLeave && ev.Peer != tm.host.ID()
+}
+
+// # Check if Message is NOT from User
+func (tm *RoomManager) isValidMessage(msg *ps.Message) bool {
+	return tm.host.ID() != msg.ReceivedFrom && tm.HasPeerID(msg.ReceivedFrom)
+}
+
+// Returns RoomData Data instance
+func (tm *RoomManager) Room() *md.Room {
+	return tm.room
 }

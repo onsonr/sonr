@@ -5,7 +5,6 @@
 *.so
 *.dylib
 *.DS_Store
-.vscode/
 build/
 lib/dist
 lib/package-lock.json
@@ -108,21 +107,7 @@ web_modules/
 out
 
 # Distribution Builds
-*/dist/*.md
-*/dist/*.txt
-*/dist/*.tar.gz
-*/dist/*.zip
-*/dist/sonr-rpc_darwin_amd64/
-*/dist/sonr-rpc_darwin_arm64/
-*/dist/sonr-rpc_linux_amd64/
-*/dist/sonr-rpc_linux_arm64/
-*/dist/sonr-rpc_windows_amd64/
-
-# Gatsby files
-.cache/
-# Comment in the public line in if your project uses Gatsby and not Next.js
-# https://nextjs.org/blog/next-9-1#public-directory-support
-# public
+dist
 
 # vuepress build output
 .vuepress/dist
