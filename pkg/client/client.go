@@ -2,6 +2,7 @@ package client
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/sonr-io/core/internal/emitter"
@@ -155,6 +156,7 @@ func (c *client) Link(req *data.LinkRequest, t *room.RoomManager) (*data.LinkRes
 func (c *client) Invite(invite *data.InviteRequest, t *room.RoomManager) *data.SonrError {
 	// Check for Peer
 	if invite.GetType() == data.InviteRequest_REMOTE {
+		data.LogInfo("Sending Invite to Mailbox")
 		err := c.Service.SendMail(invite)
 		if err != nil {
 			return err
@@ -164,11 +166,13 @@ func (c *client) Invite(invite *data.InviteRequest, t *room.RoomManager) *data.S
 		id, err := t.FindPeer(invite.To.GetActive().Id.Peer)
 		if err != nil {
 			c.newExitEvent(invite)
+			data.LogError(errors.New("Failed to find Peer ID"))
 			return data.NewPeerFoundError(err, invite.GetTo().GetActive().GetId().GetPeer())
 		}
 
 		// Initialize Session if transfer
 		if invite.IsPayloadTransfer() {
+			data.LogInfo("Preparing for Transfer")
 			// Update Status
 			c.call.SetStatus(data.Status_PENDING)
 
@@ -179,6 +183,8 @@ func (c *client) Invite(invite *data.InviteRequest, t *room.RoomManager) *data.S
 
 		// Run Routine
 		go func(inv *data.InviteRequest) {
+			data.LogInfo("Sending Invite on Service")
+
 			// Send Default Invite
 			err = c.Service.Invite(id, inv)
 			if err != nil {

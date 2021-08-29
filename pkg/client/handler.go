@@ -172,6 +172,7 @@ func (n *client) onInvite(e *emitter.Event) {
 
 	// Update Status
 	n.call.SetStatus(data.Status_INVITED)
+	data.LogInfo("Received Invite")
 
 	// Create Request
 	req := data.GenericRequest{
@@ -226,6 +227,7 @@ func (n *client) onReply(e *emitter.Event) {
 		if resp.HasAcceptedTransfer() {
 			// Update Status
 			n.call.SetStatus(data.Status_TRANSFER)
+			data.LogInfo("Beginning Transfer")
 
 			// Create New Auth Stream
 			stream, err := n.Host.StartStream(id, data.SonrProtocol_LocalTransfer.NewIDProtocol(id))

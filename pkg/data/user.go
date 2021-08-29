@@ -82,7 +82,7 @@ func (d *Device) IsLinux() bool {
 
 // // Checks Whether User is Ready to Communicate
 func (u *Device) IsReady() bool {
-	return u.Contact != nil && u.Location != nil && u.Status != Status_DEFAULT
+	return u.Contact != nil && u.Location != nil
 }
 
 // Method Checks for Web

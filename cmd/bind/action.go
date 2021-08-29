@@ -96,57 +96,54 @@ func (n *Node) Verify(buf []byte) []byte {
 
 // Update proximity/direction and Notify Lobby
 func (n *Node) Update(buf []byte) {
-	if n.account.IsReady() {
-		// Unmarshal Data to Request
-		update := &data.UpdateRequest{}
-		if err := proto.Unmarshal(buf, update); err != nil {
-			n.handleError(data.NewError(err, data.ErrorEvent_UNMARSHAL))
-			return
-		}
+	// Unmarshal Data to Request
+	update := &data.UpdateRequest{}
+	if err := proto.Unmarshal(buf, update); err != nil {
+		n.handleError(data.NewError(err, data.ErrorEvent_UNMARSHAL))
+		return
+	}
 
-		// Check Update Request Type
-		switch update.Data.(type) {
-		// Update Position
-		case *data.UpdateRequest_Position:
-			n.account.CurrentDevice().UpdatePosition(update.GetPosition().Parameters())
+	// Check Update Request Type
+	switch update.Data.(type) {
+	// Update Position
+	case *data.UpdateRequest_Position:
+		n.account.CurrentDevice().UpdatePosition(update.GetPosition().Parameters())
 
-		// Update Contact
-		case *data.UpdateRequest_Contact:
-			n.account.UpdateContact(update.GetContact())
+	// Update Contact
+	case *data.UpdateRequest_Contact:
+		n.account.UpdateContact(update.GetContact())
 
-		// Update Peer Properties
-		case *data.UpdateRequest_Properties:
-			n.account.CurrentDevice().UpdateProperties(update.GetProperties())
-		}
+	// Update Peer Properties
+	case *data.UpdateRequest_Properties:
+		n.account.CurrentDevice().UpdateProperties(update.GetProperties())
+	}
 
-		// Notify Local Lobby
-		err := n.client.Update(n.local)
-		if err != nil {
-			n.handleError(err)
-			return
-		}
+	// Notify Local Lobby
+	err := n.client.Update(n.local)
+	if err != nil {
+		n.handleError(err)
+		return
 	}
 }
 
 // Invite Processes Data and Sends Invite to Peer
 func (n *Node) Invite(buf []byte) {
-	if n.account.IsReady() {
-		// Unmarshal Data to Request
-		req := &data.InviteRequest{}
-		if err := proto.Unmarshal(buf, req); err != nil {
-			n.handleError(data.NewError(err, data.ErrorEvent_UNMARSHAL))
-			return
-		}
+	// Unmarshal Data to Request
+	req := &data.InviteRequest{}
+	if err := proto.Unmarshal(buf, req); err != nil {
+		n.handleError(data.NewError(err, data.ErrorEvent_UNMARSHAL))
+		return
+	}
 
-		// Validate invite
-		req = n.account.SignInvite(req)
+	// Validate invite
+	req = n.account.SignInvite(req)
+	data.LogInfo(req.String())
 
-		// Send Invite
-		err := n.client.Invite(req, n.local)
-		if err != nil {
-			n.handleError(err)
-			return
-		}
+	// Send Invite
+	err := n.client.Invite(req, n.local)
+	if err != nil {
+		n.handleError(err)
+		return
 	}
 }
 
