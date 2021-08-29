@@ -156,7 +156,6 @@ func (c *client) Link(req *data.LinkRequest, t *room.RoomManager) (*data.LinkRes
 func (c *client) Invite(invite *data.InviteRequest, t *room.RoomManager) *data.SonrError {
 	// Check for Peer
 	if invite.GetType() == data.InviteRequest_REMOTE {
-		data.LogInfo("Sending Invite to Mailbox")
 		err := c.Service.SendMail(invite)
 		if err != nil {
 			return err
@@ -172,7 +171,6 @@ func (c *client) Invite(invite *data.InviteRequest, t *room.RoomManager) *data.S
 
 		// Initialize Session if transfer
 		if invite.IsPayloadTransfer() {
-			data.LogInfo("Preparing for Transfer")
 			// Update Status
 			c.call.SetStatus(data.Status_PENDING)
 
@@ -183,8 +181,6 @@ func (c *client) Invite(invite *data.InviteRequest, t *room.RoomManager) *data.S
 
 		// Run Routine
 		go func(inv *data.InviteRequest) {
-			data.LogInfo("Sending Invite on Service")
-
 			// Send Default Invite
 			err = c.Service.Invite(id, inv)
 			if err != nil {
@@ -217,27 +213,21 @@ func (c *client) Update(t *room.RoomManager) *data.SonrError {
 func (c *client) Lifecycle(state data.Lifecycle, t *room.RoomManager) {
 	if state == data.Lifecycle_ACTIVE {
 		// Inform Lobby
-		if c.account.IsReady() {
-			ev := c.account.NewUpdateEvent(t.Room(), c.Host.ID())
-			if err := t.Publish(ev); err != nil {
-				data.NewError(err, data.ErrorEvent_ROOM_UPDATE)
-			}
+		ev := c.account.NewUpdateEvent(t.Room(), c.Host.ID())
+		if err := t.Publish(ev); err != nil {
+			data.NewError(err, data.ErrorEvent_ROOM_UPDATE)
 		}
 	} else if state == data.Lifecycle_PAUSED {
 		// Inform Lobby
-		if c.account.IsReady() {
-			ev := c.account.NewExitEvent(t.Room(), c.Host.ID())
-			if err := t.Publish(ev); err != nil {
-				data.NewError(err, data.ErrorEvent_ROOM_UPDATE)
-			}
+		ev := c.account.NewExitEvent(t.Room(), c.Host.ID())
+		if err := t.Publish(ev); err != nil {
+			data.NewError(err, data.ErrorEvent_ROOM_UPDATE)
 		}
 	} else if state == data.Lifecycle_STOPPED {
 		// Inform Lobby
-		if c.account.IsReady() {
-			ev := c.account.NewExitEvent(t.Room(), c.Host.ID())
-			if err := t.Publish(ev); err != nil {
-				data.NewError(err, data.ErrorEvent_ROOM_UPDATE)
-			}
+		ev := c.account.NewExitEvent(t.Room(), c.Host.ID())
+		if err := t.Publish(ev); err != nil {
+			data.NewError(err, data.ErrorEvent_ROOM_UPDATE)
 		}
 		c.Host.Close()
 	}

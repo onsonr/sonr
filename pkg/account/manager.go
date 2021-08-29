@@ -57,7 +57,6 @@ type Account interface {
 	NewExitEvent(room *data.Room, id peer.ID) *data.RoomEvent
 
 	// Status Management
-	IsReady() bool
 	SetAvailable(val bool) *data.StatusEvent
 	SetConnected(val bool) *data.StatusEvent
 	SetStatus(newStatus data.Status) *data.StatusEvent

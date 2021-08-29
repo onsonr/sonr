@@ -42,52 +42,49 @@ func (n *Node) Sign(buf []byte) []byte {
 
 // Verification Request for Signed Data
 func (n *Node) Verify(buf []byte) []byte {
-	// Check Ready
-	if n.account.IsReady() {
-		// Get Key Pair
-		kp := n.account.AccountKeys()
+	// Check Read
+	// Get Key Pair
+	kp := n.account.AccountKeys()
 
-		// Unmarshal Data to Request
-		request := &data.VerifyRequest{}
-		if err := proto.Unmarshal(buf, request); err != nil {
-			// Handle Error
-			n.handleError(data.NewUnmarshalError(err))
+	// Unmarshal Data to Request
+	request := &data.VerifyRequest{}
+	if err := proto.Unmarshal(buf, request); err != nil {
+		// Handle Error
+		n.handleError(data.NewUnmarshalError(err))
 
-			// Send Invalid Response
-			return data.NewInvalidVerifyResponseBuf()
-		}
+		// Send Invalid Response
+		return data.NewInvalidVerifyResponseBuf()
+	}
 
-		// Check Request Type
-		if request.GetType() == data.VerifyRequest_VERIFY {
-			// Check type and Verify
-			if request.IsBuffer() {
-				// Verify Result
-				result, err := kp.Verify(request.GetBufferValue(), request.GetSignedBuffer())
-				if err != nil {
-					return data.NewInvalidVerifyResponseBuf()
-				}
-
-				// Return Result
-				return data.NewVerifyResponseBuf(result)
-			} else if request.IsString() {
-				// Verify Result
-				result, err := kp.Verify([]byte(request.GetTextValue()), []byte(request.GetSignedText()))
-				if err != nil {
-					return data.NewInvalidVerifyResponseBuf()
-				}
-
-				// Return Result
-				return data.NewVerifyResponseBuf(result)
-			}
-		} else {
-			resp := n.account.VerifyRead()
-			buf, err := proto.Marshal(resp)
+	// Check Request Type
+	if request.GetType() == data.VerifyRequest_VERIFY {
+		// Check type and Verify
+		if request.IsBuffer() {
+			// Verify Result
+			result, err := kp.Verify(request.GetBufferValue(), request.GetSignedBuffer())
 			if err != nil {
-				n.handleError(data.NewMarshalError(err))
+				return data.NewInvalidVerifyResponseBuf()
 			}
-			return buf
-		}
 
+			// Return Result
+			return data.NewVerifyResponseBuf(result)
+		} else if request.IsString() {
+			// Verify Result
+			result, err := kp.Verify([]byte(request.GetTextValue()), []byte(request.GetSignedText()))
+			if err != nil {
+				return data.NewInvalidVerifyResponseBuf()
+			}
+
+			// Return Result
+			return data.NewVerifyResponseBuf(result)
+		}
+	} else {
+		resp := n.account.VerifyRead()
+		buf, err := proto.Marshal(resp)
+		if err != nil {
+			n.handleError(data.NewMarshalError(err))
+		}
+		return buf
 	}
 
 	// Send Invalid Response
@@ -175,54 +172,48 @@ func (n *Node) Link(buf []byte) []byte {
 
 // Mail handles request for a message in Mailbox
 func (n *Node) Mail(buf []byte) []byte {
-	// Check Ready
-	if n.account.IsReady() {
-		// Unmarshal Data to Request
-		req := &data.MailboxRequest{}
-		if err := proto.Unmarshal(buf, req); err != nil {
-			n.handleError(data.NewUnmarshalError(err))
-			return nil
-		}
-
-		// Handle Mail
-		resp, serr := n.client.Mail(req)
-		if serr != nil {
-			n.handleError(serr)
-			return nil
-		}
-
-		// Marshal Response
-		buf, err := proto.Marshal(resp)
-		if err != nil {
-			n.handleError(data.NewMarshalError(err))
-			return nil
-		}
-
-		// Return Response
-		return buf
+	// Unmarshal Data to Request
+	req := &data.MailboxRequest{}
+	if err := proto.Unmarshal(buf, req); err != nil {
+		n.handleError(data.NewUnmarshalError(err))
+		return nil
 	}
-	return nil
+
+	// Handle Mail
+	resp, serr := n.client.Mail(req)
+	if serr != nil {
+		n.handleError(serr)
+		return nil
+	}
+
+	// Marshal Response
+	buf, err := proto.Marshal(resp)
+	if err != nil {
+		n.handleError(data.NewMarshalError(err))
+		return nil
+	}
+
+	// Return Response
+	return buf
 }
 
 // Respond to an Invite with Decision
 func (n *Node) Respond(buf []byte) {
-	if n.account.IsReady() {
-		// Unmarshal Data to Request
-		resp := &data.DecisionRequest{}
-		if err := proto.Unmarshal(buf, resp); err != nil {
-			n.handleError(data.NewError(err, data.ErrorEvent_UNMARSHAL))
-			return
-		}
+	// Unmarshal Data to Request
+	resp := &data.DecisionRequest{}
+	if err := proto.Unmarshal(buf, resp); err != nil {
+		n.handleError(data.NewError(err, data.ErrorEvent_UNMARSHAL))
+		return
+	}
 
-		// Send Response
-		n.client.Respond(resp.ToResponse())
+	// Send Response
+	n.client.Respond(resp.ToResponse())
 
-		// Update Status
-		if resp.Decision.Accepted() {
-			n.setStatus(data.Status_TRANSFER)
-		} else {
-			n.setStatus(data.Status_AVAILABLE)
-		}
+	// Update Status
+	if resp.Decision.Accepted() {
+		n.setStatus(data.Status_TRANSFER)
+	} else {
+		n.setStatus(data.Status_AVAILABLE)
 	}
 }
 

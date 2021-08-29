@@ -21,11 +21,6 @@ func (tm *userLinker) isValidMessage(msg *ps.Message) bool {
 	return tm.host.ID() != msg.ReceivedFrom && tm.HasPeerID(msg.ReceivedFrom)
 }
 
-// Method IsReady checks if Active Device Data is ready
-func (al *userLinker) IsReady() bool {
-	return al.CurrentDevice().IsReady()
-}
-
 // SetAvailable Method Sets Account to be Available
 func (al *userLinker) SetAvailable(val bool) *data.StatusEvent {
 	return al.user.GetCurrent().SetAvailable(val)

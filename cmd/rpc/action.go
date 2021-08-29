@@ -155,29 +155,26 @@ func (s *NodeServer) Verify(ctx context.Context, req *data.VerifyRequest) (*data
 
 // Update proximity/direction/contact/properties and notify Lobby
 func (s *NodeServer) Update(ctx context.Context, req *data.UpdateRequest) (*data.NoResponse, error) {
-	// Verify Node is Ready
-	if s.account.IsReady() {
-		// Check Update Request Type
-		switch req.Data.(type) {
-		// Update Position
-		case *data.UpdateRequest_Position:
-			s.account.CurrentDevice().UpdatePosition(req.GetPosition().Parameters())
+	// Check Update Request Type
+	switch req.Data.(type) {
+	// Update Position
+	case *data.UpdateRequest_Position:
+		s.account.CurrentDevice().UpdatePosition(req.GetPosition().Parameters())
 
-		// Update Contact
-		case *data.UpdateRequest_Contact:
-			s.account.UpdateContact(req.GetContact())
+	// Update Contact
+	case *data.UpdateRequest_Contact:
+		s.account.UpdateContact(req.GetContact())
 
-		// Update Peer Properties
-		case *data.UpdateRequest_Properties:
-			s.account.CurrentDevice().UpdateProperties(req.GetProperties())
-		}
+	// Update Peer Properties
+	case *data.UpdateRequest_Properties:
+		s.account.CurrentDevice().UpdateProperties(req.GetProperties())
+	}
 
-		// Notify Local Lobby
-		err := s.client.Update(s.local)
-		if err != nil {
-			s.handleError(err)
-			return nil, err.Error
-		}
+	// Notify Local Lobby
+	err := s.client.Update(s.local)
+	if err != nil {
+		s.handleError(err)
+		return nil, err.Error
 	}
 
 	// Return Blank Response
@@ -186,56 +183,46 @@ func (s *NodeServer) Update(ctx context.Context, req *data.UpdateRequest) (*data
 
 // Invite pushes Invite request to Peer
 func (s *NodeServer) Invite(ctx context.Context, req *data.InviteRequest) (*data.NoResponse, error) {
-	// Verify Node is Ready
-	if s.account.IsReady() {
-		// Validate invite
-		req = s.account.SignInvite(req)
+	// Validate invite
+	req = s.account.SignInvite(req)
 
-		// Send Invite
-		err := s.client.Invite(req, s.local)
-		if err != nil {
-			s.handleError(err)
-			return nil, err.Error
-		}
+	// Send Invite
+	err := s.client.Invite(req, s.local)
+	if err != nil {
+		s.handleError(err)
+		return nil, err.Error
 	}
+
 	// Return Blank Response
 	return &data.NoResponse{}, nil
 }
 
 // Respond handles a respond request
 func (s *NodeServer) Respond(ctx context.Context, req *data.DecisionRequest) (*data.NoResponse, error) {
-	// Verify Node is Ready
-	if s.account.IsReady() {
-		// Send Response
-		s.client.Respond(req.ToResponse())
+	// Send Response
+	s.client.Respond(req.ToResponse())
 
-		// Update Status
-		if req.Decision.Accepted() {
-			s.setStatus(data.Status_TRANSFER)
-		} else {
-			s.setStatus(data.Status_AVAILABLE)
-		}
-
-		// Return Blank Response
-		return nil, nil
+	// Update Status
+	if req.Decision.Accepted() {
+		s.setStatus(data.Status_TRANSFER)
+	} else {
+		s.setStatus(data.Status_AVAILABLE)
 	}
-	return nil, fmt.Errorf("Node is not ready")
+
+	// Return Blank Response
+	return nil, nil
 }
 
 // Mail method handles a mail request
 func (s *NodeServer) Mail(ctx context.Context, req *data.MailboxRequest) (*data.NoResponse, error) {
-	// Verify Node is Ready
-	if s.account.IsReady() {
-		// Handle Mail
-		resp, serr := s.client.Mail(req)
-		if serr != nil {
-			s.handleError(serr)
-			return nil, serr.Error
-		}
-
-		s.mailboxResponses <- resp
-		// Return Response
-		return &data.NoResponse{}, nil
+	// Handle Mail
+	resp, serr := s.client.Mail(req)
+	if serr != nil {
+		s.handleError(serr)
+		return nil, serr.Error
 	}
-	return nil, fmt.Errorf("Node is not ready")
+
+	s.mailboxResponses <- resp
+	// Return Response
+	return &data.NoResponse{}, nil
 }
