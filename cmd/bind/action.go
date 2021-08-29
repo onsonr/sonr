@@ -208,13 +208,6 @@ func (n *Node) Respond(buf []byte) {
 
 	// Send Response
 	n.client.Respond(resp.ToResponse())
-
-	// Update Status
-	if resp.Decision.Accepted() {
-		n.setStatus(data.Status_TRANSFER)
-	} else {
-		n.setStatus(data.Status_AVAILABLE)
-	}
 }
 
 // ** ─── Misc Methods ────────────────────────────────────────────────────────
