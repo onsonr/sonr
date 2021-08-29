@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/sonr-io/core/internal/emitter"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/pkg/data"
 	"github.com/sonr-io/core/pkg/util"
@@ -36,8 +37,7 @@ type TextileService struct {
 	device      *data.Device
 	host        host.HostNode
 	options     *data.ConnectionRequest_ServiceOptions
-	onConnected data.OnConnected
-	handler     ServiceHandler
+	emitter     *emitter.Emitter
 	pushService *PushService
 
 	// Properties
@@ -56,9 +56,8 @@ func (sc *serviceClient) StartTextile() *data.SonrError {
 		options:     sc.request.GetServiceOptions(),
 		apiKeys:     sc.apiKeys,
 		host:        sc.host,
-		onConnected: sc.handler.OnConnected,
 		device:      sc.device,
-		handler:     sc.handler,
+		emitter:     sc.emitter,
 		pushService: sc.Push,
 	}
 	sc.Textile = textile
@@ -254,7 +253,7 @@ func (ts *TextileService) onNewMessage(e local.MailboxEvent, state cmd.Connectio
 			ID:        inbox[0].ID,
 		}
 		// Callback Mail Event
-		ts.handler.OnMail(mail)
+		ts.emitter.Emit(emitter.EMIT_MAIL_EVENT, mail)
 	} else {
 		// Create Mail Event
 		msg := &data.PushMessage{

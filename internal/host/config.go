@@ -9,6 +9,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
+	"github.com/sonr-io/core/internal/emitter"
 	"github.com/sonr-io/core/pkg/data"
 )
 
@@ -151,8 +152,8 @@ func iPv4Addrs(port int) ([]string, error) {
 }
 
 // Handle Post-Connection result on hostNode
-func handleConnectionResult(hh HostHandler, hostActive bool, textileActive bool, mdnsActive bool) {
-	hh.OnConnected(&data.ConnectionResponse{
+func handleConnectionResult(em *emitter.Emitter, hostActive bool, textileActive bool, mdnsActive bool) {
+	em.Emit(emitter.EMIT_CONNECTED, &data.ConnectionResponse{
 		HostActive:    hostActive,
 		MdnsActive:    mdnsActive,
 		TextileActive: textileActive,

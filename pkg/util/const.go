@@ -27,6 +27,9 @@ func DHT_OPTS() (string, dscl.Option) {
 }
 
 // Pubsub Room Max Messages
+const MAX_EMITTER_CAP = 2048
+
+// Pubsub Room Max Messages
 const MAX_CHAN_DATA = 128
 
 // Maximum Chunk Size During Transfer

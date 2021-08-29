@@ -9,6 +9,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	msg "github.com/libp2p/go-msgio"
+	"github.com/sonr-io/core/internal/emitter"
 )
 
 // ** ─── CALLBACK MANAGEMENT ────────────────────────────────────────────────────────
@@ -192,17 +193,11 @@ type Session struct {
 	direction CompleteEvent_Direction
 
 	// Management
-	call SessionHandler
-}
-
-type SessionHandler interface {
-	OnCompleted(stream network.Stream, pid protocol.ID, completeEvent *CompleteEvent)
-	OnProgress(buf []byte)
-	OnError(err *SonrError)
+	emitter *emitter.Emitter
 }
 
 // Prepare for Outgoing Session ^ //
-func NewOutSession(u *Device, req *InviteRequest, sh SessionHandler) *Session {
+func NewOutSession(u *Device, req *InviteRequest, em *emitter.Emitter) *Session {
 	return &Session{
 		file:      req.GetFile(),
 		owner:     req.GetFrom(),
@@ -210,12 +205,12 @@ func NewOutSession(u *Device, req *InviteRequest, sh SessionHandler) *Session {
 		pid:       req.ProtocolID(),
 		device:    u,
 		direction: CompleteEvent_OUTGOING,
-		call:      sh,
+		emitter:   em,
 	}
 }
 
 // Prepare for Incoming Session ^ //
-func NewInSession(u *Device, inv *InviteRequest, sh SessionHandler) *Session {
+func NewInSession(u *Device, inv *InviteRequest, em *emitter.Emitter) *Session {
 	// Return Session
 	return &Session{
 		file:      inv.GetFile(),
@@ -224,7 +219,7 @@ func NewInSession(u *Device, inv *InviteRequest, sh SessionHandler) *Session {
 		pid:       inv.ProtocolID(),
 		device:    u,
 		direction: CompleteEvent_INCOMING,
-		call:      sh,
+		emitter:   em,
 	}
 }
 
@@ -253,14 +248,14 @@ func (s *Session) ReadFromStream(stream network.Stream) {
 	go func(rs msg.ReadCloser) {
 		// Read All Files
 		for i, m := range s.file.Items {
-			r := m.NewReader(s.device, i, int(s.file.GetCount()), s.call)
+			r := m.NewReader(s.device, i, int(s.file.GetCount()), s.emitter)
 			err := r.ReadFrom(rs)
 			if err != nil {
-				s.call.OnError(NewError(err, ErrorEvent_INCOMING))
+				s.emitter.Emit("Error", NewError(err, ErrorEvent_INCOMING))
 			}
 		}
 		// Set Status
-		s.call.OnCompleted(stream, s.pid, s.Event())
+		s.emitter.Emit(emitter.EMIT_COMPLETED, stream, s.pid, s.Event())
 	}(msg.NewReader(stream))
 }
 
@@ -270,13 +265,13 @@ func (s *Session) WriteToStream(stream network.Stream) {
 	go func(ws msg.WriteCloser) {
 		// Write All Files
 		for i, m := range s.file.Items {
-			w := m.NewWriter(s.device, i, int(s.file.GetCount()), s.call)
+			w := m.NewWriter(s.device, i, int(s.file.GetCount()), s.emitter)
 			err := w.WriteTo(ws)
 			if err != nil {
-				s.call.OnError(NewError(err, ErrorEvent_OUTGOING))
+				s.emitter.Emit("Error", NewError(err, ErrorEvent_INCOMING))
 			}
 		}
 		// Handle Complete
-		s.call.OnCompleted(stream, s.pid, s.Event())
+		s.emitter.Emit(emitter.EMIT_COMPLETED, stream, s.pid, s.Event())
 	}(msg.NewWriter(stream))
 }

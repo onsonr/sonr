@@ -7,6 +7,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	rpc "github.com/libp2p/go-libp2p-gorpc"
+	"github.com/sonr-io/core/internal/emitter"
 	"github.com/sonr-io/core/pkg/data"
 	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/proto"
@@ -28,7 +29,7 @@ type AuthServiceResponse struct {
 }
 
 type AuthService struct {
-	handler         ServiceHandler
+	emitter         *emitter.Emitter
 	device          *data.Device
 	respCh          chan *data.InviteResponse
 	linkCh          chan *data.LinkRequest
@@ -42,7 +43,7 @@ func (sc *serviceClient) StartAuth() *data.SonrError {
 	localServer := rpc.NewServer(sc.host.Host(), util.AUTH_PROTOCOL)
 	psv := AuthService{
 		device:  sc.device,
-		handler: sc.handler,
+		emitter: sc.emitter,
 		respCh:  make(chan *data.InviteResponse, util.MAX_CHAN_DATA),
 		linkCh:  make(chan *data.LinkRequest, util.MAX_CHAN_DATA),
 	}
@@ -70,8 +71,8 @@ func (sc *serviceClient) HandleLinking(req *data.LinkRequest) {
 
 // Invite @ Invite: Handles User sent InviteRequest Response
 func (tm *serviceClient) Invite(id peer.ID, inv *data.InviteRequest) error {
+	data.LogInfo(inv.String())
 	// Initialize Data
-	isDirect := inv.IsDirectInvite()
 	rpcClient := rpc.NewClient(tm.host.Host(), util.AUTH_PROTOCOL)
 	var reply AuthServiceResponse
 	var args AuthServiceArgs
@@ -85,31 +86,18 @@ func (tm *serviceClient) Invite(id peer.ID, inv *data.InviteRequest) error {
 	// Set Args
 	args.Invite = msgBytes
 
-	// Check Invite for Direct transfer
-	if isDirect {
-		// Call to Peer
-		err = rpcClient.Call(id, util.AUTH_RPC_SERVICE, util.AUTH_METHOD_INVITE, args, &reply)
-		if err != nil {
-			data.LogError(err)
-			return err
-		}
+	// Call to Peer
+	done := make(chan *rpc.Call, 1)
+	err = rpcClient.Go(id, util.AUTH_RPC_SERVICE, util.AUTH_METHOD_INVITE, args, &reply, done)
 
-		tm.handler.OnReply(id, reply.InvReply)
-		return nil
-	} else {
-		// Call to Peer
-		done := make(chan *rpc.Call, 1)
-		err = rpcClient.Go(id, util.AUTH_RPC_SERVICE, util.AUTH_METHOD_INVITE, args, &reply, done)
-
-		// Await Response
-		call := <-done
-		if call.Error != nil {
-			data.LogError(err)
-			return err
-		}
-		tm.handler.OnReply(id, reply.InvReply)
-		return nil
+	// Await Response
+	call := <-done
+	if call.Error != nil {
+		data.LogError(err)
+		return err
 	}
+	tm.emitter.Emit(emitter.EMIT_REPLY, reply.InvReply)
+	return nil
 }
 
 // InviteWith # Calls Invite on Local Lobby Peer
@@ -121,43 +109,27 @@ func (ts *AuthService) InviteWith(ctx context.Context, args AuthServiceArgs, rep
 		data.LogError(err)
 		return err
 	}
+	data.LogInfo(inv.String())
 
 	// Set Current Message and send Callback
-	isFlat := inv.IsDirectInvite()
 	ts.invite = &inv
-	ts.handler.OnInvite(args.Invite)
+	ts.emitter.Emit(emitter.EMIT_INVITE, args.Invite)
 
-	// Check Invite for Flat/Default
-	if isFlat {
-		// Sign Contact Reply
-		resp := ts.device.ReplyToFlat(inv.GetFrom())
-
+	// Hold Select for Invite Type
+	select {
+	// Received Auth Channel Message
+	case m := <-ts.respCh:
 		// Convert Protobuf to bytes
-		msgBytes, err := proto.Marshal(resp)
+		msgBytes, err := proto.Marshal(m)
 		if err != nil {
 			data.LogError(err)
 			return err
 		}
 
+		// Set Message data and call done
 		reply.InvReply = msgBytes
+		ctx.Done()
 		return nil
-	} else {
-		// Hold Select for Invite Type
-		select {
-		// Received Auth Channel Message
-		case m := <-ts.respCh:
-			// Convert Protobuf to bytes
-			msgBytes, err := proto.Marshal(m)
-			if err != nil {
-				data.LogError(err)
-				return err
-			}
-
-			// Set Message data and call done
-			reply.InvReply = msgBytes
-			ctx.Done()
-			return nil
-		}
 	}
 }
 
@@ -182,10 +154,10 @@ func (tm *serviceClient) Link(id peer.ID, inv *data.LinkRequest) error {
 		// Call to Peer
 		err = rpcClient.Call(id, util.AUTH_RPC_SERVICE, util.AUTH_METHOD_LINK, args, &reply)
 		if err != nil {
-			tm.handler.OnLink(false, false, id, nil)
+			tm.emitter.Emit(emitter.EMIT_LINK, false, false, id, nil)
 			return err
 		}
-		tm.handler.OnLink(reply.LinkResult, false, id, reply.LinkResponse)
+		tm.emitter.Emit(emitter.EMIT_LINK, reply.LinkResult, false, id, reply.LinkResponse)
 		return nil
 	}
 	return errors.New("Invite is not a Link Invite")
@@ -215,7 +187,7 @@ func (ts *AuthService) LinkWith(ctx context.Context, args AuthServiceArgs, reply
 
 		// Return Result
 		data.LogInfo(fmt.Sprintf("Link Result: %v", result))
-		ts.handler.OnLink(ok, true, peer.ID(inv.GetFrom().PeerID()), reply.LinkResponse)
+		ts.emitter.Emit(emitter.EMIT_LINK, ok, true, peer.ID(inv.GetFrom().PeerID()), reply.LinkResponse)
 		return nil
 	} else {
 		return errors.New("Linking is not Active")
@@ -229,6 +201,6 @@ func (tm *serviceClient) Respond(rep *data.InviteResponse) {
 
 	// Prepare Transfer
 	if rep.Decision.Accepted() {
-		tm.handler.OnConfirmed(tm.Auth.invite)
+		tm.emitter.Emit(emitter.EMIT_CONFIRMED, tm.Auth.invite)
 	}
 }

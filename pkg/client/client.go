@@ -2,11 +2,10 @@ package client
 
 import (
 	"context"
+	"errors"
 	"time"
 
-	"github.com/libp2p/go-libp2p-core/network"
-	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-core/protocol"
+	"github.com/sonr-io/core/internal/emitter"
 	net "github.com/sonr-io/core/internal/host"
 	room "github.com/sonr-io/core/internal/room"
 	srv "github.com/sonr-io/core/internal/service"
@@ -28,18 +27,6 @@ type Client interface {
 	Update(t *room.RoomManager) *data.SonrError
 	Lifecycle(state data.Lifecycle, t *room.RoomManager)
 
-	// Room Callbacks
-	OnConnected(*data.ConnectionResponse)
-	OnRoomEvent(*data.RoomEvent)
-	OnSyncEvent(*data.SyncEvent)
-	OnError(*data.SonrError)
-	OnInvite([]byte)
-	OnMail(*data.MailEvent)
-	OnReply(peer.ID, []byte)
-	OnResponded(*data.InviteRequest)
-	OnProgress([]byte)
-	OnCompleted(network.Stream, protocol.ID, *data.CompleteEvent)
-
 	// Properties
 	GetHost() net.HostNode
 }
@@ -55,6 +42,7 @@ type client struct {
 	account  ac.Account
 	session  *data.Session
 	request  *data.ConnectionRequest
+	emitter  *emitter.Emitter
 
 	// References
 	Host    net.HostNode
@@ -63,11 +51,14 @@ type client struct {
 
 // NewClient Initializes Node with Router ^
 func NewClient(ctx context.Context, a ac.Account, call data.Callback) Client {
-	return &client{
+	c := &client{
 		ctx:     ctx,
 		call:    call,
 		account: a,
 	}
+
+	c.initEmitter()
+	return c
 }
 
 // Connects Host Node from Private Key
@@ -77,7 +68,7 @@ func (c *client) Connect(cr *data.ConnectionRequest) (*data.Peer, *data.SonrErro
 	c.isLinker = cr.GetIsLinker()
 
 	// Set Host
-	hn, err := net.NewHost(c.ctx, cr, c.account.AccountKeys(), c)
+	hn, err := net.NewHost(c.ctx, cr, c.account.AccountKeys(), c.emitter)
 	if err != nil {
 		return nil, err
 	}
@@ -105,7 +96,7 @@ func (c *client) Bootstrap(cr *data.ConnectionRequest) (*room.RoomManager, *data
 	}
 
 	// Start Services
-	s, err := srv.NewService(c.ctx, c.Host, c.account.CurrentDevice(), c.request, c)
+	s, err := srv.NewService(c.ctx, c.Host, c.account.CurrentDevice(), c.request, c.emitter)
 	if err != nil {
 		return nil, err
 	}
@@ -113,7 +104,7 @@ func (c *client) Bootstrap(cr *data.ConnectionRequest) (*room.RoomManager, *data
 
 	// Join Local
 	RoomName := c.account.CurrentDevice().NewLocalRoom(cr.GetServiceOptions())
-	if t, err := room.JoinRoom(c.ctx, c.Host, c.account, RoomName, c); err != nil {
+	if t, err := room.JoinRoom(c.ctx, c.Host, c.account, RoomName, c.emitter); err != nil {
 		return nil, err
 	} else {
 		// Check if Auto Update Events
@@ -170,44 +161,33 @@ func (c *client) Invite(invite *data.InviteRequest, t *room.RoomManager) *data.S
 			return err
 		}
 	} else {
-		if t.HasPeer(invite.To.GetActive().Id.Peer) {
-			// Get PeerID and Check error
-			id, err := t.FindPeer(invite.To.GetActive().Id.Peer)
-			if err != nil {
-				c.newExitEvent(invite)
-				return data.NewPeerFoundError(err, invite.GetTo().GetActive().GetId().GetPeer())
-			}
-
-			// Initialize Session if transfer
-			if invite.IsPayloadTransfer() {
-				// Update Status
-				c.call.SetStatus(data.Status_PENDING)
-
-				// Start New Session
-				invite.SetProtocol(data.SonrProtocol_LocalTransfer, id)
-				c.session = data.NewOutSession(c.account.CurrentDevice(), invite, c)
-			}
-
-			// Run Routine
-			go func(inv *data.InviteRequest) {
-				// Send Default Invite
-				err = c.Service.Invite(id, inv)
-				if err != nil {
-					c.call.OnError(data.NewError(err, data.ErrorEvent_ROOM_RPC))
-					return
-				}
-			}(invite)
-		} else {
-			// Send Mail to Offline Peer
-			err := c.Service.SendMail(invite)
-			if err != nil {
-				return err
-			}
-
-			// Record Peer is Offline
+		// Get PeerID and Check error
+		id, err := t.FindPeer(invite.To.GetActive().Id.Peer)
+		if err != nil {
 			c.newExitEvent(invite)
-			return data.NewErrorWithType(data.ErrorEvent_PEER_NOT_FOUND_INVITE)
+			data.LogError(errors.New("Failed to find Peer ID"))
+			return data.NewPeerFoundError(err, invite.GetTo().GetActive().GetId().GetPeer())
 		}
+
+		// Initialize Session if transfer
+		if invite.IsPayloadTransfer() {
+			// Update Status
+			c.call.SetStatus(data.Status_PENDING)
+
+			// Start New Session
+			invite.SetProtocol(data.SonrProtocol_LocalTransfer, id)
+			c.session = data.NewOutSession(c.account.CurrentDevice(), invite, c.emitter)
+		}
+
+		// Run Routine
+		go func(inv *data.InviteRequest) {
+			// Send Default Invite
+			err = c.Service.Invite(id, inv)
+			if err != nil {
+				c.call.OnError(data.NewError(err, data.ErrorEvent_ROOM_RPC))
+				return
+			}
+		}(invite)
 	}
 	return nil
 }
@@ -233,27 +213,21 @@ func (c *client) Update(t *room.RoomManager) *data.SonrError {
 func (c *client) Lifecycle(state data.Lifecycle, t *room.RoomManager) {
 	if state == data.Lifecycle_ACTIVE {
 		// Inform Lobby
-		if c.account.IsReady() {
-			ev := c.account.NewUpdateEvent(t.Room(), c.Host.ID())
-			if err := t.Publish(ev); err != nil {
-				data.NewError(err, data.ErrorEvent_ROOM_UPDATE)
-			}
+		ev := c.account.NewUpdateEvent(t.Room(), c.Host.ID())
+		if err := t.Publish(ev); err != nil {
+			data.NewError(err, data.ErrorEvent_ROOM_UPDATE)
 		}
 	} else if state == data.Lifecycle_PAUSED {
 		// Inform Lobby
-		if c.account.IsReady() {
-			ev := c.account.NewExitEvent(t.Room(), c.Host.ID())
-			if err := t.Publish(ev); err != nil {
-				data.NewError(err, data.ErrorEvent_ROOM_UPDATE)
-			}
+		ev := c.account.NewExitEvent(t.Room(), c.Host.ID())
+		if err := t.Publish(ev); err != nil {
+			data.NewError(err, data.ErrorEvent_ROOM_UPDATE)
 		}
 	} else if state == data.Lifecycle_STOPPED {
 		// Inform Lobby
-		if c.account.IsReady() {
-			ev := c.account.NewExitEvent(t.Room(), c.Host.ID())
-			if err := t.Publish(ev); err != nil {
-				data.NewError(err, data.ErrorEvent_ROOM_UPDATE)
-			}
+		ev := c.account.NewExitEvent(t.Room(), c.Host.ID())
+		if err := t.Publish(ev); err != nil {
+			data.NewError(err, data.ErrorEvent_ROOM_UPDATE)
 		}
 		c.Host.Close()
 	}
