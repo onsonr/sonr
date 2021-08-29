@@ -3,6 +3,7 @@ SONR_ROOT_DIR=/Users/prad/Sonr
 CORE_DIR=$(SONR_ROOT_DIR)/core
 CORE_RPC_DIR=$(SONR_ROOT_DIR)/core/cmd/rpc
 CORE_BIND_DIR=$(SONR_ROOT_DIR)/core/cmd/bind
+ELECTRON_BIN_DIR=$(SONR_ROOT_DIR)/electron/assets/bin/darwin
 
 # Set this -->[/Users/xxxx/Sonr/]<-- to Folder of Sonr Repos
 PROTO_DEF_PATH=/Users/prad/Sonr/core/proto
@@ -112,11 +113,10 @@ release: protobuf
 	@cd $(CORE_RPC_DIR) && goreleaser release --rm-dist
 	@echo "Cleaning up build cache..."
 	@cd $(CORE_DIR) && go mod tidy
-	@rm -rf $(DIST_DIR_DARWIN_AMD)
-	@rm -rf $(DIST_DIR_DARWIN_ARM)
-	@rm -rf $(DIST_DIR_LINUX_AMD)
-	@rm -rf $(DIST_DIR_LINUX_ARM)
-	@rm -rf $(DIST_DIR_WIN)
+	@rm -rf $(ELECTRON_BIN_DIR)
+	@mkdir -p $(ELECTRON_BIN_DIR)
+	@mv $(DIST_DIR_DARWIN_ARM) $(ELECTRON_BIN_DIR)
+	@rm -rf $(DIST_DIR)
 	@echo "✅ Finished Releasing RPC Binary ➡ " && date
 	@cd /System/Library/Sounds && afplay Glass.aiff
 

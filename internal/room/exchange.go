@@ -189,13 +189,13 @@ func (rm *RoomManager) handleExchangeMessages(ctx context.Context) {
 			}
 
 			// Check Peer is Online, if not ignore
-			if m.Member.Active.GetStatus() == data.Peer_ONLINE {
+			if m.GetMember().GetActive().GetStatus() == data.Peer_ONLINE {
 				rm.emitter.Emit(emitter.EMIT_ROOM_EVENT, m)
-			} else if m.Member.Active.GetStatus() == data.Peer_PAIRING {
+			} else if m.GetMember().GetActive().GetStatus() == data.Peer_PAIRING {
 				// Validate Linker not Already Set
-				if !rm.HasLinker(m.Member.Active.PeerID()) {
+				if !rm.HasLinker(m.GetMember().GetActive().PeerID()) {
 					// Append Linkers
-					rm.linkers = append(rm.linkers, m.Member.GetActive())
+					rm.linkers = append(rm.linkers, m.GetMember().GetActive())
 				}
 			}
 		}
