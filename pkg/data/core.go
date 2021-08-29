@@ -185,8 +185,8 @@ func (f *SFile) Single() *SFile_Item {
 type Session struct {
 	// Inherited Properties
 	file      *SFile
-	owner     *Peer
-	receiver  *Peer
+	owner     *Member
+	receiver  *Member
 	pid       protocol.ID
 	device    *Device
 	direction CompleteEvent_Direction
@@ -238,8 +238,8 @@ func (s *Session) Event() *CompleteEvent {
 			Received: int32(time.Now().Unix()),
 
 			// Owner Properties
-			Owner:    s.owner.GetProfile(),
-			Receiver: s.receiver.GetProfile(),
+			Owner:    s.owner.GetActive().GetProfile(),
+			Receiver: s.receiver.GetActive().GetProfile(),
 
 			// Data Properties
 			Data: s.file.ToData(),

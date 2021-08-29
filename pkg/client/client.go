@@ -170,12 +170,12 @@ func (c *client) Invite(invite *data.InviteRequest, t *room.RoomManager) *data.S
 			return err
 		}
 	} else {
-		if t.HasPeer(invite.To.Id.Peer) {
+		if t.HasPeer(invite.To.GetActive().Id.Peer) {
 			// Get PeerID and Check error
-			id, err := t.FindPeer(invite.To.Id.Peer)
+			id, err := t.FindPeer(invite.To.GetActive().Id.Peer)
 			if err != nil {
 				c.newExitEvent(invite)
-				return data.NewPeerFoundError(err, invite.GetTo().GetId().GetPeer())
+				return data.NewPeerFoundError(err, invite.GetTo().GetActive().GetId().GetPeer())
 			}
 
 			// Initialize Session if transfer
@@ -264,7 +264,7 @@ func (c *client) Lifecycle(state data.Lifecycle, t *room.RoomManager) {
 func (c *client) newExitEvent(inv *data.InviteRequest) {
 	// Create Exit Event
 	event := data.RoomEvent{
-		Id:      inv.To.Id.Peer,
+		Id:      inv.To.GetActive().Id.Peer,
 		Subject: data.RoomEvent_EXIT,
 	}
 

@@ -90,7 +90,7 @@ func (sc *serviceClient) SendMail(inv *data.InviteRequest) *data.SonrError {
 	// Check Mail Enabled
 	if sc.Textile.options.GetMailbox() {
 		// Fetch Peer Thread Key
-		pubKey, serr := inv.GetTo().ThreadKey()
+		pubKey, serr := inv.GetTo().GetActive().ThreadKey()
 		if serr != nil {
 			return serr
 		}

@@ -178,8 +178,8 @@ enum Decision {
 message DecisionRequest {
   Decision decision = 1; // Value to be Decided
   Payload payload = 2;   // Type of Transfer
-  Peer from = 3;         // Users Peer Data
-  Peer to = 4;           // Receivers Peer Data
+  Member from = 3;       // Users Peer Data
+  Member to = 4;         // Receivers Peer Data
   Transfer transfer = 5; // Attached Data
   Type type = 6;         // Type of Invite
   string protocol = 7;   // Protocol for Invite
@@ -255,8 +255,8 @@ message LinkResponse {
 // Invitation Message sent on RPC
 message InviteRequest {
   Payload payload = 1;   // Type of Transfer
-  Peer from = 2;         // Users Peer Data
-  Peer to = 3;           // Receivers Peer Data
+  Member from = 2;       // Users Member Data
+  Member to = 3;         // Receivers Member Data
   Transfer transfer = 4; // Attached Data
   Type type = 5;         // Type of Invite
   string protocol = 6;   // Protocol for Invite
@@ -274,8 +274,8 @@ message InviteRequest {
 message InviteResponse {
   Decision decision = 1; // Peer Decision for Invite Request
   Payload payload = 2;   // Type of Transfer
-  Peer from = 3;         // Users Peer Data
-  Peer to = 4;           // Receivers Peer Data
+  Member from = 3;       // Users Member Data
+  Member to = 4;         // Receivers Member Data
   Transfer transfer = 5; // Attached Data
   Type type = 6;         // Type of Invite
   string protocol = 7;   // Protocol for Invite

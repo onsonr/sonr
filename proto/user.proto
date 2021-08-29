@@ -1,13 +1,11 @@
 syntax = "proto3";
 package data;
 
-
 import "peer.proto";
 import "data.proto";
 
 // Require Go Package
 option go_package = "/data";
-
 
 // Client Keys for Services
 message APIKeys {
@@ -19,7 +17,6 @@ message APIKeys {
   string textileKey = 6;      // Key for the Textile Service
   string textileSecret = 7;   // Secret for the Textile Service
 }
-
 
 // User Account Info, Saved to Disk as account.snr
 message Account {

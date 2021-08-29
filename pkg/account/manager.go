@@ -41,6 +41,7 @@ type Account interface {
 	KeyChain() *data.KeyChain
 	SignLinkPacket(resp *data.LinkResponse) *data.LinkPacket
 	SignAuth(req *data.AuthRequest) *data.AuthResponse
+	SignInvite(i *data.InviteRequest) *data.InviteRequest
 	VerifyDevicePubKey(pub crypto.PubKey) bool
 	VerifyGroupPubKey(pub crypto.PubKey) bool
 	VerifyRead() *data.VerifyResponse

@@ -1,6 +1,7 @@
 package account
 
 import (
+	"io/ioutil"
 	"os"
 	"path"
 
@@ -12,7 +13,6 @@ import (
 
 // Method Returns Account KeyPair
 func (al *userLinker) AccountKeys() *data.KeyPair {
-
 	return al.user.GetKeyChain().GetAccount()
 }
 
@@ -162,4 +162,55 @@ func (al *userLinker) NewExitEvent(room *data.Room, id peer.ID) *data.RoomEvent 
 		Id:      id.String(),
 		Room:    room,
 	}
+}
+
+// Validates InviteRequest has From Parameter
+func (al *userLinker) SignInvite(i *data.InviteRequest) *data.InviteRequest {
+	// Set From
+	if i.From == nil {
+		i.From = al.Member()
+	}
+
+	// Convert all Thumbnails to Buffers
+	if i.IsPayloadTransfer() {
+		// Get File
+		f := i.GetFile()
+		if f != nil {
+			// Convert Thumbnails to Buffers
+			for _, t := range f.Items {
+				if t.GetProperties().GetIsThumbPath() {
+					// Fetch Buffer from Path
+					buffer, err := ioutil.ReadFile(t.GetThumbPath())
+					if err != nil {
+						data.LogError(err)
+						continue
+					}
+
+					// Set Buffer
+					t.Thumbnail = &data.SFile_Item_ThumbBuffer{
+						ThumbBuffer: buffer,
+					}
+
+					// Update Properties
+					oldProps := t.GetProperties()
+					t.Properties = &data.SFile_Item_Properties{
+						IsThumbPath:  false,
+						IsAudio:      oldProps.GetIsAudio(),
+						IsVideo:      oldProps.GetIsVideo(),
+						IsImage:      oldProps.GetIsImage(),
+						HasThumbnail: oldProps.GetHasThumbnail(),
+						Width:        oldProps.GetWidth(),
+						Height:       oldProps.GetHeight(),
+						Duration:     oldProps.GetDuration(),
+					}
+				}
+			}
+		}
+	}
+
+	// Set Type
+	if i.Type == data.InviteRequest_NONE {
+		i.Type = data.InviteRequest_LOCAL
+	}
+	return i
 }

@@ -139,7 +139,7 @@ func (n *Node) Invite(buf []byte) {
 		}
 
 		// Validate invite
-		req = n.account.CurrentDevice().SignInvite(req)
+		req = n.account.SignInvite(req)
 
 		// Send Invite
 		err := n.client.Invite(req, n.local)

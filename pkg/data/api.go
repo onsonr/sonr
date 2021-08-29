@@ -2,7 +2,6 @@ package data
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/http"
 
 	olc "github.com/google/open-location-code/go"
@@ -394,57 +393,6 @@ func (i *InviteRequest) SetProtocol(p SonrProtocol, id peer.ID) protocol.ID {
 	return protocol.ID(protocolName)
 }
 
-// Validates InviteRequest has From Parameter
-func (u *Device) SignInvite(i *InviteRequest) *InviteRequest {
-	// Set From
-	if i.From == nil {
-		i.From = u.GetPeer()
-	}
-
-	// Convert all Thumbnails to Buffers
-	if i.IsPayloadTransfer() {
-		// Get File
-		f := i.GetFile()
-		if f != nil {
-			// Convert Thumbnails to Buffers
-			for _, t := range f.Items {
-				if t.GetProperties().GetIsThumbPath() {
-					// Fetch Buffer from Path
-					buffer, err := ioutil.ReadFile(t.GetThumbPath())
-					if err != nil {
-						LogError(err)
-						continue
-					}
-
-					// Set Buffer
-					t.Thumbnail = &SFile_Item_ThumbBuffer{
-						ThumbBuffer: buffer,
-					}
-
-					// Update Properties
-					oldProps := t.GetProperties()
-					t.Properties = &SFile_Item_Properties{
-						IsThumbPath:  false,
-						IsAudio:      oldProps.GetIsAudio(),
-						IsVideo:      oldProps.GetIsVideo(),
-						IsImage:      oldProps.GetIsImage(),
-						HasThumbnail: oldProps.GetHasThumbnail(),
-						Width:        oldProps.GetWidth(),
-						Height:       oldProps.GetHeight(),
-						Duration:     oldProps.GetDuration(),
-					}
-				}
-			}
-		}
-	}
-
-	// Set Type
-	if i.Type == InviteRequest_NONE {
-		i.Type = InviteRequest_LOCAL
-	}
-	return i
-}
-
 // Validates LinkRequest has From Parameter
 func (u *Device) SignLink(i *LinkRequest) *LinkRequest {
 	// Set From
@@ -481,8 +429,8 @@ func (req *InviteRequest) ToPushMessage() *PushMessage {
 
 	// Return Push Map
 	return &PushMessage{
-		Peer: req.GetTo(),
-		Data: pushMap,
+		Member: req.GetTo(),
+		Data:   pushMap,
 	}
 }
 

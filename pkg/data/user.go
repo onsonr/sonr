@@ -229,20 +229,18 @@ func (d *FileSystem_Directory) ReadFile(name string) ([]byte, *SonrError) {
 }
 
 // Signs InviteResponse with Flat Contact
-func (u *Device) ReplyToFlat(from *Peer) *InviteResponse {
+func (u *Device) ReplyToFlat(from *Member) *InviteResponse {
 	return &InviteResponse{
 		Type:    InviteResponse_FLAT,
 		To:      from,
 		Payload: Payload_CONTACT,
-		From:    u.GetPeer(),
 		Transfer: &Transfer{
 			// SQL Properties
 			Payload:  Payload_CONTACT,
 			Received: int32(time.Now().Unix()),
 
 			// Owner Properties
-			Owner:    u.GetPeer().Profile,
-			Receiver: from.GetProfile(),
+			Owner: u.GetPeer().Profile,
 
 			// Data Properties
 			Data: u.GetContact().ToData(),
