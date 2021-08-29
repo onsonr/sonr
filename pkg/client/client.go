@@ -160,44 +160,32 @@ func (c *client) Invite(invite *data.InviteRequest, t *room.RoomManager) *data.S
 			return err
 		}
 	} else {
-		if t.HasPeer(invite.To.GetActive().Id.Peer) {
-			// Get PeerID and Check error
-			id, err := t.FindPeer(invite.To.GetActive().Id.Peer)
-			if err != nil {
-				c.newExitEvent(invite)
-				return data.NewPeerFoundError(err, invite.GetTo().GetActive().GetId().GetPeer())
-			}
-
-			// Initialize Session if transfer
-			if invite.IsPayloadTransfer() {
-				// Update Status
-				c.call.SetStatus(data.Status_PENDING)
-
-				// Start New Session
-				invite.SetProtocol(data.SonrProtocol_LocalTransfer, id)
-				c.session = data.NewOutSession(c.account.CurrentDevice(), invite, c.emitter)
-			}
-
-			// Run Routine
-			go func(inv *data.InviteRequest) {
-				// Send Default Invite
-				err = c.Service.Invite(id, inv)
-				if err != nil {
-					c.call.OnError(data.NewError(err, data.ErrorEvent_ROOM_RPC))
-					return
-				}
-			}(invite)
-		} else {
-			// Send Mail to Offline Peer
-			err := c.Service.SendMail(invite)
-			if err != nil {
-				return err
-			}
-
-			// Record Peer is Offline
+		// Get PeerID and Check error
+		id, err := t.FindPeer(invite.To.GetActive().Id.Peer)
+		if err != nil {
 			c.newExitEvent(invite)
-			return data.NewErrorWithType(data.ErrorEvent_PEER_NOT_FOUND_INVITE)
+			return data.NewPeerFoundError(err, invite.GetTo().GetActive().GetId().GetPeer())
 		}
+
+		// Initialize Session if transfer
+		if invite.IsPayloadTransfer() {
+			// Update Status
+			c.call.SetStatus(data.Status_PENDING)
+
+			// Start New Session
+			invite.SetProtocol(data.SonrProtocol_LocalTransfer, id)
+			c.session = data.NewOutSession(c.account.CurrentDevice(), invite, c.emitter)
+		}
+
+		// Run Routine
+		go func(inv *data.InviteRequest) {
+			// Send Default Invite
+			err = c.Service.Invite(id, inv)
+			if err != nil {
+				c.call.OnError(data.NewError(err, data.ErrorEvent_ROOM_RPC))
+				return
+			}
+		}(invite)
 	}
 	return nil
 }
