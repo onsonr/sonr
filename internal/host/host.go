@@ -16,6 +16,7 @@ import (
 	psub "github.com/libp2p/go-libp2p-pubsub"
 	discovery "github.com/libp2p/go-libp2p/p2p/discovery"
 	"github.com/multiformats/go-multiaddr"
+	"github.com/sonr-io/core/internal/emitter"
 	"github.com/sonr-io/core/pkg/data"
 )
 
@@ -33,10 +34,6 @@ type HostNode interface {
 	StartStream(p peer.ID, pid protocol.ID) (network.Stream, error)
 }
 
-type HostHandler interface {
-	OnConnected(*data.ConnectionResponse)
-}
-
 type hostNode struct {
 	HostNode
 
@@ -50,7 +47,7 @@ type hostNode struct {
 	// Libp2p
 	id      peer.ID
 	disc    *dsc.RoutingDiscovery
-	handler HostHandler
+	emitter *emitter.Emitter
 	host    host.Host
 	kdht    *dht.IpfsDHT
 	mdns    discovery.Service
@@ -61,14 +58,14 @@ type hostNode struct {
 }
 
 // Start Begins Assigning Host Parameters ^
-func NewHost(ctx context.Context, req *data.ConnectionRequest, kp *data.KeyPair, hh HostHandler) (HostNode, *data.SonrError) {
+func NewHost(ctx context.Context, req *data.ConnectionRequest, kp *data.KeyPair, em *emitter.Emitter) (HostNode, *data.SonrError) {
 	// Initialize DHT
 	var kdhtRef *dht.IpfsDHT
 
 	// Find Listen Addresses
 	addrs, err := PublicAddrStrs(req)
 	if err != nil {
-		return newRelayedHost(ctx, req, kp, hh)
+		return newRelayedHost(ctx, req, kp, em)
 	}
 
 	// Start Host
@@ -99,7 +96,7 @@ func NewHost(ctx context.Context, req *data.ConnectionRequest, kp *data.KeyPair,
 
 	// Set Host for Node
 	if err != nil {
-		return newRelayedHost(ctx, req, kp, hh)
+		return newRelayedHost(ctx, req, kp, em)
 	}
 
 	// Create Host
@@ -107,7 +104,7 @@ func NewHost(ctx context.Context, req *data.ConnectionRequest, kp *data.KeyPair,
 		ctxHost: ctx,
 		apiKeys: req.ApiKeys,
 		keyPair: kp,
-		handler: hh,
+		emitter: em,
 		id:      h.ID(),
 		host:    h,
 		kdht:    kdhtRef,
@@ -118,16 +115,16 @@ func NewHost(ctx context.Context, req *data.ConnectionRequest, kp *data.KeyPair,
 		err := hn.MDNS()
 		if err != nil {
 			data.NewError(err, data.ErrorEvent_HOST_MDNS)
-			handleConnectionResult(hh, true, false, false)
+			handleConnectionResult(em, true, false, false)
 		} else {
-			handleConnectionResult(hh, true, false, true)
+			handleConnectionResult(em, true, false, true)
 		}
 	}
 	return hn, nil
 }
 
 // Failsafe when unable to bind to External IP Address ^ //
-func newRelayedHost(ctx context.Context, req *data.ConnectionRequest, keyPair *data.KeyPair, hh HostHandler) (HostNode, *data.SonrError) {
+func newRelayedHost(ctx context.Context, req *data.ConnectionRequest, keyPair *data.KeyPair, em *emitter.Emitter) (HostNode, *data.SonrError) {
 	// Initialize DHT
 	var kdhtRef *dht.IpfsDHT
 
@@ -158,7 +155,7 @@ func newRelayedHost(ctx context.Context, req *data.ConnectionRequest, keyPair *d
 
 	// Set Host for Node
 	if err != nil {
-		handleConnectionResult(hh, false, false, false)
+		handleConnectionResult(em, false, false, false)
 		return nil, data.NewError(err, data.ErrorEvent_HOST_START)
 	}
 
@@ -167,7 +164,7 @@ func newRelayedHost(ctx context.Context, req *data.ConnectionRequest, keyPair *d
 		ctxHost: ctx,
 		apiKeys: req.ApiKeys,
 		keyPair: keyPair,
-		handler: hh,
+		emitter: em,
 		id:      h.ID(),
 		host:    h,
 		kdht:    kdhtRef,
@@ -178,9 +175,9 @@ func newRelayedHost(ctx context.Context, req *data.ConnectionRequest, keyPair *d
 		err := hn.MDNS()
 		if err != nil {
 			data.NewError(err, data.ErrorEvent_HOST_MDNS)
-			handleConnectionResult(hh, true, false, false)
+			handleConnectionResult(em, true, false, false)
 		} else {
-			handleConnectionResult(hh, true, false, true)
+			handleConnectionResult(em, true, false, true)
 		}
 	}
 	return hn, nil

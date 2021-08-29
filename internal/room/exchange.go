@@ -5,6 +5,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	rpc "github.com/libp2p/go-libp2p-gorpc"
+	"github.com/sonr-io/core/internal/emitter"
 	ac "github.com/sonr-io/core/pkg/account"
 	"github.com/sonr-io/core/pkg/data"
 	"github.com/sonr-io/core/pkg/util"
@@ -24,7 +25,7 @@ type ExchangeServiceResponse struct {
 // ExchangeService Service Struct
 type ExchangeService struct {
 	// Current Data
-	call    RoomHandler
+	emitter *emitter.Emitter
 	linkers []*data.Peer
 	room    GetRoomFunc
 	account ac.Account
@@ -36,7 +37,7 @@ func (rm *RoomManager) initExchange() *data.SonrError {
 	exchangeServer := rpc.NewServer(rm.host.Host(), util.EXCHANGE_PROTOCOL)
 	esv := ExchangeService{
 		account: rm.account,
-		call:    rm.handler,
+		emitter: rm.emitter,
 		linkers: rm.linkers,
 		room:    rm.Room,
 	}
@@ -85,7 +86,7 @@ func (rm *RoomManager) Exchange(id peer.ID, peerBuf []byte) error {
 
 	// Update Peer with new data
 	if remotePeer.Active.Status != data.Peer_PAIRING {
-		rm.handler.OnRoomEvent(rm.room.NewJoinEvent(remotePeer))
+		rm.emitter.Emit(emitter.EMIT_ROOM_EVENT, rm.room.NewJoinEvent(remotePeer))
 	} else {
 		// Add Linker if Not Present
 		if !rm.HasLinker(remotePeer.Active.PeerID()) {
@@ -108,7 +109,7 @@ func (es *ExchangeService) ExchangeWith(ctx context.Context, args ExchangeServic
 
 	// Update Peers with Lobby
 	if remotePeer.Active.Status != data.Peer_PAIRING {
-		es.call.OnRoomEvent(es.room().NewJoinEvent(remotePeer))
+		es.emitter.Emit(emitter.EMIT_ROOM_EVENT, es.room().NewJoinEvent(remotePeer))
 	} else {
 		// Add Linker if Not Present
 		if !es.HasLinker(remotePeer.Active.PeerID()) {
@@ -161,8 +162,7 @@ func (rm *RoomManager) handleExchangeEvents(ctx context.Context) {
 				continue
 			}
 		} else if rm.isEventExit(event) {
-			rm.handler.OnRoomEvent(rm.room.NewExitEvent(event.Peer.String()))
-
+			rm.emitter.Emit(emitter.EMIT_ROOM_EVENT, rm.room.NewExitEvent(event.Peer.String()))
 		}
 		data.GetState().NeedsWait()
 	}
@@ -190,7 +190,7 @@ func (rm *RoomManager) handleExchangeMessages(ctx context.Context) {
 
 			// Check Peer is Online, if not ignore
 			if m.Member.Active.GetStatus() == data.Peer_ONLINE {
-				rm.handler.OnRoomEvent(m)
+				rm.emitter.Emit(emitter.EMIT_ROOM_EVENT, m)
 			} else if m.Member.Active.GetStatus() == data.Peer_PAIRING {
 				// Validate Linker not Already Set
 				if !rm.HasLinker(m.Member.Active.PeerID()) {

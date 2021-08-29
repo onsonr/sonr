@@ -10,6 +10,7 @@ import (
 	sync "sync"
 
 	msg "github.com/libp2p/go-msgio"
+	"github.com/sonr-io/core/internal/emitter"
 	util "github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/proto"
 )
@@ -55,26 +56,26 @@ func (p Payload) IsNotTransfer() bool {
 }
 
 // ** ─── SFile_Item MANAGEMENT ────────────────────────────────────────────────────────
-func (i *SFile_Item) NewReader(d *Device, index int, total int, c SessionHandler) ItemReader {
+func (i *SFile_Item) NewReader(d *Device, index int, total int, em *emitter.Emitter) ItemReader {
 	// Return Reader
 	return &itemReader{
-		item:     i,
-		device:   d,
-		size:     0,
-		callback: c,
-		index:    index,
-		total:    total,
+		item:    i,
+		device:  d,
+		size:    0,
+		emitter: em,
+		index:   index,
+		total:   total,
 	}
 }
 
-func (m *SFile_Item) NewWriter(d *Device, index int, total int, sh SessionHandler) ItemWriter {
+func (m *SFile_Item) NewWriter(d *Device, index int, total int, em *emitter.Emitter) ItemWriter {
 	return &itemWriter{
-		item:     m,
-		size:     0,
-		device:   d,
-		callback: sh,
-		index:    index,
-		total:    total,
+		item:    m,
+		size:    0,
+		device:  d,
+		emitter: em,
+		index:   index,
+		total:   total,
 	}
 }
 
@@ -100,13 +101,13 @@ type ItemReader interface {
 }
 type itemReader struct {
 	ItemReader
-	callback SessionHandler
-	mutex    sync.Mutex
-	item     *SFile_Item
-	device   *Device
-	index    int
-	size     int
-	total    int
+	emitter *emitter.Emitter
+	mutex   sync.Mutex
+	item    *SFile_Item
+	device  *Device
+	index   int
+	size    int
+	total   int
 }
 
 // Returns Progress of File, Given the written number of bytes
@@ -159,7 +160,7 @@ func (ir *itemReader) ReadFrom(reader msg.ReadCloser) error {
 			ir.mutex.Unlock()
 
 			if i%10 == 0 {
-				go ir.callback.OnProgress(ir.Progress())
+				go ir.emitter.Emit(emitter.EMIT_PROGRESS_EVENT, ir.Progress())
 			}
 		} else {
 			// Flush File Data
@@ -185,12 +186,12 @@ type ItemWriter interface {
 
 type itemWriter struct {
 	ItemWriter
-	callback SessionHandler
-	item     *SFile_Item
-	device   *Device
-	index    int
-	size     int
-	total    int
+	emitter *emitter.Emitter
+	item    *SFile_Item
+	device  *Device
+	index   int
+	size    int
+	total   int
 }
 
 // Returns Progress of File, Given the written number of bytes
@@ -260,7 +261,7 @@ func (iw *itemWriter) WriteTo(writer msg.WriteCloser) error {
 		}
 
 		if i%10 == 0 {
-			go iw.callback.OnProgress(iw.Progress())
+			go iw.emitter.Emit(emitter.EMIT_PROGRESS_EVENT, iw.Progress())
 		}
 	}
 

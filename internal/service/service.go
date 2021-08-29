@@ -4,20 +4,11 @@ import (
 	"context"
 
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/sonr-io/core/internal/emitter"
 	net "github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/pkg/data"
 	"google.golang.org/protobuf/encoding/protojson"
 )
-
-type ServiceHandler interface {
-	OnConnected(r *data.ConnectionResponse)
-	OnLink(success bool, incoming bool, id peer.ID, resp []byte)
-	OnInvite([]byte)
-	OnReply(id peer.ID, buf []byte)
-	OnConfirmed(inv *data.InviteRequest)
-	OnMail(e *data.MailEvent)
-	OnError(err *data.SonrError)
-}
 
 type ServiceClient interface {
 	HandleLinking(req *data.LinkRequest)
@@ -37,7 +28,7 @@ type serviceClient struct {
 	// Common
 	ctx       context.Context
 	apiKeys   *data.APIKeys
-	handler   ServiceHandler
+	emitter   *emitter.Emitter
 	host      net.HostNode
 	pushToken string
 	request   *data.ConnectionRequest
@@ -50,12 +41,12 @@ type serviceClient struct {
 }
 
 // Creates New Service Interface
-func NewService(ctx context.Context, h net.HostNode, u *data.Device, req *data.ConnectionRequest, sh ServiceHandler) (ServiceClient, *data.SonrError) {
+func NewService(ctx context.Context, h net.HostNode, u *data.Device, req *data.ConnectionRequest, em *emitter.Emitter) (ServiceClient, *data.SonrError) {
 	// Create Client
 	client := &serviceClient{
 		ctx:       ctx,
 		apiKeys:   req.GetApiKeys(),
-		handler:   sh,
+		emitter:   em,
 		host:      h,
 		pushToken: req.GetPushToken(),
 		request:   req,

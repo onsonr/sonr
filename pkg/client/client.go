@@ -4,9 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/libp2p/go-libp2p-core/network"
-	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-core/protocol"
+	"github.com/sonr-io/core/internal/emitter"
 	net "github.com/sonr-io/core/internal/host"
 	room "github.com/sonr-io/core/internal/room"
 	srv "github.com/sonr-io/core/internal/service"
@@ -28,18 +26,6 @@ type Client interface {
 	Update(t *room.RoomManager) *data.SonrError
 	Lifecycle(state data.Lifecycle, t *room.RoomManager)
 
-	// Room Callbacks
-	OnConnected(*data.ConnectionResponse)
-	OnRoomEvent(*data.RoomEvent)
-	OnSyncEvent(*data.SyncEvent)
-	OnError(*data.SonrError)
-	OnInvite([]byte)
-	OnMail(*data.MailEvent)
-	OnReply(peer.ID, []byte)
-	OnResponded(*data.InviteRequest)
-	OnProgress([]byte)
-	OnCompleted(network.Stream, protocol.ID, *data.CompleteEvent)
-
 	// Properties
 	GetHost() net.HostNode
 }
@@ -55,6 +41,7 @@ type client struct {
 	account  ac.Account
 	session  *data.Session
 	request  *data.ConnectionRequest
+	emitter  *emitter.Emitter
 
 	// References
 	Host    net.HostNode
@@ -63,11 +50,14 @@ type client struct {
 
 // NewClient Initializes Node with Router ^
 func NewClient(ctx context.Context, a ac.Account, call data.Callback) Client {
-	return &client{
+	c := &client{
 		ctx:     ctx,
 		call:    call,
 		account: a,
 	}
+
+	c.initEmitter()
+	return c
 }
 
 // Connects Host Node from Private Key
@@ -77,7 +67,7 @@ func (c *client) Connect(cr *data.ConnectionRequest) (*data.Peer, *data.SonrErro
 	c.isLinker = cr.GetIsLinker()
 
 	// Set Host
-	hn, err := net.NewHost(c.ctx, cr, c.account.AccountKeys(), c)
+	hn, err := net.NewHost(c.ctx, cr, c.account.AccountKeys(), c.emitter)
 	if err != nil {
 		return nil, err
 	}
@@ -105,7 +95,7 @@ func (c *client) Bootstrap(cr *data.ConnectionRequest) (*room.RoomManager, *data
 	}
 
 	// Start Services
-	s, err := srv.NewService(c.ctx, c.Host, c.account.CurrentDevice(), c.request, c)
+	s, err := srv.NewService(c.ctx, c.Host, c.account.CurrentDevice(), c.request, c.emitter)
 	if err != nil {
 		return nil, err
 	}
@@ -113,7 +103,7 @@ func (c *client) Bootstrap(cr *data.ConnectionRequest) (*room.RoomManager, *data
 
 	// Join Local
 	RoomName := c.account.CurrentDevice().NewLocalRoom(cr.GetServiceOptions())
-	if t, err := room.JoinRoom(c.ctx, c.Host, c.account, RoomName, c); err != nil {
+	if t, err := room.JoinRoom(c.ctx, c.Host, c.account, RoomName, c.emitter); err != nil {
 		return nil, err
 	} else {
 		// Check if Auto Update Events
@@ -185,7 +175,7 @@ func (c *client) Invite(invite *data.InviteRequest, t *room.RoomManager) *data.S
 
 				// Start New Session
 				invite.SetProtocol(data.SonrProtocol_LocalTransfer, id)
-				c.session = data.NewOutSession(c.account.CurrentDevice(), invite, c)
+				c.session = data.NewOutSession(c.account.CurrentDevice(), invite, c.emitter)
 			}
 
 			// Run Routine
