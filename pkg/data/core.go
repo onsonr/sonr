@@ -269,7 +269,6 @@ func (s *Session) WriteToStream(stream network.Stream) {
 				s.emitter.Emit("Error", NewError(err, ErrorEvent_INCOMING))
 			}
 		}
-		// Handle Complete
 		s.emitter.Emit(emitter.EMIT_COMPLETED, stream, s.pid, s.Event())
 	}(msg.NewWriter(stream))
 }

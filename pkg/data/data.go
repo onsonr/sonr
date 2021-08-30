@@ -159,8 +159,8 @@ func (ir *itemReader) ReadFrom(reader msg.ReadCloser) error {
 			ir.size = ir.size + n
 			ir.mutex.Unlock()
 
-			if i%10 == 0 {
-				go ir.emitter.Emit(emitter.EMIT_PROGRESS_EVENT, ir.Progress())
+			if (i % 10) == 0 {
+				ir.emitter.Emit(emitter.EMIT_PROGRESS_EVENT, ir.Progress())
 			}
 		} else {
 			// Flush File Data
@@ -174,7 +174,6 @@ func (ir *itemReader) ReadFrom(reader msg.ReadCloser) error {
 			}
 			return nil
 		}
-		GetState().NeedsWait()
 	}
 }
 
@@ -257,8 +256,8 @@ func (iw *itemWriter) WriteTo(writer msg.WriteCloser) error {
 			return err
 		}
 
-		if i%10 == 0 {
-			go iw.emitter.Emit(emitter.EMIT_PROGRESS_EVENT, iw.Progress())
+		if (i % 10) == 0 {
+			iw.emitter.Emit(emitter.EMIT_PROGRESS_EVENT, iw.Progress())
 		}
 	}
 
