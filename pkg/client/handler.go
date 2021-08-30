@@ -16,6 +16,7 @@ func (c *client) initEmitter() {
 	c.emitter.On(emitter.EMIT_COMPLETED, c.onCompleted)
 	c.emitter.On(emitter.EMIT_CONFIRMED, c.onConfirmed)
 	c.emitter.Once(emitter.EMIT_CONNECTED, c.onConnected)
+	c.emitter.On(emitter.EMIT_REPLY, c.onReply)
 	c.emitter.On(emitter.EMIT_ERROR, c.onError)
 	c.emitter.On(emitter.EMIT_INVITE, c.onInvite)
 	c.emitter.On(emitter.EMIT_LINK, c.onLink)
