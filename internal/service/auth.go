@@ -96,7 +96,7 @@ func (tm *serviceClient) Invite(id peer.ID, inv *data.InviteRequest) error {
 		data.LogError(err)
 		return err
 	}
-	tm.emitter.Emit(emitter.EMIT_REPLY, reply.InvReply)
+	tm.emitter.Emit(emitter.EMIT_REPLY, id, reply.InvReply)
 	return nil
 }
 
@@ -128,7 +128,6 @@ func (ts *AuthService) InviteWith(ctx context.Context, args AuthServiceArgs, rep
 
 		// Set Message data and call done
 		reply.InvReply = msgBytes
-		ctx.Done()
 		return nil
 	}
 }

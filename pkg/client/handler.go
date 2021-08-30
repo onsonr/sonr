@@ -16,6 +16,7 @@ func (c *client) initEmitter() {
 	c.emitter.On(emitter.EMIT_COMPLETED, c.onCompleted)
 	c.emitter.On(emitter.EMIT_CONFIRMED, c.onConfirmed)
 	c.emitter.Once(emitter.EMIT_CONNECTED, c.onConnected)
+	c.emitter.On(emitter.EMIT_REPLY, c.onReply)
 	c.emitter.On(emitter.EMIT_ERROR, c.onError)
 	c.emitter.On(emitter.EMIT_INVITE, c.onInvite)
 	c.emitter.On(emitter.EMIT_LINK, c.onLink)
@@ -171,7 +172,6 @@ func (n *client) onInvite(e *emitter.Event) {
 	buf := e.Args[0].([]byte)
 
 	// Update Status
-	n.call.SetStatus(data.Status_INVITED)
 	data.LogInfo("Received Invite")
 
 	// Create Request
@@ -224,13 +224,12 @@ func (n *client) onReply(e *emitter.Event) {
 		}
 
 		// Check for File Transfer
-		if resp.HasAcceptedTransfer() {
-			// Update Status
-			n.call.SetStatus(data.Status_TRANSFER)
+		if resp.HasAcceptedTransfer() && n.session != nil {
 			data.LogInfo("Beginning Transfer")
+			pid := data.SonrProtocol_LocalTransfer.NewIDProtocol(id)
 
 			// Create New Auth Stream
-			stream, err := n.Host.StartStream(id, data.SonrProtocol_LocalTransfer.NewIDProtocol(id))
+			stream, err := n.Host.StartStream(id, pid)
 			if err != nil {
 				n.call.OnError(data.NewError(err, data.ErrorEvent_HOST_STREAM))
 				return
@@ -238,11 +237,7 @@ func (n *client) onReply(e *emitter.Event) {
 
 			// Write to Stream on Session
 			n.session.WriteToStream(stream)
-		} else {
-			n.call.SetStatus(data.Status_AVAILABLE)
 		}
-	} else {
-		n.call.SetStatus(data.Status_AVAILABLE)
 	}
 }
 
@@ -282,7 +277,6 @@ func (n *client) onCompleted(e *emitter.Event) {
 
 		// Call Event
 		n.call.OnEvent(buf)
-		n.call.SetStatus(data.Status_AVAILABLE)
 		n.Host.CloseStream(pid, stream)
 	} else if completeEvent.Direction == data.CompleteEvent_OUTGOING {
 		// Convert to Generic
@@ -294,6 +288,5 @@ func (n *client) onCompleted(e *emitter.Event) {
 
 		// Call Event
 		n.call.OnEvent(buf)
-		n.call.SetStatus(data.Status_AVAILABLE)
 	}
 }

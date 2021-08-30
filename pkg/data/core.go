@@ -15,7 +15,6 @@ import (
 // ** ─── CALLBACK MANAGEMENT ────────────────────────────────────────────────────────
 type OnConnected func(r *ConnectionResponse)
 type HTTPHandler func(http.ResponseWriter, *http.Request)
-type SetStatus func(s Status)
 type OnProtobuf func([]byte)
 type OnError func(err *SonrError)
 type Callback struct {
@@ -23,7 +22,6 @@ type Callback struct {
 	OnRequest  OnProtobuf
 	OnResponse OnProtobuf
 	OnError    OnError
-	SetStatus  SetStatus
 }
 
 // ** ─── State MANAGEMENT ────────────────────────────────────────────────────────
@@ -271,7 +269,6 @@ func (s *Session) WriteToStream(stream network.Stream) {
 				s.emitter.Emit("Error", NewError(err, ErrorEvent_INCOMING))
 			}
 		}
-		// Handle Complete
 		s.emitter.Emit(emitter.EMIT_COMPLETED, stream, s.pid, s.Event())
 	}(msg.NewWriter(stream))
 }

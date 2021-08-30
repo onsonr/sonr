@@ -124,17 +124,3 @@ func (n *Node) setAvailable(val bool) {
 	}
 	n.call.OnStatus(res)
 }
-
-// Sets Node to be (Provided) Status
-func (n *Node) setStatus(newStatus data.Status) {
-	// Set Status
-	su := n.account.SetStatus(newStatus)
-
-	// Callback Status
-	res, err := proto.Marshal(su)
-	if err != nil {
-		n.handleError(data.NewError(err, data.ErrorEvent_MARSHAL))
-		return
-	}
-	n.call.OnStatus(res)
-}

@@ -334,7 +334,7 @@ func (r *LinkRequest) IsCancel() bool {
 // ** ─── InviteResponse MANAGEMENT ────────────────────────────────────────────────────────
 // Checks if Peer Accepted Transfer
 func (r *InviteResponse) HasAcceptedTransfer() bool {
-	return r.GetDecision().Accepted() && r.GetPayload().IsTransfer()
+	return r.GetDecision().Accepted()
 }
 
 // Returns Protocol ID Set by Peer
@@ -385,12 +385,9 @@ func (r *InviteRequest) ProtocolID() protocol.ID {
 
 // Set Protocol for Invite and Return ID
 func (i *InviteRequest) SetProtocol(p SonrProtocol, id peer.ID) protocol.ID {
-	// Initialize
-	protocolName := fmt.Sprintf("/sonr/%s/%s", p.Method(), id.String())
-
 	// Set Name and Return ID
-	i.Protocol = protocolName
-	return protocol.ID(protocolName)
+	i.Protocol = string(p.NewIDProtocol(id))
+	return p.NewIDProtocol(id)
 }
 
 // Validates LinkRequest has From Parameter

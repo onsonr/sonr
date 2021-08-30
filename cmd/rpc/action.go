@@ -202,13 +202,6 @@ func (s *NodeServer) Respond(ctx context.Context, req *data.DecisionRequest) (*d
 	// Send Response
 	s.client.Respond(req.ToResponse())
 
-	// Update Status
-	if req.Decision.Accepted() {
-		s.setStatus(data.Status_TRANSFER)
-	} else {
-		s.setStatus(data.Status_AVAILABLE)
-	}
-
 	// Return Blank Response
 	return nil, nil
 }

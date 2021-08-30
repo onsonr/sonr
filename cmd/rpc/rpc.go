@@ -166,12 +166,3 @@ func (s *NodeServer) setAvailable(val bool) {
 	// Callback Status
 	s.statusEvents <- su
 }
-
-// Sets Node to be (Provided) Status
-func (s *NodeServer) setStatus(newStatus data.Status) {
-	// Set Status
-	su := s.account.SetStatus(newStatus)
-
-	// Callback Status
-	s.statusEvents <- su
-}
