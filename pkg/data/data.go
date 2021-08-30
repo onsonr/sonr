@@ -196,12 +196,9 @@ type itemWriter struct {
 
 // Returns Progress of File, Given the written number of bytes
 func (p *itemWriter) Progress() []byte {
-	// Calculate Tracking
-	currentProgress := float32(p.size) / float32(p.item.Size)
-
 	// Create Update
 	update := &ProgressEvent{
-		Progress: float64(currentProgress),
+		Progress: float64(p.size) / float64(p.item.Size),
 		Current:  int32(p.index),
 		Total:    int32(p.total),
 	}

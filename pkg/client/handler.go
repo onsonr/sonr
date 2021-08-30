@@ -223,11 +223,12 @@ func (n *client) onReply(e *emitter.Event) {
 		}
 
 		// Check for File Transfer
-		if resp.HasAcceptedTransfer() {
+		if resp.HasAcceptedTransfer() && n.session != nil {
 			data.LogInfo("Beginning Transfer")
+			pid := data.SonrProtocol_LocalTransfer.NewIDProtocol(id)
 
 			// Create New Auth Stream
-			stream, err := n.Host.StartStream(id, data.SonrProtocol_LocalTransfer.NewIDProtocol(id))
+			stream, err := n.Host.StartStream(id, pid)
 			if err != nil {
 				n.call.OnError(data.NewError(err, data.ErrorEvent_HOST_STREAM))
 				return

@@ -334,7 +334,7 @@ func (r *LinkRequest) IsCancel() bool {
 // ** ─── InviteResponse MANAGEMENT ────────────────────────────────────────────────────────
 // Checks if Peer Accepted Transfer
 func (r *InviteResponse) HasAcceptedTransfer() bool {
-	return r.GetDecision().Accepted() && r.GetPayload().IsTransfer()
+	return r.GetDecision().Accepted()
 }
 
 // Returns Protocol ID Set by Peer
