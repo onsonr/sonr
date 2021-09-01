@@ -28,7 +28,6 @@ type serviceClient struct {
 	apiKeys   *data.APIKeys
 	emitter   *emitter.Emitter
 	host      net.HostNode
-	pushToken string
 	request   *data.ConnectionRequest
 	device    *data.Device
 
@@ -45,7 +44,6 @@ func NewService(ctx context.Context, h net.HostNode, u *data.Device, req *data.C
 		apiKeys:   req.GetApiKeys(),
 		emitter:   em,
 		host:      h,
-		pushToken: req.GetPushToken(),
 		request:   req,
 		device:    u,
 	}

@@ -23,16 +23,15 @@ message Account {
   string sName = 1;      // User's SName
   APIKeys apiKeys = 2;   // App Env Variables for API Keys
   KeyChain keyChain = 3; // Account Keychain
-  string pushToken = 4;  // Push Notification Token
 
   // User's Contact/Member
-  Contact contact = 5; // User's Contact
-  Member member = 6;   // User's Member Reference
+  Contact contact = 4; // User's Contact
+  Member member = 5;   // User's Member Reference
 
   // Device Info
-  Device primary = 7;           // Primary Device
-  Device current = 8;           // Current Device
-  repeated Device devices = 9; // List of Devices
+  Device primary = 6;           // Primary Device
+  Device current = 7;           // Current Device
+  repeated Device devices = 8; // List of Devices
 }
 
 // Information about device for User

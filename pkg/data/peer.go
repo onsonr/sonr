@@ -294,11 +294,3 @@ func (p *Peer) ThreadKey() (thread.PubKey, *SonrError) {
 	threadKey := thread.NewLibp2pPubKey(pubKey)
 	return threadKey, nil
 }
-
-// Returns Peer Push Token
-func (p *Peer) PushToken() (string, *SonrError) {
-	if p.Id.GetPushToken() == "" {
-		return "", NewError(nil, ErrorEvent_PEER_PUSH_TOKEN_EMPTY)
-	}
-	return p.Id.GetPushToken(), nil
-}
