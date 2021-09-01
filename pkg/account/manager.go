@@ -155,7 +155,6 @@ func (al *userLinker) JoinNetwork(h sh.HostNode, cr *data.ConnectionRequest, p *
 
 	// Initialize Account Params
 	al.user.Current.Location = cr.GetLocation()
-	al.user.Current.Status = data.Status_AVAILABLE
 	al.user.PushToken = cr.GetPushToken()
 	al.user.SName = cr.GetContact().GetProfile().GetSName()
 	al.user.Contact = cr.GetContact()

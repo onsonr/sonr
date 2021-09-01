@@ -469,49 +469,56 @@ func (p SonrProtocol) Method() string {
 }
 
 // ** ─── Status MANAGEMENT ────────────────────────────────────────────────────────
+var (
+	defaultStatus = Status_DEFAULT
+	available     = Status_AVAILABLE
+	connected     = Status_CONNECTED
+	failed        = Status_FAILED
+)
+
 // Update Connected Connection Status
 func (u *Device) SetConnected(value bool) *StatusEvent {
 	// Update Status
 	if value {
-		u.Status = Status_CONNECTED
+		u.Status = &available
 	} else {
-		u.Status = Status_FAILED
+		u.Status = &failed
 	}
 
 	// Returns Status Update
-	return &StatusEvent{Value: u.Status}
+	return &StatusEvent{Value: *u.Status}
 }
 
 // Update Bootstrap Connection Status
 func (u *Device) SetAvailable(value bool) *StatusEvent {
 	// Update Status
 	if value {
-		u.Status = Status_AVAILABLE
+		u.Status = &available
 	} else {
-		u.Status = Status_FAILED
+		u.Status = &failed
 	}
 
 	// Returns Status Update
-	return &StatusEvent{Value: u.Status}
+	return &StatusEvent{Value: *u.Status}
 }
 
 // Update Node Status
 func (u *Device) SetStatus(ns Status) *StatusEvent {
 	// Set Value
-	u.Status = ns
+	u.Status = &ns
 
 	// Returns Status Update
-	return &StatusEvent{Value: u.Status}
+	return &StatusEvent{Value: *u.Status}
 }
 
 // Checks if Status is Given Value
 func (u *Device) IsStatus(gs Status) bool {
-	return u.Status == gs
+	return u.Status == &gs
 }
 
 // Checks if Status is Not Given Value
 func (u *Device) IsNotStatus(gs Status) bool {
-	return u.Status != gs
+	return u.Status != &gs
 }
 
 // ** ─── Generic Callback MANAGEMENT ───────────────────────────────────────────

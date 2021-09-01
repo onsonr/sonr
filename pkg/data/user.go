@@ -14,7 +14,7 @@ import (
 // Method Initializes Device
 func (d *Device) Initialize(r *InitializeRequest) (*KeyChain, *SonrError) {
 	// Init FileSystem
-	d.Status = Status_DEFAULT
+	d.Status = &defaultStatus
 	serr := d.GetFileSystem().Initialize()
 	if serr != nil {
 		return nil, serr

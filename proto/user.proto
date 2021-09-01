@@ -9,13 +9,13 @@ option go_package = "/data";
 
 // Client Keys for Services
 message APIKeys {
-  string ipApiKey = 1;        // API Key for the IP Service
-  string rapidApiKey = 2;     // API Key for the Rapid API Service
-  string handshakeKey = 3;    // API Key for the Handshake Service
-  string handshakeSecret = 4; // API Key for the Handshake Service
-  optional string pushKeyPath = 5;     // Path to the push key
-  string textileKey = 6;      // Key for the Textile Service
-  string textileSecret = 7;   // Secret for the Textile Service
+  string ipApiKey = 1;             // API Key for the IP Service
+  string rapidApiKey = 2;          // API Key for the Rapid API Service
+  string handshakeKey = 3;         // API Key for the Handshake Service
+  string handshakeSecret = 4;      // API Key for the Handshake Service
+  optional string pushKeyPath = 5; // Path to the push key
+  string textileKey = 6;           // Key for the Textile Service
+  string textileSecret = 7;        // Secret for the Textile Service
 }
 
 // User Account Info, Saved to Disk as account.snr
@@ -46,21 +46,21 @@ message Account {
 // Information about device for User
 message Device {
   // Management
-  FileSystem fileSystem = 1; // Directories for this Device
-  Platform platform = 2;     // Operating System
-  KeyChain keyChain = 3;     // User Keychain
+  FileSystem fileSystem = 1;      // Directories for this Device
+  Platform platform = 2;          // Operating System
+  optional KeyChain keyChain = 3; // User Keychain
 
   // Identification
-  string id = 4;       // Device ID
-  string label = 5;    // User Defined Label for this Device
-  string hostName = 6; // The hostname of the device.
-  string model = 7;    // Model of Device
+  string id = 4;             // Device ID
+  optional string label = 5; // User Defined Label for this Device
+  string hostName = 6;       // The hostname of the device.
+  optional string model = 7; // Model of Device
 
   // Connection
-  Status status = 8;     // Status of the User Node
-  Location location = 9; // Location of the Device User
-  Peer peer = 10;        // Peer of the Device
-  Contact contact = 11;  // Contact Card of the Device User
+  optional Status status = 8;    // Status of the User Node
+  Location location = 9;         // Location of the Device User
+  optional Peer peer = 10;       // Peer of the Device
+  optional Contact contact = 11; // Contact Card of the Device User
 }
 
 // FileSystem is for Directores Where Data can be stored
