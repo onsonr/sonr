@@ -386,7 +386,10 @@ func (r *InviteRequest) ProtocolID() protocol.ID {
 // Set Protocol for Invite and Return ID
 func (i *InviteRequest) SetProtocol(p SonrProtocol, id peer.ID) protocol.ID {
 	// Set Name and Return ID
-	i.Protocol = string(p.NewIDProtocol(id))
+	if i.Protocol != nil {
+		p := string(p.NewIDProtocol(id))
+		i.Protocol = &p
+	}
 	return p.NewIDProtocol(id)
 }
 
@@ -419,7 +422,7 @@ func (req *InviteRequest) ToPushMessage() *PushMessage {
 	// Initialize Map
 	pushMap := make(map[string]string)
 	pushMap["payload"] = req.Payload.String()
-	pushMap["protocol"] = req.Protocol
+	pushMap["protocol"] = *req.Protocol
 	pushMap["type"] = req.Type.String()
 	pushMap["from"] = req.From.String()
 	pushMap["to"] = req.To.String()

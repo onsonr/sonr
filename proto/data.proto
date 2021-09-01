@@ -7,15 +7,15 @@ option go_package = "/data";
 
 // Contact is Extensive User Info that can be passed
 message Contact {
-  bool isPublic = 1;   // If Contact card is Public
-  Profile profile = 2; // General Profile Information
-  General general = 3; // Base General Contact Fields, Key is Label
-  Design design = 4;   // Card Design Properties
+  optional bool isPublic = 1;   // If Contact card is Public
+  Profile profile = 2;          // General Profile Information
+  optional General general = 3; // Base General Contact Fields, Key is Label
+  optional Design design = 4;   // Card Design Properties
 
   map<string, Address> addresses = 5; // Address Fields, Key is Label
   map<string, Social> socials = 6;    // Social Media Fields, Key is Username
   map<string, URLLink> websites = 7;  // Website Links
-  int32 lastUpdated = 8;              // UnixTime of last Updated
+  optional int32 lastUpdated = 8;     // UnixTime of last Updated
 
   // Address: Field for Contact field
   message Address {

@@ -63,11 +63,11 @@ message AuthResponse {
 
 // First Message Sent with Device and API Keys
 message InitializeRequest {
-  Device device = 1;     // Users Device
-  APIKeys apiKeys = 2;   // Client Keys
-  LogLevel logLevel = 3; // Set Logging Config
-  Options options = 4;   // Reset KeyPair for Migration
-  Client client = 5;     // Client Type
+  Device device = 1;              // Users Device
+  APIKeys apiKeys = 2;            // Client Keys
+  optional LogLevel logLevel = 3; // Set Logging Config
+  optional Options options = 4;   // Reset KeyPair for Migration
+  Client client = 5;              // Client Type
 
   // Client Type
   enum Client {
@@ -87,23 +87,23 @@ message InitializeRequest {
 
   // Keychain/Account Options
   message Options {
-    bool isVerified = 1; // Is Account Verified on Frontend
-    bool isPairing = 2;  // Is Device Pairing Enabled for Linkers
-    bool resetKeys = 3;  // Reset KeyPair for Migration
-    string mnemonic = 4; // Mnemonic for Fingerprint
+    optional bool isVerified = 1; // Is Account Verified on Frontend
+    optional bool isPairing = 2;  // Is Device Pairing Enabled for Linkers
+    optional bool resetKeys = 3;  // Reset KeyPair for Migration
+    optional string mnemonic = 4; // Mnemonic for Fingerprint
   }
 }
 
 // Connection Message to Establish Sonr Host/API/Room
 message ConnectionRequest {
-  APIKeys apiKeys = 1;               // Client Keys
-  Location location = 2;             // Current Runtime Location
-  Contact contact = 3;               // Users Contact Card
-  InternetType type = 4;             // Internet Connection Type
-  HostOptions hostOptions = 5;       // Libp2p Host config
-  ServiceOptions serviceOptions = 6; // Service Config
-  string pushToken = 7;              // Push Notification Token
-  bool isLinker = 8;                 // Is Linker Node and not a Full Peer
+  APIKeys apiKeys = 1;                        // Client Keys
+  Location location = 2;                      // Current Runtime Location
+  Contact contact = 3;                        // Users Contact Card
+  InternetType type = 4;                      // Internet Connection Type
+  optional HostOptions hostOptions = 5;       // Libp2p Host config
+  optional ServiceOptions serviceOptions = 6; // Service Config
+  optional string pushToken = 7;              // Push Notification Token
+  bool isLinker = 8; // Is Linker Node and not a Full Peer
 
   // Internet Connection Type
   enum InternetType {
@@ -115,23 +115,23 @@ message ConnectionRequest {
 
   // Libp2p Host Options
   message HostOptions {
-    bool quicTransport = 1;             // Enable QUIC Transport
-    bool httpTransport = 2;             // Enable HTTP Transport
-    bool webrtcTransport = 3;           // Enable WebRTC Transport
-    bool mdnsDiscovery = 4;             // Enable MDNS Discovery
-    bool ipv4Only = 5;                  // Enable IPv4 Only
-    int32 listenPort = 6;               // Listen Port for Libp2p
-    repeated IPAddress listenAddrs = 7; // List of Listen Addresses (optional)
+    optional bool quicTransport = 1;    // Enable QUIC Transport
+    optional bool httpTransport = 2;    // Enable HTTP Transport
+    optional bool webrtcTransport = 3;  // Enable WebRTC Transport
+    optional bool mdnsDiscovery = 4;    // Enable MDNS Discovery
+    optional bool ipv4Only = 5;         // Enable IPv4 Only
+    optional int32 listenPort = 6;      // Listen Port for Libp2p
+    repeated IPAddress listenAddrs = 7; // List of Listen Addresses
   }
 
   // Service Configuration
   message ServiceOptions {
-    bool textile = 1;    // Enable Textile Client and Threads
-    bool mailbox = 2;    // Enable Mailbox
-    bool buckets = 3;    // Enable Buckets
-    bool push = 4;       // Enable Push Notifications
-    bool autoUpdate = 5; // Enable Auto Update Events
-    int32 olcRange = 6;  // OLC Range Value for Local Room (Default: 6)
+    optional bool textile = 1;    // Enable Textile Client and Threads
+    optional bool mailbox = 2;    // Enable Mailbox
+    optional bool buckets = 3;    // Enable Buckets
+    optional bool push = 4;       // Enable Push Notifications
+    optional bool autoUpdate = 5; // Enable Auto Update Events
+    optional int32 olcRange = 6;  // OLC Range Value for Local Room (Default: 6)
   }
 
   // IP Address Interface
@@ -176,13 +176,13 @@ enum Decision {
 
 // Message for a Response to an Invite Request
 message DecisionRequest {
-  Decision decision = 1; // Value to be Decided
-  Payload payload = 2;   // Type of Transfer
-  Member from = 3;       // Users Peer Data
-  Member to = 4;         // Receivers Peer Data
-  Transfer transfer = 5; // Attached Data
-  Type type = 6;         // Type of Invite
-  string protocol = 7;   // Protocol for Invite
+  Decision decision = 1;    // Value to be Decided
+  Payload payload = 2;      // Type of Transfer
+  optional Member from = 3; // Users Peer Data
+  Member to = 4;            // Receivers Peer Data
+  Transfer transfer = 5;    // Attached Data
+  Type type = 6;            // Type of Invite
+  string protocol = 7;      // Protocol for Invite
 
   enum Type {
     NONE = 0;   // No Type
@@ -254,13 +254,12 @@ message LinkResponse {
 
 // Invitation Message sent on RPC
 message InviteRequest {
-  Payload payload = 1;   // Type of Transfer
-  Member from = 2;       // Users Member Data
-  Member to = 3;         // Receivers Member Data
-  Transfer transfer = 4; // Attached Data
-  Type type = 5;         // Type of Invite
-  string protocol = 6;   // Protocol for Invite
-  string shortID = 7;    // Short ID - Calculated with Device ID for Linking
+  Payload payload = 1;          // Type of Transfer
+  optional Member from = 2;     // Users Member Data
+  Member to = 3;                // Receivers Member Data
+  Transfer transfer = 4;        // Attached Data
+  Type type = 5;                // Type of Invite
+  optional string protocol = 6; // Protocol for Invite
 
   enum Type {
     NONE = 0;   // No Type

@@ -13,7 +13,7 @@ message APIKeys {
   string rapidApiKey = 2;     // API Key for the Rapid API Service
   string handshakeKey = 3;    // API Key for the Handshake Service
   string handshakeSecret = 4; // API Key for the Handshake Service
-  string pushKeyPath = 5;     // Path to the push key
+  optional string pushKeyPath = 5;     // Path to the push key
   string textileKey = 6;      // Key for the Textile Service
   string textileSecret = 7;   // Secret for the Textile Service
 }
