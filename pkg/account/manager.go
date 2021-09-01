@@ -95,7 +95,6 @@ func OpenAccount(ir *data.InitializeRequest, d *data.Device) (Account, *data.Son
 	if d.GetFileSystem().GetSupport().IsFile(util.ACCOUNT_FILE) {
 		linker, err := loadLinker(ir, d, keychain)
 		if err != nil {
-			data.LogError(err.Error)
 			data.LogInfo("Failed to load account, creating new one...")
 			linker, err := newLinker(ir, d, keychain)
 			if err != nil {
