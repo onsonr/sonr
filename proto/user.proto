@@ -20,27 +20,19 @@ message APIKeys {
 
 // User Account Info, Saved to Disk as account.snr
 message Account {
-  State state = 1;       // User's current state
-  string sName = 2;      // User's SName
-  APIKeys apiKeys = 3;   // App Env Variables for API Keys
-  KeyChain keyChain = 4; // Account Keychain
-  string pushToken = 5;  // Push Notification Token
+  string sName = 1;      // User's SName
+  APIKeys apiKeys = 2;   // App Env Variables for API Keys
+  KeyChain keyChain = 3; // Account Keychain
+  string pushToken = 4;  // Push Notification Token
 
   // User's Contact/Member
-  Contact contact = 6; // User's Contact
-  Member member = 7;   // User's Member Reference
+  Contact contact = 5; // User's Contact
+  Member member = 6;   // User's Member Reference
 
   // Device Info
-  Device primary = 8;           // Primary Device
-  Device current = 9;           // Current Device
-  repeated Device devices = 10; // List of Devices
-
-  // State of users account
-  enum State {
-    UNVERIFIED = 0; // User is unverified - Setup Default node
-    VERIFIED = 1;   // User has verified their account
-    BLOCKED = 2;    // User is blocked from Sonr Network
-  }
+  Device primary = 7;           // Primary Device
+  Device current = 8;           // Current Device
+  repeated Device devices = 9; // List of Devices
 }
 
 // Information about device for User

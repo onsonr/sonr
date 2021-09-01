@@ -112,7 +112,6 @@ func OpenAccount(ir *data.InitializeRequest, d *data.Device) (Account, *data.Son
 		loadedAccount.KeyChain = keychain
 		loadedAccount.Current = d
 		loadedAccount.ApiKeys = ir.GetApiKeys()
-		loadedAccount.State = ir.UserState()
 
 		// Create Account Linker
 		linker := &userLinker{
@@ -126,7 +125,6 @@ func OpenAccount(ir *data.InitializeRequest, d *data.Device) (Account, *data.Son
 			KeyChain: keychain,
 			Current:  d,
 			ApiKeys:  ir.GetApiKeys(),
-			State:    ir.UserState(),
 			Devices:  make([]*data.Device, 0),
 			Member: &data.Member{
 				Reach:      data.Member_ONLINE,
