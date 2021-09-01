@@ -102,8 +102,7 @@ message ConnectionRequest {
   InternetType type = 4;                      // Internet Connection Type
   optional HostOptions hostOptions = 5;       // Libp2p Host config
   optional ServiceOptions serviceOptions = 6; // Service Config
-  optional string pushToken = 7;              // Push Notification Token
-  bool isLinker = 8; // Is Linker Node and not a Full Peer
+  bool isLinker = 7; // Is Linker Node and not a Full Peer
 
   // Internet Connection Type
   enum InternetType {

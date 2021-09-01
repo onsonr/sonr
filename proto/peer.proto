@@ -141,7 +141,6 @@ message Peer {
     string device = 2;    // Device ID
     string multiAddr = 3; // Peer MultiAddr
     string publicKey = 4; // Public Key of Peer
-    string pushToken = 5; // Push Notification token
   }
 
   // Peers Active Status
