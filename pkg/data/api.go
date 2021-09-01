@@ -399,17 +399,7 @@ func (u *Device) SignLink(i *LinkRequest) *LinkRequest {
 	if i.From == nil {
 		i.From = u.GetPeer()
 	}
-
-	// Set Type
-	if i.Type == LinkRequest_NONE {
-		if u.IsLinker() {
-			i.Type = LinkRequest_RECEIVE
-
-		} else {
-			i.Type = LinkRequest_SEND
-		}
-	}
-
+	
 	// Set Contact
 	if i.Contact == nil {
 		i.Contact = u.GetContact()
