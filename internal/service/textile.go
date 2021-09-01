@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
-	"strconv"
 	"time"
 
 	"github.com/sonr-io/core/internal/emitter"
@@ -33,12 +32,11 @@ type TextileService struct {
 	ctxToken context.Context
 
 	// Parameters
-	apiKeys     *data.APIKeys
-	device      *data.Device
-	host        host.HostNode
-	options     *data.ConnectionRequest_ServiceOptions
-	emitter     *emitter.Emitter
-	pushService *PushService
+	apiKeys *data.APIKeys
+	device  *data.Device
+	host    host.HostNode
+	options *data.ConnectionRequest_ServiceOptions
+	emitter *emitter.Emitter
 
 	// Properties
 	client  *client.Client
@@ -53,12 +51,11 @@ func (sc *serviceClient) StartTextile() *data.SonrError {
 
 	// Initialize
 	textile := &TextileService{
-		options:     sc.request.GetServiceOptions(),
-		apiKeys:     sc.apiKeys,
-		host:        sc.host,
-		device:      sc.device,
-		emitter:     sc.emitter,
-		pushService: sc.Push,
+		options: sc.request.GetServiceOptions(),
+		apiKeys: sc.apiKeys,
+		host:    sc.host,
+		device:  sc.device,
+		emitter: sc.emitter,
 	}
 	sc.Textile = textile
 
@@ -254,20 +251,6 @@ func (ts *TextileService) onNewMessage(e local.MailboxEvent, state cmd.Connectio
 		}
 		// Callback Mail Event
 		ts.emitter.Emit(emitter.EMIT_MAIL_EVENT, mail)
-	} else {
-		// Create Mail Event
-		msg := &data.PushMessage{
-			Data: map[string]string{
-				"From":      inbox[0].From.String(),
-				"To":        inbox[0].To.String(),
-				"CreatedAt": strconv.Itoa(int(inbox[0].CreatedAt.Unix())),
-				"ReadAt":    strconv.Itoa(int(inbox[0].ReadAt.Unix())),
-				"Invite":    invite.String(),
-			},
-		}
-
-		// Send Push Notification
-		ts.pushService.pushSelf(msg)
 	}
 
 }

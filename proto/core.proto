@@ -1,7 +1,5 @@
 syntax = "proto3";
 package data;
-
-import "peer.proto";
 import "user.proto";
 
 // Require Go Package
@@ -23,11 +21,6 @@ enum SonrProtocol {
   LocalTransfer = 4;  // Protocol for Local Transfer to Peer
   RemoteTransfer = 5; // Protocol for Remote Transfer to Peer
   Groups = 6;         // Protocol for Group Chat
-}
-
-message PushMessage {
-  Member member = 1;            // Peer to send to
-  map<string, string> data = 2; // Data to send
 }
 
 message LinkPacket {
