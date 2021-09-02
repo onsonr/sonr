@@ -49,8 +49,6 @@ jobs:
       # 4. Bind Android Framework to Plugin
       - name: Setup and Bind AAR
         run: |
-          cd ${{ github.workspace }} && go mod tidy
-          go get golang.org/x/mobile
           gomobile init
           cd ${{ github.workspace }}/cmd/bind
           gomobile bind -ldflags='-s -w' -v -target=android -o ${{ github.workspace }}/build/io.sonr.core.aar
@@ -105,8 +103,6 @@ jobs:
       # 4. Bind iOS Framework to Plugin
       - name: Setup and Bind
         run: |
-          cd ${{ github.workspace }} && go mod tidy
-          go get golang.org/x/mobile
           gomobile init
           cd ${{ github.workspace }}/cmd/bind
           gomobile bind -ldflags='-s -w' -v -target=ios -bundleid=io.sonr.core -o ${{ github.workspace }}/build/Core.framework
