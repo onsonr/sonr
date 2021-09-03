@@ -30,18 +30,13 @@ jobs:
         uses: ibrt/golang-github-action@v1
         with:
           go-version: 1.17
-          go-packages: |
-            golang.org/x/mobile
-            golang.org/x/mobile/bind
-            golang.org/x/mobile/cmd/gomobile
-            golang.org/x/mobile/cmd/gobind
 
       - run: mkdir -p ${{ github.workspace }}/build
 
       # 4. Bind Android Framework to Plugin
       - name: Setup and Bind AAR
         run: |
-          go get golang.org/x/mobile
+          go install golang.org/x/mobile/cmd/gomobile@latest
           gomobile init
           cd ${{ github.workspace }}/cmd/bind
           gomobile bind -ldflags='-s -w' -v -target=android -o ${{ github.workspace }}/build/io.sonr.core.aar
@@ -77,18 +72,13 @@ jobs:
         uses: ibrt/golang-github-action@v1
         with:
           go-version: 1.17
-          go-packages: |
-            golang.org/x/mobile
-            golang.org/x/mobile/bind
-            golang.org/x/mobile/cmd/gomobile
-            golang.org/x/mobile/cmd/gobind
 
       - run: mkdir -p ${{ github.workspace }}/build
 
       # 4. Bind iOS Framework to Plugin
       - name: Setup and Bind
         run: |
-          go get golang.org/x/mobile
+          go install golang.org/x/mobile/cmd/gomobile@latest
           gomobile init
           cd ${{ github.workspace }}/cmd/bind
           gomobile bind -ldflags='-s -w' -v -target=ios -bundleid=io.sonr.core -o ${{ github.workspace }}/build/Core.framework
