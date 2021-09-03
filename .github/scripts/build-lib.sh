@@ -7,6 +7,8 @@ echo "Setting up Project"
 PROJECT_DIR=$(pwd)
 CORE_BIND_DIR=${PROJECT_DIR}/cmd/bind
 CORE_RPC_DIR=${PROJECT_DIR}/cmd/rpc
+go mod download golang.org/x/mobile
+go mod download golang.org/x/mobile/cmd/gobind
 mkdir -p ${PROJECT_DIR}/build
 
 echo "Building Daemon"
