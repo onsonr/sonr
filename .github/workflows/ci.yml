@@ -29,7 +29,7 @@ jobs:
       - name: Setup Go Env
         uses: ibrt/golang-github-action@v1
         with:
-          go-version: 1.16.6
+          go-version: 1.17
           go-packages: |
             golang.org/x/mobile/cmd/gomobile
             golang.org/x/mobile/cmd/gobind
@@ -50,8 +50,6 @@ jobs:
       # 4. Bind Android Framework to Plugin
       - name: Setup and Bind AAR
         run: |
-          go mod download golang.org/x/mobile
-          go mod download golang.org/x/mobile/cmd/gobind
           cd ${{ github.workspace }}/cmd/bind
           gomobile init
           gomobile bind -ldflags='-s -w' -v -target=android -o ${{ github.workspace }}/build/io.sonr.core.aar
@@ -86,7 +84,7 @@ jobs:
       - name: Setup Go Environment
         uses: ibrt/golang-github-action@v1
         with:
-          go-version: 1.16.6
+          go-version: 1.17
           go-packages: |
             golang.org/x/mobile/cmd/gomobile
             golang.org/x/mobile/cmd/gobind
@@ -107,11 +105,8 @@ jobs:
       # 4. Bind iOS Framework to Plugin
       - name: Setup and Bind
         run: |
-          go mod download golang.org/x/mobile
-          go mod download golang.org/x/mobile/cmd/gobind
-          gomobile init
           cd ${{ github.workspace }}/cmd/bind
-
+          gomobile init
           gomobile bind -ldflags='-s -w' -v -target=ios -bundleid=io.sonr.core -o ${{ github.workspace }}/build/Core.framework
 
       # 5. Upload Framework
