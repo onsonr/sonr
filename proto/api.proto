@@ -87,10 +87,11 @@ message InitializeRequest {
 
   // Keychain/Account Options
   message Options {
-    optional bool isVerified = 1; // Is Account Verified on Frontend
-    optional bool isPairing = 2;  // Is Device Pairing Enabled for Linkers
-    optional bool resetKeys = 3;  // Reset KeyPair for Migration
-    optional string mnemonic = 4; // Mnemonic for Fingerprint
+    optional bool isVerified = 1;    // Is Account Verified on Frontend
+    optional bool isPairing = 2;     // Is Device Pairing Enabled for Linkers
+    optional bool resetKeys = 3;     // Reset KeyPair for Migration
+    optional string mnemonic = 4;    // Mnemonic for Fingerprint
+    optional bool enableLogging = 5; // Enable Logging
   }
 }
 

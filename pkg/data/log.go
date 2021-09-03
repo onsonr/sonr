@@ -40,7 +40,7 @@ func checkLogger() {
 
 // Initializes Pretty Logger
 func InitLogger(req *InitializeRequest) {
-	checkLogger()
+	loggerEnabled = req.GetOptions().GetEnableLogging()
 	// Configure Logger from Enabled
 	if loggerEnabled {
 		log.DefaultLogger = log.Logger{
