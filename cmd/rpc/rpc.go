@@ -111,7 +111,6 @@ func (s *NodeServer) Initialize(ctx context.Context, req *data.InitializeRequest
 
 	// Create Client
 	s.client = client.NewClient(s.ctx, s.account, s.callback())
-	s.verifyResponses <- s.account.VerifyRead()
 
 	// Return Blank Response
 	return &data.NoResponse{}, nil

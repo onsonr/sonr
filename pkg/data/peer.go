@@ -100,72 +100,44 @@ func (u *User) ActivePeer() *Peer {
 
 // Set Primary Peer for Member. Returns Peer Ref and if Primary Peer
 func (d *Device) SetPeer(id peer.ID, maddr multiaddr.Multiaddr, isLinker bool) (*Peer, bool) {
-	// Set Status
-	if isLinker {
-		peer := &Peer{
-			Id: &Peer_ID{
-				Peer:      id.String(),
-				Device:    d.Id,
-				MultiAddr: maddr.String(),
-				PublicKey: d.AccountKeys().PubKeyBase64(),
-			},
-			Platform: d.Platform,
-			Model:    d.GetModel(),
-			HostName: d.GetHostName(),
-			Status:   Peer_PAIRING,
-		}
-
-		// Set Primary
-		d.Peer = peer
-		return peer, d.HasDeviceKeys()
-
-	} else {
-		peer := &Peer{
-			Id: &Peer_ID{
-				Peer:      id.String(),
-				Device:    d.Id,
-				MultiAddr: maddr.String(),
-				PublicKey: d.AccountKeys().PubKeyBase64(),
-			},
-			Platform: d.Platform,
-			Model:    d.GetModel(),
-			HostName: d.GetHostName(),
-			Status:   Peer_ONLINE,
-		}
-
-		// Set Primary
-		d.Peer = peer
-		return peer, d.HasDeviceKeys()
+	peer := &Peer{
+		Id: &Peer_ID{
+			Peer:      id.String(),
+			Device:    d.Id,
+			MultiAddr: maddr.String(),
+			PublicKey: d.AccountKeys().PubKeyBase64(),
+		},
+		Platform: d.Platform,
+		Model:    d.GetModel(),
+		HostName: d.GetHostName(),
+		Status:   Peer_ONLINE,
 	}
+
+	// Set Primary
+	d.Peer = peer
+	return peer, d.HasDeviceKeys()
 }
 
 // ** ─── Peer MANAGEMENT ────────────────────────────────────────────────────────
 
-// Checks if User Peer is a Linker
-func (u *Device) IsLinker() bool {
-	return u.GetPeer().Status == Peer_PAIRING
-}
-
 // Verify if Passed ShortID is Correct
 func (u *Device) VerifyLink(req *LinkRequest) (bool, *LinkResponse) {
-	// Check if Peer is Linker
-	if u.IsLinker() {
-		// Verify Strings
-		success := req.GetShortID() == u.ShortID()
-		if success {
-			return true, &LinkResponse{
-				Type:    LinkResponse_Type(req.Type),
-				To:      req.GetTo(),
-				From:    req.GetFrom(),
-				Device:  u,
-				Contact: req.GetContact(),
-			}
+	// Verify Strings
+	success := req.GetShortID() == u.ShortID()
+	if success {
+		return true, &LinkResponse{
+			Type:    LinkResponse_Type(req.Type),
+			To:      req.GetFrom(),
+			From:    req.GetTo(),
+			Device:  u,
+			Contact: req.GetContact(),
 		}
-	}
-
-	// Return Response
-	return false, &LinkResponse{
-		Success: false,
+	} else {
+		return false, &LinkResponse{
+			From: req.GetTo(),
+			To:   req.GetFrom(),
+			Type: LinkResponse_CANCEL,
+		}
 	}
 }
 
@@ -321,12 +293,4 @@ func (p *Peer) ThreadKey() (thread.PubKey, *SonrError) {
 	// Create Thread Pub Key
 	threadKey := thread.NewLibp2pPubKey(pubKey)
 	return threadKey, nil
-}
-
-// Returns Peer Push Token
-func (p *Peer) PushToken() (string, *SonrError) {
-	if p.Id.GetPushToken() == "" {
-		return "", NewError(nil, ErrorEvent_PEER_PUSH_TOKEN_EMPTY)
-	}
-	return p.Id.GetPushToken(), nil
 }

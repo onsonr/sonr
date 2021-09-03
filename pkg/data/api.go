@@ -400,38 +400,11 @@ func (u *Device) SignLink(i *LinkRequest) *LinkRequest {
 		i.From = u.GetPeer()
 	}
 
-	// Set Type
-	if i.Type == LinkRequest_NONE {
-		if u.IsLinker() {
-			i.Type = LinkRequest_RECEIVE
-
-		} else {
-			i.Type = LinkRequest_SEND
-		}
-	}
-
 	// Set Contact
 	if i.Contact == nil {
 		i.Contact = u.GetContact()
 	}
 	return i
-}
-
-// Convert Invite Request to Push Message
-func (req *InviteRequest) ToPushMessage() *PushMessage {
-	// Initialize Map
-	pushMap := make(map[string]string)
-	pushMap["payload"] = req.Payload.String()
-	pushMap["protocol"] = *req.Protocol
-	pushMap["type"] = req.Type.String()
-	pushMap["from"] = req.From.String()
-	pushMap["to"] = req.To.String()
-
-	// Return Push Map
-	return &PushMessage{
-		Member: req.GetTo(),
-		Data:   pushMap,
-	}
 }
 
 // ** ─── Location MANAGEMENT ────────────────────────────────────────────────────────

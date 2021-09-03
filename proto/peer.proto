@@ -106,12 +106,11 @@ message Location {
 
 // Holistic Info with all Peer Data
 message Member {
-  string sName = 1;     // Member Sonr Domain
-  string pushToken = 2; // Member Push Token
-  Reach reach = 3;      // Member Reach
-  Peer active = 4; // Defaults to Primary Device if Online, otherwise uses the
-                   // most recent active device.
-  repeated Peer associated = 5; // If Primary Device is Online, additional
+  string sName = 1; // Member Sonr Domain
+  Reach reach = 2;  // Member Reach
+  Peer active = 3;  // Defaults to Primary Device if Online, otherwise uses the
+                    // most recent active device.
+  repeated Peer associated = 4; // If Primary Device is Online, additional
                                 // devices will be grouped here.
 
   // Status of Member
@@ -141,7 +140,6 @@ message Peer {
     string device = 2;    // Device ID
     string multiAddr = 3; // Peer MultiAddr
     string publicKey = 4; // Public Key of Peer
-    string pushToken = 5; // Push Notification token
   }
 
   // Peers Active Status

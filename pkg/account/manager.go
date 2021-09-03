@@ -93,55 +93,22 @@ func OpenAccount(ir *data.InitializeRequest, d *data.Device) (Account, *data.Son
 
 	// Check for existing account
 	if d.GetFileSystem().GetSupport().IsFile(util.ACCOUNT_FILE) {
-		// Load Account
-		buf, err := d.GetFileSystem().GetSupport().ReadFile(util.ACCOUNT_FILE)
+		linker, err := loadLinker(ir, d, keychain)
 		if err != nil {
-			return nil, err
-		}
-
-		// Unmarshal Account
-		loadedAccount := &data.User{}
-		serr := proto.Unmarshal(buf, loadedAccount)
-		if serr != nil {
-			return nil, data.NewError(serr, data.ErrorEvent_ACCOUNT_LOAD)
-		}
-
-		data.LogInfo(fmt.Sprintf("LoadedAccount: %s", loadedAccount.String()))
-
-		// Set Account
-		loadedAccount.KeyChain = keychain
-		loadedAccount.Current = d
-		loadedAccount.ApiKeys = ir.GetApiKeys()
-		loadedAccount.State = ir.UserState()
-
-		// Create Account Linker
-		linker := &userLinker{
-			user: loadedAccount,
-			room: loadedAccount.NewDeviceRoom(),
+			data.LogInfo("Failed to load account, creating new one...")
+			linker, err := newLinker(ir, d, keychain)
+			if err != nil {
+				data.LogError(err.Error)
+				return nil, err
+			}
+			return linker, nil
 		}
 		return linker, nil
 	} else {
-		// Return User
-		u := &data.User{
-			KeyChain: keychain,
-			Current:  d,
-			ApiKeys:  ir.GetApiKeys(),
-			State:    ir.UserState(),
-			Devices:  make([]*data.Device, 0),
-			Member: &data.Member{
-				Reach:      data.Member_ONLINE,
-				Associated: make([]*data.Peer, 0),
-			},
-		}
-
-		// Create Account Linker
-		linker := &userLinker{
-			user: u,
-			room: u.NewDeviceRoom(),
-		}
-		err := linker.Save()
+		linker, err := newLinker(ir, d, keychain)
 		if err != nil {
-			return nil, data.NewError(err, data.ErrorEvent_ACCOUNT_SAVE)
+			data.LogError(err.Error)
+			return nil, err
 		}
 		return linker, nil
 	}
@@ -155,7 +122,6 @@ func (al *userLinker) JoinNetwork(h sh.HostNode, cr *data.ConnectionRequest, p *
 
 	// Initialize Account Params
 	al.user.Current.Location = cr.GetLocation()
-	al.user.PushToken = cr.GetPushToken()
 	al.user.SName = cr.GetContact().GetProfile().GetSName()
 	al.user.Contact = cr.GetContact()
 
