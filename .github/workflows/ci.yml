@@ -27,14 +27,26 @@ jobs:
 
       # 2. Setup Go environment
       - name: Setup Go Env
-        uses: ibrt/golang-github-action@v1
+        uses: actions/setup-go@v2
         with:
           go-version: 1.17
-          go-packages: |
-            golang.org/x/mobile/cmd/gomobile@latest
-            golang.org/x/mobile/cmd/gobind@latest
 
-      - run: mkdir -p ${{ github.workspace }}/build
+      # 3. Cache Go Modules
+      - name: Cache Dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            $MOD_CACHE
+            $BUILD_CACHE
+          key: ${{ runner.os }}-go-1_17-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-1_17-
+
+      - name: Install dependencies
+      - run: |
+          go install golang.org/x/mobile/cmd/gobind@latest
+          go install golang.org/x/mobile/cmd/gomobile@latest
+          mkdir -p ${{ github.workspace }}/build
 
       # 4. Bind Android Framework to Plugin
       - name: Setup and Bind AAR
@@ -69,13 +81,28 @@ jobs:
         with:
           fetch-depth: 0
 
-      # 2. Setup Go Enviornment
-      - name: Setup Go Environment
-        uses: ibrt/golang-github-action@v1
+      # 2. Setup Go environment
+      - name: Setup Go Env
+        uses: actions/setup-go@v2
         with:
           go-version: 1.17
 
-      - run: mkdir -p ${{ github.workspace }}/build
+      # 3. Cache Go Modules
+      - name: Cache Dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            $MOD_CACHE
+            $BUILD_CACHE
+          key: ${{ runner.os }}-go-1_17-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-1_17-
+
+      - name: Install dependencies
+      - run: |
+          go install golang.org/x/mobile/cmd/gobind@latest
+          go install golang.org/x/mobile/cmd/gomobile@latest
+          mkdir -p ${{ github.workspace }}/build
 
       # 4. Bind iOS Framework to Plugin
       - name: Setup and Bind
@@ -109,10 +136,9 @@ jobs:
           fetch-depth: 0
 
       # 2. Setup Go Enviornment
-      - name: Setup Go Environment
-        uses: ibrt/golang-github-action@v1
+      - uses: actions/setup-go@v2
         with:
-          go-version: 1.16.6
+          go-version: 1.17
 
       # 3. Cache Go Modules
       - name: Cache Dependencies
@@ -121,9 +147,9 @@ jobs:
           path: |
             $MOD_CACHE
             $BUILD_CACHE
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          key: ${{ runner.os }}-go-1_17-${{ hashFiles('**/go.sum') }}
           restore-keys: |
-            ${{ runner.os }}-go-
+            ${{ runner.os }}-go-1_17-
 
       # 4. Build Daemon
       - name: Release Daemons 🎉
