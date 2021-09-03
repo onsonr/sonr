@@ -43,7 +43,7 @@ jobs:
             ${{ runner.os }}-go-1_17-
 
       - name: Install dependencies
-      - run: |
+        run: |
           go install golang.org/x/mobile/cmd/gobind@latest
           go install golang.org/x/mobile/cmd/gomobile@latest
           mkdir -p ${{ github.workspace }}/build
@@ -99,7 +99,7 @@ jobs:
             ${{ runner.os }}-go-1_17-
 
       - name: Install dependencies
-      - run: |
+        run: |
           go install golang.org/x/mobile/cmd/gobind@latest
           go install golang.org/x/mobile/cmd/gomobile@latest
           mkdir -p ${{ github.workspace }}/build
