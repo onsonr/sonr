@@ -230,4 +230,3 @@ jobs:
           repository: sonr-io/plugin
           event-type: update-plugin
           client-payload: '{"version":"${{ steps.get_version.outputs.version-without-v }}"}'
-
