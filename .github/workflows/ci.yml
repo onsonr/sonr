@@ -31,8 +31,8 @@ jobs:
         with:
           go-version: 1.17
           go-packages: |
-            golang.org/x/mobile/cmd/gomobile
-            golang.org/x/mobile/cmd/gobind
+            golang.org/x/mobile
+            golang.org/x/mobile/bind
 
       - run: mkdir -p ${{ github.workspace }}/build
 
@@ -50,8 +50,9 @@ jobs:
       # 4. Bind Android Framework to Plugin
       - name: Setup and Bind AAR
         run: |
-          cd ${{ github.workspace }}/cmd/bind
+          go get golang.org/x/mobile
           gomobile init
+          cd ${{ github.workspace }}/cmd/bind
           gomobile bind -ldflags='-s -w' -v -target=android -o ${{ github.workspace }}/build/io.sonr.core.aar
 
       # 5. Upload AAR
@@ -86,8 +87,8 @@ jobs:
         with:
           go-version: 1.17
           go-packages: |
-            golang.org/x/mobile/cmd/gomobile
-            golang.org/x/mobile/cmd/gobind
+            golang.org/x/mobile
+            golang.org/x/mobile/bind
 
       - run: mkdir -p ${{ github.workspace }}/build
 
@@ -105,8 +106,9 @@ jobs:
       # 4. Bind iOS Framework to Plugin
       - name: Setup and Bind
         run: |
-          cd ${{ github.workspace }}/cmd/bind
+          go get golang.org/x/mobile
           gomobile init
+          cd ${{ github.workspace }}/cmd/bind
           gomobile bind -ldflags='-s -w' -v -target=ios -bundleid=io.sonr.core -o ${{ github.workspace }}/build/Core.framework
 
       # 5. Upload Framework
@@ -165,7 +167,7 @@ jobs:
       - id: get_version
         uses: battila7/get-version-action@v2
 
-      # 5. Dispatch Electron
+      # 6. Dispatch Electron
       - name: Call Dispatch for Electron ⚡️
         uses: peter-evans/repository-dispatch@v1
         with:
