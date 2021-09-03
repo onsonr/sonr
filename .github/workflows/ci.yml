@@ -31,14 +31,20 @@ jobs:
         with:
           go-version: 1.17
 
+      # 3. Cache Go Modules
+      - name: Cache Dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            $MOD_CACHE
+            $BUILD_CACHE
+          key: ${{ runner.os }}-go-1_17-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-1_17-
+
       # 4. Bind Android Framework to Plugin
       - name: Setup and Bind AAR
-        run: |
-          mkdir -p ${{ github.workspace }}/build
-          go install golang.org/x/mobile/cmd/gomobile@latest
-          gomobile init
-          cd ${{ github.workspace }}/cmd/bind
-          gomobile bind -ldflags='-s -w' -v -target=android -o ${{ github.workspace }}/build/io.sonr.core.aar
+        run: ${{ github.workspace }}/.github/scripts/bind-android.sh
 
       # 5. Upload AAR
       - name: Upload AAR to GitHub
@@ -72,14 +78,20 @@ jobs:
         with:
           go-version: 1.17
 
+      # 3. Cache Go Modules
+      - name: Cache Dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            $MOD_CACHE
+            $BUILD_CACHE
+          key: ${{ runner.os }}-go-1_17-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-1_17-
+
       # 4. Bind iOS Framework to Plugin
       - name: Setup and Bind
-        run: |
-          mkdir -p ${{ github.workspace }}/build
-          go install golang.org/x/mobile/cmd/gomobile@latest
-          gomobile init
-          cd ${{ github.workspace }}/cmd/bind
-          gomobile bind -ldflags='-s -w' -v -target=ios -bundleid=io.sonr.core -o ${{ github.workspace }}/build/Core.framework
+        run: ${{ github.workspace }}/.github/scripts/bind-ios.sh
 
       # 5. Upload Framework
       - name: Upload Framework to GitHub
