@@ -33,19 +33,10 @@ jobs:
           go-packages: |
             golang.org/x/mobile
             golang.org/x/mobile/bind
+            golang.org/x/mobile/cmd/gomobile
+            golang.org/x/mobile/cmd/gobind
 
       - run: mkdir -p ${{ github.workspace }}/build
-
-      # 3. Cache Go Modules
-      - name: Cache Dependencies
-        uses: actions/cache@v2
-        with:
-          path: |
-            $MOD_CACHE
-            $BUILD_CACHE
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
 
       # 4. Bind Android Framework to Plugin
       - name: Setup and Bind AAR
@@ -89,19 +80,10 @@ jobs:
           go-packages: |
             golang.org/x/mobile
             golang.org/x/mobile/bind
+            golang.org/x/mobile/cmd/gomobile
+            golang.org/x/mobile/cmd/gobind
 
       - run: mkdir -p ${{ github.workspace }}/build
-
-      # 3. Cache Go Modules
-      - name: Cache Dependencies
-        uses: actions/cache@v2
-        with:
-          path: |
-            $MOD_CACHE
-            $BUILD_CACHE
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
 
       # 4. Bind iOS Framework to Plugin
       - name: Setup and Bind
