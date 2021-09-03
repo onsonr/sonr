@@ -32,6 +32,7 @@ jobs:
           go-version: 1.16.6
           go-packages: |
             golang.org/x/mobile/cmd/gomobile
+            golang.org/x/mobile/cmd/gobind
 
       - run: mkdir -p ${{ github.workspace }}/build
 
@@ -86,6 +87,7 @@ jobs:
           go-version: 1.16.6
           go-packages: |
             golang.org/x/mobile/cmd/gomobile
+            golang.org/x/mobile/cmd/gobind
 
       - run: mkdir -p ${{ github.workspace }}/build
 
