@@ -3,10 +3,12 @@ package bind
 import (
 	"context"
 
+	"github.com/sonr-io/core/internal/logger"
 	"github.com/sonr-io/core/internal/room"
 	ac "github.com/sonr-io/core/pkg/account"
 	sc "github.com/sonr-io/core/pkg/client"
 	"github.com/sonr-io/core/pkg/data"
+	"go.uber.org/zap"
 
 	"google.golang.org/protobuf/proto"
 )
@@ -34,17 +36,17 @@ func Initialize(reqBytes []byte, call Callback) *Node {
 	req := &data.InitializeRequest{}
 	err := proto.Unmarshal(reqBytes, req)
 	if err != nil {
-		data.LogFatal(err)
+		logger.Panic("Failed to unmarshal initialize request", zap.Error(err))
 		return nil
 	}
 
 	// Initialize Logger
-	data.InitLogger(req)
+	logger.Init(req.Options.GetEnableLogging())
 
 	// Create User
 	u, serr := ac.OpenAccount(req, req.GetDevice())
 	if serr != nil {
-		data.LogError(serr.Error)
+		logger.Panic("Failed to initialize user", zap.Error(serr.Error))
 		return nil
 	}
 	// Initialize Node
@@ -67,7 +69,7 @@ func (n *Node) Connect(buf []byte) {
 	req := &data.ConnectionRequest{}
 	err := proto.Unmarshal(buf, req)
 	if err != nil {
-		data.LogFatal(err)
+		logger.Panic("Failed to initialize user", zap.Error(err))
 	}
 
 	// Connect Host

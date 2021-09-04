@@ -1,7 +1,9 @@
 package bind
 
 import (
+	"github.com/sonr-io/core/internal/logger"
 	"github.com/sonr-io/core/pkg/data"
+	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -134,7 +136,7 @@ func (n *Node) Invite(buf []byte) {
 
 	// Validate invite
 	req = n.account.SignInvite(req)
-	data.LogInfo(req.String())
+	logger.Info("Signed Invite.", zap.String("invite", req.String()))
 
 	// Send Invite
 	err := n.client.Invite(req, n.local)
@@ -289,7 +291,7 @@ func (s *Node) Action(buf []byte) []byte {
 		return bytes
 	case data.Action_PAUSE:
 		// Pause
-		data.LogInfo("Lifecycle Pause Called")
+		logger.Info("Lifecycle Update", zap.String("value", data.Action_name[int32(data.Action_PAUSE)]))
 		s.state = data.Lifecycle_PAUSED
 		s.client.Lifecycle(s.state, s.local)
 		data.GetState().Pause()
@@ -310,7 +312,7 @@ func (s *Node) Action(buf []byte) []byte {
 		return bytes
 	case data.Action_RESUME:
 		// Resume
-		data.LogInfo("Lifecycle Resume Called")
+		logger.Info("Lifecycle Update", zap.String("value", data.Action_name[int32(data.Action_RESUME)]))
 		s.state = data.Lifecycle_ACTIVE
 		s.client.Lifecycle(s.state, s.local)
 		data.GetState().Resume()
@@ -333,7 +335,7 @@ func (s *Node) Action(buf []byte) []byte {
 		return bytes
 	case data.Action_STOP:
 		// Stop
-		data.LogInfo("Lifecycle Stop Called")
+		logger.Info("Lifecycle Update", zap.String("value", data.Action_name[int32(data.Action_STOP)]))
 		s.state = data.Lifecycle_STOPPED
 		s.client.Lifecycle(s.state, s.local)
 

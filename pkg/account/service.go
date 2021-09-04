@@ -2,12 +2,13 @@ package account
 
 import (
 	"context"
-	"errors"
 
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
+	"go.uber.org/zap"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	rpc "github.com/libp2p/go-libp2p-gorpc"
+	"github.com/sonr-io/core/internal/logger"
 	"github.com/sonr-io/core/pkg/data"
 	"github.com/sonr-io/core/pkg/util"
 )
@@ -64,13 +65,13 @@ func (rm *userLinker) Verify(id peer.ID) error {
 	// Verify with Peer
 	err := exchClient.Call(id, util.DEVICE_RPC_SERVICE, util.DEVICE_METHOD_VERIFY, args, &reply)
 	if err != nil {
-		data.LogError(err)
+		logger.Error("Failed to Call VerifyWith Method", zap.Error(err))
 		return err
 	}
 
 	// Check for Success
 	if !reply.Success {
-		data.LogError(errors.New("Failed to Verify with Device"))
+		logger.Warn("Failed to verify device")
 		rm.topic.Close()
 	}
 	return nil
@@ -81,7 +82,7 @@ func (ss *DeviceService) VerifyWith(ctx context.Context, args DeviceServiceArgs,
 	// Unmarshal Public Key
 	pubKey, err := crypto.UnmarshalPublicKey(args.PubKeyBuf)
 	if err != nil {
-		data.LogError(err)
+		logger.Error("Failed to Unmarshal PublicKey", zap.Error(err))
 		return err
 	}
 

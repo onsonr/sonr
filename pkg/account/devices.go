@@ -5,7 +5,9 @@ import (
 	"errors"
 
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/sonr-io/core/internal/logger"
 	"github.com/sonr-io/core/pkg/data"
+	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -41,14 +43,14 @@ func (tm *userLinker) Sync(msg *data.SyncEvent) error {
 		// Convert Event to Proto Binary
 		bytes, err := proto.Marshal(msg)
 		if err != nil {
-			data.LogError(err)
+			logger.Error("Marshal Sync Event", zap.Error(err))
 			return err
 		}
 
 		// Publish to Room
 		err = tm.topic.Publish(tm.ctx, bytes)
 		if err != nil {
-			data.LogError(err)
+			logger.Error("Failed to Publish Topic Message", zap.Error(err))
 			return err
 		}
 
@@ -87,7 +89,7 @@ func (rm *userLinker) handleTopicEvents(ctx context.Context) {
 		// Get next event
 		event, err := rm.eventHandler.NextPeerEvent(ctx)
 		if err != nil {
-			data.LogError(err)
+			logger.Error("Failed to Get next peer event.", zap.Error(err))
 			rm.eventHandler.Cancel()
 			return
 		}
@@ -96,7 +98,7 @@ func (rm *userLinker) handleTopicEvents(ctx context.Context) {
 		if rm.isEventJoin(event) {
 			err = rm.Verify(event.Peer)
 			if err != nil {
-				data.LogError(err)
+				logger.Error("Failed to Verify peer.", zap.Error(err))
 				continue
 			}
 		} else if rm.isEventExit(event) {
@@ -112,7 +114,7 @@ func (rm *userLinker) handleTopicMessages(ctx context.Context) {
 		// Get next msg from pub/sub
 		msg, err := rm.subscription.Next(ctx)
 		if err != nil {
-			data.LogError(err)
+			logger.Error("Failed to get next subcription message.", zap.Error(err))
 			return
 		}
 
@@ -122,7 +124,7 @@ func (rm *userLinker) handleTopicMessages(ctx context.Context) {
 			m := &data.SyncEvent{}
 			err = proto.Unmarshal(msg.Data, m)
 			if err != nil {
-				data.LogError(err)
+				logger.Error("Failed to Unmarshal Sync Event", zap.Error(err))
 				continue
 			}
 

@@ -6,8 +6,10 @@ import (
 	"path"
 
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/sonr-io/core/internal/logger"
 	"github.com/sonr-io/core/pkg/data"
 	"github.com/sonr-io/core/pkg/util"
+	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -182,7 +184,7 @@ func (al *userLinker) SignInvite(i *data.InviteRequest) *data.InviteRequest {
 					// Fetch Buffer from Path
 					buffer, err := ioutil.ReadFile(t.GetThumbPath())
 					if err != nil {
-						data.LogError(err)
+						logger.Error("Failed to get buffer for thumbnail at path.", zap.Error(err))
 						continue
 					}
 

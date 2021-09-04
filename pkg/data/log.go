@@ -1,13 +1,9 @@
 package data
 
 import (
-	"fmt"
-	"io"
-	defaultLogger "log"
-	"os"
-	"strings"
-
 	"github.com/phuslu/log"
+	"github.com/sonr-io/core/internal/logger"
+	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -24,113 +20,6 @@ type SonrError struct {
 type SonrErrorOpt struct {
 	Error error
 	Type  ErrorEvent_Type
-}
-
-// Logger Based Settings
-var loggerEnabled = true
-
-func checkLogger() {
-	// Check Terminal
-	if log.IsTerminal(os.Stderr.Fd()) {
-		loggerEnabled = true
-	} else {
-		loggerEnabled = false
-	}
-}
-
-// Initializes Pretty Logger
-func InitLogger(req *InitializeRequest) {
-	loggerEnabled = req.GetOptions().GetEnableLogging()
-	// Configure Logger from Enabled
-	if loggerEnabled {
-		log.DefaultLogger = log.Logger{
-			TimeFormat: "15:04:05",
-			Caller:     1,
-			Writer: &log.ConsoleWriter{
-				ColorOutput:    true,
-				QuoteString:    true,
-				EndWithMessage: true,
-				Formatter: func(w io.Writer, a *log.FormatterArgs) (int, error) {
-					return fmt.Fprintf(w, "(sonr_core - %s) [%s %s] \n%s", strings.ToUpper(a.Level),
-						a.Time, a.Caller, a.Message)
-				},
-			},
-		}
-	}
-}
-
-// Method Logs a Info Message for Event
-func (t GenericEvent_Type) Log(message string) {
-	checkLogger()
-	if loggerEnabled && t != GenericEvent_ROOM {
-		log.Info().Msgf("⚡️  %s", t.String())
-		defaultLogger.Println("\t" + message + "\n")
-	}
-}
-
-// Method Logs a Info Message for Response
-func (t GenericResponse_Type) Log(message string) {
-	checkLogger()
-	if loggerEnabled {
-		log.Info().Msgf("⚡️  %s", t.String())
-		defaultLogger.Println("\t" + message + "\n")
-	}
-}
-
-// Method Logs a Info Message for Request
-func (t GenericRequest_Type) Log(message string) {
-	checkLogger()
-	if loggerEnabled {
-		log.Info().Msgf("⚡️  %s", t.String())
-		defaultLogger.Println("\t" + message + "\n")
-	}
-}
-
-// Method Logs an Error Message
-func LogError(err error) {
-	checkLogger()
-	if loggerEnabled {
-		log.Error().Msgf("💣  %s", err.Error())
-	}
-}
-
-// Method Logs a Info Message
-func LogFatal(err error) {
-	checkLogger()
-	if loggerEnabled {
-		log.Fatal().Msgf("💀 %s", err.Error())
-	}
-}
-
-// Method Logs a Info Message
-func LogInfo(msg string) {
-	checkLogger()
-	if loggerEnabled {
-		log.Info().Msgf("💡  %s", msg)
-	}
-}
-
-// Method Logs a Activate Message
-func LogActivate(msg string) {
-	checkLogger()
-	if loggerEnabled {
-		log.Info().Msgf("⛷  Activating %s...", msg)
-	}
-}
-
-// Method Logs a RPC Server Message
-func LogRPC(event string, value interface{}) {
-	ev := strings.ToUpper(event)
-	val := fmt.Sprint(value)
-	defaultLogger.Println(fmt.Sprintf("(SONR_RPC)-%s=%s", ev, val))
-}
-
-// Method Logs a Success Message
-func LogSuccess(msg string) {
-	checkLogger()
-	if loggerEnabled {
-		log.Info().Msgf("✅  %s Successful", msg)
-	}
 }
 
 // Checks for Error With Type ^ //
@@ -333,37 +222,26 @@ func (errWrap *SonrError) Marshal() []byte {
 
 // Method Prints Error
 func (err *SonrError) Log() {
-	checkLogger()
-	if loggerEnabled {
-		// Fetch Data
-		errSeverity := err.Message().GetSeverity()
-		errType := err.Message().GetType().String()
-		errMsg := err.Message().GetError()
+	// Fetch Data
+	errSeverity := err.Message().GetSeverity()
+	errType := err.Message().GetType().String()
+	errMsg := err.Message().GetError()
 
-		// Start Line Break
-		log.Info().Msg("\n")
+	// Start Line Break
+	log.Info().Msg("\n")
 
-		// Check Severity
-		switch errSeverity {
-		case ErrorEvent_LOG:
-			log.Info().Msgf("😬 (%s, %s) \n Message: %s", errType, errSeverity.String(), errMsg)
-		case ErrorEvent_WARNING:
-			log.Warn().Msgf("⚠️ (%s, %s) \n Message: %s", errType, errSeverity.String(), errMsg)
-			log.Info().Msg("\n")
+	// Check Severity
+	switch errSeverity {
+	case ErrorEvent_LOG:
+		logger.Info("😬 (%s, %s) \n Message: %s", zap.String("Type", errType), zap.String("Severity", errSeverity.String()), zap.String("Error", errMsg))
+	case ErrorEvent_WARNING:
+		logger.Warn("⚠️ (%s, %s) \n Message: %s", zap.String("Type", errType), zap.String("Severity", errSeverity.String()), zap.String("Error", errMsg))
 
-		case ErrorEvent_CRITICAL:
-			log.Info().Msg("\n")
-			log.Error().Msgf("🚨 (%s, %s) \n Message: %s", errType, errSeverity.String(), errMsg)
-			log.Info().Msg("\n")
+	case ErrorEvent_CRITICAL:
+		logger.Error("🚨 (%s, %s) \n Message: %s", zap.String("Type", errType), zap.String("Severity", errSeverity.String()), zap.String("Error", errMsg))
 
-		case ErrorEvent_FATAL:
-			log.Info().Msg("\n")
-			log.Fatal().Msgf("💀 (%s, %s) \n Message: %s", errType, errSeverity.String(), errMsg)
-			log.Info().Msg("\n")
-		}
-
-		// End Line Break
-		log.Info().Msg("\n")
+	case ErrorEvent_FATAL:
+		logger.Panic("💀 (%s, %s) \n Message: %s", zap.String("Type", errType), zap.String("Severity", errSeverity.String()), zap.String("Error", errMsg))
 	}
 }
 

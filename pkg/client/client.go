@@ -2,11 +2,11 @@ package client
 
 import (
 	"context"
-	"errors"
 	"time"
 
 	"github.com/sonr-io/core/internal/emitter"
 	net "github.com/sonr-io/core/internal/host"
+	"github.com/sonr-io/core/internal/logger"
 	room "github.com/sonr-io/core/internal/room"
 	srv "github.com/sonr-io/core/internal/service"
 	ac "github.com/sonr-io/core/pkg/account"
@@ -165,7 +165,7 @@ func (c *client) Invite(invite *data.InviteRequest, t *room.RoomManager) *data.S
 		id, err := t.FindPeer(invite.To.GetActive().Id.Peer)
 		if err != nil {
 			c.newExitEvent(invite)
-			data.LogError(errors.New("Failed to find Peer ID"))
+			logger.Error("Failed to bind to find peer")
 			return data.NewPeerFoundError(err, invite.GetTo().GetActive().GetId().GetPeer())
 		}
 

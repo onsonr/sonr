@@ -1,7 +1,9 @@
 package main
 
 import (
+	"github.com/sonr-io/core/internal/logger"
 	"github.com/sonr-io/core/pkg/data"
+	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -243,7 +245,7 @@ func (s *NodeServer) handleEvent(buf []byte) {
 	event := &data.GenericEvent{}
 	err := proto.Unmarshal(buf, event)
 	if err != nil {
-		data.LogFatal(err)
+		logger.Panic("Failed to unmarshal generic event", zap.Error(err))
 		return
 	}
 
@@ -255,12 +257,9 @@ func (s *NodeServer) handleEvent(buf []byte) {
 		ce := &data.CompleteEvent{}
 		err = proto.Unmarshal(event.GetData(), ce)
 		if err != nil {
-			data.LogFatal(err)
+			logger.Panic("Failed to unmarshal complete event", zap.Error(err))
 			return
 		}
-
-		// Logging
-		eventType.Log(ce.String())
 
 		// Send Event to Channel
 		s.completeEvents <- ce
@@ -269,12 +268,9 @@ func (s *NodeServer) handleEvent(buf []byte) {
 		pe := &data.ProgressEvent{}
 		err = proto.Unmarshal(event.GetData(), pe)
 		if err != nil {
-			data.LogFatal(err)
+			logger.Panic("Failed to unmarshal progress event", zap.Error(err))
 			return
 		}
-
-		// Logging
-		eventType.Log(pe.String())
 
 		// Send Event to Channel
 		s.progressEvents <- pe
@@ -283,12 +279,9 @@ func (s *NodeServer) handleEvent(buf []byte) {
 		te := &data.RoomEvent{}
 		err = proto.Unmarshal(event.GetData(), te)
 		if err != nil {
-			data.LogFatal(err)
+			logger.Panic("Failed to unmarshal room event", zap.Error(err))
 			return
 		}
-
-		// Logging
-		eventType.Log(te.String())
 
 		// Send Event to Channel
 		s.RoomEvents <- te
@@ -298,12 +291,9 @@ func (s *NodeServer) handleEvent(buf []byte) {
 		me := &data.MailEvent{}
 		err = proto.Unmarshal(event.GetData(), me)
 		if err != nil {
-			data.LogFatal(err)
+			logger.Panic("Failed to unmarshal mail event", zap.Error(err))
 			return
 		}
-
-		// Logging
-		eventType.Log(me.String())
 
 		// Send Event to Channel
 		s.mailEvents <- me
@@ -313,12 +303,9 @@ func (s *NodeServer) handleEvent(buf []byte) {
 		le := &data.LinkEvent{}
 		err = proto.Unmarshal(event.GetData(), le)
 		if err != nil {
-			data.LogFatal(err)
+			logger.Panic("Failed to unmarshal link event", zap.Error(err))
 			return
 		}
-
-		// Logging
-		eventType.Log(le.String())
 
 		// Send Event to Channel
 		s.linkEvents <- le
@@ -331,7 +318,7 @@ func (s *NodeServer) handleRequest(buf []byte) {
 	request := &data.GenericRequest{}
 	err := proto.Unmarshal(buf, request)
 	if err != nil {
-		data.LogFatal(err)
+		logger.Panic("Failed to unmarshal generic request", zap.Error(err))
 		return
 	}
 
@@ -345,12 +332,9 @@ func (s *NodeServer) handleRequest(buf []byte) {
 		ir := &data.InviteRequest{}
 		err = proto.Unmarshal(request.GetData(), ir)
 		if err != nil {
-			data.LogFatal(err)
+			logger.Panic("Failed to unmarshal invite request", zap.Error(err))
 			return
 		}
-
-		// Logging
-		requestType.Log(ir.String())
 
 		// Send Request to Channel
 		s.inviteRequests <- ir
@@ -363,7 +347,7 @@ func (s *NodeServer) handleResponse(buf []byte) {
 	response := &data.GenericResponse{}
 	err := proto.Unmarshal(buf, response)
 	if err != nil {
-		data.LogFatal(err)
+		logger.Panic("Failed to unmarshal generic response", zap.Error(err))
 		return
 	}
 	// Get Type
@@ -376,12 +360,9 @@ func (s *NodeServer) handleResponse(buf []byte) {
 		cr := &data.ConnectionResponse{}
 		err = proto.Unmarshal(response.GetData(), cr)
 		if err != nil {
-			data.LogFatal(err)
+			logger.Panic("Failed to unmarshal connection response", zap.Error(err))
 			return
 		}
-
-		// Logging
-		requestType.Log(cr.String())
 
 		// Send Response to Channel
 		s.connectionResponses <- cr
@@ -390,12 +371,9 @@ func (s *NodeServer) handleResponse(buf []byte) {
 		rr := &data.InviteResponse{}
 		err = proto.Unmarshal(response.GetData(), rr)
 		if err != nil {
-			data.LogFatal(err)
+			logger.Panic("Failed to unmarshal invite response", zap.Error(err))
 			return
 		}
-
-		// Logging
-		requestType.Log(rr.String())
 
 		// Send Response to Channel
 		s.inviteResponses <- rr

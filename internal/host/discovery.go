@@ -70,9 +70,6 @@ func (h *hostNode) Bootstrap(deviceId string) *data.SonrError {
 
 // Method Begins MDNS Discovery
 func (h *hostNode) MDNS() error {
-	// Logging
-	data.LogActivate("MDNS")
-
 	// Create MDNS Service
 	d, p := util.MDNS_OPTS()
 	ser, err := discovery.NewMdnsService(h.ctxHost, h.host, d, p)

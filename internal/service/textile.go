@@ -8,6 +8,7 @@ import (
 
 	"github.com/sonr-io/core/internal/emitter"
 	"github.com/sonr-io/core/internal/host"
+	"github.com/sonr-io/core/internal/logger"
 	"github.com/sonr-io/core/pkg/data"
 	"github.com/sonr-io/core/pkg/util"
 	"github.com/textileio/go-threads/api/client"
@@ -46,9 +47,6 @@ type TextileService struct {
 
 // Starts New Textile Instance
 func (sc *serviceClient) StartTextile() *data.SonrError {
-	// Logging
-	data.LogActivate("Textile Service")
-
 	// Initialize
 	textile := &TextileService{
 		options: sc.request.GetServiceOptions(),
@@ -114,9 +112,6 @@ func (ts *TextileService) InitThreads(sc *serviceClient) *data.SonrError {
 		if err != nil {
 			return data.NewError(err, data.ErrorEvent_THREADS_START_NEW)
 		}
-
-		// Log DB Info
-		data.LogSuccess("Threads Activation")
 		isThreadsReady = true
 	}
 	return nil
@@ -126,9 +121,6 @@ func (ts *TextileService) InitThreads(sc *serviceClient) *data.SonrError {
 func (ts *TextileService) InitMail() *data.SonrError {
 	// Verify Ready to Initialize
 	if ts.options.GetMailbox() {
-		// Log
-		data.LogActivate("Textile Mailbox")
-
 		// Setup the mail lib
 		ts.mail = local.NewMail(cmd.NewClients(util.TEXTILE_API_URL, true, util.TEXTILE_MINER_IDX), local.DefaultConfConfig())
 
@@ -143,14 +135,10 @@ func (ts *TextileService) InitMail() *data.SonrError {
 			// Set Mailbox and Update Status
 			ts.mailbox = mailbox
 			isMailReady = true
-			data.LogSuccess("Mailbox Activation")
 
 			// Handle Mailbox Events
 			ts.handleMailboxEvents()
 		} else {
-			// Logging
-			data.LogInfo("Mailbox not found, creating new one...")
-
 			// Create a new mailbox with config
 			mailbox, err := ts.mail.NewMailbox(context.Background(), ts.defaultMailConfig())
 			if err != nil {
@@ -160,7 +148,6 @@ func (ts *TextileService) InitMail() *data.SonrError {
 			// Set Mailbox and Update Status
 			ts.mailbox = mailbox
 			isMailReady = true
-			data.LogSuccess("Mailbox Activation")
 
 			// Handle Mailbox Events
 			ts.handleMailboxEvents()
@@ -195,7 +182,6 @@ func (ts *TextileService) handleMailboxEvents() {
 	}
 
 	// Handle Mailbox State
-	data.LogSuccess("Mailbox State Handling")
 	for s := range state {
 		// Update Connection State
 		connState = s.State
@@ -203,9 +189,9 @@ func (ts *TextileService) handleMailboxEvents() {
 		// handle connectivity state
 		switch s.State {
 		case cmd.Online:
-			data.LogInfo(fmt.Sprintf("Mailbox is Online: %s", s.Err))
+			logger.Info(fmt.Sprintf("Mailbox is Online: %s", s.Err))
 		case cmd.Offline:
-			data.LogInfo(fmt.Sprintf("Mailbox is Offline: %s", s.Err))
+			logger.Info(fmt.Sprintf("Mailbox is Offline: %s", s.Err))
 		}
 	}
 }
@@ -220,7 +206,7 @@ func (ts *TextileService) onNewMessage(e local.MailboxEvent, state cmd.Connectio
 	}
 
 	// Logging and Open Body
-	data.LogInfo(fmt.Sprintf("Received new message: %s", inbox[0].From))
+	logger.Info(fmt.Sprintf("Received new message: %s", inbox[0].From))
 	body, err := inbox[0].Open(context.Background(), ts.mailbox.Identity())
 	if err != nil {
 		data.NewError(err, data.ErrorEvent_MAILBOX_MESSAGE_OPEN)
@@ -228,7 +214,7 @@ func (ts *TextileService) onNewMessage(e local.MailboxEvent, state cmd.Connectio
 	}
 
 	// Log Valid Lobby Length
-	data.LogInfo(fmt.Sprintf("Valid Body Length: %d", len(body)))
+	logger.Info(fmt.Sprintf("Valid Body Length: %d", len(body)))
 
 	// Unmarshal InviteRequest from JSON
 	invite := data.InviteRequest{}

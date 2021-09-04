@@ -5,6 +5,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/crypto"
 	ps "github.com/libp2p/go-libp2p-pubsub"
+	"github.com/sonr-io/core/internal/logger"
 	"github.com/sonr-io/core/pkg/data"
 	"github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/proto"
@@ -40,7 +41,7 @@ func loadLinker(ir *data.InitializeRequest, d *data.Device, kc *data.KeyChain) (
 		return nil, data.NewError(serr, data.ErrorEvent_ACCOUNT_LOAD)
 	}
 
-	data.LogInfo(fmt.Sprintf("LoadedAccount: %s", loadedAccount.String()))
+	logger.Info(fmt.Sprintf("LoadedAccount: %s", loadedAccount.String()))
 
 	// Set Account
 	loadedAccount.KeyChain = kc

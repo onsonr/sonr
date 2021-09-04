@@ -11,7 +11,9 @@ import (
 
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/sonr-io/core/internal/logger"
 	"github.com/textileio/go-threads/core/thread"
+	"go.uber.org/zap"
 )
 
 // ** ─── KeyPair MANAGEMENT ────────────────────────────────────────────────────────
@@ -242,7 +244,7 @@ func (d *Device) deleteKeyPair(t KeyPair_Type) *SonrError {
 	// Delete Key Pair
 	err := os.Remove(d.WorkingKeyPath(t))
 	if err != nil {
-		LogInfo("ERROR: " + err.Error())
+		logger.Error("ERROR: ", zap.String("Error", err.Error()))
 		return NewError(err, ErrorEvent_USER_FS)
 	}
 
@@ -423,7 +425,7 @@ func (d *Device) ShortID() string {
 		// Return Short ID
 		return result
 	} else {
-		LogError(errors.New("Device does not have a Key Pair"))
+		logger.Error("ERROR: ", zap.String("Error", "Device does not have a Key Pair"))
 		return ""
 	}
 }

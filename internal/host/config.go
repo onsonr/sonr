@@ -10,7 +10,9 @@ import (
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/emitter"
+	"github.com/sonr-io/core/internal/logger"
 	"github.com/sonr-io/core/pkg/data"
+	"go.uber.org/zap"
 )
 
 // ** ─── Address MANAGEMENT ────────────────────────────────────────────────────────
@@ -79,7 +81,7 @@ func PublicAddrStrs(cr *data.ConnectionRequest) ([]string, error) {
 		// Set Port
 		p, err := FreePort()
 		if err != nil {
-			data.LogError(err)
+			logger.Error("Failed to find free port.", zap.Error(err))
 		} else {
 			port = p
 		}
@@ -107,7 +109,7 @@ func PublicAddrStrs(cr *data.ConnectionRequest) ([]string, error) {
 			// Get Address String
 			addrStr, err := addr.MultiAddrStr(opts.GetIpv4Only(), port)
 			if err != nil {
-				data.LogError(err)
+				logger.Error("Failed to find Addr Strings.", zap.Error(err))
 				continue // Skip this address
 			}
 
@@ -125,14 +127,14 @@ func iPv4Addrs(port int) ([]string, error) {
 	// Find Hos
 	osHost, err := os.Hostname()
 	if err != nil {
-		data.LogError(err)
+		logger.Error("Failed to find HostName.", zap.Error(err))
 		return nil, err
 	}
 
 	// Find Public Address Strings
 	addrs, err := net.LookupIP(osHost)
 	if err != nil {
-		data.LogError(err)
+		logger.Error("Failed to find IP.", zap.Error(err))
 		return nil, err
 	}
 

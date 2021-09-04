@@ -6,9 +6,11 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	rpc "github.com/libp2p/go-libp2p-gorpc"
 	"github.com/sonr-io/core/internal/emitter"
+	"github.com/sonr-io/core/internal/logger"
 	ac "github.com/sonr-io/core/pkg/account"
 	"github.com/sonr-io/core/pkg/data"
 	"github.com/sonr-io/core/pkg/util"
+	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -70,7 +72,7 @@ func (rm *RoomManager) Exchange(id peer.ID, peerBuf []byte) error {
 	// Call to Peer
 	err := exchClient.Call(id, util.EXCHANGE_RPC_SERVICE, util.EXCHANGE_METHOD_EXCHANGE, args, &reply)
 	if err != nil {
-		data.LogError(err)
+		logger.Error("Failed to call exchange", zap.Error(err))
 		return err
 	}
 
@@ -80,7 +82,7 @@ func (rm *RoomManager) Exchange(id peer.ID, peerBuf []byte) error {
 
 	// Send Error
 	if err != nil {
-		data.LogError(err)
+		logger.Error("Failed to unmarshal member.", zap.Error(err))
 		return err
 	}
 
@@ -103,7 +105,7 @@ func (es *ExchangeService) ExchangeWith(ctx context.Context, args ExchangeServic
 	remotePeer := &data.Member{}
 	err := proto.Unmarshal(args.Member, remotePeer)
 	if err != nil {
-		data.LogError(err)
+		logger.Error("Failed to Unmarshal member.", zap.Error(err))
 		return err
 	}
 
@@ -121,7 +123,7 @@ func (es *ExchangeService) ExchangeWith(ctx context.Context, args ExchangeServic
 	// Set Message data and call done
 	buf, err := proto.Marshal(es.account.Member())
 	if err != nil {
-		data.LogError(err)
+		logger.Error("Failed to Marshal member.", zap.Error(err))
 		return err
 	}
 	reply.Member = buf
@@ -144,7 +146,7 @@ func (rm *RoomManager) handleExchangeEvents(ctx context.Context) {
 		// Get next event
 		event, err := rm.eventHandler.NextPeerEvent(ctx)
 		if err != nil {
-			data.LogError(err)
+			logger.Error("Failed to Get next peer event.", zap.Error(err))
 			rm.eventHandler.Cancel()
 			return
 		}
@@ -153,12 +155,12 @@ func (rm *RoomManager) handleExchangeEvents(ctx context.Context) {
 		if rm.isEventJoin(event) {
 			pbuf, err := proto.Marshal(rm.account.Member())
 			if err != nil {
-				data.LogError(err)
+				logger.Error("Failed to Marshal member.", zap.Error(err))
 				continue
 			}
 			err = rm.Exchange(event.Peer, pbuf)
 			if err != nil {
-				data.LogError(err)
+				logger.Error("Failed to Exchange.", zap.Error(err))
 				continue
 			}
 		} else if rm.isEventExit(event) {
@@ -174,7 +176,7 @@ func (rm *RoomManager) handleExchangeMessages(ctx context.Context) {
 		// Get next msg from pub/sub
 		msg, err := rm.subscription.Next(ctx)
 		if err != nil {
-			data.LogError(err)
+			logger.Error("Failed to get next subcription message.", zap.Error(err))
 			return
 		}
 
@@ -184,7 +186,7 @@ func (rm *RoomManager) handleExchangeMessages(ctx context.Context) {
 			m := &data.RoomEvent{}
 			err = proto.Unmarshal(msg.Data, m)
 			if err != nil {
-				data.LogError(err)
+				logger.Error("Failed to Unmarshal Room Event", zap.Error(err))
 				continue
 			}
 

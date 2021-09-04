@@ -5,8 +5,10 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/sonr-io/core/internal/emitter"
+	"github.com/sonr-io/core/internal/logger"
 	data "github.com/sonr-io/core/pkg/data"
 	"github.com/sonr-io/core/pkg/util"
+	"go.uber.org/zap"
 
 	"google.golang.org/protobuf/proto"
 )
@@ -172,7 +174,7 @@ func (n *client) onInvite(e *emitter.Event) {
 	buf := e.Args[0].([]byte)
 
 	// Update Status
-	data.LogInfo("Received Invite")
+	logger.Info("Received invite.")
 
 	// Create Request
 	req := data.GenericRequest{
@@ -225,12 +227,13 @@ func (n *client) onReply(e *emitter.Event) {
 
 		// Check for File Transfer
 		if resp.HasAcceptedTransfer() && n.session != nil {
-			data.LogInfo("Beginning Transfer")
+			logger.Info("Beginning Transfer.")
 			pid := data.SonrProtocol_LocalTransfer.NewIDProtocol(id)
 
 			// Create New Auth Stream
 			stream, err := n.Host.StartStream(id, pid)
 			if err != nil {
+				logger.Error("Failed to create stream: ", zap.Error(err))
 				n.call.OnError(data.NewError(err, data.ErrorEvent_HOST_STREAM))
 				return
 			}

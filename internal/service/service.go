@@ -6,6 +6,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/emitter"
 	net "github.com/sonr-io/core/internal/host"
+	"github.com/sonr-io/core/internal/logger"
 	"github.com/sonr-io/core/pkg/data"
 	"google.golang.org/protobuf/encoding/protojson"
 )
@@ -24,12 +25,12 @@ type serviceClient struct {
 	ServiceClient
 
 	// Common
-	ctx       context.Context
-	apiKeys   *data.APIKeys
-	emitter   *emitter.Emitter
-	host      net.HostNode
-	request   *data.ConnectionRequest
-	device    *data.Device
+	ctx     context.Context
+	apiKeys *data.APIKeys
+	emitter *emitter.Emitter
+	host    net.HostNode
+	request *data.ConnectionRequest
+	device  *data.Device
 
 	// Services
 	Auth    *AuthService
@@ -40,12 +41,12 @@ type serviceClient struct {
 func NewService(ctx context.Context, h net.HostNode, u *data.Device, req *data.ConnectionRequest, em *emitter.Emitter) (ServiceClient, *data.SonrError) {
 	// Create Client
 	client := &serviceClient{
-		ctx:       ctx,
-		apiKeys:   req.GetApiKeys(),
-		emitter:   em,
-		host:      h,
-		request:   req,
-		device:    u,
+		ctx:     ctx,
+		apiKeys: req.GetApiKeys(),
+		emitter: em,
+		host:    h,
+		request: req,
+		device:  u,
 	}
 
 	// Begin Auth Service
@@ -86,10 +87,8 @@ func (sc *serviceClient) SendMail(inv *data.InviteRequest) *data.SonrError {
 		if serr != nil {
 			return serr
 		}
-		data.LogSuccess("Sending Mail")
+		logger.Info("Succesfully sent mail!")
 		return nil
-	} else {
-		data.LogInfo("Mail is not Ready")
 	}
 	return nil
 }

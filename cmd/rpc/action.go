@@ -13,14 +13,12 @@ func (s *NodeServer) Action(ctx context.Context, req *data.ActionRequest) (*data
 	switch req.Action {
 	case data.Action_PING:
 		// Ping
-		data.LogRPC("action", "ping")
 		s.actionResponses <- &data.ActionResponse{
 			Success: true,
 			Action:  data.Action_PING,
 		}
 	case data.Action_LOCATION:
 		// Location
-		data.LogRPC("action", "location")
 		s.actionResponses <- &data.ActionResponse{
 			Success: true,
 			Action:  data.Action_LOCATION,
@@ -30,7 +28,6 @@ func (s *NodeServer) Action(ctx context.Context, req *data.ActionRequest) (*data
 		}
 	case data.Action_URL_LINK:
 		// URL Link
-		data.LogRPC("action", "url")
 		s.actionResponses <- &data.ActionResponse{
 			Success: true,
 			Action:  data.Action_URL_LINK,
@@ -40,7 +37,6 @@ func (s *NodeServer) Action(ctx context.Context, req *data.ActionRequest) (*data
 		}
 	case data.Action_PAUSE:
 		// Pause
-		data.LogRPC("action", "pause")
 		s.state = data.Lifecycle_PAUSED
 		s.client.Lifecycle(s.state, s.local)
 		data.GetState().Pause()
@@ -53,7 +49,6 @@ func (s *NodeServer) Action(ctx context.Context, req *data.ActionRequest) (*data
 		}
 	case data.Action_RESUME:
 		// Resume
-		data.LogRPC("action", "resume")
 		s.state = data.Lifecycle_ACTIVE
 		s.client.Lifecycle(s.state, s.local)
 		data.GetState().Resume()
@@ -67,7 +62,6 @@ func (s *NodeServer) Action(ctx context.Context, req *data.ActionRequest) (*data
 		}
 	case data.Action_STOP:
 		// Stop
-		data.LogRPC("action", "stop")
 		s.state = data.Lifecycle_STOPPED
 		s.client.Lifecycle(s.state, s.local)
 		s.actionResponses <- &data.ActionResponse{
@@ -87,7 +81,6 @@ func (s *NodeServer) Action(ctx context.Context, req *data.ActionRequest) (*data
 			},
 		}
 	default:
-		data.LogRPC("action", false)
 		return nil, fmt.Errorf("Action: %s not supported", req.Action)
 	}
 	return &data.NoResponse{}, nil
@@ -95,14 +88,12 @@ func (s *NodeServer) Action(ctx context.Context, req *data.ActionRequest) (*data
 
 // Sign method signs data with device's private key
 func (s *NodeServer) Sign(ctx context.Context, req *data.AuthRequest) (*data.NoResponse, error) {
-	data.LogRPC("Sign", req)
 	s.authResponses <- s.account.SignAuth(req)
 	return &data.NoResponse{}, nil
 }
 
 // Link method starts device linking channel
 func (s *NodeServer) Link(ctx context.Context, req *data.LinkRequest) (*data.NoResponse, error) {
-	data.LogRPC("Link", req)
 	req = s.account.CurrentDevice().SignLink(req)
 
 	// Check Link Request Type
@@ -119,7 +110,6 @@ func (s *NodeServer) Link(ctx context.Context, req *data.LinkRequest) (*data.NoR
 
 // Verify validates device Keys
 func (s *NodeServer) Verify(ctx context.Context, req *data.VerifyRequest) (*data.NoResponse, error) {
-	data.LogRPC("Verify", req)
 	// Get Key Pair
 	kp := s.account.AccountKeys()
 

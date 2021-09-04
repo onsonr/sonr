@@ -17,7 +17,9 @@ import (
 	discovery "github.com/libp2p/go-libp2p/p2p/discovery"
 	"github.com/multiformats/go-multiaddr"
 	"github.com/sonr-io/core/internal/emitter"
+	"github.com/sonr-io/core/internal/logger"
 	"github.com/sonr-io/core/pkg/data"
+	"go.uber.org/zap"
 )
 
 // ** ─── Interface MANAGEMENT ────────────────────────────────────────────────────────
@@ -231,13 +233,13 @@ func (h *hostNode) HandleStream(pid protocol.ID, handler network.StreamHandler) 
 }
 
 func (h *hostNode) CloseStream(pid protocol.ID, stream network.Stream) {
-	data.LogInfo("Removing Stream Handler")
+	logger.Info("Removing Stream Handler", zap.String("protocol", string(pid)))
 	h.host.RemoveStreamHandler(pid)
 	stream.Close()
 }
 
 // Start Stream for Host
 func (h *hostNode) StartStream(p peer.ID, pid protocol.ID) (network.Stream, error) {
-	data.LogActivate("New Stream")
+	logger.Info("New Stream Created", zap.String("Peer ID:", p.String()), zap.String("Protocol ID:", string(pid)))
 	return h.host.NewStream(h.ctxHost, p, pid)
 }

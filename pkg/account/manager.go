@@ -11,8 +11,10 @@ import (
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	msg "github.com/libp2p/go-msgio"
 	sh "github.com/sonr-io/core/internal/host"
+	"github.com/sonr-io/core/internal/logger"
 	"github.com/sonr-io/core/pkg/data"
 	"github.com/sonr-io/core/pkg/util"
+	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -95,10 +97,10 @@ func OpenAccount(ir *data.InitializeRequest, d *data.Device) (Account, *data.Son
 	if d.GetFileSystem().GetSupport().IsFile(util.ACCOUNT_FILE) {
 		linker, err := loadLinker(ir, d, keychain)
 		if err != nil {
-			data.LogInfo("Failed to load account, creating new one...")
+			logger.Info("Failed to load account, creating new one...")
 			linker, err := newLinker(ir, d, keychain)
 			if err != nil {
-				data.LogError(err.Error)
+				logger.Error("Failed to create new linker", zap.Error(err.Error))
 				return nil, err
 			}
 			return linker, nil
@@ -107,7 +109,7 @@ func OpenAccount(ir *data.InitializeRequest, d *data.Device) (Account, *data.Son
 	} else {
 		linker, err := newLinker(ir, d, keychain)
 		if err != nil {
-			data.LogError(err.Error)
+			logger.Error("Failed to create new linker", zap.Error(err.Error))
 			return nil, err
 		}
 		return linker, nil
@@ -180,7 +182,7 @@ func (al *userLinker) ReadFromLink(stream network.Stream) {
 	go func(rs msg.ReadCloser, stream network.Stream) {
 		buf, err := rs.ReadMsg()
 		if err != nil {
-			data.LogError(err)
+			logger.Error("Failed to read next link stream buf", zap.Error(err))
 			return
 		}
 
@@ -188,7 +190,7 @@ func (al *userLinker) ReadFromLink(stream network.Stream) {
 		lp := &data.LinkPacket{}
 		err = proto.Unmarshal(buf, lp)
 		if err != nil {
-			data.LogError(err)
+			logger.Error("Failed to unmarshal link packet", zap.Error(err))
 			return
 		}
 
@@ -241,7 +243,7 @@ func (al *userLinker) WriteToLink(stream network.Stream, resp *data.LinkResponse
 	// Marshal linkPacket
 	buf, err := proto.Marshal(linkPacket)
 	if err != nil {
-		data.LogError(err)
+		logger.Error("Failed to Marshal link packet", zap.Error(err))
 		return
 	}
 
@@ -249,7 +251,7 @@ func (al *userLinker) WriteToLink(stream network.Stream, resp *data.LinkResponse
 	go func(ws msg.WriteCloser) {
 		err := ws.WriteMsg(buf)
 		if err != nil {
-			data.LogError(err)
+			logger.Error("Failed to Write Buf to Stream", zap.Error(err))
 		}
 	}(msg.NewWriter(stream))
 }

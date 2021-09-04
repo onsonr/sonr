@@ -19,6 +19,9 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/textileio/go-threads v1.1.0-rc1.0.20210317163541-37a104610bac
 	github.com/textileio/textile/v2 v2.6.9
+	go.uber.org/atomic v1.9.0 // indirect
+	go.uber.org/multierr v1.7.0 // indirect
+	go.uber.org/zap v1.19.0
 	golang.org/x/net v0.0.0-20210423184538-5f58ad60dda6
 	golang.org/x/tools v0.1.2 // indirect
 	google.golang.org/grpc v1.35.0

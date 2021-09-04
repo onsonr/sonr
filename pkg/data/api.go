@@ -7,6 +7,7 @@ import (
 	olc "github.com/google/open-location-code/go"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
+	"github.com/sonr-io/core/internal/logger"
 	util "github.com/sonr-io/core/pkg/util"
 	"google.golang.org/protobuf/proto"
 )
@@ -30,10 +31,10 @@ func (ip *ConnectionRequest_IPAddress) IsIPv6() bool {
 // Method Converts this IPAddress into a MultiAddress String
 func (ip *ConnectionRequest_IPAddress) MultiAddrStr(onlyIPv4 bool, port int) (string, error) {
 	if ip.IsIPv4() {
-		LogInfo(ip.Info())
+		logger.Info(ip.Info())
 		return fmt.Sprintf("/ip4/%s/tcp/%d", ip.GetValue(), port), nil
 	} else if ip.IsIPv6() && !onlyIPv4 {
-		LogInfo(ip.Info())
+		logger.Info(ip.Info())
 		return fmt.Sprintf("/ip6/%s/tcp/%d", ip.GetValue(), port), nil
 	} else {
 		return "", fmt.Errorf("Invalid IP Address")

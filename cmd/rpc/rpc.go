@@ -3,14 +3,15 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"net"
 
+	"github.com/sonr-io/core/internal/logger"
 	"github.com/sonr-io/core/internal/room"
 	"github.com/sonr-io/core/pkg/account"
 	"github.com/sonr-io/core/pkg/client"
 	"github.com/sonr-io/core/pkg/data"
 	"github.com/sonr-io/core/pkg/util"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
 
@@ -52,10 +53,8 @@ func main() {
 	// Create a new gRPC server
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", util.RPC_SERVER_PORT))
 	if err != nil {
-		data.LogRPC("online", false)
-		log.Fatal(err)
+		logger.Panic("Failed to bind to port", zap.Error(err))
 	}
-	data.LogRPC("online", true)
 
 	// Set GRPC Server
 	chatServer := NodeServer{
@@ -90,17 +89,15 @@ func main() {
 	// Register the gRPC service
 	data.RegisterNodeServiceServer(grpcServer, &chatServer)
 	if err := grpcServer.Serve(listener); err != nil {
-		data.LogRPC("serve", false)
-		log.Fatal(err)
+		logger.Panic("Failed to Register node service server", zap.Error(err))
 	}
-	data.LogRPC("serve", true)
 }
 
 // Initialize method is called when a new node is created
 func (s *NodeServer) Initialize(ctx context.Context, req *data.InitializeRequest) (*data.NoResponse, error) {
 	// Initialize Logger
 	var serr *data.SonrError
-	data.InitLogger(req)
+	logger.Init(req.Options.GetEnableLogging())
 
 	// Create User
 	s.account, serr = account.OpenAccount(req, req.GetDevice())

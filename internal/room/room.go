@@ -8,9 +8,11 @@ import (
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/core/internal/emitter"
 	sh "github.com/sonr-io/core/internal/host"
+	"github.com/sonr-io/core/internal/logger"
 	ac "github.com/sonr-io/core/pkg/account"
 	"github.com/sonr-io/core/pkg/data"
 	"github.com/sonr-io/core/pkg/util"
+	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -102,14 +104,14 @@ func (tm *RoomManager) Publish(msg *data.RoomEvent) error {
 		// Convert Event to Proto Binary
 		bytes, err := proto.Marshal(msg)
 		if err != nil {
-			data.LogError(err)
+			logger.Error("Failed to Marshal Room Event", zap.Error(err))
 			return err
 		}
 
 		// Publish to Room
 		err = tm.Topic.Publish(tm.ctx, bytes)
 		if err != nil {
-			data.LogError(err)
+			logger.Error("Failed to Publish Topic Message", zap.Error(err))
 			return err
 		}
 	}
@@ -122,14 +124,14 @@ func (tm *RoomManager) Sync(msg *data.SyncEvent) error {
 		// Convert Event to Proto Binary
 		bytes, err := proto.Marshal(msg)
 		if err != nil {
-			data.LogError(err)
+			logger.Error("Failed to Marshal SyncEvent", zap.Error(err))
 			return err
 		}
 
 		// Publish to Room
 		err = tm.Topic.Publish(tm.ctx, bytes)
 		if err != nil {
-			data.LogError(err)
+			logger.Error("Failed to Publish Topic Message", zap.Error(err))
 			return err
 		}
 	}

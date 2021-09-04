@@ -3,13 +3,14 @@ package service
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	rpc "github.com/libp2p/go-libp2p-gorpc"
 	"github.com/sonr-io/core/internal/emitter"
+	"github.com/sonr-io/core/internal/logger"
 	"github.com/sonr-io/core/pkg/data"
 	"github.com/sonr-io/core/pkg/util"
+	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -71,7 +72,6 @@ func (sc *serviceClient) HandleLinking(req *data.LinkRequest) {
 
 // Invite @ Invite: Handles User sent InviteRequest Response
 func (tm *serviceClient) Invite(id peer.ID, inv *data.InviteRequest) error {
-	data.LogInfo(inv.String())
 	// Initialize Data
 	rpcClient := rpc.NewClient(tm.host.Host(), util.AUTH_PROTOCOL)
 	var reply AuthServiceResponse
@@ -93,7 +93,7 @@ func (tm *serviceClient) Invite(id peer.ID, inv *data.InviteRequest) error {
 	// Await Response
 	call := <-done
 	if call.Error != nil {
-		data.LogError(err)
+		logger.Error("Failed to Invite Peer", zap.Error(err))
 		return err
 	}
 	tm.emitter.Emit(emitter.EMIT_REPLY, id, reply.InvReply)
@@ -106,10 +106,9 @@ func (ts *AuthService) InviteWith(ctx context.Context, args AuthServiceArgs, rep
 	inv := data.InviteRequest{}
 	err := proto.Unmarshal(args.Invite, &inv)
 	if err != nil {
-		data.LogError(err)
+		logger.Error("Failed to Unmarshal Invite Request", zap.Error(err))
 		return err
 	}
-	data.LogInfo(inv.String())
 
 	// Set Current Message and send Callback
 	ts.invite = &inv
@@ -122,7 +121,7 @@ func (ts *AuthService) InviteWith(ctx context.Context, args AuthServiceArgs, rep
 		// Convert Protobuf to bytes
 		msgBytes, err := proto.Marshal(m)
 		if err != nil {
-			data.LogError(err)
+			logger.Error("Failed to Marshal InviteResponse", zap.Error(err))
 			return err
 		}
 
@@ -185,7 +184,6 @@ func (ts *AuthService) LinkWith(ctx context.Context, args AuthServiceArgs, reply
 		ts.isLinkingActive = !reply.LinkResult
 
 		// Return Result
-		data.LogInfo(fmt.Sprintf("Link Result: %v", result))
 		ts.emitter.Emit(emitter.EMIT_LINK, ok, true, peer.ID(inv.GetFrom().PeerID()), reply.LinkResponse)
 		return nil
 	} else {
