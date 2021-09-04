@@ -75,16 +75,6 @@ message InitializeRequest {
     RPC = 1;  // gRPC Client from Other Language
   }
 
-  // Logging Details
-  enum LogLevel {
-    FATAL = 0;    // Only show FATAL Errors
-    CRITICAL = 1; // Only show CRITICAL Errors
-    WARNING = 2;  // Only show WARNING Errors
-    DEBUG = 3;    // Show all Errors
-    INFO = 4;     // Show all Errors
-    NONE = 5;     // No Logging
-  }
-
   // Keychain/Account Options
   message Options {
     optional bool isVerified = 1;    // Is Account Verified on Frontend
