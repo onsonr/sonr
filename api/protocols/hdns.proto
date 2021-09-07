@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package sonr.protocols.hdns;
-option go_package = "github.com/sonr-io/sonr/pkg/hdns";
+option go_package = "github.com/sonr-io/core/pkg/hdns";
 
 // CreateSNameRequest is Message for Signing Request (Hmac Sha256)
 message CreateSNameRequest {

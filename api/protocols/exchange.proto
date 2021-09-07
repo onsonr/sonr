@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package sonr.protocols.exchange;
 import "api/common/core.proto";
-option go_package = "github.com/sonr-io/sonr/pkg/exchange";
+option go_package = "github.com/sonr-io/core/pkg/exchange";
 
 // Message Sent when peer messages Local Room
 message ExchangeEvent {

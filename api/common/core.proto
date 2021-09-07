@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package sonr.core;
-option go_package = "github.com/sonr-io/sonr/internal/common";
+option go_package = "github.com/sonr-io/core/internal/common";
 
 // Standard MIME with Additional Extensions
 message MIME {

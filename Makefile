@@ -1,5 +1,6 @@
 # Set this -->[/Users/xxxx/Sonr/]<-- to Folder of Sonr Repos
 SONR_ROOT_DIR=/Users/prad/Sonr
+ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 CORE_DIR=$(SONR_ROOT_DIR)/core
 CORE_RPC_DIR=$(SONR_ROOT_DIR)/core/cmd/rpc
 CORE_BIND_DIR=$(SONR_ROOT_DIR)/core/cmd/bind
@@ -28,13 +29,13 @@ PROTO_DIR_DART=$(SONR_ROOT_DIR)/plugin/lib/src/data/protobuf
 PROTO_DIR_DOCS=$(SONR_ROOT_DIR)/docs
 PROTO_DIR_RPC=$(SONR_ROOT_DIR)/electron/assets
 
-# @ Proto Items Lists
-PROTO_LIST_ALL=api.proto data.proto core.proto peer.proto error.proto user.proto
-PROTO_LIST_CLIENT=api.proto data.proto peer.proto error.proto user.proto
-
-# @ Proto Build Commands
-PROTO_GEN_GO="--go_out=$(PROTO_DIR_GO)"
-PROTO_GEN_RPC="--go-grpc_out=$(PROTO_DIR_GO)"
+PROTO_LIST_ALL=${ROOT_DIR}/api/**/*.proto
+MODULE_NAME=github.com/sonr-io/core
+GO_OPT_FLAG=--go_opt=module=${MODULE_NAME}
+GRPC_OPT_FLAG=--go-grpc_opt=module=${MODULE_NAME}
+PROTO_GEN_GO="--go_out=."
+PROTO_GEN_RPC="--go-grpc_out=."
+PROTO_GEN_DOCS="--doc_out=docs"
 PROTO_GEN_DART="--dart_out=$(PROTO_DIR_DART)"
 PROTO_GEN_DOCS="--doc_out=$(PROTO_DIR_DOCS)"
 
@@ -90,21 +91,19 @@ bind.ios:
 	@echo ""
 
 ##
-## [protobuf]     :   Compiles Protobuf models for Core Library and Plugin
+## [proto]     :   Compiles Protobuf models for Core Library and Plugin
 protobuf:
-	@echo ""
-	@echo ""
-	@echo "--------------------------------------------------------------"
-	@echo "------------- 🛸 START PROTOBUFS COMPILE 🛸 -------------------"
-	@echo "--------------------------------------------------------------"
-	@cd $(PROTO_DEF_PATH) && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_DOCS) $(PROTO_LIST_ALL)
-	@cd $(PROTO_DEF_PATH) && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_GO) $(PROTO_LIST_ALL)
-	@cd $(PROTO_DEF_PATH) && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_RPC) $(PROTO_LIST_ALL)
-	@cd $(PROTO_DEF_PATH) && protoc -I. --proto_path=$(PROTO_DEF_PATH) $(PROTO_GEN_DART) $(PROTO_LIST_CLIENT)
-	@rm -rf $(PROTO_DIR_RPC)/proto
-	@cp -R $(PROTO_DEF_PATH) $(PROTO_DIR_RPC)/proto
-	@echo "✅ Finished Compiling ➡ " && date
-	@echo ""
+	@echo "----"
+	@echo "Sonr: Compiling Protobufs"
+	@echo "----"
+	@echo "Generating Protobuf Go code..."
+	@protoc $(PROTO_LIST_ALL) --proto_path=$(ROOT_DIR) $(PROTO_GEN_GO) $(GO_OPT_FLAG)
+	@echo "Generating Protobuf Go RPC code..."
+	@protoc $(PROTO_LIST_ALL) --proto_path=$(ROOT_DIR) $(PROTO_GEN_RPC) $(GRPC_OPT_FLAG)
+	@echo "Generating Protobuf Docs..."
+	@protoc $(PROTO_LIST_ALL) --proto_path=$(ROOT_DIR) $(PROTO_GEN_DOCS)
+	@echo "----"
+	@echo "✅ Finished Compiling ➡ `date`"
 
 ##
 ## [release]   :   Upload RPC Binary Artifact to S3

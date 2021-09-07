@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package sonr.protocols.link;
 import "api/common/core.proto";
-option go_package = "github.com/sonr-io/sonr/pkg/link";
+option go_package = "github.com/sonr-io/core/pkg/link";
 
 // Message for Linking Response (Hmac Sha256)
 message LinkEvent {

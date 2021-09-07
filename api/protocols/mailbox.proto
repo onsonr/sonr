@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package sonr.protocols.mailbox;
-option go_package = "github.com/sonr-io/sonr/pkg/mailbox";
+option go_package = "github.com/sonr-io/core/pkg/mailbox";
 
 // Received Mail Event
 message MailEvent {
