@@ -2,7 +2,7 @@ package data
 
 import (
 	"github.com/phuslu/log"
-	"github.com/sonr-io/core/internal/logger"
+	"github.com/sonr-io/core/tools/logger"
 	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )

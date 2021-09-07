@@ -1,0 +1,120 @@
+syntax = "proto3";
+
+package sonr.core;
+import "api/common/core.proto";
+option go_package = "github.com/sonr-io/sonr/internal/common";
+
+// Internet Connection Type
+enum ConnectionType {
+  OFFLINE = 0;  // No Internet Connection
+  WIFI = 1;     // Wifi Connection
+  MOBILE = 2;   // Mobile Connection
+  ETHERNET = 3; // Ethernet Connection
+}
+
+// Connection Message to Establish Sonr Host/API/Room
+message ConnectionRequest {
+  Location location = 1;             // Current Runtime Location
+  Profile profile = 2;               // Users Contact Card
+  ConnectionType type = 3;           // Internet Connection Type
+  HostOptions hostOptions = 4;       // Libp2p Host config
+  ServiceOptions serviceOptions = 5; // Service Config
+
+  // Libp2p Host Options
+  message HostOptions {
+    bool quicTransport = 1;             // Enable QUIC Transport
+    bool httpTransport = 2;             // Enable HTTP Transport
+    bool webrtcTransport = 3;           // Enable WebRTC Transport
+    bool mdnsDiscovery = 4;             // Enable MDNS Discovery
+    bool ipv4Only = 5;                  // Enable IPv4 Only
+    int32 listenPort = 6;               // Listen Port for Libp2p
+    repeated IPAddress listenAddrs = 7; // List of Listen Addresses (optional)
+  }
+
+  // Service Configuration
+  message ServiceOptions {
+    bool textile = 1;    // Enable Textile Client and Threads
+    bool mailbox = 2;    // Enable Mailbox
+    bool buckets = 3;    // Enable Buckets
+    bool push = 4;       // Enable Push Notifications
+    bool autoUpdate = 5; // Enable Auto Update Events
+    int32 olcRange = 6;  // OLC Range Value for Local Room (Default: 6)
+  }
+
+  // IP Address Interface
+  message IPAddress {
+    string name = 1;   // Name of Interface
+    string value = 2;  // IP Address of Interface
+    string mac = 3;    // Mac Address of Interface
+    bool internal = 4; // Wether it is a Loopback Interface
+    Family family = 5; // Address Family
+
+    enum Family {
+      IPV4 = 0; // IPv4 Address
+      IPV6 = 1; // IPv6 Address
+    }
+  }
+}
+
+// Response from Connection Request
+message ConnectionResponse {
+  bool success = 1; // True if Host is Active
+  string error = 2; // Error Message if Host is not Active
+}
+
+// Location from GeoIP and OLC information
+message Location {
+  // Location Latitude
+  double latitude = 1;
+
+  // Location Longitude
+  double longitude = 2;
+
+  // Location Placemark Information - Generated
+  Placemark placemark = 3;
+
+  // Contains detailed placemark information.
+  message Placemark {
+    // The name associated with the placemark.
+    string name = 1;
+
+    // The street associated with the placemark.
+    string street = 2;
+
+    // The abbreviated country name, according to the two letter (alpha-2) [ISO
+    // standard](https://www.iso.org/iso-3166-country-codes.html).
+    string isoCountryCode = 3;
+
+    // The name of the country associated with the placemark.
+    string country = 4;
+
+    // The postal code associated with the placemark.
+    string postalCode = 5;
+
+    // The name of the state or province associated with the placemark.
+    string administrativeArea = 6;
+
+    // Additional administrative area information for the placemark.
+    string subAdministrativeArea = 7;
+
+    // The name of the city associated with the placemark.
+    string locality = 8;
+
+    // Additional city-level information for the placemark.
+    string subLocality = 9;
+
+    // The street address associated with the placemark.
+    string thoroughfare = 10;
+
+    // Additional street address information for the placemark.
+    string subThoroughfare = 11;
+  }
+}
+
+// Shared Metadata for Messages on all Protocols
+message Metadata {
+  int64 timestamp = 1; // Unix timestamp
+  string nodeId = 2;   // Node ID
+  bytes signature = 3; // Signature of the message
+  bytes publicKey = 4; // Public Key of the message sender
+}

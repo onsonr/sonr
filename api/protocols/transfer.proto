@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package sonr.protocols.transfer;
+import "api/common/api.proto";
+import "api/common/core.proto";
+import "api/common/data.proto";
+option go_package = "github.com/sonr-io/sonr/pkg/transfer";
+
+// InviteReach is Distance for an Invite
+enum InviteReach {
+  NONE = 0;   // No Reach
+  LOCAL = 1;  // Local Reach
+  REMOTE = 2; // Remote Reach
+  DIRECT = 3; // Direct Reach
+}
+
+// InviteEvent notifies Peer that an Invite has been received
+message InviteEvent {
+  string inviteId = 1;
+  sonr.core.Peer from = 2;
+  sonr.core.Transfer transfer = 3; // Attached Data
+  InviteReach reach = 4;           // Reach of Invite
+}
+
+// Invitation Message sent on RPC
+message InviteRequest {
+  string inviteId = 1;
+  sonr.core.Peer from = 2;         // Users Peer Data
+  sonr.core.Peer to = 3;           // Receivers Peer Data
+  sonr.core.Transfer transfer = 4; // Attached Data
+  InviteReach reach = 5;           // Reach of Invite
+  sonr.core.Metadata metadata = 6; // Metadata
+}
+
+// Reply Message sent on RPC
+message InviteResponse {
+  bool success = 1;                // Success
+  string inviteId = 2;             // Invitation ID
+  string transferId = 3;           // ID of new Transfer
+  InviteReach reach = 4;           // Reach of Invite
+  sonr.core.Metadata metadata = 5; // Metadata
+}

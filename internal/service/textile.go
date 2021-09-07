@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/sonr-io/core/internal/emitter"
 	"github.com/sonr-io/core/internal/host"
-	"github.com/sonr-io/core/internal/logger"
 	"github.com/sonr-io/core/pkg/data"
 	"github.com/sonr-io/core/pkg/util"
+	"github.com/sonr-io/core/tools/emitter"
+	"github.com/sonr-io/core/tools/logger"
 	"github.com/textileio/go-threads/api/client"
 	"github.com/textileio/go-threads/core/thread"
 	"github.com/textileio/go-threads/db"

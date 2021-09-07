@@ -6,12 +6,12 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	ps "github.com/libp2p/go-libp2p-pubsub"
-	"github.com/sonr-io/core/internal/emitter"
 	sh "github.com/sonr-io/core/internal/host"
-	"github.com/sonr-io/core/internal/logger"
 	ac "github.com/sonr-io/core/pkg/account"
 	"github.com/sonr-io/core/pkg/data"
 	"github.com/sonr-io/core/pkg/util"
+	"github.com/sonr-io/core/tools/emitter"
+	"github.com/sonr-io/core/tools/logger"
 	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/sonr-io/core/internal/logger"
+	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/pkg/data"
 	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"

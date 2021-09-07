@@ -6,9 +6,9 @@ import (
 	"path"
 
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/sonr-io/core/internal/logger"
 	"github.com/sonr-io/core/pkg/data"
 	"github.com/sonr-io/core/pkg/util"
+	"github.com/sonr-io/core/tools/logger"
 	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )

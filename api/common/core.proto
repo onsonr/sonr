@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package sonr.core;
+option go_package = "github.com/sonr-io/sonr/internal/common";
+
+// Standard MIME with Additional Extensions
+message MIME {
+  Type type = 1;      // Type of File
+  string subtype = 2; // Extension of File
+  string value = 3;   // Type/Subtype i.e. (image/jpeg)
+
+  enum Type {
+    OTHER = 0; // Other File Type - If cannot derive from Subtype
+    AUDIO = 1; // Sound, Audio Files
+    IMAGE = 2; // Image Files
+    TEXT = 3;  // Text Based Files
+    VIDEO = 4; // Video Files
+    SONR = 5;  // SNR Files
+    URL = 6;   // URL Links
+  }
+}
+
+// Basic Info Sent to Peers to Establish Connections
+message Peer {
+  string sName = 1;    // User Sonr Domain
+  Status status = 2;   // Peer Status
+  Info info = 3;       // Peer Device Info
+  Profile profile = 4; // Peers General Information
+
+  // Peer Info for Device
+  message Info {
+    string model = 1;    // Peers Device Model
+    string hostName = 2; // Peer Host Name
+    string arch = 3;     // Peer Device Architecture
+    string os = 4;       // Peer Operating System
+  }
+
+  // Peers Active Status
+  enum Status {
+    OFFLINE = 0; // Offline - Not Online or Not a Full Node
+    ONLINE = 1;  // Online - Full Node Available
+    AWAY = 2;    // Away - Not Online, but has a full node
+    BUSY = 3;    // Busy - Online, but busy with Transfer
+    GHOST = 4;   // User is Ghost Mode (Not Receiving)
+  }
+}
+
+// General Information about Peer passed during Authentication
+message Profile {
+  string sName = 1;            // Sonr Based Username
+  string firstName = 2;        // General Info
+  string lastName = 3;         // General Info
+  bytes picture = 4;           // Profile Picture
+  string bio = 6;              // User Biography
+  repeated Social socials = 7; // Social Media
+}
+
+// Social Media Item Information
+message Social {
+  bool valid = 1;      // Whether this is a valid Social
+  string username = 2; // Username of Social
+  string url = 3;      // URL to Social
+  bytes picture = 4;   // Profile Picture
+  Type type = 5;       // Type of Social
+
+  // Social Type
+  enum Type {
+    OTHER = 0; // Other Social Network
+    FACEBOOK = 1;
+    TWITTER = 2;
+    MEDIUM = 3;
+    TIKTOK = 4;
+    INSTAGRAM = 5;
+    YOUTUBE = 6;
+    GITHUB = 7;
+    SNAPCHAT = 8;
+    SPOTIFY = 9;
+  }
+}

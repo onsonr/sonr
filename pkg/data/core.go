@@ -9,7 +9,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	msg "github.com/libp2p/go-msgio"
-	"github.com/sonr-io/core/internal/emitter"
+	"github.com/sonr-io/core/tools/emitter"
 )
 
 // ** ─── CALLBACK MANAGEMENT ────────────────────────────────────────────────────────

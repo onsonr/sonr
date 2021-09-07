@@ -7,8 +7,8 @@ import (
 	olc "github.com/google/open-location-code/go"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
-	"github.com/sonr-io/core/internal/logger"
 	util "github.com/sonr-io/core/pkg/util"
+	"github.com/sonr-io/core/tools/logger"
 	"google.golang.org/protobuf/proto"
 )
 

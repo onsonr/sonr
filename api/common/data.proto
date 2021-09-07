@@ -1,0 +1,137 @@
+syntax = "proto3";
+
+package sonr.core;
+import "api/common/api.proto";
+import "api/common/core.proto";
+option go_package = "github.com/sonr-io/sonr/internal/common";
+
+// For Transfer File Payload
+message FileItem {
+  sonr.core.MIME mime = 1; // Standard Mime Type
+  string id = 2;           // Local Asset ID
+  string name = 3;         // File Name without Path
+  string path = 4;         // File Location
+  int32 size = 5;          // File Size in Bytes
+  Thumbnail thumb = 6;     // Thumbnail of File
+}
+
+// Thumbnail of File
+message Thumbnail {
+  bytes buffer = 1; // Thumbnail Buffer
+  string path = 2;  // Thumbnail Path
+
+  enum Type {
+    NONE = 0;   // No Thumbnail
+    BUFFER = 1; // Thumbnail Buffer
+    PATH = 2;   // Thumbnail Path
+  }
+}
+
+// Transfer is Data thats being Passed
+message Transfer {
+  repeated Item items = 1; // Transfer Items
+  string id = 2;           // Transfer ID
+  Profile receiver = 4;    // PROFILE: General Receiver Info
+  Profile owner = 5;       // PROFILE: General Sender Info
+  Metadata metadata = 6;   // METADATA: General Transfer Info
+
+  // Item in Transfer
+  message Item {
+    Type type = 1; // Type of Item
+
+    // Attached Data
+    oneof data {
+      FileItem file = 7; // FILE: File Item
+      UrlItem url = 8;   // URL: Url Item
+    }
+
+    enum Type {
+      NONE = 0; // No Item
+      FILE = 1; // File Item
+      URL = 2;  // URL Item
+    }
+  }
+}
+
+// Sonr Url Link Contains metadata of provided URL
+message UrlItem {
+  sonr.core.MIME mime = 1;             // Standard Mime Type
+  string url = 2;                      // OG URL Link
+  string title = 3;                    // Meta Field for Title
+  string type = 4;                     // OG Type
+  string site = 5;                     // Meta field for site
+  string siteName = 6;                 // Meta field for sitename
+  string description = 7;              // Meta field for description
+  repeated OpenGraphImage images = 8;  // Images
+  repeated OpenGraphVideo videos = 9;  // Videos
+  repeated OpenGraphAudio audios = 10; // Audios
+  TwitterCard twitter = 11;            // Twitter Card
+
+  // OpenGraph Image
+  message OpenGraphImage {
+    string url = 1;       // `meta:"og:image,og:image:url"`
+    string secureUrl = 2; // `meta:"og:image:secure_url"`
+    int32 width = 3;      // `meta:"og:image:width"`
+    int32 height = 4;     // `meta:"og:image:height"`
+    string type = 5;      // `meta:"og:image:type"`
+  }
+
+  // OpenGraph Video
+  message OpenGraphVideo {
+    string url = 1;       // `meta:"og:video,og:video:url"`
+    string secureUrl = 2; // `meta:"og:video:secure_url"`
+    int32 width = 3;      // `meta:"og:video:width"`
+    int32 height = 4;     // `meta:"og:video:height"`
+    string type = 5;      // `meta:"og:video:type"`
+  }
+
+  // OpenGraph Audio
+  message OpenGraphAudio {
+    string url = 1;       // `meta:"og:audio,og:audio:url"`
+    string secureUrl = 2; // `meta:"og:audio:secure_url"`
+    string type = 3;      // `meta:"og:audio:type"`
+  }
+
+  // Twitter Card
+  message TwitterCard {
+    string card = 1;            // `meta:"twitter:card"`
+    string site = 2;            // `meta:"twitter:site"`
+    string siteId = 3;          // `meta:"twitter:site:id"`
+    string creator = 4;         // `meta:"twitter:creator"`
+    string creatorId = 5;       // `meta:"twitter:creator:id"`
+    string description = 6;     // `meta:"twitter:description"`
+    string title = 7;           // `meta:"twitter:title"`
+    string image = 8;           // `meta:"twitter:image,twitter:image:src"`
+    string imageAlt = 9;        // `meta:"twitter:image:alt"`
+    string url = 10;            // `meta:"twitter:url"`
+    Player player = 11;         // Twitter Item Player
+    IPhone iphone = 12;         // Twitter iPhone Data
+    IPad ipad = 13;             // Twitter iPad Data
+    GooglePlay googlePlay = 14; // Twitter Android Data
+
+    message Player {
+      string url = 1;    // `meta:"twitter:player"`
+      int32 width = 2;   // `meta:"twitter:width"`
+      int32 height = 3;  // `meta:"twitter:height"`
+      string stream = 4; // `meta:"twitter:stream"`
+    }
+
+    message IPhone {
+      string name = 1; // `meta:"twitter:app:name:iphone"`
+      string id = 2;   // `meta:"twitter:app:id:iphone"`
+      string url = 3;  // `meta:"twitter:app:url:iphone"`
+    }
+
+    message IPad {
+      string name = 1; // `meta:"twitter:app:name:ipad"`
+      string id = 2;   // `meta:"twitter:app:id:ipad"`
+      string url = 3;  // `meta:"twitter:app:url:ipad"`
+    }
+
+    message GooglePlay {
+      string name = 1; // `meta:"twitter:app:name:googleplay"`
+      string id = 2;   // `meta:"twitter:app:id:googleplay"`
+      string url = 3;  // `meta:"twitter:app:url:googleplay"`
+    }
+  }
+}

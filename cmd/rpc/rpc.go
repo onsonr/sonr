@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/sonr-io/core/internal/logger"
+	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/internal/room"
 	"github.com/sonr-io/core/pkg/account"
 	"github.com/sonr-io/core/pkg/client"

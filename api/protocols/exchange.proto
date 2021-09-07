@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package sonr.protocols.exchange;
+import "api/common/core.proto";
+option go_package = "github.com/sonr-io/sonr/pkg/exchange";
+
+// Message Sent when peer messages Local Room
+message ExchangeEvent {
+  string olc = 1;          // OLC Code of Topic
+  string id = 2;           // Peer ID
+  sonr.core.Peer peer = 3; // User Information
+  Subject subject = 4;     // Local Event Subject
+
+  // Local Type Event
+  enum Subject {
+    JOIN = 0;    // Peer has joined wants Info
+    STANDBY = 1; // Peer is taking break from lobby
+    RESUME = 2;  // Peer has rejoined Lobby
+    UPDATE = 3;  // Peer has changed position
+    EXIT = 4;    // Peer has Exited
+  }
+}
+
+// JoinExchangeRequest is Message for Signing Request (Hmac Sha256)
+message JoinExchangeRequest {
+  // Value to be signed
+  string sName = 1; // SName combined with Device ID and Hashed
+  sonr.core.Peer peer = 2;
+}
+
+// JoinExchangeResponse is Message for Signing Response (Hmac Sha256)
+message JoinExchangeResponse {
+  bool success = 1;
+  string sName = 2;        // SName combined with Device ID and Hashed
+  sonr.core.Peer peer = 3; // Peer Data
+}
+
+// UpdateRequest is message for Exchange Protocol
+message UpdateRequest {
+  string olc = 1;          // Users Open Location Code
+  sonr.core.Peer peer = 2; // Users Peer Data
+}

@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package sonr.protocols.mailbox;
+option go_package = "github.com/sonr-io/sonr/pkg/mailbox";
+
+// Received Mail Event
+message MailEvent {
+  int32 createdAt = 1; // Time of Creation
+  string to = 2;       // Recipient
+  bytes invite = 3;    // Invite Request
+  string from = 4;     // Sender
+  int32 readAt = 5;    // Time of Read
+  bytes signature = 6; // Signature for Verification
+  string iD = 7;       // Unique ID for Message
+}
+
+// Mailbox message handling
+message DeleteMailRequest {
+  string mailId = 1; // Unique ID for Message
+}
+
+// Mailbox message handling
+message DeleteMailResponse {
+  string mailId = 1; // Unique ID for Message
+  bool success = 2;  // Successful Action
+  string error = 3;  // Error Message
+}
+
+// Mailbox message handling
+message ReadMailRequest {
+  string mailId = 1; // Unique ID for Message
+}
+
+// Mailbox message handling
+message ReadMailResponse {
+  string mailId = 1; // Unique ID for Message
+  bool success = 2;  // Successful Action
+  string error = 3;  // Error Message
+}

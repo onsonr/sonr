@@ -5,9 +5,9 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/crypto"
 	ps "github.com/libp2p/go-libp2p-pubsub"
-	"github.com/sonr-io/core/internal/logger"
 	"github.com/sonr-io/core/pkg/data"
 	"github.com/sonr-io/core/pkg/util"
+	"github.com/sonr-io/core/tools/logger"
 	"google.golang.org/protobuf/proto"
 )
 

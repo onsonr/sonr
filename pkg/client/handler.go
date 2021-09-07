@@ -4,10 +4,10 @@ import (
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
-	"github.com/sonr-io/core/internal/emitter"
-	"github.com/sonr-io/core/internal/logger"
 	data "github.com/sonr-io/core/pkg/data"
 	"github.com/sonr-io/core/pkg/util"
+	"github.com/sonr-io/core/tools/emitter"
+	"github.com/sonr-io/core/tools/logger"
 	"go.uber.org/zap"
 
 	"google.golang.org/protobuf/proto"

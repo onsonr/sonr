@@ -16,9 +16,9 @@ import (
 	psub "github.com/libp2p/go-libp2p-pubsub"
 	discovery "github.com/libp2p/go-libp2p/p2p/discovery"
 	"github.com/multiformats/go-multiaddr"
-	"github.com/sonr-io/core/internal/emitter"
-	"github.com/sonr-io/core/internal/logger"
 	"github.com/sonr-io/core/pkg/data"
+	"github.com/sonr-io/core/tools/emitter"
+	"github.com/sonr-io/core/tools/logger"
 	"go.uber.org/zap"
 )
 

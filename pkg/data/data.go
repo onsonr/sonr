@@ -10,8 +10,8 @@ import (
 	sync "sync"
 
 	msg "github.com/libp2p/go-msgio"
-	"github.com/sonr-io/core/internal/emitter"
 	util "github.com/sonr-io/core/pkg/util"
+	"github.com/sonr-io/core/tools/emitter"
 	"google.golang.org/protobuf/proto"
 )
 

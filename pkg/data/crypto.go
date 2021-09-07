@@ -11,7 +11,7 @@ import (
 
 	crypto "github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/sonr-io/core/internal/logger"
+	"github.com/sonr-io/core/tools/logger"
 	"github.com/textileio/go-threads/core/thread"
 	"go.uber.org/zap"
 )

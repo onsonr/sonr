@@ -1,4 +1,4 @@
-package host
+package net
 
 import (
 	"fmt"
@@ -9,10 +9,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
-	"github.com/sonr-io/core/pkg/data"
-	"github.com/sonr-io/core/tools/emitter"
-	"github.com/sonr-io/core/tools/logger"
-	"go.uber.org/zap"
 )
 
 // ** ─── Address MANAGEMENT ────────────────────────────────────────────────────────
@@ -63,59 +59,29 @@ func FreePort() (int, error) {
 }
 
 // Return Device Listening Addresses ^ //
-func PublicAddrStrs(cr *data.ConnectionRequest) ([]string, error) {
+func PublicAddrStrs() ([]string, error) {
 	// Initialize
-	opts := cr.GetHostOptions()
 	listenAddrs := []string{}
 	hasIpv4 := false
 	hasIpv6 := false
 
-	// Set Initial Port
+	// // Set Initial Port
 	port := 52006
 
-	// Check for Port
-	if opts.GetListenPort() != 0 {
-		// Set Port from Options
-		port = int(opts.GetListenPort())
-	} else {
-		// Set Port
-		p, err := FreePort()
-		if err != nil {
-			logger.Error("Failed to find free port.", zap.Error(err))
-		} else {
-			port = p
-		}
+	// 	// Get iPv4 Addresses
+	ip4Addrs, err := iPv4Addrs(port)
+	if err == nil {
+		hasIpv4 = true
 	}
 
-	// Check for Listen Addresses
-	if len(opts.GetListenAddrs()) == 0 {
-		// Get iPv4 Addresses
-		ip4Addrs, err := iPv4Addrs(port)
-		if err == nil {
-			hasIpv4 = true
-		}
+	// Add iPv4 Addresses
+	if hasIpv4 {
+		listenAddrs = append(listenAddrs, ip4Addrs...)
+	}
 
-		// Add iPv4 Addresses
-		if hasIpv4 {
-			listenAddrs = append(listenAddrs, ip4Addrs...)
-		}
-
-		// Neither iPv6 nor iPv4 found
-		if !hasIpv4 && !hasIpv6 {
-			return nil, errors.New("No IP Addresses found")
-		}
-	} else {
-		for _, addr := range opts.GetListenAddrs() {
-			// Get Address String
-			addrStr, err := addr.MultiAddrStr(opts.GetIpv4Only(), port)
-			if err != nil {
-				logger.Error("Failed to find Addr Strings.", zap.Error(err))
-				continue // Skip this address
-			}
-
-			// Append Address List
-			listenAddrs = append(listenAddrs, addrStr)
-		}
+	// Neither iPv6 nor iPv4 found
+	if !hasIpv4 && !hasIpv6 {
+		return nil, errors.New("No IP Addresses found")
 	}
 
 	// Return Listen Addr Strings
@@ -127,37 +93,23 @@ func iPv4Addrs(port int) ([]string, error) {
 	// Find Hos
 	osHost, err := os.Hostname()
 	if err != nil {
-		logger.Error("Failed to find HostName.", zap.Error(err))
 		return nil, err
 	}
 
 	// Find Public Address Strings
 	addrs, err := net.LookupIP(osHost)
 	if err != nil {
-		logger.Error("Failed to find IP.", zap.Error(err))
 		return nil, err
 	}
 
 	// Iterate through addresses
 	for _, addr := range addrs {
-		// Set IPv4
 		if ipv4 := addr.To4(); ipv4 != nil {
-			ip4 := ipv4.String()
 			return []string{
-				fmt.Sprintf("/ip4/%s/tcp/%d", ip4, port),
+				fmt.Sprintf("/ip4/%s/tcp/%d", ipv4.String(), port),
 			}, nil
 
 		}
 	}
-
 	return nil, errors.New("No IPV4 found")
-}
-
-// Handle Post-Connection result on hostNode
-func handleConnectionResult(em *emitter.Emitter, hostActive bool, textileActive bool, mdnsActive bool) {
-	em.Emit(emitter.EMIT_CONNECTED, &data.ConnectionResponse{
-		HostActive:    hostActive,
-		MdnsActive:    mdnsActive,
-		TextileActive: textileActive,
-	})
 }
