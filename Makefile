@@ -111,7 +111,7 @@ protobuf:
 	@echo "Generating Protobuf Go code..."
 	@protoc $(PROTO_LIST_ALL) --proto_path=$(ROOT_DIR) $(PROTO_GEN_GO) $(GO_OPT_FLAG)
 	@echo "Generating Protobuf Go RPC code..."
-	@protoc -I/usr/local/include -I. --plugin=protoc-gen-custom=$(falafel) --custom_opt=$(opts) --proto_path=$(ROOT_DIR) $(PROTO_GEN_RPC) proto/client/rpc.proto
+	@protoc $(PROTO_LIST_CLIENT) --plugin=protoc-gen-custom=$(falafel) --custom_opt=$(opts) --proto_path=$(ROOT_DIR) $(PROTO_GEN_RPC) $(GRPC_OPT_FLAG)
 	@echo "Generating Protobuf Dart code..."
 	@protoc $(PROTO_LIST_CLIENT) --proto_path=$(ROOT_DIR) $(PROTO_GEN_DART)
 	@protoc $(PROTO_LIST_COMMON) --proto_path=$(ROOT_DIR) $(PROTO_GEN_DART)
