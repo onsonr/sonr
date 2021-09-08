@@ -1,4 +1,4 @@
-package snrmobile
+package bind
 
 import (
 	"context"

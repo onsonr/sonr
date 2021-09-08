@@ -2,10 +2,8 @@ package host
 
 import (
 	"context"
-	"time"
 
 	"github.com/libp2p/go-libp2p"
-	connmgr "github.com/libp2p/go-libp2p-connmgr"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -59,12 +57,7 @@ func NewHost(ctx context.Context, kc device.Keychain) (*SHost, error) {
 	h, err := libp2p.New(
 		ctx,
 		libp2p.ListenAddrStrings(addrs...),
-		libp2p.ConnectionManager(connmgr.NewConnManager(
-			100,         // Lowwater
-			400,         // HighWater,
-			time.Minute, // GracePeriod
-		)),
-
+		libp2p.Identity(privKey),
 		libp2p.DefaultStaticRelays(),
 		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
 			// Create DHT

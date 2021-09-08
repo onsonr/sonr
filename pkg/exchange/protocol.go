@@ -2,10 +2,8 @@ package exchange
 
 import (
 	"context"
-	"fmt"
 
 	ps "github.com/libp2p/go-libp2p-pubsub"
-	psr "github.com/libp2p/go-libp2p-pubsub-router"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/tools/emitter"
@@ -23,7 +21,7 @@ const (
 
 // TransferProtocol type
 type ExchangeProtocol struct {
-	*psr.PubsubValueStore
+	//*psr.PubsubValueStore
 	ctx            context.Context
 	host           *host.SHost      // host
 	emitter        *emitter.Emitter // Handle to signal when done
@@ -38,10 +36,6 @@ type ExchangeProtocol struct {
 func NewProtocol(host *host.SHost, loc *common.Location, em *emitter.Emitter) (*ExchangeProtocol, error) {
 	// Create PubSub Value Store
 	olc := loc.OLC(6)
-	r, err := psr.NewPubsubValueStore(context.Background(), host.Host, host.Pubsub(), ExchangeValidator{})
-	if err != nil {
-		return nil, err
-	}
 
 	// Create Exchange Topic
 	topic, err := host.Pubsub().Join(olc)
@@ -62,14 +56,14 @@ func NewProtocol(host *host.SHost, loc *common.Location, em *emitter.Emitter) (*
 	}
 
 	exchProtocol := &ExchangeProtocol{
-		host:             host,
-		emitter:          em,
-		PubsubValueStore: r,
-		topic:            topic,
-		subscription:     sub,
-		eventHandler:     handler,
-		exchangeEvents:   make(chan *ExchangeEvent),
-		olc:              olc,
+		host:    host,
+		emitter: em,
+		//PubsubValueStore: r,
+		topic:          topic,
+		subscription:   sub,
+		eventHandler:   handler,
+		exchangeEvents: make(chan *ExchangeEvent),
+		olc:            olc,
 	}
 
 	go exchProtocol.handleExchangeEvents(context.Background())
@@ -80,26 +74,26 @@ func NewProtocol(host *host.SHost, loc *common.Location, em *emitter.Emitter) (*
 // Find peer by name
 func (p *ExchangeProtocol) Find(sName string) (*common.Peer, error) {
 	// Find peer from sName in the store
-	buf, err := p.PubsubValueStore.GetValue(context.Background(), fmt.Sprintf("store/%s", sName))
-	if err != nil {
-		return nil, err
-	}
+	// buf, err := p.PubsubValueStore.GetValue(context.Background(), fmt.Sprintf("store/%s", sName))
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	// Unmarshal Peer from buffer
 	peer := &common.Peer{}
-	err = proto.Unmarshal(buf, peer)
-	if err != nil {
-		return nil, err
-	}
+	// err = proto.Unmarshal(buf, peer)
+	// if err != nil {
+	// 	return nil, err
+	// }
 	return peer, nil
 }
 
 func (p *ExchangeProtocol) Update(sName string, buf []byte) error {
 	// Determine Key and Add Value to Store
-	err := p.PubsubValueStore.PutValue(context.Background(), fmt.Sprintf("store/%s", sName), buf)
-	if err != nil {
-		return err
-	}
+	// err := p.PubsubValueStore.PutValue(context.Background(), fmt.Sprintf("store/%s", sName), buf)
+	// if err != nil {
+	// 	return err
+	// }
 	return nil
 }
 

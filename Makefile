@@ -28,7 +28,7 @@ PROTO_DIR_DART=$(SONR_ROOT_DIR)/plugin/lib/src
 falafel=$(which falafel)
 
 # Name of the package for the generated APIs.
-pkg="snrmobile"
+pkg="bind"
 
 # The package where the protobuf definitions originally are found.
 target_pkg="github.com/sonr-io/core/proto"
@@ -48,7 +48,6 @@ MODULE_NAME=github.com/sonr-io/core
 GO_OPT_FLAG=--go_opt=module=${MODULE_NAME}
 GRPC_OPT_FLAG=--go-grpc_opt=module=${MODULE_NAME}
 PROTO_GEN_GO="--go_out=."
-PROTO_GEN_RPC="--go-grpc_out=."
 PROTO_GEN_DOCS="--doc_out=docs"
 PROTO_GEN_DART="--dart_out=grpc:$(PROTO_DIR_DART)"
 
@@ -112,7 +111,7 @@ protobuf:
 	@echo "Generating Protobuf Go code..."
 	@protoc $(PROTO_LIST_ALL) --proto_path=$(ROOT_DIR) $(PROTO_GEN_GO) $(GO_OPT_FLAG)
 	@echo "Generating Protobuf Go RPC code..."
-	@protoc $(PROTO_LIST_CLIENT) --plugin=protoc-gen-custom=$(falafel) --custom_opt=$(opts) --proto_path=$(ROOT_DIR) $(PROTO_GEN_RPC) $(GRPC_OPT_FLAG)
+	@protoc -I/usr/local/include -I. --plugin=protoc-gen-custom=$(falafel) --custom_opt=$(opts) --proto_path=$(ROOT_DIR) $(PROTO_GEN_RPC) proto/client/rpc.proto
 	@echo "Generating Protobuf Dart code..."
 	@protoc $(PROTO_LIST_CLIENT) --proto_path=$(ROOT_DIR) $(PROTO_GEN_DART)
 	@protoc $(PROTO_LIST_COMMON) --proto_path=$(ROOT_DIR) $(PROTO_GEN_DART)

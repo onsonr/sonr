@@ -1,15 +1,76 @@
 {
-    "protoc": {
-        "path": "/usr/local/bin/protoc",
-        "options": [
-            "--proto_path=internal/models",
-        ]
+    "[dart]": {
+        "editor.formatOnSave": true,
+        "editor.formatOnType": true,
+        "editor.rulers": [],
+        "editor.selectionHighlight": false,
+        "editor.suggest.snippetsPreventQuickSuggestions": false,
+        "editor.suggestSelection": "first",
+        "editor.tabCompletion": "onlySnippets",
+        "editor.wordBasedSuggestions": false,
+        "editor.defaultFormatter": "Dart-Code.dart-code"
     },
+    "dart.showDartDeveloperLogs": true,
+    "dart.lineLength": 150,
+    "dart.promptToGetPackages": false,
+    "dart.runPubGetOnPubspecChanges": true,
+    "[go]": {
+        "editor.formatOnSave": true,
+        "editor.snippetSuggestions": "none",
+    },
+    "[go.mod]": {
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true,
+        },
+    },
+    "go.lintFlags": [
+        "--fast",
+        "--allow-parallel-runners"
+    ],
+    "gopls": {
+        "usePlaceholders": true,
+        "completeUnimported": true,
+    },
+    "go.lintTool": "golangci-lint",
+    "go.autocompleteUnimportedPackages": true,
+    "go.useCodeSnippetsOnFunctionSuggestWithoutType": true,
+    "go.toolsManagement.autoUpdate": true,
     "files.exclude": {
-        "**/**.pb.**": true,
+        "**/.kodiak.toml" :true,
+        "**/package-lock.json": true,
+        "**/plasmic.lock": true,
+        ".dart_tool": true,
+        "**/**.pb.go": true,
+        "**/.classpath": true,
+        "**/.factorypath": true,
+        "**/.packages": true,
+        "**/.project": true,
+        "**/.settings": true,
+        "**/go.sum": true,
+        "Contents.json": true,
+        ".devcontainer": true,
+        ".gitmodules":true,
+        ".idea": true,
+        "LICENSE":true,
+
+        // Project Related
+        "**/sonr.wiki": true,
     },
-    "github-actions.workflows.pinned.workflows": [
-        ".github/workflows/cd.yml",
-        ".github/workflows/ci.yml"
-    ]
+    "[yaml]": {
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2,
+        "editor.autoIndent": "keep",
+        "gitlens.codeLens.scopes": [
+            "document"
+        ],
+        "editor.quickSuggestions": {
+            "other": true,
+            "comments": false,
+            "strings": true
+        }
+    },
+    "protoc": {
+        "compile_all_path": "${workspaceRoot}/proto",
+    },
 }
