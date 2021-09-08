@@ -25,7 +25,22 @@ BIND_ANDROID_ARTIFACT= $(BIND_DIR_ANDROID)/io.sonr.core.aar
 
 # @ Proto Directories
 PROTO_DIR_DART=$(SONR_ROOT_DIR)/plugin/lib/src
+falafel=$(which falafel)
 
+# Name of the package for the generated APIs.
+pkg="snrmobile"
+
+# The package where the protobuf definitions originally are found.
+target_pkg="github.com/sonr-io/core/proto"
+
+# A mapping from grpc service to name of the custom listeners. The grpc server
+# must be configured to listen on these.
+listeners="location=locationLis profileunlocker=profileUnlockerLis"
+
+# Set to 1 to create boiler plate grpc client code and listeners. If more than
+# one proto file is being parsed, it should only be done once.
+mem_rpc=1
+opts="package_name=$(pkg),target_package=$(target_pkg),mem_rpc=$(mem_rpc)"
 PROTO_LIST_ALL=${ROOT_DIR}/proto/**/*.proto
 PROTO_LIST_CLIENT=${ROOT_DIR}/proto/client/*.proto
 PROTO_LIST_COMMON=${ROOT_DIR}/proto/common/*.proto
@@ -97,7 +112,7 @@ protobuf:
 	@echo "Generating Protobuf Go code..."
 	@protoc $(PROTO_LIST_ALL) --proto_path=$(ROOT_DIR) $(PROTO_GEN_GO) $(GO_OPT_FLAG)
 	@echo "Generating Protobuf Go RPC code..."
-	@protoc $(PROTO_LIST_ALL) --proto_path=$(ROOT_DIR) $(PROTO_GEN_RPC) $(GRPC_OPT_FLAG)
+	@protoc $(PROTO_LIST_CLIENT) --plugin=protoc-gen-custom=$(falafel) --custom_opt=$(opts) --proto_path=$(ROOT_DIR) $(PROTO_GEN_RPC) $(GRPC_OPT_FLAG)
 	@echo "Generating Protobuf Dart code..."
 	@protoc $(PROTO_LIST_CLIENT) --proto_path=$(ROOT_DIR) $(PROTO_GEN_DART)
 	@protoc $(PROTO_LIST_COMMON) --proto_path=$(ROOT_DIR) $(PROTO_GEN_DART)

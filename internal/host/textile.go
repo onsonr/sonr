@@ -3,7 +3,6 @@ package host
 import (
 	"time"
 
-	"github.com/textileio/go-threads/core/thread"
 	"github.com/textileio/textile/v2/api/common"
 )
 
@@ -31,9 +30,9 @@ func (h *SHost) startTextileClient(apiKey string, apiSecret string) error {
 	return nil
 }
 
-func (h *SHost) threadIdentity() thread.Identity {
-	return thread.NewLibp2pIdentity(h.privKey)
-}
+// func (h *SHost) threadIdentity() thread.Identity {
+// 	return thread.NewLibp2pIdentity(h.privKey)
+// }
 
 // var (
 // 	isMailReady    = false

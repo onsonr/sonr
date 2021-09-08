@@ -18,7 +18,6 @@ import (
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/tools/emitter"
 	"github.com/sonr-io/core/tools/net"
-	"github.com/textileio/go-threads/api/client"
 )
 
 type SHost struct {
@@ -36,9 +35,6 @@ type SHost struct {
 	disc *dsc.RoutingDiscovery
 	kdht *dht.IpfsDHT
 	mdns discovery.Service
-
-	// Textile
-	client *client.Client
 
 	// Rooms
 	pubsub *psub.PubSub
