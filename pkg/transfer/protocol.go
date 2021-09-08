@@ -145,7 +145,7 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 		for _, m := range req.GetTransfer().GetItems() {
 			wg.Add(1)
 			r := newReader(m, p.emitter)
-			f, err := device.Config.Create(m.GetFile().Name)
+			f, err := device.KCConfig.Create(m.GetFile().Name)
 			if err != nil {
 				p.emitter.Emit("Error", err)
 			}

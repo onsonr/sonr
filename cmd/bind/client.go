@@ -32,10 +32,31 @@ func Start(reqBytes []byte) {
 		panic(err)
 	}
 
-	logger.Info("Initialize Request", zap.String("JSON:", initReq.String()))
+	// Get Device Paths
+	opts := make([]device.FSOption, 0)
+	// Check FSOptions
+	if initReq.GetFsoptions() != nil {
+		// Set Temporary Path
+		opts[0] = device.FSOption{
+			Path: initReq.GetFsoptions().GetCacheDir(),
+			Type: device.Temporary,
+		}
+
+		// Set Documents Path
+		opts[1] = device.FSOption{
+			Path: initReq.GetFsoptions().GetDocumentsDir(),
+			Type: device.Documents,
+		}
+
+		// Set Support Path
+		opts[2] = device.FSOption{
+			Path: initReq.GetFsoptions().GetSupportDir(),
+			Type: device.Support,
+		}
+	}
 
 	// Initialize Device
-	kc, err := device.Init()
+	kc, err := device.Init(opts...)
 	if err != nil {
 		logger.Panic("Failed to initialize Device", zap.Error(err))
 	}

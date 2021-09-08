@@ -42,7 +42,7 @@ type keychain struct {
 
 // Exists checks if a key pair exists in the keychain.
 func (kc *keychain) Exists(kp KeyPair) bool {
-	return Config.Exists(kp.Path())
+	return KCConfig.Exists(kp.Path())
 }
 
 // GetKeyPair gets a key pair from the keychain.
@@ -102,7 +102,7 @@ func (kc *keychain) GetPrivKey(key KeyPair) (crypto.PrivKey, error) {
 // RemoveKeyPair removes a key from the keychain.
 func (kc *keychain) RemoveKeyPair(key KeyPair) error {
 	if kc.Exists(key) {
-		return Config.Delete(key.Path())
+		return KCConfig.Delete(key.Path())
 	} else {
 		return errors.New("Keychain not loaded")
 	}
@@ -112,7 +112,7 @@ func (kc *keychain) RemoveKeyPair(key KeyPair) error {
 // Get Pub/Priv Key Pair for Account
 func (k *keychain) accountKeyPair() (crypto.PubKey, crypto.PrivKey, error) {
 	// Get Buffer
-	dat, err := Config.ReadFile(Account.Path())
+	dat, err := KCConfig.ReadFile(Account.Path())
 	if err != nil {
 		return nil, nil, err
 	}
@@ -131,7 +131,7 @@ func (k *keychain) accountKeyPair() (crypto.PubKey, crypto.PrivKey, error) {
 // Get Pub/Priv Key Pair for Group
 func (k *keychain) groupKeyPair() (crypto.PubKey, crypto.PrivKey, error) {
 	// Get Buffer
-	dat, err := Config.ReadFile(Group.Path())
+	dat, err := KCConfig.ReadFile(Group.Path())
 	if err != nil {
 		return nil, nil, err
 	}
@@ -150,7 +150,7 @@ func (k *keychain) groupKeyPair() (crypto.PubKey, crypto.PrivKey, error) {
 // Get Pub/Priv Key Pair for Link
 func (k *keychain) linkKeyPair() (crypto.PubKey, crypto.PrivKey, error) {
 	// Get Buffer
-	dat, err := Config.ReadFile(Link.Path())
+	dat, err := KCConfig.ReadFile(Link.Path())
 	if err != nil {
 		return nil, nil, err
 	}

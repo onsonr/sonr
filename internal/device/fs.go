@@ -16,45 +16,83 @@ type DeviceOptions struct {
 }
 
 var (
-	Config   *config.Config
-	HomePath string
+	KCConfig    *config.Config
+	DocsPath    string
+	TempPath    string
+	SupportPath string
 )
 
+type FSDirType int
+
+const (
+	Support FSDirType = iota
+	Temporary
+	Documents
+)
+
+type FSOption struct {
+	Path string
+	Type FSDirType
+}
+
 // Init initializes the keychain and returns a Keychain.
-func Init() (Keychain, error) {
-	// Create Device Config
-	configDirs := config.New(VendorName(), AppName())
+func Init(opts ...FSOption) (Keychain, error) {
+	// Check if Opts are set
+	if len(opts) == 0 {
+		// Create Device Config
+		configDirs := config.New(VendorName(), AppName())
 
-	// optional: local path has the highest priority
-	folder := configDirs.QueryFolderContainsFile("setting.json")
-	if folder != nil {
-		data, err := folder.ReadFile("setting.json")
-		if err != nil {
-			return nil, err
+		// optional: local path has the highest priority
+		folder := configDirs.QueryFolderContainsFile("setting.json")
+		if folder != nil {
+			data, err := folder.ReadFile("setting.json")
+			if err != nil {
+				return nil, err
+			}
+			json.Unmarshal(data, &KCConfig)
+			logger.Debug("Loaded Config from Disk")
+			KCConfig = folder
+			return loadKeychain()
+		} else {
+			data, err := json.Marshal(&KCConfig)
+			if err != nil {
+				return nil, err
+			}
+
+			// Stores to user folder
+			folders := configDirs.QueryFolders(config.Support)
+			err = folders[0].WriteFile("setting.json", data)
+			if err != nil {
+				return nil, err
+			}
+
+			// Create Keychain
+			logger.Debug("Created new Config")
+			KCConfig = folders[0]
+			return newKeychain()
 		}
-		json.Unmarshal(data, &Config)
-		logger.Debug("Loaded Config from Disk")
-		Config = folder
-		return loadKeychain()
 	} else {
-		data, err := json.Marshal(&Config)
-		if err != nil {
-			return nil, err
+		// Set Paths from Opts
+		for _, opt := range opts {
+			switch opt.Type {
+			case Support:
+				SupportPath = opt.Path
+			case Temporary:
+				TempPath = opt.Path
+			case Documents:
+				DocsPath = opt.Path
+			}
 		}
 
-		// Stores to user folder
-		folders := configDirs.QueryFolders(config.Global)
-		err = folders[0].WriteFile("setting.json", data)
-		if err != nil {
-			return nil, err
+		// Create Device Config
+		KCConfig = &config.Config{
+			Path: SupportPath,
+			Type: config.Support,
 		}
 
 		// Create Keychain
-		logger.Debug("Created new Config")
-		Config = folders[0]
 		return newKeychain()
 	}
-
 }
 
 // loadKeychain loads a keychain from a file.
@@ -111,7 +149,7 @@ func writeKey(kp KeyPair, privKey crypto.PrivKey) error {
 		return err
 	}
 
-	err = Config.WriteFile(kp.Path(), buf)
+	err = KCConfig.WriteFile(kp.Path(), buf)
 	if err != nil {
 		return err
 	}

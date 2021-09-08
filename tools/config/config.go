@@ -10,7 +10,7 @@ type ConfigType int
 
 const (
 	System ConfigType = iota
-	Global
+	Support
 	All
 	Existing
 	Local
@@ -92,7 +92,7 @@ func (c ConfigDir) QueryFolders(configType ConfigType) []*Config {
 		return []*Config{c.QueryCacheFolder()}
 	}
 	var result []*Config
-	if c.LocalPath != "" && configType != System && configType != Global {
+	if c.LocalPath != "" && configType != System && configType != Support {
 		result = append(result, &Config{
 			Path: c.LocalPath,
 			Type: Local,
@@ -101,10 +101,10 @@ func (c ConfigDir) QueryFolders(configType ConfigType) []*Config {
 	if configType != System && configType != Local {
 		result = append(result, &Config{
 			Path: c.joinPath(GlobalSettingFolder()),
-			Type: Global,
+			Type: Support,
 		})
 	}
-	if configType != Global && configType != Local {
+	if configType != Support && configType != Local {
 		for _, root := range SystemSettingFolders() {
 			result = append(result, &Config{
 				Path: c.joinPath(root),
