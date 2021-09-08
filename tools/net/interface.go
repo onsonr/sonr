@@ -62,28 +62,20 @@ func FreePort() (int, error) {
 func PublicAddrStrs() ([]string, error) {
 	// Initialize
 	listenAddrs := []string{}
-	hasIpv4 := false
-	hasIpv6 := false
 
 	// // Set Initial Port
-	port := 52006
+	port, err := FreePort()
+	if err != nil {
+		return nil, err
+	}
 
 	// 	// Get iPv4 Addresses
 	ip4Addrs, err := iPv4Addrs(port)
-	if err == nil {
-		hasIpv4 = true
+	if err != nil {
+		return nil, err
 	}
 
-	// Add iPv4 Addresses
-	if hasIpv4 {
-		listenAddrs = append(listenAddrs, ip4Addrs...)
-	}
-
-	// Neither iPv6 nor iPv4 found
-	if !hasIpv4 && !hasIpv6 {
-		return nil, errors.New("No IP Addresses found")
-	}
-
+	listenAddrs = append(listenAddrs, ip4Addrs...)
 	// Return Listen Addr Strings
 	return listenAddrs, nil
 }

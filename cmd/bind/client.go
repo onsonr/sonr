@@ -37,22 +37,22 @@ func Start(reqBytes []byte) {
 	// Check FSOptions
 	if initReq.GetFsoptions() != nil {
 		// Set Temporary Path
-		opts[0] = device.FSOption{
+		opts = append(opts, device.FSOption{
 			Path: initReq.GetFsoptions().GetCacheDir(),
 			Type: device.Temporary,
-		}
+		})
 
 		// Set Documents Path
-		opts[1] = device.FSOption{
+		opts = append(opts, device.FSOption{
 			Path: initReq.GetFsoptions().GetDocumentsDir(),
 			Type: device.Documents,
-		}
+		})
 
 		// Set Support Path
-		opts[2] = device.FSOption{
+		opts = append(opts, device.FSOption{
 			Path: initReq.GetFsoptions().GetSupportDir(),
 			Type: device.Support,
-		}
+		})
 	}
 
 	// Initialize Device
