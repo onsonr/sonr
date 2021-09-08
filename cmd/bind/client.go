@@ -21,7 +21,7 @@ type Client struct {
 
 var client *Client
 
-func Initialize(reqBytes []byte) error {
+func Start(reqBytes []byte) {
 	ctx := context.Background()
 	logger.Init(true)
 
@@ -29,7 +29,7 @@ func Initialize(reqBytes []byte) error {
 	initReq := &node.InitializeRequest{}
 	err := proto.Unmarshal(reqBytes, initReq)
 	if err != nil {
-		return err
+		panic(err)
 	}
 
 	logger.Info("Initialize Request", zap.String("JSON:", initReq.String()))
@@ -37,12 +37,12 @@ func Initialize(reqBytes []byte) error {
 	// Initialize Device
 	kc, err := device.Init()
 	if err != nil {
-		return err
+		logger.Panic("Failed to initialize Device", zap.Error(err))
 	}
 
 	host, err := host.NewHost(ctx, kc)
 	if err != nil {
-		return err
+		logger.Panic("Failed to create Host", zap.Error(err))
 	}
 
 	// Create Node
@@ -51,7 +51,7 @@ func Initialize(reqBytes []byte) error {
 	// Create RPC Service
 	service, err := node.NewRPCService(n)
 	if err != nil {
-		return err
+		logger.Panic("Failed to start RPC Service", zap.Error(err))
 	}
 
 	// Create Client
@@ -61,5 +61,5 @@ func Initialize(reqBytes []byte) error {
 		node:    n,
 		service: service,
 	}
-	return nil
+	client.node.Wait()
 }
