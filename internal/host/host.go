@@ -15,7 +15,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/tools/emitter"
-	"github.com/sonr-io/core/tools/net"
 )
 
 type SHost struct {
@@ -47,16 +46,9 @@ func NewHost(ctx context.Context, kc device.Keychain) (*SHost, error) {
 		return nil, errors.Wrap(err, "failed to get private key")
 	}
 
-	// Find Listen Addresses
-	addrs, err := net.PublicAddrStrs()
-	if err != nil {
-		return nil, errors.Wrap(err, "Failed to get public addresses")
-	}
-
 	// Start Host
 	h, err := libp2p.New(
 		ctx,
-		libp2p.ListenAddrStrings(addrs...),
 		libp2p.Identity(privKey),
 		libp2p.DefaultStaticRelays(),
 		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
