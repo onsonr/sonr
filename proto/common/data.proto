@@ -1,8 +1,7 @@
 syntax = "proto3";
 
 package sonr.core;
-import "api/common/api.proto";
-import "api/common/core.proto";
+import "proto/common/core.proto";
 option go_package = "github.com/sonr-io/core/internal/common";
 
 // For Transfer File Payload

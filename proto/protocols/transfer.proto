@@ -1,9 +1,8 @@
 syntax = "proto3";
 
 package sonr.protocols.transfer;
-import "api/common/api.proto";
-import "api/common/core.proto";
-import "api/common/data.proto";
+import "proto/common/core.proto";
+import "proto/common/data.proto";
 option go_package = "github.com/sonr-io/core/pkg/transfer";
 
 // InviteReach is Distance for an Invite

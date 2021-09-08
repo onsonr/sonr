@@ -24,20 +24,18 @@ BIND_IOS_ARTIFACT= $(BIND_DIR_IOS)/Core.framework
 BIND_ANDROID_ARTIFACT= $(BIND_DIR_ANDROID)/io.sonr.core.aar
 
 # @ Proto Directories
-PROTO_DIR_GO=$(SONR_ROOT_DIR)/core/pkg
-PROTO_DIR_DART=$(SONR_ROOT_DIR)/plugin/lib/src/data/protobuf
-PROTO_DIR_DOCS=$(SONR_ROOT_DIR)/docs
-PROTO_DIR_RPC=$(SONR_ROOT_DIR)/electron/assets
+PROTO_DIR_DART=$(SONR_ROOT_DIR)/plugin/lib/src
 
-PROTO_LIST_ALL=${ROOT_DIR}/api/**/*.proto
+PROTO_LIST_ALL=${ROOT_DIR}/proto/**/*.proto
+PROTO_LIST_CLIENT=${ROOT_DIR}/proto/client/*.proto
+PROTO_LIST_COMMON=${ROOT_DIR}/proto/common/*.proto
 MODULE_NAME=github.com/sonr-io/core
 GO_OPT_FLAG=--go_opt=module=${MODULE_NAME}
 GRPC_OPT_FLAG=--go-grpc_opt=module=${MODULE_NAME}
 PROTO_GEN_GO="--go_out=."
 PROTO_GEN_RPC="--go-grpc_out=."
 PROTO_GEN_DOCS="--doc_out=docs"
-PROTO_GEN_DART="--dart_out=$(PROTO_DIR_DART)"
-PROTO_GEN_DOCS="--doc_out=$(PROTO_DIR_DOCS)"
+PROTO_GEN_DART="--dart_out=grpc:$(PROTO_DIR_DART)"
 
 # @ Distribution Release Variables
 DIST_DIR=$(SONR_ROOT_DIR)/core/cmd/rpc/dist
@@ -100,6 +98,9 @@ protobuf:
 	@protoc $(PROTO_LIST_ALL) --proto_path=$(ROOT_DIR) $(PROTO_GEN_GO) $(GO_OPT_FLAG)
 	@echo "Generating Protobuf Go RPC code..."
 	@protoc $(PROTO_LIST_ALL) --proto_path=$(ROOT_DIR) $(PROTO_GEN_RPC) $(GRPC_OPT_FLAG)
+	@echo "Generating Protobuf Dart code..."
+	@protoc $(PROTO_LIST_CLIENT) --proto_path=$(ROOT_DIR) $(PROTO_GEN_DART)
+	@protoc $(PROTO_LIST_COMMON) --proto_path=$(ROOT_DIR) $(PROTO_GEN_DART)
 	@echo "Generating Protobuf Docs..."
 	@protoc $(PROTO_LIST_ALL) --proto_path=$(ROOT_DIR) $(PROTO_GEN_DOCS)
 	@echo "----"

@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package sonr.node;
+import "proto/client/api.proto";
+import "proto/common/event.proto";
+option go_package = "github.com/sonr-io/core/internal/node";
+
+message Empty {}
+
+// RPC Service with Equivalent Methods of a binded Node
+service NodeService {
+  // Signing Method Request for Data
+  rpc Supply(SupplyRequest) returns (SupplyResponse) {}
+
+  // Verification Method Request for Signed Data
+  rpc Edit(EditRequest) returns (EditResponse) {}
+
+  // Respond Method to an Invite with Decision
+  rpc Share(ShareRequest) returns (ShareResponse) {}
+
+  // Respond Method to an Invite with Decision
+  rpc Respond(RespondRequest) returns (RespondResponse) {}
+
+  // Events Streams
+  rpc OnDecision(Empty) returns (stream sonr.core.DecisionEvent) {}
+  rpc OnInvite(Empty) returns (stream sonr.core.InviteEvent) {}
+  rpc OnProgress(Empty) returns (stream sonr.core.ProgressEvent) {}
+  rpc OnComplete(Empty) returns (stream sonr.core.CompleteEvent) {}
+}

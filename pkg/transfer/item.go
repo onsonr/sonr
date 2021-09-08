@@ -9,6 +9,20 @@ import (
 	"github.com/sonr-io/core/tools/emitter"
 )
 
+type ItemReader interface {
+	Progress() []byte
+	ReadFromWriteTo(src io.Reader, dst io.Writer) (int64, error)
+}
+
+type itemReader struct {
+	ItemReader
+	emitter *emitter.Emitter
+	index   int
+	size    int
+	total   int
+	item    *common.Transfer_Item
+}
+
 type ItemWriter interface {
 	Progress() []byte
 	WriteTo(writer msg.WriteCloser) error
@@ -29,6 +43,13 @@ func newWriter(i *common.Transfer_Item, em *emitter.Emitter) ItemWriter {
 	}
 }
 
+func newReader(i *common.Transfer_Item, em *emitter.Emitter) ItemReader {
+	return &itemReader{
+		item:    i,
+		emitter: em,
+	}
+}
+
 func EncodeStream(src []byte, dst io.Writer) error {
 	enc := s2.NewWriter(dst)
 	// The encoder owns the buffer until Flush or Close is called.
@@ -39,4 +60,14 @@ func EncodeStream(src []byte, dst io.Writer) error {
 	}
 	// Blocks until compression is done.
 	return enc.Close()
+}
+
+func (ir *itemReader) ReadFromWriteTo(src io.Reader, dst io.Writer) (int64, error) {
+	dec := s2.NewReader(src)
+	n, err := io.Copy(dst, dec)
+	if err != nil {
+		return n, err
+	}
+	ir.emitter.Emit(emitter.EMIT_PROGRESS_EVENT, n)
+	return n, nil
 }

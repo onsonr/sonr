@@ -149,7 +149,7 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 			if err != nil {
 				p.emitter.Emit("Error", err)
 			}
-			_, err = r.ReadFrom(rs, f)
+			_, err = r.ReadFromWriteTo(rs, f)
 			if err != nil {
 				p.emitter.Emit("Error", err)
 			}

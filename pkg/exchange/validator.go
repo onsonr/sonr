@@ -8,14 +8,15 @@ import (
 	record "github.com/libp2p/go-libp2p-record"
 )
 
-type ExchangeValidator struct{}
+type ExchangeValidator struct {
+}
 
 func (ExchangeValidator) Validate(key string, value []byte) error {
 	ns, k, err := record.SplitKey(key)
 	if err != nil {
 		return err
 	}
-	if ns != "peer" {
+	if ns != "store" {
 		return record.ErrInvalidRecordType
 	}
 	if !bytes.Contains(value, []byte(k)) {

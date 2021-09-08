@@ -35,6 +35,11 @@ type Keychain interface {
 	RemoveKeyPair(key KeyPair) error
 }
 
+// keychain is a keychain implementation that stores keys in a directory.
+type keychain struct {
+	Keychain
+}
+
 // Exists checks if a key pair exists in the keychain.
 func (kc *keychain) Exists(kp KeyPair) bool {
 	return Config.Exists(kp.Path())

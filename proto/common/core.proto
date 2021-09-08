@@ -3,6 +3,63 @@ syntax = "proto3";
 package sonr.core;
 option go_package = "github.com/sonr-io/core/internal/common";
 
+// Location from GeoIP and OLC information
+message Location {
+  // Location Latitude
+  double latitude = 1;
+
+  // Location Longitude
+  double longitude = 2;
+
+  // Location Placemark Information - Generated
+  Placemark placemark = 3;
+
+  // Contains detailed placemark information.
+  message Placemark {
+    // The name associated with the placemark.
+    string name = 1;
+
+    // The street associated with the placemark.
+    string street = 2;
+
+    // The abbreviated country name, according to the two letter (alpha-2) [ISO
+    // standard](https://www.iso.org/iso-3166-country-codes.html).
+    string isoCountryCode = 3;
+
+    // The name of the country associated with the placemark.
+    string country = 4;
+
+    // The postal code associated with the placemark.
+    string postalCode = 5;
+
+    // The name of the state or province associated with the placemark.
+    string administrativeArea = 6;
+
+    // Additional administrative area information for the placemark.
+    string subAdministrativeArea = 7;
+
+    // The name of the city associated with the placemark.
+    string locality = 8;
+
+    // Additional city-level information for the placemark.
+    string subLocality = 9;
+
+    // The street address associated with the placemark.
+    string thoroughfare = 10;
+
+    // Additional street address information for the placemark.
+    string subThoroughfare = 11;
+  }
+}
+
+// Shared Metadata for Messages on all Protocols
+message Metadata {
+  int64 timestamp = 1; // Unix timestamp
+  string nodeId = 2;   // Node ID
+  bytes signature = 3; // Signature of the message
+  bytes publicKey = 4; // Public Key of the message sender
+}
+
 // Standard MIME with Additional Extensions
 message MIME {
   Type type = 1;      // Type of File
@@ -26,13 +83,14 @@ message Peer {
   Status status = 2;   // Peer Status
   Info info = 3;       // Peer Device Info
   Profile profile = 4; // Peers General Information
+  bytes publicKey = 5; // Public Key of the Peer
 
   // Peer Info for Device
   message Info {
     string model = 1;    // Peers Device Model
     string hostName = 2; // Peer Host Name
-    string arch = 3;     // Peer Device Architecture
-    string os = 4;       // Peer Operating System
+    string os = 3;       // Peer Operating System
+    string id = 4;       // Peer Device ID
   }
 
   // Peers Active Status

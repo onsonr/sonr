@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.26.0
 // 	protoc        v3.15.6
-// source: api/protocols/transfer.proto
+// source: proto/protocols/transfer.proto
 
 package transfer
 
@@ -58,11 +58,11 @@ func (x InviteReach) String() string {
 }
 
 func (InviteReach) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_protocols_transfer_proto_enumTypes[0].Descriptor()
+	return file_proto_protocols_transfer_proto_enumTypes[0].Descriptor()
 }
 
 func (InviteReach) Type() protoreflect.EnumType {
-	return &file_api_protocols_transfer_proto_enumTypes[0]
+	return &file_proto_protocols_transfer_proto_enumTypes[0]
 }
 
 func (x InviteReach) Number() protoreflect.EnumNumber {
@@ -71,7 +71,7 @@ func (x InviteReach) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use InviteReach.Descriptor instead.
 func (InviteReach) EnumDescriptor() ([]byte, []int) {
-	return file_api_protocols_transfer_proto_rawDescGZIP(), []int{0}
+	return file_proto_protocols_transfer_proto_rawDescGZIP(), []int{0}
 }
 
 // InviteEvent notifies Peer that an Invite has been received
@@ -89,7 +89,7 @@ type InviteEvent struct {
 func (x *InviteEvent) Reset() {
 	*x = InviteEvent{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_protocols_transfer_proto_msgTypes[0]
+		mi := &file_proto_protocols_transfer_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -102,7 +102,7 @@ func (x *InviteEvent) String() string {
 func (*InviteEvent) ProtoMessage() {}
 
 func (x *InviteEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_api_protocols_transfer_proto_msgTypes[0]
+	mi := &file_proto_protocols_transfer_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -115,7 +115,7 @@ func (x *InviteEvent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use InviteEvent.ProtoReflect.Descriptor instead.
 func (*InviteEvent) Descriptor() ([]byte, []int) {
-	return file_api_protocols_transfer_proto_rawDescGZIP(), []int{0}
+	return file_proto_protocols_transfer_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *InviteEvent) GetInviteId() string {
@@ -163,7 +163,7 @@ type InviteRequest struct {
 func (x *InviteRequest) Reset() {
 	*x = InviteRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_protocols_transfer_proto_msgTypes[1]
+		mi := &file_proto_protocols_transfer_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -176,7 +176,7 @@ func (x *InviteRequest) String() string {
 func (*InviteRequest) ProtoMessage() {}
 
 func (x *InviteRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_protocols_transfer_proto_msgTypes[1]
+	mi := &file_proto_protocols_transfer_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -189,7 +189,7 @@ func (x *InviteRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use InviteRequest.ProtoReflect.Descriptor instead.
 func (*InviteRequest) Descriptor() ([]byte, []int) {
-	return file_api_protocols_transfer_proto_rawDescGZIP(), []int{1}
+	return file_proto_protocols_transfer_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *InviteRequest) GetInviteId() string {
@@ -250,7 +250,7 @@ type InviteResponse struct {
 func (x *InviteResponse) Reset() {
 	*x = InviteResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_protocols_transfer_proto_msgTypes[2]
+		mi := &file_proto_protocols_transfer_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -263,7 +263,7 @@ func (x *InviteResponse) String() string {
 func (*InviteResponse) ProtoMessage() {}
 
 func (x *InviteResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_protocols_transfer_proto_msgTypes[2]
+	mi := &file_proto_protocols_transfer_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -276,7 +276,7 @@ func (x *InviteResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use InviteResponse.ProtoReflect.Descriptor instead.
 func (*InviteResponse) Descriptor() ([]byte, []int) {
-	return file_api_protocols_transfer_proto_rawDescGZIP(), []int{2}
+	return file_proto_protocols_transfer_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *InviteResponse) GetSuccess() bool {
@@ -314,16 +314,15 @@ func (x *InviteResponse) GetMetadata() *common.Metadata {
 	return nil
 }
 
-var File_api_protocols_transfer_proto protoreflect.FileDescriptor
+var File_proto_protocols_transfer_proto protoreflect.FileDescriptor
 
-var file_api_protocols_transfer_proto_rawDesc = []byte{
-	0x0a, 0x1c, 0x61, 0x70, 0x69, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x73, 0x2f,
-	0x74, 0x72, 0x61, 0x6e, 0x73, 0x66, 0x65, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x17,
-	0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x73, 0x2e, 0x74,
-	0x72, 0x61, 0x6e, 0x73, 0x66, 0x65, 0x72, 0x1a, 0x14, 0x61, 0x70, 0x69, 0x2f, 0x63, 0x6f, 0x6d,
-	0x6d, 0x6f, 0x6e, 0x2f, 0x61, 0x70, 0x69, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x15, 0x61,
-	0x70, 0x69, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x15, 0x61, 0x70, 0x69, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e,
+var file_proto_protocols_transfer_proto_rawDesc = []byte{
+	0x0a, 0x1e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c,
+	0x73, 0x2f, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x66, 0x65, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x12, 0x17, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x73,
+	0x2e, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x66, 0x65, 0x72, 0x1a, 0x17, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x1a, 0x17, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e,
 	0x2f, 0x64, 0x61, 0x74, 0x61, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xbb, 0x01, 0x0a, 0x0b,
 	0x49, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x1a, 0x0a, 0x08, 0x69,
 	0x6e, 0x76, 0x69, 0x74, 0x65, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x69,
@@ -377,20 +376,20 @@ var file_api_protocols_transfer_proto_rawDesc = []byte{
 }
 
 var (
-	file_api_protocols_transfer_proto_rawDescOnce sync.Once
-	file_api_protocols_transfer_proto_rawDescData = file_api_protocols_transfer_proto_rawDesc
+	file_proto_protocols_transfer_proto_rawDescOnce sync.Once
+	file_proto_protocols_transfer_proto_rawDescData = file_proto_protocols_transfer_proto_rawDesc
 )
 
-func file_api_protocols_transfer_proto_rawDescGZIP() []byte {
-	file_api_protocols_transfer_proto_rawDescOnce.Do(func() {
-		file_api_protocols_transfer_proto_rawDescData = protoimpl.X.CompressGZIP(file_api_protocols_transfer_proto_rawDescData)
+func file_proto_protocols_transfer_proto_rawDescGZIP() []byte {
+	file_proto_protocols_transfer_proto_rawDescOnce.Do(func() {
+		file_proto_protocols_transfer_proto_rawDescData = protoimpl.X.CompressGZIP(file_proto_protocols_transfer_proto_rawDescData)
 	})
-	return file_api_protocols_transfer_proto_rawDescData
+	return file_proto_protocols_transfer_proto_rawDescData
 }
 
-var file_api_protocols_transfer_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_api_protocols_transfer_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
-var file_api_protocols_transfer_proto_goTypes = []interface{}{
+var file_proto_protocols_transfer_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_proto_protocols_transfer_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_proto_protocols_transfer_proto_goTypes = []interface{}{
 	(InviteReach)(0),        // 0: sonr.protocols.transfer.InviteReach
 	(*InviteEvent)(nil),     // 1: sonr.protocols.transfer.InviteEvent
 	(*InviteRequest)(nil),   // 2: sonr.protocols.transfer.InviteRequest
@@ -399,7 +398,7 @@ var file_api_protocols_transfer_proto_goTypes = []interface{}{
 	(*common.Transfer)(nil), // 5: sonr.core.Transfer
 	(*common.Metadata)(nil), // 6: sonr.core.Metadata
 }
-var file_api_protocols_transfer_proto_depIdxs = []int32{
+var file_proto_protocols_transfer_proto_depIdxs = []int32{
 	4,  // 0: sonr.protocols.transfer.InviteEvent.from:type_name -> sonr.core.Peer
 	5,  // 1: sonr.protocols.transfer.InviteEvent.transfer:type_name -> sonr.core.Transfer
 	0,  // 2: sonr.protocols.transfer.InviteEvent.reach:type_name -> sonr.protocols.transfer.InviteReach
@@ -417,13 +416,13 @@ var file_api_protocols_transfer_proto_depIdxs = []int32{
 	0,  // [0:10] is the sub-list for field type_name
 }
 
-func init() { file_api_protocols_transfer_proto_init() }
-func file_api_protocols_transfer_proto_init() {
-	if File_api_protocols_transfer_proto != nil {
+func init() { file_proto_protocols_transfer_proto_init() }
+func file_proto_protocols_transfer_proto_init() {
+	if File_proto_protocols_transfer_proto != nil {
 		return
 	}
 	if !protoimpl.UnsafeEnabled {
-		file_api_protocols_transfer_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_protocols_transfer_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*InviteEvent); i {
 			case 0:
 				return &v.state
@@ -435,7 +434,7 @@ func file_api_protocols_transfer_proto_init() {
 				return nil
 			}
 		}
-		file_api_protocols_transfer_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_protocols_transfer_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*InviteRequest); i {
 			case 0:
 				return &v.state
@@ -447,7 +446,7 @@ func file_api_protocols_transfer_proto_init() {
 				return nil
 			}
 		}
-		file_api_protocols_transfer_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_protocols_transfer_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*InviteResponse); i {
 			case 0:
 				return &v.state
@@ -464,19 +463,19 @@ func file_api_protocols_transfer_proto_init() {
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_api_protocols_transfer_proto_rawDesc,
+			RawDescriptor: file_proto_protocols_transfer_proto_rawDesc,
 			NumEnums:      1,
 			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_api_protocols_transfer_proto_goTypes,
-		DependencyIndexes: file_api_protocols_transfer_proto_depIdxs,
-		EnumInfos:         file_api_protocols_transfer_proto_enumTypes,
-		MessageInfos:      file_api_protocols_transfer_proto_msgTypes,
+		GoTypes:           file_proto_protocols_transfer_proto_goTypes,
+		DependencyIndexes: file_proto_protocols_transfer_proto_depIdxs,
+		EnumInfos:         file_proto_protocols_transfer_proto_enumTypes,
+		MessageInfos:      file_proto_protocols_transfer_proto_msgTypes,
 	}.Build()
-	File_api_protocols_transfer_proto = out.File
-	file_api_protocols_transfer_proto_rawDesc = nil
-	file_api_protocols_transfer_proto_goTypes = nil
-	file_api_protocols_transfer_proto_depIdxs = nil
+	File_proto_protocols_transfer_proto = out.File
+	file_proto_protocols_transfer_proto_rawDesc = nil
+	file_proto_protocols_transfer_proto_goTypes = nil
+	file_proto_protocols_transfer_proto_depIdxs = nil
 }

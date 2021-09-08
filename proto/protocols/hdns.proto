@@ -43,6 +43,7 @@ message VerifySNameRequest {
 
 // VerifySNameResponse is Message for Verifying Response (Hmac Sha256)
 message VerifySNameResponse {
-  bool success = 1; // If Values were Verified
-  string error = 2; // Error Message
+  bool success = 1;   // If Values were Verified
+  string error = 2;   // Error Message
+  string shortID = 3; // Short ID generated from HMac and Device
 }

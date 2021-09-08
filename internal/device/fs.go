@@ -9,15 +9,15 @@ import (
 	"github.com/sonr-io/core/tools/logger"
 )
 
-// keychain is a keychain implementation that stores keys in a directory.
-type keychain struct {
-	Keychain
+type DeviceOptions struct {
+	DocumentsPath string
+	CachePath     string
+	SupportPath   string
 }
 
 var (
 	Config   *config.Config
 	HomePath string
-	fsReady  bool
 )
 
 // Init initializes the keychain and returns a Keychain.

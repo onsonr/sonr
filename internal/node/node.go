@@ -33,26 +33,27 @@ type Node struct {
 	// Properties
 	ctx context.Context
 
-	// TransferProtocol - the transfer protocol
-	*transfer.TransferProtocol
-
 	// Queue - the transfer queue
 	queue *list.List
+
+	// TransferProtocol - the transfer protocol
+	*transfer.TransferProtocol
 }
 
 // Create a new node with its implemented protocols
 func NewNode(ctx context.Context, host *host.SHost) *Node {
 	node := &Node{
-		SHost: host,
-		ctx:   ctx,
-		queue: list.New(),
+		Emitter: emitter.New(2048),
+		SHost:   host,
+		ctx:     ctx,
+		queue:   list.New(),
 	}
 	node.TransferProtocol = transfer.NewProtocol(host, node.Emitter)
 	return node
 }
 
 // Supply a transfer item to the queue
-func (n *Node) Supply(paths []string) {
+func (n *Node) Supply(paths []string) error {
 	// Create Transfer
 	tr := common.Transfer{
 		Metadata: n.NewMetadata(),
@@ -69,7 +70,7 @@ func (n *Node) Supply(paths []string) {
 			item, err := common.NewTransferFileItem(path)
 			if err != nil {
 				n.Emit(Event_Failed, err)
-				return
+				return err
 			}
 
 			// Add item to transfer
@@ -80,10 +81,11 @@ func (n *Node) Supply(paths []string) {
 	// Add items to transfer
 	tr.Items = items
 	n.queue.PushBack(&tr)
+	return nil
 }
 
 // Invite a peer to have a transfer
-func (n *Node) Invite(id peer.ID) {
+func (n *Node) Invite(id peer.ID) error {
 	// Get last transfer
 	tr := n.queue.Front().Value.(*common.Transfer)
 
@@ -95,12 +97,14 @@ func (n *Node) Invite(id peer.ID) {
 
 	// Invite peer
 	n.TransferProtocol.Invite(id, req)
+	return nil
 }
 
 // Respond to an invite request
-func (n *Node) Respond(id peer.ID, decs bool) {
+func (n *Node) Respond(req *RespondRequest) error {
 
 	// n.TransferProtocol.Respond(id)
+	return nil
 }
 
 // Wait continues the node's event loop until it is cancelled

@@ -1,0 +1,119 @@
+syntax = "proto3";
+
+package sonr.node;
+import "proto/common/core.proto";
+option go_package = "github.com/sonr-io/core/internal/node";
+
+// Internet Connection Type
+enum Connection {
+  OFFLINE = 0;  // No Internet Connection
+  WIFI = 1;     // Wifi Connection
+  MOBILE = 2;   // Mobile Connection
+  ETHERNET = 3; // Ethernet Connection
+}
+
+// InitializeRequest Message to Establish Sonr Host/API/Room
+message InitializeRequest {
+  sonr.core.Location location = 1;   // Current Runtime Location
+  sonr.core.Profile profile = 2;     // Users Contact Card
+  Connection connection = 3;         // Internet Connection Type
+  HostOptions hostOptions = 4;       // Libp2p Host config
+  ServiceOptions serviceOptions = 5; // Service Config
+  AccountOptions accountOptions = 6; // Account Config
+  FSOptions fsoptions = 7;           // File System Config
+
+  // Optional Message to Initialize Sonr Account
+  message AccountOptions {
+    string sName = 1;    // Sonr Account Name
+    string mnemonic = 2; // Sonr Account Mnemonic
+  }
+
+  // Optional Message to Initialize FileSystem
+  message FSOptions {
+    string documentsDir = 1; // Documents Directory
+    string cacheDir = 2;     // Cache Directory
+    string supportDir = 3;   // Support Directory
+  }
+
+  // Libp2p Host Options
+  message HostOptions {
+    bool quicTransport = 1;             // Enable QUIC Transport
+    bool httpTransport = 2;             // Enable HTTP Transport
+    bool ipv4Only = 3;                  // Enable IPv4 Only
+    repeated IPAddress listenAddrs = 4; // List of Listen Addresses (optional)
+  }
+
+  // Service Configuration
+  message ServiceOptions {
+    bool textile = 1;    // Enable Textile Client and Threads
+    bool mailbox = 2;    // Enable Mailbox
+    bool buckets = 3;    // Enable Buckets
+    bool autoUpdate = 4; // Enable Auto Update Events
+  }
+
+  // IP Address Interface
+  message IPAddress {
+    string name = 1;   // Name of Interface
+    string value = 2;  // IP Address of Interface
+    string mac = 3;    // Mac Address of Interface
+    bool internal = 4; // Wether it is a Loopback Interface
+    Family family = 5; // Address Family
+
+    enum Family {
+      IPV4 = 0; // IPv4 Address
+      IPV6 = 1; // IPv6 Address
+    }
+  }
+}
+
+// InitializeResponse is Response from Initialize Request
+message InitializeResponse {
+  bool success = 1; // True if Host is Active
+  string error = 2; // Error Message if Host is not Active
+}
+
+// SupplyRequest supplies path to files or urls and optionally a Peer
+message SupplyRequest {
+  repeated string paths = 1;        // Supply Paths
+  optional sonr.core.Peer peer = 2; // Supply Peer
+}
+
+// SupplyResponse is response to SupplyRequest
+message SupplyResponse {
+  bool success = 1; // True if Supply is Active
+  string error = 2; // Error Message if Supply is not Active
+}
+
+// EditRequest is request to edit user profile
+message EditRequest {
+  sonr.core.Profile profile = 1; // Profile to Edit
+}
+
+// EditResponse is response to EditRequest
+message EditResponse {
+  bool success = 1; // True if Supply is Active
+  string error = 2; // Error Message if Supply is not Active
+}
+
+// ShareRequest is request to share supplied files/urls with a peer
+message ShareRequest {
+  sonr.core.Peer peer = 1; // Peer to Share with
+}
+
+// ShareResponse is response to ShareRequest
+message ShareResponse {
+  bool success = 1; // True if Supply is Active
+  string error = 2; // Error Message if Supply is not Active
+}
+
+// RespondRequest is request to respond to a share request
+message RespondRequest {
+  bool decision = 1;       // True if Supply is Active
+  sonr.core.Peer peer = 2; // Peer to Share with
+}
+
+// RespondResponse is response to RespondRequest
+message RespondResponse {
+  bool success = 1; // True if Supply is Active
+  string error = 2; // Error Message if Supply is not Active
+}

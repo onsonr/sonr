@@ -35,7 +35,6 @@ func (h *SHost) threadIdentity() thread.Identity {
 	return thread.NewLibp2pIdentity(h.privKey)
 }
 
-
 // var (
 // 	isMailReady    = false
 // 	isThreadsReady = false

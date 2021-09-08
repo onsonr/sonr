@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/libp2p/go-libp2p-core/network"
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	psr "github.com/libp2p/go-libp2p-pubsub-router"
 	"github.com/sonr-io/core/internal/common"
@@ -30,6 +29,7 @@ type ExchangeProtocol struct {
 	emitter        *emitter.Emitter // Handle to signal when done
 	eventHandler   *ps.TopicEventHandler
 	exchangeEvents chan *ExchangeEvent
+	olc            string
 	subscription   *ps.Subscription
 	topic          *ps.Topic
 }
@@ -37,13 +37,14 @@ type ExchangeProtocol struct {
 // NewProtocol creates new ExchangeProtocol
 func NewProtocol(host *host.SHost, loc *common.Location, em *emitter.Emitter) (*ExchangeProtocol, error) {
 	// Create PubSub Value Store
+	olc := loc.OLC(6)
 	r, err := psr.NewPubsubValueStore(context.Background(), host.Host, host.Pubsub(), ExchangeValidator{})
 	if err != nil {
 		return nil, err
 	}
 
 	// Create Exchange Topic
-	topic, err := host.Pubsub().Join(loc.OLC(6))
+	topic, err := host.Pubsub().Join(olc)
 	if err != nil {
 		return nil, err
 	}
@@ -68,27 +69,18 @@ func NewProtocol(host *host.SHost, loc *common.Location, em *emitter.Emitter) (*
 		subscription:     sub,
 		eventHandler:     handler,
 		exchangeEvents:   make(chan *ExchangeEvent),
+		olc:              olc,
 	}
+
+	go exchProtocol.handleExchangeEvents(context.Background())
+	go exchProtocol.handleExchangeMessages(context.Background())
 	return exchProtocol, nil
-}
-
-// remote peer requests handler
-func (p *ExchangeProtocol) onPeerJoin(s network.Stream) {
-
-}
-
-// remote ping response handler
-func (p *ExchangeProtocol) onPeerExit(s network.Stream) {
-
-}
-
-func (p *ExchangeProtocol) onPeerUpdate(s network.Stream) {
 }
 
 // Find peer by name
 func (p *ExchangeProtocol) Find(sName string) (*common.Peer, error) {
 	// Find peer from sName in the store
-	buf, err := p.PubsubValueStore.GetValue(context.Background(), sName)
+	buf, err := p.PubsubValueStore.GetValue(context.Background(), fmt.Sprintf("store/%s", sName))
 	if err != nil {
 		return nil, err
 	}
@@ -102,12 +94,12 @@ func (p *ExchangeProtocol) Find(sName string) (*common.Peer, error) {
 	return peer, nil
 }
 
-func (p *ExchangeProtocol) Update(peer *common.Peer) error {
-	buf, err := proto.Marshal(peer)
+func (p *ExchangeProtocol) Update(sName string, buf []byte) error {
+	// Determine Key and Add Value to Store
+	err := p.PubsubValueStore.PutValue(context.Background(), fmt.Sprintf("store/%s", sName), buf)
 	if err != nil {
 		return err
 	}
-	p.PubsubValueStore.PutValue(context.Background(), fmt.Sprintf("peer/%s", peer.GetSName()), buf)
 	return nil
 }
 
