@@ -85,6 +85,12 @@ func NewHost(ctx context.Context, kc device.Keychain) (*SHost, error) {
 		kdht:    kdhtRef,
 		privKey: privKey,
 	}
+
+	// Bootstrap Host
+	err = hn.Bootstrap()
+	if err != nil {
+		return nil, errors.Wrap(err, "Failed to bootstrap host")
+	}
 	return hn, nil
 }
 

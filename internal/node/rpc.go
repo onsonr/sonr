@@ -110,7 +110,19 @@ func (n *NodeRPCService) Supply(ctx context.Context, req *SupplyRequest) (*Suppl
 
 // Edit method edits the node's user profile.
 func (n *NodeRPCService) Edit(ctx context.Context, req *EditRequest) (*EditResponse, error) {
-	return nil, nil
+	// Call Internal Edit
+	err := n.Node.Edit(req.GetProfile())
+	if err != nil {
+		return &EditResponse{
+			Success: false,
+			Error:   err.Error(),
+		}, err
+	}
+
+	// Send Response
+	return &EditResponse{
+		Success: true,
+	}, nil
 }
 
 // Share method sends supplied files/urls with a peer

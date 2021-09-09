@@ -31,7 +31,7 @@ func (n *discoveryNotifee) HandlePeerFound(pi peer.AddrInfo) {
 
 // ** ─── HostNode Connection Methods ────────────────────────────────────────────────────────
 // Bootstrap begins bootstrap with peers
-func (h *SHost) Bootstrap(deviceId string) error {
+func (h *SHost) Bootstrap() error {
 	// Add Host Address to Peerstore
 	h.Peerstore().AddAddrs(h.ID(), h.Addrs(), peerstore.PermanentAddrTTL)
 	// Create Bootstrapper Info
