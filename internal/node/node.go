@@ -4,8 +4,10 @@ import (
 	"container/list"
 	"context"
 
+	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/common"
+	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/transfer"
@@ -63,14 +65,33 @@ func NewNode(ctx context.Context, host *host.SHost, loc *common.Location) *Node 
 	node.Emit(Event_STATUS, true, "Transfer Protocol Set")
 
 	// Set Exchange Protocol
-	exch, err := exchange.NewProtocol(host, loc, node.Emitter)
+	exch, err := exchange.NewProtocol(ctx, host, loc, node.Emitter)
 	if err != nil {
 		logger.Error("Failed to start ExchangeProtocol", zap.Error(err))
 		return node
 	}
-
+	node.Emit(Event_STATUS, true, "Exchange Protocol Set")
 	node.ExchangeProtocol = exch
 	return node
+}
+
+// Peer method returns the peer of the node
+func (n *Node) Peer() *common.Peer {
+	// Find PublicKey Buffer
+	pubBuf, err := crypto.MarshalPublicKey(n.SHost.PublicKey())
+	if err != nil {
+		logger.Error("Failed to marshal public key", zap.Error(err))
+		return nil
+	}
+
+	// Return Peer
+	return &common.Peer{
+		SName:     n.profile.SName,
+		Status:    common.Peer_ONLINE,
+		Info:      device.Info(),
+		Profile:   n.profile,
+		PublicKey: pubBuf,
+	}
 }
 
 // Edit method updates Node's profile

@@ -36,10 +36,10 @@ type ExchangeProtocol struct {
 }
 
 // NewProtocol creates new ExchangeProtocol
-func NewProtocol(host *host.SHost, loc *common.Location, em *emitter.Emitter) (*ExchangeProtocol, error) {
+func NewProtocol(ctx context.Context, host *host.SHost, loc *common.Location, em *emitter.Emitter) (*ExchangeProtocol, error) {
 	// Create PubSub Value Store
 	olc := loc.OLC(6)
-	r, err := psr.NewPubsubValueStore(context.Background(), host.Host, host.Pubsub(), ExchangeValidator{}, psr.WithRebroadcastInterval(10*time.Second))
+	r, err := psr.NewPubsubValueStore(ctx, host.Host, host.Pubsub(), ExchangeValidator{}, psr.WithRebroadcastInterval(10*time.Second))
 	if err != nil {
 		return nil, err
 	}
@@ -63,6 +63,7 @@ func NewProtocol(host *host.SHost, loc *common.Location, em *emitter.Emitter) (*
 	}
 
 	exchProtocol := &ExchangeProtocol{
+		ctx:              ctx,
 		host:             host,
 		emitter:          em,
 		PubsubValueStore: r,
@@ -73,33 +74,33 @@ func NewProtocol(host *host.SHost, loc *common.Location, em *emitter.Emitter) (*
 		olc:              olc,
 	}
 
-	//go exchProtocol.handleExchangeEvents(context.Background())
-	//go exchProtocol.handleExchangeMessages(context.Background())
+	//go exchProtocol.handleExchangeEvents(exchProtocol.ctx)
+	//go exchProtocol.handleExchangeMessages(exchProtocol.ctx)
 	return exchProtocol, nil
 }
 
-// Find peer by name
-func (p *ExchangeProtocol) Find(sName string) (*common.Peer, error) {
+// Search peer Profile by name
+func (p *ExchangeProtocol) Search(sName string) (*common.Profile, error) {
 	// Find peer from sName in the store
-	buf, err := p.PubsubValueStore.GetValue(context.Background(), fmt.Sprintf("store/%s", sName))
+	buf, err := p.PubsubValueStore.GetValue(p.ctx, fmt.Sprintf("store/%s", sName))
 	if err != nil {
 		logger.Error("Failed to GET peer from store", zap.Error(err))
 		return nil, err
 	}
 
 	// Unmarshal Peer from buffer
-	peer := &common.Peer{}
-	err = proto.Unmarshal(buf, peer)
+	profile := &common.Profile{}
+	err = proto.Unmarshal(buf, profile)
 	if err != nil {
 		logger.Error("Failed to Unmarshal Peer", zap.Error(err))
 		return nil, err
 	}
-	return peer, nil
+	return profile, nil
 }
 
 func (p *ExchangeProtocol) Update(sName string, buf []byte) error {
 	// Determine Key and Add Value to Store
-	err := p.PubsubValueStore.PutValue(context.Background(), fmt.Sprintf("store/%s", sName), buf)
+	err := p.PubsubValueStore.PutValue(p.ctx, fmt.Sprintf("store/%s", sName), buf)
 	if err != nil {
 		logger.Error("Failed to PUT peer from store", zap.Error(err))
 		return err

@@ -125,7 +125,7 @@ message SearchRequest {
 
 // SearchResponse is Message for Searching for Peer
 message SearchResponse {
-  bool success = 1;        // Success
-  string error = 2;        // Error Message
-  sonr.core.Peer peer = 3; // Peer Data
+  bool success = 1;              // Success
+  string error = 2;              // Error Message
+  sonr.core.Profile profile = 3; // Peer Data
 }

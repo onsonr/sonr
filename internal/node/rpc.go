@@ -133,7 +133,7 @@ func (n *NodeRPCService) Share(ctx context.Context, req *ShareRequest) (*ShareRe
 // Search Method to find a Peer by SName
 func (n *NodeRPCService) Search(ctx context.Context, req *SearchRequest) (*SearchResponse, error) {
 	// Call Internal Search
-	peer, err := n.Node.Find(req.GetSName())
+	profile, err := n.Node.Search(req.GetSName())
 	if err != nil {
 		return &SearchResponse{
 			Success: false,
@@ -143,7 +143,7 @@ func (n *NodeRPCService) Search(ctx context.Context, req *SearchRequest) (*Searc
 
 	return &SearchResponse{
 		Success: true,
-		Peer:    peer,
+		Profile: profile,
 	}, nil
 }
 

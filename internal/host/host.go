@@ -106,3 +106,8 @@ func NewHost(ctx context.Context, kc device.Keychain) (*SHost, error) {
 func (hn *SHost) Pubsub() *psub.PubSub {
 	return hn.pubsub
 }
+
+// PublicKey returns the public key of the host
+func (hn *SHost) PublicKey() crypto.PubKey {
+	return hn.privKey.GetPublic()
+}
