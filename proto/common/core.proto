@@ -99,7 +99,6 @@ message Peer {
     ONLINE = 1;  // Online - Full Node Available
     AWAY = 2;    // Away - Not Online, but has a full node
     BUSY = 3;    // Busy - Online, but busy with Transfer
-    GHOST = 4;   // User is Ghost Mode (Not Receiving)
   }
 }
 
