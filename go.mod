@@ -21,6 +21,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/textileio/textile/v2 v2.6.11
 	go.uber.org/zap v1.19.0
+	golang.org/x/mobile v0.0.0-20210902104108-5d9a33257ab5 // indirect
 	golang.org/x/net v0.0.0-20210907225631-ff17edfbf26d
 	google.golang.org/grpc v1.40.0
 	google.golang.org/protobuf v1.27.1

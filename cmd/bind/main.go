@@ -25,6 +25,7 @@ var started bool
 
 // Start starts the host, node, and rpc service.
 func Start(reqBytes []byte) {
+	// Check if already started
 	if !started {
 		ctx := context.Background()
 		logger.Init(true)

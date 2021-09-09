@@ -3,6 +3,7 @@ package exchange
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	ps "github.com/libp2p/go-libp2p-pubsub"
@@ -39,7 +40,7 @@ type ExchangeProtocol struct {
 func NewProtocol(ctx context.Context, host *host.SHost, loc *common.Location, em *emitter.Emitter) (*ExchangeProtocol, error) {
 	// Create PubSub Value Store
 	olc := loc.OLC(6)
-	r, err := psr.NewPubsubValueStore(ctx, host.Host, host.Pubsub(), ExchangeValidator{}, psr.WithRebroadcastInterval(10*time.Second))
+	r, err := psr.NewPubsubValueStore(ctx, host.Host, host.Pubsub(), ExchangeValidator{}, psr.WithRebroadcastInterval(5*time.Second))
 	if err != nil {
 		return nil, err
 	}
@@ -73,14 +74,14 @@ func NewProtocol(ctx context.Context, host *host.SHost, loc *common.Location, em
 		exchangeEvents:   make(chan *ExchangeEvent),
 		olc:              olc,
 	}
-
-	//go exchProtocol.handleExchangeEvents(exchProtocol.ctx)
-	//go exchProtocol.handleExchangeMessages(exchProtocol.ctx)
 	return exchProtocol, nil
 }
 
 // Search peer Profile by name
 func (p *ExchangeProtocol) Search(sName string) (*common.Peer, error) {
+	// Set Lowercase Name
+	sName = strings.ToLower(sName)
+
 	// Find peer from sName in the store
 	buf, err := p.PubsubValueStore.GetValue(p.ctx, fmt.Sprintf("store/%s", sName))
 	if err != nil {
@@ -98,7 +99,11 @@ func (p *ExchangeProtocol) Search(sName string) (*common.Peer, error) {
 	return profile, nil
 }
 
+// Update method updates peer instance in the store
 func (p *ExchangeProtocol) Update(sName string, buf []byte) error {
+	// Set Lowercase Name
+	sName = strings.ToLower(sName)
+
 	// Determine Key and Add Value to Store
 	err := p.PubsubValueStore.PutValue(p.ctx, fmt.Sprintf("store/%s", sName), buf)
 	if err != nil {
@@ -108,33 +113,26 @@ func (p *ExchangeProtocol) Update(sName string, buf []byte) error {
 	return nil
 }
 
-// handleExchangeEvents method listens to Pubsub Events for room
-func (p *ExchangeProtocol) handleExchangeEvents(ctx context.Context) {
-	// Loop Events
-	for {
-		// Get next event
-		event, err := p.eventHandler.NextPeerEvent(ctx)
-		if err != nil {
+// HandleEvents method listens to Pubsub Events for room
+func (p *ExchangeProtocol) HandleEvents() {
+	go func() {
+		// Loop Events
+		for {
+			// Get next event
+			event, err := p.eventHandler.NextPeerEvent(p.ctx)
+			if err != nil {
 
-			p.eventHandler.Cancel()
-			return
+				p.eventHandler.Cancel()
+				return
+			}
+
+			// Check Event and Validate not User
+			if p.isEventJoin(event) {
+				continue
+			} else if p.isEventExit(event) {
+				continue
+			}
+			state.GetState().NeedsWait()
 		}
-
-		// Check Event and Validate not User
-		if p.isEventJoin(event) {
-			// pbuf, err := proto.Marshal()
-			// if err != nil {
-
-			// 	continue
-			// }
-			// err = rm.Exchange(event.Peer, pbuf)
-			// if err != nil {
-
-			// 	continue
-			// }
-		} else if p.isEventExit(event) {
-
-		}
-		state.GetState().NeedsWait()
-	}
+	}()
 }
