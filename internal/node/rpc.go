@@ -130,6 +130,23 @@ func (n *NodeRPCService) Share(ctx context.Context, req *ShareRequest) (*ShareRe
 	return nil, nil
 }
 
+// Search Method to find a Peer by SName
+func (n *NodeRPCService) Search(ctx context.Context, req *SearchRequest) (*SearchResponse, error) {
+	// Call Internal Search
+	peer, err := n.Node.Find(req.GetSName())
+	if err != nil {
+		return &SearchResponse{
+			Success: false,
+			Error:   err.Error(),
+		}, err
+	}
+
+	return &SearchResponse{
+		Success: true,
+		Peer:    peer,
+	}, nil
+}
+
 // Respond method responds to a received InviteRequest.
 func (n *NodeRPCService) Respond(ctx context.Context, req *RespondRequest) (*RespondResponse, error) {
 	// // Unmarshal Data to Request

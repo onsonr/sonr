@@ -27,6 +27,8 @@ type NodeServiceClient interface {
 	Share(ctx context.Context, in *ShareRequest, opts ...grpc.CallOption) (*ShareResponse, error)
 	// Respond Method to an Invite with Decision
 	Respond(ctx context.Context, in *RespondRequest, opts ...grpc.CallOption) (*RespondResponse, error)
+	// Search Method to find a Peer by SName
+	Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error)
 	// Events Streams
 	OnStatus(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnStatusClient, error)
 	OnDecision(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnDecisionClient, error)
@@ -73,6 +75,15 @@ func (c *nodeServiceClient) Share(ctx context.Context, in *ShareRequest, opts ..
 func (c *nodeServiceClient) Respond(ctx context.Context, in *RespondRequest, opts ...grpc.CallOption) (*RespondResponse, error) {
 	out := new(RespondResponse)
 	err := c.cc.Invoke(ctx, "/sonr.node.NodeService/Respond", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *nodeServiceClient) Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error) {
+	out := new(SearchResponse)
+	err := c.cc.Invoke(ctx, "/sonr.node.NodeService/Search", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -251,6 +262,8 @@ type NodeServiceServer interface {
 	Share(context.Context, *ShareRequest) (*ShareResponse, error)
 	// Respond Method to an Invite with Decision
 	Respond(context.Context, *RespondRequest) (*RespondResponse, error)
+	// Search Method to find a Peer by SName
+	Search(context.Context, *SearchRequest) (*SearchResponse, error)
 	// Events Streams
 	OnStatus(*Empty, NodeService_OnStatusServer) error
 	OnDecision(*Empty, NodeService_OnDecisionServer) error
@@ -275,6 +288,9 @@ func (UnimplementedNodeServiceServer) Share(context.Context, *ShareRequest) (*Sh
 }
 func (UnimplementedNodeServiceServer) Respond(context.Context, *RespondRequest) (*RespondResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Respond not implemented")
+}
+func (UnimplementedNodeServiceServer) Search(context.Context, *SearchRequest) (*SearchResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Search not implemented")
 }
 func (UnimplementedNodeServiceServer) OnStatus(*Empty, NodeService_OnStatusServer) error {
 	return status.Errorf(codes.Unimplemented, "method OnStatus not implemented")
@@ -372,6 +388,24 @@ func _NodeService_Respond_Handler(srv interface{}, ctx context.Context, dec func
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(NodeServiceServer).Respond(ctx, req.(*RespondRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _NodeService_Search_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NodeServiceServer).Search(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sonr.node.NodeService/Search",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NodeServiceServer).Search(ctx, req.(*SearchRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -503,6 +537,10 @@ var NodeService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Respond",
 			Handler:    _NodeService_Respond_Handler,
+		},
+		{
+			MethodName: "Search",
+			Handler:    _NodeService_Search_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

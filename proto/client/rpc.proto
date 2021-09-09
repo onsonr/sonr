@@ -21,6 +21,9 @@ service NodeService {
   // Respond Method to an Invite with Decision
   rpc Respond(RespondRequest) returns (RespondResponse) {}
 
+  // Search Method to find a Peer by SName
+  rpc Search(SearchRequest) returns (SearchResponse) {}
+
   // Events Streams
   rpc OnStatus(Empty) returns (stream sonr.core.StatusEvent) {}
   rpc OnDecision(Empty) returns (stream sonr.core.DecisionEvent) {}

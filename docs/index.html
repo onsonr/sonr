@@ -223,6 +223,14 @@
                 </li>
               
                 <li>
+                  <a href="#sonr.node.SearchRequest"><span class="badge">M</span>SearchRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.node.SearchResponse"><span class="badge">M</span>SearchResponse</a>
+                </li>
+              
+                <li>
                   <a href="#sonr.node.ShareRequest"><span class="badge">M</span>ShareRequest</a>
                 </li>
               
@@ -1028,6 +1036,68 @@
 
         
       
+        <h3 id="sonr.node.SearchRequest">SearchRequest</h3>
+        <p>SearchRequest is Message for Searching for Peer</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>sName</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>SName combined with Device ID and Hashed </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.node.SearchResponse">SearchResponse</h3>
+        <p>SearchResponse is Message for Searching for Peer</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>success</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>Success </p></td>
+                </tr>
+              
+                <tr>
+                  <td>error</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Error Message </p></td>
+                </tr>
+              
+                <tr>
+                  <td>peer</td>
+                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
+                  <td></td>
+                  <td><p>Peer Data </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="sonr.node.ShareRequest">ShareRequest</h3>
         <p>ShareRequest is request to share supplied files/urls with a peer</p>
 
@@ -1264,6 +1334,13 @@
                 <td><a href="#sonr.node.RespondRequest">RespondRequest</a></td>
                 <td><a href="#sonr.node.RespondResponse">RespondResponse</a></td>
                 <td><p>Respond Method to an Invite with Decision</p></td>
+              </tr>
+            
+              <tr>
+                <td>Search</td>
+                <td><a href="#sonr.node.SearchRequest">SearchRequest</a></td>
+                <td><a href="#sonr.node.SearchResponse">SearchResponse</a></td>
+                <td><p>Search Method to find a Peer by SName</p></td>
               </tr>
             
               <tr>

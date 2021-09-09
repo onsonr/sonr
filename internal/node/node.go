@@ -3,7 +3,6 @@ package node
 import (
 	"container/list"
 	"context"
-	"errors"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/common"
@@ -77,15 +76,18 @@ func NewNode(ctx context.Context, host *host.SHost, loc *common.Location) *Node 
 
 // Edit method updates Node's profile
 func (n *Node) Edit(p *common.Profile) error {
-	if n.ExchangeProtocol != nil {
-		buf, err := proto.Marshal(p)
-		if err != nil {
-			logger.Error("Failed to edit Profile", zap.Error(err))
-			return err
-		}
-		n.ExchangeProtocol.Update(p.GetSName(), buf)
+	buf, err := proto.Marshal(p)
+	if err != nil {
+		logger.Error("Failed to edit Profile", zap.Error(err))
+		return err
 	}
-	return errors.New("Exchange Protocol is not initialized.")
+	err = n.ExchangeProtocol.Update(p.GetSName(), buf)
+	if err != nil {
+		logger.Error("Failed to edit Profile", zap.Error(err))
+		return err
+	}
+
+	return nil
 }
 
 // Supply a transfer item to the queue
@@ -140,8 +142,9 @@ func (n *Node) Invite(id peer.ID) error {
 }
 
 // Respond to an invite request
-func (n *Node) Respond(req *RespondRequest) error {
-
+func (n *Node) Respond(decs bool) error {
+	// Create Invite Response
+	
 	// n.TransferProtocol.Respond(id)
 	return nil
 }

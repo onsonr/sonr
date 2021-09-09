@@ -117,3 +117,15 @@ message RespondResponse {
   bool success = 1; // True if Supply is Active
   string error = 2; // Error Message if Supply is not Active
 }
+
+// SearchRequest is Message for Searching for Peer
+message SearchRequest {
+  string sName = 1; // SName combined with Device ID and Hashed
+}
+
+// SearchResponse is Message for Searching for Peer
+message SearchResponse {
+  bool success = 1;        // Success
+  string error = 2;        // Error Message
+  sonr.core.Peer peer = 3; // Peer Data
+}
