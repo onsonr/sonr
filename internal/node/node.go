@@ -11,7 +11,9 @@ import (
 	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/transfer"
 	"github.com/sonr-io/core/tools/emitter"
+	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/tools/state"
+	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -64,6 +66,7 @@ func NewNode(ctx context.Context, host *host.SHost, loc *common.Location) *Node 
 	// Set Exchange Protocol
 	exch, err := exchange.NewProtocol(host, loc, node.Emitter)
 	if err != nil {
+		logger.Error("Failed to start ExchangeProtocol", zap.Error(err))
 		node.Emit(Event_STATUS, err)
 		return node
 	}
@@ -77,6 +80,7 @@ func (n *Node) Edit(p *common.Profile) error {
 	if n.ExchangeProtocol != nil {
 		buf, err := proto.Marshal(p)
 		if err != nil {
+			logger.Error("Failed to edit Profile", zap.Error(err))
 			return err
 		}
 		n.ExchangeProtocol.Update(p.GetSName(), buf)
@@ -101,6 +105,7 @@ func (n *Node) Supply(paths []string) error {
 			// Create File Item
 			item, err := common.NewTransferFileItem(path)
 			if err != nil {
+				logger.Error("Failed to edit Profile", zap.Error(err))
 				n.Emit(Event_STATUS, err)
 				return err
 			}
@@ -118,17 +123,19 @@ func (n *Node) Supply(paths []string) error {
 
 // Invite a peer to have a transfer
 func (n *Node) Invite(id peer.ID) error {
-	// Get last transfer
-	tr := n.queue.Front().Value.(*common.Transfer)
-
 	// Create Invite Request
 	req := &transfer.InviteRequest{
-		Transfer: tr,
+		Transfer: n.queue.Front().Value.(*common.Transfer),
 		Metadata: n.NewMetadata(),
 	}
 
 	// Invite peer
-	n.TransferProtocol.Invite(id, req)
+	err := n.TransferProtocol.Invite(id, req)
+	if err != nil {
+		logger.Error("Failed to invite peer", zap.Error(err))
+		n.Emit(Event_STATUS, err)
+		return err
+	}
 	return nil
 }
 

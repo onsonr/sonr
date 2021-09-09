@@ -27,8 +27,8 @@ func Start(reqBytes []byte) {
 	logger.Init(true)
 
 	// Unmarshal request
-	initReq := &node.InitializeRequest{}
-	err := proto.Unmarshal(reqBytes, initReq)
+	req := &node.InitializeRequest{}
+	err := proto.Unmarshal(reqBytes, req)
 	if err != nil {
 		panic(err)
 	}
@@ -36,22 +36,22 @@ func Start(reqBytes []byte) {
 	// Get Device Paths
 	fsOpts := make([]device.FSOption, 0)
 	// Check FSOptions
-	if initReq.GetFsoptions() != nil {
+	if req.GetFsoptions() != nil {
 		// Set Temporary Path
 		fsOpts = append(fsOpts, device.FSOption{
-			Path: initReq.GetFsoptions().GetCacheDir(),
+			Path: req.GetFsoptions().GetCacheDir(),
 			Type: device.Temporary,
 		})
 
 		// Set Documents Path
 		fsOpts = append(fsOpts, device.FSOption{
-			Path: initReq.GetFsoptions().GetDocumentsDir(),
+			Path: req.GetFsoptions().GetDocumentsDir(),
 			Type: device.Documents,
 		})
 
 		// Set Support Path
 		fsOpts = append(fsOpts, device.FSOption{
-			Path: initReq.GetFsoptions().GetSupportDir(),
+			Path: req.GetFsoptions().GetSupportDir(),
 			Type: device.Support,
 		})
 	}
@@ -69,7 +69,7 @@ func Start(reqBytes []byte) {
 	}
 
 	// Create Node
-	n := node.NewNode(ctx, host, initReq.GetLocation())
+	n := node.NewNode(ctx, host, req.GetLocation())
 
 	// Create RPC Service
 	service, err := node.NewRPCService(ctx, n)
