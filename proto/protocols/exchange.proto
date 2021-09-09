@@ -4,12 +4,7 @@ package sonr.protocols.exchange;
 import "proto/common/core.proto";
 option go_package = "github.com/sonr-io/core/pkg/exchange";
 
-// Message Sent when peer messages Local Room
-message ExchangeEvent {
-  string olc = 1;          // OLC Code of Topic
-  string id = 2;           // Peer ID
-  sonr.core.Peer peer = 3; // User Information
-}
+
 
 // JoinExchangeRequest is Message for Signing Request (Hmac Sha256)
 message JoinExchangeRequest {

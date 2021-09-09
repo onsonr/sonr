@@ -21,10 +21,10 @@ import (
 
 // Transfer Emission Events
 const (
-	Event_INVITED   = "invited"
-	Event_RESPONDED = "responded"
-	Event_PROGRESS  = "progress"
-	Event_COMPLETED = "completed"
+	Event_INVITED   = "transfer-invited"
+	Event_RESPONDED = "transfer-responded"
+	Event_PROGRESS  = "transfer-progress"
+	Event_COMPLETED = "transfer-completed"
 )
 
 // Transfer Protocol ID's
@@ -41,13 +41,13 @@ type RequestEntry struct {
 
 // TransferProtocol type
 type TransferProtocol struct {
-	host         *host.SHost // local host
-	requestQueue *list.List
-	requests     map[string]*InviteRequest // used to access request data from response handlers
+	host         *host.SHost               // local host
+	requestQueue *list.List                // Queue of Requests
+	requests     map[string]*InviteRequest // used to access request data from response
 	emitter      *emitter.Emitter          // Handle to signal when done
 }
 
-//
+// NewProtocol creates a new TransferProtocol
 func NewProtocol(host *host.SHost, em *emitter.Emitter) *TransferProtocol {
 	invProtocol := &TransferProtocol{
 		host:         host,
@@ -106,9 +106,10 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 	resp.Metadata.Signature = signature
 
 	// send the response
-	ok := p.host.SendProtoMessage(s.Conn().RemotePeer(), ResponsePID, resp)
-	if ok {
-		log.Printf("%s: Ping response to %s sent.", s.Conn().LocalPeer().String(), s.Conn().RemotePeer().String())
+	err = p.host.SendProtoMessage(s.Conn().RemotePeer(), ResponsePID, resp)
+	if err != nil {
+		log.Println("failed to send response")
+		return
 	}
 	p.emitter.Emit(Event_INVITED, req)
 }
@@ -194,9 +195,9 @@ func (p *TransferProtocol) Invite(id peer.ID, req *InviteRequest) error {
 
 	// add the signature to the message
 	req.Metadata.Signature = signature
-	ok := p.host.SendProtoMessage(id, RequestPID, req)
-	if !ok {
-		return errors.New("Failed to send Signed Proto Message")
+	err = p.host.SendProtoMessage(id, RequestPID, req)
+	if err != nil {
+		return err
 	}
 
 	// store ref request so response handler has access to it
@@ -205,8 +206,6 @@ func (p *TransferProtocol) Invite(id peer.ID, req *InviteRequest) error {
 }
 
 func (p *TransferProtocol) Respond(resp *InviteResponse) error {
-
-
 	// Get First Request in Queue
 	entry := p.requestQueue.Front()
 	if entry == nil {
@@ -222,9 +221,9 @@ func (p *TransferProtocol) Respond(resp *InviteResponse) error {
 
 	// add the signature to the message
 	resp.Metadata.Signature = signature
-	ok := p.host.SendProtoMessage(reqEntry.fromId, ResponsePID, resp)
-	if !ok {
-		return errors.New("Failed to send Signed Proto Message")
+	err = p.host.SendProtoMessage(reqEntry.fromId, ResponsePID, resp)
+	if err != nil {
+		return err
 	}
 	return nil
 }

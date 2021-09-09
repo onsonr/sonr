@@ -21,8 +21,8 @@ import (
 
 // Transfer Emission Events
 const (
-	Event_PEER_EXIT   = "exit"
-	Event_PEER_UPDATE = "update"
+	Event_PEER_EXIT = "exchange-peer-exit"
+	Event_PEER_JOIN = "exchange-peer-join"
 )
 
 // TransferProtocol type
@@ -32,7 +32,7 @@ type ExchangeProtocol struct {
 	host           *host.SHost      // host
 	emitter        *emitter.Emitter // Handle to signal when done
 	eventHandler   *ps.TopicEventHandler
-	exchangeEvents chan *ExchangeEvent
+	exchangeEvents chan *common.ExchangeEvent
 	olc            string
 	subscription   *ps.Subscription
 	topic          *ps.Topic
@@ -73,7 +73,7 @@ func NewProtocol(ctx context.Context, host *host.SHost, loc *common.Location, em
 		topic:            topic,
 		subscription:     sub,
 		eventHandler:     handler,
-		exchangeEvents:   make(chan *ExchangeEvent),
+		exchangeEvents:   make(chan *common.ExchangeEvent),
 		olc:              olc,
 	}
 	return exchProtocol, nil

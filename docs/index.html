@@ -419,6 +419,10 @@
                 </li>
               
                 <li>
+                  <a href="#sonr.core.ExchangeEvent"><span class="badge">M</span>ExchangeEvent</a>
+                </li>
+              
+                <li>
                   <a href="#sonr.core.InviteEvent"><span class="badge">M</span>InviteEvent</a>
                 </li>
               
@@ -440,6 +444,10 @@
                 </li>
               
                 <li>
+                  <a href="#sonr.core.ExchangeEvent.Type"><span class="badge">E</span>ExchangeEvent.Type</a>
+                </li>
+              
+                <li>
                   <a href="#sonr.core.InviteReach"><span class="badge">E</span>InviteReach</a>
                 </li>
               
@@ -452,10 +460,6 @@
           <li>
             <a href="#proto%2fprotocols%2fexchange.proto">proto/protocols/exchange.proto</a>
             <ul>
-              
-                <li>
-                  <a href="#sonr.protocols.exchange.ExchangeEvent"><span class="badge">M</span>ExchangeEvent</a>
-                </li>
               
                 <li>
                   <a href="#sonr.protocols.exchange.JoinExchangeRequest"><span class="badge">M</span>JoinExchangeRequest</a>
@@ -1327,6 +1331,20 @@
                 <td><a href="#sonr.node.Empty">Empty</a></td>
                 <td><a href="#sonr.core.StatusEvent">.sonr.core.StatusEvent</a> stream</td>
                 <td><p>Events Streams</p></td>
+              </tr>
+            
+              <tr>
+                <td>OnLocalJoin</td>
+                <td><a href="#sonr.node.Empty">Empty</a></td>
+                <td><a href="#sonr.core.ExchangeEvent">.sonr.core.ExchangeEvent</a> stream</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>OnLocalExit</td>
+                <td><a href="#sonr.node.Empty">Empty</a></td>
+                <td><a href="#sonr.core.ExchangeEvent">.sonr.core.ExchangeEvent</a> stream</td>
+                <td><p></p></td>
               </tr>
             
               <tr>
@@ -2839,6 +2857,51 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
 
         
       
+        <h3 id="sonr.core.ExchangeEvent">ExchangeEvent</h3>
+        <p>Message Sent when peer messages Local Room</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>olc</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>OLC Code of Topic </p></td>
+                </tr>
+              
+                <tr>
+                  <td>id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Peer ID </p></td>
+                </tr>
+              
+                <tr>
+                  <td>peer</td>
+                  <td><a href="#sonr.core.Peer">Peer</a></td>
+                  <td></td>
+                  <td><p>User Information </p></td>
+                </tr>
+              
+                <tr>
+                  <td>type</td>
+                  <td><a href="#sonr.core.ExchangeEvent.Type">ExchangeEvent.Type</a></td>
+                  <td></td>
+                  <td><p>Type of Message </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="sonr.core.InviteEvent">InviteEvent</h3>
         <p>InviteEvent notifies Peer that an Invite has been received</p>
 
@@ -3007,6 +3070,35 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
           </tbody>
         </table>
       
+        <h3 id="sonr.core.ExchangeEvent.Type">ExchangeEvent.Type</h3>
+        <p>Enum for ExchangeEvent type</p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>NONE</td>
+                <td>0</td>
+                <td><p>No Type - Invalid</p></td>
+              </tr>
+            
+              <tr>
+                <td>JOIN</td>
+                <td>1</td>
+                <td><p>Joined Room</p></td>
+              </tr>
+            
+              <tr>
+                <td>EXIT</td>
+                <td>2</td>
+                <td><p>Exited Room</p></td>
+              </tr>
+            
+          </tbody>
+        </table>
+      
         <h3 id="sonr.core.InviteReach">InviteReach</h3>
         <p>InviteReach is Distance for an Invite</p>
         <table class="enum-table">
@@ -3053,44 +3145,6 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
       </div>
       <p></p>
 
-      
-        <h3 id="sonr.protocols.exchange.ExchangeEvent">ExchangeEvent</h3>
-        <p>Message Sent when peer messages Local Room</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>olc</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>OLC Code of Topic </p></td>
-                </tr>
-              
-                <tr>
-                  <td>id</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Peer ID </p></td>
-                </tr>
-              
-                <tr>
-                  <td>peer</td>
-                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
-                  <td></td>
-                  <td><p>User Information </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
       
         <h3 id="sonr.protocols.exchange.JoinExchangeRequest">JoinExchangeRequest</h3>
         <p>JoinExchangeRequest is Message for Signing Request (Hmac Sha256)</p>

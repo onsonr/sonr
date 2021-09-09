@@ -28,6 +28,7 @@ type NodeRPCService struct {
 	// Channels
 	statusEvents   chan *common.StatusEvent
 	decisionEvents chan *common.DecisionEvent
+	exchangeEvents chan *common.ExchangeEvent
 	inviteEvents   chan *common.InviteEvent
 	progressEvents chan *common.ProgressEvent
 	completeEvents chan *common.CompleteEvent
@@ -51,6 +52,7 @@ func NewRPCService(ctx context.Context, n *Node) (*NodeRPCService, error) {
 		Node:           n,
 		statusEvents:   make(chan *common.StatusEvent),
 		decisionEvents: make(chan *common.DecisionEvent),
+		exchangeEvents: make(chan *common.ExchangeEvent),
 		inviteEvents:   make(chan *common.InviteEvent),
 		progressEvents: make(chan *common.ProgressEvent),
 		completeEvents: make(chan *common.CompleteEvent),
@@ -183,6 +185,40 @@ func (n *NodeRPCService) OnNodeStatus(e *Empty, stream NodeService_OnNodeStatusS
 		case m := <-n.statusEvents:
 			if m != nil {
 				stream.Send(m)
+			}
+		case <-n.ctx.Done():
+			return nil
+		}
+		state.GetState().NeedsWait()
+	}
+}
+
+// OnLocalJoin method sends a join event to the client.
+func (n *NodeRPCService) OnLocalJoin(e *Empty, stream NodeService_OnLocalJoinServer) error {
+	for {
+		select {
+		case m := <-n.exchangeEvents:
+			if m != nil {
+				if m.GetType() == common.ExchangeEvent_JOIN {
+					stream.Send(m)
+				}
+			}
+		case <-n.ctx.Done():
+			return nil
+		}
+		state.GetState().NeedsWait()
+	}
+}
+
+// OnLocalExit method sends a join event to the client.
+func (n *NodeRPCService) OnLocalExit(e *Empty, stream NodeService_OnLocalExitServer) error {
+	for {
+		select {
+		case m := <-n.exchangeEvents:
+			if m != nil {
+				if m.GetType() == common.ExchangeEvent_EXIT {
+					stream.Send(m)
+				}
 			}
 		case <-n.ctx.Done():
 			return nil

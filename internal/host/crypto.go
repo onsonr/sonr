@@ -106,11 +106,11 @@ func (n *SHost) NewMetadata() *common.Metadata {
 }
 
 // SendProtoMessage writes a protobuf go data object to a network stream
-func (n *SHost) SendProtoMessage(id peer.ID, p protocol.ID, data proto.Message) bool {
+func (n *SHost) SendProtoMessage(id peer.ID, p protocol.ID, data proto.Message) error {
 	s, err := n.NewStream(context.Background(), id, p)
 	if err != nil {
 		logger.Error("Failed to start stream", zap.Error(err))
-		return false
+		return err
 	}
 	defer s.Close()
 
@@ -118,14 +118,14 @@ func (n *SHost) SendProtoMessage(id peer.ID, p protocol.ID, data proto.Message) 
 	bin, err := proto.Marshal(data)
 	if err != nil {
 		logger.Error("Failed to marshal pb", zap.Error(err))
-		return false
+		return err
 	}
 
 	// Create Writer and write data to stream
 	w := msgio.NewWriter(s)
 	if err := w.WriteMsg(bin); err != nil {
 		logger.Error("Failed to write message to stream.", zap.Error(err))
-		return false
+		return err
 	}
-	return true
+	return nil
 }

@@ -24,6 +24,21 @@ message DecisionEvent {
   string inviteId = 3;
 }
 
+// Message Sent when peer messages Local Room
+message ExchangeEvent {
+  string olc = 1;          // OLC Code of Topic
+  string id = 2;           // Peer ID
+  sonr.core.Peer peer = 3; // User Information
+  Type type = 4;           // Type of Message
+
+  // Enum for ExchangeEvent type
+  enum Type {
+    NONE = 0; // No Type - Invalid
+    JOIN = 1; // Joined Room
+    EXIT = 2; // Exited Room
+  }
+}
+
 // InviteReach is Distance for an Invite
 enum InviteReach {
   NONE = 0;   // No Reach

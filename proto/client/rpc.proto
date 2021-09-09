@@ -26,6 +26,8 @@ service NodeService {
 
   // Events Streams
   rpc OnNodeStatus(Empty) returns (stream sonr.core.StatusEvent) {}
+  rpc OnLocalJoin(Empty) returns (stream sonr.core.ExchangeEvent) {}
+  rpc OnLocalExit(Empty) returns (stream sonr.core.ExchangeEvent) {}
   rpc OnTransferAccepted(Empty) returns (stream sonr.core.DecisionEvent) {}
   rpc OnTransferDeclined(Empty) returns (stream sonr.core.DecisionEvent) {}
   rpc OnTransferInvite(Empty) returns (stream sonr.core.InviteEvent) {}
