@@ -21,59 +21,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Internet Connection Type
-type Connection int32
-
-const (
-	Connection_OFFLINE  Connection = 0 // No Internet Connection
-	Connection_WIFI     Connection = 1 // Wifi Connection
-	Connection_MOBILE   Connection = 2 // Mobile Connection
-	Connection_ETHERNET Connection = 3 // Ethernet Connection
-)
-
-// Enum value maps for Connection.
-var (
-	Connection_name = map[int32]string{
-		0: "OFFLINE",
-		1: "WIFI",
-		2: "MOBILE",
-		3: "ETHERNET",
-	}
-	Connection_value = map[string]int32{
-		"OFFLINE":  0,
-		"WIFI":     1,
-		"MOBILE":   2,
-		"ETHERNET": 3,
-	}
-)
-
-func (x Connection) Enum() *Connection {
-	p := new(Connection)
-	*p = x
-	return p
-}
-
-func (x Connection) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (Connection) Descriptor() protoreflect.EnumDescriptor {
-	return file_proto_client_api_proto_enumTypes[0].Descriptor()
-}
-
-func (Connection) Type() protoreflect.EnumType {
-	return &file_proto_client_api_proto_enumTypes[0]
-}
-
-func (x Connection) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use Connection.Descriptor instead.
-func (Connection) EnumDescriptor() ([]byte, []int) {
-	return file_proto_client_api_proto_rawDescGZIP(), []int{0}
-}
-
 type InitializeRequest_IPAddress_Family int32
 
 const (
@@ -104,11 +51,11 @@ func (x InitializeRequest_IPAddress_Family) String() string {
 }
 
 func (InitializeRequest_IPAddress_Family) Descriptor() protoreflect.EnumDescriptor {
-	return file_proto_client_api_proto_enumTypes[1].Descriptor()
+	return file_proto_client_api_proto_enumTypes[0].Descriptor()
 }
 
 func (InitializeRequest_IPAddress_Family) Type() protoreflect.EnumType {
-	return &file_proto_client_api_proto_enumTypes[1]
+	return &file_proto_client_api_proto_enumTypes[0]
 }
 
 func (x InitializeRequest_IPAddress_Family) Number() protoreflect.EnumNumber {
@@ -128,7 +75,7 @@ type InitializeRequest struct {
 
 	Location       *common.Location                  `protobuf:"bytes,1,opt,name=location,proto3" json:"location,omitempty"`                                // Current Runtime Location
 	Profile        *common.Profile                   `protobuf:"bytes,2,opt,name=profile,proto3" json:"profile,omitempty"`                                  // Users Contact Card
-	Connection     Connection                        `protobuf:"varint,3,opt,name=connection,proto3,enum=sonr.node.Connection" json:"connection,omitempty"` // Internet Connection Type
+	Connection     common.Connection                 `protobuf:"varint,3,opt,name=connection,proto3,enum=sonr.core.Connection" json:"connection,omitempty"` // Internet Connection Type
 	HostOptions    *InitializeRequest_HostOptions    `protobuf:"bytes,4,opt,name=hostOptions,proto3" json:"hostOptions,omitempty"`                          // Libp2p Host config
 	ServiceOptions *InitializeRequest_ServiceOptions `protobuf:"bytes,5,opt,name=serviceOptions,proto3" json:"serviceOptions,omitempty"`                    // Service Config
 	AccountOptions *InitializeRequest_AccountOptions `protobuf:"bytes,6,opt,name=accountOptions,proto3" json:"accountOptions,omitempty"`                    // Account Config
@@ -181,11 +128,11 @@ func (x *InitializeRequest) GetProfile() *common.Profile {
 	return nil
 }
 
-func (x *InitializeRequest) GetConnection() Connection {
+func (x *InitializeRequest) GetConnection() common.Connection {
 	if x != nil {
 		return x.Connection
 	}
-	return Connection_OFFLINE
+	return common.Connection(0)
 }
 
 func (x *InitializeRequest) GetHostOptions() *InitializeRequest_HostOptions {
@@ -1175,7 +1122,7 @@ var file_proto_client_api_proto_rawDesc = []byte{
 	0x20, 0x01, 0x28, 0x0b, 0x32, 0x12, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x63, 0x6f, 0x72, 0x65,
 	0x2e, 0x50, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0x52, 0x07, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c,
 	0x65, 0x12, 0x35, 0x0a, 0x0a, 0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x18,
-	0x03, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x15, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x6e, 0x6f, 0x64,
+	0x03, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x15, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x63, 0x6f, 0x72,
 	0x65, 0x2e, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x0a, 0x63, 0x6f,
 	0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x4a, 0x0a, 0x0b, 0x68, 0x6f, 0x73, 0x74,
 	0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x28, 0x2e,
@@ -1288,14 +1235,10 @@ var file_proto_client_api_proto_rawDesc = []byte{
 	0x12, 0x14, 0x0a, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
 	0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x12, 0x23, 0x0a, 0x04, 0x70, 0x65, 0x65, 0x72, 0x18, 0x03,
 	0x20, 0x01, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x63, 0x6f, 0x72, 0x65,
-	0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x04, 0x70, 0x65, 0x65, 0x72, 0x2a, 0x3d, 0x0a, 0x0a, 0x43,
-	0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x0b, 0x0a, 0x07, 0x4f, 0x46, 0x46,
-	0x4c, 0x49, 0x4e, 0x45, 0x10, 0x00, 0x12, 0x08, 0x0a, 0x04, 0x57, 0x49, 0x46, 0x49, 0x10, 0x01,
-	0x12, 0x0a, 0x0a, 0x06, 0x4d, 0x4f, 0x42, 0x49, 0x4c, 0x45, 0x10, 0x02, 0x12, 0x0c, 0x0a, 0x08,
-	0x45, 0x54, 0x48, 0x45, 0x52, 0x4e, 0x45, 0x54, 0x10, 0x03, 0x42, 0x27, 0x5a, 0x25, 0x67, 0x69,
-	0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2d, 0x69, 0x6f,
-	0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x2f, 0x6e,
-	0x6f, 0x64, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x04, 0x70, 0x65, 0x65, 0x72, 0x42, 0x27, 0x5a, 0x25, 0x67,
+	0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2d, 0x69,
+	0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x2f,
+	0x6e, 0x6f, 0x64, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1310,47 +1253,47 @@ func file_proto_client_api_proto_rawDescGZIP() []byte {
 	return file_proto_client_api_proto_rawDescData
 }
 
-var file_proto_client_api_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_proto_client_api_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_proto_client_api_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
 var file_proto_client_api_proto_goTypes = []interface{}{
-	(Connection)(0),                          // 0: sonr.node.Connection
-	(InitializeRequest_IPAddress_Family)(0),  // 1: sonr.node.InitializeRequest.IPAddress.Family
-	(*InitializeRequest)(nil),                // 2: sonr.node.InitializeRequest
-	(*InitializeResponse)(nil),               // 3: sonr.node.InitializeResponse
-	(*SupplyRequest)(nil),                    // 4: sonr.node.SupplyRequest
-	(*SupplyResponse)(nil),                   // 5: sonr.node.SupplyResponse
-	(*EditRequest)(nil),                      // 6: sonr.node.EditRequest
-	(*EditResponse)(nil),                     // 7: sonr.node.EditResponse
-	(*ShareRequest)(nil),                     // 8: sonr.node.ShareRequest
-	(*ShareResponse)(nil),                    // 9: sonr.node.ShareResponse
-	(*RespondRequest)(nil),                   // 10: sonr.node.RespondRequest
-	(*RespondResponse)(nil),                  // 11: sonr.node.RespondResponse
-	(*SearchRequest)(nil),                    // 12: sonr.node.SearchRequest
-	(*SearchResponse)(nil),                   // 13: sonr.node.SearchResponse
-	(*InitializeRequest_AccountOptions)(nil), // 14: sonr.node.InitializeRequest.AccountOptions
-	(*InitializeRequest_FSOptions)(nil),      // 15: sonr.node.InitializeRequest.FSOptions
-	(*InitializeRequest_HostOptions)(nil),    // 16: sonr.node.InitializeRequest.HostOptions
-	(*InitializeRequest_ServiceOptions)(nil), // 17: sonr.node.InitializeRequest.ServiceOptions
-	(*InitializeRequest_IPAddress)(nil),      // 18: sonr.node.InitializeRequest.IPAddress
-	(*common.Location)(nil),                  // 19: sonr.core.Location
-	(*common.Profile)(nil),                   // 20: sonr.core.Profile
+	(InitializeRequest_IPAddress_Family)(0),  // 0: sonr.node.InitializeRequest.IPAddress.Family
+	(*InitializeRequest)(nil),                // 1: sonr.node.InitializeRequest
+	(*InitializeResponse)(nil),               // 2: sonr.node.InitializeResponse
+	(*SupplyRequest)(nil),                    // 3: sonr.node.SupplyRequest
+	(*SupplyResponse)(nil),                   // 4: sonr.node.SupplyResponse
+	(*EditRequest)(nil),                      // 5: sonr.node.EditRequest
+	(*EditResponse)(nil),                     // 6: sonr.node.EditResponse
+	(*ShareRequest)(nil),                     // 7: sonr.node.ShareRequest
+	(*ShareResponse)(nil),                    // 8: sonr.node.ShareResponse
+	(*RespondRequest)(nil),                   // 9: sonr.node.RespondRequest
+	(*RespondResponse)(nil),                  // 10: sonr.node.RespondResponse
+	(*SearchRequest)(nil),                    // 11: sonr.node.SearchRequest
+	(*SearchResponse)(nil),                   // 12: sonr.node.SearchResponse
+	(*InitializeRequest_AccountOptions)(nil), // 13: sonr.node.InitializeRequest.AccountOptions
+	(*InitializeRequest_FSOptions)(nil),      // 14: sonr.node.InitializeRequest.FSOptions
+	(*InitializeRequest_HostOptions)(nil),    // 15: sonr.node.InitializeRequest.HostOptions
+	(*InitializeRequest_ServiceOptions)(nil), // 16: sonr.node.InitializeRequest.ServiceOptions
+	(*InitializeRequest_IPAddress)(nil),      // 17: sonr.node.InitializeRequest.IPAddress
+	(*common.Location)(nil),                  // 18: sonr.core.Location
+	(*common.Profile)(nil),                   // 19: sonr.core.Profile
+	(common.Connection)(0),                   // 20: sonr.core.Connection
 	(*common.Peer)(nil),                      // 21: sonr.core.Peer
 }
 var file_proto_client_api_proto_depIdxs = []int32{
-	19, // 0: sonr.node.InitializeRequest.location:type_name -> sonr.core.Location
-	20, // 1: sonr.node.InitializeRequest.profile:type_name -> sonr.core.Profile
-	0,  // 2: sonr.node.InitializeRequest.connection:type_name -> sonr.node.Connection
-	16, // 3: sonr.node.InitializeRequest.hostOptions:type_name -> sonr.node.InitializeRequest.HostOptions
-	17, // 4: sonr.node.InitializeRequest.serviceOptions:type_name -> sonr.node.InitializeRequest.ServiceOptions
-	14, // 5: sonr.node.InitializeRequest.accountOptions:type_name -> sonr.node.InitializeRequest.AccountOptions
-	15, // 6: sonr.node.InitializeRequest.fsoptions:type_name -> sonr.node.InitializeRequest.FSOptions
+	18, // 0: sonr.node.InitializeRequest.location:type_name -> sonr.core.Location
+	19, // 1: sonr.node.InitializeRequest.profile:type_name -> sonr.core.Profile
+	20, // 2: sonr.node.InitializeRequest.connection:type_name -> sonr.core.Connection
+	15, // 3: sonr.node.InitializeRequest.hostOptions:type_name -> sonr.node.InitializeRequest.HostOptions
+	16, // 4: sonr.node.InitializeRequest.serviceOptions:type_name -> sonr.node.InitializeRequest.ServiceOptions
+	13, // 5: sonr.node.InitializeRequest.accountOptions:type_name -> sonr.node.InitializeRequest.AccountOptions
+	14, // 6: sonr.node.InitializeRequest.fsoptions:type_name -> sonr.node.InitializeRequest.FSOptions
 	21, // 7: sonr.node.SupplyRequest.peer:type_name -> sonr.core.Peer
-	20, // 8: sonr.node.EditRequest.profile:type_name -> sonr.core.Profile
+	19, // 8: sonr.node.EditRequest.profile:type_name -> sonr.core.Profile
 	21, // 9: sonr.node.ShareRequest.peer:type_name -> sonr.core.Peer
 	21, // 10: sonr.node.RespondRequest.peer:type_name -> sonr.core.Peer
 	21, // 11: sonr.node.SearchResponse.peer:type_name -> sonr.core.Peer
-	18, // 12: sonr.node.InitializeRequest.HostOptions.listenAddrs:type_name -> sonr.node.InitializeRequest.IPAddress
-	1,  // 13: sonr.node.InitializeRequest.IPAddress.family:type_name -> sonr.node.InitializeRequest.IPAddress.Family
+	17, // 12: sonr.node.InitializeRequest.HostOptions.listenAddrs:type_name -> sonr.node.InitializeRequest.IPAddress
+	0,  // 13: sonr.node.InitializeRequest.IPAddress.family:type_name -> sonr.node.InitializeRequest.IPAddress.Family
 	14, // [14:14] is the sub-list for method output_type
 	14, // [14:14] is the sub-list for method input_type
 	14, // [14:14] is the sub-list for extension type_name
@@ -1575,7 +1518,7 @@ func file_proto_client_api_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_proto_client_api_proto_rawDesc,
-			NumEnums:      2,
+			NumEnums:      1,
 			NumMessages:   17,
 			NumExtensions: 0,
 			NumServices:   0,

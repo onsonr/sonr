@@ -4,23 +4,15 @@ package sonr.node;
 import "proto/common/core.proto";
 option go_package = "github.com/sonr-io/core/internal/node";
 
-// Internet Connection Type
-enum Connection {
-  OFFLINE = 0;  // No Internet Connection
-  WIFI = 1;     // Wifi Connection
-  MOBILE = 2;   // Mobile Connection
-  ETHERNET = 3; // Ethernet Connection
-}
-
 // InitializeRequest Message to Establish Sonr Host/API/Room
 message InitializeRequest {
-  sonr.core.Location location = 1;   // Current Runtime Location
-  sonr.core.Profile profile = 2;     // Users Contact Card
-  Connection connection = 3;         // Internet Connection Type
-  HostOptions hostOptions = 4;       // Libp2p Host config
-  ServiceOptions serviceOptions = 5; // Service Config
-  AccountOptions accountOptions = 6; // Account Config
-  FSOptions fsoptions = 7;           // File System Config
+  sonr.core.Location location = 1;     // Current Runtime Location
+  sonr.core.Profile profile = 2;       // Users Contact Card
+  sonr.core.Connection connection = 3; // Internet Connection Type
+  HostOptions hostOptions = 4;         // Libp2p Host config
+  ServiceOptions serviceOptions = 5;   // Service Config
+  AccountOptions accountOptions = 6;   // Account Config
+  FSOptions fsoptions = 7;             // File System Config
 
   // Optional Message to Initialize Sonr Account
   message AccountOptions {

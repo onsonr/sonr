@@ -15,6 +15,7 @@ import (
 	psub "github.com/libp2p/go-libp2p-pubsub"
 	discovery "github.com/libp2p/go-libp2p/p2p/discovery"
 	"github.com/pkg/errors"
+	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/tools/emitter"
 )
@@ -40,7 +41,7 @@ type SHost struct {
 }
 
 // Start Begins Assigning Host Parameters ^
-func NewHost(ctx context.Context, kc device.Keychain) (*SHost, error) {
+func NewHost(ctx context.Context, kc device.Keychain, conn common.Connection) (*SHost, error) {
 	// Initialize DHT
 	var kdhtRef *dht.IpfsDHT
 	privKey, err := kc.GetPrivKey(device.Account)
@@ -90,6 +91,14 @@ func NewHost(ctx context.Context, kc device.Keychain) (*SHost, error) {
 	err = hn.Bootstrap()
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to bootstrap host")
+	}
+
+	// Check for Wifi/Ethernet for MDNS
+	if conn == common.Connection_WIFI || conn == common.Connection_ETHERNET {
+		err = hn.MDNS()
+		if err != nil {
+			return nil, errors.Wrap(err, "Failed to initialize MDNS")
+		}
 	}
 	return hn, nil
 }

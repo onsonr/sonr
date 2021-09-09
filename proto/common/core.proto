@@ -3,6 +3,14 @@ syntax = "proto3";
 package sonr.core;
 option go_package = "github.com/sonr-io/core/internal/common";
 
+// Internet Connection Type
+enum Connection {
+  OFFLINE = 0;  // No Internet Connection
+  WIFI = 1;     // Wifi Connection
+  MOBILE = 2;   // Mobile Connection
+  ETHERNET = 3; // Ethernet Connection
+}
+
 // Location from GeoIP and OLC information
 message Location {
   // Location Latitude

@@ -248,10 +248,6 @@
               
               
                 <li>
-                  <a href="#sonr.node.Connection"><span class="badge">E</span>Connection</a>
-                </li>
-              
-                <li>
                   <a href="#sonr.node.InitializeRequest.IPAddress.Family"><span class="badge">E</span>InitializeRequest.IPAddress.Family</a>
                 </li>
               
@@ -316,6 +312,10 @@
                   <a href="#sonr.core.Social"><span class="badge">M</span>Social</a>
                 </li>
               
+              
+                <li>
+                  <a href="#sonr.core.Connection"><span class="badge">E</span>Connection</a>
+                </li>
               
                 <li>
                   <a href="#sonr.core.MIME.Type"><span class="badge">E</span>MIME.Type</a>
@@ -692,7 +692,7 @@
               
                 <tr>
                   <td>connection</td>
-                  <td><a href="#sonr.node.Connection">Connection</a></td>
+                  <td><a href="#sonr.core.Connection">sonr.core.Connection</a></td>
                   <td></td>
                   <td><p>Internet Connection Type </p></td>
                 </tr>
@@ -1216,41 +1216,6 @@
         
       
 
-      
-        <h3 id="sonr.node.Connection">Connection</h3>
-        <p>Internet Connection Type</p>
-        <table class="enum-table">
-          <thead>
-            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
-          </thead>
-          <tbody>
-            
-              <tr>
-                <td>OFFLINE</td>
-                <td>0</td>
-                <td><p>No Internet Connection</p></td>
-              </tr>
-            
-              <tr>
-                <td>WIFI</td>
-                <td>1</td>
-                <td><p>Wifi Connection</p></td>
-              </tr>
-            
-              <tr>
-                <td>MOBILE</td>
-                <td>2</td>
-                <td><p>Mobile Connection</p></td>
-              </tr>
-            
-              <tr>
-                <td>ETHERNET</td>
-                <td>3</td>
-                <td><p>Ethernet Connection</p></td>
-              </tr>
-            
-          </tbody>
-        </table>
       
         <h3 id="sonr.node.InitializeRequest.IPAddress.Family">InitializeRequest.IPAddress.Family</h3>
         <p></p>
@@ -1815,6 +1780,41 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
         
       
 
+      
+        <h3 id="sonr.core.Connection">Connection</h3>
+        <p>Internet Connection Type</p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>OFFLINE</td>
+                <td>0</td>
+                <td><p>No Internet Connection</p></td>
+              </tr>
+            
+              <tr>
+                <td>WIFI</td>
+                <td>1</td>
+                <td><p>Wifi Connection</p></td>
+              </tr>
+            
+              <tr>
+                <td>MOBILE</td>
+                <td>2</td>
+                <td><p>Mobile Connection</p></td>
+              </tr>
+            
+              <tr>
+                <td>ETHERNET</td>
+                <td>3</td>
+                <td><p>Ethernet Connection</p></td>
+              </tr>
+            
+          </tbody>
+        </table>
       
         <h3 id="sonr.core.MIME.Type">MIME.Type</h3>
         <p></p>

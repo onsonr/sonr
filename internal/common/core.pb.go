@@ -20,6 +20,59 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// Internet Connection Type
+type Connection int32
+
+const (
+	Connection_OFFLINE  Connection = 0 // No Internet Connection
+	Connection_WIFI     Connection = 1 // Wifi Connection
+	Connection_MOBILE   Connection = 2 // Mobile Connection
+	Connection_ETHERNET Connection = 3 // Ethernet Connection
+)
+
+// Enum value maps for Connection.
+var (
+	Connection_name = map[int32]string{
+		0: "OFFLINE",
+		1: "WIFI",
+		2: "MOBILE",
+		3: "ETHERNET",
+	}
+	Connection_value = map[string]int32{
+		"OFFLINE":  0,
+		"WIFI":     1,
+		"MOBILE":   2,
+		"ETHERNET": 3,
+	}
+)
+
+func (x Connection) Enum() *Connection {
+	p := new(Connection)
+	*p = x
+	return p
+}
+
+func (x Connection) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Connection) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_common_core_proto_enumTypes[0].Descriptor()
+}
+
+func (Connection) Type() protoreflect.EnumType {
+	return &file_proto_common_core_proto_enumTypes[0]
+}
+
+func (x Connection) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use Connection.Descriptor instead.
+func (Connection) EnumDescriptor() ([]byte, []int) {
+	return file_proto_common_core_proto_rawDescGZIP(), []int{0}
+}
+
 type MIME_Type int32
 
 const (
@@ -65,11 +118,11 @@ func (x MIME_Type) String() string {
 }
 
 func (MIME_Type) Descriptor() protoreflect.EnumDescriptor {
-	return file_proto_common_core_proto_enumTypes[0].Descriptor()
+	return file_proto_common_core_proto_enumTypes[1].Descriptor()
 }
 
 func (MIME_Type) Type() protoreflect.EnumType {
-	return &file_proto_common_core_proto_enumTypes[0]
+	return &file_proto_common_core_proto_enumTypes[1]
 }
 
 func (x MIME_Type) Number() protoreflect.EnumNumber {
@@ -118,11 +171,11 @@ func (x Peer_Status) String() string {
 }
 
 func (Peer_Status) Descriptor() protoreflect.EnumDescriptor {
-	return file_proto_common_core_proto_enumTypes[1].Descriptor()
+	return file_proto_common_core_proto_enumTypes[2].Descriptor()
 }
 
 func (Peer_Status) Type() protoreflect.EnumType {
-	return &file_proto_common_core_proto_enumTypes[1]
+	return &file_proto_common_core_proto_enumTypes[2]
 }
 
 func (x Peer_Status) Number() protoreflect.EnumNumber {
@@ -189,11 +242,11 @@ func (x Social_Type) String() string {
 }
 
 func (Social_Type) Descriptor() protoreflect.EnumDescriptor {
-	return file_proto_common_core_proto_enumTypes[2].Descriptor()
+	return file_proto_common_core_proto_enumTypes[3].Descriptor()
 }
 
 func (Social_Type) Type() protoreflect.EnumType {
-	return &file_proto_common_core_proto_enumTypes[2]
+	return &file_proto_common_core_proto_enumTypes[3]
 }
 
 func (x Social_Type) Number() protoreflect.EnumNumber {
@@ -976,10 +1029,14 @@ var file_proto_common_core_proto_rawDesc = []byte{
 	0x0a, 0x07, 0x59, 0x4f, 0x55, 0x54, 0x55, 0x42, 0x45, 0x10, 0x06, 0x12, 0x0a, 0x0a, 0x06, 0x47,
 	0x49, 0x54, 0x48, 0x55, 0x42, 0x10, 0x07, 0x12, 0x0c, 0x0a, 0x08, 0x53, 0x4e, 0x41, 0x50, 0x43,
 	0x48, 0x41, 0x54, 0x10, 0x08, 0x12, 0x0b, 0x0a, 0x07, 0x53, 0x50, 0x4f, 0x54, 0x49, 0x46, 0x59,
-	0x10, 0x09, 0x42, 0x29, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d,
-	0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2d, 0x69, 0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x69, 0x6e,
-	0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x62, 0x06, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x10, 0x09, 0x2a, 0x3d, 0x0a, 0x0a, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e,
+	0x12, 0x0b, 0x0a, 0x07, 0x4f, 0x46, 0x46, 0x4c, 0x49, 0x4e, 0x45, 0x10, 0x00, 0x12, 0x08, 0x0a,
+	0x04, 0x57, 0x49, 0x46, 0x49, 0x10, 0x01, 0x12, 0x0a, 0x0a, 0x06, 0x4d, 0x4f, 0x42, 0x49, 0x4c,
+	0x45, 0x10, 0x02, 0x12, 0x0c, 0x0a, 0x08, 0x45, 0x54, 0x48, 0x45, 0x52, 0x4e, 0x45, 0x54, 0x10,
+	0x03, 0x42, 0x29, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f,
+	0x73, 0x6f, 0x6e, 0x72, 0x2d, 0x69, 0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x69, 0x6e, 0x74,
+	0x65, 0x72, 0x6e, 0x61, 0x6c, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x62, 0x06, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -994,29 +1051,30 @@ func file_proto_common_core_proto_rawDescGZIP() []byte {
 	return file_proto_common_core_proto_rawDescData
 }
 
-var file_proto_common_core_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
+var file_proto_common_core_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
 var file_proto_common_core_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_proto_common_core_proto_goTypes = []interface{}{
-	(MIME_Type)(0),             // 0: sonr.core.MIME.Type
-	(Peer_Status)(0),           // 1: sonr.core.Peer.Status
-	(Social_Type)(0),           // 2: sonr.core.Social.Type
-	(*Location)(nil),           // 3: sonr.core.Location
-	(*Metadata)(nil),           // 4: sonr.core.Metadata
-	(*MIME)(nil),               // 5: sonr.core.MIME
-	(*Peer)(nil),               // 6: sonr.core.Peer
-	(*Profile)(nil),            // 7: sonr.core.Profile
-	(*Social)(nil),             // 8: sonr.core.Social
-	(*Location_Placemark)(nil), // 9: sonr.core.Location.Placemark
-	(*Peer_Info)(nil),          // 10: sonr.core.Peer.Info
+	(Connection)(0),            // 0: sonr.core.Connection
+	(MIME_Type)(0),             // 1: sonr.core.MIME.Type
+	(Peer_Status)(0),           // 2: sonr.core.Peer.Status
+	(Social_Type)(0),           // 3: sonr.core.Social.Type
+	(*Location)(nil),           // 4: sonr.core.Location
+	(*Metadata)(nil),           // 5: sonr.core.Metadata
+	(*MIME)(nil),               // 6: sonr.core.MIME
+	(*Peer)(nil),               // 7: sonr.core.Peer
+	(*Profile)(nil),            // 8: sonr.core.Profile
+	(*Social)(nil),             // 9: sonr.core.Social
+	(*Location_Placemark)(nil), // 10: sonr.core.Location.Placemark
+	(*Peer_Info)(nil),          // 11: sonr.core.Peer.Info
 }
 var file_proto_common_core_proto_depIdxs = []int32{
-	9,  // 0: sonr.core.Location.placemark:type_name -> sonr.core.Location.Placemark
-	0,  // 1: sonr.core.MIME.type:type_name -> sonr.core.MIME.Type
-	1,  // 2: sonr.core.Peer.status:type_name -> sonr.core.Peer.Status
-	10, // 3: sonr.core.Peer.info:type_name -> sonr.core.Peer.Info
-	7,  // 4: sonr.core.Peer.profile:type_name -> sonr.core.Profile
-	8,  // 5: sonr.core.Profile.socials:type_name -> sonr.core.Social
-	2,  // 6: sonr.core.Social.type:type_name -> sonr.core.Social.Type
+	10, // 0: sonr.core.Location.placemark:type_name -> sonr.core.Location.Placemark
+	1,  // 1: sonr.core.MIME.type:type_name -> sonr.core.MIME.Type
+	2,  // 2: sonr.core.Peer.status:type_name -> sonr.core.Peer.Status
+	11, // 3: sonr.core.Peer.info:type_name -> sonr.core.Peer.Info
+	8,  // 4: sonr.core.Peer.profile:type_name -> sonr.core.Profile
+	9,  // 5: sonr.core.Profile.socials:type_name -> sonr.core.Social
+	3,  // 6: sonr.core.Social.type:type_name -> sonr.core.Social.Type
 	7,  // [7:7] is the sub-list for method output_type
 	7,  // [7:7] is the sub-list for method input_type
 	7,  // [7:7] is the sub-list for extension type_name
@@ -1132,7 +1190,7 @@ func file_proto_common_core_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_proto_common_core_proto_rawDesc,
-			NumEnums:      3,
+			NumEnums:      4,
 			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   0,

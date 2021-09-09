@@ -67,7 +67,7 @@ func Start(reqBytes []byte) {
 		}
 
 		// Initialize Host
-		host, err := host.NewHost(ctx, kc)
+		host, err := host.NewHost(ctx, kc, req.GetConnection())
 		if err != nil {
 			logger.Panic("Failed to create Host", zap.Error(err))
 		}
