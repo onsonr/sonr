@@ -72,8 +72,8 @@ func NewProtocol(host *host.SHost, loc *common.Location, em *emitter.Emitter) (*
 		olc:              olc,
 	}
 
-	go exchProtocol.handleExchangeEvents(context.Background())
-	go exchProtocol.handleExchangeMessages(context.Background())
+	//go exchProtocol.handleExchangeEvents(context.Background())
+	//go exchProtocol.handleExchangeMessages(context.Background())
 	return exchProtocol, nil
 }
 
@@ -82,6 +82,7 @@ func (p *ExchangeProtocol) Find(sName string) (*common.Peer, error) {
 	// Find peer from sName in the store
 	buf, err := p.PubsubValueStore.GetValue(context.Background(), fmt.Sprintf("store/%s", sName))
 	if err != nil {
+		logger.Error("Failed to GET peer from store", zap.Error(err))
 		return nil, err
 	}
 
@@ -89,6 +90,7 @@ func (p *ExchangeProtocol) Find(sName string) (*common.Peer, error) {
 	peer := &common.Peer{}
 	err = proto.Unmarshal(buf, peer)
 	if err != nil {
+		logger.Error("Failed to Unmarshal Peer", zap.Error(err))
 		return nil, err
 	}
 	return peer, nil
@@ -98,6 +100,7 @@ func (p *ExchangeProtocol) Update(sName string, buf []byte) error {
 	// Determine Key and Add Value to Store
 	err := p.PubsubValueStore.PutValue(context.Background(), fmt.Sprintf("store/%s", sName), buf)
 	if err != nil {
+		logger.Error("Failed to PUT peer from store", zap.Error(err))
 		return err
 	}
 	return nil

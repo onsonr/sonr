@@ -66,7 +66,6 @@ func NewNode(ctx context.Context, host *host.SHost, loc *common.Location) *Node 
 	exch, err := exchange.NewProtocol(host, loc, node.Emitter)
 	if err != nil {
 		logger.Error("Failed to start ExchangeProtocol", zap.Error(err))
-		node.Emit(Event_STATUS, err)
 		return node
 	}
 
@@ -78,15 +77,15 @@ func NewNode(ctx context.Context, host *host.SHost, loc *common.Location) *Node 
 func (n *Node) Edit(p *common.Profile) error {
 	buf, err := proto.Marshal(p)
 	if err != nil {
-		logger.Error("Failed to edit Profile", zap.Error(err))
+		logger.Error("Failed to marshal Profile", zap.Error(err))
 		return err
 	}
+
 	err = n.ExchangeProtocol.Update(p.GetSName(), buf)
 	if err != nil {
 		logger.Error("Failed to edit Profile", zap.Error(err))
 		return err
 	}
-
 	return nil
 }
 
@@ -144,7 +143,7 @@ func (n *Node) Invite(id peer.ID) error {
 // Respond to an invite request
 func (n *Node) Respond(decs bool) error {
 	// Create Invite Response
-	
+
 	// n.TransferProtocol.Respond(id)
 	return nil
 }
