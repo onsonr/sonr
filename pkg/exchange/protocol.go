@@ -3,6 +3,7 @@ package exchange
 import (
 	"context"
 	"fmt"
+	"time"
 
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	psr "github.com/libp2p/go-libp2p-pubsub-router"
@@ -38,7 +39,7 @@ type ExchangeProtocol struct {
 func NewProtocol(host *host.SHost, loc *common.Location, em *emitter.Emitter) (*ExchangeProtocol, error) {
 	// Create PubSub Value Store
 	olc := loc.OLC(6)
-	r, err := psr.NewPubsubValueStore(context.Background(), host.Host, host.Pubsub(), ExchangeValidator{})
+	r, err := psr.NewPubsubValueStore(context.Background(), host.Host, host.Pubsub(), ExchangeValidator{}, psr.WithRebroadcastInterval(10*time.Second))
 	if err != nil {
 		return nil, err
 	}

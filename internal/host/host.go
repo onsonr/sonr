@@ -95,12 +95,6 @@ func NewHost(ctx context.Context, kc device.Keychain) (*SHost, error) {
 }
 
 // ** ─── Host Info ────────────────────────────────────────────────────────
-
-// Close Libp2p Host
-func (h *SHost) Close() {
-	h.Close()
-}
-
 // Returns Host Node MultiAddr
 func (hn *SHost) Pubsub() *psub.PubSub {
 	return hn.pubsub
