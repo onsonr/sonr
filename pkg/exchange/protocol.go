@@ -80,7 +80,7 @@ func NewProtocol(ctx context.Context, host *host.SHost, loc *common.Location, em
 }
 
 // Search peer Profile by name
-func (p *ExchangeProtocol) Search(sName string) (*common.Profile, error) {
+func (p *ExchangeProtocol) Search(sName string) (*common.Peer, error) {
 	// Find peer from sName in the store
 	buf, err := p.PubsubValueStore.GetValue(p.ctx, fmt.Sprintf("store/%s", sName))
 	if err != nil {
@@ -89,7 +89,7 @@ func (p *ExchangeProtocol) Search(sName string) (*common.Profile, error) {
 	}
 
 	// Unmarshal Peer from buffer
-	profile := &common.Profile{}
+	profile := &common.Peer{}
 	err = proto.Unmarshal(buf, profile)
 	if err != nil {
 		logger.Error("Failed to Unmarshal Peer", zap.Error(err))

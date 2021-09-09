@@ -96,15 +96,20 @@ func (n *Node) Peer() *common.Peer {
 
 // Edit method updates Node's profile
 func (n *Node) Edit(p *common.Profile) error {
-	buf, err := proto.Marshal(p)
+	// Set Profile
+	n.profile = p
+
+	// Marshal Peer
+	buf, err := proto.Marshal(n.Peer())
 	if err != nil {
-		logger.Error("Failed to marshal Profile", zap.Error(err))
+		logger.Error("Failed to marshal Peer", zap.Error(err))
 		return err
 	}
 
+	// Push Update to Exchange
 	err = n.ExchangeProtocol.Update(p.GetSName(), buf)
 	if err != nil {
-		logger.Error("Failed to edit Profile", zap.Error(err))
+		logger.Error("Failed to update Exchange", zap.Error(err))
 		return err
 	}
 	return nil
