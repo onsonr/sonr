@@ -76,12 +76,6 @@ func NewHost(ctx context.Context, kc device.Keychain) (*SHost, error) {
 		return nil, errors.Wrap(err, "Failed to initialize host")
 	}
 
-	// Create Pub Sub
-	ps, err := psub.NewGossipSub(ctx, h)
-	if err != nil {
-		return nil, errors.Wrap(err, "Failed to Create new Gossip Sub")
-	}
-
 	// Create Host
 	hn := &SHost{
 		ctxHost: ctx,
@@ -90,7 +84,6 @@ func NewHost(ctx context.Context, kc device.Keychain) (*SHost, error) {
 		Host:    h,
 		kdht:    kdhtRef,
 		privKey: privKey,
-		pubsub:  ps,
 	}
 
 	// Bootstrap Host
