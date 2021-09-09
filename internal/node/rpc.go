@@ -19,6 +19,7 @@ type NodeRPCService struct {
 	*Node
 
 	// Properties
+	ctx        context.Context
 	grpcServer *grpc.Server
 	listener   net.Listener
 
@@ -30,7 +31,7 @@ type NodeRPCService struct {
 }
 
 // NewRPCService creates a new RPC service for the node.
-func NewRPCService(n *Node) (*NodeRPCService, error) {
+func NewRPCService(ctx context.Context, n *Node) (*NodeRPCService, error) {
 	// Bind RPC Service
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", RPC_SERVER_PORT))
 	if err != nil {
@@ -41,21 +42,24 @@ func NewRPCService(n *Node) (*NodeRPCService, error) {
 	// Create a new gRPC server
 	grpcServer := grpc.NewServer()
 	nrc := &NodeRPCService{
+		grpcServer:     grpcServer,
+		listener:       listener,
+		ctx:            ctx,
 		Node:           n,
 		decisionEvents: make(chan *common.DecisionEvent),
 		inviteEvents:   make(chan *common.InviteEvent),
 		progressEvents: make(chan *common.ProgressEvent),
 		completeEvents: make(chan *common.CompleteEvent),
-		grpcServer:     grpcServer,
-		listener:       listener,
 	}
 
 	// Register RPC Service
 	RegisterNodeServiceServer(grpcServer, nrc)
-	if err := grpcServer.Serve(listener); err != nil {
-		logger.Error("Failed to Register node service server", zap.Error(err))
-		return nil, err
-	}
+	go func(nodeRpcService *NodeRPCService, grpcServer *grpc.Server) {
+		if err := grpcServer.Serve(nodeRpcService.listener); err != nil {
+			logger.Error("Failed to serve gRPC", zap.Error(err))
+			return
+		}
+	}(nrc, grpcServer)
 	return nrc, nil
 }
 
@@ -111,7 +115,6 @@ func (n *NodeRPCService) OnDecision(e *Empty, stream NodeService_OnDecisionServe
 		case <-n.ctx.Done():
 			return nil
 		}
-		state.GetState().NeedsWait()
 	}
 }
 

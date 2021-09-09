@@ -21,6 +21,7 @@ type Client struct {
 
 var client *Client
 
+// Start starts the host, node, and rpc service.
 func Start(reqBytes []byte) {
 	ctx := context.Background()
 	logger.Init(true)
@@ -67,10 +68,10 @@ func Start(reqBytes []byte) {
 	}
 
 	// Create Node
-	n := node.NewNode(context.Background(), host)
+	n := node.NewNode(ctx, host)
 
 	// Create RPC Service
-	service, err := node.NewRPCService(n)
+	service, err := node.NewRPCService(ctx, n)
 	if err != nil {
 		logger.Panic("Failed to start RPC Service", zap.Error(err))
 	}
@@ -82,5 +83,11 @@ func Start(reqBytes []byte) {
 		node:    n,
 		service: service,
 	}
-	client.node.Wait()
+	return
+}
+
+// Stop closes the host, node, and rpc service.
+func Stop() {
+	client.host.Close()
+	client.node.Close()
 }

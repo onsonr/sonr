@@ -22,6 +22,7 @@ service NodeService {
   rpc Respond(RespondRequest) returns (RespondResponse) {}
 
   // Events Streams
+  rpc OnStatus(Empty) returns (stream sonr.core.StatusEvent) {}
   rpc OnDecision(Empty) returns (stream sonr.core.DecisionEvent) {}
   rpc OnInvite(Empty) returns (stream sonr.core.InviteEvent) {}
   rpc OnProgress(Empty) returns (stream sonr.core.ProgressEvent) {}

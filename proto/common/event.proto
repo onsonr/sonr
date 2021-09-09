@@ -5,6 +5,12 @@ import "proto/common/core.proto";
 import "proto/common/data.proto";
 option go_package = "github.com/sonr-io/core/internal/common";
 
+// Status Event based on Lib Functions
+message StatusEvent {
+  bool isOk = 1;
+  string message = 2;
+}
+
 // Direction of a transfer (incoming or outgoing).
 enum Direction {
   INBOUND = 0;

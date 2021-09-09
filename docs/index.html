@@ -418,6 +418,10 @@
                   <a href="#sonr.core.ProgressEvent"><span class="badge">M</span>ProgressEvent</a>
                 </li>
               
+                <li>
+                  <a href="#sonr.core.StatusEvent"><span class="badge">M</span>StatusEvent</a>
+                </li>
+              
               
                 <li>
                   <a href="#sonr.core.CompleteEvent.Direction"><span class="badge">E</span>CompleteEvent.Direction</a>
@@ -1263,10 +1267,17 @@
               </tr>
             
               <tr>
+                <td>OnStatus</td>
+                <td><a href="#sonr.node.Empty">Empty</a></td>
+                <td><a href="#sonr.core.StatusEvent">.sonr.core.StatusEvent</a> stream</td>
+                <td><p>Events Streams</p></td>
+              </tr>
+            
+              <tr>
                 <td>OnDecision</td>
                 <td><a href="#sonr.node.Empty">Empty</a></td>
                 <td><a href="#sonr.core.DecisionEvent">.sonr.core.DecisionEvent</a> stream</td>
-                <td><p>Events Streams</p></td>
+                <td><p></p></td>
               </tr>
             
               <tr>
@@ -2810,6 +2821,37 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                   <td><a href="#double">double</a></td>
                   <td></td>
                   <td><p>Current Transfer Progress </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.core.StatusEvent">StatusEvent</h3>
+        <p>Status Event based on Lib Functions</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>isOk</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>message</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
                 </tr>
               
             </tbody>
