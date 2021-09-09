@@ -22,6 +22,7 @@ import (
 const (
 	Event_INVITED   = "invited"
 	Event_RESPONDED = "responded"
+	Event_PROGRESS  = "progress"
 	Event_COMPLETED = "completed"
 )
 
@@ -95,7 +96,7 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 	if ok {
 		log.Printf("%s: Ping response to %s sent.", s.Conn().LocalPeer().String(), s.Conn().RemotePeer().String())
 	}
-	p.emitter.Emit("inviteRequest", req)
+	p.emitter.Emit(Event_INVITED, req)
 }
 
 // remote ping response handler
@@ -131,7 +132,7 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 		log.Println("Failed to locate request data boject for response")
 		return
 	}
-	p.emitter.Emit("inviteResponse", resp)
+	p.emitter.Emit(Event_RESPONDED, resp)
 }
 
 func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
@@ -161,7 +162,7 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 		rs.Close()
 
 		// Set Status
-		p.emitter.Emit(emitter.EMIT_COMPLETED)
+		p.emitter.Emit(Event_COMPLETED)
 	}(msgio.NewReader(s))
 }
 
@@ -235,7 +236,7 @@ func (p *TransferProtocol) Transfer(id peer.ID, transfer *common.Transfer) error
 			}
 			wg.Done()
 		}
-		p.emitter.Emit(emitter.EMIT_COMPLETED)
+		p.emitter.Emit(Event_COMPLETED)
 	}(msgio.NewWriter(stream))
 	wg.Wait()
 	return nil

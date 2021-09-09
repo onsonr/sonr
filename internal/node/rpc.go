@@ -6,6 +6,8 @@ import (
 	"net"
 
 	common "github.com/sonr-io/core/internal/common"
+	"github.com/sonr-io/core/pkg/transfer"
+	"github.com/sonr-io/core/tools/emitter"
 	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/tools/state"
 	"go.uber.org/zap"
@@ -24,6 +26,7 @@ type NodeRPCService struct {
 	listener   net.Listener
 
 	// Channels
+	statusEvents   chan *common.StatusEvent
 	decisionEvents chan *common.DecisionEvent
 	inviteEvents   chan *common.InviteEvent
 	progressEvents chan *common.ProgressEvent
@@ -46,6 +49,7 @@ func NewRPCService(ctx context.Context, n *Node) (*NodeRPCService, error) {
 		listener:       listener,
 		ctx:            ctx,
 		Node:           n,
+		statusEvents:   make(chan *common.StatusEvent),
 		decisionEvents: make(chan *common.DecisionEvent),
 		inviteEvents:   make(chan *common.InviteEvent),
 		progressEvents: make(chan *common.ProgressEvent),
@@ -60,6 +64,30 @@ func NewRPCService(ctx context.Context, n *Node) (*NodeRPCService, error) {
 			return
 		}
 	}(nrc, grpcServer)
+
+	// Handle Node Events
+	nrc.Node.On(transfer.Event_INVITED, func(e *emitter.Event) {
+		inv := e.Args[0].(*transfer.InviteEvent)
+		invEvent := &common.InviteEvent{
+			InviteId: inv.GetInviteId(),
+			From:     inv.GetFrom(),
+			Transfer: inv.GetTransfer(),
+		}
+		nrc.inviteEvents <- invEvent
+	})
+
+	nrc.Node.On(Event_STATUS, func(e *emitter.Event) {
+		isOk := e.Args[0].(bool)
+		message := e.Args[1].(string)
+
+		event := &common.StatusEvent{
+			IsOk:    isOk,
+			Message: message,
+		}
+		nrc.statusEvents <- event
+	})
+
+	// Return RPC Service
 	return nrc, nil
 }
 
@@ -102,6 +130,20 @@ func (n *NodeRPCService) Respond(ctx context.Context, req *RespondRequest) (*Res
 	// // Send Response
 	// n.client.Respond(resp.ToResponse())
 	return nil, nil
+}
+
+// OnDecision method sends a decision event to the client.
+func (n *NodeRPCService) OnStatus(e *Empty, stream NodeService_OnStatusServer) error {
+	for {
+		select {
+		case m := <-n.statusEvents:
+			if m != nil {
+				stream.Send(m)
+			}
+		case <-n.ctx.Done():
+			return nil
+		}
+	}
 }
 
 // OnDecision method sends a decision event to the client.

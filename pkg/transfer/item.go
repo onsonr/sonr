@@ -68,6 +68,6 @@ func (ir *itemReader) ReadFromWriteTo(src io.Reader, dst io.Writer) (int64, erro
 	if err != nil {
 		return n, err
 	}
-	ir.emitter.Emit(emitter.EMIT_PROGRESS_EVENT, n)
+	ir.emitter.Emit(Event_PROGRESS, n)
 	return n, nil
 }

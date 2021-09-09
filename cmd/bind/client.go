@@ -34,41 +34,42 @@ func Start(reqBytes []byte) {
 	}
 
 	// Get Device Paths
-	opts := make([]device.FSOption, 0)
+	fsOpts := make([]device.FSOption, 0)
 	// Check FSOptions
 	if initReq.GetFsoptions() != nil {
 		// Set Temporary Path
-		opts = append(opts, device.FSOption{
+		fsOpts = append(fsOpts, device.FSOption{
 			Path: initReq.GetFsoptions().GetCacheDir(),
 			Type: device.Temporary,
 		})
 
 		// Set Documents Path
-		opts = append(opts, device.FSOption{
+		fsOpts = append(fsOpts, device.FSOption{
 			Path: initReq.GetFsoptions().GetDocumentsDir(),
 			Type: device.Documents,
 		})
 
 		// Set Support Path
-		opts = append(opts, device.FSOption{
+		fsOpts = append(fsOpts, device.FSOption{
 			Path: initReq.GetFsoptions().GetSupportDir(),
 			Type: device.Support,
 		})
 	}
 
 	// Initialize Device
-	kc, err := device.Init(opts...)
+	kc, err := device.Init(fsOpts...)
 	if err != nil {
 		logger.Panic("Failed to initialize Device", zap.Error(err))
 	}
 
+	// Initialize Host
 	host, err := host.NewHost(ctx, kc)
 	if err != nil {
 		logger.Panic("Failed to create Host", zap.Error(err))
 	}
 
 	// Create Node
-	n := node.NewNode(ctx, host)
+	n := node.NewNode(ctx, host, initReq.GetLocation())
 
 	// Create RPC Service
 	service, err := node.NewRPCService(ctx, n)

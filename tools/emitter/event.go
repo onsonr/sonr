@@ -2,13 +2,9 @@ package emitter
 
 const EMIT_CONNECTED = "Connected"
 const EMIT_LINK = "Link"
-const EMIT_INVITE = "Invite"
-const EMIT_REPLY = "Reply"
 const EMIT_CONFIRMED = "Confirmed"
-const EMIT_COMPLETED = "Completed"
 const EMIT_ERROR = "Error"
 const EMIT_MAIL_EVENT = "MailEvent"
-const EMIT_PROGRESS_EVENT = "ProgressEvent"
 const EMIT_ROOM_EVENT = "RoomEvent"
 const EMIT_SYNC_EVENT = "SyncEvent"
 

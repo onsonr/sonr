@@ -3,20 +3,21 @@ package node
 import (
 	"container/list"
 	"context"
+	"errors"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/host"
+	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/transfer"
 	"github.com/sonr-io/core/tools/emitter"
 	"github.com/sonr-io/core/tools/state"
+	"google.golang.org/protobuf/proto"
 )
 
 // Node Emission Events
 const (
-	Event_Started = "started"
-	Event_Stopped = "stopped"
-	Event_Failed  = "failed"
+	Event_STATUS = "status"
 )
 
 // Node type - a p2p host implementing one or more p2p protocols
@@ -36,20 +37,51 @@ type Node struct {
 	// Queue - the transfer queue
 	queue *list.List
 
+	// Profile - the node's profile
+	profile *common.Profile
+
 	// TransferProtocol - the transfer protocol
 	*transfer.TransferProtocol
+
+	// ExchangeProtocol - the exchange protocol
+	*exchange.ExchangeProtocol
 }
 
-// Create a new node with its implemented protocols
-func NewNode(ctx context.Context, host *host.SHost) *Node {
+// NewNode Creates a node with its implemented protocols
+func NewNode(ctx context.Context, host *host.SHost, loc *common.Location) *Node {
+	// Initialize Node
 	node := &Node{
 		Emitter: emitter.New(2048),
 		SHost:   host,
 		ctx:     ctx,
 		queue:   list.New(),
 	}
+
+	// Create Transfer Protocol
 	node.TransferProtocol = transfer.NewProtocol(host, node.Emitter)
+	node.Emit(Event_STATUS, true, "Transfer Protocol Set")
+
+	// Set Exchange Protocol
+	exch, err := exchange.NewProtocol(host, loc, node.Emitter)
+	if err != nil {
+		node.Emit(Event_STATUS, err)
+		return node
+	}
+
+	node.ExchangeProtocol = exch
 	return node
+}
+
+// Edit method updates Node's profile
+func (n *Node) Edit(p *common.Profile) error {
+	if n.ExchangeProtocol != nil {
+		buf, err := proto.Marshal(p)
+		if err != nil {
+			return err
+		}
+		n.ExchangeProtocol.Update(p.GetSName(), buf)
+	}
+	return errors.New("Exchange Protocol is not initialized.")
 }
 
 // Supply a transfer item to the queue
@@ -69,7 +101,7 @@ func (n *Node) Supply(paths []string) error {
 			// Create File Item
 			item, err := common.NewTransferFileItem(path)
 			if err != nil {
-				n.Emit(Event_Failed, err)
+				n.Emit(Event_STATUS, err)
 				return err
 			}
 
@@ -105,14 +137,4 @@ func (n *Node) Respond(req *RespondRequest) error {
 
 	// n.TransferProtocol.Respond(id)
 	return nil
-}
-
-// Wait continues the node's event loop until it is cancelled
-func (n *Node) Wait() {
-	for {
-		select {
-		case <-n.ctx.Done():
-			return
-		}
-	}
 }

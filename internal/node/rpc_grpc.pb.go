@@ -28,6 +28,7 @@ type NodeServiceClient interface {
 	// Respond Method to an Invite with Decision
 	Respond(ctx context.Context, in *RespondRequest, opts ...grpc.CallOption) (*RespondResponse, error)
 	// Events Streams
+	OnStatus(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnStatusClient, error)
 	OnDecision(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnDecisionClient, error)
 	OnInvite(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnInviteClient, error)
 	OnProgress(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnProgressClient, error)
@@ -78,8 +79,40 @@ func (c *nodeServiceClient) Respond(ctx context.Context, in *RespondRequest, opt
 	return out, nil
 }
 
+func (c *nodeServiceClient) OnStatus(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnStatusClient, error) {
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[0], "/sonr.node.NodeService/OnStatus", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &nodeServiceOnStatusClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type NodeService_OnStatusClient interface {
+	Recv() (*common.StatusEvent, error)
+	grpc.ClientStream
+}
+
+type nodeServiceOnStatusClient struct {
+	grpc.ClientStream
+}
+
+func (x *nodeServiceOnStatusClient) Recv() (*common.StatusEvent, error) {
+	m := new(common.StatusEvent)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 func (c *nodeServiceClient) OnDecision(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnDecisionClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[0], "/sonr.node.NodeService/OnDecision", opts...)
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[1], "/sonr.node.NodeService/OnDecision", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -111,7 +144,7 @@ func (x *nodeServiceOnDecisionClient) Recv() (*common.DecisionEvent, error) {
 }
 
 func (c *nodeServiceClient) OnInvite(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnInviteClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[1], "/sonr.node.NodeService/OnInvite", opts...)
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[2], "/sonr.node.NodeService/OnInvite", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -143,7 +176,7 @@ func (x *nodeServiceOnInviteClient) Recv() (*common.InviteEvent, error) {
 }
 
 func (c *nodeServiceClient) OnProgress(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnProgressClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[2], "/sonr.node.NodeService/OnProgress", opts...)
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[3], "/sonr.node.NodeService/OnProgress", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -175,7 +208,7 @@ func (x *nodeServiceOnProgressClient) Recv() (*common.ProgressEvent, error) {
 }
 
 func (c *nodeServiceClient) OnComplete(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnCompleteClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[3], "/sonr.node.NodeService/OnComplete", opts...)
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[4], "/sonr.node.NodeService/OnComplete", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -219,6 +252,7 @@ type NodeServiceServer interface {
 	// Respond Method to an Invite with Decision
 	Respond(context.Context, *RespondRequest) (*RespondResponse, error)
 	// Events Streams
+	OnStatus(*Empty, NodeService_OnStatusServer) error
 	OnDecision(*Empty, NodeService_OnDecisionServer) error
 	OnInvite(*Empty, NodeService_OnInviteServer) error
 	OnProgress(*Empty, NodeService_OnProgressServer) error
@@ -241,6 +275,9 @@ func (UnimplementedNodeServiceServer) Share(context.Context, *ShareRequest) (*Sh
 }
 func (UnimplementedNodeServiceServer) Respond(context.Context, *RespondRequest) (*RespondResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Respond not implemented")
+}
+func (UnimplementedNodeServiceServer) OnStatus(*Empty, NodeService_OnStatusServer) error {
+	return status.Errorf(codes.Unimplemented, "method OnStatus not implemented")
 }
 func (UnimplementedNodeServiceServer) OnDecision(*Empty, NodeService_OnDecisionServer) error {
 	return status.Errorf(codes.Unimplemented, "method OnDecision not implemented")
@@ -337,6 +374,27 @@ func _NodeService_Respond_Handler(srv interface{}, ctx context.Context, dec func
 		return srv.(NodeServiceServer).Respond(ctx, req.(*RespondRequest))
 	}
 	return interceptor(ctx, in, info, handler)
+}
+
+func _NodeService_OnStatus_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(Empty)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(NodeServiceServer).OnStatus(m, &nodeServiceOnStatusServer{stream})
+}
+
+type NodeService_OnStatusServer interface {
+	Send(*common.StatusEvent) error
+	grpc.ServerStream
+}
+
+type nodeServiceOnStatusServer struct {
+	grpc.ServerStream
+}
+
+func (x *nodeServiceOnStatusServer) Send(m *common.StatusEvent) error {
+	return x.ServerStream.SendMsg(m)
 }
 
 func _NodeService_OnDecision_Handler(srv interface{}, stream grpc.ServerStream) error {
@@ -448,6 +506,11 @@ var NodeService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "OnStatus",
+			Handler:       _NodeService_OnStatus_Handler,
+			ServerStreams: true,
+		},
 		{
 			StreamName:    "OnDecision",
 			Handler:       _NodeService_OnDecision_Handler,

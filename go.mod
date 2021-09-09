@@ -14,6 +14,8 @@ require (
 	github.com/libp2p/go-libp2p-discovery v0.5.1
 	github.com/libp2p/go-libp2p-kad-dht v0.13.1
 	github.com/libp2p/go-libp2p-pubsub v0.5.4
+	github.com/libp2p/go-libp2p-pubsub-router v0.4.0
+	github.com/libp2p/go-libp2p-record v0.1.3
 	github.com/libp2p/go-msgio v0.0.6
 	github.com/multiformats/go-multiaddr v0.3.3 // Required for libp2p v0.14.4
 	github.com/pkg/errors v0.9.1
