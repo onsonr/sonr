@@ -65,6 +65,15 @@ func NewRPCService(ctx context.Context, n *Node) (*NodeRPCService, error) {
 		}
 	}(nrc, grpcServer)
 
+	// Register RPC Events
+	nrc.Node.On(Event_STATUS, func(e *emitter.Event) {
+		event := &common.StatusEvent{
+			IsOk:    e.Args[0].(bool),
+			Message: e.Args[1].(string),
+		}
+		nrc.statusEvents <- event
+	})
+
 	// Handle Node Events
 	nrc.Node.On(transfer.Event_INVITED, func(e *emitter.Event) {
 		inv := e.Args[0].(*transfer.InviteEvent)
@@ -74,17 +83,6 @@ func NewRPCService(ctx context.Context, n *Node) (*NodeRPCService, error) {
 			Transfer: inv.GetTransfer(),
 		}
 		nrc.inviteEvents <- invEvent
-	})
-
-	nrc.Node.On(Event_STATUS, func(e *emitter.Event) {
-		isOk := e.Args[0].(bool)
-		message := e.Args[1].(string)
-
-		event := &common.StatusEvent{
-			IsOk:    isOk,
-			Message: message,
-		}
-		nrc.statusEvents <- event
 	})
 
 	// Return RPC Service
@@ -127,13 +125,25 @@ func (n *NodeRPCService) Edit(ctx context.Context, req *EditRequest) (*EditRespo
 
 // Share method sends supplied files/urls with a peer
 func (n *NodeRPCService) Share(ctx context.Context, req *ShareRequest) (*ShareResponse, error) {
-	return nil, nil
+	// Call Internal Share
+	err := n.Node.Share(req.GetPeer())
+	if err != nil {
+		return &ShareResponse{
+			Success: false,
+			Error:   err.Error(),
+		}, err
+	}
+
+	// Send Response
+	return &ShareResponse{
+		Success: true,
+	}, nil
 }
 
 // Search Method to find a Peer by SName
 func (n *NodeRPCService) Search(ctx context.Context, req *SearchRequest) (*SearchResponse, error) {
 	// Call Internal Search
-	peer, err := n.Node.Search(req.GetSName())
+	peer, id, err := n.Node.Search(req.GetSName())
 	if err != nil {
 		return &SearchResponse{
 			Success: false,
@@ -141,28 +151,33 @@ func (n *NodeRPCService) Search(ctx context.Context, req *SearchRequest) (*Searc
 		}, err
 	}
 
+	// Send Response
 	return &SearchResponse{
 		Success: true,
 		Peer:    peer,
+		PeerID:  id.String(),
 	}, nil
 }
 
 // Respond method responds to a received InviteRequest.
 func (n *NodeRPCService) Respond(ctx context.Context, req *RespondRequest) (*RespondResponse, error) {
-	// // Unmarshal Data to Request
-	// resp := &data.DecisionRequest{}
-	// if err := proto.Unmarshal(buf, resp); err != nil {
-	// 	n.handleError(data.NewError(err, data.ErrorEvent_UNMARSHAL))
-	// 	return
-	// }
+	// Call Internal Respond
+	err := n.Node.Respond(req.GetDecision())
+	if err != nil {
+		return &RespondResponse{
+			Success: false,
+			Error:   err.Error(),
+		}, err
+	}
 
-	// // Send Response
-	// n.client.Respond(resp.ToResponse())
-	return nil, nil
+	// Send Response
+	return &RespondResponse{
+		Success: true,
+	}, nil
 }
 
 // OnDecision method sends a decision event to the client.
-func (n *NodeRPCService) OnStatus(e *Empty, stream NodeService_OnStatusServer) error {
+func (n *NodeRPCService) OnNodeStatus(e *Empty, stream NodeService_OnNodeStatusServer) error {
 	for {
 		select {
 		case m := <-n.statusEvents:
@@ -172,25 +187,46 @@ func (n *NodeRPCService) OnStatus(e *Empty, stream NodeService_OnStatusServer) e
 		case <-n.ctx.Done():
 			return nil
 		}
+		state.GetState().NeedsWait()
 	}
 }
 
-// OnDecision method sends a decision event to the client.
-func (n *NodeRPCService) OnDecision(e *Empty, stream NodeService_OnDecisionServer) error {
+// OnDecision-Accepted method sends a decision event to the client.
+func (n *NodeRPCService) OnTransferAccepted(e *Empty, stream NodeService_OnTransferAcceptedServer) error {
 	for {
 		select {
 		case m := <-n.decisionEvents:
 			if m != nil {
-				stream.Send(m)
+				if m.Decision {
+					stream.Send(m)
+				}
 			}
 		case <-n.ctx.Done():
 			return nil
 		}
+		state.GetState().NeedsWait()
 	}
 }
 
-// OnInvite method sends an invite event to the client.
-func (n *NodeRPCService) OnInvite(e *Empty, stream NodeService_OnInviteServer) error {
+// OnDecision-Declined method sends a decision event to the client.
+func (n *NodeRPCService) OnTransferDeclined(e *Empty, stream NodeService_OnTransferDeclinedServer) error {
+	for {
+		select {
+		case m := <-n.decisionEvents:
+			if m != nil {
+				if !m.Decision {
+					stream.Send(m)
+				}
+			}
+		case <-n.ctx.Done():
+			return nil
+		}
+		state.GetState().NeedsWait()
+	}
+}
+
+// OnTransferInvite method sends an invite event to the client.
+func (n *NodeRPCService) OnTransferInvite(e *Empty, stream NodeService_OnTransferInviteServer) error {
 	for {
 		select {
 		case m := <-n.inviteEvents:
@@ -204,8 +240,8 @@ func (n *NodeRPCService) OnInvite(e *Empty, stream NodeService_OnInviteServer) e
 	}
 }
 
-// OnProgress method sends a progress event to the client.
-func (n *NodeRPCService) OnProgress(e *Empty, stream NodeService_OnProgressServer) error {
+// OnTransferProgress method sends a progress event to the client.
+func (n *NodeRPCService) OnTransferProgress(e *Empty, stream NodeService_OnTransferProgressServer) error {
 	for {
 		select {
 		case m := <-n.progressEvents:
@@ -219,8 +255,8 @@ func (n *NodeRPCService) OnProgress(e *Empty, stream NodeService_OnProgressServe
 	}
 }
 
-// OnComplete method sends a complete event to the client.
-func (n *NodeRPCService) OnComplete(e *Empty, stream NodeService_OnCompleteServer) error {
+// OnTransferComplete method sends a complete event to the client.
+func (n *NodeRPCService) OnTransferComplete(e *Empty, stream NodeService_OnTransferCompleteServer) error {
 	for {
 		select {
 		case m := <-n.completeEvents:

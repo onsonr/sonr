@@ -195,7 +195,7 @@
                 </li>
               
                 <li>
-                  <a href="#sonr.node.InitializeRequest.FSOptions"><span class="badge">M</span>InitializeRequest.FSOptions</a>
+                  <a href="#sonr.node.InitializeRequest.DeviceOptions"><span class="badge">M</span>InitializeRequest.DeviceOptions</a>
                 </li>
               
                 <li>
@@ -719,8 +719,8 @@
                 </tr>
               
                 <tr>
-                  <td>fsoptions</td>
-                  <td><a href="#sonr.node.InitializeRequest.FSOptions">InitializeRequest.FSOptions</a></td>
+                  <td>deviceOptions</td>
+                  <td><a href="#sonr.node.InitializeRequest.DeviceOptions">InitializeRequest.DeviceOptions</a></td>
                   <td></td>
                   <td><p>File System Config </p></td>
                 </tr>
@@ -763,7 +763,7 @@
 
         
       
-        <h3 id="sonr.node.InitializeRequest.FSOptions">InitializeRequest.FSOptions</h3>
+        <h3 id="sonr.node.InitializeRequest.DeviceOptions">InitializeRequest.DeviceOptions</h3>
         <p>Optional Message to Initialize FileSystem</p>
 
         
@@ -792,6 +792,13 @@
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p>Support Directory </p></td>
+                </tr>
+              
+                <tr>
+                  <td>id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Device ID </p></td>
                 </tr>
               
             </tbody>
@@ -1091,6 +1098,13 @@
                   <td><p>Peer Data </p></td>
                 </tr>
               
+                <tr>
+                  <td>peerID</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Peer ID </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -1309,35 +1323,42 @@
               </tr>
             
               <tr>
-                <td>OnStatus</td>
+                <td>OnNodeStatus</td>
                 <td><a href="#sonr.node.Empty">Empty</a></td>
                 <td><a href="#sonr.core.StatusEvent">.sonr.core.StatusEvent</a> stream</td>
                 <td><p>Events Streams</p></td>
               </tr>
             
               <tr>
-                <td>OnDecision</td>
+                <td>OnTransferAccepted</td>
                 <td><a href="#sonr.node.Empty">Empty</a></td>
                 <td><a href="#sonr.core.DecisionEvent">.sonr.core.DecisionEvent</a> stream</td>
                 <td><p></p></td>
               </tr>
             
               <tr>
-                <td>OnInvite</td>
+                <td>OnTransferDeclined</td>
+                <td><a href="#sonr.node.Empty">Empty</a></td>
+                <td><a href="#sonr.core.DecisionEvent">.sonr.core.DecisionEvent</a> stream</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>OnTransferInvite</td>
                 <td><a href="#sonr.node.Empty">Empty</a></td>
                 <td><a href="#sonr.core.InviteEvent">.sonr.core.InviteEvent</a> stream</td>
                 <td><p></p></td>
               </tr>
             
               <tr>
-                <td>OnProgress</td>
+                <td>OnTransferProgress</td>
                 <td><a href="#sonr.node.Empty">Empty</a></td>
                 <td><a href="#sonr.core.ProgressEvent">.sonr.core.ProgressEvent</a> stream</td>
                 <td><p></p></td>
               </tr>
             
               <tr>
-                <td>OnComplete</td>
+                <td>OnTransferComplete</td>
                 <td><a href="#sonr.node.Empty">Empty</a></td>
                 <td><a href="#sonr.core.CompleteEvent">.sonr.core.CompleteEvent</a> stream</td>
                 <td><p></p></td>

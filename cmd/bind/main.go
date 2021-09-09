@@ -9,7 +9,6 @@ import (
 	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/tools/state"
 	"go.uber.org/zap"
-	"google.golang.org/protobuf/proto"
 )
 
 type Client struct {
@@ -31,33 +30,9 @@ func Start(reqBytes []byte) {
 		logger.Init(true)
 
 		// Unmarshal request
-		req := &node.InitializeRequest{}
-		err := proto.Unmarshal(reqBytes, req)
+		req, fsOpts, err := parseInitializeRequest(reqBytes)
 		if err != nil {
-			panic(err)
-		}
-
-		// Get Device Paths
-		fsOpts := make([]device.FSOption, 0)
-		// Check FSOptions
-		if req.GetFsoptions() != nil {
-			// Set Temporary Path
-			fsOpts = append(fsOpts, device.FSOption{
-				Path: req.GetFsoptions().GetCacheDir(),
-				Type: device.Temporary,
-			})
-
-			// Set Documents Path
-			fsOpts = append(fsOpts, device.FSOption{
-				Path: req.GetFsoptions().GetDocumentsDir(),
-				Type: device.Documents,
-			})
-
-			// Set Support Path
-			fsOpts = append(fsOpts, device.FSOption{
-				Path: req.GetFsoptions().GetSupportDir(),
-				Type: device.Support,
-			})
+			logger.Fatal("Failed to Parse InitializeRequest", zap.Error(err))
 		}
 
 		// Initialize Device

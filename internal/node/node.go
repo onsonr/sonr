@@ -5,7 +5,6 @@ import (
 	"context"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
-	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/host"
@@ -148,16 +147,25 @@ func (n *Node) Supply(paths []string) error {
 	return nil
 }
 
-// Invite a peer to have a transfer
-func (n *Node) Invite(id peer.ID) error {
+// Share a peer to have a transfer
+func (n *Node) Share(peer *common.Peer) error {
 	// Create Invite Request
 	req := &transfer.InviteRequest{
 		Transfer: n.queue.Front().Value.(*common.Transfer),
 		Metadata: n.NewMetadata(),
+		To:       peer,
+		From:     n.Peer(),
+	}
+
+	// Fetch Peer ID from Exchange
+	_, id, err := n.ExchangeProtocol.Search(peer.GetSName())
+	if err != nil {
+		logger.Error("Failed to search peer", zap.Error(err))
+		return err
 	}
 
 	// Invite peer
-	err := n.TransferProtocol.Invite(id, req)
+	err = n.TransferProtocol.Invite(id, req)
 	if err != nil {
 		logger.Error("Failed to invite peer", zap.Error(err))
 		n.Emit(Event_STATUS, err)
@@ -169,7 +177,19 @@ func (n *Node) Invite(id peer.ID) error {
 // Respond to an invite request
 func (n *Node) Respond(decs bool) error {
 	// Create Invite Response
+	var resp *transfer.InviteResponse
+	if decs {
+		resp = &transfer.InviteResponse{Success: true}
+	} else {
+		resp = &transfer.InviteResponse{Success: false}
+	}
 
-	// n.TransferProtocol.Respond(id)
+	// Respond on TransferProtocol
+	err := n.TransferProtocol.Respond(resp)
+	if err != nil {
+		logger.Error("Failed to respond to invite", zap.Error(err))
+		n.Emit(Event_STATUS, err)
+		return err
+	}
 	return nil
 }

@@ -25,9 +25,10 @@ service NodeService {
   rpc Search(SearchRequest) returns (SearchResponse) {}
 
   // Events Streams
-  rpc OnStatus(Empty) returns (stream sonr.core.StatusEvent) {}
-  rpc OnDecision(Empty) returns (stream sonr.core.DecisionEvent) {}
-  rpc OnInvite(Empty) returns (stream sonr.core.InviteEvent) {}
-  rpc OnProgress(Empty) returns (stream sonr.core.ProgressEvent) {}
-  rpc OnComplete(Empty) returns (stream sonr.core.CompleteEvent) {}
+  rpc OnNodeStatus(Empty) returns (stream sonr.core.StatusEvent) {}
+  rpc OnTransferAccepted(Empty) returns (stream sonr.core.DecisionEvent) {}
+  rpc OnTransferDeclined(Empty) returns (stream sonr.core.DecisionEvent) {}
+  rpc OnTransferInvite(Empty) returns (stream sonr.core.InviteEvent) {}
+  rpc OnTransferProgress(Empty) returns (stream sonr.core.ProgressEvent) {}
+  rpc OnTransferComplete(Empty) returns (stream sonr.core.CompleteEvent) {}
 }

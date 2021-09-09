@@ -12,7 +12,7 @@ message InitializeRequest {
   HostOptions hostOptions = 4;         // Libp2p Host config
   ServiceOptions serviceOptions = 5;   // Service Config
   AccountOptions accountOptions = 6;   // Account Config
-  FSOptions fsoptions = 7;             // File System Config
+  DeviceOptions deviceOptions = 7;     // File System Config
 
   // Optional Message to Initialize Sonr Account
   message AccountOptions {
@@ -21,10 +21,11 @@ message InitializeRequest {
   }
 
   // Optional Message to Initialize FileSystem
-  message FSOptions {
+  message DeviceOptions {
     string documentsDir = 1; // Documents Directory
     string cacheDir = 2;     // Cache Directory
     string supportDir = 3;   // Support Directory
+    string id = 4;           // Device ID
   }
 
   // Libp2p Host Options
@@ -120,4 +121,5 @@ message SearchResponse {
   bool success = 1;        // Success
   string error = 2;        // Error Message
   sonr.core.Peer peer = 3; // Peer Data
+  string peerID = 4;       // Peer ID
 }

@@ -1,6 +1,7 @@
 package transfer
 
 import (
+	"container/list"
 	"context"
 	"errors"
 	"io/ioutil"
@@ -33,18 +34,26 @@ const (
 	SessionPID  protocol.ID = "/transfer/session/0.0.1"
 )
 
-// TransferProtocol type
-type TransferProtocol struct {
-	host     *host.SHost               // local host
-	requests map[string]*InviteRequest // used to access request data from response handlers
-	emitter  *emitter.Emitter          // Handle to signal when done
+type RequestEntry struct {
+	request *InviteRequest
+	fromId  peer.ID
 }
 
+// TransferProtocol type
+type TransferProtocol struct {
+	host         *host.SHost // local host
+	requestQueue *list.List
+	requests     map[string]*InviteRequest // used to access request data from response handlers
+	emitter      *emitter.Emitter          // Handle to signal when done
+}
+
+//
 func NewProtocol(host *host.SHost, em *emitter.Emitter) *TransferProtocol {
 	invProtocol := &TransferProtocol{
-		host:     host,
-		requests: make(map[string]*InviteRequest),
-		emitter:  em,
+		host:         host,
+		requests:     make(map[string]*InviteRequest),
+		emitter:      em,
+		requestQueue: list.New(),
 	}
 	host.SetStreamHandler(RequestPID, invProtocol.onInviteRequest)
 	host.SetStreamHandler(ResponsePID, invProtocol.onInviteResponse)
@@ -78,6 +87,11 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 	}
 
 	// generate response message
+	entry := &RequestEntry{
+		request: req,
+		fromId:  s.Conn().RemotePeer(),
+	}
+	p.requestQueue.PushBack(entry)
 	p.requests[s.Conn().RemotePeer().String()] = req
 	resp := &InviteResponse{Metadata: p.host.NewMetadata()}
 
@@ -190,14 +204,15 @@ func (p *TransferProtocol) Invite(id peer.ID, req *InviteRequest) error {
 	return nil
 }
 
-func (p *TransferProtocol) Respond(id peer.ID, resp *InviteResponse) error {
-	// Delete Request if Declined
-	if !resp.Success {
-		_, ok := p.requests[id.String()]
-		if ok {
-			delete(p.requests, id.String())
-		}
+func (p *TransferProtocol) Respond(resp *InviteResponse) error {
+
+
+	// Get First Request in Queue
+	entry := p.requestQueue.Front()
+	if entry == nil {
+		return errors.New("No Requests in Queue")
 	}
+	reqEntry := entry.Value.(*RequestEntry)
 
 	// sign the data
 	signature, err := p.host.SignProtoMessage(resp)
@@ -207,7 +222,7 @@ func (p *TransferProtocol) Respond(id peer.ID, resp *InviteResponse) error {
 
 	// add the signature to the message
 	resp.Metadata.Signature = signature
-	ok := p.host.SendProtoMessage(id, ResponsePID, resp)
+	ok := p.host.SendProtoMessage(reqEntry.fromId, ResponsePID, resp)
 	if !ok {
 		return errors.New("Failed to send Signed Proto Message")
 	}

@@ -30,11 +30,12 @@ type NodeServiceClient interface {
 	// Search Method to find a Peer by SName
 	Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error)
 	// Events Streams
-	OnStatus(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnStatusClient, error)
-	OnDecision(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnDecisionClient, error)
-	OnInvite(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnInviteClient, error)
-	OnProgress(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnProgressClient, error)
-	OnComplete(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnCompleteClient, error)
+	OnNodeStatus(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnNodeStatusClient, error)
+	OnTransferAccepted(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnTransferAcceptedClient, error)
+	OnTransferDeclined(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnTransferDeclinedClient, error)
+	OnTransferInvite(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnTransferInviteClient, error)
+	OnTransferProgress(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnTransferProgressClient, error)
+	OnTransferComplete(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnTransferCompleteClient, error)
 }
 
 type nodeServiceClient struct {
@@ -90,12 +91,12 @@ func (c *nodeServiceClient) Search(ctx context.Context, in *SearchRequest, opts 
 	return out, nil
 }
 
-func (c *nodeServiceClient) OnStatus(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnStatusClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[0], "/sonr.node.NodeService/OnStatus", opts...)
+func (c *nodeServiceClient) OnNodeStatus(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnNodeStatusClient, error) {
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[0], "/sonr.node.NodeService/OnNodeStatus", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &nodeServiceOnStatusClient{stream}
+	x := &nodeServiceOnNodeStatusClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -105,16 +106,16 @@ func (c *nodeServiceClient) OnStatus(ctx context.Context, in *Empty, opts ...grp
 	return x, nil
 }
 
-type NodeService_OnStatusClient interface {
+type NodeService_OnNodeStatusClient interface {
 	Recv() (*common.StatusEvent, error)
 	grpc.ClientStream
 }
 
-type nodeServiceOnStatusClient struct {
+type nodeServiceOnNodeStatusClient struct {
 	grpc.ClientStream
 }
 
-func (x *nodeServiceOnStatusClient) Recv() (*common.StatusEvent, error) {
+func (x *nodeServiceOnNodeStatusClient) Recv() (*common.StatusEvent, error) {
 	m := new(common.StatusEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -122,12 +123,12 @@ func (x *nodeServiceOnStatusClient) Recv() (*common.StatusEvent, error) {
 	return m, nil
 }
 
-func (c *nodeServiceClient) OnDecision(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnDecisionClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[1], "/sonr.node.NodeService/OnDecision", opts...)
+func (c *nodeServiceClient) OnTransferAccepted(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnTransferAcceptedClient, error) {
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[1], "/sonr.node.NodeService/OnTransferAccepted", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &nodeServiceOnDecisionClient{stream}
+	x := &nodeServiceOnTransferAcceptedClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -137,16 +138,16 @@ func (c *nodeServiceClient) OnDecision(ctx context.Context, in *Empty, opts ...g
 	return x, nil
 }
 
-type NodeService_OnDecisionClient interface {
+type NodeService_OnTransferAcceptedClient interface {
 	Recv() (*common.DecisionEvent, error)
 	grpc.ClientStream
 }
 
-type nodeServiceOnDecisionClient struct {
+type nodeServiceOnTransferAcceptedClient struct {
 	grpc.ClientStream
 }
 
-func (x *nodeServiceOnDecisionClient) Recv() (*common.DecisionEvent, error) {
+func (x *nodeServiceOnTransferAcceptedClient) Recv() (*common.DecisionEvent, error) {
 	m := new(common.DecisionEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -154,12 +155,12 @@ func (x *nodeServiceOnDecisionClient) Recv() (*common.DecisionEvent, error) {
 	return m, nil
 }
 
-func (c *nodeServiceClient) OnInvite(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnInviteClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[2], "/sonr.node.NodeService/OnInvite", opts...)
+func (c *nodeServiceClient) OnTransferDeclined(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnTransferDeclinedClient, error) {
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[2], "/sonr.node.NodeService/OnTransferDeclined", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &nodeServiceOnInviteClient{stream}
+	x := &nodeServiceOnTransferDeclinedClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -169,16 +170,48 @@ func (c *nodeServiceClient) OnInvite(ctx context.Context, in *Empty, opts ...grp
 	return x, nil
 }
 
-type NodeService_OnInviteClient interface {
+type NodeService_OnTransferDeclinedClient interface {
+	Recv() (*common.DecisionEvent, error)
+	grpc.ClientStream
+}
+
+type nodeServiceOnTransferDeclinedClient struct {
+	grpc.ClientStream
+}
+
+func (x *nodeServiceOnTransferDeclinedClient) Recv() (*common.DecisionEvent, error) {
+	m := new(common.DecisionEvent)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *nodeServiceClient) OnTransferInvite(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnTransferInviteClient, error) {
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[3], "/sonr.node.NodeService/OnTransferInvite", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &nodeServiceOnTransferInviteClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type NodeService_OnTransferInviteClient interface {
 	Recv() (*common.InviteEvent, error)
 	grpc.ClientStream
 }
 
-type nodeServiceOnInviteClient struct {
+type nodeServiceOnTransferInviteClient struct {
 	grpc.ClientStream
 }
 
-func (x *nodeServiceOnInviteClient) Recv() (*common.InviteEvent, error) {
+func (x *nodeServiceOnTransferInviteClient) Recv() (*common.InviteEvent, error) {
 	m := new(common.InviteEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -186,12 +219,12 @@ func (x *nodeServiceOnInviteClient) Recv() (*common.InviteEvent, error) {
 	return m, nil
 }
 
-func (c *nodeServiceClient) OnProgress(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnProgressClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[3], "/sonr.node.NodeService/OnProgress", opts...)
+func (c *nodeServiceClient) OnTransferProgress(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnTransferProgressClient, error) {
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[4], "/sonr.node.NodeService/OnTransferProgress", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &nodeServiceOnProgressClient{stream}
+	x := &nodeServiceOnTransferProgressClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -201,16 +234,16 @@ func (c *nodeServiceClient) OnProgress(ctx context.Context, in *Empty, opts ...g
 	return x, nil
 }
 
-type NodeService_OnProgressClient interface {
+type NodeService_OnTransferProgressClient interface {
 	Recv() (*common.ProgressEvent, error)
 	grpc.ClientStream
 }
 
-type nodeServiceOnProgressClient struct {
+type nodeServiceOnTransferProgressClient struct {
 	grpc.ClientStream
 }
 
-func (x *nodeServiceOnProgressClient) Recv() (*common.ProgressEvent, error) {
+func (x *nodeServiceOnTransferProgressClient) Recv() (*common.ProgressEvent, error) {
 	m := new(common.ProgressEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -218,12 +251,12 @@ func (x *nodeServiceOnProgressClient) Recv() (*common.ProgressEvent, error) {
 	return m, nil
 }
 
-func (c *nodeServiceClient) OnComplete(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnCompleteClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[4], "/sonr.node.NodeService/OnComplete", opts...)
+func (c *nodeServiceClient) OnTransferComplete(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnTransferCompleteClient, error) {
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[5], "/sonr.node.NodeService/OnTransferComplete", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &nodeServiceOnCompleteClient{stream}
+	x := &nodeServiceOnTransferCompleteClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -233,16 +266,16 @@ func (c *nodeServiceClient) OnComplete(ctx context.Context, in *Empty, opts ...g
 	return x, nil
 }
 
-type NodeService_OnCompleteClient interface {
+type NodeService_OnTransferCompleteClient interface {
 	Recv() (*common.CompleteEvent, error)
 	grpc.ClientStream
 }
 
-type nodeServiceOnCompleteClient struct {
+type nodeServiceOnTransferCompleteClient struct {
 	grpc.ClientStream
 }
 
-func (x *nodeServiceOnCompleteClient) Recv() (*common.CompleteEvent, error) {
+func (x *nodeServiceOnTransferCompleteClient) Recv() (*common.CompleteEvent, error) {
 	m := new(common.CompleteEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -265,11 +298,12 @@ type NodeServiceServer interface {
 	// Search Method to find a Peer by SName
 	Search(context.Context, *SearchRequest) (*SearchResponse, error)
 	// Events Streams
-	OnStatus(*Empty, NodeService_OnStatusServer) error
-	OnDecision(*Empty, NodeService_OnDecisionServer) error
-	OnInvite(*Empty, NodeService_OnInviteServer) error
-	OnProgress(*Empty, NodeService_OnProgressServer) error
-	OnComplete(*Empty, NodeService_OnCompleteServer) error
+	OnNodeStatus(*Empty, NodeService_OnNodeStatusServer) error
+	OnTransferAccepted(*Empty, NodeService_OnTransferAcceptedServer) error
+	OnTransferDeclined(*Empty, NodeService_OnTransferDeclinedServer) error
+	OnTransferInvite(*Empty, NodeService_OnTransferInviteServer) error
+	OnTransferProgress(*Empty, NodeService_OnTransferProgressServer) error
+	OnTransferComplete(*Empty, NodeService_OnTransferCompleteServer) error
 	mustEmbedUnimplementedNodeServiceServer()
 }
 
@@ -292,20 +326,23 @@ func (UnimplementedNodeServiceServer) Respond(context.Context, *RespondRequest) 
 func (UnimplementedNodeServiceServer) Search(context.Context, *SearchRequest) (*SearchResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Search not implemented")
 }
-func (UnimplementedNodeServiceServer) OnStatus(*Empty, NodeService_OnStatusServer) error {
-	return status.Errorf(codes.Unimplemented, "method OnStatus not implemented")
+func (UnimplementedNodeServiceServer) OnNodeStatus(*Empty, NodeService_OnNodeStatusServer) error {
+	return status.Errorf(codes.Unimplemented, "method OnNodeStatus not implemented")
 }
-func (UnimplementedNodeServiceServer) OnDecision(*Empty, NodeService_OnDecisionServer) error {
-	return status.Errorf(codes.Unimplemented, "method OnDecision not implemented")
+func (UnimplementedNodeServiceServer) OnTransferAccepted(*Empty, NodeService_OnTransferAcceptedServer) error {
+	return status.Errorf(codes.Unimplemented, "method OnTransferAccepted not implemented")
 }
-func (UnimplementedNodeServiceServer) OnInvite(*Empty, NodeService_OnInviteServer) error {
-	return status.Errorf(codes.Unimplemented, "method OnInvite not implemented")
+func (UnimplementedNodeServiceServer) OnTransferDeclined(*Empty, NodeService_OnTransferDeclinedServer) error {
+	return status.Errorf(codes.Unimplemented, "method OnTransferDeclined not implemented")
 }
-func (UnimplementedNodeServiceServer) OnProgress(*Empty, NodeService_OnProgressServer) error {
-	return status.Errorf(codes.Unimplemented, "method OnProgress not implemented")
+func (UnimplementedNodeServiceServer) OnTransferInvite(*Empty, NodeService_OnTransferInviteServer) error {
+	return status.Errorf(codes.Unimplemented, "method OnTransferInvite not implemented")
 }
-func (UnimplementedNodeServiceServer) OnComplete(*Empty, NodeService_OnCompleteServer) error {
-	return status.Errorf(codes.Unimplemented, "method OnComplete not implemented")
+func (UnimplementedNodeServiceServer) OnTransferProgress(*Empty, NodeService_OnTransferProgressServer) error {
+	return status.Errorf(codes.Unimplemented, "method OnTransferProgress not implemented")
+}
+func (UnimplementedNodeServiceServer) OnTransferComplete(*Empty, NodeService_OnTransferCompleteServer) error {
+	return status.Errorf(codes.Unimplemented, "method OnTransferComplete not implemented")
 }
 func (UnimplementedNodeServiceServer) mustEmbedUnimplementedNodeServiceServer() {}
 
@@ -410,108 +447,129 @@ func _NodeService_Search_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
-func _NodeService_OnStatus_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _NodeService_OnNodeStatus_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(Empty)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(NodeServiceServer).OnStatus(m, &nodeServiceOnStatusServer{stream})
+	return srv.(NodeServiceServer).OnNodeStatus(m, &nodeServiceOnNodeStatusServer{stream})
 }
 
-type NodeService_OnStatusServer interface {
+type NodeService_OnNodeStatusServer interface {
 	Send(*common.StatusEvent) error
 	grpc.ServerStream
 }
 
-type nodeServiceOnStatusServer struct {
+type nodeServiceOnNodeStatusServer struct {
 	grpc.ServerStream
 }
 
-func (x *nodeServiceOnStatusServer) Send(m *common.StatusEvent) error {
+func (x *nodeServiceOnNodeStatusServer) Send(m *common.StatusEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _NodeService_OnDecision_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _NodeService_OnTransferAccepted_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(Empty)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(NodeServiceServer).OnDecision(m, &nodeServiceOnDecisionServer{stream})
+	return srv.(NodeServiceServer).OnTransferAccepted(m, &nodeServiceOnTransferAcceptedServer{stream})
 }
 
-type NodeService_OnDecisionServer interface {
+type NodeService_OnTransferAcceptedServer interface {
 	Send(*common.DecisionEvent) error
 	grpc.ServerStream
 }
 
-type nodeServiceOnDecisionServer struct {
+type nodeServiceOnTransferAcceptedServer struct {
 	grpc.ServerStream
 }
 
-func (x *nodeServiceOnDecisionServer) Send(m *common.DecisionEvent) error {
+func (x *nodeServiceOnTransferAcceptedServer) Send(m *common.DecisionEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _NodeService_OnInvite_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _NodeService_OnTransferDeclined_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(Empty)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(NodeServiceServer).OnInvite(m, &nodeServiceOnInviteServer{stream})
+	return srv.(NodeServiceServer).OnTransferDeclined(m, &nodeServiceOnTransferDeclinedServer{stream})
 }
 
-type NodeService_OnInviteServer interface {
+type NodeService_OnTransferDeclinedServer interface {
+	Send(*common.DecisionEvent) error
+	grpc.ServerStream
+}
+
+type nodeServiceOnTransferDeclinedServer struct {
+	grpc.ServerStream
+}
+
+func (x *nodeServiceOnTransferDeclinedServer) Send(m *common.DecisionEvent) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _NodeService_OnTransferInvite_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(Empty)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(NodeServiceServer).OnTransferInvite(m, &nodeServiceOnTransferInviteServer{stream})
+}
+
+type NodeService_OnTransferInviteServer interface {
 	Send(*common.InviteEvent) error
 	grpc.ServerStream
 }
 
-type nodeServiceOnInviteServer struct {
+type nodeServiceOnTransferInviteServer struct {
 	grpc.ServerStream
 }
 
-func (x *nodeServiceOnInviteServer) Send(m *common.InviteEvent) error {
+func (x *nodeServiceOnTransferInviteServer) Send(m *common.InviteEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _NodeService_OnProgress_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _NodeService_OnTransferProgress_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(Empty)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(NodeServiceServer).OnProgress(m, &nodeServiceOnProgressServer{stream})
+	return srv.(NodeServiceServer).OnTransferProgress(m, &nodeServiceOnTransferProgressServer{stream})
 }
 
-type NodeService_OnProgressServer interface {
+type NodeService_OnTransferProgressServer interface {
 	Send(*common.ProgressEvent) error
 	grpc.ServerStream
 }
 
-type nodeServiceOnProgressServer struct {
+type nodeServiceOnTransferProgressServer struct {
 	grpc.ServerStream
 }
 
-func (x *nodeServiceOnProgressServer) Send(m *common.ProgressEvent) error {
+func (x *nodeServiceOnTransferProgressServer) Send(m *common.ProgressEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _NodeService_OnComplete_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _NodeService_OnTransferComplete_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(Empty)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(NodeServiceServer).OnComplete(m, &nodeServiceOnCompleteServer{stream})
+	return srv.(NodeServiceServer).OnTransferComplete(m, &nodeServiceOnTransferCompleteServer{stream})
 }
 
-type NodeService_OnCompleteServer interface {
+type NodeService_OnTransferCompleteServer interface {
 	Send(*common.CompleteEvent) error
 	grpc.ServerStream
 }
 
-type nodeServiceOnCompleteServer struct {
+type nodeServiceOnTransferCompleteServer struct {
 	grpc.ServerStream
 }
 
-func (x *nodeServiceOnCompleteServer) Send(m *common.CompleteEvent) error {
+func (x *nodeServiceOnTransferCompleteServer) Send(m *common.CompleteEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
@@ -545,28 +603,33 @@ var NodeService_ServiceDesc = grpc.ServiceDesc{
 	},
 	Streams: []grpc.StreamDesc{
 		{
-			StreamName:    "OnStatus",
-			Handler:       _NodeService_OnStatus_Handler,
+			StreamName:    "OnNodeStatus",
+			Handler:       _NodeService_OnNodeStatus_Handler,
 			ServerStreams: true,
 		},
 		{
-			StreamName:    "OnDecision",
-			Handler:       _NodeService_OnDecision_Handler,
+			StreamName:    "OnTransferAccepted",
+			Handler:       _NodeService_OnTransferAccepted_Handler,
 			ServerStreams: true,
 		},
 		{
-			StreamName:    "OnInvite",
-			Handler:       _NodeService_OnInvite_Handler,
+			StreamName:    "OnTransferDeclined",
+			Handler:       _NodeService_OnTransferDeclined_Handler,
 			ServerStreams: true,
 		},
 		{
-			StreamName:    "OnProgress",
-			Handler:       _NodeService_OnProgress_Handler,
+			StreamName:    "OnTransferInvite",
+			Handler:       _NodeService_OnTransferInvite_Handler,
 			ServerStreams: true,
 		},
 		{
-			StreamName:    "OnComplete",
-			Handler:       _NodeService_OnComplete_Handler,
+			StreamName:    "OnTransferProgress",
+			Handler:       _NodeService_OnTransferProgress_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "OnTransferComplete",
+			Handler:       _NodeService_OnTransferComplete_Handler,
 			ServerStreams: true,
 		},
 	},

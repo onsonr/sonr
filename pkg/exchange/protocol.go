@@ -6,6 +6,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/libp2p/go-libp2p-core/crypto"
+	"github.com/libp2p/go-libp2p-core/peer"
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	psr "github.com/libp2p/go-libp2p-pubsub-router"
 	"github.com/sonr-io/core/internal/common"
@@ -78,7 +80,7 @@ func NewProtocol(ctx context.Context, host *host.SHost, loc *common.Location, em
 }
 
 // Search peer Profile by name
-func (p *ExchangeProtocol) Search(sName string) (*common.Peer, error) {
+func (p *ExchangeProtocol) Search(sName string) (*common.Peer, peer.ID, error) {
 	// Set Lowercase Name
 	sName = strings.ToLower(sName)
 
@@ -86,7 +88,7 @@ func (p *ExchangeProtocol) Search(sName string) (*common.Peer, error) {
 	buf, err := p.PubsubValueStore.GetValue(p.ctx, fmt.Sprintf("store/%s", sName))
 	if err != nil {
 		logger.Error("Failed to GET peer from store", zap.Error(err))
-		return nil, err
+		return nil, "", err
 	}
 
 	// Unmarshal Peer from buffer
@@ -94,9 +96,23 @@ func (p *ExchangeProtocol) Search(sName string) (*common.Peer, error) {
 	err = proto.Unmarshal(buf, profile)
 	if err != nil {
 		logger.Error("Failed to Unmarshal Peer", zap.Error(err))
-		return nil, err
+		return nil, "", err
 	}
-	return profile, nil
+
+	// Fetch public key from peer data
+	pubKey, err := crypto.UnmarshalPublicKey(profile.PublicKey)
+	if err != nil {
+		logger.Error("Failed to Unmarshal Public Key", zap.Error(err))
+		return nil, "", err
+	}
+
+	// Get peer ID from public key
+	id, err := peer.IDFromPublicKey(pubKey)
+	if err != nil {
+		logger.Error("Failed to get peer ID from Public Key", zap.Error(err))
+		return nil, "", err
+	}
+	return profile, id, nil
 }
 
 // Update method updates peer instance in the store
