@@ -137,32 +137,3 @@ func (p *ExchangeProtocol) handleExchangeEvents(ctx context.Context) {
 		state.GetState().NeedsWait()
 	}
 }
-
-// handleExchangeMessages method listens for messages on pubsub room subscription
-func (p *ExchangeProtocol) handleExchangeMessages(ctx context.Context) {
-	for {
-		// Get next msg from pub/sub
-		msg, err := p.subscription.Next(ctx)
-		if err != nil {
-			logger.Error("Failed to get next subcription message", zap.Error(err))
-			return
-		}
-
-		// Only forward messages delivered by others
-		if p.isValidMessage(msg) {
-			// Unmarshal RoomEvent
-			m := &ExchangeEvent{}
-			err = proto.Unmarshal(msg.Data, m)
-			if err != nil {
-				logger.Error("Failed to Unmarshal Message", zap.Error(err))
-				continue
-			}
-
-			// Check Peer is Online, if not ignore
-			if m.GetPeer().GetStatus() == common.Peer_ONLINE {
-				p.emitter.Emit(emitter.EMIT_ROOM_EVENT, m)
-			}
-		}
-		state.GetState().NeedsWait()
-	}
-}

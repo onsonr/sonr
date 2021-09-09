@@ -2,6 +2,7 @@ package exchange
 
 import (
 	"bytes"
+	"strings"
 
 	peer "github.com/libp2p/go-libp2p-core/peer"
 	ps "github.com/libp2p/go-libp2p-pubsub"
@@ -12,17 +13,7 @@ type ExchangeValidator struct {
 }
 
 func (ExchangeValidator) Validate(key string, value []byte) error {
-	ns, k, err := record.SplitKey(key)
-	if err != nil {
-		return err
-	}
-	if ns != "store" {
-		return record.ErrInvalidRecordType
-	}
-	if !bytes.Contains(value, []byte(k)) {
-		return record.ErrInvalidRecordType
-	}
-	if bytes.Contains(value, []byte("invalid")) {
+	if !strings.Contains(key, "store/") {
 		return record.ErrInvalidRecordType
 	}
 	return nil

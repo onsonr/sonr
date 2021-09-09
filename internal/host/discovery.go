@@ -7,7 +7,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	peerstore "github.com/libp2p/go-libp2p-core/peerstore"
 	dsc "github.com/libp2p/go-libp2p-discovery"
-	psub "github.com/libp2p/go-libp2p-pubsub"
 	discovery "github.com/libp2p/go-libp2p/p2p/discovery"
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/tools/net"
@@ -59,14 +58,7 @@ func (h *SHost) Bootstrap() error {
 	dsc.Advertise(h.ctxHost, routingDiscovery, HOST_RENDEVOUZ_POINT, dscl.TTL(REFRESH_INTERVAL))
 	h.disc = routingDiscovery
 
-	// Create Pub Sub
-	ps, err := psub.NewGossipSub(h.ctxHost, h.Host, psub.WithDiscovery(routingDiscovery))
-	if err != nil {
-		return errors.Wrap(err, "Failed to Create new Gossip Sub")
-	}
-
 	// Handle DHT Peers
-	h.pubsub = ps
 	peersChan, err := routingDiscovery.FindPeers(h.ctxHost, HOST_RENDEVOUZ_POINT, dscl.TTL(REFRESH_INTERVAL))
 	if err != nil {
 		return errors.Wrap(err, "Failed to create FindPeers Discovery channel")
