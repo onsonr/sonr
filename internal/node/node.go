@@ -14,7 +14,6 @@ import (
 	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/tools/state"
 	"go.uber.org/zap"
-	"google.golang.org/protobuf/proto"
 )
 
 // Node Emission Events
@@ -98,15 +97,8 @@ func (n *Node) Edit(p *common.Profile) error {
 	// Set Profile
 	n.profile = p
 
-	// Marshal Peer
-	buf, err := proto.Marshal(n.Peer())
-	if err != nil {
-		logger.Error("Failed to marshal Peer", zap.Error(err))
-		return err
-	}
-
 	// Push Update to Exchange
-	err = n.ExchangeProtocol.Update(p.GetSName(), buf)
+	err := n.ExchangeProtocol.Update(n.Peer())
 	if err != nil {
 		logger.Error("Failed to update Exchange", zap.Error(err))
 		return err

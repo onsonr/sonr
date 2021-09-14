@@ -65,6 +65,7 @@ func NewProtocol(ctx context.Context, host *host.SHost, loc *common.Location, em
 		return nil, err
 	}
 
+	// Create Exchange Protocol
 	exchProtocol := &ExchangeProtocol{
 		ctx:              ctx,
 		host:             host,
@@ -79,7 +80,7 @@ func NewProtocol(ctx context.Context, host *host.SHost, loc *common.Location, em
 	return exchProtocol, nil
 }
 
-// Ping peer Profile by name
+// Ping method finds peer Profile by name
 func (p *ExchangeProtocol) Ping(sName string) (*common.Peer, peer.ID, error) {
 	// Set Lowercase Name
 	sName = strings.ToLower(sName)
@@ -116,12 +117,37 @@ func (p *ExchangeProtocol) Ping(sName string) (*common.Peer, peer.ID, error) {
 }
 
 // Update method updates peer instance in the store
-func (p *ExchangeProtocol) Update(sName string, buf []byte) error {
-	// Set Lowercase Name
-	sName = strings.ToLower(sName)
+func (p *ExchangeProtocol) Update(peer *common.Peer) error {
+	// Create Event
+	event := &UpdateEvent{
+		Peer: peer,
+		Olc:  p.olc,
+	}
+
+	// Marshal Event
+	eventBuf, err := proto.Marshal(event)
+	if err != nil {
+		logger.Error("Failed to Marshal Event", zap.Error(err))
+		return err
+	}
+
+	// Publish Event
+	err = p.topic.Publish(p.ctx, eventBuf)
+	if err != nil {
+		logger.Error("Failed to Publish Event", zap.Error(err))
+		return err
+	}
+	return nil
+
+	// Marshal Peer
+	peerBuf, err := proto.Marshal(peer)
+	if err != nil {
+		logger.Error("Failed to Marshal Peer", zap.Error(err))
+		return err
+	}
 
 	// Determine Key and Add Value to Store
-	err := p.PubsubValueStore.PutValue(p.ctx, fmt.Sprintf("store/%s", sName), buf)
+	err = p.PubsubValueStore.PutValue(p.ctx, fmt.Sprintf("store/%s", strings.ToLower(peer.GetSName())), peerBuf)
 	if err != nil {
 		logger.Error("Failed to PUT peer from store", zap.Error(err))
 		return err

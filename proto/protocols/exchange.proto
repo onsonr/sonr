@@ -4,8 +4,6 @@ package sonr.protocols.exchange;
 import "proto/common/core.proto";
 option go_package = "github.com/sonr-io/core/pkg/exchange";
 
-
-
 // JoinExchangeRequest is Message for Signing Request (Hmac Sha256)
 message JoinExchangeRequest {
   // Value to be signed
@@ -20,8 +18,8 @@ message JoinExchangeResponse {
   sonr.core.Peer peer = 3; // Peer Data
 }
 
-// UpdateRequest is message for Exchange Protocol
-message UpdateRequest {
+// UpdateEvent is message for Exchange Protocol
+message UpdateEvent {
   string olc = 1;          // Users Open Location Code
   sonr.core.Peer peer = 2; // Users Peer Data
 }
