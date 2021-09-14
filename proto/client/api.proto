@@ -111,15 +111,28 @@ message RespondResponse {
   string error = 2; // Error Message if Supply is not Active
 }
 
-// SearchRequest is Message for Searching for Peer
-message SearchRequest {
+// PingRequest is Message for Searching for Peer
+message PingRequest {
   string sName = 1; // SName combined with Device ID and Hashed
 }
 
-// SearchResponse is Message for Searching for Peer
-message SearchResponse {
+// PingResponse is Message for Searching for Peer
+message PingResponse {
   bool success = 1;        // Success
   string error = 2;        // Error Message
   sonr.core.Peer peer = 3; // Peer Data
   string peerID = 4;       // Peer ID
+}
+
+// StatRequest is Message for Searching for Peer
+
+
+// StatResponse is a response to StatRequest that displays Node Stats
+message StatResponse {
+  string publicKey = 1;                 // Public Key
+  string deviceID = 2;                  // Device ID
+  string sName = 3;                     // SName
+  string peer = 4;                      // Peer
+  string multiaddr = 5;                 // Multiaddr
+  repeated string enabledProtocols = 6; // Enabled Protocols
 }

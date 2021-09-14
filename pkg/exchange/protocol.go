@@ -79,8 +79,8 @@ func NewProtocol(ctx context.Context, host *host.SHost, loc *common.Location, em
 	return exchProtocol, nil
 }
 
-// Search peer Profile by name
-func (p *ExchangeProtocol) Search(sName string) (*common.Peer, peer.ID, error) {
+// Ping peer Profile by name
+func (p *ExchangeProtocol) Ping(sName string) (*common.Peer, peer.ID, error) {
 	// Set Lowercase Name
 	sName = strings.ToLower(sName)
 

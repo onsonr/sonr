@@ -651,8 +651,8 @@ func (x *RespondResponse) GetError() string {
 	return ""
 }
 
-// SearchRequest is Message for Searching for Peer
-type SearchRequest struct {
+// PingRequest is Message for Searching for Peer
+type PingRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -660,8 +660,8 @@ type SearchRequest struct {
 	SName string `protobuf:"bytes,1,opt,name=sName,proto3" json:"sName,omitempty"` // SName combined with Device ID and Hashed
 }
 
-func (x *SearchRequest) Reset() {
-	*x = SearchRequest{}
+func (x *PingRequest) Reset() {
+	*x = PingRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_client_api_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -669,13 +669,13 @@ func (x *SearchRequest) Reset() {
 	}
 }
 
-func (x *SearchRequest) String() string {
+func (x *PingRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*SearchRequest) ProtoMessage() {}
+func (*PingRequest) ProtoMessage() {}
 
-func (x *SearchRequest) ProtoReflect() protoreflect.Message {
+func (x *PingRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_client_api_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -687,20 +687,20 @@ func (x *SearchRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use SearchRequest.ProtoReflect.Descriptor instead.
-func (*SearchRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use PingRequest.ProtoReflect.Descriptor instead.
+func (*PingRequest) Descriptor() ([]byte, []int) {
 	return file_proto_client_api_proto_rawDescGZIP(), []int{10}
 }
 
-func (x *SearchRequest) GetSName() string {
+func (x *PingRequest) GetSName() string {
 	if x != nil {
 		return x.SName
 	}
 	return ""
 }
 
-// SearchResponse is Message for Searching for Peer
-type SearchResponse struct {
+// PingResponse is Message for Searching for Peer
+type PingResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -711,8 +711,8 @@ type SearchResponse struct {
 	PeerID  string       `protobuf:"bytes,4,opt,name=peerID,proto3" json:"peerID,omitempty"`    // Peer ID
 }
 
-func (x *SearchResponse) Reset() {
-	*x = SearchResponse{}
+func (x *PingResponse) Reset() {
+	*x = PingResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_client_api_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -720,13 +720,13 @@ func (x *SearchResponse) Reset() {
 	}
 }
 
-func (x *SearchResponse) String() string {
+func (x *PingResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*SearchResponse) ProtoMessage() {}
+func (*PingResponse) ProtoMessage() {}
 
-func (x *SearchResponse) ProtoReflect() protoreflect.Message {
+func (x *PingResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_client_api_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -738,37 +738,125 @@ func (x *SearchResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use SearchResponse.ProtoReflect.Descriptor instead.
-func (*SearchResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use PingResponse.ProtoReflect.Descriptor instead.
+func (*PingResponse) Descriptor() ([]byte, []int) {
 	return file_proto_client_api_proto_rawDescGZIP(), []int{11}
 }
 
-func (x *SearchResponse) GetSuccess() bool {
+func (x *PingResponse) GetSuccess() bool {
 	if x != nil {
 		return x.Success
 	}
 	return false
 }
 
-func (x *SearchResponse) GetError() string {
+func (x *PingResponse) GetError() string {
 	if x != nil {
 		return x.Error
 	}
 	return ""
 }
 
-func (x *SearchResponse) GetPeer() *common.Peer {
+func (x *PingResponse) GetPeer() *common.Peer {
 	if x != nil {
 		return x.Peer
 	}
 	return nil
 }
 
-func (x *SearchResponse) GetPeerID() string {
+func (x *PingResponse) GetPeerID() string {
 	if x != nil {
 		return x.PeerID
 	}
 	return ""
+}
+
+// StatResponse is a response to StatRequest that displays Node Stats
+type StatResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	PublicKey        string   `protobuf:"bytes,1,opt,name=publicKey,proto3" json:"publicKey,omitempty"`               // Public Key
+	DeviceID         string   `protobuf:"bytes,2,opt,name=deviceID,proto3" json:"deviceID,omitempty"`                 // Device ID
+	SName            string   `protobuf:"bytes,3,opt,name=sName,proto3" json:"sName,omitempty"`                       // SName
+	Peer             string   `protobuf:"bytes,4,opt,name=peer,proto3" json:"peer,omitempty"`                         // Peer
+	Multiaddr        string   `protobuf:"bytes,5,opt,name=multiaddr,proto3" json:"multiaddr,omitempty"`               // Multiaddr
+	EnabledProtocols []string `protobuf:"bytes,6,rep,name=enabledProtocols,proto3" json:"enabledProtocols,omitempty"` // Enabled Protocols
+}
+
+func (x *StatResponse) Reset() {
+	*x = StatResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_client_api_proto_msgTypes[12]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *StatResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StatResponse) ProtoMessage() {}
+
+func (x *StatResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_client_api_proto_msgTypes[12]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StatResponse.ProtoReflect.Descriptor instead.
+func (*StatResponse) Descriptor() ([]byte, []int) {
+	return file_proto_client_api_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *StatResponse) GetPublicKey() string {
+	if x != nil {
+		return x.PublicKey
+	}
+	return ""
+}
+
+func (x *StatResponse) GetDeviceID() string {
+	if x != nil {
+		return x.DeviceID
+	}
+	return ""
+}
+
+func (x *StatResponse) GetSName() string {
+	if x != nil {
+		return x.SName
+	}
+	return ""
+}
+
+func (x *StatResponse) GetPeer() string {
+	if x != nil {
+		return x.Peer
+	}
+	return ""
+}
+
+func (x *StatResponse) GetMultiaddr() string {
+	if x != nil {
+		return x.Multiaddr
+	}
+	return ""
+}
+
+func (x *StatResponse) GetEnabledProtocols() []string {
+	if x != nil {
+		return x.EnabledProtocols
+	}
+	return nil
 }
 
 // Optional Message to Initialize Sonr Account
@@ -784,7 +872,7 @@ type InitializeRequest_AccountOptions struct {
 func (x *InitializeRequest_AccountOptions) Reset() {
 	*x = InitializeRequest_AccountOptions{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_client_api_proto_msgTypes[12]
+		mi := &file_proto_client_api_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -797,7 +885,7 @@ func (x *InitializeRequest_AccountOptions) String() string {
 func (*InitializeRequest_AccountOptions) ProtoMessage() {}
 
 func (x *InitializeRequest_AccountOptions) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_client_api_proto_msgTypes[12]
+	mi := &file_proto_client_api_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -842,7 +930,7 @@ type InitializeRequest_DeviceOptions struct {
 func (x *InitializeRequest_DeviceOptions) Reset() {
 	*x = InitializeRequest_DeviceOptions{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_client_api_proto_msgTypes[13]
+		mi := &file_proto_client_api_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -855,7 +943,7 @@ func (x *InitializeRequest_DeviceOptions) String() string {
 func (*InitializeRequest_DeviceOptions) ProtoMessage() {}
 
 func (x *InitializeRequest_DeviceOptions) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_client_api_proto_msgTypes[13]
+	mi := &file_proto_client_api_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -914,7 +1002,7 @@ type InitializeRequest_HostOptions struct {
 func (x *InitializeRequest_HostOptions) Reset() {
 	*x = InitializeRequest_HostOptions{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_client_api_proto_msgTypes[14]
+		mi := &file_proto_client_api_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -927,7 +1015,7 @@ func (x *InitializeRequest_HostOptions) String() string {
 func (*InitializeRequest_HostOptions) ProtoMessage() {}
 
 func (x *InitializeRequest_HostOptions) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_client_api_proto_msgTypes[14]
+	mi := &file_proto_client_api_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -986,7 +1074,7 @@ type InitializeRequest_ServiceOptions struct {
 func (x *InitializeRequest_ServiceOptions) Reset() {
 	*x = InitializeRequest_ServiceOptions{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_client_api_proto_msgTypes[15]
+		mi := &file_proto_client_api_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -999,7 +1087,7 @@ func (x *InitializeRequest_ServiceOptions) String() string {
 func (*InitializeRequest_ServiceOptions) ProtoMessage() {}
 
 func (x *InitializeRequest_ServiceOptions) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_client_api_proto_msgTypes[15]
+	mi := &file_proto_client_api_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1059,7 +1147,7 @@ type InitializeRequest_IPAddress struct {
 func (x *InitializeRequest_IPAddress) Reset() {
 	*x = InitializeRequest_IPAddress{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_client_api_proto_msgTypes[16]
+		mi := &file_proto_client_api_proto_msgTypes[17]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1072,7 +1160,7 @@ func (x *InitializeRequest_IPAddress) String() string {
 func (*InitializeRequest_IPAddress) ProtoMessage() {}
 
 func (x *InitializeRequest_IPAddress) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_client_api_proto_msgTypes[16]
+	mi := &file_proto_client_api_proto_msgTypes[17]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1244,21 +1332,32 @@ var file_proto_client_api_proto_rawDesc = []byte{
 	0x73, 0x70, 0x6f, 0x6e, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a,
 	0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07,
 	0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x22, 0x25, 0x0a,
-	0x0d, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x14,
-	0x0a, 0x05, 0x73, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x73,
-	0x4e, 0x61, 0x6d, 0x65, 0x22, 0x7d, 0x0a, 0x0e, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73,
-	0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73,
-	0x12, 0x14, 0x0a, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x12, 0x23, 0x0a, 0x04, 0x70, 0x65, 0x65, 0x72, 0x18, 0x03,
-	0x20, 0x01, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x63, 0x6f, 0x72, 0x65,
-	0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x04, 0x70, 0x65, 0x65, 0x72, 0x12, 0x16, 0x0a, 0x06, 0x70,
-	0x65, 0x65, 0x72, 0x49, 0x44, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x70, 0x65, 0x65,
-	0x72, 0x49, 0x44, 0x42, 0x27, 0x5a, 0x25, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f,
-	0x6d, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2d, 0x69, 0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x69,
-	0x6e, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x2f, 0x6e, 0x6f, 0x64, 0x65, 0x62, 0x06, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x33,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x22, 0x23, 0x0a,
+	0x0b, 0x50, 0x69, 0x6e, 0x67, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x14, 0x0a, 0x05,
+	0x73, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x73, 0x4e, 0x61,
+	0x6d, 0x65, 0x22, 0x7b, 0x0a, 0x0c, 0x50, 0x69, 0x6e, 0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x12, 0x14, 0x0a, 0x05,
+	0x65, 0x72, 0x72, 0x6f, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x65, 0x72, 0x72,
+	0x6f, 0x72, 0x12, 0x23, 0x0a, 0x04, 0x70, 0x65, 0x65, 0x72, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x0f, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x50, 0x65, 0x65,
+	0x72, 0x52, 0x04, 0x70, 0x65, 0x65, 0x72, 0x12, 0x16, 0x0a, 0x06, 0x70, 0x65, 0x65, 0x72, 0x49,
+	0x44, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x70, 0x65, 0x65, 0x72, 0x49, 0x44, 0x22,
+	0xbc, 0x01, 0x0a, 0x0c, 0x53, 0x74, 0x61, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x12, 0x1c, 0x0a, 0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x12, 0x1a,
+	0x0a, 0x08, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x49, 0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x08, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x49, 0x44, 0x12, 0x14, 0x0a, 0x05, 0x73, 0x4e,
+	0x61, 0x6d, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x73, 0x4e, 0x61, 0x6d, 0x65,
+	0x12, 0x12, 0x0a, 0x04, 0x70, 0x65, 0x65, 0x72, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04,
+	0x70, 0x65, 0x65, 0x72, 0x12, 0x1c, 0x0a, 0x09, 0x6d, 0x75, 0x6c, 0x74, 0x69, 0x61, 0x64, 0x64,
+	0x72, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x6d, 0x75, 0x6c, 0x74, 0x69, 0x61, 0x64,
+	0x64, 0x72, 0x12, 0x2a, 0x0a, 0x10, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x50, 0x72, 0x6f,
+	0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x73, 0x18, 0x06, 0x20, 0x03, 0x28, 0x09, 0x52, 0x10, 0x65, 0x6e,
+	0x61, 0x62, 0x6c, 0x65, 0x64, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x73, 0x42, 0x27,
+	0x5a, 0x25, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x73, 0x6f, 0x6e,
+	0x72, 0x2d, 0x69, 0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x6e,
+	0x61, 0x6c, 0x2f, 0x6e, 0x6f, 0x64, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1274,7 +1373,7 @@ func file_proto_client_api_proto_rawDescGZIP() []byte {
 }
 
 var file_proto_client_api_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_proto_client_api_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
+var file_proto_client_api_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
 var file_proto_client_api_proto_goTypes = []interface{}{
 	(InitializeRequest_IPAddress_Family)(0),  // 0: sonr.node.InitializeRequest.IPAddress.Family
 	(*InitializeRequest)(nil),                // 1: sonr.node.InitializeRequest
@@ -1287,32 +1386,33 @@ var file_proto_client_api_proto_goTypes = []interface{}{
 	(*ShareResponse)(nil),                    // 8: sonr.node.ShareResponse
 	(*RespondRequest)(nil),                   // 9: sonr.node.RespondRequest
 	(*RespondResponse)(nil),                  // 10: sonr.node.RespondResponse
-	(*SearchRequest)(nil),                    // 11: sonr.node.SearchRequest
-	(*SearchResponse)(nil),                   // 12: sonr.node.SearchResponse
-	(*InitializeRequest_AccountOptions)(nil), // 13: sonr.node.InitializeRequest.AccountOptions
-	(*InitializeRequest_DeviceOptions)(nil),  // 14: sonr.node.InitializeRequest.DeviceOptions
-	(*InitializeRequest_HostOptions)(nil),    // 15: sonr.node.InitializeRequest.HostOptions
-	(*InitializeRequest_ServiceOptions)(nil), // 16: sonr.node.InitializeRequest.ServiceOptions
-	(*InitializeRequest_IPAddress)(nil),      // 17: sonr.node.InitializeRequest.IPAddress
-	(*common.Location)(nil),                  // 18: sonr.core.Location
-	(*common.Profile)(nil),                   // 19: sonr.core.Profile
-	(common.Connection)(0),                   // 20: sonr.core.Connection
-	(*common.Peer)(nil),                      // 21: sonr.core.Peer
+	(*PingRequest)(nil),                      // 11: sonr.node.PingRequest
+	(*PingResponse)(nil),                     // 12: sonr.node.PingResponse
+	(*StatResponse)(nil),                     // 13: sonr.node.StatResponse
+	(*InitializeRequest_AccountOptions)(nil), // 14: sonr.node.InitializeRequest.AccountOptions
+	(*InitializeRequest_DeviceOptions)(nil),  // 15: sonr.node.InitializeRequest.DeviceOptions
+	(*InitializeRequest_HostOptions)(nil),    // 16: sonr.node.InitializeRequest.HostOptions
+	(*InitializeRequest_ServiceOptions)(nil), // 17: sonr.node.InitializeRequest.ServiceOptions
+	(*InitializeRequest_IPAddress)(nil),      // 18: sonr.node.InitializeRequest.IPAddress
+	(*common.Location)(nil),                  // 19: sonr.core.Location
+	(*common.Profile)(nil),                   // 20: sonr.core.Profile
+	(common.Connection)(0),                   // 21: sonr.core.Connection
+	(*common.Peer)(nil),                      // 22: sonr.core.Peer
 }
 var file_proto_client_api_proto_depIdxs = []int32{
-	18, // 0: sonr.node.InitializeRequest.location:type_name -> sonr.core.Location
-	19, // 1: sonr.node.InitializeRequest.profile:type_name -> sonr.core.Profile
-	20, // 2: sonr.node.InitializeRequest.connection:type_name -> sonr.core.Connection
-	15, // 3: sonr.node.InitializeRequest.hostOptions:type_name -> sonr.node.InitializeRequest.HostOptions
-	16, // 4: sonr.node.InitializeRequest.serviceOptions:type_name -> sonr.node.InitializeRequest.ServiceOptions
-	13, // 5: sonr.node.InitializeRequest.accountOptions:type_name -> sonr.node.InitializeRequest.AccountOptions
-	14, // 6: sonr.node.InitializeRequest.deviceOptions:type_name -> sonr.node.InitializeRequest.DeviceOptions
-	21, // 7: sonr.node.SupplyRequest.peer:type_name -> sonr.core.Peer
-	19, // 8: sonr.node.EditRequest.profile:type_name -> sonr.core.Profile
-	21, // 9: sonr.node.ShareRequest.peer:type_name -> sonr.core.Peer
-	21, // 10: sonr.node.RespondRequest.peer:type_name -> sonr.core.Peer
-	21, // 11: sonr.node.SearchResponse.peer:type_name -> sonr.core.Peer
-	17, // 12: sonr.node.InitializeRequest.HostOptions.listenAddrs:type_name -> sonr.node.InitializeRequest.IPAddress
+	19, // 0: sonr.node.InitializeRequest.location:type_name -> sonr.core.Location
+	20, // 1: sonr.node.InitializeRequest.profile:type_name -> sonr.core.Profile
+	21, // 2: sonr.node.InitializeRequest.connection:type_name -> sonr.core.Connection
+	16, // 3: sonr.node.InitializeRequest.hostOptions:type_name -> sonr.node.InitializeRequest.HostOptions
+	17, // 4: sonr.node.InitializeRequest.serviceOptions:type_name -> sonr.node.InitializeRequest.ServiceOptions
+	14, // 5: sonr.node.InitializeRequest.accountOptions:type_name -> sonr.node.InitializeRequest.AccountOptions
+	15, // 6: sonr.node.InitializeRequest.deviceOptions:type_name -> sonr.node.InitializeRequest.DeviceOptions
+	22, // 7: sonr.node.SupplyRequest.peer:type_name -> sonr.core.Peer
+	20, // 8: sonr.node.EditRequest.profile:type_name -> sonr.core.Profile
+	22, // 9: sonr.node.ShareRequest.peer:type_name -> sonr.core.Peer
+	22, // 10: sonr.node.RespondRequest.peer:type_name -> sonr.core.Peer
+	22, // 11: sonr.node.PingResponse.peer:type_name -> sonr.core.Peer
+	18, // 12: sonr.node.InitializeRequest.HostOptions.listenAddrs:type_name -> sonr.node.InitializeRequest.IPAddress
 	0,  // 13: sonr.node.InitializeRequest.IPAddress.family:type_name -> sonr.node.InitializeRequest.IPAddress.Family
 	14, // [14:14] is the sub-list for method output_type
 	14, // [14:14] is the sub-list for method input_type
@@ -1448,7 +1548,7 @@ func file_proto_client_api_proto_init() {
 			}
 		}
 		file_proto_client_api_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SearchRequest); i {
+			switch v := v.(*PingRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1460,7 +1560,7 @@ func file_proto_client_api_proto_init() {
 			}
 		}
 		file_proto_client_api_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SearchResponse); i {
+			switch v := v.(*PingResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1472,7 +1572,7 @@ func file_proto_client_api_proto_init() {
 			}
 		}
 		file_proto_client_api_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*InitializeRequest_AccountOptions); i {
+			switch v := v.(*StatResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1484,7 +1584,7 @@ func file_proto_client_api_proto_init() {
 			}
 		}
 		file_proto_client_api_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*InitializeRequest_DeviceOptions); i {
+			switch v := v.(*InitializeRequest_AccountOptions); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1496,7 +1596,7 @@ func file_proto_client_api_proto_init() {
 			}
 		}
 		file_proto_client_api_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*InitializeRequest_HostOptions); i {
+			switch v := v.(*InitializeRequest_DeviceOptions); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1508,7 +1608,7 @@ func file_proto_client_api_proto_init() {
 			}
 		}
 		file_proto_client_api_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*InitializeRequest_ServiceOptions); i {
+			switch v := v.(*InitializeRequest_HostOptions); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1520,6 +1620,18 @@ func file_proto_client_api_proto_init() {
 			}
 		}
 		file_proto_client_api_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*InitializeRequest_ServiceOptions); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_client_api_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*InitializeRequest_IPAddress); i {
 			case 0:
 				return &v.state
@@ -1539,7 +1651,7 @@ func file_proto_client_api_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_proto_client_api_proto_rawDesc,
 			NumEnums:      1,
-			NumMessages:   17,
+			NumMessages:   18,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

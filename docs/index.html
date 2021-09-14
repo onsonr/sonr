@@ -215,6 +215,14 @@
                 </li>
               
                 <li>
+                  <a href="#sonr.node.PingRequest"><span class="badge">M</span>PingRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.node.PingResponse"><span class="badge">M</span>PingResponse</a>
+                </li>
+              
+                <li>
                   <a href="#sonr.node.RespondRequest"><span class="badge">M</span>RespondRequest</a>
                 </li>
               
@@ -223,19 +231,15 @@
                 </li>
               
                 <li>
-                  <a href="#sonr.node.SearchRequest"><span class="badge">M</span>SearchRequest</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.node.SearchResponse"><span class="badge">M</span>SearchResponse</a>
-                </li>
-              
-                <li>
                   <a href="#sonr.node.ShareRequest"><span class="badge">M</span>ShareRequest</a>
                 </li>
               
                 <li>
                   <a href="#sonr.node.ShareResponse"><span class="badge">M</span>ShareResponse</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.node.StatResponse"><span class="badge">M</span>StatResponse</a>
                 </li>
               
                 <li>
@@ -985,6 +989,75 @@
 
         
       
+        <h3 id="sonr.node.PingRequest">PingRequest</h3>
+        <p>PingRequest is Message for Searching for Peer</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>sName</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>SName combined with Device ID and Hashed </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.node.PingResponse">PingResponse</h3>
+        <p>PingResponse is Message for Searching for Peer</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>success</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>Success </p></td>
+                </tr>
+              
+                <tr>
+                  <td>error</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Error Message </p></td>
+                </tr>
+              
+                <tr>
+                  <td>peer</td>
+                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
+                  <td></td>
+                  <td><p>Peer Data </p></td>
+                </tr>
+              
+                <tr>
+                  <td>peerID</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Peer ID </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="sonr.node.RespondRequest">RespondRequest</h3>
         <p>RespondRequest is request to respond to a share request</p>
 
@@ -1047,75 +1120,6 @@
 
         
       
-        <h3 id="sonr.node.SearchRequest">SearchRequest</h3>
-        <p>SearchRequest is Message for Searching for Peer</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>sName</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>SName combined with Device ID and Hashed </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.node.SearchResponse">SearchResponse</h3>
-        <p>SearchResponse is Message for Searching for Peer</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>success</td>
-                  <td><a href="#bool">bool</a></td>
-                  <td></td>
-                  <td><p>Success </p></td>
-                </tr>
-              
-                <tr>
-                  <td>error</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Error Message </p></td>
-                </tr>
-              
-                <tr>
-                  <td>peer</td>
-                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
-                  <td></td>
-                  <td><p>Peer Data </p></td>
-                </tr>
-              
-                <tr>
-                  <td>peerID</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Peer ID </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
         <h3 id="sonr.node.ShareRequest">ShareRequest</h3>
         <p>ShareRequest is request to share supplied files/urls with a peer</p>
 
@@ -1162,6 +1166,65 @@
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p>Error Message if Supply is not Active </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.node.StatResponse">StatResponse</h3>
+        <p>StatResponse is a response to StatRequest that displays Node Stats</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>publicKey</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Public Key </p></td>
+                </tr>
+              
+                <tr>
+                  <td>deviceID</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Device ID </p></td>
+                </tr>
+              
+                <tr>
+                  <td>sName</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>SName </p></td>
+                </tr>
+              
+                <tr>
+                  <td>peer</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Peer </p></td>
+                </tr>
+              
+                <tr>
+                  <td>multiaddr</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Multiaddr </p></td>
+                </tr>
+              
+                <tr>
+                  <td>enabledProtocols</td>
+                  <td><a href="#string">string</a></td>
+                  <td>repeated</td>
+                  <td><p>Enabled Protocols </p></td>
                 </tr>
               
             </tbody>
@@ -1295,7 +1358,8 @@
                 <td>Supply</td>
                 <td><a href="#sonr.node.SupplyRequest">SupplyRequest</a></td>
                 <td><a href="#sonr.node.SupplyResponse">SupplyResponse</a></td>
-                <td><p>Signing Method Request for Data</p></td>
+                <td><p>Node Methods
+Signing Method Request for Data</p></td>
               </tr>
             
               <tr>
@@ -1320,66 +1384,74 @@
               </tr>
             
               <tr>
-                <td>Search</td>
-                <td><a href="#sonr.node.SearchRequest">SearchRequest</a></td>
-                <td><a href="#sonr.node.SearchResponse">SearchResponse</a></td>
-                <td><p>Search Method to find a Peer by SName</p></td>
+                <td>Ping</td>
+                <td><a href="#sonr.node.PingRequest">PingRequest</a></td>
+                <td><a href="#sonr.node.PingResponse">PingResponse</a></td>
+                <td><p>Ping Method to find a Peer by SName</p></td>
+              </tr>
+            
+              <tr>
+                <td>Stat</td>
+                <td><a href="#sonr.node.Empty">Empty</a></td>
+                <td><a href="#sonr.node.StatResponse">StatResponse</a></td>
+                <td><p>Stat Method returns the Node Stats</p></td>
               </tr>
             
               <tr>
                 <td>OnNodeStatus</td>
                 <td><a href="#sonr.node.Empty">Empty</a></td>
                 <td><a href="#sonr.core.StatusEvent">.sonr.core.StatusEvent</a> stream</td>
-                <td><p>Events Streams</p></td>
+                <td><p>Events Streams
+Returns a stream of StatusEvents</p></td>
               </tr>
             
               <tr>
                 <td>OnLocalJoin</td>
                 <td><a href="#sonr.node.Empty">Empty</a></td>
                 <td><a href="#sonr.core.ExchangeEvent">.sonr.core.ExchangeEvent</a> stream</td>
-                <td><p></p></td>
+                <td><p>Returns a stream of ExchangeEvents for Join</p></td>
               </tr>
             
               <tr>
                 <td>OnLocalExit</td>
                 <td><a href="#sonr.node.Empty">Empty</a></td>
                 <td><a href="#sonr.core.ExchangeEvent">.sonr.core.ExchangeEvent</a> stream</td>
-                <td><p></p></td>
+                <td><p>Returns a stream of ExchangeEvents for Exit</p></td>
               </tr>
             
               <tr>
                 <td>OnTransferAccepted</td>
                 <td><a href="#sonr.node.Empty">Empty</a></td>
                 <td><a href="#sonr.core.DecisionEvent">.sonr.core.DecisionEvent</a> stream</td>
-                <td><p></p></td>
+                <td><p>Returns a stream of DecisionEvent&#39;s for Accepted Invites</p></td>
               </tr>
             
               <tr>
                 <td>OnTransferDeclined</td>
                 <td><a href="#sonr.node.Empty">Empty</a></td>
                 <td><a href="#sonr.core.DecisionEvent">.sonr.core.DecisionEvent</a> stream</td>
-                <td><p></p></td>
+                <td><p>Returns a stream of DecisionEvent&#39;s for Rejected Invites</p></td>
               </tr>
             
               <tr>
                 <td>OnTransferInvite</td>
                 <td><a href="#sonr.node.Empty">Empty</a></td>
                 <td><a href="#sonr.core.InviteEvent">.sonr.core.InviteEvent</a> stream</td>
-                <td><p></p></td>
+                <td><p>Returns a stream of DecisionEvent&#39;s for Invites</p></td>
               </tr>
             
               <tr>
                 <td>OnTransferProgress</td>
                 <td><a href="#sonr.node.Empty">Empty</a></td>
                 <td><a href="#sonr.core.ProgressEvent">.sonr.core.ProgressEvent</a> stream</td>
-                <td><p></p></td>
+                <td><p>Returns a stream of ProgressEvent&#39;s for Sessions</p></td>
               </tr>
             
               <tr>
                 <td>OnTransferComplete</td>
                 <td><a href="#sonr.node.Empty">Empty</a></td>
                 <td><a href="#sonr.core.CompleteEvent">.sonr.core.CompleteEvent</a> stream</td>
-                <td><p></p></td>
+                <td><p>Returns a stream of Completed Transfers</p></td>
               </tr>
             
           </tbody>

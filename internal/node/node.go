@@ -158,7 +158,7 @@ func (n *Node) Share(peer *common.Peer) error {
 	}
 
 	// Fetch Peer ID from Exchange
-	_, id, err := n.ExchangeProtocol.Search(peer.GetSName())
+	_, id, err := n.ExchangeProtocol.Ping(peer.GetSName())
 	if err != nil {
 		logger.Error("Failed to search peer", zap.Error(err))
 		return err

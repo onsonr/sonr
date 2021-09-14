@@ -19,6 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type NodeServiceClient interface {
+	// Node Methods
 	// Signing Method Request for Data
 	Supply(ctx context.Context, in *SupplyRequest, opts ...grpc.CallOption) (*SupplyResponse, error)
 	// Verification Method Request for Signed Data
@@ -27,16 +28,26 @@ type NodeServiceClient interface {
 	Share(ctx context.Context, in *ShareRequest, opts ...grpc.CallOption) (*ShareResponse, error)
 	// Respond Method to an Invite with Decision
 	Respond(ctx context.Context, in *RespondRequest, opts ...grpc.CallOption) (*RespondResponse, error)
-	// Search Method to find a Peer by SName
-	Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error)
+	// Ping Method to find a Peer by SName
+	Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingResponse, error)
+	// Stat Method returns the Node Stats
+	Stat(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*StatResponse, error)
 	// Events Streams
+	// Returns a stream of StatusEvents
 	OnNodeStatus(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnNodeStatusClient, error)
+	// Returns a stream of ExchangeEvents for Join
 	OnLocalJoin(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnLocalJoinClient, error)
+	// Returns a stream of ExchangeEvents for Exit
 	OnLocalExit(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnLocalExitClient, error)
+	// Returns a stream of DecisionEvent's for Accepted Invites
 	OnTransferAccepted(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnTransferAcceptedClient, error)
+	// Returns a stream of DecisionEvent's for Rejected Invites
 	OnTransferDeclined(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnTransferDeclinedClient, error)
+	// Returns a stream of DecisionEvent's for Invites
 	OnTransferInvite(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnTransferInviteClient, error)
+	// Returns a stream of ProgressEvent's for Sessions
 	OnTransferProgress(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnTransferProgressClient, error)
+	// Returns a stream of Completed Transfers
 	OnTransferComplete(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnTransferCompleteClient, error)
 }
 
@@ -84,9 +95,18 @@ func (c *nodeServiceClient) Respond(ctx context.Context, in *RespondRequest, opt
 	return out, nil
 }
 
-func (c *nodeServiceClient) Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error) {
-	out := new(SearchResponse)
-	err := c.cc.Invoke(ctx, "/sonr.node.NodeService/Search", in, out, opts...)
+func (c *nodeServiceClient) Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingResponse, error) {
+	out := new(PingResponse)
+	err := c.cc.Invoke(ctx, "/sonr.node.NodeService/Ping", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *nodeServiceClient) Stat(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*StatResponse, error) {
+	out := new(StatResponse)
+	err := c.cc.Invoke(ctx, "/sonr.node.NodeService/Stat", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -353,6 +373,7 @@ func (x *nodeServiceOnTransferCompleteClient) Recv() (*common.CompleteEvent, err
 // All implementations must embed UnimplementedNodeServiceServer
 // for forward compatibility
 type NodeServiceServer interface {
+	// Node Methods
 	// Signing Method Request for Data
 	Supply(context.Context, *SupplyRequest) (*SupplyResponse, error)
 	// Verification Method Request for Signed Data
@@ -361,16 +382,26 @@ type NodeServiceServer interface {
 	Share(context.Context, *ShareRequest) (*ShareResponse, error)
 	// Respond Method to an Invite with Decision
 	Respond(context.Context, *RespondRequest) (*RespondResponse, error)
-	// Search Method to find a Peer by SName
-	Search(context.Context, *SearchRequest) (*SearchResponse, error)
+	// Ping Method to find a Peer by SName
+	Ping(context.Context, *PingRequest) (*PingResponse, error)
+	// Stat Method returns the Node Stats
+	Stat(context.Context, *Empty) (*StatResponse, error)
 	// Events Streams
+	// Returns a stream of StatusEvents
 	OnNodeStatus(*Empty, NodeService_OnNodeStatusServer) error
+	// Returns a stream of ExchangeEvents for Join
 	OnLocalJoin(*Empty, NodeService_OnLocalJoinServer) error
+	// Returns a stream of ExchangeEvents for Exit
 	OnLocalExit(*Empty, NodeService_OnLocalExitServer) error
+	// Returns a stream of DecisionEvent's for Accepted Invites
 	OnTransferAccepted(*Empty, NodeService_OnTransferAcceptedServer) error
+	// Returns a stream of DecisionEvent's for Rejected Invites
 	OnTransferDeclined(*Empty, NodeService_OnTransferDeclinedServer) error
+	// Returns a stream of DecisionEvent's for Invites
 	OnTransferInvite(*Empty, NodeService_OnTransferInviteServer) error
+	// Returns a stream of ProgressEvent's for Sessions
 	OnTransferProgress(*Empty, NodeService_OnTransferProgressServer) error
+	// Returns a stream of Completed Transfers
 	OnTransferComplete(*Empty, NodeService_OnTransferCompleteServer) error
 	mustEmbedUnimplementedNodeServiceServer()
 }
@@ -391,8 +422,11 @@ func (UnimplementedNodeServiceServer) Share(context.Context, *ShareRequest) (*Sh
 func (UnimplementedNodeServiceServer) Respond(context.Context, *RespondRequest) (*RespondResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Respond not implemented")
 }
-func (UnimplementedNodeServiceServer) Search(context.Context, *SearchRequest) (*SearchResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Search not implemented")
+func (UnimplementedNodeServiceServer) Ping(context.Context, *PingRequest) (*PingResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
+}
+func (UnimplementedNodeServiceServer) Stat(context.Context, *Empty) (*StatResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Stat not implemented")
 }
 func (UnimplementedNodeServiceServer) OnNodeStatus(*Empty, NodeService_OnNodeStatusServer) error {
 	return status.Errorf(codes.Unimplemented, "method OnNodeStatus not implemented")
@@ -503,20 +537,38 @@ func _NodeService_Respond_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
-func _NodeService_Search_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SearchRequest)
+func _NodeService_Ping_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PingRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(NodeServiceServer).Search(ctx, in)
+		return srv.(NodeServiceServer).Ping(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonr.node.NodeService/Search",
+		FullMethod: "/sonr.node.NodeService/Ping",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NodeServiceServer).Search(ctx, req.(*SearchRequest))
+		return srv.(NodeServiceServer).Ping(ctx, req.(*PingRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _NodeService_Stat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NodeServiceServer).Stat(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sonr.node.NodeService/Stat",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NodeServiceServer).Stat(ctx, req.(*Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -713,8 +765,12 @@ var NodeService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _NodeService_Respond_Handler,
 		},
 		{
-			MethodName: "Search",
-			Handler:    _NodeService_Search_Handler,
+			MethodName: "Ping",
+			Handler:    _NodeService_Ping_Handler,
+		},
+		{
+			MethodName: "Stat",
+			Handler:    _NodeService_Stat_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
