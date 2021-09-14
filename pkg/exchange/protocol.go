@@ -137,7 +137,6 @@ func (p *ExchangeProtocol) Update(peer *common.Peer) error {
 		logger.Error("Failed to Publish Event", zap.Error(err))
 		return err
 	}
-	return nil
 
 	// Marshal Peer
 	peerBuf, err := proto.Marshal(peer)
