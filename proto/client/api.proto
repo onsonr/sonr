@@ -125,14 +125,32 @@ message PingResponse {
 }
 
 // StatRequest is Message for Searching for Peer
-
+message StatRequest {
+  bool showDevice = 1;  // Device Stats
+  bool showNetwork = 2; // Network Stats
+}
 
 // StatResponse is a response to StatRequest that displays Node Stats
 message StatResponse {
-  string publicKey = 1;                 // Public Key
-  string deviceID = 2;                  // Device ID
-  string sName = 3;                     // SName
-  string peer = 4;                      // Peer
-  string multiaddr = 5;                 // Multiaddr
-  repeated string enabledProtocols = 6; // Enabled Protocols
+  string sName = 1;        // SName
+  sonr.core.Peer peer = 2; // Peer Data
+  Device device = 3;       // Device Data
+  Network network = 4;     // Network Data
+
+  // Device Stats
+  message Device {
+    string id = 1;      // Device ID
+    string name = 2;    // Device Name
+    string os = 3;      // Operating System
+    string arch = 4;    // Architecture
+    string version = 5; // Version
+  }
+
+  // Network Stats
+  message Network {
+    string publicKey = 1; // Public Key
+    string peerID = 2;    // Peer ID
+    string address = 3;   // Address
+    string multiaddr = 4; // Multi Address
+  }
 }

@@ -18,7 +18,17 @@ import (
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/tools/emitter"
+	"github.com/sonr-io/core/tools/logger"
+	"go.uber.org/zap"
 )
+
+type SHostStat struct {
+	ID        peer.ID
+	PublicKey string
+	PeerID    string
+	MultAddr  string
+	Address   string
+}
 
 type SHost struct {
 	host.Host
@@ -112,4 +122,21 @@ func (hn *SHost) Pubsub() *psub.PubSub {
 // PublicKey returns the public key of the host
 func (hn *SHost) PublicKey() crypto.PubKey {
 	return hn.privKey.GetPublic()
+}
+
+// Stat returns the host stat info
+func (hn *SHost) Stat() *SHostStat {
+	// Marshal Public Key
+	buf, err := crypto.MarshalPublicKey(hn.PublicKey())
+	if err != nil {
+		logger.Error("Failed to marshal public key.", zap.Error(err))
+	}
+
+	// Return Host Stat
+	return &SHostStat{
+		ID:        hn.id,
+		PublicKey: string(buf),
+		PeerID:    hn.id.Pretty(),
+		MultAddr:  hn.Addrs()[0].String(),
+	}
 }

@@ -6,7 +6,17 @@ import (
 
 	"github.com/denisbrodbeck/machineid"
 	"github.com/sonr-io/core/internal/common"
+	"github.com/sonr-io/core/tools/logger"
+	"go.uber.org/zap"
 )
+
+type DeviceStat struct {
+	Id      string `json:"id"`
+	Name    string `json:"name"`
+	Os      string `json:"os"`
+	Arch    string `json:"arch"`
+	Version string `json:"version"`
+}
 
 // AppName returns the application name.
 func AppName() string {
@@ -101,4 +111,28 @@ func IsMacOS() bool {
 // VendorName returns the vendor name.
 func VendorName() string {
 	return "Sonr"
+}
+
+// Stat returns the device stat.
+func Stat() *DeviceStat {
+	// Get Device Id
+	id, err := ID()
+	if err != nil {
+		logger.Error("Failed to get Device ID", zap.Error(err))
+	}
+
+	// Get HostName
+	hn, err := HostName()
+	if err != nil {
+		logger.Error("Failed to get HostName", zap.Error(err))
+	}
+
+	// Return the device info for Peer
+	return &DeviceStat{
+		Id:      id,
+		Name:    hn,
+		Os:      runtime.GOOS,
+		Arch:    runtime.GOARCH,
+		Version: "0.0.1",
+	}
 }

@@ -6,6 +6,7 @@ import (
 	"net"
 
 	common "github.com/sonr-io/core/internal/common"
+	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/pkg/transfer"
 	"github.com/sonr-io/core/tools/emitter"
 	"github.com/sonr-io/core/tools/logger"
@@ -175,6 +176,27 @@ func (n *NodeRPCService) Respond(ctx context.Context, req *RespondRequest) (*Res
 	// Send Response
 	return &RespondResponse{
 		Success: true,
+	}, nil
+}
+
+// Stat method returns the node's stats
+func (n *NodeRPCService) Stat(ctx context.Context, req *StatRequest) (*StatResponse, error) {
+	// Call Internal Stat
+	return &StatResponse{
+		SName: n.profile.SName,
+		Peer:  n.Peer(),
+		Device: &StatResponse_Device{
+			Id:      device.Stat().Id,
+			Name:    device.Stat().Name,
+			Os:      device.Stat().Os,
+			Arch:    device.Stat().Arch,
+			Version: device.Stat().Version,
+		},
+		Network: &StatResponse_Network{
+			PublicKey: n.SHost.Stat().PublicKey,
+			PeerID:    n.SHost.Stat().PeerID,
+			Multiaddr: n.SHost.Stat().MultAddr,
+		},
 	}, nil
 }
 

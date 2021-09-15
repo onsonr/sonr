@@ -7,36 +7,52 @@ import (
 	"github.com/sonr-io/core/tools/state"
 )
 
+type TransferDirection int
+
+const (
+	DirectionInbound TransferDirection = iota
+	DirectionOutbound
+)
+
 const (
 	// ### - Invite Method Types -
 	// 1. States
-	FindingPeer state.StateType = "FindingPeer"
+	Available state.StateType = "Available"
 	// UnknownPeer is state for when Peer is not Found
-	UnknownPeer state.StateType = "UnknownPeer"
-
-	// Pending is state for when Invite Succeeds
 	Pending state.StateType = "Pending"
+	// Pending is state for when Invite Succeeds
+	InProgress state.StateType = "InProgress"
 
-	// 2. Events
-	// FindPeer Method Events
-	FailFindPeer    state.EventType = "FailFindPeer"
-	SucceedFindPeer state.EventType = "SucceedFindPeer"
+	// 2a. Events
+	// Receiver
+	InviteReceived state.EventType = "InviteReceived"
+	DecisionAccept state.EventType = "DecisionAccept"
+	DecisionReject state.EventType = "DecisionReject"
 
-	// SendInvite Method Events
-	FailSendInvite    state.EventType = "FailSendInvite"
-	SucceedSendInvite state.EventType = "SucceedSendInvite"
+	// 2b. Events
+	// Sender
+	InviteShared state.EventType = "InviteShared"
+	PeerAccepted state.EventType = "PeerAccepted"
+	PeerRejected state.EventType = "PeerRejected"
+
+	// 2c. Events
+	// Common - Sender+Receiver
+	TransferSuccess state.EventType = "TransferSuccess"
+	TransferFail    state.EventType = "TransferFail"
 )
 
 type TransferInviteContext struct {
-	invite   *InviteRequest
-	to       peer.ID
-	decision bool
+	Direction TransferDirection
+	Invite    *InviteRequest
+	To        peer.ID
+	From      peer.ID
+	Decision  bool
 }
 
 type InviteTransferAction struct{}
 
 func (a *InviteTransferAction) Execute(eventCtx state.EventContext) state.EventType {
 	invite := eventCtx.(*TransferInviteContext)
-	fmt.Println(invite.to.String())
-	return SucceedFindPeer
+	fmt.Println(invite.To.String())
+	return InviteShared
 }

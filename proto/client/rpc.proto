@@ -26,7 +26,7 @@ service NodeService {
   rpc Ping(PingRequest) returns (PingResponse) {}
 
   // Stat Method returns the Node Stats
-  rpc Stat(Empty) returns (StatResponse) {}
+  rpc Stat(StatRequest) returns (StatResponse) {}
 
   // Events Streams
   // Returns a stream of StatusEvents

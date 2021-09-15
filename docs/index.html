@@ -239,7 +239,19 @@
                 </li>
               
                 <li>
+                  <a href="#sonr.node.StatRequest"><span class="badge">M</span>StatRequest</a>
+                </li>
+              
+                <li>
                   <a href="#sonr.node.StatResponse"><span class="badge">M</span>StatResponse</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.node.StatResponse.Device"><span class="badge">M</span>StatResponse.Device</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.node.StatResponse.Network"><span class="badge">M</span>StatResponse.Network</a>
                 </li>
               
                 <li>
@@ -1175,8 +1187,136 @@
 
         
       
+        <h3 id="sonr.node.StatRequest">StatRequest</h3>
+        <p>StatRequest is Message for Searching for Peer</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>showDevice</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>Device Stats </p></td>
+                </tr>
+              
+                <tr>
+                  <td>showNetwork</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>Network Stats </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="sonr.node.StatResponse">StatResponse</h3>
         <p>StatResponse is a response to StatRequest that displays Node Stats</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>sName</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>SName </p></td>
+                </tr>
+              
+                <tr>
+                  <td>peer</td>
+                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
+                  <td></td>
+                  <td><p>Peer Data </p></td>
+                </tr>
+              
+                <tr>
+                  <td>device</td>
+                  <td><a href="#sonr.node.StatResponse.Device">StatResponse.Device</a></td>
+                  <td></td>
+                  <td><p>Device Data </p></td>
+                </tr>
+              
+                <tr>
+                  <td>network</td>
+                  <td><a href="#sonr.node.StatResponse.Network">StatResponse.Network</a></td>
+                  <td></td>
+                  <td><p>Network Data </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.node.StatResponse.Device">StatResponse.Device</h3>
+        <p>Device Stats</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Device ID </p></td>
+                </tr>
+              
+                <tr>
+                  <td>name</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Device Name </p></td>
+                </tr>
+              
+                <tr>
+                  <td>os</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Operating System </p></td>
+                </tr>
+              
+                <tr>
+                  <td>arch</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Architecture </p></td>
+                </tr>
+              
+                <tr>
+                  <td>version</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Version </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.node.StatResponse.Network">StatResponse.Network</h3>
+        <p>Network Stats</p>
 
         
           <table class="field-table">
@@ -1193,38 +1333,24 @@
                 </tr>
               
                 <tr>
-                  <td>deviceID</td>
+                  <td>peerID</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>Device ID </p></td>
+                  <td><p>Peer ID </p></td>
                 </tr>
               
                 <tr>
-                  <td>sName</td>
+                  <td>address</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>SName </p></td>
-                </tr>
-              
-                <tr>
-                  <td>peer</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Peer </p></td>
+                  <td><p>Address </p></td>
                 </tr>
               
                 <tr>
                   <td>multiaddr</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>Multiaddr </p></td>
-                </tr>
-              
-                <tr>
-                  <td>enabledProtocols</td>
-                  <td><a href="#string">string</a></td>
-                  <td>repeated</td>
-                  <td><p>Enabled Protocols </p></td>
+                  <td><p>Multi Address </p></td>
                 </tr>
               
             </tbody>
@@ -1392,7 +1518,7 @@ Signing Method Request for Data</p></td>
             
               <tr>
                 <td>Stat</td>
-                <td><a href="#sonr.node.Empty">Empty</a></td>
+                <td><a href="#sonr.node.StatRequest">StatRequest</a></td>
                 <td><a href="#sonr.node.StatResponse">StatResponse</a></td>
                 <td><p>Stat Method returns the Node Stats</p></td>
               </tr>

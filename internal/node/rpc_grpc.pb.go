@@ -31,7 +31,7 @@ type NodeServiceClient interface {
 	// Ping Method to find a Peer by SName
 	Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingResponse, error)
 	// Stat Method returns the Node Stats
-	Stat(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*StatResponse, error)
+	Stat(ctx context.Context, in *StatRequest, opts ...grpc.CallOption) (*StatResponse, error)
 	// Events Streams
 	// Returns a stream of StatusEvents
 	OnNodeStatus(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnNodeStatusClient, error)
@@ -104,7 +104,7 @@ func (c *nodeServiceClient) Ping(ctx context.Context, in *PingRequest, opts ...g
 	return out, nil
 }
 
-func (c *nodeServiceClient) Stat(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*StatResponse, error) {
+func (c *nodeServiceClient) Stat(ctx context.Context, in *StatRequest, opts ...grpc.CallOption) (*StatResponse, error) {
 	out := new(StatResponse)
 	err := c.cc.Invoke(ctx, "/sonr.node.NodeService/Stat", in, out, opts...)
 	if err != nil {
@@ -385,7 +385,7 @@ type NodeServiceServer interface {
 	// Ping Method to find a Peer by SName
 	Ping(context.Context, *PingRequest) (*PingResponse, error)
 	// Stat Method returns the Node Stats
-	Stat(context.Context, *Empty) (*StatResponse, error)
+	Stat(context.Context, *StatRequest) (*StatResponse, error)
 	// Events Streams
 	// Returns a stream of StatusEvents
 	OnNodeStatus(*Empty, NodeService_OnNodeStatusServer) error
@@ -425,7 +425,7 @@ func (UnimplementedNodeServiceServer) Respond(context.Context, *RespondRequest) 
 func (UnimplementedNodeServiceServer) Ping(context.Context, *PingRequest) (*PingResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
 }
-func (UnimplementedNodeServiceServer) Stat(context.Context, *Empty) (*StatResponse, error) {
+func (UnimplementedNodeServiceServer) Stat(context.Context, *StatRequest) (*StatResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Stat not implemented")
 }
 func (UnimplementedNodeServiceServer) OnNodeStatus(*Empty, NodeService_OnNodeStatusServer) error {
@@ -556,7 +556,7 @@ func _NodeService_Ping_Handler(srv interface{}, ctx context.Context, dec func(in
 }
 
 func _NodeService_Stat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Empty)
+	in := new(StatRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -568,7 +568,7 @@ func _NodeService_Stat_Handler(srv interface{}, ctx context.Context, dec func(in
 		FullMethod: "/sonr.node.NodeService/Stat",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NodeServiceServer).Stat(ctx, req.(*Empty))
+		return srv.(NodeServiceServer).Stat(ctx, req.(*StatRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
