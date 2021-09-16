@@ -31,6 +31,7 @@ const (
 
 	// 2b. Events
 	// Sender
+	InviteFailed state.EventType = "InviteFailed"
 	InviteShared state.EventType = "InviteShared"
 	PeerAccepted state.EventType = "PeerAccepted"
 	PeerRejected state.EventType = "PeerRejected"
@@ -55,4 +56,9 @@ func (a *InviteTransferAction) Execute(eventCtx state.EventContext) state.EventT
 	invite := eventCtx.(*TransferInviteContext)
 	fmt.Println(invite.To.String())
 	return InviteShared
+}
+
+// initStateMachine initializes the state machine
+func (p *TransferProtocol) initStateMachine() {
+
 }
