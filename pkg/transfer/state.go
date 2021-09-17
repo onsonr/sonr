@@ -1,9 +1,8 @@
 package transfer
 
 import (
-	"fmt"
-
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/tools/state"
 )
 
@@ -42,23 +41,51 @@ const (
 	TransferFail    state.EventType = "TransferFail"
 )
 
-type TransferInviteContext struct {
-	Direction TransferDirection
-	Invite    *InviteRequest
+type TransferSessionContext struct {
 	To        peer.ID
 	From      peer.ID
+	Direction TransferDirection
 	Decision  bool
-}
-
-type InviteTransferAction struct{}
-
-func (a *InviteTransferAction) Execute(eventCtx state.EventContext) state.EventType {
-	invite := eventCtx.(*TransferInviteContext)
-	fmt.Println(invite.To.String())
-	return InviteShared
+	Invite    *InviteRequest
+	Transfer  *common.Transfer
+	LastEvent state.EventType
 }
 
 // initStateMachine initializes the state machine
 func (p *TransferProtocol) initStateMachine() {
-
+	p.state = state.StateMachine{
+		States: state.States{
+			state.Default: state.State{
+				Events: state.Events{
+					InviteReceived: Pending,
+					InviteFailed:   Available,
+					InviteShared:   Pending,
+				},
+			},
+			Available: state.State{
+				Action: &TransferInviteAction{},
+				Events: state.Events{
+					InviteReceived: Pending,
+					InviteFailed:   Available,
+					InviteShared:   Pending,
+				},
+			},
+			Pending: state.State{
+				Action: &TransferPendingAction{},
+				Events: state.Events{
+					PeerAccepted:   InProgress,
+					PeerRejected:   Available,
+					DecisionAccept: InProgress,
+					DecisionReject: Available,
+				},
+			},
+			InProgress: state.State{
+				Action: &TransferInProgressAction{},
+				Events: state.Events{
+					TransferSuccess: Available,
+					TransferFail:    Available,
+				},
+			},
+		},
+	}
 }

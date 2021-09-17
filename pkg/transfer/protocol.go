@@ -2,7 +2,6 @@ package transfer
 
 import (
 	"container/list"
-	"context"
 	"errors"
 	"io/ioutil"
 	"log"
@@ -12,10 +11,12 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/libp2p/go-msgio"
-	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/tools/emitter"
+	"github.com/sonr-io/core/tools/logger"
+	"github.com/sonr-io/core/tools/state"
+	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -41,23 +42,30 @@ type RequestEntry struct {
 
 // TransferProtocol type
 type TransferProtocol struct {
-	host         *host.SHost               // local host
-	requestQueue *list.List                // Queue of Requests
-	requests     map[string]*InviteRequest // used to access request data from response
-	emitter      *emitter.Emitter          // Handle to signal when done
+	host         *host.SHost                       // local host
+	requestQueue *list.List                        // Queue of Requests
+	requests     map[string]TransferSessionContext // used to access request data from response
+	emitter      *emitter.Emitter                  // Handle to signal when done
+	state        state.StateMachine                // State machine for the transfer protocol
 }
 
 // NewProtocol creates a new TransferProtocol
 func NewProtocol(host *host.SHost, em *emitter.Emitter) *TransferProtocol {
+	// create a new transfer protocol
 	invProtocol := &TransferProtocol{
 		host:         host,
-		requests:     make(map[string]*InviteRequest),
+		requests:     make(map[string]TransferSessionContext),
 		emitter:      em,
 		requestQueue: list.New(),
 	}
+
+	// Setup Stream Handlers
 	host.SetStreamHandler(RequestPID, invProtocol.onInviteRequest)
 	host.SetStreamHandler(ResponsePID, invProtocol.onInviteResponse)
 	host.SetStreamHandler(SessionPID, invProtocol.onIncomingTransfer)
+
+	// Initialize the state machine
+	invProtocol.initStateMachine()
 	return invProtocol
 }
 
@@ -92,7 +100,17 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 		fromId:  s.Conn().RemotePeer(),
 	}
 	p.requestQueue.PushBack(entry)
-	p.requests[s.Conn().RemotePeer().String()] = req
+
+	// store ref request so response handler has access to it
+	transCtx := TransferSessionContext{
+		To:       s.Conn().RemotePeer(),
+		From:     p.host.ID(),
+		Invite:   req,
+		Transfer: req.GetTransfer(),
+	}
+
+	// store request data into Context
+	p.requests[s.Conn().RemotePeer().String()] = transCtx
 	resp := &InviteResponse{Metadata: p.host.NewMetadata()}
 
 	// sign the data
@@ -141,7 +159,10 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 	// locate request data and remove it if found
 	req, ok := p.requests[s.Conn().RemotePeer().String()]
 	if ok && resp.Success {
-		p.Transfer(s.Conn().RemotePeer(), req.GetTransfer())
+		err := p.state.SendEvent(PeerAccepted, req)
+		if err != nil {
+			logger.Error("Failed to handle State Event: ", zap.Error(err))
+		}
 		delete(p.requests, s.Conn().RemotePeer().String())
 	} else {
 		log.Println("Failed to locate request data boject for response")
@@ -158,7 +179,7 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 	// Concurrent Function
 	go func(rs msgio.ReadCloser) {
 		// Read All Files
-		for _, m := range req.GetTransfer().GetItems() {
+		for _, m := range req.Invite.GetTransfer().GetItems() {
 			wg.Add(1)
 			r := newReader(m, p.emitter)
 			f, err := device.KCConfig.Create(m.GetFile().Name)
@@ -201,7 +222,15 @@ func (p *TransferProtocol) Invite(id peer.ID, req *InviteRequest) error {
 	}
 
 	// store ref request so response handler has access to it
-	p.requests[id.String()] = req
+	transCtx := TransferSessionContext{
+		To:       id,
+		From:     p.host.ID(),
+		Invite:   req,
+		Transfer: req.GetTransfer(),
+	}
+
+	// store the request in the map
+	p.requests[id.String()] = transCtx
 	return nil
 }
 
@@ -225,33 +254,5 @@ func (p *TransferProtocol) Respond(resp *InviteResponse) error {
 	if err != nil {
 		return err
 	}
-	return nil
-}
-
-func (p *TransferProtocol) Transfer(id peer.ID, transfer *common.Transfer) error {
-	// Create a new stream
-	stream, err := p.host.NewStream(context.Background(), id, SessionPID)
-	if err != nil {
-		log.Println(err)
-		return err
-	}
-
-	wg := sync.WaitGroup{}
-
-	// Concurrent Function
-	go func(ws msgio.WriteCloser) {
-		// Write All Files
-		for _, m := range transfer.Items {
-			wg.Add(1)
-			w := newWriter(m, p.emitter)
-			err := w.WriteTo(ws)
-			if err != nil {
-				p.emitter.Emit("Error", err)
-			}
-			wg.Done()
-		}
-		p.emitter.Emit(Event_COMPLETED)
-	}(msgio.NewWriter(stream))
-	wg.Wait()
 	return nil
 }
