@@ -202,7 +202,7 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 	}(msgio.NewReader(s))
 }
 
-func (p *TransferProtocol) Invite(id peer.ID, req *InviteRequest) error {
+func (p *TransferProtocol) Request(id peer.ID, req *InviteRequest) error {
 	// Check if Metadata is valid
 	if req.Metadata == nil {
 		req.Metadata = p.host.NewMetadata()

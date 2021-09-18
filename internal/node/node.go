@@ -157,7 +157,7 @@ func (n *Node) Share(peer *common.Peer) error {
 	}
 
 	// Invite peer
-	err = n.TransferProtocol.Invite(id, req)
+	err = n.TransferProtocol.Request(id, req)
 	if err != nil {
 		logger.Error("Failed to invite peer", zap.Error(err))
 		n.Emit(Event_STATUS, err)
