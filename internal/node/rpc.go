@@ -15,7 +15,7 @@ import (
 	grpc "google.golang.org/grpc"
 )
 
-const RPC_SERVER_PORT = 60214
+const RPC_SERVER_PORT = 52006
 
 type NodeRPCService struct {
 	NodeServiceServer
