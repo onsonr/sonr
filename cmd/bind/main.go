@@ -49,7 +49,11 @@ func Start(reqBytes []byte) {
 		}
 
 		// Create Node
-		n := node.NewNode(ctx, host, req.GetLocation())
+		n := node.NewNode(ctx, host, req.GetLocation(), req.GetProfile())
+		err = n.Edit(req.GetProfile())
+		if err != nil {
+			logger.Panic("Failed to update Profile for Node", zap.Error(err))
+		}
 
 		// Create RPC Service
 		service, err := node.NewRPCService(ctx, n)

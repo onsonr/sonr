@@ -49,13 +49,14 @@ type Node struct {
 }
 
 // NewNode Creates a node with its implemented protocols
-func NewNode(ctx context.Context, host *host.SHost, loc *common.Location) *Node {
+func NewNode(ctx context.Context, host *host.SHost, loc *common.Location, profile *common.Profile) *Node {
 	// Initialize Node
 	node := &Node{
 		Emitter: emitter.New(2048),
 		SHost:   host,
 		ctx:     ctx,
 		queue:   list.New(),
+		profile: profile,
 	}
 
 	// Create Transfer Protocol
@@ -70,6 +71,13 @@ func NewNode(ctx context.Context, host *host.SHost, loc *common.Location) *Node 
 	}
 	node.Emit(Event_STATUS, true, "Exchange Protocol Set")
 	node.ExchangeProtocol = exch
+
+	// Push Update to Exchange
+	err = node.ExchangeProtocol.Update(node.Peer())
+	if err != nil {
+		logger.Error("Failed to update Exchange", zap.Error(err))
+		return node
+	}
 	return node
 }
 
