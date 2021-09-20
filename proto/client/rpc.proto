@@ -35,6 +35,9 @@ service NodeService {
   // Returns a stream of ExchangeEvents for Join
   rpc OnLocalJoin(Empty) returns (stream sonr.core.ExchangeEvent) {}
 
+  // Returns a stream of ExchangeEvents for Update
+  rpc OnLocalUpdate(Empty) returns (stream sonr.core.ExchangeEvent) {}
+
   // Returns a stream of ExchangeEvents for Exit
   rpc OnLocalExit(Empty) returns (stream sonr.core.ExchangeEvent) {}
 

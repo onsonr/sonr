@@ -244,7 +244,7 @@ func (n *NodeRPCService) OnLocalJoin(e *Empty, stream NodeService_OnLocalJoinSer
 }
 
 // OnLocalJoin method sends a join event to the client.
-func (n *NodeRPCService) OnLocalUpdate(e *Empty, stream NodeService_OnLocalJoinServer) error {
+func (n *NodeRPCService) OnLocalUpdate(e *Empty, stream NodeService_OnLocalUpdateServer) error {
 	for {
 		select {
 		case m := <-n.exchangeEvents:
