@@ -2,7 +2,6 @@ package host
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
@@ -25,7 +24,7 @@ func (n *SHost) AuthenticateMessage(message proto.Message, data *common.Metadata
 	// marshall data without the signature to protobufs3 binary format
 	bin, err := proto.Marshal(message)
 	if err != nil {
-		log.Println(err, "failed to marshal pb message")
+		logger.Error("Failed to marshal Protobuf Message.", zap.Error(err))
 		return false
 	}
 
@@ -35,7 +34,7 @@ func (n *SHost) AuthenticateMessage(message proto.Message, data *common.Metadata
 	// restore peer id binary format from base58 encoded node id data
 	peerId, err := peer.Decode(data.NodeId)
 	if err != nil {
-		log.Println(err, "Failed to decode node id from base58")
+		logger.Error("Failed to decode node id from base58.", zap.Error(err))
 		return false
 	}
 
@@ -63,7 +62,7 @@ func (n *SHost) SignData(data []byte) ([]byte, error) {
 func (n *SHost) VerifyData(data []byte, signature []byte, peerId peer.ID, pubKeyData []byte) bool {
 	key, err := crypto.UnmarshalPublicKey(pubKeyData)
 	if err != nil {
-		log.Println(err, "Failed to extract key from message key data")
+		logger.Error("Failed to extract key from message key data", zap.Error(err))
 		return false
 	}
 
@@ -71,19 +70,19 @@ func (n *SHost) VerifyData(data []byte, signature []byte, peerId peer.ID, pubKey
 	idFromKey, err := peer.IDFromPublicKey(key)
 
 	if err != nil {
-		log.Println(err, "Failed to extract peer id from public key")
+		logger.Error("Failed to extract peer id from public key", zap.Error(err))
 		return false
 	}
 
 	// verify that message author node id matches the provided node public key
 	if idFromKey != peerId {
-		log.Println(err, "Node id and provided public key mismatch")
+		logger.Error("Node id and provided public key mismatch", zap.Error(err))
 		return false
 	}
 
 	res, err := key.Verify(data, signature)
 	if err != nil {
-		log.Println(err, "Error authenticating data")
+		logger.Error("Error authenticating data", zap.Error(err))
 		return false
 	}
 
@@ -94,7 +93,7 @@ func (n *SHost) VerifyData(data []byte, signature []byte, peerId peer.ID, pubKey
 func (n *SHost) NewMetadata() *common.Metadata {
 	nodePubKey, err := n.privKey.GetPublic().Raw()
 	if err != nil {
-		log.Println(err, "Failed to extract public key")
+		logger.Error("Failed to Extract Public Key", zap.Error(err))
 		return nil
 	}
 

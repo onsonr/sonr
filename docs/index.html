@@ -297,6 +297,14 @@
             <ul>
               
                 <li>
+                  <a href="#sonr.core.Environment"><span class="badge">M</span>Environment</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.core.Environment.VariablesEntry"><span class="badge">M</span>Environment.VariablesEntry</a>
+                </li>
+              
+                <li>
                   <a href="#sonr.core.Location"><span class="badge">M</span>Location</a>
                 </li>
               
@@ -331,6 +339,10 @@
               
                 <li>
                   <a href="#sonr.core.Connection"><span class="badge">E</span>Connection</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.core.Environment.Type"><span class="badge">E</span>Environment.Type</a>
                 </li>
               
                 <li>
@@ -743,6 +755,13 @@
                   <td><a href="#sonr.node.InitializeRequest.DeviceOptions">InitializeRequest.DeviceOptions</a></td>
                   <td></td>
                   <td><p>File System Config </p></td>
+                </tr>
+              
+                <tr>
+                  <td>environment</td>
+                  <td><a href="#sonr.core.Environment">sonr.core.Environment</a></td>
+                  <td></td>
+                  <td><p>Environment Config </p></td>
                 </tr>
               
             </tbody>
@@ -1592,6 +1611,68 @@ Returns a stream of StatusEvents</p></td>
       <p></p>
 
       
+        <h3 id="sonr.core.Environment">Environment</h3>
+        <p>Environment Configuration</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>type</td>
+                  <td><a href="#sonr.core.Environment.Type">Environment.Type</a></td>
+                  <td></td>
+                  <td><p>Environment Type </p></td>
+                </tr>
+              
+                <tr>
+                  <td>variables</td>
+                  <td><a href="#sonr.core.Environment.VariablesEntry">Environment.VariablesEntry</a></td>
+                  <td>repeated</td>
+                  <td><p>Environment Variables </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.core.Environment.VariablesEntry">Environment.VariablesEntry</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>key</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="sonr.core.Location">Location</h3>
         <p>Location from GeoIP and OLC information</p>
 
@@ -2048,6 +2129,29 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                 <td>ETHERNET</td>
                 <td>3</td>
                 <td><p>Ethernet Connection</p></td>
+              </tr>
+            
+          </tbody>
+        </table>
+      
+        <h3 id="sonr.core.Environment.Type">Environment.Type</h3>
+        <p>Environment Type</p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>DEVELOPMENT</td>
+                <td>0</td>
+                <td><p>Development Environment</p></td>
+              </tr>
+            
+              <tr>
+                <td>PRODUCTION</td>
+                <td>1</td>
+                <td><p>Production Environment</p></td>
               </tr>
             
           </tbody>

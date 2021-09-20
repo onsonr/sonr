@@ -11,6 +11,18 @@ enum Connection {
   ETHERNET = 3; // Ethernet Connection
 }
 
+// Environment Configuration
+message Environment {
+  Type type = 1;                     // Environment Type
+  map<string, string> variables = 2; // Environment Variables
+
+  // Environment Type
+  enum Type {
+    DEVELOPMENT = 0; // Development Environment
+    PRODUCTION = 1;  // Production Environment
+  }
+}
+
 // Location from GeoIP and OLC information
 message Location {
   // Location Latitude

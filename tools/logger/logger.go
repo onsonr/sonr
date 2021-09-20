@@ -14,7 +14,7 @@ func Init(isDevelopment bool) {
 
 	// Create the logger
 	if isDev {
-		log, _ = zap.NewDevelopment()
+		log, _ = zap.NewDevelopment(zap.AddCaller(), zap.AddStacktrace(zap.ErrorLevel))
 	} else {
 		log, _ = zap.NewProduction()
 	}

@@ -4,7 +4,6 @@ import (
 	"container/list"
 	"errors"
 	"io/ioutil"
-	"log"
 	sync "sync"
 
 	"github.com/libp2p/go-libp2p-core/network"
@@ -76,7 +75,7 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 	buf, err := ioutil.ReadAll(s)
 	if err != nil {
 		s.Reset()
-		log.Println(err)
+		logger.Error("Failed to Read Invite Request buffer.", zap.Error(err))
 		return
 	}
 	s.Close()
@@ -84,13 +83,13 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 	// unmarshal it
 	err = proto.Unmarshal(buf, req)
 	if err != nil {
-		log.Println(err)
+		logger.Error("Failed to Unmarshal Invite REQUEST buffer.", zap.Error(err))
 		return
 	}
 
 	valid := p.host.AuthenticateMessage(req, req.Metadata)
 	if !valid {
-		log.Println("Failed to authenticate message")
+		logger.Error("Failed to Authorize Invite REQUEST.", zap.Error(err))
 		return
 	}
 
@@ -116,7 +115,7 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 	// sign the data
 	signature, err := p.host.SignProtoMessage(resp)
 	if err != nil {
-		log.Println("failed to sign response")
+		logger.Error("Failed to sign Proto Message.", zap.Error(err))
 		return
 	}
 
@@ -126,7 +125,7 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 	// send the response
 	err = p.host.SendProtoMessage(s.Conn().RemotePeer(), ResponsePID, resp)
 	if err != nil {
-		log.Println("failed to send response")
+		logger.Error("Failed to send InviteResponse.", zap.Error(err))
 		return
 	}
 	p.emitter.Emit(Event_INVITED, req)
@@ -138,7 +137,7 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 	buf, err := ioutil.ReadAll(s)
 	if err != nil {
 		s.Reset()
-		log.Println(err)
+		logger.Error("Failed to Read Invite RESPONSE buffer.", zap.Error(err))
 		return
 	}
 	s.Close()
@@ -146,13 +145,13 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 	// unmarshal it
 	err = proto.Unmarshal(buf, resp)
 	if err != nil {
-		log.Println(err)
+		logger.Error("Failed to Unmarshal Invite RESPONSE buffer.", zap.Error(err))
 		return
 	}
 
 	valid := p.host.AuthenticateMessage(resp, resp.Metadata)
 	if !valid {
-		log.Println("Failed to authenticate message")
+		logger.Error("Failed to Authenticate Invite RESPONSE.", zap.Error(err))
 		return
 	}
 
@@ -165,7 +164,7 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 		}
 		delete(p.requests, s.Conn().RemotePeer().String())
 	} else {
-		log.Println("Failed to locate request data boject for response")
+		logger.Error("Failed to locate request data object for RESPONSE.", zap.Error(err))
 		return
 	}
 	p.emitter.Emit(Event_RESPONDED, resp)

@@ -3,11 +3,12 @@ package transfer
 import (
 	"context"
 	"fmt"
-	"log"
 	sync "sync"
 
 	"github.com/libp2p/go-msgio"
+	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/tools/state"
+	"go.uber.org/zap"
 )
 
 type TransferInviteAction struct {
@@ -47,7 +48,7 @@ func (a *TransferInProgressAction) Execute(eventCtx state.EventContext) state.Ev
 		// Create a new stream
 		stream, err := a.host.NewStream(context.Background(), transferCtx.To, SessionPID)
 		if err != nil {
-			log.Println(err)
+			logger.Error("Failed to Start new Stream", zap.Error(err))
 			return TransferFail
 		}
 
