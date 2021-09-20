@@ -26,14 +26,15 @@ var started bool
 func Start(reqBytes []byte) {
 	// Check if already started
 	if !started {
-		ctx := context.Background()
-		logger.Init(true)
-
 		// Unmarshal request
 		req, fsOpts, err := parseInitializeRequest(reqBytes)
 		if err != nil {
 			logger.Fatal("Failed to Parse InitializeRequest", zap.Error(err))
 		}
+
+		// Initialize logger/context
+		ctx := context.Background()
+		logger.Init(req.GetEnvironment().IsDev())
 
 		// Initialize Device
 		kc, err := device.Init(fsOpts...)

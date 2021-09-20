@@ -73,14 +73,14 @@ type InitializeRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Location       *common.Location                  `protobuf:"bytes,1,opt,name=location,proto3" json:"location,omitempty"`                                // Current Runtime Location
-	Profile        *common.Profile                   `protobuf:"bytes,2,opt,name=profile,proto3" json:"profile,omitempty"`                                  // Users Contact Card
-	Connection     common.Connection                 `protobuf:"varint,3,opt,name=connection,proto3,enum=sonr.core.Connection" json:"connection,omitempty"` // Internet Connection Type
-	HostOptions    *InitializeRequest_HostOptions    `protobuf:"bytes,4,opt,name=hostOptions,proto3" json:"hostOptions,omitempty"`                          // Libp2p Host config
-	ServiceOptions *InitializeRequest_ServiceOptions `protobuf:"bytes,5,opt,name=serviceOptions,proto3" json:"serviceOptions,omitempty"`                    // Service Config
-	AccountOptions *InitializeRequest_AccountOptions `protobuf:"bytes,6,opt,name=accountOptions,proto3" json:"accountOptions,omitempty"`                    // Account Config
-	DeviceOptions  *InitializeRequest_DeviceOptions  `protobuf:"bytes,7,opt,name=deviceOptions,proto3" json:"deviceOptions,omitempty"`                      // File System Config
-	Environment    *common.Environment               `protobuf:"bytes,8,opt,name=environment,proto3" json:"environment,omitempty"`                          // Environment Config
+	Location       *common.Location                  `protobuf:"bytes,1,opt,name=location,proto3" json:"location,omitempty"`                                   // Current Runtime Location
+	Profile        *common.Profile                   `protobuf:"bytes,2,opt,name=profile,proto3" json:"profile,omitempty"`                                     // Users Contact Card
+	Connection     common.Connection                 `protobuf:"varint,3,opt,name=connection,proto3,enum=sonr.core.Connection" json:"connection,omitempty"`    // Internet Connection Type
+	HostOptions    *InitializeRequest_HostOptions    `protobuf:"bytes,4,opt,name=hostOptions,proto3" json:"hostOptions,omitempty"`                             // Libp2p Host config
+	ServiceOptions *InitializeRequest_ServiceOptions `protobuf:"bytes,5,opt,name=serviceOptions,proto3" json:"serviceOptions,omitempty"`                       // Service Config
+	AccountOptions *InitializeRequest_AccountOptions `protobuf:"bytes,6,opt,name=accountOptions,proto3" json:"accountOptions,omitempty"`                       // Account Config
+	DeviceOptions  *InitializeRequest_DeviceOptions  `protobuf:"bytes,7,opt,name=deviceOptions,proto3" json:"deviceOptions,omitempty"`                         // File System Config
+	Environment    common.Environment                `protobuf:"varint,8,opt,name=environment,proto3,enum=sonr.core.Environment" json:"environment,omitempty"` // Environment Config
 }
 
 func (x *InitializeRequest) Reset() {
@@ -164,11 +164,11 @@ func (x *InitializeRequest) GetDeviceOptions() *InitializeRequest_DeviceOptions 
 	return nil
 }
 
-func (x *InitializeRequest) GetEnvironment() *common.Environment {
+func (x *InitializeRequest) GetEnvironment() common.Environment {
 	if x != nil {
 		return x.Environment
 	}
-	return nil
+	return common.Environment(0)
 }
 
 // InitializeResponse is Response from Initialize Request
@@ -1450,7 +1450,7 @@ var file_proto_client_api_proto_rawDesc = []byte{
 	0x65, 0x73, 0x74, 0x2e, 0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e,
 	0x73, 0x52, 0x0d, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73,
 	0x12, 0x38, 0x0a, 0x0b, 0x65, 0x6e, 0x76, 0x69, 0x72, 0x6f, 0x6e, 0x6d, 0x65, 0x6e, 0x74, 0x18,
-	0x08, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x16, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x63, 0x6f, 0x72,
+	0x08, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x16, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x63, 0x6f, 0x72,
 	0x65, 0x2e, 0x45, 0x6e, 0x76, 0x69, 0x72, 0x6f, 0x6e, 0x6d, 0x65, 0x6e, 0x74, 0x52, 0x0b, 0x65,
 	0x6e, 0x76, 0x69, 0x72, 0x6f, 0x6e, 0x6d, 0x65, 0x6e, 0x74, 0x1a, 0x42, 0x0a, 0x0e, 0x41, 0x63,
 	0x63, 0x6f, 0x75, 0x6e, 0x74, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x14, 0x0a, 0x05,
@@ -1623,7 +1623,7 @@ var file_proto_client_api_proto_goTypes = []interface{}{
 	(*common.Location)(nil),                  // 22: sonr.core.Location
 	(*common.Profile)(nil),                   // 23: sonr.core.Profile
 	(common.Connection)(0),                   // 24: sonr.core.Connection
-	(*common.Environment)(nil),               // 25: sonr.core.Environment
+	(common.Environment)(0),                  // 25: sonr.core.Environment
 	(*common.Peer)(nil),                      // 26: sonr.core.Peer
 }
 var file_proto_client_api_proto_depIdxs = []int32{
