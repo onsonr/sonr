@@ -21,8 +21,9 @@ import (
 
 // Transfer Emission Events
 const (
-	Event_PEER_EXIT = "exchange-peer-exit"
-	Event_PEER_JOIN = "exchange-peer-join"
+	Event_PEER_EXIT   = "exchange-peer-exit"
+	Event_PEER_UPDATE = "exchange-peer-update"
+	Event_PEER_JOIN   = "exchange-peer-join"
 )
 
 // TransferProtocol type
@@ -77,6 +78,10 @@ func NewProtocol(ctx context.Context, host *host.SHost, loc *common.Location, em
 		exchangeEvents:   make(chan *common.ExchangeEvent),
 		olc:              olc,
 	}
+
+	// Handle Background Processes, return Protocol
+	go exchProtocol.HandleEvents()
+	go exchProtocol.HandleMessages()
 	return exchProtocol, nil
 }
 
@@ -162,17 +167,53 @@ func (p *ExchangeProtocol) HandleEvents() {
 			// Get next event
 			event, err := p.eventHandler.NextPeerEvent(p.ctx)
 			if err != nil {
-
 				p.eventHandler.Cancel()
 				return
 			}
 
 			// Check Event and Validate not User
 			if p.isEventJoin(event) {
+				// Handle Join Event
+
 				continue
 			} else if p.isEventExit(event) {
 				continue
 			}
+			state.GetState().NeedsWait()
+		}
+	}()
+}
+
+// HandleMessages method listens to Pubsub Messages for room
+func (p *ExchangeProtocol) HandleMessages() {
+	go func() {
+		// Loop Messages
+		for {
+			// Get next message
+			msg, err := p.subscription.Next(p.ctx)
+			if err != nil {
+				p.subscription.Cancel()
+				return
+			}
+
+			// Check Message and Validate not User
+			if msg.ReceivedFrom == p.host.ID() {
+				continue
+			} else {
+				// Define Event
+				event := &UpdateEvent{}
+
+				// Unmarshal Message
+				err = proto.Unmarshal(msg.Data, event)
+				if err != nil {
+					logger.Error("Failed to Unmarshal Message", zap.Error(err))
+					continue
+				}
+
+				// Emit Event
+				p.emitter.Emit(Event_PEER_UPDATE, event)
+			}
+
 			state.GetState().NeedsWait()
 		}
 	}()

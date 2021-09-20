@@ -33,9 +33,10 @@ message ExchangeEvent {
 
   // Enum for ExchangeEvent type
   enum Type {
-    NONE = 0; // No Type - Invalid
-    JOIN = 1; // Joined Room
-    EXIT = 2; // Exited Room
+    NONE = 0;   // No Type - Invalid
+    JOIN = 1;   // Joined Room
+    UPDATE = 2; // Update Message
+    EXIT = 3;   // Exited Room
   }
 }
 

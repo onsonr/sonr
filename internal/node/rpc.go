@@ -7,6 +7,7 @@ import (
 
 	common "github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
+	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/transfer"
 	"github.com/sonr-io/core/tools/emitter"
 	"github.com/sonr-io/core/tools/logger"
@@ -86,6 +87,16 @@ func NewRPCService(ctx context.Context, n *Node) (*NodeRPCService, error) {
 			Transfer: inv.GetTransfer(),
 		}
 		nrc.inviteEvents <- invEvent
+	})
+
+	// Handle Node Events
+	nrc.Node.On(exchange.Event_PEER_UPDATE, func(e *emitter.Event) {
+		updEvent := e.Args[0].(*exchange.UpdateEvent)
+		exchEvent := &common.ExchangeEvent{
+			Peer: updEvent.GetPeer(),
+			Type: common.ExchangeEvent_UPDATE,
+		}
+		nrc.exchangeEvents <- exchEvent
 	})
 
 	// Return RPC Service
@@ -222,6 +233,23 @@ func (n *NodeRPCService) OnLocalJoin(e *Empty, stream NodeService_OnLocalJoinSer
 		case m := <-n.exchangeEvents:
 			if m != nil {
 				if m.GetType() == common.ExchangeEvent_JOIN {
+					stream.Send(m)
+				}
+			}
+		case <-n.ctx.Done():
+			return nil
+		}
+		state.GetState().NeedsWait()
+	}
+}
+
+// OnLocalJoin method sends a join event to the client.
+func (n *NodeRPCService) OnLocalUpdate(e *Empty, stream NodeService_OnLocalJoinServer) error {
+	for {
+		select {
+		case m := <-n.exchangeEvents:
+			if m != nil {
+				if m.GetType() == common.ExchangeEvent_UPDATE {
 					stream.Send(m)
 				}
 			}
