@@ -43,8 +43,7 @@ func (a *TransferInProgressAction) Execute(eventCtx state.EventContext) state.Ev
 	transfer := transferCtx.Transfer
 
 	// Check Direction
-	if transferCtx.Direction == DirectionInbound {
-		// Create Session
+	if transferCtx.Direction == DirectionOutbound {
 		// Create a new stream
 		stream, err := a.host.NewStream(context.Background(), transferCtx.To, SessionPID)
 		if err != nil {
@@ -70,7 +69,7 @@ func (a *TransferInProgressAction) Execute(eventCtx state.EventContext) state.Ev
 		wg.Wait()
 		return TransferSuccess
 	} else {
-
+		
 		return TransferSuccess
 	}
 

@@ -76,24 +76,22 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 		r := msg.NewReader(s)
 		buf, err := r.ReadMsg()
 		if err != nil {
-			s.Reset()
 			logger.Error("Failed to Read Invite Request buffer.", zap.Error(err))
-			return
+			continue
 		}
-		s.Close()
 
 		// unmarshal it
 		req := &InviteRequest{}
 		err = proto.Unmarshal(buf, req)
 		if err != nil {
 			logger.Error("Failed to Unmarshal Invite REQUEST buffer.", zap.Error(err))
-			return
+			continue
 		}
 
 		valid := p.host.AuthenticateMessage(req, req.Metadata)
 		if !valid {
 			logger.Error("Failed to Authorize Invite REQUEST.", zap.Error(err))
-			return
+			continue
 		}
 
 		// generate response message
@@ -119,7 +117,7 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 		signature, err := p.host.SignMessage(resp)
 		if err != nil {
 			logger.Error("Failed to sign Proto Message.", zap.Error(err))
-			return
+			continue
 		}
 
 		// add the signature to the message
@@ -129,7 +127,7 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 		err = p.host.SendMessage(s.Conn().RemotePeer(), ResponsePID, resp)
 		if err != nil {
 			logger.Error("Failed to send InviteResponse.", zap.Error(err))
-			return
+			continue
 		}
 		p.emitter.Emit(Event_INVITED, req)
 	}
@@ -141,9 +139,8 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 		r := msg.NewReader(s)
 		buf, err := r.ReadMsg()
 		if err != nil {
-			s.Reset()
 			logger.Error("Failed to Read Invite RESPONSE buffer.", zap.Error(err))
-			return
+			continue
 		}
 		s.Close()
 
@@ -152,13 +149,13 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 		err = proto.Unmarshal(buf, resp)
 		if err != nil {
 			logger.Error("Failed to Unmarshal Invite RESPONSE buffer.", zap.Error(err))
-			return
+			continue
 		}
 
 		valid := p.host.AuthenticateMessage(resp, resp.Metadata)
 		if !valid {
 			logger.Error("Failed to Authenticate Invite RESPONSE.", zap.Error(err))
-			return
+			continue
 		}
 
 		// locate request data and remove it if found
@@ -181,7 +178,7 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 				err := p.state.SendEvent(PeerRejected, req)
 				if err != nil {
 					logger.Error("Failed to handle State Event: ", zap.Error(err))
-					return
+					continue
 				}
 				delete(p.requests, s.Conn().RemotePeer().String())
 			}
