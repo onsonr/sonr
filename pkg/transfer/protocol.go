@@ -113,7 +113,7 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 
 		// store request data into Context
 		p.requests[s.Conn().RemotePeer().String()] = transCtx
-		resp := &InviteResponse{Metadata: p.host.NewMetadata()}
+		resp := &InviteResponse{Metadata: p.host.NewMetadata(), Success: true}
 
 		// sign the data
 		signature, err := p.host.SignMessage(resp)
@@ -170,8 +170,21 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 			}
 			delete(p.requests, s.Conn().RemotePeer().String())
 		} else {
-			logger.Error("Failed to locate request data object for RESPONSE.", zap.Error(err))
-			return
+			// Check if the request is not in the queue
+			if !ok {
+				logger.Error("Failed to locate request data object for RESPONSE.", zap.Error(err))
+				continue
+			}
+
+			// Check if the request was denied
+			if !resp.Success {
+				err := p.state.SendEvent(PeerRejected, req)
+				if err != nil {
+					logger.Error("Failed to handle State Event: ", zap.Error(err))
+					return
+				}
+				delete(p.requests, s.Conn().RemotePeer().String())
+			}
 		}
 		p.emitter.Emit(Event_RESPONDED, resp)
 	}

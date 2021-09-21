@@ -5,6 +5,7 @@ go 1.16
 require (
 	github.com/PuerkitoBio/goquery v1.7.1
 	github.com/denisbrodbeck/machineid v1.0.1
+	github.com/disintegration/imaging v1.6.2 // indirect
 	github.com/gabriel-vasile/mimetype v1.3.1
 	github.com/google/open-location-code/go v0.0.0-20210504205230-1796878d947c
 	github.com/klauspost/compress v1.13.5
@@ -21,6 +22,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/textileio/textile/v2 v2.6.11
 	go.uber.org/zap v1.19.0
+	golang.org/x/image v0.0.0-20210628002857-a66eb6448b8d // indirect
 	golang.org/x/net v0.0.0-20210907225631-ff17edfbf26d
 	golang.org/x/sys v0.0.0-20210917161153-d61c044b1678 // indirect
 	golang.org/x/tools v0.1.6 // indirect

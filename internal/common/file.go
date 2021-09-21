@@ -45,55 +45,6 @@ func (f *FileItem) ToTransferItem() *Transfer_Item {
 	}
 }
 
-// // NewThumbnail creates a new thumbnail with the given path and size
-// func NewThumbnail(width, height int, path string) (*Thumbnail, error) {
-// 	// decoder wants []byte, so read the whole file into a buffer
-// 	inputBuf, err := ioutil.ReadFile(path)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	decoder, err := lilliput.NewDecoder(inputBuf)
-// 	// this error reflects very basic checks,
-// 	// mostly just for the magic bytes of the file to match known image formats
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	defer decoder.Close()
-
-// 	header, err := decoder.Header()
-// 	// this error is much more comprehensive and reflects
-// 	// format errors
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	// print some basic info about the image
-// 	fmt.Printf("file type: %s\n", decoder.Description())
-// 	fmt.Printf("%dpx x %dpx\n", header.Width(), header.Height())
-
-// 	ops := lilliput.NewImageOps(8192)
-// 	defer ops.Close()
-
-// 	// create a buffer to store the output image, 50MB in this case
-// 	outputImg := make([]byte, 50*1024*1024)
-// 	opts := &lilliput.ImageOptions{
-// 		Width:                width,
-// 		Height:               height,
-// 		NormalizeOrientation: true,
-// 	}
-
-// 	// resize and transcode image
-// 	buf, err := ops.Transform(decoder, opts, outputImg)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	return &Thumbnail{
-// 		Buffer: buf,
-// 	}, nil
-// }
-
 // NewTransferFileItem creates a new transfer file item
 func NewTransferFileItem(path string) (*Transfer_Item, error) {
 	// Extracts File Infrom from path
@@ -120,15 +71,19 @@ func NewTransferFileItem(path string) (*Transfer_Item, error) {
 		},
 	}
 
-	// // Check if File is Image
+	// // // Check if File is Image
 	// if fileItem.Mime.IsImage() {
 	// 	// Create Thumbnail
-	// 	thumbnail, err := NewThumbnail(100, 100, path)
+	// 	name := filepath.Base(path)
+	// 	dir := filepath.Dir(path)
+	// 	outPath := filepath.Join(dir, name+"_thumb")
+	// 	err := thumbnail.NewImage(path, outPath)
 	// 	if err != nil {
 	// 		return nil, err
-	// 	}
-	// 	if thumbnail != nil {
-	// 		fileItem.Thumb = thumbnail
+	// 	} else {
+	// 		fileItem.Thumb = &Thumbnail{
+	// 			Path: outPath,
+	// 		}
 	// 	}
 	// }
 
