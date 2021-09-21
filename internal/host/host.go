@@ -41,13 +41,16 @@ type SNRHost struct {
 	privKey      crypto.PrivKey
 
 	// Libp2p
-	id   peer.ID
-	disc *dsc.RoutingDiscovery
-	kdht *dht.IpfsDHT
-	mdns discovery.Service
-
-	// Rooms
+	id     peer.ID
+	disc   *dsc.RoutingDiscovery
+	kdht   *dht.IpfsDHT
+	mdns   discovery.Service
 	pubsub *psub.PubSub
+
+	// Textile
+	// 	client  *client.Client
+	// 	mail    *local.Mail
+	// 	mailbox *local.Mailbox
 }
 
 // Start Begins Assigning Host Parameters ^
@@ -79,7 +82,7 @@ func NewHost(ctx context.Context, kc device.Keychain, conn common.Connection) (*
 
 			// Set DHT
 			kdhtRef = kdht
-			return kdht, err
+			return kdht, nil
 		}),
 		libp2p.EnableAutoRelay(),
 	)

@@ -45,9 +45,6 @@ func (h *SNRHost) startTextileClient(apiKey string, apiSecret string) error {
 // 	ctxToken context.Context
 
 // 	// Parameters
-// 	apiKeys *data.APIKeys
-// 	device  *data.Device
-// 	host    host.HostNode
 // 	options *data.ConnectionRequest_ServiceOptions
 // 	emitter *emitter.Emitter
 

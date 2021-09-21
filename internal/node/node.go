@@ -76,7 +76,7 @@ func NewNode(ctx context.Context, host *host.SNRHost, loc *common.Location) *Nod
 	node.ExchangeProtocol = exch
 
 	// Set Lobby Protocol
-	lobby, err := lobby.NewProtocol(ctx, host, loc, node.Emitter)
+	lobby, err := lobby.NewProtocol(host, loc, node.Emitter)
 	if err != nil {
 		logger.Error("Failed to start LobbyProtocol", zap.Error(err))
 		return node
