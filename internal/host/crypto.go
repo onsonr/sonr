@@ -14,6 +14,23 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+// NewMetadata generates message data shared between all node's p2p protocols
+func (n *SNRHost) NewMetadata() *common.Metadata {
+	// Marshal Public key into public key data
+	nodePubKey, err := crypto.MarshalPublicKey(n.privKey.GetPublic())
+	if err != nil {
+		logger.Error("Failed to Extract Public Key", zap.Error(err))
+		return nil
+	}
+
+	// Generate new Metadata
+	return &common.Metadata{
+		Timestamp: time.Now().Unix(),
+		PublicKey: nodePubKey,
+		NodeId:    peer.Encode(n.id),
+	}
+}
+
 // AuthenticateMessage Authenticates incoming p2p message
 func (n *SNRHost) AuthenticateMessage(message proto.Message, data *common.Metadata) bool {
 	// store a temp ref to signature and remove it from message data
@@ -43,8 +60,33 @@ func (n *SNRHost) AuthenticateMessage(message proto.Message, data *common.Metada
 	return n.VerifyData(bin, []byte(sign), peerId, data.PublicKey)
 }
 
-// SignProtoMessage signs an outgoing p2p message payload
-func (n *SNRHost) SignProtoMessage(message proto.Message) ([]byte, error) {
+// SendMessage writes a protobuf go data object to a network stream
+func (n *SNRHost) SendMessage(id peer.ID, p protocol.ID, data proto.Message) error {
+	s, err := n.NewStream(context.Background(), id, p)
+	if err != nil {
+		logger.Error("Failed to start stream", zap.Error(err))
+		return err
+	}
+	defer s.Close()
+
+	// marshall data to protobufs3 binary format
+	bin, err := proto.Marshal(data)
+	if err != nil {
+		logger.Error("Failed to marshal pb", zap.Error(err))
+		return err
+	}
+
+	// Create Writer and write data to stream
+	w := msgio.NewWriter(s)
+	if err := w.WriteMsg(bin); err != nil {
+		logger.Error("Failed to write message to stream.", zap.Error(err))
+		return err
+	}
+	return nil
+}
+
+// SignMessage signs an outgoing p2p message payload
+func (n *SNRHost) SignMessage(message proto.Message) ([]byte, error) {
 	data, err := proto.Marshal(message)
 	if err != nil {
 		return nil, err
@@ -68,7 +110,6 @@ func (n *SNRHost) VerifyData(data []byte, signature []byte, peerId peer.ID, pubK
 
 	// extract node id from the provided public key
 	idFromKey, err := peer.IDFromPublicKey(key)
-
 	if err != nil {
 		logger.Error("Failed to extract peer id from public key", zap.Error(err))
 		return false
@@ -87,44 +128,4 @@ func (n *SNRHost) VerifyData(data []byte, signature []byte, peerId peer.ID, pubK
 	}
 
 	return res
-}
-
-// NewMetadata generates message data shared between all node's p2p protocols
-func (n *SNRHost) NewMetadata() *common.Metadata {
-	nodePubKey, err := n.privKey.GetPublic().Raw()
-	if err != nil {
-		logger.Error("Failed to Extract Public Key", zap.Error(err))
-		return nil
-	}
-
-	return &common.Metadata{
-		Timestamp: time.Now().Unix(),
-		PublicKey: nodePubKey,
-		NodeId:    peer.Encode(n.id),
-	}
-}
-
-// SendProtoMessage writes a protobuf go data object to a network stream
-func (n *SNRHost) SendProtoMessage(id peer.ID, p protocol.ID, data proto.Message) error {
-	s, err := n.NewStream(context.Background(), id, p)
-	if err != nil {
-		logger.Error("Failed to start stream", zap.Error(err))
-		return err
-	}
-	defer s.Close()
-
-	// marshall data to protobufs3 binary format
-	bin, err := proto.Marshal(data)
-	if err != nil {
-		logger.Error("Failed to marshal pb", zap.Error(err))
-		return err
-	}
-
-	// Create Writer and write data to stream
-	w := msgio.NewWriter(s)
-	if err := w.WriteMsg(bin); err != nil {
-		logger.Error("Failed to write message to stream.", zap.Error(err))
-		return err
-	}
-	return nil
 }

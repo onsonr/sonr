@@ -116,7 +116,7 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 		resp := &InviteResponse{Metadata: p.host.NewMetadata()}
 
 		// sign the data
-		signature, err := p.host.SignProtoMessage(resp)
+		signature, err := p.host.SignMessage(resp)
 		if err != nil {
 			logger.Error("Failed to sign Proto Message.", zap.Error(err))
 			return
@@ -126,7 +126,7 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 		resp.Metadata.Signature = signature
 
 		// send the response
-		err = p.host.SendProtoMessage(s.Conn().RemotePeer(), ResponsePID, resp)
+		err = p.host.SendMessage(s.Conn().RemotePeer(), ResponsePID, resp)
 		if err != nil {
 			logger.Error("Failed to send InviteResponse.", zap.Error(err))
 			return
@@ -215,14 +215,14 @@ func (p *TransferProtocol) Request(id peer.ID, req *InviteRequest) error {
 	}
 
 	// sign the data
-	signature, err := p.host.SignProtoMessage(req)
+	signature, err := p.host.SignMessage(req)
 	if err != nil {
 		return err
 	}
 
 	// add the signature to the message
 	req.Metadata.Signature = signature
-	err = p.host.SendProtoMessage(id, RequestPID, req)
+	err = p.host.SendMessage(id, RequestPID, req)
 	if err != nil {
 		return err
 	}
@@ -249,14 +249,14 @@ func (p *TransferProtocol) Respond(resp *InviteResponse) error {
 	reqEntry := entry.Value.(*RequestEntry)
 
 	// sign the data
-	signature, err := p.host.SignProtoMessage(resp)
+	signature, err := p.host.SignMessage(resp)
 	if err != nil {
 		return err
 	}
 
 	// add the signature to the message
 	resp.Metadata.Signature = signature
-	err = p.host.SendProtoMessage(reqEntry.fromId, ResponsePID, resp)
+	err = p.host.SendMessage(reqEntry.fromId, ResponsePID, resp)
 	if err != nil {
 		return err
 	}
