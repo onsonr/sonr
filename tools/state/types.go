@@ -22,24 +22,4 @@ const (
 
 	// NoOp represents a no-op event.
 	NoOp EventType = "NoOp"
-
-	// ### - Invite Method Types -
-	// 1. States
-	// UnknownPeer is state for when Peer is not Found
-	UnknownPeer StateType = "UnknownPeer"
-
-	// Pending is state for when Invite Succeeds
-	Pending StateType = "Pending"
-
-	// 2. Events
-	// FindPeer Method Events
-	FailFindPeer    EventType = "FailFindPeer"
-	SucceedFindPeer EventType = "SucceedFindPeer"
-
-	// SendInvite Method Events
-	FailSendInvite    EventType = "FailSendInvite"
-	SucceedSendInvite EventType = "SucceedSendInvite"
-
-	// ### - Respond Method Types -
-
 )

@@ -72,13 +72,18 @@ func NewProtocol(host *host.SNRHost, em *emitter.Emitter) *TransferProtocol {
 // remote peer requests handler
 func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 	for {
-		// get request req
+		// Initialize Stream Data
+		remotePeer := s.Conn().RemotePeer()
 		r := msg.NewReader(s)
+
+		// Read the request
 		buf, err := r.ReadMsg()
 		if err != nil {
+			s.Reset()
 			logger.Error("Failed to Read Invite Request buffer.", zap.Error(err))
 			continue
 		}
+		s.Close()
 
 		// unmarshal it
 		req := &InviteRequest{}
@@ -97,20 +102,20 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 		// generate response message
 		entry := &RequestEntry{
 			request: req,
-			fromId:  s.Conn().RemotePeer(),
+			fromId:  remotePeer,
 		}
 		p.requestQueue.PushBack(entry)
 
 		// store ref request so response handler has access to it
 		transCtx := TransferSessionContext{
-			To:       s.Conn().RemotePeer(),
+			To:       remotePeer,
 			From:     p.host.ID(),
 			Invite:   req,
 			Transfer: req.GetTransfer(),
 		}
 
 		// store request data into Context
-		p.requests[s.Conn().RemotePeer().String()] = transCtx
+		p.requests[remotePeer.String()] = transCtx
 		resp := &InviteResponse{Metadata: p.host.NewMetadata(), Success: true}
 
 		// sign the data
@@ -120,11 +125,9 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 			continue
 		}
 
-		// add the signature to the message
-		resp.Metadata.Signature = signature
-
 		// send the response
-		err = p.host.SendMessage(s.Conn().RemotePeer(), ResponsePID, resp)
+		resp.Metadata.Signature = signature
+		err = p.host.SendMessage(remotePeer, ResponsePID, resp)
 		if err != nil {
 			logger.Error("Failed to send InviteResponse.", zap.Error(err))
 			continue
@@ -136,9 +139,14 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 // remote ping response handler
 func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 	for {
+		// Initialize Stream Data
+		remotePeer := s.Conn().RemotePeer()
 		r := msg.NewReader(s)
+
+		// Read the request
 		buf, err := r.ReadMsg()
 		if err != nil {
+			s.Reset()
 			logger.Error("Failed to Read Invite RESPONSE buffer.", zap.Error(err))
 			continue
 		}
@@ -159,13 +167,13 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 		}
 
 		// locate request data and remove it if found
-		req, ok := p.requests[s.Conn().RemotePeer().String()]
+		req, ok := p.requests[remotePeer.String()]
 		if ok && resp.Success {
 			err := p.state.SendEvent(PeerAccepted, req)
 			if err != nil {
 				logger.Error("Failed to handle State Event: ", zap.Error(err))
 			}
-			delete(p.requests, s.Conn().RemotePeer().String())
+			delete(p.requests, remotePeer.String())
 		} else {
 			// Check if the request is not in the queue
 			if !ok {
@@ -180,7 +188,7 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 					logger.Error("Failed to handle State Event: ", zap.Error(err))
 					continue
 				}
-				delete(p.requests, s.Conn().RemotePeer().String())
+				delete(p.requests, remotePeer.String())
 			}
 		}
 		p.emitter.Emit(Event_RESPONDED, resp)
