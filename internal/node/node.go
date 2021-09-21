@@ -49,14 +49,13 @@ type Node struct {
 }
 
 // NewNode Creates a node with its implemented protocols
-func NewNode(ctx context.Context, host *host.SHost, loc *common.Location, profile *common.Profile) *Node {
+func NewNode(ctx context.Context, host *host.SHost, loc *common.Location) *Node {
 	// Initialize Node
 	node := &Node{
 		Emitter: emitter.New(2048),
 		SHost:   host,
 		ctx:     ctx,
 		queue:   list.New(),
-		profile: profile,
 	}
 
 	// Create Transfer Protocol

@@ -14,7 +14,6 @@ import (
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/tools/emitter"
 	"github.com/sonr-io/core/tools/logger"
-	"github.com/sonr-io/core/tools/state"
 	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )
@@ -80,8 +79,8 @@ func NewProtocol(ctx context.Context, host *host.SHost, loc *common.Location, em
 	}
 
 	// Handle Background Processes, return Protocol
-	go exchProtocol.HandleEvents()
-	go exchProtocol.HandleMessages()
+	// go exchProtocol.HandleEvents()
+	// go exchProtocol.HandleMessages()
 	return exchProtocol, nil
 }
 
@@ -201,7 +200,6 @@ func (p *ExchangeProtocol) HandleEvents() {
 			} else if p.isEventExit(event) {
 				continue
 			}
-			state.GetState().NeedsWait()
 		}
 	}()
 }
@@ -235,8 +233,6 @@ func (p *ExchangeProtocol) HandleMessages() {
 				// Emit Event
 				p.emitter.Emit(Event_PEER_UPDATE, event)
 			}
-
-			state.GetState().NeedsWait()
 		}
 	}()
 }
