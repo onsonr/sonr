@@ -2,7 +2,6 @@ package node
 
 import (
 	common "github.com/sonr-io/core/internal/common"
-	"github.com/sonr-io/core/tools/state"
 )
 
 // OnDecision method sends a decision event to the client.
@@ -16,7 +15,7 @@ func (n *NodeRPCService) OnNodeStatus(e *Empty, stream NodeService_OnNodeStatusS
 		case <-n.ctx.Done():
 			return nil
 		}
-		state.GetState().NeedsWait()
+
 	}
 }
 
@@ -33,7 +32,7 @@ func (n *NodeRPCService) OnLocalJoin(e *Empty, stream NodeService_OnLocalJoinSer
 		case <-n.ctx.Done():
 			return nil
 		}
-		state.GetState().NeedsWait()
+
 	}
 }
 
@@ -50,7 +49,7 @@ func (n *NodeRPCService) OnLocalUpdate(e *Empty, stream NodeService_OnLocalUpdat
 		case <-n.ctx.Done():
 			return nil
 		}
-		state.GetState().NeedsWait()
+
 	}
 }
 
@@ -67,7 +66,7 @@ func (n *NodeRPCService) OnLocalExit(e *Empty, stream NodeService_OnLocalExitSer
 		case <-n.ctx.Done():
 			return nil
 		}
-		state.GetState().NeedsWait()
+
 	}
 }
 
@@ -84,7 +83,7 @@ func (n *NodeRPCService) OnTransferAccepted(e *Empty, stream NodeService_OnTrans
 		case <-n.ctx.Done():
 			return nil
 		}
-		state.GetState().NeedsWait()
+
 	}
 }
 
@@ -101,7 +100,7 @@ func (n *NodeRPCService) OnTransferDeclined(e *Empty, stream NodeService_OnTrans
 		case <-n.ctx.Done():
 			return nil
 		}
-		state.GetState().NeedsWait()
+
 	}
 }
 
@@ -116,7 +115,7 @@ func (n *NodeRPCService) OnTransferInvite(e *Empty, stream NodeService_OnTransfe
 		case <-n.ctx.Done():
 			return nil
 		}
-		state.GetState().NeedsWait()
+
 	}
 }
 
@@ -131,7 +130,7 @@ func (n *NodeRPCService) OnTransferProgress(e *Empty, stream NodeService_OnTrans
 		case <-n.ctx.Done():
 			return nil
 		}
-		state.GetState().NeedsWait()
+
 	}
 }
 
@@ -146,6 +145,6 @@ func (n *NodeRPCService) OnTransferComplete(e *Empty, stream NodeService_OnTrans
 		case <-n.ctx.Done():
 			return nil
 		}
-		state.GetState().NeedsWait()
+
 	}
 }

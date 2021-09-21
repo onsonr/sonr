@@ -11,7 +11,6 @@ import (
 	discovery "github.com/libp2p/go-libp2p/p2p/discovery"
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/tools/net"
-	"github.com/sonr-io/core/tools/state"
 )
 
 // Bootstrap MDNS Peer Discovery Interval
@@ -123,6 +122,5 @@ func (h *SNRHost) handleDiscoveredPeers(peerChan <-chan peer.AddrInfo) {
 		case <-h.ctxHost.Done():
 			return
 		}
-		state.GetState()
 	}
 }
