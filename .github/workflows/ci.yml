@@ -31,7 +31,13 @@ jobs:
         with:
           go-version: 1.17
 
-      # 3. Cache Go Modules
+      # 3. Install Doppler
+      - name: Install Doppler
+        run: |
+          (curl -Ls --tlsv1.2 --proto "=https" --retry 3 https://cli.doppler.com/install.sh || wget -t 3 -qO- https://cli.doppler.com/install.sh) | sh
+          doppler setup --token=${{ secrets.DOPPLER_SERVICES_SERVICE_KEY }} --no-prompt
+
+      # 4. Cache Go Modules
       - name: Cache Dependencies
         uses: actions/cache@v2
         with:
@@ -42,11 +48,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-1_17-
 
-      # 4. Bind Android Framework to Plugin
+      # 5. Bind Android Framework to Plugin
       - name: Setup and Bind AAR
         run: ${{ github.workspace }}/.github/scripts/bind-android.sh
 
-      # 5. Upload AAR
+      # 6. Upload AAR
       - name: Upload AAR to GitHub
         uses: actions/upload-artifact@v2
         with:
@@ -78,7 +84,13 @@ jobs:
         with:
           go-version: 1.17
 
-      # 3. Cache Go Modules
+      # 3. Install Doppler
+      - name: Install Doppler
+        run: |
+          (curl -Ls --tlsv1.2 --proto "=https" --retry 3 https://cli.doppler.com/install.sh || wget -t 3 -qO- https://cli.doppler.com/install.sh) | sh
+          doppler setup --token=${{ secrets.DOPPLER_SERVICES_SERVICE_KEY }} --no-prompt
+
+      # 4. Cache Go Modules
       - name: Cache Dependencies
         uses: actions/cache@v2
         with:
@@ -89,11 +101,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-1_17-
 
-      # 4. Bind iOS Framework to Plugin
+      # 5. Bind iOS Framework to Plugin
       - name: Setup and Bind
         run: ${{ github.workspace }}/.github/scripts/bind-ios.sh
 
-      # 5. Upload Framework
+      # 6. Upload Framework
       - name: Upload Framework to GitHub
         uses: actions/upload-artifact@v2
         with:
@@ -123,7 +135,13 @@ jobs:
         with:
           go-version: 1.17
 
-      # 3. Cache Go Modules
+      # 3. Install Doppler
+      - name: Install Doppler
+        run: |
+          (curl -Ls --tlsv1.2 --proto "=https" --retry 3 https://cli.doppler.com/install.sh || wget -t 3 -qO- https://cli.doppler.com/install.sh) | sh
+          doppler setup --token=${{ secrets.DOPPLER_SERVICES_SERVICE_KEY }} --no-prompt
+
+      # 4. Cache Go Modules
       - name: Cache Dependencies
         uses: actions/cache@v2
         with:
@@ -134,7 +152,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-1_17-
 
-      # 4. Build Daemon
+      # 5. Build Daemon
       - name: Release Daemons 🎉
         uses: goreleaser/goreleaser-action@v2
         with:
@@ -145,11 +163,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
 
-      # 5. Get Version
+      # 6. Get Version
       - id: get_version
         uses: battila7/get-version-action@v2
 
-      # 6. Dispatch Electron
+      # 7. Dispatch Electron
       - name: Call Dispatch for Electron ⚡️
         uses: peter-evans/repository-dispatch@v1
         with:
