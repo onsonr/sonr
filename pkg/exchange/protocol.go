@@ -93,7 +93,7 @@ func (p *ExchangeProtocol) Find(sName string) (peer.ID, error) {
 	// Find peer from sName in the store
 	buf, err := p.PubsubValueStore.GetValue(p.ctx, fmt.Sprintf("store/%s", sName))
 	if err != nil {
-		logger.Error("Failed to GET peer from store", zap.Error(err))
+		logger.Error(fmt.Sprintf("Failed to GET peer (%s) from store", sName), zap.Error(err))
 		return "", err
 	}
 
@@ -101,21 +101,21 @@ func (p *ExchangeProtocol) Find(sName string) (peer.ID, error) {
 	profile := &common.Peer{}
 	err = proto.Unmarshal(buf, profile)
 	if err != nil {
-		logger.Error("Failed to Unmarshal Peer", zap.Error(err))
+		logger.Error(fmt.Sprintf("Failed to Unmarshal Peer (%s)", sName), zap.Error(err))
 		return "", err
 	}
 
 	// Fetch public key from peer data
 	pubKey, err := crypto.UnmarshalPublicKey(profile.PublicKey)
 	if err != nil {
-		logger.Error("Failed to Unmarshal Public Key", zap.Error(err))
+		logger.Error(fmt.Sprintf("Failed to Unmarshal Public Key for (%s)", sName), zap.Error(err))
 		return "", err
 	}
 
 	// Get peer ID from public key
 	id, err := peer.IDFromPublicKey(pubKey)
 	if err != nil {
-		logger.Error("Failed to get peer ID from Public Key", zap.Error(err))
+		logger.Error(fmt.Sprintf("Failed to get peer ID from Public Key for (%s)", sName), zap.Error(err))
 		return "", err
 	}
 	return id, nil
@@ -129,7 +129,7 @@ func (p *ExchangeProtocol) Ping(sName string) (*common.Peer, error) {
 	// Find peer from sName in the store
 	buf, err := p.PubsubValueStore.GetValue(p.ctx, fmt.Sprintf("store/%s", sName))
 	if err != nil {
-		logger.Error("Failed to GET peer from store", zap.Error(err))
+		logger.Error(fmt.Sprintf("Failed to GET peer (%s) from store", sName), zap.Error(err))
 		return nil, err
 	}
 
@@ -137,7 +137,7 @@ func (p *ExchangeProtocol) Ping(sName string) (*common.Peer, error) {
 	profile := &common.Peer{}
 	err = proto.Unmarshal(buf, profile)
 	if err != nil {
-		logger.Error("Failed to Unmarshal Peer", zap.Error(err))
+		logger.Error(fmt.Sprintf("Failed to Unmarshal Peer (%s)", sName), zap.Error(err))
 		return nil, err
 	}
 	return profile, nil
