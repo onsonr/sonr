@@ -36,6 +36,12 @@ func Start(reqBytes []byte) {
 		ctx := context.Background()
 		logger.Init(req.GetEnvironment().IsDev())
 
+		// Set environment variables
+		err = device.InitEnv()
+		if err != nil {
+			logger.Error("Failed to initialize environment variables: %s", zap.Error(err))
+		}
+
 		// Initialize Device
 		kc, err := device.Init(fsOpts...)
 		if err != nil {

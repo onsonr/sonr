@@ -23,7 +23,7 @@ var TEXTILE_HUB_KEY string
 // Textile Hub API secret
 var TEXTILE_HUB_SECRET string
 
-func initEnv() error {
+func InitEnv() error {
 	// Set environment variables
 	HANDSHAKE_KEY = os.Getenv("HANDSHAKE_KEY")
 	HANDSHAKE_SECRET = os.Getenv("HANDSHAKE_SECRET")

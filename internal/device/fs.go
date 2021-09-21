@@ -7,7 +7,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/sonr-io/core/tools/config"
 	"github.com/sonr-io/core/tools/logger"
-	"go.uber.org/zap"
 )
 
 type DeviceOptions struct {
@@ -38,12 +37,6 @@ type FSOption struct {
 
 // Init initializes the keychain and returns a Keychain.
 func Init(opts ...FSOption) (Keychain, error) {
-	// Set environment variables
-	err := initEnv()
-	if err != nil {
-		logger.Error("Failed to initialize environment variables: %s", zap.Error(err))
-		return nil, err
-	}
 
 	// Check if Opts are set
 	if len(opts) == 0 {
