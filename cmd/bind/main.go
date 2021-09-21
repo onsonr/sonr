@@ -24,13 +24,6 @@ var started bool
 
 // Start starts the host, node, and rpc service.
 func Start(reqBytes []byte) {
-	// Initialize environment
-	ctx := context.Background()
-	err := device.InitEnv()
-	if err != nil {
-		logger.Error("Failed to initialize environment variables", zap.Error(err))
-	}
-
 	// Check if already started
 	if !started {
 		// Unmarshal request
@@ -43,6 +36,13 @@ func Start(reqBytes []byte) {
 		kc, err := device.Init(req.GetEnvironment().IsDev(), fsOpts...)
 		if err != nil {
 			logger.Panic("Failed to initialize Device", zap.Error(err))
+		}
+
+		// Initialize environment
+		ctx := context.Background()
+		err = device.InitEnv()
+		if err != nil {
+			logger.Error("Failed to initialize environment variables", zap.Error(err))
 		}
 
 		// Initialize Host
