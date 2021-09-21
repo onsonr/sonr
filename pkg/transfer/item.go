@@ -11,7 +11,7 @@ import (
 
 type ItemReader interface {
 	Progress() []byte
-	ReadFromWriteTo(src io.Reader, dst io.Writer) (int64, error)
+	ReadWriteFrom(src io.Reader, dst io.Writer) (int64, error)
 }
 
 type itemReader struct {
@@ -62,7 +62,7 @@ func EncodeStream(src []byte, dst io.Writer) error {
 	return enc.Close()
 }
 
-func (ir *itemReader) ReadFromWriteTo(src io.Reader, dst io.Writer) (int64, error) {
+func (ir *itemReader) ReadWriteFrom(src io.Reader, dst io.Writer) (int64, error) {
 	dec := s2.NewReader(src)
 	n, err := io.Copy(dst, dec)
 	if err != nil {

@@ -15,7 +15,7 @@ import (
 )
 
 // AuthenticateMessage Authenticates incoming p2p message
-func (n *SHost) AuthenticateMessage(message proto.Message, data *common.Metadata) bool {
+func (n *SNRHost) AuthenticateMessage(message proto.Message, data *common.Metadata) bool {
 	// store a temp ref to signature and remove it from message data
 	// sign is a string to allow easy reset to zero-value (empty string)
 	sign := data.Signature
@@ -44,7 +44,7 @@ func (n *SHost) AuthenticateMessage(message proto.Message, data *common.Metadata
 }
 
 // SignProtoMessage signs an outgoing p2p message payload
-func (n *SHost) SignProtoMessage(message proto.Message) ([]byte, error) {
+func (n *SNRHost) SignProtoMessage(message proto.Message) ([]byte, error) {
 	data, err := proto.Marshal(message)
 	if err != nil {
 		return nil, err
@@ -53,13 +53,13 @@ func (n *SHost) SignProtoMessage(message proto.Message) ([]byte, error) {
 }
 
 // sign binary data using the local node's private key
-func (n *SHost) SignData(data []byte) ([]byte, error) {
+func (n *SNRHost) SignData(data []byte) ([]byte, error) {
 	res, err := n.privKey.Sign(data)
 	return res, err
 }
 
 // VerifyData verifies incoming p2p message data integrity
-func (n *SHost) VerifyData(data []byte, signature []byte, peerId peer.ID, pubKeyData []byte) bool {
+func (n *SNRHost) VerifyData(data []byte, signature []byte, peerId peer.ID, pubKeyData []byte) bool {
 	key, err := crypto.UnmarshalPublicKey(pubKeyData)
 	if err != nil {
 		logger.Error("Failed to extract key from message key data", zap.Error(err))
@@ -90,7 +90,7 @@ func (n *SHost) VerifyData(data []byte, signature []byte, peerId peer.ID, pubKey
 }
 
 // NewMetadata generates message data shared between all node's p2p protocols
-func (n *SHost) NewMetadata() *common.Metadata {
+func (n *SNRHost) NewMetadata() *common.Metadata {
 	nodePubKey, err := n.privKey.GetPublic().Raw()
 	if err != nil {
 		logger.Error("Failed to Extract Public Key", zap.Error(err))
@@ -105,7 +105,7 @@ func (n *SHost) NewMetadata() *common.Metadata {
 }
 
 // SendProtoMessage writes a protobuf go data object to a network stream
-func (n *SHost) SendProtoMessage(id peer.ID, p protocol.ID, data proto.Message) error {
+func (n *SNRHost) SendProtoMessage(id peer.ID, p protocol.ID, data proto.Message) error {
 	s, err := n.NewStream(context.Background(), id, p)
 	if err != nil {
 		logger.Error("Failed to start stream", zap.Error(err))

@@ -163,7 +163,7 @@ func (c *nodeServiceClient) OnLocalJoin(ctx context.Context, in *Empty, opts ...
 }
 
 type NodeService_OnLocalJoinClient interface {
-	Recv() (*common.ExchangeEvent, error)
+	Recv() (*common.LobbyEvent, error)
 	grpc.ClientStream
 }
 
@@ -171,8 +171,8 @@ type nodeServiceOnLocalJoinClient struct {
 	grpc.ClientStream
 }
 
-func (x *nodeServiceOnLocalJoinClient) Recv() (*common.ExchangeEvent, error) {
-	m := new(common.ExchangeEvent)
+func (x *nodeServiceOnLocalJoinClient) Recv() (*common.LobbyEvent, error) {
+	m := new(common.LobbyEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -195,7 +195,7 @@ func (c *nodeServiceClient) OnLocalUpdate(ctx context.Context, in *Empty, opts .
 }
 
 type NodeService_OnLocalUpdateClient interface {
-	Recv() (*common.ExchangeEvent, error)
+	Recv() (*common.LobbyEvent, error)
 	grpc.ClientStream
 }
 
@@ -203,8 +203,8 @@ type nodeServiceOnLocalUpdateClient struct {
 	grpc.ClientStream
 }
 
-func (x *nodeServiceOnLocalUpdateClient) Recv() (*common.ExchangeEvent, error) {
-	m := new(common.ExchangeEvent)
+func (x *nodeServiceOnLocalUpdateClient) Recv() (*common.LobbyEvent, error) {
+	m := new(common.LobbyEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -227,7 +227,7 @@ func (c *nodeServiceClient) OnLocalExit(ctx context.Context, in *Empty, opts ...
 }
 
 type NodeService_OnLocalExitClient interface {
-	Recv() (*common.ExchangeEvent, error)
+	Recv() (*common.LobbyEvent, error)
 	grpc.ClientStream
 }
 
@@ -235,8 +235,8 @@ type nodeServiceOnLocalExitClient struct {
 	grpc.ClientStream
 }
 
-func (x *nodeServiceOnLocalExitClient) Recv() (*common.ExchangeEvent, error) {
-	m := new(common.ExchangeEvent)
+func (x *nodeServiceOnLocalExitClient) Recv() (*common.LobbyEvent, error) {
+	m := new(common.LobbyEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -642,7 +642,7 @@ func _NodeService_OnLocalJoin_Handler(srv interface{}, stream grpc.ServerStream)
 }
 
 type NodeService_OnLocalJoinServer interface {
-	Send(*common.ExchangeEvent) error
+	Send(*common.LobbyEvent) error
 	grpc.ServerStream
 }
 
@@ -650,7 +650,7 @@ type nodeServiceOnLocalJoinServer struct {
 	grpc.ServerStream
 }
 
-func (x *nodeServiceOnLocalJoinServer) Send(m *common.ExchangeEvent) error {
+func (x *nodeServiceOnLocalJoinServer) Send(m *common.LobbyEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
@@ -663,7 +663,7 @@ func _NodeService_OnLocalUpdate_Handler(srv interface{}, stream grpc.ServerStrea
 }
 
 type NodeService_OnLocalUpdateServer interface {
-	Send(*common.ExchangeEvent) error
+	Send(*common.LobbyEvent) error
 	grpc.ServerStream
 }
 
@@ -671,7 +671,7 @@ type nodeServiceOnLocalUpdateServer struct {
 	grpc.ServerStream
 }
 
-func (x *nodeServiceOnLocalUpdateServer) Send(m *common.ExchangeEvent) error {
+func (x *nodeServiceOnLocalUpdateServer) Send(m *common.LobbyEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
@@ -684,7 +684,7 @@ func _NodeService_OnLocalExit_Handler(srv interface{}, stream grpc.ServerStream)
 }
 
 type NodeService_OnLocalExitServer interface {
-	Send(*common.ExchangeEvent) error
+	Send(*common.LobbyEvent) error
 	grpc.ServerStream
 }
 
@@ -692,7 +692,7 @@ type nodeServiceOnLocalExitServer struct {
 	grpc.ServerStream
 }
 
-func (x *nodeServiceOnLocalExitServer) Send(m *common.ExchangeEvent) error {
+func (x *nodeServiceOnLocalExitServer) Send(m *common.LobbyEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 

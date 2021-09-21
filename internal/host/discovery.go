@@ -31,7 +31,7 @@ func (n *discoveryNotifee) HandlePeerFound(pi peer.AddrInfo) {
 
 // ** ─── HostNode Connection Methods ────────────────────────────────────────────────────────
 // Bootstrap begins bootstrap with peers
-func (h *SHost) Bootstrap() error {
+func (h *SNRHost) Bootstrap() error {
 	// Add Host Address to Peerstore
 	h.Peerstore().AddAddrs(h.ID(), h.Addrs(), peerstore.PermanentAddrTTL)
 	// Create Bootstrapper Info
@@ -76,7 +76,7 @@ func (h *SHost) Bootstrap() error {
 }
 
 // Method Begins MDNS Discovery
-func (h *SHost) MDNS() error {
+func (h *SNRHost) MDNS() error {
 	// Create MDNS Service
 	ser, err := discovery.NewMdnsService(h.ctxHost, h.Host, REFRESH_INTERVAL, HOST_RENDEVOUZ_POINT)
 	if err != nil {
@@ -95,7 +95,7 @@ func (h *SHost) MDNS() error {
 }
 
 // Helper Method checks if Peer AddrInfo is Unknown
-func (h *SHost) checkUnknown(pi peer.AddrInfo) bool {
+func (h *SNRHost) checkUnknown(pi peer.AddrInfo) bool {
 	// Iterate and Check
 	if len(h.Peerstore().Addrs(pi.ID)) > 0 {
 		return false
@@ -108,7 +108,7 @@ func (h *SHost) checkUnknown(pi peer.AddrInfo) bool {
 
 // Handle MDNS Peers: Connect to Local MDNS Peers
 // Params: **Read Only** Peer AddrInfo Channel
-func (h *SHost) handleDiscoveredPeers(peerChan <-chan peer.AddrInfo) {
+func (h *SNRHost) handleDiscoveredPeers(peerChan <-chan peer.AddrInfo) {
 	for {
 		select {
 		case pi := <-peerChan:

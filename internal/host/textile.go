@@ -15,7 +15,7 @@ const TEXTILE_MINER_IDX = "api.minerindex.hub.textile.io:443"
 // Textile Mailbox Directory
 const TEXTILE_MAILBOX_DIR = ".textile"
 
-func (h *SHost) startTextileClient(apiKey string, apiSecret string) error {
+func (h *SNRHost) startTextileClient(apiKey string, apiSecret string) error {
 	// Add our device group key to the context
 	ctx := common.NewAPIKeyContext(h.ctxHost, apiKey)
 
@@ -30,7 +30,7 @@ func (h *SHost) startTextileClient(apiKey string, apiSecret string) error {
 	return nil
 }
 
-// func (h *SHost) threadIdentity() thread.Identity {
+// func (h *SNRHost) threadIdentity() thread.Identity {
 // 	return thread.NewLibp2pIdentity(h.privKey)
 // }
 

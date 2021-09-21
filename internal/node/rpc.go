@@ -7,11 +7,10 @@ import (
 
 	common "github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
-	"github.com/sonr-io/core/pkg/exchange"
+	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/transfer"
 	"github.com/sonr-io/core/tools/emitter"
 	"github.com/sonr-io/core/tools/logger"
-	"github.com/sonr-io/core/tools/state"
 	"go.uber.org/zap"
 	grpc "google.golang.org/grpc"
 )
@@ -30,7 +29,7 @@ type NodeRPCService struct {
 	// Channels
 	statusEvents   chan *common.StatusEvent
 	decisionEvents chan *common.DecisionEvent
-	exchangeEvents chan *common.ExchangeEvent
+	exchangeEvents chan *common.LobbyEvent
 	inviteEvents   chan *common.InviteEvent
 	progressEvents chan *common.ProgressEvent
 	completeEvents chan *common.CompleteEvent
@@ -54,7 +53,7 @@ func NewRPCService(ctx context.Context, n *Node) (*NodeRPCService, error) {
 		Node:           n,
 		statusEvents:   make(chan *common.StatusEvent),
 		decisionEvents: make(chan *common.DecisionEvent),
-		exchangeEvents: make(chan *common.ExchangeEvent),
+		exchangeEvents: make(chan *common.LobbyEvent),
 		inviteEvents:   make(chan *common.InviteEvent),
 		progressEvents: make(chan *common.ProgressEvent),
 		completeEvents: make(chan *common.CompleteEvent),
@@ -67,37 +66,37 @@ func NewRPCService(ctx context.Context, n *Node) (*NodeRPCService, error) {
 			logger.Error("Failed to serve gRPC", zap.Error(err))
 			return
 		}
+
+		// Register RPC Events
+		nrc.Node.On(Event_STATUS, func(e *emitter.Event) {
+			event := &common.StatusEvent{
+				IsOk:    e.Args[0].(bool),
+				Message: e.Args[1].(string),
+			}
+			nrc.statusEvents <- event
+		})
+
+		// Handle Node Events
+		nrc.Node.On(transfer.Event_INVITED, func(e *emitter.Event) {
+			inv := e.Args[0].(*transfer.InviteEvent)
+			invEvent := &common.InviteEvent{
+				InviteId: inv.GetInviteId(),
+				From:     inv.GetFrom(),
+				Transfer: inv.GetTransfer(),
+			}
+			nrc.inviteEvents <- invEvent
+		})
+
+		// Handle Node Events
+		nrc.Node.On(lobby.Event_PEER_UPDATE, func(e *emitter.Event) {
+			updEvent := e.Args[0].(*lobby.PublishEvent)
+			exchEvent := &common.LobbyEvent{
+				Peer: updEvent.GetPeer(),
+				Type: common.LobbyEvent_UPDATE,
+			}
+			nrc.exchangeEvents <- exchEvent
+		})
 	}(nrc, grpcServer)
-
-	// Register RPC Events
-	nrc.Node.On(Event_STATUS, func(e *emitter.Event) {
-		event := &common.StatusEvent{
-			IsOk:    e.Args[0].(bool),
-			Message: e.Args[1].(string),
-		}
-		nrc.statusEvents <- event
-	})
-
-	// Handle Node Events
-	nrc.Node.On(transfer.Event_INVITED, func(e *emitter.Event) {
-		inv := e.Args[0].(*transfer.InviteEvent)
-		invEvent := &common.InviteEvent{
-			InviteId: inv.GetInviteId(),
-			From:     inv.GetFrom(),
-			Transfer: inv.GetTransfer(),
-		}
-		nrc.inviteEvents <- invEvent
-	})
-
-	// Handle Node Events
-	nrc.Node.On(exchange.Event_PEER_UPDATE, func(e *emitter.Event) {
-		updEvent := e.Args[0].(*exchange.UpdateEvent)
-		exchEvent := &common.ExchangeEvent{
-			Peer: updEvent.GetPeer(),
-			Type: common.ExchangeEvent_UPDATE,
-		}
-		nrc.exchangeEvents <- exchEvent
-	})
 
 	// Return RPC Service
 	return nrc, nil
@@ -203,154 +202,9 @@ func (n *NodeRPCService) Stat(ctx context.Context, req *StatRequest) (*StatRespo
 			Version: device.Stat().Version,
 		},
 		Network: &StatResponse_Network{
-			PublicKey: n.SHost.Stat().PublicKey,
-			PeerID:    n.SHost.Stat().PeerID,
-			Multiaddr: n.SHost.Stat().MultAddr,
+			PublicKey: n.SNRHost.Stat().PublicKey,
+			PeerID:    n.SNRHost.Stat().PeerID,
+			Multiaddr: n.SNRHost.Stat().MultAddr,
 		},
 	}, nil
-}
-
-// OnDecision method sends a decision event to the client.
-func (n *NodeRPCService) OnNodeStatus(e *Empty, stream NodeService_OnNodeStatusServer) error {
-	for {
-		select {
-		case m := <-n.statusEvents:
-			if m != nil {
-				stream.Send(m)
-			}
-		case <-n.ctx.Done():
-			return nil
-		}
-		state.GetState().NeedsWait()
-	}
-}
-
-// OnLocalJoin method sends a join event to the client.
-func (n *NodeRPCService) OnLocalJoin(e *Empty, stream NodeService_OnLocalJoinServer) error {
-	for {
-		select {
-		case m := <-n.exchangeEvents:
-			if m != nil {
-				if m.GetType() == common.ExchangeEvent_JOIN {
-					stream.Send(m)
-				}
-			}
-		case <-n.ctx.Done():
-			return nil
-		}
-		state.GetState().NeedsWait()
-	}
-}
-
-// OnLocalJoin method sends a join event to the client.
-func (n *NodeRPCService) OnLocalUpdate(e *Empty, stream NodeService_OnLocalUpdateServer) error {
-	for {
-		select {
-		case m := <-n.exchangeEvents:
-			if m != nil {
-				if m.GetType() == common.ExchangeEvent_UPDATE {
-					stream.Send(m)
-				}
-			}
-		case <-n.ctx.Done():
-			return nil
-		}
-		state.GetState().NeedsWait()
-	}
-}
-
-// OnLocalExit method sends a join event to the client.
-func (n *NodeRPCService) OnLocalExit(e *Empty, stream NodeService_OnLocalExitServer) error {
-	for {
-		select {
-		case m := <-n.exchangeEvents:
-			if m != nil {
-				if m.GetType() == common.ExchangeEvent_EXIT {
-					stream.Send(m)
-				}
-			}
-		case <-n.ctx.Done():
-			return nil
-		}
-		state.GetState().NeedsWait()
-	}
-}
-
-// OnDecision-Accepted method sends a decision event to the client.
-func (n *NodeRPCService) OnTransferAccepted(e *Empty, stream NodeService_OnTransferAcceptedServer) error {
-	for {
-		select {
-		case m := <-n.decisionEvents:
-			if m != nil {
-				if m.Decision {
-					stream.Send(m)
-				}
-			}
-		case <-n.ctx.Done():
-			return nil
-		}
-		state.GetState().NeedsWait()
-	}
-}
-
-// OnDecision-Declined method sends a decision event to the client.
-func (n *NodeRPCService) OnTransferDeclined(e *Empty, stream NodeService_OnTransferDeclinedServer) error {
-	for {
-		select {
-		case m := <-n.decisionEvents:
-			if m != nil {
-				if !m.Decision {
-					stream.Send(m)
-				}
-			}
-		case <-n.ctx.Done():
-			return nil
-		}
-		state.GetState().NeedsWait()
-	}
-}
-
-// OnTransferInvite method sends an invite event to the client.
-func (n *NodeRPCService) OnTransferInvite(e *Empty, stream NodeService_OnTransferInviteServer) error {
-	for {
-		select {
-		case m := <-n.inviteEvents:
-			if m != nil {
-				stream.Send(m)
-			}
-		case <-n.ctx.Done():
-			return nil
-		}
-		state.GetState().NeedsWait()
-	}
-}
-
-// OnTransferProgress method sends a progress event to the client.
-func (n *NodeRPCService) OnTransferProgress(e *Empty, stream NodeService_OnTransferProgressServer) error {
-	for {
-		select {
-		case m := <-n.progressEvents:
-			if m != nil {
-				stream.Send(m)
-			}
-		case <-n.ctx.Done():
-			return nil
-		}
-		state.GetState().NeedsWait()
-	}
-}
-
-// OnTransferComplete method sends a complete event to the client.
-func (n *NodeRPCService) OnTransferComplete(e *Empty, stream NodeService_OnTransferCompleteServer) error {
-	for {
-		select {
-		case m := <-n.completeEvents:
-			if m != nil {
-				stream.Send(m)
-			}
-		case <-n.ctx.Done():
-			return nil
-		}
-		state.GetState().NeedsWait()
-	}
 }

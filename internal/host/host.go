@@ -22,7 +22,7 @@ import (
 	"go.uber.org/zap"
 )
 
-type SHostStat struct {
+type SNRHostStat struct {
 	ID        peer.ID
 	PublicKey string
 	PeerID    string
@@ -30,7 +30,7 @@ type SHostStat struct {
 	Address   string
 }
 
-type SHost struct {
+type SNRHost struct {
 	host.Host
 	*emitter.Emitter
 
@@ -51,7 +51,7 @@ type SHost struct {
 }
 
 // Start Begins Assigning Host Parameters ^
-func NewHost(ctx context.Context, kc device.Keychain, conn common.Connection) (*SHost, error) {
+func NewHost(ctx context.Context, kc device.Keychain, conn common.Connection) (*SNRHost, error) {
 	// Initialize DHT
 	var kdhtRef *dht.IpfsDHT
 	privKey, err := kc.GetPrivKey(device.Account)
@@ -88,7 +88,7 @@ func NewHost(ctx context.Context, kc device.Keychain, conn common.Connection) (*
 	}
 
 	// Create Host
-	hn := &SHost{
+	hn := &SNRHost{
 		ctxHost: ctx,
 		Emitter: emitter.New(2048),
 		id:      h.ID(),
@@ -115,17 +115,17 @@ func NewHost(ctx context.Context, kc device.Keychain, conn common.Connection) (*
 
 // ** ─── Host Info ────────────────────────────────────────────────────────
 // Returns Host Node MultiAddr
-func (hn *SHost) Pubsub() *psub.PubSub {
+func (hn *SNRHost) Pubsub() *psub.PubSub {
 	return hn.pubsub
 }
 
 // PublicKey returns the public key of the host
-func (hn *SHost) PublicKey() crypto.PubKey {
+func (hn *SNRHost) PublicKey() crypto.PubKey {
 	return hn.privKey.GetPublic()
 }
 
 // Stat returns the host stat info
-func (hn *SHost) Stat() *SHostStat {
+func (hn *SNRHost) Stat() *SNRHostStat {
 	// Marshal Public Key
 	buf, err := crypto.MarshalPublicKey(hn.PublicKey())
 	if err != nil {
@@ -133,7 +133,7 @@ func (hn *SHost) Stat() *SHostStat {
 	}
 
 	// Return Host Stat
-	return &SHostStat{
+	return &SNRHostStat{
 		ID:        hn.id,
 		PublicKey: string(buf),
 		PeerID:    hn.id.Pretty(),

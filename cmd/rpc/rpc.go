@@ -12,7 +12,7 @@ type NodeServer struct {
 	ctx context.Context
 
 	// Client
-	host *host.SHost
+	host *host.SNRHost
 	node *node.Node
 
 	// Event Channels

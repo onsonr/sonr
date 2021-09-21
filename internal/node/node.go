@@ -9,6 +9,7 @@ import (
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/pkg/exchange"
+	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/transfer"
 	"github.com/sonr-io/core/tools/emitter"
 	"github.com/sonr-io/core/tools/logger"
@@ -30,7 +31,7 @@ type Node struct {
 	*state.StateMachine
 
 	// Host and context
-	*host.SHost
+	*host.SNRHost
 
 	// Properties
 	ctx context.Context
@@ -46,24 +47,27 @@ type Node struct {
 
 	// ExchangeProtocol - the exchange protocol
 	*exchange.ExchangeProtocol
+
+	// LobbyProtocol - The lobby protocol
+	*lobby.LobbyProtocol
 }
 
 // NewNode Creates a node with its implemented protocols
-func NewNode(ctx context.Context, host *host.SHost, loc *common.Location) *Node {
+func NewNode(ctx context.Context, host *host.SNRHost, loc *common.Location) *Node {
 	// Initialize Node
 	node := &Node{
 		Emitter: emitter.New(2048),
-		SHost:   host,
+		SNRHost: host,
 		ctx:     ctx,
 		queue:   list.New(),
 	}
 
-	// Create Transfer Protocol
+	// Set Transfer Protocol
 	node.TransferProtocol = transfer.NewProtocol(host, node.Emitter)
 	node.Emit(Event_STATUS, true, "Transfer Protocol Set")
 
 	// Set Exchange Protocol
-	exch, err := exchange.NewProtocol(ctx, host, loc, node.Emitter)
+	exch, err := exchange.NewProtocol(ctx, host, node.Emitter)
 	if err != nil {
 		logger.Error("Failed to start ExchangeProtocol", zap.Error(err))
 		return node
@@ -71,19 +75,21 @@ func NewNode(ctx context.Context, host *host.SHost, loc *common.Location) *Node 
 	node.Emit(Event_STATUS, true, "Exchange Protocol Set")
 	node.ExchangeProtocol = exch
 
-	// Push Update to Exchange
-	err = node.ExchangeProtocol.Update(node.Peer())
+	// Set Lobby Protocol
+	lobby, err := lobby.NewProtocol(ctx, host, loc, node.Emitter)
 	if err != nil {
-		logger.Error("Failed to update Exchange", zap.Error(err))
+		logger.Error("Failed to start LobbyProtocol", zap.Error(err))
 		return node
 	}
+	node.Emit(Event_STATUS, true, "Lobby Protocol Set")
+	node.LobbyProtocol = lobby
 	return node
 }
 
 // Peer method returns the peer of the node
 func (n *Node) Peer() *common.Peer {
 	// Find PublicKey Buffer
-	pubBuf, err := crypto.MarshalPublicKey(n.SHost.PublicKey())
+	pubBuf, err := crypto.MarshalPublicKey(n.SNRHost.PublicKey())
 	if err != nil {
 		logger.Error("Failed to marshal public key", zap.Error(err))
 		return nil
@@ -110,6 +116,7 @@ func (n *Node) Edit(p *common.Profile) error {
 		logger.Error("Failed to update Exchange", zap.Error(err))
 		return err
 	}
+
 	return nil
 }
 

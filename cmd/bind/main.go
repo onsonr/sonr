@@ -14,7 +14,7 @@ import (
 type Client struct {
 	// Properties
 	ctx     context.Context
-	host    *host.SHost
+	host    *host.SNRHost
 	node    *node.Node
 	service *node.NodeRPCService
 }
