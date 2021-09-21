@@ -15,12 +15,12 @@ GOMOBILE=gomobile
 GOCLEAN=$(GOMOBILE) clean
 GOBIND=$(GOMOBILE) bind -ldflags='-s -w' -v
 GOBIND_ANDROID=$(GOBIND) -target=android
-GOBIND_IOS=$(GOBIND) -target=ios -bundleid=io.sonr.core
+GOBIND_IOS=$(GOBIND) -target=ios,macos -bundleid=io.sonr.core
 
 # @ Bind Directories
 BIND_DIR_ANDROID=$(SONR_ROOT_DIR)/plugin/android/libs
 BIND_DIR_IOS=$(SONR_ROOT_DIR)/plugin/ios/Frameworks
-BIND_IOS_ARTIFACT= $(BIND_DIR_IOS)/Core.framework
+BIND_IOS_ARTIFACT= $(BIND_DIR_IOS)/Core.xcframework
 BIND_ANDROID_ARTIFACT= $(BIND_DIR_ANDROID)/io.sonr.core.aar
 
 # @ Proto Directories
@@ -84,9 +84,9 @@ bind.android:
 	@echo "--------------------------------------------------------------"
 	@echo "--------------- 🤖 START ANDROID BIND 🤖 ----------------------"
 	@echo "--------------------------------------------------------------"
-	@go get golang.org/x/mobile/bind
+	@go get -u golang.org/x/mobile/bind
 	@gomobile init
-	cd $(CORE_BIND_DIR) && $(GOBIND_ANDROID) -o $(BIND_ANDROID_ARTIFACT)
+	cd $(CORE_BIND_DIR) && doppler run -- $(GOBIND_ANDROID) -o $(BIND_ANDROID_ARTIFACT)
 	@echo "✅ Finished Binding ➡ " && date
 	@echo ""
 
@@ -98,8 +98,7 @@ bind.ios:
 	@echo "--------------------------------------------------------------"
 	@echo "-------------- 📱 START IOS BIND 📱 ---------------------------"
 	@echo "--------------------------------------------------------------"
-	@go get golang.org/x/mobile/bind
-	cd $(CORE_BIND_DIR) && $(GOBIND_IOS) -o $(BIND_IOS_ARTIFACT)
+	cd $(CORE_BIND_DIR) && doppler run -- $(GOBIND_IOS) -o $(BIND_IOS_ARTIFACT)
 	@echo "✅ Finished Binding ➡ " && date
 	@echo ""
 
