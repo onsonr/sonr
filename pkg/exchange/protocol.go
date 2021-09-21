@@ -85,8 +85,8 @@ func NewProtocol(ctx context.Context, host *host.SHost, loc *common.Location, em
 	return exchProtocol, nil
 }
 
-// Ping method finds peer Profile by name
-func (p *ExchangeProtocol) Ping(sName string) (*common.Peer, peer.ID, error) {
+// Find method returns PeerID by SName
+func (p *ExchangeProtocol) Find(sName string) (peer.ID, error) {
 	// Set Lowercase Name
 	sName = strings.ToLower(sName)
 
@@ -94,7 +94,7 @@ func (p *ExchangeProtocol) Ping(sName string) (*common.Peer, peer.ID, error) {
 	buf, err := p.PubsubValueStore.GetValue(p.ctx, fmt.Sprintf("store/%s", sName))
 	if err != nil {
 		logger.Error("Failed to GET peer from store", zap.Error(err))
-		return nil, "", err
+		return "", err
 	}
 
 	// Unmarshal Peer from buffer
@@ -102,23 +102,45 @@ func (p *ExchangeProtocol) Ping(sName string) (*common.Peer, peer.ID, error) {
 	err = proto.Unmarshal(buf, profile)
 	if err != nil {
 		logger.Error("Failed to Unmarshal Peer", zap.Error(err))
-		return nil, "", err
+		return "", err
 	}
 
 	// Fetch public key from peer data
 	pubKey, err := crypto.UnmarshalPublicKey(profile.PublicKey)
 	if err != nil {
 		logger.Error("Failed to Unmarshal Public Key", zap.Error(err))
-		return nil, "", err
+		return "", err
 	}
 
 	// Get peer ID from public key
 	id, err := peer.IDFromPublicKey(pubKey)
 	if err != nil {
 		logger.Error("Failed to get peer ID from Public Key", zap.Error(err))
-		return nil, "", err
+		return "", err
 	}
-	return profile, id, nil
+	return id, nil
+}
+
+// Ping method finds peer Profile by name
+func (p *ExchangeProtocol) Ping(sName string) (*common.Peer, error) {
+	// Set Lowercase Name
+	sName = strings.ToLower(sName)
+
+	// Find peer from sName in the store
+	buf, err := p.PubsubValueStore.GetValue(p.ctx, fmt.Sprintf("store/%s", sName))
+	if err != nil {
+		logger.Error("Failed to GET peer from store", zap.Error(err))
+		return nil, err
+	}
+
+	// Unmarshal Peer from buffer
+	profile := &common.Peer{}
+	err = proto.Unmarshal(buf, profile)
+	if err != nil {
+		logger.Error("Failed to Unmarshal Peer", zap.Error(err))
+		return nil, err
+	}
+	return profile, nil
 }
 
 // Update method updates peer instance in the store

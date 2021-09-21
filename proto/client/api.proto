@@ -122,7 +122,6 @@ message PingResponse {
   bool success = 1;        // Success
   string error = 2;        // Error Message
   sonr.core.Peer peer = 3; // Peer Data
-  string peerID = 4;       // Peer ID
 }
 
 // StatRequest is Message for Searching for Peer

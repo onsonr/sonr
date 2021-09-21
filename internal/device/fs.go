@@ -36,7 +36,9 @@ type FSOption struct {
 }
 
 // Init initializes the keychain and returns a Keychain.
-func Init(opts ...FSOption) (Keychain, error) {
+func Init(isDev bool, opts ...FSOption) (Keychain, error) {
+	// Initialize logger
+	logger.Init(isDev)
 
 	// Check if Opts are set
 	if len(opts) == 0 {

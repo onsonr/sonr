@@ -157,7 +157,7 @@ func (n *NodeRPCService) Share(ctx context.Context, req *ShareRequest) (*ShareRe
 // Search Method to find a Peer by SName
 func (n *NodeRPCService) Ping(ctx context.Context, req *PingRequest) (*PingResponse, error) {
 	// Call Internal Ping
-	peer, id, err := n.Node.Ping(req.GetSName())
+	peer, err := n.Node.Ping(req.GetSName())
 	if err != nil {
 		return &PingResponse{
 			Success: false,
@@ -169,7 +169,6 @@ func (n *NodeRPCService) Ping(ctx context.Context, req *PingRequest) (*PingRespo
 	return &PingResponse{
 		Success: true,
 		Peer:    peer,
-		PeerID:  id.String(),
 	}, nil
 }
 
