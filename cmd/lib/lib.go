@@ -1,4 +1,4 @@
-package bind
+package lib
 
 import (
 	"context"
@@ -8,6 +8,7 @@ import (
 	"github.com/sonr-io/core/internal/node"
 	"github.com/sonr-io/core/tools/logger"
 	"go.uber.org/zap"
+	"google.golang.org/protobuf/proto"
 )
 
 type Client struct {
@@ -22,7 +23,7 @@ var client *Client
 var started bool
 
 // Start starts the host, node, and rpc service.
-func Start(reqBytes []byte) {
+func Start(reqBytes []byte) *Client {
 	// Check if already started
 	if !started {
 		// Unmarshal request
@@ -68,7 +69,7 @@ func Start(reqBytes []byte) {
 		// Set Started
 		started = true
 	}
-	return
+	return client
 }
 
 // Pause pauses the host, node, and rpc service.
@@ -91,4 +92,31 @@ func Stop() {
 		client.host.Close()
 		client.ctx.Done()
 	}
+}
+
+// parseInitializeRequest parses the given buffer and returns the proto and fsOptions.
+func parseInitializeRequest(buf []byte) (*node.InitializeRequest, []device.FSOption, error) {
+	// Unmarshal request
+	req := &node.InitializeRequest{}
+	err := proto.Unmarshal(buf, req)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	// Check FSOptions and Get Device Paths
+	fsOpts := make([]device.FSOption, 0)
+	if req.GetDeviceOptions() != nil {
+		// Set Temporary Path
+		fsOpts = append(fsOpts, device.FSOption{
+			Path: req.GetDeviceOptions().GetCacheDir(),
+			Type: device.Temporary,
+		}, device.FSOption{
+			Path: req.GetDeviceOptions().GetDocumentsDir(),
+			Type: device.Documents,
+		}, device.FSOption{
+			Path: req.GetDeviceOptions().GetSupportDir(),
+			Type: device.Support,
+		})
+	}
+	return req, fsOpts, nil
 }
