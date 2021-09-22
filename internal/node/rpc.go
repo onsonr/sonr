@@ -59,44 +59,9 @@ func NewRPCService(ctx context.Context, n *Node) (*NodeRPCService, error) {
 		completeEvents: make(chan *common.CompleteEvent),
 	}
 
-	// Register RPC Service
-	RegisterNodeServiceServer(grpcServer, nrc)
-	go func(nodeRpcService *NodeRPCService, grpcServer *grpc.Server) {
-		if err := grpcServer.Serve(nodeRpcService.listener); err != nil {
-			logger.Error("Failed to serve gRPC", zap.Error(err))
-			return
-		}
-
-		// Register RPC Events
-		nrc.Node.On(Event_STATUS, func(e *emitter.Event) {
-			event := &common.StatusEvent{
-				IsOk:    e.Args[0].(bool),
-				Message: e.Args[1].(string),
-			}
-			nrc.statusEvents <- event
-		})
-
-		// Handle Node Events
-		nrc.Node.On(transfer.Event_INVITED, func(e *emitter.Event) {
-			inv := e.Args[0].(*transfer.InviteEvent)
-			invEvent := &common.InviteEvent{
-				InviteId: inv.GetInviteId(),
-				From:     inv.GetFrom(),
-				Transfer: inv.GetTransfer(),
-			}
-			nrc.inviteEvents <- invEvent
-		})
-
-		// Handle Node Events
-		nrc.Node.On(lobby.Event_PEER_UPDATE, func(e *emitter.Event) {
-			updEvent := e.Args[0].(*lobby.PublishEvent)
-			exchEvent := &common.LobbyEvent{
-				Peer: updEvent.GetPeer(),
-				Type: common.LobbyEvent_UPDATE,
-			}
-			nrc.exchangeEvents <- exchEvent
-		})
-	}(nrc, grpcServer)
+	// Start Routines
+	go nrc.serveRPC()
+	go nrc.handleEmitter()
 
 	// Return RPC Service
 	return nrc, nil
@@ -202,9 +167,58 @@ func (n *NodeRPCService) Stat(ctx context.Context, req *StatRequest) (*StatRespo
 			Version: device.Stat().Version,
 		},
 		Network: &StatResponse_Network{
-			PublicKey: n.SNRHost.Stat().PublicKey,
-			PeerID:    n.SNRHost.Stat().PeerID,
-			Multiaddr: n.SNRHost.Stat().MultAddr,
+			PublicKey: n.host.Stat().PublicKey,
+			PeerID:    n.host.Stat().PeerID,
+			Multiaddr: n.host.Stat().MultAddr,
 		},
 	}, nil
+}
+
+// HandleEmitter handles the emitter events.
+func (nrc *NodeRPCService) handleEmitter() {
+	for {
+		// Handle Node Events
+		nrc.Node.On(transfer.Event_INVITED, func(e *emitter.Event) {
+			inv := e.Args[0].(*transfer.InviteEvent)
+			invEvent := &common.InviteEvent{
+				InviteId: inv.GetInviteId(),
+				From:     inv.GetFrom(),
+				Transfer: inv.GetTransfer(),
+			}
+			nrc.inviteEvents <- invEvent
+		})
+
+		// Handle Node Events
+		nrc.Node.On(lobby.Event_PEER_UPDATE, func(e *emitter.Event) {
+			updEvent := e.Args[0].(*lobby.PublishEvent)
+			exchEvent := &common.LobbyEvent{
+				Peer: updEvent.GetPeer(),
+				Type: common.LobbyEvent_UPDATE,
+			}
+			nrc.exchangeEvents <- exchEvent
+		})
+
+		// Stop Emitter if context is done
+		select {
+		case <-nrc.ctx.Done():
+			return
+		}
+	}
+}
+
+// serveRPC Serves the RPC Service on the given port.
+func (nrc *NodeRPCService) serveRPC() {
+	for {
+		// Handle Node Events
+		if err := nrc.grpcServer.Serve(nrc.listener); err != nil {
+			logger.Error("Failed to serve gRPC", zap.Error(err))
+			return
+		}
+
+		// Stop Serving if context is done
+		select {
+		case <-nrc.ctx.Done():
+			return
+		}
+	}
 }

@@ -50,14 +50,8 @@ func Start(reqBytes []byte) {
 			logger.Panic("Failed to create Host", zap.Error(err))
 		}
 
-		// Create Node
-		n := node.NewNode(ctx, host, req.GetLocation())
-		err = n.Edit(req.GetProfile())
-		if err != nil {
-			logger.Panic("Failed to update Profile for Node", zap.Error(err))
-		}
-
-		// Create RPC Service
+		// Create Node and Start Service
+		n := node.NewNode(ctx, host, req.GetLocation(), req.GetProfile())
 		service, err := node.NewRPCService(ctx, n)
 		if err != nil {
 			logger.Panic("Failed to start RPC Service", zap.Error(err))
@@ -73,17 +67,6 @@ func Start(reqBytes []byte) {
 
 		// Set Started
 		started = true
-
-		// Supply Initial Profile
-		editReq := &node.EditRequest{
-			Profile: req.GetProfile(),
-		}
-
-		// Push EditRequest
-		_, err = client.service.Edit(client.ctx, editReq)
-		if err != nil {
-			logger.Error("Failed to supply initial Profile", zap.Error(err))
-		}
 	}
 	return
 }

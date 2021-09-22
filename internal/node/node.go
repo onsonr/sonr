@@ -13,13 +13,7 @@ import (
 	"github.com/sonr-io/core/pkg/transfer"
 	"github.com/sonr-io/core/tools/emitter"
 	"github.com/sonr-io/core/tools/logger"
-	"github.com/sonr-io/core/tools/state"
 	"go.uber.org/zap"
-)
-
-// Node Emission Events
-const (
-	Event_STATUS = "status"
 )
 
 // Node type - a p2p host implementing one or more p2p protocols
@@ -27,11 +21,8 @@ type Node struct {
 	// Emitter is the event emitter for this node
 	*emitter.Emitter
 
-	// StateMachine state
-	*state.StateMachine
-
 	// Host and context
-	*host.SNRHost
+	host *host.SNRHost
 
 	// Properties
 	ctx context.Context
@@ -53,43 +44,44 @@ type Node struct {
 }
 
 // NewNode Creates a node with its implemented protocols
-func NewNode(ctx context.Context, host *host.SNRHost, loc *common.Location) *Node {
+func NewNode(ctx context.Context, host *host.SNRHost, loc *common.Location, pro *common.Profile) *Node {
 	// Initialize Node
+	var err error
 	node := &Node{
 		Emitter: emitter.New(2048),
-		SNRHost: host,
+		host:    host,
 		ctx:     ctx,
 		queue:   list.New(),
+		profile: pro,
+	}
+
+	// Set Exchange Protocol
+	node.ExchangeProtocol, err = exchange.NewProtocol(ctx, host, node.Emitter)
+	if err != nil {
+		logger.Error("Failed to start ExchangeProtocol", zap.Error(err))
 	}
 
 	// Set Transfer Protocol
 	node.TransferProtocol = transfer.NewProtocol(host, node.Emitter)
-	node.Emit(Event_STATUS, true, "Transfer Protocol Set")
-
-	// Set Exchange Protocol
-	exch, err := exchange.NewProtocol(ctx, host, node.Emitter)
-	if err != nil {
-		logger.Error("Failed to start ExchangeProtocol", zap.Error(err))
-		return node
-	}
-	node.Emit(Event_STATUS, true, "Exchange Protocol Set")
-	node.ExchangeProtocol = exch
 
 	// Set Lobby Protocol
-	lobby, err := lobby.NewProtocol(host, loc, node.Emitter)
+	node.LobbyProtocol, err = lobby.NewProtocol(host, loc, node.Emitter)
 	if err != nil {
 		logger.Error("Failed to start LobbyProtocol", zap.Error(err))
-		return node
 	}
-	node.Emit(Event_STATUS, true, "Lobby Protocol Set")
-	node.LobbyProtocol = lobby
+
+	// Update Exchange with node's peer
+	err = node.ExchangeProtocol.Update(node.Peer())
+	if err != nil {
+		logger.Error("Failed to update Exchange", zap.Error(err))
+	}
 	return node
 }
 
 // Peer method returns the peer of the node
 func (n *Node) Peer() *common.Peer {
 	// Find PublicKey Buffer
-	pubBuf, err := crypto.MarshalPublicKey(n.SNRHost.PublicKey())
+	pubBuf, err := crypto.MarshalPublicKey(n.host.PublicKey())
 	if err != nil {
 		logger.Error("Failed to marshal public key", zap.Error(err))
 		return nil
@@ -117,6 +109,12 @@ func (n *Node) Edit(p *common.Profile) error {
 		return err
 	}
 
+	// Push Update to Lobby
+	err = n.LobbyProtocol.Update(n.Peer())
+	if err != nil {
+		logger.Error("Failed to update Lobby", zap.Error(err))
+		return err
+	}
 	return nil
 }
 
@@ -124,7 +122,7 @@ func (n *Node) Edit(p *common.Profile) error {
 func (n *Node) Supply(paths []string) error {
 	// Create Transfer
 	tr := common.Transfer{
-		Metadata: n.NewMetadata(),
+		Metadata: n.host.NewMetadata(),
 	}
 
 	// Initialize Transfer Items and add iterate over paths
@@ -138,7 +136,6 @@ func (n *Node) Supply(paths []string) error {
 			item, err := common.NewTransferFileItem(path)
 			if err != nil {
 				logger.Error("Failed to edit Profile", zap.Error(err))
-				n.Emit(Event_STATUS, err)
 				return err
 			}
 
@@ -158,7 +155,7 @@ func (n *Node) Share(peer *common.Peer) error {
 	// Create Invite Request
 	req := &transfer.InviteRequest{
 		Transfer: n.queue.Front().Value.(*common.Transfer),
-		Metadata: n.NewMetadata(),
+		Metadata: n.host.NewMetadata(),
 		To:       peer,
 		From:     n.Peer(),
 	}
@@ -174,7 +171,6 @@ func (n *Node) Share(peer *common.Peer) error {
 	err = n.TransferProtocol.Request(id, req)
 	if err != nil {
 		logger.Error("Failed to invite peer", zap.Error(err))
-		n.Emit(Event_STATUS, err)
 		return err
 	}
 	return nil
@@ -194,7 +190,6 @@ func (n *Node) Respond(decs bool) error {
 	err := n.TransferProtocol.Respond(resp)
 	if err != nil {
 		logger.Error("Failed to respond to invite", zap.Error(err))
-		n.Emit(Event_STATUS, err)
 		return err
 	}
 	return nil
