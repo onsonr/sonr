@@ -178,15 +178,25 @@ func (n *NodeRPCService) Stat(ctx context.Context, req *StatRequest) (*StatRespo
 // HandleEmitter handles the emitter events.
 func (nrc *NodeRPCService) handleEmitter() {
 	for {
-		// Handle Node Events
+		// Handle Transfer Invite
 		nrc.Node.On(transfer.Event_INVITED, func(e *emitter.Event) {
-			inv := e.Args[0].(*transfer.InviteEvent)
+			inv := e.Args[0].(*transfer.InviteRequest)
 			invEvent := &common.InviteEvent{
 				InviteId: inv.GetInviteId(),
 				From:     inv.GetFrom(),
 				Transfer: inv.GetTransfer(),
 			}
 			nrc.inviteEvents <- invEvent
+		})
+
+		// Handle Transfer Decision
+		nrc.Node.On(transfer.Event_RESPONDED, func(e *emitter.Event) {
+			inv := e.Args[0].(*transfer.InviteResponse)
+			decsEvent := &common.DecisionEvent{
+				InviteId: inv.GetInviteId(),
+				Decision: inv.GetSuccess(),
+			}
+			nrc.decisionEvents <- decsEvent
 		})
 
 		// Handle Node Events
