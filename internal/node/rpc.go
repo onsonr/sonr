@@ -110,7 +110,7 @@ func (n *NodeRPCService) Supply(ctx context.Context, req *SupplyRequest) (*Suppl
 		return &SupplyResponse{
 			Success: false,
 			Error:   err.Error(),
-		}, err
+		}, nil
 	}
 
 	// Send Response
@@ -127,7 +127,7 @@ func (n *NodeRPCService) Edit(ctx context.Context, req *EditRequest) (*EditRespo
 		return &EditResponse{
 			Success: false,
 			Error:   err.Error(),
-		}, err
+		}, nil
 	}
 
 	// Send Response
@@ -144,7 +144,7 @@ func (n *NodeRPCService) Share(ctx context.Context, req *ShareRequest) (*ShareRe
 		return &ShareResponse{
 			Success: false,
 			Error:   err.Error(),
-		}, err
+		}, nil
 	}
 
 	// Send Response
@@ -161,7 +161,7 @@ func (n *NodeRPCService) Ping(ctx context.Context, req *PingRequest) (*PingRespo
 		return &PingResponse{
 			Success: false,
 			Error:   err.Error(),
-		}, err
+		}, nil
 	}
 
 	// Send Response
@@ -179,7 +179,7 @@ func (n *NodeRPCService) Respond(ctx context.Context, req *RespondRequest) (*Res
 		return &RespondResponse{
 			Success: false,
 			Error:   err.Error(),
-		}, err
+		}, nil
 	}
 
 	// Send Response
