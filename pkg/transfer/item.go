@@ -7,6 +7,8 @@ import (
 	msg "github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/tools/emitter"
+	"github.com/sonr-io/core/tools/logger"
+	"go.uber.org/zap"
 )
 
 type ItemReader interface {
@@ -68,6 +70,7 @@ func (ir *itemReader) ReadWriteFrom(src io.Reader, dst io.Writer) (int64, error)
 	if err != nil {
 		return n, err
 	}
+	logger.Info("Progress: ", zap.Int64("Written Bytes", n))
 	ir.emitter.Emit(Event_PROGRESS, n)
 	return n, nil
 }

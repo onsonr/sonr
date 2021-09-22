@@ -51,17 +51,19 @@ func (a *TransferInProgressAction) Execute(eventCtx state.EventContext) state.Ev
 			return TransferFail
 		}
 
+		logger.Info("Beginning Outgoing Transfer Stream")
 		wg := sync.WaitGroup{}
 		// Concurrent Function
 		go func(ws msgio.WriteCloser) {
 			// Write All Files
-			for _, m := range transfer.Items {
+			for i, m := range transfer.Items {
 				wg.Add(1)
 				w := newWriter(m, a.emitter)
 				err := w.WriteTo(ws)
 				if err != nil {
 					a.emitter.Emit("Error", err)
 				}
+				logger.Info(fmt.Sprintf("Finished TRANSFERRING File (%v/%v)", i, len(transfer.Items)))
 				wg.Done()
 			}
 			a.emitter.Emit(Event_COMPLETED)
@@ -69,7 +71,7 @@ func (a *TransferInProgressAction) Execute(eventCtx state.EventContext) state.Ev
 		wg.Wait()
 		return TransferSuccess
 	} else {
-		
+
 		return TransferSuccess
 	}
 

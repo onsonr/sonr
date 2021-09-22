@@ -1,3 +1,4 @@
+/// This file contains service for the Node RPC Server
 syntax = "proto3";
 
 package sonr.node;

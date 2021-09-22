@@ -3,7 +3,6 @@ package transfer
 import (
 	"container/list"
 	"errors"
-	sync "sync"
 
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -192,14 +191,13 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 
 func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 	// Init WaitGroup
-	wg := sync.WaitGroup{}
 	req := p.requests[s.Conn().RemotePeer().String()]
+	logger.Info("Started Incoming Transfer...")
 
 	// Concurrent Function
 	go func(rs msgio.ReadCloser) {
 		// Read All Files
 		for _, m := range req.Invite.GetTransfer().GetItems() {
-			wg.Add(1)
 			r := newReader(m, p.emitter)
 			f, err := device.KCConfig.Create(m.GetFile().Name)
 			if err != nil {
@@ -209,11 +207,9 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 			if err != nil {
 				p.emitter.Emit("Error", err)
 			}
-			wg.Done()
 		}
 
 		// Close Stream
-		wg.Wait()
 		rs.Close()
 
 		// Set Status

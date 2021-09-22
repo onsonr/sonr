@@ -1,3 +1,4 @@
+/// This file has messages for describing a API Request/Responses with RPC.
 syntax = "proto3";
 
 package sonr.node;
