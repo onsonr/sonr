@@ -215,7 +215,7 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 		rs.Close()
 
 		// Set Status
-		p.emitter.Emit(Event_COMPLETED)
+		p.emitter.Emit(Event_COMPLETED, req.Invite.GetTransfer())
 	}(msgio.NewReader(s))
 }
 

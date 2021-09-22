@@ -199,12 +199,52 @@ func (nrc *NodeRPCService) handleEmitter() {
 			nrc.decisionEvents <- decsEvent
 		})
 
-		// Handle Node Events
+		// Handle Transfer Progress
+		nrc.Node.On(transfer.Event_PROGRESS, func(e *emitter.Event) {
+			writtenBytes := e.Args[0].(int64)
+			progEvent := &common.ProgressEvent{
+				Current:  int32(writtenBytes),
+				Total:    0,
+				Progress: 0,
+			}
+			nrc.progressEvents <- progEvent
+		})
+
+		// Handle Transfer Completed
+		nrc.Node.On(transfer.Event_COMPLETED, func(e *emitter.Event) {
+			result := e.Args[0].(*common.Transfer)
+			compEvent := &common.CompleteEvent{
+				Transfer: result,
+			}
+			nrc.completeEvents <- compEvent
+		})
+
+		// Handle Lobby Join Events
+		nrc.Node.On(lobby.Event_PEER_JOIN, func(e *emitter.Event) {
+			updEvent := e.Args[0].(*lobby.PublishEvent)
+			exchEvent := &common.LobbyEvent{
+				Peer: updEvent.GetPeer(),
+				Type: common.LobbyEvent_JOIN,
+			}
+			nrc.exchangeEvents <- exchEvent
+		})
+
+		// Handle Lobby Update Events
 		nrc.Node.On(lobby.Event_PEER_UPDATE, func(e *emitter.Event) {
 			updEvent := e.Args[0].(*lobby.PublishEvent)
 			exchEvent := &common.LobbyEvent{
 				Peer: updEvent.GetPeer(),
 				Type: common.LobbyEvent_UPDATE,
+			}
+			nrc.exchangeEvents <- exchEvent
+		})
+
+		// Handle Lobby Exit Events
+		nrc.Node.On(lobby.Event_PEER_EXIT, func(e *emitter.Event) {
+			updEvent := e.Args[0].(*lobby.PublishEvent)
+			exchEvent := &common.LobbyEvent{
+				Peer: updEvent.GetPeer(),
+				Type: common.LobbyEvent_EXIT,
 			}
 			nrc.exchangeEvents <- exchEvent
 		})
