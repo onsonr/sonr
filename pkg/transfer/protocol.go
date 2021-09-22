@@ -5,8 +5,6 @@ import (
 	"errors"
 	sync "sync"
 
-	msg "github.com/libp2p/go-msgio"
-
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
@@ -71,128 +69,125 @@ func NewProtocol(host *host.SNRHost, em *emitter.Emitter) *TransferProtocol {
 
 // remote peer requests handler
 func (p *TransferProtocol) onInviteRequest(s network.Stream) {
-	for {
-		// Initialize Stream Data
-		remotePeer := s.Conn().RemotePeer()
-		r := msg.NewReader(s)
+	// Initialize Stream Data
+	remotePeer := s.Conn().RemotePeer()
+	r := msgio.NewReader(s)
 
-		// Read the request
-		buf, err := r.ReadMsg()
-		if err != nil {
-			s.Reset()
-			logger.Error("Failed to Read Invite Request buffer.", zap.Error(err))
-			continue
-		}
-		s.Close()
-
-		// unmarshal it
-		req := &InviteRequest{}
-		err = proto.Unmarshal(buf, req)
-		if err != nil {
-			logger.Error("Failed to Unmarshal Invite REQUEST buffer.", zap.Error(err))
-			continue
-		}
-
-		valid := p.host.AuthenticateMessage(req, req.Metadata)
-		if !valid {
-			logger.Error("Failed to Authorize Invite REQUEST.", zap.Error(err))
-			continue
-		}
-
-		// generate response message
-		entry := &RequestEntry{
-			request: req,
-			fromId:  remotePeer,
-		}
-		p.requestQueue.PushBack(entry)
-
-		// store ref request so response handler has access to it
-		transCtx := TransferSessionContext{
-			To:       remotePeer,
-			From:     p.host.ID(),
-			Invite:   req,
-			Transfer: req.GetTransfer(),
-		}
-
-		// store request data into Context
-		p.requests[remotePeer.String()] = transCtx
-		resp := &InviteResponse{Metadata: p.host.NewMetadata(), Success: true}
-
-		// sign the data
-		signature, err := p.host.SignMessage(resp)
-		if err != nil {
-			logger.Error("Failed to sign Proto Message.", zap.Error(err))
-			continue
-		}
-
-		// send the response
-		resp.Metadata.Signature = signature
-		err = p.host.SendMessage(remotePeer, ResponsePID, resp)
-		if err != nil {
-			logger.Error("Failed to send InviteResponse.", zap.Error(err))
-			continue
-		}
-		p.emitter.Emit(Event_INVITED, req)
+	// Read the request
+	buf, err := r.ReadMsg()
+	if err != nil {
+		s.Reset()
+		logger.Error("Failed to Read Invite Request buffer.", zap.Error(err))
+		return
 	}
+	s.Close()
+
+	// unmarshal it
+	req := &InviteRequest{}
+	err = proto.Unmarshal(buf, req)
+	if err != nil {
+		logger.Error("Failed to Unmarshal Invite REQUEST buffer.", zap.Error(err))
+		return
+	}
+
+	valid := p.host.AuthenticateMessage(req, req.Metadata)
+	if !valid {
+		logger.Error("Failed to Authorize Invite REQUEST.", zap.Error(err))
+		return
+	}
+
+	// generate response message
+	entry := &RequestEntry{
+		request: req,
+		fromId:  remotePeer,
+	}
+	p.requestQueue.PushBack(entry)
+
+	// store ref request so response handler has access to it
+	transCtx := TransferSessionContext{
+		To:       remotePeer,
+		From:     p.host.ID(),
+		Invite:   req,
+		Transfer: req.GetTransfer(),
+	}
+
+	// store request data into Context
+	p.requests[remotePeer.String()] = transCtx
+	resp := &InviteResponse{Metadata: p.host.NewMetadata(), Success: true}
+
+	// sign the data
+	signature, err := p.host.SignMessage(resp)
+	if err != nil {
+		logger.Error("Failed to sign Proto Message.", zap.Error(err))
+		return
+	}
+
+	// send the response
+	resp.Metadata.Signature = signature
+	err = p.host.SendMessage(remotePeer, ResponsePID, resp)
+	if err != nil {
+		logger.Error("Failed to send InviteResponse.", zap.Error(err))
+		return
+	}
+	p.emitter.Emit(Event_INVITED, req)
 }
 
 // remote ping response handler
 func (p *TransferProtocol) onInviteResponse(s network.Stream) {
-	for {
-		// Initialize Stream Data
-		remotePeer := s.Conn().RemotePeer()
-		r := msg.NewReader(s)
+	// Initialize Stream Data
+	remotePeer := s.Conn().RemotePeer()
+	r := msgio.NewReader(s)
 
-		// Read the request
-		buf, err := r.ReadMsg()
+	// Read the request
+	buf, err := r.ReadMsg()
+	if err != nil {
+		s.Reset()
+		logger.Error("Failed to Read Invite RESPONSE buffer.", zap.Error(err))
+		return
+	}
+	s.Close()
+
+	// unmarshal it
+	resp := &InviteResponse{}
+	err = proto.Unmarshal(buf, resp)
+	if err != nil {
+		logger.Error("Failed to Unmarshal Invite RESPONSE buffer.", zap.Error(err))
+		return
+	}
+
+	valid := p.host.AuthenticateMessage(resp, resp.Metadata)
+	if !valid {
+		logger.Error("Failed to Authenticate Invite RESPONSE.", zap.Error(err))
+		return
+	}
+
+	// locate request data and remove it if found
+	req, ok := p.requests[remotePeer.String()]
+	if ok && resp.Success {
+		err := p.state.SendEvent(PeerAccepted, req)
 		if err != nil {
-			s.Reset()
-			logger.Error("Failed to Read Invite RESPONSE buffer.", zap.Error(err))
-			continue
+			logger.Error("Failed to handle State Event: ", zap.Error(err))
 		}
-		s.Close()
-
-		// unmarshal it
-		resp := &InviteResponse{}
-		err = proto.Unmarshal(buf, resp)
-		if err != nil {
-			logger.Error("Failed to Unmarshal Invite RESPONSE buffer.", zap.Error(err))
-			continue
+		delete(p.requests, remotePeer.String())
+	} else {
+		// Check if the request is not in the queue
+		if !ok {
+			logger.Error("Failed to locate request data object for RESPONSE.", zap.Error(err))
+			return
 		}
 
-		valid := p.host.AuthenticateMessage(resp, resp.Metadata)
-		if !valid {
-			logger.Error("Failed to Authenticate Invite RESPONSE.", zap.Error(err))
-			continue
-		}
-
-		// locate request data and remove it if found
-		req, ok := p.requests[remotePeer.String()]
-		if ok && resp.Success {
-			err := p.state.SendEvent(PeerAccepted, req)
+		// Check if the request was denied
+		if !resp.Success {
+			err := p.state.SendEvent(PeerRejected, req)
 			if err != nil {
 				logger.Error("Failed to handle State Event: ", zap.Error(err))
+				return
 			}
 			delete(p.requests, remotePeer.String())
-		} else {
-			// Check if the request is not in the queue
-			if !ok {
-				logger.Error("Failed to locate request data object for RESPONSE.", zap.Error(err))
-				continue
-			}
-
-			// Check if the request was denied
-			if !resp.Success {
-				err := p.state.SendEvent(PeerRejected, req)
-				if err != nil {
-					logger.Error("Failed to handle State Event: ", zap.Error(err))
-					continue
-				}
-				delete(p.requests, remotePeer.String())
-			}
 		}
-		p.emitter.Emit(Event_RESPONDED, resp)
 	}
+	p.emitter.Emit(Event_RESPONDED, resp)
+
 }
 
 func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {

@@ -17,7 +17,7 @@ const (
 	// ### - Invite Method Types -
 	// 1. States
 	Available state.StateType = "Available"
-	// UnknownPeer is state for when Peer is not Found
+	// Pending is state for when Peer is not Found
 	Pending state.StateType = "Pending"
 	// Pending is state for when Invite Succeeds
 	InProgress state.StateType = "InProgress"

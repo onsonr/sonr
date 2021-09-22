@@ -1,7 +1,6 @@
 package host
 
 import (
-	"context"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
@@ -62,7 +61,7 @@ func (n *SNRHost) AuthenticateMessage(message proto.Message, data *common.Metada
 
 // SendMessage writes a protobuf go data object to a network stream
 func (n *SNRHost) SendMessage(id peer.ID, p protocol.ID, data proto.Message) error {
-	s, err := n.NewStream(context.Background(), id, p)
+	s, err := n.NewStream(n.ctxHost, id, p)
 	if err != nil {
 		logger.Error("Failed to start stream", zap.Error(err))
 		return err
