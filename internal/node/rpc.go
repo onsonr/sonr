@@ -60,6 +60,7 @@ func NewRPCService(ctx context.Context, n *Node) (*NodeRPCService, error) {
 	}
 
 	// Start Routines
+	RegisterNodeServiceServer(grpcServer, nrc)
 	go nrc.serveRPC()
 	go nrc.handleEmitter()
 
