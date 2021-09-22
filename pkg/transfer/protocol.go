@@ -113,22 +113,6 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 
 	// store request data into Context
 	p.requests[remotePeer.String()] = transCtx
-	resp := &InviteResponse{Metadata: p.host.NewMetadata(), Success: true}
-
-	// sign the data
-	signature, err := p.host.SignMessage(resp)
-	if err != nil {
-		logger.Error("Failed to sign Proto Message.", zap.Error(err))
-		return
-	}
-
-	// send the response
-	resp.Metadata.Signature = signature
-	err = p.host.SendMessage(remotePeer, ResponsePID, resp)
-	if err != nil {
-		logger.Error("Failed to send InviteResponse.", zap.Error(err))
-		return
-	}
 	p.emitter.Emit(Event_INVITED, req)
 }
 

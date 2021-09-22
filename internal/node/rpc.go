@@ -29,7 +29,7 @@ type NodeRPCService struct {
 	// Channels
 	statusEvents   chan *common.StatusEvent
 	decisionEvents chan *common.DecisionEvent
-	exchangeEvents chan *common.LobbyEvent
+	exchangeEvents chan *common.RefreshEvent
 	inviteEvents   chan *common.InviteEvent
 	progressEvents chan *common.ProgressEvent
 	completeEvents chan *common.CompleteEvent
@@ -53,7 +53,7 @@ func NewRPCService(ctx context.Context, n *Node) (*NodeRPCService, error) {
 		Node:           n,
 		statusEvents:   make(chan *common.StatusEvent),
 		decisionEvents: make(chan *common.DecisionEvent),
-		exchangeEvents: make(chan *common.LobbyEvent),
+		exchangeEvents: make(chan *common.RefreshEvent),
 		inviteEvents:   make(chan *common.InviteEvent),
 		progressEvents: make(chan *common.ProgressEvent),
 		completeEvents: make(chan *common.CompleteEvent),
@@ -220,33 +220,9 @@ func (nrc *NodeRPCService) handleEmitter() {
 		})
 
 		// Handle Lobby Join Events
-		nrc.Node.On(lobby.Event_PEER_JOIN, func(e *emitter.Event) {
-			updEvent := e.Args[0].(*lobby.PublishEvent)
-			exchEvent := &common.LobbyEvent{
-				Peer: updEvent.GetPeer(),
-				Type: common.LobbyEvent_JOIN,
-			}
-			nrc.exchangeEvents <- exchEvent
-		})
-
-		// Handle Lobby Update Events
-		nrc.Node.On(lobby.Event_PEER_UPDATE, func(e *emitter.Event) {
-			updEvent := e.Args[0].(*lobby.PublishEvent)
-			exchEvent := &common.LobbyEvent{
-				Peer: updEvent.GetPeer(),
-				Type: common.LobbyEvent_UPDATE,
-			}
-			nrc.exchangeEvents <- exchEvent
-		})
-
-		// Handle Lobby Exit Events
-		nrc.Node.On(lobby.Event_PEER_EXIT, func(e *emitter.Event) {
-			updEvent := e.Args[0].(*lobby.PublishEvent)
-			exchEvent := &common.LobbyEvent{
-				Peer: updEvent.GetPeer(),
-				Type: common.LobbyEvent_EXIT,
-			}
-			nrc.exchangeEvents <- exchEvent
+		nrc.Node.On(lobby.Event_LIST_REFRESH, func(e *emitter.Event) {
+			refreshEvent := e.Args[0].(*common.RefreshEvent)
+			nrc.exchangeEvents <- refreshEvent
 		})
 
 		// Stop Emitter if context is done

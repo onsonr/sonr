@@ -36,11 +36,7 @@ type NodeServiceClient interface {
 	// Returns a stream of StatusEvents
 	OnNodeStatus(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnNodeStatusClient, error)
 	// Returns a stream of ExchangeEvents for Join
-	OnLocalJoin(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnLocalJoinClient, error)
-	// Returns a stream of ExchangeEvents for Update
-	OnLocalUpdate(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnLocalUpdateClient, error)
-	// Returns a stream of ExchangeEvents for Exit
-	OnLocalExit(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnLocalExitClient, error)
+	OnLobbyRefresh(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnLobbyRefreshClient, error)
 	// Returns a stream of DecisionEvent's for Accepted Invites
 	OnTransferAccepted(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnTransferAcceptedClient, error)
 	// Returns a stream of DecisionEvent's for Rejected Invites
@@ -147,12 +143,12 @@ func (x *nodeServiceOnNodeStatusClient) Recv() (*common.StatusEvent, error) {
 	return m, nil
 }
 
-func (c *nodeServiceClient) OnLocalJoin(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnLocalJoinClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[1], "/sonr.node.NodeService/OnLocalJoin", opts...)
+func (c *nodeServiceClient) OnLobbyRefresh(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnLobbyRefreshClient, error) {
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[1], "/sonr.node.NodeService/OnLobbyRefresh", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &nodeServiceOnLocalJoinClient{stream}
+	x := &nodeServiceOnLobbyRefreshClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -162,81 +158,17 @@ func (c *nodeServiceClient) OnLocalJoin(ctx context.Context, in *Empty, opts ...
 	return x, nil
 }
 
-type NodeService_OnLocalJoinClient interface {
-	Recv() (*common.LobbyEvent, error)
+type NodeService_OnLobbyRefreshClient interface {
+	Recv() (*common.RefreshEvent, error)
 	grpc.ClientStream
 }
 
-type nodeServiceOnLocalJoinClient struct {
+type nodeServiceOnLobbyRefreshClient struct {
 	grpc.ClientStream
 }
 
-func (x *nodeServiceOnLocalJoinClient) Recv() (*common.LobbyEvent, error) {
-	m := new(common.LobbyEvent)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
-func (c *nodeServiceClient) OnLocalUpdate(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnLocalUpdateClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[2], "/sonr.node.NodeService/OnLocalUpdate", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &nodeServiceOnLocalUpdateClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type NodeService_OnLocalUpdateClient interface {
-	Recv() (*common.LobbyEvent, error)
-	grpc.ClientStream
-}
-
-type nodeServiceOnLocalUpdateClient struct {
-	grpc.ClientStream
-}
-
-func (x *nodeServiceOnLocalUpdateClient) Recv() (*common.LobbyEvent, error) {
-	m := new(common.LobbyEvent)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
-func (c *nodeServiceClient) OnLocalExit(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnLocalExitClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[3], "/sonr.node.NodeService/OnLocalExit", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &nodeServiceOnLocalExitClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type NodeService_OnLocalExitClient interface {
-	Recv() (*common.LobbyEvent, error)
-	grpc.ClientStream
-}
-
-type nodeServiceOnLocalExitClient struct {
-	grpc.ClientStream
-}
-
-func (x *nodeServiceOnLocalExitClient) Recv() (*common.LobbyEvent, error) {
-	m := new(common.LobbyEvent)
+func (x *nodeServiceOnLobbyRefreshClient) Recv() (*common.RefreshEvent, error) {
+	m := new(common.RefreshEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -244,7 +176,7 @@ func (x *nodeServiceOnLocalExitClient) Recv() (*common.LobbyEvent, error) {
 }
 
 func (c *nodeServiceClient) OnTransferAccepted(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnTransferAcceptedClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[4], "/sonr.node.NodeService/OnTransferAccepted", opts...)
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[2], "/sonr.node.NodeService/OnTransferAccepted", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -276,7 +208,7 @@ func (x *nodeServiceOnTransferAcceptedClient) Recv() (*common.DecisionEvent, err
 }
 
 func (c *nodeServiceClient) OnTransferDeclined(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnTransferDeclinedClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[5], "/sonr.node.NodeService/OnTransferDeclined", opts...)
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[3], "/sonr.node.NodeService/OnTransferDeclined", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -308,7 +240,7 @@ func (x *nodeServiceOnTransferDeclinedClient) Recv() (*common.DecisionEvent, err
 }
 
 func (c *nodeServiceClient) OnTransferInvite(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnTransferInviteClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[6], "/sonr.node.NodeService/OnTransferInvite", opts...)
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[4], "/sonr.node.NodeService/OnTransferInvite", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -340,7 +272,7 @@ func (x *nodeServiceOnTransferInviteClient) Recv() (*common.InviteEvent, error) 
 }
 
 func (c *nodeServiceClient) OnTransferProgress(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnTransferProgressClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[7], "/sonr.node.NodeService/OnTransferProgress", opts...)
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[5], "/sonr.node.NodeService/OnTransferProgress", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -372,7 +304,7 @@ func (x *nodeServiceOnTransferProgressClient) Recv() (*common.ProgressEvent, err
 }
 
 func (c *nodeServiceClient) OnTransferComplete(ctx context.Context, in *Empty, opts ...grpc.CallOption) (NodeService_OnTransferCompleteClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[8], "/sonr.node.NodeService/OnTransferComplete", opts...)
+	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[6], "/sonr.node.NodeService/OnTransferComplete", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -424,11 +356,7 @@ type NodeServiceServer interface {
 	// Returns a stream of StatusEvents
 	OnNodeStatus(*Empty, NodeService_OnNodeStatusServer) error
 	// Returns a stream of ExchangeEvents for Join
-	OnLocalJoin(*Empty, NodeService_OnLocalJoinServer) error
-	// Returns a stream of ExchangeEvents for Update
-	OnLocalUpdate(*Empty, NodeService_OnLocalUpdateServer) error
-	// Returns a stream of ExchangeEvents for Exit
-	OnLocalExit(*Empty, NodeService_OnLocalExitServer) error
+	OnLobbyRefresh(*Empty, NodeService_OnLobbyRefreshServer) error
 	// Returns a stream of DecisionEvent's for Accepted Invites
 	OnTransferAccepted(*Empty, NodeService_OnTransferAcceptedServer) error
 	// Returns a stream of DecisionEvent's for Rejected Invites
@@ -467,14 +395,8 @@ func (UnimplementedNodeServiceServer) Stat(context.Context, *StatRequest) (*Stat
 func (UnimplementedNodeServiceServer) OnNodeStatus(*Empty, NodeService_OnNodeStatusServer) error {
 	return status.Errorf(codes.Unimplemented, "method OnNodeStatus not implemented")
 }
-func (UnimplementedNodeServiceServer) OnLocalJoin(*Empty, NodeService_OnLocalJoinServer) error {
-	return status.Errorf(codes.Unimplemented, "method OnLocalJoin not implemented")
-}
-func (UnimplementedNodeServiceServer) OnLocalUpdate(*Empty, NodeService_OnLocalUpdateServer) error {
-	return status.Errorf(codes.Unimplemented, "method OnLocalUpdate not implemented")
-}
-func (UnimplementedNodeServiceServer) OnLocalExit(*Empty, NodeService_OnLocalExitServer) error {
-	return status.Errorf(codes.Unimplemented, "method OnLocalExit not implemented")
+func (UnimplementedNodeServiceServer) OnLobbyRefresh(*Empty, NodeService_OnLobbyRefreshServer) error {
+	return status.Errorf(codes.Unimplemented, "method OnLobbyRefresh not implemented")
 }
 func (UnimplementedNodeServiceServer) OnTransferAccepted(*Empty, NodeService_OnTransferAcceptedServer) error {
 	return status.Errorf(codes.Unimplemented, "method OnTransferAccepted not implemented")
@@ -633,66 +555,24 @@ func (x *nodeServiceOnNodeStatusServer) Send(m *common.StatusEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _NodeService_OnLocalJoin_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _NodeService_OnLobbyRefresh_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(Empty)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(NodeServiceServer).OnLocalJoin(m, &nodeServiceOnLocalJoinServer{stream})
+	return srv.(NodeServiceServer).OnLobbyRefresh(m, &nodeServiceOnLobbyRefreshServer{stream})
 }
 
-type NodeService_OnLocalJoinServer interface {
-	Send(*common.LobbyEvent) error
+type NodeService_OnLobbyRefreshServer interface {
+	Send(*common.RefreshEvent) error
 	grpc.ServerStream
 }
 
-type nodeServiceOnLocalJoinServer struct {
+type nodeServiceOnLobbyRefreshServer struct {
 	grpc.ServerStream
 }
 
-func (x *nodeServiceOnLocalJoinServer) Send(m *common.LobbyEvent) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func _NodeService_OnLocalUpdate_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(Empty)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(NodeServiceServer).OnLocalUpdate(m, &nodeServiceOnLocalUpdateServer{stream})
-}
-
-type NodeService_OnLocalUpdateServer interface {
-	Send(*common.LobbyEvent) error
-	grpc.ServerStream
-}
-
-type nodeServiceOnLocalUpdateServer struct {
-	grpc.ServerStream
-}
-
-func (x *nodeServiceOnLocalUpdateServer) Send(m *common.LobbyEvent) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func _NodeService_OnLocalExit_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(Empty)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(NodeServiceServer).OnLocalExit(m, &nodeServiceOnLocalExitServer{stream})
-}
-
-type NodeService_OnLocalExitServer interface {
-	Send(*common.LobbyEvent) error
-	grpc.ServerStream
-}
-
-type nodeServiceOnLocalExitServer struct {
-	grpc.ServerStream
-}
-
-func (x *nodeServiceOnLocalExitServer) Send(m *common.LobbyEvent) error {
+func (x *nodeServiceOnLobbyRefreshServer) Send(m *common.RefreshEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
@@ -840,18 +720,8 @@ var NodeService_ServiceDesc = grpc.ServiceDesc{
 			ServerStreams: true,
 		},
 		{
-			StreamName:    "OnLocalJoin",
-			Handler:       _NodeService_OnLocalJoin_Handler,
-			ServerStreams: true,
-		},
-		{
-			StreamName:    "OnLocalUpdate",
-			Handler:       _NodeService_OnLocalUpdate_Handler,
-			ServerStreams: true,
-		},
-		{
-			StreamName:    "OnLocalExit",
-			Handler:       _NodeService_OnLocalExit_Handler,
+			StreamName:    "OnLobbyRefresh",
+			Handler:       _NodeService_OnLobbyRefresh_Handler,
 			ServerStreams: true,
 		},
 		{

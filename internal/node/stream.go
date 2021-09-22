@@ -1,9 +1,5 @@
 package node
 
-import (
-	common "github.com/sonr-io/core/internal/common"
-)
-
 // OnDecision method sends a decision event to the client.
 func (n *NodeRPCService) OnNodeStatus(e *Empty, stream NodeService_OnNodeStatusServer) error {
 	for {
@@ -20,48 +16,12 @@ func (n *NodeRPCService) OnNodeStatus(e *Empty, stream NodeService_OnNodeStatusS
 }
 
 // OnLocalJoin method sends a join event to the client.
-func (n *NodeRPCService) OnLocalJoin(e *Empty, stream NodeService_OnLocalJoinServer) error {
+func (n *NodeRPCService) OnLobbyRefresh(e *Empty, stream NodeService_OnLobbyRefreshServer) error {
 	for {
 		select {
 		case m := <-n.exchangeEvents:
 			if m != nil {
-				if m.GetType() == common.LobbyEvent_JOIN {
-					stream.Send(m)
-				}
-			}
-		case <-n.ctx.Done():
-			return nil
-		}
-
-	}
-}
-
-// OnLocalJoin method sends a join event to the client.
-func (n *NodeRPCService) OnLocalUpdate(e *Empty, stream NodeService_OnLocalUpdateServer) error {
-	for {
-		select {
-		case m := <-n.exchangeEvents:
-			if m != nil {
-				if m.GetType() == common.LobbyEvent_UPDATE {
-					stream.Send(m)
-				}
-			}
-		case <-n.ctx.Done():
-			return nil
-		}
-
-	}
-}
-
-// OnLocalExit method sends a join event to the client.
-func (n *NodeRPCService) OnLocalExit(e *Empty, stream NodeService_OnLocalExitServer) error {
-	for {
-		select {
-		case m := <-n.exchangeEvents:
-			if m != nil {
-				if m.GetType() == common.LobbyEvent_EXIT {
-					stream.Send(m)
-				}
+				stream.Send(m)
 			}
 		case <-n.ctx.Done():
 			return nil

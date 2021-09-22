@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// PublishEvent is message passed from Peer in Lobby Protocol
-type PublishEvent struct {
+// LobbyMessage is message passed from Peer in Lobby Protocol
+type LobbyMessage struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -32,8 +32,8 @@ type PublishEvent struct {
 	Message *string      `protobuf:"bytes,3,opt,name=message,proto3,oneof" json:"message,omitempty"` // Message to be published
 }
 
-func (x *PublishEvent) Reset() {
-	*x = PublishEvent{}
+func (x *LobbyMessage) Reset() {
+	*x = LobbyMessage{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_protocols_lobby_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -41,13 +41,13 @@ func (x *PublishEvent) Reset() {
 	}
 }
 
-func (x *PublishEvent) String() string {
+func (x *LobbyMessage) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*PublishEvent) ProtoMessage() {}
+func (*LobbyMessage) ProtoMessage() {}
 
-func (x *PublishEvent) ProtoReflect() protoreflect.Message {
+func (x *LobbyMessage) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_protocols_lobby_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,26 +59,26 @@ func (x *PublishEvent) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use PublishEvent.ProtoReflect.Descriptor instead.
-func (*PublishEvent) Descriptor() ([]byte, []int) {
+// Deprecated: Use LobbyMessage.ProtoReflect.Descriptor instead.
+func (*LobbyMessage) Descriptor() ([]byte, []int) {
 	return file_proto_protocols_lobby_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *PublishEvent) GetOlc() string {
+func (x *LobbyMessage) GetOlc() string {
 	if x != nil {
 		return x.Olc
 	}
 	return ""
 }
 
-func (x *PublishEvent) GetPeer() *common.Peer {
+func (x *LobbyMessage) GetPeer() *common.Peer {
 	if x != nil {
 		return x.Peer
 	}
 	return nil
 }
 
-func (x *PublishEvent) GetMessage() string {
+func (x *LobbyMessage) GetMessage() string {
 	if x != nil && x.Message != nil {
 		return *x.Message
 	}
@@ -93,7 +93,7 @@ var file_proto_protocols_lobby_proto_rawDesc = []byte{
 	0x6f, 0x6e, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x73, 0x2e, 0x6c, 0x6f,
 	0x62, 0x62, 0x79, 0x1a, 0x17, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x6f,
 	0x6e, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x70, 0x0a, 0x0c,
-	0x50, 0x75, 0x62, 0x6c, 0x69, 0x73, 0x68, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x10, 0x0a, 0x03,
+	0x4c, 0x6f, 0x62, 0x62, 0x79, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x10, 0x0a, 0x03,
 	0x6f, 0x6c, 0x63, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6f, 0x6c, 0x63, 0x12, 0x23,
 	0x0a, 0x04, 0x70, 0x65, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x73,
 	0x6f, 0x6e, 0x72, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x04, 0x70,
@@ -119,11 +119,11 @@ func file_proto_protocols_lobby_proto_rawDescGZIP() []byte {
 
 var file_proto_protocols_lobby_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_proto_protocols_lobby_proto_goTypes = []interface{}{
-	(*PublishEvent)(nil), // 0: sonr.protocols.lobby.PublishEvent
+	(*LobbyMessage)(nil), // 0: sonr.protocols.lobby.LobbyMessage
 	(*common.Peer)(nil),  // 1: sonr.core.Peer
 }
 var file_proto_protocols_lobby_proto_depIdxs = []int32{
-	1, // 0: sonr.protocols.lobby.PublishEvent.peer:type_name -> sonr.core.Peer
+	1, // 0: sonr.protocols.lobby.LobbyMessage.peer:type_name -> sonr.core.Peer
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
@@ -138,7 +138,7 @@ func file_proto_protocols_lobby_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_proto_protocols_lobby_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PublishEvent); i {
+			switch v := v.(*LobbyMessage); i {
 			case 0:
 				return &v.state
 			case 1:

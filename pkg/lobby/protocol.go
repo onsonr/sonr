@@ -3,6 +3,7 @@ package lobby
 import (
 	"context"
 
+	"github.com/libp2p/go-libp2p-core/peer"
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/host"
@@ -14,9 +15,7 @@ import (
 
 // Transfer Emission Events
 const (
-	Event_PEER_EXIT   = "exchange-peer-exit"
-	Event_PEER_UPDATE = "exchange-peer-update"
-	Event_PEER_JOIN   = "exchange-peer-join"
+	Event_LIST_REFRESH = "lobby-list-refresh"
 )
 
 type LobbyProtocol struct {
@@ -24,10 +23,11 @@ type LobbyProtocol struct {
 	host         *host.SNRHost    // host
 	emitter      *emitter.Emitter // Handle to signal when done
 	eventHandler *ps.TopicEventHandler
-	lobbyEvents  chan *common.LobbyEvent
+	lobbyEvents  chan *LobbyMessage
 	location     *common.Location
 	subscription *ps.Subscription
 	topic        *ps.Topic
+	peers        map[peer.ID]*common.Peer
 }
 
 // NewProtocol creates a new lobby protocol instance.
@@ -58,8 +58,9 @@ func NewProtocol(host *host.SNRHost, loc *common.Location, em *emitter.Emitter) 
 		topic:        topic,
 		subscription: sub,
 		eventHandler: handler,
-		lobbyEvents:  make(chan *common.LobbyEvent),
+		lobbyEvents:  make(chan *LobbyMessage),
 		location:     loc,
+		peers:        make(map[peer.ID]*common.Peer),
 	}
 
 	// Handle Events and Return Protocol
@@ -70,7 +71,7 @@ func NewProtocol(host *host.SNRHost, loc *common.Location, em *emitter.Emitter) 
 
 func (p *LobbyProtocol) Update(peer *common.Peer) error {
 	// Create Event
-	event := &PublishEvent{
+	event := &LobbyMessage{
 		Peer: peer,
 		Olc:  p.location.OLC(6),
 	}
@@ -104,10 +105,9 @@ func (p *LobbyProtocol) HandleEvents() {
 			}
 
 			// Check Event and Validate not User
-			if p.isEventJoin(event) {
-				// Handle Join Event
-				continue
-			} else if p.isEventExit(event) {
+			if p.isEventExit(event) {
+				// Remove Peer from map
+				delete(p.peers, event.Peer)
 				continue
 			}
 		}
@@ -130,17 +130,39 @@ func (p *LobbyProtocol) HandleMessages() {
 			if msg.ReceivedFrom == p.host.ID() {
 				continue
 			} else {
+
 				// Unmarshal Message
-				event := &PublishEvent{}
-				err = proto.Unmarshal(msg.Data, event)
+				data := &LobbyMessage{}
+				err = proto.Unmarshal(msg.Data, data)
 				if err != nil {
 					logger.Error("Failed to Unmarshal Message", zap.Error(err))
 					continue
 				}
 
-				// Emit Event
-				p.emitter.Emit(Event_PEER_UPDATE, event)
+				// Update Peer Data in map
+				p.pushRefresh(msg.ReceivedFrom, data.Peer)
 			}
 		}
 	}()
+}
+
+// pushRefresh sends a refresh event to the emitter
+func (p *LobbyProtocol) pushRefresh(id peer.ID, peer *common.Peer) {
+	// Add Peer to map
+	p.peers[id] = peer
+
+	// Create Peer List from map
+	peers := make([]*common.Peer, 0, len(p.peers))
+	for _, peer := range p.peers {
+		peers = append(peers, peer)
+	}
+
+	// Create RefreshEvent
+	event := &common.RefreshEvent{
+		Olc:   p.location.OLC(6),
+		Peers: peers,
+	}
+
+	// Emit Event
+	p.emitter.Emit(Event_LIST_REFRESH, event)
 }

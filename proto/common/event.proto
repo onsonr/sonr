@@ -25,19 +25,9 @@ message DecisionEvent {
 }
 
 // Message Sent when peer messages Lobby
-message LobbyEvent {
-  string olc = 1;          // OLC Code of Topic
-  string id = 2;           // Peer ID
-  sonr.core.Peer peer = 3; // User Information
-  Type type = 4;           // Type of Message
-
-  // Enum for LobbyEvent type
-  enum Type {
-    NONE = 0;   // No Type - Invalid
-    JOIN = 1;   // Joined Room
-    UPDATE = 2; // Update Message
-    EXIT = 3;   // Exited Room
-  }
+message RefreshEvent {
+  string olc = 1;                    // OLC Code of Topic
+  repeated sonr.core.Peer peers = 2; // User Information
 }
 
 // InviteReach is Distance for an Invite

@@ -443,11 +443,11 @@
                 </li>
               
                 <li>
-                  <a href="#sonr.core.LobbyEvent"><span class="badge">M</span>LobbyEvent</a>
+                  <a href="#sonr.core.ProgressEvent"><span class="badge">M</span>ProgressEvent</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.core.ProgressEvent"><span class="badge">M</span>ProgressEvent</a>
+                  <a href="#sonr.core.RefreshEvent"><span class="badge">M</span>RefreshEvent</a>
                 </li>
               
                 <li>
@@ -465,10 +465,6 @@
               
                 <li>
                   <a href="#sonr.core.InviteReach"><span class="badge">E</span>InviteReach</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.core.LobbyEvent.Type"><span class="badge">E</span>LobbyEvent.Type</a>
                 </li>
               
               
@@ -567,7 +563,7 @@
             <ul>
               
                 <li>
-                  <a href="#sonr.protocols.lobby.PublishEvent"><span class="badge">M</span>PublishEvent</a>
+                  <a href="#sonr.protocols.lobby.LobbyMessage"><span class="badge">M</span>LobbyMessage</a>
                 </li>
               
               
@@ -1547,24 +1543,10 @@ Returns a stream of StatusEvents</p></td>
               </tr>
             
               <tr>
-                <td>OnLocalJoin</td>
+                <td>OnLobbyRefresh</td>
                 <td><a href="#sonr.node.Empty">Empty</a></td>
-                <td><a href="#sonr.core.LobbyEvent">.sonr.core.LobbyEvent</a> stream</td>
+                <td><a href="#sonr.core.RefreshEvent">.sonr.core.RefreshEvent</a> stream</td>
                 <td><p>Returns a stream of ExchangeEvents for Join</p></td>
-              </tr>
-            
-              <tr>
-                <td>OnLocalUpdate</td>
-                <td><a href="#sonr.node.Empty">Empty</a></td>
-                <td><a href="#sonr.core.LobbyEvent">.sonr.core.LobbyEvent</a> stream</td>
-                <td><p>Returns a stream of ExchangeEvents for Update</p></td>
-              </tr>
-            
-              <tr>
-                <td>OnLocalExit</td>
-                <td><a href="#sonr.node.Empty">Empty</a></td>
-                <td><a href="#sonr.core.LobbyEvent">.sonr.core.LobbyEvent</a> stream</td>
-                <td><p>Returns a stream of ExchangeEvents for Exit</p></td>
               </tr>
             
               <tr>
@@ -3145,51 +3127,6 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
 
         
       
-        <h3 id="sonr.core.LobbyEvent">LobbyEvent</h3>
-        <p>Message Sent when peer messages Lobby</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>olc</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>OLC Code of Topic </p></td>
-                </tr>
-              
-                <tr>
-                  <td>id</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Peer ID </p></td>
-                </tr>
-              
-                <tr>
-                  <td>peer</td>
-                  <td><a href="#sonr.core.Peer">Peer</a></td>
-                  <td></td>
-                  <td><p>User Information </p></td>
-                </tr>
-              
-                <tr>
-                  <td>type</td>
-                  <td><a href="#sonr.core.LobbyEvent.Type">LobbyEvent.Type</a></td>
-                  <td></td>
-                  <td><p>Type of Message </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
         <h3 id="sonr.core.ProgressEvent">ProgressEvent</h3>
         <p>Transfer Progress Event</p>
 
@@ -3219,6 +3156,37 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                   <td><a href="#double">double</a></td>
                   <td></td>
                   <td><p>Current Transfer Progress </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.core.RefreshEvent">RefreshEvent</h3>
+        <p>Message Sent when peer messages Lobby</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>olc</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>OLC Code of Topic </p></td>
+                </tr>
+              
+                <tr>
+                  <td>peers</td>
+                  <td><a href="#sonr.core.Peer">Peer</a></td>
+                  <td>repeated</td>
+                  <td><p>User Information </p></td>
                 </tr>
               
             </tbody>
@@ -3343,41 +3311,6 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                 <td>DIRECT</td>
                 <td>3</td>
                 <td><p>Direct Reach</p></td>
-              </tr>
-            
-          </tbody>
-        </table>
-      
-        <h3 id="sonr.core.LobbyEvent.Type">LobbyEvent.Type</h3>
-        <p>Enum for LobbyEvent type</p>
-        <table class="enum-table">
-          <thead>
-            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
-          </thead>
-          <tbody>
-            
-              <tr>
-                <td>NONE</td>
-                <td>0</td>
-                <td><p>No Type - Invalid</p></td>
-              </tr>
-            
-              <tr>
-                <td>JOIN</td>
-                <td>1</td>
-                <td><p>Joined Room</p></td>
-              </tr>
-            
-              <tr>
-                <td>UPDATE</td>
-                <td>2</td>
-                <td><p>Update Message</p></td>
-              </tr>
-            
-              <tr>
-                <td>EXIT</td>
-                <td>3</td>
-                <td><p>Exited Room</p></td>
               </tr>
             
           </tbody>
@@ -3913,8 +3846,8 @@ SName combined with Device ID and Hashed </p></td>
       <p></p>
 
       
-        <h3 id="sonr.protocols.lobby.PublishEvent">PublishEvent</h3>
-        <p>PublishEvent is message passed from Peer in Lobby Protocol</p>
+        <h3 id="sonr.protocols.lobby.LobbyMessage">LobbyMessage</h3>
+        <p>LobbyMessage is message passed from Peer in Lobby Protocol</p>
 
         
           <table class="field-table">

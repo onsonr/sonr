@@ -34,13 +34,7 @@ service NodeService {
   rpc OnNodeStatus(Empty) returns (stream sonr.core.StatusEvent) {}
 
   // Returns a stream of ExchangeEvents for Join
-  rpc OnLocalJoin(Empty) returns (stream sonr.core.LobbyEvent) {}
-
-  // Returns a stream of ExchangeEvents for Update
-  rpc OnLocalUpdate(Empty) returns (stream sonr.core.LobbyEvent) {}
-
-  // Returns a stream of ExchangeEvents for Exit
-  rpc OnLocalExit(Empty) returns (stream sonr.core.LobbyEvent) {}
+  rpc OnLobbyRefresh(Empty) returns (stream sonr.core.RefreshEvent) {}
 
   // Returns a stream of DecisionEvent's for Accepted Invites
   rpc OnTransferAccepted(Empty) returns (stream sonr.core.DecisionEvent) {}
