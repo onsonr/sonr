@@ -71,8 +71,7 @@ func (a *TransferInProgressAction) Execute(eventCtx state.EventContext) state.Ev
 		wg.Wait()
 		return TransferSuccess
 	} else {
-
+		logger.Error("Invalid Stream Direction")
 		return TransferSuccess
 	}
-
 }
