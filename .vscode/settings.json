@@ -37,24 +37,27 @@
     "go.useCodeSnippetsOnFunctionSuggestWithoutType": true,
     "go.toolsManagement.autoUpdate": true,
     "files.exclude": {
-        "**/.kodiak.toml" :true,
         "**/package-lock.json": true,
         "**/plasmic.lock": true,
         ".dart_tool": true,
         "**/**.pb.go": true,
         "**/.classpath": true,
         "**/.factorypath": true,
+        "**/.flutter-plugins": true,
+        "**/.flutter-plugins-dependencies": true,
         "**/.packages": true,
         "**/.project": true,
         "**/.settings": true,
         "**/go.sum": true,
+        "**/pubspec.lock": true,
+        "**pubspec.lock": true,
+        "**/node_modules": true,
+        "app.iml": true,
         "Contents.json": true,
         ".devcontainer": true,
-        ".gitmodules":true,
-        ".idea": true,
-        "LICENSE":true,
-
         // Project Related
+        "**/app": true,
+        "**/design": true,
         "**/sonr.wiki": true,
     },
     "[yaml]": {
@@ -70,7 +73,128 @@
             "strings": true
         }
     },
-    "protoc": {
-        "compile_all_path": "${workspaceRoot}/proto",
+    "protoc": {},
+    "better-comments.tags": [
+        {
+            "tag": "^",
+            "color": "#c982ff",
+            "strikethrough": false,
+            "underline": true,
+            "backgroundColor": "transparent",
+            "bold": true,
+            "italic": false
+        },
+        {
+            "tag": "/ ####",
+            "color": "#98C379",
+            "strikethrough": false,
+            "underline": true,
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": true
+        },
+        {
+            "tag": "/ ###",
+            "color": "#3498DB",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": true,
+            "italic": true
+        },
+        {
+            "tag": "/ ##",
+            "color": "#c982ff",
+            "strikethrough": false,
+            "underline": true,
+            "backgroundColor": "transparent",
+            "bold": true,
+            "italic": false
+        },
+        {
+            "tag": " ####",
+            "color": "#98C379",
+            "strikethrough": false,
+            "underline": true,
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": true
+        },
+        {
+            "tag": " ###",
+            "color": "#3498DB",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": true,
+            "italic": true
+        },
+        {
+            "tag": " ##",
+            "color": "#c982ff",
+            "strikethrough": false,
+            "underline": true,
+            "backgroundColor": "transparent",
+            "bold": true,
+            "italic": false
+        },
+        {
+            "tag": "todo",
+            "color": "#FF8C00",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "#FFEEEE",
+            "bold": false,
+            "italic": false
+        }
+    ],
+    "dart.autoImportCompletions": false,
+    "dart.previewFlutterUiGuidesCustomTracking": true,
+    "dart.allowAnalytics": false,
+    "dart.analyzeAngularTemplates": false,
+    "dart.devToolsReuseWindows": false,
+    "dart.flutterHotRestartOnSave": false,
+    "dart.flutterSelectDeviceWhenConnected": false,
+    "dart.showDartPadSampleCodeLens": false,
+    "dart.showDevToolsDebugToolBarButtons": false,
+    "dart.showTodos": false,
+    "dart.useKnownChromeOSPorts": false,
+    "dart.openDevTools": "flutter",
+    "dart.warnWhenEditingFilesInPubCache": false,
+    "dart.previewLsp": true,
+    "dart.warnWhenEditingFilesOutsideWorkspace": false,
+    "go.languageServerFlags": [
+        "-rpc.trace",
+        "serve",
+        "--debug=localhost:6060"
+    ],
+    "go.useLanguageServer": true,
+    "material-icon-theme.opacity": 0.75,
+    "material-icon-theme.saturation": 0.75,
+    "material-icon-theme.files.associations": {
+        "*.proto": "xml"
     },
+    "material-icon-theme.folders.associations": {
+        "Grida": "interface",
+        "bind": "dist",
+        "cli": "dist",
+        "rpc": "dist",
+        "internal": "core",
+        "CD": "pipe",
+        "pkg": "src",
+        "cmd": "core",
+        "proto": "json",
+        "common": "",
+        "config": "",
+        "util": "",
+        "service": "",
+        "workflows": "serverless",
+        "electron": "examples",
+        "flutter": "examples"
+    },
+    "github.codespaces.defaultExtensions": [
+        "GitHub.codespaces",
+        "GitHub.vscode-pull-request-github"
+    ],
+    "liveServer.settings.multiRootWorkspaceName": "🏛  Sonr"
 }
