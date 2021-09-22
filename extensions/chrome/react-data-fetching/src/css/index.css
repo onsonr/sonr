@@ -1,0 +1,52 @@
+/*
+ * This is temporary styling and can be completed removed or replaced.
+ */
+
+img {
+  height: auto;
+  max-width: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+.container {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.content {
+  padding: 50px;
+  width: 400px;
+}
+
+.content h1 {
+  font-size: 30px;
+  text-align: center;
+}
+
+.content p {
+  font-size: 16px;
+  margin: 0;
+  text-align: center;
+}
+
+.example {
+  background: #eee;
+  margin-top: 30px;
+  padding: 15px;
+  text-align: center;
+}
+
+.example ul {
+  margin: 0;
+  padding: 0;
+}
+
+.example li {
+  list-style: none;
+  margin-bottom: 10px;
+}

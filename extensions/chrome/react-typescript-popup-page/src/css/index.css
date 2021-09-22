@@ -1,0 +1,27 @@
+/*
+ * This is temporary styling and can be completed removed or replaced.
+ */
+
+img {
+  height: auto;
+  max-width: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+.content {
+  padding: 50px;
+  width: 300px;
+}
+
+.content h1 {
+  font-size: 25px;
+  text-align: center;
+}
+
+.content p {
+  margin: 0;
+  text-align: center;
+}

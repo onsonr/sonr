@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "React - Content Scripts Starter Template",
+  "description": "Starter template for a React-based content scripts extension.",
+  "version": "1.0.0",
+  "icons": {
+    "128": "icon.png"
+  },
+  "action": {
+    "default_icon": {
+      "32": "icon.png"
+    },
+    "default_title": "Open Extension"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["/static/js/main.js"],
+      "css": ["/static/css/main.css"],
+      "run_at": "document_end"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["/static/assets/*"],
+      "matches": ["http://*/*", "https://*/*"]
+    }
+  ]
+}

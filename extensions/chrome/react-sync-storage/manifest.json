@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "React - Sync Storage Starter Template",
+  "description": "Starter template for a basic sync storage extension (Chrome API).",
+  "version": "1.0.0",
+  "icons": {
+    "128": "icon.png"
+  },
+  "action": {
+    "default_icon": {
+      "32": "icon.png"
+    },
+    "default_title": "Open Page"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": ["storage"]
+}

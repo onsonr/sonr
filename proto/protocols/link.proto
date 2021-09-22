@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package sonr.protocols.link;
+import "proto/common/core.proto";
+option go_package = "github.com/sonr-io/core/pkg/link";
+
+// Message for Linking Response (Hmac Sha256)
+message LinkEvent {
+  bool success = 1;        // ID of Device to Link
+  sonr.core.Peer peer = 2; // Peer to Link
+}
+
+//  Message for a LinkRequest
+message ReceiveLinkRequest {
+  string shortID = 1;      // Short ID of Link
+  sonr.core.Peer from = 2; // Users Peer Data
+  sonr.core.Peer to = 3;   // Receivers Peer Data
+}
+
+// Message for Verification Response
+message ReceiveLinkResponse {
+  bool success = 1;        // Result for Verification
+  sonr.core.Peer from = 2; // Users Peer Data
+  sonr.core.Peer to = 3;   // Receivers Peer Data
+}
+
+message SendLinkRequest {
+  string shortID = 1;      // Short ID of Link
+  sonr.core.Peer from = 2; // Users Peer Data
+  sonr.core.Peer to = 3;   // Receivers Peer Data
+}
+
+message SendLinkResponse {
+  bool success = 1;        // Result for Verification
+  sonr.core.Peer from = 2; // Users Peer Data
+  sonr.core.Peer to = 3;   // Receivers Peer Data
+}

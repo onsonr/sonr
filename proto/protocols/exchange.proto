@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package sonr.protocols.exchange;
+import "proto/common/core.proto";
+option go_package = "github.com/sonr-io/core/pkg/exchange";
+
+// JoinExchangeRequest is Message for Signing Request (Hmac Sha256)
+message JoinExchangeRequest {
+  // Value to be signed
+  string sName = 1; // SName combined with Device ID and Hashed
+  sonr.core.Peer peer = 2;
+}
+
+// JoinExchangeResponse is Message for Signing Response (Hmac Sha256)
+message JoinExchangeResponse {
+  bool success = 1;
+  string sName = 2;        // SName combined with Device ID and Hashed
+  sonr.core.Peer peer = 3; // Peer Data
+}
