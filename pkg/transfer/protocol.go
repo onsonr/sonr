@@ -205,6 +205,7 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 	}(msgio.NewReader(s))
 }
 
+// Request Method sends a request to Transfer Data to a remote peer
 func (p *TransferProtocol) Request(id peer.ID, req *InviteRequest) error {
 	// Check if Metadata is valid
 	if req.Metadata == nil {
@@ -239,13 +240,12 @@ func (p *TransferProtocol) Request(id peer.ID, req *InviteRequest) error {
 	return nil
 }
 
+// Respond Method authenticates or declines a Transfer Request
 func (p *TransferProtocol) Respond(resp *InviteResponse) error {
-	// Get First Request in Queue
-	entry := p.requestQueue.Front()
-	if entry == nil {
-		return errors.New("No Requests in Queue")
+	// Check if Response Metadata is valid
+	if resp.Metadata == nil {
+		resp.Metadata = p.host.NewMetadata()
 	}
-	reqEntry := entry.Value.(*RequestEntry)
 
 	// sign the data
 	signature, err := p.host.SignMessage(resp)
@@ -253,14 +253,18 @@ func (p *TransferProtocol) Respond(resp *InviteResponse) error {
 		logger.Error("Failed to Sign Response Message", zap.Error(err))
 		return err
 	}
-	
-	// Check if Response Metadata is valid
-	if resp.Metadata == nil {
-		resp.Metadata = p.host.NewMetadata()
-	}
 
 	// add the signature to the message
 	resp.Metadata.Signature = signature
+
+	// Get First Request in Queue
+	entry := p.requestQueue.Front()
+	if entry == nil {
+		return errors.New("No Requests in Queue")
+	}
+
+	// Send Response
+	reqEntry := entry.Value.(*RequestEntry)
 	err = p.host.SendMessage(reqEntry.fromId, ResponsePID, resp)
 	if err != nil {
 		logger.Error("Failed to Send Message to Peer", zap.Error(err))
