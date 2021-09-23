@@ -154,7 +154,7 @@ func (n *Node) Supply(paths []string) error {
 func (n *Node) Share(peer *common.Peer) error {
 	// Create Invite Request
 	req := &transfer.InviteRequest{
-		Payload: n.queue.Front().Value.(*common.Payload),
+		Payload:  n.queue.Front().Value.(*common.Payload),
 		Metadata: n.host.NewMetadata(),
 		To:       peer,
 		From:     n.Peer(),
