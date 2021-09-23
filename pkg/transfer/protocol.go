@@ -36,6 +36,7 @@ const (
 type RequestEntry struct {
 	request *InviteRequest
 	fromId  peer.ID
+	context TransferSessionContext
 }
 
 // TransferProtocol type
@@ -114,6 +115,13 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 	// store request data into Context
 	p.requests[remotePeer.String()] = transCtx
 	p.emitter.Emit(Event_INVITED, req)
+
+	// Update State
+	err = p.state.SendEvent(InviteReceived, transCtx)
+	if err != nil {
+		logger.Error("Failed to Update State Machine.", zap.Error(err))
+		return
+	}
 }
 
 // remote ping response handler
@@ -237,6 +245,13 @@ func (p *TransferProtocol) Request(id peer.ID, req *InviteRequest) error {
 
 	// store the request in the map
 	p.requests[id.String()] = transCtx
+
+	// Update State
+	err = p.state.SendEvent(InviteShared, transCtx)
+	if err != nil {
+		logger.Error("Failed to handle State Event: ", zap.Error(err))
+		return err
+	}
 	return nil
 }
 
@@ -270,5 +285,23 @@ func (p *TransferProtocol) Respond(resp *InviteResponse) error {
 		logger.Error("Failed to Send Message to Peer", zap.Error(err))
 		return err
 	}
+
+	// Update State
+	if resp.GetSuccess() {
+		// User Decision was Accept
+		err = p.state.SendEvent(DecisionAccept, reqEntry.context)
+		if err != nil {
+			logger.Error("Failed to handle State Event: ", zap.Error(err))
+			return err
+		}
+	} else {
+		// User Decision was Reject
+		err = p.state.SendEvent(DecisionReject, reqEntry.context)
+		if err != nil {
+			logger.Error("Failed to handle State Event: ", zap.Error(err))
+			return err
+		}
+	}
+
 	return nil
 }
