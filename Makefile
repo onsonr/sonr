@@ -2,8 +2,8 @@
 SONR_ROOT_DIR=/Users/prad/Sonr
 ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 CORE_DIR=$(SONR_ROOT_DIR)/core
-CORE_RPC_DIR=$(SONR_ROOT_DIR)/core/cmd/rpc
-CORE_BIND_DIR=$(SONR_ROOT_DIR)/core/cmd/bind
+CORE_RPC_DIR=$(SONR_ROOT_DIR)/core/cmd/bin
+CORE_BIND_DIR=$(SONR_ROOT_DIR)/core/cmd/lib
 ELECTRON_BIN_DIR=$(SONR_ROOT_DIR)/electron/assets/bin/darwin
 
 # Set this -->[/Users/xxxx/Sonr/]<-- to Folder of Sonr Repos

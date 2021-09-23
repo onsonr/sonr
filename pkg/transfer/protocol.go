@@ -186,11 +186,13 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 			r := newReader(m, p.emitter)
 			f, err := device.KCConfig.Create(m.GetFile().Name)
 			if err != nil {
-				p.emitter.Emit("Error", err)
+				logger.Error("Failed to Create new File", zap.Error(err))
+				return
 			}
 			_, err = r.ReadWriteFrom(rs, f)
 			if err != nil {
-				p.emitter.Emit("Error", err)
+				logger.Error("Failed to Read from Stream and Write to File.", zap.Error(err))
+				return
 			}
 			logger.Info(fmt.Sprintf("Finished RECEIVING File (%v/%v)", i, len(req.Invite.GetTransfer().GetItems())))
 		}
@@ -212,6 +214,7 @@ func (p *TransferProtocol) Request(id peer.ID, req *InviteRequest) error {
 	// sign the data
 	signature, err := p.host.SignMessage(req)
 	if err != nil {
+		logger.Error("Failed to Sign Response Message", zap.Error(err))
 		return err
 	}
 
@@ -219,6 +222,7 @@ func (p *TransferProtocol) Request(id peer.ID, req *InviteRequest) error {
 	req.Metadata.Signature = signature
 	err = p.host.SendMessage(id, RequestPID, req)
 	if err != nil {
+		logger.Error("Failed to Send Message to Peer", zap.Error(err))
 		return err
 	}
 
@@ -246,6 +250,7 @@ func (p *TransferProtocol) Respond(resp *InviteResponse) error {
 	// sign the data
 	signature, err := p.host.SignMessage(resp)
 	if err != nil {
+		logger.Error("Failed to Sign Response Message", zap.Error(err))
 		return err
 	}
 
@@ -253,6 +258,7 @@ func (p *TransferProtocol) Respond(resp *InviteResponse) error {
 	resp.Metadata.Signature = signature
 	err = p.host.SendMessage(reqEntry.fromId, ResponsePID, resp)
 	if err != nil {
+		logger.Error("Failed to Send Message to Peer", zap.Error(err))
 		return err
 	}
 	return nil
