@@ -228,6 +228,7 @@ func (nrc *NodeRPCService) handleEmitter() {
 		// Stop Emitter if context is done
 		select {
 		case <-nrc.ctx.Done():
+			nrc.host.Close()
 			return
 		}
 	}
@@ -245,6 +246,7 @@ func (nrc *NodeRPCService) serveRPC() {
 		// Stop Serving if context is done
 		select {
 		case <-nrc.ctx.Done():
+			nrc.host.Close()
 			return
 		}
 	}
