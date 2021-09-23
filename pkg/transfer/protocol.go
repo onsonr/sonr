@@ -253,6 +253,11 @@ func (p *TransferProtocol) Respond(resp *InviteResponse) error {
 		logger.Error("Failed to Sign Response Message", zap.Error(err))
 		return err
 	}
+	
+	// Check if Response Metadata is valid
+	if resp.Metadata == nil {
+		resp.Metadata = p.host.NewMetadata()
+	}
 
 	// add the signature to the message
 	resp.Metadata.Signature = signature
