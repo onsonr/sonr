@@ -36,17 +36,17 @@ func (m *MIME) IsVideo() bool {
 }
 
 // ToTransferItem Returns Transfer for FileItem
-func (f *FileItem) ToTransferItem() *Transfer_Item {
-	return &Transfer_Item{
-		Data: &Transfer_Item_File{
+func (f *FileItem) ToTransferItem() *Payload_Item {
+	return &Payload_Item{
+		Data: &Payload_Item_File{
 			File: f,
 		},
-		Type: Transfer_Item_FILE,
+		Type: Payload_Item_FILE,
 	}
 }
 
 // NewTransferFileItem creates a new transfer file item
-func NewTransferFileItem(path string) (*Transfer_Item, error) {
+func NewTransferFileItem(path string) (*Payload_Item, error) {
 	// Extracts File Infrom from path
 	fi, err := os.Stat(path)
 	if err != nil {
@@ -88,9 +88,9 @@ func NewTransferFileItem(path string) (*Transfer_Item, error) {
 	// }
 
 	// Returns transfer item
-	return &Transfer_Item{
-		Type: Transfer_Item_FILE,
-		Data: &Transfer_Item_File{
+	return &Payload_Item{
+		Type: Payload_Item_FILE,
+		Data: &Payload_Item_File{
 			File: fileItem,
 		},
 	}, nil

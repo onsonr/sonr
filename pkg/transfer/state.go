@@ -47,7 +47,7 @@ type TransferSessionContext struct {
 	Direction TransferDirection
 	Decision  bool
 	Invite    *InviteRequest
-	Transfer  *common.Transfer
+	Transfer  *common.Payload
 	LastEvent state.EventType
 }
 

@@ -121,12 +121,12 @@ func (n *Node) Edit(p *common.Profile) error {
 // Supply a transfer item to the queue
 func (n *Node) Supply(paths []string) error {
 	// Create Transfer
-	tr := common.Transfer{
+	tr := common.Payload{
 		Metadata: n.host.NewMetadata(),
 	}
 
 	// Initialize Transfer Items and add iterate over paths
-	items := make([]*common.Transfer_Item, len(paths))
+	items := make([]*common.Payload_Item, len(paths))
 	for _, path := range paths {
 		// Check if path is a url
 		if common.IsUrl(path) {
@@ -154,7 +154,7 @@ func (n *Node) Supply(paths []string) error {
 func (n *Node) Share(peer *common.Peer) error {
 	// Create Invite Request
 	req := &transfer.InviteRequest{
-		Transfer: n.queue.Front().Value.(*common.Transfer),
+		Payload: n.queue.Front().Value.(*common.Payload),
 		Metadata: n.host.NewMetadata(),
 		To:       peer,
 		From:     n.Peer(),

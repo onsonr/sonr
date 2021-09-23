@@ -364,15 +364,15 @@
                 </li>
               
                 <li>
+                  <a href="#sonr.core.Payload"><span class="badge">M</span>Payload</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.core.Payload.Item"><span class="badge">M</span>Payload.Item</a>
+                </li>
+              
+                <li>
                   <a href="#sonr.core.Thumbnail"><span class="badge">M</span>Thumbnail</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.core.Transfer"><span class="badge">M</span>Transfer</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.core.Transfer.Item"><span class="badge">M</span>Transfer.Item</a>
                 </li>
               
                 <li>
@@ -413,11 +413,11 @@
               
               
                 <li>
-                  <a href="#sonr.core.Thumbnail.Type"><span class="badge">E</span>Thumbnail.Type</a>
+                  <a href="#sonr.core.Payload.Item.Type"><span class="badge">E</span>Payload.Item.Type</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.core.Transfer.Item.Type"><span class="badge">E</span>Transfer.Item.Type</a>
+                  <a href="#sonr.core.Thumbnail.Type"><span class="badge">E</span>Thumbnail.Type</a>
                 </li>
               
               
@@ -2310,39 +2310,8 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
 
         
       
-        <h3 id="sonr.core.Thumbnail">Thumbnail</h3>
-        <p>Thumbnail of File</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>buffer</td>
-                  <td><a href="#bytes">bytes</a></td>
-                  <td></td>
-                  <td><p>Thumbnail Buffer </p></td>
-                </tr>
-              
-                <tr>
-                  <td>path</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Thumbnail Path </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.core.Transfer">Transfer</h3>
-        <p>Transfer is Data thats being Passed</p>
+        <h3 id="sonr.core.Payload">Payload</h3>
+        <p>Payload is Data thats being Passed</p>
 
         
           <table class="field-table">
@@ -2353,7 +2322,7 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
               
                 <tr>
                   <td>items</td>
-                  <td><a href="#sonr.core.Transfer.Item">Transfer.Item</a></td>
+                  <td><a href="#sonr.core.Payload.Item">Payload.Item</a></td>
                   <td>repeated</td>
                   <td><p>Transfer Items </p></td>
                 </tr>
@@ -2393,8 +2362,8 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
 
         
       
-        <h3 id="sonr.core.Transfer.Item">Transfer.Item</h3>
-        <p>Item in Transfer</p>
+        <h3 id="sonr.core.Payload.Item">Payload.Item</h3>
+        <p>Item in Payload</p>
 
         
           <table class="field-table">
@@ -2405,7 +2374,7 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
               
                 <tr>
                   <td>type</td>
-                  <td><a href="#sonr.core.Transfer.Item.Type">Transfer.Item.Type</a></td>
+                  <td><a href="#sonr.core.Payload.Item.Type">Payload.Item.Type</a></td>
                   <td></td>
                   <td><p>Type of Item </p></td>
                 </tr>
@@ -2422,6 +2391,37 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                   <td><a href="#sonr.core.UrlItem">UrlItem</a></td>
                   <td></td>
                   <td><p>URL: Url Item </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.core.Thumbnail">Thumbnail</h3>
+        <p>Thumbnail of File</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>buffer</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>Thumbnail Buffer </p></td>
+                </tr>
+              
+                <tr>
+                  <td>path</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Thumbnail Path </p></td>
                 </tr>
               
             </tbody>
@@ -2943,6 +2943,35 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
       
 
       
+        <h3 id="sonr.core.Payload.Item.Type">Payload.Item.Type</h3>
+        <p></p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>NONE</td>
+                <td>0</td>
+                <td><p>No Item</p></td>
+              </tr>
+            
+              <tr>
+                <td>FILE</td>
+                <td>1</td>
+                <td><p>File Item</p></td>
+              </tr>
+            
+              <tr>
+                <td>URL</td>
+                <td>2</td>
+                <td><p>URL Item</p></td>
+              </tr>
+            
+          </tbody>
+        </table>
+      
         <h3 id="sonr.core.Thumbnail.Type">Thumbnail.Type</h3>
         <p></p>
         <table class="enum-table">
@@ -2967,35 +2996,6 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                 <td>PATH</td>
                 <td>2</td>
                 <td><p>Thumbnail Path</p></td>
-              </tr>
-            
-          </tbody>
-        </table>
-      
-        <h3 id="sonr.core.Transfer.Item.Type">Transfer.Item.Type</h3>
-        <p></p>
-        <table class="enum-table">
-          <thead>
-            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
-          </thead>
-          <tbody>
-            
-              <tr>
-                <td>NONE</td>
-                <td>0</td>
-                <td><p>No Item</p></td>
-              </tr>
-            
-              <tr>
-                <td>FILE</td>
-                <td>1</td>
-                <td><p>File Item</p></td>
-              </tr>
-            
-              <tr>
-                <td>URL</td>
-                <td>2</td>
-                <td><p>URL Item</p></td>
               </tr>
             
           </tbody>
@@ -3031,8 +3031,8 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                 </tr>
               
                 <tr>
-                  <td>transfer</td>
-                  <td><a href="#sonr.core.Transfer">Transfer</a></td>
+                  <td>payload</td>
+                  <td><a href="#sonr.core.Payload">Payload</a></td>
                   <td></td>
                   <td><p>Transfer Data </p></td>
                 </tr>
@@ -3107,8 +3107,8 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                 </tr>
               
                 <tr>
-                  <td>transfer</td>
-                  <td><a href="#sonr.core.Transfer">Transfer</a></td>
+                  <td>payload</td>
+                  <td><a href="#sonr.core.Payload">Payload</a></td>
                   <td></td>
                   <td><p>Attached Data </p></td>
                 </tr>
@@ -4127,8 +4127,8 @@ SName combined with Device ID and Hashed </p></td>
                 </tr>
               
                 <tr>
-                  <td>transfer</td>
-                  <td><a href="#sonr.core.Transfer">sonr.core.Transfer</a></td>
+                  <td>payload</td>
+                  <td><a href="#sonr.core.Payload">sonr.core.Payload</a></td>
                   <td></td>
                   <td><p>Attached Data </p></td>
                 </tr>
@@ -4179,8 +4179,8 @@ SName combined with Device ID and Hashed </p></td>
                 </tr>
               
                 <tr>
-                  <td>transfer</td>
-                  <td><a href="#sonr.core.Transfer">sonr.core.Transfer</a></td>
+                  <td>payload</td>
+                  <td><a href="#sonr.core.Payload">sonr.core.Payload</a></td>
                   <td></td>
                   <td><p>Attached Data </p></td>
                 </tr>

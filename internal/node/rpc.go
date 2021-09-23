@@ -184,7 +184,7 @@ func (nrc *NodeRPCService) handleEmitter() {
 			invEvent := &common.InviteEvent{
 				InviteId: inv.GetInviteId(),
 				From:     inv.GetFrom(),
-				Transfer: inv.GetTransfer(),
+				Payload:  inv.GetPayload(),
 			}
 			nrc.inviteEvents <- invEvent
 		})
@@ -212,9 +212,9 @@ func (nrc *NodeRPCService) handleEmitter() {
 
 		// Handle Transfer Completed
 		nrc.Node.On(transfer.Event_COMPLETED, func(e *emitter.Event) {
-			result := e.Args[0].(*common.Transfer)
+			result := e.Args[0].(*common.Payload)
 			compEvent := &common.CompleteEvent{
-				Transfer: result,
+				Payload: result,
 			}
 			nrc.completeEvents <- compEvent
 		})

@@ -42,8 +42,8 @@ enum InviteReach {
 message InviteEvent {
   string inviteId = 1;
   sonr.core.Peer from = 2;
-  sonr.core.Transfer transfer = 3; // Attached Data
-  InviteReach reach = 4;           // Reach of Invite
+  sonr.core.Payload payload = 3; // Attached Data
+  InviteReach reach = 4;         // Reach of Invite
 }
 
 // Transfer Progress Event
@@ -56,7 +56,7 @@ message ProgressEvent {
 // Message Sent after Completed Transfer
 message CompleteEvent {
   Direction direction = 1; // Transfer Direction
-  Transfer transfer = 2;   // Transfer Data
+  Payload payload = 2;     // Transfer Data
 
   // Traffic Direction of Session
   enum Direction {

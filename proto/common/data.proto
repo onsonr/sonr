@@ -14,27 +14,15 @@ message FileItem {
   Thumbnail thumb = 6;     // Thumbnail of File
 }
 
-// Thumbnail of File
-message Thumbnail {
-  bytes buffer = 1; // Thumbnail Buffer
-  string path = 2;  // Thumbnail Path
-
-  enum Type {
-    NONE = 0;   // No Thumbnail
-    BUFFER = 1; // Thumbnail Buffer
-    PATH = 2;   // Thumbnail Path
-  }
-}
-
-// Transfer is Data thats being Passed
-message Transfer {
+// Payload is Data thats being Passed
+message Payload {
   repeated Item items = 1; // Transfer Items
   string id = 2;           // Transfer ID
   Profile receiver = 4;    // PROFILE: General Receiver Info
   Profile owner = 5;       // PROFILE: General Sender Info
   Metadata metadata = 6;   // METADATA: General Transfer Info
 
-  // Item in Transfer
+  // Item in Payload
   message Item {
     Type type = 1; // Type of Item
 
@@ -49,6 +37,18 @@ message Transfer {
       FILE = 1; // File Item
       URL = 2;  // URL Item
     }
+  }
+}
+
+// Thumbnail of File
+message Thumbnail {
+  bytes buffer = 1; // Thumbnail Buffer
+  string path = 2;  // Thumbnail Path
+
+  enum Type {
+    NONE = 0;   // No Thumbnail
+    BUFFER = 1; // Thumbnail Buffer
+    PATH = 2;   // Thumbnail Path
   }
 }
 

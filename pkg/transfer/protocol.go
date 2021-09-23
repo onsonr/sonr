@@ -108,7 +108,7 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 		To:       remotePeer,
 		From:     p.host.ID(),
 		Invite:   req,
-		Transfer: req.GetTransfer(),
+		Transfer: req.GetPayload(),
 	}
 
 	// store request data into Context
@@ -182,7 +182,7 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 	// Concurrent Function
 	go func(rs msgio.ReadCloser) {
 		// Read All Files
-		for i, m := range req.Invite.GetTransfer().GetItems() {
+		for i, m := range req.Invite.GetPayload().GetItems() {
 			r := newReader(m, p.emitter)
 			f, err := device.KCConfig.Create(m.GetFile().Name)
 			if err != nil {
@@ -194,14 +194,14 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 				logger.Error("Failed to Read from Stream and Write to File.", zap.Error(err))
 				return
 			}
-			logger.Info(fmt.Sprintf("Finished RECEIVING File (%v/%v)", i, len(req.Invite.GetTransfer().GetItems())))
+			logger.Info(fmt.Sprintf("Finished RECEIVING File (%v/%v)", i, len(req.Invite.GetPayload().GetItems())))
 		}
 
 		// Close Stream
 		rs.Close()
 
 		// Set Status
-		p.emitter.Emit(Event_COMPLETED, req.Invite.GetTransfer())
+		p.emitter.Emit(Event_COMPLETED, req.Invite.GetPayload())
 	}(msgio.NewReader(s))
 }
 
@@ -231,7 +231,7 @@ func (p *TransferProtocol) Request(id peer.ID, req *InviteRequest) error {
 		To:       id,
 		From:     p.host.ID(),
 		Invite:   req,
-		Transfer: req.GetTransfer(),
+		Transfer: req.GetPayload(),
 	}
 
 	// store the request in the map
