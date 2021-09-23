@@ -73,7 +73,7 @@ bind: protobuf bind.ios bind.android
 	@echo ""
 	@echo ""
 	@echo "----------------------------------------------------------------"
-	@echo "-------- ✅ ✅ ✅  SUCCESFUL MOBILE BIND  ✅ ✅ ✅  --------------"
+	@echo "-------- ✅ ✅ ✅  COMPLETED MOBILE BIND  ✅ ✅ ✅  --------------"
 	@echo "----------------------------------------------------------------"
 
 
@@ -87,7 +87,7 @@ bind.android:
 	@go get golang.org/x/mobile/bind
 	@gomobile init
 	cd $(CORE_BIND_DIR) && doppler run --command "$(GOBIND_ANDROID) -o $(BIND_ANDROID_ARTIFACT)"
-	@echo "✅ Finished Binding ➡ " && date
+	@echo "✅ Finished Binding Android ➡ `date`"
 	@echo ""
 
 
@@ -100,15 +100,15 @@ bind.ios:
 	@echo "--------------------------------------------------------------"
 	@go get golang.org/x/mobile/bind
 	cd $(CORE_BIND_DIR) && doppler run --command "$(GOBIND_IOS) -o $(BIND_IOS_ARTIFACT)"
-	@echo "✅ Finished Binding ➡ " && date
+	@echo "✅ Finished Binding iOS ➡ `date`"
 	@echo ""
 
 ##
 ## [proto]     :   Compiles Protobuf models for Core Library and Plugin
 protobuf:
-	@echo "----"
-	@echo "Sonr: Compiling Protobufs"
-	@echo "----"
+	@echo "-------------------------------------------------------------------"
+	@echo "-------------- 🔮 COMPILING PROTOBUFS 🔮 ---------------------------"
+	@echo "-------------------------------------------------------------------"
 	@echo "Generating Protobuf Go code..."
 	@protoc $(PROTO_LIST_ALL) --proto_path=$(ROOT_DIR) $(PROTO_GEN_GO) $(GO_OPT_FLAG)
 	@echo "Generating Protobuf Go RPC code..."
@@ -124,7 +124,9 @@ protobuf:
 ##
 ## [release]   :   Upload RPC Binary Artifact to S3
 release: protobuf
-	@echo "Building Artifacts..."
+	@echo "------------------------------------------------------------------"
+	@echo "-------------- 🔨 BUILDING ARTIFACTS 🔨 ---------------------------"
+	@echo "------------------------------------------------------------------"
 	@cd $(CORE_RPC_DIR) && goreleaser release --rm-dist
 	@echo "Cleaning up build cache..."
 	@cd $(CORE_DIR) && go mod tidy
