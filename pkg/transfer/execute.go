@@ -39,7 +39,11 @@ type TransferInProgressAction struct {
 
 func (a *TransferInProgressAction) Execute(eventCtx state.EventContext) state.EventType {
 	// Fetch the transfer context
-	transferCtx := eventCtx.(*TransferSessionContext)
+	transferCtx, ok := eventCtx.(TransferSessionContext)
+	if !ok {
+		logger.Error("Invalid Type conversion")
+		return TransferFail
+	}
 	transfer := transferCtx.Transfer
 
 	// Check Direction
