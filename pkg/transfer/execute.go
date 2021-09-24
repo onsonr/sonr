@@ -67,7 +67,7 @@ func (a *TransferInProgressAction) Execute(eventCtx state.EventContext) state.Ev
 		// Write All Files
 		for i, m := range transfer.Items {
 			wg.Add(1)
-			w := newWriter(m, a.emitter)
+			w := newWriter(m, a.emitter, i)
 			err := w.WriteTo(ws)
 			if err != nil {
 				a.emitter.Emit("Error", err)

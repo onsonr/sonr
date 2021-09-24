@@ -1,4 +1,4 @@
-package transfer
+package config
 
 import (
 	"errors"

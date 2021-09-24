@@ -3,7 +3,9 @@ package transfer
 import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/common"
+	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/tools/state"
+	"go.uber.org/zap"
 )
 
 type TransferDirection int
@@ -53,7 +55,7 @@ type TransferSessionContext struct {
 
 // initStateMachine initializes the state machine
 func (p *TransferProtocol) initStateMachine() {
-	p.state = state.StateMachine{
+	machine := state.StateMachine{
 		States: state.States{
 			state.Default: state.State{
 				Events: state.Events{
@@ -88,4 +90,6 @@ func (p *TransferProtocol) initStateMachine() {
 			},
 		},
 	}
+	logger.Info("Set State Machine", zap.Any("Machine", &machine))
+	//p.state = machine
 }

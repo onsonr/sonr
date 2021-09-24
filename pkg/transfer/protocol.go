@@ -2,8 +2,10 @@ package transfer
 
 import (
 	"container/list"
+	"context"
 	"errors"
 	"fmt"
+	sync "sync"
 
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -13,7 +15,6 @@ import (
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/tools/emitter"
 	"github.com/sonr-io/core/tools/logger"
-	"github.com/sonr-io/core/tools/state"
 	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )
@@ -45,7 +46,7 @@ type TransferProtocol struct {
 	requestQueue *list.List                        // Queue of Requests
 	requests     map[string]TransferSessionContext // used to access request data from response
 	emitter      *emitter.Emitter                  // Handle to signal when done
-	state        state.StateMachine                // State machine for the transfer protocol
+	//state        state.StateMachine                // State machine for the transfer protocol
 }
 
 // NewProtocol creates a new TransferProtocol
@@ -64,7 +65,7 @@ func NewProtocol(host *host.SNRHost, em *emitter.Emitter) *TransferProtocol {
 	host.SetStreamHandler(SessionPID, invProtocol.onIncomingTransfer)
 
 	// Initialize the state machine
-	invProtocol.initStateMachine()
+	//invProtocol.initStateMachine()
 	return invProtocol
 }
 
@@ -116,12 +117,12 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 	p.requests[remotePeer.String()] = transCtx
 	p.emitter.Emit(Event_INVITED, req)
 
-	// Update State
-	err = p.state.SendEvent(InviteReceived, transCtx)
-	if err != nil {
-		logger.Error("Failed to Update State Machine.", zap.Error(err))
-		return
-	}
+	// // Update State
+	// err = p.state.SendEvent(InviteReceived, transCtx)
+	// if err != nil {
+	// 	logger.Error("Failed to Update State Machine.", zap.Error(err))
+	// 	return
+	// }
 }
 
 // remote ping response handler
@@ -156,27 +157,40 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 	// locate request data and remove it if found
 	req, ok := p.requests[remotePeer.String()]
 	if ok && resp.Success {
-		err := p.state.SendEvent(PeerAccepted, req)
-		if err != nil {
-			logger.Error("Failed to handle State Event: ", zap.Error(err))
-		}
-		delete(p.requests, remotePeer.String())
-	} else {
-		// Check if the request is not in the queue
-		if !ok {
-			logger.Error("Failed to locate request data object for RESPONSE.", zap.Error(err))
-			return
-		}
+		// err := p.state.SendEvent(PeerAccepted, req)
+		// if err != nil {
+		// 	logger.Error("Failed to handle State Event: ", zap.Error(err))
+		// }
 
-		// Check if the request was denied
-		if !resp.Success {
-			err := p.state.SendEvent(PeerRejected, req)
+		logger.Info("Beginning Outgoing Transfer Stream")
+		wg := sync.WaitGroup{}
+		// Concurrent Function
+		go func() {
+			// Create a new stream
+			stream, err := p.host.NewStream(context.Background(), remotePeer, SessionPID)
+			ws := msgio.NewWriter(stream)
 			if err != nil {
-				logger.Error("Failed to handle State Event: ", zap.Error(err))
+				logger.Error("Failed to Start new Stream", zap.Error(err))
 				return
 			}
-			delete(p.requests, remotePeer.String())
-		}
+
+			// Write All Files
+			for i, m := range req.Transfer.Items {
+				wg.Add(1)
+				w := newWriter(m, p.emitter, i)
+				err := w.WriteTo(ws)
+				if err != nil {
+					p.emitter.Emit("Error", err)
+				}
+				logger.Info(fmt.Sprintf("Finished TRANSFERRING File (%v/%v)", i, len(req.Transfer.Items)))
+				wg.Done()
+			}
+
+			// Emit Completed
+			p.emitter.Emit(Event_COMPLETED)
+		}()
+		wg.Wait()
+		delete(p.requests, remotePeer.String())
 	}
 	p.emitter.Emit(Event_RESPONDED, resp)
 
@@ -191,7 +205,7 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 	go func(rs msgio.ReadCloser) {
 		// Read All Files
 		for i, m := range req.Invite.GetPayload().GetItems() {
-			r := newReader(m, p.emitter)
+			r := newReader(m, p.emitter, i)
 			f, err := device.KCConfig.Create(m.GetFile().Name)
 			if err != nil {
 				logger.Error("Failed to Create new File", zap.Error(err))
@@ -246,12 +260,12 @@ func (p *TransferProtocol) Request(id peer.ID, req *InviteRequest) error {
 	// store the request in the map
 	p.requests[id.String()] = transCtx
 
-	// Update State
-	err = p.state.SendEvent(InviteShared, transCtx)
-	if err != nil {
-		logger.Error("Failed to handle State Event: ", zap.Error(err))
-		return err
-	}
+	// // Update State
+	// err = p.state.SendEvent(InviteShared, transCtx)
+	// if err != nil {
+	// 	logger.Error("Failed to handle State Event: ", zap.Error(err))
+	// 	return err
+	// }
 	return nil
 }
 
@@ -286,22 +300,22 @@ func (p *TransferProtocol) Respond(resp *InviteResponse) error {
 		return err
 	}
 
-	// Update State
-	if resp.GetSuccess() {
-		// User Decision was Accept
-		err = p.state.SendEvent(DecisionAccept, reqEntry.context)
-		if err != nil {
-			logger.Error("Failed to handle State Event: ", zap.Error(err))
-			return err
-		}
-	} else {
-		// User Decision was Reject
-		err = p.state.SendEvent(DecisionReject, reqEntry.context)
-		if err != nil {
-			logger.Error("Failed to handle State Event: ", zap.Error(err))
-			return err
-		}
-	}
+	// // Update State
+	// if resp.GetSuccess() {
+	// 	// User Decision was Accept
+	// 	err = p.state.SendEvent(DecisionAccept, reqEntry.context)
+	// 	if err != nil {
+	// 		logger.Error("Failed to handle State Event: ", zap.Error(err))
+	// 		return err
+	// 	}
+	// } else {
+	// 	// User Decision was Reject
+	// 	err = p.state.SendEvent(DecisionReject, reqEntry.context)
+	// 	if err != nil {
+	// 		logger.Error("Failed to handle State Event: ", zap.Error(err))
+	// 		return err
+	// 	}
+	// }
 
 	return nil
 }
