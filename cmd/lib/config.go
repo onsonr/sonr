@@ -1,4 +1,4 @@
-package bind
+package lib
 
 import (
 	"github.com/sonr-io/core/internal/device"
