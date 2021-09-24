@@ -26,15 +26,15 @@ message Thumbnail {
   }
 }
 
-// Transfer is Data thats being Passed
-message Transfer {
-  repeated Item items = 1; // Transfer Items
-  string id = 2;           // Transfer ID
+// Payload is Data thats being Passed
+message Payload {
+  repeated Item items = 1; // Payload Items
+  string id = 2;           // Payload ID
   Profile receiver = 4;    // PROFILE: General Receiver Info
   Profile owner = 5;       // PROFILE: General Sender Info
-  Metadata metadata = 6;   // METADATA: General Transfer Info
+  Metadata metadata = 6;   // METADATA: General Payload Info
 
-  // Item in Transfer
+  // Item in Payload
   message Item {
     Type type = 1; // Type of Item
 

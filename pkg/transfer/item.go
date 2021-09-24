@@ -22,7 +22,7 @@ type itemReader struct {
 	index   int
 	size    int
 	total   int
-	item    *common.Transfer_Item
+	item    *common.Payload_Item
 }
 
 type ItemWriter interface {
@@ -35,20 +35,22 @@ type itemWriter struct {
 	emitter *emitter.Emitter
 	index   int
 	size    int
-	item    *common.Transfer_Item
+	item    *common.Payload_Item
 }
 
-func newWriter(i *common.Transfer_Item, em *emitter.Emitter) ItemWriter {
+func newWriter(i *common.Payload_Item, em *emitter.Emitter, index int) ItemWriter {
 	return &itemWriter{
 		item:    i,
 		emitter: em,
+		index:   index,
 	}
 }
 
-func newReader(i *common.Transfer_Item, em *emitter.Emitter) ItemReader {
+func newReader(i *common.Payload_Item, em *emitter.Emitter, index int) ItemReader {
 	return &itemReader{
 		item:    i,
 		emitter: em,
+		index:   index,
 	}
 }
 

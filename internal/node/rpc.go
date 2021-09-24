@@ -82,7 +82,7 @@ func NewRPCService(ctx context.Context, n *Node) (*NodeRPCService, error) {
 			invEvent := &common.InviteEvent{
 				InviteId: inv.GetInviteId(),
 				From:     inv.GetFrom(),
-				Transfer: inv.GetTransfer(),
+				Payload: inv.GetPayload(),
 			}
 			nrc.inviteEvents <- invEvent
 		})
