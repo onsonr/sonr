@@ -17,7 +17,7 @@ enum InviteReach {
 message InviteEvent {
   string inviteId = 1;
   sonr.core.Peer from = 2;
-  sonr.core.Transfer transfer = 3; // Attached Data
+  sonr.core.Payload payload = 3; // Attached Data
   InviteReach reach = 4;           // Reach of Invite
 }
 
@@ -26,7 +26,7 @@ message InviteRequest {
   string inviteId = 1;
   sonr.core.Peer from = 2;         // Users Peer Data
   sonr.core.Peer to = 3;           // Receivers Peer Data
-  sonr.core.Transfer transfer = 4; // Attached Data
+  sonr.core.Payload payload = 4; // Attached Data
   InviteReach reach = 5;           // Reach of Invite
   sonr.core.Metadata metadata = 6; // Metadata
 }

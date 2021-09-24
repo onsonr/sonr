@@ -52,7 +52,7 @@ func (a *TransferInProgressAction) Execute(eventCtx state.EventContext) state.Ev
 		logger.Error("Invalid Type conversion")
 		return TransferFail
 	}
-	transfer := transferCtx.Transfer
+	transfer := transferCtx.Payload
 	// Create a new stream
 	stream, err := a.host.NewStream(context.Background(), transferCtx.To, SessionPID)
 	if err != nil {

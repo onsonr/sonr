@@ -24,10 +24,10 @@ func IsUrl(s string) bool {
 }
 
 // NewTransferUrlItem creates a new transfer url item
-func NewTransferUrlItem(url string) *Transfer_Item {
-	return &Transfer_Item{
-		Type: Transfer_Item_URL,
-		Data: &Transfer_Item_Url{
+func NewTransferUrlItem(url string) *Payload_Item {
+	return &Payload_Item{
+		Type: Payload_Item_URL,
+		Data: &Payload_Item_Url{
 			Url: NewURLLink(url),
 		},
 	}
@@ -140,12 +140,12 @@ func (u *UrlItem) SetData() {
 }
 
 // ToTransferItem Returns Transfer for URLLink
-func (u *UrlItem) ToTransferItem() *Transfer_Item {
-	return &Transfer_Item{
-		Data: &Transfer_Item_Url{
+func (u *UrlItem) ToTransferItem() *Payload_Item {
+	return &Payload_Item{
+		Data: &Payload_Item_Url{
 			Url: u,
 		},
-		Type: Transfer_Item_URL,
+		Type: Payload_Item_URL,
 	}
 }
 
