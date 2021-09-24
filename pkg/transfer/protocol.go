@@ -177,7 +177,7 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 			// Write All Files
 			for i, m := range req.Payload.Items {
 				wg.Add(1)
-				w := newWriter(m, p.emitter, i)
+				w := m.NewWriter(i, len(req.Payload.Items), device.DocsPath, p.emitter)
 				err := w.WriteTo(ws)
 				if err != nil {
 					p.emitter.Emit("Error", err)
@@ -205,13 +205,8 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 	go func(rs msgio.ReadCloser) {
 		// Read All Files
 		for i, m := range req.Invite.GetPayload().GetItems() {
-			r := newReader(m, p.emitter, i)
-			f, err := device.KCConfig.Create(m.GetFile().Name)
-			if err != nil {
-				logger.Error("Failed to Create new File", zap.Error(err))
-				return
-			}
-			_, err = r.ReadWriteFrom(rs, f)
+			r := m.NewReader(i, len(req.Payload.Items), device.DocsPath, p.emitter)
+			err := r.ReadFrom(rs)
 			if err != nil {
 				logger.Error("Failed to Read from Stream and Write to File.", zap.Error(err))
 				return

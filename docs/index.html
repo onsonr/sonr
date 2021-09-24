@@ -360,6 +360,10 @@
             <ul>
               
                 <li>
+                  <a href="#sonr.core.Chunk"><span class="badge">M</span>Chunk</a>
+                </li>
+              
+                <li>
                   <a href="#sonr.core.FileItem"><span class="badge">M</span>FileItem</a>
                 </li>
               
@@ -2268,6 +2272,51 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
       </div>
       <p></p>
 
+      
+        <h3 id="sonr.core.Chunk">Chunk</h3>
+        <p>For Transfer Chunk Transmission</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>offset</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p>Offset is number of bytes from the beginning of the reader to chunk </p></td>
+                </tr>
+              
+                <tr>
+                  <td>length</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p>Length is number of bytes in the chunk </p></td>
+                </tr>
+              
+                <tr>
+                  <td>data</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>Data is the actual chunk </p></td>
+                </tr>
+              
+                <tr>
+                  <td>fingerprint</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>Fingerprint is the value of rolling hash of the chunk </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
       
         <h3 id="sonr.core.FileItem">FileItem</h3>
         <p>For Transfer File Payload</p>
