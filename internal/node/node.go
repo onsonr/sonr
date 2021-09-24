@@ -13,7 +13,6 @@ import (
 	"github.com/sonr-io/core/pkg/transfer"
 	"github.com/sonr-io/core/tools/emitter"
 	"github.com/sonr-io/core/tools/logger"
-	"github.com/sonr-io/core/tools/state"
 	"go.uber.org/zap"
 )
 
@@ -27,11 +26,8 @@ type Node struct {
 	// Emitter is the event emitter for this node
 	*emitter.Emitter
 
-	// StateMachine state
-	*state.StateMachine
-
 	// Host and context
-	*host.SNRHost
+	host *host.SNRHost
 
 	// Properties
 	ctx context.Context
@@ -57,7 +53,7 @@ func NewNode(ctx context.Context, host *host.SNRHost, loc *common.Location) *Nod
 	// Initialize Node
 	node := &Node{
 		Emitter: emitter.New(2048),
-		SNRHost: host,
+		host:    host,
 		ctx:     ctx,
 		queue:   list.New(),
 	}
@@ -89,7 +85,7 @@ func NewNode(ctx context.Context, host *host.SNRHost, loc *common.Location) *Nod
 // Peer method returns the peer of the node
 func (n *Node) Peer() *common.Peer {
 	// Find PublicKey Buffer
-	pubBuf, err := crypto.MarshalPublicKey(n.SNRHost.PublicKey())
+	pubBuf, err := crypto.MarshalPublicKey(n.host.PublicKey())
 	if err != nil {
 		logger.Error("Failed to marshal public key", zap.Error(err))
 		return nil
@@ -124,7 +120,7 @@ func (n *Node) Edit(p *common.Profile) error {
 func (n *Node) Supply(paths []string) error {
 	// Create Transfer
 	tr := common.Payload{
-		Metadata: n.NewMetadata(),
+		Metadata: n.host.NewMetadata(),
 	}
 
 	// Initialize Transfer Items and add iterate over paths
@@ -158,7 +154,7 @@ func (n *Node) Share(peer *common.Peer) error {
 	// Create Invite Request
 	req := &transfer.InviteRequest{
 		Payload:  n.queue.Front().Value.(*common.Payload),
-		Metadata: n.NewMetadata(),
+		Metadata: n.host.NewMetadata(),
 		To:       peer,
 		From:     n.Peer(),
 	}

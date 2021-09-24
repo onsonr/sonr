@@ -25,19 +25,9 @@ message DecisionEvent {
 }
 
 // Message Sent when peer messages Lobby
-message LobbyEvent {
-  string olc = 1;          // OLC Code of Topic
-  string id = 2;           // Peer ID
-  sonr.core.Peer peer = 3; // User Information
-  Type type = 4;           // Type of Message
-
-  // Enum for LobbyEvent type
-  enum Type {
-    NONE = 0;   // No Type - Invalid
-    JOIN = 1;   // Joined Room
-    UPDATE = 2; // Update Message
-    EXIT = 3;   // Exited Room
-  }
+message RefreshEvent {
+  string olc = 1;                    // OLC Code of Topic
+  repeated sonr.core.Peer peers = 2; // User Information
 }
 
 // InviteReach is Distance for an Invite
@@ -53,7 +43,7 @@ message InviteEvent {
   string inviteId = 1;
   sonr.core.Peer from = 2;
   sonr.core.Payload payload = 3; // Attached Data
-  InviteReach reach = 4;           // Reach of Invite
+  InviteReach reach = 4;         // Reach of Invite
 }
 
 // Transfer Progress Event
@@ -66,7 +56,7 @@ message ProgressEvent {
 // Message Sent after Completed Transfer
 message CompleteEvent {
   Direction direction = 1; // Transfer Direction
-  Payload payload = 2;   // Transfer Data
+  Payload payload = 2;     // Transfer Data
 
   // Traffic Direction of Session
   enum Direction {
