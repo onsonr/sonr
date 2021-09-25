@@ -59,7 +59,7 @@ func NewNode(ctx context.Context, host *host.SNRHost, loc *common.Location) *Nod
 	}
 
 	// Set Transfer Protocol
-	node.TransferProtocol = transfer.NewProtocol(host, node.Emitter)
+	node.TransferProtocol = transfer.NewProtocol(ctx, host, node.Emitter)
 	node.Emit(Event_STATUS, true, "Transfer Protocol Set")
 
 	// Set Exchange Protocol

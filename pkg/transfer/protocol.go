@@ -11,6 +11,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/libp2p/go-msgio"
+	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/tools/emitter"
@@ -42,6 +43,7 @@ type RequestEntry struct {
 
 // TransferProtocol type
 type TransferProtocol struct {
+	ctx          context.Context
 	host         *host.SNRHost                     // local host
 	requestQueue *list.List                        // Queue of Requests
 	requests     map[string]TransferSessionContext // used to access request data from response
@@ -50,9 +52,10 @@ type TransferProtocol struct {
 }
 
 // NewProtocol creates a new TransferProtocol
-func NewProtocol(host *host.SNRHost, em *emitter.Emitter) *TransferProtocol {
+func NewProtocol(ctx context.Context, host *host.SNRHost, em *emitter.Emitter) *TransferProtocol {
 	// create a new transfer protocol
 	invProtocol := &TransferProtocol{
+		ctx:          ctx,
 		host:         host,
 		requests:     make(map[string]TransferSessionContext),
 		emitter:      em,
@@ -162,34 +165,34 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 		//  logger.Error("Failed to handle State Event: ", zap.Error(err))
 		// }
 
+		// Create a new stream
+		stream, err := p.host.NewStream(p.ctx, remotePeer, SessionPID)
+		if err != nil {
+			logger.Error("Failed to create new stream.", zap.Error(err))
+			return
+		}
+
+		// Logging Info
 		logger.Info("Beginning Outgoing Transfer Stream")
 		wg := sync.WaitGroup{}
-		// Concurrent Function
-		go func() {
-			// Create a new stream
-			stream, err := p.host.NewStream(context.Background(), remotePeer, SessionPID)
-			ws := msgio.NewWriter(stream)
+		wc := msgio.NewWriter(stream)
+
+		// Write All Files
+		for i, m := range req.Payload.Items {
+			wg.Add(1)
+			w := common.NewWriter(m, i, len(req.Payload.Items), device.DocsPath, p.emitter)
+			err := w.WriteTo(wc)
 			if err != nil {
-				logger.Error("Failed to Start new Stream", zap.Error(err))
+				logger.Error("Error writing stream", zap.Error(err))
 				return
 			}
-
-			// Write All Files
-			for i, m := range req.Payload.Items {
-				wg.Add(1)
-				w := m.NewWriter(i, len(req.Payload.Items), device.DocsPath, p.emitter)
-				err := w.WriteTo(ws)
-				if err != nil {
-					p.emitter.Emit("Error", err)
-				}
-				logger.Info(fmt.Sprintf("Finished TRANSFERRING File (%v/%v)", i, len(req.Payload.Items)))
-				wg.Done()
-			}
-
-			// Emit Completed
-			p.emitter.Emit(Event_COMPLETED)
-		}()
+			logger.Info(fmt.Sprintf("Finished TRANSFERRING File (%v/%v)", i, len(req.Payload.Items)))
+			wg.Done()
+		}
 		wg.Wait()
+
+		// Emit Completed
+		p.emitter.Emit(Event_COMPLETED)
 		delete(p.requests, remotePeer.String())
 	}
 	p.emitter.Emit(Event_RESPONDED, resp)
@@ -205,7 +208,7 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 	go func(rs msgio.ReadCloser) {
 		// Read All Files
 		for i, m := range req.Invite.GetPayload().GetItems() {
-			r := m.NewReader(i, len(req.Payload.Items), device.DocsPath, p.emitter)
+			r := common.NewReader(m, i, len(req.Payload.Items), device.DocsPath, p.emitter)
 			err := r.ReadFrom(rs)
 			if err != nil {
 				logger.Error("Failed to Read from Stream and Write to File.", zap.Error(err))

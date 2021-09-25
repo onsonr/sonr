@@ -10,11 +10,13 @@ import (
 	sync "sync"
 
 	"github.com/gabriel-vasile/mimetype"
+	"go.uber.org/zap"
 
 	msg "github.com/libp2p/go-msgio"
 
 	"github.com/sonr-io/core/tools/config"
 	"github.com/sonr-io/core/tools/emitter"
+	"github.com/sonr-io/core/tools/logger"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -108,10 +110,10 @@ func NewTransferFileItem(path string) (*Payload_Item, error) {
 }
 
 // ** ─── SFile_Item MANAGEMENT ────────────────────────────────────────────────────────
-func (i *Payload_Item) NewReader(index int, total int, docsDir string, em *emitter.Emitter) ItemReader {
+func NewReader(pi *Payload_Item, index int, total int, docsDir string, em *emitter.Emitter) ItemReader {
 	// Return Reader
 	return &itemReader{
-		item:    i.GetFile(),
+		item:    pi.GetFile(),
 		size:    0,
 		emitter: em,
 		index:   index,
@@ -120,9 +122,9 @@ func (i *Payload_Item) NewReader(index int, total int, docsDir string, em *emitt
 	}
 }
 
-func (m *Payload_Item) NewWriter(index int, total int, docsDir string, em *emitter.Emitter) ItemWriter {
+func NewWriter(pi *Payload_Item, index int, total int, docsDir string, em *emitter.Emitter) ItemWriter {
 	return &itemWriter{
-		item:    m.GetFile(),
+		item:    pi.GetFile(),
 		size:    0,
 		emitter: em,
 		index:   index,
@@ -235,8 +237,11 @@ func (p *itemWriter) Progress() []byte {
 	return buf
 }
 
+// Write Item to Stream
 func (iw *itemWriter) WriteTo(writer msg.WriteCloser) error {
-	// Write Item to Stream
+	// Print Item Info
+	logger.Info("Current Item Info: ", zap.String("Path", iw.item.Path), zap.String("Name", iw.item.Name), zap.Int("Size", int(iw.item.Size)), zap.String("Mime", iw.item.GetMime().String()))
+	
 	// Open Os File
 	f, err := os.Open(iw.item.Path)
 	if err != nil {

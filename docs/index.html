@@ -482,6 +482,14 @@
             <ul>
               
                 <li>
+                  <a href="#sonr.protocols.exchange.CreateSNameRequest"><span class="badge">M</span>CreateSNameRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.protocols.exchange.CreateSNameResponse"><span class="badge">M</span>CreateSNameResponse</a>
+                </li>
+              
+                <li>
                   <a href="#sonr.protocols.exchange.JoinExchangeRequest"><span class="badge">M</span>JoinExchangeRequest</a>
                 </li>
               
@@ -489,39 +497,20 @@
                   <a href="#sonr.protocols.exchange.JoinExchangeResponse"><span class="badge">M</span>JoinExchangeResponse</a>
                 </li>
               
-              
-              
-              
-            </ul>
-          </li>
-        
-          
-          <li>
-            <a href="#proto%2fprotocols%2fhdns.proto">proto/protocols/hdns.proto</a>
-            <ul>
-              
                 <li>
-                  <a href="#sonr.protocols.hdns.CreateSNameRequest"><span class="badge">M</span>CreateSNameRequest</a>
+                  <a href="#sonr.protocols.exchange.LookupSNameRequest"><span class="badge">M</span>LookupSNameRequest</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.protocols.hdns.CreateSNameResponse"><span class="badge">M</span>CreateSNameResponse</a>
+                  <a href="#sonr.protocols.exchange.LookupSNameResponse"><span class="badge">M</span>LookupSNameResponse</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.protocols.hdns.LookupSNameRequest"><span class="badge">M</span>LookupSNameRequest</a>
+                  <a href="#sonr.protocols.exchange.VerifySNameRequest"><span class="badge">M</span>VerifySNameRequest</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.protocols.hdns.LookupSNameResponse"><span class="badge">M</span>LookupSNameResponse</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.hdns.VerifySNameRequest"><span class="badge">M</span>VerifySNameRequest</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.hdns.VerifySNameResponse"><span class="badge">M</span>VerifySNameResponse</a>
+                  <a href="#sonr.protocols.exchange.VerifySNameResponse"><span class="badge">M</span>VerifySNameResponse</a>
                 </li>
               
               
@@ -3377,6 +3366,100 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
       <p></p>
 
       
+        <h3 id="sonr.protocols.exchange.CreateSNameRequest">CreateSNameRequest</h3>
+        <p>CreateSNameRequest is Message for Signing Request (Hmac Sha256)</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>sName</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Value to be signed
+
+SName combined with Device ID and Hashed </p></td>
+                </tr>
+              
+                <tr>
+                  <td>mnemonic</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Mnemonic Hashed with private key for fingerprint </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.protocols.exchange.CreateSNameResponse">CreateSNameResponse</h3>
+        <p>CreateSNameResponse is Message for Signing Response (Hmac Sha256)</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>success</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>If Values were Signed </p></td>
+                </tr>
+              
+                <tr>
+                  <td>signedPrefix</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Resulting Signed Values
+
+Message for List of Bytes </p></td>
+                </tr>
+              
+                <tr>
+                  <td>signedFingerprint</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Fingerprint Value </p></td>
+                </tr>
+              
+                <tr>
+                  <td>publicKey</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Base64 Encoded Public Key </p></td>
+                </tr>
+              
+                <tr>
+                  <td>givenSName</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Provided SName </p></td>
+                </tr>
+              
+                <tr>
+                  <td>givenMnemonic</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Provided Mnemonic </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="sonr.protocols.exchange.JoinExchangeRequest">JoinExchangeRequest</h3>
         <p>JoinExchangeRequest is Message for Signing Request (Hmac Sha256)</p>
 
@@ -3448,115 +3531,7 @@ SName combined with Device ID and Hashed </p></td>
 
         
       
-
-      
-
-      
-
-      
-    
-      
-      <div class="file-heading">
-        <h2 id="proto/protocols/hdns.proto">proto/protocols/hdns.proto</h2><a href="#title">Top</a>
-      </div>
-      <p></p>
-
-      
-        <h3 id="sonr.protocols.hdns.CreateSNameRequest">CreateSNameRequest</h3>
-        <p>CreateSNameRequest is Message for Signing Request (Hmac Sha256)</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>sName</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Value to be signed
-
-SName combined with Device ID and Hashed </p></td>
-                </tr>
-              
-                <tr>
-                  <td>mnemonic</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Mnemonic Hashed with private key for fingerprint </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.protocols.hdns.CreateSNameResponse">CreateSNameResponse</h3>
-        <p>CreateSNameResponse is Message for Signing Response (Hmac Sha256)</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>success</td>
-                  <td><a href="#bool">bool</a></td>
-                  <td></td>
-                  <td><p>If Values were Signed </p></td>
-                </tr>
-              
-                <tr>
-                  <td>signedPrefix</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Resulting Signed Values
-
-Message for List of Bytes </p></td>
-                </tr>
-              
-                <tr>
-                  <td>signedFingerprint</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Fingerprint Value </p></td>
-                </tr>
-              
-                <tr>
-                  <td>publicKey</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Base64 Encoded Public Key </p></td>
-                </tr>
-              
-                <tr>
-                  <td>givenSName</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Provided SName </p></td>
-                </tr>
-              
-                <tr>
-                  <td>givenMnemonic</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Provided Mnemonic </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.protocols.hdns.LookupSNameRequest">LookupSNameRequest</h3>
+        <h3 id="sonr.protocols.exchange.LookupSNameRequest">LookupSNameRequest</h3>
         <p>LookupSNameRequest is Message for Verifying Request (Hmac Sha256)</p>
 
         
@@ -3582,7 +3557,7 @@ SName combined with Device ID and Hashed </p></td>
 
         
       
-        <h3 id="sonr.protocols.hdns.LookupSNameResponse">LookupSNameResponse</h3>
+        <h3 id="sonr.protocols.exchange.LookupSNameResponse">LookupSNameResponse</h3>
         <p>LookupSNameResponse is Message for Verifying Response (Hmac Sha256)</p>
 
         
@@ -3613,7 +3588,7 @@ SName combined with Device ID and Hashed </p></td>
 
         
       
-        <h3 id="sonr.protocols.hdns.VerifySNameRequest">VerifySNameRequest</h3>
+        <h3 id="sonr.protocols.exchange.VerifySNameRequest">VerifySNameRequest</h3>
         <p>VerifySNameRequest is Message for Verifying Request (Hmac Sha256)</p>
 
         
@@ -3646,7 +3621,7 @@ SName combined with Device ID and Hashed </p></td>
 
         
       
-        <h3 id="sonr.protocols.hdns.VerifySNameResponse">VerifySNameResponse</h3>
+        <h3 id="sonr.protocols.exchange.VerifySNameResponse">VerifySNameResponse</h3>
         <p>VerifySNameResponse is Message for Verifying Response (Hmac Sha256)</p>
 
         
