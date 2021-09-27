@@ -17,7 +17,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
-	"github.com/sonr-io/core/tools/emitter"
 	"github.com/sonr-io/core/tools/logger"
 	"go.uber.org/zap"
 )
@@ -32,7 +31,6 @@ type SNRHostStat struct {
 
 type SNRHost struct {
 	host.Host
-	*emitter.Emitter
 
 	// Properties
 	ctxHost      context.Context
@@ -93,7 +91,6 @@ func NewHost(ctx context.Context, kc device.Keychain, conn common.Connection) (*
 	// Create Host
 	hn := &SNRHost{
 		ctxHost: ctx,
-		Emitter: emitter.New(2048),
 		id:      h.ID(),
 		Host:    h,
 		kdht:    kdhtRef,

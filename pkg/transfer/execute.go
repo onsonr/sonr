@@ -64,14 +64,13 @@ func (a *TransferInProgressAction) Execute(eventCtx state.EventContext) state.Ev
 	wg := sync.WaitGroup{}
 	// Concurrent Function
 	go func(ws msgio.WriteCloser) {
-		// Write All Files
-		for i, m := range transfer.Items {
+		for i := range transfer.Items {
 			wg.Add(1)
-			w := newWriter(m, a.emitter, i)
-			err := w.WriteTo(ws)
-			if err != nil {
-				a.emitter.Emit("Error", err)
-			}
+			// w := newWriter(m, a.emitter, i)
+			// err := w.WriteTo(ws)
+			// if err != nil {
+			// 	a.emitter.Emit("Error", err)
+			// }
 			logger.Info(fmt.Sprintf("Finished TRANSFERRING File (%v/%v)", i, len(transfer.Items)))
 			wg.Done()
 		}

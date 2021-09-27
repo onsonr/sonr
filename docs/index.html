@@ -360,6 +360,10 @@
             <ul>
               
                 <li>
+                  <a href="#sonr.core.Chunk"><span class="badge">M</span>Chunk</a>
+                </li>
+              
+                <li>
                   <a href="#sonr.core.FileItem"><span class="badge">M</span>FileItem</a>
                 </li>
               
@@ -443,11 +447,11 @@
                 </li>
               
                 <li>
-                  <a href="#sonr.core.LobbyEvent"><span class="badge">M</span>LobbyEvent</a>
+                  <a href="#sonr.core.ProgressEvent"><span class="badge">M</span>ProgressEvent</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.core.ProgressEvent"><span class="badge">M</span>ProgressEvent</a>
+                  <a href="#sonr.core.RefreshEvent"><span class="badge">M</span>RefreshEvent</a>
                 </li>
               
                 <li>
@@ -467,10 +471,6 @@
                   <a href="#sonr.core.InviteReach"><span class="badge">E</span>InviteReach</a>
                 </li>
               
-                <li>
-                  <a href="#sonr.core.LobbyEvent.Type"><span class="badge">E</span>LobbyEvent.Type</a>
-                </li>
-              
               
               
             </ul>
@@ -482,6 +482,14 @@
             <ul>
               
                 <li>
+                  <a href="#sonr.protocols.exchange.CreateSNameRequest"><span class="badge">M</span>CreateSNameRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.protocols.exchange.CreateSNameResponse"><span class="badge">M</span>CreateSNameResponse</a>
+                </li>
+              
+                <li>
                   <a href="#sonr.protocols.exchange.JoinExchangeRequest"><span class="badge">M</span>JoinExchangeRequest</a>
                 </li>
               
@@ -489,39 +497,20 @@
                   <a href="#sonr.protocols.exchange.JoinExchangeResponse"><span class="badge">M</span>JoinExchangeResponse</a>
                 </li>
               
-              
-              
-              
-            </ul>
-          </li>
-        
-          
-          <li>
-            <a href="#proto%2fprotocols%2fhdns.proto">proto/protocols/hdns.proto</a>
-            <ul>
-              
                 <li>
-                  <a href="#sonr.protocols.hdns.CreateSNameRequest"><span class="badge">M</span>CreateSNameRequest</a>
+                  <a href="#sonr.protocols.exchange.LookupSNameRequest"><span class="badge">M</span>LookupSNameRequest</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.protocols.hdns.CreateSNameResponse"><span class="badge">M</span>CreateSNameResponse</a>
+                  <a href="#sonr.protocols.exchange.LookupSNameResponse"><span class="badge">M</span>LookupSNameResponse</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.protocols.hdns.LookupSNameRequest"><span class="badge">M</span>LookupSNameRequest</a>
+                  <a href="#sonr.protocols.exchange.VerifySNameRequest"><span class="badge">M</span>VerifySNameRequest</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.protocols.hdns.LookupSNameResponse"><span class="badge">M</span>LookupSNameResponse</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.hdns.VerifySNameRequest"><span class="badge">M</span>VerifySNameRequest</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.hdns.VerifySNameResponse"><span class="badge">M</span>VerifySNameResponse</a>
+                  <a href="#sonr.protocols.exchange.VerifySNameResponse"><span class="badge">M</span>VerifySNameResponse</a>
                 </li>
               
               
@@ -567,7 +556,7 @@
             <ul>
               
                 <li>
-                  <a href="#sonr.protocols.lobby.PublishEvent"><span class="badge">M</span>PublishEvent</a>
+                  <a href="#sonr.protocols.lobby.LobbyMessage"><span class="badge">M</span>LobbyMessage</a>
                 </li>
               
               
@@ -1547,24 +1536,10 @@ Returns a stream of StatusEvents</p></td>
               </tr>
             
               <tr>
-                <td>OnLocalJoin</td>
+                <td>OnLobbyRefresh</td>
                 <td><a href="#sonr.node.Empty">Empty</a></td>
-                <td><a href="#sonr.core.LobbyEvent">.sonr.core.LobbyEvent</a> stream</td>
-                <td><p>Returns a stream of ExchangeEvents for Join</p></td>
-              </tr>
-            
-              <tr>
-                <td>OnLocalUpdate</td>
-                <td><a href="#sonr.node.Empty">Empty</a></td>
-                <td><a href="#sonr.core.LobbyEvent">.sonr.core.LobbyEvent</a> stream</td>
-                <td><p>Returns a stream of ExchangeEvents for Update</p></td>
-              </tr>
-            
-              <tr>
-                <td>OnLocalExit</td>
-                <td><a href="#sonr.node.Empty">Empty</a></td>
-                <td><a href="#sonr.core.LobbyEvent">.sonr.core.LobbyEvent</a> stream</td>
-                <td><p>Returns a stream of ExchangeEvents for Exit</p></td>
+                <td><a href="#sonr.core.RefreshEvent">.sonr.core.RefreshEvent</a> stream</td>
+                <td><p>Returns a stream of Lobby Refresh Events</p></td>
               </tr>
             
               <tr>
@@ -2268,6 +2243,51 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
       </div>
       <p></p>
 
+      
+        <h3 id="sonr.core.Chunk">Chunk</h3>
+        <p>For Transfer Chunk Transmission</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>offset</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p>Offset is number of bytes from the beginning of the reader to chunk </p></td>
+                </tr>
+              
+                <tr>
+                  <td>length</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p>Length is number of bytes in the chunk </p></td>
+                </tr>
+              
+                <tr>
+                  <td>data</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>Data is the actual chunk </p></td>
+                </tr>
+              
+                <tr>
+                  <td>fingerprint</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>Fingerprint is the value of rolling hash of the chunk </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
       
         <h3 id="sonr.core.FileItem">FileItem</h3>
         <p>For Transfer File Payload</p>
@@ -3145,51 +3165,6 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
 
         
       
-        <h3 id="sonr.core.LobbyEvent">LobbyEvent</h3>
-        <p>Message Sent when peer messages Lobby</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>olc</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>OLC Code of Topic </p></td>
-                </tr>
-              
-                <tr>
-                  <td>id</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Peer ID </p></td>
-                </tr>
-              
-                <tr>
-                  <td>peer</td>
-                  <td><a href="#sonr.core.Peer">Peer</a></td>
-                  <td></td>
-                  <td><p>User Information </p></td>
-                </tr>
-              
-                <tr>
-                  <td>type</td>
-                  <td><a href="#sonr.core.LobbyEvent.Type">LobbyEvent.Type</a></td>
-                  <td></td>
-                  <td><p>Type of Message </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
         <h3 id="sonr.core.ProgressEvent">ProgressEvent</h3>
         <p>Transfer Progress Event</p>
 
@@ -3219,6 +3194,37 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                   <td><a href="#double">double</a></td>
                   <td></td>
                   <td><p>Current Transfer Progress </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.core.RefreshEvent">RefreshEvent</h3>
+        <p>Message Sent when peer messages Lobby</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>olc</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>OLC Code of Topic </p></td>
+                </tr>
+              
+                <tr>
+                  <td>peers</td>
+                  <td><a href="#sonr.core.Peer">Peer</a></td>
+                  <td>repeated</td>
+                  <td><p>User Information </p></td>
                 </tr>
               
             </tbody>
@@ -3348,41 +3354,6 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
           </tbody>
         </table>
       
-        <h3 id="sonr.core.LobbyEvent.Type">LobbyEvent.Type</h3>
-        <p>Enum for LobbyEvent type</p>
-        <table class="enum-table">
-          <thead>
-            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
-          </thead>
-          <tbody>
-            
-              <tr>
-                <td>NONE</td>
-                <td>0</td>
-                <td><p>No Type - Invalid</p></td>
-              </tr>
-            
-              <tr>
-                <td>JOIN</td>
-                <td>1</td>
-                <td><p>Joined Room</p></td>
-              </tr>
-            
-              <tr>
-                <td>UPDATE</td>
-                <td>2</td>
-                <td><p>Update Message</p></td>
-              </tr>
-            
-              <tr>
-                <td>EXIT</td>
-                <td>3</td>
-                <td><p>Exited Room</p></td>
-              </tr>
-            
-          </tbody>
-        </table>
-      
 
       
 
@@ -3394,6 +3365,100 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
       </div>
       <p></p>
 
+      
+        <h3 id="sonr.protocols.exchange.CreateSNameRequest">CreateSNameRequest</h3>
+        <p>CreateSNameRequest is Message for Signing Request (Hmac Sha256)</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>sName</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Value to be signed
+
+SName combined with Device ID and Hashed </p></td>
+                </tr>
+              
+                <tr>
+                  <td>mnemonic</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Mnemonic Hashed with private key for fingerprint </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.protocols.exchange.CreateSNameResponse">CreateSNameResponse</h3>
+        <p>CreateSNameResponse is Message for Signing Response (Hmac Sha256)</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>success</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>If Values were Signed </p></td>
+                </tr>
+              
+                <tr>
+                  <td>signedPrefix</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Resulting Signed Values
+
+Message for List of Bytes </p></td>
+                </tr>
+              
+                <tr>
+                  <td>signedFingerprint</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Fingerprint Value </p></td>
+                </tr>
+              
+                <tr>
+                  <td>publicKey</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Base64 Encoded Public Key </p></td>
+                </tr>
+              
+                <tr>
+                  <td>givenSName</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Provided SName </p></td>
+                </tr>
+              
+                <tr>
+                  <td>givenMnemonic</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Provided Mnemonic </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
       
         <h3 id="sonr.protocols.exchange.JoinExchangeRequest">JoinExchangeRequest</h3>
         <p>JoinExchangeRequest is Message for Signing Request (Hmac Sha256)</p>
@@ -3466,115 +3531,7 @@ SName combined with Device ID and Hashed </p></td>
 
         
       
-
-      
-
-      
-
-      
-    
-      
-      <div class="file-heading">
-        <h2 id="proto/protocols/hdns.proto">proto/protocols/hdns.proto</h2><a href="#title">Top</a>
-      </div>
-      <p></p>
-
-      
-        <h3 id="sonr.protocols.hdns.CreateSNameRequest">CreateSNameRequest</h3>
-        <p>CreateSNameRequest is Message for Signing Request (Hmac Sha256)</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>sName</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Value to be signed
-
-SName combined with Device ID and Hashed </p></td>
-                </tr>
-              
-                <tr>
-                  <td>mnemonic</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Mnemonic Hashed with private key for fingerprint </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.protocols.hdns.CreateSNameResponse">CreateSNameResponse</h3>
-        <p>CreateSNameResponse is Message for Signing Response (Hmac Sha256)</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>success</td>
-                  <td><a href="#bool">bool</a></td>
-                  <td></td>
-                  <td><p>If Values were Signed </p></td>
-                </tr>
-              
-                <tr>
-                  <td>signedPrefix</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Resulting Signed Values
-
-Message for List of Bytes </p></td>
-                </tr>
-              
-                <tr>
-                  <td>signedFingerprint</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Fingerprint Value </p></td>
-                </tr>
-              
-                <tr>
-                  <td>publicKey</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Base64 Encoded Public Key </p></td>
-                </tr>
-              
-                <tr>
-                  <td>givenSName</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Provided SName </p></td>
-                </tr>
-              
-                <tr>
-                  <td>givenMnemonic</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Provided Mnemonic </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.protocols.hdns.LookupSNameRequest">LookupSNameRequest</h3>
+        <h3 id="sonr.protocols.exchange.LookupSNameRequest">LookupSNameRequest</h3>
         <p>LookupSNameRequest is Message for Verifying Request (Hmac Sha256)</p>
 
         
@@ -3600,7 +3557,7 @@ SName combined with Device ID and Hashed </p></td>
 
         
       
-        <h3 id="sonr.protocols.hdns.LookupSNameResponse">LookupSNameResponse</h3>
+        <h3 id="sonr.protocols.exchange.LookupSNameResponse">LookupSNameResponse</h3>
         <p>LookupSNameResponse is Message for Verifying Response (Hmac Sha256)</p>
 
         
@@ -3631,7 +3588,7 @@ SName combined with Device ID and Hashed </p></td>
 
         
       
-        <h3 id="sonr.protocols.hdns.VerifySNameRequest">VerifySNameRequest</h3>
+        <h3 id="sonr.protocols.exchange.VerifySNameRequest">VerifySNameRequest</h3>
         <p>VerifySNameRequest is Message for Verifying Request (Hmac Sha256)</p>
 
         
@@ -3664,7 +3621,7 @@ SName combined with Device ID and Hashed </p></td>
 
         
       
-        <h3 id="sonr.protocols.hdns.VerifySNameResponse">VerifySNameResponse</h3>
+        <h3 id="sonr.protocols.exchange.VerifySNameResponse">VerifySNameResponse</h3>
         <p>VerifySNameResponse is Message for Verifying Response (Hmac Sha256)</p>
 
         
@@ -3913,7 +3870,7 @@ SName combined with Device ID and Hashed </p></td>
       <p></p>
 
       
-        <h3 id="sonr.protocols.lobby.PublishEvent">PublishEvent</h3>
+        <h3 id="sonr.protocols.lobby.LobbyMessage">LobbyMessage</h3>
         <p>PublishEvent is message passed from Peer in Lobby Protocol</p>
 
         
