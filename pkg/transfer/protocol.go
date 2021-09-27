@@ -176,11 +176,13 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 		logger.Info("Beginning Outgoing Transfer Stream")
 		wg := sync.WaitGroup{}
 		wc := msgio.NewWriter(stream)
+		count := len(req.Invite.Payload.Items)
 
 		// Write All Files
-		for i, m := range req.Payload.Items {
+		for i, m := range req.Invite.Payload.Items {
+			logger.Info("Current Item: ", zap.String(fmt.Sprint(i), m.String()))
 			wg.Add(1)
-			w := common.NewWriter(m, i, len(req.Payload.Items), device.DocsPath, p.emitter)
+			w := common.NewWriter(m, i, count, device.DocsPath, p.emitter)
 			err := w.WriteTo(wc)
 			if err != nil {
 				logger.Error("Error writing stream", zap.Error(err))
