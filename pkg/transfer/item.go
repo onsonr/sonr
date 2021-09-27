@@ -1,4 +1,4 @@
-package common
+package transfer
 
 import (
 	"errors"
@@ -9,6 +9,7 @@ import (
 	sync "sync"
 
 	"github.com/libp2p/go-msgio"
+	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/tools/config"
 	"github.com/sonr-io/core/tools/emitter"
 	"github.com/sonr-io/core/tools/logger"
@@ -28,13 +29,13 @@ type itemReader struct {
 	docsDir string
 	emitter *emitter.Emitter
 	mutex   sync.Mutex
-	item    *FileItem
+	item    *common.FileItem
 	index   int
 	size    int
 	total   int
 }
 
-func NewReader(pi *Payload_Item, index int, total int, docsDir string, em *emitter.Emitter) ItemReader {
+func NewReader(pi *common.Payload_Item, index int, total int, docsDir string, em *emitter.Emitter) ItemReader {
 	// Return Reader
 	return &itemReader{
 		item:    pi.GetFile(),
@@ -52,7 +53,7 @@ func (p *itemReader) Progress() []byte {
 	currentProgress := float32(p.size) / float32(p.item.Size)
 
 	// Create Update
-	update := &ProgressEvent{
+	update := &common.ProgressEvent{
 		Progress: float64(currentProgress),
 		Current:  int32(p.index),
 		Total:    int32(p.total),
@@ -97,13 +98,12 @@ func (ir *itemReader) ReadFrom(reader msgio.ReadCloser) error {
 		if (i % 10) == 0 {
 			//ir.emitter.Emit(emitter.EMIT_PROGRESS_EVENT, ir.Progress())
 		}
-
 	}
 }
 
 func decodeChunk(buf []byte) (config.Chunk, error) {
 	// Decode Chunk
-	chunk := &Chunk{}
+	chunk := &common.Chunk{}
 	err := proto.Unmarshal(buf, chunk)
 	if err != nil {
 		return config.Chunk{}, err
@@ -131,13 +131,13 @@ type itemWriter struct {
 	ItemWriter
 	docsDir string
 	emitter *emitter.Emitter
-	item    *FileItem
+	item    *common.FileItem
 	index   int
 	size    int
 	total   int
 }
 
-func NewWriter(pi *Payload_Item, index int, total int, docsDir string, em *emitter.Emitter) ItemWriter {
+func NewWriter(pi *common.Payload_Item, index int, total int, docsDir string, em *emitter.Emitter) ItemWriter {
 	return &itemWriter{
 		item:    pi.GetFile(),
 		size:    0,
@@ -151,7 +151,7 @@ func NewWriter(pi *Payload_Item, index int, total int, docsDir string, em *emitt
 // Returns Progress of File, Given the written number of bytes
 func (p *itemWriter) Progress() []byte {
 	// Create Update
-	update := &ProgressEvent{
+	update := &common.ProgressEvent{
 		Progress: float64(p.size) / float64(p.item.Size),
 		Current:  int32(p.index),
 		Total:    int32(p.total),
@@ -213,7 +213,7 @@ func (iw *itemWriter) WriteTo(writer msgio.WriteCloser) error {
 
 func encodeChunk(c config.Chunk) ([]byte, error) {
 	// Create Block Protobuf from Chunk
-	data, err := proto.Marshal(&Chunk{
+	data, err := proto.Marshal(&common.Chunk{
 		Offset:      int32(c.Offset),
 		Length:      int32(c.Length),
 		Data:        c.Data,

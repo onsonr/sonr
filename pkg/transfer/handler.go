@@ -89,7 +89,7 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 		err = entry.request.GetPayload().MapItemsWithIndex(func(m *common.Payload_Item, i int, count int) error {
 			logger.Info("Current Item: ", zap.String(fmt.Sprint(i), m.String()))
 			wg.Add(1)
-			w := common.NewWriter(m, i, count, device.DocsPath, p.emitter)
+			w := NewWriter(m, i, count, device.DocsPath, p.emitter)
 			err := w.WriteTo(wc)
 			if err != nil {
 				logger.Error("Error writing stream", zap.Error(err))
@@ -133,7 +133,7 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 	go func(rs msgio.ReadCloser) {
 		// Write All Files
 		err = entry.request.GetPayload().MapItemsWithIndex(func(m *common.Payload_Item, i int, count int) error {
-			r := common.NewReader(m, i, count, device.DocsPath, p.emitter)
+			r := NewReader(m, i, count, device.DocsPath, p.emitter)
 			err := r.ReadFrom(rs)
 			if err != nil {
 				logger.Error("Failed to Read from Stream and Write to File.", zap.Error(err))
