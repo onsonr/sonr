@@ -38,16 +38,16 @@ const (
 type RequestEntry struct {
 	request *InviteRequest
 	fromId  peer.ID
-	context TransferSessionContext
+	toId    peer.ID
 }
 
 // TransferProtocol type
 type TransferProtocol struct {
 	ctx          context.Context
-	host         *host.SNRHost                     // local host
-	requestQueue *list.List                        // Queue of Requests
-	requests     map[string]TransferSessionContext // used to access request data from response
-	emitter      *emitter.Emitter                  // Handle to signal when done
+	host         *host.SNRHost           // local host
+	requestQueue *list.List              // Queue of Requests
+	requests     map[string]RequestEntry // used to access request data from response
+	emitter      *emitter.Emitter        // Handle to signal when done
 	//state        state.StateMachine                // State machine for the transfer protocol
 }
 
@@ -57,7 +57,6 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *emitter.Emitter) *
 	invProtocol := &TransferProtocol{
 		ctx:          ctx,
 		host:         host,
-		requests:     make(map[string]TransferSessionContext),
 		emitter:      em,
 		requestQueue: list.New(),
 	}
@@ -66,9 +65,6 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *emitter.Emitter) *
 	host.SetStreamHandler(RequestPID, invProtocol.onInviteRequest)
 	host.SetStreamHandler(ResponsePID, invProtocol.onInviteResponse)
 	host.SetStreamHandler(SessionPID, invProtocol.onIncomingTransfer)
-
-	// Initialize the state machine
-	//invProtocol.initStateMachine()
 	return invProtocol
 }
 
@@ -102,30 +98,14 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 	}
 
 	// generate response message
-	entry := &RequestEntry{
+	entry := RequestEntry{
 		request: req,
 		fromId:  remotePeer,
 	}
 	p.requestQueue.PushBack(entry)
 
-	// store ref request so response handler has access to it
-	transCtx := TransferSessionContext{
-		To:      remotePeer,
-		From:    p.host.ID(),
-		Invite:  req,
-		Payload: req.GetPayload(),
-	}
-
 	// store request data into Context
-	p.requests[remotePeer.String()] = transCtx
 	p.emitter.Emit(Event_INVITED, req)
-
-	// // Update State
-	// err = p.state.SendEvent(InviteReceived, transCtx)
-	// if err != nil {
-	//  logger.Error("Failed to Update State Machine.", zap.Error(err))
-	//  return
-	// }
 }
 
 // remote ping response handler
@@ -160,11 +140,6 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 	// locate request data and remove it if found
 	req, ok := p.requests[remotePeer.String()]
 	if ok && resp.Success {
-		// err := p.state.SendEvent(PeerAccepted, req)
-		// if err != nil {
-		//  logger.Error("Failed to handle State Event: ", zap.Error(err))
-		// }
-
 		// Create a new stream
 		stream, err := p.host.NewStream(p.ctx, remotePeer, SessionPID)
 		if err != nil {
@@ -176,10 +151,10 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 		logger.Info("Beginning Outgoing Transfer Stream")
 		wg := sync.WaitGroup{}
 		wc := msgio.NewWriter(stream)
-		count := len(req.Invite.Payload.Items)
+		count := len(req.request.Payload.Items)
 
 		// Write All Files
-		for i, m := range req.Invite.Payload.Items {
+		for i, m := range req.request.Payload.Items {
 			logger.Info("Current Item: ", zap.String(fmt.Sprint(i), m.String()))
 			wg.Add(1)
 			w := common.NewWriter(m, i, count, device.DocsPath, p.emitter)
@@ -188,7 +163,7 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 				logger.Error("Error writing stream", zap.Error(err))
 				return
 			}
-			logger.Info(fmt.Sprintf("Finished TRANSFERRING File (%v/%v)", i, len(req.Payload.Items)))
+			logger.Info(fmt.Sprintf("Finished TRANSFERRING File (%v/%v)", i, len(req.request.Payload.Items)))
 			wg.Done()
 		}
 		wg.Wait()
@@ -209,21 +184,21 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 	// Concurrent Function
 	go func(rs msgio.ReadCloser) {
 		// Read All Files
-		for i, m := range req.Invite.GetPayload().GetItems() {
-			r := common.NewReader(m, i, len(req.Payload.Items), device.DocsPath, p.emitter)
+		for i, m := range req.request.GetPayload().GetItems() {
+			r := common.NewReader(m, i, len(req.request.Payload.Items), device.DocsPath, p.emitter)
 			err := r.ReadFrom(rs)
 			if err != nil {
 				logger.Error("Failed to Read from Stream and Write to File.", zap.Error(err))
 				return
 			}
-			logger.Info(fmt.Sprintf("Finished RECEIVING File (%v/%v)", i, len(req.Invite.GetPayload().GetItems())))
+			logger.Info(fmt.Sprintf("Finished RECEIVING File (%v/%v)", i, len(req.request.GetPayload().GetItems())))
 		}
 
 		// Close Stream
 		rs.Close()
 
 		// Set Status
-		p.emitter.Emit(Event_COMPLETED, req.Invite.GetPayload())
+		p.emitter.Emit(Event_COMPLETED, req.request.GetPayload())
 	}(msgio.NewReader(s))
 }
 
@@ -249,23 +224,12 @@ func (p *TransferProtocol) Request(id peer.ID, req *InviteRequest) error {
 		return err
 	}
 
-	// store ref request so response handler has access to it
-	transCtx := TransferSessionContext{
-		To:      id,
-		From:    p.host.ID(),
-		Invite:  req,
-		Payload: req.GetPayload(),
-	}
-
 	// store the request in the map
-	p.requests[id.String()] = transCtx
-
-	// // Update State
-	// err = p.state.SendEvent(InviteShared, transCtx)
-	// if err != nil {
-	//  logger.Error("Failed to handle State Event: ", zap.Error(err))
-	//  return err
-	// }
+	p.requests[id.String()] = RequestEntry{
+		request: req,
+		toId:    id,
+		fromId:  p.host.ID(),
+	}
 	return nil
 }
 
@@ -293,29 +257,11 @@ func (p *TransferProtocol) Respond(resp *InviteResponse) error {
 	}
 
 	// Send Response
-	reqEntry := entry.Value.(*RequestEntry)
+	reqEntry := entry.Value.(RequestEntry)
 	err = p.host.SendMessage(reqEntry.fromId, ResponsePID, resp)
 	if err != nil {
 		logger.Error("Failed to Send Message to Peer", zap.Error(err))
 		return err
 	}
-
-	// // Update State
-	// if resp.GetSuccess() {
-	//  // User Decision was Accept
-	//  err = p.state.SendEvent(DecisionAccept, reqEntry.context)
-	//  if err != nil {
-	//      logger.Error("Failed to handle State Event: ", zap.Error(err))
-	//      return err
-	//  }
-	// } else {
-	//  // User Decision was Reject
-	//  err = p.state.SendEvent(DecisionReject, reqEntry.context)
-	//  if err != nil {
-	//      logger.Error("Failed to handle State Event: ", zap.Error(err))
-	//      return err
-	//  }
-	// }
-
 	return nil
 }
