@@ -18,6 +18,9 @@ import (
 // ** ───────────────────────────────────────────────────────
 // ** ─── General ───────────────────────────────────────────
 // ** ───────────────────────────────────────────────────────
+// MetadatFunc is a function that returns a Metadata Object
+type MetadatFunc func() *Metadata
+
 // OLC_SCOPE is the default OLC Scope for Distance Calculation
 const OLC_SCOPE = 6
 
@@ -37,6 +40,24 @@ func (e Environment) IsDev() bool {
 // Checks if Enviornment is Development
 func (e Environment) IsProd() bool {
 	return e == Environment_PRODUCTION
+}
+
+// WrapErrors wraps errors list into a single error
+func WrapErrors(msg string, errs []error) error {
+	// Check if errors are empty
+	if len(errs) == 0 {
+		return nil
+	}
+
+	// Iterate over errors
+	err := errors.New(msg)
+	for _, e := range errs {
+		if e != nil {
+			err = errors.Wrap(e, e.Error())
+			continue
+		}
+	}
+	return err
 }
 
 // ** ───────────────────────────────────────────────────────
@@ -216,6 +237,77 @@ func (m *MIME) PermitsThumbnail() bool {
 // ** ───────────────────────────────────────────────────────
 // ** ─── Payload Management ────────────────────────────────
 // ** ───────────────────────────────────────────────────────
+// NewPayload creates a new Payload Object
+func NewPayload(owner *Profile, paths []string, mf MetadatFunc) (*Payload, error) {
+	// Initialize
+	fileCount := 0
+	urlCount := 0
+	size := int32(0)
+	items := make([]*Payload_Item, 0)
+	errs := make([]error, 0)
+
+	// Iterate over Paths
+	for i, path := range paths {
+		// Check if path is URL
+		if IsUrl(path) {
+			// Increase URL Count
+			urlCount++
+
+			// Add URL to Payload
+			item, err := NewUrlItem(path, mf())
+			if err != nil {
+				msg := fmt.Sprintf("Failed to create URLItem at Index: %v, with Path: %s", i, path)
+				logger.Error(msg, zap.Error(err))
+				errs = append(errs, errors.Wrap(err, msg))
+				continue
+			}
+
+			// Add URL to Payload
+			items = append(items, item)
+			continue
+		} else if IsFile(path) {
+			// Increase File Count
+			fileCount++
+
+			// Create Payload Item
+			item, err := NewFileItem(path, mf())
+			if err != nil {
+				msg := fmt.Sprintf("Failed to create FileItem at Index: %v with Path: %s", i, path)
+				logger.Error(msg, zap.Error(err))
+				errs = append(errs, errors.Wrap(err, msg))
+				continue
+			}
+
+			// Add Payload Item to Payload
+			items = append(items, item)
+			size += int32(item.Size)
+			continue
+		} else {
+			err := fmt.Errorf("Invalid Path provided, value is neither File or URL. Path: %s", path)
+			logger.Error(err.Error(), zap.Error(err))
+			errs = append(errs, err)
+			continue
+		}
+	}
+
+	// Log Payload Details
+	logger.Info(fmt.Sprintf("Created payload with %v Files and %v URLs. Total size: %v", fileCount, urlCount, size))
+
+	// Create Payload
+	payload := &Payload{
+		Items: items,
+		Size:  size,
+		Owner: owner,
+	}
+
+	// Check if there are any errors
+	if len(errs) > 0 {
+		err := WrapErrors(fmt.Sprintf("⚠️ Payload created with %v Errors: \n", len(errs)), errs)
+		logger.Error(err.Error(), zap.Error(err))
+		return payload, err
+	}
+	return payload, nil
+}
 
 // IsSingle returns true if the transfer is a single transfer. Error returned
 // if No Items present in Payload

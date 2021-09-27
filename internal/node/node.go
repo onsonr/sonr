@@ -120,33 +120,14 @@ func (n *Node) Edit(p *common.Profile) error {
 // Supply a transfer item to the queue
 func (n *Node) Supply(paths []string) error {
 	// Create Transfer
-	tr := common.Payload{
-		Owner: n.Peer().GetProfile(),
-	}
-
-	// Initialize Transfer Items and add iterate over paths
-	items := make([]*common.Payload_Item, len(paths))
-	for _, path := range paths {
-		// Check if path is a url
-		if common.IsUrl(path) {
-			items = append(items, common.NewUrlItem(path))
-		} else {
-			// Create File Item
-			item, err := common.NewFileItem(path, n.host.NewMetadata())
-			if err != nil {
-				logger.Error("Failed to edit Profile", zap.Error(err))
-				n.Emit(Event_STATUS, err)
-				return err
-			}
-
-			// Add item to transfer
-			items = append(items, item)
-		}
+	payload, err := common.NewPayload(n.profile, paths, n.host.NewMetadata)
+	if err != nil {
+		logger.Error("Failed to Supply Paths", zap.Error(err))
+		return err
 	}
 
 	// Add items to transfer
-	tr.Items = items
-	n.queue.PushBack(&tr)
+	n.queue.PushBack(payload)
 	return nil
 }
 

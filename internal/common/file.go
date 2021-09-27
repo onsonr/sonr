@@ -43,22 +43,6 @@ func NewFileItem(path string, m *Metadata) (*Payload_Item, error) {
 		Name: fi.Name(),
 	}
 
-	// // // Check if File is Image
-	// if fileItem.Mime.IsImage() {
-	// 	// Create Thumbnail
-	// 	name := filepath.Base(path)
-	// 	dir := filepath.Dir(path)
-	// 	outPath := filepath.Join(dir, name+"_thumb")
-	// 	err := thumbnail.NewImage(path, outPath)
-	// 	if err != nil {
-	// 		return nil, err
-	// 	} else {
-	// 		fileItem.Thumb = &Thumbnail{
-	// 			Path: outPath,
-	// 		}
-	// 	}
-	// }
-
 	// Returns transfer item
 	return &Payload_Item{
 		Metadata: m,
@@ -68,3 +52,19 @@ func NewFileItem(path string, m *Metadata) (*Payload_Item, error) {
 		},
 	}, nil
 }
+
+// // // Check if File is Image
+// if fileItem.Mime.IsImage() {
+// 	// Create Thumbnail
+// 	name := filepath.Base(path)
+// 	dir := filepath.Dir(path)
+// 	outPath := filepath.Join(dir, name+"_thumb")
+// 	err := thumbnail.NewImage(path, outPath)
+// 	if err != nil {
+// 		return nil, err
+// 	} else {
+// 		fileItem.Thumb = &Thumbnail{
+// 			Path: outPath,
+// 		}
+// 	}
+// }

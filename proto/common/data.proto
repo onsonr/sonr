@@ -26,9 +26,9 @@ message FileItem {
 // Payload is Data thats being Passed
 message Payload {
   repeated Item items = 1; // Payload Items
-  Profile receiver = 2;    // PROFILE: General Receiver Info
-  Profile owner = 3;       // PROFILE: General Sender Info
-  int32 size = 4;          // Payload Size in Bytes
+  Profile owner = 2;       // PROFILE: General Sender Info
+  int32 size = 3;          // Payload Size in Bytes
+  int64 createdAt = 4;     // Payload Creation Time in Seconds
 
   // Item in Payload
   message Item {
