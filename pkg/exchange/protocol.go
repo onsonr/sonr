@@ -3,21 +3,18 @@ package exchange
 import (
 	"context"
 	"fmt"
-	"strings"
 	"time"
 
-	"github.com/libp2p/go-libp2p-core/crypto"
-	"github.com/libp2p/go-libp2p-core/peer"
 	psr "github.com/libp2p/go-libp2p-pubsub-router"
+	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/tools/emitter"
 	"github.com/sonr-io/core/tools/logger"
 	"go.uber.org/zap"
-	"google.golang.org/protobuf/proto"
 )
 
-// TransferProtocol type
+// ExchangeProtocol handles Global Sonr Exchange Protocol
 type ExchangeProtocol struct {
 	*psr.PubsubValueStore
 	ctx     context.Context
@@ -28,7 +25,6 @@ type ExchangeProtocol struct {
 // NewProtocol creates new ExchangeProtocol
 func NewProtocol(ctx context.Context, host *host.SNRHost, em *emitter.Emitter) (*ExchangeProtocol, error) {
 	// Create PubSub Value Store
-
 	r, err := psr.NewPubsubValueStore(ctx, host.Host, host.Pubsub(), ExchangeValidator{}, psr.WithRebroadcastInterval(5*time.Second))
 	if err != nil {
 		return nil, err
@@ -41,85 +37,64 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *emitter.Emitter) (
 		emitter:          em,
 		PubsubValueStore: r,
 	}
-
-	// Handle Background Processes, return Protocol
-	// go exchProtocol.HandleEvents()
-	// go exchProtocol.HandleMessages()
 	return exchProtocol, nil
 }
 
-// Find method returns PeerID by SName
-func (p *ExchangeProtocol) Find(sName string) (peer.ID, error) {
-	// Set Lowercase Name
-	sName = strings.ToLower(sName)
-
-	// Find peer from sName in the store
-	buf, err := p.PubsubValueStore.GetValue(p.ctx, fmt.Sprintf("store/%s", sName))
+// FindPeerId method returns PeerID by SName
+func (p *ExchangeProtocol) Query(q *QueryExchangeRequest) (*common.PeerInfo, error) {
+	query, val, err := q.QueryValue()
 	if err != nil {
-		logger.Error(fmt.Sprintf("Failed to GET peer (%s) from store", sName), zap.Error(err))
-		return "", err
-	}
-
-	// Unmarshal Peer from buffer
-	profile := &common.Peer{}
-	err = proto.Unmarshal(buf, profile)
-	if err != nil {
-		logger.Error(fmt.Sprintf("Failed to Unmarshal Peer (%s)", sName), zap.Error(err))
-		return "", err
-	}
-
-	// Fetch public key from peer data
-	pubKey, err := crypto.UnmarshalPublicKey(profile.PublicKey)
-	if err != nil {
-		logger.Error(fmt.Sprintf("Failed to Unmarshal Public Key for (%s)", sName), zap.Error(err))
-		return "", err
-	}
-
-	// Get peer ID from public key
-	id, err := peer.IDFromPublicKey(pubKey)
-	if err != nil {
-		logger.Error(fmt.Sprintf("Failed to get peer ID from Public Key for (%s)", sName), zap.Error(err))
-		return "", err
-	}
-	return id, nil
-}
-
-// Ping method finds peer Profile by name
-func (p *ExchangeProtocol) Ping(sName string) (*common.Peer, error) {
-	// Set Lowercase Name
-	sName = strings.ToLower(sName)
-
-	// Find peer from sName in the store
-	buf, err := p.PubsubValueStore.GetValue(p.ctx, fmt.Sprintf("store/%s", sName))
-	if err != nil {
-		logger.Error(fmt.Sprintf("Failed to GET peer (%s) from store", sName), zap.Error(err))
+		logger.Error("Failed to Query Value", zap.Error(err))
 		return nil, err
 	}
 
-	// Unmarshal Peer from buffer
-	profile := &common.Peer{}
-	err = proto.Unmarshal(buf, profile)
+	// Find peer from sName in the store
+	buf, err := p.PubsubValueStore.GetValue(p.ctx, query)
 	if err != nil {
-		logger.Error(fmt.Sprintf("Failed to Unmarshal Peer (%s)", sName), zap.Error(err))
+		msg := fmt.Sprintf("Failed to GET peer (%s) from store", val)
+		logger.Error(msg, zap.Error(err))
+		return nil, errors.Wrap(err, msg)
+	}
+
+	// Unmarshal Peer from buffer
+	peerData := &common.Peer{}
+	err = peerData.Unmarshal(buf)
+	if err != nil {
 		return nil, err
 	}
-	return profile, nil
+
+	// Get PeerID from Peer
+	info, err := peerData.Info()
+	if err != nil {
+		msg := fmt.Sprintf("Failed to get PeerInfo from Peer (%s)", val)
+		logger.Error(msg, zap.Error(err))
+		return nil, errors.Wrap(err, msg)
+	}
+	return info, nil
 }
 
 // Update method updates peer instance in the store
 func (p *ExchangeProtocol) Update(peer *common.Peer) error {
 	// Marshal Peer
-	peerBuf, err := proto.Marshal(peer)
+	info, err := peer.Info()
+	if err != nil {
+		logger.Error("Failed to get PeerInfo from Peer", zap.Error(err))
+		return err
+	}
+
+	// Marshal Peer
+	buf, err := peer.Marshal()
 	if err != nil {
 		logger.Error("Failed to Marshal Peer", zap.Error(err))
 		return err
 	}
 
-	// Determine Key and Add Value to Store
-	err = p.PubsubValueStore.PutValue(p.ctx, fmt.Sprintf("store/%s", strings.ToLower(peer.GetSName())), peerBuf)
+	// Add Peer to SName Store
+	err = p.PubsubValueStore.PutValue(p.ctx, info.StoreEntryKey, buf)
 	if err != nil {
-		logger.Error("Failed to PUT peer from store", zap.Error(err))
-		return err
+		msg := fmt.Sprintf("Failed to Add Peer Object to SName store: %s", peer.GetSName())
+		logger.Error(msg, zap.Error(err))
+		return errors.Wrap(err, msg)
 	}
 	return nil
 }

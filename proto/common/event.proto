@@ -7,43 +7,30 @@ option go_package = "github.com/sonr-io/core/internal/common";
 
 // Status Event based on Lib Functions
 message StatusEvent {
-  bool isOk = 1;
-  string message = 2;
-}
-
-// Direction of a transfer (incoming or outgoing).
-enum Direction {
-  INBOUND = 0;
-  OUTBOUND = 1;
+  bool isOk = 1;      // true if the event is ok
+  string message = 2; // Status Event Message
+  int64 received = 3; // Timestamp
 }
 
 // DecisionEvent is emitted when a decision is made by Peer.
 message DecisionEvent {
-  bool decision = 1;
-  sonr.core.Peer from = 2;
-  string inviteId = 3;
+  bool decision = 1;       // true = accept, false = reject
+  sonr.core.Peer from = 2; // Peer that made decision
+  int64 received = 3;      // Timestamp
 }
 
 // Message Sent when peer messages Lobby
 message RefreshEvent {
   string olc = 1;                    // OLC Code of Topic
   repeated sonr.core.Peer peers = 2; // User Information
-}
-
-// InviteReach is Distance for an Invite
-enum InviteReach {
-  NONE = 0;   // No Reach
-  LOCAL = 1;  // Local Reach
-  REMOTE = 2; // Remote Reach
-  DIRECT = 3; // Direct Reach
+  int64 received = 3;                // Invite received Timestamp
 }
 
 // InviteEvent notifies Peer that an Invite has been received
 message InviteEvent {
-  string inviteId = 1;
-  sonr.core.Peer from = 2;
+  int64 received = 1;            // Invite received Timestamp
+  sonr.core.Peer from = 2;       // Peer that sent the Invite
   sonr.core.Payload payload = 3; // Attached Data
-  InviteReach reach = 4;         // Reach of Invite
 }
 
 // Transfer Progress Event
@@ -51,12 +38,14 @@ message ProgressEvent {
   int32 current = 1;   // Current Transfer Item
   int32 total = 2;     // Total Transfer Progress
   double progress = 3; // Current Transfer Progress
+  int64 received = 4;  // Timestamp
 }
 
 // Message Sent after Completed Transfer
 message CompleteEvent {
   Direction direction = 1; // Transfer Direction
   Payload payload = 2;     // Transfer Data
+  int64 received = 3;      // Timestamp
 
   // Traffic Direction of Session
   enum Direction {

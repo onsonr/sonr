@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"math"
 	"net/http"
+	"net/url"
 	"reflect"
 	"regexp"
 	"strconv"
@@ -20,13 +21,21 @@ import (
 
 // IsUrl returns true if the given string is a valid url
 func IsUrl(s string) bool {
-	return strings.HasPrefix(s, "http://") || strings.HasPrefix(s, "https://")
+	_, err := url.ParseRequestURI(s)
+	if err != nil {
+		return false
+	}
+
+	u, err := url.Parse(s)
+	if err != nil || u.Scheme == "" || u.Host == "" {
+		return false
+	}
+	return true
 }
 
-// NewTransferUrlItem creates a new transfer url item
-func NewTransferUrlItem(url string) *Payload_Item {
+// NewUrlItem creates a new transfer url item
+func NewUrlItem(url string) *Payload_Item {
 	return &Payload_Item{
-		Type: Payload_Item_URL,
 		Data: &Payload_Item_Url{
 			Url: NewURLLink(url),
 		},
@@ -140,12 +149,13 @@ func (u *UrlItem) SetData() {
 }
 
 // ToTransferItem Returns Transfer for URLLink
-func (u *UrlItem) ToTransferItem() *Payload_Item {
+func (u *UrlItem) ToTransferItem(m *Metadata) *Payload_Item {
 	return &Payload_Item{
+		Mime:     DefaultUrlMIME(),
+		Metadata: m,
 		Data: &Payload_Item_Url{
 			Url: u,
 		},
-		Type: Payload_Item_URL,
 	}
 }
 

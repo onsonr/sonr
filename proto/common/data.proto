@@ -6,12 +6,10 @@ option go_package = "github.com/sonr-io/core/internal/common";
 
 // For Transfer Chunk Transmission
 message Chunk {
-  int32 offset =
-      1; // Offset is number of bytes from the beginning of the reader to chunk
-  int32 length = 2; // Length is number of bytes in the chunk
-  bytes data = 3;   // Data is the actual chunk
-  int64 fingerprint =
-      4; // Fingerprint is the value of rolling hash of the chunk
+  int32 offset = 1;      // Bytes from the beginning of the reader to chunk
+  int32 length = 2;      // Length is number of bytes in the chunk
+  bytes data = 3;        // Data is the actual chunk
+  int64 fingerprint = 4; // Fingerprint is the hash of the chunk
 }
 
 // For Transfer File Payload
@@ -21,44 +19,39 @@ message FileItem {
   string name = 3;         // File Name without Path
   string path = 4;         // File Location
   int32 size = 5;          // File Size in Bytes
-  Thumbnail thumb = 6;     // Thumbnail of File
-}
-
-// Thumbnail of File
-message Thumbnail {
-  bytes buffer = 1; // Thumbnail Buffer
-  string path = 2;  // Thumbnail Path
-
-  enum Type {
-    NONE = 0;   // No Thumbnail
-    BUFFER = 1; // Thumbnail Buffer
-    PATH = 2;   // Thumbnail Path
-  }
+  Thumbnail thumbnail = 6; // Thumbnail of File
+  int32 lastModified = 7;  // Last Modified Time in Seconds
 }
 
 // Payload is Data thats being Passed
 message Payload {
   repeated Item items = 1; // Payload Items
-  string id = 2;           // Payload ID
-  Profile receiver = 4;    // PROFILE: General Receiver Info
-  Profile owner = 5;       // PROFILE: General Sender Info
-  Metadata metadata = 6;   // METADATA: General Payload Info
+  Profile receiver = 2;    // PROFILE: General Receiver Info
+  Profile owner = 3;       // PROFILE: General Sender Info
+  int32 size = 4;          // Payload Size in Bytes
 
   // Item in Payload
   message Item {
-    Type type = 1; // Type of Item
+    MIME mime = 1;         // MIME of the Item
+    int32 size = 2;        // Size of the Item in Bytes
+    Metadata metadata = 3; // Metadata of the Item
 
     // Attached Data
     oneof data {
-      FileItem file = 7; // FILE: File Item
-      UrlItem url = 8;   // URL: Url Item
+      FileItem file = 4; // FILE: File Item
+      UrlItem url = 5;   // URL: Url Item
     }
+  }
+}
 
-    enum Type {
-      NONE = 0; // No Item
-      FILE = 1; // File Item
-      URL = 2;  // URL Item
-    }
+// Thumbnail of File
+message Thumbnail {
+  bool exists = 1; // Does the thumbnail exist?
+
+  // Value of the Thumbnail
+  oneof value {
+    bytes buffer = 2; // Thumbnail Buffer
+    string path = 3;  // Thumbnail Path
   }
 }
 

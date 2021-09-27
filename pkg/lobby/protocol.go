@@ -33,7 +33,7 @@ type LobbyProtocol struct {
 // NewProtocol creates a new lobby protocol instance.
 func NewProtocol(host *host.SNRHost, loc *common.Location, em *emitter.Emitter) (*LobbyProtocol, error) {
 	// Create Exchange Topic
-	topic, err := host.Pubsub().Join(loc.OLC(6))
+	topic, err := host.Pubsub().Join(loc.OLC())
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +73,7 @@ func (p *LobbyProtocol) Update(peer *common.Peer) error {
 	// Create Event
 	event := &LobbyMessage{
 		Peer: peer,
-		Olc:  p.location.OLC(6),
+		Olc:  p.location.OLC(),
 	}
 
 	// Marshal Event
@@ -159,7 +159,7 @@ func (p *LobbyProtocol) pushRefresh(id peer.ID, peer *common.Peer) {
 
 	// Create RefreshEvent
 	event := &common.RefreshEvent{
-		Olc:   p.location.OLC(6),
+		Olc:   p.location.OLC(),
 		Peers: peers,
 	}
 

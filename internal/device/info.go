@@ -52,7 +52,7 @@ func ID() (string, error) {
 }
 
 // Info returns the device info.
-func Info() *common.Peer_Info {
+func Info() *common.Peer_Device {
 	// Get HostName
 	hn, err := HostName()
 	if err != nil {
@@ -66,10 +66,11 @@ func Info() *common.Peer_Info {
 	}
 
 	// Return the device info for Peer
-	return &common.Peer_Info{
+	return &common.Peer_Device{
 		HostName: hn,
 		Os:       runtime.GOOS,
 		Id:       id,
+		Arch:     runtime.GOARCH,
 	}
 }
 

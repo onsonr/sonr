@@ -1,23 +1,14 @@
 package transfer
 
 import (
-	"container/list"
 	"context"
-	"errors"
-	"fmt"
-	sync "sync"
 
-	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
-	"github.com/libp2p/go-msgio"
-	"github.com/sonr-io/core/internal/common"
-	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/tools/emitter"
 	"github.com/sonr-io/core/tools/logger"
 	"go.uber.org/zap"
-	"google.golang.org/protobuf/proto"
 )
 
 // Transfer Emission Events
@@ -35,30 +26,26 @@ const (
 	SessionPID  protocol.ID = "/transfer/session/0.0.1"
 )
 
-type RequestEntry struct {
-	request *InviteRequest
-	fromId  peer.ID
-	toId    peer.ID
-}
-
 // TransferProtocol type
 type TransferProtocol struct {
-	ctx          context.Context
-	host         *host.SNRHost           // local host
-	requestQueue *list.List              // Queue of Requests
-	requests     map[string]RequestEntry // used to access request data from response
-	emitter      *emitter.Emitter        // Handle to signal when done
-	//state        state.StateMachine                // State machine for the transfer protocol
+	ctx     context.Context  // Context
+	host    *host.SNRHost    // local host
+	queue   *transferQueue   // transfer queue
+	emitter *emitter.Emitter // Handle to signal when done
 }
 
 // NewProtocol creates a new TransferProtocol
 func NewProtocol(ctx context.Context, host *host.SNRHost, em *emitter.Emitter) *TransferProtocol {
 	// create a new transfer protocol
 	invProtocol := &TransferProtocol{
-		ctx:          ctx,
-		host:         host,
-		emitter:      em,
-		requestQueue: list.New(),
+		ctx:     ctx,
+		host:    host,
+		emitter: em,
+		queue: &transferQueue{
+			ctx:      ctx,
+			host:     host,
+			requests: make(map[peer.ID]TransferEntry),
+		},
 	}
 
 	// Setup Stream Handlers
@@ -68,147 +55,8 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *emitter.Emitter) *
 	return invProtocol
 }
 
-// remote peer requests handler
-func (p *TransferProtocol) onInviteRequest(s network.Stream) {
-	// Initialize Stream Data
-	remotePeer := s.Conn().RemotePeer()
-	r := msgio.NewReader(s)
-
-	// Read the request
-	buf, err := r.ReadMsg()
-	if err != nil {
-		s.Reset()
-		logger.Error("Failed to Read Invite Request buffer.", zap.Error(err))
-		return
-	}
-	s.Close()
-
-	// unmarshal it
-	req := &InviteRequest{}
-	err = proto.Unmarshal(buf, req)
-	if err != nil {
-		logger.Error("Failed to Unmarshal Invite REQUEST buffer.", zap.Error(err))
-		return
-	}
-
-	valid := p.host.AuthenticateMessage(req, req.Metadata)
-	if !valid {
-		logger.Error("Failed to Authorize Invite REQUEST.", zap.Error(err))
-		return
-	}
-
-	// generate response message
-	entry := RequestEntry{
-		request: req,
-		fromId:  remotePeer,
-	}
-	p.requestQueue.PushBack(entry)
-
-	// store request data into Context
-	p.emitter.Emit(Event_INVITED, req)
-}
-
-// remote ping response handler
-func (p *TransferProtocol) onInviteResponse(s network.Stream) {
-	// Initialize Stream Data
-	remotePeer := s.Conn().RemotePeer()
-	r := msgio.NewReader(s)
-
-	// Read the request
-	buf, err := r.ReadMsg()
-	if err != nil {
-		s.Reset()
-		logger.Error("Failed to Read Invite RESPONSE buffer.", zap.Error(err))
-		return
-	}
-	s.Close()
-
-	// unmarshal it
-	resp := &InviteResponse{}
-	err = proto.Unmarshal(buf, resp)
-	if err != nil {
-		logger.Error("Failed to Unmarshal Invite RESPONSE buffer.", zap.Error(err))
-		return
-	}
-
-	valid := p.host.AuthenticateMessage(resp, resp.Metadata)
-	if !valid {
-		logger.Error("Failed to Authenticate Invite RESPONSE.", zap.Error(err))
-		return
-	}
-
-	// locate request data and remove it if found
-	req, ok := p.requests[remotePeer.String()]
-	if ok && resp.Success {
-		// Create a new stream
-		stream, err := p.host.NewStream(p.ctx, remotePeer, SessionPID)
-		if err != nil {
-			logger.Error("Failed to create new stream.", zap.Error(err))
-			return
-		}
-
-		// Logging Info
-		logger.Info("Beginning Outgoing Transfer Stream")
-		wg := sync.WaitGroup{}
-		wc := msgio.NewWriter(stream)
-		count := len(req.request.Payload.Items)
-
-		// Write All Files
-		for i, m := range req.request.Payload.Items {
-			logger.Info("Current Item: ", zap.String(fmt.Sprint(i), m.String()))
-			wg.Add(1)
-			w := common.NewWriter(m, i, count, device.DocsPath, p.emitter)
-			err := w.WriteTo(wc)
-			if err != nil {
-				logger.Error("Error writing stream", zap.Error(err))
-				return
-			}
-			logger.Info(fmt.Sprintf("Finished TRANSFERRING File (%v/%v)", i, len(req.request.Payload.Items)))
-			wg.Done()
-		}
-		wg.Wait()
-
-		// Emit Completed
-		p.emitter.Emit(Event_COMPLETED)
-		delete(p.requests, remotePeer.String())
-	}
-	p.emitter.Emit(Event_RESPONDED, resp)
-
-}
-
-func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
-	// Init WaitGroup
-	req := p.requests[s.Conn().RemotePeer().String()]
-	logger.Info("Started Incoming Transfer...")
-
-	// Concurrent Function
-	go func(rs msgio.ReadCloser) {
-		// Read All Files
-		for i, m := range req.request.GetPayload().GetItems() {
-			r := common.NewReader(m, i, len(req.request.Payload.Items), device.DocsPath, p.emitter)
-			err := r.ReadFrom(rs)
-			if err != nil {
-				logger.Error("Failed to Read from Stream and Write to File.", zap.Error(err))
-				return
-			}
-			logger.Info(fmt.Sprintf("Finished RECEIVING File (%v/%v)", i, len(req.request.GetPayload().GetItems())))
-		}
-
-		// Close Stream
-		rs.Close()
-
-		// Set Status
-		p.emitter.Emit(Event_COMPLETED, req.request.GetPayload())
-	}(msgio.NewReader(s))
-}
-
 // Request Method sends a request to Transfer Data to a remote peer
 func (p *TransferProtocol) Request(id peer.ID, req *InviteRequest) error {
-	// Check if Metadata is valid
-	if req.Metadata == nil {
-		req.Metadata = p.host.NewMetadata()
-	}
-
 	// sign the data
 	signature, err := p.host.SignMessage(req)
 	if err != nil {
@@ -225,20 +73,28 @@ func (p *TransferProtocol) Request(id peer.ID, req *InviteRequest) error {
 	}
 
 	// store the request in the map
-	p.requests[id.String()] = RequestEntry{
-		request: req,
-		toId:    id,
-		fromId:  p.host.ID(),
-	}
+	p.queue.AddOutgoing(id, req)
 	return nil
 }
 
 // Respond Method authenticates or declines a Transfer Request
 func (p *TransferProtocol) Respond(resp *InviteResponse) error {
-	// Check if Response Metadata is valid
-	if resp.Metadata == nil {
-		resp.Metadata = p.host.NewMetadata()
+	// Get ToID
+	toID, err := resp.GetTo().PeerID()
+	if err != nil {
+		logger.Error("Failed to Get PeerID", zap.Error(err))
+		return err
 	}
+
+	// Find Entry
+	entry, err := p.queue.Find(toID)
+	if err != nil {
+		logger.Error("Failed to find transfer entry", zap.Error(err))
+		return err
+	}
+
+	// Copy UUID
+	resp = entry.CopyUUID(resp)
 
 	// sign the data
 	signature, err := p.host.SignMessage(resp)
@@ -250,15 +106,8 @@ func (p *TransferProtocol) Respond(resp *InviteResponse) error {
 	// add the signature to the message
 	resp.Metadata.Signature = signature
 
-	// Get First Request in Queue
-	entry := p.requestQueue.Front()
-	if entry == nil {
-		return errors.New("No Requests in Queue")
-	}
-
 	// Send Response
-	reqEntry := entry.Value.(RequestEntry)
-	err = p.host.SendMessage(reqEntry.fromId, ResponsePID, resp)
+	err = p.host.SendMessage(toID, ResponsePID, resp)
 	if err != nil {
 		logger.Error("Failed to Send Message to Peer", zap.Error(err))
 		return err

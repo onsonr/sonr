@@ -4,43 +4,34 @@ package sonr.protocols.exchange;
 import "proto/common/core.proto";
 option go_package = "github.com/sonr-io/core/pkg/exchange";
 
-// JoinExchangeRequest is Message for Signing Request (Hmac Sha256)
-message JoinExchangeRequest {
-  // Value to be signed
-  string sName = 1; // SName combined with Device ID and Hashed
-  sonr.core.Peer peer = 2;
-}
-
-// JoinExchangeResponse is Message for Signing Response (Hmac Sha256)
-message JoinExchangeResponse {
-  bool success = 1;
-  string sName = 2;        // SName combined with Device ID and Hashed
-  sonr.core.Peer peer = 3; // Peer Data
-}
-
-
 // CreateSNameRequest is Message for Signing Request (Hmac Sha256)
 message CreateSNameRequest {
-  // Value to be signed
   string sName = 1;    // SName combined with Device ID and Hashed
   string mnemonic = 2; // Mnemonic Hashed with private key for fingerprint
+  repeated string deviceIds = 3; // Device IDs for SName
 }
 
 // CreateSNameResponse is Message for Signing Response (Hmac Sha256)
 message CreateSNameResponse {
-  bool success = 1; // If Values were Signed
+  bool success = 1;            // If Values were Signed
+  repeated Domain domains = 2; // Signed Domain TXT Records
 
   // Resulting Signed Values
-  string signedPrefix = 2;      // Message for List of Bytes
-  string signedFingerprint = 3; // Fingerprint Value
-  string publicKey = 4;         // Base64 Encoded Public Key
-  string givenSName = 5;        // Provided SName
-  string givenMnemonic = 6;     // Provided Mnemonic
+  string publicKey = 4;     // Base64 Encoded Public Key
+  string givenSName = 5;    // Provided SName
+  string givenMnemonic = 6; // Provided Mnemonic
+
+  // Domain TXT Record for single SName Entry
+  message Domain {
+    string domain = 1;            // Domain Name
+    string value = 2;             // Domain Value
+    string signedPrefix = 3;      // Message for List of Bytes
+    string signedFingerprint = 4; // Fingerprint Value
+  }
 }
 
 // LookupSNameRequest is Message for Verifying Request (Hmac Sha256)
 message LookupSNameRequest {
-  // Value to be verified
   string sName = 1; // SName combined with Device ID and Hashed
 }
 
@@ -50,16 +41,34 @@ message LookupSNameResponse {
   string publicKey = 2; // Base64 Encoded Public Key
 }
 
+// QueryExchangeRequest is Message for searching for Peer
+message QueryExchangeRequest {
+  string sName = 1;  // SName combined with Device ID and Hashed
+  string peerId = 2; // Peer ID
+}
+
+// UpdateExchangeRequest is Message for updating Peer Data in Exchange
+message UpdateExchangeRequest {
+  string sName = 1;        // SName combined with Device ID and Hashed
+  string peerId = 2;       // Peer ID
+  sonr.core.Peer peer = 3; // Peer Data
+}
+
+// UpdateExchangeResponse is response for UpdateExchangeRequest
+message UpdateExchangeResponse {
+  bool success = 1; // If Request was Successful
+  string error = 2; // Error Message if Request was not successful
+}
+
 // VerifySNameRequest is Message for Verifying Request (Hmac Sha256)
 message VerifySNameRequest {
-  // Value to be verified
   string sName = 1;    // SName combined with Device ID and Hashed
   string mnemonic = 2; // Mnemonic Hashed with public key for fingerprint
+  string deviceId = 3; // Device ID
 }
 
 // VerifySNameResponse is Message for Verifying Response (Hmac Sha256)
 message VerifySNameResponse {
-  bool success = 1;   // If Values were Verified
-  string error = 2;   // Error Message
-  string shortID = 3; // Short ID generated from HMac and Device
+  bool success = 1; // If Values were Verified
+  string error = 2; // Error Message
 }

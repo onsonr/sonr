@@ -4,9 +4,11 @@ import (
 	context "context"
 	"fmt"
 	"net"
+	"time"
 
 	common "github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
+	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/transfer"
 	"github.com/sonr-io/core/tools/emitter"
@@ -120,27 +122,27 @@ func (n *NodeRPCService) Share(ctx context.Context, req *ShareRequest) (*ShareRe
 }
 
 // Search Method to find a Peer by SName
-func (n *NodeRPCService) Ping(ctx context.Context, req *PingRequest) (*PingResponse, error) {
+func (n *NodeRPCService) Find(ctx context.Context, req *FindRequest) (*FindResponse, error) {
 	// Call Internal Ping
-	peer, err := n.Node.Ping(req.GetSName())
+	entry, err := n.Node.Query(exchange.NewQueryRequestFromSName(req.GetSName()))
 	if err != nil {
-		return &PingResponse{
+		return &FindResponse{
 			Success: false,
 			Error:   err.Error(),
 		}, nil
 	}
 
 	// Send Response
-	return &PingResponse{
+	return &FindResponse{
 		Success: true,
-		Peer:    peer,
+		Peer:    entry.Peer,
 	}, nil
 }
 
 // Respond method responds to a received InviteRequest.
 func (n *NodeRPCService) Respond(ctx context.Context, req *RespondRequest) (*RespondResponse, error) {
 	// Call Internal Respond
-	err := n.Node.Respond(req.GetDecision())
+	err := n.Node.Respond(req.GetDecision(), req.GetPeer())
 	if err != nil {
 		return &RespondResponse{
 			Success: false,
@@ -182,7 +184,7 @@ func (nrc *NodeRPCService) handleEmitter() {
 		nrc.Node.On(transfer.Event_INVITED, func(e *emitter.Event) {
 			inv := e.Args[0].(*transfer.InviteRequest)
 			invEvent := &common.InviteEvent{
-				InviteId: inv.GetInviteId(),
+				Received: int64(time.Now().Unix()),
 				From:     inv.GetFrom(),
 				Payload:  inv.GetPayload(),
 			}
@@ -193,8 +195,9 @@ func (nrc *NodeRPCService) handleEmitter() {
 		nrc.Node.On(transfer.Event_RESPONDED, func(e *emitter.Event) {
 			inv := e.Args[0].(*transfer.InviteResponse)
 			decsEvent := &common.DecisionEvent{
-				InviteId: inv.GetInviteId(),
-				Decision: inv.GetSuccess(),
+				From:     inv.GetFrom(),
+				Received: int64(time.Now().Unix()),
+				Decision: inv.GetDecision(),
 			}
 			nrc.decisionEvents <- decsEvent
 		})
@@ -203,6 +206,7 @@ func (nrc *NodeRPCService) handleEmitter() {
 		nrc.Node.On(transfer.Event_PROGRESS, func(e *emitter.Event) {
 			writtenBytes := e.Args[0].(int64)
 			progEvent := &common.ProgressEvent{
+				Received: int64(time.Now().Unix()),
 				Current:  int32(writtenBytes),
 				Total:    0,
 				Progress: 0,
@@ -214,7 +218,8 @@ func (nrc *NodeRPCService) handleEmitter() {
 		nrc.Node.On(transfer.Event_COMPLETED, func(e *emitter.Event) {
 			result := e.Args[0].(*common.Payload)
 			compEvent := &common.CompleteEvent{
-				Payload: result,
+				Received: int64(time.Now().Unix()),
+				Payload:  result,
 			}
 			nrc.completeEvents <- compEvent
 		})
@@ -222,6 +227,7 @@ func (nrc *NodeRPCService) handleEmitter() {
 		// Handle Lobby Join Events
 		nrc.Node.On(lobby.Event_LIST_REFRESH, func(e *emitter.Event) {
 			refreshEvent := e.Args[0].(*common.RefreshEvent)
+			refreshEvent.Received = int64(time.Now().Unix())
 			nrc.exchangeEvents <- refreshEvent
 		})
 

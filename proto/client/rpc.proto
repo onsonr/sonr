@@ -23,8 +23,8 @@ service NodeService {
   // Respond Method to an Invite with Decision
   rpc Respond(RespondRequest) returns (RespondResponse) {}
 
-  // Ping Method to find a Peer by SName
-  rpc Ping(PingRequest) returns (PingResponse) {}
+  // Find Method to find a Peer by SName or PeerID
+  rpc Find(FindRequest) returns (FindResponse) {}
 
   // Stat Method returns the Node Stats
   rpc Stat(StatRequest) returns (StatResponse) {}

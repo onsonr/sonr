@@ -3,6 +3,7 @@ package node
 import (
 	"container/list"
 	"context"
+	"strings"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/sonr-io/core/internal/common"
@@ -93,9 +94,9 @@ func (n *Node) Peer() *common.Peer {
 
 	// Return Peer
 	return &common.Peer{
-		SName:     n.profile.SName,
+		SName:     strings.ToLower(n.profile.SName),
 		Status:    common.Peer_ONLINE,
-		Info:      device.Info(),
+		Device:    device.Info(),
 		Profile:   n.profile,
 		PublicKey: pubBuf,
 	}
@@ -120,7 +121,7 @@ func (n *Node) Edit(p *common.Profile) error {
 func (n *Node) Supply(paths []string) error {
 	// Create Transfer
 	tr := common.Payload{
-		Metadata: n.host.NewMetadata(),
+		Owner: n.Peer().GetProfile(),
 	}
 
 	// Initialize Transfer Items and add iterate over paths
@@ -128,10 +129,10 @@ func (n *Node) Supply(paths []string) error {
 	for _, path := range paths {
 		// Check if path is a url
 		if common.IsUrl(path) {
-			items = append(items, common.NewTransferUrlItem(path))
+			items = append(items, common.NewUrlItem(path))
 		} else {
 			// Create File Item
-			item, err := common.NewTransferFileItem(path)
+			item, err := common.NewFileItem(path, n.host.NewMetadata())
 			if err != nil {
 				logger.Error("Failed to edit Profile", zap.Error(err))
 				n.Emit(Event_STATUS, err)
@@ -151,23 +152,31 @@ func (n *Node) Supply(paths []string) error {
 
 // Share a peer to have a transfer
 func (n *Node) Share(peer *common.Peer) error {
+	// Create New ID for Invite
+	id, err := n.host.NewId()
+	if err != nil {
+		logger.Error("Failed to create new id for Shared Invite", zap.Error(err))
+		return err
+	}
+
 	// Create Invite Request
 	req := &transfer.InviteRequest{
 		Payload:  n.queue.Front().Value.(*common.Payload),
 		Metadata: n.host.NewMetadata(),
 		To:       peer,
 		From:     n.Peer(),
+		Uuid:     id,
 	}
 
 	// Fetch Peer ID from Exchange
-	id, err := n.ExchangeProtocol.Find(peer.GetSName())
+	entry, err := n.ExchangeProtocol.Query(exchange.NewQueryRequestFromSName(peer.GetSName()))
 	if err != nil {
 		logger.Error("Failed to search peer", zap.Error(err))
 		return err
 	}
 
 	// Invite peer
-	err = n.TransferProtocol.Request(id, req)
+	err = n.TransferProtocol.Request(entry.PeerID, req)
 	if err != nil {
 		logger.Error("Failed to invite peer", zap.Error(err))
 		n.Emit(Event_STATUS, err)
@@ -177,13 +186,13 @@ func (n *Node) Share(peer *common.Peer) error {
 }
 
 // Respond to an invite request
-func (n *Node) Respond(decs bool) error {
+func (n *Node) Respond(decs bool, to *common.Peer) error {
 	// Create Invite Response
 	var resp *transfer.InviteResponse
 	if decs {
-		resp = &transfer.InviteResponse{Success: true}
+		resp = &transfer.InviteResponse{Decision: true, Metadata: n.host.NewMetadata(), From: n.Peer(), To: to}
 	} else {
-		resp = &transfer.InviteResponse{Success: false}
+		resp = &transfer.InviteResponse{Decision: false, Metadata: n.host.NewMetadata(), From: n.Peer(), To: to}
 	}
 
 	// Respond on TransferProtocol
