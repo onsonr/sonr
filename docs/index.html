@@ -1221,10 +1221,10 @@
                 </tr>
               
                 <tr>
-                  <td>peer</td>
-                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
+                  <td>profile</td>
+                  <td><a href="#sonr.core.Profile">sonr.core.Profile</a></td>
                   <td></td>
-                  <td><p>Peer Data </p></td>
+                  <td><p>Profile Data </p></td>
                 </tr>
               
                 <tr>
@@ -1287,10 +1287,17 @@
                 </tr>
               
                 <tr>
-                  <td>version</td>
-                  <td><a href="#string">string</a></td>
+                  <td>isDesktop</td>
+                  <td><a href="#bool">bool</a></td>
                   <td></td>
-                  <td><p>Version </p></td>
+                  <td><p>Desktop Device </p></td>
+                </tr>
+              
+                <tr>
+                  <td>isMobile</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>Mobile Device </p></td>
                 </tr>
               
             </tbody>
@@ -1322,13 +1329,6 @@
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p>Peer ID </p></td>
-                </tr>
-              
-                <tr>
-                  <td>address</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Address </p></td>
                 </tr>
               
                 <tr>
@@ -2295,13 +2295,6 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                 </tr>
               
                 <tr>
-                  <td>id</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Local Asset ID </p></td>
-                </tr>
-              
-                <tr>
                   <td>name</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
@@ -2331,7 +2324,7 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
               
                 <tr>
                   <td>lastModified</td>
-                  <td><a href="#int32">int32</a></td>
+                  <td><a href="#int64">int64</a></td>
                   <td></td>
                   <td><p>Last Modified Time in Seconds </p></td>
                 </tr>
@@ -2361,13 +2354,6 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                 </tr>
               
                 <tr>
-                  <td>receiver</td>
-                  <td><a href="#sonr.core.Profile">Profile</a></td>
-                  <td></td>
-                  <td><p>PROFILE: General Receiver Info </p></td>
-                </tr>
-              
-                <tr>
                   <td>owner</td>
                   <td><a href="#sonr.core.Profile">Profile</a></td>
                   <td></td>
@@ -2379,6 +2365,13 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                   <td><a href="#int32">int32</a></td>
                   <td></td>
                   <td><p>Payload Size in Bytes </p></td>
+                </tr>
+              
+                <tr>
+                  <td>createdAt</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>Payload Creation Time in Seconds </p></td>
                 </tr>
               
             </tbody>

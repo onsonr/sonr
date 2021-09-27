@@ -11,11 +11,12 @@ import (
 )
 
 type DeviceStat struct {
-	Id      string `json:"id"`
-	Name    string `json:"name"`
-	Os      string `json:"os"`
-	Arch    string `json:"arch"`
-	Version string `json:"version"`
+	Id        string `json:"id"`
+	Name      string `json:"name"`
+	Os        string `json:"os"`
+	Arch      string `json:"arch"`
+	IsDesktop bool
+	IsMobile  bool
 }
 
 // AppName returns the application name.
@@ -130,10 +131,11 @@ func Stat() *DeviceStat {
 
 	// Return the device info for Peer
 	return &DeviceStat{
-		Id:      id,
-		Name:    hn,
-		Os:      runtime.GOOS,
-		Arch:    runtime.GOARCH,
-		Version: "0.0.1",
+		Id:        id,
+		Name:      hn,
+		Os:        runtime.GOOS,
+		Arch:      runtime.GOARCH,
+		IsDesktop: IsDesktop(),
+		IsMobile:  IsMobile(),
 	}
 }

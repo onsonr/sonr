@@ -37,16 +37,17 @@ func NewFileItem(path string, m *Metadata) (*Payload_Item, error) {
 
 	// Create File Item
 	fileItem := &FileItem{
-		Mime: mime,
-		Path: path,
-		Size: int32(fi.Size()),
-		Name: fi.Name(),
+		Mime:         mime,
+		Path:         path,
+		Size:         int32(fi.Size()),
+		Name:         fi.Name(),
+		LastModified: fi.ModTime().Unix(),
 	}
 
 	// Returns transfer item
 	return &Payload_Item{
 		Metadata: m,
-		Mime:     fileItem.Mime,
+		Mime:     mime,
 		Data: &Payload_Item_File{
 			File: fileItem,
 		},

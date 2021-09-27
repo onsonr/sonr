@@ -15,12 +15,11 @@ message Chunk {
 // For Transfer File Payload
 message FileItem {
   sonr.core.MIME mime = 1; // Standard Mime Type
-  string id = 2;           // Local Asset ID
-  string name = 3;         // File Name without Path
-  string path = 4;         // File Location
-  int32 size = 5;          // File Size in Bytes
-  Thumbnail thumbnail = 6; // Thumbnail of File
-  int32 lastModified = 7;  // Last Modified Time in Seconds
+  string name = 2;         // File Name without Path
+  string path = 3;         // File Location
+  int32 size = 4;          // File Size in Bytes
+  Thumbnail thumbnail = 5; // Thumbnail of File
+  int64 lastModified = 6;  // Last Modified Time in Seconds
 }
 
 // Payload is Data thats being Passed

@@ -61,7 +61,6 @@ func NewNode(ctx context.Context, host *host.SNRHost, loc *common.Location) *Nod
 
 	// Set Transfer Protocol
 	node.TransferProtocol = transfer.NewProtocol(ctx, host, node.Emitter)
-	node.Emit(Event_STATUS, true, "Transfer Protocol Set")
 
 	// Set Exchange Protocol
 	exch, err := exchange.NewProtocol(ctx, host, node.Emitter)
@@ -69,7 +68,6 @@ func NewNode(ctx context.Context, host *host.SNRHost, loc *common.Location) *Nod
 		logger.Error("Failed to start ExchangeProtocol", zap.Error(err))
 		return node
 	}
-	node.Emit(Event_STATUS, true, "Exchange Protocol Set")
 	node.ExchangeProtocol = exch
 
 	// Set Lobby Protocol
@@ -78,7 +76,6 @@ func NewNode(ctx context.Context, host *host.SNRHost, loc *common.Location) *Nod
 		logger.Error("Failed to start LobbyProtocol", zap.Error(err))
 		return node
 	}
-	node.Emit(Event_STATUS, true, "Lobby Protocol Set")
 	node.LobbyProtocol = lobby
 	return node
 }
@@ -113,7 +110,6 @@ func (n *Node) Edit(p *common.Profile) error {
 		logger.Error("Failed to update Exchange", zap.Error(err))
 		return err
 	}
-
 	return nil
 }
 

@@ -101,7 +101,7 @@ func (p *Peer) Info() (*PeerInfo, error) {
 		PeerID:          id,
 		PublicKey:       pubKey,
 		SName:           p.GetSName(),
-		StoreEntryKey:   fmt.Sprintf("sName/%s", strings.ToLower(p.GetSName())),
+		StoreEntryKey:   fmt.Sprintf("%s%s", EXCHANGE_SNAME_PREFIX, strings.ToLower(p.GetSName())),
 		Peer:            p,
 	}, nil
 }

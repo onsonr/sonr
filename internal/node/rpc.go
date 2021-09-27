@@ -160,14 +160,15 @@ func (n *NodeRPCService) Respond(ctx context.Context, req *RespondRequest) (*Res
 func (n *NodeRPCService) Stat(ctx context.Context, req *StatRequest) (*StatResponse, error) {
 	// Call Internal Stat
 	return &StatResponse{
-		SName: n.profile.SName,
-		Peer:  n.Peer(),
+		SName:   n.profile.SName,
+		Profile: n.profile,
 		Device: &StatResponse_Device{
-			Id:      device.Stat().Id,
-			Name:    device.Stat().Name,
-			Os:      device.Stat().Os,
-			Arch:    device.Stat().Arch,
-			Version: device.Stat().Version,
+			Id:        device.Stat().Id,
+			Name:      device.Stat().Name,
+			Os:        device.Stat().Os,
+			Arch:      device.Stat().Arch,
+			IsDesktop: device.Stat().IsDesktop,
+			IsMobile:  device.Stat().IsMobile,
 		},
 		Network: &StatResponse_Network{
 			PublicKey: n.host.Stat().PublicKey,

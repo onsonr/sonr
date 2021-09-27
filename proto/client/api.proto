@@ -131,16 +131,14 @@ message FindResponse {
 }
 
 // StatRequest is Message for Searching for Peer
-message StatRequest {
-  // TODO: Add Stat Request
-}
+message StatRequest {}
 
 // StatResponse is a response to StatRequest that displays Node Stats
 message StatResponse {
-  string sName = 1;        // SName
-  sonr.core.Peer peer = 2; // Peer Data
-  Device device = 3;       // Device Data
-  Network network = 4;     // Network Data
+  string sName = 1;              // SName
+  sonr.core.Profile profile = 2; // Profile Data
+  Device device = 3;             // Device Data
+  Network network = 4;           // Network Data
 
   // Device Stats
   message Device {
@@ -148,14 +146,14 @@ message StatResponse {
     string name = 2;    // Device Name
     string os = 3;      // Operating System
     string arch = 4;    // Architecture
-    string version = 5; // Version
+    bool isDesktop = 5; // Desktop Device
+    bool isMobile = 6;  // Mobile Device
   }
 
   // Network Stats
   message Network {
     string publicKey = 1; // Public Key
     string peerID = 2;    // Peer ID
-    string address = 3;   // Address
-    string multiaddr = 4; // Multi Address
+    string multiaddr = 3; // Multi Address
   }
 }

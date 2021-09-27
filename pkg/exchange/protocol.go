@@ -51,7 +51,7 @@ func (p *ExchangeProtocol) Query(q *QueryExchangeRequest) (*common.PeerInfo, err
 	// Find peer from sName in the store
 	buf, err := p.PubsubValueStore.GetValue(p.ctx, query)
 	if err != nil {
-		msg := fmt.Sprintf("Failed to GET peer (%s) from store", val)
+		msg := fmt.Sprintf("Failed to GET peer (%s) from store, with Query Value: %s", val, query)
 		logger.Error(msg, zap.Error(err))
 		return nil, errors.Wrap(err, msg)
 	}
@@ -66,7 +66,7 @@ func (p *ExchangeProtocol) Query(q *QueryExchangeRequest) (*common.PeerInfo, err
 	// Get PeerID from Peer
 	info, err := peerData.Info()
 	if err != nil {
-		msg := fmt.Sprintf("Failed to get PeerInfo from Peer (%s)", val)
+		msg := fmt.Sprintf("Failed to get PeerInfo from Peer: %s", val)
 		logger.Error(msg, zap.Error(err))
 		return nil, errors.Wrap(err, msg)
 	}

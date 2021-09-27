@@ -29,7 +29,7 @@ func (q *QueryExchangeRequest) QueryValue() (string, string, error) {
 	// Check if the SName is provided
 	if q.GetSName() != "" {
 		val := strings.ToLower(q.GetSName())
-		return fmt.Sprintf("%s/%s", common.EXCHANGE_SNAME_PREFIX, val), val, nil
+		return fmt.Sprintf("%s%s", common.EXCHANGE_SNAME_PREFIX, val), val, nil
 	}
 	return "", "", fmt.Errorf("no peerID or SName given")
 }
