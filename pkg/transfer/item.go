@@ -18,8 +18,8 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// ITEM_PROGRESS_INTERVAL is the interval in which progress events are emitted
-const ITEM_PROGRESS_INTERVAL = 25
+// ITEM_INTERVAL is the interval in which progress events are emitted
+const ITEM_INTERVAL = 25
 
 // itemReader is a Reader for a FileItem
 type itemReader struct {
@@ -91,7 +91,7 @@ func (ir *itemReader) ReadFrom(reader msgio.ReadCloser) error {
 		ir.mutex.Unlock()
 
 		// Emit Progress
-		if (i % ITEM_PROGRESS_INTERVAL) == 0 {
+		if (i % ITEM_INTERVAL) == 0 {
 			ir.Progress(i)
 		}
 	}
@@ -164,9 +164,17 @@ func (iw *itemWriter) WriteTo(writer msgio.WriteCloser) error {
 		return errors.New(fmt.Sprintf("Error to read Item, %s", err.Error()))
 	}
 
+	// Define Chunker Opts
+	var avgSize int
+	if iw.size < ITEM_INTERVAL {
+		avgSize = int(iw.size)
+	} else {
+		avgSize = int(iw.size / ITEM_INTERVAL)
+	}
+
 	// Create New Chunker
 	chunker, err := config.NewChunker(f, config.ChunkerOptions{
-		AverageSize: 2048, // Only Average Required
+		AverageSize: avgSize, // Only Average Required
 	})
 	if err != nil {
 		return err
@@ -203,7 +211,7 @@ func (iw *itemWriter) WriteTo(writer msgio.WriteCloser) error {
 		i += int64(c.Length)
 
 		// Emit Progress
-		if (i % ITEM_PROGRESS_INTERVAL) == 0 {
+		if (i % ITEM_INTERVAL) == 0 {
 			iw.Progress(i)
 		}
 	}
