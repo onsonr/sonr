@@ -130,7 +130,6 @@ func (p *LobbyProtocol) HandleMessages() {
 			if msg.ReceivedFrom == p.host.ID() {
 				continue
 			} else {
-
 				// Unmarshal Message
 				data := &LobbyMessage{}
 				err = proto.Unmarshal(msg.Data, data)

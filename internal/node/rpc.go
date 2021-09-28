@@ -81,6 +81,18 @@ func (n *NodeRPCService) Supply(ctx context.Context, req *SupplyRequest) (*Suppl
 		}, nil
 	}
 
+	// Check if Peer is provided
+	if req.GetPeer() != nil {
+		// Call Internal Share
+		err = n.Node.Share(req.GetPeer())
+		if err != nil {
+			return &SupplyResponse{
+				Success: false,
+				Error:   err.Error(),
+			}, nil
+		}
+	}
+
 	// Send Response
 	return &SupplyResponse{
 		Success: true,

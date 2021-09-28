@@ -17,6 +17,7 @@ func parseInitializeRequest(buf []byte) (*node.InitializeRequest, []device.FSOpt
 
 	// Check FSOptions and Get Device Paths
 	fsOpts := make([]device.FSOption, 0)
+
 	if req.GetDeviceOptions() != nil {
 		// Set Temporary Path
 		fsOpts = append(fsOpts, device.FSOption{

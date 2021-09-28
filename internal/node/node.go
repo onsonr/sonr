@@ -110,6 +110,13 @@ func (n *Node) Edit(p *common.Profile) error {
 		logger.Error("Failed to update Exchange", zap.Error(err))
 		return err
 	}
+
+	// Push Update to Lobby
+	err = n.LobbyProtocol.Update(n.Peer())
+	if err != nil {
+		logger.Error("Failed to update Lobby", zap.Error(err))
+		return err
+	}
 	return nil
 }
 
