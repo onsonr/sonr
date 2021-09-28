@@ -161,7 +161,10 @@ func (iw *itemWriter) WriteTo(writer msgio.WriteCloser) error {
 		return errors.New(fmt.Sprintf("Error to read Item, %s", err.Error()))
 	}
 
-	chunker, err := config.NewChunker(f, config.ChunkerOptions{})
+	// Create New Chunker
+	chunker, err := config.NewChunker(f, config.ChunkerOptions{
+		AverageSize: 2048, // Only Average Required
+	})
 	if err != nil {
 		return err
 	}
