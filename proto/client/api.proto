@@ -17,10 +17,11 @@ message InitializeRequest {
 
   // Optional Message to Initialize FileSystem
   message DeviceOptions {
-    string documentsDir = 1; // Documents Directory
+    string id = 1;           // Device ID
     string cacheDir = 2;     // Cache Directory
-    string supportDir = 3;   // Support Directory
-    string id = 4;           // Device ID
+    string documentsDir = 3; // Documents Directory
+    string downloadsDir = 4; // Downloads Directory
+    string supportDir = 5;   // Support Directory
   }
 
   // Optional Message to Initialize Env Variables
