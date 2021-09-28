@@ -4,7 +4,6 @@ import (
 	context "context"
 	"fmt"
 	"net"
-	"time"
 
 	common "github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
@@ -197,52 +196,31 @@ func (nrc *NodeRPCService) handleEmitter() {
 	for {
 		// Handle Transfer Invite
 		nrc.Node.On(transfer.Event_INVITED, func(e *state.Event) {
-			inv := e.Args[0].(*transfer.InviteRequest)
-			invEvent := &common.InviteEvent{
-				Received: int64(time.Now().Unix()),
-				From:     inv.GetFrom(),
-				Payload:  inv.GetPayload(),
-			}
-			nrc.inviteEvents <- invEvent
+			event := e.Args[0].(*common.InviteEvent)
+			nrc.inviteEvents <- event
 		})
 
 		// Handle Transfer Decision
 		nrc.Node.On(transfer.Event_RESPONDED, func(e *state.Event) {
-			inv := e.Args[0].(*transfer.InviteResponse)
-			decsEvent := &common.DecisionEvent{
-				From:     inv.GetFrom(),
-				Received: int64(time.Now().Unix()),
-				Decision: inv.GetDecision(),
-			}
-			nrc.decisionEvents <- decsEvent
+			event := e.Args[0].(*common.DecisionEvent)
+			nrc.decisionEvents <- event
 		})
 
 		// Handle Transfer Progress
 		nrc.Node.On(transfer.Event_PROGRESS, func(e *state.Event) {
-			writtenBytes := e.Args[0].(int64)
-			progEvent := &common.ProgressEvent{
-				Received: int64(time.Now().Unix()),
-				Current:  int32(writtenBytes),
-				Total:    0,
-				Progress: 0,
-			}
-			nrc.progressEvents <- progEvent
+			event := e.Args[0].(*common.ProgressEvent)
+			nrc.progressEvents <- event
 		})
 
 		// Handle Transfer Completed
 		nrc.Node.On(transfer.Event_COMPLETED, func(e *state.Event) {
-			result := e.Args[0].(*common.Payload)
-			compEvent := &common.CompleteEvent{
-				Received: int64(time.Now().Unix()),
-				Payload:  result,
-			}
-			nrc.completeEvents <- compEvent
+			event := e.Args[0].(*common.CompleteEvent)
+			nrc.completeEvents <- event
 		})
 
 		// Handle Lobby Join Events
 		nrc.Node.On(lobby.Event_LIST_REFRESH, func(e *state.Event) {
 			refreshEvent := e.Args[0].(*common.RefreshEvent)
-			refreshEvent.Received = int64(time.Now().Unix())
 			nrc.exchangeEvents <- refreshEvent
 		})
 

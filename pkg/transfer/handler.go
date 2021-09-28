@@ -40,7 +40,7 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 	p.queue.AddIncoming(remotePeer, req)
 
 	// store request data into Context
-	p.emitter.Emit(Event_INVITED, req)
+	p.emitter.Emit(Event_INVITED, req.ToEvent())
 }
 
 // onInviteResponse response handler
@@ -58,14 +58,14 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 	}
 	s.Close()
 
-	// unmarshal it
+	// Unmarshal response
 	resp := &InviteResponse{}
 	err = proto.Unmarshal(buf, resp)
 	if err != nil {
 		logger.Error("Failed to Unmarshal Invite RESPONSE buffer.", zap.Error(err))
 		return
 	}
-	p.emitter.Emit(Event_RESPONDED, resp)
+	p.emitter.Emit(Event_RESPONDED, resp.ToEvent())
 
 	// locate request data and remove it if found
 	entry, err := p.queue.Validate(resp)

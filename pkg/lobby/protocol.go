@@ -2,6 +2,7 @@ package lobby
 
 import (
 	"context"
+	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	ps "github.com/libp2p/go-libp2p-pubsub"
@@ -160,8 +161,9 @@ func (p *LobbyProtocol) pushRefresh(id peer.ID, peer *common.Peer) {
 
 	// Create RefreshEvent
 	event := &common.RefreshEvent{
-		Olc:   p.location.OLC(),
-		Peers: peers,
+		Olc:      p.location.OLC(),
+		Peers:    peers,
+		Received: int64(time.Now().Unix()),
 	}
 
 	// Emit Event
