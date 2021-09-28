@@ -17,8 +17,13 @@ func parseInitializeRequest(buf []byte) (*node.InitializeRequest, []device.FSOpt
 
 	// Check FSOptions and Get Device Paths
 	fsOpts := make([]device.FSOption, 0)
-
 	if req.GetDeviceOptions() != nil {
+		// Set Device ID
+		err = device.SetDeviceID(req.GetDeviceOptions().GetId())
+		if err != nil {
+			return nil, nil, err
+		}
+
 		// Set Temporary Path
 		fsOpts = append(fsOpts, device.FSOption{
 			Path: req.GetDeviceOptions().GetCacheDir(),

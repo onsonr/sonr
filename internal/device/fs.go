@@ -3,6 +3,7 @@ package device
 import (
 	"crypto/rand"
 	"encoding/json"
+	"errors"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/sonr-io/core/tools/config"
@@ -39,6 +40,9 @@ var (
 
 	// SupportPath is the path to the support folder
 	SupportPath string
+
+	// deviceID is the device ID. Either provided or found
+	deviceID string
 )
 
 // DirType is the type of a directory.
@@ -127,6 +131,15 @@ func Init(isDev bool, opts ...FSOption) error {
 		KeyChain = kc
 	}
 	return nil
+}
+
+// SetDeviceID sets the device ID.
+func SetDeviceID(id string) error {
+	if id != "" {
+		deviceID = id
+		return nil
+	}
+	return errors.New("Empty DeviceID provided.")
 }
 
 // loadKeychain loads a keychain from a file.

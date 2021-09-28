@@ -1,6 +1,7 @@
 package device
 
 import (
+	"errors"
 	"os"
 	"runtime"
 
@@ -49,6 +50,13 @@ func HostName() (string, error) {
 
 // ID returns the device ID.
 func ID() (string, error) {
+	// Check if Mobile
+	if IsMobile() {
+		if deviceID != "" {
+			return deviceID, nil
+		}
+		return "", errors.New("Device ID not set for Mobile.")
+	}
 	return machineid.ID()
 }
 
