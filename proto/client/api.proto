@@ -7,20 +7,13 @@ option go_package = "github.com/sonr-io/core/internal/node";
 
 // InitializeRequest Message to Establish Sonr Host/API/Room
 message InitializeRequest {
-  sonr.core.Location location = 1;       // Current Runtime Location
-  sonr.core.Profile profile = 2;         // Users Contact Card
-  sonr.core.Connection connection = 3;   // Internet Connection Type
-  HostOptions hostOptions = 4;           // Libp2p Host config
-  ServiceOptions serviceOptions = 5;     // Service Config
-  AccountOptions accountOptions = 6;     // Account Config
-  DeviceOptions deviceOptions = 7;       // File System Config
-  sonr.core.Environment environment = 8; // Environment Config
-
-  // Optional Message to Initialize Sonr Account
-  message AccountOptions {
-    string sName = 1;    // Sonr Account Name
-    string mnemonic = 2; // Sonr Account Mnemonic
-  }
+  sonr.core.Location location = 1;     // Current Runtime Location
+  sonr.core.Profile profile = 2;       // Users Contact Card
+  sonr.core.Connection connection = 3; // Internet Connection Type
+  HostOptions hostOptions = 4;         // Libp2p Host config
+  ServiceOptions serviceOptions = 5;   // Service Config
+  DeviceOptions deviceOptions = 6;     // File System Config
+  EnvOptions envOptions = 7;           // Environment Config
 
   // Optional Message to Initialize FileSystem
   message DeviceOptions {
@@ -28,6 +21,12 @@ message InitializeRequest {
     string cacheDir = 2;     // Cache Directory
     string supportDir = 3;   // Support Directory
     string id = 4;           // Device ID
+  }
+
+  // Optional Message to Initialize Env Variables
+  message EnvOptions {
+    map<string, string> variables = 1;     // Environment Variables
+    sonr.core.Environment environment = 2; // Environment Config
   }
 
   // Libp2p Host Options
@@ -113,30 +112,32 @@ message RespondResponse {
   string error = 2; // Error Message if Supply is not Active
 }
 
-// PingRequest is Message for Searching for Peer
-message PingRequest {
-  string sName = 1; // SName combined with Device ID and Hashed
+// FindRequest is Message for Searching for Peer
+message FindRequest {
+  oneof query {
+    string sName = 1;  // SName combined with Device ID and Hashed
+    string peerId = 2; // Peer ID
+  }
 }
 
-// PingResponse is Message for Searching for Peer
-message PingResponse {
+// FindResponse is Message for Searching for Peer
+message FindResponse {
   bool success = 1;        // Success
   string error = 2;        // Error Message
   sonr.core.Peer peer = 3; // Peer Data
+  string peerId = 4;       // Peer ID
+  string sName = 5;        // SName
 }
 
 // StatRequest is Message for Searching for Peer
-message StatRequest {
-  bool showDevice = 1;  // Device Stats
-  bool showNetwork = 2; // Network Stats
-}
+message StatRequest {}
 
 // StatResponse is a response to StatRequest that displays Node Stats
 message StatResponse {
-  string sName = 1;        // SName
-  sonr.core.Peer peer = 2; // Peer Data
-  Device device = 3;       // Device Data
-  Network network = 4;     // Network Data
+  string sName = 1;              // SName
+  sonr.core.Profile profile = 2; // Profile Data
+  Device device = 3;             // Device Data
+  Network network = 4;           // Network Data
 
   // Device Stats
   message Device {
@@ -144,14 +145,14 @@ message StatResponse {
     string name = 2;    // Device Name
     string os = 3;      // Operating System
     string arch = 4;    // Architecture
-    string version = 5; // Version
+    bool isDesktop = 5; // Desktop Device
+    bool isMobile = 6;  // Mobile Device
   }
 
   // Network Stats
   message Network {
     string publicKey = 1; // Public Key
     string peerID = 2;    // Peer ID
-    string address = 3;   // Address
-    string multiaddr = 4; // Multi Address
+    string multiaddr = 3; // Multi Address
   }
 }

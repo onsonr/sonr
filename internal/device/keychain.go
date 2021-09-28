@@ -10,14 +10,21 @@ import (
 // Directory Name of Private Key Folder
 const PRIVATE_KEY_DIR = ".sonr_private"
 
+// KeyPair is a type of keypair
 type KeyPair int64
 
 const (
+	// Account is the keypair for the account
 	Account KeyPair = iota
+
+	// Link is the keypair for linking Devices
 	Link
+
+	// Group is the keypair for created Groups
 	Group
 )
 
+// Keychain Interface for managing device keypairs.
 type Keychain interface {
 	// Checks if a key pair exists in the keychain.
 	Exists(key KeyPair) bool

@@ -1,6 +1,6 @@
 package node
 
-// OnDecision method sends a decision event to the client.
+// OnNodeStatus method sends a status event to the client.
 func (n *NodeRPCService) OnNodeStatus(e *Empty, stream NodeService_OnNodeStatusServer) error {
 	for {
 		select {
@@ -15,7 +15,7 @@ func (n *NodeRPCService) OnNodeStatus(e *Empty, stream NodeService_OnNodeStatusS
 	}
 }
 
-// OnLocalJoin method sends a join event to the client.
+// OnLobbyRefresh method sends a lobby refresh event to the client.
 func (n *NodeRPCService) OnLobbyRefresh(e *Empty, stream NodeService_OnLobbyRefreshServer) error {
 	for {
 		select {
@@ -30,7 +30,7 @@ func (n *NodeRPCService) OnLobbyRefresh(e *Empty, stream NodeService_OnLobbyRefr
 	}
 }
 
-// OnDecision-Accepted method sends a decision event to the client.
+// OnTransferAccepted method sends an accepted event to the client.
 func (n *NodeRPCService) OnTransferAccepted(e *Empty, stream NodeService_OnTransferAcceptedServer) error {
 	for {
 		select {
@@ -47,7 +47,7 @@ func (n *NodeRPCService) OnTransferAccepted(e *Empty, stream NodeService_OnTrans
 	}
 }
 
-// OnDecision-Declined method sends a decision event to the client.
+// OnTransferDeclinedmethod sends a decline event to the client.
 func (n *NodeRPCService) OnTransferDeclined(e *Empty, stream NodeService_OnTransferDeclinedServer) error {
 	for {
 		select {

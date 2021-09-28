@@ -81,13 +81,13 @@ message MIME {
   string value = 3;   // Type/Subtype i.e. (image/jpeg)
 
   enum Type {
-    OTHER = 0; // Other File Type - If cannot derive from Subtype
-    AUDIO = 1; // Sound, Audio Files
-    IMAGE = 2; // Image Files
-    TEXT = 3;  // Text Based Files
-    VIDEO = 4; // Video Files
-    SONR = 5;  // SNR Files
-    URL = 6;   // URL Links
+    OTHER = 0;    // Other File Type - If cannot derive from Subtype
+    AUDIO = 1;    // Sound, Audio Files
+    DOCUMENT = 2; // Document Files - PDF, Word, Excel, etc.
+    IMAGE = 3;    // Image Files
+    TEXT = 4;     // Text Based Files
+    VIDEO = 5;    // Video Files
+    URL = 6;      // URL Links
   }
 }
 
@@ -95,16 +95,17 @@ message MIME {
 message Peer {
   string sName = 1;    // User Sonr Domain
   Status status = 2;   // Peer Status
-  Info info = 3;       // Peer Device Info
+  Device device = 3;   // Peer Device Info
   Profile profile = 4; // Peers General Information
   bytes publicKey = 5; // Public Key of the Peer
 
   // Peer Info for Device
-  message Info {
-    string model = 1;    // Peers Device Model
+  message Device {
+    string id = 1;       // Peer Device ID
     string hostName = 2; // Peer Host Name
     string os = 3;       // Peer Operating System
-    string id = 4;       // Peer Device ID
+    string arch = 4;     // Peer Architecture
+    string model = 5;    // Peers Device Model
   }
 
   // Peers Active Status
@@ -132,19 +133,26 @@ message Social {
   string username = 2; // Username of Social
   string url = 3;      // URL to Social
   bytes picture = 4;   // Profile Picture
-  Type type = 5;       // Type of Social
+  Media media = 5;     // Type of Social
 
   // Social Type
-  enum Type {
-    OTHER = 0; // Other Social Network
-    FACEBOOK = 1;
-    TWITTER = 2;
-    MEDIUM = 3;
-    TIKTOK = 4;
-    INSTAGRAM = 5;
-    YOUTUBE = 6;
-    GITHUB = 7;
-    SNAPCHAT = 8;
-    SPOTIFY = 9;
+  enum Media {
+    OTHER = 0;     // Other Social Network
+    FACEBOOK = 1;  // Facebook
+    TWITTER = 2;   // Twitter
+    MEDIUM = 3;    // Medium
+    TIKTOK = 4;    // TikTok
+    INSTAGRAM = 5; // Instagram
+    YOUTUBE = 6;   // YouTube
+    GITHUB = 7;    // GitHub
+    SNAPCHAT = 8;  // Snapchat
+    SPOTIFY = 9;   // Spotify
   }
+}
+
+// UUID is General Message ID with Signature, ID, and Timestamp
+message UUID {
+  bytes signature = 1; // Signature of the message
+  string value = 2;    // ID of the message
+  int64 timestamp = 3; // Unix timestamp
 }

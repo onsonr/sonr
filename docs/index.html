@@ -187,15 +187,27 @@
                 </li>
               
                 <li>
+                  <a href="#sonr.node.FindRequest"><span class="badge">M</span>FindRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.node.FindResponse"><span class="badge">M</span>FindResponse</a>
+                </li>
+              
+                <li>
                   <a href="#sonr.node.InitializeRequest"><span class="badge">M</span>InitializeRequest</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.node.InitializeRequest.AccountOptions"><span class="badge">M</span>InitializeRequest.AccountOptions</a>
+                  <a href="#sonr.node.InitializeRequest.DeviceOptions"><span class="badge">M</span>InitializeRequest.DeviceOptions</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.node.InitializeRequest.DeviceOptions"><span class="badge">M</span>InitializeRequest.DeviceOptions</a>
+                  <a href="#sonr.node.InitializeRequest.EnvOptions"><span class="badge">M</span>InitializeRequest.EnvOptions</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.node.InitializeRequest.EnvOptions.VariablesEntry"><span class="badge">M</span>InitializeRequest.EnvOptions.VariablesEntry</a>
                 </li>
               
                 <li>
@@ -212,14 +224,6 @@
               
                 <li>
                   <a href="#sonr.node.InitializeResponse"><span class="badge">M</span>InitializeResponse</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.node.PingRequest"><span class="badge">M</span>PingRequest</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.node.PingResponse"><span class="badge">M</span>PingResponse</a>
                 </li>
               
                 <li>
@@ -317,7 +321,7 @@
                 </li>
               
                 <li>
-                  <a href="#sonr.core.Peer.Info"><span class="badge">M</span>Peer.Info</a>
+                  <a href="#sonr.core.Peer.Device"><span class="badge">M</span>Peer.Device</a>
                 </li>
               
                 <li>
@@ -326,6 +330,10 @@
               
                 <li>
                   <a href="#sonr.core.Social"><span class="badge">M</span>Social</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.core.UUID"><span class="badge">M</span>UUID</a>
                 </li>
               
               
@@ -346,7 +354,7 @@
                 </li>
               
                 <li>
-                  <a href="#sonr.core.Social.Type"><span class="badge">E</span>Social.Type</a>
+                  <a href="#sonr.core.Social.Media"><span class="badge">E</span>Social.Media</a>
                 </li>
               
               
@@ -416,14 +424,6 @@
                 </li>
               
               
-                <li>
-                  <a href="#sonr.core.Payload.Item.Type"><span class="badge">E</span>Payload.Item.Type</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.core.Thumbnail.Type"><span class="badge">E</span>Thumbnail.Type</a>
-                </li>
-              
               
               
             </ul>
@@ -463,14 +463,6 @@
                   <a href="#sonr.core.CompleteEvent.Direction"><span class="badge">E</span>CompleteEvent.Direction</a>
                 </li>
               
-                <li>
-                  <a href="#sonr.core.Direction"><span class="badge">E</span>Direction</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.core.InviteReach"><span class="badge">E</span>InviteReach</a>
-                </li>
-              
               
               
             </ul>
@@ -482,35 +474,43 @@
             <ul>
               
                 <li>
-                  <a href="#sonr.protocols.exchange.CreateSNameRequest"><span class="badge">M</span>CreateSNameRequest</a>
+                  <a href="#sonr.protocols.exchange.LookupRequest"><span class="badge">M</span>LookupRequest</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.protocols.exchange.CreateSNameResponse"><span class="badge">M</span>CreateSNameResponse</a>
+                  <a href="#sonr.protocols.exchange.LookupResponse"><span class="badge">M</span>LookupResponse</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.protocols.exchange.JoinExchangeRequest"><span class="badge">M</span>JoinExchangeRequest</a>
+                  <a href="#sonr.protocols.exchange.QueryRequest"><span class="badge">M</span>QueryRequest</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.protocols.exchange.JoinExchangeResponse"><span class="badge">M</span>JoinExchangeResponse</a>
+                  <a href="#sonr.protocols.exchange.RegisterRequest"><span class="badge">M</span>RegisterRequest</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.protocols.exchange.LookupSNameRequest"><span class="badge">M</span>LookupSNameRequest</a>
+                  <a href="#sonr.protocols.exchange.RegisterResponse"><span class="badge">M</span>RegisterResponse</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.protocols.exchange.LookupSNameResponse"><span class="badge">M</span>LookupSNameResponse</a>
+                  <a href="#sonr.protocols.exchange.RegisterResponse.Domain"><span class="badge">M</span>RegisterResponse.Domain</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.protocols.exchange.VerifySNameRequest"><span class="badge">M</span>VerifySNameRequest</a>
+                  <a href="#sonr.protocols.exchange.UpdateRequest"><span class="badge">M</span>UpdateRequest</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.protocols.exchange.VerifySNameResponse"><span class="badge">M</span>VerifySNameResponse</a>
+                  <a href="#sonr.protocols.exchange.UpdateResponse"><span class="badge">M</span>UpdateResponse</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.protocols.exchange.VerifyRequest"><span class="badge">M</span>VerifyRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.protocols.exchange.VerifyResponse"><span class="badge">M</span>VerifyResponse</a>
                 </li>
               
               
@@ -602,10 +602,6 @@
             <ul>
               
                 <li>
-                  <a href="#sonr.protocols.transfer.InviteEvent"><span class="badge">M</span>InviteEvent</a>
-                </li>
-              
-                <li>
                   <a href="#sonr.protocols.transfer.InviteRequest"><span class="badge">M</span>InviteRequest</a>
                 </li>
               
@@ -613,10 +609,6 @@
                   <a href="#sonr.protocols.transfer.InviteResponse"><span class="badge">M</span>InviteResponse</a>
                 </li>
               
-              
-                <li>
-                  <a href="#sonr.protocols.transfer.InviteReach"><span class="badge">E</span>InviteReach</a>
-                </li>
               
               
               
@@ -690,6 +682,89 @@
 
         
       
+        <h3 id="sonr.node.FindRequest">FindRequest</h3>
+        <p>FindRequest is Message for Searching for Peer</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>sName</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>SName combined with Device ID and Hashed </p></td>
+                </tr>
+              
+                <tr>
+                  <td>peerId</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Peer ID </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.node.FindResponse">FindResponse</h3>
+        <p>FindResponse is Message for Searching for Peer</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>success</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>Success </p></td>
+                </tr>
+              
+                <tr>
+                  <td>error</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Error Message </p></td>
+                </tr>
+              
+                <tr>
+                  <td>peer</td>
+                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
+                  <td></td>
+                  <td><p>Peer Data </p></td>
+                </tr>
+              
+                <tr>
+                  <td>peerId</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Peer ID </p></td>
+                </tr>
+              
+                <tr>
+                  <td>sName</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>SName </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="sonr.node.InitializeRequest">InitializeRequest</h3>
         <p>InitializeRequest Message to Establish Sonr Host/API/Room</p>
 
@@ -736,13 +811,6 @@
                 </tr>
               
                 <tr>
-                  <td>accountOptions</td>
-                  <td><a href="#sonr.node.InitializeRequest.AccountOptions">InitializeRequest.AccountOptions</a></td>
-                  <td></td>
-                  <td><p>Account Config </p></td>
-                </tr>
-              
-                <tr>
                   <td>deviceOptions</td>
                   <td><a href="#sonr.node.InitializeRequest.DeviceOptions">InitializeRequest.DeviceOptions</a></td>
                   <td></td>
@@ -750,41 +818,10 @@
                 </tr>
               
                 <tr>
-                  <td>environment</td>
-                  <td><a href="#sonr.core.Environment">sonr.core.Environment</a></td>
+                  <td>envOptions</td>
+                  <td><a href="#sonr.node.InitializeRequest.EnvOptions">InitializeRequest.EnvOptions</a></td>
                   <td></td>
                   <td><p>Environment Config </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.node.InitializeRequest.AccountOptions">InitializeRequest.AccountOptions</h3>
-        <p>Optional Message to Initialize Sonr Account</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>sName</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Sonr Account Name </p></td>
-                </tr>
-              
-                <tr>
-                  <td>mnemonic</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Sonr Account Mnemonic </p></td>
                 </tr>
               
             </tbody>
@@ -830,6 +867,68 @@
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p>Device ID </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.node.InitializeRequest.EnvOptions">InitializeRequest.EnvOptions</h3>
+        <p>Optional Message to Initialize Env Variables</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>variables</td>
+                  <td><a href="#sonr.node.InitializeRequest.EnvOptions.VariablesEntry">InitializeRequest.EnvOptions.VariablesEntry</a></td>
+                  <td>repeated</td>
+                  <td><p>Environment Variables </p></td>
+                </tr>
+              
+                <tr>
+                  <td>environment</td>
+                  <td><a href="#sonr.core.Environment">sonr.core.Environment</a></td>
+                  <td></td>
+                  <td><p>Environment Config </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.node.InitializeRequest.EnvOptions.VariablesEntry">InitializeRequest.EnvOptions.VariablesEntry</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>key</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
                 </tr>
               
             </tbody>
@@ -1012,68 +1111,6 @@
 
         
       
-        <h3 id="sonr.node.PingRequest">PingRequest</h3>
-        <p>PingRequest is Message for Searching for Peer</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>sName</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>SName combined with Device ID and Hashed </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.node.PingResponse">PingResponse</h3>
-        <p>PingResponse is Message for Searching for Peer</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>success</td>
-                  <td><a href="#bool">bool</a></td>
-                  <td></td>
-                  <td><p>Success </p></td>
-                </tr>
-              
-                <tr>
-                  <td>error</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Error Message </p></td>
-                </tr>
-              
-                <tr>
-                  <td>peer</td>
-                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
-                  <td></td>
-                  <td><p>Peer Data </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
         <h3 id="sonr.node.RespondRequest">RespondRequest</h3>
         <p>RespondRequest is request to respond to a share request</p>
 
@@ -1195,30 +1232,6 @@
         <p>StatRequest is Message for Searching for Peer</p>
 
         
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>showDevice</td>
-                  <td><a href="#bool">bool</a></td>
-                  <td></td>
-                  <td><p>Device Stats </p></td>
-                </tr>
-              
-                <tr>
-                  <td>showNetwork</td>
-                  <td><a href="#bool">bool</a></td>
-                  <td></td>
-                  <td><p>Network Stats </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
 
         
       
@@ -1240,10 +1253,10 @@
                 </tr>
               
                 <tr>
-                  <td>peer</td>
-                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
+                  <td>profile</td>
+                  <td><a href="#sonr.core.Profile">sonr.core.Profile</a></td>
                   <td></td>
-                  <td><p>Peer Data </p></td>
+                  <td><p>Profile Data </p></td>
                 </tr>
               
                 <tr>
@@ -1306,10 +1319,17 @@
                 </tr>
               
                 <tr>
-                  <td>version</td>
-                  <td><a href="#string">string</a></td>
+                  <td>isDesktop</td>
+                  <td><a href="#bool">bool</a></td>
                   <td></td>
-                  <td><p>Version </p></td>
+                  <td><p>Desktop Device </p></td>
+                </tr>
+              
+                <tr>
+                  <td>isMobile</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>Mobile Device </p></td>
                 </tr>
               
             </tbody>
@@ -1341,13 +1361,6 @@
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p>Peer ID </p></td>
-                </tr>
-              
-                <tr>
-                  <td>address</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Address </p></td>
                 </tr>
               
                 <tr>
@@ -1514,10 +1527,10 @@ Signing Method Request for Data</p></td>
               </tr>
             
               <tr>
-                <td>Ping</td>
-                <td><a href="#sonr.node.PingRequest">PingRequest</a></td>
-                <td><a href="#sonr.node.PingResponse">PingResponse</a></td>
-                <td><p>Ping Method to find a Peer by SName</p></td>
+                <td>Find</td>
+                <td><a href="#sonr.node.FindRequest">FindRequest</a></td>
+                <td><a href="#sonr.node.FindResponse">FindResponse</a></td>
+                <td><p>Find Method to find a Peer by SName or PeerID</p></td>
               </tr>
             
               <tr>
@@ -1830,8 +1843,8 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                 </tr>
               
                 <tr>
-                  <td>info</td>
-                  <td><a href="#sonr.core.Peer.Info">Peer.Info</a></td>
+                  <td>device</td>
+                  <td><a href="#sonr.core.Peer.Device">Peer.Device</a></td>
                   <td></td>
                   <td><p>Peer Device Info </p></td>
                 </tr>
@@ -1857,7 +1870,7 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
 
         
       
-        <h3 id="sonr.core.Peer.Info">Peer.Info</h3>
+        <h3 id="sonr.core.Peer.Device">Peer.Device</h3>
         <p>Peer Info for Device</p>
 
         
@@ -1868,10 +1881,10 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
             <tbody>
               
                 <tr>
-                  <td>model</td>
+                  <td>id</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>Peers Device Model </p></td>
+                  <td><p>Peer Device ID </p></td>
                 </tr>
               
                 <tr>
@@ -1889,10 +1902,17 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                 </tr>
               
                 <tr>
-                  <td>id</td>
+                  <td>arch</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>Peer Device ID </p></td>
+                  <td><p>Peer Architecture </p></td>
+                </tr>
+              
+                <tr>
+                  <td>model</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Peers Device Model </p></td>
                 </tr>
               
             </tbody>
@@ -2000,10 +2020,48 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                 </tr>
               
                 <tr>
-                  <td>type</td>
-                  <td><a href="#sonr.core.Social.Type">Social.Type</a></td>
+                  <td>media</td>
+                  <td><a href="#sonr.core.Social.Media">Social.Media</a></td>
                   <td></td>
                   <td><p>Type of Social </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.core.UUID">UUID</h3>
+        <p>UUID is General Message ID with Signature, ID, and Timestamp</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>signature</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>Signature of the message </p></td>
+                </tr>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>ID of the message </p></td>
+                </tr>
+              
+                <tr>
+                  <td>timestamp</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>Unix timestamp </p></td>
                 </tr>
               
             </tbody>
@@ -2094,27 +2152,27 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
               </tr>
             
               <tr>
-                <td>IMAGE</td>
+                <td>DOCUMENT</td>
                 <td>2</td>
+                <td><p>Document Files - PDF, Word, Excel, etc.</p></td>
+              </tr>
+            
+              <tr>
+                <td>IMAGE</td>
+                <td>3</td>
                 <td><p>Image Files</p></td>
               </tr>
             
               <tr>
                 <td>TEXT</td>
-                <td>3</td>
+                <td>4</td>
                 <td><p>Text Based Files</p></td>
               </tr>
             
               <tr>
                 <td>VIDEO</td>
-                <td>4</td>
-                <td><p>Video Files</p></td>
-              </tr>
-            
-              <tr>
-                <td>SONR</td>
                 <td>5</td>
-                <td><p>SNR Files</p></td>
+                <td><p>Video Files</p></td>
               </tr>
             
               <tr>
@@ -2161,7 +2219,7 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
           </tbody>
         </table>
       
-        <h3 id="sonr.core.Social.Type">Social.Type</h3>
+        <h3 id="sonr.core.Social.Media">Social.Media</h3>
         <p>Social Type</p>
         <table class="enum-table">
           <thead>
@@ -2178,55 +2236,55 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
               <tr>
                 <td>FACEBOOK</td>
                 <td>1</td>
-                <td><p></p></td>
+                <td><p>Facebook</p></td>
               </tr>
             
               <tr>
                 <td>TWITTER</td>
                 <td>2</td>
-                <td><p></p></td>
+                <td><p>Twitter</p></td>
               </tr>
             
               <tr>
                 <td>MEDIUM</td>
                 <td>3</td>
-                <td><p></p></td>
+                <td><p>Medium</p></td>
               </tr>
             
               <tr>
                 <td>TIKTOK</td>
                 <td>4</td>
-                <td><p></p></td>
+                <td><p>TikTok</p></td>
               </tr>
             
               <tr>
                 <td>INSTAGRAM</td>
                 <td>5</td>
-                <td><p></p></td>
+                <td><p>Instagram</p></td>
               </tr>
             
               <tr>
                 <td>YOUTUBE</td>
                 <td>6</td>
-                <td><p></p></td>
+                <td><p>YouTube</p></td>
               </tr>
             
               <tr>
                 <td>GITHUB</td>
                 <td>7</td>
-                <td><p></p></td>
+                <td><p>GitHub</p></td>
               </tr>
             
               <tr>
                 <td>SNAPCHAT</td>
                 <td>8</td>
-                <td><p></p></td>
+                <td><p>Snapchat</p></td>
               </tr>
             
               <tr>
                 <td>SPOTIFY</td>
                 <td>9</td>
-                <td><p></p></td>
+                <td><p>Spotify</p></td>
               </tr>
             
           </tbody>
@@ -2258,7 +2316,7 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                   <td>offset</td>
                   <td><a href="#int32">int32</a></td>
                   <td></td>
-                  <td><p>Offset is number of bytes from the beginning of the reader to chunk </p></td>
+                  <td><p>Bytes from the beginning of the reader to chunk </p></td>
                 </tr>
               
                 <tr>
@@ -2279,7 +2337,7 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                   <td>fingerprint</td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
-                  <td><p>Fingerprint is the value of rolling hash of the chunk </p></td>
+                  <td><p>Fingerprint is the hash of the chunk </p></td>
                 </tr>
               
             </tbody>
@@ -2307,13 +2365,6 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                 </tr>
               
                 <tr>
-                  <td>id</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Local Asset ID </p></td>
-                </tr>
-              
-                <tr>
                   <td>name</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
@@ -2329,16 +2380,23 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
               
                 <tr>
                   <td>size</td>
-                  <td><a href="#int32">int32</a></td>
+                  <td><a href="#int64">int64</a></td>
                   <td></td>
                   <td><p>File Size in Bytes </p></td>
                 </tr>
               
                 <tr>
-                  <td>thumb</td>
+                  <td>thumbnail</td>
                   <td><a href="#sonr.core.Thumbnail">Thumbnail</a></td>
                   <td></td>
                   <td><p>Thumbnail of File </p></td>
+                </tr>
+              
+                <tr>
+                  <td>lastModified</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>Last Modified Time in Seconds </p></td>
                 </tr>
               
             </tbody>
@@ -2366,20 +2424,6 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                 </tr>
               
                 <tr>
-                  <td>id</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Payload ID </p></td>
-                </tr>
-              
-                <tr>
-                  <td>receiver</td>
-                  <td><a href="#sonr.core.Profile">Profile</a></td>
-                  <td></td>
-                  <td><p>PROFILE: General Receiver Info </p></td>
-                </tr>
-              
-                <tr>
                   <td>owner</td>
                   <td><a href="#sonr.core.Profile">Profile</a></td>
                   <td></td>
@@ -2387,10 +2431,17 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                 </tr>
               
                 <tr>
-                  <td>metadata</td>
-                  <td><a href="#sonr.core.Metadata">Metadata</a></td>
+                  <td>size</td>
+                  <td><a href="#int64">int64</a></td>
                   <td></td>
-                  <td><p>METADATA: General Payload Info </p></td>
+                  <td><p>Payload Size in Bytes </p></td>
+                </tr>
+              
+                <tr>
+                  <td>createdAt</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>Payload Creation Time in Seconds </p></td>
                 </tr>
               
             </tbody>
@@ -2411,10 +2462,17 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
             <tbody>
               
                 <tr>
-                  <td>type</td>
-                  <td><a href="#sonr.core.Payload.Item.Type">Payload.Item.Type</a></td>
+                  <td>mime</td>
+                  <td><a href="#sonr.core.MIME">MIME</a></td>
                   <td></td>
-                  <td><p>Type of Item </p></td>
+                  <td><p>MIME of the Item </p></td>
+                </tr>
+              
+                <tr>
+                  <td>size</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>Size of the Item in Bytes </p></td>
                 </tr>
               
                 <tr>
@@ -2447,6 +2505,13 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
               <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
             </thead>
             <tbody>
+              
+                <tr>
+                  <td>exists</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>Does the thumbnail exist? </p></td>
+                </tr>
               
                 <tr>
                   <td>buffer</td>
@@ -2981,64 +3046,6 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
       
 
       
-        <h3 id="sonr.core.Payload.Item.Type">Payload.Item.Type</h3>
-        <p></p>
-        <table class="enum-table">
-          <thead>
-            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
-          </thead>
-          <tbody>
-            
-              <tr>
-                <td>NONE</td>
-                <td>0</td>
-                <td><p>No Item</p></td>
-              </tr>
-            
-              <tr>
-                <td>FILE</td>
-                <td>1</td>
-                <td><p>File Item</p></td>
-              </tr>
-            
-              <tr>
-                <td>URL</td>
-                <td>2</td>
-                <td><p>URL Item</p></td>
-              </tr>
-            
-          </tbody>
-        </table>
-      
-        <h3 id="sonr.core.Thumbnail.Type">Thumbnail.Type</h3>
-        <p></p>
-        <table class="enum-table">
-          <thead>
-            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
-          </thead>
-          <tbody>
-            
-              <tr>
-                <td>NONE</td>
-                <td>0</td>
-                <td><p>No Thumbnail</p></td>
-              </tr>
-            
-              <tr>
-                <td>BUFFER</td>
-                <td>1</td>
-                <td><p>Thumbnail Buffer</p></td>
-              </tr>
-            
-              <tr>
-                <td>PATH</td>
-                <td>2</td>
-                <td><p>Thumbnail Path</p></td>
-              </tr>
-            
-          </tbody>
-        </table>
-      
 
       
 
@@ -3075,6 +3082,13 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                   <td><p>Transfer Data </p></td>
                 </tr>
               
+                <tr>
+                  <td>received</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>Timestamp </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -3096,21 +3110,21 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                   <td>decision</td>
                   <td><a href="#bool">bool</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>true = accept, false = reject </p></td>
                 </tr>
               
                 <tr>
                   <td>from</td>
                   <td><a href="#sonr.core.Peer">Peer</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Peer that made decision </p></td>
                 </tr>
               
                 <tr>
-                  <td>inviteId</td>
-                  <td><a href="#string">string</a></td>
+                  <td>received</td>
+                  <td><a href="#int64">int64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Timestamp </p></td>
                 </tr>
               
             </tbody>
@@ -3131,17 +3145,17 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
             <tbody>
               
                 <tr>
-                  <td>inviteId</td>
-                  <td><a href="#string">string</a></td>
+                  <td>received</td>
+                  <td><a href="#int64">int64</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Invite received Timestamp </p></td>
                 </tr>
               
                 <tr>
                   <td>from</td>
                   <td><a href="#sonr.core.Peer">Peer</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Peer that sent the Invite </p></td>
                 </tr>
               
                 <tr>
@@ -3149,13 +3163,6 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                   <td><a href="#sonr.core.Payload">Payload</a></td>
                   <td></td>
                   <td><p>Attached Data </p></td>
-                </tr>
-              
-                <tr>
-                  <td>reach</td>
-                  <td><a href="#sonr.core.InviteReach">InviteReach</a></td>
-                  <td></td>
-                  <td><p>Reach of Invite </p></td>
                 </tr>
               
             </tbody>
@@ -3196,6 +3203,13 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                   <td><p>Current Transfer Progress </p></td>
                 </tr>
               
+                <tr>
+                  <td>received</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>Timestamp </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -3227,6 +3241,13 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                   <td><p>User Information </p></td>
                 </tr>
               
+                <tr>
+                  <td>received</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>Invite received Timestamp </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -3248,14 +3269,21 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                   <td>isOk</td>
                   <td><a href="#bool">bool</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>true if the event is ok </p></td>
                 </tr>
               
                 <tr>
                   <td>message</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Status Event Message </p></td>
+                </tr>
+              
+                <tr>
+                  <td>received</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>Timestamp </p></td>
                 </tr>
               
             </tbody>
@@ -3296,64 +3324,6 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
           </tbody>
         </table>
       
-        <h3 id="sonr.core.Direction">Direction</h3>
-        <p>Direction of a transfer (incoming or outgoing).</p>
-        <table class="enum-table">
-          <thead>
-            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
-          </thead>
-          <tbody>
-            
-              <tr>
-                <td>INBOUND</td>
-                <td>0</td>
-                <td><p></p></td>
-              </tr>
-            
-              <tr>
-                <td>OUTBOUND</td>
-                <td>1</td>
-                <td><p></p></td>
-              </tr>
-            
-          </tbody>
-        </table>
-      
-        <h3 id="sonr.core.InviteReach">InviteReach</h3>
-        <p>InviteReach is Distance for an Invite</p>
-        <table class="enum-table">
-          <thead>
-            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
-          </thead>
-          <tbody>
-            
-              <tr>
-                <td>NONE</td>
-                <td>0</td>
-                <td><p>No Reach</p></td>
-              </tr>
-            
-              <tr>
-                <td>LOCAL</td>
-                <td>1</td>
-                <td><p>Local Reach</p></td>
-              </tr>
-            
-              <tr>
-                <td>REMOTE</td>
-                <td>2</td>
-                <td><p>Remote Reach</p></td>
-              </tr>
-            
-              <tr>
-                <td>DIRECT</td>
-                <td>3</td>
-                <td><p>Direct Reach</p></td>
-              </tr>
-            
-          </tbody>
-        </table>
-      
 
       
 
@@ -3366,8 +3336,8 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
       <p></p>
 
       
-        <h3 id="sonr.protocols.exchange.CreateSNameRequest">CreateSNameRequest</h3>
-        <p>CreateSNameRequest is Message for Signing Request (Hmac Sha256)</p>
+        <h3 id="sonr.protocols.exchange.LookupRequest">LookupRequest</h3>
+        <p>LookupRequest is Message for Verifying Request (Hmac Sha256)</p>
 
         
           <table class="field-table">
@@ -3380,16 +3350,7 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                   <td>sName</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>Value to be signed
-
-SName combined with Device ID and Hashed </p></td>
-                </tr>
-              
-                <tr>
-                  <td>mnemonic</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Mnemonic Hashed with private key for fingerprint </p></td>
+                  <td><p>SName combined with Device ID and Hashed </p></td>
                 </tr>
               
             </tbody>
@@ -3399,8 +3360,108 @@ SName combined with Device ID and Hashed </p></td>
 
         
       
-        <h3 id="sonr.protocols.exchange.CreateSNameResponse">CreateSNameResponse</h3>
-        <p>CreateSNameResponse is Message for Signing Response (Hmac Sha256)</p>
+        <h3 id="sonr.protocols.exchange.LookupResponse">LookupResponse</h3>
+        <p>LookupResponse is Message for Verifying Response (Hmac Sha256)</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>success</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>If Values were Verified </p></td>
+                </tr>
+              
+                <tr>
+                  <td>publicKey</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Base64 Encoded Public Key </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.protocols.exchange.QueryRequest">QueryRequest</h3>
+        <p>QueryRequest is Message for searching for Peer</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>sName</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>SName combined with Device ID and Hashed </p></td>
+                </tr>
+              
+                <tr>
+                  <td>peerId</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Peer ID </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.protocols.exchange.RegisterRequest">RegisterRequest</h3>
+        <p>RegisterRequest is Message for Signing Request (Hmac Sha256)</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>sName</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>SName combined with Device ID and Hashed </p></td>
+                </tr>
+              
+                <tr>
+                  <td>mnemonic</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Mnemonic Hashed with private key for fingerprint </p></td>
+                </tr>
+              
+                <tr>
+                  <td>deviceIds</td>
+                  <td><a href="#string">string</a></td>
+                  <td>repeated</td>
+                  <td><p>Device IDs for SName </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.protocols.exchange.RegisterResponse">RegisterResponse</h3>
+        <p>RegisterResponse is Message for Signing Response (Hmac Sha256)</p>
 
         
           <table class="field-table">
@@ -3417,26 +3478,19 @@ SName combined with Device ID and Hashed </p></td>
                 </tr>
               
                 <tr>
-                  <td>signedPrefix</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Resulting Signed Values
-
-Message for List of Bytes </p></td>
-                </tr>
-              
-                <tr>
-                  <td>signedFingerprint</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Fingerprint Value </p></td>
+                  <td>domains</td>
+                  <td><a href="#sonr.protocols.exchange.RegisterResponse.Domain">RegisterResponse.Domain</a></td>
+                  <td>repeated</td>
+                  <td><p>Signed Domain TXT Records </p></td>
                 </tr>
               
                 <tr>
                   <td>publicKey</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>Base64 Encoded Public Key </p></td>
+                  <td><p>Resulting Signed Values
+
+Base64 Encoded Public Key </p></td>
                 </tr>
               
                 <tr>
@@ -3460,8 +3514,8 @@ Message for List of Bytes </p></td>
 
         
       
-        <h3 id="sonr.protocols.exchange.JoinExchangeRequest">JoinExchangeRequest</h3>
-        <p>JoinExchangeRequest is Message for Signing Request (Hmac Sha256)</p>
+        <h3 id="sonr.protocols.exchange.RegisterResponse.Domain">RegisterResponse.Domain</h3>
+        <p>Domain TXT Record for single SName Entry</p>
 
         
           <table class="field-table">
@@ -3471,19 +3525,31 @@ Message for List of Bytes </p></td>
             <tbody>
               
                 <tr>
-                  <td>sName</td>
+                  <td>domain</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>Value to be signed
-
-SName combined with Device ID and Hashed </p></td>
+                  <td><p>Domain Name </p></td>
                 </tr>
               
                 <tr>
-                  <td>peer</td>
-                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
+                  <td>value</td>
+                  <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Domain Value </p></td>
+                </tr>
+              
+                <tr>
+                  <td>signedPrefix</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Message for List of Bytes </p></td>
+                </tr>
+              
+                <tr>
+                  <td>signedFingerprint</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Fingerprint Value </p></td>
                 </tr>
               
             </tbody>
@@ -3493,8 +3559,8 @@ SName combined with Device ID and Hashed </p></td>
 
         
       
-        <h3 id="sonr.protocols.exchange.JoinExchangeResponse">JoinExchangeResponse</h3>
-        <p>JoinExchangeResponse is Message for Signing Response (Hmac Sha256)</p>
+        <h3 id="sonr.protocols.exchange.UpdateRequest">UpdateRequest</h3>
+        <p>UpdateRequest is Message for updating Peer Data in Exchange</p>
 
         
           <table class="field-table">
@@ -3504,17 +3570,17 @@ SName combined with Device ID and Hashed </p></td>
             <tbody>
               
                 <tr>
-                  <td>success</td>
-                  <td><a href="#bool">bool</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
                   <td>sName</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p>SName combined with Device ID and Hashed </p></td>
+                </tr>
+              
+                <tr>
+                  <td>peerId</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Peer ID </p></td>
                 </tr>
               
                 <tr>
@@ -3531,34 +3597,8 @@ SName combined with Device ID and Hashed </p></td>
 
         
       
-        <h3 id="sonr.protocols.exchange.LookupSNameRequest">LookupSNameRequest</h3>
-        <p>LookupSNameRequest is Message for Verifying Request (Hmac Sha256)</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>sName</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Value to be verified
-
-SName combined with Device ID and Hashed </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.protocols.exchange.LookupSNameResponse">LookupSNameResponse</h3>
-        <p>LookupSNameResponse is Message for Verifying Response (Hmac Sha256)</p>
+        <h3 id="sonr.protocols.exchange.UpdateResponse">UpdateResponse</h3>
+        <p>UpdateResponse is response for UpdateExchangeRequest</p>
 
         
           <table class="field-table">
@@ -3571,14 +3611,14 @@ SName combined with Device ID and Hashed </p></td>
                   <td>success</td>
                   <td><a href="#bool">bool</a></td>
                   <td></td>
-                  <td><p>If Values were Verified </p></td>
+                  <td><p>If Request was Successful </p></td>
                 </tr>
               
                 <tr>
-                  <td>publicKey</td>
+                  <td>error</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>Base64 Encoded Public Key </p></td>
+                  <td><p>Error Message if Request was not successful </p></td>
                 </tr>
               
             </tbody>
@@ -3588,8 +3628,8 @@ SName combined with Device ID and Hashed </p></td>
 
         
       
-        <h3 id="sonr.protocols.exchange.VerifySNameRequest">VerifySNameRequest</h3>
-        <p>VerifySNameRequest is Message for Verifying Request (Hmac Sha256)</p>
+        <h3 id="sonr.protocols.exchange.VerifyRequest">VerifyRequest</h3>
+        <p>VerifyRequest is Message for Verifying Request (Hmac Sha256)</p>
 
         
           <table class="field-table">
@@ -3602,9 +3642,7 @@ SName combined with Device ID and Hashed </p></td>
                   <td>sName</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>Value to be verified
-
-SName combined with Device ID and Hashed </p></td>
+                  <td><p>SName combined with Device ID and Hashed </p></td>
                 </tr>
               
                 <tr>
@@ -3614,6 +3652,13 @@ SName combined with Device ID and Hashed </p></td>
                   <td><p>Mnemonic Hashed with public key for fingerprint </p></td>
                 </tr>
               
+                <tr>
+                  <td>deviceId</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Device ID </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -3621,8 +3666,8 @@ SName combined with Device ID and Hashed </p></td>
 
         
       
-        <h3 id="sonr.protocols.exchange.VerifySNameResponse">VerifySNameResponse</h3>
-        <p>VerifySNameResponse is Message for Verifying Response (Hmac Sha256)</p>
+        <h3 id="sonr.protocols.exchange.VerifyResponse">VerifyResponse</h3>
+        <p>VerifyResponse is Message for Verifying Response (Hmac Sha256)</p>
 
         
           <table class="field-table">
@@ -3643,13 +3688,6 @@ SName combined with Device ID and Hashed </p></td>
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p>Error Message </p></td>
-                </tr>
-              
-                <tr>
-                  <td>shortID</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Short ID generated from HMac and Device </p></td>
                 </tr>
               
             </tbody>
@@ -4126,51 +4164,6 @@ SName combined with Device ID and Hashed </p></td>
       <p></p>
 
       
-        <h3 id="sonr.protocols.transfer.InviteEvent">InviteEvent</h3>
-        <p>InviteEvent notifies Peer that an Invite has been received</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>inviteId</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>from</td>
-                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>payload</td>
-                  <td><a href="#sonr.core.Payload">sonr.core.Payload</a></td>
-                  <td></td>
-                  <td><p>Attached Data </p></td>
-                </tr>
-              
-                <tr>
-                  <td>reach</td>
-                  <td><a href="#sonr.protocols.transfer.InviteReach">InviteReach</a></td>
-                  <td></td>
-                  <td><p>Reach of Invite </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
         <h3 id="sonr.protocols.transfer.InviteRequest">InviteRequest</h3>
         <p>Invitation Message sent on RPC</p>
 
@@ -4182,10 +4175,17 @@ SName combined with Device ID and Hashed </p></td>
             <tbody>
               
                 <tr>
-                  <td>inviteId</td>
-                  <td><a href="#string">string</a></td>
+                  <td>payload</td>
+                  <td><a href="#sonr.core.Payload">sonr.core.Payload</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Attached Data </p></td>
+                </tr>
+              
+                <tr>
+                  <td>uuid</td>
+                  <td><a href="#sonr.core.UUID">sonr.core.UUID</a></td>
+                  <td></td>
+                  <td><p>Invitation ID (UUID) signed by the sender </p></td>
                 </tr>
               
                 <tr>
@@ -4200,20 +4200,6 @@ SName combined with Device ID and Hashed </p></td>
                   <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
                   <td></td>
                   <td><p>Receivers Peer Data </p></td>
-                </tr>
-              
-                <tr>
-                  <td>payload</td>
-                  <td><a href="#sonr.core.Payload">sonr.core.Payload</a></td>
-                  <td></td>
-                  <td><p>Attached Data </p></td>
-                </tr>
-              
-                <tr>
-                  <td>reach</td>
-                  <td><a href="#sonr.protocols.transfer.InviteReach">InviteReach</a></td>
-                  <td></td>
-                  <td><p>Reach of Invite </p></td>
                 </tr>
               
                 <tr>
@@ -4241,31 +4227,31 @@ SName combined with Device ID and Hashed </p></td>
             <tbody>
               
                 <tr>
-                  <td>success</td>
+                  <td>decision</td>
                   <td><a href="#bool">bool</a></td>
                   <td></td>
                   <td><p>Success </p></td>
                 </tr>
               
                 <tr>
-                  <td>inviteId</td>
-                  <td><a href="#string">string</a></td>
+                  <td>uuid</td>
+                  <td><a href="#sonr.core.UUID">sonr.core.UUID</a></td>
                   <td></td>
-                  <td><p>Invitation ID </p></td>
+                  <td><p>Invitation ID (UUID) signed by the sender </p></td>
                 </tr>
               
                 <tr>
-                  <td>transferId</td>
-                  <td><a href="#string">string</a></td>
+                  <td>from</td>
+                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
                   <td></td>
-                  <td><p>ID of new Transfer </p></td>
+                  <td><p>Users Peer Data </p></td>
                 </tr>
               
                 <tr>
-                  <td>reach</td>
-                  <td><a href="#sonr.protocols.transfer.InviteReach">InviteReach</a></td>
+                  <td>to</td>
+                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
                   <td></td>
-                  <td><p>Reach of Invite </p></td>
+                  <td><p>Receivers Peer Data </p></td>
                 </tr>
               
                 <tr>
@@ -4283,41 +4269,6 @@ SName combined with Device ID and Hashed </p></td>
         
       
 
-      
-        <h3 id="sonr.protocols.transfer.InviteReach">InviteReach</h3>
-        <p>InviteReach is Distance for an Invite</p>
-        <table class="enum-table">
-          <thead>
-            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
-          </thead>
-          <tbody>
-            
-              <tr>
-                <td>NONE</td>
-                <td>0</td>
-                <td><p>No Reach</p></td>
-              </tr>
-            
-              <tr>
-                <td>LOCAL</td>
-                <td>1</td>
-                <td><p>Local Reach</p></td>
-              </tr>
-            
-              <tr>
-                <td>REMOTE</td>
-                <td>2</td>
-                <td><p>Remote Reach</p></td>
-              </tr>
-            
-              <tr>
-                <td>DIRECT</td>
-                <td>3</td>
-                <td><p>Direct Reach</p></td>
-              </tr>
-            
-          </tbody>
-        </table>
       
 
       

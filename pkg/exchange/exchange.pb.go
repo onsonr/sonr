@@ -21,19 +21,19 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// JoinExchangeRequest is Message for Signing Request (Hmac Sha256)
-type JoinExchangeRequest struct {
+// RegisterRequest is Message for Signing Request (Hmac Sha256)
+type RegisterRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// Value to be signed
-	SName string       `protobuf:"bytes,1,opt,name=sName,proto3" json:"sName,omitempty"` // SName combined with Device ID and Hashed
-	Peer  *common.Peer `protobuf:"bytes,2,opt,name=peer,proto3" json:"peer,omitempty"`
+	SName     string   `protobuf:"bytes,1,opt,name=sName,proto3" json:"sName,omitempty"`         // SName combined with Device ID and Hashed
+	Mnemonic  string   `protobuf:"bytes,2,opt,name=mnemonic,proto3" json:"mnemonic,omitempty"`   // Mnemonic Hashed with private key for fingerprint
+	DeviceIds []string `protobuf:"bytes,3,rep,name=deviceIds,proto3" json:"deviceIds,omitempty"` // Device IDs for SName
 }
 
-func (x *JoinExchangeRequest) Reset() {
-	*x = JoinExchangeRequest{}
+func (x *RegisterRequest) Reset() {
+	*x = RegisterRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_protocols_exchange_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -41,13 +41,13 @@ func (x *JoinExchangeRequest) Reset() {
 	}
 }
 
-func (x *JoinExchangeRequest) String() string {
+func (x *RegisterRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*JoinExchangeRequest) ProtoMessage() {}
+func (*RegisterRequest) ProtoMessage() {}
 
-func (x *JoinExchangeRequest) ProtoReflect() protoreflect.Message {
+func (x *RegisterRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_protocols_exchange_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,38 +59,48 @@ func (x *JoinExchangeRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use JoinExchangeRequest.ProtoReflect.Descriptor instead.
-func (*JoinExchangeRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use RegisterRequest.ProtoReflect.Descriptor instead.
+func (*RegisterRequest) Descriptor() ([]byte, []int) {
 	return file_proto_protocols_exchange_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *JoinExchangeRequest) GetSName() string {
+func (x *RegisterRequest) GetSName() string {
 	if x != nil {
 		return x.SName
 	}
 	return ""
 }
 
-func (x *JoinExchangeRequest) GetPeer() *common.Peer {
+func (x *RegisterRequest) GetMnemonic() string {
 	if x != nil {
-		return x.Peer
+		return x.Mnemonic
+	}
+	return ""
+}
+
+func (x *RegisterRequest) GetDeviceIds() []string {
+	if x != nil {
+		return x.DeviceIds
 	}
 	return nil
 }
 
-// JoinExchangeResponse is Message for Signing Response (Hmac Sha256)
-type JoinExchangeResponse struct {
+// RegisterResponse is Message for Signing Response (Hmac Sha256)
+type RegisterResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Success bool         `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
-	SName   string       `protobuf:"bytes,2,opt,name=sName,proto3" json:"sName,omitempty"` // SName combined with Device ID and Hashed
-	Peer    *common.Peer `protobuf:"bytes,3,opt,name=peer,proto3" json:"peer,omitempty"`   // Peer Data
+	Success bool                       `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"` // If Values were Signed
+	Domains []*RegisterResponse_Domain `protobuf:"bytes,2,rep,name=domains,proto3" json:"domains,omitempty"`  // Signed Domain TXT Records
+	// Resulting Signed Values
+	PublicKey     string `protobuf:"bytes,4,opt,name=publicKey,proto3" json:"publicKey,omitempty"`         // Base64 Encoded Public Key
+	GivenSName    string `protobuf:"bytes,5,opt,name=givenSName,proto3" json:"givenSName,omitempty"`       // Provided SName
+	GivenMnemonic string `protobuf:"bytes,6,opt,name=givenMnemonic,proto3" json:"givenMnemonic,omitempty"` // Provided Mnemonic
 }
 
-func (x *JoinExchangeResponse) Reset() {
-	*x = JoinExchangeResponse{}
+func (x *RegisterResponse) Reset() {
+	*x = RegisterResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_protocols_exchange_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -98,13 +108,13 @@ func (x *JoinExchangeResponse) Reset() {
 	}
 }
 
-func (x *JoinExchangeResponse) String() string {
+func (x *RegisterResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*JoinExchangeResponse) ProtoMessage() {}
+func (*RegisterResponse) ProtoMessage() {}
 
-func (x *JoinExchangeResponse) ProtoReflect() protoreflect.Message {
+func (x *RegisterResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_protocols_exchange_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -116,45 +126,57 @@ func (x *JoinExchangeResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use JoinExchangeResponse.ProtoReflect.Descriptor instead.
-func (*JoinExchangeResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use RegisterResponse.ProtoReflect.Descriptor instead.
+func (*RegisterResponse) Descriptor() ([]byte, []int) {
 	return file_proto_protocols_exchange_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *JoinExchangeResponse) GetSuccess() bool {
+func (x *RegisterResponse) GetSuccess() bool {
 	if x != nil {
 		return x.Success
 	}
 	return false
 }
 
-func (x *JoinExchangeResponse) GetSName() string {
+func (x *RegisterResponse) GetDomains() []*RegisterResponse_Domain {
 	if x != nil {
-		return x.SName
-	}
-	return ""
-}
-
-func (x *JoinExchangeResponse) GetPeer() *common.Peer {
-	if x != nil {
-		return x.Peer
+		return x.Domains
 	}
 	return nil
 }
 
-// CreateSNameRequest is Message for Signing Request (Hmac Sha256)
-type CreateSNameRequest struct {
+func (x *RegisterResponse) GetPublicKey() string {
+	if x != nil {
+		return x.PublicKey
+	}
+	return ""
+}
+
+func (x *RegisterResponse) GetGivenSName() string {
+	if x != nil {
+		return x.GivenSName
+	}
+	return ""
+}
+
+func (x *RegisterResponse) GetGivenMnemonic() string {
+	if x != nil {
+		return x.GivenMnemonic
+	}
+	return ""
+}
+
+// LookupRequest is Message for Verifying Request (Hmac Sha256)
+type LookupRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// Value to be signed
-	SName    string `protobuf:"bytes,1,opt,name=sName,proto3" json:"sName,omitempty"`       // SName combined with Device ID and Hashed
-	Mnemonic string `protobuf:"bytes,2,opt,name=mnemonic,proto3" json:"mnemonic,omitempty"` // Mnemonic Hashed with private key for fingerprint
+	SName string `protobuf:"bytes,1,opt,name=sName,proto3" json:"sName,omitempty"` // SName combined with Device ID and Hashed
 }
 
-func (x *CreateSNameRequest) Reset() {
-	*x = CreateSNameRequest{}
+func (x *LookupRequest) Reset() {
+	*x = LookupRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_protocols_exchange_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -162,13 +184,13 @@ func (x *CreateSNameRequest) Reset() {
 	}
 }
 
-func (x *CreateSNameRequest) String() string {
+func (x *LookupRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CreateSNameRequest) ProtoMessage() {}
+func (*LookupRequest) ProtoMessage() {}
 
-func (x *CreateSNameRequest) ProtoReflect() protoreflect.Message {
+func (x *LookupRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_protocols_exchange_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -180,42 +202,30 @@ func (x *CreateSNameRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CreateSNameRequest.ProtoReflect.Descriptor instead.
-func (*CreateSNameRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use LookupRequest.ProtoReflect.Descriptor instead.
+func (*LookupRequest) Descriptor() ([]byte, []int) {
 	return file_proto_protocols_exchange_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *CreateSNameRequest) GetSName() string {
+func (x *LookupRequest) GetSName() string {
 	if x != nil {
 		return x.SName
 	}
 	return ""
 }
 
-func (x *CreateSNameRequest) GetMnemonic() string {
-	if x != nil {
-		return x.Mnemonic
-	}
-	return ""
-}
-
-// CreateSNameResponse is Message for Signing Response (Hmac Sha256)
-type CreateSNameResponse struct {
+// LookupResponse is Message for Verifying Response (Hmac Sha256)
+type LookupResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Success bool `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"` // If Values were Signed
-	// Resulting Signed Values
-	SignedPrefix      string `protobuf:"bytes,2,opt,name=signedPrefix,proto3" json:"signedPrefix,omitempty"`           // Message for List of Bytes
-	SignedFingerprint string `protobuf:"bytes,3,opt,name=signedFingerprint,proto3" json:"signedFingerprint,omitempty"` // Fingerprint Value
-	PublicKey         string `protobuf:"bytes,4,opt,name=publicKey,proto3" json:"publicKey,omitempty"`                 // Base64 Encoded Public Key
-	GivenSName        string `protobuf:"bytes,5,opt,name=givenSName,proto3" json:"givenSName,omitempty"`               // Provided SName
-	GivenMnemonic     string `protobuf:"bytes,6,opt,name=givenMnemonic,proto3" json:"givenMnemonic,omitempty"`         // Provided Mnemonic
+	Success   bool   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`    // If Values were Verified
+	PublicKey string `protobuf:"bytes,2,opt,name=publicKey,proto3" json:"publicKey,omitempty"` // Base64 Encoded Public Key
 }
 
-func (x *CreateSNameResponse) Reset() {
-	*x = CreateSNameResponse{}
+func (x *LookupResponse) Reset() {
+	*x = LookupResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_protocols_exchange_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -223,13 +233,13 @@ func (x *CreateSNameResponse) Reset() {
 	}
 }
 
-func (x *CreateSNameResponse) String() string {
+func (x *LookupResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CreateSNameResponse) ProtoMessage() {}
+func (*LookupResponse) ProtoMessage() {}
 
-func (x *CreateSNameResponse) ProtoReflect() protoreflect.Message {
+func (x *LookupResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_protocols_exchange_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -241,65 +251,37 @@ func (x *CreateSNameResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CreateSNameResponse.ProtoReflect.Descriptor instead.
-func (*CreateSNameResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use LookupResponse.ProtoReflect.Descriptor instead.
+func (*LookupResponse) Descriptor() ([]byte, []int) {
 	return file_proto_protocols_exchange_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *CreateSNameResponse) GetSuccess() bool {
+func (x *LookupResponse) GetSuccess() bool {
 	if x != nil {
 		return x.Success
 	}
 	return false
 }
 
-func (x *CreateSNameResponse) GetSignedPrefix() string {
-	if x != nil {
-		return x.SignedPrefix
-	}
-	return ""
-}
-
-func (x *CreateSNameResponse) GetSignedFingerprint() string {
-	if x != nil {
-		return x.SignedFingerprint
-	}
-	return ""
-}
-
-func (x *CreateSNameResponse) GetPublicKey() string {
+func (x *LookupResponse) GetPublicKey() string {
 	if x != nil {
 		return x.PublicKey
 	}
 	return ""
 }
 
-func (x *CreateSNameResponse) GetGivenSName() string {
-	if x != nil {
-		return x.GivenSName
-	}
-	return ""
-}
-
-func (x *CreateSNameResponse) GetGivenMnemonic() string {
-	if x != nil {
-		return x.GivenMnemonic
-	}
-	return ""
-}
-
-// LookupSNameRequest is Message for Verifying Request (Hmac Sha256)
-type LookupSNameRequest struct {
+// QueryRequest is Message for searching for Peer
+type QueryRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// Value to be verified
-	SName string `protobuf:"bytes,1,opt,name=sName,proto3" json:"sName,omitempty"` // SName combined with Device ID and Hashed
+	SName  string `protobuf:"bytes,1,opt,name=sName,proto3" json:"sName,omitempty"`   // SName combined with Device ID and Hashed
+	PeerId string `protobuf:"bytes,2,opt,name=peerId,proto3" json:"peerId,omitempty"` // Peer ID
 }
 
-func (x *LookupSNameRequest) Reset() {
-	*x = LookupSNameRequest{}
+func (x *QueryRequest) Reset() {
+	*x = QueryRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_protocols_exchange_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -307,13 +289,13 @@ func (x *LookupSNameRequest) Reset() {
 	}
 }
 
-func (x *LookupSNameRequest) String() string {
+func (x *QueryRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*LookupSNameRequest) ProtoMessage() {}
+func (*QueryRequest) ProtoMessage() {}
 
-func (x *LookupSNameRequest) ProtoReflect() protoreflect.Message {
+func (x *QueryRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_protocols_exchange_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -325,30 +307,38 @@ func (x *LookupSNameRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use LookupSNameRequest.ProtoReflect.Descriptor instead.
-func (*LookupSNameRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use QueryRequest.ProtoReflect.Descriptor instead.
+func (*QueryRequest) Descriptor() ([]byte, []int) {
 	return file_proto_protocols_exchange_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *LookupSNameRequest) GetSName() string {
+func (x *QueryRequest) GetSName() string {
 	if x != nil {
 		return x.SName
 	}
 	return ""
 }
 
-// LookupSNameResponse is Message for Verifying Response (Hmac Sha256)
-type LookupSNameResponse struct {
+func (x *QueryRequest) GetPeerId() string {
+	if x != nil {
+		return x.PeerId
+	}
+	return ""
+}
+
+// UpdateRequest is Message for updating Peer Data in Exchange
+type UpdateRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Success   bool   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`    // If Values were Verified
-	PublicKey string `protobuf:"bytes,2,opt,name=publicKey,proto3" json:"publicKey,omitempty"` // Base64 Encoded Public Key
+	SName  string       `protobuf:"bytes,1,opt,name=sName,proto3" json:"sName,omitempty"`   // SName combined with Device ID and Hashed
+	PeerId string       `protobuf:"bytes,2,opt,name=peerId,proto3" json:"peerId,omitempty"` // Peer ID
+	Peer   *common.Peer `protobuf:"bytes,3,opt,name=peer,proto3" json:"peer,omitempty"`     // Peer Data
 }
 
-func (x *LookupSNameResponse) Reset() {
-	*x = LookupSNameResponse{}
+func (x *UpdateRequest) Reset() {
+	*x = UpdateRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_protocols_exchange_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -356,13 +346,13 @@ func (x *LookupSNameResponse) Reset() {
 	}
 }
 
-func (x *LookupSNameResponse) String() string {
+func (x *UpdateRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*LookupSNameResponse) ProtoMessage() {}
+func (*UpdateRequest) ProtoMessage() {}
 
-func (x *LookupSNameResponse) ProtoReflect() protoreflect.Message {
+func (x *UpdateRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_protocols_exchange_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -374,38 +364,44 @@ func (x *LookupSNameResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use LookupSNameResponse.ProtoReflect.Descriptor instead.
-func (*LookupSNameResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use UpdateRequest.ProtoReflect.Descriptor instead.
+func (*UpdateRequest) Descriptor() ([]byte, []int) {
 	return file_proto_protocols_exchange_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *LookupSNameResponse) GetSuccess() bool {
+func (x *UpdateRequest) GetSName() string {
 	if x != nil {
-		return x.Success
-	}
-	return false
-}
-
-func (x *LookupSNameResponse) GetPublicKey() string {
-	if x != nil {
-		return x.PublicKey
+		return x.SName
 	}
 	return ""
 }
 
-// VerifySNameRequest is Message for Verifying Request (Hmac Sha256)
-type VerifySNameRequest struct {
+func (x *UpdateRequest) GetPeerId() string {
+	if x != nil {
+		return x.PeerId
+	}
+	return ""
+}
+
+func (x *UpdateRequest) GetPeer() *common.Peer {
+	if x != nil {
+		return x.Peer
+	}
+	return nil
+}
+
+// UpdateResponse is response for UpdateExchangeRequest
+type UpdateResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// Value to be verified
-	SName    string `protobuf:"bytes,1,opt,name=sName,proto3" json:"sName,omitempty"`       // SName combined with Device ID and Hashed
-	Mnemonic string `protobuf:"bytes,2,opt,name=mnemonic,proto3" json:"mnemonic,omitempty"` // Mnemonic Hashed with public key for fingerprint
+	Success bool   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"` // If Request was Successful
+	Error   string `protobuf:"bytes,2,opt,name=error,proto3" json:"error,omitempty"`      // Error Message if Request was not successful
 }
 
-func (x *VerifySNameRequest) Reset() {
-	*x = VerifySNameRequest{}
+func (x *UpdateResponse) Reset() {
+	*x = UpdateResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_protocols_exchange_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -413,13 +409,13 @@ func (x *VerifySNameRequest) Reset() {
 	}
 }
 
-func (x *VerifySNameRequest) String() string {
+func (x *UpdateResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*VerifySNameRequest) ProtoMessage() {}
+func (*UpdateResponse) ProtoMessage() {}
 
-func (x *VerifySNameRequest) ProtoReflect() protoreflect.Message {
+func (x *UpdateResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_protocols_exchange_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -431,38 +427,38 @@ func (x *VerifySNameRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use VerifySNameRequest.ProtoReflect.Descriptor instead.
-func (*VerifySNameRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use UpdateResponse.ProtoReflect.Descriptor instead.
+func (*UpdateResponse) Descriptor() ([]byte, []int) {
 	return file_proto_protocols_exchange_proto_rawDescGZIP(), []int{6}
 }
 
-func (x *VerifySNameRequest) GetSName() string {
+func (x *UpdateResponse) GetSuccess() bool {
 	if x != nil {
-		return x.SName
+		return x.Success
+	}
+	return false
+}
+
+func (x *UpdateResponse) GetError() string {
+	if x != nil {
+		return x.Error
 	}
 	return ""
 }
 
-func (x *VerifySNameRequest) GetMnemonic() string {
-	if x != nil {
-		return x.Mnemonic
-	}
-	return ""
-}
-
-// VerifySNameResponse is Message for Verifying Response (Hmac Sha256)
-type VerifySNameResponse struct {
+// VerifyRequest is Message for Verifying Request (Hmac Sha256)
+type VerifyRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Success bool   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"` // If Values were Verified
-	Error   string `protobuf:"bytes,2,opt,name=error,proto3" json:"error,omitempty"`      // Error Message
-	ShortID string `protobuf:"bytes,3,opt,name=shortID,proto3" json:"shortID,omitempty"`  // Short ID generated from HMac and Device
+	SName    string `protobuf:"bytes,1,opt,name=sName,proto3" json:"sName,omitempty"`       // SName combined with Device ID and Hashed
+	Mnemonic string `protobuf:"bytes,2,opt,name=mnemonic,proto3" json:"mnemonic,omitempty"` // Mnemonic Hashed with public key for fingerprint
+	DeviceId string `protobuf:"bytes,3,opt,name=deviceId,proto3" json:"deviceId,omitempty"` // Device ID
 }
 
-func (x *VerifySNameResponse) Reset() {
-	*x = VerifySNameResponse{}
+func (x *VerifyRequest) Reset() {
+	*x = VerifyRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_protocols_exchange_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -470,13 +466,13 @@ func (x *VerifySNameResponse) Reset() {
 	}
 }
 
-func (x *VerifySNameResponse) String() string {
+func (x *VerifyRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*VerifySNameResponse) ProtoMessage() {}
+func (*VerifyRequest) ProtoMessage() {}
 
-func (x *VerifySNameResponse) ProtoReflect() protoreflect.Message {
+func (x *VerifyRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_protocols_exchange_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -488,28 +484,156 @@ func (x *VerifySNameResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use VerifySNameResponse.ProtoReflect.Descriptor instead.
-func (*VerifySNameResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use VerifyRequest.ProtoReflect.Descriptor instead.
+func (*VerifyRequest) Descriptor() ([]byte, []int) {
 	return file_proto_protocols_exchange_proto_rawDescGZIP(), []int{7}
 }
 
-func (x *VerifySNameResponse) GetSuccess() bool {
+func (x *VerifyRequest) GetSName() string {
+	if x != nil {
+		return x.SName
+	}
+	return ""
+}
+
+func (x *VerifyRequest) GetMnemonic() string {
+	if x != nil {
+		return x.Mnemonic
+	}
+	return ""
+}
+
+func (x *VerifyRequest) GetDeviceId() string {
+	if x != nil {
+		return x.DeviceId
+	}
+	return ""
+}
+
+// VerifyResponse is Message for Verifying Response (Hmac Sha256)
+type VerifyResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Success bool   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"` // If Values were Verified
+	Error   string `protobuf:"bytes,2,opt,name=error,proto3" json:"error,omitempty"`      // Error Message
+}
+
+func (x *VerifyResponse) Reset() {
+	*x = VerifyResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_protocols_exchange_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *VerifyResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VerifyResponse) ProtoMessage() {}
+
+func (x *VerifyResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_protocols_exchange_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VerifyResponse.ProtoReflect.Descriptor instead.
+func (*VerifyResponse) Descriptor() ([]byte, []int) {
+	return file_proto_protocols_exchange_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *VerifyResponse) GetSuccess() bool {
 	if x != nil {
 		return x.Success
 	}
 	return false
 }
 
-func (x *VerifySNameResponse) GetError() string {
+func (x *VerifyResponse) GetError() string {
 	if x != nil {
 		return x.Error
 	}
 	return ""
 }
 
-func (x *VerifySNameResponse) GetShortID() string {
+// Domain TXT Record for single SName Entry
+type RegisterResponse_Domain struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Domain            string `protobuf:"bytes,1,opt,name=domain,proto3" json:"domain,omitempty"`                       // Domain Name
+	Value             string `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`                         // Domain Value
+	SignedPrefix      string `protobuf:"bytes,3,opt,name=signedPrefix,proto3" json:"signedPrefix,omitempty"`           // Message for List of Bytes
+	SignedFingerprint string `protobuf:"bytes,4,opt,name=signedFingerprint,proto3" json:"signedFingerprint,omitempty"` // Fingerprint Value
+}
+
+func (x *RegisterResponse_Domain) Reset() {
+	*x = RegisterResponse_Domain{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_protocols_exchange_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RegisterResponse_Domain) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RegisterResponse_Domain) ProtoMessage() {}
+
+func (x *RegisterResponse_Domain) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_protocols_exchange_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RegisterResponse_Domain.ProtoReflect.Descriptor instead.
+func (*RegisterResponse_Domain) Descriptor() ([]byte, []int) {
+	return file_proto_protocols_exchange_proto_rawDescGZIP(), []int{1, 0}
+}
+
+func (x *RegisterResponse_Domain) GetDomain() string {
 	if x != nil {
-		return x.ShortID
+		return x.Domain
+	}
+	return ""
+}
+
+func (x *RegisterResponse_Domain) GetValue() string {
+	if x != nil {
+		return x.Value
+	}
+	return ""
+}
+
+func (x *RegisterResponse_Domain) GetSignedPrefix() string {
+	if x != nil {
+		return x.SignedPrefix
+	}
+	return ""
+}
+
+func (x *RegisterResponse_Domain) GetSignedFingerprint() string {
+	if x != nil {
+		return x.SignedFingerprint
 	}
 	return ""
 }
@@ -522,56 +646,67 @@ var file_proto_protocols_exchange_proto_rawDesc = []byte{
 	0x12, 0x17, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x73,
 	0x2e, 0x65, 0x78, 0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x1a, 0x17, 0x70, 0x72, 0x6f, 0x74, 0x6f,
 	0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x22, 0x50, 0x0a, 0x13, 0x4a, 0x6f, 0x69, 0x6e, 0x45, 0x78, 0x63, 0x68, 0x61, 0x6e,
-	0x67, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x73, 0x4e, 0x61,
-	0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x73, 0x4e, 0x61, 0x6d, 0x65, 0x12,
-	0x23, 0x0a, 0x04, 0x70, 0x65, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0f, 0x2e,
-	0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x04,
-	0x70, 0x65, 0x65, 0x72, 0x22, 0x6b, 0x0a, 0x14, 0x4a, 0x6f, 0x69, 0x6e, 0x45, 0x78, 0x63, 0x68,
-	0x61, 0x6e, 0x67, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07,
-	0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73,
-	0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x73, 0x4e, 0x61, 0x6d, 0x65, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x73, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x23, 0x0a, 0x04,
-	0x70, 0x65, 0x65, 0x72, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x73, 0x6f, 0x6e,
-	0x72, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x04, 0x70, 0x65, 0x65,
-	0x72, 0x22, 0x46, 0x0a, 0x12, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x53, 0x4e, 0x61, 0x6d, 0x65,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x73, 0x4e, 0x61, 0x6d, 0x65,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x73, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x1a, 0x0a,
-	0x08, 0x6d, 0x6e, 0x65, 0x6d, 0x6f, 0x6e, 0x69, 0x63, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x08, 0x6d, 0x6e, 0x65, 0x6d, 0x6f, 0x6e, 0x69, 0x63, 0x22, 0xe5, 0x01, 0x0a, 0x13, 0x43, 0x72,
-	0x65, 0x61, 0x74, 0x65, 0x53, 0x4e, 0x61, 0x6d, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x12, 0x22, 0x0a, 0x0c, 0x73,
-	0x69, 0x67, 0x6e, 0x65, 0x64, 0x50, 0x72, 0x65, 0x66, 0x69, 0x78, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x0c, 0x73, 0x69, 0x67, 0x6e, 0x65, 0x64, 0x50, 0x72, 0x65, 0x66, 0x69, 0x78, 0x12,
-	0x2c, 0x0a, 0x11, 0x73, 0x69, 0x67, 0x6e, 0x65, 0x64, 0x46, 0x69, 0x6e, 0x67, 0x65, 0x72, 0x70,
-	0x72, 0x69, 0x6e, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x11, 0x73, 0x69, 0x67, 0x6e,
-	0x65, 0x64, 0x46, 0x69, 0x6e, 0x67, 0x65, 0x72, 0x70, 0x72, 0x69, 0x6e, 0x74, 0x12, 0x1c, 0x0a,
-	0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x12, 0x1e, 0x0a, 0x0a, 0x67,
-	0x69, 0x76, 0x65, 0x6e, 0x53, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x0a, 0x67, 0x69, 0x76, 0x65, 0x6e, 0x53, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x24, 0x0a, 0x0d, 0x67,
-	0x69, 0x76, 0x65, 0x6e, 0x4d, 0x6e, 0x65, 0x6d, 0x6f, 0x6e, 0x69, 0x63, 0x18, 0x06, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x0d, 0x67, 0x69, 0x76, 0x65, 0x6e, 0x4d, 0x6e, 0x65, 0x6d, 0x6f, 0x6e, 0x69,
-	0x63, 0x22, 0x2a, 0x0a, 0x12, 0x4c, 0x6f, 0x6f, 0x6b, 0x75, 0x70, 0x53, 0x4e, 0x61, 0x6d, 0x65,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x73, 0x4e, 0x61, 0x6d, 0x65,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x73, 0x4e, 0x61, 0x6d, 0x65, 0x22, 0x4d, 0x0a,
-	0x13, 0x4c, 0x6f, 0x6f, 0x6b, 0x75, 0x70, 0x53, 0x4e, 0x61, 0x6d, 0x65, 0x52, 0x65, 0x73, 0x70,
+	0x74, 0x6f, 0x22, 0x61, 0x0a, 0x0f, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x73, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x73, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x6d,
+	0x6e, 0x65, 0x6d, 0x6f, 0x6e, 0x69, 0x63, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x6d,
+	0x6e, 0x65, 0x6d, 0x6f, 0x6e, 0x69, 0x63, 0x12, 0x1c, 0x0a, 0x09, 0x64, 0x65, 0x76, 0x69, 0x63,
+	0x65, 0x49, 0x64, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x09, 0x52, 0x09, 0x64, 0x65, 0x76, 0x69,
+	0x63, 0x65, 0x49, 0x64, 0x73, 0x22, 0xe7, 0x02, 0x0a, 0x10, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74,
+	0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75,
+	0x63, 0x63, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63,
+	0x63, 0x65, 0x73, 0x73, 0x12, 0x4a, 0x0a, 0x07, 0x64, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x73, 0x18,
+	0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x30, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x73, 0x2e, 0x65, 0x78, 0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x2e,
+	0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x2e, 0x44, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x52, 0x07, 0x64, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x73,
+	0x12, 0x1c, 0x0a, 0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x18, 0x04, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x12, 0x1e,
+	0x0a, 0x0a, 0x67, 0x69, 0x76, 0x65, 0x6e, 0x53, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x05, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x0a, 0x67, 0x69, 0x76, 0x65, 0x6e, 0x53, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x24,
+	0x0a, 0x0d, 0x67, 0x69, 0x76, 0x65, 0x6e, 0x4d, 0x6e, 0x65, 0x6d, 0x6f, 0x6e, 0x69, 0x63, 0x18,
+	0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0d, 0x67, 0x69, 0x76, 0x65, 0x6e, 0x4d, 0x6e, 0x65, 0x6d,
+	0x6f, 0x6e, 0x69, 0x63, 0x1a, 0x88, 0x01, 0x0a, 0x06, 0x44, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x12,
+	0x16, 0x0a, 0x06, 0x64, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x06, 0x64, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x12, 0x22, 0x0a,
+	0x0c, 0x73, 0x69, 0x67, 0x6e, 0x65, 0x64, 0x50, 0x72, 0x65, 0x66, 0x69, 0x78, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x0c, 0x73, 0x69, 0x67, 0x6e, 0x65, 0x64, 0x50, 0x72, 0x65, 0x66, 0x69,
+	0x78, 0x12, 0x2c, 0x0a, 0x11, 0x73, 0x69, 0x67, 0x6e, 0x65, 0x64, 0x46, 0x69, 0x6e, 0x67, 0x65,
+	0x72, 0x70, 0x72, 0x69, 0x6e, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x11, 0x73, 0x69,
+	0x67, 0x6e, 0x65, 0x64, 0x46, 0x69, 0x6e, 0x67, 0x65, 0x72, 0x70, 0x72, 0x69, 0x6e, 0x74, 0x22,
+	0x25, 0x0a, 0x0d, 0x4c, 0x6f, 0x6f, 0x6b, 0x75, 0x70, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x12, 0x14, 0x0a, 0x05, 0x73, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x05, 0x73, 0x4e, 0x61, 0x6d, 0x65, 0x22, 0x48, 0x0a, 0x0e, 0x4c, 0x6f, 0x6f, 0x6b, 0x75, 0x70,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x63, 0x63,
+	0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65,
+	0x73, 0x73, 0x12, 0x1c, 0x0a, 0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79,
+	0x22, 0x3c, 0x0a, 0x0c, 0x51, 0x75, 0x65, 0x72, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x12, 0x14, 0x0a, 0x05, 0x73, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x05, 0x73, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x70, 0x65, 0x65, 0x72, 0x49, 0x64,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x70, 0x65, 0x65, 0x72, 0x49, 0x64, 0x22, 0x62,
+	0x0a, 0x0d, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
+	0x14, 0x0a, 0x05, 0x73, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05,
+	0x73, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x70, 0x65, 0x65, 0x72, 0x49, 0x64, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x70, 0x65, 0x65, 0x72, 0x49, 0x64, 0x12, 0x23, 0x0a,
+	0x04, 0x70, 0x65, 0x65, 0x72, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x73, 0x6f,
+	0x6e, 0x72, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x52, 0x04, 0x70, 0x65,
+	0x65, 0x72, 0x22, 0x40, 0x0a, 0x0e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70,
 	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x12, 0x1c,
-	0x0a, 0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x22, 0x46, 0x0a, 0x12,
-	0x56, 0x65, 0x72, 0x69, 0x66, 0x79, 0x53, 0x4e, 0x61, 0x6d, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x73, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x05, 0x73, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x6d, 0x6e, 0x65, 0x6d,
-	0x6f, 0x6e, 0x69, 0x63, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x6d, 0x6e, 0x65, 0x6d,
-	0x6f, 0x6e, 0x69, 0x63, 0x22, 0x5f, 0x0a, 0x13, 0x56, 0x65, 0x72, 0x69, 0x66, 0x79, 0x53, 0x4e,
-	0x61, 0x6d, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x73,
-	0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75,
-	0x63, 0x63, 0x65, 0x73, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x12, 0x18, 0x0a, 0x07, 0x73,
-	0x68, 0x6f, 0x72, 0x74, 0x49, 0x44, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x73, 0x68,
-	0x6f, 0x72, 0x74, 0x49, 0x44, 0x42, 0x26, 0x5a, 0x24, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e,
+	0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x12, 0x14,
+	0x0a, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x65,
+	0x72, 0x72, 0x6f, 0x72, 0x22, 0x5d, 0x0a, 0x0d, 0x56, 0x65, 0x72, 0x69, 0x66, 0x79, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x73, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x73, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x6d,
+	0x6e, 0x65, 0x6d, 0x6f, 0x6e, 0x69, 0x63, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x6d,
+	0x6e, 0x65, 0x6d, 0x6f, 0x6e, 0x69, 0x63, 0x12, 0x1a, 0x0a, 0x08, 0x64, 0x65, 0x76, 0x69, 0x63,
+	0x65, 0x49, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x64, 0x65, 0x76, 0x69, 0x63,
+	0x65, 0x49, 0x64, 0x22, 0x40, 0x0a, 0x0e, 0x56, 0x65, 0x72, 0x69, 0x66, 0x79, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x12,
+	0x14, 0x0a, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05,
+	0x65, 0x72, 0x72, 0x6f, 0x72, 0x42, 0x26, 0x5a, 0x24, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e,
 	0x63, 0x6f, 0x6d, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2d, 0x69, 0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65,
 	0x2f, 0x70, 0x6b, 0x67, 0x2f, 0x65, 0x78, 0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x62, 0x06, 0x70,
 	0x72, 0x6f, 0x74, 0x6f, 0x33,
@@ -589,26 +724,28 @@ func file_proto_protocols_exchange_proto_rawDescGZIP() []byte {
 	return file_proto_protocols_exchange_proto_rawDescData
 }
 
-var file_proto_protocols_exchange_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_proto_protocols_exchange_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_proto_protocols_exchange_proto_goTypes = []interface{}{
-	(*JoinExchangeRequest)(nil),  // 0: sonr.protocols.exchange.JoinExchangeRequest
-	(*JoinExchangeResponse)(nil), // 1: sonr.protocols.exchange.JoinExchangeResponse
-	(*CreateSNameRequest)(nil),   // 2: sonr.protocols.exchange.CreateSNameRequest
-	(*CreateSNameResponse)(nil),  // 3: sonr.protocols.exchange.CreateSNameResponse
-	(*LookupSNameRequest)(nil),   // 4: sonr.protocols.exchange.LookupSNameRequest
-	(*LookupSNameResponse)(nil),  // 5: sonr.protocols.exchange.LookupSNameResponse
-	(*VerifySNameRequest)(nil),   // 6: sonr.protocols.exchange.VerifySNameRequest
-	(*VerifySNameResponse)(nil),  // 7: sonr.protocols.exchange.VerifySNameResponse
-	(*common.Peer)(nil),          // 8: sonr.core.Peer
+	(*RegisterRequest)(nil),         // 0: sonr.protocols.exchange.RegisterRequest
+	(*RegisterResponse)(nil),        // 1: sonr.protocols.exchange.RegisterResponse
+	(*LookupRequest)(nil),           // 2: sonr.protocols.exchange.LookupRequest
+	(*LookupResponse)(nil),          // 3: sonr.protocols.exchange.LookupResponse
+	(*QueryRequest)(nil),            // 4: sonr.protocols.exchange.QueryRequest
+	(*UpdateRequest)(nil),           // 5: sonr.protocols.exchange.UpdateRequest
+	(*UpdateResponse)(nil),          // 6: sonr.protocols.exchange.UpdateResponse
+	(*VerifyRequest)(nil),           // 7: sonr.protocols.exchange.VerifyRequest
+	(*VerifyResponse)(nil),          // 8: sonr.protocols.exchange.VerifyResponse
+	(*RegisterResponse_Domain)(nil), // 9: sonr.protocols.exchange.RegisterResponse.Domain
+	(*common.Peer)(nil),             // 10: sonr.core.Peer
 }
 var file_proto_protocols_exchange_proto_depIdxs = []int32{
-	8, // 0: sonr.protocols.exchange.JoinExchangeRequest.peer:type_name -> sonr.core.Peer
-	8, // 1: sonr.protocols.exchange.JoinExchangeResponse.peer:type_name -> sonr.core.Peer
-	2, // [2:2] is the sub-list for method output_type
-	2, // [2:2] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	9,  // 0: sonr.protocols.exchange.RegisterResponse.domains:type_name -> sonr.protocols.exchange.RegisterResponse.Domain
+	10, // 1: sonr.protocols.exchange.UpdateRequest.peer:type_name -> sonr.core.Peer
+	2,  // [2:2] is the sub-list for method output_type
+	2,  // [2:2] is the sub-list for method input_type
+	2,  // [2:2] is the sub-list for extension type_name
+	2,  // [2:2] is the sub-list for extension extendee
+	0,  // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_proto_protocols_exchange_proto_init() }
@@ -618,7 +755,7 @@ func file_proto_protocols_exchange_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_proto_protocols_exchange_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*JoinExchangeRequest); i {
+			switch v := v.(*RegisterRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -630,7 +767,7 @@ func file_proto_protocols_exchange_proto_init() {
 			}
 		}
 		file_proto_protocols_exchange_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*JoinExchangeResponse); i {
+			switch v := v.(*RegisterResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -642,7 +779,7 @@ func file_proto_protocols_exchange_proto_init() {
 			}
 		}
 		file_proto_protocols_exchange_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CreateSNameRequest); i {
+			switch v := v.(*LookupRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -654,7 +791,7 @@ func file_proto_protocols_exchange_proto_init() {
 			}
 		}
 		file_proto_protocols_exchange_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CreateSNameResponse); i {
+			switch v := v.(*LookupResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -666,7 +803,7 @@ func file_proto_protocols_exchange_proto_init() {
 			}
 		}
 		file_proto_protocols_exchange_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*LookupSNameRequest); i {
+			switch v := v.(*QueryRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -678,7 +815,7 @@ func file_proto_protocols_exchange_proto_init() {
 			}
 		}
 		file_proto_protocols_exchange_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*LookupSNameResponse); i {
+			switch v := v.(*UpdateRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -690,7 +827,7 @@ func file_proto_protocols_exchange_proto_init() {
 			}
 		}
 		file_proto_protocols_exchange_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*VerifySNameRequest); i {
+			switch v := v.(*UpdateResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -702,7 +839,31 @@ func file_proto_protocols_exchange_proto_init() {
 			}
 		}
 		file_proto_protocols_exchange_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*VerifySNameResponse); i {
+			switch v := v.(*VerifyRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_protocols_exchange_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*VerifyResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_protocols_exchange_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*RegisterResponse_Domain); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -720,7 +881,7 @@ func file_proto_protocols_exchange_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_proto_protocols_exchange_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   8,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

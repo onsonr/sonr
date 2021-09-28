@@ -10,12 +10,14 @@ import (
 	"go.uber.org/zap"
 )
 
+// DeviceStat is the device info struct
 type DeviceStat struct {
-	Id      string `json:"id"`
-	Name    string `json:"name"`
-	Os      string `json:"os"`
-	Arch    string `json:"arch"`
-	Version string `json:"version"`
+	Id        string `json:"id"`
+	Name      string `json:"name"`
+	Os        string `json:"os"`
+	Arch      string `json:"arch"`
+	IsDesktop bool
+	IsMobile  bool
 }
 
 // AppName returns the application name.
@@ -52,7 +54,7 @@ func ID() (string, error) {
 }
 
 // Info returns the device info.
-func Info() *common.Peer_Info {
+func Info() *common.Peer_Device {
 	// Get HostName
 	hn, err := HostName()
 	if err != nil {
@@ -66,10 +68,11 @@ func Info() *common.Peer_Info {
 	}
 
 	// Return the device info for Peer
-	return &common.Peer_Info{
+	return &common.Peer_Device{
 		HostName: hn,
 		Os:       runtime.GOOS,
 		Id:       id,
+		Arch:     runtime.GOARCH,
 	}
 }
 
@@ -129,10 +132,11 @@ func Stat() *DeviceStat {
 
 	// Return the device info for Peer
 	return &DeviceStat{
-		Id:      id,
-		Name:    hn,
-		Os:      runtime.GOOS,
-		Arch:    runtime.GOARCH,
-		Version: "0.0.1",
+		Id:        id,
+		Name:      hn,
+		Os:        runtime.GOOS,
+		Arch:      runtime.GOARCH,
+		IsDesktop: IsDesktop(),
+		IsMobile:  IsMobile(),
 	}
 }

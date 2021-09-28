@@ -28,8 +28,8 @@ type NodeServiceClient interface {
 	Share(ctx context.Context, in *ShareRequest, opts ...grpc.CallOption) (*ShareResponse, error)
 	// Respond Method to an Invite with Decision
 	Respond(ctx context.Context, in *RespondRequest, opts ...grpc.CallOption) (*RespondResponse, error)
-	// Ping Method to find a Peer by SName
-	Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingResponse, error)
+	// Find Method to find a Peer by SName or PeerID
+	Find(ctx context.Context, in *FindRequest, opts ...grpc.CallOption) (*FindResponse, error)
 	// Stat Method returns the Node Stats
 	Stat(ctx context.Context, in *StatRequest, opts ...grpc.CallOption) (*StatResponse, error)
 	// Events Streams
@@ -93,9 +93,9 @@ func (c *nodeServiceClient) Respond(ctx context.Context, in *RespondRequest, opt
 	return out, nil
 }
 
-func (c *nodeServiceClient) Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingResponse, error) {
-	out := new(PingResponse)
-	err := c.cc.Invoke(ctx, "/sonr.node.NodeService/Ping", in, out, opts...)
+func (c *nodeServiceClient) Find(ctx context.Context, in *FindRequest, opts ...grpc.CallOption) (*FindResponse, error) {
+	out := new(FindResponse)
+	err := c.cc.Invoke(ctx, "/sonr.node.NodeService/Find", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -348,8 +348,8 @@ type NodeServiceServer interface {
 	Share(context.Context, *ShareRequest) (*ShareResponse, error)
 	// Respond Method to an Invite with Decision
 	Respond(context.Context, *RespondRequest) (*RespondResponse, error)
-	// Ping Method to find a Peer by SName
-	Ping(context.Context, *PingRequest) (*PingResponse, error)
+	// Find Method to find a Peer by SName or PeerID
+	Find(context.Context, *FindRequest) (*FindResponse, error)
 	// Stat Method returns the Node Stats
 	Stat(context.Context, *StatRequest) (*StatResponse, error)
 	// Events Streams
@@ -386,8 +386,8 @@ func (UnimplementedNodeServiceServer) Share(context.Context, *ShareRequest) (*Sh
 func (UnimplementedNodeServiceServer) Respond(context.Context, *RespondRequest) (*RespondResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Respond not implemented")
 }
-func (UnimplementedNodeServiceServer) Ping(context.Context, *PingRequest) (*PingResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
+func (UnimplementedNodeServiceServer) Find(context.Context, *FindRequest) (*FindResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Find not implemented")
 }
 func (UnimplementedNodeServiceServer) Stat(context.Context, *StatRequest) (*StatResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Stat not implemented")
@@ -498,20 +498,20 @@ func _NodeService_Respond_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
-func _NodeService_Ping_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PingRequest)
+func _NodeService_Find_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FindRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(NodeServiceServer).Ping(ctx, in)
+		return srv.(NodeServiceServer).Find(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonr.node.NodeService/Ping",
+		FullMethod: "/sonr.node.NodeService/Find",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NodeServiceServer).Ping(ctx, req.(*PingRequest))
+		return srv.(NodeServiceServer).Find(ctx, req.(*FindRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -705,8 +705,8 @@ var NodeService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _NodeService_Respond_Handler,
 		},
 		{
-			MethodName: "Ping",
-			Handler:    _NodeService_Ping_Handler,
+			MethodName: "Find",
+			Handler:    _NodeService_Find_Handler,
 		},
 		{
 			MethodName: "Stat",

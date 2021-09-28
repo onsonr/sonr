@@ -2,13 +2,14 @@ package lobby
 
 import (
 	"context"
+	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/host"
-	"github.com/sonr-io/core/tools/emitter"
 	"github.com/sonr-io/core/tools/logger"
+	"github.com/sonr-io/core/tools/state"
 	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )
@@ -18,10 +19,11 @@ const (
 	Event_LIST_REFRESH = "lobby-list-refresh"
 )
 
+// LobbyProtocol is the protocol for managing local peers.
 type LobbyProtocol struct {
 	ctx          context.Context
-	host         *host.SNRHost    // host
-	emitter      *emitter.Emitter // Handle to signal when done
+	host         *host.SNRHost  // host
+	emitter      *state.Emitter // Handle to signal when done
 	eventHandler *ps.TopicEventHandler
 	lobbyEvents  chan *LobbyMessage
 	location     *common.Location
@@ -31,9 +33,9 @@ type LobbyProtocol struct {
 }
 
 // NewProtocol creates a new lobby protocol instance.
-func NewProtocol(host *host.SNRHost, loc *common.Location, em *emitter.Emitter) (*LobbyProtocol, error) {
+func NewProtocol(host *host.SNRHost, loc *common.Location, em *state.Emitter) (*LobbyProtocol, error) {
 	// Create Exchange Topic
-	topic, err := host.Pubsub().Join(loc.OLC(6))
+	topic, err := host.Pubsub().Join(loc.OLC())
 	if err != nil {
 		return nil, err
 	}
@@ -69,11 +71,12 @@ func NewProtocol(host *host.SNRHost, loc *common.Location, em *emitter.Emitter) 
 	return lobProtocol, nil
 }
 
+// Update method publishes peer data to the topic
 func (p *LobbyProtocol) Update(peer *common.Peer) error {
 	// Create Event
 	event := &LobbyMessage{
 		Peer: peer,
-		Olc:  p.location.OLC(6),
+		Olc:  p.location.OLC(),
 	}
 
 	// Marshal Event
@@ -130,7 +133,6 @@ func (p *LobbyProtocol) HandleMessages() {
 			if msg.ReceivedFrom == p.host.ID() {
 				continue
 			} else {
-
 				// Unmarshal Message
 				data := &LobbyMessage{}
 				err = proto.Unmarshal(msg.Data, data)
@@ -159,8 +161,9 @@ func (p *LobbyProtocol) pushRefresh(id peer.ID, peer *common.Peer) {
 
 	// Create RefreshEvent
 	event := &common.RefreshEvent{
-		Olc:   p.location.OLC(6),
-		Peers: peers,
+		Olc:      p.location.OLC(),
+		Peers:    peers,
+		Received: int64(time.Now().Unix()),
 	}
 
 	// Emit Event

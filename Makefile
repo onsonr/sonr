@@ -1,5 +1,5 @@
 # Set this -->[/Users/xxxx/Sonr/]<-- to Folder of Sonr Repos
-SONR_ROOT_DIR=/Users/prad/Sonr
+SONR_ROOT_DIR=/Users/prad/Developer
 ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 CORE_DIR=$(SONR_ROOT_DIR)/core
 CORE_RPC_DIR=$(SONR_ROOT_DIR)/core/cmd/bin
@@ -7,15 +7,15 @@ CORE_BIND_DIR=$(SONR_ROOT_DIR)/core/cmd/lib
 ELECTRON_BIN_DIR=$(SONR_ROOT_DIR)/electron/assets/bin/darwin
 
 # Set this -->[/Users/xxxx/Sonr/]<-- to Folder of Sonr Repos
-PROTO_DEF_PATH=/Users/prad/Sonr/core/proto
-APP_ROOT_DIR =/Users/prad/Sonr/app
+PROTO_DEF_PATH=/Users/prad/Developer/core/proto
+APP_ROOT_DIR =/Users/prad/Developer/app
 
 # @ Packaging Vars/Commands
 GOMOBILE=gomobile
 GOCLEAN=$(GOMOBILE) clean
 GOBIND=$(GOMOBILE) bind -ldflags='-s -w' -v
 GOBIND_ANDROID=$(GOBIND) -target=android
-GOBIND_IOS=$(GOBIND) -target=ios -bundleid=io.sonr.core
+GOBIND_IOS=$(GOBIND) -target=ios/arm64 -bundleid=io.sonr.core
 
 # @ Bind Directories
 BIND_DIR_ANDROID=$(SONR_ROOT_DIR)/plugin/android/libs
@@ -25,22 +25,6 @@ BIND_ANDROID_ARTIFACT= $(BIND_DIR_ANDROID)/io.sonr.core.aar
 
 # @ Proto Directories
 PROTO_DIR_DART=$(SONR_ROOT_DIR)/plugin/lib/src
-falafel=$(which falafel)
-
-# Name of the package for the generated APIs.
-pkg="bind"
-
-# The package where the protobuf definitions originally are found.
-target_pkg="github.com/sonr-io/core/proto"
-
-# A mapping from grpc service to name of the custom listeners. The grpc server
-# must be configured to listen on these.
-listeners="location=locationLis profileunlocker=profileUnlockerLis"
-
-# Set to 1 to create boiler plate grpc client code and listeners. If more than
-# one proto file is being parsed, it should only be done once.
-mem_rpc=1
-opts="package_name=$(pkg),target_package=$(target_pkg),mem_rpc=$(mem_rpc)"
 PROTO_LIST_ALL=${ROOT_DIR}/proto/**/*.proto
 PROTO_LIST_CLIENT=${ROOT_DIR}/proto/client/*.proto
 PROTO_LIST_COMMON=${ROOT_DIR}/proto/common/*.proto
@@ -87,7 +71,7 @@ bind.android:
 	@go get golang.org/x/mobile/bind
 	@gomobile init
 	cd $(CORE_BIND_DIR) && doppler run --command "$(GOBIND_ANDROID) -o $(BIND_ANDROID_ARTIFACT)"
-	@echo "✅ Finished Binding ➡ " && date
+	@echo "✅ Finished Binding ➡ `date`"
 	@echo ""
 
 
@@ -100,7 +84,7 @@ bind.ios:
 	@echo "--------------------------------------------------------------"
 	@go get golang.org/x/mobile/bind
 	cd $(CORE_BIND_DIR) && doppler run --command "$(GOBIND_IOS) -o $(BIND_IOS_ARTIFACT)"
-	@echo "✅ Finished Binding ➡ " && date
+	@echo "✅ Finished Binding ➡ `date`"
 	@echo ""
 
 ##
@@ -132,7 +116,7 @@ release: protobuf
 	@mkdir -p $(ELECTRON_BIN_DIR)
 	@mv $(DIST_DIR_DARWIN_ARM) $(ELECTRON_BIN_DIR)
 	@rm -rf $(DIST_DIR)
-	@echo "✅ Finished Releasing RPC Binary ➡ " && date
+	@echo "✅ Finished Releasing RPC Binary ➡ `date`"
 	@cd /System/Library/Sounds && afplay Glass.aiff
 
 ## [clean]     :   Reinitializes Gomobile and Removes Framworks from Plugin

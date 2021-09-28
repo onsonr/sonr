@@ -7,16 +7,19 @@ import (
 
 	common "github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
+	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/transfer"
-	"github.com/sonr-io/core/tools/emitter"
 	"github.com/sonr-io/core/tools/logger"
+	"github.com/sonr-io/core/tools/state"
 	"go.uber.org/zap"
 	grpc "google.golang.org/grpc"
 )
 
+// RPC_SERVER_PORT is the port the RPC service listens on.
 const RPC_SERVER_PORT = 52006
 
+// NodeRPCService is the RPC Service for the Node.
 type NodeRPCService struct {
 	NodeServiceServer
 	*Node
@@ -79,6 +82,18 @@ func (n *NodeRPCService) Supply(ctx context.Context, req *SupplyRequest) (*Suppl
 		}, nil
 	}
 
+	// Check if Peer is provided
+	if req.GetPeer() != nil {
+		// Call Internal Share
+		err = n.Node.Share(req.GetPeer())
+		if err != nil {
+			return &SupplyResponse{
+				Success: false,
+				Error:   err.Error(),
+			}, nil
+		}
+	}
+
 	// Send Response
 	return &SupplyResponse{
 		Success: true,
@@ -120,27 +135,27 @@ func (n *NodeRPCService) Share(ctx context.Context, req *ShareRequest) (*ShareRe
 }
 
 // Search Method to find a Peer by SName
-func (n *NodeRPCService) Ping(ctx context.Context, req *PingRequest) (*PingResponse, error) {
+func (n *NodeRPCService) Find(ctx context.Context, req *FindRequest) (*FindResponse, error) {
 	// Call Internal Ping
-	peer, err := n.Node.Ping(req.GetSName())
+	entry, err := n.Node.Query(exchange.NewQueryRequestFromSName(req.GetSName()))
 	if err != nil {
-		return &PingResponse{
+		return &FindResponse{
 			Success: false,
 			Error:   err.Error(),
 		}, nil
 	}
 
 	// Send Response
-	return &PingResponse{
+	return &FindResponse{
 		Success: true,
-		Peer:    peer,
+		Peer:    entry.Peer,
 	}, nil
 }
 
 // Respond method responds to a received InviteRequest.
 func (n *NodeRPCService) Respond(ctx context.Context, req *RespondRequest) (*RespondResponse, error) {
 	// Call Internal Respond
-	err := n.Node.Respond(req.GetDecision())
+	err := n.Node.Respond(req.GetDecision(), req.GetPeer())
 	if err != nil {
 		return &RespondResponse{
 			Success: false,
@@ -158,14 +173,15 @@ func (n *NodeRPCService) Respond(ctx context.Context, req *RespondRequest) (*Res
 func (n *NodeRPCService) Stat(ctx context.Context, req *StatRequest) (*StatResponse, error) {
 	// Call Internal Stat
 	return &StatResponse{
-		SName: n.profile.SName,
-		Peer:  n.Peer(),
+		SName:   n.profile.SName,
+		Profile: n.profile,
 		Device: &StatResponse_Device{
-			Id:      device.Stat().Id,
-			Name:    device.Stat().Name,
-			Os:      device.Stat().Os,
-			Arch:    device.Stat().Arch,
-			Version: device.Stat().Version,
+			Id:        device.Stat().Id,
+			Name:      device.Stat().Name,
+			Os:        device.Stat().Os,
+			Arch:      device.Stat().Arch,
+			IsDesktop: device.Stat().IsDesktop,
+			IsMobile:  device.Stat().IsMobile,
 		},
 		Network: &StatResponse_Network{
 			PublicKey: n.host.Stat().PublicKey,
@@ -179,48 +195,31 @@ func (n *NodeRPCService) Stat(ctx context.Context, req *StatRequest) (*StatRespo
 func (nrc *NodeRPCService) handleEmitter() {
 	for {
 		// Handle Transfer Invite
-		nrc.Node.On(transfer.Event_INVITED, func(e *emitter.Event) {
-			inv := e.Args[0].(*transfer.InviteRequest)
-			invEvent := &common.InviteEvent{
-				InviteId: inv.GetInviteId(),
-				From:     inv.GetFrom(),
-				Payload:  inv.GetPayload(),
-			}
-			nrc.inviteEvents <- invEvent
+		nrc.Node.On(transfer.Event_INVITED, func(e *state.Event) {
+			event := e.Args[0].(*common.InviteEvent)
+			nrc.inviteEvents <- event
 		})
 
 		// Handle Transfer Decision
-		nrc.Node.On(transfer.Event_RESPONDED, func(e *emitter.Event) {
-			inv := e.Args[0].(*transfer.InviteResponse)
-			decsEvent := &common.DecisionEvent{
-				InviteId: inv.GetInviteId(),
-				Decision: inv.GetSuccess(),
-			}
-			nrc.decisionEvents <- decsEvent
+		nrc.Node.On(transfer.Event_RESPONDED, func(e *state.Event) {
+			event := e.Args[0].(*common.DecisionEvent)
+			nrc.decisionEvents <- event
 		})
 
 		// Handle Transfer Progress
-		nrc.Node.On(transfer.Event_PROGRESS, func(e *emitter.Event) {
-			writtenBytes := e.Args[0].(int64)
-			progEvent := &common.ProgressEvent{
-				Current:  int32(writtenBytes),
-				Total:    0,
-				Progress: 0,
-			}
-			nrc.progressEvents <- progEvent
+		nrc.Node.On(transfer.Event_PROGRESS, func(e *state.Event) {
+			event := e.Args[0].(*common.ProgressEvent)
+			nrc.progressEvents <- event
 		})
 
 		// Handle Transfer Completed
-		nrc.Node.On(transfer.Event_COMPLETED, func(e *emitter.Event) {
-			result := e.Args[0].(*common.Payload)
-			compEvent := &common.CompleteEvent{
-				Payload: result,
-			}
-			nrc.completeEvents <- compEvent
+		nrc.Node.On(transfer.Event_COMPLETED, func(e *state.Event) {
+			event := e.Args[0].(*common.CompleteEvent)
+			nrc.completeEvents <- event
 		})
 
 		// Handle Lobby Join Events
-		nrc.Node.On(lobby.Event_LIST_REFRESH, func(e *emitter.Event) {
+		nrc.Node.On(lobby.Event_LIST_REFRESH, func(e *state.Event) {
 			refreshEvent := e.Args[0].(*common.RefreshEvent)
 			nrc.exchangeEvents <- refreshEvent
 		})

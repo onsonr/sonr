@@ -3,6 +3,7 @@ package host
 import (
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
@@ -12,6 +13,26 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )
+
+// NewID generates a new UUID value signed by the local node's private key
+func (n *SNRHost) NewID() (*common.UUID, error) {
+	// generate new UUID
+	id := uuid.New().String()
+
+	// sign UUID using local node's private key
+	sig, err := n.SignData([]byte(id))
+	if err != nil {
+		logger.Error("Failed to sign UUID", zap.Error(err))
+		return nil, err
+	}
+
+	// Return UUID with signature
+	return &common.UUID{
+		Value:     id,
+		Signature: sig,
+		Timestamp: time.Now().Unix(),
+	}, nil
+}
 
 // NewMetadata generates message data shared between all node's p2p protocols
 func (n *SNRHost) NewMetadata() *common.Metadata {
@@ -28,6 +49,17 @@ func (n *SNRHost) NewMetadata() *common.Metadata {
 		PublicKey: nodePubKey,
 		NodeId:    peer.Encode(n.id),
 	}
+}
+
+// AuthenticateId verifies UUID value and signature
+func (n *SNRHost) AuthenticateId(id *common.UUID) (bool, error) {
+	// verify UUID value
+	result, err := n.privKey.GetPublic().Verify([]byte(id.GetValue()), []byte(id.GetSignature()))
+	if err != nil {
+		logger.Error("Failed to verify signature of UUID", zap.Error(err))
+		return false, err
+	}
+	return result, nil
 }
 
 // AuthenticateMessage Authenticates incoming p2p message
@@ -93,10 +125,15 @@ func (n *SNRHost) SignMessage(message proto.Message) ([]byte, error) {
 	return n.SignData(data)
 }
 
-// sign binary data using the local node's private key
+// SignData signs an outgoing p2p message payload
 func (n *SNRHost) SignData(data []byte) ([]byte, error) {
+	// sign data using local node's private key
 	res, err := n.privKey.Sign(data)
-	return res, err
+	if err != nil {
+		logger.Error("Failed to sign data.", zap.Error(err))
+		return nil, err
+	}
+	return res, nil
 }
 
 // VerifyData verifies incoming p2p message data integrity

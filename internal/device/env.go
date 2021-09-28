@@ -23,6 +23,7 @@ var TEXTILE_HUB_KEY string
 // Textile Hub API secret
 var TEXTILE_HUB_SECRET string
 
+// InitEnv initializes the environment variables
 func InitEnv() error {
 	// Set environment variables
 	HANDSHAKE_KEY = os.Getenv("HANDSHAKE_KEY")
@@ -54,6 +55,7 @@ func InitEnv() error {
 	return nil
 }
 
+// envVarError returns an error for missing environment variables
 func envVarError(name string) error {
 	return fmt.Errorf("Missing Env Variable for: %s", name)
 }

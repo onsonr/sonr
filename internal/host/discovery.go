@@ -19,11 +19,12 @@ const REFRESH_INTERVAL = time.Second * 4
 // Libp2p Host Rendevouz Point
 const HOST_RENDEVOUZ_POINT = "/sonr/rendevouz/0.9.2"
 
+// discoveryNotifee is a Notifee for the Discovery Service
 type discoveryNotifee struct {
 	PeerChan chan peer.AddrInfo
 }
 
-//interface to be called when new  peer is found
+// HandlePeerFound is to be called when new  peer is found
 func (n *discoveryNotifee) HandlePeerFound(pi peer.AddrInfo) {
 	n.PeerChan <- pi
 }
@@ -74,7 +75,7 @@ func (h *SNRHost) Bootstrap() error {
 	return nil
 }
 
-// Method Begins MDNS Discovery
+// MDNS Method Begins MDNS Discovery
 func (h *SNRHost) MDNS() error {
 	// Create MDNS Service
 	ser, err := discovery.NewMdnsService(h.ctxHost, h.Host, REFRESH_INTERVAL, HOST_RENDEVOUZ_POINT)
@@ -93,20 +94,7 @@ func (h *SNRHost) MDNS() error {
 	return nil
 }
 
-// Helper Method checks if Peer AddrInfo is Unknown
-func (h *SNRHost) checkUnknown(pi peer.AddrInfo) bool {
-	// Iterate and Check
-	if len(h.Peerstore().Addrs(pi.ID)) > 0 {
-		return false
-	}
-
-	// Add to PeerStore
-	h.Peerstore().AddAddrs(pi.ID, pi.Addrs, time.Minute*4)
-	return true
-}
-
-// Handle MDNS Peers: Connect to Local MDNS Peers
-// Params: **Read Only** Peer AddrInfo Channel
+// handleDiscoveredPeers Connect to Peers that are discovered
 func (h *SNRHost) handleDiscoveredPeers(peerChan <-chan peer.AddrInfo) {
 	for {
 		select {
@@ -123,4 +111,16 @@ func (h *SNRHost) handleDiscoveredPeers(peerChan <-chan peer.AddrInfo) {
 			return
 		}
 	}
+}
+
+// checkUnknown is a Helper Method checks if Peer AddrInfo is Unknown
+func (h *SNRHost) checkUnknown(pi peer.AddrInfo) bool {
+	// Iterate and Check
+	if len(h.Peerstore().Addrs(pi.ID)) > 0 {
+		return false
+	}
+
+	// Add to PeerStore
+	h.Peerstore().AddAddrs(pi.ID, pi.Addrs, time.Minute*4)
+	return true
 }

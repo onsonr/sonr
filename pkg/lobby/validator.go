@@ -17,17 +17,17 @@ func (tm *LobbyProtocol) HasPeerID(q peer.ID) bool {
 	return false
 }
 
-// Check if PeerEvent is Join and NOT User
+// isEventJoin Checks if PeerEvent is Join and NOT User
 func (tm *LobbyProtocol) isEventJoin(ev ps.PeerEvent) bool {
 	return ev.Type == ps.PeerJoin && ev.Peer != tm.host.ID()
 }
 
-// Check if PeerEvent is Exit and NOT User
+// isEventExit Checks if PeerEvent is Exit and NOT User
 func (tm *LobbyProtocol) isEventExit(ev ps.PeerEvent) bool {
 	return ev.Type == ps.PeerLeave && ev.Peer != tm.host.ID()
 }
 
-// Check if Message is NOT from User
+// isValidMessage Checks if Message is NOT from User
 func (tm *LobbyProtocol) isValidMessage(msg *ps.Message) bool {
 	return tm.host.ID() != msg.ReceivedFrom && tm.HasPeerID(msg.ReceivedFrom)
 }
