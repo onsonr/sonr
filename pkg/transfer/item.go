@@ -11,8 +11,9 @@ import (
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/tools/config"
-	"github.com/sonr-io/core/tools/emitter"
+
 	"github.com/sonr-io/core/tools/logger"
+	"github.com/sonr-io/core/tools/state"
 	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )
@@ -27,7 +28,7 @@ type ItemReader interface {
 type itemReader struct {
 	ItemReader
 	docsDir string
-	emitter *emitter.Emitter
+	emitter *state.Emitter
 	mutex   sync.Mutex
 	item    *common.FileItem
 	index   int
@@ -35,7 +36,7 @@ type itemReader struct {
 	total   int
 }
 
-func NewReader(pi *common.Payload_Item, index int, total int, docsDir string, em *emitter.Emitter) ItemReader {
+func NewReader(pi *common.Payload_Item, index int, total int, docsDir string, em *state.Emitter) ItemReader {
 	// Return Reader
 	return &itemReader{
 		item:    pi.GetFile(),
@@ -130,14 +131,14 @@ type ItemWriter interface {
 type itemWriter struct {
 	ItemWriter
 	docsDir string
-	emitter *emitter.Emitter
+	emitter *state.Emitter
 	item    *common.FileItem
 	index   int
 	size    int
 	total   int
 }
 
-func NewWriter(pi *common.Payload_Item, index int, total int, docsDir string, em *emitter.Emitter) ItemWriter {
+func NewWriter(pi *common.Payload_Item, index int, total int, docsDir string, em *state.Emitter) ItemWriter {
 	return &itemWriter{
 		item:    pi.GetFile(),
 		size:    0,

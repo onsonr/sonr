@@ -1,5 +1,5 @@
 # Set this -->[/Users/xxxx/Sonr/]<-- to Folder of Sonr Repos
-SONR_ROOT_DIR=/Users/prad/Sonr
+SONR_ROOT_DIR=/Users/prad/Developer
 ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 CORE_DIR=$(SONR_ROOT_DIR)/core
 CORE_RPC_DIR=$(SONR_ROOT_DIR)/core/cmd/bin
@@ -7,8 +7,8 @@ CORE_BIND_DIR=$(SONR_ROOT_DIR)/core/cmd/lib
 ELECTRON_BIN_DIR=$(SONR_ROOT_DIR)/electron/assets/bin/darwin
 
 # Set this -->[/Users/xxxx/Sonr/]<-- to Folder of Sonr Repos
-PROTO_DEF_PATH=/Users/prad/Sonr/core/proto
-APP_ROOT_DIR =/Users/prad/Sonr/app
+PROTO_DEF_PATH=/Users/prad/Developer/core/proto
+APP_ROOT_DIR =/Users/prad/Developer/app
 
 # @ Packaging Vars/Commands
 GOMOBILE=gomobile

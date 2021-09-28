@@ -12,8 +12,8 @@ import (
 	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/transfer"
-	"github.com/sonr-io/core/tools/emitter"
 	"github.com/sonr-io/core/tools/logger"
+	"github.com/sonr-io/core/tools/state"
 	"go.uber.org/zap"
 )
 
@@ -25,7 +25,7 @@ const (
 // Node type - a p2p host implementing one or more p2p protocols
 type Node struct {
 	// Emitter is the event emitter for this node
-	*emitter.Emitter
+	*state.Emitter
 
 	// Host and context
 	host *host.SNRHost
@@ -53,7 +53,7 @@ type Node struct {
 func NewNode(ctx context.Context, host *host.SNRHost, loc *common.Location) *Node {
 	// Initialize Node
 	node := &Node{
-		Emitter: emitter.New(2048),
+		Emitter: state.NewEmitter(2048),
 		host:    host,
 		ctx:     ctx,
 		queue:   list.New(),

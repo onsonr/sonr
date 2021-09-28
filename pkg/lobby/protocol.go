@@ -7,8 +7,8 @@ import (
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/host"
-	"github.com/sonr-io/core/tools/emitter"
 	"github.com/sonr-io/core/tools/logger"
+	"github.com/sonr-io/core/tools/state"
 	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )
@@ -20,8 +20,8 @@ const (
 
 type LobbyProtocol struct {
 	ctx          context.Context
-	host         *host.SNRHost    // host
-	emitter      *emitter.Emitter // Handle to signal when done
+	host         *host.SNRHost  // host
+	emitter      *state.Emitter // Handle to signal when done
 	eventHandler *ps.TopicEventHandler
 	lobbyEvents  chan *LobbyMessage
 	location     *common.Location
@@ -31,7 +31,7 @@ type LobbyProtocol struct {
 }
 
 // NewProtocol creates a new lobby protocol instance.
-func NewProtocol(host *host.SNRHost, loc *common.Location, em *emitter.Emitter) (*LobbyProtocol, error) {
+func NewProtocol(host *host.SNRHost, loc *common.Location, em *state.Emitter) (*LobbyProtocol, error) {
 	// Create Exchange Topic
 	topic, err := host.Pubsub().Join(loc.OLC())
 	if err != nil {

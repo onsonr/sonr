@@ -6,8 +6,8 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/sonr-io/core/internal/host"
-	"github.com/sonr-io/core/tools/emitter"
 	"github.com/sonr-io/core/tools/logger"
+	"github.com/sonr-io/core/tools/state"
 	"go.uber.org/zap"
 )
 
@@ -28,14 +28,14 @@ const (
 
 // TransferProtocol type
 type TransferProtocol struct {
-	ctx     context.Context  // Context
-	host    *host.SNRHost    // local host
-	queue   *transferQueue   // transfer queue
-	emitter *emitter.Emitter // Handle to signal when done
+	ctx     context.Context // Context
+	host    *host.SNRHost   // local host
+	queue   *transferQueue  // transfer queue
+	emitter *state.Emitter  // Handle to signal when done
 }
 
 // NewProtocol creates a new TransferProtocol
-func NewProtocol(ctx context.Context, host *host.SNRHost, em *emitter.Emitter) *TransferProtocol {
+func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) *TransferProtocol {
 	// create a new transfer protocol
 	invProtocol := &TransferProtocol{
 		ctx:     ctx,

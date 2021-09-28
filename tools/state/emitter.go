@@ -5,7 +5,7 @@ The design goals are:
 	- simple to understand and use
 	- make the code readable, maintainable and minimalistic
 */
-package emitter
+package state
 
 import (
 	"path"
@@ -53,9 +53,9 @@ func Close(e *Event) { e.Flags = e.Flags | FlagClose }
 // Sync middleware sets FlagSync flag for an event
 func Sync(e *Event) { e.Flags = e.Flags | FlagSync }
 
-// New returns just created Emitter struct. Capacity argument
+// NewEmitter returns just created Emitter struct. Capacity argument
 // will be used to create channels with given capacity
-func New(capacity uint) *Emitter {
+func NewEmitter(capacity uint) *Emitter {
 	return &Emitter{
 		Cap:         capacity,
 		listeners:   make(map[string][]listener),

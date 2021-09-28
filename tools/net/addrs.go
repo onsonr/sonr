@@ -11,8 +11,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-// ** ─── Address MANAGEMENT ────────────────────────────────────────────────────────
-// Return Bootstrap List Address Info
+// BootstrapAddrInfo Returns Bootstrap List Address Info
 func BootstrapAddrInfo() ([]peer.AddrInfo, error) {
 	// Create Bootstrapper List
 	var bootstrappers []ma.Multiaddr
@@ -58,7 +57,7 @@ func FreePort() (int, error) {
 	return l.Addr().(*net.TCPAddr).Port, nil
 }
 
-// Return Device Listening Addresses ^ //
+// PublicAddrStrs Returns Device Listening Addresses ^ //
 func PublicAddrStrs() ([]string, error) {
 	// Initialize
 	listenAddrs := []string{}
@@ -80,7 +79,7 @@ func PublicAddrStrs() ([]string, error) {
 	return listenAddrs, nil
 }
 
-// Returns Node Public iPv4 Address
+// iPv4Addrs Returns Node Public iPv4 Address
 func iPv4Addrs(port int) ([]string, error) {
 	// Find Hos
 	osHost, err := os.Hostname()

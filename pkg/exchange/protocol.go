@@ -9,8 +9,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/host"
-	"github.com/sonr-io/core/tools/emitter"
 	"github.com/sonr-io/core/tools/logger"
+	"github.com/sonr-io/core/tools/state"
 	"go.uber.org/zap"
 )
 
@@ -18,12 +18,12 @@ import (
 type ExchangeProtocol struct {
 	*psr.PubsubValueStore
 	ctx     context.Context
-	host    *host.SNRHost    // host
-	emitter *emitter.Emitter // Handle to signal when done
+	host    *host.SNRHost  // host
+	emitter *state.Emitter // Handle to signal when done
 }
 
 // NewProtocol creates new ExchangeProtocol
-func NewProtocol(ctx context.Context, host *host.SNRHost, em *emitter.Emitter) (*ExchangeProtocol, error) {
+func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) (*ExchangeProtocol, error) {
 	// Create PubSub Value Store
 	r, err := psr.NewPubsubValueStore(ctx, host.Host, host.Pubsub(), ExchangeValidator{}, psr.WithRebroadcastInterval(5*time.Second))
 	if err != nil {

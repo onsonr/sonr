@@ -1,4 +1,4 @@
-package emitter
+package state
 
 import (
 	"reflect"

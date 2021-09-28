@@ -147,7 +147,6 @@ func GetPageData(response *http.Response) (*PageInfo, error) {
 	}
 
 	info.Content = r.Text()
-
 	return &info, nil
 }
 

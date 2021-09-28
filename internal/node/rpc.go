@@ -11,8 +11,8 @@ import (
 	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/transfer"
-	"github.com/sonr-io/core/tools/emitter"
 	"github.com/sonr-io/core/tools/logger"
+	"github.com/sonr-io/core/tools/state"
 	"go.uber.org/zap"
 	grpc "google.golang.org/grpc"
 )
@@ -182,7 +182,7 @@ func (n *NodeRPCService) Stat(ctx context.Context, req *StatRequest) (*StatRespo
 func (nrc *NodeRPCService) handleEmitter() {
 	for {
 		// Handle Transfer Invite
-		nrc.Node.On(transfer.Event_INVITED, func(e *emitter.Event) {
+		nrc.Node.On(transfer.Event_INVITED, func(e *state.Event) {
 			inv := e.Args[0].(*transfer.InviteRequest)
 			invEvent := &common.InviteEvent{
 				Received: int64(time.Now().Unix()),
@@ -193,7 +193,7 @@ func (nrc *NodeRPCService) handleEmitter() {
 		})
 
 		// Handle Transfer Decision
-		nrc.Node.On(transfer.Event_RESPONDED, func(e *emitter.Event) {
+		nrc.Node.On(transfer.Event_RESPONDED, func(e *state.Event) {
 			inv := e.Args[0].(*transfer.InviteResponse)
 			decsEvent := &common.DecisionEvent{
 				From:     inv.GetFrom(),
@@ -204,7 +204,7 @@ func (nrc *NodeRPCService) handleEmitter() {
 		})
 
 		// Handle Transfer Progress
-		nrc.Node.On(transfer.Event_PROGRESS, func(e *emitter.Event) {
+		nrc.Node.On(transfer.Event_PROGRESS, func(e *state.Event) {
 			writtenBytes := e.Args[0].(int64)
 			progEvent := &common.ProgressEvent{
 				Received: int64(time.Now().Unix()),
@@ -216,7 +216,7 @@ func (nrc *NodeRPCService) handleEmitter() {
 		})
 
 		// Handle Transfer Completed
-		nrc.Node.On(transfer.Event_COMPLETED, func(e *emitter.Event) {
+		nrc.Node.On(transfer.Event_COMPLETED, func(e *state.Event) {
 			result := e.Args[0].(*common.Payload)
 			compEvent := &common.CompleteEvent{
 				Received: int64(time.Now().Unix()),
@@ -226,7 +226,7 @@ func (nrc *NodeRPCService) handleEmitter() {
 		})
 
 		// Handle Lobby Join Events
-		nrc.Node.On(lobby.Event_LIST_REFRESH, func(e *emitter.Event) {
+		nrc.Node.On(lobby.Event_LIST_REFRESH, func(e *state.Event) {
 			refreshEvent := e.Args[0].(*common.RefreshEvent)
 			refreshEvent.Received = int64(time.Now().Unix())
 			nrc.exchangeEvents <- refreshEvent

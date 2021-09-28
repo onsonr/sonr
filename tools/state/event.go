@@ -1,12 +1,4 @@
-package emitter
-
-const EMIT_CONNECTED = "Connected"
-const EMIT_LINK = "Link"
-const EMIT_CONFIRMED = "Confirmed"
-const EMIT_ERROR = "Error"
-const EMIT_MAIL_EVENT = "MailEvent"
-const EMIT_ROOM_EVENT = "RoomEvent"
-const EMIT_SYNC_EVENT = "SyncEvent"
+package state
 
 // Event is a structure to send events contains
 // some helpers to cast primitive types easily.
