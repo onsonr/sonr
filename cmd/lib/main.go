@@ -51,8 +51,7 @@ func Start(reqBytes []byte) {
 		}
 
 		// Create Node
-		n := node.NewNode(ctx, host, req.GetLocation())
-		err = n.Edit(req.GetProfile())
+		n, err := node.NewNode(ctx, host, req.GetLocation(), req.GetProfile())
 		if err != nil {
 			logger.Panic("Failed to update Profile for Node", zap.Error(err))
 		}

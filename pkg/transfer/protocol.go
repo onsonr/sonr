@@ -78,16 +78,9 @@ func (p *TransferProtocol) Request(id peer.ID, req *InviteRequest) error {
 }
 
 // Respond Method authenticates or declines a Transfer Request
-func (p *TransferProtocol) Respond(resp *InviteResponse) error {
-	// Get ToID
-	toID, err := resp.GetTo().PeerID()
-	if err != nil {
-		logger.Error("Failed to Get PeerID", zap.Error(err))
-		return err
-	}
-
+func (p *TransferProtocol) Respond(id peer.ID, resp *InviteResponse) error {
 	// Find Entry
-	entry, err := p.queue.Find(toID)
+	entry, err := p.queue.Find(id)
 	if err != nil {
 		logger.Error("Failed to find transfer entry", zap.Error(err))
 		return err
@@ -107,7 +100,7 @@ func (p *TransferProtocol) Respond(resp *InviteResponse) error {
 	resp.Metadata.Signature = signature
 
 	// Send Response
-	err = p.host.SendMessage(toID, ResponsePID, resp)
+	err = p.host.SendMessage(id, ResponsePID, resp)
 	if err != nil {
 		logger.Error("Failed to Send Message to Peer", zap.Error(err))
 		return err

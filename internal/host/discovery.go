@@ -13,11 +13,16 @@ import (
 	"github.com/sonr-io/core/tools/net"
 )
 
-// Bootstrap MDNS Peer Discovery Interval
-const REFRESH_INTERVAL = time.Second * 4
+const (
+	// HOST_RENDEVOUZ_POINT is the rendezvous point for the host
+	HOST_RENDEVOUZ_POINT = "/sonr/rendevouz/0.9.2"
 
-// Libp2p Host Rendevouz Point
-const HOST_RENDEVOUZ_POINT = "/sonr/rendevouz/0.9.2"
+	// REFRESH_INTERVAL is the interval for refreshing the discovery
+	REFRESH_INTERVAL = time.Second * 4
+
+	// TTL_DURATION is the duration for TTL for the discovery
+	TTL_DURATION = time.Minute * 2
+)
 
 // discoveryNotifee is a Notifee for the Discovery Service
 type discoveryNotifee struct {
@@ -121,6 +126,6 @@ func (h *SNRHost) checkUnknown(pi peer.AddrInfo) bool {
 	}
 
 	// Add to PeerStore
-	h.Peerstore().AddAddrs(pi.ID, pi.Addrs, time.Minute*4)
+	h.Peerstore().AddAddrs(pi.ID, pi.Addrs, TTL_DURATION)
 	return true
 }

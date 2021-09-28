@@ -3,6 +3,7 @@ package node
 import (
 	"container/list"
 	"context"
+	"errors"
 
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/host"
@@ -47,39 +48,47 @@ type Node struct {
 }
 
 // NewNode Creates a node with its implemented protocols
-func NewNode(ctx context.Context, host *host.SNRHost, loc *common.Location) *Node {
+func NewNode(ctx context.Context, host *host.SNRHost, loc *common.Location, pro *common.Profile) (*Node, error) {
 	// Initialize Node
 	node := &Node{
 		Emitter: state.NewEmitter(2048),
 		host:    host,
 		ctx:     ctx,
 		queue:   list.New(),
+		profile: pro,
+	}
+
+	// Fetch User Peer
+	peer, err := node.Peer()
+	if err != nil {
+		logger.Error("Failed to fetch User Peer", zap.Error(err))
+		return nil, err
 	}
 
 	// Set Transfer Protocol
 	node.TransferProtocol = transfer.NewProtocol(ctx, host, node.Emitter)
 
 	// Set Exchange Protocol
-	exch, err := exchange.NewProtocol(ctx, host, node.Emitter)
+	exch, err := exchange.NewProtocol(ctx, host, node.Emitter, peer)
 	if err != nil {
 		logger.Error("Failed to start ExchangeProtocol", zap.Error(err))
-		return node
+		return nil, err
 	}
 	node.ExchangeProtocol = exch
 
 	// Set Lobby Protocol
-	lobby, err := lobby.NewProtocol(host, loc, node.Emitter)
+	lobby, err := lobby.NewProtocol(host, loc, node.Emitter, peer)
 	if err != nil {
 		logger.Error("Failed to start LobbyProtocol", zap.Error(err))
-		return node
+		return nil, err
 	}
 	node.LobbyProtocol = lobby
-	return node
+	return node, nil
 }
 
 // Edit method updates Node's profile
 func (n *Node) Edit(p *common.Profile) error {
-	// Set Profile and Get Peer
+	// Set Profile and Fetch User Peer
 	n.profile = p
 	peer, err := n.Peer()
 	if err != nil {
@@ -118,50 +127,58 @@ func (n *Node) Supply(paths []string) error {
 
 // Share a peer to have a transfer
 func (n *Node) Share(to *common.Peer) error {
-	// Create New ID for Invite
-	id, err := n.host.NewID()
-	if err != nil {
-		logger.Error("Failed to create new id for Shared Invite", zap.Error(err))
-		return err
-	}
+	// Fetch Element from Queue
+	elem := n.queue.Front()
+	if elem != nil {
+		// Get Payload
+		payload := n.queue.Remove(elem).(*common.Payload)
 
-	// Create new Metadata
-	meta, err := n.host.NewMetadata()
-	if err != nil {
-		logger.Error("Failed to create new metadata for Shared Invite", zap.Error(err))
-		return err
-	}
+		// Create New ID for Invite
+		id, err := n.host.NewID()
+		if err != nil {
+			logger.Error("Failed to create new id for Shared Invite", zap.Error(err))
+			return err
+		}
 
-	// Fetch Peer Data
-	from, err := n.Peer()
-	if err != nil {
-		return err
-	}
+		// Create new Metadata
+		meta, err := n.host.NewMetadata()
+		if err != nil {
+			logger.Error("Failed to create new metadata for Shared Invite", zap.Error(err))
+			return err
+		}
 
-	// Create Invite Request
-	req := &transfer.InviteRequest{
-		Payload:  n.queue.Front().Value.(*common.Payload),
-		Metadata: meta,
-		To:       to,
-		From:     from,
-		Uuid:     id,
-	}
+		// Fetch User Peer
+		from, err := n.Peer()
+		if err != nil {
+			return err
+		}
 
-	// Fetch Peer ID from Exchange
-	entry, err := n.ExchangeProtocol.Query(exchange.NewQueryRequestFromSName(from.GetSName()))
-	if err != nil {
-		logger.Error("Failed to search peer", zap.Error(err))
-		return err
-	}
+		// Create Invite Request
+		req := &transfer.InviteRequest{
+			Payload:  payload,
+			Metadata: meta,
+			To:       to,
+			From:     from,
+			Uuid:     id,
+		}
 
-	// Invite peer
-	err = n.TransferProtocol.Request(entry.PeerID, req)
-	if err != nil {
-		logger.Error("Failed to invite peer", zap.Error(err))
-		n.Emit(Event_STATUS, err)
-		return err
+		// Fetch Peer ID from Exchange
+		entry, err := n.ExchangeProtocol.Query(exchange.NewQueryRequestFromSName(to.GetSName()))
+		if err != nil {
+			logger.Error("Failed to search peer", zap.Error(err))
+			return err
+		}
+
+		// Invite peer
+		err = n.TransferProtocol.Request(entry.PeerID, req)
+		if err != nil {
+			logger.Error("Failed to invite peer", zap.Error(err))
+			n.Emit(Event_STATUS, err)
+			return err
+		}
+		return nil
 	}
-	return nil
+	return errors.New("No items in Transfer Queue.")
 }
 
 // Respond to an invite request
@@ -173,7 +190,7 @@ func (n *Node) Respond(decs bool, to *common.Peer) error {
 		return err
 	}
 
-	// Fetch Peer Data
+	// Fetch User Peer
 	from, err := n.Peer()
 	if err != nil {
 		return err
@@ -187,8 +204,15 @@ func (n *Node) Respond(decs bool, to *common.Peer) error {
 		To:       to,
 	}
 
+	// Fetch Peer ID from Exchange
+	entry, err := n.ExchangeProtocol.Query(exchange.NewQueryRequestFromSName(to.GetSName()))
+	if err != nil {
+		logger.Error("Failed to search peer", zap.Error(err))
+		return err
+	}
+
 	// Respond on TransferProtocol
-	err = n.TransferProtocol.Respond(resp)
+	err = n.TransferProtocol.Respond(entry.PeerID, resp)
 	if err != nil {
 		logger.Error("Failed to respond to invite", zap.Error(err))
 		n.Emit(Event_STATUS, err)
