@@ -42,7 +42,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) (*E
 }
 
 // FindPeerId method returns PeerID by SName
-func (p *ExchangeProtocol) Query(q *QueryExchangeRequest) (*common.PeerInfo, error) {
+func (p *ExchangeProtocol) Query(q *QueryRequest) (*common.PeerInfo, error) {
 	query, val, err := q.QueryValue()
 	if err != nil {
 		logger.Error("Failed to Query Value", zap.Error(err))

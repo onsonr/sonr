@@ -10,6 +10,7 @@ import (
 	"go.uber.org/zap"
 )
 
+// DeviceStat is the device info struct
 type DeviceStat struct {
 	Id        string `json:"id"`
 	Name      string `json:"name"`

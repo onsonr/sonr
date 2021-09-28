@@ -21,6 +21,7 @@ import (
 	"go.uber.org/zap"
 )
 
+// SNRHostStat is the host stat info
 type SNRHostStat struct {
 	ID        peer.ID
 	PublicKey string
@@ -29,6 +30,7 @@ type SNRHostStat struct {
 	Address   string
 }
 
+// SNRHost is the host wrapper for the Sonr Network
 type SNRHost struct {
 	host.Host
 
@@ -51,7 +53,7 @@ type SNRHost struct {
 	// 	mailbox *local.Mailbox
 }
 
-// Start Begins Assigning Host Parameters ^
+// NewHost creates a new host
 func NewHost(ctx context.Context, kc device.Keychain, conn common.Connection) (*SNRHost, error) {
 	// Initialize DHT
 	var kdhtRef *dht.IpfsDHT
@@ -114,7 +116,7 @@ func NewHost(ctx context.Context, kc device.Keychain, conn common.Connection) (*
 }
 
 // ** ─── Host Info ────────────────────────────────────────────────────────
-// Returns Host Node MultiAddr
+// Pubsub Returns Host Node MultiAddr
 func (hn *SNRHost) Pubsub() *psub.PubSub {
 	return hn.pubsub
 }

@@ -4,15 +4,15 @@ package sonr.protocols.exchange;
 import "proto/common/core.proto";
 option go_package = "github.com/sonr-io/core/pkg/exchange";
 
-// CreateSNameRequest is Message for Signing Request (Hmac Sha256)
-message CreateSNameRequest {
+// RegisterRequest is Message for Signing Request (Hmac Sha256)
+message RegisterRequest {
   string sName = 1;    // SName combined with Device ID and Hashed
   string mnemonic = 2; // Mnemonic Hashed with private key for fingerprint
   repeated string deviceIds = 3; // Device IDs for SName
 }
 
-// CreateSNameResponse is Message for Signing Response (Hmac Sha256)
-message CreateSNameResponse {
+// RegisterResponse is Message for Signing Response (Hmac Sha256)
+message RegisterResponse {
   bool success = 1;            // If Values were Signed
   repeated Domain domains = 2; // Signed Domain TXT Records
 
@@ -30,45 +30,45 @@ message CreateSNameResponse {
   }
 }
 
-// LookupSNameRequest is Message for Verifying Request (Hmac Sha256)
-message LookupSNameRequest {
+// LookupRequest is Message for Verifying Request (Hmac Sha256)
+message LookupRequest {
   string sName = 1; // SName combined with Device ID and Hashed
 }
 
-// LookupSNameResponse is Message for Verifying Response (Hmac Sha256)
-message LookupSNameResponse {
+// LookupResponse is Message for Verifying Response (Hmac Sha256)
+message LookupResponse {
   bool success = 1;     // If Values were Verified
   string publicKey = 2; // Base64 Encoded Public Key
 }
 
-// QueryExchangeRequest is Message for searching for Peer
-message QueryExchangeRequest {
+// QueryRequest is Message for searching for Peer
+message QueryRequest {
   string sName = 1;  // SName combined with Device ID and Hashed
   string peerId = 2; // Peer ID
 }
 
-// UpdateExchangeRequest is Message for updating Peer Data in Exchange
-message UpdateExchangeRequest {
+// UpdateRequest is Message for updating Peer Data in Exchange
+message UpdateRequest {
   string sName = 1;        // SName combined with Device ID and Hashed
   string peerId = 2;       // Peer ID
   sonr.core.Peer peer = 3; // Peer Data
 }
 
-// UpdateExchangeResponse is response for UpdateExchangeRequest
-message UpdateExchangeResponse {
+// UpdateResponse is response for UpdateExchangeRequest
+message UpdateResponse {
   bool success = 1; // If Request was Successful
   string error = 2; // Error Message if Request was not successful
 }
 
-// VerifySNameRequest is Message for Verifying Request (Hmac Sha256)
-message VerifySNameRequest {
+// VerifyRequest is Message for Verifying Request (Hmac Sha256)
+message VerifyRequest {
   string sName = 1;    // SName combined with Device ID and Hashed
   string mnemonic = 2; // Mnemonic Hashed with public key for fingerprint
   string deviceId = 3; // Device ID
 }
 
-// VerifySNameResponse is Message for Verifying Response (Hmac Sha256)
-message VerifySNameResponse {
+// VerifyResponse is Message for Verifying Response (Hmac Sha256)
+message VerifyResponse {
   bool success = 1; // If Values were Verified
   string error = 2; // Error Message
 }

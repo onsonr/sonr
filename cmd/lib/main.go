@@ -32,7 +32,7 @@ func Start(reqBytes []byte) {
 		}
 
 		// Initialize Device
-		kc, err := device.Init(req.GetEnvironment().IsDev(), fsOpts...)
+		kc, err := device.Init(req.GetEnvOptions().GetEnvironment().IsDev(), fsOpts...)
 		if err != nil {
 			logger.Panic("Failed to initialize Device", zap.Error(err))
 		}

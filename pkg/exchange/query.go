@@ -10,22 +10,22 @@ import (
 )
 
 // NewQueryRequestFromSName returns a new QueryExchangeRequest from the given peerID or SName
-func NewQueryRequestFromSName(sname string) *QueryExchangeRequest {
-	return &QueryExchangeRequest{
+func NewQueryRequestFromSName(sname string) *QueryRequest {
+	return &QueryRequest{
 		SName: sname,
 	}
 }
 
 // NewQueryRequestFromPeer returns a new QueryExchangeRequest from the given common.Peer
-func NewQueryRequestFromPeer(peer *common.Peer) *QueryExchangeRequest {
-	return &QueryExchangeRequest{
+func NewQueryRequestFromPeer(peer *common.Peer) *QueryRequest {
+	return &QueryRequest{
 		SName: peer.GetSName(),
 	}
 }
 
 // QueryValue returns the peer ID or SName query of Record to Find
 // returns the record value, value of query, and error
-func (q *QueryExchangeRequest) QueryValue() (string, string, error) {
+func (q *QueryRequest) QueryValue() (string, string, error) {
 	// Check if the SName is provided
 	if q.GetSName() != "" {
 		val := strings.ToLower(q.GetSName())

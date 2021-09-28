@@ -199,11 +199,15 @@
                 </li>
               
                 <li>
-                  <a href="#sonr.node.InitializeRequest.AccountOptions"><span class="badge">M</span>InitializeRequest.AccountOptions</a>
+                  <a href="#sonr.node.InitializeRequest.DeviceOptions"><span class="badge">M</span>InitializeRequest.DeviceOptions</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.node.InitializeRequest.DeviceOptions"><span class="badge">M</span>InitializeRequest.DeviceOptions</a>
+                  <a href="#sonr.node.InitializeRequest.EnvOptions"><span class="badge">M</span>InitializeRequest.EnvOptions</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.node.InitializeRequest.EnvOptions.VariablesEntry"><span class="badge">M</span>InitializeRequest.EnvOptions.VariablesEntry</a>
                 </li>
               
                 <li>
@@ -470,43 +474,43 @@
             <ul>
               
                 <li>
-                  <a href="#sonr.protocols.exchange.CreateSNameRequest"><span class="badge">M</span>CreateSNameRequest</a>
+                  <a href="#sonr.protocols.exchange.LookupRequest"><span class="badge">M</span>LookupRequest</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.protocols.exchange.CreateSNameResponse"><span class="badge">M</span>CreateSNameResponse</a>
+                  <a href="#sonr.protocols.exchange.LookupResponse"><span class="badge">M</span>LookupResponse</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.protocols.exchange.CreateSNameResponse.Domain"><span class="badge">M</span>CreateSNameResponse.Domain</a>
+                  <a href="#sonr.protocols.exchange.QueryRequest"><span class="badge">M</span>QueryRequest</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.protocols.exchange.LookupSNameRequest"><span class="badge">M</span>LookupSNameRequest</a>
+                  <a href="#sonr.protocols.exchange.RegisterRequest"><span class="badge">M</span>RegisterRequest</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.protocols.exchange.LookupSNameResponse"><span class="badge">M</span>LookupSNameResponse</a>
+                  <a href="#sonr.protocols.exchange.RegisterResponse"><span class="badge">M</span>RegisterResponse</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.protocols.exchange.QueryExchangeRequest"><span class="badge">M</span>QueryExchangeRequest</a>
+                  <a href="#sonr.protocols.exchange.RegisterResponse.Domain"><span class="badge">M</span>RegisterResponse.Domain</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.protocols.exchange.UpdateExchangeRequest"><span class="badge">M</span>UpdateExchangeRequest</a>
+                  <a href="#sonr.protocols.exchange.UpdateRequest"><span class="badge">M</span>UpdateRequest</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.protocols.exchange.UpdateExchangeResponse"><span class="badge">M</span>UpdateExchangeResponse</a>
+                  <a href="#sonr.protocols.exchange.UpdateResponse"><span class="badge">M</span>UpdateResponse</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.protocols.exchange.VerifySNameRequest"><span class="badge">M</span>VerifySNameRequest</a>
+                  <a href="#sonr.protocols.exchange.VerifyRequest"><span class="badge">M</span>VerifyRequest</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.protocols.exchange.VerifySNameResponse"><span class="badge">M</span>VerifySNameResponse</a>
+                  <a href="#sonr.protocols.exchange.VerifyResponse"><span class="badge">M</span>VerifyResponse</a>
                 </li>
               
               
@@ -807,13 +811,6 @@
                 </tr>
               
                 <tr>
-                  <td>accountOptions</td>
-                  <td><a href="#sonr.node.InitializeRequest.AccountOptions">InitializeRequest.AccountOptions</a></td>
-                  <td></td>
-                  <td><p>Account Config </p></td>
-                </tr>
-              
-                <tr>
                   <td>deviceOptions</td>
                   <td><a href="#sonr.node.InitializeRequest.DeviceOptions">InitializeRequest.DeviceOptions</a></td>
                   <td></td>
@@ -821,41 +818,10 @@
                 </tr>
               
                 <tr>
-                  <td>environment</td>
-                  <td><a href="#sonr.core.Environment">sonr.core.Environment</a></td>
+                  <td>envOptions</td>
+                  <td><a href="#sonr.node.InitializeRequest.EnvOptions">InitializeRequest.EnvOptions</a></td>
                   <td></td>
                   <td><p>Environment Config </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.node.InitializeRequest.AccountOptions">InitializeRequest.AccountOptions</h3>
-        <p>Optional Message to Initialize Sonr Account</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>sName</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Sonr Account Name </p></td>
-                </tr>
-              
-                <tr>
-                  <td>mnemonic</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Sonr Account Mnemonic </p></td>
                 </tr>
               
             </tbody>
@@ -901,6 +867,68 @@
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p>Device ID </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.node.InitializeRequest.EnvOptions">InitializeRequest.EnvOptions</h3>
+        <p>Optional Message to Initialize Env Variables</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>variables</td>
+                  <td><a href="#sonr.node.InitializeRequest.EnvOptions.VariablesEntry">InitializeRequest.EnvOptions.VariablesEntry</a></td>
+                  <td>repeated</td>
+                  <td><p>Environment Variables </p></td>
+                </tr>
+              
+                <tr>
+                  <td>environment</td>
+                  <td><a href="#sonr.core.Environment">sonr.core.Environment</a></td>
+                  <td></td>
+                  <td><p>Environment Config </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.node.InitializeRequest.EnvOptions.VariablesEntry">InitializeRequest.EnvOptions.VariablesEntry</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>key</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
                 </tr>
               
             </tbody>
@@ -3308,8 +3336,94 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
       <p></p>
 
       
-        <h3 id="sonr.protocols.exchange.CreateSNameRequest">CreateSNameRequest</h3>
-        <p>CreateSNameRequest is Message for Signing Request (Hmac Sha256)</p>
+        <h3 id="sonr.protocols.exchange.LookupRequest">LookupRequest</h3>
+        <p>LookupRequest is Message for Verifying Request (Hmac Sha256)</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>sName</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>SName combined with Device ID and Hashed </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.protocols.exchange.LookupResponse">LookupResponse</h3>
+        <p>LookupResponse is Message for Verifying Response (Hmac Sha256)</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>success</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>If Values were Verified </p></td>
+                </tr>
+              
+                <tr>
+                  <td>publicKey</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Base64 Encoded Public Key </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.protocols.exchange.QueryRequest">QueryRequest</h3>
+        <p>QueryRequest is Message for searching for Peer</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>sName</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>SName combined with Device ID and Hashed </p></td>
+                </tr>
+              
+                <tr>
+                  <td>peerId</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Peer ID </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.protocols.exchange.RegisterRequest">RegisterRequest</h3>
+        <p>RegisterRequest is Message for Signing Request (Hmac Sha256)</p>
 
         
           <table class="field-table">
@@ -3346,8 +3460,8 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
 
         
       
-        <h3 id="sonr.protocols.exchange.CreateSNameResponse">CreateSNameResponse</h3>
-        <p>CreateSNameResponse is Message for Signing Response (Hmac Sha256)</p>
+        <h3 id="sonr.protocols.exchange.RegisterResponse">RegisterResponse</h3>
+        <p>RegisterResponse is Message for Signing Response (Hmac Sha256)</p>
 
         
           <table class="field-table">
@@ -3365,7 +3479,7 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
               
                 <tr>
                   <td>domains</td>
-                  <td><a href="#sonr.protocols.exchange.CreateSNameResponse.Domain">CreateSNameResponse.Domain</a></td>
+                  <td><a href="#sonr.protocols.exchange.RegisterResponse.Domain">RegisterResponse.Domain</a></td>
                   <td>repeated</td>
                   <td><p>Signed Domain TXT Records </p></td>
                 </tr>
@@ -3400,7 +3514,7 @@ Base64 Encoded Public Key </p></td>
 
         
       
-        <h3 id="sonr.protocols.exchange.CreateSNameResponse.Domain">CreateSNameResponse.Domain</h3>
+        <h3 id="sonr.protocols.exchange.RegisterResponse.Domain">RegisterResponse.Domain</h3>
         <p>Domain TXT Record for single SName Entry</p>
 
         
@@ -3445,94 +3559,8 @@ Base64 Encoded Public Key </p></td>
 
         
       
-        <h3 id="sonr.protocols.exchange.LookupSNameRequest">LookupSNameRequest</h3>
-        <p>LookupSNameRequest is Message for Verifying Request (Hmac Sha256)</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>sName</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>SName combined with Device ID and Hashed </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.protocols.exchange.LookupSNameResponse">LookupSNameResponse</h3>
-        <p>LookupSNameResponse is Message for Verifying Response (Hmac Sha256)</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>success</td>
-                  <td><a href="#bool">bool</a></td>
-                  <td></td>
-                  <td><p>If Values were Verified </p></td>
-                </tr>
-              
-                <tr>
-                  <td>publicKey</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Base64 Encoded Public Key </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.protocols.exchange.QueryExchangeRequest">QueryExchangeRequest</h3>
-        <p>QueryExchangeRequest is Message for searching for Peer</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>sName</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>SName combined with Device ID and Hashed </p></td>
-                </tr>
-              
-                <tr>
-                  <td>peerId</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Peer ID </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.protocols.exchange.UpdateExchangeRequest">UpdateExchangeRequest</h3>
-        <p>UpdateExchangeRequest is Message for updating Peer Data in Exchange</p>
+        <h3 id="sonr.protocols.exchange.UpdateRequest">UpdateRequest</h3>
+        <p>UpdateRequest is Message for updating Peer Data in Exchange</p>
 
         
           <table class="field-table">
@@ -3569,8 +3597,8 @@ Base64 Encoded Public Key </p></td>
 
         
       
-        <h3 id="sonr.protocols.exchange.UpdateExchangeResponse">UpdateExchangeResponse</h3>
-        <p>UpdateExchangeResponse is response for UpdateExchangeRequest</p>
+        <h3 id="sonr.protocols.exchange.UpdateResponse">UpdateResponse</h3>
+        <p>UpdateResponse is response for UpdateExchangeRequest</p>
 
         
           <table class="field-table">
@@ -3600,8 +3628,8 @@ Base64 Encoded Public Key </p></td>
 
         
       
-        <h3 id="sonr.protocols.exchange.VerifySNameRequest">VerifySNameRequest</h3>
-        <p>VerifySNameRequest is Message for Verifying Request (Hmac Sha256)</p>
+        <h3 id="sonr.protocols.exchange.VerifyRequest">VerifyRequest</h3>
+        <p>VerifyRequest is Message for Verifying Request (Hmac Sha256)</p>
 
         
           <table class="field-table">
@@ -3638,8 +3666,8 @@ Base64 Encoded Public Key </p></td>
 
         
       
-        <h3 id="sonr.protocols.exchange.VerifySNameResponse">VerifySNameResponse</h3>
-        <p>VerifySNameResponse is Message for Verifying Response (Hmac Sha256)</p>
+        <h3 id="sonr.protocols.exchange.VerifyResponse">VerifyResponse</h3>
+        <p>VerifyResponse is Message for Verifying Response (Hmac Sha256)</p>
 
         
           <table class="field-table">

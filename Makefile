@@ -15,7 +15,7 @@ GOMOBILE=gomobile
 GOCLEAN=$(GOMOBILE) clean
 GOBIND=$(GOMOBILE) bind -ldflags='-s -w' -v
 GOBIND_ANDROID=$(GOBIND) -target=android
-GOBIND_IOS=$(GOBIND) -target=ios -bundleid=io.sonr.core
+GOBIND_IOS=$(GOBIND) -target=ios/arm64 -bundleid=io.sonr.core
 
 # @ Bind Directories
 BIND_DIR_ANDROID=$(SONR_ROOT_DIR)/plugin/android/libs
@@ -25,22 +25,6 @@ BIND_ANDROID_ARTIFACT= $(BIND_DIR_ANDROID)/io.sonr.core.aar
 
 # @ Proto Directories
 PROTO_DIR_DART=$(SONR_ROOT_DIR)/plugin/lib/src
-falafel=$(which falafel)
-
-# Name of the package for the generated APIs.
-pkg="bind"
-
-# The package where the protobuf definitions originally are found.
-target_pkg="github.com/sonr-io/core/proto"
-
-# A mapping from grpc service to name of the custom listeners. The grpc server
-# must be configured to listen on these.
-listeners="location=locationLis profileunlocker=profileUnlockerLis"
-
-# Set to 1 to create boiler plate grpc client code and listeners. If more than
-# one proto file is being parsed, it should only be done once.
-mem_rpc=1
-opts="package_name=$(pkg),target_package=$(target_pkg),mem_rpc=$(mem_rpc)"
 PROTO_LIST_ALL=${ROOT_DIR}/proto/**/*.proto
 PROTO_LIST_CLIENT=${ROOT_DIR}/proto/client/*.proto
 PROTO_LIST_COMMON=${ROOT_DIR}/proto/common/*.proto

@@ -17,8 +17,10 @@ import (
 	grpc "google.golang.org/grpc"
 )
 
+// RPC_SERVER_PORT is the port the RPC service listens on.
 const RPC_SERVER_PORT = 52006
 
+// NodeRPCService is the RPC Service for the Node.
 type NodeRPCService struct {
 	NodeServiceServer
 	*Node

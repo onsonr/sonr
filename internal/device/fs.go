@@ -9,30 +9,56 @@ import (
 	"github.com/sonr-io/core/tools/logger"
 )
 
+// DeviceOptions are options for the device.
 type DeviceOptions struct {
+	// DocumentsPath is provided Docs Path.
 	DocumentsPath string
-	CachePath     string
-	SupportPath   string
+
+	// CachePath is provided Cache Path.
+	CachePath string
+
+	// SupportPath is provided Support Path.
+	SupportPath string
+
+	// DownloadsPath is provided Downloads Path.
+	DownloadsPath string
 }
 
 var (
-	KCConfig    *config.Config
-	DocsPath    string
-	TempPath    string
+	// KCConfig is the device config for Keychain
+	KCConfig *config.Config
+
+	// DocsPath is the path to the documents folder
+	DocsPath string
+
+	// TempPath is the path to the temporary/cache folder
+	TempPath string
+
+	// SupportPath is the path to the support folder
 	SupportPath string
 )
 
+// FSDirType is the type of a directory.
 type FSDirType int
 
 const (
+	// Support is the type for a support directory.
 	Support FSDirType = iota
+
+	// Temporary is the type for a temporary directory.
 	Temporary
+
+	// Documents is the type for Documents folder.
 	Documents
+
+	// Downloads is the type for Downloads folder.
+	Downloads
 )
 
+// FSOption is a functional option for configuring the filesystem.
 type FSOption struct {
-	Path string
-	Type FSDirType
+	Path string    // Path to the directory
+	Type FSDirType // Type of the directory
 }
 
 // Init initializes the keychain and returns a Keychain.

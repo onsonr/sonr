@@ -7,20 +7,13 @@ option go_package = "github.com/sonr-io/core/internal/node";
 
 // InitializeRequest Message to Establish Sonr Host/API/Room
 message InitializeRequest {
-  sonr.core.Location location = 1;       // Current Runtime Location
-  sonr.core.Profile profile = 2;         // Users Contact Card
-  sonr.core.Connection connection = 3;   // Internet Connection Type
-  HostOptions hostOptions = 4;           // Libp2p Host config
-  ServiceOptions serviceOptions = 5;     // Service Config
-  AccountOptions accountOptions = 6;     // Account Config
-  DeviceOptions deviceOptions = 7;       // File System Config
-  sonr.core.Environment environment = 8; // Environment Config
-
-  // Optional Message to Initialize Sonr Account
-  message AccountOptions {
-    string sName = 1;    // Sonr Account Name
-    string mnemonic = 2; // Sonr Account Mnemonic
-  }
+  sonr.core.Location location = 1;     // Current Runtime Location
+  sonr.core.Profile profile = 2;       // Users Contact Card
+  sonr.core.Connection connection = 3; // Internet Connection Type
+  HostOptions hostOptions = 4;         // Libp2p Host config
+  ServiceOptions serviceOptions = 5;   // Service Config
+  DeviceOptions deviceOptions = 6;     // File System Config
+  EnvOptions envOptions = 7;           // Environment Config
 
   // Optional Message to Initialize FileSystem
   message DeviceOptions {
@@ -28,6 +21,12 @@ message InitializeRequest {
     string cacheDir = 2;     // Cache Directory
     string supportDir = 3;   // Support Directory
     string id = 4;           // Device ID
+  }
+
+  // Optional Message to Initialize Env Variables
+  message EnvOptions {
+    map<string, string> variables = 1;     // Environment Variables
+    sonr.core.Environment environment = 2; // Environment Config
   }
 
   // Libp2p Host Options

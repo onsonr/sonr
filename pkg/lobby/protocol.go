@@ -18,6 +18,7 @@ const (
 	Event_LIST_REFRESH = "lobby-list-refresh"
 )
 
+// LobbyProtocol is the protocol for managing local peers.
 type LobbyProtocol struct {
 	ctx          context.Context
 	host         *host.SNRHost  // host
@@ -69,6 +70,7 @@ func NewProtocol(host *host.SNRHost, loc *common.Location, em *state.Emitter) (*
 	return lobProtocol, nil
 }
 
+// Update method publishes peer data to the topic
 func (p *LobbyProtocol) Update(peer *common.Peer) error {
 	// Create Event
 	event := &LobbyMessage{
