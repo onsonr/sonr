@@ -12,7 +12,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/tools/logger"
 	"go.uber.org/zap"
-	"google.golang.org/protobuf/proto"
 )
 
 // ** ───────────────────────────────────────────────────────
@@ -103,17 +102,6 @@ func (p *Peer) Info() (*PeerInfo, error) {
 	}, nil
 }
 
-// Marshal utilizes Proto.Marshal for this Peer Object
-func (p *Peer) Marshal() ([]byte, error) {
-	buf, err := proto.Marshal(p)
-	if err != nil {
-		msg := fmt.Sprintf("Failed to Marshal Peer Object: %s", p.GetSName())
-		logger.Error(msg, zap.Error(err))
-		return nil, errors.Wrap(err, msg)
-	}
-	return buf, nil
-}
-
 // PeerID returns the PeerID based on PublicKey from Profile
 func (p *Peer) PeerID() (peer.ID, error) {
 	// Fetch public key from peer data
@@ -134,7 +122,7 @@ func (p *Peer) PeerID() (peer.ID, error) {
 
 // PubKey returns the Public Key from the Peer
 func (p *Peer) PubKey() (crypto.PubKey, error) {
-	pubKey, err := crypto.UnmarshalEd25519PublicKey(p.GetPublicKey())
+	pubKey, err := crypto.UnmarshalPublicKey(p.GetPublicKey())
 	if err != nil {
 		msg := fmt.Sprintf("Failed to Unmarshal Public Key: %s", p.GetSName())
 		logger.Error(msg, zap.Error(err))

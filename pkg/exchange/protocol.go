@@ -84,7 +84,7 @@ func (p *ExchangeProtocol) Update(peer *common.Peer) error {
 	}
 
 	// Marshal Peer
-	buf, err := peer.Marshal()
+	buf, err := proto.Marshal(peer)
 	if err != nil {
 		logger.Error("Failed to Marshal Peer", zap.Error(err))
 		return err
