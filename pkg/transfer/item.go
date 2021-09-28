@@ -18,6 +18,9 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+// ITEM_PROGRESS_INTERVAL is the interval in which progress events are emitted
+const ITEM_PROGRESS_INTERVAL = 25
+
 // itemReader is a Reader for a FileItem
 type itemReader struct {
 	docsDir string
@@ -43,17 +46,16 @@ func NewReader(pi *common.Payload_Item, index int, count int, docsDir string, em
 }
 
 // Progress Returns Progress of File, Given the written number of bytes
-func (p *itemReader) Progress(i int64) []byte {
-	// Marshal and Return
-	buf, err := proto.Marshal(&common.ProgressEvent{
+func (p *itemReader) Progress(i int64) {
+	// Create Progress Event
+	event := &common.ProgressEvent{
 		Progress: (float64(i) / float64(p.size)),
 		Current:  int32(p.index),
 		Total:    int32(p.count),
-	})
-	if err != nil {
-		return nil
 	}
-	return buf
+
+	// Push ProgressEvent to Emitter
+	p.emitter.Emit(Event_PROGRESS, event)
 }
 
 // ReadFrom Reads from the given Reader and writes to the given File
@@ -63,6 +65,7 @@ func (ir *itemReader) ReadFrom(reader msgio.ReadCloser) error {
 	if err != nil {
 		return err
 	}
+	defer f.Close()
 
 	// Route Data from Stream
 	for i := int64(0); i <= ir.size; {
@@ -88,8 +91,8 @@ func (ir *itemReader) ReadFrom(reader msgio.ReadCloser) error {
 		ir.mutex.Unlock()
 
 		// Emit Progress
-		if (i % 10) == 0 {
-			ir.emitter.Emit(Event_PROGRESS, ir.Progress(i))
+		if (i % ITEM_PROGRESS_INTERVAL) == 0 {
+			ir.Progress(i)
 		}
 	}
 	return nil
@@ -137,17 +140,16 @@ func NewWriter(pi *common.Payload_Item, index int, count int, docsDir string, em
 }
 
 // Returns Progress of File, Given the written number of bytes
-func (p *itemWriter) Progress(i int64) []byte {
-	// Marshal and Return
-	buf, err := proto.Marshal(&common.ProgressEvent{
+func (p *itemWriter) Progress(i int64) {
+	// Create Progress Event
+	event := &common.ProgressEvent{
 		Progress: (float64(i) / float64(p.size)),
 		Current:  int32(p.index),
 		Total:    int32(p.count),
-	})
-	if err != nil {
-		return nil
 	}
-	return buf
+
+	// Push ProgressEvent to Emitter
+	p.emitter.Emit(Event_PROGRESS, event)
 }
 
 // Write Item to Stream
@@ -157,6 +159,7 @@ func (iw *itemWriter) WriteTo(writer msgio.WriteCloser) error {
 
 	// Open Os File
 	f, err := os.Open(iw.item.Path)
+	defer f.Close()
 	if err != nil {
 		return errors.New(fmt.Sprintf("Error to read Item, %s", err.Error()))
 	}
@@ -200,8 +203,8 @@ func (iw *itemWriter) WriteTo(writer msgio.WriteCloser) error {
 		i += int64(c.Length)
 
 		// Emit Progress
-		if (i % 10) == 0 {
-			iw.emitter.Emit(Event_PROGRESS, iw.Progress(i))
+		if (i % ITEM_PROGRESS_INTERVAL) == 0 {
+			iw.Progress(i)
 		}
 	}
 	return nil

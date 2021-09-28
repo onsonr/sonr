@@ -27,10 +27,6 @@ func (c Config) Delete(fileName string) error {
 	return os.Remove(filepath.Join(c.Path, fileName))
 }
 
-func (c Config) Open(fileName string) (*os.File, error) {
-	return os.Open(filepath.Join(c.Path, fileName))
-}
-
 func (c Config) Create(fileName string) (*os.File, error) {
 	err := c.CreateParentDir(fileName)
 	if err != nil {
