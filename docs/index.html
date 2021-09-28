@@ -328,6 +328,10 @@
                   <a href="#sonr.core.Social"><span class="badge">M</span>Social</a>
                 </li>
               
+                <li>
+                  <a href="#sonr.core.UUID"><span class="badge">M</span>UUID</a>
+                </li>
+              
               
                 <li>
                   <a href="#sonr.core.Connection"><span class="badge">E</span>Connection</a>
@@ -1992,6 +1996,44 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                   <td><a href="#sonr.core.Social.Media">Social.Media</a></td>
                   <td></td>
                   <td><p>Type of Social </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.core.UUID">UUID</h3>
+        <p>UUID is General Message ID with Signature, ID, and Timestamp</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>signature</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>Signature of the message </p></td>
+                </tr>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>ID of the message </p></td>
+                </tr>
+              
+                <tr>
+                  <td>timestamp</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>Unix timestamp </p></td>
                 </tr>
               
             </tbody>
@@ -4113,7 +4155,7 @@ Base64 Encoded Public Key </p></td>
               
                 <tr>
                   <td>uuid</td>
-                  <td><a href="#string">string</a></td>
+                  <td><a href="#sonr.core.UUID">sonr.core.UUID</a></td>
                   <td></td>
                   <td><p>Invitation ID (UUID) signed by the sender </p></td>
                 </tr>
@@ -4165,7 +4207,7 @@ Base64 Encoded Public Key </p></td>
               
                 <tr>
                   <td>uuid</td>
-                  <td><a href="#string">string</a></td>
+                  <td><a href="#sonr.core.UUID">sonr.core.UUID</a></td>
                   <td></td>
                   <td><p>Invitation ID (UUID) signed by the sender </p></td>
                 </tr>

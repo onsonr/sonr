@@ -130,7 +130,7 @@ func (n *Node) Supply(paths []string) error {
 // Share a peer to have a transfer
 func (n *Node) Share(peer *common.Peer) error {
 	// Create New ID for Invite
-	id, err := n.host.NewId()
+	id, err := n.host.NewID()
 	if err != nil {
 		logger.Error("Failed to create new id for Shared Invite", zap.Error(err))
 		return err

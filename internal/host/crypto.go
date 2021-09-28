@@ -1,7 +1,6 @@
 package host
 
 import (
-	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -15,15 +14,24 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// NewId generates a new UUID value signed by the local node's private key
-func (n *SNRHost) NewId() (string, error) {
+// NewID generates a new UUID value signed by the local node's private key
+func (n *SNRHost) NewID() (*common.UUID, error) {
+	// generate new UUID
 	id := uuid.New().String()
+
+	// sign UUID using local node's private key
 	sig, err := n.SignData([]byte(id))
 	if err != nil {
 		logger.Error("Failed to sign UUID", zap.Error(err))
-		return "", err
+		return nil, err
 	}
-	return id + ":" + string(sig), nil
+
+	// Return UUID with signature
+	return &common.UUID{
+		Value:     id,
+		Signature: sig,
+		Timestamp: time.Now().Unix(),
+	}, nil
 }
 
 // NewMetadata generates message data shared between all node's p2p protocols
@@ -44,13 +52,9 @@ func (n *SNRHost) NewMetadata() *common.Metadata {
 }
 
 // AuthenticateId verifies UUID value and signature
-func (n *SNRHost) AuthenticateId(id string) (bool, error) {
-	// extract signature and UUID from id
-	sig := id[strings.LastIndex(id, ":")+1:]
-	uuid := id[:strings.LastIndex(id, ":")]
-
+func (n *SNRHost) AuthenticateId(id *common.UUID) (bool, error) {
 	// verify UUID value
-	result, err := n.privKey.GetPublic().Verify([]byte(uuid), []byte(sig))
+	result, err := n.privKey.GetPublic().Verify([]byte(id.GetValue()), []byte(id.GetSignature()))
 	if err != nil {
 		logger.Error("Failed to verify signature of UUID", zap.Error(err))
 		return false, err

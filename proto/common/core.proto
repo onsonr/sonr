@@ -149,3 +149,10 @@ message Social {
     SPOTIFY = 9;   // Spotify
   }
 }
+
+// UUID is General Message ID with Signature, ID, and Timestamp
+message UUID {
+  bytes signature = 1; // Signature of the message
+  string value = 2;    // ID of the message
+  int64 timestamp = 3; // Unix timestamp
+}

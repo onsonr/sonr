@@ -20,7 +20,7 @@ type TransferEntry struct {
 	fromId      peer.ID
 	toId        peer.ID
 	lastUpdated int64
-	uuid        string
+	uuid        *common.UUID
 }
 
 // Count returns the number of items in Payload
@@ -35,8 +35,8 @@ func (e TransferEntry) CopyUUID(resp *InviteResponse) *InviteResponse {
 }
 
 // Equals checks if given ID is equal to the current UUID.
-func (e TransferEntry) Equals(id string) bool {
-	return e.uuid == id
+func (e TransferEntry) Equals(id *common.UUID) bool {
+	return e.uuid.GetValue() == id.GetValue()
 }
 
 // transferQueue is a queue for incoming and outgoing requests.
