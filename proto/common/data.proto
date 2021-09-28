@@ -4,14 +4,6 @@ package sonr.core;
 import "proto/common/core.proto";
 option go_package = "github.com/sonr-io/core/internal/common";
 
-// For Transfer Chunk Transmission
-message Chunk {
-  int32 offset = 1;      // Bytes from the beginning of the reader to chunk
-  int32 length = 2;      // Length is number of bytes in the chunk
-  bytes data = 3;        // Data is the actual chunk
-  int64 fingerprint = 4; // Fingerprint is the hash of the chunk
-}
-
 // For Transfer File Payload
 message FileItem {
   sonr.core.MIME mime = 1; // Standard Mime Type
@@ -22,53 +14,38 @@ message FileItem {
   int64 lastModified = 6;  // Last Modified Time in Seconds
 }
 
-// Payload is Data thats being Passed
-message Payload {
-  repeated Item items = 1; // Payload Items
-  Profile owner = 2;       // PROFILE: General Sender Info
-  int64 size = 3;          // Payload Size in Bytes
-  int64 createdAt = 4;     // Payload Creation Time in Seconds
-
-  // Item in Payload
-  message Item {
-    MIME mime = 1;  // MIME of the Item
-    int64 size = 2; // Size of the Item in Bytes
-
-    // Attached Data
-    oneof data {
-      FileItem file = 3; // FILE: File Item
-      UrlItem url = 4;   // URL: Url Item
-    }
-  }
-}
-
-// Thumbnail of File
-message Thumbnail {
-  bool exists = 1; // Does the thumbnail exist?
-
-  // Value of the Thumbnail
-  oneof value {
-    bytes buffer = 2; // Thumbnail Buffer
-    string path = 3;  // Thumbnail Path
-  }
-}
-
 // Sonr Url Link Contains metadata of provided URL
 message UrlItem {
-  sonr.core.MIME mime = 1;             // Standard Mime Type
-  string url = 2;                      // OG URL Link
-  string title = 3;                    // Meta Field for Title
-  string type = 4;                     // OG Type
-  string site = 5;                     // Meta field for site
-  string siteName = 6;                 // Meta field for sitename
-  string description = 7;              // Meta field for description
-  repeated OpenGraphImage images = 8;  // Images
-  repeated OpenGraphVideo videos = 9;  // Videos
-  repeated OpenGraphAudio audios = 10; // Audios
-  TwitterCard twitter = 11;            // Twitter Card
+  sonr.core.MIME mime = 1; // Standard Mime Type
+  string link = 2;         // OG URL Link
+  string title = 3;        // Meta Field for Title
+  string site = 4;         // Meta field for site
+  string siteName = 5;     // Meta field for sitename
+  string description = 6;  // Meta field for description
+  OpenGraph openGraph = 7; // OpenGraph Object
+}
+
+// OpenGraph is a generic OpenGraph object
+message OpenGraph {
+  Primary primary = 1;       // Primary OpenGraph Object
+  repeated Image images = 2; // Images
+  repeated Video videos = 3; // Videos
+  repeated Audio audios = 4; // Audios
+  Twitter twitter = 5;       // Twitter Card
+
+  // Primary Opengraph Preview
+  message Primary {
+    Type type = 1; // Type of Primary
+    oneof data {
+      Image image = 2;     // Image
+      Video video = 3;     // Video
+      Audio audio = 4;     // Audio
+      Twitter twitter = 5; // Twitter Card
+    }
+  }
 
   // OpenGraph Image
-  message OpenGraphImage {
+  message Image {
     string url = 1;       // `meta:"og:image,og:image:url"`
     string secureUrl = 2; // `meta:"og:image:secure_url"`
     int32 width = 3;      // `meta:"og:image:width"`
@@ -77,7 +54,7 @@ message UrlItem {
   }
 
   // OpenGraph Video
-  message OpenGraphVideo {
+  message Video {
     string url = 1;       // `meta:"og:video,og:video:url"`
     string secureUrl = 2; // `meta:"og:video:secure_url"`
     int32 width = 3;      // `meta:"og:video:width"`
@@ -86,14 +63,14 @@ message UrlItem {
   }
 
   // OpenGraph Audio
-  message OpenGraphAudio {
+  message Audio {
     string url = 1;       // `meta:"og:audio,og:audio:url"`
     string secureUrl = 2; // `meta:"og:audio:secure_url"`
     string type = 3;      // `meta:"og:audio:type"`
   }
 
   // Twitter Card
-  message TwitterCard {
+  message Twitter {
     string card = 1;            // `meta:"twitter:card"`
     string site = 2;            // `meta:"twitter:site"`
     string siteId = 3;          // `meta:"twitter:site:id"`
@@ -132,6 +109,55 @@ message UrlItem {
       string name = 1; // `meta:"twitter:app:name:googleplay"`
       string id = 2;   // `meta:"twitter:app:id:googleplay"`
       string url = 3;  // `meta:"twitter:app:url:googleplay"`
+    }
+  }
+
+  // Url Opengraph Preview Type - In order of Priority
+  enum Type {
+    IMAGE = 0;   // Image Preview
+    VIDEO = 1;   // Video Preview
+    TWITTER = 2; // Twitter Card Preview
+    AUDIO = 3;   // Audio Preview
+    NONE = 4;    // No Type, Preview not set.
+  }
+}
+
+// Thumbnail of File
+message Thumbnail {
+  int64 size = 1;         // Thumbnail Size in Bytes
+  int32 width = 2;        // Thumbnail Width
+  int32 height = 3;       // Thumbnail Height
+  double aspectRatio = 4; // Thumbnail Aspect Ratio
+
+  // Value of the Thumbnail
+  oneof value {
+    bytes buffer = 5; // Thumbnail Buffer
+    string path = 6;  // Thumbnail Path
+  }
+}
+
+// Payload is Data thats being Passed
+message Payload {
+  repeated Item items = 1; // Payload Items
+  Profile owner = 2;       // PROFILE: General Sender Info
+  int64 size = 3;          // Payload Size in Bytes
+  int64 createdAt = 4;     // Payload Creation Time in Seconds
+
+  // Item in Payload
+  message Item {
+    MIME mime = 1;  // MIME of the Item
+    int64 size = 2; // Size of the Item in Bytes
+
+    // Attached Data
+    oneof data {
+      FileItem file = 3; // FILE: File Item
+      UrlItem url = 4;   // URL: Url Item
+    }
+
+    // Thumbnail of the Item
+    oneof preview {
+      Thumbnail thumbnail = 5;         // Thumbnail of the Item
+      OpenGraph.Primary openGraph = 6; // Open Graph Image
     }
   }
 }

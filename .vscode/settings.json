@@ -197,5 +197,8 @@
         "GitHub.codespaces",
         "GitHub.vscode-pull-request-github"
     ],
-    "liveServer.settings.multiRootWorkspaceName": "🏛  Sonr"
+    "github-actions.workflows.pinned.workflows": [
+        ".github/workflows/cd.yml",
+        ".github/workflows/ci.yml"
+    ]
 }

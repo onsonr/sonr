@@ -115,7 +115,7 @@ func (ir *itemReader) ReadFrom(reader msgio.ReadCloser) error {
 // decodeChunk Decodes a Chunk from a Message
 func decodeChunk(buf []byte) (config.Chunk, error) {
 	// Decode Chunk
-	chunk := &common.Chunk{}
+	chunk := &Chunk{}
 	err := proto.Unmarshal(buf, chunk)
 	if err != nil {
 		return config.Chunk{}, err
@@ -241,7 +241,7 @@ func (iw *itemWriter) WriteTo(writer msgio.WriteCloser) error {
 // encodeChunk Encodes a Chunk into a Protobuf
 func encodeChunk(c config.Chunk) ([]byte, error) {
 	// Create Block Protobuf from Chunk
-	data, err := proto.Marshal(&common.Chunk{
+	data, err := proto.Marshal(&Chunk{
 		Offset:      int32(c.Offset),
 		Length:      int32(c.Length),
 		Data:        c.Data,

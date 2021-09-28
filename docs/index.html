@@ -368,11 +368,47 @@
             <ul>
               
                 <li>
-                  <a href="#sonr.core.Chunk"><span class="badge">M</span>Chunk</a>
+                  <a href="#sonr.core.FileItem"><span class="badge">M</span>FileItem</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.core.FileItem"><span class="badge">M</span>FileItem</a>
+                  <a href="#sonr.core.OpenGraph"><span class="badge">M</span>OpenGraph</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.core.OpenGraph.Audio"><span class="badge">M</span>OpenGraph.Audio</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.core.OpenGraph.Image"><span class="badge">M</span>OpenGraph.Image</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.core.OpenGraph.Primary"><span class="badge">M</span>OpenGraph.Primary</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.core.OpenGraph.Twitter"><span class="badge">M</span>OpenGraph.Twitter</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.core.OpenGraph.Twitter.GooglePlay"><span class="badge">M</span>OpenGraph.Twitter.GooglePlay</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.core.OpenGraph.Twitter.IPad"><span class="badge">M</span>OpenGraph.Twitter.IPad</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.core.OpenGraph.Twitter.IPhone"><span class="badge">M</span>OpenGraph.Twitter.IPhone</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.core.OpenGraph.Twitter.Player"><span class="badge">M</span>OpenGraph.Twitter.Player</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.core.OpenGraph.Video"><span class="badge">M</span>OpenGraph.Video</a>
                 </li>
               
                 <li>
@@ -391,38 +427,10 @@
                   <a href="#sonr.core.UrlItem"><span class="badge">M</span>UrlItem</a>
                 </li>
               
-                <li>
-                  <a href="#sonr.core.UrlItem.OpenGraphAudio"><span class="badge">M</span>UrlItem.OpenGraphAudio</a>
-                </li>
               
                 <li>
-                  <a href="#sonr.core.UrlItem.OpenGraphImage"><span class="badge">M</span>UrlItem.OpenGraphImage</a>
+                  <a href="#sonr.core.OpenGraph.Type"><span class="badge">E</span>OpenGraph.Type</a>
                 </li>
-              
-                <li>
-                  <a href="#sonr.core.UrlItem.OpenGraphVideo"><span class="badge">M</span>UrlItem.OpenGraphVideo</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.core.UrlItem.TwitterCard"><span class="badge">M</span>UrlItem.TwitterCard</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.core.UrlItem.TwitterCard.GooglePlay"><span class="badge">M</span>UrlItem.TwitterCard.GooglePlay</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.core.UrlItem.TwitterCard.IPad"><span class="badge">M</span>UrlItem.TwitterCard.IPad</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.core.UrlItem.TwitterCard.IPhone"><span class="badge">M</span>UrlItem.TwitterCard.IPhone</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.core.UrlItem.TwitterCard.Player"><span class="badge">M</span>UrlItem.TwitterCard.Player</a>
-                </li>
-              
               
               
               
@@ -600,6 +608,10 @@
           <li>
             <a href="#proto%2fprotocols%2ftransfer.proto">proto/protocols/transfer.proto</a>
             <ul>
+              
+                <li>
+                  <a href="#sonr.protocols.transfer.Chunk"><span class="badge">M</span>Chunk</a>
+                </li>
               
                 <li>
                   <a href="#sonr.protocols.transfer.InviteRequest"><span class="badge">M</span>InviteRequest</a>
@@ -2302,51 +2314,6 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
       <p></p>
 
       
-        <h3 id="sonr.core.Chunk">Chunk</h3>
-        <p>For Transfer Chunk Transmission</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>offset</td>
-                  <td><a href="#int32">int32</a></td>
-                  <td></td>
-                  <td><p>Bytes from the beginning of the reader to chunk </p></td>
-                </tr>
-              
-                <tr>
-                  <td>length</td>
-                  <td><a href="#int32">int32</a></td>
-                  <td></td>
-                  <td><p>Length is number of bytes in the chunk </p></td>
-                </tr>
-              
-                <tr>
-                  <td>data</td>
-                  <td><a href="#bytes">bytes</a></td>
-                  <td></td>
-                  <td><p>Data is the actual chunk </p></td>
-                </tr>
-              
-                <tr>
-                  <td>fingerprint</td>
-                  <td><a href="#int64">int64</a></td>
-                  <td></td>
-                  <td><p>Fingerprint is the hash of the chunk </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
         <h3 id="sonr.core.FileItem">FileItem</h3>
         <p>For Transfer File Payload</p>
 
@@ -2397,6 +2364,526 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
                   <td><p>Last Modified Time in Seconds </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.core.OpenGraph">OpenGraph</h3>
+        <p>OpenGraph is a generic OpenGraph object</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>primary</td>
+                  <td><a href="#sonr.core.OpenGraph.Primary">OpenGraph.Primary</a></td>
+                  <td></td>
+                  <td><p>Primary OpenGraph Object </p></td>
+                </tr>
+              
+                <tr>
+                  <td>images</td>
+                  <td><a href="#sonr.core.OpenGraph.Image">OpenGraph.Image</a></td>
+                  <td>repeated</td>
+                  <td><p>Images </p></td>
+                </tr>
+              
+                <tr>
+                  <td>videos</td>
+                  <td><a href="#sonr.core.OpenGraph.Video">OpenGraph.Video</a></td>
+                  <td>repeated</td>
+                  <td><p>Videos </p></td>
+                </tr>
+              
+                <tr>
+                  <td>audios</td>
+                  <td><a href="#sonr.core.OpenGraph.Audio">OpenGraph.Audio</a></td>
+                  <td>repeated</td>
+                  <td><p>Audios </p></td>
+                </tr>
+              
+                <tr>
+                  <td>twitter</td>
+                  <td><a href="#sonr.core.OpenGraph.Twitter">OpenGraph.Twitter</a></td>
+                  <td></td>
+                  <td><p>Twitter Card </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.core.OpenGraph.Audio">OpenGraph.Audio</h3>
+        <p>OpenGraph Audio</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>url</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;og:audio,og:audio:url&#34;` </p></td>
+                </tr>
+              
+                <tr>
+                  <td>secureUrl</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;og:audio:secure_url&#34;` </p></td>
+                </tr>
+              
+                <tr>
+                  <td>type</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;og:audio:type&#34;` </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.core.OpenGraph.Image">OpenGraph.Image</h3>
+        <p>OpenGraph Image</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>url</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;og:image,og:image:url&#34;` </p></td>
+                </tr>
+              
+                <tr>
+                  <td>secureUrl</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;og:image:secure_url&#34;` </p></td>
+                </tr>
+              
+                <tr>
+                  <td>width</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;og:image:width&#34;` </p></td>
+                </tr>
+              
+                <tr>
+                  <td>height</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;og:image:height&#34;` </p></td>
+                </tr>
+              
+                <tr>
+                  <td>type</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;og:image:type&#34;` </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.core.OpenGraph.Primary">OpenGraph.Primary</h3>
+        <p>Primary Opengraph Preview</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>type</td>
+                  <td><a href="#sonr.core.OpenGraph.Type">OpenGraph.Type</a></td>
+                  <td></td>
+                  <td><p>Type of Primary </p></td>
+                </tr>
+              
+                <tr>
+                  <td>image</td>
+                  <td><a href="#sonr.core.OpenGraph.Image">OpenGraph.Image</a></td>
+                  <td></td>
+                  <td><p>Image </p></td>
+                </tr>
+              
+                <tr>
+                  <td>video</td>
+                  <td><a href="#sonr.core.OpenGraph.Video">OpenGraph.Video</a></td>
+                  <td></td>
+                  <td><p>Video </p></td>
+                </tr>
+              
+                <tr>
+                  <td>audio</td>
+                  <td><a href="#sonr.core.OpenGraph.Audio">OpenGraph.Audio</a></td>
+                  <td></td>
+                  <td><p>Audio </p></td>
+                </tr>
+              
+                <tr>
+                  <td>twitter</td>
+                  <td><a href="#sonr.core.OpenGraph.Twitter">OpenGraph.Twitter</a></td>
+                  <td></td>
+                  <td><p>Twitter Card </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.core.OpenGraph.Twitter">OpenGraph.Twitter</h3>
+        <p>Twitter Card</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>card</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;twitter:card&#34;` </p></td>
+                </tr>
+              
+                <tr>
+                  <td>site</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;twitter:site&#34;` </p></td>
+                </tr>
+              
+                <tr>
+                  <td>siteId</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;twitter:site:id&#34;` </p></td>
+                </tr>
+              
+                <tr>
+                  <td>creator</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;twitter:creator&#34;` </p></td>
+                </tr>
+              
+                <tr>
+                  <td>creatorId</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;twitter:creator:id&#34;` </p></td>
+                </tr>
+              
+                <tr>
+                  <td>description</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;twitter:description&#34;` </p></td>
+                </tr>
+              
+                <tr>
+                  <td>title</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;twitter:title&#34;` </p></td>
+                </tr>
+              
+                <tr>
+                  <td>image</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;twitter:image,twitter:image:src&#34;` </p></td>
+                </tr>
+              
+                <tr>
+                  <td>imageAlt</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;twitter:image:alt&#34;` </p></td>
+                </tr>
+              
+                <tr>
+                  <td>url</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;twitter:url&#34;` </p></td>
+                </tr>
+              
+                <tr>
+                  <td>player</td>
+                  <td><a href="#sonr.core.OpenGraph.Twitter.Player">OpenGraph.Twitter.Player</a></td>
+                  <td></td>
+                  <td><p>Twitter Item Player </p></td>
+                </tr>
+              
+                <tr>
+                  <td>iphone</td>
+                  <td><a href="#sonr.core.OpenGraph.Twitter.IPhone">OpenGraph.Twitter.IPhone</a></td>
+                  <td></td>
+                  <td><p>Twitter iPhone Data </p></td>
+                </tr>
+              
+                <tr>
+                  <td>ipad</td>
+                  <td><a href="#sonr.core.OpenGraph.Twitter.IPad">OpenGraph.Twitter.IPad</a></td>
+                  <td></td>
+                  <td><p>Twitter iPad Data </p></td>
+                </tr>
+              
+                <tr>
+                  <td>googlePlay</td>
+                  <td><a href="#sonr.core.OpenGraph.Twitter.GooglePlay">OpenGraph.Twitter.GooglePlay</a></td>
+                  <td></td>
+                  <td><p>Twitter Android Data </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.core.OpenGraph.Twitter.GooglePlay">OpenGraph.Twitter.GooglePlay</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>name</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;twitter:app:name:googleplay&#34;` </p></td>
+                </tr>
+              
+                <tr>
+                  <td>id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;twitter:app:id:googleplay&#34;` </p></td>
+                </tr>
+              
+                <tr>
+                  <td>url</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;twitter:app:url:googleplay&#34;` </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.core.OpenGraph.Twitter.IPad">OpenGraph.Twitter.IPad</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>name</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;twitter:app:name:ipad&#34;` </p></td>
+                </tr>
+              
+                <tr>
+                  <td>id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;twitter:app:id:ipad&#34;` </p></td>
+                </tr>
+              
+                <tr>
+                  <td>url</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;twitter:app:url:ipad&#34;` </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.core.OpenGraph.Twitter.IPhone">OpenGraph.Twitter.IPhone</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>name</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;twitter:app:name:iphone&#34;` </p></td>
+                </tr>
+              
+                <tr>
+                  <td>id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;twitter:app:id:iphone&#34;` </p></td>
+                </tr>
+              
+                <tr>
+                  <td>url</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;twitter:app:url:iphone&#34;` </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.core.OpenGraph.Twitter.Player">OpenGraph.Twitter.Player</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>url</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;twitter:player&#34;` </p></td>
+                </tr>
+              
+                <tr>
+                  <td>width</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;twitter:width&#34;` </p></td>
+                </tr>
+              
+                <tr>
+                  <td>height</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;twitter:height&#34;` </p></td>
+                </tr>
+              
+                <tr>
+                  <td>stream</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;twitter:stream&#34;` </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.core.OpenGraph.Video">OpenGraph.Video</h3>
+        <p>OpenGraph Video</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>url</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;og:video,og:video:url&#34;` </p></td>
+                </tr>
+              
+                <tr>
+                  <td>secureUrl</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;og:video:secure_url&#34;` </p></td>
+                </tr>
+              
+                <tr>
+                  <td>width</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;og:video:width&#34;` </p></td>
+                </tr>
+              
+                <tr>
+                  <td>height</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;og:video:height&#34;` </p></td>
+                </tr>
+              
+                <tr>
+                  <td>type</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>`meta:&#34;og:video:type&#34;` </p></td>
                 </tr>
               
             </tbody>
@@ -2489,6 +2976,20 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                   <td><p>URL: Url Item </p></td>
                 </tr>
               
+                <tr>
+                  <td>thumbnail</td>
+                  <td><a href="#sonr.core.Thumbnail">Thumbnail</a></td>
+                  <td></td>
+                  <td><p>Thumbnail of the Item </p></td>
+                </tr>
+              
+                <tr>
+                  <td>openGraph</td>
+                  <td><a href="#sonr.core.OpenGraph.Primary">OpenGraph.Primary</a></td>
+                  <td></td>
+                  <td><p>Open Graph Image </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -2507,10 +3008,31 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
             <tbody>
               
                 <tr>
-                  <td>exists</td>
-                  <td><a href="#bool">bool</a></td>
+                  <td>size</td>
+                  <td><a href="#int64">int64</a></td>
                   <td></td>
-                  <td><p>Does the thumbnail exist? </p></td>
+                  <td><p>Thumbnail Size in Bytes </p></td>
+                </tr>
+              
+                <tr>
+                  <td>width</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p>Thumbnail Width </p></td>
+                </tr>
+              
+                <tr>
+                  <td>height</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p>Thumbnail Height </p></td>
+                </tr>
+              
+                <tr>
+                  <td>aspectRatio</td>
+                  <td><a href="#double">double</a></td>
+                  <td></td>
+                  <td><p>Thumbnail Aspect Ratio </p></td>
                 </tr>
               
                 <tr>
@@ -2552,7 +3074,7 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                 </tr>
               
                 <tr>
-                  <td>url</td>
+                  <td>link</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p>OG URL Link </p></td>
@@ -2563,13 +3085,6 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p>Meta Field for Title </p></td>
-                </tr>
-              
-                <tr>
-                  <td>type</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>OG Type </p></td>
                 </tr>
               
                 <tr>
@@ -2594,447 +3109,10 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                 </tr>
               
                 <tr>
-                  <td>images</td>
-                  <td><a href="#sonr.core.UrlItem.OpenGraphImage">UrlItem.OpenGraphImage</a></td>
-                  <td>repeated</td>
-                  <td><p>Images </p></td>
-                </tr>
-              
-                <tr>
-                  <td>videos</td>
-                  <td><a href="#sonr.core.UrlItem.OpenGraphVideo">UrlItem.OpenGraphVideo</a></td>
-                  <td>repeated</td>
-                  <td><p>Videos </p></td>
-                </tr>
-              
-                <tr>
-                  <td>audios</td>
-                  <td><a href="#sonr.core.UrlItem.OpenGraphAudio">UrlItem.OpenGraphAudio</a></td>
-                  <td>repeated</td>
-                  <td><p>Audios </p></td>
-                </tr>
-              
-                <tr>
-                  <td>twitter</td>
-                  <td><a href="#sonr.core.UrlItem.TwitterCard">UrlItem.TwitterCard</a></td>
+                  <td>openGraph</td>
+                  <td><a href="#sonr.core.OpenGraph">OpenGraph</a></td>
                   <td></td>
-                  <td><p>Twitter Card </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.core.UrlItem.OpenGraphAudio">UrlItem.OpenGraphAudio</h3>
-        <p>OpenGraph Audio</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>url</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;og:audio,og:audio:url&#34;` </p></td>
-                </tr>
-              
-                <tr>
-                  <td>secureUrl</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;og:audio:secure_url&#34;` </p></td>
-                </tr>
-              
-                <tr>
-                  <td>type</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;og:audio:type&#34;` </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.core.UrlItem.OpenGraphImage">UrlItem.OpenGraphImage</h3>
-        <p>OpenGraph Image</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>url</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;og:image,og:image:url&#34;` </p></td>
-                </tr>
-              
-                <tr>
-                  <td>secureUrl</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;og:image:secure_url&#34;` </p></td>
-                </tr>
-              
-                <tr>
-                  <td>width</td>
-                  <td><a href="#int32">int32</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;og:image:width&#34;` </p></td>
-                </tr>
-              
-                <tr>
-                  <td>height</td>
-                  <td><a href="#int32">int32</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;og:image:height&#34;` </p></td>
-                </tr>
-              
-                <tr>
-                  <td>type</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;og:image:type&#34;` </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.core.UrlItem.OpenGraphVideo">UrlItem.OpenGraphVideo</h3>
-        <p>OpenGraph Video</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>url</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;og:video,og:video:url&#34;` </p></td>
-                </tr>
-              
-                <tr>
-                  <td>secureUrl</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;og:video:secure_url&#34;` </p></td>
-                </tr>
-              
-                <tr>
-                  <td>width</td>
-                  <td><a href="#int32">int32</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;og:video:width&#34;` </p></td>
-                </tr>
-              
-                <tr>
-                  <td>height</td>
-                  <td><a href="#int32">int32</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;og:video:height&#34;` </p></td>
-                </tr>
-              
-                <tr>
-                  <td>type</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;og:video:type&#34;` </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.core.UrlItem.TwitterCard">UrlItem.TwitterCard</h3>
-        <p>Twitter Card</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>card</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;twitter:card&#34;` </p></td>
-                </tr>
-              
-                <tr>
-                  <td>site</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;twitter:site&#34;` </p></td>
-                </tr>
-              
-                <tr>
-                  <td>siteId</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;twitter:site:id&#34;` </p></td>
-                </tr>
-              
-                <tr>
-                  <td>creator</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;twitter:creator&#34;` </p></td>
-                </tr>
-              
-                <tr>
-                  <td>creatorId</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;twitter:creator:id&#34;` </p></td>
-                </tr>
-              
-                <tr>
-                  <td>description</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;twitter:description&#34;` </p></td>
-                </tr>
-              
-                <tr>
-                  <td>title</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;twitter:title&#34;` </p></td>
-                </tr>
-              
-                <tr>
-                  <td>image</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;twitter:image,twitter:image:src&#34;` </p></td>
-                </tr>
-              
-                <tr>
-                  <td>imageAlt</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;twitter:image:alt&#34;` </p></td>
-                </tr>
-              
-                <tr>
-                  <td>url</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;twitter:url&#34;` </p></td>
-                </tr>
-              
-                <tr>
-                  <td>player</td>
-                  <td><a href="#sonr.core.UrlItem.TwitterCard.Player">UrlItem.TwitterCard.Player</a></td>
-                  <td></td>
-                  <td><p>Twitter Item Player </p></td>
-                </tr>
-              
-                <tr>
-                  <td>iphone</td>
-                  <td><a href="#sonr.core.UrlItem.TwitterCard.IPhone">UrlItem.TwitterCard.IPhone</a></td>
-                  <td></td>
-                  <td><p>Twitter iPhone Data </p></td>
-                </tr>
-              
-                <tr>
-                  <td>ipad</td>
-                  <td><a href="#sonr.core.UrlItem.TwitterCard.IPad">UrlItem.TwitterCard.IPad</a></td>
-                  <td></td>
-                  <td><p>Twitter iPad Data </p></td>
-                </tr>
-              
-                <tr>
-                  <td>googlePlay</td>
-                  <td><a href="#sonr.core.UrlItem.TwitterCard.GooglePlay">UrlItem.TwitterCard.GooglePlay</a></td>
-                  <td></td>
-                  <td><p>Twitter Android Data </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.core.UrlItem.TwitterCard.GooglePlay">UrlItem.TwitterCard.GooglePlay</h3>
-        <p></p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>name</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;twitter:app:name:googleplay&#34;` </p></td>
-                </tr>
-              
-                <tr>
-                  <td>id</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;twitter:app:id:googleplay&#34;` </p></td>
-                </tr>
-              
-                <tr>
-                  <td>url</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;twitter:app:url:googleplay&#34;` </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.core.UrlItem.TwitterCard.IPad">UrlItem.TwitterCard.IPad</h3>
-        <p></p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>name</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;twitter:app:name:ipad&#34;` </p></td>
-                </tr>
-              
-                <tr>
-                  <td>id</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;twitter:app:id:ipad&#34;` </p></td>
-                </tr>
-              
-                <tr>
-                  <td>url</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;twitter:app:url:ipad&#34;` </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.core.UrlItem.TwitterCard.IPhone">UrlItem.TwitterCard.IPhone</h3>
-        <p></p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>name</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;twitter:app:name:iphone&#34;` </p></td>
-                </tr>
-              
-                <tr>
-                  <td>id</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;twitter:app:id:iphone&#34;` </p></td>
-                </tr>
-              
-                <tr>
-                  <td>url</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;twitter:app:url:iphone&#34;` </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.core.UrlItem.TwitterCard.Player">UrlItem.TwitterCard.Player</h3>
-        <p></p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>url</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;twitter:player&#34;` </p></td>
-                </tr>
-              
-                <tr>
-                  <td>width</td>
-                  <td><a href="#int32">int32</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;twitter:width&#34;` </p></td>
-                </tr>
-              
-                <tr>
-                  <td>height</td>
-                  <td><a href="#int32">int32</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;twitter:height&#34;` </p></td>
-                </tr>
-              
-                <tr>
-                  <td>stream</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>`meta:&#34;twitter:stream&#34;` </p></td>
+                  <td><p>OpenGraph Object </p></td>
                 </tr>
               
             </tbody>
@@ -3045,6 +3123,47 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
         
       
 
+      
+        <h3 id="sonr.core.OpenGraph.Type">OpenGraph.Type</h3>
+        <p>Url Opengraph Preview Type - In order of Priority</p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>IMAGE</td>
+                <td>0</td>
+                <td><p>Image Preview</p></td>
+              </tr>
+            
+              <tr>
+                <td>VIDEO</td>
+                <td>1</td>
+                <td><p>Video Preview</p></td>
+              </tr>
+            
+              <tr>
+                <td>TWITTER</td>
+                <td>2</td>
+                <td><p>Twitter Card Preview</p></td>
+              </tr>
+            
+              <tr>
+                <td>AUDIO</td>
+                <td>3</td>
+                <td><p>Audio Preview</p></td>
+              </tr>
+            
+              <tr>
+                <td>NONE</td>
+                <td>4</td>
+                <td><p>No Type, Preview not set.</p></td>
+              </tr>
+            
+          </tbody>
+        </table>
       
 
       
@@ -4163,6 +4282,51 @@ Base64 Encoded Public Key </p></td>
       </div>
       <p></p>
 
+      
+        <h3 id="sonr.protocols.transfer.Chunk">Chunk</h3>
+        <p>For Transfer Chunk Transmission</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>offset</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p>Bytes from the beginning of the reader to chunk </p></td>
+                </tr>
+              
+                <tr>
+                  <td>length</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p>Length is number of bytes in the chunk </p></td>
+                </tr>
+              
+                <tr>
+                  <td>data</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>Data is the actual chunk </p></td>
+                </tr>
+              
+                <tr>
+                  <td>fingerprint</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>Fingerprint is the hash of the chunk </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
       
         <h3 id="sonr.protocols.transfer.InviteRequest">InviteRequest</h3>
         <p>Invitation Message sent on RPC</p>

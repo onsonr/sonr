@@ -5,6 +5,14 @@ import "proto/common/core.proto";
 import "proto/common/data.proto";
 option go_package = "github.com/sonr-io/core/pkg/transfer";
 
+// For Transfer Chunk Transmission
+message Chunk {
+  int32 offset = 1;      // Bytes from the beginning of the reader to chunk
+  int32 length = 2;      // Length is number of bytes in the chunk
+  bytes data = 3;        // Data is the actual chunk
+  int64 fingerprint = 4; // Fingerprint is the hash of the chunk
+}
+
 // Invitation Message sent on RPC
 message InviteRequest {
   sonr.core.Payload payload = 1;   // Attached Data
