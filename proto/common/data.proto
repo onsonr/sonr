@@ -128,12 +128,7 @@ message Thumbnail {
   int32 width = 2;        // Thumbnail Width
   int32 height = 3;       // Thumbnail Height
   double aspectRatio = 4; // Thumbnail Aspect Ratio
-
-  // Value of the Thumbnail
-  oneof value {
-    bytes buffer = 5; // Thumbnail Buffer
-    string path = 6;  // Thumbnail Path
-  }
+  bytes buffer = 5;       // Thumbnail Buffer
 }
 
 // Payload is Data thats being Passed

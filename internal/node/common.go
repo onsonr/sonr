@@ -15,6 +15,7 @@ import (
 // Peer method returns the peer of the node
 func (n *Node) Peer() *common.Peer {
 	// Find PublicKey Buffer
+	deviceStat := device.Stat()
 	pubBuf, err := crypto.MarshalPublicKey(n.host.PublicKey())
 	if err != nil {
 		logger.Error("Failed to marshal public key", zap.Error(err))
@@ -25,9 +26,14 @@ func (n *Node) Peer() *common.Peer {
 	return &common.Peer{
 		SName:     strings.ToLower(n.profile.SName),
 		Status:    common.Peer_ONLINE,
-		Device:    device.Info(),
 		Profile:   n.profile,
 		PublicKey: pubBuf,
+		Device: &common.Peer_Device{
+			HostName: deviceStat.HostName,
+			Os:       deviceStat.Os,
+			Id:       deviceStat.Id,
+			Arch:     deviceStat.Arch,
+		},
 	}
 }
 

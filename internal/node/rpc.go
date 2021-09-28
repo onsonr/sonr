@@ -177,7 +177,7 @@ func (n *NodeRPCService) Stat(ctx context.Context, req *StatRequest) (*StatRespo
 		Profile: n.profile,
 		Device: &StatResponse_Device{
 			Id:        device.Stat().Id,
-			Name:      device.Stat().Name,
+			Name:      device.Stat().HostName,
 			Os:        device.Stat().Os,
 			Arch:      device.Stat().Arch,
 			IsDesktop: device.Stat().IsDesktop,

@@ -5,7 +5,6 @@ import (
 	"runtime"
 
 	"github.com/denisbrodbeck/machineid"
-	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/tools/logger"
 	"go.uber.org/zap"
 )
@@ -13,7 +12,7 @@ import (
 // DeviceStat is the device info struct
 type DeviceStat struct {
 	Id        string `json:"id"`
-	Name      string `json:"name"`
+	HostName  string `json:"name"`
 	Os        string `json:"os"`
 	Arch      string `json:"arch"`
 	IsDesktop bool
@@ -51,29 +50,6 @@ func HostName() (string, error) {
 // ID returns the device ID.
 func ID() (string, error) {
 	return machineid.ID()
-}
-
-// Info returns the device info.
-func Info() *common.Peer_Device {
-	// Get HostName
-	hn, err := HostName()
-	if err != nil {
-		hn = "unknown"
-	}
-
-	// Get Devices ID
-	id, err := ID()
-	if err != nil {
-		id = "unknown"
-	}
-
-	// Return the device info for Peer
-	return &common.Peer_Device{
-		HostName: hn,
-		Os:       runtime.GOOS,
-		Id:       id,
-		Arch:     runtime.GOARCH,
-	}
 }
 
 // IsMobile returns true if the current platform is ANY mobile platform.
@@ -133,7 +109,7 @@ func Stat() *DeviceStat {
 	// Return the device info for Peer
 	return &DeviceStat{
 		Id:        id,
-		Name:      hn,
+		HostName:  hn,
 		Os:        runtime.GOOS,
 		Arch:      runtime.GOARCH,
 		IsDesktop: IsDesktop(),

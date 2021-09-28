@@ -31,6 +31,9 @@ var (
 	// DocsPath is the path to the documents folder
 	DocsPath string
 
+	// DownloadsPath is the path to the downloads folder
+	DownloadsPath string
+
 	// TempPath is the path to the temporary/cache folder
 	TempPath string
 
@@ -38,12 +41,12 @@ var (
 	SupportPath string
 )
 
-// FSDirType is the type of a directory.
-type FSDirType int
+// DirType is the type of a directory.
+type DirType int
 
 const (
 	// Support is the type for a support directory.
-	Support FSDirType = iota
+	Support DirType = iota
 
 	// Temporary is the type for a temporary directory.
 	Temporary
@@ -57,8 +60,8 @@ const (
 
 // FSOption is a functional option for configuring the filesystem.
 type FSOption struct {
-	Path string    // Path to the directory
-	Type FSDirType // Type of the directory
+	Path string  // Path to the directory
+	Type DirType // Type of the directory
 }
 
 // Init initializes the keychain and returns a Keychain.
@@ -110,6 +113,8 @@ func Init(isDev bool, opts ...FSOption) (Keychain, error) {
 				TempPath = opt.Path
 			case Documents:
 				DocsPath = opt.Path
+			case Downloads:
+				DownloadsPath = opt.Path
 			}
 		}
 
