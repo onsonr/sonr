@@ -18,9 +18,6 @@ import (
 // ** ───────────────────────────────────────────────────────
 // ** ─── General ───────────────────────────────────────────
 // ** ───────────────────────────────────────────────────────
-// MetadatFunc is a function that returns a Metadata Object
-type MetadatFunc func() *Metadata
-
 // OLC_SCOPE is the default OLC Scope for Distance Calculation
 const OLC_SCOPE = 6
 
@@ -238,11 +235,11 @@ func (m *MIME) PermitsThumbnail() bool {
 // ** ─── Payload Management ────────────────────────────────
 // ** ───────────────────────────────────────────────────────
 // NewPayload creates a new Payload Object
-func NewPayload(owner *Profile, paths []string, mf MetadatFunc) (*Payload, error) {
+func NewPayload(owner *Profile, paths []string) (*Payload, error) {
 	// Initialize
 	fileCount := 0
 	urlCount := 0
-	size := int32(0)
+	size := int64(0)
 	items := make([]*Payload_Item, 0)
 	errs := make([]error, 0)
 
@@ -254,7 +251,7 @@ func NewPayload(owner *Profile, paths []string, mf MetadatFunc) (*Payload, error
 			urlCount++
 
 			// Add URL to Payload
-			item, err := NewUrlItem(path, mf())
+			item, err := NewUrlItem(path)
 			if err != nil {
 				msg := fmt.Sprintf("Failed to create URLItem at Index: %v, with Path: %s", i, path)
 				logger.Error(msg, zap.Error(err))
@@ -270,7 +267,7 @@ func NewPayload(owner *Profile, paths []string, mf MetadatFunc) (*Payload, error
 			fileCount++
 
 			// Create Payload Item
-			item, err := NewFileItem(path, mf())
+			item, err := NewFileItem(path)
 			if err != nil {
 				msg := fmt.Sprintf("Failed to create FileItem at Index: %v with Path: %s", i, path)
 				logger.Error(msg, zap.Error(err))
@@ -280,7 +277,7 @@ func NewPayload(owner *Profile, paths []string, mf MetadatFunc) (*Payload, error
 
 			// Add Payload Item to Payload
 			items = append(items, item)
-			size += int32(item.Size)
+			size += item.GetSize()
 			continue
 		} else {
 			err := fmt.Errorf("Invalid Path provided, value is neither File or URL. Path: %s", path)

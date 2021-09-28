@@ -116,7 +116,7 @@ func (n *Node) Edit(p *common.Profile) error {
 // Supply a transfer item to the queue
 func (n *Node) Supply(paths []string) error {
 	// Create Transfer
-	payload, err := common.NewPayload(n.profile, paths, n.host.NewMetadata)
+	payload, err := common.NewPayload(n.profile, paths)
 	if err != nil {
 		logger.Error("Failed to Supply Paths", zap.Error(err))
 		return err

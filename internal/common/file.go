@@ -11,10 +11,9 @@ func IsFile(path string) bool {
 }
 
 // ToTransferItem Returns Transfer for FileItem
-func (f *FileItem) ToTransferItem(m *Metadata) *Payload_Item {
+func (f *FileItem) ToTransferItem() *Payload_Item {
 	return &Payload_Item{
 		Mime:     f.GetMime(),
-		Metadata: m,
 		Data: &Payload_Item_File{
 			File: f,
 		},
@@ -22,7 +21,7 @@ func (f *FileItem) ToTransferItem(m *Metadata) *Payload_Item {
 }
 
 // NewFileItem creates a new transfer file item
-func NewFileItem(path string, m *Metadata) (*Payload_Item, error) {
+func NewFileItem(path string) (*Payload_Item, error) {
 	// Extracts File Infrom from path
 	fi, err := os.Stat(path)
 	if err != nil {
@@ -39,14 +38,14 @@ func NewFileItem(path string, m *Metadata) (*Payload_Item, error) {
 	fileItem := &FileItem{
 		Mime:         mime,
 		Path:         path,
-		Size:         int32(fi.Size()),
+		Size:         fi.Size(),
 		Name:         fi.Name(),
 		LastModified: fi.ModTime().Unix(),
 	}
 
 	// Returns transfer item
 	return &Payload_Item{
-		Metadata: m,
+		Size:     fi.Size(),
 		Mime:     mime,
 		Data: &Payload_Item_File{
 			File: fileItem,

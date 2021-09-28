@@ -22,7 +22,7 @@ func IsUrl(s string) bool {
 }
 
 // NewUrlItem creates a new transfer url item
-func NewUrlItem(url string, m *Metadata) (*Payload_Item, error) {
+func NewUrlItem(url string) (*Payload_Item, error) {
 	// Create UrlItem
 	link := &UrlItem{
 		Mime: DefaultUrlMIME(),
@@ -35,7 +35,6 @@ func NewUrlItem(url string, m *Metadata) (*Payload_Item, error) {
 
 	return &Payload_Item{
 		Size:     0,
-		Metadata: m,
 		Mime:     DefaultUrlMIME(),
 		Data: &Payload_Item_Url{
 			Url: link,
@@ -147,10 +146,9 @@ func (u *UrlItem) FetchData() error {
 }
 
 // ToTransferItem Returns Transfer for URLLink
-func (u *UrlItem) ToTransferItem(m *Metadata) *Payload_Item {
+func (u *UrlItem) ToTransferItem() *Payload_Item {
 	return &Payload_Item{
 		Mime:     DefaultUrlMIME(),
-		Metadata: m,
 		Data: &Payload_Item_Url{
 			Url: u,
 		},

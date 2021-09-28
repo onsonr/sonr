@@ -17,7 +17,7 @@ message FileItem {
   sonr.core.MIME mime = 1; // Standard Mime Type
   string name = 2;         // File Name without Path
   string path = 3;         // File Location
-  int32 size = 4;          // File Size in Bytes
+  int64 size = 4;          // File Size in Bytes
   Thumbnail thumbnail = 5; // Thumbnail of File
   int64 lastModified = 6;  // Last Modified Time in Seconds
 }
@@ -26,19 +26,18 @@ message FileItem {
 message Payload {
   repeated Item items = 1; // Payload Items
   Profile owner = 2;       // PROFILE: General Sender Info
-  int32 size = 3;          // Payload Size in Bytes
+  int64 size = 3;          // Payload Size in Bytes
   int64 createdAt = 4;     // Payload Creation Time in Seconds
 
   // Item in Payload
   message Item {
-    MIME mime = 1;         // MIME of the Item
-    int32 size = 2;        // Size of the Item in Bytes
-    Metadata metadata = 3; // Metadata of the Item
+    MIME mime = 1;  // MIME of the Item
+    int64 size = 2; // Size of the Item in Bytes
 
     // Attached Data
     oneof data {
-      FileItem file = 4; // FILE: File Item
-      UrlItem url = 5;   // URL: Url Item
+      FileItem file = 3; // FILE: File Item
+      UrlItem url = 4;   // URL: Url Item
     }
   }
 }
