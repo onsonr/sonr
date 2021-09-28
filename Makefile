@@ -5,6 +5,8 @@ CORE_DIR=$(SONR_ROOT_DIR)/core
 CORE_RPC_DIR=$(SONR_ROOT_DIR)/core/cmd/bin
 CORE_BIND_DIR=$(SONR_ROOT_DIR)/core/cmd/lib
 ELECTRON_BIN_DIR=$(SONR_ROOT_DIR)/electron/assets/bin/darwin
+PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+LD_LIBRARY_PATH=/usr/local/Cellar/ffmpeg/4.4_2/lib
 
 # Set this -->[/Users/xxxx/Sonr/]<-- to Folder of Sonr Repos
 PROTO_DEF_PATH=/Users/prad/Developer/core/proto
