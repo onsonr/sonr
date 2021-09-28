@@ -84,9 +84,8 @@ func (p *Peer) Info() (*PeerInfo, error) {
 	// Get peer ID from public key
 	id, err := peer.IDFromPublicKey(pubKey)
 	if err != nil {
-		msg := fmt.Sprintf("Failed to get peer ID from Public Key: %s", p.GetSName())
-		logger.Error(msg, zap.Error(err))
-		return nil, errors.Wrap(err, msg)
+		logger.Error(fmt.Sprintf("Failed to get peer ID from Public Key: %s", p.GetSName()), zap.Error(err))
+		return nil, err
 	}
 
 	// Return Peer Info
@@ -104,29 +103,39 @@ func (p *Peer) Info() (*PeerInfo, error) {
 
 // PeerID returns the PeerID based on PublicKey from Profile
 func (p *Peer) PeerID() (peer.ID, error) {
+	// Check if PublicKey is empty
+	if len(p.GetPublicKey()) == 0 {
+		return "", errors.New("Peer Public Key is not set.")
+	}
+
 	// Fetch public key from peer data
-	pubKey, err := p.PubKey()
+	pubKey, err := crypto.UnmarshalPublicKey(p.GetPublicKey())
 	if err != nil {
+		logger.Error(fmt.Sprintf("Failed to Unmarshal Public Key: %s", p.GetSName()), zap.Error(err))
 		return "", err
 	}
 
 	// Get peer ID from public key
 	id, err := peer.IDFromPublicKey(pubKey)
 	if err != nil {
-		msg := fmt.Sprintf("Failed to get peer ID from Public Key: %s", p.GetSName())
-		logger.Error(msg, zap.Error(err))
-		return "", errors.Wrap(err, msg)
+		logger.Error(fmt.Sprintf("Failed to get peer ID from Public Key: %s", p.GetSName()), zap.Error(err))
+		return "", err
 	}
 	return id, nil
 }
 
 // PubKey returns the Public Key from the Peer
 func (p *Peer) PubKey() (crypto.PubKey, error) {
+	// Check if PublicKey is empty
+	if len(p.GetPublicKey()) == 0 {
+		return nil, errors.New("Peer Public Key is not set.")
+	}
+
+	// Unmarshal Public Key
 	pubKey, err := crypto.UnmarshalPublicKey(p.GetPublicKey())
 	if err != nil {
-		msg := fmt.Sprintf("Failed to Unmarshal Public Key: %s", p.GetSName())
-		logger.Error(msg, zap.Error(err))
-		return nil, errors.Wrap(err, msg)
+		logger.Error(fmt.Sprintf("Failed to Unmarshal Public Key: %s", p.GetSName()), zap.Error(err))
+		return nil, err
 	}
 	return pubKey, nil
 }

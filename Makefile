@@ -71,7 +71,7 @@ bind.android:
 	@go get golang.org/x/mobile/bind
 	@gomobile init
 	cd $(CORE_BIND_DIR) && doppler run --command "$(GOBIND_ANDROID) -o $(BIND_ANDROID_ARTIFACT)"
-	@echo "✅ Finished Binding ➡ " && date
+	@echo "✅ Finished Binding ➡ `date`"
 	@echo ""
 
 
@@ -84,7 +84,7 @@ bind.ios:
 	@echo "--------------------------------------------------------------"
 	@go get golang.org/x/mobile/bind
 	cd $(CORE_BIND_DIR) && doppler run --command "$(GOBIND_IOS) -o $(BIND_IOS_ARTIFACT)"
-	@echo "✅ Finished Binding ➡ " && date
+	@echo "✅ Finished Binding ➡ `date`"
 	@echo ""
 
 ##
@@ -116,7 +116,7 @@ release: protobuf
 	@mkdir -p $(ELECTRON_BIN_DIR)
 	@mv $(DIST_DIR_DARWIN_ARM) $(ELECTRON_BIN_DIR)
 	@rm -rf $(DIST_DIR)
-	@echo "✅ Finished Releasing RPC Binary ➡ " && date
+	@echo "✅ Finished Releasing RPC Binary ➡ `date`"
 	@cd /System/Library/Sounds && afplay Glass.aiff
 
 ## [clean]     :   Reinitializes Gomobile and Removes Framworks from Plugin

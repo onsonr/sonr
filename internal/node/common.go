@@ -12,6 +12,25 @@ import (
 	"go.uber.org/zap"
 )
 
+// Peer method returns the peer of the node
+func (n *Node) Peer() *common.Peer {
+	// Find PublicKey Buffer
+	pubBuf, err := crypto.MarshalPublicKey(n.host.PublicKey())
+	if err != nil {
+		logger.Error("Failed to marshal public key", zap.Error(err))
+		return nil
+	}
+
+	// Return Peer
+	return &common.Peer{
+		SName:     strings.ToLower(n.profile.SName),
+		Status:    common.Peer_ONLINE,
+		Device:    device.Info(),
+		Profile:   n.profile,
+		PublicKey: pubBuf,
+	}
+}
+
 // ToExchangeQueryRequest converts a query request to an exchange query request.
 func (f *FindRequest) ToExchangeQueryRequest() (*exchange.QueryRequest, error) {
 	if f.GetSName() != "" {
@@ -35,24 +54,5 @@ func ToFindResponse(p *common.PeerInfo) *FindResponse {
 		Peer:    p.Peer,
 		PeerId:  p.PeerID.String(),
 		SName:   p.SName,
-	}
-}
-
-// Peer method returns the peer of the node
-func (n *Node) Peer() *common.Peer {
-	// Find PublicKey Buffer
-	pubBuf, err := crypto.MarshalPublicKey(n.host.PublicKey())
-	if err != nil {
-		logger.Error("Failed to marshal public key", zap.Error(err))
-		return nil
-	}
-
-	// Return Peer
-	return &common.Peer{
-		SName:     strings.ToLower(n.profile.SName),
-		Status:    common.Peer_ONLINE,
-		Device:    device.Info(),
-		Profile:   n.profile,
-		PublicKey: pubBuf,
 	}
 }
