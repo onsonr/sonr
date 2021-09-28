@@ -99,18 +99,26 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 
 // onIncomingTransfer incoming transfer handler
 func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
-	// Init WaitGroup
-	entry, err := p.queue.Find(s.Conn().RemotePeer())
+	// Find Entry in Queue
+	e, err := p.queue.Find(s.Conn().RemotePeer())
 	if err != nil {
 		logger.Error("Failed to find transfer request", zap.Error(err))
 		return
 	}
+
+	// Initialize Params
 	logger.Info("Started Incoming Transfer...")
+	waitGroup := sync.WaitGroup{}
+	reader := msgio.NewReader(s)
 
 	// Handle incoming stream
-	go func(rs msgio.ReadCloser) {
+	go func(entry *TransferEntry, wg sync.WaitGroup, rs msgio.ReadCloser) {
 		// Write All Files
 		err = entry.request.GetPayload().MapItemsWithIndex(func(m *common.Payload_Item, i int, count int) error {
+			// Add to WaitGroup
+			logger.Info("Current Item: ", zap.String(fmt.Sprint(i), m.String()))
+			wg.Add(1)
+
 			// Create New Reader
 			r := NewReader(m, i, count, device.DocsPath, p.emitter)
 			err := r.ReadFrom(rs)
@@ -121,23 +129,28 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 
 			// Complete Writing
 			logger.Info(fmt.Sprintf("Finished RECEIVING File (%v/%v)", i, count))
+			wg.Done()
 			return nil
 		})
 		if err != nil {
 			logger.Error("Error writing stream", zap.Error(err))
 			return
 		}
-		// Close Stream
-		rs.Close()
-		event, err := p.queue.Complete(s.Conn().RemotePeer())
-		if err != nil {
-			logger.Error("Failed to Complete Transfer", zap.Error(err))
-			return
-		}
+	}(e, waitGroup, reader)
 
-		// Emit Event
-		p.emitter.Emit(Event_COMPLETED, event)
-	}(msgio.NewReader(s))
+	// Await WaitGroup
+	waitGroup.Wait()
+	reader.Close()
+
+	// Complete the transfer
+	event, err := p.queue.Complete(s.Conn().RemotePeer())
+	if err != nil {
+		logger.Error("Failed to Complete Transfer", zap.Error(err))
+		return
+	}
+
+	// Emit Event
+	p.emitter.Emit(Event_COMPLETED, event)
 }
 
 // onOutgoingTransfer is called by onInviteResponse if Validated
