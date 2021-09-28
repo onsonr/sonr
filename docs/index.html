@@ -372,6 +372,10 @@
                 </li>
               
                 <li>
+                  <a href="#sonr.core.MessageItem"><span class="badge">M</span>MessageItem</a>
+                </li>
+              
+                <li>
                   <a href="#sonr.core.OpenGraph"><span class="badge">M</span>OpenGraph</a>
                 </li>
               
@@ -2373,6 +2377,58 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
 
         
       
+        <h3 id="sonr.core.MessageItem">MessageItem</h3>
+        <p>For Transfer Text Payload</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>mime</td>
+                  <td><a href="#sonr.core.MIME">MIME</a></td>
+                  <td></td>
+                  <td><p>Standard Mime Type </p></td>
+                </tr>
+              
+                <tr>
+                  <td>subject</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Subject of Message </p></td>
+                </tr>
+              
+                <tr>
+                  <td>body</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Body of Message </p></td>
+                </tr>
+              
+                <tr>
+                  <td>createdAt</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>Created Time in Seconds </p></td>
+                </tr>
+              
+                <tr>
+                  <td>attachments</td>
+                  <td><a href="#sonr.core.FileItem">FileItem</a></td>
+                  <td>repeated</td>
+                  <td><p>Attachments of Message </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="sonr.core.OpenGraph">OpenGraph</h3>
         <p>OpenGraph is a generic OpenGraph object</p>
 
@@ -2977,6 +3033,13 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                 </tr>
               
                 <tr>
+                  <td>message</td>
+                  <td><a href="#sonr.core.MessageItem">MessageItem</a></td>
+                  <td></td>
+                  <td><p>MESSAGE: Message Item </p></td>
+                </tr>
+              
+                <tr>
                   <td>thumbnail</td>
                   <td><a href="#sonr.core.Thumbnail">Thumbnail</a></td>
                   <td></td>
@@ -3015,31 +3078,17 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                 </tr>
               
                 <tr>
-                  <td>width</td>
-                  <td><a href="#int32">int32</a></td>
-                  <td></td>
-                  <td><p>Thumbnail Width </p></td>
-                </tr>
-              
-                <tr>
-                  <td>height</td>
-                  <td><a href="#int32">int32</a></td>
-                  <td></td>
-                  <td><p>Thumbnail Height </p></td>
-                </tr>
-              
-                <tr>
-                  <td>aspectRatio</td>
-                  <td><a href="#double">double</a></td>
-                  <td></td>
-                  <td><p>Thumbnail Aspect Ratio </p></td>
-                </tr>
-              
-                <tr>
                   <td>buffer</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
                   <td><p>Thumbnail Buffer </p></td>
+                </tr>
+              
+                <tr>
+                  <td>mime</td>
+                  <td><a href="#sonr.core.MIME">MIME</a></td>
+                  <td></td>
+                  <td><p>Mime Type </p></td>
                 </tr>
               
             </tbody>

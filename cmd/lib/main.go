@@ -32,7 +32,7 @@ func Start(reqBytes []byte) {
 		}
 
 		// Initialize Device
-		kc, err := device.Init(req.GetEnvOptions().GetEnvironment().IsDev(), fsOpts...)
+		err = device.Init(req.GetEnvOptions().GetEnvironment().IsDev(), fsOpts...)
 		if err != nil {
 			logger.Panic("Failed to initialize Device", zap.Error(err))
 		}
@@ -45,7 +45,7 @@ func Start(reqBytes []byte) {
 		}
 
 		// Initialize Host
-		host, err := host.NewHost(ctx, kc, req.GetConnection())
+		host, err := host.NewHost(ctx, req.GetConnection())
 		if err != nil {
 			logger.Panic("Failed to create Host", zap.Error(err))
 		}

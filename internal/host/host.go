@@ -54,10 +54,10 @@ type SNRHost struct {
 }
 
 // NewHost creates a new host
-func NewHost(ctx context.Context, kc device.Keychain, conn common.Connection) (*SNRHost, error) {
+func NewHost(ctx context.Context, conn common.Connection) (*SNRHost, error) {
 	// Initialize DHT
 	var kdhtRef *dht.IpfsDHT
-	privKey, err := kc.GetPrivKey(device.Account)
+	privKey, err := device.KeyChain.GetPrivKey(device.Account)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get private key")
 	}

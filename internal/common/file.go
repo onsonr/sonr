@@ -1,15 +1,14 @@
 package common
 
 import (
-	"image"
-	"image/jpeg"
-	"io/ioutil"
+	//"errors"
+	//"image/jpeg"
+	//"io/ioutil"
 	"os"
-
-	"github.com/liujiawm/graphics-go/graphics"
-	"github.com/sonr-io/core/internal/device"
-	"github.com/sonr-io/core/tools/logger"
-	"go.uber.org/zap"
+	//"github.com/bakape/thumbnailer/v2"
+	//"github.com/sonr-io/core/internal/device"
+	//"github.com/sonr-io/core/tools/logger"
+	//"go.uber.org/zap"
 )
 
 // MIN_THUMBNAIL_BOUNDS is the minimum size of the thumbnail
@@ -44,37 +43,30 @@ func NewFileItem(path string) (*Payload_Item, error) {
 		LastModified: fi.ModTime().Unix(),
 	}
 
-	// Check if File is Image
-	if fileItem.Mime.IsImage() {
-		// Init Thumbnail Path
-		thumbTempPath, err := device.NewTempPath(fileItem.Path, device.WithSuffix("thumb"))
-		if err != nil {
-			logger.Error("Failed to retreive Temporary Path", zap.Error(err))
-			return nil, err
-		}
+	// // Check if File is Image
+	// if fileItem.Mime.PermitsThumbnail() {
+	// 	// Create Thumbnail
+	// 	thumb, err := fileItem.NewThumbnail()
+	// 	if err != nil {
+	// 		logger.Error("Failed to create Thumbnail", zap.Error(err))
+	// 		return nil, err
+	// 	}
 
-		// Create Thumbnail
-		thumb, err := NewThumbnail(fileItem.Path, thumbTempPath)
-		if err != nil {
-			logger.Error("Failed to create Thumbnail", zap.Error(err))
-			return nil, err
-		}
+	// 	// Set Thumbnail
+	// 	fileItem.Thumbnail = thumb
 
-		// Set Thumbnail
-		fileItem.Thumbnail = thumb
-
-		// Returns transfer item
-		return &Payload_Item{
-			Size: fi.Size(),
-			Mime: mime,
-			Data: &Payload_Item_File{
-				File: fileItem,
-			},
-			Preview: &Payload_Item_Thumbnail{
-				Thumbnail: fileItem.GetThumbnail(),
-			},
-		}, nil
-	}
+	// 	// Returns transfer item
+	// 	return &Payload_Item{
+	// 		Size: fi.Size(),
+	// 		Mime: mime,
+	// 		Data: &Payload_Item_File{
+	// 			File: fileItem,
+	// 		},
+	// 		Preview: &Payload_Item_Thumbnail{
+	// 			Thumbnail: fileItem.GetThumbnail(),
+	// 		},
+	// 	}, nil
+	// }
 
 	// Returns transfer item
 	return &Payload_Item{
@@ -86,70 +78,74 @@ func NewFileItem(path string) (*Payload_Item, error) {
 	}, nil
 }
 
-// NewThumbnail creates a thumbnail from source path
-func NewThumbnail(srcPath, destPath string) (*Thumbnail, error) {
-	// Open File
-	imagePath, err := os.Open(srcPath)
-	if err != nil {
-		logger.Error("Failed to open file", zap.Error(err))
-		return nil, err
-	}
-	defer imagePath.Close()
+// // NewThumbnail creates a thumbnail from source path
+// func (fi *FileItem) NewThumbnail() (*Thumbnail, error) {
+// 	// Check if path is valid and a File
+// 	if fi.Path != "" && IsFile(fi.Path) {
+// 		// Open File
+// 		file, err := os.Open(fi.GetPath())
+// 		if err != nil {
+// 			logger.Error("Failed to open file", zap.Error(err))
+// 			return nil, err
+// 		}
+// 		defer file.Close()
 
-	// Decode Image
-	srcImage, _, err := image.Decode(imagePath)
-	if err != nil {
-		logger.Error("Failed to decode image", zap.Error(err))
-		return nil, err
-	}
+// 		// Create FFmpeg Reader
+// 		ffctx, err := thumbnailer.NewFFContext(file)
+// 		if err != nil {
+// 			logger.Error("Failed to create FFContext", zap.Error(err))
+// 			return nil, err
+// 		}
 
-	// Find Thumbnail Size
-	srcWidth := srcImage.Bounds().Max.X
-	srcHeight := srcImage.Bounds().Max.Y
+// 		// Create Thumbnail
+// 		thumbImg, err := ffctx.Thumbnail(thumbnailer.Dims{
+// 			Width:  MIN_THUMBNAIL_BOUNDS,
+// 			Height: MIN_THUMBNAIL_BOUNDS,
+// 		})
+// 		if err != nil {
+// 			logger.Error("Failed to create thumbnail", zap.Error(err))
+// 			return nil, err
+// 		}
 
-	// Calculate Thumbnail Size
-	w, h, ar := getThumbWidthHeight(srcWidth, srcHeight)
+// 		// Init Thumbnail Path
+// 		thumbPath, err := device.NewTempPath(fi.Path, device.WithSuffix("tmb"))
+// 		if err != nil {
+// 			logger.Error("Failed to retreive Temporary Path", zap.Error(err))
+// 			return nil, err
+// 		}
 
-	// Dimension of new thumbnail 80 X 80
-	dstImage := image.NewRGBA(image.Rect(0, 0, w, h))
-	// Thumbnail function of Graphics
-	err = graphics.Thumbnail(dstImage, srcImage)
-	if err != nil {
-		logger.Error("Failed to create Thumbnail", zap.Error(err))
-		return nil, err
-	}
+// 		// Create Thumbnail at path
+// 		thumbFile, err := os.Create(thumbPath)
+// 		if err != nil {
+// 			logger.Error("Failed to create new image", zap.Error(err))
+// 			return nil, err
+// 		}
+// 		defer thumbFile.Close()
 
-	// Create Thumbnail
-	newImage, err := os.Create(destPath)
-	if err != nil {
-		logger.Error("Failed to create new image", zap.Error(err))
-		return nil, err
-	}
-	defer newImage.Close()
+// 		// Encode Thumbnail
+// 		err = jpeg.Encode(thumbFile, thumbImg, &jpeg.Options{Quality: 100})
+// 		if err != nil {
+// 			logger.Error("Failed to encode image", zap.Error(err))
+// 			return nil, err
+// 		}
 
-	// Encode Thumbnail
-	err = jpeg.Encode(newImage, dstImage, &jpeg.Options{Quality: 100})
-	if err != nil {
-		logger.Error("Failed to encode image", zap.Error(err))
-		return nil, err
-	}
+// 		// Read all bytes from thumbnail
+// 		thumbBytes, err := ioutil.ReadFile(thumbPath)
+// 		if err != nil {
+// 			logger.Error("Failed to read thumbnail bytes after processing.", zap.Error(err))
+// 			return nil, err
+// 		}
 
-	// Read all bytes from thumbnail
-	thumbBytes, err := ioutil.ReadFile(destPath)
-	if err != nil {
-		logger.Error("Failed to read thumbnail bytes after processing.", zap.Error(err))
-		return nil, err
-	}
-
-	// Create Thumbnail
-	return &Thumbnail{
-		Size:        int64(len(thumbBytes)),
-		Buffer:      thumbBytes,
-		Width:       int32(w),
-		Height:      int32(h),
-		AspectRatio: float64(ar),
-	}, nil
-}
+// 		// Create Thumbnail
+// 		return &Thumbnail{
+// 			Size:   int64(len(thumbBytes)),
+// 			Buffer: thumbBytes,
+// 			Mime:   fi.GetMime(),
+// 		}, nil
+// 	} else {
+// 		return nil, errors.New("Invalid File Path provided for item.")
+// 	}
+// }
 
 // ToTransferItem Returns Transfer for FileItem
 func (f *FileItem) ToTransferItem() *Payload_Item {

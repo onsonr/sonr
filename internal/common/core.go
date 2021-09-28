@@ -201,6 +201,11 @@ func (m *MIME) IsMedia() bool {
 	return m.IsAudio() || m.IsImage() || m.IsVideo()
 }
 
+// IsPDF Checks if Mime is PDF
+func (m *MIME) IsPDF() bool {
+	return strings.Contains(m.GetSubtype(), "pdf")
+}
+
 // IsVideo Checks if Mime is Video
 func (m *MIME) IsVideo() bool {
 	return m.Type == MIME_VIDEO
@@ -211,11 +216,11 @@ func (m *MIME) IsUrl() bool {
 	return m.Type == MIME_URL
 }
 
-// PermitsThumbnail Checks if Mime Type Allows Thumbnail Generation
+// PermitsThumbnail Checks if Mime Type Allows Thumbnail Generation.
+// Image, Video, Audio, and PDF are allowed.
 func (m *MIME) PermitsThumbnail() bool {
-	return m.IsImage() || m.IsVideo()
+	return m.IsImage() || m.IsVideo() || m.IsAudio() || m.IsPDF()
 }
-
 // ** ───────────────────────────────────────────────────────
 // ** ─── Payload Management ────────────────────────────────
 // ** ───────────────────────────────────────────────────────

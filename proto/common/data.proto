@@ -14,6 +14,15 @@ message FileItem {
   int64 lastModified = 6;  // Last Modified Time in Seconds
 }
 
+// For Transfer Text Payload
+message MessageItem {
+  sonr.core.MIME mime = 1;           // Standard Mime Type
+  string subject = 2;                // Subject of Message
+  string body = 3;                   // Body of Message
+  int64 createdAt = 4;               // Created Time in Seconds
+  repeated FileItem attachments = 5; // Attachments of Message
+}
+
 // Sonr Url Link Contains metadata of provided URL
 message UrlItem {
   sonr.core.MIME mime = 1; // Standard Mime Type
@@ -124,11 +133,9 @@ message OpenGraph {
 
 // Thumbnail of File
 message Thumbnail {
-  int64 size = 1;         // Thumbnail Size in Bytes
-  int32 width = 2;        // Thumbnail Width
-  int32 height = 3;       // Thumbnail Height
-  double aspectRatio = 4; // Thumbnail Aspect Ratio
-  bytes buffer = 5;       // Thumbnail Buffer
+  int64 size = 1;   // Thumbnail Size in Bytes
+  bytes buffer = 2; // Thumbnail Buffer
+  MIME mime = 3;    // Mime Type
 }
 
 // Payload is Data thats being Passed
@@ -145,14 +152,15 @@ message Payload {
 
     // Attached Data
     oneof data {
-      FileItem file = 3; // FILE: File Item
-      UrlItem url = 4;   // URL: Url Item
+      FileItem file = 3;       // FILE: File Item
+      UrlItem url = 4;         // URL: Url Item
+      MessageItem message = 5; // MESSAGE: Message Item
     }
 
     // Thumbnail of the Item
     oneof preview {
-      Thumbnail thumbnail = 5;         // Thumbnail of the Item
-      OpenGraph.Primary openGraph = 6; // Open Graph Image
+      Thumbnail thumbnail = 6;         // Thumbnail of the Item
+      OpenGraph.Primary openGraph = 7; // Open Graph Image
     }
   }
 }

@@ -25,8 +25,8 @@ type DeviceOptions struct {
 }
 
 var (
-	// KCConfig is the device config for Keychain
-	KCConfig *config.Config
+	// Keychain is the device keychain
+	KeyChain Keychain
 
 	// DocsPath is the path to the documents folder
 	DocsPath string
@@ -59,7 +59,7 @@ const (
 )
 
 // Init initializes the keychain and returns a Keychain.
-func Init(isDev bool, opts ...FSOption) (Keychain, error) {
+func Init(isDev bool, opts ...FSOption) error {
 	// Initialize logger
 	logger.Init(isDev)
 
@@ -73,29 +73,39 @@ func Init(isDev bool, opts ...FSOption) (Keychain, error) {
 		if folder != nil {
 			data, err := folder.ReadFile("setting.json")
 			if err != nil {
-				return nil, err
+				return err
 			}
-			json.Unmarshal(data, &KCConfig)
+			kcConfig := &config.Config{}
+			json.Unmarshal(data, &kcConfig)
 			logger.Debug("Loaded Config from Disk")
-			KCConfig = folder
-			return loadKeychain()
-		} else {
-			data, err := json.Marshal(&KCConfig)
+			kcConfig = folder
+			kc, err := loadKeychain(kcConfig)
 			if err != nil {
-				return nil, err
+				return err
+			}
+			KeyChain = kc
+		} else {
+			kcConfig := &config.Config{}
+			data, err := json.Marshal(&kcConfig)
+			if err != nil {
+				return err
 			}
 
 			// Stores to user folder
 			folders := configDirs.QueryFolders(config.Support)
 			err = folders[0].WriteFile("setting.json", data)
 			if err != nil {
-				return nil, err
+				return err
 			}
 
 			// Create Keychain
 			logger.Debug("Created new Config")
-			KCConfig = folders[0]
-			return newKeychain()
+			kcConfig = folders[0]
+			kc, err := newKeychain(kcConfig)
+			if err != nil {
+				return err
+			}
+			KeyChain = kc
 		}
 	} else {
 		// Set Paths from Opts
@@ -104,24 +114,31 @@ func Init(isDev bool, opts ...FSOption) (Keychain, error) {
 		}
 
 		// Create Device Config
-		KCConfig = &config.Config{
+		kcConfig := &config.Config{
 			Path: SupportPath,
 			Type: config.Support,
 		}
 
 		// Create Keychain
-		return newKeychain()
+		kc, err := newKeychain(kcConfig)
+		if err != nil {
+			return err
+		}
+		KeyChain = kc
 	}
+	return nil
 }
 
 // loadKeychain loads a keychain from a file.
-func loadKeychain() (Keychain, error) {
-	kc := &keychain{}
+func loadKeychain(kcconfig *config.Config) (Keychain, error) {
+	kc := &keychain{
+		config: kcconfig,
+	}
 	return kc, nil
 }
 
 // newKeychain creates a new keychain.
-func newKeychain() (Keychain, error) {
+func newKeychain(kcconfig *config.Config) (Keychain, error) {
 	// Create New Account Key
 	accPrivKey, _, err := crypto.GenerateEd25519Key(rand.Reader)
 	if err != nil {
@@ -141,34 +158,36 @@ func newKeychain() (Keychain, error) {
 	}
 
 	// Add Account Key to Keychain
-	err = writeKey(Account, accPrivKey)
+	err = writeKey(kcconfig, Account, accPrivKey)
 	if err != nil {
 		return nil, err
 	}
 
 	// Add Group Key to Keychain
-	err = writeKey(Group, groupPrivKey)
+	err = writeKey(kcconfig, Group, groupPrivKey)
 	if err != nil {
 		return nil, err
 	}
 
 	// Add Link Key to Keychain
-	err = writeKey(Link, linkPrivKey)
+	err = writeKey(kcconfig, Link, linkPrivKey)
 	if err != nil {
 		return nil, err
 	}
-	return &keychain{}, nil
+	return &keychain{
+		config: kcconfig,
+	}, nil
 }
 
 // writeKey writes a key to the keychain.
-func writeKey(kp KeyPair, privKey crypto.PrivKey) error {
+func writeKey(kcconfig *config.Config, kp KeyPair, privKey crypto.PrivKey) error {
 	// Write Key to Keychain
 	buf, err := crypto.MarshalPrivateKey(privKey)
 	if err != nil {
 		return err
 	}
 
-	err = KCConfig.WriteFile(kp.Path(), buf)
+	err = kcconfig.WriteFile(kp.Path(), buf)
 	if err != nil {
 		return err
 	}

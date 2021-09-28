@@ -18,11 +18,11 @@ require (
 	github.com/libp2p/go-libp2p-pubsub-router v0.4.0
 	github.com/libp2p/go-libp2p-record v0.1.3
 	github.com/libp2p/go-msgio v0.0.6
-	github.com/liujiawm/graphics-go v0.0.0-20200331105750-879216a3393f
 	github.com/multiformats/go-multiaddr v0.3.3 // Required for libp2p v0.14.4
 	github.com/pkg/errors v0.9.1
 	github.com/textileio/textile/v2 v2.6.11
 	go.uber.org/zap v1.19.0
+	golang.org/x/mobile v0.0.0-20210924032853-1c027f395ef7 // indirect
 	golang.org/x/net v0.0.0-20210907225631-ff17edfbf26d
 	golang.org/x/sys v0.0.0-20210917161153-d61c044b1678 // indirect
 	golang.org/x/tools v0.1.6 // indirect
