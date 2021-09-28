@@ -58,12 +58,6 @@ const (
 	Downloads
 )
 
-// FSOption is a functional option for configuring the filesystem.
-type FSOption struct {
-	Path string  // Path to the directory
-	Type DirType // Type of the directory
-}
-
 // Init initializes the keychain and returns a Keychain.
 func Init(isDev bool, opts ...FSOption) (Keychain, error) {
 	// Initialize logger
@@ -106,16 +100,7 @@ func Init(isDev bool, opts ...FSOption) (Keychain, error) {
 	} else {
 		// Set Paths from Opts
 		for _, opt := range opts {
-			switch opt.Type {
-			case Support:
-				SupportPath = opt.Path
-			case Temporary:
-				TempPath = opt.Path
-			case Documents:
-				DocsPath = opt.Path
-			case Downloads:
-				DownloadsPath = opt.Path
-			}
+			opt.apply()
 		}
 
 		// Create Device Config
@@ -188,4 +173,24 @@ func writeKey(kp KeyPair, privKey crypto.PrivKey) error {
 		return err
 	}
 	return nil
+}
+
+// FSOption is a functional option for configuring the filesystem.
+type FSOption struct {
+	Path string  // Path to the directory
+	Type DirType // Type of the directory
+}
+
+// apply applies the given options to the filesystem.
+func (o FSOption) apply() {
+	switch o.Type {
+	case Support:
+		SupportPath = o.Path
+	case Temporary:
+		TempPath = o.Path
+	case Documents:
+		DocsPath = o.Path
+	case Downloads:
+		DownloadsPath = o.Path
+	}
 }

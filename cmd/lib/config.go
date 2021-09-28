@@ -25,6 +25,9 @@ func parseInitializeRequest(buf []byte) (*node.InitializeRequest, []device.FSOpt
 			Type: device.Temporary,
 		}, device.FSOption{
 			Path: req.GetDeviceOptions().GetDocumentsDir(),
+			Type: device.Downloads,
+		}, device.FSOption{
+			Path: req.GetDeviceOptions().GetDocumentsDir(),
 			Type: device.Documents,
 		}, device.FSOption{
 			Path: req.GetDeviceOptions().GetSupportDir(),
