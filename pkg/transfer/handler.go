@@ -82,19 +82,7 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 	}
 
 	// Call Outgoing Transfer
-	wg := sync.WaitGroup{}
-	go p.onOutgoingTransfer(entry, wg, msgio.NewWriter(stream))
-	wg.Wait()
-
-	// Complete the transfer
-	event, err := p.queue.Complete(s.Conn().RemotePeer())
-	if err != nil {
-		logger.Error("Failed to Complete Transfer", zap.Error(err))
-		return
-	}
-
-	// Emit Event
-	p.emitter.Emit(Event_COMPLETED, event)
+	go p.onOutgoingTransfer(entry, msgio.NewWriter(stream))
 }
 
 // onIncomingTransfer incoming transfer handler
@@ -136,32 +124,34 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 			logger.Error("Error writing stream", zap.Error(err))
 			return
 		}
+
+		// Await WaitGroup
+		waitGroup.Wait()
+		reader.Close()
+
+		// Complete the transfer
+		event, err := p.queue.Complete(s.Conn().RemotePeer())
+		if err != nil {
+			logger.Error("Failed to Complete Transfer", zap.Error(err))
+			return
+		}
+
+		// Emit Event
+		p.emitter.Emit(Event_COMPLETED, event)
 	}(e, waitGroup, reader)
-
-	// Await WaitGroup
-	waitGroup.Wait()
-	reader.Close()
-
-	// Complete the transfer
-	event, err := p.queue.Complete(s.Conn().RemotePeer())
-	if err != nil {
-		logger.Error("Failed to Complete Transfer", zap.Error(err))
-		return
-	}
-
-	// Emit Event
-	p.emitter.Emit(Event_COMPLETED, event)
 }
 
 // onOutgoingTransfer is called by onInviteResponse if Validated
-func (p *TransferProtocol) onOutgoingTransfer(entry *TransferEntry, waitGroup sync.WaitGroup, wc msgio.WriteCloser) {
+func (p *TransferProtocol) onOutgoingTransfer(entry *TransferEntry, wc msgio.WriteCloser) {
+	// Initialize Params
 	logger.Info("Beginning Outgoing Transfer Stream")
+	wg := sync.WaitGroup{}
 
 	// Write All Files
 	err := entry.request.GetPayload().MapItemsWithIndex(func(m *common.Payload_Item, i int, count int) error {
 		// Add to WaitGroup
 		logger.Info("Current Item: ", zap.String(fmt.Sprint(i), m.String()))
-		waitGroup.Add(1)
+		wg.Add(1)
 
 		// Create New Writer
 		w := NewWriter(m, i, count, device.DocsPath, p.emitter)
@@ -173,11 +163,22 @@ func (p *TransferProtocol) onOutgoingTransfer(entry *TransferEntry, waitGroup sy
 
 		// Complete Writing
 		logger.Info(fmt.Sprintf("Finished TRANSFERRING File (%v/%v)", i, count))
-		waitGroup.Done()
+		wg.Done()
 		return nil
 	})
 	if err != nil {
 		logger.Error("Error writing stream", zap.Error(err))
 		return
 	}
+
+	// Complete the transfer
+	wg.Wait()
+	event, err := p.queue.Complete(entry.toId)
+	if err != nil {
+		logger.Error("Failed to Complete Transfer", zap.Error(err))
+		return
+	}
+
+	// Emit Event
+	p.emitter.Emit(Event_COMPLETED, event)
 }
