@@ -95,6 +95,20 @@ func (ir *itemReader) ReadFrom(reader msgio.ReadCloser) error {
 			ir.Progress(i)
 		}
 	}
+
+	// Flush File Contents
+	err = f.Sync()
+	if err != nil {
+		logger.Error(fmt.Sprintf("Failed to Flush item at path %s", ir.item.Path), zap.Error(err))
+		return err
+	}
+
+	// Close File
+	err = f.Close()
+	if err != nil {
+		logger.Error(fmt.Sprintf("Failed to Close item at path %s", ir.item.Path), zap.Error(err))
+		return err
+	}
 	return nil
 }
 
@@ -159,7 +173,6 @@ func (iw *itemWriter) WriteTo(writer msgio.WriteCloser) error {
 
 	// Open Os File
 	f, err := os.Open(iw.item.Path)
-	defer f.Close()
 	if err != nil {
 		return errors.New(fmt.Sprintf("Error to read Item, %s", err.Error()))
 	}
@@ -214,6 +227,13 @@ func (iw *itemWriter) WriteTo(writer msgio.WriteCloser) error {
 		if (i % ITEM_INTERVAL) == 0 {
 			iw.Progress(i)
 		}
+	}
+
+	// Close File
+	err = f.Close()
+	if err != nil {
+		logger.Error(fmt.Sprintf("Failed to Close item at path %s", iw.item.Path), zap.Error(err))
+		return err
 	}
 	return nil
 }

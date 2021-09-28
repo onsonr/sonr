@@ -67,7 +67,7 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 	}
 	p.emitter.Emit(Event_RESPONDED, resp.ToEvent())
 
-	// locate request data and remove it if found
+	// Locate request data and remove it if found
 	entry, err := p.queue.Validate(resp)
 	if err != nil {
 		logger.Error("Failed to Validate Invite RESPONSE buffer.", zap.Error(err))
@@ -81,34 +81,9 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 		return
 	}
 
-	// Logging Info
-	logger.Info("Beginning Outgoing Transfer Stream")
+	// Call Outgoing Transfer
 	wg := sync.WaitGroup{}
-	go func(waitGroup sync.WaitGroup, wc msgio.WriteCloser) {
-		// Write All Files
-		err = entry.request.GetPayload().MapItemsWithIndex(func(m *common.Payload_Item, i int, count int) error {
-			// Add to WaitGroup
-			logger.Info("Current Item: ", zap.String(fmt.Sprint(i), m.String()))
-			waitGroup.Add(1)
-
-			// Create New Writer
-			w := NewWriter(m, i, count, device.DocsPath, p.emitter)
-			err := w.WriteTo(wc)
-			if err != nil {
-				logger.Error("Error writing stream", zap.Error(err))
-				return err
-			}
-
-			// Complete Writing
-			logger.Info(fmt.Sprintf("Finished TRANSFERRING File (%v/%v)", i, count))
-			waitGroup.Done()
-			return nil
-		})
-		if err != nil {
-			logger.Error("Error writing stream", zap.Error(err))
-			return
-		}
-	}(wg, msgio.NewWriter(stream))
+	go p.onOutgoingTransfer(entry, wg, msgio.NewWriter(stream))
 	wg.Wait()
 
 	// Complete the transfer
@@ -132,8 +107,7 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 	}
 	logger.Info("Started Incoming Transfer...")
 
-	// Logging Info
-	logger.Info("Beginning Outgoing Transfer Stream")
+	// Handle incoming stream
 	go func(rs msgio.ReadCloser) {
 		// Write All Files
 		err = entry.request.GetPayload().MapItemsWithIndex(func(m *common.Payload_Item, i int, count int) error {
@@ -164,4 +138,33 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 		// Emit Event
 		p.emitter.Emit(Event_COMPLETED, event)
 	}(msgio.NewReader(s))
+}
+
+// onOutgoingTransfer is called by onInviteResponse if Validated
+func (p *TransferProtocol) onOutgoingTransfer(entry *TransferEntry, waitGroup sync.WaitGroup, wc msgio.WriteCloser) {
+	logger.Info("Beginning Outgoing Transfer Stream")
+
+	// Write All Files
+	err := entry.request.GetPayload().MapItemsWithIndex(func(m *common.Payload_Item, i int, count int) error {
+		// Add to WaitGroup
+		logger.Info("Current Item: ", zap.String(fmt.Sprint(i), m.String()))
+		waitGroup.Add(1)
+
+		// Create New Writer
+		w := NewWriter(m, i, count, device.DocsPath, p.emitter)
+		err := w.WriteTo(wc)
+		if err != nil {
+			logger.Error("Error writing stream", zap.Error(err))
+			return err
+		}
+
+		// Complete Writing
+		logger.Info(fmt.Sprintf("Finished TRANSFERRING File (%v/%v)", i, count))
+		waitGroup.Done()
+		return nil
+	})
+	if err != nil {
+		logger.Error("Error writing stream", zap.Error(err))
+		return
+	}
 }
