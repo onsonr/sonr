@@ -5,10 +5,10 @@ option go_package = "github.com/sonr-io/core/internal/common";
 
 // Internet Connection Type
 enum Connection {
-  OFFLINE = 0;  // No Internet Connection
-  WIFI = 1;     // Wifi Connection
+  WIFI = 0;     // Wifi Connection
+  ETHERNET = 1; // Ethernet Connection
   MOBILE = 2;   // Mobile Connection
-  ETHERNET = 3; // Ethernet Connection
+  OFFLINE = 3;  // No Internet Connection
 }
 
 // Environment Type Configuration
