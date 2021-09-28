@@ -87,23 +87,27 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 	go func(waitGroup sync.WaitGroup, wc msgio.WriteCloser) {
 		// Write All Files
 		err = entry.request.GetPayload().MapItemsWithIndex(func(m *common.Payload_Item, i int, count int) error {
+			// Add to WaitGroup
 			logger.Info("Current Item: ", zap.String(fmt.Sprint(i), m.String()))
-			wg.Add(1)
+			waitGroup.Add(1)
+
+			// Create New Writer
 			w := NewWriter(m, i, count, device.DocsPath, p.emitter)
 			err := w.WriteTo(wc)
 			if err != nil {
 				logger.Error("Error writing stream", zap.Error(err))
 				return err
 			}
+
+			// Complete Writing
 			logger.Info(fmt.Sprintf("Finished TRANSFERRING File (%v/%v)", i, count))
-			wg.Done()
+			waitGroup.Done()
 			return nil
 		})
 		if err != nil {
 			logger.Error("Error writing stream", zap.Error(err))
 			return
 		}
-
 	}(wg, msgio.NewWriter(stream))
 	wg.Wait()
 
@@ -114,7 +118,7 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 		return
 	}
 
-	// Set Status
+	// Emit Event
 	p.emitter.Emit(Event_COMPLETED, event)
 }
 
@@ -133,12 +137,15 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 	go func(rs msgio.ReadCloser) {
 		// Write All Files
 		err = entry.request.GetPayload().MapItemsWithIndex(func(m *common.Payload_Item, i int, count int) error {
+			// Create New Reader
 			r := NewReader(m, i, count, device.DocsPath, p.emitter)
 			err := r.ReadFrom(rs)
 			if err != nil {
 				logger.Error("Failed to Read from Stream and Write to File.", zap.Error(err))
 				return err
 			}
+
+			// Complete Writing
 			logger.Info(fmt.Sprintf("Finished RECEIVING File (%v/%v)", i, count))
 			return nil
 		})
@@ -154,7 +161,7 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 			return
 		}
 
-		// Set Status
+		// Emit Event
 		p.emitter.Emit(Event_COMPLETED, event)
 	}(msgio.NewReader(s))
 }
