@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/liujiawm/graphics-go/graphics"
+	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/tools/logger"
 	"go.uber.org/zap"
 )
@@ -46,7 +47,7 @@ func NewFileItem(path string) (*Payload_Item, error) {
 	// Check if File is Image
 	if fileItem.Mime.IsImage() {
 		// Init Thumbnail Path
-		thumbTempPath, err := NewTempPath(fileItem.Path, WithSuffix("thumb"))
+		thumbTempPath, err := device.NewTempPath(fileItem.Path, device.WithSuffix("thumb"))
 		if err != nil {
 			logger.Error("Failed to retreive Temporary Path", zap.Error(err))
 			return nil, err

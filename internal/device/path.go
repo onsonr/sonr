@@ -1,11 +1,9 @@
-package common
+package device
 
 import (
 	"errors"
 	"path/filepath"
 	"strings"
-
-	"github.com/sonr-io/core/internal/device"
 )
 
 type filePathOptType int
@@ -44,7 +42,7 @@ func NewDocsPath(path string, opts ...FilePathOption) (string, error) {
 	}
 
 	// Build path
-	return fpo.Apply(device.DocsPath)
+	return fpo.Apply(DocsPath)
 }
 
 // NewDownloadsPath Returns a new path in downloads dir with given file name.
@@ -64,7 +62,7 @@ func NewDownloadsPath(path string, opts ...FilePathOption) (string, error) {
 	}
 
 	// Build path
-	return fpo.Apply(device.DownloadsPath)
+	return fpo.Apply(DownloadsPath)
 }
 
 // NewTempPath Returns a new path in temp dir with given file name.
@@ -84,7 +82,7 @@ func NewTempPath(path string, opts ...FilePathOption) (string, error) {
 	}
 
 	// Build path
-	return fpo.Apply(device.TempPath)
+	return fpo.Apply(TempPath)
 }
 
 // NewSupportPath Returns a new path in support dir with given file name.
@@ -104,7 +102,7 @@ func NewSupportPath(path string, opts ...FilePathOption) (string, error) {
 	}
 
 	// Build path
-	return fpo.Apply(device.DownloadsPath)
+	return fpo.Apply(DownloadsPath)
 }
 
 // FilePathOption is a function option for FilePath.
