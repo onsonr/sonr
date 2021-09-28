@@ -24,7 +24,7 @@ type ExchangeProtocol struct {
 }
 
 // NewProtocol creates new ExchangeProtocol
-func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter, p *common.Peer) (*ExchangeProtocol, error) {
+func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) (*ExchangeProtocol, error) {
 	// Create PubSub Value Store
 	r, err := psr.NewPubsubValueStore(ctx, host.Host, host.Pubsub(), ExchangeValidator{}, psr.WithRebroadcastInterval(5*time.Second))
 	if err != nil {
@@ -37,12 +37,6 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter, p *
 		host:             host,
 		emitter:          em,
 		PubsubValueStore: r,
-	}
-
-	// Update Peer in the store
-	err = exchProtocol.Update(p)
-	if err != nil {
-		return nil, err
 	}
 	return exchProtocol, nil
 }

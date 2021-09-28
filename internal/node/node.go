@@ -57,19 +57,11 @@ func NewNode(ctx context.Context, host *host.SNRHost, loc *common.Location, pro 
 		queue:   list.New(),
 		profile: pro,
 	}
-
-	// Fetch User Peer
-	peer, err := node.Peer()
-	if err != nil {
-		logger.Error("Failed to fetch User Peer", zap.Error(err))
-		return nil, err
-	}
-
 	// Set Transfer Protocol
 	node.TransferProtocol = transfer.NewProtocol(ctx, host, node.Emitter)
 
 	// Set Exchange Protocol
-	exch, err := exchange.NewProtocol(ctx, host, node.Emitter, peer)
+	exch, err := exchange.NewProtocol(ctx, host, node.Emitter)
 	if err != nil {
 		logger.Error("Failed to start ExchangeProtocol", zap.Error(err))
 		return nil, err
@@ -77,7 +69,7 @@ func NewNode(ctx context.Context, host *host.SNRHost, loc *common.Location, pro 
 	node.ExchangeProtocol = exch
 
 	// Set Lobby Protocol
-	lobby, err := lobby.NewProtocol(host, loc, node.Emitter, peer)
+	lobby, err := lobby.NewProtocol(host, loc, node.Emitter)
 	if err != nil {
 		logger.Error("Failed to start LobbyProtocol", zap.Error(err))
 		return nil, err

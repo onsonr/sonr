@@ -33,7 +33,7 @@ type LobbyProtocol struct {
 }
 
 // NewProtocol creates a new lobby protocol instance.
-func NewProtocol(host *host.SNRHost, loc *common.Location, em *state.Emitter, p *common.Peer) (*LobbyProtocol, error) {
+func NewProtocol(host *host.SNRHost, loc *common.Location, em *state.Emitter) (*LobbyProtocol, error) {
 	// Create Exchange Topic
 	topic, err := host.Pubsub().Join(loc.OLC())
 	if err != nil {
@@ -68,12 +68,6 @@ func NewProtocol(host *host.SNRHost, loc *common.Location, em *state.Emitter, p 
 	// Handle Events and Return Protocol
 	go lobProtocol.HandleEvents()
 	go lobProtocol.HandleMessages()
-
-	// Update Peer
-	err = lobProtocol.Update(p)
-	if err != nil {
-		return nil, err
-	}
 	return lobProtocol, nil
 }
 
