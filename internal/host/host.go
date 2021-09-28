@@ -38,10 +38,8 @@ type SNRHost struct {
 	ctxHost      context.Context
 	ctxTileAuth  context.Context
 	ctxTileToken context.Context
-	privKey      crypto.PrivKey
 
 	// Libp2p
-	id     peer.ID
 	disc   *dsc.RoutingDiscovery
 	kdht   *dht.IpfsDHT
 	mdns   discovery.Service
@@ -93,10 +91,8 @@ func NewHost(ctx context.Context, conn common.Connection) (*SNRHost, error) {
 	// Create Host
 	hn := &SNRHost{
 		ctxHost: ctx,
-		id:      h.ID(),
 		Host:    h,
 		kdht:    kdhtRef,
-		privKey: privKey,
 	}
 
 	// Bootstrap Host
@@ -121,24 +117,26 @@ func (hn *SNRHost) Pubsub() *psub.PubSub {
 	return hn.pubsub
 }
 
-// PublicKey returns the public key of the host
-func (hn *SNRHost) PublicKey() crypto.PubKey {
-	return hn.privKey.GetPublic()
-}
-
 // Stat returns the host stat info
 func (hn *SNRHost) Stat() *SNRHostStat {
+	// Get Public Key
+	pubKey, err := device.KeyChain.GetPubKey(device.Account)
+	if err != nil {
+		logger.Error("Failed to get public key", zap.Error(err))
+		return nil
+	}
+
 	// Marshal Public Key
-	buf, err := crypto.MarshalPublicKey(hn.PublicKey())
+	buf, err := crypto.MarshalPublicKey(pubKey)
 	if err != nil {
 		logger.Error("Failed to marshal public key.", zap.Error(err))
 	}
 
 	// Return Host Stat
 	return &SNRHostStat{
-		ID:        hn.id,
+		ID:        hn.ID(),
 		PublicKey: string(buf),
-		PeerID:    hn.id.Pretty(),
+		PeerID:    hn.ID().Pretty(),
 		MultAddr:  hn.Addrs()[0].String(),
 	}
 }

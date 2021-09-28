@@ -13,13 +13,19 @@ import (
 )
 
 // Peer method returns the peer of the node
-func (n *Node) Peer() *common.Peer {
+func (n *Node) Peer() (*common.Peer, error) {
+	// Get Public Key
+	pubKey, err := device.KeyChain.GetPubKey(device.Account)
+	if err != nil {
+		return nil, err
+	}
+
 	// Find PublicKey Buffer
 	deviceStat := device.Stat()
-	pubBuf, err := crypto.MarshalPublicKey(n.host.PublicKey())
+	pubBuf, err := crypto.MarshalPublicKey(pubKey)
 	if err != nil {
 		logger.Error("Failed to marshal public key", zap.Error(err))
-		return nil
+		return nil, err
 	}
 
 	// Return Peer
@@ -34,7 +40,7 @@ func (n *Node) Peer() *common.Peer {
 			Id:       deviceStat.Id,
 			Arch:     deviceStat.Arch,
 		},
-	}
+	}, nil
 }
 
 // ToExchangeQueryRequest converts a query request to an exchange query request.

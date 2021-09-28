@@ -79,18 +79,22 @@ func NewNode(ctx context.Context, host *host.SNRHost, loc *common.Location) *Nod
 
 // Edit method updates Node's profile
 func (n *Node) Edit(p *common.Profile) error {
-	// Set Profile
+	// Set Profile and Get Peer
 	n.profile = p
+	peer, err := n.Peer()
+	if err != nil {
+		return err
+	}
 
 	// Push Update to Exchange
-	err := n.ExchangeProtocol.Update(n.Peer())
+	err = n.ExchangeProtocol.Update(peer)
 	if err != nil {
 		logger.Error("Failed to update Exchange", zap.Error(err))
 		return err
 	}
 
 	// Push Update to Lobby
-	err = n.LobbyProtocol.Update(n.Peer())
+	err = n.LobbyProtocol.Update(peer)
 	if err != nil {
 		logger.Error("Failed to update Lobby", zap.Error(err))
 		return err
@@ -113,7 +117,7 @@ func (n *Node) Supply(paths []string) error {
 }
 
 // Share a peer to have a transfer
-func (n *Node) Share(peer *common.Peer) error {
+func (n *Node) Share(to *common.Peer) error {
 	// Create New ID for Invite
 	id, err := n.host.NewID()
 	if err != nil {
@@ -121,17 +125,30 @@ func (n *Node) Share(peer *common.Peer) error {
 		return err
 	}
 
+	// Create new Metadata
+	meta, err := n.host.NewMetadata()
+	if err != nil {
+		logger.Error("Failed to create new metadata for Shared Invite", zap.Error(err))
+		return err
+	}
+
+	// Fetch Peer Data
+	from, err := n.Peer()
+	if err != nil {
+		return err
+	}
+
 	// Create Invite Request
 	req := &transfer.InviteRequest{
 		Payload:  n.queue.Front().Value.(*common.Payload),
-		Metadata: n.host.NewMetadata(),
-		To:       peer,
-		From:     n.Peer(),
+		Metadata: meta,
+		To:       to,
+		From:     from,
 		Uuid:     id,
 	}
 
 	// Fetch Peer ID from Exchange
-	entry, err := n.ExchangeProtocol.Query(exchange.NewQueryRequestFromSName(peer.GetSName()))
+	entry, err := n.ExchangeProtocol.Query(exchange.NewQueryRequestFromSName(from.GetSName()))
 	if err != nil {
 		logger.Error("Failed to search peer", zap.Error(err))
 		return err
@@ -149,16 +166,29 @@ func (n *Node) Share(peer *common.Peer) error {
 
 // Respond to an invite request
 func (n *Node) Respond(decs bool, to *common.Peer) error {
+	// Create new Metadata
+	meta, err := n.host.NewMetadata()
+	if err != nil {
+		logger.Error("Failed to create new metadata for Shared Invite", zap.Error(err))
+		return err
+	}
+
+	// Fetch Peer Data
+	from, err := n.Peer()
+	if err != nil {
+		return err
+	}
+
 	// Create Invite Response
-	var resp *transfer.InviteResponse
-	if decs {
-		resp = &transfer.InviteResponse{Decision: true, Metadata: n.host.NewMetadata(), From: n.Peer(), To: to}
-	} else {
-		resp = &transfer.InviteResponse{Decision: false, Metadata: n.host.NewMetadata(), From: n.Peer(), To: to}
+	resp := &transfer.InviteResponse{
+		Decision: decs,
+		Metadata: meta,
+		From:     from,
+		To:       to,
 	}
 
 	// Respond on TransferProtocol
-	err := n.TransferProtocol.Respond(resp)
+	err = n.TransferProtocol.Respond(resp)
 	if err != nil {
 		logger.Error("Failed to respond to invite", zap.Error(err))
 		n.Emit(Event_STATUS, err)

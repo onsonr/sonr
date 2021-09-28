@@ -8,7 +8,9 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/libp2p/go-msgio"
+	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/common"
+	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/tools/logger"
 	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
@@ -35,26 +37,40 @@ func (n *SNRHost) NewID() (*common.UUID, error) {
 }
 
 // NewMetadata generates message data shared between all node's p2p protocols
-func (n *SNRHost) NewMetadata() *common.Metadata {
+func (h *SNRHost) NewMetadata() (*common.Metadata, error) {
+	// Get local node's public key
+	pubKey, err := device.KeyChain.GetPubKey(device.Account)
+	if err != nil {
+		logger.Error("Failed to get local host's public key", zap.Error(err))
+		return nil, err
+	}
+
 	// Marshal Public key into public key data
-	nodePubKey, err := crypto.MarshalPublicKey(n.privKey.GetPublic())
+	nodePubKey, err := crypto.MarshalPublicKey(pubKey)
 	if err != nil {
 		logger.Error("Failed to Extract Public Key", zap.Error(err))
-		return nil
+		return nil, err
 	}
 
 	// Generate new Metadata
 	return &common.Metadata{
 		Timestamp: time.Now().Unix(),
 		PublicKey: nodePubKey,
-		NodeId:    peer.Encode(n.id),
-	}
+		NodeId:    peer.Encode(h.ID()),
+	}, nil
 }
 
 // AuthenticateId verifies UUID value and signature
-func (n *SNRHost) AuthenticateId(id *common.UUID) (bool, error) {
+func (h *SNRHost) AuthenticateId(id *common.UUID) (bool, error) {
+	// Get local node's public key
+	pubKey, err := device.KeyChain.GetPubKey(device.Account)
+	if err != nil {
+		logger.Error("Failed to get local host's public key", zap.Error(err))
+		return false, err
+	}
+
 	// verify UUID value
-	result, err := n.privKey.GetPublic().Verify([]byte(id.GetValue()), []byte(id.GetSignature()))
+	result, err := pubKey.Verify([]byte(id.GetValue()), []byte(id.GetSignature()))
 	if err != nil {
 		logger.Error("Failed to verify signature of UUID", zap.Error(err))
 		return false, err
@@ -127,8 +143,14 @@ func (n *SNRHost) SignMessage(message proto.Message) ([]byte, error) {
 
 // SignData signs an outgoing p2p message payload
 func (n *SNRHost) SignData(data []byte) ([]byte, error) {
+	// Get local node's private key
+	privKey, err := device.KeyChain.GetPrivKey(device.Account)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get private key")
+	}
+
 	// sign data using local node's private key
-	res, err := n.privKey.Sign(data)
+	res, err := privKey.Sign(data)
 	if err != nil {
 		logger.Error("Failed to sign data.", zap.Error(err))
 		return nil, err
