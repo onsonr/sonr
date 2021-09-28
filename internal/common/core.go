@@ -69,8 +69,8 @@ type PeerInfo struct {
 	SName           string        // Peer SName
 	StoreEntryKey   string        // Peer SName in Store Entry Key Format
 	PeerID          peer.ID       // Peer ID
-	PublicKey       crypto.PubKey // Peer Public Key
 	Peer            *Peer         // Peer Data Object
+	PublicKey       crypto.PubKey // Peer Public Key
 }
 
 // Info returns PeerInfo from Peer
@@ -134,25 +134,13 @@ func (p *Peer) PeerID() (peer.ID, error) {
 
 // PubKey returns the Public Key from the Peer
 func (p *Peer) PubKey() (crypto.PubKey, error) {
-	pubKey, err := crypto.UnmarshalPublicKey(p.GetPublicKey())
+	pubKey, err := crypto.UnmarshalEd25519PublicKey(p.GetPublicKey())
 	if err != nil {
 		msg := fmt.Sprintf("Failed to Unmarshal Public Key: %s", p.GetSName())
 		logger.Error(msg, zap.Error(err))
 		return nil, errors.Wrap(err, msg)
 	}
 	return pubKey, nil
-}
-
-// Unmarshal utilizes Proto.Unmarshal for this Peer Object
-func (p *Peer) Unmarshal(buf []byte) error {
-	// Unmarshal Peer Object
-	err := proto.Unmarshal(buf, p)
-	if err != nil {
-		msg := fmt.Sprintf("Failed to Unmarshal Peer Object: %s", p.GetSName())
-		logger.Error(msg, zap.Error(err))
-		return errors.Wrap(err, msg)
-	}
-	return nil
 }
 
 // ** ───────────────────────────────────────────────────────

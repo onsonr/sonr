@@ -12,6 +12,7 @@ import (
 	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/tools/state"
 	"go.uber.org/zap"
+	"google.golang.org/protobuf/proto"
 )
 
 // ExchangeProtocol handles Global Sonr Exchange Protocol
@@ -58,7 +59,7 @@ func (p *ExchangeProtocol) Query(q *QueryExchangeRequest) (*common.PeerInfo, err
 
 	// Unmarshal Peer from buffer
 	peerData := &common.Peer{}
-	err = peerData.Unmarshal(buf)
+	err = proto.Unmarshal(buf, peerData)
 	if err != nil {
 		return nil, err
 	}

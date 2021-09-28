@@ -48,7 +48,7 @@ func NewReader(pi *common.Payload_Item, index int, total int, docsDir string, em
 	}
 }
 
-// Returns Progress of File, Given the written number of bytes
+// Progress Returns Progress of File, Given the written number of bytes
 func (p *itemReader) Progress() []byte {
 	// Calculate Tracking
 	currentProgress := float32(p.size) / float32(p.item.Size)
