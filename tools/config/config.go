@@ -1,7 +1,6 @@
 package config
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 )
@@ -36,7 +35,7 @@ func (c Config) Create(fileName string) (*os.File, error) {
 }
 
 func (c Config) ReadFile(fileName string) ([]byte, error) {
-	return ioutil.ReadFile(filepath.Join(c.Path, fileName))
+	return os.ReadFile(filepath.Join(c.Path, fileName))
 }
 
 // CreateParentDir creates the parent directory of fileName inside c. fileName
@@ -50,7 +49,7 @@ func (c Config) WriteFile(fileName string, data []byte) error {
 	if err != nil {
 		return err
 	}
-	return ioutil.WriteFile(filepath.Join(c.Path, fileName), data, 0644)
+	return os.WriteFile(filepath.Join(c.Path, fileName), data, 0644)
 }
 
 func (c Config) MkdirAll() error {

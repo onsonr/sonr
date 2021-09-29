@@ -1,7 +1,6 @@
 package device
 
 import (
-	"crypto/rand"
 	"encoding/json"
 	"errors"
 
@@ -142,58 +141,26 @@ func SetDeviceID(id string) error {
 	return errors.New("Empty DeviceID provided.")
 }
 
-// loadKeychain loads a keychain from a file.
-func loadKeychain(kcconfig *config.Config) (Keychain, error) {
-	kc := &keychain{
-		config: kcconfig,
-	}
-	return kc, nil
-}
-
-// newKeychain creates a new keychain.
-func newKeychain(kcconfig *config.Config) (Keychain, error) {
-	// Create New Account Key
-	accPrivKey, _, err := crypto.GenerateEd25519Key(rand.Reader)
+// readKey reads a key from a file and returns privKey and pubKey.
+func readKey(kcconfig *config.Config, kp KeyPairType) (crypto.PrivKey, crypto.PubKey, error) {
+	// Get Buffer
+	dat, err := kcconfig.ReadFile(kp.Path())
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	// Create New Group Key
-	groupPrivKey, _, err := crypto.GenerateEd25519Key(rand.Reader)
+	// Get Private Key from Buffer
+	privKey, err := crypto.UnmarshalPrivateKey(dat)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-
-	// Create New Link Key
-	linkPrivKey, _, err := crypto.GenerateEd25519Key(rand.Reader)
-	if err != nil {
-		return nil, err
-	}
-
-	// Add Account Key to Keychain
-	err = writeKey(kcconfig, Account, accPrivKey)
-	if err != nil {
-		return nil, err
-	}
-
-	// Add Group Key to Keychain
-	err = writeKey(kcconfig, Group, groupPrivKey)
-	if err != nil {
-		return nil, err
-	}
-
-	// Add Link Key to Keychain
-	err = writeKey(kcconfig, Link, linkPrivKey)
-	if err != nil {
-		return nil, err
-	}
-	return &keychain{
-		config: kcconfig,
-	}, nil
+	// Get Public Key from Private Key
+	pubKey := privKey.GetPublic()
+	return privKey, pubKey, nil
 }
 
 // writeKey writes a key to the keychain.
-func writeKey(kcconfig *config.Config, kp KeyPair, privKey crypto.PrivKey) error {
+func writeKey(kcconfig *config.Config, kp KeyPairType, privKey crypto.PrivKey) error {
 	// Write Key to Keychain
 	buf, err := crypto.MarshalPrivateKey(privKey)
 	if err != nil {

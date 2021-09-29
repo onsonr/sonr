@@ -1,6 +1,7 @@
 package device
 
 import (
+	"crypto/rand"
 	"errors"
 	"path/filepath"
 
@@ -8,12 +9,12 @@ import (
 	"github.com/sonr-io/core/tools/config"
 )
 
-// KeyPair is a type of keypair
-type KeyPair int64
+// KeyPairType is a type of keypair
+type KeyPairType int64
 
 const (
 	// Account is the keypair for the account
-	Account KeyPair = iota
+	Account KeyPairType = iota
 
 	// Link is the keypair for linking Devices
 	Link
@@ -25,50 +26,176 @@ const (
 	PRIVATE_KEY_DIR = ".sonr_private"
 )
 
+// Path returns the path to the keypair
+func (kpt KeyPairType) Path() string {
+	switch kpt {
+	case Account:
+		return filepath.Join("keychain", "account_private_key")
+	case Group:
+		return filepath.Join("keychain", "group_private_key")
+	case Link:
+		return filepath.Join("keychain", "link_private_key")
+	}
+	return ""
+}
+
 // Keychain Interface for managing device keypairs.
 type Keychain interface {
 	// Exists Checks if a key pair exists in the keychain.
-	Exists(kp KeyPair) bool
+	Exists(kp KeyPairType) bool
 
 	// GetKeyPair Gets a key pair from the keychain.
-	GetKeyPair(kp KeyPair) (crypto.PubKey, crypto.PrivKey, error)
+	GetKeyPair(kp KeyPairType) (crypto.PubKey, crypto.PrivKey, error)
 
 	// GetPubKey Gets a public key from the keychain.
-	GetPubKey(kp KeyPair) (crypto.PubKey, error)
+	GetPubKey(kp KeyPairType) (crypto.PubKey, error)
 
 	// GetPrivKey Gets a private key from the keychain.
-	GetPrivKey(kp KeyPair) (crypto.PrivKey, error)
+	GetPrivKey(kp KeyPairType) (crypto.PrivKey, error)
 
 	// RemoveKeyPair Removes a key from the keychain.
-	RemoveKeyPair(kp KeyPair) error
+	RemoveKeyPair(kp KeyPairType) error
 
 	// SignWith returns a signature for a message with specified pair
-	SignWith(kp KeyPair, msg []byte) ([]byte, error)
+	SignWith(kp KeyPairType, msg []byte) ([]byte, error)
 
 	// VerifyWith verifies a signature with specified pair
-	VerifyWith(kp KeyPair, msg []byte, sig []byte) (bool, error)
+	VerifyWith(kp KeyPairType, msg []byte, sig []byte) (bool, error)
 }
 
 // keychain is a keychain implementation that stores keys in a directory.
 type keychain struct {
 	Keychain
 	config *config.Config
+
+	// Key Pair References
+	accountKeyPair keyPair
+	groupKeyPair   keyPair
+	linkKeyPair    keyPair
+}
+
+// loadKeychain loads a keychain from a file.
+func loadKeychain(kcconfig *config.Config) (Keychain, error) {
+	// Create Keychain
+	kc := &keychain{
+		config: kcconfig,
+	}
+
+	// Read Account Key
+	accPrivKey, accPubKey, err := readKey(kcconfig, Account)
+	if err != nil {
+		return nil, err
+	}
+
+	// Load Account Key to Keychain
+	err = kc.LoadKeyPair(accPubKey, accPrivKey, Account)
+	if err != nil {
+		return nil, err
+	}
+
+	// Read Link Key
+	linkPrivKey, linkPubKey, err := readKey(kcconfig, Link)
+	if err != nil {
+		return nil, err
+	}
+
+	// Load Link Key to Keychain
+	err = kc.LoadKeyPair(linkPubKey, linkPrivKey, Link)
+	if err != nil {
+		return nil, err
+	}
+
+	// Read Group Key
+	groupPrivKey, groupPubKey, err := readKey(kcconfig, Group)
+	if err != nil {
+		return nil, err
+	}
+
+	// Load Group Key to Keychain
+	err = kc.LoadKeyPair(groupPubKey, groupPrivKey, Group)
+	if err != nil {
+		return nil, err
+	}
+	return kc, nil
+}
+
+// newKeychain creates a new keychain.
+func newKeychain(kcconfig *config.Config) (Keychain, error) {
+	// Create Keychain
+	kc := &keychain{
+		config: kcconfig,
+	}
+
+	// Create New Account Key
+	accPrivKey, accPubKey, err := crypto.GenerateEd25519Key(rand.Reader)
+	if err != nil {
+		return nil, err
+	}
+
+	// Write Account Key to Disk
+	err = writeKey(kcconfig, Account, accPrivKey)
+	if err != nil {
+		return nil, err
+	}
+
+	// Load Account Key to Keychain
+	err = kc.LoadKeyPair(accPubKey, accPrivKey, Account)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create New Link Key
+	linkPrivKey, linkPubKey, err := crypto.GenerateEd25519Key(rand.Reader)
+	if err != nil {
+		return nil, err
+	}
+
+	// Write Link Key to Disk
+	err = writeKey(kcconfig, Link, linkPrivKey)
+	if err != nil {
+		return nil, err
+	}
+
+	// Load Link Key to Keychain
+	err = kc.LoadKeyPair(linkPubKey, linkPrivKey, Link)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create New Group Key
+	groupPrivKey, groupPubKey, err := crypto.GenerateEd25519Key(rand.Reader)
+	if err != nil {
+		return nil, err
+	}
+
+	// Write Group Key to Disk
+	err = writeKey(kcconfig, Group, groupPrivKey)
+	if err != nil {
+		return nil, err
+	}
+
+	// Load Group Key to Keychain
+	err = kc.LoadKeyPair(groupPubKey, groupPrivKey, Group)
+	if err != nil {
+		return nil, err
+	}
+	return kc, nil
 }
 
 // Exists checks if a key pair exists in the keychain.
-func (kc *keychain) Exists(kp KeyPair) bool {
+func (kc *keychain) Exists(kp KeyPairType) bool {
 	return kc.config.Exists(kp.Path())
 }
 
 // GetKeyPair gets a key pair from the keychain.
-func (kc *keychain) GetKeyPair(kp KeyPair) (crypto.PubKey, crypto.PrivKey, error) {
+func (kc *keychain) GetKeyPair(kp KeyPairType) (crypto.PubKey, crypto.PrivKey, error) {
 	if kc.Exists(kp) {
 		if kp == Account {
-			return kc.accountKeyPair()
+			return kc.accountKeyPair.PrivPubKeys()
 		} else if kp == Link {
-			return kc.linkKeyPair()
+			return kc.linkKeyPair.PrivPubKeys()
 		} else if kp == Group {
-			return kc.groupKeyPair()
+			return kc.groupKeyPair.PrivPubKeys()
 		} else {
 			return nil, nil, errors.New("Invalid Key Type")
 		}
@@ -77,16 +204,16 @@ func (kc *keychain) GetKeyPair(kp KeyPair) (crypto.PubKey, crypto.PrivKey, error
 }
 
 // GetPubKey gets a public key from the keychain.
-func (kc *keychain) GetPubKey(kp KeyPair) (crypto.PubKey, error) {
+func (kc *keychain) GetPubKey(kp KeyPairType) (crypto.PubKey, error) {
 	if kc.Exists(kp) {
 		if kp == Account {
-			pub, _, err := kc.accountKeyPair()
+			pub, _, err := kc.accountKeyPair.PrivPubKeys()
 			return pub, err
 		} else if kp == Group {
-			pub, _, err := kc.groupKeyPair()
+			pub, _, err := kc.groupKeyPair.PrivPubKeys()
 			return pub, err
 		} else if kp == Link {
-			pub, _, err := kc.linkKeyPair()
+			pub, _, err := kc.linkKeyPair.PrivPubKeys()
 			return pub, err
 		} else {
 			return nil, errors.New("Invalid Key Type")
@@ -96,16 +223,16 @@ func (kc *keychain) GetPubKey(kp KeyPair) (crypto.PubKey, error) {
 }
 
 // GetPrivKey gets a private key from the keychain.
-func (kc *keychain) GetPrivKey(kp KeyPair) (crypto.PrivKey, error) {
+func (kc *keychain) GetPrivKey(kp KeyPairType) (crypto.PrivKey, error) {
 	if kc.Exists(kp) {
 		if kp == Account {
-			_, priv, err := kc.accountKeyPair()
+			_, priv, err := kc.accountKeyPair.PrivPubKeys()
 			return priv, err
 		} else if kp == Group {
-			_, priv, err := kc.groupKeyPair()
+			_, priv, err := kc.groupKeyPair.PrivPubKeys()
 			return priv, err
 		} else if kp == Link {
-			_, priv, err := kc.linkKeyPair()
+			_, priv, err := kc.linkKeyPair.PrivPubKeys()
 			return priv, err
 		} else {
 			return nil, errors.New("Invalid Key Type")
@@ -114,8 +241,20 @@ func (kc *keychain) GetPrivKey(kp KeyPair) (crypto.PrivKey, error) {
 	return nil, errors.New("Keychain not loaded")
 }
 
+// LoadKeyPair loads a keypair set into the keychain.
+func (kc *keychain) LoadKeyPair(pub crypto.PubKey, priv crypto.PrivKey, kp KeyPairType) error {
+	if kp == Account {
+		kc.accountKeyPair = keyPair{pub, priv, kp}
+	} else if kp == Link {
+		kc.linkKeyPair = keyPair{pub, priv, kp}
+	} else if kp == Group {
+		kc.groupKeyPair = keyPair{pub, priv, kp}
+	}
+	return errors.New("Invalid Key Type")
+}
+
 // RemoveKeyPair removes a key from the keychain.
-func (kc *keychain) RemoveKeyPair(kp KeyPair) error {
+func (kc *keychain) RemoveKeyPair(kp KeyPairType) error {
 	if kc.Exists(kp) {
 		return kc.config.Delete(kp.Path())
 	}
@@ -123,7 +262,7 @@ func (kc *keychain) RemoveKeyPair(kp KeyPair) error {
 }
 
 // SignWith signs a message with the specified keypair
-func (kc *keychain) SignWith(kp KeyPair, msg []byte) ([]byte, error) {
+func (kc *keychain) SignWith(kp KeyPairType, msg []byte) ([]byte, error) {
 	if kc.Exists(kp) {
 		priv, err := kc.GetPrivKey(kp)
 		if err != nil {
@@ -135,7 +274,7 @@ func (kc *keychain) SignWith(kp KeyPair, msg []byte) ([]byte, error) {
 }
 
 // VerifyWith verifies a signature with specified pair
-func (kc *keychain) VerifyWith(kp KeyPair, msg []byte, sig []byte) (bool, error) {
+func (kc *keychain) VerifyWith(kp KeyPairType, msg []byte, sig []byte) (bool, error) {
 	if kc.Exists(kp) {
 		pub, err := kc.GetPubKey(kp)
 		if err != nil {
@@ -146,74 +285,21 @@ func (kc *keychain) VerifyWith(kp KeyPair, msg []byte, sig []byte) (bool, error)
 	return false, errors.New("Keychain not loaded")
 }
 
-// ---------------- Retreiver Functions ----------------
-// Get Pub/Priv Key Pair for Account
-func (k *keychain) accountKeyPair() (crypto.PubKey, crypto.PrivKey, error) {
-	// Get Buffer
-	dat, err := k.config.ReadFile(Account.Path())
-	if err != nil {
-		return nil, nil, err
-	}
-
-	// Get Private Key from Buffer
-	privKey, err := crypto.UnmarshalPrivateKey(dat)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	// Get Public Key from Private Key
-	pubKey := privKey.GetPublic()
-	return pubKey, privKey, nil
-}
-
-// Get Pub/Priv Key Pair for Group
-func (k *keychain) groupKeyPair() (crypto.PubKey, crypto.PrivKey, error) {
-	// Get Buffer
-	dat, err := k.config.ReadFile(Group.Path())
-	if err != nil {
-		return nil, nil, err
-	}
-
-	// Get Private Key from Buffer
-	privKey, err := crypto.UnmarshalPrivateKey(dat)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	// Get Public Key from Private Key
-	pubKey := privKey.GetPublic()
-	return pubKey, privKey, nil
-}
-
-// Get Pub/Priv Key Pair for Link
-func (k *keychain) linkKeyPair() (crypto.PubKey, crypto.PrivKey, error) {
-	// Get Buffer
-	dat, err := k.config.ReadFile(Link.Path())
-	if err != nil {
-		return nil, nil, err
-	}
-
-	// Get Private Key from Buffer
-	privKey, err := crypto.UnmarshalPrivateKey(dat)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	// Get Public Key from Private Key
-	pubKey := privKey.GetPublic()
-	return pubKey, privKey, nil
-}
-
 // ---------------- FilePath Functions ----------------
-// Get Account Private Key File Path
-func (kp KeyPair) Path() string {
-	switch kp {
-	case Account:
-		return filepath.Join("keychain", "account_private_key")
-	case Group:
-		return filepath.Join("keychain", "group_private_key")
-	case Link:
-		return filepath.Join("keychain", "link_private_key")
+type keyPair struct {
+	pub    crypto.PubKey
+	priv   crypto.PrivKey
+	kpType KeyPairType
+}
+
+// PrivPubKeys returns the private and public keys for the keypair given keychain
+func (kp keyPair) PrivPubKeys() (crypto.PubKey, crypto.PrivKey, error) {
+	if kp.priv == nil {
+		return nil, nil, errors.New("No Private Key")
 	}
-	return ""
+
+	if kp.pub == nil {
+		return nil, nil, errors.New("No Public Key")
+	}
+	return kp.pub, kp.priv, nil
 }

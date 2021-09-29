@@ -3,7 +3,6 @@ package common
 import (
 	//"errors"
 	//"image/jpeg"
-	//"io/ioutil"
 	"os"
 	//"github.com/bakape/thumbnailer/v2"
 	//"github.com/sonr-io/core/internal/device"
@@ -130,7 +129,7 @@ func NewFileItem(path string) (*Payload_Item, error) {
 // 		}
 
 // 		// Read all bytes from thumbnail
-// 		thumbBytes, err := ioutil.ReadFile(thumbPath)
+// 		thumbBytes, err := os.ReadFile(thumbPath)
 // 		if err != nil {
 // 			logger.Error("Failed to read thumbnail bytes after processing.", zap.Error(err))
 // 			return nil, err
