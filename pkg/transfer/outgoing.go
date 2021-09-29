@@ -57,7 +57,7 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 }
 
 // onOutgoingTransfer is called by onInviteResponse if Validated
-func (p *TransferProtocol) onOutgoingTransfer(entry *TransferEntry, wc msgio.WriteCloser) {
+func (p *TransferProtocol) onOutgoingTransfer(entry *Session, wc msgio.WriteCloser) {
 	// Initialize Params
 	logger.Info("Beginning Outgoing Transfer Stream")
 	wg := sync.WaitGroup{}

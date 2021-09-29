@@ -61,7 +61,7 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 	reader := msgio.NewReader(s)
 
 	// Handle incoming stream
-	go func(entry *TransferEntry, wg sync.WaitGroup, rs msgio.ReadCloser) {
+	go func(entry *Session, wg sync.WaitGroup, rs msgio.ReadCloser) {
 		// Write All Files
 		err = entry.MapItems(func(m *common.Payload_Item, i int, count int) error {
 			// Add to WaitGroup

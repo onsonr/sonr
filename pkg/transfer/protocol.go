@@ -3,11 +3,8 @@ package transfer
 import (
 	"container/list"
 	"context"
-	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/sonr-io/core/internal/common"
-	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/tools/state"
@@ -17,7 +14,7 @@ import (
 type TransferProtocol struct {
 	ctx     context.Context // Context
 	host    *host.SNRHost   // local host
-	queue   *transferQueue  // transfer queue
+	queue   *SessionQueue   // transfer queue
 	emitter *state.Emitter  // Handle to signal when done
 }
 
@@ -28,7 +25,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) *Tr
 		ctx:     ctx,
 		host:    host,
 		emitter: em,
-		queue: &transferQueue{
+		queue: &SessionQueue{
 			ctx:   ctx,
 			host:  host,
 			queue: list.New(),
@@ -89,168 +86,4 @@ func (p *TransferProtocol) Respond(id peer.ID, resp *InviteResponse) error {
 		return logger.Error("Failed to Send Message to Peer", err)
 	}
 	return nil
-}
-
-// TransferEntry is a single entry in the transfer queue.
-type TransferEntry struct {
-	direction   common.CompleteEvent_Direction
-	request     *InviteRequest
-	response    *InviteResponse
-	fromId      peer.ID
-	toId        peer.ID
-	lastUpdated int64
-	uuid        *common.UUID
-}
-
-// Count returns the number of items in Payload
-func (e TransferEntry) Count() int {
-	return len(e.request.GetPayload().GetItems())
-}
-
-// CopyUUID copies Request UUID to Response
-func (e TransferEntry) CopyUUID(resp *InviteResponse) *InviteResponse {
-	resp.Uuid = e.uuid
-	return resp
-}
-
-// Equals checks if given ID is equal to the current UUID.
-func (e TransferEntry) Equals(id *common.UUID) bool {
-	return e.uuid.GetValue() == id.GetValue()
-}
-
-// MapItems performs PayloadItemFunc on each item in the Payload.
-func (e TransferEntry) MapItems(f common.PayloadItemFunc) error {
-	return e.request.GetPayload().MapItems(f)
-}
-
-// transferQueue is a queue for incoming and outgoing requests.
-type transferQueue struct {
-	ctx   context.Context
-	host  *host.SNRHost
-	queue *list.List
-}
-
-// AddIncoming adds Incoming Request to Transfer Queue
-func (tq *transferQueue) AddIncoming(from peer.ID, req *InviteRequest) error {
-	// Authenticate Message
-	valid := tq.host.AuthenticateMessage(req, req.Metadata)
-	if !valid {
-		return ErrFailedAuth
-	}
-
-	// Create New TransferEntry
-	entry := TransferEntry{
-		direction:   common.CompleteEvent_INCOMING,
-		request:     req,
-		fromId:      from,
-		toId:        tq.host.ID(),
-		lastUpdated: int64(time.Now().Unix()),
-		uuid:        req.GetUuid(),
-	}
-
-	// Add to Requests
-	tq.queue.PushBack(entry)
-	return nil
-}
-
-// AddOutgoing adds Outgoing Request to Transfer Queue
-func (tq *transferQueue) AddOutgoing(to peer.ID, req *InviteRequest) error {
-	// Create New TransferEntry
-	entry := TransferEntry{
-		direction:   common.CompleteEvent_OUTGOING,
-		request:     req,
-		fromId:      tq.host.ID(),
-		toId:        to,
-		lastUpdated: int64(time.Now().Unix()),
-		uuid:        req.GetUuid(),
-	}
-
-	// Add to Requests
-	tq.queue.PushBack(entry)
-	return nil
-}
-
-// Next returns topmost entry in the queue.
-func (tq *transferQueue) Next() (*TransferEntry, error) {
-	// Find Entry for Peer
-	entry := tq.queue.Front()
-	if entry == nil {
-		return nil, ErrInvalidEntry
-	}
-
-	val := entry.Value.(TransferEntry)
-	val.lastUpdated = int64(time.Now().Unix())
-	return &val, nil
-}
-
-// Done marks the transfer as completed and returns the CompleteEvent.
-func (tq *transferQueue) Done() (*common.CompleteEvent, error) {
-	// Find Entry for Peer
-	entry := tq.queue.Front()
-	if entry == nil {
-		return nil, ErrInvalidEntry
-	}
-
-	// Pop Value of Entry from Queue
-	val := tq.queue.Remove(entry).(TransferEntry)
-	rawPayload := val.request.GetPayload()
-
-	// Adjust Payload item paths
-	adjPayload, err := rawPayload.ReplaceItemsDir(device.DownloadsPath)
-	if err != nil {
-		return nil, err
-	}
-
-	// Create CompleteEvent
-	event := &common.CompleteEvent{
-		Direction: val.direction,
-		Payload:   adjPayload,
-		Received:  int64(time.Now().Unix()),
-	}
-	return event, nil
-}
-
-// Validate takes list of Requests and returns true if Request exists in List and UUID is verified.
-// Method also returns the InviteRequest that points to the Response.
-func (tq *transferQueue) Validate(resp *InviteResponse) (*TransferEntry, error) {
-	// Authenticate Message
-	valid := tq.host.AuthenticateMessage(resp, resp.Metadata)
-	if !valid {
-		return nil, ErrFailedAuth
-	}
-
-	// Check Decision
-	if !resp.GetDecision() {
-		return nil, nil
-	}
-
-	// Check if the request is valid
-	if tq.queue.Len() == 0 {
-		return nil, ErrEmptyRequests
-	}
-
-	// Validate UUID
-	ok, err := tq.host.AuthenticateId(resp.GetUuid())
-	if err != nil {
-		return nil, err
-	}
-
-	// Check if UUID is valid
-	if !ok {
-		return nil, ErrMismatchUUID
-	}
-
-	// Get Next Entry
-	entry, err := tq.Next()
-	if err != nil {
-		return nil, logger.Error("Failed to get Transfer entry", err)
-	}
-
-	// Check if Request exists in Map
-	if entry.Equals(resp.GetUuid()) {
-		entry.response = resp
-		entry.lastUpdated = int64(time.Now().Unix())
-		return entry, nil
-	}
-	return nil, ErrRequestNotFound
 }
