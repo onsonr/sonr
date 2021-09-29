@@ -2,7 +2,6 @@ package device
 
 import (
 	"encoding/json"
-	"errors"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/sonr-io/core/tools/config"
@@ -152,7 +151,7 @@ func SetDeviceID(id string) error {
 		deviceID = id
 		return nil
 	}
-	return errors.New("Empty DeviceID provided.")
+	return logger.Error("Failed to Set Device ID", ErrEmptyDeviceID)
 }
 
 // keychainExists checks if EVERY key pair exists in the keychain.
@@ -182,12 +181,13 @@ func readKey(kcconfig *config.Config, kp KeyPairType) (crypto.PrivKey, crypto.Pu
 
 // writeKey writes a key to the keychain.
 func writeKey(kcconfig *config.Config, privKey crypto.PrivKey, kp KeyPairType) error {
-	// Write Key to Keychain
+	// Marshal Private Key
 	buf, err := crypto.MarshalPrivateKey(privKey)
 	if err != nil {
 		return err
 	}
 
+	// Write Key to Keychain
 	err = kcconfig.WriteFile(kp.Path(), buf)
 	if err != nil {
 		return err

@@ -8,7 +8,6 @@ import (
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/tools/state"
-	"go.uber.org/zap"
 )
 
 // Transfer Emission Events
@@ -60,7 +59,7 @@ func (p *TransferProtocol) Request(id peer.ID, req *InviteRequest) error {
 	// sign the data
 	signature, err := p.host.SignMessage(req)
 	if err != nil {
-		logger.Error("Failed to Sign Response Message", zap.Error(err))
+		logger.Error("Failed to Sign Response Message", err)
 		return err
 	}
 
@@ -68,8 +67,7 @@ func (p *TransferProtocol) Request(id peer.ID, req *InviteRequest) error {
 	req.Metadata.Signature = signature
 	err = p.host.SendMessage(id, RequestPID, req)
 	if err != nil {
-		logger.Error("Failed to Send Message to Peer", zap.Error(err))
-		return err
+		return logger.Error("Failed to Send Message to Peer", err)
 	}
 
 	// store the request in the map
@@ -82,8 +80,7 @@ func (p *TransferProtocol) Respond(id peer.ID, resp *InviteResponse) error {
 	// Find Entry
 	entry, err := p.queue.Find(id)
 	if err != nil {
-		logger.Error("Failed to find transfer entry", zap.Error(err))
-		return err
+		return logger.Error("Failed to find transfer entry", err)
 	}
 
 	// Copy UUID
@@ -92,8 +89,7 @@ func (p *TransferProtocol) Respond(id peer.ID, resp *InviteResponse) error {
 	// sign the data
 	signature, err := p.host.SignMessage(resp)
 	if err != nil {
-		logger.Error("Failed to Sign Response Message", zap.Error(err))
-		return err
+		return logger.Error("Failed to Sign Response Message", err)
 	}
 
 	// add the signature to the message
@@ -102,8 +98,7 @@ func (p *TransferProtocol) Respond(id peer.ID, resp *InviteResponse) error {
 	// Send Response
 	err = p.host.SendMessage(id, ResponsePID, resp)
 	if err != nil {
-		logger.Error("Failed to Send Message to Peer", zap.Error(err))
-		return err
+		return logger.Error("Failed to Send Message to Peer", err)
 	}
 	return nil
 }

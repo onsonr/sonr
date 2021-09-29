@@ -6,6 +6,9 @@ import (
 	"github.com/sonr-io/core/internal/common"
 )
 
+// ITEM_INTERVAL is the interval in which progress events are emitted
+const ITEM_INTERVAL = 25
+
 // ToEvent method on InviteResponse converts InviteResponse to DecisionEvent.
 func (ir *InviteResponse) ToEvent() *common.DecisionEvent {
 	return &common.DecisionEvent{

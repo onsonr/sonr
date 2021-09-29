@@ -2,7 +2,6 @@ package device
 
 import (
 	"crypto/rand"
-	"errors"
 	"path/filepath"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
@@ -82,7 +81,7 @@ func loadKeychain(kcconfig *config.Config) (Keychain, error) {
 	// Read Account Key
 	accPrivKey, accPubKey, err := readKey(kcconfig, Account)
 	if err != nil {
-		return nil, err
+		return nil, logger.Error("Failed to Read Account Key", err)
 	}
 
 	// Load Account Key to Keychain
@@ -91,7 +90,7 @@ func loadKeychain(kcconfig *config.Config) (Keychain, error) {
 	// Read Link Key
 	linkPrivKey, linkPubKey, err := readKey(kcconfig, Link)
 	if err != nil {
-		return nil, err
+		return nil, logger.Error("Failed to Read Link Key", err)
 	}
 
 	// Load Link Key to Keychain
@@ -100,12 +99,11 @@ func loadKeychain(kcconfig *config.Config) (Keychain, error) {
 	// Read Group Key
 	groupPrivKey, groupPubKey, err := readKey(kcconfig, Group)
 	if err != nil {
-		return nil, err
+		return nil, logger.Error("Failed to Read Group Key", err)
 	}
 
 	// Load Group Key to Keychain
 	kc.LoadKeyPair(groupPubKey, groupPrivKey, Group)
-
 	return kc, nil
 }
 
@@ -119,7 +117,7 @@ func newKeychain(kcconfig *config.Config) (Keychain, error) {
 	// Create New Account Key
 	accPrivKey, accPubKey, err := crypto.GenerateEd25519Key(rand.Reader)
 	if err != nil {
-		return nil, err
+		return nil, logger.Error("Failed to generate Account KeyPair", err)
 	}
 
 	// Write Account Key to Disk
@@ -134,7 +132,7 @@ func newKeychain(kcconfig *config.Config) (Keychain, error) {
 	// Create New Link Key
 	linkPrivKey, linkPubKey, err := crypto.GenerateEd25519Key(rand.Reader)
 	if err != nil {
-		return nil, err
+		return nil, logger.Error("Failed to generate Link KeyPair", err)
 	}
 
 	// Write Link Key to Disk
@@ -149,7 +147,7 @@ func newKeychain(kcconfig *config.Config) (Keychain, error) {
 	// Create New Group Key
 	groupPrivKey, groupPubKey, err := crypto.GenerateEd25519Key(rand.Reader)
 	if err != nil {
-		return nil, err
+		return nil, logger.Error("Failed to generate Group KeyPair", err)
 	}
 
 	// Write Group Key to Disk
@@ -178,10 +176,10 @@ func (kc *keychain) GetKeyPair(kp KeyPairType) (crypto.PubKey, crypto.PrivKey, e
 		} else if kp == Group {
 			return kc.groupKeyPair.PrivPubKeys()
 		} else {
-			return nil, nil, errors.New("Invalid Key Type")
+			return nil, nil, ErrInvalidKeyType
 		}
 	}
-	return nil, nil, errors.New("Keychain not loaded")
+	return nil, nil, ErrKeychainUnready
 }
 
 // GetPubKey gets a public key from the keychain.
@@ -206,9 +204,9 @@ func (kc *keychain) GetPubKey(kp KeyPairType) (crypto.PubKey, error) {
 			}
 			return pub, nil
 		}
-		return nil, errors.New("Invalid Key Type")
+		return nil, ErrInvalidKeyType
 	}
-	return nil, errors.New("Keychain not loaded")
+	return nil, ErrKeychainUnready
 }
 
 // GetPrivKey gets a private key from the keychain.
@@ -233,9 +231,9 @@ func (kc *keychain) GetPrivKey(kp KeyPairType) (crypto.PrivKey, error) {
 			}
 			return priv, nil
 		}
-		return nil, errors.New("Invalid Key Type")
+		return nil, ErrInvalidKeyType
 	}
-	return nil, errors.New("Keychain not loaded")
+	return nil, ErrKeychainUnready
 }
 
 // LoadKeyPair loads a keypair set into the keychain.
@@ -247,9 +245,8 @@ func (kc *keychain) LoadKeyPair(pub crypto.PubKey, priv crypto.PrivKey, kp KeyPa
 	} else if kp == Group {
 		kc.groupKeyPair = keyPair{pub, priv, kp}
 	} else {
-		logger.Error("Invalid KeyPair Type provided")
+		logger.Error("Failed to load Key Pair", ErrInvalidKeyType)
 	}
-
 }
 
 // RemoveKeyPair removes a key from the keychain.
@@ -257,7 +254,7 @@ func (kc *keychain) RemoveKeyPair(kp KeyPairType) error {
 	if kc.Exists(kp) {
 		return kc.config.Delete(kp.Path())
 	}
-	return errors.New("Keychain not loaded")
+	return logger.Error("Failed to Remove Key Pair", ErrKeychainUnready)
 }
 
 // SignWith signs a message with the specified keypair
@@ -269,7 +266,7 @@ func (kc *keychain) SignWith(kp KeyPairType, msg []byte) ([]byte, error) {
 		}
 		return priv.Sign(msg)
 	}
-	return nil, errors.New("Keychain not loaded")
+	return nil, logger.Error("Failed to Sign Data", ErrKeychainUnready)
 }
 
 // VerifyWith verifies a signature with specified pair
@@ -281,7 +278,7 @@ func (kc *keychain) VerifyWith(kp KeyPairType, msg []byte, sig []byte) (bool, er
 		}
 		return pub.Verify(msg, sig)
 	}
-	return false, errors.New("Keychain not loaded")
+	return false, logger.Error("Failed to Verify Data", ErrKeychainUnready)
 }
 
 // ---------------- FilePath Functions ----------------
@@ -294,11 +291,11 @@ type keyPair struct {
 // PrivPubKeys returns the private and public keys for the keypair given keychain
 func (kp keyPair) PrivPubKeys() (crypto.PubKey, crypto.PrivKey, error) {
 	if kp.priv == nil {
-		return nil, nil, errors.New("No Private Key")
+		return nil, nil, logger.Error("Failed to Return Private Key", ErrNoPrivateKey)
 	}
 
 	if kp.pub == nil {
-		return nil, nil, errors.New("No Public Key")
+		return nil, nil, logger.Error("Failed to Return Public Key", ErrNoPublicKey)
 	}
 	return kp.pub, kp.priv, nil
 }

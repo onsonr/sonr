@@ -11,7 +11,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/tools/logger"
-	"go.uber.org/zap"
 )
 
 // ** ───────────────────────────────────────────────────────
@@ -77,14 +76,14 @@ func (p *Peer) Info() (*PeerInfo, error) {
 	// Get Public Key
 	pubKey, err := p.PubKey()
 	if err != nil {
-		logger.Error("Failed to get Public Key", zap.Error(err))
+		logger.Error("Failed to get Public Key", err)
 		return nil, err
 	}
 
 	// Get peer ID from public key
 	id, err := peer.IDFromPublicKey(pubKey)
 	if err != nil {
-		logger.Error(fmt.Sprintf("Failed to get peer ID from Public Key: %s", p.GetSName()), zap.Error(err))
+		logger.Error(fmt.Sprintf("Failed to get peer ID from Public Key: %s", p.GetSName()), err)
 		return nil, err
 	}
 
@@ -111,14 +110,14 @@ func (p *Peer) PeerID() (peer.ID, error) {
 	// Fetch public key from peer data
 	pubKey, err := crypto.UnmarshalPublicKey(p.GetPublicKey())
 	if err != nil {
-		logger.Error(fmt.Sprintf("Failed to Unmarshal Public Key: %s", p.GetSName()), zap.Error(err))
+		logger.Error(fmt.Sprintf("Failed to Unmarshal Public Key: %s", p.GetSName()), err)
 		return "", err
 	}
 
 	// Get peer ID from public key
 	id, err := peer.IDFromPublicKey(pubKey)
 	if err != nil {
-		logger.Error(fmt.Sprintf("Failed to get peer ID from Public Key: %s", p.GetSName()), zap.Error(err))
+		logger.Error(fmt.Sprintf("Failed to get peer ID from Public Key: %s", p.GetSName()), err)
 		return "", err
 	}
 	return id, nil
@@ -134,7 +133,7 @@ func (p *Peer) PubKey() (crypto.PubKey, error) {
 	// Unmarshal Public Key
 	pubKey, err := crypto.UnmarshalPublicKey(p.GetPublicKey())
 	if err != nil {
-		logger.Error(fmt.Sprintf("Failed to Unmarshal Public Key: %s", p.GetSName()), zap.Error(err))
+		logger.Error(fmt.Sprintf("Failed to Unmarshal Public Key: %s", p.GetSName()), err)
 		return nil, err
 	}
 	return pubKey, nil
@@ -221,9 +220,13 @@ func (m *MIME) IsUrl() bool {
 func (m *MIME) PermitsThumbnail() bool {
 	return m.IsImage() || m.IsVideo() || m.IsAudio() || m.IsPDF()
 }
+
 // ** ───────────────────────────────────────────────────────
 // ** ─── Payload Management ────────────────────────────────
 // ** ───────────────────────────────────────────────────────
+// PayloadItemFunc is the Map function for PayloadItem
+type PayloadItemFunc func(item *Payload_Item, index int, total int) error
+
 // NewPayload creates a new Payload Object
 func NewPayload(owner *Profile, paths []string) (*Payload, error) {
 	// Initialize
@@ -244,7 +247,7 @@ func NewPayload(owner *Profile, paths []string) (*Payload, error) {
 			item, err := NewUrlItem(path)
 			if err != nil {
 				msg := fmt.Sprintf("Failed to create URLItem at Index: %v, with Path: %s", i, path)
-				logger.Error(msg, zap.Error(err))
+				logger.Error(msg, err)
 				errs = append(errs, errors.Wrap(err, msg))
 				continue
 			}
@@ -260,7 +263,7 @@ func NewPayload(owner *Profile, paths []string) (*Payload, error) {
 			item, err := NewFileItem(path)
 			if err != nil {
 				msg := fmt.Sprintf("Failed to create FileItem at Index: %v with Path: %s", i, path)
-				logger.Error(msg, zap.Error(err))
+				logger.Error(msg, err)
 				errs = append(errs, errors.Wrap(err, msg))
 				continue
 			}
@@ -271,7 +274,7 @@ func NewPayload(owner *Profile, paths []string) (*Payload, error) {
 			continue
 		} else {
 			err := fmt.Errorf("Invalid Path provided, value is neither File or URL. Path: %s", path)
-			logger.Error(err.Error(), zap.Error(err))
+			logger.Error(err.Error(), err)
 			errs = append(errs, err)
 			continue
 		}
@@ -290,7 +293,7 @@ func NewPayload(owner *Profile, paths []string) (*Payload, error) {
 	// Check if there are any errors
 	if len(errs) > 0 {
 		err := WrapErrors(fmt.Sprintf("⚠️ Payload created with %v Errors: \n", len(errs)), errs)
-		logger.Error(err.Error(), zap.Error(err))
+		logger.Error(err.Error(), err)
 		return payload, err
 	}
 	return payload, nil
@@ -321,9 +324,10 @@ func (p *Payload) IsMultiple() (bool, error) {
 }
 
 // MapItems performs method chaining on the Items in the Payload
-func (p *Payload) MapItems(fn func(item *Payload_Item) error) error {
-	for _, item := range p.GetItems() {
-		if err := fn(item); err != nil {
+func (p *Payload) MapItems(fn PayloadItemFunc) error {
+	count := len(p.GetItems())
+	for i, item := range p.GetItems() {
+		if err := fn(item, i, count); err != nil {
 			return err
 		}
 	}
@@ -331,7 +335,7 @@ func (p *Payload) MapItems(fn func(item *Payload_Item) error) error {
 }
 
 // MapItems performs method chaining on the Items in the Payload
-func (p *Payload) MapItemsWithIndex(fn func(item *Payload_Item, index int, total int) error) error {
+func (p *Payload) MapItemsWithIndex(fn PayloadItemFunc) error {
 	count := len(p.GetItems())
 	for i, item := range p.GetItems() {
 		if err := fn(item, i, count); err != nil {
@@ -342,10 +346,11 @@ func (p *Payload) MapItemsWithIndex(fn func(item *Payload_Item, index int, total
 }
 
 // MapFileItems performs method chaining on ONLY the FileItems in the Payload
-func (p *Payload) MapFileItems(fn func(item *Payload_Item) error) error {
-	for _, item := range p.GetItems() {
+func (p *Payload) MapFileItems(fn PayloadItemFunc) error {
+	count := len(p.GetItems())
+	for i, item := range p.GetItems() {
 		if item.GetFile() != nil {
-			if err := fn(item); err != nil {
+			if err := fn(item, i, count); err != nil {
 				return err
 			}
 		}
@@ -354,10 +359,11 @@ func (p *Payload) MapFileItems(fn func(item *Payload_Item) error) error {
 }
 
 // MapUrlItems performs method chaining on ONLY the UrlItems in the Payload
-func (p *Payload) MapUrlItems(fn func(item *Payload_Item) error) error {
-	for _, item := range p.GetItems() {
+func (p *Payload) MapUrlItems(fn PayloadItemFunc) error {
+	count := len(p.GetItems())
+	for i, item := range p.GetItems() {
 		if item.GetUrl() != nil {
-			if err := fn(item); err != nil {
+			if err := fn(item, i, count); err != nil {
 				return err
 			}
 		}

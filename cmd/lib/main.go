@@ -7,7 +7,6 @@ import (
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/internal/node"
 	"github.com/sonr-io/core/tools/logger"
-	"go.uber.org/zap"
 )
 
 type Client struct {
@@ -28,38 +27,38 @@ func Start(reqBytes []byte) {
 		// Unmarshal request
 		req, fsOpts, err := parseInitializeRequest(reqBytes)
 		if err != nil {
-			logger.Fatal("Failed to Parse InitializeRequest", zap.Error(err))
+			panic(logger.Error("Failed to Parse Initialize Request", err))
 		}
 
 		// Initialize Device
 		err = device.Init(req.GetEnvOptions().GetEnvironment().IsDev(), fsOpts...)
 		if err != nil {
-			logger.Panic("Failed to initialize Device", zap.Error(err))
+			panic(logger.Error("Failed to initialize Device", err))
 		}
 
 		// Initialize environment
 		ctx := context.Background()
 		err = device.InitEnv()
 		if err != nil {
-			logger.Error("Failed to initialize environment variables", zap.Error(err))
+			logger.Error("Failed to initialize environment variables", err)
 		}
 
 		// Initialize Host
 		host, err := host.NewHost(ctx, req.GetConnection())
 		if err != nil {
-			logger.Panic("Failed to create Host", zap.Error(err))
+			panic(logger.Error("Failed to create Host", err))
 		}
 
 		// Create Node
 		n, err := node.NewNode(ctx, host, req.GetLocation())
 		if err != nil {
-			logger.Panic("Failed to update Profile for Node", zap.Error(err))
+			panic(logger.Error("Failed to update Profile for Node", err))
 		}
 
 		// Create RPC Service
 		service, err := node.NewRPCService(ctx, n)
 		if err != nil {
-			logger.Panic("Failed to start RPC Service", zap.Error(err))
+			panic(logger.Error("Failed to start RPC Service", err))
 		}
 
 		// Create Client
@@ -81,7 +80,7 @@ func Start(reqBytes []byte) {
 		// Push EditRequest
 		_, err = client.service.Edit(client.ctx, editReq)
 		if err != nil {
-			logger.Error("Failed to supply initial Profile", zap.Error(err))
+			logger.Error("Failed to supply initial Profile", err)
 		}
 	}
 	return

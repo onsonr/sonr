@@ -18,7 +18,6 @@ import (
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/tools/logger"
-	"go.uber.org/zap"
 )
 
 // SNRHostStat is the host stat info
@@ -85,7 +84,7 @@ func NewHost(ctx context.Context, conn common.Connection) (*SNRHost, error) {
 		libp2p.EnableAutoRelay(),
 	)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to initialize host")
+		return nil, logger.Error("Failed to initialize libp2p host", err)
 	}
 
 	// Create Host
@@ -98,14 +97,14 @@ func NewHost(ctx context.Context, conn common.Connection) (*SNRHost, error) {
 	// Bootstrap Host
 	err = hn.Bootstrap()
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to bootstrap host")
+		return nil, logger.Error("Failed to bootstrap libp2p Host", err)
 	}
 
 	// Check for Wifi/Ethernet for MDNS
 	if conn == common.Connection_WIFI || conn == common.Connection_ETHERNET {
 		err = hn.MDNS()
 		if err != nil {
-			return nil, errors.Wrap(err, "Failed to initialize MDNS")
+			return nil, logger.Error("Failed to start MDNS Discovery", err)
 		}
 	}
 	return hn, nil
@@ -118,18 +117,17 @@ func (hn *SNRHost) Pubsub() *psub.PubSub {
 }
 
 // Stat returns the host stat info
-func (hn *SNRHost) Stat() *SNRHostStat {
+func (hn *SNRHost) Stat() (*SNRHostStat, error) {
 	// Get Public Key
 	pubKey, err := device.KeyChain.GetPubKey(device.Account)
 	if err != nil {
-		logger.Error("Failed to get public key", zap.Error(err))
-		return nil
+		return nil, logger.Error("Failed to get public key", err)
 	}
 
 	// Marshal Public Key
 	buf, err := crypto.MarshalPublicKey(pubKey)
 	if err != nil {
-		logger.Error("Failed to marshal public key.", zap.Error(err))
+		return nil, logger.Error("Failed to marshal public key", err)
 	}
 
 	// Return Host Stat
@@ -138,5 +136,5 @@ func (hn *SNRHost) Stat() *SNRHostStat {
 		PublicKey: string(buf),
 		PeerID:    hn.ID().Pretty(),
 		MultAddr:  hn.Addrs()[0].String(),
-	}
+	}, nil
 }

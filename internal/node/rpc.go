@@ -6,13 +6,11 @@ import (
 	"net"
 
 	common "github.com/sonr-io/core/internal/common"
-	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/transfer"
 	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/tools/state"
-	"go.uber.org/zap"
 	grpc "google.golang.org/grpc"
 )
 
@@ -43,8 +41,7 @@ func NewRPCService(ctx context.Context, n *Node) (*NodeRPCService, error) {
 	// Bind RPC Service
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", RPC_SERVER_PORT))
 	if err != nil {
-		logger.Error("Failed to bind to port", zap.Error(err))
-		return nil, err
+		return nil, logger.Error("Failed to bind to port", err)
 	}
 
 	// Create a new gRPC server
@@ -171,24 +168,8 @@ func (n *NodeRPCService) Respond(ctx context.Context, req *RespondRequest) (*Res
 
 // Stat method returns the node's stats
 func (n *NodeRPCService) Stat(ctx context.Context, req *StatRequest) (*StatResponse, error) {
-	// Call Internal Stat
-	return &StatResponse{
-		SName:   n.profile.SName,
-		Profile: n.profile,
-		Device: &StatResponse_Device{
-			Id:        device.Stat().Id,
-			Name:      device.Stat().HostName,
-			Os:        device.Stat().Os,
-			Arch:      device.Stat().Arch,
-			IsDesktop: device.Stat().IsDesktop,
-			IsMobile:  device.Stat().IsMobile,
-		},
-		Network: &StatResponse_Network{
-			PublicKey: n.host.Stat().PublicKey,
-			PeerID:    n.host.Stat().PeerID,
-			Multiaddr: n.host.Stat().MultAddr,
-		},
-	}, nil
+	resp, _ := n.Node.Stat()
+	return resp, nil
 }
 
 // HandleEmitter handles the emitter events.
@@ -238,7 +219,7 @@ func (nrc *NodeRPCService) serveRPC() {
 	for {
 		// Handle Node Events
 		if err := nrc.grpcServer.Serve(nrc.listener); err != nil {
-			logger.Error("Failed to serve gRPC", zap.Error(err))
+			logger.Error("Failed to serve gRPC", err)
 			return
 		}
 

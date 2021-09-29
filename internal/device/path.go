@@ -1,7 +1,6 @@
 package device
 
 import (
-	"errors"
 	"path/filepath"
 	"strings"
 )
@@ -14,15 +13,6 @@ const (
 	filePathOptionTypePrefix                           // Prefix
 	filePathOptionTypeReplace                          // Replace
 	filePathOptionTypeSeparator                        // Separator
-)
-
-// Error definitions
-var (
-	ErrDuplicateFilePathOption    = errors.New("Duplicate file path option")
-	ErrPrefixSuffixSetWithReplace = errors.New("Prefix or Suffix was set with the Replace option was set.")
-	ErrSeparatorLength            = errors.New("Separator length must be 1.")
-	ErrNoFilePathOptionSet        = errors.New("Prefix, Suffix, or Replace must be set.")
-	ErrNoFileNameSet              = errors.New("File name was not set by options.")
 )
 
 // NewDocsPath Returns a new path in docs dir with given file name.
@@ -261,31 +251,27 @@ func (fpo *filePathOptions) Apply(dir string) (string, error) {
 	// Verify baseName, extension, and separator are set
 	if fpo.baseName == "" || fpo.extension == "" || fpo.Separator == "" {
 		// Verify prefix, suffix, or replace is set
-		if !fpo.suffixSet && !fpo.prefixSet && !fpo.replaceSet {
-			return "", ErrNoFilePathOptionSet
-		} else {
-			// Check for Replace
-			if fpo.replaceSet {
-				// Check if prefix or suffix is set
-				if fpo.suffixSet || fpo.prefixSet {
-					return "", ErrPrefixSuffixSetWithReplace
-				} else {
-					fpo.fileName = fpo.Replace + "." + fpo.extension
-				}
+		// Check for Replace
+		if fpo.replaceSet {
+			// Check if prefix or suffix is set
+			if fpo.suffixSet || fpo.prefixSet {
+				return "", ErrPrefixSuffixSetWithReplace
 			} else {
-				// Check for prefix
-				if fpo.prefixSet {
-					fpo.fileName = fpo.Prefix + fpo.Separator + fpo.baseName
-				} else {
-					fpo.fileName = fpo.baseName
-				}
+				fpo.fileName = fpo.Replace + "." + fpo.extension
+			}
+		} else {
+			// Check for prefix
+			if fpo.prefixSet {
+				fpo.fileName = fpo.Prefix + fpo.Separator + fpo.baseName
+			} else {
+				fpo.fileName = fpo.baseName
+			}
 
-				// Check for suffix
-				if fpo.suffixSet {
-					fpo.fileName = fpo.fileName + fpo.Separator + fpo.Suffix
-				} else {
-					fpo.fileName = fpo.fileName + fpo.Separator
-				}
+			// Check for suffix
+			if fpo.suffixSet {
+				fpo.fileName = fpo.fileName + fpo.Separator + fpo.Suffix
+			} else {
+				fpo.fileName = fpo.fileName + fpo.Separator
 			}
 		}
 	} else {

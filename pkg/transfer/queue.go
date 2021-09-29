@@ -39,6 +39,11 @@ func (e TransferEntry) Equals(id *common.UUID) bool {
 	return e.uuid.GetValue() == id.GetValue()
 }
 
+// MapItems performs PayloadItemFunc on each item in the Payload.
+func (e TransferEntry) MapItems(f common.PayloadItemFunc) error {
+	return e.request.GetPayload().MapItems(f)
+}
+
 // transferQueue is a queue for incoming and outgoing requests.
 type transferQueue struct {
 	ctx      context.Context

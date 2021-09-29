@@ -10,7 +10,6 @@ import (
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/tools/state"
-	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -37,19 +36,19 @@ func NewProtocol(host *host.SNRHost, loc *common.Location, em *state.Emitter) (*
 	// Create Exchange Topic
 	topic, err := host.Pubsub().Join(loc.OLC())
 	if err != nil {
-		return nil, err
+		return nil, logger.Error("Failed to Join Local Pubsub Topic", err)
 	}
 
 	// Subscribe to Room
 	sub, err := topic.Subscribe()
 	if err != nil {
-		return nil, err
+		return nil, logger.Error("Failed to Subscribe to OLC Topic", err)
 	}
 
 	// Create Room Handler
 	handler, err := topic.EventHandler()
 	if err != nil {
-		return nil, err
+		return nil, logger.Error("Failed to Get Event Handler", err)
 	}
 
 	// Create Exchange Protocol
@@ -82,15 +81,13 @@ func (p *LobbyProtocol) Update(peer *common.Peer) error {
 	// Marshal Event
 	eventBuf, err := proto.Marshal(event)
 	if err != nil {
-		logger.Error("Failed to Marshal Event", zap.Error(err))
-		return err
+		return logger.Error("Failed to Marshal Event", err)
 	}
 
 	// Publish Event
 	err = p.topic.Publish(p.ctx, eventBuf)
 	if err != nil {
-		logger.Error("Failed to Publish Event", zap.Error(err))
-		return err
+		return logger.Error("Failed to Publish Event", err)
 	}
 	return nil
 }
@@ -137,7 +134,7 @@ func (p *LobbyProtocol) HandleMessages() {
 				data := &LobbyMessage{}
 				err = proto.Unmarshal(msg.Data, data)
 				if err != nil {
-					logger.Error("Failed to Unmarshal Message", zap.Error(err))
+					logger.Error("Failed to Unmarshal Message", err)
 					continue
 				}
 

@@ -9,7 +9,12 @@ import (
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/tools/logger"
-	"go.uber.org/zap"
+)
+
+// Error Definitions
+var (
+	ErrEmptyQueue   = errors.New("No items in Transfer Queue.")
+	ErrInvalidQuery = errors.New("No SName or PeerID provided.")
 )
 
 // Peer method returns the peer of the node
@@ -17,15 +22,19 @@ func (n *Node) Peer() (*common.Peer, error) {
 	// Get Public Key
 	pubKey, err := device.KeyChain.GetPubKey(device.Account)
 	if err != nil {
-		return nil, err
+		return nil, logger.Error("Failed to get Public Key", err)
 	}
 
 	// Find PublicKey Buffer
-	deviceStat := device.Stat()
+	deviceStat, err := device.Stat()
+	if err != nil {
+		return nil, logger.Error("Failed to get device Stat", err)
+	}
+
+	// Marshal Public Key
 	pubBuf, err := crypto.MarshalPublicKey(pubKey)
 	if err != nil {
-		logger.Error("Failed to marshal public key", zap.Error(err))
-		return nil, err
+		return nil, logger.Error("Failed to marshal public key", err)
 	}
 
 	// Return Peer
@@ -56,7 +65,7 @@ func (f *FindRequest) ToExchangeQueryRequest() (*exchange.QueryRequest, error) {
 			PeerId: f.GetPeerId(),
 		}, nil
 	}
-	return nil, errors.New("No SName or PeerID provided.")
+	return nil, logger.Error("Failed to convert FindRequest", ErrInvalidQuery)
 }
 
 // ToFindResponse converts PeerInfo to a FindResponse.

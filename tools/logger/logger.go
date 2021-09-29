@@ -28,8 +28,9 @@ func Debug(msg string, fields ...zapcore.Field) {
 
 // Error logs a message at ErrorLevel. The message includes any fields passed at the log site,
 // as well as any fields accumulated on the logger.
-func Error(msg string, fields ...zapcore.Field) {
-	log.Error(msg, fields...)
+func Error(msg string, err error) error {
+	log.Error(msg, zap.Error(err))
+	return err
 }
 
 // Fatal logs a message at FatalLevel. The message includes any fields passed at the log site, as well as any fields accumulated on the logger.

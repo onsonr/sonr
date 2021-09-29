@@ -135,10 +135,12 @@ message StatRequest {}
 
 // StatResponse is a response to StatRequest that displays Node Stats
 message StatResponse {
-  string sName = 1;              // SName
-  sonr.core.Profile profile = 2; // Profile Data
-  Device device = 3;             // Device Data
-  Network network = 4;           // Network Data
+  bool success = 1;              // Success
+  string error = 2;              // Error Message
+  string sName = 3;              // SName
+  sonr.core.Profile profile = 4; // Profile Data
+  Device device = 5;             // Device Data
+  Network network = 6;           // Network Data
 
   // Device Stats
   message Device {
