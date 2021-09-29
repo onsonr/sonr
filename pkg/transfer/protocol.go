@@ -1,8 +1,8 @@
 package transfer
 
 import (
+	"container/list"
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -28,9 +28,9 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) *Tr
 		host:    host,
 		emitter: em,
 		queue: &transferQueue{
-			ctx:      ctx,
-			host:     host,
-			requests: make(map[peer.ID]TransferEntry),
+			ctx:   ctx,
+			host:  host,
+			queue: list.New(),
 		},
 	}
 
@@ -65,7 +65,7 @@ func (p *TransferProtocol) Request(id peer.ID, req *InviteRequest) error {
 // Respond Method authenticates or declines a Transfer Request
 func (p *TransferProtocol) Respond(id peer.ID, resp *InviteResponse) error {
 	// Find Entry
-	entry, err := p.queue.Find(id)
+	entry, err := p.queue.Next()
 	if err != nil {
 		return logger.Error("Failed to find transfer entry", err)
 	}
@@ -124,9 +124,9 @@ func (e TransferEntry) MapItems(f common.PayloadItemFunc) error {
 
 // transferQueue is a queue for incoming and outgoing requests.
 type transferQueue struct {
-	ctx      context.Context
-	host     *host.SNRHost
-	requests map[peer.ID]TransferEntry
+	ctx   context.Context
+	host  *host.SNRHost
+	queue *list.List
 }
 
 // AddIncoming adds Incoming Request to Transfer Queue
@@ -148,7 +148,7 @@ func (tq *transferQueue) AddIncoming(from peer.ID, req *InviteRequest) error {
 	}
 
 	// Add to Requests
-	tq.requests[from] = entry
+	tq.queue.PushBack(entry)
 	return nil
 }
 
@@ -165,39 +165,40 @@ func (tq *transferQueue) AddOutgoing(to peer.ID, req *InviteRequest) error {
 	}
 
 	// Add to Requests
-	tq.requests[to] = entry
+	tq.queue.PushBack(entry)
 	return nil
 }
 
 // Complete marks the transfer as completed and returns the CompleteEvent.
-func (tq *transferQueue) Complete(peer peer.ID) (*common.CompleteEvent, error) {
+func (tq *transferQueue) Complete() (*common.CompleteEvent, error) {
 	// Find Entry for Peer
-	entry, ok := tq.requests[peer]
-	if !ok {
-		return nil, logger.Error("Failed to find Entry", ErrInvalidEntry)
-	}
+	entry := tq.queue.Front()
+	if entry == nil {
+		// Pop Value of Entry from Queue
+		val := tq.queue.Remove(entry).(TransferEntry)
 
-	// Create CompleteEvent
-	event := &common.CompleteEvent{
-		Direction: entry.direction,
-		Payload:   entry.request.GetPayload(),
-		Received:  int64(time.Now().Unix()),
+		// Create CompleteEvent
+		event := &common.CompleteEvent{
+			Direction: val.direction,
+			Payload:   val.request.GetPayload(),
+			Received:  int64(time.Now().Unix()),
+		}
+		return event, nil
 	}
-
-	// Delete Entry
-	delete(tq.requests, peer)
-	return event, nil
+	return nil, ErrInvalidEntry
 }
 
-// Complete marks the transfer as completed and returns the CompleteEvent.
-func (tq *transferQueue) Find(peer peer.ID) (*TransferEntry, error) {
+// Next returns topmost entry in the queue.
+func (tq *transferQueue) Next() (*TransferEntry, error) {
 	// Find Entry for Peer
-	entry, ok := tq.requests[peer]
-	if !ok {
-		return nil, logger.Error("Failed to find Entry", ErrInvalidEntry)
+	entry := tq.queue.Front()
+	if entry == nil {
+		return nil, ErrInvalidEntry
 	}
-	entry.lastUpdated = int64(time.Now().Unix())
-	return &entry, nil
+
+	val := entry.Value.(TransferEntry)
+	val.lastUpdated = int64(time.Now().Unix())
+	return &val, nil
 }
 
 // Validate takes list of Requests and returns true if Request exists in List and UUID is verified.
@@ -215,8 +216,7 @@ func (tq *transferQueue) Validate(resp *InviteResponse) (*TransferEntry, error) 
 	}
 
 	// Check if the request is valid
-	totalRequests := len(tq.requests)
-	if totalRequests == 0 {
+	if tq.queue.Len() == 0 {
 		return nil, ErrEmptyRequests
 	}
 
@@ -231,14 +231,17 @@ func (tq *transferQueue) Validate(resp *InviteResponse) (*TransferEntry, error) 
 		return nil, ErrMismatchUUID
 	}
 
+	// Get Next Entry
+	entry, err := tq.Next()
+	if err != nil {
+		return nil, logger.Error("Failed to get Transfer entry", err)
+	}
+
 	// Check if Request exists in Map
-	for i, entry := range tq.requests {
-		if entry.Equals(resp.GetUuid()) {
-			logger.Info(fmt.Sprintf("Found matching invite at [%v/%v]", i, totalRequests))
-			entry.response = resp
-			entry.lastUpdated = int64(time.Now().Unix())
-			return &entry, nil
-		}
+	if entry.Equals(resp.GetUuid()) {
+		entry.response = resp
+		entry.lastUpdated = int64(time.Now().Unix())
+		return entry, nil
 	}
 	return nil, ErrRequestNotFound
 }
