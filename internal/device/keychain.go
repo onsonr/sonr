@@ -22,9 +22,6 @@ const (
 
 	// Group is the keypair for created Groups
 	Group
-
-	// Directory Name of Private Key Folder
-	PRIVATE_KEY_DIR = ".sonr_private"
 )
 
 // Path returns the path to the keypair

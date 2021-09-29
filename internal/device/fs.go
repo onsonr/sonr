@@ -122,12 +122,26 @@ func Init(isDev bool, opts ...FSOption) error {
 			Type: config.Support,
 		}
 
-		// Create Keychain
-		kc, err := newKeychain(kcConfig)
-		if err != nil {
-			return err
+		// Check if Keychain exists
+		if keychainExists(kcConfig) {
+			// Load Existing Keychain
+			kc, err := loadKeychain(kcConfig)
+			if err != nil {
+				return err
+			}
+
+			// Set Keychain
+			KeyChain = kc
+		} else {
+			// Create Keychain
+			kc, err := newKeychain(kcConfig)
+			if err != nil {
+				return err
+			}
+
+			// Set Keychain
+			KeyChain = kc
 		}
-		KeyChain = kc
 	}
 	return nil
 }
@@ -139,6 +153,14 @@ func SetDeviceID(id string) error {
 		return nil
 	}
 	return errors.New("Empty DeviceID provided.")
+}
+
+// keychainExists checks if EVERY key pair exists in the keychain.
+func keychainExists(kcConfig *config.Config) bool {
+	accExists := kcConfig.Exists(Account.Path())
+	linkExists := kcConfig.Exists(Link.Path())
+	groupExists := kcConfig.Exists(Group.Path())
+	return accExists && linkExists && groupExists
 }
 
 // readKey reads a key from a file and returns privKey and pubKey.
