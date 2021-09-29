@@ -62,7 +62,7 @@ func (p *ExchangeProtocol) Query(q *QueryRequest) (*common.PeerInfo, error) {
 	// Get PeerID from Peer
 	info, err := peerData.Info()
 	if err != nil {
-		return nil, logger.Error(fmt.Sprintf("Failed to get PeerInfo from Peer: %s", val), err)
+		return nil, logger.Error("Failed to get PeerInfo from Peer", err)
 	}
 	return info, nil
 }
@@ -84,7 +84,7 @@ func (p *ExchangeProtocol) Update(peer *common.Peer) error {
 	// Add Peer to SName Store
 	err = p.PubsubValueStore.PutValue(p.ctx, info.StoreEntryKey, buf)
 	if err != nil {
-		return logger.Error(fmt.Sprintf("Failed to Add Peer Object to SName store: %s", peer.GetSName()), err)
+		return logger.Error("Failed to Put Value in Exchange Store", err)
 	}
 	return nil
 }
