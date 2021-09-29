@@ -24,6 +24,9 @@ type DeviceOptions struct {
 
 	// DownloadsDir is provided Downloads Path.
 	DownloadsDir string
+
+	// MailboxDir is provided Mailbox Path.
+	MailboxDir string
 }
 
 var (
@@ -44,6 +47,9 @@ var (
 
 	// SupportPath is the path to the support folder
 	SupportPath string
+
+	// MailboxPath is the path to the mailbox folder
+	MailboxPath string
 
 	// deviceID is the device ID. Either provided or found
 	deviceID string
@@ -67,6 +73,9 @@ const (
 
 	// Database is the type for Database folder.
 	Database
+
+	// Mailbox is the type for Mailbox folder.
+	Mailbox
 )
 
 // Init initializes the keychain and returns a Keychain.
@@ -223,5 +232,7 @@ func (o FSOption) apply() {
 		DownloadsPath = o.Path
 	case Database:
 		DatabasePath = o.Path
+	case Mailbox:
+		MailboxPath = o.Path
 	}
 }

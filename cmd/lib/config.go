@@ -40,6 +40,9 @@ func parseInitializeRequest(buf []byte) (*node.InitializeRequest, []device.FSOpt
 		}, device.FSOption{
 			Path: req.GetDeviceOptions().GetDatabaseDir(),
 			Type: device.Database,
+		}, device.FSOption{
+			Path: req.GetDeviceOptions().GetMailboxDir(),
+			Type: device.Mailbox,
 		})
 	}
 	return req, fsOpts, nil
