@@ -155,12 +155,11 @@ func readKey(kcconfig *config.Config, kp KeyPairType) (crypto.PrivKey, crypto.Pu
 		return nil, nil, err
 	}
 	// Get Public Key from Private Key
-	pubKey := privKey.GetPublic()
-	return privKey, pubKey, nil
+	return privKey, privKey.GetPublic(), nil
 }
 
 // writeKey writes a key to the keychain.
-func writeKey(kcconfig *config.Config, kp KeyPairType, privKey crypto.PrivKey) error {
+func writeKey(kcconfig *config.Config, privKey crypto.PrivKey, kp KeyPairType) error {
 	// Write Key to Keychain
 	buf, err := crypto.MarshalPrivateKey(privKey)
 	if err != nil {

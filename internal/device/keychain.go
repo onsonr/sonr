@@ -7,6 +7,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/sonr-io/core/tools/config"
+	"github.com/sonr-io/core/tools/logger"
 )
 
 // KeyPairType is a type of keypair
@@ -88,10 +89,7 @@ func loadKeychain(kcconfig *config.Config) (Keychain, error) {
 	}
 
 	// Load Account Key to Keychain
-	err = kc.LoadKeyPair(accPubKey, accPrivKey, Account)
-	if err != nil {
-		return nil, err
-	}
+	kc.LoadKeyPair(accPubKey, accPrivKey, Account)
 
 	// Read Link Key
 	linkPrivKey, linkPubKey, err := readKey(kcconfig, Link)
@@ -100,10 +98,7 @@ func loadKeychain(kcconfig *config.Config) (Keychain, error) {
 	}
 
 	// Load Link Key to Keychain
-	err = kc.LoadKeyPair(linkPubKey, linkPrivKey, Link)
-	if err != nil {
-		return nil, err
-	}
+	kc.LoadKeyPair(linkPubKey, linkPrivKey, Link)
 
 	// Read Group Key
 	groupPrivKey, groupPubKey, err := readKey(kcconfig, Group)
@@ -112,10 +107,8 @@ func loadKeychain(kcconfig *config.Config) (Keychain, error) {
 	}
 
 	// Load Group Key to Keychain
-	err = kc.LoadKeyPair(groupPubKey, groupPrivKey, Group)
-	if err != nil {
-		return nil, err
-	}
+	kc.LoadKeyPair(groupPubKey, groupPrivKey, Group)
+
 	return kc, nil
 }
 
@@ -133,16 +126,13 @@ func newKeychain(kcconfig *config.Config) (Keychain, error) {
 	}
 
 	// Write Account Key to Disk
-	err = writeKey(kcconfig, Account, accPrivKey)
+	err = writeKey(kcconfig, accPrivKey, Account)
 	if err != nil {
 		return nil, err
 	}
 
 	// Load Account Key to Keychain
-	err = kc.LoadKeyPair(accPubKey, accPrivKey, Account)
-	if err != nil {
-		return nil, err
-	}
+	kc.LoadKeyPair(accPubKey, accPrivKey, Account)
 
 	// Create New Link Key
 	linkPrivKey, linkPubKey, err := crypto.GenerateEd25519Key(rand.Reader)
@@ -151,16 +141,13 @@ func newKeychain(kcconfig *config.Config) (Keychain, error) {
 	}
 
 	// Write Link Key to Disk
-	err = writeKey(kcconfig, Link, linkPrivKey)
+	err = writeKey(kcconfig, linkPrivKey, Link)
 	if err != nil {
 		return nil, err
 	}
 
 	// Load Link Key to Keychain
-	err = kc.LoadKeyPair(linkPubKey, linkPrivKey, Link)
-	if err != nil {
-		return nil, err
-	}
+	kc.LoadKeyPair(linkPubKey, linkPrivKey, Link)
 
 	// Create New Group Key
 	groupPrivKey, groupPubKey, err := crypto.GenerateEd25519Key(rand.Reader)
@@ -169,16 +156,13 @@ func newKeychain(kcconfig *config.Config) (Keychain, error) {
 	}
 
 	// Write Group Key to Disk
-	err = writeKey(kcconfig, Group, groupPrivKey)
+	err = writeKey(kcconfig, groupPrivKey, Group)
 	if err != nil {
 		return nil, err
 	}
 
 	// Load Group Key to Keychain
-	err = kc.LoadKeyPair(groupPubKey, groupPrivKey, Group)
-	if err != nil {
-		return nil, err
-	}
+	kc.LoadKeyPair(groupPubKey, groupPrivKey, Group)
 	return kc, nil
 }
 
@@ -208,16 +192,24 @@ func (kc *keychain) GetPubKey(kp KeyPairType) (crypto.PubKey, error) {
 	if kc.Exists(kp) {
 		if kp == Account {
 			pub, _, err := kc.accountKeyPair.PrivPubKeys()
-			return pub, err
+			if err != nil {
+				return nil, err
+			}
+			return pub, nil
 		} else if kp == Group {
 			pub, _, err := kc.groupKeyPair.PrivPubKeys()
-			return pub, err
+			if err != nil {
+				return nil, err
+			}
+			return pub, nil
 		} else if kp == Link {
 			pub, _, err := kc.linkKeyPair.PrivPubKeys()
-			return pub, err
-		} else {
-			return nil, errors.New("Invalid Key Type")
+			if err != nil {
+				return nil, err
+			}
+			return pub, nil
 		}
+		return nil, errors.New("Invalid Key Type")
 	}
 	return nil, errors.New("Keychain not loaded")
 }
@@ -227,30 +219,40 @@ func (kc *keychain) GetPrivKey(kp KeyPairType) (crypto.PrivKey, error) {
 	if kc.Exists(kp) {
 		if kp == Account {
 			_, priv, err := kc.accountKeyPair.PrivPubKeys()
-			return priv, err
+			if err != nil {
+				return nil, err
+			}
+			return priv, nil
 		} else if kp == Group {
 			_, priv, err := kc.groupKeyPair.PrivPubKeys()
-			return priv, err
+			if err != nil {
+				return nil, err
+			}
+			return priv, nil
 		} else if kp == Link {
 			_, priv, err := kc.linkKeyPair.PrivPubKeys()
-			return priv, err
-		} else {
-			return nil, errors.New("Invalid Key Type")
+			if err != nil {
+				return nil, err
+			}
+			return priv, nil
 		}
+		return nil, errors.New("Invalid Key Type")
 	}
 	return nil, errors.New("Keychain not loaded")
 }
 
 // LoadKeyPair loads a keypair set into the keychain.
-func (kc *keychain) LoadKeyPair(pub crypto.PubKey, priv crypto.PrivKey, kp KeyPairType) error {
+func (kc *keychain) LoadKeyPair(pub crypto.PubKey, priv crypto.PrivKey, kp KeyPairType) {
 	if kp == Account {
 		kc.accountKeyPair = keyPair{pub, priv, kp}
 	} else if kp == Link {
 		kc.linkKeyPair = keyPair{pub, priv, kp}
 	} else if kp == Group {
 		kc.groupKeyPair = keyPair{pub, priv, kp}
+	} else {
+		logger.Error("Invalid KeyPair Type provided")
 	}
-	return errors.New("Invalid Key Type")
+
 }
 
 // RemoveKeyPair removes a key from the keychain.
