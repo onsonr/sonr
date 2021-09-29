@@ -150,7 +150,7 @@ func (n *NodeRPCService) Share(ctx context.Context, req *ShareRequest) (*ShareRe
 }
 
 // Search Method to find a Peer by SName
-func (n *NodeRPCService) Find(ctx context.Context, req *SearchRequest) (*SearchResponse, error) {
+func (n *NodeRPCService) Search(ctx context.Context, req *SearchRequest) (*SearchResponse, error) {
 	// Call Internal Ping
 	entry, err := n.Node.Query(exchange.NewQueryRequestFromSName(req.GetSName()))
 	if err != nil {
