@@ -1,6 +1,7 @@
 package store
 
 import (
+	"errors"
 	"time"
 
 	"github.com/sonr-io/core/internal/common"
@@ -17,9 +18,11 @@ func (s *Store) GetProfile() (*common.Profile, error) {
 	var profile common.Profile
 	err := s.db.View(func(tx *bolt.Tx) error {
 		// Assume bucket exists and has keys
-		b, err := tx.CreateBucketIfNotExists(USER_BUCKET)
-		if err != nil {
-			return err
+		b := tx.Bucket(USER_BUCKET)
+
+		// Check if bucket exists
+		if b == nil {
+			return errors.New("Bucket does not exist")
 		}
 
 		// Get profile buffer
@@ -29,7 +32,7 @@ func (s *Store) GetProfile() (*common.Profile, error) {
 		}
 
 		// Unmarshal profile
-		err = proto.Unmarshal(buf, &profile)
+		err := proto.Unmarshal(buf, &profile)
 		if err != nil {
 			return err
 		}
