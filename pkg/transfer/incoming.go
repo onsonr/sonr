@@ -95,9 +95,9 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 		reader.Close()
 
 		// Complete the transfer
-		event, err := p.queue.Complete()
+		event, err := p.queue.Done()
 		if err != nil {
-			logger.Error("Failed to Complete Transfer", err)
+			logger.Error("Failed to Complete Incoming Transfer", err)
 			return
 		}
 
@@ -124,7 +124,6 @@ func NewReader(pi *common.Payload_Item, index int, count int, em *state.Emitter)
 	if err != nil {
 		return nil, logger.Error("Failed to determine downloads path", err)
 	}
-	logger.Info("Found Path for incoming Transfer Item.", zap.String("Path", path))
 
 	// Return Reader
 	return &itemReader{

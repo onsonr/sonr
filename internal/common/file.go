@@ -4,6 +4,9 @@ import (
 	//"errors"
 	//"image/jpeg"
 	"os"
+
+	"github.com/sonr-io/core/internal/device"
+	"github.com/sonr-io/core/tools/logger"
 	//"github.com/bakape/thumbnailer/v2"
 	//"github.com/sonr-io/core/internal/device"
 	//"github.com/sonr-io/core/tools/logger"
@@ -145,6 +148,19 @@ func NewFileItem(path string) (*Payload_Item, error) {
 // 		return nil, errors.New("Invalid File Path provided for item.")
 // 	}
 // }
+
+// ReplaceDir replaces the directory of the item path
+func (fi *FileItem) ReplaceDir(dir string) error {
+	// Get New Path
+	path, err := device.NewPath(fi.GetPath(), dir)
+	if err != nil {
+		return logger.Error("Failed to replace directory for FileItem", err)
+	}
+
+	// Set Path
+	fi.Path = path
+	return nil
+}
 
 // ToTransferItem Returns Transfer for FileItem
 func (f *FileItem) ToTransferItem() *Payload_Item {

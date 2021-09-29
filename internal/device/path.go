@@ -15,6 +15,26 @@ const (
 	filePathOptionTypeSeparator                        // Separator
 )
 
+// NewPath returns a new path with the given file name and specified folder.
+func NewPath(path string, dir string, opts ...FilePathOption) (string, error) {
+	// Initialize options list
+	name := filepath.Base(path)
+	fpoList := make([]*filePathOptions, len(opts))
+	for _, opt := range opts {
+		fpoList = append(fpoList, opt.Apply())
+	}
+
+	// Merge options
+	fpo := &filePathOptions{}
+	err := fpo.Merge(name, fpoList...)
+	if err != nil {
+		return "", err
+	}
+
+	// Build path
+	return fpo.Apply(dir)
+}
+
 // NewDocsPath Returns a new path in docs dir with given file name.
 func NewDocsPath(path string, opts ...FilePathOption) (string, error) {
 	// Initialize options list

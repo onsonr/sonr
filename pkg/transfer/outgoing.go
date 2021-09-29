@@ -89,7 +89,7 @@ func (p *TransferProtocol) onOutgoingTransfer(entry *TransferEntry, wc msgio.Wri
 
 	// Complete the transfer
 	wg.Wait()
-	event, err := p.queue.Complete()
+	event, err := p.queue.Done()
 	if err != nil {
 		logger.Error("Failed to Complete Transfer", err)
 		return

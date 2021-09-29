@@ -26,7 +26,7 @@ const (
 
 // Error Definitions
 var (
-	ErrInvalidEntry  = errors.New("Peer.ID not found for Entry in Queue")
+	ErrInvalidEntry  = errors.New("Failed to get Topmost entry from Queue")
 	ErrFailedAuth    = errors.New("Failed to Authenticate message")
 	ErrEmptyRequests = errors.New("Empty Request list provided")
 	ErrMismatchUUID  = errors.New("The provided UUID's do not match")

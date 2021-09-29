@@ -7,6 +7,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/common"
+	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/tools/state"
@@ -169,25 +170,6 @@ func (tq *transferQueue) AddOutgoing(to peer.ID, req *InviteRequest) error {
 	return nil
 }
 
-// Complete marks the transfer as completed and returns the CompleteEvent.
-func (tq *transferQueue) Complete() (*common.CompleteEvent, error) {
-	// Find Entry for Peer
-	entry := tq.queue.Front()
-	if entry == nil {
-		// Pop Value of Entry from Queue
-		val := tq.queue.Remove(entry).(TransferEntry)
-
-		// Create CompleteEvent
-		event := &common.CompleteEvent{
-			Direction: val.direction,
-			Payload:   val.request.GetPayload(),
-			Received:  int64(time.Now().Unix()),
-		}
-		return event, nil
-	}
-	return nil, ErrInvalidEntry
-}
-
 // Next returns topmost entry in the queue.
 func (tq *transferQueue) Next() (*TransferEntry, error) {
 	// Find Entry for Peer
@@ -199,6 +181,33 @@ func (tq *transferQueue) Next() (*TransferEntry, error) {
 	val := entry.Value.(TransferEntry)
 	val.lastUpdated = int64(time.Now().Unix())
 	return &val, nil
+}
+
+// Done marks the transfer as completed and returns the CompleteEvent.
+func (tq *transferQueue) Done() (*common.CompleteEvent, error) {
+	// Find Entry for Peer
+	entry := tq.queue.Front()
+	if entry == nil {
+		return nil, ErrInvalidEntry
+	}
+
+	// Pop Value of Entry from Queue
+	val := tq.queue.Remove(entry).(TransferEntry)
+	rawPayload := val.request.GetPayload()
+
+	// Adjust Payload item paths
+	adjPayload, err := rawPayload.ReplaceItemsDir(device.DownloadsPath)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create CompleteEvent
+	event := &common.CompleteEvent{
+		Direction: val.direction,
+		Payload:   adjPayload,
+		Received:  int64(time.Now().Unix()),
+	}
+	return event, nil
 }
 
 // Validate takes list of Requests and returns true if Request exists in List and UUID is verified.

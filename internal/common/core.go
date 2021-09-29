@@ -370,3 +370,18 @@ func (p *Payload) MapUrlItems(fn PayloadItemFunc) error {
 	}
 	return nil
 }
+
+// ReplaceItemsDir iterates over the items in the payload and replaces the
+// directory of the item with the new directory.
+func (p *Payload) ReplaceItemsDir(dir string) (*Payload, error) {
+	// Create new Payload
+	for _, item := range p.GetItems() {
+		if item.GetFile() != nil {
+			err := item.GetFile().ReplaceDir(dir)
+			if err != nil {
+				return nil, logger.Error("Failed to replace path for Item", err)
+			}
+		}
+	}
+	return p, nil
+}
