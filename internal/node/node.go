@@ -153,15 +153,15 @@ func (n *Node) Share(to *common.Peer) error {
 			Uuid:     id,
 		}
 
-		// Fetch Peer ID from Exchange
-		entry, err := n.ExchangeProtocol.Query(exchange.NewQueryRequestFromSName(to.GetSName()))
+		// Fetch Peer ID from Public Key
+		toId, err := to.PeerID()
 		if err != nil {
-			logger.Error("Failed to search peer", zap.Error(err))
+			logger.Error("Failed to fetch peer id from public key", zap.Error(err))
 			return err
 		}
 
-		// Invite peer
-		err = n.TransferProtocol.Request(entry.PeerID, req)
+		// Request Peer to Transfer File
+		err = n.TransferProtocol.Request(toId, req)
 		if err != nil {
 			logger.Error("Failed to invite peer", zap.Error(err))
 			n.Emit(Event_STATUS, err)
@@ -195,15 +195,15 @@ func (n *Node) Respond(decs bool, to *common.Peer) error {
 		To:       to,
 	}
 
-	// Fetch Peer ID from Exchange
-	entry, err := n.ExchangeProtocol.Query(exchange.NewQueryRequestFromSName(to.GetSName()))
+	// Fetch Peer ID from Public Key
+	toId, err := to.PeerID()
 	if err != nil {
-		logger.Error("Failed to search peer", zap.Error(err))
+		logger.Error("Failed to fetch peer id from public key", zap.Error(err))
 		return err
 	}
 
 	// Respond on TransferProtocol
-	err = n.TransferProtocol.Respond(entry.PeerID, resp)
+	err = n.TransferProtocol.Respond(toId, resp)
 	if err != nil {
 		logger.Error("Failed to respond to invite", zap.Error(err))
 		n.Emit(Event_STATUS, err)

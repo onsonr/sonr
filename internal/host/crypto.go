@@ -136,6 +136,7 @@ func (n *SNRHost) SendMessage(id peer.ID, p protocol.ID, data proto.Message) err
 func (n *SNRHost) SignMessage(message proto.Message) ([]byte, error) {
 	data, err := proto.Marshal(message)
 	if err != nil {
+		logger.Error("Failed to Sign Message", zap.Error(err))
 		return nil, err
 	}
 	return n.SignData(data)
@@ -146,6 +147,7 @@ func (n *SNRHost) SignData(data []byte) ([]byte, error) {
 	// Get local node's private key
 	privKey, err := device.KeyChain.GetPrivKey(device.Account)
 	if err != nil {
+		logger.Error("Failed to get local host's private key", zap.Error(err))
 		return nil, errors.Wrap(err, "failed to get private key")
 	}
 
@@ -184,6 +186,5 @@ func (n *SNRHost) VerifyData(data []byte, signature []byte, peerId peer.ID, pubK
 		logger.Error("Error authenticating data", zap.Error(err))
 		return false
 	}
-
 	return res
 }
