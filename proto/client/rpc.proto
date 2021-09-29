@@ -17,14 +17,17 @@ service NodeService {
   // Verification Method Request for Signed Data
   rpc Edit(EditRequest) returns (EditResponse) {}
 
+  // Fetch method finds data from Key/Value store
+  rpc Fetch(FetchRequest) returns (FetchResponse) {}
+
   // Respond Method to an Invite with Decision
   rpc Share(ShareRequest) returns (ShareResponse) {}
 
   // Respond Method to an Invite with Decision
   rpc Respond(RespondRequest) returns (RespondResponse) {}
 
-  // Find Method to find a Peer by SName or PeerID
-  rpc Find(FindRequest) returns (FindResponse) {}
+  // Search Method to find a Peer by SName or PeerID
+  rpc Search(SearchRequest) returns (SearchResponse) {}
 
   // Stat Method returns the Node Stats
   rpc Stat(StatRequest) returns (StatResponse) {}

@@ -97,7 +97,7 @@ func (n *NodeRPCService) Supply(ctx context.Context, req *SupplyRequest) (*Suppl
 	}, nil
 }
 
-// Edit method edits the node's user profile.
+// Edit method edits the node's properties in the Key/Value Store
 func (n *NodeRPCService) Edit(ctx context.Context, req *EditRequest) (*EditResponse, error) {
 	// Call Internal Edit
 	err := n.Node.Edit(req.GetProfile())
@@ -111,6 +111,24 @@ func (n *NodeRPCService) Edit(ctx context.Context, req *EditRequest) (*EditRespo
 	// Send Response
 	return &EditResponse{
 		Success: true,
+	}, nil
+}
+
+// Fetch method retreives Node properties from Key/Value Store
+func (n *NodeRPCService) Fetch(ctx context.Context, req *FetchRequest) (*FetchResponse, error) {
+	// Call Internal Fetch
+	profile, err := n.Node.store.GetProfile()
+	if err != nil {
+		return &FetchResponse{
+			Success: false,
+			Error:   err.Error(),
+		}, nil
+	}
+
+	// Send Response
+	return &FetchResponse{
+		Success: true,
+		Profile: profile,
 	}, nil
 }
 
@@ -132,18 +150,18 @@ func (n *NodeRPCService) Share(ctx context.Context, req *ShareRequest) (*ShareRe
 }
 
 // Search Method to find a Peer by SName
-func (n *NodeRPCService) Find(ctx context.Context, req *FindRequest) (*FindResponse, error) {
+func (n *NodeRPCService) Find(ctx context.Context, req *SearchRequest) (*SearchResponse, error) {
 	// Call Internal Ping
 	entry, err := n.Node.Query(exchange.NewQueryRequestFromSName(req.GetSName()))
 	if err != nil {
-		return &FindResponse{
+		return &SearchResponse{
 			Success: false,
 			Error:   err.Error(),
 		}, nil
 	}
 
 	// Send Response
-	return &FindResponse{
+	return &SearchResponse{
 		Success: true,
 		Peer:    entry.Peer,
 	}, nil

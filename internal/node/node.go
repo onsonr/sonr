@@ -8,6 +8,7 @@ import (
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/host"
+	"github.com/sonr-io/core/internal/store"
 	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/transfer"
@@ -31,11 +32,11 @@ type Node struct {
 	// Properties
 	ctx context.Context
 
+	// Persistent Database
+	store *store.Store
+
 	// Queue - the transfer queue
 	queue *list.List
-
-	// Profile - the node's profile
-	profile *common.Profile
 
 	// TransferProtocol - the transfer protocol
 	*transfer.TransferProtocol
@@ -49,13 +50,21 @@ type Node struct {
 
 // NewNode Creates a node with its implemented protocols
 func NewNode(ctx context.Context, host *host.SNRHost, loc *common.Location) (*Node, error) {
-	// Initialize Node
+	// Create Node
 	node := &Node{
 		Emitter: state.NewEmitter(2048),
 		host:    host,
 		ctx:     ctx,
 		queue:   list.New(),
 	}
+
+	// Initialize Store
+	store, err := store.NewStore(ctx, host, node.Emitter)
+	if err != nil {
+		return nil, logger.Error("Failed to initialize store", err)
+	}
+	node.store = store
+
 	// Set Transfer Protocol
 	node.TransferProtocol = transfer.NewProtocol(ctx, host, node.Emitter)
 
@@ -78,7 +87,12 @@ func NewNode(ctx context.Context, host *host.SNRHost, loc *common.Location) (*No
 // Edit method updates Node's profile
 func (n *Node) Edit(p *common.Profile) error {
 	// Set Profile and Fetch User Peer
-	n.profile = p
+	err := n.store.PutProfile(p)
+	if err != nil {
+		return err
+	}
+
+	// Get Peer
 	peer, err := n.Peer()
 	if err != nil {
 		return logger.Error("Failed to get Node Peer Object", err)
@@ -100,8 +114,14 @@ func (n *Node) Edit(p *common.Profile) error {
 
 // Supply a transfer item to the queue
 func (n *Node) Supply(paths []string) error {
+	// Get Profile
+	profile, err := n.store.GetProfile()
+	if err != nil {
+		return err
+	}
+
 	// Create Transfer
-	payload, err := common.NewPayload(n.profile, paths)
+	payload, err := common.NewPayload(profile, paths)
 	if err != nil {
 		return logger.Error("Failed to Supply Paths", err)
 	}
@@ -203,14 +223,23 @@ func (n *Node) Respond(decs bool, to *common.Peer) error {
 
 // Stat returns the Node info as StatResponse
 func (n *Node) Stat() (*StatResponse, error) {
+	// Get Profile
+	profile, err := n.store.GetProfile()
+	if err != nil {
+		return &StatResponse{
+			Success: false,
+			Error:   err.Error(),
+		}, err
+	}
+
 	// Get Host Stats
 	hStat, err := n.host.Stat()
 	if err != nil {
 		return &StatResponse{
 			Success: false,
 			Error:   err.Error(),
-			SName:   n.profile.SName,
-			Profile: n.profile,
+			SName:   profile.SName,
+			Profile: profile,
 		}, logger.Error("Failed to get Host Stat", err)
 	}
 
@@ -220,8 +249,8 @@ func (n *Node) Stat() (*StatResponse, error) {
 		return &StatResponse{
 			Success: false,
 			Error:   err.Error(),
-			SName:   n.profile.SName,
-			Profile: n.profile,
+			SName:   profile.SName,
+			Profile: profile,
 			Network: &StatResponse_Network{
 				PublicKey: hStat.PublicKey,
 				PeerID:    hStat.PeerID,
@@ -232,8 +261,8 @@ func (n *Node) Stat() (*StatResponse, error) {
 
 	// Return StatResponse
 	return &StatResponse{
-		SName:   n.profile.SName,
-		Profile: n.profile,
+		SName:   profile.SName,
+		Profile: profile,
 		Network: &StatResponse_Network{
 			PublicKey: hStat.PublicKey,
 			PeerID:    hStat.PeerID,

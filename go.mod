@@ -21,6 +21,7 @@ require (
 	github.com/multiformats/go-multiaddr v0.3.3 // Required for libp2p v0.14.4
 	github.com/pkg/errors v0.9.1
 	github.com/textileio/textile/v2 v2.6.11
+	go.etcd.io/bbolt v1.3.6
 	go.uber.org/zap v1.19.0
 	golang.org/x/net v0.0.0-20210907225631-ff17edfbf26d
 	golang.org/x/sys v0.0.0-20210917161153-d61c044b1678 // indirect

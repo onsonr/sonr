@@ -124,9 +124,12 @@ func (sq *SessionQueue) Done() (*common.CompleteEvent, error) {
 
 	// Create CompleteEvent
 	event := &common.CompleteEvent{
-		Direction: val.direction,
-		Payload:   adjPayload,
-		Received:  int64(time.Now().Unix()),
+		From:       val.request.GetFrom(),
+		To:         val.request.GetTo(),
+		Direction:  val.direction,
+		Payload:    adjPayload,
+		CreatedAt:  adjPayload.GetCreatedAt(),
+		ReceivedAt: int64(time.Now().Unix()),
 	}
 	return event, nil
 }

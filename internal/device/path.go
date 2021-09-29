@@ -35,6 +35,27 @@ func NewPath(path string, dir string, opts ...FilePathOption) (string, error) {
 	return fpo.Apply(dir)
 }
 
+// NewDatabasePath Returns a new path in database dir with given file name.
+func NewDatabasePath(path string, opts ...FilePathOption) (string, error) {
+	// Initialize options list
+	name := filepath.Base(path)
+	fpoList := make([]*filePathOptions, len(opts))
+	for _, opt := range opts {
+		fpoList = append(fpoList, opt.Apply())
+	}
+
+	// Merge options
+	fpo := &filePathOptions{}
+	err := fpo.Merge(name, fpoList...)
+	if err != nil {
+		return "", err
+	}
+
+	// Build path
+	return fpo.Apply(DocsPath)
+}
+
+
 // NewDocsPath Returns a new path in docs dir with given file name.
 func NewDocsPath(path string, opts ...FilePathOption) (string, error) {
 	// Initialize options list

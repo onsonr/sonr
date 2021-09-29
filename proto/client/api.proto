@@ -19,9 +19,10 @@ message InitializeRequest {
   message DeviceOptions {
     string id = 1;           // Device ID
     string cacheDir = 2;     // Cache Directory
-    string documentsDir = 3; // Documents Directory
-    string downloadsDir = 4; // Downloads Directory
-    string supportDir = 5;   // Support Directory
+    string databaseDir = 3;  // Database Directory
+    string documentsDir = 4; // Documents Directory
+    string downloadsDir = 5; // Downloads Directory
+    string supportDir = 6;   // Support Directory
   }
 
   // Optional Message to Initialize Env Variables
@@ -90,6 +91,24 @@ message EditResponse {
   string error = 2; // Error Message if Supply is not Active
 }
 
+// Fetch Request to Fetch a Property from Key/Value Store
+message FetchRequest {
+  Key key = 1; // Key to Fetch
+
+  enum Key {
+    PROFILE = 0; // Profile
+    DEVICES = 1; // Devices
+    RECENTS = 2; // Recent Contacts
+  }
+}
+
+// Fetch Response to Fetch Request
+message FetchResponse {
+  bool success = 1; // True if Fetch is Active
+  string error = 2; // Error Message if Fetch is not Active
+  sonr.core.Profile profile = 3; // Profile
+}
+
 // ShareRequest is request to share supplied files/urls with a peer
 message ShareRequest {
   sonr.core.Peer peer = 1; // Peer to Share with
@@ -113,16 +132,16 @@ message RespondResponse {
   string error = 2; // Error Message if Supply is not Active
 }
 
-// FindRequest is Message for Searching for Peer
-message FindRequest {
+// SearchRequest is Message for Searching for Peer
+message SearchRequest {
   oneof query {
     string sName = 1;  // SName combined with Device ID and Hashed
     string peerId = 2; // Peer ID
   }
 }
 
-// FindResponse is Message for Searching for Peer
-message FindResponse {
+// SearchResponse is Message for Searching for Peer
+message SearchResponse {
   bool success = 1;        // Success
   string error = 2;        // Error Message
   sonr.core.Peer peer = 3; // Peer Data

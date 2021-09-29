@@ -10,22 +10,28 @@ import (
 
 // DeviceOptions are options for the device.
 type DeviceOptions struct {
-	// DocumentsPath is provided Docs Path.
-	DocumentsPath string
+	// DatabaseDir is provided Database Path.
+	DatabaseDir string
 
-	// CachePath is provided Cache Path.
-	CachePath string
+	// DocumentsDir is provided Docs Path.
+	DocumentsDir string
 
-	// SupportPath is provided Support Path.
-	SupportPath string
+	// CacheDir is provided Cache Path.
+	CacheDir string
 
-	// DownloadsPath is provided Downloads Path.
-	DownloadsPath string
+	// SupportDir is provided Support Path.
+	SupportDir string
+
+	// DownloadsDir is provided Downloads Path.
+	DownloadsDir string
 }
 
 var (
 	// Keychain is the device keychain
 	KeyChain Keychain
+
+	// DatabasePath is the path to the database folder
+	DatabasePath string
 
 	// DocsPath is the path to the documents folder
 	DocsPath string
@@ -58,6 +64,9 @@ const (
 
 	// Downloads is the type for Downloads folder.
 	Downloads
+
+	// Database is the type for Database folder.
+	Database
 )
 
 // Init initializes the keychain and returns a Keychain.
@@ -212,5 +221,7 @@ func (o FSOption) apply() {
 		DocsPath = o.Path
 	case Downloads:
 		DownloadsPath = o.Path
+	case Database:
+		DatabasePath = o.Path
 	}
 }

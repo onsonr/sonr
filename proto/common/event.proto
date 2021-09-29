@@ -45,7 +45,11 @@ message ProgressEvent {
 message CompleteEvent {
   Direction direction = 1; // Transfer Direction
   Payload payload = 2;     // Transfer Data
-  int64 received = 3;      // Timestamp
+  sonr.core.Peer from = 3; // Peer that sent the Complete Event
+  sonr.core.Peer to = 4;   // Peer that received the Complete Event
+  int64 createdAt = 5;     // Transfer Created Timestamp
+  int64 receivedAt = 6;    // Transfer Received Timestamp
+
 
   // Traffic Direction of Session
   enum Direction {

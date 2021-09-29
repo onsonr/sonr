@@ -37,6 +37,9 @@ func parseInitializeRequest(buf []byte) (*node.InitializeRequest, []device.FSOpt
 		}, device.FSOption{
 			Path: req.GetDeviceOptions().GetSupportDir(),
 			Type: device.Support,
+		}, device.FSOption{
+			Path: req.GetDeviceOptions().GetDatabaseDir(),
+			Type: device.Database,
 		})
 	}
 	return req, fsOpts, nil

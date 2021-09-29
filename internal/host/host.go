@@ -65,9 +65,9 @@ func NewHost(ctx context.Context, conn common.Connection) (*SNRHost, error) {
 		libp2p.Identity(privKey),
 		libp2p.DefaultTransports,
 		libp2p.ConnectionManager(connmgr.NewConnManager(
-			10,          // Lowwater
-			15,          // HighWater,
-			time.Minute, // GracePeriod
+			25,            // Lowwater
+			50,            // HighWater,
+			time.Minute*5, // GracePeriod
 		)),
 		libp2p.DefaultStaticRelays(),
 		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {

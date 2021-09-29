@@ -37,11 +37,17 @@ func (n *Node) Peer() (*common.Peer, error) {
 		return nil, logger.Error("Failed to marshal public key", err)
 	}
 
+	// Get Profile
+	profile, err := n.store.GetProfile()
+	if err != nil {
+		return nil, err
+	}
+
 	// Return Peer
 	return &common.Peer{
-		SName:     strings.ToLower(n.profile.SName),
+		SName:     strings.ToLower(profile.SName),
 		Status:    common.Peer_ONLINE,
-		Profile:   n.profile,
+		Profile:   profile,
 		PublicKey: pubBuf,
 		Device: &common.Peer_Device{
 			HostName: deviceStat.HostName,
@@ -53,7 +59,7 @@ func (n *Node) Peer() (*common.Peer, error) {
 }
 
 // ToExchangeQueryRequest converts a query request to an exchange query request.
-func (f *FindRequest) ToExchangeQueryRequest() (*exchange.QueryRequest, error) {
+func (f *SearchRequest) ToExchangeQueryRequest() (*exchange.QueryRequest, error) {
 	if f.GetSName() != "" {
 		return &exchange.QueryRequest{
 			SName: f.GetSName(),
@@ -69,8 +75,8 @@ func (f *FindRequest) ToExchangeQueryRequest() (*exchange.QueryRequest, error) {
 }
 
 // ToFindResponse converts PeerInfo to a FindResponse.
-func ToFindResponse(p *common.PeerInfo) *FindResponse {
-	return &FindResponse{
+func ToFindResponse(p *common.PeerInfo) *SearchResponse {
+	return &SearchResponse{
 		Success: true,
 		Peer:    p.Peer,
 		PeerId:  p.PeerID.String(),

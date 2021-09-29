@@ -187,11 +187,11 @@
                 </li>
               
                 <li>
-                  <a href="#sonr.node.FindRequest"><span class="badge">M</span>FindRequest</a>
+                  <a href="#sonr.node.FetchRequest"><span class="badge">M</span>FetchRequest</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.node.FindResponse"><span class="badge">M</span>FindResponse</a>
+                  <a href="#sonr.node.FetchResponse"><span class="badge">M</span>FetchResponse</a>
                 </li>
               
                 <li>
@@ -235,6 +235,14 @@
                 </li>
               
                 <li>
+                  <a href="#sonr.node.SearchRequest"><span class="badge">M</span>SearchRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.node.SearchResponse"><span class="badge">M</span>SearchResponse</a>
+                </li>
+              
+                <li>
                   <a href="#sonr.node.ShareRequest"><span class="badge">M</span>ShareRequest</a>
                 </li>
               
@@ -266,6 +274,10 @@
                   <a href="#sonr.node.SupplyResponse"><span class="badge">M</span>SupplyResponse</a>
                 </li>
               
+              
+                <li>
+                  <a href="#sonr.node.FetchRequest.Key"><span class="badge">E</span>FetchRequest.Key</a>
+                </li>
               
                 <li>
                   <a href="#sonr.node.InitializeRequest.IPAddress.Family"><span class="badge">E</span>InitializeRequest.IPAddress.Family</a>
@@ -698,8 +710,8 @@
 
         
       
-        <h3 id="sonr.node.FindRequest">FindRequest</h3>
-        <p>FindRequest is Message for Searching for Peer</p>
+        <h3 id="sonr.node.FetchRequest">FetchRequest</h3>
+        <p>Fetch Request to Fetch a Property from Key/Value Store</p>
 
         
           <table class="field-table">
@@ -709,17 +721,10 @@
             <tbody>
               
                 <tr>
-                  <td>sName</td>
-                  <td><a href="#string">string</a></td>
+                  <td>key</td>
+                  <td><a href="#sonr.node.FetchRequest.Key">FetchRequest.Key</a></td>
                   <td></td>
-                  <td><p>SName combined with Device ID and Hashed </p></td>
-                </tr>
-              
-                <tr>
-                  <td>peerId</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Peer ID </p></td>
+                  <td><p>Key to Fetch </p></td>
                 </tr>
               
             </tbody>
@@ -729,8 +734,8 @@
 
         
       
-        <h3 id="sonr.node.FindResponse">FindResponse</h3>
-        <p>FindResponse is Message for Searching for Peer</p>
+        <h3 id="sonr.node.FetchResponse">FetchResponse</h3>
+        <p>Fetch Response to Fetch Request</p>
 
         
           <table class="field-table">
@@ -743,35 +748,21 @@
                   <td>success</td>
                   <td><a href="#bool">bool</a></td>
                   <td></td>
-                  <td><p>Success </p></td>
+                  <td><p>True if Fetch is Active </p></td>
                 </tr>
               
                 <tr>
                   <td>error</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>Error Message </p></td>
+                  <td><p>Error Message if Fetch is not Active </p></td>
                 </tr>
               
                 <tr>
-                  <td>peer</td>
-                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
+                  <td>profile</td>
+                  <td><a href="#sonr.core.Profile">sonr.core.Profile</a></td>
                   <td></td>
-                  <td><p>Peer Data </p></td>
-                </tr>
-              
-                <tr>
-                  <td>peerId</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Peer ID </p></td>
-                </tr>
-              
-                <tr>
-                  <td>sName</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>SName </p></td>
+                  <td><p>Profile </p></td>
                 </tr>
               
             </tbody>
@@ -869,6 +860,13 @@
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p>Cache Directory </p></td>
+                </tr>
+              
+                <tr>
+                  <td>databaseDir</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Database Directory </p></td>
                 </tr>
               
                 <tr>
@@ -1196,6 +1194,89 @@
 
         
       
+        <h3 id="sonr.node.SearchRequest">SearchRequest</h3>
+        <p>SearchRequest is Message for Searching for Peer</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>sName</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>SName combined with Device ID and Hashed </p></td>
+                </tr>
+              
+                <tr>
+                  <td>peerId</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Peer ID </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.node.SearchResponse">SearchResponse</h3>
+        <p>SearchResponse is Message for Searching for Peer</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>success</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>Success </p></td>
+                </tr>
+              
+                <tr>
+                  <td>error</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Error Message </p></td>
+                </tr>
+              
+                <tr>
+                  <td>peer</td>
+                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
+                  <td></td>
+                  <td><p>Peer Data </p></td>
+                </tr>
+              
+                <tr>
+                  <td>peerId</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Peer ID </p></td>
+                </tr>
+              
+                <tr>
+                  <td>sName</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>SName </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="sonr.node.ShareRequest">ShareRequest</h3>
         <p>ShareRequest is request to share supplied files/urls with a peer</p>
 
@@ -1478,6 +1559,35 @@
       
 
       
+        <h3 id="sonr.node.FetchRequest.Key">FetchRequest.Key</h3>
+        <p></p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>PROFILE</td>
+                <td>0</td>
+                <td><p>Profile</p></td>
+              </tr>
+            
+              <tr>
+                <td>DEVICES</td>
+                <td>1</td>
+                <td><p>Devices</p></td>
+              </tr>
+            
+              <tr>
+                <td>RECENTS</td>
+                <td>2</td>
+                <td><p>Recent Contacts</p></td>
+              </tr>
+            
+          </tbody>
+        </table>
+      
         <h3 id="sonr.node.InitializeRequest.IPAddress.Family">InitializeRequest.IPAddress.Family</h3>
         <p></p>
         <table class="enum-table">
@@ -1550,6 +1660,13 @@ Signing Method Request for Data</p></td>
               </tr>
             
               <tr>
+                <td>Fetch</td>
+                <td><a href="#sonr.node.FetchRequest">FetchRequest</a></td>
+                <td><a href="#sonr.node.FetchResponse">FetchResponse</a></td>
+                <td><p>Fetch method finds data from Key/Value store</p></td>
+              </tr>
+            
+              <tr>
                 <td>Share</td>
                 <td><a href="#sonr.node.ShareRequest">ShareRequest</a></td>
                 <td><a href="#sonr.node.ShareResponse">ShareResponse</a></td>
@@ -1564,10 +1681,10 @@ Signing Method Request for Data</p></td>
               </tr>
             
               <tr>
-                <td>Find</td>
-                <td><a href="#sonr.node.FindRequest">FindRequest</a></td>
-                <td><a href="#sonr.node.FindResponse">FindResponse</a></td>
-                <td><p>Find Method to find a Peer by SName or PeerID</p></td>
+                <td>Search</td>
+                <td><a href="#sonr.node.SearchRequest">SearchRequest</a></td>
+                <td><a href="#sonr.node.SearchResponse">SearchResponse</a></td>
+                <td><p>Search Method to find a Peer by SName or PeerID</p></td>
               </tr>
             
               <tr>
@@ -1668,6 +1785,13 @@ Returns a stream of StatusEvents</p></td>
                   <td><a href="#sonr.core.Location.Placemark">Location.Placemark</a></td>
                   <td></td>
                   <td><p>Location Placemark Information - Generated </p></td>
+                </tr>
+              
+                <tr>
+                  <td>lastModified</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>Last Updated Time </p></td>
                 </tr>
               
             </tbody>
@@ -1900,6 +2024,13 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                   <td><p>Public Key of the Peer </p></td>
                 </tr>
               
+                <tr>
+                  <td>lastModified</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>Last Modified Timestamp </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -2009,6 +2140,13 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                   <td><a href="#sonr.core.Social">Social</a></td>
                   <td>repeated</td>
                   <td><p>Social Media </p></td>
+                </tr>
+              
+                <tr>
+                  <td>lastModified</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>Last Modified Timestamp </p></td>
                 </tr>
               
             </tbody>
@@ -3265,10 +3403,31 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                 </tr>
               
                 <tr>
-                  <td>received</td>
+                  <td>from</td>
+                  <td><a href="#sonr.core.Peer">Peer</a></td>
+                  <td></td>
+                  <td><p>Peer that sent the Complete Event </p></td>
+                </tr>
+              
+                <tr>
+                  <td>to</td>
+                  <td><a href="#sonr.core.Peer">Peer</a></td>
+                  <td></td>
+                  <td><p>Peer that received the Complete Event </p></td>
+                </tr>
+              
+                <tr>
+                  <td>createdAt</td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
-                  <td><p>Timestamp </p></td>
+                  <td><p>Transfer Created Timestamp </p></td>
+                </tr>
+              
+                <tr>
+                  <td>receivedAt</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>Transfer Received Timestamp </p></td>
                 </tr>
               
             </tbody>
