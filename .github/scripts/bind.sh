@@ -64,9 +64,11 @@ exit_abnormal() {
 
 # Function: Exit after Success.
 exit_success() {
-    echo ""
-    echo "🎉  SUCCESS: Bind complete"
     go mod tidy
+    echo ""
+    echo "-----------------------------"
+    echo "🎉  SUCCESS: Bind complete"
+    echo "-----------------------------"
     exit 0
 }
 # ----- <Process Functions/> ----------------------------------------------
