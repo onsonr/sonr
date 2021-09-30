@@ -169,8 +169,6 @@ elif [ $platform == ios ]; then
     fi
 elif [ $platform == all ]; then
     init_all
-    echo ""
-    echo "----------------- (AAR & xcframework: Build Output) -------------------"
     if [ $output == plugin ]; then
         echo "- (3/4) Binding iOS Framework"
         gtime -q --format=%E gomobile bind -ldflags='-s -w' -v -target=ios/arm64 -bundleid=io.sonr.core -o ${PLUGIN_IOS}/${IOS_ARTIFACT}
