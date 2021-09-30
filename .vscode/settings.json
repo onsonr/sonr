@@ -59,7 +59,7 @@
         "**/app": true,
         "**/design": true,
         "**/sonr.wiki": true,
-        ".gitignore": true,
+        ".gitignore": false,
     },
     "[yaml]": {
         "editor.insertSpaces": true,
