@@ -53,6 +53,7 @@ _By [Sonr](https://www.sonr.io), creators of [The Sonr App](https://www.twitter.
 </details>
 
 <!-- ABOUT THE PROJECT -->
+
 ### Built With
 
 - [Golang]()
@@ -80,17 +81,13 @@ This is an example of how to list things you need to use the software and how to
    ```sh
    git clone https://github.com/sonr-io/core.git
    ```
-2. Build iOS Framework
+2. Bind Mobile Framework(s)
    ```sh
-    godotenv -f <(doppler secrets download --no-file --format env) .github/scripts/bind-ios.sh
+    godotenv -f <(doppler secrets download --no-file --format env) .github/scripts/bind.sh
    ```
    or with `fish`
    ```sh
-   godotenv -f (doppler secrets download --no-file --format env | psub) .github/scripts/bind-ios.sh
-   ```
-3. Build Android AAR
-   ```sh
-    godotenv -f <(doppler secrets download --no-file --format env) .github/scripts/bind-android.sh
+   godotenv -f (doppler secrets download --no-file --format env | psub) .github/scripts/bind.sh
    ```
 
 <!-- USAGE EXAMPLES -->
