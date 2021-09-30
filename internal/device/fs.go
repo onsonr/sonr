@@ -79,10 +79,7 @@ const (
 )
 
 // Init initializes the keychain and returns a Keychain.
-func Init(isDev bool, opts ...FSOption) error {
-	// Initialize logger
-	logger.Init(isDev)
-
+func Init(opts ...FSOption) error {
 	// Check if Opts are set
 	if len(opts) == 0 {
 		// Create Device Config

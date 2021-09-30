@@ -3,36 +3,68 @@ package device
 import (
 	"errors"
 	"fmt"
+	"os"
+
+	"github.com/sonr-io/core/tools/logger"
 )
 
+// EnvVariable represents an environment variable
+type EnvVariable struct {
+	Key   string
+	Value string
+}
+
+// NewEnvVariable creates a new environment variable
+func NewEnvVariable(key string) EnvVariable {
+	return EnvVariable{Key: key}
+}
+
+// Exists checks if the environment variable exists
+func (ev EnvVariable) Exists() bool {
+	return len(ev.Value) > 0 && len(ev.Key) > 0
+}
+
+// Get the environment variable
+func (ev EnvVariable) Get() string {
+	return ev.Value
+}
+
+// Set the environment variable
+func (ev EnvVariable) Set(val string) {
+	if !ev.Exists() {
+		ev.Value = val
+	}
+}
+
+// EnvVariableMap is a map of environment variables
 type EnvVariableMap map[string]string
 
 // ENV Variables
 var (
 	// HDNS client key for Namebase.io
-	HANDSHAKE_KEY = ""
+	HANDSHAKE_KEY EnvVariable = NewEnvVariable("HANDSHAKE_KEY")
 
 	// HDNS secret key for Namebase.io
-	HANDSHAKE_SECRET = ""
+	HANDSHAKE_SECRET EnvVariable = NewEnvVariable("HANDSHAKE_SECRET")
 
 	// IP Location API key for IPStack.com
-	IP_LOCATION_KEY = ""
+	IP_LOCATION_KEY EnvVariable = NewEnvVariable("IP_LOCATION_KEY")
 
 	// RapidAPI key for RapidAPI.com
-	RAPID_API_KEY = ""
+	RAPID_API_KEY EnvVariable = NewEnvVariable("RAPID_API_KEY")
 
 	// Textile Hub API key
-	TEXTILE_HUB_KEY = ""
+	TEXTILE_HUB_KEY EnvVariable = NewEnvVariable("TEXTILE_HUB_KEY")
 
 	// Textile Hub secret key
-	TEXTILE_HUB_SECRET = ""
+	TEXTILE_HUB_SECRET EnvVariable = NewEnvVariable("TEXTILE_HUB_SECRET")
 )
 
 // Error definitions
 var (
 	// General errors
 	ErrEmptyDeviceID = errors.New("Device ID cannot be empty")
-	ErrMissingEnvVar = errors.New("Missing Env Variable")
+	ErrMissingEnvVar = errors.New("Cannot set EnvVariable with empty value")
 
 	// Keychain errors
 	ErrInvalidKeyType  = errors.New("Invalid KeyPair Type provided")
@@ -48,38 +80,27 @@ var (
 )
 
 // InitEnv initializes the environment variables
-func InitEnv(envVars EnvVariableMap) error {
-	// Set environment variables
-	HANDSHAKE_KEY = envVars["HANDSHAKE_KEY"]
-	HANDSHAKE_SECRET = envVars["HANDSHAKE_SECRET"]
-	IP_LOCATION_KEY = envVars["IP_LOCATION_KEY"]
-	RAPID_API_KEY = envVars["RAPID_API_KEY"]
-	TEXTILE_HUB_KEY = envVars["TEXTILE_HUB_KEY"]
-	TEXTILE_HUB_SECRET = envVars["TEXTILE_HUB_SECRET"]
+func InitEnv(isDev bool, envVars EnvVariableMap) {
+	// Initialize logger
+	logger.Init(isDev)
 
-	// Check for missing environment variables
-	if HANDSHAKE_KEY == "" {
-		return envVarError("HANDSHAKE_KEY")
+	// Check Map length
+	if len(envVars) > 0 {
+		// Set Variables from Map
+		for k, v := range envVars {
+			if len(v) > 0 {
+				os.Setenv(k, v)
+			} else {
+				logger.Error(fmt.Sprintf("Failed to set Env Var: %s", k), ErrMissingEnvVar)
+			}
+		}
 	}
-	if HANDSHAKE_SECRET == "" {
-		return envVarError("HANDSHAKE_SECRET")
-	}
-	if IP_LOCATION_KEY == "" {
-		return envVarError("IP_LOCATION_KEY")
-	}
-	if RAPID_API_KEY == "" {
-		return envVarError("RAPID_API_KEY")
-	}
-	if TEXTILE_HUB_KEY == "" {
-		return envVarError("TEXTILE_HUB_KEY")
-	}
-	if TEXTILE_HUB_SECRET == "" {
-		return envVarError("TEXTILE_HUB_SECRET")
-	}
-	return nil
-}
 
-// envVarError returns an error for missing environment variables
-func envVarError(name string) error {
-	return fmt.Errorf("Missing Env Variable for: %s", name)
+	// Set Variables from OS
+	HANDSHAKE_KEY.Set(os.Getenv("HANDSHAKE_KEY"))
+	HANDSHAKE_SECRET.Set(os.Getenv("HANDSHAKE_SECRET"))
+	IP_LOCATION_KEY.Set(os.Getenv("IP_LOCATION_KEY"))
+	RAPID_API_KEY.Set(os.Getenv("RAPID_API_KEY"))
+	TEXTILE_HUB_KEY.Set(os.Getenv("TEXTILE_HUB_KEY"))
+	TEXTILE_HUB_SECRET.Set(os.Getenv("TEXTILE_HUB_SECRET"))
 }

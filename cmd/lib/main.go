@@ -3,6 +3,7 @@ package lib
 import (
 	"context"
 
+	_ "github.com/joho/godotenv/autoload"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/internal/node"
@@ -25,22 +26,19 @@ func Start(reqBytes []byte) {
 	// Check if already started
 	if !started {
 		// Unmarshal request
-		req, fsOpts, envVars, err := parseInitializeRequest(reqBytes)
+		isDev, req, fsOpts, envVars, err := parseInitializeRequest(reqBytes)
 		if err != nil {
 			panic(logger.Error("Failed to Parse Initialize Request", err))
 		}
 
-		// Initialize Device
-		err = device.Init(req.GetEnvOptions().GetEnvironment().IsDev(), fsOpts...)
-		if err != nil {
-			panic(logger.Error("Failed to initialize Device", err))
-		}
-
 		// Initialize environment
 		ctx := context.Background()
-		err = device.InitEnv(envVars)
+		device.InitEnv(isDev, envVars)
+
+		// Initialize Device
+		err = device.Init(fsOpts...)
 		if err != nil {
-			logger.Error("Failed to initialize environment variables", err)
+			panic(logger.Error("Failed to initialize Device", err))
 		}
 
 		// Initialize Host

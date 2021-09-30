@@ -8,6 +8,7 @@ require (
 	github.com/gabriel-vasile/mimetype v1.3.1
 	github.com/google/open-location-code/go v0.0.0-20210504205230-1796878d947c
 	github.com/google/uuid v1.3.0
+	github.com/joho/godotenv v1.4.0
 	github.com/klauspost/compress v1.13.5 // indirect
 	github.com/libp2p/go-libp2p v0.14.4 // Required for libp2p v0.14.4
 	github.com/libp2p/go-libp2p-connmgr v0.2.4
@@ -23,7 +24,6 @@ require (
 	github.com/textileio/textile/v2 v2.6.11
 	go.etcd.io/bbolt v1.3.6
 	go.uber.org/zap v1.19.0
-	golang.org/x/mobile v0.0.0-20210924032853-1c027f395ef7 // indirect
 	golang.org/x/net v0.0.0-20210907225631-ff17edfbf26d
 	golang.org/x/sys v0.0.0-20210917161153-d61c044b1678 // indirect
 	golang.org/x/tools v0.1.6 // indirect

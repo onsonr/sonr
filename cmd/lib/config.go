@@ -7,12 +7,12 @@ import (
 )
 
 // parseInitializeRequest parses the given buffer and returns the proto and fsOptions.
-func parseInitializeRequest(buf []byte) (*node.InitializeRequest, []device.FSOption, map[string]string, error) {
+func parseInitializeRequest(buf []byte) (bool, *node.InitializeRequest, []device.FSOption, map[string]string, error) {
 	// Unmarshal request
 	req := &node.InitializeRequest{}
 	err := proto.Unmarshal(buf, req)
 	if err != nil {
-		return nil, nil, nil, err
+		return false, nil, nil, nil, err
 	}
 
 	// Check FSOptions and Get Device Paths
@@ -21,7 +21,7 @@ func parseInitializeRequest(buf []byte) (*node.InitializeRequest, []device.FSOpt
 		// Set Device ID
 		err = device.SetDeviceID(req.GetDeviceOptions().GetId())
 		if err != nil {
-			return nil, nil, nil, err
+			return req.GetEnvOptions().GetEnvironment().IsDev(), nil, nil, nil, err
 		}
 
 		// Set Temporary Path
@@ -52,5 +52,5 @@ func parseInitializeRequest(buf []byte) (*node.InitializeRequest, []device.FSOpt
 		envVars[key] = value
 	}
 
-	return req, fsOpts, envVars, nil
+	return req.GetEnvOptions().GetEnvironment().IsDev(), req, fsOpts, envVars, nil
 }
