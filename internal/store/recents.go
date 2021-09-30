@@ -1,7 +1,7 @@
 package store
 
 import (
-	"errors"
+	"bytes"
 	"time"
 
 	"github.com/sonr-io/core/internal/common"
@@ -15,33 +15,34 @@ type RecentsHistory map[string]*common.ProfileList
 func (s *Store) GetRecents() (RecentsHistory, error) {
 	// Create empty map
 	recents := make(RecentsHistory)
-	key := []byte("TO-DO")
+	now := time.Now().Round(time.Hour)
+	start := now.Add(-time.Hour * 24 * 7)
+
+	// Set Time Range for Recent Profiles
+	nowStr := now.Format(time.RFC3339)
+	startStr := start.Format(time.RFC3339)
 
 	// Iterate over all profiles
 	err := s.db.View(func(tx *bolt.Tx) error {
-		// Assume bucket exists and has keys
-		b := tx.Bucket(RECENTS_BUCKET)
+		// Assume our events bucket exists and has RFC3339 encoded time keys.
+		c := tx.Bucket(RECENTS_BUCKET).Cursor()
 
-		// Check if bucket exists
-		if b == nil {
-			return errors.New("Bucket does not exist")
+		// Our time range spans the 90's decade.
+		min := []byte(startStr)
+		max := []byte(nowStr)
+
+		// Iterate over the 90's.
+		for k, v := c.Seek(min); k != nil && bytes.Compare(k, max) <= 0; k, v = c.Next() {
+			// Unmarshal profile list
+			profileList := common.ProfileList{}
+			err := proto.Unmarshal(v, &profileList)
+			if err != nil {
+				return err
+			}
+
+			// Add to map
+			recents[string(k)] = &profileList
 		}
-
-		// Get profile list buffer
-		buf := b.Get(key)
-		if buf == nil {
-			return nil
-		}
-
-		// Unmarshal profile list
-		profileList := common.ProfileList{}
-		err := proto.Unmarshal(buf, &profileList)
-		if err != nil {
-			return err
-		}
-
-		// Add to map
-		recents[string(key)] = &profileList
 		return nil
 	})
 	return recents, err
@@ -49,9 +50,11 @@ func (s *Store) GetRecents() (RecentsHistory, error) {
 
 // AddRecent stores the profile for recents in desk and returns list of recent profiles
 func (s *Store) AddRecent(profile *common.Profile) error {
-	key := []byte("TO-DO")
+	// Create Key from Time in RFC3339 format
 	t := time.Now().Round(time.Hour)
-	t.Format(time.RFC3339)
+	keyStr := t.Format(time.RFC3339)
+	key := []byte(keyStr)
+
 	// Put in Bucket
 	return s.db.Update(func(tx *bolt.Tx) error {
 		// Assume bucket exists and has keys

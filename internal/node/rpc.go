@@ -214,6 +214,20 @@ func (nrc *NodeRPCService) handleEmitter() {
 		// Handle Transfer Completed
 		nrc.Node.On(transfer.Event_COMPLETED, func(e *state.Event) {
 			event := e.Args[0].(*common.CompleteEvent)
+			// Check Direction
+			if event.Direction == common.CompleteEvent_INCOMING {
+				// Add Sender to Recents
+				err := nrc.Node.store.AddRecent(event.GetFrom().GetProfile())
+				if err != nil {
+					logger.Error("Failed to add sender's profile to store.", err)
+				}
+			} else {
+				// Add Receiver to Recents
+				err := nrc.Node.store.AddRecent(event.GetTo().GetProfile())
+				if err != nil {
+					logger.Error("Failed to add receiver's profile to store.", err)
+				}
+			}
 			nrc.completeEvents <- event
 		})
 
