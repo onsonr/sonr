@@ -7,12 +7,12 @@ import (
 )
 
 // parseInitializeRequest parses the given buffer and returns the proto and fsOptions.
-func parseInitializeRequest(buf []byte) (*node.InitializeRequest, []device.FSOption, error) {
+func parseInitializeRequest(buf []byte) (*node.InitializeRequest, []device.FSOption, map[string]string, error) {
 	// Unmarshal request
 	req := &node.InitializeRequest{}
 	err := proto.Unmarshal(buf, req)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 
 	// Check FSOptions and Get Device Paths
@@ -21,7 +21,7 @@ func parseInitializeRequest(buf []byte) (*node.InitializeRequest, []device.FSOpt
 		// Set Device ID
 		err = device.SetDeviceID(req.GetDeviceOptions().GetId())
 		if err != nil {
-			return nil, nil, err
+			return nil, nil, nil, err
 		}
 
 		// Set Temporary Path
@@ -45,5 +45,12 @@ func parseInitializeRequest(buf []byte) (*node.InitializeRequest, []device.FSOpt
 			Type: device.Mailbox,
 		})
 	}
-	return req, fsOpts, nil
+
+	// Make env variable map
+	envVars := make(map[string]string)
+	for key, value := range req.GetEnvOptions().GetVariables() {
+		envVars[key] = value
+	}
+
+	return req, fsOpts, envVars, nil
 }

@@ -25,7 +25,7 @@ func Start(reqBytes []byte) {
 	// Check if already started
 	if !started {
 		// Unmarshal request
-		req, fsOpts, err := parseInitializeRequest(reqBytes)
+		req, fsOpts, envVars, err := parseInitializeRequest(reqBytes)
 		if err != nil {
 			panic(logger.Error("Failed to Parse Initialize Request", err))
 		}
@@ -38,7 +38,7 @@ func Start(reqBytes []byte) {
 
 		// Initialize environment
 		ctx := context.Background()
-		err = device.InitEnv()
+		err = device.InitEnv(envVars)
 		if err != nil {
 			logger.Error("Failed to initialize environment variables", err)
 		}

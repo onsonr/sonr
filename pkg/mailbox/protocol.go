@@ -1,6 +1,8 @@
 package mailbox
 
-
+type MailboxProtocol struct {
+	
+}
 // // Method Sends Mail Entry to Peer
 // func (sc *serviceClient) SendMail(inv *data.InviteRequest) *data.SonrError {
 // 	// Check Mail Enabled

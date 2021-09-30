@@ -3,8 +3,9 @@ package device
 import (
 	"errors"
 	"fmt"
-	"os"
 )
+
+type EnvVariableMap map[string]string
 
 // ENV Variables
 var (
@@ -47,14 +48,14 @@ var (
 )
 
 // InitEnv initializes the environment variables
-func InitEnv() error {
+func InitEnv(envVars EnvVariableMap) error {
 	// Set environment variables
-	HANDSHAKE_KEY = os.Getenv("HANDSHAKE_KEY")
-	HANDSHAKE_SECRET = os.Getenv("HANDSHAKE_SECRET")
-	IP_LOCATION_KEY = os.Getenv("IP_LOCATION_KEY")
-	RAPID_API_KEY = os.Getenv("RAPID_API_KEY")
-	TEXTILE_HUB_KEY = os.Getenv("TEXTILE_HUB_KEY")
-	TEXTILE_HUB_SECRET = os.Getenv("TEXTILE_HUB_SECRET")
+	HANDSHAKE_KEY = envVars["HANDSHAKE_KEY"]
+	HANDSHAKE_SECRET = envVars["HANDSHAKE_SECRET"]
+	IP_LOCATION_KEY = envVars["IP_LOCATION_KEY"]
+	RAPID_API_KEY = envVars["RAPID_API_KEY"]
+	TEXTILE_HUB_KEY = envVars["TEXTILE_HUB_KEY"]
+	TEXTILE_HUB_SECRET = envVars["TEXTILE_HUB_SECRET"]
 
 	// Check for missing environment variables
 	if HANDSHAKE_KEY == "" {
