@@ -24,10 +24,8 @@ require (
 	github.com/textileio/textile/v2 v2.6.11
 	go.etcd.io/bbolt v1.3.6
 	go.uber.org/zap v1.19.0
-	golang.org/x/mobile v0.0.0-20210924032853-1c027f395ef7 // indirect
-	golang.org/x/mod v0.5.1 // indirect
 	golang.org/x/net v0.0.0-20210907225631-ff17edfbf26d
-	golang.org/x/sys v0.0.0-20210930141918-969570ce7c6c // indirect
+	golang.org/x/sys v0.0.0-20210930212924-f542c8878de8 // indirect
 	golang.org/x/tools v0.1.7 // indirect
 	google.golang.org/grpc v1.40.0
 	google.golang.org/protobuf v1.27.1
