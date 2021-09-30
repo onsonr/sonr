@@ -195,6 +195,18 @@
                 </li>
               
                 <li>
+                  <a href="#sonr.node.FetchResponse.DevicesEntry"><span class="badge">M</span>FetchResponse.DevicesEntry</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.node.FetchResponse.HistoryEntry"><span class="badge">M</span>FetchResponse.HistoryEntry</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.node.FetchResponse.RecentsEntry"><span class="badge">M</span>FetchResponse.RecentsEntry</a>
+                </li>
+              
+                <li>
                   <a href="#sonr.node.InitializeRequest"><span class="badge">M</span>InitializeRequest</a>
                 </li>
               
@@ -341,6 +353,10 @@
                 </li>
               
                 <li>
+                  <a href="#sonr.core.ProfileList"><span class="badge">M</span>ProfileList</a>
+                </li>
+              
+                <li>
                   <a href="#sonr.core.Social"><span class="badge">M</span>Social</a>
                 </li>
               
@@ -433,6 +449,10 @@
               
                 <li>
                   <a href="#sonr.core.Payload.Item"><span class="badge">M</span>Payload.Item</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.core.PayloadItemList"><span class="badge">M</span>PayloadItemList</a>
                 </li>
               
                 <li>
@@ -763,6 +783,120 @@
                   <td><a href="#sonr.core.Profile">sonr.core.Profile</a></td>
                   <td></td>
                   <td><p>Profile </p></td>
+                </tr>
+              
+                <tr>
+                  <td>devices</td>
+                  <td><a href="#sonr.node.FetchResponse.DevicesEntry">FetchResponse.DevicesEntry</a></td>
+                  <td>repeated</td>
+                  <td><p>Linked Devices </p></td>
+                </tr>
+              
+                <tr>
+                  <td>recents</td>
+                  <td><a href="#sonr.node.FetchResponse.RecentsEntry">FetchResponse.RecentsEntry</a></td>
+                  <td>repeated</td>
+                  <td><p>Recent Peers </p></td>
+                </tr>
+              
+                <tr>
+                  <td>history</td>
+                  <td><a href="#sonr.node.FetchResponse.HistoryEntry">FetchResponse.HistoryEntry</a></td>
+                  <td>repeated</td>
+                  <td><p>File Transfer History </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.node.FetchResponse.DevicesEntry">FetchResponse.DevicesEntry</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>key</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.node.FetchResponse.HistoryEntry">FetchResponse.HistoryEntry</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>key</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#sonr.core.PayloadItemList">sonr.core.PayloadItemList</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.node.FetchResponse.RecentsEntry">FetchResponse.RecentsEntry</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>key</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#sonr.core.ProfileList">sonr.core.ProfileList</a></td>
+                  <td></td>
+                  <td><p> </p></td>
                 </tr>
               
             </tbody>
@@ -1132,6 +1266,13 @@
                   <td><p>Error Message if Host is not Active </p></td>
                 </tr>
               
+                <tr>
+                  <td>profile</td>
+                  <td><a href="#sonr.core.Profile">sonr.core.Profile</a></td>
+                  <td></td>
+                  <td><p>Users Profile from store </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -1299,6 +1440,13 @@
                   <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
                   <td></td>
                   <td><p>Peer to Share with </p></td>
+                </tr>
+              
+                <tr>
+                  <td>message</td>
+                  <td><a href="#sonr.core.MessageItem">sonr.core.MessageItem</a></td>
+                  <td></td>
+                  <td><p>Message to Share </p></td>
                 </tr>
               
             </tbody>
@@ -1575,21 +1723,33 @@
           <tbody>
             
               <tr>
-                <td>PROFILE</td>
+                <td>ALL</td>
                 <td>0</td>
-                <td><p>Profile</p></td>
+                <td><p>Fetch All Keys</p></td>
+              </tr>
+            
+              <tr>
+                <td>PROFILE</td>
+                <td>1</td>
+                <td><p>User Profile</p></td>
               </tr>
             
               <tr>
                 <td>DEVICES</td>
-                <td>1</td>
-                <td><p>Devices</p></td>
+                <td>2</td>
+                <td><p>Linked Devices</p></td>
               </tr>
             
               <tr>
                 <td>RECENTS</td>
-                <td>2</td>
-                <td><p>Recent Contacts</p></td>
+                <td>3</td>
+                <td><p>Recent Peers</p></td>
+              </tr>
+            
+              <tr>
+                <td>HISTORY</td>
+                <td>4</td>
+                <td><p>File Transfer History</p></td>
               </tr>
             
           </tbody>
@@ -2147,6 +2307,44 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                   <td><a href="#sonr.core.Social">Social</a></td>
                   <td>repeated</td>
                   <td><p>Social Media </p></td>
+                </tr>
+              
+                <tr>
+                  <td>lastModified</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>Last Modified Timestamp </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.core.ProfileList">ProfileList</h3>
+        <p>List of Profiles for Persistent Store</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>profiles</td>
+                  <td><a href="#sonr.core.Profile">Profile</a></td>
+                  <td>repeated</td>
+                  <td><p>List of Profiles </p></td>
+                </tr>
+              
+                <tr>
+                  <td>createdAt</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>Creation Timestamp </p></td>
                 </tr>
               
                 <tr>
@@ -3217,6 +3415,51 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                   <td><a href="#sonr.core.OpenGraph.Primary">OpenGraph.Primary</a></td>
                   <td></td>
                   <td><p>Open Graph Image </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.core.PayloadItemList">PayloadItemList</h3>
+        <p>PayloadItemList is a list of Payload.Item's for Persistent Store</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>items</td>
+                  <td><a href="#sonr.core.Payload.Item">Payload.Item</a></td>
+                  <td>repeated</td>
+                  <td><p>Payload List </p></td>
+                </tr>
+              
+                <tr>
+                  <td>mime</td>
+                  <td><a href="#sonr.core.MIME">MIME</a></td>
+                  <td></td>
+                  <td><p>MIME of the Payload </p></td>
+                </tr>
+              
+                <tr>
+                  <td>size</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>Total Size of all Items in Bytes </p></td>
+                </tr>
+              
+                <tr>
+                  <td>lastModified</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p>Last Modified Time in Seconds </p></td>
                 </tr>
               
             </tbody>

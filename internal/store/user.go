@@ -41,8 +41,8 @@ func (s *Store) GetProfile() (*common.Profile, error) {
 	return &profile, err
 }
 
-// PutProfile stores the profile for the user in diskDB
-func (s *Store) PutProfile(profile *common.Profile) error {
+// SetProfile stores the profile for the user in diskDB
+func (s *Store) SetProfile(profile *common.Profile) error {
 	// Verify timestamp
 	if profile.GetLastModified() == 0 {
 		profile.LastModified = time.Now().Unix()

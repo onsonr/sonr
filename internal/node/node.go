@@ -87,7 +87,7 @@ func NewNode(ctx context.Context, host *host.SNRHost, loc *common.Location) (*No
 // Edit method updates Node's profile
 func (n *Node) Edit(p *common.Profile) error {
 	// Set Profile and Fetch User Peer
-	err := n.store.PutProfile(p)
+	err := n.store.SetProfile(p)
 	if err != nil {
 		return err
 	}

@@ -132,6 +132,13 @@ message Profile {
   int64 lastModified = 8;      // Last Modified Timestamp
 }
 
+// List of Profiles for Persistent Store
+message ProfileList {
+  repeated Profile profiles = 1; // List of Profiles
+  int64 createdAt = 2;          // Creation Timestamp
+  int64 lastModified = 3;       // Last Modified Timestamp
+}
+
 // Social Media Item Information
 message Social {
   bool valid = 1;      // Whether this is a valid Social

@@ -3,6 +3,7 @@ syntax = "proto3";
 
 package sonr.node;
 import "proto/common/core.proto";
+import "proto/common/data.proto";
 option go_package = "github.com/sonr-io/core/internal/node";
 
 // InitializeRequest Message to Establish Sonr Host/API/Room
@@ -67,6 +68,8 @@ message InitializeRequest {
 message InitializeResponse {
   bool success = 1; // True if Host is Active
   string error = 2; // Error Message if Host is not Active
+  sonr.core.Profile profile = 3; // Users Profile from store
+
 }
 
 // SupplyRequest supplies path to files or urls and optionally a Peer
@@ -97,9 +100,11 @@ message FetchRequest {
   Key key = 1; // Key to Fetch
 
   enum Key {
-    PROFILE = 0; // Profile
-    DEVICES = 1; // Devices
-    RECENTS = 2; // Recent Contacts
+    ALL = 0; // Fetch All Keys
+    PROFILE = 1; // User Profile
+    DEVICES = 2; // Linked Devices
+    RECENTS = 3; // Recent Peers
+    HISTORY = 4; // File Transfer History
   }
 }
 
@@ -108,11 +113,15 @@ message FetchResponse {
   bool success = 1; // True if Fetch is Active
   string error = 2; // Error Message if Fetch is not Active
   sonr.core.Profile profile = 3; // Profile
+  map<string, sonr.core.Peer> devices = 4; // Linked Devices
+  map<string, sonr.core.ProfileList> recents = 5; // Recent Peers
+  map<string, sonr.core.PayloadItemList> history = 6; // File Transfer History
 }
 
 // ShareRequest is request to share supplied files/urls with a peer
 message ShareRequest {
   sonr.core.Peer peer = 1; // Peer to Share with
+  sonr.core.MessageItem message = 2; // Message to Share
 }
 
 // ShareResponse is response to ShareRequest

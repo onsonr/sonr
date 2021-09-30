@@ -2,10 +2,9 @@ package common
 
 import (
 	"fmt"
-	"os"
 	"strings"
+	"time"
 
-	"github.com/gabriel-vasile/mimetype"
 	olc "github.com/google/open-location-code/go"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -140,85 +139,23 @@ func (p *Peer) PubKey() (crypto.PubKey, error) {
 }
 
 // ** ───────────────────────────────────────────────────────
-// ** ─── MIME Management ───────────────────────────────────
+// ** ─── Profile Management ────────────────────────────────
 // ** ───────────────────────────────────────────────────────
-// DefaultUrlMIME is the standard MIME type for URLs
-func DefaultUrlMIME() *MIME {
-	return &MIME{
-		Type:    MIME_URL,
-		Subtype: ".html",
-		Value:   "url/html",
-	}
+// Add adds a new Profile to the List and
+// updates LastModified time.
+func (p *ProfileList) Add(profile *Profile) {
+	p.Profiles = append(p.Profiles, profile)
+	p.LastModified = time.Now().Unix()
 }
 
-// NewMime creates a new MIME type from Path
-func NewMime(path string) (*MIME, error) {
-	// Check if path is URL
-	if IsUrl(path) {
-		return DefaultUrlMIME(), nil
-	}
-
-	// Check if path to file exists
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		return nil, err
-	}
-
-	// Get MIME Type and Set Proto Enum
-	mtype, err := mimetype.DetectFile(path)
-	if err != nil {
-		return nil, err
-	}
-
-	// Return MIME Type
-	return &MIME{
-		Type:    MIME_Type(MIME_Type_value[strings.ToUpper(mtype.Parent().String())]),
-		Value:   mtype.String(),
-		Subtype: mtype.Extension(),
-	}, nil
+// Count returns the number of Profiles in the List
+func (p *ProfileList) Count() int {
+	return len(p.Profiles)
 }
 
-// Ext Method adjusts extension for JPEG
-func (m *MIME) Ext() string {
-	if m.Subtype == "jpg" || m.Subtype == "jpeg" {
-		return "jpeg"
-	}
-	return m.Subtype
-}
-
-// IsAudio Checks if Mime is Audio
-func (m *MIME) IsAudio() bool {
-	return m.Type == MIME_AUDIO
-}
-
-// IsImage Checks if Mime is Image
-func (m *MIME) IsImage() bool {
-	return m.Type == MIME_IMAGE
-}
-
-// IsMedia Checks if Mime is any media
-func (m *MIME) IsMedia() bool {
-	return m.IsAudio() || m.IsImage() || m.IsVideo()
-}
-
-// IsPDF Checks if Mime is PDF
-func (m *MIME) IsPDF() bool {
-	return strings.Contains(m.GetSubtype(), "pdf")
-}
-
-// IsVideo Checks if Mime is Video
-func (m *MIME) IsVideo() bool {
-	return m.Type == MIME_VIDEO
-}
-
-// IsUrl Checks if Path is a URL
-func (m *MIME) IsUrl() bool {
-	return m.Type == MIME_URL
-}
-
-// PermitsThumbnail Checks if Mime Type Allows Thumbnail Generation.
-// Image, Video, Audio, and PDF are allowed.
-func (m *MIME) PermitsThumbnail() bool {
-	return m.IsImage() || m.IsVideo() || m.IsAudio() || m.IsPDF()
+// IndexAt returns profile at index
+func (p *ProfileList) IndexAt(i int) *Profile {
+	return p.Profiles[i]
 }
 
 // ** ───────────────────────────────────────────────────────
