@@ -10,22 +10,32 @@ PLUGIN_ANDROID=${ROOT_DIR}/plugin/android/libs
 PLUGIN_IOS=${ROOT_DIR}/plugin/ios/Frameworks
 ANDROID_ARTIFACT=io.sonr.core.aar
 IOS_ARTIFACT=Core.xcframework
-
+cd ${PROJECT_DIR}
 platform=""
 output=""
 
 # Functions for printing help
 usage() {                                 # Function: Print a help message.
-  echo ""
-  echo "🚨  ERROR: Invalid Parameters"
   echo "Usage: sonr-io/core/bind.sh [ -p PLATFORM (ios, android) ] [ -o OUTPUT (plugin, build) ]" 1>&2
   echo ""
 }
-exit_abnormal() {                         # Function: Exit with error.
+
+# Function: Exit with error.
+exit_abnormal() {
+  echo ""
+  echo "🚨  ERROR: Invalid Parameters"
   usage
+  go mod tidy
   exit 1
 }
-cd ${PROJECT_DIR}
+
+# Function: Exit after Success.
+exit_success() {
+    echo ""
+    echo "🎉  SUCCESS: Bind complete"
+    go mod tidy
+    exit 0
+}
 
 # Parse arguments
 while getopts ":p:o:" options; do         # Loop: Get the next option;
@@ -86,22 +96,22 @@ echo "----------------- (Build Output) -------------------"
 if [ $platform == android ]; then
     if [ $output == plugin ]; then
         gtime -q gomobile bind -ldflags='-s -w' -v -target=android -o ${PLUGIN_ANDROID}/${ANDROID_ARTIFACT}
-        echo ""
+        exit_success
     elif [ $output == build ]; then
         mkdir -p ${PROJECT_DIR}/build
         gtime -q gomobile bind -ldflags='-s -w' -v -target=android -o ${PROJECT_DIR}/build/${ANDROID_ARTIFACT}
-        echo ""
+        exit_success
     else
         exit_abnormal
     fi
 elif [ $platform == ios ]; then
     if [ $output == plugin ]; then
         gtime -q --format=%E gomobile bind -ldflags='-s -w' -v -target=ios/arm64 -bundleid=io.sonr.core -o ${PLUGIN_IOS}/${IOS_ARTIFACT}
-        echo ""
+        exit_success
     elif [ $output == build ]; then
         mkdir -p ${PROJECT_DIR}/build
         gtime -q --format=%E gomobile bind -ldflags='-s -w' -v -target=ios/arm64 -bundleid=io.sonr.core -o ${PROJECT_DIR}/build/${IOS_ARTIFACT}
-        echo ""
+        exit_success
     else
         exit_abnormal
     fi
@@ -109,32 +119,19 @@ elif [ $platform == all ]; then
     if [ $output == plugin ]; then
         echo "Building iOS (3/4)"
         gtime -q --format=%E gomobile bind -ldflags='-s -w' -v -target=ios/arm64 -bundleid=io.sonr.core -o ${PLUGIN_IOS}/${IOS_ARTIFACT}
-        echo ""
         echo "Building Android (4/4)"
         gtime -q gomobile bind -ldflags='-s -w' -v -target=android -o ${PLUGIN_ANDROID}/${ANDROID_ARTIFACT}
-        echo ""
+        exit_success
     elif [ $output == build ]; then
         mkdir -p ${PROJECT_DIR}/build
         echo "Building iOS (3/4)"
         gtime -q --format=%E gomobile bind -ldflags='-s -w' -v -target=ios/arm64 -bundleid=io.sonr.core -o ${PROJECT_DIR}/build/${IOS_ARTIFACT}
-        echo ""
         echo "Building Android (4/4)"
         gtime -q --format=%E gomobile bind -ldflags='-s -w' -v -target=ios/arm64 -bundleid=io.sonr.core -o ${PROJECT_DIR}/build/${IOS_ARTIFACT}
-        echo ""
+        exit_success
     else
         exit_abnormal
     fi
 else
     exit_abnormal
 fi
-echo ""
-go mod tidy
-
-if [ $platform == android ]; then
-    echo "✅  Finished Binding for Android"
-elif [ $platform == ios ]; then
-    echo "✅  Finished Binding for iOS"
-else
-    echo "✅  Finished Binding for All Platforms"
-fi
-exit 0
