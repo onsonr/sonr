@@ -9,6 +9,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/pkg/errors"
+	"github.com/sonr-io/core/internal/keychain"
 	"github.com/sonr-io/core/tools/logger"
 )
 
@@ -17,9 +18,6 @@ import (
 // ** ───────────────────────────────────────────────────────
 // OLC_SCOPE is the default OLC Scope for Distance Calculation
 const OLC_SCOPE = 6
-
-// EXCHANGE_SNAME_PREFIX is the prefix for exchange SName
-const EXCHANGE_SNAME_PREFIX = "sName/"
 
 // Fetch olc code from lat/lng at Scope Level 6
 func (l *Location) OLC() string {
@@ -94,7 +92,7 @@ func (p *Peer) Info() (*PeerInfo, error) {
 		PeerID:          id,
 		PublicKey:       pubKey,
 		SName:           p.GetSName(),
-		StoreEntryKey:   fmt.Sprintf("%s%s", EXCHANGE_SNAME_PREFIX, strings.ToLower(p.GetSName())),
+		StoreEntryKey:   strings.ToLower(p.GetSName()),
 		Peer:            p,
 	}, nil
 }
@@ -107,16 +105,14 @@ func (p *Peer) PeerID() (peer.ID, error) {
 	}
 
 	// Fetch public key from peer data
-	pubKey, err := crypto.UnmarshalPublicKey(p.GetPublicKey())
+	pubKey, err := p.SnrPubKey()
 	if err != nil {
-		logger.Error(fmt.Sprintf("Failed to Unmarshal Public Key: %s", p.GetSName()), err)
 		return "", err
 	}
 
-	// Get peer ID from public key
-	id, err := peer.IDFromPublicKey(pubKey)
+	// Return Peer ID
+	id, err := pubKey.PeerID()
 	if err != nil {
-		logger.Error(fmt.Sprintf("Failed to get peer ID from Public Key: %s", p.GetSName()), err)
 		return "", err
 	}
 	return id, nil
@@ -132,10 +128,21 @@ func (p *Peer) PubKey() (crypto.PubKey, error) {
 	// Unmarshal Public Key
 	pubKey, err := crypto.UnmarshalPublicKey(p.GetPublicKey())
 	if err != nil {
-		logger.Error(fmt.Sprintf("Failed to Unmarshal Public Key: %s", p.GetSName()), err)
-		return nil, err
+		return nil, logger.Error(fmt.Sprintf("Failed to Unmarshal Public Key: %s", p.GetSName()), err)
 	}
 	return pubKey, nil
+}
+
+// SnrPubKey returns the Public Key from the Peer as SnrPubKey
+func (p *Peer) SnrPubKey() (*keychain.SnrPubKey, error) {
+	// Get Public Key
+	pub, err := p.PubKey()
+	if err != nil {
+		return nil, logger.Error("Failed to get Public Key", err)
+	}
+
+	// Return SnrPubKey
+	return keychain.NewSnrPubKey(pub), nil
 }
 
 // ** ───────────────────────────────────────────────────────

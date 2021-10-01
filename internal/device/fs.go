@@ -2,8 +2,9 @@ package device
 
 import (
 	"encoding/json"
+	"os"
 
-	"github.com/libp2p/go-libp2p-core/crypto"
+	"github.com/sonr-io/core/internal/keychain"
 	"github.com/sonr-io/core/tools/config"
 	"github.com/sonr-io/core/tools/logger"
 )
@@ -31,7 +32,7 @@ type DeviceOptions struct {
 
 var (
 	// Keychain is the device keychain
-	KeyChain Keychain
+	KeyChain keychain.Keychain
 
 	// DatabasePath is the path to the database folder
 	DatabasePath string
@@ -79,7 +80,18 @@ const (
 )
 
 // Init initializes the keychain and returns a Keychain.
-func Init(opts ...FSOption) error {
+func Init(isDev bool, opts ...FSOption) error {
+	// Initialize logger
+	logger.Init(isDev)
+
+	// Set Variables from OS
+	HANDSHAKE_KEY.Set(os.Getenv("HANDSHAKE_KEY"))
+	HANDSHAKE_SECRET.Set(os.Getenv("HANDSHAKE_SECRET"))
+	IP_LOCATION_KEY.Set(os.Getenv("IP_LOCATION_KEY"))
+	RAPID_API_KEY.Set(os.Getenv("RAPID_API_KEY"))
+	TEXTILE_HUB_KEY.Set(os.Getenv("TEXTILE_HUB_KEY"))
+	TEXTILE_HUB_SECRET.Set(os.Getenv("TEXTILE_HUB_SECRET"))
+
 	// Check if Opts are set
 	if len(opts) == 0 {
 		// Create Device Config
@@ -96,7 +108,9 @@ func Init(opts ...FSOption) error {
 			json.Unmarshal(data, &kcConfig)
 			logger.Debug("Loaded Config from Disk")
 			kcConfig = folder
-			kc, err := loadKeychain(kcConfig)
+
+			// Create Keychain
+			kc, err := keychain.NewKeychain(kcConfig)
 			if err != nil {
 				return err
 			}
@@ -118,7 +132,9 @@ func Init(opts ...FSOption) error {
 			// Create Keychain
 			logger.Debug("Created new Config")
 			kcConfig = folders[0]
-			kc, err := newKeychain(kcConfig)
+
+			// Create Keychain
+			kc, err := keychain.NewKeychain(kcConfig)
 			if err != nil {
 				return err
 			}
@@ -136,26 +152,12 @@ func Init(opts ...FSOption) error {
 			Type: config.Support,
 		}
 
-		// Check if Keychain exists
-		if keychainExists(kcConfig) {
-			// Load Existing Keychain
-			kc, err := loadKeychain(kcConfig)
-			if err != nil {
-				return err
-			}
-
-			// Set Keychain
-			KeyChain = kc
-		} else {
-			// Create Keychain
-			kc, err := newKeychain(kcConfig)
-			if err != nil {
-				return err
-			}
-
-			// Set Keychain
-			KeyChain = kc
+		// Create Keychain
+		kc, err := keychain.NewKeychain(kcConfig)
+		if err != nil {
+			return err
 		}
+		KeyChain = kc
 	}
 	return nil
 }
@@ -167,47 +169,6 @@ func SetDeviceID(id string) error {
 		return nil
 	}
 	return logger.Error("Failed to Set Device ID", ErrEmptyDeviceID)
-}
-
-// keychainExists checks if EVERY key pair exists in the keychain.
-func keychainExists(kcConfig *config.Config) bool {
-	accExists := kcConfig.Exists(Account.Path())
-	linkExists := kcConfig.Exists(Link.Path())
-	groupExists := kcConfig.Exists(Group.Path())
-	return accExists && linkExists && groupExists
-}
-
-// readKey reads a key from a file and returns privKey and pubKey.
-func readKey(kcconfig *config.Config, kp KeyPairType) (crypto.PrivKey, crypto.PubKey, error) {
-	// Get Buffer
-	dat, err := kcconfig.ReadFile(kp.Path())
-	if err != nil {
-		return nil, nil, err
-	}
-
-	// Get Private Key from Buffer
-	privKey, err := crypto.UnmarshalPrivateKey(dat)
-	if err != nil {
-		return nil, nil, err
-	}
-	// Get Public Key from Private Key
-	return privKey, privKey.GetPublic(), nil
-}
-
-// writeKey writes a key to the keychain.
-func writeKey(kcconfig *config.Config, privKey crypto.PrivKey, kp KeyPairType) error {
-	// Marshal Private Key
-	buf, err := crypto.MarshalPrivateKey(privKey)
-	if err != nil {
-		return err
-	}
-
-	// Write Key to Keychain
-	err = kcconfig.WriteFile(kp.Path(), buf)
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 // FSOption is a functional option for configuring the filesystem.

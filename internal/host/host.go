@@ -9,15 +9,19 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/libp2p/go-libp2p-core/routing"
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	psub "github.com/libp2p/go-libp2p-pubsub"
 	discovery "github.com/libp2p/go-libp2p/p2p/discovery"
+	"github.com/libp2p/go-msgio"
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
+	"github.com/sonr-io/core/internal/keychain"
 	"github.com/sonr-io/core/tools/logger"
+	"google.golang.org/protobuf/proto"
 )
 
 // SNRHostStat is the host stat info
@@ -54,7 +58,7 @@ type SNRHost struct {
 func NewHost(ctx context.Context, conn common.Connection) (*SNRHost, error) {
 	// Initialize DHT
 	var kdhtRef *dht.IpfsDHT
-	privKey, err := device.KeyChain.GetPrivKey(device.Account)
+	privKey, err := device.KeyChain.GetPrivKey(keychain.Account)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get private key")
 	}
@@ -116,10 +120,32 @@ func (hn *SNRHost) Pubsub() *psub.PubSub {
 	return hn.pubsub
 }
 
+// SendMessage writes a protobuf go data object to a network stream
+func (hn *SNRHost) SendMessage(id peer.ID, p protocol.ID, data proto.Message) error {
+	s, err := hn.NewStream(hn.ctxHost, id, p)
+	if err != nil {
+		return logger.Error("Failed to start stream", err)
+	}
+	defer s.Close()
+
+	// marshall data to protobufs3 binary format
+	bin, err := proto.Marshal(data)
+	if err != nil {
+		return logger.Error("Failed to marshal pb", err)
+	}
+
+	// Create Writer and write data to stream
+	w := msgio.NewWriter(s)
+	if err := w.WriteMsg(bin); err != nil {
+		return logger.Error("Failed to write message to stream.", err)
+	}
+	return nil
+}
+
 // Stat returns the host stat info
 func (hn *SNRHost) Stat() (*SNRHostStat, error) {
 	// Get Public Key
-	pubKey, err := device.KeyChain.GetPubKey(device.Account)
+	pubKey, err := device.KeyChain.GetPubKey(keychain.Account)
 	if err != nil {
 		return nil, logger.Error("Failed to get public key", err)
 	}

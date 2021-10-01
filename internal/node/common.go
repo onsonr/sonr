@@ -7,6 +7,8 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	common "github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
+	"github.com/sonr-io/core/internal/keychain"
+	"github.com/sonr-io/core/internal/store"
 	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/tools/logger"
 )
@@ -20,7 +22,7 @@ var (
 // Peer method returns the peer of the node
 func (n *Node) Peer() (*common.Peer, error) {
 	// Get Public Key
-	pubKey, err := device.KeyChain.GetPubKey(device.Account)
+	pubKey, err := device.KeyChain.GetPubKey(keychain.Account)
 	if err != nil {
 		return nil, logger.Error("Failed to get Public Key", err)
 	}
@@ -58,6 +60,22 @@ func (n *Node) Peer() (*common.Peer, error) {
 	}, nil
 }
 
+func (n *Node) Profile() (*common.Profile, error) {
+	pro, err := n.store.GetProfile()
+	if err != nil {
+		return nil, logger.Error("Failed to retreive Profile", err)
+	}
+	return pro, nil
+}
+
+func (n *Node) Recents() (store.RecentsHistory, error) {
+	rec, err := n.store.GetRecents()
+	if err != nil {
+		return nil, logger.Error("Failed to get recents", err)
+	}
+	return rec, nil
+}
+
 // ToExchangeQueryRequest converts a query request to an exchange query request.
 func (f *SearchRequest) ToExchangeQueryRequest() (*exchange.QueryRequest, error) {
 	if f.GetSName() != "" {
@@ -81,5 +99,42 @@ func ToFindResponse(p *common.PeerInfo) *SearchResponse {
 		Peer:    p.Peer,
 		PeerId:  p.PeerID.String(),
 		SName:   p.SName,
+	}
+}
+
+// createInitializeResponse creates a response for the initialize request.
+func (n *Node) createInitializeResponse(err error) *InitializeResponse {
+	// Check for provided error
+	if err != nil {
+		return &InitializeResponse{
+			Success: false,
+			Error:   err.Error(),
+		}
+	}
+
+	// Fetch Profile
+	p, err := n.Profile()
+	if err != nil {
+		return &InitializeResponse{
+			Success: true,
+			Error:   err.Error(),
+		}
+	}
+
+	// Fetch Recents
+	r, err := n.Recents()
+	if err != nil {
+		return &InitializeResponse{
+			Success: true,
+			Error:   err.Error(),
+			Profile: p,
+		}
+	}
+
+	// Return Response
+	return &InitializeResponse{
+		Success: true,
+		Profile: p,
+		Recents: r,
 	}
 }

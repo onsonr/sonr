@@ -9,10 +9,6 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-var (
-	PROFILE_KEY = []byte("profile")
-)
-
 // GetProfile returns the profile for the user from diskDB
 func (s *Store) GetProfile() (*common.Profile, error) {
 	var profile common.Profile

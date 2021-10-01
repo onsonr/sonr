@@ -4,6 +4,7 @@ go 1.16
 
 require (
 	github.com/PuerkitoBio/goquery v1.7.1
+	github.com/babolivier/go-doh-client v0.0.0-20201028162107-a76cff4cb8b6
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/gabriel-vasile/mimetype v1.3.1
 	github.com/google/open-location-code/go v0.0.0-20210504205230-1796878d947c

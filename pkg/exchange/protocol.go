@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/babolivier/go-doh-client"
 	psr "github.com/libp2p/go-libp2p-pubsub-router"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/host"
@@ -16,9 +17,10 @@ import (
 // ExchangeProtocol handles Global Sonr Exchange Protocol
 type ExchangeProtocol struct {
 	*psr.PubsubValueStore
-	ctx     context.Context
-	host    *host.SNRHost  // host
-	emitter *state.Emitter // Handle to signal when done
+	ctx      context.Context
+	host     *host.SNRHost  // host
+	emitter  *state.Emitter // Handle to signal when done
+	resolver doh.Resolver
 }
 
 // NewProtocol creates new ExchangeProtocol
@@ -29,11 +31,18 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) (*E
 		return nil, logger.Error("Failed to create Exchange PubSubValueStore", err)
 	}
 
+	// Create Doh Resolver
+	resolver := doh.Resolver{
+		Host:  "https://query.hdns.io/dns-query",
+		Class: doh.IN,
+	}
+
 	// Create Exchange Protocol
 	exchProtocol := &ExchangeProtocol{
 		ctx:              ctx,
 		host:             host,
 		emitter:          em,
+		resolver:         resolver,
 		PubsubValueStore: r,
 	}
 	return exchProtocol, nil

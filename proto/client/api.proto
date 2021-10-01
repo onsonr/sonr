@@ -63,7 +63,15 @@ message InitializeResponse {
   bool success = 1; // True if Host is Active
   string error = 2; // Error Message if Host is not Active
   sonr.core.Profile profile = 3; // Users Profile from store
+  map<string,sonr.core.ProfileList> recents = 4; // Recent Peers from store
+  map<string, sonr.core.PayloadItemList> history = 5; // File transfer history from store
+  UserStatus userStatus = 6; // User Status from store'
 
+  // User Status
+  enum UserStatus {
+    RETURNING = 0; // User is Returning
+    NEW = 1;       // User is New
+  }
 }
 
 // SupplyRequest supplies path to files or urls and optionally a Peer

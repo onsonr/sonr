@@ -49,7 +49,7 @@ type Node struct {
 }
 
 // NewNode Creates a node with its implemented protocols
-func NewNode(ctx context.Context, host *host.SNRHost, loc *common.Location) (*Node, error) {
+func NewNode(ctx context.Context, host *host.SNRHost, loc *common.Location) (*Node, *InitializeResponse, error) {
 	// Create Node
 	node := &Node{
 		Emitter: state.NewEmitter(2048),
@@ -61,7 +61,7 @@ func NewNode(ctx context.Context, host *host.SNRHost, loc *common.Location) (*No
 	// Initialize Store
 	store, err := store.NewStore(ctx, host, node.Emitter)
 	if err != nil {
-		return nil, logger.Error("Failed to initialize store", err)
+		return nil, node.createInitializeResponse(err), logger.Error("Failed to initialize store", err)
 	}
 	node.store = store
 
@@ -71,17 +71,19 @@ func NewNode(ctx context.Context, host *host.SNRHost, loc *common.Location) (*No
 	// Set Exchange Protocol
 	exch, err := exchange.NewProtocol(ctx, host, node.Emitter)
 	if err != nil {
-		return nil, logger.Error("Failed to start ExchangeProtocol", err)
+		return nil, node.createInitializeResponse(err), logger.Error("Failed to start ExchangeProtocol", err)
 	}
 	node.ExchangeProtocol = exch
 
 	// Set Lobby Protocol
 	lobby, err := lobby.NewProtocol(host, loc, node.Emitter)
 	if err != nil {
-		return nil, logger.Error("Failed to start LobbyProtocol", err)
+		return nil, node.createInitializeResponse(err), logger.Error("Failed to start LobbyProtocol", err)
 	}
 	node.LobbyProtocol = lobby
-	return node, nil
+
+	// Create Initialize Response and Return
+	return node, node.createInitializeResponse(nil), nil
 }
 
 // Edit method updates Node's profile
@@ -140,13 +142,13 @@ func (n *Node) Share(to *common.Peer) error {
 		payload := n.queue.Remove(elem).(*common.Payload)
 
 		// Create New ID for Invite
-		id, err := n.host.NewID()
+		id, err := device.KeyChain.CreateUUID()
 		if err != nil {
 			return logger.Error("Failed to create new id for Shared Invite", err)
 		}
 
 		// Create new Metadata
-		meta, err := n.host.NewMetadata()
+		meta, err := device.KeyChain.CreateMetadata(n.host.ID())
 		if err != nil {
 			return logger.Error("Failed to create new metadata for Shared Invite", err)
 		}
@@ -160,10 +162,10 @@ func (n *Node) Share(to *common.Peer) error {
 		// Create Invite Request
 		req := &transfer.InviteRequest{
 			Payload:  payload,
-			Metadata: meta,
+			Metadata: common.SignedMetadataToProto(meta),
 			To:       to,
 			From:     from,
-			Uuid:     id,
+			Uuid:     common.SignedUUIDToProto(id),
 		}
 
 		// Fetch Peer ID from Public Key
@@ -185,7 +187,7 @@ func (n *Node) Share(to *common.Peer) error {
 // Respond to an invite request
 func (n *Node) Respond(decs bool, to *common.Peer) error {
 	// Create new Metadata
-	meta, err := n.host.NewMetadata()
+	meta, err := device.KeyChain.CreateMetadata(n.host.ID())
 	if err != nil {
 		logger.Error("Failed to create new metadata for Shared Invite", err)
 		return err
@@ -200,7 +202,7 @@ func (n *Node) Respond(decs bool, to *common.Peer) error {
 	// Create Invite Response
 	resp := &transfer.InviteResponse{
 		Decision: decs,
-		Metadata: meta,
+		Metadata: common.SignedMetadataToProto(meta),
 		From:     from,
 		To:       to,
 	}

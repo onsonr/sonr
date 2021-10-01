@@ -1,43 +1,24 @@
-package device
+package keychain
 
 import (
 	"crypto/rand"
-	"path/filepath"
+	"time"
 
+	"github.com/google/uuid"
 	"github.com/libp2p/go-libp2p-core/crypto"
+	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/tools/config"
 	"github.com/sonr-io/core/tools/logger"
 )
 
-// KeyPairType is a type of keypair
-type KeyPairType int64
-
-const (
-	// Account is the keypair for the account
-	Account KeyPairType = iota
-
-	// Link is the keypair for linking Devices
-	Link
-
-	// Group is the keypair for created Groups
-	Group
-)
-
-// Path returns the path to the keypair
-func (kpt KeyPairType) Path() string {
-	switch kpt {
-	case Account:
-		return filepath.Join("keychain", "account_private_key")
-	case Group:
-		return filepath.Join("keychain", "group_private_key")
-	case Link:
-		return filepath.Join("keychain", "link_private_key")
-	}
-	return ""
-}
-
 // Keychain Interface for managing device keypairs.
 type Keychain interface {
+	// CreateUUID makes new UUID value signed by the local node's private key
+	CreateUUID() (*SignedUUID, error)
+
+	// CreateMetadata makes message data shared between all node's p2p protocols
+	CreateMetadata(peerID peer.ID) (*SignedMetadata, error)
+
 	// Exists Checks if a key pair exists in the keychain.
 	Exists(kp KeyPairType) bool
 
@@ -58,6 +39,30 @@ type Keychain interface {
 
 	// VerifyWith verifies a signature with specified pair
 	VerifyWith(kp KeyPairType, msg []byte, sig []byte) (bool, error)
+}
+
+// NewKeychain creates a new keychain with Config.
+func NewKeychain(config *config.Config) (Keychain, error) {
+	// Check if Keychain exists
+	if keychainExists(config) {
+		// Load Existing Keychain
+		kc, err := loadKeychain(config)
+		if err != nil {
+			return nil, err
+		}
+
+		// Return Keychain
+		return kc, nil
+	} else {
+		// Create Keychain
+		kc, err := newKeychain(config)
+		if err != nil {
+			return nil, err
+		}
+
+		// Return Keychain
+		return kc, nil
+	}
 }
 
 // keychain is a keychain implementation that stores keys in a directory.
@@ -159,6 +164,50 @@ func newKeychain(kcconfig *config.Config) (Keychain, error) {
 	// Load Group Key to Keychain
 	kc.LoadKeyPair(groupPubKey, groupPrivKey, Group)
 	return kc, nil
+}
+
+// CreateUUID makes a new UUID value signed by the local node's private key
+func (kc *keychain) CreateUUID() (*SignedUUID, error) {
+	// generate new UUID
+	id := uuid.New().String()
+
+	// sign UUID using local node's private key
+	sig, err := kc.SignWith(Account, []byte(id))
+	if err != nil {
+		logger.Error("Failed to sign UUID", err)
+		return nil, err
+	}
+
+	// Return UUID with signature
+	return &SignedUUID{
+		Value:     id,
+		Signature: sig,
+		Timestamp: time.Now().Unix(),
+	}, nil
+}
+
+// CreateMetadata makes message data shared between all node's p2p protocols
+func (kc *keychain) CreateMetadata(peerID peer.ID) (*SignedMetadata, error) {
+	// Get local node's public key
+	pubKey, err := kc.GetPubKey(Account)
+	if err != nil {
+		logger.Error("Failed to get local host's public key", err)
+		return nil, err
+	}
+
+	// Marshal Public key into public key data
+	nodePubKey, err := crypto.MarshalPublicKey(pubKey)
+	if err != nil {
+		logger.Error("Failed to Extract Public Key", err)
+		return nil, err
+	}
+
+	// Generate new Metadata
+	return &SignedMetadata{
+		Timestamp: time.Now().Unix(),
+		PublicKey: nodePubKey,
+		NodeId:    peer.Encode(peerID),
+	}, nil
 }
 
 // Exists checks if a key pair exists in the keychain.
@@ -279,23 +328,4 @@ func (kc *keychain) VerifyWith(kp KeyPairType, msg []byte, sig []byte) (bool, er
 		return pub.Verify(msg, sig)
 	}
 	return false, logger.Error("Failed to Verify Data", ErrKeychainUnready)
-}
-
-// ---------------- FilePath Functions ----------------
-type keyPair struct {
-	pub    crypto.PubKey
-	priv   crypto.PrivKey
-	kpType KeyPairType
-}
-
-// PrivPubKeys returns the private and public keys for the keypair given keychain
-func (kp keyPair) PrivPubKeys() (crypto.PubKey, crypto.PrivKey, error) {
-	if kp.priv == nil {
-		return nil, nil, logger.Error("Failed to Return Private Key", ErrNoPrivateKey)
-	}
-
-	if kp.pub == nil {
-		return nil, nil, logger.Error("Failed to Return Public Key", ErrNoPublicKey)
-	}
-	return kp.pub, kp.priv, nil
 }

@@ -9,7 +9,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-type RecentsHistory map[string]*common.ProfileList
+
 
 // GetProfile returns the profile for the user from diskDB
 func (s *Store) GetRecents() (RecentsHistory, error) {

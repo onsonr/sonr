@@ -1,67 +1,19 @@
 package host
 
 import (
-	"time"
-
-	"github.com/google/uuid"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-core/protocol"
-	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
+	"github.com/sonr-io/core/internal/keychain"
 	"github.com/sonr-io/core/tools/logger"
 	"google.golang.org/protobuf/proto"
 )
 
-// NewID generates a new UUID value signed by the local node's private key
-func (n *SNRHost) NewID() (*common.UUID, error) {
-	// generate new UUID
-	id := uuid.New().String()
-
-	// sign UUID using local node's private key
-	sig, err := n.SignData([]byte(id))
-	if err != nil {
-		logger.Error("Failed to sign UUID", err)
-		return nil, err
-	}
-
-	// Return UUID with signature
-	return &common.UUID{
-		Value:     id,
-		Signature: sig,
-		Timestamp: time.Now().Unix(),
-	}, nil
-}
-
-// NewMetadata generates message data shared between all node's p2p protocols
-func (h *SNRHost) NewMetadata() (*common.Metadata, error) {
-	// Get local node's public key
-	pubKey, err := device.KeyChain.GetPubKey(device.Account)
-	if err != nil {
-		logger.Error("Failed to get local host's public key", err)
-		return nil, err
-	}
-
-	// Marshal Public key into public key data
-	nodePubKey, err := crypto.MarshalPublicKey(pubKey)
-	if err != nil {
-		logger.Error("Failed to Extract Public Key", err)
-		return nil, err
-	}
-
-	// Generate new Metadata
-	return &common.Metadata{
-		Timestamp: time.Now().Unix(),
-		PublicKey: nodePubKey,
-		NodeId:    peer.Encode(h.ID()),
-	}, nil
-}
-
 // AuthenticateId verifies UUID value and signature
 func (h *SNRHost) AuthenticateId(id *common.UUID) (bool, error) {
 	// Get local node's public key
-	pubKey, err := device.KeyChain.GetPubKey(device.Account)
+	pubKey, err := device.KeyChain.GetPubKey(keychain.Account)
 	if err != nil {
 		return false, logger.Error("Failed to get local host's public key", err)
 	}
@@ -103,28 +55,6 @@ func (n *SNRHost) AuthenticateMessage(message proto.Message, data *common.Metada
 	return n.VerifyData(bin, []byte(sign), peerId, data.PublicKey)
 }
 
-// SendMessage writes a protobuf go data object to a network stream
-func (n *SNRHost) SendMessage(id peer.ID, p protocol.ID, data proto.Message) error {
-	s, err := n.NewStream(n.ctxHost, id, p)
-	if err != nil {
-		return logger.Error("Failed to start stream", err)
-	}
-	defer s.Close()
-
-	// marshall data to protobufs3 binary format
-	bin, err := proto.Marshal(data)
-	if err != nil {
-		return logger.Error("Failed to marshal pb", err)
-	}
-
-	// Create Writer and write data to stream
-	w := msgio.NewWriter(s)
-	if err := w.WriteMsg(bin); err != nil {
-		return logger.Error("Failed to write message to stream.", err)
-	}
-	return nil
-}
-
 // SignMessage signs an outgoing p2p message payload
 func (n *SNRHost) SignMessage(message proto.Message) ([]byte, error) {
 	data, err := proto.Marshal(message)
@@ -137,15 +67,9 @@ func (n *SNRHost) SignMessage(message proto.Message) ([]byte, error) {
 // SignData signs an outgoing p2p message payload
 func (n *SNRHost) SignData(data []byte) ([]byte, error) {
 	// Get local node's private key
-	privKey, err := device.KeyChain.GetPrivKey(device.Account)
+	res, err := device.KeyChain.SignWith(keychain.Account, data)
 	if err != nil {
 		return nil, logger.Error("Failed to get local host's private key", err)
-	}
-
-	// sign data using local node's private key
-	res, err := privKey.Sign(data)
-	if err != nil {
-		return nil, logger.Error("Failed to sign data.", err)
 	}
 	return res, nil
 }

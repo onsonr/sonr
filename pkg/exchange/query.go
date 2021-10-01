@@ -29,7 +29,7 @@ func (q *QueryRequest) QueryValue() (string, string, error) {
 	// Check if the SName is provided
 	if q.GetSName() != "" {
 		val := strings.ToLower(q.GetSName())
-		return fmt.Sprintf("%s%s", common.EXCHANGE_SNAME_PREFIX, val), val, nil
+		return val, val, nil
 	}
 	return "", "", fmt.Errorf("no peerID or SName given")
 }
@@ -40,9 +40,7 @@ type ExchangeValidator struct {
 
 // Validate validates the given record against the given query
 func (ExchangeValidator) Validate(key string, value []byte) error {
-	if !strings.Contains(key, common.EXCHANGE_SNAME_PREFIX) {
-		return record.ErrInvalidRecordType
-	}
+
 	return nil
 }
 

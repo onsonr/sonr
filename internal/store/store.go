@@ -10,10 +10,6 @@ import (
 	bolt "go.etcd.io/bbolt"
 )
 
-var (
-	RECENTS_BUCKET = []byte("recents")
-	USER_BUCKET    = []byte("user")
-)
 
 type Store struct {
 	ctx     context.Context

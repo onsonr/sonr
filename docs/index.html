@@ -231,6 +231,14 @@
                 </li>
               
                 <li>
+                  <a href="#sonr.node.InitializeResponse.HistoryEntry"><span class="badge">M</span>InitializeResponse.HistoryEntry</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.node.InitializeResponse.RecentsEntry"><span class="badge">M</span>InitializeResponse.RecentsEntry</a>
+                </li>
+              
+                <li>
                   <a href="#sonr.node.RespondRequest"><span class="badge">M</span>RespondRequest</a>
                 </li>
               
@@ -285,6 +293,10 @@
               
                 <li>
                   <a href="#sonr.node.InitializeRequest.IPAddress.Family"><span class="badge">E</span>InitializeRequest.IPAddress.Family</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.node.InitializeResponse.UserStatus"><span class="badge">E</span>InitializeResponse.UserStatus</a>
                 </li>
               
               
@@ -1203,6 +1215,89 @@
                   <td><p>Users Profile from store </p></td>
                 </tr>
               
+                <tr>
+                  <td>recents</td>
+                  <td><a href="#sonr.node.InitializeResponse.RecentsEntry">InitializeResponse.RecentsEntry</a></td>
+                  <td>repeated</td>
+                  <td><p>Recent Peers from store </p></td>
+                </tr>
+              
+                <tr>
+                  <td>history</td>
+                  <td><a href="#sonr.node.InitializeResponse.HistoryEntry">InitializeResponse.HistoryEntry</a></td>
+                  <td>repeated</td>
+                  <td><p>File transfer history from store </p></td>
+                </tr>
+              
+                <tr>
+                  <td>userStatus</td>
+                  <td><a href="#sonr.node.InitializeResponse.UserStatus">InitializeResponse.UserStatus</a></td>
+                  <td></td>
+                  <td><p>User Status from store&#39; </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.node.InitializeResponse.HistoryEntry">InitializeResponse.HistoryEntry</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>key</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#sonr.core.PayloadItemList">sonr.core.PayloadItemList</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.node.InitializeResponse.RecentsEntry">InitializeResponse.RecentsEntry</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>key</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#sonr.core.ProfileList">sonr.core.ProfileList</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -1703,6 +1798,29 @@
                 <td>IPV6</td>
                 <td>1</td>
                 <td><p>IPv6 Address</p></td>
+              </tr>
+            
+          </tbody>
+        </table>
+      
+        <h3 id="sonr.node.InitializeResponse.UserStatus">InitializeResponse.UserStatus</h3>
+        <p>User Status</p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>RETURNING</td>
+                <td>0</td>
+                <td><p>User is Returning</p></td>
+              </tr>
+            
+              <tr>
+                <td>NEW</td>
+                <td>1</td>
+                <td><p>User is New</p></td>
               </tr>
             
           </tbody>

@@ -3,7 +3,6 @@ package device
 import (
 	"errors"
 	"fmt"
-	"os"
 
 	"github.com/sonr-io/core/tools/logger"
 )
@@ -80,17 +79,3 @@ var (
 	ErrSeparatorLength            = errors.New("Separator length must be 1.")
 	ErrNoFileNameSet              = errors.New("File name was not set by options.")
 )
-
-// InitEnv initializes the environment variables
-func InitEnv(isDev bool) {
-	// Initialize logger
-	logger.Init(isDev)
-
-	// Set Variables from OS
-	HANDSHAKE_KEY.Set(os.Getenv("HANDSHAKE_KEY"))
-	HANDSHAKE_SECRET.Set(os.Getenv("HANDSHAKE_SECRET"))
-	IP_LOCATION_KEY.Set(os.Getenv("IP_LOCATION_KEY"))
-	RAPID_API_KEY.Set(os.Getenv("RAPID_API_KEY"))
-	TEXTILE_HUB_KEY.Set(os.Getenv("TEXTILE_HUB_KEY"))
-	TEXTILE_HUB_SECRET.Set(os.Getenv("TEXTILE_HUB_SECRET"))
-}
