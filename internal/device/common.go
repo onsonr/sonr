@@ -8,6 +8,10 @@ import (
 	"github.com/sonr-io/core/tools/logger"
 )
 
+var (
+	ErrVariableNotFound = errors.New("EnvVariable not found on OS.getEnv()")
+)
+
 // EnvVariable represents an environment variable
 type EnvVariable struct {
 	Key   string
@@ -19,11 +23,6 @@ func NewEnvVariable(key string) EnvVariable {
 	return EnvVariable{Key: key}
 }
 
-// Exists checks if the environment variable exists
-func (ev EnvVariable) Exists() bool {
-	return len(ev.Value) > 0 && len(ev.Key) > 0
-}
-
 // Get the environment variable
 func (ev EnvVariable) Get() string {
 	return ev.Value
@@ -31,9 +30,12 @@ func (ev EnvVariable) Get() string {
 
 // Set the environment variable
 func (ev EnvVariable) Set(val string) {
-	if !ev.Exists() {
+	if len(val) > 0 {
 		ev.Value = val
+		logger.Info(fmt.Sprintf("Enviornment Variable Set: %s", val))
+		return
 	}
+	logger.Error("Failed to set Enviornment variable", ErrVariableNotFound)
 }
 
 // EnvVariableMap is a map of environment variables
@@ -80,21 +82,9 @@ var (
 )
 
 // InitEnv initializes the environment variables
-func InitEnv(isDev bool, envVars EnvVariableMap) {
+func InitEnv(isDev bool) {
 	// Initialize logger
 	logger.Init(isDev)
-
-	// Check Map length
-	if len(envVars) > 0 {
-		// Set Variables from Map
-		for k, v := range envVars {
-			if len(v) > 0 {
-				os.Setenv(k, v)
-			} else {
-				logger.Error(fmt.Sprintf("Failed to set Env Var: %s", k), ErrMissingEnvVar)
-			}
-		}
-	}
 
 	// Set Variables from OS
 	HANDSHAKE_KEY.Set(os.Getenv("HANDSHAKE_KEY"))

@@ -1,8 +1,12 @@
 package device
 
 import (
+	"fmt"
 	"path/filepath"
 	"strings"
+
+	"github.com/sonr-io/core/tools/logger"
+	"go.uber.org/zap"
 )
 
 type filePathOptType int
@@ -54,7 +58,6 @@ func NewDatabasePath(path string, opts ...FilePathOption) (string, error) {
 	// Build path
 	return fpo.Apply(DocsPath)
 }
-
 
 // NewDocsPath Returns a new path in docs dir with given file name.
 func NewDocsPath(path string, opts ...FilePathOption) (string, error) {
@@ -289,39 +292,36 @@ func (fpo *filePathOptions) Apply(dir string) (string, error) {
 		fpo.Separator = "-"
 	}
 
-	// Verify baseName, extension, and separator are set
-	if fpo.baseName == "" || fpo.extension == "" || fpo.Separator == "" {
-		// Verify prefix, suffix, or replace is set
-		// Check for Replace
-		if fpo.replaceSet {
-			// Check if prefix or suffix is set
-			if fpo.suffixSet || fpo.prefixSet {
-				return "", ErrPrefixSuffixSetWithReplace
-			} else {
-				fpo.fileName = fpo.Replace + "." + fpo.extension
-			}
-		} else {
-			// Check for prefix
-			if fpo.prefixSet {
-				fpo.fileName = fpo.Prefix + fpo.Separator + fpo.baseName
-			} else {
-				fpo.fileName = fpo.baseName
-			}
-
-			// Check for suffix
-			if fpo.suffixSet {
-				fpo.fileName = fpo.fileName + fpo.Separator + fpo.Suffix
-			} else {
-				fpo.fileName = fpo.fileName + fpo.Separator
-			}
+	// Check for Replace
+	if fpo.replaceSet {
+		// Check if prefix or suffix is set
+		if fpo.suffixSet || fpo.prefixSet {
+			return "", ErrPrefixSuffixSetWithReplace
 		}
+		// Set Filename to replace
+		fpo.fileName = fpo.Replace
 	} else {
-		fpo.fileName = fpo.baseName + "." + fpo.extension
+		// Check for prefix
+		if fpo.prefixSet {
+			fpo.fileName = fpo.Prefix + fpo.Separator + fpo.baseName
+		} else {
+			fpo.fileName = fpo.baseName
+		}
+
+		// Check for suffix
+		if fpo.suffixSet {
+			fpo.fileName = fpo.fileName + fpo.Separator + fpo.Suffix
+		}
 	}
+
+	// Add extension
+	fpo.fileName = fpo.fileName + "." + fpo.extension
 
 	// Check if file name is set
 	if fpo.fileName != "" {
-		return filepath.Join(dir, fpo.fileName), nil
+		path := filepath.Join(dir, fpo.fileName)
+		logger.Info(fmt.Sprintf("Calculated new file path: %s", path), zap.String("path.Apply()", path))
+		return path, nil
 	} else {
 		return "", ErrNoFileNameSet
 	}

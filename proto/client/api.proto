@@ -14,7 +14,7 @@ message InitializeRequest {
   HostOptions hostOptions = 4;         // Libp2p Host config
   ServiceOptions serviceOptions = 5;   // Service Config
   DeviceOptions deviceOptions = 6;     // File System Config
-  EnvOptions envOptions = 7;           // Environment Config
+  sonr.core.Environment environment = 7; // Environment Config
 
   // Optional Message to Initialize FileSystem
   message DeviceOptions {
@@ -25,12 +25,6 @@ message InitializeRequest {
     string downloadsDir = 5; // Downloads Directory
     string mailboxDir = 6;   // Mailbox Directory
     string supportDir = 7;   // Support Directory
-  }
-
-  // Optional Message to Initialize Env Variables
-  message EnvOptions {
-    map<string, string> variables = 1;     // Environment Variables
-    sonr.core.Environment environment = 2; // Environment Config
   }
 
   // Libp2p Host Options

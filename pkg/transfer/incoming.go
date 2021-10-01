@@ -156,6 +156,7 @@ func (ir *itemReader) ReadFrom(reader msgio.ReadCloser) error {
 	if err != nil {
 		return err
 	}
+	logger.Info("Created new file at path", zap.String("incoming.ItemPath", ir.path))
 	defer f.Close()
 
 	// Route Data from Stream
