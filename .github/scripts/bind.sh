@@ -148,10 +148,10 @@ if [ $platform == android ]; then
     echo ""
     echo "----------------- (AAR: Build Output) -------------------"
     if [ $output == plugin ]; then
-        gtime -q gomobile bind -ldflags='-s -w' -v -target=android -o ${PLUGIN_ANDROID}/${ANDROID_ARTIFACT}
+        gtime -q -format=%E gomobile bind -ldflags='-s -w' -v -target=android -o ${PLUGIN_ANDROID}/${ANDROID_ARTIFACT}
         exit_success
     elif [ $output == build ]; then
-        gtime -q gomobile bind -ldflags='-s -w' -v -target=android -o ${BUILD_DIR}/${ANDROID_ARTIFACT}
+        gtime -q -format=%E gomobile bind -ldflags='-s -w' -v -target=android -o ${BUILD_DIR}/${ANDROID_ARTIFACT}
         exit_success
     else
         exit_abnormal
@@ -175,7 +175,7 @@ elif [ $platform == all ]; then
         echo "- (3/4) Binding iOS Framework"
         gtime -q --format=%E gomobile bind -ldflags='-s -w' -v -target=ios/arm64 -bundleid=io.sonr.core -o ${PLUGIN_IOS}/${IOS_ARTIFACT}
         echo "- (4/4) Binding Android Framework"
-        gtime -q gomobile bind -ldflags='-s -w' -v -target=android -o ${PLUGIN_ANDROID}/${ANDROID_ARTIFACT}
+        gtime -q -format=%E gomobile bind -ldflags='-s -w' -v -target=android -o ${PLUGIN_ANDROID}/${ANDROID_ARTIFACT}
         exit_success
     elif [ $output == build ]; then
         echo "- (3/4) Binding iOS Framework"
