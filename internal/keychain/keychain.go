@@ -31,6 +31,12 @@ type Keychain interface {
 	// GetPrivKey Gets a private key from the keychain.
 	GetPrivKey(kp KeyPairType) (crypto.PrivKey, error)
 
+	// GetSnrPubKey Gets a public key from the keychain with Snr wrapper.
+	GetSnrPubKey(kp KeyPairType) (*SnrPubKey, error)
+
+	// GetSnrPrivKey Gets a private key from the keychain with Snr wrapper.
+	GetSnrPrivKey(kp KeyPairType) (*SnrPrivKey, error)
+
 	// RemoveKeyPair Removes a key from the keychain.
 	RemoveKeyPair(kp KeyPairType) error
 
@@ -283,6 +289,26 @@ func (kc *keychain) GetPrivKey(kp KeyPairType) (crypto.PrivKey, error) {
 		return nil, ErrInvalidKeyType
 	}
 	return nil, ErrKeychainUnready
+}
+
+// GetSnrPubKey gets a public key from the keychain with a given keypair type
+// as a SnrPubKey
+func (kc *keychain) GetSnrPubKey(kp KeyPairType) (*SnrPubKey, error) {
+	pub, err := kc.GetPubKey(kp)
+	if err != nil {
+		return nil, logger.Error("Failed to get SnrPubKey", err)
+	}
+	return NewSnrPubKey(pub), nil
+}
+
+// GetSnrPrivKey gets a private key from the keychain with a given keypair type
+// as a SnrPrivKey
+func (kc *keychain) GetSnrPrivKey(kp KeyPairType) (*SnrPrivKey, error) {
+	priv, err := kc.GetPrivKey(kp)
+	if err != nil {
+		return nil, logger.Error("Failed to get SnrPrivKey", err)
+	}
+	return NewSnrPrivKey(priv), nil
 }
 
 // LoadKeyPair loads a keypair set into the keychain.

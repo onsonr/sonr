@@ -4,7 +4,6 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/libp2p/go-libp2p-core/crypto"
 	common "github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/keychain"
@@ -15,14 +14,14 @@ import (
 
 // Error Definitions
 var (
-	ErrEmptyQueue   = errors.New("No items in Transfer Queue.")
-	ErrInvalidQuery = errors.New("No SName or PeerID provided.")
+	ErrEmptyQueue         = errors.New("No items in Transfer Queue.")
+	ErrInvalidQuery       = errors.New("No SName or PeerID provided.")
 )
 
 // Peer method returns the peer of the node
 func (n *Node) Peer() (*common.Peer, error) {
 	// Get Public Key
-	pubKey, err := device.KeyChain.GetPubKey(keychain.Account)
+	pubKey, err := device.KeyChain.GetSnrPubKey(keychain.Account)
 	if err != nil {
 		return nil, logger.Error("Failed to get Public Key", err)
 	}
@@ -34,13 +33,13 @@ func (n *Node) Peer() (*common.Peer, error) {
 	}
 
 	// Marshal Public Key
-	pubBuf, err := crypto.MarshalPublicKey(pubKey)
+	pubBuf, err := pubKey.Buffer()
 	if err != nil {
 		return nil, logger.Error("Failed to marshal public key", err)
 	}
 
 	// Get Profile
-	profile, err := n.store.GetProfile()
+	profile, err := n.Profile()
 	if err != nil {
 		return nil, err
 	}
@@ -60,6 +59,7 @@ func (n *Node) Peer() (*common.Peer, error) {
 	}, nil
 }
 
+// Profile method returns the profile of the node
 func (n *Node) Profile() (*common.Profile, error) {
 	pro, err := n.store.GetProfile()
 	if err != nil {
@@ -68,6 +68,7 @@ func (n *Node) Profile() (*common.Profile, error) {
 	return pro, nil
 }
 
+// Recents method returns the recent peers of the node
 func (n *Node) Recents() (store.RecentsHistory, error) {
 	rec, err := n.store.GetRecents()
 	if err != nil {

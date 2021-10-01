@@ -9,8 +9,6 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-
-
 // GetProfile returns the profile for the user from diskDB
 func (s *Store) GetRecents() (RecentsHistory, error) {
 	// Create empty map
@@ -24,8 +22,14 @@ func (s *Store) GetRecents() (RecentsHistory, error) {
 
 	// Iterate over all profiles
 	err := s.db.View(func(tx *bolt.Tx) error {
+		// Get bucket
+		b := tx.Bucket(RECENTS_BUCKET)
+		if b == nil {
+			return ErrRecentsNotCreated
+		}
+
 		// Assume our events bucket exists and has RFC3339 encoded time keys.
-		c := tx.Bucket(RECENTS_BUCKET).Cursor()
+		c := b.Cursor()
 
 		// Our time range spans the 90's decade.
 		min := []byte(startStr)
@@ -45,7 +49,7 @@ func (s *Store) GetRecents() (RecentsHistory, error) {
 		}
 		return nil
 	})
-	return recents, err
+	return recents, s.checkGetErr(err)
 }
 
 // AddRecent stores the profile for recents in desk and returns list of recent profiles
