@@ -56,12 +56,14 @@ func (n *Node) startClientService(ctx context.Context, loc *common.Location) (*N
 	}
 	n.ExchangeProtocol = exch
 
-	// Set Lobby Protocol
-	lobby, err := lobby.NewProtocol(n.host, loc, n.Emitter)
-	if err != nil {
-		return nil, logger.Error("Failed to start LobbyProtocol", err)
+	// Set Local Lobby Protocol if Location is provided
+	if loc != nil {
+		lobby, err := lobby.NewProtocol(n.host, loc, n.Emitter)
+		if err != nil {
+			return nil, logger.Error("Failed to start LobbyProtocol", err)
+		}
+		n.LobbyProtocol = lobby
 	}
-	n.LobbyProtocol = lobby
 
 	// Bind RPC Service
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", RPC_SERVER_PORT))

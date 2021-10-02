@@ -4,10 +4,12 @@ import (
 	"container/list"
 	"context"
 	"errors"
+	"strings"
 
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/host"
+	"github.com/sonr-io/core/internal/keychain"
 	"github.com/sonr-io/core/internal/store"
 	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/lobby"
@@ -59,8 +61,14 @@ func NewNode(ctx context.Context, opts ...NodeOption) (*Node, *InitializeRespons
 		config = opt(config)
 	}
 
+	// Get Device KeyChain Account Key
+	privKey, err := device.KeyChain.GetPrivKey(keychain.Account)
+	if err != nil {
+		return nil, nil, logger.Error("Failed to get private key", err)
+	}
+
 	// Initialize Host
-	host, err := host.NewHost(ctx, config.GetConnection())
+	host, err := host.NewHost(ctx, config.GetConnection(), privKey)
 	if err != nil {
 		return nil, nil, logger.Error("Failed to initialize host", err)
 	}
@@ -109,6 +117,65 @@ func (n *Node) Edit(p *common.Profile) error {
 		return logger.Error("Failed to update Lobby", err)
 	}
 	return nil
+}
+
+// Peer method returns the peer of the node
+func (n *Node) Peer() (*common.Peer, error) {
+	// Get Public Key
+	pubKey, err := device.KeyChain.GetSnrPubKey(keychain.Account)
+	if err != nil {
+		return nil, logger.Error("Failed to get Public Key", err)
+	}
+
+	// Find PublicKey Buffer
+	deviceStat, err := device.Stat()
+	if err != nil {
+		return nil, logger.Error("Failed to get device Stat", err)
+	}
+
+	// Marshal Public Key
+	pubBuf, err := pubKey.Buffer()
+	if err != nil {
+		return nil, logger.Error("Failed to marshal public key", err)
+	}
+
+	// Get Profile
+	profile, err := n.Profile()
+	if err != nil {
+		return nil, err
+	}
+
+	// Return Peer
+	return &common.Peer{
+		SName:     strings.ToLower(profile.SName),
+		Status:    common.Peer_ONLINE,
+		Profile:   profile,
+		PublicKey: pubBuf,
+		Device: &common.Peer_Device{
+			HostName: deviceStat.HostName,
+			Os:       deviceStat.Os,
+			Id:       deviceStat.Id,
+			Arch:     deviceStat.Arch,
+		},
+	}, nil
+}
+
+// Profile method returns the profile of the node
+func (n *Node) Profile() (*common.Profile, error) {
+	pro, err := n.store.GetProfile()
+	if err != nil {
+		return nil, logger.Error("Failed to retreive Profile", err)
+	}
+	return pro, nil
+}
+
+// Recents method returns the recent peers of the node
+func (n *Node) Recents() (store.RecentsHistory, error) {
+	rec, err := n.store.GetRecents()
+	if err != nil {
+		return nil, logger.Error("Failed to get recents", err)
+	}
+	return rec, nil
 }
 
 // Supply a transfer item to the queue

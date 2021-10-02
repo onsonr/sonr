@@ -16,7 +16,6 @@ import (
 	psub "github.com/libp2p/go-libp2p-pubsub"
 	discovery "github.com/libp2p/go-libp2p/p2p/discovery"
 	"github.com/libp2p/go-msgio"
-	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/keychain"
@@ -55,13 +54,9 @@ type SNRHost struct {
 }
 
 // NewHost creates a new host
-func NewHost(ctx context.Context, conn common.Connection) (*SNRHost, error) {
+func NewHost(ctx context.Context, conn common.Connection, privKey crypto.PrivKey) (*SNRHost, error) {
 	// Initialize DHT
 	var kdhtRef *dht.IpfsDHT
-	privKey, err := device.KeyChain.GetPrivKey(keychain.Account)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to get private key")
-	}
 
 	// Start Host
 	h, err := libp2p.New(

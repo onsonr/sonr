@@ -1,8 +1,28 @@
 package node
 
 import (
+	"errors"
+
 	"github.com/sonr-io/core/internal/common"
+	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/tools/logger"
+)
+
+// Error Definitions
+var (
+	ErrEmptyQueue   = errors.New("No items in Transfer Queue.")
+	ErrInvalidQuery = errors.New("No SName or PeerID provided.")
+)
+
+// NodeType is the type of the node (Client, Highway)
+type NodeType int
+
+const (
+	// NodeType_CLIENT is the Node utilized by Desktop, Mobile and Web Clients
+	NodeType_CLIENT NodeType = iota
+
+	// NodeType_HIGHWAY is the Node utilized by long running Server processes
+	NodeType_HIGHWAY
 )
 
 // NodeOption is a function that modifies the node options.
@@ -34,10 +54,7 @@ func (no nodeOptions) GetLocation() *common.Location {
 	if no.request.Location != nil {
 		logger.Warn("No Location was set.")
 		// Return Default
-		return &common.Location{
-			Latitude:  0,
-			Longitude: 0,
-		}
+		return nil
 	}
 	return no.request.GetLocation()
 }
@@ -113,5 +130,31 @@ func (n *Node) newInitResponse(err error) *InitializeResponse {
 		Success: true,
 		Profile: p,
 		Recents: r,
+	}
+}
+
+// ToExchangeQueryRequest converts a query request to an exchange query request.
+func (f *SearchRequest) ToExchangeQueryRequest() (*exchange.QueryRequest, error) {
+	if f.GetSName() != "" {
+		return &exchange.QueryRequest{
+			SName: f.GetSName(),
+		}, nil
+	}
+
+	if f.GetPeerId() != "" {
+		return &exchange.QueryRequest{
+			PeerId: f.GetPeerId(),
+		}, nil
+	}
+	return nil, logger.Error("Failed to convert FindRequest", ErrInvalidQuery)
+}
+
+// ToFindResponse converts PeerInfo to a FindResponse.
+func ToFindResponse(p *common.PeerInfo) *SearchResponse {
+	return &SearchResponse{
+		Success: true,
+		Peer:    p.Peer,
+		PeerId:  p.PeerID.String(),
+		SName:   p.SName,
 	}
 }
