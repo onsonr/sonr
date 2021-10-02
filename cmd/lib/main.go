@@ -1,4 +1,4 @@
-package sonr_lib
+package lib
 
 import (
 	"context"

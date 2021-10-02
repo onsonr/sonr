@@ -2,14 +2,14 @@
 syntax = "proto3";
 
 package sonr.node;
-import "proto/client/api.proto";
+import "proto/node/api.proto";
 import "proto/common/event.proto";
 option go_package = "github.com/sonr-io/core/internal/node";
 
 message Empty {}
 
 // RPC Service with Equivalent Methods of a binded Node
-service NodeService {
+service ClientService {
   // Node Methods
   // Signing Method Request for Data
   rpc Supply(SupplyRequest) returns (SupplyResponse) {}

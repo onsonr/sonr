@@ -19,7 +19,7 @@ const RPC_SERVER_PORT = 52006
 
 // NodeRPCService is the RPC Service for the Node.
 type NodeRPCService struct {
-	NodeServiceServer
+	ClientServiceServer
 	*Node
 
 	// Properties
@@ -60,7 +60,7 @@ func NewRPCService(ctx context.Context, n *Node) (*NodeRPCService, error) {
 	}
 
 	// Start Routines
-	RegisterNodeServiceServer(grpcServer, nrc)
+	RegisterClientServiceServer(grpcServer, nrc)
 	go nrc.serveRPC()
 	go nrc.handleEmitter()
 
@@ -261,5 +261,114 @@ func (nrc *NodeRPCService) serveRPC() {
 			nrc.host.Close()
 			return
 		}
+	}
+}
+
+// OnNodeStatus method sends a status event to the client.
+func (n *NodeRPCService) OnNodeStatus(e *Empty, stream ClientService_OnNodeStatusServer) error {
+	for {
+		select {
+		case m := <-n.statusEvents:
+			if m != nil {
+				stream.Send(m)
+			}
+		case <-n.ctx.Done():
+			return nil
+		}
+
+	}
+}
+
+// OnLobbyRefresh method sends a lobby refresh event to the client.
+func (n *NodeRPCService) OnLobbyRefresh(e *Empty, stream ClientService_OnLobbyRefreshServer) error {
+	for {
+		select {
+		case m := <-n.exchangeEvents:
+			if m != nil {
+				stream.Send(m)
+			}
+		case <-n.ctx.Done():
+			return nil
+		}
+
+	}
+}
+
+// OnTransferAccepted method sends an accepted event to the client.
+func (n *NodeRPCService) OnTransferAccepted(e *Empty, stream ClientService_OnTransferAcceptedServer) error {
+	for {
+		select {
+		case m := <-n.decisionEvents:
+			if m != nil {
+				if m.Decision {
+					stream.Send(m)
+				}
+			}
+		case <-n.ctx.Done():
+			return nil
+		}
+
+	}
+}
+
+// OnTransferDeclinedmethod sends a decline event to the client.
+func (n *NodeRPCService) OnTransferDeclined(e *Empty, stream ClientService_OnTransferDeclinedServer) error {
+	for {
+		select {
+		case m := <-n.decisionEvents:
+			if m != nil {
+				if !m.Decision {
+					stream.Send(m)
+				}
+			}
+		case <-n.ctx.Done():
+			return nil
+		}
+
+	}
+}
+
+// OnTransferInvite method sends an invite event to the client.
+func (n *NodeRPCService) OnTransferInvite(e *Empty, stream ClientService_OnTransferInviteServer) error {
+	for {
+		select {
+		case m := <-n.inviteEvents:
+			if m != nil {
+				stream.Send(m)
+			}
+		case <-n.ctx.Done():
+			return nil
+		}
+
+	}
+}
+
+// OnTransferProgress method sends a progress event to the client.
+func (n *NodeRPCService) OnTransferProgress(e *Empty, stream ClientService_OnTransferProgressServer) error {
+	for {
+		select {
+		case m := <-n.progressEvents:
+			if m != nil {
+				stream.Send(m)
+			}
+		case <-n.ctx.Done():
+			return nil
+		}
+
+	}
+}
+
+// OnTransferComplete method sends a complete event to the client.
+func (n *NodeRPCService) OnTransferComplete(e *Empty, stream ClientService_OnTransferCompleteServer) error {
+	for {
+		select {
+		case m := <-n.completeEvents:
+			if m != nil {
+				stream.Send(m)
+			}
+		case <-n.ctx.Done():
+			return nil
+		}
+
 	}
 }

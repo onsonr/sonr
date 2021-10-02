@@ -1,0 +1,10 @@
+/// This file contains service for the Node RPC Server
+syntax = "proto3";
+
+package sonr.node;
+option go_package = "github.com/sonr-io/core/internal/node";
+
+// RPC Service with Equivalent Methods of a binded Node
+service HighwayService {
+
+}
