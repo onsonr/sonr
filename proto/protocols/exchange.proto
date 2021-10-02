@@ -1,34 +1,7 @@
 syntax = "proto3";
 
 package sonr.protocols.exchange;
-import "proto/common/core.proto";
 option go_package = "github.com/sonr-io/core/pkg/exchange";
-
-// RegisterRequest is Message for Signing Request (Hmac Sha256)
-message RegisterRequest {
-  string sName = 1;    // SName combined with Device ID and Hashed
-  string mnemonic = 2; // Mnemonic Hashed with private key for fingerprint
-  repeated string deviceIds = 3; // Device IDs for SName
-}
-
-// RegisterResponse is Message for Signing Response (Hmac Sha256)
-message RegisterResponse {
-  bool success = 1;            // If Values were Signed
-  repeated Domain domains = 2; // Signed Domain TXT Records
-
-  // Resulting Signed Values
-  string publicKey = 4;     // Base64 Encoded Public Key
-  string givenSName = 5;    // Provided SName
-  string givenMnemonic = 6; // Provided Mnemonic
-
-  // Domain TXT Record for single SName Entry
-  message Domain {
-    string domain = 1;            // Domain Name
-    string value = 2;             // Domain Value
-    string signedPrefix = 3;      // Message for List of Bytes
-    string signedFingerprint = 4; // Fingerprint Value
-  }
-}
 
 // LookupRequest is Message for Verifying Request (Hmac Sha256)
 message LookupRequest {
@@ -47,28 +20,29 @@ message QueryRequest {
   string peerId = 2; // Peer ID
 }
 
-// UpdateRequest is Message for updating Peer Data in Exchange
-message UpdateRequest {
+// VisibilityRequest is Message for updating Peer Visibility in Exchange
+message VisibilityRequest {
   string sName = 1;        // SName combined with Device ID and Hashed
-  string peerId = 2;       // Peer ID
-  sonr.core.Peer peer = 3; // Peer Data
+  bytes publicKey = 2;     // Buffer of Public Key
+  Visibility visibility = 3; // Visibility
+
+  enum Visibility {
+    VISIBLE = 0; // Everyone can see this peer
+    GHOST = 1; // Only Linked Devices can see this peer
+    FRIENDS = 2; // Only Friends can see this peer
+  }
 }
 
-// UpdateResponse is response for UpdateExchangeRequest
-message UpdateResponse {
+// VisibilityResponse is response for VisibilityRequest
+message VisibilityResponse {
   bool success = 1; // If Request was Successful
   string error = 2; // Error Message if Request was not successful
+  Visibility visibility = 3; // Visibility
+
+  enum Visibility {
+    VISIBLE = 0; // Everyone can see this peer
+    GHOST = 1; // Only Linked Devices can see this peer
+    FRIENDS = 2; // Only Friends can see this peer
+  }
 }
 
-// VerifyRequest is Message for Verifying Request (Hmac Sha256)
-message VerifyRequest {
-  string sName = 1;    // SName combined with Device ID and Hashed
-  string mnemonic = 2; // Mnemonic Hashed with public key for fingerprint
-  string deviceId = 3; // Device ID
-}
-
-// VerifyResponse is Message for Verifying Response (Hmac Sha256)
-message VerifyResponse {
-  bool success = 1; // If Values were Verified
-  string error = 2; // Error Message
-}
