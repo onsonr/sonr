@@ -38,6 +38,9 @@ type Node struct {
 	// Queue - the transfer queue
 	queue *list.List
 
+	// Type - the type of node
+	nodeType NodeType
+
 	// TransferProtocol - the transfer protocol
 	*transfer.TransferProtocol
 
@@ -49,41 +52,35 @@ type Node struct {
 }
 
 // NewNode Creates a node with its implemented protocols
-func NewNode(ctx context.Context, host *host.SNRHost, loc *common.Location) (*Node, *InitializeResponse, error) {
+func NewNode(ctx context.Context, opts ...NodeOption) (*Node, *InitializeResponse, error) {
+	// Set Node Options
+	config := defaultNodeOptions()
+	for _, opt := range opts {
+		config = opt(config)
+	}
+
+	// Initialize Host
+	host, err := host.NewHost(ctx, config.GetConnection())
+	if err != nil {
+		return nil, nil, logger.Error("Failed to initialize host", err)
+	}
+
 	// Create Node
 	node := &Node{
-		Emitter: state.NewEmitter(2048),
-		host:    host,
-		ctx:     ctx,
-		queue:   list.New(),
+		Emitter:  state.NewEmitter(2048),
+		host:     host,
+		ctx:      ctx,
+		queue:    list.New(),
+		nodeType: config.GetNodeType(),
 	}
 
-	// Initialize Store
-	store, err := store.NewStore(ctx, host, node.Emitter)
-	if err != nil {
-		return nil, node.createInitializeResponse(err), logger.Error("Failed to initialize store", err)
+	// Check Config for Node Type
+	if config.isClient {
+		node.startClientService(ctx, config.GetLocation())
 	}
-	node.store = store
-
-	// Set Transfer Protocol
-	node.TransferProtocol = transfer.NewProtocol(ctx, host, node.Emitter)
-
-	// Set Exchange Protocol
-	exch, err := exchange.NewProtocol(ctx, host, node.Emitter)
-	if err != nil {
-		return nil, node.createInitializeResponse(err), logger.Error("Failed to start ExchangeProtocol", err)
-	}
-	node.ExchangeProtocol = exch
-
-	// Set Lobby Protocol
-	lobby, err := lobby.NewProtocol(host, loc, node.Emitter)
-	if err != nil {
-		return nil, node.createInitializeResponse(err), logger.Error("Failed to start LobbyProtocol", err)
-	}
-	node.LobbyProtocol = lobby
 
 	// Create Initialize Response and Return
-	return node, node.createInitializeResponse(nil), nil
+	return node, node.newInitResponse(nil), nil
 }
 
 // Edit method updates Node's profile

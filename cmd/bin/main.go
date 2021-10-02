@@ -1,4 +1,4 @@
-package lib
+package main
 
 import (
 	"context"
@@ -7,50 +7,41 @@ import (
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/node"
 	"github.com/sonr-io/core/tools/logger"
+	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )
 
-type SonrLib struct {
+type SonrBin struct {
 	// Properties
 	ctx  context.Context
 	node *node.Node
 }
 
-var sonrLib *SonrLib
+var sonrBin *SonrBin
 
 // Start starts the host, node, and rpc service.
-func Start(reqBytes []byte) []byte {
-	// Unmarshal request
-	isDev, req, fsOpts, err := parseInitializeRequest(reqBytes)
-	if err != nil {
-		panic(logger.Error("Failed to Parse Initialize Request", err))
-	}
+func main() {
+	// Read Flag Values from Environment for Initialize Request
 
 	// Initialize Device
 	ctx := context.Background()
-	err = device.Init(isDev, fsOpts...)
+	err := device.Init(false)
 	if err != nil {
 		panic(logger.Error("Failed to initialize Device", err))
 	}
 
 	// Create Node
-	n, resp, err := node.NewNode(ctx, node.WithRequest(req), node.WithClient())
+	n, resp, err := node.NewNode(ctx, node.WithClient())
 	if err != nil {
 		panic(logger.Error("Failed to update Profile for Node", err))
 	}
+	logger.Info("Node Started: ", zap.Any("Response", resp))
 
 	// Set Lib
-	sonrLib = &SonrLib{
+	sonrBin = &SonrBin{
 		ctx:  ctx,
 		node: n,
 	}
-
-	// Marshal Response
-	buf, err := proto.Marshal(resp)
-	if err != nil {
-		logger.Error("Failed to Marshal InitializeResponse", err)
-	}
-	return buf
 }
 
 // Pause pauses the host, node, and rpc service.

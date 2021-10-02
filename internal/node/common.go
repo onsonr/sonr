@@ -12,10 +12,21 @@ import (
 	"github.com/sonr-io/core/tools/logger"
 )
 
+// NodeType is the type of the node (Client, Highway)
+type NodeType int
+
+const (
+	// NodeType_CLIENT is the Node utilized by Desktop, Mobile and Web Clients
+	NodeType_CLIENT NodeType = iota
+
+	// NodeType_HIGHWAY is the Node utilized by long running Server processes
+	NodeType_HIGHWAY
+)
+
 // Error Definitions
 var (
-	ErrEmptyQueue         = errors.New("No items in Transfer Queue.")
-	ErrInvalidQuery       = errors.New("No SName or PeerID provided.")
+	ErrEmptyQueue   = errors.New("No items in Transfer Queue.")
+	ErrInvalidQuery = errors.New("No SName or PeerID provided.")
 )
 
 // Peer method returns the peer of the node
@@ -100,42 +111,5 @@ func ToFindResponse(p *common.PeerInfo) *SearchResponse {
 		Peer:    p.Peer,
 		PeerId:  p.PeerID.String(),
 		SName:   p.SName,
-	}
-}
-
-// createInitializeResponse creates a response for the initialize request.
-func (n *Node) createInitializeResponse(err error) *InitializeResponse {
-	// Check for provided error
-	if err != nil {
-		return &InitializeResponse{
-			Success: false,
-			Error:   err.Error(),
-		}
-	}
-
-	// Fetch Profile
-	p, err := n.Profile()
-	if err != nil {
-		return &InitializeResponse{
-			Success: true,
-			Error:   err.Error(),
-		}
-	}
-
-	// Fetch Recents
-	r, err := n.Recents()
-	if err != nil {
-		return &InitializeResponse{
-			Success: true,
-			Error:   err.Error(),
-			Profile: p,
-		}
-	}
-
-	// Return Response
-	return &InitializeResponse{
-		Success: true,
-		Profile: p,
-		Recents: r,
 	}
 }

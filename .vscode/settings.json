@@ -1,19 +1,4 @@
 {
-    "[dart]": {
-        "editor.formatOnSave": true,
-        "editor.formatOnType": true,
-        "editor.rulers": [],
-        "editor.selectionHighlight": false,
-        "editor.suggest.snippetsPreventQuickSuggestions": false,
-        "editor.suggestSelection": "first",
-        "editor.tabCompletion": "onlySnippets",
-        "editor.wordBasedSuggestions": false,
-        "editor.defaultFormatter": "Dart-Code.dart-code"
-    },
-    "dart.showDartDeveloperLogs": true,
-    "dart.lineLength": 150,
-    "dart.promptToGetPackages": false,
-    "dart.runPubGetOnPubspecChanges": true,
     "[go]": {
         "editor.formatOnSave": true,
         "editor.snippetSuggestions": "none",
@@ -38,8 +23,6 @@
     "go.toolsManagement.autoUpdate": true,
     "files.exclude": {
         "**/package-lock.json": true,
-        "**/plasmic.lock": true,
-        ".dart_tool": true,
         "**/**.pb.go": true,
         "**/.classpath": true,
         "**/.factorypath": true,
@@ -149,21 +132,6 @@
             "italic": false
         }
     ],
-    "dart.autoImportCompletions": false,
-    "dart.previewFlutterUiGuidesCustomTracking": true,
-    "dart.allowAnalytics": false,
-    "dart.analyzeAngularTemplates": false,
-    "dart.devToolsReuseWindows": false,
-    "dart.flutterHotRestartOnSave": false,
-    "dart.flutterSelectDeviceWhenConnected": false,
-    "dart.showDartPadSampleCodeLens": false,
-    "dart.showDevToolsDebugToolBarButtons": false,
-    "dart.showTodos": false,
-    "dart.useKnownChromeOSPorts": false,
-    "dart.openDevTools": "flutter",
-    "dart.warnWhenEditingFilesInPubCache": false,
-    "dart.previewLsp": true,
-    "dart.warnWhenEditingFilesOutsideWorkspace": false,
     "go.languageServerFlags": [
         "-rpc.trace",
         "serve",
@@ -183,15 +151,16 @@
         "internal": "core",
         "CD": "pipe",
         "pkg": "src",
-        "cmd": "core",
+        "cmd": "hook",
         "proto": "json",
         "common": "",
-        "config": "",
-        "util": "",
         "service": "",
+        "config": "",
         "workflows": "serverless",
         "electron": "examples",
-        "flutter": "examples"
+        "flutter": "examples",
+        "highway": "project",
+        "util": ""
     },
     "github.codespaces.defaultExtensions": [
         "GitHub.codespaces",

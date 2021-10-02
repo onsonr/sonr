@@ -6,6 +6,7 @@ import (
 	"net"
 
 	common "github.com/sonr-io/core/internal/common"
+	"github.com/sonr-io/core/internal/store"
 	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/transfer"
@@ -37,7 +38,31 @@ type NodeRPCService struct {
 }
 
 // NewRPCService creates a new RPC service for the node.
-func NewRPCService(ctx context.Context, n *Node) (*NodeRPCService, error) {
+func (n *Node) startClientService(ctx context.Context, loc *common.Location) (*NodeRPCService, error) {
+	// Initialize Store
+	store, err := store.NewStore(ctx, n.host, n.Emitter)
+	if err != nil {
+		return nil, logger.Error("Failed to initialize store", err)
+	}
+	n.store = store
+
+	// Set Transfer Protocol
+	n.TransferProtocol = transfer.NewProtocol(ctx, n.host, n.Emitter)
+
+	// Set Exchange Protocol
+	exch, err := exchange.NewProtocol(ctx, n.host, n.Emitter)
+	if err != nil {
+		return nil, logger.Error("Failed to start ExchangeProtocol", err)
+	}
+	n.ExchangeProtocol = exch
+
+	// Set Lobby Protocol
+	lobby, err := lobby.NewProtocol(n.host, loc, n.Emitter)
+	if err != nil {
+		return nil, logger.Error("Failed to start LobbyProtocol", err)
+	}
+	n.LobbyProtocol = lobby
+
 	// Bind RPC Service
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", RPC_SERVER_PORT))
 	if err != nil {
@@ -354,7 +379,6 @@ func (n *NodeRPCService) OnTransferProgress(e *Empty, stream ClientService_OnTra
 		case <-n.ctx.Done():
 			return nil
 		}
-
 	}
 }
 
