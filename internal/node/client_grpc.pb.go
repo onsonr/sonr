@@ -35,8 +35,6 @@ type ClientServiceClient interface {
 	// Stat Method returns the Node Stats
 	Stat(ctx context.Context, in *StatRequest, opts ...grpc.CallOption) (*StatResponse, error)
 	// Events Streams
-	// Returns a stream of StatusEvents
-	OnNodeStatus(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnNodeStatusClient, error)
 	// Returns a stream of Lobby Refresh Events
 	OnLobbyRefresh(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnLobbyRefreshClient, error)
 	// Returns a stream of DecisionEvent's for Accepted Invites
@@ -122,40 +120,8 @@ func (c *clientServiceClient) Stat(ctx context.Context, in *StatRequest, opts ..
 	return out, nil
 }
 
-func (c *clientServiceClient) OnNodeStatus(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnNodeStatusClient, error) {
-	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[0], "/sonr.node.ClientService/OnNodeStatus", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &clientServiceOnNodeStatusClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type ClientService_OnNodeStatusClient interface {
-	Recv() (*common.StatusEvent, error)
-	grpc.ClientStream
-}
-
-type clientServiceOnNodeStatusClient struct {
-	grpc.ClientStream
-}
-
-func (x *clientServiceOnNodeStatusClient) Recv() (*common.StatusEvent, error) {
-	m := new(common.StatusEvent)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
 func (c *clientServiceClient) OnLobbyRefresh(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnLobbyRefreshClient, error) {
-	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[1], "/sonr.node.ClientService/OnLobbyRefresh", opts...)
+	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[0], "/sonr.node.ClientService/OnLobbyRefresh", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -187,7 +153,7 @@ func (x *clientServiceOnLobbyRefreshClient) Recv() (*common.RefreshEvent, error)
 }
 
 func (c *clientServiceClient) OnTransferAccepted(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnTransferAcceptedClient, error) {
-	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[2], "/sonr.node.ClientService/OnTransferAccepted", opts...)
+	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[1], "/sonr.node.ClientService/OnTransferAccepted", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -219,7 +185,7 @@ func (x *clientServiceOnTransferAcceptedClient) Recv() (*common.DecisionEvent, e
 }
 
 func (c *clientServiceClient) OnTransferDeclined(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnTransferDeclinedClient, error) {
-	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[3], "/sonr.node.ClientService/OnTransferDeclined", opts...)
+	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[2], "/sonr.node.ClientService/OnTransferDeclined", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -251,7 +217,7 @@ func (x *clientServiceOnTransferDeclinedClient) Recv() (*common.DecisionEvent, e
 }
 
 func (c *clientServiceClient) OnTransferInvite(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnTransferInviteClient, error) {
-	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[4], "/sonr.node.ClientService/OnTransferInvite", opts...)
+	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[3], "/sonr.node.ClientService/OnTransferInvite", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -283,7 +249,7 @@ func (x *clientServiceOnTransferInviteClient) Recv() (*common.InviteEvent, error
 }
 
 func (c *clientServiceClient) OnTransferProgress(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnTransferProgressClient, error) {
-	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[5], "/sonr.node.ClientService/OnTransferProgress", opts...)
+	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[4], "/sonr.node.ClientService/OnTransferProgress", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -315,7 +281,7 @@ func (x *clientServiceOnTransferProgressClient) Recv() (*common.ProgressEvent, e
 }
 
 func (c *clientServiceClient) OnTransferComplete(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnTransferCompleteClient, error) {
-	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[6], "/sonr.node.ClientService/OnTransferComplete", opts...)
+	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[5], "/sonr.node.ClientService/OnTransferComplete", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -366,8 +332,6 @@ type ClientServiceServer interface {
 	// Stat Method returns the Node Stats
 	Stat(context.Context, *StatRequest) (*StatResponse, error)
 	// Events Streams
-	// Returns a stream of StatusEvents
-	OnNodeStatus(*Empty, ClientService_OnNodeStatusServer) error
 	// Returns a stream of Lobby Refresh Events
 	OnLobbyRefresh(*Empty, ClientService_OnLobbyRefreshServer) error
 	// Returns a stream of DecisionEvent's for Accepted Invites
@@ -407,9 +371,6 @@ func (UnimplementedClientServiceServer) Search(context.Context, *SearchRequest) 
 }
 func (UnimplementedClientServiceServer) Stat(context.Context, *StatRequest) (*StatResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Stat not implemented")
-}
-func (UnimplementedClientServiceServer) OnNodeStatus(*Empty, ClientService_OnNodeStatusServer) error {
-	return status.Errorf(codes.Unimplemented, "method OnNodeStatus not implemented")
 }
 func (UnimplementedClientServiceServer) OnLobbyRefresh(*Empty, ClientService_OnLobbyRefreshServer) error {
 	return status.Errorf(codes.Unimplemented, "method OnLobbyRefresh not implemented")
@@ -566,27 +527,6 @@ func _ClientService_Stat_Handler(srv interface{}, ctx context.Context, dec func(
 		return srv.(ClientServiceServer).Stat(ctx, req.(*StatRequest))
 	}
 	return interceptor(ctx, in, info, handler)
-}
-
-func _ClientService_OnNodeStatus_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(Empty)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(ClientServiceServer).OnNodeStatus(m, &clientServiceOnNodeStatusServer{stream})
-}
-
-type ClientService_OnNodeStatusServer interface {
-	Send(*common.StatusEvent) error
-	grpc.ServerStream
-}
-
-type clientServiceOnNodeStatusServer struct {
-	grpc.ServerStream
-}
-
-func (x *clientServiceOnNodeStatusServer) Send(m *common.StatusEvent) error {
-	return x.ServerStream.SendMsg(m)
 }
 
 func _ClientService_OnLobbyRefresh_Handler(srv interface{}, stream grpc.ServerStream) error {
@@ -752,11 +692,6 @@ var ClientService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams: []grpc.StreamDesc{
-		{
-			StreamName:    "OnNodeStatus",
-			Handler:       _ClientService_OnNodeStatus_Handler,
-			ServerStreams: true,
-		},
 		{
 			StreamName:    "OnLobbyRefresh",
 			Handler:       _ClientService_OnLobbyRefresh_Handler,

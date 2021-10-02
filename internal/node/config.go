@@ -10,8 +10,10 @@ import (
 
 // Error Definitions
 var (
-	ErrEmptyQueue   = errors.New("No items in Transfer Queue.")
-	ErrInvalidQuery = errors.New("No SName or PeerID provided.")
+	ErrEmptyQueue      = errors.New("No items in Transfer Queue.")
+	ErrInvalidQuery    = errors.New("No SName or PeerID provided.")
+	ErrNBClientMissing = errors.New("No Namebase API Client Key provided.")
+	ErrNBSecretMissing = errors.New("No Namebase API Secret Key provided.")
 )
 
 // NodeType is the type of the node (Client, Highway)
@@ -30,9 +32,23 @@ type NodeOption func(nodeOptions) nodeOptions
 
 // nodeOptions is a collection of options for the node.
 type nodeOptions struct {
-	isClient  bool
-	isHighway bool
-	request   *InitializeRequest
+	isClient          bool
+	isHighway         bool
+	request           *InitializeRequest
+	namebaseApiClient string
+	namebaseApiSecret string
+}
+
+// GetNBKeys returns the namebase client,secret key
+func (no nodeOptions) GetNBKeys() (string, string, error) {
+	if no.namebaseApiClient == "" {
+		return "", "", ErrNBClientMissing
+	}
+
+	if no.namebaseApiSecret == "" {
+		return "", "", ErrNBSecretMissing
+	}
+	return no.namebaseApiClient, no.namebaseApiSecret, nil
 }
 
 // GetNodeType returns the node type from Config
@@ -81,6 +97,15 @@ func WithHighway() NodeOption {
 	return func(o nodeOptions) nodeOptions {
 		o.isHighway = true
 		o.isClient = false
+		return o
+	}
+}
+
+// WithNamebase sets the namebase client and secret api for DomainProtocol
+func WithNamebase(client, secret string) NodeOption {
+	return func(o nodeOptions) nodeOptions {
+		o.namebaseApiClient = client
+		o.namebaseApiSecret = secret
 		return o
 	}
 }

@@ -18,8 +18,8 @@ import (
 // RPC_SERVER_PORT is the port the RPC service listens on.
 const RPC_SERVER_PORT = 52006
 
-// NodeRPCService is the RPC Service for the Node.
-type NodeRPCService struct {
+// ClientNodeStub is the RPC Service for the Node.
+type ClientNodeStub struct {
 	ClientServiceServer
 	*Node
 
@@ -29,7 +29,6 @@ type NodeRPCService struct {
 	listener   net.Listener
 
 	// Channels
-	statusEvents   chan *common.StatusEvent
 	decisionEvents chan *common.DecisionEvent
 	exchangeEvents chan *common.RefreshEvent
 	inviteEvents   chan *common.InviteEvent
@@ -37,8 +36,8 @@ type NodeRPCService struct {
 	completeEvents chan *common.CompleteEvent
 }
 
-// NewRPCService creates a new RPC service for the node.
-func (n *Node) startClientService(ctx context.Context, loc *common.Location) (*NodeRPCService, error) {
+// startClientService creates a new Client service stub for the node.
+func (n *Node) startClientService(ctx context.Context, loc *common.Location) (*ClientNodeStub, error) {
 	// Initialize Store
 	store, err := store.NewStore(ctx, n.host, n.Emitter)
 	if err != nil {
@@ -73,12 +72,11 @@ func (n *Node) startClientService(ctx context.Context, loc *common.Location) (*N
 
 	// Create a new gRPC server
 	grpcServer := grpc.NewServer()
-	nrc := &NodeRPCService{
+	nrc := &ClientNodeStub{
 		grpcServer:     grpcServer,
 		listener:       listener,
 		ctx:            ctx,
 		Node:           n,
-		statusEvents:   make(chan *common.StatusEvent),
 		decisionEvents: make(chan *common.DecisionEvent),
 		exchangeEvents: make(chan *common.RefreshEvent),
 		inviteEvents:   make(chan *common.InviteEvent),
@@ -96,7 +94,7 @@ func (n *Node) startClientService(ctx context.Context, loc *common.Location) (*N
 }
 
 // Supply supplies the node with the given amount of resources.
-func (n *NodeRPCService) Supply(ctx context.Context, req *SupplyRequest) (*SupplyResponse, error) {
+func (n *ClientNodeStub) Supply(ctx context.Context, req *SupplyRequest) (*SupplyResponse, error) {
 	// Call Internal Supply
 	err := n.Node.Supply(req.GetPaths())
 	if err != nil {
@@ -125,7 +123,7 @@ func (n *NodeRPCService) Supply(ctx context.Context, req *SupplyRequest) (*Suppl
 }
 
 // Edit method edits the node's properties in the Key/Value Store
-func (n *NodeRPCService) Edit(ctx context.Context, req *EditRequest) (*EditResponse, error) {
+func (n *ClientNodeStub) Edit(ctx context.Context, req *EditRequest) (*EditResponse, error) {
 	// Call Internal Edit
 	err := n.Node.Edit(req.GetProfile())
 	if err != nil {
@@ -142,7 +140,7 @@ func (n *NodeRPCService) Edit(ctx context.Context, req *EditRequest) (*EditRespo
 }
 
 // Fetch method retreives Node properties from Key/Value Store
-func (n *NodeRPCService) Fetch(ctx context.Context, req *FetchRequest) (*FetchResponse, error) {
+func (n *ClientNodeStub) Fetch(ctx context.Context, req *FetchRequest) (*FetchResponse, error) {
 	// Call Internal Fetch
 	profile, err := n.Node.store.GetProfile()
 	if err != nil {
@@ -160,7 +158,7 @@ func (n *NodeRPCService) Fetch(ctx context.Context, req *FetchRequest) (*FetchRe
 }
 
 // Share method sends supplied files/urls with a peer
-func (n *NodeRPCService) Share(ctx context.Context, req *ShareRequest) (*ShareResponse, error) {
+func (n *ClientNodeStub) Share(ctx context.Context, req *ShareRequest) (*ShareResponse, error) {
 	// Call Internal Share
 	err := n.Node.Share(req.GetPeer())
 	if err != nil {
@@ -177,7 +175,7 @@ func (n *NodeRPCService) Share(ctx context.Context, req *ShareRequest) (*ShareRe
 }
 
 // Search Method to find a Peer by SName
-func (n *NodeRPCService) Search(ctx context.Context, req *SearchRequest) (*SearchResponse, error) {
+func (n *ClientNodeStub) Search(ctx context.Context, req *SearchRequest) (*SearchResponse, error) {
 	// Call Internal Ping
 	entry, err := n.Node.Query(exchange.NewQueryRequestFromSName(req.GetSName()))
 	if err != nil {
@@ -195,7 +193,7 @@ func (n *NodeRPCService) Search(ctx context.Context, req *SearchRequest) (*Searc
 }
 
 // Respond method responds to a received InviteRequest.
-func (n *NodeRPCService) Respond(ctx context.Context, req *RespondRequest) (*RespondResponse, error) {
+func (n *ClientNodeStub) Respond(ctx context.Context, req *RespondRequest) (*RespondResponse, error) {
 	// Call Internal Respond
 	err := n.Node.Respond(req.GetDecision(), req.GetPeer())
 	if err != nil {
@@ -212,13 +210,13 @@ func (n *NodeRPCService) Respond(ctx context.Context, req *RespondRequest) (*Res
 }
 
 // Stat method returns the node's stats
-func (n *NodeRPCService) Stat(ctx context.Context, req *StatRequest) (*StatResponse, error) {
+func (n *ClientNodeStub) Stat(ctx context.Context, req *StatRequest) (*StatResponse, error) {
 	resp, _ := n.Node.Stat()
 	return resp, nil
 }
 
 // HandleEmitter handles the emitter events.
-func (nrc *NodeRPCService) handleEmitter() {
+func (nrc *ClientNodeStub) handleEmitter() {
 	for {
 		// Handle Transfer Invite
 		nrc.Node.On(transfer.Event_INVITED, func(e *state.Event) {
@@ -274,7 +272,7 @@ func (nrc *NodeRPCService) handleEmitter() {
 }
 
 // serveRPC Serves the RPC Service on the given port.
-func (nrc *NodeRPCService) serveRPC() {
+func (nrc *ClientNodeStub) serveRPC() {
 	for {
 		// Handle Node Events
 		if err := nrc.grpcServer.Serve(nrc.listener); err != nil {
@@ -291,23 +289,8 @@ func (nrc *NodeRPCService) serveRPC() {
 	}
 }
 
-// OnNodeStatus method sends a status event to the client.
-func (n *NodeRPCService) OnNodeStatus(e *Empty, stream ClientService_OnNodeStatusServer) error {
-	for {
-		select {
-		case m := <-n.statusEvents:
-			if m != nil {
-				stream.Send(m)
-			}
-		case <-n.ctx.Done():
-			return nil
-		}
-
-	}
-}
-
 // OnLobbyRefresh method sends a lobby refresh event to the client.
-func (n *NodeRPCService) OnLobbyRefresh(e *Empty, stream ClientService_OnLobbyRefreshServer) error {
+func (n *ClientNodeStub) OnLobbyRefresh(e *Empty, stream ClientService_OnLobbyRefreshServer) error {
 	for {
 		select {
 		case m := <-n.exchangeEvents:
@@ -322,7 +305,7 @@ func (n *NodeRPCService) OnLobbyRefresh(e *Empty, stream ClientService_OnLobbyRe
 }
 
 // OnTransferAccepted method sends an accepted event to the client.
-func (n *NodeRPCService) OnTransferAccepted(e *Empty, stream ClientService_OnTransferAcceptedServer) error {
+func (n *ClientNodeStub) OnTransferAccepted(e *Empty, stream ClientService_OnTransferAcceptedServer) error {
 	for {
 		select {
 		case m := <-n.decisionEvents:
@@ -339,7 +322,7 @@ func (n *NodeRPCService) OnTransferAccepted(e *Empty, stream ClientService_OnTra
 }
 
 // OnTransferDeclinedmethod sends a decline event to the client.
-func (n *NodeRPCService) OnTransferDeclined(e *Empty, stream ClientService_OnTransferDeclinedServer) error {
+func (n *ClientNodeStub) OnTransferDeclined(e *Empty, stream ClientService_OnTransferDeclinedServer) error {
 	for {
 		select {
 		case m := <-n.decisionEvents:
@@ -356,7 +339,7 @@ func (n *NodeRPCService) OnTransferDeclined(e *Empty, stream ClientService_OnTra
 }
 
 // OnTransferInvite method sends an invite event to the client.
-func (n *NodeRPCService) OnTransferInvite(e *Empty, stream ClientService_OnTransferInviteServer) error {
+func (n *ClientNodeStub) OnTransferInvite(e *Empty, stream ClientService_OnTransferInviteServer) error {
 	for {
 		select {
 		case m := <-n.inviteEvents:
@@ -371,7 +354,7 @@ func (n *NodeRPCService) OnTransferInvite(e *Empty, stream ClientService_OnTrans
 }
 
 // OnTransferProgress method sends a progress event to the client.
-func (n *NodeRPCService) OnTransferProgress(e *Empty, stream ClientService_OnTransferProgressServer) error {
+func (n *ClientNodeStub) OnTransferProgress(e *Empty, stream ClientService_OnTransferProgressServer) error {
 	for {
 		select {
 		case m := <-n.progressEvents:
@@ -385,7 +368,7 @@ func (n *NodeRPCService) OnTransferProgress(e *Empty, stream ClientService_OnTra
 }
 
 // OnTransferComplete method sends a complete event to the client.
-func (n *NodeRPCService) OnTransferComplete(e *Empty, stream ClientService_OnTransferCompleteServer) error {
+func (n *ClientNodeStub) OnTransferComplete(e *Empty, stream ClientService_OnTransferCompleteServer) error {
 	for {
 		select {
 		case m := <-n.completeEvents:

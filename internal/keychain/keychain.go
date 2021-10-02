@@ -1,7 +1,10 @@
 package keychain
 
 import (
+	"crypto/hmac"
 	"crypto/rand"
+	"crypto/sha256"
+	"encoding/base64"
 	"time"
 
 	"github.com/google/uuid"
@@ -43,8 +46,16 @@ type Keychain interface {
 	// SignWith returns a signature for a message with specified pair
 	SignWith(kp KeyPairType, msg []byte) ([]byte, error)
 
+	// SignHmacWith returns a signature for a message with specified pair using HMAC(256)
+	// returning: signature, error
+	SignHmacWith(kp KeyPairType, msg string) (string, error)
+
 	// VerifyWith verifies a signature with specified pair
 	VerifyWith(kp KeyPairType, msg []byte, sig []byte) (bool, error)
+
+	// VerifyHmacWith verifies a signature with specified pair using HMAC(256)
+	// returning: true/false, error
+	VerifyHmacWith(kp KeyPairType, msg string, sig string) (bool, error)
 }
 
 // NewKeychain creates a new keychain with Config.
@@ -344,6 +355,30 @@ func (kc *keychain) SignWith(kp KeyPairType, msg []byte) ([]byte, error) {
 	return nil, logger.Error("Failed to Sign Data", ErrKeychainUnready)
 }
 
+// SignWith signs a message with the specified keypair with Hmac - Used to Sign Fingerprint of RecoveryCode
+// on HDNS subdomain
+func (kc *keychain) SignHmacWith(kp KeyPairType, msg string) (string, error) {
+	if kc.Exists(kp) {
+		// Find the private key
+		priv, err := kc.GetPrivKey(kp)
+		if err != nil {
+			return "", err
+		}
+
+		// Get the private key as a byte array
+		privBuf, err := priv.Raw()
+		if err != nil {
+			return "", logger.Error("Failed to Get PrivKey Raw Buffer", err)
+		}
+
+		// Create a new HMAC object
+		h := hmac.New(sha256.New, privBuf)
+		h.Write([]byte(msg))
+		return base64.StdEncoding.EncodeToString(h.Sum(nil)), nil
+	}
+	return "", logger.Error("Failed to Sign Data", ErrKeychainUnready)
+}
+
 // VerifyWith verifies a signature with specified pair
 func (kc *keychain) VerifyWith(kp KeyPairType, msg []byte, sig []byte) (bool, error) {
 	if kc.Exists(kp) {
@@ -352,6 +387,36 @@ func (kc *keychain) VerifyWith(kp KeyPairType, msg []byte, sig []byte) (bool, er
 			return false, err
 		}
 		return pub.Verify(msg, sig)
+	}
+	return false, logger.Error("Failed to Verify Data", ErrKeychainUnready)
+}
+
+// VerifyHmacWith verifies a signature with specified pair - Used to Verify Fingerprint of RecoveryCode
+// on HDNS subdomain
+func (kc *keychain) VerifyHmacWith(kp KeyPairType, msg string, sig string) (bool, error) {
+	if kc.Exists(kp) {
+		// Find the public key
+		pub, err := kc.GetPubKey(kp)
+		if err != nil {
+			return false, err
+		}
+
+		// Get the public key as a byte array
+		pubBuf, err := pub.Raw()
+		if err != nil {
+			return false, logger.Error("Failed to Get PubKey Raw Buffer", err)
+		}
+
+		// Decode the signature
+		sigBuf, err := base64.StdEncoding.DecodeString(sig)
+		if err != nil {
+			return false, logger.Error("Failed to Decode Signature", err)
+		}
+
+		// Create a new HMAC object
+		h := hmac.New(sha256.New, pubBuf)
+		h.Write([]byte(msg))
+		return hmac.Equal(h.Sum(nil), sigBuf), nil
 	}
 	return false, logger.Error("Failed to Verify Data", ErrKeychainUnready)
 }

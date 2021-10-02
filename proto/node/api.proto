@@ -6,7 +6,21 @@ import "proto/common/core.proto";
 import "proto/common/data.proto";
 option go_package = "github.com/sonr-io/core/internal/node";
 
-// InitializeRequest Message to Establish Sonr Host/API/Room
+// (Highway) AuthorizeRequest is Message for Verifying Request (Hmac Sha256)
+message AuthorizeRequest {
+  string sName = 1;    // SName combined with Device ID and Hashed
+  string mnemonic = 2; // Mnemonic Hashed with public key for fingerprint
+  string deviceId = 3; // Device ID
+}
+
+// (Highway) AuthorizeResponse is Message for Verifying Response (Hmac Sha256)
+message AuthorizeResponse {
+  bool success = 1; // If Values were Verified
+  string error = 2; // Error Message
+  map<string,string> records = 3; // Updated Domain TXT Records
+}
+
+// (Client) InitializeRequest Message to Establish Sonr Host/API/Room
 message InitializeRequest {
   sonr.core.Location location = 1;     // Current Runtime Location
   sonr.core.Profile profile = 2;       // Users Contact Card
@@ -58,7 +72,7 @@ message InitializeRequest {
   }
 }
 
-// InitializeResponse is Response from Initialize Request
+// (Client) InitializeResponse is Response from Initialize Request
 message InitializeResponse {
   bool success = 1; // True if Host is Active
   string error = 2; // Error Message if Host is not Active
@@ -74,24 +88,24 @@ message InitializeResponse {
   }
 }
 
-// SupplyRequest supplies path to files or urls and optionally a Peer
+// (Client) SupplyRequest supplies path to files or urls and optionally a Peer
 message SupplyRequest {
   repeated string paths = 1;        // Supply Paths
   optional sonr.core.Peer peer = 2; // Supply Peer
 }
 
-// SupplyResponse is response to SupplyRequest
+// (Client) SupplyResponse is response to SupplyRequest
 message SupplyResponse {
   bool success = 1; // True if Supply is Active
   string error = 2; // Error Message if Supply is not Active
 }
 
-// EditRequest is request to edit user profile
+// (Client) EditRequest is request to edit user profile
 message EditRequest {
   sonr.core.Profile profile = 1; // Profile to Edit
 }
 
-// EditResponse is response to EditRequest
+// (Client) EditResponse is response to EditRequest
 message EditResponse {
   bool success = 1; // True if Supply is Active
   string error = 2; // Error Message if Supply is not Active
@@ -110,7 +124,7 @@ message FetchRequest {
   }
 }
 
-// Fetch Response to Fetch Request
+// (Client) Fetch Response to Fetch Request
 message FetchResponse {
   bool success = 1; // True if Fetch is Active
   string error = 2; // Error Message if Fetch is not Active
@@ -120,31 +134,67 @@ message FetchResponse {
   map<string, sonr.core.PayloadItemList> history = 6; // File Transfer History
 }
 
-// ShareRequest is request to share supplied files/urls with a peer
+// (Highway) LinkRequest handles Linked Devices on DNS Table
+message LinkRequest {
+  string sName = 1;    // SName combined with Device ID and Hashed
+  string mnemonic = 2; // Mnemonic Hashed with public key for fingerprint
+  string deviceId = 3; // Device ID
+  Method method = 4; // Method for Linking
+
+  // Method for Linking
+  enum Method {
+    ADD = 0; // Add Device ID to SName on DNS Table
+    REMOVE = 1; // Remove Device ID from SName on DNS Table
+  }
+}
+
+// (Highway) LinkResponse is Message for Linking Response (Hmac Sha256)
+message LinkResponse {
+    bool success = 1; // If Values were Signed
+    string error = 2; // Error Message
+    map<string,string> records = 3; // Updated Domain TXT Records
+}
+
+// (Client) ShareRequest is request to share supplied files/urls with a peer
 message ShareRequest {
   sonr.core.Peer peer = 1; // Peer to Share with
   sonr.core.MessageItem message = 2; // Message to Share
 }
 
-// ShareResponse is response to ShareRequest
+// (Client) ShareResponse is response to ShareRequest
 message ShareResponse {
   bool success = 1; // True if Supply is Active
   string error = 2; // Error Message if Supply is not Active
 }
 
-// RespondRequest is request to respond to a share request
+// (Highway) RegisterRequest is Message for Signing Request (Hmac Sha256)
+message RegisterRequest {
+  string sName = 1;       // SName combined with Device ID and Hashed
+  string prefix = 2;      // Mnemonic Hashed with private key for fingerprint
+  string fingerprint = 3;  // Fingerprint of Public Key
+}
+
+// (Highway) RegisterResponse is Message for Signing Response (Hmac Sha256)
+message RegisterResponse {
+  bool success = 1;            // If Values were Signed
+  string error = 2;            // Error Message
+  map<string,string> records = 3; // Signed Domain TXT Records
+}
+
+
+// (Client) RespondRequest is request to respond to a share request
 message RespondRequest {
   bool decision = 1;       // True if Supply is Active
   sonr.core.Peer peer = 2; // Peer to Share with
 }
 
-// RespondResponse is response to RespondRequest
+// (Client) RespondResponse is response to RespondRequest
 message RespondResponse {
   bool success = 1; // True if Supply is Active
   string error = 2; // Error Message if Supply is not Active
 }
 
-// SearchRequest is Message for Searching for Peer
+// (Client) SearchRequest is Message for Searching for Peer
 message SearchRequest {
   oneof query {
     string sName = 1;  // SName combined with Device ID and Hashed
@@ -152,7 +202,7 @@ message SearchRequest {
   }
 }
 
-// SearchResponse is Message for Searching for Peer
+// (Client) SearchResponse is Message for Searching for Peer
 message SearchResponse {
   bool success = 1;        // Success
   string error = 2;        // Error Message
@@ -161,10 +211,10 @@ message SearchResponse {
   string sName = 5;        // SName
 }
 
-// StatRequest is Message for Searching for Peer
+// (Client) StatRequest is Message for Searching for Peer
 message StatRequest {}
 
-// StatResponse is a response to StatRequest that displays Node Stats
+// (Client) StatResponse is a response to StatRequest that displays Node Stats
 message StatResponse {
   bool success = 1;              // Success
   string error = 2;              // Error Message

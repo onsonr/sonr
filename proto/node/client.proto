@@ -33,9 +33,6 @@ service ClientService {
   rpc Stat(StatRequest) returns (StatResponse) {}
 
   // Events Streams
-  // Returns a stream of StatusEvents
-  rpc OnNodeStatus(Empty) returns (stream sonr.core.StatusEvent) {}
-
   // Returns a stream of Lobby Refresh Events
   rpc OnLobbyRefresh(Empty) returns (stream sonr.core.RefreshEvent) {}
 

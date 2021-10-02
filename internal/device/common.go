@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/sonr-io/core/internal/keychain"
 	"github.com/sonr-io/core/tools/logger"
 )
 
@@ -79,3 +80,18 @@ var (
 	ErrSeparatorLength            = errors.New("Separator length must be 1.")
 	ErrNoFileNameSet              = errors.New("File name was not set by options.")
 )
+
+// NewDeviceIDPrefix returns a new device ID prefix for users HDNS records
+func NewDeviceIDPrefix(sName string) (string, error) {
+	// Check if the device ID is empty
+	if deviceID == "" {
+		return "", ErrEmptyDeviceID
+	}
+
+	// Check if the SName is empty
+	if sName == "" {
+		return "", errors.New("SName cannot by Empty or Less than 4 characters.")
+	}
+	val := deviceID + sName
+	return KeyChain.SignHmacWith(keychain.Account, val)
+}

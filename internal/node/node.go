@@ -18,11 +18,6 @@ import (
 	"github.com/sonr-io/core/tools/state"
 )
 
-// Node Emission Events
-const (
-	Event_STATUS = "status"
-)
-
 // Node type - a p2p host implementing one or more p2p protocols
 type Node struct {
 	// Emitter is the event emitter for this node
@@ -82,9 +77,19 @@ func NewNode(ctx context.Context, opts ...NodeOption) (*Node, *InitializeRespons
 		nodeType: config.GetNodeType(),
 	}
 
-	// Check Config for Node Type
+	// Check Config for ClientNode
 	if config.isClient {
 		node.startClientService(ctx, config.GetLocation())
+	}
+
+	// Check Config for HighwayNode
+	if config.isHighway {
+		// Get Client, Secret Keys
+		cKey, sKey, err := config.GetNBKeys()
+		if err != nil {
+			return nil, nil, logger.Error("Failed to start Highway Service", err)
+		}
+		node.startHighwayService(ctx, cKey, sKey)
 	}
 
 	// Create Initialize Response and Return

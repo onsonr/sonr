@@ -352,10 +352,6 @@
                   <a href="#sonr.core.RefreshEvent"><span class="badge">M</span>RefreshEvent</a>
                 </li>
               
-                <li>
-                  <a href="#sonr.core.StatusEvent"><span class="badge">M</span>StatusEvent</a>
-                </li>
-              
               
                 <li>
                   <a href="#sonr.core.CompleteEvent.Direction"><span class="badge">E</span>CompleteEvent.Direction</a>
@@ -370,6 +366,18 @@
           <li>
             <a href="#proto%2fnode%2fapi.proto">proto/node/api.proto</a>
             <ul>
+              
+                <li>
+                  <a href="#sonr.node.AuthorizeRequest"><span class="badge">M</span>AuthorizeRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.node.AuthorizeResponse"><span class="badge">M</span>AuthorizeResponse</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.node.AuthorizeResponse.RecordsEntry"><span class="badge">M</span>AuthorizeResponse.RecordsEntry</a>
+                </li>
               
                 <li>
                   <a href="#sonr.node.EditRequest"><span class="badge">M</span>EditRequest</a>
@@ -432,6 +440,30 @@
                 </li>
               
                 <li>
+                  <a href="#sonr.node.LinkRequest"><span class="badge">M</span>LinkRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.node.LinkResponse"><span class="badge">M</span>LinkResponse</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.node.LinkResponse.RecordsEntry"><span class="badge">M</span>LinkResponse.RecordsEntry</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.node.RegisterRequest"><span class="badge">M</span>RegisterRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.node.RegisterResponse"><span class="badge">M</span>RegisterResponse</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.node.RegisterResponse.RecordsEntry"><span class="badge">M</span>RegisterResponse.RecordsEntry</a>
+                </li>
+              
+                <li>
                   <a href="#sonr.node.RespondRequest"><span class="badge">M</span>RespondRequest</a>
                 </li>
               
@@ -490,6 +522,10 @@
               
                 <li>
                   <a href="#sonr.node.InitializeResponse.UserStatus"><span class="badge">E</span>InitializeResponse.UserStatus</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.node.LinkRequest.Method"><span class="badge">E</span>LinkRequest.Method</a>
                 </li>
               
               
@@ -2625,44 +2661,6 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
 
         
       
-        <h3 id="sonr.core.StatusEvent">StatusEvent</h3>
-        <p>Status Event based on Lib Functions</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>isOk</td>
-                  <td><a href="#bool">bool</a></td>
-                  <td></td>
-                  <td><p>true if the event is ok </p></td>
-                </tr>
-              
-                <tr>
-                  <td>message</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Status Event Message </p></td>
-                </tr>
-              
-                <tr>
-                  <td>received</td>
-                  <td><a href="#int64">int64</a></td>
-                  <td></td>
-                  <td><p>Timestamp </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
 
       
         <h3 id="sonr.core.CompleteEvent.Direction">CompleteEvent.Direction</h3>
@@ -2706,8 +2704,115 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
       <p>This file has messages for describing a API Request/Responses with RPC.</p>
 
       
+        <h3 id="sonr.node.AuthorizeRequest">AuthorizeRequest</h3>
+        <p>(Highway) AuthorizeRequest is Message for Verifying Request (Hmac Sha256)</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>sName</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>SName combined with Device ID and Hashed </p></td>
+                </tr>
+              
+                <tr>
+                  <td>mnemonic</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Mnemonic Hashed with public key for fingerprint </p></td>
+                </tr>
+              
+                <tr>
+                  <td>deviceId</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Device ID </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.node.AuthorizeResponse">AuthorizeResponse</h3>
+        <p>(Highway) AuthorizeResponse is Message for Verifying Response (Hmac Sha256)</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>success</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>If Values were Verified </p></td>
+                </tr>
+              
+                <tr>
+                  <td>error</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Error Message </p></td>
+                </tr>
+              
+                <tr>
+                  <td>records</td>
+                  <td><a href="#sonr.node.AuthorizeResponse.RecordsEntry">AuthorizeResponse.RecordsEntry</a></td>
+                  <td>repeated</td>
+                  <td><p>Updated Domain TXT Records </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.node.AuthorizeResponse.RecordsEntry">AuthorizeResponse.RecordsEntry</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>key</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="sonr.node.EditRequest">EditRequest</h3>
-        <p>EditRequest is request to edit user profile</p>
+        <p>(Client) EditRequest is request to edit user profile</p>
 
         
           <table class="field-table">
@@ -2731,7 +2836,7 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
         
       
         <h3 id="sonr.node.EditResponse">EditResponse</h3>
-        <p>EditResponse is response to EditRequest</p>
+        <p>(Client) EditResponse is response to EditRequest</p>
 
         
           <table class="field-table">
@@ -2786,7 +2891,7 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
         
       
         <h3 id="sonr.node.FetchResponse">FetchResponse</h3>
-        <p>Fetch Response to Fetch Request</p>
+        <p>(Client) Fetch Response to Fetch Request</p>
 
         
           <table class="field-table">
@@ -2938,7 +3043,7 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
         
       
         <h3 id="sonr.node.InitializeRequest">InitializeRequest</h3>
-        <p>InitializeRequest Message to Establish Sonr Host/API/Room</p>
+        <p>(Client) InitializeRequest Message to Establish Sonr Host/API/Room</p>
 
         
           <table class="field-table">
@@ -3212,7 +3317,7 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
         
       
         <h3 id="sonr.node.InitializeResponse">InitializeResponse</h3>
-        <p>InitializeResponse is Response from Initialize Request</p>
+        <p>(Client) InitializeResponse is Response from Initialize Request</p>
 
         
           <table class="field-table">
@@ -3332,8 +3437,229 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
 
         
       
+        <h3 id="sonr.node.LinkRequest">LinkRequest</h3>
+        <p>(Highway) LinkRequest handles Linked Devices on DNS Table</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>sName</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>SName combined with Device ID and Hashed </p></td>
+                </tr>
+              
+                <tr>
+                  <td>mnemonic</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Mnemonic Hashed with public key for fingerprint </p></td>
+                </tr>
+              
+                <tr>
+                  <td>deviceId</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Device ID </p></td>
+                </tr>
+              
+                <tr>
+                  <td>method</td>
+                  <td><a href="#sonr.node.LinkRequest.Method">LinkRequest.Method</a></td>
+                  <td></td>
+                  <td><p>Method for Linking </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.node.LinkResponse">LinkResponse</h3>
+        <p>(Highway) LinkResponse is Message for Linking Response (Hmac Sha256)</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>success</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>If Values were Signed </p></td>
+                </tr>
+              
+                <tr>
+                  <td>error</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Error Message </p></td>
+                </tr>
+              
+                <tr>
+                  <td>records</td>
+                  <td><a href="#sonr.node.LinkResponse.RecordsEntry">LinkResponse.RecordsEntry</a></td>
+                  <td>repeated</td>
+                  <td><p>Updated Domain TXT Records </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.node.LinkResponse.RecordsEntry">LinkResponse.RecordsEntry</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>key</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.node.RegisterRequest">RegisterRequest</h3>
+        <p>(Highway) RegisterRequest is Message for Signing Request (Hmac Sha256)</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>sName</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>SName combined with Device ID and Hashed </p></td>
+                </tr>
+              
+                <tr>
+                  <td>prefix</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Mnemonic Hashed with private key for fingerprint </p></td>
+                </tr>
+              
+                <tr>
+                  <td>fingerprint</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Fingerprint of Public Key </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.node.RegisterResponse">RegisterResponse</h3>
+        <p>(Highway) RegisterResponse is Message for Signing Response (Hmac Sha256)</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>success</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>If Values were Signed </p></td>
+                </tr>
+              
+                <tr>
+                  <td>error</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Error Message </p></td>
+                </tr>
+              
+                <tr>
+                  <td>records</td>
+                  <td><a href="#sonr.node.RegisterResponse.RecordsEntry">RegisterResponse.RecordsEntry</a></td>
+                  <td>repeated</td>
+                  <td><p>Signed Domain TXT Records </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.node.RegisterResponse.RecordsEntry">RegisterResponse.RecordsEntry</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>key</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="sonr.node.RespondRequest">RespondRequest</h3>
-        <p>RespondRequest is request to respond to a share request</p>
+        <p>(Client) RespondRequest is request to respond to a share request</p>
 
         
           <table class="field-table">
@@ -3364,7 +3690,7 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
         
       
         <h3 id="sonr.node.RespondResponse">RespondResponse</h3>
-        <p>RespondResponse is response to RespondRequest</p>
+        <p>(Client) RespondResponse is response to RespondRequest</p>
 
         
           <table class="field-table">
@@ -3395,7 +3721,7 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
         
       
         <h3 id="sonr.node.SearchRequest">SearchRequest</h3>
-        <p>SearchRequest is Message for Searching for Peer</p>
+        <p>(Client) SearchRequest is Message for Searching for Peer</p>
 
         
           <table class="field-table">
@@ -3426,7 +3752,7 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
         
       
         <h3 id="sonr.node.SearchResponse">SearchResponse</h3>
-        <p>SearchResponse is Message for Searching for Peer</p>
+        <p>(Client) SearchResponse is Message for Searching for Peer</p>
 
         
           <table class="field-table">
@@ -3478,7 +3804,7 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
         
       
         <h3 id="sonr.node.ShareRequest">ShareRequest</h3>
-        <p>ShareRequest is request to share supplied files/urls with a peer</p>
+        <p>(Client) ShareRequest is request to share supplied files/urls with a peer</p>
 
         
           <table class="field-table">
@@ -3509,7 +3835,7 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
         
       
         <h3 id="sonr.node.ShareResponse">ShareResponse</h3>
-        <p>ShareResponse is response to ShareRequest</p>
+        <p>(Client) ShareResponse is response to ShareRequest</p>
 
         
           <table class="field-table">
@@ -3540,14 +3866,14 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
         
       
         <h3 id="sonr.node.StatRequest">StatRequest</h3>
-        <p>StatRequest is Message for Searching for Peer</p>
+        <p>(Client) StatRequest is Message for Searching for Peer</p>
 
         
 
         
       
         <h3 id="sonr.node.StatResponse">StatResponse</h3>
-        <p>StatResponse is a response to StatRequest that displays Node Stats</p>
+        <p>(Client) StatResponse is a response to StatRequest that displays Node Stats</p>
 
         
           <table class="field-table">
@@ -3703,7 +4029,7 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
         
       
         <h3 id="sonr.node.SupplyRequest">SupplyRequest</h3>
-        <p>SupplyRequest supplies path to files or urls and optionally a Peer</p>
+        <p>(Client) SupplyRequest supplies path to files or urls and optionally a Peer</p>
 
         
           <table class="field-table">
@@ -3734,7 +4060,7 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
         
       
         <h3 id="sonr.node.SupplyResponse">SupplyResponse</h3>
-        <p>SupplyResponse is response to SupplyRequest</p>
+        <p>(Client) SupplyResponse is response to SupplyRequest</p>
 
         
           <table class="field-table">
@@ -3853,6 +4179,29 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
           </tbody>
         </table>
       
+        <h3 id="sonr.node.LinkRequest.Method">LinkRequest.Method</h3>
+        <p>Method for Linking</p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>ADD</td>
+                <td>0</td>
+                <td><p>Add Device ID to SName on DNS Table</p></td>
+              </tr>
+            
+              <tr>
+                <td>REMOVE</td>
+                <td>1</td>
+                <td><p>Remove Device ID from SName on DNS Table</p></td>
+              </tr>
+            
+          </tbody>
+        </table>
+      
 
       
 
@@ -3937,18 +4286,11 @@ Signing Method Request for Data</p></td>
               </tr>
             
               <tr>
-                <td>OnNodeStatus</td>
-                <td><a href="#sonr.node.Empty">Empty</a></td>
-                <td><a href="#sonr.core.StatusEvent">.sonr.core.StatusEvent</a> stream</td>
-                <td><p>Events Streams
-Returns a stream of StatusEvents</p></td>
-              </tr>
-            
-              <tr>
                 <td>OnLobbyRefresh</td>
                 <td><a href="#sonr.node.Empty">Empty</a></td>
                 <td><a href="#sonr.core.RefreshEvent">.sonr.core.RefreshEvent</a> stream</td>
-                <td><p>Returns a stream of Lobby Refresh Events</p></td>
+                <td><p>Events Streams
+Returns a stream of Lobby Refresh Events</p></td>
               </tr>
             
               <tr>
@@ -4011,6 +4353,27 @@ Returns a stream of StatusEvents</p></td>
             <tr><td>Method Name</td><td>Request Type</td><td>Response Type</td><td>Description</td></tr>
           </thead>
           <tbody>
+            
+              <tr>
+                <td>Authorize</td>
+                <td><a href="#sonr.node.AuthorizeRequest">AuthorizeRequest</a></td>
+                <td><a href="#sonr.node.AuthorizeResponse">AuthorizeResponse</a></td>
+                <td><p>Authorize Signing Method Request for Data</p></td>
+              </tr>
+            
+              <tr>
+                <td>Link</td>
+                <td><a href="#sonr.node.LinkRequest">LinkRequest</a></td>
+                <td><a href="#sonr.node.LinkResponse">LinkResponse</a></td>
+                <td><p>Link Links an Additional Device to User</p></td>
+              </tr>
+            
+              <tr>
+                <td>Register</td>
+                <td><a href="#sonr.node.RegisterRequest">RegisterRequest</a></td>
+                <td><a href="#sonr.node.RegisterResponse">RegisterResponse</a></td>
+                <td><p>Register creates new user in DNS Table</p></td>
+              </tr>
             
           </tbody>
         </table>

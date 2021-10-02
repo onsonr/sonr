@@ -5,13 +5,6 @@ import "proto/common/core.proto";
 import "proto/common/data.proto";
 option go_package = "github.com/sonr-io/core/internal/common";
 
-// Status Event based on Lib Functions
-message StatusEvent {
-  bool isOk = 1;      // true if the event is ok
-  string message = 2; // Status Event Message
-  int64 received = 3; // Timestamp
-}
-
 // DecisionEvent is emitted when a decision is made by Peer.
 message DecisionEvent {
   bool decision = 1;       // true = accept, false = reject
