@@ -3,15 +3,17 @@ package node
 import (
 	"container/list"
 	"context"
+	"errors"
 
 	"github.com/sonr-io/core/internal/common"
+	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/host"
+	"github.com/sonr-io/core/internal/store"
 	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/transfer"
 	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/tools/state"
-	"go.uber.org/zap"
 )
 
 // Node Emission Events
@@ -30,11 +32,11 @@ type Node struct {
 	// Properties
 	ctx context.Context
 
+	// Persistent Database
+	store *store.Store
+
 	// Queue - the transfer queue
 	queue *list.List
-
-	// Profile - the node's profile
-	profile *common.Profile
 
 	// TransferProtocol - the transfer protocol
 	*transfer.TransferProtocol
@@ -47,8 +49,8 @@ type Node struct {
 }
 
 // NewNode Creates a node with its implemented protocols
-func NewNode(ctx context.Context, host *host.SNRHost, loc *common.Location) *Node {
-	// Initialize Node
+func NewNode(ctx context.Context, host *host.SNRHost, loc *common.Location) (*Node, *InitializeResponse, error) {
+	// Create Node
 	node := &Node{
 		Emitter: state.NewEmitter(2048),
 		host:    host,
@@ -56,55 +58,74 @@ func NewNode(ctx context.Context, host *host.SNRHost, loc *common.Location) *Nod
 		queue:   list.New(),
 	}
 
+	// Initialize Store
+	store, err := store.NewStore(ctx, host, node.Emitter)
+	if err != nil {
+		return nil, node.createInitializeResponse(err), logger.Error("Failed to initialize store", err)
+	}
+	node.store = store
+
 	// Set Transfer Protocol
 	node.TransferProtocol = transfer.NewProtocol(ctx, host, node.Emitter)
 
 	// Set Exchange Protocol
 	exch, err := exchange.NewProtocol(ctx, host, node.Emitter)
 	if err != nil {
-		logger.Error("Failed to start ExchangeProtocol", zap.Error(err))
-		return node
+		return nil, node.createInitializeResponse(err), logger.Error("Failed to start ExchangeProtocol", err)
 	}
 	node.ExchangeProtocol = exch
 
 	// Set Lobby Protocol
 	lobby, err := lobby.NewProtocol(host, loc, node.Emitter)
 	if err != nil {
-		logger.Error("Failed to start LobbyProtocol", zap.Error(err))
-		return node
+		return nil, node.createInitializeResponse(err), logger.Error("Failed to start LobbyProtocol", err)
 	}
 	node.LobbyProtocol = lobby
-	return node
+
+	// Create Initialize Response and Return
+	return node, node.createInitializeResponse(nil), nil
 }
 
 // Edit method updates Node's profile
 func (n *Node) Edit(p *common.Profile) error {
-	// Set Profile
-	n.profile = p
-
-	// Push Update to Exchange
-	err := n.ExchangeProtocol.Update(n.Peer())
+	// Set Profile and Fetch User Peer
+	err := n.store.SetProfile(p)
 	if err != nil {
-		logger.Error("Failed to update Exchange", zap.Error(err))
 		return err
 	}
 
-	// Push Update to Lobby
-	err = n.LobbyProtocol.Update(n.Peer())
+	// Get Peer
+	peer, err := n.Peer()
 	if err != nil {
-		logger.Error("Failed to update Lobby", zap.Error(err))
-		return err
+		return logger.Error("Failed to get Node Peer Object", err)
+	}
+
+	// Push Update to Exchange
+	err = n.ExchangeProtocol.Update(peer)
+	if err != nil {
+		return logger.Error("Failed to update Exchange", err)
+	}
+
+	// Push Update to Lobby
+	err = n.LobbyProtocol.Update(peer)
+	if err != nil {
+		return logger.Error("Failed to update Lobby", err)
 	}
 	return nil
 }
 
 // Supply a transfer item to the queue
 func (n *Node) Supply(paths []string) error {
-	// Create Transfer
-	payload, err := common.NewPayload(n.profile, paths)
+	// Get Profile
+	profile, err := n.store.GetProfile()
 	if err != nil {
-		logger.Error("Failed to Supply Paths", zap.Error(err))
 		return err
+	}
+
+	// Create Transfer
+	payload, err := common.NewPayload(profile, paths)
+	if err != nil {
+		return logger.Error("Failed to Supply Paths", err)
 	}
 
 	// Add items to transfer
@@ -113,56 +134,149 @@ func (n *Node) Supply(paths []string) error {
 }
 
 // Share a peer to have a transfer
-func (n *Node) Share(peer *common.Peer) error {
-	// Create New ID for Invite
-	id, err := n.host.NewID()
+func (n *Node) Share(to *common.Peer) error {
+	// Fetch Element from Queue
+	elem := n.queue.Front()
+	if elem != nil {
+		// Get Payload
+		payload := n.queue.Remove(elem).(*common.Payload)
+
+		// Create New ID for Invite
+		id, err := device.KeyChain.CreateUUID()
+		if err != nil {
+			return logger.Error("Failed to create new id for Shared Invite", err)
+		}
+
+		// Create new Metadata
+		meta, err := device.KeyChain.CreateMetadata(n.host.ID())
+		if err != nil {
+			return logger.Error("Failed to create new metadata for Shared Invite", err)
+		}
+
+		// Fetch User Peer
+		from, err := n.Peer()
+		if err != nil {
+			return logger.Error("Failed to get Node Peer Object", err)
+		}
+
+		// Create Invite Request
+		req := &transfer.InviteRequest{
+			Payload:  payload,
+			Metadata: common.SignedMetadataToProto(meta),
+			To:       to,
+			From:     from,
+			Uuid:     common.SignedUUIDToProto(id),
+		}
+
+		// Fetch Peer ID from Public Key
+		toId, err := to.PeerID()
+		if err != nil {
+			return logger.Error("Failed to fetch peer id from public key", err)
+		}
+
+		// Request Peer to Transfer File
+		err = n.TransferProtocol.Request(toId, req)
+		if err != nil {
+			return logger.Error("Failed to invite peer", err)
+		}
+		return nil
+	}
+	return errors.New("No items in Transfer Queue.")
+}
+
+// Respond to an invite request
+func (n *Node) Respond(decs bool, to *common.Peer) error {
+	// Create new Metadata
+	meta, err := device.KeyChain.CreateMetadata(n.host.ID())
 	if err != nil {
-		logger.Error("Failed to create new id for Shared Invite", zap.Error(err))
+		logger.Error("Failed to create new metadata for Shared Invite", err)
 		return err
 	}
 
-	// Create Invite Request
-	req := &transfer.InviteRequest{
-		Payload:  n.queue.Front().Value.(*common.Payload),
-		Metadata: n.host.NewMetadata(),
-		To:       peer,
-		From:     n.Peer(),
-		Uuid:     id,
-	}
-
-	// Fetch Peer ID from Exchange
-	entry, err := n.ExchangeProtocol.Query(exchange.NewQueryRequestFromSName(peer.GetSName()))
+	// Fetch User Peer
+	from, err := n.Peer()
 	if err != nil {
-		logger.Error("Failed to search peer", zap.Error(err))
 		return err
 	}
 
-	// Invite peer
-	err = n.TransferProtocol.Request(entry.PeerID, req)
+	// Create Invite Response
+	resp := &transfer.InviteResponse{
+		Decision: decs,
+		Metadata: common.SignedMetadataToProto(meta),
+		From:     from,
+		To:       to,
+	}
+
+	// Fetch Peer ID from Public Key
+	toId, err := to.PeerID()
 	if err != nil {
-		logger.Error("Failed to invite peer", zap.Error(err))
-		n.Emit(Event_STATUS, err)
+		logger.Error("Failed to fetch peer id from public key", err)
+		return err
+	}
+
+	// Respond on TransferProtocol
+	err = n.TransferProtocol.Respond(toId, resp)
+	if err != nil {
+		logger.Error("Failed to respond to invite", err)
 		return err
 	}
 	return nil
 }
 
-// Respond to an invite request
-func (n *Node) Respond(decs bool, to *common.Peer) error {
-	// Create Invite Response
-	var resp *transfer.InviteResponse
-	if decs {
-		resp = &transfer.InviteResponse{Decision: true, Metadata: n.host.NewMetadata(), From: n.Peer(), To: to}
-	} else {
-		resp = &transfer.InviteResponse{Decision: false, Metadata: n.host.NewMetadata(), From: n.Peer(), To: to}
+// Stat returns the Node info as StatResponse
+func (n *Node) Stat() (*StatResponse, error) {
+	// Get Profile
+	profile, err := n.store.GetProfile()
+	if err != nil {
+		return &StatResponse{
+			Success: false,
+			Error:   err.Error(),
+		}, err
 	}
 
-	// Respond on TransferProtocol
-	err := n.TransferProtocol.Respond(resp)
+	// Get Host Stats
+	hStat, err := n.host.Stat()
 	if err != nil {
-		logger.Error("Failed to respond to invite", zap.Error(err))
-		n.Emit(Event_STATUS, err)
-		return err
+		return &StatResponse{
+			Success: false,
+			Error:   err.Error(),
+			SName:   profile.SName,
+			Profile: profile,
+		}, logger.Error("Failed to get Host Stat", err)
 	}
-	return nil
+
+	// Get Device Stat
+	dStat, err := device.Stat()
+	if err != nil {
+		return &StatResponse{
+			Success: false,
+			Error:   err.Error(),
+			SName:   profile.SName,
+			Profile: profile,
+			Network: &StatResponse_Network{
+				PublicKey: hStat.PublicKey,
+				PeerID:    hStat.PeerID,
+				Multiaddr: hStat.MultAddr,
+			},
+		}, logger.Error("Failed to get Device Stat", err)
+	}
+
+	// Return StatResponse
+	return &StatResponse{
+		SName:   profile.SName,
+		Profile: profile,
+		Network: &StatResponse_Network{
+			PublicKey: hStat.PublicKey,
+			PeerID:    hStat.PeerID,
+			Multiaddr: hStat.MultAddr,
+		},
+		Device: &StatResponse_Device{
+			Id:        dStat.Id,
+			Name:      dStat.HostName,
+			Os:        dStat.Os,
+			Arch:      dStat.Arch,
+			IsDesktop: dStat.IsDesktop,
+			IsMobile:  dStat.IsMobile,
+		},
+	}, nil
 }

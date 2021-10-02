@@ -8,8 +8,6 @@
     <img src="https://uploads-ssl.webflow.com/60e4b57e5960f8d0456720e7/60fbc0e3fcdf204c7ed9946b_Github%20-%20Core.png" alt="Logo" height="275">
   </a>
 
-
-
   <p align="center">
   Core Framework that manages the Sonr Libp2p node in Go, Handles File Management, Connection to Peer, and Pub-Sub for Lobby.
     <a href="https://github.com/sonr-io/core"><strong>Explore the docs »</strong></a>
@@ -24,11 +22,7 @@
 </p>
 <br />
 
-
-
-
-
-*By [Sonr](https://www.sonr.io), creators of [The Sonr App](https://www.twitter.com/TheSonrApp)*
+_By [Sonr](https://www.sonr.io), creators of [The Sonr App](https://www.twitter.com/TheSonrApp)_
 
 ---
 
@@ -58,23 +52,14 @@
   </ol>
 </details>
 
-
-
 <!-- ABOUT THE PROJECT -->
-## About The Project
-
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
-
 
 ### Built With
 
-* [Golang]()
-
-
-
+- [Golang]()
 
 <!-- GETTING STARTED -->
+
 ## Getting Started
 
 To get a local copy up and running follow these simple steps.
@@ -82,9 +67,12 @@ To get a local copy up and running follow these simple steps.
 ### Prerequisites
 
 This is an example of how to list things you need to use the software and how to install them.
-* npm
+
+- golang
   ```sh
-  npm install npm@latest -g
+  go install github.com/joho/godotenv/cmd/godotenv@latest
+  go install golang.org/x/mobile/cmd/gomobile@latest
+  gomobile init
   ```
 
 ### Installation
@@ -93,17 +81,21 @@ This is an example of how to list things you need to use the software and how to
    ```sh
    git clone https://github.com/sonr-io/core.git
    ```
-2. Install NPM packages
+2. Bind Mobile Framework(s)
    ```sh
-   npm install
+    godotenv -f <(doppler secrets download --no-file --format env) .github/scripts/bind.sh
+   ```
+   or with `fish`
+   ```sh
+   godotenv -f (doppler secrets download --no-file --format env | psub) .github/scripts/bind.sh
    ```
 
-
-
 <!-- USAGE EXAMPLES -->
+
 ## Usage
 
 This project contains a `makefile` with the following commands:
+
 ```bash
 # Binds Android and iOS for Plugin Path
 make bind
@@ -126,16 +118,14 @@ make clean
 
 _For more examples, please refer to the [Documentation](https://example.com)_
 
-
-
 <!-- ROADMAP -->
+
 ## Roadmap
 
 See the [open issues](https://github.com/sonr-io/core/issues) for a list of proposed features (and known issues).
 
-
-
 <!-- CONTRIBUTING -->
+
 ## Contributing
 
 Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
@@ -146,39 +136,33 @@ Contributions are what make the open source community such an amazing place to b
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-
-
 <!-- LICENSE -->
+
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
 
-
-
 <!-- CONTACT -->
+
 ## Contact
 
 Prad Nukala - [TheSonrApp](https://twitter.com/TheSonrApp) - pradn@sonr.io
 
 Project Link: [Github](https://github.com/sonr-io/core) - [Discord](https://sonr.io) - [Website](https://sonr.io)
 
-
-
 <!-- ACKNOWLEDGEMENTS -->
+
 ## Acknowledgements
 
-* [Libp2p](https://libp2p.io/)
-* [Textile](https://www.textile.io/)
-* [Handshake](https://handshake.org/)
-* [Flutter](https://flutter.dev/)
-* [Gitmoji-CLI](https://github.com/carloscuesta/gitmoji-cli)
-
-
-
-
+- [Libp2p](https://libp2p.io/)
+- [Textile](https://www.textile.io/)
+- [Handshake](https://handshake.org/)
+- [Flutter](https://flutter.dev/)
+- [Gitmoji-CLI](https://github.com/carloscuesta/gitmoji-cli)
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
 [contributors-shield]: https://img.shields.io/github/contributors/sonr-io/core.svg?style=for-the-badge
 [contributors-url]: https://github.com/sonr-io/core/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/sonr-io/core.svg?style=for-the-badge

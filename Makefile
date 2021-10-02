@@ -1,3 +1,5 @@
+SHELL=/bin/bash
+
 # Set this -->[/Users/xxxx/Sonr/]<-- to Folder of Sonr Repos
 SONR_ROOT_DIR=/Users/prad/Developer
 ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
@@ -5,6 +7,8 @@ CORE_DIR=$(SONR_ROOT_DIR)/core
 CORE_RPC_DIR=$(SONR_ROOT_DIR)/core/cmd/bin
 CORE_BIND_DIR=$(SONR_ROOT_DIR)/core/cmd/lib
 ELECTRON_BIN_DIR=$(SONR_ROOT_DIR)/electron/assets/bin/darwin
+PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+LD_LIBRARY_PATH=/usr/local/Cellar/ffmpeg/4.4_2/lib
 
 # Set this -->[/Users/xxxx/Sonr/]<-- to Folder of Sonr Repos
 PROTO_DEF_PATH=/Users/prad/Developer/core/proto
@@ -16,6 +20,7 @@ GOCLEAN=$(GOMOBILE) clean
 GOBIND=$(GOMOBILE) bind -ldflags='-s -w' -v
 GOBIND_ANDROID=$(GOBIND) -target=android
 GOBIND_IOS=$(GOBIND) -target=ios/arm64 -bundleid=io.sonr.core
+INJECT_ENV=godotenv -f <(doppler secrets download --no-file --format env)
 
 # @ Bind Directories
 BIND_DIR_ANDROID=$(SONR_ROOT_DIR)/plugin/android/libs
@@ -70,7 +75,7 @@ bind.android:
 	@echo "--------------------------------------------------------------"
 	@go get golang.org/x/mobile/bind
 	@gomobile init
-	cd $(CORE_BIND_DIR) && doppler run --command "$(GOBIND_ANDROID) -o $(BIND_ANDROID_ARTIFACT)"
+	cd $(CORE_BIND_DIR) && $(INJECT_ENV) $(GOBIND_ANDROID) -o $(BIND_ANDROID_ARTIFACT)
 	@echo "✅ Finished Binding ➡ `date`"
 	@echo ""
 
@@ -83,7 +88,7 @@ bind.ios:
 	@echo "-------------- 📱 START IOS BIND 📱 ---------------------------"
 	@echo "--------------------------------------------------------------"
 	@go get golang.org/x/mobile/bind
-	cd $(CORE_BIND_DIR) && doppler run --command "$(GOBIND_IOS) -o $(BIND_IOS_ARTIFACT)"
+	cd $(CORE_BIND_DIR) && $(INJECT_ENV) $(GOBIND_IOS) -o $(BIND_IOS_ARTIFACT)
 	@echo "✅ Finished Binding ➡ `date`"
 	@echo ""
 

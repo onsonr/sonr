@@ -9,16 +9,19 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/libp2p/go-libp2p-core/routing"
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	psub "github.com/libp2p/go-libp2p-pubsub"
 	discovery "github.com/libp2p/go-libp2p/p2p/discovery"
+	"github.com/libp2p/go-msgio"
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
+	"github.com/sonr-io/core/internal/keychain"
 	"github.com/sonr-io/core/tools/logger"
-	"go.uber.org/zap"
+	"google.golang.org/protobuf/proto"
 )
 
 // SNRHostStat is the host stat info
@@ -38,10 +41,8 @@ type SNRHost struct {
 	ctxHost      context.Context
 	ctxTileAuth  context.Context
 	ctxTileToken context.Context
-	privKey      crypto.PrivKey
 
 	// Libp2p
-	id     peer.ID
 	disc   *dsc.RoutingDiscovery
 	kdht   *dht.IpfsDHT
 	mdns   discovery.Service
@@ -54,10 +55,10 @@ type SNRHost struct {
 }
 
 // NewHost creates a new host
-func NewHost(ctx context.Context, kc device.Keychain, conn common.Connection) (*SNRHost, error) {
+func NewHost(ctx context.Context, conn common.Connection) (*SNRHost, error) {
 	// Initialize DHT
 	var kdhtRef *dht.IpfsDHT
-	privKey, err := kc.GetPrivKey(device.Account)
+	privKey, err := device.KeyChain.GetPrivKey(keychain.Account)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get private key")
 	}
@@ -68,9 +69,9 @@ func NewHost(ctx context.Context, kc device.Keychain, conn common.Connection) (*
 		libp2p.Identity(privKey),
 		libp2p.DefaultTransports,
 		libp2p.ConnectionManager(connmgr.NewConnManager(
-			10,          // Lowwater
-			15,          // HighWater,
-			time.Minute, // GracePeriod
+			25,            // Lowwater
+			50,            // HighWater,
+			time.Minute*5, // GracePeriod
 		)),
 		libp2p.DefaultStaticRelays(),
 		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
@@ -87,29 +88,27 @@ func NewHost(ctx context.Context, kc device.Keychain, conn common.Connection) (*
 		libp2p.EnableAutoRelay(),
 	)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to initialize host")
+		return nil, logger.Error("Failed to initialize libp2p host", err)
 	}
 
 	// Create Host
 	hn := &SNRHost{
 		ctxHost: ctx,
-		id:      h.ID(),
 		Host:    h,
 		kdht:    kdhtRef,
-		privKey: privKey,
 	}
 
 	// Bootstrap Host
 	err = hn.Bootstrap()
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to bootstrap host")
+		return nil, logger.Error("Failed to bootstrap libp2p Host", err)
 	}
 
 	// Check for Wifi/Ethernet for MDNS
 	if conn == common.Connection_WIFI || conn == common.Connection_ETHERNET {
 		err = hn.MDNS()
 		if err != nil {
-			return nil, errors.Wrap(err, "Failed to initialize MDNS")
+			return nil, logger.Error("Failed to start MDNS Discovery", err)
 		}
 	}
 	return hn, nil
@@ -121,24 +120,47 @@ func (hn *SNRHost) Pubsub() *psub.PubSub {
 	return hn.pubsub
 }
 
-// PublicKey returns the public key of the host
-func (hn *SNRHost) PublicKey() crypto.PubKey {
-	return hn.privKey.GetPublic()
+// SendMessage writes a protobuf go data object to a network stream
+func (hn *SNRHost) SendMessage(id peer.ID, p protocol.ID, data proto.Message) error {
+	s, err := hn.NewStream(hn.ctxHost, id, p)
+	if err != nil {
+		return logger.Error("Failed to start stream", err)
+	}
+	defer s.Close()
+
+	// marshall data to protobufs3 binary format
+	bin, err := proto.Marshal(data)
+	if err != nil {
+		return logger.Error("Failed to marshal pb", err)
+	}
+
+	// Create Writer and write data to stream
+	w := msgio.NewWriter(s)
+	if err := w.WriteMsg(bin); err != nil {
+		return logger.Error("Failed to write message to stream.", err)
+	}
+	return nil
 }
 
 // Stat returns the host stat info
-func (hn *SNRHost) Stat() *SNRHostStat {
-	// Marshal Public Key
-	buf, err := crypto.MarshalPublicKey(hn.PublicKey())
+func (hn *SNRHost) Stat() (*SNRHostStat, error) {
+	// Get Public Key
+	pubKey, err := device.KeyChain.GetPubKey(keychain.Account)
 	if err != nil {
-		logger.Error("Failed to marshal public key.", zap.Error(err))
+		return nil, logger.Error("Failed to get public key", err)
+	}
+
+	// Marshal Public Key
+	buf, err := crypto.MarshalPublicKey(pubKey)
+	if err != nil {
+		return nil, logger.Error("Failed to marshal public key", err)
 	}
 
 	// Return Host Stat
 	return &SNRHostStat{
-		ID:        hn.id,
+		ID:        hn.ID(),
 		PublicKey: string(buf),
-		PeerID:    hn.id.Pretty(),
+		PeerID:    hn.ID().Pretty(),
 		MultAddr:  hn.Addrs()[0].String(),
-	}
+	}, nil
 }

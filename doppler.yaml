@@ -1,0 +1,3 @@
+setup:
+  project: core
+  config: prd

@@ -3,6 +3,7 @@ syntax = "proto3";
 
 package sonr.node;
 import "proto/common/core.proto";
+import "proto/common/data.proto";
 option go_package = "github.com/sonr-io/core/internal/node";
 
 // InitializeRequest Message to Establish Sonr Host/API/Room
@@ -13,20 +14,17 @@ message InitializeRequest {
   HostOptions hostOptions = 4;         // Libp2p Host config
   ServiceOptions serviceOptions = 5;   // Service Config
   DeviceOptions deviceOptions = 6;     // File System Config
-  EnvOptions envOptions = 7;           // Environment Config
+  sonr.core.Environment environment = 7; // Environment Config
 
   // Optional Message to Initialize FileSystem
   message DeviceOptions {
-    string documentsDir = 1; // Documents Directory
+    string id = 1;           // Device ID
     string cacheDir = 2;     // Cache Directory
-    string supportDir = 3;   // Support Directory
-    string id = 4;           // Device ID
-  }
-
-  // Optional Message to Initialize Env Variables
-  message EnvOptions {
-    map<string, string> variables = 1;     // Environment Variables
-    sonr.core.Environment environment = 2; // Environment Config
+    string databaseDir = 3;  // Database Directory
+    string documentsDir = 4; // Documents Directory
+    string downloadsDir = 5; // Downloads Directory
+    string mailboxDir = 6;   // Mailbox Directory
+    string supportDir = 7;   // Support Directory
   }
 
   // Libp2p Host Options
@@ -64,6 +62,16 @@ message InitializeRequest {
 message InitializeResponse {
   bool success = 1; // True if Host is Active
   string error = 2; // Error Message if Host is not Active
+  sonr.core.Profile profile = 3; // Users Profile from store
+  map<string,sonr.core.ProfileList> recents = 4; // Recent Peers from store
+  map<string, sonr.core.PayloadItemList> history = 5; // File transfer history from store
+  UserStatus userStatus = 6; // User Status from store'
+
+  // User Status
+  enum UserStatus {
+    RETURNING = 0; // User is Returning
+    NEW = 1;       // User is New
+  }
 }
 
 // SupplyRequest supplies path to files or urls and optionally a Peer
@@ -89,9 +97,33 @@ message EditResponse {
   string error = 2; // Error Message if Supply is not Active
 }
 
+// Fetch Request to Fetch a Property from Key/Value Store
+message FetchRequest {
+  Key key = 1; // Key to Fetch
+
+  enum Key {
+    ALL = 0; // Fetch All Keys
+    PROFILE = 1; // User Profile
+    DEVICES = 2; // Linked Devices
+    RECENTS = 3; // Recent Peers
+    HISTORY = 4; // File Transfer History
+  }
+}
+
+// Fetch Response to Fetch Request
+message FetchResponse {
+  bool success = 1; // True if Fetch is Active
+  string error = 2; // Error Message if Fetch is not Active
+  sonr.core.Profile profile = 3; // Profile
+  map<string, sonr.core.Peer> devices = 4; // Linked Devices
+  map<string, sonr.core.ProfileList> recents = 5; // Recent Peers
+  map<string, sonr.core.PayloadItemList> history = 6; // File Transfer History
+}
+
 // ShareRequest is request to share supplied files/urls with a peer
 message ShareRequest {
   sonr.core.Peer peer = 1; // Peer to Share with
+  sonr.core.MessageItem message = 2; // Message to Share
 }
 
 // ShareResponse is response to ShareRequest
@@ -112,16 +144,16 @@ message RespondResponse {
   string error = 2; // Error Message if Supply is not Active
 }
 
-// FindRequest is Message for Searching for Peer
-message FindRequest {
+// SearchRequest is Message for Searching for Peer
+message SearchRequest {
   oneof query {
     string sName = 1;  // SName combined with Device ID and Hashed
     string peerId = 2; // Peer ID
   }
 }
 
-// FindResponse is Message for Searching for Peer
-message FindResponse {
+// SearchResponse is Message for Searching for Peer
+message SearchResponse {
   bool success = 1;        // Success
   string error = 2;        // Error Message
   sonr.core.Peer peer = 3; // Peer Data
@@ -134,10 +166,12 @@ message StatRequest {}
 
 // StatResponse is a response to StatRequest that displays Node Stats
 message StatResponse {
-  string sName = 1;              // SName
-  sonr.core.Profile profile = 2; // Profile Data
-  Device device = 3;             // Device Data
-  Network network = 4;           // Network Data
+  bool success = 1;              // Success
+  string error = 2;              // Error Message
+  string sName = 3;              // SName
+  sonr.core.Profile profile = 4; // Profile Data
+  Device device = 5;             // Device Data
+  Network network = 6;           // Network Data
 
   // Device Stats
   message Device {

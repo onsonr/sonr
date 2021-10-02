@@ -7,24 +7,29 @@ import (
 )
 
 // parseInitializeRequest parses the given buffer and returns the proto and fsOptions.
-func parseInitializeRequest(buf []byte) (*node.InitializeRequest, []device.FSOption, error) {
+func parseInitializeRequest(buf []byte) (bool, *node.InitializeRequest, []device.FSOption, error) {
 	// Unmarshal request
 	req := &node.InitializeRequest{}
 	err := proto.Unmarshal(buf, req)
 	if err != nil {
-		return nil, nil, err
+		return false, nil, nil, err
 	}
 
 	// Check FSOptions and Get Device Paths
 	fsOpts := make([]device.FSOption, 0)
-
 	if req.GetDeviceOptions() != nil {
+		// Set Device ID
+		err = device.SetDeviceID(req.GetDeviceOptions().GetId())
+		if err != nil {
+			return req.GetEnvironment().IsDev(), nil, nil, err
+		}
+
 		// Set Temporary Path
 		fsOpts = append(fsOpts, device.FSOption{
 			Path: req.GetDeviceOptions().GetCacheDir(),
 			Type: device.Temporary,
 		}, device.FSOption{
-			Path: req.GetDeviceOptions().GetDocumentsDir(),
+			Path: req.GetDeviceOptions().GetDownloadsDir(),
 			Type: device.Downloads,
 		}, device.FSOption{
 			Path: req.GetDeviceOptions().GetDocumentsDir(),
@@ -32,7 +37,13 @@ func parseInitializeRequest(buf []byte) (*node.InitializeRequest, []device.FSOpt
 		}, device.FSOption{
 			Path: req.GetDeviceOptions().GetSupportDir(),
 			Type: device.Support,
+		}, device.FSOption{
+			Path: req.GetDeviceOptions().GetDatabaseDir(),
+			Type: device.Database,
+		}, device.FSOption{
+			Path: req.GetDeviceOptions().GetMailboxDir(),
+			Type: device.Mailbox,
 		})
 	}
-	return req, fsOpts, nil
+	return req.GetEnvironment().IsDev(), req, fsOpts, nil
 }

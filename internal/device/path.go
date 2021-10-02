@@ -1,9 +1,12 @@
 package device
 
 import (
-	"errors"
+	"fmt"
 	"path/filepath"
 	"strings"
+
+	"github.com/sonr-io/core/tools/logger"
+	"go.uber.org/zap"
 )
 
 type filePathOptType int
@@ -16,14 +19,45 @@ const (
 	filePathOptionTypeSeparator                        // Separator
 )
 
-// Error definitions
-var (
-	ErrDuplicateFilePathOption    = errors.New("Duplicate file path option")
-	ErrPrefixSuffixSetWithReplace = errors.New("Prefix or Suffix was set with the Replace option was set.")
-	ErrSeparatorLength            = errors.New("Separator length must be 1.")
-	ErrNoFilePathOptionSet        = errors.New("Prefix, Suffix, or Replace must be set.")
-	ErrNoFileNameSet              = errors.New("File name was not set by options.")
-)
+// NewPath returns a new path with the given file name and specified folder.
+func NewPath(path string, dir string, opts ...FilePathOption) (string, error) {
+	// Initialize options list
+	name := filepath.Base(path)
+	fpoList := make([]*filePathOptions, len(opts))
+	for _, opt := range opts {
+		fpoList = append(fpoList, opt.Apply())
+	}
+
+	// Merge options
+	fpo := &filePathOptions{}
+	err := fpo.Merge(name, fpoList...)
+	if err != nil {
+		return "", err
+	}
+
+	// Build path
+	return fpo.Apply(dir)
+}
+
+// NewDatabasePath Returns a new path in database dir with given file name.
+func NewDatabasePath(path string, opts ...FilePathOption) (string, error) {
+	// Initialize options list
+	name := filepath.Base(path)
+	fpoList := make([]*filePathOptions, len(opts))
+	for _, opt := range opts {
+		fpoList = append(fpoList, opt.Apply())
+	}
+
+	// Merge options
+	fpo := &filePathOptions{}
+	err := fpo.Merge(name, fpoList...)
+	if err != nil {
+		return "", err
+	}
+
+	// Build path
+	return fpo.Apply(DocsPath)
+}
 
 // NewDocsPath Returns a new path in docs dir with given file name.
 func NewDocsPath(path string, opts ...FilePathOption) (string, error) {
@@ -258,43 +292,36 @@ func (fpo *filePathOptions) Apply(dir string) (string, error) {
 		fpo.Separator = "-"
 	}
 
-	// Verify baseName, extension, and separator are set
-	if fpo.baseName == "" || fpo.extension == "" || fpo.Separator == "" {
-		// Verify prefix, suffix, or replace is set
-		if !fpo.suffixSet && !fpo.prefixSet && !fpo.replaceSet {
-			return "", ErrNoFilePathOptionSet
-		} else {
-			// Check for Replace
-			if fpo.replaceSet {
-				// Check if prefix or suffix is set
-				if fpo.suffixSet || fpo.prefixSet {
-					return "", ErrPrefixSuffixSetWithReplace
-				} else {
-					fpo.fileName = fpo.Replace + "." + fpo.extension
-				}
-			} else {
-				// Check for prefix
-				if fpo.prefixSet {
-					fpo.fileName = fpo.Prefix + fpo.Separator + fpo.baseName
-				} else {
-					fpo.fileName = fpo.baseName
-				}
-
-				// Check for suffix
-				if fpo.suffixSet {
-					fpo.fileName = fpo.fileName + fpo.Separator + fpo.Suffix
-				} else {
-					fpo.fileName = fpo.fileName + fpo.Separator
-				}
-			}
+	// Check for Replace
+	if fpo.replaceSet {
+		// Check if prefix or suffix is set
+		if fpo.suffixSet || fpo.prefixSet {
+			return "", ErrPrefixSuffixSetWithReplace
 		}
+		// Set Filename to replace
+		fpo.fileName = fpo.Replace
 	} else {
-		fpo.fileName = fpo.baseName + "." + fpo.extension
+		// Check for prefix
+		if fpo.prefixSet {
+			fpo.fileName = fpo.Prefix + fpo.Separator + fpo.baseName
+		} else {
+			fpo.fileName = fpo.baseName
+		}
+
+		// Check for suffix
+		if fpo.suffixSet {
+			fpo.fileName = fpo.fileName + fpo.Separator + fpo.Suffix
+		}
 	}
+
+	// Add extension
+	fpo.fileName = fpo.fileName + "." + fpo.extension
 
 	// Check if file name is set
 	if fpo.fileName != "" {
-		return filepath.Join(dir, fpo.fileName), nil
+		path := filepath.Join(dir, fpo.fileName)
+		logger.Info(fmt.Sprintf("Calculated new file path: %s", path), zap.String("path.Apply()", path))
+		return path, nil
 	} else {
 		return "", ErrNoFileNameSet
 	}

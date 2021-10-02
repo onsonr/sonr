@@ -2,16 +2,15 @@ package common
 
 import (
 	"fmt"
-	"os"
 	"strings"
+	"time"
 
-	"github.com/gabriel-vasile/mimetype"
 	olc "github.com/google/open-location-code/go"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/pkg/errors"
+	"github.com/sonr-io/core/internal/keychain"
 	"github.com/sonr-io/core/tools/logger"
-	"go.uber.org/zap"
 )
 
 // ** ───────────────────────────────────────────────────────
@@ -19,9 +18,6 @@ import (
 // ** ───────────────────────────────────────────────────────
 // OLC_SCOPE is the default OLC Scope for Distance Calculation
 const OLC_SCOPE = 6
-
-// EXCHANGE_SNAME_PREFIX is the prefix for exchange SName
-const EXCHANGE_SNAME_PREFIX = "sName/"
 
 // Fetch olc code from lat/lng at Scope Level 6
 func (l *Location) OLC() string {
@@ -77,14 +73,14 @@ func (p *Peer) Info() (*PeerInfo, error) {
 	// Get Public Key
 	pubKey, err := p.PubKey()
 	if err != nil {
-		logger.Error("Failed to get Public Key", zap.Error(err))
+		logger.Error("Failed to get Public Key", err)
 		return nil, err
 	}
 
 	// Get peer ID from public key
 	id, err := peer.IDFromPublicKey(pubKey)
 	if err != nil {
-		logger.Error(fmt.Sprintf("Failed to get peer ID from Public Key: %s", p.GetSName()), zap.Error(err))
+		logger.Error(fmt.Sprintf("Failed to get peer ID from Public Key: %s", p.GetSName()), err)
 		return nil, err
 	}
 
@@ -96,7 +92,7 @@ func (p *Peer) Info() (*PeerInfo, error) {
 		PeerID:          id,
 		PublicKey:       pubKey,
 		SName:           p.GetSName(),
-		StoreEntryKey:   fmt.Sprintf("%s%s", EXCHANGE_SNAME_PREFIX, strings.ToLower(p.GetSName())),
+		StoreEntryKey:   strings.ToLower(p.GetSName()),
 		Peer:            p,
 	}, nil
 }
@@ -109,16 +105,14 @@ func (p *Peer) PeerID() (peer.ID, error) {
 	}
 
 	// Fetch public key from peer data
-	pubKey, err := crypto.UnmarshalPublicKey(p.GetPublicKey())
+	pubKey, err := p.SnrPubKey()
 	if err != nil {
-		logger.Error(fmt.Sprintf("Failed to Unmarshal Public Key: %s", p.GetSName()), zap.Error(err))
 		return "", err
 	}
 
-	// Get peer ID from public key
-	id, err := peer.IDFromPublicKey(pubKey)
+	// Return Peer ID
+	id, err := pubKey.PeerID()
 	if err != nil {
-		logger.Error(fmt.Sprintf("Failed to get peer ID from Public Key: %s", p.GetSName()), zap.Error(err))
 		return "", err
 	}
 	return id, nil
@@ -134,91 +128,49 @@ func (p *Peer) PubKey() (crypto.PubKey, error) {
 	// Unmarshal Public Key
 	pubKey, err := crypto.UnmarshalPublicKey(p.GetPublicKey())
 	if err != nil {
-		logger.Error(fmt.Sprintf("Failed to Unmarshal Public Key: %s", p.GetSName()), zap.Error(err))
-		return nil, err
+		return nil, logger.Error(fmt.Sprintf("Failed to Unmarshal Public Key: %s", p.GetSName()), err)
 	}
 	return pubKey, nil
 }
 
-// ** ───────────────────────────────────────────────────────
-// ** ─── MIME Management ───────────────────────────────────
-// ** ───────────────────────────────────────────────────────
-// DefaultUrlMIME is the standard MIME type for URLs
-func DefaultUrlMIME() *MIME {
-	return &MIME{
-		Type:    MIME_URL,
-		Subtype: ".html",
-		Value:   "url/html",
-	}
-}
-
-// NewMime creates a new MIME type from Path
-func NewMime(path string) (*MIME, error) {
-	// Check if path is URL
-	if IsUrl(path) {
-		return DefaultUrlMIME(), nil
-	}
-
-	// Check if path to file exists
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		return nil, err
-	}
-
-	// Get MIME Type and Set Proto Enum
-	mtype, err := mimetype.DetectFile(path)
+// SnrPubKey returns the Public Key from the Peer as SnrPubKey
+func (p *Peer) SnrPubKey() (*keychain.SnrPubKey, error) {
+	// Get Public Key
+	pub, err := p.PubKey()
 	if err != nil {
-		return nil, err
+		return nil, logger.Error("Failed to get Public Key", err)
 	}
 
-	// Return MIME Type
-	return &MIME{
-		Type:    MIME_Type(MIME_Type_value[strings.ToUpper(mtype.Parent().String())]),
-		Value:   mtype.String(),
-		Subtype: mtype.Extension(),
-	}, nil
+	// Return SnrPubKey
+	return keychain.NewSnrPubKey(pub), nil
 }
 
-// Ext Method adjusts extension for JPEG
-func (m *MIME) Ext() string {
-	if m.Subtype == "jpg" || m.Subtype == "jpeg" {
-		return "jpeg"
-	}
-	return m.Subtype
+// ** ───────────────────────────────────────────────────────
+// ** ─── Profile Management ────────────────────────────────
+// ** ───────────────────────────────────────────────────────
+// Add adds a new Profile to the List and
+// updates LastModified time.
+func (p *ProfileList) Add(profile *Profile) {
+	p.Profiles = append(p.Profiles, profile)
+	p.LastModified = time.Now().Unix()
 }
 
-// IsAudio Checks if Mime is Audio
-func (m *MIME) IsAudio() bool {
-	return m.Type == MIME_AUDIO
+// Count returns the number of Profiles in the List
+func (p *ProfileList) Count() int {
+	return len(p.Profiles)
 }
 
-// IsImage Checks if Mime is Image
-func (m *MIME) IsImage() bool {
-	return m.Type == MIME_IMAGE
-}
-
-// IsMedia Checks if Mime is any media
-func (m *MIME) IsMedia() bool {
-	return m.IsAudio() || m.IsImage() || m.IsVideo()
-}
-
-// IsVideo Checks if Mime is Video
-func (m *MIME) IsVideo() bool {
-	return m.Type == MIME_VIDEO
-}
-
-// IsUrl Checks if Path is a URL
-func (m *MIME) IsUrl() bool {
-	return m.Type == MIME_URL
-}
-
-// PermitsThumbnail Checks if Mime Type Allows Thumbnail Generation
-func (m *MIME) PermitsThumbnail() bool {
-	return m.IsImage() || m.IsVideo()
+// IndexAt returns profile at index
+func (p *ProfileList) IndexAt(i int) *Profile {
+	return p.Profiles[i]
 }
 
 // ** ───────────────────────────────────────────────────────
 // ** ─── Payload Management ────────────────────────────────
 // ** ───────────────────────────────────────────────────────
+// PayloadItemFunc is the Map function for PayloadItem
+type PayloadItemFunc func(item *Payload_Item, index int, total int) error
+
 // NewPayload creates a new Payload Object
 func NewPayload(owner *Profile, paths []string) (*Payload, error) {
 	// Initialize
@@ -239,7 +191,7 @@ func NewPayload(owner *Profile, paths []string) (*Payload, error) {
 			item, err := NewUrlItem(path)
 			if err != nil {
 				msg := fmt.Sprintf("Failed to create URLItem at Index: %v, with Path: %s", i, path)
-				logger.Error(msg, zap.Error(err))
+				logger.Error(msg, err)
 				errs = append(errs, errors.Wrap(err, msg))
 				continue
 			}
@@ -255,7 +207,7 @@ func NewPayload(owner *Profile, paths []string) (*Payload, error) {
 			item, err := NewFileItem(path)
 			if err != nil {
 				msg := fmt.Sprintf("Failed to create FileItem at Index: %v with Path: %s", i, path)
-				logger.Error(msg, zap.Error(err))
+				logger.Error(msg, err)
 				errs = append(errs, errors.Wrap(err, msg))
 				continue
 			}
@@ -266,7 +218,7 @@ func NewPayload(owner *Profile, paths []string) (*Payload, error) {
 			continue
 		} else {
 			err := fmt.Errorf("Invalid Path provided, value is neither File or URL. Path: %s", path)
-			logger.Error(err.Error(), zap.Error(err))
+			logger.Error(err.Error(), err)
 			errs = append(errs, err)
 			continue
 		}
@@ -285,7 +237,7 @@ func NewPayload(owner *Profile, paths []string) (*Payload, error) {
 	// Check if there are any errors
 	if len(errs) > 0 {
 		err := WrapErrors(fmt.Sprintf("⚠️ Payload created with %v Errors: \n", len(errs)), errs)
-		logger.Error(err.Error(), zap.Error(err))
+		logger.Error(err.Error(), err)
 		return payload, err
 	}
 	return payload, nil
@@ -316,9 +268,10 @@ func (p *Payload) IsMultiple() (bool, error) {
 }
 
 // MapItems performs method chaining on the Items in the Payload
-func (p *Payload) MapItems(fn func(item *Payload_Item) error) error {
-	for _, item := range p.GetItems() {
-		if err := fn(item); err != nil {
+func (p *Payload) MapItems(fn PayloadItemFunc) error {
+	count := len(p.GetItems())
+	for i, item := range p.GetItems() {
+		if err := fn(item, i, count); err != nil {
 			return err
 		}
 	}
@@ -326,7 +279,7 @@ func (p *Payload) MapItems(fn func(item *Payload_Item) error) error {
 }
 
 // MapItems performs method chaining on the Items in the Payload
-func (p *Payload) MapItemsWithIndex(fn func(item *Payload_Item, index int, total int) error) error {
+func (p *Payload) MapItemsWithIndex(fn PayloadItemFunc) error {
 	count := len(p.GetItems())
 	for i, item := range p.GetItems() {
 		if err := fn(item, i, count); err != nil {
@@ -337,10 +290,11 @@ func (p *Payload) MapItemsWithIndex(fn func(item *Payload_Item, index int, total
 }
 
 // MapFileItems performs method chaining on ONLY the FileItems in the Payload
-func (p *Payload) MapFileItems(fn func(item *Payload_Item) error) error {
-	for _, item := range p.GetItems() {
+func (p *Payload) MapFileItems(fn PayloadItemFunc) error {
+	count := len(p.GetItems())
+	for i, item := range p.GetItems() {
 		if item.GetFile() != nil {
-			if err := fn(item); err != nil {
+			if err := fn(item, i, count); err != nil {
 				return err
 			}
 		}
@@ -349,13 +303,29 @@ func (p *Payload) MapFileItems(fn func(item *Payload_Item) error) error {
 }
 
 // MapUrlItems performs method chaining on ONLY the UrlItems in the Payload
-func (p *Payload) MapUrlItems(fn func(item *Payload_Item) error) error {
-	for _, item := range p.GetItems() {
+func (p *Payload) MapUrlItems(fn PayloadItemFunc) error {
+	count := len(p.GetItems())
+	for i, item := range p.GetItems() {
 		if item.GetUrl() != nil {
-			if err := fn(item); err != nil {
+			if err := fn(item, i, count); err != nil {
 				return err
 			}
 		}
 	}
 	return nil
+}
+
+// ReplaceItemsDir iterates over the items in the payload and replaces the
+// directory of the item with the new directory.
+func (p *Payload) ReplaceItemsDir(dir string) (*Payload, error) {
+	// Create new Payload
+	for _, item := range p.GetItems() {
+		if item.GetFile() != nil {
+			err := item.GetFile().ReplaceDir(dir)
+			if err != nil {
+				return nil, logger.Error("Failed to replace path for Item", err)
+			}
+		}
+	}
+	return p, nil
 }

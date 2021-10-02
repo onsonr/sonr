@@ -24,12 +24,14 @@ type NodeServiceClient interface {
 	Supply(ctx context.Context, in *SupplyRequest, opts ...grpc.CallOption) (*SupplyResponse, error)
 	// Verification Method Request for Signed Data
 	Edit(ctx context.Context, in *EditRequest, opts ...grpc.CallOption) (*EditResponse, error)
+	// Fetch method finds data from Key/Value store
+	Fetch(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*FetchResponse, error)
 	// Respond Method to an Invite with Decision
 	Share(ctx context.Context, in *ShareRequest, opts ...grpc.CallOption) (*ShareResponse, error)
 	// Respond Method to an Invite with Decision
 	Respond(ctx context.Context, in *RespondRequest, opts ...grpc.CallOption) (*RespondResponse, error)
-	// Find Method to find a Peer by SName or PeerID
-	Find(ctx context.Context, in *FindRequest, opts ...grpc.CallOption) (*FindResponse, error)
+	// Search Method to find a Peer by SName or PeerID
+	Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error)
 	// Stat Method returns the Node Stats
 	Stat(ctx context.Context, in *StatRequest, opts ...grpc.CallOption) (*StatResponse, error)
 	// Events Streams
@@ -75,6 +77,15 @@ func (c *nodeServiceClient) Edit(ctx context.Context, in *EditRequest, opts ...g
 	return out, nil
 }
 
+func (c *nodeServiceClient) Fetch(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*FetchResponse, error) {
+	out := new(FetchResponse)
+	err := c.cc.Invoke(ctx, "/sonr.node.NodeService/Fetch", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *nodeServiceClient) Share(ctx context.Context, in *ShareRequest, opts ...grpc.CallOption) (*ShareResponse, error) {
 	out := new(ShareResponse)
 	err := c.cc.Invoke(ctx, "/sonr.node.NodeService/Share", in, out, opts...)
@@ -93,9 +104,9 @@ func (c *nodeServiceClient) Respond(ctx context.Context, in *RespondRequest, opt
 	return out, nil
 }
 
-func (c *nodeServiceClient) Find(ctx context.Context, in *FindRequest, opts ...grpc.CallOption) (*FindResponse, error) {
-	out := new(FindResponse)
-	err := c.cc.Invoke(ctx, "/sonr.node.NodeService/Find", in, out, opts...)
+func (c *nodeServiceClient) Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error) {
+	out := new(SearchResponse)
+	err := c.cc.Invoke(ctx, "/sonr.node.NodeService/Search", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -344,12 +355,14 @@ type NodeServiceServer interface {
 	Supply(context.Context, *SupplyRequest) (*SupplyResponse, error)
 	// Verification Method Request for Signed Data
 	Edit(context.Context, *EditRequest) (*EditResponse, error)
+	// Fetch method finds data from Key/Value store
+	Fetch(context.Context, *FetchRequest) (*FetchResponse, error)
 	// Respond Method to an Invite with Decision
 	Share(context.Context, *ShareRequest) (*ShareResponse, error)
 	// Respond Method to an Invite with Decision
 	Respond(context.Context, *RespondRequest) (*RespondResponse, error)
-	// Find Method to find a Peer by SName or PeerID
-	Find(context.Context, *FindRequest) (*FindResponse, error)
+	// Search Method to find a Peer by SName or PeerID
+	Search(context.Context, *SearchRequest) (*SearchResponse, error)
 	// Stat Method returns the Node Stats
 	Stat(context.Context, *StatRequest) (*StatResponse, error)
 	// Events Streams
@@ -380,14 +393,17 @@ func (UnimplementedNodeServiceServer) Supply(context.Context, *SupplyRequest) (*
 func (UnimplementedNodeServiceServer) Edit(context.Context, *EditRequest) (*EditResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Edit not implemented")
 }
+func (UnimplementedNodeServiceServer) Fetch(context.Context, *FetchRequest) (*FetchResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Fetch not implemented")
+}
 func (UnimplementedNodeServiceServer) Share(context.Context, *ShareRequest) (*ShareResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Share not implemented")
 }
 func (UnimplementedNodeServiceServer) Respond(context.Context, *RespondRequest) (*RespondResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Respond not implemented")
 }
-func (UnimplementedNodeServiceServer) Find(context.Context, *FindRequest) (*FindResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Find not implemented")
+func (UnimplementedNodeServiceServer) Search(context.Context, *SearchRequest) (*SearchResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Search not implemented")
 }
 func (UnimplementedNodeServiceServer) Stat(context.Context, *StatRequest) (*StatResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Stat not implemented")
@@ -462,6 +478,24 @@ func _NodeService_Edit_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _NodeService_Fetch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FetchRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NodeServiceServer).Fetch(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sonr.node.NodeService/Fetch",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NodeServiceServer).Fetch(ctx, req.(*FetchRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _NodeService_Share_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ShareRequest)
 	if err := dec(in); err != nil {
@@ -498,20 +532,20 @@ func _NodeService_Respond_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
-func _NodeService_Find_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(FindRequest)
+func _NodeService_Search_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(NodeServiceServer).Find(ctx, in)
+		return srv.(NodeServiceServer).Search(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonr.node.NodeService/Find",
+		FullMethod: "/sonr.node.NodeService/Search",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NodeServiceServer).Find(ctx, req.(*FindRequest))
+		return srv.(NodeServiceServer).Search(ctx, req.(*SearchRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -697,6 +731,10 @@ var NodeService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _NodeService_Edit_Handler,
 		},
 		{
+			MethodName: "Fetch",
+			Handler:    _NodeService_Fetch_Handler,
+		},
+		{
 			MethodName: "Share",
 			Handler:    _NodeService_Share_Handler,
 		},
@@ -705,8 +743,8 @@ var NodeService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _NodeService_Respond_Handler,
 		},
 		{
-			MethodName: "Find",
-			Handler:    _NodeService_Find_Handler,
+			MethodName: "Search",
+			Handler:    _NodeService_Search_Handler,
 		},
 		{
 			MethodName: "Stat",

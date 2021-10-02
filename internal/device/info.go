@@ -1,12 +1,12 @@
 package device
 
 import (
+	"errors"
 	"os"
 	"runtime"
 
 	"github.com/denisbrodbeck/machineid"
 	"github.com/sonr-io/core/tools/logger"
-	"go.uber.org/zap"
 )
 
 // DeviceStat is the device info struct
@@ -49,6 +49,13 @@ func HostName() (string, error) {
 
 // ID returns the device ID.
 func ID() (string, error) {
+	// Check if Mobile
+	if IsMobile() {
+		if deviceID != "" {
+			return deviceID, nil
+		}
+		return "", errors.New("Device ID not set for Mobile.")
+	}
 	return machineid.ID()
 }
 
@@ -93,17 +100,17 @@ func VendorName() string {
 }
 
 // Stat returns the device stat.
-func Stat() *DeviceStat {
+func Stat() (*DeviceStat, error) {
 	// Get Device Id
 	id, err := ID()
 	if err != nil {
-		logger.Error("Failed to get Device ID", zap.Error(err))
+		return nil, logger.Error("Failed to get Device ID", err)
 	}
 
 	// Get HostName
 	hn, err := HostName()
 	if err != nil {
-		logger.Error("Failed to get HostName", zap.Error(err))
+		return nil, logger.Error("Failed to get HostName", err)
 	}
 
 	// Return the device info for Peer
@@ -114,5 +121,5 @@ func Stat() *DeviceStat {
 		Arch:      runtime.GOARCH,
 		IsDesktop: IsDesktop(),
 		IsMobile:  IsMobile(),
-	}
+	}, nil
 }

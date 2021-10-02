@@ -6,13 +6,11 @@ import (
 	"net"
 
 	common "github.com/sonr-io/core/internal/common"
-	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/transfer"
 	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/tools/state"
-	"go.uber.org/zap"
 	grpc "google.golang.org/grpc"
 )
 
@@ -43,8 +41,7 @@ func NewRPCService(ctx context.Context, n *Node) (*NodeRPCService, error) {
 	// Bind RPC Service
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", RPC_SERVER_PORT))
 	if err != nil {
-		logger.Error("Failed to bind to port", zap.Error(err))
-		return nil, err
+		return nil, logger.Error("Failed to bind to port", err)
 	}
 
 	// Create a new gRPC server
@@ -100,7 +97,7 @@ func (n *NodeRPCService) Supply(ctx context.Context, req *SupplyRequest) (*Suppl
 	}, nil
 }
 
-// Edit method edits the node's user profile.
+// Edit method edits the node's properties in the Key/Value Store
 func (n *NodeRPCService) Edit(ctx context.Context, req *EditRequest) (*EditResponse, error) {
 	// Call Internal Edit
 	err := n.Node.Edit(req.GetProfile())
@@ -114,6 +111,24 @@ func (n *NodeRPCService) Edit(ctx context.Context, req *EditRequest) (*EditRespo
 	// Send Response
 	return &EditResponse{
 		Success: true,
+	}, nil
+}
+
+// Fetch method retreives Node properties from Key/Value Store
+func (n *NodeRPCService) Fetch(ctx context.Context, req *FetchRequest) (*FetchResponse, error) {
+	// Call Internal Fetch
+	profile, err := n.Node.store.GetProfile()
+	if err != nil {
+		return &FetchResponse{
+			Success: false,
+			Error:   err.Error(),
+		}, nil
+	}
+
+	// Send Response
+	return &FetchResponse{
+		Success: true,
+		Profile: profile,
 	}, nil
 }
 
@@ -135,18 +150,18 @@ func (n *NodeRPCService) Share(ctx context.Context, req *ShareRequest) (*ShareRe
 }
 
 // Search Method to find a Peer by SName
-func (n *NodeRPCService) Find(ctx context.Context, req *FindRequest) (*FindResponse, error) {
+func (n *NodeRPCService) Search(ctx context.Context, req *SearchRequest) (*SearchResponse, error) {
 	// Call Internal Ping
 	entry, err := n.Node.Query(exchange.NewQueryRequestFromSName(req.GetSName()))
 	if err != nil {
-		return &FindResponse{
+		return &SearchResponse{
 			Success: false,
 			Error:   err.Error(),
 		}, nil
 	}
 
 	// Send Response
-	return &FindResponse{
+	return &SearchResponse{
 		Success: true,
 		Peer:    entry.Peer,
 	}, nil
@@ -171,24 +186,8 @@ func (n *NodeRPCService) Respond(ctx context.Context, req *RespondRequest) (*Res
 
 // Stat method returns the node's stats
 func (n *NodeRPCService) Stat(ctx context.Context, req *StatRequest) (*StatResponse, error) {
-	// Call Internal Stat
-	return &StatResponse{
-		SName:   n.profile.SName,
-		Profile: n.profile,
-		Device: &StatResponse_Device{
-			Id:        device.Stat().Id,
-			Name:      device.Stat().HostName,
-			Os:        device.Stat().Os,
-			Arch:      device.Stat().Arch,
-			IsDesktop: device.Stat().IsDesktop,
-			IsMobile:  device.Stat().IsMobile,
-		},
-		Network: &StatResponse_Network{
-			PublicKey: n.host.Stat().PublicKey,
-			PeerID:    n.host.Stat().PeerID,
-			Multiaddr: n.host.Stat().MultAddr,
-		},
-	}, nil
+	resp, _ := n.Node.Stat()
+	return resp, nil
 }
 
 // HandleEmitter handles the emitter events.
@@ -215,6 +214,20 @@ func (nrc *NodeRPCService) handleEmitter() {
 		// Handle Transfer Completed
 		nrc.Node.On(transfer.Event_COMPLETED, func(e *state.Event) {
 			event := e.Args[0].(*common.CompleteEvent)
+			// Check Direction
+			if event.Direction == common.CompleteEvent_INCOMING {
+				// Add Sender to Recents
+				err := nrc.Node.store.AddRecent(event.GetFrom().GetProfile())
+				if err != nil {
+					logger.Error("Failed to add sender's profile to store.", err)
+				}
+			} else {
+				// Add Receiver to Recents
+				err := nrc.Node.store.AddRecent(event.GetTo().GetProfile())
+				if err != nil {
+					logger.Error("Failed to add receiver's profile to store.", err)
+				}
+			}
 			nrc.completeEvents <- event
 		})
 
@@ -238,7 +251,7 @@ func (nrc *NodeRPCService) serveRPC() {
 	for {
 		// Handle Node Events
 		if err := nrc.grpcServer.Serve(nrc.listener); err != nil {
-			logger.Error("Failed to serve gRPC", zap.Error(err))
+			logger.Error("Failed to serve gRPC", err)
 			return
 		}
 

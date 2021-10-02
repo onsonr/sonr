@@ -5,10 +5,10 @@ option go_package = "github.com/sonr-io/core/internal/common";
 
 // Internet Connection Type
 enum Connection {
-  OFFLINE = 0;  // No Internet Connection
-  WIFI = 1;     // Wifi Connection
+  WIFI = 0;     // Wifi Connection
+  ETHERNET = 1; // Ethernet Connection
   MOBILE = 2;   // Mobile Connection
-  ETHERNET = 3; // Ethernet Connection
+  OFFLINE = 3;  // No Internet Connection
 }
 
 // Environment Type Configuration
@@ -27,6 +27,9 @@ message Location {
 
   // Location Placemark Information - Generated
   Placemark placemark = 3;
+
+  // Last Updated Time
+  int64 lastModified = 4;
 
   // Contains detailed placemark information.
   message Placemark {
@@ -93,11 +96,12 @@ message MIME {
 
 // Basic Info Sent to Peers to Establish Connections
 message Peer {
-  string sName = 1;    // User Sonr Domain
-  Status status = 2;   // Peer Status
-  Device device = 3;   // Peer Device Info
-  Profile profile = 4; // Peers General Information
-  bytes publicKey = 5; // Public Key of the Peer
+  string sName = 1;       // User Sonr Domain
+  Status status = 2;      // Peer Status
+  Device device = 3;      // Peer Device Info
+  Profile profile = 4;    // Peers General Information
+  bytes publicKey = 5;    // Public Key of the Peer
+  int64 lastModified = 6; // Last Modified Timestamp
 
   // Peer Info for Device
   message Device {
@@ -125,6 +129,14 @@ message Profile {
   bytes picture = 4;           // Profile Picture
   string bio = 6;              // User Biography
   repeated Social socials = 7; // Social Media
+  int64 lastModified = 8;      // Last Modified Timestamp
+}
+
+// List of Profiles for Persistent Store
+message ProfileList {
+  repeated Profile profiles = 1; // List of Profiles
+  int64 createdAt = 2;          // Creation Timestamp
+  int64 lastModified = 3;       // Last Modified Timestamp
 }
 
 // Social Media Item Information

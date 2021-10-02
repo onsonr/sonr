@@ -3,24 +3,25 @@ package exchange
 import (
 	"context"
 	"fmt"
+
 	"time"
 
 	psr "github.com/libp2p/go-libp2p-pubsub-router"
-	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/tools/logger"
+	"github.com/sonr-io/core/tools/net"
 	"github.com/sonr-io/core/tools/state"
-	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )
 
 // ExchangeProtocol handles Global Sonr Exchange Protocol
 type ExchangeProtocol struct {
 	*psr.PubsubValueStore
-	ctx     context.Context
-	host    *host.SNRHost  // host
-	emitter *state.Emitter // Handle to signal when done
+	ctx      context.Context
+	host     *host.SNRHost  // host
+	emitter  *state.Emitter // Handle to signal when done
+	resolver net.HDNSResolver
 }
 
 // NewProtocol creates new ExchangeProtocol
@@ -28,7 +29,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) (*E
 	// Create PubSub Value Store
 	r, err := psr.NewPubsubValueStore(ctx, host.Host, host.Pubsub(), ExchangeValidator{}, psr.WithRebroadcastInterval(5*time.Second))
 	if err != nil {
-		return nil, err
+		return nil, logger.Error("Failed to create Exchange PubSubValueStore", err)
 	}
 
 	// Create Exchange Protocol
@@ -36,6 +37,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) (*E
 		ctx:              ctx,
 		host:             host,
 		emitter:          em,
+		resolver:         net.NewHDNSResolver(),
 		PubsubValueStore: r,
 	}
 	return exchProtocol, nil
@@ -45,16 +47,13 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) (*E
 func (p *ExchangeProtocol) Query(q *QueryRequest) (*common.PeerInfo, error) {
 	query, val, err := q.QueryValue()
 	if err != nil {
-		logger.Error("Failed to Query Value", zap.Error(err))
-		return nil, err
+		return nil, logger.Error("Failed to Query Value", err)
 	}
 
 	// Find peer from sName in the store
 	buf, err := p.PubsubValueStore.GetValue(p.ctx, query)
 	if err != nil {
-		msg := fmt.Sprintf("Failed to GET peer (%s) from store, with Query Value: %s", val, query)
-		logger.Error(msg, zap.Error(err))
-		return nil, errors.Wrap(err, msg)
+		return nil, logger.Error(fmt.Sprintf("Failed to GET peer (%s) from store, with Query Value: %s", val, query), err)
 	}
 
 	// Unmarshal Peer from buffer
@@ -67,9 +66,7 @@ func (p *ExchangeProtocol) Query(q *QueryRequest) (*common.PeerInfo, error) {
 	// Get PeerID from Peer
 	info, err := peerData.Info()
 	if err != nil {
-		msg := fmt.Sprintf("Failed to get PeerInfo from Peer: %s", val)
-		logger.Error(msg, zap.Error(err))
-		return nil, errors.Wrap(err, msg)
+		return nil, logger.Error("Failed to get PeerInfo from Peer", err)
 	}
 	return info, nil
 }
@@ -79,23 +76,19 @@ func (p *ExchangeProtocol) Update(peer *common.Peer) error {
 	// Marshal Peer
 	info, err := peer.Info()
 	if err != nil {
-		logger.Error("Failed to get PeerInfo from Peer", zap.Error(err))
-		return err
+		return logger.Error("Failed to get PeerInfo from Peer", err)
 	}
 
 	// Marshal Peer
 	buf, err := proto.Marshal(peer)
 	if err != nil {
-		logger.Error("Failed to Marshal Peer", zap.Error(err))
-		return err
+		return logger.Error("Failed to Marshal Peer", err)
 	}
 
 	// Add Peer to SName Store
 	err = p.PubsubValueStore.PutValue(p.ctx, info.StoreEntryKey, buf)
 	if err != nil {
-		msg := fmt.Sprintf("Failed to Add Peer Object to SName store: %s", peer.GetSName())
-		logger.Error(msg, zap.Error(err))
-		return errors.Wrap(err, msg)
+		return logger.Error("Failed to Put Value in Exchange Store", err)
 	}
 	return nil
 }
