@@ -37,13 +37,21 @@ type ClientNodeStub struct {
 }
 
 // startClientService creates a new Client service stub for the node.
-func (n *Node) startClientService(ctx context.Context, loc *common.Location) (*ClientNodeStub, error) {
+func (n *Node) startClientService(ctx context.Context, loc *common.Location, profile *common.Profile) (*ClientNodeStub, error) {
 	// Initialize Store
 	store, err := store.NewStore(ctx, n.host, n.Emitter)
 	if err != nil {
 		return nil, logger.Error("Failed to initialize store", err)
 	}
 	n.store = store
+
+	if profile != nil {
+		// Set Profile
+		err = n.store.SetProfile(profile)
+		if err != nil {
+			logger.Error("Failed to Set a New Profile", err)
+		}
+	}
 
 	// Set Transfer Protocol
 	n.TransferProtocol = transfer.NewProtocol(ctx, n.host, n.Emitter)

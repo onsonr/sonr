@@ -80,7 +80,7 @@ func NewNode(ctx context.Context, opts ...NodeOption) (*Node, *InitializeRespons
 
 	// Check Config for ClientNode
 	if config.isClient {
-		node.startClientService(ctx, config.GetLocation())
+		node.startClientService(ctx, config.GetLocation(), config.GetProfile())
 	}
 
 	// Check Config for HighwayNode

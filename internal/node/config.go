@@ -74,6 +74,16 @@ func (no nodeOptions) GetLocation() *common.Location {
 	return no.request.GetLocation()
 }
 
+// GetLocation returns the location of the node.
+func (no nodeOptions) GetProfile() *common.Profile {
+	// Check if the request has a location
+	if no.request.Profile == nil {
+		logger.Warn("No Location was set.")
+		return nil
+	}
+	return no.request.GetProfile()
+}
+
 // WithRequest sets the initialize request.
 func WithRequest(req *InitializeRequest) NodeOption {
 	return func(o nodeOptions) nodeOptions {
