@@ -39,6 +39,11 @@ func (s *Store) GetProfile() (*common.Profile, error) {
 
 // SetProfile stores the profile for the user in diskDB
 func (s *Store) SetProfile(profile *common.Profile) error {
+	// Check if profile is nil
+	if profile == nil {
+		return ErrProfileNotProvided
+	}
+
 	// Compare current profile with new profile
 	isNewProfile := false
 	currentProfile, err := s.GetProfile()

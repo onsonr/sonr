@@ -54,7 +54,7 @@ func NewNode(ctx context.Context, opts ...NodeOption) (*Node, *InitializeRespons
 	// Set Node Options
 	config := defaultNodeOptions()
 	for _, opt := range opts {
-		config = opt(config)
+		opt(config)
 	}
 
 	// Get Device KeyChain Account Key
@@ -101,6 +101,7 @@ func NewNode(ctx context.Context, opts ...NodeOption) (*Node, *InitializeRespons
 // Edit method updates Node's profile
 func (n *Node) Edit(p *common.Profile) error {
 	// Set Profile and Fetch User Peer
+	p.LastModified = time.Now().Unix()
 	err := n.store.SetProfile(p)
 	if err != nil {
 		return err

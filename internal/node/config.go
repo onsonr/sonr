@@ -28,7 +28,7 @@ const (
 )
 
 // NodeOption is a function that modifies the node options.
-type NodeOption func(nodeOptions) nodeOptions
+type NodeOption func(nodeOptions)
 
 // nodeOptions is a collection of options for the node.
 type nodeOptions struct {
@@ -66,56 +66,42 @@ func (no nodeOptions) GetConnection() common.Connection {
 
 // GetLocation returns the location of the node.
 func (no nodeOptions) GetLocation() *common.Location {
-	// Check if the request has a location
-	if no.request.Location == nil {
-		logger.Warn("No Location was set.")
-		return nil
-	}
 	return no.request.GetLocation()
 }
 
 // GetLocation returns the location of the node.
 func (no nodeOptions) GetProfile() *common.Profile {
-	// Check if the request has a location
-	if no.request.Profile == nil {
-		logger.Warn("No Location was set.")
-		return nil
-	}
 	return no.request.GetProfile()
 }
 
 // WithRequest sets the initialize request.
 func WithRequest(req *InitializeRequest) NodeOption {
-	return func(o nodeOptions) nodeOptions {
+	return func(o nodeOptions) {
 		o.request = req
-		return o
 	}
 }
 
 // WithClient starts the Client RPC server and sets the node as a client node.
 func WithClient() NodeOption {
-	return func(o nodeOptions) nodeOptions {
+	return func(o nodeOptions) {
 		o.isClient = true
 		o.isHighway = false
-		return o
 	}
 }
 
 // WithHighway starts the Highway RPC server and sets the node as a highway node.
 func WithHighway() NodeOption {
-	return func(o nodeOptions) nodeOptions {
+	return func(o nodeOptions) {
 		o.isHighway = true
 		o.isClient = false
-		return o
 	}
 }
 
 // WithNamebase sets the namebase client and secret api for DomainProtocol
 func WithNamebase(client, secret string) NodeOption {
-	return func(o nodeOptions) nodeOptions {
+	return func(o nodeOptions) {
 		o.namebaseApiClient = client
 		o.namebaseApiSecret = secret
-		return o
 	}
 }
 
@@ -124,9 +110,6 @@ func defaultNodeOptions() nodeOptions {
 	return nodeOptions{
 		isClient:  true,
 		isHighway: false,
-		request: &InitializeRequest{
-			Connection: common.Connection_MOBILE,
-		},
 	}
 }
 

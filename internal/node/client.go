@@ -45,12 +45,10 @@ func (n *Node) startClientService(ctx context.Context, loc *common.Location, pro
 	}
 	n.store = store
 
-	if profile != nil {
-		// Set Profile
-		err = n.store.SetProfile(profile)
-		if err != nil {
-			logger.Error("Failed to Set a New Profile", err)
-		}
+	// Set Profile
+	err = n.store.SetProfile(profile)
+	if err != nil {
+		logger.Error("Failed to Set a New Profile", err)
 	}
 
 	// Set Transfer Protocol

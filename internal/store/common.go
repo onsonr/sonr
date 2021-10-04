@@ -13,6 +13,7 @@ type RecentsHistory map[string]*common.ProfileList
 var (
 	ErrRecentsNotCreated  = errors.New("Recents has not been created yet.")
 	ErrProfileNotCreated  = errors.New("Profile has not been created yet.")
+	ErrProfileNotProvided = errors.New("Profile has not been provided to Store.")
 	ErrProfileIsOlder     = errors.New("Profile is older than the oldest one on disk.")
 	ErrProfileNoTimestamp = errors.New("Profile has no timestamp.")
 )
