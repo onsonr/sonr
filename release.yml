@@ -1,6 +1,7 @@
-project_name: sonr-rpc
+project_name: sonr-core
 builds:
-  - binary: sonr-rpc
+  - binary: sonr-helper
+    dir: cmd/bin
     goos:
       - linux
       - windows
@@ -8,6 +9,15 @@ builds:
     goarch:
       - amd64
       - arm64
+
+  - binary: sonr-highway
+    dir: cmd/highway
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+
 archives:
   - format: binary
 checksum:
