@@ -67,9 +67,8 @@ func (no nodeOptions) GetConnection() common.Connection {
 // GetLocation returns the location of the node.
 func (no nodeOptions) GetLocation() *common.Location {
 	// Check if the request has a location
-	if no.request.Location != nil {
+	if no.request.Location == nil {
 		logger.Warn("No Location was set.")
-		// Return Default
 		return nil
 	}
 	return no.request.GetLocation()
