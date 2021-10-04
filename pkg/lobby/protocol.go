@@ -106,8 +106,7 @@ func (p *LobbyProtocol) HandleEvents() {
 
 			// Check Event and Validate not User
 			if p.isEventExit(event) {
-				// Remove Peer from map
-				delete(p.peers, event.Peer)
+				p.pushRefresh(event.Peer, nil)
 				continue
 			}
 		}
@@ -147,8 +146,14 @@ func (p *LobbyProtocol) HandleMessages() {
 
 // pushRefresh sends a refresh event to the emitter
 func (p *LobbyProtocol) pushRefresh(id peer.ID, peer *common.Peer) {
-	// Add Peer to map
-	p.peers[id] = peer
+	// Check if Peer was provided
+	if peer == nil {
+		// Remove Peer from map
+		delete(p.peers, id)
+	} else {
+		// Add Peer to map
+		p.peers[id] = peer
+	}
 
 	// Create Peer List from map
 	peers := make([]*common.Peer, 0, len(p.peers))

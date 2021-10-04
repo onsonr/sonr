@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"strings"
+	"time"
 
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
@@ -92,7 +93,8 @@ func NewNode(ctx context.Context, opts ...NodeOption) (*Node, *InitializeRespons
 		node.startHighwayService(ctx, cKey, sKey)
 	}
 
-	// Create Initialize Response and Return
+	// Start Background Refresh and Return Response
+	go node.pushAutomaticPings()
 	return node, node.newInitResponse(nil), nil
 }
 
@@ -348,4 +350,22 @@ func (n *Node) Stat() (*StatResponse, error) {
 			IsMobile:  dStat.IsMobile,
 		},
 	}, nil
+}
+
+func (n *Node) pushAutomaticPings() {
+	for {
+		select {
+		case <-time.After(time.Second * 5):
+			p, err := n.Peer()
+			if err != nil {
+				logger.Error("Failed to push Auto Ping", err)
+				continue
+			}
+			n.LobbyProtocol.Update(p)
+			n.ExchangeProtocol.Update(p)
+
+		case <-n.ctx.Done():
+			return
+		}
+	}
 }
