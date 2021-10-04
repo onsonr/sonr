@@ -64,7 +64,7 @@ func NewNode(ctx context.Context, opts ...NodeOption) (*Node, *InitializeRespons
 	}
 
 	// Initialize Host
-	host, err := host.NewHost(ctx, config.GetConnection(), privKey)
+	host, err := host.NewHost(ctx, config.connection, privKey, config.GetIPAddresses()...)
 	if err != nil {
 		return nil, nil, logger.Error("Failed to initialize host", err)
 	}
@@ -80,7 +80,7 @@ func NewNode(ctx context.Context, opts ...NodeOption) (*Node, *InitializeRespons
 
 	// Check Config for ClientNode
 	if config.isClient {
-		node.startClientService(ctx, config.GetLocation(), config.GetProfile())
+		node.startClientService(ctx, config.location, config.profile)
 	}
 
 	// Check Config for HighwayNode

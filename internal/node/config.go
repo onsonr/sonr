@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/sonr-io/core/internal/common"
+	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/tools/logger"
 )
@@ -34,7 +35,10 @@ type NodeOption func(nodeOptions)
 type nodeOptions struct {
 	isClient          bool
 	isHighway         bool
-	request           *InitializeRequest
+	connection        common.Connection
+	hostOpts          *InitializeRequest_HostOptions
+	location          *common.Location
+	profile           *common.Profile
 	namebaseApiClient string
 	namebaseApiSecret string
 }
@@ -59,25 +63,29 @@ func (no nodeOptions) GetNodeType() NodeType {
 	return NodeType_CLIENT
 }
 
-// GetConnection returns the connection type.
-func (no nodeOptions) GetConnection() common.Connection {
-	return no.request.GetConnection()
-}
+// GetIPAddresses returns host.HostListenAddr from hostOpts
+func (no nodeOptions) GetIPAddresses() []host.HostListenAddr {
+	// Define Listen Addresses
+	providedAddrs := no.hostOpts.GetListenAddrs()
+	addrs := make([]host.HostListenAddr, len(providedAddrs))
 
-// GetLocation returns the location of the node.
-func (no nodeOptions) GetLocation() *common.Location {
-	return no.request.GetLocation()
-}
-
-// GetLocation returns the location of the node.
-func (no nodeOptions) GetProfile() *common.Profile {
-	return no.request.GetProfile()
+	// Iterate over provided addresses
+	for i, addr := range providedAddrs {
+		addrs[i] = host.HostListenAddr{
+			Addr:   addr.GetAddress(),
+			Family: addr.GetFamily().String(),
+		}
+	}
+	return addrs
 }
 
 // WithRequest sets the initialize request.
 func WithRequest(req *InitializeRequest) NodeOption {
 	return func(o nodeOptions) {
-		o.request = req
+		o.hostOpts = req.GetHostOptions()
+		o.connection = req.GetConnection()
+		o.location = req.GetLocation()
+		o.profile = req.GetProfile()
 	}
 }
 
