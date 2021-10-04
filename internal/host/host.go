@@ -2,6 +2,8 @@ package host
 
 import (
 	"context"
+	"fmt"
+	"strings"
 	"time"
 
 	"github.com/libp2p/go-libp2p"
@@ -20,6 +22,8 @@ import (
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/keychain"
 	"github.com/sonr-io/core/tools/logger"
+	"github.com/sonr-io/core/tools/net"
+	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -53,15 +57,53 @@ type SNRHost struct {
 	// 	mailbox *local.Mailbox
 }
 
+type HostListenAddr struct {
+	Addr   string
+	Family string
+}
+
+// MultiAddrStr Returns MultiAddr from IP Address
+func (la HostListenAddr) MultiAddrStr(port int) string {
+	if strings.Contains(la.Family, "6") {
+		return fmt.Sprintf("/ip6/%s/tcp/%d", la.Addr, port)
+	}
+	return fmt.Sprintf("/ip4/%s/tcp/%d", la.Addr, port)
+}
+
 // NewHost creates a new host
-func NewHost(ctx context.Context, conn common.Connection, privKey crypto.PrivKey) (*SNRHost, error) {
+func NewHost(ctx context.Context, conn common.Connection, privKey crypto.PrivKey, listenAddrs ...HostListenAddr) (*SNRHost, error) {
 	// Initialize DHT
 	var kdhtRef *dht.IpfsDHT
+	var listenAddresses []string
+
+	// Add Listen Addresses
+	if len(listenAddrs) > 0 {
+		// Set Initial Port
+		port, err := net.FreePort()
+		if err != nil {
+			logger.Warn("Failed to get free port", zap.Error(err))
+			port = 600214
+		}
+
+		// Build MultAddr Address Strings
+		for _, addr := range listenAddrs {
+			listenAddresses = append(listenAddresses, addr.MultiAddrStr(port))
+		}
+	} else {
+		addrs, err := net.PublicAddrStrs()
+		if err != nil {
+			logger.Warn("Failed to get public addresses", zap.Error(err))
+			listenAddresses = []string{}
+		} else {
+			listenAddresses = addrs
+		}
+	}
 
 	// Start Host
 	h, err := libp2p.New(
 		ctx,
 		libp2p.Identity(privKey),
+		libp2p.ListenAddrStrings(listenAddresses...),
 		libp2p.DefaultTransports,
 		libp2p.ConnectionManager(connmgr.NewConnManager(
 			25,            // Lowwater
@@ -80,6 +122,7 @@ func NewHost(ctx context.Context, conn common.Connection, privKey crypto.PrivKey
 			kdhtRef = kdht
 			return kdht, nil
 		}),
+		libp2p.NATPortMap(),
 		libp2p.EnableAutoRelay(),
 	)
 	if err != nil {

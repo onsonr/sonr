@@ -60,10 +60,9 @@ message InitializeRequest {
   // IP Address Interface
   message IPAddress {
     string name = 1;   // Name of Interface
-    string value = 2;  // IP Address of Interface
-    string mac = 3;    // Mac Address of Interface
-    bool internal = 4; // Wether it is a Loopback Interface
-    Family family = 5; // Address Family
+    string address = 2;  // IP Address of Interface
+    bool internal = 3; // Wether it is a Loopback Interface
+    Family family = 4; // Address Family
 
     enum Family {
       IPV4 = 0; // IPv4 Address
