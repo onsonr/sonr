@@ -1,0 +1,117 @@
+{
+  "folders": [
+    {
+      "path": ".."
+    }
+  ],
+  "settings": {
+    "better-comments.tags": [
+      {
+        "tag": "^",
+        "color": "#c982ff",
+        "strikethrough": false,
+        "underline": true,
+        "backgroundColor": "transparent",
+        "bold": true,
+        "italic": false
+      },
+      {
+        "tag": "/ ####",
+        "color": "#98C379",
+        "strikethrough": false,
+        "underline": true,
+        "backgroundColor": "transparent",
+        "bold": false,
+        "italic": true
+      },
+      {
+        "tag": "/ ###",
+        "color": "#3498DB",
+        "strikethrough": false,
+        "underline": false,
+        "backgroundColor": "transparent",
+        "bold": true,
+        "italic": true
+      },
+      {
+        "tag": "/ ##",
+        "color": "#c982ff",
+        "strikethrough": false,
+        "underline": true,
+        "backgroundColor": "transparent",
+        "bold": true,
+        "italic": false
+      },
+      {
+        "tag": " ####",
+        "color": "#98C379",
+        "strikethrough": false,
+        "underline": true,
+        "backgroundColor": "transparent",
+        "bold": false,
+        "italic": true
+      },
+      {
+        "tag": " ###",
+        "color": "#3498DB",
+        "strikethrough": false,
+        "underline": false,
+        "backgroundColor": "transparent",
+        "bold": true,
+        "italic": true
+      },
+      {
+        "tag": " ##",
+        "color": "#c982ff",
+        "strikethrough": false,
+        "underline": true,
+        "backgroundColor": "transparent",
+        "bold": true,
+        "italic": false
+      },
+      {
+        "tag": "todo",
+        "color": "#FF8C00",
+        "strikethrough": false,
+        "underline": false,
+        "backgroundColor": "#FFEEEE",
+        "bold": false,
+        "italic": false
+      }
+    ],
+    "go.languageServerFlags": ["-rpc.trace", "serve", "--debug=localhost:6060"],
+    "go.useLanguageServer": true,
+    "material-icon-theme.opacity": 0.75,
+    "material-icon-theme.saturation": 0.75,
+    "material-icon-theme.files.associations": {
+      "*.proto": "xml"
+    },
+    "material-icon-theme.folders.associations": {
+      "Grida": "interface",
+      "bind": "dist",
+      "cli": "dist",
+      "rpc": "dist",
+      "internal": "core",
+      "CD": "pipe",
+      "pkg": "src",
+      "cmd": "hook",
+      "proto": "json",
+      "common": "",
+      "service": "",
+      "config": "",
+      "workflows": "serverless",
+      "electron": "examples",
+      "flutter": "examples",
+      "highway": "project",
+      "util": ""
+    },
+    "github.codespaces.defaultExtensions": [
+      "GitHub.codespaces",
+      "GitHub.vscode-pull-request-github"
+    ],
+    "github-actions.workflows.pinned.workflows": [
+      ".github/workflows/cd.yml",
+      ".github/workflows/ci.yml"
+    ]
+  }
+}

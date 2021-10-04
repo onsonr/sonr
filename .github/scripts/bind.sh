@@ -161,10 +161,10 @@ elif [ $platform == ios ]; then
     echo ""
     echo "----------------- (xcframework: Build Output) -------------------"
     if [ $output == plugin ]; then
-        gtime -q --format=%E gomobile bind -ldflags='-s -w' -v -target=ios/arm64 -bundleid=io.sonr.core -o ${PLUGIN_IOS}/${IOS_ARTIFACT}
+        gtime -q --format=%E gomobile bind -ldflags='-s -w' -v -target=ios -bundleid=io.sonr.core -o ${PLUGIN_IOS}/${IOS_ARTIFACT}
         exit_success
     elif [ $output == build ]; then
-        gtime -q --format=%E gomobile bind -ldflags='-s -w' -v -target=ios/arm64 -bundleid=io.sonr.core -o ${BUILD_DIR}/${IOS_ARTIFACT}
+        gtime -q --format=%E gomobile bind -ldflags='-s -w' -v -target=ios -bundleid=io.sonr.core -o ${BUILD_DIR}/${IOS_ARTIFACT}
         exit_success
     else
         exit_abnormal
