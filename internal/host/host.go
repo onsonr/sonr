@@ -151,11 +151,10 @@ func NewHost(ctx context.Context, conn common.Connection, privKey crypto.PrivKey
 
 	// Check for Wifi/Ethernet for MDNS
 	if conn == common.Connection_WIFI || conn == common.Connection_ETHERNET {
-		// err = hn.MDNS()
-		// if err != nil {
-		// 	return nil, logger.Error("Failed to start MDNS Discovery", err)
-		// }
-		logger.Debug("MDNS Discovery Disabled: Temp")
+		err = hn.MDNS()
+		if err != nil {
+			return nil, logger.Error("Failed to start MDNS Discovery", err)
+		}
 	}
 	return hn, nil
 }

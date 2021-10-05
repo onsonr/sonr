@@ -131,29 +131,20 @@ func (n *Node) newInitResponse(err error) *InitializeResponse {
 		}
 	}
 
-	// Fetch Profile
-	p, err := n.Profile()
-	if err != nil {
-		return &InitializeResponse{
-			Success: true,
-			Error:   err.Error(),
-		}
-	}
-
 	// Fetch Recents
 	r, err := n.Recents()
 	if err != nil {
 		return &InitializeResponse{
 			Success: true,
 			Error:   err.Error(),
-			Profile: p,
+			Profile: n.profile,
 		}
 	}
 
 	// Return Response
 	return &InitializeResponse{
 		Success: true,
-		Profile: p,
+		Profile: n.profile,
 		Recents: r,
 	}
 }

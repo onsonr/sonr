@@ -85,7 +85,28 @@ func NewNode(ctx context.Context, opts ...NodeOption) (*Node, *InitializeRespons
 
 	// Check Config for ClientNode
 	if config.isClient {
-		node.startClientService(ctx, config.location, config.profile)
+		// Set Transfer Protocol
+		node.TransferProtocol = transfer.NewProtocol(ctx, node.host, node.Emitter)
+
+		// Set Exchange Protocol
+		exch, err := exchange.NewProtocol(ctx, node.host, node.Emitter)
+		if err != nil {
+			logger.Error("Failed to start ExchangeProtocol", err)
+		} else {
+			node.ExchangeProtocol = exch
+		}
+
+		// Set Local Lobby Protocol if Location is provided
+		lobby, err := lobby.NewProtocol(node.host, config.location, node.Emitter)
+		if err != nil {
+			logger.Error("Failed to start LobbyProtocol", err)
+		} else {
+			node.LobbyProtocol = lobby
+		}
+
+		// Initialze client lite node
+		node.startClientService(ctx)
+		return node, node.newInitResponse(nil), nil
 	}
 
 	// Check Config for HighwayNode
@@ -96,6 +117,7 @@ func NewNode(ctx context.Context, opts ...NodeOption) (*Node, *InitializeRespons
 			return nil, nil, logger.Error("Failed to start Highway Service", err)
 		}
 		node.startHighwayService(ctx, cKey, sKey)
+		return node, node.newInitResponse(nil), nil
 	}
 	return node, node.newInitResponse(nil), nil
 }
@@ -150,17 +172,11 @@ func (n *Node) Peer() (*common.Peer, error) {
 		return nil, logger.Error("Failed to marshal public key", err)
 	}
 
-	// Get Profile
-	profile, err := n.Profile()
-	if err != nil {
-		return nil, err
-	}
-
 	// Return Peer
 	return &common.Peer{
-		SName:     strings.ToLower(profile.SName),
+		SName:     strings.ToLower(n.profile.SName),
 		Status:    common.Peer_ONLINE,
-		Profile:   profile,
+		Profile:   n.profile,
 		PublicKey: pubBuf,
 		Device: &common.Peer_Device{
 			HostName: deviceStat.HostName,
@@ -171,17 +187,17 @@ func (n *Node) Peer() (*common.Peer, error) {
 	}, nil
 }
 
-// Profile method returns the profile of the node
-func (n *Node) Profile() (*common.Profile, error) {
-	// Get Profile from Store
-	pro, err := n.store.GetProfile()
-	if err != nil {
-		return nil, logger.Error("Failed to get profile, from Store. Using provided record.", err)
-	}
+// // Profile method returns the profile of the node
+// func (n *Node) Profile() (*common.Profile, error) {
+// 	// Get Profile from Store
+// 	pro, err := n.store.GetProfile()
+// 	if err != nil {
+// 		return nil, logger.Error("Failed to get profile, from Store. Using provided record.", err)
+// 	}
 
-	// Warn if no profile found
-	return pro, nil
-}
+// 	// Warn if no profile found
+// 	return pro, nil
+// }
 
 // Recents method returns the recent peers of the node
 func (n *Node) Recents() (store.RecentsHistory, error) {
@@ -195,13 +211,13 @@ func (n *Node) Recents() (store.RecentsHistory, error) {
 // Supply a transfer item to the queue
 func (n *Node) Supply(paths []string) error {
 	// Get Profile
-	profile, err := n.store.GetProfile()
-	if err != nil {
-		return err
-	}
+	// profile, err := n.store.GetProfile()
+	// if err != nil {
+	// 	return err
+	// }
 
 	// Create Transfer
-	payload, err := common.NewPayload(profile, paths)
+	payload, err := common.NewPayload(n.profile, paths)
 	if err != nil {
 		return logger.Error("Failed to Supply Paths", err)
 	}
@@ -303,14 +319,14 @@ func (n *Node) Respond(decs bool, to *common.Peer) error {
 
 // Stat returns the Node info as StatResponse
 func (n *Node) Stat() (*StatResponse, error) {
-	// Get Profile
-	profile, err := n.store.GetProfile()
-	if err != nil {
-		return &StatResponse{
-			Success: false,
-			Error:   err.Error(),
-		}, err
-	}
+	// // Get Profile
+	// profile, err := n.store.GetProfile()
+	// if err != nil {
+	// 	return &StatResponse{
+	// 		Success: false,
+	// 		Error:   err.Error(),
+	// 	}, err
+	// }
 
 	// Get Host Stats
 	hStat, err := n.host.Stat()
@@ -318,8 +334,8 @@ func (n *Node) Stat() (*StatResponse, error) {
 		return &StatResponse{
 			Success: false,
 			Error:   err.Error(),
-			SName:   profile.SName,
-			Profile: profile,
+			SName:   n.profile.SName,
+			Profile: n.profile,
 		}, logger.Error("Failed to get Host Stat", err)
 	}
 
@@ -329,8 +345,8 @@ func (n *Node) Stat() (*StatResponse, error) {
 		return &StatResponse{
 			Success: false,
 			Error:   err.Error(),
-			SName:   profile.SName,
-			Profile: profile,
+			SName:   n.profile.SName,
+			Profile: n.profile,
 			Network: &StatResponse_Network{
 				PublicKey: hStat.PublicKey,
 				PeerID:    hStat.PeerID,
@@ -341,8 +357,8 @@ func (n *Node) Stat() (*StatResponse, error) {
 
 	// Return StatResponse
 	return &StatResponse{
-		SName:   profile.SName,
-		Profile: profile,
+		SName:   n.profile.SName,
+		Profile: n.profile,
 		Network: &StatResponse_Network{
 			PublicKey: hStat.PublicKey,
 			PeerID:    hStat.PeerID,

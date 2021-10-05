@@ -36,38 +36,17 @@ type ClientNodeStub struct {
 }
 
 // startClientService creates a new Client service stub for the node.
-func (nd *Node) startClientService(ctx context.Context, loc *common.Location, profile *common.Profile) (*ClientNodeStub, error) {
-	// Set Transfer Protocol
-	nd.TransferProtocol = transfer.NewProtocol(ctx, nd.host, nd.Emitter)
-
-	// Set Exchange Protocol
-	exch, err := exchange.NewProtocol(ctx, nd.host, nd.Emitter)
-	if err != nil {
-		logger.Error("Failed to start ExchangeProtocol", err)
-	} else {
-		nd.ExchangeProtocol = exch
-	}
-
-	// Set Local Lobby Protocol if Location is provided
-	if loc != nil {
-		lobby, err := lobby.NewProtocol(nd.host, loc, nd.Emitter)
-		if err != nil {
-			logger.Error("Failed to start LobbyProtocol", err)
-		} else {
-			nd.LobbyProtocol = lobby
-		}
-	}
-
-	// Start Node Store
-	go func(node *Node) {
-		// // Initialize Store
-		// store, err := store.NewStore(ctx, node.host, node.Emitter)
-		// if err != nil {
-		// 	logger.Error("Failed to initialize store", err)
-		// } else {
-		// 	node.store = store
-		// }
-	}(nd)
+func (nd *Node) startClientService(ctx context.Context) (*ClientNodeStub, error) {
+	// // Start Node Store
+	// go func(node *Node) {
+	// 	// // Initialize Store
+	// 	// store, err := store.NewStore(ctx, node.host, node.Emitter)
+	// 	// if err != nil {
+	// 	// 	logger.Error("Failed to initialize store", err)
+	// 	// } else {
+	// 	// 	node.store = store
+	// 	// }
+	// }(nd)
 
 	// Bind RPC Service
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", RPC_SERVER_PORT))
@@ -148,18 +127,18 @@ func (n *ClientNodeStub) Edit(ctx context.Context, req *EditRequest) (*EditRespo
 // Fetch method retreives Node properties from Key/Value Store
 func (n *ClientNodeStub) Fetch(ctx context.Context, req *FetchRequest) (*FetchResponse, error) {
 	// Call Internal Fetch
-	profile, err := n.Node.store.GetProfile()
-	if err != nil {
-		return &FetchResponse{
-			Success: false,
-			Error:   err.Error(),
-		}, nil
-	}
+	// profile, err := n.Node.store.GetProfile()
+	// if err != nil {
+	// 	return &FetchResponse{
+	// 		Success: false,
+	// 		Error:   err.Error(),
+	// 	}, nil
+	// }
 
 	// Send Response
 	return &FetchResponse{
 		Success: true,
-		Profile: profile,
+		Profile: n.profile,
 	}, nil
 }
 
