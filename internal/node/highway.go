@@ -24,9 +24,9 @@ type HighwayNodeStub struct {
 }
 
 // startClientService creates a new Client service stub for the node.
-func (n *Node) startHighwayService(ctx context.Context, clientKey string, clientSecret string) (*HighwayNodeStub, error) {
+func (n *Node) startHighwayService(ctx context.Context) (*HighwayNodeStub, error) {
 	// Initialize Domain Protocol
-	domainProtocol, err := domain.NewProtocol(ctx, n.host, clientKey, clientSecret)
+	domainProtocol, err := domain.NewProtocol(ctx, n.host)
 	if err != nil {
 		return nil, err
 	}

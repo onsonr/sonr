@@ -8,4 +8,5 @@ option go_package = "github.com/sonr-io/core/pkg/lobby";
 message LobbyMessage {
   sonr.core.Peer peer = 1;     // Users Peer Data
   optional string message = 2; // Message to be published
+  sonr.core.Metadata metadata = 3; // Metadata
 }

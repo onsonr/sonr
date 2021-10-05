@@ -20,11 +20,18 @@ type DomainProtocol struct {
 }
 
 // NewProtocol creates a new DomainProtocol to be used by HighwayNode
-func NewProtocol(ctx context.Context, host *host.SNRHost, apiKey string, apiSecret string) (*DomainProtocol, error) {
+func NewProtocol(ctx context.Context, host *host.SNRHost) (*DomainProtocol, error) {
+	// Fetch Keys
+	key, secret, err := fetchApiKeys()
+	if err != nil {
+		return nil, logger.Error("Failed to create namebase client", err)
+	}
+
+	// Create Namebase Client Protocol
 	return &DomainProtocol{
 		ctx:            ctx,
 		host:           host,
-		namebaseClient: net.NewNamebaseClient(ctx, apiKey, apiSecret),
+		namebaseClient: net.NewNamebaseClient(ctx, key, secret),
 	}, nil
 }
 

@@ -42,13 +42,13 @@ func (h *SNRHost) Bootstrap() error {
 	}
 
 	// Bootstrap DHT
-	if err := h.kdht.Bootstrap(h.ctxHost); err != nil {
+	if err := h.kdht.Bootstrap(h.ctx); err != nil {
 		return logger.Error("Failed to Bootstrap KDHT to Host", err)
 	}
 
 	// Connect to bootstrap nodes, if any
 	for _, pi := range bootstrappers {
-		if err := h.Connect(h.ctxHost, pi); err != nil {
+		if err := h.Connect(h.ctx, pi); err != nil {
 			continue
 		} else {
 			break
@@ -57,11 +57,11 @@ func (h *SNRHost) Bootstrap() error {
 
 	// Set Routing Discovery, Find Peers
 	routingDiscovery := dsc.NewRoutingDiscovery(h.kdht)
-	dsc.Advertise(h.ctxHost, routingDiscovery, HOST_RENDEVOUZ_POINT, dscl.TTL(REFRESH_INTERVAL))
+	dsc.Advertise(h.ctx, routingDiscovery, HOST_RENDEVOUZ_POINT, dscl.TTL(REFRESH_INTERVAL))
 	h.disc = routingDiscovery
 
 	// Handle DHT Peers
-	peersChan, err := routingDiscovery.FindPeers(h.ctxHost, HOST_RENDEVOUZ_POINT, dscl.TTL(REFRESH_INTERVAL))
+	peersChan, err := routingDiscovery.FindPeers(h.ctx, HOST_RENDEVOUZ_POINT, dscl.TTL(REFRESH_INTERVAL))
 	if err != nil {
 		return logger.Error("Failed to create FindPeers Discovery channel", err)
 	}
@@ -72,7 +72,7 @@ func (h *SNRHost) Bootstrap() error {
 // MDNS Method Begins MDNS Discovery
 func (h *SNRHost) MDNS() error {
 	// Create MDNS Service
-	ser, err := discovery.NewMdnsService(h.ctxHost, h.Host, REFRESH_INTERVAL, HOST_RENDEVOUZ_POINT)
+	ser, err := discovery.NewMdnsService(h.ctx, h.Host, REFRESH_INTERVAL, HOST_RENDEVOUZ_POINT)
 	if err != nil {
 		return err
 	}
@@ -96,12 +96,12 @@ func (h *SNRHost) handleDiscoveredPeers(peerChan <-chan peer.AddrInfo) {
 			// Validate not Self
 			if h.checkUnknown(pi) {
 				// Connect to Peer
-				if err := h.Connect(h.ctxHost, pi); err != nil {
+				if err := h.Connect(h.ctx, pi); err != nil {
 					h.Peerstore().ClearAddrs(pi.ID)
 					continue
 				}
 			}
-		case <-h.ctxHost.Done():
+		case <-h.ctx.Done():
 			return
 		}
 	}

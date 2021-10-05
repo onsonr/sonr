@@ -12,6 +12,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/tools/config"
 	"github.com/sonr-io/core/tools/logger"
+	"github.com/textileio/go-threads/core/thread"
 )
 
 // Keychain Interface for managing device keypairs.
@@ -49,6 +50,9 @@ type Keychain interface {
 	// SignHmacWith returns a signature for a message with specified pair using HMAC(256)
 	// returning: signature, error
 	SignHmacWith(kp KeyPairType, msg string) (string, error)
+
+	// ThreadIdentity returns Textile thread identity from Account key
+	ThreadIdentity() (thread.Identity, error)
 
 	// VerifyWith verifies a signature with specified pair
 	VerifyWith(kp KeyPairType, msg []byte, sig []byte) (bool, error)
@@ -377,6 +381,18 @@ func (kc *keychain) SignHmacWith(kp KeyPairType, msg string) (string, error) {
 		return base64.StdEncoding.EncodeToString(h.Sum(nil)), nil
 	}
 	return "", logger.Error("Failed to Sign Data", ErrKeychainUnready)
+}
+
+// ThreadIdentity returns the thread identity of the Node
+func (kc *keychain) ThreadIdentity() (thread.Identity, error) {
+	if kc.Exists(Account) {
+		priv, err := kc.GetPrivKey(Account)
+		if err != nil {
+			return nil, logger.Error("Failed to Get Account Private Key", err)
+		}
+		return thread.NewLibp2pIdentity(priv), nil
+	}
+	return nil, logger.Error("Failed to get Thread Identity", ErrKeychainUnready)
 }
 
 // VerifyWith verifies a signature with specified pair

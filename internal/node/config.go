@@ -2,11 +2,13 @@ package node
 
 import (
 	"errors"
+	"os"
 
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/tools/logger"
+	"go.uber.org/zap"
 )
 
 // Error Definitions
@@ -38,20 +40,7 @@ type nodeOptions struct {
 	connection        common.Connection
 	hostOpts          *InitializeRequest_HostOptions
 	location          *common.Location
-	namebaseApiClient string
-	namebaseApiSecret string
-}
-
-// GetNBKeys returns the namebase client,secret key
-func (no nodeOptions) GetNBKeys() (string, string, error) {
-	if no.namebaseApiClient == "" {
-		return "", "", ErrNBClientMissing
-	}
-
-	if no.namebaseApiSecret == "" {
-		return "", "", ErrNBSecretMissing
-	}
-	return no.namebaseApiClient, no.namebaseApiSecret, nil
+	profile           *common.Profile
 }
 
 // GetNodeType returns the node type from Config
@@ -84,6 +73,7 @@ func WithRequest(req *InitializeRequest) NodeOption {
 		o.hostOpts = req.GetHostOptions()
 		o.connection = req.GetConnection()
 		o.location = req.GetLocation()
+		o.profile = req.GetProfile()
 	}
 }
 
@@ -95,19 +85,24 @@ func WithClient() NodeOption {
 	}
 }
 
+// WithClient starts the Client RPC server and sets the node as a client node.
+func WithEnvMap(vars map[string]string) NodeOption {
+	return func(o nodeOptions) {
+		for k, v := range vars {
+			os.Setenv(k, v)
+		}
+
+		if len(vars) > 0 {
+			logger.Info("Added Enviornment Variable(s)", zap.Int("Total", len(vars)))
+		}
+	}
+}
+
 // WithHighway starts the Highway RPC server and sets the node as a highway node.
 func WithHighway() NodeOption {
 	return func(o nodeOptions) {
 		o.isHighway = true
 		o.isClient = false
-	}
-}
-
-// WithNamebase sets the namebase client and secret api for DomainProtocol
-func WithNamebase(client, secret string) NodeOption {
-	return func(o nodeOptions) {
-		o.namebaseApiClient = client
-		o.namebaseApiSecret = secret
 	}
 }
 

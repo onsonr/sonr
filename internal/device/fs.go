@@ -55,44 +55,13 @@ var (
 	deviceID string
 )
 
-// DirType is the type of a directory.
-type DirType int
-
-const (
-	// Support is the type for a support directory.
-	Support DirType = iota
-
-	// Temporary is the type for a temporary directory.
-	Temporary
-
-	// Documents is the type for Documents folder.
-	Documents
-
-	// Downloads is the type for Downloads folder.
-	Downloads
-
-	// Database is the type for Database folder.
-	Database
-
-	// Mailbox is the type for Mailbox folder.
-	Mailbox
-)
-
 // Init initializes the keychain and returns a Keychain.
 func Init(isDev bool, opts ...FSOption) error {
 	// Initialize logger
 	logger.Init(isDev)
 
-	// Set Variables from OS
-	// HANDSHAKE_KEY.Set(os.Getenv("HANDSHAKE_KEY"))
-	// HANDSHAKE_SECRET.Set(os.Getenv("HANDSHAKE_SECRET"))
-	// IP_LOCATION_KEY.Set(os.Getenv("IP_LOCATION_KEY"))
-	// RAPID_API_KEY.Set(os.Getenv("RAPID_API_KEY"))
-	// TEXTILE_HUB_KEY.Set(os.Getenv("TEXTILE_HUB_KEY"))
-	// TEXTILE_HUB_SECRET.Set(os.Getenv("TEXTILE_HUB_SECRET"))
-
 	// Check if Opts are set
-	if len(opts) == 0 { 
+	if len(opts) == 0 {
 		// Create Device Config
 		configDirs := config.New(VendorName(), AppName())
 

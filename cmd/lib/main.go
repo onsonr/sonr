@@ -23,20 +23,20 @@ func Start(reqBytes []byte) []byte {
 	// Unmarshal request
 	isDev, req, fsOpts, err := parseInitializeRequest(reqBytes)
 	if err != nil {
-		panic(logger.Error("Failed to Parse Initialize Request", err))
+		logger.Panic("Failed to Parse Initialize Request", err)
 	}
 
 	// Initialize Device
 	ctx := context.Background()
 	err = device.Init(isDev, fsOpts...)
 	if err != nil {
-		panic(logger.Error("Failed to initialize Device", err))
+		logger.Panic("Failed to initialize Device", err)
 	}
 
 	// Create Node
-	n, resp, err := node.NewNode(ctx, req.GetProfile(), node.WithRequest(req), node.WithClient())
+	n, resp, err := node.NewNode(ctx, node.WithRequest(req), node.WithClient(), node.WithEnvMap(req.GetVariables()))
 	if err != nil {
-		panic(logger.Error("Failed to update Profile for Node", err))
+		logger.Panic("Failed to update Profile for Node", err)
 	}
 
 	// Set Lib
@@ -48,7 +48,7 @@ func Start(reqBytes []byte) []byte {
 	// Marshal Response
 	buf, err := proto.Marshal(resp)
 	if err != nil {
-		logger.Error("Failed to Marshal InitializeResponse", err)
+		logger.Warn("Failed to Marshal InitializeResponse", err)
 	}
 	return buf
 }

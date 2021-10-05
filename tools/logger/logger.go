@@ -14,7 +14,7 @@ func Init(isDevelopment bool) {
 
 	// Create the logger
 	if isDev {
-		log, _ = zap.NewDevelopment(zap.AddCaller(), zap.AddStacktrace(zap.ErrorLevel))
+		log, _ = zap.NewDevelopment(zap.AddCallerSkip(2), zap.AddStacktrace(zap.ErrorLevel))
 	} else {
 		log, _ = zap.NewProduction()
 	}
@@ -29,14 +29,19 @@ func Debug(msg string, fields ...zapcore.Field) {
 // Error logs a message at ErrorLevel. The message includes any fields passed at the log site,
 // as well as any fields accumulated on the logger.
 func Error(msg string, err error) error {
-	log.Error(msg, zap.Error(err))
+	sugared := log.Sugar()
+	sugared.Errorf("%s: %s", msg, err)
+	sugared.Sync()
 	return err
 }
 
 // Fatal logs a message at FatalLevel. The message includes any fields passed at the log site, as well as any fields accumulated on the logger.
 // The logger then calls os.Exit(1), even if logging at FatalLevel is disabled.
-func Fatal(msg string, fields ...zapcore.Field) {
-	log.Fatal(msg, fields...)
+func Fatal(msg string, err error) error {
+	sugared := log.Sugar()
+	sugared.Fatalf("%s: %s", msg, err)
+	sugared.Sync()
+	return err
 }
 
 // Info logs a message at InfoLevel. The message includes any fields passed at the log site,
@@ -47,18 +52,24 @@ func Info(msg string, fields ...zapcore.Field) {
 
 // Panic logs a message at PanicLevel. The message includes any fields passed at the log site,
 // as well as any fields accumulated on the logger.
-func Panic(msg string, fields ...zapcore.Field) {
+func Panic(msg string, err error) error {
+	sugared := log.Sugar()
 	if isDev {
-		log.DPanic(msg, fields...)
+		sugared.DPanicf("%s: %s", msg, err)
 	} else {
-		log.Panic(msg, fields...)
+		sugared.Panicf("%s: %s", msg, err)
 	}
+	sugared.Sync()
+	return err
 }
 
 // Warn logs a message at WarnLevel. The message includes any fields passed at the log site,
 // as well as any fields accumulated on the logger.
-func Warn(msg string, fields ...zapcore.Field) {
-	log.Warn(msg, fields...)
+func Warn(msg string, err error) error {
+	sugared := log.Sugar()
+	sugared.Warn("%s: %s", msg, err)
+	sugared.Sync()
+	return err
 }
 
 // Close calls the underlying Core's Sync method, flushing any buffered log entries. Applications

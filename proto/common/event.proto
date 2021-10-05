@@ -26,6 +26,15 @@ message InviteEvent {
   sonr.core.Payload payload = 3; // Attached Data
 }
 
+// Received Mail Event
+message MailEvent {
+  string id = 1;                    // ID is the Message ID
+  bytes buffer = 2;                 // Buffer is the message data
+  sonr.core.Profile from = 3;       // Users Peer Data
+  sonr.core.Profile to = 4;         // Receivers Peer Data
+  sonr.core.Metadata metadata = 5;  // Metadata
+}
+
 // Transfer Progress Event
 message ProgressEvent {
   int32 current = 1;   // Current Transfer Item

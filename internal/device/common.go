@@ -2,64 +2,10 @@ package device
 
 import (
 	"errors"
-	"fmt"
+	"os"
 
 	"github.com/sonr-io/core/internal/keychain"
 	"github.com/sonr-io/core/tools/logger"
-)
-
-var (
-	ErrVariableNotFound = errors.New("EnvVariable not found on Env")
-)
-
-// EnvVariable represents an environment variable
-type EnvVariable struct {
-	Key   string
-	Value string
-}
-
-// NewEnvVariable creates a new environment variable
-func NewEnvVariable(key string) EnvVariable {
-	return EnvVariable{Key: key}
-}
-
-// Get the environment variable
-func (ev EnvVariable) Get() string {
-	return ev.Value
-}
-
-// Set the environment variable
-func (ev EnvVariable) Set(val string) {
-	if len(val) > 0 {
-		ev.Value = val
-		logger.Info(fmt.Sprintf("Enviornment Variable Set: %s", val))
-		return
-	}
-	logger.Error("Failed to set Enviornment variable", ErrVariableNotFound)
-}
-
-// EnvVariableMap is a map of environment variables
-type EnvVariableMap map[string]string
-
-// ENV Variables
-var (
-	// HDNS client key for Namebase.io
-	HANDSHAKE_KEY EnvVariable = NewEnvVariable("HANDSHAKE_KEY")
-
-	// HDNS secret key for Namebase.io
-	HANDSHAKE_SECRET EnvVariable = NewEnvVariable("HANDSHAKE_SECRET")
-
-	// IP Location API key for IPStack.com
-	IP_LOCATION_KEY EnvVariable = NewEnvVariable("IP_LOCATION_KEY")
-
-	// RapidAPI key for RapidAPI.com
-	RAPID_API_KEY EnvVariable = NewEnvVariable("RAPID_API_KEY")
-
-	// Textile Hub API key
-	TEXTILE_HUB_KEY EnvVariable = NewEnvVariable("TEXTILE_HUB_KEY")
-
-	// Textile Hub secret key
-	TEXTILE_HUB_SECRET EnvVariable = NewEnvVariable("TEXTILE_HUB_SECRET")
 )
 
 // Error definitions
@@ -67,6 +13,10 @@ var (
 	// General errors
 	ErrEmptyDeviceID = errors.New("Device ID cannot be empty")
 	ErrMissingEnvVar = errors.New("Cannot set EnvVariable with empty value")
+
+	// Directory errors
+	ErrDirectoryInvalid = errors.New("Directory Type is invalid")
+	ErrDirectoryUnset   = errors.New("Directory path has not been set")
 
 	// Keychain errors
 	ErrInvalidKeyType  = errors.New("Invalid KeyPair Type provided")
@@ -94,4 +44,83 @@ func NewDeviceIDPrefix(sName string) (string, error) {
 	}
 	val := deviceID + sName
 	return KeyChain.SignHmacWith(keychain.Account, val)
+}
+
+// DirType is the type of a directory.
+type DirType int
+
+// Directory types
+const (
+	// Support is the type for a support directory.
+	Support DirType = iota
+
+	// Temporary is the type for a temporary directory.
+	Temporary
+
+	// Documents is the type for Documents folder.
+	Documents
+
+	// Downloads is the type for Downloads folder.
+	Downloads
+
+	// Database is the type for Database folder.
+	Database
+
+	// Mailbox is the type for Mailbox folder.
+	Mailbox
+)
+
+// Path returns the path for the directory.
+func (d DirType) Path() (string, error) {
+	// Switch on the directory type
+	switch d {
+	case Support:
+		if SupportPath == "" {
+			return "", ErrDirectoryUnset
+		}
+		return SupportPath, nil
+	case Temporary:
+		if TempPath == "" {
+			return "", ErrDirectoryUnset
+		}
+		return TempPath, nil
+	case Documents:
+		if DocsPath == "" {
+			return "", ErrDirectoryUnset
+		}
+		return DocsPath, nil
+	case Downloads:
+		if DownloadsPath == "" {
+			return "", ErrDirectoryUnset
+		}
+		return DownloadsPath, nil
+	case Database:
+		if DatabasePath == "" {
+			return "", ErrDirectoryUnset
+		}
+		return DatabasePath, nil
+	case Mailbox:
+		if MailboxPath == "" {
+			return "", ErrDirectoryUnset
+		}
+		return MailboxPath, nil
+	default:
+		return "", ErrDirectoryInvalid
+	}
+}
+
+// Exists returns true if the directory exists.
+func (d DirType) Exists() bool {
+	// Get the directory path
+	path, err := d.Path()
+	if err != nil {
+		logger.Error("Failed to get Directory path", err)
+		return false
+	}
+
+	// Check if the directory exists
+	if _, err := os.Stat(path); err == nil {
+		return true
+	}
+	return false
 }

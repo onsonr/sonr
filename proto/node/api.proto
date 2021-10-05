@@ -29,6 +29,7 @@ message InitializeRequest {
   ServiceOptions serviceOptions = 5;   // Service Config
   DeviceOptions deviceOptions = 6;     // File System Config
   sonr.core.Environment environment = 7; // Environment Config
+  map<string,string> variables = 8;     // Domain TXT Records
 
   // Optional Message to Initialize FileSystem
   message DeviceOptions {

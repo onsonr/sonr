@@ -23,7 +23,6 @@ import (
 	"github.com/sonr-io/core/internal/keychain"
 	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/tools/net"
-	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -39,22 +38,14 @@ type SNRHostStat struct {
 // SNRHost is the host wrapper for the Sonr Network
 type SNRHost struct {
 	host.Host
-
 	// Properties
-	ctxHost      context.Context
-	ctxTileAuth  context.Context
-	ctxTileToken context.Context
+	ctx context.Context
 
 	// Libp2p
 	disc   *dsc.RoutingDiscovery
 	kdht   *dht.IpfsDHT
 	mdns   discovery.Service
 	pubsub *psub.PubSub
-
-	// Textile
-	// 	client  *client.Client
-	// 	mail    *local.Mail
-	// 	mailbox *local.Mailbox
 }
 
 type HostListenAddr struct {
@@ -81,7 +72,7 @@ func NewHost(ctx context.Context, conn common.Connection, privKey crypto.PrivKey
 		// Set Initial Port
 		port, err := net.FreePort()
 		if err != nil {
-			logger.Warn("Failed to get free port", zap.Error(err))
+			logger.Warn("Failed to get free port", err)
 			port = 600214
 		}
 
@@ -92,7 +83,7 @@ func NewHost(ctx context.Context, conn common.Connection, privKey crypto.PrivKey
 	} else {
 		addrs, err := net.PublicAddrStrs()
 		if err != nil {
-			logger.Warn("Failed to get public addresses", zap.Error(err))
+			logger.Warn("Failed to get public addresses", err)
 			listenAddresses = []string{}
 		} else {
 			listenAddresses = addrs
@@ -137,10 +128,10 @@ func NewHost(ctx context.Context, conn common.Connection, privKey crypto.PrivKey
 
 	// Create Host
 	hn := &SNRHost{
-		ctxHost: ctx,
-		Host:    h,
-		kdht:    kdhtRef,
-		pubsub:  ps,
+		ctx:    ctx,
+		Host:   h,
+		kdht:   kdhtRef,
+		pubsub: ps,
 	}
 
 	// Bootstrap Host
@@ -167,7 +158,7 @@ func (hn *SNRHost) Pubsub() *psub.PubSub {
 
 // SendMessage writes a protobuf go data object to a network stream
 func (hn *SNRHost) SendMessage(id peer.ID, p protocol.ID, data proto.Message) error {
-	s, err := hn.NewStream(hn.ctxHost, id, p)
+	s, err := hn.NewStream(hn.ctx, id, p)
 	if err != nil {
 		return logger.Error("Failed to start stream", err)
 	}

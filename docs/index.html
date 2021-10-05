@@ -345,6 +345,10 @@
                 </li>
               
                 <li>
+                  <a href="#sonr.core.MailEvent"><span class="badge">M</span>MailEvent</a>
+                </li>
+              
+                <li>
                   <a href="#sonr.core.ProgressEvent"><span class="badge">M</span>ProgressEvent</a>
                 </li>
               
@@ -425,6 +429,10 @@
               
                 <li>
                   <a href="#sonr.node.InitializeRequest.ServiceOptions"><span class="badge">M</span>InitializeRequest.ServiceOptions</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.node.InitializeRequest.VariablesEntry"><span class="badge">M</span>InitializeRequest.VariablesEntry</a>
                 </li>
               
                 <li>
@@ -678,23 +686,7 @@
             <ul>
               
                 <li>
-                  <a href="#sonr.protocols.mailbox.DeleteMailRequest"><span class="badge">M</span>DeleteMailRequest</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.mailbox.DeleteMailResponse"><span class="badge">M</span>DeleteMailResponse</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.mailbox.MailEvent"><span class="badge">M</span>MailEvent</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.mailbox.ReadMailRequest"><span class="badge">M</span>ReadMailRequest</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.mailbox.ReadMailResponse"><span class="badge">M</span>ReadMailResponse</a>
+                  <a href="#sonr.protocols.mailbox.MailboxMessage"><span class="badge">M</span>MailboxMessage</a>
                 </li>
               
               
@@ -2578,6 +2570,58 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
 
         
       
+        <h3 id="sonr.core.MailEvent">MailEvent</h3>
+        <p>Received Mail Event</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>ID is the Message ID </p></td>
+                </tr>
+              
+                <tr>
+                  <td>buffer</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>Buffer is the message data </p></td>
+                </tr>
+              
+                <tr>
+                  <td>from</td>
+                  <td><a href="#sonr.core.Profile">Profile</a></td>
+                  <td></td>
+                  <td><p>Users Peer Data </p></td>
+                </tr>
+              
+                <tr>
+                  <td>to</td>
+                  <td><a href="#sonr.core.Profile">Profile</a></td>
+                  <td></td>
+                  <td><p>Receivers Peer Data </p></td>
+                </tr>
+              
+                <tr>
+                  <td>metadata</td>
+                  <td><a href="#sonr.core.Metadata">Metadata</a></td>
+                  <td></td>
+                  <td><p>Metadata </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="sonr.core.ProgressEvent">ProgressEvent</h3>
         <p>Transfer Progress Event</p>
 
@@ -3101,6 +3145,13 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                   <td><p>Environment Config </p></td>
                 </tr>
               
+                <tr>
+                  <td>variables</td>
+                  <td><a href="#sonr.node.InitializeRequest.VariablesEntry">InitializeRequest.VariablesEntry</a></td>
+                  <td>repeated</td>
+                  <td><p>Domain TXT Records </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -3300,6 +3351,37 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                   <td><a href="#bool">bool</a></td>
                   <td></td>
                   <td><p>Enable Auto Update Events </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.node.InitializeRequest.VariablesEntry">InitializeRequest.VariablesEntry</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>key</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
                 </tr>
               
             </tbody>
@@ -5017,6 +5099,13 @@ Returns a stream of Lobby Refresh Events</p></td>
                   <td><p>Message to be published </p></td>
                 </tr>
               
+                <tr>
+                  <td>metadata</td>
+                  <td><a href="#sonr.core.Metadata">sonr.core.Metadata</a></td>
+                  <td></td>
+                  <td><p>Metadata </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -5038,8 +5127,8 @@ Returns a stream of Lobby Refresh Events</p></td>
       <p></p>
 
       
-        <h3 id="sonr.protocols.mailbox.DeleteMailRequest">DeleteMailRequest</h3>
-        <p>Mailbox message handling</p>
+        <h3 id="sonr.protocols.mailbox.MailboxMessage">MailboxMessage</h3>
+        <p></p>
 
         
           <table class="field-table">
@@ -5049,176 +5138,45 @@ Returns a stream of Lobby Refresh Events</p></td>
             <tbody>
               
                 <tr>
-                  <td>mailId</td>
+                  <td>id</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>Unique ID for Message </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.protocols.mailbox.DeleteMailResponse">DeleteMailResponse</h3>
-        <p>Mailbox message handling</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>mailId</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Unique ID for Message </p></td>
+                  <td><p>ID is the Message ID </p></td>
                 </tr>
               
                 <tr>
-                  <td>success</td>
-                  <td><a href="#bool">bool</a></td>
-                  <td></td>
-                  <td><p>Successful Action </p></td>
-                </tr>
-              
-                <tr>
-                  <td>error</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Error Message </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.protocols.mailbox.MailEvent">MailEvent</h3>
-        <p>Received Mail Event</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>createdAt</td>
-                  <td><a href="#int32">int32</a></td>
-                  <td></td>
-                  <td><p>Time of Creation </p></td>
-                </tr>
-              
-                <tr>
-                  <td>to</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Recipient </p></td>
-                </tr>
-              
-                <tr>
-                  <td>invite</td>
+                  <td>buffer</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
-                  <td><p>Invite Request </p></td>
+                  <td><p>Buffer is the message data </p></td>
                 </tr>
               
                 <tr>
                   <td>from</td>
-                  <td><a href="#string">string</a></td>
+                  <td><a href="#sonr.core.Profile">sonr.core.Profile</a></td>
                   <td></td>
-                  <td><p>Sender </p></td>
+                  <td><p>Users Peer Data </p></td>
                 </tr>
               
                 <tr>
-                  <td>readAt</td>
-                  <td><a href="#int32">int32</a></td>
+                  <td>to</td>
+                  <td><a href="#sonr.core.Profile">sonr.core.Profile</a></td>
                   <td></td>
-                  <td><p>Time of Read </p></td>
+                  <td><p>Receivers Peer Data </p></td>
                 </tr>
               
                 <tr>
-                  <td>signature</td>
-                  <td><a href="#bytes">bytes</a></td>
+                  <td>metadata</td>
+                  <td><a href="#sonr.core.Metadata">sonr.core.Metadata</a></td>
                   <td></td>
-                  <td><p>Signature for Verification </p></td>
+                  <td><p>Metadata </p></td>
                 </tr>
               
                 <tr>
-                  <td>iD</td>
-                  <td><a href="#string">string</a></td>
+                  <td>createdAt</td>
+                  <td><a href="#int64">int64</a></td>
                   <td></td>
-                  <td><p>Unique ID for Message </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.protocols.mailbox.ReadMailRequest">ReadMailRequest</h3>
-        <p>Mailbox message handling</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>mailId</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Unique ID for Message </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.protocols.mailbox.ReadMailResponse">ReadMailResponse</h3>
-        <p>Mailbox message handling</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>mailId</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Unique ID for Message </p></td>
-                </tr>
-              
-                <tr>
-                  <td>success</td>
-                  <td><a href="#bool">bool</a></td>
-                  <td></td>
-                  <td><p>Successful Action </p></td>
-                </tr>
-              
-                <tr>
-                  <td>error</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Error Message </p></td>
+                  <td><p>Timestamp </p></td>
                 </tr>
               
             </tbody>

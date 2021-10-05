@@ -53,7 +53,7 @@ type Node struct {
 }
 
 // NewNode Creates a node with its implemented protocols
-func NewNode(ctx context.Context, profile *common.Profile, opts ...NodeOption) (*Node, *InitializeResponse, error) {
+func NewNode(ctx context.Context, opts ...NodeOption) (*Node, *InitializeResponse, error) {
 	// Set Node Options
 	config := defaultNodeOptions()
 	for _, opt := range opts {
@@ -79,7 +79,7 @@ func NewNode(ctx context.Context, profile *common.Profile, opts ...NodeOption) (
 		ctx:      ctx,
 		queue:    list.New(),
 		nodeType: config.GetNodeType(),
-		profile:  profile,
+		profile:  config.profile,
 	}
 
 	// Check Config for ClientNode
@@ -96,7 +96,7 @@ func NewNode(ctx context.Context, profile *common.Profile, opts ...NodeOption) (
 		}
 
 		// Set Local Lobby Protocol if Location is provided
-		lobby, err := lobby.NewProtocol(node.host, config.location, node.Emitter)
+		lobby, err := lobby.NewProtocol(ctx, node.host, config.location, node.Emitter)
 		if err != nil {
 			logger.Error("Failed to start LobbyProtocol", err)
 		} else {
@@ -109,14 +109,9 @@ func NewNode(ctx context.Context, profile *common.Profile, opts ...NodeOption) (
 
 	// Check Config for HighwayNode
 	if config.isHighway {
-		// Get Client, Secret Keys
-		cKey, sKey, err := config.GetNBKeys()
-		if err != nil {
-			return nil, nil, logger.Error("Failed to start Highway Service", err)
-		}
-		node.startHighwayService(ctx, cKey, sKey)
+		node.startHighwayService(ctx)
 	}
-	go node.pushAutomaticPings(profile)
+	go node.pushAutomaticPings(node.profile)
 	return node, node.newInitResponse(nil), nil
 }
 
