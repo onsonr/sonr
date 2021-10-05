@@ -1,10 +1,7 @@
 package store
 
 import (
-	"time"
-
 	"github.com/sonr-io/core/internal/common"
-	"github.com/sonr-io/core/tools/logger"
 	bolt "go.etcd.io/bbolt"
 	"google.golang.org/protobuf/proto"
 )
@@ -44,27 +41,27 @@ func (s *Store) SetProfile(profile *common.Profile) error {
 		return ErrProfileNotProvided
 	}
 
-	// Compare current profile with new profile
-	isNewProfile := false
-	currentProfile, err := s.GetProfile()
-	if err != nil {
-		if err == ErrProfileNotCreated {
-			profile.LastModified = time.Now().Unix()
-			isNewProfile = true
-		} else {
-			return logger.Error("Failed to set Profile", err)
-		}
-	}
+	// // Compare current profile with new profile
+	// isNewProfile := false
+	// currentProfile, err := s.GetProfile()
+	// if err != nil {
+	// 	if err == ErrProfileNotCreated {
+	// 		profile.LastModified = time.Now().Unix()
+	// 		isNewProfile = true
+	// 	} else {
+	// 		return logger.Error("Failed to set Profile", err)
+	// 	}
+	// }
 
-	// Check if given profile has Timestamp
-	if !isNewProfile && profile.GetLastModified() == 0 {
-		return ErrProfileNoTimestamp
-	}
+	// // Check if given profile has Timestamp
+	// if !isNewProfile && profile.GetLastModified() == 0 {
+	// 	return ErrProfileNoTimestamp
+	// }
 
-	// Verify timestamp
-	if !isNewProfile && profile.LastModified < currentProfile.GetLastModified() {
-		return ErrProfileIsOlder
-	}
+	// // Verify timestamp
+	// if !isNewProfile && profile.LastModified < currentProfile.GetLastModified() {
+	// 	return ErrProfileIsOlder
+	// }
 
 	// Put in Bucket
 	return s.db.Update(func(tx *bolt.Tx) error {

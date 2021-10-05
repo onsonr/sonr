@@ -30,7 +30,7 @@ type ClientNodeStub struct {
 
 	// Channels
 	decisionEvents chan *common.DecisionEvent
-	exchangeEvents chan *common.RefreshEvent
+	refreshEvents chan *common.RefreshEvent
 	inviteEvents   chan *common.InviteEvent
 	progressEvents chan *common.ProgressEvent
 	completeEvents chan *common.CompleteEvent
@@ -84,7 +84,7 @@ func (n *Node) startClientService(ctx context.Context, loc *common.Location, pro
 		ctx:            ctx,
 		Node:           n,
 		decisionEvents: make(chan *common.DecisionEvent),
-		exchangeEvents: make(chan *common.RefreshEvent),
+		refreshEvents: make(chan *common.RefreshEvent),
 		inviteEvents:   make(chan *common.InviteEvent),
 		progressEvents: make(chan *common.ProgressEvent),
 		completeEvents: make(chan *common.CompleteEvent),
@@ -265,7 +265,7 @@ func (nrc *ClientNodeStub) handleEmitter() {
 		// Handle Lobby Join Events
 		nrc.Node.On(lobby.Event_LIST_REFRESH, func(e *state.Event) {
 			refreshEvent := e.Args[0].(*common.RefreshEvent)
-			nrc.exchangeEvents <- refreshEvent
+			nrc.refreshEvents <- refreshEvent
 		})
 
 		// Stop Emitter if context is done
@@ -299,7 +299,7 @@ func (nrc *ClientNodeStub) serveRPC() {
 func (n *ClientNodeStub) OnLobbyRefresh(e *Empty, stream ClientService_OnLobbyRefreshServer) error {
 	for {
 		select {
-		case m := <-n.exchangeEvents:
+		case m := <-n.refreshEvents:
 			if m != nil {
 				stream.Send(m)
 			}

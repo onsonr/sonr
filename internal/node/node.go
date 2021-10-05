@@ -17,6 +17,7 @@ import (
 	"github.com/sonr-io/core/pkg/transfer"
 	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/tools/state"
+	"go.uber.org/zap"
 )
 
 // Node type - a p2p host implementing one or more p2p protocols
@@ -29,6 +30,9 @@ type Node struct {
 
 	// Properties
 	ctx context.Context
+
+	// Given Profile from Config
+	profile *common.Profile
 
 	// Persistent Database
 	store *store.Store
@@ -76,6 +80,7 @@ func NewNode(ctx context.Context, opts ...NodeOption) (*Node, *InitializeRespons
 		ctx:      ctx,
 		queue:    list.New(),
 		nodeType: config.GetNodeType(),
+		profile:  config.profile,
 	}
 
 	// Check Config for ClientNode
@@ -170,11 +175,15 @@ func (n *Node) Peer() (*common.Peer, error) {
 
 // Profile method returns the profile of the node
 func (n *Node) Profile() (*common.Profile, error) {
+	// Get Profile from Store
 	pro, err := n.store.GetProfile()
-	if err != nil {
-		return nil, logger.Error("Failed to retreive Profile", err)
+	if err == nil && pro.GetSName() != "" {
+		return pro, nil
 	}
-	return pro, nil
+
+	// Warn if no profile found
+	logger.Warn("Failed to get profile, from Store. Using provided record.", zap.Error(err))
+	return n.profile, nil
 }
 
 // Recents method returns the recent peers of the node
@@ -355,16 +364,22 @@ func (n *Node) Stat() (*StatResponse, error) {
 
 func (n *Node) pushAutomaticPings() {
 	for {
-		select {
-		case <-time.After(time.Second * 5):
-			p, err := n.Peer()
-			if err != nil {
-				logger.Error("Failed to push Auto Ping", err)
-				continue
-			}
-			n.LobbyProtocol.Update(p)
-			n.ExchangeProtocol.Update(p)
+		// Get Profile
+		p, err := n.Peer()
+		if err != nil {
+			logger.Error("Failed to push Auto Ping", err)
+			continue
+		}
 
+		// Push Ping
+		n.LobbyProtocol.Update(p)
+		n.ExchangeProtocol.Update(p)
+
+		// Sleep for 5 Seconds
+		time.Sleep(time.Second * 5)
+
+		// Check if we are still connected
+		select {
 		case <-n.ctx.Done():
 			return
 		}
