@@ -5,9 +5,7 @@ import (
 
 	dscl "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/peer"
-	peerstore "github.com/libp2p/go-libp2p-core/peerstore"
 	dsc "github.com/libp2p/go-libp2p-discovery"
-	psub "github.com/libp2p/go-libp2p-pubsub"
 	discovery "github.com/libp2p/go-libp2p/p2p/discovery"
 	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/tools/net"
@@ -37,8 +35,6 @@ func (n *discoveryNotifee) HandlePeerFound(pi peer.AddrInfo) {
 // ** ─── HostNode Connection Methods ────────────────────────────────────────────────────────
 // Bootstrap begins bootstrap with peers
 func (h *SNRHost) Bootstrap() error {
-	// Add Host Address to Peerstore
-	h.Peerstore().AddAddrs(h.ID(), h.Addrs(), peerstore.PermanentAddrTTL)
 	// Create Bootstrapper Info
 	bootstrappers, err := net.BootstrapAddrInfo()
 	if err != nil {
@@ -64,14 +60,7 @@ func (h *SNRHost) Bootstrap() error {
 	dsc.Advertise(h.ctxHost, routingDiscovery, HOST_RENDEVOUZ_POINT, dscl.TTL(REFRESH_INTERVAL))
 	h.disc = routingDiscovery
 
-	// Create Pub Sub
-	ps, err := psub.NewGossipSub(h.ctxHost, h.Host, psub.WithDiscovery(routingDiscovery))
-	if err != nil {
-		return logger.Error("Failed to Create new Gossip Sub", err)
-	}
-
 	// Handle DHT Peers
-	h.pubsub = ps
 	peersChan, err := routingDiscovery.FindPeers(h.ctxHost, HOST_RENDEVOUZ_POINT, dscl.TTL(REFRESH_INTERVAL))
 	if err != nil {
 		return logger.Error("Failed to create FindPeers Discovery channel", err)

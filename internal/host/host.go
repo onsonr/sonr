@@ -129,11 +129,18 @@ func NewHost(ctx context.Context, conn common.Connection, privKey crypto.PrivKey
 		return nil, logger.Error("Failed to initialize libp2p host", err)
 	}
 
+	// Create Pub Sub
+	ps, err := psub.NewGossipSub(ctx, h, psub.WithDiscovery(dsc.NewRoutingDiscovery(kdhtRef)))
+	if err != nil {
+		return nil, logger.Error("Failed to Create new Gossip Sub", err)
+	}
+
 	// Create Host
 	hn := &SNRHost{
 		ctxHost: ctx,
 		Host:    h,
 		kdht:    kdhtRef,
+		pubsub:  ps,
 	}
 
 	// Bootstrap Host
@@ -144,10 +151,11 @@ func NewHost(ctx context.Context, conn common.Connection, privKey crypto.PrivKey
 
 	// Check for Wifi/Ethernet for MDNS
 	if conn == common.Connection_WIFI || conn == common.Connection_ETHERNET {
-		err = hn.MDNS()
-		if err != nil {
-			return nil, logger.Error("Failed to start MDNS Discovery", err)
-		}
+		// err = hn.MDNS()
+		// if err != nil {
+		// 	return nil, logger.Error("Failed to start MDNS Discovery", err)
+		// }
+		logger.Debug("MDNS Discovery Disabled: Temp")
 	}
 	return hn, nil
 }
