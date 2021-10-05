@@ -6,6 +6,7 @@ import (
 	core "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/peer"
 	discovery "github.com/libp2p/go-libp2p-discovery"
+	peerstore "github.com/libp2p/go-libp2p-peerstore"
 	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/tools/net"
 )
@@ -34,6 +35,9 @@ func (n *discoveryNotifee) HandlePeerFound(pi peer.AddrInfo) {
 // ** ─── HostNode Connection Methods ────────────────────────────────────────────────────────
 // Bootstrap begins bootstrap with peers
 func (h *SNRHost) Bootstrap() error {
+	// Add Host Address to Peerstore
+	h.Peerstore().AddAddrs(h.ID(), h.Addrs(), peerstore.PermanentAddrTTL)
+
 	// Create Bootstrapper Info
 	bootstrappers, err := net.BootstrapAddrInfo()
 	if err != nil {

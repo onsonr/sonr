@@ -6,7 +6,6 @@ import (
 	"net"
 	"time"
 
-	common "github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/transfer"
@@ -88,32 +87,31 @@ func (n *Node) startClientService(olc string) (*ClientNodeStub, error) {
 	// Start Routines
 	RegisterClientServiceServer(grpcServer, nrc)
 	go nrc.serveRPC()
-	go nrc.pushAutomaticPings()
-
+	go nrc.pushAutomaticPings(time.NewTicker(5 * time.Second))
 	// Return RPC Service
 	return nrc, nil
 }
 
 // Update method updates the node's properties in the Key/Value Store and Lobby
-func (n *ClientNodeStub) Update(peer *common.Peer) error {
+func (n *ClientNodeStub) Update() error {
+	// Call Internal Edit
+	peer, err := n.Peer()
+	if err != nil {
+		return logger.Error("Failed to push Auto Ping", err)
+	}
+
 	// Push Update to Exchange
 	if n.ExchangeProtocol != nil {
-		err := n.ExchangeProtocol.Update(peer)
-		if err != nil {
+		if err := n.ExchangeProtocol.Update(peer); err != nil {
 			return logger.Error("Failed to Update Exchange", err)
 		}
-	} else {
-		return logger.Error("Failed to Update ExchangeProtocol", ErrExchangeNotCreated)
 	}
 
 	// Push Update to Lobby
 	if n.LobbyProtocol != nil {
-		err := n.LobbyProtocol.Update(peer)
-		if err != nil {
+		if err := n.LobbyProtocol.Update(peer); err != nil {
 			return logger.Error("Failed to Update Lobby", err)
 		}
-	} else {
-		return logger.Error("Failed to Update LobbyProtocol", ErrLobbyNotCreated)
 	}
 	return nil
 }
@@ -165,18 +163,8 @@ func (n *ClientNodeStub) Supply(ctx context.Context, req *SupplyRequest) (*Suppl
 
 // Edit method edits the node's properties in the Key/Value Store
 func (n *ClientNodeStub) Edit(ctx context.Context, req *EditRequest) (*EditResponse, error) {
-	// Call Internal Edit
-	peer, err := n.Peer()
-	if err != nil {
-		return &EditResponse{
-			Success: false,
-			Error:   err.Error(),
-		}, nil
-	}
-
 	// Call Internal Update
-	err = n.Update(peer)
-	if err != nil {
+	if err := n.Update(); err != nil {
 		return &EditResponse{
 			Success: false,
 			Error:   err.Error(),
@@ -421,30 +409,17 @@ func (nrc *ClientNodeStub) serveRPC() {
 }
 
 // pushAutomaticPings sends automatic pings to the network of Profile
-func (n *ClientNodeStub) pushAutomaticPings() {
-	var timer *time.Timer
+func (n *ClientNodeStub) pushAutomaticPings(ticker *time.Ticker) {
 	for {
 		select {
+		case <-ticker.C:
+			// Call Internal Update
+			if err := n.Update(); err != nil {
+				logger.Error("Failed to push Auto Ping", err)
+			}
 		case <-n.ctx.Done():
-			timer.Stop()
+			ticker.Stop()
 			return
-		default:
-			// Sleep for 4 Seconds
-			timer = time.AfterFunc(time.Second*4, func() {
-				// Call Internal Edit
-				peer, err := n.Peer()
-				if err != nil {
-					logger.Error("Failed to push Auto Ping", err)
-				}
-
-				// Call Internal Update
-				if peer != nil {
-					err = n.Update(peer)
-					if err != nil {
-						logger.Error("Failed to push Auto Ping", err)
-					}
-				}
-			})
 		}
 	}
 }
