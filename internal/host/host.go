@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/libp2p/go-libp2p"
+	libp2p "github.com/libp2p/go-libp2p"
 	connmgr "github.com/libp2p/go-libp2p-connmgr"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/host"
@@ -16,7 +16,6 @@ import (
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	psub "github.com/libp2p/go-libp2p-pubsub"
-	discovery "github.com/libp2p/go-libp2p/p2p/discovery"
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
@@ -44,7 +43,6 @@ type SNRHost struct {
 	// Libp2p
 	disc   *dsc.RoutingDiscovery
 	kdht   *dht.IpfsDHT
-	mdns   discovery.Service
 	pubsub *psub.PubSub
 }
 
@@ -142,10 +140,10 @@ func NewHost(ctx context.Context, conn common.Connection, privKey crypto.PrivKey
 
 	// Check for Wifi/Ethernet for MDNS
 	if conn == common.Connection_WIFI || conn == common.Connection_ETHERNET {
-		err = hn.MDNS()
-		if err != nil {
-			return nil, logger.Error("Failed to start MDNS Discovery", err)
-		}
+		// err = hn.MDNS()
+		// if err != nil {
+		// 	return nil, logger.Error("Failed to start MDNS Discovery", err)
+		// }
 	}
 	return hn, nil
 }

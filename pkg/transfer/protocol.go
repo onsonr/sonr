@@ -19,7 +19,12 @@ type TransferProtocol struct {
 }
 
 // NewProtocol creates a new TransferProtocol
-func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) *TransferProtocol {
+func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) (*TransferProtocol, error) {
+	// Check parameters
+	if err := checkParams(host, em); err != nil {
+		return nil, logger.Error("Failed to create TransferProtocol", err)
+	}
+
 	// create a new transfer protocol
 	invProtocol := &TransferProtocol{
 		ctx:     ctx,
@@ -36,11 +41,16 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) *Tr
 	host.SetStreamHandler(RequestPID, invProtocol.onInviteRequest)
 	host.SetStreamHandler(ResponsePID, invProtocol.onInviteResponse)
 	host.SetStreamHandler(SessionPID, invProtocol.onIncomingTransfer)
-	return invProtocol
+	return invProtocol, nil
 }
 
 // Request Method sends a request to Transfer Data to a remote peer
 func (p *TransferProtocol) Request(id peer.ID, req *InviteRequest) error {
+	// Check if the response is valid
+	if req == nil {
+		return ErrInvalidRequest
+	}
+
 	// sign the data
 	signature, err := p.host.SignMessage(req)
 	if err != nil {
@@ -62,6 +72,11 @@ func (p *TransferProtocol) Request(id peer.ID, req *InviteRequest) error {
 
 // Respond Method authenticates or declines a Transfer Request
 func (p *TransferProtocol) Respond(id peer.ID, resp *InviteResponse) error {
+	// Check if the response is valid
+	if resp == nil {
+		return ErrInvalidResponse
+	}
+
 	// Find Entry
 	entry, err := p.queue.Next()
 	if err != nil {

@@ -8,6 +8,7 @@ import (
 var (
 	ErrMissingAPIKey    = errors.New("Missing Namebase Handshake Key in env")
 	ErrMissingAPISecret = errors.New("Missing Namebase Handshake Secret in env")
+	ErrParameters       = errors.New("Failed to create new DomainProtocol, invalid parameters")
 )
 
 // fetchApiKeys fetches the Textile Api/Secrect keys from the environment

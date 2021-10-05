@@ -13,7 +13,6 @@ import (
 	"github.com/sonr-io/core/internal/keychain"
 	"github.com/sonr-io/core/internal/store"
 	"github.com/sonr-io/core/pkg/lobby"
-	"github.com/sonr-io/core/pkg/mailbox"
 	"github.com/sonr-io/core/pkg/transfer"
 	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/tools/state"
@@ -314,11 +313,11 @@ func (n *Node) Stat() (*StatResponse, error) {
 // HandleEmitter handles the emitter events.
 func (n *Node) handleEmitter() {
 	for {
-		// Handle Mail Event
-		n.On(mailbox.Event_MAIL_RECEIVED, func(e *state.Event) {
-			event := e.Args[0].(*common.MailboxEvent)
-			n.mailEvents <- event
-		})
+		// // Handle Mail Event
+		// n.On(mailbox.Event_MAIL_RECEIVED, func(e *state.Event) {
+		// 	event := e.Args[0].(*common.MailboxEvent)
+		// 	n.mailEvents <- event
+		// })
 
 		// Handle Transfer Invite
 		n.On(transfer.Event_INVITED, func(e *state.Event) {

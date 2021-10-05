@@ -2,6 +2,7 @@ package exchange
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"time"
@@ -15,6 +16,11 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+var (
+	ErrParameters  = errors.New("Failed to create new ExchangeProtocol, invalid parameters")
+	ErrInvalidPeer = errors.New("Peer object provided to ExchangeProtocol is Nil")
+)
+
 // ExchangeProtocol handles Global Sonr Exchange Protocol
 type ExchangeProtocol struct {
 	*psr.PubsubValueStore
@@ -26,6 +32,11 @@ type ExchangeProtocol struct {
 
 // NewProtocol creates new ExchangeProtocol
 func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) (*ExchangeProtocol, error) {
+	// Check parameters
+	if err := checkParams(host, em); err != nil {
+		return nil, logger.Error("Failed to create TransferProtocol", err)
+	}
+
 	// Create PubSub Value Store
 	r, err := psr.NewPubsubValueStore(ctx, host.Host, host.Pubsub(), ExchangeValidator{}, psr.WithRebroadcastInterval(5*time.Second))
 	if err != nil {
@@ -73,6 +84,11 @@ func (p *ExchangeProtocol) Query(q *QueryRequest) (*common.PeerInfo, error) {
 
 // Update method updates peer instance in the store
 func (p *ExchangeProtocol) Update(peer *common.Peer) error {
+	// Verify Peer is not nil
+	if peer == nil {
+		return ErrInvalidPeer
+	}
+
 	// Marshal Peer
 	info, err := peer.Info()
 	if err != nil {

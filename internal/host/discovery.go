@@ -3,10 +3,9 @@ package host
 import (
 	"time"
 
-	dscl "github.com/libp2p/go-libp2p-core/discovery"
+	core "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/peer"
-	dsc "github.com/libp2p/go-libp2p-discovery"
-	discovery "github.com/libp2p/go-libp2p/p2p/discovery"
+	discovery "github.com/libp2p/go-libp2p-discovery"
 	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/tools/net"
 )
@@ -56,35 +55,16 @@ func (h *SNRHost) Bootstrap() error {
 	}
 
 	// Set Routing Discovery, Find Peers
-	routingDiscovery := dsc.NewRoutingDiscovery(h.kdht)
-	dsc.Advertise(h.ctx, routingDiscovery, HOST_RENDEVOUZ_POINT, dscl.TTL(REFRESH_INTERVAL))
+	routingDiscovery := discovery.NewRoutingDiscovery(h.kdht)
+	discovery.Advertise(h.ctx, routingDiscovery, HOST_RENDEVOUZ_POINT, core.TTL(REFRESH_INTERVAL))
 	h.disc = routingDiscovery
 
 	// Handle DHT Peers
-	peersChan, err := routingDiscovery.FindPeers(h.ctx, HOST_RENDEVOUZ_POINT, dscl.TTL(REFRESH_INTERVAL))
+	peersChan, err := routingDiscovery.FindPeers(h.ctx, HOST_RENDEVOUZ_POINT, core.TTL(REFRESH_INTERVAL))
 	if err != nil {
 		return logger.Error("Failed to create FindPeers Discovery channel", err)
 	}
 	go h.handleDiscoveredPeers(peersChan)
-	return nil
-}
-
-// MDNS Method Begins MDNS Discovery
-func (h *SNRHost) MDNS() error {
-	// Create MDNS Service
-	ser, err := discovery.NewMdnsService(h.ctx, h.Host, REFRESH_INTERVAL, HOST_RENDEVOUZ_POINT)
-	if err != nil {
-		return err
-	}
-	h.mdns = ser
-
-	// Register Notifier
-	n := &discoveryNotifee{}
-	n.PeerChan = make(chan peer.AddrInfo)
-
-	// Handle Events
-	ser.RegisterNotifee(n)
-	go h.handleDiscoveredPeers(n.PeerChan)
 	return nil
 }
 

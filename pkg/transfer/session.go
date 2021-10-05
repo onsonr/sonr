@@ -96,7 +96,7 @@ func (sq *SessionQueue) Next() (*Session, error) {
 	// Find Entry for Peer
 	entry := sq.queue.Front()
 	if entry == nil {
-		return nil, ErrInvalidEntry
+		return nil, ErrFailedEntry
 	}
 
 	val := entry.Value.(Session)
@@ -109,7 +109,7 @@ func (sq *SessionQueue) Done() (*common.CompleteEvent, error) {
 	// Find Entry for Peer
 	entry := sq.queue.Front()
 	if entry == nil {
-		return nil, ErrInvalidEntry
+		return nil, ErrFailedEntry
 	}
 
 	// Pop Value of Entry from Queue

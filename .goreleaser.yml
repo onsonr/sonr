@@ -1,6 +1,6 @@
 project_name: sonr-core
 builds:
-  - id: highway
+  - id: sonr-desktop-bin
     binary: sonr-helper
     dir: cmd/bin
     goos:
@@ -11,7 +11,7 @@ builds:
       - amd64
       - arm64
 
-  - id: highway
+  - id: sonr-highway-bin
     binary: sonr-highway
     dir: cmd/highway
     goos:

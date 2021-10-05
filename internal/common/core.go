@@ -11,7 +11,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/keychain"
 	"github.com/sonr-io/core/tools/logger"
-	"github.com/textileio/go-threads/core/thread"
+	// "github.com/textileio/go-threads/core/thread"
 )
 
 // ** ───────────────────────────────────────────────────────
@@ -134,17 +134,17 @@ func (p *Peer) PubKey() (crypto.PubKey, error) {
 	return pubKey, nil
 }
 
-// ThreadPubKey returns the Public Key from the Peer as Textile Thread Key
-func (p *Peer) ThreadPubKey() (thread.PubKey, error) {
-	// Get Public Key
-	pub, err := p.PubKey()
-	if err != nil {
-		return nil, logger.Error("Failed to get Public Key", err)
-	}
+// // ThreadPubKey returns the Public Key from the Peer as Textile Thread Key
+// func (p *Peer) ThreadPubKey() (thread.PubKey, error) {
+// 	// Get Public Key
+// 	pub, err := p.PubKey()
+// 	if err != nil {
+// 		return nil, logger.Error("Failed to get Public Key", err)
+// 	}
 
-	// Return Thread PubKey
-	return thread.NewLibp2pPubKey(pub), nil
-}
+// 	// Return Thread PubKey
+// 	return thread.NewLibp2pPubKey(pub), nil
+// }
 
 // SnrPubKey returns the Public Key from the Peer as SnrPubKey
 func (p *Peer) SnrPubKey() (*keychain.SnrPubKey, error) {

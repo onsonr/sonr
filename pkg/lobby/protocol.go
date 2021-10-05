@@ -2,6 +2,7 @@ package lobby
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -16,6 +17,11 @@ import (
 // Transfer Emission Events
 const (
 	Event_LIST_REFRESH = "lobby-list-refresh"
+)
+
+var (
+	ErrParameters  = errors.New("Failed to create new LobbyProtocol, invalid parameters")
+	ErrInvalidPeer = errors.New("Peer object provided to LobbyProtocol is Nil")
 )
 
 // LobbyProtocol is the protocol for managing local peers.
@@ -33,6 +39,11 @@ type LobbyProtocol struct {
 
 // NewProtocol creates a new lobby protocol instance.
 func NewProtocol(ctx context.Context, host *host.SNRHost, loc *common.Location, em *state.Emitter) (*LobbyProtocol, error) {
+	// Check parameters
+	if err := checkParams(host, loc, em); err != nil {
+		return nil, logger.Error("Failed to create TransferProtocol", err)
+	}
+
 	// Create Exchange Topic
 	topic, err := host.Pubsub().Join(loc.OLC())
 	if err != nil {
@@ -72,6 +83,11 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, loc *common.Location, 
 
 // Update method publishes peer data to the topic
 func (p *LobbyProtocol) Update(peer *common.Peer) error {
+	// Verify Peer is not nil
+	if peer == nil {
+		return ErrInvalidPeer
+	}
+
 	// Create Event
 	event := &LobbyMessage{Peer: peer}
 
@@ -123,9 +139,7 @@ func (p *LobbyProtocol) HandleMessages() {
 			}
 
 			// Check Message and Validate not User
-			if msg.ReceivedFrom == p.host.ID() {
-				continue
-			} else {
+			if msg.ReceivedFrom != p.host.ID() {
 				// Unmarshal Message
 				data := &LobbyMessage{}
 				err = proto.Unmarshal(msg.Data, data)

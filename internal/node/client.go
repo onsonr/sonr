@@ -9,7 +9,6 @@ import (
 	common "github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/lobby"
-	"github.com/sonr-io/core/pkg/mailbox"
 	"github.com/sonr-io/core/pkg/transfer"
 	"github.com/sonr-io/core/tools/logger"
 	grpc "google.golang.org/grpc"
@@ -38,13 +37,16 @@ type ClientNodeStub struct {
 	*lobby.LobbyProtocol
 
 	// MailboxProtocol - Offline Mailbox Protocol
-	*mailbox.MailboxProtocol
+	// *mailbox.MailboxProtocol
 }
 
 // startClientService creates a new Client service stub for the node.
 func (n *Node) startClientService(ctx context.Context, loc *common.Location) (*ClientNodeStub, error) {
 	// Set Transfer Protocol
-	transferProtocol := transfer.NewProtocol(ctx, n.host, n.Emitter)
+	transferProtocol, err := transfer.NewProtocol(ctx, n.host, n.Emitter)
+	if err != nil {
+		logger.Error("Failed to start TransferProtocol", err)
+	}
 
 	// Set Exchange Protocol
 	exchProtocol, err := exchange.NewProtocol(ctx, n.host, n.Emitter)
@@ -58,11 +60,11 @@ func (n *Node) startClientService(ctx context.Context, loc *common.Location) (*C
 		logger.Error("Failed to start LobbyProtocol", err)
 	}
 
-	// Set Mailbox Protocol
-	mailboxProtocol, err := mailbox.NewProtocol(ctx, n.host, n.Emitter)
-	if err != nil {
-		logger.Error("Failed to start MailboxProtocol", err)
-	}
+	// // Set Mailbox Protocol
+	// mailboxProtocol, err := mailbox.NewProtocol(ctx, n.host, n.Emitter)
+	// if err != nil {
+	// 	logger.Error("Failed to start MailboxProtocol", err)
+	// }
 
 	// Bind RPC Service
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", RPC_SERVER_PORT))
@@ -80,7 +82,7 @@ func (n *Node) startClientService(ctx context.Context, loc *common.Location) (*C
 		TransferProtocol: transferProtocol,
 		ExchangeProtocol: exchProtocol,
 		LobbyProtocol:    lobbyProtocol,
-		MailboxProtocol:  mailboxProtocol,
+		//MailboxProtocol:  mailboxProtocol,
 	}
 
 	// Start Routines
@@ -277,7 +279,6 @@ func (n *ClientNodeStub) OnLobbyRefresh(e *Empty, stream ClientService_OnLobbyRe
 		case <-n.ctx.Done():
 			return nil
 		}
-
 	}
 }
 
@@ -387,12 +388,15 @@ func (n *ClientNodeStub) pushAutomaticPings() {
 		peer, err := n.Peer()
 		if err != nil {
 			logger.Error("Failed to push Auto Ping", err)
+			continue
 		}
 
 		// Call Internal Update
-		err = n.Update(peer)
-		if err != nil {
-			logger.Error("Failed to push Auto Ping", err)
+		if peer != nil {
+			err = n.Update(peer)
+			if err != nil {
+				logger.Error("Failed to push Auto Ping", err)
+			}
 		}
 
 		// Sleep for 5 Seconds
