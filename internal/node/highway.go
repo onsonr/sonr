@@ -24,9 +24,9 @@ type HighwayNodeStub struct {
 }
 
 // startClientService creates a new Client service stub for the node.
-func (n *Node) startHighwayService(ctx context.Context) (*HighwayNodeStub, error) {
+func (n *Node) startHighwayService() (*HighwayNodeStub, error) {
 	// Initialize Domain Protocol
-	domainProtocol, err := domain.NewProtocol(ctx, n.host)
+	domainProtocol, err := domain.NewProtocol(n.ctx, n.host)
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +41,7 @@ func (n *Node) startHighwayService(ctx context.Context) (*HighwayNodeStub, error
 	grpcServer := grpc.NewServer()
 	stub := &HighwayNodeStub{
 		Node:           n,
-		ctx:            ctx,
+		ctx:            n.ctx,
 		grpcServer:     grpcServer,
 		listener:       listener,
 		DomainProtocol: domainProtocol,
@@ -80,7 +80,7 @@ func (hrc *HighwayNodeStub) Register(ctx context.Context, req *RegisterRequest) 
 			Error:   "Invalid request. One or more of the required fields are empty.",
 		}, nil
 	}
-	
+
 	// Create Record
 	resp, err := hrc.DomainProtocol.Register(name, dnet.NewNBAuthRecord(pfix, name, fprint))
 	if err != nil {

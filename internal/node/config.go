@@ -37,12 +37,12 @@ const (
 )
 
 // Initialize initializes the node by Type.
-func (nt NodeType) Initialize(n *Node) {
+func (nt NodeType) Initialize(n *Node, l *common.Location) {
 	switch nt {
 	case NodeType_CLIENT:
-		n.startClientService(n.ctx, n.location)
+		n.startClientService(l)
 	case NodeType_HIGHWAY:
-		n.startHighwayService(n.ctx)
+		n.startHighwayService()
 	}
 }
 
@@ -59,10 +59,8 @@ type nodeOptions struct {
 
 // Apply applies the node options to the node.
 func (no nodeOptions) Apply(n *Node) {
-	n.location = no.request.GetLocation()
 	n.profile = no.request.GetProfile()
-
-	no.GetNodeType().Initialize(n)
+	no.GetNodeType().Initialize(n, no.request.GetLocation())
 }
 
 // GetNodeType returns the node type from Config

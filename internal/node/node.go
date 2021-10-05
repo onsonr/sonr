@@ -29,9 +29,6 @@ type Node struct {
 	// Properties
 	ctx context.Context
 
-	// Location - current location of the node
-	location *common.Location
-
 	// Given Profile from Config
 	profile *common.Profile
 

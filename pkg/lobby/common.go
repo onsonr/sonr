@@ -11,11 +11,11 @@ func checkParams(host *host.SNRHost, loc *common.Location, em *state.Emitter) er
 	if host == nil {
 		return logger.Error("Host provided is nil", ErrParameters)
 	}
-	if em == nil {
-		return logger.Error("Emitter provided is nil", ErrParameters)
-	}
 	if loc == nil {
 		return logger.Error("Location provided is nil", ErrParameters)
+	}
+	if em == nil {
+		return logger.Error("Emitter provided is nil", ErrParameters)
 	}
 	return nil
 }

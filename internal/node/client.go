@@ -41,21 +41,21 @@ type ClientNodeStub struct {
 }
 
 // startClientService creates a new Client service stub for the node.
-func (n *Node) startClientService(ctx context.Context, loc *common.Location) (*ClientNodeStub, error) {
+func (n *Node) startClientService(loc *common.Location) (*ClientNodeStub, error) {
 	// Set Transfer Protocol
-	transferProtocol, err := transfer.NewProtocol(ctx, n.host, n.Emitter)
+	transferProtocol, err := transfer.NewProtocol(n.ctx, n.host, n.Emitter)
 	if err != nil {
 		logger.Error("Failed to start TransferProtocol", err)
 	}
 
 	// Set Exchange Protocol
-	exchProtocol, err := exchange.NewProtocol(ctx, n.host, n.Emitter)
+	exchProtocol, err := exchange.NewProtocol(n.ctx, n.host, n.Emitter)
 	if err != nil {
 		logger.Error("Failed to start ExchangeProtocol", err)
 	}
 
 	// Set Local Lobby Protocol if Location is provided
-	lobbyProtocol, err := lobby.NewProtocol(ctx, n.host, loc, n.Emitter)
+	lobbyProtocol, err := lobby.NewProtocol(n.ctx, n.host, loc, n.Emitter)
 	if err != nil {
 		logger.Error("Failed to start LobbyProtocol", err)
 	}
@@ -77,7 +77,7 @@ func (n *Node) startClientService(ctx context.Context, loc *common.Location) (*C
 	nrc := &ClientNodeStub{
 		grpcServer:       grpcServer,
 		listener:         listener,
-		ctx:              ctx,
+		ctx:              n.ctx,
 		Node:             n,
 		TransferProtocol: transferProtocol,
 		ExchangeProtocol: exchProtocol,
