@@ -422,23 +422,29 @@ func (nrc *ClientNodeStub) serveRPC() {
 
 // pushAutomaticPings sends automatic pings to the network of Profile
 func (n *ClientNodeStub) pushAutomaticPings() {
+	var timer *time.Timer
 	for {
-		// Call Internal Edit
-		peer, err := n.Peer()
-		if err != nil {
-			logger.Error("Failed to push Auto Ping", err)
-			continue
-		}
+		select {
+		case <-n.ctx.Done():
+			timer.Stop()
+			return
+		default:
+			// Sleep for 4 Seconds
+			timer = time.AfterFunc(time.Second*4, func() {
+				// Call Internal Edit
+				peer, err := n.Peer()
+				if err != nil {
+					logger.Error("Failed to push Auto Ping", err)
+				}
 
-		// Call Internal Update
-		if peer != nil {
-			err = n.Update(peer)
-			if err != nil {
-				logger.Error("Failed to push Auto Ping", err)
-			}
+				// Call Internal Update
+				if peer != nil {
+					err = n.Update(peer)
+					if err != nil {
+						logger.Error("Failed to push Auto Ping", err)
+					}
+				}
+			})
 		}
-
-		// Sleep for 5 Seconds
-		time.Sleep(time.Second * 4)
 	}
 }

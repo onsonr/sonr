@@ -11,13 +11,12 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/keychain"
 	"github.com/sonr-io/core/tools/logger"
-	// "github.com/textileio/go-threads/core/thread"
+	"go.uber.org/zap"
 )
 
 // ** ───────────────────────────────────────────────────────
 // ** ─── General ───────────────────────────────────────────
 // ** ───────────────────────────────────────────────────────
-
 // Fetch olc code from lat/lng at Scope Level 6
 func (l *Location) OLC() string {
 	// Get Lat/Lon
@@ -29,6 +28,9 @@ func (l *Location) OLC() string {
 	if code == "" {
 		return "global"
 	}
+
+	// Logging and return Code
+	logger.Info("Determined OLC for Location", zap.String("OLC", code), zap.Float64("Latitude", lat), zap.Float64("Longitude", lng))
 	return code
 }
 

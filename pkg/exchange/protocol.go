@@ -7,6 +7,7 @@ import (
 
 	"time"
 
+	dht "github.com/libp2p/go-libp2p-kad-dht"
 	psr "github.com/libp2p/go-libp2p-pubsub-router"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/host"
@@ -25,7 +26,8 @@ var (
 type ExchangeProtocol struct {
 	*psr.PubsubValueStore
 	ctx      context.Context
-	host     *host.SNRHost  // host
+	host     *host.SNRHost // host
+	kadDHT   *dht.IpfsDHT
 	emitter  *state.Emitter // Handle to signal when done
 	resolver net.HDNSResolver
 }
@@ -35,6 +37,12 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) (*E
 	// Check parameters
 	if err := checkParams(host, em); err != nil {
 		return nil, logger.Error("Failed to create TransferProtocol", err)
+	}
+
+	// Fetch KadDHT
+	kadDHT, err := host.KadDHT()
+	if err != nil {
+		return nil, logger.Error("Failed to get KadDHT", err)
 	}
 
 	// Create PubSub Value Store
@@ -50,6 +58,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) (*E
 		emitter:          em,
 		resolver:         net.NewHDNSResolver(),
 		PubsubValueStore: r,
+		kadDHT:           kadDHT,
 	}
 	return exchProtocol, nil
 }
@@ -61,8 +70,28 @@ func (p *ExchangeProtocol) Query(q *QueryRequest) (*common.PeerInfo, error) {
 		return nil, logger.Error("Failed to Query Value", err)
 	}
 
+	// Get Peer from KadDHT store
+	buf, err := p.kadDHT.GetValue(p.ctx, query)
+	if err == nil {
+		// Unmarshal Peer
+		peer := &common.Peer{}
+		err = proto.Unmarshal(buf, peer)
+		if err != nil {
+			return nil, logger.Error("Failed to Unmarshal Peer", err)
+		}
+
+		// Get PeerID from Peer
+		info, err := peer.Info()
+		if err != nil {
+			return nil, logger.Error("Failed to get PeerInfo from Peer", err)
+		}
+		return info, nil
+	} else {
+		logger.Warn("Failed to get item from KadDHT", err)
+	}
+
 	// Find peer from sName in the store
-	buf, err := p.PubsubValueStore.GetValue(p.ctx, query)
+	buf, err = p.PubsubValueStore.GetValue(p.ctx, query)
 	if err != nil {
 		return nil, logger.Error(fmt.Sprintf("Failed to GET peer (%s) from store, with Query Value: %s", val, query), err)
 	}
@@ -99,6 +128,12 @@ func (p *ExchangeProtocol) Update(peer *common.Peer) error {
 	buf, err := proto.Marshal(peer)
 	if err != nil {
 		return logger.Error("Failed to Marshal Peer", err)
+	}
+
+	// Add Peer to KadDHT store
+	err = p.kadDHT.PutValue(p.ctx, info.StoreEntryKey, buf)
+	if err != nil {
+		logger.Warn("Failed to put Item in KDHT", err)
 	}
 
 	// Add Peer to SName Store

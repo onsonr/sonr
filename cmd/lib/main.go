@@ -20,6 +20,7 @@ var sonrLib *SonrLib
 
 // Start starts the host, node, and rpc service.
 func Start(reqBytes []byte) []byte {
+	ctx := context.Background()
 	// Unmarshal request
 	isDev, req, fsOpts, err := parseInitializeRequest(reqBytes)
 	if err != nil {
@@ -27,7 +28,6 @@ func Start(reqBytes []byte) []byte {
 	}
 
 	// Initialize Device
-	ctx := context.Background()
 	err = device.Init(isDev, fsOpts...)
 	if err != nil {
 		logger.Panic("Failed to initialize Device", err)
@@ -69,10 +69,7 @@ func Resume() {
 
 // Stop closes the host, node, and rpc service.
 func Stop() {
-	// if started {
-	// 	client.host.Close()
-	// 	client.ctx.Done()
-	// }
+	sonrLib.ctx.Done()
 }
 
 // parseInitializeRequest parses the given buffer and returns the proto and fsOptions.

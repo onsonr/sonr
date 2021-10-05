@@ -15,10 +15,10 @@ const (
 	HOST_RENDEVOUZ_POINT = "/sonr/rendevouz/0.9.2"
 
 	// REFRESH_INTERVAL is the interval for refreshing the discovery
-	REFRESH_INTERVAL = time.Second * 4
+	REFRESH_INTERVAL = time.Second * 10
 
 	// TTL_DURATION is the duration for TTL for the discovery
-	TTL_DURATION = time.Minute * 2
+	TTL_DURATION = time.Minute * 5
 )
 
 // discoveryNotifee is a Notifee for the Discovery Service

@@ -2,6 +2,7 @@ package host
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -21,7 +22,6 @@ import (
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/keychain"
 	"github.com/sonr-io/core/tools/logger"
-	"github.com/sonr-io/core/tools/net"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -69,36 +69,13 @@ func NewHost(ctx context.Context, conn common.Connection, listenAddrs ...HostLis
 
 	// Initialize DHT
 	var kdhtRef *dht.IpfsDHT
-	var listenAddresses []string
-
-	// Add Listen Addresses
-	if len(listenAddrs) > 0 {
-		// Set Initial Port
-		port, err := net.FreePort()
-		if err != nil {
-			logger.Warn("Failed to get free port", err)
-			port = 600214
-		}
-
-		// Build MultAddr Address Strings
-		for _, addr := range listenAddrs {
-			listenAddresses = append(listenAddresses, addr.MultiAddrStr(port))
-		}
-	} else {
-		addrs, err := net.PublicAddrStrs()
-		if err != nil {
-			logger.Warn("Failed to get public addresses", err)
-			listenAddresses = []string{}
-		} else {
-			listenAddresses = addrs
-		}
-	}
+	listenAddrStrs := getListenAddrStrings(listenAddrs...)
 
 	// Start Host
 	h, err := libp2p.New(
 		ctx,
 		libp2p.Identity(privKey),
-		libp2p.ListenAddrStrings(listenAddresses...),
+		libp2p.ListenAddrStrings(listenAddrStrs...),
 		libp2p.DefaultTransports,
 		libp2p.ConnectionManager(connmgr.NewConnManager(
 			25,            // Lowwater
@@ -155,6 +132,14 @@ func NewHost(ctx context.Context, conn common.Connection, listenAddrs ...HostLis
 }
 
 // ** ─── Host Info ────────────────────────────────────────────────────────
+// KadDHT Returns the Kademlia DHT Instance
+func (hn *SNRHost) KadDHT() (*dht.IpfsDHT, error) {
+	if hn.kdht == nil {
+		return nil, errors.New("Kadht is not initialized")
+	}
+	return hn.kdht, nil
+}
+
 // Pubsub Returns Host Node MultiAddr
 func (hn *SNRHost) Pubsub() *psub.PubSub {
 	return hn.pubsub
