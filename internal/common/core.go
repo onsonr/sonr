@@ -17,12 +17,10 @@ import (
 // ** ───────────────────────────────────────────────────────
 // ** ─── General ───────────────────────────────────────────
 // ** ───────────────────────────────────────────────────────
-// OLC_SCOPE is the default OLC Scope for Distance Calculation
-const OLC_SCOPE = 4
 
 // Fetch olc code from lat/lng at Scope Level 6
 func (l *Location) OLC() string {
-	return olc.Encode(float64(l.GetLatitude()), float64(l.GetLongitude()), OLC_SCOPE)
+	return olc.Encode(l.GetLatitude(), l.GetLongitude(), 6)
 }
 
 // Checks if Enviornment is Development

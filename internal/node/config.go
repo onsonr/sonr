@@ -37,10 +37,10 @@ const (
 )
 
 // Initialize initializes the node by Type.
-func (nt NodeType) Initialize(n *Node, l *common.Location) {
+func (nt NodeType) Initialize(n *Node, olc string) {
 	switch nt {
 	case NodeType_CLIENT:
-		n.startClientService(l)
+		n.startClientService(olc)
 	case NodeType_HIGHWAY:
 		n.startHighwayService()
 	}
@@ -54,13 +54,14 @@ type nodeOptions struct {
 	isClient   bool
 	isHighway  bool
 	connection common.Connection
+	localOlc   string
 	request    *InitializeRequest
 }
 
 // Apply applies the node options to the node.
 func (no nodeOptions) Apply(n *Node) {
 	n.profile = no.request.GetProfile()
-	no.GetNodeType().Initialize(n, no.request.GetLocation())
+	no.GetNodeType().Initialize(n, no.localOlc)
 }
 
 // GetNodeType returns the node type from Config
@@ -90,6 +91,8 @@ func (no nodeOptions) GetIPAddresses() []host.HostListenAddr {
 // WithRequest sets the initialize request.
 func WithRequest(req *InitializeRequest) NodeOption {
 	return func(o nodeOptions) {
+		loc := req.GetLocation()
+		o.localOlc = loc.OLC()
 		o.request = req
 		o.connection = req.GetConnection()
 	}

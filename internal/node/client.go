@@ -41,7 +41,7 @@ type ClientNodeStub struct {
 }
 
 // startClientService creates a new Client service stub for the node.
-func (n *Node) startClientService(loc *common.Location) (*ClientNodeStub, error) {
+func (n *Node) startClientService(olc string) (*ClientNodeStub, error) {
 	// Set Transfer Protocol
 	transferProtocol, err := transfer.NewProtocol(n.ctx, n.host, n.Emitter)
 	if err != nil {
@@ -55,7 +55,7 @@ func (n *Node) startClientService(loc *common.Location) (*ClientNodeStub, error)
 	}
 
 	// Set Local Lobby Protocol if Location is provided
-	lobbyProtocol, err := lobby.NewProtocol(n.ctx, n.host, loc, n.Emitter)
+	lobbyProtocol, err := lobby.NewProtocol(n.ctx, n.host, n.Emitter, olc)
 	if err != nil {
 		logger.Error("Failed to start LobbyProtocol", err)
 	}

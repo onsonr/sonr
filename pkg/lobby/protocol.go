@@ -20,8 +20,9 @@ const (
 )
 
 var (
-	ErrParameters  = errors.New("Failed to create new LobbyProtocol, invalid parameters")
-	ErrInvalidPeer = errors.New("Peer object provided to LobbyProtocol is Nil")
+	ErrParameters      = errors.New("Failed to create new LobbyProtocol, invalid parameters")
+	ErrInvalidPeer     = errors.New("Peer object provided to LobbyProtocol is Nil")
+	ErrTopicNotCreated = errors.New("Lobby Topic has not been Created")
 )
 
 // LobbyProtocol is the protocol for managing local peers.
@@ -31,21 +32,21 @@ type LobbyProtocol struct {
 	emitter      *state.Emitter // Handle to signal when done
 	eventHandler *ps.TopicEventHandler
 	lobbyEvents  chan *LobbyMessage
-	location     *common.Location
 	subscription *ps.Subscription
 	topic        *ps.Topic
+	olc          string
 	peers        map[peer.ID]*common.Peer
 }
 
 // NewProtocol creates a new lobby protocol instance.
-func NewProtocol(ctx context.Context, host *host.SNRHost, loc *common.Location, em *state.Emitter) (*LobbyProtocol, error) {
+func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter, olc string) (*LobbyProtocol, error) {
 	// Check parameters
-	if err := checkParams(host, loc, em); err != nil {
+	if err := checkParams(host, olc, em); err != nil {
 		return nil, logger.Error("Failed to create TransferProtocol", err)
 	}
 
 	// Create Exchange Topic
-	topic, err := host.Pubsub().Join(loc.OLC())
+	topic, err := host.Pubsub().Join(olc)
 	if err != nil {
 		return nil, logger.Error("Failed to Join Local Pubsub Topic", err)
 	}
@@ -70,8 +71,8 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, loc *common.Location, 
 		topic:        topic,
 		subscription: sub,
 		eventHandler: handler,
+		olc:          olc,
 		lobbyEvents:  make(chan *LobbyMessage),
-		location:     loc,
 		peers:        make(map[peer.ID]*common.Peer),
 	}
 
@@ -83,6 +84,11 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, loc *common.Location, 
 
 // Update method publishes peer data to the topic
 func (p *LobbyProtocol) Update(peer *common.Peer) error {
+	// Verify Topic has been created
+	if p.topic == nil {
+		return ErrTopicNotCreated
+	}
+
 	// Verify Peer is not nil
 	if peer == nil {
 		return ErrInvalidPeer
@@ -174,7 +180,7 @@ func (p *LobbyProtocol) pushRefresh(id peer.ID, peer *common.Peer) {
 
 	// Create RefreshEvent
 	event := &common.RefreshEvent{
-		Olc:      p.location.OLC(),
+		Olc:      p.olc,
 		Peers:    peers,
 		Received: int64(time.Now().Unix()),
 	}
