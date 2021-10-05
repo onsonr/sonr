@@ -11,11 +11,11 @@ import (
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/internal/keychain"
-	"github.com/sonr-io/core/internal/store"
 	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/transfer"
 	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/tools/state"
+	bolt "go.etcd.io/bbolt"
 )
 
 // Node type - a p2p host implementing one or more p2p protocols
@@ -36,7 +36,7 @@ type Node struct {
 	profile *common.Profile
 
 	// Persistent Database
-	store *store.Store
+	store *bolt.DB
 
 	// Queue - the transfer queue
 	queue *list.List
@@ -343,13 +343,13 @@ func (n *Node) handleEmitter() {
 			// Check Direction
 			if event.Direction == common.CompleteEvent_INCOMING {
 				// Add Sender to Recents
-				err := n.store.AddRecent(event.GetFrom().GetProfile())
+				err := n.AddRecent(event.GetFrom().GetProfile())
 				if err != nil {
 					logger.Error("Failed to add sender's profile to store.", err)
 				}
 			} else {
 				// Add Receiver to Recents
-				err := n.store.AddRecent(event.GetTo().GetProfile())
+				err := n.AddRecent(event.GetTo().GetProfile())
 				if err != nil {
 					logger.Error("Failed to add receiver's profile to store.", err)
 				}
