@@ -85,7 +85,7 @@ func NewNode(ctx context.Context, options ...NodeOption) (*Node, *InitializeResp
 		progressEvents: make(chan *common.ProgressEvent),
 		completeEvents: make(chan *common.CompleteEvent),
 	}
-	opts.Apply(node)
+	opts.Apply(ctx, node)
 
 	// Begin Background Tasks
 	go node.handleEmitter()

@@ -24,9 +24,9 @@ type HighwayNodeStub struct {
 }
 
 // startClientService creates a new Client service stub for the node.
-func (n *Node) startHighwayService() (*HighwayNodeStub, error) {
+func (n *Node) startHighwayService(ctx context.Context) (*HighwayNodeStub, error) {
 	// Initialize Domain Protocol
-	domainProtocol, err := domain.NewProtocol(n.ctx, n.host)
+	domainProtocol, err := domain.NewProtocol(ctx, n.host)
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +41,7 @@ func (n *Node) startHighwayService() (*HighwayNodeStub, error) {
 	grpcServer := grpc.NewServer()
 	stub := &HighwayNodeStub{
 		Node:           n,
-		ctx:            n.ctx,
+		ctx:            ctx,
 		grpcServer:     grpcServer,
 		listener:       listener,
 		DomainProtocol: domainProtocol,

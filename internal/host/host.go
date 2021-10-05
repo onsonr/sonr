@@ -16,7 +16,10 @@ import (
 	"github.com/libp2p/go-libp2p-core/routing"
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
+	noise "github.com/libp2p/go-libp2p-noise"
 	psub "github.com/libp2p/go-libp2p-pubsub"
+	quic "github.com/libp2p/go-libp2p-quic-transport"
+	tls "github.com/libp2p/go-libp2p-tls"
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
@@ -76,6 +79,10 @@ func NewHost(ctx context.Context, conn common.Connection, listenAddrs ...HostLis
 		ctx,
 		libp2p.Identity(privKey),
 		libp2p.ListenAddrStrings(listenAddrStrs...),
+
+		libp2p.Security(tls.ID, tls.New),
+		libp2p.Security(noise.ID, noise.New),
+		libp2p.Transport(quic.NewTransport),
 		libp2p.DefaultTransports,
 		libp2p.ConnectionManager(connmgr.NewConnManager(
 			25,            // Lowwater

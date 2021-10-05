@@ -1,6 +1,7 @@
 package node
 
 import (
+	"context"
 	"errors"
 	"os"
 
@@ -40,12 +41,12 @@ const (
 )
 
 // Initialize initializes the node by Type.
-func (nt NodeType) Initialize(n *Node, olc string) {
+func (nt NodeType) Initialize(ctx context.Context, n *Node, olc string) {
 	switch nt {
 	case NodeType_CLIENT:
-		n.startClientService(olc)
+		n.startClientService(ctx, olc)
 	case NodeType_HIGHWAY:
-		n.startHighwayService()
+		n.startHighwayService(ctx)
 	}
 }
 
@@ -60,9 +61,9 @@ type nodeOptions struct {
 }
 
 // Apply applies the node options to the node.
-func (no nodeOptions) Apply(n *Node) {
+func (no nodeOptions) Apply(ctx context.Context, n *Node) {
 	n.profile = no.request.GetProfile()
-	no.GetNodeType().Initialize(n, no.GetLocalOLC())
+	no.GetNodeType().Initialize(ctx, n, no.GetLocalOLC())
 }
 
 // GetConnection returns the node internet connection type

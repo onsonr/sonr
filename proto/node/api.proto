@@ -55,7 +55,7 @@ message InitializeRequest {
     bool textile = 1;    // Enable Textile Client and Threads
     bool mailbox = 2;    // Enable Mailbox
     bool buckets = 3;    // Enable Buckets
-    bool autoUpdate = 4; // Enable Auto Update Events
+    int32 interval = 4; // Auto Update Interval (seconds) - Default 5s
   }
 
   // IP Address Interface

@@ -40,21 +40,21 @@ type ClientNodeStub struct {
 }
 
 // startClientService creates a new Client service stub for the node.
-func (n *Node) startClientService(olc string) (*ClientNodeStub, error) {
+func (n *Node) startClientService(ctx context.Context, olc string) (*ClientNodeStub, error) {
 	// Set Transfer Protocol
-	transferProtocol, err := transfer.NewProtocol(n.ctx, n.host, n.Emitter)
+	transferProtocol, err := transfer.NewProtocol(ctx, n.host, n.Emitter)
 	if err != nil {
 		logger.Error("Failed to start TransferProtocol", err)
 	}
 
 	// Set Exchange Protocol
-	exchProtocol, err := exchange.NewProtocol(n.ctx, n.host, n.Emitter)
+	exchProtocol, err := exchange.NewProtocol(ctx, n.host, n.Emitter)
 	if err != nil {
 		logger.Error("Failed to start ExchangeProtocol", err)
 	}
 
 	// Set Local Lobby Protocol if Location is provided
-	lobbyProtocol, err := lobby.NewProtocol(n.ctx, n.host, n.Emitter, olc)
+	lobbyProtocol, err := lobby.NewProtocol(ctx, n.host, n.Emitter, olc)
 	if err != nil {
 		logger.Error("Failed to start LobbyProtocol", err)
 	}
@@ -76,18 +76,18 @@ func (n *Node) startClientService(olc string) (*ClientNodeStub, error) {
 	nrc := &ClientNodeStub{
 		grpcServer:       grpcServer,
 		listener:         listener,
-		ctx:              n.ctx,
+		ctx:              ctx,
 		Node:             n,
 		TransferProtocol: transferProtocol,
 		ExchangeProtocol: exchProtocol,
 		LobbyProtocol:    lobbyProtocol,
-		//MailboxProtocol:  mailboxProtocol,
 	}
 
 	// Start Routines
 	RegisterClientServiceServer(grpcServer, nrc)
 	go nrc.serveRPC()
 	go nrc.pushAutomaticPings(time.NewTicker(5 * time.Second))
+
 	// Return RPC Service
 	return nrc, nil
 }
