@@ -97,9 +97,6 @@ func NewNode(ctx context.Context, opts ...NodeOption) (*Node, *InitializeRespons
 		}
 		node.startHighwayService(ctx, cKey, sKey)
 	}
-
-	// Start Background Refresh and Return Response
-	go node.pushAutomaticPings()
 	return node, node.newInitResponse(nil), nil
 }
 
@@ -362,6 +359,7 @@ func (n *Node) Stat() (*StatResponse, error) {
 	}, nil
 }
 
+// pushAutomaticPings sends automatic pings to the network of Profile
 func (n *Node) pushAutomaticPings() {
 	for {
 		// Get Profile
@@ -371,17 +369,21 @@ func (n *Node) pushAutomaticPings() {
 			continue
 		}
 
-		// Push Ping
-		n.LobbyProtocol.Update(p)
-		n.ExchangeProtocol.Update(p)
+		// Push Ping to Lobby
+		err = n.LobbyProtocol.Update(p)
+		if err != nil {
+			logger.Warn("Failed to Auto Ping to Lobby", zap.Error(err))
+			continue
+		}
+
+		// Push Ping to Exchange
+		err = n.ExchangeProtocol.Update(p)
+		if err != nil {
+			logger.Warn("Failed to Auto Ping to Exchange", zap.Error(err))
+			continue
+		}
 
 		// Sleep for 5 Seconds
-		time.Sleep(time.Second * 5)
-
-		// Check if we are still connected
-		select {
-		case <-n.ctx.Done():
-			return
-		}
+		time.Sleep(time.Second * 4)
 	}
 }

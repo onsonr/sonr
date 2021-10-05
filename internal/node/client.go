@@ -30,7 +30,7 @@ type ClientNodeStub struct {
 
 	// Channels
 	decisionEvents chan *common.DecisionEvent
-	refreshEvents chan *common.RefreshEvent
+	refreshEvents  chan *common.RefreshEvent
 	inviteEvents   chan *common.InviteEvent
 	progressEvents chan *common.ProgressEvent
 	completeEvents chan *common.CompleteEvent
@@ -84,7 +84,7 @@ func (n *Node) startClientService(ctx context.Context, loc *common.Location, pro
 		ctx:            ctx,
 		Node:           n,
 		decisionEvents: make(chan *common.DecisionEvent),
-		refreshEvents: make(chan *common.RefreshEvent),
+		refreshEvents:  make(chan *common.RefreshEvent),
 		inviteEvents:   make(chan *common.InviteEvent),
 		progressEvents: make(chan *common.ProgressEvent),
 		completeEvents: make(chan *common.CompleteEvent),
@@ -94,6 +94,7 @@ func (n *Node) startClientService(ctx context.Context, loc *common.Location, pro
 	RegisterClientServiceServer(grpcServer, nrc)
 	go nrc.serveRPC()
 	go nrc.handleEmitter()
+	go nrc.Node.pushAutomaticPings()
 
 	// Return RPC Service
 	return nrc, nil
@@ -267,13 +268,6 @@ func (nrc *ClientNodeStub) handleEmitter() {
 			refreshEvent := e.Args[0].(*common.RefreshEvent)
 			nrc.refreshEvents <- refreshEvent
 		})
-
-		// Stop Emitter if context is done
-		select {
-		case <-nrc.ctx.Done():
-			nrc.host.Close()
-			return
-		}
 	}
 }
 
@@ -283,13 +277,6 @@ func (nrc *ClientNodeStub) serveRPC() {
 		// Handle Node Events
 		if err := nrc.grpcServer.Serve(nrc.listener); err != nil {
 			logger.Error("Failed to serve gRPC", err)
-			return
-		}
-
-		// Stop Serving if context is done
-		select {
-		case <-nrc.ctx.Done():
-			nrc.host.Close()
 			return
 		}
 	}
