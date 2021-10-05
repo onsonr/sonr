@@ -345,7 +345,7 @@
                 </li>
               
                 <li>
-                  <a href="#sonr.core.MailEvent"><span class="badge">M</span>MailEvent</a>
+                  <a href="#sonr.core.MailboxEvent"><span class="badge">M</span>MailboxEvent</a>
                 </li>
               
                 <li>
@@ -2570,7 +2570,7 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
 
         
       
-        <h3 id="sonr.core.MailEvent">MailEvent</h3>
+        <h3 id="sonr.core.MailboxEvent">MailboxEvent</h3>
         <p>Received Mail Event</p>
 
         
@@ -3205,10 +3205,10 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                 </tr>
               
                 <tr>
-                  <td>mailboxDir</td>
+                  <td>textileDir</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>Mailbox Directory </p></td>
+                  <td><p>Textile Directory </p></td>
                 </tr>
               
                 <tr>
@@ -4366,6 +4366,13 @@ Signing Method Request for Data</p></td>
                 <td><a href="#sonr.core.RefreshEvent">.sonr.core.RefreshEvent</a> stream</td>
                 <td><p>Events Streams
 Returns a stream of Lobby Refresh Events</p></td>
+              </tr>
+            
+              <tr>
+                <td>OnMailboxMessage</td>
+                <td><a href="#sonr.node.Empty">Empty</a></td>
+                <td><a href="#sonr.core.MailboxEvent">.sonr.core.MailboxEvent</a> stream</td>
+                <td><p>Returns a stream of Mailbox Message Events</p></td>
               </tr>
             
               <tr>

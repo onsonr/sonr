@@ -27,7 +27,7 @@ message InviteEvent {
 }
 
 // Received Mail Event
-message MailEvent {
+message MailboxEvent {
   string id = 1;                    // ID is the Message ID
   bytes buffer = 2;                 // Buffer is the message data
   sonr.core.Profile from = 3;       // Users Peer Data

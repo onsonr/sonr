@@ -80,6 +80,7 @@ func (hrc *HighwayNodeStub) Register(ctx context.Context, req *RegisterRequest) 
 			Error:   "Invalid request. One or more of the required fields are empty.",
 		}, nil
 	}
+	
 	// Create Record
 	resp, err := hrc.DomainProtocol.Register(name, dnet.NewNBAuthRecord(pfix, name, fprint))
 	if err != nil {

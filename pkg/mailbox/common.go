@@ -19,10 +19,11 @@ const (
 	TextileMinerIdx = "api.minerindex.hub.textile.io:443"
 
 	// Textile Mailbox Directory
-	TextileMailboxDir = ".mailbox"
+	TextileMailboxDirName = "mailbox"
 )
 
 var (
+	ErrMailboxDisabled  = errors.New("Mailbox not enabled, cannot perform request.")
 	ErrMissingAPIKey    = errors.New("Missing Textile API Key in env")
 	ErrMissingAPISecret = errors.New("Missing Textile API Secret in env")
 )
@@ -43,12 +44,24 @@ func fetchApiKeys() (string, string, error) {
 	return key, secret, nil
 }
 
+// getMailboxPath returns the mailbox path from the device
+func (mb *MailboxProtocol) getMailboxPath() (string, error) {
+	// Get Mailbox Path
+	path, err := device.Textile.Join(TextileMailboxDirName)
+	if err != nil {
+		return "", logger.Error("Failed to Find Existing Mailbox at Path", err)
+	}
+	return path, nil
+}
+
 // loadMailbox loads an existing mailbox instance
 func (mb *MailboxProtocol) loadMailbox() error {
+	logger.Info("Loading Mailbox...")
+
 	// Get Mailbox Path
-	path, err := device.Mailbox.Path()
+	path, err := mb.getMailboxPath()
 	if err != nil {
-		return logger.Error("Failed to Find Existing Mailbox at Path", err)
+		return logger.Error("Failed to Create New Mailbox at Path", err)
 	}
 
 	// Return Existing Mailbox
@@ -65,10 +78,12 @@ func (mb *MailboxProtocol) loadMailbox() error {
 
 // newMailbox creates a new mailbox instance
 func (mb *MailboxProtocol) newMailbox() error {
+	logger.Info("Creating new Mailbox...")
+
 	// Get Mailbox Path
-	path, err := device.Mailbox.Path()
+	path, err := mb.getMailboxPath()
 	if err != nil {
-		return logger.Error("Failed to Find Existing Mailbox at Path", err)
+		return logger.Error("Failed to Create New Mailbox at Path", err)
 	}
 
 	// Get Device ThreadIdentity
@@ -91,6 +106,13 @@ func (mb *MailboxProtocol) newMailbox() error {
 		APISecret: secret,
 	})
 
+	// Check if Err is for ErrMailboxExists
+	if err == local.ErrMailboxExists {
+		logger.Info("Mailbox already exists no need to create a new one")
+		// Load Existing Mailbox
+		return mb.loadMailbox()
+	}
+
 	// Check for errors
 	if err != nil {
 		return logger.Error("Failed to create mailbox", err)
@@ -98,6 +120,6 @@ func (mb *MailboxProtocol) newMailbox() error {
 
 	// Set mailbox
 	mb.mailbox = mailbox
-	logger.Info("New Mailbox has been created.", zap.String("path", device.MailboxPath))
+	logger.Info("New Mailbox has been created.", zap.String("path", path))
 	return nil
 }

@@ -29,7 +29,7 @@ BIND_IOS_ARTIFACT= $(BIND_DIR_IOS)/Core.xcframework
 BIND_ANDROID_ARTIFACT= $(BIND_DIR_ANDROID)/io.sonr.core.aar
 
 # @ Proto Directories
-PROTO_DIR_DART=$(SONR_ROOT_DIR)/plugin/lib/src
+PROTO_DIR_DART=$(SONR_ROOT_DIR)/mobile/lib/src
 PROTO_LIST_ALL=${ROOT_DIR}/proto/**/*.proto
 PROTO_LIST_CLIENT=${ROOT_DIR}/proto/node/*.proto
 PROTO_LIST_COMMON=${ROOT_DIR}/proto/common/*.proto

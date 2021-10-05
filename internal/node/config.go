@@ -30,17 +30,33 @@ const (
 	NodeType_HIGHWAY
 )
 
+// Initialize initializes the node by Type.
+func (nt NodeType) Initialize(n *Node) {
+	switch nt {
+	case NodeType_CLIENT:
+		n.startClientService(n.ctx, n.location)
+	case NodeType_HIGHWAY:
+		n.startHighwayService(n.ctx)
+	}
+}
+
 // NodeOption is a function that modifies the node options.
 type NodeOption func(nodeOptions)
 
 // nodeOptions is a collection of options for the node.
 type nodeOptions struct {
-	isClient          bool
-	isHighway         bool
-	connection        common.Connection
-	hostOpts          *InitializeRequest_HostOptions
-	location          *common.Location
-	profile           *common.Profile
+	isClient   bool
+	isHighway  bool
+	connection common.Connection
+	request    *InitializeRequest
+}
+
+// Apply applies the node options to the node.
+func (no nodeOptions) Apply(n *Node) {
+	n.location = no.request.GetLocation()
+	n.profile = no.request.GetProfile()
+
+	no.GetNodeType().Initialize(n)
 }
 
 // GetNodeType returns the node type from Config
@@ -54,7 +70,7 @@ func (no nodeOptions) GetNodeType() NodeType {
 // GetIPAddresses returns host.HostListenAddr from hostOpts
 func (no nodeOptions) GetIPAddresses() []host.HostListenAddr {
 	// Define Listen Addresses
-	providedAddrs := no.hostOpts.GetListenAddrs()
+	providedAddrs := no.request.GetHostOptions().GetListenAddrs()
 	addrs := make([]host.HostListenAddr, len(providedAddrs))
 
 	// Iterate over provided addresses
@@ -70,10 +86,8 @@ func (no nodeOptions) GetIPAddresses() []host.HostListenAddr {
 // WithRequest sets the initialize request.
 func WithRequest(req *InitializeRequest) NodeOption {
 	return func(o nodeOptions) {
-		o.hostOpts = req.GetHostOptions()
+		o.request = req
 		o.connection = req.GetConnection()
-		o.location = req.GetLocation()
-		o.profile = req.GetProfile()
 	}
 }
 

@@ -36,6 +36,9 @@ service ClientService {
   // Returns a stream of Lobby Refresh Events
   rpc OnLobbyRefresh(Empty) returns (stream sonr.core.RefreshEvent) {}
 
+  // Returns a stream of Mailbox Message Events
+  rpc OnMailboxMessage(Empty) returns (stream sonr.core.MailboxEvent) {}
+
   // Returns a stream of DecisionEvent's for Accepted Invites
   rpc OnTransferAccepted(Empty) returns (stream sonr.core.DecisionEvent) {}
 

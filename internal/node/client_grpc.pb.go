@@ -37,6 +37,8 @@ type ClientServiceClient interface {
 	// Events Streams
 	// Returns a stream of Lobby Refresh Events
 	OnLobbyRefresh(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnLobbyRefreshClient, error)
+	// Returns a stream of Mailbox Message Events
+	OnMailboxMessage(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnMailboxMessageClient, error)
 	// Returns a stream of DecisionEvent's for Accepted Invites
 	OnTransferAccepted(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnTransferAcceptedClient, error)
 	// Returns a stream of DecisionEvent's for Rejected Invites
@@ -152,8 +154,40 @@ func (x *clientServiceOnLobbyRefreshClient) Recv() (*common.RefreshEvent, error)
 	return m, nil
 }
 
+func (c *clientServiceClient) OnMailboxMessage(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnMailboxMessageClient, error) {
+	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[1], "/sonr.node.ClientService/OnMailboxMessage", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &clientServiceOnMailboxMessageClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type ClientService_OnMailboxMessageClient interface {
+	Recv() (*common.MailboxEvent, error)
+	grpc.ClientStream
+}
+
+type clientServiceOnMailboxMessageClient struct {
+	grpc.ClientStream
+}
+
+func (x *clientServiceOnMailboxMessageClient) Recv() (*common.MailboxEvent, error) {
+	m := new(common.MailboxEvent)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 func (c *clientServiceClient) OnTransferAccepted(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnTransferAcceptedClient, error) {
-	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[1], "/sonr.node.ClientService/OnTransferAccepted", opts...)
+	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[2], "/sonr.node.ClientService/OnTransferAccepted", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -185,7 +219,7 @@ func (x *clientServiceOnTransferAcceptedClient) Recv() (*common.DecisionEvent, e
 }
 
 func (c *clientServiceClient) OnTransferDeclined(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnTransferDeclinedClient, error) {
-	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[2], "/sonr.node.ClientService/OnTransferDeclined", opts...)
+	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[3], "/sonr.node.ClientService/OnTransferDeclined", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -217,7 +251,7 @@ func (x *clientServiceOnTransferDeclinedClient) Recv() (*common.DecisionEvent, e
 }
 
 func (c *clientServiceClient) OnTransferInvite(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnTransferInviteClient, error) {
-	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[3], "/sonr.node.ClientService/OnTransferInvite", opts...)
+	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[4], "/sonr.node.ClientService/OnTransferInvite", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -249,7 +283,7 @@ func (x *clientServiceOnTransferInviteClient) Recv() (*common.InviteEvent, error
 }
 
 func (c *clientServiceClient) OnTransferProgress(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnTransferProgressClient, error) {
-	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[4], "/sonr.node.ClientService/OnTransferProgress", opts...)
+	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[5], "/sonr.node.ClientService/OnTransferProgress", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -281,7 +315,7 @@ func (x *clientServiceOnTransferProgressClient) Recv() (*common.ProgressEvent, e
 }
 
 func (c *clientServiceClient) OnTransferComplete(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnTransferCompleteClient, error) {
-	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[5], "/sonr.node.ClientService/OnTransferComplete", opts...)
+	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[6], "/sonr.node.ClientService/OnTransferComplete", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -334,6 +368,8 @@ type ClientServiceServer interface {
 	// Events Streams
 	// Returns a stream of Lobby Refresh Events
 	OnLobbyRefresh(*Empty, ClientService_OnLobbyRefreshServer) error
+	// Returns a stream of Mailbox Message Events
+	OnMailboxMessage(*Empty, ClientService_OnMailboxMessageServer) error
 	// Returns a stream of DecisionEvent's for Accepted Invites
 	OnTransferAccepted(*Empty, ClientService_OnTransferAcceptedServer) error
 	// Returns a stream of DecisionEvent's for Rejected Invites
@@ -374,6 +410,9 @@ func (UnimplementedClientServiceServer) Stat(context.Context, *StatRequest) (*St
 }
 func (UnimplementedClientServiceServer) OnLobbyRefresh(*Empty, ClientService_OnLobbyRefreshServer) error {
 	return status.Errorf(codes.Unimplemented, "method OnLobbyRefresh not implemented")
+}
+func (UnimplementedClientServiceServer) OnMailboxMessage(*Empty, ClientService_OnMailboxMessageServer) error {
+	return status.Errorf(codes.Unimplemented, "method OnMailboxMessage not implemented")
 }
 func (UnimplementedClientServiceServer) OnTransferAccepted(*Empty, ClientService_OnTransferAcceptedServer) error {
 	return status.Errorf(codes.Unimplemented, "method OnTransferAccepted not implemented")
@@ -550,6 +589,27 @@ func (x *clientServiceOnLobbyRefreshServer) Send(m *common.RefreshEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
+func _ClientService_OnMailboxMessage_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(Empty)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(ClientServiceServer).OnMailboxMessage(m, &clientServiceOnMailboxMessageServer{stream})
+}
+
+type ClientService_OnMailboxMessageServer interface {
+	Send(*common.MailboxEvent) error
+	grpc.ServerStream
+}
+
+type clientServiceOnMailboxMessageServer struct {
+	grpc.ServerStream
+}
+
+func (x *clientServiceOnMailboxMessageServer) Send(m *common.MailboxEvent) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 func _ClientService_OnTransferAccepted_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(Empty)
 	if err := stream.RecvMsg(m); err != nil {
@@ -695,6 +755,11 @@ var ClientService_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "OnLobbyRefresh",
 			Handler:       _ClientService_OnLobbyRefresh_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "OnMailboxMessage",
+			Handler:       _ClientService_OnMailboxMessage_Handler,
 			ServerStreams: true,
 		},
 		{

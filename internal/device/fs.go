@@ -25,8 +25,8 @@ type DeviceOptions struct {
 	// DownloadsDir is provided Downloads Path.
 	DownloadsDir string
 
-	// MailboxDir is provided Mailbox Path.
-	MailboxDir string
+	// TextileDir is provided Mailbox Path.
+	TextileDir string
 }
 
 var (
@@ -49,7 +49,7 @@ var (
 	SupportPath string
 
 	// MailboxPath is the path to the mailbox folder
-	MailboxPath string
+	TextilePath string
 
 	// deviceID is the device ID. Either provided or found
 	deviceID string
@@ -158,7 +158,7 @@ func (o FSOption) apply() {
 		DownloadsPath = o.Path
 	case Database:
 		DatabasePath = o.Path
-	case Mailbox:
-		MailboxPath = o.Path
+	case Textile:
+		TextilePath = o.Path
 	}
 }

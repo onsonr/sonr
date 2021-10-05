@@ -38,7 +38,7 @@ message InitializeRequest {
     string databaseDir = 3;  // Database Directory
     string documentsDir = 4; // Documents Directory
     string downloadsDir = 5; // Downloads Directory
-    string mailboxDir = 6;   // Mailbox Directory
+    string textileDir = 6;   // Textile Directory
     string supportDir = 7;   // Support Directory
   }
 

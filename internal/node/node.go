@@ -5,15 +5,15 @@ import (
 	"context"
 	"errors"
 	"strings"
-	"time"
 
+	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/internal/keychain"
 	"github.com/sonr-io/core/internal/store"
-	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/lobby"
+	"github.com/sonr-io/core/pkg/mailbox"
 	"github.com/sonr-io/core/pkg/transfer"
 	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/tools/state"
@@ -30,6 +30,9 @@ type Node struct {
 	// Properties
 	ctx context.Context
 
+	// Location - current location of the node
+	location *common.Location
+
 	// Given Profile from Config
 	profile *common.Profile
 
@@ -39,31 +42,39 @@ type Node struct {
 	// Queue - the transfer queue
 	queue *list.List
 
-	// Type - the type of node
-	nodeType NodeType
+	// Channels
+	// TransferProtocol - decisionEvents
+	decisionEvents chan *common.DecisionEvent
 
-	// TransferProtocol - the transfer protocol
-	*transfer.TransferProtocol
+	// LobbyProtocol - refreshEvents
+	refreshEvents chan *common.RefreshEvent
 
-	// ExchangeProtocol - the exchange protocol
-	*exchange.ExchangeProtocol
+	// MailboxProtocol - mailEvents
+	mailEvents chan *common.MailboxEvent
 
-	// LobbyProtocol - The lobby protocol
-	*lobby.LobbyProtocol
+	// TransferProtocol - inviteEvents
+	inviteEvents chan *common.InviteEvent
+
+	// TransferProtocol - progressEvents
+	progressEvents chan *common.ProgressEvent
+
+	// TransferProtocol - completeEvents
+	completeEvents chan *common.CompleteEvent
 }
 
 // NewNode Creates a node with its implemented protocols
 func NewNode(ctx context.Context, opts ...NodeOption) (*Node, *InitializeResponse, error) {
-	// Set Node Options
-	config := defaultNodeOptions()
-	for _, opt := range opts {
-		opt(config)
-	}
 
 	// Get Device KeyChain Account Key
 	privKey, err := device.KeyChain.GetPrivKey(keychain.Account)
 	if err != nil {
 		return nil, nil, logger.Error("Failed to get private key", err)
+	}
+
+	// Set Node Options
+	config := defaultNodeOptions()
+	for _, opt := range opts {
+		opt(config)
 	}
 
 	// Initialize Host
@@ -74,67 +85,22 @@ func NewNode(ctx context.Context, opts ...NodeOption) (*Node, *InitializeRespons
 
 	// Create Node
 	node := &Node{
-		Emitter:  state.NewEmitter(2048),
-		host:     host,
-		ctx:      ctx,
-		queue:    list.New(),
-		nodeType: config.GetNodeType(),
-		profile:  config.profile,
+		Emitter:        state.NewEmitter(2048),
+		host:           host,
+		ctx:            ctx,
+		queue:          list.New(),
+		decisionEvents: make(chan *common.DecisionEvent),
+		refreshEvents:  make(chan *common.RefreshEvent),
+		inviteEvents:   make(chan *common.InviteEvent),
+		mailEvents:     make(chan *common.MailboxEvent),
+		progressEvents: make(chan *common.ProgressEvent),
+		completeEvents: make(chan *common.CompleteEvent),
 	}
+	config.Apply(node)
 
-	// Check Config for ClientNode
-	if config.isClient {
-		// Set Transfer Protocol
-		node.TransferProtocol = transfer.NewProtocol(ctx, node.host, node.Emitter)
-
-		// Set Exchange Protocol
-		exch, err := exchange.NewProtocol(ctx, node.host, node.Emitter)
-		if err != nil {
-			logger.Error("Failed to start ExchangeProtocol", err)
-		} else {
-			node.ExchangeProtocol = exch
-		}
-
-		// Set Local Lobby Protocol if Location is provided
-		lobby, err := lobby.NewProtocol(ctx, node.host, config.location, node.Emitter)
-		if err != nil {
-			logger.Error("Failed to start LobbyProtocol", err)
-		} else {
-			node.LobbyProtocol = lobby
-		}
-
-		// Initialze client lite node
-		node.startClientService(ctx)
-	}
-
-	// Check Config for HighwayNode
-	if config.isHighway {
-		node.startHighwayService(ctx)
-	}
-	go node.pushAutomaticPings(node.profile)
+	// Begin Background Tasks
+	go node.handleEmitter()
 	return node, node.newInitResponse(nil), nil
-}
-
-// Edit method updates Node's profile
-func (n *Node) Edit(p *common.Profile) error {
-	// Get Peer
-	peer, err := n.Peer()
-	if err != nil {
-		return logger.Error("Failed to get Node Peer Object", err)
-	}
-
-	// Push Update to Exchange
-	err = n.ExchangeProtocol.Update(peer)
-	if err != nil {
-		return logger.Error("Failed to update Exchange", err)
-	}
-
-	// Push Update to Lobby
-	err = n.LobbyProtocol.Update(peer)
-	if err != nil {
-		return logger.Error("Failed to update Lobby", err)
-	}
-	return nil
 }
 
 // Peer method returns the peer of the node
@@ -213,7 +179,7 @@ func (n *Node) Supply(paths []string) error {
 }
 
 // Share a peer to have a transfer
-func (n *Node) Share(to *common.Peer) error {
+func (n *Node) NewRequest(to *common.Peer) (peer.ID, *transfer.InviteRequest, error) {
 	// Fetch Element from Queue
 	elem := n.queue.Front()
 	if elem != nil {
@@ -223,19 +189,19 @@ func (n *Node) Share(to *common.Peer) error {
 		// Create New ID for Invite
 		id, err := device.KeyChain.CreateUUID()
 		if err != nil {
-			return logger.Error("Failed to create new id for Shared Invite", err)
+			return "", nil, logger.Error("Failed to create new id for Shared Invite", err)
 		}
 
 		// Create new Metadata
 		meta, err := device.KeyChain.CreateMetadata(n.host.ID())
 		if err != nil {
-			return logger.Error("Failed to create new metadata for Shared Invite", err)
+			return "", nil, logger.Error("Failed to create new metadata for Shared Invite", err)
 		}
 
 		// Fetch User Peer
 		from, err := n.Peer()
 		if err != nil {
-			return logger.Error("Failed to get Node Peer Object", err)
+			return "", nil, logger.Error("Failed to get Node Peer Object", err)
 		}
 
 		// Create Invite Request
@@ -250,32 +216,25 @@ func (n *Node) Share(to *common.Peer) error {
 		// Fetch Peer ID from Public Key
 		toId, err := to.PeerID()
 		if err != nil {
-			return logger.Error("Failed to fetch peer id from public key", err)
+			return "", nil, logger.Error("Failed to fetch peer id from public key", err)
 		}
-
-		// Request Peer to Transfer File
-		err = n.TransferProtocol.Request(toId, req)
-		if err != nil {
-			return logger.Error("Failed to invite peer", err)
-		}
-		return nil
+		return toId, req, nil
 	}
-	return errors.New("No items in Transfer Queue.")
+	return "", nil, errors.New("No items in Transfer Queue.")
 }
 
 // Respond to an invite request
-func (n *Node) Respond(decs bool, to *common.Peer) error {
+func (n *Node) NewResponse(decs bool, to *common.Peer) (peer.ID, *transfer.InviteResponse, error) {
 	// Create new Metadata
 	meta, err := device.KeyChain.CreateMetadata(n.host.ID())
 	if err != nil {
-		logger.Error("Failed to create new metadata for Shared Invite", err)
-		return err
+		return "", nil, logger.Error("Failed to create new metadata for Shared Invite", err)
 	}
 
 	// Fetch User Peer
 	from, err := n.Peer()
 	if err != nil {
-		return err
+		return "", nil, err
 	}
 
 	// Create Invite Response
@@ -289,17 +248,9 @@ func (n *Node) Respond(decs bool, to *common.Peer) error {
 	// Fetch Peer ID from Public Key
 	toId, err := to.PeerID()
 	if err != nil {
-		logger.Error("Failed to fetch peer id from public key", err)
-		return err
+		return "", nil, logger.Error("Failed to fetch peer id from public key", err)
 	}
-
-	// Respond on TransferProtocol
-	err = n.TransferProtocol.Respond(toId, resp)
-	if err != nil {
-		logger.Error("Failed to respond to invite", err)
-		return err
-	}
-	return nil
+	return toId, resp, nil
 }
 
 // Stat returns the Node info as StatResponse
@@ -360,17 +311,57 @@ func (n *Node) Stat() (*StatResponse, error) {
 	}, nil
 }
 
-// pushAutomaticPings sends automatic pings to the network of Profile
-func (n *Node) pushAutomaticPings(p *common.Profile) {
+// HandleEmitter handles the emitter events.
+func (n *Node) handleEmitter() {
 	for {
-		// Push Ping to Lobby
-		err := n.Edit(p)
-		if err != nil {
-			logger.Error("Failed to push Auto Ping", err)
-			continue
-		}
+		// Handle Mail Event
+		n.On(mailbox.Event_MAIL_RECEIVED, func(e *state.Event) {
+			event := e.Args[0].(*common.MailboxEvent)
+			n.mailEvents <- event
+		})
 
-		// Sleep for 5 Seconds
-		time.Sleep(time.Second * 4)
+		// Handle Transfer Invite
+		n.On(transfer.Event_INVITED, func(e *state.Event) {
+			event := e.Args[0].(*common.InviteEvent)
+			n.inviteEvents <- event
+		})
+
+		// Handle Transfer Decision
+		n.On(transfer.Event_RESPONDED, func(e *state.Event) {
+			event := e.Args[0].(*common.DecisionEvent)
+			n.decisionEvents <- event
+		})
+
+		// Handle Transfer Progress
+		n.On(transfer.Event_PROGRESS, func(e *state.Event) {
+			event := e.Args[0].(*common.ProgressEvent)
+			n.progressEvents <- event
+		})
+
+		// Handle Transfer Completed
+		n.On(transfer.Event_COMPLETED, func(e *state.Event) {
+			event := e.Args[0].(*common.CompleteEvent)
+			// Check Direction
+			if event.Direction == common.CompleteEvent_INCOMING {
+				// Add Sender to Recents
+				err := n.store.AddRecent(event.GetFrom().GetProfile())
+				if err != nil {
+					logger.Error("Failed to add sender's profile to store.", err)
+				}
+			} else {
+				// Add Receiver to Recents
+				err := n.store.AddRecent(event.GetTo().GetProfile())
+				if err != nil {
+					logger.Error("Failed to add receiver's profile to store.", err)
+				}
+			}
+			n.completeEvents <- event
+		})
+
+		// Handle Lobby Join Events
+		n.On(lobby.Event_LIST_REFRESH, func(e *state.Event) {
+			refreshEvent := e.Args[0].(*common.RefreshEvent)
+			n.refreshEvents <- refreshEvent
+		})
 	}
 }

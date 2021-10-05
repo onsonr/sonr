@@ -3,6 +3,7 @@ package device
 import (
 	"errors"
 	"os"
+	"path/filepath"
 
 	"github.com/sonr-io/core/internal/keychain"
 	"github.com/sonr-io/core/tools/logger"
@@ -17,6 +18,7 @@ var (
 	// Directory errors
 	ErrDirectoryInvalid = errors.New("Directory Type is invalid")
 	ErrDirectoryUnset   = errors.New("Directory path has not been set")
+	ErrDirectoryJoin    = errors.New("Failed to join directory path")
 
 	// Keychain errors
 	ErrInvalidKeyType  = errors.New("Invalid KeyPair Type provided")
@@ -66,8 +68,8 @@ const (
 	// Database is the type for Database folder.
 	Database
 
-	// Mailbox is the type for Mailbox folder.
-	Mailbox
+	// Textile is the type for Textile folder.
+	Textile
 )
 
 // Path returns the path for the directory.
@@ -99,11 +101,11 @@ func (d DirType) Path() (string, error) {
 			return "", ErrDirectoryUnset
 		}
 		return DatabasePath, nil
-	case Mailbox:
-		if MailboxPath == "" {
+	case Textile:
+		if TextilePath == "" {
 			return "", ErrDirectoryUnset
 		}
-		return MailboxPath, nil
+		return TextilePath, nil
 	default:
 		return "", ErrDirectoryInvalid
 	}
@@ -119,6 +121,34 @@ func (d DirType) Exists() bool {
 	}
 
 	// Check if the directory exists
+	if _, err := os.Stat(path); err == nil {
+		return true
+	}
+	return false
+}
+
+// Join returns the path for the directory joined with the path.
+func (d DirType) Join(path string) (string, error) {
+	// Get the directory path
+	dir, err := d.Path()
+	if err != nil {
+		return path, ErrDirectoryJoin
+	}
+
+	// Join the directory with the path
+	return filepath.Join(dir, path), nil
+}
+
+// Has returns true if the directory has the file or directory.
+func (d DirType) Has(p string) bool {
+	// Get the directory path
+	path, err := d.Join(p)
+	if err != nil {
+		logger.Error("Failed to determine joined path", err)
+		return false
+	}
+
+	// Check if the directory has the file or directory
 	if _, err := os.Stat(path); err == nil {
 		return true
 	}

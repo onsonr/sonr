@@ -42,7 +42,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) (*M
 	}
 
 	// Create new mailbox
-	if device.Mailbox.Exists() {
+	if device.Textile.Exists() {
 		// Return Existing Mailbox
 		if err := mailProtocol.loadMailbox(); err != nil {
 			return nil, err
@@ -128,11 +128,11 @@ func (ts *MailboxProtocol) onNewMessage(e local.MailboxEvent, state cmd.Connecti
 	// Send Foreground Event
 	if state == cmd.Online {
 		// Create Mail Event
-		mail := &common.MailEvent{
-			To:      msg.GetTo(),
-			From:    msg.GetFrom(),
-			Buffer:  msg.GetBuffer(),
-			Id:      msg.GetId(),
+		mail := &common.MailboxEvent{
+			To:     msg.GetTo(),
+			From:   msg.GetFrom(),
+			Buffer: msg.GetBuffer(),
+			Id:     msg.GetId(),
 		}
 
 		// Callback Mail Event
@@ -142,6 +142,11 @@ func (ts *MailboxProtocol) onNewMessage(e local.MailboxEvent, state cmd.Connecti
 
 // Method Sends Mail Entry to Peer
 func (ts *MailboxProtocol) DeleteMail(id string) error {
+	// Check if Mailbox exists
+	if ts.mail == nil || ts.mailbox == nil {
+		return ErrMailboxDisabled
+	}
+
 	// Mark Item as Read
 	err := ts.mailbox.DeleteInboxMessage(context.Background(), id)
 	if err != nil {
@@ -152,6 +157,11 @@ func (ts *MailboxProtocol) DeleteMail(id string) error {
 
 // Method Sends Mail Entry to Peer
 func (ts *MailboxProtocol) ReadMail(id string) error {
+	// Check if Mailbox exists
+	if ts.mail == nil || ts.mailbox == nil {
+		return ErrMailboxDisabled
+	}
+
 	// Mark Item as Read
 	err := ts.mailbox.ReadInboxMessage(context.Background(), id)
 	if err != nil {
@@ -162,6 +172,11 @@ func (ts *MailboxProtocol) ReadMail(id string) error {
 
 // Method Sends Mail Entry to Peer
 func (ts *MailboxProtocol) SendMail(to thread.PubKey, message *MailboxMessage) error {
+	// Check if Mailbox exists
+	if ts.mail == nil || ts.mailbox == nil {
+		return ErrMailboxDisabled
+	}
+
 	// Marshal Data
 	buf, err := protojson.Marshal(message)
 	if err != nil {

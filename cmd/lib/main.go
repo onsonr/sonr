@@ -110,8 +110,8 @@ func parseInitializeRequest(buf []byte) (bool, *node.InitializeRequest, []device
 			Path: req.GetDeviceOptions().GetDatabaseDir(),
 			Type: device.Database,
 		}, device.FSOption{
-			Path: req.GetDeviceOptions().GetMailboxDir(),
-			Type: device.Mailbox,
+			Path: req.GetDeviceOptions().GetTextileDir(),
+			Type: device.Textile,
 		})
 	}
 	return req.GetEnvironment().IsDev(), req, fsOpts, nil
