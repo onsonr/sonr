@@ -31,7 +31,7 @@ func main() {
 	}
 
 	// Create Node
-	n, resp, err := node.NewNode(ctx, node.WithClient())
+	n, resp, err := node.NewNode(ctx, nil, node.WithClient())
 	if err != nil {
 		panic(logger.Error("Failed to update Profile for Node", err))
 	}

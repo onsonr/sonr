@@ -72,7 +72,6 @@ func (nd *Node) startClientService(ctx context.Context) (*ClientNodeStub, error)
 	RegisterClientServiceServer(grpcServer, nrc)
 	go nrc.serveRPC()
 	go nrc.handleEmitter()
-	go nrc.Node.pushAutomaticPings()
 
 	// Return RPC Service
 	return nrc, nil
@@ -126,7 +125,7 @@ func (n *ClientNodeStub) Edit(ctx context.Context, req *EditRequest) (*EditRespo
 
 // Fetch method retreives Node properties from Key/Value Store
 func (n *ClientNodeStub) Fetch(ctx context.Context, req *FetchRequest) (*FetchResponse, error) {
-	// Call Internal Fetch
+	// Call Internal Fetch4
 	// profile, err := n.Node.store.GetProfile()
 	// if err != nil {
 	// 	return &FetchResponse{

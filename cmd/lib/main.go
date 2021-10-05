@@ -34,7 +34,7 @@ func Start(reqBytes []byte) []byte {
 	}
 
 	// Create Node
-	n, resp, err := node.NewNode(ctx, node.WithRequest(req), node.WithClient())
+	n, resp, err := node.NewNode(ctx, req.GetProfile(), node.WithRequest(req), node.WithClient())
 	if err != nil {
 		panic(logger.Error("Failed to update Profile for Node", err))
 	}

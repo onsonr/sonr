@@ -73,10 +73,7 @@ func NewProtocol(host *host.SNRHost, loc *common.Location, em *state.Emitter) (*
 // Update method publishes peer data to the topic
 func (p *LobbyProtocol) Update(peer *common.Peer) error {
 	// Create Event
-	event := &LobbyMessage{
-		Peer: peer,
-		Olc:  p.location.OLC(),
-	}
+	event := &LobbyMessage{Peer: peer}
 
 	// Marshal Event
 	eventBuf, err := proto.Marshal(event)

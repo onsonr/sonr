@@ -26,7 +26,7 @@ func main() {
 	}
 
 	// Create Node
-	n, resp, err := node.NewNode(ctx, node.WithHighway())
+	n, resp, err := node.NewNode(ctx, nil, node.WithHighway())
 	if err != nil {
 		panic(logger.Error("Failed to update Profile for Node", err))
 	}

@@ -9,8 +9,8 @@ BIND_DIR=${PROJECT_DIR}/cmd/lib
 BUILD_DIR=${PROJECT_DIR}/build
 cd ${PROJECT_DIR}/../
 ROOT_DIR=$(pwd);
-PLUGIN_ANDROID=${ROOT_DIR}/plugin/android/libs
-PLUGIN_IOS=${ROOT_DIR}/plugin/ios/Frameworks
+PLUGIN_ANDROID=${ROOT_DIR}/mobile/android/libs
+PLUGIN_IOS=${ROOT_DIR}/mobile/ios/Frameworks
 ANDROID_ARTIFACT=io.sonr.core.aar
 IOS_ARTIFACT=Core.xcframework
 cd ${PROJECT_DIR}

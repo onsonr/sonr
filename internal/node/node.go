@@ -17,7 +17,6 @@ import (
 	"github.com/sonr-io/core/pkg/transfer"
 	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/tools/state"
-	"go.uber.org/zap"
 )
 
 // Node type - a p2p host implementing one or more p2p protocols
@@ -54,7 +53,7 @@ type Node struct {
 }
 
 // NewNode Creates a node with its implemented protocols
-func NewNode(ctx context.Context, opts ...NodeOption) (*Node, *InitializeResponse, error) {
+func NewNode(ctx context.Context, profile *common.Profile, opts ...NodeOption) (*Node, *InitializeResponse, error) {
 	// Set Node Options
 	config := defaultNodeOptions()
 	for _, opt := range opts {
@@ -80,7 +79,7 @@ func NewNode(ctx context.Context, opts ...NodeOption) (*Node, *InitializeRespons
 		ctx:      ctx,
 		queue:    list.New(),
 		nodeType: config.GetNodeType(),
-		profile:  config.profile,
+		profile:  profile,
 	}
 
 	// Check Config for ClientNode
@@ -106,7 +105,6 @@ func NewNode(ctx context.Context, opts ...NodeOption) (*Node, *InitializeRespons
 
 		// Initialze client lite node
 		node.startClientService(ctx)
-		return node, node.newInitResponse(nil), nil
 	}
 
 	// Check Config for HighwayNode
@@ -117,21 +115,13 @@ func NewNode(ctx context.Context, opts ...NodeOption) (*Node, *InitializeRespons
 			return nil, nil, logger.Error("Failed to start Highway Service", err)
 		}
 		node.startHighwayService(ctx, cKey, sKey)
-		return node, node.newInitResponse(nil), nil
 	}
+	go node.pushAutomaticPings(profile)
 	return node, node.newInitResponse(nil), nil
 }
 
 // Edit method updates Node's profile
 func (n *Node) Edit(p *common.Profile) error {
-	// Set Profile and Fetch User Peer
-	p.LastModified = time.Now().Unix()
-	// err := n.store.SetProfile(p)
-	// if err != nil {
-	// 	return err
-	// }
-	n.profile = p
-
 	// Get Peer
 	peer, err := n.Peer()
 	if err != nil {
@@ -174,7 +164,7 @@ func (n *Node) Peer() (*common.Peer, error) {
 
 	// Return Peer
 	return &common.Peer{
-		SName:     strings.ToLower(n.profile.SName),
+		SName:     strings.ToLower(n.profile.GetSName()),
 		Status:    common.Peer_ONLINE,
 		Profile:   n.profile,
 		PublicKey: pubBuf,
@@ -199,14 +189,14 @@ func (n *Node) Peer() (*common.Peer, error) {
 // 	return pro, nil
 // }
 
-// Recents method returns the recent peers of the node
-func (n *Node) Recents() (store.RecentsHistory, error) {
-	rec, err := n.store.GetRecents()
-	if err != nil {
-		return nil, logger.Error("Failed to get recents", err)
-	}
-	return rec, nil
-}
+// // Recents method returns the recent peers of the node
+// func (n *Node) Recents() (store.RecentsHistory, error) {
+// 	rec, err := n.store.GetRecents()
+// 	if err != nil {
+// 		return nil, logger.Error("Failed to get recents", err)
+// 	}
+// 	return rec, nil
+// }
 
 // Supply a transfer item to the queue
 func (n *Node) Supply(paths []string) error {
@@ -376,26 +366,12 @@ func (n *Node) Stat() (*StatResponse, error) {
 }
 
 // pushAutomaticPings sends automatic pings to the network of Profile
-func (n *Node) pushAutomaticPings() {
+func (n *Node) pushAutomaticPings(p *common.Profile) {
 	for {
-		// Get Profile
-		p, err := n.Peer()
+		// Push Ping to Lobby
+		err := n.Edit(p)
 		if err != nil {
 			logger.Error("Failed to push Auto Ping", err)
-			continue
-		}
-
-		// Push Ping to Lobby
-		err = n.LobbyProtocol.Update(p)
-		if err != nil {
-			logger.Warn("Failed to Auto Ping to Lobby", zap.Error(err))
-			continue
-		}
-
-		// Push Ping to Exchange
-		err = n.ExchangeProtocol.Update(p)
-		if err != nil {
-			logger.Warn("Failed to Auto Ping to Exchange", zap.Error(err))
 			continue
 		}
 

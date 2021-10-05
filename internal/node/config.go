@@ -38,7 +38,6 @@ type nodeOptions struct {
 	connection        common.Connection
 	hostOpts          *InitializeRequest_HostOptions
 	location          *common.Location
-	profile           *common.Profile
 	namebaseApiClient string
 	namebaseApiSecret string
 }
@@ -85,7 +84,6 @@ func WithRequest(req *InitializeRequest) NodeOption {
 		o.hostOpts = req.GetHostOptions()
 		o.connection = req.GetConnection()
 		o.location = req.GetLocation()
-		o.profile = req.GetProfile()
 	}
 }
 
@@ -131,21 +129,11 @@ func (n *Node) newInitResponse(err error) *InitializeResponse {
 		}
 	}
 
-	// Fetch Recents
-	r, err := n.Recents()
-	if err != nil {
-		return &InitializeResponse{
-			Success: true,
-			Error:   err.Error(),
-			Profile: n.profile,
-		}
-	}
-
 	// Return Response
 	return &InitializeResponse{
 		Success: true,
 		Profile: n.profile,
-		Recents: r,
+		//	Recents: r,
 	}
 }
 
