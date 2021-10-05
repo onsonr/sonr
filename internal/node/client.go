@@ -37,29 +37,29 @@ type ClientNodeStub struct {
 
 // startClientService creates a new Client service stub for the node.
 func (nd *Node) startClientService(ctx context.Context, loc *common.Location, profile *common.Profile) (*ClientNodeStub, error) {
-	go func(node *Node) {
+	// Set Transfer Protocol
+	nd.TransferProtocol = transfer.NewProtocol(ctx, nd.host, nd.Emitter)
 
-		// Set Transfer Protocol
-		node.TransferProtocol = transfer.NewProtocol(ctx, node.host, node.Emitter)
+	// Set Exchange Protocol
+	exch, err := exchange.NewProtocol(ctx, nd.host, nd.Emitter)
+	if err != nil {
+		logger.Error("Failed to start ExchangeProtocol", err)
+	} else {
+		nd.ExchangeProtocol = exch
+	}
 
-		// Set Exchange Protocol
-		exch, err := exchange.NewProtocol(ctx, node.host, node.Emitter)
+	// Set Local Lobby Protocol if Location is provided
+	if loc != nil {
+		lobby, err := lobby.NewProtocol(nd.host, loc, nd.Emitter)
 		if err != nil {
-			logger.Error("Failed to start ExchangeProtocol", err)
+			logger.Error("Failed to start LobbyProtocol", err)
 		} else {
-			node.ExchangeProtocol = exch
+			nd.LobbyProtocol = lobby
 		}
+	}
 
-		// Set Local Lobby Protocol if Location is provided
-		if loc != nil {
-			lobby, err := lobby.NewProtocol(node.host, loc, node.Emitter)
-			if err != nil {
-				logger.Error("Failed to start LobbyProtocol", err)
-			} else {
-				node.LobbyProtocol = lobby
-			}
-		}
-
+	// Start Node Store
+	go func(node *Node) {
 		// // Initialize Store
 		// store, err := store.NewStore(ctx, node.host, node.Emitter)
 		// if err != nil {
