@@ -2,7 +2,6 @@ package device
 
 import (
 	"encoding/json"
-	"os"
 
 	"github.com/sonr-io/core/internal/keychain"
 	"github.com/sonr-io/core/tools/config"
@@ -85,15 +84,15 @@ func Init(isDev bool, opts ...FSOption) error {
 	logger.Init(isDev)
 
 	// Set Variables from OS
-	HANDSHAKE_KEY.Set(os.Getenv("HANDSHAKE_KEY"))
-	HANDSHAKE_SECRET.Set(os.Getenv("HANDSHAKE_SECRET"))
-	IP_LOCATION_KEY.Set(os.Getenv("IP_LOCATION_KEY"))
-	RAPID_API_KEY.Set(os.Getenv("RAPID_API_KEY"))
-	TEXTILE_HUB_KEY.Set(os.Getenv("TEXTILE_HUB_KEY"))
-	TEXTILE_HUB_SECRET.Set(os.Getenv("TEXTILE_HUB_SECRET"))
+	// HANDSHAKE_KEY.Set(os.Getenv("HANDSHAKE_KEY"))
+	// HANDSHAKE_SECRET.Set(os.Getenv("HANDSHAKE_SECRET"))
+	// IP_LOCATION_KEY.Set(os.Getenv("IP_LOCATION_KEY"))
+	// RAPID_API_KEY.Set(os.Getenv("RAPID_API_KEY"))
+	// TEXTILE_HUB_KEY.Set(os.Getenv("TEXTILE_HUB_KEY"))
+	// TEXTILE_HUB_SECRET.Set(os.Getenv("TEXTILE_HUB_SECRET"))
 
 	// Check if Opts are set
-	if len(opts) == 0 {
+	if len(opts) == 0 { 
 		// Create Device Config
 		configDirs := config.New(VendorName(), AppName())
 

@@ -104,10 +104,11 @@ func NewNode(ctx context.Context, opts ...NodeOption) (*Node, *InitializeRespons
 func (n *Node) Edit(p *common.Profile) error {
 	// Set Profile and Fetch User Peer
 	p.LastModified = time.Now().Unix()
-	err := n.store.SetProfile(p)
-	if err != nil {
-		return err
-	}
+	// err := n.store.SetProfile(p)
+	// if err != nil {
+	// 	return err
+	// }
+	n.profile = p
 
 	// Get Peer
 	peer, err := n.Peer()
@@ -174,13 +175,12 @@ func (n *Node) Peer() (*common.Peer, error) {
 func (n *Node) Profile() (*common.Profile, error) {
 	// Get Profile from Store
 	pro, err := n.store.GetProfile()
-	if err == nil && pro.GetSName() != "" {
-		return pro, nil
+	if err != nil {
+		return nil, logger.Error("Failed to get profile, from Store. Using provided record.", err)
 	}
 
 	// Warn if no profile found
-	logger.Warn("Failed to get profile, from Store. Using provided record.", zap.Error(err))
-	return n.profile, nil
+	return pro, nil
 }
 
 // Recents method returns the recent peers of the node

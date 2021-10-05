@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	ErrVariableNotFound = errors.New("EnvVariable not found on OS.getEnv()")
+	ErrVariableNotFound = errors.New("EnvVariable not found on Env")
 )
 
 // EnvVariable represents an environment variable
