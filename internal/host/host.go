@@ -60,7 +60,13 @@ func (la HostListenAddr) MultiAddrStr(port int) string {
 }
 
 // NewHost creates a new host
-func NewHost(ctx context.Context, conn common.Connection, privKey crypto.PrivKey, listenAddrs ...HostListenAddr) (*SNRHost, error) {
+func NewHost(ctx context.Context, conn common.Connection, listenAddrs ...HostListenAddr) (*SNRHost, error) {
+	// Get Device KeyChain Account Key
+	privKey, err := device.KeyChain.GetPrivKey(keychain.Account)
+	if err != nil {
+		return nil, logger.Error("Failed to get private key", err)
+	}
+
 	// Initialize DHT
 	var kdhtRef *dht.IpfsDHT
 	var listenAddresses []string

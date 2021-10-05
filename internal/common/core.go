@@ -20,7 +20,16 @@ import (
 
 // Fetch olc code from lat/lng at Scope Level 6
 func (l *Location) OLC() string {
-	return olc.Encode(l.GetLatitude(), l.GetLongitude(), 6)
+	// Get Lat/Lon
+	lat := l.GetLatitude()
+	lng := l.GetLongitude()
+
+	// Get OLC code
+	code := olc.Encode(lat, lng, 8)
+	if code == "" {
+		return "global"
+	}
+	return code
 }
 
 // Checks if Enviornment is Development

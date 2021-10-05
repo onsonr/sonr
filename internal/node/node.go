@@ -59,22 +59,15 @@ type Node struct {
 }
 
 // NewNode Creates a node with its implemented protocols
-func NewNode(ctx context.Context, opts ...NodeOption) (*Node, *InitializeResponse, error) {
-
-	// Get Device KeyChain Account Key
-	privKey, err := device.KeyChain.GetPrivKey(keychain.Account)
-	if err != nil {
-		return nil, nil, logger.Error("Failed to get private key", err)
-	}
-
+func NewNode(ctx context.Context, options ...NodeOption) (*Node, *InitializeResponse, error) {
 	// Set Node Options
-	config := defaultNodeOptions()
-	for _, opt := range opts {
-		opt(config)
+	opts := defaultNodeOptions()
+	for _, opt := range options {
+		opt(opts)
 	}
 
 	// Initialize Host
-	host, err := host.NewHost(ctx, config.connection, privKey, config.GetIPAddresses()...)
+	host, err := host.NewHost(ctx, opts.GetConnection(), opts.GetIPAddresses()...)
 	if err != nil {
 		return nil, nil, logger.Error("Failed to initialize host", err)
 	}
@@ -92,7 +85,7 @@ func NewNode(ctx context.Context, opts ...NodeOption) (*Node, *InitializeRespons
 		progressEvents: make(chan *common.ProgressEvent),
 		completeEvents: make(chan *common.CompleteEvent),
 	}
-	config.Apply(node)
+	opts.Apply(node)
 
 	// Begin Background Tasks
 	go node.handleEmitter()

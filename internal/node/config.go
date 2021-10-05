@@ -23,6 +23,9 @@ var (
 	ErrProfileIsOlder     = errors.New("Profile is older than the oldest one on disk.")
 	ErrProfileNoTimestamp = errors.New("Profile has no timestamp.")
 	ErrStoreNotCreated    = errors.New("Node Store has not been opened/created.")
+	ErrLobbyNotCreated    = errors.New("LobbyProtocol has not been created")
+	ErrExchangeNotCreated = errors.New("ExchangeProtocol has not been created")
+	ErrTransferNotCreated = errors.New("TransferProtocol has not been created")
 )
 
 // NodeType is the type of the node (Client, Highway)
@@ -51,17 +54,25 @@ type NodeOption func(nodeOptions)
 
 // nodeOptions is a collection of options for the node.
 type nodeOptions struct {
-	isClient   bool
-	isHighway  bool
-	connection common.Connection
-	localOlc   string
-	request    *InitializeRequest
+	isClient  bool
+	isHighway bool
+	request   *InitializeRequest
 }
 
 // Apply applies the node options to the node.
 func (no nodeOptions) Apply(n *Node) {
 	n.profile = no.request.GetProfile()
-	no.GetNodeType().Initialize(n, no.localOlc)
+	no.GetNodeType().Initialize(n, no.GetLocalOLC())
+}
+
+// GetConnection returns the node internet connection type
+func (no nodeOptions) GetConnection() common.Connection {
+	return no.request.GetConnection()
+}
+
+// GetLocalOLC returns the local OLC for LobbyProtocol
+func (no nodeOptions) GetLocalOLC() string {
+	return no.request.GetLocation().OLC()
 }
 
 // GetNodeType returns the node type from Config
@@ -91,10 +102,7 @@ func (no nodeOptions) GetIPAddresses() []host.HostListenAddr {
 // WithRequest sets the initialize request.
 func WithRequest(req *InitializeRequest) NodeOption {
 	return func(o nodeOptions) {
-		loc := req.GetLocation()
-		o.localOlc = loc.OLC()
 		o.request = req
-		o.connection = req.GetConnection()
 	}
 }
 

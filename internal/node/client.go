@@ -97,15 +97,23 @@ func (n *Node) startClientService(olc string) (*ClientNodeStub, error) {
 // Update method updates the node's properties in the Key/Value Store and Lobby
 func (n *ClientNodeStub) Update(peer *common.Peer) error {
 	// Push Update to Exchange
-	err := n.ExchangeProtocol.Update(peer)
-	if err != nil {
-		return logger.Error("Failed to Update Exchange", err)
+	if n.ExchangeProtocol != nil {
+		err := n.ExchangeProtocol.Update(peer)
+		if err != nil {
+			return logger.Error("Failed to Update Exchange", err)
+		}
+	} else {
+		return logger.Error("Failed to Update ExchangeProtocol", ErrExchangeNotCreated)
 	}
 
 	// Push Update to Lobby
-	err = n.LobbyProtocol.Update(peer)
-	if err != nil {
-		return logger.Error("Failed to Update Exchange", err)
+	if n.LobbyProtocol != nil {
+		err := n.LobbyProtocol.Update(peer)
+		if err != nil {
+			return logger.Error("Failed to Update Lobby", err)
+		}
+	} else {
+		return logger.Error("Failed to Update LobbyProtocol", ErrLobbyNotCreated)
 	}
 	return nil
 }
@@ -133,11 +141,18 @@ func (n *ClientNodeStub) Supply(ctx context.Context, req *SupplyRequest) (*Suppl
 		}
 
 		// Request Peer to Transfer File
-		err = n.TransferProtocol.Request(toId, inv)
-		if err != nil {
+		if n.TransferProtocol != nil {
+			err = n.TransferProtocol.Request(toId, inv)
+			if err != nil {
+				return &SupplyResponse{
+					Success: false,
+					Error:   err.Error(),
+				}, nil
+			}
+		} else {
 			return &SupplyResponse{
 				Success: false,
-				Error:   err.Error(),
+				Error:   ErrTransferNotCreated.Error(),
 			}, nil
 		}
 	}
@@ -204,11 +219,18 @@ func (n *ClientNodeStub) Share(ctx context.Context, req *ShareRequest) (*ShareRe
 	}
 
 	// Request Peer to Transfer File
-	err = n.TransferProtocol.Request(toId, inv)
-	if err != nil {
+	if n.TransferProtocol != nil {
+		err = n.TransferProtocol.Request(toId, inv)
+		if err != nil {
+			return &ShareResponse{
+				Success: false,
+				Error:   err.Error(),
+			}, nil
+		}
+	} else {
 		return &ShareResponse{
 			Success: false,
-			Error:   err.Error(),
+			Error:   ErrTransferNotCreated.Error(),
 		}, nil
 	}
 
@@ -221,45 +243,62 @@ func (n *ClientNodeStub) Share(ctx context.Context, req *ShareRequest) (*ShareRe
 // Search Method to find a Peer by SName
 func (n *ClientNodeStub) Search(ctx context.Context, req *SearchRequest) (*SearchResponse, error) {
 	// Call Internal Ping
-	entry, err := n.Query(exchange.NewQueryRequestFromSName(req.GetSName()))
-	if err != nil {
+	if n.ExchangeProtocol != nil {
+		// Call Internal Search
+		entry, err := n.Query(exchange.NewQueryRequestFromSName(req.GetSName()))
+		if err != nil {
+			return &SearchResponse{
+				Success: false,
+				Error:   err.Error(),
+			}, nil
+		}
+
+		// Send Response
+		return &SearchResponse{
+			Success: true,
+			Peer:    entry.Peer,
+		}, nil
+	} else {
 		return &SearchResponse{
 			Success: false,
-			Error:   err.Error(),
+			Error:   ErrExchangeNotCreated.Error(),
 		}, nil
 	}
 
-	// Send Response
-	return &SearchResponse{
-		Success: true,
-		Peer:    entry.Peer,
-	}, nil
 }
 
 // Respond method responds to a received InviteRequest.
 func (n *ClientNodeStub) Respond(ctx context.Context, req *RespondRequest) (*RespondResponse, error) {
 	// Call Internal Respond
-	toId, resp, err := n.Node.NewResponse(req.GetDecision(), req.GetPeer())
-	if err != nil {
+	if n.TransferProtocol != nil {
+		toId, resp, err := n.Node.NewResponse(req.GetDecision(), req.GetPeer())
+		if err != nil {
+			return &RespondResponse{
+				Success: false,
+				Error:   err.Error(),
+			}, nil
+		}
+
+		// Respond on TransferProtocol
+		err = n.TransferProtocol.Respond(toId, resp)
+		if err != nil {
+			return &RespondResponse{
+				Success: false,
+				Error:   err.Error(),
+			}, nil
+		}
+
+		// Send Response
+		return &RespondResponse{
+			Success: true,
+		}, nil
+	} else {
 		return &RespondResponse{
 			Success: false,
-			Error:   err.Error(),
+			Error:   ErrTransferNotCreated.Error(),
 		}, nil
 	}
 
-	// Respond on TransferProtocol
-	err = n.TransferProtocol.Respond(toId, resp)
-	if err != nil {
-		return &RespondResponse{
-			Success: false,
-			Error:   err.Error(),
-		}, nil
-	}
-
-	// Send Response
-	return &RespondResponse{
-		Success: true,
-	}, nil
 }
 
 // Stat method returns the node's stats
