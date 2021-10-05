@@ -17,7 +17,7 @@ import (
 // ** ─── General ───────────────────────────────────────────
 // ** ───────────────────────────────────────────────────────
 // OLC_SCOPE is the default OLC Scope for Distance Calculation
-const OLC_SCOPE = 6
+const OLC_SCOPE = 4
 
 // Fetch olc code from lat/lng at Scope Level 6
 func (l *Location) OLC() string {

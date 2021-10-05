@@ -6,7 +6,6 @@ import (
 	"net"
 
 	common "github.com/sonr-io/core/internal/common"
-	"github.com/sonr-io/core/internal/store"
 	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/transfer"
@@ -37,38 +36,38 @@ type ClientNodeStub struct {
 }
 
 // startClientService creates a new Client service stub for the node.
-func (n *Node) startClientService(ctx context.Context, loc *common.Location, profile *common.Profile) (*ClientNodeStub, error) {
-	// Initialize Store
-	store, err := store.NewStore(ctx, n.host, n.Emitter)
-	if err != nil {
-		return nil, logger.Error("Failed to initialize store", err)
-	}
-	n.store = store
+func (nd *Node) startClientService(ctx context.Context, loc *common.Location, profile *common.Profile) (*ClientNodeStub, error) {
+	go func(node *Node) {
 
-	// Set Profile
-	err = n.store.SetProfile(profile)
-	if err != nil {
-		logger.Error("Failed to Set a New Profile", err)
-	}
+		// Set Transfer Protocol
+		node.TransferProtocol = transfer.NewProtocol(ctx, node.host, node.Emitter)
 
-	// Set Transfer Protocol
-	n.TransferProtocol = transfer.NewProtocol(ctx, n.host, n.Emitter)
-
-	// Set Exchange Protocol
-	exch, err := exchange.NewProtocol(ctx, n.host, n.Emitter)
-	if err != nil {
-		return nil, logger.Error("Failed to start ExchangeProtocol", err)
-	}
-	n.ExchangeProtocol = exch
-
-	// Set Local Lobby Protocol if Location is provided
-	if loc != nil {
-		lobby, err := lobby.NewProtocol(n.host, loc, n.Emitter)
+		// Set Exchange Protocol
+		exch, err := exchange.NewProtocol(ctx, node.host, node.Emitter)
 		if err != nil {
-			return nil, logger.Error("Failed to start LobbyProtocol", err)
+			logger.Error("Failed to start ExchangeProtocol", err)
+		} else {
+			node.ExchangeProtocol = exch
 		}
-		n.LobbyProtocol = lobby
-	}
+
+		// Set Local Lobby Protocol if Location is provided
+		if loc != nil {
+			lobby, err := lobby.NewProtocol(node.host, loc, node.Emitter)
+			if err != nil {
+				logger.Error("Failed to start LobbyProtocol", err)
+			} else {
+				node.LobbyProtocol = lobby
+			}
+		}
+
+		// // Initialize Store
+		// store, err := store.NewStore(ctx, node.host, node.Emitter)
+		// if err != nil {
+		// 	logger.Error("Failed to initialize store", err)
+		// } else {
+		// 	node.store = store
+		// }
+	}(nd)
 
 	// Bind RPC Service
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", RPC_SERVER_PORT))
@@ -82,7 +81,7 @@ func (n *Node) startClientService(ctx context.Context, loc *common.Location, pro
 		grpcServer:     grpcServer,
 		listener:       listener,
 		ctx:            ctx,
-		Node:           n,
+		Node:           nd,
 		decisionEvents: make(chan *common.DecisionEvent),
 		refreshEvents:  make(chan *common.RefreshEvent),
 		inviteEvents:   make(chan *common.InviteEvent),
