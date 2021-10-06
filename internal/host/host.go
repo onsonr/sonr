@@ -2,6 +2,7 @@ package host
 
 import (
 	"context"
+	"time"
 
 	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/crypto"
@@ -78,7 +79,10 @@ func (hn *SNRHost) Close() error {
 // ** ─── Host Info ────────────────────────────────────────────────────────
 // SendMessage writes a protobuf go data object to a network stream
 func (hn *SNRHost) SendMessage(id peer.ID, p protocol.ID, data proto.Message) error {
-	s, err := hn.NewStream(hn.ctx, id, p)
+	ctxCancel, cancel := context.WithDeadline(hn.ctx, <-time.After(10*time.Second))
+	defer cancel()
+
+	s, err := hn.NewStream(ctxCancel, id, p)
 	if err != nil {
 		return logger.Error("Failed to start stream", err)
 	}

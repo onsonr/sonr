@@ -104,7 +104,9 @@ func (p *LobbyProtocol) Update(peer *common.Peer) error {
 	}
 
 	// Publish Event
-	err = p.topic.Publish(p.ctx, eventBuf)
+	ctx, cancel := context.WithDeadline(p.ctx, <-time.After(time.Second*10))
+	defer cancel()
+	err = p.topic.Publish(ctx, eventBuf)
 	if err != nil {
 		return logger.Error("Failed to Publish Event", err)
 	}

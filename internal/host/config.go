@@ -16,6 +16,7 @@ import (
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/keychain"
 	"github.com/sonr-io/core/tools/logger"
+	"github.com/sonr-io/core/tools/net"
 )
 
 // HostOption is a function that modifies the node options.
@@ -106,18 +107,18 @@ func defaultHostOptions() hostOptions {
 		connection:     common.Connection_WIFI,
 		bootstrapPeers: dht.GetDefaultBootstrapPeerAddrInfos(),
 		lowWater:       10,
-		highWater:      40,
+		highWater:      15,
 		gracePeriod:    time.Second * 5,
 		privateKey:     privKey,
 		rendezvous:     "/sonr/rendevouz/0.9.2",
 		interval:       time.Second * 5,
-		ttl:            time.Minute * 2,
+		ttl:            time.Minute * 1,
 	}
 }
 
 // Apply creates slice of libp2p.Option from the host options.
 func (no hostOptions) Apply(ctx context.Context, hn *SNRHost) []libp2p.Option {
-	return []libp2p.Option{
+	opts := []libp2p.Option{
 		libp2p.Identity(no.privateKey),
 		libp2p.ConnectionManager(connmgr.NewConnManager(
 			no.lowWater,    // Lowwater
@@ -136,6 +137,18 @@ func (no hostOptions) Apply(ctx context.Context, hn *SNRHost) []libp2p.Option {
 			hn.IpfsDHT = kdht
 			return kdht, nil
 		}),
+		libp2p.NATPortMap(),
 		libp2p.EnableAutoRelay(),
 	}
+
+	// Get Listening Addresses
+	listenAddrs, err := net.PublicAddrStrs()
+	if err != nil {
+		logger.Error("Failed to get Public Listening Addresses", err)
+		return opts
+	}
+
+	// Return options
+	opts = append(opts, libp2p.ListenAddrStrings(listenAddrs...))
+	return opts
 }
