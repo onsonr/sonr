@@ -18,7 +18,6 @@ require (
 	github.com/pkg/errors v0.9.1
 	go.etcd.io/bbolt v1.3.6
 	go.uber.org/zap v1.19.0
-	golang.org/x/mobile v0.0.0-20210924032853-1c027f395ef7 // indirect
 	golang.org/x/net v0.0.0-20210907225631-ff17edfbf26d
 	golang.org/x/tools v0.1.2 // indirect
 	google.golang.org/grpc v1.40.0

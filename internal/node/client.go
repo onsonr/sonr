@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/transfer"
@@ -87,7 +88,9 @@ func (n *Node) startClientService(ctx context.Context, olc string) (*ClientNodeS
 	// Start Routines
 	RegisterClientServiceServer(grpcServer, nrc)
 	go nrc.serveRPC()
-	go nrc.pushAutomaticPings(time.NewTicker(5 * time.Second))
+
+	// pushFunc, errChan := common.NewPeriodicFunc(ctx, nrc.Update, common.WithInterval(5*time.Second), common.WithRetry(3, 10*time.Second))
+	// go nrc.pushAutomaticPings(time.NewTicker(5 * time.Second))
 
 	// Return RPC Service
 	return nrc, nil
@@ -181,18 +184,18 @@ func (n *ClientNodeStub) Edit(ctx context.Context, req *EditRequest) (*EditRespo
 // Fetch method retreives Node properties from Key/Value Store
 func (n *ClientNodeStub) Fetch(ctx context.Context, req *FetchRequest) (*FetchResponse, error) {
 	// Call Internal Fetch4
-	// profile, err := n.Node.store.GetProfile()
-	// if err != nil {
-	// 	return &FetchResponse{
-	// 		Success: false,
-	// 		Error:   err.Error(),
-	// 	}, nil
-	// }
+	profile, err := n.Node.GetProfile()
+	if err != nil {
+		return &FetchResponse{
+			Success: false,
+			Error:   err.Error(),
+		}, nil
+	}
 
 	// Send Response
 	return &FetchResponse{
 		Success: true,
-		Profile: n.profile,
+		Profile: profile,
 	}, nil
 }
 
@@ -415,8 +418,11 @@ func (n *ClientNodeStub) pushAutomaticPings(ticker *time.Ticker) {
 		select {
 		case <-ticker.C:
 			// Call Internal Update
-			if err := n.Update(); err != nil {
+			retryFunc := common.NewRetryFunc(n.Update, 2, time.Second*20)
+			if err := retryFunc(); err != nil {
 				logger.Error("Failed to push Auto Ping", err)
+				ticker.Stop()
+				return
 			}
 		case <-n.ctx.Done():
 			ticker.Stop()

@@ -1,13 +1,21 @@
 package host
 
 import (
+	"errors"
+	"time"
+
 	dscl "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/peer"
 	peerstore "github.com/libp2p/go-libp2p-core/peerstore"
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	psub "github.com/libp2p/go-libp2p-pubsub"
 
+	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/tools/logger"
+)
+
+var (
+	ErrDHTNotFound = errors.New("DHT has not been set by Routing Function")
 )
 
 // discoveryNotifee is a Notifee for the Discovery Service
@@ -21,8 +29,21 @@ func (n *discoveryNotifee) HandlePeerFound(pi peer.AddrInfo) {
 }
 
 // ** ─── HostNode Connection Methods ────────────────────────────────────────────────────────
+func (hn *SNRHost) checkDhtSet() error {
+	if hn.IpfsDHT == nil {
+		return ErrDHTNotFound
+	}
+	return nil
+}
+
 // Bootstrap begins bootstrap with peers
 func (h *SNRHost) Bootstrap() error {
+	// Check DHT Set
+	retryFunc := common.NewRetryFunc(h.checkDhtSet, 3, time.Second*3)
+	if err := retryFunc(); err != nil {
+		return logger.Error("Host DHT was never set", err)
+	}
+
 	// Add Host Address to Peerstore
 	h.Peerstore().AddAddrs(h.ID(), h.Addrs(), peerstore.PermanentAddrTTL)
 

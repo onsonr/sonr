@@ -116,7 +116,7 @@ func defaultHostOptions() hostOptions {
 }
 
 // Apply creates slice of libp2p.Option from the host options.
-func (no hostOptions) Apply(ctx context.Context, kdhtRef *dht.IpfsDHT) []libp2p.Option {
+func (no hostOptions) Apply(ctx context.Context, hn *SNRHost) []libp2p.Option {
 	return []libp2p.Option{
 		libp2p.Identity(no.privateKey),
 		libp2p.ConnectionManager(connmgr.NewConnManager(
@@ -133,7 +133,7 @@ func (no hostOptions) Apply(ctx context.Context, kdhtRef *dht.IpfsDHT) []libp2p.
 			}
 
 			// Set DHT
-			kdhtRef = kdht
+			hn.IpfsDHT = kdht
 			return kdht, nil
 		}),
 		libp2p.EnableAutoRelay(),

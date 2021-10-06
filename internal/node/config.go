@@ -8,6 +8,7 @@ import (
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/tools/logger"
 	"go.uber.org/zap"
+	"google.golang.org/protobuf/proto"
 )
 
 // Error Definitions
@@ -104,30 +105,48 @@ func defaultNodeOptions() nodeOptions {
 
 // Apply applies the node options to the node.
 func (no nodeOptions) Apply(ctx context.Context, n *Node) {
-	n.profile = no.request.GetProfile()
-	no.GetNodeType().Initialize(ctx, n, no.GetLocalOLC())
+	no.NodeType().Initialize(ctx, n, no.LobbyOLC())
 }
 
-// GetConnection returns the node internet connection type
-func (no nodeOptions) GetConnection() common.Connection {
+// Connection returns the node internet connection type
+func (no nodeOptions) Connection() common.Connection {
 	return no.request.GetConnection()
 }
 
-// GetLocalOLC returns the local OLC for LobbyProtocol
-func (no nodeOptions) GetLocalOLC() string {
+// LobbyOLC returns the local OLC for LobbyProtocol
+func (no nodeOptions) LobbyOLC() string {
 	return no.request.GetLocation().OLC()
 }
 
-// GetNodeType returns the node type from Config
-func (no nodeOptions) GetNodeType() NodeType {
+// NodeType returns the node type from Config
+func (no nodeOptions) NodeType() NodeType {
 	if no.isHighway {
 		return NodeType_HIGHWAY
 	}
 	return NodeType_CLIENT
 }
 
+// ProfileBuffer returns the Profile as a byte slice.
+func (no nodeOptions) ProfileBuffer() ([]byte, error) {
+	// Check if Profile is provided
+	if no.request.Profile == nil {
+		return nil, ErrProfileNotProvided
+	}
+	return proto.Marshal(no.request.GetProfile())
+}
+
 // newInitResponse creates a response for the initialize request.
 func (n *Node) newInitResponse(err error) *InitializeResponse {
+	// Get Profile from Store
+	profile, err := n.GetProfile()
+	if err != nil {
+		logger.Error("Failed to create initialize Response", err)
+		return &InitializeResponse{
+			Success: false,
+			Error:   err.Error(),
+		}
+	}
+
 	// Check for provided error
 	if err != nil {
 		return &InitializeResponse{
@@ -139,7 +158,7 @@ func (n *Node) newInitResponse(err error) *InitializeResponse {
 	// Return Response
 	return &InitializeResponse{
 		Success: true,
-		Profile: n.profile,
+		Profile: profile,
 		//	Recents: r,
 	}
 }

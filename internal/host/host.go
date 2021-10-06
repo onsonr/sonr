@@ -44,24 +44,22 @@ type SNRHost struct {
 // NewHost creates a new host
 func NewHost(ctx context.Context, options ...HostOption) (*SNRHost, error) {
 	// Initialize DHT
-	var kdhtRef *dht.IpfsDHT
+	var err error
 	opts := defaultHostOptions()
 	for _, opt := range options {
 		opt(opts)
 	}
 
-	// Start Host
-	h, err := libp2p.New(ctx, opts.Apply(ctx, kdhtRef)...)
-	if err != nil {
-		return nil, logger.Error("Failed to initialize libp2p host", err)
-	}
-
 	// Create Host
 	hn := &SNRHost{
-		ctx:     ctx,
-		Host:    h,
-		IpfsDHT: kdhtRef,
-		opts:    opts,
+		ctx:  ctx,
+		opts: opts,
+	}
+
+	// Start Host
+	hn.Host, err = libp2p.New(ctx, opts.Apply(ctx, hn)...)
+	if err != nil {
+		return nil, logger.Error("Failed to initialize libp2p host", err)
 	}
 
 	// Bootstrap Host

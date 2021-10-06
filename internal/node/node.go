@@ -16,6 +16,7 @@ import (
 	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/tools/state"
 	bolt "go.etcd.io/bbolt"
+	"google.golang.org/protobuf/proto"
 )
 
 // Node type - a p2p host implementing one or more p2p protocols
@@ -29,8 +30,8 @@ type Node struct {
 	// Properties
 	ctx context.Context
 
-	// Given Profile from Config
-	profile *common.Profile
+	// Node Options
+	options nodeOptions
 
 	// Persistent Database
 	store *bolt.DB
@@ -67,7 +68,7 @@ func NewNode(ctx context.Context, options ...NodeOption) (*Node, *InitializeResp
 	}
 
 	// Initialize Host
-	host, err := host.NewHost(ctx, host.WithConnection(opts.GetConnection()))
+	host, err := host.NewHost(ctx, host.WithConnection(opts.Connection()))
 	if err != nil {
 		return nil, nil, logger.Error("Failed to initialize host", err)
 	}
@@ -85,15 +86,27 @@ func NewNode(ctx context.Context, options ...NodeOption) (*Node, *InitializeResp
 		progressEvents: make(chan *common.ProgressEvent),
 		completeEvents: make(chan *common.CompleteEvent),
 	}
-	opts.Apply(ctx, node)
+
+	// Open Database
+	err = node.openStore(ctx, host, node.Emitter)
+	if err != nil {
+		return nil, nil, logger.Error("Failed to open database", err)
+	}
 
 	// Begin Background Tasks
+	opts.Apply(ctx, node)
 	go node.handleEmitter()
 	return node, node.newInitResponse(nil), nil
 }
 
 // Peer method returns the peer of the node
 func (n *Node) Peer() (*common.Peer, error) {
+	// Get Profile
+	profile, err := n.GetProfile()
+	if err != nil {
+		return nil, err
+	}
+
 	// Get Public Key
 	pubKey, err := device.KeyChain.GetSnrPubKey(keychain.Account)
 	if err != nil {
@@ -114,9 +127,9 @@ func (n *Node) Peer() (*common.Peer, error) {
 
 	// Return Peer
 	return &common.Peer{
-		SName:     strings.ToLower(n.profile.GetSName()),
+		SName:     strings.ToLower(profile.GetSName()),
 		Status:    common.Peer_ONLINE,
-		Profile:   n.profile,
+		Profile:   profile,
 		PublicKey: pubBuf,
 		Device: &common.Peer_Device{
 			HostName: deviceStat.HostName,
@@ -127,37 +140,52 @@ func (n *Node) Peer() (*common.Peer, error) {
 	}, nil
 }
 
-// // Profile method returns the profile of the node
-// func (n *Node) Profile() (*common.Profile, error) {
-// 	// Get Profile from Store
-// 	pro, err := n.store.GetProfile()
-// 	if err != nil {
-// 		return nil, logger.Error("Failed to get profile, from Store. Using provided record.", err)
-// 	}
+// GetProfile returns the profile for the user from diskDB
+func (n *Node) GetProfile() (*common.Profile, error) {
+	// Check if Store is open
+	if n.store == nil {
+		return nil, logger.Error("Failed to Get Profile", ErrStoreNotCreated)
+	}
 
-// 	// Warn if no profile found
-// 	return pro, nil
-// }
+	var profile common.Profile
+	err := n.store.View(func(tx *bolt.Tx) error {
+		// Assume bucket exists and has keys
+		b := tx.Bucket(USER_BUCKET)
 
-// // Recents method returns the recent peers of the node
-// func (n *Node) Recents() (store.RecentsHistory, error) {
-// 	rec, err := n.store.GetRecents()
-// 	if err != nil {
-// 		return nil, logger.Error("Failed to get recents", err)
-// 	}
-// 	return rec, nil
-// }
+		// Check if bucket exists
+		if b == nil {
+			return ErrProfileNotCreated
+		}
+
+		// Get profile buffer
+		buf := b.Get(PROFILE_KEY)
+		if buf == nil {
+			return nil
+		}
+
+		// Unmarshal profile
+		err := proto.Unmarshal(buf, &profile)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &profile, nil
+}
 
 // Supply a transfer item to the queue
 func (n *Node) Supply(paths []string) error {
 	// Get Profile
-	// profile, err := n.store.GetProfile()
-	// if err != nil {
-	// 	return err
-	// }
+	profile, err := n.GetProfile()
+	if err != nil {
+		return err
+	}
 
 	// Create Transfer
-	payload, err := common.NewPayload(n.profile, paths)
+	payload, err := common.NewPayload(profile, paths)
 	if err != nil {
 		return logger.Error("Failed to Supply Paths", err)
 	}
@@ -244,14 +272,14 @@ func (n *Node) NewResponse(decs bool, to *common.Peer) (peer.ID, *transfer.Invit
 
 // Stat returns the Node info as StatResponse
 func (n *Node) Stat() (*StatResponse, error) {
-	// // Get Profile
-	// profile, err := n.store.GetProfile()
-	// if err != nil {
-	// 	return &StatResponse{
-	// 		Success: false,
-	// 		Error:   err.Error(),
-	// 	}, err
-	// }
+	// Get Profile
+	profile, err := n.GetProfile()
+	if err != nil {
+		return &StatResponse{
+			Success: false,
+			Error:   err.Error(),
+		}, err
+	}
 
 	// Get Host Stats
 	hStat, err := n.host.Stat()
@@ -259,8 +287,8 @@ func (n *Node) Stat() (*StatResponse, error) {
 		return &StatResponse{
 			Success: false,
 			Error:   err.Error(),
-			SName:   n.profile.SName,
-			Profile: n.profile,
+			SName:   profile.SName,
+			Profile: profile,
 		}, logger.Error("Failed to get Host Stat", err)
 	}
 
@@ -270,8 +298,8 @@ func (n *Node) Stat() (*StatResponse, error) {
 		return &StatResponse{
 			Success: false,
 			Error:   err.Error(),
-			SName:   n.profile.SName,
-			Profile: n.profile,
+			SName:   profile.SName,
+			Profile: profile,
 			Network: &StatResponse_Network{
 				PublicKey: hStat.PublicKey,
 				PeerID:    hStat.PeerID,
@@ -282,8 +310,8 @@ func (n *Node) Stat() (*StatResponse, error) {
 
 	// Return StatResponse
 	return &StatResponse{
-		SName:   n.profile.SName,
-		Profile: n.profile,
+		SName:   profile.SName,
+		Profile: profile,
 		Network: &StatResponse_Network{
 			PublicKey: hStat.PublicKey,
 			PeerID:    hStat.PeerID,

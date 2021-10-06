@@ -42,11 +42,29 @@ func (n *Node) openStore(ctx context.Context, h *host.SNRHost, em *state.Emitter
 		return logger.Error("Failed to open Database", err)
 	}
 	n.store = db
+
+	// Marshal Profile
+	profileBuf, err := n.options.ProfileBuffer()
+	if err != nil {
+		return logger.Error("Failed to marshal Profile", err)
+	}
+
+	// Create Profile Bucket
+	err = n.createBucket(USER_BUCKET, PROFILE_KEY, profileBuf)
+	if err != nil {
+		return err
+	}
+
+	// Create Recents Bucket
+	err = n.createBucket(RECENTS_BUCKET, nil, nil)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
 // createBucket creates a new bucket in the store.
-func (n *Node) createBucket(key []byte) error {
+func (n *Node) createBucket(name []byte, key []byte, val []byte) error {
 	// Check if Store is open
 	if n.store == nil {
 		return logger.Error("Failed to Create Bucket", ErrStoreNotCreated)
@@ -54,9 +72,20 @@ func (n *Node) createBucket(key []byte) error {
 
 	return n.store.Update(func(tx *bolt.Tx) error {
 		// Assume bucket exists and has keys
-		_, err := tx.CreateBucketIfNotExists(USER_BUCKET)
+		b, err := tx.CreateBucketIfNotExists(name)
 		if err != nil {
 			return logger.Error("Failed to create new bucket", err)
+		}
+
+		// Check if Value is not nil
+		if val != nil && key != nil {
+			// Put in Bucket
+			err = b.Put(key, val)
+			if err != nil {
+				return err
+			}
+		} else {
+			logger.Warn("No initial key/value provided skipping first Put")
 		}
 		return nil
 	})
@@ -163,40 +192,10 @@ func (n *Node) GetRecents() (RecentsHistory, error) {
 		}
 		return nil
 	})
-	return recents, n.checkGetErr(err)
-}
-
-// GetProfile returns the profile for the user from diskDB
-func (n *Node) GetProfile() (*common.Profile, error) {
-	// Check if Store is open
-	if n.store == nil {
-		return nil, logger.Error("Failed to Get Profile", ErrStoreNotCreated)
+	if err != nil {
+		return nil, err
 	}
-
-	var profile common.Profile
-	err := n.store.View(func(tx *bolt.Tx) error {
-		// Assume bucket exists and has keys
-		b := tx.Bucket(USER_BUCKET)
-
-		// Check if bucket exists
-		if b == nil {
-			return ErrProfileNotCreated
-		}
-
-		// Get profile buffer
-		buf := b.Get(PROFILE_KEY)
-		if buf == nil {
-			return nil
-		}
-
-		// Unmarshal profile
-		err := proto.Unmarshal(buf, &profile)
-		if err != nil {
-			return err
-		}
-		return nil
-	})
-	return &profile, n.checkGetErr(err)
+	return recents, nil
 }
 
 // SetProfile stores the profile for the user in diskDB
@@ -210,28 +209,6 @@ func (n *Node) SetProfile(profile *common.Profile) error {
 	if profile == nil {
 		return ErrProfileNotProvided
 	}
-
-	// // Compare current profile with new profile
-	// isNewProfile := false
-	// currentProfile, err := s.GetProfile()
-	// if err != nil {
-	// 	if err == ErrProfileNotCreated {
-	// 		profile.LastModified = time.Now().Unix()
-	// 		isNewProfile = true
-	// 	} else {
-	// 		return logger.Error("Failed to set Profile", err)
-	// 	}
-	// }
-
-	// // Check if given profile has Timestamp
-	// if !isNewProfile && profile.GetLastModified() == 0 {
-	// 	return ErrProfileNoTimestamp
-	// }
-
-	// // Verify timestamp
-	// if !isNewProfile && profile.LastModified < currentProfile.GetLastModified() {
-	// 	return ErrProfileIsOlder
-	// }
 
 	// Put in Bucket
 	return n.store.Update(func(tx *bolt.Tx) error {
@@ -254,37 +231,4 @@ func (n *Node) SetProfile(profile *common.Profile) error {
 		}
 		return nil
 	})
-}
-
-// checkGetErr checks if an error occurred and if so, handles it.
-func (n *Node) checkGetErr(err error) error {
-	if err != nil {
-		// Check if profile bucket not created
-		if err == ErrProfileNotCreated {
-			logger.Debug("No Profile Bucket found, Creating new one...")
-
-			// Check if bucket was created
-			err = n.createBucket(USER_BUCKET)
-			if err != nil {
-				return err
-			}
-			return nil
-		}
-
-		// Check if recents bucket not created
-		if err == ErrRecentsNotCreated {
-			logger.Debug("No Recents Bucket found, Creating new one...")
-
-			// Check if bucket was created
-			err = n.createBucket(RECENTS_BUCKET)
-			if err != nil {
-				return err
-			}
-			return nil
-		}
-
-		// Other error
-		return err
-	}
-	return nil
 }
