@@ -2,6 +2,7 @@ package device
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -33,8 +34,8 @@ var (
 	ErrNoFileNameSet              = errors.New("File name was not set by options.")
 )
 
-// NewDeviceIDPrefix returns a new device ID prefix for users HDNS records
-func NewDeviceIDPrefix(sName string) (string, error) {
+// NewRecordPrefix returns a new device ID prefix for users HDNS records
+func NewRecordPrefix(sName string) (string, error) {
 	// Check if the device ID is empty
 	if deviceID == "" {
 		return "", ErrEmptyDeviceID
@@ -44,8 +45,26 @@ func NewDeviceIDPrefix(sName string) (string, error) {
 	if sName == "" {
 		return "", errors.New("SName cannot by Empty or Less than 4 characters.")
 	}
-	val := deviceID + sName
+	val := fmt.Sprintf("%s:%s", deviceID, sName)
 	return KeyChain.SignHmacWith(keychain.Account, val)
+}
+
+// VerifyRecordPrefix returns true if the prefix is valid for the device ID.
+func VerifyRecordPrefix(prefix string, sName string) bool {
+	// Check if the prefix is empty
+	if prefix == "" {
+		logger.Warn("Empty Prefix Provided as Parameter")
+		return false
+	}
+
+	// Check if the prefix is valid
+	val := fmt.Sprintf("%s:%s", deviceID, sName)
+	ok, err := KeyChain.VerifyHmacWith(keychain.Account, prefix, val)
+	if err != nil {
+		logger.Error("Failed to verify prefix", err)
+		return false
+	}
+	return ok
 }
 
 // DirType is the type of a directory.

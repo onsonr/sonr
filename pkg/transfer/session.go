@@ -44,6 +44,15 @@ func (s Session) MapItems(f common.PayloadItemFunc) error {
 	return s.request.GetPayload().MapItems(f)
 }
 
+func (s Session) Wait(ctx context.Context) error {
+	select {
+	case <-ctx.Done():
+		return ctx.Err()
+	case <-time.After(10 * time.Minute):
+		return ErrTimeout
+	}
+}
+
 // SessionQueue is a queue for incoming and outgoing requests.
 type SessionQueue struct {
 	ctx   context.Context

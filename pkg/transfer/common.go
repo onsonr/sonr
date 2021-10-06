@@ -29,6 +29,7 @@ const (
 
 // Error Definitions
 var (
+	ErrTimeout         = errors.New("Session has Timed out")
 	ErrParameters      = errors.New("Failed to create new TransferProtocol, invalid parameters")
 	ErrInvalidResponse = errors.New("Invalid Transfer InviteResponse provided to TransferProtocol")
 	ErrInvalidRequest  = errors.New("Invalid Transfer InviteRequest provided to TransferProtocol")
@@ -39,7 +40,7 @@ var (
 	ErrRequestNotFound = errors.New("Request not found in list")
 )
 
-func checkParams(host *host.SNRHost,  em *state.Emitter) error {
+func checkParams(host *host.SNRHost, em *state.Emitter) error {
 	if host == nil {
 		return logger.Error("Host provided is nil", ErrParameters)
 	}

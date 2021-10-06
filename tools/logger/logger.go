@@ -1,6 +1,9 @@
 package logger
 
 import (
+	"errors"
+	"fmt"
+
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -28,15 +31,37 @@ func Debug(msg string, fields ...zapcore.Field) {
 
 // Error logs a message at ErrorLevel. The message includes any fields passed at the log site,
 // as well as any fields accumulated on the logger.
-func Error(msg string, err error) error {
-	log.Error(msg, zap.Error(err))
+func Error(msg string, errs ...error) error {
+	// Initialize the errors
+	err := errors.New(msg)
+	fields := []zapcore.Field{}
+
+	// Add the errors
+	for _, e := range errs {
+		fields = append(fields, zap.Error(e))
+		err = fmt.Errorf("%w; Second error", e)
+	}
+
+	// Log the message and return the error
+	log.Error(msg, fields...)
 	return err
 }
 
 // Fatal logs a message at FatalLevel. The message includes any fields passed at the log site, as well as any fields accumulated on the logger.
 // The logger then calls os.Exit(1), even if logging at FatalLevel is disabled.
-func Fatal(msg string, err error) error {
-	log.Fatal(msg, zap.Error(err))
+func Fatal(msg string, errs ...error) error {
+	// Initialize the errors
+	err := errors.New(msg)
+	fields := []zapcore.Field{}
+
+	// Add the errors
+	for _, e := range errs {
+		fields = append(fields, zap.Error(e))
+		err = fmt.Errorf("%w; Second error", e)
+	}
+
+	// Log the message and return the error
+	log.Fatal(msg, fields...)
 	return err
 }
 
@@ -48,19 +73,40 @@ func Info(msg string, fields ...zapcore.Field) {
 
 // Panic logs a message at PanicLevel. The message includes any fields passed at the log site,
 // as well as any fields accumulated on the logger.
-func Panic(msg string, err error) error {
+func Panic(msg string, errs ...error) error {
+	// Initialize the errors
+	err := errors.New(msg)
+	fields := []zapcore.Field{}
+
+	// Add the errors
+	for _, e := range errs {
+		fields = append(fields, zap.Error(e))
+		err = fmt.Errorf("%w; Second error", e)
+	}
+
 	if isDev {
-		log.DPanic(msg, zap.Error(err))
+		log.DPanic(msg, fields...)
 	} else {
-		log.Panic(msg, zap.Error(err))
+		log.Panic(msg, fields...)
 	}
 	return err
 }
 
 // Warn logs a message at WarnLevel. The message includes any fields passed at the log site,
 // as well as any fields accumulated on the logger.
-func Warn(msg string, err error) error {
-	log.Warn(msg, zap.Error(err))
+func Warn(msg string, errs ...error) error {
+	// Initialize the errors
+	err := errors.New(msg)
+	fields := []zapcore.Field{}
+
+	// Add the errors
+	for _, e := range errs {
+		fields = append(fields, zap.Error(e))
+		err = fmt.Errorf("%w; Second error", e)
+	}
+
+	// Log the message and return the error
+	log.Warn(msg, fields...)
 	return err
 }
 

@@ -99,6 +99,8 @@ func (priv *SnrPrivKey) GetPublic() crypto.PubKey {
 	}
 }
 
+// Hash returns a hmac hash of private key
+
 // PeerID returns the peer ID from the public key
 func (priv *SnrPrivKey) PeerID() (peer.ID, error) {
 	return peer.IDFromPublicKey(priv.GetPublic())
@@ -124,11 +126,31 @@ type SnrPubKey struct {
 	SnrKey
 }
 
-// NewSnrPrivKey creates a new private key
+// NewSnrPubKey creates a new public key
 func NewSnrPubKey(p crypto.PubKey) *SnrPubKey {
 	return &SnrPubKey{
 		PubKey: p,
 	}
+}
+
+// NewSnrPubKeyFromBuffer creates a new public key from buffer
+func NewSnrPubKeyFromBuffer(buf []byte) (*SnrPubKey, error) {
+	// Decode the key
+	pubKey, err := crypto.UnmarshalPublicKey(buf)
+	if err != nil {
+		return nil, logger.Error("Failed to unmarshal PubKey from Bytes", err)
+	}
+	return NewSnrPubKey(pubKey), nil
+}
+
+// NewSnrPubKeyFromString creates a new public key from string
+func NewSnrPubKeyFromString(str string) (*SnrPubKey, error) {
+	// Decode the key
+	buf, err := crypto.ConfigDecodeKey(str)
+	if err != nil {
+		return nil, logger.Error("Failed to decode PubKey from String", err)
+	}
+	return NewSnrPubKeyFromBuffer(buf)
 }
 
 // Buffer returns PublicKey as bytes
