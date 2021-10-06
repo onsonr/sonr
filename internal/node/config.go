@@ -5,6 +5,7 @@ import (
 	"errors"
 	"os"
 
+	olc "github.com/google/open-location-code/go"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/tools/logger"
 	"go.uber.org/zap"
@@ -55,15 +56,32 @@ type NodeOption func(nodeOptions)
 // WithRequest sets the initialize request.
 func WithRequest(req *InitializeRequest) NodeOption {
 	return func(o nodeOptions) {
-		o.request = req
+		// Set Connection
+		o.connection = req.Connection
+
+		// Set OLC code
+		code := olc.Encode(req.GetLocation().GetLatitude(), req.GetLocation().GetLongitude(), 8)
+		if code == "" {
+			logger.Error("Failed to Determine OLC Code, set to Global")
+			o.olc = "global"
+		} else {
+			o.olc = code
+		}
+
+		// Set Profile buffer
+		profile := common.NewDefaultProfile(common.WithCheckerProfile(req.GetProfile()), common.WithPicture())
+		proBuf, err := proto.Marshal(profile)
+		if err != nil {
+			logger.Error("Failed to marshal Profile", err)
+		}
+		o.profileBuf = proBuf
 	}
 }
 
 // WithClient starts the Client RPC server and sets the node as a client node.
 func WithClient() NodeOption {
 	return func(o nodeOptions) {
-		o.isClient = true
-		o.isHighway = false
+		o.kind = NodeType_CLIENT
 	}
 }
 
@@ -83,56 +101,30 @@ func WithEnvMap(vars map[string]string) NodeOption {
 // WithHighway starts the Highway RPC server and sets the node as a highway node.
 func WithHighway() NodeOption {
 	return func(o nodeOptions) {
-		o.isHighway = true
-		o.isClient = false
+		o.kind = NodeType_HIGHWAY
 	}
 }
 
 // nodeOptions is a collection of options for the node.
 type nodeOptions struct {
-	isClient  bool
-	isHighway bool
-	request   *InitializeRequest
+	kind       NodeType
+	profileBuf []byte
+	connection common.Connection
+	olc        string
 }
 
 // defaultNodeOptions returns the default node options.
 func defaultNodeOptions() nodeOptions {
 	return nodeOptions{
-		isClient:  true,
-		isHighway: false,
+		kind:       NodeType_CLIENT,
+		olc:        "global",
+		connection: common.Connection_WIFI,
 	}
 }
 
 // Apply applies the node options to the node.
 func (no nodeOptions) Apply(ctx context.Context, n *Node) {
-	no.NodeType().Initialize(ctx, n, no.LobbyOLC())
-}
-
-// Connection returns the node internet connection type
-func (no nodeOptions) Connection() common.Connection {
-	return no.request.GetConnection()
-}
-
-// LobbyOLC returns the local OLC for LobbyProtocol
-func (no nodeOptions) LobbyOLC() string {
-	return no.request.GetLocation().OLC()
-}
-
-// NodeType returns the node type from Config
-func (no nodeOptions) NodeType() NodeType {
-	if no.isHighway {
-		return NodeType_HIGHWAY
-	}
-	return NodeType_CLIENT
-}
-
-// ProfileBuffer returns the Profile as a byte slice.
-func (no nodeOptions) ProfileBuffer() ([]byte, error) {
-	// Check if Profile is provided
-	if no.request.Profile == nil {
-		return nil, ErrProfileNotProvided
-	}
-	return proto.Marshal(no.request.GetProfile())
+	no.kind.Initialize(ctx, n, no.olc)
 }
 
 // newInitResponse creates a response for the initialize request.

@@ -43,14 +43,8 @@ func (n *Node) openStore(ctx context.Context, h *host.SNRHost, em *state.Emitter
 	}
 	n.store = db
 
-	// Marshal Profile
-	profileBuf, err := n.options.ProfileBuffer()
-	if err != nil {
-		return logger.Error("Failed to marshal Profile", err)
-	}
-
 	// Create Profile Bucket
-	err = n.createBucket(USER_BUCKET, PROFILE_KEY, profileBuf)
+	err = n.createBucket(USER_BUCKET, PROFILE_KEY, n.options.profileBuf)
 	if err != nil {
 		return err
 	}
@@ -69,12 +63,17 @@ func (n *Node) createBucket(name []byte, key []byte, val []byte) error {
 	if n.store == nil {
 		return logger.Error("Failed to Create Bucket", ErrStoreNotCreated)
 	}
-
-	return n.store.Update(func(tx *bolt.Tx) error {
+	if err := n.store.Update(func(tx *bolt.Tx) error {
 		// Assume bucket exists and has keys
 		b, err := tx.CreateBucketIfNotExists(name)
 		if err != nil {
 			return logger.Error("Failed to create new bucket", err)
+		}
+
+		// Set Initial Value
+		retVal := b.Get(key)
+		if retVal != nil {
+			return nil
 		}
 
 		// Check if Value is not nil
@@ -88,7 +87,10 @@ func (n *Node) createBucket(name []byte, key []byte, val []byte) error {
 			logger.Warn("No initial key/value provided skipping first Put")
 		}
 		return nil
-	})
+	}); err != nil {
+		return logger.Error("Failed to Create bucket", err)
+	}
+	return nil
 }
 
 // AddRecent stores the profile for recents in desk and returns list of recent profiles
@@ -109,7 +111,7 @@ func (n *Node) AddRecent(profile *common.Profile) error {
 	key := []byte(keyStr)
 
 	// Put in Bucket
-	return n.store.Update(func(tx *bolt.Tx) error {
+	if err := n.store.Update(func(tx *bolt.Tx) error {
 		// Assume bucket exists and has keys
 		b, err := tx.CreateBucketIfNotExists(RECENTS_BUCKET)
 		if err != nil {
@@ -144,7 +146,10 @@ func (n *Node) AddRecent(profile *common.Profile) error {
 			return err
 		}
 		return nil
-	})
+	}); err != nil {
+		return logger.Error("Failed to ADD Recent to Store", err)
+	}
+	return nil
 }
 
 // GetProfile returns the profile for the user from diskDB
@@ -193,7 +198,7 @@ func (n *Node) GetRecents() (RecentsHistory, error) {
 		return nil
 	})
 	if err != nil {
-		return nil, err
+		return nil, logger.Error("Failed to GET Recents in Store", err)
 	}
 	return recents, nil
 }
@@ -211,7 +216,7 @@ func (n *Node) SetProfile(profile *common.Profile) error {
 	}
 
 	// Put in Bucket
-	return n.store.Update(func(tx *bolt.Tx) error {
+	if err := n.store.Update(func(tx *bolt.Tx) error {
 		// Assume bucket exists and has keys
 		b, err := tx.CreateBucketIfNotExists(USER_BUCKET)
 		if err != nil {
@@ -230,5 +235,8 @@ func (n *Node) SetProfile(profile *common.Profile) error {
 			return err
 		}
 		return nil
-	})
+	}); err != nil {
+		return logger.Error("Failed to SET Profile in Store", err)
+	}
+	return nil
 }
