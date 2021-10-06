@@ -3,12 +3,9 @@ package exchange
 import (
 	"context"
 	"errors"
-	"fmt"
-
 	"time"
 
-	dht "github.com/libp2p/go-libp2p-kad-dht"
-	psr "github.com/libp2p/go-libp2p-pubsub-router"
+	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/tools/logger"
@@ -24,10 +21,8 @@ var (
 
 // ExchangeProtocol handles Global Sonr Exchange Protocol
 type ExchangeProtocol struct {
-	*psr.PubsubValueStore
 	ctx      context.Context
-	host     *host.SNRHost // host
-	kadDHT   *dht.IpfsDHT
+	host     *host.SNRHost  // host
 	emitter  *state.Emitter // Handle to signal when done
 	resolver net.HDNSResolver
 }
@@ -39,61 +34,22 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) (*E
 		return nil, logger.Error("Failed to create TransferProtocol", err)
 	}
 
-	// Fetch KadDHT
-	kadDHT, err := host.KadDHT()
-	if err != nil {
-		return nil, logger.Error("Failed to get KadDHT", err)
-	}
-
-	// Create PubSub Value Store
-	r, err := psr.NewPubsubValueStore(ctx, host.Host, host.Pubsub(), ExchangeValidator{}, psr.WithRebroadcastInterval(5*time.Second))
-	if err != nil {
-		return nil, logger.Error("Failed to create Exchange PubSubValueStore", err)
-	}
-
 	// Create Exchange Protocol
 	exchProtocol := &ExchangeProtocol{
-		ctx:              ctx,
-		host:             host,
-		emitter:          em,
-		resolver:         net.NewHDNSResolver(),
-		PubsubValueStore: r,
-		kadDHT:           kadDHT,
+		ctx:      ctx,
+		host:     host,
+		emitter:  em,
+		resolver: net.NewHDNSResolver(),
 	}
 	return exchProtocol, nil
 }
 
 // FindPeerId method returns PeerID by SName
-func (p *ExchangeProtocol) Query(q *QueryRequest) (*common.PeerInfo, error) {
-	query, val, err := q.QueryValue()
-	if err != nil {
-		return nil, logger.Error("Failed to Query Value", err)
-	}
-
+func (p *ExchangeProtocol) Query(sname string) (*common.PeerInfo, error) {
 	// Get Peer from KadDHT store
-	buf, err := p.kadDHT.GetValue(p.ctx, query)
-	if err == nil {
-		// Unmarshal Peer
-		peer := &common.Peer{}
-		err = proto.Unmarshal(buf, peer)
-		if err != nil {
-			return nil, logger.Error("Failed to Unmarshal Peer", err)
-		}
-
-		// Get PeerID from Peer
-		info, err := peer.Info()
-		if err != nil {
-			return nil, logger.Error("Failed to get PeerInfo from Peer", err)
-		}
-		return info, nil
-	} else {
-		logger.Warn("Failed to get item from KadDHT", err)
-	}
-
-	// Find peer from sName in the store
-	buf, err = p.PubsubValueStore.GetValue(p.ctx, query)
+	buf, err := p.host.GetValue(p.ctx, sname)
 	if err != nil {
-		return nil, logger.Error(fmt.Sprintf("Failed to GET peer (%s) from store, with Query Value: %s", val, query), err)
+		return nil, logger.Error("Failed to get item from KadDHT", err)
 	}
 
 	// Unmarshal Peer from buffer
@@ -108,7 +64,20 @@ func (p *ExchangeProtocol) Query(q *QueryRequest) (*common.PeerInfo, error) {
 	if err != nil {
 		return nil, logger.Error("Failed to get PeerInfo from Peer", err)
 	}
-	return info, nil
+
+	// Verify Peer is registered
+	ok, rec, err := p.Verify(sname)
+	if err != nil {
+		logger.Warn("Failed to verify Peer", err)
+		return info, nil
+	}
+
+	// Update PeerInfo
+	if ok {
+		info.NameRecord = rec
+		return info, nil
+	}
+	return info, logger.Error("Peer is not registered", err)
 }
 
 // Update method updates peer instance in the store
@@ -131,15 +100,31 @@ func (p *ExchangeProtocol) Update(peer *common.Peer) error {
 	}
 
 	// Add Peer to KadDHT store
-	err = p.kadDHT.PutValue(p.ctx, info.StoreEntryKey, buf)
+	err = p.host.PutValue(p.ctx, info.StoreEntryKey, buf)
 	if err != nil {
-		logger.Warn("Failed to put Item in KDHT", err)
-	}
-
-	// Add Peer to SName Store
-	err = p.PubsubValueStore.PutValue(p.ctx, info.StoreEntryKey, buf)
-	if err != nil {
-		return logger.Error("Failed to Put Value in Exchange Store", err)
+		return logger.Error("Failed to put Item in KDHT", err)
 	}
 	return nil
+}
+
+// Verify method uses resolver to check if Peer is registered,
+// returns true if Peer is registered
+func (p *ExchangeProtocol) Verify(sname string) (bool, *net.HDNSNameRecord, error) {
+	// Create Context
+	ctx, cancel := context.WithTimeout(p.ctx, time.Second*5)
+	defer cancel()
+
+	// Verify Peer is registered
+	rec, err := p.resolver.LookupTXT(ctx, sname)
+	if err != nil {
+		return false, nil, logger.Error("Failed to resolve DNS record for SName", err)
+	}
+
+	// Check peer record
+	pubKey := rec.PubKey
+	compId, err := peer.IDFromPublicKey(pubKey)
+	if err != nil {
+		return false, nil, logger.Error("Failed to extract PeerID from PublicKey", err)
+	}
+	return rec.PeerID() == compId, rec, nil
 }

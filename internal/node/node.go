@@ -67,7 +67,7 @@ func NewNode(ctx context.Context, options ...NodeOption) (*Node, *InitializeResp
 	}
 
 	// Initialize Host
-	host, err := host.NewHost(ctx, opts.GetConnection(), opts.GetIPAddresses()...)
+	host, err := host.NewHost(ctx, host.WithConnection(opts.GetConnection()))
 	if err != nil {
 		return nil, nil, logger.Error("Failed to initialize host", err)
 	}

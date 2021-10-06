@@ -6,8 +6,6 @@ import (
 	"os"
 
 	"github.com/sonr-io/core/internal/common"
-	"github.com/sonr-io/core/internal/host"
-	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/tools/logger"
 	"go.uber.org/zap"
 )
@@ -53,53 +51,6 @@ func (nt NodeType) Initialize(ctx context.Context, n *Node, olc string) {
 // NodeOption is a function that modifies the node options.
 type NodeOption func(nodeOptions)
 
-// nodeOptions is a collection of options for the node.
-type nodeOptions struct {
-	isClient  bool
-	isHighway bool
-	request   *InitializeRequest
-}
-
-// Apply applies the node options to the node.
-func (no nodeOptions) Apply(ctx context.Context, n *Node) {
-	n.profile = no.request.GetProfile()
-	no.GetNodeType().Initialize(ctx, n, no.GetLocalOLC())
-}
-
-// GetConnection returns the node internet connection type
-func (no nodeOptions) GetConnection() common.Connection {
-	return no.request.GetConnection()
-}
-
-// GetLocalOLC returns the local OLC for LobbyProtocol
-func (no nodeOptions) GetLocalOLC() string {
-	return no.request.GetLocation().OLC()
-}
-
-// GetNodeType returns the node type from Config
-func (no nodeOptions) GetNodeType() NodeType {
-	if no.isHighway {
-		return NodeType_HIGHWAY
-	}
-	return NodeType_CLIENT
-}
-
-// GetIPAddresses returns host.HostListenAddr from hostOpts
-func (no nodeOptions) GetIPAddresses() []host.HostListenAddr {
-	// Define Listen Addresses
-	providedAddrs := no.request.GetHostOptions().GetListenAddrs()
-	addrs := make([]host.HostListenAddr, len(providedAddrs))
-
-	// Iterate over provided addresses
-	for i, addr := range providedAddrs {
-		addrs[i] = host.HostListenAddr{
-			Addr:   addr.GetAddress(),
-			Family: addr.GetFamily().String(),
-		}
-	}
-	return addrs
-}
-
 // WithRequest sets the initialize request.
 func WithRequest(req *InitializeRequest) NodeOption {
 	return func(o nodeOptions) {
@@ -136,12 +87,43 @@ func WithHighway() NodeOption {
 	}
 }
 
+// nodeOptions is a collection of options for the node.
+type nodeOptions struct {
+	isClient  bool
+	isHighway bool
+	request   *InitializeRequest
+}
+
 // defaultNodeOptions returns the default node options.
 func defaultNodeOptions() nodeOptions {
 	return nodeOptions{
 		isClient:  true,
 		isHighway: false,
 	}
+}
+
+// Apply applies the node options to the node.
+func (no nodeOptions) Apply(ctx context.Context, n *Node) {
+	n.profile = no.request.GetProfile()
+	no.GetNodeType().Initialize(ctx, n, no.GetLocalOLC())
+}
+
+// GetConnection returns the node internet connection type
+func (no nodeOptions) GetConnection() common.Connection {
+	return no.request.GetConnection()
+}
+
+// GetLocalOLC returns the local OLC for LobbyProtocol
+func (no nodeOptions) GetLocalOLC() string {
+	return no.request.GetLocation().OLC()
+}
+
+// GetNodeType returns the node type from Config
+func (no nodeOptions) GetNodeType() NodeType {
+	if no.isHighway {
+		return NodeType_HIGHWAY
+	}
+	return NodeType_CLIENT
 }
 
 // newInitResponse creates a response for the initialize request.
@@ -160,22 +142,6 @@ func (n *Node) newInitResponse(err error) *InitializeResponse {
 		Profile: n.profile,
 		//	Recents: r,
 	}
-}
-
-// ToExchangeQueryRequest converts a query request to an exchange query request.
-func (f *SearchRequest) ToExchangeQueryRequest() (*exchange.QueryRequest, error) {
-	if f.GetSName() != "" {
-		return &exchange.QueryRequest{
-			SName: f.GetSName(),
-		}, nil
-	}
-
-	if f.GetPeerId() != "" {
-		return &exchange.QueryRequest{
-			PeerId: f.GetPeerId(),
-		}, nil
-	}
-	return nil, logger.Error("Failed to convert FindRequest", ErrInvalidQuery)
 }
 
 // ToFindResponse converts PeerInfo to a FindResponse.

@@ -31,7 +31,7 @@
         "**/.packages": true,
         "**/.project": true,
         "**/.settings": true,
-        "**/go.sum": true,
+        "**/go.sum": false,
         "**/pubspec.lock": true,
         "**pubspec.lock": true,
         "**/node_modules": true,

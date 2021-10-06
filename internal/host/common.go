@@ -1,33 +1,141 @@
 package host
 
 import (
+	"context"
+	"crypto/rand"
+	"time"
+
+	"github.com/libp2p/go-libp2p"
+	connmgr "github.com/libp2p/go-libp2p-connmgr"
+	"github.com/libp2p/go-libp2p-core/crypto"
+	"github.com/libp2p/go-libp2p-core/host"
+	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-core/routing"
+	dht "github.com/libp2p/go-libp2p-kad-dht"
+	"github.com/sonr-io/core/internal/common"
+	"github.com/sonr-io/core/internal/device"
+	"github.com/sonr-io/core/internal/keychain"
 	"github.com/sonr-io/core/tools/logger"
-	"github.com/sonr-io/core/tools/net"
 )
 
-func getListenAddrStrings(listenAddrs ...HostListenAddr) []string {
-	var listenAddresses []string
-	// Add Listen Addresses
-	if len(listenAddrs) > 0 {
-		// Set Initial Port
-		port, err := net.FreePort()
-		if err != nil {
-			logger.Warn("Failed to get free port", err)
-			port = 60214
-		}
+// HostOption is a function that modifies the node options.
+type HostOption func(hostOptions)
 
-		// Build MultAddr Address Strings
-		for _, addr := range listenAddrs {
-			listenAddresses = append(listenAddresses, addr.MultiAddrStr(port))
-		}
-	} else {
-		addrs, err := net.PublicAddrStrs()
+// WithBootstrappers sets the bootstrap peers.
+func WithBootstrappers(pis []peer.AddrInfo) HostOption {
+	return func(o hostOptions) {
+		o.bootstrapPeers = pis
+	}
+}
+
+// WithConnection sets the connection to the host.
+func WithConnection(c common.Connection) HostOption {
+	return func(o hostOptions) {
+		o.connection = c
+	}
+}
+
+// WithConnOptions sets the connection manager options.
+func WithConnOptions(low int, hi int, grace time.Duration) HostOption {
+	return func(o hostOptions) {
+		o.lowWater = low
+		o.highWater = hi
+		o.gracePeriod = grace
+	}
+}
+
+// WithInterval sets the interval for the host.
+func WithInterval(interval time.Duration) HostOption {
+	return func(o hostOptions) {
+		o.interval = interval
+	}
+}
+
+// WithPrivKey sets the private key for the host.
+func WithPrivKey(pk crypto.PrivKey) HostOption {
+	return func(o hostOptions) {
+		o.privateKey = pk
+	}
+}
+
+// WithRendevouz sets the rendevouz address.
+func WithRendevouz(addr string) HostOption {
+	return func(o hostOptions) {
+		o.rendezvous = addr
+	}
+}
+
+// WithTTL sets the ttl for the host.
+func WithTTL(ttl time.Duration) HostOption {
+	return func(o hostOptions) {
+		o.ttl = ttl
+	}
+}
+
+// hostOptions is a collection of options for the SnrHost.
+type hostOptions struct {
+	connection     common.Connection
+	bootstrapPeers []peer.AddrInfo
+	lowWater       int
+	highWater      int
+	gracePeriod    time.Duration
+	privateKey     crypto.PrivKey
+	rendezvous     string
+	interval       time.Duration
+	ttl            time.Duration
+}
+
+// defaultHostOptions returns the default host options.
+func defaultHostOptions() hostOptions {
+	var privKey crypto.PrivKey
+	needsGen := false
+	privKey, err := device.KeyChain.GetPrivKey(keychain.Account)
+	if err != nil {
+		logger.Warn("Failed to get Account Private Key for Host", err)
+		needsGen = true
+	}
+
+	if needsGen {
+		privKey, _, err = crypto.GenerateEd25519Key(rand.Reader)
 		if err != nil {
-			logger.Warn("Failed to get public addresses", err)
-			listenAddresses = []string{}
-		} else {
-			listenAddresses = addrs
+			logger.Fatal("Failed to generate Host Private Key", err)
 		}
 	}
-	return listenAddresses
+
+	return hostOptions{
+		connection:     common.Connection_WIFI,
+		bootstrapPeers: dht.GetDefaultBootstrapPeerAddrInfos(),
+		lowWater:       10,
+		highWater:      40,
+		gracePeriod:    time.Second * 5,
+		privateKey:     privKey,
+		rendezvous:     "/sonr/rendevouz/0.9.2",
+		interval:       time.Second * 5,
+		ttl:            time.Minute * 2,
+	}
+}
+
+// Apply creates slice of libp2p.Option from the host options.
+func (no hostOptions) Apply(ctx context.Context, kdhtRef *dht.IpfsDHT) []libp2p.Option {
+	return []libp2p.Option{
+		libp2p.Identity(no.privateKey),
+		libp2p.ConnectionManager(connmgr.NewConnManager(
+			no.lowWater,    // Lowwater
+			no.highWater,   // HighWater,
+			no.gracePeriod, // GracePeriod
+		)),
+		libp2p.DefaultStaticRelays(),
+		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
+			// Create DHT
+			kdht, err := dht.New(ctx, h)
+			if err != nil {
+				return nil, err
+			}
+
+			// Set DHT
+			kdhtRef = kdht
+			return kdht, nil
+		}),
+		libp2p.EnableAutoRelay(),
+	}
 }

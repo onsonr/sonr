@@ -4,6 +4,7 @@ import (
 	context "context"
 	"fmt"
 	"net"
+	"strings"
 	"time"
 
 	"github.com/sonr-io/core/pkg/exchange"
@@ -233,7 +234,7 @@ func (n *ClientNodeStub) Search(ctx context.Context, req *SearchRequest) (*Searc
 	// Call Internal Ping
 	if n.ExchangeProtocol != nil {
 		// Call Internal Search
-		entry, err := n.Query(exchange.NewQueryRequestFromSName(req.GetSName()))
+		entry, err := n.Query(strings.ToLower(req.GetSName()))
 		if err != nil {
 			return &SearchResponse{
 				Success: false,

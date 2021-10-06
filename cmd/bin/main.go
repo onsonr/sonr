@@ -2,8 +2,6 @@ package main
 
 import (
 	"context"
-
-	_ "github.com/joho/godotenv/autoload"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/node"
 	"github.com/sonr-io/core/tools/logger"

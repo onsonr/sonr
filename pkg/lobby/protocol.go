@@ -46,7 +46,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter, olc
 	}
 
 	// Create Exchange Topic
-	topic, err := host.Pubsub().Join(olc)
+	topic, err := host.Join(olc)
 	if err != nil {
 		return nil, logger.Error("Failed to Join Local Pubsub Topic", err)
 	}

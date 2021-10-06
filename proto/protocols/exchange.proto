@@ -14,12 +14,6 @@ message LookupResponse {
   string publicKey = 2; // Base64 Encoded Public Key
 }
 
-// QueryRequest is Message for searching for Peer
-message QueryRequest {
-  string sName = 1;  // SName combined with Device ID and Hashed
-  string peerId = 2; // Peer ID
-}
-
 // VisibilityRequest is Message for updating Peer Visibility in Exchange
 message VisibilityRequest {
   string sName = 1;        // SName combined with Device ID and Hashed

@@ -11,6 +11,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/keychain"
 	"github.com/sonr-io/core/tools/logger"
+	"github.com/sonr-io/core/tools/net"
 	"go.uber.org/zap"
 )
 
@@ -32,6 +33,24 @@ func (l *Location) OLC() string {
 	// Logging and return Code
 	logger.Info("Determined OLC for Location", zap.String("OLC", code), zap.Float64("Latitude", lat), zap.Float64("Longitude", lng))
 	return code
+}
+
+// SignedMetadataToProto converts a SignedMetadata to a protobuf.
+func SignedMetadataToProto(m *keychain.SignedMetadata) *Metadata {
+	return &Metadata{
+		Timestamp: m.Timestamp,
+		NodeId:    m.NodeId,
+		PublicKey: m.PublicKey,
+	}
+}
+
+// SignedUUIDToProto converts a SignedUUID to a protobuf.
+func SignedUUIDToProto(m *keychain.SignedUUID) *UUID {
+	return &UUID{
+		Timestamp: m.Timestamp,
+		Signature: m.Signature,
+		Value:     m.Value,
+	}
 }
 
 // Checks if Enviornment is Development
@@ -76,6 +95,7 @@ type PeerInfo struct {
 	PeerID          peer.ID       // Peer ID
 	Peer            *Peer         // Peer Data Object
 	PublicKey       crypto.PubKey // Peer Public Key
+	NameRecord      *net.HDNSNameRecord
 }
 
 // Info returns PeerInfo from Peer
