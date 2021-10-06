@@ -4,6 +4,7 @@ import (
 	context "context"
 	"fmt"
 	"net"
+	"time"
 
 	common "github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/pkg/exchange"
@@ -63,9 +64,34 @@ func NewRPCService(ctx context.Context, n *Node) (*NodeRPCService, error) {
 	RegisterNodeServiceServer(grpcServer, nrc)
 	go nrc.serveRPC()
 	go nrc.handleEmitter()
+	go nrc.pushAutomaticPings(time.NewTicker(5 * time.Second))
 
 	// Return RPC Service
 	return nrc, nil
+}
+
+// Update method updates the node's properties in the Key/Value Store and Lobby
+func (n *NodeRPCService) Update() error {
+	// Call Internal Edit
+	peer, err := n.Peer()
+	if err != nil {
+		return logger.Error("Failed to push Auto Ping", err)
+	}
+
+	// Push Update to Exchange
+	if n.ExchangeProtocol != nil {
+		if err := n.ExchangeProtocol.Update(peer); err != nil {
+			return logger.Error("Failed to Update Exchange", err)
+		}
+	}
+
+	// Push Update to Lobby
+	if n.LobbyProtocol != nil {
+		if err := n.LobbyProtocol.Update(peer); err != nil {
+			return logger.Error("Failed to Update Lobby", err)
+		}
+	}
+	return nil
 }
 
 // Supply supplies the node with the given amount of resources.
@@ -259,6 +285,22 @@ func (nrc *NodeRPCService) serveRPC() {
 		select {
 		case <-nrc.ctx.Done():
 			nrc.host.Close()
+			return
+		}
+	}
+}
+
+// // pushAutomaticPings sends automatic pings to the network of Profile
+func (n *NodeRPCService) pushAutomaticPings(ticker *time.Ticker) {
+	for {
+		select {
+		case <-ticker.C:
+			// Call Internal Update
+			if err := n.Update(); err != nil {
+				logger.Error("Failed to push Auto Ping", err)
+			}
+		case <-n.ctx.Done():
+			ticker.Stop()
 			return
 		}
 	}

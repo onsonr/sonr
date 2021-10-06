@@ -106,8 +106,8 @@ func (p *LobbyProtocol) HandleEvents() {
 
 			// Check Event and Validate not User
 			if p.isEventExit(event) {
-				// Remove Peer from map
-				delete(p.peers, event.Peer)
+				// Update Peer Data in map
+				p.pushRefresh(event.Peer, nil)
 				continue
 			}
 		}
@@ -127,9 +127,7 @@ func (p *LobbyProtocol) HandleMessages() {
 			}
 
 			// Check Message and Validate not User
-			if msg.ReceivedFrom == p.host.ID() {
-				continue
-			} else {
+			if msg.ReceivedFrom != p.host.ID() {
 				// Unmarshal Message
 				data := &LobbyMessage{}
 				err = proto.Unmarshal(msg.Data, data)
@@ -148,19 +146,21 @@ func (p *LobbyProtocol) HandleMessages() {
 // pushRefresh sends a refresh event to the emitter
 func (p *LobbyProtocol) pushRefresh(id peer.ID, peer *common.Peer) {
 	// Add Peer to map
-	p.peers[id] = peer
-
-	// Create Peer List from map
-	peers := make([]*common.Peer, 0, len(p.peers))
-	for _, peer := range p.peers {
-		peers = append(peers, peer)
+	if peer != nil {
+		p.peers[id] = peer
+	} else {
+		// Remove Peer from map
+		delete(p.peers, id)
 	}
 
 	// Create RefreshEvent
 	event := &common.RefreshEvent{
-		Olc:      p.location.OLC(),
-		Peers:    peers,
 		Received: int64(time.Now().Unix()),
+	}
+
+	// Create Peer List from map
+	for _, v := range p.peers {
+		event.Peers = append(event.Peers, v)
 	}
 
 	// Emit Event

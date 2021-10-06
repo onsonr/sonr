@@ -12,7 +12,7 @@ LD_LIBRARY_PATH=/usr/local/Cellar/ffmpeg/4.4_2/lib
 
 # Set this -->[/Users/xxxx/Sonr/]<-- to Folder of Sonr Repos
 PROTO_DEF_PATH=/Users/prad/Developer/core/proto
-APP_ROOT_DIR =/Users/prad/Developer/app
+APP_ROOT_DIR =/Users/prad/Developer/mobile
 
 # @ Packaging Vars/Commands
 GOMOBILE=gomobile
@@ -23,13 +23,13 @@ GOBIND_IOS=$(GOBIND) -target=ios/arm64 -bundleid=io.sonr.core
 INJECT_ENV=godotenv -f <(doppler secrets download --no-file --format env)
 
 # @ Bind Directories
-BIND_DIR_ANDROID=$(SONR_ROOT_DIR)/plugin/android/libs
-BIND_DIR_IOS=$(SONR_ROOT_DIR)/plugin/ios/Frameworks
+BIND_DIR_ANDROID=$(SONR_ROOT_DIR)/mobile/android/libs
+BIND_DIR_IOS=$(SONR_ROOT_DIR)/mobile/ios/Frameworks
 BIND_IOS_ARTIFACT= $(BIND_DIR_IOS)/Core.xcframework
 BIND_ANDROID_ARTIFACT= $(BIND_DIR_ANDROID)/io.sonr.core.aar
 
 # @ Proto Directories
-PROTO_DIR_DART=$(SONR_ROOT_DIR)/plugin/lib/src
+PROTO_DIR_DART=$(SONR_ROOT_DIR)/mobile/lib/src
 PROTO_LIST_ALL=${ROOT_DIR}/proto/**/*.proto
 PROTO_LIST_CLIENT=${ROOT_DIR}/proto/client/*.proto
 PROTO_LIST_COMMON=${ROOT_DIR}/proto/common/*.proto
