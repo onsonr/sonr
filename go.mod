@@ -21,7 +21,8 @@ require (
 	go.etcd.io/bbolt v1.3.6
 	go.uber.org/zap v1.19.0
 	golang.org/x/net v0.0.0-20210907225631-ff17edfbf26d
-	golang.org/x/tools v0.1.2 // indirect
+	golang.org/x/sys v0.0.0-20211006194710-c8a6f5223071 // indirect
+	golang.org/x/tools v0.1.7 // indirect
 	google.golang.org/grpc v1.40.0
 	google.golang.org/protobuf v1.27.1
 )

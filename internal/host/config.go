@@ -22,6 +22,13 @@ import (
 // HostOption is a function that modifies the node options.
 type HostOption func(hostOptions)
 
+// FindListenAddrs will set Host to determine the local addresses
+func FindListenAddrs() HostOption {
+	return func(o hostOptions) {
+		o.findAddrs = true
+	}
+}
+
 // WithBootstrappers sets the bootstrap peers.
 func WithBootstrappers(pis []peer.AddrInfo) HostOption {
 	return func(o hostOptions) {
@@ -75,6 +82,7 @@ func WithTTL(ttl time.Duration) HostOption {
 
 // hostOptions is a collection of options for the SnrHost.
 type hostOptions struct {
+	findAddrs      bool
 	connection     common.Connection
 	bootstrapPeers []peer.AddrInfo
 	lowWater       int
@@ -104,6 +112,7 @@ func defaultHostOptions() hostOptions {
 	}
 
 	return hostOptions{
+		findAddrs:      false,
 		connection:     common.Connection_WIFI,
 		bootstrapPeers: dht.GetDefaultBootstrapPeerAddrInfos(),
 		lowWater:       10,
@@ -141,14 +150,17 @@ func (no hostOptions) Apply(ctx context.Context, hn *SNRHost) []libp2p.Option {
 		libp2p.EnableAutoRelay(),
 	}
 
-	// Get Listening Addresses
-	listenAddrs, err := net.PublicAddrStrs()
-	if err != nil {
-		logger.Error("Failed to get Public Listening Addresses", err)
-		return opts
-	}
+	// Check if we should find ListenAddrStrings
+	if no.findAddrs {
+		// Get Listening Addresses
+		listenAddrs, err := net.PublicAddrStrs()
+		if err != nil {
+			logger.Error("Failed to get Public Listening Addresses", err)
+			return opts
+		}
 
-	// Return options
-	opts = append(opts, libp2p.ListenAddrStrings(listenAddrs...))
+		// Return options
+		opts = append(opts, libp2p.ListenAddrStrings(listenAddrs...))
+	}
 	return opts
 }
