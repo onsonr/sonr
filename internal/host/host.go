@@ -16,6 +16,7 @@ import (
 	"github.com/multiformats/go-multiaddr"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/keychain"
+	"github.com/sonr-io/core/tools/internet"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -45,9 +46,9 @@ type SNRHost struct {
 }
 
 // NewHost creates a new host
-func NewHost(ctx context.Context, options ...HostOption) (*SNRHost, error) {
+func NewHost(ctx context.Context, listener *internet.TCPListener, options ...HostOption) (*SNRHost, error) {
 	// Initialize DHT
-	opts := defaultHostOptions(ctx)
+	opts := defaultHostOptions(ctx, listener)
 	hn, err := opts.Apply(options...)
 	if err != nil {
 		return nil, err
@@ -67,14 +68,7 @@ func NewHost(ctx context.Context, options ...HostOption) (*SNRHost, error) {
 		libp2p.NATPortMap(),
 		libp2p.EnableAutoRelay())
 	if err != nil {
-		logger.Error("Failed to initialize libp2p host", err)
-		return nil, err
-	}
-
-	// Discover Host
-	err = hn.Discover()
-	if err != nil {
-		logger.Error("Failed to bootstrap libp2p Host", err)
+		logger.Error("Failed to create libp2p host", err)
 		return nil, err
 	}
 	return hn, nil
@@ -94,10 +88,7 @@ func (hn *SNRHost) Connect(ctx context.Context, pi peer.AddrInfo) error {
 	defer cancel()
 	go func(context context.Context, errorChannel chan error) {
 		err := hn.Host.Connect(ctxTO, pi)
-		if err != nil {
-			errorChannel <- err
-		}
-		errorChannel <- nil
+		errorChannel <- err
 	}(ctxTO, errChan)
 
 	// Await for result
@@ -118,14 +109,13 @@ func (hn *SNRHost) Close() error {
 // Router returns the host node Peer Routing Function
 func (hn *SNRHost) Router(h host.Host) (routing.PeerRouting, error) {
 	// Create DHT
-	kdht, err := dht.New(context.Background(), h)
+	kdht, err := dht.New(hn.ctx, h)
 	if err != nil {
 		return nil, err
 	}
 
-	// Set Properties
-	hn.Bootstrap(kdht, h)
-	return kdht, nil
+	// Setup Properties
+	return hn.Setup(kdht, h)
 }
 
 // ** ─── Host Info ────────────────────────────────────────────────────────

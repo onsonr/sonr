@@ -1,15 +1,11 @@
 package common
 
 import (
-	//"errors"
-	//"image/jpeg"
 	"os"
 	"strings"
 
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/sonr-io/core/internal/device"
-	//"github.com/bakape/thumbnailer/v2"
-	//"github.com/sonr-io/core/internal/device"
 )
 
 // MIN_THUMBNAIL_BOUNDS is the minimum size of the thumbnail

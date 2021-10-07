@@ -14,6 +14,7 @@ import (
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/keychain"
+	"github.com/sonr-io/core/tools/internet"
 	net "github.com/sonr-io/core/tools/internet"
 )
 
@@ -26,6 +27,7 @@ var (
 	ErrDHTNotFound      = errors.New("DHT has not been set by Routing Function")
 	ErrHostNotSet       = errors.New("Host has not been set to SNRHost Struct")
 	ErrListenerRequired = errors.New("Listener was not Provided")
+	ErrMDNSInvalidConn  = errors.New("Invalid Connection, cannot begin MDNS Service")
 )
 
 // HostOption is a function that modifies the node options.
@@ -61,15 +63,6 @@ func WithInterval(interval time.Duration) HostOption {
 	}
 }
 
-// TCPListener sets the listener for the host. (This is Required for the
-// host to start)
-func TCPListener(l *net.TCPListener) HostOption {
-	// Return the option.
-	return func(o hostOptions) {
-		o.listener = l
-	}
-}
-
 // WithTTL sets the ttl for the host.
 func WithTTL(ttl time.Duration) HostOption {
 	return func(o hostOptions) {
@@ -95,7 +88,7 @@ type hostOptions struct {
 }
 
 // defaultHostOptions returns the default host options.
-func defaultHostOptions(ctx context.Context) hostOptions {
+func defaultHostOptions(ctx context.Context, l *internet.TCPListener) hostOptions {
 	return hostOptions{
 		ctx:            ctx,
 		Connection:     common.Connection_WIFI,
@@ -106,6 +99,7 @@ func defaultHostOptions(ctx context.Context) hostOptions {
 		Rendezvous:     "/sonr/rendevouz/0.9.2",
 		Interval:       time.Second * 5,
 		TTL:            time.Minute * 1,
+		listener:       l,
 	}
 }
 

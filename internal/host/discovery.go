@@ -23,13 +23,13 @@ func (n *discoveryNotifee) HandlePeerFound(pi peer.AddrInfo) {
 }
 
 // ** ─── HostNode Connection Methods ────────────────────────────────────────────────────────
-// Bootstrap connects to the IpfsDHT and Bootstraps the DHT
-func (h *SNRHost) Bootstrap(dht *dht.IpfsDHT, host host.Host) error {
+// Setup Bootstraps the DHT, Sets IpfsDHT and Host, and starts discovery
+func (h *SNRHost) Setup(dht *dht.IpfsDHT, host host.Host) (*dht.IpfsDHT, error) {
 	if dht == nil {
-		return errors.Wrap(ErrDHTNotFound, "Failed to Bootstrap")
+		return nil, errors.Wrap(ErrDHTNotFound, "Failed to Bootstrap")
 	}
 	if host == nil {
-		return errors.Wrap(ErrHostNotSet, "Failed to Bootstrap")
+		return nil, errors.Wrap(ErrHostNotSet, "Failed to Bootstrap")
 	}
 
 	// Set Properties
@@ -37,24 +37,37 @@ func (h *SNRHost) Bootstrap(dht *dht.IpfsDHT, host host.Host) error {
 	h.Host = host
 
 	// Bootstrap DHT
-	if err := h.IpfsDHT.Bootstrap(h.ctx); err != nil {
+	if err := h.Bootstrap(h.ctx); err != nil {
 		logger.Error("Failed to Bootstrap KDHT to Host", err)
-		return err
+		return nil, err
 	}
 
-	// Connect to bootstrap nodes, if any
-	for _, pi := range h.opts.BootstrapPeers {
-		if err := h.Connect(h.ctx, pi); err != nil {
-			continue
-		} else {
-			break
+	// Initialize Discovery
+	go func() {
+		// Connect to Bootstrap Nodes
+		for _, pi := range h.opts.BootstrapPeers {
+			if err := h.Connect(h.ctx, pi); err != nil {
+				continue
+			} else {
+				break
+			}
 		}
-	}
-	return nil
+
+		// Initialize Discovery for DHT
+		if err := h.initDHTDiscovery(); err != nil {
+			logger.Fatal("Could not start DHT Discovery", err)
+		}
+
+		// Initialize Discovery for MDNS
+		if err := h.initMdnsDiscovery(); err != nil {
+			logger.Warn("Could not start MDNS Discovery", err)
+		}
+	}()
+	return h.IpfsDHT, nil
 }
 
 // Discover begins Discovery with peers for MDNS and DHT
-func (h *SNRHost) Discover() error {
+func (h *SNRHost) initMdnsDiscovery() error {
 	// Start MDNS Discovery
 	if h.opts.Connection.IsMdnsCompatible() {
 		// Create MDNS Service
@@ -67,8 +80,13 @@ func (h *SNRHost) Discover() error {
 		// Handle Events
 		ser.RegisterNotifee(n)
 		go h.handleDiscoveredPeers(n.PeerChan)
+		return nil
 	}
+	return ErrMDNSInvalidConn
+}
 
+// initDHTDiscovery is a Helper Method to initialize the DHT Discovery
+func (h *SNRHost) initDHTDiscovery() error {
 	// Set Routing Discovery, Find Peers
 	routingDiscovery := dsc.NewRoutingDiscovery(h.IpfsDHT)
 	dsc.Advertise(h.ctx, routingDiscovery, h.opts.Rendezvous, dscl.TTL(h.opts.TTL))
