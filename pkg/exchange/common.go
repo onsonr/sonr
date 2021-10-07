@@ -19,5 +19,5 @@ func checkParams(host *host.SNRHost, em *state.Emitter) error {
 		logger.Error("Emitter provided is nil", ErrParameters)
 		return ErrParameters
 	}
-	return host.Ready()
+	return host.IsReady()
 }

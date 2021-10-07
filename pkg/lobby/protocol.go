@@ -41,7 +41,13 @@ type LobbyProtocol struct {
 func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter, olc string) (*LobbyProtocol, error) {
 	// Check parameters
 	if err := checkParams(host, olc, em); err != nil {
-		logger.Error("Failed to create TransferProtocol", err)
+		logger.Error("Failed to create LobbyProtocol", err)
+		return nil, err
+	}
+
+	// Wait until host is ready
+	if err := host.WaitForReady(); err != nil {
+		logger.Error("Failed to create LobbyProtocol", err)
 		return nil, err
 	}
 

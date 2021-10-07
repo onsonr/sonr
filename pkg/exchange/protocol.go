@@ -30,7 +30,13 @@ type ExchangeProtocol struct {
 func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) (*ExchangeProtocol, error) {
 	// Check parameters
 	if err := checkParams(host, em); err != nil {
-		logger.Error("Failed to create TransferProtocol", err)
+		logger.Error("Failed to create ExchangeProtocol", err)
+		return nil, err
+	}
+
+	// Wait until host is ready
+	if err := host.WaitForReady(); err != nil {
+		logger.Error("Failed to create ExchangeProtocol", err)
 		return nil, err
 	}
 
@@ -131,8 +137,8 @@ func (p *ExchangeProtocol) Verify(sname string) (bool, *internet.HDNSNameRecord,
 	pubKey := rec.PubKey
 	compId, err := peer.IDFromPublicKey(pubKey)
 	if err != nil {
-		 logger.Error("Failed to extract PeerID from PublicKey", err)
-		return false, nil,err
+		logger.Error("Failed to extract PeerID from PublicKey", err)
+		return false, nil, err
 	}
 	return rec.PeerID() == compId, rec, nil
 }

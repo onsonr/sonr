@@ -15,7 +15,6 @@ type DomainProtocol struct {
 	ctx            context.Context             // Context of Protocol
 	host           *host.SNRHost               // Host of Node
 	namebaseClient *internet.NamebaseAPIClient // REST Client
-
 }
 
 // NewProtocol creates a new DomainProtocol to be used by HighwayNode

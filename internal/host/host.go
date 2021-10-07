@@ -2,6 +2,8 @@ package host
 
 import (
 	"context"
+	"errors"
+	"time"
 
 	"github.com/libp2p/go-libp2p"
 	connmgr "github.com/libp2p/go-libp2p-connmgr"
@@ -11,7 +13,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/libp2p/go-libp2p-core/routing"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
-	psub "github.com/libp2p/go-libp2p-pubsub"
+	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/libp2p/go-msgio"
 	"github.com/multiformats/go-multiaddr"
 	"github.com/sonr-io/core/internal/device"
@@ -39,10 +41,11 @@ type SNRHost struct {
 	opts         hostOptions
 	multiAddr    multiaddr.Multiaddr
 	privKey      crypto.PrivKey
+	readyChan    chan bool
 
 	// Discovery
 	*dht.IpfsDHT
-	*psub.PubSub
+	*ps.PubSub
 }
 
 // NewHost creates a new host
@@ -72,13 +75,13 @@ func NewHost(ctx context.Context, listener *internet.TCPListener, options ...Hos
 		logger.Error("Failed to create libp2p host", err)
 		return nil, err
 	}
-	return hn, nil
+	return hn.Setup()
 }
 
 // Connect connects with `peer.AddrInfo` if underlying Host is ready
 func (hn *SNRHost) Connect(ctx context.Context, pi peer.AddrInfo) error {
 	// Check if host is ready
-	if err := hn.Ready(); err != nil {
+	if err := hn.IsReady(); err != nil {
 		logger.Warn("Underlying host is not ready, failed to call Connect()")
 		return err
 	}
@@ -101,7 +104,19 @@ func (hn *SNRHost) Connect(ctx context.Context, pi peer.AddrInfo) error {
 	}
 }
 
-// Close closes the host
+// Join wraps around PubSub.Join and returns the joined topic. Checks wether the
+// host is ready before joining.
+func (hn *SNRHost) Join(topic string, opts ...ps.TopicOpt) (*ps.Topic, error) {
+	if hn.PubSub == nil {
+		return nil, errors.New("Pubsub has not been set on SNRHost")
+	}
+	if topic == "" {
+		return nil, errors.New("Empty topic string provided to Join for host.Pubsub")
+	}
+	return hn.PubSub.Join(topic, opts...)
+}
+
+// Close closes the underlying host
 func (hn *SNRHost) Close() error {
 	hn.IpfsDHT.Close()
 	return hn.Host.Close()
@@ -112,31 +127,31 @@ func (hn *SNRHost) Router(h host.Host) (routing.PeerRouting, error) {
 	// Create DHT
 	kdht, err := dht.New(hn.ctx, h)
 	if err != nil {
+		hn.readyChan <- false
 		return nil, err
 	}
 
+	// Set Properties
+	hn.IpfsDHT = kdht
+	hn.Host = h
+	logger.Info("Host and DHT have been set for SNRNode")
+
 	// Setup Properties
-	return hn.Setup(kdht, h)
+	return hn.IpfsDHT, nil
 }
 
 // ** ─── Host Info ────────────────────────────────────────────────────────
-// Ready returns no-error if the host is ready for connect
-func (hn *SNRHost) Ready() error {
-	if hn.Host == nil {
-		return ErrHostNotSet
-	}
-	if hn.IpfsDHT == nil {
-		return ErrDHTNotFound
-	}
-	if hn.PubSub == nil {
-		logger.Warn("Pubsub has not been set yet")
+// IsReady returns no-error if the host is ready for connect
+func (hn *SNRHost) IsReady() error {
+	if hn.IpfsDHT == nil || hn.Host == nil {
+		return ErrRoutingNotSet
 	}
 	return nil
 }
 
 // SendMessage writes a protobuf go data object to a network stream
 func (hn *SNRHost) SendMessage(id peer.ID, p protocol.ID, data proto.Message) error {
-	err := hn.Ready()
+	err := hn.IsReady()
 	if err != nil {
 		return err
 	}
@@ -187,4 +202,22 @@ func (hn *SNRHost) Stat() (*SNRHostStat, error) {
 		PeerID:    hn.ID().Pretty(),
 		MultAddr:  hn.Addrs()[0].String(),
 	}, nil
+}
+
+// WaitForReady blocks until the host is ready
+func (hn *SNRHost) WaitForReady() error {
+	timeout := time.After(HOST_TIMEOUT)
+	for {
+		select {
+		case <-timeout:
+			return errors.New("Timeout occurred waiting for host to be ready")
+		case ready := <-hn.readyChan:
+			if !ready {
+				return errors.New("Host failed to be ready")
+			}
+			return nil
+		case <-hn.ctx.Done():
+			return errors.New("Context ended before host became ready")
+		}
+	}
 }

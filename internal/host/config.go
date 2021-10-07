@@ -24,8 +24,7 @@ const (
 
 var (
 	logger              = golog.Child("host")
-	ErrDHTNotFound      = errors.New("DHT has not been set by Routing Function")
-	ErrHostNotSet       = errors.New("Host has not been set to SNRHost Struct")
+	ErrRoutingNotSet    = errors.New("DHT and Host have not been set by Routing Function")
 	ErrListenerRequired = errors.New("Listener was not Provided")
 	ErrMDNSInvalidConn  = errors.New("Invalid Connection, cannot begin MDNS Service")
 )
@@ -121,6 +120,7 @@ func (ho hostOptions) Apply(options ...HostOption) (*SNRHost, error) {
 		ctx:          ho.ctx,
 		opts:         ho,
 		bootstrapped: false,
+		readyChan:    make(chan bool, 1),
 	}
 
 	// Get MultiAddr from listener

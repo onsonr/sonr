@@ -36,5 +36,5 @@ func checkParams(host *host.SNRHost) error {
 		logger.Error("Host provided is nil", ErrParameters)
 		return ErrParameters
 	}
-	return host.Ready()
+	return host.IsReady()
 }

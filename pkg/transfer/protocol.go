@@ -25,6 +25,12 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) (*T
 		return nil, err
 	}
 
+	// Wait until host is ready
+	if err := host.WaitForReady(); err != nil {
+		logger.Error("Failed to create TransferProtocol", err)
+		return nil, err
+	}
+
 	// create a new transfer protocol
 	invProtocol := &TransferProtocol{
 		ctx:     ctx,

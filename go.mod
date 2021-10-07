@@ -22,7 +22,6 @@ require (
 	github.com/o1egl/govatar v0.4.1
 	github.com/pkg/errors v0.9.1
 	go.etcd.io/bbolt v1.3.6
-	golang.org/x/mobile v0.0.0-20210924032853-1c027f395ef7 // indirect
 	golang.org/x/net v0.0.0-20210813160813-60bc85c4be6d
 	golang.org/x/tools v0.1.2 // indirect
 	google.golang.org/grpc v1.40.0
