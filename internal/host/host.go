@@ -63,6 +63,7 @@ func NewHost(ctx context.Context, listener *internet.TCPListener, options ...Hos
 			opts.GracePeriod, // GracePeriod
 		)),
 		libp2p.ListenAddrs(hn.multiAddr),
+		libp2p.DefaultListenAddrs,
 		libp2p.DefaultStaticRelays(),
 		libp2p.Routing(hn.Router),
 		libp2p.NATPortMap(),

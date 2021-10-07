@@ -24,6 +24,8 @@ func init() {
 	logger = golog.New()
 	logger.SetPrefix("[Sonr-Core.lib] ")
 	logger.SetStacktraceLimit(2)
+	logger.SetLevel("warn")
+	logger.SetFormat("json", "    ")
 }
 
 // Start starts the host, node, and rpc service.

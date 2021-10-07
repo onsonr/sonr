@@ -23,6 +23,8 @@ func init() {
 	logger = golog.New()
 	logger.SetPrefix("[Sonr-Core.highway] ")
 	logger.SetStacktraceLimit(2)
+	logger.SetLevel("warn")
+    logger.SetFormat("json", "    ")
 }
 
 func main() {
