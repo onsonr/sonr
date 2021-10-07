@@ -3,6 +3,7 @@ package internet
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"net"
@@ -14,6 +15,7 @@ import (
 
 const (
 	DefaultListenNetwork = "tcp"
+	DefaultListenIP      = "127.0.0.1"
 	DefaultListenHost    = "localhost"
 	DefaultListenPort    = 0
 )
@@ -40,7 +42,7 @@ func WithPort(p int) TCPListenerOpt {
 	// Check if port is valid and return defaultPortFunc if not
 	results := checkPorts(DefaultListenHost, p)
 	if results[fmt.Sprint(p)] == "failed" {
-		logger.Error(fmt.Errorf("port %v is not available", p))
+		logger.Child("internet/TCPListener").Error(fmt.Errorf("port %v is not available", p))
 		return defaultPortFunc()
 	}
 	return setPortFunc(p)
@@ -76,12 +78,12 @@ func defaultTCPListenerOpts() tcpOptions {
 // Apply applies the options to the listener
 func (o tcpOptions) Apply(options ...TCPListenerOpt) {
 	if len(options) > 0 {
-		logger.Info(fmt.Sprintf("Applying %v options to TCPListener: %s", len(options), o.getAddress()))
+		logger.Child("internet/TCPListener").Info(fmt.Sprintf("Applying %v options to TCPListener: %s", len(options), o.getAddress()))
 		for _, opt := range options {
 			opt(o)
 		}
 	} else {
-		logger.Info(fmt.Sprintf("Default Options set for TCPListener: %s", o.getAddress()))
+		logger.Child("internet/TCPListener").Info(fmt.Sprintf("Default Options set for TCPListener: %s", o.getAddress()))
 	}
 }
 
@@ -127,9 +129,17 @@ func (l *TCPListener) IsIPv6() bool {
 	return l.Addr().(*net.TCPAddr).IP.To16() != nil
 }
 
-// IP returns the IP of the listener
-func (l *TCPListener) IP() string {
-	return l.Addr().String()
+// Host returns the Host of the listener
+func (l *TCPListener) Host() string {
+	// Get Host
+	hostStr := strings.Split(l.Addr().String(), ":")[0]
+	hostStrSplits := strings.Split(hostStr, ".")
+
+	// Validate IP address
+	if len(hostStrSplits) != 4 {
+		return DefaultListenIP
+	}
+	return hostStr
 }
 
 // Port returns the port of the listener
@@ -142,6 +152,26 @@ func (l *TCPListener) Multiaddr() (ma.Multiaddr, error) {
 	return ma.NewMultiaddr(l.MultiaddrStr())
 }
 
+// MultiaddrStr returns the multiaddr string of the listener
+func (l *TCPListener) MultiaddrStr() string {
+	// Get Variables
+	t := l.Transport()
+	h := l.Host()
+	n := l.Network()
+	p := l.Port()
+
+	// Logging and return
+	maStr := fmt.Sprintf("/%s/%s/%s/%d", t, n, h, p)
+	logger.Child("internet/TCPListener").Info("Created MultiAddr for TCPListener", golog.Fields{
+		"Transport": t,
+		"Host":      h,
+		"Network":   n,
+		"Port":      p,
+		"MultiAddr": maStr,
+	})
+	return maStr
+}
+
 // Multiaddr returns the multiaddr of the listener
 func (l *TCPListener) Network() string {
 	if l.opts.network != "" {
@@ -150,17 +180,12 @@ func (l *TCPListener) Network() string {
 	return DefaultListenNetwork
 }
 
-// MultiaddrStr returns the multiaddr string of the listener
-func (l *TCPListener) MultiaddrStr() string {
-	return fmt.Sprintf("/%s/%s/%s/%v", l.Transport(), l.IP(), l.Network(), l.Port())
-}
-
 // Transport returns 'ip4' or 'ip6' based on the listener
 func (l *TCPListener) Transport() string {
-	if l.IsIPv4() {
-		return "ip4"
+	if l.IsIPv6() {
+		return "ip6"
 	}
-	return "ip6"
+	return "ip4"
 }
 
 // handlePort handles the port of the listener until it is closed
