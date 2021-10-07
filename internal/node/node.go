@@ -3,15 +3,12 @@ package node
 import (
 	"container/list"
 	"context"
-	"errors"
 	"strings"
 
-	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/internal/keychain"
-	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/transfer"
 
 	"github.com/sonr-io/core/tools/state"
@@ -97,14 +94,27 @@ func NewNode(ctx context.Context, options ...NodeOption) (*Node, *InitializeResp
 
 	// Begin Background Tasks
 	opts.Apply(ctx, node)
-	go node.handleEmitter()
+	go node.Serve(ctx)
 	return node, node.newInitResponse(nil), nil
+}
+
+// Close closes the node
+func (n *Node) Close() {
+	// Close Host
+	if err := n.host.Close(); err != nil {
+		logger.Error("Failed to close host", err)
+	}
+
+	// Close Store
+	if err := n.store.Close(); err != nil {
+		logger.Error("Failed to close store", err)
+	}
 }
 
 // Peer method returns the peer of the node
 func (n *Node) Peer() (*common.Peer, error) {
 	// Get Profile
-	profile, err := n.GetProfile()
+	profile, err := n.Profile()
 	if err != nil {
 		return nil, err
 	}
@@ -145,8 +155,8 @@ func (n *Node) Peer() (*common.Peer, error) {
 	}, nil
 }
 
-// GetProfile returns the profile for the user from diskDB
-func (n *Node) GetProfile() (*common.Profile, error) {
+// Profile returns the profile for the user from diskDB
+func (n *Node) Profile() (*common.Profile, error) {
 	// Check if Store is open
 	if n.store == nil {
 		logger.Error("Failed to Get Profile", ErrStoreNotCreated)
@@ -185,7 +195,7 @@ func (n *Node) GetProfile() (*common.Profile, error) {
 // Supply a transfer item to the queue
 func (n *Node) Supply(paths []string) error {
 	// Get Profile
-	profile, err := n.GetProfile()
+	profile, err := n.Profile()
 	if err != nil {
 		return err
 	}
@@ -202,91 +212,10 @@ func (n *Node) Supply(paths []string) error {
 	return nil
 }
 
-// Share a peer to have a transfer
-func (n *Node) NewRequest(to *common.Peer) (peer.ID, *transfer.InviteRequest, error) {
-	// Fetch Element from Queue
-	elem := n.queue.Front()
-	if elem != nil {
-		// Get Payload
-		payload := n.queue.Remove(elem).(*common.Payload)
-
-		// Create New ID for Invite
-		id, err := device.KeyChain.CreateUUID()
-		if err != nil {
-			logger.Error("Failed to create new id for Shared Invite", err)
-			return "", nil, err
-		}
-
-		// Create new Metadata
-		meta, err := device.KeyChain.CreateMetadata(n.host.ID())
-		if err != nil {
-			logger.Error("Failed to create new metadata for Shared Invite", err)
-			return "", nil, err
-		}
-
-		// Fetch User Peer
-		from, err := n.Peer()
-		if err != nil {
-			logger.Error("Failed to get Node Peer Object", err)
-			return "", nil, err
-		}
-
-		// Create Invite Request
-		req := &transfer.InviteRequest{
-			Payload:  payload,
-			Metadata: common.SignedMetadataToProto(meta),
-			To:       to,
-			From:     from,
-			Uuid:     common.SignedUUIDToProto(id),
-		}
-
-		// Fetch Peer ID from Public Key
-		toId, err := to.PeerID()
-		if err != nil {
-			logger.Error("Failed to fetch peer id from public key", err)
-			return "", nil, err
-		}
-		return toId, req, nil
-	}
-	return "", nil, errors.New("No items in Transfer Queue.")
-}
-
-// Respond to an invite request
-func (n *Node) NewResponse(decs bool, to *common.Peer) (peer.ID, *transfer.InviteResponse, error) {
-	// Create new Metadata
-	meta, err := device.KeyChain.CreateMetadata(n.host.ID())
-	if err != nil {
-		logger.Error("Failed to create new metadata for Shared Invite", err)
-		return "", nil, err
-	}
-
-	// Fetch User Peer
-	from, err := n.Peer()
-	if err != nil {
-		return "", nil, err
-	}
-
-	// Create Invite Response
-	resp := &transfer.InviteResponse{
-		Decision: decs,
-		Metadata: common.SignedMetadataToProto(meta),
-		From:     from,
-		To:       to,
-	}
-
-	// Fetch Peer ID from Public Key
-	toId, err := to.PeerID()
-	if err != nil {
-		logger.Error("Failed to fetch peer id from public key", err)
-		return "", nil, err
-	}
-	return toId, resp, nil
-}
-
 // Stat returns the Node info as StatResponse
 func (n *Node) Stat() (*StatResponse, error) {
 	// Get Profile
-	profile, err := n.GetProfile()
+	profile, err := n.Profile()
 	if err != nil {
 		return &StatResponse{
 			Success: false,
@@ -343,57 +272,25 @@ func (n *Node) Stat() (*StatResponse, error) {
 	}, nil
 }
 
-// HandleEmitter handles the emitter events.
-func (n *Node) handleEmitter() {
+// Serve handles the emitter events.
+func (n *Node) Serve(ctx context.Context) {
 	for {
-		// // Handle Mail Event
-		// n.On(mailbox.Event_MAIL_RECEIVED, func(e *state.Event) {
-		// 	event := e.Args[0].(*common.MailboxEvent)
-		// 	n.mailEvents <- event
-		// })
-
-		// Handle Transfer Invite
-		n.On(transfer.Event_INVITED, func(e *state.Event) {
+		select {
+		case e := <-n.On(transfer.Event_INVITED):
 			event := e.Args[0].(*common.InviteEvent)
 			n.inviteEvents <- event
-		})
-
-		// Handle Transfer Decision
-		n.On(transfer.Event_RESPONDED, func(e *state.Event) {
+		case e := <-n.On(transfer.Event_RESPONDED):
 			event := e.Args[0].(*common.DecisionEvent)
 			n.decisionEvents <- event
-		})
-
-		// Handle Transfer Progress
-		n.On(transfer.Event_PROGRESS, func(e *state.Event) {
+		case e := <-n.On(transfer.Event_PROGRESS):
 			event := e.Args[0].(*common.ProgressEvent)
 			n.progressEvents <- event
-		})
-
-		// Handle Transfer Completed
-		n.On(transfer.Event_COMPLETED, func(e *state.Event) {
+		case e := <-n.On(transfer.Event_COMPLETED):
 			event := e.Args[0].(*common.CompleteEvent)
-			// Check Direction
-			if event.Direction == common.CompleteEvent_INCOMING {
-				// Add Sender to Recents
-				err := n.AddRecent(event.GetFrom().GetProfile())
-				if err != nil {
-					logger.Error("Failed to add sender's profile to store.", err)
-				}
-			} else {
-				// Add Receiver to Recents
-				err := n.AddRecent(event.GetTo().GetProfile())
-				if err != nil {
-					logger.Error("Failed to add receiver's profile to store.", err)
-				}
-			}
 			n.completeEvents <- event
-		})
-
-		// Handle Lobby Join Events
-		n.On(lobby.Event_LIST_REFRESH, func(e *state.Event) {
-			refreshEvent := e.Args[0].(*common.RefreshEvent)
-			n.refreshEvents <- refreshEvent
-		})
+		case <-ctx.Done():
+			n.Close()
+			return
+		}
 	}
 }

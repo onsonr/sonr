@@ -15,6 +15,11 @@ var (
 	logger = golog.Child("common")
 )
 
+// IsMdnsCompatible returns true if the Connection is MDNS compatible
+func (c Connection) IsMdnsCompatible() bool {
+	return c == Connection_WIFI || c == Connection_ETHERNET
+}
+
 // SignedMetadataToProto converts a SignedMetadata to a protobuf.
 func SignedMetadataToProto(m *keychain.SignedMetadata) *Metadata {
 	return &Metadata{

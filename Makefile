@@ -17,7 +17,7 @@ APP_ROOT_DIR =/Users/prad/Developer/mobile/
 # @ Packaging Vars/Commands
 GOMOBILE=gomobile
 GOCLEAN=$(GOMOBILE) clean
-GOBIND=$(GOMOBILE) bind -ldflags='-s -w' -x
+GOBIND=$(GOMOBILE) bind -ldflags='-s -w' -v
 GOBIND_ANDROID=$(GOBIND) -target=android -androidapi=24
 GOBIND_IOS=$(GOBIND) -target=ios -bundleid=io.sonr.core
 

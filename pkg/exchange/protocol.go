@@ -8,7 +8,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/host"
-	"github.com/sonr-io/core/tools/net"
+	"github.com/sonr-io/core/tools/internet"
 	"github.com/sonr-io/core/tools/state"
 	"google.golang.org/protobuf/proto"
 )
@@ -23,7 +23,7 @@ type ExchangeProtocol struct {
 	ctx      context.Context
 	host     *host.SNRHost  // host
 	emitter  *state.Emitter // Handle to signal when done
-	resolver net.HDNSResolver
+	resolver internet.HDNSResolver
 }
 
 // NewProtocol creates new ExchangeProtocol
@@ -39,7 +39,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) (*E
 		ctx:      ctx,
 		host:     host,
 		emitter:  em,
-		resolver: net.NewHDNSResolver(),
+		resolver: internet.NewHDNSResolver(),
 	}
 	return exchProtocol, nil
 }
@@ -115,7 +115,7 @@ func (p *ExchangeProtocol) Update(peer *common.Peer) error {
 
 // Verify method uses resolver to check if Peer is registered,
 // returns true if Peer is registered
-func (p *ExchangeProtocol) Verify(sname string) (bool, *net.HDNSNameRecord, error) {
+func (p *ExchangeProtocol) Verify(sname string) (bool, *internet.HDNSNameRecord, error) {
 	// Create Context
 	ctx, cancel := context.WithTimeout(p.ctx, time.Second*5)
 	defer cancel()

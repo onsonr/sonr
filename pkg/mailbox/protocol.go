@@ -12,7 +12,6 @@ package mailbox
 // 	"github.com/textileio/go-threads/core/thread"
 // 	"github.com/textileio/textile/v2/cmd"
 // 	"github.com/textileio/textile/v2/mail/local"
-// 	"go.uber.org/zap"
 // 	"google.golang.org/protobuf/encoding/protojson"
 // )
 
@@ -190,6 +189,6 @@ package mailbox
 // 	}
 
 // 	// Log Result
-// 	logger.Info("Succesfully sent mail!", zap.String("ID", msg.ID), zap.Time("SentAt", msg.CreatedAt), zap.String("To", msg.To.String()))
+// 	logger.Info("Succesfully sent mail!", golog.Fields{"ID": msg.ID, "SentAt": msg.CreatedAt, "To": msg.To.String()},
 // 	return nil
 // }

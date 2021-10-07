@@ -6,7 +6,6 @@ import (
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/node"
-	"go.uber.org/zap"
 )
 
 type SonrHighway struct {
@@ -38,7 +37,7 @@ func main() {
 	if err != nil {
 		logger.Fatal("Failed to update Profile for Node", err)
 	}
-	logger.Info("Node Started: ", zap.Any("Response", resp))
+	logger.Info("Node Started: ", golog.Fields{"Response": resp.String()})
 
 	// Set Lib
 	sonrHighway = &SonrHighway{

@@ -46,10 +46,10 @@ type SNRHost struct {
 // NewHost creates a new host
 func NewHost(ctx context.Context, options ...HostOption) (*SNRHost, error) {
 	// Initialize DHT
-	var err error
 	opts := defaultHostOptions()
-	for _, opt := range options {
-		opt(opts)
+	err := opts.Apply(options...)
+	if err != nil {
+		return nil, err
 	}
 
 	// Create Host
@@ -66,6 +66,7 @@ func NewHost(ctx context.Context, options ...HostOption) (*SNRHost, error) {
 			opts.highWater,   // HighWater,
 			opts.gracePeriod, // GracePeriod
 		)),
+		libp2p.ListenAddrs(opts.multiAddrs...),
 		libp2p.DefaultStaticRelays(),
 		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
 			// Create DHT
@@ -90,6 +91,15 @@ func NewHost(ctx context.Context, options ...HostOption) (*SNRHost, error) {
 	if err != nil {
 		logger.Error("Failed to bootstrap libp2p Host", err)
 		return nil, err
+	}
+
+	// Check for MDNS Discovery
+	if hn.opts.connection.IsMdnsCompatible() {
+		err = hn.MDNS()
+		if err != nil {
+			logger.Warn("MDNS Discovery Service failed to Start")
+			return hn, nil
+		}
 	}
 	return hn, nil
 }

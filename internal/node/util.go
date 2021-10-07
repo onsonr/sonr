@@ -8,7 +8,7 @@ import (
 // newInitResponse creates a response for the initialize request.
 func (n *Node) newInitResponse(err error) *InitializeResponse {
 	// Get Profile from Store
-	profile, err := n.GetProfile()
+	profile, err := n.Profile()
 	if err != nil {
 		logger.Error("Failed to create initialize Response", err)
 		return &InitializeResponse{

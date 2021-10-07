@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	common "github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/transfer"
@@ -59,12 +60,6 @@ func (n *Node) startClientService(ctx context.Context, olc string) (*ClientNodeS
 	if err != nil {
 		logger.Error("Failed to start LobbyProtocol", err)
 	}
-
-	// // Set Mailbox Protocol
-	// mailboxProtocol, err := mailbox.NewProtocol(ctx, n.host, n.Emitter)
-	// if err != nil {
-	// 	logger.Error("Failed to start MailboxProtocol", err)
-	// }
 
 	// Bind RPC Service
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", RPC_SERVER_PORT))
@@ -187,7 +182,7 @@ func (n *ClientNodeStub) Edit(ctx context.Context, req *EditRequest) (*EditRespo
 // Fetch method retreives Node properties from Key/Value Store
 func (n *ClientNodeStub) Fetch(ctx context.Context, req *FetchRequest) (*FetchResponse, error) {
 	// Call Internal Fetch4
-	profile, err := n.Node.GetProfile()
+	profile, err := n.Node.Profile()
 	if err != nil {
 		return &FetchResponse{
 			Success: false,
@@ -396,6 +391,22 @@ func (n *ClientNodeStub) OnTransferComplete(e *Empty, stream ClientService_OnTra
 		select {
 		case m := <-n.completeEvents:
 			if m != nil {
+				// Check Direction
+				if m.Direction == common.CompleteEvent_INCOMING {
+					// Add Sender to Recents
+					err := n.AddRecent(m.GetFrom().GetProfile())
+					if err != nil {
+						logger.Error("Failed to add sender's profile to store.", err)
+						return err
+					}
+				} else {
+					// Add Receiver to Recents
+					err := n.AddRecent(m.GetTo().GetProfile())
+					if err != nil {
+						logger.Error("Failed to add receiver's profile to store.", err)
+						return err
+					}
+				}
 				stream.Send(m)
 			}
 		case <-n.ctx.Done():

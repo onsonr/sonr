@@ -1,17 +1,17 @@
-package net_test
+package internet_test
 
 import (
 	"context"
 	"fmt"
 	"testing"
 
-	"github.com/sonr-io/core/tools/net"
+	"github.com/sonr-io/core/tools/internet"
 )
 
 func TestLookup(t *testing.T) {
 	// Create resolver
 	testVal := "_redirect.snr"
-	hdnsResolver := net.NewHDNSResolver()
+	hdnsResolver := internet.NewHDNSResolver()
 
 	// Test with a valid domain
 	rec, err := hdnsResolver.LookupTXT(context.Background(), testVal)

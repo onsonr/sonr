@@ -8,6 +8,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	psub "github.com/libp2p/go-libp2p-pubsub"
+	mdns "github.com/libp2p/go-libp2p/p2p/discovery/mdns"
 )
 
 var (
@@ -25,6 +26,7 @@ func (n *discoveryNotifee) HandlePeerFound(pi peer.AddrInfo) {
 }
 
 // ** ─── HostNode Connection Methods ────────────────────────────────────────────────────────
+// checkDhtSet is a Helper Method to check if DHT is set
 func (hn *SNRHost) checkDhtSet() error {
 	if hn.IpfsDHT == nil {
 		return ErrDHTNotFound
@@ -76,6 +78,21 @@ func (h *SNRHost) Bootstrap() error {
 		return err
 	}
 	go h.handleDiscoveredPeers(peersChan)
+	return nil
+}
+
+// MDNS Method Begins MDNS Discovery
+func (h *SNRHost) MDNS() error {
+	// Create MDNS Service
+	ser := mdns.NewMdnsService(h.Host, h.opts.rendezvous)
+
+	// Register Notifier
+	n := &discoveryNotifee{}
+	n.PeerChan = make(chan peer.AddrInfo)
+
+	// Handle Events
+	ser.RegisterNotifee(n)
+	go h.handleDiscoveredPeers(n.PeerChan)
 	return nil
 }
 

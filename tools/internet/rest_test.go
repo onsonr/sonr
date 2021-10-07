@@ -1,4 +1,4 @@
-package net_test
+package internet_test
 
 import (
 	"context"
@@ -8,13 +8,13 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/sonr-io/core/internal/keychain"
-	"github.com/sonr-io/core/tools/net"
+	"github.com/sonr-io/core/tools/internet"
 )
 
 func TestNewAuthRecord(t *testing.T) {
 	// Create Protocol
 	testName := "testerLope"
-	nbClient := net.NewNamebaseClient(context.Background(), os.Getenv("HANDSHAKE_KEY"), os.Getenv("HANDSHAKE_SECRET"))
+	nbClient := internet.NewNamebaseClient(context.Background(), os.Getenv("HANDSHAKE_KEY"), os.Getenv("HANDSHAKE_SECRET"))
 
 	// Generate Keys
 	_, pubKey, err := crypto.GenerateEd25519Key(rand.Reader)
@@ -30,7 +30,7 @@ func TestNewAuthRecord(t *testing.T) {
 	}
 
 	// Create Record
-	record := net.NewNBNameRecord(pubStr, testName)
+	record := internet.NewNBNameRecord(pubStr, testName)
 	println(record.Name())
 	println(record.Prefix())
 	println(record.Fingerprint())
@@ -39,7 +39,7 @@ func TestNewAuthRecord(t *testing.T) {
 	t.Log(record.Prefix())
 
 	// Create New Add NamebaseRequest
-	ok, err := nbClient.PutRecords(net.NewNBAddRequest(record))
+	ok, err := nbClient.PutRecords(internet.NewNBAddRequest(record))
 	if err != nil {
 		t.Error(err)
 	}
@@ -59,7 +59,7 @@ func TestNewAuthRecord(t *testing.T) {
 	}
 
 	// Create New Delete NamebaseRequest
-	ok, err = nbClient.PutRecords(net.NewNBDeleteRequest(record.ToDeleteRecord()))
+	ok, err = nbClient.PutRecords(internet.NewNBDeleteRequest(record.ToDeleteRecord()))
 	if err != nil {
 		t.Error(err)
 	}

@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/sonr-io/core/internal/host"
-	"github.com/sonr-io/core/tools/net"
+	"github.com/sonr-io/core/tools/internet"
 )
 
 // DomainMap returns map with host as key and recordValue as value.
@@ -12,9 +12,9 @@ type DomainMap map[string]string
 
 // DomainProtocol handles DNS Table Registration and Verification.
 type DomainProtocol struct {
-	ctx            context.Context        // Context of Protocol
-	host           *host.SNRHost          // Host of Node
-	namebaseClient *net.NamebaseAPIClient // REST Client
+	ctx            context.Context             // Context of Protocol
+	host           *host.SNRHost               // Host of Node
+	namebaseClient *internet.NamebaseAPIClient // REST Client
 
 }
 
@@ -36,14 +36,14 @@ func NewProtocol(ctx context.Context, host *host.SNRHost) (*DomainProtocol, erro
 	return &DomainProtocol{
 		ctx:            ctx,
 		host:           host,
-		namebaseClient: net.NewNamebaseClient(ctx, key, secret),
+		namebaseClient: internet.NewNamebaseClient(ctx, key, secret),
 	}, nil
 }
 
 // RegisterDomain registers a domain with Namebase.
-func (p *DomainProtocol) Register(sName string, records ...net.Record) (DomainMap, error) {
+func (p *DomainProtocol) Register(sName string, records ...internet.Record) (DomainMap, error) {
 	// Put records into Namebase
-	req := net.NewNBAddRequest(records...)
+	req := internet.NewNBAddRequest(records...)
 	ok, err := p.namebaseClient.PutRecords(req)
 	if err != nil {
 		logger.Error("Failed to Register SName", err)

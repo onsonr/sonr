@@ -6,7 +6,7 @@ import (
 	"net"
 
 	"github.com/sonr-io/core/pkg/domain"
-	dnet "github.com/sonr-io/core/tools/net"
+	"github.com/sonr-io/core/tools/internet"
 	grpc "google.golang.org/grpc"
 )
 
@@ -81,7 +81,7 @@ func (hrc *HighwayNodeStub) Register(ctx context.Context, req *RegisterRequest) 
 	}
 
 	// Create Record
-	resp, err := hrc.DomainProtocol.Register(name, dnet.NewNBAuthRecord(pfix, name, fprint))
+	resp, err := hrc.DomainProtocol.Register(name, internet.NewNBAuthRecord(pfix, name, fprint))
 	if err != nil {
 		return &RegisterResponse{
 			Success: false,

@@ -8,11 +8,8 @@ import (
 
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/sonr-io/core/internal/device"
-
 	//"github.com/bakape/thumbnailer/v2"
 	//"github.com/sonr-io/core/internal/device"
-	//"github.com/sonr-io/core/tools/logger"
-	//"go.uber.org/zap"
 )
 
 // MIN_THUMBNAIL_BOUNDS is the minimum size of the thumbnail
@@ -52,7 +49,7 @@ func NewFileItem(path string) (*Payload_Item, error) {
 	// 	// Create Thumbnail
 	// 	thumb, err := fileItem.NewThumbnail()
 	// 	if err != nil {
-	// 		logger.Error("Failed to create Thumbnail", zap.Error(err))
+	// 		logger.Error("Failed to create Thumbnail", err)
 	// 		return nil, err
 	// 	}
 
@@ -89,7 +86,7 @@ func NewFileItem(path string) (*Payload_Item, error) {
 // 		// Open File
 // 		file, err := os.Open(fi.GetPath())
 // 		if err != nil {
-// 			logger.Error("Failed to open file", zap.Error(err))
+// 			logger.Error("Failed to open file", err)
 // 			return nil, err
 // 		}
 // 		defer file.Close()
@@ -97,7 +94,7 @@ func NewFileItem(path string) (*Payload_Item, error) {
 // 		// Create FFmpeg Reader
 // 		ffctx, err := thumbnailer.NewFFContext(file)
 // 		if err != nil {
-// 			logger.Error("Failed to create FFContext", zap.Error(err))
+// 			logger.Error("Failed to create FFContext", err)
 // 			return nil, err
 // 		}
 
@@ -107,21 +104,21 @@ func NewFileItem(path string) (*Payload_Item, error) {
 // 			Height: MIN_THUMBNAIL_BOUNDS,
 // 		})
 // 		if err != nil {
-// 			logger.Error("Failed to create thumbnail", zap.Error(err))
+// 			logger.Error("Failed to create thumbnail", err)
 // 			return nil, err
 // 		}
 
 // 		// Init Thumbnail Path
 // 		thumbPath, err := device.NewTempPath(fi.Path, device.WithSuffix("tmb"))
 // 		if err != nil {
-// 			logger.Error("Failed to retreive Temporary Path", zap.Error(err))
+// 			logger.Error("Failed to retreive Temporary Path", err)
 // 			return nil, err
 // 		}
 
 // 		// Create Thumbnail at path
 // 		thumbFile, err := os.Create(thumbPath)
 // 		if err != nil {
-// 			logger.Error("Failed to create new image", zap.Error(err))
+// 			logger.Error("Failed to create new image", err)
 // 			return nil, err
 // 		}
 // 		defer thumbFile.Close()
@@ -129,14 +126,14 @@ func NewFileItem(path string) (*Payload_Item, error) {
 // 		// Encode Thumbnail
 // 		err = jpeg.Encode(thumbFile, thumbImg, &jpeg.Options{Quality: 100})
 // 		if err != nil {
-// 			logger.Error("Failed to encode image", zap.Error(err))
+// 			logger.Error("Failed to encode image", err)
 // 			return nil, err
 // 		}
 
 // 		// Read all bytes from thumbnail
 // 		thumbBytes, err := os.ReadFile(thumbPath)
 // 		if err != nil {
-// 			logger.Error("Failed to read thumbnail bytes after processing.", zap.Error(err))
+// 			logger.Error("Failed to read thumbnail bytes after processing.", err)
 // 			return nil, err
 // 		}
 

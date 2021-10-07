@@ -14,7 +14,7 @@ import (
 	"github.com/o1egl/govatar"
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/keychain"
-	"github.com/sonr-io/core/tools/net"
+	net "github.com/sonr-io/core/tools/internet"
 )
 
 // ** ───────────────────────────────────────────────────────

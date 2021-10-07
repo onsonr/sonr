@@ -1,14 +1,14 @@
-package net
+package internet
 
 import (
 	"context"
 	"net"
 	"time"
 
+	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/pkg/errors"
-	"go.uber.org/zap"
 )
 
 const (
@@ -119,6 +119,9 @@ func (sr *HDNSNameRecord) Verify() error {
 		logger.Error("Failed to find Value in SName Record", ErrEmptyTXT)
 		return ErrEmptyTXT
 	}
-	logger.Info("Valid SName DNS TXT Record", zap.String("SName", sr.SName), zap.String("Value", sr.Record))
+	logger.Info("Valid SName DNS TXT Record", golog.Fields{
+		"SName":  sr.SName,
+		"Record": sr.Record,
+	})
 	return nil
 }

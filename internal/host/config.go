@@ -1,22 +1,19 @@
 package host
 
 import (
-	"context"
 	"crypto/rand"
+	"errors"
 	"time"
 
 	"github.com/kataras/golog"
-	"github.com/libp2p/go-libp2p"
-	connmgr "github.com/libp2p/go-libp2p-connmgr"
 	"github.com/libp2p/go-libp2p-core/crypto"
-	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-core/routing"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
+	"github.com/multiformats/go-multiaddr"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/keychain"
-	"github.com/sonr-io/core/tools/net"
+	net "github.com/sonr-io/core/tools/internet"
 )
 
 var (
@@ -25,13 +22,6 @@ var (
 
 // HostOption is a function that modifies the node options.
 type HostOption func(hostOptions)
-
-// FindListenAddrs will set Host to determine the local addresses
-func FindListenAddrs() HostOption {
-	return func(o hostOptions) {
-		o.findAddrs = true
-	}
-}
 
 // WithBootstrappers sets the bootstrap peers.
 func WithBootstrappers(pis []peer.AddrInfo) HostOption {
@@ -63,17 +53,26 @@ func WithInterval(interval time.Duration) HostOption {
 	}
 }
 
+// TCPListener sets the listener for the host. (This is Required for the
+// host to start)
+func TCPListener(l *net.TCPListener) (HostOption, error) {
+	// Get the address.
+	ma, err := l.Multiaddr()
+	if err != nil {
+		return nil, err
+	}
+
+	// Return the option.
+	return func(o hostOptions) {
+		o.setAddr = true
+		o.multiAddrs = []multiaddr.Multiaddr{ma}
+	}, nil
+}
+
 // WithPrivKey sets the private key for the host.
 func WithPrivKey(pk crypto.PrivKey) HostOption {
 	return func(o hostOptions) {
 		o.privateKey = pk
-	}
-}
-
-// WithRendevouz sets the rendevouz address.
-func WithRendevouz(addr string) HostOption {
-	return func(o hostOptions) {
-		o.rendezvous = addr
 	}
 }
 
@@ -86,9 +85,10 @@ func WithTTL(ttl time.Duration) HostOption {
 
 // hostOptions is a collection of options for the SnrHost.
 type hostOptions struct {
-	findAddrs      bool
+	setAddr        bool
 	connection     common.Connection
 	bootstrapPeers []peer.AddrInfo
+	multiAddrs     []multiaddr.Multiaddr
 	lowWater       int
 	highWater      int
 	gracePeriod    time.Duration
@@ -100,71 +100,54 @@ type hostOptions struct {
 
 // defaultHostOptions returns the default host options.
 func defaultHostOptions() hostOptions {
-	var privKey crypto.PrivKey
-	needsGen := false
-	privKey, err := device.KeyChain.GetPrivKey(keychain.Account)
-	if err != nil {
-		logger.Warn("Failed to get Account Private Key for Host", err)
-		needsGen = true
-	}
-
-	if needsGen {
-		privKey, _, err = crypto.GenerateEd25519Key(rand.Reader)
-		if err != nil {
-			logger.Fatal("Failed to generate Host Private Key", err)
-		}
-	}
-
 	return hostOptions{
-		findAddrs:      false,
+		setAddr:        false,
 		connection:     common.Connection_WIFI,
 		bootstrapPeers: dht.GetDefaultBootstrapPeerAddrInfos(),
 		lowWater:       10,
 		highWater:      15,
 		gracePeriod:    time.Second * 5,
-		privateKey:     privKey,
 		rendezvous:     "/sonr/rendevouz/0.9.2",
 		interval:       time.Second * 5,
 		ttl:            time.Minute * 1,
 	}
 }
 
-// Apply creates slice of libp2p.Option from the host options.
-func (no hostOptions) Apply(ctx context.Context, hn *SNRHost) []libp2p.Option {
-	opts := []libp2p.Option{
-		libp2p.Identity(no.privateKey),
-		libp2p.ConnectionManager(connmgr.NewConnManager(
-			no.lowWater,    // Lowwater
-			no.highWater,   // HighWater,
-			no.gracePeriod, // GracePeriod
-		)),
-		libp2p.DefaultStaticRelays(),
-		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
-			// Create DHT
-			kdht, err := dht.New(ctx, h)
-			if err != nil {
-				return nil, err
-			}
-
-			// Set DHT
-			hn.IpfsDHT = kdht
-			return kdht, nil
-		}),
-		libp2p.NATPortMap(),
-		libp2p.EnableAutoRelay(),
+// Apply applies the host options
+func (ho hostOptions) Apply(options ...HostOption) error {
+	// Iterate over the options.
+	for _, opt := range options {
+		opt(ho)
 	}
 
-	// Check if we should find ListenAddrStrings
-	if no.findAddrs {
-		// Get Listening Addresses
-		listenAddrs, err := net.PublicAddrStrs()
-		if err != nil {
-			logger.Error("Failed to get Public Listening Addresses", err)
-			return opts
+	// Check if Listener is set.
+	if !ho.setAddr {
+		logger.Error("Failed to create host, invalid hostOptions")
+		return errors.New("Listener Address was not set")
+	}
+
+	// findPrivKey returns the private key for the host.
+	findPrivKey := func() (crypto.PrivKey, error) {
+		privKey, err := device.KeyChain.GetPrivKey(keychain.Account)
+		if err == nil {
+			return privKey, nil
 		}
-
-		// Return options
-		opts = append(opts, libp2p.ListenAddrStrings(listenAddrs...))
+		logger.Warn("Failed to get Account Private Key for Host", err)
+		privKey, _, err = crypto.GenerateEd25519Key(rand.Reader)
+		if err == nil {
+			return privKey, nil
+		}
+		return nil, err
 	}
-	return opts
+
+	// Fetch the private key.
+	privKey, err := findPrivKey()
+	if err != nil {
+		logger.Error("Failed to create host, invalid hostOptions")
+		return err
+	}
+
+	// Set the private key.
+	ho.privateKey = privKey
+	return nil
 }

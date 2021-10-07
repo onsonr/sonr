@@ -12,7 +12,6 @@ import (
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/tools/config"
 	"github.com/sonr-io/core/tools/state"
-	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -65,8 +64,6 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 		// Write All Files
 		err = entry.MapItems(func(m *common.Payload_Item, i int, count int) error {
 			// Add to WaitGroup
-
-			logger.Info("Current Item: ", zap.String(fmt.Sprint(i), m.String()))
 			wg.Add(1)
 
 			// Create New Reader
@@ -161,7 +158,7 @@ func (ir *itemReader) ReadFrom(reader msgio.ReadCloser) error {
 	if err != nil {
 		return err
 	}
-	ir.logger.Info("Created new file at path", zap.String("incoming.ItemPath", ir.path))
+	ir.logger.Info("Created new file at path ", ir.path)
 	defer f.Close()
 
 	// Route Data from Stream

@@ -7,7 +7,6 @@ package mailbox
 // 	"github.com/sonr-io/core/internal/device"
 // 	"github.com/sonr-io/core/tools/logger"
 // 	"github.com/textileio/textile/v2/mail/local"
-// 	"go.uber.org/zap"
 // )
 
 // // Textile API definitions
@@ -72,7 +71,7 @@ package mailbox
 
 // 	// Set mailbox
 // 	mb.mailbox = mailbox
-// 	logger.Info("Existing Mailbox has been loaded.", zap.String("path", path))
+// 	logger.Info("Existing Mailbox has been loaded.", golog.Fields{"path": path})
 // 	return nil
 // }
 
@@ -120,6 +119,6 @@ package mailbox
 
 // 	// Set mailbox
 // 	mb.mailbox = mailbox
-// 	logger.Info("New Mailbox has been created.", zap.String("path", path))
+// 	logger.Info("New Mailbox has been created.", golog.Fields{"path": path})
 // 	return nil
 // }
