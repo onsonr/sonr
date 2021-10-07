@@ -161,7 +161,7 @@ func (l *TCPListener) MultiaddrStr() string {
 	p := l.Port()
 
 	// Logging and return
-	maStr := fmt.Sprintf("/%s/%s/%s/%d", t, n, h, p)
+	maStr := fmt.Sprintf("/%s/%s/%s/%d", t, h, n, p)
 	logger.Child("internet/TCPListener").Info("Created MultiAddr for TCPListener", golog.Fields{
 		"Transport": t,
 		"Host":      h,
