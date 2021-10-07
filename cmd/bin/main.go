@@ -22,7 +22,8 @@ var (
 
 func init() {
 	logger = golog.New()
-	logger.SetPrefix("[SonrBin] ")
+	logger.SetPrefix("[Sonr-Core.bin] ")
+	logger.SetStacktraceLimit(2)
 }
 
 // Start starts the host, node, and rpc service.

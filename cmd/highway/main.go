@@ -21,7 +21,8 @@ var (
 
 func init() {
 	logger = golog.New()
-	logger.SetPrefix("[SonrHighway] ")
+	logger.SetPrefix("[Sonr-Core.highway] ")
+	logger.SetStacktraceLimit(2)
 }
 
 func main() {
