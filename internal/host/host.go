@@ -5,10 +5,12 @@ import (
 	"time"
 
 	"github.com/libp2p/go-libp2p"
+	connmgr "github.com/libp2p/go-libp2p-connmgr"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
+	"github.com/libp2p/go-libp2p-core/routing"
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	psub "github.com/libp2p/go-libp2p-pubsub"
@@ -58,7 +60,27 @@ func NewHost(ctx context.Context, options ...HostOption) (*SNRHost, error) {
 	}
 
 	// Start Host
-	hn.Host, err = libp2p.New(ctx, opts.Apply(ctx, hn)...)
+	hn.Host, err = libp2p.New(ctx,
+		libp2p.Identity(opts.privateKey),
+		libp2p.ConnectionManager(connmgr.NewConnManager(
+			opts.lowWater,    // Lowwater
+			opts.highWater,   // HighWater,
+			opts.gracePeriod, // GracePeriod
+		)),
+		libp2p.DefaultStaticRelays(),
+		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
+			// Create DHT
+			kdht, err := dht.New(ctx, h)
+			if err != nil {
+				return nil, err
+			}
+
+			// Set DHT
+			hn.IpfsDHT = kdht
+			return kdht, nil
+		}),
+		libp2p.NATPortMap(),
+		libp2p.EnableAutoRelay())
 	if err != nil {
 		return nil, logger.Error("Failed to initialize libp2p host", err)
 	}

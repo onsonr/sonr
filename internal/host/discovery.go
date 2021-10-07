@@ -1,9 +1,7 @@
 package host
 
 import (
-	"context"
 	"errors"
-	"fmt"
 	"time"
 
 	dscl "github.com/libp2p/go-libp2p-core/discovery"
@@ -11,7 +9,6 @@ import (
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	psub "github.com/libp2p/go-libp2p-pubsub"
 
-	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/tools/logger"
 )
 
@@ -39,15 +36,12 @@ func (hn *SNRHost) checkDhtSet() error {
 
 // Bootstrap begins bootstrap with peers
 func (h *SNRHost) Bootstrap() error {
-	// // Add Host Address to Peerstore
-	// h.Peerstore().AddAddrs(h.ID(), h.Addrs(), peerstore.PermanentAddrTTL)
-
 	// Check DHT Set
-	retryFunc := common.NewRetryFunc(h.checkDhtSet, 3, time.Second*3)
-	if err := retryFunc(); err != nil {
+	time.Sleep(3 * time.Second)
+	if err := h.checkDhtSet(); err != nil {
 		return logger.Error("Host DHT was never set", err)
 	}
-
+	
 	// Bootstrap DHT
 	if err := h.IpfsDHT.Bootstrap(h.ctx); err != nil {
 		return logger.Error("Failed to Bootstrap KDHT to Host", err)
@@ -55,7 +49,7 @@ func (h *SNRHost) Bootstrap() error {
 
 	// Connect to bootstrap nodes, if any
 	for _, pi := range h.opts.bootstrapPeers {
-		if err := h.Connect(pi); err != nil {
+		if err := h.Connect(h.ctx, pi); err != nil {
 			continue
 		} else {
 			break
@@ -83,35 +77,18 @@ func (h *SNRHost) Bootstrap() error {
 	return nil
 }
 
-func (h *SNRHost) Connect(pi peer.AddrInfo) error {
-	ctxCancel, cancel := context.WithDeadline(h.ctx, <-time.After(10*time.Second))
-	defer cancel()
-
-	// Create Connect Func
-	connectFunc := func() error {
-		// Validate not Self
-		if h.checkUnknown(pi) {
-			return h.Host.Connect(ctxCancel, pi)
-		}
-		return nil
-	}
-	// Attempt Connect
-	if err := common.NewRetryFunc(connectFunc, 3, 5*time.Second)(); err != nil {
-		msg := fmt.Sprintf("Failed to connect to Peer %s \n Clearing from PeerStore and Adding to Ignored", pi.ID)
-		logger.Error(msg, err)
-		h.Peerstore().ClearAddrs(pi.ID)
-		return err
-	}
-	return nil
-}
-
 // handleDiscoveredPeers Connect to Peers that are discovered
 func (h *SNRHost) handleDiscoveredPeers(peerChan <-chan peer.AddrInfo) {
 	for {
 		select {
 		case pi := <-peerChan:
-			if err := h.Connect(pi); err != nil {
-				continue
+			// Validate not Self
+			if h.checkUnknown(pi) {
+				// Connect to Peer
+				if err := h.Connect(h.ctx, pi); err != nil {
+					h.Peerstore().ClearAddrs(pi.ID)
+					continue
+				}
 			}
 		case <-h.ctx.Done():
 			return
@@ -121,14 +98,12 @@ func (h *SNRHost) handleDiscoveredPeers(peerChan <-chan peer.AddrInfo) {
 
 // checkUnknown is a Helper Method checks if Peer AddrInfo is Unknown
 func (h *SNRHost) checkUnknown(pi peer.AddrInfo) bool {
-	// Check if Peer is Self
-	if h.ID() == pi.ID {
-		return false
-	}
-
 	// Iterate and Check
 	if len(h.Peerstore().Addrs(pi.ID)) > 0 {
 		return false
 	}
+
+	// Add to PeerStore
+	h.Peerstore().AddAddrs(pi.ID, pi.Addrs, h.opts.ttl)
 	return true
 }

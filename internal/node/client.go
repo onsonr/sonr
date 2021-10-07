@@ -7,7 +7,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/transfer"
@@ -418,8 +417,7 @@ func (n *ClientNodeStub) pushAutomaticPings(ticker *time.Ticker) {
 		select {
 		case <-ticker.C:
 			// Call Internal Update
-			retryFunc := common.NewRetryFunc(n.Update, 2, time.Second*20)
-			if err := retryFunc(); err != nil {
+			if err := n.Update(); err != nil {
 				logger.Error("Failed to push Auto Ping", err)
 				ticker.Stop()
 				return
