@@ -1,23 +1,31 @@
 package host
 
 import (
+	"context"
 	"crypto/rand"
-	"errors"
+
 	"time"
 
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
-	"github.com/multiformats/go-multiaddr"
+	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/keychain"
 	net "github.com/sonr-io/core/tools/internet"
 )
 
+const (
+	HOST_TIMEOUT = time.Second * 12
+)
+
 var (
-	logger = golog.Child("host")
+	logger              = golog.Child("host")
+	ErrDHTNotFound      = errors.New("DHT has not been set by Routing Function")
+	ErrHostNotSet       = errors.New("Host has not been set to SNRHost Struct")
+	ErrListenerRequired = errors.New("Listener was not Provided")
 )
 
 // HostOption is a function that modifies the node options.
@@ -26,104 +34,106 @@ type HostOption func(hostOptions)
 // WithBootstrappers sets the bootstrap peers.
 func WithBootstrappers(pis []peer.AddrInfo) HostOption {
 	return func(o hostOptions) {
-		o.bootstrapPeers = pis
+		o.BootstrapPeers = pis
 	}
 }
 
 // WithConnection sets the connection to the host.
 func WithConnection(c common.Connection) HostOption {
 	return func(o hostOptions) {
-		o.connection = c
+		o.Connection = c
 	}
 }
 
 // WithConnOptions sets the connection manager options.
 func WithConnOptions(low int, hi int, grace time.Duration) HostOption {
 	return func(o hostOptions) {
-		o.lowWater = low
-		o.highWater = hi
-		o.gracePeriod = grace
+		o.LowWater = low
+		o.HighWater = hi
+		o.GracePeriod = grace
 	}
 }
 
 // WithInterval sets the interval for the host.
 func WithInterval(interval time.Duration) HostOption {
 	return func(o hostOptions) {
-		o.interval = interval
+		o.Interval = interval
 	}
 }
 
 // TCPListener sets the listener for the host. (This is Required for the
 // host to start)
-func TCPListener(l *net.TCPListener) (HostOption, error) {
-	// Get the address.
-	ma, err := l.Multiaddr()
-	if err != nil {
-		return nil, err
-	}
-
+func TCPListener(l *net.TCPListener) HostOption {
 	// Return the option.
 	return func(o hostOptions) {
-		o.setAddr = true
-		o.multiAddrs = []multiaddr.Multiaddr{ma}
-	}, nil
-}
-
-// WithPrivKey sets the private key for the host.
-func WithPrivKey(pk crypto.PrivKey) HostOption {
-	return func(o hostOptions) {
-		o.privateKey = pk
+		o.listener = l
 	}
 }
 
 // WithTTL sets the ttl for the host.
 func WithTTL(ttl time.Duration) HostOption {
 	return func(o hostOptions) {
-		o.ttl = ttl
+		o.TTL = ttl
 	}
 }
 
 // hostOptions is a collection of options for the SnrHost.
 type hostOptions struct {
-	setAddr        bool
-	connection     common.Connection
-	bootstrapPeers []peer.AddrInfo
-	multiAddrs     []multiaddr.Multiaddr
-	lowWater       int
-	highWater      int
-	gracePeriod    time.Duration
-	privateKey     crypto.PrivKey
-	rendezvous     string
-	interval       time.Duration
-	ttl            time.Duration
+	// Properties
+	Connection     common.Connection
+	BootstrapPeers []peer.AddrInfo
+	LowWater       int
+	HighWater      int
+	GracePeriod    time.Duration
+	Rendezvous     string
+	Interval       time.Duration
+	TTL            time.Duration
+
+	// Parameters
+	ctx      context.Context
+	listener *net.TCPListener
 }
 
 // defaultHostOptions returns the default host options.
-func defaultHostOptions() hostOptions {
+func defaultHostOptions(ctx context.Context) hostOptions {
 	return hostOptions{
-		setAddr:        false,
-		connection:     common.Connection_WIFI,
-		bootstrapPeers: dht.GetDefaultBootstrapPeerAddrInfos(),
-		lowWater:       10,
-		highWater:      15,
-		gracePeriod:    time.Second * 5,
-		rendezvous:     "/sonr/rendevouz/0.9.2",
-		interval:       time.Second * 5,
-		ttl:            time.Minute * 1,
+		ctx:            ctx,
+		Connection:     common.Connection_WIFI,
+		BootstrapPeers: dht.GetDefaultBootstrapPeerAddrInfos(),
+		LowWater:       10,
+		HighWater:      15,
+		GracePeriod:    time.Second * 5,
+		Rendezvous:     "/sonr/rendevouz/0.9.2",
+		Interval:       time.Second * 5,
+		TTL:            time.Minute * 1,
 	}
 }
 
-// Apply applies the host options
-func (ho hostOptions) Apply(options ...HostOption) error {
+// Apply applies the host options and returns new SNRHost
+func (ho hostOptions) Apply(options ...HostOption) (*SNRHost, error) {
 	// Iterate over the options.
+	var err error
 	for _, opt := range options {
 		opt(ho)
 	}
 
-	// Check if Listener is set.
-	if !ho.setAddr {
-		logger.Error("Failed to create host, invalid hostOptions")
-		return errors.New("Listener Address was not set")
+	// Check if the listener is set.
+	if ho.listener == nil {
+		return nil, errors.Wrap(ErrListenerRequired, "Failed to apply host options: TCPListener")
+	}
+
+	// Create the host.
+	hn := &SNRHost{
+		ctx:          ho.ctx,
+		opts:         ho,
+		bootstrapped: false,
+	}
+
+	// Get MultiAddr from listener
+	hn.multiAddr, err = ho.listener.Multiaddr()
+	if err != nil {
+		logger.Error("Failed to parse MultiAddr from LocalHost")
+		return nil, errors.Wrap(err, "Failed to apply host options: MultiAddr")
 	}
 
 	// findPrivKey returns the private key for the host.
@@ -141,13 +151,12 @@ func (ho hostOptions) Apply(options ...HostOption) error {
 	}
 
 	// Fetch the private key.
-	privKey, err := findPrivKey()
+	hn.privKey, err = findPrivKey()
 	if err != nil {
 		logger.Error("Failed to create host, invalid hostOptions")
-		return err
+		return nil, errors.Wrap(err, "Failed to apply host options: PrivKey")
 	}
 
 	// Set the private key.
-	ho.privateKey = privKey
-	return nil
+	return hn, nil
 }

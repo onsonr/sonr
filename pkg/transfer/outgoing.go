@@ -69,7 +69,7 @@ func (p *TransferProtocol) onOutgoingTransfer(entry *Session, wc msgio.WriteClos
 		wg.Add(1)
 
 		// Create New Writer
-		w, err := NewWriter(m, i, count, p.emitter)
+		w, err := entry.NewWriter(i, p.emitter)
 		if err != nil {
 			logger.Error("Failed to create new writer.", err)
 			return err
@@ -114,8 +114,12 @@ type itemWriter struct {
 	size    int64
 }
 
-// NewWriter Returns a new Writer for the given FileItem
-func NewWriter(pi *common.Payload_Item, index int, count int, em *state.Emitter) (*itemWriter, error) {
+// NewReader Returns a new Reader for the given FileItem
+func (s Session) NewWriter(index int, em *state.Emitter) (*itemWriter, error) {
+	// Get FileItem
+	pi := s.request.GetPayload().GetItems()[index]
+	logger := s.logger.Child(fmt.Sprintf("outgoing/%v", pi.GetFile().GetName()))
+
 	// Properties
 	size := pi.GetSize()
 	item := pi.GetFile()
@@ -147,12 +151,12 @@ func NewWriter(pi *common.Payload_Item, index int, count int, em *state.Emitter)
 	// Create New Writer
 	return &itemWriter{
 		item:    item,
-		logger:  logger.Child(fmt.Sprintf("%v/%v", "transfer/session/outgoing", item.GetName())),
+		logger:  logger,
 		size:    size,
 		file:    f,
 		emitter: em,
 		index:   index,
-		count:   count,
+		count:   s.Count(),
 		chunker: chunker,
 	}, nil
 }

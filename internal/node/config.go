@@ -103,6 +103,7 @@ func WithRequest(req *InitializeRequest) NodeOption {
 func WithClient() NodeOption {
 	return func(o nodeOptions) {
 		o.kind = NodeType_CLIENT
+		o.enableTCPPort = true
 	}
 }
 
@@ -110,23 +111,26 @@ func WithClient() NodeOption {
 func WithHighway() NodeOption {
 	return func(o nodeOptions) {
 		o.kind = NodeType_HIGHWAY
+		o.enableTCPPort = false
 	}
 }
 
 // nodeOptions is a collection of options for the node.
 type nodeOptions struct {
-	kind       NodeType
-	profileBuf []byte
-	connection common.Connection
-	olc        string
+	enableTCPPort bool
+	kind          NodeType
+	profileBuf    []byte
+	connection    common.Connection
+	olc           string
 }
 
 // defaultNodeOptions returns the default node options.
 func defaultNodeOptions() nodeOptions {
 	return nodeOptions{
-		kind:       NodeType_CLIENT,
-		olc:        "global",
-		connection: common.Connection_WIFI,
+		enableTCPPort: true,
+		kind:          NodeType_CLIENT,
+		olc:           "global",
+		connection:    common.Connection_WIFI,
 	}
 }
 

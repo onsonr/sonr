@@ -21,8 +21,9 @@ type DomainProtocol struct {
 // NewProtocol creates a new DomainProtocol to be used by HighwayNode
 func NewProtocol(ctx context.Context, host *host.SNRHost) (*DomainProtocol, error) {
 	// Check parameters
-	if host == nil {
-		return nil, ErrParameters
+	if err := checkParams(host); err != nil {
+		logger.Error("Failed to create TransferProtocol", err)
+		return nil, err
 	}
 
 	// Fetch Keys

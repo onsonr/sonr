@@ -67,7 +67,7 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 			wg.Add(1)
 
 			// Create New Reader
-			r, err := NewReader(m, i, count, p.emitter)
+			r, err := entry.NewReader(i, p.emitter)
 			if err != nil {
 				logger.Error("Error creating reader", err)
 				return err
@@ -119,26 +119,31 @@ type itemReader struct {
 }
 
 // NewReader Returns a new Reader for the given FileItem
-func NewReader(pi *common.Payload_Item, index int, count int, em *state.Emitter) (*itemReader, error) {
+func (s Session) NewReader(index int, em *state.Emitter) (*itemReader, error) {
+	// Get FileItem
+	item := s.request.GetPayload().GetItems()[index]
+	logger := s.logger.Child(fmt.Sprintf("incoming/%v", item.GetFile().GetName()))
+
 	// Determine Path for File
-	path, err := device.NewDownloadsPath(pi.GetFile().GetPath())
+	path, err := device.NewDownloadsPath(item.GetFile().GetPath())
 	if err != nil {
 		logger.Error("Failed to determine downloads path", err)
 		return nil, err
 	}
+
 	// Return Reader
 	return &itemReader{
-		item:    pi.GetFile(),
-		size:    pi.GetSize(),
-		logger:  logger.Child(fmt.Sprintf("%v/%v", "transfer/session/incoming", pi.GetFile().GetName())),
+		item:    item.GetFile(),
+		size:    item.GetSize(),
+		logger:  logger,
 		emitter: em,
 		index:   index,
-		count:   count,
+		count:   s.Count(),
 		path:    path,
 	}, nil
 }
 
-// Progress Returns Progress of File, Given the written number of bytes
+// Returns Progress of File, Given the written number of bytes
 func (p *itemReader) Progress(i int) {
 	// Create Progress Event
 	event := &common.ProgressEvent{

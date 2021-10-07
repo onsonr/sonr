@@ -5,6 +5,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
@@ -18,6 +19,7 @@ type Session struct {
 	response    *InviteResponse
 	fromId      peer.ID
 	toId        peer.ID
+	logger      *golog.Logger
 	lastUpdated int64
 	uuid        *common.UUID
 }
@@ -75,6 +77,7 @@ func (sq *SessionQueue) AddIncoming(from peer.ID, req *InviteRequest) error {
 		toId:        sq.host.ID(),
 		lastUpdated: int64(time.Now().Unix()),
 		uuid:        req.GetUuid(),
+		logger:      logger.Child("transfer/session"),
 	}
 
 	// Add to Requests
@@ -175,7 +178,7 @@ func (sq *SessionQueue) Validate(resp *InviteResponse) (*Session, error) {
 	// Get Next Entry
 	entry, err := sq.Next()
 	if err != nil {
-		 logger.Error("Failed to get Transfer entry", err)
+		logger.Error("Failed to get Transfer entry", err)
 		return nil, err
 	}
 

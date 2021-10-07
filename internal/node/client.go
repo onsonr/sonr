@@ -2,8 +2,6 @@ package node
 
 import (
 	context "context"
-	"fmt"
-	"net"
 	"strings"
 	"time"
 
@@ -11,6 +9,7 @@ import (
 	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/transfer"
+	"github.com/sonr-io/core/tools/internet"
 
 	grpc "google.golang.org/grpc"
 )
@@ -25,8 +24,12 @@ type ClientNodeStub struct {
 
 	// Properties
 	ctx        context.Context
+
+	// grpcServer is the gRPC server.
 	grpcServer *grpc.Server
-	listener   net.Listener
+
+	// TCPListener for RPC Service
+	listener   *internet.TCPListener
 
 	// TransferProtocol - the transfer protocol
 	*transfer.TransferProtocol
@@ -62,9 +65,8 @@ func (n *Node) startClientService(ctx context.Context, olc string) (*ClientNodeS
 	}
 
 	// Bind RPC Service
-	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", RPC_SERVER_PORT))
+	listener, err := internet.NewTCPListener(ctx, internet.WithPort(RPC_SERVER_PORT))
 	if err != nil {
-		logger.Error("Failed to bind to port", err)
 		return nil, err
 	}
 
@@ -82,12 +84,13 @@ func (n *Node) startClientService(ctx context.Context, olc string) (*ClientNodeS
 
 	// Start Routines
 	RegisterClientServiceServer(grpcServer, nrc)
-	go nrc.serveRPC()
 
-	// pushFunc, errChan := common.NewPeriodicFunc(ctx, nrc.Update, common.WithInterval(5*time.Second), common.WithRetry(3, 10*time.Second))
-	// go nrc.pushAutomaticPings(time.NewTicker(5 * time.Second))
-
-	// Return RPC Service
+	// Handle Node Events
+	if err := nrc.grpcServer.Serve(nrc.listener); err != nil {
+		logger.Error("Failed to serve gRPC", err)
+		return nil, err
+	}
+	go nrc.pushAutomaticPings(ctx, time.NewTicker(5*time.Second))
 	return nrc, nil
 }
 
@@ -415,19 +418,8 @@ func (n *ClientNodeStub) OnTransferComplete(e *Empty, stream ClientService_OnTra
 	}
 }
 
-// serveRPC Serves the RPC Service on the given port.
-func (nrc *ClientNodeStub) serveRPC() {
-	for {
-		// Handle Node Events
-		if err := nrc.grpcServer.Serve(nrc.listener); err != nil {
-			logger.Error("Failed to serve gRPC", err)
-			return
-		}
-	}
-}
-
 // pushAutomaticPings sends automatic pings to the network of Profile
-func (n *ClientNodeStub) pushAutomaticPings(ticker *time.Ticker) {
+func (n *ClientNodeStub) pushAutomaticPings(ctx context.Context, ticker *time.Ticker) {
 	for {
 		select {
 		case <-ticker.C:
@@ -437,8 +429,9 @@ func (n *ClientNodeStub) pushAutomaticPings(ticker *time.Ticker) {
 				ticker.Stop()
 				return
 			}
-		case <-n.ctx.Done():
+		case <-ctx.Done():
 			ticker.Stop()
+			n.grpcServer.Stop()
 			return
 		}
 	}

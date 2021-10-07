@@ -23,7 +23,6 @@ require (
 	github.com/pkg/errors v0.9.1
 	go.etcd.io/bbolt v1.3.6
 	golang.org/x/net v0.0.0-20210813160813-60bc85c4be6d
-	golang.org/x/tools v0.1.2 // indirect
 	google.golang.org/grpc v1.40.0
 	google.golang.org/protobuf v1.27.1
 )

@@ -11,6 +11,7 @@ import (
 	"github.com/sonr-io/core/internal/keychain"
 	"github.com/sonr-io/core/pkg/transfer"
 
+	"github.com/sonr-io/core/tools/internet"
 	"github.com/sonr-io/core/tools/state"
 	bolt "go.etcd.io/bbolt"
 	"google.golang.org/protobuf/proto"
@@ -23,6 +24,9 @@ type Node struct {
 
 	// Host and context
 	host *host.SNRHost
+
+	// TCP Listener for incoming connections
+	listener *internet.TCPListener
 
 	// Properties
 	ctx context.Context
@@ -64,8 +68,15 @@ func NewNode(ctx context.Context, options ...NodeOption) (*Node, *InitializeResp
 		opt(opts)
 	}
 
+	// Open TCP Port
+	l, err := internet.NewTCPListener(ctx)
+	if err != nil {
+		logger.Error("Failed to open TCP Port", err)
+		return nil, nil, err
+	}
+
 	// Initialize Host
-	host, err := host.NewHost(ctx, host.WithConnection(opts.connection))
+	host, err := host.NewHost(ctx, host.WithConnection(opts.connection), )
 	if err != nil {
 		logger.Error("Failed to initialize host", err)
 		return nil, nil, err
@@ -77,6 +88,7 @@ func NewNode(ctx context.Context, options ...NodeOption) (*Node, *InitializeResp
 		host:           host,
 		ctx:            ctx,
 		queue:          list.New(),
+		listener:       l,
 		decisionEvents: make(chan *common.DecisionEvent),
 		refreshEvents:  make(chan *common.RefreshEvent),
 		inviteEvents:   make(chan *common.InviteEvent),

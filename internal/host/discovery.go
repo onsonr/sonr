@@ -1,22 +1,19 @@
 package host
 
 import (
-	"errors"
-	"time"
-
 	dscl "github.com/libp2p/go-libp2p-core/discovery"
+	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
 	dsc "github.com/libp2p/go-libp2p-discovery"
+	dht "github.com/libp2p/go-libp2p-kad-dht"
 	psub "github.com/libp2p/go-libp2p-pubsub"
 	mdns "github.com/libp2p/go-libp2p/p2p/discovery/mdns"
-)
-
-var (
-	ErrDHTNotFound = errors.New("DHT has not been set by Routing Function")
+	"github.com/pkg/errors"
 )
 
 // discoveryNotifee is a Notifee for the Discovery Service
 type discoveryNotifee struct {
+	mdns.Notifee
 	PeerChan chan peer.AddrInfo
 }
 
@@ -26,22 +23,18 @@ func (n *discoveryNotifee) HandlePeerFound(pi peer.AddrInfo) {
 }
 
 // ** ─── HostNode Connection Methods ────────────────────────────────────────────────────────
-// checkDhtSet is a Helper Method to check if DHT is set
-func (hn *SNRHost) checkDhtSet() error {
-	if hn.IpfsDHT == nil {
-		return ErrDHTNotFound
+// Bootstrap connects to the IpfsDHT and Bootstraps the DHT
+func (h *SNRHost) Bootstrap(dht *dht.IpfsDHT, host host.Host) error {
+	if dht == nil {
+		return errors.Wrap(ErrDHTNotFound, "Failed to Bootstrap")
 	}
-	return nil
-}
+	if host == nil {
+		return errors.Wrap(ErrHostNotSet, "Failed to Bootstrap")
+	}
 
-// Bootstrap begins bootstrap with peers
-func (h *SNRHost) Bootstrap() error {
-	// Check DHT Set
-	time.Sleep(3 * time.Second)
-	if err := h.checkDhtSet(); err != nil {
-		logger.Error("Host DHT was never set", err)
-		return err
-	}
+	// Set Properties
+	h.IpfsDHT = dht
+	h.Host = host
 
 	// Bootstrap DHT
 	if err := h.IpfsDHT.Bootstrap(h.ctx); err != nil {
@@ -50,18 +43,35 @@ func (h *SNRHost) Bootstrap() error {
 	}
 
 	// Connect to bootstrap nodes, if any
-	for _, pi := range h.opts.bootstrapPeers {
+	for _, pi := range h.opts.BootstrapPeers {
 		if err := h.Connect(h.ctx, pi); err != nil {
 			continue
 		} else {
 			break
 		}
 	}
+	return nil
+}
+
+// Discover begins Discovery with peers for MDNS and DHT
+func (h *SNRHost) Discover() error {
+	// Start MDNS Discovery
+	if h.opts.Connection.IsMdnsCompatible() {
+		// Create MDNS Service
+		ser := mdns.NewMdnsService(h.Host, h.opts.Rendezvous)
+
+		// Register Notifier
+		n := &discoveryNotifee{}
+		n.PeerChan = make(chan peer.AddrInfo)
+
+		// Handle Events
+		ser.RegisterNotifee(n)
+		go h.handleDiscoveredPeers(n.PeerChan)
+	}
 
 	// Set Routing Discovery, Find Peers
 	routingDiscovery := dsc.NewRoutingDiscovery(h.IpfsDHT)
-	dsc.Advertise(h.ctx, routingDiscovery, h.opts.rendezvous, dscl.TTL(h.opts.ttl))
-	h.disc = routingDiscovery
+	dsc.Advertise(h.ctx, routingDiscovery, h.opts.Rendezvous, dscl.TTL(h.opts.TTL))
 
 	// Create Pub Sub
 	ps, err := psub.NewGossipSub(h.ctx, h.Host, psub.WithDiscovery(routingDiscovery))
@@ -72,27 +82,12 @@ func (h *SNRHost) Bootstrap() error {
 
 	// Handle DHT Peers
 	h.PubSub = ps
-	peersChan, err := routingDiscovery.FindPeers(h.ctx, h.opts.rendezvous, dscl.TTL(h.opts.ttl))
+	peersChan, err := routingDiscovery.FindPeers(h.ctx, h.opts.Rendezvous, dscl.TTL(h.opts.TTL))
 	if err != nil {
 		logger.Error("Failed to create FindPeers Discovery channel", err)
 		return err
 	}
 	go h.handleDiscoveredPeers(peersChan)
-	return nil
-}
-
-// MDNS Method Begins MDNS Discovery
-func (h *SNRHost) MDNS() error {
-	// Create MDNS Service
-	ser := mdns.NewMdnsService(h.Host, h.opts.rendezvous)
-
-	// Register Notifier
-	n := &discoveryNotifee{}
-	n.PeerChan = make(chan peer.AddrInfo)
-
-	// Handle Events
-	ser.RegisterNotifee(n)
-	go h.handleDiscoveredPeers(n.PeerChan)
 	return nil
 }
 
@@ -123,6 +118,6 @@ func (h *SNRHost) checkUnknown(pi peer.AddrInfo) bool {
 	}
 
 	// Add to PeerStore
-	h.Peerstore().AddAddrs(pi.ID, pi.Addrs, h.opts.ttl)
+	h.Peerstore().AddAddrs(pi.ID, pi.Addrs, h.opts.TTL)
 	return true
 }

@@ -2,7 +2,6 @@ package host
 
 import (
 	"context"
-	"time"
 
 	"github.com/libp2p/go-libp2p"
 	connmgr "github.com/libp2p/go-libp2p-connmgr"
@@ -11,10 +10,10 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/libp2p/go-libp2p-core/routing"
-	dsc "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	psub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/libp2p/go-msgio"
+	"github.com/multiformats/go-multiaddr"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/keychain"
 	"google.golang.org/protobuf/proto"
@@ -31,54 +30,40 @@ type SNRHostStat struct {
 
 // SNRHost is the host wrapper for the Sonr Network
 type SNRHost struct {
-	// Properties
-	ctx  context.Context
-	opts hostOptions
-
 	host.Host
+
+	// Properties
+	ctx          context.Context
+	bootstrapped bool
+	opts         hostOptions
+	multiAddr    multiaddr.Multiaddr
+	privKey      crypto.PrivKey
+
+	// Discovery
 	*dht.IpfsDHT
 	*psub.PubSub
-
-	// Libp2p
-	disc *dsc.RoutingDiscovery
 }
 
 // NewHost creates a new host
 func NewHost(ctx context.Context, options ...HostOption) (*SNRHost, error) {
 	// Initialize DHT
-	opts := defaultHostOptions()
-	err := opts.Apply(options...)
+	opts := defaultHostOptions(ctx)
+	hn, err := opts.Apply(options...)
 	if err != nil {
 		return nil, err
 	}
 
-	// Create Host
-	hn := &SNRHost{
-		ctx:  ctx,
-		opts: opts,
-	}
-
 	// Start Host
 	hn.Host, err = libp2p.New(ctx,
-		libp2p.Identity(opts.privateKey),
+		libp2p.Identity(hn.privKey),
 		libp2p.ConnectionManager(connmgr.NewConnManager(
-			opts.lowWater,    // Lowwater
-			opts.highWater,   // HighWater,
-			opts.gracePeriod, // GracePeriod
+			opts.LowWater,    // Lowwater
+			opts.HighWater,   // HighWater,
+			opts.GracePeriod, // GracePeriod
 		)),
-		libp2p.ListenAddrs(opts.multiAddrs...),
+		libp2p.ListenAddrs(hn.multiAddr),
 		libp2p.DefaultStaticRelays(),
-		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
-			// Create DHT
-			kdht, err := dht.New(ctx, h)
-			if err != nil {
-				return nil, err
-			}
-
-			// Set DHT
-			hn.IpfsDHT = kdht
-			return kdht, nil
-		}),
+		libp2p.Routing(hn.Router),
 		libp2p.NATPortMap(),
 		libp2p.EnableAutoRelay())
 	if err != nil {
@@ -86,36 +71,86 @@ func NewHost(ctx context.Context, options ...HostOption) (*SNRHost, error) {
 		return nil, err
 	}
 
-	// Bootstrap Host
-	err = hn.Bootstrap()
+	// Discover Host
+	err = hn.Discover()
 	if err != nil {
 		logger.Error("Failed to bootstrap libp2p Host", err)
 		return nil, err
 	}
-
-	// Check for MDNS Discovery
-	if hn.opts.connection.IsMdnsCompatible() {
-		err = hn.MDNS()
-		if err != nil {
-			logger.Warn("MDNS Discovery Service failed to Start")
-			return hn, nil
-		}
-	}
 	return hn, nil
+}
+
+// Connect connects with `peer.AddrInfo` if underlying Host is ready
+func (hn *SNRHost) Connect(ctx context.Context, pi peer.AddrInfo) error {
+	// Check if host is ready
+	if err := hn.Ready(); err != nil {
+		logger.Warn("Underlying host is not ready, failed to call Connect()")
+		return err
+	}
+
+	// Connect to peer concurrently
+	errChan := make(chan error, 1)
+	ctxTO, cancel := context.WithTimeout(ctx, HOST_TIMEOUT)
+	defer cancel()
+	go func(context context.Context, errorChannel chan error) {
+		err := hn.Host.Connect(ctxTO, pi)
+		if err != nil {
+			errorChannel <- err
+		}
+		errorChannel <- nil
+	}(ctxTO, errChan)
+
+	// Await for result
+	select {
+	case <-ctx.Done():
+		return ctx.Err()
+	case err := <-errChan:
+		return err
+	}
 }
 
 // Close closes the host
 func (hn *SNRHost) Close() error {
+	hn.IpfsDHT.Close()
 	return hn.Host.Close()
 }
 
+// Router returns the host node Peer Routing Function
+func (hn *SNRHost) Router(h host.Host) (routing.PeerRouting, error) {
+	// Create DHT
+	kdht, err := dht.New(context.Background(), h)
+	if err != nil {
+		return nil, err
+	}
+
+	// Set Properties
+	hn.Bootstrap(kdht, h)
+	return kdht, nil
+}
+
 // ** ─── Host Info ────────────────────────────────────────────────────────
+// Ready returns no-error if the host is ready for connect
+func (hn *SNRHost) Ready() error {
+	if hn.Host == nil {
+		return ErrHostNotSet
+	}
+	if hn.IpfsDHT == nil {
+		return ErrDHTNotFound
+	}
+	if hn.PubSub == nil {
+		logger.Warn("Pubsub has not been set yet")
+	}
+	return nil
+}
+
 // SendMessage writes a protobuf go data object to a network stream
 func (hn *SNRHost) SendMessage(id peer.ID, p protocol.ID, data proto.Message) error {
-	ctxCancel, cancel := context.WithDeadline(hn.ctx, <-time.After(10*time.Second))
-	defer cancel()
+	err := hn.Ready()
+	if err != nil {
+		return err
+	}
 
-	s, err := hn.NewStream(ctxCancel, id, p)
+	s, err := hn.NewStream(hn.ctx, id, p)
 	if err != nil {
 		logger.Error("Failed to start stream", err)
 		return err

@@ -57,7 +57,6 @@ func WithHost(h string) TCPListenerOpt {
 
 // tcpOptions is the options for the TCP listener
 type tcpOptions struct {
-	address string
 	network string
 	host    string
 	port    int
@@ -70,18 +69,25 @@ func defaultTCPListenerOpts() tcpOptions {
 		host:    DefaultListenHost,
 		port:    DefaultListenPort,
 	}
-	opts.address = fmt.Sprintf("%s:%v", opts.host, opts.port)
+
 	return opts
 }
 
 // Apply applies the options to the listener
 func (o tcpOptions) Apply(options ...TCPListenerOpt) {
 	if len(options) > 0 {
+		logger.Info(fmt.Sprintf("Applying %v options to TCPListener: %s", len(options), o.getAddress()))
 		for _, opt := range options {
 			opt(o)
 		}
+	} else {
+		logger.Info(fmt.Sprintf("Default Options set for TCPListener: %s", o.getAddress()))
 	}
-	o.address = fmt.Sprintf("%s:%v", o.host, 0)
+}
+
+// getAddress returns the address of the listener
+func (o tcpOptions) getAddress() string {
+	return fmt.Sprintf("%s:%v", o.host, o.port)
 }
 
 // TCPListener is a cross-platform Listener
@@ -97,7 +103,7 @@ func NewTCPListener(ctx context.Context, options ...TCPListenerOpt) (*TCPListene
 	opts.Apply(options...)
 
 	// Open Listener
-	lc, err := reuse.Listen(opts.network, opts.address)
+	lc, err := reuse.Listen(opts.network, opts.getAddress())
 	if err != nil {
 		return nil, err
 	}
