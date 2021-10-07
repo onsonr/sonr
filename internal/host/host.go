@@ -3,7 +3,6 @@ package host
 import (
 	"context"
 	"errors"
-	"time"
 
 	"github.com/libp2p/go-libp2p"
 	connmgr "github.com/libp2p/go-libp2p-connmgr"
@@ -16,19 +15,16 @@ import (
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/libp2p/go-msgio"
 	"github.com/multiformats/go-multiaddr"
-	"github.com/sonr-io/core/internal/device"
-	"github.com/sonr-io/core/internal/keychain"
 	"github.com/sonr-io/core/tools/internet"
 	"google.golang.org/protobuf/proto"
 )
 
 // SNRHostStat is the host stat info
 type SNRHostStat struct {
-	ID        peer.ID
-	PublicKey string
-	PeerID    string
-	MultAddr  string
-	Address   string
+	ID       peer.ID
+	PeerID   string
+	MultAddr string
+	Address  string
 }
 
 // SNRHost is the host wrapper for the Sonr Network
@@ -86,33 +82,23 @@ func (hn *SNRHost) Connect(ctx context.Context, pi peer.AddrInfo) error {
 		return err
 	}
 
-	// Connect to peer concurrently
-	errChan := make(chan error, 1)
-	ctxTO, cancel := context.WithTimeout(ctx, HOST_TIMEOUT)
-	defer cancel()
-	go func(context context.Context, errorChannel chan error) {
-		err := hn.Host.Connect(ctxTO, pi)
-		errorChannel <- err
-	}(ctxTO, errChan)
-
-	// Await for result
-	select {
-	case <-ctx.Done():
-		return ctx.Err()
-	case err := <-errChan:
-		return err
-	}
+	// Call Underlying Host to Connect
+	return hn.Host.Connect(ctx, pi)
 }
 
-// Join wraps around PubSub.Join and returns the joined topic. Checks wether the
-// host is ready before joining.
+// Join wraps around PubSub.Join and returns topic. Checks wether the host is ready before joining.
 func (hn *SNRHost) Join(topic string, opts ...ps.TopicOpt) (*ps.Topic, error) {
+	// Check if PubSub is Set
 	if hn.PubSub == nil {
 		return nil, errors.New("Pubsub has not been set on SNRHost")
 	}
+
+	// Check if topic is valid
 	if topic == "" {
 		return nil, errors.New("Empty topic string provided to Join for host.Pubsub")
 	}
+
+	// Call Underlying Pubsub to Connect
 	return hn.PubSub.Join(topic, opts...)
 }
 
@@ -181,40 +167,24 @@ func (hn *SNRHost) SendMessage(id peer.ID, p protocol.ID, data proto.Message) er
 
 // Stat returns the host stat info
 func (hn *SNRHost) Stat() (*SNRHostStat, error) {
-	// Get Public Key
-	pubKey, err := device.KeyChain.GetPubKey(keychain.Account)
-	if err != nil {
-		logger.Error("Failed to get public key", err)
-		return nil, err
-	}
-
-	// Marshal Public Key
-	buf, err := crypto.MarshalPublicKey(pubKey)
-	if err != nil {
-		logger.Error("Failed to marshal public key", err)
-		return nil, err
-	}
-
 	// Return Host Stat
 	return &SNRHostStat{
-		ID:        hn.ID(),
-		PublicKey: string(buf),
-		PeerID:    hn.ID().Pretty(),
-		MultAddr:  hn.Addrs()[0].String(),
+		ID:       hn.ID(),
+		PeerID:   hn.ID().Pretty(),
+		MultAddr: hn.Addrs()[0].String(),
 	}, nil
 }
 
 // WaitForReady blocks until the host is ready
 func (hn *SNRHost) WaitForReady() error {
-	timeout := time.After(HOST_TIMEOUT)
 	for {
 		select {
-		case <-timeout:
-			return errors.New("Timeout occurred waiting for host to be ready")
 		case ready := <-hn.readyChan:
 			if !ready {
+				logger.Error("Host failed to setup, NOT ready")
 				return errors.New("Host failed to be ready")
 			}
+			logger.Info("Host is ready!")
 			return nil
 		case <-hn.ctx.Done():
 			return errors.New("Context ended before host became ready")

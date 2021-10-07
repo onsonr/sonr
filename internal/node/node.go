@@ -226,42 +226,31 @@ func (n *Node) Supply(paths []string) error {
 
 // Stat returns the Node info as StatResponse
 func (n *Node) Stat() (*StatResponse, error) {
-	// Get Profile
-	profile, err := n.Profile()
-	if err != nil {
+	// Define Error StatResponse
+	sendErr := func(err error) (*StatResponse, error) {
+		logger.Error("Failed to get Host Stat ", err)
 		return &StatResponse{
 			Success: false,
 			Error:   err.Error(),
 		}, err
+	}
+
+	// Get Profile
+	profile, err := n.Profile()
+	if err != nil {
+		return sendErr(err)
 	}
 
 	// Get Host Stats
 	hStat, err := n.host.Stat()
 	if err != nil {
-		logger.Error("Failed to get Host Stat", err)
-		return &StatResponse{
-			Success: false,
-			Error:   err.Error(),
-			SName:   profile.SName,
-			Profile: profile,
-		}, err
+		return sendErr(err)
 	}
 
 	// Get Device Stat
 	dStat, err := device.Stat()
 	if err != nil {
-		logger.Error("Failed to get Device Stat", err)
-		return &StatResponse{
-			Success: false,
-			Error:   err.Error(),
-			SName:   profile.SName,
-			Profile: profile,
-			Network: &StatResponse_Network{
-				PublicKey: hStat.PublicKey,
-				PeerID:    hStat.PeerID,
-				Multiaddr: hStat.MultAddr,
-			},
-		}, err
+		return sendErr(err)
 	}
 
 	// Return StatResponse
@@ -269,7 +258,6 @@ func (n *Node) Stat() (*StatResponse, error) {
 		SName:   profile.SName,
 		Profile: profile,
 		Network: &StatResponse_Network{
-			PublicKey: hStat.PublicKey,
 			PeerID:    hStat.PeerID,
 			Multiaddr: hStat.MultAddr,
 		},

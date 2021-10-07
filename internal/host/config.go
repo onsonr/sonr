@@ -18,10 +18,6 @@ import (
 	net "github.com/sonr-io/core/tools/internet"
 )
 
-const (
-	HOST_TIMEOUT = time.Second * 12
-)
-
 var (
 	logger              = golog.Child("host")
 	ErrRoutingNotSet    = errors.New("DHT and Host have not been set by Routing Function")
