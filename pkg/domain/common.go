@@ -3,9 +3,12 @@ package domain
 import (
 	"errors"
 	"os"
+
+	"github.com/kataras/golog"
 )
 
 var (
+	logger = golog.Child("domain")
 	ErrMissingAPIKey    = errors.New("Missing Namebase Handshake Key in env")
 	ErrMissingAPISecret = errors.New("Missing Namebase Handshake Secret in env")
 	ErrParameters       = errors.New("Failed to create new DomainProtocol, invalid parameters")

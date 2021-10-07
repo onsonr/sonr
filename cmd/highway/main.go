@@ -3,9 +3,9 @@ package main
 import (
 	"context"
 
+	"github.com/kataras/golog"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/node"
-	"github.com/sonr-io/core/tools/logger"
 	"go.uber.org/zap"
 )
 
@@ -15,20 +15,28 @@ type SonrHighway struct {
 	node *node.Node
 }
 
-var sonrHighway *SonrHighway
+var (
+	logger      *golog.Logger
+	sonrHighway *SonrHighway
+)
+
+func init() {
+	logger = golog.New()
+	logger.SetPrefix("[SonrHighway] ")
+}
 
 func main() {
 	// Initialize Device
 	ctx := context.Background()
 	err := device.Init(false)
 	if err != nil {
-		panic(logger.Error("Failed to initialize Device", err))
+		logger.Fatal("Failed to initialize Device", err)
 	}
 
 	// Create Node
 	n, resp, err := node.NewNode(ctx, node.WithHighway())
 	if err != nil {
-		panic(logger.Error("Failed to update Profile for Node", err))
+		logger.Fatal("Failed to update Profile for Node", err)
 	}
 	logger.Info("Node Started: ", zap.Any("Response", resp))
 

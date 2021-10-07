@@ -11,7 +11,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/tools/config"
-	"github.com/sonr-io/core/tools/logger"
 )
 
 // Keychain Interface for managing device keypairs.
@@ -106,7 +105,8 @@ func loadKeychain(kcconfig *config.Config) (Keychain, error) {
 	// Read Account Key
 	accPrivKey, accPubKey, err := readKey(kcconfig, Account)
 	if err != nil {
-		return nil, logger.Error("Failed to Read Account Key", err)
+		logger.Error("Failed to Read Account Key", err)
+		return nil, err
 	}
 
 	// Load Account Key to Keychain
@@ -115,7 +115,8 @@ func loadKeychain(kcconfig *config.Config) (Keychain, error) {
 	// Read Link Key
 	linkPrivKey, linkPubKey, err := readKey(kcconfig, Link)
 	if err != nil {
-		return nil, logger.Error("Failed to Read Link Key", err)
+		logger.Error("Failed to Read Link Key", err)
+		return nil, err
 	}
 
 	// Load Link Key to Keychain
@@ -124,7 +125,8 @@ func loadKeychain(kcconfig *config.Config) (Keychain, error) {
 	// Read Group Key
 	groupPrivKey, groupPubKey, err := readKey(kcconfig, Group)
 	if err != nil {
-		return nil, logger.Error("Failed to Read Group Key", err)
+		logger.Error("Failed to Read Group Key", err)
+		return nil, err
 	}
 
 	// Load Group Key to Keychain
@@ -142,7 +144,8 @@ func newKeychain(kcconfig *config.Config) (Keychain, error) {
 	// Create New Account Key
 	accPrivKey, accPubKey, err := crypto.GenerateEd25519Key(rand.Reader)
 	if err != nil {
-		return nil, logger.Error("Failed to generate Account KeyPair", err)
+		logger.Error("Failed to generate Account KeyPair", err)
+		return nil, err
 	}
 
 	// Write Account Key to Disk
@@ -157,7 +160,8 @@ func newKeychain(kcconfig *config.Config) (Keychain, error) {
 	// Create New Link Key
 	linkPrivKey, linkPubKey, err := crypto.GenerateEd25519Key(rand.Reader)
 	if err != nil {
-		return nil, logger.Error("Failed to generate Link KeyPair", err)
+		logger.Error("Failed to generate Link KeyPair", err)
+		return nil, err
 	}
 
 	// Write Link Key to Disk
@@ -172,7 +176,8 @@ func newKeychain(kcconfig *config.Config) (Keychain, error) {
 	// Create New Group Key
 	groupPrivKey, groupPubKey, err := crypto.GenerateEd25519Key(rand.Reader)
 	if err != nil {
-		return nil, logger.Error("Failed to generate Group KeyPair", err)
+		logger.Error("Failed to generate Group KeyPair", err)
+		return nil, err
 	}
 
 	// Write Group Key to Disk
@@ -310,7 +315,8 @@ func (kc *keychain) GetPrivKey(kp KeyPairType) (crypto.PrivKey, error) {
 func (kc *keychain) GetSnrPubKey(kp KeyPairType) (*SnrPubKey, error) {
 	pub, err := kc.GetPubKey(kp)
 	if err != nil {
-		return nil, logger.Error("Failed to get SnrPubKey", err)
+		logger.Error("Failed to get SnrPubKey", err)
+		return nil, err
 	}
 	return NewSnrPubKey(pub), nil
 }
@@ -320,7 +326,8 @@ func (kc *keychain) GetSnrPubKey(kp KeyPairType) (*SnrPubKey, error) {
 func (kc *keychain) GetSnrPrivKey(kp KeyPairType) (*SnrPrivKey, error) {
 	priv, err := kc.GetPrivKey(kp)
 	if err != nil {
-		return nil, logger.Error("Failed to get SnrPrivKey", err)
+		logger.Error("Failed to get SnrPrivKey", err)
+		return nil, err
 	}
 	return NewSnrPrivKey(priv), nil
 }
@@ -343,7 +350,8 @@ func (kc *keychain) RemoveKeyPair(kp KeyPairType) error {
 	if kc.Exists(kp) {
 		return kc.config.Delete(kp.Path())
 	}
-	return logger.Error("Failed to Remove Key Pair", ErrKeychainUnready)
+	logger.Error("Failed to Remove Key Pair", ErrKeychainUnready)
+	return ErrKeychainUnready
 }
 
 // SignWith signs a message with the specified keypair
@@ -355,7 +363,8 @@ func (kc *keychain) SignWith(kp KeyPairType, msg []byte) ([]byte, error) {
 		}
 		return priv.Sign(msg)
 	}
-	return nil, logger.Error("Failed to Sign Data", ErrKeychainUnready)
+	logger.Error("Failed to Sign Data", ErrKeychainUnready)
+	return nil, ErrKeychainUnready
 }
 
 // SignWith signs a message with the specified keypair with Hmac - Used to Sign Fingerprint of RecoveryCode
@@ -371,7 +380,8 @@ func (kc *keychain) SignHmacWith(kp KeyPairType, msg string) (string, error) {
 		// Get the private key as a byte array
 		privBuf, err := priv.Raw()
 		if err != nil {
-			return "", logger.Error("Failed to Get PrivKey Raw Buffer", err)
+			logger.Error("Failed to Get PrivKey Raw Buffer", err)
+			return "", err
 		}
 
 		// Create a new HMAC object
@@ -379,7 +389,8 @@ func (kc *keychain) SignHmacWith(kp KeyPairType, msg string) (string, error) {
 		h.Write([]byte(msg))
 		return base64.StdEncoding.EncodeToString(h.Sum(nil)), nil
 	}
-	return "", logger.Error("Failed to Sign Data", ErrKeychainUnready)
+	logger.Error("Failed to Sign Data", ErrKeychainUnready)
+	return "", ErrKeychainUnready
 }
 
 // // ThreadIdentity returns the thread identity of the Node
@@ -403,7 +414,8 @@ func (kc *keychain) VerifyWith(kp KeyPairType, msg []byte, sig []byte) (bool, er
 		}
 		return pub.Verify(msg, sig)
 	}
-	return false, logger.Error("Failed to Verify Data", ErrKeychainUnready)
+	logger.Error("Failed to Verify Data", ErrKeychainUnready)
+	return false, ErrKeychainUnready
 }
 
 // VerifyHmacWith verifies a signature with specified pair - Used to Verify Fingerprint of RecoveryCode
@@ -419,13 +431,15 @@ func (kc *keychain) VerifyHmacWith(kp KeyPairType, msg string, sig string) (bool
 		// Get the public key as a byte array
 		pubBuf, err := pub.Raw()
 		if err != nil {
-			return false, logger.Error("Failed to Get PubKey Raw Buffer", err)
+			logger.Error("Failed to Get PubKey Raw Buffer", err)
+			return false, err
 		}
 
 		// Decode the signature
 		sigBuf, err := base64.StdEncoding.DecodeString(sig)
 		if err != nil {
-			return false, logger.Error("Failed to Decode Signature", err)
+			logger.Error("Failed to Decode Signature", err)
+			return false, err
 		}
 
 		// Create a new HMAC object
@@ -433,5 +447,6 @@ func (kc *keychain) VerifyHmacWith(kp KeyPairType, msg string, sig string) (bool
 		h.Write([]byte(msg))
 		return hmac.Equal(h.Sum(nil), sigBuf), nil
 	}
-	return false, logger.Error("Failed to Verify Data", ErrKeychainUnready)
+	logger.Error("Failed to Verify Data", ErrKeychainUnready)
+	return false, ErrKeychainUnready
 }

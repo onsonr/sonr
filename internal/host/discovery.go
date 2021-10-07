@@ -8,8 +8,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	psub "github.com/libp2p/go-libp2p-pubsub"
-
-	"github.com/sonr-io/core/tools/logger"
 )
 
 var (
@@ -39,12 +37,14 @@ func (h *SNRHost) Bootstrap() error {
 	// Check DHT Set
 	time.Sleep(3 * time.Second)
 	if err := h.checkDhtSet(); err != nil {
-		return logger.Error("Host DHT was never set", err)
+		logger.Error("Host DHT was never set", err)
+		return err
 	}
-	
+
 	// Bootstrap DHT
 	if err := h.IpfsDHT.Bootstrap(h.ctx); err != nil {
-		return logger.Error("Failed to Bootstrap KDHT to Host", err)
+		logger.Error("Failed to Bootstrap KDHT to Host", err)
+		return err
 	}
 
 	// Connect to bootstrap nodes, if any
@@ -64,14 +64,16 @@ func (h *SNRHost) Bootstrap() error {
 	// Create Pub Sub
 	ps, err := psub.NewGossipSub(h.ctx, h.Host, psub.WithDiscovery(routingDiscovery))
 	if err != nil {
-		return logger.Error("Failed to Create new Gossip Sub", err)
+		logger.Error("Failed to Create new Gossip Sub", err)
+		return err
 	}
 
 	// Handle DHT Peers
 	h.PubSub = ps
 	peersChan, err := routingDiscovery.FindPeers(h.ctx, h.opts.rendezvous, dscl.TTL(h.opts.ttl))
 	if err != nil {
-		return logger.Error("Failed to create FindPeers Discovery channel", err)
+		logger.Error("Failed to create FindPeers Discovery channel", err)
+		return err
 	}
 	go h.handleDiscoveredPeers(peersChan)
 	return nil

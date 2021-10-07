@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/sonr-io/core/internal/host"
-	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/tools/net"
 )
 
@@ -29,7 +28,8 @@ func NewProtocol(ctx context.Context, host *host.SNRHost) (*DomainProtocol, erro
 	// Fetch Keys
 	key, secret, err := fetchApiKeys()
 	if err != nil {
-		return nil, logger.Error("Failed to create namebase client", err)
+		logger.Error("Failed to create namebase client", err)
+		return nil, err
 	}
 
 	// Create Namebase Client Protocol
@@ -46,7 +46,8 @@ func (p *DomainProtocol) Register(sName string, records ...net.Record) (DomainMa
 	req := net.NewNBAddRequest(records...)
 	ok, err := p.namebaseClient.PutRecords(req)
 	if err != nil {
-		return nil, logger.Error("Failed to Register SName", err)
+		logger.Error("Failed to Register SName", err)
+		return nil, err
 	}
 
 	// API Call was Unsuccessful
@@ -57,7 +58,8 @@ func (p *DomainProtocol) Register(sName string, records ...net.Record) (DomainMa
 	// Get records from Namebase
 	recs, err := p.namebaseClient.FindRecords(sName)
 	if err != nil {
-		return nil, logger.Error("Failed to Find SName after Registering", err)
+		logger.Error("Failed to Find SName after Registering", err)
+		return nil, err
 	}
 
 	// Map records to DomainMap

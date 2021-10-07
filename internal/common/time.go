@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-	"github.com/sonr-io/core/tools/logger"
 )
 
 // ErrFunc is a function that returns an error

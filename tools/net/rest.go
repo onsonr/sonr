@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/kataras/golog"
 	"github.com/pkg/errors"
-	"github.com/sonr-io/core/tools/logger"
 )
 
 // Constant for the Namebase API
@@ -24,6 +24,7 @@ const (
 
 // Error Definitions
 var (
+	logger = golog.Child("Tools/Net")
 	ErrGetNamebase = errors.New("Failed to perform GET Request on Namebase API")
 	ErrPutNamebase = errors.New("Failed to perform PUT Request on Namebase API")
 )
@@ -51,7 +52,8 @@ func (p *NamebaseAPIClient) NewNBGetRequest() (*http.Request, error) {
 	// Create the request
 	req, err := http.NewRequest("GET", NB_DNS_API_URL, nil)
 	if err != nil {
-		return nil, logger.Error("Failed to create Namebase HTTP Request", err)
+		logger.Error("Failed to create Namebase HTTP Request", err)
+		return nil, err
 	}
 
 	// Set the headers
@@ -66,14 +68,16 @@ func (p *NamebaseAPIClient) NewNBPutRequest(nbReq NamebaseRequest) (*http.Reques
 	// Marshal the request
 	jsonreq, err := json.Marshal(nbReq)
 	if err != nil {
-		return nil, logger.Error("Failed to marshal Namebase Request", err)
+		logger.Error("Failed to marshal Namebase Request", err)
+		return nil, err
 	}
 	bytes := bytes.NewBuffer(jsonreq)
 
 	// Create the request
 	req, err := http.NewRequest("PUT", NB_DNS_API_URL, bytes)
 	if err != nil {
-		return nil, logger.Error("Failed to create Namebase HTTP Request", err)
+		logger.Error("Failed to create Namebase HTTP Request", err)
+		return nil, err
 	}
 
 	// Set the headers

@@ -8,7 +8,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/host"
-	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/tools/net"
 	"github.com/sonr-io/core/tools/state"
 	"google.golang.org/protobuf/proto"
@@ -31,7 +30,8 @@ type ExchangeProtocol struct {
 func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) (*ExchangeProtocol, error) {
 	// Check parameters
 	if err := checkParams(host, em); err != nil {
-		return nil, logger.Error("Failed to create TransferProtocol", err)
+		logger.Error("Failed to create TransferProtocol", err)
+		return nil, err
 	}
 
 	// Create Exchange Protocol
@@ -49,7 +49,8 @@ func (p *ExchangeProtocol) Query(sname string) (*common.PeerInfo, error) {
 	// Get Peer from KadDHT store
 	buf, err := p.host.GetValue(p.ctx, sname)
 	if err != nil {
-		return nil, logger.Error("Failed to get item from KadDHT", err)
+		logger.Error("Failed to get item from KadDHT", err)
+		return nil, err
 	}
 
 	// Unmarshal Peer from buffer
@@ -62,7 +63,8 @@ func (p *ExchangeProtocol) Query(sname string) (*common.PeerInfo, error) {
 	// Get PeerID from Peer
 	info, err := peerData.Info()
 	if err != nil {
-		return nil, logger.Error("Failed to get PeerInfo from Peer", err)
+		logger.Error("Failed to get PeerInfo from Peer", err)
+		return nil, err
 	}
 
 	// Verify Peer is registered
@@ -77,7 +79,8 @@ func (p *ExchangeProtocol) Query(sname string) (*common.PeerInfo, error) {
 		info.NameRecord = rec
 		return info, nil
 	}
-	return info, logger.Error("Peer is not registered", err)
+	logger.Error("Peer is not registered", err)
+	return info, err
 }
 
 // Update method updates peer instance in the store
@@ -90,19 +93,22 @@ func (p *ExchangeProtocol) Update(peer *common.Peer) error {
 	// Marshal Peer
 	info, err := peer.Info()
 	if err != nil {
-		return logger.Error("Failed to get PeerInfo from Peer", err)
+		logger.Error("Failed to get PeerInfo from Peer", err)
+		return err
 	}
 
 	// Marshal Peer
 	buf, err := proto.Marshal(peer)
 	if err != nil {
-		return logger.Error("Failed to Marshal Peer", err)
+		logger.Error("Failed to Marshal Peer", err)
+		return err
 	}
 
 	// Add Peer to KadDHT store
 	err = p.host.PutValue(p.ctx, info.StoreEntryKey, buf)
 	if err != nil {
-		return logger.Error("Failed to put Item in KDHT", err)
+		logger.Error("Failed to put Item in KDHT", err)
+		return err
 	}
 	return nil
 }
@@ -117,14 +123,16 @@ func (p *ExchangeProtocol) Verify(sname string) (bool, *net.HDNSNameRecord, erro
 	// Verify Peer is registered
 	rec, err := p.resolver.LookupTXT(ctx, sname)
 	if err != nil {
-		return false, nil, logger.Error("Failed to resolve DNS record for SName", err)
+		logger.Error("Failed to resolve DNS record for SName", err)
+		return false, nil, err
 	}
 
 	// Check peer record
 	pubKey := rec.PubKey
 	compId, err := peer.IDFromPublicKey(pubKey)
 	if err != nil {
-		return false, nil, logger.Error("Failed to extract PeerID from PublicKey", err)
+		 logger.Error("Failed to extract PeerID from PublicKey", err)
+		return false, nil,err
 	}
 	return rec.PeerID() == compId, rec, nil
 }

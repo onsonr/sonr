@@ -13,7 +13,6 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/pkg/errors"
-	"github.com/sonr-io/core/tools/logger"
 	"golang.org/x/net/html"
 )
 

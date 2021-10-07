@@ -4,10 +4,10 @@ import (
 	"errors"
 	"time"
 
+	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/host"
-	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/tools/state"
 )
 
@@ -29,6 +29,7 @@ const (
 
 // Error Definitions
 var (
+	logger             = golog.Child("transfer")
 	ErrTimeout         = errors.New("Session has Timed out")
 	ErrParameters      = errors.New("Failed to create new TransferProtocol, invalid parameters")
 	ErrInvalidResponse = errors.New("Invalid Transfer InviteResponse provided to TransferProtocol")
@@ -42,10 +43,12 @@ var (
 
 func checkParams(host *host.SNRHost, em *state.Emitter) error {
 	if host == nil {
-		return logger.Error("Host provided is nil", ErrParameters)
+		logger.Error("Host provided is nil", ErrParameters)
+		return ErrParameters
 	}
 	if em == nil {
-		return logger.Error("Emitter provided is nil", ErrParameters)
+		logger.Error("Emitter provided is nil", ErrParameters)
+		return ErrParameters
 	}
 	return nil
 }

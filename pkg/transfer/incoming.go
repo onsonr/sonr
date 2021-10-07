@@ -5,12 +5,12 @@ import (
 	"os"
 	sync "sync"
 
+	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/tools/config"
-	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/tools/state"
 	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
@@ -65,19 +65,22 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 		// Write All Files
 		err = entry.MapItems(func(m *common.Payload_Item, i int, count int) error {
 			// Add to WaitGroup
+
 			logger.Info("Current Item: ", zap.String(fmt.Sprint(i), m.String()))
 			wg.Add(1)
 
 			// Create New Reader
 			r, err := NewReader(m, i, count, p.emitter)
 			if err != nil {
-				return logger.Error("Error creating reader", err)
+				logger.Error("Error creating reader", err)
+				return err
 			}
 
 			// Read From Stream
 			err = r.ReadFrom(rs)
 			if err != nil {
-				return logger.Error("Failed to Read from Stream and Write to File.", err)
+				logger.Error("Failed to Read from Stream and Write to File.", err)
+				return err
 			}
 
 			// Complete Writing
@@ -110,6 +113,7 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 type itemReader struct {
 	emitter *state.Emitter
 	mutex   sync.Mutex
+	logger  *golog.Logger
 	item    *common.FileItem
 	path    string
 	index   int
@@ -122,13 +126,14 @@ func NewReader(pi *common.Payload_Item, index int, count int, em *state.Emitter)
 	// Determine Path for File
 	path, err := device.NewDownloadsPath(pi.GetFile().GetPath())
 	if err != nil {
-		return nil, logger.Error("Failed to determine downloads path", err)
+		logger.Error("Failed to determine downloads path", err)
+		return nil, err
 	}
-
 	// Return Reader
 	return &itemReader{
 		item:    pi.GetFile(),
 		size:    pi.GetSize(),
+		logger:  logger.Child(fmt.Sprintf("%v/%v", "transfer/session/incoming", pi.GetFile().GetName())),
 		emitter: em,
 		index:   index,
 		count:   count,
@@ -156,7 +161,7 @@ func (ir *itemReader) ReadFrom(reader msgio.ReadCloser) error {
 	if err != nil {
 		return err
 	}
-	logger.Info("Created new file at path", zap.String("incoming.ItemPath", ir.path))
+	ir.logger.Info("Created new file at path", zap.String("incoming.ItemPath", ir.path))
 	defer f.Close()
 
 	// Route Data from Stream
@@ -164,20 +169,23 @@ func (ir *itemReader) ReadFrom(reader msgio.ReadCloser) error {
 		// Read Length Fixed Bytes
 		buffer, err := reader.ReadMsg()
 		if err != nil {
-			return logger.Error("Failed to Read Next Message on Read Stream", err)
+			ir.logger.Error("Failed to Read Next Message on Read Stream", err)
+			return err
 		}
 
 		// Decode Chunk
 		buf, err := decodeChunk(buffer)
 		if err != nil {
-			return logger.Error("Failed to Decode Chunk on Read Stream", err)
+			ir.logger.Error("Failed to Decode Chunk on Read Stream", err)
+			return err
 		}
 
 		// Write to File, and Update Progress
 		ir.mutex.Lock()
 		n, err := f.Write(buf.Data)
 		if err != nil {
-			return logger.Error("Failed to Write Buffer to File on Read Stream", err)
+			ir.logger.Error("Failed to Write Buffer to File on Read Stream", err)
+			return err
 		}
 		i += n
 		ir.mutex.Unlock()
@@ -191,21 +199,24 @@ func (ir *itemReader) ReadFrom(reader msgio.ReadCloser) error {
 	// Flush File Contents
 	err = f.Sync()
 	if err != nil {
-		return logger.Error("Failed to Sync item on Read Stream", err)
+		ir.logger.Error("Failed to Sync item on Read Stream", err)
+		return err
 	}
 
 	// Close File
 	err = f.Close()
 	if err != nil {
-		return logger.Error("Failed to Close item on Read Stream", err)
+		ir.logger.Error("Failed to Close item on Read Stream", err)
+		return err
 	}
 
 	// Close Reader
 	err = reader.Close()
 	if err != nil {
-		return logger.Error("Failed to Close Reader for Incoming Stream", err)
+		ir.logger.Error("Failed to Close Reader for Incoming Stream", err)
+		return err
 	}
-	logger.Info("Completed writing to file.")
+	ir.logger.Info("Completed writing to file.")
 	return nil
 }
 
@@ -215,7 +226,8 @@ func decodeChunk(buf []byte) (config.Chunk, error) {
 	chunk := &Chunk{}
 	err := proto.Unmarshal(buf, chunk)
 	if err != nil {
-		return config.Chunk{}, logger.Error("Failed to Unmarshal Chunk.", err)
+		logger.Error("Failed to Unmarshal Chunk.", err)
+		return config.Chunk{}, err
 	}
 
 	// Convert to Chunk

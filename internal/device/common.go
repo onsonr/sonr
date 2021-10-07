@@ -6,12 +6,13 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/kataras/golog"
 	"github.com/sonr-io/core/internal/keychain"
-	"github.com/sonr-io/core/tools/logger"
 )
 
 // Error definitions
 var (
+	logger = golog.Child("device")
 	// General errors
 	ErrEmptyDeviceID = errors.New("Device ID cannot be empty")
 	ErrMissingEnvVar = errors.New("Cannot set EnvVariable with empty value")

@@ -17,7 +17,6 @@ import (
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/keychain"
-	"github.com/sonr-io/core/tools/logger"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -82,13 +81,15 @@ func NewHost(ctx context.Context, options ...HostOption) (*SNRHost, error) {
 		libp2p.NATPortMap(),
 		libp2p.EnableAutoRelay())
 	if err != nil {
-		return nil, logger.Error("Failed to initialize libp2p host", err)
+		logger.Error("Failed to initialize libp2p host", err)
+		return nil, err
 	}
 
 	// Bootstrap Host
 	err = hn.Bootstrap()
 	if err != nil {
-		return nil, logger.Error("Failed to bootstrap libp2p Host", err)
+		logger.Error("Failed to bootstrap libp2p Host", err)
+		return nil, err
 	}
 	return hn, nil
 }
@@ -106,20 +107,23 @@ func (hn *SNRHost) SendMessage(id peer.ID, p protocol.ID, data proto.Message) er
 
 	s, err := hn.NewStream(ctxCancel, id, p)
 	if err != nil {
-		return logger.Error("Failed to start stream", err)
+		logger.Error("Failed to start stream", err)
+		return err
 	}
 	defer s.Close()
 
 	// marshall data to protobufs3 binary format
 	bin, err := proto.Marshal(data)
 	if err != nil {
-		return logger.Error("Failed to marshal pb", err)
+		logger.Error("Failed to marshal pb", err)
+		return err
 	}
 
 	// Create Writer and write data to stream
 	w := msgio.NewWriter(s)
 	if err := w.WriteMsg(bin); err != nil {
-		return logger.Error("Failed to write message to stream.", err)
+		logger.Error("Failed to write message to stream.", err)
+		return err
 	}
 	return nil
 }
@@ -129,13 +133,15 @@ func (hn *SNRHost) Stat() (*SNRHostStat, error) {
 	// Get Public Key
 	pubKey, err := device.KeyChain.GetPubKey(keychain.Account)
 	if err != nil {
-		return nil, logger.Error("Failed to get public key", err)
+		logger.Error("Failed to get public key", err)
+		return nil, err
 	}
 
 	// Marshal Public Key
 	buf, err := crypto.MarshalPublicKey(pubKey)
 	if err != nil {
-		return nil, logger.Error("Failed to marshal public key", err)
+		logger.Error("Failed to marshal public key", err)
+		return nil, err
 	}
 
 	// Return Host Stat

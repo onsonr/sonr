@@ -3,14 +3,17 @@ package common
 import (
 	"fmt"
 
+	"github.com/kataras/golog"
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/keychain"
-	"github.com/sonr-io/core/tools/logger"
 )
 
 // ** ───────────────────────────────────────────────────────
 // ** ─── General ───────────────────────────────────────────
 // ** ───────────────────────────────────────────────────────
+var (
+	logger = golog.Child("common")
+)
 
 // SignedMetadataToProto converts a SignedMetadata to a protobuf.
 func SignedMetadataToProto(m *keychain.SignedMetadata) *Metadata {
@@ -216,7 +219,8 @@ func (p *Payload) ReplaceItemsDir(dir string) (*Payload, error) {
 		if item.GetFile() != nil {
 			err := item.GetFile().ReplaceDir(dir)
 			if err != nil {
-				return nil, logger.Error("Failed to replace path for Item", err)
+				logger.Error("Failed to replace path for Item", err)
+				return nil, err
 			}
 		}
 	}

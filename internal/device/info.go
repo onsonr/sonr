@@ -6,7 +6,7 @@ import (
 	"runtime"
 
 	"github.com/denisbrodbeck/machineid"
-	"github.com/sonr-io/core/tools/logger"
+
 )
 
 // DeviceStat is the device info struct
@@ -104,13 +104,15 @@ func Stat() (*DeviceStat, error) {
 	// Get Device Id
 	id, err := ID()
 	if err != nil {
-		return nil, logger.Error("Failed to get Device ID", err)
+		logger.Error("Failed to get Device ID", err)
+		return nil, err
 	}
 
 	// Get HostName
 	hn, err := HostName()
 	if err != nil {
-		return nil, logger.Error("Failed to get HostName", err)
+		logger.Error("Failed to get HostName", err)
+		return nil, err
 	}
 
 	// Return the device info for Peer

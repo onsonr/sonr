@@ -10,7 +10,7 @@ import (
 	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/transfer"
-	"github.com/sonr-io/core/tools/logger"
+
 	grpc "google.golang.org/grpc"
 )
 
@@ -69,7 +69,8 @@ func (n *Node) startClientService(ctx context.Context, olc string) (*ClientNodeS
 	// Bind RPC Service
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", RPC_SERVER_PORT))
 	if err != nil {
-		return nil, logger.Error("Failed to bind to port", err)
+		logger.Error("Failed to bind to port", err)
+		return nil, err
 	}
 
 	// Create a new gRPC server
@@ -100,20 +101,23 @@ func (n *ClientNodeStub) Update() error {
 	// Call Internal Edit
 	peer, err := n.Peer()
 	if err != nil {
-		return logger.Error("Failed to push Auto Ping", err)
+		logger.Error("Failed to push Auto Ping", err)
+		return err
 	}
 
 	// Push Update to Exchange
 	if n.ExchangeProtocol != nil {
 		if err := n.ExchangeProtocol.Update(peer); err != nil {
-			return logger.Error("Failed to Update Exchange", err)
+			logger.Error("Failed to Update Exchange", err)
+			return err
 		}
 	}
 
 	// Push Update to Lobby
 	if n.LobbyProtocol != nil {
 		if err := n.LobbyProtocol.Update(peer); err != nil {
-			return logger.Error("Failed to Update Lobby", err)
+			logger.Error("Failed to Update Lobby", err)
+			return err
 		}
 	}
 	return nil

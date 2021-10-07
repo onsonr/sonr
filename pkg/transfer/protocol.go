@@ -6,7 +6,6 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/host"
-	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/tools/state"
 )
 
@@ -22,7 +21,8 @@ type TransferProtocol struct {
 func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) (*TransferProtocol, error) {
 	// Check parameters
 	if err := checkParams(host, em); err != nil {
-		return nil, logger.Error("Failed to create TransferProtocol", err)
+		logger.Error("Failed to create TransferProtocol", err)
+		return nil, err
 	}
 
 	// create a new transfer protocol
@@ -62,7 +62,8 @@ func (p *TransferProtocol) Request(id peer.ID, req *InviteRequest) error {
 	req.Metadata.Signature = signature
 	err = p.host.SendMessage(id, RequestPID, req)
 	if err != nil {
-		return logger.Error("Failed to Send Message to Peer", err)
+		logger.Error("Failed to Send Message to Peer", err)
+		return err
 	}
 
 	// store the request in the map
@@ -80,7 +81,8 @@ func (p *TransferProtocol) Respond(id peer.ID, resp *InviteResponse) error {
 	// Find Entry
 	entry, err := p.queue.Next()
 	if err != nil {
-		return logger.Error("Failed to find transfer entry", err)
+		logger.Error("Failed to find transfer entry", err)
+		return err
 	}
 
 	// Copy UUID
@@ -89,7 +91,8 @@ func (p *TransferProtocol) Respond(id peer.ID, resp *InviteResponse) error {
 	// sign the data
 	signature, err := p.host.SignMessage(resp)
 	if err != nil {
-		return logger.Error("Failed to Sign Response Message", err)
+		logger.Error("Failed to Sign Response Message", err)
+		return err
 	}
 
 	// add the signature to the message
@@ -98,7 +101,8 @@ func (p *TransferProtocol) Respond(id peer.ID, resp *InviteResponse) error {
 	// Send Response
 	err = p.host.SendMessage(id, ResponsePID, resp)
 	if err != nil {
-		return logger.Error("Failed to Send Message to Peer", err)
+		logger.Error("Failed to Send Message to Peer", err)
+		return err
 	}
 	return nil
 }

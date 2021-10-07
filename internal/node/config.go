@@ -6,14 +6,15 @@ import (
 	"os"
 
 	olc "github.com/google/open-location-code/go"
+	"github.com/kataras/golog"
 	"github.com/sonr-io/core/internal/common"
-	"github.com/sonr-io/core/tools/logger"
-	"go.uber.org/zap"
+
 	"google.golang.org/protobuf/proto"
 )
 
 // Error Definitions
 var (
+	logger                = golog.Child("Node")
 	ErrEmptyQueue         = errors.New("No items in Transfer Queue.")
 	ErrInvalidQuery       = errors.New("No SName or PeerID provided.")
 	ErrNBClientMissing    = errors.New("No Namebase API Client Key provided.")
@@ -28,6 +29,10 @@ var (
 	ErrExchangeNotCreated = errors.New("ExchangeProtocol has not been created")
 	ErrTransferNotCreated = errors.New("TransferProtocol has not been created")
 )
+
+func init() {
+
+}
 
 // NodeType is the type of the node (Client, Highway)
 type NodeType int
@@ -59,6 +64,19 @@ func WithRequest(req *InitializeRequest) NodeOption {
 		// Set Connection
 		o.connection = req.Connection
 
+		// Set Env Variables
+		if req.Variables != nil {
+			for k, v := range req.Variables {
+				os.Setenv(k, v)
+			}
+
+			if len(req.Variables) > 0 {
+				logger.Info("Added Enviornment Variable(s)", golog.Fields{
+					"Total": len(req.Variables),
+				})
+			}
+		}
+
 		// Set OLC code
 		code := olc.Encode(req.GetLocation().GetLatitude(), req.GetLocation().GetLongitude(), 8)
 		if code == "" {
@@ -82,19 +100,6 @@ func WithRequest(req *InitializeRequest) NodeOption {
 func WithClient() NodeOption {
 	return func(o nodeOptions) {
 		o.kind = NodeType_CLIENT
-	}
-}
-
-// WithClient starts the Client RPC server and sets the node as a client node.
-func WithEnvMap(vars map[string]string) NodeOption {
-	return func(o nodeOptions) {
-		for k, v := range vars {
-			os.Setenv(k, v)
-		}
-
-		if len(vars) > 0 {
-			logger.Info("Added Enviornment Variable(s)", zap.Int("Total", len(vars)))
-		}
 	}
 }
 
@@ -125,42 +130,4 @@ func defaultNodeOptions() nodeOptions {
 // Apply applies the node options to the node.
 func (no nodeOptions) Apply(ctx context.Context, n *Node) {
 	no.kind.Initialize(ctx, n, no.olc)
-}
-
-// newInitResponse creates a response for the initialize request.
-func (n *Node) newInitResponse(err error) *InitializeResponse {
-	// Get Profile from Store
-	profile, err := n.GetProfile()
-	if err != nil {
-		logger.Error("Failed to create initialize Response", err)
-		return &InitializeResponse{
-			Success: false,
-			Error:   err.Error(),
-		}
-	}
-
-	// Check for provided error
-	if err != nil {
-		return &InitializeResponse{
-			Success: false,
-			Error:   err.Error(),
-		}
-	}
-
-	// Return Response
-	return &InitializeResponse{
-		Success: true,
-		Profile: profile,
-		//	Recents: r,
-	}
-}
-
-// ToFindResponse converts PeerInfo to a FindResponse.
-func ToFindResponse(p *common.PeerInfo) *SearchResponse {
-	return &SearchResponse{
-		Success: true,
-		Peer:    p.Peer,
-		PeerId:  p.PeerID.String(),
-		SName:   p.SName,
-	}
 }

@@ -6,7 +6,6 @@ import (
 	"net"
 
 	"github.com/sonr-io/core/pkg/domain"
-	"github.com/sonr-io/core/tools/logger"
 	dnet "github.com/sonr-io/core/tools/net"
 	grpc "google.golang.org/grpc"
 )

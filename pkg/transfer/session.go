@@ -9,7 +9,6 @@ import (
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/host"
-	"github.com/sonr-io/core/tools/logger"
 )
 
 // Session is a single entry in the transfer queue.
@@ -176,7 +175,8 @@ func (sq *SessionQueue) Validate(resp *InviteResponse) (*Session, error) {
 	// Get Next Entry
 	entry, err := sq.Next()
 	if err != nil {
-		return nil, logger.Error("Failed to get Transfer entry", err)
+		 logger.Error("Failed to get Transfer entry", err)
+		return nil, err
 	}
 
 	// Check if Request exists in Map

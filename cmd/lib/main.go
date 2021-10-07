@@ -2,9 +2,10 @@ package lib
 
 import (
 	"context"
+
+	"github.com/kataras/golog"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/node"
-	"github.com/sonr-io/core/tools/logger"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -14,27 +15,37 @@ type SonrLib struct {
 	node *node.Node
 }
 
-var sonrLib *SonrLib
+var (
+	logger  *golog.Logger
+	sonrLib *SonrLib
+)
+
+func init() {
+	logger = golog.New()
+	logger.SetPrefix("[SonrBin] ")
+}
 
 // Start starts the host, node, and rpc service.
-func Start(reqBytes []byte) []byte {
+func Start(reqBuf []byte) []byte {
 	ctx := context.Background()
+
 	// Unmarshal request
-	isDev, req, fsOpts, err := parseInitializeRequest(reqBytes)
+	req := &node.InitializeRequest{}
+	err := proto.Unmarshal(reqBuf, req)
 	if err != nil {
-		logger.Panic("Failed to Parse Initialize Request", err)
+		logger.Fatal("Failed to Unmarshal InitializeRequest", err)
 	}
 
 	// Initialize Device
-	err = device.Init(isDev, fsOpts...)
+	err = device.Init(req.IsDev(), req.ToDeviceOpts()...)
 	if err != nil {
-		logger.Panic("Failed to initialize Device", err)
+		logger.Fatal("Failed to initialize Device", err)
 	}
 
 	// Create Node
-	n, resp, err := node.NewNode(ctx, node.WithRequest(req), node.WithClient(), node.WithEnvMap(req.GetVariables()))
+	n, resp, err := node.NewNode(ctx, node.WithRequest(req))
 	if err != nil {
-		logger.Panic("Failed to update Profile for Node", err)
+		logger.Fatal("Failed to Create new node", err)
 	}
 
 	// Set Lib

@@ -8,7 +8,7 @@ import (
 
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/sonr-io/core/internal/device"
-	"github.com/sonr-io/core/tools/logger"
+
 	//"github.com/bakape/thumbnailer/v2"
 	//"github.com/sonr-io/core/internal/device"
 	//"github.com/sonr-io/core/tools/logger"
@@ -156,7 +156,8 @@ func (fi *FileItem) ReplaceDir(dir string) error {
 	// Get New Path
 	path, err := device.NewPath(fi.GetPath(), dir)
 	if err != nil {
-		return logger.Error("Failed to replace directory for FileItem", err)
+		logger.Error("Failed to replace directory for FileItem", err)
+		return err
 	}
 
 	// Set Path

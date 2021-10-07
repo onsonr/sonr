@@ -9,7 +9,6 @@ import (
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/host"
-	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/tools/state"
 	"google.golang.org/protobuf/proto"
 )
@@ -42,25 +41,29 @@ type LobbyProtocol struct {
 func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter, olc string) (*LobbyProtocol, error) {
 	// Check parameters
 	if err := checkParams(host, olc, em); err != nil {
-		return nil, logger.Error("Failed to create TransferProtocol", err)
+		logger.Error("Failed to create TransferProtocol", err)
+		return nil, err
 	}
 
 	// Create Exchange Topic
 	topic, err := host.Join(olc)
 	if err != nil {
-		return nil, logger.Error("Failed to Join Local Pubsub Topic", err)
+		 logger.Error("Failed to Join Local Pubsub Topic", err)
+		return nil, err
 	}
 
 	// Subscribe to Room
 	sub, err := topic.Subscribe()
 	if err != nil {
-		return nil, logger.Error("Failed to Subscribe to OLC Topic", err)
+		 logger.Error("Failed to Subscribe to OLC Topic", err)
+		return nil,err
 	}
 
 	// Create Room Handler
 	handler, err := topic.EventHandler()
 	if err != nil {
-		return nil, logger.Error("Failed to Get Event Handler", err)
+		logger.Error("Failed to Get Event Handler", err)
+		return nil, err
 	}
 
 	// Create Exchange Protocol
@@ -100,7 +103,8 @@ func (p *LobbyProtocol) Update(peer *common.Peer) error {
 	// Marshal Event
 	eventBuf, err := proto.Marshal(event)
 	if err != nil {
-		return logger.Error("Failed to Marshal Event", err)
+		logger.Error("Failed to Marshal Event", err)
+		return err
 	}
 
 	// Publish Event
@@ -108,7 +112,8 @@ func (p *LobbyProtocol) Update(peer *common.Peer) error {
 	defer cancel()
 	err = p.topic.Publish(ctx, eventBuf)
 	if err != nil {
-		return logger.Error("Failed to Publish Event", err)
+		logger.Error("Failed to Publish Event", err)
+		return err
 	}
 	return nil
 }

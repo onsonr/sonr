@@ -8,7 +8,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/pkg/errors"
-	"github.com/sonr-io/core/tools/logger"
 	"go.uber.org/zap"
 )
 
@@ -117,7 +116,8 @@ func (sr *HDNSNameRecord) PeerID() peer.ID {
 // Verify verifies the TXT record for the given SName.
 func (sr *HDNSNameRecord) Verify() error {
 	if sr.Record == "" {
-		return logger.Error("Failed to find Value in SName Record", ErrEmptyTXT)
+		logger.Error("Failed to find Value in SName Record", ErrEmptyTXT)
+		return ErrEmptyTXT
 	}
 	logger.Info("Valid SName DNS TXT Record", zap.String("SName", sr.SName), zap.String("Value", sr.Record))
 	return nil

@@ -14,7 +14,6 @@ import (
 	"github.com/o1egl/govatar"
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/keychain"
-	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/tools/net"
 )
 
@@ -95,7 +94,8 @@ func (p *Peer) PubKey() (crypto.PubKey, error) {
 	// Unmarshal Public Key
 	pubKey, err := crypto.UnmarshalPublicKey(p.GetPublicKey())
 	if err != nil {
-		return nil, logger.Error(fmt.Sprintf("Failed to Unmarshal Public Key: %s", p.GetSName()), err)
+		logger.Error(fmt.Sprintf("Failed to Unmarshal Public Key: %s", p.GetSName()), err)
+		return nil, err
 	}
 	return pubKey, nil
 }
@@ -117,7 +117,8 @@ func (p *Peer) SnrPubKey() (*keychain.SnrPubKey, error) {
 	// Get Public Key
 	pub, err := p.PubKey()
 	if err != nil {
-		return nil, logger.Error("Failed to get Public Key", err)
+		logger.Error("Failed to get Public Key", err)
+		return nil, err
 	}
 
 	// Return SnrPubKey

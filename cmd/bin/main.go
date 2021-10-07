@@ -2,9 +2,10 @@ package main
 
 import (
 	"context"
+
+	"github.com/kataras/golog"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/node"
-	"github.com/sonr-io/core/tools/logger"
 	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )
@@ -15,7 +16,15 @@ type SonrBin struct {
 	node *node.Node
 }
 
-var sonrBin *SonrBin
+var (
+	logger  *golog.Logger
+	sonrBin *SonrBin
+)
+
+func init() {
+	logger = golog.New()
+	logger.SetPrefix("[SonrBin] ")
+}
 
 // Start starts the host, node, and rpc service.
 func main() {
@@ -25,13 +34,13 @@ func main() {
 	ctx := context.Background()
 	err := device.Init(false)
 	if err != nil {
-		panic(logger.Error("Failed to initialize Device", err))
+		logger.Fatal("Failed to initialize Device", err)
 	}
 
 	// Create Node
 	n, resp, err := node.NewNode(ctx, node.WithClient())
 	if err != nil {
-		panic(logger.Error("Failed to update Profile for Node", err))
+		logger.Fatal("Failed to update Profile for Node", err)
 	}
 	logger.Info("Node Started: ", zap.Any("Response", resp))
 

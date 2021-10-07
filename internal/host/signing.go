@@ -6,7 +6,6 @@ import (
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/keychain"
-	"github.com/sonr-io/core/tools/logger"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -15,13 +14,15 @@ func (h *SNRHost) AuthenticateId(id *common.UUID) (bool, error) {
 	// Get local node's public key
 	pubKey, err := device.KeyChain.GetPubKey(keychain.Account)
 	if err != nil {
-		return false, logger.Error("Failed to get local host's public key", err)
+		logger.Error("Failed to get local host's public key", err)
+		return false, err
 	}
 
 	// verify UUID value
 	result, err := pubKey.Verify([]byte(id.GetValue()), []byte(id.GetSignature()))
 	if err != nil {
-		return false, logger.Error("Failed to verify signature of UUID", err)
+		logger.Error("Failed to verify signature of UUID", err)
+		return false, err
 	}
 	return result, nil
 }
@@ -59,7 +60,8 @@ func (n *SNRHost) AuthenticateMessage(message proto.Message, data *common.Metada
 func (n *SNRHost) SignMessage(message proto.Message) ([]byte, error) {
 	data, err := proto.Marshal(message)
 	if err != nil {
-		return nil, logger.Error("Failed to Sign Message", err)
+		logger.Error("Failed to Sign Message", err)
+		return nil, err
 	}
 	return n.SignData(data)
 }
@@ -69,7 +71,8 @@ func (n *SNRHost) SignData(data []byte) ([]byte, error) {
 	// Get local node's private key
 	res, err := device.KeyChain.SignWith(keychain.Account, data)
 	if err != nil {
-		return nil, logger.Error("Failed to get local host's private key", err)
+		logger.Error("Failed to get local host's private key", err)
+		return nil, err
 	}
 	return res, nil
 }

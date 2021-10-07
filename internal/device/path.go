@@ -1,12 +1,10 @@
 package device
 
 import (
-	"fmt"
 	"path/filepath"
 	"strings"
 
-	"github.com/sonr-io/core/tools/logger"
-	"go.uber.org/zap"
+	"github.com/kataras/golog"
 )
 
 type filePathOptType int
@@ -320,7 +318,9 @@ func (fpo *filePathOptions) Apply(dir string) (string, error) {
 	// Check if file name is set
 	if fpo.fileName != "" {
 		path := filepath.Join(dir, fpo.fileName)
-		logger.Info(fmt.Sprintf("Calculated new file path: %s", path), zap.String("path.Apply()", path))
+		logger.Info("Calculated new file path", golog.Fields{
+			"path": path,
+		})
 		return path, nil
 	} else {
 		return "", ErrNoFileNameSet

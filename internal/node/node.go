@@ -13,7 +13,7 @@ import (
 	"github.com/sonr-io/core/internal/keychain"
 	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/transfer"
-	"github.com/sonr-io/core/tools/logger"
+
 	"github.com/sonr-io/core/tools/state"
 	bolt "go.etcd.io/bbolt"
 	"google.golang.org/protobuf/proto"
@@ -70,7 +70,8 @@ func NewNode(ctx context.Context, options ...NodeOption) (*Node, *InitializeResp
 	// Initialize Host
 	host, err := host.NewHost(ctx, host.WithConnection(opts.connection))
 	if err != nil {
-		return nil, nil, logger.Error("Failed to initialize host", err)
+		logger.Error("Failed to initialize host", err)
+		return nil, nil, err
 	}
 
 	// Create Node
@@ -90,7 +91,8 @@ func NewNode(ctx context.Context, options ...NodeOption) (*Node, *InitializeResp
 	// Open Database
 	err = node.openStore(ctx, host, node.Emitter)
 	if err != nil {
-		return nil, nil, logger.Error("Failed to open database", err)
+		logger.Error("Failed to open database", err)
+		return nil, nil, err
 	}
 
 	// Begin Background Tasks
@@ -110,19 +112,22 @@ func (n *Node) Peer() (*common.Peer, error) {
 	// Get Public Key
 	pubKey, err := device.KeyChain.GetSnrPubKey(keychain.Account)
 	if err != nil {
-		return nil, logger.Error("Failed to get Public Key", err)
+		logger.Error("Failed to get Public Key", err)
+		return nil, err
 	}
 
 	// Find PublicKey Buffer
 	deviceStat, err := device.Stat()
 	if err != nil {
-		return nil, logger.Error("Failed to get device Stat", err)
+		logger.Error("Failed to get device Stat", err)
+		return nil, err
 	}
 
 	// Marshal Public Key
 	pubBuf, err := pubKey.Buffer()
 	if err != nil {
-		return nil, logger.Error("Failed to marshal public key", err)
+		logger.Error("Failed to marshal public key", err)
+		return nil, err
 	}
 
 	// Return Peer
@@ -144,7 +149,8 @@ func (n *Node) Peer() (*common.Peer, error) {
 func (n *Node) GetProfile() (*common.Profile, error) {
 	// Check if Store is open
 	if n.store == nil {
-		return nil, logger.Error("Failed to Get Profile", ErrStoreNotCreated)
+		logger.Error("Failed to Get Profile", ErrStoreNotCreated)
+		return nil, ErrStoreNotCreated
 	}
 
 	var profile common.Profile
@@ -187,7 +193,8 @@ func (n *Node) Supply(paths []string) error {
 	// Create Transfer
 	payload, err := common.NewPayload(profile, paths)
 	if err != nil {
-		return logger.Error("Failed to Supply Paths", err)
+		logger.Error("Failed to Supply Paths", err)
+		return err
 	}
 
 	// Add items to transfer
@@ -206,19 +213,22 @@ func (n *Node) NewRequest(to *common.Peer) (peer.ID, *transfer.InviteRequest, er
 		// Create New ID for Invite
 		id, err := device.KeyChain.CreateUUID()
 		if err != nil {
-			return "", nil, logger.Error("Failed to create new id for Shared Invite", err)
+			logger.Error("Failed to create new id for Shared Invite", err)
+			return "", nil, err
 		}
 
 		// Create new Metadata
 		meta, err := device.KeyChain.CreateMetadata(n.host.ID())
 		if err != nil {
-			return "", nil, logger.Error("Failed to create new metadata for Shared Invite", err)
+			logger.Error("Failed to create new metadata for Shared Invite", err)
+			return "", nil, err
 		}
 
 		// Fetch User Peer
 		from, err := n.Peer()
 		if err != nil {
-			return "", nil, logger.Error("Failed to get Node Peer Object", err)
+			logger.Error("Failed to get Node Peer Object", err)
+			return "", nil, err
 		}
 
 		// Create Invite Request
@@ -233,7 +243,8 @@ func (n *Node) NewRequest(to *common.Peer) (peer.ID, *transfer.InviteRequest, er
 		// Fetch Peer ID from Public Key
 		toId, err := to.PeerID()
 		if err != nil {
-			return "", nil, logger.Error("Failed to fetch peer id from public key", err)
+			logger.Error("Failed to fetch peer id from public key", err)
+			return "", nil, err
 		}
 		return toId, req, nil
 	}
@@ -245,7 +256,8 @@ func (n *Node) NewResponse(decs bool, to *common.Peer) (peer.ID, *transfer.Invit
 	// Create new Metadata
 	meta, err := device.KeyChain.CreateMetadata(n.host.ID())
 	if err != nil {
-		return "", nil, logger.Error("Failed to create new metadata for Shared Invite", err)
+		logger.Error("Failed to create new metadata for Shared Invite", err)
+		return "", nil, err
 	}
 
 	// Fetch User Peer
@@ -265,7 +277,8 @@ func (n *Node) NewResponse(decs bool, to *common.Peer) (peer.ID, *transfer.Invit
 	// Fetch Peer ID from Public Key
 	toId, err := to.PeerID()
 	if err != nil {
-		return "", nil, logger.Error("Failed to fetch peer id from public key", err)
+		logger.Error("Failed to fetch peer id from public key", err)
+		return "", nil, err
 	}
 	return toId, resp, nil
 }
@@ -284,17 +297,19 @@ func (n *Node) Stat() (*StatResponse, error) {
 	// Get Host Stats
 	hStat, err := n.host.Stat()
 	if err != nil {
+		logger.Error("Failed to get Host Stat", err)
 		return &StatResponse{
 			Success: false,
 			Error:   err.Error(),
 			SName:   profile.SName,
 			Profile: profile,
-		}, logger.Error("Failed to get Host Stat", err)
+		}, err
 	}
 
 	// Get Device Stat
 	dStat, err := device.Stat()
 	if err != nil {
+		logger.Error("Failed to get Device Stat", err)
 		return &StatResponse{
 			Success: false,
 			Error:   err.Error(),
@@ -305,7 +320,7 @@ func (n *Node) Stat() (*StatResponse, error) {
 				PeerID:    hStat.PeerID,
 				Multiaddr: hStat.MultAddr,
 			},
-		}, logger.Error("Failed to get Device Stat", err)
+		}, err
 	}
 
 	// Return StatResponse

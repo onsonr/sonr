@@ -5,7 +5,6 @@ import (
 
 	"github.com/sonr-io/core/internal/keychain"
 	"github.com/sonr-io/core/tools/config"
-	"github.com/sonr-io/core/tools/logger"
 )
 
 // DeviceOptions are options for the device.
@@ -57,9 +56,6 @@ var (
 
 // Init initializes the keychain and returns a Keychain.
 func Init(isDev bool, opts ...FSOption) error {
-	// Initialize logger
-	logger.Init(isDev)
-
 	// Check if Opts are set
 	if len(opts) == 0 {
 		// Create Device Config
@@ -136,7 +132,8 @@ func SetDeviceID(id string) error {
 		deviceID = id
 		return nil
 	}
-	return logger.Error("Failed to Set Device ID", ErrEmptyDeviceID)
+	logger.Error("Failed to Set Device ID", ErrEmptyDeviceID)
+	return ErrEmptyDeviceID
 }
 
 // FSOption is a functional option for configuring the filesystem.
