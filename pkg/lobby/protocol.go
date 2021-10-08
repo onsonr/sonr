@@ -45,9 +45,6 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter, olc
 		return nil, err
 	}
 
-	// Wait until host is ready
-	host.WaitForReady()
-
 	// Create Exchange Topic
 	topic, err := host.Join(olc)
 	if err != nil {

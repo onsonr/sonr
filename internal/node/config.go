@@ -7,17 +7,14 @@ import (
 
 	olc "github.com/google/open-location-code/go"
 	"github.com/kataras/golog"
-	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/common"
-	"github.com/sonr-io/core/internal/device"
-	"github.com/sonr-io/core/pkg/transfer"
 
 	"google.golang.org/protobuf/proto"
 )
 
 // Error Definitions
 var (
-	logger                = golog.Child("Node")
+	logger                = golog.Child("internal/node")
 	ErrEmptyQueue         = errors.New("No items in Transfer Queue.")
 	ErrInvalidQuery       = errors.New("No SName or PeerID provided.")
 	ErrNBClientMissing    = errors.New("No Namebase API Client Key provided.")
@@ -137,85 +134,4 @@ func defaultNodeOptions() nodeOptions {
 // Apply applies the node options to the node.
 func (no nodeOptions) Apply(ctx context.Context, n *Node) {
 	no.kind.Initialize(ctx, n, no.olc)
-}
-
-// Share a peer to have a transfer
-func (n *Node) NewRequest(to *common.Peer) (peer.ID, *transfer.InviteRequest, error) {
-	// Fetch Element from Queue
-	elem := n.queue.Front()
-	if elem != nil {
-		// Get Payload
-		payload := n.queue.Remove(elem).(*common.Payload)
-
-		// Create New ID for Invite
-		id, err := device.KeyChain.CreateUUID()
-		if err != nil {
-			logger.Error("Failed to create new id for Shared Invite", err)
-			return "", nil, err
-		}
-
-		// Create new Metadata
-		meta, err := device.KeyChain.CreateMetadata(n.host.ID())
-		if err != nil {
-			logger.Error("Failed to create new metadata for Shared Invite", err)
-			return "", nil, err
-		}
-
-		// Fetch User Peer
-		from, err := n.Peer()
-		if err != nil {
-			logger.Error("Failed to get Node Peer Object", err)
-			return "", nil, err
-		}
-
-		// Create Invite Request
-		req := &transfer.InviteRequest{
-			Payload:  payload,
-			Metadata: common.SignedMetadataToProto(meta),
-			To:       to,
-			From:     from,
-			Uuid:     common.SignedUUIDToProto(id),
-		}
-
-		// Fetch Peer ID from Public Key
-		toId, err := to.PeerID()
-		if err != nil {
-			logger.Error("Failed to fetch peer id from public key", err)
-			return "", nil, err
-		}
-		return toId, req, nil
-	}
-	return "", nil, errors.New("No items in Transfer Queue.")
-}
-
-// Respond to an invite request
-func (n *Node) NewResponse(decs bool, to *common.Peer) (peer.ID, *transfer.InviteResponse, error) {
-	// Create new Metadata
-	meta, err := device.KeyChain.CreateMetadata(n.host.ID())
-	if err != nil {
-		logger.Error("Failed to create new metadata for Shared Invite", err)
-		return "", nil, err
-	}
-
-	// Fetch User Peer
-	from, err := n.Peer()
-	if err != nil {
-		return "", nil, err
-	}
-
-	// Create Invite Response
-	resp := &transfer.InviteResponse{
-		Decision: decs,
-		Metadata: common.SignedMetadataToProto(meta),
-		From:     from,
-		To:       to,
-	}
-
-	// Fetch Peer ID from Public Key
-	toId, err := to.PeerID()
-	if err != nil {
-		logger.Error("Failed to fetch peer id from public key", err)
-		return "", nil, err
-	}
-	return toId, resp, nil
 }

@@ -29,7 +29,7 @@ const (
 
 // Error Definitions
 var (
-	logger             = golog.Child("transfer")
+	logger             = golog.Child("protocols/transfer")
 	ErrTimeout         = errors.New("Session has Timed out")
 	ErrParameters      = errors.New("Failed to create new TransferProtocol, invalid parameters")
 	ErrInvalidResponse = errors.New("Invalid Transfer InviteResponse provided to TransferProtocol")
@@ -50,7 +50,7 @@ func checkParams(host *host.SNRHost, em *state.Emitter) error {
 		logger.Error("Emitter provided is nil", ErrParameters)
 		return ErrParameters
 	}
-	return host.IsReady()
+	return host.HasRouting()
 }
 
 // ToEvent method on InviteResponse converts InviteResponse to DecisionEvent.

@@ -24,14 +24,14 @@ type HighwayNodeStub struct {
 
 // startClientService creates a new Client service stub for the node.
 func (n *Node) startHighwayService(ctx context.Context) (*HighwayNodeStub, error) {
-	// Initialize Domain Protocol
-	domainProtocol, err := domain.NewProtocol(ctx, n.host)
+	// Create the listener
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", RPC_SERVER_PORT))
 	if err != nil {
 		return nil, err
 	}
 
-	// Create the listener
-	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", RPC_SERVER_PORT))
+	// Initialize Domain Protocol
+	domainProtocol, err := domain.NewProtocol(ctx, n.host)
 	if err != nil {
 		return nil, err
 	}

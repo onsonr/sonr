@@ -16,16 +16,13 @@ type SonrBin struct {
 }
 
 var (
-	logger  *golog.Logger
 	sonrBin *SonrBin
 )
 
 func init() {
-	logger = golog.New()
-	logger.SetPrefix("[Sonr-Core.bin] ")
-	logger.SetStacktraceLimit(2)
-	logger.SetLevel("warn")
-    logger.SetFormat("json", "    ")
+	golog.SetPrefix("[Sonr-Core.bin] ")
+	golog.SetStacktraceLimit(2)
+	golog.SetFormat("json", "    ")
 }
 
 // Start starts the host, node, and rpc service.
@@ -36,15 +33,15 @@ func main() {
 	ctx := context.Background()
 	err := device.Init(false)
 	if err != nil {
-		logger.Fatal("Failed to initialize Device", err)
+		golog.Fatal("Failed to initialize Device", err)
 	}
 
 	// Create Node
 	n, resp, err := node.NewNode(ctx, node.WithClient())
 	if err != nil {
-		logger.Fatal("Failed to update Profile for Node", err)
+		golog.Fatal("Failed to update Profile for Node", err)
 	}
-	logger.Info("Node Started: ", golog.Fields{
+	golog.Info("Node Started: ", golog.Fields{
 		"Response": resp.String(),
 	})
 

@@ -16,10 +16,13 @@ import (
 	"github.com/sonr-io/core/internal/keychain"
 	"github.com/sonr-io/core/tools/internet"
 	net "github.com/sonr-io/core/tools/internet"
+	"github.com/sonr-io/core/tools/state"
 )
 
+
+// Error Definitions
 var (
-	logger              = golog.Child("host")
+	logger              = golog.Child("internal/host")
 	ErrRoutingNotSet    = errors.New("DHT and Host have not been set by Routing Function")
 	ErrListenerRequired = errors.New("Listener was not Provided")
 	ErrMDNSInvalidConn  = errors.New("Invalid Connection, cannot begin MDNS Service")
@@ -116,7 +119,8 @@ func (ho hostOptions) Apply(options ...HostOption) (*SNRHost, error) {
 		ctx:          ho.ctx,
 		opts:         ho,
 		bootstrapped: false,
-		readyChan:    make(chan bool, 1),
+		status:       Status_IDLE,
+		Emitter:      state.NewEmitter(2048),
 	}
 
 	// Get MultiAddr from listener

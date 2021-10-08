@@ -15,16 +15,13 @@ type SonrHighway struct {
 }
 
 var (
-	logger      *golog.Logger
 	sonrHighway *SonrHighway
 )
 
 func init() {
-	logger = golog.New()
-	logger.SetPrefix("[Sonr-Core.highway] ")
-	logger.SetStacktraceLimit(2)
-	logger.SetLevel("warn")
-    logger.SetFormat("json", "    ")
+	golog.SetPrefix("[Sonr-Core.highway] ")
+	golog.SetStacktraceLimit(2)
+    golog.SetFormat("json", "    ")
 }
 
 func main() {
@@ -32,15 +29,15 @@ func main() {
 	ctx := context.Background()
 	err := device.Init(false)
 	if err != nil {
-		logger.Fatal("Failed to initialize Device", err)
+		golog.Fatal("Failed to initialize Device", err)
 	}
 
 	// Create Node
 	n, resp, err := node.NewNode(ctx, node.WithHighway())
 	if err != nil {
-		logger.Fatal("Failed to update Profile for Node", err)
+		golog.Fatal("Failed to update Profile for Node", err)
 	}
-	logger.Info("Node Started: ", golog.Fields{"Response": resp.String()})
+	golog.Info("Node Started: ", golog.Fields{"Response": resp.String()})
 
 	// Set Lib
 	sonrHighway = &SonrHighway{

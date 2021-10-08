@@ -23,6 +23,7 @@ type ExchangeProtocol struct {
 	ctx      context.Context
 	host     *host.SNRHost  // host
 	emitter  *state.Emitter // Handle to signal when done
+	ready    bool           // Ready flag
 	resolver internet.HDNSResolver
 }
 
@@ -34,14 +35,12 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) (*E
 		return nil, err
 	}
 
-	// Wait until host is ready
-	host.WaitForReady()
-
 	// Create Exchange Protocol
 	exchProtocol := &ExchangeProtocol{
 		ctx:      ctx,
 		host:     host,
 		emitter:  em,
+		ready:    false,
 		resolver: internet.NewHDNSResolver(),
 	}
 	logger.Info("⚡️ Protocol is Ready")

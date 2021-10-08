@@ -16,16 +16,13 @@ type SonrLib struct {
 }
 
 var (
-	logger  *golog.Logger
 	sonrLib *SonrLib
 )
 
 func init() {
-	logger = golog.New()
-	logger.SetPrefix("[Sonr-Core.lib] ")
-	logger.SetStacktraceLimit(2)
-	logger.SetLevel("warn")
-	logger.SetFormat("json", "    ")
+	golog.SetPrefix("[Sonr-Core.lib] ")
+	golog.SetStacktraceLimit(2)
+	golog.SetFormat("json", "    ")
 }
 
 // Start starts the host, node, and rpc service.
@@ -36,19 +33,19 @@ func Start(reqBuf []byte) []byte {
 	req := &node.InitializeRequest{}
 	err := proto.Unmarshal(reqBuf, req)
 	if err != nil {
-		logger.Fatal("Failed to Unmarshal InitializeRequest", err)
+		golog.Fatal("Failed to Unmarshal InitializeRequest", err)
 	}
 
 	// Initialize Device
 	err = device.Init(req.IsDev(), req.ToDeviceOpts()...)
 	if err != nil {
-		logger.Fatal("Failed to initialize Device", err)
+		golog.Fatal("Failed to initialize Device", err)
 	}
 
 	// Create Node
 	n, resp, err := node.NewNode(ctx, node.WithRequest(req))
 	if err != nil {
-		logger.Fatal("Failed to Create new node", err)
+		golog.Fatal("Failed to Create new node", err)
 	}
 
 	// Set Lib
@@ -60,7 +57,7 @@ func Start(reqBuf []byte) []byte {
 	// Marshal Response
 	buf, err := proto.Marshal(resp)
 	if err != nil {
-		logger.Warn("Failed to Marshal InitializeResponse", err)
+		golog.Warn("Failed to Marshal InitializeResponse", err)
 	}
 	return buf
 }

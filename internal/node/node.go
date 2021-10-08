@@ -82,6 +82,9 @@ func NewNode(ctx context.Context, options ...NodeOption) (*Node, *InitializeResp
 		return nil, nil, err
 	}
 
+	// Wait for Host to be Ready
+	host.WaitForReady()
+
 	// Create Node
 	node := &Node{
 		Emitter:        state.NewEmitter(2048),

@@ -23,13 +23,13 @@ type ClientNodeStub struct {
 	*Node
 
 	// Properties
-	ctx        context.Context
+	ctx context.Context
 
 	// grpcServer is the gRPC server.
 	grpcServer *grpc.Server
 
 	// TCPListener for RPC Service
-	listener   *internet.TCPListener
+	listener *internet.TCPListener
 
 	// TransferProtocol - the transfer protocol
 	*transfer.TransferProtocol
@@ -46,28 +46,28 @@ type ClientNodeStub struct {
 
 // startClientService creates a new Client service stub for the node.
 func (n *Node) startClientService(ctx context.Context, olc string) (*ClientNodeStub, error) {
+	// Bind Listener to RPC Service
+	listener, err := internet.NewTCPListener(ctx, internet.WithPort(RPC_SERVER_PORT))
+	if err != nil {
+		return nil, err
+	}
+
 	// Set Transfer Protocol
 	transferProtocol, err := transfer.NewProtocol(ctx, n.host, n.Emitter)
 	if err != nil {
-		logger.Error("Failed to start TransferProtocol", err)
+		logger.Child("Client").Error("Failed to start TransferProtocol", err)
 	}
 
 	// Set Exchange Protocol
 	exchProtocol, err := exchange.NewProtocol(ctx, n.host, n.Emitter)
 	if err != nil {
-		logger.Error("Failed to start ExchangeProtocol", err)
+		logger.Child("Client").Error("Failed to start ExchangeProtocol", err)
 	}
 
 	// Set Local Lobby Protocol if Location is provided
 	lobbyProtocol, err := lobby.NewProtocol(ctx, n.host, n.Emitter, olc)
 	if err != nil {
-		logger.Error("Failed to start LobbyProtocol", err)
-	}
-
-	// Bind RPC Service
-	listener, err := internet.NewTCPListener(ctx, internet.WithPort(RPC_SERVER_PORT))
-	if err != nil {
-		return nil, err
+		logger.Child("Client").Error("Failed to start LobbyProtocol", err)
 	}
 
 	// Create a new gRPC server
@@ -87,7 +87,7 @@ func (n *Node) startClientService(ctx context.Context, olc string) (*ClientNodeS
 
 	// Handle Node Events
 	if err := nrc.grpcServer.Serve(nrc.listener); err != nil {
-		logger.Error("Failed to serve gRPC", err)
+		logger.Child("Client").Error("Failed to serve gRPC", err)
 		return nil, err
 	}
 	go nrc.pushAutomaticPings(ctx, time.NewTicker(5*time.Second))
@@ -99,14 +99,14 @@ func (n *ClientNodeStub) Update() error {
 	// Call Internal Edit
 	peer, err := n.Peer()
 	if err != nil {
-		logger.Error("Failed to push Auto Ping", err)
+		logger.Child("Client").Error("Failed to push Auto Ping", err)
 		return err
 	}
 
 	// Push Update to Exchange
 	if n.ExchangeProtocol != nil {
 		if err := n.ExchangeProtocol.Update(peer); err != nil {
-			logger.Error("Failed to Update Exchange", err)
+			logger.Child("Client").Error("Failed to Update Exchange", err)
 			return err
 		}
 	}
@@ -114,7 +114,7 @@ func (n *ClientNodeStub) Update() error {
 	// Push Update to Lobby
 	if n.LobbyProtocol != nil {
 		if err := n.LobbyProtocol.Update(peer); err != nil {
-			logger.Error("Failed to Update Lobby", err)
+			logger.Child("Client").Error("Failed to Update Lobby", err)
 			return err
 		}
 	}
@@ -399,14 +399,14 @@ func (n *ClientNodeStub) OnTransferComplete(e *Empty, stream ClientService_OnTra
 					// Add Sender to Recents
 					err := n.AddRecent(m.GetFrom().GetProfile())
 					if err != nil {
-						logger.Error("Failed to add sender's profile to store.", err)
+						logger.Child("Client").Error("Failed to add sender's profile to store.", err)
 						return err
 					}
 				} else {
 					// Add Receiver to Recents
 					err := n.AddRecent(m.GetTo().GetProfile())
 					if err != nil {
-						logger.Error("Failed to add receiver's profile to store.", err)
+						logger.Child("Client").Error("Failed to add receiver's profile to store.", err)
 						return err
 					}
 				}
@@ -425,7 +425,7 @@ func (n *ClientNodeStub) pushAutomaticPings(ctx context.Context, ticker *time.Ti
 		case <-ticker.C:
 			// Call Internal Update
 			if err := n.Update(); err != nil {
-				logger.Error("Failed to push Auto Ping", err)
+				logger.Child("Client").Error("Failed to push Auto Ping", err)
 				ticker.Stop()
 				return
 			}

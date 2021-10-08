@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	logger              = golog.Child("domain")
+	logger              = golog.Child("protocols/domain")
 	ErrMissingAPIKey    = errors.New("Missing Namebase Handshake Key in env")
 	ErrMissingAPISecret = errors.New("Missing Namebase Handshake Secret in env")
 	ErrParameters       = errors.New("Failed to create new DomainProtocol, invalid parameters")
@@ -36,5 +36,5 @@ func checkParams(host *host.SNRHost) error {
 		logger.Error("Host provided is nil", ErrParameters)
 		return ErrParameters
 	}
-	return host.IsReady()
+	return host.HasRouting()
 }

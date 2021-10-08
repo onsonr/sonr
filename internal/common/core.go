@@ -12,7 +12,7 @@ import (
 // ** ─── General ───────────────────────────────────────────
 // ** ───────────────────────────────────────────────────────
 var (
-	logger = golog.Child("common")
+	logger = golog.Child("internal/common")
 )
 
 // IsMdnsCompatible returns true if the Connection is MDNS compatible

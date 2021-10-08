@@ -24,7 +24,7 @@ const (
 
 // Error Definitions
 var (
-	logger = golog.Child("Tools/Net")
+	logger         = golog.Child("tools/internet")
 	ErrGetNamebase = errors.New("Failed to perform GET Request on Namebase API")
 	ErrPutNamebase = errors.New("Failed to perform PUT Request on Namebase API")
 )

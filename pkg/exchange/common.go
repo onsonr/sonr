@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	logger = golog.Child("exchange")
+	logger = golog.Child("protocols/exchange")
 )
 
 func checkParams(host *host.SNRHost, em *state.Emitter) error {
@@ -19,5 +19,5 @@ func checkParams(host *host.SNRHost, em *state.Emitter) error {
 		logger.Error("Emitter provided is nil", ErrParameters)
 		return ErrParameters
 	}
-	return host.IsReady()
+	return host.HasRouting()
 }

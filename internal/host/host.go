@@ -17,6 +17,7 @@ import (
 	"github.com/libp2p/go-msgio"
 	"github.com/multiformats/go-multiaddr"
 	"github.com/sonr-io/core/tools/internet"
+	"github.com/sonr-io/core/tools/state"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -38,7 +39,11 @@ type SNRHost struct {
 	opts         hostOptions
 	multiAddr    multiaddr.Multiaddr
 	privKey      crypto.PrivKey
-	readyChan    chan bool
+
+	// State
+	mu sync.Mutex
+	*state.Emitter
+	status SNRHostStatus
 
 	// Discovery
 	*dht.IpfsDHT
@@ -72,13 +77,14 @@ func NewHost(ctx context.Context, listener *internet.TCPListener, options ...Hos
 		logger.Error("Failed to create libp2p host", err)
 		return nil, err
 	}
+	hn.SetStatus(Status_CONNECTING)
 	return hn.Setup()
 }
 
 // Connect connects with `peer.AddrInfo` if underlying Host is ready
 func (hn *SNRHost) Connect(ctx context.Context, pi peer.AddrInfo) error {
 	// Check if host is ready
-	if err := hn.IsReady(); err != nil {
+	if err := hn.HasRouting(); err != nil {
 		logger.Warn("Underlying host is not ready, failed to call Connect()")
 		return err
 	}
@@ -105,6 +111,7 @@ func (hn *SNRHost) Join(topic string, opts ...ps.TopicOpt) (*ps.Topic, error) {
 
 // Close closes the underlying host
 func (hn *SNRHost) Close() error {
+	hn.SetStatus(Status_CLOSED)
 	hn.IpfsDHT.Close()
 	return hn.Host.Close()
 }
@@ -114,7 +121,7 @@ func (hn *SNRHost) Router(h host.Host) (routing.PeerRouting, error) {
 	// Create DHT
 	kdht, err := dht.New(hn.ctx, h)
 	if err != nil {
-		hn.readyChan <- false
+		hn.SetStatus(Status_FAIL)
 		return nil, err
 	}
 
@@ -128,22 +135,29 @@ func (hn *SNRHost) Router(h host.Host) (routing.PeerRouting, error) {
 }
 
 // ** ─── Host Info ────────────────────────────────────────────────────────
-// IsReady returns no-error if the host is ready for connect
-func (hn *SNRHost) IsReady() error {
-	if hn.IpfsDHT == nil || hn.Host == nil {
+// HasRouting returns no-error if the host is ready for connect
+func (h *SNRHost) HasRouting() error {
+	if h.IpfsDHT == nil || h.Host == nil {
 		return ErrRoutingNotSet
 	}
 	return nil
 }
 
+// IsStatus returns true if the host is in the provided status
+func (hn *SNRHost) IsStatus(s SNRHostStatus) bool {
+	hn.mu.Lock()
+	defer hn.mu.Unlock()
+	return hn.status == s
+}
+
 // SendMessage writes a protobuf go data object to a network stream
-func (hn *SNRHost) SendMessage(id peer.ID, p protocol.ID, data proto.Message) error {
-	err := hn.IsReady()
+func (h *SNRHost) SendMessage(id peer.ID, p protocol.ID, data proto.Message) error {
+	err := h.HasRouting()
 	if err != nil {
 		return err
 	}
 
-	s, err := hn.NewStream(hn.ctx, id, p)
+	s, err := h.NewStream(h.ctx, id, p)
 	if err != nil {
 		logger.Error("Failed to start stream", err)
 		return err
@@ -166,6 +180,14 @@ func (hn *SNRHost) SendMessage(id peer.ID, p protocol.ID, data proto.Message) er
 	return nil
 }
 
+// SetStatus sets the host status and emits the event
+func (h *SNRHost) SetStatus(s SNRHostStatus) {
+	h.mu.Lock()
+	h.status = s
+	h.Emit(Event_STATUS, s)
+	h.mu.Unlock()
+}
+
 // Stat returns the host stat info
 func (hn *SNRHost) Stat() (*SNRHostStat, error) {
 	// Return Host Stat
@@ -176,26 +198,31 @@ func (hn *SNRHost) Stat() (*SNRHostStat, error) {
 	}, nil
 }
 
-// WaitForReady blocks until the host is ready
+// OnReady registers a function to be called when the host is ready
+func (hn *SNRHost) OnReady(f StatusFunc) {
+	finished := make(chan bool)
+	logger.Info("OnReady: Created Status Worker for - Status_READY")
+	go createEventLoop(hn, WithDoneChannel(finished), WithMiddlewareFunc(f), WithTargetEvent(Status_READY))
+	logger.Info("OnReady: Waiting for status worker to finish...")
+	<-finished
+}
+
+// OnFail registers a function to be called when the host failed to connect
+func (hn *SNRHost) OnFail(f StatusFunc) {
+	finished := make(chan bool)
+	logger.Info("OnFail: Created Status Worker for - Status_FAIL")
+	go createEventLoop(hn, WithDoneChannel(finished), WithMiddlewareFunc(f), WithTargetEvent(Status_FAIL))
+	logger.Info("OnFail: Waiting for status worker to finish...")
+	<-finished
+}
+
+// WaitForReady waits for the host to be ready to accept connections
 func (hn *SNRHost) WaitForReady() {
-	wg := sync.WaitGroup{}
-	wg.Add(1)
-	go func(ctx context.Context, readyCh chan bool) {
-		for {
-			select {
-			case ready := <-hn.readyChan:
-				if !ready {
-					logger.Fatal("Host failed to setup, NOT ready")
-					return
-				}
-				logger.Info("Host is now ready!")
-				wg.Done()
-				return
-			case <-ctx.Done():
-				logger.Error("Context ended before host became ready")
-				return
-			}
-		}
-	}(hn.ctx, hn.readyChan)
-	wg.Wait()
+	finished := make(chan bool)
+	logger.Info("WaitForReady: Created Status Worker for - Status_READY")
+	go createEventLoop(hn, WithDoneChannel(finished))
+	logger.Info("WaitForReady: Waiting for status worker to finish...")
+	<-finished
+	logger.Info("WaitForReady: Completed")
+	return
 }

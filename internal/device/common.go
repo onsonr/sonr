@@ -12,7 +12,7 @@ import (
 
 // Error definitions
 var (
-	logger = golog.Child("device")
+	logger = golog.Child("internal/device")
 	// General errors
 	ErrEmptyDeviceID = errors.New("Device ID cannot be empty")
 	ErrMissingEnvVar = errors.New("Cannot set EnvVariable with empty value")
