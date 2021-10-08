@@ -90,12 +90,12 @@ func defaultHostOptions(ctx context.Context, l *internet.TCPListener) hostOption
 		ctx:            ctx,
 		Connection:     common.Connection_WIFI,
 		BootstrapPeers: dht.GetDefaultBootstrapPeerAddrInfos(),
-		LowWater:       10,
-		HighWater:      15,
-		GracePeriod:    time.Second * 5,
+		LowWater:       15,
+		HighWater:      40,
+		GracePeriod:    time.Minute * 5,
 		Rendezvous:     "/sonr/rendevouz/0.9.2",
 		Interval:       time.Second * 5,
-		TTL:            time.Minute * 1,
+		TTL:            time.Minute * 2,
 		listener:       l,
 	}
 }
