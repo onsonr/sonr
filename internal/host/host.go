@@ -3,6 +3,7 @@ package host
 import (
 	"context"
 	"errors"
+	"sync"
 
 	"github.com/libp2p/go-libp2p"
 	connmgr "github.com/libp2p/go-libp2p-connmgr"
@@ -176,18 +177,25 @@ func (hn *SNRHost) Stat() (*SNRHostStat, error) {
 }
 
 // WaitForReady blocks until the host is ready
-func (hn *SNRHost) WaitForReady() error {
-	for {
-		select {
-		case ready := <-hn.readyChan:
-			if !ready {
-				logger.Error("Host failed to setup, NOT ready")
-				return errors.New("Host failed to be ready")
+func (hn *SNRHost) WaitForReady() {
+	wg := sync.WaitGroup{}
+	wg.Add(1)
+	go func(ctx context.Context, readyCh chan bool) {
+		for {
+			select {
+			case ready := <-hn.readyChan:
+				if !ready {
+					logger.Fatal("Host failed to setup, NOT ready")
+					return
+				}
+				logger.Info("Host is now ready!")
+				wg.Done()
+				return
+			case <-ctx.Done():
+				logger.Error("Context ended before host became ready")
+				return
 			}
-			logger.Info("Host is ready!")
-			return nil
-		case <-hn.ctx.Done():
-			return errors.New("Context ended before host became ready")
 		}
-	}
+	}(hn.ctx, hn.readyChan)
+	wg.Wait()
 }

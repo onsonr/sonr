@@ -46,23 +46,20 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter, olc
 	}
 
 	// Wait until host is ready
-	if err := host.WaitForReady(); err != nil {
-		logger.Error("Failed to create LobbyProtocol", err)
-		return nil, err
-	}
+	host.WaitForReady()
 
 	// Create Exchange Topic
 	topic, err := host.Join(olc)
 	if err != nil {
-		 logger.Error("Failed to Join Local Pubsub Topic", err)
+		logger.Error("Failed to Join Local Pubsub Topic", err)
 		return nil, err
 	}
 
 	// Subscribe to Room
 	sub, err := topic.Subscribe()
 	if err != nil {
-		 logger.Error("Failed to Subscribe to OLC Topic", err)
-		return nil,err
+		logger.Error("Failed to Subscribe to OLC Topic", err)
+		return nil, err
 	}
 
 	// Create Room Handler
@@ -86,6 +83,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter, olc
 	}
 
 	// Handle Events and Return Protocol
+	logger.Info("⚡️ Protocol is Ready")
 	go lobProtocol.HandleEvents()
 	go lobProtocol.HandleMessages()
 	return lobProtocol, nil

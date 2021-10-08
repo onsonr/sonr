@@ -35,10 +35,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) (*E
 	}
 
 	// Wait until host is ready
-	if err := host.WaitForReady(); err != nil {
-		logger.Error("Failed to create ExchangeProtocol", err)
-		return nil, err
-	}
+	host.WaitForReady()
 
 	// Create Exchange Protocol
 	exchProtocol := &ExchangeProtocol{
@@ -47,6 +44,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) (*E
 		emitter:  em,
 		resolver: internet.NewHDNSResolver(),
 	}
+	logger.Info("⚡️ Protocol is Ready")
 	return exchProtocol, nil
 }
 
