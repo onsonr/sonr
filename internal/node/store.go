@@ -212,6 +212,43 @@ func (n *Node) GetRecents() (RecentsHistory, error) {
 	return recents, nil
 }
 
+// Profile returns the profile for the user from diskDB
+func (n *Node) Profile() (*common.Profile, error) {
+	// Check if Store is open
+	if n.store == nil {
+		logger.Error("Failed to Get Profile", ErrStoreNotCreated)
+		return nil, ErrStoreNotCreated
+	}
+
+	var profile common.Profile
+	err := n.store.View(func(tx *bolt.Tx) error {
+		// Assume bucket exists and has keys
+		b := tx.Bucket(USER_BUCKET)
+
+		// Check if bucket exists
+		if b == nil {
+			return ErrProfileNotCreated
+		}
+
+		// Get profile buffer
+		buf := b.Get(PROFILE_KEY)
+		if buf == nil {
+			return nil
+		}
+
+		// Unmarshal profile
+		err := proto.Unmarshal(buf, &profile)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &profile, nil
+}
+
 // SetProfile stores the profile for the user in diskDB
 func (n *Node) SetProfile(profile *common.Profile) error {
 	// Check if Store is open

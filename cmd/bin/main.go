@@ -6,13 +6,15 @@ import (
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/node"
+	"github.com/sonr-io/core/tools/state"
 	"google.golang.org/protobuf/proto"
 )
 
 type SonrBin struct {
 	// Properties
-	ctx  context.Context
-	node *node.Node
+	ctx     context.Context
+	node    *node.Node
+	emitter *state.Emitter
 }
 
 var (
@@ -31,13 +33,14 @@ func main() {
 
 	// Initialize Device
 	ctx := context.Background()
+	emitter := state.NewEmitter(2048)
 	err := device.Init(false)
 	if err != nil {
 		golog.Fatal("Failed to initialize Device", err)
 	}
 
 	// Create Node
-	n, resp, err := node.NewNode(ctx, node.WithClient())
+	n, resp, err := node.NewNode(ctx, emitter, node.WithClient())
 	if err != nil {
 		golog.Fatal("Failed to update Profile for Node", err)
 	}
@@ -47,8 +50,9 @@ func main() {
 
 	// Set Lib
 	sonrBin = &SonrBin{
-		ctx:  ctx,
-		node: n,
+		ctx:     ctx,
+		emitter: emitter,
+		node:    n,
 	}
 }
 

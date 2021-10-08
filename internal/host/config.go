@@ -101,7 +101,12 @@ func defaultHostOptions(ctx context.Context, l *internet.TCPListener) hostOption
 }
 
 // Apply applies the host options and returns new SNRHost
-func (ho hostOptions) Apply(options ...HostOption) (*SNRHost, error) {
+func (ho hostOptions) Apply(em *state.Emitter, options ...HostOption) (*SNRHost, error) {
+	// Check if emitter is set
+	if em == nil {
+		return nil, errors.New("Emitter is not set")
+	}
+
 	// Iterate over the options.
 	var err error
 	for _, opt := range options {
@@ -118,13 +123,12 @@ func (ho hostOptions) Apply(options ...HostOption) (*SNRHost, error) {
 		ctx:     ho.ctx,
 		opts:    ho,
 		status:  Status_IDLE,
-		Emitter: state.NewEmitter(2048),
+		emitter: em,
 	}
 
 	// Get MultiAddr from listener
 	hn.multiAddr, err = ho.listener.Multiaddr()
 	if err != nil {
-		logger.Child("Apply:").Error("Failed to parse MultiAddr from LocalHost")
 		return nil, errors.Wrap(err, "Failed to apply host options: MultiAddr")
 	}
 
@@ -134,7 +138,6 @@ func (ho hostOptions) Apply(options ...HostOption) (*SNRHost, error) {
 		if err == nil {
 			return privKey, nil
 		}
-		logger.Child("Apply:").Warn("Failed to get Account Private Key for Host", err)
 		privKey, _, err = crypto.GenerateEd25519Key(rand.Reader)
 		if err == nil {
 			return privKey, nil
@@ -145,7 +148,6 @@ func (ho hostOptions) Apply(options ...HostOption) (*SNRHost, error) {
 	// Fetch the private key.
 	hn.privKey, err = findPrivKey()
 	if err != nil {
-		logger.Child("Apply:").Error("Failed to create host, invalid hostOptions")
 		return nil, errors.Wrap(err, "Failed to apply host options: PrivKey")
 	}
 

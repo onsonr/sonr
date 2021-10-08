@@ -137,7 +137,7 @@ func createEventLoop(h *SNRHost, options ...EventLoopOption) {
 	for {
 		select {
 		// Handle Status Event
-		case e := <-h.On(Event_STATUS):
+		case e := <-h.emitter.On(Event_STATUS):
 			status := e.Args[0].(SNRHostStatus)
 			opts.Handle(status)
 			return

@@ -6,13 +6,15 @@ import (
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/node"
+	"github.com/sonr-io/core/tools/state"
 	"google.golang.org/protobuf/proto"
 )
 
 type SonrLib struct {
 	// Properties
-	ctx  context.Context
-	node *node.Node
+	ctx     context.Context
+	node    *node.Node
+	emitter *state.Emitter
 }
 
 var (
@@ -28,6 +30,7 @@ func init() {
 // Start starts the host, node, and rpc service.
 func Start(reqBuf []byte) []byte {
 	ctx := context.Background()
+	emitter := state.NewEmitter(2048)
 
 	// Unmarshal request
 	req := &node.InitializeRequest{}
@@ -43,15 +46,16 @@ func Start(reqBuf []byte) []byte {
 	}
 
 	// Create Node
-	n, resp, err := node.NewNode(ctx, node.WithRequest(req))
+	n, resp, err := node.NewNode(ctx, emitter, node.WithRequest(req))
 	if err != nil {
 		golog.Fatal("Failed to Create new node", err)
 	}
 
 	// Set Lib
 	sonrLib = &SonrLib{
-		ctx:  ctx,
-		node: n,
+		ctx:     ctx,
+		emitter: emitter,
+		node:    n,
 	}
 
 	// Marshal Response

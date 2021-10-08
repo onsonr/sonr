@@ -39,9 +39,8 @@ type SNRHost struct {
 	privKey   crypto.PrivKey
 
 	// State
-
-	*state.Emitter
-	status SNRHostStatus
+	emitter *state.Emitter
+	status  SNRHostStatus
 
 	// Discovery
 	*dht.IpfsDHT
@@ -49,10 +48,10 @@ type SNRHost struct {
 }
 
 // NewHost creates a new host
-func NewHost(ctx context.Context, listener *internet.TCPListener, options ...HostOption) (*SNRHost, error) {
+func NewHost(ctx context.Context, listener *internet.TCPListener, em *state.Emitter, options ...HostOption) (*SNRHost, error) {
 	// Initialize DHT
 	opts := defaultHostOptions(ctx, listener)
-	hn, err := opts.Apply(options...)
+	hn, err := opts.Apply(em, options...)
 	if err != nil {
 		return nil, err
 	}
@@ -180,7 +179,7 @@ func (h *SNRHost) SetStatus(s SNRHostStatus) {
 
 	// Update Status
 	h.status = s
-	h.Emit(Event_STATUS, s)
+	h.emitter.Emit(Event_STATUS, s)
 }
 
 // Stat returns the host stat info
@@ -191,19 +190,4 @@ func (hn *SNRHost) Stat() (*SNRHostStat, error) {
 		PeerID:   hn.ID().Pretty(),
 		MultAddr: hn.Addrs()[0].String(),
 	}, nil
-}
-
-// WaitForReady waits for the host to be ready to accept connections
-func (hn *SNRHost) WaitForReady() {
-	if hn.status == Status_READY {
-		logger.Info("WaitForReady: Status is already " + Status_READY.String())
-		return
-	}
-	finished := make(chan bool)
-	logger.Info("WaitForReady: Created Status Worker for - " + Status_READY.String())
-	go createEventLoop(hn, WithDoneChannel(finished))
-	logger.Info("WaitForReady: Waiting for status worker to finish...")
-	<-finished
-	logger.Info("WaitForReady: Completed")
-	return
 }

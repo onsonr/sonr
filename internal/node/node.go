@@ -4,6 +4,7 @@ import (
 	"container/list"
 	"context"
 	"strings"
+	"time"
 
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
@@ -14,7 +15,6 @@ import (
 	"github.com/sonr-io/core/tools/internet"
 	"github.com/sonr-io/core/tools/state"
 	bolt "go.etcd.io/bbolt"
-	"google.golang.org/protobuf/proto"
 )
 
 // Node type - a p2p host implementing one or more p2p protocols
@@ -61,7 +61,7 @@ type Node struct {
 }
 
 // NewNode Creates a node with its implemented protocols
-func NewNode(ctx context.Context, options ...NodeOption) (*Node, *InitializeResponse, error) {
+func NewNode(ctx context.Context, em *state.Emitter, options ...NodeOption) (*Node, *InitializeResponse, error) {
 	// Set Node Options
 	opts := defaultNodeOptions()
 	for _, opt := range options {
@@ -76,18 +76,18 @@ func NewNode(ctx context.Context, options ...NodeOption) (*Node, *InitializeResp
 	}
 
 	// Initialize Host
-	host, err := host.NewHost(ctx, l, host.WithConnection(opts.connection))
+	host, err := host.NewHost(ctx, l, em, host.WithConnection(opts.connection))
 	if err != nil {
 		logger.Error("Failed to initialize host", err)
 		return nil, nil, err
 	}
 
 	// Wait for Host to be Ready
-	host.WaitForReady()
+	time.Sleep(250 * time.Millisecond)
 
 	// Create Node
 	node := &Node{
-		Emitter:        state.NewEmitter(2048),
+		Emitter:        em,
 		host:           host,
 		ctx:            ctx,
 		queue:          list.New(),
@@ -174,43 +174,6 @@ func (n *Node) Peer() (*common.Peer, error) {
 			Arch:     deviceStat.Arch,
 		},
 	}, nil
-}
-
-// Profile returns the profile for the user from diskDB
-func (n *Node) Profile() (*common.Profile, error) {
-	// Check if Store is open
-	if n.store == nil {
-		logger.Error("Failed to Get Profile", ErrStoreNotCreated)
-		return nil, ErrStoreNotCreated
-	}
-
-	var profile common.Profile
-	err := n.store.View(func(tx *bolt.Tx) error {
-		// Assume bucket exists and has keys
-		b := tx.Bucket(USER_BUCKET)
-
-		// Check if bucket exists
-		if b == nil {
-			return ErrProfileNotCreated
-		}
-
-		// Get profile buffer
-		buf := b.Get(PROFILE_KEY)
-		if buf == nil {
-			return nil
-		}
-
-		// Unmarshal profile
-		err := proto.Unmarshal(buf, &profile)
-		if err != nil {
-			return err
-		}
-		return nil
-	})
-	if err != nil {
-		return nil, err
-	}
-	return &profile, nil
 }
 
 // Supply a transfer item to the queue
