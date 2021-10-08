@@ -101,6 +101,7 @@ func (hn *SNRHost) initDHTDiscovery() error {
 		logger.Error("Failed to create FindPeers Discovery channel", err)
 		return err
 	}
+	hn.SetStatus(Status_READY)
 	go hn.handleDiscoveredPeers(peersChan)
 	return nil
 }

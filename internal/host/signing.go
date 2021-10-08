@@ -14,14 +14,14 @@ func (h *SNRHost) AuthenticateId(id *common.UUID) (bool, error) {
 	// Get local node's public key
 	pubKey, err := device.KeyChain.GetPubKey(keychain.Account)
 	if err != nil {
-		logger.Error("Failed to get local host's public key", err)
+		logger.Error("AuthenticateId: Failed to get local host's public key", err)
 		return false, err
 	}
 
 	// verify UUID value
 	result, err := pubKey.Verify([]byte(id.GetValue()), []byte(id.GetSignature()))
 	if err != nil {
-		logger.Error("Failed to verify signature of UUID", err)
+		logger.Error("AuthenticateId: Failed to verify signature of UUID", err)
 		return false, err
 	}
 	return result, nil
@@ -37,7 +37,7 @@ func (n *SNRHost) AuthenticateMessage(message proto.Message, data *common.Metada
 	// marshall data without the signature to protobufs3 binary format
 	bin, err := proto.Marshal(message)
 	if err != nil {
-		logger.Error("Failed to marshal Protobuf Message.", err)
+		logger.Error("AuthenticateMessage: Failed to marshal Protobuf Message.", err)
 		return false
 	}
 
@@ -47,7 +47,7 @@ func (n *SNRHost) AuthenticateMessage(message proto.Message, data *common.Metada
 	// restore peer id binary format from base58 encoded node id data
 	peerId, err := peer.Decode(data.NodeId)
 	if err != nil {
-		logger.Error("Failed to decode node id from base58.", err)
+		logger.Error("AuthenticateMessage: Failed to decode node id from base58.", err)
 		return false
 	}
 
@@ -60,7 +60,7 @@ func (n *SNRHost) AuthenticateMessage(message proto.Message, data *common.Metada
 func (n *SNRHost) SignMessage(message proto.Message) ([]byte, error) {
 	data, err := proto.Marshal(message)
 	if err != nil {
-		logger.Error("Failed to Sign Message", err)
+		logger.Error("SignMessage: Failed to Sign Message", err)
 		return nil, err
 	}
 	return n.SignData(data)
@@ -71,7 +71,7 @@ func (n *SNRHost) SignData(data []byte) ([]byte, error) {
 	// Get local node's private key
 	res, err := device.KeyChain.SignWith(keychain.Account, data)
 	if err != nil {
-		logger.Error("Failed to get local host's private key", err)
+		logger.Error("SignData: Failed to get local host's private key", err)
 		return nil, err
 	}
 	return res, nil
@@ -88,19 +88,19 @@ func (n *SNRHost) VerifyData(data []byte, signature []byte, peerId peer.ID, pubK
 	// extract node id from the provided public key
 	idFromKey, err := peer.IDFromPublicKey(key)
 	if err != nil {
-		logger.Error("Failed to extract peer id from public key", err)
+		logger.Error("VerifyData: Failed to extract peer id from public key", err)
 		return false
 	}
 
 	// verify that message author node id matches the provided node public key
 	if idFromKey != peerId {
-		logger.Error("Node id and provided public key mismatch", err)
+		logger.Error("VerifyData: Node id and provided public key mismatch", err)
 		return false
 	}
 
 	res, err := key.Verify(data, signature)
 	if err != nil {
-		logger.Error("Error authenticating data", err)
+		logger.Error("VerifyData: Error authenticating data", err)
 		return false
 	}
 	return res

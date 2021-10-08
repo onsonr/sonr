@@ -34,10 +34,10 @@ type SNRHost struct {
 	host.Host
 
 	// Properties
-	ctx          context.Context
-	opts         hostOptions
-	multiAddr    multiaddr.Multiaddr
-	privKey      crypto.PrivKey
+	ctx       context.Context
+	opts      hostOptions
+	multiAddr multiaddr.Multiaddr
+	privKey   crypto.PrivKey
 
 	// State
 	mu sync.Mutex
@@ -73,7 +73,7 @@ func NewHost(ctx context.Context, listener *internet.TCPListener, options ...Hos
 		libp2p.NATPortMap(),
 		libp2p.EnableAutoRelay())
 	if err != nil {
-		logger.Error("Failed to create libp2p host", err)
+		logger.Error("NewHost: Failed to create libp2p host", err)
 		return nil, err
 	}
 	hn.SetStatus(Status_CONNECTING)
@@ -84,7 +84,7 @@ func NewHost(ctx context.Context, listener *internet.TCPListener, options ...Hos
 func (hn *SNRHost) Connect(ctx context.Context, pi peer.AddrInfo) error {
 	// Check if host is ready
 	if err := hn.HasRouting(); err != nil {
-		logger.Warn("Underlying host is not ready, failed to call Connect()")
+		logger.Warn("Connect: Underlying host is not ready, failed to call Connect()")
 		return err
 	}
 
@@ -96,12 +96,12 @@ func (hn *SNRHost) Connect(ctx context.Context, pi peer.AddrInfo) error {
 func (hn *SNRHost) Join(topic string, opts ...ps.TopicOpt) (*ps.Topic, error) {
 	// Check if PubSub is Set
 	if hn.PubSub == nil {
-		return nil, errors.New("Pubsub has not been set on SNRHost")
+		return nil, errors.New("Join: Pubsub has not been set on SNRHost")
 	}
 
 	// Check if topic is valid
 	if topic == "" {
-		return nil, errors.New("Empty topic string provided to Join for host.Pubsub")
+		return nil, errors.New("Join: Empty topic string provided to Join for host.Pubsub")
 	}
 
 	// Call Underlying Pubsub to Connect
@@ -127,7 +127,7 @@ func (hn *SNRHost) Router(h host.Host) (routing.PeerRouting, error) {
 	// Set Properties
 	hn.IpfsDHT = kdht
 	hn.Host = h
-	logger.Info("Host and DHT have been set for SNRNode")
+	logger.Info("Router: Host and DHT have been set for SNRNode")
 
 	// Setup Properties
 	return hn.IpfsDHT, nil
@@ -158,7 +158,7 @@ func (h *SNRHost) SendMessage(id peer.ID, p protocol.ID, data proto.Message) err
 
 	s, err := h.NewStream(h.ctx, id, p)
 	if err != nil {
-		logger.Error("Failed to start stream", err)
+		logger.Error("SendMessage: Failed to start stream", err)
 		return err
 	}
 	defer s.Close()
@@ -166,14 +166,14 @@ func (h *SNRHost) SendMessage(id peer.ID, p protocol.ID, data proto.Message) err
 	// marshall data to protobufs3 binary format
 	bin, err := proto.Marshal(data)
 	if err != nil {
-		logger.Error("Failed to marshal pb", err)
+		logger.Error("SendMessage: Failed to marshal pb", err)
 		return err
 	}
 
 	// Create Writer and write data to stream
 	w := msgio.NewWriter(s)
 	if err := w.WriteMsg(bin); err != nil {
-		logger.Error("Failed to write message to stream.", err)
+		logger.Error("SendMessage: Failed to write message to stream.", err)
 		return err
 	}
 	return nil
@@ -181,6 +181,13 @@ func (h *SNRHost) SendMessage(id peer.ID, p protocol.ID, data proto.Message) err
 
 // SetStatus sets the host status and emits the event
 func (h *SNRHost) SetStatus(s SNRHostStatus) {
+	// Check if status is changed
+	if h.status == s {
+		logger.Info("SetStatus: Same status provided, " + s.String())
+		return
+	}
+
+	// Update Status
 	h.mu.Lock()
 	h.status = s
 	h.Emit(Event_STATUS, s)
@@ -197,28 +204,14 @@ func (hn *SNRHost) Stat() (*SNRHostStat, error) {
 	}, nil
 }
 
-// OnReady registers a function to be called when the host is ready
-func (hn *SNRHost) OnReady(f StatusFunc) {
-	finished := make(chan bool)
-	logger.Info("OnReady: Created Status Worker for - Status_READY")
-	go createEventLoop(hn, WithDoneChannel(finished), WithMiddlewareFunc(f), WithTargetEvent(Status_READY))
-	logger.Info("OnReady: Waiting for status worker to finish...")
-	<-finished
-}
-
-// OnFail registers a function to be called when the host failed to connect
-func (hn *SNRHost) OnFail(f StatusFunc) {
-	finished := make(chan bool)
-	logger.Info("OnFail: Created Status Worker for - Status_FAIL")
-	go createEventLoop(hn, WithDoneChannel(finished), WithMiddlewareFunc(f), WithTargetEvent(Status_FAIL))
-	logger.Info("OnFail: Waiting for status worker to finish...")
-	<-finished
-}
-
 // WaitForReady waits for the host to be ready to accept connections
 func (hn *SNRHost) WaitForReady() {
+	if hn.IsStatus(Status_READY) {
+		logger.Info("WaitForReady: Status is already " + Status_READY.String())
+		return
+	}
 	finished := make(chan bool)
-	logger.Info("WaitForReady: Created Status Worker for - Status_READY")
+	logger.Info("WaitForReady: Created Status Worker for - " + Status_READY.String())
 	go createEventLoop(hn, WithDoneChannel(finished))
 	logger.Info("WaitForReady: Waiting for status worker to finish...")
 	<-finished

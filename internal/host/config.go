@@ -125,7 +125,7 @@ func (ho hostOptions) Apply(options ...HostOption) (*SNRHost, error) {
 	// Get MultiAddr from listener
 	hn.multiAddr, err = ho.listener.Multiaddr()
 	if err != nil {
-		logger.Error("Failed to parse MultiAddr from LocalHost")
+		logger.Child("Apply:").Error("Failed to parse MultiAddr from LocalHost")
 		return nil, errors.Wrap(err, "Failed to apply host options: MultiAddr")
 	}
 
@@ -135,7 +135,7 @@ func (ho hostOptions) Apply(options ...HostOption) (*SNRHost, error) {
 		if err == nil {
 			return privKey, nil
 		}
-		logger.Warn("Failed to get Account Private Key for Host", err)
+		logger.Child("Apply:").Warn("Failed to get Account Private Key for Host", err)
 		privKey, _, err = crypto.GenerateEd25519Key(rand.Reader)
 		if err == nil {
 			return privKey, nil
@@ -146,7 +146,7 @@ func (ho hostOptions) Apply(options ...HostOption) (*SNRHost, error) {
 	// Fetch the private key.
 	hn.privKey, err = findPrivKey()
 	if err != nil {
-		logger.Error("Failed to create host, invalid hostOptions")
+		logger.Child("Apply:").Error("Failed to create host, invalid hostOptions")
 		return nil, errors.Wrap(err, "Failed to apply host options: PrivKey")
 	}
 
