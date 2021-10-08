@@ -19,7 +19,6 @@ import (
 	"github.com/sonr-io/core/tools/state"
 )
 
-
 // Error Definitions
 var (
 	logger              = golog.Child("internal/host")
@@ -116,10 +115,10 @@ func (ho hostOptions) Apply(options ...HostOption) (*SNRHost, error) {
 
 	// Create the host.
 	hn := &SNRHost{
-		ctx:          ho.ctx,
-		opts:         ho,
-		status:       Status_IDLE,
-		Emitter:      state.NewEmitter(2048),
+		ctx:     ho.ctx,
+		opts:    ho,
+		status:  Status_IDLE,
+		Emitter: state.NewEmitter(2048),
 	}
 
 	// Get MultiAddr from listener

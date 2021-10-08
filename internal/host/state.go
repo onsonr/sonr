@@ -159,7 +159,7 @@ func (eo eventLoopOptions) Handle(s SNRHostStatus) {
 	if eo.target.IsNotIdle() {
 		// Update channels
 		logger.Info("Handling Done Channel and Middlewares for Target: ", eo.target.String())
-		if eo.host.IsStatus(s) {
+		if eo.host.status == eo.target {
 			eo.doneCh <- true
 		} else {
 			eo.doneCh <- false
@@ -167,7 +167,7 @@ func (eo eventLoopOptions) Handle(s SNRHostStatus) {
 
 		// Call on target middlewares
 		for _, m := range eo.middlewares {
-			if eo.host.IsStatus(s) {
+			if eo.host.status == s {
 				m(s)
 			}
 		}

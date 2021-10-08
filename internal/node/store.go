@@ -32,7 +32,7 @@ var (
 func (n *Node) openStore(ctx context.Context, h *host.SNRHost, em *state.Emitter) error {
 	path, err := device.NewDatabasePath("sonr-bolt.db")
 	if err != nil {
-		logger.Error("Failed to get DB Path", err)
+		logger.Child("Store").Error("Failed to get DB Path", err)
 		return err
 	}
 
@@ -40,7 +40,7 @@ func (n *Node) openStore(ctx context.Context, h *host.SNRHost, em *state.Emitter
 	// It will be created if it doesn't exist.
 	db, err := bolt.Open(path, 0600, &bolt.Options{})
 	if err != nil {
-		logger.Error("Failed to open Database", err)
+		logger.Child("Store").Error("Failed to open Database", err)
 		return err
 	}
 	n.store = db
@@ -63,14 +63,14 @@ func (n *Node) openStore(ctx context.Context, h *host.SNRHost, em *state.Emitter
 func (n *Node) createBucket(name []byte, key []byte, val []byte) error {
 	// Check if Store is open
 	if n.store == nil {
-		logger.Error("Failed to Create Bucket", ErrStoreNotCreated)
+		logger.Child("Store").Error("Failed to Create Bucket", ErrStoreNotCreated)
 		return ErrStoreNotCreated
 	}
 	if err := n.store.Update(func(tx *bolt.Tx) error {
 		// Assume bucket exists and has keys
 		b, err := tx.CreateBucketIfNotExists(name)
 		if err != nil {
-			logger.Error("Failed to Create Bucket", ErrStoreNotCreated)
+			logger.Child("Store").Error("Failed to Create Bucket", ErrStoreNotCreated)
 			return err
 		}
 
@@ -92,7 +92,7 @@ func (n *Node) createBucket(name []byte, key []byte, val []byte) error {
 		}
 		return nil
 	}); err != nil {
-		logger.Error("Failed to Create bucket", err)
+		logger.Child("Store").Error("Failed to Create bucket", err)
 		return err
 	}
 	return nil
@@ -102,7 +102,7 @@ func (n *Node) createBucket(name []byte, key []byte, val []byte) error {
 func (n *Node) AddRecent(profile *common.Profile) error {
 	// Check if Store is open
 	if n.store == nil {
-		logger.Error("Failed to Add Recent", ErrStoreNotCreated)
+		logger.Child("Store").Error("Failed to Add Recent", ErrStoreNotCreated)
 		return ErrStoreNotCreated
 	}
 
@@ -153,7 +153,7 @@ func (n *Node) AddRecent(profile *common.Profile) error {
 		}
 		return nil
 	}); err != nil {
-		logger.Error("Failed to ADD Recent to Store", err)
+		logger.Child("Store").Error("Failed to ADD Recent to Store", err)
 		return err
 	}
 	return nil
@@ -163,7 +163,7 @@ func (n *Node) AddRecent(profile *common.Profile) error {
 func (n *Node) GetRecents() (RecentsHistory, error) {
 	// Check if Store is open
 	if n.store == nil {
-		logger.Error("Failed to Get Recents", ErrStoreNotCreated)
+		logger.Child("Store").Error("Failed to Get Recents", ErrStoreNotCreated)
 		return nil, ErrStoreNotCreated
 	}
 
@@ -206,7 +206,7 @@ func (n *Node) GetRecents() (RecentsHistory, error) {
 		return nil
 	})
 	if err != nil {
-		logger.Error("Failed to GET Recents in Store", err)
+		logger.Child("Store").Error("Failed to GET Recents in Store", err)
 		return nil, err
 	}
 	return recents, nil
@@ -216,7 +216,7 @@ func (n *Node) GetRecents() (RecentsHistory, error) {
 func (n *Node) SetProfile(profile *common.Profile) error {
 	// Check if Store is open
 	if n.store == nil {
-		logger.Error("Failed to Set Profile", ErrStoreNotCreated)
+		logger.Child("Store").Error("Failed to Set Profile", ErrStoreNotCreated)
 		return ErrStoreNotCreated
 	}
 
@@ -246,7 +246,7 @@ func (n *Node) SetProfile(profile *common.Profile) error {
 		}
 		return nil
 	}); err != nil {
-		logger.Error("Failed to SET Profile in Store", err)
+		logger.Child("Store").Error("Failed to SET Profile in Store", err)
 		return err
 	}
 	return nil

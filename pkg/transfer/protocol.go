@@ -41,7 +41,6 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) (*T
 	host.SetStreamHandler(RequestPID, invProtocol.onInviteRequest)
 	host.SetStreamHandler(ResponsePID, invProtocol.onInviteResponse)
 	host.SetStreamHandler(SessionPID, invProtocol.onIncomingTransfer)
-	logger.Info("⚡️ Protocol is Ready")
 	return invProtocol, nil
 }
 

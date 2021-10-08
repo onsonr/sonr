@@ -80,7 +80,6 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter, olc
 	}
 
 	// Handle Events and Return Protocol
-	logger.Info("⚡️ Protocol is Ready")
 	go lobProtocol.HandleEvents()
 	go lobProtocol.HandleMessages()
 	return lobProtocol, nil

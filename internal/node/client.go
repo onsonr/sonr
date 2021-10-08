@@ -2,6 +2,8 @@ package node
 
 import (
 	context "context"
+	"fmt"
+	"net"
 	"strings"
 	"time"
 
@@ -9,7 +11,6 @@ import (
 	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/transfer"
-	"github.com/sonr-io/core/tools/internet"
 
 	grpc "google.golang.org/grpc"
 )
@@ -29,7 +30,7 @@ type ClientNodeStub struct {
 	grpcServer *grpc.Server
 
 	// TCPListener for RPC Service
-	listener *internet.TCPListener
+	listener net.Listener
 
 	// TransferProtocol - the transfer protocol
 	*transfer.TransferProtocol
@@ -46,28 +47,32 @@ type ClientNodeStub struct {
 
 // startClientService creates a new Client service stub for the node.
 func (n *Node) startClientService(ctx context.Context, olc string) (*ClientNodeStub, error) {
-	// Bind Listener to RPC Service
-	listener, err := internet.NewTCPListener(ctx, internet.WithPort(RPC_SERVER_PORT))
-	if err != nil {
-		return nil, err
-	}
-
 	// Set Transfer Protocol
 	transferProtocol, err := transfer.NewProtocol(ctx, n.host, n.Emitter)
 	if err != nil {
 		logger.Child("Client").Error("Failed to start TransferProtocol", err)
+		return nil, err
 	}
 
 	// Set Exchange Protocol
 	exchProtocol, err := exchange.NewProtocol(ctx, n.host, n.Emitter)
 	if err != nil {
 		logger.Child("Client").Error("Failed to start ExchangeProtocol", err)
+		return nil, err
 	}
 
 	// Set Local Lobby Protocol if Location is provided
 	lobbyProtocol, err := lobby.NewProtocol(ctx, n.host, n.Emitter, olc)
 	if err != nil {
 		logger.Child("Client").Error("Failed to start LobbyProtocol", err)
+		return nil, err
+	}
+
+	// Bind RPC Service
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", RPC_SERVER_PORT))
+	if err != nil {
+		logger.Child("Client").Error("Failed to bind to port", err)
+		return nil, err
 	}
 
 	// Create a new gRPC server

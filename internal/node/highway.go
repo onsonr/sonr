@@ -101,7 +101,7 @@ func (hrc *HighwayNodeStub) serveRPC() {
 	for {
 		// Handle Node Events
 		if err := hrc.grpcServer.Serve(hrc.listener); err != nil {
-			logger.Error("Failed to serve gRPC", err)
+			logger.Child("Highway").Error("Failed to serve gRPC", err)
 			return
 		}
 

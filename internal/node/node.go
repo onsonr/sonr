@@ -9,8 +9,8 @@ import (
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/internal/keychain"
+	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/transfer"
-
 	"github.com/sonr-io/core/tools/internet"
 	"github.com/sonr-io/core/tools/state"
 	bolt "go.etcd.io/bbolt"
@@ -100,6 +100,13 @@ func NewNode(ctx context.Context, options ...NodeOption) (*Node, *InitializeResp
 		completeEvents: make(chan *common.CompleteEvent),
 	}
 
+	// Initialize Node by Type
+	err = opts.Apply(ctx, node)
+	if err != nil {
+		logger.Error("Failed to apply options", err)
+		return nil, nil, err
+	}
+
 	// Open Database
 	err = node.openStore(ctx, host, node.Emitter)
 	if err != nil {
@@ -108,7 +115,6 @@ func NewNode(ctx context.Context, options ...NodeOption) (*Node, *InitializeResp
 	}
 
 	// Begin Background Tasks
-	opts.Apply(ctx, node)
 	go node.Serve(ctx)
 	return node, node.newInitResponse(nil), nil
 }
@@ -279,15 +285,23 @@ func (n *Node) Stat() (*StatResponse, error) {
 func (n *Node) Serve(ctx context.Context) {
 	for {
 		select {
+		// LobbyProtocol: ListRefresh
+		case e := <-n.On(lobby.Event_LIST_REFRESH):
+			event := e.Args[0].(*common.RefreshEvent)
+			n.refreshEvents <- event
+		// TransferProtocol: Invited
 		case e := <-n.On(transfer.Event_INVITED):
 			event := e.Args[0].(*common.InviteEvent)
 			n.inviteEvents <- event
+		// TransferProtocol: Responded
 		case e := <-n.On(transfer.Event_RESPONDED):
 			event := e.Args[0].(*common.DecisionEvent)
 			n.decisionEvents <- event
+		// TransferProtocol: Progress
 		case e := <-n.On(transfer.Event_PROGRESS):
 			event := e.Args[0].(*common.ProgressEvent)
 			n.progressEvents <- event
+		// TransferProtocol: Completed
 		case e := <-n.On(transfer.Event_COMPLETED):
 			event := e.Args[0].(*common.CompleteEvent)
 			n.completeEvents <- event

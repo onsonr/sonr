@@ -14,7 +14,7 @@ func (n *Node) newInitResponse(err error) *InitializeResponse {
 	// Get Profile from Store
 	profile, err := n.Profile()
 	if err != nil {
-		logger.Error("Failed to create initialize Response", err)
+		logger.Child("Util").Error("Failed to create initialize Response", err)
 		return &InitializeResponse{
 			Success: false,
 			Error:   err.Error(),
@@ -48,21 +48,21 @@ func (n *Node) NewRequest(to *common.Peer) (peer.ID, *transfer.InviteRequest, er
 		// Create New ID for Invite
 		id, err := device.KeyChain.CreateUUID()
 		if err != nil {
-			logger.Error("Failed to create new id for Shared Invite", err)
+			logger.Child("Util").Error("Failed to create new id for Shared Invite", err)
 			return "", nil, err
 		}
 
 		// Create new Metadata
 		meta, err := device.KeyChain.CreateMetadata(n.host.ID())
 		if err != nil {
-			logger.Error("Failed to create new metadata for Shared Invite", err)
+			logger.Child("Util").Error("Failed to create new metadata for Shared Invite", err)
 			return "", nil, err
 		}
 
 		// Fetch User Peer
 		from, err := n.Peer()
 		if err != nil {
-			logger.Error("Failed to get Node Peer Object", err)
+			logger.Child("Util").Error("Failed to get Node Peer Object", err)
 			return "", nil, err
 		}
 
@@ -78,7 +78,7 @@ func (n *Node) NewRequest(to *common.Peer) (peer.ID, *transfer.InviteRequest, er
 		// Fetch Peer ID from Public Key
 		toId, err := to.PeerID()
 		if err != nil {
-			logger.Error("Failed to fetch peer id from public key", err)
+			logger.Child("Util").Error("Failed to fetch peer id from public key", err)
 			return "", nil, err
 		}
 		return toId, req, nil
@@ -91,7 +91,7 @@ func (n *Node) NewResponse(decs bool, to *common.Peer) (peer.ID, *transfer.Invit
 	// Create new Metadata
 	meta, err := device.KeyChain.CreateMetadata(n.host.ID())
 	if err != nil {
-		logger.Error("Failed to create new metadata for Shared Invite", err)
+		logger.Child("Util").Error("Failed to create new metadata for Shared Invite", err)
 		return "", nil, err
 	}
 
@@ -112,7 +112,7 @@ func (n *Node) NewResponse(decs bool, to *common.Peer) (peer.ID, *transfer.Invit
 	// Fetch Peer ID from Public Key
 	toId, err := to.PeerID()
 	if err != nil {
-		logger.Error("Failed to fetch peer id from public key", err)
+		logger.Child("Util").Error("Failed to fetch peer id from public key", err)
 		return "", nil, err
 	}
 	return toId, resp, nil
@@ -143,7 +143,7 @@ func (ir *InitializeRequest) ToDeviceOpts() []device.FSOption {
 		// Set Device ID
 		err := device.SetDeviceID(dOpts.GetId())
 		if err != nil {
-			logger.Error("Failed to Set Device ID", err)
+			logger.Child("Util").Error("Failed to Set Device ID", err)
 			return fsOpts
 		}
 

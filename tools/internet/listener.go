@@ -111,7 +111,7 @@ func NewTCPListener(ctx context.Context, options ...TCPListenerOpt) (*TCPListene
 	}
 
 	// Create Listener
-	go handlePort(ctx, lc)
+	// go handlePort(ctx, lc)
 	return &TCPListener{
 		ctx:      ctx,
 		Listener: lc,

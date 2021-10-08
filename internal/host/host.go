@@ -3,7 +3,6 @@ package host
 import (
 	"context"
 	"errors"
-	"sync"
 
 	"github.com/libp2p/go-libp2p"
 	connmgr "github.com/libp2p/go-libp2p-connmgr"
@@ -40,7 +39,7 @@ type SNRHost struct {
 	privKey   crypto.PrivKey
 
 	// State
-	mu sync.Mutex
+
 	*state.Emitter
 	status SNRHostStatus
 
@@ -66,9 +65,8 @@ func NewHost(ctx context.Context, listener *internet.TCPListener, options ...Hos
 			opts.HighWater,   // HighWater,
 			opts.GracePeriod, // GracePeriod
 		)),
-		libp2p.ListenAddrs(hn.multiAddr),
+		// libp2p.ListenAddrs(hn.multiAddr),
 		libp2p.DefaultListenAddrs,
-		libp2p.DefaultStaticRelays(),
 		libp2p.Routing(hn.Router),
 		libp2p.NATPortMap(),
 		libp2p.EnableAutoRelay())
@@ -142,13 +140,6 @@ func (h *SNRHost) HasRouting() error {
 	return nil
 }
 
-// IsStatus returns true if the host is in the provided status
-func (hn *SNRHost) IsStatus(s SNRHostStatus) bool {
-	hn.mu.Lock()
-	defer hn.mu.Unlock()
-	return hn.status == s
-}
-
 // SendMessage writes a protobuf go data object to a network stream
 func (h *SNRHost) SendMessage(id peer.ID, p protocol.ID, data proto.Message) error {
 	err := h.HasRouting()
@@ -188,10 +179,8 @@ func (h *SNRHost) SetStatus(s SNRHostStatus) {
 	}
 
 	// Update Status
-	h.mu.Lock()
 	h.status = s
 	h.Emit(Event_STATUS, s)
-	h.mu.Unlock()
 }
 
 // Stat returns the host stat info
@@ -206,7 +195,7 @@ func (hn *SNRHost) Stat() (*SNRHostStat, error) {
 
 // WaitForReady waits for the host to be ready to accept connections
 func (hn *SNRHost) WaitForReady() {
-	if hn.IsStatus(Status_READY) {
+	if hn.status == Status_READY {
 		logger.Info("WaitForReady: Status is already " + Status_READY.String())
 		return
 	}

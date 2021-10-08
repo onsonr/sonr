@@ -45,16 +45,6 @@ const (
 	NodeType_HIGHWAY
 )
 
-// Initialize initializes the node by Type.
-func (nt NodeType) Initialize(ctx context.Context, n *Node, olc string) {
-	switch nt {
-	case NodeType_CLIENT:
-		n.startClientService(ctx, olc)
-	case NodeType_HIGHWAY:
-		n.startHighwayService(ctx)
-	}
-}
-
 // NodeOption is a function that modifies the node options.
 type NodeOption func(nodeOptions)
 
@@ -80,7 +70,7 @@ func WithRequest(req *InitializeRequest) NodeOption {
 		// Set OLC code
 		code := olc.Encode(req.GetLocation().GetLatitude(), req.GetLocation().GetLongitude(), 8)
 		if code == "" {
-			logger.Error("Failed to Determine OLC Code, set to Global")
+			logger.Child("Config").Error("Failed to Determine OLC Code, set to Global")
 			o.olc = "global"
 		} else {
 			o.olc = code
@@ -90,7 +80,7 @@ func WithRequest(req *InitializeRequest) NodeOption {
 		profile := common.NewDefaultProfile(common.WithCheckerProfile(req.GetProfile()), common.WithPicture())
 		proBuf, err := proto.Marshal(profile)
 		if err != nil {
-			logger.Error("Failed to marshal Profile", err)
+			logger.Child("Config").Error("Failed to marshal Profile", err)
 		}
 		o.profileBuf = proBuf
 	}
@@ -132,6 +122,21 @@ func defaultNodeOptions() nodeOptions {
 }
 
 // Apply applies the node options to the node.
-func (no nodeOptions) Apply(ctx context.Context, n *Node) {
-	no.kind.Initialize(ctx, n, no.olc)
+func (no nodeOptions) Apply(ctx context.Context, n *Node) error {
+	if no.kind == NodeType_CLIENT {
+		// Client Node Type
+		_, err := n.startClientService(ctx, no.olc)
+		if err != nil {
+			logger.Error("Failed to start Client Service", err)
+			return err
+		}
+	} else {
+		// Highway Node Type
+		_, err := n.startHighwayService(ctx)
+		if err != nil {
+			logger.Error("Failed to start Highway Service", err)
+			return err
+		}
+	}
+	return nil
 }
