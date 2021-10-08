@@ -35,7 +35,6 @@ type SNRHost struct {
 
 	// Properties
 	ctx          context.Context
-	bootstrapped bool
 	opts         hostOptions
 	multiAddr    multiaddr.Multiaddr
 	privKey      crypto.PrivKey

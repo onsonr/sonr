@@ -118,7 +118,6 @@ func (ho hostOptions) Apply(options ...HostOption) (*SNRHost, error) {
 	hn := &SNRHost{
 		ctx:          ho.ctx,
 		opts:         ho,
-		bootstrapped: false,
 		status:       Status_IDLE,
 		Emitter:      state.NewEmitter(2048),
 	}
