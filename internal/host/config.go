@@ -117,8 +117,8 @@ func (ho hostOptions) Apply(em *state.Emitter, options ...HostOption) (*SNRHost,
 	}
 
 	// Check if the listener is set.
-	if ho.listener == nil {
-		return nil, errors.Wrap(ErrListenerRequired, "Failed to apply host options: TCPListener")
+	if ho.listener != nil {
+		logger.Debug("TCP Listener provided, using for MultiAddr")
 	}
 
 	// Create the host.
