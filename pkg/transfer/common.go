@@ -6,7 +6,7 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/protocol"
-	"github.com/sonr-io/core/internal/common"
+	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/tools/state"
 )
@@ -54,8 +54,8 @@ func checkParams(host *host.SNRHost, em *state.Emitter) error {
 }
 
 // ToEvent method on InviteResponse converts InviteResponse to DecisionEvent.
-func (ir *InviteResponse) ToEvent() *common.DecisionEvent {
-	return &common.DecisionEvent{
+func (ir *InviteResponse) ToEvent() *api.DecisionEvent {
+	return &api.DecisionEvent{
 		From:     ir.GetFrom(),
 		Received: int64(time.Now().Unix()),
 		Decision: ir.GetDecision(),
@@ -63,8 +63,8 @@ func (ir *InviteResponse) ToEvent() *common.DecisionEvent {
 }
 
 // ToEvent method on InviteRequest converts InviteRequest to InviteEvent.
-func (ir *InviteRequest) ToEvent() *common.InviteEvent {
-	return &common.InviteEvent{
+func (ir *InviteRequest) ToEvent() *api.InviteEvent {
+	return &api.InviteEvent{
 		Received: int64(time.Now().Unix()),
 		From:     ir.GetFrom(),
 		Payload:  ir.GetPayload(),

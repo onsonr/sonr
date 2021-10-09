@@ -4,6 +4,7 @@ package node
 
 import (
 	context "context"
+	api "github.com/sonr-io/core/internal/api"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -19,11 +20,11 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type HighwayServiceClient interface {
 	// Authorize Signing Method Request for Data
-	Authorize(ctx context.Context, in *AuthorizeRequest, opts ...grpc.CallOption) (*AuthorizeResponse, error)
+	Authorize(ctx context.Context, in *api.AuthorizeRequest, opts ...grpc.CallOption) (*api.AuthorizeResponse, error)
 	// Link Links an Additional Device to User
-	Link(ctx context.Context, in *LinkRequest, opts ...grpc.CallOption) (*LinkResponse, error)
+	Link(ctx context.Context, in *api.LinkRequest, opts ...grpc.CallOption) (*api.LinkResponse, error)
 	// Register creates new user in DNS Table
-	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
+	Register(ctx context.Context, in *api.RegisterRequest, opts ...grpc.CallOption) (*api.RegisterResponse, error)
 }
 
 type highwayServiceClient struct {
@@ -34,8 +35,8 @@ func NewHighwayServiceClient(cc grpc.ClientConnInterface) HighwayServiceClient {
 	return &highwayServiceClient{cc}
 }
 
-func (c *highwayServiceClient) Authorize(ctx context.Context, in *AuthorizeRequest, opts ...grpc.CallOption) (*AuthorizeResponse, error) {
-	out := new(AuthorizeResponse)
+func (c *highwayServiceClient) Authorize(ctx context.Context, in *api.AuthorizeRequest, opts ...grpc.CallOption) (*api.AuthorizeResponse, error) {
+	out := new(api.AuthorizeResponse)
 	err := c.cc.Invoke(ctx, "/sonr.node.HighwayService/Authorize", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -43,8 +44,8 @@ func (c *highwayServiceClient) Authorize(ctx context.Context, in *AuthorizeReque
 	return out, nil
 }
 
-func (c *highwayServiceClient) Link(ctx context.Context, in *LinkRequest, opts ...grpc.CallOption) (*LinkResponse, error) {
-	out := new(LinkResponse)
+func (c *highwayServiceClient) Link(ctx context.Context, in *api.LinkRequest, opts ...grpc.CallOption) (*api.LinkResponse, error) {
+	out := new(api.LinkResponse)
 	err := c.cc.Invoke(ctx, "/sonr.node.HighwayService/Link", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -52,8 +53,8 @@ func (c *highwayServiceClient) Link(ctx context.Context, in *LinkRequest, opts .
 	return out, nil
 }
 
-func (c *highwayServiceClient) Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error) {
-	out := new(RegisterResponse)
+func (c *highwayServiceClient) Register(ctx context.Context, in *api.RegisterRequest, opts ...grpc.CallOption) (*api.RegisterResponse, error) {
+	out := new(api.RegisterResponse)
 	err := c.cc.Invoke(ctx, "/sonr.node.HighwayService/Register", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -66,11 +67,11 @@ func (c *highwayServiceClient) Register(ctx context.Context, in *RegisterRequest
 // for forward compatibility
 type HighwayServiceServer interface {
 	// Authorize Signing Method Request for Data
-	Authorize(context.Context, *AuthorizeRequest) (*AuthorizeResponse, error)
+	Authorize(context.Context, *api.AuthorizeRequest) (*api.AuthorizeResponse, error)
 	// Link Links an Additional Device to User
-	Link(context.Context, *LinkRequest) (*LinkResponse, error)
+	Link(context.Context, *api.LinkRequest) (*api.LinkResponse, error)
 	// Register creates new user in DNS Table
-	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
+	Register(context.Context, *api.RegisterRequest) (*api.RegisterResponse, error)
 	mustEmbedUnimplementedHighwayServiceServer()
 }
 
@@ -78,13 +79,13 @@ type HighwayServiceServer interface {
 type UnimplementedHighwayServiceServer struct {
 }
 
-func (UnimplementedHighwayServiceServer) Authorize(context.Context, *AuthorizeRequest) (*AuthorizeResponse, error) {
+func (UnimplementedHighwayServiceServer) Authorize(context.Context, *api.AuthorizeRequest) (*api.AuthorizeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Authorize not implemented")
 }
-func (UnimplementedHighwayServiceServer) Link(context.Context, *LinkRequest) (*LinkResponse, error) {
+func (UnimplementedHighwayServiceServer) Link(context.Context, *api.LinkRequest) (*api.LinkResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Link not implemented")
 }
-func (UnimplementedHighwayServiceServer) Register(context.Context, *RegisterRequest) (*RegisterResponse, error) {
+func (UnimplementedHighwayServiceServer) Register(context.Context, *api.RegisterRequest) (*api.RegisterResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
 func (UnimplementedHighwayServiceServer) mustEmbedUnimplementedHighwayServiceServer() {}
@@ -101,7 +102,7 @@ func RegisterHighwayServiceServer(s grpc.ServiceRegistrar, srv HighwayServiceSer
 }
 
 func _HighwayService_Authorize_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AuthorizeRequest)
+	in := new(api.AuthorizeRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -113,13 +114,13 @@ func _HighwayService_Authorize_Handler(srv interface{}, ctx context.Context, dec
 		FullMethod: "/sonr.node.HighwayService/Authorize",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HighwayServiceServer).Authorize(ctx, req.(*AuthorizeRequest))
+		return srv.(HighwayServiceServer).Authorize(ctx, req.(*api.AuthorizeRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _HighwayService_Link_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LinkRequest)
+	in := new(api.LinkRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -131,13 +132,13 @@ func _HighwayService_Link_Handler(srv interface{}, ctx context.Context, dec func
 		FullMethod: "/sonr.node.HighwayService/Link",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HighwayServiceServer).Link(ctx, req.(*LinkRequest))
+		return srv.(HighwayServiceServer).Link(ctx, req.(*api.LinkRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _HighwayService_Register_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RegisterRequest)
+	in := new(api.RegisterRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -149,7 +150,7 @@ func _HighwayService_Register_Handler(srv interface{}, ctx context.Context, dec 
 		FullMethod: "/sonr.node.HighwayService/Register",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HighwayServiceServer).Register(ctx, req.(*RegisterRequest))
+		return srv.(HighwayServiceServer).Register(ctx, req.(*api.RegisterRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

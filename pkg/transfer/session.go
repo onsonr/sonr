@@ -7,6 +7,7 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/host"
@@ -14,7 +15,7 @@ import (
 
 // Session is a single entry in the transfer queue.
 type Session struct {
-	direction   common.CompleteEvent_Direction
+	direction   api.CompleteEvent_Direction
 	request     *InviteRequest
 	response    *InviteResponse
 	fromId      peer.ID
@@ -71,7 +72,7 @@ func (sq *SessionQueue) AddIncoming(from peer.ID, req *InviteRequest) error {
 
 	// Create New TransferEntry
 	entry := Session{
-		direction:   common.CompleteEvent_INCOMING,
+		direction:   api.CompleteEvent_INCOMING,
 		request:     req,
 		fromId:      from,
 		toId:        sq.host.ID(),
@@ -89,7 +90,7 @@ func (sq *SessionQueue) AddIncoming(from peer.ID, req *InviteRequest) error {
 func (sq *SessionQueue) AddOutgoing(to peer.ID, req *InviteRequest) error {
 	// Create New TransferEntry
 	entry := Session{
-		direction:   common.CompleteEvent_OUTGOING,
+		direction:   api.CompleteEvent_OUTGOING,
 		request:     req,
 		fromId:      sq.host.ID(),
 		toId:        to,
@@ -116,7 +117,7 @@ func (sq *SessionQueue) Next() (*Session, error) {
 }
 
 // Done marks the transfer as completed and returns the CompleteEvent.
-func (sq *SessionQueue) Done() (*common.CompleteEvent, error) {
+func (sq *SessionQueue) Done() (*api.CompleteEvent, error) {
 	// Find Entry for Peer
 	entry := sq.queue.Front()
 	if entry == nil {
@@ -134,7 +135,7 @@ func (sq *SessionQueue) Done() (*common.CompleteEvent, error) {
 	}
 
 	// Create CompleteEvent
-	event := &common.CompleteEvent{
+	event := &api.CompleteEvent{
 		From:       val.request.GetFrom(),
 		To:         val.request.GetTo(),
 		Direction:  val.direction,

@@ -127,24 +127,24 @@ func (h *SNRHost) AuthenticateId(id *common.UUID) (bool, error) {
 }
 
 // AuthenticateMessage Authenticates incoming p2p message
-func (n *SNRHost) AuthenticateMessage(message proto.Message, data *common.Metadata) bool {
+func (n *SNRHost) AuthenticateMessage(msg proto.Message, metadata *common.Metadata) bool {
 	// store a temp ref to signature and remove it from message data
 	// sign is a string to allow easy reset to zero-value (empty string)
-	sign := data.Signature
-	data.Signature = nil
+	sign := metadata.Signature
+	metadata.Signature = nil
 
 	// marshall data without the signature to protobufs3 binary format
-	bin, err := proto.Marshal(message)
+	buf, err := proto.Marshal(msg)
 	if err != nil {
 		logger.Error("AuthenticateMessage: Failed to marshal Protobuf Message.", err)
 		return false
 	}
 
 	// restore sig in message data (for possible future use)
-	data.Signature = sign
+	metadata.Signature = sign
 
 	// restore peer id binary format from base58 encoded node id data
-	peerId, err := peer.Decode(data.NodeId)
+	peerId, err := peer.Decode(metadata.NodeId)
 	if err != nil {
 		logger.Error("AuthenticateMessage: Failed to decode node id from base58.", err)
 		return false
@@ -152,7 +152,7 @@ func (n *SNRHost) AuthenticateMessage(message proto.Message, data *common.Metada
 
 	// verify the data was authored by the signing peer identified by the public key
 	// and signature included in the message
-	return n.VerifyData(bin, []byte(sign), peerId, data.PublicKey)
+	return n.VerifyData(buf, []byte(sign), peerId, metadata.PublicKey)
 }
 
 // Close closes the underlying host

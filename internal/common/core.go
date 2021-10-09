@@ -5,7 +5,6 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/pkg/errors"
-	"github.com/sonr-io/core/internal/keychain"
 )
 
 // ** ───────────────────────────────────────────────────────
@@ -14,6 +13,8 @@ import (
 // RPC_SERVER_PORT is the port the RPC service listens on.
 const RPC_SERVER_PORT = 52006
 
+type GetProfileFunc func() (*Profile, error)
+
 var (
 	logger = golog.Child("internal/common")
 )
@@ -21,24 +22,6 @@ var (
 // IsMdnsCompatible returns true if the Connection is MDNS compatible
 func (c Connection) IsMdnsCompatible() bool {
 	return c == Connection_WIFI || c == Connection_ETHERNET
-}
-
-// SignedMetadataToProto converts a SignedMetadata to a protobuf.
-func SignedMetadataToProto(m *keychain.SignedMetadata) *Metadata {
-	return &Metadata{
-		Timestamp: m.Timestamp,
-		NodeId:    m.NodeId,
-		PublicKey: m.PublicKey,
-	}
-}
-
-// SignedUUIDToProto converts a SignedUUID to a protobuf.
-func SignedUUIDToProto(m *keychain.SignedUUID) *UUID {
-	return &UUID{
-		Timestamp: m.Timestamp,
-		Signature: m.Signature,
-		Value:     m.Value,
-	}
 }
 
 // Checks if Enviornment is Development

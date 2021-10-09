@@ -31,7 +31,7 @@ type PeerInfo struct {
 	PeerID          peer.ID       // Peer ID
 	Peer            *Peer         // Peer Data Object
 	PublicKey       crypto.PubKey // Peer Public Key
-	NameRecord      *net.HDNSNameRecord
+	NameRecord      net.Record
 }
 
 // Info returns PeerInfo from Peer

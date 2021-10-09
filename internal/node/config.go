@@ -8,6 +8,7 @@ import (
 
 	olc "github.com/google/open-location-code/go"
 	"github.com/kataras/golog"
+	api "github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/tools/state"
 
@@ -33,7 +34,10 @@ var (
 )
 
 // NodeStub is the interface for the node based on mode: (client, highway)
-type NodeStub interface{}
+type NodeStub interface {
+	Serve(ctx context.Context) error
+	Close() error
+}
 
 // NodeMode is the type of the node (Client, Highway)
 type NodeMode int
@@ -50,7 +54,7 @@ const (
 type NodeOption func(nodeOptions)
 
 // WithRequest sets the initialize request.
-func WithRequest(req *InitializeRequest) NodeOption {
+func WithRequest(req *api.InitializeRequest) NodeOption {
 	return func(o nodeOptions) {
 		// Set Connection
 		o.connection = req.Connection
@@ -129,31 +133,35 @@ func defaultNodeOptions() nodeOptions {
 }
 
 // Apply applies the node options to the node.
-func (no nodeOptions) Apply(ctx context.Context, n *Node) error {
-	// Set Options to Node
-	n.options = no
-
+func (no nodeOptions) Apply(ctx context.Context, n *Node) (*Node, error) {
 	// Handle by Node Mode
 	if no.mode == Mode_CLIENT {
 		// Client Node Type
-		stub, err := n.startClientService(ctx, no.olc)
+		stub, err := n.startClientService(ctx, no.listener, no.olc)
 		if err != nil {
 			logger.Error("Failed to start Client Service", err)
-			return err
+			return n, err
 		}
 
 		// Set Stub to node
 		n.stub = stub
+
+		// Open Store with profileBuf
+		err = n.openStore(ctx, no.profileBuf)
+		if err != nil {
+			logger.Error("Failed to open database", err)
+			return n, err
+		}
 	} else {
 		// Highway Node Type
 		stub, err := n.startHighwayService(ctx)
 		if err != nil {
 			logger.Error("Failed to start Highway Service", err)
-			return err
+			return n, err
 		}
 
 		// Set Stub to node
 		n.stub = stub
 	}
-	return nil
+	return n, nil
 }

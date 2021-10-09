@@ -4,7 +4,7 @@ package node
 
 import (
 	context "context"
-	common "github.com/sonr-io/core/internal/common"
+	api "github.com/sonr-io/core/internal/api"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -21,19 +21,17 @@ const _ = grpc.SupportPackageIsVersion7
 type ClientServiceClient interface {
 	// Node Methods
 	// Signing Method Request for Data
-	Supply(ctx context.Context, in *SupplyRequest, opts ...grpc.CallOption) (*SupplyResponse, error)
+	Supply(ctx context.Context, in *api.SupplyRequest, opts ...grpc.CallOption) (*api.SupplyResponse, error)
 	// Verification Method Request for Signed Data
-	Edit(ctx context.Context, in *EditRequest, opts ...grpc.CallOption) (*EditResponse, error)
+	Edit(ctx context.Context, in *api.EditRequest, opts ...grpc.CallOption) (*api.EditResponse, error)
 	// Fetch method finds data from Key/Value store
-	Fetch(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*FetchResponse, error)
+	Fetch(ctx context.Context, in *api.FetchRequest, opts ...grpc.CallOption) (*api.FetchResponse, error)
 	// Respond Method to an Invite with Decision
-	Share(ctx context.Context, in *ShareRequest, opts ...grpc.CallOption) (*ShareResponse, error)
+	Share(ctx context.Context, in *api.ShareRequest, opts ...grpc.CallOption) (*api.ShareResponse, error)
 	// Respond Method to an Invite with Decision
-	Respond(ctx context.Context, in *RespondRequest, opts ...grpc.CallOption) (*RespondResponse, error)
+	Respond(ctx context.Context, in *api.RespondRequest, opts ...grpc.CallOption) (*api.RespondResponse, error)
 	// Search Method to find a Peer by SName or PeerID
-	Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error)
-	// Stat Method returns the Node Stats
-	Stat(ctx context.Context, in *StatRequest, opts ...grpc.CallOption) (*StatResponse, error)
+	Search(ctx context.Context, in *api.SearchRequest, opts ...grpc.CallOption) (*api.SearchResponse, error)
 	// Events Streams
 	// Returns a stream of Lobby Refresh Events
 	OnLobbyRefresh(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnLobbyRefreshClient, error)
@@ -59,8 +57,8 @@ func NewClientServiceClient(cc grpc.ClientConnInterface) ClientServiceClient {
 	return &clientServiceClient{cc}
 }
 
-func (c *clientServiceClient) Supply(ctx context.Context, in *SupplyRequest, opts ...grpc.CallOption) (*SupplyResponse, error) {
-	out := new(SupplyResponse)
+func (c *clientServiceClient) Supply(ctx context.Context, in *api.SupplyRequest, opts ...grpc.CallOption) (*api.SupplyResponse, error) {
+	out := new(api.SupplyResponse)
 	err := c.cc.Invoke(ctx, "/sonr.node.ClientService/Supply", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -68,8 +66,8 @@ func (c *clientServiceClient) Supply(ctx context.Context, in *SupplyRequest, opt
 	return out, nil
 }
 
-func (c *clientServiceClient) Edit(ctx context.Context, in *EditRequest, opts ...grpc.CallOption) (*EditResponse, error) {
-	out := new(EditResponse)
+func (c *clientServiceClient) Edit(ctx context.Context, in *api.EditRequest, opts ...grpc.CallOption) (*api.EditResponse, error) {
+	out := new(api.EditResponse)
 	err := c.cc.Invoke(ctx, "/sonr.node.ClientService/Edit", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -77,8 +75,8 @@ func (c *clientServiceClient) Edit(ctx context.Context, in *EditRequest, opts ..
 	return out, nil
 }
 
-func (c *clientServiceClient) Fetch(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*FetchResponse, error) {
-	out := new(FetchResponse)
+func (c *clientServiceClient) Fetch(ctx context.Context, in *api.FetchRequest, opts ...grpc.CallOption) (*api.FetchResponse, error) {
+	out := new(api.FetchResponse)
 	err := c.cc.Invoke(ctx, "/sonr.node.ClientService/Fetch", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -86,8 +84,8 @@ func (c *clientServiceClient) Fetch(ctx context.Context, in *FetchRequest, opts 
 	return out, nil
 }
 
-func (c *clientServiceClient) Share(ctx context.Context, in *ShareRequest, opts ...grpc.CallOption) (*ShareResponse, error) {
-	out := new(ShareResponse)
+func (c *clientServiceClient) Share(ctx context.Context, in *api.ShareRequest, opts ...grpc.CallOption) (*api.ShareResponse, error) {
+	out := new(api.ShareResponse)
 	err := c.cc.Invoke(ctx, "/sonr.node.ClientService/Share", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -95,8 +93,8 @@ func (c *clientServiceClient) Share(ctx context.Context, in *ShareRequest, opts 
 	return out, nil
 }
 
-func (c *clientServiceClient) Respond(ctx context.Context, in *RespondRequest, opts ...grpc.CallOption) (*RespondResponse, error) {
-	out := new(RespondResponse)
+func (c *clientServiceClient) Respond(ctx context.Context, in *api.RespondRequest, opts ...grpc.CallOption) (*api.RespondResponse, error) {
+	out := new(api.RespondResponse)
 	err := c.cc.Invoke(ctx, "/sonr.node.ClientService/Respond", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -104,18 +102,9 @@ func (c *clientServiceClient) Respond(ctx context.Context, in *RespondRequest, o
 	return out, nil
 }
 
-func (c *clientServiceClient) Search(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SearchResponse, error) {
-	out := new(SearchResponse)
+func (c *clientServiceClient) Search(ctx context.Context, in *api.SearchRequest, opts ...grpc.CallOption) (*api.SearchResponse, error) {
+	out := new(api.SearchResponse)
 	err := c.cc.Invoke(ctx, "/sonr.node.ClientService/Search", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *clientServiceClient) Stat(ctx context.Context, in *StatRequest, opts ...grpc.CallOption) (*StatResponse, error) {
-	out := new(StatResponse)
-	err := c.cc.Invoke(ctx, "/sonr.node.ClientService/Stat", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -138,7 +127,7 @@ func (c *clientServiceClient) OnLobbyRefresh(ctx context.Context, in *Empty, opt
 }
 
 type ClientService_OnLobbyRefreshClient interface {
-	Recv() (*common.RefreshEvent, error)
+	Recv() (*api.RefreshEvent, error)
 	grpc.ClientStream
 }
 
@@ -146,8 +135,8 @@ type clientServiceOnLobbyRefreshClient struct {
 	grpc.ClientStream
 }
 
-func (x *clientServiceOnLobbyRefreshClient) Recv() (*common.RefreshEvent, error) {
-	m := new(common.RefreshEvent)
+func (x *clientServiceOnLobbyRefreshClient) Recv() (*api.RefreshEvent, error) {
+	m := new(api.RefreshEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -170,7 +159,7 @@ func (c *clientServiceClient) OnMailboxMessage(ctx context.Context, in *Empty, o
 }
 
 type ClientService_OnMailboxMessageClient interface {
-	Recv() (*common.MailboxEvent, error)
+	Recv() (*api.MailboxEvent, error)
 	grpc.ClientStream
 }
 
@@ -178,8 +167,8 @@ type clientServiceOnMailboxMessageClient struct {
 	grpc.ClientStream
 }
 
-func (x *clientServiceOnMailboxMessageClient) Recv() (*common.MailboxEvent, error) {
-	m := new(common.MailboxEvent)
+func (x *clientServiceOnMailboxMessageClient) Recv() (*api.MailboxEvent, error) {
+	m := new(api.MailboxEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -202,7 +191,7 @@ func (c *clientServiceClient) OnTransferAccepted(ctx context.Context, in *Empty,
 }
 
 type ClientService_OnTransferAcceptedClient interface {
-	Recv() (*common.DecisionEvent, error)
+	Recv() (*api.DecisionEvent, error)
 	grpc.ClientStream
 }
 
@@ -210,8 +199,8 @@ type clientServiceOnTransferAcceptedClient struct {
 	grpc.ClientStream
 }
 
-func (x *clientServiceOnTransferAcceptedClient) Recv() (*common.DecisionEvent, error) {
-	m := new(common.DecisionEvent)
+func (x *clientServiceOnTransferAcceptedClient) Recv() (*api.DecisionEvent, error) {
+	m := new(api.DecisionEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -234,7 +223,7 @@ func (c *clientServiceClient) OnTransferDeclined(ctx context.Context, in *Empty,
 }
 
 type ClientService_OnTransferDeclinedClient interface {
-	Recv() (*common.DecisionEvent, error)
+	Recv() (*api.DecisionEvent, error)
 	grpc.ClientStream
 }
 
@@ -242,8 +231,8 @@ type clientServiceOnTransferDeclinedClient struct {
 	grpc.ClientStream
 }
 
-func (x *clientServiceOnTransferDeclinedClient) Recv() (*common.DecisionEvent, error) {
-	m := new(common.DecisionEvent)
+func (x *clientServiceOnTransferDeclinedClient) Recv() (*api.DecisionEvent, error) {
+	m := new(api.DecisionEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -266,7 +255,7 @@ func (c *clientServiceClient) OnTransferInvite(ctx context.Context, in *Empty, o
 }
 
 type ClientService_OnTransferInviteClient interface {
-	Recv() (*common.InviteEvent, error)
+	Recv() (*api.InviteEvent, error)
 	grpc.ClientStream
 }
 
@@ -274,8 +263,8 @@ type clientServiceOnTransferInviteClient struct {
 	grpc.ClientStream
 }
 
-func (x *clientServiceOnTransferInviteClient) Recv() (*common.InviteEvent, error) {
-	m := new(common.InviteEvent)
+func (x *clientServiceOnTransferInviteClient) Recv() (*api.InviteEvent, error) {
+	m := new(api.InviteEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -298,7 +287,7 @@ func (c *clientServiceClient) OnTransferProgress(ctx context.Context, in *Empty,
 }
 
 type ClientService_OnTransferProgressClient interface {
-	Recv() (*common.ProgressEvent, error)
+	Recv() (*api.ProgressEvent, error)
 	grpc.ClientStream
 }
 
@@ -306,8 +295,8 @@ type clientServiceOnTransferProgressClient struct {
 	grpc.ClientStream
 }
 
-func (x *clientServiceOnTransferProgressClient) Recv() (*common.ProgressEvent, error) {
-	m := new(common.ProgressEvent)
+func (x *clientServiceOnTransferProgressClient) Recv() (*api.ProgressEvent, error) {
+	m := new(api.ProgressEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -330,7 +319,7 @@ func (c *clientServiceClient) OnTransferComplete(ctx context.Context, in *Empty,
 }
 
 type ClientService_OnTransferCompleteClient interface {
-	Recv() (*common.CompleteEvent, error)
+	Recv() (*api.CompleteEvent, error)
 	grpc.ClientStream
 }
 
@@ -338,8 +327,8 @@ type clientServiceOnTransferCompleteClient struct {
 	grpc.ClientStream
 }
 
-func (x *clientServiceOnTransferCompleteClient) Recv() (*common.CompleteEvent, error) {
-	m := new(common.CompleteEvent)
+func (x *clientServiceOnTransferCompleteClient) Recv() (*api.CompleteEvent, error) {
+	m := new(api.CompleteEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -352,19 +341,17 @@ func (x *clientServiceOnTransferCompleteClient) Recv() (*common.CompleteEvent, e
 type ClientServiceServer interface {
 	// Node Methods
 	// Signing Method Request for Data
-	Supply(context.Context, *SupplyRequest) (*SupplyResponse, error)
+	Supply(context.Context, *api.SupplyRequest) (*api.SupplyResponse, error)
 	// Verification Method Request for Signed Data
-	Edit(context.Context, *EditRequest) (*EditResponse, error)
+	Edit(context.Context, *api.EditRequest) (*api.EditResponse, error)
 	// Fetch method finds data from Key/Value store
-	Fetch(context.Context, *FetchRequest) (*FetchResponse, error)
+	Fetch(context.Context, *api.FetchRequest) (*api.FetchResponse, error)
 	// Respond Method to an Invite with Decision
-	Share(context.Context, *ShareRequest) (*ShareResponse, error)
+	Share(context.Context, *api.ShareRequest) (*api.ShareResponse, error)
 	// Respond Method to an Invite with Decision
-	Respond(context.Context, *RespondRequest) (*RespondResponse, error)
+	Respond(context.Context, *api.RespondRequest) (*api.RespondResponse, error)
 	// Search Method to find a Peer by SName or PeerID
-	Search(context.Context, *SearchRequest) (*SearchResponse, error)
-	// Stat Method returns the Node Stats
-	Stat(context.Context, *StatRequest) (*StatResponse, error)
+	Search(context.Context, *api.SearchRequest) (*api.SearchResponse, error)
 	// Events Streams
 	// Returns a stream of Lobby Refresh Events
 	OnLobbyRefresh(*Empty, ClientService_OnLobbyRefreshServer) error
@@ -387,26 +374,23 @@ type ClientServiceServer interface {
 type UnimplementedClientServiceServer struct {
 }
 
-func (UnimplementedClientServiceServer) Supply(context.Context, *SupplyRequest) (*SupplyResponse, error) {
+func (UnimplementedClientServiceServer) Supply(context.Context, *api.SupplyRequest) (*api.SupplyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Supply not implemented")
 }
-func (UnimplementedClientServiceServer) Edit(context.Context, *EditRequest) (*EditResponse, error) {
+func (UnimplementedClientServiceServer) Edit(context.Context, *api.EditRequest) (*api.EditResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Edit not implemented")
 }
-func (UnimplementedClientServiceServer) Fetch(context.Context, *FetchRequest) (*FetchResponse, error) {
+func (UnimplementedClientServiceServer) Fetch(context.Context, *api.FetchRequest) (*api.FetchResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Fetch not implemented")
 }
-func (UnimplementedClientServiceServer) Share(context.Context, *ShareRequest) (*ShareResponse, error) {
+func (UnimplementedClientServiceServer) Share(context.Context, *api.ShareRequest) (*api.ShareResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Share not implemented")
 }
-func (UnimplementedClientServiceServer) Respond(context.Context, *RespondRequest) (*RespondResponse, error) {
+func (UnimplementedClientServiceServer) Respond(context.Context, *api.RespondRequest) (*api.RespondResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Respond not implemented")
 }
-func (UnimplementedClientServiceServer) Search(context.Context, *SearchRequest) (*SearchResponse, error) {
+func (UnimplementedClientServiceServer) Search(context.Context, *api.SearchRequest) (*api.SearchResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Search not implemented")
-}
-func (UnimplementedClientServiceServer) Stat(context.Context, *StatRequest) (*StatResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Stat not implemented")
 }
 func (UnimplementedClientServiceServer) OnLobbyRefresh(*Empty, ClientService_OnLobbyRefreshServer) error {
 	return status.Errorf(codes.Unimplemented, "method OnLobbyRefresh not implemented")
@@ -443,7 +427,7 @@ func RegisterClientServiceServer(s grpc.ServiceRegistrar, srv ClientServiceServe
 }
 
 func _ClientService_Supply_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SupplyRequest)
+	in := new(api.SupplyRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -455,13 +439,13 @@ func _ClientService_Supply_Handler(srv interface{}, ctx context.Context, dec fun
 		FullMethod: "/sonr.node.ClientService/Supply",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ClientServiceServer).Supply(ctx, req.(*SupplyRequest))
+		return srv.(ClientServiceServer).Supply(ctx, req.(*api.SupplyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _ClientService_Edit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(EditRequest)
+	in := new(api.EditRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -473,13 +457,13 @@ func _ClientService_Edit_Handler(srv interface{}, ctx context.Context, dec func(
 		FullMethod: "/sonr.node.ClientService/Edit",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ClientServiceServer).Edit(ctx, req.(*EditRequest))
+		return srv.(ClientServiceServer).Edit(ctx, req.(*api.EditRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _ClientService_Fetch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(FetchRequest)
+	in := new(api.FetchRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -491,13 +475,13 @@ func _ClientService_Fetch_Handler(srv interface{}, ctx context.Context, dec func
 		FullMethod: "/sonr.node.ClientService/Fetch",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ClientServiceServer).Fetch(ctx, req.(*FetchRequest))
+		return srv.(ClientServiceServer).Fetch(ctx, req.(*api.FetchRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _ClientService_Share_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ShareRequest)
+	in := new(api.ShareRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -509,13 +493,13 @@ func _ClientService_Share_Handler(srv interface{}, ctx context.Context, dec func
 		FullMethod: "/sonr.node.ClientService/Share",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ClientServiceServer).Share(ctx, req.(*ShareRequest))
+		return srv.(ClientServiceServer).Share(ctx, req.(*api.ShareRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _ClientService_Respond_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RespondRequest)
+	in := new(api.RespondRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -527,13 +511,13 @@ func _ClientService_Respond_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: "/sonr.node.ClientService/Respond",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ClientServiceServer).Respond(ctx, req.(*RespondRequest))
+		return srv.(ClientServiceServer).Respond(ctx, req.(*api.RespondRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _ClientService_Search_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SearchRequest)
+	in := new(api.SearchRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -545,25 +529,7 @@ func _ClientService_Search_Handler(srv interface{}, ctx context.Context, dec fun
 		FullMethod: "/sonr.node.ClientService/Search",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ClientServiceServer).Search(ctx, req.(*SearchRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ClientService_Stat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(StatRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ClientServiceServer).Stat(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/sonr.node.ClientService/Stat",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ClientServiceServer).Stat(ctx, req.(*StatRequest))
+		return srv.(ClientServiceServer).Search(ctx, req.(*api.SearchRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -577,7 +543,7 @@ func _ClientService_OnLobbyRefresh_Handler(srv interface{}, stream grpc.ServerSt
 }
 
 type ClientService_OnLobbyRefreshServer interface {
-	Send(*common.RefreshEvent) error
+	Send(*api.RefreshEvent) error
 	grpc.ServerStream
 }
 
@@ -585,7 +551,7 @@ type clientServiceOnLobbyRefreshServer struct {
 	grpc.ServerStream
 }
 
-func (x *clientServiceOnLobbyRefreshServer) Send(m *common.RefreshEvent) error {
+func (x *clientServiceOnLobbyRefreshServer) Send(m *api.RefreshEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
@@ -598,7 +564,7 @@ func _ClientService_OnMailboxMessage_Handler(srv interface{}, stream grpc.Server
 }
 
 type ClientService_OnMailboxMessageServer interface {
-	Send(*common.MailboxEvent) error
+	Send(*api.MailboxEvent) error
 	grpc.ServerStream
 }
 
@@ -606,7 +572,7 @@ type clientServiceOnMailboxMessageServer struct {
 	grpc.ServerStream
 }
 
-func (x *clientServiceOnMailboxMessageServer) Send(m *common.MailboxEvent) error {
+func (x *clientServiceOnMailboxMessageServer) Send(m *api.MailboxEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
@@ -619,7 +585,7 @@ func _ClientService_OnTransferAccepted_Handler(srv interface{}, stream grpc.Serv
 }
 
 type ClientService_OnTransferAcceptedServer interface {
-	Send(*common.DecisionEvent) error
+	Send(*api.DecisionEvent) error
 	grpc.ServerStream
 }
 
@@ -627,7 +593,7 @@ type clientServiceOnTransferAcceptedServer struct {
 	grpc.ServerStream
 }
 
-func (x *clientServiceOnTransferAcceptedServer) Send(m *common.DecisionEvent) error {
+func (x *clientServiceOnTransferAcceptedServer) Send(m *api.DecisionEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
@@ -640,7 +606,7 @@ func _ClientService_OnTransferDeclined_Handler(srv interface{}, stream grpc.Serv
 }
 
 type ClientService_OnTransferDeclinedServer interface {
-	Send(*common.DecisionEvent) error
+	Send(*api.DecisionEvent) error
 	grpc.ServerStream
 }
 
@@ -648,7 +614,7 @@ type clientServiceOnTransferDeclinedServer struct {
 	grpc.ServerStream
 }
 
-func (x *clientServiceOnTransferDeclinedServer) Send(m *common.DecisionEvent) error {
+func (x *clientServiceOnTransferDeclinedServer) Send(m *api.DecisionEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
@@ -661,7 +627,7 @@ func _ClientService_OnTransferInvite_Handler(srv interface{}, stream grpc.Server
 }
 
 type ClientService_OnTransferInviteServer interface {
-	Send(*common.InviteEvent) error
+	Send(*api.InviteEvent) error
 	grpc.ServerStream
 }
 
@@ -669,7 +635,7 @@ type clientServiceOnTransferInviteServer struct {
 	grpc.ServerStream
 }
 
-func (x *clientServiceOnTransferInviteServer) Send(m *common.InviteEvent) error {
+func (x *clientServiceOnTransferInviteServer) Send(m *api.InviteEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
@@ -682,7 +648,7 @@ func _ClientService_OnTransferProgress_Handler(srv interface{}, stream grpc.Serv
 }
 
 type ClientService_OnTransferProgressServer interface {
-	Send(*common.ProgressEvent) error
+	Send(*api.ProgressEvent) error
 	grpc.ServerStream
 }
 
@@ -690,7 +656,7 @@ type clientServiceOnTransferProgressServer struct {
 	grpc.ServerStream
 }
 
-func (x *clientServiceOnTransferProgressServer) Send(m *common.ProgressEvent) error {
+func (x *clientServiceOnTransferProgressServer) Send(m *api.ProgressEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
@@ -703,7 +669,7 @@ func _ClientService_OnTransferComplete_Handler(srv interface{}, stream grpc.Serv
 }
 
 type ClientService_OnTransferCompleteServer interface {
-	Send(*common.CompleteEvent) error
+	Send(*api.CompleteEvent) error
 	grpc.ServerStream
 }
 
@@ -711,7 +677,7 @@ type clientServiceOnTransferCompleteServer struct {
 	grpc.ServerStream
 }
 
-func (x *clientServiceOnTransferCompleteServer) Send(m *common.CompleteEvent) error {
+func (x *clientServiceOnTransferCompleteServer) Send(m *api.CompleteEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
@@ -745,10 +711,6 @@ var ClientService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Search",
 			Handler:    _ClientService_Search_Handler,
-		},
-		{
-			MethodName: "Stat",
-			Handler:    _ClientService_Stat_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

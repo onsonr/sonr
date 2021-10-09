@@ -1,9 +1,9 @@
 syntax = "proto3";
 
-package sonr.core;
+package sonr.api;
 import "proto/common/core.proto";
 import "proto/common/data.proto";
-option go_package = "github.com/sonr-io/core/internal/common";
+option go_package = "github.com/sonr-io/core/internal/api";
 
 // DecisionEvent is emitted when a decision is made by Peer.
 message DecisionEvent {
@@ -46,7 +46,7 @@ message ProgressEvent {
 // Message Sent after Completed Transfer
 message CompleteEvent {
   Direction direction = 1; // Transfer Direction
-  Payload payload = 2;     // Transfer Data
+  sonr.core.Payload payload = 2;     // Transfer Data
   sonr.core.Peer from = 3; // Peer that sent the Complete Event
   sonr.core.Peer to = 4;   // Peer that received the Complete Event
   int64 createdAt = 5;     // Transfer Created Timestamp

@@ -115,8 +115,9 @@ func (p *ExchangeProtocol) Update(peer *common.Peer) error {
 
 // Verify method uses resolver to check if Peer is registered,
 // returns true if Peer is registered
-func (p *ExchangeProtocol) Verify(sname string) (bool, *internet.HDNSNameRecord, error) {
+func (p *ExchangeProtocol) Verify(sname string) (bool, internet.Record, error) {
 	// Create Context
+	empty := internet.Record{}
 	ctx, cancel := context.WithTimeout(p.ctx, time.Second*5)
 	defer cancel()
 
@@ -124,15 +125,37 @@ func (p *ExchangeProtocol) Verify(sname string) (bool, *internet.HDNSNameRecord,
 	rec, err := p.resolver.LookupTXT(ctx, sname)
 	if err != nil {
 		logger.Error("Failed to resolve DNS record for SName", err)
-		return false, nil, err
+		return false, empty, err
 	}
 
 	// Check peer record
-	pubKey := rec.PubKey
+	pubKey, err := rec.PubKey()
+	if err != nil {
+		logger.Error("Failed to get public key from record", err)
+		return false, rec, err
+	}
+
 	compId, err := peer.IDFromPublicKey(pubKey)
 	if err != nil {
 		logger.Error("Failed to extract PeerID from PublicKey", err)
-		return false, nil, err
+		return false, rec, err
 	}
-	return rec.PeerID() == compId, rec, nil
+
+	ok, err := compareRecordtoID(rec, compId)
+	if err != nil {
+		logger.Error("Failed to compare PeerID to record", err)
+		return false, rec, err
+	}
+	return ok, rec, nil
+}
+
+func compareRecordtoID(r internet.Record, target peer.ID) (bool, error) {
+
+	// Check peer record
+	pid, err := r.PeerID()
+	if err != nil {
+		logger.Error("Failed to extract PeerID from PublicKey", err)
+		return false, err
+	}
+	return pid == target, nil
 }

@@ -20,8 +20,9 @@ func TestLookup(t *testing.T) {
 	}
 
 	// Verify result
-	println("[SUCCESS]")
+	println("[SUCCESS] - Test DNS Lookup")
 	println(fmt.Sprintf("\t host: %s", testVal))
-	println(fmt.Sprintf("\t value: %s \n", rec.Record))
+	println("\t value: %s \n")
+	rec.ToPrint()
 	t.Log(rec)
 }

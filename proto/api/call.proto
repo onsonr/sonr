@@ -1,10 +1,10 @@
 /// This file has messages for describing a API Request/Responses with RPC.
 syntax = "proto3";
 
-package sonr.node;
+package sonr.api;
 import "proto/common/core.proto";
 import "proto/common/data.proto";
-option go_package = "github.com/sonr-io/core/internal/node";
+option go_package = "github.com/sonr-io/core/internal/api";
 
 // (Highway) AuthorizeRequest is Message for Verifying Request (Hmac Sha256)
 message AuthorizeRequest {
@@ -209,34 +209,4 @@ message SearchResponse {
   sonr.core.Peer peer = 3; // Peer Data
   string peerId = 4;       // Peer ID
   string sName = 5;        // SName
-}
-
-// (Client) StatRequest is Message for Searching for Peer
-message StatRequest {}
-
-// (Client) StatResponse is a response to StatRequest that displays Node Stats
-message StatResponse {
-  bool success = 1;              // Success
-  string error = 2;              // Error Message
-  string sName = 3;              // SName
-  sonr.core.Profile profile = 4; // Profile Data
-  Device device = 5;             // Device Data
-  Network network = 6;           // Network Data
-
-  // Device Stats
-  message Device {
-    string id = 1;      // Device ID
-    string name = 2;    // Device Name
-    string os = 3;      // Operating System
-    string arch = 4;    // Architecture
-    bool isDesktop = 5; // Desktop Device
-    bool isMobile = 6;  // Mobile Device
-  }
-
-  // Network Stats
-  message Network {
-    string publicKey = 1; // Public Key
-    string peerID = 2;    // Peer ID
-    string multiaddr = 3; // Multi Address
-  }
 }

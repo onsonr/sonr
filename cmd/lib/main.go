@@ -6,6 +6,7 @@ import (
 	"net"
 
 	"github.com/kataras/golog"
+	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/node"
@@ -40,7 +41,7 @@ func Start(reqBuf []byte) {
 	}
 
 	// Unmarshal request
-	req := &node.InitializeRequest{}
+	req := &api.InitializeRequest{}
 	err = proto.Unmarshal(reqBuf, req)
 	if err != nil {
 		golog.Fatal("Failed to Unmarshal InitializeRequest", err)
@@ -85,9 +86,9 @@ func Stop() {
 }
 
 // parseInitializeRequest parses the given buffer and returns the proto and fsOptions.
-func parseInitializeRequest(buf []byte) (bool, *node.InitializeRequest, []device.FSOption, error) {
+func parseInitializeRequest(buf []byte) (bool, *api.InitializeRequest, []device.FSOption, error) {
 	// Unmarshal request
-	req := &node.InitializeRequest{}
+	req := &api.InitializeRequest{}
 	err := proto.Unmarshal(buf, req)
 	if err != nil {
 		return false, nil, nil, err

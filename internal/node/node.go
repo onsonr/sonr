@@ -3,8 +3,11 @@ package node
 import (
 	"container/list"
 	"context"
+	"errors"
 	"strings"
 
+	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/host"
@@ -26,9 +29,6 @@ type Node struct {
 	// Properties
 	ctx context.Context
 
-	// Node Options
-	options nodeOptions
-
 	// Persistent Database
 	store *bolt.DB
 
@@ -40,26 +40,26 @@ type Node struct {
 
 	// Channels
 	// TransferProtocol - decisionEvents
-	decisionEvents chan *common.DecisionEvent
+	decisionEvents chan *api.DecisionEvent
 
 	// LobbyProtocol - refreshEvents
-	refreshEvents chan *common.RefreshEvent
+	refreshEvents chan *api.RefreshEvent
 
 	// MailboxProtocol - mailEvents
-	mailEvents chan *common.MailboxEvent
+	mailEvents chan *api.MailboxEvent
 
 	// TransferProtocol - inviteEvents
-	inviteEvents chan *common.InviteEvent
+	inviteEvents chan *api.InviteEvent
 
 	// TransferProtocol - progressEvents
-	progressEvents chan *common.ProgressEvent
+	progressEvents chan *api.ProgressEvent
 
 	// TransferProtocol - completeEvents
-	completeEvents chan *common.CompleteEvent
+	completeEvents chan *api.CompleteEvent
 }
 
 // NewNode Creates a node with its implemented protocols
-func NewNode(ctx context.Context, options ...NodeOption) (*Node, *InitializeResponse, error) {
+func NewNode(ctx context.Context, options ...NodeOption) (*Node, *api.InitializeResponse, error) {
 	// Set Node Options
 	opts := defaultNodeOptions()
 	for _, opt := range options {
@@ -75,40 +75,38 @@ func NewNode(ctx context.Context, options ...NodeOption) (*Node, *InitializeResp
 
 	// Create Node
 	node := &Node{
-		Emitter: opts.emitter,
-		host:    host,
-		ctx:     ctx,
-		queue:   list.New(),
-		// listener:       l,
-		decisionEvents: make(chan *common.DecisionEvent),
-		refreshEvents:  make(chan *common.RefreshEvent),
-		inviteEvents:   make(chan *common.InviteEvent),
-		mailEvents:     make(chan *common.MailboxEvent),
-		progressEvents: make(chan *common.ProgressEvent),
-		completeEvents: make(chan *common.CompleteEvent),
+		Emitter:        opts.emitter,
+		host:           host,
+		ctx:            ctx,
+		queue:          list.New(),
+		decisionEvents: make(chan *api.DecisionEvent),
+		refreshEvents:  make(chan *api.RefreshEvent),
+		inviteEvents:   make(chan *api.InviteEvent),
+		mailEvents:     make(chan *api.MailboxEvent),
+		progressEvents: make(chan *api.ProgressEvent),
+		completeEvents: make(chan *api.CompleteEvent),
 	}
 
 	// Initialize Node by Type
-	err = opts.Apply(ctx, node)
+	node, err = opts.Apply(ctx, node)
 	if err != nil {
 		logger.Error("Failed to apply options", err)
 		return nil, nil, err
 	}
 
-	// Open Database
-	err = node.openStore(ctx, host, node.Emitter)
-	if err != nil {
-		logger.Error("Failed to open database", err)
-		return nil, nil, err
-	}
-
 	// Begin Background Tasks
 	go node.Serve(ctx)
-	return node, node.newInitResponse(nil), nil
+	go node.stub.Serve(ctx)
+	return node, api.NewInitialzeSuccess(node.Profile), nil
 }
 
 // Close closes the node
 func (n *Node) Close() {
+	// Close Stub
+	if err := n.stub.Close(); err != nil {
+		logger.Error("Failed to close host", err)
+	}
+
 	// Close Host
 	if err := n.host.Close(); err != nil {
 		logger.Error("Failed to close host", err)
@@ -184,81 +182,115 @@ func (n *Node) Supply(paths []string) error {
 	return nil
 }
 
-// Stat returns the Node info as StatResponse
-func (n *Node) Stat() (*StatResponse, error) {
-	// Define Error StatResponse
-	sendErr := func(err error) (*StatResponse, error) {
-		logger.Error("Failed to get Host Stat ", err)
-		return &StatResponse{
-			Success: false,
-			Error:   err.Error(),
-		}, err
-	}
-
-	// Get Profile
-	profile, err := n.Profile()
-	if err != nil {
-		return sendErr(err)
-	}
-
-	// Get Host Stats
-	hStat, err := n.host.Stat()
-	if err != nil {
-		return sendErr(err)
-	}
-
-	// Get Device Stat
-	dStat, err := device.Stat()
-	if err != nil {
-		return sendErr(err)
-	}
-
-	// Return StatResponse
-	return &StatResponse{
-		SName:   profile.SName,
-		Profile: profile,
-		Network: &StatResponse_Network{
-			PeerID:    hStat.PeerID,
-			Multiaddr: hStat.MultAddr,
-		},
-		Device: &StatResponse_Device{
-			Id:        dStat.Id,
-			Name:      dStat.HostName,
-			Os:        dStat.Os,
-			Arch:      dStat.Arch,
-			IsDesktop: dStat.IsDesktop,
-			IsMobile:  dStat.IsMobile,
-		},
-	}, nil
-}
-
 // Serve handles the emitter events.
 func (n *Node) Serve(ctx context.Context) {
 	for {
 		select {
 		// LobbyProtocol: ListRefresh
 		case e := <-n.On(lobby.Event_LIST_REFRESH):
-			event := e.Args[0].(*common.RefreshEvent)
+			event := e.Args[0].(*api.RefreshEvent)
 			n.refreshEvents <- event
 		// TransferProtocol: Invited
 		case e := <-n.On(transfer.Event_INVITED):
-			event := e.Args[0].(*common.InviteEvent)
+			event := e.Args[0].(*api.InviteEvent)
 			n.inviteEvents <- event
 		// TransferProtocol: Responded
 		case e := <-n.On(transfer.Event_RESPONDED):
-			event := e.Args[0].(*common.DecisionEvent)
+			event := e.Args[0].(*api.DecisionEvent)
 			n.decisionEvents <- event
 		// TransferProtocol: Progress
 		case e := <-n.On(transfer.Event_PROGRESS):
-			event := e.Args[0].(*common.ProgressEvent)
+			event := e.Args[0].(*api.ProgressEvent)
 			n.progressEvents <- event
 		// TransferProtocol: Completed
 		case e := <-n.On(transfer.Event_COMPLETED):
-			event := e.Args[0].(*common.CompleteEvent)
+			event := e.Args[0].(*api.CompleteEvent)
 			n.completeEvents <- event
 		case <-ctx.Done():
 			n.Close()
 			return
 		}
 	}
+}
+
+// Share a peer to have a transfer
+func (n *Node) NewRequest(to *common.Peer) (peer.ID, *transfer.InviteRequest, error) {
+	// Fetch Element from Queue
+	elem := n.queue.Front()
+	if elem != nil {
+		// Get Payload
+		payload := n.queue.Remove(elem).(*common.Payload)
+
+		// Create New ID for Invite
+		id, err := device.KeyChain.CreateUUID()
+		if err != nil {
+			logger.Child("Util").Error("Failed to create new id for Shared Invite", err)
+			return "", nil, err
+		}
+
+		// Create new Metadata
+		meta, err := device.KeyChain.CreateMetadata(n.host.ID())
+		if err != nil {
+			logger.Child("Util").Error("Failed to create new metadata for Shared Invite", err)
+			return "", nil, err
+		}
+
+		// Fetch User Peer
+		from, err := n.Peer()
+		if err != nil {
+			logger.Child("Util").Error("Failed to get Node Peer Object", err)
+			return "", nil, err
+		}
+
+		// Create Invite Request
+		req := &transfer.InviteRequest{
+			Payload:  payload,
+			Metadata: api.SignedMetadataToProto(meta),
+			To:       to,
+			From:     from,
+			Uuid:     api.SignedUUIDToProto(id),
+		}
+
+		// Fetch Peer ID from Public Key
+		toId, err := to.PeerID()
+		if err != nil {
+			logger.Child("Util").Error("Failed to fetch peer id from public key", err)
+			return "", nil, err
+		}
+		return toId, req, nil
+	}
+	return "", nil, errors.New("No items in Transfer Queue.")
+}
+
+// Respond to an invite request
+func (n *Node) NewResponse(decs bool, to *common.Peer) (peer.ID, *transfer.InviteResponse, error) {
+	// Get Peer
+	from, err := n.Peer()
+	if err != nil {
+		logger.Child("Util").Error("Failed to get Node Peer Object", err)
+		return "", nil, err
+	}
+
+	// Create new Metadata
+	meta, err := device.KeyChain.CreateMetadata(n.host.ID())
+	if err != nil {
+		logger.Child("Util").Error("Failed to create new metadata for Shared Invite", err)
+		return "", nil, err
+	}
+
+	// Create Invite Response
+	resp := &transfer.InviteResponse{
+		Decision: decs,
+		Metadata: api.SignedMetadataToProto(meta),
+		From:     from,
+		To:       to,
+	}
+
+	// Fetch Peer ID from Public Key
+	toId, err := to.PeerID()
+	if err != nil {
+		logger.Child("Util").Error("Failed to fetch peer id from public key", err)
+		return "", nil, err
+	}
+	return toId, resp, nil
 }

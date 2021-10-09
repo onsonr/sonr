@@ -30,8 +30,12 @@ BIND_ANDROID_ARTIFACT= $(BIND_DIR_ANDROID)/io.sonr.core.aar
 # @ Proto Directories
 PROTO_DIR_DART=$(SONR_ROOT_DIR)/mobile/lib/src
 PROTO_LIST_ALL=${ROOT_DIR}/proto/**/*.proto
-PROTO_LIST_CLIENT=${ROOT_DIR}/proto/node/*.proto
+PROTO_LIST_API=${ROOT_DIR}/proto/api/*.proto
 PROTO_LIST_COMMON=${ROOT_DIR}/proto/common/*.proto
+PROTO_FILE_NODE_CLIENT=${ROOT_DIR}/proto/node/client.proto
+PROTO_FILE_NODE_HIGHWAY=${ROOT_DIR}/proto/node/highway.proto
+PROTO_LIST_PROTOCOLS=${ROOT_DIR}/proto/protocols/*.proto
+PROTO_LIST_WALLET=${ROOT_DIR}/proto/wallet/*.proto
 MODULE_NAME=github.com/sonr-io/core
 GO_OPT_FLAG=--go_opt=module=${MODULE_NAME}
 GRPC_OPT_FLAG=--go-grpc_opt=module=${MODULE_NAME}
@@ -99,11 +103,13 @@ protobuf:
 	@echo "----"
 	@echo "Generating Protobuf Go code..."
 	@protoc $(PROTO_LIST_ALL) --proto_path=$(ROOT_DIR) $(PROTO_GEN_GO) $(GO_OPT_FLAG)
-	@echo "Generating Protobuf Go RPC code..."
 	@protoc $(PROTO_LIST_ALL) --proto_path=$(ROOT_DIR) $(PROTO_GEN_RPC) $(GRPC_OPT_FLAG)
+
 	@echo "Generating Protobuf Dart code..."
-	@protoc $(PROTO_LIST_CLIENT) --proto_path=$(ROOT_DIR) $(PROTO_GEN_DART)
+	@protoc $(PROTO_LIST_API) --proto_path=$(ROOT_DIR) $(PROTO_GEN_DART)
 	@protoc $(PROTO_LIST_COMMON) --proto_path=$(ROOT_DIR) $(PROTO_GEN_DART)
+	@protoc $(PROTO_FILE_NODE_CLIENT) --proto_path=$(ROOT_DIR) $(PROTO_GEN_DART)
+
 	@echo "Generating Protobuf Docs..."
 	@protoc $(PROTO_LIST_ALL) --proto_path=$(ROOT_DIR) $(PROTO_GEN_DOCS)
 	@echo "----"

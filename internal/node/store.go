@@ -7,9 +7,7 @@ import (
 
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
-	"github.com/sonr-io/core/internal/host"
 
-	"github.com/sonr-io/core/tools/state"
 	bolt "go.etcd.io/bbolt"
 	"google.golang.org/protobuf/proto"
 )
@@ -29,7 +27,7 @@ var (
 )
 
 // openStore creates a new Store instance for Node
-func (n *Node) openStore(ctx context.Context, h *host.SNRHost, em *state.Emitter) error {
+func (n *Node) openStore(ctx context.Context, profileBuf []byte) error {
 	path, err := device.NewDatabasePath("sonr-bolt.db")
 	if err != nil {
 		logger.Child("Store").Error("Failed to get DB Path", err)
@@ -46,7 +44,7 @@ func (n *Node) openStore(ctx context.Context, h *host.SNRHost, em *state.Emitter
 	n.store = db
 
 	// Create Profile Bucket
-	err = n.createBucket(USER_BUCKET, PROFILE_KEY, n.options.profileBuf)
+	err = n.createBucket(USER_BUCKET, PROFILE_KEY, profileBuf)
 	if err != nil {
 		return err
 	}

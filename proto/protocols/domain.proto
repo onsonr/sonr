@@ -17,39 +17,4 @@ message AuthorizeResponse {
   map<string,string> records = 3; // Updated Domain TXT Records
 }
 
-// LinkRequest handles Linked Devices on DNS Table
-message LinkRequest {
-  string sName = 1;    // SName combined with Device ID and Hashed
-  string mnemonic = 2; // Mnemonic Hashed with public key for fingerprint
-  string deviceId = 3; // Device ID
-  Method method = 4; // Method for Linking
 
-  // Method for Linking
-  enum Method {
-    ADD = 0; // Add Device ID to SName on DNS Table
-    REMOVE = 1; // Remove Device ID from SName on DNS Table
-  }
-}
-
-// LinkResponse is Message for Linking Response (Hmac Sha256)
-message LinkResponse {
-    bool success = 1; // If Values were Signed
-    string error = 2; // Error Message
-    map<string,string> records = 3; // Updated Domain TXT Records
-}
-
-// RegisterRequest is Message for Signing Request (Hmac Sha256)
-message RegisterRequest {
-  string sName = 1;    // SName combined with Device ID and Hashed
-  string mnemonic = 2; // Mnemonic Hashed with private key for fingerprint
-  repeated string deviceIds = 3; // Device IDs for SName
-}
-
-// RegisterResponse is Message for Signing Response (Hmac Sha256)
-message RegisterResponse {
-  bool success = 1;            // If Values were Signed
-  map<string,string> records = 2; // Signed Domain TXT Records
-  string publicKey = 3;     // Base64 Encoded Public Key
-  string givenSName = 4;    // Provided SName
-  string givenMnemonic = 5; // Provided Mnemonic
-}

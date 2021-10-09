@@ -8,6 +8,7 @@ import (
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-msgio"
+	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/tools/config"
@@ -146,7 +147,7 @@ func (s Session) NewReader(index int, em *state.Emitter) (*itemReader, error) {
 // Returns Progress of File, Given the written number of bytes
 func (p *itemReader) Progress(i int) {
 	// Create Progress Event
-	event := &common.ProgressEvent{
+	event := &api.ProgressEvent{
 		Progress: (float64(i) / float64(p.size)),
 		Current:  int32(p.index),
 		Total:    int32(p.count),

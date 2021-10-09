@@ -2,8 +2,8 @@
 syntax = "proto3";
 
 package sonr.node;
-import "proto/node/api.proto";
-import "proto/common/event.proto";
+import "proto/api/call.proto";
+import "proto/api/event.proto";
 option go_package = "github.com/sonr-io/core/internal/node";
 
 message Empty {}
@@ -12,45 +12,42 @@ message Empty {}
 service ClientService {
   // Node Methods
   // Signing Method Request for Data
-  rpc Supply(SupplyRequest) returns (SupplyResponse) {}
+  rpc Supply(sonr.api.SupplyRequest) returns (sonr.api.SupplyResponse) {}
 
   // Verification Method Request for Signed Data
-  rpc Edit(EditRequest) returns (EditResponse) {}
+  rpc Edit(sonr.api.EditRequest) returns (sonr.api.EditResponse) {}
 
   // Fetch method finds data from Key/Value store
-  rpc Fetch(FetchRequest) returns (FetchResponse) {}
+  rpc Fetch(sonr.api.FetchRequest) returns (sonr.api.FetchResponse) {}
 
   // Respond Method to an Invite with Decision
-  rpc Share(ShareRequest) returns (ShareResponse) {}
+  rpc Share(sonr.api.ShareRequest) returns (sonr.api.ShareResponse) {}
 
   // Respond Method to an Invite with Decision
-  rpc Respond(RespondRequest) returns (RespondResponse) {}
+  rpc Respond(sonr.api.RespondRequest) returns (sonr.api.RespondResponse) {}
 
   // Search Method to find a Peer by SName or PeerID
-  rpc Search(SearchRequest) returns (SearchResponse) {}
-
-  // Stat Method returns the Node Stats
-  rpc Stat(StatRequest) returns (StatResponse) {}
+  rpc Search(sonr.api.SearchRequest) returns (sonr.api.SearchResponse) {}
 
   // Events Streams
   // Returns a stream of Lobby Refresh Events
-  rpc OnLobbyRefresh(Empty) returns (stream sonr.core.RefreshEvent) {}
+  rpc OnLobbyRefresh(Empty) returns (stream sonr.api.RefreshEvent) {}
 
   // Returns a stream of Mailbox Message Events
-  rpc OnMailboxMessage(Empty) returns (stream sonr.core.MailboxEvent) {}
+  rpc OnMailboxMessage(Empty) returns (stream sonr.api.MailboxEvent) {}
 
   // Returns a stream of DecisionEvent's for Accepted Invites
-  rpc OnTransferAccepted(Empty) returns (stream sonr.core.DecisionEvent) {}
+  rpc OnTransferAccepted(Empty) returns (stream sonr.api.DecisionEvent) {}
 
   // Returns a stream of DecisionEvent's for Rejected Invites
-  rpc OnTransferDeclined(Empty) returns (stream sonr.core.DecisionEvent) {}
+  rpc OnTransferDeclined(Empty) returns (stream sonr.api.DecisionEvent) {}
 
   // Returns a stream of DecisionEvent's for Invites
-  rpc OnTransferInvite(Empty) returns (stream sonr.core.InviteEvent) {}
+  rpc OnTransferInvite(Empty) returns (stream sonr.api.InviteEvent) {}
 
   // Returns a stream of ProgressEvent's for Sessions
-  rpc OnTransferProgress(Empty) returns (stream sonr.core.ProgressEvent) {}
+  rpc OnTransferProgress(Empty) returns (stream sonr.api.ProgressEvent) {}
 
   // Returns a stream of Completed Transfers
-  rpc OnTransferComplete(Empty) returns (stream sonr.core.CompleteEvent) {}
+  rpc OnTransferComplete(Empty) returns (stream sonr.api.CompleteEvent) {}
 }

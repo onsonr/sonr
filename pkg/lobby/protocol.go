@@ -7,6 +7,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	ps "github.com/libp2p/go-libp2p-pubsub"
+	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/tools/state"
@@ -186,7 +187,7 @@ func (p *LobbyProtocol) pushRefresh(id peer.ID, peer *common.Peer) {
 	}
 
 	// Create RefreshEvent
-	event := &common.RefreshEvent{
+	event := &api.RefreshEvent{
 		Olc:      p.olc,
 		Peers:    peers,
 		Received: int64(time.Now().Unix()),
