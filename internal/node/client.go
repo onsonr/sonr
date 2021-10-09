@@ -2,7 +2,7 @@ package node
 
 import (
 	context "context"
-	"fmt"
+	"errors"
 	"net"
 	"strings"
 	"time"
@@ -47,6 +47,11 @@ type ClientNodeStub struct {
 
 // startClientService creates a new Client service stub for the node.
 func (n *Node) startClientService(ctx context.Context, olc string) (*ClientNodeStub, error) {
+	// Check for listener in Node options
+	if n.options.listener == nil {
+		return nil, errors.New("Listener was not set in nodeOptions")
+	}
+
 	// Set Transfer Protocol
 	transferProtocol, err := transfer.NewProtocol(ctx, n.host, n.Emitter)
 	if err != nil {
@@ -68,23 +73,16 @@ func (n *Node) startClientService(ctx context.Context, olc string) (*ClientNodeS
 		return nil, err
 	}
 
-	// Bind RPC Service
-	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", RPC_SERVER_PORT))
-	if err != nil {
-		logger.Child("Client").Error("Failed to bind to port", err)
-		return nil, err
-	}
-
 	// Create a new gRPC server
 	grpcServer := grpc.NewServer()
 	nrc := &ClientNodeStub{
 		grpcServer:       grpcServer,
-		listener:         listener,
 		ctx:              ctx,
 		Node:             n,
 		TransferProtocol: transferProtocol,
 		ExchangeProtocol: exchProtocol,
 		LobbyProtocol:    lobbyProtocol,
+		listener:         n.options.listener,
 	}
 
 	// Start Routines

@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"fmt"
+	"net"
 
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/internal/device"
@@ -9,6 +11,9 @@ import (
 	"github.com/sonr-io/core/tools/state"
 	"google.golang.org/protobuf/proto"
 )
+
+// RPC_SERVER_PORT is the port the RPC service listens on.
+const RPC_SERVER_PORT = 52006
 
 type SonrBin struct {
 	// Properties
@@ -30,17 +35,24 @@ func init() {
 // Start starts the host, node, and rpc service.
 func main() {
 	// Read Flag Values from Environment for Initialize Request
+	
+	// Open Listener on Port
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", RPC_SERVER_PORT))
+	if err != nil {
+		golog.Fatal("Failed to bind listener to port ", err)
+		return
+	}
 
 	// Initialize Device
 	ctx := context.Background()
 	emitter := state.NewEmitter(2048)
-	err := device.Init(false)
+	err = device.Init(false)
 	if err != nil {
 		golog.Fatal("Failed to initialize Device", err)
 	}
 
 	// Create Node
-	n, resp, err := node.NewNode(ctx, emitter, node.WithClient())
+	n, resp, err := node.NewNode(ctx, node.WithClient(), node.WithListener(listener))
 	if err != nil {
 		golog.Fatal("Failed to update Profile for Node", err)
 	}

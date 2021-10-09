@@ -18,7 +18,6 @@ import (
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/keychain"
-	"github.com/sonr-io/core/tools/internet"
 	net "github.com/sonr-io/core/tools/internet"
 	"github.com/sonr-io/core/tools/state"
 )
@@ -89,7 +88,7 @@ type hostOptions struct {
 }
 
 // defaultHostOptions returns the default host options.
-func defaultHostOptions(ctx context.Context, l *internet.TCPListener) hostOptions {
+func defaultHostOptions(ctx context.Context) hostOptions {
 	return hostOptions{
 		ctx:            ctx,
 		Connection:     common.Connection_WIFI,
@@ -100,7 +99,7 @@ func defaultHostOptions(ctx context.Context, l *internet.TCPListener) hostOption
 		Rendezvous:     "/sonr/rendevouz/0.9.2",
 		Interval:       time.Second * 5,
 		TTL:            time.Minute * 2,
-		listener:       l,
+		// listener:       l,
 	}
 }
 
@@ -131,11 +130,11 @@ func (ho hostOptions) Apply(em *state.Emitter, options ...HostOption) (*SNRHost,
 		mdnsPeerChan: make(chan peer.AddrInfo),
 	}
 
-	// Get MultiAddr from listener
-	hn.multiAddr, err = ho.listener.Multiaddr()
-	if err != nil {
-		return nil, errors.Wrap(err, "Failed to apply host options: MultiAddr")
-	}
+	// // Get MultiAddr from listener
+	// hn.multiAddr, err = ho.listener.Multiaddr()
+	// if err != nil {
+	// 	return nil, errors.Wrap(err, "Failed to apply host options: MultiAddr")
+	// }
 
 	// findPrivKey returns the private key for the host.
 	findPrivKey := func() (crypto.PrivKey, error) {

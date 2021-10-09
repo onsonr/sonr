@@ -14,11 +14,9 @@ import (
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/libp2p/go-msgio"
-	"github.com/multiformats/go-multiaddr"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/keychain"
-	"github.com/sonr-io/core/tools/internet"
 	"github.com/sonr-io/core/tools/state"
 	"google.golang.org/protobuf/proto"
 )
@@ -38,10 +36,10 @@ type SNRHost struct {
 	dhtPeerChan  <-chan peer.AddrInfo
 
 	// Properties
-	ctx       context.Context
-	opts      hostOptions
-	multiAddr multiaddr.Multiaddr
-	privKey   crypto.PrivKey
+	ctx  context.Context
+	opts hostOptions
+	//	multiAddr multiaddr.Multiaddr
+	privKey crypto.PrivKey
 
 	// State
 	emitter *state.Emitter
@@ -53,9 +51,9 @@ type SNRHost struct {
 }
 
 // NewHost creates a new host
-func NewHost(ctx context.Context, listener *internet.TCPListener, em *state.Emitter, options ...HostOption) (*SNRHost, error) {
+func NewHost(ctx context.Context, em *state.Emitter, options ...HostOption) (*SNRHost, error) {
 	// Initialize DHT
-	opts := defaultHostOptions(ctx, listener)
+	opts := defaultHostOptions(ctx)
 	hn, err := opts.Apply(em, options...)
 	if err != nil {
 		return nil, err

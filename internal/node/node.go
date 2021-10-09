@@ -4,7 +4,6 @@ import (
 	"container/list"
 	"context"
 	"strings"
-	"time"
 
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
@@ -12,7 +11,6 @@ import (
 	"github.com/sonr-io/core/internal/keychain"
 	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/transfer"
-	"github.com/sonr-io/core/tools/internet"
 	"github.com/sonr-io/core/tools/state"
 	bolt "go.etcd.io/bbolt"
 )
@@ -24,9 +22,6 @@ type Node struct {
 
 	// Host and context
 	host *host.SNRHost
-
-	// TCP Listener for incoming connections
-	listener *internet.TCPListener
 
 	// Properties
 	ctx context.Context
@@ -61,37 +56,34 @@ type Node struct {
 }
 
 // NewNode Creates a node with its implemented protocols
-func NewNode(ctx context.Context, em *state.Emitter, options ...NodeOption) (*Node, *InitializeResponse, error) {
+func NewNode(ctx context.Context, options ...NodeOption) (*Node, *InitializeResponse, error) {
 	// Set Node Options
 	opts := defaultNodeOptions()
 	for _, opt := range options {
 		opt(opts)
 	}
 
-	// Open TCP Port
-	l, err := internet.NewTCPListener(ctx)
-	if err != nil {
-		logger.Error("Failed to open TCP Port", err)
-		return nil, nil, err
-	}
+	// // Open TCP Port
+	// l, err := internet.NewTCPListener(ctx)
+	// if err != nil {
+	// 	logger.Error("Failed to open TCP Port", err)
+	// 	return nil, nil, err
+	// }
 
 	// Initialize Host
-	host, err := host.NewHost(ctx, l, em, host.WithConnection(opts.connection))
+	host, err := host.NewHost(ctx, opts.emitter, host.WithConnection(opts.connection))
 	if err != nil {
 		logger.Error("Failed to initialize host", err)
 		return nil, nil, err
 	}
 
-	// Wait for Host to be Ready
-	time.Sleep(250 * time.Millisecond)
-
 	// Create Node
 	node := &Node{
-		Emitter:        em,
-		host:           host,
-		ctx:            ctx,
-		queue:          list.New(),
-		listener:       l,
+		Emitter: opts.emitter,
+		host:    host,
+		ctx:     ctx,
+		queue:   list.New(),
+		// listener:       l,
 		decisionEvents: make(chan *common.DecisionEvent),
 		refreshEvents:  make(chan *common.RefreshEvent),
 		inviteEvents:   make(chan *common.InviteEvent),

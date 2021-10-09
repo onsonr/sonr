@@ -2,19 +2,22 @@ package lib
 
 import (
 	"context"
+	"fmt"
+	"net"
 
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/node"
-	"github.com/sonr-io/core/tools/state"
 	"google.golang.org/protobuf/proto"
 )
 
+// RPC_SERVER_PORT is the port the RPC service listens on.
+const RPC_SERVER_PORT = 52006
+
 type sonrLib struct {
 	// Properties
-	ctx     context.Context
-	node    *node.Node
-	emitter *state.Emitter
+	ctx  context.Context
+	node *node.Node
 }
 
 var (
@@ -30,11 +33,17 @@ func init() {
 // Start starts the host, node, and rpc service.
 func Start(reqBuf []byte) {
 	ctx := context.Background()
-	emitter := state.NewEmitter(2048)
+
+	// Open Listener on Port
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", RPC_SERVER_PORT))
+	if err != nil {
+		golog.Fatal("Failed to bind listener to port ", err)
+		return
+	}
 
 	// Unmarshal request
 	req := &node.InitializeRequest{}
-	err := proto.Unmarshal(reqBuf, req)
+	err = proto.Unmarshal(reqBuf, req)
 	if err != nil {
 		golog.Fatal("Failed to Unmarshal InitializeRequest", err)
 	}
@@ -46,16 +55,15 @@ func Start(reqBuf []byte) {
 	}
 
 	// Create Node
-	n, _, err := node.NewNode(ctx, emitter, node.WithRequest(req))
+	n, _, err := node.NewNode(ctx, node.WithRequest(req), node.WithListener(listener))
 	if err != nil {
 		golog.Fatal("Failed to Create new node", err)
 	}
 
 	// Set Lib
 	instance = &sonrLib{
-		ctx:     ctx,
-		emitter: emitter,
-		node:    n,
+		ctx:  ctx,
+		node: n,
 	}
 }
 

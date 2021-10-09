@@ -3,11 +3,13 @@ package node
 import (
 	"context"
 	"errors"
+	"net"
 	"os"
 
 	olc "github.com/google/open-location-code/go"
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/internal/common"
+	"github.com/sonr-io/core/tools/state"
 
 	"google.golang.org/protobuf/proto"
 )
@@ -90,7 +92,13 @@ func WithRequest(req *InitializeRequest) NodeOption {
 func WithClient() NodeOption {
 	return func(o nodeOptions) {
 		o.kind = NodeType_CLIENT
-		o.enableTCPPort = true
+	}
+}
+
+// WithEmitter sets the emitter for the node.
+func WithEmitter(e *state.Emitter) NodeOption {
+	return func(o nodeOptions) {
+		o.emitter = e
 	}
 }
 
@@ -98,26 +106,33 @@ func WithClient() NodeOption {
 func WithHighway() NodeOption {
 	return func(o nodeOptions) {
 		o.kind = NodeType_HIGHWAY
-		o.enableTCPPort = false
+	}
+}
+
+// WithListener sets the TCP Listener for Client stub
+func WithListener(l net.Listener) NodeOption {
+	return func(o nodeOptions) {
+		o.listener = l
 	}
 }
 
 // nodeOptions is a collection of options for the node.
 type nodeOptions struct {
-	enableTCPPort bool
-	kind          NodeType
-	profileBuf    []byte
-	connection    common.Connection
-	olc           string
+	emitter    *state.Emitter
+	kind       NodeType
+	listener   net.Listener
+	profileBuf []byte
+	connection common.Connection
+	olc        string
 }
 
 // defaultNodeOptions returns the default node options.
 func defaultNodeOptions() nodeOptions {
 	return nodeOptions{
-		enableTCPPort: true,
-		kind:          NodeType_CLIENT,
-		olc:           "global",
-		connection:    common.Connection_WIFI,
+		emitter:    state.NewEmitter(2048),
+		kind:       NodeType_CLIENT,
+		olc:        "global",
+		connection: common.Connection_WIFI,
 	}
 }
 

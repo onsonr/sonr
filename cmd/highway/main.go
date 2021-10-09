@@ -37,7 +37,7 @@ func main() {
 	}
 
 	// Create Node
-	n, resp, err := node.NewNode(ctx, emitter, node.WithHighway())
+	n, resp, err := node.NewNode(ctx,  node.WithHighway())
 	if err != nil {
 		golog.Fatal("Failed to update Profile for Node", err)
 	}
