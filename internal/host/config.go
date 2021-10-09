@@ -8,8 +8,12 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/crypto"
+	dscl "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/peer"
+	dsc "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
+	psub "github.com/libp2p/go-libp2p-pubsub"
+	mdns "github.com/libp2p/go-libp2p/p2p/discovery/mdns"
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
@@ -120,10 +124,11 @@ func (ho hostOptions) Apply(em *state.Emitter, options ...HostOption) (*SNRHost,
 
 	// Create the host.
 	hn := &SNRHost{
-		ctx:     ho.ctx,
-		opts:    ho,
-		status:  Status_IDLE,
-		emitter: em,
+		ctx:          ho.ctx,
+		opts:         ho,
+		status:       Status_IDLE,
+		emitter:      em,
+		mdnsPeerChan: make(chan peer.AddrInfo),
 	}
 
 	// Get MultiAddr from listener
@@ -153,4 +158,57 @@ func (ho hostOptions) Apply(em *state.Emitter, options ...HostOption) (*SNRHost,
 
 	// Set the private key.
 	return hn, nil
+}
+
+// checkUnknown is a Helper Method checks if Peer AddrInfo is Unknown
+func (hn *SNRHost) checkUnknown(pi peer.AddrInfo) bool {
+	// Iterate and Check
+	if len(hn.Peerstore().Addrs(pi.ID)) > 0 {
+		return false
+	}
+
+	// Add to PeerStore
+	hn.Peerstore().AddAddrs(pi.ID, pi.Addrs, hn.opts.TTL)
+	return true
+}
+
+// createDHTDiscovery is a Helper Method to initialize the DHT Discovery
+func (hn *SNRHost) createDHTDiscovery() error {
+	// Set Routing Discovery, Find Peers
+	var err error
+	routingDiscovery := dsc.NewRoutingDiscovery(hn.IpfsDHT)
+	dsc.Advertise(hn.ctx, routingDiscovery, hn.opts.Rendezvous, dscl.TTL(hn.opts.TTL))
+
+	// Create Pub Sub
+	hn.PubSub, err = psub.NewGossipSub(hn.ctx, hn.Host, psub.WithDiscovery(routingDiscovery))
+	if err != nil {
+		hn.SetStatus(Status_FAIL)
+		logger.Error("Failed to Create new Gossip Sub", err)
+		return err
+	}
+
+	// Handle DHT Peers
+	hn.dhtPeerChan, err = routingDiscovery.FindPeers(hn.ctx, hn.opts.Rendezvous, dscl.TTL(hn.opts.TTL))
+	if err != nil {
+		hn.SetStatus(Status_FAIL)
+		logger.Error("Failed to create FindPeers Discovery channel", err)
+		return err
+	}
+	hn.SetStatus(Status_READY)
+	return nil
+}
+
+// createMdnsDiscovery is a Helper Method to initialize the MDNS Discovery
+func (hn *SNRHost) createMdnsDiscovery() {
+	// Verify if MDNS is Enabled
+	if !hn.opts.Connection.IsMdnsCompatible() {
+		logger.Error("Failed to Start MDNS Discovery ", ErrMDNSInvalidConn)
+		return
+	}
+
+	// Create MDNS Service
+	ser := mdns.NewMdnsService(hn.Host, hn.opts.Rendezvous)
+
+	// Handle Events
+	ser.RegisterNotifee(hn)
 }
