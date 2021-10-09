@@ -1,12 +1,16 @@
 {
   "folders": [
-    {
-      "path": "..",
-      "name": "🚀 Core",
+  {
+          "path": "../cmd/cli",
+          "name": "🔌  CLI"
     },
     {
-        "path": "../tools",
-        "name": "🛠 Tools"
+      "path": "..",
+      "name": "🚀  Core"
+    },
+    {
+      "path": "../tools",
+      "name": "🛠  Tools"
     }
   ],
   "settings": {
@@ -90,6 +94,30 @@
     "material-icon-theme.saturation": 0.75,
     "material-icon-theme.files.associations": {
       "*.proto": "xml"
+    },
+    "files.exclude": {
+      "**/package-lock.json": true,
+      "**/**.pb.go": true,
+      "**/.classpath": true,
+      "**/.factorypath": true,
+      "**/.flutter-plugins": true,
+      "**/.flutter-plugins-dependencies": true,
+      "**/.packages": true,
+      "**/.project": true,
+      "**/.settings": true,
+      "**/go.sum": false,
+      "**/pubspec.lock": true,
+      "**pubspec.lock": true,
+      "**/node_modules": true,
+      "app.iml": true,
+      "Contents.json": true,
+      ".devcontainer": true,
+      "cmd/cli": true,
+      // Project Related
+      "**/app": true,
+      "**/design": true,
+      "**/sonr.wiki": true,
+      ".gitignore": false,
     },
     "material-icon-theme.folders.associations": {
       "Grida": "interface",

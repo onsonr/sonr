@@ -10,7 +10,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-type SonrLib struct {
+type sonrLib struct {
 	// Properties
 	ctx     context.Context
 	node    *node.Node
@@ -18,7 +18,7 @@ type SonrLib struct {
 }
 
 var (
-	sonrLib *SonrLib
+	instance *sonrLib
 )
 
 func init() {
@@ -28,7 +28,7 @@ func init() {
 }
 
 // Start starts the host, node, and rpc service.
-func Start(reqBuf []byte) []byte {
+func Start(reqBuf []byte) {
 	ctx := context.Background()
 	emitter := state.NewEmitter(2048)
 
@@ -46,24 +46,17 @@ func Start(reqBuf []byte) []byte {
 	}
 
 	// Create Node
-	n, resp, err := node.NewNode(ctx, emitter, node.WithRequest(req))
+	n, _, err := node.NewNode(ctx, emitter, node.WithRequest(req))
 	if err != nil {
 		golog.Fatal("Failed to Create new node", err)
 	}
 
 	// Set Lib
-	sonrLib = &SonrLib{
+	instance = &sonrLib{
 		ctx:     ctx,
 		emitter: emitter,
 		node:    n,
 	}
-
-	// Marshal Response
-	buf, err := proto.Marshal(resp)
-	if err != nil {
-		golog.Warn("Failed to Marshal InitializeResponse", err)
-	}
-	return buf
 }
 
 // Pause pauses the host, node, and rpc service.
@@ -82,7 +75,7 @@ func Resume() {
 
 // Stop closes the host, node, and rpc service.
 func Stop() {
-	sonrLib.ctx.Done()
+	instance.ctx.Done()
 }
 
 // parseInitializeRequest parses the given buffer and returns the proto and fsOptions.
