@@ -70,7 +70,7 @@ func NewNode(ctx context.Context, options ...NodeOption) (*Node, *api.Initialize
 	host, err := host.NewHost(ctx, opts.emitter, host.WithConnection(opts.connection))
 	if err != nil {
 		logger.Error("Failed to initialize host", err)
-		return nil, nil, err
+		return nil, api.NewInitialzeResponse(nil, false), err
 	}
 
 	// Create Node
@@ -87,17 +87,40 @@ func NewNode(ctx context.Context, options ...NodeOption) (*Node, *api.Initialize
 		completeEvents: make(chan *api.CompleteEvent),
 	}
 
-	// Initialize Node by Type
-	node, err = opts.Apply(ctx, node)
-	if err != nil {
-		logger.Error("Failed to apply options", err)
-		return nil, nil, err
+	// Handle by Node Mode
+	if opts.mode == Mode_CLIENT {
+		// Client Node Type
+		stub, err := node.startClientService(ctx, opts.listener, opts.olc)
+		if err != nil {
+			logger.Error("Failed to start Client Service", err)
+			return node, api.NewInitialzeResponse(nil, false), err
+		}
+
+		// Set Stub to node
+		node.stub = stub
+
+		// Open Store with profileBuf
+		err = node.openStore(ctx, opts.profileBuf)
+		if err != nil {
+			logger.Error("Failed to open database", err)
+			return node, api.NewInitialzeResponse(nil, false), err
+		}
+	} else {
+		// Highway Node Type
+		stub, err := node.startHighwayService(ctx)
+		if err != nil {
+			logger.Error("Failed to start Highway Service", err)
+			return node, api.NewInitialzeResponse(nil, false), err
+		}
+
+		// Set Stub to node
+		node.stub = stub
 	}
 
 	// Begin Background Tasks
 	go node.Serve(ctx)
 	go node.stub.Serve(ctx)
-	return node, api.NewInitialzeSuccess(node.Profile), nil
+	return node, api.NewInitialzeResponse(node.Profile, false), nil
 }
 
 // Close closes the node

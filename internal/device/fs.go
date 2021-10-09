@@ -3,6 +3,7 @@ package device
 import (
 	"encoding/json"
 
+	"github.com/kataras/golog"
 	"github.com/sonr-io/core/internal/keychain"
 	"github.com/sonr-io/core/tools/config"
 )
@@ -31,6 +32,9 @@ type DeviceOptions struct {
 var (
 	// Keychain is the device keychain
 	KeyChain keychain.Keychain
+
+	// sockManager is the device socket manager
+	sockManager *SockManager
 
 	// DatabasePath is the path to the database folder
 	DatabasePath string
@@ -123,6 +127,13 @@ func Init(isDev bool, opts ...FSOption) error {
 		}
 		KeyChain = kc
 	}
+	// Initialize Socket Manager
+	mgr, err := NewSockManager(TempPath)
+	if err != nil {
+		logger.Error("Failed to initialize Socket Manager", golog.Fields{"error": err})
+		return err
+	}
+	sockManager = mgr
 	return nil
 }
 

@@ -3,6 +3,7 @@ package host
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/libp2p/go-libp2p"
 	connmgr "github.com/libp2p/go-libp2p-connmgr"
@@ -36,10 +37,12 @@ type SNRHost struct {
 	dhtPeerChan  <-chan peer.AddrInfo
 
 	// Properties
-	ctx  context.Context
-	opts hostOptions
-	//	multiAddr multiaddr.Multiaddr
-	privKey crypto.PrivKey
+	ctx        context.Context
+	privKey    crypto.PrivKey
+	connection common.Connection
+	rendezvous string
+	interval   time.Duration
+	ttl        time.Duration
 
 	// State
 	emitter *state.Emitter
@@ -53,8 +56,8 @@ type SNRHost struct {
 // NewHost creates a new host
 func NewHost(ctx context.Context, em *state.Emitter, options ...HostOption) (*SNRHost, error) {
 	// Initialize DHT
-	opts := defaultHostOptions(ctx)
-	hn, err := opts.Apply(em, options...)
+	opts := defaultHostOptions()
+	hn, err := opts.Apply(ctx, em, options...)
 	if err != nil {
 		return nil, err
 	}
@@ -79,15 +82,15 @@ func NewHost(ctx context.Context, em *state.Emitter, options ...HostOption) (*SN
 	hn.SetStatus(Status_CONNECTING)
 
 	// Bootstrap DHT
-	if err := hn.Bootstrap(context.Background()); err != nil {
+	if err := hn.Bootstrap(hn.ctx); err != nil {
 		logger.Error("Failed to Bootstrap KDHT to Host", err)
 		hn.SetStatus(Status_FAIL)
 		return nil, err
 	}
 
 	// Connect to Bootstrap Nodes
-	for _, pi := range hn.opts.BootstrapPeers {
-		if err := hn.Connect(hn.ctx, pi); err != nil {
+	for _, pi := range dht.GetDefaultBootstrapPeerAddrInfos() {
+		if err := hn.Connect(pi); err != nil {
 			continue
 		} else {
 			break
@@ -163,7 +166,7 @@ func (hn *SNRHost) Close() error {
 }
 
 // Connect connects with `peer.AddrInfo` if underlying Host is ready
-func (hn *SNRHost) Connect(ctx context.Context, pi peer.AddrInfo) error {
+func (hn *SNRHost) Connect(pi peer.AddrInfo) error {
 	// Check if host is ready
 	if err := hn.HasRouting(); err != nil {
 		logger.Warn("Connect: Underlying host is not ready, failed to call Connect()")
@@ -171,7 +174,7 @@ func (hn *SNRHost) Connect(ctx context.Context, pi peer.AddrInfo) error {
 	}
 
 	// Call Underlying Host to Connect
-	return hn.Host.Connect(ctx, pi)
+	return hn.Host.Connect(context.Background(), pi)
 }
 
 // HandlePeerFound is to be called when new  peer is found
@@ -303,7 +306,7 @@ func (hn *SNRHost) Serve() {
 			// Validate not Self
 			if hn.checkUnknown(mdnsPI) {
 				// Connect to Peer
-				if err := hn.Connect(hn.ctx, mdnsPI); err != nil {
+				if err := hn.Connect(mdnsPI); err != nil {
 					hn.Peerstore().ClearAddrs(mdnsPI.ID)
 					continue
 				}
@@ -312,7 +315,7 @@ func (hn *SNRHost) Serve() {
 			// Validate not Self
 			if hn.checkUnknown(dhtPI) {
 				// Connect to Peer
-				if err := hn.Connect(hn.ctx, dhtPI); err != nil {
+				if err := hn.Connect(dhtPI); err != nil {
 					hn.Peerstore().ClearAddrs(dhtPI.ID)
 					continue
 				}

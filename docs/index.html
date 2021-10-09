@@ -409,6 +409,10 @@
                 </li>
               
                 <li>
+                  <a href="#sonr.core.SNID"><span class="badge">M</span>SNID</a>
+                </li>
+              
+                <li>
                   <a href="#sonr.core.Social"><span class="badge">M</span>Social</a>
                 </li>
               
@@ -662,6 +666,44 @@
               
                 <li>
                   <a href="#sonr.protocols.transfer.InviteResponse"><span class="badge">M</span>InviteResponse</a>
+                </li>
+              
+              
+              
+              
+            </ul>
+          </li>
+        
+          
+          <li>
+            <a href="#proto%2fwallet%2fkeychain.proto">proto/wallet/keychain.proto</a>
+            <ul>
+              
+                <li>
+                  <a href="#sonr.wallet.PrivateKey"><span class="badge">M</span>PrivateKey</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.wallet.PublicKey"><span class="badge">M</span>PublicKey</a>
+                </li>
+              
+              
+                <li>
+                  <a href="#sonr.wallet.KeyType"><span class="badge">E</span>KeyType</a>
+                </li>
+              
+              
+              
+            </ul>
+          </li>
+        
+          
+          <li>
+            <a href="#proto%2fwallet%2fwallet.proto">proto/wallet/wallet.proto</a>
+            <ul>
+              
+                <li>
+                  <a href="#sonr.wallet.Wallet"><span class="badge">M</span>Wallet</a>
                 </li>
               
               
@@ -2811,6 +2853,51 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
 
         
       
+        <h3 id="sonr.core.SNID">SNID</h3>
+        <p>SNID is the unique identifier of a node with Sonr Protocol</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>domain</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Domain Name of the node, e.g. prad.snr </p></td>
+                </tr>
+              
+                <tr>
+                  <td>publicKey</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>Public Key of the node, value in the Domains second TXT record </p></td>
+                </tr>
+              
+                <tr>
+                  <td>peerId</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Peer ID of the node, calculated from the public key </p></td>
+                </tr>
+              
+                <tr>
+                  <td>deviceId</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Device ID of the node host </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="sonr.core.Social">Social</h3>
         <p>Social Media Item Information</p>
 
@@ -4840,6 +4927,190 @@ Returns a stream of Lobby Refresh Events</p></td>
                   <td><a href="#sonr.core.Metadata">sonr.core.Metadata</a></td>
                   <td></td>
                   <td><p>Metadata </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+
+      
+
+      
+
+      
+    
+      
+      <div class="file-heading">
+        <h2 id="proto/wallet/keychain.proto">proto/wallet/keychain.proto</h2><a href="#title">Top</a>
+      </div>
+      <p></p>
+
+      
+        <h3 id="sonr.wallet.PrivateKey">PrivateKey</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>Type</td>
+                  <td><a href="#sonr.wallet.KeyType">KeyType</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>Data</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.wallet.PublicKey">PublicKey</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>Type</td>
+                  <td><a href="#sonr.wallet.KeyType">KeyType</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>Data</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+
+      
+        <h3 id="sonr.wallet.KeyType">KeyType</h3>
+        <p></p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>RSA</td>
+                <td>0</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>Ed25519</td>
+                <td>1</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>Secp256k1</td>
+                <td>2</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>ECDSA</td>
+                <td>3</td>
+                <td><p></p></td>
+              </tr>
+            
+          </tbody>
+        </table>
+      
+
+      
+
+      
+    
+      
+      <div class="file-heading">
+        <h2 id="proto/wallet/wallet.proto">proto/wallet/wallet.proto</h2><a href="#title">Top</a>
+      </div>
+      <p></p>
+
+      
+        <h3 id="sonr.wallet.Wallet">Wallet</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>sName</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>pubKey</td>
+                  <td><a href="#sonr.wallet.PublicKey">PublicKey</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>privKey</td>
+                  <td><a href="#sonr.wallet.PrivateKey">PrivateKey</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>mnemonic</td>
+                  <td><a href="#string">string</a></td>
+                  <td>optional</td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>seed</td>
+                  <td><a href="#string">string</a></td>
+                  <td>optional</td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>path</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
                 </tr>
               
             </tbody>

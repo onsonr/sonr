@@ -11,7 +11,6 @@ import (
 	dscl "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/peer"
 	dsc "github.com/libp2p/go-libp2p-discovery"
-	dht "github.com/libp2p/go-libp2p-kad-dht"
 	psub "github.com/libp2p/go-libp2p-pubsub"
 	mdns "github.com/libp2p/go-libp2p/p2p/discovery/mdns"
 	"github.com/multiformats/go-multiaddr"
@@ -19,7 +18,6 @@ import (
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/keychain"
-	net "github.com/sonr-io/core/tools/internet"
 	"github.com/sonr-io/core/tools/state"
 )
 
@@ -33,13 +31,6 @@ var (
 
 // HostOption is a function that modifies the node options.
 type HostOption func(hostOptions)
-
-// WithBootstrappers sets the bootstrap peers. Default is the default bootstrap peers.
-func WithBootstrappers(pis []peer.AddrInfo) HostOption {
-	return func(o hostOptions) {
-		o.BootstrapPeers = pis
-	}
-}
 
 // WithConnection sets the connection to the host. Default is WIFI.
 func WithConnection(c common.Connection) HostOption {
@@ -74,39 +65,32 @@ func WithTTL(ttl time.Duration) HostOption {
 // hostOptions is a collection of options for the SnrHost.
 type hostOptions struct {
 	// Properties
-	Connection     common.Connection
-	BootstrapPeers []peer.AddrInfo
-	LowWater       int
-	HighWater      int
-	GracePeriod    time.Duration
-	Rendezvous     string
-	Interval       time.Duration
-	TTL            time.Duration
-
-	// Parameters
-	ctx       context.Context
-	listener  *net.TCPListener
-	multiAddr multiaddr.Multiaddr
+	Connection  common.Connection
+	LowWater    int
+	HighWater   int
+	GracePeriod time.Duration
+	MultiAddrs  []multiaddr.Multiaddr
+	Rendezvous  string
+	Interval    time.Duration
+	TTL         time.Duration
 }
 
 // defaultHostOptions returns the default host options.
-func defaultHostOptions(ctx context.Context) hostOptions {
+func defaultHostOptions() hostOptions {
 	return hostOptions{
-		ctx:            ctx,
-		Connection:     common.Connection_WIFI,
-		BootstrapPeers: dht.GetDefaultBootstrapPeerAddrInfos(),
-		LowWater:       15,
-		HighWater:      40,
-		GracePeriod:    time.Minute * 5,
-		Rendezvous:     "/sonr/rendevouz/0.9.2",
-		Interval:       time.Second * 5,
-		TTL:            time.Minute * 2,
-		// listener:       l,
+		Connection:  common.Connection_WIFI,
+		LowWater:    100,
+		HighWater:   200,
+		GracePeriod: time.Second * 20,
+		Rendezvous:  "/sonr/rendevouz/0.9.2",
+		MultiAddrs:  make([]multiaddr.Multiaddr, 0),
+		Interval:    time.Second * 5,
+		TTL:         time.Minute * 2,
 	}
 }
 
 // Apply applies the host options and returns new SNRHost
-func (ho hostOptions) Apply(em *state.Emitter, options ...HostOption) (*SNRHost, error) {
+func (opts hostOptions) Apply(ctx context.Context, em *state.Emitter, options ...HostOption) (*SNRHost, error) {
 	// Check if emitter is set
 	if em == nil {
 		return nil, errors.New("Emitter is not set")
@@ -115,29 +99,34 @@ func (ho hostOptions) Apply(em *state.Emitter, options ...HostOption) (*SNRHost,
 	// Iterate over the options.
 	var err error
 	for _, opt := range options {
-		opt(ho)
-	}
-
-	// Check if the listener is set.
-	if ho.listener != nil {
-		logger.Debug("TCP Listener provided, using for MultiAddr")
-		// Get MultiAddr from listener
-		ho.multiAddr, err = ho.listener.Multiaddr()
-		if err != nil {
-			return nil, errors.Wrap(err, "Failed to apply host options: MultiAddr")
-		}
-	} else {
-		logger.Debug("No TCP Listener provided, using default MultiAddr's")
+		opt(opts)
 	}
 
 	// Create the host.
 	hn := &SNRHost{
-		ctx:          ho.ctx,
-		opts:         ho,
+		ctx:          ctx,
 		status:       Status_IDLE,
 		emitter:      em,
 		mdnsPeerChan: make(chan peer.AddrInfo),
+		connection:   opts.Connection,
+		rendezvous:   opts.Rendezvous,
+		ttl:          opts.TTL,
+		interval:     opts.Interval,
 	}
+
+	// // Check if the listener is set.
+	// if ho.listener != nil {
+	// 	logger.Debug("TCP Listener provided, using for MultiAddr")
+	// 	// Get MultiAddr from listener
+	// 	addr, err := ho.listener.Multiaddr()
+	// 	if err != nil {
+	// 		logger.Warn("Failed to add MultiAddr, Skipping...", err)
+	// 	} else {
+	// 		ho.MultiAddrs = append(ho.MultiAddrs, addr)
+	// 	}
+	// } else {
+	// 	logger.Debug("No TCP Listener provided, using default MultiAddr's")
+	// }
 
 	// findPrivKey returns the private key for the host.
 	findPrivKey := func() (crypto.PrivKey, error) {
@@ -170,7 +159,7 @@ func (hn *SNRHost) checkUnknown(pi peer.AddrInfo) bool {
 	}
 
 	// Add to PeerStore
-	hn.Peerstore().AddAddrs(pi.ID, pi.Addrs, hn.opts.TTL)
+	hn.Peerstore().AddAddrs(pi.ID, pi.Addrs, hn.ttl)
 	return true
 }
 
@@ -179,7 +168,7 @@ func (hn *SNRHost) createDHTDiscovery() error {
 	// Set Routing Discovery, Find Peers
 	var err error
 	routingDiscovery := dsc.NewRoutingDiscovery(hn.IpfsDHT)
-	dsc.Advertise(hn.ctx, routingDiscovery, hn.opts.Rendezvous, dscl.TTL(hn.opts.TTL))
+	dsc.Advertise(hn.ctx, routingDiscovery, hn.rendezvous, dscl.TTL(hn.ttl))
 
 	// Create Pub Sub
 	hn.PubSub, err = psub.NewGossipSub(hn.ctx, hn.Host, psub.WithDiscovery(routingDiscovery))
@@ -190,7 +179,7 @@ func (hn *SNRHost) createDHTDiscovery() error {
 	}
 
 	// Handle DHT Peers
-	hn.dhtPeerChan, err = routingDiscovery.FindPeers(hn.ctx, hn.opts.Rendezvous, dscl.TTL(hn.opts.TTL))
+	hn.dhtPeerChan, err = routingDiscovery.FindPeers(hn.ctx, hn.rendezvous, dscl.TTL(hn.ttl))
 	if err != nil {
 		hn.SetStatus(Status_FAIL)
 		logger.Error("Failed to create FindPeers Discovery channel", err)
@@ -203,13 +192,13 @@ func (hn *SNRHost) createDHTDiscovery() error {
 // createMdnsDiscovery is a Helper Method to initialize the MDNS Discovery
 func (hn *SNRHost) createMdnsDiscovery() {
 	// Verify if MDNS is Enabled
-	if !hn.opts.Connection.IsMdnsCompatible() {
+	if !hn.connection.IsMdnsCompatible() {
 		logger.Error("Failed to Start MDNS Discovery ", ErrMDNSInvalidConn)
 		return
 	}
 
 	// Create MDNS Service
-	ser := mdns.NewMdnsService(hn.Host, hn.opts.Rendezvous)
+	ser := mdns.NewMdnsService(hn.Host, hn.rendezvous)
 
 	// Handle Events
 	ser.RegisterNotifee(hn)

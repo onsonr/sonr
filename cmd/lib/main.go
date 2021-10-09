@@ -6,6 +6,7 @@ import (
 	"net"
 
 	"github.com/kataras/golog"
+	_ "github.com/mtibben/androiddnsfix"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"

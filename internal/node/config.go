@@ -131,37 +131,3 @@ func defaultNodeOptions() nodeOptions {
 		connection: common.Connection_WIFI,
 	}
 }
-
-// Apply applies the node options to the node.
-func (no nodeOptions) Apply(ctx context.Context, n *Node) (*Node, error) {
-	// Handle by Node Mode
-	if no.mode == Mode_CLIENT {
-		// Client Node Type
-		stub, err := n.startClientService(ctx, no.listener, no.olc)
-		if err != nil {
-			logger.Error("Failed to start Client Service", err)
-			return n, err
-		}
-
-		// Set Stub to node
-		n.stub = stub
-
-		// Open Store with profileBuf
-		err = n.openStore(ctx, no.profileBuf)
-		if err != nil {
-			logger.Error("Failed to open database", err)
-			return n, err
-		}
-	} else {
-		// Highway Node Type
-		stub, err := n.startHighwayService(ctx)
-		if err != nil {
-			logger.Error("Failed to start Highway Service", err)
-			return n, err
-		}
-
-		// Set Stub to node
-		n.stub = stub
-	}
-	return n, nil
-}

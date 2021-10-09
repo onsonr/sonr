@@ -18,7 +18,7 @@ APP_ROOT_DIR =/Users/prad/Developer/mobile/
 GOMOBILE=gomobile
 GOCLEAN=$(GOMOBILE) clean
 GOBIND=$(GOMOBILE) bind -ldflags='-s -w' -v
-GOBIND_ANDROID=$(GOBIND) -target=android -androidapi=24
+GOBIND_ANDROID=$(GOBIND) -tags='androiddnsfix' -target=android -androidapi=24
 GOBIND_IOS=$(GOBIND) -target=ios -bundleid=io.sonr.core
 
 # @ Bind Directories
