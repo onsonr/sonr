@@ -12,6 +12,7 @@ import (
 
 // ClientNodeStub is the RPC Service for the Node.
 type HighwayNodeStub struct {
+	NodeStub
 	HighwayServiceServer
 	*Node
 

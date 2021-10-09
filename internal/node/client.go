@@ -20,6 +20,7 @@ const RPC_SERVER_PORT = 52006
 
 // ClientNodeStub is the RPC Service for the Node.
 type ClientNodeStub struct {
+	NodeStub
 	ClientServiceServer
 	*Node
 

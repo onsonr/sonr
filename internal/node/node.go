@@ -32,6 +32,9 @@ type Node struct {
 	// Persistent Database
 	store *bolt.DB
 
+	// Node Stub Interface
+	stub NodeStub
+
 	// Queue - the transfer queue
 	queue *list.List
 
@@ -62,13 +65,6 @@ func NewNode(ctx context.Context, options ...NodeOption) (*Node, *InitializeResp
 	for _, opt := range options {
 		opt(opts)
 	}
-
-	// // Open TCP Port
-	// l, err := internet.NewTCPListener(ctx)
-	// if err != nil {
-	// 	logger.Error("Failed to open TCP Port", err)
-	// 	return nil, nil, err
-	// }
 
 	// Initialize Host
 	host, err := host.NewHost(ctx, opts.emitter, host.WithConnection(opts.connection))

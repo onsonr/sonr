@@ -11,6 +11,9 @@ import (
 // ** ───────────────────────────────────────────────────────
 // ** ─── General ───────────────────────────────────────────
 // ** ───────────────────────────────────────────────────────
+// RPC_SERVER_PORT is the port the RPC service listens on.
+const RPC_SERVER_PORT = 52006
+
 var (
 	logger = golog.Child("internal/common")
 )

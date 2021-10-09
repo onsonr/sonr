@@ -32,19 +32,18 @@ var (
 	ErrTransferNotCreated = errors.New("TransferProtocol has not been created")
 )
 
-func init() {
+// NodeStub is the interface for the node based on mode: (client, highway)
+type NodeStub interface{}
 
-}
-
-// NodeType is the type of the node (Client, Highway)
-type NodeType int
+// NodeMode is the type of the node (Client, Highway)
+type NodeMode int
 
 const (
-	// NodeType_CLIENT is the Node utilized by Desktop, Mobile and Web Clients
-	NodeType_CLIENT NodeType = iota
+	// Mode_CLIENT is the Node utilized by Desktop, Mobile and Web Clients
+	Mode_CLIENT NodeMode = iota
 
-	// NodeType_HIGHWAY is the Node utilized by long running Server processes
-	NodeType_HIGHWAY
+	// Mode_HIGHWAY is the Node utilized by long running Server processes
+	Mode_HIGHWAY
 )
 
 // NodeOption is a function that modifies the node options.
@@ -88,10 +87,10 @@ func WithRequest(req *InitializeRequest) NodeOption {
 	}
 }
 
-// WithClient starts the Client RPC server and sets the node as a client node.
-func WithClient() NodeOption {
+// WithMode starts the Client RPC server and sets the node as a client node.
+func WithMode(m NodeMode) NodeOption {
 	return func(o nodeOptions) {
-		o.kind = NodeType_CLIENT
+		o.mode = m
 	}
 }
 
@@ -99,13 +98,6 @@ func WithClient() NodeOption {
 func WithEmitter(e *state.Emitter) NodeOption {
 	return func(o nodeOptions) {
 		o.emitter = e
-	}
-}
-
-// WithHighway starts the Highway RPC server and sets the node as a highway node.
-func WithHighway() NodeOption {
-	return func(o nodeOptions) {
-		o.kind = NodeType_HIGHWAY
 	}
 }
 
@@ -119,7 +111,7 @@ func WithListener(l net.Listener) NodeOption {
 // nodeOptions is a collection of options for the node.
 type nodeOptions struct {
 	emitter    *state.Emitter
-	kind       NodeType
+	mode       NodeMode
 	listener   net.Listener
 	profileBuf []byte
 	connection common.Connection
@@ -130,7 +122,7 @@ type nodeOptions struct {
 func defaultNodeOptions() nodeOptions {
 	return nodeOptions{
 		emitter:    state.NewEmitter(2048),
-		kind:       NodeType_CLIENT,
+		mode:       Mode_CLIENT,
 		olc:        "global",
 		connection: common.Connection_WIFI,
 	}
@@ -138,20 +130,30 @@ func defaultNodeOptions() nodeOptions {
 
 // Apply applies the node options to the node.
 func (no nodeOptions) Apply(ctx context.Context, n *Node) error {
-	if no.kind == NodeType_CLIENT {
+	// Set Options to Node
+	n.options = no
+
+	// Handle by Node Mode
+	if no.mode == Mode_CLIENT {
 		// Client Node Type
-		_, err := n.startClientService(ctx, no.olc)
+		stub, err := n.startClientService(ctx, no.olc)
 		if err != nil {
 			logger.Error("Failed to start Client Service", err)
 			return err
 		}
+
+		// Set Stub to node
+		n.stub = stub
 	} else {
 		// Highway Node Type
-		_, err := n.startHighwayService(ctx)
+		stub, err := n.startHighwayService(ctx)
 		if err != nil {
 			logger.Error("Failed to start Highway Service", err)
 			return err
 		}
+
+		// Set Stub to node
+		n.stub = stub
 	}
 	return nil
 }

@@ -6,13 +6,11 @@ import (
 	"net"
 
 	"github.com/kataras/golog"
+	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/node"
 	"google.golang.org/protobuf/proto"
 )
-
-// RPC_SERVER_PORT is the port the RPC service listens on.
-const RPC_SERVER_PORT = 52006
 
 type sonrLib struct {
 	// Properties
@@ -35,7 +33,7 @@ func Start(reqBuf []byte) {
 	ctx := context.Background()
 
 	// Open Listener on Port
-	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", RPC_SERVER_PORT))
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", common.RPC_SERVER_PORT))
 	if err != nil {
 		golog.Fatal("Failed to bind listener to port ", err)
 		return
@@ -55,7 +53,7 @@ func Start(reqBuf []byte) {
 	}
 
 	// Create Node
-	n, _, err := node.NewNode(ctx, node.WithRequest(req), node.WithListener(listener))
+	n, _, err := node.NewNode(ctx, node.WithRequest(req), node.WithListener(listener), node.WithMode(node.Mode_CLIENT))
 	if err != nil {
 		golog.Fatal("Failed to Create new node", err)
 	}

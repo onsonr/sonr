@@ -14,6 +14,7 @@ import (
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	psub "github.com/libp2p/go-libp2p-pubsub"
 	mdns "github.com/libp2p/go-libp2p/p2p/discovery/mdns"
+	"github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
@@ -33,21 +34,21 @@ var (
 // HostOption is a function that modifies the node options.
 type HostOption func(hostOptions)
 
-// WithBootstrappers sets the bootstrap peers.
+// WithBootstrappers sets the bootstrap peers. Default is the default bootstrap peers.
 func WithBootstrappers(pis []peer.AddrInfo) HostOption {
 	return func(o hostOptions) {
 		o.BootstrapPeers = pis
 	}
 }
 
-// WithConnection sets the connection to the host.
+// WithConnection sets the connection to the host. Default is WIFI.
 func WithConnection(c common.Connection) HostOption {
 	return func(o hostOptions) {
 		o.Connection = c
 	}
 }
 
-// WithConnOptions sets the connection manager options.
+// WithConnOptions sets the connection manager options. Defaults are (lowWater: 15, highWater: 40, gracePeriod: 5m)
 func WithConnOptions(low int, hi int, grace time.Duration) HostOption {
 	return func(o hostOptions) {
 		o.LowWater = low
@@ -56,14 +57,14 @@ func WithConnOptions(low int, hi int, grace time.Duration) HostOption {
 	}
 }
 
-// WithInterval sets the interval for the host.
+// WithInterval sets the interval for the host. Default is 5 seconds.
 func WithInterval(interval time.Duration) HostOption {
 	return func(o hostOptions) {
 		o.Interval = interval
 	}
 }
 
-// WithTTL sets the ttl for the host.
+// WithTTL sets the ttl for the host. Default is 2 minutes.
 func WithTTL(ttl time.Duration) HostOption {
 	return func(o hostOptions) {
 		o.TTL = ttl
@@ -83,8 +84,9 @@ type hostOptions struct {
 	TTL            time.Duration
 
 	// Parameters
-	ctx      context.Context
-	listener *net.TCPListener
+	ctx       context.Context
+	listener  *net.TCPListener
+	multiAddr multiaddr.Multiaddr
 }
 
 // defaultHostOptions returns the default host options.
@@ -119,6 +121,13 @@ func (ho hostOptions) Apply(em *state.Emitter, options ...HostOption) (*SNRHost,
 	// Check if the listener is set.
 	if ho.listener != nil {
 		logger.Debug("TCP Listener provided, using for MultiAddr")
+		// Get MultiAddr from listener
+		ho.multiAddr, err = ho.listener.Multiaddr()
+		if err != nil {
+			return nil, errors.Wrap(err, "Failed to apply host options: MultiAddr")
+		}
+	} else {
+		logger.Debug("No TCP Listener provided, using default MultiAddr's")
 	}
 
 	// Create the host.
@@ -129,12 +138,6 @@ func (ho hostOptions) Apply(em *state.Emitter, options ...HostOption) (*SNRHost,
 		emitter:      em,
 		mdnsPeerChan: make(chan peer.AddrInfo),
 	}
-
-	// // Get MultiAddr from listener
-	// hn.multiAddr, err = ho.listener.Multiaddr()
-	// if err != nil {
-	// 	return nil, errors.Wrap(err, "Failed to apply host options: MultiAddr")
-	// }
 
 	// findPrivKey returns the private key for the host.
 	findPrivKey := func() (crypto.PrivKey, error) {
