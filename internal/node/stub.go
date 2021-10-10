@@ -42,32 +42,32 @@ type ClientNodeStub struct {
 }
 
 // startClientService creates a new Client service stub for the node.
-func (n *Node) startClientService(ctx context.Context, opts nodeOptions) (NodeStub, error) {
+func (n *Node) startClientService(ctx context.Context, opts *nodeOptions) (NodeStub, error) {
 	// Set Transfer Protocol
 	transferProtocol, err := transfer.NewProtocol(ctx, n.host, n.Emitter)
 	if err != nil {
-		logger.Child("Client").Error("Failed to start TransferProtocol", err)
+		logger.Error("Failed to start TransferProtocol", err)
 		return nil, err
 	}
 
 	// Set Exchange Protocol
 	exchProtocol, err := exchange.NewProtocol(ctx, n.host, n.Emitter)
 	if err != nil {
-		logger.Child("Client").Error("Failed to start ExchangeProtocol", err)
+		logger.Error("Failed to start ExchangeProtocol", err)
 		return nil, err
 	}
 
 	// Set Local Lobby Protocol if Location is provided
 	lobbyProtocol, err := lobby.NewProtocol(ctx, n.host, n.Emitter, opts.olc)
 	if err != nil {
-		logger.Child("Client").Error("Failed to start LobbyProtocol", err)
+		logger.Error("Failed to start LobbyProtocol", err)
 		return nil, err
 	}
 
 	// Open Listener on Port
 	listener, err := net.Listen(opts.network, opts.address)
 	if err != nil {
-		logger.Child("Client").Fatal("Failed to bind listener to port ", err)
+		logger.Fatal("Failed to bind listener to port ", err)
 		return nil, err
 	}
 
@@ -84,7 +84,6 @@ func (n *Node) startClientService(ctx context.Context, opts nodeOptions) (NodeSt
 
 	// Start Routines
 	RegisterClientServiceServer(grpcServer, cns)
-
 	go cns.Serve(ctx, listener, DefaultAutoPingTicker)
 	return cns, nil
 }
@@ -93,16 +92,14 @@ func (s *ClientNodeStub) Serve(ctx context.Context, listener net.Listener, ticke
 	for {
 		// Handle Node Events
 		if err := s.grpcServer.Serve(listener); err != nil {
-			logger.Child("Client").Error("Failed to serve gRPC", err)
+			logger.Error("Failed to serve gRPC", err)
 		}
 
 		select {
 		case <-ticker.C:
 			// Call Internal Update
 			if err := s.Update(); err != nil {
-				logger.Child("Client").Error("Failed to push Auto Ping", err)
-				ticker.Stop()
-				return
+				logger.Error("Failed to push Auto Ping", err)
 			}
 		case <-ctx.Done():
 			ticker.Stop()
@@ -113,7 +110,7 @@ func (s *ClientNodeStub) Serve(ctx context.Context, listener net.Listener, ticke
 }
 
 func (s *ClientNodeStub) Close() error {
-	
+
 	s.grpcServer.Stop()
 	return nil
 }
@@ -123,14 +120,14 @@ func (s *ClientNodeStub) Update() error {
 	// Call Internal Edit
 	peer, err := s.node.Peer()
 	if err != nil {
-		logger.Child("Client").Error("Failed to push Auto Ping", err)
+		logger.Error("Failed to push Auto Ping", err)
 		return err
 	}
 
 	// Push Update to Exchange
 	if s.ExchangeProtocol != nil {
 		if err := s.ExchangeProtocol.Update(peer); err != nil {
-			logger.Child("Client").Error("Failed to Update Exchange", err)
+			logger.Error("Failed to Update Exchange", err)
 			return err
 		}
 	}
@@ -138,7 +135,7 @@ func (s *ClientNodeStub) Update() error {
 	// Push Update to Lobby
 	if s.LobbyProtocol != nil {
 		if err := s.LobbyProtocol.Update(peer); err != nil {
-			logger.Child("Client").Error("Failed to Update Lobby", err)
+			logger.Error("Failed to Update Lobby", err)
 			return err
 		}
 	}
@@ -159,7 +156,7 @@ type HighwayNodeStub struct {
 }
 
 // startHighwayService creates a new Highway service stub for the node.
-func (n *Node) startHighwayService(ctx context.Context) (NodeStub, error) {
+func (n *Node) startHighwayService(ctx context.Context, opts *nodeOptions) (NodeStub, error) {
 	// Create the listener
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", RPC_SERVER_PORT))
 	if err != nil {
@@ -189,7 +186,7 @@ func (n *Node) startHighwayService(ctx context.Context) (NodeStub, error) {
 func (s *HighwayNodeStub) Serve(ctx context.Context) error {
 	// Handle Node Events
 	if err := s.grpcServer.Serve(s.listener); err != nil {
-		logger.Child("Highway").Error("Failed to serve gRPC", err)
+		logger.Error("Failed to serve gRPC", err)
 		return err
 	}
 

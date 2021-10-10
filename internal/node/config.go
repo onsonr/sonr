@@ -49,11 +49,11 @@ const (
 )
 
 // NodeOption is a function that modifies the node options.
-type NodeOption func(nodeOptions)
+type NodeOption func(*nodeOptions)
 
 // WithRequest sets the initialize request.
 func WithRequest(req *api.InitializeRequest) NodeOption {
-	return func(o nodeOptions) {
+	return func(o *nodeOptions) {
 		// Set Connection
 		o.connection = req.Connection
 
@@ -91,7 +91,7 @@ func WithRequest(req *api.InitializeRequest) NodeOption {
 
 // WithMode starts the Client RPC server and sets the node as a client node.
 func WithMode(m NodeMode) NodeOption {
-	return func(o nodeOptions) {
+	return func(o *nodeOptions) {
 		o.mode = m
 	}
 }
@@ -108,8 +108,8 @@ type nodeOptions struct {
 }
 
 // defaultNodeOptions returns the default node options.
-func defaultNodeOptions() nodeOptions {
-	return nodeOptions{
+func defaultNodeOptions() *nodeOptions {
+	return &nodeOptions{
 		emitter:    state.NewEmitter(2048),
 		mode:       Mode_CLIENT,
 		olc:        "global",

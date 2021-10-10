@@ -100,14 +100,14 @@ func NewNode(ctx context.Context, options ...NodeOption) (*Node, *api.Initialize
 		node.stub = stub
 
 		// Open Store with profileBuf
-		err = node.openStore(ctx, opts.profileBuf)
+		err = node.openStore(ctx, opts)
 		if err != nil {
 			logger.Error("Failed to open database", err)
 			return node, api.NewInitialzeResponse(nil, false), err
 		}
 	} else {
 		// Highway Node Type
-		stub, err := node.startHighwayService(ctx)
+		stub, err := node.startHighwayService(ctx, opts)
 		if err != nil {
 			logger.Error("Failed to start Highway Service", err)
 			return node, api.NewInitialzeResponse(nil, false), err

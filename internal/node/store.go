@@ -27,7 +27,7 @@ var (
 )
 
 // openStore creates a new Store instance for Node
-func (n *Node) openStore(ctx context.Context, profileBuf []byte) error {
+func (n *Node) openStore(ctx context.Context, opts *nodeOptions) error {
 	path, err := device.NewDatabasePath("sonr-bolt.db")
 	if err != nil {
 		logger.Child("Store").Error("Failed to get DB Path", err)
@@ -44,7 +44,7 @@ func (n *Node) openStore(ctx context.Context, profileBuf []byte) error {
 	n.store = db
 
 	// Create Profile Bucket
-	err = n.createBucket(USER_BUCKET, PROFILE_KEY, profileBuf)
+	err = n.createBucket(USER_BUCKET, PROFILE_KEY, opts.profileBuf)
 	if err != nil {
 		return err
 	}

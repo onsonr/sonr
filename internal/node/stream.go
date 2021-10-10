@@ -10,8 +10,6 @@ func (s *ClientNodeStub) OnLobbyRefresh(e *Empty, stream ClientService_OnLobbyRe
 			if m != nil {
 				stream.Send(m)
 			}
-		case <-s.ctx.Done():
-			return nil
 		}
 	}
 }
@@ -24,8 +22,6 @@ func (s *ClientNodeStub) OnMailboxMessage(e *Empty, stream ClientService_OnMailb
 			if m != nil {
 				stream.Send(m)
 			}
-		case <-s.ctx.Done():
-			return nil
 		}
 	}
 }
@@ -40,8 +36,6 @@ func (s *ClientNodeStub) OnTransferAccepted(e *Empty, stream ClientService_OnTra
 					stream.Send(m)
 				}
 			}
-		case <-s.ctx.Done():
-			return nil
 		}
 	}
 }
@@ -56,8 +50,6 @@ func (s *ClientNodeStub) OnTransferDeclined(e *Empty, stream ClientService_OnTra
 					stream.Send(m)
 				}
 			}
-		case <-s.ctx.Done():
-			return nil
 		}
 	}
 }
@@ -70,8 +62,6 @@ func (s *ClientNodeStub) OnTransferInvite(e *Empty, stream ClientService_OnTrans
 			if m != nil {
 				stream.Send(m)
 			}
-		case <-s.ctx.Done():
-			return nil
 		}
 	}
 }
@@ -84,8 +74,6 @@ func (s *ClientNodeStub) OnTransferProgress(e *Empty, stream ClientService_OnTra
 			if m != nil {
 				stream.Send(m)
 			}
-		case <-s.ctx.Done():
-			return nil
 		}
 	}
 }
@@ -114,8 +102,6 @@ func (s *ClientNodeStub) OnTransferComplete(e *Empty, stream ClientService_OnTra
 				}
 				stream.Send(m)
 			}
-		case <-s.ctx.Done():
-			return nil
 		}
 	}
 }
