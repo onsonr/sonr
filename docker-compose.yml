@@ -1,0 +1,16 @@
+version: "3.7"
+services:
+  node1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: node1
+    ports:
+      - 49152:3000
+    volumes:
+      - ./:/home/app
+      - /home/app/node_modules
+networks:
+  default:
+    external:
+      name: p2p-net

@@ -8,7 +8,7 @@ CORE_RPC_DIR=$(SONR_ROOT_DIR)/core/cmd/bin
 CORE_BIND_DIR=$(SONR_ROOT_DIR)/core/cmd/lib
 ELECTRON_BIN_DIR=$(SONR_ROOT_DIR)/electron/assets/bin/darwin
 PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
-LD_LIBRARY_PATH=/usr/local/Cellar/ffmpeg/4.4_2/lib
+LD_LIBRARY_PATH=/opt/homebrew/bin/ffmpeg/4.4_2/lib
 
 # Set this -->[/Users/xxxx/Sonr/]<-- to Folder of Sonr Repos
 PROTO_DEF_PATH=/Users/prad/Developer/core/proto
@@ -18,7 +18,7 @@ APP_ROOT_DIR =/Users/prad/Developer/mobile/
 GOMOBILE=gomobile
 GOCLEAN=$(GOMOBILE) clean
 GOBIND=$(GOMOBILE) bind -ldflags='-s -w' -v
-GOBIND_ANDROID=$(GOBIND) -tags='androiddnsfix' -target=android/arm64 -androidapi=24
+GOBIND_ANDROID=$(GOBIND) -target=android/arm64 -androidapi=24
 GOBIND_IOS=$(GOBIND) -target=ios/arm64 -bundleid=io.sonr.core
 
 # @ Bind Directories
