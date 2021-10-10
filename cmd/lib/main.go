@@ -2,13 +2,9 @@ package lib
 
 import (
 	"context"
-	"fmt"
-	"net"
 
 	"github.com/kataras/golog"
-	_ "github.com/mtibben/androiddnsfix"
 	"github.com/sonr-io/core/internal/api"
-	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/node"
 	"google.golang.org/protobuf/proto"
@@ -33,29 +29,21 @@ func init() {
 // Start starts the host, node, and rpc service.
 func Start(reqBuf []byte) {
 	ctx := context.Background()
-
-	// Open Listener on Port
-	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", common.RPC_SERVER_PORT))
-	if err != nil {
-		golog.Fatal("Failed to bind listener to port ", err)
-		return
-	}
-
 	// Unmarshal request
 	req := &api.InitializeRequest{}
-	err = proto.Unmarshal(reqBuf, req)
+	err := proto.Unmarshal(reqBuf, req)
 	if err != nil {
 		golog.Fatal("Failed to Unmarshal InitializeRequest", err)
 	}
 
 	// Initialize Device
-	err = device.Init(req.IsDev(), req.ToDeviceOpts()...)
+	err = device.Init(device.WithDirectoryPaths(req.GetDeviceOptions().GetFolders()))
 	if err != nil {
 		golog.Fatal("Failed to initialize Device", err)
 	}
 
 	// Create Node
-	n, _, err := node.NewNode(ctx, node.WithRequest(req), node.WithListener(listener), node.WithMode(node.Mode_CLIENT))
+	n, _, err := node.NewNode(ctx, node.WithRequest(req), node.WithMode(node.Mode_CLIENT))
 	if err != nil {
 		golog.Fatal("Failed to Create new node", err)
 	}
@@ -84,46 +72,4 @@ func Resume() {
 // Stop closes the host, node, and rpc service.
 func Stop() {
 	instance.ctx.Done()
-}
-
-// parseInitializeRequest parses the given buffer and returns the proto and fsOptions.
-func parseInitializeRequest(buf []byte) (bool, *api.InitializeRequest, []device.FSOption, error) {
-	// Unmarshal request
-	req := &api.InitializeRequest{}
-	err := proto.Unmarshal(buf, req)
-	if err != nil {
-		return false, nil, nil, err
-	}
-
-	// Check FSOptions and Get Device Paths
-	fsOpts := make([]device.FSOption, 0)
-	if req.GetDeviceOptions() != nil {
-		// Set Device ID
-		err = device.SetDeviceID(req.GetDeviceOptions().GetId())
-		if err != nil {
-			return req.GetEnvironment().IsDev(), nil, nil, err
-		}
-
-		// Set Temporary Path
-		fsOpts = append(fsOpts, device.FSOption{
-			Path: req.GetDeviceOptions().GetCacheDir(),
-			Type: device.Temporary,
-		}, device.FSOption{
-			Path: req.GetDeviceOptions().GetDownloadsDir(),
-			Type: device.Downloads,
-		}, device.FSOption{
-			Path: req.GetDeviceOptions().GetDocumentsDir(),
-			Type: device.Documents,
-		}, device.FSOption{
-			Path: req.GetDeviceOptions().GetSupportDir(),
-			Type: device.Support,
-		}, device.FSOption{
-			Path: req.GetDeviceOptions().GetDatabaseDir(),
-			Type: device.Database,
-		}, device.FSOption{
-			Path: req.GetDeviceOptions().GetTextileDir(),
-			Type: device.Textile,
-		})
-	}
-	return req.GetEnvironment().IsDev(), req, fsOpts, nil
 }

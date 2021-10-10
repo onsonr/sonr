@@ -6,7 +6,7 @@ import api "github.com/sonr-io/core/internal/api"
 func (s *ClientNodeStub) OnLobbyRefresh(e *Empty, stream ClientService_OnLobbyRefreshServer) error {
 	for {
 		select {
-		case m := <-s.refreshEvents:
+		case m := <-s.node.refreshEvents:
 			if m != nil {
 				stream.Send(m)
 			}
@@ -20,7 +20,7 @@ func (s *ClientNodeStub) OnLobbyRefresh(e *Empty, stream ClientService_OnLobbyRe
 func (s *ClientNodeStub) OnMailboxMessage(e *Empty, stream ClientService_OnMailboxMessageServer) error {
 	for {
 		select {
-		case m := <-s.mailEvents:
+		case m := <-s.node.mailEvents:
 			if m != nil {
 				stream.Send(m)
 			}
@@ -34,7 +34,7 @@ func (s *ClientNodeStub) OnMailboxMessage(e *Empty, stream ClientService_OnMailb
 func (s *ClientNodeStub) OnTransferAccepted(e *Empty, stream ClientService_OnTransferAcceptedServer) error {
 	for {
 		select {
-		case m := <-s.decisionEvents:
+		case m := <-s.node.decisionEvents:
 			if m != nil {
 				if m.Decision {
 					stream.Send(m)
@@ -50,7 +50,7 @@ func (s *ClientNodeStub) OnTransferAccepted(e *Empty, stream ClientService_OnTra
 func (s *ClientNodeStub) OnTransferDeclined(e *Empty, stream ClientService_OnTransferDeclinedServer) error {
 	for {
 		select {
-		case m := <-s.decisionEvents:
+		case m := <-s.node.decisionEvents:
 			if m != nil {
 				if !m.Decision {
 					stream.Send(m)
@@ -66,7 +66,7 @@ func (s *ClientNodeStub) OnTransferDeclined(e *Empty, stream ClientService_OnTra
 func (s *ClientNodeStub) OnTransferInvite(e *Empty, stream ClientService_OnTransferInviteServer) error {
 	for {
 		select {
-		case m := <-s.inviteEvents:
+		case m := <-s.node.inviteEvents:
 			if m != nil {
 				stream.Send(m)
 			}
@@ -80,7 +80,7 @@ func (s *ClientNodeStub) OnTransferInvite(e *Empty, stream ClientService_OnTrans
 func (s *ClientNodeStub) OnTransferProgress(e *Empty, stream ClientService_OnTransferProgressServer) error {
 	for {
 		select {
-		case m := <-s.progressEvents:
+		case m := <-s.node.progressEvents:
 			if m != nil {
 				stream.Send(m)
 			}
@@ -94,19 +94,19 @@ func (s *ClientNodeStub) OnTransferProgress(e *Empty, stream ClientService_OnTra
 func (s *ClientNodeStub) OnTransferComplete(e *Empty, stream ClientService_OnTransferCompleteServer) error {
 	for {
 		select {
-		case m := <-s.completeEvents:
+		case m := <-s.node.completeEvents:
 			if m != nil {
 				// Check Direction
 				if m.Direction == api.CompleteEvent_INCOMING {
 					// Add Sender to Recents
-					err := s.AddRecent(m.GetFrom().GetProfile())
+					err := s.node.AddRecent(m.GetFrom().GetProfile())
 					if err != nil {
 						logger.Child("Client").Error("Failed to add sender's profile to store.", err)
 						return err
 					}
 				} else {
 					// Add Receiver to Recents
-					err := s.AddRecent(m.GetTo().GetProfile())
+					err := s.node.AddRecent(m.GetTo().GetProfile())
 					if err != nil {
 						logger.Child("Client").Error("Failed to add receiver's profile to store.", err)
 						return err

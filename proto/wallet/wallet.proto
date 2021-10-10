@@ -1,14 +1,14 @@
 syntax = "proto3";
 
 package sonr.wallet;
+import "proto/common/core.proto";
 import "proto/wallet/keychain.proto";
 option go_package = "github.com/sonr-io/core/internal/wallet";
 
 message Wallet {
-    string sName = 1;
-    PublicKey pubKey = 3;
-    PrivateKey privKey = 4;
-    optional string mnemonic = 5;
-    optional string seed = 6;
-    string path = 7;
+    sonr.core.SNID id = 1;
+    string mnemonic = 2;
+    string seed = 3;
+    string path = 4;
+    map<string, sonr.wallet.KeyChain> keychains = 5;
 }

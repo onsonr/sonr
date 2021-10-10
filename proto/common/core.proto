@@ -162,7 +162,7 @@ message Social {
   }
 }
 
-// SNID is the unique identifier of a node with Sonr Protocol
+// SNID is the unique identifier of a user with Sonr Protocol
 message SNID {
     string domain = 1; // Domain Name of the node, e.g. prad.snr
     bytes publicKey = 2; // Public Key of the node, value in the Domains second TXT record

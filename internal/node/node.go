@@ -90,7 +90,7 @@ func NewNode(ctx context.Context, options ...NodeOption) (*Node, *api.Initialize
 	// Handle by Node Mode
 	if opts.mode == Mode_CLIENT {
 		// Client Node Type
-		stub, err := node.startClientService(ctx, opts.listener, opts.olc)
+		stub, err := node.startClientService(ctx, opts)
 		if err != nil {
 			logger.Error("Failed to start Client Service", err)
 			return node, api.NewInitialzeResponse(nil, false), err
@@ -119,7 +119,6 @@ func NewNode(ctx context.Context, options ...NodeOption) (*Node, *api.Initialize
 
 	// Begin Background Tasks
 	go node.Serve(ctx)
-	go node.stub.Serve(ctx)
 	return node, api.NewInitialzeResponse(node.Profile, false), nil
 }
 
@@ -156,13 +155,6 @@ func (n *Node) Peer() (*common.Peer, error) {
 		return nil, err
 	}
 
-	// Find PublicKey Buffer
-	deviceStat, err := device.Stat()
-	if err != nil {
-		logger.Error("Failed to get device Stat", err)
-		return nil, err
-	}
-
 	// Marshal Public Key
 	pubBuf, err := pubKey.Buffer()
 	if err != nil {
@@ -177,10 +169,10 @@ func (n *Node) Peer() (*common.Peer, error) {
 		Profile:   profile,
 		PublicKey: pubBuf,
 		Device: &common.Peer_Device{
-			HostName: deviceStat.HostName,
-			Os:       deviceStat.Os,
-			Id:       deviceStat.Id,
-			Arch:     deviceStat.Arch,
+			HostName: device.HostName(),
+			Os:       device.PrettyOS(),
+			Id:       device.ID(),
+			Arch:     device.PrettyArch(),
 		},
 	}, nil
 }

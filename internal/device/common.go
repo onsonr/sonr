@@ -3,8 +3,7 @@ package device
 import (
 	"errors"
 	"fmt"
-	"os"
-	"path/filepath"
+	"strings"
 
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/internal/keychain"
@@ -34,6 +33,71 @@ var (
 	ErrSeparatorLength            = errors.New("Separator length must be 1.")
 	ErrNoFileNameSet              = errors.New("File name was not set by options.")
 )
+
+// DeviceOption is a function that modifies the node options.
+type DeviceOption func(deviceOptions)
+
+// WithRequest sets the initialize request.
+func WithDirectoryPaths(paths map[string]string) DeviceOption {
+	return func(o deviceOptions) {
+		for k, v := range paths {
+			switch strings.ToLower(k) {
+			case "support":
+				o.Folders = append(o.Folders, Folder{
+					Type: FolderType_SUPPORT,
+					Path: v,
+				})
+			case "temporary":
+				o.Folders = append(o.Folders, Folder{
+					Type: FolderType_TEMPORARY,
+					Path: v,
+				})
+			case "home":
+				home := Folder{
+					Type: FolderType_HOME,
+					Path: v,
+				}
+				if IsMobile() {
+					o.Folders = append(o.Folders, buildMobileFolders(home)...)
+				} else {
+					o.Folders = append(o.Folders, home)
+				}
+			}
+		}
+	}
+}
+
+// deviceOptions are options for the device.
+type deviceOptions struct {
+	Folders []Folder
+}
+
+type getDirFunc func() (string, error)
+
+func defaultDeviceOptions() deviceOptions {
+	opts := deviceOptions{
+		Folders: make([]Folder, 0),
+	}
+	var AddDir = func(f getDirFunc, t FolderType) {
+		p, err := f()
+		if err != nil {
+			logger.Error("Failed to get directory", err)
+			return
+		}
+		opts.Folders = append(opts.Folders, Folder{
+			Type: t,
+			Path: p,
+		})
+	}
+
+	if IsDesktop() {
+		AddDir(UserHomePath, FolderType_HOME)
+		AddDir(UserTemporaryPath, FolderType_TEMPORARY)
+		AddDir(UserSupportPath, FolderType_SUPPORT)
+		return opts
+	}
+	return opts
+}
 
 // NewRecordPrefix returns a new device ID prefix for users HDNS records
 func NewRecordPrefix(sName string) (string, error) {
@@ -66,111 +130,4 @@ func VerifyRecordPrefix(prefix string, sName string) bool {
 		return false
 	}
 	return ok
-}
-
-// DirType is the type of a directory.
-type DirType int
-
-// Directory types
-const (
-	// Support is the type for a support directory.
-	Support DirType = iota
-
-	// Temporary is the type for a temporary directory.
-	Temporary
-
-	// Documents is the type for Documents folder.
-	Documents
-
-	// Downloads is the type for Downloads folder.
-	Downloads
-
-	// Database is the type for Database folder.
-	Database
-
-	// Textile is the type for Textile folder.
-	Textile
-)
-
-// Path returns the path for the directory.
-func (d DirType) Path() (string, error) {
-	// Switch on the directory type
-	switch d {
-	case Support:
-		if SupportPath == "" {
-			return "", ErrDirectoryUnset
-		}
-		return SupportPath, nil
-	case Temporary:
-		if TempPath == "" {
-			return "", ErrDirectoryUnset
-		}
-		return TempPath, nil
-	case Documents:
-		if DocsPath == "" {
-			return "", ErrDirectoryUnset
-		}
-		return DocsPath, nil
-	case Downloads:
-		if DownloadsPath == "" {
-			return "", ErrDirectoryUnset
-		}
-		return DownloadsPath, nil
-	case Database:
-		if DatabasePath == "" {
-			return "", ErrDirectoryUnset
-		}
-		return DatabasePath, nil
-	case Textile:
-		if TextilePath == "" {
-			return "", ErrDirectoryUnset
-		}
-		return TextilePath, nil
-	default:
-		return "", ErrDirectoryInvalid
-	}
-}
-
-// Exists returns true if the directory exists.
-func (d DirType) Exists() bool {
-	// Get the directory path
-	path, err := d.Path()
-	if err != nil {
-		logger.Error("Failed to get Directory path", err)
-		return false
-	}
-
-	// Check if the directory exists
-	if _, err := os.Stat(path); err == nil {
-		return true
-	}
-	return false
-}
-
-// Join returns the path for the directory joined with the path.
-func (d DirType) Join(path string) (string, error) {
-	// Get the directory path
-	dir, err := d.Path()
-	if err != nil {
-		return path, ErrDirectoryJoin
-	}
-
-	// Join the directory with the path
-	return filepath.Join(dir, path), nil
-}
-
-// Has returns true if the directory has the file or directory.
-func (d DirType) Has(p string) bool {
-	// Get the directory path
-	path, err := d.Join(p)
-	if err != nil {
-		logger.Error("Failed to determine joined path", err)
-		return false
-	}
-
-	// Check if the directory has the file or directory
-	if _, err := os.Stat(path); err == nil {
-		return true
-	}
-	return false
 }

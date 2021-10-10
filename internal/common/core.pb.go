@@ -845,7 +845,7 @@ func (x *Social) GetMedia() Social_Media {
 	return Social_OTHER
 }
 
-// SNID is the unique identifier of a node with Sonr Protocol
+// SNID is the unique identifier of a user with Sonr Protocol
 type SNID struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

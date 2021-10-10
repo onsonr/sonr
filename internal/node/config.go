@@ -1,9 +1,8 @@
 package node
 
 import (
-	"context"
 	"errors"
-	"net"
+	"fmt"
 	"os"
 
 	olc "github.com/google/open-location-code/go"
@@ -35,7 +34,6 @@ var (
 
 // NodeStub is the interface for the node based on mode: (client, highway)
 type NodeStub interface {
-	Serve(ctx context.Context) error
 	Close() error
 }
 
@@ -106,9 +104,10 @@ func WithEmitter(e *state.Emitter) NodeOption {
 }
 
 // WithListener sets the TCP Listener for Client stub
-func WithListener(l net.Listener) NodeOption {
+func WithListener(network, address string) NodeOption {
 	return func(o nodeOptions) {
-		o.listener = l
+		o.network = network
+		o.address = address
 	}
 }
 
@@ -116,7 +115,8 @@ func WithListener(l net.Listener) NodeOption {
 type nodeOptions struct {
 	emitter    *state.Emitter
 	mode       NodeMode
-	listener   net.Listener
+	network    string
+	address    string
 	profileBuf []byte
 	connection common.Connection
 	olc        string
@@ -129,5 +129,7 @@ func defaultNodeOptions() nodeOptions {
 		mode:       Mode_CLIENT,
 		olc:        "global",
 		connection: common.Connection_WIFI,
+		network:    "tcp",
+		address:    fmt.Sprintf(":%d", common.RPC_SERVER_PORT),
 	}
 }

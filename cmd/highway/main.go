@@ -31,13 +31,13 @@ func main() {
 	ctx := context.Background()
 	emitter := state.NewEmitter(2048)
 
-	err := device.Init(false)
+	err := device.Init()
 	if err != nil {
 		golog.Fatal("Failed to initialize Device", err)
 	}
 
 	// Create Node
-	n, resp, err := node.NewNode(ctx,  node.WithMode(node.Mode_HIGHWAY))
+	n, resp, err := node.NewNode(ctx, node.WithMode(node.Mode_HIGHWAY))
 	if err != nil {
 		golog.Fatal("Failed to update Profile for Node", err)
 	}

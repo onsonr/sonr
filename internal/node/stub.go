@@ -13,20 +13,20 @@ import (
 	grpc "google.golang.org/grpc"
 )
 
+var DefaultAutoPingTicker = time.NewTicker(5 * time.Second)
+
 // ClientNodeStub is the RPC Service for the Node.
 type ClientNodeStub struct {
 	NodeStub
 	ClientServiceServer
-	*Node
 
-	// Properties
+	node *Node
+
+	// ctx is the context for the RPC Service
 	ctx context.Context
 
 	// grpcServer is the gRPC server.
 	grpcServer *grpc.Server
-
-	// TCPListener for RPC Service
-	listener net.Listener
 
 	// TransferProtocol - the transfer protocol
 	*transfer.TransferProtocol
@@ -42,7 +42,7 @@ type ClientNodeStub struct {
 }
 
 // startClientService creates a new Client service stub for the node.
-func (n *Node) startClientService(ctx context.Context, listener net.Listener, olc string) (NodeStub, error) {
+func (n *Node) startClientService(ctx context.Context, opts nodeOptions) (NodeStub, error) {
 	// Set Transfer Protocol
 	transferProtocol, err := transfer.NewProtocol(ctx, n.host, n.Emitter)
 	if err != nil {
@@ -58,50 +58,70 @@ func (n *Node) startClientService(ctx context.Context, listener net.Listener, ol
 	}
 
 	// Set Local Lobby Protocol if Location is provided
-	lobbyProtocol, err := lobby.NewProtocol(ctx, n.host, n.Emitter, olc)
+	lobbyProtocol, err := lobby.NewProtocol(ctx, n.host, n.Emitter, opts.olc)
 	if err != nil {
 		logger.Child("Client").Error("Failed to start LobbyProtocol", err)
+		return nil, err
+	}
+
+	// Open Listener on Port
+	listener, err := net.Listen(opts.network, opts.address)
+	if err != nil {
+		logger.Child("Client").Fatal("Failed to bind listener to port ", err)
 		return nil, err
 	}
 
 	// Create a new gRPC server
 	grpcServer := grpc.NewServer()
 	cns := &ClientNodeStub{
-		grpcServer:       grpcServer,
-		ctx:              ctx,
-		Node:             n,
 		TransferProtocol: transferProtocol,
 		ExchangeProtocol: exchProtocol,
 		LobbyProtocol:    lobbyProtocol,
-		listener:         listener,
+		grpcServer:       grpcServer,
+		node:             n,
+		ctx:              ctx,
 	}
 
 	// Start Routines
 	RegisterClientServiceServer(grpcServer, cns)
+
+	go cns.Serve(ctx, listener, DefaultAutoPingTicker)
 	return cns, nil
 }
 
-func (s *ClientNodeStub) Serve(ctx context.Context) error {
-	// Handle Node Events
-	if err := s.grpcServer.Serve(s.listener); err != nil {
-		logger.Child("Client").Error("Failed to serve gRPC", err)
-		return err
-	}
+func (s *ClientNodeStub) Serve(ctx context.Context, listener net.Listener, ticker *time.Ticker) {
+	for {
+		// Handle Node Events
+		if err := s.grpcServer.Serve(listener); err != nil {
+			logger.Child("Client").Error("Failed to serve gRPC", err)
+		}
 
-	go s.pushAutomaticPings(ctx, time.NewTicker(5*time.Second))
-	return nil
+		select {
+		case <-ticker.C:
+			// Call Internal Update
+			if err := s.Update(); err != nil {
+				logger.Child("Client").Error("Failed to push Auto Ping", err)
+				ticker.Stop()
+				return
+			}
+		case <-ctx.Done():
+			ticker.Stop()
+			s.grpcServer.Stop()
+			return
+		}
+	}
 }
 
 func (s *ClientNodeStub) Close() error {
+	
 	s.grpcServer.Stop()
-	s.listener.Close()
 	return nil
 }
 
 // Update method updates the node's properties in the Key/Value Store and Lobby
 func (s *ClientNodeStub) Update() error {
 	// Call Internal Edit
-	peer, err := s.Peer()
+	peer, err := s.node.Peer()
 	if err != nil {
 		logger.Child("Client").Error("Failed to push Auto Ping", err)
 		return err
@@ -123,25 +143,6 @@ func (s *ClientNodeStub) Update() error {
 		}
 	}
 	return nil
-}
-
-// pushAutomaticPings sends automatic pings to the network of Profile
-func (s *ClientNodeStub) pushAutomaticPings(ctx context.Context, ticker *time.Ticker) {
-	for {
-		select {
-		case <-ticker.C:
-			// Call Internal Update
-			if err := s.Update(); err != nil {
-				logger.Child("Client").Error("Failed to push Auto Ping", err)
-				ticker.Stop()
-				return
-			}
-		case <-ctx.Done():
-			ticker.Stop()
-			s.grpcServer.Stop()
-			return
-		}
-	}
 }
 
 // HighwayNodeStub is the RPC Service for the Full Node.

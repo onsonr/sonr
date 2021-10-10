@@ -14,7 +14,7 @@ const RPC_SERVER_PORT = 52006
 // Supply supplies the node with the given amount of resources.
 func (s *ClientNodeStub) Supply(ctx context.Context, req *api.SupplyRequest) (*api.SupplyResponse, error) {
 	// Call Internal Supply
-	err := s.Node.Supply(req.GetPaths())
+	err := s.node.Supply(req.GetPaths())
 	if err != nil {
 		return &api.SupplyResponse{
 			Success: false,
@@ -25,7 +25,7 @@ func (s *ClientNodeStub) Supply(ctx context.Context, req *api.SupplyRequest) (*a
 	// Check if Peer is provided
 	if req.GetPeer() != nil {
 		// Call Internal Respond
-		toId, inv, err := s.NewRequest(req.GetPeer())
+		toId, inv, err := s.node.NewRequest(req.GetPeer())
 		if err != nil {
 			return &api.SupplyResponse{
 				Success: false,
@@ -75,7 +75,7 @@ func (s *ClientNodeStub) Edit(ctx context.Context, req *api.EditRequest) (*api.E
 // Fetch method retreives Node properties from Key/Value Store
 func (s *ClientNodeStub) Fetch(ctx context.Context, req *api.FetchRequest) (*api.FetchResponse, error) {
 	// Call Internal Fetch4
-	profile, err := s.Node.Profile()
+	profile, err := s.node.Profile()
 	if err != nil {
 		return &api.FetchResponse{
 			Success: false,
@@ -93,7 +93,7 @@ func (s *ClientNodeStub) Fetch(ctx context.Context, req *api.FetchRequest) (*api
 // Share method sends supplied files/urls with a peer
 func (s *ClientNodeStub) Share(ctx context.Context, req *api.ShareRequest) (*api.ShareResponse, error) {
 	// Call Internal Respond
-	toId, inv, err := s.NewRequest(req.GetPeer())
+	toId, inv, err := s.node.NewRequest(req.GetPeer())
 	if err != nil {
 		return &api.ShareResponse{
 			Success: false,
@@ -154,7 +154,7 @@ func (s *ClientNodeStub) Search(ctx context.Context, req *api.SearchRequest) (*a
 func (s *ClientNodeStub) Respond(ctx context.Context, req *api.RespondRequest) (*api.RespondResponse, error) {
 	// Call Internal Respond
 	if s.TransferProtocol != nil {
-		toId, resp, err := s.NewResponse(req.GetDecision(), req.GetPeer())
+		toId, resp, err := s.node.NewResponse(req.GetDecision(), req.GetPeer())
 		if err != nil {
 			return &api.RespondResponse{
 				Success: false,
