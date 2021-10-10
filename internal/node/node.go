@@ -161,7 +161,11 @@ func (n *Node) Peer() (*common.Peer, error) {
 		logger.Error("Failed to marshal public key", err)
 		return nil, err
 	}
-
+	stat, err := device.Stat()
+	if err != nil {
+		logger.Error("Failed to get device stat", err)
+		return nil, err
+	}
 	// Return Peer
 	return &common.Peer{
 		SName:     strings.ToLower(profile.GetSName()),
@@ -169,10 +173,10 @@ func (n *Node) Peer() (*common.Peer, error) {
 		Profile:   profile,
 		PublicKey: pubBuf,
 		Device: &common.Peer_Device{
-			HostName: device.HostName(),
-			Os:       device.PrettyOS(),
-			Id:       device.ID(),
-			Arch:     device.PrettyArch(),
+			HostName: stat.HostName,
+			Os:       stat.Os,
+			Id:       stat.Id,
+			Arch:     stat.Arch,
 		},
 	}, nil
 }

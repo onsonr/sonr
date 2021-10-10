@@ -6,14 +6,12 @@ import (
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/node"
-	"github.com/sonr-io/core/tools/state"
 )
 
 type SonrBin struct {
 	// Properties
-	ctx     context.Context
-	node    *node.Node
-	emitter *state.Emitter
+	ctx  context.Context
+	node *node.Node
 }
 
 var (
@@ -32,8 +30,7 @@ func main() {
 
 	// Initialize Device
 	ctx := context.Background()
-	emitter := state.NewEmitter(2048)
-	err := device.Init()
+	err := device.Init(true)
 	if err != nil {
 		golog.Fatal("Failed to initialize Device", err)
 	}
@@ -49,9 +46,8 @@ func main() {
 
 	// Set Lib
 	sonrBin = &SonrBin{
-		ctx:     ctx,
-		emitter: emitter,
-		node:    n,
+		ctx:  ctx,
+		node: n,
 	}
 }
 

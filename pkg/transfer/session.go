@@ -129,7 +129,7 @@ func (sq *SessionQueue) Done() (*api.CompleteEvent, error) {
 	rawPayload := val.request.GetPayload()
 
 	// Adjust Payload item paths
-	adjPayload, err := rawPayload.ReplaceItemsDir(device.FS.Downloads.Path)
+	adjPayload, err := rawPayload.ReplaceItemsDir(device.DownloadsPath)
 	if err != nil {
 		return nil, err
 	}

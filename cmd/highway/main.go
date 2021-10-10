@@ -31,7 +31,7 @@ func main() {
 	ctx := context.Background()
 	emitter := state.NewEmitter(2048)
 
-	err := device.Init()
+	err := device.Init(true)
 	if err != nil {
 		golog.Fatal("Failed to initialize Device", err)
 	}

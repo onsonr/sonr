@@ -96,21 +96,6 @@ func WithMode(m NodeMode) NodeOption {
 	}
 }
 
-// WithEmitter sets the emitter for the node.
-func WithEmitter(e *state.Emitter) NodeOption {
-	return func(o nodeOptions) {
-		o.emitter = e
-	}
-}
-
-// WithListener sets the TCP Listener for Client stub
-func WithListener(network, address string) NodeOption {
-	return func(o nodeOptions) {
-		o.network = network
-		o.address = address
-	}
-}
-
 // nodeOptions is a collection of options for the node.
 type nodeOptions struct {
 	emitter    *state.Emitter

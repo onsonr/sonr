@@ -61,12 +61,7 @@ type Keychain interface {
 }
 
 // NewKeychain creates a new keychain with Config.
-func NewKeychain(path string) (Keychain, error) {
-	// Create Device Config
-	config := &config.Config{
-		Path: path,
-		Type: config.Support,
-	}
+func NewKeychain(config *config.Config) (Keychain, error) {
 	// Check if Keychain exists
 	if keychainExists(config) {
 		// Load Existing Keychain

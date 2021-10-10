@@ -54,7 +54,7 @@ func NewDatabasePath(path string, opts ...FilePathOption) (string, error) {
 	}
 
 	// Build path
-	return fpo.Apply(FS.Database.Path)
+	return fpo.Apply(DocsPath)
 }
 
 // NewDocsPath Returns a new path in docs dir with given file name.
@@ -74,7 +74,7 @@ func NewDocsPath(path string, opts ...FilePathOption) (string, error) {
 	}
 
 	// Build path
-	return fpo.Apply(FS.Documents.Path)
+	return fpo.Apply(DocsPath)
 }
 
 // NewDownloadsPath Returns a new path in downloads dir with given file name.
@@ -94,7 +94,7 @@ func NewDownloadsPath(path string, opts ...FilePathOption) (string, error) {
 	}
 
 	// Build path
-	return fpo.Apply(FS.Downloads.Path)
+	return fpo.Apply(DownloadsPath)
 }
 
 // NewTempPath Returns a new path in temp dir with given file name.
@@ -114,7 +114,7 @@ func NewTempPath(path string, opts ...FilePathOption) (string, error) {
 	}
 
 	// Build path
-	return fpo.Apply(FS.Temporary.Path)
+	return fpo.Apply(TempPath)
 }
 
 // NewSupportPath Returns a new path in support dir with given file name.
@@ -134,7 +134,7 @@ func NewSupportPath(path string, opts ...FilePathOption) (string, error) {
 	}
 
 	// Build path
-	return fpo.Apply(FS.Downloads.Path)
+	return fpo.Apply(DownloadsPath)
 }
 
 // FilePathOption is a function option for FilePath.

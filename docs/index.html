@@ -227,10 +227,6 @@
                 </li>
               
                 <li>
-                  <a href="#sonr.api.InitializeRequest.DeviceOptions.FoldersEntry"><span class="badge">M</span>InitializeRequest.DeviceOptions.FoldersEntry</a>
-                </li>
-              
-                <li>
                   <a href="#sonr.api.InitializeRequest.HostOptions"><span class="badge">M</span>InitializeRequest.HostOptions</a>
                 </li>
               
@@ -670,60 +666,6 @@
               
                 <li>
                   <a href="#sonr.protocols.transfer.InviteResponse"><span class="badge">M</span>InviteResponse</a>
-                </li>
-              
-              
-              
-              
-            </ul>
-          </li>
-        
-          
-          <li>
-            <a href="#proto%2fwallet%2fkeychain.proto">proto/wallet/keychain.proto</a>
-            <ul>
-              
-                <li>
-                  <a href="#sonr.wallet.KeyChain"><span class="badge">M</span>KeyChain</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.wallet.KeyPair"><span class="badge">M</span>KeyPair</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.wallet.PrivateKey"><span class="badge">M</span>PrivateKey</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.wallet.PublicKey"><span class="badge">M</span>PublicKey</a>
-                </li>
-              
-              
-                <li>
-                  <a href="#sonr.wallet.KeyChainCategory"><span class="badge">E</span>KeyChainCategory</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.wallet.KeyType"><span class="badge">E</span>KeyType</a>
-                </li>
-              
-              
-              
-            </ul>
-          </li>
-        
-          
-          <li>
-            <a href="#proto%2fwallet%2fwallet.proto">proto/wallet/wallet.proto</a>
-            <ul>
-              
-                <li>
-                  <a href="#sonr.wallet.Wallet"><span class="badge">M</span>Wallet</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.wallet.Wallet.KeychainsEntry"><span class="badge">M</span>Wallet.KeychainsEntry</a>
                 </li>
               
               
@@ -1173,41 +1115,45 @@
                 </tr>
               
                 <tr>
-                  <td>folders</td>
-                  <td><a href="#sonr.api.InitializeRequest.DeviceOptions.FoldersEntry">InitializeRequest.DeviceOptions.FoldersEntry</a></td>
-                  <td>repeated</td>
-                  <td><p>Device Directories </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.api.InitializeRequest.DeviceOptions.FoldersEntry">InitializeRequest.DeviceOptions.FoldersEntry</h3>
-        <p></p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>key</td>
+                  <td>cacheDir</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Cache Directory </p></td>
                 </tr>
               
                 <tr>
-                  <td>value</td>
+                  <td>databaseDir</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Database Directory </p></td>
+                </tr>
+              
+                <tr>
+                  <td>documentsDir</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Documents Directory </p></td>
+                </tr>
+              
+                <tr>
+                  <td>downloadsDir</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Downloads Directory </p></td>
+                </tr>
+              
+                <tr>
+                  <td>textileDir</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Textile Directory </p></td>
+                </tr>
+              
+                <tr>
+                  <td>supportDir</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Support Directory </p></td>
                 </tr>
               
             </tbody>
@@ -4943,339 +4889,6 @@ Returns a stream of Lobby Refresh Events</p></td>
                   <td><a href="#sonr.core.Metadata">sonr.core.Metadata</a></td>
                   <td></td>
                   <td><p>Metadata </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-
-      
-
-      
-
-      
-    
-      
-      <div class="file-heading">
-        <h2 id="proto/wallet/keychain.proto">proto/wallet/keychain.proto</h2><a href="#title">Top</a>
-      </div>
-      <p></p>
-
-      
-        <h3 id="sonr.wallet.KeyChain">KeyChain</h3>
-        <p></p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>Keys</td>
-                  <td><a href="#sonr.wallet.KeyPair">KeyPair</a></td>
-                  <td>repeated</td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>Category</td>
-                  <td><a href="#sonr.wallet.KeyChainCategory">KeyChainCategory</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>Path</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>LastModified</td>
-                  <td><a href="#int64">int64</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.wallet.KeyPair">KeyPair</h3>
-        <p></p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>Name</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>Type</td>
-                  <td><a href="#sonr.wallet.KeyType">KeyType</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>Public</td>
-                  <td><a href="#sonr.wallet.PublicKey">PublicKey</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>Private</td>
-                  <td><a href="#sonr.wallet.PrivateKey">PrivateKey</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.wallet.PrivateKey">PrivateKey</h3>
-        <p></p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>Type</td>
-                  <td><a href="#sonr.wallet.KeyType">KeyType</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>Data</td>
-                  <td><a href="#bytes">bytes</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.wallet.PublicKey">PublicKey</h3>
-        <p></p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>Type</td>
-                  <td><a href="#sonr.wallet.KeyType">KeyType</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>Data</td>
-                  <td><a href="#bytes">bytes</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-
-      
-        <h3 id="sonr.wallet.KeyChainCategory">KeyChainCategory</h3>
-        <p></p>
-        <table class="enum-table">
-          <thead>
-            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
-          </thead>
-          <tbody>
-            
-              <tr>
-                <td>LIBP2P</td>
-                <td>0</td>
-                <td><p></p></td>
-              </tr>
-            
-              <tr>
-                <td>HDNS</td>
-                <td>1</td>
-                <td><p></p></td>
-              </tr>
-            
-              <tr>
-                <td>TEXTILE</td>
-                <td>2</td>
-                <td><p></p></td>
-              </tr>
-            
-              <tr>
-                <td>ETHEREUM</td>
-                <td>3</td>
-                <td><p></p></td>
-              </tr>
-            
-          </tbody>
-        </table>
-      
-        <h3 id="sonr.wallet.KeyType">KeyType</h3>
-        <p></p>
-        <table class="enum-table">
-          <thead>
-            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
-          </thead>
-          <tbody>
-            
-              <tr>
-                <td>RSA</td>
-                <td>0</td>
-                <td><p></p></td>
-              </tr>
-            
-              <tr>
-                <td>Ed25519</td>
-                <td>1</td>
-                <td><p></p></td>
-              </tr>
-            
-              <tr>
-                <td>Secp256k1</td>
-                <td>2</td>
-                <td><p></p></td>
-              </tr>
-            
-              <tr>
-                <td>ECDSA</td>
-                <td>3</td>
-                <td><p></p></td>
-              </tr>
-            
-          </tbody>
-        </table>
-      
-
-      
-
-      
-    
-      
-      <div class="file-heading">
-        <h2 id="proto/wallet/wallet.proto">proto/wallet/wallet.proto</h2><a href="#title">Top</a>
-      </div>
-      <p></p>
-
-      
-        <h3 id="sonr.wallet.Wallet">Wallet</h3>
-        <p></p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>id</td>
-                  <td><a href="#sonr.core.SNID">sonr.core.SNID</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>mnemonic</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>seed</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>path</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>keychains</td>
-                  <td><a href="#sonr.wallet.Wallet.KeychainsEntry">Wallet.KeychainsEntry</a></td>
-                  <td>repeated</td>
-                  <td><p> </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.wallet.Wallet.KeychainsEntry">Wallet.KeychainsEntry</h3>
-        <p></p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>key</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>value</td>
-                  <td><a href="#sonr.wallet.KeyChain">KeyChain</a></td>
-                  <td></td>
-                  <td><p> </p></td>
                 </tr>
               
             </tbody>
