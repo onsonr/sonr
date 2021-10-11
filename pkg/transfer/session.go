@@ -42,8 +42,8 @@ func (s Session) Equals(id *common.UUID) bool {
 }
 
 // MapItems performs PayloadItemFunc on each item in the Payload.
-func (s Session) MapItems(f common.PayloadItemFunc) error {
-	return s.request.GetPayload().MapItems(f)
+func (s Session) Items() []*common.Payload_Item {
+	return s.request.GetPayload().GetItems()
 }
 
 func (s Session) Wait(ctx context.Context) error {
@@ -184,7 +184,7 @@ func (sq *SessionQueue) Validate(resp *InviteResponse) (*Session, error) {
 	}
 
 	// Check if Request exists in Map
-	if entry.Equals(resp.GetUuid()) {
+	if entry != nil {
 		entry.response = resp
 		entry.lastUpdated = int64(time.Now().Unix())
 		return entry, nil

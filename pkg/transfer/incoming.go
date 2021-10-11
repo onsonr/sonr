@@ -52,47 +52,37 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 	e, err := p.queue.Next()
 	if err != nil {
 		logger.Error("Failed to find transfer request", err)
+		s.Reset()
 		return
 	}
 
 	// Initialize Params
 	logger.Info("Started Incoming Transfer...")
-	waitGroup := sync.WaitGroup{}
 	reader := msgio.NewReader(s)
 
 	// Handle incoming stream
-	go func(entry *Session, wg sync.WaitGroup, rs msgio.ReadCloser) {
+	go func(entry *Session, rs msgio.ReadCloser) {
 		// Write All Files
-		err = entry.MapItems(func(m *common.Payload_Item, i int, count int) error {
-			// Add to WaitGroup
-			wg.Add(1)
-
-			// Create New Reader
+		for i := range entry.Items() {
+			// Create Reader
 			r, err := entry.NewReader(i, p.emitter)
 			if err != nil {
-				logger.Error("Error creating reader", err)
-				return err
+				logger.Error("Failed to create reader", err)
+				return
 			}
 
-			// Read From Stream
+			// Write to File
 			err = r.ReadFrom(rs)
 			if err != nil {
-				logger.Error("Failed to Read from Stream and Write to File.", err)
-				return err
+				logger.Error("Failed to write to file", err)
+				return
 			}
 
-			// Complete Writing
-			logger.Info(fmt.Sprintf("Finished RECEIVING File (%v/%v)", i+1, count))
-			wg.Done()
-			return nil
-		})
-		if err != nil {
-			logger.Error("Error writing stream", err)
-			return
+			// Update Progress
+			logger.Info(fmt.Sprintf("Finished RECEIVING File (%v/%v)", i+1, entry.Count()))
 		}
 
 		// Await WaitGroup
-		waitGroup.Wait()
 		reader.Close()
 
 		// Complete the transfer
@@ -104,7 +94,7 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 
 		// Emit Event
 		p.emitter.Emit(Event_COMPLETED, event)
-	}(e, waitGroup, reader)
+	}(e, reader)
 }
 
 // itemReader is a Reader for a FileItem

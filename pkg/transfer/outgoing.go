@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	sync "sync"
 
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -62,37 +61,23 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 func (p *TransferProtocol) onOutgoingTransfer(entry *Session, wc msgio.WriteCloser) {
 	// Initialize Params
 	logger.Info("Beginning Outgoing Transfer Stream")
-	wg := sync.WaitGroup{}
-
-	// Write All Files
-	err := entry.MapItems(func(m *common.Payload_Item, i int, count int) error {
-		// Add to WaitGroup
-		wg.Add(1)
-
+	for i := range entry.Items() {
 		// Create New Writer
 		w, err := entry.NewWriter(i, p.emitter)
 		if err != nil {
 			logger.Error("Failed to create new writer.", err)
-			return err
+			wc.Close()
+			break
 		}
 
 		// Write File to Stream
 		if err := w.WriteTo(wc); err != nil {
 			logger.Error("Error writing stream", err)
-			return err
+			wc.Close()
+			break
 		}
-
-		// Complete Writing
-		wg.Done()
-		return nil
-	})
-	if err != nil {
-		logger.Error("Error writing stream", err)
-		return
 	}
 
-	// Complete the transfer
-	wg.Wait()
 	event, err := p.queue.Done()
 	if err != nil {
 		logger.Error("Failed to Complete Transfer", err)
