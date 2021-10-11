@@ -79,16 +79,6 @@ func (p *TransferProtocol) Respond(id peer.ID, resp *InviteResponse) error {
 		return ErrInvalidResponse
 	}
 
-	// Find Entry
-	entry, err := p.queue.Next()
-	if err != nil {
-		logger.Error("Failed to find transfer entry", err)
-		return err
-	}
-
-	// Copy UUID
-	resp = entry.CopyUUID(resp)
-
 	// sign the data
 	signature, err := p.host.SignMessage(resp)
 	if err != nil {

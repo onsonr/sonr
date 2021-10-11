@@ -227,13 +227,6 @@ func (n *Node) NewRequest(to *common.Peer) (peer.ID, *transfer.InviteRequest, er
 		// Get Payload
 		payload := n.queue.Remove(elem).(*common.Payload)
 
-		// Create New ID for Invite
-		id, err := device.KeyChain.CreateUUID()
-		if err != nil {
-			logger.Error("Failed to create new id for Shared Invite", err)
-			return "", nil, err
-		}
-
 		// Create new Metadata
 		meta, err := device.KeyChain.CreateMetadata(n.host.ID())
 		if err != nil {
@@ -254,7 +247,6 @@ func (n *Node) NewRequest(to *common.Peer) (peer.ID, *transfer.InviteRequest, er
 			Metadata: api.SignedMetadataToProto(meta),
 			To:       to,
 			From:     from,
-			Uuid:     api.SignedUUIDToProto(id),
 		}
 
 		// Fetch Peer ID from Public Key

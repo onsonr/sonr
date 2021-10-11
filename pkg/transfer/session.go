@@ -28,12 +28,6 @@ func (s Session) Count() int {
 	return len(s.request.GetPayload().GetItems())
 }
 
-// CopyUUID copies Request UUID to Response
-func (s Session) CopyUUID(resp *InviteResponse) *InviteResponse {
-	resp.Uuid = s.uuid
-	return resp
-}
-
 // Equals checks if given ID is equal to the current UUID.
 func (s Session) Equals(id *common.UUID) bool {
 	return s.uuid.GetValue() == id.GetValue()
@@ -66,7 +60,6 @@ func (sq *SessionQueue) AddIncoming(from peer.ID, req *InviteRequest) error {
 		fromId:      from,
 		toId:        sq.host.ID(),
 		lastUpdated: int64(time.Now().Unix()),
-		uuid:        req.GetUuid(),
 	}
 
 	// Add to Requests
@@ -83,7 +76,6 @@ func (sq *SessionQueue) AddOutgoing(to peer.ID, req *InviteRequest) error {
 		fromId:      sq.host.ID(),
 		toId:        to,
 		lastUpdated: int64(time.Now().Unix()),
-		uuid:        req.GetUuid(),
 	}
 
 	// Add to Requests
@@ -151,17 +143,6 @@ func (sq *SessionQueue) Validate(resp *InviteResponse) (*Session, error) {
 	// Check if the request is valid
 	if sq.queue.Len() == 0 {
 		return nil, ErrEmptyRequests
-	}
-
-	// Validate UUID
-	ok, err := sq.host.AuthenticateId(resp.GetUuid())
-	if err != nil {
-		return nil, err
-	}
-
-	// Check if UUID is valid
-	if !ok {
-		return nil, ErrMismatchUUID
 	}
 
 	// Get Next Entry
