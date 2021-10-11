@@ -55,12 +55,13 @@ func (n *Node) openStore(ctx context.Context, opts *nodeOptions) error {
 func (n *Node) AddRecent(profile *common.Profile) error {
 	// Check if Store is open
 	if n.store == nil {
-		logger.Error("Failed to Add Recent", ErrStoreNotCreated)
-		return ErrStoreNotCreated
+		logger.Error("Failed to Add Recent", ErrProtocolsNotSet)
+		return ErrProtocolsNotSet
 	}
 
 	// Check if profile is nil
 	if profile == nil {
+		logger.Error("Failed to Add Recent", ErrProfileNotProvided)
 		return ErrProfileNotProvided
 	}
 
@@ -74,6 +75,7 @@ func (n *Node) AddRecent(profile *common.Profile) error {
 		// Get profile list buffer
 		oldBuf, err := n.store.Get(key)
 		if err != nil {
+			logger.Error("Failed to Get old Recents from store")
 			return err
 		}
 
@@ -81,6 +83,7 @@ func (n *Node) AddRecent(profile *common.Profile) error {
 		profileList := common.ProfileList{}
 		err = proto.Unmarshal(oldBuf, &profileList)
 		if err != nil {
+			logger.Error("Failed to Unmarshal ProfileList")
 			return err
 		}
 
@@ -90,6 +93,7 @@ func (n *Node) AddRecent(profile *common.Profile) error {
 		// Marshal profile
 		val, err := proto.Marshal(&profileList)
 		if err != nil {
+			logger.Error("Failed to Marshal ProfileList")
 			return err
 		}
 
@@ -115,8 +119,8 @@ func (n *Node) AddRecent(profile *common.Profile) error {
 func (n *Node) Profile() (*common.Profile, error) {
 	// Check if Store is open
 	if n.store == nil {
-		logger.Error("Failed to Get Profile", ErrStoreNotCreated)
-		return common.NewDefaultProfile(), ErrStoreNotCreated
+		logger.Error("Failed to Get Profile", ErrProtocolsNotSet)
+		return common.NewDefaultProfile(), ErrProtocolsNotSet
 	}
 	if n.store.Has(PROFILE_KEY) {
 		pbuf, err := n.store.Get(PROFILE_KEY)
@@ -138,8 +142,8 @@ func (n *Node) Profile() (*common.Profile, error) {
 func (n *Node) SetProfile(profile *common.Profile) error {
 	// Check if Store is open
 	if n.store == nil {
-		logger.Error("Failed to Set Profile", ErrStoreNotCreated)
-		return ErrStoreNotCreated
+		logger.Error("Failed to Set Profile", ErrProtocolsNotSet)
+		return ErrProtocolsNotSet
 	}
 
 	// Check if profile is nil

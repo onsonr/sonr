@@ -45,7 +45,7 @@ func (s *ClientNodeStub) Supply(ctx context.Context, req *api.SupplyRequest) (*a
 		} else {
 			return &api.SupplyResponse{
 				Success: false,
-				Error:   ErrTransferNotCreated.Error(),
+				Error:   ErrProtocolsNotSet.Error(),
 			}, nil
 		}
 	}
@@ -113,7 +113,7 @@ func (s *ClientNodeStub) Share(ctx context.Context, req *api.ShareRequest) (*api
 	} else {
 		return &api.ShareResponse{
 			Success: false,
-			Error:   ErrTransferNotCreated.Error(),
+			Error:   ErrProtocolsNotSet.Error(),
 		}, nil
 	}
 
@@ -144,7 +144,7 @@ func (s *ClientNodeStub) Search(ctx context.Context, req *api.SearchRequest) (*a
 	} else {
 		return &api.SearchResponse{
 			Success: false,
-			Error:   ErrExchangeNotCreated.Error(),
+			Error:   ErrProtocolsNotSet.Error(),
 		}, nil
 	}
 
@@ -178,7 +178,7 @@ func (s *ClientNodeStub) Respond(ctx context.Context, req *api.RespondRequest) (
 	} else {
 		return &api.RespondResponse{
 			Success: false,
-			Error:   ErrTransferNotCreated.Error(),
+			Error:   ErrProtocolsNotSet.Error(),
 		}, nil
 	}
 

@@ -221,8 +221,13 @@ type filePathOptions struct {
 // Merge merges the file path options.
 func (fpo *filePathOptions) Merge(name string, optsList ...*filePathOptions) error {
 	// Initialize options
-	fpo.baseName = strings.Split(name, ".")[0]
-	fpo.extension = strings.Split(name, ".")[1]
+	if strings.Contains(".", name) {
+		fpo.baseName = strings.Split(name, ".")[0]
+		fpo.extension = strings.Split(name, ".")[1]
+	} else {
+		fpo.baseName = name
+		fpo.extension = ""
+	}
 
 	// Set Checkers
 	fpo.suffixSet = false
@@ -313,7 +318,9 @@ func (fpo *filePathOptions) Apply(dir string) (string, error) {
 	}
 
 	// Add extension
-	fpo.fileName = fpo.fileName + "." + fpo.extension
+	if fpo.extension != "" {
+		fpo.fileName = fpo.fileName + "." + fpo.extension
+	}
 
 	// Check if file name is set
 	if fpo.fileName != "" {

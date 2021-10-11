@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net"
+	"time"
 
 	"github.com/kataras/golog"
 	api "github.com/sonr-io/core/internal/api"
@@ -20,16 +22,13 @@ var (
 	ErrRecentsNotCreated  = errors.New("Recents has not been created yet.")
 	ErrProfileNotCreated  = errors.New("Profile has not been created yet.")
 	ErrProfileNotProvided = errors.New("Profile has not been provided to Store.")
-	ErrProfileIsOlder     = errors.New("Profile is older than the oldest one on disk.")
-	ErrProfileNoTimestamp = errors.New("Profile has no timestamp.")
-	ErrStoreNotCreated    = errors.New("Node Store has not been opened/created.")
-	ErrLobbyNotCreated    = errors.New("LobbyProtocol has not been created")
-	ErrExchangeNotCreated = errors.New("ExchangeProtocol has not been created")
-	ErrTransferNotCreated = errors.New("TransferProtocol has not been created")
+	ErrProtocolsNotSet    = errors.New("Node Protocol has not been initialized.")
 )
 
 // NodeStub is the interface for the node based on mode: (client, highway)
 type NodeStub interface {
+	Serve(ctx context.Context, listener net.Listener, ticker *time.Ticker)
+	HasProtocols() bool
 	Close() error
 }
 
