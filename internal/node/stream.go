@@ -85,22 +85,20 @@ func (s *ClientNodeStub) OnTransferComplete(e *Empty, stream ClientService_OnTra
 		case m := <-s.node.completeEvents:
 			if m != nil {
 				// Check Direction
+				stream.Send(m)
 				if m.Direction == api.CompleteEvent_INCOMING {
 					// Add Sender to Recents
 					err := s.node.AddRecent(m.GetFrom().GetProfile())
 					if err != nil {
 						logger.Child("Client").Error("Failed to add sender's profile to store.", err)
-						return err
 					}
 				} else {
 					// Add Receiver to Recents
 					err := s.node.AddRecent(m.GetTo().GetProfile())
 					if err != nil {
 						logger.Child("Client").Error("Failed to add receiver's profile to store.", err)
-						return err
 					}
 				}
-				stream.Send(m)
 			}
 		}
 	}

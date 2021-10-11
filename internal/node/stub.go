@@ -88,13 +88,14 @@ func (n *Node) startClientService(ctx context.Context, opts *nodeOptions) (NodeS
 	return cns, nil
 }
 
+// Serve serves the RPC Service on the given port.
 func (s *ClientNodeStub) Serve(ctx context.Context, listener net.Listener, ticker *time.Ticker) {
-	for {
-		// Handle Node Events
-		if err := s.grpcServer.Serve(listener); err != nil {
-			logger.Error("Failed to serve gRPC", err)
-		}
+	// Handle Node Events
+	if err := s.grpcServer.Serve(listener); err != nil {
+		logger.Error("Failed to serve gRPC", err)
+	}
 
+	for {
 		select {
 		case <-ticker.C:
 			// Call Internal Update
@@ -102,6 +103,7 @@ func (s *ClientNodeStub) Serve(ctx context.Context, listener net.Listener, ticke
 				logger.Error("Failed to push Auto Ping", err)
 			}
 		case <-ctx.Done():
+			listener.Close()
 			ticker.Stop()
 			s.grpcServer.Stop()
 			return
@@ -109,8 +111,8 @@ func (s *ClientNodeStub) Serve(ctx context.Context, listener net.Listener, ticke
 	}
 }
 
+// Close closes the RPC Service.
 func (s *ClientNodeStub) Close() error {
-
 	s.grpcServer.Stop()
 	return nil
 }

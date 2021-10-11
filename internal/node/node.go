@@ -66,17 +66,9 @@ func NewNode(ctx context.Context, options ...NodeOption) (*Node, *api.Initialize
 		opt(opts)
 	}
 
-	// Initialize Host
-	host, err := host.NewHost(ctx, opts.emitter, host.WithConnection(opts.connection))
-	if err != nil {
-		logger.Error("Failed to initialize host", err)
-		return nil, api.NewInitialzeResponse(nil, false), err
-	}
-
 	// Create Node
 	node := &Node{
-		Emitter:        opts.emitter,
-		host:           host,
+		Emitter:        state.NewEmitter(2048),
 		ctx:            ctx,
 		queue:          list.New(),
 		decisionEvents: make(chan *api.DecisionEvent),
@@ -87,34 +79,26 @@ func NewNode(ctx context.Context, options ...NodeOption) (*Node, *api.Initialize
 		completeEvents: make(chan *api.CompleteEvent),
 	}
 
-	// Handle by Node Mode
-	if opts.mode == Mode_CLIENT {
-		// Client Node Type
-		stub, err := node.startClientService(ctx, opts)
-		if err != nil {
-			logger.Error("Failed to start Client Service", err)
-			return node, api.NewInitialzeResponse(nil, false), err
-		}
+	// Open Store with profileBuf
+	err := node.openStore(ctx, opts)
+	if err != nil {
+		logger.Error("Failed to open database", err)
+		return node, api.NewInitialzeResponse(nil, false), err
+	}
 
-		// Set Stub to node
-		node.stub = stub
+	// Initialize Host
+	host, err := host.NewHost(ctx, node.Emitter, host.WithConnection(opts.connection))
+	if err != nil {
+		logger.Error("Failed to initialize host", err)
+		return nil, api.NewInitialzeResponse(nil, false), err
+	}
+	node.host = host
 
-		// Open Store with profileBuf
-		err = node.openStore(ctx, opts)
-		if err != nil {
-			logger.Error("Failed to open database", err)
-			return node, api.NewInitialzeResponse(nil, false), err
-		}
-	} else {
-		// Highway Node Type
-		stub, err := node.startHighwayService(ctx, opts)
-		if err != nil {
-			logger.Error("Failed to start Highway Service", err)
-			return node, api.NewInitialzeResponse(nil, false), err
-		}
-
-		// Set Stub to node
-		node.stub = stub
+	// Initialize Stub
+	err = opts.Apply(node.ctx, node)
+	if err != nil {
+		logger.Error("Failed to initialize stub", err)
+		return nil, api.NewInitialzeResponse(nil, false), err
 	}
 
 	// Begin Background Tasks

@@ -1,6 +1,7 @@
 package node
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"os"
@@ -9,7 +10,6 @@ import (
 	"github.com/kataras/golog"
 	api "github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
-	"github.com/sonr-io/core/tools/state"
 
 	"google.golang.org/protobuf/proto"
 )
@@ -37,15 +37,15 @@ type NodeStub interface {
 	Close() error
 }
 
-// NodeMode is the type of the node (Client, Highway)
-type NodeMode int
+// NodeStubMode is the type of the node (Client, Highway)
+type NodeStubMode int
 
 const (
-	// Mode_CLIENT is the Node utilized by Desktop, Mobile and Web Clients
-	Mode_CLIENT NodeMode = iota
+	// StubMode_CLIENT is the Node utilized by Desktop, Mobile and Web Clients
+	StubMode_CLIENT NodeStubMode = iota
 
-	// Mode_HIGHWAY is the Node utilized by long running Server processes
-	Mode_HIGHWAY
+	// StubMode_HIGHWAY is the Node utilized by long running Server processes
+	StubMode_HIGHWAY
 )
 
 // NodeOption is a function that modifies the node options.
@@ -53,6 +53,18 @@ type NodeOption func(*nodeOptions)
 
 // WithRequest sets the initialize request.
 func WithRequest(req *api.InitializeRequest) NodeOption {
+	// Set Profile buffer
+	profile := common.NewDefaultProfile(common.WithCheckerProfile(req.GetProfile()), common.WithPicture())
+	proBuf, err := proto.Marshal(profile)
+	if err != nil {
+		logger.Child("Config").Error("Failed to marshal Profile", err)
+	}
+	code := olc.Encode(req.GetLocation().GetLatitude(), req.GetLocation().GetLongitude(), 8)
+	if code == "" {
+		logger.Child("Config").Error("Failed to Determine OLC Code, set to Global")
+		code = "global"
+	}
+
 	return func(o *nodeOptions) {
 		// Set Connection
 		o.connection = req.Connection
@@ -70,27 +82,14 @@ func WithRequest(req *api.InitializeRequest) NodeOption {
 			}
 		}
 
-		// Set OLC code
-		code := olc.Encode(req.GetLocation().GetLatitude(), req.GetLocation().GetLongitude(), 8)
-		if code == "" {
-			logger.Child("Config").Error("Failed to Determine OLC Code, set to Global")
-			o.olc = "global"
-		} else {
-			o.olc = code
-		}
-
-		// Set Profile buffer
-		profile := common.NewDefaultProfile(common.WithCheckerProfile(req.GetProfile()), common.WithPicture())
-		proBuf, err := proto.Marshal(profile)
-		if err != nil {
-			logger.Child("Config").Error("Failed to marshal Profile", err)
-		}
+		// Set Properties
+		o.olc = code
 		o.profileBuf = proBuf
 	}
 }
 
 // WithMode starts the Client RPC server and sets the node as a client node.
-func WithMode(m NodeMode) NodeOption {
+func WithMode(m NodeStubMode) NodeOption {
 	return func(o *nodeOptions) {
 		o.mode = m
 	}
@@ -98,8 +97,7 @@ func WithMode(m NodeMode) NodeOption {
 
 // nodeOptions is a collection of options for the node.
 type nodeOptions struct {
-	emitter    *state.Emitter
-	mode       NodeMode
+	mode       NodeStubMode
 	network    string
 	address    string
 	profileBuf []byte
@@ -110,11 +108,37 @@ type nodeOptions struct {
 // defaultNodeOptions returns the default node options.
 func defaultNodeOptions() *nodeOptions {
 	return &nodeOptions{
-		emitter:    state.NewEmitter(2048),
-		mode:       Mode_CLIENT,
+		mode:       StubMode_CLIENT,
 		olc:        "global",
 		connection: common.Connection_WIFI,
 		network:    "tcp",
 		address:    fmt.Sprintf(":%d", common.RPC_SERVER_PORT),
 	}
+}
+
+func (opts *nodeOptions) Apply(ctx context.Context, node *Node) error {
+	// Handle by Node Mode
+	if opts.mode == StubMode_CLIENT {
+		// Client Node Type
+		stub, err := node.startClientService(ctx, opts)
+		if err != nil {
+			logger.Error("Failed to start Client Service", err)
+			return err
+		}
+
+		// Set Stub to node
+		node.stub = stub
+
+	} else {
+		// Highway Node Type
+		stub, err := node.startHighwayService(ctx, opts)
+		if err != nil {
+			logger.Error("Failed to start Highway Service", err)
+			return err
+		}
+
+		// Set Stub to node
+		node.stub = stub
+	}
+	return nil
 }

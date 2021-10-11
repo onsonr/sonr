@@ -7,12 +7,11 @@ import (
 	"github.com/pkg/errors"
 )
 
-// ** ───────────────────────────────────────────────────────
-// ** ─── General ───────────────────────────────────────────
-// ** ───────────────────────────────────────────────────────
 // RPC_SERVER_PORT is the port the RPC service listens on.
+// Calculated: (Sister Bday + Dad Bday + Mom Bday) / Mine
 const RPC_SERVER_PORT = 26225
 
+// GetProfileFunc returns a function that returns the Profile and error
 type GetProfileFunc func() (*Profile, error)
 
 var (

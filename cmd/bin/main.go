@@ -36,7 +36,7 @@ func main() {
 	}
 
 	// Create Node
-	n, resp, err := node.NewNode(ctx, node.WithMode(node.Mode_CLIENT))
+	n, resp, err := node.NewNode(ctx, node.WithMode(node.StubMode_CLIENT))
 	if err != nil {
 		golog.Fatal("Failed to update Profile for Node", err)
 	}

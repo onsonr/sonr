@@ -28,6 +28,12 @@ func init() {
 
 // Start starts the host, node, and rpc service.
 func Start(reqBuf []byte) {
+	// Prevent duplicate start
+	if instance != nil {
+		return
+	}
+
+	// Parse Initialize Request
 	ctx := context.Background()
 	isDev, req, dOpts, err := parseInitializeRequest(reqBuf)
 	if err != nil {
@@ -43,7 +49,7 @@ func Start(reqBuf []byte) {
 	}
 
 	// Create Node
-	n, _, err := node.NewNode(ctx, node.WithRequest(req), node.WithMode(node.Mode_CLIENT))
+	n, _, err := node.NewNode(ctx, node.WithRequest(req), node.WithMode(node.StubMode_CLIENT))
 	if err != nil {
 		golog.Fatal("Failed to Create new node", err)
 		return
@@ -74,7 +80,6 @@ func Resume() {
 func Stop() {
 	instance.ctx.Done()
 }
-
 
 // parseInitializeRequest parses the given buffer and returns the proto and fsOptions.
 func parseInitializeRequest(buf []byte) (bool, *api.InitializeRequest, []device.FSOption, error) {
