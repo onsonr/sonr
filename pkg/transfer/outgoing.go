@@ -45,15 +45,18 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 		return
 	}
 
-	// Create a new stream
-	stream, err := p.host.NewStream(p.ctx, remotePeer, SessionPID)
-	if err != nil {
-		logger.Error("Failed to create new stream.", err)
-		return
-	}
+	// Check for Decision and Start Outgoing Transfer
+	if resp.GetDecision() {
+		// Create a new stream
+		stream, err := p.host.NewStream(p.ctx, remotePeer, SessionPID)
+		if err != nil {
+			logger.Error("Failed to create new stream.", err)
+			return
+		}
 
-	// Call Outgoing Transfer
-	go p.onOutgoingTransfer(entry, msgio.NewWriter(stream))
+		// Call Outgoing Transfer
+		go p.onOutgoingTransfer(entry, msgio.NewWriter(stream))
+	}
 }
 
 // onOutgoingTransfer is called by onInviteResponse if Validated
