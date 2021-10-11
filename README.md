@@ -52,28 +52,6 @@ _By [Sonr](https://www.sonr.io), creators of [The Sonr App](https://www.twitter.
   </ol>
 </details>
 
-<!-- ABOUT THE PROJECT -->
-
-### Built With
-
-- [Golang]()
-
-<!-- GETTING STARTED -->
-
-## Getting Started
-
-To get a local copy up and running follow these simple steps.
-
-### Prerequisites
-
-This is an example of how to list things you need to use the software and how to install them.
-
-- golang
-  ```sh
-  go install github.com/joho/godotenv/cmd/godotenv@latest
-  go install golang.org/x/mobile/cmd/gomobile@latest
-  gomobile init
-  ```
 
 <!-- ABOUT THE PROJECT -->
 
