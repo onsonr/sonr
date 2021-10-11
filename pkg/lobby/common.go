@@ -38,6 +38,7 @@ func createOlc(l *common.Location) string {
 		logger.Error("Failed to Determine OLC Code, set to Global")
 		return "global"
 	}
+	logger.Info("Calculated OLC for Location", golog.Fields{"olc": code, "latitude": l.GetLatitude(), "longitude": l.GetLongitude()})
 	return code
 }
 

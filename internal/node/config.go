@@ -88,6 +88,7 @@ func defaultNodeOptions() *nodeOptions {
 func (opts *nodeOptions) Apply(ctx context.Context, node *Node) error {
 	// Handle by Node Mode
 	if opts.mode == StubMode_CLIENT {
+		logger.Info("Starting Client stub...")
 		// Client Node Type
 		stub, err := node.startClientService(ctx, opts)
 		if err != nil {
@@ -99,6 +100,7 @@ func (opts *nodeOptions) Apply(ctx context.Context, node *Node) error {
 		node.stub = stub
 
 	} else {
+		logger.Info("Starting Highway stub...")
 		// Highway Node Type
 		stub, err := node.startHighwayService(ctx, opts)
 		if err != nil {

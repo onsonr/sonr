@@ -33,7 +33,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost) (*DomainProtocol, erro
 	}
 
 	// Create Namebase Client Protocol
-	logger.Info("⚡️ Protocol is Ready")
+	logger.Info("✅  DomainProtocol is Activated \n")
 	return &DomainProtocol{
 		ctx:            ctx,
 		host:           host,

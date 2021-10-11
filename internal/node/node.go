@@ -79,13 +79,6 @@ func NewNode(ctx context.Context, options ...NodeOption) (*Node, *api.Initialize
 		completeEvents: make(chan *api.CompleteEvent),
 	}
 
-	// Open Store with profileBuf
-	err := node.openStore(ctx, opts)
-	if err != nil {
-		logger.Error("Failed to open database", err)
-		return node, api.NewInitialzeResponse(nil, false), err
-	}
-
 	// Initialize Host
 	host, err := host.NewHost(ctx, node.Emitter, host.WithConnection(opts.connection))
 	if err != nil {
@@ -93,6 +86,13 @@ func NewNode(ctx context.Context, options ...NodeOption) (*Node, *api.Initialize
 		return nil, api.NewInitialzeResponse(nil, false), err
 	}
 	node.host = host
+
+	// Open Store with profileBuf
+	err = node.openStore(ctx, opts)
+	if err != nil {
+		logger.Error("Failed to open database", err)
+		return node, api.NewInitialzeResponse(nil, false), err
+	}
 
 	// Initialize Stub
 	err = opts.Apply(node.ctx, node)

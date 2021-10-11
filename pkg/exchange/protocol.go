@@ -41,6 +41,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) (*E
 		emitter:  em,
 		resolver: internet.NewHDNSResolver(),
 	}
+	logger.Info("✅  ExchangeProtocol is Activated \n")
 	return exchProtocol, nil
 }
 
