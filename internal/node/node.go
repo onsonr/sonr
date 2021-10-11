@@ -156,6 +156,7 @@ func (n *Node) Peer() (*common.Peer, error) {
 		Status:    common.Peer_ONLINE,
 		Profile:   profile,
 		PublicKey: pubBuf,
+		PeerID:    n.host.ID().String(),
 		Device: &common.Peer_Device{
 			HostName: stat.HostName,
 			Os:       stat.Os,
