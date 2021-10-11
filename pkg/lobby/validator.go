@@ -85,9 +85,9 @@ func (p *LobbyProtocol) pushRefresh(id peer.ID, peer *common.Peer) {
 }
 
 // hasPeer Checks if Peer is in Peer List
-func (lp *LobbyProtocol) hasPeer(peerID peer.ID) bool {
+func (lp *LobbyProtocol) hasPeer(data *common.Peer) bool {
 	for _, p := range lp.peers {
-		if peer.ID(p.GetPeerID()) == peerID {
+		if p.GetPeerID() == data.GetPeerID() {
 			return true
 		}
 	}
@@ -97,7 +97,7 @@ func (lp *LobbyProtocol) hasPeer(peerID peer.ID) bool {
 // removePeer Removes Peer from Peer List
 func (lp *LobbyProtocol) removePeer(peerID peer.ID) []*common.Peer {
 	for i, p := range lp.peers {
-		if peer.ID(p.GetPeerID()) == peerID {
+		if p.GetPeerID() == peerID.String() {
 			return append(lp.peers[:i], lp.peers[i+1:]...)
 		}
 	}
@@ -106,8 +106,9 @@ func (lp *LobbyProtocol) removePeer(peerID peer.ID) []*common.Peer {
 
 // updatePeer Adds Peer to Peer List
 func (lp *LobbyProtocol) updatePeer(peerID peer.ID, data *common.Peer) []*common.Peer {
-	if !lp.hasPeer(peerID) {
-		lp.peers = append(lp.peers, data)
+	if lp.hasPeer(data) {
+		return lp.peers
 	}
+	lp.peers = append(lp.peers, data)
 	return lp.peers
 }
