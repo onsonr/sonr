@@ -50,7 +50,7 @@ func (n *Node) startClientService(ctx context.Context, opts *nodeOptions) (NodeS
 	}
 
 	// Set Local Lobby Protocol if Location is provided
-	lobbyProtocol, err := lobby.NewProtocol(ctx, n.host, n.Emitter, lobby.WithLocation(opts.location))
+	lobbyProtocol, err := lobby.NewProtocol(ctx, n.host, n, n.Emitter, lobby.WithLocation(opts.location))
 	if err != nil {
 		logger.Error("Failed to start LobbyProtocol", err)
 		return nil, err
@@ -86,34 +86,27 @@ func (s *ClientNodeStub) HasProtocols() bool {
 	return s.TransferProtocol != nil && s.ExchangeProtocol != nil && s.LobbyProtocol != nil
 }
 
+// Close closes the RPC Service.
+func (s *ClientNodeStub) Close() error {
+	s.listener.Close()
+	s.grpcServer.Stop()
+	return nil
+}
+
 // Serve serves the RPC Service on the given port.
 func (s *ClientNodeStub) Serve(ctx context.Context, listener net.Listener, ticker time.Duration) {
 	// Handle Node Events
 	if err := s.grpcServer.Serve(listener); err != nil {
 		logger.Error("Failed to serve gRPC", err)
 	}
-	logger.Info("🍦  Serving Client Stub...")
+	logger.Info("🍦  Serving Client Stub: " + listener.Addr().String())
 	for {
 		// Stop Serving if context is done
 		select {
-		case <-time.After(ticker):
-			// Call Internal Update
-			if err := s.Update(); err != nil {
-				logger.Warn("Failed to push Auto Ping", err)
-			}
-			continue
-
 		case <-ctx.Done():
 			return
 		}
 	}
-}
-
-// Close closes the RPC Service.
-func (s *ClientNodeStub) Close() error {
-	s.listener.Close()
-	s.grpcServer.Stop()
-	return nil
 }
 
 // Update method updates the node's properties in the Key/Value Store and Lobby
@@ -200,7 +193,6 @@ func (s *HighwayNodeStub) Serve(ctx context.Context, listener net.Listener, tick
 		// Stop Serving if context is done
 		select {
 		case <-ctx.Done():
-
 			return
 		}
 	}

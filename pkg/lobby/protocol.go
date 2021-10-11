@@ -3,6 +3,7 @@ package lobby
 import (
 	"context"
 	"errors"
+	"time"
 
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/core/internal/common"
@@ -24,6 +25,7 @@ var (
 
 // LobbyProtocol is the protocol for managing local peers.
 type LobbyProtocol struct {
+	common.NodeUser
 	ctx          context.Context
 	host         *host.SNRHost  // host
 	emitter      *state.Emitter // Handle to signal when done
@@ -36,7 +38,7 @@ type LobbyProtocol struct {
 }
 
 // NewProtocol creates a new lobby protocol instance.
-func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter, options ...LobbyOption) (*LobbyProtocol, error) {
+func NewProtocol(ctx context.Context, host *host.SNRHost, nu common.NodeUser, em *state.Emitter, options ...LobbyOption) (*LobbyProtocol, error) {
 	opts := defaultLobbyOptions()
 	for _, option := range options {
 		option(opts)
@@ -73,6 +75,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter, opt
 
 	// Create Exchange Protocol
 	lobProtocol := &LobbyProtocol{
+		NodeUser:     nu,
 		ctx:          ctx,
 		host:         host,
 		emitter:      em,
@@ -88,6 +91,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter, opt
 	logger.Info("✅  LobbyProtocol is Activated \n")
 	go lobProtocol.HandleEvents()
 	go lobProtocol.HandleMessages()
+	go lobProtocol.autoPushUpdates()
 	return lobProtocol, nil
 }
 
@@ -165,5 +169,23 @@ func (p *LobbyProtocol) HandleMessages() {
 			// Update Peer Data in map
 			p.pushRefresh(msg.ReceivedFrom, data.Peer)
 		}
+	}
+}
+
+// HandleMessages method listens to Pubsub Messages for room
+func (p *LobbyProtocol) autoPushUpdates() {
+	// Loop Messages
+	for {
+		peer, err := p.Peer()
+		if err != nil {
+			logger.Error("Failed to get peer", err)
+			continue
+		}
+		err = p.Update(peer)
+		if err != nil {
+			logger.Error("Failed to update peer", err)
+			continue
+		}
+		time.Sleep(time.Second * 5)
 	}
 }

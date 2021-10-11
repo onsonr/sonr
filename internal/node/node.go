@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"strings"
+	"time"
 
 	"git.mills.io/prologic/bitcask"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -20,6 +21,7 @@ import (
 
 // Node type - a p2p host implementing one or more p2p protocols
 type Node struct {
+	common.NodeUser
 	// Emitter is the event emitter for this node
 	*state.Emitter
 
@@ -59,7 +61,7 @@ type Node struct {
 }
 
 // NewNode Creates a node with its implemented protocols
-func NewNode(ctx context.Context, options ...NodeOption) (*Node, *api.InitializeResponse, error) {
+func NewNode(ctx context.Context, options ...NodeOption) (common.NodeUser, *api.InitializeResponse, error) {
 	// Set Node Options
 	opts := defaultNodeOptions()
 	for _, opt := range options {
@@ -153,11 +155,12 @@ func (n *Node) Peer() (*common.Peer, error) {
 	}
 	// Return Peer
 	return &common.Peer{
-		SName:     strings.ToLower(profile.GetSName()),
-		Status:    common.Peer_ONLINE,
-		Profile:   profile,
-		PublicKey: pubBuf,
-		PeerID:    n.host.ID().String(),
+		SName:        strings.ToLower(profile.GetSName()),
+		Status:       common.Peer_ONLINE,
+		Profile:      profile,
+		PublicKey:    pubBuf,
+		PeerID:       n.host.ID().String(),
+		LastModified: time.Now().Unix(),
 		Device: &common.Peer_Device{
 			HostName: stat.HostName,
 			Os:       stat.Os,

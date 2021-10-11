@@ -9,6 +9,11 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+type NodeUser interface {
+	Profile() (*Profile, error)
+	Peer() (*Peer, error)
+}
+
 // RPC_SERVER_PORT is the port the RPC service listens on.
 // Calculated: (Sister Bday + Dad Bday + Mom Bday) / Mine
 const RPC_SERVER_PORT = 26225

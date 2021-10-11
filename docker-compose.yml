@@ -13,4 +13,4 @@ services:
 networks:
   default:
     external:
-      name: p2p-net
+      name: sonr-node
