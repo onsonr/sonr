@@ -9,8 +9,8 @@ BIND_DIR=${PROJECT_DIR}/cmd/lib
 BUILD_DIR=${PROJECT_DIR}/build
 cd ${PROJECT_DIR}/../
 ROOT_DIR=$(pwd);
-PLUGIN_ANDROID=${ROOT_DIR}/plugin/android/libs
-PLUGIN_IOS=${ROOT_DIR}/plugin/ios/Frameworks
+PLUGIN_ANDROID=${ROOT_DIR}/mobile/android/libs
+PLUGIN_IOS=${ROOT_DIR}/mobile/ios/Frameworks
 ANDROID_ARTIFACT=io.sonr.core.aar
 IOS_ARTIFACT=Core.xcframework
 cd ${PROJECT_DIR}
@@ -181,7 +181,7 @@ elif [ $platform == all ]; then
         echo "- (3/4) Binding iOS Framework"
         gtime -q --format=%E gomobile bind -ldflags='-s -w' -v -target=ios/arm64 -bundleid=io.sonr.core -o ${BUILD_DIR}/${IOS_ARTIFACT}
         echo "- (4/4) Binding Android Framework"
-        gtime -q --format=%E gomobile bind -ldflags='-s -w' -v -target=ios/arm64 -bundleid=io.sonr.core -o ${BUILD_DIR}/${IOS_ARTIFACT}
+        gtime -q --format=%E gomobile bind -ldflags='-s -w' -v -target=android -bundleid=io.sonr.core -o ${BUILD_DIR}/${IOS_ARTIFACT}
         exit_success
     else
         exit_abnormal

@@ -3,12 +3,14 @@ package keychain
 import (
 	"errors"
 
+	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/sonr-io/core/tools/config"
 )
 
 // Error definitions
 var (
+	logger             = golog.Child("internal/keychain")
 	ErrInvalidKeyType  = errors.New("Invalid KeyPair Type provided")
 	ErrKeychainUnready = errors.New("Keychain has not been loaded")
 	ErrNoPrivateKey    = errors.New("No private key in KeyPair")

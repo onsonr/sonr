@@ -101,7 +101,8 @@ message Peer {
   Device device = 3;      // Peer Device Info
   Profile profile = 4;    // Peers General Information
   bytes publicKey = 5;    // Public Key of the Peer
-  int64 lastModified = 6; // Last Modified Timestamp
+  string peerID = 6;      // Peer ID
+  int64 lastModified = 7; // Last Modified Timestamp
 
   // Peer Info for Device
   message Device {
@@ -160,6 +161,13 @@ message Social {
     SNAPCHAT = 8;  // Snapchat
     SPOTIFY = 9;   // Spotify
   }
+}
+
+// SNID is the unique identifier of a user with Sonr Protocol
+message SNID {
+    string domain = 1; // Domain Name of the node, e.g. prad.snr
+    bytes pubKey = 2; // Public Key of the node, value in the Domains second TXT record
+    string peerID = 3;  // Peer ID of the node, calculated from the public key
 }
 
 // UUID is General Message ID with Signature, ID, and Timestamp

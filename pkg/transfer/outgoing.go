@@ -3,13 +3,13 @@ package transfer
 import (
 	"io"
 	"os"
-	sync "sync"
 
+	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-msgio"
+	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/tools/config"
-	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/tools/state"
 	"google.golang.org/protobuf/proto"
 )
@@ -60,35 +60,23 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 func (p *TransferProtocol) onOutgoingTransfer(entry *Session, wc msgio.WriteCloser) {
 	// Initialize Params
 	logger.Info("Beginning Outgoing Transfer Stream")
-	wg := sync.WaitGroup{}
-
-	// Write All Files
-	err := entry.MapItems(func(m *common.Payload_Item, i int, count int) error {
-		// Add to WaitGroup
-		wg.Add(1)
-
+	for i, v := range entry.Items() {
 		// Create New Writer
-		w, err := NewWriter(m, i, count, p.emitter)
+		w, err := NewWriter(i, entry.Count(), v, p.emitter)
 		if err != nil {
-			return logger.Error("Failed to create new writer.", err)
+			logger.Error("Failed to create new writer.", err)
+			wc.Close()
+			break
 		}
 
 		// Write File to Stream
 		if err := w.WriteTo(wc); err != nil {
-			return logger.Error("Error writing stream", err)
+			logger.Error("Error writing stream", err)
+			wc.Close()
+			break
 		}
-
-		// Complete Writing
-		wg.Done()
-		return nil
-	})
-	if err != nil {
-		logger.Error("Error writing stream", err)
-		return
 	}
 
-	// Complete the transfer
-	wg.Wait()
 	event, err := p.queue.Done()
 	if err != nil {
 		logger.Error("Failed to Complete Transfer", err)
@@ -106,12 +94,13 @@ type itemWriter struct {
 	file    *os.File
 	item    *common.FileItem
 	index   int
+	logger  *golog.Logger
 	count   int
 	size    int64
 }
 
-// NewWriter Returns a new Writer for the given FileItem
-func NewWriter(pi *common.Payload_Item, index int, count int, em *state.Emitter) (*itemWriter, error) {
+// NewReader Returns a new Reader for the given FileItem
+func NewWriter(index int, count int, pi *common.Payload_Item, em *state.Emitter) (*itemWriter, error) {
 	// Properties
 	size := pi.GetSize()
 	item := pi.GetFile()
@@ -127,7 +116,8 @@ func NewWriter(pi *common.Payload_Item, index int, count int, em *state.Emitter)
 	// Open Os File
 	f, err := os.Open(item.Path)
 	if err != nil {
-		return nil, logger.Error("Error opening item for Write stream", err)
+		logger.Error("Error opening item for Write stream", err)
+		return nil, err
 	}
 
 	// Create New Chunker
@@ -135,12 +125,14 @@ func NewWriter(pi *common.Payload_Item, index int, count int, em *state.Emitter)
 		AverageSize: avgSize, // Only Average Required
 	})
 	if err != nil {
-		return nil, logger.Error("Failed to create new chunker.", err)
+		logger.Error("Failed to create new chunker.", err)
+		return nil, err
 	}
 
 	// Create New Writer
 	return &itemWriter{
 		item:    item,
+		logger:  logger,
 		size:    size,
 		file:    f,
 		emitter: em,
@@ -153,7 +145,7 @@ func NewWriter(pi *common.Payload_Item, index int, count int, em *state.Emitter)
 // Returns Progress of File, Given the written number of bytes
 func (p *itemWriter) Progress(i int) {
 	// Create Progress Event
-	event := &common.ProgressEvent{
+	event := &api.ProgressEvent{
 		Progress: (float64(i) / float64(p.size)),
 		Current:  int32(p.index),
 		Total:    int32(p.count),
@@ -178,18 +170,21 @@ func (iw *itemWriter) WriteTo(writer msgio.WriteCloser) error {
 		// Create Block Protobuf from Chunk
 		data, err := encodeChunk(c)
 		if err != nil {
-			return logger.Error("Error Encoding chunk", err)
+			iw.logger.Error("Error Encoding chunk", err)
+			return err
 		}
 
 		// Write Message Bytes to Stream
 		err = writer.WriteMsg(data)
 		if err != nil {
-			return logger.Error("Error Writing data to msgio.Writer", err)
+			iw.logger.Error("Error Writing data to msgio.Writer", err)
+			return err
 		}
 
 		// Unexpected Error
 		if err != nil && err != io.EOF {
-			return logger.Error("Unexpected Error occurred on Write Stream", err)
+			iw.logger.Error("Unexpected Error occurred on Write Stream", err)
+			return err
 		}
 
 		// Update Progress
@@ -203,7 +198,8 @@ func (iw *itemWriter) WriteTo(writer msgio.WriteCloser) error {
 
 	// Close File
 	if err := iw.file.Close(); err != nil {
-		return logger.Error("Failed to Close item on Write Stream", err)
+		iw.logger.Error("Failed to Close item on Write Stream", err)
+		return err
 	}
 	return nil
 }
@@ -219,7 +215,8 @@ func encodeChunk(c config.Chunk) ([]byte, error) {
 	})
 
 	if err != nil {
-		return nil, logger.Error("Error Marshalling Chunk Proto.", err)
+		logger.Error("Error Marshalling Chunk Proto.", err)
+		return nil, err
 	}
 	return data, nil
 }

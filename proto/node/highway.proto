@@ -1,0 +1,18 @@
+/// This file contains service for the Node RPC Server
+syntax = "proto3";
+
+package sonr.node;
+import "proto/api/call.proto";
+option go_package = "github.com/sonr-io/core/internal/node";
+
+// RPC Service with Equivalent Methods of a binded Node
+service HighwayService {
+  // Authorize Signing Method Request for Data
+  rpc Authorize(sonr.api.AuthorizeRequest) returns (sonr.api.AuthorizeResponse) {}
+
+  // Link Links an Additional Device to User
+  rpc Link(sonr.api.LinkRequest) returns (sonr.api.LinkResponse) {}
+
+  // Register creates new user in DNS Table
+  rpc Register(sonr.api.RegisterRequest) returns (sonr.api.RegisterResponse) {}
+}

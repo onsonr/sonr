@@ -4,8 +4,11 @@ import (
 	"errors"
 	"time"
 
+	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/protocol"
-	"github.com/sonr-io/core/internal/common"
+	"github.com/sonr-io/core/internal/api"
+	"github.com/sonr-io/core/internal/host"
+	"github.com/sonr-io/core/tools/state"
 )
 
 // Transfer Emission Events
@@ -26,16 +29,33 @@ const (
 
 // Error Definitions
 var (
-	ErrInvalidEntry  = errors.New("Failed to get Topmost entry from Queue")
-	ErrFailedAuth    = errors.New("Failed to Authenticate message")
-	ErrEmptyRequests = errors.New("Empty Request list provided")
-	ErrMismatchUUID  = errors.New("The provided UUID's do not match")
+	logger             = golog.Child("protocols/transfer")
+	ErrTimeout         = errors.New("Session has Timed out")
+	ErrParameters      = errors.New("Failed to create new TransferProtocol, invalid parameters")
+	ErrInvalidResponse = errors.New("Invalid Transfer InviteResponse provided to TransferProtocol")
+	ErrInvalidRequest  = errors.New("Invalid Transfer InviteRequest provided to TransferProtocol")
+	ErrFailedEntry     = errors.New("Failed to get Topmost entry from Queue")
+	ErrFailedAuth      = errors.New("Failed to Authenticate message")
+	ErrEmptyRequests   = errors.New("Empty Request list provided")
+	ErrMismatchUUID    = errors.New("The provided UUID's do not match")
 	ErrRequestNotFound = errors.New("Request not found in list")
 )
 
+func checkParams(host *host.SNRHost, em *state.Emitter) error {
+	if host == nil {
+		logger.Error("Host provided is nil", ErrParameters)
+		return ErrParameters
+	}
+	if em == nil {
+		logger.Error("Emitter provided is nil", ErrParameters)
+		return ErrParameters
+	}
+	return host.HasRouting()
+}
+
 // ToEvent method on InviteResponse converts InviteResponse to DecisionEvent.
-func (ir *InviteResponse) ToEvent() *common.DecisionEvent {
-	return &common.DecisionEvent{
+func (ir *InviteResponse) ToEvent() *api.DecisionEvent {
+	return &api.DecisionEvent{
 		From:     ir.GetFrom(),
 		Received: int64(time.Now().Unix()),
 		Decision: ir.GetDecision(),
@@ -43,8 +63,8 @@ func (ir *InviteResponse) ToEvent() *common.DecisionEvent {
 }
 
 // ToEvent method on InviteRequest converts InviteRequest to InviteEvent.
-func (ir *InviteRequest) ToEvent() *common.InviteEvent {
-	return &common.InviteEvent{
+func (ir *InviteRequest) ToEvent() *api.InviteEvent {
+	return &api.InviteEvent{
 		Received: int64(time.Now().Unix()),
 		From:     ir.GetFrom(),
 		Payload:  ir.GetPayload(),

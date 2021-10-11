@@ -6,7 +6,7 @@ option go_package = "github.com/sonr-io/core/pkg/lobby";
 
 // PublishEvent is message passed from Peer in Lobby Protocol
 message LobbyMessage {
-  string olc = 1;              // Users Open Location Code
-  sonr.core.Peer peer = 2;     // Users Peer Data
-  optional string message = 3; // Message to be published
+  sonr.core.Peer peer = 1;     // Users Peer Data
+  optional string message = 2; // Message to be published
+  sonr.core.Metadata metadata = 3; // Metadata
 }

@@ -1,0 +1,32 @@
+project_name: sonr-core
+builds:
+  - id: sonr-desktop-bin
+    binary: sonr-helper
+    dir: cmd/bin
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+
+  - id: sonr-highway-bin
+    binary: sonr-highway
+    dir: cmd/highway
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+
+archives:
+  - format: binary
+checksum:
+  name_template: "checksums.txt"
+snapshot:
+  name_template: "{{ .Tag }}-next"
+release:
+  github:
+    owner: sonr-io
+    name: core

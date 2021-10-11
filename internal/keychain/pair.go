@@ -6,7 +6,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	crypto_pb "github.com/libp2p/go-libp2p-core/crypto/pb"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/sonr-io/core/tools/logger"
 )
 
 // KeyPairType is a type of keypair
@@ -46,11 +45,13 @@ type keyPair struct {
 // PrivPubKeys returns the private and public keys for the keypair given keychain
 func (kp keyPair) PrivPubKeys() (crypto.PubKey, crypto.PrivKey, error) {
 	if kp.priv == nil {
-		return nil, nil, logger.Error("Failed to Return Private Key", ErrNoPrivateKey)
+		logger.Error("Failed to Return Private Key", ErrNoPrivateKey)
+		return nil, nil, ErrNoPrivateKey
 	}
 
 	if kp.pub == nil {
-		return nil, nil, logger.Error("Failed to Return Public Key", ErrNoPublicKey)
+		logger.Error("Failed to Return Public Key", ErrNoPublicKey)
+		return nil, nil, ErrNoPublicKey
 	}
 	return kp.pub, kp.priv, nil
 }
@@ -87,7 +88,8 @@ func NewSnrPrivKey(p crypto.PrivKey) *SnrPrivKey {
 func (priv *SnrPrivKey) Buffer() ([]byte, error) {
 	buf, err := crypto.MarshalPrivateKey(priv.PrivKey)
 	if err != nil {
-		return nil, logger.Error("Failed to marshal SPubKey", err)
+		logger.Error("Failed to marshal SPubKey", err)
+		return nil, err
 	}
 	return buf, nil
 }
@@ -98,6 +100,8 @@ func (priv *SnrPrivKey) GetPublic() crypto.PubKey {
 		PubKey: priv.PrivKey.GetPublic(),
 	}
 }
+
+// Hash returns a hmac hash of private key
 
 // PeerID returns the peer ID from the public key
 func (priv *SnrPrivKey) PeerID() (peer.ID, error) {
@@ -124,18 +128,41 @@ type SnrPubKey struct {
 	SnrKey
 }
 
-// NewSnrPrivKey creates a new private key
+// NewSnrPubKey creates a new public key
 func NewSnrPubKey(p crypto.PubKey) *SnrPubKey {
 	return &SnrPubKey{
 		PubKey: p,
 	}
 }
 
+// NewSnrPubKeyFromBuffer creates a new public key from buffer
+func NewSnrPubKeyFromBuffer(buf []byte) (*SnrPubKey, error) {
+	// Decode the key
+	pubKey, err := crypto.UnmarshalPublicKey(buf)
+	if err != nil {
+		logger.Error("Failed to unmarshal PubKey from Bytes", err)
+		return nil, err
+	}
+	return NewSnrPubKey(pubKey), nil
+}
+
+// NewSnrPubKeyFromString creates a new public key from string
+func NewSnrPubKeyFromString(str string) (*SnrPubKey, error) {
+	// Decode the key
+	buf, err := crypto.ConfigDecodeKey(str)
+	if err != nil {
+		logger.Error("Failed to decode PubKey from String", err)
+		return nil, err
+	}
+	return NewSnrPubKeyFromBuffer(buf)
+}
+
 // Buffer returns PublicKey as bytes
 func (pub *SnrPubKey) Buffer() ([]byte, error) {
 	buf, err := crypto.MarshalPublicKey(pub)
 	if err != nil {
-		return nil, logger.Error("Failed to marshal SPubKey", err)
+		logger.Error("Failed to marshal SPubKey", err)
+		return nil, err
 	}
 	return buf, nil
 }

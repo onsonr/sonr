@@ -2,26 +2,27 @@ package common
 
 import (
 	"fmt"
-	"strings"
-	"time"
 
 	olc "github.com/google/open-location-code/go"
-	"github.com/libp2p/go-libp2p-core/crypto"
-	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/kataras/golog"
 	"github.com/pkg/errors"
-	"github.com/sonr-io/core/internal/keychain"
-	"github.com/sonr-io/core/tools/logger"
+	"google.golang.org/protobuf/proto"
 )
 
-// ** ───────────────────────────────────────────────────────
-// ** ─── General ───────────────────────────────────────────
-// ** ───────────────────────────────────────────────────────
-// OLC_SCOPE is the default OLC Scope for Distance Calculation
-const OLC_SCOPE = 6
+// RPC_SERVER_PORT is the port the RPC service listens on.
+// Calculated: (Sister Bday + Dad Bday + Mom Bday) / Mine
+const RPC_SERVER_PORT = 26225
 
-// Fetch olc code from lat/lng at Scope Level 6
-func (l *Location) OLC() string {
-	return olc.Encode(float64(l.GetLatitude()), float64(l.GetLongitude()), OLC_SCOPE)
+// GetProfileFunc returns a function that returns the Profile and error
+type GetProfileFunc func() (*Profile, error)
+
+var (
+	logger = golog.Child("internal/common")
+)
+
+// IsMdnsCompatible returns true if the Connection is MDNS compatible
+func (c Connection) IsMdnsCompatible() bool {
+	return c == Connection_WIFI || c == Connection_ETHERNET
 }
 
 // Checks if Enviornment is Development
@@ -52,117 +53,15 @@ func WrapErrors(msg string, errs []error) error {
 	return err
 }
 
-// ** ───────────────────────────────────────────────────────
-// ** ─── Peer Management ───────────────────────────────────
-// ** ───────────────────────────────────────────────────────
-
-// PeerInfo is a struct for Peer Information containing Device and Crypto
-type PeerInfo struct {
-	OperatingSystem string        // Device Operating System
-	Architecture    string        // Device Architecture
-	HostName        string        // Device Host Name
-	SName           string        // Peer SName
-	StoreEntryKey   string        // Peer SName in Store Entry Key Format
-	PeerID          peer.ID       // Peer ID
-	Peer            *Peer         // Peer Data Object
-	PublicKey       crypto.PubKey // Peer Public Key
+func DefaultLocation() *Location {
+	return &Location{
+		Latitude:  34.102920,
+		Longitude: -118.394190,
+	}
 }
 
-// Info returns PeerInfo from Peer
-func (p *Peer) Info() (*PeerInfo, error) {
-	// Get Public Key
-	pubKey, err := p.PubKey()
-	if err != nil {
-		logger.Error("Failed to get Public Key", err)
-		return nil, err
-	}
-
-	// Get peer ID from public key
-	id, err := peer.IDFromPublicKey(pubKey)
-	if err != nil {
-		logger.Error(fmt.Sprintf("Failed to get peer ID from Public Key: %s", p.GetSName()), err)
-		return nil, err
-	}
-
-	// Return Peer Info
-	return &PeerInfo{
-		OperatingSystem: p.GetDevice().GetOs(),
-		Architecture:    p.GetDevice().GetArch(),
-		HostName:        p.GetDevice().GetHostName(),
-		PeerID:          id,
-		PublicKey:       pubKey,
-		SName:           p.GetSName(),
-		StoreEntryKey:   strings.ToLower(p.GetSName()),
-		Peer:            p,
-	}, nil
-}
-
-// PeerID returns the PeerID based on PublicKey from Profile
-func (p *Peer) PeerID() (peer.ID, error) {
-	// Check if PublicKey is empty
-	if len(p.GetPublicKey()) == 0 {
-		return "", errors.New("Peer Public Key is not set.")
-	}
-
-	// Fetch public key from peer data
-	pubKey, err := p.SnrPubKey()
-	if err != nil {
-		return "", err
-	}
-
-	// Return Peer ID
-	id, err := pubKey.PeerID()
-	if err != nil {
-		return "", err
-	}
-	return id, nil
-}
-
-// PubKey returns the Public Key from the Peer
-func (p *Peer) PubKey() (crypto.PubKey, error) {
-	// Check if PublicKey is empty
-	if len(p.GetPublicKey()) == 0 {
-		return nil, errors.New("Peer Public Key is not set.")
-	}
-
-	// Unmarshal Public Key
-	pubKey, err := crypto.UnmarshalPublicKey(p.GetPublicKey())
-	if err != nil {
-		return nil, logger.Error(fmt.Sprintf("Failed to Unmarshal Public Key: %s", p.GetSName()), err)
-	}
-	return pubKey, nil
-}
-
-// SnrPubKey returns the Public Key from the Peer as SnrPubKey
-func (p *Peer) SnrPubKey() (*keychain.SnrPubKey, error) {
-	// Get Public Key
-	pub, err := p.PubKey()
-	if err != nil {
-		return nil, logger.Error("Failed to get Public Key", err)
-	}
-
-	// Return SnrPubKey
-	return keychain.NewSnrPubKey(pub), nil
-}
-
-// ** ───────────────────────────────────────────────────────
-// ** ─── Profile Management ────────────────────────────────
-// ** ───────────────────────────────────────────────────────
-// Add adds a new Profile to the List and
-// updates LastModified time.
-func (p *ProfileList) Add(profile *Profile) {
-	p.Profiles = append(p.Profiles, profile)
-	p.LastModified = time.Now().Unix()
-}
-
-// Count returns the number of Profiles in the List
-func (p *ProfileList) Count() int {
-	return len(p.Profiles)
-}
-
-// IndexAt returns profile at index
-func (p *ProfileList) IndexAt(i int) *Profile {
-	return p.Profiles[i]
+func (l *Location) OLC() string {
+	return olc.Encode(l.GetLatitude(), l.GetLongitude(), 6)
 }
 
 // ** ───────────────────────────────────────────────────────
@@ -323,9 +222,22 @@ func (p *Payload) ReplaceItemsDir(dir string) (*Payload, error) {
 		if item.GetFile() != nil {
 			err := item.GetFile().ReplaceDir(dir)
 			if err != nil {
-				return nil, logger.Error("Failed to replace path for Item", err)
+				logger.Error("Failed to replace path for Item", err)
+				return nil, err
 			}
 		}
 	}
 	return p, nil
+}
+
+// Buffer returns Peer as a buffer
+func (p *Profile) Buffer() ([]byte, error) {
+	// Marshal Peer
+	data, err := proto.Marshal(p)
+	if err != nil {
+		return nil, err
+	}
+
+	// Return Peer as buffer
+	return data, nil
 }

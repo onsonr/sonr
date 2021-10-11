@@ -5,7 +5,7 @@ import (
 	"net/url"
 
 	"github.com/pkg/errors"
-	"github.com/sonr-io/core/tools/net"
+	net "github.com/sonr-io/core/tools/internet"
 )
 
 // IsUrl returns true if the given string is a valid url

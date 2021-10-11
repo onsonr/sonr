@@ -3,71 +3,66 @@ package lib
 import (
 	"context"
 
-	_ "github.com/joho/godotenv/autoload"
+	"github.com/kataras/golog"
+	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/device"
-	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/internal/node"
-	"github.com/sonr-io/core/tools/logger"
 	"google.golang.org/protobuf/proto"
 )
 
-type Client struct {
+type sonrLib struct {
 	// Properties
-	ctx     context.Context
-	host    *host.SNRHost
-	node    *node.Node
-	service *node.NodeRPCService
+	ctx  context.Context
+	node *node.Node
 }
 
-var client *Client
+var (
+	instance *sonrLib
+)
+
+func init() {
+	golog.SetPrefix("[Sonr-Core.lib] ")
+	golog.SetStacktraceLimit(2)
+	golog.SetFormat("json", "    ")
+}
 
 // Start starts the host, node, and rpc service.
-func Start(reqBytes []byte) []byte {
+func Start(reqBuf []byte) {
+	// Prevent duplicate start
+	if instance != nil {
+		return
+	}
+
+	// Parse Initialize Request
+	ctx := context.Background()
+
 	// Unmarshal request
-	isDev, req, fsOpts, err := parseInitializeRequest(reqBytes)
+	req := &api.InitializeRequest{}
+	err := proto.Unmarshal(reqBuf, req)
 	if err != nil {
-		panic(logger.Error("Failed to Parse Initialize Request", err))
+		golog.Errorf("Failed to unmarshal request: %v", err)
+		return
 	}
 
 	// Initialize Device
-	ctx := context.Background()
-	err = device.Init(isDev, fsOpts...)
+	err = device.Init(req.ParseOpts()...)
 	if err != nil {
-		panic(logger.Error("Failed to initialize Device", err))
-	}
-
-	// Initialize Host
-	host, err := host.NewHost(ctx, req.GetConnection())
-	if err != nil {
-		panic(logger.Error("Failed to create Host", err))
+		golog.Fatal("Failed to initialize Device", err)
+		return
 	}
 
 	// Create Node
-	n, resp, err := node.NewNode(ctx, host, req.GetLocation())
+	n, _, err := node.NewNode(ctx, node.WithRequest(req), node.WithStubMode(node.StubMode_CLIENT))
 	if err != nil {
-		panic(logger.Error("Failed to update Profile for Node", err))
+		golog.Fatal("Failed to Create new node", err)
+		return
 	}
 
-	// Create RPC Service
-	service, err := node.NewRPCService(ctx, n)
-	if err != nil {
-		panic(logger.Error("Failed to start RPC Service", err))
+	// Set Lib
+	instance = &sonrLib{
+		ctx:  ctx,
+		node: n,
 	}
-
-	// Create Client
-	client = &Client{
-		ctx:     ctx,
-		host:    host,
-		node:    n,
-		service: service,
-	}
-
-	// Marshal Response
-	buf, err := proto.Marshal(resp)
-	if err != nil {
-		logger.Error("Failed to Marshal InitializeResponse", err)
-	}
-	return buf
 }
 
 // Pause pauses the host, node, and rpc service.
@@ -86,8 +81,5 @@ func Resume() {
 
 // Stop closes the host, node, and rpc service.
 func Stop() {
-	// if started {
-	// 	client.host.Close()
-	// 	client.ctx.Done()
-	// }
+	instance.ctx.Done()
 }

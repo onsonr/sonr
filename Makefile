@@ -8,19 +8,18 @@ CORE_RPC_DIR=$(SONR_ROOT_DIR)/core/cmd/bin
 CORE_BIND_DIR=$(SONR_ROOT_DIR)/core/cmd/lib
 ELECTRON_BIN_DIR=$(SONR_ROOT_DIR)/electron/assets/bin/darwin
 PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
-LD_LIBRARY_PATH=/usr/local/Cellar/ffmpeg/4.4_2/lib
+LD_LIBRARY_PATH=/opt/homebrew/bin/ffmpeg/4.4_2/lib
 
 # Set this -->[/Users/xxxx/Sonr/]<-- to Folder of Sonr Repos
 PROTO_DEF_PATH=/Users/prad/Developer/core/proto
-APP_ROOT_DIR =/Users/prad/Developer/mobile
+APP_ROOT_DIR =/Users/prad/Developer/mobile/
 
 # @ Packaging Vars/Commands
 GOMOBILE=gomobile
 GOCLEAN=$(GOMOBILE) clean
 GOBIND=$(GOMOBILE) bind -ldflags='-s -w' -v
-GOBIND_ANDROID=$(GOBIND) -target=android
+GOBIND_ANDROID=$(GOBIND) -target=android/arm64 -androidapi=24
 GOBIND_IOS=$(GOBIND) -target=ios/arm64 -bundleid=io.sonr.core
-INJECT_ENV=godotenv -f <(doppler secrets download --no-file --format env)
 
 # @ Bind Directories
 BIND_DIR_ANDROID=$(SONR_ROOT_DIR)/mobile/android/libs
@@ -31,8 +30,12 @@ BIND_ANDROID_ARTIFACT= $(BIND_DIR_ANDROID)/io.sonr.core.aar
 # @ Proto Directories
 PROTO_DIR_DART=$(SONR_ROOT_DIR)/mobile/lib/src
 PROTO_LIST_ALL=${ROOT_DIR}/proto/**/*.proto
-PROTO_LIST_CLIENT=${ROOT_DIR}/proto/client/*.proto
+PROTO_LIST_API=${ROOT_DIR}/proto/api/*.proto
 PROTO_LIST_COMMON=${ROOT_DIR}/proto/common/*.proto
+PROTO_FILE_NODE_CLIENT=${ROOT_DIR}/proto/node/client.proto
+PROTO_FILE_NODE_HIGHWAY=${ROOT_DIR}/proto/node/highway.proto
+PROTO_LIST_PROTOCOLS=${ROOT_DIR}/proto/protocols/*.proto
+PROTO_LIST_WALLET=${ROOT_DIR}/proto/wallet/*.proto
 MODULE_NAME=github.com/sonr-io/core
 GO_OPT_FLAG=--go_opt=module=${MODULE_NAME}
 GRPC_OPT_FLAG=--go-grpc_opt=module=${MODULE_NAME}
@@ -75,7 +78,7 @@ bind.android:
 	@echo "--------------------------------------------------------------"
 	@go get golang.org/x/mobile/bind
 	@gomobile init
-	cd $(CORE_BIND_DIR) && $(INJECT_ENV) $(GOBIND_ANDROID) -o $(BIND_ANDROID_ARTIFACT)
+	cd $(CORE_BIND_DIR) && $(GOBIND_ANDROID) -o $(BIND_ANDROID_ARTIFACT)
 	@echo "✅ Finished Binding ➡ `date`"
 	@echo ""
 
@@ -88,7 +91,7 @@ bind.ios:
 	@echo "-------------- 📱 START IOS BIND 📱 ---------------------------"
 	@echo "--------------------------------------------------------------"
 	@go get golang.org/x/mobile/bind
-	cd $(CORE_BIND_DIR) && $(INJECT_ENV) $(GOBIND_IOS) -o $(BIND_IOS_ARTIFACT)
+	cd $(CORE_BIND_DIR) && $(GOBIND_IOS) -o $(BIND_IOS_ARTIFACT)
 	@echo "✅ Finished Binding ➡ `date`"
 	@echo ""
 
@@ -100,11 +103,13 @@ protobuf:
 	@echo "----"
 	@echo "Generating Protobuf Go code..."
 	@protoc $(PROTO_LIST_ALL) --proto_path=$(ROOT_DIR) $(PROTO_GEN_GO) $(GO_OPT_FLAG)
-	@echo "Generating Protobuf Go RPC code..."
 	@protoc $(PROTO_LIST_ALL) --proto_path=$(ROOT_DIR) $(PROTO_GEN_RPC) $(GRPC_OPT_FLAG)
+
 	@echo "Generating Protobuf Dart code..."
-	@protoc $(PROTO_LIST_CLIENT) --proto_path=$(ROOT_DIR) $(PROTO_GEN_DART)
+	@protoc $(PROTO_LIST_API) --proto_path=$(ROOT_DIR) $(PROTO_GEN_DART)
 	@protoc $(PROTO_LIST_COMMON) --proto_path=$(ROOT_DIR) $(PROTO_GEN_DART)
+	@protoc $(PROTO_FILE_NODE_CLIENT) --proto_path=$(ROOT_DIR) $(PROTO_GEN_DART)
+
 	@echo "Generating Protobuf Docs..."
 	@protoc $(PROTO_LIST_ALL) --proto_path=$(ROOT_DIR) $(PROTO_GEN_DOCS)
 	@echo "----"

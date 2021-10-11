@@ -6,7 +6,6 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/host"
-	"github.com/sonr-io/core/tools/logger"
 	"github.com/sonr-io/core/tools/state"
 )
 
@@ -19,7 +18,13 @@ type TransferProtocol struct {
 }
 
 // NewProtocol creates a new TransferProtocol
-func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) *TransferProtocol {
+func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) (*TransferProtocol, error) {
+	// Check parameters
+	if err := checkParams(host, em); err != nil {
+		logger.Error("Failed to create TransferProtocol", err)
+		return nil, err
+	}
+
 	// create a new transfer protocol
 	invProtocol := &TransferProtocol{
 		ctx:     ctx,
@@ -36,11 +41,17 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) *Tr
 	host.SetStreamHandler(RequestPID, invProtocol.onInviteRequest)
 	host.SetStreamHandler(ResponsePID, invProtocol.onInviteResponse)
 	host.SetStreamHandler(SessionPID, invProtocol.onIncomingTransfer)
-	return invProtocol
+	logger.Info("✅  TransferProtocol is Activated \n")
+	return invProtocol, nil
 }
 
 // Request Method sends a request to Transfer Data to a remote peer
 func (p *TransferProtocol) Request(id peer.ID, req *InviteRequest) error {
+	// Check if the response is valid
+	if req == nil {
+		return ErrInvalidRequest
+	}
+
 	// sign the data
 	signature, err := p.host.SignMessage(req)
 	if err != nil {
@@ -52,7 +63,8 @@ func (p *TransferProtocol) Request(id peer.ID, req *InviteRequest) error {
 	req.Metadata.Signature = signature
 	err = p.host.SendMessage(id, RequestPID, req)
 	if err != nil {
-		return logger.Error("Failed to Send Message to Peer", err)
+		logger.Error("Failed to Send Message to Peer", err)
+		return err
 	}
 
 	// store the request in the map
@@ -62,19 +74,16 @@ func (p *TransferProtocol) Request(id peer.ID, req *InviteRequest) error {
 
 // Respond Method authenticates or declines a Transfer Request
 func (p *TransferProtocol) Respond(id peer.ID, resp *InviteResponse) error {
-	// Find Entry
-	entry, err := p.queue.Next()
-	if err != nil {
-		return logger.Error("Failed to find transfer entry", err)
+	// Check if the response is valid
+	if resp == nil {
+		return ErrInvalidResponse
 	}
-
-	// Copy UUID
-	resp = entry.CopyUUID(resp)
 
 	// sign the data
 	signature, err := p.host.SignMessage(resp)
 	if err != nil {
-		return logger.Error("Failed to Sign Response Message", err)
+		logger.Error("Failed to Sign Response Message", err)
+		return err
 	}
 
 	// add the signature to the message
@@ -83,7 +92,8 @@ func (p *TransferProtocol) Respond(id peer.ID, resp *InviteResponse) error {
 	// Send Response
 	err = p.host.SendMessage(id, ResponsePID, resp)
 	if err != nil {
-		return logger.Error("Failed to Send Message to Peer", err)
+		logger.Error("Failed to Send Message to Peer", err)
+		return err
 	}
 	return nil
 }

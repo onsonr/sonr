@@ -1,12 +1,10 @@
 package device
 
 import (
-	"fmt"
 	"path/filepath"
 	"strings"
 
-	"github.com/sonr-io/core/tools/logger"
-	"go.uber.org/zap"
+	"github.com/kataras/golog"
 )
 
 type filePathOptType int
@@ -223,8 +221,13 @@ type filePathOptions struct {
 // Merge merges the file path options.
 func (fpo *filePathOptions) Merge(name string, optsList ...*filePathOptions) error {
 	// Initialize options
-	fpo.baseName = strings.Split(name, ".")[0]
-	fpo.extension = strings.Split(name, ".")[1]
+	if strings.Contains(".", name) {
+		fpo.baseName = strings.Split(name, ".")[0]
+		fpo.extension = strings.Split(name, ".")[1]
+	} else {
+		fpo.baseName = name
+		fpo.extension = ""
+	}
 
 	// Set Checkers
 	fpo.suffixSet = false
@@ -315,12 +318,16 @@ func (fpo *filePathOptions) Apply(dir string) (string, error) {
 	}
 
 	// Add extension
-	fpo.fileName = fpo.fileName + "." + fpo.extension
+	if fpo.extension != "" {
+		fpo.fileName = fpo.fileName + "." + fpo.extension
+	}
 
 	// Check if file name is set
 	if fpo.fileName != "" {
 		path := filepath.Join(dir, fpo.fileName)
-		logger.Info(fmt.Sprintf("Calculated new file path: %s", path), zap.String("path.Apply()", path))
+		logger.Info("Calculated new file path", golog.Fields{
+			"path": path,
+		})
 		return path, nil
 	} else {
 		return "", ErrNoFileNameSet

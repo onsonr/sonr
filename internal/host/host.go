@@ -2,6 +2,7 @@ package host
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/libp2p/go-libp2p"
@@ -11,156 +12,343 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/libp2p/go-libp2p-core/routing"
-	dsc "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
-	psub "github.com/libp2p/go-libp2p-pubsub"
-	discovery "github.com/libp2p/go-libp2p/p2p/discovery"
+	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/libp2p/go-msgio"
-	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/keychain"
-	"github.com/sonr-io/core/tools/logger"
+	"github.com/sonr-io/core/tools/state"
 	"google.golang.org/protobuf/proto"
 )
 
 // SNRHostStat is the host stat info
 type SNRHostStat struct {
-	ID        peer.ID
-	PublicKey string
-	PeerID    string
-	MultAddr  string
-	Address   string
+	ID       peer.ID
+	PeerID   string
+	MultAddr string
+	Address  string
 }
 
 // SNRHost is the host wrapper for the Sonr Network
 type SNRHost struct {
 	host.Host
+	mdnsPeerChan chan peer.AddrInfo
+	dhtPeerChan  <-chan peer.AddrInfo
 
 	// Properties
-	ctxHost      context.Context
-	ctxTileAuth  context.Context
-	ctxTileToken context.Context
+	ctx        context.Context
+	privKey    crypto.PrivKey
+	connection common.Connection
+	rendezvous string
+	interval   time.Duration
+	ttl        time.Duration
 
-	// Libp2p
-	disc   *dsc.RoutingDiscovery
-	kdht   *dht.IpfsDHT
-	mdns   discovery.Service
-	pubsub *psub.PubSub
+	// State
+	emitter *state.Emitter
+	status  SNRHostStatus
 
-	// Textile
-	// 	client  *client.Client
-	// 	mail    *local.Mail
-	// 	mailbox *local.Mailbox
+	// Discovery
+	*dht.IpfsDHT
+	*ps.PubSub
 }
 
 // NewHost creates a new host
-func NewHost(ctx context.Context, conn common.Connection) (*SNRHost, error) {
+func NewHost(ctx context.Context, em *state.Emitter, options ...HostOption) (*SNRHost, error) {
 	// Initialize DHT
-	var kdhtRef *dht.IpfsDHT
-	privKey, err := device.KeyChain.GetPrivKey(keychain.Account)
+	opts := defaultHostOptions()
+	hn, err := opts.Apply(ctx, em, options...)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to get private key")
+		return nil, err
 	}
 
 	// Start Host
-	h, err := libp2p.New(
-		ctx,
-		libp2p.Identity(privKey),
-		libp2p.DefaultTransports,
+	hn.Host, err = libp2p.New(ctx,
+		libp2p.Identity(hn.privKey),
 		libp2p.ConnectionManager(connmgr.NewConnManager(
-			25,            // Lowwater
-			50,            // HighWater,
-			time.Minute*5, // GracePeriod
+			opts.LowWater,    // Lowwater
+			opts.HighWater,   // HighWater,
+			opts.GracePeriod, // GracePeriod
 		)),
-		libp2p.DefaultStaticRelays(),
-		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
-			// Create DHT
-			kdht, err := dht.New(ctx, h)
-			if err != nil {
-				return nil, err
-			}
-
-			// Set DHT
-			kdhtRef = kdht
-			return kdht, nil
-		}),
-		libp2p.EnableAutoRelay(),
-	)
+		// libp2p.ListenAddrs(hn.multiAddr),
+		libp2p.DefaultListenAddrs,
+		libp2p.Routing(hn.Router),
+		libp2p.NATPortMap(),
+		libp2p.EnableAutoRelay())
 	if err != nil {
-		return nil, logger.Error("Failed to initialize libp2p host", err)
+		logger.Error("NewHost: Failed to create libp2p host", err)
+		return nil, err
+	}
+	hn.SetStatus(Status_CONNECTING)
+
+	// Bootstrap DHT
+	if err := hn.Bootstrap(hn.ctx); err != nil {
+		logger.Error("Failed to Bootstrap KDHT to Host", err)
+		hn.SetStatus(Status_FAIL)
+		return nil, err
 	}
 
-	// Create Host
-	hn := &SNRHost{
-		ctxHost: ctx,
-		Host:    h,
-		kdht:    kdhtRef,
-	}
-
-	// Bootstrap Host
-	err = hn.Bootstrap()
-	if err != nil {
-		return nil, logger.Error("Failed to bootstrap libp2p Host", err)
-	}
-
-	// Check for Wifi/Ethernet for MDNS
-	if conn == common.Connection_WIFI || conn == common.Connection_ETHERNET {
-		err = hn.MDNS()
-		if err != nil {
-			return nil, logger.Error("Failed to start MDNS Discovery", err)
+	// Connect to Bootstrap Nodes
+	for _, pi := range dht.GetDefaultBootstrapPeerAddrInfos() {
+		if err := hn.Connect(pi); err != nil {
+			continue
+		} else {
+			break
 		}
 	}
+
+	// Initialize Discovery for DHT
+	if err := hn.createDHTDiscovery(); err != nil {
+		logger.Fatal("Could not start DHT Discovery", err)
+		hn.SetStatus(Status_FAIL)
+		return nil, err
+	}
+
+	// Initialize Discovery for MDNS
+	hn.createMdnsDiscovery()
+	hn.SetStatus(Status_READY)
+	go hn.Serve()
 	return hn, nil
 }
 
-// ** ─── Host Info ────────────────────────────────────────────────────────
-// Pubsub Returns Host Node MultiAddr
-func (hn *SNRHost) Pubsub() *psub.PubSub {
-	return hn.pubsub
+// AuthenticateId verifies UUID value and signature
+func (h *SNRHost) AuthenticateId(id *common.UUID) (bool, error) {
+	// Get local node's public key
+	pubKey, err := device.KeyChain.GetPubKey(keychain.Account)
+	if err != nil {
+		logger.Error("AuthenticateId: Failed to get local host's public key", err)
+		return false, err
+	}
+
+	// verify UUID value
+	result, err := pubKey.Verify([]byte(id.GetValue()), []byte(id.GetSignature()))
+	if err != nil {
+		logger.Error("AuthenticateId: Failed to verify signature of UUID", err)
+		return false, err
+	}
+	return result, nil
+}
+
+// AuthenticateMessage Authenticates incoming p2p message
+func (n *SNRHost) AuthenticateMessage(msg proto.Message, metadata *common.Metadata) bool {
+	// store a temp ref to signature and remove it from message data
+	// sign is a string to allow easy reset to zero-value (empty string)
+	sign := metadata.Signature
+	metadata.Signature = nil
+
+	// marshall data without the signature to protobufs3 binary format
+	buf, err := proto.Marshal(msg)
+	if err != nil {
+		logger.Error("AuthenticateMessage: Failed to marshal Protobuf Message.", err)
+		return false
+	}
+
+	// restore sig in message data (for possible future use)
+	metadata.Signature = sign
+
+	// restore peer id binary format from base58 encoded node id data
+	peerId, err := peer.Decode(metadata.NodeId)
+	if err != nil {
+		logger.Error("AuthenticateMessage: Failed to decode node id from base58.", err)
+		return false
+	}
+
+	// verify the data was authored by the signing peer identified by the public key
+	// and signature included in the message
+	return n.VerifyData(buf, []byte(sign), peerId, metadata.PublicKey)
+}
+
+// Close closes the underlying host
+func (hn *SNRHost) Close() error {
+	hn.SetStatus(Status_CLOSED)
+	hn.IpfsDHT.Close()
+	return hn.Host.Close()
+}
+
+// Connect connects with `peer.AddrInfo` if underlying Host is ready
+func (hn *SNRHost) Connect(pi peer.AddrInfo) error {
+	// Check if host is ready
+	if err := hn.HasRouting(); err != nil {
+		logger.Warn("Connect: Underlying host is not ready, failed to call Connect()")
+		return err
+	}
+
+	// Call Underlying Host to Connect
+	return hn.Host.Connect(context.Background(), pi)
+}
+
+// HandlePeerFound is to be called when new  peer is found
+func (hn *SNRHost) HandlePeerFound(pi peer.AddrInfo) {
+	hn.mdnsPeerChan <- pi
+}
+
+// HasRouting returns no-error if the host is ready for connect
+func (h *SNRHost) HasRouting() error {
+	if h.IpfsDHT == nil || h.Host == nil {
+		return ErrRoutingNotSet
+	}
+	return nil
+}
+
+// Join wraps around PubSub.Join and returns topic. Checks wether the host is ready before joining.
+func (hn *SNRHost) Join(topic string, opts ...ps.TopicOpt) (*ps.Topic, error) {
+	// Check if PubSub is Set
+	if hn.PubSub == nil {
+		return nil, errors.New("Join: Pubsub has not been set on SNRHost")
+	}
+
+	// Check if topic is valid
+	if topic == "" {
+		return nil, errors.New("Join: Empty topic string provided to Join for host.Pubsub")
+	}
+
+	// Call Underlying Pubsub to Connect
+	return hn.PubSub.Join(topic, opts...)
+}
+
+// Router returns the host node Peer Routing Function
+func (hn *SNRHost) Router(h host.Host) (routing.PeerRouting, error) {
+	// Create DHT
+	kdht, err := dht.New(hn.ctx, h)
+	if err != nil {
+		hn.SetStatus(Status_FAIL)
+		return nil, err
+	}
+
+	// Set Properties
+	hn.IpfsDHT = kdht
+	hn.Host = h
+	logger.Info("Router: Host and DHT have been set for SNRNode")
+
+	// Setup Properties
+	return hn.IpfsDHT, nil
 }
 
 // SendMessage writes a protobuf go data object to a network stream
-func (hn *SNRHost) SendMessage(id peer.ID, p protocol.ID, data proto.Message) error {
-	s, err := hn.NewStream(hn.ctxHost, id, p)
+func (h *SNRHost) SendMessage(id peer.ID, p protocol.ID, data proto.Message) error {
+	err := h.HasRouting()
 	if err != nil {
-		return logger.Error("Failed to start stream", err)
+		return err
+	}
+
+	s, err := h.NewStream(h.ctx, id, p)
+	if err != nil {
+		logger.Error("SendMessage: Failed to start stream", err)
+		return err
 	}
 	defer s.Close()
 
 	// marshall data to protobufs3 binary format
 	bin, err := proto.Marshal(data)
 	if err != nil {
-		return logger.Error("Failed to marshal pb", err)
+		logger.Error("SendMessage: Failed to marshal pb", err)
+		return err
 	}
 
 	// Create Writer and write data to stream
 	w := msgio.NewWriter(s)
 	if err := w.WriteMsg(bin); err != nil {
-		return logger.Error("Failed to write message to stream.", err)
+		logger.Error("SendMessage: Failed to write message to stream.", err)
+		return err
 	}
 	return nil
 }
 
+// SetStatus sets the host status and emits the event
+func (h *SNRHost) SetStatus(s SNRHostStatus) {
+	// Check if status is changed
+	if h.status == s {
+		logger.Info("SetStatus: Same status provided, " + s.String())
+		return
+	}
+
+	// Update Status
+	h.status = s
+	h.emitter.Emit(Event_STATUS, s)
+}
+
+// SignData signs an outgoing p2p message payload
+func (n *SNRHost) SignData(data []byte) ([]byte, error) {
+	// Get local node's private key
+	res, err := device.KeyChain.SignWith(keychain.Account, data)
+	if err != nil {
+		logger.Error("SignData: Failed to get local host's private key", err)
+		return nil, err
+	}
+	return res, nil
+}
+
+// SignMessage signs an outgoing p2p message payload
+func (n *SNRHost) SignMessage(message proto.Message) ([]byte, error) {
+	data, err := proto.Marshal(message)
+	if err != nil {
+		logger.Error("SignMessage: Failed to Sign Message", err)
+		return nil, err
+	}
+	return n.SignData(data)
+}
+
 // Stat returns the host stat info
 func (hn *SNRHost) Stat() (*SNRHostStat, error) {
-	// Get Public Key
-	pubKey, err := device.KeyChain.GetPubKey(keychain.Account)
-	if err != nil {
-		return nil, logger.Error("Failed to get public key", err)
-	}
-
-	// Marshal Public Key
-	buf, err := crypto.MarshalPublicKey(pubKey)
-	if err != nil {
-		return nil, logger.Error("Failed to marshal public key", err)
-	}
-
 	// Return Host Stat
 	return &SNRHostStat{
-		ID:        hn.ID(),
-		PublicKey: string(buf),
-		PeerID:    hn.ID().Pretty(),
-		MultAddr:  hn.Addrs()[0].String(),
+		ID:       hn.ID(),
+		PeerID:   hn.ID().Pretty(),
+		MultAddr: hn.Addrs()[0].String(),
 	}, nil
+}
+
+// Serve handles incoming peer Addr Info
+func (hn *SNRHost) Serve() {
+	for {
+		select {
+		case mdnsPI := <-hn.mdnsPeerChan:
+			// Validate not Self
+			if hn.checkUnknown(mdnsPI) {
+				// Connect to Peer
+				if err := hn.Connect(mdnsPI); err != nil {
+					hn.Peerstore().ClearAddrs(mdnsPI.ID)
+					continue
+				}
+			}
+		case dhtPI := <-hn.dhtPeerChan:
+			// Validate not Self
+			if hn.checkUnknown(dhtPI) {
+				// Connect to Peer
+				if err := hn.Connect(dhtPI); err != nil {
+					hn.Peerstore().ClearAddrs(dhtPI.ID)
+					continue
+				}
+			}
+		}
+	}
+}
+
+// VerifyData verifies incoming p2p message data integrity
+func (n *SNRHost) VerifyData(data []byte, signature []byte, peerId peer.ID, pubKeyData []byte) bool {
+	key, err := crypto.UnmarshalPublicKey(pubKeyData)
+	if err != nil {
+		logger.Error("Failed to extract key from message key data", err)
+		return false
+	}
+
+	// extract node id from the provided public key
+	idFromKey, err := peer.IDFromPublicKey(key)
+	if err != nil {
+		logger.Error("VerifyData: Failed to extract peer id from public key", err)
+		return false
+	}
+
+	// verify that message author node id matches the provided node public key
+	if idFromKey != peerId {
+		logger.Error("VerifyData: Node id and provided public key mismatch", err)
+		return false
+	}
+
+	res, err := key.Verify(data, signature)
+	if err != nil {
+		logger.Error("VerifyData: Error authenticating data", err)
+		return false
+	}
+	return res
 }
