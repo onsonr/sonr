@@ -3,11 +3,8 @@ package lobby
 import (
 	"context"
 	"errors"
-	"time"
 
-	"github.com/libp2p/go-libp2p-core/peer"
 	ps "github.com/libp2p/go-libp2p-pubsub"
-	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/tools/state"
@@ -31,15 +28,17 @@ type LobbyProtocol struct {
 	host         *host.SNRHost  // host
 	emitter      *state.Emitter // Handle to signal when done
 	eventHandler *ps.TopicEventHandler
-	lobbyEvents  chan *LobbyMessage
+	messages     chan *LobbyMessage
 	subscription *ps.Subscription
 	topic        *ps.Topic
 	olc          string
-	peers        map[peer.ID]*common.Peer
+	peers        []*common.Peer
 }
 
 // NewProtocol creates a new lobby protocol instance.
-func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter, olc string) (*LobbyProtocol, error) {
+func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter, loc *common.Location) (*LobbyProtocol, error) {
+	olc := createOlc(loc)
+
 	// Check parameters
 	if err := checkParams(host, olc, em); err != nil {
 		logger.Error("Failed to create LobbyProtocol", err)
@@ -76,8 +75,8 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter, olc
 		subscription: sub,
 		eventHandler: handler,
 		olc:          olc,
-		lobbyEvents:  make(chan *LobbyMessage),
-		peers:        make(map[peer.ID]*common.Peer),
+		messages:     make(chan *LobbyMessage),
+		peers:        make([]*common.Peer, 0),
 	}
 
 	// Handle Events and Return Protocol
@@ -109,9 +108,7 @@ func (p *LobbyProtocol) Update(peer *common.Peer) error {
 	}
 
 	// Publish Event
-	ctx, cancel := context.WithDeadline(p.ctx, <-time.After(time.Second*10))
-	defer cancel()
-	err = p.topic.Publish(ctx, eventBuf)
+	err = p.topic.Publish(context.Background(), eventBuf)
 	if err != nil {
 		logger.Error("Failed to Publish Event", err)
 		return err
@@ -167,32 +164,4 @@ func (p *LobbyProtocol) HandleMessages() {
 			}
 		}
 	}()
-}
-
-// pushRefresh sends a refresh event to the emitter
-func (p *LobbyProtocol) pushRefresh(id peer.ID, peer *common.Peer) {
-	// Check if Peer was provided
-	if peer == nil {
-		// Remove Peer from map
-		delete(p.peers, id)
-	} else {
-		// Add Peer to map
-		p.peers[id] = peer
-	}
-
-	// Create Peer List from map
-	peers := make([]*common.Peer, 0, len(p.peers))
-	for _, peer := range p.peers {
-		peers = append(peers, peer)
-	}
-
-	// Create RefreshEvent
-	event := &api.RefreshEvent{
-		Olc:      p.olc,
-		Peers:    peers,
-		Received: int64(time.Now().Unix()),
-	}
-
-	// Emit Event
-	p.emitter.Emit(Event_LIST_REFRESH, event)
 }

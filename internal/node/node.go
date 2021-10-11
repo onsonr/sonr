@@ -255,7 +255,7 @@ func (n *Node) NewRequest(to *common.Peer) (peer.ID, *transfer.InviteRequest, er
 		}
 
 		// Fetch Peer ID from Public Key
-		toId, err := to.PeerID()
+		toId, err := to.Libp2pID()
 		if err != nil {
 			logger.Child("Util").Error("Failed to fetch peer id from public key", err)
 			return "", nil, err
@@ -290,7 +290,7 @@ func (n *Node) NewResponse(decs bool, to *common.Peer) (peer.ID, *transfer.Invit
 	}
 
 	// Fetch Peer ID from Public Key
-	toId, err := to.PeerID()
+	toId, err := to.Libp2pID()
 	if err != nil {
 		logger.Child("Util").Error("Failed to fetch peer id from public key", err)
 		return "", nil, err

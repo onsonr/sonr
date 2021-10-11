@@ -55,7 +55,7 @@ var (
 )
 
 // Init initializes the keychain and returns a Keychain.
-func Init(isDev bool, opts ...FSOption) error {
+func Init(opts ...FSOption) error {
 	// Check if Opts are set
 	if len(opts) == 0 {
 		// Create Device Config

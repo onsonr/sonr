@@ -2,6 +2,7 @@ package common
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"image/png"
 	"math/rand"
@@ -14,8 +15,45 @@ import (
 	"github.com/o1egl/govatar"
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/keychain"
+	"github.com/sonr-io/core/tools/internet"
 	net "github.com/sonr-io/core/tools/internet"
+	"google.golang.org/protobuf/proto"
 )
+
+// ** ───────────────────────────────────────────────────────
+// ** ─── SNID Management ───────────────────────────────────
+// ** ───────────────────────────────────────────────────────
+func NewSNID(sname string) (*SNID, error) {
+	// Check if SNID is empty
+	if len(sname) == 0 {
+		return nil, errors.New("SName not provided.")
+	}
+
+	r := internet.NewHDNSResolver()
+	rec, err := r.LookupTXT(context.Background(), sname)
+	if err != nil {
+		return nil, err
+	}
+
+	// Get Pub Key
+	pubKey, err := rec.PubKeyBuffer()
+	if err != nil {
+		return nil, err
+	}
+
+	// Get Peer ID
+	id, err := rec.PeerID()
+	if err != nil {
+		return nil, err
+	}
+
+	// Return SNID
+	return &SNID{
+		Domain: sname,
+		PeerID: id.String(),
+		PubKey: pubKey,
+	}, nil
+}
 
 // ** ───────────────────────────────────────────────────────
 // ** ─── Peer Management ───────────────────────────────────
@@ -32,6 +70,18 @@ type PeerInfo struct {
 	Peer            *Peer         // Peer Data Object
 	PublicKey       crypto.PubKey // Peer Public Key
 	NameRecord      net.Record
+}
+
+// Buffer returns Peer as a buffer
+func (p *Peer) Buffer() ([]byte, error) {
+	// Marshal Peer
+	data, err := proto.Marshal(p)
+	if err != nil {
+		return nil, err
+	}
+
+	// Return Peer as buffer
+	return data, nil
 }
 
 // Info returns PeerInfo from Peer
@@ -64,7 +114,7 @@ func (p *Peer) Info() (*PeerInfo, error) {
 }
 
 // PeerID returns the PeerID based on PublicKey from Profile
-func (p *Peer) PeerID() (peer.ID, error) {
+func (p *Peer) Libp2pID() (peer.ID, error) {
 	// Check if PublicKey is empty
 	if len(p.GetPublicKey()) == 0 {
 		return "", errors.New("Peer Public Key is not set.")

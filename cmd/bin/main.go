@@ -30,13 +30,13 @@ func main() {
 
 	// Initialize Device
 	ctx := context.Background()
-	err := device.Init(true)
+	err := device.Init()
 	if err != nil {
 		golog.Fatal("Failed to initialize Device", err)
 	}
 
 	// Create Node
-	n, resp, err := node.NewNode(ctx, node.WithMode(node.StubMode_CLIENT))
+	n, resp, err := node.NewNode(ctx, node.WithStubMode(node.StubMode_CLIENT))
 	if err != nil {
 		golog.Fatal("Failed to update Profile for Node", err)
 	}

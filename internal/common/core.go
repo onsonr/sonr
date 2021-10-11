@@ -5,6 +5,7 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/pkg/errors"
+	"google.golang.org/protobuf/proto"
 )
 
 // RPC_SERVER_PORT is the port the RPC service listens on.
@@ -215,4 +216,16 @@ func (p *Payload) ReplaceItemsDir(dir string) (*Payload, error) {
 		}
 	}
 	return p, nil
+}
+
+// Buffer returns Peer as a buffer
+func (p *Profile) Buffer() ([]byte, error) {
+	// Marshal Peer
+	data, err := proto.Marshal(p)
+	if err != nil {
+		return nil, err
+	}
+
+	// Return Peer as buffer
+	return data, nil
 }

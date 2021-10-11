@@ -236,6 +236,25 @@ func (r Record) PubKey() (crypto.PubKey, error) {
 	return bufferToPubKey(buf)
 }
 
+func (r Record) PubKeyBuffer() ([]byte, error) {
+	// Check for TXT Record
+	if r.Type != "TXT" {
+		return nil, errors.New("not a TXT record")
+	}
+
+	// Verify Public Key
+	if err := verifyStringPubKey(r.Value); err != nil {
+		return nil, err
+	}
+
+	// Get Buffer from Value
+	buf, err := base64StrToBuffer(r.Value)
+	if err != nil {
+		return nil, err
+	}
+	return buf, nil
+}
+
 // ToDeleteRecord converts a Record to a DeleteRecord
 func (r Record) ToDeleteRecord() DeleteRecord {
 	return DeleteRecord{

@@ -35,21 +35,24 @@ func Start(reqBuf []byte) {
 
 	// Parse Initialize Request
 	ctx := context.Background()
-	isDev, req, dOpts, err := parseInitializeRequest(reqBuf)
+
+	// Unmarshal request
+	req := &api.InitializeRequest{}
+	err := proto.Unmarshal(reqBuf, req)
 	if err != nil {
-		golog.Fatal("Failed to parse initialize request: %s", err)
+		golog.Errorf("Failed to unmarshal request: %v", err)
 		return
 	}
 
 	// Initialize Device
-	err = device.Init(isDev, dOpts...)
+	err = device.Init(req.ParseOpts()...)
 	if err != nil {
 		golog.Fatal("Failed to initialize Device", err)
 		return
 	}
 
 	// Create Node
-	n, _, err := node.NewNode(ctx, node.WithRequest(req), node.WithMode(node.StubMode_CLIENT))
+	n, _, err := node.NewNode(ctx, node.WithRequest(req), node.WithStubMode(node.StubMode_CLIENT))
 	if err != nil {
 		golog.Fatal("Failed to Create new node", err)
 		return
@@ -79,46 +82,4 @@ func Resume() {
 // Stop closes the host, node, and rpc service.
 func Stop() {
 	instance.ctx.Done()
-}
-
-// parseInitializeRequest parses the given buffer and returns the proto and fsOptions.
-func parseInitializeRequest(buf []byte) (bool, *api.InitializeRequest, []device.FSOption, error) {
-	// Unmarshal request
-	req := &api.InitializeRequest{}
-	err := proto.Unmarshal(buf, req)
-	if err != nil {
-		return false, nil, nil, err
-	}
-
-	// Check FSOptions and Get Device Paths
-	fsOpts := make([]device.FSOption, 0)
-	if req.GetDeviceOptions() != nil {
-		// Set Device ID
-		err = device.SetDeviceID(req.GetDeviceOptions().GetId())
-		if err != nil {
-			return req.GetEnvironment().IsDev(), nil, nil, err
-		}
-
-		// Set Temporary Path
-		fsOpts = append(fsOpts, device.FSOption{
-			Path: req.GetDeviceOptions().GetCacheDir(),
-			Type: device.Temporary,
-		}, device.FSOption{
-			Path: req.GetDeviceOptions().GetDownloadsDir(),
-			Type: device.Downloads,
-		}, device.FSOption{
-			Path: req.GetDeviceOptions().GetDocumentsDir(),
-			Type: device.Documents,
-		}, device.FSOption{
-			Path: req.GetDeviceOptions().GetSupportDir(),
-			Type: device.Support,
-		}, device.FSOption{
-			Path: req.GetDeviceOptions().GetDatabaseDir(),
-			Type: device.Database,
-		}, device.FSOption{
-			Path: req.GetDeviceOptions().GetTextileDir(),
-			Type: device.Textile,
-		})
-	}
-	return req.GetEnvironment().IsDev(), req, fsOpts, nil
 }

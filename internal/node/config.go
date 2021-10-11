@@ -4,14 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"os"
 
-	olc "github.com/google/open-location-code/go"
 	"github.com/kataras/golog"
 	api "github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
-
-	"google.golang.org/protobuf/proto"
 )
 
 // Error Definitions
@@ -53,43 +49,15 @@ type NodeOption func(*nodeOptions)
 
 // WithRequest sets the initialize request.
 func WithRequest(req *api.InitializeRequest) NodeOption {
-	// Set Profile buffer
-	profile := common.NewDefaultProfile(common.WithCheckerProfile(req.GetProfile()), common.WithPicture())
-	proBuf, err := proto.Marshal(profile)
-	if err != nil {
-		logger.Child("Config").Error("Failed to marshal Profile", err)
-	}
-	code := olc.Encode(req.GetLocation().GetLatitude(), req.GetLocation().GetLongitude(), 8)
-	if code == "" {
-		logger.Child("Config").Error("Failed to Determine OLC Code, set to Global")
-		code = "global"
-	}
-
 	return func(o *nodeOptions) {
-		// Set Connection
-		o.connection = req.Connection
-
-		// Set Env Variables
-		if req.Variables != nil {
-			for k, v := range req.Variables {
-				os.Setenv(k, v)
-			}
-
-			if len(req.Variables) > 0 {
-				logger.Info("Added Enviornment Variable(s)", golog.Fields{
-					"Total": len(req.Variables),
-				})
-			}
-		}
-
-		// Set Properties
-		o.olc = code
-		o.profileBuf = proBuf
+		o.location = req.GetLocation()
+		o.profile = req.GetProfile()
+		o.connection = req.GetConnection()
 	}
 }
 
-// WithMode starts the Client RPC server and sets the node as a client node.
-func WithMode(m NodeStubMode) NodeOption {
+// WithStubMode starts the Client RPC server and sets the node as a client node.
+func WithStubMode(m NodeStubMode) NodeOption {
 	return func(o *nodeOptions) {
 		o.mode = m
 	}
@@ -97,22 +65,23 @@ func WithMode(m NodeStubMode) NodeOption {
 
 // nodeOptions is a collection of options for the node.
 type nodeOptions struct {
+	address    string
+	connection common.Connection
+	location   *common.Location
 	mode       NodeStubMode
 	network    string
-	address    string
-	profileBuf []byte
-	connection common.Connection
-	olc        string
+	profile    *common.Profile
 }
 
 // defaultNodeOptions returns the default node options.
 func defaultNodeOptions() *nodeOptions {
 	return &nodeOptions{
 		mode:       StubMode_CLIENT,
-		olc:        "global",
+		location:   &common.Location{},
 		connection: common.Connection_WIFI,
 		network:    "tcp",
 		address:    fmt.Sprintf(":%d", common.RPC_SERVER_PORT),
+		profile:    common.NewDefaultProfile(),
 	}
 }
 
