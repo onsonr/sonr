@@ -1,7 +1,6 @@
 package transfer
 
 import (
-	"fmt"
 	"io"
 	"os"
 
@@ -61,9 +60,9 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 func (p *TransferProtocol) onOutgoingTransfer(entry *Session, wc msgio.WriteCloser) {
 	// Initialize Params
 	logger.Info("Beginning Outgoing Transfer Stream")
-	for i := range entry.Items() {
+	for i, v := range entry.Items() {
 		// Create New Writer
-		w, err := entry.NewWriter(i, p.emitter)
+		w, err := NewWriter(i, entry.Count(), v, p.emitter)
 		if err != nil {
 			logger.Error("Failed to create new writer.", err)
 			wc.Close()
@@ -101,11 +100,7 @@ type itemWriter struct {
 }
 
 // NewReader Returns a new Reader for the given FileItem
-func (s Session) NewWriter(index int, em *state.Emitter) (*itemWriter, error) {
-	// Get FileItem
-	pi := s.request.GetPayload().GetItems()[index]
-	logger := s.logger.Child(fmt.Sprintf("outgoing/%v", pi.GetFile().GetName()))
-
+func NewWriter(index int, count int, pi *common.Payload_Item, em *state.Emitter) (*itemWriter, error) {
 	// Properties
 	size := pi.GetSize()
 	item := pi.GetFile()
@@ -142,7 +137,7 @@ func (s Session) NewWriter(index int, em *state.Emitter) (*itemWriter, error) {
 		file:    f,
 		emitter: em,
 		index:   index,
-		count:   s.Count(),
+		count:   count,
 		chunker: chunker,
 	}, nil
 }

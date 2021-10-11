@@ -63,9 +63,9 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 	// Handle incoming stream
 	go func(entry *Session, rs msgio.ReadCloser) {
 		// Write All Files
-		for i := range entry.Items() {
+		for i, v := range entry.Items() {
 			// Create Reader
-			r, err := entry.NewReader(i, p.emitter)
+			r, err := NewReader(i, entry.Count(), v, p.emitter)
 			if err != nil {
 				logger.Error("Failed to create reader", err)
 				return
@@ -110,11 +110,7 @@ type itemReader struct {
 }
 
 // NewReader Returns a new Reader for the given FileItem
-func (s Session) NewReader(index int, em *state.Emitter) (*itemReader, error) {
-	// Get FileItem
-	item := s.request.GetPayload().GetItems()[index]
-	logger := s.logger.Child(fmt.Sprintf("incoming/%v", item.GetFile().GetName()))
-
+func NewReader(index int, count int, item *common.Payload_Item, em *state.Emitter) (*itemReader, error) {
 	// Determine Path for File
 	path, err := device.NewDownloadsPath(item.GetFile().GetPath())
 	if err != nil {
@@ -129,7 +125,7 @@ func (s Session) NewReader(index int, em *state.Emitter) (*itemReader, error) {
 		logger:  logger,
 		emitter: em,
 		index:   index,
-		count:   s.Count(),
+		count:   count,
 		path:    path,
 	}, nil
 }

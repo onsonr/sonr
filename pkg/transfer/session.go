@@ -5,7 +5,6 @@ import (
 	"context"
 	"time"
 
-	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
@@ -20,7 +19,6 @@ type Session struct {
 	response    *InviteResponse
 	fromId      peer.ID
 	toId        peer.ID
-	logger      *golog.Logger
 	lastUpdated int64
 	uuid        *common.UUID
 }
@@ -46,15 +44,6 @@ func (s Session) Items() []*common.Payload_Item {
 	return s.request.GetPayload().GetItems()
 }
 
-func (s Session) Wait(ctx context.Context) error {
-	select {
-	case <-ctx.Done():
-		return ctx.Err()
-	case <-time.After(10 * time.Minute):
-		return ErrTimeout
-	}
-}
-
 // SessionQueue is a queue for incoming and outgoing requests.
 type SessionQueue struct {
 	ctx   context.Context
@@ -78,7 +67,6 @@ func (sq *SessionQueue) AddIncoming(from peer.ID, req *InviteRequest) error {
 		toId:        sq.host.ID(),
 		lastUpdated: int64(time.Now().Unix()),
 		uuid:        req.GetUuid(),
-		logger:      logger.Child("transfer/session"),
 	}
 
 	// Add to Requests
