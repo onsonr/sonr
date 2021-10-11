@@ -36,17 +36,20 @@ type LobbyProtocol struct {
 }
 
 // NewProtocol creates a new lobby protocol instance.
-func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter, loc *common.Location) (*LobbyProtocol, error) {
-	olc := createOlc(loc)
+func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter, options ...LobbyOption) (*LobbyProtocol, error) {
+	opts := defaultLobbyOptions()
+	for _, option := range options {
+		option(opts)
+	}
 
 	// Check parameters
-	if err := checkParams(host, olc, em); err != nil {
+	if err := checkParams(host, em); err != nil {
 		logger.Error("Failed to create LobbyProtocol", err)
 		return nil, err
 	}
 
 	// Create Exchange Topic
-	topic, err := host.Join(olc)
+	topic, err := host.Join(createOlc(opts.location))
 	if err != nil {
 		logger.Error("Failed to Join Local Pubsub Topic", err)
 		return nil, err
@@ -74,7 +77,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter, loc
 		topic:        topic,
 		subscription: sub,
 		eventHandler: handler,
-		olc:          olc,
+		olc:          createOlc(opts.location),
 		messages:     make(chan *LobbyMessage),
 		peers:        make([]*common.Peer, 0),
 	}
@@ -119,50 +122,46 @@ func (p *LobbyProtocol) Update(peer *common.Peer) error {
 
 // HandleEvents method listens to Pubsub Events for room
 func (p *LobbyProtocol) HandleEvents() {
-	go func() {
-		// Loop Events
-		for {
-			// Get next event
-			event, err := p.eventHandler.NextPeerEvent(p.ctx)
-			if err != nil {
-				p.eventHandler.Cancel()
-				return
-			}
-
-			// Check Event and Validate not User
-			if p.isEventExit(event) {
-				p.pushRefresh(event.Peer, nil)
-				continue
-			}
+	// Loop Events
+	for {
+		// Get next event
+		event, err := p.eventHandler.NextPeerEvent(p.ctx)
+		if err != nil {
+			p.eventHandler.Cancel()
+			return
 		}
-	}()
+
+		// Check Event and Validate not User
+		if p.isEventExit(event) {
+			p.pushRefresh(event.Peer, nil)
+			continue
+		}
+	}
 }
 
 // HandleMessages method listens to Pubsub Messages for room
 func (p *LobbyProtocol) HandleMessages() {
-	go func() {
-		// Loop Messages
-		for {
-			// Get next message
-			msg, err := p.subscription.Next(p.ctx)
-			if err != nil {
-				p.subscription.Cancel()
-				return
-			}
-
-			// Check Message and Validate not User
-			if msg.ReceivedFrom != p.host.ID() {
-				// Unmarshal Message
-				data := &LobbyMessage{}
-				err = proto.Unmarshal(msg.Data, data)
-				if err != nil {
-					logger.Error("Failed to Unmarshal Message", err)
-					continue
-				}
-
-				// Update Peer Data in map
-				p.pushRefresh(msg.ReceivedFrom, data.Peer)
-			}
+	// Loop Messages
+	for {
+		// Get next message
+		msg, err := p.subscription.Next(p.ctx)
+		if err != nil {
+			p.subscription.Cancel()
+			return
 		}
-	}()
+
+		// Check Message and Validate not User
+		if msg.ReceivedFrom != p.host.ID() {
+			// Unmarshal Message
+			data := &LobbyMessage{}
+			err = proto.Unmarshal(msg.Data, data)
+			if err != nil {
+				logger.Error("Failed to Unmarshal Message", err)
+				continue
+			}
+
+			// Update Peer Data in map
+			p.pushRefresh(msg.ReceivedFrom, data.Peer)
+		}
+	}
 }

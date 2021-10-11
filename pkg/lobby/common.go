@@ -3,80 +3,47 @@ package lobby
 import (
 	"time"
 
-	olc "github.com/google/open-location-code/go"
 	"github.com/kataras/golog"
-	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/sonr-io/core/internal/api"
 	common "github.com/sonr-io/core/internal/common"
-	"github.com/sonr-io/core/internal/host"
-	"github.com/sonr-io/core/tools/state"
 )
 
 var (
 	logger = golog.Child("protocols/lobby")
 )
 
-func checkParams(host *host.SNRHost, olc string, em *state.Emitter) error {
-	if host == nil {
-		logger.Error("Host provided is nil", ErrParameters)
-		return ErrParameters
-	}
-	if olc == "" {
-		logger.Error("Location provided is nil", ErrParameters)
-		return ErrParameters
-	}
-	if em == nil {
-		logger.Error("Emitter provided is nil", ErrParameters)
-		return ErrParameters
-	}
-	return host.HasRouting()
-}
+type GetPeerFunc func() (*common.Peer, error)
 
-func createOlc(l *common.Location) string {
-	code := olc.Encode(l.GetLatitude(), l.GetLongitude(), 8)
-	if code == "" {
-		logger.Error("Failed to Determine OLC Code, set to Global")
-		return "global"
-	}
-	logger.Info("Calculated OLC for Location", golog.Fields{"olc": code, "latitude": l.GetLatitude(), "longitude": l.GetLongitude()})
-	return code
-}
+// LobbyOption is a function that modifies the Lobby options.
+type LobbyOption func(*lobbyOptions)
 
-// pushRefresh sends a refresh event to the emitter
-func (p *LobbyProtocol) pushRefresh(id peer.ID, peer *common.Peer) {
-	// Function to build a refreshEvent
-	var buildEvent = func(peers []*common.Peer) *api.RefreshEvent {
-		return &api.RefreshEvent{
-			Olc:      p.olc,
-			Peers:    peers,
-			Received: int64(time.Now().Unix()),
+// WithLocation sets the location of the Lobby for OLC
+func WithLocation(l *common.Location) LobbyOption {
+	return func(o *lobbyOptions) {
+		if o.location != nil {
+			if o.location.GetLatitude() != 0 && o.location.GetLongitude() != 0 {
+				logger.Info("Skipping Location Set")
+			} else {
+				o.location = l
+			}
+		} else {
+			o.location = l
 		}
 	}
-
-	// Check if Peer was provided
-	if peer == nil {
-		// Remove Peer, Emit Event
-		p.emitter.Emit(Event_LIST_REFRESH, buildEvent(p.removePeer(id)))
-
-	} else {
-		// Update Peer, Emit Event
-		p.emitter.Emit(Event_LIST_REFRESH, buildEvent(p.updatePeer(id, peer)))
-	}
-
 }
 
-// removePeer Removes Peer from Peer List
-func (lp *LobbyProtocol) removePeer(peerID peer.ID) []*common.Peer {
-	for i, p := range lp.peers {
-		if peer.ID(p.GetPeerID()) == peerID {
-			return append(lp.peers[:i], lp.peers[i+1:]...)
-		}
-	}
-	return lp.peers
+// lobbyOptions is a collection of options for the Lobby.
+type lobbyOptions struct {
+	location *common.Location
+	peerFunc GetPeerFunc
+	interval time.Duration
 }
 
-// updatePeer Adds Peer to Peer List
-func (lp *LobbyProtocol) updatePeer(peerID peer.ID, peer *common.Peer) []*common.Peer {
-	lp.peers = append(lp.peers, peer)
-	return lp.peers
+func defaultLobbyOptions() *lobbyOptions {
+	return &lobbyOptions{
+		location: &common.Location{
+			Latitude:  34.102920,
+			Longitude: -118.394190,
+		},
+		interval: time.Second * 5,
+	}
 }

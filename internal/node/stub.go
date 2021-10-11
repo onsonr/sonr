@@ -58,7 +58,7 @@ func (n *Node) startClientService(ctx context.Context, opts *nodeOptions) (NodeS
 	}
 
 	// Set Local Lobby Protocol if Location is provided
-	lobbyProtocol, err := lobby.NewProtocol(ctx, n.host, n.Emitter, opts.location)
+	lobbyProtocol, err := lobby.NewProtocol(ctx, n.host, n.Emitter, lobby.WithLocation(opts.location), )
 	if err != nil {
 		logger.Error("Failed to start LobbyProtocol", err)
 		return nil, err
