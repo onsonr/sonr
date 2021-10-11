@@ -6,6 +6,7 @@ import (
 	"errors"
 	"strings"
 
+	"git.mills.io/prologic/bitcask"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
@@ -15,7 +16,6 @@ import (
 	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/transfer"
 	"github.com/sonr-io/core/tools/state"
-	bolt "go.etcd.io/bbolt"
 )
 
 // Node type - a p2p host implementing one or more p2p protocols
@@ -30,7 +30,7 @@ type Node struct {
 	ctx context.Context
 
 	// Persistent Database
-	store *bolt.DB
+	store *bitcask.Bitcask
 
 	// Node Stub Interface
 	stub NodeStub
@@ -129,7 +129,7 @@ func (n *Node) Peer() (*common.Peer, error) {
 	// Get Profile
 	profile, err := n.Profile()
 	if err != nil {
-		return nil, err
+		logger.Warn("Failed to get profile from Memory store, using DefaultProfile.", err)
 	}
 
 	// Get Public Key
@@ -145,6 +145,7 @@ func (n *Node) Peer() (*common.Peer, error) {
 		logger.Error("Failed to marshal public key", err)
 		return nil, err
 	}
+	
 	stat, err := device.Stat()
 	if err != nil {
 		logger.Error("Failed to get device stat", err)

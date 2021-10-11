@@ -1,14 +1,13 @@
 package node
 
 import (
-	"bytes"
 	"context"
 	"time"
 
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 
-	bolt "go.etcd.io/bbolt"
+	"git.mills.io/prologic/bitcask"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -28,7 +27,7 @@ var (
 
 // openStore creates a new Store instance for Node
 func (n *Node) openStore(ctx context.Context, opts *nodeOptions) error {
-	path, err := device.NewDatabasePath("sonr-bolt.db")
+	path, err := device.NewDatabasePath("sonr_bitcask")
 	if err != nil {
 		logger.Error("Failed to get DB Path", err)
 		return err
@@ -36,68 +35,17 @@ func (n *Node) openStore(ctx context.Context, opts *nodeOptions) error {
 
 	// Open the my.db data file in your current directory.
 	// It will be created if it doesn't exist.
-	db, err := bolt.Open(path, 0600, &bolt.Options{})
+	db, err := bitcask.Open(path)
 	if err != nil {
 		logger.Error("Failed to open Database", err)
 		return err
 	}
 	n.store = db
 
-	// Get Profile Buffer
-	profile, err := opts.profile.Buffer()
-	if err != nil {
-		logger.Error("Failed to get Profile Buffer", err)
-		return err
-	}
-
 	// Create Profile Bucket
-	err = n.createBucket(USER_BUCKET, PROFILE_KEY, profile)
+	err = n.SetProfile(opts.profile)
 	if err != nil {
-		return err
-	}
-
-	// Create Recents Bucket
-	err = n.createBucket(RECENTS_BUCKET, nil, nil)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-// createBucket creates a new bucket in the store.
-func (n *Node) createBucket(name []byte, key []byte, val []byte) error {
-	// Check if Store is open
-	if n.store == nil {
-		logger.Error("Failed to Create Bucket", ErrStoreNotCreated)
-		return ErrStoreNotCreated
-	}
-	if err := n.store.Update(func(tx *bolt.Tx) error {
-		// Assume bucket exists and has keys
-		b, err := tx.CreateBucketIfNotExists(name)
-		if err != nil {
-			logger.Error("Failed to Create Bucket", ErrStoreNotCreated)
-			return err
-		}
-
-		// Set Initial Value
-		retVal := b.Get(key)
-		if retVal != nil {
-			return nil
-		}
-
-		// Check if Value is not nil
-		if val != nil && key != nil {
-			// Put in Bucket
-			err = b.Put(key, val)
-			if err != nil {
-				return err
-			}
-		} else {
-			logger.Warn("No initial key/value provided skipping first Put")
-		}
-		return nil
-	}); err != nil {
-		logger.Error("Failed to Create bucket", err)
+		logger.Error("Failed to Set Profile", err)
 		return err
 	}
 	return nil
@@ -122,17 +70,11 @@ func (n *Node) AddRecent(profile *common.Profile) error {
 	key := []byte(keyStr)
 
 	// Put in Bucket
-	if err := n.store.Update(func(tx *bolt.Tx) error {
-		// Assume bucket exists and has keys
-		b, err := tx.CreateBucketIfNotExists(RECENTS_BUCKET)
+	if n.store.Has(key) {
+		// Get profile list buffer
+		oldBuf, err := n.store.Get(key)
 		if err != nil {
 			return err
-		}
-
-		// Get profile list buffer
-		oldBuf := b.Get(key)
-		if oldBuf == nil {
-			return nil
 		}
 
 		// Unmarshal profile list
@@ -146,75 +88,27 @@ func (n *Node) AddRecent(profile *common.Profile) error {
 		profileList.Add(profile)
 
 		// Marshal profile
-		buf, err := proto.Marshal(&profileList)
+		val, err := proto.Marshal(&profileList)
 		if err != nil {
 			return err
 		}
 
-		// Put profile
-		err = b.Put(key, buf)
+		err = n.store.Put(key, val)
 		if err != nil {
 			return err
 		}
-		return nil
-	}); err != nil {
-		logger.Error("Failed to ADD Recent to Store", err)
+	}
+	profileList := common.ProfileList{}
+	profileList.Add(profile)
+	val, err := proto.Marshal(&profileList)
+	if err != nil {
+		return err
+	}
+	err = n.store.Put(key, val)
+	if err != nil {
 		return err
 	}
 	return nil
-}
-
-// GetProfile returns the profile for the user from diskDB
-func (n *Node) GetRecents() (RecentsHistory, error) {
-	// Check if Store is open
-	if n.store == nil {
-		logger.Error("Failed to Get Recents", ErrStoreNotCreated)
-		return nil, ErrStoreNotCreated
-	}
-
-	// Create empty map
-	recents := make(RecentsHistory)
-	now := time.Now().Round(time.Hour)
-	start := now.Add(-time.Hour * 24 * 7)
-
-	// Set Time Range for Recent Profiles
-	nowStr := now.Format(time.RFC3339)
-	startStr := start.Format(time.RFC3339)
-
-	// Iterate over all profiles
-	err := n.store.View(func(tx *bolt.Tx) error {
-		// Get bucket
-		b := tx.Bucket(RECENTS_BUCKET)
-		if b == nil {
-			return ErrRecentsNotCreated
-		}
-
-		// Assume our events bucket exists and has RFC3339 encoded time keys.
-		c := b.Cursor()
-
-		// Our time range spans the 90's decade.
-		min := []byte(startStr)
-		max := []byte(nowStr)
-
-		// Iterate over the 90's.
-		for k, v := c.Seek(min); k != nil && bytes.Compare(k, max) <= 0; k, v = c.Next() {
-			// Unmarshal profile list
-			profileList := common.ProfileList{}
-			err := proto.Unmarshal(v, &profileList)
-			if err != nil {
-				return err
-			}
-
-			// Add to map
-			recents[string(k)] = &profileList
-		}
-		return nil
-	})
-	if err != nil {
-		logger.Error("Failed to GET Recents in Store", err)
-		return nil, err
-	}
-	return recents, nil
 }
 
 // Profile returns the profile for the user from diskDB
@@ -222,36 +116,22 @@ func (n *Node) Profile() (*common.Profile, error) {
 	// Check if Store is open
 	if n.store == nil {
 		logger.Error("Failed to Get Profile", ErrStoreNotCreated)
-		return nil, ErrStoreNotCreated
+		return common.NewDefaultProfile(), ErrStoreNotCreated
 	}
-
-	var profile common.Profile
-	err := n.store.View(func(tx *bolt.Tx) error {
-		// Assume bucket exists and has keys
-		b := tx.Bucket(USER_BUCKET)
-
-		// Check if bucket exists
-		if b == nil {
-			return ErrProfileNotCreated
-		}
-
-		// Get profile buffer
-		buf := b.Get(PROFILE_KEY)
-		if buf == nil {
-			return nil
-		}
-
-		// Unmarshal profile
-		err := proto.Unmarshal(buf, &profile)
+	if n.store.Has(PROFILE_KEY) {
+		pbuf, err := n.store.Get(PROFILE_KEY)
 		if err != nil {
-			return err
+			return common.NewDefaultProfile(), err
 		}
-		return nil
-	})
-	if err != nil {
-		return nil, err
+
+		profile := common.Profile{}
+		err = proto.Unmarshal(pbuf, &profile)
+		if err != nil {
+			return nil, err
+		}
+		return &profile, nil
 	}
-	return &profile, nil
+	return common.NewDefaultProfile(), ErrProfileNotCreated
 }
 
 // SetProfile stores the profile for the user in diskDB
@@ -266,29 +146,12 @@ func (n *Node) SetProfile(profile *common.Profile) error {
 	if profile == nil {
 		return ErrProfileNotProvided
 	}
-
-	// Put in Bucket
-	if err := n.store.Update(func(tx *bolt.Tx) error {
-		// Assume bucket exists and has keys
-		b, err := tx.CreateBucketIfNotExists(USER_BUCKET)
-		if err != nil {
-			return err
-		}
-
-		// Marshal profile
-		buf, err := proto.Marshal(profile)
-		if err != nil {
-			return err
-		}
-
-		// Put profile
-		err = b.Put(PROFILE_KEY, buf)
-		if err != nil {
-			return err
-		}
-		return nil
-	}); err != nil {
-		logger.Error("Failed to SET Profile in Store", err)
+	pbuf, err := profile.Buffer()
+	if err != nil {
+		return err
+	}
+	err = n.store.Put(PROFILE_KEY, pbuf)
+	if err != nil {
 		return err
 	}
 	return nil
