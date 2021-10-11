@@ -68,13 +68,14 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 			r, err := NewReader(i, entry.Count(), v, p.emitter)
 			if err != nil {
 				logger.Error("Failed to create reader", err)
+				rs.Close()
 				return
 			}
 
 			// Write to File
-			err = r.ReadFrom(rs)
-			if err != nil {
+			if err := r.ReadFrom(rs); err != nil {
 				logger.Error("Failed to write to file", err)
+				rs.Close()
 				return
 			}
 
@@ -205,7 +206,7 @@ func (ir *itemReader) ReadFrom(reader msgio.ReadCloser) error {
 		ir.logger.Error("Failed to Close Reader for Incoming Stream", err)
 		return err
 	}
-	ir.logger.Info("Completed writing to file.")
+	ir.logger.Info("Completed writing to file: " + ir.path)
 	return nil
 }
 

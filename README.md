@@ -122,24 +122,30 @@ This is an example of how to list things you need to use the software and how to
 This project is a pseudo-monorepo, meaning it has a single root directory and all of its packages are in subdirectories. The structure is as follows:
 
 ```
-/app            ->        Contains Frontend Code from Grida Generation.
 /cmd            ->        Packaged Binaries.
-  └─ bind       ->        Binded Mobile Framework (aar, framework)
-  └─ cli        ->        Sonr CLI with helper utilities, (Design Generation, Version Management, etc.)
-  └─ rpc        ->        Daemon RPC for Desktop Builds.
-/design         ->        Design Files and Frontend Generation.
+  └─ bin        ->        +   Daemon RPC for Desktop Builds.
+  └─ highway    ->        +   Sonr Custodian Node (desktop, server)
+  └─ lib        ->        +   Binded Mobile Framework (aar, framework)
 /docs           ->        Documentation.
 /extensions     ->        Sonr Extension's for platform integrations (Figma, Chrome, Native, etc.)
 /internal       ->        Internal Code. (Networking, Emitter, FileSystem, etc.)
-/pkg            ->        Models, Services, and RPC's.
-  └─ common     ->        Shared Protobuf Models, Generic Types, and Enums.
-  └─ payload    ->        Data Transfer related Models.
-  └─ peer       ->        Node Peer related Models.
-  └─ service    ->        Creates and Registers Libp2p RPC Service Handlers.
-  └─ topic      ->        Creates an Interface which manages libp2p pubsub topics.
-  └─ user       ->        Handles Key Management, Device(s), Linking, and Authorization.
+  └─ api        ->        +   Shared Protobuf Models, Generic Types, and Enums.
+  └─ common     ->        +   Core data types and functions.
+  └─ device     ->        +   Current Node Device management
+  └─ host       ->        +   Libp2p Configuration
+  └─ keychain   ->        +   Keychain for Private/Public Keys
+  └─ node       ->        +   Central Node for Sonr Network
+/pkg            ->        Protocol Services for Sonr Core
+  └─ domain     ->        +   Shared Protobuf Models, Generic Types, and Enums.
+  └─ exchange   ->        +   Data Transfer related Models.
+  └─ lobby      ->        +   Node Peer related Models.
+  └─ mailbox    ->        +   Creates and Registers Libp2p RPC Service Handlers.
+  └─ transfer   ->        +   Creates an Interface which manages libp2p pubsub topics.
 /proto          ->        Protobuf Definition Files.
 /tools          ->        API Services utilized in the project.
+  └─ config     ->        +   File System structure management
+  └─ internet   ->        +   Namebase, REST, and DNS Resolver
+  └─ state      ->        +   State Machine Management
 ```
 
 <!-- USAGE EXAMPLES -->

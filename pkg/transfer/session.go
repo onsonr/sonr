@@ -28,11 +28,6 @@ func (s Session) Count() int {
 	return len(s.request.GetPayload().GetItems())
 }
 
-// Equals checks if given ID is equal to the current UUID.
-func (s Session) Equals(id *common.UUID) bool {
-	return s.uuid.GetValue() == id.GetValue()
-}
-
 // MapItems performs PayloadItemFunc on each item in the Payload.
 func (s Session) Items() []*common.Payload_Item {
 	return s.request.GetPayload().GetItems()
