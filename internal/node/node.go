@@ -21,7 +21,8 @@ import (
 
 // Node type - a p2p host implementing one or more p2p protocols
 type Node struct {
-	common.NodeUser
+	common.NodeImpl
+	
 	// Emitter is the event emitter for this node
 	*state.Emitter
 
@@ -61,7 +62,7 @@ type Node struct {
 }
 
 // NewNode Creates a node with its implemented protocols
-func NewNode(ctx context.Context, options ...NodeOption) (common.NodeUser, *api.InitializeResponse, error) {
+func NewNode(ctx context.Context, options ...NodeOption) (common.NodeImpl, *api.InitializeResponse, error) {
 	// Set Node Options
 	opts := defaultNodeOptions()
 	for _, opt := range options {

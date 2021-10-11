@@ -9,7 +9,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-type NodeUser interface {
+type NodeImpl interface {
 	Profile() (*Profile, error)
 	Peer() (*Peer, error)
 }

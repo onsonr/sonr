@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/kataras/golog"
+	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/node"
 )
@@ -11,7 +12,7 @@ import (
 type SonrBin struct {
 	// Properties
 	ctx  context.Context
-	node *node.Node
+	node common.NodeImpl
 }
 
 var (

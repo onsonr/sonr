@@ -25,7 +25,7 @@ var (
 
 // LobbyProtocol is the protocol for managing local peers.
 type LobbyProtocol struct {
-	common.NodeUser
+	common.NodeImpl
 	ctx          context.Context
 	host         *host.SNRHost  // host
 	emitter      *state.Emitter // Handle to signal when done
@@ -38,7 +38,7 @@ type LobbyProtocol struct {
 }
 
 // NewProtocol creates a new lobby protocol instance.
-func NewProtocol(ctx context.Context, host *host.SNRHost, nu common.NodeUser, em *state.Emitter, options ...LobbyOption) (*LobbyProtocol, error) {
+func NewProtocol(ctx context.Context, host *host.SNRHost, nu common.NodeImpl, em *state.Emitter, options ...LobbyOption) (*LobbyProtocol, error) {
 	opts := defaultLobbyOptions()
 	for _, option := range options {
 		option(opts)
@@ -75,7 +75,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, nu common.NodeUser, em
 
 	// Create Exchange Protocol
 	lobProtocol := &LobbyProtocol{
-		NodeUser:     nu,
+		NodeImpl:     nu,
 		ctx:          ctx,
 		host:         host,
 		emitter:      em,
