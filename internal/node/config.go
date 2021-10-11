@@ -27,7 +27,7 @@ var (
 
 // NodeStub is the interface for the node based on mode: (client, highway)
 type NodeStub interface {
-	Serve(ctx context.Context, listener net.Listener, ticker *time.Ticker)
+	Serve(ctx context.Context, listener net.Listener, ticker time.Duration)
 	HasProtocols() bool
 	Close() error
 }
@@ -76,7 +76,7 @@ type nodeOptions struct {
 func defaultNodeOptions() *nodeOptions {
 	return &nodeOptions{
 		mode:       StubMode_CLIENT,
-		location:   &common.Location{},
+		location:   common.DefaultLocation(),
 		connection: common.Connection_WIFI,
 		network:    "tcp",
 		address:    fmt.Sprintf(":%d", common.RPC_SERVER_PORT),

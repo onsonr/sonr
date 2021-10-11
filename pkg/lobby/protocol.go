@@ -42,6 +42,8 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter, opt
 		option(opts)
 	}
 
+	olc := createOlc(opts.location)
+
 	// Check parameters
 	if err := checkParams(host, em); err != nil {
 		logger.Error("Failed to create LobbyProtocol", err)
@@ -49,7 +51,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter, opt
 	}
 
 	// Create Exchange Topic
-	topic, err := host.Join(createOlc(opts.location))
+	topic, err := host.Join(olc)
 	if err != nil {
 		logger.Error("Failed to Join Local Pubsub Topic", err)
 		return nil, err
@@ -77,7 +79,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter, opt
 		topic:        topic,
 		subscription: sub,
 		eventHandler: handler,
-		olc:          createOlc(opts.location),
+		olc:          olc,
 		messages:     make(chan *LobbyMessage),
 		peers:        make([]*common.Peer, 0),
 	}
@@ -112,7 +114,7 @@ func (p *LobbyProtocol) Update(peer *common.Peer) error {
 	}
 
 	// Publish Event
-	err = p.topic.Publish(context.Background(), eventBuf)
+	err = p.topic.Publish(p.ctx, eventBuf)
 	if err != nil {
 		logger.Error("Failed to Publish Event", err)
 		return err

@@ -40,10 +40,7 @@ type lobbyOptions struct {
 
 func defaultLobbyOptions() *lobbyOptions {
 	return &lobbyOptions{
-		location: &common.Location{
-			Latitude:  34.102920,
-			Longitude: -118.394190,
-		},
+		location: common.DefaultLocation(),
 		interval: time.Second * 5,
 	}
 }

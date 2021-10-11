@@ -13,7 +13,7 @@ import (
 	grpc "google.golang.org/grpc"
 )
 
-var DefaultAutoPingTicker = time.NewTicker(5 * time.Second)
+var DefaultAutoPingTicker = 5 * time.Second
 
 // ClientNodeStub is the RPC Service for the Node.
 type ClientNodeStub struct {
@@ -21,6 +21,8 @@ type ClientNodeStub struct {
 	ClientServiceServer
 
 	node *Node
+
+	listener net.Listener
 
 	// ctx is the context for the RPC Service
 	ctx context.Context
@@ -58,7 +60,7 @@ func (n *Node) startClientService(ctx context.Context, opts *nodeOptions) (NodeS
 	}
 
 	// Set Local Lobby Protocol if Location is provided
-	lobbyProtocol, err := lobby.NewProtocol(ctx, n.host, n.Emitter, lobby.WithLocation(opts.location), )
+	lobbyProtocol, err := lobby.NewProtocol(ctx, n.host, n.Emitter, lobby.WithLocation(opts.location))
 	if err != nil {
 		logger.Error("Failed to start LobbyProtocol", err)
 		return nil, err
@@ -80,6 +82,7 @@ func (n *Node) startClientService(ctx context.Context, opts *nodeOptions) (NodeS
 		grpcServer:       grpcServer,
 		node:             n,
 		ctx:              ctx,
+		listener:         listener,
 	}
 
 	// Start Routines
@@ -94,23 +97,24 @@ func (s *ClientNodeStub) HasProtocols() bool {
 }
 
 // Serve serves the RPC Service on the given port.
-func (s *ClientNodeStub) Serve(ctx context.Context, listener net.Listener, ticker *time.Ticker) {
+func (s *ClientNodeStub) Serve(ctx context.Context, listener net.Listener, ticker time.Duration) {
 	// Handle Node Events
 	if err := s.grpcServer.Serve(listener); err != nil {
 		logger.Error("Failed to serve gRPC", err)
 	}
-
+	logger.Info("🍦  Serving Client Stub...")
 	for {
+		// Call Internal Update
+		if err := s.Update(); err != nil {
+			logger.Warn("Failed to push Auto Ping", err)
+		}
+
+		// Await next tick
+		time.Sleep(ticker)
+
+		// Stop Serving if context is done
 		select {
-		case <-ticker.C:
-			// Call Internal Update
-			if err := s.Update(); err != nil {
-				logger.Warn("Failed to push Auto Ping", err)
-			}
 		case <-ctx.Done():
-			listener.Close()
-			ticker.Stop()
-			s.grpcServer.Stop()
 			return
 		}
 	}
@@ -118,6 +122,7 @@ func (s *ClientNodeStub) Serve(ctx context.Context, listener net.Listener, ticke
 
 // Close closes the RPC Service.
 func (s *ClientNodeStub) Close() error {
+	s.listener.Close()
 	s.grpcServer.Stop()
 	return nil
 }
@@ -195,26 +200,25 @@ func (n *Node) startHighwayService(ctx context.Context, opts *nodeOptions) (Node
 	return stub, nil
 }
 
-func (s *HighwayNodeStub) Serve(ctx context.Context, listener net.Listener, ticker *time.Ticker) {
+func (s *HighwayNodeStub) Serve(ctx context.Context, listener net.Listener, ticker time.Duration) {
 	// Handle Node Events
 	if err := s.grpcServer.Serve(s.listener); err != nil {
 		logger.Error("Failed to serve gRPC", err)
 
 	}
-
+	logger.Info("🍦  Serving Highway Stub...")
 	for {
 		// Stop Serving if context is done
 		select {
 		case <-ctx.Done():
-			listener.Close()
-			ticker.Stop()
-			s.grpcServer.Stop()
+
 			return
 		}
 	}
 }
 
 func (s *HighwayNodeStub) Close() error {
+	s.listener.Close()
 	s.grpcServer.Stop()
 	return nil
 }

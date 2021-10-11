@@ -108,6 +108,11 @@ func NewNode(ctx context.Context, options ...NodeOption) (*Node, *api.Initialize
 
 // Close closes the node
 func (n *Node) Close() {
+	// Close Store
+	if err := n.store.Close(); err != nil {
+		logger.Error("Failed to close store", err)
+	}
+
 	// Close Stub
 	if err := n.stub.Close(); err != nil {
 		logger.Error("Failed to close host", err)
@@ -116,11 +121,6 @@ func (n *Node) Close() {
 	// Close Host
 	if err := n.host.Close(); err != nil {
 		logger.Error("Failed to close host", err)
-	}
-
-	// Close Store
-	if err := n.store.Close(); err != nil {
-		logger.Error("Failed to close store", err)
 	}
 }
 
@@ -189,6 +189,7 @@ func (n *Node) Supply(paths []string) error {
 
 // Serve handles the emitter events.
 func (n *Node) Serve(ctx context.Context) {
+	logger.Info("🍦  Serving Node event channels...")
 	for {
 		select {
 		// LobbyProtocol: ListRefresh

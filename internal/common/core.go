@@ -3,6 +3,7 @@ package common
 import (
 	"fmt"
 
+	olc "github.com/google/open-location-code/go"
 	"github.com/kataras/golog"
 	"github.com/pkg/errors"
 	"google.golang.org/protobuf/proto"
@@ -50,6 +51,17 @@ func WrapErrors(msg string, errs []error) error {
 		}
 	}
 	return err
+}
+
+func DefaultLocation() *Location {
+	return &Location{
+		Latitude:  34.102920,
+		Longitude: -118.394190,
+	}
+}
+
+func (l *Location) OLC() string {
+	return olc.Encode(l.GetLatitude(), l.GetLongitude(), 6)
 }
 
 // ** ───────────────────────────────────────────────────────

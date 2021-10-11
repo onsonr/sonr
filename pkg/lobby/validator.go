@@ -3,7 +3,7 @@ package lobby
 import (
 	"fmt"
 	"time"
-	olc "github.com/google/open-location-code/go"
+
 	peer "github.com/libp2p/go-libp2p-core/peer"
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/core/internal/api"
@@ -52,7 +52,7 @@ func checkParams(host *host.SNRHost, em *state.Emitter) error {
 }
 
 func createOlc(l *common.Location) string {
-	code := olc.Encode(l.GetLatitude(), l.GetLongitude(), 6)
+	code := l.OLC()
 	if code == "" {
 		logger.Error("Failed to Determine OLC Code, set to Global")
 		code = "global"
