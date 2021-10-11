@@ -17,30 +17,20 @@ var DefaultAutoPingTicker = 5 * time.Second
 
 // ClientNodeStub is the RPC Service for the Node.
 type ClientNodeStub struct {
+	// Interfaces
 	NodeStub
 	ClientServiceServer
 
-	node *Node
-
-	listener net.Listener
-
-	// ctx is the context for the RPC Service
-	ctx context.Context
-
-	// grpcServer is the gRPC server.
+	// Properties
+	ctx        context.Context
+	listener   net.Listener
 	grpcServer *grpc.Server
+	node       *Node
 
-	// TransferProtocol - the transfer protocol
+	// Protocols
 	*transfer.TransferProtocol
-
-	// ExchangeProtocol - the exchange protocol
 	*exchange.ExchangeProtocol
-
-	// LobbyProtocol - The lobby protocol
 	*lobby.LobbyProtocol
-
-	// MailboxProtocol - Offline Mailbox Protocol
-	// *mailbox.MailboxProtocol
 }
 
 // startClientService creates a new Client service stub for the node.
@@ -104,16 +94,15 @@ func (s *ClientNodeStub) Serve(ctx context.Context, listener net.Listener, ticke
 	}
 	logger.Info("🍦  Serving Client Stub...")
 	for {
-		// Call Internal Update
-		if err := s.Update(); err != nil {
-			logger.Warn("Failed to push Auto Ping", err)
-		}
-
-		// Await next tick
-		time.Sleep(ticker)
-
 		// Stop Serving if context is done
 		select {
+		case <-time.After(ticker):
+			// Call Internal Update
+			if err := s.Update(); err != nil {
+				logger.Warn("Failed to push Auto Ping", err)
+			}
+			continue
+
 		case <-ctx.Done():
 			return
 		}
