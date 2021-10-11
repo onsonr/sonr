@@ -127,23 +127,30 @@ func (s *ClientNodeStub) Update() error {
 	// Call Internal Edit
 	peer, err := s.node.Peer()
 	if err != nil {
-		logger.Error("Failed to push Auto Ping", err)
+		logger.Error("Failed to get Peer Ref", err)
 		return err
 	}
 
 	if s.HasProtocols() {
-		if err := s.ExchangeProtocol.Update(peer); err != nil {
-			logger.Error("Failed to Update Exchange", err)
-			return err
-		}
-		if err := s.LobbyProtocol.Update(peer); err != nil {
+		// Update LobbyProtocol
+		err = s.LobbyProtocol.Update(peer)
+		if err != nil {
 			logger.Error("Failed to Update Lobby", err)
-			return err
+		} else {
+			logger.Info("🌎 Succesfully updated Lobby.")
 		}
+
+		// Update ExchangeProtocol
+		err := s.ExchangeProtocol.Update(peer)
+		if err != nil {
+			logger.Error("Failed to Update Exchange", err)
+		} else {
+			logger.Info("🌎 Succesfully updated Exchange.")
+		}
+		return err
 	} else {
 		return ErrProtocolsNotSet
 	}
-	return nil
 }
 
 // HighwayNodeStub is the RPC Service for the Full Node.

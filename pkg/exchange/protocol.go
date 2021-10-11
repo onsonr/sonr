@@ -92,21 +92,14 @@ func (p *ExchangeProtocol) Update(peer *common.Peer) error {
 	}
 
 	// Marshal Peer
-	info, err := peer.Info()
-	if err != nil {
-		logger.Error("Failed to get PeerInfo from Peer", err)
-		return err
-	}
-
-	// Marshal Peer
-	buf, err := proto.Marshal(peer)
+	buf, err := peer.Buffer()
 	if err != nil {
 		logger.Error("Failed to Marshal Peer", err)
 		return err
 	}
 
 	// Add Peer to KadDHT store
-	err = p.host.PutValue(p.ctx, info.StoreEntryKey, buf)
+	err = p.host.PutValue(p.ctx, peer.GetSName(), buf)
 	if err != nil {
 		logger.Error("Failed to put Item in KDHT", err)
 		return err
