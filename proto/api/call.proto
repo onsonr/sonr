@@ -78,7 +78,7 @@ message InitializeResponse {
   string error = 2; // Error Message if Host is not Active
   sonr.core.Profile profile = 3; // Users Profile from store
   map<string,sonr.core.ProfileList> recents = 4; // Recent Peers from store
-  map<string, sonr.core.PayloadItemList> history = 5; // File transfer history from store
+  map<string, sonr.core.PayloadList> history = 5; // File transfer history from store
   UserStatus userStatus = 6; // User Status from store'
 
   // User Status
@@ -130,8 +130,10 @@ message FetchResponse {
   string error = 2; // Error Message if Fetch is not Active
   sonr.core.Profile profile = 3; // Profile
   map<string, sonr.core.Peer> devices = 4; // Linked Devices
-  map<string, sonr.core.ProfileList> recents = 5; // Recent Peers
-  map<string, sonr.core.PayloadItemList> history = 6; // File Transfer History
+  //map<string, sonr.core.ProfileList> recents = 5; // Recent Peers
+  sonr.core.ProfileList recents = 5; // Recent Peers
+  //map<string, sonr.core.PayloadList> history = 6; // File Transfer History
+  sonr.core.PayloadList history = 6; // File Transfer History
 }
 
 // (Highway) LinkRequest handles Linked Devices on DNS Table

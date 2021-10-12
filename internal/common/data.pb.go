@@ -557,19 +557,18 @@ func (x *Payload) GetCreatedAt() int64 {
 }
 
 // PayloadItemList is a list of Payload.Item's for Persistent Store
-type PayloadItemList struct {
+type PayloadList struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Items        []*Payload_Item `protobuf:"bytes,1,rep,name=items,proto3" json:"items,omitempty"`                // Payload List
-	Mime         *MIME           `protobuf:"bytes,2,opt,name=mime,proto3" json:"mime,omitempty"`                  // MIME of the Payload
-	Size         int64           `protobuf:"varint,3,opt,name=size,proto3" json:"size,omitempty"`                 // Total Size of all Items in Bytes
-	LastModified int64           `protobuf:"varint,4,opt,name=lastModified,proto3" json:"lastModified,omitempty"` // Last Modified Time in Seconds
+	Payloads     []*Payload `protobuf:"bytes,1,rep,name=payloads,proto3" json:"payloads,omitempty"`          // Payload List
+	Key          string     `protobuf:"bytes,2,opt,name=key,proto3" json:"key,omitempty"`                    // Key of the Payload List
+	LastModified int64      `protobuf:"varint,3,opt,name=lastModified,proto3" json:"lastModified,omitempty"` // Last Modified Time in Seconds
 }
 
-func (x *PayloadItemList) Reset() {
-	*x = PayloadItemList{}
+func (x *PayloadList) Reset() {
+	*x = PayloadList{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_common_data_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -577,13 +576,13 @@ func (x *PayloadItemList) Reset() {
 	}
 }
 
-func (x *PayloadItemList) String() string {
+func (x *PayloadList) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*PayloadItemList) ProtoMessage() {}
+func (*PayloadList) ProtoMessage() {}
 
-func (x *PayloadItemList) ProtoReflect() protoreflect.Message {
+func (x *PayloadList) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_common_data_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -595,33 +594,26 @@ func (x *PayloadItemList) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use PayloadItemList.ProtoReflect.Descriptor instead.
-func (*PayloadItemList) Descriptor() ([]byte, []int) {
+// Deprecated: Use PayloadList.ProtoReflect.Descriptor instead.
+func (*PayloadList) Descriptor() ([]byte, []int) {
 	return file_proto_common_data_proto_rawDescGZIP(), []int{6}
 }
 
-func (x *PayloadItemList) GetItems() []*Payload_Item {
+func (x *PayloadList) GetPayloads() []*Payload {
 	if x != nil {
-		return x.Items
+		return x.Payloads
 	}
 	return nil
 }
 
-func (x *PayloadItemList) GetMime() *MIME {
+func (x *PayloadList) GetKey() string {
 	if x != nil {
-		return x.Mime
+		return x.Key
 	}
-	return nil
+	return ""
 }
 
-func (x *PayloadItemList) GetSize() int64 {
-	if x != nil {
-		return x.Size
-	}
-	return 0
-}
-
-func (x *PayloadItemList) GetLastModified() int64 {
+func (x *PayloadList) GetLastModified() int64 {
 	if x != nil {
 		return x.LastModified
 	}
@@ -1727,20 +1719,17 @@ var file_proto_common_data_proto_rawDesc = []byte{
 	0x6f, 0x72, 0x65, 0x2e, 0x4f, 0x70, 0x65, 0x6e, 0x47, 0x72, 0x61, 0x70, 0x68, 0x2e, 0x50, 0x72,
 	0x69, 0x6d, 0x61, 0x72, 0x79, 0x48, 0x01, 0x52, 0x09, 0x6f, 0x70, 0x65, 0x6e, 0x47, 0x72, 0x61,
 	0x70, 0x68, 0x42, 0x06, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x42, 0x09, 0x0a, 0x07, 0x70, 0x72,
-	0x65, 0x76, 0x69, 0x65, 0x77, 0x22, 0x9d, 0x01, 0x0a, 0x0f, 0x50, 0x61, 0x79, 0x6c, 0x6f, 0x61,
-	0x64, 0x49, 0x74, 0x65, 0x6d, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x2d, 0x0a, 0x05, 0x69, 0x74, 0x65,
-	0x6d, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e,
-	0x63, 0x6f, 0x72, 0x65, 0x2e, 0x50, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x2e, 0x49, 0x74, 0x65,
-	0x6d, 0x52, 0x05, 0x69, 0x74, 0x65, 0x6d, 0x73, 0x12, 0x23, 0x0a, 0x04, 0x6d, 0x69, 0x6d, 0x65,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x63, 0x6f,
-	0x72, 0x65, 0x2e, 0x4d, 0x49, 0x4d, 0x45, 0x52, 0x04, 0x6d, 0x69, 0x6d, 0x65, 0x12, 0x12, 0x0a,
-	0x04, 0x73, 0x69, 0x7a, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x04, 0x73, 0x69, 0x7a,
-	0x65, 0x12, 0x22, 0x0a, 0x0c, 0x6c, 0x61, 0x73, 0x74, 0x4d, 0x6f, 0x64, 0x69, 0x66, 0x69, 0x65,
-	0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0c, 0x6c, 0x61, 0x73, 0x74, 0x4d, 0x6f, 0x64,
-	0x69, 0x66, 0x69, 0x65, 0x64, 0x42, 0x29, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e,
-	0x63, 0x6f, 0x6d, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2d, 0x69, 0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65,
-	0x2f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e,
-	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x65, 0x76, 0x69, 0x65, 0x77, 0x22, 0x73, 0x0a, 0x0b, 0x50, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64,
+	0x4c, 0x69, 0x73, 0x74, 0x12, 0x2e, 0x0a, 0x08, 0x70, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x73,
+	0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x12, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x63, 0x6f,
+	0x72, 0x65, 0x2e, 0x50, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x52, 0x08, 0x70, 0x61, 0x79, 0x6c,
+	0x6f, 0x61, 0x64, 0x73, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x22, 0x0a, 0x0c, 0x6c, 0x61, 0x73, 0x74, 0x4d, 0x6f,
+	0x64, 0x69, 0x66, 0x69, 0x65, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0c, 0x6c, 0x61,
+	0x73, 0x74, 0x4d, 0x6f, 0x64, 0x69, 0x66, 0x69, 0x65, 0x64, 0x42, 0x29, 0x5a, 0x27, 0x67, 0x69,
+	0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2d, 0x69, 0x6f,
+	0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x2f, 0x63,
+	0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1765,7 +1754,7 @@ var file_proto_common_data_proto_goTypes = []interface{}{
 	(*OpenGraph)(nil),                    // 4: sonr.core.OpenGraph
 	(*Thumbnail)(nil),                    // 5: sonr.core.Thumbnail
 	(*Payload)(nil),                      // 6: sonr.core.Payload
-	(*PayloadItemList)(nil),              // 7: sonr.core.PayloadItemList
+	(*PayloadList)(nil),                  // 7: sonr.core.PayloadList
 	(*OpenGraph_Primary)(nil),            // 8: sonr.core.OpenGraph.Primary
 	(*OpenGraph_Image)(nil),              // 9: sonr.core.OpenGraph.Image
 	(*OpenGraph_Video)(nil),              // 10: sonr.core.OpenGraph.Video
@@ -1794,28 +1783,27 @@ var file_proto_common_data_proto_depIdxs = []int32{
 	18, // 11: sonr.core.Thumbnail.mime:type_name -> sonr.core.MIME
 	17, // 12: sonr.core.Payload.items:type_name -> sonr.core.Payload.Item
 	19, // 13: sonr.core.Payload.owner:type_name -> sonr.core.Profile
-	17, // 14: sonr.core.PayloadItemList.items:type_name -> sonr.core.Payload.Item
-	18, // 15: sonr.core.PayloadItemList.mime:type_name -> sonr.core.MIME
-	0,  // 16: sonr.core.OpenGraph.Primary.type:type_name -> sonr.core.OpenGraph.Type
-	9,  // 17: sonr.core.OpenGraph.Primary.image:type_name -> sonr.core.OpenGraph.Image
-	10, // 18: sonr.core.OpenGraph.Primary.video:type_name -> sonr.core.OpenGraph.Video
-	11, // 19: sonr.core.OpenGraph.Primary.audio:type_name -> sonr.core.OpenGraph.Audio
-	12, // 20: sonr.core.OpenGraph.Primary.twitter:type_name -> sonr.core.OpenGraph.Twitter
-	13, // 21: sonr.core.OpenGraph.Twitter.player:type_name -> sonr.core.OpenGraph.Twitter.Player
-	14, // 22: sonr.core.OpenGraph.Twitter.iphone:type_name -> sonr.core.OpenGraph.Twitter.IPhone
-	15, // 23: sonr.core.OpenGraph.Twitter.ipad:type_name -> sonr.core.OpenGraph.Twitter.IPad
-	16, // 24: sonr.core.OpenGraph.Twitter.googlePlay:type_name -> sonr.core.OpenGraph.Twitter.GooglePlay
-	18, // 25: sonr.core.Payload.Item.mime:type_name -> sonr.core.MIME
-	1,  // 26: sonr.core.Payload.Item.file:type_name -> sonr.core.FileItem
-	3,  // 27: sonr.core.Payload.Item.url:type_name -> sonr.core.UrlItem
-	2,  // 28: sonr.core.Payload.Item.message:type_name -> sonr.core.MessageItem
-	5,  // 29: sonr.core.Payload.Item.thumbnail:type_name -> sonr.core.Thumbnail
-	8,  // 30: sonr.core.Payload.Item.openGraph:type_name -> sonr.core.OpenGraph.Primary
-	31, // [31:31] is the sub-list for method output_type
-	31, // [31:31] is the sub-list for method input_type
-	31, // [31:31] is the sub-list for extension type_name
-	31, // [31:31] is the sub-list for extension extendee
-	0,  // [0:31] is the sub-list for field type_name
+	6,  // 14: sonr.core.PayloadList.payloads:type_name -> sonr.core.Payload
+	0,  // 15: sonr.core.OpenGraph.Primary.type:type_name -> sonr.core.OpenGraph.Type
+	9,  // 16: sonr.core.OpenGraph.Primary.image:type_name -> sonr.core.OpenGraph.Image
+	10, // 17: sonr.core.OpenGraph.Primary.video:type_name -> sonr.core.OpenGraph.Video
+	11, // 18: sonr.core.OpenGraph.Primary.audio:type_name -> sonr.core.OpenGraph.Audio
+	12, // 19: sonr.core.OpenGraph.Primary.twitter:type_name -> sonr.core.OpenGraph.Twitter
+	13, // 20: sonr.core.OpenGraph.Twitter.player:type_name -> sonr.core.OpenGraph.Twitter.Player
+	14, // 21: sonr.core.OpenGraph.Twitter.iphone:type_name -> sonr.core.OpenGraph.Twitter.IPhone
+	15, // 22: sonr.core.OpenGraph.Twitter.ipad:type_name -> sonr.core.OpenGraph.Twitter.IPad
+	16, // 23: sonr.core.OpenGraph.Twitter.googlePlay:type_name -> sonr.core.OpenGraph.Twitter.GooglePlay
+	18, // 24: sonr.core.Payload.Item.mime:type_name -> sonr.core.MIME
+	1,  // 25: sonr.core.Payload.Item.file:type_name -> sonr.core.FileItem
+	3,  // 26: sonr.core.Payload.Item.url:type_name -> sonr.core.UrlItem
+	2,  // 27: sonr.core.Payload.Item.message:type_name -> sonr.core.MessageItem
+	5,  // 28: sonr.core.Payload.Item.thumbnail:type_name -> sonr.core.Thumbnail
+	8,  // 29: sonr.core.Payload.Item.openGraph:type_name -> sonr.core.OpenGraph.Primary
+	30, // [30:30] is the sub-list for method output_type
+	30, // [30:30] is the sub-list for method input_type
+	30, // [30:30] is the sub-list for extension type_name
+	30, // [30:30] is the sub-list for extension extendee
+	0,  // [0:30] is the sub-list for field type_name
 }
 
 func init() { file_proto_common_data_proto_init() }
@@ -1898,7 +1886,7 @@ func file_proto_common_data_proto_init() {
 			}
 		}
 		file_proto_common_data_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PayloadItemList); i {
+			switch v := v.(*PayloadList); i {
 			case 0:
 				return &v.state
 			case 1:

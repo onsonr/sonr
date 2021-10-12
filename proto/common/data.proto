@@ -166,10 +166,9 @@ message Payload {
 }
 
 // PayloadItemList is a list of Payload.Item's for Persistent Store
-message PayloadItemList {
-  repeated Payload.Item items = 1; // Payload List
-  MIME mime = 2;                   // MIME of the Payload
-  int64 size = 3;                  // Total Size of all Items in Bytes
-  int64 lastModified = 4;          // Last Modified Time in Seconds
+message PayloadList {
+  repeated Payload payloads = 1; // Payload List
+  string key = 2;                // Key of the Payload List
+  int64 lastModified = 3;          // Last Modified Time in Seconds
 }
 
