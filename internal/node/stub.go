@@ -9,6 +9,7 @@ import (
 	"github.com/sonr-io/core/pkg/domain"
 	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/lobby"
+	"github.com/sonr-io/core/pkg/mailbox"
 	"github.com/sonr-io/core/pkg/transfer"
 	grpc "google.golang.org/grpc"
 )
@@ -31,6 +32,7 @@ type ClientNodeStub struct {
 	*transfer.TransferProtocol
 	*exchange.ExchangeProtocol
 	*lobby.LobbyProtocol
+	*mailbox.MailboxProtocol
 }
 
 // startClientService creates a new Client service stub for the node.
@@ -56,6 +58,13 @@ func (n *Node) startClientService(ctx context.Context, opts *nodeOptions) (NodeS
 		return nil, err
 	}
 
+	// Set Mailbox Protocol
+	mailboxProtocol, err := mailbox.NewProtocol(ctx, n.host, n.Emitter)
+	if err != nil {
+		logger.Error("Failed to start MailboxProtocol", err)
+		return nil, err
+	}
+
 	// Open Listener on Port
 	listener, err := net.Listen(opts.network, opts.address)
 	if err != nil {
@@ -69,6 +78,7 @@ func (n *Node) startClientService(ctx context.Context, opts *nodeOptions) (NodeS
 		TransferProtocol: transferProtocol,
 		ExchangeProtocol: exchProtocol,
 		LobbyProtocol:    lobbyProtocol,
+		MailboxProtocol:  mailboxProtocol,
 		grpcServer:       grpcServer,
 		node:             n,
 		ctx:              ctx,
