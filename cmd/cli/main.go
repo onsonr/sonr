@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/urfave/cli/v2" // imports as package "cli"
 	"log"
 	"os"
-	"sort"
+
+	"github.com/urfave/cli/v2" // imports as package "cli"
 )
 
 func main() {
@@ -12,10 +12,10 @@ func main() {
 		Name: "sonr",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
-				Name:    "lang",
+				Name:    "mode",
 				Aliases: []string{"l"},
-				Value:   "english",
-				Usage:   "Language for the greeting",
+				Value:   "client",
+				Usage:   "Node mode either for (client, highway)",
 			},
 			&cli.StringFlag{
 				Name:    "config",
@@ -23,29 +23,29 @@ func main() {
 				Usage:   "Load configuration from `FILE`",
 			},
 		},
+		Action: func(c *cli.Context) error {
+			c.String("mode")
+			return nil
+		},
 		Commands: []*cli.Command{
 			{
-				Name:    "complete",
-				Aliases: []string{"c"},
-				Usage:   "complete a task on the list",
+				Name:    "build",
+				Aliases: []string{"b"},
+				Usage:   "Build for desktop",
 				Action: func(c *cli.Context) error {
 					return nil
 				},
 			},
 			{
-				Name:    "add",
-				Aliases: []string{"a"},
-				Usage:   "add a task to the list",
+				Name:    "serve",
+				Aliases: []string{"s"},
+				Usage:   "Serve node on Localhost",
 				Action: func(c *cli.Context) error {
 					return nil
 				},
 			},
 		},
 	}
-
-	sort.Sort(cli.FlagsByName(app.Flags))
-	sort.Sort(cli.CommandsByName(app.Commands))
-
 	err := app.Run(os.Args)
 	if err != nil {
 		log.Fatal(err)

@@ -46,7 +46,7 @@ func (n *Node) openStore(ctx context.Context, opts *nodeOptions) error {
 
 	// Open the my.db data file in your current directory.
 	// It will be created if it doesn't exist.
-	db, err := bitcask.Open(path)
+	db, err := bitcask.Open(path, bitcask.WithAutoRecovery(true))
 	if err != nil {
 		logger.Error("Failed to open Database", err)
 		return err
@@ -188,6 +188,7 @@ func (n *Node) AddRecent(profile *common.Profile) error {
 	return nil
 }
 
+// GetHistory returns the history of profiles
 func (n *Node) GetHistory() (*common.PayloadList, error) {
 	if n.store == nil {
 		logger.Error("Failed to Get Profile", ErrProtocolsNotSet)
@@ -214,6 +215,7 @@ func (n *Node) GetHistory() (*common.PayloadList, error) {
 	return &common.PayloadList{}, nil
 }
 
+// GetRecents returns the list of recent profiles
 func (n *Node) GetRecents() (*common.ProfileList, error) {
 	if n.store == nil {
 		logger.Error("Failed to Get Profile", ErrProtocolsNotSet)

@@ -145,7 +145,6 @@ func (p *ExchangeProtocol) Verify(sname string) (bool, internet.Record, error) {
 }
 
 func compareRecordtoID(r internet.Record, target peer.ID) (bool, error) {
-
 	// Check peer record
 	pid, err := r.PeerID()
 	if err != nil {
