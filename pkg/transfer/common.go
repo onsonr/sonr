@@ -37,10 +37,10 @@ var (
 	ErrFailedEntry     = errors.New("Failed to get Topmost entry from Queue")
 	ErrFailedAuth      = errors.New("Failed to Authenticate message")
 	ErrEmptyRequests   = errors.New("Empty Request list provided")
-	ErrMismatchUUID    = errors.New("The provided UUID's do not match")
 	ErrRequestNotFound = errors.New("Request not found in list")
 )
 
+// checkParams Checks if Non-nil Parameters were passed
 func checkParams(host *host.SNRHost, em *state.Emitter) error {
 	if host == nil {
 		logger.Error("Host provided is nil", ErrParameters)

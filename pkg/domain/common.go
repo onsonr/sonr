@@ -31,6 +31,7 @@ func fetchApiKeys() (string, string, error) {
 	return key, secret, nil
 }
 
+// checkParams Checks if Non-nil Parameters were passed
 func checkParams(host *host.SNRHost) error {
 	if host == nil {
 		logger.Error("Host provided is nil", ErrParameters)
