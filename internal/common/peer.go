@@ -10,8 +10,10 @@ import (
 	"time"
 
 	faker "github.com/brianvoe/gofakeit/v6"
+	"github.com/ipfs/go-cid"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
+	mh "github.com/multiformats/go-multihash"
 	"github.com/o1egl/govatar"
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/keychain"
@@ -82,6 +84,22 @@ func (p *Peer) Buffer() ([]byte, error) {
 
 	// Return Peer as buffer
 	return data, nil
+}
+
+// CID returns the CID of the Peer
+func (p *Peer) CID() (string, error) {
+	// Create a cid manually by specifying the 'prefix' parameters
+	pref := cid.Prefix{
+		Version:  1,
+		Codec:    cid.Raw,
+		MhType:   mh.SHA2_256,
+		MhLength: -1, // default length
+	}
+	cid, err := pref.Sum([]byte(p.GetSName()))
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("sonr/%v", cid), nil
 }
 
 // Info returns PeerInfo from Peer
