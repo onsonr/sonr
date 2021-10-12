@@ -17,7 +17,6 @@ import (
 	"github.com/sonr-io/core/internal/keychain"
 	"github.com/sonr-io/core/tools/internet"
 	net "github.com/sonr-io/core/tools/internet"
-	"github.com/textileio/go-threads/core/thread"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -149,19 +148,6 @@ func (p *Peer) PubKey() (crypto.PubKey, error) {
 		return nil, err
 	}
 	return pubKey, nil
-}
-
-// ThreadPubKey returns the Public Key from the Peer as Textile Thread Key
-func (p *Peer) ThreadPubKey() (thread.PubKey, error) {
-	// Get Public Key
-	pub, err := p.PubKey()
-	if err != nil {
-		logger.Error("Failed to get Public Key", err)
-		return nil, err
-	}
-
-	// Return Thread PubKey
-	return thread.NewLibp2pPubKey(pub), nil
 }
 
 // SnrPubKey returns the Public Key from the Peer as SnrPubKey

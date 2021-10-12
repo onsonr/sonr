@@ -58,12 +58,12 @@ func (n *Node) startClientService(ctx context.Context, opts *nodeOptions) (NodeS
 		return nil, err
 	}
 
-	// Set Mailbox Protocol
-	mailboxProtocol, err := mailbox.NewProtocol(ctx, n.host, n.Emitter)
-	if err != nil {
-		logger.Error("Failed to start MailboxProtocol", err)
-		return nil, err
-	}
+	// // Set Mailbox Protocol
+	// mailboxProtocol, err := mailbox.NewProtocol(ctx, n.host, n.Emitter)
+	// if err != nil {
+	// 	logger.Error("Failed to start MailboxProtocol", err)
+	// 	return nil, err
+	// }
 
 	// Open Listener on Port
 	listener, err := net.Listen(opts.network, opts.address)
@@ -78,11 +78,11 @@ func (n *Node) startClientService(ctx context.Context, opts *nodeOptions) (NodeS
 		TransferProtocol: transferProtocol,
 		ExchangeProtocol: exchProtocol,
 		LobbyProtocol:    lobbyProtocol,
-		MailboxProtocol:  mailboxProtocol,
-		grpcServer:       grpcServer,
-		node:             n,
-		ctx:              ctx,
-		listener:         listener,
+		//MailboxProtocol:  mailboxProtocol,
+		grpcServer: grpcServer,
+		node:       n,
+		ctx:        ctx,
+		listener:   listener,
 	}
 
 	// Start Routines
