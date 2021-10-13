@@ -172,6 +172,7 @@ message LinkResponse {
 message ShareRequest {
   sonr.core.Peer peer = 1; // Peer to Share with
   sonr.core.MessageItem message = 2; // Message to Share
+  repeated string paths = 3;        // Optional: Supply Paths, to directly supply files
 }
 
 // (Client) ShareResponse is response to ShareRequest

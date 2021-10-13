@@ -4,10 +4,12 @@ import (
 	"container/list"
 	"context"
 	"errors"
+	"fmt"
 	"strings"
 	"time"
 
 	"git.mills.io/prologic/bitcask"
+	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
@@ -177,6 +179,7 @@ func (n *Node) Supply(paths []string) error {
 	// Get Profile
 	profile, err := n.GetProfile()
 	if err != nil {
+		logger.Error("Failed to get profile", err)
 		return err
 	}
 
@@ -188,7 +191,8 @@ func (n *Node) Supply(paths []string) error {
 	}
 
 	// Add items to transfer
-	n.queue.PushBack(payload)
+	n.queue.PushFront(payload)
+	logger.Info(fmt.Sprintf("Added %v items to supply queue.", len(paths)), golog.Fields{"File Count": payload.FileCount(), "URL Count": payload.URLCount()})
 	return nil
 }
 
@@ -227,43 +231,42 @@ func (n *Node) Serve(ctx context.Context) {
 // Share a peer to have a transfer
 func (n *Node) NewRequest(to *common.Peer) (peer.ID, *transfer.InviteRequest, error) {
 	// Fetch Element from Queue
-	elem := n.queue.Front()
-	if elem != nil {
-		// Get Payload
-		payload := n.queue.Remove(elem).(*common.Payload)
-
-		// Create new Metadata
-		meta, err := device.KeyChain.CreateMetadata(n.host.ID())
-		if err != nil {
-			logger.Error("Failed to create new metadata for Shared Invite", err)
-			return "", nil, err
-		}
-
-		// Fetch User Peer
-		from, err := n.Peer()
-		if err != nil {
-			logger.Error("Failed to get Node Peer Object", err)
-			return "", nil, err
-		}
-
-		// Create Invite Request
-		req := &transfer.InviteRequest{
-			Payload:  payload,
-			Metadata: api.SignedMetadataToProto(meta),
-			To:       to,
-			From:     from,
-		}
-
-		// Fetch Peer ID from Public Key
-		toId, err := to.Libp2pID()
-		if err != nil {
-			logger.Error("Failed to fetch peer id from public key", err)
-			return "", nil, err
-		}
-		return toId, req, nil
+	payload := n.queue.Remove(n.queue.Front()).(*common.Payload)
+	if payload == nil {
+		logger.Error("Failed to get item from Supply Queue.")
+		return "", nil, errors.New("No items in Supply Queue.")
 	}
-	logger.Error("Failed to get item from Supply Queue.")
-	return "", nil, errors.New("No items in Supply Queue.")
+
+	// Create new Metadata
+	meta, err := device.KeyChain.CreateMetadata(n.host.ID())
+	if err != nil {
+		logger.Error("Failed to create new metadata for Shared Invite", err)
+		return "", nil, err
+	}
+
+	// Fetch User Peer
+	from, err := n.Peer()
+	if err != nil {
+		logger.Error("Failed to get Node Peer Object", err)
+		return "", nil, err
+	}
+
+	// Create Invite Request
+	req := &transfer.InviteRequest{
+		Payload:  payload,
+		Metadata: api.SignedMetadataToProto(meta),
+		To:       to,
+		From:     from,
+	}
+
+	// Fetch Peer ID from Public Key
+	toId, err := to.Libp2pID()
+	if err != nil {
+		logger.Error("Failed to fetch peer id from public key", err)
+		return "", nil, err
+	}
+	return toId, req, nil
+
 }
 
 // Respond to an invite request

@@ -59,9 +59,11 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 	// Initialize Params
 	logger.Info("Started Incoming Transfer...")
 	reader := msgio.NewReader(s)
-
+	wg := sync.WaitGroup{}
+	wg.Add(1)
 	// Handle incoming stream
 	go func(entry *Session, rs msgio.ReadCloser) {
+
 		// Write All Files
 		for i, v := range entry.Items() {
 			// Create Reader
@@ -82,20 +84,26 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 			// Update Progress
 			logger.Info(fmt.Sprintf("Finished RECEIVING File (%v/%v)", i+1, entry.Count()))
 		}
-
-		// Await WaitGroup
-		reader.Close()
-
-		// Complete the transfer
-		event, err := p.queue.Done()
-		if err != nil {
-			logger.Error("Failed to Complete Incoming Transfer", err)
-			return
-		}
-
-		// Emit Event
-		p.emitter.Emit(Event_COMPLETED, event)
+		wg.Done()
 	}(e, reader)
+	wg.Wait()
+
+	// Complete the transfer
+	event, err := p.queue.Done()
+	if err != nil {
+		logger.Error("Failed to Complete Incoming Transfer", err)
+		return
+	}
+
+	// Emit Event
+	p.emitter.Emit(Event_COMPLETED, event)
+
+	// Await WaitGroup
+	err = s.Close()
+	if err != nil {
+		logger.Error("Failed to close stream for incoming transfer", err)
+		return
+	}
 }
 
 // itemReader is a Reader for a FileItem
@@ -197,13 +205,6 @@ func (ir *itemReader) ReadFrom(reader msgio.ReadCloser) error {
 	err = f.Close()
 	if err != nil {
 		ir.logger.Error("Failed to Close item on Read Stream", err)
-		return err
-	}
-
-	// Close Reader
-	err = reader.Close()
-	if err != nil {
-		ir.logger.Error("Failed to Close Reader for Incoming Stream", err)
 		return err
 	}
 	ir.logger.Info("Completed writing to file: " + ir.path)
