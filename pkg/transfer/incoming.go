@@ -40,7 +40,7 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 	}
 
 	// generate response message
-	p.queue.AddIncoming(remotePeer, req)
+	p.sessionQueue.AddIncoming(remotePeer, req)
 
 	// store request data into Context
 	p.emitter.Emit(Event_INVITED, req.ToEvent())
@@ -49,7 +49,7 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 // onIncomingTransfer incoming transfer handler
 func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 	// Find Entry in Queue
-	e, err := p.queue.Next()
+	e, err := p.sessionQueue.Next()
 	if err != nil {
 		logger.Error("Failed to find transfer request", err)
 		s.Reset()
@@ -89,7 +89,7 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 	wg.Wait()
 
 	// Complete the transfer
-	event, err := p.queue.Done()
+	event, err := p.sessionQueue.Done()
 	if err != nil {
 		logger.Error("Failed to Complete Incoming Transfer", err)
 		return

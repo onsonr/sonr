@@ -3,18 +3,22 @@ package transfer
 import (
 	"container/list"
 	"context"
+	"fmt"
 
+	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/tools/state"
 )
 
 // TransferProtocol type
 type TransferProtocol struct {
-	ctx     context.Context // Context
-	host    *host.SNRHost   // local host
-	queue   *SessionQueue   // transfer queue
-	emitter *state.Emitter  // Handle to signal when done
+	ctx          context.Context // Context
+	host         *host.SNRHost   // local host
+	emitter      *state.Emitter  // Handle to signal when done
+	sessionQueue *SessionQueue   // transfer session queue
+	supplyQueue  *list.List      // supply queue
 }
 
 // NewProtocol creates a new TransferProtocol
@@ -30,11 +34,12 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) (*T
 		ctx:     ctx,
 		host:    host,
 		emitter: em,
-		queue: &SessionQueue{
+		sessionQueue: &SessionQueue{
 			ctx:   ctx,
 			host:  host,
 			queue: list.New(),
 		},
+		supplyQueue: list.New(),
 	}
 
 	// Setup Stream Handlers
@@ -68,7 +73,7 @@ func (p *TransferProtocol) Request(id peer.ID, req *InviteRequest) error {
 	}
 
 	// store the request in the map
-	p.queue.AddOutgoing(id, req)
+	p.sessionQueue.AddOutgoing(id, req)
 	return nil
 }
 
@@ -95,5 +100,20 @@ func (p *TransferProtocol) Respond(id peer.ID, resp *InviteResponse) error {
 		logger.Error("Failed to Send Message to Peer", err)
 		return err
 	}
+	return nil
+}
+
+// Supply a transfer item to the queue
+func (p *TransferProtocol) Supply(paths []string, profile *common.Profile) error {
+	// Create Transfer
+	payload, err := common.NewPayload(profile, paths)
+	if err != nil {
+		logger.Error("Failed to Supply Paths", err)
+		return err
+	}
+
+	// Add items to transfer
+	p.supplyQueue.PushBack(payload)
+	logger.Info(fmt.Sprintf("Added %v items to supply queue.", len(paths)), golog.Fields{"File Count": payload.FileCount(), "URL Count": payload.URLCount()})
 	return nil
 }

@@ -5,8 +5,11 @@ import (
 	"time"
 
 	"github.com/kataras/golog"
+	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/sonr-io/core/internal/api"
+	"github.com/sonr-io/core/internal/common"
+	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/tools/state"
 )
@@ -69,4 +72,65 @@ func (ir *InviteRequest) ToEvent() *api.InviteEvent {
 		From:     ir.GetFrom(),
 		Payload:  ir.GetPayload(),
 	}
+}
+
+// Share a peer to have a transfer
+func (p *TransferProtocol) NewRequest(to *common.Peer, from *common.Peer, fromID peer.ID) (peer.ID, *InviteRequest, error) {
+	// Fetch Element from Queue
+	elem := p.supplyQueue.Front()
+	if elem != nil {
+		// Get Payload
+		payload := p.supplyQueue.Remove(elem).(*common.Payload)
+
+		// Create new Metadata
+		meta, err := device.KeyChain.CreateMetadata(fromID)
+		if err != nil {
+			logger.Error("Failed to create new metadata for Shared Invite", err)
+			return "", nil, err
+		}
+
+		// Create Invite Request
+		req := &InviteRequest{
+			Payload:  payload,
+			Metadata: api.SignedMetadataToProto(meta),
+			To:       to,
+			From:     from,
+		}
+
+		// Fetch Peer ID from Public Key
+		toId, err := to.Libp2pID()
+		if err != nil {
+			logger.Error("Failed to fetch peer id from public key", err)
+			return "", nil, err
+		}
+		return toId, req, nil
+	}
+	logger.Error("Failed to get item from Supply Queue.")
+	return "", nil, errors.New("No items in Supply Queue.")
+}
+
+// Respond to an invite request
+func (p *TransferProtocol) NewResponse(decs bool, to *common.Peer, from *common.Peer, fromID peer.ID) (peer.ID, *InviteResponse, error) {
+	// Create new Metadata
+	meta, err := device.KeyChain.CreateMetadata(fromID)
+	if err != nil {
+		logger.Error("Failed to create new metadata for Shared Invite", err)
+		return "", nil, err
+	}
+
+	// Create Invite Response
+	resp := &InviteResponse{
+		Decision: decs,
+		Metadata: api.SignedMetadataToProto(meta),
+		From:     from,
+		To:       to,
+	}
+
+	// Fetch Peer ID from Public Key
+	toId, err := to.Libp2pID()
+	if err != nil {
+		logger.Error("Failed to fetch peer id from public key", err)
+		return "", nil, err
+	}
+	return toId, resp, nil
 }
