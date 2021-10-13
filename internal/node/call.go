@@ -75,7 +75,7 @@ func (s *ClientNodeStub) Edit(ctx context.Context, req *api.EditRequest) (*api.E
 // Fetch method retreives Node properties from Key/Value Store
 func (s *ClientNodeStub) Fetch(ctx context.Context, req *api.FetchRequest) (*api.FetchResponse, error) {
 	// Call Internal Fetch4
-	profile, err := s.node.Profile()
+	profile, err := s.node.GetProfile()
 	if err != nil {
 		return &api.FetchResponse{
 			Success: false,

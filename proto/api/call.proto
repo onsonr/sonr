@@ -102,7 +102,18 @@ message SupplyResponse {
 
 // (Client) EditRequest is request to edit user profile
 message EditRequest {
-  sonr.core.Profile profile = 1; // Profile to Edit
+  Type type = 1; // Type of Edit
+  sonr.core.Profile profile = 2; // Profile to Edit
+  oneof deleteValue {
+    sonr.core.Payload history = 3; // Payload to Delete
+    sonr.core.Profile recent = 4; // Profile to Delete
+  }
+
+  enum Type {
+    NONE = 0; // No Delete
+    DELETE = 1; // Delete Profile, Payload, or File
+    MODIFY = 2; // Modify Profile
+  }
 }
 
 // (Client) EditResponse is response to EditRequest

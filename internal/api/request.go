@@ -94,3 +94,8 @@ func (ir *InitializeRequest) SetDeviceID() {
 		golog.Warn("No Device ID Passed")
 	}
 }
+
+// IsDelete returns true if the request is a delete request
+func (er *EditRequest) IsDelete() bool {
+	return er.GetType() == EditRequest_DELETE
+}

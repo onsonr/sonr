@@ -10,7 +10,7 @@ import (
 )
 
 type NodeImpl interface {
-	Profile() (*Profile, error)
+	GetProfile() (*Profile, error)
 	Peer() (*Peer, error)
 }
 

@@ -304,6 +304,10 @@
               
               
                 <li>
+                  <a href="#sonr.api.EditRequest.Type"><span class="badge">E</span>EditRequest.Type</a>
+                </li>
+              
+                <li>
                   <a href="#sonr.api.FetchRequest.Key"><span class="badge">E</span>FetchRequest.Key</a>
                 </li>
               
@@ -796,10 +800,31 @@
             <tbody>
               
                 <tr>
+                  <td>type</td>
+                  <td><a href="#sonr.api.EditRequest.Type">EditRequest.Type</a></td>
+                  <td></td>
+                  <td><p>Type of Edit </p></td>
+                </tr>
+              
+                <tr>
                   <td>profile</td>
                   <td><a href="#sonr.core.Profile">sonr.core.Profile</a></td>
                   <td></td>
                   <td><p>Profile to Edit </p></td>
+                </tr>
+              
+                <tr>
+                  <td>history</td>
+                  <td><a href="#sonr.core.Payload">sonr.core.Payload</a></td>
+                  <td></td>
+                  <td><p>Payload to Delete </p></td>
+                </tr>
+              
+                <tr>
+                  <td>recent</td>
+                  <td><a href="#sonr.core.Profile">sonr.core.Profile</a></td>
+                  <td></td>
+                  <td><p>Profile to Delete </p></td>
                 </tr>
               
             </tbody>
@@ -1876,6 +1901,35 @@ File Transfer History </p></td>
       
 
       
+        <h3 id="sonr.api.EditRequest.Type">EditRequest.Type</h3>
+        <p></p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>NONE</td>
+                <td>0</td>
+                <td><p>No Delete</p></td>
+              </tr>
+            
+              <tr>
+                <td>DELETE</td>
+                <td>1</td>
+                <td><p>Delete Profile, Payload, or File</p></td>
+              </tr>
+            
+              <tr>
+                <td>MODIFY</td>
+                <td>2</td>
+                <td><p>Modify Profile</p></td>
+              </tr>
+            
+          </tbody>
+        </table>
+      
         <h3 id="sonr.api.FetchRequest.Key">FetchRequest.Key</h3>
         <p></p>
         <table class="enum-table">
@@ -2792,6 +2846,13 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p>Peer ID of the node, calculated from the public key </p></td>
+                </tr>
+              
+                <tr>
+                  <td>cid</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>CID of the node, calculated from the public key </p></td>
                 </tr>
               
             </tbody>

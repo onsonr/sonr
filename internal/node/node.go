@@ -21,8 +21,9 @@ import (
 
 // Node type - a p2p host implementing one or more p2p protocols
 type Node struct {
+	// Standard Node Implementation
 	common.NodeImpl
-	
+
 	// Emitter is the event emitter for this node
 	*state.Emitter
 
@@ -106,7 +107,7 @@ func NewNode(ctx context.Context, options ...NodeOption) (common.NodeImpl, *api.
 
 	// Begin Background Tasks
 	go node.Serve(ctx)
-	return node, api.NewInitialzeResponse(node.Profile, false), nil
+	return node, api.NewInitialzeResponse(node.GetProfile, false), nil
 }
 
 // Close closes the node
@@ -130,7 +131,7 @@ func (n *Node) Close() {
 // Peer method returns the peer of the node
 func (n *Node) Peer() (*common.Peer, error) {
 	// Get Profile
-	profile, err := n.Profile()
+	profile, err := n.GetProfile()
 	if err != nil {
 		logger.Warn("Failed to get profile from Memory store, using DefaultProfile.", err)
 	}
@@ -174,7 +175,7 @@ func (n *Node) Peer() (*common.Peer, error) {
 // Supply a transfer item to the queue
 func (n *Node) Supply(paths []string) error {
 	// Get Profile
-	profile, err := n.Profile()
+	profile, err := n.GetProfile()
 	if err != nil {
 		return err
 	}
@@ -261,7 +262,8 @@ func (n *Node) NewRequest(to *common.Peer) (peer.ID, *transfer.InviteRequest, er
 		}
 		return toId, req, nil
 	}
-	return "", nil, errors.New("No items in Transfer Queue.")
+	logger.Error("Failed to get item from Supply Queue.")
+	return "", nil, errors.New("No items in Supply Queue.")
 }
 
 // Respond to an invite request
