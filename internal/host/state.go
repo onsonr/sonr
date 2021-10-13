@@ -136,11 +136,6 @@ func createEventLoop(h *SNRHost, options ...EventLoopOption) {
 	// Create the event loop
 	for {
 		select {
-		// Handle Status Event
-		case e := <-h.emitter.On(Event_STATUS):
-			status := e.Args[0].(SNRHostStatus)
-			opts.Handle(status)
-			return
 		// Handle Timeout
 		case <-time.After(opts.timeout):
 			logger.Error("Timeout for EventLoop reached \n", golog.Fields{

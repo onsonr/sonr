@@ -18,7 +18,6 @@ import (
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/keychain"
-	"github.com/sonr-io/core/tools/state"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -45,8 +44,7 @@ type SNRHost struct {
 	ttl        time.Duration
 
 	// State
-	emitter *state.Emitter
-	status  SNRHostStatus
+	status SNRHostStatus
 
 	// Discovery
 	*dht.IpfsDHT
@@ -54,10 +52,10 @@ type SNRHost struct {
 }
 
 // NewHost creates a new host
-func NewHost(ctx context.Context, em *state.Emitter, options ...HostOption) (*SNRHost, error) {
+func NewHost(ctx context.Context, options ...HostOption) (*SNRHost, error) {
 	// Initialize DHT
 	opts := defaultHostOptions()
-	hn, err := opts.Apply(ctx, em, options...)
+	hn, err := opts.Apply(ctx, options...)
 	if err != nil {
 		return nil, err
 	}
@@ -264,7 +262,6 @@ func (h *SNRHost) SetStatus(s SNRHostStatus) {
 
 	// Update Status
 	h.status = s
-	h.emitter.Emit(Event_STATUS, s)
 }
 
 // SignData signs an outgoing p2p message payload

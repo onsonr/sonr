@@ -4,6 +4,12 @@ package sonr.core;
 import "proto/common/core.proto";
 option go_package = "github.com/sonr-io/core/internal/common";
 
+enum Direction {
+  DEFAULT = 0;
+  INCOMING = 1;
+  OUTGOING = 2;
+}
+
 // For Transfer File Payload
 message FileItem {
   sonr.core.MIME mime = 1; // Standard Mime Type

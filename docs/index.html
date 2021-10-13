@@ -358,10 +358,6 @@
                 </li>
               
               
-                <li>
-                  <a href="#sonr.api.CompleteEvent.Direction"><span class="badge">E</span>CompleteEvent.Direction</a>
-                </li>
-              
               
               
             </ul>
@@ -515,6 +511,10 @@
                   <a href="#sonr.core.UrlItem"><span class="badge">M</span>UrlItem</a>
                 </li>
               
+              
+                <li>
+                  <a href="#sonr.core.Direction"><span class="badge">E</span>Direction</a>
+                </li>
               
                 <li>
                   <a href="#sonr.core.OpenGraph.Type"><span class="badge">E</span>OpenGraph.Type</a>
@@ -2071,9 +2071,9 @@ File Transfer History </p></td>
               
                 <tr>
                   <td>direction</td>
-                  <td><a href="#sonr.api.CompleteEvent.Direction">CompleteEvent.Direction</a></td>
+                  <td><a href="#sonr.core.Direction">sonr.core.Direction</a></td>
                   <td></td>
-                  <td><p>Transfer Direction </p></td>
+                  <td><p>Direction of Transfer </p></td>
                 </tr>
               
                 <tr>
@@ -2284,6 +2284,13 @@ File Transfer History </p></td>
                   <td><p>Timestamp </p></td>
                 </tr>
               
+                <tr>
+                  <td>direction</td>
+                  <td><a href="#sonr.core.Direction">sonr.core.Direction</a></td>
+                  <td></td>
+                  <td><p>Direction of Transfer </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -2330,35 +2337,6 @@ File Transfer History </p></td>
         
       
 
-      
-        <h3 id="sonr.api.CompleteEvent.Direction">CompleteEvent.Direction</h3>
-        <p>Traffic Direction of Session</p>
-        <table class="enum-table">
-          <thead>
-            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
-          </thead>
-          <tbody>
-            
-              <tr>
-                <td>DEFAULT</td>
-                <td>0</td>
-                <td><p>From Memory/Viewing</p></td>
-              </tr>
-            
-              <tr>
-                <td>INCOMING</td>
-                <td>1</td>
-                <td><p>Incoming Transfer</p></td>
-              </tr>
-            
-              <tr>
-                <td>OUTGOING</td>
-                <td>2</td>
-                <td><p>Outgoing Transfer</p></td>
-              </tr>
-            
-          </tbody>
-        </table>
       
 
       
@@ -4075,6 +4053,35 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
         
       
 
+      
+        <h3 id="sonr.core.Direction">Direction</h3>
+        <p></p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>DEFAULT</td>
+                <td>0</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>INCOMING</td>
+                <td>1</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>OUTGOING</td>
+                <td>2</td>
+                <td><p></p></td>
+              </tr>
+            
+          </tbody>
+        </table>
       
         <h3 id="sonr.core.OpenGraph.Type">OpenGraph.Type</h3>
         <p>Url Opengraph Preview Type - In order of Priority</p>

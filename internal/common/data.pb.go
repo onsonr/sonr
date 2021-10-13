@@ -20,6 +20,55 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type Direction int32
+
+const (
+	Direction_DEFAULT  Direction = 0
+	Direction_INCOMING Direction = 1
+	Direction_OUTGOING Direction = 2
+)
+
+// Enum value maps for Direction.
+var (
+	Direction_name = map[int32]string{
+		0: "DEFAULT",
+		1: "INCOMING",
+		2: "OUTGOING",
+	}
+	Direction_value = map[string]int32{
+		"DEFAULT":  0,
+		"INCOMING": 1,
+		"OUTGOING": 2,
+	}
+)
+
+func (x Direction) Enum() *Direction {
+	p := new(Direction)
+	*p = x
+	return p
+}
+
+func (x Direction) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Direction) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_common_data_proto_enumTypes[0].Descriptor()
+}
+
+func (Direction) Type() protoreflect.EnumType {
+	return &file_proto_common_data_proto_enumTypes[0]
+}
+
+func (x Direction) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use Direction.Descriptor instead.
+func (Direction) EnumDescriptor() ([]byte, []int) {
+	return file_proto_common_data_proto_rawDescGZIP(), []int{0}
+}
+
 // Url Opengraph Preview Type - In order of Priority
 type OpenGraph_Type int32
 
@@ -60,11 +109,11 @@ func (x OpenGraph_Type) String() string {
 }
 
 func (OpenGraph_Type) Descriptor() protoreflect.EnumDescriptor {
-	return file_proto_common_data_proto_enumTypes[0].Descriptor()
+	return file_proto_common_data_proto_enumTypes[1].Descriptor()
 }
 
 func (OpenGraph_Type) Type() protoreflect.EnumType {
-	return &file_proto_common_data_proto_enumTypes[0]
+	return &file_proto_common_data_proto_enumTypes[1]
 }
 
 func (x OpenGraph_Type) Number() protoreflect.EnumNumber {
@@ -1726,10 +1775,14 @@ var file_proto_common_data_proto_rawDesc = []byte{
 	0x6f, 0x61, 0x64, 0x73, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28,
 	0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x22, 0x0a, 0x0c, 0x6c, 0x61, 0x73, 0x74, 0x4d, 0x6f,
 	0x64, 0x69, 0x66, 0x69, 0x65, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0c, 0x6c, 0x61,
-	0x73, 0x74, 0x4d, 0x6f, 0x64, 0x69, 0x66, 0x69, 0x65, 0x64, 0x42, 0x29, 0x5a, 0x27, 0x67, 0x69,
-	0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2d, 0x69, 0x6f,
-	0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x2f, 0x63,
-	0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x73, 0x74, 0x4d, 0x6f, 0x64, 0x69, 0x66, 0x69, 0x65, 0x64, 0x2a, 0x34, 0x0a, 0x09, 0x44, 0x69,
+	0x72, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x0b, 0x0a, 0x07, 0x44, 0x45, 0x46, 0x41, 0x55,
+	0x4c, 0x54, 0x10, 0x00, 0x12, 0x0c, 0x0a, 0x08, 0x49, 0x4e, 0x43, 0x4f, 0x4d, 0x49, 0x4e, 0x47,
+	0x10, 0x01, 0x12, 0x0c, 0x0a, 0x08, 0x4f, 0x55, 0x54, 0x47, 0x4f, 0x49, 0x4e, 0x47, 0x10, 0x02,
+	0x42, 0x29, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x73,
+	0x6f, 0x6e, 0x72, 0x2d, 0x69, 0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x69, 0x6e, 0x74, 0x65,
+	0x72, 0x6e, 0x61, 0x6c, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x62, 0x06, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1744,61 +1797,62 @@ func file_proto_common_data_proto_rawDescGZIP() []byte {
 	return file_proto_common_data_proto_rawDescData
 }
 
-var file_proto_common_data_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_proto_common_data_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
 var file_proto_common_data_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
 var file_proto_common_data_proto_goTypes = []interface{}{
-	(OpenGraph_Type)(0),                  // 0: sonr.core.OpenGraph.Type
-	(*FileItem)(nil),                     // 1: sonr.core.FileItem
-	(*MessageItem)(nil),                  // 2: sonr.core.MessageItem
-	(*UrlItem)(nil),                      // 3: sonr.core.UrlItem
-	(*OpenGraph)(nil),                    // 4: sonr.core.OpenGraph
-	(*Thumbnail)(nil),                    // 5: sonr.core.Thumbnail
-	(*Payload)(nil),                      // 6: sonr.core.Payload
-	(*PayloadList)(nil),                  // 7: sonr.core.PayloadList
-	(*OpenGraph_Primary)(nil),            // 8: sonr.core.OpenGraph.Primary
-	(*OpenGraph_Image)(nil),              // 9: sonr.core.OpenGraph.Image
-	(*OpenGraph_Video)(nil),              // 10: sonr.core.OpenGraph.Video
-	(*OpenGraph_Audio)(nil),              // 11: sonr.core.OpenGraph.Audio
-	(*OpenGraph_Twitter)(nil),            // 12: sonr.core.OpenGraph.Twitter
-	(*OpenGraph_Twitter_Player)(nil),     // 13: sonr.core.OpenGraph.Twitter.Player
-	(*OpenGraph_Twitter_IPhone)(nil),     // 14: sonr.core.OpenGraph.Twitter.IPhone
-	(*OpenGraph_Twitter_IPad)(nil),       // 15: sonr.core.OpenGraph.Twitter.IPad
-	(*OpenGraph_Twitter_GooglePlay)(nil), // 16: sonr.core.OpenGraph.Twitter.GooglePlay
-	(*Payload_Item)(nil),                 // 17: sonr.core.Payload.Item
-	(*MIME)(nil),                         // 18: sonr.core.MIME
-	(*Profile)(nil),                      // 19: sonr.core.Profile
+	(Direction)(0),                       // 0: sonr.core.Direction
+	(OpenGraph_Type)(0),                  // 1: sonr.core.OpenGraph.Type
+	(*FileItem)(nil),                     // 2: sonr.core.FileItem
+	(*MessageItem)(nil),                  // 3: sonr.core.MessageItem
+	(*UrlItem)(nil),                      // 4: sonr.core.UrlItem
+	(*OpenGraph)(nil),                    // 5: sonr.core.OpenGraph
+	(*Thumbnail)(nil),                    // 6: sonr.core.Thumbnail
+	(*Payload)(nil),                      // 7: sonr.core.Payload
+	(*PayloadList)(nil),                  // 8: sonr.core.PayloadList
+	(*OpenGraph_Primary)(nil),            // 9: sonr.core.OpenGraph.Primary
+	(*OpenGraph_Image)(nil),              // 10: sonr.core.OpenGraph.Image
+	(*OpenGraph_Video)(nil),              // 11: sonr.core.OpenGraph.Video
+	(*OpenGraph_Audio)(nil),              // 12: sonr.core.OpenGraph.Audio
+	(*OpenGraph_Twitter)(nil),            // 13: sonr.core.OpenGraph.Twitter
+	(*OpenGraph_Twitter_Player)(nil),     // 14: sonr.core.OpenGraph.Twitter.Player
+	(*OpenGraph_Twitter_IPhone)(nil),     // 15: sonr.core.OpenGraph.Twitter.IPhone
+	(*OpenGraph_Twitter_IPad)(nil),       // 16: sonr.core.OpenGraph.Twitter.IPad
+	(*OpenGraph_Twitter_GooglePlay)(nil), // 17: sonr.core.OpenGraph.Twitter.GooglePlay
+	(*Payload_Item)(nil),                 // 18: sonr.core.Payload.Item
+	(*MIME)(nil),                         // 19: sonr.core.MIME
+	(*Profile)(nil),                      // 20: sonr.core.Profile
 }
 var file_proto_common_data_proto_depIdxs = []int32{
-	18, // 0: sonr.core.FileItem.mime:type_name -> sonr.core.MIME
-	5,  // 1: sonr.core.FileItem.thumbnail:type_name -> sonr.core.Thumbnail
-	18, // 2: sonr.core.MessageItem.mime:type_name -> sonr.core.MIME
-	1,  // 3: sonr.core.MessageItem.attachments:type_name -> sonr.core.FileItem
-	18, // 4: sonr.core.UrlItem.mime:type_name -> sonr.core.MIME
-	4,  // 5: sonr.core.UrlItem.openGraph:type_name -> sonr.core.OpenGraph
-	8,  // 6: sonr.core.OpenGraph.primary:type_name -> sonr.core.OpenGraph.Primary
-	9,  // 7: sonr.core.OpenGraph.images:type_name -> sonr.core.OpenGraph.Image
-	10, // 8: sonr.core.OpenGraph.videos:type_name -> sonr.core.OpenGraph.Video
-	11, // 9: sonr.core.OpenGraph.audios:type_name -> sonr.core.OpenGraph.Audio
-	12, // 10: sonr.core.OpenGraph.twitter:type_name -> sonr.core.OpenGraph.Twitter
-	18, // 11: sonr.core.Thumbnail.mime:type_name -> sonr.core.MIME
-	17, // 12: sonr.core.Payload.items:type_name -> sonr.core.Payload.Item
-	19, // 13: sonr.core.Payload.owner:type_name -> sonr.core.Profile
-	6,  // 14: sonr.core.PayloadList.payloads:type_name -> sonr.core.Payload
-	0,  // 15: sonr.core.OpenGraph.Primary.type:type_name -> sonr.core.OpenGraph.Type
-	9,  // 16: sonr.core.OpenGraph.Primary.image:type_name -> sonr.core.OpenGraph.Image
-	10, // 17: sonr.core.OpenGraph.Primary.video:type_name -> sonr.core.OpenGraph.Video
-	11, // 18: sonr.core.OpenGraph.Primary.audio:type_name -> sonr.core.OpenGraph.Audio
-	12, // 19: sonr.core.OpenGraph.Primary.twitter:type_name -> sonr.core.OpenGraph.Twitter
-	13, // 20: sonr.core.OpenGraph.Twitter.player:type_name -> sonr.core.OpenGraph.Twitter.Player
-	14, // 21: sonr.core.OpenGraph.Twitter.iphone:type_name -> sonr.core.OpenGraph.Twitter.IPhone
-	15, // 22: sonr.core.OpenGraph.Twitter.ipad:type_name -> sonr.core.OpenGraph.Twitter.IPad
-	16, // 23: sonr.core.OpenGraph.Twitter.googlePlay:type_name -> sonr.core.OpenGraph.Twitter.GooglePlay
-	18, // 24: sonr.core.Payload.Item.mime:type_name -> sonr.core.MIME
-	1,  // 25: sonr.core.Payload.Item.file:type_name -> sonr.core.FileItem
-	3,  // 26: sonr.core.Payload.Item.url:type_name -> sonr.core.UrlItem
-	2,  // 27: sonr.core.Payload.Item.message:type_name -> sonr.core.MessageItem
-	5,  // 28: sonr.core.Payload.Item.thumbnail:type_name -> sonr.core.Thumbnail
-	8,  // 29: sonr.core.Payload.Item.openGraph:type_name -> sonr.core.OpenGraph.Primary
+	19, // 0: sonr.core.FileItem.mime:type_name -> sonr.core.MIME
+	6,  // 1: sonr.core.FileItem.thumbnail:type_name -> sonr.core.Thumbnail
+	19, // 2: sonr.core.MessageItem.mime:type_name -> sonr.core.MIME
+	2,  // 3: sonr.core.MessageItem.attachments:type_name -> sonr.core.FileItem
+	19, // 4: sonr.core.UrlItem.mime:type_name -> sonr.core.MIME
+	5,  // 5: sonr.core.UrlItem.openGraph:type_name -> sonr.core.OpenGraph
+	9,  // 6: sonr.core.OpenGraph.primary:type_name -> sonr.core.OpenGraph.Primary
+	10, // 7: sonr.core.OpenGraph.images:type_name -> sonr.core.OpenGraph.Image
+	11, // 8: sonr.core.OpenGraph.videos:type_name -> sonr.core.OpenGraph.Video
+	12, // 9: sonr.core.OpenGraph.audios:type_name -> sonr.core.OpenGraph.Audio
+	13, // 10: sonr.core.OpenGraph.twitter:type_name -> sonr.core.OpenGraph.Twitter
+	19, // 11: sonr.core.Thumbnail.mime:type_name -> sonr.core.MIME
+	18, // 12: sonr.core.Payload.items:type_name -> sonr.core.Payload.Item
+	20, // 13: sonr.core.Payload.owner:type_name -> sonr.core.Profile
+	7,  // 14: sonr.core.PayloadList.payloads:type_name -> sonr.core.Payload
+	1,  // 15: sonr.core.OpenGraph.Primary.type:type_name -> sonr.core.OpenGraph.Type
+	10, // 16: sonr.core.OpenGraph.Primary.image:type_name -> sonr.core.OpenGraph.Image
+	11, // 17: sonr.core.OpenGraph.Primary.video:type_name -> sonr.core.OpenGraph.Video
+	12, // 18: sonr.core.OpenGraph.Primary.audio:type_name -> sonr.core.OpenGraph.Audio
+	13, // 19: sonr.core.OpenGraph.Primary.twitter:type_name -> sonr.core.OpenGraph.Twitter
+	14, // 20: sonr.core.OpenGraph.Twitter.player:type_name -> sonr.core.OpenGraph.Twitter.Player
+	15, // 21: sonr.core.OpenGraph.Twitter.iphone:type_name -> sonr.core.OpenGraph.Twitter.IPhone
+	16, // 22: sonr.core.OpenGraph.Twitter.ipad:type_name -> sonr.core.OpenGraph.Twitter.IPad
+	17, // 23: sonr.core.OpenGraph.Twitter.googlePlay:type_name -> sonr.core.OpenGraph.Twitter.GooglePlay
+	19, // 24: sonr.core.Payload.Item.mime:type_name -> sonr.core.MIME
+	2,  // 25: sonr.core.Payload.Item.file:type_name -> sonr.core.FileItem
+	4,  // 26: sonr.core.Payload.Item.url:type_name -> sonr.core.UrlItem
+	3,  // 27: sonr.core.Payload.Item.message:type_name -> sonr.core.MessageItem
+	6,  // 28: sonr.core.Payload.Item.thumbnail:type_name -> sonr.core.Thumbnail
+	9,  // 29: sonr.core.Payload.Item.openGraph:type_name -> sonr.core.OpenGraph.Primary
 	30, // [30:30] is the sub-list for method output_type
 	30, // [30:30] is the sub-list for method input_type
 	30, // [30:30] is the sub-list for extension type_name
@@ -2036,7 +2090,7 @@ func file_proto_common_data_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_proto_common_data_proto_rawDesc,
-			NumEnums:      1,
+			NumEnums:      2,
 			NumMessages:   17,
 			NumExtensions: 0,
 			NumServices:   0,

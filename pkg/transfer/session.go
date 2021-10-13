@@ -14,7 +14,7 @@ import (
 
 // Session is a single entry in the transfer queue.
 type Session struct {
-	direction   api.CompleteEvent_Direction
+	direction   common.Direction
 	request     *InviteRequest
 	response    *InviteResponse
 	fromId      peer.ID
@@ -50,7 +50,7 @@ func (sq *SessionQueue) AddIncoming(from peer.ID, req *InviteRequest) error {
 
 	// Create New TransferEntry
 	entry := Session{
-		direction:   api.CompleteEvent_INCOMING,
+		direction:   common.Direction_INCOMING,
 		request:     req,
 		fromId:      from,
 		toId:        sq.host.ID(),
@@ -66,7 +66,7 @@ func (sq *SessionQueue) AddIncoming(from peer.ID, req *InviteRequest) error {
 func (sq *SessionQueue) AddOutgoing(to peer.ID, req *InviteRequest) error {
 	// Create New TransferEntry
 	entry := Session{
-		direction:   api.CompleteEvent_OUTGOING,
+		direction:   common.Direction_OUTGOING,
 		request:     req,
 		fromId:      sq.host.ID(),
 		toId:        to,
