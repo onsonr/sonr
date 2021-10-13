@@ -1,14 +1,11 @@
 package node
 
 import (
-	"container/list"
 	"context"
-	"errors"
 	"strings"
 	"time"
 
 	"git.mills.io/prologic/bitcask"
-	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
@@ -21,8 +18,9 @@ import (
 
 // Node type - a p2p host implementing one or more p2p protocols
 type Node struct {
+	// Standard Node Implementation
 	common.NodeImpl
-	
+
 	// Emitter is the event emitter for this node
 	*state.Emitter
 
@@ -37,9 +35,6 @@ type Node struct {
 
 	// Node Stub Interface
 	stub NodeStub
-
-	// Queue - the transfer queue
-	queue *list.List
 
 	// Channels
 	// TransferProtocol - decisionEvents
@@ -73,7 +68,6 @@ func NewNode(ctx context.Context, options ...NodeOption) (common.NodeImpl, *api.
 	node := &Node{
 		Emitter:        state.NewEmitter(2048),
 		ctx:            ctx,
-		queue:          list.New(),
 		decisionEvents: make(chan *api.DecisionEvent),
 		refreshEvents:  make(chan *api.RefreshEvent),
 		inviteEvents:   make(chan *api.InviteEvent),
@@ -106,7 +100,7 @@ func NewNode(ctx context.Context, options ...NodeOption) (common.NodeImpl, *api.
 
 	// Begin Background Tasks
 	go node.Serve(ctx)
-	return node, api.NewInitialzeResponse(node.Profile, false), nil
+	return node, api.NewInitialzeResponse(node.GetProfile, false), nil
 }
 
 // Close closes the node
@@ -130,7 +124,7 @@ func (n *Node) Close() {
 // Peer method returns the peer of the node
 func (n *Node) Peer() (*common.Peer, error) {
 	// Get Profile
-	profile, err := n.Profile()
+	profile, err := n.GetProfile()
 	if err != nil {
 		logger.Warn("Failed to get profile from Memory store, using DefaultProfile.", err)
 	}
@@ -171,26 +165,6 @@ func (n *Node) Peer() (*common.Peer, error) {
 	}, nil
 }
 
-// Supply a transfer item to the queue
-func (n *Node) Supply(paths []string) error {
-	// Get Profile
-	profile, err := n.Profile()
-	if err != nil {
-		return err
-	}
-
-	// Create Transfer
-	payload, err := common.NewPayload(profile, paths)
-	if err != nil {
-		logger.Error("Failed to Supply Paths", err)
-		return err
-	}
-
-	// Add items to transfer
-	n.queue.PushBack(payload)
-	return nil
-}
-
 // Serve handles the emitter events.
 func (n *Node) Serve(ctx context.Context) {
 	logger.Info("🍦  Serving Node event channels...")
@@ -221,78 +195,4 @@ func (n *Node) Serve(ctx context.Context) {
 			return
 		}
 	}
-}
-
-// Share a peer to have a transfer
-func (n *Node) NewRequest(to *common.Peer) (peer.ID, *transfer.InviteRequest, error) {
-	// Fetch Element from Queue
-	elem := n.queue.Front()
-	if elem != nil {
-		// Get Payload
-		payload := n.queue.Remove(elem).(*common.Payload)
-
-		// Create new Metadata
-		meta, err := device.KeyChain.CreateMetadata(n.host.ID())
-		if err != nil {
-			logger.Error("Failed to create new metadata for Shared Invite", err)
-			return "", nil, err
-		}
-
-		// Fetch User Peer
-		from, err := n.Peer()
-		if err != nil {
-			logger.Error("Failed to get Node Peer Object", err)
-			return "", nil, err
-		}
-
-		// Create Invite Request
-		req := &transfer.InviteRequest{
-			Payload:  payload,
-			Metadata: api.SignedMetadataToProto(meta),
-			To:       to,
-			From:     from,
-		}
-
-		// Fetch Peer ID from Public Key
-		toId, err := to.Libp2pID()
-		if err != nil {
-			logger.Error("Failed to fetch peer id from public key", err)
-			return "", nil, err
-		}
-		return toId, req, nil
-	}
-	return "", nil, errors.New("No items in Transfer Queue.")
-}
-
-// Respond to an invite request
-func (n *Node) NewResponse(decs bool, to *common.Peer) (peer.ID, *transfer.InviteResponse, error) {
-	// Get Peer
-	from, err := n.Peer()
-	if err != nil {
-		logger.Error("Failed to get Node Peer Object", err)
-		return "", nil, err
-	}
-
-	// Create new Metadata
-	meta, err := device.KeyChain.CreateMetadata(n.host.ID())
-	if err != nil {
-		logger.Error("Failed to create new metadata for Shared Invite", err)
-		return "", nil, err
-	}
-
-	// Create Invite Response
-	resp := &transfer.InviteResponse{
-		Decision: decs,
-		Metadata: api.SignedMetadataToProto(meta),
-		From:     from,
-		To:       to,
-	}
-
-	// Fetch Peer ID from Public Key
-	toId, err := to.Libp2pID()
-	if err != nil {
-		logger.Error("Failed to fetch peer id from public key", err)
-		return "", nil, err
-	}
-	return toId, resp, nil
 }

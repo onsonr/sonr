@@ -137,7 +137,8 @@ message Profile {
 message ProfileList {
   repeated Profile profiles = 1; // List of Profiles
   int64 createdAt = 2;          // Creation Timestamp
-  int64 lastModified = 3;       // Last Modified Timestamp
+  string key = 3;                // Key of the Payload List
+  int64 lastModified = 4;       // Last Modified Timestamp
 }
 
 // Social Media Item Information
@@ -168,6 +169,7 @@ message SNID {
     string domain = 1; // Domain Name of the node, e.g. prad.snr
     bytes pubKey = 2; // Public Key of the node, value in the Domains second TXT record
     string peerID = 3;  // Peer ID of the node, calculated from the public key
+    string cid = 4; // CID of the node, calculated from the public key
 }
 
 // UUID is General Message ID with Signature, ID, and Timestamp

@@ -1,7 +1,5 @@
 package node
 
-import api "github.com/sonr-io/core/internal/api"
-
 // OnLobbyRefresh method sends a lobby refresh event to the client.
 func (s *ClientNodeStub) OnLobbyRefresh(e *Empty, stream ClientService_OnLobbyRefreshServer) error {
 	for {
@@ -86,17 +84,17 @@ func (s *ClientNodeStub) OnTransferComplete(e *Empty, stream ClientService_OnTra
 			if m != nil {
 				// Check Direction
 				stream.Send(m)
-				if m.Direction == api.CompleteEvent_INCOMING {
-					// Add Sender to Recents
-					err := s.node.AddRecent(m.GetFrom().GetProfile())
+				// Add Receiver to Recents
+				err := s.node.AddRecent(m.Recent())
+				if err != nil {
+					logger.Error("Failed to add receiver's profile to store.", err)
+				}
+
+				// Add Payload to History
+				if m.IsIncoming() {
+					err = s.node.AddHistory(m.GetPayload())
 					if err != nil {
-						logger.Child("Client").Error("Failed to add sender's profile to store.", err)
-					}
-				} else {
-					// Add Receiver to Recents
-					err := s.node.AddRecent(m.GetTo().GetProfile())
-					if err != nil {
-						logger.Child("Client").Error("Failed to add receiver's profile to store.", err)
+						logger.Error("Failed to add payload to store.", err)
 					}
 				}
 			}

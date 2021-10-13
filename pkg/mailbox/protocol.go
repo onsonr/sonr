@@ -1,32 +1,24 @@
 package mailbox
 
-// import (
-// 	"context"
-// 	"fmt"
+import (
+	"context"
 
-// 	"github.com/sonr-io/core/internal/common"
-// 	"github.com/sonr-io/core/internal/device"
-// 	"github.com/sonr-io/core/internal/host"
-// 	"github.com/sonr-io/core/tools/logger"
-// 	"github.com/sonr-io/core/tools/state"
-// 	"github.com/textileio/go-threads/core/thread"
-// 	"github.com/textileio/textile/v2/cmd"
-// 	"github.com/textileio/textile/v2/mail/local"
-// 	"google.golang.org/protobuf/encoding/protojson"
-// )
+	"github.com/sonr-io/core/internal/host"
+	"github.com/sonr-io/core/tools/state"
+)
 
-// // Transfer Emission Events
-// const (
-// 	Event_MAIL_RECEIVED = "mailbox-mail-received"
-// )
+// Transfer Emission Events
+const (
+	Event_MAIL_RECEIVED = "mailbox-mail-received"
+)
 
-// type MailboxProtocol struct {
-// 	ctx     context.Context
-// 	host    *host.SNRHost
-// 	emitter *state.Emitter
-// 	mail    *local.Mail
-// 	mailbox *local.Mailbox
-// }
+type MailboxProtocol struct {
+	ctx     context.Context
+	host    *host.SNRHost
+	emitter *state.Emitter
+	// mail    *local.Mail
+	// mailbox *local.Mailbox
+}
 
 // // NewProtocol creates a new lobby protocol instance.
 // func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) (*MailboxProtocol, error) {
@@ -52,7 +44,7 @@ package mailbox
 // 			return nil, err
 // 		}
 // 	}
-
+// 	logger.Info("✅  MailboxProtocol is Activated \n")
 // 	go mailProtocol.handleMailboxEvents()
 // 	return mailProtocol, nil
 // }
@@ -127,7 +119,7 @@ package mailbox
 // 	// Send Foreground Event
 // 	if state == cmd.Online {
 // 		// Create Mail Event
-// 		mail := &common.MailboxEvent{
+// 		mail := &api.MailboxEvent{
 // 			To:     msg.GetTo(),
 // 			From:   msg.GetFrom(),
 // 			Buffer: msg.GetBuffer(),
@@ -149,7 +141,8 @@ package mailbox
 // 	// Mark Item as Read
 // 	err := ts.mailbox.DeleteInboxMessage(context.Background(), id)
 // 	if err != nil {
-// 		return logger.Error("Failed to Delete Mailbox Message", err)
+// 		logger.Error("Failed to Delete Mailbox Message", err)
+// 		return err
 // 	}
 // 	return nil
 // }
@@ -164,7 +157,8 @@ package mailbox
 // 	// Mark Item as Read
 // 	err := ts.mailbox.ReadInboxMessage(context.Background(), id)
 // 	if err != nil {
-// 		return logger.Error("Failed to set Mailbox Message as Read", err)
+// 		logger.Error("Failed to set Mailbox Message as Read", err)
+// 		return err
 // 	}
 // 	return nil
 // }
@@ -179,16 +173,18 @@ package mailbox
 // 	// Marshal Data
 // 	buf, err := protojson.Marshal(message)
 // 	if err != nil {
-// 		return logger.Error("Failed to Marshal Outbound Mailbox Message with JSON", err)
+// 		logger.Error("Failed to Marshal Outbound Mailbox Message with JSON", err)
+// 		return err
 // 	}
 
 // 	// 	// Send Message to Mailbox
 // 	msg, err := ts.mailbox.SendMessage(context.Background(), to, buf)
 // 	if err != nil {
-// 		return logger.Error(fmt.Sprintf("Failed to Send Message to Peer with ThreadIdentity: %s", to.String()), err)
+// 		logger.Error(fmt.Sprintf("Failed to Send Message to Peer with ThreadIdentity: %s", to.String()), err)
+// 		return err
 // 	}
 
 // 	// Log Result
-// 	logger.Info("Succesfully sent mail!", golog.Fields{"ID": msg.ID, "SentAt": msg.CreatedAt, "To": msg.To.String()},
+// 	logger.Info("Succesfully sent mail!", golog.Fields{"ID": msg.ID, "SentAt": msg.CreatedAt, "To": msg.To.String()})
 // 	return nil
 // }

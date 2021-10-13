@@ -10,7 +10,7 @@ import (
 )
 
 type NodeImpl interface {
-	Profile() (*Profile, error)
+	GetProfile() (*Profile, error)
 	Peer() (*Peer, error)
 }
 
@@ -171,6 +171,24 @@ func (p *Payload) IsMultiple() (bool, error) {
 	return false, nil
 }
 
+// FileCount returns the number of files in the Payload
+func (p *Payload) FileCount() int {
+	// Initialize
+	count := 0
+
+	// Iterate over Items
+	for _, item := range p.GetItems() {
+		// Check if Item is File
+		if item.GetMime().Type != MIME_URL {
+			// Increase Count
+			count++
+		}
+	}
+
+	// Return Count
+	return count
+}
+
 // MapItems performs method chaining on the Items in the Payload
 func (p *Payload) MapItems(fn PayloadItemFunc) error {
 	count := len(p.GetItems())
@@ -233,6 +251,24 @@ func (p *Payload) ReplaceItemsDir(dir string) (*Payload, error) {
 		}
 	}
 	return p, nil
+}
+
+// URLCount returns the number of URLs in the Payload
+func (p *Payload) URLCount() int {
+	// Initialize
+	count := 0
+
+	// Iterate over Items
+	for _, item := range p.GetItems() {
+		// Check if Item is File
+		if item.GetMime().Type == MIME_URL {
+			// Increase Count
+			count++
+		}
+	}
+
+	// Return Count
+	return count
 }
 
 // Buffer returns Peer as a buffer

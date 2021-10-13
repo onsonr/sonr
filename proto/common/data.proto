@@ -4,6 +4,12 @@ package sonr.core;
 import "proto/common/core.proto";
 option go_package = "github.com/sonr-io/core/internal/common";
 
+enum Direction {
+  DEFAULT = 0;
+  INCOMING = 1;
+  OUTGOING = 2;
+}
+
 // For Transfer File Payload
 message FileItem {
   sonr.core.MIME mime = 1; // Standard Mime Type
@@ -166,10 +172,9 @@ message Payload {
 }
 
 // PayloadItemList is a list of Payload.Item's for Persistent Store
-message PayloadItemList {
-  repeated Payload.Item items = 1; // Payload List
-  MIME mime = 2;                   // MIME of the Payload
-  int64 size = 3;                  // Total Size of all Items in Bytes
-  int64 lastModified = 4;          // Last Modified Time in Seconds
+message PayloadList {
+  repeated Payload payloads = 1; // Payload List
+  string key = 2;                // Key of the Payload List
+  int64 lastModified = 3;          // Last Modified Time in Seconds
 }
 

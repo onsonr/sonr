@@ -39,7 +39,7 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 	p.emitter.Emit(Event_RESPONDED, resp.ToEvent())
 
 	// Locate request data and remove it if found
-	entry, err := p.queue.Validate(resp)
+	entry, err := p.sessionQueue.Validate(resp)
 	if err != nil {
 		logger.Error("Failed to Validate Invite RESPONSE buffer.", err)
 		return
@@ -80,7 +80,7 @@ func (p *TransferProtocol) onOutgoingTransfer(entry *Session, wc msgio.WriteClos
 		}
 	}
 
-	event, err := p.queue.Done()
+	event, err := p.sessionQueue.Done()
 	if err != nil {
 		logger.Error("Failed to Complete Transfer", err)
 		return

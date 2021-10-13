@@ -41,22 +41,15 @@ message ProgressEvent {
   int32 total = 2;     // Total Transfer Progress
   double progress = 3; // Current Transfer Progress
   int64 received = 4;  // Timestamp
+  sonr.core.Direction direction = 5; // Direction of Transfer
 }
 
 // Message Sent after Completed Transfer
 message CompleteEvent {
-  Direction direction = 1; // Transfer Direction
+  sonr.core.Direction direction = 1; // Direction of Transfer
   sonr.core.Payload payload = 2;     // Transfer Data
   sonr.core.Peer from = 3; // Peer that sent the Complete Event
   sonr.core.Peer to = 4;   // Peer that received the Complete Event
   int64 createdAt = 5;     // Transfer Created Timestamp
   int64 receivedAt = 6;    // Transfer Received Timestamp
-
-
-  // Traffic Direction of Session
-  enum Direction {
-    DEFAULT = 0;  // From Memory/Viewing
-    INCOMING = 1; // Incoming Transfer
-    OUTGOING = 2; // Outgoing Transfer
-  }
 }

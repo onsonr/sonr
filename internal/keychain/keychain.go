@@ -49,9 +49,6 @@ type Keychain interface {
 	// returning: signature, error
 	SignHmacWith(kp KeyPairType, msg string) (string, error)
 
-	// ThreadIdentity returns Textile thread identity from Account key
-	// ThreadIdentity() (thread.Identity, error)
-
 	// VerifyWith verifies a signature with specified pair
 	VerifyWith(kp KeyPairType, msg []byte, sig []byte) (bool, error)
 
@@ -392,18 +389,6 @@ func (kc *keychain) SignHmacWith(kp KeyPairType, msg string) (string, error) {
 	logger.Error("Failed to Sign Data", ErrKeychainUnready)
 	return "", ErrKeychainUnready
 }
-
-// // ThreadIdentity returns the thread identity of the Node
-// func (kc *keychain) ThreadIdentity() (thread.Identity, error) {
-// 	if kc.Exists(Account) {
-// 		priv, err := kc.GetPrivKey(Account)
-// 		if err != nil {
-// 			return nil, logger.Error("Failed to Get Account Private Key", err)
-// 		}
-// 		return thread.NewLibp2pIdentity(priv), nil
-// 	}
-// 	return nil, logger.Error("Failed to get Thread Identity", ErrKeychainUnready)
-// }
 
 // VerifyWith verifies a signature with specified pair
 func (kc *keychain) VerifyWith(kp KeyPairType, msg []byte, sig []byte) (bool, error) {

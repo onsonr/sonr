@@ -3,6 +3,7 @@ package common
 import (
 	"os"
 	"strings"
+	"time"
 
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/sonr-io/core/internal/device"
@@ -267,4 +268,24 @@ func (m *MIME) IsUrl() bool {
 // Image, Video, Audio, and PDF are allowed.
 func (m *MIME) PermitsThumbnail() bool {
 	return m.IsImage() || m.IsVideo() || m.IsAudio() || m.IsPDF()
+}
+
+// ** ───────────────────────────────────────────────────────
+// ** ─── Profile Management ────────────────────────────────
+// ** ───────────────────────────────────────────────────────
+// Add adds a new Profile to the List and
+// updates LastModified time.
+func (p *PayloadList) Add(load *Payload) {
+	p.Payloads = append(p.Payloads, load)
+	p.LastModified = time.Now().Unix()
+}
+
+// Count returns the number of Profiles in the List
+func (p *PayloadList) Count() int {
+	return len(p.Payloads)
+}
+
+// IndexAt returns profile at index
+func (p *PayloadList) IndexAt(i int) *Payload {
+	return p.Payloads[i]
 }

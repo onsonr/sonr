@@ -86,9 +86,10 @@ func (p *ExchangeProtocol) Query(sname string) (*common.PeerInfo, error) {
 
 // Update method updates peer instance in the store
 func (p *ExchangeProtocol) Update(peer *common.Peer) error {
-	// Verify Peer is not nil
-	if peer == nil {
-		return ErrInvalidPeer
+	// Create a cid manually by specifying the 'prefix' parameters
+	key, err := peer.CID()
+	if err != nil {
+		return err
 	}
 
 	// Marshal Peer
@@ -99,7 +100,7 @@ func (p *ExchangeProtocol) Update(peer *common.Peer) error {
 	}
 
 	// Add Peer to KadDHT store
-	err = p.host.PutValue(p.ctx, peer.GetSName(), buf)
+	err = p.host.PutValue(p.ctx, key, buf)
 	if err != nil {
 		logger.Error("Failed to put Item in KDHT", err)
 		return err
@@ -144,7 +145,6 @@ func (p *ExchangeProtocol) Verify(sname string) (bool, internet.Record, error) {
 }
 
 func compareRecordtoID(r internet.Record, target peer.ID) (bool, error) {
-
 	// Check peer record
 	pid, err := r.PeerID()
 	if err != nil {

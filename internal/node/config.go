@@ -14,15 +14,13 @@ import (
 
 // Error Definitions
 var (
-	logger                = golog.Child("internal/node")
-	ErrEmptyQueue         = errors.New("No items in Transfer Queue.")
-	ErrInvalidQuery       = errors.New("No SName or PeerID provided.")
-	ErrNBClientMissing    = errors.New("No Namebase API Client Key provided.")
-	ErrNBSecretMissing    = errors.New("No Namebase API Secret Key provided.")
-	ErrRecentsNotCreated  = errors.New("Recents has not been created yet.")
-	ErrProfileNotCreated  = errors.New("Profile has not been created yet.")
-	ErrProfileNotProvided = errors.New("Profile has not been provided to Store.")
-	ErrProtocolsNotSet    = errors.New("Node Protocol has not been initialized.")
+	logger               = golog.Child("internal/node")
+	ErrEmptyQueue        = errors.New("No items in Transfer Queue.")
+	ErrInvalidQuery      = errors.New("No SName or PeerID provided.")
+	ErrNBClientMissing   = errors.New("No Namebase API Client Key provided.")
+	ErrNBSecretMissing   = errors.New("No Namebase API Secret Key provided.")
+	ErrMissingParam      = errors.New("Paramater is missing.")
+	ErrProtocolsNotSet   = errors.New("Node Protocol has not been initialized.")
 )
 
 // NodeStub is the interface for the node based on mode: (client, highway)

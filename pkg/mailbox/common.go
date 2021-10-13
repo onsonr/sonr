@@ -1,31 +1,29 @@
 package mailbox
 
-// import (
-// 	"errors"
-// 	"os"
+import (
+	"errors"
 
-// 	"github.com/sonr-io/core/internal/device"
-// 	"github.com/sonr-io/core/tools/logger"
-// 	"github.com/textileio/textile/v2/mail/local"
-// )
+	"github.com/kataras/golog"
+)
 
-// // Textile API definitions
-// const (
-// 	// Textile Client API URL
-// 	TextileClientURL = "https://api.textile.io"
+// Textile API definitions
+const (
+	// Textile Client API URL
+	TextileClientURL = "https://api.textile.io"
 
-// 	// Textile Miner Index Target
-// 	TextileMinerIdx = "api.minerindex.hub.textile.io:443"
+	// Textile Miner Index Target
+	TextileMinerIdx = "api.minerindex.hub.textile.io:443"
 
-// 	// Textile Mailbox Directory
-// 	TextileMailboxDirName = "mailbox"
-// )
+	// Textile Mailbox Directory
+	TextileMailboxDirName = "mailbox"
+)
 
-// var (
-// 	ErrMailboxDisabled  = errors.New("Mailbox not enabled, cannot perform request.")
-// 	ErrMissingAPIKey    = errors.New("Missing Textile API Key in env")
-// 	ErrMissingAPISecret = errors.New("Missing Textile API Secret in env")
-// )
+var (
+	logger              = golog.Child("protocols/mailbox")
+	ErrMailboxDisabled  = errors.New("Mailbox not enabled, cannot perform request.")
+	ErrMissingAPIKey    = errors.New("Missing Textile API Key in env")
+	ErrMissingAPISecret = errors.New("Missing Textile API Secret in env")
+)
 
 // // fetchApiKeys fetches the Textile Api/Secrect keys from the environment
 // func fetchApiKeys() (string, string, error) {
@@ -48,7 +46,8 @@ package mailbox
 // 	// Get Mailbox Path
 // 	path, err := device.Textile.Join(TextileMailboxDirName)
 // 	if err != nil {
-// 		return "", logger.Error("Failed to Find Existing Mailbox at Path", err)
+// 		logger.Error("Failed to Find Existing Mailbox at Path", err)
+// 		return "", err
 // 	}
 // 	return path, nil
 // }
@@ -60,13 +59,15 @@ package mailbox
 // 	// Get Mailbox Path
 // 	path, err := mb.getMailboxPath()
 // 	if err != nil {
-// 		return logger.Error("Failed to Create New Mailbox at Path", err)
+// 		logger.Error("Failed to Create New Mailbox at Path", err)
+// 		return err
 // 	}
 
 // 	// Return Existing Mailbox
 // 	mailbox, err := mb.mail.GetLocalMailbox(mb.ctx, path)
 // 	if err != nil {
-// 		return logger.Error("Failed to Load Existing Mailbox", err)
+// 		logger.Error("Failed to Load Existing Mailbox", err)
+// 		return err
 // 	}
 
 // 	// Set mailbox
@@ -82,19 +83,22 @@ package mailbox
 // 	// Get Mailbox Path
 // 	path, err := mb.getMailboxPath()
 // 	if err != nil {
-// 		return logger.Error("Failed to Create New Mailbox at Path", err)
+// 		logger.Error("Failed to Create New Mailbox at Path", err)
+// 		return err
 // 	}
 
 // 	// Get Device ThreadIdentity
 // 	id, err := device.KeyChain.ThreadIdentity()
 // 	if err != nil {
-// 		return logger.Error("Failed to get thread Identity", err)
+// 		logger.Error("Failed to get thread Identity", err)
+// 		return err
 // 	}
 
 // 	// Fetch API Keys
 // 	key, secret, err := fetchApiKeys()
 // 	if err != nil {
-// 		return logger.Error("Failed to create new mailbox", err)
+// 		logger.Error("Failed to create new mailbox", err)
+// 		return err
 // 	}
 
 // 	// Create a new mailbox with config
@@ -114,7 +118,8 @@ package mailbox
 
 // 	// Check for errors
 // 	if err != nil {
-// 		return logger.Error("Failed to create mailbox", err)
+// 		logger.Error("Failed to create mailbox", err)
+// 		return err
 // 	}
 
 // 	// Set mailbox

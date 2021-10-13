@@ -13,8 +13,15 @@ const RPC_SERVER_PORT = 52006
 
 // Supply supplies the node with the given amount of resources.
 func (s *ClientNodeStub) Supply(ctx context.Context, req *api.SupplyRequest) (*api.SupplyResponse, error) {
+	profile, err := s.node.GetProfile()
+	if err != nil {
+		return &api.SupplyResponse{
+			Success: false,
+			Error:   err.Error(),
+		}, nil
+	}
 	// Call Internal Supply
-	err := s.node.Supply(req.GetPaths())
+	err = s.TransferProtocol.Supply(req.GetPaths(), profile)
 	if err != nil {
 		return &api.SupplyResponse{
 			Success: false,
@@ -25,7 +32,16 @@ func (s *ClientNodeStub) Supply(ctx context.Context, req *api.SupplyRequest) (*a
 	// Check if Peer is provided
 	if req.GetPeer() != nil {
 		// Call Internal Respond
-		toId, inv, err := s.node.NewRequest(req.GetPeer())
+		peer, err := s.node.Peer()
+		if err != nil {
+			return &api.SupplyResponse{
+				Success: false,
+				Error:   err.Error(),
+			}, nil
+		}
+
+		// Call Internal Respond
+		toId, inv, err := s.TransferProtocol.NewRequest(req.GetPeer(), peer, s.node.host.ID())
 		if err != nil {
 			return &api.SupplyResponse{
 				Success: false,
@@ -75,7 +91,23 @@ func (s *ClientNodeStub) Edit(ctx context.Context, req *api.EditRequest) (*api.E
 // Fetch method retreives Node properties from Key/Value Store
 func (s *ClientNodeStub) Fetch(ctx context.Context, req *api.FetchRequest) (*api.FetchResponse, error) {
 	// Call Internal Fetch4
-	profile, err := s.node.Profile()
+	profile, err := s.node.GetProfile()
+	if err != nil {
+		return &api.FetchResponse{
+			Success: false,
+			Error:   err.Error(),
+		}, nil
+	}
+
+	recents, err := s.node.GetRecents()
+	if err != nil {
+		return &api.FetchResponse{
+			Success: false,
+			Error:   err.Error(),
+		}, nil
+	}
+
+	history, err := s.node.GetHistory()
 	if err != nil {
 		return &api.FetchResponse{
 			Success: false,
@@ -87,13 +119,24 @@ func (s *ClientNodeStub) Fetch(ctx context.Context, req *api.FetchRequest) (*api
 	return &api.FetchResponse{
 		Success: true,
 		Profile: profile,
+		Recents: recents,
+		History: history,
 	}, nil
 }
 
 // Share method sends supplied files/urls with a peer
 func (s *ClientNodeStub) Share(ctx context.Context, req *api.ShareRequest) (*api.ShareResponse, error) {
 	// Call Internal Respond
-	toId, inv, err := s.node.NewRequest(req.GetPeer())
+	peer, err := s.node.Peer()
+	if err != nil {
+		return &api.ShareResponse{
+			Success: false,
+			Error:   err.Error(),
+		}, nil
+	}
+
+	// Create new Request
+	toId, inv, err := s.TransferProtocol.NewRequest(req.GetPeer(), peer, s.node.host.ID())
 	if err != nil {
 		return &api.ShareResponse{
 			Success: false,
@@ -154,7 +197,15 @@ func (s *ClientNodeStub) Search(ctx context.Context, req *api.SearchRequest) (*a
 func (s *ClientNodeStub) Respond(ctx context.Context, req *api.RespondRequest) (*api.RespondResponse, error) {
 	// Call Internal Respond
 	if s.TransferProtocol != nil {
-		toId, resp, err := s.node.NewResponse(req.GetDecision(), req.GetPeer())
+		// Call Internal Respond
+		peer, err := s.node.Peer()
+		if err != nil {
+			return &api.RespondResponse{
+				Success: false,
+				Error:   err.Error(),
+			}, nil
+		}
+		toId, resp, err := s.TransferProtocol.NewResponse(req.GetDecision(), req.GetPeer(), peer, s.node.host.ID())
 		if err != nil {
 			return &api.RespondResponse{
 				Success: false,

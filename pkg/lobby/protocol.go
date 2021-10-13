@@ -141,6 +141,13 @@ func (p *LobbyProtocol) HandleEvents() {
 		if p.isEventExit(event) {
 			p.pushRefresh(event.Peer, nil)
 			continue
+		} else {
+			// Update Peer Data in Topic
+			err := p.sendUpdate()
+			if err != nil {
+				logger.Error("Failed to send peer update to lobby topic", err)
+				continue
+			}
 		}
 	}
 }
@@ -176,14 +183,9 @@ func (p *LobbyProtocol) HandleMessages() {
 func (p *LobbyProtocol) autoPushUpdates() {
 	// Loop Messages
 	for {
-		peer, err := p.Peer()
+		err := p.sendUpdate()
 		if err != nil {
-			logger.Error("Failed to get peer", err)
-			continue
-		}
-		err = p.Update(peer)
-		if err != nil {
-			logger.Error("Failed to update peer", err)
+			logger.Error("Failed to send peer update to lobby topic", err)
 			continue
 		}
 		time.Sleep(time.Second * 5)

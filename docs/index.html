@@ -211,14 +211,6 @@
                 </li>
               
                 <li>
-                  <a href="#sonr.api.FetchResponse.HistoryEntry"><span class="badge">M</span>FetchResponse.HistoryEntry</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.api.FetchResponse.RecentsEntry"><span class="badge">M</span>FetchResponse.RecentsEntry</a>
-                </li>
-              
-                <li>
                   <a href="#sonr.api.InitializeRequest"><span class="badge">M</span>InitializeRequest</a>
                 </li>
               
@@ -312,6 +304,10 @@
               
               
                 <li>
+                  <a href="#sonr.api.EditRequest.Type"><span class="badge">E</span>EditRequest.Type</a>
+                </li>
+              
+                <li>
                   <a href="#sonr.api.FetchRequest.Key"><span class="badge">E</span>FetchRequest.Key</a>
                 </li>
               
@@ -361,10 +357,6 @@
                   <a href="#sonr.api.RefreshEvent"><span class="badge">M</span>RefreshEvent</a>
                 </li>
               
-              
-                <li>
-                  <a href="#sonr.api.CompleteEvent.Direction"><span class="badge">E</span>CompleteEvent.Direction</a>
-                </li>
               
               
               
@@ -508,7 +500,7 @@
                 </li>
               
                 <li>
-                  <a href="#sonr.core.PayloadItemList"><span class="badge">M</span>PayloadItemList</a>
+                  <a href="#sonr.core.PayloadList"><span class="badge">M</span>PayloadList</a>
                 </li>
               
                 <li>
@@ -519,6 +511,10 @@
                   <a href="#sonr.core.UrlItem"><span class="badge">M</span>UrlItem</a>
                 </li>
               
+              
+                <li>
+                  <a href="#sonr.core.Direction"><span class="badge">E</span>Direction</a>
+                </li>
               
                 <li>
                   <a href="#sonr.core.OpenGraph.Type"><span class="badge">E</span>OpenGraph.Type</a>
@@ -804,10 +800,31 @@
             <tbody>
               
                 <tr>
+                  <td>type</td>
+                  <td><a href="#sonr.api.EditRequest.Type">EditRequest.Type</a></td>
+                  <td></td>
+                  <td><p>Type of Edit </p></td>
+                </tr>
+              
+                <tr>
                   <td>profile</td>
                   <td><a href="#sonr.core.Profile">sonr.core.Profile</a></td>
                   <td></td>
                   <td><p>Profile to Edit </p></td>
+                </tr>
+              
+                <tr>
+                  <td>history</td>
+                  <td><a href="#sonr.core.Payload">sonr.core.Payload</a></td>
+                  <td></td>
+                  <td><p>Payload to Delete </p></td>
+                </tr>
+              
+                <tr>
+                  <td>recent</td>
+                  <td><a href="#sonr.core.Profile">sonr.core.Profile</a></td>
+                  <td></td>
+                  <td><p>Profile to Delete </p></td>
                 </tr>
               
             </tbody>
@@ -912,16 +929,20 @@
               
                 <tr>
                   <td>recents</td>
-                  <td><a href="#sonr.api.FetchResponse.RecentsEntry">FetchResponse.RecentsEntry</a></td>
-                  <td>repeated</td>
-                  <td><p>Recent Peers </p></td>
+                  <td><a href="#sonr.core.ProfileList">sonr.core.ProfileList</a></td>
+                  <td></td>
+                  <td><p>map&lt;string, sonr.core.ProfileList&gt; recents = 5; // Recent Peers
+
+Recent Peers </p></td>
                 </tr>
               
                 <tr>
                   <td>history</td>
-                  <td><a href="#sonr.api.FetchResponse.HistoryEntry">FetchResponse.HistoryEntry</a></td>
-                  <td>repeated</td>
-                  <td><p>File Transfer History </p></td>
+                  <td><a href="#sonr.core.PayloadList">sonr.core.PayloadList</a></td>
+                  <td></td>
+                  <td><p>map&lt;string, sonr.core.PayloadList&gt; history = 6; // File Transfer History
+
+File Transfer History </p></td>
                 </tr>
               
             </tbody>
@@ -951,68 +972,6 @@
                 <tr>
                   <td>value</td>
                   <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.api.FetchResponse.HistoryEntry">FetchResponse.HistoryEntry</h3>
-        <p></p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>key</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>value</td>
-                  <td><a href="#sonr.core.PayloadItemList">sonr.core.PayloadItemList</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.api.FetchResponse.RecentsEntry">FetchResponse.RecentsEntry</h3>
-        <p></p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>key</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>value</td>
-                  <td><a href="#sonr.core.ProfileList">sonr.core.ProfileList</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
@@ -1407,7 +1366,7 @@
               
                 <tr>
                   <td>value</td>
-                  <td><a href="#sonr.core.PayloadItemList">sonr.core.PayloadItemList</a></td>
+                  <td><a href="#sonr.core.PayloadList">sonr.core.PayloadList</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
@@ -1840,6 +1799,13 @@
                   <td><p>Message to Share </p></td>
                 </tr>
               
+                <tr>
+                  <td>paths</td>
+                  <td><a href="#string">string</a></td>
+                  <td>repeated</td>
+                  <td><p>Optional: Supply Paths, to directly supply files </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -1941,6 +1907,35 @@
         
       
 
+      
+        <h3 id="sonr.api.EditRequest.Type">EditRequest.Type</h3>
+        <p></p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>NONE</td>
+                <td>0</td>
+                <td><p>No Delete</p></td>
+              </tr>
+            
+              <tr>
+                <td>DELETE</td>
+                <td>1</td>
+                <td><p>Delete Profile, Payload, or File</p></td>
+              </tr>
+            
+              <tr>
+                <td>MODIFY</td>
+                <td>2</td>
+                <td><p>Modify Profile</p></td>
+              </tr>
+            
+          </tbody>
+        </table>
       
         <h3 id="sonr.api.FetchRequest.Key">FetchRequest.Key</h3>
         <p></p>
@@ -2076,9 +2071,9 @@
               
                 <tr>
                   <td>direction</td>
-                  <td><a href="#sonr.api.CompleteEvent.Direction">CompleteEvent.Direction</a></td>
+                  <td><a href="#sonr.core.Direction">sonr.core.Direction</a></td>
                   <td></td>
-                  <td><p>Transfer Direction </p></td>
+                  <td><p>Direction of Transfer </p></td>
                 </tr>
               
                 <tr>
@@ -2289,6 +2284,13 @@
                   <td><p>Timestamp </p></td>
                 </tr>
               
+                <tr>
+                  <td>direction</td>
+                  <td><a href="#sonr.core.Direction">sonr.core.Direction</a></td>
+                  <td></td>
+                  <td><p>Direction of Transfer </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -2335,35 +2337,6 @@
         
       
 
-      
-        <h3 id="sonr.api.CompleteEvent.Direction">CompleteEvent.Direction</h3>
-        <p>Traffic Direction of Session</p>
-        <table class="enum-table">
-          <thead>
-            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
-          </thead>
-          <tbody>
-            
-              <tr>
-                <td>DEFAULT</td>
-                <td>0</td>
-                <td><p>From Memory/Viewing</p></td>
-              </tr>
-            
-              <tr>
-                <td>INCOMING</td>
-                <td>1</td>
-                <td><p>Incoming Transfer</p></td>
-              </tr>
-            
-              <tr>
-                <td>OUTGOING</td>
-                <td>2</td>
-                <td><p>Outgoing Transfer</p></td>
-              </tr>
-            
-          </tbody>
-        </table>
       
 
       
@@ -2809,6 +2782,13 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                 </tr>
               
                 <tr>
+                  <td>key</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Key of the Payload List </p></td>
+                </tr>
+              
+                <tr>
                   <td>lastModified</td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
@@ -2851,6 +2831,13 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p>Peer ID of the node, calculated from the public key </p></td>
+                </tr>
+              
+                <tr>
+                  <td>cid</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>CID of the node, calculated from the public key </p></td>
                 </tr>
               
             </tbody>
@@ -3923,7 +3910,7 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
 
         
       
-        <h3 id="sonr.core.PayloadItemList">PayloadItemList</h3>
+        <h3 id="sonr.core.PayloadList">PayloadList</h3>
         <p>PayloadItemList is a list of Payload.Item's for Persistent Store</p>
 
         
@@ -3934,24 +3921,17 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
             <tbody>
               
                 <tr>
-                  <td>items</td>
-                  <td><a href="#sonr.core.Payload.Item">Payload.Item</a></td>
+                  <td>payloads</td>
+                  <td><a href="#sonr.core.Payload">Payload</a></td>
                   <td>repeated</td>
                   <td><p>Payload List </p></td>
                 </tr>
               
                 <tr>
-                  <td>mime</td>
-                  <td><a href="#sonr.core.MIME">MIME</a></td>
+                  <td>key</td>
+                  <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>MIME of the Payload </p></td>
-                </tr>
-              
-                <tr>
-                  <td>size</td>
-                  <td><a href="#int64">int64</a></td>
-                  <td></td>
-                  <td><p>Total Size of all Items in Bytes </p></td>
+                  <td><p>Key of the Payload List </p></td>
                 </tr>
               
                 <tr>
@@ -4073,6 +4053,35 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
         
       
 
+      
+        <h3 id="sonr.core.Direction">Direction</h3>
+        <p></p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>DEFAULT</td>
+                <td>0</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>INCOMING</td>
+                <td>1</td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>OUTGOING</td>
+                <td>2</td>
+                <td><p></p></td>
+              </tr>
+            
+          </tbody>
+        </table>
       
         <h3 id="sonr.core.OpenGraph.Type">OpenGraph.Type</h3>
         <p>Url Opengraph Preview Type - In order of Priority</p>

@@ -39,6 +39,7 @@ func (p *LobbyProtocol) isValidMessage(msg *ps.Message) bool {
 	return p.host.ID() != msg.ReceivedFrom && p.HasPeerID(msg.ReceivedFrom)
 }
 
+// checkParams Checks if Non-nil Parameters were passed
 func checkParams(host *host.SNRHost, em *state.Emitter) error {
 	if host == nil {
 		logger.Error("Host provided is nil", ErrParameters)
@@ -51,6 +52,7 @@ func checkParams(host *host.SNRHost, em *state.Emitter) error {
 	return host.HasRouting()
 }
 
+// createOlc Creates a new Olc from Location
 func createOlc(l *common.Location) string {
 	code := l.OLC()
 	if code == "" {
@@ -79,9 +81,27 @@ func (p *LobbyProtocol) pushRefresh(id peer.ID, peer *common.Peer) {
 
 	} else {
 		// Update Peer, Emit Event
-		p.emitter.Emit(Event_LIST_REFRESH, buildEvent(p.updatePeer(id, peer)))
+		ok, list := p.updatePeer(id, peer)
+		p.emitter.Emit(Event_LIST_REFRESH, buildEvent(list))
+		if !ok {
+			p.sendUpdate()
+		}
 	}
+}
 
+// sendUpdate sends a refresh event to the Lobby topic
+func (lp *LobbyProtocol) sendUpdate() error {
+	peer, err := lp.Peer()
+	if err != nil {
+		logger.Error("Failed to get peer", err)
+		return err
+	}
+	err = lp.Update(peer)
+	if err != nil {
+		logger.Error("Failed to update peer", err)
+		return err
+	}
+	return nil
 }
 
 // hasPeer Checks if Peer is in Peer List
@@ -105,10 +125,10 @@ func (lp *LobbyProtocol) removePeer(peerID peer.ID) []*common.Peer {
 }
 
 // updatePeer Adds Peer to Peer List
-func (lp *LobbyProtocol) updatePeer(peerID peer.ID, data *common.Peer) []*common.Peer {
+func (lp *LobbyProtocol) updatePeer(peerID peer.ID, data *common.Peer) (bool, []*common.Peer) {
 	if lp.hasPeer(data) {
-		return lp.peers
+		return false, lp.peers
 	}
 	lp.peers = append(lp.peers, data)
-	return lp.peers
+	return true, lp.peers
 }
