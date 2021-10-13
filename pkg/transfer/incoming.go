@@ -84,6 +84,7 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 			// Update Progress
 			logger.Info(fmt.Sprintf("Finished RECEIVING File (%v/%v)", i+1, entry.Count()))
 		}
+
 		wg.Done()
 	}(e, reader)
 	wg.Wait()
@@ -99,7 +100,7 @@ func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
 	p.emitter.Emit(Event_COMPLETED, event)
 
 	// Await WaitGroup
-	err = s.Close()
+	err = reader.Close()
 	if err != nil {
 		logger.Error("Failed to close stream for incoming transfer", err)
 		return
@@ -192,13 +193,6 @@ func (ir *itemReader) ReadFrom(reader msgio.ReadCloser) error {
 		if (i % ITEM_INTERVAL) == 0 {
 			ir.Progress(i)
 		}
-	}
-
-	// Flush File Contents
-	err = f.Sync()
-	if err != nil {
-		ir.logger.Error("Failed to Sync item on Read Stream", err)
-		return err
 	}
 
 	// Close File
