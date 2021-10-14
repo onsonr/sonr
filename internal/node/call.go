@@ -23,7 +23,7 @@ func (s *ClientNodeStub) Supply(ctx context.Context, req *api.SupplyRequest) (*a
 	}
 
 	// Check if Peer is provided
-	if req.Peer != nil {
+	if req.GetIsPeerSupply() {
 		// Call Internal Respond
 		peer, err := s.node.Peer()
 		if err != nil {

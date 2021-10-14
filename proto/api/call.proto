@@ -92,6 +92,7 @@ message InitializeResponse {
 message SupplyRequest {
   repeated string paths = 1;        // Supply Paths
   optional sonr.core.Peer peer = 2; // Supply Peer
+  bool isPeerSupply = 3;                 // Supply Peer
 }
 
 // (Client) SupplyResponse is response to SupplyRequest
