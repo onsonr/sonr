@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"git.mills.io/prologic/bitcask"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
@@ -28,6 +29,8 @@ type Node struct {
 
 	// Properties
 	ctx context.Context
+
+	store *bitcask.Bitcask
 
 	// Node Stub Interface
 	stub NodeStub
@@ -81,7 +84,7 @@ func NewNode(ctx context.Context, options ...NodeOption) (common.NodeImpl, *api.
 	node.host = host
 
 	// Open Store with profileBuf
-	err = node.initStore(ctx, opts)
+	err = node.openStore(ctx, opts)
 	if err != nil {
 		logger.Error("Failed to open database", err)
 		return node, api.NewInitialzeResponse(nil, false), err

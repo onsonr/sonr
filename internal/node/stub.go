@@ -38,7 +38,7 @@ type ClientNodeStub struct {
 // startClientService creates a new Client service stub for the node.
 func (n *Node) startClientService(ctx context.Context, opts *nodeOptions) (NodeStub, error) {
 	// Set Transfer Protocol
-	transferProtocol, err := transfer.NewProtocol(ctx, n.host, n.Emitter)
+	transferProtocol, err := transfer.NewProtocol(ctx, n.host, n.Emitter, n.GetProfile)
 	if err != nil {
 		logger.Error("Failed to start TransferProtocol", err)
 		return nil, err

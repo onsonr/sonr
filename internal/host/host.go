@@ -70,11 +70,10 @@ func NewHost(ctx context.Context, em *state.Emitter, options ...HostOption) (*SN
 			opts.HighWater,   // HighWater,
 			opts.GracePeriod, // GracePeriod
 		)),
-		// libp2p.ListenAddrs(hn.multiAddr),
 		libp2p.DefaultListenAddrs,
 		libp2p.Routing(hn.Router),
-		libp2p.NATPortMap(),
-		libp2p.EnableAutoRelay())
+		libp2p.EnableAutoRelay(),
+	)
 	if err != nil {
 		logger.Error("NewHost: Failed to create libp2p host", err)
 		return nil, err
@@ -105,7 +104,7 @@ func NewHost(ctx context.Context, em *state.Emitter, options ...HostOption) (*SN
 	}
 
 	// Initialize Discovery for MDNS
-	// hn.createMdnsDiscovery()
+	hn.createMdnsDiscovery()
 	hn.SetStatus(Status_READY)
 	go hn.Serve()
 	return hn, nil

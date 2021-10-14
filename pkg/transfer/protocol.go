@@ -14,15 +14,16 @@ import (
 
 // TransferProtocol type
 type TransferProtocol struct {
-	ctx          context.Context // Context
-	host         *host.SNRHost   // local host
-	emitter      *state.Emitter  // Handle to signal when done
-	sessionQueue *SessionQueue   // transfer session queue
-	supplyQueue  *list.List      // supply queue
+	ctx            context.Context // Context
+	host           *host.SNRHost   // local host
+	emitter        *state.Emitter  // Handle to signal when done
+	sessionQueue   *SessionQueue   // transfer session queue
+	supplyQueue    *list.List      // supply queue
+	getProfileFunc common.GetProfileFunc
 }
 
 // NewProtocol creates a new TransferProtocol
-func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) (*TransferProtocol, error) {
+func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter, gpf common.GetProfileFunc) (*TransferProtocol, error) {
 	// Check parameters
 	if err := checkParams(host, em); err != nil {
 		logger.Error("Failed to create TransferProtocol", err)
@@ -39,7 +40,8 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) (*T
 			host:  host,
 			queue: list.New(),
 		},
-		supplyQueue: list.New(),
+		supplyQueue:    list.New(),
+		getProfileFunc: gpf,
 	}
 
 	// Setup Stream Handlers
@@ -104,7 +106,14 @@ func (p *TransferProtocol) Respond(id peer.ID, resp *InviteResponse) error {
 }
 
 // Supply a transfer item to the queue
-func (p *TransferProtocol) Supply(paths []string, profile *common.Profile) error {
+func (p *TransferProtocol) Supply(paths []string) error {
+	// Profile from NodeImpl
+	profile, err := p.getProfileFunc()
+	if err != nil {
+		logger.Error("Failed to Get Profile from Node")
+		return err
+	}
+
 	// Create Transfer
 	payload, err := common.NewPayload(profile, paths)
 	if err != nil {

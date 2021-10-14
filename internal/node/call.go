@@ -13,15 +13,8 @@ const RPC_SERVER_PORT = 52006
 
 // Supply supplies the node with the given amount of resources.
 func (s *ClientNodeStub) Supply(ctx context.Context, req *api.SupplyRequest) (*api.SupplyResponse, error) {
-	profile, err := s.node.GetProfile()
-	if err != nil {
-		return &api.SupplyResponse{
-			Success: false,
-			Error:   err.Error(),
-		}, nil
-	}
 	// Call Internal Supply
-	err = s.TransferProtocol.Supply(req.GetPaths(), profile)
+	err := s.TransferProtocol.Supply(req.GetPaths())
 	if err != nil {
 		return &api.SupplyResponse{
 			Success: false,
@@ -30,7 +23,7 @@ func (s *ClientNodeStub) Supply(ctx context.Context, req *api.SupplyRequest) (*a
 	}
 
 	// Check if Peer is provided
-	if req.GetPeer() != nil {
+	if req.Peer != nil {
 		// Call Internal Respond
 		peer, err := s.node.Peer()
 		if err != nil {

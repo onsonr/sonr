@@ -79,8 +79,8 @@ type hostOptions struct {
 func defaultHostOptions() hostOptions {
 	return hostOptions{
 		Connection:  common.Connection_WIFI,
-		LowWater:    100,
-		HighWater:   200,
+		LowWater:    200,
+		HighWater:   400,
 		GracePeriod: time.Second * 20,
 		Rendezvous:  "/sonr/rendevouz/0.9.2",
 		MultiAddrs:  make([]multiaddr.Multiaddr, 0),
