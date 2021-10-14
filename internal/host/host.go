@@ -105,7 +105,7 @@ func NewHost(ctx context.Context, em *state.Emitter, options ...HostOption) (*SN
 	}
 
 	// Initialize Discovery for MDNS
-	hn.createMdnsDiscovery()
+	// hn.createMdnsDiscovery()
 	hn.SetStatus(Status_READY)
 	go hn.Serve()
 	return hn, nil
@@ -174,7 +174,7 @@ func (hn *SNRHost) Connect(pi peer.AddrInfo) error {
 	}
 
 	// Call Underlying Host to Connect
-	return hn.Host.Connect(context.Background(), pi)
+	return hn.Host.Connect(hn.ctx, pi)
 }
 
 // HandlePeerFound is to be called when new  peer is found

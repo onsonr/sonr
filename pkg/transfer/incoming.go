@@ -1,8 +1,9 @@
 package transfer
 
 import (
+	"bytes"
 	"fmt"
-	"os"
+	"io/ioutil"
 	sync "sync"
 
 	"github.com/kataras/golog"
@@ -38,12 +39,11 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 		logger.Error("Failed to Unmarshal Invite REQUEST buffer.", err)
 		return
 	}
+	// store request data into Context
+	p.emitter.Emit(Event_INVITED, req.ToEvent())
 
 	// generate response message
 	p.sessionQueue.AddIncoming(remotePeer, req)
-
-	// store request data into Context
-	p.emitter.Emit(Event_INVITED, req.ToEvent())
 }
 
 // onIncomingTransfer incoming transfer handler
@@ -155,13 +155,8 @@ func (p *itemReader) Progress(i int) {
 
 // ReadFrom Reads from the given Reader and writes to the given File
 func (ir *itemReader) ReadFrom(reader msgio.ReadCloser) error {
-	// Return Created File
-	f, err := os.Create(ir.path)
-	if err != nil {
-		return err
-	}
-	ir.logger.Info("Created new file at path ", ir.path)
-	defer f.Close()
+	// Create File Buffer
+	fileBuffer := bytes.Buffer{}
 
 	// Route Data from Stream
 	for i := 0; i < int(ir.size); {
@@ -181,7 +176,8 @@ func (ir *itemReader) ReadFrom(reader msgio.ReadCloser) error {
 
 		// Write to File, and Update Progress
 		ir.mutex.Lock()
-		n, err := f.Write(buf.Data)
+
+		n, err := fileBuffer.Write(buf.Data)
 		if err != nil {
 			ir.logger.Error("Failed to Write Buffer to File on Read Stream", err)
 			return err
@@ -195,8 +191,8 @@ func (ir *itemReader) ReadFrom(reader msgio.ReadCloser) error {
 		}
 	}
 
-	// Close File
-	err = f.Close()
+	// Write File Buffer to File
+	err := ioutil.WriteFile(ir.path, fileBuffer.Bytes(), 0644)
 	if err != nil {
 		ir.logger.Error("Failed to Close item on Read Stream", err)
 		return err

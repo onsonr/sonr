@@ -36,22 +36,16 @@ func recentsKey() []byte {
 	return []byte(fmt.Sprintf("%s_recents", key))
 }
 
-// openStore creates a new Store instance for Node
-func (n *Node) openStore(ctx context.Context, opts *nodeOptions) error {
-	path, err := device.NewDatabasePath("sonr_bitcask")
-	if err != nil {
-		logger.Error("Failed to get DB Path", err)
-		return err
-	}
-
+// initStore creates a new Store instance for Node
+func (n *Node) initStore(ctx context.Context, opts *nodeOptions) error {
 	// Open the my.db data file in your current directory.
 	// It will be created if it doesn't exist.
-	db, err := bitcask.Open(path, bitcask.WithAutoRecovery(true))
+	db, err := n.openStore()
 	if err != nil {
-		logger.Error("Failed to open Database", err)
+		logger.Error("Failed to Open Bitcask Store", err)
 		return err
 	}
-	n.store = db
+	defer db.Close()
 
 	// Create Profile Bucket
 	err = n.SetProfile(opts.profile)
@@ -62,13 +56,26 @@ func (n *Node) openStore(ctx context.Context, opts *nodeOptions) error {
 	return nil
 }
 
+// openStore opens the store file
+func (n *Node) openStore() (*bitcask.Bitcask, error) {
+	path, err := device.NewDatabasePath("sonr_bitcask")
+	if err != nil {
+		logger.Error("Failed to get DB Path", err)
+		return nil, err
+	}
+	return bitcask.Open(path, bitcask.WithAutoRecovery(true))
+}
+
 // AddHistory adds payload to the store file history
 func (n *Node) AddHistory(payload *common.Payload) error {
-	// Check if Store is open
-	if n.store == nil {
-		logger.Error("Failed to Add Payload", ErrProtocolsNotSet)
-		return ErrProtocolsNotSet
+	// Open the my.db data file in your current directory.
+	// It will be created if it doesn't exist.
+	db, err := n.openStore()
+	if err != nil {
+		logger.Error("Failed to Open Bitcask Store", err)
+		return err
 	}
+	defer db.Close()
 
 	// Check if profile is nil
 	if payload == nil {
@@ -77,9 +84,9 @@ func (n *Node) AddHistory(payload *common.Payload) error {
 	}
 
 	// Put in Bucket
-	if n.store.Has(historyKey()) {
+	if db.Has(historyKey()) {
 		// Get profile list buffer
-		oldBuf, err := n.store.Get(historyKey())
+		oldBuf, err := db.Get(historyKey())
 		if err != nil {
 			logger.Error("Failed to Get History from store")
 			return err
@@ -103,7 +110,7 @@ func (n *Node) AddHistory(payload *common.Payload) error {
 			return err
 		}
 
-		err = n.store.Put(historyKey(), val)
+		err = db.Put(historyKey(), val)
 		if err != nil {
 			return err
 		}
@@ -118,7 +125,7 @@ func (n *Node) AddHistory(payload *common.Payload) error {
 	if err != nil {
 		return err
 	}
-	err = n.store.Put(historyKey(), val)
+	err = db.Put(historyKey(), val)
 	if err != nil {
 		return err
 	}
@@ -127,11 +134,14 @@ func (n *Node) AddHistory(payload *common.Payload) error {
 
 // AddRecent stores the profile for recents in desk and returns list of recent profiles
 func (n *Node) AddRecent(profile *common.Profile) error {
-	// Check if Store is open
-	if n.store == nil {
-		logger.Error("Failed to Add Recent Profile", ErrProtocolsNotSet)
-		return ErrProtocolsNotSet
+	// Open the my.db data file in your current directory.
+	// It will be created if it doesn't exist.
+	db, err := n.openStore()
+	if err != nil {
+		logger.Error("Failed to Open Bitcask Store", err)
+		return err
 	}
+	defer db.Close()
 
 	// Check if profile is nil
 	if profile == nil {
@@ -140,9 +150,9 @@ func (n *Node) AddRecent(profile *common.Profile) error {
 	}
 
 	// Put in Bucket
-	if n.store.Has(recentsKey()) {
+	if db.Has(recentsKey()) {
 		// Get profile list buffer
-		oldBuf, err := n.store.Get(recentsKey())
+		oldBuf, err := db.Get(recentsKey())
 		if err != nil {
 			logger.Error("Failed to Get old Recents from store")
 			return err
@@ -167,7 +177,7 @@ func (n *Node) AddRecent(profile *common.Profile) error {
 			return err
 		}
 
-		err = n.store.Put(recentsKey(), val)
+		err = db.Put(recentsKey(), val)
 		if err != nil {
 			return err
 		}
@@ -181,7 +191,7 @@ func (n *Node) AddRecent(profile *common.Profile) error {
 	if err != nil {
 		return err
 	}
-	err = n.store.Put(recentsKey(), val)
+	err = db.Put(recentsKey(), val)
 	if err != nil {
 		return err
 	}
@@ -190,14 +200,18 @@ func (n *Node) AddRecent(profile *common.Profile) error {
 
 // GetHistory returns the history of profiles
 func (n *Node) GetHistory() (*common.PayloadList, error) {
-	if n.store == nil {
-		logger.Error("Failed to Get Profile", ErrProtocolsNotSet)
-		return nil, ErrProtocolsNotSet
+	// Open the my.db data file in your current directory.
+	// It will be created if it doesn't exist.
+	db, err := n.openStore()
+	if err != nil {
+		logger.Error("Failed to Open Bitcask Store", err)
+		return nil, err
 	}
+	defer db.Close()
 
 	// Check for Key
-	if n.store.Has(historyKey()) {
-		rbuf, err := n.store.Get(historyKey())
+	if db.Has(historyKey()) {
+		rbuf, err := db.Get(historyKey())
 		if err != nil {
 			logger.Error("Failed to Get History from store")
 			return nil, err
@@ -217,14 +231,18 @@ func (n *Node) GetHistory() (*common.PayloadList, error) {
 
 // GetRecents returns the list of recent profiles
 func (n *Node) GetRecents() (*common.ProfileList, error) {
-	if n.store == nil {
-		logger.Error("Failed to Get Profile", ErrProtocolsNotSet)
-		return nil, ErrProtocolsNotSet
+	// Open the my.db data file in your current directory.
+	// It will be created if it doesn't exist.
+	db, err := n.openStore()
+	if err != nil {
+		logger.Error("Failed to Open Bitcask Store", err)
+		return nil, err
 	}
+	defer db.Close()
 
 	// Check for Key
-	if n.store.Has(recentsKey()) {
-		rbuf, err := n.store.Get(recentsKey())
+	if db.Has(recentsKey()) {
+		rbuf, err := db.Get(recentsKey())
 		if err != nil {
 			logger.Error("Failed to Get Recents from store")
 			return nil, err
@@ -244,13 +262,17 @@ func (n *Node) GetRecents() (*common.ProfileList, error) {
 
 // GetProfile returns the profile for the user from diskDB
 func (n *Node) GetProfile() (*common.Profile, error) {
-	// Check if Store is open
-	if n.store == nil {
-		logger.Error("Failed to Get Profile", ErrProtocolsNotSet)
-		return common.NewDefaultProfile(), ErrProtocolsNotSet
+	// Open the my.db data file in your current directory.
+	// It will be created if it doesn't exist.
+	db, err := n.openStore()
+	if err != nil {
+		logger.Error("Failed to Open Bitcask Store", err)
+		return nil, err
 	}
-	if n.store.Has(PROFILE_KEY) {
-		pbuf, err := n.store.Get(PROFILE_KEY)
+	defer db.Close()
+
+	if db.Has(PROFILE_KEY) {
+		pbuf, err := db.Get(PROFILE_KEY)
 		if err != nil {
 			return common.NewDefaultProfile(), err
 		}
@@ -267,11 +289,14 @@ func (n *Node) GetProfile() (*common.Profile, error) {
 
 // SetProfile stores the profile for the user in diskDB
 func (n *Node) SetProfile(profile *common.Profile) error {
-	// Check if Store is open
-	if n.store == nil {
-		logger.Error("Failed to Set Profile", ErrProtocolsNotSet)
-		return ErrProtocolsNotSet
+	// Open the my.db data file in your current directory.
+	// It will be created if it doesn't exist.
+	db, err := n.openStore()
+	if err != nil {
+		logger.Error("Failed to Open Bitcask Store", err)
+		return err
 	}
+	defer db.Close()
 
 	// Check if profile is nil
 	if profile == nil {
@@ -281,7 +306,7 @@ func (n *Node) SetProfile(profile *common.Profile) error {
 	if err != nil {
 		return err
 	}
-	err = n.store.Put(PROFILE_KEY, pbuf)
+	err = db.Put(PROFILE_KEY, pbuf)
 	if err != nil {
 		return err
 	}

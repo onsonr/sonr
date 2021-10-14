@@ -42,11 +42,11 @@ type SessionQueue struct {
 
 // AddIncoming adds Incoming Request to Transfer Queue
 func (sq *SessionQueue) AddIncoming(from peer.ID, req *InviteRequest) error {
-	// Authenticate Message
-	valid := sq.host.AuthenticateMessage(req, req.Metadata)
-	if !valid {
-		return ErrFailedAuth
-	}
+	// // Authenticate Message
+	// valid := sq.host.AuthenticateMessage(req, req.Metadata)
+	// if !valid {
+	// 	return ErrFailedAuth
+	// }
 
 	// Create New TransferEntry
 	entry := Session{
@@ -124,11 +124,11 @@ func (sq *SessionQueue) Done() (*api.CompleteEvent, error) {
 // Validate takes list of Requests and returns true if Request exists in List and UUID is verified.
 // Method also returns the InviteRequest that points to the Response.
 func (sq *SessionQueue) Validate(resp *InviteResponse) (*Session, error) {
-	// Authenticate Message
-	valid := sq.host.AuthenticateMessage(resp, resp.Metadata)
-	if !valid {
-		return nil, ErrFailedAuth
-	}
+	// // Authenticate Message
+	// valid := sq.host.AuthenticateMessage(resp, resp.Metadata)
+	// if !valid {
+	// 	return nil, ErrFailedAuth
+	// }
 
 	// Check Decision
 	if !resp.GetDecision() {

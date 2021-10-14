@@ -5,7 +5,6 @@ import (
 	"strings"
 	"time"
 
-	"git.mills.io/prologic/bitcask"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
@@ -29,9 +28,6 @@ type Node struct {
 
 	// Properties
 	ctx context.Context
-
-	// Persistent Database
-	store *bitcask.Bitcask
 
 	// Node Stub Interface
 	stub NodeStub
@@ -85,7 +81,7 @@ func NewNode(ctx context.Context, options ...NodeOption) (common.NodeImpl, *api.
 	node.host = host
 
 	// Open Store with profileBuf
-	err = node.openStore(ctx, opts)
+	err = node.initStore(ctx, opts)
 	if err != nil {
 		logger.Error("Failed to open database", err)
 		return node, api.NewInitialzeResponse(nil, false), err
@@ -105,11 +101,6 @@ func NewNode(ctx context.Context, options ...NodeOption) (common.NodeImpl, *api.
 
 // Close closes the node
 func (n *Node) Close() {
-	// Close Store
-	if err := n.store.Close(); err != nil {
-		logger.Error("Failed to close store", err)
-	}
-
 	// Close Stub
 	if err := n.stub.Close(); err != nil {
 		logger.Error("Failed to close host", err)
