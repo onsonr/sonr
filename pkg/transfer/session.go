@@ -47,11 +47,7 @@ func (s *Session) ReadFrom(stream network.Stream) *api.CompleteEvent {
 	// Write All Files
 	for i, v := range s.Items() {
 		// Create Reader
-		r, err := NewReader(i, s.Count(), v)
-		if err != nil {
-			logger.Error("Failed to create reader", err)
-			return nil
-		}
+		r := NewReader(i, s.Count(), v)
 
 		// Write to File
 		wg.Add(1)

@@ -1,4 +1,4 @@
-package sonr_lite
+package sonr
 
 import (
 	"context"

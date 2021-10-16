@@ -1,8 +1,11 @@
 package device
 
 import (
+	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/kataras/golog"
 )
 
 // NewPath returns a new path with the given file name and specified folder.
@@ -86,6 +89,13 @@ func NewSupportPath(path string, opts ...FilePathOption) string {
 // NodeOption is a function that modifies the node options.
 type FilePathOption func(*filePathOptions)
 
+// CreateDirIfNotExist creates the directory if it does not exist.
+func CreateDirIfNotExist() FilePathOption {
+	return func(o *filePathOptions) {
+		o.CreateDir = true
+	}
+}
+
 // WithSuffix sets the suffix for the file name.
 func WithSuffix(path string) FilePathOption {
 	return func(o *filePathOptions) {
@@ -122,12 +132,12 @@ type filePathOptions struct {
 	Replace   string // Replace filename with this string
 	Separator string // Default is "-"
 	Directory string // Directory for File
+	CreateDir bool   // Create Directory if not exist
 
 	// Properties
-	fileName  string
-	baseName  string
-	extension string
-	items     []string
+	fileName string
+	baseName string
+	ext      string
 }
 
 // defaultFilePathOptions returns the default file path options.
@@ -139,15 +149,16 @@ func defaultFilePathOptions(dir string, name string) *filePathOptions {
 		Replace:   "",
 		Separator: "-",
 		Directory: dir,
+		CreateDir: false,
 	}
 
 	// Set File Name
 	if strings.Contains(".", name) {
 		defOpts.baseName = strings.Split(name, ".")[0]
-		defOpts.extension = strings.Split(name, ".")[1]
+		defOpts.ext = strings.Split(name, ".")[1]
 	} else {
 		defOpts.baseName = name
-		defOpts.extension = ""
+		defOpts.ext = ""
 	}
 	return defOpts
 }
@@ -155,50 +166,21 @@ func defaultFilePathOptions(dir string, name string) *filePathOptions {
 // Merge merges the file path options.
 func (fpo *filePathOptions) Apply() string {
 	// Check for Replace
-	if fpo.HasReplace() {
+	if fpo.Replace != "" {
 		return filepath.Join(fpo.Directory, fpo.Replace)
 	}
 
 	// Check for Prefix
-	items := make([]string, 0)
-	if fpo.HasPrefix() {
-		items = append(items, fpo.Prefix)
+	rawPath := strings.Join([]string{fpo.Prefix, fpo.baseName, fpo.Suffix}, fpo.Separator)
+	path := filepath.Join(fpo.Directory, (rawPath + "." + fpo.ext))
+
+	// Check for Create Dir
+	if fpo.CreateDir {
+		if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
+			logger.Error("Failed to Create Dir as FilePathOption", golog.Fields{"error": err})
+		} else {
+			logger.Info("Created new Directory for Path", golog.Fields{"path": path, "root": fpo.Directory, "parent": filepath.Base(fpo.Directory)})
+		}
 	}
-
-	items = append(items, fpo.baseName)
-
-	// Check for suffix
-	if fpo.HasSuffix() {
-		items = append(items, fpo.Suffix)
-	}
-
-	// Add extension
-	return filepath.Join(fpo.Directory, addExtension(fpo.extension, strings.Join(items, fpo.Separator)))
-}
-
-func (fpo *filePathOptions) HasExtension() bool {
-	return fpo.extension != ""
-}
-
-func (fpo *filePathOptions) HasPrefix() bool {
-	return fpo.Prefix != ""
-}
-
-func (fpo *filePathOptions) HasSuffix() bool {
-	return fpo.Suffix != ""
-}
-
-func (fpo *filePathOptions) HasReplace() bool {
-	return fpo.Replace != ""
-}
-
-func addExtension(ext, path string) string {
-	if ext == "" {
-		return path
-	}
-	if strings.Contains(ext, ".") {
-		return path + ext
-	} else {
-		return path + "." + ext
-	}
+	return path
 }

@@ -68,13 +68,14 @@ func (p *TransferProtocol) onOutgoingTransfer(entry *Session, stream network.Str
 
 // itemWriter is a Writer for FileItems
 type itemWriter struct {
-	chunker *config.Chunker
-	emitter *state.Emitter
-	file    *os.File
-	item    *common.FileItem
-	index   int
-	count   int
-	size    int64
+	controller state.HandController
+	chunker    *config.Chunker
+	emitter    *state.Emitter
+	file       *os.File
+	item       *common.FileItem
+	index      int
+	count      int
+	size       int64
 }
 
 // NewReader Returns a new Reader for the given FileItem
@@ -109,27 +110,33 @@ func NewWriter(index int, count int, pi *common.Payload_Item) (*itemWriter, erro
 
 	// Create New Writer
 	return &itemWriter{
-		item:    item,
-		size:    size,
-		file:    f,
-		emitter: state.NewEmitter(2048),
-		index:   index,
-		count:   count,
-		chunker: chunker,
+		item:       item,
+		size:       size,
+		file:       f,
+		emitter:    state.NewEmitter(2048),
+		index:      index,
+		count:      count,
+		chunker:    chunker,
+		controller: state.NewHands(),
 	}, nil
 }
 
 // Returns Progress of File, Given the written number of bytes
-func (p *itemWriter) Progress(i int) {
-	// Create Progress Event
-	event := &api.ProgressEvent{
-		Progress: (float64(i) / float64(p.size)),
-		Current:  int32(p.index),
-		Total:    int32(p.count),
-	}
+func (p *itemWriter) Progress(i int, n int) {
+	// Update Progress
+	i += n
 
-	// Push ProgressEvent to Emitter
-	p.emitter.Emit(Event_PROGRESS, event)
+	// Create Progress Event
+	if (i % ITEM_INTERVAL) == 0 {
+		event := &api.ProgressEvent{
+			Progress: (float64(i) / float64(p.size)),
+			Current:  int32(p.index),
+			Total:    int32(p.count),
+		}
+
+		// Push ProgressEvent to Emitter
+		p.emitter.Emit(Event_PROGRESS, event)
+	}
 }
 
 // Write Item to Stream
@@ -139,7 +146,7 @@ func (iw *itemWriter) WriteTo(writer msgio.WriteCloser) {
 	defer writer.Close()
 
 	// Loop through File
-	for i := 0; i < int(iw.size); {
+	for i := 0; ; {
 		c, err := iw.chunker.Next()
 		if err != nil {
 			if err == io.EOF {
@@ -149,15 +156,8 @@ func (iw *itemWriter) WriteTo(writer msgio.WriteCloser) {
 			return
 		}
 
-		// Create Block Protobuf from Chunk
-		data, err := encodeChunk(c)
-		if err != nil {
-			logger.Error("Error Encoding chunk", err)
-			return
-		}
-
 		// Write Message Bytes to Stream
-		err = writer.WriteMsg(data)
+		err = writer.WriteMsg(c.Data)
 		if err != nil {
 			logger.Error("Error Writing data to msgio.Writer", err)
 			return
@@ -168,14 +168,7 @@ func (iw *itemWriter) WriteTo(writer msgio.WriteCloser) {
 			logger.Error("Unexpected Error occurred on Write Stream", err)
 			return
 		}
-
-		// Update Progress
-		i += c.Length
-
-		// Emit Progress
-		if (i % ITEM_INTERVAL) == 0 {
-			iw.Progress(i)
-		}
+		iw.Progress(i, c.Length)
 	}
 
 	// Close File
@@ -184,21 +177,4 @@ func (iw *itemWriter) WriteTo(writer msgio.WriteCloser) {
 		return
 	}
 	return
-}
-
-// encodeChunk Encodes a Chunk into a Protobuf
-func encodeChunk(c config.Chunk) ([]byte, error) {
-	// Create Block Protobuf from Chunk
-	data, err := proto.Marshal(&Chunk{
-		Offset:      int32(c.Offset),
-		Length:      int32(c.Length),
-		Data:        c.Data,
-		Fingerprint: int64(c.Fingerprint),
-	})
-
-	if err != nil {
-		logger.Error("Error Marshalling Chunk Proto.", err)
-		return nil, err
-	}
-	return data, nil
 }

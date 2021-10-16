@@ -30,6 +30,6 @@ type walletOptions struct {
 func defaultNodeOptions() *walletOptions {
 
 	return &walletOptions{
-		directory: device.NewSupportPath(".wallet"),
+		directory: device.NewSupportPath(".wallet", device.CreateDirIfNotExist()),
 	}
 }

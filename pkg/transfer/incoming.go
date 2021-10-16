@@ -2,6 +2,7 @@ package transfer
 
 import (
 	"bytes"
+	"context"
 	"io/ioutil"
 
 	"github.com/libp2p/go-libp2p-core/network"
@@ -9,7 +10,6 @@ import (
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
-	"github.com/sonr-io/core/tools/config"
 	"github.com/sonr-io/core/tools/state"
 	"google.golang.org/protobuf/proto"
 )
@@ -61,40 +61,44 @@ func (p *TransferProtocol) onIncomingTransfer(stream network.Stream) {
 
 // itemReader is a Reader for a FileItem
 type itemReader struct {
-	emitter *state.Emitter
-	item    *common.FileItem
-	buffer  bytes.Buffer
-	path    string
-	index   int
-	count   int
-	size    int64
+	controller state.HandController
+	emitter    *state.Emitter
+	item       *common.FileItem
+	buffer     bytes.Buffer
+	path       string
+	index      int
+	count      int
+	size       int64
 }
 
 // NewReader Returns a new Reader for the given FileItem
-func NewReader(index int, count int, item *common.Payload_Item) (*itemReader, error) {
-	// Return Reader
+func NewReader(index int, count int, item *common.Payload_Item) *itemReader {
 	return &itemReader{
-		item:    item.GetFile(),
-		size:    item.GetSize(),
-		emitter: state.NewEmitter(2048),
-		index:   index,
-		count:   count,
-		path:    device.NewDownloadsPath(item.GetFile().GetPath()),
-		buffer:  bytes.Buffer{},
-	}, nil
+		item:       item.GetFile(),
+		size:       item.GetSize(),
+		emitter:    state.NewEmitter(2048),
+		index:      index,
+		count:      count,
+		path:       device.NewDownloadsPath(item.GetFile().GetPath()),
+		buffer:     bytes.Buffer{},
+		controller: state.NewHands(),
+	}
 }
 
 // Returns Progress of File, Given the written number of bytes
-func (p *itemReader) Progress(i int) {
-	// Create Progress Event
-	event := &api.ProgressEvent{
-		Progress: (float64(i) / float64(p.size)),
-		Current:  int32(p.index),
-		Total:    int32(p.count),
-	}
+func (p *itemReader) Progress(i int, n int) {
+	i += n
+	if (i % ITEM_INTERVAL) == 0 {
+		// Create Progress Event
+		event := &api.ProgressEvent{
+			Progress: (float64(i) / float64(p.size)),
+			Current:  int32(p.index),
+			Total:    int32(p.count),
+		}
 
-	// Push ProgressEvent to Emitter
-	p.emitter.Emit(Event_PROGRESS, event)
+		// Push ProgressEvent to Emitter
+		p.emitter.Emit(Event_PROGRESS, event)
+	}
 }
 
 // ReadFrom Reads from the given Reader and writes to the given File
@@ -104,30 +108,35 @@ func (ir *itemReader) ReadFrom(reader msgio.ReadCloser) {
 
 	// Route Data from Stream
 	for i := 0; i < int(ir.size); {
-		// Read Length Fixed Bytes
-		buffer, err := reader.ReadMsg()
-		if err != nil {
-			logger.Error("Failed to Read Next Message on Read Stream", err)
-			return
-		}
+		var buf []byte
+		// Function to Parse Chunk
+		ir.controller.Do(func(ctx context.Context) error {
+			// Read Length Fixed Bytes
+			var err error
+			buf, err = reader.ReadMsg()
+			if err != nil {
+				logger.Error("Failed to Read Next Message on Read Stream", err)
+				return err
+			}
+			return nil
+		}, state.P(1))
 
-		// Decode Chunk
-		buf, err := decodeChunk(buffer)
-		if err != nil {
-			logger.Error("Failed to Decode Chunk on Read Stream", err)
-			return
-		}
+		// Function to Parse Chunk
+		ir.controller.Do(func(ctx context.Context) error {
+			// Write Chunk to File
+			n, err := ir.buffer.Write(buf)
+			if err != nil {
+				logger.Error("Failed to Write Buffer to File on Read Stream", err)
+				return err
+			}
+			ir.Progress(i, n)
+			return nil
+		}, state.P(2))
 
-		n, err := ir.buffer.Write(buf.Data)
-		if err != nil {
-			logger.Error("Failed to Write Buffer to File on Read Stream", err)
+		// Run Handlers
+		if err := ir.controller.Run(); err != nil {
+			logger.Error("Failed to Run Handlers on Read Stream", err)
 			return
-		}
-		i += n
-
-		// Emit Progress
-		if (i % ITEM_INTERVAL) == 0 {
-			ir.Progress(i)
 		}
 	}
 
@@ -139,23 +148,4 @@ func (ir *itemReader) ReadFrom(reader msgio.ReadCloser) {
 	}
 	logger.Info("Completed writing to file: " + ir.path)
 	return
-}
-
-// decodeChunk Decodes a Chunk from a Message
-func decodeChunk(buf []byte) (config.Chunk, error) {
-	// Decode Chunk
-	chunk := &Chunk{}
-	err := proto.Unmarshal(buf, chunk)
-	if err != nil {
-		logger.Error("Failed to Unmarshal Chunk.", err)
-		return config.Chunk{}, err
-	}
-
-	// Convert to Chunk
-	return config.Chunk{
-		Offset:      int(chunk.Offset),
-		Length:      int(chunk.Length),
-		Data:        chunk.Data,
-		Fingerprint: uint64(chunk.Fingerprint),
-	}, nil
 }

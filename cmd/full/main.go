@@ -1,4 +1,4 @@
-package sonr
+package main
 
 import (
 	"context"

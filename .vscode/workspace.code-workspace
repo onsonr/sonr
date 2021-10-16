@@ -1,8 +1,8 @@
 {
   "folders": [
-  {
-          "path": "../cmd/cli",
-          "name": "🔌  CLI"
+    {
+      "path": "../cmd/cli",
+      "name": "🔌  CLI"
     },
     {
       "path": "..",
@@ -109,7 +109,6 @@
       "Contents.json": true,
       ".devcontainer": true,
       "cmd/cli": true,
-      // Project Related
       "**/app": true,
       "**/design": true,
       "**/sonr.wiki": true,
