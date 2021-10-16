@@ -11,18 +11,12 @@ import (
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/internal/keychain"
-	"github.com/sonr-io/core/pkg/lobby"
-	"github.com/sonr-io/core/pkg/transfer"
-	"github.com/sonr-io/core/tools/state"
 )
 
 // Node type - a p2p host implementing one or more p2p protocols
 type Node struct {
 	// Standard Node Implementation
-	common.NodeImpl
-
-	// Emitter is the event emitter for this node
-	*state.Emitter
+	api.NodeImpl
 
 	// Host and context
 	host *host.SNRHost
@@ -56,7 +50,7 @@ type Node struct {
 }
 
 // NewNode Creates a node with its implemented protocols
-func NewNode(ctx context.Context, options ...NodeOption) (common.NodeImpl, *api.InitializeResponse, error) {
+func NewNode(ctx context.Context, options ...NodeOption) (api.NodeImpl, *api.InitializeResponse, error) {
 	// Set Node Options
 	opts := defaultNodeOptions()
 	for _, opt := range options {
@@ -65,7 +59,6 @@ func NewNode(ctx context.Context, options ...NodeOption) (common.NodeImpl, *api.
 
 	// Create Node
 	node := &Node{
-		Emitter:        state.NewEmitter(2048),
 		ctx:            ctx,
 		decisionEvents: make(chan *api.DecisionEvent),
 		refreshEvents:  make(chan *api.RefreshEvent),
@@ -96,9 +89,7 @@ func NewNode(ctx context.Context, options ...NodeOption) (common.NodeImpl, *api.
 		logger.Error("Failed to initialize stub", err)
 		return nil, api.NewInitialzeResponse(nil, false), err
 	}
-
 	// Begin Background Tasks
-	go node.Serve(ctx)
 	return node, api.NewInitialzeResponse(node.GetProfile, false), nil
 }
 
@@ -159,31 +150,22 @@ func (n *Node) Peer() (*common.Peer, error) {
 	}, nil
 }
 
-// Serve handles the emitter events.
-func (n *Node) Serve(ctx context.Context) {
-	logger.Info("🍦  Serving Node event channels...")
-	for {
-		select {
-		// LobbyProtocol: ListRefresh
-		case e := <-n.On(lobby.Event_LIST_REFRESH):
-			event := e.Args[0].(*api.RefreshEvent)
-			n.refreshEvents <- event
-		// TransferProtocol: Invited
-		case e := <-n.On(transfer.Event_INVITED):
-			event := e.Args[0].(*api.InviteEvent)
-			n.inviteEvents <- event
-		// TransferProtocol: Responded
-		case e := <-n.On(transfer.Event_RESPONDED):
-			event := e.Args[0].(*api.DecisionEvent)
-			n.decisionEvents <- event
-		// TransferProtocol: Progress
-		case e := <-n.On(transfer.Event_PROGRESS):
-			event := e.Args[0].(*api.ProgressEvent)
-			n.progressEvents <- event
-		// TransferProtocol: Completed
-		case e := <-n.On(transfer.Event_COMPLETED):
-			event := e.Args[0].(*api.CompleteEvent)
-			n.completeEvents <- event
-		}
-	}
+func (n *Node) OnDecision(event *api.DecisionEvent) {
+	n.decisionEvents <- event
+}
+
+func (n *Node) OnInvite(event *api.InviteEvent) {
+	n.inviteEvents <- event
+}
+
+func (n *Node) OnRefresh(event *api.RefreshEvent) {
+	n.refreshEvents <- event
+}
+
+func (n *Node) OnProgress(event *api.ProgressEvent) {
+	n.progressEvents <- event
+}
+
+func (n *Node) OnComplete(event *api.CompleteEvent) {
+	n.completeEvents <- event
 }

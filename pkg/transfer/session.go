@@ -47,7 +47,7 @@ func (s *Session) ReadFrom(stream network.Stream) *api.CompleteEvent {
 	// Write All Files
 	for i, v := range s.Items() {
 		// Create Reader
-		r := NewReader(i, s.Count(), v)
+		r := NewItemReader(i, s.Count(), v)
 
 		// Write to File
 		wg.Add(1)
@@ -80,7 +80,7 @@ func (s *Session) WriteTo(stream network.Stream) *api.CompleteEvent {
 	// Create New Writer
 	for i, v := range s.Items() {
 		// Create New Writer
-		w, err := NewWriter(i, s.Count(), v)
+		w, err := NewItemWriter(i, s.Count(), v)
 		if err != nil {
 			logger.Error("Failed to create new writer.", err)
 			wc.Close()

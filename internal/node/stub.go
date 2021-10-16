@@ -45,21 +45,21 @@ type ClientNodeStub struct {
 // startClientService creates a new Client service stub for the node.
 func (n *Node) startClientService(ctx context.Context, opts *nodeOptions) (NodeStub, error) {
 	// Set Transfer Protocol
-	transferProtocol, err := transfer.NewProtocol(ctx, n.host, n.Emitter, n.GetProfile)
+	transferProtocol, err := transfer.NewProtocol(ctx, n.host, n)
 	if err != nil {
 		logger.Error("Failed to start TransferProtocol", err)
 		return nil, err
 	}
 
 	// Set Exchange Protocol
-	exchProtocol, err := exchange.NewProtocol(ctx, n.host, n.Emitter)
+	exchProtocol, err := exchange.NewProtocol(ctx, n.host, n)
 	if err != nil {
 		logger.Error("Failed to start ExchangeProtocol", err)
 		return nil, err
 	}
 
 	// Set Local Lobby Protocol if Location is provided
-	lobbyProtocol, err := lobby.NewProtocol(ctx, n.host, n, n.Emitter, lobby.WithLocation(opts.location))
+	lobbyProtocol, err := lobby.NewProtocol(ctx, n.host, n, lobby.WithLocation(opts.location))
 	if err != nil {
 		logger.Error("Failed to start LobbyProtocol", err)
 		return nil, err

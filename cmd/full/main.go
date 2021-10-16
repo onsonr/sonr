@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/kataras/golog"
-	"github.com/sonr-io/core/internal/common"
+	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/node"
 	"github.com/sonr-io/core/tools/state"
@@ -13,7 +13,7 @@ import (
 type Sonr struct {
 	// Properties
 	ctx     context.Context
-	node    common.NodeImpl
+	node    api.NodeImpl
 	emitter *state.Emitter
 }
 

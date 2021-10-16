@@ -6,10 +6,8 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-msgio"
-	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/tools/config"
-	"github.com/sonr-io/core/tools/state"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -35,7 +33,7 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 		logger.Error("Failed to Unmarshal Invite RESPONSE buffer.", err)
 		return
 	}
-	p.emitter.Emit(Event_RESPONDED, resp.ToEvent())
+	p.OnDecision(resp.ToEvent())
 
 	// Locate request data and remove it if found
 	entry, err := p.sessionQueue.Validate(resp)
@@ -62,24 +60,22 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 func (p *TransferProtocol) onOutgoingTransfer(entry *Session, stream network.Stream) {
 	// Create New Writer
 	if event := entry.WriteTo(stream); event != nil {
-		p.emitter.Emit(Event_COMPLETED, event)
+		p.OnComplete(event)
 	}
 }
 
 // itemWriter is a Writer for FileItems
 type itemWriter struct {
-	controller state.HandController
-	chunker    *config.Chunker
-	emitter    *state.Emitter
-	file       *os.File
-	item       *common.FileItem
-	index      int
-	count      int
-	size       int64
+	chunker *config.Chunker
+	file    *os.File
+	item    *common.FileItem
+	index   int
+	count   int
+	size    int64
 }
 
-// NewReader Returns a new Reader for the given FileItem
-func NewWriter(index int, count int, pi *common.Payload_Item) (*itemWriter, error) {
+// NewItemWriter Returns a new Reader for the given FileItem
+func NewItemWriter(index int, count int, pi *common.Payload_Item) (*itemWriter, error) {
 	// Properties
 	size := pi.GetSize()
 	item := pi.GetFile()
@@ -110,14 +106,12 @@ func NewWriter(index int, count int, pi *common.Payload_Item) (*itemWriter, erro
 
 	// Create New Writer
 	return &itemWriter{
-		item:       item,
-		size:       size,
-		file:       f,
-		emitter:    state.NewEmitter(2048),
-		index:      index,
-		count:      count,
-		chunker:    chunker,
-		controller: state.NewHands(),
+		item:    item,
+		size:    size,
+		file:    f,
+		index:   index,
+		count:   count,
+		chunker: chunker,
 	}, nil
 }
 
@@ -128,14 +122,14 @@ func (p *itemWriter) Progress(i int, n int) {
 
 	// Create Progress Event
 	if (i % ITEM_INTERVAL) == 0 {
-		event := &api.ProgressEvent{
-			Progress: (float64(i) / float64(p.size)),
-			Current:  int32(p.index),
-			Total:    int32(p.count),
-		}
+		// event := &api.ProgressEvent{
+		// 	Progress: (float64(i) / float64(p.size)),
+		// 	Current:  int32(p.index),
+		// 	Total:    int32(p.count),
+		// }
 
-		// Push ProgressEvent to Emitter
-		p.emitter.Emit(Event_PROGRESS, event)
+		// // Push ProgressEvent to Emitter
+		// p.emitter.Emit(Event_PROGRESS, event)
 	}
 }
 

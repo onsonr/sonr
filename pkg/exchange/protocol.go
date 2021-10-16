@@ -6,10 +6,10 @@ import (
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/tools/internet"
-	"github.com/sonr-io/core/tools/state"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -20,16 +20,16 @@ var (
 
 // ExchangeProtocol handles Global Sonr Exchange Protocol
 type ExchangeProtocol struct {
+	api.NodeImpl
 	ctx      context.Context
-	host     *host.SNRHost  // host
-	emitter  *state.Emitter // Handle to signal when done
+	host     *host.SNRHost // host
 	resolver internet.HDNSResolver
 }
 
 // NewProtocol creates new ExchangeProtocol
-func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) (*ExchangeProtocol, error) {
+func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*ExchangeProtocol, error) {
 	// Check parameters
-	if err := checkParams(host, em); err != nil {
+	if err := checkParams(host); err != nil {
 		logger.Error("Failed to create ExchangeProtocol", err)
 		return nil, err
 	}
@@ -38,7 +38,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) (*E
 	exchProtocol := &ExchangeProtocol{
 		ctx:      ctx,
 		host:     host,
-		emitter:  em,
+		NodeImpl: node,
 		resolver: internet.NewHDNSResolver(),
 	}
 	logger.Info("✅  ExchangeProtocol is Activated \n")

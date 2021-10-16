@@ -7,41 +7,38 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/host"
-	"github.com/sonr-io/core/tools/state"
 )
 
 // TransferProtocol type
 type TransferProtocol struct {
-	ctx            context.Context // Context
-	host           *host.SNRHost   // local host
-	emitter        *state.Emitter  // Handle to signal when done
-	sessionQueue   *SessionQueue   // transfer session queue
-	supplyQueue    *list.List      // supply queue
-	getProfileFunc common.GetProfileFunc
+	api.NodeImpl
+	ctx          context.Context // Context
+	host         *host.SNRHost   // local host
+	sessionQueue *SessionQueue   // transfer session queue
+	supplyQueue  *list.List      // supply queue
 }
 
 // NewProtocol creates a new TransferProtocol
-func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter, gpf common.GetProfileFunc) (*TransferProtocol, error) {
+func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*TransferProtocol, error) {
 	// Check parameters
-	if err := checkParams(host, em); err != nil {
+	if err := checkParams(host); err != nil {
 		logger.Error("Failed to create TransferProtocol", err)
 		return nil, err
 	}
 
 	// create a new transfer protocol
 	invProtocol := &TransferProtocol{
-		ctx:     ctx,
-		host:    host,
-		emitter: em,
+		ctx:  ctx,
+		host: host,
 		sessionQueue: &SessionQueue{
 			ctx:   ctx,
 			host:  host,
 			queue: list.New(),
 		},
-		supplyQueue:    list.New(),
-		getProfileFunc: gpf,
+		supplyQueue: list.New(),
 	}
 
 	// Setup Stream Handlers
@@ -108,7 +105,7 @@ func (p *TransferProtocol) Respond(id peer.ID, resp *InviteResponse) error {
 // Supply a transfer item to the queue
 func (p *TransferProtocol) Supply(paths []string) error {
 	// Profile from NodeImpl
-	profile, err := p.getProfileFunc()
+	profile, err := p.GetProfile()
 	if err != nil {
 		logger.Error("Failed to Get Profile from Node")
 		return err

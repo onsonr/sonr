@@ -5,7 +5,6 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/internal/api"
-	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/node"
 	"google.golang.org/protobuf/proto"
@@ -14,7 +13,7 @@ import (
 type sonrLite struct {
 	// Properties
 	ctx  context.Context
-	node common.NodeImpl
+	node api.NodeImpl
 }
 
 var (
