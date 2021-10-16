@@ -4,8 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"net"
-	"time"
 
 	"github.com/kataras/golog"
 	api "github.com/sonr-io/core/internal/api"
@@ -14,21 +12,14 @@ import (
 
 // Error Definitions
 var (
-	logger               = golog.Child("internal/node")
-	ErrEmptyQueue        = errors.New("No items in Transfer Queue.")
-	ErrInvalidQuery      = errors.New("No SName or PeerID provided.")
-	ErrNBClientMissing   = errors.New("No Namebase API Client Key provided.")
-	ErrNBSecretMissing   = errors.New("No Namebase API Secret Key provided.")
-	ErrMissingParam      = errors.New("Paramater is missing.")
-	ErrProtocolsNotSet   = errors.New("Node Protocol has not been initialized.")
+	logger             = golog.Child("internal/node")
+	ErrEmptyQueue      = errors.New("No items in Transfer Queue.")
+	ErrInvalidQuery    = errors.New("No SName or PeerID provided.")
+	ErrNBClientMissing = errors.New("No Namebase API Client Key provided.")
+	ErrNBSecretMissing = errors.New("No Namebase API Secret Key provided.")
+	ErrMissingParam    = errors.New("Paramater is missing.")
+	ErrProtocolsNotSet = errors.New("Node Protocol has not been initialized.")
 )
-
-// NodeStub is the interface for the node based on mode: (client, highway)
-type NodeStub interface {
-	Serve(ctx context.Context, listener net.Listener, ticker time.Duration)
-	HasProtocols() bool
-	Close() error
-}
 
 // NodeStubMode is the type of the node (Client, Highway)
 type NodeStubMode int

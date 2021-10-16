@@ -76,7 +76,7 @@ func NewNode(ctx context.Context, options ...NodeOption) (common.NodeImpl, *api.
 	}
 
 	// Initialize Host
-	host, err := host.NewHost(ctx, node.Emitter, host.WithConnection(opts.connection))
+	host, err := host.NewHost(ctx, host.WithConnection(opts.connection))
 	if err != nil {
 		logger.Error("Failed to initialize host", err)
 		return nil, api.NewInitialzeResponse(nil, false), err
@@ -184,9 +184,6 @@ func (n *Node) Serve(ctx context.Context) {
 		case e := <-n.On(transfer.Event_COMPLETED):
 			event := e.Args[0].(*api.CompleteEvent)
 			n.completeEvents <- event
-		case <-ctx.Done():
-			n.Close()
-			return
 		}
 	}
 }

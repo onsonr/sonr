@@ -146,17 +146,10 @@ func NewFileItem(path string) (*Payload_Item, error) {
 // }
 
 // ReplaceDir replaces the directory of the item path
-func (fi *FileItem) ReplaceDir(dir string) error {
-	// Get New Path
-	path, err := device.NewPath(fi.GetPath(), dir)
-	if err != nil {
-		logger.Error("Failed to replace directory for FileItem", err)
-		return err
-	}
-
+func (fi *FileItem) ReplaceDir(dir string) string {
 	// Set Path
-	fi.Path = path
-	return nil
+	fi.Path = device.NewPath(fi.GetPath(), dir)
+	return fi.GetPath()
 }
 
 // ToTransferItem Returns Transfer for FileItem

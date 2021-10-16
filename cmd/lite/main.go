@@ -1,4 +1,4 @@
-package lib
+package sonr_lite
 
 import (
 	"context"
@@ -11,14 +11,14 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-type sonrLib struct {
+type sonrLite struct {
 	// Properties
 	ctx  context.Context
 	node common.NodeImpl
 }
 
 var (
-	instance *sonrLib
+	instance *sonrLite
 )
 
 func init() {
@@ -60,7 +60,7 @@ func Start(reqBuf []byte) {
 	}
 
 	// Set Lib
-	instance = &sonrLib{
+	instance = &sonrLite{
 		ctx:  ctx,
 		node: n,
 	}

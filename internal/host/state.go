@@ -77,5 +77,4 @@ func (h *SNRHost) SetStatus(s SNRHostStatus) {
 
 	// Update Status
 	h.status = s
-	h.emitter.Emit(Event_STATUS, s)
 }

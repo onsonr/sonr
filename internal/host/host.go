@@ -17,7 +17,6 @@ import (
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/keychain"
-	"github.com/sonr-io/core/tools/state"
 	"github.com/sonr-io/core/internal/wallet"
 	"google.golang.org/protobuf/proto"
 )
@@ -39,8 +38,7 @@ type SNRHost struct {
 	connection common.Connection
 
 	// State
-	emitter *state.Emitter
-	status  SNRHostStatus
+	status SNRHostStatus
 
 	// Discovery
 	*dht.IpfsDHT
@@ -48,10 +46,10 @@ type SNRHost struct {
 }
 
 // NewHost creates a new host
-func NewHost(ctx context.Context, em *state.Emitter, options ...HostOption) (*SNRHost, error) {
+func NewHost(ctx context.Context, options ...HostOption) (*SNRHost, error) {
 	// Initialize DHT
 	opts := defaultHostOptions()
-	hn, err := opts.Apply(ctx, em, options...)
+	hn, err := opts.Apply(ctx, options...)
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +73,7 @@ func NewHost(ctx context.Context, em *state.Emitter, options ...HostOption) (*SN
 	hn.SetStatus(Status_CONNECTING)
 
 	// Bootstrap DHT
-	if err := hn.Bootstrap(hn.ctx); err != nil {
+	if err := hn.Bootstrap(context.Background()); err != nil {
 		logger.Error("Failed to Bootstrap KDHT to Host", err)
 		hn.SetStatus(Status_FAIL)
 		return nil, err
@@ -210,7 +208,6 @@ func (hn *SNRHost) Router(h host.Host) (routing.PeerRouting, error) {
 
 	// Set Properties
 	hn.IpfsDHT = kdht
-	hn.Host = h
 	logger.Info("Router: Host and DHT have been set for SNRNode")
 
 	// Setup Properties

@@ -1,4 +1,4 @@
-package main
+package sonr
 
 import (
 	"context"
@@ -7,48 +7,48 @@ import (
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/node"
+	"github.com/sonr-io/core/tools/state"
 )
 
-type SonrBin struct {
+type Sonr struct {
 	// Properties
-	ctx  context.Context
-	node common.NodeImpl
+	ctx     context.Context
+	node    common.NodeImpl
+	emitter *state.Emitter
 }
 
 var (
-	sonrBin *SonrBin
+	sonrHighway *Sonr
 )
 
 func init() {
-	golog.SetPrefix("[Sonr-Core.bin] ")
+	golog.SetPrefix("[Sonr-Core.highway] ")
 	golog.SetStacktraceLimit(2)
 	golog.SetFormat("json", "    ")
 }
 
-// Start starts the host, node, and rpc service.
 func main() {
-	// Read Flag Values from Environment for Initialize Request
-
 	// Initialize Device
 	ctx := context.Background()
+	emitter := state.NewEmitter(2048)
+
 	err := device.Init()
 	if err != nil {
 		golog.Fatal("Failed to initialize Device", err)
 	}
 
 	// Create Node
-	n, resp, err := node.NewNode(ctx, node.WithStubMode(node.StubMode_CLIENT))
+	n, resp, err := node.NewNode(ctx, node.WithStubMode(node.StubMode_HIGHWAY))
 	if err != nil {
 		golog.Fatal("Failed to update Profile for Node", err)
 	}
-	golog.Info("Node Started: ", golog.Fields{
-		"Response": resp.String(),
-	})
+	golog.Info("Node Started: ", golog.Fields{"Response": resp.String()})
 
 	// Set Lib
-	sonrBin = &SonrBin{
-		ctx:  ctx,
-		node: n,
+	sonrHighway = &Sonr{
+		ctx:     ctx,
+		node:    n,
+		emitter: emitter,
 	}
 }
 

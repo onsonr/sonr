@@ -14,6 +14,13 @@ import (
 	grpc "google.golang.org/grpc"
 )
 
+// NodeStub is the interface for the node based on mode: (client, highway)
+type NodeStub interface {
+	Serve(ctx context.Context, listener net.Listener, ticker time.Duration)
+	HasProtocols() bool
+	Close() error
+}
+
 var DefaultAutoPingTicker = 5 * time.Second
 
 // ClientNodeStub is the RPC Service for the Node.

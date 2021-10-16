@@ -3,10 +3,13 @@ package transfer
 import (
 	"container/list"
 	"context"
+	"fmt"
+	"sync"
 	"time"
 
-	"github.com/kataras/golog"
+	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
@@ -23,23 +26,110 @@ type Session struct {
 }
 
 // IsIncoming returns true if the session is incoming.
-func (s Session) IsIncoming() bool {
+func (s *Session) IsIncoming() bool {
 	return s.direction == common.Direction_INCOMING
 }
 
 // IsOutgoing returns true if the session is outgoing.
-func (s Session) IsOutgoing() bool {
+func (s *Session) IsOutgoing() bool {
 	return s.direction == common.Direction_OUTGOING
 }
 
+// ReadFrom reads the next Session from the given stream.
+func (s *Session) ReadFrom(stream network.Stream) *api.CompleteEvent {
+	// Initialize Params
+	logger.Info("Beginning INCOMING Transfer Stream")
+
+	// Handle incoming stream
+	rs := msgio.NewReader(stream)
+	var wg sync.WaitGroup
+
+	// Write All Files
+	for i, v := range s.Items() {
+		// Create Reader
+		r, err := NewReader(i, s.Count(), v)
+		if err != nil {
+			logger.Error("Failed to create reader", err)
+			return nil
+		}
+
+		// Write to File
+		wg.Add(1)
+		go func(idx, total int) {
+			defer wg.Done()
+			r.ReadFrom(rs)
+			logger.Info(fmt.Sprintf("Finished RECEIVING File (%v/%v)", idx, total))
+		}(i, s.Count())
+	}
+	wg.Wait()
+
+	// Return Complete Event
+	return &api.CompleteEvent{
+		From:       s.from,
+		To:         s.to,
+		Direction:  s.direction,
+		Payload:    s.SetPayload(),
+		CreatedAt:  s.SetPayload().GetCreatedAt(),
+		ReceivedAt: int64(time.Now().Unix()),
+	}
+}
+
+// WriteTo writes the Session to the given stream.
+func (s *Session) WriteTo(stream network.Stream) *api.CompleteEvent {
+	// Initialize Params
+	logger.Info("Beginning OUTGOING Transfer Stream")
+	wc := msgio.NewWriter(stream)
+	var wg sync.WaitGroup
+
+	// Create New Writer
+	for i, v := range s.Items() {
+		// Create New Writer
+		w, err := NewWriter(i, s.Count(), v)
+		if err != nil {
+			logger.Error("Failed to create new writer.", err)
+			wc.Close()
+			return nil
+		}
+
+		// Write File to Stream
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			w.WriteTo(wc)
+		}()
+	}
+
+	// Wait for all writes to finish
+	wg.Wait()
+
+	// Return Complete Event
+	return &api.CompleteEvent{
+		From:       s.from,
+		To:         s.to,
+		Direction:  s.direction,
+		Payload:    s.SetPayload(),
+		CreatedAt:  s.SetPayload().GetCreatedAt(),
+		ReceivedAt: int64(time.Now().Unix()),
+	}
+}
+
 // Count returns the number of items in Payload
-func (s Session) Count() int {
+func (s *Session) Count() int {
 	return len(s.payload.GetItems())
 }
 
 // MapItems performs PayloadItemFunc on each item in the Payload.
-func (s Session) Items() []*common.Payload_Item {
+func (s *Session) Items() []*common.Payload_Item {
 	return s.payload.GetItems()
+}
+
+// SetPayload sets the Payload for the Session.
+func (s *Session) SetPayload() *common.Payload {
+	if s.IsIncoming() {
+		s.payload = s.payload.ReplaceItemsDir(device.DownloadsPath)
+		s.lastUpdated = common.NewLastUpdated()
+	}
+	return s.payload
 }
 
 // SessionQueue is a queue for incoming and outgoing requests.
@@ -58,7 +148,7 @@ func (sq *SessionQueue) AddIncoming(from peer.ID, req *InviteRequest) error {
 	}
 
 	// Create New TransferEntry
-	entry := Session{
+	entry := &Session{
 		direction:   common.Direction_INCOMING,
 		payload:     req.GetPayload(),
 		from:        req.GetFrom(),
@@ -74,7 +164,7 @@ func (sq *SessionQueue) AddIncoming(from peer.ID, req *InviteRequest) error {
 // AddOutgoing adds Outgoing Request to Transfer Queue
 func (sq *SessionQueue) AddOutgoing(to peer.ID, req *InviteRequest) error {
 	// Create New TransferEntry
-	entry := Session{
+	entry := &Session{
 		direction:   common.Direction_OUTGOING,
 		payload:     req.GetPayload(),
 		from:        req.GetFrom(),
@@ -95,43 +185,9 @@ func (sq *SessionQueue) Next() (*Session, error) {
 		return nil, ErrFailedEntry
 	}
 
-	val := entry.Value.(Session)
+	val := entry.Value.(*Session)
 	val.lastUpdated = int64(time.Now().Unix())
-	return &val, nil
-}
-
-// Done marks the transfer as completed and returns the CompleteEvent.
-func (sq *SessionQueue) Done() (*api.CompleteEvent, error) {
-	// Find Entry for Peer
-	val, ok := sq.queue.Remove(sq.queue.Front()).(Session)
-	if !ok {
-		return nil, ErrFailedEntry
-	}
-
-	// Set Adjusted Payload
-	setPayload := func(s Session) *common.Payload {
-		if val.IsIncoming() {
-			rawPayload := s.payload
-			payload, err := rawPayload.ReplaceItemsDir(device.DownloadsPath)
-			if err != nil {
-				logger.Error("Failed to Replace Items in Incoming Payload", golog.Fields{"error": err})
-			}
-			s.lastUpdated = common.NewLastUpdated()
-			return payload
-		}
-		return s.payload
-	}
-
-	// Create CompleteEvent
-	event := &api.CompleteEvent{
-		From:       val.from,
-		To:         val.to,
-		Direction:  val.direction,
-		Payload:    setPayload(val),
-		CreatedAt:  setPayload(val).GetCreatedAt(),
-		ReceivedAt: int64(time.Now().Unix()),
-	}
-	return event, nil
+	return val, nil
 }
 
 // Validate takes list of Requests and returns true if Request exists in List and UUID is verified.

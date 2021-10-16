@@ -38,15 +38,9 @@ func recentsKey() []byte {
 
 // openStore creates a new Store instance for Node
 func (n *Node) openStore(ctx context.Context, opts *nodeOptions) error {
-	path, err := device.NewDatabasePath("sonr_bitcask")
-	if err != nil {
-		logger.Error("Failed to get DB Path", err)
-		return err
-	}
-
 	// Open the my.db data file in your current directory.
 	// It will be created if it doesn't exist.
-	db, err := bitcask.Open(path, bitcask.WithAutoRecovery(true))
+	db, err := bitcask.Open(device.NewDatabasePath("sonr_bitcask"), bitcask.WithAutoRecovery(true))
 	if err != nil {
 		logger.Error("Failed to open Database", err)
 		return err

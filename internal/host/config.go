@@ -18,7 +18,6 @@ import (
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/keychain"
-	"github.com/sonr-io/core/tools/state"
 )
 
 // Error Definitions
@@ -125,11 +124,7 @@ func defaultHostOptions() hostOptions {
 }
 
 // Apply applies the host options and returns new SNRHost
-func (opts hostOptions) Apply(ctx context.Context, em *state.Emitter, options ...HostOption) (*SNRHost, error) {
-	// Check if emitter is set
-	if em == nil {
-		return nil, errors.New("Emitter is not set")
-	}
+func (opts hostOptions) Apply(ctx context.Context, options ...HostOption) (*SNRHost, error) {
 
 	// Iterate over the options.
 	var err error
@@ -141,7 +136,6 @@ func (opts hostOptions) Apply(ctx context.Context, em *state.Emitter, options ..
 	hn := &SNRHost{
 		ctx:          ctx,
 		status:       Status_IDLE,
-		emitter:      em,
 		mdnsPeerChan: make(chan peer.AddrInfo),
 		connection:   opts.Connection,
 	}

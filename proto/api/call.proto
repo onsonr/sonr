@@ -40,6 +40,7 @@ message InitializeRequest {
     string downloadsDir = 5; // Downloads Directory
     string textileDir = 6;   // Textile Directory
     string supportDir = 7;   // Support Directory
+    string walletDir = 8;    // Wallet Directory
   }
 
   // Libp2p Host Options
