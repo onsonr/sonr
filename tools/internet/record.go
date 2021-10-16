@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/pkg/errors"
@@ -17,18 +18,22 @@ const (
 	Category_NAME
 )
 
+// IsAuth returns true if the Record is an Auth Record
 func (c RecordCategory) IsAuth() bool {
 	return c == Category_AUTH
 }
 
+// IsName returns true if the Record is a Name Record
 func (c RecordCategory) IsName() bool {
 	return c == Category_NAME
 }
 
+// IsNone returns true if the Record is a None Record
 func (c RecordCategory) IsNone() bool {
 	return c == Category_NONE
 }
 
+// String returns the string representation of the Record
 func (c RecordCategory) String() string {
 	switch c {
 	case Category_AUTH:
@@ -78,7 +83,7 @@ type NamebaseResponse struct {
 func (nr *NamebaseResponse) Print() {
 	// Loop through all records
 	for _, record := range nr.Records {
-		record.ToPrint()
+		record.Print()
 	}
 }
 
@@ -117,6 +122,7 @@ type Record struct {
 	Category RecordCategory
 }
 
+// FindRecordCategory determines the Sonr Category of Record
 func FindRecordCategory(host, value string) RecordCategory {
 	// Check for Auth Record
 	if checkRecordForAuth(host, value) {
@@ -136,10 +142,11 @@ func FindRecordCategory(host, value string) RecordCategory {
 func NewNBRecord(host string, value string) Record {
 	// Return Record
 	return Record{
-		TTL:   5,
-		Type:  "TXT",
-		Host:  host,
-		Value: value,
+		TTL:      5,
+		Type:     "TXT",
+		Host:     host,
+		Value:    value,
+		Category: FindRecordCategory(host, value),
 	}
 }
 
@@ -147,10 +154,11 @@ func NewNBRecord(host string, value string) Record {
 func NewNBAuthRecord(prefix string, name string, fingerprint string) Record {
 	// Return Record
 	return Record{
-		TTL:   5,
-		Type:  "TXT",
-		Host:  fmt.Sprintf("%s%s%s", prefix, AUTH_DIVIDER, name),
-		Value: fmt.Sprintf("%s%s", FINGERPRINT_DIVIDER, fingerprint),
+		TTL:      5,
+		Type:     "TXT",
+		Host:     fmt.Sprintf("%s%s%s", prefix, AUTH_DIVIDER, name),
+		Value:    fmt.Sprintf("%s%s", FINGERPRINT_DIVIDER, fingerprint),
+		Category: Category_AUTH,
 	}
 }
 
@@ -158,17 +166,28 @@ func NewNBAuthRecord(prefix string, name string, fingerprint string) Record {
 func NewNBNameRecord(publicKey string, name string) Record {
 	// Return Record
 	return Record{
-		TTL:   5,
-		Type:  "TXT",
-		Host:  name,
-		Value: publicKey,
+		TTL:      5,
+		Type:     "TXT",
+		Host:     name,
+		Value:    publicKey,
+		Category: Category_NAME,
 	}
+}
+
+// IsAuth returns true if the Record is an Auth Record
+func (r Record) IsAuth() bool {
+	return r.Category.IsAuth()
+}
+
+// IsName returns true if the Record is a Name Record
+func (r Record) IsName() bool {
+	return r.Category.IsName()
 }
 
 // Fingerprint is the fingerprint for the Auth Record
 func (r Record) Fingerprint() string {
-	// Check for TXT Record
-	if r.Type != "TXT" {
+	// Check for SNR Record
+	if err := checkSnrRecord(r); err != nil {
 		return ""
 	}
 
@@ -179,10 +198,10 @@ func (r Record) Fingerprint() string {
 	return vals[0]
 }
 
-// Prefix is the prefix for the Auth Record
+// Prefix is the prefix for the Auth/Name Record
 func (r Record) Name() string {
-	// Check for TXT Record
-	if r.Type != "TXT" {
+	// Check for SNR Record
+	if err := checkSnrRecord(r); err != nil {
 		return ""
 	}
 
@@ -191,10 +210,11 @@ func (r Record) Name() string {
 	return vals[len(vals)-1]
 }
 
+// PeerID is the PeerID for the Name Record
 func (r Record) PeerID() (peer.ID, error) {
-	// Check for TXT Record
-	if r.Type != "TXT" {
-		return peer.ID(""), errors.New("not a TXT record")
+	// Check for SNR Record
+	if err := checkSnrRecord(r); err != nil {
+		return peer.ID(""), err
 	}
 
 	// Verify Public Key
@@ -207,8 +227,8 @@ func (r Record) PeerID() (peer.ID, error) {
 
 // Prefix is the prefix for the Auth Record
 func (r Record) Prefix() string {
-	// Check for TXT Record
-	if r.Type != "TXT" {
+	// Check for SNR Record
+	if err := checkSnrRecord(r); err != nil {
 		return ""
 	}
 
@@ -217,10 +237,11 @@ func (r Record) Prefix() string {
 	return vals[0]
 }
 
+// PubKey is the Public Key for the Name Record
 func (r Record) PubKey() (crypto.PubKey, error) {
-	// Check for TXT Record
-	if r.Type != "TXT" {
-		return nil, errors.New("not a TXT record")
+	// Check for SNR Record
+	if err := checkSnrRecord(r); err != nil {
+		return nil, err
 	}
 
 	// Verify Public Key
@@ -236,10 +257,11 @@ func (r Record) PubKey() (crypto.PubKey, error) {
 	return bufferToPubKey(buf)
 }
 
+// PubKeyBuffer is the Public Key for the Name Record as a Buffer
 func (r Record) PubKeyBuffer() ([]byte, error) {
-	// Check for TXT Record
-	if r.Type != "TXT" {
-		return nil, errors.New("not a TXT record")
+	// Check for SNR Record
+	if err := checkSnrRecord(r); err != nil {
+		return nil, err
 	}
 
 	// Verify Public Key
@@ -263,8 +285,8 @@ func (r Record) ToDeleteRecord() DeleteRecord {
 	}
 }
 
-// ToPrint prints the Record to stdout
-func (r Record) ToPrint() {
+// Print prints the Record to stdout
+func (r Record) Print() {
 	println("[NB.Record]")
 	println("--- DNS ---")
 	println(fmt.Sprintf("\t Host: %s", r.Host))
@@ -282,7 +304,7 @@ func (r Record) ToPrint() {
 			println(fmt.Sprintf("\t Prefix: %s", r.Prefix()))
 			println(fmt.Sprintf("\t Fingerprint: %s", r.Fingerprint()))
 		case Category_NAME:
-			println("--- NAME ---")
+			println("--- [NAME] Properties ---")
 			peerid, _ := r.PeerID()
 			println(fmt.Sprintf("\t Name: %s", r.Name()))
 			println(fmt.Sprintf("\t PeerID: %s", peerid))
@@ -350,4 +372,57 @@ func verifyStringPubKey(str string) error {
 	// Get Public Key from Buffer
 	_, err = crypto.UnmarshalPublicKey(buf)
 	return errors.WithMessage(err, "Failed to unmarshal PubKey from Bytes")
+}
+
+// Records is a slice of Record
+type Records []Record
+
+// Len returns the length of the Record Slice
+func (rs Records) Len() int {
+	return len(rs)
+}
+
+// GetAuthRecord returns the Auth Record from the Record Slice
+func (rs Records) GetAuthRecord() (Record, error) {
+	// Check for Auth Record
+	for _, r := range rs {
+		if r.Category == Category_AUTH {
+			return r, nil
+		}
+	}
+
+	// No Auth Record Found
+	return Record{}, errors.New("no auth record found")
+}
+
+// GetNameRecord returns the Name Record from the Record Slice
+func (rs Records) GetNameRecord() (Record, error) {
+	// Check for Name Record
+	for _, r := range rs {
+		if r.Category == Category_NAME {
+			return r, nil
+		}
+	}
+
+	// No Name Record Found
+	return Record{}, errors.New("no name record found")
+}
+
+// checkSnrRecord checks if the record is a SNR Record
+func checkSnrRecord(r Record) error {
+	// Check for TXT Record
+	if r.Type != "TXT" {
+		err := errors.New("not a TXT record")
+		logger.Error("Failed to get Value from Record", golog.Fields{"error": err})
+		return err
+	}
+
+	// Check Category
+	c := FindRecordCategory(r.Host, r.Value)
+	if c != Category_NAME && c != Category_AUTH {
+		err := errors.New("Record does not have category")
+		logger.Error("Failed to get Value from Record", golog.Fields{"error": err})
+		return err
+	}
+	return nil
 }

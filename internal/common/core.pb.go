@@ -870,7 +870,7 @@ type SNID struct {
 	Domain string `protobuf:"bytes,1,opt,name=domain,proto3" json:"domain,omitempty"` // Domain Name of the node, e.g. prad.snr
 	PubKey []byte `protobuf:"bytes,2,opt,name=pubKey,proto3" json:"pubKey,omitempty"` // Public Key of the node, value in the Domains second TXT record
 	PeerID string `protobuf:"bytes,3,opt,name=peerID,proto3" json:"peerID,omitempty"` // Peer ID of the node, calculated from the public key
-	Cid    string `protobuf:"bytes,4,opt,name=cid,proto3" json:"cid,omitempty"`       // CID of the node, calculated from the public key
+	Did    string `protobuf:"bytes,4,opt,name=did,proto3" json:"did,omitempty"`       // DID of the node, calculated from the public key
 }
 
 func (x *SNID) Reset() {
@@ -926,75 +926,11 @@ func (x *SNID) GetPeerID() string {
 	return ""
 }
 
-func (x *SNID) GetCid() string {
+func (x *SNID) GetDid() string {
 	if x != nil {
-		return x.Cid
+		return x.Did
 	}
 	return ""
-}
-
-// UUID is General Message ID with Signature, ID, and Timestamp
-type UUID struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Signature []byte `protobuf:"bytes,1,opt,name=signature,proto3" json:"signature,omitempty"`  // Signature of the message
-	Value     string `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`          // ID of the message
-	Timestamp int64  `protobuf:"varint,3,opt,name=timestamp,proto3" json:"timestamp,omitempty"` // Unix timestamp
-}
-
-func (x *UUID) Reset() {
-	*x = UUID{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_common_core_proto_msgTypes[8]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *UUID) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*UUID) ProtoMessage() {}
-
-func (x *UUID) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_common_core_proto_msgTypes[8]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use UUID.ProtoReflect.Descriptor instead.
-func (*UUID) Descriptor() ([]byte, []int) {
-	return file_proto_common_core_proto_rawDescGZIP(), []int{8}
-}
-
-func (x *UUID) GetSignature() []byte {
-	if x != nil {
-		return x.Signature
-	}
-	return nil
-}
-
-func (x *UUID) GetValue() string {
-	if x != nil {
-		return x.Value
-	}
-	return ""
-}
-
-func (x *UUID) GetTimestamp() int64 {
-	if x != nil {
-		return x.Timestamp
-	}
-	return 0
 }
 
 // Contains detailed placemark information.
@@ -1031,7 +967,7 @@ type Location_Placemark struct {
 func (x *Location_Placemark) Reset() {
 	*x = Location_Placemark{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_common_core_proto_msgTypes[9]
+		mi := &file_proto_common_core_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1044,7 +980,7 @@ func (x *Location_Placemark) String() string {
 func (*Location_Placemark) ProtoMessage() {}
 
 func (x *Location_Placemark) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_common_core_proto_msgTypes[9]
+	mi := &file_proto_common_core_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1153,7 +1089,7 @@ type Peer_Device struct {
 func (x *Peer_Device) Reset() {
 	*x = Peer_Device{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_common_core_proto_msgTypes[10]
+		mi := &file_proto_common_core_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1166,7 +1102,7 @@ func (x *Peer_Device) String() string {
 func (*Peer_Device) ProtoMessage() {}
 
 func (x *Peer_Device) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_common_core_proto_msgTypes[10]
+	mi := &file_proto_common_core_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1350,23 +1286,18 @@ var file_proto_common_core_proto_rawDesc = []byte{
 	0x0a, 0x06, 0x70, 0x75, 0x62, 0x4b, 0x65, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x06,
 	0x70, 0x75, 0x62, 0x4b, 0x65, 0x79, 0x12, 0x16, 0x0a, 0x06, 0x70, 0x65, 0x65, 0x72, 0x49, 0x44,
 	0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x70, 0x65, 0x65, 0x72, 0x49, 0x44, 0x12, 0x10,
-	0x0a, 0x03, 0x63, 0x69, 0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x63, 0x69, 0x64,
-	0x22, 0x58, 0x0a, 0x04, 0x55, 0x55, 0x49, 0x44, 0x12, 0x1c, 0x0a, 0x09, 0x73, 0x69, 0x67, 0x6e,
-	0x61, 0x74, 0x75, 0x72, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x09, 0x73, 0x69, 0x67,
-	0x6e, 0x61, 0x74, 0x75, 0x72, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x12, 0x1c, 0x0a, 0x09,
-	0x74, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x52,
-	0x09, 0x74, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x2a, 0x3d, 0x0a, 0x0a, 0x43, 0x6f,
-	0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x08, 0x0a, 0x04, 0x57, 0x49, 0x46, 0x49,
-	0x10, 0x00, 0x12, 0x0c, 0x0a, 0x08, 0x45, 0x54, 0x48, 0x45, 0x52, 0x4e, 0x45, 0x54, 0x10, 0x01,
-	0x12, 0x0a, 0x0a, 0x06, 0x4d, 0x4f, 0x42, 0x49, 0x4c, 0x45, 0x10, 0x02, 0x12, 0x0b, 0x0a, 0x07,
-	0x4f, 0x46, 0x46, 0x4c, 0x49, 0x4e, 0x45, 0x10, 0x03, 0x2a, 0x2e, 0x0a, 0x0b, 0x45, 0x6e, 0x76,
-	0x69, 0x72, 0x6f, 0x6e, 0x6d, 0x65, 0x6e, 0x74, 0x12, 0x0f, 0x0a, 0x0b, 0x44, 0x45, 0x56, 0x45,
-	0x4c, 0x4f, 0x50, 0x4d, 0x45, 0x4e, 0x54, 0x10, 0x00, 0x12, 0x0e, 0x0a, 0x0a, 0x50, 0x52, 0x4f,
-	0x44, 0x55, 0x43, 0x54, 0x49, 0x4f, 0x4e, 0x10, 0x01, 0x42, 0x29, 0x5a, 0x27, 0x67, 0x69, 0x74,
-	0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2d, 0x69, 0x6f, 0x2f,
-	0x63, 0x6f, 0x72, 0x65, 0x2f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x2f, 0x63, 0x6f,
-	0x6d, 0x6d, 0x6f, 0x6e, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x0a, 0x03, 0x64, 0x69, 0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x64, 0x69, 0x64,
+	0x2a, 0x3d, 0x0a, 0x0a, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x08,
+	0x0a, 0x04, 0x57, 0x49, 0x46, 0x49, 0x10, 0x00, 0x12, 0x0c, 0x0a, 0x08, 0x45, 0x54, 0x48, 0x45,
+	0x52, 0x4e, 0x45, 0x54, 0x10, 0x01, 0x12, 0x0a, 0x0a, 0x06, 0x4d, 0x4f, 0x42, 0x49, 0x4c, 0x45,
+	0x10, 0x02, 0x12, 0x0b, 0x0a, 0x07, 0x4f, 0x46, 0x46, 0x4c, 0x49, 0x4e, 0x45, 0x10, 0x03, 0x2a,
+	0x2e, 0x0a, 0x0b, 0x45, 0x6e, 0x76, 0x69, 0x72, 0x6f, 0x6e, 0x6d, 0x65, 0x6e, 0x74, 0x12, 0x0f,
+	0x0a, 0x0b, 0x44, 0x45, 0x56, 0x45, 0x4c, 0x4f, 0x50, 0x4d, 0x45, 0x4e, 0x54, 0x10, 0x00, 0x12,
+	0x0e, 0x0a, 0x0a, 0x50, 0x52, 0x4f, 0x44, 0x55, 0x43, 0x54, 0x49, 0x4f, 0x4e, 0x10, 0x01, 0x42,
+	0x29, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x73, 0x6f,
+	0x6e, 0x72, 0x2d, 0x69, 0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x69, 0x6e, 0x74, 0x65, 0x72,
+	0x6e, 0x61, 0x6c, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x33,
 }
 
 var (
@@ -1382,7 +1313,7 @@ func file_proto_common_core_proto_rawDescGZIP() []byte {
 }
 
 var file_proto_common_core_proto_enumTypes = make([]protoimpl.EnumInfo, 5)
-var file_proto_common_core_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
+var file_proto_common_core_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_proto_common_core_proto_goTypes = []interface{}{
 	(Connection)(0),            // 0: sonr.core.Connection
 	(Environment)(0),           // 1: sonr.core.Environment
@@ -1397,15 +1328,14 @@ var file_proto_common_core_proto_goTypes = []interface{}{
 	(*ProfileList)(nil),        // 10: sonr.core.ProfileList
 	(*Social)(nil),             // 11: sonr.core.Social
 	(*SNID)(nil),               // 12: sonr.core.SNID
-	(*UUID)(nil),               // 13: sonr.core.UUID
-	(*Location_Placemark)(nil), // 14: sonr.core.Location.Placemark
-	(*Peer_Device)(nil),        // 15: sonr.core.Peer.Device
+	(*Location_Placemark)(nil), // 13: sonr.core.Location.Placemark
+	(*Peer_Device)(nil),        // 14: sonr.core.Peer.Device
 }
 var file_proto_common_core_proto_depIdxs = []int32{
-	14, // 0: sonr.core.Location.placemark:type_name -> sonr.core.Location.Placemark
+	13, // 0: sonr.core.Location.placemark:type_name -> sonr.core.Location.Placemark
 	2,  // 1: sonr.core.MIME.type:type_name -> sonr.core.MIME.Type
 	3,  // 2: sonr.core.Peer.status:type_name -> sonr.core.Peer.Status
-	15, // 3: sonr.core.Peer.device:type_name -> sonr.core.Peer.Device
+	14, // 3: sonr.core.Peer.device:type_name -> sonr.core.Peer.Device
 	9,  // 4: sonr.core.Peer.profile:type_name -> sonr.core.Profile
 	11, // 5: sonr.core.Profile.socials:type_name -> sonr.core.Social
 	9,  // 6: sonr.core.ProfileList.profiles:type_name -> sonr.core.Profile
@@ -1520,18 +1450,6 @@ func file_proto_common_core_proto_init() {
 			}
 		}
 		file_proto_common_core_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UUID); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_proto_common_core_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Location_Placemark); i {
 			case 0:
 				return &v.state
@@ -1543,7 +1461,7 @@ func file_proto_common_core_proto_init() {
 				return nil
 			}
 		}
-		file_proto_common_core_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_common_core_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Peer_Device); i {
 			case 0:
 				return &v.state
@@ -1562,7 +1480,7 @@ func file_proto_common_core_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_proto_common_core_proto_rawDesc,
 			NumEnums:      5,
-			NumMessages:   11,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

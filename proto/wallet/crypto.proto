@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package sonr.wallet;
+option go_package = "github.com/sonr-io/core/internal/wallet";
+
+
+enum KeyType {
+	RSA = 0;
+	Ed25519 = 1;
+	Secp256k1 = 2;
+	ECDSA = 3;
+}
+
+message PublicKey {
+	KeyType Type = 1;
+	bytes Data = 2;
+}
+
+message PrivateKey {
+	KeyType Type = 1;
+	bytes Data = 2;
+}
+
+// UUID is General Message ID with Signature, ID, and Timestamp
+message UUID {
+  bytes signature = 1; // Signature of the message
+  string value = 2;    // ID of the message
+  int64 timestamp = 3; // Unix timestamp
+}

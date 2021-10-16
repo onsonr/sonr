@@ -8,15 +8,12 @@ import (
 	"github.com/denisbrodbeck/machineid"
 )
 
-// DeviceStat is the device info struct
-type DeviceStat struct {
-	Id        string `json:"id"`
-	HostName  string `json:"name"`
-	Os        string `json:"os"`
-	Arch      string `json:"arch"`
-	IsDesktop bool
-	IsMobile  bool
-}
+const (
+	StatKey_Id       = "Id"
+	StatKey_HostName = "HostName"
+	StatKey_Os       = "Os"
+	StatKey_Arch     = "Arch"
+)
 
 // AppName returns the application name.
 func AppName() string {
@@ -99,7 +96,7 @@ func VendorName() string {
 }
 
 // Stat returns the device stat.
-func Stat() (*DeviceStat, error) {
+func Stat() (map[string]string, error) {
 	// Get Device Id
 	id, err := ID()
 	if err != nil {
@@ -115,12 +112,10 @@ func Stat() (*DeviceStat, error) {
 	}
 
 	// Return the device info for Peer
-	return &DeviceStat{
-		Id:        id,
-		HostName:  hn,
-		Os:        runtime.GOOS,
-		Arch:      runtime.GOARCH,
-		IsDesktop: IsDesktop(),
-		IsMobile:  IsMobile(),
+	return map[string]string{
+		StatKey_Id:       id,
+		StatKey_HostName: hn,
+		StatKey_Os:       runtime.GOOS,
+		StatKey_Arch:     runtime.GOARCH,
 	}, nil
 }

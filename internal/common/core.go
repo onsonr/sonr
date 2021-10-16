@@ -2,6 +2,7 @@ package common
 
 import (
 	"fmt"
+	"time"
 
 	olc "github.com/google/open-location-code/go"
 	"github.com/kataras/golog"
@@ -9,9 +10,15 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+// NodeImpl returns the NodeImpl for the Main Node
 type NodeImpl interface {
 	GetProfile() (*Profile, error)
 	Peer() (*Peer, error)
+}
+
+// NewLastUpdated returns a new LastUpdated Object as int64
+var NewLastUpdated = func() int64 {
+	return time.Now().Unix()
 }
 
 // RPC_SERVER_PORT is the port the RPC service listens on.

@@ -18,12 +18,3 @@ func SignedMetadataToProto(m *keychain.SignedMetadata) *common.Metadata {
 		PublicKey: m.PublicKey,
 	}
 }
-
-// SignedUUIDToProto converts a SignedUUID to a protobuf.
-func SignedUUIDToProto(m *keychain.SignedUUID) *common.UUID {
-	return &common.UUID{
-		Timestamp: m.Timestamp,
-		Signature: m.Signature,
-		Value:     m.Value,
-	}
-}

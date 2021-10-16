@@ -24,9 +24,11 @@ var (
 	ErrHDNSResolve         = errors.New("Failed to dial all three public HDNS resolvers.")
 )
 
+
+
 // HDNSResolver is a DNS Resolver that resolves SName records.
 type HDNSResolver interface {
-	LookupTXT(ctx context.Context, name string) (Record, error)
+	LookupTXT(ctx context.Context, name string) (Records, error)
 }
 
 // NewHDNSResolver creates a new DNS Resolver reference
@@ -72,19 +74,24 @@ type hdnsResolver struct {
 }
 
 // LookupTXT looks up the TXT record for the given SName.
-func (r *hdnsResolver) LookupTXT(ctx context.Context, name string) (Record, error) {
+func (r *hdnsResolver) LookupTXT(ctx context.Context, name string) (Records, error) {
 	// Call internal resolver
 	recs, err := r.resolver.LookupTXT(ctx, name)
 	if err != nil {
-		return Record{}, err
+		return nil, err
 	}
 
 	// Check Record count
 	if len(recs) == 0 {
-		return Record{}, ErrEmptyTXT
+		return nil, ErrEmptyTXT
 	} else if len(recs) > 1 {
-		return Record{}, ErrMultipleRecords
+		return nil, ErrMultipleRecords
 	} else {
-		return NewNBRecord(name, recs[0]), nil
+		// Create NB records
+		records := make([]Record, len(recs))
+		for _, rec := range recs {
+			records = append(records, NewNBRecord(name, rec))
+		}
+		return records, nil
 	}
 }

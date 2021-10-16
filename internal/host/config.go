@@ -13,7 +13,7 @@ import (
 	dsc "github.com/libp2p/go-libp2p-discovery"
 	psub "github.com/libp2p/go-libp2p-pubsub"
 	mdns "github.com/libp2p/go-libp2p/p2p/discovery/mdns"
-	"github.com/multiformats/go-multiaddr"
+	ma "github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
@@ -27,6 +27,18 @@ var (
 	ErrRoutingNotSet    = errors.New("DHT and Host have not been set by Routing Function")
 	ErrListenerRequired = errors.New("Listener was not Provided")
 	ErrMDNSInvalidConn  = errors.New("Invalid Connection, cannot begin MDNS Service")
+)
+
+var (
+	bootstrapAddrStrs = []string{
+		"/dnsaddr/bootstrap.libp2p.io/p2p/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN",
+		"/dnsaddr/bootstrap.libp2p.io/p2p/QmQCU2EcMqAqQPR2i9bChDtGNJchTbq5TbXJJ16u19uLTa",
+		"/dnsaddr/bootstrap.libp2p.io/p2p/QmbLHAnMoJPWSCR5Zhtx6BHJX9KiKNN6tpvbUcqanj75Nb",
+		"/dnsaddr/bootstrap.libp2p.io/p2p/QmcZf59bWwK5XFi76CZX8cbJ4BhTzzA3gU1ZjYZcYW3dwt",
+		"/ip4/104.131.131.82/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
+		"/ip4/104.131.131.82/udp/4001/quic/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
+	}
+	addrStoreTTL = time.Minute * 5
 )
 
 // HostOption is a function that modifies the node options.
@@ -58,34 +70,57 @@ func WithInterval(interval time.Duration) HostOption {
 // WithTTL sets the ttl for the host. Default is 2 minutes.
 func WithTTL(ttl time.Duration) HostOption {
 	return func(o hostOptions) {
-		o.TTL = ttl
+		o.TTL = dscl.TTL(ttl)
 	}
 }
 
 // hostOptions is a collection of options for the SnrHost.
 type hostOptions struct {
 	// Properties
-	Connection  common.Connection
-	LowWater    int
-	HighWater   int
-	GracePeriod time.Duration
-	MultiAddrs  []multiaddr.Multiaddr
-	Rendezvous  string
-	Interval    time.Duration
-	TTL         time.Duration
+	BootstrapPeers []peer.AddrInfo
+	Connection     common.Connection
+	LowWater       int
+	HighWater      int
+	GracePeriod    time.Duration
+	MultiAddrs     []ma.Multiaddr
+	Rendezvous     string
+	Interval       time.Duration
+	TTL            dscl.Option
 }
 
 // defaultHostOptions returns the default host options.
 func defaultHostOptions() hostOptions {
+	// Create Bootstrapper List
+	var bootstrappers []ma.Multiaddr
+	for _, s := range bootstrapAddrStrs {
+		ma, err := ma.NewMultiaddr(s)
+		if err != nil {
+			continue
+		}
+		bootstrappers = append(bootstrappers, ma)
+	}
+
+	// Create Address Info List
+	ds := make([]peer.AddrInfo, 0, len(bootstrappers))
+	for i := range bootstrappers {
+		info, err := peer.AddrInfoFromP2pAddr(bootstrappers[i])
+		if err != nil {
+			continue
+		}
+		ds = append(ds, *info)
+	}
+
+	// Return Host Options
 	return hostOptions{
-		Connection:  common.Connection_WIFI,
-		LowWater:    10,
-		HighWater:   40,
-		GracePeriod: time.Second * 4,
-		Rendezvous:  "/sonr/rendevouz/0.9.2",
-		MultiAddrs:  make([]multiaddr.Multiaddr, 0),
-		Interval:    time.Second * 4,
-		TTL:         time.Minute * 2,
+		Connection:     common.Connection_WIFI,
+		LowWater:       200,
+		HighWater:      400,
+		GracePeriod:    time.Second * 20,
+		Rendezvous:     "/sonr/rendevouz/0.9.2",
+		MultiAddrs:     make([]ma.Multiaddr, 0),
+		Interval:       time.Second * 5,
+		BootstrapPeers: ds,
+		TTL:            dscl.TTL(time.Minute * 2),
 	}
 }
 
@@ -109,24 +144,7 @@ func (opts hostOptions) Apply(ctx context.Context, em *state.Emitter, options ..
 		emitter:      em,
 		mdnsPeerChan: make(chan peer.AddrInfo),
 		connection:   opts.Connection,
-		rendezvous:   opts.Rendezvous,
-		ttl:          opts.TTL,
-		interval:     opts.Interval,
 	}
-
-	// // Check if the listener is set.
-	// if ho.listener != nil {
-	// 	logger.Debug("TCP Listener provided, using for MultiAddr")
-	// 	// Get MultiAddr from listener
-	// 	addr, err := ho.listener.Multiaddr()
-	// 	if err != nil {
-	// 		logger.Warn("Failed to add MultiAddr, Skipping...", err)
-	// 	} else {
-	// 		ho.MultiAddrs = append(ho.MultiAddrs, addr)
-	// 	}
-	// } else {
-	// 	logger.Debug("No TCP Listener provided, using default MultiAddr's")
-	// }
 
 	// findPrivKey returns the private key for the host.
 	findPrivKey := func() (crypto.PrivKey, error) {
@@ -136,6 +154,7 @@ func (opts hostOptions) Apply(ctx context.Context, em *state.Emitter, options ..
 		}
 		privKey, _, err = crypto.GenerateEd25519Key(rand.Reader)
 		if err == nil {
+			logger.Warn("Generated new Account Private Key")
 			return privKey, nil
 		}
 		return nil, err
@@ -151,24 +170,12 @@ func (opts hostOptions) Apply(ctx context.Context, em *state.Emitter, options ..
 	return hn, nil
 }
 
-// checkUnknown is a Helper Method checks if Peer AddrInfo is Unknown
-func (hn *SNRHost) checkUnknown(pi peer.AddrInfo) bool {
-	// Iterate and Check
-	if len(hn.Peerstore().Addrs(pi.ID)) > 0 {
-		return false
-	}
-
-	// Add to PeerStore
-	hn.Peerstore().AddAddrs(pi.ID, pi.Addrs, hn.ttl)
-	return true
-}
-
 // createDHTDiscovery is a Helper Method to initialize the DHT Discovery
-func (hn *SNRHost) createDHTDiscovery() error {
+func (hn *SNRHost) createDHTDiscovery(opts hostOptions) error {
 	// Set Routing Discovery, Find Peers
 	var err error
 	routingDiscovery := dsc.NewRoutingDiscovery(hn.IpfsDHT)
-	dsc.Advertise(hn.ctx, routingDiscovery, hn.rendezvous, dscl.TTL(hn.ttl))
+	dsc.Advertise(hn.ctx, routingDiscovery, opts.Rendezvous, opts.TTL)
 
 	// Create Pub Sub
 	hn.PubSub, err = psub.NewGossipSub(hn.ctx, hn.Host, psub.WithDiscovery(routingDiscovery))
@@ -179,7 +186,7 @@ func (hn *SNRHost) createDHTDiscovery() error {
 	}
 
 	// Handle DHT Peers
-	hn.dhtPeerChan, err = routingDiscovery.FindPeers(hn.ctx, hn.rendezvous, dscl.TTL(hn.ttl))
+	hn.dhtPeerChan, err = routingDiscovery.FindPeers(hn.ctx, opts.Rendezvous, opts.TTL)
 	if err != nil {
 		hn.SetStatus(Status_FAIL)
 		logger.Error("Failed to create FindPeers Discovery channel", err)
@@ -190,7 +197,7 @@ func (hn *SNRHost) createDHTDiscovery() error {
 }
 
 // createMdnsDiscovery is a Helper Method to initialize the MDNS Discovery
-func (hn *SNRHost) createMdnsDiscovery() {
+func (hn *SNRHost) createMdnsDiscovery(opts hostOptions) {
 	// Verify if MDNS is Enabled
 	if !hn.connection.IsMdnsCompatible() {
 		logger.Error("Failed to Start MDNS Discovery ", ErrMDNSInvalidConn)
@@ -198,7 +205,7 @@ func (hn *SNRHost) createMdnsDiscovery() {
 	}
 
 	// Create MDNS Service
-	ser := mdns.NewMdnsService(hn.Host, hn.rendezvous)
+	ser := mdns.NewMdnsService(hn.Host, opts.Rendezvous)
 
 	// Handle Events
 	ser.RegisterNotifee(hn)

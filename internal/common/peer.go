@@ -31,8 +31,15 @@ func NewSNID(sname string) (*SNID, error) {
 		return nil, errors.New("SName not provided.")
 	}
 
+	// Find Records
 	r := internet.NewHDNSResolver()
-	rec, err := r.LookupTXT(context.Background(), sname)
+	recs, err := r.LookupTXT(context.Background(), sname)
+	if err != nil {
+		return nil, err
+	}
+
+	// Get Name from Records
+	rec, err := recs.GetNameRecord()
 	if err != nil {
 		return nil, err
 	}
@@ -131,7 +138,7 @@ func (p *Peer) Info() (*PeerInfo, error) {
 	}, nil
 }
 
-// PeerID returns the PeerID based on PublicKey from Profile
+// Libp2pID returns the PeerID based on PublicKey from Profile
 func (p *Peer) Libp2pID() (peer.ID, error) {
 	// Check if PublicKey is empty
 	if len(p.GetPublicKey()) == 0 {

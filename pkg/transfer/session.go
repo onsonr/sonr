@@ -5,6 +5,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
@@ -15,22 +16,30 @@ import (
 // Session is a single entry in the transfer queue.
 type Session struct {
 	direction   common.Direction
-	request     *InviteRequest
-	response    *InviteResponse
-	fromId      peer.ID
-	toId        peer.ID
+	from        *common.Peer
+	to          *common.Peer
+	payload     *common.Payload
 	lastUpdated int64
-	uuid        *common.UUID
+}
+
+// IsIncoming returns true if the session is incoming.
+func (s Session) IsIncoming() bool {
+	return s.direction == common.Direction_INCOMING
+}
+
+// IsOutgoing returns true if the session is outgoing.
+func (s Session) IsOutgoing() bool {
+	return s.direction == common.Direction_OUTGOING
 }
 
 // Count returns the number of items in Payload
 func (s Session) Count() int {
-	return len(s.request.GetPayload().GetItems())
+	return len(s.payload.GetItems())
 }
 
 // MapItems performs PayloadItemFunc on each item in the Payload.
 func (s Session) Items() []*common.Payload_Item {
-	return s.request.GetPayload().GetItems()
+	return s.payload.GetItems()
 }
 
 // SessionQueue is a queue for incoming and outgoing requests.
@@ -51,9 +60,9 @@ func (sq *SessionQueue) AddIncoming(from peer.ID, req *InviteRequest) error {
 	// Create New TransferEntry
 	entry := Session{
 		direction:   common.Direction_INCOMING,
-		request:     req,
-		fromId:      from,
-		toId:        sq.host.ID(),
+		payload:     req.GetPayload(),
+		from:        req.GetFrom(),
+		to:          req.GetTo(),
 		lastUpdated: int64(time.Now().Unix()),
 	}
 
@@ -67,9 +76,9 @@ func (sq *SessionQueue) AddOutgoing(to peer.ID, req *InviteRequest) error {
 	// Create New TransferEntry
 	entry := Session{
 		direction:   common.Direction_OUTGOING,
-		request:     req,
-		fromId:      sq.host.ID(),
-		toId:        to,
+		payload:     req.GetPayload(),
+		from:        req.GetFrom(),
+		to:          req.GetTo(),
 		lastUpdated: int64(time.Now().Unix()),
 	}
 
@@ -94,28 +103,32 @@ func (sq *SessionQueue) Next() (*Session, error) {
 // Done marks the transfer as completed and returns the CompleteEvent.
 func (sq *SessionQueue) Done() (*api.CompleteEvent, error) {
 	// Find Entry for Peer
-	entry := sq.queue.Front()
-	if entry == nil {
+	val, ok := sq.queue.Remove(sq.queue.Front()).(Session)
+	if !ok {
 		return nil, ErrFailedEntry
 	}
 
-	// Pop Value of Entry from Queue
-	val := sq.queue.Remove(entry).(Session)
-	rawPayload := val.request.GetPayload()
-
-	// Adjust Payload item paths
-	adjPayload, err := rawPayload.ReplaceItemsDir(device.DownloadsPath)
-	if err != nil {
-		return nil, err
+	// Set Adjusted Payload
+	setPayload := func(s Session) *common.Payload {
+		if val.IsIncoming() {
+			rawPayload := s.payload
+			payload, err := rawPayload.ReplaceItemsDir(device.DownloadsPath)
+			if err != nil {
+				logger.Error("Failed to Replace Items in Incoming Payload", golog.Fields{"error": err})
+			}
+			s.lastUpdated = common.NewLastUpdated()
+			return payload
+		}
+		return s.payload
 	}
 
 	// Create CompleteEvent
 	event := &api.CompleteEvent{
-		From:       val.request.GetFrom(),
-		To:         val.request.GetTo(),
+		From:       val.from,
+		To:         val.to,
 		Direction:  val.direction,
-		Payload:    adjPayload,
-		CreatedAt:  adjPayload.GetCreatedAt(),
+		Payload:    setPayload(val),
+		CreatedAt:  setPayload(val).GetCreatedAt(),
 		ReceivedAt: int64(time.Now().Unix()),
 	}
 	return event, nil
@@ -149,7 +162,6 @@ func (sq *SessionQueue) Validate(resp *InviteResponse) (*Session, error) {
 
 	// Check if Request exists in Map
 	if entry != nil {
-		entry.response = resp
 		entry.lastUpdated = int64(time.Now().Unix())
 		return entry, nil
 	}

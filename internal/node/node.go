@@ -91,7 +91,7 @@ func NewNode(ctx context.Context, options ...NodeOption) (common.NodeImpl, *api.
 	}
 
 	// Initialize Stub
-	err = opts.Apply(node.ctx, node)
+	err = opts.Apply(ctx, node)
 	if err != nil {
 		logger.Error("Failed to initialize stub", err)
 		return nil, api.NewInitialzeResponse(nil, false), err
@@ -151,10 +151,10 @@ func (n *Node) Peer() (*common.Peer, error) {
 		PeerID:       n.host.ID().String(),
 		LastModified: time.Now().Unix(),
 		Device: &common.Peer_Device{
-			HostName: stat.HostName,
-			Os:       stat.Os,
-			Id:       stat.Id,
-			Arch:     stat.Arch,
+			HostName: stat[device.StatKey_HostName],
+			Os:       stat[device.StatKey_Os],
+			Id:       stat[device.StatKey_Id],
+			Arch:     stat[device.StatKey_Arch],
 		},
 	}, nil
 }

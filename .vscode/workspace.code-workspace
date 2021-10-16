@@ -7,10 +7,6 @@
     {
       "path": "..",
       "name": "🚀  Core"
-    },
-    {
-      "path": "../tools",
-      "name": "🛠  Tools"
     }
   ],
   "settings": {

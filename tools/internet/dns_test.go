@@ -14,7 +14,7 @@ func TestLookup(t *testing.T) {
 	hdnsResolver := internet.NewHDNSResolver()
 
 	// Test with a valid domain
-	rec, err := hdnsResolver.LookupTXT(context.Background(), testVal)
+	recs, err := hdnsResolver.LookupTXT(context.Background(), testVal)
 	if err != nil {
 		t.Errorf("LookupTXT(%q) failed: %v", testVal, err)
 	}
@@ -23,6 +23,8 @@ func TestLookup(t *testing.T) {
 	println("[SUCCESS] - Test DNS Lookup")
 	println(fmt.Sprintf("\t host: %s", testVal))
 	println("\t value: %s \n")
-	rec.ToPrint()
-	t.Log(rec)
+	for _, v := range recs {
+		v.Print()
+	}
+	t.Log(recs)
 }

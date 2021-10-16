@@ -3,7 +3,6 @@ package host
 import (
 	"context"
 	"errors"
-	"time"
 
 	"github.com/libp2p/go-libp2p"
 	connmgr "github.com/libp2p/go-libp2p-connmgr"
@@ -19,16 +18,14 @@ import (
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/keychain"
 	"github.com/sonr-io/core/tools/state"
+	"github.com/sonr-io/core/internal/wallet"
 	"google.golang.org/protobuf/proto"
 )
 
-// SNRHostStat is the host stat info
-type SNRHostStat struct {
-	ID       peer.ID
-	PeerID   string
-	MultAddr string
-	Address  string
-}
+// Transfer Emission Events
+const (
+	Event_STATUS = "host-status"
+)
 
 // SNRHost is the host wrapper for the Sonr Network
 type SNRHost struct {
@@ -40,9 +37,6 @@ type SNRHost struct {
 	ctx        context.Context
 	privKey    crypto.PrivKey
 	connection common.Connection
-	rendezvous string
-	interval   time.Duration
-	ttl        time.Duration
 
 	// State
 	emitter *state.Emitter
@@ -88,7 +82,7 @@ func NewHost(ctx context.Context, em *state.Emitter, options ...HostOption) (*SN
 	}
 
 	// Connect to Bootstrap Nodes
-	for _, pi := range dht.GetDefaultBootstrapPeerAddrInfos() {
+	for _, pi := range opts.BootstrapPeers {
 		if err := hn.Connect(pi); err != nil {
 			continue
 		} else {
@@ -97,21 +91,21 @@ func NewHost(ctx context.Context, em *state.Emitter, options ...HostOption) (*SN
 	}
 
 	// Initialize Discovery for DHT
-	if err := hn.createDHTDiscovery(); err != nil {
+	if err := hn.createDHTDiscovery(opts); err != nil {
 		logger.Fatal("Could not start DHT Discovery", err)
 		hn.SetStatus(Status_FAIL)
 		return nil, err
 	}
 
 	// Initialize Discovery for MDNS
-	hn.createMdnsDiscovery()
+	hn.createMdnsDiscovery(opts)
 	hn.SetStatus(Status_READY)
 	go hn.Serve()
 	return hn, nil
 }
 
 // AuthenticateId verifies UUID value and signature
-func (h *SNRHost) AuthenticateId(id *common.UUID) (bool, error) {
+func (h *SNRHost) AuthenticateId(id *wallet.UUID) (bool, error) {
 	// Get local node's public key
 	pubKey, err := device.KeyChain.GetPubKey(keychain.Account)
 	if err != nil {
@@ -253,19 +247,6 @@ func (h *SNRHost) SendMessage(id peer.ID, p protocol.ID, data proto.Message) err
 	return nil
 }
 
-// SetStatus sets the host status and emits the event
-func (h *SNRHost) SetStatus(s SNRHostStatus) {
-	// Check if status is changed
-	if h.status == s {
-		logger.Info("SetStatus: Same status provided, " + s.String())
-		return
-	}
-
-	// Update Status
-	h.status = s
-	h.emitter.Emit(Event_STATUS, s)
-}
-
 // SignData signs an outgoing p2p message payload
 func (n *SNRHost) SignData(data []byte) ([]byte, error) {
 	// Get local node's private key
@@ -288,12 +269,12 @@ func (n *SNRHost) SignMessage(message proto.Message) ([]byte, error) {
 }
 
 // Stat returns the host stat info
-func (hn *SNRHost) Stat() (*SNRHostStat, error) {
+func (hn *SNRHost) Stat() (map[string]string, error) {
 	// Return Host Stat
-	return &SNRHostStat{
-		ID:       hn.ID(),
-		PeerID:   hn.ID().Pretty(),
-		MultAddr: hn.Addrs()[0].String(),
+	return map[string]string{
+		"ID":        hn.ID().String(),
+		"Status":    hn.status.String(),
+		"MultiAddr": hn.Addrs()[0].String(),
 	}, nil
 }
 
@@ -302,23 +283,18 @@ func (hn *SNRHost) Serve() {
 	for {
 		select {
 		case mdnsPI := <-hn.mdnsPeerChan:
-			// Validate not Self
-			if hn.checkUnknown(mdnsPI) {
-				// Connect to Peer
-				if err := hn.Connect(mdnsPI); err != nil {
-					hn.Peerstore().ClearAddrs(mdnsPI.ID)
-					continue
-				}
+			if err := hn.Connect(mdnsPI); err != nil {
+				hn.Peerstore().ClearAddrs(mdnsPI.ID)
+				continue
 			}
+
 		case dhtPI := <-hn.dhtPeerChan:
-			// Validate not Self
-			if hn.checkUnknown(dhtPI) {
-				// Connect to Peer
-				if err := hn.Connect(dhtPI); err != nil {
-					hn.Peerstore().ClearAddrs(dhtPI.ID)
-					continue
-				}
+			if err := hn.Connect(dhtPI); err != nil {
+				hn.Peerstore().ClearAddrs(dhtPI.ID)
+				continue
 			}
+		case <-hn.ctx.Done():
+			return
 		}
 	}
 }

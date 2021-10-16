@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package sonr.wallet;
+import "proto/common/core.proto";
+import "proto/wallet/keychain.proto";
+option go_package = "github.com/sonr-io/core/internal/wallet";
+
+message Wallet {
+  repeated string mnemonic = 1;
+	sonr.core.SNID id = 2;
+  map<string, Keychain> keychains = 3;
+  string path = 4;
+  int64 lastUpdated = 5;
+}

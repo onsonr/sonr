@@ -117,9 +117,16 @@ func (p *ExchangeProtocol) Verify(sname string) (bool, internet.Record, error) {
 	defer cancel()
 
 	// Verify Peer is registered
-	rec, err := p.resolver.LookupTXT(ctx, sname)
+	recs, err := p.resolver.LookupTXT(ctx, sname)
 	if err != nil {
 		logger.Error("Failed to resolve DNS record for SName", err)
+		return false, empty, err
+	}
+
+	// Get Name Record
+	rec, err := recs.GetNameRecord()
+	if err != nil {
+		logger.Error("Failed to get Name Record", err)
 		return false, empty, err
 	}
 
