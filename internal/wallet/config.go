@@ -2,7 +2,8 @@ package wallet
 
 import (
 	"github.com/kataras/golog"
-	api "github.com/sonr-io/core/internal/api"
+
+	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/device"
 )
 
@@ -28,7 +29,6 @@ type walletOptions struct {
 
 // defaultNodeOptions returns the default node options.
 func defaultNodeOptions() *walletOptions {
-
 	return &walletOptions{
 		directory: device.NewSupportPath(".wallet", device.CreateDirIfNotExist()),
 	}

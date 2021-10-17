@@ -6,6 +6,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-msgio"
+	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/tools/config"
 	"google.golang.org/protobuf/proto"
@@ -33,7 +34,7 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 		logger.Error("Failed to Unmarshal Invite RESPONSE buffer.", err)
 		return
 	}
-	p.OnDecision(resp.ToEvent())
+	p.node.OnDecision(resp.ToEvent())
 
 	// Locate request data and remove it if found
 	entry, err := p.sessionQueue.Validate(resp)
@@ -59,8 +60,8 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 // onOutgoingTransfer is called by onInviteResponse if Validated
 func (p *TransferProtocol) onOutgoingTransfer(entry *Session, stream network.Stream) {
 	// Create New Writer
-	if event := entry.WriteTo(stream); event != nil {
-		p.OnComplete(event)
+	if event := entry.WriteTo(stream, p.node); event != nil {
+		p.node.OnComplete(event)
 	}
 }
 
@@ -72,10 +73,11 @@ type itemWriter struct {
 	index   int
 	count   int
 	size    int64
+	node    api.NodeImpl
 }
 
 // NewItemWriter Returns a new Reader for the given FileItem
-func NewItemWriter(index int, count int, pi *common.Payload_Item) (*itemWriter, error) {
+func NewItemWriter(index int, count int, pi *common.Payload_Item, node api.NodeImpl) (*itemWriter, error) {
 	// Properties
 	size := pi.GetSize()
 	item := pi.GetFile()
@@ -122,14 +124,14 @@ func (p *itemWriter) Progress(i int, n int) {
 
 	// Create Progress Event
 	if (i % ITEM_INTERVAL) == 0 {
-		// event := &api.ProgressEvent{
-		// 	Progress: (float64(i) / float64(p.size)),
-		// 	Current:  int32(p.index),
-		// 	Total:    int32(p.count),
-		// }
+		event := &api.ProgressEvent{
+			Progress: (float64(i) / float64(p.size)),
+			Current:  int32(p.index),
+			Total:    int32(p.count),
+		}
 
-		// // Push ProgressEvent to Emitter
-		// p.emitter.Emit(Event_PROGRESS, event)
+		// Push ProgressEvent to Emitter
+		p.node.OnProgress(event)
 	}
 }
 

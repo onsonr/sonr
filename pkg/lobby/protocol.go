@@ -25,9 +25,9 @@ var (
 
 // LobbyProtocol is the protocol for managing local peers.
 type LobbyProtocol struct {
-	api.NodeImpl
+	node         api.NodeImpl
 	ctx          context.Context
-	host         *host.SNRHost  // host
+	host         *host.SNRHost // host
 	eventHandler *ps.TopicEventHandler
 	messages     chan *LobbyMessage
 	subscription *ps.Subscription
@@ -74,7 +74,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, nu api.NodeImpl, optio
 
 	// Create Exchange Protocol
 	lobProtocol := &LobbyProtocol{
-		NodeImpl:     nu,
+		node:     nu,
 		ctx:          ctx,
 		host:         host,
 		topic:        topic,

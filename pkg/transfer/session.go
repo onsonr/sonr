@@ -36,7 +36,7 @@ func (s *Session) IsOutgoing() bool {
 }
 
 // ReadFrom reads the next Session from the given stream.
-func (s *Session) ReadFrom(stream network.Stream) *api.CompleteEvent {
+func (s *Session) ReadFrom(stream network.Stream, n api.NodeImpl) *api.CompleteEvent {
 	// Initialize Params
 	logger.Info("Beginning INCOMING Transfer Stream")
 
@@ -47,7 +47,7 @@ func (s *Session) ReadFrom(stream network.Stream) *api.CompleteEvent {
 	// Write All Files
 	for i, v := range s.Items() {
 		// Create Reader
-		r := NewItemReader(i, s.Count(), v)
+		r := NewItemReader(i, s.Count(), v, n)
 
 		// Write to File
 		wg.Add(1)
@@ -58,6 +58,7 @@ func (s *Session) ReadFrom(stream network.Stream) *api.CompleteEvent {
 		}(i, s.Count())
 	}
 	wg.Wait()
+	stream.Close()
 
 	// Return Complete Event
 	return &api.CompleteEvent{
@@ -71,7 +72,7 @@ func (s *Session) ReadFrom(stream network.Stream) *api.CompleteEvent {
 }
 
 // WriteTo writes the Session to the given stream.
-func (s *Session) WriteTo(stream network.Stream) *api.CompleteEvent {
+func (s *Session) WriteTo(stream network.Stream, n api.NodeImpl) *api.CompleteEvent {
 	// Initialize Params
 	logger.Info("Beginning OUTGOING Transfer Stream")
 	wc := msgio.NewWriter(stream)
@@ -80,7 +81,7 @@ func (s *Session) WriteTo(stream network.Stream) *api.CompleteEvent {
 	// Create New Writer
 	for i, v := range s.Items() {
 		// Create New Writer
-		w, err := NewItemWriter(i, s.Count(), v)
+		w, err := NewItemWriter(i, s.Count(), v, n)
 		if err != nil {
 			logger.Error("Failed to create new writer.", err)
 			wc.Close()
@@ -99,12 +100,13 @@ func (s *Session) WriteTo(stream network.Stream) *api.CompleteEvent {
 	wg.Wait()
 
 	// Return Complete Event
+	load := s.SetPayload()
 	return &api.CompleteEvent{
 		From:       s.from,
 		To:         s.to,
 		Direction:  s.direction,
-		Payload:    s.SetPayload(),
-		CreatedAt:  s.SetPayload().GetCreatedAt(),
+		Payload:    load,
+		CreatedAt:  load.GetCreatedAt(),
 		ReceivedAt: int64(time.Now().Unix()),
 	}
 }
@@ -176,14 +178,13 @@ func (sq *SessionQueue) AddOutgoing(to peer.ID, req *InviteRequest) error {
 // Next returns topmost entry in the queue.
 func (sq *SessionQueue) Next() (*Session, error) {
 	// Find Entry for Peer
-	entry := sq.queue.Front()
+	entry := sq.queue.Remove(sq.queue.Front()).(*Session)
 	if entry == nil {
 		return nil, ErrFailedEntry
 	}
 
-	val := entry.Value.(*Session)
-	val.lastUpdated = int64(time.Now().Unix())
-	return val, nil
+	entry.lastUpdated = int64(time.Now().Unix())
+	return entry, nil
 }
 
 // Validate takes list of Requests and returns true if Request exists in List and UUID is verified.

@@ -148,7 +148,7 @@ func NewFileItem(path string) (*Payload_Item, error) {
 // ReplaceDir replaces the directory of the item path
 func (fi *FileItem) ReplaceDir(dir string) string {
 	// Set Path
-	fi.Path = device.NewPath(fi.GetPath(), dir)
+	fi.Path = device.NewPath(dir, fi.GetPath())
 	return fi.GetPath()
 }
 

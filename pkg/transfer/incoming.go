@@ -2,10 +2,12 @@ package transfer
 
 import (
 	"bytes"
+	"io"
 	"io/ioutil"
 
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-msgio"
+	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"google.golang.org/protobuf/proto"
@@ -34,7 +36,7 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 		return
 	}
 	// store request data into Context
-	p.OnInvite(req.ToEvent())
+	p.node.OnInvite(req.ToEvent())
 
 	// generate response message
 	p.sessionQueue.AddIncoming(remotePeer, req)
@@ -51,8 +53,8 @@ func (p *TransferProtocol) onIncomingTransfer(stream network.Stream) {
 	}
 
 	// Create New Writer
-	if event := entry.ReadFrom(stream); event != nil {
-		p.OnComplete(event)
+	if event := entry.ReadFrom(stream, p.node); event != nil {
+		p.node.OnComplete(event)
 	}
 }
 
@@ -64,10 +66,11 @@ type itemReader struct {
 	index  int
 	count  int
 	size   int64
+	node   api.NodeImpl
 }
 
 // NewItemReader Returns a new Reader for the given FileItem
-func NewItemReader(index int, count int, item *common.Payload_Item) *itemReader {
+func NewItemReader(index int, count int, item *common.Payload_Item, node api.NodeImpl) *itemReader {
 	return &itemReader{
 		item:   item.GetFile(),
 		size:   item.GetSize(),
@@ -75,6 +78,7 @@ func NewItemReader(index int, count int, item *common.Payload_Item) *itemReader 
 		count:  count,
 		path:   device.NewDownloadsPath(item.GetFile().GetPath()),
 		buffer: bytes.Buffer{},
+		node:   node,
 	}
 }
 
@@ -82,15 +86,15 @@ func NewItemReader(index int, count int, item *common.Payload_Item) *itemReader 
 func (p *itemReader) Progress(i int, n int) {
 	i += n
 	if (i % ITEM_INTERVAL) == 0 {
-		// // Create Progress Event
-		// event := &api.ProgressEvent{
-		// 	Progress: (float64(i) / float64(p.size)),
-		// 	Current:  int32(p.index),
-		// 	Total:    int32(p.count),
-		// }
+		// Create Progress Event
+		event := &api.ProgressEvent{
+			Progress: (float64(i) / float64(p.size)),
+			Current:  int32(p.index),
+			Total:    int32(p.count),
+		}
 
-		// // Push ProgressEvent to Emitter
-		// p.emitter.Emit(Event_PROGRESS, event)
+		// Push ProgressEvent to Emitter
+		p.node.OnProgress(event)
 	}
 }
 
@@ -103,18 +107,20 @@ func (ir *itemReader) ReadFrom(reader msgio.ReadCloser) {
 	for i := 0; i < int(ir.size); {
 		// Read Next Message
 		buf, err := reader.ReadMsg()
-		if err != nil {
+		if err == io.EOF {
+			break
+		} else if err != nil {
 			logger.Error("Failed to Read Next Message on Read Stream", err)
 			return
+		} else {
+			// Write Chunk to File
+			n, err := ir.buffer.Write(buf)
+			if err != nil {
+				logger.Error("Failed to Write Buffer to File on Read Stream", err)
+				return
+			}
+			ir.Progress(i, n)
 		}
-
-		// Write Chunk to File
-		n, err := ir.buffer.Write(buf)
-		if err != nil {
-			logger.Error("Failed to Write Buffer to File on Read Stream", err)
-			return
-		}
-		ir.Progress(i, n)
 	}
 
 	// Write File Buffer to File

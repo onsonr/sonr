@@ -20,7 +20,7 @@ var (
 
 // ExchangeProtocol handles Global Sonr Exchange Protocol
 type ExchangeProtocol struct {
-	api.NodeImpl
+	node         api.NodeImpl
 	ctx      context.Context
 	host     *host.SNRHost // host
 	resolver internet.HDNSResolver
@@ -38,7 +38,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*E
 	exchProtocol := &ExchangeProtocol{
 		ctx:      ctx,
 		host:     host,
-		NodeImpl: node,
+		node: node,
 		resolver: internet.NewHDNSResolver(),
 	}
 	logger.Info("✅  ExchangeProtocol is Activated \n")

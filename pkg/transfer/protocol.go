@@ -14,7 +14,7 @@ import (
 
 // TransferProtocol type
 type TransferProtocol struct {
-	api.NodeImpl
+	node         api.NodeImpl
 	ctx          context.Context // Context
 	host         *host.SNRHost   // local host
 	sessionQueue *SessionQueue   // transfer session queue
@@ -39,6 +39,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*T
 			queue: list.New(),
 		},
 		supplyQueue: list.New(),
+		node:        node,
 	}
 
 	// Setup Stream Handlers
@@ -105,7 +106,7 @@ func (p *TransferProtocol) Respond(id peer.ID, resp *InviteResponse) error {
 // Supply a transfer item to the queue
 func (p *TransferProtocol) Supply(paths []string) error {
 	// Profile from NodeImpl
-	profile, err := p.GetProfile()
+	profile, err := p.node.GetProfile()
 	if err != nil {
 		logger.Error("Failed to Get Profile from Node")
 		return err

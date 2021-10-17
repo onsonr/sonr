@@ -3,6 +3,7 @@ package domain
 import (
 	"context"
 
+	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/tools/internet"
 )
@@ -15,10 +16,11 @@ type DomainProtocol struct {
 	ctx            context.Context             // Context of Protocol
 	host           *host.SNRHost               // Host of Node
 	namebaseClient *internet.NamebaseAPIClient // REST Client
+	node           api.NodeImpl
 }
 
 // NewProtocol creates a new DomainProtocol to be used by HighwayNode
-func NewProtocol(ctx context.Context, host *host.SNRHost) (*DomainProtocol, error) {
+func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*DomainProtocol, error) {
 	// Check parameters
 	if err := checkParams(host); err != nil {
 		logger.Error("Failed to create TransferProtocol", err)
@@ -38,6 +40,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost) (*DomainProtocol, erro
 		ctx:            ctx,
 		host:           host,
 		namebaseClient: internet.NewNamebaseClient(ctx, key, secret),
+		node:           node,
 	}, nil
 }
 

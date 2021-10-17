@@ -179,7 +179,7 @@ func (n *Node) startHighwayService(ctx context.Context, opts *nodeOptions) (Node
 	}
 
 	// Initialize Domain Protocol
-	domainProtocol, err := domain.NewProtocol(ctx, n.host)
+	domainProtocol, err := domain.NewProtocol(ctx, n.host, n)
 	if err != nil {
 		return nil, err
 	}

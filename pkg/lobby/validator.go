@@ -72,11 +72,11 @@ func (p *LobbyProtocol) pushRefresh(id peer.ID, peer *common.Peer) {
 	// Check if Peer was provided
 	if peer == nil {
 		// Remove Peer, Emit Event
-		p.OnRefresh(buildEvent(p.removePeer(id)))
+		p.node.OnRefresh(buildEvent(p.removePeer(id)))
 	} else {
 		// Update Peer, Emit Event
 		ok, list := p.updatePeer(id, peer)
-		p.OnRefresh(buildEvent(list))
+		p.node.OnRefresh(buildEvent(list))
 		if !ok {
 			p.sendUpdate()
 		}
@@ -85,7 +85,7 @@ func (p *LobbyProtocol) pushRefresh(id peer.ID, peer *common.Peer) {
 
 // sendUpdate sends a refresh event to the Lobby topic
 func (lp *LobbyProtocol) sendUpdate() error {
-	peer, err := lp.Peer()
+	peer, err := lp.node.Peer()
 	if err != nil {
 		logger.Error("Failed to get peer", err)
 		return err
