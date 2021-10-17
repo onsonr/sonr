@@ -9,17 +9,8 @@ import (
 	"github.com/sonr-io/core/internal/device"
 )
 
-// MIN_THUMBNAIL_BOUNDS is the minimum size of the thumbnail
-const MIN_THUMBNAIL_BOUNDS = 240
-
-// IsFile Checks if Path is Valid File
-func IsFile(path string) bool {
-	info, err := os.Stat(path)
-	return err == nil && !info.IsDir()
-}
-
 // NewFileItem creates a new transfer file item
-func NewFileItem(path string) (*Payload_Item, error) {
+func NewFileItem(path string, thumb []byte) (*Payload_Item, error) {
 	// Extracts File Infrom from path
 	fi, err := os.Stat(path)
 	if err != nil {
@@ -32,6 +23,18 @@ func NewFileItem(path string) (*Payload_Item, error) {
 		return nil, err
 	}
 
+	// Method Adds thumb to file item
+	addThumb := func(m *MIME) *Thumbnail {
+		if len(thumb) > 0 {
+			return &Thumbnail{
+				Buffer: thumb,
+				Mime:   m,
+			}
+		} else {
+			return nil
+		}
+	}
+
 	// Create File Item
 	fileItem := &FileItem{
 		Mime:         mime,
@@ -39,32 +42,8 @@ func NewFileItem(path string) (*Payload_Item, error) {
 		Size:         fi.Size(),
 		Name:         fi.Name(),
 		LastModified: fi.ModTime().Unix(),
+		Thumbnail:    addThumb(mime),
 	}
-
-	// // Check if File is Image
-	// if fileItem.Mime.PermitsThumbnail() {
-	// 	// Create Thumbnail
-	// 	thumb, err := fileItem.NewThumbnail()
-	// 	if err != nil {
-	// 		logger.Error("Failed to create Thumbnail", err)
-	// 		return nil, err
-	// 	}
-
-	// 	// Set Thumbnail
-	// 	fileItem.Thumbnail = thumb
-
-	// 	// Returns transfer item
-	// 	return &Payload_Item{
-	// 		Size: fi.Size(),
-	// 		Mime: mime,
-	// 		Data: &Payload_Item_File{
-	// 			File: fileItem,
-	// 		},
-	// 		Preview: &Payload_Item_Thumbnail{
-	// 			Thumbnail: fileItem.GetThumbnail(),
-	// 		},
-	// 	}, nil
-	// }
 
 	// Returns transfer item
 	return &Payload_Item{
@@ -75,75 +54,6 @@ func NewFileItem(path string) (*Payload_Item, error) {
 		},
 	}, nil
 }
-
-// // NewThumbnail creates a thumbnail from source path
-// func (fi *FileItem) NewThumbnail() (*Thumbnail, error) {
-// 	// Check if path is valid and a File
-// 	if fi.Path != "" && IsFile(fi.Path) {
-// 		// Open File
-// 		file, err := os.Open(fi.GetPath())
-// 		if err != nil {
-// 			logger.Error("Failed to open file", err)
-// 			return nil, err
-// 		}
-// 		defer file.Close()
-
-// 		// Create FFmpeg Reader
-// 		ffctx, err := thumbnailer.NewFFContext(file)
-// 		if err != nil {
-// 			logger.Error("Failed to create FFContext", err)
-// 			return nil, err
-// 		}
-
-// 		// Create Thumbnail
-// 		thumbImg, err := ffctx.Thumbnail(thumbnailer.Dims{
-// 			Width:  MIN_THUMBNAIL_BOUNDS,
-// 			Height: MIN_THUMBNAIL_BOUNDS,
-// 		})
-// 		if err != nil {
-// 			logger.Error("Failed to create thumbnail", err)
-// 			return nil, err
-// 		}
-
-// 		// Init Thumbnail Path
-// 		thumbPath, err := device.NewTempPath(fi.Path, device.WithSuffix("tmb"))
-// 		if err != nil {
-// 			logger.Error("Failed to retreive Temporary Path", err)
-// 			return nil, err
-// 		}
-
-// 		// Create Thumbnail at path
-// 		thumbFile, err := os.Create(thumbPath)
-// 		if err != nil {
-// 			logger.Error("Failed to create new image", err)
-// 			return nil, err
-// 		}
-// 		defer thumbFile.Close()
-
-// 		// Encode Thumbnail
-// 		err = jpeg.Encode(thumbFile, thumbImg, &jpeg.Options{Quality: 100})
-// 		if err != nil {
-// 			logger.Error("Failed to encode image", err)
-// 			return nil, err
-// 		}
-
-// 		// Read all bytes from thumbnail
-// 		thumbBytes, err := os.ReadFile(thumbPath)
-// 		if err != nil {
-// 			logger.Error("Failed to read thumbnail bytes after processing.", err)
-// 			return nil, err
-// 		}
-
-// 		// Create Thumbnail
-// 		return &Thumbnail{
-// 			Size:   int64(len(thumbBytes)),
-// 			Buffer: thumbBytes,
-// 			Mime:   fi.GetMime(),
-// 		}, nil
-// 	} else {
-// 		return nil, errors.New("Invalid File Path provided for item.")
-// 	}
-// }
 
 // ResetDir replaces the directory of the item path with DownloadsPath
 func (fi *FileItem) ResetDir() string {
@@ -159,25 +69,6 @@ func (f *FileItem) ToTransferItem() *Payload_Item {
 		Data: &Payload_Item_File{
 			File: f,
 		},
-	}
-}
-
-// getThumbWidthHeight returns the width and height of the thumbnail by aspect ratio
-func getThumbWidthHeight(srcWidth, srcHeight int) (int, int, float32) {
-	// Set Min Width/Height
-	width := srcWidth
-	height := srcHeight
-	aspectRatio := float32(srcWidth) / float32(srcHeight)
-
-	// Calculate Bounds with larger width
-	if width > height {
-		width = MIN_THUMBNAIL_BOUNDS
-		height = int(float32(width) / aspectRatio)
-		return width, height, aspectRatio
-	} else {
-		height = MIN_THUMBNAIL_BOUNDS
-		width = int(float32(height) * aspectRatio)
-		return width, height, aspectRatio
 	}
 }
 

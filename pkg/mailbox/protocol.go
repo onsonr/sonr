@@ -3,51 +3,47 @@ package mailbox
 import (
 	"context"
 
+	"github.com/sonr-io/core/internal/api"
+	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/host"
-	"github.com/sonr-io/core/tools/state"
-)
-
-// Transfer Emission Events
-const (
-	Event_MAIL_RECEIVED = "mailbox-mail-received"
 )
 
 type MailboxProtocol struct {
-	ctx     context.Context
-	host    *host.SNRHost
-	emitter *state.Emitter
+	ctx  context.Context
+	host *host.SNRHost
+	node api.NodeImpl
 	// mail    *local.Mail
-	// mailbox *local.Mailbox
+	//mailbox *local.Mailbox
 }
 
-// // NewProtocol creates a new lobby protocol instance.
-// func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) (*MailboxProtocol, error) {
-// 	mail := local.NewMail(cmd.NewClients(TextileClientURL, true, TextileMinerIdx), local.DefaultConfConfig())
+// NewProtocol creates a new lobby protocol instance.
+func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*MailboxProtocol, error) {
+	//mail := local.NewMail(cmd.NewClients(TextileClientURL, true, TextileMinerIdx), local.DefaultConfConfig())
 
-// 	// Create Mailbox Protocol
-// 	mailProtocol := &MailboxProtocol{
-// 		ctx:     ctx,
-// 		host:    host,
-// 		mail:    mail,
-// 		emitter: em,
-// 	}
+	// Create Mailbox Protocol
+	mailProtocol := &MailboxProtocol{
+		ctx:  ctx,
+		host: host,
+		//	mail: mail,
+		node: node,
+	}
 
-// 	// Create new mailbox
-// 	if device.Textile.Exists() {
-// 		// Return Existing Mailbox
-// 		if err := mailProtocol.loadMailbox(); err != nil {
-// 			return nil, err
-// 		}
-// 	} else {
-// 		// Create New Mailbox
-// 		if err := mailProtocol.newMailbox(); err != nil {
-// 			return nil, err
-// 		}
-// 	}
-// 	logger.Info("✅  MailboxProtocol is Activated \n")
-// 	go mailProtocol.handleMailboxEvents()
-// 	return mailProtocol, nil
-// }
+	// Create new mailbox
+	if device.Textile.Exists() {
+		// Return Existing Mailbox
+		if err := mailProtocol.loadMailbox(); err != nil {
+			return nil, err
+		}
+	} else {
+		// Create New Mailbox
+		if err := mailProtocol.newMailbox(); err != nil {
+			return nil, err
+		}
+	}
+	logger.Info("✅  MailboxProtocol is Activated \n")
+	// go mailProtocol.handleMailboxEvents()
+	return mailProtocol, nil
+}
 
 // // // Handle Mailbox Events
 // func (ts *MailboxProtocol) handleMailboxEvents() {
@@ -126,8 +122,8 @@ type MailboxProtocol struct {
 // 			Id:     msg.GetId(),
 // 		}
 
-// 		// Callback Mail Event
-// 		ts.emitter.Emit(Event_MAIL_RECEIVED, mail)
+// 		// Send Mail Event
+// 		ts.node.OnMailbox(mail)
 // 	}
 // }
 

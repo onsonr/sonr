@@ -5,6 +5,7 @@ go 1.16
 require (
 	git.mills.io/prologic/bitcask v1.0.0
 	github.com/PuerkitoBio/goquery v1.7.1
+	github.com/anthonynsimon/bild v0.11.1
 	github.com/brianvoe/gofakeit/v6 v6.9.0
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/gabriel-vasile/mimetype v1.3.1
@@ -21,6 +22,7 @@ require (
 	github.com/libp2p/go-msgio v0.0.6
 	github.com/multiformats/go-multiaddr v0.4.0
 	github.com/multiformats/go-multihash v0.0.15
+	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/o1egl/govatar v0.4.1
 	github.com/pkg/errors v0.9.1
 	golang.org/x/net v0.0.0-20210813160813-60bc85c4be6d

@@ -8,7 +8,6 @@ import (
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/api"
-	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/host"
 )
 
@@ -104,7 +103,7 @@ func (p *TransferProtocol) Respond(id peer.ID, resp *InviteResponse) error {
 }
 
 // Supply a transfer item to the queue
-func (p *TransferProtocol) Supply(paths []string) error {
+func (p *TransferProtocol) Supply(req *api.SupplyRequest) error {
 	// Profile from NodeImpl
 	profile, err := p.node.GetProfile()
 	if err != nil {
@@ -113,7 +112,7 @@ func (p *TransferProtocol) Supply(paths []string) error {
 	}
 
 	// Create Transfer
-	payload, err := common.NewPayload(profile, paths)
+	payload, err := req.ToPayload(profile)
 	if err != nil {
 		logger.Error("Failed to Supply Paths", err)
 		return err
@@ -121,6 +120,6 @@ func (p *TransferProtocol) Supply(paths []string) error {
 
 	// Add items to transfer
 	p.supplyQueue.PushBack(payload)
-	logger.Info(fmt.Sprintf("Added %v items to supply queue.", len(paths)), golog.Fields{"File Count": payload.FileCount(), "URL Count": payload.URLCount()})
+	logger.Info(fmt.Sprintf("Added %v items to supply queue.", req.Count()), golog.Fields{"File Count": payload.FileCount(), "URL Count": payload.URLCount()})
 	return nil
 }

@@ -84,8 +84,7 @@ func NewItemReader(index int, count int, item *common.Payload_Item, node api.Nod
 }
 
 // Returns Progress of File, Given the written number of bytes
-func (p *itemReader) Progress(i int, n int) {
-	i += n
+func (p *itemReader) Progress(i int) {
 	if (i % ITEM_INTERVAL) == 0 {
 		// Create Progress Event
 		event := &api.ProgressEvent{
@@ -105,7 +104,7 @@ func (ir *itemReader) ReadFrom(reader msgio.ReadCloser) {
 	defer reader.Close()
 
 	// Route Data from Stream
-	for {
+	for i := 0; i < int(ir.item.GetSize()); {
 		// Read Next Message
 		buf, err := reader.ReadMsg()
 		if err == io.EOF {
@@ -115,11 +114,12 @@ func (ir *itemReader) ReadFrom(reader msgio.ReadCloser) {
 			return
 		} else {
 			// Write Chunk to File
-			_, err := ir.buffer.Write(buf)
+			n, err := ir.buffer.Write(buf)
 			if err != nil {
 				logger.Error("Failed to Write Buffer to File on Read Stream", err)
 				return
 			}
+			i += n
 			// ir.Progress(i, n)
 		}
 	}

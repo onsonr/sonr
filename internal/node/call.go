@@ -14,7 +14,7 @@ const RPC_SERVER_PORT = 52006
 // Supply supplies the node with the given amount of resources.
 func (s *ClientNodeStub) Supply(ctx context.Context, req *api.SupplyRequest) (*api.SupplyResponse, error) {
 	// Call Internal Supply
-	err := s.TransferProtocol.Supply(req.GetPaths())
+	err := s.TransferProtocol.Supply(req)
 	if err != nil {
 		return &api.SupplyResponse{
 			Success: false,
@@ -164,7 +164,7 @@ func (s *ClientNodeStub) Search(ctx context.Context, req *api.SearchRequest) (*a
 	// Call Internal Ping
 	if s.ExchangeProtocol != nil {
 		// Call Internal Search
-		entry, err := s.Query(strings.ToLower(req.GetSName()))
+		entry, err := s.Get(strings.ToLower(req.GetSName()))
 		if err != nil {
 			return &api.SearchResponse{
 				Success: false,

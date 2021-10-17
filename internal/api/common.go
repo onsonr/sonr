@@ -12,12 +12,12 @@ var (
 
 // NodeImpl returns the NodeImpl for the Main Node
 type NodeImpl interface {
-	
 	GetProfile() (*common.Profile, error)
 	Peer() (*common.Peer, error)
 
 	OnRefresh(event *RefreshEvent)
 	OnInvite(event *InviteEvent)
+	OnMailbox(event *MailboxEvent)
 	OnDecision(event *DecisionEvent)
 	OnProgress(event *ProgressEvent)
 	OnComplete(event *CompleteEvent)

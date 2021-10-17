@@ -7,14 +7,12 @@ import (
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/node"
-	"github.com/sonr-io/core/tools/state"
 )
 
 type Sonr struct {
 	// Properties
-	ctx     context.Context
-	node    api.NodeImpl
-	emitter *state.Emitter
+	ctx  context.Context
+	node api.NodeImpl
 }
 
 var (
@@ -30,7 +28,6 @@ func init() {
 func main() {
 	// Initialize Device
 	ctx := context.Background()
-	emitter := state.NewEmitter(2048)
 
 	err := device.Init()
 	if err != nil {
@@ -46,9 +43,8 @@ func main() {
 
 	// Set Lib
 	sonrHighway = &Sonr{
-		ctx:     ctx,
-		node:    n,
-		emitter: emitter,
+		ctx:  ctx,
+		node: n,
 	}
 }
 

@@ -139,9 +139,8 @@ message OpenGraph {
 
 // Thumbnail of File
 message Thumbnail {
-  int64 size = 1;   // Thumbnail Size in Bytes
-  bytes buffer = 2; // Thumbnail Buffer
-  MIME mime = 3;    // Mime Type
+  bytes buffer = 1; // Thumbnail Buffer
+  MIME mime = 2;    // Mime Type
 }
 
 // Payload is Data thats being Passed

@@ -3,7 +3,6 @@ package exchange
 import (
 	"context"
 	"errors"
-	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/api"
@@ -20,7 +19,7 @@ var (
 
 // ExchangeProtocol handles Global Sonr Exchange Protocol
 type ExchangeProtocol struct {
-	node         api.NodeImpl
+	node     api.NodeImpl
 	ctx      context.Context
 	host     *host.SNRHost // host
 	resolver internet.HDNSResolver
@@ -38,15 +37,23 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*E
 	exchProtocol := &ExchangeProtocol{
 		ctx:      ctx,
 		host:     host,
-		node: node,
+		node:     node,
 		resolver: internet.NewHDNSResolver(),
 	}
 	logger.Info("✅  ExchangeProtocol is Activated \n")
+
+	// Set Peer in Exchange
+	peer, err := node.Peer()
+	if err != nil {
+		logger.Error("Failed to get Profile", err)
+		return nil, err
+	}
+	exchProtocol.Put(peer)
 	return exchProtocol, nil
 }
 
 // FindPeerId method returns PeerID by SName
-func (p *ExchangeProtocol) Query(sname string) (*common.PeerInfo, error) {
+func (p *ExchangeProtocol) Get(sname string) (*common.PeerInfo, error) {
 	// Get Peer from KadDHT store
 	buf, err := p.host.GetValue(p.ctx, sname)
 	if err != nil {
@@ -84,8 +91,8 @@ func (p *ExchangeProtocol) Query(sname string) (*common.PeerInfo, error) {
 	return info, err
 }
 
-// Update method updates peer instance in the store
-func (p *ExchangeProtocol) Update(peer *common.Peer) error {
+// Put method updates peer instance in the store
+func (p *ExchangeProtocol) Put(peer *common.Peer) error {
 	// Create a cid manually by specifying the 'prefix' parameters
 	key, err := peer.CID()
 	if err != nil {
@@ -113,11 +120,9 @@ func (p *ExchangeProtocol) Update(peer *common.Peer) error {
 func (p *ExchangeProtocol) Verify(sname string) (bool, internet.Record, error) {
 	// Create Context
 	empty := internet.Record{}
-	ctx, cancel := context.WithTimeout(p.ctx, time.Second*5)
-	defer cancel()
 
 	// Verify Peer is registered
-	recs, err := p.resolver.LookupTXT(ctx, sname)
+	recs, err := p.resolver.LookupTXT(p.ctx, sname)
 	if err != nil {
 		logger.Error("Failed to resolve DNS record for SName", err)
 		return false, empty, err

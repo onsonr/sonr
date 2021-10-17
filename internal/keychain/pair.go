@@ -1,6 +1,9 @@
 package keychain
 
 import (
+	"context"
+	"encoding"
+	"fmt"
 	"path/filepath"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
@@ -70,6 +73,37 @@ type SnrKey interface {
 	Type() crypto_pb.KeyType
 }
 
+type TextileIdentity interface {
+	encoding.BinaryMarshaler
+	encoding.BinaryUnmarshaler
+
+	// Sign the given bytes cryptographically.
+	Sign(context.Context, []byte) ([]byte, error)
+	// GetPublic returns the public key paired with this identity.
+	GetPublic() TextilePubKey
+	// Decrypt returns decrypted data.
+	Decrypt(context.Context, []byte) ([]byte, error)
+	// Equals returns true if the identities are equal.
+	Equals(TextileIdentity) bool
+}
+
+// Pubkey can be anything that provides a verify method.
+type TextilePubKey interface {
+	encoding.BinaryMarshaler
+	encoding.BinaryUnmarshaler
+
+	// String encodes the public key into a base32 string.
+	fmt.Stringer
+	// UnmarshalString decodes the public key from a base32 string.
+	UnmarshalString(string) error
+	// Verify that 'sig' is the signed hash of 'data'
+	Verify(data []byte, sig []byte) (bool, error)
+	// Encrypt data with the public key.
+	Encrypt([]byte) ([]byte, error)
+	// Equals returns true if the keys are equal.
+	Equals(TextilePubKey) bool
+}
+
 // SnrPrivKey is Sonr wrapper around crypto.PrivKey
 type SnrPrivKey struct {
 	crypto.PrivKey
@@ -100,8 +134,6 @@ func (priv *SnrPrivKey) GetPublic() crypto.PubKey {
 		PubKey: priv.PrivKey.GetPublic(),
 	}
 }
-
-// Hash returns a hmac hash of private key
 
 // PeerID returns the peer ID from the public key
 func (priv *SnrPrivKey) PeerID() (peer.ID, error) {

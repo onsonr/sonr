@@ -1,10 +1,14 @@
 package api
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/kataras/golog"
+	"github.com/pkg/errors"
+	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
+	"github.com/sonr-io/core/tools/config"
 )
 
 // IsDev returns true if the node is running in development mode.
@@ -83,4 +87,79 @@ func (ir *InitializeRequest) SetDeviceID() {
 // IsDelete returns true if the request is a delete request
 func (er *EditRequest) IsDelete() bool {
 	return er.GetType() == EditRequest_DELETE
+}
+
+func (sr *SupplyRequest) Count() int {
+	return len(sr.GetItems())
+}
+
+func (sr *SupplyRequest) ToPayload(owner *common.Profile) (*common.Payload, error) {
+	// Initialize
+	fileCount := 0
+	urlCount := 0
+	size := int64(0)
+	items := make([]*common.Payload_Item, 0)
+	errs := make([]error, 0)
+
+	// Iterate over Paths
+	for i, item := range sr.GetItems() {
+		// Check if path is URL
+		if common.IsUrl(item.GetPath()) {
+			// Increase URL Count
+			urlCount++
+
+			// Add URL to Payload
+			urlItem, err := common.NewUrlItem(item.GetPath())
+			if err != nil {
+				msg := fmt.Sprintf("Failed to create URLItem at Index: %v, with Path: %s", i, item.GetPath())
+				logger.Error(msg, err)
+				errs = append(errs, errors.Wrap(err, msg))
+				continue
+			}
+
+			// Add URL to Payload
+			items = append(items, urlItem)
+			continue
+		} else if config.IsFile(item.GetPath()) {
+			// Increase File Count
+			fileCount++
+
+			// Create Payload Item
+			fileItem, err := common.NewFileItem(item.GetPath(), item.GetThumbnail())
+			if err != nil {
+				msg := fmt.Sprintf("Failed to create FileItem at Index: %v with Path: %s", i, item.GetPath())
+				logger.Error(msg, err)
+				errs = append(errs, errors.Wrap(err, msg))
+				continue
+			}
+
+			// Add Payload Item to Payload
+			items = append(items, fileItem)
+			size += fileItem.GetSize()
+			continue
+		} else {
+			err := fmt.Errorf("Invalid Path provided, value is neither File or URL. Path: %s", item.GetPath())
+			logger.Error(err.Error(), err)
+			errs = append(errs, err)
+			continue
+		}
+	}
+
+	// Log Payload Details
+	logger.Info(fmt.Sprintf("Created payload with %v Files and %v URLs. Total size: %v", fileCount, urlCount, size))
+
+	// Create Payload
+	payload := &common.Payload{
+		Items: items,
+		Size:  size,
+		Owner: owner,
+	}
+
+	// Check if there are any errors
+	if len(errs) > 0 {
+		err := common.WrapErrors(fmt.Sprintf("⚠️ Payload created with %v Errors: \n", len(errs)), errs)
+		logger.Error(err.Error(), err)
+		return payload, err
+	}
+	return payload, nil
 }

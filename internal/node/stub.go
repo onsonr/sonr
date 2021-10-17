@@ -145,7 +145,7 @@ func (s *ClientNodeStub) Update() error {
 		}
 
 		// Update ExchangeProtocol
-		err := s.ExchangeProtocol.Update(peer)
+		err := s.ExchangeProtocol.Put(peer)
 		if err != nil {
 			logger.Error("Failed to Update Exchange", err)
 		} else {
@@ -168,13 +168,31 @@ type HighwayNodeStub struct {
 	grpcServer *grpc.Server
 	listener   net.Listener
 	*domain.DomainProtocol
+	*transfer.TransferProtocol
+	*exchange.ExchangeProtocol
+	*lobby.LobbyProtocol
 }
 
 // startHighwayService creates a new Highway service stub for the node.
 func (n *Node) startHighwayService(ctx context.Context, opts *nodeOptions) (NodeStub, error) {
-	// Create the listener
-	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", RPC_SERVER_PORT))
+	// Set Transfer Protocol
+	transferProtocol, err := transfer.NewProtocol(ctx, n.host, n)
 	if err != nil {
+		logger.Error("Failed to start TransferProtocol", err)
+		return nil, err
+	}
+
+	// Set Exchange Protocol
+	exchProtocol, err := exchange.NewProtocol(ctx, n.host, n)
+	if err != nil {
+		logger.Error("Failed to start ExchangeProtocol", err)
+		return nil, err
+	}
+
+	// Set Local Lobby Protocol if Location is provided
+	lobbyProtocol, err := lobby.NewProtocol(ctx, n.host, n, lobby.WithLocation(opts.location))
+	if err != nil {
+		logger.Error("Failed to start LobbyProtocol", err)
 		return nil, err
 	}
 
@@ -184,19 +202,33 @@ func (n *Node) startHighwayService(ctx context.Context, opts *nodeOptions) (Node
 		return nil, err
 	}
 
+	// Create the listener
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", RPC_SERVER_PORT))
+	if err != nil {
+		return nil, err
+	}
+
 	// Create the RPC Service
 	grpcServer := grpc.NewServer()
 	stub := &HighwayNodeStub{
-		Node:           n,
-		ctx:            ctx,
-		grpcServer:     grpcServer,
-		listener:       listener,
-		DomainProtocol: domainProtocol,
+		Node:             n,
+		ctx:              ctx,
+		grpcServer:       grpcServer,
+		listener:         listener,
+		DomainProtocol:   domainProtocol,
+		TransferProtocol: transferProtocol,
+		ExchangeProtocol: exchProtocol,
+		LobbyProtocol:    lobbyProtocol,
 	}
 	// Register the RPC Service
 	RegisterHighwayServiceServer(stub.grpcServer, stub)
 	go stub.Serve(ctx, listener, DefaultAutoPingTicker)
 	return stub, nil
+}
+
+// HasProtocols returns true if the node has the protocols.
+func (s *HighwayNodeStub) HasProtocols() bool {
+	return s.TransferProtocol != nil && s.ExchangeProtocol != nil && s.LobbyProtocol != nil && s.DomainProtocol != nil
 }
 
 func (s *HighwayNodeStub) Serve(ctx context.Context, listener net.Listener, ticker time.Duration) {

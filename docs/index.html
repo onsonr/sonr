@@ -299,6 +299,10 @@
                 </li>
               
                 <li>
+                  <a href="#sonr.api.SupplyRequest.Item"><span class="badge">M</span>SupplyRequest.Item</a>
+                </li>
+              
+                <li>
                   <a href="#sonr.api.SupplyResponse"><span class="badge">M</span>SupplyResponse</a>
                 </li>
               
@@ -1931,8 +1935,8 @@ File Transfer History </p></td>
             <tbody>
               
                 <tr>
-                  <td>paths</td>
-                  <td><a href="#string">string</a></td>
+                  <td>items</td>
+                  <td><a href="#sonr.api.SupplyRequest.Item">SupplyRequest.Item</a></td>
                   <td>repeated</td>
                   <td><p>Supply Paths </p></td>
                 </tr>
@@ -1949,6 +1953,37 @@ File Transfer History </p></td>
                   <td><a href="#bool">bool</a></td>
                   <td></td>
                   <td><p>Supply Peer </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.api.SupplyRequest.Item">SupplyRequest.Item</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>path</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Supply Path </p></td>
+                </tr>
+              
+                <tr>
+                  <td>thumbnail</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>Supply Thumbnail </p></td>
                 </tr>
               
             </tbody>
@@ -4002,13 +4037,6 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
               <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
             </thead>
             <tbody>
-              
-                <tr>
-                  <td>size</td>
-                  <td><a href="#int64">int64</a></td>
-                  <td></td>
-                  <td><p>Thumbnail Size in Bytes </p></td>
-                </tr>
               
                 <tr>
                   <td>buffer</td>

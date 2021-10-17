@@ -91,9 +91,13 @@ message InitializeResponse {
 
 // (Client) SupplyRequest supplies path to files or urls and optionally a Peer
 message SupplyRequest {
-  repeated string paths = 1;        // Supply Paths
+  repeated Item items = 1;        // Supply Paths
   optional sonr.core.Peer peer = 2; // Supply Peer
   bool isPeerSupply = 3;                 // Supply Peer
+  message Item {
+    string path = 1; // Supply Path
+    bytes thumbnail = 2; // Supply Thumbnail
+  }
 }
 
 // (Client) SupplyResponse is response to SupplyRequest
