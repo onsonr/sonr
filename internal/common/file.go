@@ -145,10 +145,10 @@ func NewFileItem(path string) (*Payload_Item, error) {
 // 	}
 // }
 
-// ReplaceDir replaces the directory of the item path
-func (fi *FileItem) ReplaceDir(dir string) string {
+// ResetDir replaces the directory of the item path with DownloadsPath
+func (fi *FileItem) ResetDir() string {
 	// Set Path
-	fi.Path = device.NewPath(dir, fi.GetPath())
+	fi.Path, _ = device.NewDownloadsPath(fi.GetPath())
 	return fi.GetPath()
 }
 

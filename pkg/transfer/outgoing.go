@@ -142,7 +142,7 @@ func (iw *itemWriter) WriteTo(writer msgio.WriteCloser) {
 	defer writer.Close()
 
 	// Loop through File
-	for i := 0; ; {
+	for {
 		c, err := iw.chunker.Next()
 		if err != nil {
 			if err == io.EOF {
@@ -164,7 +164,7 @@ func (iw *itemWriter) WriteTo(writer msgio.WriteCloser) {
 			logger.Error("Unexpected Error occurred on Write Stream", err)
 			return
 		}
-		iw.Progress(i, c.Length)
+		// iw.Progress(i, c.Length)
 	}
 
 	// Close File

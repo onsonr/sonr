@@ -240,11 +240,11 @@ func (p *Payload) MapUrlItems(fn PayloadItemFunc) error {
 
 // ReplaceItemsDir iterates over the items in the payload and replaces the
 // directory of the item with the new directory.
-func (p *Payload) ReplaceItemsDir(dir string) *Payload {
+func (p *Payload) ResetItemsDirectory() *Payload {
 	// Create new Payload
 	for _, item := range p.GetItems() {
 		if item.GetFile() != nil {
-			item.GetFile().ReplaceDir(dir)
+			item.GetFile().ResetDir()
 		}
 	}
 	return p

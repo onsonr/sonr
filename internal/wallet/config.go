@@ -4,7 +4,6 @@ import (
 	"github.com/kataras/golog"
 
 	"github.com/sonr-io/core/internal/api"
-	"github.com/sonr-io/core/internal/device"
 )
 
 // Error Definitions
@@ -29,7 +28,8 @@ type walletOptions struct {
 
 // defaultNodeOptions returns the default node options.
 func defaultNodeOptions() *walletOptions {
+	// path, _ := device.NewSupportPath(".wallet", device.CreateDirIfNotExist())
 	return &walletOptions{
-		directory: device.NewSupportPath(".wallet", device.CreateDirIfNotExist()),
+		// directory: path,
 	}
 }

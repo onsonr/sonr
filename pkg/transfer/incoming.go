@@ -71,12 +71,13 @@ type itemReader struct {
 
 // NewItemReader Returns a new Reader for the given FileItem
 func NewItemReader(index int, count int, item *common.Payload_Item, node api.NodeImpl) *itemReader {
+	path, _ := device.NewDownloadsPath(item.GetFile().GetPath())
 	return &itemReader{
 		item:   item.GetFile(),
 		size:   item.GetSize(),
 		index:  index,
 		count:  count,
-		path:   device.NewDownloadsPath(item.GetFile().GetPath()),
+		path:   path,
 		buffer: bytes.Buffer{},
 		node:   node,
 	}
@@ -104,7 +105,7 @@ func (ir *itemReader) ReadFrom(reader msgio.ReadCloser) {
 	defer reader.Close()
 
 	// Route Data from Stream
-	for i := 0; i < int(ir.size); {
+	for {
 		// Read Next Message
 		buf, err := reader.ReadMsg()
 		if err == io.EOF {
@@ -114,12 +115,12 @@ func (ir *itemReader) ReadFrom(reader msgio.ReadCloser) {
 			return
 		} else {
 			// Write Chunk to File
-			n, err := ir.buffer.Write(buf)
+			_, err := ir.buffer.Write(buf)
 			if err != nil {
 				logger.Error("Failed to Write Buffer to File on Read Stream", err)
 				return
 			}
-			ir.Progress(i, n)
+			// ir.Progress(i, n)
 		}
 	}
 

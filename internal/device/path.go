@@ -1,126 +1,200 @@
 package device
 
 import (
-	"os"
 	"path/filepath"
 	"strings"
 
 	"github.com/kataras/golog"
 )
 
+type filePathOptType int
+
+// Option Type Enum
+const (
+	filePathOptionTypeSuffix    filePathOptType = iota // Suffix
+	filePathOptionTypePrefix                           // Prefix
+	filePathOptionTypeReplace                          // Replace
+	filePathOptionTypeSeparator                        // Separator
+)
+
 // NewPath returns a new path with the given file name and specified folder.
-func NewPath(dir string, path string, opts ...FilePathOption) string {
+func NewPath(path string, dir string, opts ...FilePathOption) (string, error) {
 	// Initialize options list
 	name := filepath.Base(path)
-	options := defaultFilePathOptions(dir, name)
+	fpoList := make([]*filePathOptions, len(opts))
 	for _, opt := range opts {
-		opt(options)
+		fpoList = append(fpoList, opt.Apply())
+	}
+
+	// Merge options
+	fpo := &filePathOptions{}
+	err := fpo.Merge(name, fpoList...)
+	if err != nil {
+		return "", err
 	}
 
 	// Build path
-	return options.Apply()
+	return fpo.Apply(dir)
 }
 
 // NewDatabasePath Returns a new path in database dir with given file name.
-func NewDatabasePath(path string, opts ...FilePathOption) string {
+func NewDatabasePath(path string, opts ...FilePathOption) (string, error) {
 	// Initialize options list
 	name := filepath.Base(path)
-	options := defaultFilePathOptions(DatabasePath, name)
+	fpoList := make([]*filePathOptions, len(opts))
 	for _, opt := range opts {
-		opt(options)
+		fpoList = append(fpoList, opt.Apply())
+	}
+
+	// Merge options
+	fpo := &filePathOptions{}
+	err := fpo.Merge(name, fpoList...)
+	if err != nil {
+		return "", err
 	}
 
 	// Build path
-	return options.Apply()
+	return fpo.Apply(DatabasePath)
 }
 
 // NewDocsPath Returns a new path in docs dir with given file name.
-func NewDocsPath(path string, opts ...FilePathOption) string {
+func NewDocsPath(path string, opts ...FilePathOption) (string, error) {
 	// Initialize options list
 	name := filepath.Base(path)
-	options := defaultFilePathOptions(DocsPath, name)
+	fpoList := make([]*filePathOptions, len(opts))
 	for _, opt := range opts {
-		opt(options)
+		fpoList = append(fpoList, opt.Apply())
+	}
+
+	// Merge options
+	fpo := &filePathOptions{}
+	err := fpo.Merge(name, fpoList...)
+	if err != nil {
+		return "", err
 	}
 
 	// Build path
-	return options.Apply()
+	return fpo.Apply(DocsPath)
 }
 
 // NewDownloadsPath Returns a new path in downloads dir with given file name.
-func NewDownloadsPath(path string, opts ...FilePathOption) string {
+func NewDownloadsPath(path string, opts ...FilePathOption) (string, error) {
 	// Initialize options list
 	name := filepath.Base(path)
-	options := defaultFilePathOptions(DownloadsPath, name)
+	fpoList := make([]*filePathOptions, len(opts))
 	for _, opt := range opts {
-		opt(options)
+		fpoList = append(fpoList, opt.Apply())
+	}
+
+	// Merge options
+	fpo := &filePathOptions{}
+	err := fpo.Merge(name, fpoList...)
+	if err != nil {
+		return "", err
 	}
 
 	// Build path
-	return options.Apply()
+	return fpo.Apply(DownloadsPath)
 }
 
 // NewTempPath Returns a new path in temp dir with given file name.
-func NewTempPath(path string, opts ...FilePathOption) string {
+func NewTempPath(path string, opts ...FilePathOption) (string, error) {
 	// Initialize options list
 	name := filepath.Base(path)
-	options := defaultFilePathOptions(TempPath, name)
+	fpoList := make([]*filePathOptions, len(opts))
 	for _, opt := range opts {
-		opt(options)
+		fpoList = append(fpoList, opt.Apply())
+	}
+
+	// Merge options
+	fpo := &filePathOptions{}
+	err := fpo.Merge(name, fpoList...)
+	if err != nil {
+		return "", err
 	}
 
 	// Build path
-	return options.Apply()
+	return fpo.Apply(TempPath)
 }
 
 // NewSupportPath Returns a new path in support dir with given file name.
-func NewSupportPath(path string, opts ...FilePathOption) string {
+func NewSupportPath(path string, opts ...FilePathOption) (string, error) {
 	// Initialize options list
 	name := filepath.Base(path)
-	options := defaultFilePathOptions(SupportPath, name)
+	fpoList := make([]*filePathOptions, len(opts))
 	for _, opt := range opts {
-		opt(options)
+		fpoList = append(fpoList, opt.Apply())
+	}
+
+	// Merge options
+	fpo := &filePathOptions{}
+	err := fpo.Merge(name, fpoList...)
+	if err != nil {
+		return "", err
 	}
 
 	// Build path
-	return options.Apply()
+	return fpo.Apply(SupportPath)
 }
 
-// NodeOption is a function that modifies the node options.
-type FilePathOption func(*filePathOptions)
+// FilePathOption is a function option for FilePath.
+type FilePathOption interface {
+	Apply() *filePathOptions
+}
 
-// CreateDirIfNotExist creates the directory if it does not exist.
-func CreateDirIfNotExist() FilePathOption {
-	return func(o *filePathOptions) {
-		o.CreateDir = true
+// filePathOpt is a struct that implements FilePathOption.
+type filePathOpt struct {
+	FilePathOption
+	value string
+	filePathOptType
+}
+
+// Apply returns the value set for the specified option.
+func (fio *filePathOpt) Apply() *filePathOptions {
+	if fio.filePathOptType == filePathOptionTypeSuffix {
+		return &filePathOptions{Suffix: fio.value}
+	} else if fio.filePathOptType == filePathOptionTypePrefix {
+		return &filePathOptions{Prefix: fio.value}
+	} else if fio.filePathOptType == filePathOptionTypeReplace {
+		return &filePathOptions{Replace: fio.value}
+	} else if fio.filePathOptType == filePathOptionTypeSeparator {
+		return &filePathOptions{Separator: fio.value}
 	}
+	return nil
 }
 
-// WithSuffix sets the suffix for the file name.
-func WithSuffix(path string) FilePathOption {
-	return func(o *filePathOptions) {
-		o.Suffix = path
+// FilePathOptFunc is a function that returns a FilePathOption.
+type FilePathOptFunc func(path string) FilePathOption
+
+// WithSuffix sets the suffix for the file path.
+var WithSuffix FilePathOptFunc = func(path string) FilePathOption {
+	return &filePathOpt{
+		filePathOptType: filePathOptionTypeSuffix,
+		value:           path,
 	}
 }
 
 // WithPrefix sets the prefix for the file path.
-func WithPrefix(v string) FilePathOption {
-	return func(o *filePathOptions) {
-		o.Prefix = v
+var WithPrefix FilePathOptFunc = func(path string) FilePathOption {
+	return &filePathOpt{
+		filePathOptType: filePathOptionTypePrefix,
+		value:           path,
 	}
 }
 
 // WithReplace sets the replace string for the file path.
-func WithReplace(v string) FilePathOption {
-	return func(o *filePathOptions) {
-		o.Replace = v
+var WithReplace FilePathOptFunc = func(path string) FilePathOption {
+	return &filePathOpt{
+		filePathOptType: filePathOptionTypeReplace,
+		value:           path,
 	}
 }
 
 // WithSeparator sets the separator for the file path.
-func WithSeparator(v string) FilePathOption {
-	return func(o *filePathOptions) {
-		o.Separator = v
+var WithSeparator FilePathOptFunc = func(path string) FilePathOption {
+	return &filePathOpt{
+		filePathOptType: filePathOptionTypeSeparator,
+		value:           path,
 	}
 }
 
@@ -131,56 +205,131 @@ type filePathOptions struct {
 	Prefix    string // Add Prefix to file name
 	Replace   string // Replace filename with this string
 	Separator string // Default is "-"
-	Directory string // Directory for File
-	CreateDir bool   // Create Directory if not exist
 
 	// Properties
-	fileName string
-	baseName string
-	ext      string
-}
+	fileName  string
+	baseName  string
+	extension string
 
-// defaultFilePathOptions returns the default file path options.
-func defaultFilePathOptions(dir string, name string) *filePathOptions {
-	// Initialize options list
-	defOpts := &filePathOptions{
-		Suffix:    "",
-		Prefix:    "",
-		Replace:   "",
-		Separator: "-",
-		Directory: dir,
-		CreateDir: false,
-	}
-
-	// Set File Name
-	if strings.Contains(".", name) {
-		defOpts.baseName = strings.Split(name, ".")[0]
-		defOpts.ext = strings.Split(name, ".")[1]
-	} else {
-		defOpts.baseName = name
-		defOpts.ext = ""
-	}
-	return defOpts
+	// Internal
+	suffixSet    bool
+	prefixSet    bool
+	replaceSet   bool
+	separatorSet bool
 }
 
 // Merge merges the file path options.
-func (fpo *filePathOptions) Apply() string {
-	// Check for Replace
-	if fpo.Replace != "" {
-		return filepath.Join(fpo.Directory, fpo.Replace)
+func (fpo *filePathOptions) Merge(name string, optsList ...*filePathOptions) error {
+	// Initialize options
+	if strings.Contains(".", name) {
+		fpo.baseName = strings.Split(name, ".")[0]
+		fpo.extension = strings.Split(name, ".")[1]
+	} else {
+		fpo.baseName = name
+		fpo.extension = ""
 	}
 
-	// Check for Prefix
-	rawPath := strings.Join([]string{fpo.Prefix, fpo.baseName, fpo.Suffix}, fpo.Separator)
-	path := filepath.Join(fpo.Directory, (rawPath + "." + fpo.ext))
+	// Set Checkers
+	fpo.suffixSet = false
+	fpo.prefixSet = false
+	fpo.replaceSet = false
+	fpo.separatorSet = false
 
-	// Check for Create Dir
-	if fpo.CreateDir {
-		if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
-			logger.Error("Failed to Create Dir as FilePathOption", golog.Fields{"error": err})
-		} else {
-			logger.Info("Created new Directory for Path", golog.Fields{"path": path, "root": fpo.Directory, "parent": filepath.Base(fpo.Directory)})
+	// Merge options
+	for _, opts := range optsList {
+		// Check if suffix is set
+		if opts.Suffix != "" {
+			if !fpo.suffixSet {
+				fpo.Suffix = opts.Suffix
+				fpo.suffixSet = true
+			} else {
+				return ErrDuplicateFilePathOption
+			}
+		}
+
+		// Check if prefix is set
+		if opts.Prefix != "" {
+			if !fpo.prefixSet {
+				fpo.Prefix = opts.Prefix
+				fpo.prefixSet = true
+			} else {
+				return ErrDuplicateFilePathOption
+			}
+		}
+
+		// Check if replace is set
+		if opts.Replace != "" {
+			if !fpo.replaceSet {
+				if fpo.Prefix == "" && fpo.Suffix == "" {
+					fpo.Replace = opts.Replace
+					fpo.replaceSet = true
+				} else {
+					return ErrPrefixSuffixSetWithReplace
+				}
+			} else {
+				return ErrDuplicateFilePathOption
+			}
+		}
+
+		// Check separator
+		if opts.Separator != "" {
+			if !fpo.separatorSet {
+				if len(opts.Separator) == 1 {
+					fpo.Separator = opts.Separator
+					fpo.separatorSet = true
+				} else {
+					return ErrSeparatorLength
+				}
+			} else {
+				return ErrDuplicateFilePathOption
+			}
 		}
 	}
-	return path
+	return nil
+}
+
+// Apply method applies the file path options to the given path.
+func (fpo *filePathOptions) Apply(dir string) (string, error) {
+	// Set Default Separator if not set
+	if !fpo.separatorSet {
+		fpo.Separator = "-"
+	}
+
+	// Check for Replace
+	if fpo.replaceSet {
+		// Check if prefix or suffix is set
+		if fpo.suffixSet || fpo.prefixSet {
+			return "", ErrPrefixSuffixSetWithReplace
+		}
+		// Set Filename to replace
+		fpo.fileName = fpo.Replace
+	} else {
+		// Check for prefix
+		if fpo.prefixSet {
+			fpo.fileName = fpo.Prefix + fpo.Separator + fpo.baseName
+		} else {
+			fpo.fileName = fpo.baseName
+		}
+
+		// Check for suffix
+		if fpo.suffixSet {
+			fpo.fileName = fpo.fileName + fpo.Separator + fpo.Suffix
+		}
+	}
+
+	// Add extension
+	if fpo.extension != "" {
+		fpo.fileName = fpo.fileName + "." + fpo.extension
+	}
+
+	// Check if file name is set
+	if fpo.fileName != "" {
+		path := filepath.Join(dir, fpo.fileName)
+		logger.Info("Calculated new file path", golog.Fields{
+			"path": path,
+		})
+		return path, nil
+	} else {
+		return "", ErrNoFileNameSet
+	}
 }
