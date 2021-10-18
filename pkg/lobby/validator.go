@@ -54,7 +54,7 @@ func createOlc(l *common.Location) string {
 		logger.Error("Failed to Determine OLC Code, set to Global")
 		code = "global"
 	}
-	logger.Info("Calculated OLC for Location: " + code)
+	logger.Debug("Calculated OLC for Location: " + code)
 	return fmt.Sprintf("sonr/topic/%s", code)
 }
 

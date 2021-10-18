@@ -1,5 +1,7 @@
 package node
 
+import "github.com/pterm/pterm"
+
 // OnLobbyRefresh method sends a lobby refresh event to the client.
 func (s *ClientNodeStub) OnLobbyRefresh(e *Empty, stream ClientService_OnLobbyRefreshServer) error {
 	for {
@@ -31,6 +33,9 @@ func (s *ClientNodeStub) OnTransferAccepted(e *Empty, stream ClientService_OnTra
 		case m := <-s.node.decisionEvents:
 			if m != nil {
 				if m.Decision {
+					if s.isTerminal {
+						PrintTerminal(m.Title(), m.Message())
+					}
 					stream.Send(m)
 				}
 			}
@@ -45,6 +50,9 @@ func (s *ClientNodeStub) OnTransferDeclined(e *Empty, stream ClientService_OnTra
 		case m := <-s.node.decisionEvents:
 			if m != nil {
 				if !m.Decision {
+					if s.isTerminal {
+						PrintTerminal(m.Title(), m.Message())
+					}
 					stream.Send(m)
 				}
 			}
@@ -58,6 +66,9 @@ func (s *ClientNodeStub) OnTransferInvite(e *Empty, stream ClientService_OnTrans
 		select {
 		case m := <-s.node.inviteEvents:
 			if m != nil {
+				if s.isTerminal {
+					PrintTerminal(m.Title(), m.Message())
+				}
 				stream.Send(m)
 			}
 		}
@@ -82,6 +93,9 @@ func (s *ClientNodeStub) OnTransferComplete(e *Empty, stream ClientService_OnTra
 		select {
 		case m := <-s.node.completeEvents:
 			if m != nil {
+				if s.isTerminal {
+					PrintTerminal(m.Title(), m.Message())
+				}
 				// Check Direction
 				stream.Send(m)
 				// Add Receiver to Recents
@@ -100,4 +114,12 @@ func (s *ClientNodeStub) OnTransferComplete(e *Empty, stream ClientService_OnTra
 			}
 		}
 	}
+}
+
+func PrintTerminal(title string, msg string) {
+	// Print a section with level one.
+	pterm.DefaultSection.Println(title)
+	// Print placeholder.
+	pterm.Info.Println(msg)
+
 }

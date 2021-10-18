@@ -3,7 +3,6 @@ package transfer
 import (
 	"container/list"
 	"context"
-	"fmt"
 	"sync"
 	"time"
 
@@ -37,7 +36,7 @@ func (s *Session) IsOutgoing() bool {
 // ReadFrom reads the next Session from the given stream.
 func (s *Session) ReadFrom(stream network.Stream, n api.NodeImpl) *api.CompleteEvent {
 	// Initialize Params
-	logger.Info("Beginning INCOMING Transfer Stream")
+	logger.Debug("Beginning INCOMING Transfer Stream")
 
 	// Handle incoming stream
 	rs := msgio.NewReader(stream)
@@ -53,7 +52,6 @@ func (s *Session) ReadFrom(stream network.Stream, n api.NodeImpl) *api.CompleteE
 		go func(idx, total int) {
 			defer wg.Done()
 			r.ReadFrom(rs)
-			logger.Info(fmt.Sprintf("Finished RECEIVING File (%v/%v)", idx, total))
 		}(i, s.Count())
 	}
 	wg.Wait()
@@ -73,7 +71,7 @@ func (s *Session) ReadFrom(stream network.Stream, n api.NodeImpl) *api.CompleteE
 // WriteTo writes the Session to the given stream.
 func (s *Session) WriteTo(stream network.Stream, n api.NodeImpl) *api.CompleteEvent {
 	// Initialize Params
-	logger.Info("Beginning OUTGOING Transfer Stream")
+	logger.Debug("Beginning OUTGOING Transfer Stream")
 	wc := msgio.NewWriter(stream)
 	var wg sync.WaitGroup
 

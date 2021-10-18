@@ -44,10 +44,17 @@ func WithRequest(req *api.InitializeRequest) NodeOption {
 	}
 }
 
-// WithStubMode starts the Client RPC server and sets the node as a client node.
-func WithStubMode(m NodeStubMode) NodeOption {
+// WitHighway starts the Client RPC server as a highway node.
+func WitHighway() NodeOption {
 	return func(o *nodeOptions) {
-		o.mode = m
+		o.mode = StubMode_HIGHWAY
+	}
+}
+
+// WithTerminal sets the node as a terminal node.
+func WithTerminal() NodeOption {
+	return func(o *nodeOptions) {
+		o.isTerminal = true
 	}
 }
 
@@ -59,6 +66,7 @@ type nodeOptions struct {
 	mode       NodeStubMode
 	network    string
 	profile    *common.Profile
+	isTerminal bool
 }
 
 // defaultNodeOptions returns the default node options.
@@ -70,13 +78,14 @@ func defaultNodeOptions() *nodeOptions {
 		network:    "tcp",
 		address:    fmt.Sprintf(":%d", common.RPC_SERVER_PORT),
 		profile:    common.NewDefaultProfile(),
+		isTerminal: false,
 	}
 }
 
 func (opts *nodeOptions) Apply(ctx context.Context, node *Node) error {
 	// Handle by Node Mode
 	if opts.mode == StubMode_CLIENT {
-		logger.Info("Starting Client stub...")
+		logger.Debug("Starting Client stub...")
 		// Client Node Type
 		stub, err := node.startClientService(ctx, opts)
 		if err != nil {
@@ -88,7 +97,7 @@ func (opts *nodeOptions) Apply(ctx context.Context, node *Node) error {
 		node.stub = stub
 
 	} else {
-		logger.Info("Starting Highway stub...")
+		logger.Debug("Starting Highway stub...")
 		// Highway Node Type
 		stub, err := node.startHighwayService(ctx, opts)
 		if err != nil {

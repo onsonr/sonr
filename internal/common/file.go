@@ -10,7 +10,7 @@ import (
 )
 
 // NewFileItem creates a new transfer file item
-func NewFileItem(path string, thumb []byte) (*Payload_Item, error) {
+func NewFileItem(path string, tbuf []byte) (*Payload_Item, error) {
 	// Extracts File Infrom from path
 	fi, err := os.Stat(path)
 	if err != nil {
@@ -23,18 +23,6 @@ func NewFileItem(path string, thumb []byte) (*Payload_Item, error) {
 		return nil, err
 	}
 
-	// Method Adds thumb to file item
-	addThumb := func(m *MIME) *Thumbnail {
-		if len(thumb) > 0 {
-			return &Thumbnail{
-				Buffer: thumb,
-				Mime:   m,
-			}
-		} else {
-			return nil
-		}
-	}
-
 	// Create File Item
 	fileItem := &FileItem{
 		Mime:         mime,
@@ -42,7 +30,10 @@ func NewFileItem(path string, thumb []byte) (*Payload_Item, error) {
 		Size:         fi.Size(),
 		Name:         fi.Name(),
 		LastModified: fi.ModTime().Unix(),
-		Thumbnail:    addThumb(mime),
+		Thumbnail: &Thumbnail{
+			Buffer: tbuf,
+			Mime:   mime,
+		},
 	}
 
 	// Returns transfer item

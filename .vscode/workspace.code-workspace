@@ -1,10 +1,6 @@
 {
   "folders": [
     {
-      "path": "../cmd/cli",
-      "name": "🔌  CLI"
-    },
-    {
       "path": "..",
       "name": "🚀  Core"
     }

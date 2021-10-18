@@ -40,7 +40,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*E
 		node:     node,
 		resolver: internet.NewHDNSResolver(),
 	}
-	logger.Info("✅  ExchangeProtocol is Activated \n")
+	logger.Debug("✅  ExchangeProtocol is Activated \n")
 
 	// Set Peer in Exchange
 	peer, err := node.Peer()

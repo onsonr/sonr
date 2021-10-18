@@ -52,7 +52,7 @@ func Start(reqBuf []byte) {
 	}
 
 	// Create Node
-	n, _, err := node.NewNode(ctx, node.WithRequest(req), node.WithStubMode(node.StubMode_CLIENT))
+	n, _, err := node.NewNode(ctx, node.WithRequest(req))
 	if err != nil {
 		golog.Fatal("Failed to Create new node", err)
 		return

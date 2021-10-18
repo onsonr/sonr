@@ -130,6 +130,6 @@ func (ir *itemReader) ReadFrom(reader msgio.ReadCloser) {
 		logger.Error("Failed to Close item on Read Stream", err)
 		return
 	}
-	logger.Info("Completed writing to file: " + ir.path)
+	logger.Debug("Completed writing to file: " + ir.path)
 	return
 }

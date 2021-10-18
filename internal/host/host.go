@@ -208,7 +208,7 @@ func (hn *SNRHost) Router(h host.Host) (routing.PeerRouting, error) {
 
 	// Set Properties
 	hn.IpfsDHT = kdht
-	logger.Info("Router: Host and DHT have been set for SNRNode")
+	logger.Debug("Router: Host and DHT have been set for SNRNode")
 
 	// Setup Properties
 	return hn.IpfsDHT, nil

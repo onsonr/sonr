@@ -70,6 +70,7 @@ func NewKeychain(config *config.Config) (Keychain, error) {
 		// Return Keychain
 		return kc, nil
 	} else {
+		logger.Info("Creating new Keychain")
 		// Create Keychain
 		kc, err := newKeychain(config)
 		if err != nil {

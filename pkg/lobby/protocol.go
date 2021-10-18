@@ -86,7 +86,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, nu api.NodeImpl, optio
 	}
 
 	// Handle Events and Return Protocol
-	logger.Info("✅  LobbyProtocol is Activated \n")
+	logger.Debug("✅  LobbyProtocol is Activated \n")
 	go lobProtocol.HandleEvents()
 	go lobProtocol.HandleMessages()
 	go lobProtocol.autoPushUpdates()

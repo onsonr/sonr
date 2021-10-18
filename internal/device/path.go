@@ -3,8 +3,6 @@ package device
 import (
 	"path/filepath"
 	"strings"
-
-	"github.com/kataras/golog"
 )
 
 type filePathOptType int
@@ -325,9 +323,7 @@ func (fpo *filePathOptions) Apply(dir string) (string, error) {
 	// Check if file name is set
 	if fpo.fileName != "" {
 		path := filepath.Join(dir, fpo.fileName)
-		logger.Info("Calculated new file path", golog.Fields{
-			"path": path,
-		})
+		logger.Debug("Calculated new file path: " + path)
 		return path, nil
 	} else {
 		return "", ErrNoFileNameSet

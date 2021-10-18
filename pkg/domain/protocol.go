@@ -35,7 +35,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*D
 	}
 
 	// Create Namebase Client Protocol
-	logger.Info("✅  DomainProtocol is Activated \n")
+	logger.Debug("✅  DomainProtocol is Activated \n")
 	return &DomainProtocol{
 		ctx:            ctx,
 		host:           host,

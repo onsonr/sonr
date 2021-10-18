@@ -9,7 +9,16 @@ import (
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/tools/config"
+	"google.golang.org/protobuf/encoding/protojson"
 )
+
+// DefaultInitializeRequest returns the default initialize request
+func DefaultInitializeRequest() *InitializeRequest {
+	return &InitializeRequest{
+		Profile:  common.NewDefaultProfile(),
+		Location: common.DefaultLocation(),
+	}
+}
 
 // IsDev returns true if the node is running in development mode.
 func (ir *InitializeRequest) IsDev() bool {
@@ -42,6 +51,16 @@ func (ir *InitializeRequest) fsOpts() []device.FSOption {
 		})
 	}
 	return fsOpts
+}
+
+// MarshalJSON marshals the request to JSON
+func (ir *InitializeRequest) MarshalJSON() ([]byte, error) {
+	return protojson.Marshal(ir)
+}
+
+// UnmarshalJSON unmarshals the request from JSON
+func (ir *InitializeRequest) UnmarshalJSON(data []byte) error {
+	return protojson.Unmarshal(data, ir)
 }
 
 // ParseOpts parses the device options and returns the device.FSOptions
@@ -99,7 +118,6 @@ func (sr *SupplyRequest) ToPayload(owner *common.Profile) (*common.Payload, erro
 	urlCount := 0
 	size := int64(0)
 	items := make([]*common.Payload_Item, 0)
-	errs := make([]error, 0)
 
 	// Iterate over Paths
 	for i, item := range sr.GetItems() {
@@ -113,13 +131,11 @@ func (sr *SupplyRequest) ToPayload(owner *common.Profile) (*common.Payload, erro
 			if err != nil {
 				msg := fmt.Sprintf("Failed to create URLItem at Index: %v, with Path: %s", i, item.GetPath())
 				logger.Error(msg, err)
-				errs = append(errs, errors.Wrap(err, msg))
-				continue
+				return nil, errors.Wrap(err, msg)
 			}
 
 			// Add URL to Payload
 			items = append(items, urlItem)
-			continue
 		} else if config.IsFile(item.GetPath()) {
 			// Increase File Count
 			fileCount++
@@ -129,19 +145,12 @@ func (sr *SupplyRequest) ToPayload(owner *common.Profile) (*common.Payload, erro
 			if err != nil {
 				msg := fmt.Sprintf("Failed to create FileItem at Index: %v with Path: %s", i, item.GetPath())
 				logger.Error(msg, err)
-				errs = append(errs, errors.Wrap(err, msg))
-				continue
+				return nil, errors.Wrap(err, msg)
 			}
 
 			// Add Payload Item to Payload
 			items = append(items, fileItem)
 			size += fileItem.GetSize()
-			continue
-		} else {
-			err := fmt.Errorf("Invalid Path provided, value is neither File or URL. Path: %s", item.GetPath())
-			logger.Error(err.Error(), err)
-			errs = append(errs, err)
-			continue
 		}
 	}
 
@@ -153,13 +162,6 @@ func (sr *SupplyRequest) ToPayload(owner *common.Profile) (*common.Payload, erro
 		Items: items,
 		Size:  size,
 		Owner: owner,
-	}
-
-	// Check if there are any errors
-	if len(errs) > 0 {
-		err := common.WrapErrors(fmt.Sprintf("⚠️ Payload created with %v Errors: \n", len(errs)), errs)
-		logger.Error(err.Error(), err)
-		return payload, err
 	}
 	return payload, nil
 }
