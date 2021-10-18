@@ -163,11 +163,3 @@ message Social {
     SPOTIFY = 9;   // Spotify
   }
 }
-
-// SNID is the unique identifier of a user with Sonr Protocol
-message SNID {
-    string domain = 1; // Domain Name of the node, e.g. prad.snr
-    bytes pubKey = 2; // Public Key of the node, value in the Domains second TXT record
-    string peerID = 3;  // Peer ID of the node, calculated from the public key
-    string did = 4; // DID of the node, calculated from the public key
-}

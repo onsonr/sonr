@@ -8,8 +8,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/fs"
-
-	"google.golang.org/protobuf/encoding/protojson"
+	"github.com/sonr-io/core/internal/wallet"
 )
 
 // DefaultInitializeRequest returns the default initialize request
@@ -23,24 +22,24 @@ func DefaultInitializeRequest() *InitializeRequest {
 // FSOpts returns a list of FS Options
 func (ir *InitializeRequest) FSOpts() []fs.Option {
 	return []fs.Option{
-		fs.WithHomePath(ir.HomeDir()),
-		fs.WithSupportPath(ir.SupportDir()),
-		fs.WithTempPath(ir.TempDir()),
+		fs.WithHomePath(ir.homeDir()),
+		fs.WithSupportPath(ir.supportDir()),
+		fs.WithTempPath(ir.tempDir()),
 	}
 }
 
-// HomeDir returns provided String Home Path
-func (ir *InitializeRequest) HomeDir() string {
+// homeDir returns provided String Home Path
+func (ir *InitializeRequest) homeDir() string {
 	return ir.GetDeviceOptions().GetHomeDir()
 }
 
-// SupportDir returns provided String Support Path
-func (ir *InitializeRequest) SupportDir() string {
+// supportDir returns provided String Support Path
+func (ir *InitializeRequest) supportDir() string {
 	return ir.GetDeviceOptions().GetSupportDir()
 }
 
-// TempDir returns provided String Temporary Path
-func (ir *InitializeRequest) TempDir() string {
+// tempDir returns provided String Temporary Path
+func (ir *InitializeRequest) tempDir() string {
 	return ir.GetDeviceOptions().GetTempDir()
 }
 
@@ -49,22 +48,13 @@ func (ir *InitializeRequest) IsDev() bool {
 	return ir.GetEnvironment().IsDev()
 }
 
-// MarshalJSON marshals the request to JSON
-func (ir *InitializeRequest) MarshalJSON() ([]byte, error) {
-	return protojson.Marshal(ir)
-}
-
-// UnmarshalJSON unmarshals the request from JSON
-func (ir *InitializeRequest) UnmarshalJSON(data []byte) error {
-	return protojson.Unmarshal(data, ir)
-}
-
 // SetEnvVars sets the environment variables
-func (ir *InitializeRequest) SetEnvVars() {
+func (ir *InitializeRequest) Parse() error {
+	// Set Environment Variables
 	vars := ir.GetVariables()
 	count := len(vars)
 
-	// Set Env Variables
+	// Iterate over Variables
 	if count > 0 {
 		for k, v := range vars {
 			os.Setenv(k, v)
@@ -76,10 +66,8 @@ func (ir *InitializeRequest) SetEnvVars() {
 	} else {
 		golog.Warn("No Enviornment Variable(s) passed")
 	}
-}
 
-// SetDeviceID sets the device id
-func (ir *InitializeRequest) SetDeviceID() {
+	// Set Device ID
 	did := ir.GetDeviceOptions().GetId()
 	if did != "" {
 		logger.Info("Device ID Passed: " + did)
@@ -87,6 +75,17 @@ func (ir *InitializeRequest) SetDeviceID() {
 	} else {
 		golog.Warn("No Device ID Passed")
 	}
+
+	// Start File System
+	if err := fs.Start(ir.FSOpts()...); err != nil {
+		return errors.Wrap(err, "Failed to Start File System")
+	}
+
+	// Open Keychain
+	if err := wallet.Open(); err != nil {
+		return errors.Wrap(err, "Failed to Open Keychain")
+	}
+	return nil
 }
 
 // IsDelete returns true if the request is a delete request

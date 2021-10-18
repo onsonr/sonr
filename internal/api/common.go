@@ -7,7 +7,7 @@ import (
 
 	"github.com/kataras/golog"
 	common "github.com/sonr-io/core/internal/common"
-	"github.com/sonr-io/core/internal/keychain"
+	"github.com/sonr-io/core/internal/wallet"
 )
 
 var (
@@ -36,7 +36,7 @@ type NodeStubImpl interface {
 }
 
 // SignedMetadataToProto converts a SignedMetadata to a protobuf.
-func SignedMetadataToProto(m *keychain.SignedMetadata) *common.Metadata {
+func SignedMetadataToProto(m *wallet.SignedMetadata) *common.Metadata {
 	return &common.Metadata{
 		Timestamp: m.Timestamp,
 		NodeId:    m.NodeId,

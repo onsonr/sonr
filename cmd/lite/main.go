@@ -5,7 +5,6 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/internal/api"
-	"github.com/sonr-io/core/internal/fs"
 	"github.com/sonr-io/core/internal/node"
 	"google.golang.org/protobuf/proto"
 )
@@ -21,9 +20,8 @@ var (
 )
 
 func init() {
-	golog.SetPrefix("[Sonr-Core.lib] ")
+	golog.SetPrefix("[Sonr-Core.lite] ")
 	golog.SetStacktraceLimit(2)
-	golog.SetFormat("json", "    ")
 }
 
 // Start starts the host, node, and rpc service.
@@ -45,10 +43,9 @@ func Start(reqBuf []byte) {
 	}
 
 	// Initialize Device
-	req.SetDeviceID()
-	err = fs.Start(fs.WithHomePath(req.HomeDir()))
+	err = req.Parse()
 	if err != nil {
-		golog.Fatal("Failed to initialize Device", err)
+		golog.Errorf("Failed to parse and handle request: %v", err)
 		return
 	}
 

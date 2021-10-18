@@ -15,7 +15,6 @@ import (
 	"github.com/pterm/pterm"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
-	"github.com/sonr-io/core/internal/fs"
 	"github.com/sonr-io/core/internal/node"
 	"google.golang.org/protobuf/encoding/protojson"
 )
@@ -31,14 +30,14 @@ var (
 )
 
 func init() {
-	golog.SetPrefix("[Sonr-Core.highway] ")
+	golog.SetPrefix("[Sonr-Core.full] ")
 	golog.SetStacktraceLimit(2)
 	pterm.SetDefaultOutput(golog.Default.Printer)
 }
 
 func main() {
 	// Parse InitializeRequest
-	req, err := Parse()
+	req, err := handleInitRequest()
 	if err != nil {
 		golog.Warn("Failed to Parse Initialize Request, Using Default Request", golog.Fields{"error": err.Error()})
 		req = api.DefaultInitializeRequest()
@@ -46,7 +45,7 @@ func main() {
 
 	// Initialize Device
 	ctx := context.Background()
-	err = fs.Start()
+	err = req.Parse()
 	if err != nil {
 		golog.Fatal("Failed to initialize Device", golog.Fields{"error": err})
 		os.Exit(1)
@@ -119,8 +118,8 @@ func (sh *Sonr) Exit(code int) {
 	os.Exit(code)
 }
 
-// Parse parses the given request and returns Request
-func Parse() (*api.InitializeRequest, error) {
+// handleInitRequest parses the given request and returns Request
+func handleInitRequest() (*api.InitializeRequest, error) {
 	// Parse flag
 	latPtr := flag.Float64("lat", 34.102920, "Latitude for InitializeRequest")
 	lngPtr := flag.Float64("lng", -118.394190, "Longitude for InitializeRequest")

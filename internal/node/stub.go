@@ -100,8 +100,8 @@ func (s *ClientNodeStub) HasProtocols() bool {
 
 // Close closes the RPC Service.
 func (s *ClientNodeStub) Close() error {
-	s.listener.Close()
 	s.grpcServer.Stop()
+	s.listener.Close()
 	s.LobbyProtocol.Close()
 	return nil
 }

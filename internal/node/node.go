@@ -2,6 +2,7 @@ package node
 
 import (
 	"context"
+	"errors"
 	"strings"
 	"time"
 
@@ -9,7 +10,7 @@ import (
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/host"
-	"github.com/sonr-io/core/internal/keychain"
+	"github.com/sonr-io/core/internal/wallet"
 )
 
 // Node type - a p2p host implementing one or more p2p protocols
@@ -119,7 +120,7 @@ func (n *Node) Peer() (*common.Peer, error) {
 	}
 
 	// Get Public Key
-	pubKey, err := keychain.Primary.GetSnrPubKey(keychain.Account)
+	pubKey, err := wallet.Primary.GetSnrPubKey(wallet.Account)
 	if err != nil {
 		logger.Error("Failed to get Public Key", err)
 		return nil, err
@@ -177,4 +178,42 @@ func (n *Node) OnProgress(event *api.ProgressEvent) {
 // OnComplete is callback for NodeImpl for completeEvents
 func (n *Node) OnComplete(event *api.CompleteEvent) {
 	n.completeEvents <- event
+}
+
+func (n *Node) NewSNID(sname string) (*wallet.SNID, error) {
+	// Check if SNID is empty
+	if len(sname) == 0 {
+		return nil, errors.New("SName not provided.")
+	}
+
+	// Find Records
+	recs, err := n.host.LookupTXT(n.ctx, sname)
+	if err != nil {
+		return nil, err
+	}
+
+	// Get Name from Records
+	rec, err := recs.GetNameRecord()
+	if err != nil {
+		return nil, err
+	}
+
+	// Get Pub Key
+	pubKey, err := rec.PubKeyBuffer()
+	if err != nil {
+		return nil, err
+	}
+
+	// Get Peer ID
+	id, err := rec.PeerID()
+	if err != nil {
+		return nil, err
+	}
+
+	// Return SNID
+	return &wallet.SNID{
+		Domain: sname,
+		PeerID: id.String(),
+		PubKey: pubKey,
+	}, nil
 }

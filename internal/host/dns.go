@@ -1,13 +1,37 @@
-package exchange
+package host
 
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
+
 	"github.com/pkg/errors"
+)
+
+const (
+	// 53 is the default DNS port
+	DIAL_TIMEOUT        = time.Millisecond * time.Duration(10000)
+	HDNS_RESOLVER_ONE   = "103.196.38.38:53" // Hardcoded Public DNS Resolver for HDNS #1
+	HDNS_RESOLVER_TWO   = "103.196.38.39:53" // Hardcoded Public DNS Resolver for HDNS #2
+	HDNS_RESOLVER_THREE = "103.196.38.40:53" // Hardcoded Public DNS Resolver for HDNS #3
+	DOMAIN              = "snr"
+	API_ADDRESS         = "https://www.namebase.io/api/v0/"
+	DNS_ENDPOINT        = "dns/domains/snr/nameserver"
+	FINGERPRINT_DIVIDER = "v=0;fingerprint="
+	AUTH_DIVIDER        = "._auth."
+	NB_DNS_API_URL      = API_ADDRESS + DNS_ENDPOINT
+)
+
+// Error Definitions
+var (
+	ErrRecordCountMismatch = errors.New("Number of TXT records dont match Number of TTLs")
+	ErrMultipleRecords     = errors.New("Multiple TXT records found for Query")
+	ErrEmptyTXT            = errors.New("Empty TXT Record")
+	ErrHDNSResolve         = errors.New("Failed to dial all three public HDNS resolvers.")
 )
 
 // DomainMap returns map with host as key and recordValue as value.

@@ -3,6 +3,7 @@ package host
 import (
 	"context"
 	"errors"
+	"net"
 
 	"github.com/libp2p/go-libp2p"
 	connmgr "github.com/libp2p/go-libp2p-connmgr"
@@ -15,7 +16,7 @@ import (
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/common"
-	"github.com/sonr-io/core/internal/keychain"
+
 	"github.com/sonr-io/core/internal/wallet"
 	"google.golang.org/protobuf/proto"
 )
@@ -35,6 +36,7 @@ type SNRHost struct {
 	ctx        context.Context
 	privKey    crypto.PrivKey
 	connection common.Connection
+	resolver   *net.Resolver
 
 	// State
 	status SNRHostStatus
@@ -104,7 +106,7 @@ func NewHost(ctx context.Context, options ...HostOption) (*SNRHost, error) {
 // AuthenticateId verifies UUID value and signature
 func (h *SNRHost) AuthenticateId(id *wallet.UUID) (bool, error) {
 	// Get local node's public key
-	pubKey, err := keychain.Primary.GetPubKey(keychain.Account)
+	pubKey, err := wallet.Primary.GetPubKey(wallet.Account)
 	if err != nil {
 		logger.Error("AuthenticateId: Failed to get local host's public key", err)
 		return false, err
@@ -196,6 +198,29 @@ func (hn *SNRHost) Join(topic string, opts ...ps.TopicOpt) (*ps.Topic, error) {
 	return hn.PubSub.Join(topic, opts...)
 }
 
+// LookupTXT looks up the TXT record for the given SName.
+func (r *SNRHost) LookupTXT(ctx context.Context, name string) (Records, error) {
+	// Call internal resolver
+	recs, err := r.resolver.LookupTXT(ctx, name)
+	if err != nil {
+		return nil, err
+	}
+
+	// Check Record count
+	if len(recs) == 0 {
+		return nil, ErrEmptyTXT
+	} else if len(recs) > 1 {
+		return nil, ErrMultipleRecords
+	} else {
+		// Create NB records
+		records := make([]Record, len(recs))
+		for _, rec := range recs {
+			records = append(records, NewNBRecord(name, rec))
+		}
+		return records, nil
+	}
+}
+
 // Router returns the host node Peer Routing Function
 func (hn *SNRHost) Router(h host.Host) (routing.PeerRouting, error) {
 	// Create DHT
@@ -246,7 +271,7 @@ func (h *SNRHost) SendMessage(id peer.ID, p protocol.ID, data proto.Message) err
 // SignData signs an outgoing p2p message payload
 func (n *SNRHost) SignData(data []byte) ([]byte, error) {
 	// Get local node's private key
-	res, err := keychain.Primary.SignWith(keychain.Account, data)
+	res, err := wallet.Primary.SignWith(wallet.Account, data)
 	if err != nil {
 		logger.Error("SignData: Failed to get local host's private key", err)
 		return nil, err

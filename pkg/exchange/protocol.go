@@ -24,7 +24,6 @@ type ExchangeProtocol struct {
 	ctx            context.Context
 	host           *host.SNRHost // host
 	namebaseClient *NamebaseAPIClient
-	resolver       HDNSResolver
 }
 
 // NewProtocol creates new ExchangeProtocol
@@ -34,14 +33,13 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*E
 		logger.Error("Failed to fetch API Keys", err)
 		return nil, err
 	}
-	
+
 	// Create Exchange Protocol
 	exchProtocol := &ExchangeProtocol{
 		ctx:      ctx,
 		host:     host,
 		node:     node,
 		namebaseClient: NewNamebaseClient(ctx, key, secret),
-		resolver: NewHDNSResolver(),
 	}
 	logger.Debug("✅  ExchangeProtocol is Activated \n")
 
@@ -119,12 +117,12 @@ func (p *ExchangeProtocol) Put(peer *common.Peer) error {
 
 // Verify method uses resolver to check if Peer is registered,
 // returns true if Peer is registered
-func (p *ExchangeProtocol) Verify(sname string) (bool, Record, error) {
+func (p *ExchangeProtocol) Verify(sname string) (bool, host.Record, error) {
 	// Create Context
-	empty := Record{}
+	empty := host.Record{}
 
 	// Verify Peer is registered
-	recs, err := p.resolver.LookupTXT(p.ctx, sname)
+	recs, err := p.host.LookupTXT(p.ctx, sname)
 	if err != nil {
 		logger.Error("Failed to resolve DNS record for SName", err)
 		return false, empty, err
@@ -159,9 +157,9 @@ func (p *ExchangeProtocol) Verify(sname string) (bool, Record, error) {
 }
 
 // RegisterDomain registers a domain with Namebase.
-func (p *ExchangeProtocol) Register(sName string, records ...Record) (DomainMap, error) {
+func (p *ExchangeProtocol) Register(sName string, records ...host.Record) (host.DomainMap, error) {
 	// Put records into Namebase
-	req := NewNBAddRequest(records...)
+	req := host.NewNBAddRequest(records...)
 	ok, err := p.namebaseClient.PutRecords(req)
 	if err != nil {
 		logger.Error("Failed to Register SName", err)
@@ -181,14 +179,14 @@ func (p *ExchangeProtocol) Register(sName string, records ...Record) (DomainMap,
 	}
 
 	// Map records to DomainMap
-	m := make(DomainMap)
+	m := make(host.DomainMap)
 	for _, r := range recs {
 		m[r.Host] = r.Value
 	}
 	return m, nil
 }
 
-func compareRecordtoID(r Record, target peer.ID) (bool, error) {
+func compareRecordtoID(r host.Record, target peer.ID) (bool, error) {
 	// Check peer record
 	pid, err := r.PeerID()
 	if err != nil {

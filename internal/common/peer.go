@@ -15,52 +15,9 @@ import (
 	mh "github.com/multiformats/go-multihash"
 	"github.com/o1egl/govatar"
 	"github.com/pkg/errors"
-	"github.com/sonr-io/core/internal/keychain"
+	"github.com/sonr-io/core/internal/wallet"
 	"google.golang.org/protobuf/proto"
 )
-
-// ** ───────────────────────────────────────────────────────
-// ** ─── SNID Management ───────────────────────────────────
-// ** ───────────────────────────────────────────────────────
-// func NewSNID(sname string) (*SNID, error) {
-// 	// Check if SNID is empty
-// 	if len(sname) == 0 {
-// 		return nil, errors.New("SName not provided.")
-// 	}
-
-// 	// Find Records
-// 	r := internet.NewHDNSResolver()
-// 	recs, err := r.LookupTXT(context.Background(), sname)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	// Get Name from Records
-// 	rec, err := recs.GetNameRecord()
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	// Get Pub Key
-// 	pubKey, err := rec.PubKeyBuffer()
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	// Get Peer ID
-// 	id, err := rec.PeerID()
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	// Return SNID
-// 	return &SNID{
-// 		Domain: sname,
-// 		PeerID: id.String(),
-// 		PubKey: pubKey,
-// 	}, nil
-// }
-
 // ** ───────────────────────────────────────────────────────
 // ** ─── Peer Management ───────────────────────────────────
 // ** ───────────────────────────────────────────────────────
@@ -182,7 +139,7 @@ func (p *Peer) OS() string {
 }
 
 // SnrPubKey returns the Public Key from the Peer as SnrPubKey
-func (p *Peer) SnrPubKey() (*keychain.SnrPubKey, error) {
+func (p *Peer) SnrPubKey() (*wallet.SnrPubKey, error) {
 	// Get Public Key
 	pub, err := p.PubKey()
 	if err != nil {
@@ -191,7 +148,7 @@ func (p *Peer) SnrPubKey() (*keychain.SnrPubKey, error) {
 	}
 
 	// Return SnrPubKey
-	return keychain.NewSnrPubKey(pub), nil
+	return wallet.NewSnrPubKey(pub), nil
 }
 
 // ** ───────────────────────────────────────────────────────

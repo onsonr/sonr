@@ -64,7 +64,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*M
 // 	}()
 
 // 	// Start watching (the third param indicates we want to keep watching when offline)
-// 	state, err := ts.mailbox.WatchInbox(context.Background(), events, true)
+// 	state, err := ts.mailbox.WatchInbox(ts.ctx, events, true)
 // 	if err != nil {
 // 		logger.Error("Error watching Mailbox", err)
 // 		return
@@ -88,7 +88,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*M
 // // Handle New Mailbox Message
 // func (ts *MailboxProtocol) onNewMessage(e local.MailboxEvent, state cmd.ConnectionState) {
 // 	// List Total Inbox
-// 	inbox, err := ts.mailbox.ListInboxMessages(context.Background())
+// 	inbox, err := ts.mailbox.ListInboxMessages(ts.ctx)
 // 	if err != nil {
 // 		logger.Error("Failed to List Inbox Messages", err)
 // 		return
@@ -96,7 +96,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*M
 
 // 	// Logging and Open Body
 // 	logger.Info(fmt.Sprintf("Received new message: %s", inbox[0].From))
-// 	body, err := inbox[0].Open(context.Background(), ts.mailbox.Identity())
+// 	body, err := inbox[0].Open(ts.ctx, ts.mailbox.Identity())
 // 	if err != nil {
 // 		logger.Error("Failed to Open Inbox Messages", err)
 // 		return
@@ -135,7 +135,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*M
 // 	}
 
 // 	// Mark Item as Read
-// 	err := ts.mailbox.DeleteInboxMessage(context.Background(), id)
+// 	err := ts.mailbox.DeleteInboxMessage(ts.ctx, id)
 // 	if err != nil {
 // 		logger.Error("Failed to Delete Mailbox Message", err)
 // 		return err
@@ -151,7 +151,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*M
 // 	}
 
 // 	// Mark Item as Read
-// 	err := ts.mailbox.ReadInboxMessage(context.Background(), id)
+// 	err := ts.mailbox.ReadInboxMessage(ts.ctx, id)
 // 	if err != nil {
 // 		logger.Error("Failed to set Mailbox Message as Read", err)
 // 		return err
@@ -174,7 +174,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*M
 // 	}
 
 // 	// 	// Send Message to Mailbox
-// 	msg, err := ts.mailbox.SendMessage(context.Background(), to, buf)
+// 	msg, err := ts.mailbox.SendMessage(ts.ctx, to, buf)
 // 	if err != nil {
 // 		logger.Error(fmt.Sprintf("Failed to Send Message to Peer with ThreadIdentity: %s", to.String()), err)
 // 		return err
