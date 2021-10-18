@@ -7,7 +7,6 @@ import (
 	"time"
 
 	api "github.com/sonr-io/core/internal/api"
-	"github.com/sonr-io/core/pkg/domain"
 	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/mailbox"
@@ -165,16 +164,10 @@ type HighwayNodeStub struct {
 	ctx        context.Context
 	grpcServer *grpc.Server
 	listener   net.Listener
-	*domain.DomainProtocol
 }
 
 // startHighwayService creates a new Highway service stub for the node.
 func (n *Node) startHighwayService(ctx context.Context, opts *nodeOptions) (api.NodeStubImpl, error) {
-	// Initialize Domain Protocol
-	domainProtocol, err := domain.NewProtocol(ctx, n.host, n)
-	if err != nil {
-		return nil, err
-	}
 
 	// Create the listener
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", RPC_SERVER_PORT))
@@ -185,21 +178,15 @@ func (n *Node) startHighwayService(ctx context.Context, opts *nodeOptions) (api.
 	// Create the RPC Service
 	grpcServer := grpc.NewServer()
 	stub := &HighwayNodeStub{
-		Node:           n,
-		ctx:            ctx,
-		grpcServer:     grpcServer,
-		listener:       listener,
-		DomainProtocol: domainProtocol,
+		Node:       n,
+		ctx:        ctx,
+		grpcServer: grpcServer,
+		listener:   listener,
 	}
 	// Register the RPC Service
 	RegisterHighwayServiceServer(stub.grpcServer, stub)
 	go stub.Serve(ctx, listener, DefaultAutoPingTicker)
 	return stub, nil
-}
-
-// HasProtocols returns true if the node has the protocols.
-func (s *HighwayNodeStub) HasProtocols() bool {
-	return s.DomainProtocol != nil
 }
 
 func (s *HighwayNodeStub) Serve(ctx context.Context, listener net.Listener, ticker time.Duration) {

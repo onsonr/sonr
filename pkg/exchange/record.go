@@ -10,6 +10,9 @@ import (
 	"github.com/pkg/errors"
 )
 
+// DomainMap returns map with host as key and recordValue as value.
+type DomainMap map[string]string
+
 type RecordCategory int
 
 const (

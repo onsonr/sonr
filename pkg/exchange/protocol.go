@@ -20,19 +20,27 @@ var (
 
 // ExchangeProtocol handles Global Sonr Exchange Protocol
 type ExchangeProtocol struct {
-	node     api.NodeImpl
-	ctx      context.Context
-	host     *host.SNRHost // host
-	resolver HDNSResolver
+	node           api.NodeImpl
+	ctx            context.Context
+	host           *host.SNRHost // host
+	namebaseClient *NamebaseAPIClient
+	resolver       HDNSResolver
 }
 
 // NewProtocol creates new ExchangeProtocol
 func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*ExchangeProtocol, error) {
+	key, secret, err := fetchApiKeys()
+	if err != nil {
+		logger.Error("Failed to fetch API Keys", err)
+		return nil, err
+	}
+	
 	// Create Exchange Protocol
 	exchProtocol := &ExchangeProtocol{
 		ctx:      ctx,
 		host:     host,
 		node:     node,
+		namebaseClient: NewNamebaseClient(ctx, key, secret),
 		resolver: NewHDNSResolver(),
 	}
 	logger.Debug("✅  ExchangeProtocol is Activated \n")
@@ -148,6 +156,36 @@ func (p *ExchangeProtocol) Verify(sname string) (bool, Record, error) {
 		return false, rec, err
 	}
 	return ok, rec, nil
+}
+
+// RegisterDomain registers a domain with Namebase.
+func (p *ExchangeProtocol) Register(sName string, records ...Record) (DomainMap, error) {
+	// Put records into Namebase
+	req := NewNBAddRequest(records...)
+	ok, err := p.namebaseClient.PutRecords(req)
+	if err != nil {
+		logger.Error("Failed to Register SName", err)
+		return nil, err
+	}
+
+	// API Call was Unsuccessful
+	if !ok {
+		return nil, err
+	}
+
+	// Get records from Namebase
+	recs, err := p.namebaseClient.FindRecords(sName)
+	if err != nil {
+		logger.Error("Failed to Find SName after Registering", err)
+		return nil, err
+	}
+
+	// Map records to DomainMap
+	m := make(DomainMap)
+	for _, r := range recs {
+		m[r.Host] = r.Value
+	}
+	return m, nil
 }
 
 func compareRecordtoID(r Record, target peer.ID) (bool, error) {
