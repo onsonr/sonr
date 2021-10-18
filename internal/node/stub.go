@@ -6,6 +6,7 @@ import (
 	"net"
 	"time"
 
+	api "github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/pkg/domain"
 	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/lobby"
@@ -14,19 +15,12 @@ import (
 	grpc "google.golang.org/grpc"
 )
 
-// NodeStub is the interface for the node based on mode: (client, highway)
-type NodeStub interface {
-	Serve(ctx context.Context, listener net.Listener, ticker time.Duration)
-	HasProtocols() bool
-	Close() error
-}
-
 var DefaultAutoPingTicker = 5 * time.Second
 
 // ClientNodeStub is the RPC Service for the Node.
 type ClientNodeStub struct {
 	// Interfaces
-	NodeStub
+	api.NodeStubImpl
 	ClientServiceServer
 
 	// Properties
@@ -44,7 +38,7 @@ type ClientNodeStub struct {
 }
 
 // startClientService creates a new Client service stub for the node.
-func (n *Node) startClientService(ctx context.Context, opts *nodeOptions) (NodeStub, error) {
+func (n *Node) startClientService(ctx context.Context, opts *nodeOptions) (api.NodeStubImpl, error) {
 	// Set Transfer Protocol
 	transferProtocol, err := transfer.NewProtocol(ctx, n.host, n)
 	if err != nil {
@@ -109,6 +103,7 @@ func (s *ClientNodeStub) HasProtocols() bool {
 func (s *ClientNodeStub) Close() error {
 	s.listener.Close()
 	s.grpcServer.Stop()
+	s.LobbyProtocol.Close()
 	return nil
 }
 
@@ -161,7 +156,7 @@ func (s *ClientNodeStub) Update() error {
 
 // HighwayNodeStub is the RPC Service for the Full Node.
 type HighwayNodeStub struct {
-	NodeStub
+	api.NodeStubImpl
 	HighwayServiceServer
 	ClientServiceServer
 	*Node
@@ -174,7 +169,7 @@ type HighwayNodeStub struct {
 }
 
 // startHighwayService creates a new Highway service stub for the node.
-func (n *Node) startHighwayService(ctx context.Context, opts *nodeOptions) (NodeStub, error) {
+func (n *Node) startHighwayService(ctx context.Context, opts *nodeOptions) (api.NodeStubImpl, error) {
 	// Initialize Domain Protocol
 	domainProtocol, err := domain.NewProtocol(ctx, n.host, n)
 	if err != nil {

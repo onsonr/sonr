@@ -8,6 +8,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/device"
+	"github.com/sonr-io/core/internal/fs"
 	"github.com/sonr-io/core/tools/config"
 	"google.golang.org/protobuf/encoding/protojson"
 )
@@ -20,37 +21,33 @@ func DefaultInitializeRequest() *InitializeRequest {
 	}
 }
 
+// FSOpts returns a list of FS Options
+func (ir *InitializeRequest) FSOpts() []fs.Option {
+	return []fs.Option{
+		fs.WithHomePath(ir.HomeDir()),
+		fs.WithSupportPath(ir.SupportDir()),
+		fs.WithTempPath(ir.TempDir()),
+	}
+}
+
+// HomeDir returns provided String Home Path
+func (ir *InitializeRequest) HomeDir() string {
+	return ir.GetDeviceOptions().GetHomeDir()
+}
+
+// SupportDir returns provided String Support Path
+func (ir *InitializeRequest) SupportDir() string {
+	return ir.GetDeviceOptions().GetSupportDir()
+}
+
+// TempDir returns provided String Temporary Path
+func (ir *InitializeRequest) TempDir() string {
+	return ir.GetDeviceOptions().GetTempDir()
+}
+
 // IsDev returns true if the node is running in development mode.
 func (ir *InitializeRequest) IsDev() bool {
 	return ir.GetEnvironment().IsDev()
-}
-
-// fsOpts returns the device.FSOptions
-func (ir *InitializeRequest) fsOpts() []device.FSOption {
-	fsOpts := make([]device.FSOption, 0)
-	if ir.GetDeviceOptions() != nil {
-		// Set Temporary Path
-		fsOpts = append(fsOpts, device.FSOption{
-			Path: ir.GetDeviceOptions().GetCacheDir(),
-			Type: device.Temporary,
-		}, device.FSOption{
-			Path: ir.GetDeviceOptions().GetDownloadsDir(),
-			Type: device.Downloads,
-		}, device.FSOption{
-			Path: ir.GetDeviceOptions().GetDocumentsDir(),
-			Type: device.Documents,
-		}, device.FSOption{
-			Path: ir.GetDeviceOptions().GetSupportDir(),
-			Type: device.Support,
-		}, device.FSOption{
-			Path: ir.GetDeviceOptions().GetDatabaseDir(),
-			Type: device.Database,
-		}, device.FSOption{
-			Path: ir.GetDeviceOptions().GetTextileDir(),
-			Type: device.Textile,
-		})
-	}
-	return fsOpts
 }
 
 // MarshalJSON marshals the request to JSON
@@ -61,16 +58,6 @@ func (ir *InitializeRequest) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON unmarshals the request from JSON
 func (ir *InitializeRequest) UnmarshalJSON(data []byte) error {
 	return protojson.Unmarshal(data, ir)
-}
-
-// ParseOpts parses the device options and returns the device.FSOptions
-func (ir *InitializeRequest) ParseOpts() []device.FSOption {
-	logger.Info("Parsing Initialize Request...")
-
-	// Check DeviceID
-	ir.SetEnvVars()
-	ir.SetDeviceID()
-	return ir.fsOpts()
 }
 
 // SetEnvVars sets the environment variables

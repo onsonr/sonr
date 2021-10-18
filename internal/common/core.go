@@ -6,6 +6,7 @@ import (
 	olc "github.com/google/open-location-code/go"
 	"github.com/kataras/golog"
 	"github.com/pkg/errors"
+	"github.com/sonr-io/core/internal/fs"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -167,11 +168,12 @@ func (p *Payload) MapUrlItems(fn PayloadItemFunc) error {
 
 // ReplaceItemsDir iterates over the items in the payload and replaces the
 // directory of the item with the new directory.
-func (p *Payload) ResetItemsDirectory() *Payload {
+func (p *Payload) ResetItemsDirectory(f fs.Folder) *Payload {
 	// Create new Payload
 	for _, item := range p.GetItems() {
 		if item.GetFile() != nil {
-			item.GetFile().ResetDir()
+			path, _ := f.GenPath(item.GetFile().GetPath())
+			item.GetFile().ResetDir(path)
 		}
 	}
 	return p

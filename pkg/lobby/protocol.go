@@ -38,6 +38,7 @@ type LobbyProtocol struct {
 
 // NewProtocol creates a new lobby protocol instance.
 func NewProtocol(ctx context.Context, host *host.SNRHost, nu api.NodeImpl, options ...LobbyOption) (*LobbyProtocol, error) {
+
 	opts := defaultLobbyOptions()
 	for _, option := range options {
 		option(opts)
@@ -74,7 +75,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, nu api.NodeImpl, optio
 
 	// Create Exchange Protocol
 	lobProtocol := &LobbyProtocol{
-		node:     nu,
+		node:         nu,
 		ctx:          ctx,
 		host:         host,
 		topic:        topic,
@@ -188,4 +189,10 @@ func (p *LobbyProtocol) autoPushUpdates() {
 		}
 		time.Sleep(time.Second * 5)
 	}
+}
+
+func (p *LobbyProtocol) Close() error {
+	p.eventHandler.Cancel()
+	p.subscription.Cancel()
+	return p.topic.Close()
 }

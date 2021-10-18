@@ -27,7 +27,7 @@ type Node struct {
 	store *bitcask.Bitcask
 
 	// Node Stub Interface
-	stub NodeStub
+	stub api.NodeStubImpl
 
 	// Channels
 	// TransferProtocol - decisionEvents
@@ -69,7 +69,7 @@ func NewNode(ctx context.Context, options ...NodeOption) (api.NodeImpl, *api.Ini
 	}
 
 	// Initialize Host
-	host, err := host.NewHost(ctx, host.WithConnection(opts.connection))
+	host, err := host.NewHost(ctx, host.WithConnection(opts.connection), host.WithTerminal(opts.isTerminal))
 	if err != nil {
 		logger.Error("Failed to initialize host", err)
 		return nil, api.NewInitialzeResponse(nil, false), err
@@ -97,12 +97,17 @@ func NewNode(ctx context.Context, options ...NodeOption) (api.NodeImpl, *api.Ini
 func (n *Node) Close() {
 	// Close Stub
 	if err := n.stub.Close(); err != nil {
-		logger.Error("Failed to close host", err)
+		logger.Error("Failed to close host, ", err)
+	}
+
+	// Close Store
+	if err := n.store.Close(); err != nil {
+		logger.Error("Failed to close store, ", err)
 	}
 
 	// Close Host
 	if err := n.host.Close(); err != nil {
-		logger.Error("Failed to close host", err)
+		logger.Error("Failed to close host, ", err)
 	}
 }
 
@@ -115,7 +120,7 @@ func (n *Node) Peer() (*common.Peer, error) {
 	}
 
 	// Get Public Key
-	pubKey, err := device.KeyChain.GetSnrPubKey(keychain.Account)
+	pubKey, err := keychain.Primary.GetSnrPubKey(keychain.Account)
 	if err != nil {
 		logger.Error("Failed to get Public Key", err)
 		return nil, err
@@ -150,22 +155,27 @@ func (n *Node) Peer() (*common.Peer, error) {
 	}, nil
 }
 
+// OnDecision is callback for NodeImpl for decisionEvents
 func (n *Node) OnDecision(event *api.DecisionEvent) {
 	n.decisionEvents <- event
 }
 
+// OnInvite is callback for NodeImpl for inviteEvents
 func (n *Node) OnInvite(event *api.InviteEvent) {
 	n.inviteEvents <- event
 }
 
+// OnRefresh is callback for NodeImpl for refreshEvents
 func (n *Node) OnRefresh(event *api.RefreshEvent) {
 	n.refreshEvents <- event
 }
 
+// OnProgress is callback for NodeImpl for progressEvents
 func (n *Node) OnProgress(event *api.ProgressEvent) {
 	n.progressEvents <- event
 }
 
+// OnComplete is callback for NodeImpl for completeEvents
 func (n *Node) OnComplete(event *api.CompleteEvent) {
 	n.completeEvents <- event
 }

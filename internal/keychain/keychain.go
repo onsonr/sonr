@@ -10,7 +10,11 @@ import (
 	"github.com/google/uuid"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/sonr-io/core/tools/config"
+	"github.com/sonr-io/core/internal/fs"
+)
+
+var (
+	Primary Keychain
 )
 
 // Keychain Interface for managing device keypairs.
@@ -58,34 +62,36 @@ type Keychain interface {
 }
 
 // NewKeychain creates a new keychain with Config.
-func NewKeychain(config *config.Config) (Keychain, error) {
+func Open() error {
+	config := fs.Wallet
+	
 	// Check if Keychain exists
 	if keychainExists(config) {
 		// Load Existing Keychain
 		kc, err := loadKeychain(config)
 		if err != nil {
-			return nil, err
+			return err
 		}
-
-		// Return Keychain
-		return kc, nil
+		Primary = kc
+		return nil
 	} else {
 		logger.Info("Creating new Keychain")
 		// Create Keychain
 		kc, err := newKeychain(config)
 		if err != nil {
-			return nil, err
+			return err
 		}
 
 		// Return Keychain
-		return kc, nil
+		Primary = kc
+		return nil
 	}
 }
 
 // keychain is a keychain implementation that stores keys in a directory.
 type keychain struct {
 	Keychain
-	config *config.Config
+	config fs.Folder
 
 	// Key Pair References
 	accountKeyPair keyPair
@@ -94,7 +100,7 @@ type keychain struct {
 }
 
 // loadKeychain loads a keychain from a file.
-func loadKeychain(kcconfig *config.Config) (Keychain, error) {
+func loadKeychain(kcconfig fs.Folder) (Keychain, error) {
 	// Create Keychain
 	kc := &keychain{
 		config: kcconfig,
@@ -133,10 +139,10 @@ func loadKeychain(kcconfig *config.Config) (Keychain, error) {
 }
 
 // newKeychain creates a new keychain.
-func newKeychain(kcconfig *config.Config) (Keychain, error) {
+func newKeychain(folder fs.Folder) (Keychain, error) {
 	// Create Keychain
 	kc := &keychain{
-		config: kcconfig,
+		config: folder,
 	}
 
 	// Create New Account Key
@@ -147,7 +153,7 @@ func newKeychain(kcconfig *config.Config) (Keychain, error) {
 	}
 
 	// Write Account Key to Disk
-	err = writeKey(kcconfig, accPrivKey, Account)
+	err = writeKey(folder, accPrivKey, Account)
 	if err != nil {
 		return nil, err
 	}
@@ -163,7 +169,7 @@ func newKeychain(kcconfig *config.Config) (Keychain, error) {
 	}
 
 	// Write Link Key to Disk
-	err = writeKey(kcconfig, linkPrivKey, Link)
+	err = writeKey(folder, linkPrivKey, Link)
 	if err != nil {
 		return nil, err
 	}
@@ -179,7 +185,7 @@ func newKeychain(kcconfig *config.Config) (Keychain, error) {
 	}
 
 	// Write Group Key to Disk
-	err = writeKey(kcconfig, groupPrivKey, Group)
+	err = writeKey(folder, groupPrivKey, Group)
 	if err != nil {
 		return nil, err
 	}

@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/sonr-io/core/internal/api"
-	"github.com/sonr-io/core/internal/device"
+	"github.com/sonr-io/core/internal/fs"
 	"github.com/sonr-io/core/internal/host"
 )
 
@@ -29,7 +29,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*M
 	}
 
 	// Create new mailbox
-	if device.Textile.Exists() {
+	if fs.ThirdParty.Exists(TextileMailboxDirName) {
 		// Return Existing Mailbox
 		if err := mailProtocol.loadMailbox(); err != nil {
 			return nil, err

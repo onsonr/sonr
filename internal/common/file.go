@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/gabriel-vasile/mimetype"
-	"github.com/sonr-io/core/internal/device"
 )
 
 // NewFileItem creates a new transfer file item
@@ -47,9 +46,8 @@ func NewFileItem(path string, tbuf []byte) (*Payload_Item, error) {
 }
 
 // ResetDir replaces the directory of the item path with DownloadsPath
-func (fi *FileItem) ResetDir() string {
-	// Set Path
-	fi.Path, _ = device.NewDownloadsPath(fi.GetPath())
+func (fi *FileItem) ResetDir(path string) string {
+	fi.Path = path
 	return fi.GetPath()
 }
 

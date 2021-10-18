@@ -16,7 +16,6 @@ import (
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/common"
-	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/keychain"
 )
 
@@ -66,6 +65,13 @@ func WithInterval(interval time.Duration) HostOption {
 	}
 }
 
+// WithTerminal sets the Terminal value to true
+func WithTerminal(val bool) HostOption {
+	return func(o hostOptions) {
+		o.IsTerminal = val
+	}
+}
+
 // WithTTL sets the ttl for the host. Default is 2 minutes.
 func WithTTL(ttl time.Duration) HostOption {
 	return func(o hostOptions) {
@@ -85,6 +91,7 @@ type hostOptions struct {
 	Rendezvous     string
 	Interval       time.Duration
 	TTL            dscl.Option
+	IsTerminal     bool
 }
 
 // defaultHostOptions returns the default host options.
@@ -142,7 +149,7 @@ func (opts hostOptions) Apply(ctx context.Context, options ...HostOption) (*SNRH
 
 	// findPrivKey returns the private key for the host.
 	findPrivKey := func() (crypto.PrivKey, error) {
-		privKey, err := device.KeyChain.GetPrivKey(keychain.Account)
+		privKey, err := keychain.Primary.GetPrivKey(keychain.Account)
 		if err == nil {
 			return privKey, nil
 		}

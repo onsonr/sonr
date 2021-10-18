@@ -138,6 +138,11 @@ func (p *Peer) Info() (*PeerInfo, error) {
 	}, nil
 }
 
+// Arch returns Peer Device GOARCH
+func (p *Peer) Arch() string {
+	return p.GetDevice().GetArch()
+}
+
 // Libp2pID returns the PeerID based on PublicKey from Profile
 func (p *Peer) Libp2pID() (peer.ID, error) {
 	// Check if PublicKey is empty
@@ -173,6 +178,11 @@ func (p *Peer) PubKey() (crypto.PubKey, error) {
 		return nil, err
 	}
 	return pubKey, nil
+}
+
+// OS returns Peer Device GOOS
+func (p *Peer) OS() string {
+	return p.GetDevice().GetOs()
 }
 
 // SnrPubKey returns the Public Key from the Peer as SnrPubKey

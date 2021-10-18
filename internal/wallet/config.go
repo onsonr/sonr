@@ -2,8 +2,6 @@ package wallet
 
 import (
 	"github.com/kataras/golog"
-
-	"github.com/sonr-io/core/internal/api"
 )
 
 // Error Definitions
@@ -13,13 +11,6 @@ var (
 
 // NodeOption is a function that modifies the node options.
 type WalletOption func(*walletOptions)
-
-// WithRequest sets the initialize request.
-func WithDirectory(req *api.InitializeRequest) WalletOption {
-	return func(o *walletOptions) {
-		o.directory = req.GetDeviceOptions().GetWalletDir()
-	}
-}
 
 // walletOptions is a collection of options for the node.
 type walletOptions struct {

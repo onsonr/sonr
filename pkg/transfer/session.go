@@ -11,6 +11,7 @@ import (
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
+	"github.com/sonr-io/core/internal/fs"
 	"github.com/sonr-io/core/internal/host"
 )
 
@@ -121,7 +122,7 @@ func (s *Session) Items() []*common.Payload_Item {
 // SetPayload sets the Payload for the Session.
 func (s *Session) SetPayload() *common.Payload {
 	if s.IsIncoming() {
-		s.payload = s.payload.ResetItemsDirectory()
+		s.payload = s.payload.ResetItemsDirectory(fs.Downloads)
 		s.lastUpdated = common.NewLastUpdated()
 	}
 	return s.payload

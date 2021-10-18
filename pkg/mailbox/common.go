@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/kataras/golog"
-	"github.com/sonr-io/core/internal/device"
+	"github.com/sonr-io/core/internal/fs"
 )
 
 // Textile API definitions
@@ -46,7 +46,7 @@ func fetchApiKeys() (string, string, error) {
 // getMailboxPath returns the mailbox path from the device
 func (mb *MailboxProtocol) getMailboxPath() (string, error) {
 	// Get Mailbox Path
-	path, err := device.Textile.Join(TextileMailboxDirName)
+	path, err := fs.ThirdParty.GenPath(TextileMailboxDirName)
 	if err != nil {
 		logger.Error("Failed to Find Existing Mailbox at Path", err)
 		return "", err

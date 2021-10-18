@@ -9,7 +9,7 @@ import (
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
-	"github.com/sonr-io/core/internal/device"
+	"github.com/sonr-io/core/internal/fs"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -71,7 +71,7 @@ type itemReader struct {
 
 // NewItemReader Returns a new Reader for the given FileItem
 func NewItemReader(index int, count int, item *common.Payload_Item, node api.NodeImpl) *itemReader {
-	path, _ := device.NewDownloadsPath(item.GetFile().GetPath())
+	path, _ := fs.Downloads.GenPath(item.GetFile().GetPath())
 	return &itemReader{
 		item:   item.GetFile(),
 		size:   item.GetSize(),

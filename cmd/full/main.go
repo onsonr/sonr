@@ -2,17 +2,20 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"os"
 	"os/signal"
 	"path/filepath"
+	"strings"
 	"syscall"
 
 	"github.com/kataras/golog"
 	"github.com/pterm/pterm"
 	"github.com/sonr-io/core/internal/api"
-	"github.com/sonr-io/core/internal/device"
+	"github.com/sonr-io/core/internal/common"
+	"github.com/sonr-io/core/internal/fs"
 	"github.com/sonr-io/core/internal/node"
 	"google.golang.org/protobuf/encoding/protojson"
 )
@@ -42,20 +45,18 @@ func main() {
 	}
 
 	// Initialize Device
-	deviceSpinner, _ := pterm.DefaultSpinner.WithRemoveWhenDone(true).WithShowTimer(true).Start("Initializing Device...")
 	ctx := context.Background()
-	err = device.Init()
-	deviceSpinner.Stop()
+	err = fs.Start()
 	if err != nil {
 		golog.Fatal("Failed to initialize Device", golog.Fields{"error": err})
+		os.Exit(1)
 	}
 
 	// Create Node
-	nodeSpinner, _ := pterm.DefaultSpinner.WithRemoveWhenDone(true).WithShowTimer(true).Start("Starting Full Node...")
 	n, _, err := node.NewNode(ctx, node.WithTerminal(), node.WithRequest(req))
-	nodeSpinner.Stop()
 	if err != nil {
 		golog.Fatal("Failed to update Profile for Node", golog.Fields{"error": err})
+		os.Exit(1)
 	}
 
 	// Set Lib
@@ -66,18 +67,21 @@ func main() {
 	snr.Serve()
 }
 
-func AppHeader(s *Sonr) *pterm.TextPrinter {
+// AppHeader prints Node Info onto Terminal
+func AppHeader(s *Sonr) {
 	p, err := s.node.Peer()
 	if err != nil {
 		golog.Error("Failed to get Peer", golog.Fields{"error": err})
 		s.Exit(1)
-		return nil
+
 	}
-	header := fmt.Sprintf("Node Available: %v", p.PeerID)
-	return pterm.DefaultHeader.WithBackgroundStyle(pterm.NewStyle(pterm.BgLightBlue)).WithMargin(10).Println(
-		header)
+
+	//
+	pterm.DefaultSection.Println(fmt.Sprintf("Sonr Node Online: %s", p.PeerID))
+	pterm.Info.Println(fmt.Sprintf("SName: %s \nOS: %s \nArch: %s", p.GetSName(), p.OS(), p.Arch()))
 }
 
+// Serve waits for Exit Signal from Terminal
 func (sh *Sonr) Serve() {
 	AppHeader(sh)
 	c := make(chan os.Signal)
@@ -95,15 +99,19 @@ func (sh *Sonr) Serve() {
 	}
 }
 
+// Exit handles cleanup on Sonr A[[]]
 func (sh *Sonr) Exit(code int) {
 	golog.Info("Cleaning up on Exit...")
+	sh.node.Close()
 	defer sh.ctx.Done()
 	ex, err := os.Executable()
 	if err != nil {
 		golog.Error("Failed to find Executable, ", err)
+		return
 	}
 
 	exPath := filepath.Dir(ex)
+	golog.Info(filepath.Join(exPath, "sonr_bitcask"))
 	err = os.RemoveAll(filepath.Join(exPath, "sonr_bitcask"))
 	if err != nil {
 		golog.Error("Failed to remove Bitcask, ", err)
@@ -113,23 +121,57 @@ func (sh *Sonr) Exit(code int) {
 
 // Parse parses the given request and returns Request
 func Parse() (*api.InitializeRequest, error) {
-	// Get DefaultInitializeRequest
-	defReq := api.DefaultInitializeRequest()
-	buf, err := defReq.MarshalJSON()
-	if err != nil {
-		return defReq, err
-	}
-
-	// Parse Flag
-	req := &api.InitializeRequest{}
-	reqPtr := flag.String("req", string(buf), "InitializeRequest JSON String")
+	// Parse flag
+	latPtr := flag.Float64("lat", 34.102920, "Latitude for InitializeRequest")
+	lngPtr := flag.Float64("lng", -118.394190, "Longitude for InitializeRequest")
+	envVarsPtr := flag.String("vars", "KEY=VALUE", "Enviornment variables in format: 'Key=Value, Key=Value'")
+	profilePtr := flag.String("profile", "", "Profile JSON string")
 	flag.Parse()
 
-	// Unmarshal Request
-	err = protojson.Unmarshal([]byte(*reqPtr), req)
-	if err != nil {
-		return defReq, err
+	// Set Enviornment variables
+	if envVarsPtr != nil {
+		golog.Info("Setting Enviornment variables.")
+
+		// Split String Values
+		keyValuePairs := strings.Split(*envVarsPtr, ",")
+
+		// Iterate over keyValuePairs
+		for _, v := range keyValuePairs {
+			// Trim White Space
+			tv := strings.TrimSpace(v)
+
+			// Split Key Value Pairs
+			value := strings.Split(tv, "=")
+			if len(value) != 2 {
+				return nil, errors.New("Invalid Enviornment Variable Format")
+			}
+
+			// Set Env Variables
+			os.Setenv(value[0], value[1])
+		}
 	}
-	req.SetEnvVars()
+
+	// Set Location
+	req := &api.InitializeRequest{
+		Location: &common.Location{
+			Latitude:  *latPtr,
+			Longitude: *lngPtr,
+		},
+		Profile: common.NewDefaultProfile(),
+	}
+
+	// Set Profile
+	if *profilePtr != "" {
+		golog.Info("Setting Profile from JSON.")
+		p := &common.Profile{}
+
+		// Unmarshal JSON String
+		err := protojson.Unmarshal([]byte(*profilePtr), p)
+		if err == nil {
+			req.Profile = p
+		} else {
+			golog.Warn("Failed to set Profile from flag")
+		}
+	}
 	return req, nil
 }

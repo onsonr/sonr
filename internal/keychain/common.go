@@ -5,7 +5,7 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/crypto"
-	"github.com/sonr-io/core/tools/config"
+	"github.com/sonr-io/core/internal/fs"
 )
 
 // Error definitions
@@ -32,17 +32,17 @@ type SignedUUID struct {
 }
 
 // keychainExists checks if EVERY key pair exists in the keychain.
-func keychainExists(kcConfig *config.Config) bool {
-	accExists := kcConfig.Exists(Account.Path())
-	linkExists := kcConfig.Exists(Link.Path())
-	groupExists := kcConfig.Exists(Group.Path())
+func keychainExists(folder fs.Folder) bool {
+	accExists := folder.Exists(Account.Path())
+	linkExists := folder.Exists(Link.Path())
+	groupExists := folder.Exists(Group.Path())
 	return accExists && linkExists && groupExists
 }
 
 // readKey reads a key from a file and returns privKey and pubKey.
-func readKey(kcconfig *config.Config, kp KeyPairType) (crypto.PrivKey, crypto.PubKey, error) {
+func readKey(folder fs.Folder, kp KeyPairType) (crypto.PrivKey, crypto.PubKey, error) {
 	// Get Buffer
-	dat, err := kcconfig.ReadFile(kp.Path())
+	dat, err := folder.ReadFile(kp.Path())
 	if err != nil {
 		return nil, nil, err
 	}
@@ -59,7 +59,7 @@ func readKey(kcconfig *config.Config, kp KeyPairType) (crypto.PrivKey, crypto.Pu
 }
 
 // writeKey writes a key to the keychain.
-func writeKey(kcconfig *config.Config, privKey crypto.PrivKey, kp KeyPairType) error {
+func writeKey(folder fs.Folder, privKey crypto.PrivKey, kp KeyPairType) error {
 	// Marshal Private Key
 	buf, err := crypto.MarshalPrivateKey(privKey)
 	if err != nil {
@@ -67,7 +67,7 @@ func writeKey(kcconfig *config.Config, privKey crypto.PrivKey, kp KeyPairType) e
 	}
 
 	// Write Key to Keychain
-	err = kcconfig.WriteFile(kp.Path(), buf)
+	err = folder.WriteFile(kp.Path(), buf)
 	if err != nil {
 		return err
 	}

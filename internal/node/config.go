@@ -44,8 +44,8 @@ func WithRequest(req *api.InitializeRequest) NodeOption {
 	}
 }
 
-// WitHighway starts the Client RPC server as a highway node.
-func WitHighway() NodeOption {
+// WithHighway starts the Client RPC server as a highway node.
+func WithHighway() NodeOption {
 	return func(o *nodeOptions) {
 		o.mode = StubMode_HIGHWAY
 	}
@@ -82,6 +82,7 @@ func defaultNodeOptions() *nodeOptions {
 	}
 }
 
+// Apply applies to node 
 func (opts *nodeOptions) Apply(ctx context.Context, node *Node) error {
 	// Handle by Node Mode
 	if opts.mode == StubMode_CLIENT {

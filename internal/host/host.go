@@ -15,7 +15,6 @@ import (
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/common"
-	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/keychain"
 	"github.com/sonr-io/core/internal/wallet"
 	"google.golang.org/protobuf/proto"
@@ -105,7 +104,7 @@ func NewHost(ctx context.Context, options ...HostOption) (*SNRHost, error) {
 // AuthenticateId verifies UUID value and signature
 func (h *SNRHost) AuthenticateId(id *wallet.UUID) (bool, error) {
 	// Get local node's public key
-	pubKey, err := device.KeyChain.GetPubKey(keychain.Account)
+	pubKey, err := keychain.Primary.GetPubKey(keychain.Account)
 	if err != nil {
 		logger.Error("AuthenticateId: Failed to get local host's public key", err)
 		return false, err
@@ -247,7 +246,7 @@ func (h *SNRHost) SendMessage(id peer.ID, p protocol.ID, data proto.Message) err
 // SignData signs an outgoing p2p message payload
 func (n *SNRHost) SignData(data []byte) ([]byte, error) {
 	// Get local node's private key
-	res, err := device.KeyChain.SignWith(keychain.Account, data)
+	res, err := keychain.Primary.SignWith(keychain.Account, data)
 	if err != nil {
 		logger.Error("SignData: Failed to get local host's private key", err)
 		return nil, err

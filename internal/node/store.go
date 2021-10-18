@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/sonr-io/core/internal/common"
-	"github.com/sonr-io/core/internal/device"
+	"github.com/sonr-io/core/internal/fs"
 
 	"git.mills.io/prologic/bitcask"
 	"google.golang.org/protobuf/proto"
@@ -39,8 +39,8 @@ func recentsKey() []byte {
 // openStore creates a new Store instance for Node
 func (n *Node) openStore(ctx context.Context, opts *nodeOptions) error {
 	// Open the my.db data file in your current directory.
-	path, _ := device.NewDatabasePath("sonr_bitcask")
-	
+	path, _ := fs.Database.GenPath("sonr_bitcask")
+
 	// It will be created if it doesn't exist.
 	db, err := bitcask.Open(path, bitcask.WithAutoRecovery(true))
 	if err != nil {

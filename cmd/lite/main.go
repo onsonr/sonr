@@ -5,7 +5,7 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/internal/api"
-	"github.com/sonr-io/core/internal/device"
+	"github.com/sonr-io/core/internal/fs"
 	"github.com/sonr-io/core/internal/node"
 	"google.golang.org/protobuf/proto"
 )
@@ -45,7 +45,7 @@ func Start(reqBuf []byte) {
 	}
 
 	// Initialize Device
-	err = device.Init(req.ParseOpts()...)
+	err = fs.Start(fs.WithHomePath(req.HomeDir()))
 	if err != nil {
 		golog.Fatal("Failed to initialize Device", err)
 		return

@@ -34,13 +34,9 @@ message InitializeRequest {
   // Optional Message to Initialize FileSystem
   message DeviceOptions {
     string id = 1;           // Device ID
-    string cacheDir = 2;     // Cache Directory
-    string databaseDir = 3;  // Database Directory
-    string documentsDir = 4; // Documents Directory
-    string downloadsDir = 5; // Downloads Directory
-    string textileDir = 6;   // Textile Directory
-    string supportDir = 7;   // Support Directory
-    string walletDir = 8;    // Wallet Directory
+    string homeDir = 2;
+    string supportDir = 3;
+    string tempDir = 4;
   }
 
   // Libp2p Host Options

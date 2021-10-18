@@ -9,8 +9,8 @@ import (
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
-	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/host"
+	"github.com/sonr-io/core/internal/keychain"
 )
 
 // Transfer Emission Events
@@ -78,7 +78,7 @@ func (p *TransferProtocol) NewRequest(to *common.Peer, from *common.Peer, fromID
 		payload := p.supplyQueue.Remove(elem).(*common.Payload)
 
 		// Create new Metadata
-		meta, err := device.KeyChain.CreateMetadata(fromID)
+		meta, err := keychain.Primary.CreateMetadata(fromID)
 		if err != nil {
 			logger.Error("Failed to create new metadata for Shared Invite", err)
 			return "", nil, err
@@ -107,7 +107,7 @@ func (p *TransferProtocol) NewRequest(to *common.Peer, from *common.Peer, fromID
 // Respond to an invite request
 func (p *TransferProtocol) NewResponse(decs bool, to *common.Peer, from *common.Peer, fromID peer.ID) (peer.ID, *InviteResponse, error) {
 	// Create new Metadata
-	meta, err := device.KeyChain.CreateMetadata(fromID)
+	meta, err := keychain.Primary.CreateMetadata(fromID)
 	if err != nil {
 		logger.Error("Failed to create new metadata for Shared Invite", err)
 		return "", nil, err

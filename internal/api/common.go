@@ -1,6 +1,10 @@
 package api
 
 import (
+	"context"
+	"net"
+	"time"
+
 	"github.com/kataras/golog"
 	common "github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/keychain"
@@ -14,6 +18,7 @@ var (
 type NodeImpl interface {
 	GetProfile() (*common.Profile, error)
 	Peer() (*common.Peer, error)
+	Close()
 
 	OnRefresh(event *RefreshEvent)
 	OnInvite(event *InviteEvent)
@@ -21,6 +26,13 @@ type NodeImpl interface {
 	OnDecision(event *DecisionEvent)
 	OnProgress(event *ProgressEvent)
 	OnComplete(event *CompleteEvent)
+}
+
+// NodeStub is the interface for the node based on mode: (client, highway)
+type NodeStubImpl interface {
+	Serve(ctx context.Context, listener net.Listener, ticker time.Duration)
+	HasProtocols() bool
+	Close() error
 }
 
 // SignedMetadataToProto converts a SignedMetadata to a protobuf.

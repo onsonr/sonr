@@ -1,25 +1,36 @@
-package device
+package common
 
 import (
 	"errors"
 	"os"
 	"runtime"
-
-	"github.com/denisbrodbeck/machineid"
 )
-
-type PlatformOS string
 
 var (
-	Platform = PlatformOS(runtime.GOOS)
+	// General errors
+	ErrEmptyDeviceID = errors.New("Device ID cannot be empty")
+	ErrMissingEnvVar = errors.New("Cannot set EnvVariable with empty value")
+
+	// Directory errors
+	ErrDirectoryInvalid = errors.New("Directory Type is invalid")
+	ErrDirectoryUnset   = errors.New("Directory path has not been set")
+	ErrDirectoryJoin    = errors.New("Failed to join directory path")
 )
 
-const (
-	StatKey_Id       = "Id"
-	StatKey_HostName = "HostName"
-	StatKey_Os       = "Os"
-	StatKey_Arch     = "Arch"
+var (
+	// deviceID is the device ID. Either provided or found
+	deviceID string
 )
+
+// SetDeviceID sets the device ID.
+func SetDeviceID(id string) error {
+	if id != "" {
+		deviceID = id
+		return nil
+	}
+	logger.Error("Failed to Set Device ID", ErrEmptyDeviceID)
+	return ErrEmptyDeviceID
+}
 
 // AppName returns the application name.
 func AppName() string {
@@ -47,18 +58,6 @@ func Arch() string {
 // HostName returns the hostname of the current machine.
 func HostName() (string, error) {
 	return os.Hostname()
-}
-
-// ID returns the device ID.
-func ID() (string, error) {
-	// Check if Mobile
-	if IsMobile() {
-		if deviceID != "" {
-			return deviceID, nil
-		}
-		return "", errors.New("Device ID not set for Mobile.")
-	}
-	return machineid.ID()
 }
 
 // IsMobile returns true if the current platform is ANY mobile platform.
@@ -103,13 +102,6 @@ func VendorName() string {
 
 // Stat returns the device stat.
 func Stat() (map[string]string, error) {
-	// Get Device Id
-	id, err := ID()
-	if err != nil {
-		logger.Error("Failed to get Device ID", err)
-		return nil, err
-	}
-
 	// Get HostName
 	hn, err := HostName()
 	if err != nil {
@@ -119,9 +111,8 @@ func Stat() (map[string]string, error) {
 
 	// Return the device info for Peer
 	return map[string]string{
-		StatKey_Id:       id,
-		StatKey_HostName: hn,
-		StatKey_Os:       runtime.GOOS,
-		StatKey_Arch:     runtime.GOARCH,
+		"HostName": hn,
+		"Os":       runtime.GOOS,
+		"Arch":     runtime.GOARCH,
 	}, nil
 }
