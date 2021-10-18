@@ -98,25 +98,27 @@ type fsOptions struct {
 // defaultFsOptions returns fsOptions
 func defaultFsOptions() *fsOptions {
 	opts := &fsOptions{}
-	hp, err := os.UserHomeDir()
-	if err != nil {
-		logger.Error("Failed to get HomeDir, ", err)
-	} else {
-		opts.HomeDir = hp
-	}
+	if checkIsDesktop() {
+		hp, err := os.UserHomeDir()
+		if err != nil {
+			logger.Error("Failed to get HomeDir, ", err)
+		} else {
+			opts.HomeDir = hp
+		}
 
-	tp, err := os.UserCacheDir()
-	if err != nil {
-		logger.Error("Failed to get TempDir, ", err)
-	} else {
-		opts.TempDir = tp
-	}
+		tp, err := os.UserCacheDir()
+		if err != nil {
+			logger.Error("Failed to get TempDir, ", err)
+		} else {
+			opts.TempDir = tp
+		}
 
-	sp, err := os.UserConfigDir()
-	if err != nil {
-		logger.Error("Failed to get SupportDir, ", err)
-	} else {
-		opts.SupportDir = sp
+		sp, err := os.UserConfigDir()
+		if err != nil {
+			logger.Error("Failed to get SupportDir, ", err)
+		} else {
+			opts.SupportDir = sp
+		}
 	}
 	return opts
 }
@@ -173,28 +175,33 @@ func (fo *fsOptions) Apply() error {
 	return nil
 }
 
+// IsFile returns true if the given path is a file
 func IsFile(fileName string) bool {
 	_, err := os.Stat(fileName)
 	return !os.IsNotExist(err)
 }
 
+// IsImage returns true if the given path is an image
 func IsImage(filename string) bool {
 	ext := path.Ext(filename)
 	_, exist := mExtsImageFile[ext]
 	return exist
 }
 
+// IsMediaFile returns true if the given path is a media file
 func IsMediaFile(filename string) bool {
 	ext := path.Ext(filename)
 	return IsImage(ext) || IsVideo(ext)
 }
 
+// IsVideo returns true if the given path is a video
 func IsVideo(filename string) bool {
 	ext := path.Ext(filename)
 	_, exist := mExtsVideoFile[ext]
 	return exist
 }
 
+// IsVideoExt returns true if the given extension is a video
 func IsVideoExt(ext string) bool {
 	if strings.EqualFold(ext, ".mp4") || strings.EqualFold(ext, ".mov") || strings.EqualFold(ext, ".mpeg") ||
 		strings.EqualFold(ext, ".mpg") || strings.EqualFold(ext, ".wmv") ||
@@ -206,6 +213,22 @@ func IsVideoExt(ext string) bool {
 		strings.EqualFold(ext, ".vob") || strings.EqualFold(ext, ".mpe") ||
 		strings.EqualFold(ext, ".asf") || strings.EqualFold(ext, ".asx") ||
 		strings.EqualFold(ext, ".f4v") {
+		return true
+	}
+	return false
+}
+
+// checkIsDesktop returns true if the current platform is desktop
+func checkIsDesktop() bool {
+	if runtime.GOOS == "android" || runtime.GOOS == "ios" {
+		return false
+	}
+	return true
+}
+
+// checkIsMobile returns true if the current platform is mobile
+func checkIsMobile() bool {
+	if runtime.GOOS == "android" || runtime.GOOS == "ios" {
 		return true
 	}
 	return false
