@@ -12,11 +12,13 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/kataras/golog"
 	"github.com/pkg/errors"
 	"golang.org/x/net/html"
 )
 
 var (
+	logger = golog.Child("tools/internet")
 	ErrorType = errors.New("Should not be non-ptr or nil")
 )
 

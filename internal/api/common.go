@@ -28,7 +28,7 @@ type NodeImpl interface {
 	OnComplete(event *CompleteEvent)
 }
 
-// NodeStub is the interface for the node based on mode: (client, highway)
+// NodeStubImpl is the interface for the node based on mode: (client, highway)
 type NodeStubImpl interface {
 	Serve(ctx context.Context, listener net.Listener, ticker time.Duration)
 	HasProtocols() bool

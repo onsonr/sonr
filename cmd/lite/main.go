@@ -45,6 +45,7 @@ func Start(reqBuf []byte) {
 	}
 
 	// Initialize Device
+	req.SetDeviceID()
 	err = fs.Start(fs.WithHomePath(req.HomeDir()))
 	if err != nil {
 		golog.Fatal("Failed to initialize Device", err)

@@ -7,9 +7,8 @@ import (
 	"github.com/kataras/golog"
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/common"
-	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/fs"
-	"github.com/sonr-io/core/tools/config"
+
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
@@ -84,7 +83,7 @@ func (ir *InitializeRequest) SetDeviceID() {
 	did := ir.GetDeviceOptions().GetId()
 	if did != "" {
 		logger.Info("Device ID Passed: " + did)
-		device.SetDeviceID(did)
+		common.SetDeviceID(did)
 	} else {
 		golog.Warn("No Device ID Passed")
 	}
@@ -123,7 +122,7 @@ func (sr *SupplyRequest) ToPayload(owner *common.Profile) (*common.Payload, erro
 
 			// Add URL to Payload
 			items = append(items, urlItem)
-		} else if config.IsFile(item.GetPath()) {
+		} else if fs.IsFile(item.GetPath()) {
 			// Increase File Count
 			fileCount++
 

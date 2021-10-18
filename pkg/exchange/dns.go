@@ -1,4 +1,4 @@
-package internet
+package exchange
 
 import (
 	"context"
@@ -23,8 +23,6 @@ var (
 	ErrEmptyTXT            = errors.New("Empty TXT Record")
 	ErrHDNSResolve         = errors.New("Failed to dial all three public HDNS resolvers.")
 )
-
-
 
 // HDNSResolver is a DNS Resolver that resolves SName records.
 type HDNSResolver interface {

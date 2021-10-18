@@ -8,7 +8,8 @@ import (
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
-	"github.com/sonr-io/core/tools/config"
+	"github.com/sonr-io/core/internal/fs"
+
 	"google.golang.org/protobuf/proto"
 )
 
@@ -67,7 +68,7 @@ func (p *TransferProtocol) onOutgoingTransfer(entry *Session, stream network.Str
 
 // itemWriter is a Writer for FileItems
 type itemWriter struct {
-	chunker *config.Chunker
+	chunker *fs.Chunker
 	file    *os.File
 	item    *common.FileItem
 	index   int
@@ -98,7 +99,7 @@ func NewItemWriter(index int, count int, pi *common.Payload_Item, node api.NodeI
 	}
 
 	// Create New Chunker
-	chunker, err := config.NewChunker(f, config.ChunkerOptions{
+	chunker, err := fs.NewChunker(f, fs.ChunkerOptions{
 		AverageSize: avgSize, // Only Average Required
 	})
 	if err != nil {

@@ -16,7 +16,6 @@ var NewLastUpdated = func() int64 {
 }
 
 // RPC_SERVER_PORT is the port the RPC service listens on.
-// Calculated: (Sister Bday + Dad Bday + Mom Bday) / Mine
 const RPC_SERVER_PORT = 26225
 
 // GetProfileFunc returns a function that returns the Profile and error
@@ -31,12 +30,12 @@ func (c Connection) IsMdnsCompatible() bool {
 	return c == Connection_WIFI || c == Connection_ETHERNET
 }
 
-// Checks if Enviornment is Development
+// IsDev Checks if Enviornment is Development
 func (e Environment) IsDev() bool {
 	return e == Environment_DEVELOPMENT
 }
 
-// Checks if Enviornment is Development
+// IsProd Checks if Enviornment is Development
 func (e Environment) IsProd() bool {
 	return e == Environment_PRODUCTION
 }
@@ -59,6 +58,7 @@ func WrapErrors(msg string, errs []error) error {
 	return err
 }
 
+// DefaultLocation is the LA Address
 func DefaultLocation() *Location {
 	return &Location{
 		Latitude:  34.102920,
@@ -66,6 +66,7 @@ func DefaultLocation() *Location {
 	}
 }
 
+// OLC returns Open Location code
 func (l *Location) OLC() string {
 	return olc.Encode(l.GetLatitude(), l.GetLongitude(), 6)
 }

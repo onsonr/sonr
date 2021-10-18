@@ -8,7 +8,6 @@ import (
 	"git.mills.io/prologic/bitcask"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
-	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/internal/keychain"
 )
@@ -133,7 +132,7 @@ func (n *Node) Peer() (*common.Peer, error) {
 		return nil, err
 	}
 
-	stat, err := device.Stat()
+	stat, err := common.Stat()
 	if err != nil {
 		logger.Error("Failed to get device stat", err)
 		return nil, err
@@ -147,10 +146,10 @@ func (n *Node) Peer() (*common.Peer, error) {
 		PeerID:       n.host.ID().String(),
 		LastModified: time.Now().Unix(),
 		Device: &common.Peer_Device{
-			HostName: stat[device.StatKey_HostName],
-			Os:       stat[device.StatKey_Os],
-			Id:       stat[device.StatKey_Id],
-			Arch:     stat[device.StatKey_Arch],
+			HostName: stat["hostName"],
+			Os:       stat["os"],
+			Id:       stat["id"],
+			Arch:     stat["arch"],
 		},
 	}, nil
 }

@@ -4,15 +4,16 @@ import (
 	"context"
 	"errors"
 
+	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/host"
-	"github.com/sonr-io/core/tools/internet"
 	"google.golang.org/protobuf/proto"
 )
 
 var (
+	logger         = golog.Child("protocols/exchange")
 	ErrParameters  = errors.New("Failed to create new ExchangeProtocol, invalid parameters")
 	ErrInvalidPeer = errors.New("Peer object provided to ExchangeProtocol is Nil")
 )
@@ -22,23 +23,17 @@ type ExchangeProtocol struct {
 	node     api.NodeImpl
 	ctx      context.Context
 	host     *host.SNRHost // host
-	resolver internet.HDNSResolver
+	resolver HDNSResolver
 }
 
 // NewProtocol creates new ExchangeProtocol
 func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*ExchangeProtocol, error) {
-	// Check parameters
-	if err := checkParams(host); err != nil {
-		logger.Error("Failed to create ExchangeProtocol", err)
-		return nil, err
-	}
-
 	// Create Exchange Protocol
 	exchProtocol := &ExchangeProtocol{
 		ctx:      ctx,
 		host:     host,
 		node:     node,
-		resolver: internet.NewHDNSResolver(),
+		resolver: NewHDNSResolver(),
 	}
 	logger.Debug("✅  ExchangeProtocol is Activated \n")
 
@@ -76,7 +71,7 @@ func (p *ExchangeProtocol) Get(sname string) (*common.PeerInfo, error) {
 	}
 
 	// Verify Peer is registered
-	ok, rec, err := p.Verify(sname)
+	ok, _, err := p.Verify(sname)
 	if err != nil {
 		logger.Warn("Failed to verify Peer", err)
 		return info, nil
@@ -84,7 +79,6 @@ func (p *ExchangeProtocol) Get(sname string) (*common.PeerInfo, error) {
 
 	// Update PeerInfo
 	if ok {
-		info.NameRecord = rec
 		return info, nil
 	}
 	logger.Error("Peer is not registered", err)
@@ -117,9 +111,9 @@ func (p *ExchangeProtocol) Put(peer *common.Peer) error {
 
 // Verify method uses resolver to check if Peer is registered,
 // returns true if Peer is registered
-func (p *ExchangeProtocol) Verify(sname string) (bool, internet.Record, error) {
+func (p *ExchangeProtocol) Verify(sname string) (bool, Record, error) {
 	// Create Context
-	empty := internet.Record{}
+	empty := Record{}
 
 	// Verify Peer is registered
 	recs, err := p.resolver.LookupTXT(p.ctx, sname)
@@ -156,7 +150,7 @@ func (p *ExchangeProtocol) Verify(sname string) (bool, internet.Record, error) {
 	return ok, rec, nil
 }
 
-func compareRecordtoID(r internet.Record, target peer.ID) (bool, error) {
+func compareRecordtoID(r Record, target peer.ID) (bool, error) {
 	// Check peer record
 	pid, err := r.PeerID()
 	if err != nil {

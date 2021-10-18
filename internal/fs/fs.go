@@ -3,7 +3,9 @@ package fs
 import (
 	"errors"
 	"os"
+	"path"
 	"runtime"
+	"strings"
 
 	"github.com/kataras/golog"
 )
@@ -29,6 +31,16 @@ var (
 	ErrSeparatorLength            = errors.New("Separator length must be 1.")
 	ErrNoFileNameSet              = errors.New("File name was not set by options.")
 )
+
+var mExtsImageFile map[string]string
+var mExtsVideoFile map[string]string
+
+func init() {
+	mExtsImageFile = map[string]string{".png": "", ".PNG": "", ".jpg": "", ".JPG": "", ".jpeg": "", ".JPEG": "",
+		".heic": "", ".HEIC": "", ".gif": "", ".GIF": "",
+	}
+	mExtsVideoFile = map[string]string{".MOV": "", ".mov": "", ".MP4": "", ".mp4": ""}
+}
 
 // Start creates new FileSystem
 func Start(options ...Option) error {
@@ -71,6 +83,7 @@ func WithSupportPath(p string) Option {
 	}
 }
 
+// fsOptions holds directory list
 type fsOptions struct {
 	HomeDir    string
 	TempDir    string
@@ -82,6 +95,7 @@ type fsOptions struct {
 	textileDir   string
 }
 
+// defaultFsOptions returns fsOptions
 func defaultFsOptions() *fsOptions {
 	opts := &fsOptions{}
 	hp, err := os.UserHomeDir()
@@ -107,6 +121,7 @@ func defaultFsOptions() *fsOptions {
 	return opts
 }
 
+// Apply sets device directories for Path
 func (fo *fsOptions) Apply() error {
 	// Check for Valid
 	var err error
@@ -144,16 +159,54 @@ func (fo *fsOptions) Apply() error {
 		return err
 	}
 
-	// Create Third Party Folder
-	ThirdParty, err = Support.CreateFolder("third_party")
-	if err != nil {
-		return err
-	}
-
 	// Create Wallet Folder
 	Wallet, err = Support.CreateFolder(".wallet")
 	if err != nil {
 		return err
 	}
+
+	// Create Third Party Folder
+	ThirdParty, err = Support.CreateFolder("third_party")
+	if err != nil {
+		return err
+	}
 	return nil
+}
+
+func IsFile(fileName string) bool {
+	_, err := os.Stat(fileName)
+	return !os.IsNotExist(err)
+}
+
+func IsImage(filename string) bool {
+	ext := path.Ext(filename)
+	_, exist := mExtsImageFile[ext]
+	return exist
+}
+
+func IsMediaFile(filename string) bool {
+	ext := path.Ext(filename)
+	return IsImage(ext) || IsVideo(ext)
+}
+
+func IsVideo(filename string) bool {
+	ext := path.Ext(filename)
+	_, exist := mExtsVideoFile[ext]
+	return exist
+}
+
+func IsVideoExt(ext string) bool {
+	if strings.EqualFold(ext, ".mp4") || strings.EqualFold(ext, ".mov") || strings.EqualFold(ext, ".mpeg") ||
+		strings.EqualFold(ext, ".mpg") || strings.EqualFold(ext, ".wmv") ||
+		strings.EqualFold(ext, ".rm") || strings.EqualFold(ext, ".rmvb") ||
+		strings.EqualFold(ext, ".swf") || strings.EqualFold(ext, ".flv") ||
+		strings.EqualFold(ext, ".3GP") || strings.EqualFold(ext, ".mkv") ||
+		strings.EqualFold(ext, ".m4v") || strings.EqualFold(ext, ".ogg") ||
+		strings.EqualFold(ext, ".avi") || strings.EqualFold(ext, ".dat") ||
+		strings.EqualFold(ext, ".vob") || strings.EqualFold(ext, ".mpe") ||
+		strings.EqualFold(ext, ".asf") || strings.EqualFold(ext, ".asx") ||
+		strings.EqualFold(ext, ".f4v") {
+		return true
+	}
+	return false
 }

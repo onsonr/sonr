@@ -1,4 +1,4 @@
-package internet
+package exchange
 
 import (
 	"bytes"
@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/kataras/golog"
 	"github.com/pkg/errors"
 )
 
@@ -24,7 +23,6 @@ const (
 
 // Error Definitions
 var (
-	logger         = golog.Child("tools/internet")
 	ErrGetNamebase = errors.New("Failed to perform GET Request on Namebase API")
 	ErrPutNamebase = errors.New("Failed to perform PUT Request on Namebase API")
 )

@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	api "github.com/sonr-io/core/internal/api"
-	"github.com/sonr-io/core/tools/internet"
+	"github.com/sonr-io/core/pkg/exchange"
 )
 
 // RPC_SERVER_PORT is the port the RPC service listens on.
@@ -256,7 +256,7 @@ func (hrc *HighwayNodeStub) Register(ctx context.Context, req *api.RegisterReque
 	}
 
 	// Create Record
-	resp, err := hrc.DomainProtocol.Register(name, internet.NewNBAuthRecord(pfix, name, fprint))
+	resp, err := hrc.DomainProtocol.Register(name, exchange.NewNBAuthRecord(pfix, name, fprint))
 	if err != nil {
 		return &api.RegisterResponse{
 			Success: false,
