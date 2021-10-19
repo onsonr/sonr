@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/kataras/golog"
-	common "github.com/sonr-io/core/internal/common"
+	common "github.com/sonr-io/core/pkg/common"
 )
 
 var (

@@ -2,8 +2,8 @@ package api
 
 import (
 	"github.com/kataras/golog"
-	common "github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/wallet"
+	common "github.com/sonr-io/core/pkg/common"
 )
 
 var (

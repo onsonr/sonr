@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/fs"
+	"github.com/sonr-io/core/pkg/common"
 
 	"git.mills.io/prologic/bitcask"
 	"google.golang.org/protobuf/proto"

@@ -7,8 +7,8 @@ import (
 
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/core/internal/api"
-	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/host"
+	"github.com/sonr-io/core/pkg/common"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -95,15 +95,16 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, nu api.NodeImpl, optio
 }
 
 // Update method publishes peer data to the topic
-func (p *LobbyProtocol) Update(peer *common.Peer) error {
+func (p *LobbyProtocol) Update() error {
 	// Verify Topic has been created
 	if p.topic == nil {
 		return ErrTopicNotCreated
 	}
 
 	// Verify Peer is not nil
-	if peer == nil {
-		return ErrInvalidPeer
+	peer, err := p.node.Peer()
+	if err != nil {
+		return err
 	}
 
 	// Create Event

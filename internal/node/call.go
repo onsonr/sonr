@@ -174,7 +174,7 @@ func (s *ClientNodeStub) Search(ctx context.Context, req *api.SearchRequest) (*a
 		// Send Response
 		return &api.SearchResponse{
 			Success: true,
-			Peer:    entry.Peer,
+			Peer:    entry,
 		}, nil
 	} else {
 		return &api.SearchResponse{

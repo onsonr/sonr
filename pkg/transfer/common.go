@@ -8,9 +8,9 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/sonr-io/core/internal/api"
-	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/internal/wallet"
+	"github.com/sonr-io/core/pkg/common"
 )
 
 // Transfer Emission Events

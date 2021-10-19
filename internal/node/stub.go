@@ -105,10 +105,10 @@ func (s *ClientNodeStub) HasProtocols() bool {
 
 // Close closes the RPC Service.
 func (s *ClientNodeStub) Close() error {
+	s.LobbyProtocol.Close()
+	s.ExchangeProtocol.Close()
 	s.grpcServer.Stop()
 	s.listener.Close()
-	s.ExchangeProtocol.Close()
-	s.LobbyProtocol.Close()
 	return nil
 }
 
@@ -118,7 +118,6 @@ func (s *ClientNodeStub) Serve(ctx context.Context, listener net.Listener, ticke
 	if err := s.grpcServer.Serve(listener); err != nil {
 		logger.Error("Failed to serve gRPC", err)
 	}
-	logger.Info("🍦  Serving Client Stub: " + listener.Addr().String())
 	for {
 		// Stop Serving if context is done
 		select {
@@ -137,9 +136,10 @@ func (s *ClientNodeStub) Update() error {
 		return err
 	}
 
+	// Check for Valid Protocols
 	if s.HasProtocols() {
 		// Update LobbyProtocol
-		err = s.LobbyProtocol.Update(peer)
+		err = s.LobbyProtocol.Update()
 		if err != nil {
 			logger.Error("Failed to Update Lobby", err)
 		} else {
@@ -200,7 +200,6 @@ func (s *HighwayNodeStub) Serve(ctx context.Context, listener net.Listener, tick
 		logger.Error("Failed to serve gRPC", err)
 
 	}
-	logger.Info("🍦  Serving Highway Stub...")
 	for {
 		// Stop Serving if context is done
 		select {

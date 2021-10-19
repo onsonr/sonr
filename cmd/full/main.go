@@ -14,8 +14,8 @@ import (
 	"github.com/kataras/golog"
 	"github.com/pterm/pterm"
 	"github.com/sonr-io/core/internal/api"
-	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/node"
+	"github.com/sonr-io/core/pkg/common"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 

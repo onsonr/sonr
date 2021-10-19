@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/sonr-io/core/internal/common"
+	"github.com/sonr-io/core/pkg/common"
 )
 
 func (e *CompleteEvent) IsIncoming() bool {

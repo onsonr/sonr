@@ -6,9 +6,9 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/pkg/errors"
-	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/fs"
 	"github.com/sonr-io/core/internal/wallet"
+	"github.com/sonr-io/core/pkg/common"
 )
 
 // DefaultInitializeRequest returns the default initialize request

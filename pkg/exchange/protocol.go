@@ -7,8 +7,8 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/api"
-	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/host"
+	"github.com/sonr-io/core/pkg/common"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -58,7 +58,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl, opt
 }
 
 // FindPeerId method returns PeerID by SName
-func (p *ExchangeProtocol) Get(sname string) (*common.PeerInfo, error) {
+func (p *ExchangeProtocol) Get(sname string) (*common.Peer, error) {
 	// Get Peer from KadDHT store
 	buf, err := p.host.GetValue(p.ctx, sname)
 	if err != nil {
@@ -72,27 +72,7 @@ func (p *ExchangeProtocol) Get(sname string) (*common.PeerInfo, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	// Get PeerID from Peer
-	info, err := peerData.Info()
-	if err != nil {
-		logger.Error("Failed to get PeerInfo from Peer", err)
-		return nil, err
-	}
-
-	// Verify Peer is registered
-	ok, _, err := p.Verify(sname)
-	if err != nil {
-		logger.Warn("Failed to verify Peer", err)
-		return info, nil
-	}
-
-	// Update PeerInfo
-	if ok {
-		return info, nil
-	}
-	logger.Error("Peer is not registered", err)
-	return info, err
+	return peerData, err
 }
 
 // Put method updates peer instance in the store

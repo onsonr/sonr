@@ -1,6 +1,6 @@
 package api
 
-import common "github.com/sonr-io/core/internal/common"
+import common "github.com/sonr-io/core/pkg/common"
 
 func NewInitialzeResponse(gpf common.GetProfileFunc, success bool) *InitializeResponse {
 	resp := &InitializeResponse{Success: success}

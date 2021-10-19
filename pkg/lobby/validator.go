@@ -7,8 +7,8 @@ import (
 	peer "github.com/libp2p/go-libp2p-core/peer"
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/core/internal/api"
-	common "github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/host"
+	common "github.com/sonr-io/core/pkg/common"
 )
 
 // HasPeer Method Checks if Peer ID is Subscribed to Room
@@ -85,12 +85,7 @@ func (p *LobbyProtocol) pushRefresh(id peer.ID, peer *common.Peer) {
 
 // sendUpdate sends a refresh event to the Lobby topic
 func (lp *LobbyProtocol) sendUpdate() error {
-	peer, err := lp.node.Peer()
-	if err != nil {
-		logger.Error("Failed to get peer", err)
-		return err
-	}
-	err = lp.Update(peer)
+	err := lp.Update()
 	if err != nil {
 		logger.Error("Failed to update peer", err)
 		return err

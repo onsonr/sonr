@@ -18,21 +18,10 @@ import (
 	"github.com/sonr-io/core/internal/wallet"
 	"google.golang.org/protobuf/proto"
 )
+
 // ** ───────────────────────────────────────────────────────
 // ** ─── Peer Management ───────────────────────────────────
 // ** ───────────────────────────────────────────────────────
-
-// PeerInfo is a struct for Peer Information containing Device and Crypto
-type PeerInfo struct {
-	OperatingSystem string        // Device Operating System
-	Architecture    string        // Device Architecture
-	HostName        string        // Device Host Name
-	SName           string        // Peer SName
-	StoreEntryKey   string        // Peer SName in Store Entry Key Format
-	PeerID          peer.ID       // Peer ID
-	Peer            *Peer         // Peer Data Object
-	PublicKey       crypto.PubKey // Peer Public Key
-}
 
 // Buffer returns Peer as a buffer
 func (p *Peer) Buffer() ([]byte, error) {
@@ -60,35 +49,6 @@ func (p *Peer) CID() (string, error) {
 		return "", err
 	}
 	return fmt.Sprintf("sonr/%v", cid), nil
-}
-
-// Info returns PeerInfo from Peer
-func (p *Peer) Info() (*PeerInfo, error) {
-	// Get Public Key
-	pubKey, err := p.PubKey()
-	if err != nil {
-		logger.Error("Failed to get Public Key", err)
-		return nil, err
-	}
-
-	// Get peer ID from public key
-	id, err := peer.IDFromPublicKey(pubKey)
-	if err != nil {
-		logger.Error(fmt.Sprintf("Failed to get peer ID from Public Key: %s", p.GetSName()), err)
-		return nil, err
-	}
-
-	// Return Peer Info
-	return &PeerInfo{
-		OperatingSystem: p.GetDevice().GetOs(),
-		Architecture:    p.GetDevice().GetArch(),
-		HostName:        p.GetDevice().GetHostName(),
-		PeerID:          id,
-		PublicKey:       pubKey,
-		SName:           p.GetSName(),
-		StoreEntryKey:   strings.ToLower(p.GetSName()),
-		Peer:            p,
-	}, nil
 }
 
 // Arch returns Peer Device GOARCH

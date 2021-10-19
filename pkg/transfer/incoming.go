@@ -8,8 +8,8 @@ import (
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/api"
-	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/fs"
+	"github.com/sonr-io/core/pkg/common"
 	"google.golang.org/protobuf/proto"
 )
 

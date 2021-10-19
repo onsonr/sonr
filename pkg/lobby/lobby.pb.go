@@ -7,7 +7,7 @@
 package lobby
 
 import (
-	common "github.com/sonr-io/core/internal/common"
+	common "github.com/sonr-io/core/pkg/common"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
