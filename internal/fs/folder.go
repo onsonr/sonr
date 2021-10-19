@@ -52,11 +52,11 @@ func (f Folder) GenPath(path string, opts ...FilePathOption) (string, error) {
 	name := filepath.Base(path)
 	for f.Exists(name) {
 		num++
-		strPtr := strings.Split(name, ".")
+		strPtr := strings.Split(filepath.Base(path), ".")
 		if len(strPtr) == 1 {
-			name = fmt.Sprintf("%s (%d)", name, num)
+			name = fmt.Sprintf("%s(%d)", filepath.Base(path), num)
 		} else {
-			name = fmt.Sprintf("%s (%d).%s", strPtr[0], num, strPtr[1])
+			name = fmt.Sprintf("%s(%d).%s", strPtr[0], num, strPtr[1])
 		}
 	}
 
