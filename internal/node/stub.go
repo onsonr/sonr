@@ -42,18 +42,27 @@ func (n *Node) startClientService(ctx context.Context, opts *options) (*ClientNo
 		return nil, err
 	}
 
-	// Set Exchange Protocol
-	exchProtocol, err := exchange.NewProtocol(ctx, n.host, n)
-	if err != nil {
-		logger.Error("Failed to start ExchangeProtocol", err)
-		return nil, err
-	}
-
 	// Set Local Lobby Protocol if Location is provided
 	lobbyProtocol, err := lobby.NewProtocol(ctx, n.host, n, lobby.WithLocation(opts.location))
 	if err != nil {
 		logger.Error("Failed to start LobbyProtocol", err)
 		return nil, err
+	}
+
+	// Set Exchange Protocol
+	var exchProtocol *exchange.ExchangeProtocol
+	if opts.isTerminal {
+		exchProtocol, err = exchange.NewProtocol(ctx, n.host, n, exchange.TempName(opts.profile.SName))
+		if err != nil {
+			logger.Error("Failed to start ExchangeProtocol", err)
+			return nil, err
+		}
+	} else {
+		exchProtocol, err = exchange.NewProtocol(ctx, n.host, n)
+		if err != nil {
+			logger.Error("Failed to start ExchangeProtocol", err)
+			return nil, err
+		}
 	}
 
 	// // Set Mailbox Protocol
@@ -98,6 +107,7 @@ func (s *ClientNodeStub) HasProtocols() bool {
 func (s *ClientNodeStub) Close() error {
 	s.grpcServer.Stop()
 	s.listener.Close()
+	s.ExchangeProtocol.Close()
 	s.LobbyProtocol.Close()
 	return nil
 }

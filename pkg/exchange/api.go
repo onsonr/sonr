@@ -13,6 +13,7 @@ import (
 	"github.com/sonr-io/core/internal/host"
 )
 
+
 // Constant for the Namebase API
 const (
 	DOMAIN              = "snr"

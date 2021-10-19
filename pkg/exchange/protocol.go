@@ -23,17 +23,27 @@ type ExchangeProtocol struct {
 	node           api.NodeImpl
 	ctx            context.Context
 	host           *host.SNRHost // host
+	mode           DNSMode
 	namebaseClient *NamebaseAPIClient
+	authRecord     host.Record
+	nameRecord     host.Record
 }
 
 // NewProtocol creates new ExchangeProtocol
-func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*ExchangeProtocol, error) {
+func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl, options ...Option) (*ExchangeProtocol, error) {
+	// Set options
+	opts := defaultOptions()
+	for _, opt := range options {
+		opt(opts)
+	}
+
 	// Create Exchange Protocol
 	exchProtocol := &ExchangeProtocol{
 		ctx:            ctx,
 		host:           host,
 		node:           node,
 		namebaseClient: initClient(ctx),
+		mode:           opts.Mode,
 	}
 	logger.Debug("✅  ExchangeProtocol is Activated \n")
 
@@ -197,4 +207,25 @@ func compareRecordtoID(r host.Record, target peer.ID) (bool, error) {
 		return false, err
 	}
 	return pid == target, nil
+}
+
+// Close method closes the ExchangeProtocol
+func (p *ExchangeProtocol) Close() error {
+	// Check for isTemporary
+	if p.mode.IsTemp() {
+		logger.Info("Deleted Temporary SName from DNS Table")
+		// Check if NamebaseClient is Nil
+		if p.namebaseClient == nil {
+			return errors.Wrap(ErrParameters, "NamebaseClient is Nil")
+		}
+
+		// Delete SName from Namebase
+		req := host.NewNBDeleteRequest(p.authRecord.ToDeleteRecord(), p.nameRecord.ToDeleteRecord())
+		_, err := p.namebaseClient.PutRecords(req)
+		if err != nil {
+			logger.Error("Failed to Delete SName", err)
+			return err
+		}
+	}
+	return nil
 }
