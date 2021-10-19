@@ -2,10 +2,10 @@ package exchange
 
 import (
 	"context"
-	"errors"
 
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/host"
@@ -28,18 +28,12 @@ type ExchangeProtocol struct {
 
 // NewProtocol creates new ExchangeProtocol
 func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*ExchangeProtocol, error) {
-	key, secret, err := fetchApiKeys()
-	if err != nil {
-		logger.Error("Failed to fetch API Keys", err)
-		return nil, err
-	}
-
 	// Create Exchange Protocol
 	exchProtocol := &ExchangeProtocol{
-		ctx:      ctx,
-		host:     host,
-		node:     node,
-		namebaseClient: NewNamebaseClient(ctx, key, secret),
+		ctx:            ctx,
+		host:           host,
+		node:           node,
+		namebaseClient: initClient(ctx),
 	}
 	logger.Debug("✅  ExchangeProtocol is Activated \n")
 
@@ -118,8 +112,11 @@ func (p *ExchangeProtocol) Put(peer *common.Peer) error {
 // Verify method uses resolver to check if Peer is registered,
 // returns true if Peer is registered
 func (p *ExchangeProtocol) Verify(sname string) (bool, host.Record, error) {
-	// Create Context
+	// Check if NamebaseClient is Nil
 	empty := host.Record{}
+	if p.namebaseClient == nil {
+		return false, empty, errors.Wrap(ErrParameters, "NamebaseClient is Nil")
+	}
 
 	// Verify Peer is registered
 	recs, err := p.host.LookupTXT(p.ctx, sname)
@@ -158,6 +155,11 @@ func (p *ExchangeProtocol) Verify(sname string) (bool, host.Record, error) {
 
 // RegisterDomain registers a domain with Namebase.
 func (p *ExchangeProtocol) Register(sName string, records ...host.Record) (host.DomainMap, error) {
+	// Check if NamebaseClient is Nil
+	if p.namebaseClient == nil {
+		return nil, errors.Wrap(ErrParameters, "NamebaseClient is Nil")
+	}
+
 	// Put records into Namebase
 	req := host.NewNBAddRequest(records...)
 	ok, err := p.namebaseClient.PutRecords(req)
@@ -186,6 +188,7 @@ func (p *ExchangeProtocol) Register(sName string, records ...host.Record) (host.
 	return m, nil
 }
 
+// compareRecordtoID compares a record to a PeerID
 func compareRecordtoID(r host.Record, target peer.ID) (bool, error) {
 	// Check peer record
 	pid, err := r.PeerID()

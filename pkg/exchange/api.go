@@ -31,20 +31,27 @@ var (
 	ErrMissingAPISecret = errors.New("Missing Namebase Handshake Secret in env")
 )
 
-// fetchApiKeys fetches the Textile Api/Secrect keys from the environment
-func fetchApiKeys() (string, string, error) {
+// initClient initializes the Namebase API Client
+func initClient(ctx context.Context) *NamebaseAPIClient {
+	// Define logger warning message
+	logWarning := func() {
+		logger.Warn("Could not fetch Namebase API Keys from Env, skipping API client...")
+	}
+
 	// Get API Key
 	key, ok := os.LookupEnv("NB_KEY")
 	if !ok {
-		return "", "", ErrMissingAPIKey
+		logWarning()
+		return nil
 	}
 
 	// Get API Secret
 	secret, ok := os.LookupEnv("NB_SECRET")
 	if !ok {
-		return "", "", ErrMissingAPISecret
+		logWarning()
+		return nil
 	}
-	return key, secret, nil
+	return NewNamebaseClient(ctx, key, secret)
 }
 
 // NamebaseAPIClient handles DNS Table Registration and Verification.
