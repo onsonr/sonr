@@ -45,12 +45,6 @@ func NewFileItem(path string, tbuf []byte) (*Payload_Item, error) {
 	}, nil
 }
 
-// ResetDir replaces the directory of the item path with DownloadsPath
-func (fi *FileItem) ResetDir(path string) string {
-	fi.Path = path
-	return fi.GetPath()
-}
-
 // ToTransferItem Returns Transfer for FileItem
 func (f *FileItem) ToTransferItem() *Payload_Item {
 	return &Payload_Item{

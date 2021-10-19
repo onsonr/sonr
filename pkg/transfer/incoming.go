@@ -76,10 +76,15 @@ type itemReader struct {
 
 // NewItemReader Returns a new Reader for the given FileItem
 func NewItemReader(index int, count int, item *common.Payload_Item, node api.NodeImpl) *itemReader {
+	// generate path
 	path, _ := fs.Downloads.GenPath(item.GetFile().GetPath())
+	f := item.GetFile()
+	f.Path = path
+
+	// Create New Item Reader
 	return &itemReader{
-		item:   item.GetFile(),
-		size:   item.GetSize(),
+		item:   f,
+		size:   f.GetSize(),
 		index:  index,
 		count:  count,
 		path:   path,

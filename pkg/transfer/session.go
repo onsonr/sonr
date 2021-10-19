@@ -11,7 +11,6 @@ import (
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
-	"github.com/sonr-io/core/internal/fs"
 	"github.com/sonr-io/core/internal/host"
 )
 
@@ -63,8 +62,8 @@ func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) *api.CompleteEv
 		From:       s.from,
 		To:         s.to,
 		Direction:  s.direction,
-		Payload:    s.SetPayload(),
-		CreatedAt:  s.SetPayload().GetCreatedAt(),
+		Payload:    s.payload,
+		CreatedAt:  s.payload.GetCreatedAt(),
 		ReceivedAt: int64(time.Now().Unix()),
 	}
 }
@@ -98,13 +97,12 @@ func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) *api.CompleteEve
 	wg.Wait()
 
 	// Return Complete Event
-	load := s.SetPayload()
 	return &api.CompleteEvent{
 		From:       s.from,
 		To:         s.to,
 		Direction:  s.direction,
-		Payload:    load,
-		CreatedAt:  load.GetCreatedAt(),
+		Payload:    s.payload,
+		CreatedAt:  s.payload.GetCreatedAt(),
 		ReceivedAt: int64(time.Now().Unix()),
 	}
 }
@@ -117,15 +115,6 @@ func (s Session) Count() int {
 // MapItems performs PayloadItemFunc on each item in the Payload.
 func (s Session) Items() []*common.Payload_Item {
 	return s.payload.GetItems()
-}
-
-// SetPayload sets the Payload for the Session.
-func (s Session) SetPayload() *common.Payload {
-	if s.IsIncoming() {
-		s.payload = s.payload.ResetItemsDirectory(fs.Downloads)
-		s.lastUpdated = common.NewLastUpdated()
-	}
-	return s.payload
 }
 
 // SessionQueue is a queue for incoming and outgoing requests.
@@ -206,7 +195,7 @@ func (sq *SessionQueue) Validate(resp *InviteResponse) (Session, error) {
 		logger.Error("Failed to get Transfer entry", err)
 		return Session{}, err
 	}
-	
+
 	entry.lastUpdated = int64(time.Now().Unix())
 	return entry, nil
 }
