@@ -129,13 +129,6 @@ release: protobuf
 	@echo "✅ Finished Releasing RPC Binary ➡ `date`"
 	@cd /System/Library/Sounds && afplay Glass.aiff
 
-## [run]       :   Runs Full Node Locally
-run: protobuf
-	@echo "----"
-	@echo "Sonr: Running Node"
-	@echo "----"
-	@cd $(CORE_FULL_DIR) && go run main.go
-
 ## [clean]     :   Reinitializes Gomobile and Removes Framworks from Plugin
 clean:
 	cd $(CORE_BIND_DIR) && $(GOCLEAN)

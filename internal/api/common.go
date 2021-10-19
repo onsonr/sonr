@@ -1,10 +1,6 @@
 package api
 
 import (
-	"context"
-	"net"
-	"time"
-
 	"github.com/kataras/golog"
 	common "github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/wallet"
@@ -26,13 +22,6 @@ type NodeImpl interface {
 	OnDecision(event *DecisionEvent)
 	OnProgress(event *ProgressEvent)
 	OnComplete(event *CompleteEvent)
-}
-
-// NodeStubImpl is the interface for the node based on mode: (client, highway)
-type NodeStubImpl interface {
-	Serve(ctx context.Context, listener net.Listener, ticker time.Duration)
-	HasProtocols() bool
-	Close() error
 }
 
 // SignedMetadataToProto converts a SignedMetadata to a protobuf.

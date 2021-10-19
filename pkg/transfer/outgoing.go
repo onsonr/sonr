@@ -59,7 +59,7 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 }
 
 // onOutgoingTransfer is called by onInviteResponse if Validated
-func (p *TransferProtocol) onOutgoingTransfer(entry *Session, stream network.Stream) {
+func (p *TransferProtocol) onOutgoingTransfer(entry Session, stream network.Stream) {
 	// Create New Writer
 	if event := entry.WriteTo(stream, p.node); event != nil {
 		p.node.OnComplete(event)

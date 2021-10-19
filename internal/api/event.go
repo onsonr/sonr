@@ -39,9 +39,21 @@ func (d *DecisionEvent) Message() string {
 }
 
 func (d *InviteEvent) Title() string {
-	return fmt.Sprintf("Got Invite from %s", d.GetFrom().GetProfile().GetSName())
+	fname := d.GetFrom().GetProfile().GetFirstName()
+	lname := d.GetFrom().GetProfile().GetLastName()
+	sname := d.GetFrom().GetProfile().GetSName()
+	platform := d.GetFrom().GetDevice().GetOs()
+	return fmt.Sprintf("Got Invite from %s %s (%s) on %s", fname, lname, sname, platform)
 }
 
 func (d *InviteEvent) Message() string {
-	return fmt.Sprintf("Payload: %v", d.GetPayload().String())
+	fcount := d.GetPayload().FileCount()
+	ucount := d.GetPayload().URLCount()
+	tcount := fcount + ucount
+	countStr := fmt.Sprintf("%d, (Files) %d, (Urls) %d", tcount, fcount, ucount)
+	mimes := ""
+	for _, v := range d.GetPayload().GetItems() {
+		mimes += fmt.Sprintf("%s, ", v.GetMime().GetValue())
+	}
+	return fmt.Sprintf("Count: %s \nMimes: %s \nSize: %v", countStr, mimes, d.GetPayload().GetSize())
 }

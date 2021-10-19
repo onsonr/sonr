@@ -39,7 +39,11 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 	p.node.OnInvite(req.ToEvent())
 
 	// generate response message
-	p.sessionQueue.AddIncoming(remotePeer, req)
+	err = p.sessionQueue.AddIncoming(remotePeer, req)
+	if err != nil {
+		logger.Error("Failed to add incoming session to queue.", err)
+		return
+	}
 }
 
 // onIncomingTransfer incoming transfer handler

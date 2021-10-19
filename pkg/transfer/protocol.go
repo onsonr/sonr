@@ -72,8 +72,7 @@ func (p *TransferProtocol) Request(id peer.ID, req *InviteRequest) error {
 	}
 
 	// store the request in the map
-	p.sessionQueue.AddOutgoing(id, req)
-	return nil
+	return p.sessionQueue.AddOutgoing(id, req)
 }
 
 // Respond Method authenticates or declines a Transfer Request

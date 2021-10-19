@@ -21,13 +21,12 @@ import (
 
 type Sonr struct {
 	// Properties
-	ctx  context.Context
-	node api.NodeImpl
+	ctx   context.Context
+	node  api.NodeImpl
+	isCli bool
 }
 
-var (
-	snr *Sonr
-)
+var snr *Sonr
 
 func init() {
 	golog.SetPrefix("[Sonr-Core.full] ")
@@ -37,7 +36,7 @@ func init() {
 
 func main() {
 	// Parse InitializeRequest
-	req, err := handleInitRequest()
+	req, isCli, err := handleInitRequest()
 	if err != nil {
 		golog.Warn("Failed to Parse Initialize Request, Using Default Request", golog.Fields{"error": err.Error()})
 		req = api.DefaultInitializeRequest()
@@ -52,7 +51,7 @@ func main() {
 	}
 
 	// Create Node
-	n, _, err := node.NewNode(ctx, node.WithTerminal(), node.WithRequest(req))
+	n, _, err := node.NewNode(ctx, node.WithTerminal(isCli), node.WithRequest(req))
 	if err != nil {
 		golog.Fatal("Failed to update Profile for Node", golog.Fields{"error": err})
 		os.Exit(1)
@@ -60,14 +59,16 @@ func main() {
 
 	// Set Lib
 	snr = &Sonr{
-		ctx:  ctx,
-		node: n,
+		ctx:   ctx,
+		isCli: isCli,
+		node:  n,
 	}
 	snr.Serve()
 }
 
 // AppHeader prints Node Info onto Terminal
 func AppHeader(s *Sonr) {
+	// Get Peer Info
 	p, err := s.node.Peer()
 	if err != nil {
 		golog.Error("Failed to get Peer", golog.Fields{"error": err})
@@ -75,9 +76,11 @@ func AppHeader(s *Sonr) {
 
 	}
 
-	//
-	pterm.DefaultSection.Println(fmt.Sprintf("Sonr Node Online: %s", p.PeerID))
-	pterm.Info.Println(fmt.Sprintf("SName: %s \nOS: %s \nArch: %s", p.GetSName(), p.OS(), p.Arch()))
+	// Print Header on Terminal CLI Mode
+	if s.isCli {
+		pterm.DefaultSection.Println(fmt.Sprintf("Sonr Node Online: %s", p.PeerID))
+		pterm.Info.Println(fmt.Sprintf("SName: %s \nOS: %s \nArch: %s", p.GetSName(), p.OS(), p.Arch()))
+	}
 }
 
 // Serve waits for Exit Signal from Terminal
@@ -109,8 +112,8 @@ func (sh *Sonr) Exit(code int) {
 		return
 	}
 
+	// Delete Executable Path
 	exPath := filepath.Dir(ex)
-	golog.Info(filepath.Join(exPath, "sonr_bitcask"))
 	err = os.RemoveAll(filepath.Join(exPath, "sonr_bitcask"))
 	if err != nil {
 		golog.Error("Failed to remove Bitcask, ", err)
@@ -119,21 +122,21 @@ func (sh *Sonr) Exit(code int) {
 }
 
 // handleInitRequest parses the given request and returns Request
-func handleInitRequest() (*api.InitializeRequest, error) {
+func handleInitRequest() (*api.InitializeRequest, bool, error) {
 	// Parse flag
 	latPtr := flag.Float64("lat", 34.102920, "Latitude for InitializeRequest")
 	lngPtr := flag.Float64("lng", -118.394190, "Longitude for InitializeRequest")
 	envVarsPtr := flag.String("vars", "KEY=VALUE", "Enviornment variables in format: 'Key=Value, Key=Value'")
 	profilePtr := flag.String("profile", "", "Profile JSON string")
+	cliPtr := flag.Bool("cli", false, "Run in CLI Mode")
 	flag.Parse()
 
 	// Set Enviornment variables
 	if envVarsPtr != nil {
-		golog.Info("Setting Enviornment variables.")
 
 		// Split String Values
 		keyValuePairs := strings.Split(*envVarsPtr, ",")
-
+		golog.Infof("Setting %v Enviornment variables.", len(keyValuePairs))
 		// Iterate over keyValuePairs
 		for _, v := range keyValuePairs {
 			// Trim White Space
@@ -142,7 +145,7 @@ func handleInitRequest() (*api.InitializeRequest, error) {
 			// Split Key Value Pairs
 			value := strings.Split(tv, "=")
 			if len(value) != 2 {
-				return nil, errors.New("Invalid Enviornment Variable Format")
+				return nil, *cliPtr, errors.New("Invalid Enviornment Variable Format")
 			}
 
 			// Set Env Variables
@@ -172,5 +175,5 @@ func handleInitRequest() (*api.InitializeRequest, error) {
 			golog.Warn("Failed to set Profile from flag")
 		}
 	}
-	return req, nil
+	return req, *cliPtr, nil
 }

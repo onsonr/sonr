@@ -6,7 +6,6 @@ import (
 	"net"
 	"time"
 
-	api "github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/mailbox"
@@ -19,12 +18,10 @@ var DefaultAutoPingTicker = 5 * time.Second
 // ClientNodeStub is the RPC Service for the Node.
 type ClientNodeStub struct {
 	// Interfaces
-	api.NodeStubImpl
 	ClientServiceServer
 
 	// Properties
 	ctx        context.Context
-	isTerminal bool
 	listener   net.Listener
 	grpcServer *grpc.Server
 	node       *Node
@@ -37,7 +34,7 @@ type ClientNodeStub struct {
 }
 
 // startClientService creates a new Client service stub for the node.
-func (n *Node) startClientService(ctx context.Context, opts *nodeOptions) (api.NodeStubImpl, error) {
+func (n *Node) startClientService(ctx context.Context, opts *nodeOptions) (*ClientNodeStub, error) {
 	// Set Transfer Protocol
 	transferProtocol, err := transfer.NewProtocol(ctx, n.host, n)
 	if err != nil {
@@ -77,7 +74,6 @@ func (n *Node) startClientService(ctx context.Context, opts *nodeOptions) (api.N
 	grpcServer := grpc.NewServer()
 	stub := &ClientNodeStub{
 		ctx:              ctx,
-		isTerminal:       opts.isTerminal,
 		TransferProtocol: transferProtocol,
 		ExchangeProtocol: exchProtocol,
 		LobbyProtocol:    lobbyProtocol,
@@ -155,7 +151,6 @@ func (s *ClientNodeStub) Update() error {
 
 // HighwayNodeStub is the RPC Service for the Full Node.
 type HighwayNodeStub struct {
-	api.NodeStubImpl
 	HighwayServiceServer
 	ClientServiceServer
 	*Node
@@ -167,7 +162,7 @@ type HighwayNodeStub struct {
 }
 
 // startHighwayService creates a new Highway service stub for the node.
-func (n *Node) startHighwayService(ctx context.Context, opts *nodeOptions) (api.NodeStubImpl, error) {
+func (n *Node) startHighwayService(ctx context.Context, opts *nodeOptions) (*HighwayNodeStub, error) {
 
 	// Create the listener
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", RPC_SERVER_PORT))

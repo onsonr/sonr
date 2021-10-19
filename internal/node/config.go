@@ -5,7 +5,10 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/manifoldco/promptui"
+
 	"github.com/kataras/golog"
+	"github.com/pterm/pterm"
 	api "github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
 )
@@ -32,6 +35,16 @@ const (
 	StubMode_HIGHWAY
 )
 
+// IsClient returns true if the node is a client node.
+func (m NodeStubMode) IsClient() bool {
+	return m == StubMode_CLIENT
+}
+
+// IsHighway returns true if the node is a highway node.
+func (m NodeStubMode) IsHighway() bool {
+	return m == StubMode_HIGHWAY
+}
+
 // NodeOption is a function that modifies the node options.
 type NodeOption func(*nodeOptions)
 
@@ -52,9 +65,9 @@ func WithHighway() NodeOption {
 }
 
 // WithTerminal sets the node as a terminal node.
-func WithTerminal() NodeOption {
+func WithTerminal(val bool) NodeOption {
 	return func(o *nodeOptions) {
-		o.isTerminal = true
+		o.isTerminal = val
 	}
 }
 
@@ -82,8 +95,11 @@ func defaultNodeOptions() *nodeOptions {
 	}
 }
 
-// Apply applies to node 
+// Apply applies to node
 func (opts *nodeOptions) Apply(ctx context.Context, node *Node) error {
+	node.isTerminal = opts.isTerminal
+	node.mode = opts.mode
+
 	// Handle by Node Mode
 	if opts.mode == StubMode_CLIENT {
 		logger.Debug("Starting Client stub...")
@@ -95,7 +111,7 @@ func (opts *nodeOptions) Apply(ctx context.Context, node *Node) error {
 		}
 
 		// Set Stub to node
-		node.stub = stub
+		node.clientStub = stub
 
 	} else {
 		logger.Debug("Starting Highway stub...")
@@ -107,7 +123,33 @@ func (opts *nodeOptions) Apply(ctx context.Context, node *Node) error {
 		}
 
 		// Set Stub to node
-		node.stub = stub
+		node.highwayStub = stub
+	}
+	return nil
+}
+
+func (n *Node) PrintTerminal(title string, msg string) {
+	if n.isTerminal {
+		// Print a section with level one.
+		pterm.DefaultSection.Println(title)
+		// Print placeholder.
+		pterm.Info.Println(msg)
+	}
+}
+
+func (n *Node) PromptTerminal(title string, onResult func(result bool)) error {
+	if n.isTerminal {
+		prompt := promptui.Prompt{
+			Label:     title,
+			IsConfirm: true,
+		}
+
+		result, err := prompt.Run()
+		if err != nil {
+			fmt.Printf("Prompt failed %v\n", err)
+			return err
+		}
+		onResult(result == "y")
 	}
 	return nil
 }

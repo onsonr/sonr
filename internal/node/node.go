@@ -17,17 +17,17 @@ import (
 type Node struct {
 	// Standard Node Implementation
 	api.NodeImpl
+	clientStub  *ClientNodeStub
+	highwayStub *HighwayNodeStub
+	mode        NodeStubMode
 
 	// Host and context
 	host *host.SNRHost
 
 	// Properties
-	ctx context.Context
-
-	store *bitcask.Bitcask
-
-	// Node Stub Interface
-	stub api.NodeStubImpl
+	ctx        context.Context
+	isTerminal bool
+	store      *bitcask.Bitcask
 
 	// Channels
 	// TransferProtocol - decisionEvents
@@ -95,9 +95,18 @@ func NewNode(ctx context.Context, options ...NodeOption) (api.NodeImpl, *api.Ini
 
 // Close closes the node
 func (n *Node) Close() {
-	// Close Stub
-	if err := n.stub.Close(); err != nil {
-		logger.Error("Failed to close host, ", err)
+	// Close Client Stub
+	if n.mode.IsClient() {
+		if err := n.clientStub.Close(); err != nil {
+			logger.Error("Failed to close Client Stub, ", err)
+		}
+	}
+
+	// Close Highway Stub
+	if n.mode.IsHighway() {
+		if err := n.highwayStub.Close(); err != nil {
+			logger.Error("Failed to close Highway Stub, ", err)
+		}
 	}
 
 	// Close Store
@@ -157,11 +166,21 @@ func (n *Node) Peer() (*common.Peer, error) {
 
 // OnDecision is callback for NodeImpl for decisionEvents
 func (n *Node) OnDecision(event *api.DecisionEvent) {
+	n.PrintTerminal(event.Title(), event.Message())
 	n.decisionEvents <- event
 }
 
 // OnInvite is callback for NodeImpl for inviteEvents
 func (n *Node) OnInvite(event *api.InviteEvent) {
+	n.PrintTerminal(event.Title(), event.Message())
+	n.PromptTerminal("Accept Invite", func(result bool) {
+		if n.mode.IsClient() {
+			n.clientStub.Respond(n.ctx, &api.RespondRequest{
+				Decision: result,
+				Peer:     event.GetFrom(),
+			})
+		}
+	})
 	n.inviteEvents <- event
 }
 
@@ -177,6 +196,7 @@ func (n *Node) OnProgress(event *api.ProgressEvent) {
 
 // OnComplete is callback for NodeImpl for completeEvents
 func (n *Node) OnComplete(event *api.CompleteEvent) {
+	n.PrintTerminal(event.Title(), event.Message())
 	n.completeEvents <- event
 }
 

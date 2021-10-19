@@ -25,17 +25,17 @@ type Session struct {
 }
 
 // IsIncoming returns true if the session is incoming.
-func (s *Session) IsIncoming() bool {
+func (s Session) IsIncoming() bool {
 	return s.direction == common.Direction_INCOMING
 }
 
 // IsOutgoing returns true if the session is outgoing.
-func (s *Session) IsOutgoing() bool {
+func (s Session) IsOutgoing() bool {
 	return s.direction == common.Direction_OUTGOING
 }
 
 // ReadFrom reads the next Session from the given stream.
-func (s *Session) ReadFrom(stream network.Stream, n api.NodeImpl) *api.CompleteEvent {
+func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) *api.CompleteEvent {
 	// Initialize Params
 	logger.Debug("Beginning INCOMING Transfer Stream")
 
@@ -70,7 +70,7 @@ func (s *Session) ReadFrom(stream network.Stream, n api.NodeImpl) *api.CompleteE
 }
 
 // WriteTo writes the Session to the given stream.
-func (s *Session) WriteTo(stream network.Stream, n api.NodeImpl) *api.CompleteEvent {
+func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) *api.CompleteEvent {
 	// Initialize Params
 	logger.Debug("Beginning OUTGOING Transfer Stream")
 	wc := msgio.NewWriter(stream)
@@ -110,17 +110,17 @@ func (s *Session) WriteTo(stream network.Stream, n api.NodeImpl) *api.CompleteEv
 }
 
 // Count returns the number of items in Payload
-func (s *Session) Count() int {
+func (s Session) Count() int {
 	return len(s.payload.GetItems())
 }
 
 // MapItems performs PayloadItemFunc on each item in the Payload.
-func (s *Session) Items() []*common.Payload_Item {
+func (s Session) Items() []*common.Payload_Item {
 	return s.payload.GetItems()
 }
 
 // SetPayload sets the Payload for the Session.
-func (s *Session) SetPayload() *common.Payload {
+func (s Session) SetPayload() *common.Payload {
 	if s.IsIncoming() {
 		s.payload = s.payload.ResetItemsDirectory(fs.Downloads)
 		s.lastUpdated = common.NewLastUpdated()
@@ -144,7 +144,7 @@ func (sq *SessionQueue) AddIncoming(from peer.ID, req *InviteRequest) error {
 	}
 
 	// Create New TransferEntry
-	entry := &Session{
+	entry := Session{
 		direction:   common.Direction_INCOMING,
 		payload:     req.GetPayload(),
 		from:        req.GetFrom(),
@@ -160,7 +160,7 @@ func (sq *SessionQueue) AddIncoming(from peer.ID, req *InviteRequest) error {
 // AddOutgoing adds Outgoing Request to Transfer Queue
 func (sq *SessionQueue) AddOutgoing(to peer.ID, req *InviteRequest) error {
 	// Create New TransferEntry
-	entry := &Session{
+	entry := Session{
 		direction:   common.Direction_OUTGOING,
 		payload:     req.GetPayload(),
 		from:        req.GetFrom(),
@@ -174,47 +174,39 @@ func (sq *SessionQueue) AddOutgoing(to peer.ID, req *InviteRequest) error {
 }
 
 // Next returns topmost entry in the queue.
-func (sq *SessionQueue) Next() (*Session, error) {
+func (sq *SessionQueue) Next() (Session, error) {
 	// Find Entry for Peer
-	entry := sq.queue.Remove(sq.queue.Front()).(*Session)
-	if entry == nil {
-		return nil, ErrFailedEntry
-	}
-
+	entry := sq.queue.Remove(sq.queue.Front()).(Session)
 	entry.lastUpdated = int64(time.Now().Unix())
 	return entry, nil
 }
 
 // Validate takes list of Requests and returns true if Request exists in List and UUID is verified.
 // Method also returns the InviteRequest that points to the Response.
-func (sq *SessionQueue) Validate(resp *InviteResponse) (*Session, error) {
+func (sq *SessionQueue) Validate(resp *InviteResponse) (Session, error) {
 	// Authenticate Message
 	valid := sq.host.AuthenticateMessage(resp, resp.Metadata)
 	if !valid {
-		return nil, ErrFailedAuth
+		return Session{}, ErrFailedAuth
 	}
 
 	// Check Decision
 	if !resp.GetDecision() {
-		return nil, nil
+		return Session{}, nil
 	}
 
 	// Check if the request is valid
 	if sq.queue.Len() == 0 {
-		return nil, ErrEmptyRequests
+		return Session{}, ErrEmptyRequests
 	}
 
 	// Get Next Entry
 	entry, err := sq.Next()
 	if err != nil {
 		logger.Error("Failed to get Transfer entry", err)
-		return nil, err
+		return Session{}, err
 	}
-
-	// Check if Request exists in Map
-	if entry != nil {
-		entry.lastUpdated = int64(time.Now().Unix())
-		return entry, nil
-	}
-	return nil, ErrRequestNotFound
+	
+	entry.lastUpdated = int64(time.Now().Unix())
+	return entry, nil
 }

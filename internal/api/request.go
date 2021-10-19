@@ -63,8 +63,6 @@ func (ir *InitializeRequest) Parse() error {
 		golog.Info("Added Enviornment Variable(s)", golog.Fields{
 			"Total": count,
 		})
-	} else {
-		golog.Warn("No Enviornment Variable(s) passed")
 	}
 
 	// Set Device ID
@@ -72,8 +70,6 @@ func (ir *InitializeRequest) Parse() error {
 	if did != "" {
 		logger.Info("Device ID Passed: " + did)
 		common.SetDeviceID(did)
-	} else {
-		golog.Warn("No Device ID Passed")
 	}
 
 	// Start File System
