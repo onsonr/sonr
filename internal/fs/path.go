@@ -1,10 +1,8 @@
-package device
+package fs
 
 import (
 	"path/filepath"
 	"strings"
-
-	"github.com/kataras/golog"
 )
 
 type filePathOptType int
@@ -16,126 +14,6 @@ const (
 	filePathOptionTypeReplace                          // Replace
 	filePathOptionTypeSeparator                        // Separator
 )
-
-// NewPath returns a new path with the given file name and specified folder.
-func NewPath(path string, dir string, opts ...FilePathOption) (string, error) {
-	// Initialize options list
-	name := filepath.Base(path)
-	fpoList := make([]*filePathOptions, len(opts))
-	for _, opt := range opts {
-		fpoList = append(fpoList, opt.Apply())
-	}
-
-	// Merge options
-	fpo := &filePathOptions{}
-	err := fpo.Merge(name, fpoList...)
-	if err != nil {
-		return "", err
-	}
-
-	// Build path
-	return fpo.Apply(dir)
-}
-
-// NewDatabasePath Returns a new path in database dir with given file name.
-func NewDatabasePath(path string, opts ...FilePathOption) (string, error) {
-	// Initialize options list
-	name := filepath.Base(path)
-	fpoList := make([]*filePathOptions, len(opts))
-	for _, opt := range opts {
-		fpoList = append(fpoList, opt.Apply())
-	}
-
-	// Merge options
-	fpo := &filePathOptions{}
-	err := fpo.Merge(name, fpoList...)
-	if err != nil {
-		return "", err
-	}
-
-	// Build path
-	return fpo.Apply(DocsPath)
-}
-
-// NewDocsPath Returns a new path in docs dir with given file name.
-func NewDocsPath(path string, opts ...FilePathOption) (string, error) {
-	// Initialize options list
-	name := filepath.Base(path)
-	fpoList := make([]*filePathOptions, len(opts))
-	for _, opt := range opts {
-		fpoList = append(fpoList, opt.Apply())
-	}
-
-	// Merge options
-	fpo := &filePathOptions{}
-	err := fpo.Merge(name, fpoList...)
-	if err != nil {
-		return "", err
-	}
-
-	// Build path
-	return fpo.Apply(DocsPath)
-}
-
-// NewDownloadsPath Returns a new path in downloads dir with given file name.
-func NewDownloadsPath(path string, opts ...FilePathOption) (string, error) {
-	// Initialize options list
-	name := filepath.Base(path)
-	fpoList := make([]*filePathOptions, len(opts))
-	for _, opt := range opts {
-		fpoList = append(fpoList, opt.Apply())
-	}
-
-	// Merge options
-	fpo := &filePathOptions{}
-	err := fpo.Merge(name, fpoList...)
-	if err != nil {
-		return "", err
-	}
-
-	// Build path
-	return fpo.Apply(DownloadsPath)
-}
-
-// NewTempPath Returns a new path in temp dir with given file name.
-func NewTempPath(path string, opts ...FilePathOption) (string, error) {
-	// Initialize options list
-	name := filepath.Base(path)
-	fpoList := make([]*filePathOptions, len(opts))
-	for _, opt := range opts {
-		fpoList = append(fpoList, opt.Apply())
-	}
-
-	// Merge options
-	fpo := &filePathOptions{}
-	err := fpo.Merge(name, fpoList...)
-	if err != nil {
-		return "", err
-	}
-
-	// Build path
-	return fpo.Apply(TempPath)
-}
-
-// NewSupportPath Returns a new path in support dir with given file name.
-func NewSupportPath(path string, opts ...FilePathOption) (string, error) {
-	// Initialize options list
-	name := filepath.Base(path)
-	fpoList := make([]*filePathOptions, len(opts))
-	for _, opt := range opts {
-		fpoList = append(fpoList, opt.Apply())
-	}
-
-	// Merge options
-	fpo := &filePathOptions{}
-	err := fpo.Merge(name, fpoList...)
-	if err != nil {
-		return "", err
-	}
-
-	// Build path
-	return fpo.Apply(DownloadsPath)
-}
 
 // FilePathOption is a function option for FilePath.
 type FilePathOption interface {
@@ -325,9 +203,7 @@ func (fpo *filePathOptions) Apply(dir string) (string, error) {
 	// Check if file name is set
 	if fpo.fileName != "" {
 		path := filepath.Join(dir, fpo.fileName)
-		logger.Info("Calculated new file path", golog.Fields{
-			"path": path,
-		})
+		logger.Debug("Calculated new file path: " + path)
 		return path, nil
 	} else {
 		return "", ErrNoFileNameSet

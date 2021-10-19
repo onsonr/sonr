@@ -1,37 +1,30 @@
-package device
+package common
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"runtime"
 
 	"github.com/denisbrodbeck/machineid"
+	"github.com/sonr-io/core/internal/wallet"
 )
 
-const (
-	StatKey_Id       = "Id"
-	StatKey_HostName = "HostName"
-	StatKey_Os       = "Os"
-	StatKey_Arch     = "Arch"
+var (
+	// General errors
+	ErrEmptyDeviceID = errors.New("Device ID cannot be empty")
+	ErrMissingEnvVar = errors.New("Cannot set EnvVariable with empty value")
+
+	// Directory errors
+	ErrDirectoryInvalid = errors.New("Directory Type is invalid")
+	ErrDirectoryUnset   = errors.New("Directory path has not been set")
+	ErrDirectoryJoin    = errors.New("Failed to join directory path")
 )
 
-// AppName returns the application name.
-func AppName() string {
-	switch runtime.GOOS {
-	case "android":
-		return "io.sonr.petitfour"
-	case "darwin":
-		return "io.sonr.macos"
-	case "linux":
-		return "io.sonr.linux"
-	case "windows":
-		return "io.sonr.windows"
-	case "ios":
-		return "io.sonr.alpine"
-	default:
-		return "io.sonr.app"
-	}
-}
+var (
+	// deviceID is the device ID. Either provided or found
+	deviceID string
+)
 
 // Arch returns the current architecture.
 func Arch() string {
@@ -90,9 +83,29 @@ func IsMacOS() bool {
 	return runtime.GOOS == "darwin"
 }
 
-// VendorName returns the vendor name.
-func VendorName() string {
-	return "Sonr"
+// NewRecordPrefix returns a new device ID prefix for users HDNS records
+func NewRecordPrefix(sName string) (string, error) {
+	// Check if the device ID is empty
+	if deviceID == "" {
+		return "", ErrEmptyDeviceID
+	}
+
+	// Check if the SName is empty
+	if sName == "" {
+		return "", errors.New("SName cannot by Empty or Less than 4 characters.")
+	}
+	val := fmt.Sprintf("%s:%s", deviceID, sName)
+	return wallet.Primary.SignHmacWith(wallet.Account, val)
+}
+
+// SetDeviceID sets the device ID.
+func SetDeviceID(id string) error {
+	if id != "" {
+		deviceID = id
+		return nil
+	}
+	logger.Error("Failed to Set Device ID", ErrEmptyDeviceID)
+	return ErrEmptyDeviceID
 }
 
 // Stat returns the device stat.
@@ -113,9 +126,27 @@ func Stat() (map[string]string, error) {
 
 	// Return the device info for Peer
 	return map[string]string{
-		StatKey_Id:       id,
-		StatKey_HostName: hn,
-		StatKey_Os:       runtime.GOOS,
-		StatKey_Arch:     runtime.GOARCH,
+		"id":       id,
+		"hostName": hn,
+		"os":       runtime.GOOS,
+		"arch":     runtime.GOARCH,
 	}, nil
+}
+
+// VerifyRecordPrefix returns true if the prefix is valid for the device ID.
+func VerifyRecordPrefix(prefix string, sName string) bool {
+	// Check if the prefix is empty
+	if prefix == "" {
+		logger.Warn("Empty Prefix Provided as Parameter")
+		return false
+	}
+
+	// Check if the prefix is valid
+	val := fmt.Sprintf("%s:%s", deviceID, sName)
+	ok, err := wallet.Primary.VerifyHmacWith(wallet.Account, prefix, val)
+	if err != nil {
+		logger.Error("Failed to verify prefix", err)
+		return false
+	}
+	return ok
 }

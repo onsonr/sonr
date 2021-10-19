@@ -71,11 +71,9 @@ func (s SNRHostStatus) String() string {
 func (h *SNRHost) SetStatus(s SNRHostStatus) {
 	// Check if status is changed
 	if h.status == s {
-		logger.Info("SetStatus: Same status provided, " + s.String())
 		return
 	}
 
 	// Update Status
 	h.status = s
-	h.emitter.Emit(Event_STATUS, s)
 }

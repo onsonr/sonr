@@ -34,12 +34,9 @@ message InitializeRequest {
   // Optional Message to Initialize FileSystem
   message DeviceOptions {
     string id = 1;           // Device ID
-    string cacheDir = 2;     // Cache Directory
-    string databaseDir = 3;  // Database Directory
-    string documentsDir = 4; // Documents Directory
-    string downloadsDir = 5; // Downloads Directory
-    string textileDir = 6;   // Textile Directory
-    string supportDir = 7;   // Support Directory
+    string homeDir = 2;
+    string supportDir = 3;
+    string tempDir = 4;
   }
 
   // Libp2p Host Options
@@ -90,9 +87,13 @@ message InitializeResponse {
 
 // (Client) SupplyRequest supplies path to files or urls and optionally a Peer
 message SupplyRequest {
-  repeated string paths = 1;        // Supply Paths
+  repeated Item items = 1;        // Supply Paths
   optional sonr.core.Peer peer = 2; // Supply Peer
   bool isPeerSupply = 3;                 // Supply Peer
+  message Item {
+    string path = 1; // Supply Path
+    bytes thumbnail = 2; // Supply Thumbnail
+  }
 }
 
 // (Client) SupplyResponse is response to SupplyRequest

@@ -2,18 +2,14 @@ package transfer
 
 import (
 	"bytes"
-	"fmt"
+	"io"
 	"io/ioutil"
-	sync "sync"
 
-	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
-	"github.com/sonr-io/core/internal/device"
-	"github.com/sonr-io/core/tools/config"
-	"github.com/sonr-io/core/tools/state"
+	"github.com/sonr-io/core/internal/fs"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -39,183 +35,106 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 		logger.Error("Failed to Unmarshal Invite REQUEST buffer.", err)
 		return
 	}
-	// store request data into Context
-	p.emitter.Emit(Event_INVITED, req.ToEvent())
 
 	// generate response message
-	p.sessionQueue.AddIncoming(remotePeer, req)
+	err = p.sessionQueue.AddIncoming(remotePeer, req)
+	if err != nil {
+		logger.Error("Failed to add incoming session to queue.", err)
+		return
+	}
+
+	// store request data into Context
+	p.node.OnInvite(req.ToEvent())
 }
 
 // onIncomingTransfer incoming transfer handler
-func (p *TransferProtocol) onIncomingTransfer(s network.Stream) {
+func (p *TransferProtocol) onIncomingTransfer(stream network.Stream) {
 	// Find Entry in Queue
-	e, err := p.sessionQueue.Next()
+	entry, err := p.sessionQueue.Next()
 	if err != nil {
 		logger.Error("Failed to find transfer request", err)
-		s.Reset()
+		stream.Reset()
 		return
 	}
 
-	// Initialize Params
-	logger.Info("Started Incoming Transfer...")
-	reader := msgio.NewReader(s)
-	wg := sync.WaitGroup{}
-	wg.Add(1)
-	// Handle incoming stream
-	go func(entry *Session, rs msgio.ReadCloser) {
-
-		// Write All Files
-		for i, v := range entry.Items() {
-			// Create Reader
-			r, err := NewReader(i, entry.Count(), v, p.emitter)
-			if err != nil {
-				logger.Error("Failed to create reader", err)
-				rs.Close()
-				return
-			}
-
-			// Write to File
-			if err := r.ReadFrom(rs); err != nil {
-				logger.Error("Failed to write to file", err)
-				rs.Close()
-				return
-			}
-
-			// Update Progress
-			logger.Info(fmt.Sprintf("Finished RECEIVING File (%v/%v)", i+1, entry.Count()))
-		}
-
-		wg.Done()
-	}(e, reader)
-	wg.Wait()
-
-	// Complete the transfer
-	event, err := p.sessionQueue.Done()
-	if err != nil {
-		logger.Error("Failed to Complete Incoming Transfer", err)
-		return
-	}
-
-	// Emit Event
-	p.emitter.Emit(Event_COMPLETED, event)
-
-	// Await WaitGroup
-	err = reader.Close()
-	if err != nil {
-		logger.Error("Failed to close stream for incoming transfer", err)
-		return
+	// Create New Writer
+	if event := entry.ReadFrom(stream, p.node); event != nil {
+		p.node.OnComplete(event)
 	}
 }
 
 // itemReader is a Reader for a FileItem
 type itemReader struct {
-	emitter *state.Emitter
-	mutex   sync.Mutex
-	logger  *golog.Logger
-	item    *common.FileItem
-	path    string
-	index   int
-	count   int
-	size    int64
+	item   *common.FileItem
+	buffer bytes.Buffer
+	path   string
+	index  int
+	count  int
+	size   int64
+	node   api.NodeImpl
 }
 
-// NewReader Returns a new Reader for the given FileItem
-func NewReader(index int, count int, item *common.Payload_Item, em *state.Emitter) (*itemReader, error) {
-	// Determine Path for File
-	path, err := device.NewDownloadsPath(item.GetFile().GetPath())
-	if err != nil {
-		logger.Error("Failed to determine downloads path", err)
-		return nil, err
-	}
-
-	// Return Reader
+// NewItemReader Returns a new Reader for the given FileItem
+func NewItemReader(index int, count int, item *common.Payload_Item, node api.NodeImpl) *itemReader {
+	path, _ := fs.Downloads.GenPath(item.GetFile().GetPath())
 	return &itemReader{
-		item:    item.GetFile(),
-		size:    item.GetSize(),
-		logger:  logger,
-		emitter: em,
-		index:   index,
-		count:   count,
-		path:    path,
-	}, nil
+		item:   item.GetFile(),
+		size:   item.GetSize(),
+		index:  index,
+		count:  count,
+		path:   path,
+		buffer: bytes.Buffer{},
+		node:   node,
+	}
 }
 
 // Returns Progress of File, Given the written number of bytes
 func (p *itemReader) Progress(i int) {
-	// Create Progress Event
-	event := &api.ProgressEvent{
-		Progress: (float64(i) / float64(p.size)),
-		Current:  int32(p.index),
-		Total:    int32(p.count),
-	}
+	if (i % ITEM_INTERVAL) == 0 {
+		// Create Progress Event
+		event := &api.ProgressEvent{
+			Progress: (float64(i) / float64(p.size)),
+			Current:  int32(p.index),
+			Total:    int32(p.count),
+		}
 
-	// Push ProgressEvent to Emitter
-	p.emitter.Emit(Event_PROGRESS, event)
+		// Push ProgressEvent to Emitter
+		p.node.OnProgress(event)
+	}
 }
 
 // ReadFrom Reads from the given Reader and writes to the given File
-func (ir *itemReader) ReadFrom(reader msgio.ReadCloser) error {
-	// Create File Buffer
-	fileBuffer := bytes.Buffer{}
+func (ir *itemReader) ReadFrom(reader msgio.ReadCloser) {
+	// Defer Closing of Reader and WaitGroup
+	defer reader.Close()
 
 	// Route Data from Stream
-	for i := 0; i < int(ir.size); {
-		// Read Length Fixed Bytes
-		buffer, err := reader.ReadMsg()
-		if err != nil {
-			ir.logger.Error("Failed to Read Next Message on Read Stream", err)
-			return err
-		}
-
-		// Decode Chunk
-		buf, err := decodeChunk(buffer)
-		if err != nil {
-			ir.logger.Error("Failed to Decode Chunk on Read Stream", err)
-			return err
-		}
-
-		// Write to File, and Update Progress
-		ir.mutex.Lock()
-
-		n, err := fileBuffer.Write(buf.Data)
-		if err != nil {
-			ir.logger.Error("Failed to Write Buffer to File on Read Stream", err)
-			return err
-		}
-		i += n
-		ir.mutex.Unlock()
-
-		// Emit Progress
-		if (i % ITEM_INTERVAL) == 0 {
-			ir.Progress(i)
+	for i := 0; i < int(ir.item.GetSize()); {
+		// Read Next Message
+		buf, err := reader.ReadMsg()
+		if err == io.EOF {
+			break
+		} else if err != nil {
+			logger.Error("Failed to Read Next Message on Read Stream", err)
+			return
+		} else {
+			// Write Chunk to File
+			n, err := ir.buffer.Write(buf)
+			if err != nil {
+				logger.Error("Failed to Write Buffer to File on Read Stream", err)
+				return
+			}
+			i += n
+			// ir.Progress(i, n)
 		}
 	}
 
 	// Write File Buffer to File
-	err := ioutil.WriteFile(ir.path, fileBuffer.Bytes(), 0644)
+	err := ioutil.WriteFile(ir.path, ir.buffer.Bytes(), 0644)
 	if err != nil {
-		ir.logger.Error("Failed to Close item on Read Stream", err)
-		return err
+		logger.Error("Failed to Close item on Read Stream", err)
+		return
 	}
-	ir.logger.Info("Completed writing to file: " + ir.path)
-	return nil
-}
-
-// decodeChunk Decodes a Chunk from a Message
-func decodeChunk(buf []byte) (config.Chunk, error) {
-	// Decode Chunk
-	chunk := &Chunk{}
-	err := proto.Unmarshal(buf, chunk)
-	if err != nil {
-		logger.Error("Failed to Unmarshal Chunk.", err)
-		return config.Chunk{}, err
-	}
-
-	// Convert to Chunk
-	return config.Chunk{
-		Offset:      int(chunk.Offset),
-		Length:      int(chunk.Length),
-		Data:        chunk.Data,
-		Fingerprint: uint64(chunk.Fingerprint),
-	}, nil
+	logger.Debug("Completed writing to file: " + ir.path)
+	return
 }

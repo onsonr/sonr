@@ -9,9 +9,8 @@ import (
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
-	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/host"
-	"github.com/sonr-io/core/tools/state"
+	"github.com/sonr-io/core/internal/wallet"
 )
 
 // Transfer Emission Events
@@ -44,13 +43,9 @@ var (
 )
 
 // checkParams Checks if Non-nil Parameters were passed
-func checkParams(host *host.SNRHost, em *state.Emitter) error {
+func checkParams(host *host.SNRHost) error {
 	if host == nil {
 		logger.Error("Host provided is nil", ErrParameters)
-		return ErrParameters
-	}
-	if em == nil {
-		logger.Error("Emitter provided is nil", ErrParameters)
 		return ErrParameters
 	}
 	return host.HasRouting()
@@ -83,7 +78,7 @@ func (p *TransferProtocol) NewRequest(to *common.Peer, from *common.Peer, fromID
 		payload := p.supplyQueue.Remove(elem).(*common.Payload)
 
 		// Create new Metadata
-		meta, err := device.KeyChain.CreateMetadata(fromID)
+		meta, err := wallet.Primary.CreateMetadata(fromID)
 		if err != nil {
 			logger.Error("Failed to create new metadata for Shared Invite", err)
 			return "", nil, err
@@ -112,7 +107,7 @@ func (p *TransferProtocol) NewRequest(to *common.Peer, from *common.Peer, fromID
 // Respond to an invite request
 func (p *TransferProtocol) NewResponse(decs bool, to *common.Peer, from *common.Peer, fromID peer.ID) (peer.ID, *InviteResponse, error) {
 	// Create new Metadata
-	meta, err := device.KeyChain.CreateMetadata(fromID)
+	meta, err := wallet.Primary.CreateMetadata(fromID)
 	if err != nil {
 		logger.Error("Failed to create new metadata for Shared Invite", err)
 		return "", nil, err

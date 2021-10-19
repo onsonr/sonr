@@ -1,30 +1,27 @@
-package lib
+package sonr
 
 import (
 	"context"
 
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/internal/api"
-	"github.com/sonr-io/core/internal/common"
-	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/node"
 	"google.golang.org/protobuf/proto"
 )
 
-type sonrLib struct {
+type sonrLite struct {
 	// Properties
 	ctx  context.Context
-	node common.NodeImpl
+	node api.NodeImpl
 }
 
 var (
-	instance *sonrLib
+	instance *sonrLite
 )
 
 func init() {
-	golog.SetPrefix("[Sonr-Core.lib] ")
+	golog.SetPrefix("[Sonr-Core.lite] ")
 	golog.SetStacktraceLimit(2)
-	golog.SetFormat("json", "    ")
 }
 
 // Start starts the host, node, and rpc service.
@@ -46,21 +43,21 @@ func Start(reqBuf []byte) {
 	}
 
 	// Initialize Device
-	err = device.Init(req.ParseOpts()...)
+	err = req.Parse()
 	if err != nil {
-		golog.Fatal("Failed to initialize Device", err)
+		golog.Errorf("Failed to parse and handle request: %v", err)
 		return
 	}
 
 	// Create Node
-	n, _, err := node.NewNode(ctx, node.WithRequest(req), node.WithStubMode(node.StubMode_CLIENT))
+	n, _, err := node.NewNode(ctx, node.WithRequest(req))
 	if err != nil {
 		golog.Fatal("Failed to Create new node", err)
 		return
 	}
 
 	// Set Lib
-	instance = &sonrLib{
+	instance = &sonrLite{
 		ctx:  ctx,
 		node: n,
 	}

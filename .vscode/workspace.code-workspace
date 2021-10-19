@@ -1,9 +1,5 @@
 {
   "folders": [
-  {
-          "path": "../cmd/cli",
-          "name": "🔌  CLI"
-    },
     {
       "path": "..",
       "name": "🚀  Core"
@@ -109,7 +105,6 @@
       "Contents.json": true,
       ".devcontainer": true,
       "cmd/cli": true,
-      // Project Related
       "**/app": true,
       "**/design": true,
       "**/sonr.wiki": true,
@@ -133,7 +128,7 @@
       "electron": "examples",
       "flutter": "examples",
       "highway": "project",
-      "util": ""
+      "api": ""
     },
     "github.codespaces.defaultExtensions": [
       "GitHub.codespaces",

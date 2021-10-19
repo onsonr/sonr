@@ -6,9 +6,9 @@ import (
 	"time"
 
 	ps "github.com/libp2p/go-libp2p-pubsub"
+	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/host"
-	"github.com/sonr-io/core/tools/state"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -25,10 +25,9 @@ var (
 
 // LobbyProtocol is the protocol for managing local peers.
 type LobbyProtocol struct {
-	common.NodeImpl
+	node         api.NodeImpl
 	ctx          context.Context
-	host         *host.SNRHost  // host
-	emitter      *state.Emitter // Handle to signal when done
+	host         *host.SNRHost // host
 	eventHandler *ps.TopicEventHandler
 	messages     chan *LobbyMessage
 	subscription *ps.Subscription
@@ -38,7 +37,8 @@ type LobbyProtocol struct {
 }
 
 // NewProtocol creates a new lobby protocol instance.
-func NewProtocol(ctx context.Context, host *host.SNRHost, nu common.NodeImpl, em *state.Emitter, options ...LobbyOption) (*LobbyProtocol, error) {
+func NewProtocol(ctx context.Context, host *host.SNRHost, nu api.NodeImpl, options ...LobbyOption) (*LobbyProtocol, error) {
+
 	opts := defaultLobbyOptions()
 	for _, option := range options {
 		option(opts)
@@ -47,7 +47,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, nu common.NodeImpl, em
 	olc := createOlc(opts.location)
 
 	// Check parameters
-	if err := checkParams(host, em); err != nil {
+	if err := checkParams(host); err != nil {
 		logger.Error("Failed to create LobbyProtocol", err)
 		return nil, err
 	}
@@ -75,10 +75,9 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, nu common.NodeImpl, em
 
 	// Create Exchange Protocol
 	lobProtocol := &LobbyProtocol{
-		NodeImpl:     nu,
+		node:         nu,
 		ctx:          ctx,
 		host:         host,
-		emitter:      em,
 		topic:        topic,
 		subscription: sub,
 		eventHandler: handler,
@@ -88,7 +87,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, nu common.NodeImpl, em
 	}
 
 	// Handle Events and Return Protocol
-	logger.Info("✅  LobbyProtocol is Activated \n")
+	logger.Debug("✅  LobbyProtocol is Activated \n")
 	go lobProtocol.HandleEvents()
 	go lobProtocol.HandleMessages()
 	go lobProtocol.autoPushUpdates()
@@ -190,4 +189,10 @@ func (p *LobbyProtocol) autoPushUpdates() {
 		}
 		time.Sleep(time.Second * 5)
 	}
+}
+
+func (p *LobbyProtocol) Close() error {
+	p.eventHandler.Cancel()
+	p.subscription.Cancel()
+	return p.topic.Close()
 }

@@ -4,8 +4,8 @@ SHELL=/bin/bash
 SONR_ROOT_DIR=/Users/prad/Developer
 ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 CORE_DIR=$(SONR_ROOT_DIR)/core
-CORE_RPC_DIR=$(SONR_ROOT_DIR)/core/cmd/bin
-CORE_BIND_DIR=$(SONR_ROOT_DIR)/core/cmd/lib
+CORE_FULL_DIR=$(SONR_ROOT_DIR)/core/cmd/full
+CORE_BIND_DIR=$(SONR_ROOT_DIR)/core/cmd/lite
 ELECTRON_BIN_DIR=$(SONR_ROOT_DIR)/electron/assets/bin/darwin
 PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
 LD_LIBRARY_PATH=/opt/homebrew/bin/ffmpeg/4.4_2/lib
@@ -119,7 +119,7 @@ protobuf:
 ## [release]   :   Upload RPC Binary Artifact to S3
 release: protobuf
 	@echo "Building Artifacts..."
-	@cd $(CORE_RPC_DIR) && goreleaser release --rm-dist
+	@cd $(CORE_FULL_DIR) && goreleaser release --rm-dist
 	@echo "Cleaning up build cache..."
 	@cd $(CORE_DIR) && go mod tidy
 	@rm -rf $(ELECTRON_BIN_DIR)

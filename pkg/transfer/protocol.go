@@ -7,48 +7,45 @@ import (
 
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/sonr-io/core/internal/common"
+	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/host"
-	"github.com/sonr-io/core/tools/state"
 )
 
 // TransferProtocol type
 type TransferProtocol struct {
-	ctx            context.Context // Context
-	host           *host.SNRHost   // local host
-	emitter        *state.Emitter  // Handle to signal when done
-	sessionQueue   *SessionQueue   // transfer session queue
-	supplyQueue    *list.List      // supply queue
-	getProfileFunc common.GetProfileFunc
+	node         api.NodeImpl
+	ctx          context.Context // Context
+	host         *host.SNRHost   // local host
+	sessionQueue *SessionQueue   // transfer session queue
+	supplyQueue  *list.List      // supply queue
 }
 
 // NewProtocol creates a new TransferProtocol
-func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter, gpf common.GetProfileFunc) (*TransferProtocol, error) {
+func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*TransferProtocol, error) {
 	// Check parameters
-	if err := checkParams(host, em); err != nil {
+	if err := checkParams(host); err != nil {
 		logger.Error("Failed to create TransferProtocol", err)
 		return nil, err
 	}
 
 	// create a new transfer protocol
 	invProtocol := &TransferProtocol{
-		ctx:     ctx,
-		host:    host,
-		emitter: em,
+		ctx:  ctx,
+		host: host,
 		sessionQueue: &SessionQueue{
 			ctx:   ctx,
 			host:  host,
 			queue: list.New(),
 		},
-		supplyQueue:    list.New(),
-		getProfileFunc: gpf,
+		supplyQueue: list.New(),
+		node:        node,
 	}
 
 	// Setup Stream Handlers
 	host.SetStreamHandler(RequestPID, invProtocol.onInviteRequest)
 	host.SetStreamHandler(ResponsePID, invProtocol.onInviteResponse)
 	host.SetStreamHandler(SessionPID, invProtocol.onIncomingTransfer)
-	logger.Info("✅  TransferProtocol is Activated \n")
+	logger.Debug("✅  TransferProtocol is Activated \n")
 	return invProtocol, nil
 }
 
@@ -75,8 +72,7 @@ func (p *TransferProtocol) Request(id peer.ID, req *InviteRequest) error {
 	}
 
 	// store the request in the map
-	p.sessionQueue.AddOutgoing(id, req)
-	return nil
+	return p.sessionQueue.AddOutgoing(id, req)
 }
 
 // Respond Method authenticates or declines a Transfer Request
@@ -106,16 +102,16 @@ func (p *TransferProtocol) Respond(id peer.ID, resp *InviteResponse) error {
 }
 
 // Supply a transfer item to the queue
-func (p *TransferProtocol) Supply(paths []string) error {
+func (p *TransferProtocol) Supply(req *api.SupplyRequest) error {
 	// Profile from NodeImpl
-	profile, err := p.getProfileFunc()
+	profile, err := p.node.GetProfile()
 	if err != nil {
 		logger.Error("Failed to Get Profile from Node")
 		return err
 	}
 
 	// Create Transfer
-	payload, err := common.NewPayload(profile, paths)
+	payload, err := req.ToPayload(profile)
 	if err != nil {
 		logger.Error("Failed to Supply Paths", err)
 		return err
@@ -123,6 +119,6 @@ func (p *TransferProtocol) Supply(paths []string) error {
 
 	// Add items to transfer
 	p.supplyQueue.PushBack(payload)
-	logger.Info(fmt.Sprintf("Added %v items to supply queue.", len(paths)), golog.Fields{"File Count": payload.FileCount(), "URL Count": payload.URLCount()})
+	logger.Info(fmt.Sprintf("Added %v items to supply queue.", req.Count()), golog.Fields{"File Count": payload.FileCount(), "URL Count": payload.URLCount()})
 	return nil
 }

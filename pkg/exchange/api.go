@@ -1,4 +1,4 @@
-package internet
+package exchange
 
 import (
 	"bytes"
@@ -6,11 +6,13 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"strings"
 
-	"github.com/kataras/golog"
 	"github.com/pkg/errors"
+	"github.com/sonr-io/core/internal/host"
 )
+
 
 // Constant for the Namebase API
 const (
@@ -24,10 +26,34 @@ const (
 
 // Error Definitions
 var (
-	logger         = golog.Child("tools/internet")
-	ErrGetNamebase = errors.New("Failed to perform GET Request on Namebase API")
-	ErrPutNamebase = errors.New("Failed to perform PUT Request on Namebase API")
+	ErrGetNamebase      = errors.New("Failed to perform GET Request on Namebase API")
+	ErrPutNamebase      = errors.New("Failed to perform PUT Request on Namebase API")
+	ErrMissingAPIKey    = errors.New("Missing Namebase Handshake Key in env")
+	ErrMissingAPISecret = errors.New("Missing Namebase Handshake Secret in env")
 )
+
+// initClient initializes the Namebase API Client
+func initClient(ctx context.Context) *NamebaseAPIClient {
+	// Define logger warning message
+	logWarning := func() {
+		logger.Warn("Could not fetch Namebase API Keys from Env, skipping API client...")
+	}
+
+	// Get API Key
+	key, ok := os.LookupEnv("NB_KEY")
+	if !ok {
+		logWarning()
+		return nil
+	}
+
+	// Get API Secret
+	secret, ok := os.LookupEnv("NB_SECRET")
+	if !ok {
+		logWarning()
+		return nil
+	}
+	return NewNamebaseClient(ctx, key, secret)
+}
 
 // NamebaseAPIClient handles DNS Table Registration and Verification.
 type NamebaseAPIClient struct {
@@ -64,7 +90,7 @@ func (p *NamebaseAPIClient) NewNBGetRequest() (*http.Request, error) {
 }
 
 // NewNBPutRequest returns a PUT Request for the Namebase REST API call
-func (p *NamebaseAPIClient) NewNBPutRequest(nbReq NamebaseRequest) (*http.Request, error) {
+func (p *NamebaseAPIClient) NewNBPutRequest(nbReq host.NamebaseRequest) (*http.Request, error) {
 	// Marshal the request
 	jsonreq, err := json.Marshal(nbReq)
 	if err != nil {
@@ -88,7 +114,7 @@ func (p *NamebaseAPIClient) NewNBPutRequest(nbReq NamebaseRequest) (*http.Reques
 }
 
 // FindRecords returns a list of records matching the given query
-func (p *NamebaseAPIClient) FindRecords(query string) ([]Record, error) {
+func (p *NamebaseAPIClient) FindRecords(query string) ([]host.Record, error) {
 	// Fetch records from Namebase
 	recs, err := p.GetRecords()
 	if err != nil {
@@ -96,7 +122,7 @@ func (p *NamebaseAPIClient) FindRecords(query string) ([]Record, error) {
 	}
 
 	// Filter records
-	filtered := []Record{}
+	filtered := []host.Record{}
 	for _, rec := range recs {
 		// Clean up query
 		val := strings.ToLower(rec.Host)
@@ -113,7 +139,7 @@ func (p *NamebaseAPIClient) FindRecords(query string) ([]Record, error) {
 }
 
 // GetRecords returns a list of all records on Root TLD
-func (p *NamebaseAPIClient) GetRecords() ([]Record, error) {
+func (p *NamebaseAPIClient) GetRecords() ([]host.Record, error) {
 	// Create new GET request
 	req, err := p.NewNBGetRequest()
 	if err != nil {
@@ -133,7 +159,7 @@ func (p *NamebaseAPIClient) GetRecords() ([]Record, error) {
 	}
 
 	// Unmarshal Response Body
-	nbResponse := &NamebaseResponse{}
+	nbResponse := &host.NamebaseResponse{}
 	err = json.Unmarshal(respBody, nbResponse)
 	if err != nil {
 		return nil, err
@@ -161,7 +187,7 @@ func (p *NamebaseAPIClient) HasRecords(query string) (bool, error) {
 }
 
 // PutRecords adds/deletes records to/from Root TLD
-func (p *NamebaseAPIClient) PutRecords(nbReq NamebaseRequest) (bool, error) {
+func (p *NamebaseAPIClient) PutRecords(nbReq host.NamebaseRequest) (bool, error) {
 	// Create new GET request
 	req, err := p.NewNBPutRequest(nbReq)
 	if err != nil {
@@ -181,7 +207,7 @@ func (p *NamebaseAPIClient) PutRecords(nbReq NamebaseRequest) (bool, error) {
 	}
 
 	// Unmarshal Response Body
-	nbResponse := &NamebaseResponse{}
+	nbResponse := &host.NamebaseResponse{}
 	err = json.Unmarshal(respBody, nbResponse)
 	if err != nil {
 		return false, err

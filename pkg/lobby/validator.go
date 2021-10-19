@@ -9,7 +9,6 @@ import (
 	"github.com/sonr-io/core/internal/api"
 	common "github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/host"
-	"github.com/sonr-io/core/tools/state"
 )
 
 // HasPeer Method Checks if Peer ID is Subscribed to Room
@@ -40,13 +39,9 @@ func (p *LobbyProtocol) isValidMessage(msg *ps.Message) bool {
 }
 
 // checkParams Checks if Non-nil Parameters were passed
-func checkParams(host *host.SNRHost, em *state.Emitter) error {
+func checkParams(host *host.SNRHost) error {
 	if host == nil {
 		logger.Error("Host provided is nil", ErrParameters)
-		return ErrParameters
-	}
-	if em == nil {
-		logger.Error("Emitter provided is nil", ErrParameters)
 		return ErrParameters
 	}
 	return host.HasRouting()
@@ -59,7 +54,7 @@ func createOlc(l *common.Location) string {
 		logger.Error("Failed to Determine OLC Code, set to Global")
 		code = "global"
 	}
-	logger.Info("Calculated OLC for Location: " + code)
+	logger.Debug("Calculated OLC for Location: " + code)
 	return fmt.Sprintf("sonr/topic/%s", code)
 }
 
@@ -77,12 +72,11 @@ func (p *LobbyProtocol) pushRefresh(id peer.ID, peer *common.Peer) {
 	// Check if Peer was provided
 	if peer == nil {
 		// Remove Peer, Emit Event
-		p.emitter.Emit(Event_LIST_REFRESH, buildEvent(p.removePeer(id)))
-
+		p.node.OnRefresh(buildEvent(p.removePeer(id)))
 	} else {
 		// Update Peer, Emit Event
 		ok, list := p.updatePeer(id, peer)
-		p.emitter.Emit(Event_LIST_REFRESH, buildEvent(list))
+		p.node.OnRefresh(buildEvent(list))
 		if !ok {
 			p.sendUpdate()
 		}
@@ -91,7 +85,7 @@ func (p *LobbyProtocol) pushRefresh(id peer.ID, peer *common.Peer) {
 
 // sendUpdate sends a refresh event to the Lobby topic
 func (lp *LobbyProtocol) sendUpdate() error {
-	peer, err := lp.Peer()
+	peer, err := lp.node.Peer()
 	if err != nil {
 		logger.Error("Failed to get peer", err)
 		return err

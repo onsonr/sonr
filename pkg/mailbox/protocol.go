@@ -3,51 +3,47 @@ package mailbox
 import (
 	"context"
 
+	"github.com/sonr-io/core/internal/api"
+	"github.com/sonr-io/core/internal/fs"
 	"github.com/sonr-io/core/internal/host"
-	"github.com/sonr-io/core/tools/state"
-)
-
-// Transfer Emission Events
-const (
-	Event_MAIL_RECEIVED = "mailbox-mail-received"
 )
 
 type MailboxProtocol struct {
-	ctx     context.Context
-	host    *host.SNRHost
-	emitter *state.Emitter
+	ctx  context.Context
+	host *host.SNRHost
+	node api.NodeImpl
 	// mail    *local.Mail
-	// mailbox *local.Mailbox
+	//mailbox *local.Mailbox
 }
 
-// // NewProtocol creates a new lobby protocol instance.
-// func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) (*MailboxProtocol, error) {
-// 	mail := local.NewMail(cmd.NewClients(TextileClientURL, true, TextileMinerIdx), local.DefaultConfConfig())
+// NewProtocol creates a new lobby protocol instance.
+func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*MailboxProtocol, error) {
+	//mail := local.NewMail(cmd.NewClients(TextileClientURL, true, TextileMinerIdx), local.DefaultConfConfig())
 
-// 	// Create Mailbox Protocol
-// 	mailProtocol := &MailboxProtocol{
-// 		ctx:     ctx,
-// 		host:    host,
-// 		mail:    mail,
-// 		emitter: em,
-// 	}
+	// Create Mailbox Protocol
+	mailProtocol := &MailboxProtocol{
+		ctx:  ctx,
+		host: host,
+		//	mail: mail,
+		node: node,
+	}
 
-// 	// Create new mailbox
-// 	if device.Textile.Exists() {
-// 		// Return Existing Mailbox
-// 		if err := mailProtocol.loadMailbox(); err != nil {
-// 			return nil, err
-// 		}
-// 	} else {
-// 		// Create New Mailbox
-// 		if err := mailProtocol.newMailbox(); err != nil {
-// 			return nil, err
-// 		}
-// 	}
-// 	logger.Info("✅  MailboxProtocol is Activated \n")
-// 	go mailProtocol.handleMailboxEvents()
-// 	return mailProtocol, nil
-// }
+	// Create new mailbox
+	if fs.ThirdParty.Exists(TextileMailboxDirName) {
+		// Return Existing Mailbox
+		if err := mailProtocol.loadMailbox(); err != nil {
+			return nil, err
+		}
+	} else {
+		// Create New Mailbox
+		if err := mailProtocol.newMailbox(); err != nil {
+			return nil, err
+		}
+	}
+	logger.Info("✅  MailboxProtocol is Activated \n")
+	// go mailProtocol.handleMailboxEvents()
+	return mailProtocol, nil
+}
 
 // // // Handle Mailbox Events
 // func (ts *MailboxProtocol) handleMailboxEvents() {
@@ -68,7 +64,7 @@ type MailboxProtocol struct {
 // 	}()
 
 // 	// Start watching (the third param indicates we want to keep watching when offline)
-// 	state, err := ts.mailbox.WatchInbox(context.Background(), events, true)
+// 	state, err := ts.mailbox.WatchInbox(ts.ctx, events, true)
 // 	if err != nil {
 // 		logger.Error("Error watching Mailbox", err)
 // 		return
@@ -92,7 +88,7 @@ type MailboxProtocol struct {
 // // Handle New Mailbox Message
 // func (ts *MailboxProtocol) onNewMessage(e local.MailboxEvent, state cmd.ConnectionState) {
 // 	// List Total Inbox
-// 	inbox, err := ts.mailbox.ListInboxMessages(context.Background())
+// 	inbox, err := ts.mailbox.ListInboxMessages(ts.ctx)
 // 	if err != nil {
 // 		logger.Error("Failed to List Inbox Messages", err)
 // 		return
@@ -100,7 +96,7 @@ type MailboxProtocol struct {
 
 // 	// Logging and Open Body
 // 	logger.Info(fmt.Sprintf("Received new message: %s", inbox[0].From))
-// 	body, err := inbox[0].Open(context.Background(), ts.mailbox.Identity())
+// 	body, err := inbox[0].Open(ts.ctx, ts.mailbox.Identity())
 // 	if err != nil {
 // 		logger.Error("Failed to Open Inbox Messages", err)
 // 		return
@@ -126,8 +122,8 @@ type MailboxProtocol struct {
 // 			Id:     msg.GetId(),
 // 		}
 
-// 		// Callback Mail Event
-// 		ts.emitter.Emit(Event_MAIL_RECEIVED, mail)
+// 		// Send Mail Event
+// 		ts.node.OnMailbox(mail)
 // 	}
 // }
 
@@ -139,7 +135,7 @@ type MailboxProtocol struct {
 // 	}
 
 // 	// Mark Item as Read
-// 	err := ts.mailbox.DeleteInboxMessage(context.Background(), id)
+// 	err := ts.mailbox.DeleteInboxMessage(ts.ctx, id)
 // 	if err != nil {
 // 		logger.Error("Failed to Delete Mailbox Message", err)
 // 		return err
@@ -155,7 +151,7 @@ type MailboxProtocol struct {
 // 	}
 
 // 	// Mark Item as Read
-// 	err := ts.mailbox.ReadInboxMessage(context.Background(), id)
+// 	err := ts.mailbox.ReadInboxMessage(ts.ctx, id)
 // 	if err != nil {
 // 		logger.Error("Failed to set Mailbox Message as Read", err)
 // 		return err
@@ -178,7 +174,7 @@ type MailboxProtocol struct {
 // 	}
 
 // 	// 	// Send Message to Mailbox
-// 	msg, err := ts.mailbox.SendMessage(context.Background(), to, buf)
+// 	msg, err := ts.mailbox.SendMessage(ts.ctx, to, buf)
 // 	if err != nil {
 // 		logger.Error(fmt.Sprintf("Failed to Send Message to Peer with ThreadIdentity: %s", to.String()), err)
 // 		return err

@@ -2,7 +2,6 @@ package common
 
 import (
 	"bytes"
-	"context"
 	"fmt"
 	"image/png"
 	"math/rand"
@@ -16,54 +15,9 @@ import (
 	mh "github.com/multiformats/go-multihash"
 	"github.com/o1egl/govatar"
 	"github.com/pkg/errors"
-	"github.com/sonr-io/core/internal/keychain"
-	"github.com/sonr-io/core/tools/internet"
-	net "github.com/sonr-io/core/tools/internet"
+	"github.com/sonr-io/core/internal/wallet"
 	"google.golang.org/protobuf/proto"
 )
-
-// ** ───────────────────────────────────────────────────────
-// ** ─── SNID Management ───────────────────────────────────
-// ** ───────────────────────────────────────────────────────
-func NewSNID(sname string) (*SNID, error) {
-	// Check if SNID is empty
-	if len(sname) == 0 {
-		return nil, errors.New("SName not provided.")
-	}
-
-	// Find Records
-	r := internet.NewHDNSResolver()
-	recs, err := r.LookupTXT(context.Background(), sname)
-	if err != nil {
-		return nil, err
-	}
-
-	// Get Name from Records
-	rec, err := recs.GetNameRecord()
-	if err != nil {
-		return nil, err
-	}
-
-	// Get Pub Key
-	pubKey, err := rec.PubKeyBuffer()
-	if err != nil {
-		return nil, err
-	}
-
-	// Get Peer ID
-	id, err := rec.PeerID()
-	if err != nil {
-		return nil, err
-	}
-
-	// Return SNID
-	return &SNID{
-		Domain: sname,
-		PeerID: id.String(),
-		PubKey: pubKey,
-	}, nil
-}
-
 // ** ───────────────────────────────────────────────────────
 // ** ─── Peer Management ───────────────────────────────────
 // ** ───────────────────────────────────────────────────────
@@ -78,7 +32,6 @@ type PeerInfo struct {
 	PeerID          peer.ID       // Peer ID
 	Peer            *Peer         // Peer Data Object
 	PublicKey       crypto.PubKey // Peer Public Key
-	NameRecord      net.Record
 }
 
 // Buffer returns Peer as a buffer
@@ -138,6 +91,11 @@ func (p *Peer) Info() (*PeerInfo, error) {
 	}, nil
 }
 
+// Arch returns Peer Device GOARCH
+func (p *Peer) Arch() string {
+	return p.GetDevice().GetArch()
+}
+
 // Libp2pID returns the PeerID based on PublicKey from Profile
 func (p *Peer) Libp2pID() (peer.ID, error) {
 	// Check if PublicKey is empty
@@ -175,8 +133,13 @@ func (p *Peer) PubKey() (crypto.PubKey, error) {
 	return pubKey, nil
 }
 
+// OS returns Peer Device GOOS
+func (p *Peer) OS() string {
+	return p.GetDevice().GetOs()
+}
+
 // SnrPubKey returns the Public Key from the Peer as SnrPubKey
-func (p *Peer) SnrPubKey() (*keychain.SnrPubKey, error) {
+func (p *Peer) SnrPubKey() (*wallet.SnrPubKey, error) {
 	// Get Public Key
 	pub, err := p.PubKey()
 	if err != nil {
@@ -185,7 +148,7 @@ func (p *Peer) SnrPubKey() (*keychain.SnrPubKey, error) {
 	}
 
 	// Return SnrPubKey
-	return keychain.NewSnrPubKey(pub), nil
+	return wallet.NewSnrPubKey(pub), nil
 }
 
 // ** ───────────────────────────────────────────────────────

@@ -1,20 +1,14 @@
 package common
 
 import (
-	"fmt"
 	"time"
 
 	olc "github.com/google/open-location-code/go"
 	"github.com/kataras/golog"
 	"github.com/pkg/errors"
+	"github.com/sonr-io/core/internal/fs"
 	"google.golang.org/protobuf/proto"
 )
-
-// NodeImpl returns the NodeImpl for the Main Node
-type NodeImpl interface {
-	GetProfile() (*Profile, error)
-	Peer() (*Peer, error)
-}
 
 // NewLastUpdated returns a new LastUpdated Object as int64
 var NewLastUpdated = func() int64 {
@@ -22,7 +16,6 @@ var NewLastUpdated = func() int64 {
 }
 
 // RPC_SERVER_PORT is the port the RPC service listens on.
-// Calculated: (Sister Bday + Dad Bday + Mom Bday) / Mine
 const RPC_SERVER_PORT = 26225
 
 // GetProfileFunc returns a function that returns the Profile and error
@@ -37,12 +30,12 @@ func (c Connection) IsMdnsCompatible() bool {
 	return c == Connection_WIFI || c == Connection_ETHERNET
 }
 
-// Checks if Enviornment is Development
+// IsDev Checks if Enviornment is Development
 func (e Environment) IsDev() bool {
 	return e == Environment_DEVELOPMENT
 }
 
-// Checks if Enviornment is Development
+// IsProd Checks if Enviornment is Development
 func (e Environment) IsProd() bool {
 	return e == Environment_PRODUCTION
 }
@@ -65,6 +58,7 @@ func WrapErrors(msg string, errs []error) error {
 	return err
 }
 
+// DefaultLocation is the LA Address
 func DefaultLocation() *Location {
 	return &Location{
 		Latitude:  34.102920,
@@ -72,6 +66,7 @@ func DefaultLocation() *Location {
 	}
 }
 
+// OLC returns Open Location code
 func (l *Location) OLC() string {
 	return olc.Encode(l.GetLatitude(), l.GetLongitude(), 6)
 }
@@ -81,78 +76,6 @@ func (l *Location) OLC() string {
 // ** ───────────────────────────────────────────────────────
 // PayloadItemFunc is the Map function for PayloadItem
 type PayloadItemFunc func(item *Payload_Item, index int, total int) error
-
-// NewPayload creates a new Payload Object
-func NewPayload(owner *Profile, paths []string) (*Payload, error) {
-	// Initialize
-	fileCount := 0
-	urlCount := 0
-	size := int64(0)
-	items := make([]*Payload_Item, 0)
-	errs := make([]error, 0)
-
-	// Iterate over Paths
-	for i, path := range paths {
-		// Check if path is URL
-		if IsUrl(path) {
-			// Increase URL Count
-			urlCount++
-
-			// Add URL to Payload
-			item, err := NewUrlItem(path)
-			if err != nil {
-				msg := fmt.Sprintf("Failed to create URLItem at Index: %v, with Path: %s", i, path)
-				logger.Error(msg, err)
-				errs = append(errs, errors.Wrap(err, msg))
-				continue
-			}
-
-			// Add URL to Payload
-			items = append(items, item)
-			continue
-		} else if IsFile(path) {
-			// Increase File Count
-			fileCount++
-
-			// Create Payload Item
-			item, err := NewFileItem(path)
-			if err != nil {
-				msg := fmt.Sprintf("Failed to create FileItem at Index: %v with Path: %s", i, path)
-				logger.Error(msg, err)
-				errs = append(errs, errors.Wrap(err, msg))
-				continue
-			}
-
-			// Add Payload Item to Payload
-			items = append(items, item)
-			size += item.GetSize()
-			continue
-		} else {
-			err := fmt.Errorf("Invalid Path provided, value is neither File or URL. Path: %s", path)
-			logger.Error(err.Error(), err)
-			errs = append(errs, err)
-			continue
-		}
-	}
-
-	// Log Payload Details
-	logger.Info(fmt.Sprintf("Created payload with %v Files and %v URLs. Total size: %v", fileCount, urlCount, size))
-
-	// Create Payload
-	payload := &Payload{
-		Items: items,
-		Size:  size,
-		Owner: owner,
-	}
-
-	// Check if there are any errors
-	if len(errs) > 0 {
-		err := WrapErrors(fmt.Sprintf("⚠️ Payload created with %v Errors: \n", len(errs)), errs)
-		logger.Error(err.Error(), err)
-		return payload, err
-	}
-	return payload, nil
-}
 
 // IsSingle returns true if the transfer is a single transfer. Error returned
 // if No Items present in Payload
@@ -246,18 +169,15 @@ func (p *Payload) MapUrlItems(fn PayloadItemFunc) error {
 
 // ReplaceItemsDir iterates over the items in the payload and replaces the
 // directory of the item with the new directory.
-func (p *Payload) ReplaceItemsDir(dir string) (*Payload, error) {
+func (p *Payload) ResetItemsDirectory(f fs.Folder) *Payload {
 	// Create new Payload
 	for _, item := range p.GetItems() {
 		if item.GetFile() != nil {
-			err := item.GetFile().ReplaceDir(dir)
-			if err != nil {
-				logger.Error("Failed to replace path for Item", err)
-				return nil, err
-			}
+			path, _ := f.GenPath(item.GetFile().GetPath())
+			item.GetFile().ResetDir(path)
 		}
 	}
-	return p, nil
+	return p
 }
 
 // URLCount returns the number of URLs in the Payload

@@ -1,48 +1,50 @@
-package keychain
+package wallet
 
 import (
 	"errors"
 
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/crypto"
-	"github.com/sonr-io/core/tools/config"
+	"github.com/sonr-io/core/internal/fs"
 )
 
-// Error definitions
+// Error Definitions
 var (
-	logger             = golog.Child("internal/keychain")
+	logger             = golog.Child("internal/wallet")
 	ErrInvalidKeyType  = errors.New("Invalid KeyPair Type provided")
 	ErrKeychainUnready = errors.New("Keychain has not been loaded")
 	ErrNoPrivateKey    = errors.New("No private key in KeyPair")
 	ErrNoPublicKey     = errors.New("No public key in KeyPair")
 )
 
-// SignedMetadata is a struct to be used for signing metadata.
-type SignedMetadata struct {
-	Timestamp int64
-	PublicKey []byte
-	NodeId    string
+// NodeOption is a function that modifies the node options.
+type WalletOption func(*walletOptions)
+
+// walletOptions is a collection of options for the node.
+type walletOptions struct {
+	directory string
 }
 
-// SignedUUID is a struct to be converted into a UUID.
-type SignedUUID struct {
-	Timestamp int64
-	Signature []byte
-	Value     string
+// defaultNodeOptions returns the default node options.
+func defaultNodeOptions() *walletOptions {
+	// path, _ := device.NewSupportPath(".wallet", device.CreateDirIfNotExist())
+	return &walletOptions{
+		// directory: path,
+	}
 }
 
 // keychainExists checks if EVERY key pair exists in the keychain.
-func keychainExists(kcConfig *config.Config) bool {
-	accExists := kcConfig.Exists(Account.Path())
-	linkExists := kcConfig.Exists(Link.Path())
-	groupExists := kcConfig.Exists(Group.Path())
+func keychainExists(folder fs.Folder) bool {
+	accExists := folder.Exists(Account.Path())
+	linkExists := folder.Exists(Link.Path())
+	groupExists := folder.Exists(Group.Path())
 	return accExists && linkExists && groupExists
 }
 
 // readKey reads a key from a file and returns privKey and pubKey.
-func readKey(kcconfig *config.Config, kp KeyPairType) (crypto.PrivKey, crypto.PubKey, error) {
+func readKey(folder fs.Folder, kp KeyPairType) (crypto.PrivKey, crypto.PubKey, error) {
 	// Get Buffer
-	dat, err := kcconfig.ReadFile(kp.Path())
+	dat, err := folder.ReadFile(kp.Path())
 	if err != nil {
 		return nil, nil, err
 	}
@@ -59,7 +61,7 @@ func readKey(kcconfig *config.Config, kp KeyPairType) (crypto.PrivKey, crypto.Pu
 }
 
 // writeKey writes a key to the keychain.
-func writeKey(kcconfig *config.Config, privKey crypto.PrivKey, kp KeyPairType) error {
+func writeKey(folder fs.Folder, privKey crypto.PrivKey, kp KeyPairType) error {
 	// Marshal Private Key
 	buf, err := crypto.MarshalPrivateKey(privKey)
 	if err != nil {
@@ -67,7 +69,7 @@ func writeKey(kcconfig *config.Config, privKey crypto.PrivKey, kp KeyPairType) e
 	}
 
 	// Write Key to Keychain
-	err = kcconfig.WriteFile(kp.Path(), buf)
+	err = folder.WriteFile(kp.Path(), buf)
 	if err != nil {
 		return err
 	}

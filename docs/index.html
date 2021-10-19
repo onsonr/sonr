@@ -299,6 +299,10 @@
                 </li>
               
                 <li>
+                  <a href="#sonr.api.SupplyRequest.Item"><span class="badge">M</span>SupplyRequest.Item</a>
+                </li>
+              
+                <li>
                   <a href="#sonr.api.SupplyResponse"><span class="badge">M</span>SupplyResponse</a>
                 </li>
               
@@ -398,10 +402,6 @@
               
                 <li>
                   <a href="#sonr.core.ProfileList"><span class="badge">M</span>ProfileList</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.core.SNID"><span class="badge">M</span>SNID</a>
                 </li>
               
                 <li>
@@ -557,31 +557,20 @@
         
           
           <li>
-            <a href="#proto%2fprotocols%2fdomain.proto">proto/protocols/domain.proto</a>
-            <ul>
-              
-                <li>
-                  <a href="#sonr.protocols.domain.AuthorizeRequest"><span class="badge">M</span>AuthorizeRequest</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.domain.AuthorizeResponse"><span class="badge">M</span>AuthorizeResponse</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.domain.AuthorizeResponse.RecordsEntry"><span class="badge">M</span>AuthorizeResponse.RecordsEntry</a>
-                </li>
-              
-              
-              
-              
-            </ul>
-          </li>
-        
-          
-          <li>
             <a href="#proto%2fprotocols%2fexchange.proto">proto/protocols/exchange.proto</a>
             <ul>
+              
+                <li>
+                  <a href="#sonr.protocols.exchange.AuthorizeRequest"><span class="badge">M</span>AuthorizeRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.protocols.exchange.AuthorizeResponse"><span class="badge">M</span>AuthorizeResponse</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.protocols.exchange.AuthorizeResponse.RecordsEntry"><span class="badge">M</span>AuthorizeResponse.RecordsEntry</a>
+                </li>
               
                 <li>
                   <a href="#sonr.protocols.exchange.LookupRequest"><span class="badge">M</span>LookupRequest</a>
@@ -677,6 +666,10 @@
               
                 <li>
                   <a href="#sonr.wallet.PublicKey"><span class="badge">M</span>PublicKey</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.wallet.SNID"><span class="badge">M</span>SNID</a>
                 </li>
               
                 <li>
@@ -1143,45 +1136,24 @@ File Transfer History </p></td>
                 </tr>
               
                 <tr>
-                  <td>cacheDir</td>
+                  <td>homeDir</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>Cache Directory </p></td>
-                </tr>
-              
-                <tr>
-                  <td>databaseDir</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Database Directory </p></td>
-                </tr>
-              
-                <tr>
-                  <td>documentsDir</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Documents Directory </p></td>
-                </tr>
-              
-                <tr>
-                  <td>downloadsDir</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Downloads Directory </p></td>
-                </tr>
-              
-                <tr>
-                  <td>textileDir</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Textile Directory </p></td>
+                  <td><p> </p></td>
                 </tr>
               
                 <tr>
                   <td>supportDir</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>Support Directory </p></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>tempDir</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
                 </tr>
               
             </tbody>
@@ -1924,8 +1896,8 @@ File Transfer History </p></td>
             <tbody>
               
                 <tr>
-                  <td>paths</td>
-                  <td><a href="#string">string</a></td>
+                  <td>items</td>
+                  <td><a href="#sonr.api.SupplyRequest.Item">SupplyRequest.Item</a></td>
                   <td>repeated</td>
                   <td><p>Supply Paths </p></td>
                 </tr>
@@ -1942,6 +1914,37 @@ File Transfer History </p></td>
                   <td><a href="#bool">bool</a></td>
                   <td></td>
                   <td><p>Supply Peer </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.api.SupplyRequest.Item">SupplyRequest.Item</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>path</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Supply Path </p></td>
+                </tr>
+              
+                <tr>
+                  <td>thumbnail</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>Supply Thumbnail </p></td>
                 </tr>
               
             </tbody>
@@ -2869,51 +2872,6 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
                   <td><p>Last Modified Timestamp </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.core.SNID">SNID</h3>
-        <p>SNID is the unique identifier of a user with Sonr Protocol</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>domain</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Domain Name of the node, e.g. prad.snr </p></td>
-                </tr>
-              
-                <tr>
-                  <td>pubKey</td>
-                  <td><a href="#bytes">bytes</a></td>
-                  <td></td>
-                  <td><p>Public Key of the node, value in the Domains second TXT record </p></td>
-                </tr>
-              
-                <tr>
-                  <td>peerID</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Peer ID of the node, calculated from the public key </p></td>
-                </tr>
-              
-                <tr>
-                  <td>did</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>DID of the node, calculated from the public key </p></td>
                 </tr>
               
             </tbody>
@@ -3997,13 +3955,6 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
             <tbody>
               
                 <tr>
-                  <td>size</td>
-                  <td><a href="#int64">int64</a></td>
-                  <td></td>
-                  <td><p>Thumbnail Size in Bytes </p></td>
-                </tr>
-              
-                <tr>
                   <td>buffer</td>
                   <td><a href="#bytes">bytes</a></td>
                   <td></td>
@@ -4342,12 +4293,12 @@ Returns a stream of Lobby Refresh Events</p></td>
     
       
       <div class="file-heading">
-        <h2 id="proto/protocols/domain.proto">proto/protocols/domain.proto</h2><a href="#title">Top</a>
+        <h2 id="proto/protocols/exchange.proto">proto/protocols/exchange.proto</h2><a href="#title">Top</a>
       </div>
       <p></p>
 
       
-        <h3 id="sonr.protocols.domain.AuthorizeRequest">AuthorizeRequest</h3>
+        <h3 id="sonr.protocols.exchange.AuthorizeRequest">AuthorizeRequest</h3>
         <p>AuthorizeRequest is Message for Verifying Request (Hmac Sha256)</p>
 
         
@@ -4385,7 +4336,7 @@ Returns a stream of Lobby Refresh Events</p></td>
 
         
       
-        <h3 id="sonr.protocols.domain.AuthorizeResponse">AuthorizeResponse</h3>
+        <h3 id="sonr.protocols.exchange.AuthorizeResponse">AuthorizeResponse</h3>
         <p>AuthorizeResponse is Message for Verifying Response (Hmac Sha256)</p>
 
         
@@ -4411,7 +4362,7 @@ Returns a stream of Lobby Refresh Events</p></td>
               
                 <tr>
                   <td>records</td>
-                  <td><a href="#sonr.protocols.domain.AuthorizeResponse.RecordsEntry">AuthorizeResponse.RecordsEntry</a></td>
+                  <td><a href="#sonr.protocols.exchange.AuthorizeResponse.RecordsEntry">AuthorizeResponse.RecordsEntry</a></td>
                   <td>repeated</td>
                   <td><p>Updated Domain TXT Records </p></td>
                 </tr>
@@ -4423,7 +4374,7 @@ Returns a stream of Lobby Refresh Events</p></td>
 
         
       
-        <h3 id="sonr.protocols.domain.AuthorizeResponse.RecordsEntry">AuthorizeResponse.RecordsEntry</h3>
+        <h3 id="sonr.protocols.exchange.AuthorizeResponse.RecordsEntry">AuthorizeResponse.RecordsEntry</h3>
         <p></p>
 
         
@@ -4453,20 +4404,6 @@ Returns a stream of Lobby Refresh Events</p></td>
           
 
         
-      
-
-      
-
-      
-
-      
-    
-      
-      <div class="file-heading">
-        <h2 id="proto/protocols/exchange.proto">proto/protocols/exchange.proto</h2><a href="#title">Top</a>
-      </div>
-      <p></p>
-
       
         <h3 id="sonr.protocols.exchange.LookupRequest">LookupRequest</h3>
         <p>LookupRequest is Message for Verifying Request (Hmac Sha256)</p>
@@ -5007,6 +4944,51 @@ Returns a stream of Lobby Refresh Events</p></td>
 
         
       
+        <h3 id="sonr.wallet.SNID">SNID</h3>
+        <p>SNID is the unique identifier of a user with Sonr Protocol</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>domain</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Domain Name of the node, e.g. prad.snr </p></td>
+                </tr>
+              
+                <tr>
+                  <td>pubKey</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>Public Key of the node, value in the Domains second TXT record </p></td>
+                </tr>
+              
+                <tr>
+                  <td>peerID</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Peer ID of the node, calculated from the public key </p></td>
+                </tr>
+              
+                <tr>
+                  <td>did</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>DID of the node, calculated from the public key </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="sonr.wallet.UUID">UUID</h3>
         <p>UUID is General Message ID with Signature, ID, and Timestamp</p>
 
@@ -5276,7 +5258,7 @@ Returns a stream of Lobby Refresh Events</p></td>
               
                 <tr>
                   <td>id</td>
-                  <td><a href="#sonr.core.SNID">sonr.core.SNID</a></td>
+                  <td><a href="#sonr.wallet.SNID">SNID</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>

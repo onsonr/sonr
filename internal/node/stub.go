@@ -6,7 +6,6 @@ import (
 	"net"
 	"time"
 
-	"github.com/sonr-io/core/pkg/domain"
 	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/mailbox"
@@ -19,7 +18,6 @@ var DefaultAutoPingTicker = 5 * time.Second
 // ClientNodeStub is the RPC Service for the Node.
 type ClientNodeStub struct {
 	// Interfaces
-	NodeStub
 	ClientServiceServer
 
 	// Properties
@@ -36,26 +34,35 @@ type ClientNodeStub struct {
 }
 
 // startClientService creates a new Client service stub for the node.
-func (n *Node) startClientService(ctx context.Context, opts *nodeOptions) (NodeStub, error) {
+func (n *Node) startClientService(ctx context.Context, opts *options) (*ClientNodeStub, error) {
 	// Set Transfer Protocol
-	transferProtocol, err := transfer.NewProtocol(ctx, n.host, n.Emitter, n.GetProfile)
+	transferProtocol, err := transfer.NewProtocol(ctx, n.host, n)
 	if err != nil {
 		logger.Error("Failed to start TransferProtocol", err)
 		return nil, err
 	}
 
-	// Set Exchange Protocol
-	exchProtocol, err := exchange.NewProtocol(ctx, n.host, n.Emitter)
-	if err != nil {
-		logger.Error("Failed to start ExchangeProtocol", err)
-		return nil, err
-	}
-
 	// Set Local Lobby Protocol if Location is provided
-	lobbyProtocol, err := lobby.NewProtocol(ctx, n.host, n, n.Emitter, lobby.WithLocation(opts.location))
+	lobbyProtocol, err := lobby.NewProtocol(ctx, n.host, n, lobby.WithLocation(opts.location))
 	if err != nil {
 		logger.Error("Failed to start LobbyProtocol", err)
 		return nil, err
+	}
+
+	// Set Exchange Protocol
+	var exchProtocol *exchange.ExchangeProtocol
+	if opts.isTerminal {
+		exchProtocol, err = exchange.NewProtocol(ctx, n.host, n, exchange.TempName(opts.profile.SName))
+		if err != nil {
+			logger.Error("Failed to start ExchangeProtocol", err)
+			return nil, err
+		}
+	} else {
+		exchProtocol, err = exchange.NewProtocol(ctx, n.host, n)
+		if err != nil {
+			logger.Error("Failed to start ExchangeProtocol", err)
+			return nil, err
+		}
 	}
 
 	// // Set Mailbox Protocol
@@ -75,13 +82,13 @@ func (n *Node) startClientService(ctx context.Context, opts *nodeOptions) (NodeS
 	// Create a new gRPC server
 	grpcServer := grpc.NewServer()
 	stub := &ClientNodeStub{
+		ctx:              ctx,
 		TransferProtocol: transferProtocol,
 		ExchangeProtocol: exchProtocol,
 		LobbyProtocol:    lobbyProtocol,
 		//MailboxProtocol:  mailboxProtocol,
 		grpcServer: grpcServer,
 		node:       n,
-		ctx:        ctx,
 		listener:   listener,
 	}
 
@@ -98,8 +105,10 @@ func (s *ClientNodeStub) HasProtocols() bool {
 
 // Close closes the RPC Service.
 func (s *ClientNodeStub) Close() error {
-	s.listener.Close()
 	s.grpcServer.Stop()
+	s.listener.Close()
+	s.ExchangeProtocol.Close()
+	s.LobbyProtocol.Close()
 	return nil
 }
 
@@ -138,7 +147,7 @@ func (s *ClientNodeStub) Update() error {
 		}
 
 		// Update ExchangeProtocol
-		err := s.ExchangeProtocol.Update(peer)
+		err := s.ExchangeProtocol.Put(peer)
 		if err != nil {
 			logger.Error("Failed to Update Exchange", err)
 		} else {
@@ -152,27 +161,21 @@ func (s *ClientNodeStub) Update() error {
 
 // HighwayNodeStub is the RPC Service for the Full Node.
 type HighwayNodeStub struct {
-	NodeStub
 	HighwayServiceServer
+	ClientServiceServer
 	*Node
 
 	// Properties
 	ctx        context.Context
 	grpcServer *grpc.Server
 	listener   net.Listener
-	*domain.DomainProtocol
 }
 
 // startHighwayService creates a new Highway service stub for the node.
-func (n *Node) startHighwayService(ctx context.Context, opts *nodeOptions) (NodeStub, error) {
+func (n *Node) startHighwayService(ctx context.Context, opts *options) (*HighwayNodeStub, error) {
+
 	// Create the listener
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", RPC_SERVER_PORT))
-	if err != nil {
-		return nil, err
-	}
-
-	// Initialize Domain Protocol
-	domainProtocol, err := domain.NewProtocol(ctx, n.host)
 	if err != nil {
 		return nil, err
 	}
@@ -180,11 +183,10 @@ func (n *Node) startHighwayService(ctx context.Context, opts *nodeOptions) (Node
 	// Create the RPC Service
 	grpcServer := grpc.NewServer()
 	stub := &HighwayNodeStub{
-		Node:           n,
-		ctx:            ctx,
-		grpcServer:     grpcServer,
-		listener:       listener,
-		DomainProtocol: domainProtocol,
+		Node:       n,
+		ctx:        ctx,
+		grpcServer: grpcServer,
+		listener:   listener,
 	}
 	// Register the RPC Service
 	RegisterHighwayServiceServer(stub.grpcServer, stub)

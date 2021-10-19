@@ -21,7 +21,7 @@ func WithLocation(l *common.Location) LobbyOption {
 	return func(o *lobbyOptions) {
 		if o.location != nil {
 			if o.location.GetLatitude() != 0 && o.location.GetLongitude() != 0 {
-				logger.Info("Skipping Location Set")
+				logger.Debug("Skipping Location Set")
 			} else {
 				o.location = l
 			}

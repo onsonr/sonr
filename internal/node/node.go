@@ -2,38 +2,32 @@ package node
 
 import (
 	"context"
+	"errors"
 	"strings"
 	"time"
 
 	"git.mills.io/prologic/bitcask"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
-	"github.com/sonr-io/core/internal/device"
 	"github.com/sonr-io/core/internal/host"
-	"github.com/sonr-io/core/internal/keychain"
-	"github.com/sonr-io/core/pkg/lobby"
-	"github.com/sonr-io/core/pkg/transfer"
-	"github.com/sonr-io/core/tools/state"
+	"github.com/sonr-io/core/internal/wallet"
 )
 
 // Node type - a p2p host implementing one or more p2p protocols
 type Node struct {
 	// Standard Node Implementation
-	common.NodeImpl
-
-	// Emitter is the event emitter for this node
-	*state.Emitter
+	api.NodeImpl
+	clientStub  *ClientNodeStub
+	highwayStub *HighwayNodeStub
+	mode        NodeStubMode
 
 	// Host and context
 	host *host.SNRHost
 
 	// Properties
-	ctx context.Context
-
-	store *bitcask.Bitcask
-
-	// Node Stub Interface
-	stub NodeStub
+	ctx        context.Context
+	isTerminal bool
+	store      *bitcask.Bitcask
 
 	// Channels
 	// TransferProtocol - decisionEvents
@@ -56,7 +50,7 @@ type Node struct {
 }
 
 // NewNode Creates a node with its implemented protocols
-func NewNode(ctx context.Context, options ...NodeOption) (common.NodeImpl, *api.InitializeResponse, error) {
+func NewNode(ctx context.Context, options ...Option) (api.NodeImpl, *api.InitializeResponse, error) {
 	// Set Node Options
 	opts := defaultNodeOptions()
 	for _, opt := range options {
@@ -65,7 +59,6 @@ func NewNode(ctx context.Context, options ...NodeOption) (common.NodeImpl, *api.
 
 	// Create Node
 	node := &Node{
-		Emitter:        state.NewEmitter(2048),
 		ctx:            ctx,
 		decisionEvents: make(chan *api.DecisionEvent),
 		refreshEvents:  make(chan *api.RefreshEvent),
@@ -76,7 +69,7 @@ func NewNode(ctx context.Context, options ...NodeOption) (common.NodeImpl, *api.
 	}
 
 	// Initialize Host
-	host, err := host.NewHost(ctx, node.Emitter, host.WithConnection(opts.connection))
+	host, err := host.NewHost(ctx, host.WithConnection(opts.connection), host.WithTerminal(opts.isTerminal))
 	if err != nil {
 		logger.Error("Failed to initialize host", err)
 		return nil, api.NewInitialzeResponse(nil, false), err
@@ -96,22 +89,34 @@ func NewNode(ctx context.Context, options ...NodeOption) (common.NodeImpl, *api.
 		logger.Error("Failed to initialize stub", err)
 		return nil, api.NewInitialzeResponse(nil, false), err
 	}
-
 	// Begin Background Tasks
-	go node.Serve(ctx)
 	return node, api.NewInitialzeResponse(node.GetProfile, false), nil
 }
 
 // Close closes the node
 func (n *Node) Close() {
-	// Close Stub
-	if err := n.stub.Close(); err != nil {
-		logger.Error("Failed to close host", err)
+	// Close Client Stub
+	if n.mode.IsClient() {
+		if err := n.clientStub.Close(); err != nil {
+			logger.Error("Failed to close Client Stub, ", err)
+		}
+	}
+
+	// Close Highway Stub
+	if n.mode.IsHighway() {
+		if err := n.highwayStub.Close(); err != nil {
+			logger.Error("Failed to close Highway Stub, ", err)
+		}
+	}
+
+	// Close Store
+	if err := n.store.Close(); err != nil {
+		logger.Error("Failed to close store, ", err)
 	}
 
 	// Close Host
 	if err := n.host.Close(); err != nil {
-		logger.Error("Failed to close host", err)
+		logger.Error("Failed to close host, ", err)
 	}
 }
 
@@ -124,7 +129,7 @@ func (n *Node) Peer() (*common.Peer, error) {
 	}
 
 	// Get Public Key
-	pubKey, err := device.KeyChain.GetSnrPubKey(keychain.Account)
+	pubKey, err := wallet.Primary.GetSnrPubKey(wallet.Account)
 	if err != nil {
 		logger.Error("Failed to get Public Key", err)
 		return nil, err
@@ -137,7 +142,7 @@ func (n *Node) Peer() (*common.Peer, error) {
 		return nil, err
 	}
 
-	stat, err := device.Stat()
+	stat, err := common.Stat()
 	if err != nil {
 		logger.Error("Failed to get device stat", err)
 		return nil, err
@@ -151,42 +156,84 @@ func (n *Node) Peer() (*common.Peer, error) {
 		PeerID:       n.host.ID().String(),
 		LastModified: time.Now().Unix(),
 		Device: &common.Peer_Device{
-			HostName: stat[device.StatKey_HostName],
-			Os:       stat[device.StatKey_Os],
-			Id:       stat[device.StatKey_Id],
-			Arch:     stat[device.StatKey_Arch],
+			HostName: stat["hostName"],
+			Os:       stat["os"],
+			Id:       stat["id"],
+			Arch:     stat["arch"],
 		},
 	}, nil
 }
 
-// Serve handles the emitter events.
-func (n *Node) Serve(ctx context.Context) {
-	logger.Info("🍦  Serving Node event channels...")
-	for {
-		select {
-		// LobbyProtocol: ListRefresh
-		case e := <-n.On(lobby.Event_LIST_REFRESH):
-			event := e.Args[0].(*api.RefreshEvent)
-			n.refreshEvents <- event
-		// TransferProtocol: Invited
-		case e := <-n.On(transfer.Event_INVITED):
-			event := e.Args[0].(*api.InviteEvent)
-			n.inviteEvents <- event
-		// TransferProtocol: Responded
-		case e := <-n.On(transfer.Event_RESPONDED):
-			event := e.Args[0].(*api.DecisionEvent)
-			n.decisionEvents <- event
-		// TransferProtocol: Progress
-		case e := <-n.On(transfer.Event_PROGRESS):
-			event := e.Args[0].(*api.ProgressEvent)
-			n.progressEvents <- event
-		// TransferProtocol: Completed
-		case e := <-n.On(transfer.Event_COMPLETED):
-			event := e.Args[0].(*api.CompleteEvent)
-			n.completeEvents <- event
-		case <-ctx.Done():
-			n.Close()
-			return
+// OnDecision is callback for NodeImpl for decisionEvents
+func (n *Node) OnDecision(event *api.DecisionEvent) {
+	n.printTerminal(event.Title(), event.Message())
+	n.decisionEvents <- event
+}
+
+// OnInvite is callback for NodeImpl for inviteEvents
+func (n *Node) OnInvite(event *api.InviteEvent) {
+	n.printTerminal(event.Title(), event.Message())
+	n.promptTerminal("Accept Invite", func(result bool) {
+		if n.mode.IsClient() {
+			n.clientStub.Respond(n.ctx, &api.RespondRequest{
+				Decision: result,
+				Peer:     event.GetFrom(),
+			})
 		}
+	})
+	n.inviteEvents <- event
+}
+
+// OnRefresh is callback for NodeImpl for refreshEvents
+func (n *Node) OnRefresh(event *api.RefreshEvent) {
+	n.refreshEvents <- event
+}
+
+// OnProgress is callback for NodeImpl for progressEvents
+func (n *Node) OnProgress(event *api.ProgressEvent) {
+	n.progressEvents <- event
+}
+
+// OnComplete is callback for NodeImpl for completeEvents
+func (n *Node) OnComplete(event *api.CompleteEvent) {
+	n.printTerminal(event.Title(), event.Message())
+	n.completeEvents <- event
+}
+
+func (n *Node) NewSNID(sname string) (*wallet.SNID, error) {
+	// Check if SNID is empty
+	if len(sname) == 0 {
+		return nil, errors.New("SName not provided.")
 	}
+
+	// Find Records
+	recs, err := n.host.LookupTXT(n.ctx, sname)
+	if err != nil {
+		return nil, err
+	}
+
+	// Get Name from Records
+	rec, err := recs.GetNameRecord()
+	if err != nil {
+		return nil, err
+	}
+
+	// Get Pub Key
+	pubKey, err := rec.PubKeyBuffer()
+	if err != nil {
+		return nil, err
+	}
+
+	// Get Peer ID
+	id, err := rec.PeerID()
+	if err != nil {
+		return nil, err
+	}
+
+	// Return SNID
+	return &wallet.SNID{
+		Domain: sname,
+		PeerID: id.String(),
+		PubKey: pubKey,
+	}, nil
 }

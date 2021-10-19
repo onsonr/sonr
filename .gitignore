@@ -9,6 +9,7 @@ build/
 lib/dist
 lib/package-lock.json
 lib/node_modules
+cmd/full/sonr_bitcask
 
 # Test binary, built with `go test -c`
 *.test

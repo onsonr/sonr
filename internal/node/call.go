@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	api "github.com/sonr-io/core/internal/api"
-	"github.com/sonr-io/core/tools/internet"
 )
 
 // RPC_SERVER_PORT is the port the RPC service listens on.
@@ -14,7 +13,7 @@ const RPC_SERVER_PORT = 52006
 // Supply supplies the node with the given amount of resources.
 func (s *ClientNodeStub) Supply(ctx context.Context, req *api.SupplyRequest) (*api.SupplyResponse, error) {
 	// Call Internal Supply
-	err := s.TransferProtocol.Supply(req.GetPaths())
+	err := s.TransferProtocol.Supply(req)
 	if err != nil {
 		return &api.SupplyResponse{
 			Success: false,
@@ -164,7 +163,7 @@ func (s *ClientNodeStub) Search(ctx context.Context, req *api.SearchRequest) (*a
 	// Call Internal Ping
 	if s.ExchangeProtocol != nil {
 		// Call Internal Search
-		entry, err := s.Query(strings.ToLower(req.GetSName()))
+		entry, err := s.Get(strings.ToLower(req.GetSName()))
 		if err != nil {
 			return &api.SearchResponse{
 				Success: false,
@@ -255,18 +254,18 @@ func (hrc *HighwayNodeStub) Register(ctx context.Context, req *api.RegisterReque
 		}, nil
 	}
 
-	// Create Record
-	resp, err := hrc.DomainProtocol.Register(name, internet.NewNBAuthRecord(pfix, name, fprint))
-	if err != nil {
-		return &api.RegisterResponse{
-			Success: false,
-			Error:   err.Error(),
-		}, nil
-	}
+	// // Create Record
+	// resp, err := hrc.DomainProtocol.Register(name, exchange.NewNBAuthRecord(pfix, name, fprint))
+	// if err != nil {
+	// 	return &api.RegisterResponse{
+	// 		Success: false,
+	// 		Error:   err.Error(),
+	// 	}, nil
+	// }
 
 	// Return Response
 	return &api.RegisterResponse{
 		Success: true,
-		Records: resp,
+		// Records: resp,
 	}, nil
 }

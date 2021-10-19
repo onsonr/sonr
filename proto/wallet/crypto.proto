@@ -21,9 +21,19 @@ message PrivateKey {
 	bytes Data = 2;
 }
 
+// SNID is the unique identifier of a user with Sonr Protocol
+message SNID {
+    string domain = 1; // Domain Name of the node, e.g. prad.snr
+    bytes pubKey = 2; // Public Key of the node, value in the Domains second TXT record
+    string peerID = 3;  // Peer ID of the node, calculated from the public key
+    string did = 4; // DID of the node, calculated from the public key
+}
+
+
 // UUID is General Message ID with Signature, ID, and Timestamp
 message UUID {
   bytes signature = 1; // Signature of the message
   string value = 2;    // ID of the message
   int64 timestamp = 3; // Unix timestamp
 }
+

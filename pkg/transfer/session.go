@@ -3,13 +3,15 @@ package transfer
 import (
 	"container/list"
 	"context"
+	"sync"
 	"time"
 
-	"github.com/kataras/golog"
+	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
-	"github.com/sonr-io/core/internal/device"
+	"github.com/sonr-io/core/internal/fs"
 	"github.com/sonr-io/core/internal/host"
 )
 
@@ -32,6 +34,81 @@ func (s Session) IsOutgoing() bool {
 	return s.direction == common.Direction_OUTGOING
 }
 
+// ReadFrom reads the next Session from the given stream.
+func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) *api.CompleteEvent {
+	// Initialize Params
+	logger.Debug("Beginning INCOMING Transfer Stream")
+
+	// Handle incoming stream
+	rs := msgio.NewReader(stream)
+	var wg sync.WaitGroup
+
+	// Write All Files
+	for i, v := range s.Items() {
+		// Create Reader
+		r := NewItemReader(i, s.Count(), v, n)
+
+		// Write to File
+		wg.Add(1)
+		go func(idx, total int) {
+			defer wg.Done()
+			r.ReadFrom(rs)
+		}(i, s.Count())
+	}
+	wg.Wait()
+	stream.Close()
+
+	// Return Complete Event
+	return &api.CompleteEvent{
+		From:       s.from,
+		To:         s.to,
+		Direction:  s.direction,
+		Payload:    s.SetPayload(),
+		CreatedAt:  s.SetPayload().GetCreatedAt(),
+		ReceivedAt: int64(time.Now().Unix()),
+	}
+}
+
+// WriteTo writes the Session to the given stream.
+func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) *api.CompleteEvent {
+	// Initialize Params
+	logger.Debug("Beginning OUTGOING Transfer Stream")
+	wc := msgio.NewWriter(stream)
+	var wg sync.WaitGroup
+
+	// Create New Writer
+	for i, v := range s.Items() {
+		// Create New Writer
+		w, err := NewItemWriter(i, s.Count(), v, n)
+		if err != nil {
+			logger.Error("Failed to create new writer.", err)
+			wc.Close()
+			return nil
+		}
+
+		// Write File to Stream
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			w.WriteTo(wc)
+		}()
+	}
+
+	// Wait for all writes to finish
+	wg.Wait()
+
+	// Return Complete Event
+	load := s.SetPayload()
+	return &api.CompleteEvent{
+		From:       s.from,
+		To:         s.to,
+		Direction:  s.direction,
+		Payload:    load,
+		CreatedAt:  load.GetCreatedAt(),
+		ReceivedAt: int64(time.Now().Unix()),
+	}
+}
+
 // Count returns the number of items in Payload
 func (s Session) Count() int {
 	return len(s.payload.GetItems())
@@ -40,6 +117,15 @@ func (s Session) Count() int {
 // MapItems performs PayloadItemFunc on each item in the Payload.
 func (s Session) Items() []*common.Payload_Item {
 	return s.payload.GetItems()
+}
+
+// SetPayload sets the Payload for the Session.
+func (s Session) SetPayload() *common.Payload {
+	if s.IsIncoming() {
+		s.payload = s.payload.ResetItemsDirectory(fs.Downloads)
+		s.lastUpdated = common.NewLastUpdated()
+	}
+	return s.payload
 }
 
 // SessionQueue is a queue for incoming and outgoing requests.
@@ -88,82 +174,39 @@ func (sq *SessionQueue) AddOutgoing(to peer.ID, req *InviteRequest) error {
 }
 
 // Next returns topmost entry in the queue.
-func (sq *SessionQueue) Next() (*Session, error) {
+func (sq *SessionQueue) Next() (Session, error) {
 	// Find Entry for Peer
-	entry := sq.queue.Front()
-	if entry == nil {
-		return nil, ErrFailedEntry
-	}
-
-	val := entry.Value.(Session)
-	val.lastUpdated = int64(time.Now().Unix())
-	return &val, nil
-}
-
-// Done marks the transfer as completed and returns the CompleteEvent.
-func (sq *SessionQueue) Done() (*api.CompleteEvent, error) {
-	// Find Entry for Peer
-	val, ok := sq.queue.Remove(sq.queue.Front()).(Session)
-	if !ok {
-		return nil, ErrFailedEntry
-	}
-
-	// Set Adjusted Payload
-	setPayload := func(s Session) *common.Payload {
-		if val.IsIncoming() {
-			rawPayload := s.payload
-			payload, err := rawPayload.ReplaceItemsDir(device.DownloadsPath)
-			if err != nil {
-				logger.Error("Failed to Replace Items in Incoming Payload", golog.Fields{"error": err})
-			}
-			s.lastUpdated = common.NewLastUpdated()
-			return payload
-		}
-		return s.payload
-	}
-
-	// Create CompleteEvent
-	event := &api.CompleteEvent{
-		From:       val.from,
-		To:         val.to,
-		Direction:  val.direction,
-		Payload:    setPayload(val),
-		CreatedAt:  setPayload(val).GetCreatedAt(),
-		ReceivedAt: int64(time.Now().Unix()),
-	}
-	return event, nil
+	entry := sq.queue.Remove(sq.queue.Front()).(Session)
+	entry.lastUpdated = int64(time.Now().Unix())
+	return entry, nil
 }
 
 // Validate takes list of Requests and returns true if Request exists in List and UUID is verified.
 // Method also returns the InviteRequest that points to the Response.
-func (sq *SessionQueue) Validate(resp *InviteResponse) (*Session, error) {
+func (sq *SessionQueue) Validate(resp *InviteResponse) (Session, error) {
 	// Authenticate Message
 	valid := sq.host.AuthenticateMessage(resp, resp.Metadata)
 	if !valid {
-		return nil, ErrFailedAuth
+		return Session{}, ErrFailedAuth
 	}
 
 	// Check Decision
 	if !resp.GetDecision() {
-		return nil, nil
+		return Session{}, nil
 	}
 
 	// Check if the request is valid
 	if sq.queue.Len() == 0 {
-		return nil, ErrEmptyRequests
+		return Session{}, ErrEmptyRequests
 	}
 
 	// Get Next Entry
 	entry, err := sq.Next()
 	if err != nil {
 		logger.Error("Failed to get Transfer entry", err)
-		return nil, err
+		return Session{}, err
 	}
-
-	// Check if Request exists in Map
-	if entry != nil {
-		entry.lastUpdated = int64(time.Now().Unix())
-		return entry, nil
-	}
-	return nil, ErrRequestNotFound
+	
+	entry.lastUpdated = int64(time.Now().Unix())
+	return entry, nil
 }

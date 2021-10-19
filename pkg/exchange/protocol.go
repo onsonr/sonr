@@ -2,51 +2,63 @@ package exchange
 
 import (
 	"context"
-	"errors"
-	"time"
 
+	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/pkg/errors"
+	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/common"
 	"github.com/sonr-io/core/internal/host"
-	"github.com/sonr-io/core/tools/internet"
-	"github.com/sonr-io/core/tools/state"
 	"google.golang.org/protobuf/proto"
 )
 
 var (
+	logger         = golog.Child("protocols/exchange")
 	ErrParameters  = errors.New("Failed to create new ExchangeProtocol, invalid parameters")
 	ErrInvalidPeer = errors.New("Peer object provided to ExchangeProtocol is Nil")
 )
 
 // ExchangeProtocol handles Global Sonr Exchange Protocol
 type ExchangeProtocol struct {
-	ctx      context.Context
-	host     *host.SNRHost  // host
-	emitter  *state.Emitter // Handle to signal when done
-	resolver internet.HDNSResolver
+	node           api.NodeImpl
+	ctx            context.Context
+	host           *host.SNRHost // host
+	mode           DNSMode
+	namebaseClient *NamebaseAPIClient
+	authRecord     host.Record
+	nameRecord     host.Record
 }
 
 // NewProtocol creates new ExchangeProtocol
-func NewProtocol(ctx context.Context, host *host.SNRHost, em *state.Emitter) (*ExchangeProtocol, error) {
-	// Check parameters
-	if err := checkParams(host, em); err != nil {
-		logger.Error("Failed to create ExchangeProtocol", err)
-		return nil, err
+func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl, options ...Option) (*ExchangeProtocol, error) {
+	// Set options
+	opts := defaultOptions()
+	for _, opt := range options {
+		opt(opts)
 	}
 
 	// Create Exchange Protocol
 	exchProtocol := &ExchangeProtocol{
-		ctx:      ctx,
-		host:     host,
-		emitter:  em,
-		resolver: internet.NewHDNSResolver(),
+		ctx:            ctx,
+		host:           host,
+		node:           node,
+		namebaseClient: initClient(ctx),
+		mode:           opts.Mode,
 	}
-	logger.Info("✅  ExchangeProtocol is Activated \n")
+	logger.Debug("✅  ExchangeProtocol is Activated \n")
+
+	// Set Peer in Exchange
+	peer, err := node.Peer()
+	if err != nil {
+		logger.Error("Failed to get Profile", err)
+		return nil, err
+	}
+	exchProtocol.Put(peer)
 	return exchProtocol, nil
 }
 
 // FindPeerId method returns PeerID by SName
-func (p *ExchangeProtocol) Query(sname string) (*common.PeerInfo, error) {
+func (p *ExchangeProtocol) Get(sname string) (*common.PeerInfo, error) {
 	// Get Peer from KadDHT store
 	buf, err := p.host.GetValue(p.ctx, sname)
 	if err != nil {
@@ -69,7 +81,7 @@ func (p *ExchangeProtocol) Query(sname string) (*common.PeerInfo, error) {
 	}
 
 	// Verify Peer is registered
-	ok, rec, err := p.Verify(sname)
+	ok, _, err := p.Verify(sname)
 	if err != nil {
 		logger.Warn("Failed to verify Peer", err)
 		return info, nil
@@ -77,15 +89,14 @@ func (p *ExchangeProtocol) Query(sname string) (*common.PeerInfo, error) {
 
 	// Update PeerInfo
 	if ok {
-		info.NameRecord = rec
 		return info, nil
 	}
 	logger.Error("Peer is not registered", err)
 	return info, err
 }
 
-// Update method updates peer instance in the store
-func (p *ExchangeProtocol) Update(peer *common.Peer) error {
+// Put method updates peer instance in the store
+func (p *ExchangeProtocol) Put(peer *common.Peer) error {
 	// Create a cid manually by specifying the 'prefix' parameters
 	key, err := peer.CID()
 	if err != nil {
@@ -110,14 +121,15 @@ func (p *ExchangeProtocol) Update(peer *common.Peer) error {
 
 // Verify method uses resolver to check if Peer is registered,
 // returns true if Peer is registered
-func (p *ExchangeProtocol) Verify(sname string) (bool, internet.Record, error) {
-	// Create Context
-	empty := internet.Record{}
-	ctx, cancel := context.WithTimeout(p.ctx, time.Second*5)
-	defer cancel()
+func (p *ExchangeProtocol) Verify(sname string) (bool, host.Record, error) {
+	// Check if NamebaseClient is Nil
+	empty := host.Record{}
+	if p.namebaseClient == nil {
+		return false, empty, errors.Wrap(ErrParameters, "NamebaseClient is Nil")
+	}
 
 	// Verify Peer is registered
-	recs, err := p.resolver.LookupTXT(ctx, sname)
+	recs, err := p.host.LookupTXT(p.ctx, sname)
 	if err != nil {
 		logger.Error("Failed to resolve DNS record for SName", err)
 		return false, empty, err
@@ -151,7 +163,43 @@ func (p *ExchangeProtocol) Verify(sname string) (bool, internet.Record, error) {
 	return ok, rec, nil
 }
 
-func compareRecordtoID(r internet.Record, target peer.ID) (bool, error) {
+// RegisterDomain registers a domain with Namebase.
+func (p *ExchangeProtocol) Register(sName string, records ...host.Record) (host.DomainMap, error) {
+	// Check if NamebaseClient is Nil
+	if p.namebaseClient == nil {
+		return nil, errors.Wrap(ErrParameters, "NamebaseClient is Nil")
+	}
+
+	// Put records into Namebase
+	req := host.NewNBAddRequest(records...)
+	ok, err := p.namebaseClient.PutRecords(req)
+	if err != nil {
+		logger.Error("Failed to Register SName", err)
+		return nil, err
+	}
+
+	// API Call was Unsuccessful
+	if !ok {
+		return nil, err
+	}
+
+	// Get records from Namebase
+	recs, err := p.namebaseClient.FindRecords(sName)
+	if err != nil {
+		logger.Error("Failed to Find SName after Registering", err)
+		return nil, err
+	}
+
+	// Map records to DomainMap
+	m := make(host.DomainMap)
+	for _, r := range recs {
+		m[r.Host] = r.Value
+	}
+	return m, nil
+}
+
+// compareRecordtoID compares a record to a PeerID
+func compareRecordtoID(r host.Record, target peer.ID) (bool, error) {
 	// Check peer record
 	pid, err := r.PeerID()
 	if err != nil {
@@ -159,4 +207,25 @@ func compareRecordtoID(r internet.Record, target peer.ID) (bool, error) {
 		return false, err
 	}
 	return pid == target, nil
+}
+
+// Close method closes the ExchangeProtocol
+func (p *ExchangeProtocol) Close() error {
+	// Check for isTemporary
+	if p.mode.IsTemp() {
+		logger.Info("Deleted Temporary SName from DNS Table")
+		// Check if NamebaseClient is Nil
+		if p.namebaseClient == nil {
+			return errors.Wrap(ErrParameters, "NamebaseClient is Nil")
+		}
+
+		// Delete SName from Namebase
+		req := host.NewNBDeleteRequest(p.authRecord.ToDeleteRecord(), p.nameRecord.ToDeleteRecord())
+		_, err := p.namebaseClient.PutRecords(req)
+		if err != nil {
+			logger.Error("Failed to Delete SName", err)
+			return err
+		}
+	}
+	return nil
 }
