@@ -85,6 +85,13 @@ func AppHeader(s *Sonr) {
 
 // Serve waits for Exit Signal from Terminal
 func (sh *Sonr) Serve() {
+	// Check if CLI Mode
+	if !sh.isCli {
+		golog.Info("Skipping Serve, CLI mode set to false...")
+		return
+	}
+
+	// Wait for Exit Signal
 	AppHeader(sh)
 	c := make(chan os.Signal)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
@@ -92,6 +99,8 @@ func (sh *Sonr) Serve() {
 		<-c
 		snr.Exit(0)
 	}()
+
+	// Hold until Exit Signal
 	for {
 		select {
 		case <-sh.ctx.Done():
