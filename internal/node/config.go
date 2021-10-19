@@ -45,12 +45,12 @@ func (m NodeStubMode) IsHighway() bool {
 	return m == StubMode_HIGHWAY
 }
 
-// NodeOption is a function that modifies the node options.
-type NodeOption func(*nodeOptions)
+// Option is a function that modifies the node options.
+type Option func(*options)
 
 // WithRequest sets the initialize request.
-func WithRequest(req *api.InitializeRequest) NodeOption {
-	return func(o *nodeOptions) {
+func WithRequest(req *api.InitializeRequest) Option {
+	return func(o *options) {
 		o.location = req.GetLocation()
 		o.profile = req.GetProfile()
 		o.connection = req.GetConnection()
@@ -58,21 +58,21 @@ func WithRequest(req *api.InitializeRequest) NodeOption {
 }
 
 // WithHighway starts the Client RPC server as a highway node.
-func WithHighway() NodeOption {
-	return func(o *nodeOptions) {
+func WithHighway() Option {
+	return func(o *options) {
 		o.mode = StubMode_HIGHWAY
 	}
 }
 
 // WithTerminal sets the node as a terminal node.
-func WithTerminal(val bool) NodeOption {
-	return func(o *nodeOptions) {
+func WithTerminal(val bool) Option {
+	return func(o *options) {
 		o.isTerminal = val
 	}
 }
 
-// nodeOptions is a collection of options for the node.
-type nodeOptions struct {
+// options is a collection of options for the node.
+type options struct {
 	address    string
 	connection common.Connection
 	location   *common.Location
@@ -83,8 +83,8 @@ type nodeOptions struct {
 }
 
 // defaultNodeOptions returns the default node options.
-func defaultNodeOptions() *nodeOptions {
-	return &nodeOptions{
+func defaultNodeOptions() *options {
+	return &options{
 		mode:       StubMode_CLIENT,
 		location:   common.DefaultLocation(),
 		connection: common.Connection_WIFI,
@@ -95,8 +95,8 @@ func defaultNodeOptions() *nodeOptions {
 	}
 }
 
-// Apply applies to node
-func (opts *nodeOptions) Apply(ctx context.Context, node *Node) error {
+// Apply applies Options to node
+func (opts *options) Apply(ctx context.Context, node *Node) error {
 	node.isTerminal = opts.isTerminal
 	node.mode = opts.mode
 
@@ -128,7 +128,8 @@ func (opts *nodeOptions) Apply(ctx context.Context, node *Node) error {
 	return nil
 }
 
-func (n *Node) PrintTerminal(title string, msg string) {
+// printTerminal is a helper function that prints to the terminal.
+func (n *Node) printTerminal(title string, msg string) {
 	if n.isTerminal {
 		// Print a section with level one.
 		pterm.DefaultSection.Println(title)
@@ -137,7 +138,8 @@ func (n *Node) PrintTerminal(title string, msg string) {
 	}
 }
 
-func (n *Node) PromptTerminal(title string, onResult func(result bool)) error {
+// promptTerminal is a helper function that prompts the user for input.
+func (n *Node) promptTerminal(title string, onResult func(result bool)) error {
 	if n.isTerminal {
 		prompt := promptui.Prompt{
 			Label:     title,

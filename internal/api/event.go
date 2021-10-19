@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/sonr-io/core/internal/common"
@@ -30,7 +31,7 @@ func (d *CompleteEvent) Title() string {
 func (d *CompleteEvent) Message() string {
 	paths := ""
 	for _, v := range d.GetPayload().GetItems() {
-		paths += fmt.Sprintf("-  %s\n", v.GetFile().GetPath())
+		paths += fmt.Sprintf("\n-\t%s", v.GetFile().GetPath())
 	}
 	return fmt.Sprintf("Size: %v \n Paths: %s", d.GetPayload().GetSize(), paths)
 }
@@ -47,8 +48,8 @@ func (d *InviteEvent) Title() string {
 	fname := d.GetFrom().GetProfile().GetFirstName()
 	lname := d.GetFrom().GetProfile().GetLastName()
 	sname := d.GetFrom().GetProfile().GetSName()
-	platform := d.GetFrom().GetDevice().GetOs()
-	return fmt.Sprintf("[Transfer-Invite] from %s %s (%s) on %s", fname, lname, sname, platform)
+	platform := strings.ToUpper(d.GetFrom().GetDevice().GetOs())
+	return fmt.Sprintf("[Transfer-Invite] from %s %s (%s) on (%s)", fname, lname, sname, platform)
 }
 
 func (d *InviteEvent) Message() string {

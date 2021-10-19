@@ -50,7 +50,7 @@ type Node struct {
 }
 
 // NewNode Creates a node with its implemented protocols
-func NewNode(ctx context.Context, options ...NodeOption) (api.NodeImpl, *api.InitializeResponse, error) {
+func NewNode(ctx context.Context, options ...Option) (api.NodeImpl, *api.InitializeResponse, error) {
 	// Set Node Options
 	opts := defaultNodeOptions()
 	for _, opt := range options {
@@ -166,14 +166,14 @@ func (n *Node) Peer() (*common.Peer, error) {
 
 // OnDecision is callback for NodeImpl for decisionEvents
 func (n *Node) OnDecision(event *api.DecisionEvent) {
-	n.PrintTerminal(event.Title(), event.Message())
+	n.printTerminal(event.Title(), event.Message())
 	n.decisionEvents <- event
 }
 
 // OnInvite is callback for NodeImpl for inviteEvents
 func (n *Node) OnInvite(event *api.InviteEvent) {
-	n.PrintTerminal(event.Title(), event.Message())
-	n.PromptTerminal("Accept Invite", func(result bool) {
+	n.printTerminal(event.Title(), event.Message())
+	n.promptTerminal("Accept Invite", func(result bool) {
 		if n.mode.IsClient() {
 			n.clientStub.Respond(n.ctx, &api.RespondRequest{
 				Decision: result,
@@ -196,7 +196,7 @@ func (n *Node) OnProgress(event *api.ProgressEvent) {
 
 // OnComplete is callback for NodeImpl for completeEvents
 func (n *Node) OnComplete(event *api.CompleteEvent) {
-	n.PrintTerminal(event.Title(), event.Message())
+	n.printTerminal(event.Title(), event.Message())
 	n.completeEvents <- event
 }
 

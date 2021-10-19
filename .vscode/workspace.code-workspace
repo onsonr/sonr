@@ -128,7 +128,7 @@
       "electron": "examples",
       "flutter": "examples",
       "highway": "project",
-      "util": ""
+      "api": ""
     },
     "github.codespaces.defaultExtensions": [
       "GitHub.codespaces",

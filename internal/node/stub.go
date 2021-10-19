@@ -34,7 +34,7 @@ type ClientNodeStub struct {
 }
 
 // startClientService creates a new Client service stub for the node.
-func (n *Node) startClientService(ctx context.Context, opts *nodeOptions) (*ClientNodeStub, error) {
+func (n *Node) startClientService(ctx context.Context, opts *options) (*ClientNodeStub, error) {
 	// Set Transfer Protocol
 	transferProtocol, err := transfer.NewProtocol(ctx, n.host, n)
 	if err != nil {
@@ -162,7 +162,7 @@ type HighwayNodeStub struct {
 }
 
 // startHighwayService creates a new Highway service stub for the node.
-func (n *Node) startHighwayService(ctx context.Context, opts *nodeOptions) (*HighwayNodeStub, error) {
+func (n *Node) startHighwayService(ctx context.Context, opts *options) (*HighwayNodeStub, error) {
 
 	// Create the listener
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", RPC_SERVER_PORT))

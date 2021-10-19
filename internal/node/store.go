@@ -37,7 +37,7 @@ func recentsKey() []byte {
 }
 
 // openStore creates a new Store instance for Node
-func (n *Node) openStore(ctx context.Context, opts *nodeOptions) error {
+func (n *Node) openStore(ctx context.Context, opts *options) error {
 	// Open the my.db data file in your current directory.
 	path, _ := fs.Database.GenPath("sonr_bitcask")
 
