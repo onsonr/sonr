@@ -124,18 +124,17 @@ func (sh *Sonr) Exit(code int) {
 // handleInitRequest parses the given request and returns Request
 func handleInitRequest() (*api.InitializeRequest, bool, error) {
 	// Parse flag
+	cliPtr := flag.Bool("cli", false, "Run in CLI Mode")
 	latPtr := flag.Float64("lat", 34.102920, "Latitude for InitializeRequest")
 	lngPtr := flag.Float64("lng", -118.394190, "Longitude for InitializeRequest")
-	envVarsPtr := flag.String("vars", "KEY=VALUE", "Enviornment variables in format: 'Key=Value, Key=Value'")
 	profilePtr := flag.String("profile", "", "Profile JSON string")
-	cliPtr := flag.Bool("cli", false, "Run in CLI Mode")
+	varsPtr := flag.String("vars", "", "Enviornment variables in format: 'Key=Value, Key=Value'")
 	flag.Parse()
 
 	// Set Enviornment variables
-	if envVarsPtr != nil {
-
+	if *varsPtr != "" {
 		// Split String Values
-		keyValuePairs := strings.Split(*envVarsPtr, ",")
+		keyValuePairs := strings.Split(*varsPtr, ",")
 		golog.Infof("Setting %v Enviornment variables.", len(keyValuePairs))
 		// Iterate over keyValuePairs
 		for _, v := range keyValuePairs {
