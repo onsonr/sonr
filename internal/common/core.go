@@ -6,7 +6,6 @@ import (
 	olc "github.com/google/open-location-code/go"
 	"github.com/kataras/golog"
 	"github.com/pkg/errors"
-	"github.com/sonr-io/core/internal/fs"
 	"google.golang.org/protobuf/proto"
 )
 
