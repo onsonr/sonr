@@ -35,8 +35,6 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 		logger.Error("Failed to Unmarshal Invite REQUEST buffer.", err)
 		return
 	}
-	// store request data into Context
-	p.node.OnInvite(req.ToEvent())
 
 	// generate response message
 	err = p.sessionQueue.AddIncoming(remotePeer, req)
@@ -44,6 +42,9 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 		logger.Error("Failed to add incoming session to queue.", err)
 		return
 	}
+
+	// store request data into Context
+	p.node.OnInvite(req.ToEvent())
 }
 
 // onIncomingTransfer incoming transfer handler

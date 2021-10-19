@@ -35,7 +35,6 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 		logger.Error("Failed to Unmarshal Invite RESPONSE buffer.", err)
 		return
 	}
-	p.node.OnDecision(resp.ToEvent())
 
 	// Locate request data and remove it if found
 	entry, err := p.sessionQueue.Validate(resp)
@@ -56,6 +55,7 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 		// Call Outgoing Transfer
 		p.onOutgoingTransfer(entry, stream)
 	}
+	p.node.OnDecision(resp.ToEvent())
 }
 
 // onOutgoingTransfer is called by onInviteResponse if Validated

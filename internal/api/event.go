@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/sonr-io/core/internal/common"
 )
@@ -23,15 +24,19 @@ func (e *CompleteEvent) Recent() *common.Profile {
 }
 
 func (d *CompleteEvent) Title() string {
-	return fmt.Sprintf("Completed Transfer from %s", d.GetFrom().GetProfile().GetSName())
+	return fmt.Sprintf("[Transfer-Complete] from %s at %v", d.GetFrom().GetProfile().GetSName(), time.Now())
 }
 
 func (d *CompleteEvent) Message() string {
-	return fmt.Sprintf("Size: %v", d.GetPayload().GetSize())
+	paths := ""
+	for _, v := range d.GetPayload().GetItems() {
+		paths += fmt.Sprintf("-  %s\n", v.GetFile().GetPath())
+	}
+	return fmt.Sprintf("Size: %v \n Paths: %s", d.GetPayload().GetSize(), paths)
 }
 
 func (d *DecisionEvent) Title() string {
-	return fmt.Sprintf("Got Decision from %s", d.GetFrom().GetProfile().GetSName())
+	return fmt.Sprintf("[Transfer-Decision] from %s", d.GetFrom().GetProfile().GetSName())
 }
 
 func (d *DecisionEvent) Message() string {
@@ -43,7 +48,7 @@ func (d *InviteEvent) Title() string {
 	lname := d.GetFrom().GetProfile().GetLastName()
 	sname := d.GetFrom().GetProfile().GetSName()
 	platform := d.GetFrom().GetDevice().GetOs()
-	return fmt.Sprintf("Got Invite from %s %s (%s) on %s", fname, lname, sname, platform)
+	return fmt.Sprintf("[Transfer-Invite] from %s %s (%s) on %s", fname, lname, sname, platform)
 }
 
 func (d *InviteEvent) Message() string {
