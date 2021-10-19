@@ -34,13 +34,13 @@ var (
 // fetchApiKeys fetches the Textile Api/Secrect keys from the environment
 func fetchApiKeys() (string, string, error) {
 	// Get API Key
-	key, ok := os.LookupEnv("HANDSHAKE_KEY")
+	key, ok := os.LookupEnv("NB_KEY")
 	if !ok {
 		return "", "", ErrMissingAPIKey
 	}
 
 	// Get API Secret
-	secret, ok := os.LookupEnv("HANDSHAKE_SECRET")
+	secret, ok := os.LookupEnv("NB_SECRET")
 	if !ok {
 		return "", "", ErrMissingAPISecret
 	}
