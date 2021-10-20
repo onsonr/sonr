@@ -7,6 +7,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/api"
+	"github.com/sonr-io/core/internal/beam"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/pkg/common"
 	"google.golang.org/protobuf/proto"
@@ -22,6 +23,7 @@ var (
 type ExchangeProtocol struct {
 	node           api.NodeImpl
 	ctx            context.Context
+	beamStore      beam.Beam
 	host           *host.SNRHost // host
 	mode           DNSMode
 	namebaseClient *NamebaseAPIClient
@@ -37,9 +39,15 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl, opt
 		opt(opts)
 	}
 
+	b, err := beam.New(ctx, host, "exchange")
+	if err != nil {
+		return nil, err
+	}
+
 	// Create Exchange Protocol
 	exchProtocol := &ExchangeProtocol{
 		ctx:            ctx,
+		beamStore:      b,
 		host:           host,
 		node:           node,
 		namebaseClient: initClient(ctx),
@@ -60,9 +68,9 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl, opt
 // FindPeerId method returns PeerID by SName
 func (p *ExchangeProtocol) Get(sname string) (*common.Peer, error) {
 	// Get Peer from KadDHT store
-	buf, err := p.host.GetValue(p.ctx, sname)
+	buf, err := p.beamStore.Get(sname)
 	if err != nil {
-		logger.Error("Failed to get item from KadDHT", err)
+		logger.Error("Failed to get Peer from BeamStore: %s", err)
 		return nil, err
 	}
 
@@ -77,23 +85,17 @@ func (p *ExchangeProtocol) Get(sname string) (*common.Peer, error) {
 
 // Put method updates peer instance in the store
 func (p *ExchangeProtocol) Put(peer *common.Peer) error {
-	// Create a cid manually by specifying the 'prefix' parameters
-	key, err := peer.CID()
-	if err != nil {
-		return err
-	}
-
 	// Marshal Peer
 	buf, err := peer.Buffer()
 	if err != nil {
-		logger.Error("Failed to Marshal Peer", err)
+		logger.Errorf("Failed to Marshal Peer: %s", err)
 		return err
 	}
 
 	// Add Peer to KadDHT store
-	err = p.host.PutValue(p.ctx, key, buf)
+	err = p.beamStore.Put(peer.GetSName(), buf)
 	if err != nil {
-		logger.Error("Failed to put Item in KDHT", err)
+		logger.Errorf("Failed to put item in BeamStore: %s", err)
 		return err
 	}
 	return nil
@@ -111,33 +113,33 @@ func (p *ExchangeProtocol) Verify(sname string) (bool, host.Record, error) {
 	// Verify Peer is registered
 	recs, err := p.host.LookupTXT(p.ctx, sname)
 	if err != nil {
-		logger.Error("Failed to resolve DNS record for SName", err)
+		logger.Errorf("Failed to resolve DNS record for SName: %s", err)
 		return false, empty, err
 	}
 
 	// Get Name Record
 	rec, err := recs.GetNameRecord()
 	if err != nil {
-		logger.Error("Failed to get Name Record", err)
+		logger.Errorf("Failed to get Name Record: %s", err)
 		return false, empty, err
 	}
 
 	// Check peer record
 	pubKey, err := rec.PubKey()
 	if err != nil {
-		logger.Error("Failed to get public key from record", err)
+		logger.Errorf("Failed to get public key from record: %s", err)
 		return false, rec, err
 	}
 
 	compId, err := peer.IDFromPublicKey(pubKey)
 	if err != nil {
-		logger.Error("Failed to extract PeerID from PublicKey", err)
+		logger.Errorf("Failed to extract PeerID from PublicKey: %s", err)
 		return false, rec, err
 	}
 
 	ok, err := compareRecordtoID(rec, compId)
 	if err != nil {
-		logger.Error("Failed to compare PeerID to record", err)
+		logger.Errorf("Failed to compare PeerID to record: %s", err)
 		return false, rec, err
 	}
 	return ok, rec, nil
@@ -191,6 +193,13 @@ func compareRecordtoID(r host.Record, target peer.ID) (bool, error) {
 
 // Close method closes the ExchangeProtocol
 func (p *ExchangeProtocol) Close() error {
+	// Close BeamStore
+	err := p.beamStore.Close()
+	if err != nil {
+		logger.Error("Failed to close BeamStore", err)
+		return err
+	}
+
 	// Check for isTemporary
 	if p.mode.IsTemp() {
 		logger.Info("Deleted Temporary SName from DNS Table")

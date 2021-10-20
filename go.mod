@@ -10,7 +10,6 @@ require (
 	github.com/gabriel-vasile/mimetype v1.3.1
 	github.com/google/open-location-code/go v0.0.0-20210504205230-1796878d947c
 	github.com/google/uuid v1.3.0
-	github.com/ipfs/go-cid v0.1.0
 	github.com/kataras/golog v0.1.7
 	github.com/libp2p/go-libp2p v0.15.1
 	github.com/libp2p/go-libp2p-connmgr v0.2.4
@@ -21,7 +20,6 @@ require (
 	github.com/libp2p/go-msgio v0.0.6
 	github.com/manifoldco/promptui v0.8.0
 	github.com/multiformats/go-multiaddr v0.4.0
-	github.com/multiformats/go-multihash v0.0.15
 	github.com/o1egl/govatar v0.4.1
 	github.com/pkg/errors v0.9.1
 	github.com/pterm/pterm v0.12.31
