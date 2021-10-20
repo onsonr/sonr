@@ -65,7 +65,7 @@ func (s *Store) Handle(e *Event, b *beam) error {
 	case EventType_EXPIRE:
 		delete(s.Data, e.Entry.Key)
 	case EventType_PUSH:
-		if s.Modified < e.Store.Modified {
+		if s.Modified > e.Store.Modified && len(s.Data) < int(e.Store.Capacity) {
 			s.Data = e.Store.Data
 			s.Modified = e.Store.Modified
 			golog.Info("Updated store to pushed earlier version")
