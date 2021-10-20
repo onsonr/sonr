@@ -9,7 +9,6 @@ import (
 	"syscall"
 
 	"github.com/kataras/golog"
-	"github.com/pterm/pterm"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/node"
 	"github.com/sonr-io/core/pkg/common"
@@ -36,9 +35,6 @@ func Start(req *api.InitializeRequest, isTerminal bool, prefix string) {
 	}
 	golog.SetPrefix(fmt.Sprintf("[Sonr.%s] ", prefix))
 
-	if isTerminal {
-		pterm.SetDefaultOutput(golog.Default.Printer)
-	}
 	// Initialize Device
 	ctx := context.Background()
 	err := req.Parse()
@@ -60,23 +56,7 @@ func Start(req *api.InitializeRequest, isTerminal bool, prefix string) {
 		IsCli: isTerminal,
 		Node:  n,
 	}
-	instance.Serve()
-}
-
-// AppHeader prints Node Info onto Terminal
-func AppHeader() {
-	// Get Peer Info
-	p, err := instance.Node.Peer()
-	if err != nil {
-		golog.Error("Failed to get Peer", golog.Fields{"error": err})
-		Exit(1)
-	}
-
-	// Print Header on Terminal CLI Mode
-	if instance.IsCli {
-		pterm.DefaultSection.Println(fmt.Sprintf("Sonr Node Online: %s", p.PeerID))
-		pterm.Info.Println(fmt.Sprintf("SName: %s \nOS: %s \nArch: %s", p.GetSName(), p.OS(), p.Arch()))
-	}
+	instance.Persist()
 }
 
 // Exit handles cleanup on Sonr Node
@@ -111,28 +91,27 @@ func Exit(code int) {
 	}
 }
 
-// Serve waits for Exit Signal from Terminal
-func (sh Sonr) Serve() {
+// Persist waits for Exit Signal from Terminal
+func (sh Sonr) Persist() {
 	// Check if CLI Mode
-	if !sh.IsCli || common.IsMobile() {
+	if common.IsMobile() {
 		golog.Info("Skipping Serve, Node is either mobile or non-cli...")
 		return
 	}
-
-	// Wait for Exit Signal
-	AppHeader()
 	c := make(chan os.Signal)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	go func() {
 		<-c
-		Exit(0)
 	}()
+
+	golog.Info("Persisting Node...")
 
 	// Hold until Exit Signal
 	for {
 		select {
+		case <-c:
+			Exit(0)
 		case <-sh.Ctx.Done():
-			golog.Info("Context Done")
 			return
 		}
 	}
