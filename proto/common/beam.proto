@@ -9,8 +9,7 @@ enum EventType {
     SET = 2;
     DELETE = 3;
     PUT = 4;
-    EXPIRE = 5;
-    PUSH = 6;
+    SYNC = 5;
 }
 
 message Event {

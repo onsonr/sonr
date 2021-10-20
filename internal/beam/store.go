@@ -62,20 +62,29 @@ func (s *Store) Handle(e *Event, b *beam) error {
 	switch e.Type {
 	case EventType_DELETE:
 		delete(s.Data, e.Entry.Key)
-	case EventType_EXPIRE:
-		delete(s.Data, e.Entry.Key)
-	case EventType_PUSH:
-		if s.Modified > e.Store.Modified && len(s.Data) < int(e.Store.Capacity) {
-			s.Data = e.Store.Data
-			s.Modified = e.Store.Modified
-			golog.Info("Updated store to pushed earlier version")
+		return nil
+	case EventType_SYNC:
+		if e.Store != nil {
+			if s.Modified > e.Store.Modified && len(s.Data) < int(e.Store.Capacity) {
+				s.Data = e.Store.Data
+				s.Modified = e.Store.Modified
+				golog.Info("Updated store to pushed earlier version")
+			}
 		}
+		return nil
 	case EventType_PUT:
-		s.Data[e.Entry.Key] = e.Entry
+		if e.Entry != nil {
+			s.Data[e.Entry.Key] = e.Entry
+			s.Modified = time.Now().Unix()
+		}
+		return nil
 	case EventType_SET:
-		s.Data[e.Entry.Key] = e.Entry
+		if e.Entry != nil {
+			s.Data[e.Entry.Key] = e.Entry
+			s.Modified = time.Now().Unix()
+		}
+		return nil
 	}
-	s.Modified = time.Now().Unix()
 	return nil
 }
 
@@ -131,28 +140,13 @@ func (b *beam) newPutEvent(key string, value []byte) (*Event, *StoreEntry) {
 	return event, entry
 }
 
-// newPushEvent creates a new push event
-func (b *beam) newPushEvent() *Event {
+// newSyncEvent creates a new sync event
+func (b *beam) newSyncEvent() *Event {
 	return &Event{
-		Type:  EventType_PUSH,
+		Type:  EventType_SYNC,
 		Peer:  b.h.ID().String(),
 		Store: b.store,
 	}
-}
-
-// newExpireEvent creates a new expire event
-func (b *beam) newExpireEvent(key string) *Event {
-	entry := &StoreEntry{
-		Key:      key,
-		Peer:     b.h.ID().String(),
-		Modified: time.Now().Unix(),
-	}
-	event := &Event{
-		Type:  EventType_EXPIRE,
-		Peer:  b.h.ID().String(),
-		Entry: entry,
-	}
-	return event
 }
 
 // newDeleteEvent creates a new delete event

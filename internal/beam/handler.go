@@ -23,7 +23,7 @@ func (b *beam) handleEvents() {
 		// Check Event and Validate not User
 		switch event.Type {
 		case pubsub.PeerJoin:
-			event := b.newPushEvent()
+			event := b.newSyncEvent()
 			err = event.Publish(b.ctx, b.topic)
 			if err != nil {
 				golog.Error(err)
