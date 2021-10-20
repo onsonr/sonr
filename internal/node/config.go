@@ -57,15 +57,15 @@ func WithRequest(req *api.InitializeRequest) Option {
 	}
 }
 
-// WithHighway starts the Client RPC server as a highway node.
-func WithHighway() Option {
+// SetHighway starts the Client RPC server as a highway node.
+func SetHighway() Option {
 	return func(o *options) {
 		o.mode = StubMode_HIGHWAY
 	}
 }
 
 // WithTerminal sets the node as a terminal node.
-func WithTerminal(val bool) Option {
+func SetTerminalMode(val bool) Option {
 	return func(o *options) {
 		o.isTerminal = val
 	}

@@ -17,7 +17,6 @@ func (b *beam) handleEvents() {
 		// Get next event
 		event, err := b.handler.NextPeerEvent(b.ctx)
 		if err != nil {
-			b.handler.Cancel()
 			return
 		}
 
@@ -43,7 +42,6 @@ func (b *beam) handleMessages() {
 		// Get next message
 		msg, err := b.sub.Next(b.ctx)
 		if err != nil {
-			b.sub.Cancel()
 			return
 		}
 

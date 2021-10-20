@@ -38,7 +38,6 @@ type LobbyProtocol struct {
 
 // NewProtocol creates a new lobby protocol instance.
 func NewProtocol(ctx context.Context, host *host.SNRHost, nu api.NodeImpl, options ...LobbyOption) (*LobbyProtocol, error) {
-
 	opts := defaultLobbyOptions()
 	for _, option := range options {
 		option(opts)
@@ -133,7 +132,6 @@ func (p *LobbyProtocol) HandleEvents() {
 		// Get next event
 		event, err := p.eventHandler.NextPeerEvent(p.ctx)
 		if err != nil {
-			p.eventHandler.Cancel()
 			return
 		}
 
@@ -159,7 +157,6 @@ func (p *LobbyProtocol) HandleMessages() {
 		// Get next message
 		msg, err := p.subscription.Next(p.ctx)
 		if err != nil {
-			p.subscription.Cancel()
 			return
 		}
 

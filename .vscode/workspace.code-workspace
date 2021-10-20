@@ -105,7 +105,6 @@
       "Contents.json": true,
       ".devcontainer": true,
       "cmd/cli": true,
-      "**/app": true,
       "**/design": true,
       "**/sonr.wiki": true,
       ".gitignore": false,

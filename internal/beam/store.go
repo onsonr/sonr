@@ -70,7 +70,9 @@ func (s *Store) Handle(e *Event, b *beam) error {
 			s.Modified = e.Store.Modified
 			golog.Info("Updated store to pushed earlier version")
 		}
-	default:
+	case EventType_PUT:
+		s.Data[e.Entry.Key] = e.Entry
+	case EventType_SET:
 		s.Data[e.Entry.Key] = e.Entry
 	}
 	s.Modified = time.Now().Unix()
