@@ -24,9 +24,12 @@ func (b *beam) handleEvents() {
 		// Check Event and Validate not User
 		switch event.Type {
 		case pubsub.PeerJoin:
-			golog.Info("Peer Joined")
-		case pubsub.PeerLeave:
-			golog.Info("Peer Exited")
+			event := b.newPushEvent()
+			err = event.Publish(b.ctx, b.topic)
+			if err != nil {
+				golog.Error(err)
+				continue
+			}
 		default:
 			continue
 		}
@@ -85,7 +88,7 @@ func isEventExit(ev pubsub.PeerEvent) bool {
 	return ev.Type == pubsub.PeerLeave
 }
 
-// isValidMessage Checks if Message is NOT from User
+// eventFromMsg converts a message to an event
 func eventFromMsg(msg *pubsub.Message, selfID peer.ID) (*Event, error) {
 	// Check Message
 	if msg.ReceivedFrom == selfID {

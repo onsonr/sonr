@@ -10,12 +10,14 @@ enum EventType {
     DELETE = 3;
     PUT = 4;
     EXPIRE = 5;
+    PUSH = 6;
 }
 
 message Event {
     string peer = 1;
     EventType type = 2;
     StoreEntry entry = 3;
+    Store store = 4;
 }
 
 message Store {

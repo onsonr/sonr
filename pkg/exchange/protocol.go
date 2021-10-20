@@ -193,6 +193,13 @@ func compareRecordtoID(r host.Record, target peer.ID) (bool, error) {
 
 // Close method closes the ExchangeProtocol
 func (p *ExchangeProtocol) Close() error {
+	// Close BeamStore
+	err := p.beamStore.Close()
+	if err != nil {
+		logger.Error("Failed to close BeamStore", err)
+		return err
+	}
+
 	// Check for isTemporary
 	if p.mode.IsTemp() {
 		logger.Info("Deleted Temporary SName from DNS Table")

@@ -1,8 +1,11 @@
 package beam
 
 import (
+	"context"
 	"time"
 
+	"github.com/kataras/golog"
+	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -31,13 +34,13 @@ func (s *Store) Delete(key string, b *beam) error {
 		return ErrNotOwner
 	}
 
+	// Delete the entry
+	delete(s.Data, key)
+	s.Modified = time.Now().Unix()
+
 	// Create Delete Event
 	event := b.newDeleteEvent(key)
-	eventBuf, err := event.Marshal()
-	if err != nil {
-		return err
-	}
-	return b.topic.Publish(b.ctx, eventBuf)
+	return event.Publish(b.ctx, b.topic)
 }
 
 // Get returns the value of the entry
@@ -59,9 +62,18 @@ func (s *Store) Handle(e *Event, b *beam) error {
 	switch e.Type {
 	case EventType_DELETE:
 		delete(s.Data, e.Entry.Key)
+	case EventType_EXPIRE:
+		delete(s.Data, e.Entry.Key)
+	case EventType_PUSH:
+		if s.Modified < e.Store.Modified {
+			s.Data = e.Store.Data
+			s.Modified = e.Store.Modified
+			golog.Info("Updated store to pushed earlier version")
+		}
 	default:
 		s.Data[e.Entry.Key] = e.Entry
 	}
+	s.Modified = time.Now().Unix()
 	return nil
 }
 
@@ -73,13 +85,8 @@ func (s *Store) Put(key string, value []byte, b *beam) error {
 		// Create new entry with Event
 		event, entry := b.newPutEvent(key, value)
 		s.Data[key] = entry
-
-		// Publish event
-		eventBuf, err := event.Marshal()
-		if err != nil {
-			return err
-		}
-		return b.topic.Publish(b.ctx, eventBuf)
+		s.Modified = time.Now().Unix()
+		return event.Publish(b.ctx, b.topic)
 	}
 
 	// Get existing entry and update it
@@ -87,11 +94,8 @@ func (s *Store) Put(key string, value []byte, b *beam) error {
 	if err != nil {
 		return err
 	}
-	eventBuf, err := event.Marshal()
-	if err != nil {
-		return err
-	}
-	return b.topic.Publish(b.ctx, eventBuf)
+	s.Modified = time.Now().Unix()
+	return event.Publish(b.ctx, b.topic)
 }
 
 // Set updates the entry in the store and publishes an event
@@ -108,6 +112,7 @@ func (se *StoreEntry) Set(value []byte, selfID string) (*Event, error) {
 	}, nil
 }
 
+// newPutEvent creates a new put event
 func (b *beam) newPutEvent(key string, value []byte) (*Event, *StoreEntry) {
 	entry := &StoreEntry{
 		Key:      key,
@@ -124,6 +129,31 @@ func (b *beam) newPutEvent(key string, value []byte) (*Event, *StoreEntry) {
 	return event, entry
 }
 
+// newPushEvent creates a new push event
+func (b *beam) newPushEvent() *Event {
+	return &Event{
+		Type:  EventType_PUSH,
+		Peer:  b.h.ID().String(),
+		Store: b.store,
+	}
+}
+
+// newExpireEvent creates a new expire event
+func (b *beam) newExpireEvent(key string) *Event {
+	entry := &StoreEntry{
+		Key:      key,
+		Peer:     b.h.ID().String(),
+		Modified: time.Now().Unix(),
+	}
+	event := &Event{
+		Type:  EventType_EXPIRE,
+		Peer:  b.h.ID().String(),
+		Entry: entry,
+	}
+	return event
+}
+
+// newDeleteEvent creates a new delete event
 func (b *beam) newDeleteEvent(key string) *Event {
 	entry := &StoreEntry{
 		Key:      key,
@@ -138,6 +168,16 @@ func (b *beam) newDeleteEvent(key string) *Event {
 	return event
 }
 
+// Marshal converts the event to a protobuf message and returns buffer
 func (e *Event) Marshal() ([]byte, error) {
 	return proto.Marshal(e)
+}
+
+// Publish publishes the event to the topic
+func (e *Event) Publish(ctx context.Context, t *pubsub.Topic) error {
+	buf, err := e.Marshal()
+	if err != nil {
+		return err
+	}
+	return t.Publish(ctx, buf)
 }
