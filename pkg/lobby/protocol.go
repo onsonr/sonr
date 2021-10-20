@@ -185,7 +185,15 @@ func (p *LobbyProtocol) autoPushUpdates() {
 			logger.Error("Failed to send peer update to lobby topic", err)
 			continue
 		}
-		time.Sleep(time.Second * 5)
+
+		// Sleep for 5 seconds before next update
+		select {
+		case <-p.ctx.Done():
+			return
+		default:
+			time.Sleep(time.Second * 5)
+			continue
+		}
 	}
 }
 
