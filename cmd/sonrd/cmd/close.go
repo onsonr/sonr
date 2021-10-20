@@ -16,6 +16,11 @@ limitations under the License.
 package cmd
 
 import (
+	"io/ioutil"
+	"os"
+	"strconv"
+
+	"github.com/kataras/golog"
 	"github.com/sonr-io/core/app"
 	"github.com/spf13/cobra"
 )
@@ -27,12 +32,31 @@ var closeCmd = &cobra.Command{
 	Use:   "close",
 	Short: "Closes any active Sonr Daemon thats running",
 	Run: func(cmd *cobra.Command, args []string) {
-		if isErrorPtr {
+		data, err := ioutil.ReadFile(PIDFile)
+		if err != nil {
+			golog.Child("[Sonr.daemon] ").Error("Not running")
 			app.Exit(1)
-		} else {
-			app.Exit(0)
 		}
 
+		ProcessID, err := strconv.Atoi(string(data))
+		if err != nil {
+			golog.Child("[Sonr.daemon] ").Error("Unable to read and parse process id found in ", PIDFile)
+			app.Exit(1)
+		}
+
+		process, err := os.FindProcess(ProcessID)
+		if err != nil {
+			golog.Child("[Sonr.daemon] ").Errorf("Unable to find process ID [%v] with error %v \n", ProcessID, err)
+			app.Exit(1)
+		}
+		// remove PID file
+		os.Remove(PIDFile)
+		err = process.Kill()
+		if err != nil {
+			golog.Child("[Sonr.daemon] ").Errorf("Unable to kill process ID [%v] with error %v \n", ProcessID, err)
+			app.Exit(1)
+		}
+		app.Exit(0)
 	},
 }
 

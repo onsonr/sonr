@@ -19,25 +19,26 @@ import (
 	"encoding/base64"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
+	"syscall"
 
 	"github.com/kataras/golog"
-	"github.com/sonr-io/core/app"
-	"github.com/sonr-io/core/internal/api"
-	"github.com/sonr-io/core/pkg/common"
 	"github.com/spf13/cobra"
-	"google.golang.org/protobuf/encoding/protojson"
 
 	"github.com/spf13/viper"
 )
 
+var execServeCmd = exec.Command("sonrd", "serve")
 var cliPtr bool
 var latPtr float64
 var lngPtr float64
 var profilePtr string
 var varsPtr string
 var cfgFile string
+var PIDFile = "/tmp/sonrd.pid"
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -45,57 +46,17 @@ var rootCmd = &cobra.Command{
 	Short: "Daemon for Sonr Binary, interact with Node through this CLI.",
 	Long:  `Sonr's Core Framework manages Discovery, Connection, Data-Transfer, Authorization/Authentication and Peer Lobby.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// Set Enviornment variables
-		if varsPtr != "" {
-			// Decode base64 encoded string
-			keyValuesBuf, err := base64.StdEncoding.DecodeString(varsPtr)
+		if cmd.Name() != "close" {
+			if err := execServeCmd.Start(); err != nil {
+				golog.Child("[Sonr.daemon] ").Fatal(err)
+			}
+			savePID(execServeCmd.Process.Pid)
+			err := execServeCmd.Process.Signal(syscall.SIGSTOP)
 			if err != nil {
-				golog.Child("[Sonr.daemon] ").Error("Failed to decode Enviornment Vars from Config")
-				return
+				golog.Child("[Sonr.daemon] ").Fatal(err)
 			}
-
-			// Split String Values
-			keyValuePairs := strings.Split(string(keyValuesBuf), ",")
-			golog.Infof("Updating %v Enviornment variables.", len(keyValuePairs))
-			// Iterate over keyValuePairs
-			for _, v := range keyValuePairs {
-				// Trim White Space
-				tv := strings.TrimSpace(v)
-
-				// Split Key Value Pairs
-				value := strings.Split(tv, "=")
-				if len(value) != 2 {
-					golog.Child("[Sonr.daemon] ").Fatal("Invalid Enviornment Variable Format")
-				}
-
-				// Set Env Variables
-				os.Setenv(value[0], value[1])
-			}
+			execServeCmd.Wait()
 		}
-
-		// Set Location
-		req := &api.InitializeRequest{
-			Location: &common.Location{
-				Latitude:  latPtr,
-				Longitude: lngPtr,
-			},
-			Profile: common.NewDefaultProfile(),
-		}
-
-		// Set Profile
-		if profilePtr != "" {
-			golog.Info("Setting Profile from JSON.")
-			p := &common.Profile{}
-
-			// Unmarshal JSON String
-			err := protojson.Unmarshal([]byte(profilePtr), p)
-			if err == nil {
-				req.Profile = p
-			} else {
-				golog.Child("[Sonr.daemon] ").Warn("Failed to set Profile from flag")
-			}
-		}
-		app.Start(req, cliPtr, "full")
 	},
 }
 
@@ -112,7 +73,35 @@ func init() {
 	rootCmd.Flags().Float64Var(&lngPtr, "lng", -118.394190, "longitude for InitializeRequest")
 	rootCmd.Flags().StringVar(&profilePtr, "profile", "", "profile JSON string")
 	rootCmd.Flags().StringVar(&varsPtr, "vars", "", "enviornment variables encoded as base64")
-	viper.BindPFlags(rootCmd.Flags())
+	// Set Enviornment variables
+	if varsPtr != "" {
+		// Decode base64 encoded string
+		keyValuesBuf, err := base64.StdEncoding.DecodeString(varsPtr)
+		if err != nil {
+			golog.Child("[Sonr.daemon] ").Error("Failed to decode Enviornment Vars from Config")
+			return
+		}
+
+		// Split String Values
+		keyValuePairs := strings.Split(string(keyValuesBuf), ",")
+		golog.Infof("Updating %v Enviornment variables.", len(keyValuePairs))
+		// Iterate over keyValuePairs
+		for _, v := range keyValuePairs {
+			// Trim White Space
+			tv := strings.TrimSpace(v)
+
+			// Split Key Value Pairs
+			value := strings.Split(tv, "=")
+			if len(value) != 2 {
+				golog.Child("[Sonr.daemon] ").Fatal("Invalid Enviornment Variable Format")
+			}
+
+			// Set Env Variables
+			os.Setenv(value[0], value[1])
+		}
+		viper.Set("vars", base64.StdEncoding.EncodeToString([]byte(varsPtr)))
+		viper.SafeWriteConfig()
+	}
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "Path to config file (default is $HOME/.sonr-config/sonrd.yaml)")
 }
@@ -146,14 +135,8 @@ func initConfig() {
 			return
 		}
 
-		keyValuesBuf, err := base64.StdEncoding.DecodeString(encodedVars)
-		if err != nil {
-			golog.Child("[Sonr.daemon] ").Error("Failed to decode Enviornment Vars from Config")
-			return
-		}
-
 		// Split String Values
-		keyValuePairs := strings.Split(string(keyValuesBuf), ",")
+		keyValuePairs := strings.Split(string(encodedVars), ",")
 		golog.Child("[Sonr.daemon] ").Debugf("Loading %v Enviornment variables from Config.", len(keyValuePairs))
 		// Iterate over keyValuePairs
 		for _, v := range keyValuePairs {
@@ -170,4 +153,24 @@ func initConfig() {
 			os.Setenv(value[0], value[1])
 		}
 	}
+}
+
+func savePID(pid int) {
+	golog.Child("[Sonr.daemon] ").Info("Process ID is : ", pid)
+	file, err := os.Create(PIDFile)
+	if err != nil {
+		golog.Child("[Sonr.daemon] ").Error("Unable to create pid file : %v\n", err)
+		os.Exit(1)
+	}
+
+	defer file.Close()
+
+	_, err = file.WriteString(strconv.Itoa(pid))
+
+	if err != nil {
+		golog.Child("[Sonr.daemon] ").Error("Unable to create pid file : %v\n", err)
+		os.Exit(1)
+	}
+
+	file.Sync() // flush to disk
 }

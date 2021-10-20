@@ -56,7 +56,6 @@ func Start(req *api.InitializeRequest, isTerminal bool, prefix string) {
 		IsCli: isTerminal,
 		Node:  n,
 	}
-	instance.Persist()
 }
 
 // Exit handles cleanup on Sonr Node
@@ -92,7 +91,7 @@ func Exit(code int) {
 }
 
 // Persist waits for Exit Signal from Terminal
-func (sh Sonr) Persist() {
+func Persist() {
 	// Check if CLI Mode
 	if common.IsMobile() {
 		golog.Info("Skipping Serve, Node is either mobile or non-cli...")
@@ -102,7 +101,7 @@ func (sh Sonr) Persist() {
 	// Wait for Exit Signal
 	golog.Info("- Persisting Node on localhost:26225 -")
 	c := make(chan os.Signal)
-	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+	signal.Notify(c, os.Interrupt, syscall.SIGKILL, syscall.SIGTERM, syscall.SIGSTOP)
 	go func() {
 		<-c
 	}()
@@ -112,7 +111,8 @@ func (sh Sonr) Persist() {
 		select {
 		case <-c:
 			Exit(0)
-		case <-sh.Ctx.Done():
+			return
+		case <-instance.Ctx.Done():
 			return
 		}
 	}
