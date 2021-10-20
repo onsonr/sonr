@@ -98,13 +98,14 @@ func (sh Sonr) Persist() {
 		golog.Info("Skipping Serve, Node is either mobile or non-cli...")
 		return
 	}
+
+	// Wait for Exit Signal
+	golog.Info("- Persisting Node on localhost:26225 -")
 	c := make(chan os.Signal)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	go func() {
 		<-c
 	}()
-
-	golog.Info("Persisting Node...")
 
 	// Hold until Exit Signal
 	for {
