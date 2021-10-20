@@ -50,7 +50,6 @@ func (b *beam) handleMessages() {
 		// Check Message and Validate not User
 		e, err := eventFromMsg(msg, b.h.ID())
 		if err != nil {
-			golog.Warn(err)
 			continue
 		}
 
@@ -104,6 +103,7 @@ func eventFromMsg(msg *pubsub.Message, selfID peer.ID) (*Event, error) {
 	e := &Event{}
 	err := proto.Unmarshal(msg.Data, e)
 	if err != nil {
+		golog.Errorf("(beam) failed to Unmarshal Event from pubsub.Message")
 		return nil, err
 	}
 	return e, nil
