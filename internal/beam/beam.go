@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/libp2p/go-libp2p-core/host"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/pkg/errors"
+	"github.com/sonr-io/core/internal/host"
 )
 
 var (
@@ -35,12 +35,11 @@ type Beam interface {
 type beam struct {
 	Beam
 	ctx  context.Context
-	h    host.Host
+	h    *host.SNRHost
 	name string
 
 	events  chan *Event
 	handler *pubsub.TopicEventHandler
-	psub    *pubsub.PubSub
 	sub     *pubsub.Subscription
 	topic   *pubsub.Topic
 
@@ -48,18 +47,13 @@ type beam struct {
 }
 
 // New creates a new beam with the given name and options.
-func New(ctx context.Context, h host.Host, name string, options ...Option) (Beam, error) {
+func New(ctx context.Context, h *host.SNRHost, name string, options ...Option) (Beam, error) {
 	opts := defaultOptions()
 	for _, option := range options {
 		option(opts)
 	}
 
-	psub, err := pubsub.NewGossipSub(ctx, h)
-	if err != nil {
-		return nil, err
-	}
-
-	topic, err := psub.Join(name)
+	topic, err := h.Join(name)
 	if err != nil {
 		return nil, err
 	}
@@ -77,7 +71,6 @@ func New(ctx context.Context, h host.Host, name string, options ...Option) (Beam
 	b := &beam{
 		ctx:     ctx,
 		h:       h,
-		psub:    psub,
 		name:    name,
 		topic:   topic,
 		sub:     sub,
