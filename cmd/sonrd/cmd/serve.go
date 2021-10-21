@@ -23,6 +23,7 @@ import (
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/app"
 	"github.com/sonr-io/core/internal/api"
+	"github.com/sonr-io/core/internal/node"
 	"github.com/sonr-io/core/pkg/common"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -90,7 +91,12 @@ var serveCmd = &cobra.Command{
 				golog.Warn("Failed to set Profile from flag")
 			}
 		}
-		app.Start(req, cliPtr, "full")
+		if cliPtr {
+			app.Start(req, node.StubMode_CLI)
+		} else {
+			app.Start(req, node.StubMode_BIN)
+		}
+
 	},
 }
 

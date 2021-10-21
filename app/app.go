@@ -18,9 +18,9 @@ import (
 
 type Sonr struct {
 	// Properties
-	Ctx   context.Context
-	Node  api.NodeImpl
-	IsCli bool
+	Ctx  context.Context
+	Node api.NodeImpl
+	Mode node.StubMode
 }
 
 var instance Sonr
@@ -29,14 +29,14 @@ func init() {
 	golog.SetStacktraceLimit(2)
 }
 
-func Start(req *api.InitializeRequest, isTerminal bool, prefix string) {
+func Start(req *api.InitializeRequest, mode node.StubMode) {
 	if instance.Node != nil {
 		golog.Error("Sonr Instance already active")
 		return
 	}
-	golog.SetPrefix(fmt.Sprintf("[Sonr.%s] ", prefix))
+	golog.SetPrefix(mode.Prefix())
 
-	if isTerminal {
+	if mode.IsCLI() {
 		pterm.SetDefaultOutput(golog.Default.Printer)
 	}
 	// Initialize Device
@@ -48,7 +48,7 @@ func Start(req *api.InitializeRequest, isTerminal bool, prefix string) {
 	}
 
 	// Create Node
-	n, _, err := node.NewNode(ctx, node.SetTerminalMode(isTerminal), node.WithRequest(req))
+	n, _, err := node.NewNode(ctx, node.WithMode(mode), node.WithRequest(req))
 	if err != nil {
 		golog.Fatal("Failed to update Profile for Node", golog.Fields{"error": err})
 		os.Exit(1)
@@ -56,9 +56,9 @@ func Start(req *api.InitializeRequest, isTerminal bool, prefix string) {
 
 	// Set Lib
 	instance = Sonr{
-		Ctx:   ctx,
-		IsCli: isTerminal,
-		Node:  n,
+		Ctx:  ctx,
+		Mode: mode,
+		Node: n,
 	}
 	instance.Serve()
 }
@@ -73,7 +73,7 @@ func AppHeader() {
 	}
 
 	// Print Header on Terminal CLI Mode
-	if instance.IsCli {
+	if instance.Mode.IsCLI() {
 		pterm.DefaultSection.Println(fmt.Sprintf("Sonr Node Online: %s", p.PeerID))
 		pterm.Info.Println(fmt.Sprintf("SName: %s \nOS: %s \nArch: %s", p.GetSName(), p.OS(), p.Arch()))
 	}
@@ -114,7 +114,7 @@ func Exit(code int) {
 // Serve waits for Exit Signal from Terminal
 func (sh Sonr) Serve() {
 	// Check if CLI Mode
-	if !sh.IsCli || common.IsMobile() {
+	if !sh.Mode.IsCLI() || common.IsMobile() {
 		golog.Info("Skipping Serve, Node is either mobile or non-cli...")
 		return
 	}
