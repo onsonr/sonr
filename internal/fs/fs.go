@@ -4,7 +4,6 @@ import (
 	"errors"
 	"os"
 	"runtime"
-	"strings"
 
 	"github.com/kataras/golog"
 )
@@ -132,7 +131,7 @@ func (fo *fsOptions) Apply() error {
 	Temporary = Folder(fo.TempDir)
 
 	// Create Downloads Folder
-	if runtime.GOOS != "android" && runtime.GOOS != "ios" {
+	if checkIsDesktop() {
 		Downloads, err = Home.CreateFolder("Downloads")
 		if err != nil {
 			return err
@@ -170,23 +169,6 @@ func IsFile(fileName string) bool {
 	return !os.IsNotExist(err)
 }
 
-// IsVideoExt returns true if the given extension is a video
-func IsVideoExt(ext string) bool {
-	if strings.EqualFold(ext, ".mp4") || strings.EqualFold(ext, ".mov") || strings.EqualFold(ext, ".mpeg") ||
-		strings.EqualFold(ext, ".mpg") || strings.EqualFold(ext, ".wmv") ||
-		strings.EqualFold(ext, ".rm") || strings.EqualFold(ext, ".rmvb") ||
-		strings.EqualFold(ext, ".swf") || strings.EqualFold(ext, ".flv") ||
-		strings.EqualFold(ext, ".3GP") || strings.EqualFold(ext, ".mkv") ||
-		strings.EqualFold(ext, ".m4v") || strings.EqualFold(ext, ".ogg") ||
-		strings.EqualFold(ext, ".avi") || strings.EqualFold(ext, ".dat") ||
-		strings.EqualFold(ext, ".vob") || strings.EqualFold(ext, ".mpe") ||
-		strings.EqualFold(ext, ".asf") || strings.EqualFold(ext, ".asx") ||
-		strings.EqualFold(ext, ".f4v") {
-		return true
-	}
-	return false
-}
-
 // checkIsDesktop returns true if the current platform is desktop
 func checkIsDesktop() bool {
 	if runtime.GOOS == "android" || runtime.GOOS == "ios" {
@@ -197,8 +179,5 @@ func checkIsDesktop() bool {
 
 // checkIsMobile returns true if the current platform is mobile
 func checkIsMobile() bool {
-	if runtime.GOOS == "android" || runtime.GOOS == "ios" {
-		return true
-	}
-	return false
+	return !checkIsDesktop()
 }
