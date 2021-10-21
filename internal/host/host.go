@@ -3,7 +3,6 @@ package host
 import (
 	"context"
 	"errors"
-	"net"
 
 	"github.com/libp2p/go-libp2p"
 	connmgr "github.com/libp2p/go-libp2p-connmgr"
@@ -36,7 +35,6 @@ type SNRHost struct {
 	ctx        context.Context
 	privKey    crypto.PrivKey
 	connection common.Connection
-	resolver   *net.Resolver
 
 	// State
 	status SNRHostStatus
@@ -196,29 +194,6 @@ func (hn *SNRHost) Join(topic string, opts ...ps.TopicOpt) (*ps.Topic, error) {
 
 	// Call Underlying Pubsub to Connect
 	return hn.PubSub.Join(topic, opts...)
-}
-
-// LookupTXT looks up the TXT record for the given SName.
-func (r *SNRHost) LookupTXT(ctx context.Context, name string) (Records, error) {
-	// Call internal resolver
-	recs, err := r.resolver.LookupTXT(ctx, name)
-	if err != nil {
-		return nil, err
-	}
-
-	// Check Record count
-	if len(recs) == 0 {
-		return nil, ErrEmptyTXT
-	} else if len(recs) > 1 {
-		return nil, ErrMultipleRecords
-	} else {
-		// Create NB records
-		records := make([]Record, len(recs))
-		for _, rec := range recs {
-			records = append(records, NewNBRecord(name, rec))
-		}
-		return records, nil
-	}
 }
 
 // Router returns the host node Peer Routing Function

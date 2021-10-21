@@ -108,6 +108,25 @@ func SetDeviceID(id string) error {
 	return ErrEmptyDeviceID
 }
 
+// Platform returns formatted GOOS for Text format.
+// Returns: ["MacOS", "Windows", "Linux", "Android", "iOS"]
+func Platform() string {
+	switch runtime.GOOS {
+	case "windows":
+		return "Windows"
+	case "darwin":
+		return "MacOS"
+	case "linux":
+		return "Linux"
+	case "android":
+		return "Android"
+	case "ios":
+		return "iOS"
+	default:
+		return "Unknown"
+	}
+}
+
 // Stat returns the device stat.
 func Stat() (map[string]string, error) {
 	// Get Device Id
