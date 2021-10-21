@@ -13,45 +13,32 @@ import (
 	"github.com/pkg/errors"
 )
 
-var (
-	nbClient    *namebaseAPIClient
-	hasNbClient bool
-)
-
-var (
-	ErrNoNamebaseClient = errors.New("Namebase Client was not initialized. Key, Secret are missing.")
-)
-
-func init() {
+func initClient() (*namebaseAPIClient, error) {
 	// Define logger warning message
-	logWarning := func() {
+	logWarning := func() error {
 		logger.Warn("Could not fetch Namebase API Keys from Env, skipping API client...")
-		hasNbClient = false
+		return ErrNBKeys
 	}
 
 	// Get API Key
 	key, ok := os.LookupEnv("NB_KEY")
 	if !ok {
-		logWarning()
+		return nil, logWarning()
 	}
 
 	// Get API Secret
 	secret, ok := os.LookupEnv("NB_SECRET")
 	if !ok {
-		logWarning()
+		return nil, logWarning()
 	}
 
-	// Create Namebase API Client
-	if key != "" && secret != "" {
-		hasNbClient = true
-		// Set client
-		nbClient = &namebaseAPIClient{
-			ctx:          context.TODO(),
-			restClient:   &http.Client{},
-			apiClientKey: key,
-			apiSecretKey: secret,
-		}
+	nbClient := &namebaseAPIClient{
+		ctx:          context.TODO(),
+		restClient:   &http.Client{},
+		apiClientKey: key,
+		apiSecretKey: secret,
 	}
+	return nbClient, nil
 }
 
 // NamebaseRequest for either Adding or Removing DNS Records
@@ -218,9 +205,6 @@ func (p *namebaseAPIClient) newNBPutRequest(nbReq NamebaseRequest) (*http.Reques
 
 // FindRecords returns a list of records matching the given query
 func FindRecords(ctx context.Context, query string) ([]Record, error) {
-	if !hasNbClient {
-		return nil, ErrNoNamebaseClient
-	}
 	// Fetch records from Namebase
 	recs, err := GetRecords(ctx)
 	if err != nil {
@@ -246,9 +230,12 @@ func FindRecords(ctx context.Context, query string) ([]Record, error) {
 
 // GetRecords returns a list of all records on Root TLD
 func GetRecords(ctx context.Context) ([]Record, error) {
-	if !hasNbClient {
-		return nil, ErrNoNamebaseClient
+	// Init Client
+	nbClient, err := initClient()
+	if err != nil {
+		return nil, err
 	}
+
 	// Create new GET request
 	req, err := nbClient.newNBGetRequest()
 	if err != nil {
@@ -285,9 +272,6 @@ func GetRecords(ctx context.Context) ([]Record, error) {
 
 // HasRecords returns true if the given hostname has a record on Root TLD
 func HasRecords(ctx context.Context, query string) (bool, error) {
-	if !hasNbClient {
-		return false, ErrNoNamebaseClient
-	}
 	// Fetch records from Namebase
 	recs, err := FindRecords(ctx, query)
 	if err != nil {
@@ -300,8 +284,10 @@ func HasRecords(ctx context.Context, query string) (bool, error) {
 
 // PutRecords adds/deletes records to/from Root TLD
 func PutRecords(ctx context.Context, recs ...Record) (bool, error) {
-	if !hasNbClient {
-		return false, ErrNoNamebaseClient
+	// Init Client
+	nbClient, err := initClient()
+	if err != nil {
+		return false, err
 	}
 	// Create new GET request
 	req, err := nbClient.newNBPutRequest(newNBAddRequest(recs...))
@@ -334,13 +320,19 @@ func PutRecords(ctx context.Context, recs ...Record) (bool, error) {
 
 // RemoveRecords removes records from Root TLD
 func RemoveRecords(ctx context.Context, recs ...Record) (bool, error) {
-	if !hasNbClient {
-		return false, ErrNoNamebaseClient
+	// Init Client
+	nbClient, err := initClient()
+	if err != nil {
+		return false, err
 	}
+
+	// Convert records to DeleteRecord
 	deleteRecords := make([]DeleteRecord, len(recs))
 	for _, rec := range recs {
 		deleteRecords = append(deleteRecords, rec.ToDeleteRecord())
 	}
+
+	// Create new PUT request
 	req, err := nbClient.newNBPutRequest(newNBDeleteRequest(deleteRecords...))
 	if err != nil {
 		return false, err

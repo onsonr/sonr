@@ -33,6 +33,7 @@ var (
 	ErrMultipleRecords     = errors.New("Multiple TXT records found for Query")
 	ErrEmptyTXT            = errors.New("Empty TXT Record")
 	ErrHDNSResolve         = errors.New("Failed to dial all three public HDNS resolvers.")
+	ErrNBKeys              = errors.New("Namebase API Keys were not provided.")
 )
 
 // DomainMap returns map with host as key and recordValue as value.
