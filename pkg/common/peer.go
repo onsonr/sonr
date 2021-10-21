@@ -133,8 +133,8 @@ func defaultProfileOpts() profileOpts {
 	l := faker.LastName()
 	return profileOpts{
 		sname:     strings.ToLower(f[0:1] + l),
-		firstName: f,
-		lastName:  l,
+		firstName: "Anonymous",
+		lastName:  Platform(),
 		picture:   make([]byte, 0),
 		bio:       faker.Dessert(),
 		socials:   make([]*Social, 0),

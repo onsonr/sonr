@@ -21,14 +21,13 @@ var (
 
 // ExchangeProtocol handles Global Sonr Exchange Protocol
 type ExchangeProtocol struct {
-	node           api.NodeImpl
-	ctx            context.Context
-	beamStore      beam.Beam
-	host           *host.SNRHost // host
-	mode           DNSMode
-	namebaseClient *NamebaseAPIClient
-	authRecord     host.Record
-	nameRecord     host.Record
+	node       api.NodeImpl
+	ctx        context.Context
+	beamStore  beam.Beam
+	host       *host.SNRHost // host
+	mode       DNSMode
+	authRecord api.Record
+	nameRecord api.Record
 }
 
 // NewProtocol creates new ExchangeProtocol
@@ -46,12 +45,11 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl, opt
 
 	// Create Exchange Protocol
 	exchProtocol := &ExchangeProtocol{
-		ctx:            ctx,
-		beamStore:      b,
-		host:           host,
-		node:           node,
-		namebaseClient: initClient(ctx),
-		mode:           opts.Mode,
+		ctx:       ctx,
+		beamStore: b,
+		host:      host,
+		node:      node,
+		mode:      opts.Mode,
 	}
 	logger.Debug("✅  ExchangeProtocol is Activated \n")
 
@@ -105,7 +103,7 @@ func (p *ExchangeProtocol) Put(peer *common.Peer) error {
 func (p *ExchangeProtocol) Resolve(sname string) (*common.Peer, error) {
 	logger.Info("Attempting to resolve from DNS Table")
 	// Get Peer from DNS Resolver
-	recs, err := p.host.LookupTXT(p.ctx, sname)
+	recs, err := api.LookupTXT(p.ctx, sname)
 	if err != nil {
 		logger.Errorf("Failed to resolve DNS record for SName: %s", err)
 		return nil, err
@@ -122,15 +120,11 @@ func (p *ExchangeProtocol) Resolve(sname string) (*common.Peer, error) {
 
 // Verify method uses resolver to check if Peer is registered,
 // returns true if Peer is registered
-func (p *ExchangeProtocol) Verify(sname string) (bool, host.Record, error) {
+func (p *ExchangeProtocol) Verify(sname string) (bool, api.Record, error) {
 	// Check if NamebaseClient is Nil
-	empty := host.Record{}
-	if p.namebaseClient == nil {
-		return false, empty, errors.Wrap(ErrParameters, "NamebaseClient is Nil")
-	}
-
+	empty := api.Record{}
 	// Verify Peer is registered
-	recs, err := p.host.LookupTXT(p.ctx, sname)
+	recs, err := api.LookupTXT(p.ctx, sname)
 	if err != nil {
 		logger.Errorf("Failed to resolve DNS record for SName: %s", err)
 		return false, empty, err
@@ -155,25 +149,14 @@ func (p *ExchangeProtocol) Verify(sname string) (bool, host.Record, error) {
 		logger.Errorf("Failed to extract PeerID from PublicKey: %s", err)
 		return false, rec, err
 	}
-
-	ok, err := compareRecordtoID(rec, compId)
-	if err != nil {
-		logger.Errorf("Failed to compare PeerID to record: %s", err)
-		return false, rec, err
-	}
-	return ok, rec, nil
+	return rec.ComparePeerID(compId), rec, nil
 }
 
 // RegisterDomain registers a domain with Namebase.
-func (p *ExchangeProtocol) Register(sName string, records ...host.Record) (host.DomainMap, error) {
-	// Check if NamebaseClient is Nil
-	if p.namebaseClient == nil {
-		return nil, errors.Wrap(ErrParameters, "NamebaseClient is Nil")
-	}
-
+func (p *ExchangeProtocol) Register(sName string, records ...api.Record) (api.DomainMap, error) {
 	// Put records into Namebase
-	req := host.NewNBAddRequest(records...)
-	ok, err := p.namebaseClient.PutRecords(req)
+
+	ok, err := api.PutRecords(p.ctx, records...)
 	if err != nil {
 		logger.Error("Failed to Register SName", err)
 		return nil, err
@@ -185,29 +168,18 @@ func (p *ExchangeProtocol) Register(sName string, records ...host.Record) (host.
 	}
 
 	// Get records from Namebase
-	recs, err := p.namebaseClient.FindRecords(sName)
+	recs, err := api.FindRecords(p.ctx, sName)
 	if err != nil {
 		logger.Error("Failed to Find SName after Registering", err)
 		return nil, err
 	}
 
 	// Map records to DomainMap
-	m := make(host.DomainMap)
+	m := make(api.DomainMap)
 	for _, r := range recs {
 		m[r.Host] = r.Value
 	}
 	return m, nil
-}
-
-// compareRecordtoID compares a record to a PeerID
-func compareRecordtoID(r host.Record, target peer.ID) (bool, error) {
-	// Check peer record
-	pid, err := r.PeerID()
-	if err != nil {
-		logger.Error("Failed to extract PeerID from PublicKey", err)
-		return false, err
-	}
-	return pid == target, nil
 }
 
 // Close method closes the ExchangeProtocol
@@ -222,14 +194,9 @@ func (p *ExchangeProtocol) Close() error {
 	// Check for isTemporary
 	if p.mode.IsTemp() {
 		logger.Info("Deleted Temporary SName from DNS Table")
-		// Check if NamebaseClient is Nil
-		if p.namebaseClient == nil {
-			return errors.Wrap(ErrParameters, "NamebaseClient is Nil")
-		}
 
 		// Delete SName from Namebase
-		req := host.NewNBDeleteRequest(p.authRecord.ToDeleteRecord(), p.nameRecord.ToDeleteRecord())
-		_, err := p.namebaseClient.PutRecords(req)
+		_, err := api.RemoveRecords(p.ctx, p.authRecord)
 		if err != nil {
 			logger.Error("Failed to Delete SName", err)
 			return err

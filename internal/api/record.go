@@ -1,4 +1,4 @@
-package host
+package api
 
 import (
 	"fmt"
@@ -70,65 +70,6 @@ func (c RecordCategory) String() string {
 		return "NAME"
 	default:
 		return "NONE"
-	}
-}
-
-// NamebaseRequest for either Adding or Removing DNS Records
-type NamebaseRequest struct {
-	// Records to be added to DNS Table
-	Records []Record `json:"records"`
-
-	// DeleteRecords are to be deleted from DNS Table
-	DeleteRecords []DeleteRecord `json:"deleteRecords"`
-}
-
-// NewNamebaseRequest creates a new NamebaseRequest for adding records
-func NewNBAddRequest(records ...Record) NamebaseRequest {
-	return NamebaseRequest{
-		Records:       records,
-		DeleteRecords: make([]DeleteRecord, 0),
-	}
-}
-
-// NewNBDeleteRequest creates a new NamebaseRequest for deleting records
-func NewNBDeleteRequest(records ...DeleteRecord) NamebaseRequest {
-	return NamebaseRequest{
-		Records:       make([]Record, 0),
-		DeleteRecords: records,
-	}
-}
-
-// NamebaseResponse is JSON Response for NamebaseRequest
-type NamebaseResponse struct {
-	// Success is true if the request was successful
-	Success bool `json:"success"`
-
-	// Records is the list of records from GET request
-	Records []Record `json:"records"`
-}
-
-// Print prints the NamebaseResponse
-func (nr *NamebaseResponse) Print() {
-	// Loop through all records
-	for _, record := range nr.Records {
-		record.Print()
-	}
-}
-
-// DeleteRecord is for Removing Records in Request
-type DeleteRecord struct {
-	// Type is the type of record to be deleted
-	Type string `json:"type"`
-
-	// Host is the hostname of the record to be deleted
-	Host string `json:"host"`
-}
-
-// NewNamebaseDeleteRecord creates a new DeleteRecord
-func NewNBDeleteRecord(host string) DeleteRecord {
-	return DeleteRecord{
-		Type: "TXT",
-		Host: host,
 	}
 }
 
@@ -210,6 +151,17 @@ func (r Record) IsAuth() bool {
 // IsName returns true if the Record is a Name Record
 func (r Record) IsName() bool {
 	return r.Category.IsName()
+}
+
+// ComparePeerID compares the PeerID of the Record with the given PeerID
+func (r Record) ComparePeerID(id peer.ID) bool {
+	// Check peer record
+	pid, err := r.PeerID()
+	if err != nil {
+		logger.Error("Failed to extract PeerID from PublicKey", err)
+		return false
+	}
+	return pid == id
 }
 
 // Fingerprint is the fingerprint for the Auth Record

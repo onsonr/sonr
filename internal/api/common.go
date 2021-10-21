@@ -16,7 +16,6 @@ var (
 	LOCATION_KEY             = os.Getenv("LOCATION_KEY")
 	NB_KEY                   = os.Getenv("NB_KEY")
 	NB_SECRET                = os.Getenv("NB_SECRET")
-	ROLLBAR_POST_SERVER_ITEM = os.Getenv("ROLLBAR_POST_SERVER_ITEM")
 	logger                   = golog.Child("internal/api")
 	instance                 *state
 	once                     sync.Once
