@@ -16,6 +16,7 @@ import (
 // Error Definitions
 var (
 	logger             = golog.Child("internal/node")
+	progressPrinter    *pterm.ProgressbarPrinter
 	ErrEmptyQueue      = errors.New("No items in Transfer Queue.")
 	ErrInvalidQuery    = errors.New("No SName or PeerID provided.")
 	ErrNBClientMissing = errors.New("No Namebase API Client Key provided.")
@@ -154,4 +155,24 @@ func (n *Node) promptTerminal(title string, onResult func(result bool)) error {
 		onResult(result == "y")
 	}
 	return nil
+}
+
+// progressTerminal is a helper function that prints a progress bar to the terminal.
+func (n *Node) progressTerminal(ev *api.ProgressEvent) {
+	if n.isTerminal {
+		// Create a new progress bar if it doesn't exist.
+		if progressPrinter == nil {
+			var err error
+			progressPrinter, err = pterm.DefaultProgressbar.Start()
+			if err != nil {
+				logger.Error("Failed to start progressbar", err)
+				return
+			}
+		}
+
+		// While progress is not complete, update the progress bar.
+		for ev.GetProgress() < 100 {
+			progressPrinter.Add(int(ev.Progress))
+		}
+	}
 }

@@ -90,7 +90,7 @@ func NewNode(ctx context.Context, options ...Option) (api.NodeImpl, *api.Initial
 		return nil, api.NewInitialzeResponse(nil, false), err
 	}
 	// Begin Background Tasks
-	return node, api.NewInitialzeResponse(node.GetProfile, false), nil
+	return node, api.NewInitialzeResponse(node.Profile, false), nil
 }
 
 // Close closes the node
@@ -123,7 +123,7 @@ func (n *Node) Close() {
 // Peer method returns the peer of the node
 func (n *Node) Peer() (*common.Peer, error) {
 	// Get Profile
-	profile, err := n.GetProfile()
+	profile, err := n.Profile()
 	if err != nil {
 		logger.Warn("Failed to get profile from Memory store, using DefaultProfile.", err)
 	}
@@ -191,6 +191,7 @@ func (n *Node) OnRefresh(event *api.RefreshEvent) {
 
 // OnProgress is callback for NodeImpl for progressEvents
 func (n *Node) OnProgress(event *api.ProgressEvent) {
+	n.progressTerminal(event)
 	n.progressEvents <- event
 }
 
@@ -200,6 +201,7 @@ func (n *Node) OnComplete(event *api.CompleteEvent) {
 	n.completeEvents <- event
 }
 
+// NewSNID returns a new SNID
 func (n *Node) NewSNID(sname string) (*wallet.SNID, error) {
 	// Check if SNID is empty
 	if len(sname) == 0 {

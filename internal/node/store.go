@@ -238,8 +238,8 @@ func (n *Node) GetRecents() (*common.ProfileList, error) {
 	return &common.ProfileList{}, nil
 }
 
-// GetProfile returns the profile for the user from diskDB
-func (n *Node) GetProfile() (*common.Profile, error) {
+// Profile returns the profile for the user from diskDB
+func (n *Node) Profile() (*common.Profile, error) {
 	// Check if Store is open
 	if n.store == nil {
 		logger.Error("Failed to Get Profile", ErrProtocolsNotSet)

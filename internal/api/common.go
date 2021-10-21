@@ -12,7 +12,7 @@ var (
 
 // NodeImpl returns the NodeImpl for the Main Node
 type NodeImpl interface {
-	GetProfile() (*common.Profile, error)
+	Profile() (*common.Profile, error)
 	Peer() (*common.Peer, error)
 	Close()
 
