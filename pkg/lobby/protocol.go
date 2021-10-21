@@ -93,6 +93,17 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, nu api.NodeImpl, optio
 	return lobProtocol, nil
 }
 
+// Close closes the LobbyProtocol
+func (p *LobbyProtocol) Close() error {
+	p.eventHandler.Cancel()
+	p.subscription.Cancel()
+	err := p.topic.Close()
+	if err != nil {
+		// ignore
+	}
+	return nil
+}
+
 // Update method publishes peer data to the topic
 func (p *LobbyProtocol) Update() error {
 	// Verify Topic has been created
@@ -137,7 +148,7 @@ func (p *LobbyProtocol) HandleEvents() {
 
 		// Check Event and Validate not User
 		if p.isEventExit(event) {
-			p.pushRefresh(event.Peer, nil)
+			p.handleEvent(event.Peer, nil)
 			continue
 		} else {
 			// Update Peer Data in Topic
@@ -171,7 +182,7 @@ func (p *LobbyProtocol) HandleMessages() {
 			}
 
 			// Update Peer Data in map
-			p.pushRefresh(msg.ReceivedFrom, data.Peer)
+			p.handleEvent(msg.ReceivedFrom, data.Peer)
 		}
 	}
 }
@@ -187,18 +198,27 @@ func (p *LobbyProtocol) autoPushUpdates() {
 		}
 
 		// Sleep for 5 seconds before next update
-		select {
-		case <-p.ctx.Done():
-			return
-		default:
-			time.Sleep(time.Second * 5)
-			continue
-		}
+		p.cleanPeerList()
+		time.Sleep(time.Second * 5)
 	}
 }
 
-func (p *LobbyProtocol) Close() error {
-	p.eventHandler.Cancel()
-	p.subscription.Cancel()
-	return p.topic.Close()
+// cleanPeerList removes peers that are no longer in the room
+func (p *LobbyProtocol) cleanPeerList() {
+	// Initialize Vars
+	needsRefresh := false
+	peers := p.topic.ListPeers()
+
+	// Iterate all subscribed Peer ID's
+	for _, id := range peers {
+		if !p.hasPeerID(id) {
+			needsRefresh = true
+			p.peers = p.removePeer(id)
+		}
+	}
+
+	// Check if we need to send a refresh event
+	if needsRefresh {
+		p.callRefresh()
+	}
 }

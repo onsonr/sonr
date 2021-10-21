@@ -58,29 +58,30 @@ func createOlc(l *common.Location) string {
 	return fmt.Sprintf("sonr/topic/%s", code)
 }
 
-// pushRefresh sends a refresh event to the emitter
-func (p *LobbyProtocol) pushRefresh(id peer.ID, peer *common.Peer) {
-	// Function to build a refreshEvent
-	var buildEvent = func(peers []*common.Peer) *api.RefreshEvent {
-		return &api.RefreshEvent{
-			Olc:      p.olc,
-			Peers:    peers,
-			Received: int64(time.Now().Unix()),
-		}
-	}
-
+// handleEvent sends a refresh event to the emitter
+func (p *LobbyProtocol) handleEvent(id peer.ID, peer *common.Peer) {
 	// Check if Peer was provided
 	if peer == nil {
 		// Remove Peer, Emit Event
-		p.node.OnRefresh(buildEvent(p.removePeer(id)))
+		p.peers = p.removePeer(id)
+		p.callRefresh()
 	} else {
 		// Update Peer, Emit Event
-		ok, list := p.updatePeer(id, peer)
-		p.node.OnRefresh(buildEvent(list))
+		ok, _ := p.updatePeer(id, peer)
+		p.callRefresh()
 		if !ok {
 			p.sendUpdate()
 		}
 	}
+}
+
+// callRefresh calls back RefreshEvent to Node
+func (lp *LobbyProtocol) callRefresh() {
+	lp.node.OnRefresh(&api.RefreshEvent{
+		Olc:      lp.olc,
+		Peers:    lp.peers,
+		Received: int64(time.Now().Unix()),
+	})
 }
 
 // sendUpdate sends a refresh event to the Lobby topic
@@ -97,6 +98,16 @@ func (lp *LobbyProtocol) sendUpdate() error {
 func (lp *LobbyProtocol) hasPeer(data *common.Peer) bool {
 	for _, p := range lp.peers {
 		if p.GetPeerID() == data.GetPeerID() {
+			return true
+		}
+	}
+	return false
+}
+
+// hasPeerID Checks if Peer ID is in Peer List
+func (lp *LobbyProtocol) hasPeerID(id peer.ID) bool {
+	for _, p := range lp.peers {
+		if p.GetPeerID() == id.String() {
 			return true
 		}
 	}
