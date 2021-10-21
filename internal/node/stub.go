@@ -51,7 +51,7 @@ func (n *Node) startClientService(ctx context.Context, opts *options) (*ClientNo
 
 	// Set Exchange Protocol
 	var exchProtocol *exchange.ExchangeProtocol
-	if opts.isTerminal {
+	if opts.mode.IsCLI() {
 		exchProtocol, err = exchange.NewProtocol(ctx, n.host, n, exchange.TempName(opts.profile.SName))
 		if err != nil {
 			logger.Error("Failed to start ExchangeProtocol", err)

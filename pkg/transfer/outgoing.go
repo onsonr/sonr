@@ -119,10 +119,7 @@ func NewItemWriter(index int, count int, pi *common.Payload_Item, node api.NodeI
 }
 
 // Returns Progress of File, Given the written number of bytes
-func (p *itemWriter) Progress(i int, n int) {
-	// Update Progress
-	i += n
-
+func (p *itemWriter) Progress(i int) {
 	// Create Progress Event
 	if (i % ITEM_INTERVAL) == 0 {
 		event := &api.ProgressEvent{
@@ -143,6 +140,7 @@ func (iw *itemWriter) WriteTo(writer msgio.WriteCloser) {
 	defer writer.Close()
 
 	// Loop through File
+	i := 0
 	for {
 		c, err := iw.chunker.Next()
 		if err != nil {
@@ -165,7 +163,9 @@ func (iw *itemWriter) WriteTo(writer msgio.WriteCloser) {
 			logger.Error("Unexpected Error occurred on Write Stream", err)
 			return
 		}
-		// iw.Progress(i, c.Length)
+		// Update Progress
+		i += c.Length
+		iw.Progress(i)
 	}
 
 	// Close File

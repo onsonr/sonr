@@ -19,14 +19,13 @@ type Node struct {
 	api.NodeImpl
 	clientStub  *ClientNodeStub
 	highwayStub *HighwayNodeStub
-	mode        NodeStubMode
+	mode        StubMode
 
 	// Host and context
 	host *host.SNRHost
 
 	// Properties
 	ctx        context.Context
-	isTerminal bool
 	store      *bitcask.Bitcask
 
 	// Channels
@@ -69,7 +68,7 @@ func NewNode(ctx context.Context, options ...Option) (api.NodeImpl, *api.Initial
 	}
 
 	// Initialize Host
-	host, err := host.NewHost(ctx, host.WithConnection(opts.connection), host.WithTerminal(opts.isTerminal))
+	host, err := host.NewHost(ctx, host.WithConnection(opts.connection), host.WithTerminal(opts.mode.IsCLI()))
 	if err != nil {
 		logger.Error("Failed to initialize host", err)
 		return nil, api.NewInitialzeResponse(nil, false), err
@@ -90,13 +89,13 @@ func NewNode(ctx context.Context, options ...Option) (api.NodeImpl, *api.Initial
 		return nil, api.NewInitialzeResponse(nil, false), err
 	}
 	// Begin Background Tasks
-	return node, api.NewInitialzeResponse(node.GetProfile, false), nil
+	return node, api.NewInitialzeResponse(node.Profile, false), nil
 }
 
 // Close closes the node
 func (n *Node) Close() {
 	// Close Client Stub
-	if n.mode.IsClient() {
+	if n.mode.IsLib() {
 		if err := n.clientStub.Close(); err != nil {
 			logger.Error("Failed to close Client Stub, ", err)
 		}
@@ -123,7 +122,7 @@ func (n *Node) Close() {
 // Peer method returns the peer of the node
 func (n *Node) Peer() (*common.Peer, error) {
 	// Get Profile
-	profile, err := n.GetProfile()
+	profile, err := n.Profile()
 	if err != nil {
 		logger.Warn("Failed to get profile from Memory store, using DefaultProfile.", err)
 	}
@@ -174,7 +173,7 @@ func (n *Node) OnDecision(event *api.DecisionEvent) {
 func (n *Node) OnInvite(event *api.InviteEvent) {
 	n.printTerminal(event.Title(), event.Message())
 	n.promptTerminal("Accept Invite", func(result bool) {
-		if n.mode.IsClient() {
+		if n.mode.IsLib() {
 			n.clientStub.Respond(n.ctx, &api.RespondRequest{
 				Decision: result,
 				Peer:     event.GetFrom(),
@@ -200,6 +199,7 @@ func (n *Node) OnComplete(event *api.CompleteEvent) {
 	n.completeEvents <- event
 }
 
+// NewSNID returns a new SNID
 func (n *Node) NewSNID(sname string) (*wallet.SNID, error) {
 	// Check if SNID is empty
 	if len(sname) == 0 {

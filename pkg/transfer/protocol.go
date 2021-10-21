@@ -104,7 +104,7 @@ func (p *TransferProtocol) Respond(id peer.ID, resp *InviteResponse) error {
 // Supply a transfer item to the queue
 func (p *TransferProtocol) Supply(req *api.SupplyRequest) error {
 	// Profile from NodeImpl
-	profile, err := p.node.GetProfile()
+	profile, err := p.node.Profile()
 	if err != nil {
 		logger.Error("Failed to Get Profile from Node")
 		return err

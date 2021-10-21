@@ -17,14 +17,13 @@ func (b *beam) handleEvents() {
 		// Get next event
 		event, err := b.handler.NextPeerEvent(b.ctx)
 		if err != nil {
-			b.handler.Cancel()
 			return
 		}
 
 		// Check Event and Validate not User
 		switch event.Type {
 		case pubsub.PeerJoin:
-			event := b.newPushEvent()
+			event := b.newSyncEvent()
 			err = event.Publish(b.ctx, b.topic)
 			if err != nil {
 				golog.Error(err)
@@ -43,7 +42,6 @@ func (b *beam) handleMessages() {
 		// Get next message
 		msg, err := b.sub.Next(b.ctx)
 		if err != nil {
-			b.sub.Cancel()
 			return
 		}
 

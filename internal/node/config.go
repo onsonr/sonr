@@ -18,31 +18,63 @@ var (
 	logger             = golog.Child("internal/node")
 	ErrEmptyQueue      = errors.New("No items in Transfer Queue.")
 	ErrInvalidQuery    = errors.New("No SName or PeerID provided.")
-	ErrNBClientMissing = errors.New("No Namebase API Client Key provided.")
-	ErrNBSecretMissing = errors.New("No Namebase API Secret Key provided.")
 	ErrMissingParam    = errors.New("Paramater is missing.")
 	ErrProtocolsNotSet = errors.New("Node Protocol has not been initialized.")
 )
 
-// NodeStubMode is the type of the node (Client, Highway)
-type NodeStubMode int
+// StubMode is the type of the node (Client, Highway)
+type StubMode int
 
 const (
-	// StubMode_CLIENT is the Node utilized by Desktop, Mobile and Web Clients
-	StubMode_CLIENT NodeStubMode = iota
+	// StubMode_LIB is the Node utilized by Mobile and Web Clients
+	StubMode_LIB StubMode = iota
 
-	// StubMode_HIGHWAY is the Node utilized by long running Server processes
+	// StubMode_CLI is the Node utilized by CLI Clients
+	StubMode_CLI
+
+	// StubMode_BIN is the Node utilized for Desktop background process
+	StubMode_BIN
+
+	// StubMode_HIGHWAY is the Custodian Node that manages Network
 	StubMode_HIGHWAY
 )
 
-// IsClient returns true if the node is a client node.
-func (m NodeStubMode) IsClient() bool {
-	return m == StubMode_CLIENT
+// IsLib returns true if the node is a client node.
+func (m StubMode) IsLib() bool {
+	return m == StubMode_LIB
+}
+
+// IsBin returns true if the node is a bin node.
+func (m StubMode) IsBin() bool {
+	return m == StubMode_BIN
+}
+
+// IsCLI returns true if the node is a CLI node.
+func (m StubMode) IsCLI() bool {
+	return m == StubMode_CLI
 }
 
 // IsHighway returns true if the node is a highway node.
-func (m NodeStubMode) IsHighway() bool {
+func (m StubMode) IsHighway() bool {
 	return m == StubMode_HIGHWAY
+}
+
+// Prefix returns golog prefix for the node.
+func (m StubMode) Prefix() string {
+	var name string
+	switch m {
+	case StubMode_LIB:
+		name = "lib"
+	case StubMode_CLI:
+		name = "cli"
+	case StubMode_BIN:
+		name = "bin"
+	case StubMode_HIGHWAY:
+		name = "highway"
+	default:
+		name = "unknown"
+	}
+	return fmt.Sprintf("[SONR.%s] ", name)
 }
 
 // Option is a function that modifies the node options.
@@ -57,17 +89,10 @@ func WithRequest(req *api.InitializeRequest) Option {
 	}
 }
 
-// WithHighway starts the Client RPC server as a highway node.
-func WithHighway() Option {
+// WithMode starts the Client RPC server as a highway node.
+func WithMode(m StubMode) Option {
 	return func(o *options) {
-		o.mode = StubMode_HIGHWAY
-	}
-}
-
-// WithTerminal sets the node as a terminal node.
-func WithTerminal(val bool) Option {
-	return func(o *options) {
-		o.isTerminal = val
+		o.mode = m
 	}
 }
 
@@ -76,32 +101,29 @@ type options struct {
 	address    string
 	connection common.Connection
 	location   *common.Location
-	mode       NodeStubMode
+	mode       StubMode
 	network    string
 	profile    *common.Profile
-	isTerminal bool
 }
 
 // defaultNodeOptions returns the default node options.
 func defaultNodeOptions() *options {
 	return &options{
-		mode:       StubMode_CLIENT,
+		mode:       StubMode_LIB,
 		location:   common.DefaultLocation(),
 		connection: common.Connection_WIFI,
 		network:    "tcp",
 		address:    fmt.Sprintf(":%d", common.RPC_SERVER_PORT),
 		profile:    common.NewDefaultProfile(),
-		isTerminal: false,
 	}
 }
 
 // Apply applies Options to node
 func (opts *options) Apply(ctx context.Context, node *Node) error {
-	node.isTerminal = opts.isTerminal
 	node.mode = opts.mode
 
 	// Handle by Node Mode
-	if opts.mode == StubMode_CLIENT {
+	if opts.mode == StubMode_LIB {
 		logger.Debug("Starting Client stub...")
 		// Client Node Type
 		stub, err := node.startClientService(ctx, opts)
@@ -130,7 +152,7 @@ func (opts *options) Apply(ctx context.Context, node *Node) error {
 
 // printTerminal is a helper function that prints to the terminal.
 func (n *Node) printTerminal(title string, msg string) {
-	if n.isTerminal {
+	if n.mode.IsCLI() {
 		// Print a section with level one.
 		pterm.DefaultSection.Println(title)
 		// Print placeholder.
@@ -140,7 +162,7 @@ func (n *Node) printTerminal(title string, msg string) {
 
 // promptTerminal is a helper function that prompts the user for input.
 func (n *Node) promptTerminal(title string, onResult func(result bool)) error {
-	if n.isTerminal {
+	if n.mode.IsCLI() {
 		prompt := promptui.Prompt{
 			Label:     title,
 			IsConfirm: true,

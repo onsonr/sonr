@@ -120,24 +120,24 @@ func (ir *itemReader) ReadFrom(reader msgio.ReadCloser) {
 		if err == io.EOF {
 			break
 		} else if err != nil {
-			logger.Error("Failed to Read Next Message on Read Stream", err)
+			logger.Fatal("Failed to Read Next Message on Read Stream", err)
 			return
 		} else {
 			// Write Chunk to File
 			n, err := ir.buffer.Write(buf)
 			if err != nil {
-				logger.Error("Failed to Write Buffer to File on Read Stream", err)
+				logger.Fatal("Failed to Write Buffer to File on Read Stream", err)
 				return
 			}
 			i += n
-			// ir.Progress(i, n)
+			ir.Progress(i)
 		}
 	}
 
 	// Write File Buffer to File
 	err := ioutil.WriteFile(ir.path, ir.buffer.Bytes(), 0644)
 	if err != nil {
-		logger.Error("Failed to Close item on Read Stream", err)
+		logger.Fatal("Failed to Close item on Read Stream", err)
 		return
 	}
 	logger.Debug("Completed writing to file: " + ir.path)
