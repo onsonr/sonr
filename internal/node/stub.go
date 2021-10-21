@@ -4,7 +4,6 @@ import (
 	context "context"
 	"fmt"
 	"net"
-	"time"
 
 	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/lobby"
@@ -13,9 +12,7 @@ import (
 	grpc "google.golang.org/grpc"
 )
 
-var DefaultAutoPingTicker = 5 * time.Second
-
-// ClientNodeStub is the RPC Service for the Node.
+// ClientNodeStub is the RPC Service for the Default Node.
 type ClientNodeStub struct {
 	// Interfaces
 	ClientServiceServer
@@ -94,7 +91,7 @@ func (n *Node) startClientService(ctx context.Context, opts *options) (*ClientNo
 
 	// Start Routines
 	RegisterClientServiceServer(grpcServer, stub)
-	go stub.Serve(ctx, listener, DefaultAutoPingTicker)
+	go stub.Serve(ctx, listener)
 	return stub, nil
 }
 
@@ -113,7 +110,7 @@ func (s *ClientNodeStub) Close() error {
 }
 
 // Serve serves the RPC Service on the given port.
-func (s *ClientNodeStub) Serve(ctx context.Context, listener net.Listener, ticker time.Duration) {
+func (s *ClientNodeStub) Serve(ctx context.Context, listener net.Listener) {
 	// Handle Node Events
 	if err := s.grpcServer.Serve(listener); err != nil {
 		logger.Error("Failed to serve gRPC", err)
@@ -159,7 +156,7 @@ func (s *ClientNodeStub) Update() error {
 	}
 }
 
-// HighwayNodeStub is the RPC Service for the Full Node.
+// HighwayNodeStub is the RPC Service for the Custodian Node.
 type HighwayNodeStub struct {
 	HighwayServiceServer
 	ClientServiceServer
@@ -190,11 +187,12 @@ func (n *Node) startHighwayService(ctx context.Context, opts *options) (*Highway
 	}
 	// Register the RPC Service
 	RegisterHighwayServiceServer(stub.grpcServer, stub)
-	go stub.Serve(ctx, listener, DefaultAutoPingTicker)
+	go stub.Serve(ctx, listener)
 	return stub, nil
 }
 
-func (s *HighwayNodeStub) Serve(ctx context.Context, listener net.Listener, ticker time.Duration) {
+// Serve serves the RPC Service on the given port.
+func (s *HighwayNodeStub) Serve(ctx context.Context, listener net.Listener) {
 	// Handle Node Events
 	if err := s.grpcServer.Serve(s.listener); err != nil {
 		logger.Error("Failed to serve gRPC", err)

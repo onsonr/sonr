@@ -2,6 +2,7 @@ package api
 
 import common "github.com/sonr-io/core/pkg/common"
 
+// NewInitialzeResponse creates a new InitializeResponse with the given parameters.
 func NewInitialzeResponse(gpf common.GetProfileFunc, success bool) *InitializeResponse {
 	resp := &InitializeResponse{Success: success}
 	if !success || gpf == nil {

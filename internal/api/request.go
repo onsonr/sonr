@@ -89,10 +89,12 @@ func (er *EditRequest) IsDelete() bool {
 	return er.GetType() == EditRequest_DELETE
 }
 
+// Count returns the number of items in the request
 func (sr *SupplyRequest) Count() int {
 	return len(sr.GetItems())
 }
 
+// ToPayload converts the request to a payload
 func (sr *SupplyRequest) ToPayload(owner *common.Profile) (*common.Payload, error) {
 	// Initialize
 	fileCount := 0

@@ -11,6 +11,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 )
 
+// PrivKey is the interface type for all WALLET private keys
 type PrivKey interface {
 	crypto.PrivKey
 	Marshal() ([]byte, error)
