@@ -31,8 +31,10 @@ import (
 )
 
 var cliPtr bool
+var hostPtr string
 var latPtr float64
 var lngPtr float64
+var portPtr int
 var profilePtr string
 var varsPtr string
 
@@ -92,9 +94,9 @@ var serveCmd = &cobra.Command{
 			}
 		}
 		if cliPtr {
-			app.Start(req, node.StubMode_CLI)
+			app.Start(req, app.WithMode(node.StubMode_CLI), app.WithHost(hostPtr), app.WithPort(portPtr))
 		} else {
-			app.Start(req, node.StubMode_BIN)
+			app.Start(req, app.WithMode(node.StubMode_BIN), app.WithHost(hostPtr), app.WithPort(portPtr))
 		}
 
 	},
@@ -102,9 +104,11 @@ var serveCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(serveCmd)
-	serveCmd.Flags().BoolVar(&cliPtr, "cli", false, "run in CLI Mode")
+	serveCmd.Flags().BoolVar(&cliPtr, "cli", false, "run in CLI Mode -- Default: false")
+	serveCmd.Flags().StringVar(&hostPtr, "host", ":", "host address for Node -- Default: localhost")
 	serveCmd.Flags().Float64Var(&latPtr, "lat", 34.102920, "latitude for InitializeRequest")
 	serveCmd.Flags().Float64Var(&lngPtr, "lng", -118.394190, "longitude for InitializeRequest")
+	serveCmd.Flags().IntVar(&portPtr, "port", 26225, "port for RPC NodeStub Service -- Default: 26225")
 	serveCmd.Flags().StringVar(&profilePtr, "profile", "", "profile JSON string")
 	serveCmd.Flags().StringVar(&varsPtr, "vars", "", "enviornment variables encoded as base64")
 	viper.BindPFlags(serveCmd.Flags())

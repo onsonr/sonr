@@ -1,6 +1,7 @@
 package api
 
 import (
+	"os"
 	sync "sync"
 	"sync/atomic"
 
@@ -10,9 +11,15 @@ import (
 )
 
 var (
-	logger   = golog.Child("internal/api")
-	instance *state
-	once     sync.Once
+	TEXTILE_KEY              = os.Getenv("TEXTILE_KEY")
+	TEXTILE_SECRET           = os.Getenv("TEXTILE_SECRET")
+	LOCATION_KEY             = os.Getenv("LOCATION_KEY")
+	NB_KEY                   = os.Getenv("NB_KEY")
+	NB_SECRET                = os.Getenv("NB_SECRET")
+	ROLLBAR_POST_SERVER_ITEM = os.Getenv("ROLLBAR_POST_SERVER_ITEM")
+	logger                   = golog.Child("internal/api")
+	instance                 *state
+	once                     sync.Once
 )
 
 // NodeImpl returns the NodeImpl for the Main Node

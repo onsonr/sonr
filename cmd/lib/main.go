@@ -4,7 +4,6 @@ import (
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/app"
 	"github.com/sonr-io/core/internal/api"
-	"github.com/sonr-io/core/internal/node"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -17,7 +16,7 @@ func Start(reqBuf []byte) {
 		golog.Errorf("Failed to unmarshal request: %v", err)
 		return
 	}
-	app.Start(req, node.StubMode_LIB)
+	app.Start(req)
 }
 
 // Pause pauses the host, node, and rpc service.

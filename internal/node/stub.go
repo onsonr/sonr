@@ -12,6 +12,61 @@ import (
 	grpc "google.golang.org/grpc"
 )
 
+// StubMode is the type of the node (Client, Highway)
+type StubMode int
+
+const (
+	// StubMode_LIB is the Node utilized by Mobile and Web Clients
+	StubMode_LIB StubMode = iota
+
+	// StubMode_CLI is the Node utilized by CLI Clients
+	StubMode_CLI
+
+	// StubMode_BIN is the Node utilized for Desktop background process
+	StubMode_BIN
+
+	// StubMode_HIGHWAY is the Custodian Node that manages Network
+	StubMode_HIGHWAY
+)
+
+// IsLib returns true if the node is a client node.
+func (m StubMode) IsLib() bool {
+	return m == StubMode_LIB
+}
+
+// IsBin returns true if the node is a bin node.
+func (m StubMode) IsBin() bool {
+	return m == StubMode_BIN
+}
+
+// IsCLI returns true if the node is a CLI node.
+func (m StubMode) IsCLI() bool {
+	return m == StubMode_CLI
+}
+
+// IsHighway returns true if the node is a highway node.
+func (m StubMode) IsHighway() bool {
+	return m == StubMode_HIGHWAY
+}
+
+// Prefix returns golog prefix for the node.
+func (m StubMode) Prefix() string {
+	var name string
+	switch m {
+	case StubMode_LIB:
+		name = "lib"
+	case StubMode_CLI:
+		name = "cli"
+	case StubMode_BIN:
+		name = "bin"
+	case StubMode_HIGHWAY:
+		name = "highway"
+	default:
+		name = "unknown"
+	}
+	return fmt.Sprintf("[SONR.%s] ", name)
+}
+
 // ClientNodeStub is the RPC Service for the Default Node.
 type ClientNodeStub struct {
 	// Interfaces
@@ -70,7 +125,7 @@ func (n *Node) startClientService(ctx context.Context, opts *options) (*ClientNo
 	// }
 
 	// Open Listener on Port
-	listener, err := net.Listen(opts.network, opts.address)
+	listener, err := net.Listen(opts.network, opts.Address())
 	if err != nil {
 		logger.Fatal("Failed to bind listener to port ", err)
 		return nil, err
