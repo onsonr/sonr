@@ -3,7 +3,6 @@ package fs
 import (
 	"errors"
 	"os"
-	"path"
 	"runtime"
 	"strings"
 
@@ -31,16 +30,6 @@ var (
 	ErrSeparatorLength            = errors.New("Separator length must be 1.")
 	ErrNoFileNameSet              = errors.New("File name was not set by options.")
 )
-
-var mExtsImageFile map[string]string
-var mExtsVideoFile map[string]string
-
-func init() {
-	mExtsImageFile = map[string]string{".png": "", ".PNG": "", ".jpg": "", ".JPG": "", ".jpeg": "", ".JPEG": "",
-		".heic": "", ".HEIC": "", ".gif": "", ".GIF": "",
-	}
-	mExtsVideoFile = map[string]string{".MOV": "", ".mov": "", ".MP4": "", ".mp4": ""}
-}
 
 // Start creates new FileSystem
 func Start(options ...Option) error {
@@ -179,26 +168,6 @@ func (fo *fsOptions) Apply() error {
 func IsFile(fileName string) bool {
 	_, err := os.Stat(fileName)
 	return !os.IsNotExist(err)
-}
-
-// IsImage returns true if the given path is an image
-func IsImage(filename string) bool {
-	ext := path.Ext(filename)
-	_, exist := mExtsImageFile[ext]
-	return exist
-}
-
-// IsMediaFile returns true if the given path is a media file
-func IsMediaFile(filename string) bool {
-	ext := path.Ext(filename)
-	return IsImage(ext) || IsVideo(ext)
-}
-
-// IsVideo returns true if the given path is a video
-func IsVideo(filename string) bool {
-	ext := path.Ext(filename)
-	_, exist := mExtsVideoFile[ext]
-	return exist
 }
 
 // IsVideoExt returns true if the given extension is a video
