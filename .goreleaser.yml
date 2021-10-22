@@ -2,7 +2,7 @@ project_name: sonr-core
 builds:
   - id: sonr
     binary: sonr-node
-    dir: cmd/full
+    dir: cmd/sonrd
     goos:
       - linux
       - windows
