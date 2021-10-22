@@ -83,6 +83,7 @@ func (p *ExchangeProtocol) Get(sname string) (*common.Peer, error) {
 
 // Put method updates peer instance in the store
 func (p *ExchangeProtocol) Put(peer *common.Peer) error {
+	logger.Info("Updating Peer in BeamStore")
 	// Marshal Peer
 	buf, err := peer.Buffer()
 	if err != nil {

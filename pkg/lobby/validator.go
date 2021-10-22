@@ -77,6 +77,7 @@ func (p *LobbyProtocol) handleEvent(id peer.ID, peer *common.Peer) {
 
 // callRefresh calls back RefreshEvent to Node
 func (lp *LobbyProtocol) callRefresh() {
+	logger.Info("Calling Refresh Event")
 	lp.node.OnRefresh(&api.RefreshEvent{
 		Olc:      lp.olc,
 		Peers:    lp.peers,
@@ -86,6 +87,7 @@ func (lp *LobbyProtocol) callRefresh() {
 
 // sendUpdate sends a refresh event to the Lobby topic
 func (lp *LobbyProtocol) sendUpdate() error {
+	logger.Info("Sending Update to Lobby")
 	err := lp.Update()
 	if err != nil {
 		logger.Error("Failed to update peer", err)

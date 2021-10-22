@@ -3,13 +3,11 @@ package node
 import (
 	context "context"
 	"fmt"
-	"net"
 
 	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/mailbox"
 	"github.com/sonr-io/core/pkg/transfer"
-	grpc "google.golang.org/grpc"
 )
 
 // StubMode is the type of the node (Client, Highway)
@@ -83,10 +81,8 @@ type ClientNodeStub struct {
 	ClientServiceServer
 
 	// Properties
-	ctx        context.Context
-	listener   net.Listener
-	grpcServer *grpc.Server
-	node       *Node
+	ctx  context.Context
+	node *Node
 
 	// Protocols
 	*transfer.TransferProtocol
@@ -118,28 +114,17 @@ func (n *Node) startClientService(ctx context.Context, opts *options) (*ClientNo
 		return nil, err
 	}
 
-	// Open Listener on Port
-	listener, err := net.Listen(opts.network, opts.Address())
-	if err != nil {
-		logger.Fatal("Failed to bind listener to port ", err)
-		return nil, err
-	}
-
 	// Create a new gRPC server
-	grpcServer := grpc.NewServer()
 	stub := &ClientNodeStub{
 		ctx:              ctx,
 		TransferProtocol: transferProtocol,
 		ExchangeProtocol: exchProtocol,
 		LobbyProtocol:    lobbyProtocol,
-		grpcServer: grpcServer,
-		node:       n,
-		listener:   listener,
+		node:             n,
 	}
 
 	// Start Routines
-	RegisterClientServiceServer(grpcServer, stub)
-	go stub.Serve(ctx, listener)
+	RegisterClientServiceServer(opts.grpcServer, stub)
 	return stub, nil
 }
 
@@ -152,24 +137,7 @@ func (s *ClientNodeStub) HasProtocols() bool {
 func (s *ClientNodeStub) Close() error {
 	s.LobbyProtocol.Close()
 	s.ExchangeProtocol.Close()
-	s.grpcServer.Stop()
-	s.listener.Close()
 	return nil
-}
-
-// Serve serves the RPC Service on the given port.
-func (s *ClientNodeStub) Serve(ctx context.Context, listener net.Listener) {
-	// Handle Node Events
-	if err := s.grpcServer.Serve(listener); err != nil {
-		logger.Error("Failed to serve gRPC", err)
-	}
-	for {
-		// Stop Serving if context is done
-		select {
-		case <-ctx.Done():
-			return
-		}
-	}
 }
 
 // Update method updates the node's properties in the Key/Value Store and Lobby
@@ -211,52 +179,22 @@ type HighwayNodeStub struct {
 	*Node
 
 	// Properties
-	ctx        context.Context
-	grpcServer *grpc.Server
-	listener   net.Listener
+	ctx context.Context
 }
 
 // startHighwayService creates a new Highway service stub for the node.
 func (n *Node) startHighwayService(ctx context.Context, opts *options) (*HighwayNodeStub, error) {
-
-	// Create the listener
-	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", RPC_SERVER_PORT))
-	if err != nil {
-		return nil, err
-	}
-
 	// Create the RPC Service
-	grpcServer := grpc.NewServer()
 	stub := &HighwayNodeStub{
-		Node:       n,
-		ctx:        ctx,
-		grpcServer: grpcServer,
-		listener:   listener,
+		Node: n,
+		ctx:  ctx,
 	}
 	// Register the RPC Service
-	RegisterHighwayServiceServer(stub.grpcServer, stub)
-	go stub.Serve(ctx, listener)
+	RegisterHighwayServiceServer(opts.grpcServer, stub)
 	return stub, nil
 }
 
-// Serve serves the RPC Service on the given port.
-func (s *HighwayNodeStub) Serve(ctx context.Context, listener net.Listener) {
-	// Handle Node Events
-	if err := s.grpcServer.Serve(s.listener); err != nil {
-		logger.Error("Failed to serve gRPC", err)
-
-	}
-	for {
-		// Stop Serving if context is done
-		select {
-		case <-ctx.Done():
-			return
-		}
-	}
-}
-
+// Close closes the RPC Service.
 func (s *HighwayNodeStub) Close() error {
-	s.listener.Close()
-	s.grpcServer.Stop()
 	return nil
 }
