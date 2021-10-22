@@ -40,7 +40,7 @@ func (n *Node) startClientService(ctx context.Context, opts *options) (*ClientNo
 		logger.Error("Failed to start TransferProtocol", err)
 		return nil, err
 	}
-
+ 
 	// Set Local Lobby Protocol if Location is provided
 	lobbyProtocol, err := lobby.NewProtocol(ctx, n.host, n, lobby.WithLocation(opts.location))
 	if err != nil {
