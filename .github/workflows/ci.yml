@@ -38,7 +38,7 @@ jobs:
           go install golang.org/x/mobile/cmd/gomobile@latest
           gomobile init
           cd ${{ github.workspace }}/cmd/lib
-          gomobile bind -ldflags='-s -w' -v -target=android -o ${{ github.workspace }}/build/io.sonr.core.aar
+          gomobile bind -ldflags='-s -w' -v -target=android/arm64 -o ${{ github.workspace }}/build/io.sonr.core.aar
 
       # 5. Upload AAR
       - name: Upload AAR to GitHub
@@ -79,14 +79,14 @@ jobs:
           go install golang.org/x/mobile/cmd/gomobile@latest
           gomobile init
           cd ${{ github.workspace }}/cmd/lib
-          gomobile bind -ldflags='-s -w' -v -target=ios -bundleid=io.sonr.core -o ${{ github.workspace }}/build/Core.xcframework
+          gomobile bind -ldflags='-s -w' -v -target=ios/arm64 -bundleid=io.sonr.core -o ${{ github.workspace }}/build/Core.xcframework
 
       # 5. Upload Framework
       - name: Upload Framework to GitHub
         uses: actions/upload-artifact@v2
         with:
           name: ios-framework
-          path: ${{ github.workspace }}/build/Core.framework/
+          path: ${{ github.workspace }}/build/Core.xcframework/
 
   # Build Daemon for Desktops
   build-rpc:
@@ -131,19 +131,6 @@ jobs:
           args: release --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
-
-      # 5. Get Version
-      - id: get_version
-        uses: battila7/get-version-action@v2
-
-      # 6. Dispatch Electron
-      - name: Call Dispatch for Electron ⚡️
-        uses: peter-evans/repository-dispatch@v1
-        with:
-          token: ${{secrets.PAT_GITHUB_TOKEN}}
-          repository: sonr-io/electron
-          event-type: build-electron
-          client-payload: '{"version":"${{ steps.get_version.outputs.version-without-v }}"}'
 
   # Add Frameworks to Release
   release-frameworks:
@@ -193,11 +180,3 @@ jobs:
         artifacts: "${{ github.workspace }}/build/*.zip"
         replacesArtifacts: false
         token: ${{ secrets.PAT_GITHUB_TOKEN }}
-
-    - name: Call Dispatch for Plugin ⚡️
-      uses: peter-evans/repository-dispatch@v1
-      with:
-          token: ${{secrets.PAT_GITHUB_TOKEN}}
-          repository: sonr-io/plugin
-          event-type: update-plugin
-          client-payload: '{"version":"${{ steps.get_version.outputs.version-without-v }}"}'
