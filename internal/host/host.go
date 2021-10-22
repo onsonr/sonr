@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"net"
-	"strings"
 
 	"github.com/libp2p/go-libp2p"
 	connmgr "github.com/libp2p/go-libp2p-connmgr"
@@ -202,7 +201,7 @@ func (hn *SNRHost) Join(topic string, opts ...ps.TopicOpt) (*ps.Topic, error) {
 // LookupTXT looks up the TXT record for the given SName.
 func (r *SNRHost) LookupTXT(ctx context.Context, name string) (Records, error) {
 	// Call internal resolver
-	recs, err := r.resolver.LookupTXT(ctx, strings.ToLower(name))
+	recs, err := r.resolver.LookupTXT(ctx, name)
 	if err != nil {
 		return nil, err
 	}

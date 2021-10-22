@@ -29,19 +29,14 @@ func init() {
 	golog.SetStacktraceLimit(2)
 }
 
-func Start(req *api.InitializeRequest, options ...Option) {
+func Start(req *api.InitializeRequest, mode node.StubMode) {
 	if instance.Node != nil {
 		golog.Error("Sonr Instance already active")
 		return
 	}
-	opts := defaultOptions()
-	for _, o := range options {
-		o(opts)
-	}
+	golog.SetPrefix(mode.Prefix())
 
-	golog.SetPrefix(opts.mode.Prefix())
-
-	if opts.mode.IsCLI() {
+	if mode.IsCLI() {
 		pterm.SetDefaultOutput(golog.Default.Printer)
 	}
 	// Initialize Device
@@ -53,7 +48,7 @@ func Start(req *api.InitializeRequest, options ...Option) {
 	}
 
 	// Create Node
-	n, _, err := node.NewNode(ctx, opts.Apply(req)...)
+	n, _, err := node.NewNode(ctx, node.WithMode(mode), node.WithRequest(req))
 	if err != nil {
 		golog.Fatal("Failed to update Profile for Node", golog.Fields{"error": err})
 		os.Exit(1)
@@ -62,7 +57,7 @@ func Start(req *api.InitializeRequest, options ...Option) {
 	// Set Lib
 	instance = Sonr{
 		Ctx:  ctx,
-		Mode: opts.mode,
+		Mode: mode,
 		Node: n,
 	}
 	instance.Serve()
@@ -140,48 +135,5 @@ func (sh Sonr) Serve() {
 			golog.Info("Context Done")
 			return
 		}
-	}
-}
-
-type Option func(*options)
-
-func WithHost(host string) Option {
-	return func(o *options) {
-		o.host = host
-	}
-}
-
-func WithPort(port int) Option {
-	return func(o *options) {
-		o.port = port
-	}
-}
-
-func WithMode(mode node.StubMode) Option {
-	return func(o *options) {
-		o.mode = mode
-	}
-}
-
-type options struct {
-	host string
-	port int
-	mode node.StubMode
-}
-
-func defaultOptions() *options {
-	return &options{
-		host: ":",
-		port: 26225,
-		mode: node.StubMode_LIB,
-	}
-}
-
-func (o *options) Apply(r *api.InitializeRequest) []node.Option {
-	return []node.Option{
-		node.WithHost(o.host),
-		node.WithPort(o.port),
-		node.WithMode(o.mode),
-		node.WithRequest(r),
 	}
 }

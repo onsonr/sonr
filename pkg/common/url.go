@@ -302,7 +302,6 @@ type TwitterCard struct {
 	}
 }
 
-// PageInfo is the OpenGraph Page Info
 type PageInfo struct {
 	Title       string `meta:"og:title"`
 	Type        string `meta:"og:type"`
@@ -318,7 +317,6 @@ type PageInfo struct {
 	Content     string
 }
 
-// getPageDataFromHtml returns the PageInfo from the HTML
 func getPageDataFromHtml(html []byte, data interface{}) error {
 	buf := bytes.NewBuffer(html)
 	doc, err := goquery.NewDocumentFromReader(buf)
@@ -330,13 +328,11 @@ func getPageDataFromHtml(html []byte, data interface{}) error {
 	return getPageDoc(doc, data)
 }
 
-// getPageDoc returns the Document with Data from the HTML
 func getPageDoc(doc *goquery.Document, data interface{}) error {
 	doc = goquery.CloneDocument(doc)
 	return getPageData(doc, data)
 }
 
-// getPageInfo returns the Document from the HTML
 func getPageInfo(doc *goquery.Document) (*PageInfo, error) {
 	info := PageInfo{}
 	err := getPageDoc(doc, &info)
@@ -355,7 +351,6 @@ func getPageInfo(doc *goquery.Document) (*PageInfo, error) {
 	return &info, nil
 }
 
-// GetPageData returns the Response from the HTML
 func GetPageData(response *http.Response) (*PageInfo, error) {
 	info := PageInfo{}
 	html, err := ioutil.ReadAll(response.Body)
@@ -379,7 +374,6 @@ func GetPageData(response *http.Response) (*PageInfo, error) {
 	return &info, nil
 }
 
-// getPageData returns the Document with Data from the HTML
 func getPageData(doc *goquery.Document, data interface{}) error {
 	var rv reflect.Value
 	var ok bool
@@ -552,7 +546,6 @@ func (c *candidate) Node() *html.Node {
 	return c.selection.Get(0)
 }
 
-// Document represents a parsed HTML document.
 type Document struct {
 	input         string
 	document      *goquery.Document
@@ -570,7 +563,6 @@ type Document struct {
 	WhitelistTags            []string
 }
 
-// NewDocument creates a new Document from the given HTML string.
 func NewDocument(s string) (*Document, error) {
 	d := &Document{
 		input:                    s,

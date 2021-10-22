@@ -22,30 +22,63 @@ var (
 	ErrProtocolsNotSet = errors.New("Node Protocol has not been initialized.")
 )
 
+// StubMode is the type of the node (Client, Highway)
+type StubMode int
+
+const (
+	// StubMode_LIB is the Node utilized by Mobile and Web Clients
+	StubMode_LIB StubMode = iota
+
+	// StubMode_CLI is the Node utilized by CLI Clients
+	StubMode_CLI
+
+	// StubMode_BIN is the Node utilized for Desktop background process
+	StubMode_BIN
+
+	// StubMode_HIGHWAY is the Custodian Node that manages Network
+	StubMode_HIGHWAY
+)
+
+// IsLib returns true if the node is a client node.
+func (m StubMode) IsLib() bool {
+	return m == StubMode_LIB
+}
+
+// IsBin returns true if the node is a bin node.
+func (m StubMode) IsBin() bool {
+	return m == StubMode_BIN
+}
+
+// IsCLI returns true if the node is a CLI node.
+func (m StubMode) IsCLI() bool {
+	return m == StubMode_CLI
+}
+
+// IsHighway returns true if the node is a highway node.
+func (m StubMode) IsHighway() bool {
+	return m == StubMode_HIGHWAY
+}
+
+// Prefix returns golog prefix for the node.
+func (m StubMode) Prefix() string {
+	var name string
+	switch m {
+	case StubMode_LIB:
+		name = "lib"
+	case StubMode_CLI:
+		name = "cli"
+	case StubMode_BIN:
+		name = "bin"
+	case StubMode_HIGHWAY:
+		name = "highway"
+	default:
+		name = "unknown"
+	}
+	return fmt.Sprintf("[SONR.%s] ", name)
+}
 
 // Option is a function that modifies the node options.
 type Option func(*options)
-
-// WithHost sets the host for RPC Stub Server
-func WithHost(h string) Option {
-	return func(o *options) {
-		o.host = h
-	}
-}
-
-// WithMode starts the Client RPC server as a highway node.
-func WithMode(m StubMode) Option {
-	return func(o *options) {
-		o.mode = m
-	}
-}
-
-// WithPort sets the port for RPC Stub Server
-func WithPort(p int) Option {
-	return func(o *options) {
-		o.port = p
-	}
-}
 
 // WithRequest sets the initialize request.
 func WithRequest(req *api.InitializeRequest) Option {
@@ -56,14 +89,20 @@ func WithRequest(req *api.InitializeRequest) Option {
 	}
 }
 
+// WithMode starts the Client RPC server as a highway node.
+func WithMode(m StubMode) Option {
+	return func(o *options) {
+		o.mode = m
+	}
+}
+
 // options is a collection of options for the node.
 type options struct {
-	host       string
+	address    string
 	connection common.Connection
 	location   *common.Location
 	mode       StubMode
 	network    string
-	port       int
 	profile    *common.Profile
 }
 
@@ -74,15 +113,9 @@ func defaultNodeOptions() *options {
 		location:   common.DefaultLocation(),
 		connection: common.Connection_WIFI,
 		network:    "tcp",
-		host:       ":",
-		port:       common.RPC_SERVER_PORT,
+		address:    fmt.Sprintf(":%d", common.RPC_SERVER_PORT),
 		profile:    common.NewDefaultProfile(),
 	}
-}
-
-// Address returns the address of the node.
-func (opts *options) Address() string {
-	return fmt.Sprintf("%s%d", opts.host, opts.port)
 }
 
 // Apply applies Options to node

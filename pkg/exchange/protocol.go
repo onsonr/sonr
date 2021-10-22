@@ -67,20 +67,20 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl, opt
 
 // FindPeerId method returns PeerID by SName
 func (p *ExchangeProtocol) Get(sname string) (*common.Peer, error) {
-	peer := &common.Peer{}
 	// Get Peer from KadDHT store
-	if buf, err := p.beamStore.Get(sname); err == nil {
-		// Unmarshal Peer
-		err := proto.Unmarshal(buf, peer)
-		if err != nil {
-			logger.Error("Failed to unmarshal Peer", err)
-			return nil, err
-		}
-		return peer, nil
-	} else {
-		logger.Warn("Failed to get Peer from BeamStore: %s", err)
+	buf, err := p.beamStore.Get(sname)
+	if err != nil {
+		logger.Error("Failed to get Peer from BeamStore: %s", err)
+		return nil, err
 	}
-	return p.Resolve(sname)
+
+	// Unmarshal Peer from buffer
+	peerData := &common.Peer{}
+	err = proto.Unmarshal(buf, peerData)
+	if err != nil {
+		return nil, err
+	}
+	return peerData, err
 }
 
 // Put method updates peer instance in the store
@@ -99,25 +99,6 @@ func (p *ExchangeProtocol) Put(peer *common.Peer) error {
 		return err
 	}
 	return nil
-}
-
-// Resolve method resolves SName from DNS Table
-func (p *ExchangeProtocol) Resolve(sname string) (*common.Peer, error) {
-	logger.Info("Attempting to resolve from DNS Table")
-	// Get Peer from DNS Resolver
-	recs, err := p.host.LookupTXT(p.ctx, sname)
-	if err != nil {
-		logger.Errorf("Failed to resolve DNS record for SName: %s", err)
-		return nil, err
-	}
-
-	// Get Name Record
-	rec, err := recs.GetNameRecord()
-	if err != nil {
-		logger.Errorf("Failed to get Name Record: %s", err)
-		return nil, err
-	}
-	return rec.Peer()
 }
 
 // Verify method uses resolver to check if Peer is registered,

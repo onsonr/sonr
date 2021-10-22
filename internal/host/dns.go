@@ -8,7 +8,6 @@ import (
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/sonr-io/core/pkg/common"
 
 	"github.com/pkg/errors"
 )
@@ -251,36 +250,6 @@ func (r Record) PeerID() (peer.ID, error) {
 		return peer.ID(""), err
 	}
 	return peer.IDFromPublicKey(pub)
-}
-
-func (r Record) Peer() (*common.Peer, error) {
-	// Check for SName
-	if r.IsName() {
-		pid, err := r.PeerID()
-		if err != nil {
-			logger.Errorf("Failed to get PeerID from record: %s", err)
-			return nil, err
-		}
-
-		pbuf, err := r.PubKeyBuffer()
-		if err != nil {
-			logger.Errorf("Failed to get Public Key Buffer: %s", err)
-			return nil, err
-		}
-
-		peer := &common.Peer{
-			PeerID:    pid.String(),
-			PublicKey: pbuf,
-			SName:     r.Name(),
-			Profile: &common.Profile{
-				FirstName: "Anonymous",
-				LastName:  "Peer",
-				SName:     r.Name(),
-			},
-		}
-		return peer, nil
-	}
-	return nil, errors.New("Record is Not an Auth Record")
 }
 
 // Prefix is the prefix for the Auth Record
