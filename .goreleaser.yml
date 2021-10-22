@@ -1,11 +1,10 @@
 project_name: sonr-core
 builds:
   - id: sonr
-    binary: sonr-node
+    binary: sonrd
     dir: cmd/sonrd
     goos:
       - linux
-      - windows
       - darwin
     goarch:
       - amd64

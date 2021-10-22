@@ -79,7 +79,7 @@ jobs:
           go install golang.org/x/mobile/cmd/gomobile@latest
           gomobile init
           cd ${{ github.workspace }}/cmd/lib
-          gomobile bind -ldflags='-s -w' -v -target=ios -bundleid=io.sonr.core -o ${{ github.workspace }}/build/Core.framework
+          gomobile bind -ldflags='-s -w' -v -target=ios -bundleid=io.sonr.core -o ${{ github.workspace }}/build/Core.xcframework
 
       # 5. Upload Framework
       - name: Upload Framework to GitHub
@@ -156,7 +156,7 @@ jobs:
     steps:
       # 1. Checkout the branch
     - uses: actions/checkout@v2
-    - run: mkdir -p ${{ github.workspace }}/build/Core.framework
+    - run: mkdir -p ${{ github.workspace }}/build/Core.xcframework
 
       # 2. Download AAR Artifact
     - name: Download Android AAR
@@ -170,7 +170,7 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: ios-framework
-        path: ${{ github.workspace }}/build/Core.framework
+        path: ${{ github.workspace }}/build/Core.xcframework
 
       # 4. Get Version
     - id: get_version
