@@ -3,7 +3,6 @@ package host
 import (
 	"context"
 	"crypto/rand"
-	"net"
 
 	"time"
 
@@ -16,8 +15,8 @@ import (
 	mdns "github.com/libp2p/go-libp2p/p2p/discovery/mdns"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
-	"github.com/sonr-io/core/pkg/common"
 	"github.com/sonr-io/core/internal/wallet"
+	"github.com/sonr-io/core/pkg/common"
 )
 
 // Error Definitions
@@ -66,12 +65,6 @@ func WithInterval(interval time.Duration) HostOption {
 	}
 }
 
-// WithTerminal sets the Terminal value to true
-func WithTerminal(val bool) HostOption {
-	return func(o hostOptions) {
-		o.IsTerminal = val
-	}
-}
 
 // WithTTL sets the ttl for the host. Default is 2 minutes.
 func WithTTL(ttl time.Duration) HostOption {
@@ -92,7 +85,6 @@ type hostOptions struct {
 	Rendezvous     string
 	Interval       time.Duration
 	TTL            dscl.Option
-	IsTerminal     bool
 }
 
 // defaultHostOptions returns the default host options.
@@ -146,36 +138,6 @@ func (opts hostOptions) Apply(ctx context.Context, options ...HostOption) (*SNRH
 		status:       Status_IDLE,
 		mdnsPeerChan: make(chan peer.AddrInfo),
 		connection:   opts.Connection,
-		resolver: &net.Resolver{
-			PreferGo: true,
-			Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
-				// Create Dialer
-				d := net.Dialer{
-					Timeout: DIAL_TIMEOUT,
-				}
-
-				// Dial First Resolver
-				c, err := d.DialContext(ctx, network, HDNS_RESOLVER_ONE)
-				if err == nil {
-					return c, nil
-				}
-
-				// Dial Second Resolver
-				c, err = d.DialContext(ctx, network, HDNS_RESOLVER_TWO)
-				if err == nil {
-					return c, nil
-				}
-
-				// Dial Third Resolver
-				c, err = d.DialContext(ctx, network, HDNS_RESOLVER_THREE)
-				if err == nil {
-					return c, nil
-				}
-
-				// Return Error if we failed to dial all three resolvers
-				return nil, ErrHDNSResolve
-			},
-		},
 	}
 
 	// findPrivKey returns the private key for the host.

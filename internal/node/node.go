@@ -25,8 +25,8 @@ type Node struct {
 	host *host.SNRHost
 
 	// Properties
-	ctx        context.Context
-	store      *bitcask.Bitcask
+	ctx   context.Context
+	store *bitcask.Bitcask
 
 	// Channels
 	// TransferProtocol - decisionEvents
@@ -68,7 +68,7 @@ func NewNode(ctx context.Context, options ...Option) (api.NodeImpl, *api.Initial
 	}
 
 	// Initialize Host
-	host, err := host.NewHost(ctx, host.WithConnection(opts.connection), host.WithTerminal(opts.mode.IsCLI()))
+	host, err := host.NewHost(ctx, host.WithConnection(opts.connection))
 	if err != nil {
 		logger.Error("Failed to initialize host", err)
 		return nil, api.NewInitialzeResponse(nil, false), err
@@ -207,7 +207,7 @@ func (n *Node) NewSNID(sname string) (*wallet.SNID, error) {
 	}
 
 	// Find Records
-	recs, err := n.host.LookupTXT(n.ctx, sname)
+	recs, err := api.LookupTXT(n.ctx, sname)
 	if err != nil {
 		return nil, err
 	}

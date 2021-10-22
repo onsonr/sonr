@@ -1,7 +1,7 @@
 package exchange
 
 import (
-	"github.com/sonr-io/core/internal/host"
+	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/wallet"
 	"github.com/sonr-io/core/pkg/common"
 )
@@ -91,8 +91,8 @@ func (o *options) Apply(p *ExchangeProtocol) error {
 		}
 
 		// Create DNS records
-		authRec := host.NewNBAuthRecord(prefix, o.sNameVal, "test, test, test")
-		nameRec := host.NewNBNameRecord(pubStr, o.sNameVal)
+		authRec := api.NewNBAuthRecord(prefix, o.sNameVal, "test, test, test")
+		nameRec := api.NewNBNameRecord(pubStr, o.sNameVal)
 		p.authRecord = authRec
 		p.nameRecord = nameRec
 

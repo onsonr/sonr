@@ -2,8 +2,8 @@ package node
 
 import (
 	context "context"
+	"fmt"
 	"net"
-	"time"
 
 	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/lobby"
@@ -12,9 +12,72 @@ import (
 	grpc "google.golang.org/grpc"
 )
 
-var DefaultAutoPingTicker = 5 * time.Second
+// StubMode is the type of the node (Client, Highway)
+type StubMode int
 
-// ClientNodeStub is the RPC Service for the Node.
+const (
+	// StubMode_LIB is the Node utilized by Mobile and Web Clients
+	StubMode_LIB StubMode = iota
+
+	// StubMode_CLI is the Node utilized by CLI Clients
+	StubMode_CLI
+
+	// StubMode_BIN is the Node utilized for Desktop background process
+	StubMode_BIN
+
+	// StubMode_HIGHWAY is the Custodian Node that manages Network
+	StubMode_HIGHWAY
+)
+
+// IsLib returns true if the node is a client node.
+func (m StubMode) IsLib() bool {
+	return m == StubMode_LIB
+}
+
+// IsBin returns true if the node is a bin node.
+func (m StubMode) IsBin() bool {
+	return m == StubMode_BIN
+}
+
+// IsCLI returns true if the node is a CLI node.
+func (m StubMode) IsCLI() bool {
+	return m == StubMode_CLI
+}
+
+// IsHighway returns true if the node is a highway node.
+func (m StubMode) IsHighway() bool {
+	return m == StubMode_HIGHWAY
+}
+
+// HasClient returns true if the node has a client.
+func (m StubMode) HasClient() bool {
+	return m.IsLib() || m.IsBin() || m.IsCLI()
+}
+
+// HasHighway returns true if the node has a highway stub.
+func (m StubMode) HasHighway() bool {
+	return m.IsHighway()
+}
+
+// Prefix returns golog prefix for the node.
+func (m StubMode) Prefix() string {
+	var name string
+	switch m {
+	case StubMode_LIB:
+		name = "lib"
+	case StubMode_CLI:
+		name = "cli"
+	case StubMode_BIN:
+		name = "bin"
+	case StubMode_HIGHWAY:
+		name = "highway"
+	default:
+		name = "unknown"
+	}
+	return fmt.Sprintf("[SONR.%s] ", name)
+}
+
+// ClientNodeStub is the RPC Service for the Default Node.
 type ClientNodeStub struct {
 	// Interfaces
 	ClientServiceServer
@@ -93,7 +156,7 @@ func (n *Node) startClientService(ctx context.Context, opts *options) (*ClientNo
 
 	// Start Routines
 	RegisterClientServiceServer(grpcServer, stub)
-	go stub.Serve(ctx, listener, DefaultAutoPingTicker)
+	go stub.Serve(ctx, listener)
 	return stub, nil
 }
 
@@ -112,7 +175,7 @@ func (s *ClientNodeStub) Close() error {
 }
 
 // Serve serves the RPC Service on the given port.
-func (s *ClientNodeStub) Serve(ctx context.Context, listener net.Listener, ticker time.Duration) {
+func (s *ClientNodeStub) Serve(ctx context.Context, listener net.Listener) {
 	// Handle Node Events
 	if err := s.grpcServer.Serve(listener); err != nil {
 		logger.Error("Failed to serve gRPC", err)
@@ -158,7 +221,7 @@ func (s *ClientNodeStub) Update() error {
 	}
 }
 
-// HighwayNodeStub is the RPC Service for the Full Node.
+// HighwayNodeStub is the RPC Service for the Custodian Node.
 type HighwayNodeStub struct {
 	HighwayServiceServer
 	ClientServiceServer
@@ -174,7 +237,7 @@ type HighwayNodeStub struct {
 func (n *Node) startHighwayService(ctx context.Context, opts *options) (*HighwayNodeStub, error) {
 
 	// Create the listener
-	listener, err := net.Listen(opts.network, opts.Address())
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", RPC_SERVER_PORT))
 	if err != nil {
 		return nil, err
 	}
@@ -189,11 +252,12 @@ func (n *Node) startHighwayService(ctx context.Context, opts *options) (*Highway
 	}
 	// Register the RPC Service
 	RegisterHighwayServiceServer(stub.grpcServer, stub)
-	go stub.Serve(ctx, listener, DefaultAutoPingTicker)
+	go stub.Serve(ctx, listener)
 	return stub, nil
 }
 
-func (s *HighwayNodeStub) Serve(ctx context.Context, listener net.Listener, ticker time.Duration) {
+// Serve serves the RPC Service on the given port.
+func (s *HighwayNodeStub) Serve(ctx context.Context, listener net.Listener) {
 	// Handle Node Events
 	if err := s.grpcServer.Serve(s.listener); err != nil {
 		logger.Error("Failed to serve gRPC", err)

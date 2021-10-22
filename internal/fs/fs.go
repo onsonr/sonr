@@ -3,9 +3,7 @@ package fs
 import (
 	"errors"
 	"os"
-	"path"
 	"runtime"
-	"strings"
 
 	"github.com/kataras/golog"
 )
@@ -31,16 +29,6 @@ var (
 	ErrSeparatorLength            = errors.New("Separator length must be 1.")
 	ErrNoFileNameSet              = errors.New("File name was not set by options.")
 )
-
-var mExtsImageFile map[string]string
-var mExtsVideoFile map[string]string
-
-func init() {
-	mExtsImageFile = map[string]string{".png": "", ".PNG": "", ".jpg": "", ".JPG": "", ".jpeg": "", ".JPEG": "",
-		".heic": "", ".HEIC": "", ".gif": "", ".GIF": "",
-	}
-	mExtsVideoFile = map[string]string{".MOV": "", ".mov": "", ".MP4": "", ".mp4": ""}
-}
 
 // Start creates new FileSystem
 func Start(options ...Option) error {
@@ -143,7 +131,7 @@ func (fo *fsOptions) Apply() error {
 	Temporary = Folder(fo.TempDir)
 
 	// Create Downloads Folder
-	if runtime.GOOS != "android" && runtime.GOOS != "ios" {
+	if checkIsDesktop() {
 		Downloads, err = Home.CreateFolder("Downloads")
 		if err != nil {
 			return err
@@ -181,43 +169,6 @@ func IsFile(fileName string) bool {
 	return !os.IsNotExist(err)
 }
 
-// IsImage returns true if the given path is an image
-func IsImage(filename string) bool {
-	ext := path.Ext(filename)
-	_, exist := mExtsImageFile[ext]
-	return exist
-}
-
-// IsMediaFile returns true if the given path is a media file
-func IsMediaFile(filename string) bool {
-	ext := path.Ext(filename)
-	return IsImage(ext) || IsVideo(ext)
-}
-
-// IsVideo returns true if the given path is a video
-func IsVideo(filename string) bool {
-	ext := path.Ext(filename)
-	_, exist := mExtsVideoFile[ext]
-	return exist
-}
-
-// IsVideoExt returns true if the given extension is a video
-func IsVideoExt(ext string) bool {
-	if strings.EqualFold(ext, ".mp4") || strings.EqualFold(ext, ".mov") || strings.EqualFold(ext, ".mpeg") ||
-		strings.EqualFold(ext, ".mpg") || strings.EqualFold(ext, ".wmv") ||
-		strings.EqualFold(ext, ".rm") || strings.EqualFold(ext, ".rmvb") ||
-		strings.EqualFold(ext, ".swf") || strings.EqualFold(ext, ".flv") ||
-		strings.EqualFold(ext, ".3GP") || strings.EqualFold(ext, ".mkv") ||
-		strings.EqualFold(ext, ".m4v") || strings.EqualFold(ext, ".ogg") ||
-		strings.EqualFold(ext, ".avi") || strings.EqualFold(ext, ".dat") ||
-		strings.EqualFold(ext, ".vob") || strings.EqualFold(ext, ".mpe") ||
-		strings.EqualFold(ext, ".asf") || strings.EqualFold(ext, ".asx") ||
-		strings.EqualFold(ext, ".f4v") {
-		return true
-	}
-	return false
-}
-
 // checkIsDesktop returns true if the current platform is desktop
 func checkIsDesktop() bool {
 	if runtime.GOOS == "android" || runtime.GOOS == "ios" {
@@ -228,8 +179,5 @@ func checkIsDesktop() bool {
 
 // checkIsMobile returns true if the current platform is mobile
 func checkIsMobile() bool {
-	if runtime.GOOS == "android" || runtime.GOOS == "ios" {
-		return true
-	}
-	return false
+	return !checkIsDesktop()
 }
