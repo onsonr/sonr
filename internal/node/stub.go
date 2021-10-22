@@ -49,6 +49,11 @@ func (m StubMode) IsHighway() bool {
 	return m == StubMode_HIGHWAY
 }
 
+// HasClient returns true if the node has a client.
+func (m StubMode) HasClient() bool {
+	return m.IsLib() || m.IsBin() || m.IsCLI()
+}
+
 // Prefix returns golog prefix for the node.
 func (m StubMode) Prefix() string {
 	var name string

@@ -90,7 +90,7 @@ func (opts *options) Apply(ctx context.Context, node *Node) error {
 	node.mode = opts.mode
 
 	// Handle by Node Mode
-	if opts.mode == StubMode_LIB {
+	if opts.mode.HasClient() {
 		logger.Debug("Starting Client stub...")
 		// Client Node Type
 		stub, err := node.startClientService(ctx, opts)
