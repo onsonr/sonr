@@ -133,7 +133,6 @@ func LookupTXT(ctx context.Context, name string) (Records, error) {
 			return nil, ErrHDNSResolve
 		},
 	}
-
 	// Call internal resolver
 	recs, err := r.LookupTXT(ctx, strings.ToLower(name))
 	if err != nil {

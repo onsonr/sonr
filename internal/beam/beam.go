@@ -2,8 +2,6 @@ package beam
 
 import (
 	"context"
-	"fmt"
-	"time"
 
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/pkg/errors"
@@ -34,9 +32,9 @@ type Beam interface {
 // beam is the implementation of the Beam interface.
 type beam struct {
 	Beam
-	ctx  context.Context
-	h    *host.SNRHost
-	name string
+	ctx context.Context
+	h   *host.SNRHost
+	id  ID
 
 	events  chan *Event
 	handler *pubsub.TopicEventHandler
@@ -47,13 +45,13 @@ type beam struct {
 }
 
 // New creates a new beam with the given name and options.
-func New(ctx context.Context, h *host.SNRHost, name string, options ...Option) (Beam, error) {
+func New(ctx context.Context, h *host.SNRHost, id ID, options ...Option) (Beam, error) {
 	opts := defaultOptions()
 	for _, option := range options {
 		option(opts)
 	}
 
-	topic, err := h.Join(name)
+	topic, err := h.Join(id.String())
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +69,7 @@ func New(ctx context.Context, h *host.SNRHost, name string, options ...Option) (
 	b := &beam{
 		ctx:     ctx,
 		h:       h,
-		name:    name,
+		id:      id,
 		topic:   topic,
 		sub:     sub,
 		handler: handler,
@@ -84,17 +82,17 @@ func New(ctx context.Context, h *host.SNRHost, name string, options ...Option) (
 
 // Delete removes the key in the beam store.
 func (b *beam) Delete(key string) error {
-	return b.store.Delete(fmt.Sprintf("%s/%s", b.name, key), b)
+	return b.store.Delete(b.id.Key(key), b)
 }
 
 // Get returns the value for the given key in the beam store.
 func (b *beam) Get(key string) ([]byte, error) {
-	return b.store.Get(fmt.Sprintf("%s/%s", b.name, key))
+	return b.store.Get(b.id.Key(key))
 }
 
 // Put stores the value for the given key in the beam store.
 func (b *beam) Put(key string, value []byte) error {
-	return b.store.Put(fmt.Sprintf("%s/%s", b.name, key), value, b)
+	return b.store.Put(b.id.Key(key), value, b)
 }
 
 // Close closes the beam.
@@ -102,35 +100,4 @@ func (b *beam) Close() error {
 	b.handler.Cancel()
 	b.sub.Cancel()
 	return b.topic.Close()
-}
-
-// Option is a function that modifies the beam options.
-type Option func(*options)
-
-// WithTTL sets the time-to-live for the beam store entries
-func WithTTL(ttl time.Duration) Option {
-	return func(o *options) {
-		o.ttl = ttl
-	}
-}
-
-// WithCapacity sets the capacity of the beam store.
-func WithCapacity(capacity int) Option {
-	return func(o *options) {
-		o.capacity = capacity
-	}
-}
-
-// options is a collection of options for the beam.
-type options struct {
-	ttl      time.Duration
-	capacity int
-}
-
-// defaultOptions is the default options for the beam.
-func defaultOptions() *options {
-	return &options{
-		ttl:      time.Minute * 10,
-		capacity: 4096,
-	}
 }

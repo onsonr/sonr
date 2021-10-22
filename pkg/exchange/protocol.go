@@ -38,7 +38,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl, opt
 		opt(opts)
 	}
 
-	b, err := beam.New(ctx, host, "exchange")
+	b, err := beam.New(ctx, host, beam.ID("exchange"))
 	if err != nil {
 		return nil, err
 	}
