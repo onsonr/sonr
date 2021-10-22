@@ -16,6 +16,11 @@ import (
 	"github.com/spf13/viper"
 )
 
+func init() {
+	golog.SetStacktraceLimit(2)
+}
+
+// Sonr is the main struct for Sonr Node
 type Sonr struct {
 	// Properties
 	Ctx  context.Context
@@ -23,29 +28,30 @@ type Sonr struct {
 	Mode node.StubMode
 }
 
+// instance is the global Sonr Instance
 var instance Sonr
 
-func init() {
-	golog.SetStacktraceLimit(2)
-}
-
+// Start starts the Sonr Node
 func Start(req *api.InitializeRequest, options ...Option) {
+	// Check if Node is already running
 	if instance.Node != nil {
 		golog.Error("Sonr Instance already active")
 		return
 	}
+
+	// Set Options
 	opts := defaultOptions()
 	for _, o := range options {
 		o(opts)
 	}
 
+	// Set Logging Settings
 	golog.SetPrefix(opts.mode.Prefix())
-
 	if opts.mode.IsCLI() {
 		pterm.SetDefaultOutput(golog.Default.Printer)
 	}
-	// Initialize Device
-	ctx := context.Background()
+
+	// Initialize Wallet, and FS
 	err := req.Parse()
 	if err != nil {
 		golog.Fatal("Failed to initialize Device", golog.Fields{"error": err})
@@ -53,6 +59,7 @@ func Start(req *api.InitializeRequest, options ...Option) {
 	}
 
 	// Create Node
+	ctx := context.Background()
 	n, _, err := node.NewNode(ctx, opts.Apply(req)...)
 	if err != nil {
 		golog.Fatal("Failed to update Profile for Node", golog.Fields{"error": err})
@@ -143,32 +150,38 @@ func (sh Sonr) Serve() {
 	}
 }
 
+// Option is a function that can be passed to Start
 type Option func(*options)
 
+// WithHost sets the host for the Node Stub Client Host
 func WithHost(host string) Option {
 	return func(o *options) {
 		o.host = host
 	}
 }
 
+// WithPort sets the port for the Node Stub Client
 func WithPort(port int) Option {
 	return func(o *options) {
 		o.port = port
 	}
 }
 
+// WithMode sets the mode for the Node
 func WithMode(mode node.StubMode) Option {
 	return func(o *options) {
 		o.mode = mode
 	}
 }
 
+// options is the struct for the options
 type options struct {
 	host string
 	port int
 	mode node.StubMode
 }
 
+// defaultOptions returns the default options
 func defaultOptions() *options {
 	return &options{
 		host: ":",
@@ -177,6 +190,7 @@ func defaultOptions() *options {
 	}
 }
 
+// Apply applies the options to the request
 func (o *options) Apply(r *api.InitializeRequest) []node.Option {
 	return []node.Option{
 		node.WithHost(o.host),
