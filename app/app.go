@@ -126,8 +126,8 @@ func Exit(code int) {
 // Serve waits for Exit Signal from Terminal
 func (sh Sonr) Serve() {
 	// Check if CLI Mode
-	if !sh.Mode.IsCLI() || common.IsMobile() {
-		golog.Info("Skipping Serve, Node is either mobile or non-cli...")
+	if common.IsMobile() {
+		golog.Info("Skipping Serve, Node is mobile...")
 		return
 	}
 

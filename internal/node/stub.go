@@ -112,27 +112,11 @@ func (n *Node) startClientService(ctx context.Context, opts *options) (*ClientNo
 	}
 
 	// Set Exchange Protocol
-	var exchProtocol *exchange.ExchangeProtocol
-	if opts.mode.IsCLI() {
-		exchProtocol, err = exchange.NewProtocol(ctx, n.host, n, exchange.TempName(opts.profile.SName))
-		if err != nil {
-			logger.Error("Failed to start ExchangeProtocol", err)
-			return nil, err
-		}
-	} else {
-		exchProtocol, err = exchange.NewProtocol(ctx, n.host, n)
-		if err != nil {
-			logger.Error("Failed to start ExchangeProtocol", err)
-			return nil, err
-		}
+	exchProtocol, err := exchange.NewProtocol(ctx, n.host, n)
+	if err != nil {
+		logger.Error("Failed to start ExchangeProtocol", err)
+		return nil, err
 	}
-
-	// // Set Mailbox Protocol
-	// mailboxProtocol, err := mailbox.NewProtocol(ctx, n.host, n.Emitter)
-	// if err != nil {
-	// 	logger.Error("Failed to start MailboxProtocol", err)
-	// 	return nil, err
-	// }
 
 	// Open Listener on Port
 	listener, err := net.Listen(opts.network, opts.Address())
@@ -148,7 +132,6 @@ func (n *Node) startClientService(ctx context.Context, opts *options) (*ClientNo
 		TransferProtocol: transferProtocol,
 		ExchangeProtocol: exchProtocol,
 		LobbyProtocol:    lobbyProtocol,
-		//MailboxProtocol:  mailboxProtocol,
 		grpcServer: grpcServer,
 		node:       n,
 		listener:   listener,

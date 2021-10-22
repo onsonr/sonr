@@ -165,12 +165,13 @@ func (n *Node) Peer() (*common.Peer, error) {
 
 // OnDecision is callback for NodeImpl for decisionEvents
 func (n *Node) OnDecision(event *api.DecisionEvent) {
-	n.printTerminal(event.Title(), event.Message())
 	n.decisionEvents <- event
+	n.printTerminal(event.Title(), event.Message())
 }
 
 // OnInvite is callback for NodeImpl for inviteEvents
 func (n *Node) OnInvite(event *api.InviteEvent) {
+	n.inviteEvents <- event
 	n.printTerminal(event.Title(), event.Message())
 	n.promptTerminal("Accept Invite", func(result bool) {
 		if n.mode.IsLib() {
@@ -180,7 +181,6 @@ func (n *Node) OnInvite(event *api.InviteEvent) {
 			})
 		}
 	})
-	n.inviteEvents <- event
 }
 
 // OnRefresh is callback for NodeImpl for refreshEvents
@@ -195,8 +195,8 @@ func (n *Node) OnProgress(event *api.ProgressEvent) {
 
 // OnComplete is callback for NodeImpl for completeEvents
 func (n *Node) OnComplete(event *api.CompleteEvent) {
-	n.printTerminal(event.Title(), event.Message())
 	n.completeEvents <- event
+	n.printTerminal(event.Title(), event.Message())
 }
 
 // NewSNID returns a new SNID
