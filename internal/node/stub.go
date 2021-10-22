@@ -2,7 +2,6 @@ package node
 
 import (
 	context "context"
-	"fmt"
 	"net"
 	"time"
 
@@ -73,7 +72,7 @@ func (n *Node) startClientService(ctx context.Context, opts *options) (*ClientNo
 	// }
 
 	// Open Listener on Port
-	listener, err := net.Listen(opts.network, opts.address)
+	listener, err := net.Listen(opts.network, opts.Address())
 	if err != nil {
 		logger.Fatal("Failed to bind listener to port ", err)
 		return nil, err
@@ -175,7 +174,7 @@ type HighwayNodeStub struct {
 func (n *Node) startHighwayService(ctx context.Context, opts *options) (*HighwayNodeStub, error) {
 
 	// Create the listener
-	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", RPC_SERVER_PORT))
+	listener, err := net.Listen(opts.network, opts.Address())
 	if err != nil {
 		return nil, err
 	}

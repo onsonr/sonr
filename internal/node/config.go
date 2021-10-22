@@ -59,6 +59,16 @@ func (m StubMode) IsHighway() bool {
 	return m == StubMode_HIGHWAY
 }
 
+// HasClient returns true if the node has a client stub.
+func (m StubMode) HasClient() bool {
+	return m.IsLib() || m.IsCLI() || m.IsBin()
+}
+
+// HasHighway returns true if the node has a highway stub.
+func (m StubMode) HasHighway() bool {
+	return m.IsHighway()
+}
+
 // Prefix returns golog prefix for the node.
 func (m StubMode) Prefix() string {
 	var name string
@@ -80,6 +90,13 @@ func (m StubMode) Prefix() string {
 // Option is a function that modifies the node options.
 type Option func(*options)
 
+// WithHost sets the host for RPC Stub Server
+func WithHost(h string) Option {
+	return func(o *options) {
+		o.host = h
+	}
+}
+
 // WithRequest sets the initialize request.
 func WithRequest(req *api.InitializeRequest) Option {
 	return func(o *options) {
@@ -96,13 +113,21 @@ func WithMode(m StubMode) Option {
 	}
 }
 
+// WithPort sets the port for RPC Stub Server
+func WithPort(p int) Option {
+	return func(o *options) {
+		o.port = p
+	}
+}
+
 // options is a collection of options for the node.
 type options struct {
-	address    string
+	host       string
 	connection common.Connection
 	location   *common.Location
 	mode       StubMode
 	network    string
+	port       int
 	profile    *common.Profile
 }
 
@@ -113,17 +138,24 @@ func defaultNodeOptions() *options {
 		location:   common.DefaultLocation(),
 		connection: common.Connection_WIFI,
 		network:    "tcp",
-		address:    fmt.Sprintf(":%d", common.RPC_SERVER_PORT),
+		host:       ":",
+		port:       common.RPC_SERVER_PORT,
 		profile:    common.NewDefaultProfile(),
 	}
 }
 
+// Address returns the address of the node.
+func (opts *options) Address() string {
+	return fmt.Sprintf("%s%d", opts.host, opts.port)
+}
+
 // Apply applies Options to node
 func (opts *options) Apply(ctx context.Context, node *Node) error {
+	// Set Mode
 	node.mode = opts.mode
 
 	// Handle by Node Mode
-	if opts.mode == StubMode_LIB {
+	if opts.mode.HasClient() {
 		logger.Debug("Starting Client stub...")
 		// Client Node Type
 		stub, err := node.startClientService(ctx, opts)
