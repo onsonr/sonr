@@ -34,7 +34,7 @@ func (s Session) IsOutgoing() bool {
 }
 
 // ReadFrom reads the next Session from the given stream.
-func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) *api.CompleteEvent {
+func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) (*api.CompleteEvent, error) {
 	// Initialize Params
 	logger.Debug("Beginning INCOMING Transfer Stream")
 
@@ -45,7 +45,12 @@ func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) *api.CompleteEv
 	// Write All Files
 	for i, v := range s.Items() {
 		// Create Reader
-		r := NewItemReader(i, s.Count(), v, n)
+		r, err := NewItemReader(i, s.Count(), v, n)
+		if err != nil {
+			logger.Error("Failed to create new reader.", err)
+			rs.Close()
+			return nil, err
+		}
 
 		// Write to File
 		wg.Add(1)
@@ -69,11 +74,11 @@ func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) *api.CompleteEv
 		Payload:    s.payload,
 		CreatedAt:  s.payload.GetCreatedAt(),
 		ReceivedAt: int64(time.Now().Unix()),
-	}
+	}, nil
 }
 
 // WriteTo writes the Session to the given stream.
-func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) *api.CompleteEvent {
+func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) (*api.CompleteEvent, error) {
 	// Initialize Params
 	logger.Debug("Beginning OUTGOING Transfer Stream")
 	wc := msgio.NewWriter(stream)
@@ -86,7 +91,7 @@ func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) *api.CompleteEve
 		if err != nil {
 			logger.Error("Failed to create new writer.", err)
 			wc.Close()
-			return nil
+			return nil, err
 		}
 
 		// Write File to Stream
@@ -112,7 +117,7 @@ func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) *api.CompleteEve
 		Payload:    s.payload,
 		CreatedAt:  s.payload.GetCreatedAt(),
 		ReceivedAt: int64(time.Now().Unix()),
-	}
+	}, nil
 }
 
 // Count returns the number of items in Payload

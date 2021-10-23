@@ -63,9 +63,13 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 func (p *TransferProtocol) onOutgoingTransfer(entry Session, stream network.Stream) {
 	logger.Debug("Received Accept Decision, Starting Outgoing Transfer")
 	// Create New Writer
-	if event := entry.WriteTo(stream, p.node); event != nil {
-		p.node.OnComplete(event)
+	event, err := entry.WriteTo(stream, p.node)
+	if err != nil {
+		logger.Error("Failed to Write To Stream", err)
+		stream.Reset()
+		return
 	}
+	p.node.OnComplete(event)
 }
 
 // itemWriter is a Writer for FileItems
@@ -142,8 +146,7 @@ func (iw *itemWriter) WriteTo(writer msgio.WriteCloser) {
 	defer writer.Close()
 
 	// Loop through File
-	i := 0
-	for {
+	for i := 0; i < int(iw.size); {
 		c, err := iw.chunker.Next()
 		if err != nil {
 			if err == io.EOF {
