@@ -16,6 +16,22 @@ import (
 	"google.golang.org/grpc"
 )
 
+// LogLevel is the type for the log level
+type LogLevel string
+
+const (
+	// DebugLevel is the debug log level
+	DebugLevel LogLevel = "debug"
+	// InfoLevel is the info log level
+	InfoLevel LogLevel = "info"
+	// WarnLevel is the warn log level
+	WarnLevel LogLevel = "warn"
+	// ErrorLevel is the error log level
+	ErrorLevel LogLevel = "error"
+	// FatalLevel is the fatal log level
+	FatalLevel LogLevel = "fatal"
+)
+
 func init() {
 	golog.SetStacktraceLimit(2)
 }
@@ -48,6 +64,7 @@ func Start(req *api.InitializeRequest, options ...Option) {
 	}
 
 	// Set Logging Settings
+	golog.SetLevel(opts.logLevel)
 	golog.SetPrefix(opts.mode.Prefix())
 	if opts.mode.IsCLI() {
 		pterm.SetDefaultOutput(golog.Default.Printer)
@@ -82,14 +99,13 @@ func Start(req *api.InitializeRequest, options ...Option) {
 	}
 }
 
-
 // Exit handles cleanup on Sonr Node
 func Exit(code int) {
 	if instance.Node == nil {
-		golog.Info("Skipping Exit, instance is nil...")
+		golog.Debug("Skipping Exit, instance is nil...")
 		return
 	}
-	golog.Info("Cleaning up on Exit...")
+	golog.Debug("Cleaning up on Exit...")
 	instance.Node.Close()
 	instance.GRPCServer.Stop()
 	instance.Listener.Close()
@@ -111,7 +127,7 @@ func Exit(code int) {
 		}
 		err = viper.SafeWriteConfig()
 		if err == nil {
-			golog.Info("Wrote new config file to Disk")
+			golog.Debug("Wrote new config file to Disk")
 		}
 		os.Exit(code)
 	}
@@ -119,6 +135,13 @@ func Exit(code int) {
 
 // Option is a function that can be passed to Start
 type Option func(*options)
+
+// WithLogLevel sets the log level for Logger
+func WithLogLevel(level LogLevel) Option {
+	return func(o *options) {
+		o.logLevel = string(level)
+	}
+}
 
 // WithHost sets the host for the Node Stub Client Host
 func WithHost(host string) Option {
@@ -143,10 +166,11 @@ func WithMode(mode node.StubMode) Option {
 
 // options is the struct for the options
 type options struct {
-	host    string
-	network string
-	port    int
-	mode    node.StubMode
+	host     string
+	network  string
+	port     int
+	mode     node.StubMode
+	logLevel string
 }
 
 // Address returns the address of the node.
@@ -157,10 +181,11 @@ func (opts *options) Address() string {
 // defaultOptions returns the default options
 func defaultOptions() *options {
 	return &options{
-		host:    ":",
-		port:    26225,
-		mode:    node.StubMode_LIB,
-		network: "tcp",
+		host:     ":",
+		port:     26225,
+		mode:     node.StubMode_LIB,
+		network:  "tcp",
+		logLevel: string(InfoLevel),
 	}
 }
 

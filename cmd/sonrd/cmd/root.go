@@ -14,7 +14,7 @@ import (
 )
 
 var cfgFile string
-
+var isDebug bool
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "sonrd",
@@ -31,6 +31,7 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "Path to config file (default is $HOME/.sonr-config/sonrd.yaml)")
+	rootCmd.PersistentFlags().BoolVar(&isDebug, "debug", false, "Sets Logging to Debug mode (default is false)")
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -70,7 +71,7 @@ func initConfig() {
 
 		// Split String Values
 		keyValuePairs := strings.Split(string(keyValuesBuf), ",")
-		golog.Infof("Loading %v Enviornment variables from Config.", len(keyValuePairs))
+		golog.Debugf("Loading %v Enviornment variables from Config.", len(keyValuePairs))
 		// Iterate over keyValuePairs
 		for _, v := range keyValuePairs {
 			// Trim White Space

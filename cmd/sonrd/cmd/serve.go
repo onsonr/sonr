@@ -39,7 +39,7 @@ var serveCmd = &cobra.Command{
 
 			// Split String Values
 			keyValuePairs := strings.Split(string(keyValuesBuf), ",")
-			golog.Infof("Updating %v Enviornment variables.", len(keyValuePairs))
+			golog.Debugf("Updating %v Enviornment variables.", len(keyValuePairs))
 			// Iterate over keyValuePairs
 			for _, v := range keyValuePairs {
 				// Trim White Space
@@ -67,7 +67,7 @@ var serveCmd = &cobra.Command{
 
 		// Set Profile
 		if profilePtr != "" {
-			golog.Info("Setting Profile from JSON.")
+			golog.Debug("Setting Profile from JSON.")
 			p := &common.Profile{}
 
 			// Unmarshal JSON String
@@ -78,12 +78,25 @@ var serveCmd = &cobra.Command{
 				golog.Warn("Failed to set Profile from flag")
 			}
 		}
+
+		// Get Stub Mode
+		mode := node.StubMode_BIN
 		if cliPtr {
-			app.Start(req, app.WithMode(node.StubMode_CLI), app.WithHost(hostPtr), app.WithPort(portPtr))
-		} else {
-			app.Start(req, app.WithMode(node.StubMode_BIN), app.WithHost(hostPtr), app.WithPort(portPtr))
+			mode = node.StubMode_CLI
 		}
 
+		// Set Log Level
+		logLevel := app.InfoLevel
+		if isDebug {
+			logLevel = app.DebugLevel
+		}
+
+		// Initialize App
+		app.Start(req, app.WithMode(mode),
+			app.WithHost(hostPtr),
+			app.WithPort(portPtr),
+			app.WithLogLevel(logLevel),
+		)
 	},
 }
 

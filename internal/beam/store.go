@@ -68,7 +68,7 @@ func (s *Store) Handle(e *Event, b *beam) error {
 			if s.Modified > e.Store.Modified && len(s.Data) < int(e.Store.Capacity) {
 				s.Data = e.Store.Data
 				s.Modified = e.Store.Modified
-				golog.Info("Updated store to pushed earlier version")
+				golog.Debug("Updated store to pushed earlier version")
 			}
 		}
 		return nil

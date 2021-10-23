@@ -67,7 +67,7 @@ func (s *Store) handleStoreTTL() {
 		case <-time.After(time.Duration(s.Ttl) * time.Millisecond):
 			for key, entry := range s.Data {
 				if entry.Created+s.Ttl < time.Now().Unix() {
-					golog.Infof("Entry has expired, deleting key: %s", key)
+					golog.Debugf("Entry has expired, deleting key: %s", key)
 					delete(s.Data, key)
 				}
 			}

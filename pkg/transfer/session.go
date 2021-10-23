@@ -51,6 +51,10 @@ func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) *api.CompleteEv
 		wg.Add(1)
 		go func(idx, total int) {
 			defer wg.Done()
+			if r == nil {
+				logger.Error("Failed to create new reader.")
+				return
+			}
 			r.ReadFrom(rs)
 		}(i, s.Count())
 	}
@@ -89,6 +93,10 @@ func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) *api.CompleteEve
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
+			if w == nil {
+				logger.Error("Failed to create new writer.")
+				return
+			}
 			w.WriteTo(wc)
 		}()
 	}

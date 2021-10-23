@@ -60,7 +60,7 @@ func (ir *InitializeRequest) Parse() error {
 			os.Setenv(k, v)
 		}
 
-		golog.Info("Added Enviornment Variable(s)", golog.Fields{
+		golog.Debug("Added Enviornment Variable(s)", golog.Fields{
 			"Total": count,
 		})
 	}
