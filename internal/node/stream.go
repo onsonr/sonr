@@ -1,5 +1,61 @@
 package node
 
+import api "github.com/sonr-io/core/internal/api"
+
+// OnDecision is callback for NodeImpl for decisionEvents
+func (n *Node) OnDecision(event *api.DecisionEvent) {
+	if event == nil {
+		logger.Warn("Received nil event: OnDecision")
+		return
+	}
+	n.decisionEvents <- event
+}
+
+// OnInvite is callback for NodeImpl for inviteEvents
+func (n *Node) OnInvite(event *api.InviteEvent) {
+	if event == nil {
+		logger.Warn("Received nil event: OnInvite")
+		return
+	}
+	n.inviteEvents <- event
+}
+
+// OnMailbox is callback for NodeImpl for mailEvents
+func (n *Node) OnMailbox(event *api.MailboxEvent) {
+	if event == nil {
+		logger.Warn("Received nil event: OnMailbox")
+		return
+	}
+	n.mailEvents <- event
+}
+
+// OnRefresh is callback for NodeImpl for refreshEvents
+func (n *Node) OnRefresh(event *api.RefreshEvent) {
+	if event == nil {
+		logger.Warn("Received nil event: OnRefresh")
+		return
+	}
+	n.refreshEvents <- event
+}
+
+// OnProgress is callback for NodeImpl for progressEvents
+func (n *Node) OnProgress(event *api.ProgressEvent) {
+	if event == nil {
+		logger.Warn("Received nil event: OnProgress")
+		return
+	}
+	n.progressEvents <- event
+}
+
+// OnComplete is callback for NodeImpl for completeEvents
+func (n *Node) OnComplete(event *api.CompleteEvent) {
+	if event == nil {
+		logger.Warn("Received nil event: OnComplete")
+		return
+	}
+	n.completeEvents <- event
+}
+
 // OnLobbyRefresh method sends a lobby refresh event to the client.
 func (s *ClientNodeStub) OnLobbyRefresh(e *Empty, stream ClientService_OnLobbyRefreshServer) error {
 	for {

@@ -2,7 +2,6 @@ package node
 
 import (
 	"context"
-	"errors"
 	"strings"
 	"time"
 
@@ -92,33 +91,6 @@ func NewNode(ctx context.Context, options ...Option) (api.NodeImpl, *api.Initial
 	return node, api.NewInitialzeResponse(node.Profile, false), nil
 }
 
-// Close closes the node
-func (n *Node) Close() {
-	// Close Client Stub
-	if n.mode.IsLib() {
-		if err := n.clientStub.Close(); err != nil {
-			logger.Error("Failed to close Client Stub, ", err)
-		}
-	}
-
-	// Close Highway Stub
-	if n.mode.IsHighway() {
-		if err := n.highwayStub.Close(); err != nil {
-			logger.Error("Failed to close Highway Stub, ", err)
-		}
-	}
-
-	// Close Store
-	if err := n.store.Close(); err != nil {
-		logger.Error("Failed to close store, ", err)
-	}
-
-	// Close Host
-	if err := n.host.Close(); err != nil {
-		logger.Error("Failed to close host, ", err)
-	}
-}
-
 // Peer method returns the peer of the node
 func (n *Node) Peer() (*common.Peer, error) {
 	// Get Profile
@@ -163,66 +135,29 @@ func (n *Node) Peer() (*common.Peer, error) {
 	}, nil
 }
 
-// OnDecision is callback for NodeImpl for decisionEvents
-func (n *Node) OnDecision(event *api.DecisionEvent) {
-	n.decisionEvents <- event
-}
-
-// OnInvite is callback for NodeImpl for inviteEvents
-func (n *Node) OnInvite(event *api.InviteEvent) {
-	n.inviteEvents <- event
-}
-
-// OnRefresh is callback for NodeImpl for refreshEvents
-func (n *Node) OnRefresh(event *api.RefreshEvent) {
-	n.refreshEvents <- event
-}
-
-// OnProgress is callback for NodeImpl for progressEvents
-func (n *Node) OnProgress(event *api.ProgressEvent) {
-	n.progressEvents <- event
-}
-
-// OnComplete is callback for NodeImpl for completeEvents
-func (n *Node) OnComplete(event *api.CompleteEvent) {
-	n.completeEvents <- event
-}
-
-// NewSNID returns a new SNID
-func (n *Node) NewSNID(sname string) (*wallet.SNID, error) {
-	// Check if SNID is empty
-	if len(sname) == 0 {
-		return nil, errors.New("SName not provided.")
+// Close closes the node
+func (n *Node) Close() {
+	// Close Client Stub
+	if n.mode.IsLib() {
+		if err := n.clientStub.Close(); err != nil {
+			logger.Error("Failed to close Client Stub, ", err)
+		}
 	}
 
-	// Find Records
-	recs, err := api.LookupTXT(n.ctx, sname)
-	if err != nil {
-		return nil, err
+	// Close Highway Stub
+	if n.mode.IsHighway() {
+		if err := n.highwayStub.Close(); err != nil {
+			logger.Error("Failed to close Highway Stub, ", err)
+		}
 	}
 
-	// Get Name from Records
-	rec, err := recs.GetNameRecord()
-	if err != nil {
-		return nil, err
+	// Close Store
+	if err := n.store.Close(); err != nil {
+		logger.Error("Failed to close store, ", err)
 	}
 
-	// Get Pub Key
-	pubKey, err := rec.PubKeyBuffer()
-	if err != nil {
-		return nil, err
+	// Close Host
+	if err := n.host.Close(); err != nil {
+		logger.Error("Failed to close host, ", err)
 	}
-
-	// Get Peer ID
-	id, err := rec.PeerID()
-	if err != nil {
-		return nil, err
-	}
-
-	// Return SNID
-	return &wallet.SNID{
-		Domain: sname,
-		PeerID: id.String(),
-		PubKey: pubKey,
-	}, nil
 }

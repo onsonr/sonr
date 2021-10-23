@@ -85,11 +85,17 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, nu api.NodeImpl, optio
 		peers:        make([]*common.Peer, 0),
 	}
 
-	// Handle Events and Return Protocol
-	logger.Debug("✅  LobbyProtocol is Activated \n")
+	// Handle Events
 	go lobProtocol.HandleEvents()
 	go lobProtocol.HandleMessages()
-	go lobProtocol.autoPushUpdates()
+
+	// Auto Push Updates
+	if opts.autoPushEnabled {
+		go lobProtocol.autoPushUpdates(opts.interval)
+	}
+
+	// Return Protocol
+	logger.Debug("✅  LobbyProtocol is Activated \n")
 	return lobProtocol, nil
 }
 
@@ -188,7 +194,7 @@ func (p *LobbyProtocol) HandleMessages() {
 }
 
 // HandleMessages method listens to Pubsub Messages for room
-func (p *LobbyProtocol) autoPushUpdates() {
+func (p *LobbyProtocol) autoPushUpdates(d time.Duration) {
 	// Loop Messages
 	for {
 		err := p.sendUpdate()
@@ -199,7 +205,7 @@ func (p *LobbyProtocol) autoPushUpdates() {
 
 		// Sleep for 5 seconds before next update
 		p.cleanPeerList()
-		time.Sleep(time.Second * 5)
+		time.Sleep(d)
 	}
 }
 

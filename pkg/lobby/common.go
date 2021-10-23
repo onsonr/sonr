@@ -12,10 +12,15 @@ var (
 	logger = golog.Child("protocols/lobby")
 )
 
-type GetPeerFunc func() (*common.Peer, error)
-
 // LobbyOption is a function that modifies the Lobby options.
 type LobbyOption func(*lobbyOptions)
+
+// DisableAutoPush disables the auto push of the Lobby for OLC
+func DisableAutoPush() LobbyOption {
+	return func(o *lobbyOptions) {
+		o.autoPushEnabled = false
+	}
+}
 
 // WithLocation sets the location of the Lobby for OLC
 func WithLocation(l *common.Location) LobbyOption {
@@ -26,22 +31,28 @@ func WithLocation(l *common.Location) LobbyOption {
 			} else {
 				o.location = l
 			}
-		} else {
-			o.location = l
 		}
+	}
+}
+
+// WithInterval sets the interval of the Lobby for OLC
+func WithInterval(i time.Duration) LobbyOption {
+	return func(o *lobbyOptions) {
+		o.interval = i
 	}
 }
 
 // lobbyOptions is a collection of options for the Lobby.
 type lobbyOptions struct {
-	location *common.Location
-	peerFunc GetPeerFunc
-	interval time.Duration
+	location        *common.Location
+	interval        time.Duration
+	autoPushEnabled bool
 }
 
 func defaultLobbyOptions() *lobbyOptions {
 	return &lobbyOptions{
-		location: api.GetLocation(),
-		interval: time.Second * 5,
+		location:        api.GetLocation(),
+		interval:        time.Second * 5,
+		autoPushEnabled: true,
 	}
 }
