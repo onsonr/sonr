@@ -79,7 +79,7 @@ func (o *options) Apply(p *ExchangeProtocol) error {
 		}
 
 		// Get Public Key
-		pub, err := wallet.Primary.GetSnrPubKey(wallet.Account)
+		pub, err := wallet.Sonr.GetSnrPubKey(wallet.Account)
 		if err != nil {
 			return err
 		}

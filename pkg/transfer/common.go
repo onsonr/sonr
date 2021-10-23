@@ -85,7 +85,7 @@ func (p *TransferProtocol) createRequest(to *common.Peer) (peer.ID, *InviteReque
 		payload := p.supplyQueue.Remove(elem).(*common.Payload)
 
 		// Create new Metadata
-		meta, err := wallet.Primary.CreateMetadata(p.host.ID())
+		meta, err := wallet.Sonr.CreateMetadata(p.host.ID())
 		if err != nil {
 			logger.Error("Failed to create new metadata for Shared Invite", err)
 			return "", nil, err
@@ -121,7 +121,7 @@ func (p *TransferProtocol) createResponse(decs bool, to *common.Peer) (peer.ID, 
 	}
 
 	// Create new Metadata
-	meta, err := wallet.Primary.CreateMetadata(p.host.ID())
+	meta, err := wallet.Sonr.CreateMetadata(p.host.ID())
 	if err != nil {
 		logger.Error("Failed to create new metadata for Shared Invite", err)
 		return "", nil, err

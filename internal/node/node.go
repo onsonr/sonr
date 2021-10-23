@@ -100,7 +100,7 @@ func (n *Node) Peer() (*common.Peer, error) {
 	}
 
 	// Get Public Key
-	pubKey, err := wallet.Primary.GetSnrPubKey(wallet.Account)
+	pubKey, err := wallet.Sonr.GetSnrPubKey(wallet.Account)
 	if err != nil {
 		logger.Error("Failed to get Public Key", err)
 		return nil, err
@@ -138,7 +138,7 @@ func (n *Node) Peer() (*common.Peer, error) {
 // Close closes the node
 func (n *Node) Close() {
 	// Close Client Stub
-	if n.mode.IsLib() {
+	if n.mode.HasClient() {
 		if err := n.clientStub.Close(); err != nil {
 			logger.Error("Failed to close Client Stub, ", err)
 		}

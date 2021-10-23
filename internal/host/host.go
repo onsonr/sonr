@@ -104,7 +104,7 @@ func NewHost(ctx context.Context, options ...HostOption) (*SNRHost, error) {
 // AuthenticateId verifies UUID value and signature
 func (h *SNRHost) AuthenticateId(id *wallet.UUID) (bool, error) {
 	// Get local node's public key
-	pubKey, err := wallet.Primary.GetPubKey(wallet.Account)
+	pubKey, err := wallet.Sonr.GetPubKey(wallet.Account)
 	if err != nil {
 		logger.Error("AuthenticateId: Failed to get local host's public key", err)
 		return false, err
@@ -246,7 +246,7 @@ func (h *SNRHost) SendMessage(id peer.ID, p protocol.ID, data proto.Message) err
 // SignData signs an outgoing p2p message payload
 func (n *SNRHost) SignData(data []byte) ([]byte, error) {
 	// Get local node's private key
-	res, err := wallet.Primary.SignWith(wallet.Account, data)
+	res, err := wallet.Sonr.SignWith(wallet.Account, data)
 	if err != nil {
 		logger.Error("SignData: Failed to get local host's private key", err)
 		return nil, err

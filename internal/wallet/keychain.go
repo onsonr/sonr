@@ -14,7 +14,8 @@ import (
 )
 
 var (
-	Primary KeyChain
+	// Sonr is the KeyChain for the Sonr Protocol
+	Sonr KeyChain
 )
 
 // Keychain Interface for managing device keypairs.
@@ -72,7 +73,7 @@ func Open() error {
 		if err != nil {
 			return err
 		}
-		Primary = kc
+		Sonr = kc
 		return nil
 	} else {
 		logger.Debug("Creating new Keychain")
@@ -83,7 +84,7 @@ func Open() error {
 		}
 
 		// Return Keychain
-		Primary = kc
+		Sonr = kc
 		return nil
 	}
 }

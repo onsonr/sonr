@@ -95,7 +95,7 @@ func NewRecordPrefix(sName string) (string, error) {
 		return "", errors.New("SName cannot by Empty or Less than 4 characters.")
 	}
 	val := fmt.Sprintf("%s:%s", deviceID, sName)
-	return wallet.Primary.SignHmacWith(wallet.Account, val)
+	return wallet.Sonr.SignHmacWith(wallet.Account, val)
 }
 
 // SetDeviceID sets the device ID.
@@ -162,7 +162,7 @@ func VerifyRecordPrefix(prefix string, sName string) bool {
 
 	// Check if the prefix is valid
 	val := fmt.Sprintf("%s:%s", deviceID, sName)
-	ok, err := wallet.Primary.VerifyHmacWith(wallet.Account, prefix, val)
+	ok, err := wallet.Sonr.VerifyHmacWith(wallet.Account, prefix, val)
 	if err != nil {
 		logger.Error("Failed to verify prefix", err)
 		return false
