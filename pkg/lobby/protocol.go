@@ -213,7 +213,7 @@ func (p *LobbyProtocol) cleanPeerList() {
 	for _, id := range peers {
 		if !p.hasPeerID(id) {
 			needsRefresh = true
-			p.peers = p.removePeer(id)
+			p.removePeer(id)
 		}
 	}
 

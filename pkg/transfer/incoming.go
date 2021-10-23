@@ -15,6 +15,7 @@ import (
 
 // onInviteRequest peer requests handler
 func (p *TransferProtocol) onInviteRequest(s network.Stream) {
+	logger.Debug("Received Invite Request")
 	// Initialize Stream Data
 	remotePeer := s.Conn().RemotePeer()
 	r := msgio.NewReader(s)
@@ -49,6 +50,7 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 
 // onIncomingTransfer incoming transfer handler
 func (p *TransferProtocol) onIncomingTransfer(stream network.Stream) {
+	logger.Debug("Received Incoming Transfer")
 	// Find Entry in Queue
 	entry, err := p.sessionQueue.Next()
 	if err != nil {

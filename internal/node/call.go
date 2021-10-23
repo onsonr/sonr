@@ -229,13 +229,13 @@ func (s *ClientNodeStub) Respond(ctx context.Context, req *api.RespondRequest) (
 
 // Authorize Signing Method Request for Data
 func (hrc *HighwayNodeStub) Authorize(ctx context.Context, req *api.AuthorizeRequest) (*api.AuthorizeResponse, error) {
-	logger.Info("HighwayService.Authorize() is Unimplemented")
+	logger.Debug("HighwayService.Authorize() is Unimplemented")
 	return nil, nil
 }
 
 // Link a new Device to the Node
 func (hrc *HighwayNodeStub) Link(ctx context.Context, req *api.LinkRequest) (*api.LinkResponse, error) {
-	logger.Info("HighwayService.Link() is Unimplemented")
+	logger.Debug("HighwayService.Link() is Unimplemented")
 	return nil, nil
 }
 

@@ -40,7 +40,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*M
 			return nil, err
 		}
 	}
-	logger.Info("✅  MailboxProtocol is Activated \n")
+	logger.Debug("✅  MailboxProtocol is Activated \n")
 	// go mailProtocol.handleMailboxEvents()
 	return mailProtocol, nil
 }
@@ -78,9 +78,9 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*M
 // 		// handle connectivity state
 // 		switch s.State {
 // 		case cmd.Online:
-// 			logger.Info(fmt.Sprintf("Mailbox is Online: %s", s.Err))
+// 			logger.Debug(fmt.Sprintf("Mailbox is Online: %s", s.Err))
 // 		case cmd.Offline:
-// 			logger.Info(fmt.Sprintf("Mailbox is Offline: %s", s.Err))
+// 			logger.Debug(fmt.Sprintf("Mailbox is Offline: %s", s.Err))
 // 		}
 // 	}
 // }
@@ -95,7 +95,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*M
 // 	}
 
 // 	// Logging and Open Body
-// 	logger.Info(fmt.Sprintf("Received new message: %s", inbox[0].From))
+// 	logger.Debug(fmt.Sprintf("Received new message: %s", inbox[0].From))
 // 	body, err := inbox[0].Open(ts.ctx, ts.mailbox.Identity())
 // 	if err != nil {
 // 		logger.Error("Failed to Open Inbox Messages", err)
@@ -103,7 +103,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*M
 // 	}
 
 // 	// Log Valid Lobby Length
-// 	logger.Info(fmt.Sprintf("Valid Body Length: %d", len(body)))
+// 	logger.Debug(fmt.Sprintf("Valid Body Length: %d", len(body)))
 
 // 	// Unmarshal InviteRequest from JSON
 // 	msg := MailboxMessage{}
@@ -181,6 +181,6 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*M
 // 	}
 
 // 	// Log Result
-// 	logger.Info("Succesfully sent mail!", golog.Fields{"ID": msg.ID, "SentAt": msg.CreatedAt, "To": msg.To.String()})
+// 	logger.Debug("Succesfully sent mail!", golog.Fields{"ID": msg.ID, "SentAt": msg.CreatedAt, "To": msg.To.String()})
 // 	return nil
 // }

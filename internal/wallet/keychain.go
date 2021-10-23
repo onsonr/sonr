@@ -75,7 +75,7 @@ func Open() error {
 		Primary = kc
 		return nil
 	} else {
-		logger.Info("Creating new Keychain")
+		logger.Debug("Creating new Keychain")
 		// Create Keychain
 		kc, err := newKeychain(config)
 		if err != nil {

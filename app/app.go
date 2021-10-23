@@ -3,10 +3,9 @@ package app
 import (
 	"context"
 	"fmt"
+	"net"
 	"os"
-	"os/signal"
 	"path/filepath"
-	"syscall"
 
 	"github.com/kataras/golog"
 	"github.com/pterm/pterm"
@@ -14,6 +13,7 @@ import (
 	"github.com/sonr-io/core/internal/node"
 	"github.com/sonr-io/core/pkg/common"
 	"github.com/spf13/viper"
+	"google.golang.org/grpc"
 )
 
 func init() {
@@ -23,9 +23,11 @@ func init() {
 // Sonr is the main struct for Sonr Node
 type Sonr struct {
 	// Properties
-	Ctx  context.Context
-	Node api.NodeImpl
-	Mode node.StubMode
+	Ctx        context.Context
+	Node       api.NodeImpl
+	Mode       node.StubMode
+	Listener   net.Listener
+	GRPCServer *grpc.Server
 }
 
 // instance is the global Sonr Instance
@@ -58,38 +60,28 @@ func Start(req *api.InitializeRequest, options ...Option) {
 		os.Exit(1)
 	}
 
-	// Create Node
-	ctx := context.Background()
-	n, _, err := node.NewNode(ctx, opts.Apply(req)...)
+	// Apply Options
+	err = opts.Apply(req)
 	if err != nil {
-		golog.Fatal("Failed to update Profile for Node", golog.Fields{"error": err})
+		golog.Fatal("Failed to initialize Sonr", golog.Fields{"error": err})
 		os.Exit(1)
 	}
 
-	// Set Lib
-	instance = Sonr{
-		Ctx:  ctx,
-		Mode: opts.mode,
-		Node: n,
-	}
-	instance.Serve()
-}
-
-// AppHeader prints Node Info onto Terminal
-func AppHeader() {
-	// Get Peer Info
-	p, err := instance.Node.Peer()
-	if err != nil {
-		golog.Error("Failed to get Peer", golog.Fields{"error": err})
-		Exit(1)
-	}
-
-	// Print Header on Terminal CLI Mode
-	if instance.Mode.IsCLI() {
-		pterm.DefaultSection.Println(fmt.Sprintf("Sonr Node Online: %s", p.PeerID))
-		pterm.Info.Println(fmt.Sprintf("SName: %s \nOS: %s \nArch: %s", p.GetSName(), p.OS(), p.Arch()))
+	// Serve Node for GRPC
+	if common.IsDesktop() {
+		// Handle Node Events
+		if err := instance.GRPCServer.Serve(instance.Listener); err != nil {
+			golog.Fatal("Failed to serve gRPC", err)
+		}
+	} else {
+		go func() {
+			if err := instance.GRPCServer.Serve(instance.Listener); err != nil {
+				golog.Fatal("Failed to serve gRPC", err)
+			}
+		}()
 	}
 }
+
 
 // Exit handles cleanup on Sonr Node
 func Exit(code int) {
@@ -99,6 +91,8 @@ func Exit(code int) {
 	}
 	golog.Info("Cleaning up on Exit...")
 	instance.Node.Close()
+	instance.GRPCServer.Stop()
+	instance.Listener.Close()
 	defer instance.Ctx.Done()
 
 	// Check for Full Desktop Node
@@ -120,33 +114,6 @@ func Exit(code int) {
 			golog.Info("Wrote new config file to Disk")
 		}
 		os.Exit(code)
-	}
-}
-
-// Serve waits for Exit Signal from Terminal
-func (sh Sonr) Serve() {
-	// Check if CLI Mode
-	if common.IsMobile() {
-		golog.Info("Skipping Serve, Node is mobile...")
-		return
-	}
-
-	// Wait for Exit Signal
-	AppHeader()
-	c := make(chan os.Signal)
-	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
-	go func() {
-		<-c
-		Exit(0)
-	}()
-
-	// Hold until Exit Signal
-	for {
-		select {
-		case <-sh.Ctx.Done():
-			golog.Info("Context Done")
-			return
-		}
 	}
 }
 
@@ -176,26 +143,53 @@ func WithMode(mode node.StubMode) Option {
 
 // options is the struct for the options
 type options struct {
-	host string
-	port int
-	mode node.StubMode
+	host    string
+	network string
+	port    int
+	mode    node.StubMode
+}
+
+// Address returns the address of the node.
+func (opts *options) Address() string {
+	return fmt.Sprintf("%s%d", opts.host, opts.port)
 }
 
 // defaultOptions returns the default options
 func defaultOptions() *options {
 	return &options{
-		host: ":",
-		port: 26225,
-		mode: node.StubMode_LIB,
+		host:    ":",
+		port:    26225,
+		mode:    node.StubMode_LIB,
+		network: "tcp",
 	}
 }
 
 // Apply applies the options to the request
-func (o *options) Apply(r *api.InitializeRequest) []node.Option {
-	return []node.Option{
-		node.WithHost(o.host),
-		node.WithPort(o.port),
-		node.WithMode(o.mode),
-		node.WithRequest(r),
+func (o *options) Apply(req *api.InitializeRequest) error {
+	// Create Node
+	ctx := context.Background()
+
+	// Open Listener on Port
+	listener, err := net.Listen(o.network, o.Address())
+	if err != nil {
+		return err
 	}
+
+	// Set Instance
+	instance = Sonr{
+		Ctx:        ctx,
+		Mode:       o.mode,
+		Listener:   listener,
+		GRPCServer: grpc.NewServer(),
+	}
+
+	// Set Node Stub
+	n, _, err := node.NewNode(ctx, node.WithGRPC(instance.GRPCServer),
+		node.WithMode(o.mode),
+		node.WithRequest(req))
+	if err != nil {
+		return err
+	}
+	instance.Node = n
+	return nil
 }

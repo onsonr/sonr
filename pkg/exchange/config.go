@@ -71,7 +71,7 @@ func defaultOptions() *options {
 // Apply applies options to ExchangeProtocol config
 func (o *options) Apply(p *ExchangeProtocol) error {
 	if o.Mode.ShouldCreate() {
-		logger.Infof("Registering SName on DNS Table: %s (%v)", o.sNameVal, o.Mode)
+		logger.Debugf("Registering SName on DNS Table: %s (%v)", o.sNameVal, o.Mode)
 		// Get Record Prefix
 		prefix, err := common.NewRecordPrefix(o.sNameVal)
 		if err != nil {

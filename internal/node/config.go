@@ -3,12 +3,10 @@ package node
 import (
 	"context"
 	"errors"
-	"fmt"
 
-	"github.com/manifoldco/promptui"
+	grpc "google.golang.org/grpc"
 
 	"github.com/kataras/golog"
-	"github.com/pterm/pterm"
 	api "github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/pkg/common"
 )
@@ -25,10 +23,10 @@ var (
 // Option is a function that modifies the node options.
 type Option func(*options)
 
-// WithHost sets the host for RPC Stub Server
-func WithHost(h string) Option {
+// WithPort sets the port for RPC Stub Server
+func WithGRPC(s *grpc.Server) Option {
 	return func(o *options) {
-		o.host = h
+		o.grpcServer = s
 	}
 }
 
@@ -48,22 +46,13 @@ func WithMode(m StubMode) Option {
 	}
 }
 
-// WithPort sets the port for RPC Stub Server
-func WithPort(p int) Option {
-	return func(o *options) {
-		o.port = p
-	}
-}
-
 // options is a collection of options for the node.
 type options struct {
-	host       string
 	connection common.Connection
 	location   *common.Location
 	mode       StubMode
-	network    string
-	port       int
 	profile    *common.Profile
+	grpcServer *grpc.Server
 }
 
 // defaultNodeOptions returns the default node options.
@@ -72,16 +61,9 @@ func defaultNodeOptions() *options {
 		mode:       StubMode_LIB,
 		location:   common.DefaultLocation(),
 		connection: common.Connection_WIFI,
-		network:    "tcp",
-		host:       ":",
-		port:       common.RPC_SERVER_PORT,
+		grpcServer: grpc.NewServer(),
 		profile:    common.NewDefaultProfile(),
 	}
-}
-
-// Address returns the address of the node.
-func (opts *options) Address() string {
-	return fmt.Sprintf("%s%d", opts.host, opts.port)
 }
 
 // Apply applies Options to node
@@ -113,34 +95,6 @@ func (opts *options) Apply(ctx context.Context, node *Node) error {
 
 		// Set Stub to node
 		node.highwayStub = stub
-	}
-	return nil
-}
-
-// printTerminal is a helper function that prints to the terminal.
-func (n *Node) printTerminal(title string, msg string) {
-	if n.mode.IsCLI() {
-		// Print a section with level one.
-		pterm.DefaultSection.Println(title)
-		// Print placeholder.
-		pterm.Info.Println(msg)
-	}
-}
-
-// promptTerminal is a helper function that prompts the user for input.
-func (n *Node) promptTerminal(title string, onResult func(result bool)) error {
-	if n.mode.IsCLI() {
-		prompt := promptui.Prompt{
-			Label:     title,
-			IsConfirm: true,
-		}
-
-		result, err := prompt.Run()
-		if err != nil {
-			fmt.Printf("Prompt failed %v\n", err)
-			return err
-		}
-		onResult(result == "y")
 	}
 	return nil
 }
