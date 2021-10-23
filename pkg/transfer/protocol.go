@@ -119,6 +119,6 @@ func (p *TransferProtocol) Supply(req *api.SupplyRequest) error {
 
 	// Add items to transfer
 	p.supplyQueue.PushBack(payload)
-	logger.Info(fmt.Sprintf("Added %v items to supply queue.", req.Count()), golog.Fields{"File Count": payload.FileCount(), "URL Count": payload.URLCount()})
+	logger.Debug(fmt.Sprintf("Added %v items to supply queue.", req.Count()), golog.Fields{"File Count": payload.FileCount(), "URL Count": payload.URLCount()})
 	return nil
 }

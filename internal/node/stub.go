@@ -156,7 +156,7 @@ func (s *ClientNodeStub) Update() error {
 		if err != nil {
 			logger.Error("Failed to Update Lobby", err)
 		} else {
-			logger.Info("🌎 Succesfully updated Lobby.")
+			logger.Debug("🌎 Succesfully updated Lobby.")
 		}
 
 		// Update ExchangeProtocol
@@ -164,7 +164,7 @@ func (s *ClientNodeStub) Update() error {
 		if err != nil {
 			logger.Error("Failed to Update Exchange", err)
 		} else {
-			logger.Info("🌎 Succesfully updated Exchange.")
+			logger.Debug("🌎 Succesfully updated Exchange.")
 		}
 		return err
 	} else {

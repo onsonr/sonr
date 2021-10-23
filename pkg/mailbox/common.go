@@ -56,7 +56,7 @@ func (mb *MailboxProtocol) getMailboxPath() (string, error) {
 
 // loadMailbox loads an existing mailbox instance
 func (mb *MailboxProtocol) loadMailbox() error {
-	logger.Info("Loading Mailbox...")
+	logger.Debug("Loading Mailbox...")
 
 	// Get Mailbox Path
 	path, err := mb.getMailboxPath()
@@ -74,13 +74,13 @@ func (mb *MailboxProtocol) loadMailbox() error {
 
 	// // Set mailbox
 	// mb.mailbox = mailbox
-	logger.Info("Existing Mailbox has been loaded.", golog.Fields{"path": path})
+	logger.Debug("Existing Mailbox has been loaded.", golog.Fields{"path": path})
 	return nil
 }
 
 // newMailbox creates a new mailbox instance
 func (mb *MailboxProtocol) newMailbox() error {
-	logger.Info("Creating new Mailbox...")
+	logger.Debug("Creating new Mailbox...")
 
 	// Get Mailbox Path
 	path, err := mb.getMailboxPath()
@@ -106,7 +106,7 @@ func (mb *MailboxProtocol) newMailbox() error {
 
 	// // Check if Err is for ErrMailboxExists
 	// if err == local.ErrMailboxExists {
-	// 	logger.Info("Mailbox already exists no need to create a new one")
+	// 	logger.Debug("Mailbox already exists no need to create a new one")
 	// 	// Load Existing Mailbox
 	// 	return mb.loadMailbox()
 	// }
@@ -119,6 +119,6 @@ func (mb *MailboxProtocol) newMailbox() error {
 
 	// // Set mailbox
 	// mb.mailbox = mailbox
-	logger.Info("New Mailbox has been created.", golog.Fields{"path": path})
+	logger.Debug("New Mailbox has been created.", golog.Fields{"path": path})
 	return nil
 }

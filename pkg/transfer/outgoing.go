@@ -15,7 +15,7 @@ import (
 
 // onInviteResponse response handler
 func (p *TransferProtocol) onInviteResponse(s network.Stream) {
-	logger.Info("Received Invite Response")
+	logger.Debug("Received Invite Response")
 	// Initialize Stream Data
 	remotePeer := s.Conn().RemotePeer()
 	r := msgio.NewReader(s)
@@ -61,7 +61,7 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 
 // onOutgoingTransfer is called by onInviteResponse if Validated
 func (p *TransferProtocol) onOutgoingTransfer(entry Session, stream network.Stream) {
-	logger.Info("Received Accept Decision, Starting Outgoing Transfer")
+	logger.Debug("Received Accept Decision, Starting Outgoing Transfer")
 	// Create New Writer
 	if event := entry.WriteTo(stream, p.node); event != nil {
 		p.node.OnComplete(event)

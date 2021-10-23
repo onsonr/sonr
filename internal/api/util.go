@@ -68,7 +68,7 @@ func (ir *InitializeRequest) Parse() error {
 	// Set Device ID
 	did := ir.GetDeviceOptions().GetId()
 	if did != "" {
-		logger.Info("Device ID Passed: " + did)
+		logger.Debug("Device ID Passed: " + did)
 		common.SetDeviceID(did)
 	}
 
@@ -136,7 +136,7 @@ func (sr *SupplyRequest) ToPayload(owner *common.Profile) (*common.Payload, erro
 	}
 
 	// Log Payload Details
-	logger.Info(fmt.Sprintf("Created payload with %v Files and %v URLs. Total size: %v", fileCount, urlCount, size))
+	logger.Debug(fmt.Sprintf("Created payload with %v Files and %v URLs. Total size: %v", fileCount, urlCount, size))
 
 	// Create Payload
 	payload := &common.Payload{

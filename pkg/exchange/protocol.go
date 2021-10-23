@@ -83,7 +83,7 @@ func (p *ExchangeProtocol) Get(sname string) (*common.Peer, error) {
 
 // Put method updates peer instance in the store
 func (p *ExchangeProtocol) Put(peer *common.Peer) error {
-	logger.Info("Updating Peer in BeamStore")
+	logger.Debug("Updating Peer in BeamStore")
 	// Marshal Peer
 	buf, err := peer.Buffer()
 	if err != nil {
@@ -102,7 +102,7 @@ func (p *ExchangeProtocol) Put(peer *common.Peer) error {
 
 // Resolve method resolves SName from DNS Table
 func (p *ExchangeProtocol) Resolve(sname string) (*common.Peer, error) {
-	logger.Info("Attempting to resolve from DNS Table")
+	logger.Debug("Attempting to resolve from DNS Table")
 	// Get Peer from DNS Resolver
 	recs, err := api.LookupTXT(p.ctx, sname)
 	if err != nil {
@@ -194,7 +194,7 @@ func (p *ExchangeProtocol) Close() error {
 
 	// Check for isTemporary
 	if p.mode.IsTemp() {
-		logger.Info("Deleted Temporary SName from DNS Table")
+		logger.Debug("Deleted Temporary SName from DNS Table")
 
 		// Delete SName from Namebase
 		_, err := api.RemoveRecords(p.ctx, p.authRecord)
