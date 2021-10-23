@@ -25,7 +25,6 @@ type ExchangeProtocol struct {
 	ctx        context.Context
 	beamStore  beam.Beam
 	host       *host.SNRHost // host
-	mode       DNSMode
 	authRecord api.Record
 	nameRecord api.Record
 }
@@ -49,7 +48,6 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl, opt
 		beamStore: b,
 		host:      host,
 		node:      node,
-		mode:      opts.Mode,
 	}
 	logger.Debug("✅  ExchangeProtocol is Activated \n")
 
@@ -190,18 +188,6 @@ func (p *ExchangeProtocol) Close() error {
 	if err != nil {
 		logger.Error("Failed to close BeamStore", err)
 		return err
-	}
-
-	// Check for isTemporary
-	if p.mode.IsTemp() {
-		logger.Debug("Deleted Temporary SName from DNS Table")
-
-		// Delete SName from Namebase
-		_, err := api.RemoveRecords(p.ctx, p.authRecord)
-		if err != nil {
-			logger.Error("Failed to Delete SName", err)
-			return err
-		}
 	}
 	return nil
 }

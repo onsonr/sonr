@@ -3,7 +3,6 @@ package lobby
 import (
 	"context"
 	"errors"
-	"time"
 
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/core/internal/api"
@@ -89,11 +88,6 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, nu api.NodeImpl, optio
 	go lobProtocol.HandleEvents()
 	go lobProtocol.HandleMessages()
 
-	// Auto Push Updates
-	if opts.autoPushEnabled {
-		go lobProtocol.autoPushUpdates(opts.interval)
-	}
-
 	// Return Protocol
 	logger.Debug("✅  LobbyProtocol is Activated \n")
 	return lobProtocol, nil
@@ -123,21 +117,13 @@ func (p *LobbyProtocol) Update() error {
 		return err
 	}
 
-	// Create Event
-	event := &LobbyMessage{Peer: peer}
-
-	// Marshal Event
-	eventBuf, err := proto.Marshal(event)
-	if err != nil {
-		logger.Error("Failed to Marshal Event", err)
-		return err
-	}
-
 	// Publish Event
-	err = p.topic.Publish(p.ctx, eventBuf)
-	if err != nil {
-		logger.Error("Failed to Publish Event", err)
-		return err
+	if buf := createLobbyMsgBuf(peer); buf != nil {
+		err = p.topic.Publish(p.ctx, buf)
+		if err != nil {
+			logger.Error("Failed to Publish Event", err)
+			return err
+		}
 	}
 	return nil
 }
@@ -152,13 +138,21 @@ func (p *LobbyProtocol) HandleEvents() {
 			return
 		}
 
+		// Verify Event not from self
+		if event.Peer == p.host.ID() {
+			continue
+		}
+
 		// Check Event and Validate not User
-		if p.isEventExit(event) {
-			p.handleEvent(event.Peer, nil)
+		if event.Type == ps.PeerLeave {
+			// Remove Peer, Emit Event
+			if ok := p.removePeer(event.Peer); ok {
+				p.callRefresh()
+			}
 			continue
 		} else {
 			// Update Peer Data in Topic
-			err := p.sendUpdate()
+			err := p.callUpdate()
 			if err != nil {
 				logger.Error("Failed to send peer update to lobby topic", err)
 				continue
@@ -187,44 +181,10 @@ func (p *LobbyProtocol) HandleMessages() {
 				continue
 			}
 
-			// Update Peer Data in map
-			p.handleEvent(msg.ReceivedFrom, data.Peer)
+			// Update Peer, Emit Event
+			if ok := p.updatePeer(msg.ReceivedFrom, data.GetPeer()); ok {
+				p.callRefresh()
+			}
 		}
-	}
-}
-
-// HandleMessages method listens to Pubsub Messages for room
-func (p *LobbyProtocol) autoPushUpdates(d time.Duration) {
-	// Loop Messages
-	for {
-		err := p.sendUpdate()
-		if err != nil {
-			logger.Error("Failed to send peer update to lobby topic", err)
-			continue
-		}
-
-		// Sleep for 5 seconds before next update
-		p.cleanPeerList()
-		time.Sleep(d)
-	}
-}
-
-// cleanPeerList removes peers that are no longer in the room
-func (p *LobbyProtocol) cleanPeerList() {
-	// Initialize Vars
-	needsRefresh := false
-	peers := p.topic.ListPeers()
-
-	// Iterate all subscribed Peer ID's
-	for _, id := range peers {
-		if !p.hasPeerID(id) {
-			needsRefresh = true
-			p.removePeer(id)
-		}
-	}
-
-	// Check if we need to send a refresh event
-	if needsRefresh {
-		p.callRefresh()
 	}
 }
