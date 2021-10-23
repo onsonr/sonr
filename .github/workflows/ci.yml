@@ -172,7 +172,7 @@ jobs:
       env:
         ANDROID_ZIP: sonrlib_${{ steps.get_version.outputs.version-without-v }}_android.zip
         IOS_ZIP: sonrlib_${{ steps.get_version.outputs.version-without-v }}_ios.zip
-        PROTO_ZIP: proto_${{ steps.get_version.outputs.version-without-v }}.zip
+        PROTO_ZIP: ${{ github.workspace }}/build/proto_${{ steps.get_version.outputs.version-without-v }}.zip
 
       # 6. Upload AAR and Framework to Release
     - uses: ncipollo/release-action@v1
