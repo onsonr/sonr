@@ -170,7 +170,7 @@ jobs:
         cp -R ${{ github.workspace }}/proto/api ${{ github.workspace }}/build/proto
         cp -R ${{ github.workspace }}/proto/common ${{ github.workspace }}/build/proto
         cp -R ${{ github.workspace }}/proto/node ${{ github.workspace }}/build/proto
-        cd ${{ github.workspace }}/build zip -r $PROTO_ZIP proto
+        cd ${{ github.workspace }}/build && zip -r $PROTO_ZIP proto
         cd ${{ github.workspace }}/build && zip -r $ANDROID_ZIP io.sonr.core.aar
         cd ${{ github.workspace }}/build && zip -r $IOS_ZIP Core.xcframework
       env:
