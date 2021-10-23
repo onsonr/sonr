@@ -67,11 +67,21 @@ func Start(req *api.InitializeRequest, options ...Option) {
 		os.Exit(1)
 	}
 
-	// Handle Node Events
-	if err := instance.GRPCServer.Serve(instance.Listener); err != nil {
-		golog.Fatal("Failed to serve gRPC", err)
+	// Serve Node for GRPC
+	if common.IsDesktop() {
+		// Handle Node Events
+		if err := instance.GRPCServer.Serve(instance.Listener); err != nil {
+			golog.Fatal("Failed to serve gRPC", err)
+		}
+	} else {
+		go func() {
+			if err := instance.GRPCServer.Serve(instance.Listener); err != nil {
+				golog.Fatal("Failed to serve gRPC", err)
+			}
+		}()
 	}
 }
+
 
 // Exit handles cleanup on Sonr Node
 func Exit(code int) {
