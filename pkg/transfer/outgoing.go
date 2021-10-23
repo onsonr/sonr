@@ -24,7 +24,7 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 	buf, err := r.ReadMsg()
 	if err != nil {
 		s.Reset()
-		logger.Error("Failed to Read Invite RESPONSE buffer.", err)
+		logger.Errorf("%s - Failed to Read Invite RESPONSE buffer.", err)
 		return
 	}
 	s.Close()
@@ -33,14 +33,14 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 	resp := &InviteResponse{}
 	err = proto.Unmarshal(buf, resp)
 	if err != nil {
-		logger.Error("Failed to Unmarshal Invite RESPONSE buffer.", err)
+		logger.Errorf("%s - Failed to Unmarshal Invite RESPONSE buffer.", err)
 		return
 	}
 
 	// Locate request data and remove it if found
 	entry, err := p.sessionQueue.Validate(resp)
 	if err != nil {
-		logger.Error("Failed to Validate Invite RESPONSE buffer.", err)
+		logger.Errorf("%s - Failed to Validate Invite RESPONSE buffer.", err)
 		return
 	}
 
@@ -49,7 +49,7 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 		// Create a new stream
 		stream, err := p.host.NewStream(p.ctx, remotePeer, SessionPID)
 		if err != nil {
-			logger.Error("Failed to create new stream.", err)
+			logger.Errorf("%s - Failed to create new stream.", err)
 			return
 		}
 
@@ -65,7 +65,7 @@ func (p *TransferProtocol) onOutgoingTransfer(entry Session, stream network.Stre
 	// Create New Writer
 	event, err := entry.WriteTo(stream, p.node)
 	if err != nil {
-		logger.Error("Failed to Write To Stream", err)
+		logger.Errorf("%s - Failed to Write To Stream", err)
 		stream.Reset()
 		return
 	}
@@ -100,7 +100,7 @@ func NewItemWriter(index int, count int, pi *common.Payload_Item, node api.NodeI
 	// Open Os File
 	f, err := os.Open(item.Path)
 	if err != nil {
-		logger.Error("Error opening item for Write stream", err)
+		logger.Errorf("%s - Error opening item for Write stream", err)
 		return nil, err
 	}
 
@@ -109,7 +109,7 @@ func NewItemWriter(index int, count int, pi *common.Payload_Item, node api.NodeI
 		AverageSize: avgSize, // Only Average Required
 	})
 	if err != nil {
-		logger.Error("Failed to create new chunker.", err)
+		logger.Errorf("%s - Failed to create new chunker.", err)
 		return nil, err
 	}
 
@@ -152,20 +152,20 @@ func (iw *itemWriter) WriteTo(writer msgio.WriteCloser) {
 			if err == io.EOF {
 				break
 			}
-			logger.Error("Error reading chunk.", err)
+			logger.Errorf("%s - Error reading chunk.", err)
 			return
 		}
 
 		// Write Message Bytes to Stream
 		err = writer.WriteMsg(c.Data)
 		if err != nil {
-			logger.Error("Error Writing data to msgio.Writer", err)
+			logger.Errorf("%s - Error Writing data to msgio.Writer", err)
 			return
 		}
 
 		// Unexpected Error
 		if err != nil && err != io.EOF {
-			logger.Error("Unexpected Error occurred on Write Stream", err)
+			logger.Errorf("%s - Unexpected Error occurred on Write Stream", err)
 			return
 		}
 		// Update Progress
@@ -175,7 +175,7 @@ func (iw *itemWriter) WriteTo(writer msgio.WriteCloser) {
 
 	// Close File
 	if err := iw.file.Close(); err != nil {
-		logger.Error("Failed to Close item on Write Stream", err)
+		logger.Errorf("%s - Failed to Close item on Write Stream", err)
 		return
 	}
 	return

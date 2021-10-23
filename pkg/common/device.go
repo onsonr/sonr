@@ -104,7 +104,7 @@ func SetDeviceID(id string) error {
 		deviceID = id
 		return nil
 	}
-	logger.Error("Failed to Set Device ID", ErrEmptyDeviceID)
+	logger.Errorf("%s - Failed to Set Device ID", ErrEmptyDeviceID)
 	return ErrEmptyDeviceID
 }
 
@@ -132,14 +132,14 @@ func Stat() (map[string]string, error) {
 	// Get Device Id
 	id, err := ID()
 	if err != nil {
-		logger.Error("Failed to get Device ID", err)
+		logger.Errorf("%s - Failed to get Device ID", err)
 		return nil, err
 	}
 
 	// Get HostName
 	hn, err := HostName()
 	if err != nil {
-		logger.Error("Failed to get HostName", err)
+		logger.Errorf("%s - Failed to get HostName", err)
 		return nil, err
 	}
 
@@ -164,7 +164,7 @@ func VerifyRecordPrefix(prefix string, sName string) bool {
 	val := fmt.Sprintf("%s:%s", deviceID, sName)
 	ok, err := wallet.Sonr.VerifyHmacWith(wallet.Account, prefix, val)
 	if err != nil {
-		logger.Error("Failed to verify prefix", err)
+		logger.Errorf("%s - Failed to verify prefix", err)
 		return false
 	}
 	return ok

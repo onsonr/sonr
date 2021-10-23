@@ -65,7 +65,6 @@ func WithInterval(interval time.Duration) HostOption {
 	}
 }
 
-
 // WithTTL sets the ttl for the host. Default is 2 minutes.
 func WithTTL(ttl time.Duration) HostOption {
 	return func(o hostOptions) {
@@ -175,7 +174,7 @@ func (hn *SNRHost) createDHTDiscovery(opts hostOptions) error {
 	hn.PubSub, err = psub.NewGossipSub(hn.ctx, hn.Host, psub.WithDiscovery(routingDiscovery))
 	if err != nil {
 		hn.SetStatus(Status_FAIL)
-		logger.Error("Failed to Create new Gossip Sub", err)
+		logger.Errorf("%s - Failed to Create new Gossip Sub", err)
 		return err
 	}
 
@@ -183,7 +182,7 @@ func (hn *SNRHost) createDHTDiscovery(opts hostOptions) error {
 	hn.dhtPeerChan, err = routingDiscovery.FindPeers(hn.ctx, opts.Rendezvous, opts.TTL)
 	if err != nil {
 		hn.SetStatus(Status_FAIL)
-		logger.Error("Failed to create FindPeers Discovery channel", err)
+		logger.Errorf("%s - Failed to create FindPeers Discovery channel", err)
 		return err
 	}
 	hn.SetStatus(Status_READY)
@@ -194,7 +193,7 @@ func (hn *SNRHost) createDHTDiscovery(opts hostOptions) error {
 func (hn *SNRHost) createMdnsDiscovery(opts hostOptions) {
 	// Verify if MDNS is Enabled
 	if !hn.connection.IsMdnsCompatible() {
-		logger.Error("Failed to Start MDNS Discovery ", ErrMDNSInvalidConn)
+		logger.Errorf("%s - Failed to Start MDNS Discovery ", ErrMDNSInvalidConn)
 		return
 	}
 

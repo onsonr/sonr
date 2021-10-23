@@ -46,28 +46,28 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, nu api.NodeImpl, optio
 
 	// Check parameters
 	if err := checkParams(host); err != nil {
-		logger.Error("Failed to create LobbyProtocol", err)
+		logger.Errorf("%s - Failed to create LobbyProtocol", err)
 		return nil, err
 	}
 
 	// Create Exchange Topic
 	topic, err := host.Join(olc)
 	if err != nil {
-		logger.Error("Failed to Join Local Pubsub Topic", err)
+		logger.Errorf("%s - Failed to Join Local Pubsub Topic", err)
 		return nil, err
 	}
 
 	// Subscribe to Room
 	sub, err := topic.Subscribe()
 	if err != nil {
-		logger.Error("Failed to Subscribe to OLC Topic", err)
+		logger.Errorf("%s - Failed to Subscribe to OLC Topic", err)
 		return nil, err
 	}
 
 	// Create Room Handler
 	handler, err := topic.EventHandler()
 	if err != nil {
-		logger.Error("Failed to Get Event Handler", err)
+		logger.Errorf("%s - Failed to Get Event Handler", err)
 		return nil, err
 	}
 
@@ -121,7 +121,7 @@ func (p *LobbyProtocol) Update() error {
 	if buf := createLobbyMsgBuf(peer); buf != nil {
 		err = p.topic.Publish(p.ctx, buf)
 		if err != nil {
-			logger.Error("Failed to Publish Event", err)
+			logger.Errorf("%s - Failed to Publish Event", err)
 			return err
 		}
 	}
@@ -135,26 +135,25 @@ func (p *LobbyProtocol) HandleEvents() {
 		// Get next event
 		event, err := p.eventHandler.NextPeerEvent(p.ctx)
 		if err != nil {
+			logger.Errorf("%s - Failed to Get Next Peer Event", err)
 			return
 		}
 
-		// Verify Event not from self
-		if event.Peer == p.host.ID() {
-			continue
-		}
-
 		// Check Event and Validate not User
-		if event.Type == ps.PeerLeave {
+		if event.Type == ps.PeerLeave && event.Peer != p.host.ID() {
 			// Remove Peer, Emit Event
 			if ok := p.removePeer(event.Peer); ok {
 				p.callRefresh()
 			}
 			continue
-		} else {
+		}
+
+		// Check Event and Validate not User
+		if event.Type == ps.PeerJoin && event.Peer != p.host.ID() {
 			// Update Peer Data in Topic
 			err := p.callUpdate()
 			if err != nil {
-				logger.Error("Failed to send peer update to lobby topic", err)
+				logger.Errorf("%s - Failed to send peer update to lobby topic", err)
 				continue
 			}
 		}
@@ -177,7 +176,7 @@ func (p *LobbyProtocol) HandleMessages() {
 			data := &LobbyMessage{}
 			err = proto.Unmarshal(msg.Data, data)
 			if err != nil {
-				logger.Error("Failed to Unmarshal Message", err)
+				logger.Errorf("%s - Failed to Unmarshal Message", err)
 				continue
 			}
 

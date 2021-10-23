@@ -96,21 +96,21 @@ func (n *Node) startClientService(ctx context.Context, opts *options) (*ClientNo
 	// Set Transfer Protocol
 	transferProtocol, err := transfer.NewProtocol(ctx, n.host, n)
 	if err != nil {
-		logger.Error("Failed to start TransferProtocol", err)
+		logger.Errorf("%s - Failed to start TransferProtocol", err)
 		return nil, err
 	}
 
 	// Set Local Lobby Protocol if Location is provided
 	lobbyProtocol, err := lobby.NewProtocol(ctx, n.host, n, lobby.WithLocation(opts.location))
 	if err != nil {
-		logger.Error("Failed to start LobbyProtocol", err)
+		logger.Errorf("%s - Failed to start LobbyProtocol", err)
 		return nil, err
 	}
 
 	// Set Exchange Protocol
 	exchProtocol, err := exchange.NewProtocol(ctx, n.host, n)
 	if err != nil {
-		logger.Error("Failed to start ExchangeProtocol", err)
+		logger.Errorf("%s - Failed to start ExchangeProtocol", err)
 		return nil, err
 	}
 
@@ -145,7 +145,7 @@ func (s *ClientNodeStub) Update() error {
 	// Call Internal Edit
 	peer, err := s.node.Peer()
 	if err != nil {
-		logger.Error("Failed to get Peer Ref", err)
+		logger.Errorf("%s - Failed to get Peer Ref", err)
 		return err
 	}
 
@@ -154,7 +154,7 @@ func (s *ClientNodeStub) Update() error {
 		// Update LobbyProtocol
 		err = s.LobbyProtocol.Update()
 		if err != nil {
-			logger.Error("Failed to Update Lobby", err)
+			logger.Errorf("%s - Failed to Update Lobby", err)
 		} else {
 			logger.Debug("🌎 Succesfully updated Lobby.")
 		}
@@ -162,7 +162,7 @@ func (s *ClientNodeStub) Update() error {
 		// Update ExchangeProtocol
 		err := s.ExchangeProtocol.Put(peer)
 		if err != nil {
-			logger.Error("Failed to Update Exchange", err)
+			logger.Errorf("%s - Failed to Update Exchange", err)
 		} else {
 			logger.Debug("🌎 Succesfully updated Exchange.")
 		}

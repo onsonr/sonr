@@ -89,10 +89,12 @@ func (er *EditRequest) IsDelete() bool {
 	return er.GetType() == EditRequest_DELETE
 }
 
+// Count returns the number of items in the payload
 func (sr *SupplyRequest) Count() int {
 	return len(sr.GetItems())
 }
 
+// ToPayload converts the response to a payload
 func (sr *SupplyRequest) ToPayload(owner *common.Profile) (*common.Payload, error) {
 	// Initialize
 	fileCount := 0
@@ -147,6 +149,7 @@ func (sr *SupplyRequest) ToPayload(owner *common.Profile) (*common.Payload, erro
 	return payload, nil
 }
 
+// NewInitialzeResponse returns a new initialize response
 func NewInitialzeResponse(gpf common.GetProfileFunc, success bool) *InitializeResponse {
 	resp := &InitializeResponse{Success: success}
 	if !success || gpf == nil {
@@ -154,7 +157,7 @@ func NewInitialzeResponse(gpf common.GetProfileFunc, success bool) *InitializeRe
 	}
 	p, err := gpf()
 	if err != nil {
-		logger.Error("Failed to get profile", err)
+		logger.Errorf("%s - Failed to get profile", err)
 		return resp
 	}
 	resp.Profile = p

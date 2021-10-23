@@ -47,7 +47,7 @@ func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) (*api.CompleteE
 		// Create Reader
 		r, err := NewItemReader(i, s.Count(), v, n)
 		if err != nil {
-			logger.Error("Failed to create new reader.", err)
+			logger.Errorf("%s - Failed to create new reader.", err)
 			rs.Close()
 			return nil, err
 		}
@@ -57,7 +57,7 @@ func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) (*api.CompleteE
 		go func(idx, total int) {
 			defer wg.Done()
 			if r == nil {
-				logger.Error("Failed to create new reader.")
+				logger.Errorf("%s - Failed to create new reader.")
 				return
 			}
 			r.ReadFrom(rs)
@@ -89,7 +89,7 @@ func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) (*api.CompleteEv
 		// Create New Writer
 		w, err := NewItemWriter(i, s.Count(), v, n)
 		if err != nil {
-			logger.Error("Failed to create new writer.", err)
+			logger.Errorf("%s - Failed to create new writer.", err)
 			wc.Close()
 			return nil, err
 		}
@@ -99,7 +99,7 @@ func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) (*api.CompleteEv
 		go func() {
 			defer wg.Done()
 			if w == nil {
-				logger.Error("Failed to create new writer.")
+				logger.Errorf("%s - Failed to create new writer.")
 				return
 			}
 			w.WriteTo(wc)
@@ -205,7 +205,7 @@ func (sq *SessionQueue) Validate(resp *InviteResponse) (Session, error) {
 	// Get Next Entry
 	entry, err := sq.Next()
 	if err != nil {
-		logger.Error("Failed to get Transfer entry", err)
+		logger.Errorf("%s - Failed to get Transfer entry", err)
 		return Session{}, err
 	}
 

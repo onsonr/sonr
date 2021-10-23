@@ -13,7 +13,7 @@ func Start(reqBuf []byte) {
 	req := &api.InitializeRequest{}
 	err := proto.Unmarshal(reqBuf, req)
 	if err != nil {
-		golog.Errorf("Failed to unmarshal request: %v", err)
+		golog.Fatalf("%s - Failed to unmarshal InitializeRequest", err)
 		return
 	}
 	app.Start(req)

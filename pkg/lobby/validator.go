@@ -36,7 +36,7 @@ func (lp *LobbyProtocol) callUpdate() error {
 	logger.Debug("Sending Update to Lobby")
 	err := lp.Update()
 	if err != nil {
-		logger.Error("Failed to update peer", err)
+		logger.Errorf("%s - Failed to update peer", err)
 		return err
 	}
 	return nil
@@ -122,13 +122,8 @@ func (lp *LobbyProtocol) removePeer(peerID peer.ID) bool {
 // updatePeer Adds Peer to Peer List
 func (lp *LobbyProtocol) updatePeer(peerID peer.ID, data *common.Peer) bool {
 	// Check if Peer is in Peer List and Topic already
-	if !lp.hasPeerID(peerID) {
+	if ok := lp.hasPeerID(peerID); !ok {
 		lp.removePeer(peerID)
-		return false
-	}
-
-	// Check if Peer is in Peer-Data List
-	if lp.hasPeer(data) {
 		return false
 	}
 

@@ -44,7 +44,7 @@ func (n *Node) openStore(ctx context.Context, opts *options) error {
 	// It will be created if it doesn't exist.
 	db, err := bitcask.Open(path, bitcask.WithAutoRecovery(true))
 	if err != nil {
-		logger.Error("Failed to open Database", err)
+		logger.Errorf("%s - Failed to open Database", err)
 		return err
 	}
 	n.store = db
@@ -52,7 +52,7 @@ func (n *Node) openStore(ctx context.Context, opts *options) error {
 	// Create Profile Bucket
 	err = n.SetProfile(opts.profile)
 	if err != nil {
-		logger.Error("Failed to Set Profile", err)
+		logger.Errorf("%s - Failed to Set Profile", err)
 		return err
 	}
 	return nil
@@ -62,13 +62,13 @@ func (n *Node) openStore(ctx context.Context, opts *options) error {
 func (n *Node) AddHistory(payload *common.Payload) error {
 	// Check if Store is open
 	if n.store == nil {
-		logger.Error("Failed to Add Payload", ErrProtocolsNotSet)
+		logger.Errorf("%s - Failed to Add Payload", ErrProtocolsNotSet)
 		return ErrProtocolsNotSet
 	}
 
 	// Check if profile is nil
 	if payload == nil {
-		logger.Error("Failed to Add Payload", ErrMissingParam)
+		logger.Errorf("%s - Failed to Add Payload", ErrMissingParam)
 		return ErrMissingParam
 	}
 
@@ -77,7 +77,7 @@ func (n *Node) AddHistory(payload *common.Payload) error {
 		// Get profile list buffer
 		oldBuf, err := n.store.Get(historyKey())
 		if err != nil {
-			logger.Error("Failed to Get History from store")
+			logger.Errorf("%s - Failed to Get History from store")
 			return err
 		}
 
@@ -85,7 +85,7 @@ func (n *Node) AddHistory(payload *common.Payload) error {
 		payloadList := common.PayloadList{}
 		err = proto.Unmarshal(oldBuf, &payloadList)
 		if err != nil {
-			logger.Error("Failed to Unmarshal PayloadList")
+			logger.Errorf("%s - Failed to Unmarshal PayloadList")
 			return err
 		}
 
@@ -95,7 +95,7 @@ func (n *Node) AddHistory(payload *common.Payload) error {
 		// Marshal profile
 		val, err := proto.Marshal(&payloadList)
 		if err != nil {
-			logger.Error("Failed to Marshal PayloadList")
+			logger.Errorf("%s - Failed to Marshal PayloadList")
 			return err
 		}
 
@@ -125,13 +125,13 @@ func (n *Node) AddHistory(payload *common.Payload) error {
 func (n *Node) AddRecent(profile *common.Profile) error {
 	// Check if Store is open
 	if n.store == nil {
-		logger.Error("Failed to Add Recent Profile", ErrProtocolsNotSet)
+		logger.Errorf("%s - Failed to Add Recent Profile", ErrProtocolsNotSet)
 		return ErrProtocolsNotSet
 	}
 
 	// Check if profile is nil
 	if profile == nil {
-		logger.Error("Failed to Add Recent Profile", ErrMissingParam)
+		logger.Errorf("%s - Failed to Add Recent Profile", ErrMissingParam)
 		return ErrMissingParam
 	}
 
@@ -140,7 +140,7 @@ func (n *Node) AddRecent(profile *common.Profile) error {
 		// Get profile list buffer
 		oldBuf, err := n.store.Get(recentsKey())
 		if err != nil {
-			logger.Error("Failed to Get old Recents from store")
+			logger.Errorf("%s - Failed to Get old Recents from store")
 			return err
 		}
 
@@ -148,7 +148,7 @@ func (n *Node) AddRecent(profile *common.Profile) error {
 		profileList := common.ProfileList{}
 		err = proto.Unmarshal(oldBuf, &profileList)
 		if err != nil {
-			logger.Error("Failed to Unmarshal ProfileList")
+			logger.Errorf("%s - Failed to Unmarshal ProfileList")
 			return err
 		}
 
@@ -159,7 +159,7 @@ func (n *Node) AddRecent(profile *common.Profile) error {
 		// Marshal profile
 		val, err := proto.Marshal(&profileList)
 		if err != nil {
-			logger.Error("Failed to Marshal ProfileList")
+			logger.Errorf("%s - Failed to Marshal ProfileList")
 			return err
 		}
 
@@ -187,7 +187,7 @@ func (n *Node) AddRecent(profile *common.Profile) error {
 // GetHistory returns the history of profiles
 func (n *Node) GetHistory() (*common.PayloadList, error) {
 	if n.store == nil {
-		logger.Error("Failed to Get Profile", ErrProtocolsNotSet)
+		logger.Errorf("%s - Failed to Get Profile", ErrProtocolsNotSet)
 		return nil, ErrProtocolsNotSet
 	}
 
@@ -195,7 +195,7 @@ func (n *Node) GetHistory() (*common.PayloadList, error) {
 	if n.store.Has(historyKey()) {
 		rbuf, err := n.store.Get(historyKey())
 		if err != nil {
-			logger.Error("Failed to Get History from store")
+			logger.Errorf("%s - Failed to Get History from store")
 			return nil, err
 		}
 
@@ -203,7 +203,7 @@ func (n *Node) GetHistory() (*common.PayloadList, error) {
 		payloadList := common.PayloadList{}
 		err = proto.Unmarshal(rbuf, &payloadList)
 		if err != nil {
-			logger.Error("Failed to Unmarshal PayloadList")
+			logger.Errorf("%s - Failed to Unmarshal PayloadList")
 			return nil, err
 		}
 		return &payloadList, nil
@@ -214,7 +214,7 @@ func (n *Node) GetHistory() (*common.PayloadList, error) {
 // GetRecents returns the list of recent profiles
 func (n *Node) GetRecents() (*common.ProfileList, error) {
 	if n.store == nil {
-		logger.Error("Failed to Get Profile", ErrProtocolsNotSet)
+		logger.Errorf("%s - Failed to Get Profile", ErrProtocolsNotSet)
 		return nil, ErrProtocolsNotSet
 	}
 
@@ -222,7 +222,7 @@ func (n *Node) GetRecents() (*common.ProfileList, error) {
 	if n.store.Has(recentsKey()) {
 		rbuf, err := n.store.Get(recentsKey())
 		if err != nil {
-			logger.Error("Failed to Get Recents from store")
+			logger.Errorf("%s - Failed to Get Recents from store")
 			return nil, err
 		}
 
@@ -230,7 +230,7 @@ func (n *Node) GetRecents() (*common.ProfileList, error) {
 		profileList := common.ProfileList{}
 		err = proto.Unmarshal(rbuf, &profileList)
 		if err != nil {
-			logger.Error("Failed to Unmarshal ProfileList")
+			logger.Errorf("%s - Failed to Unmarshal ProfileList")
 			return nil, err
 		}
 		return &profileList, nil
@@ -242,7 +242,7 @@ func (n *Node) GetRecents() (*common.ProfileList, error) {
 func (n *Node) Profile() (*common.Profile, error) {
 	// Check if Store is open
 	if n.store == nil {
-		logger.Error("Failed to Get Profile", ErrProtocolsNotSet)
+		logger.Errorf("%s - Failed to Get Profile", ErrProtocolsNotSet)
 		return common.NewDefaultProfile(), ErrProtocolsNotSet
 	}
 	if n.store.Has(PROFILE_KEY) {
@@ -265,7 +265,7 @@ func (n *Node) Profile() (*common.Profile, error) {
 func (n *Node) SetProfile(profile *common.Profile) error {
 	// Check if Store is open
 	if n.store == nil {
-		logger.Error("Failed to Set Profile", ErrProtocolsNotSet)
+		logger.Errorf("%s - Failed to Set Profile", ErrProtocolsNotSet)
 		return ErrProtocolsNotSet
 	}
 

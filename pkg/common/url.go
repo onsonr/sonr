@@ -632,7 +632,7 @@ func (d *Document) Content() string {
 			if retry {
 				err := d.initializeHtml(d.input)
 				if err != nil {
-					logger.Error("Failed to initialize HTML for URL", err)
+					logger.Errorf("%s - Failed to initialize HTML for URL", err)
 					return ""
 				}
 				articleText = d.Content()
@@ -749,7 +749,7 @@ func (d *Document) transformMisusedDivsIntoParagraphs() {
 	d.document.Find("div").Each(func(i int, s *goquery.Selection) {
 		html, err := s.Html()
 		if err != nil {
-			logger.Error("Unable to transform div to p", err)
+			logger.Errorf("%s - Unable to transform div to p", err)
 			return
 		}
 
@@ -869,7 +869,7 @@ func (d *Document) scoreNode(s *goquery.Selection) *candidate {
 func (d *Document) sanitize(article string) string {
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(article))
 	if err != nil {
-		logger.Error("Unable to create document", err)
+		logger.Errorf("%s - Unable to create document", err)
 		return ""
 	}
 

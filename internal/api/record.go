@@ -5,7 +5,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/pkg/common"
@@ -159,7 +158,7 @@ func (r Record) ComparePeerID(id peer.ID) bool {
 	// Check peer record
 	pid, err := r.PeerID()
 	if err != nil {
-		logger.Error("Failed to extract PeerID from PublicKey", err)
+		logger.Errorf("%s - Failed to extract PeerID from PublicKey", err)
 		return false
 	}
 	return pid == id
@@ -353,7 +352,7 @@ func checkRecordForSNID(host, value string) bool {
 
 	// Verify Public Key
 	if err := verifyStringPubKey(value); err != nil {
-		logger.Error("Failed to verify public key: %s", err)
+		logger.Errorf("%s - Failed to verify public key: %s", err)
 		return false
 	}
 	return true
@@ -427,7 +426,7 @@ func checkSnrRecord(r Record) error {
 	// Check for TXT Record
 	if r.Type != "TXT" {
 		err := errors.New("not a TXT record")
-		logger.Error("Failed to get Value from Record", golog.Fields{"error": err})
+		logger.Errorf("%s - Failed to get Value from Record", err)
 		return err
 	}
 
@@ -435,7 +434,7 @@ func checkSnrRecord(r Record) error {
 	c := FindRecordCategory(r.Host, r.Value)
 	if c != Category_NAME && c != Category_AUTH {
 		err := errors.New("Record does not have category")
-		logger.Error("Failed to get Value from Record", golog.Fields{"error": err})
+		logger.Errorf("%s - Failed to get Value from Record", err)
 		return err
 	}
 	return nil

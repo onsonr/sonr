@@ -84,7 +84,7 @@ func (p *Peer) SnrPubKey() (*wallet.SnrPubKey, error) {
 	// Get Public Key
 	pub, err := p.PubKey()
 	if err != nil {
-		logger.Error("Failed to get Public Key", err)
+		logger.Errorf("%s - Failed to get Public Key", err)
 		return nil, err
 	}
 

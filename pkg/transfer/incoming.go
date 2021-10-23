@@ -24,7 +24,7 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 	buf, err := r.ReadMsg()
 	if err != nil {
 		s.Reset()
-		logger.Error("Failed to Read Invite Request buffer.", err)
+		logger.Errorf("%s - Failed to Read Invite Request buffer.", err)
 		return
 	}
 	s.Close()
@@ -33,14 +33,14 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 	req := &InviteRequest{}
 	err = proto.Unmarshal(buf, req)
 	if err != nil {
-		logger.Error("Failed to Unmarshal Invite REQUEST buffer.", err)
+		logger.Errorf("%s - Failed to Unmarshal Invite REQUEST buffer.", err)
 		return
 	}
 
 	// generate response message
 	err = p.sessionQueue.AddIncoming(remotePeer, req)
 	if err != nil {
-		logger.Error("Failed to add incoming session to queue.", err)
+		logger.Errorf("%s - Failed to add incoming session to queue.", err)
 		return
 	}
 
@@ -54,7 +54,7 @@ func (p *TransferProtocol) onIncomingTransfer(stream network.Stream) {
 	// Find Entry in Queue
 	entry, err := p.sessionQueue.Next()
 	if err != nil {
-		logger.Error("Failed to find transfer request", err)
+		logger.Errorf("%s - Failed to find transfer request", err)
 		stream.Close()
 		return
 	}
@@ -62,7 +62,7 @@ func (p *TransferProtocol) onIncomingTransfer(stream network.Stream) {
 	// Create New Reader
 	event, err := entry.ReadFrom(stream, p.node)
 	if err != nil {
-		logger.Error("Failed to Read From Stream", err)
+		logger.Errorf("%s - Failed to Read From Stream", err)
 		stream.Reset()
 		return
 	}
@@ -129,13 +129,13 @@ func (ir *itemReader) ReadFrom(reader msgio.ReadCloser) {
 		if err == io.EOF {
 			break
 		} else if err != nil {
-			logger.Error("Failed to Read Next Message on Read Stream", err)
+			logger.Errorf("%s - Failed to Read Next Message on Read Stream", err)
 			return
 		} else {
 			// Write Chunk to File
 			n, err := ir.buffer.Write(buf)
 			if err != nil {
-				logger.Error("Failed to Write Buffer to File on Read Stream", err)
+				logger.Errorf("%s - Failed to Write Buffer to File on Read Stream", err)
 				return
 			}
 			i += n
@@ -146,7 +146,7 @@ func (ir *itemReader) ReadFrom(reader msgio.ReadCloser) {
 	// Write File Buffer to File
 	err := ioutil.WriteFile(ir.path, ir.buffer.Bytes(), 0644)
 	if err != nil {
-		logger.Error("Failed to Close item on Read Stream", err)
+		logger.Errorf("%s - Failed to Close item on Read Stream", err)
 		return
 	}
 	logger.Debug("Completed writing to file: " + ir.path)

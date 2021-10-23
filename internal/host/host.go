@@ -66,14 +66,14 @@ func NewHost(ctx context.Context, options ...HostOption) (*SNRHost, error) {
 		libp2p.EnableAutoRelay(),
 	)
 	if err != nil {
-		logger.Error("NewHost: Failed to create libp2p host", err)
+		logger.Errorf("%s - NewHost: Failed to create libp2p host", err)
 		return nil, err
 	}
 	hn.SetStatus(Status_CONNECTING)
 
 	// Bootstrap DHT
 	if err := hn.Bootstrap(context.Background()); err != nil {
-		logger.Error("Failed to Bootstrap KDHT to Host", err)
+		logger.Errorf("%s - Failed to Bootstrap KDHT to Host", err)
 		hn.SetStatus(Status_FAIL)
 		return nil, err
 	}
@@ -106,14 +106,14 @@ func (h *SNRHost) AuthenticateId(id *wallet.UUID) (bool, error) {
 	// Get local node's public key
 	pubKey, err := wallet.Sonr.GetPubKey(wallet.Account)
 	if err != nil {
-		logger.Error("AuthenticateId: Failed to get local host's public key", err)
+		logger.Errorf("%s - AuthenticateId: Failed to get local host's public key", err)
 		return false, err
 	}
 
 	// verify UUID value
 	result, err := pubKey.Verify([]byte(id.GetValue()), []byte(id.GetSignature()))
 	if err != nil {
-		logger.Error("AuthenticateId: Failed to verify signature of UUID", err)
+		logger.Errorf("%s - AuthenticateId: Failed to verify signature of UUID", err)
 		return false, err
 	}
 	return result, nil
@@ -129,7 +129,7 @@ func (n *SNRHost) AuthenticateMessage(msg proto.Message, metadata *common.Metada
 	// marshall data without the signature to protobufs3 binary format
 	buf, err := proto.Marshal(msg)
 	if err != nil {
-		logger.Error("AuthenticateMessage: Failed to marshal Protobuf Message.", err)
+		logger.Errorf("%s - AuthenticateMessage: Failed to marshal Protobuf Message.", err)
 		return false
 	}
 
@@ -139,7 +139,7 @@ func (n *SNRHost) AuthenticateMessage(msg proto.Message, metadata *common.Metada
 	// restore peer id binary format from base58 encoded node id data
 	peerId, err := peer.Decode(metadata.NodeId)
 	if err != nil {
-		logger.Error("AuthenticateMessage: Failed to decode node id from base58.", err)
+		logger.Errorf("%s - AuthenticateMessage: Failed to decode node id from base58.", err)
 		return false
 	}
 
@@ -222,7 +222,7 @@ func (h *SNRHost) SendMessage(id peer.ID, p protocol.ID, data proto.Message) err
 
 	s, err := h.NewStream(h.ctx, id, p)
 	if err != nil {
-		logger.Error("SendMessage: Failed to start stream", err)
+		logger.Errorf("%s - SendMessage: Failed to start stream", err)
 		return err
 	}
 	defer s.Close()
@@ -230,14 +230,14 @@ func (h *SNRHost) SendMessage(id peer.ID, p protocol.ID, data proto.Message) err
 	// marshall data to protobufs3 binary format
 	bin, err := proto.Marshal(data)
 	if err != nil {
-		logger.Error("SendMessage: Failed to marshal pb", err)
+		logger.Errorf("%s - SendMessage: Failed to marshal pb", err)
 		return err
 	}
 
 	// Create Writer and write data to stream
 	w := msgio.NewWriter(s)
 	if err := w.WriteMsg(bin); err != nil {
-		logger.Error("SendMessage: Failed to write message to stream.", err)
+		logger.Errorf("%s - SendMessage: Failed to write message to stream.", err)
 		return err
 	}
 	return nil
@@ -248,7 +248,7 @@ func (n *SNRHost) SignData(data []byte) ([]byte, error) {
 	// Get local node's private key
 	res, err := wallet.Sonr.SignWith(wallet.Account, data)
 	if err != nil {
-		logger.Error("SignData: Failed to get local host's private key", err)
+		logger.Errorf("%s - SignData: Failed to get local host's private key", err)
 		return nil, err
 	}
 	return res, nil
@@ -258,7 +258,7 @@ func (n *SNRHost) SignData(data []byte) ([]byte, error) {
 func (n *SNRHost) SignMessage(message proto.Message) ([]byte, error) {
 	data, err := proto.Marshal(message)
 	if err != nil {
-		logger.Error("SignMessage: Failed to Sign Message", err)
+		logger.Errorf("%s - SignMessage: Failed to Sign Message", err)
 		return nil, err
 	}
 	return n.SignData(data)
@@ -299,26 +299,26 @@ func (hn *SNRHost) Serve() {
 func (n *SNRHost) VerifyData(data []byte, signature []byte, peerId peer.ID, pubKeyData []byte) bool {
 	key, err := crypto.UnmarshalPublicKey(pubKeyData)
 	if err != nil {
-		logger.Error("Failed to extract key from message key data", err)
+		logger.Errorf("%s - Failed to extract key from message key data", err)
 		return false
 	}
 
 	// extract node id from the provided public key
 	idFromKey, err := peer.IDFromPublicKey(key)
 	if err != nil {
-		logger.Error("VerifyData: Failed to extract peer id from public key", err)
+		logger.Errorf("%s - VerifyData: Failed to extract peer id from public key", err)
 		return false
 	}
 
 	// verify that message author node id matches the provided node public key
 	if idFromKey != peerId {
-		logger.Error("VerifyData: Node id and provided public key mismatch", err)
+		logger.Errorf("%s - VerifyData: Node id and provided public key mismatch", err)
 		return false
 	}
 
 	res, err := key.Verify(data, signature)
 	if err != nil {
-		logger.Error("VerifyData: Error authenticating data", err)
+		logger.Errorf("%s - VerifyData: Error authenticating data", err)
 		return false
 	}
 	return res

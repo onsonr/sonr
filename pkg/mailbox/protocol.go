@@ -66,7 +66,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*M
 // 	// Start watching (the third param indicates we want to keep watching when offline)
 // 	state, err := ts.mailbox.WatchInbox(ts.ctx, events, true)
 // 	if err != nil {
-// 		logger.Error("Error watching Mailbox", err)
+// 		logger.Errorf("%s - Error watching Mailbox", err)
 // 		return
 // 	}
 
@@ -90,7 +90,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*M
 // 	// List Total Inbox
 // 	inbox, err := ts.mailbox.ListInboxMessages(ts.ctx)
 // 	if err != nil {
-// 		logger.Error("Failed to List Inbox Messages", err)
+// 		logger.Errorf("%s - Failed to List Inbox Messages", err)
 // 		return
 // 	}
 
@@ -98,7 +98,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*M
 // 	logger.Debug(fmt.Sprintf("Received new message: %s", inbox[0].From))
 // 	body, err := inbox[0].Open(ts.ctx, ts.mailbox.Identity())
 // 	if err != nil {
-// 		logger.Error("Failed to Open Inbox Messages", err)
+// 		logger.Errorf("%s - Failed to Open Inbox Messages", err)
 // 		return
 // 	}
 
@@ -109,7 +109,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*M
 // 	msg := MailboxMessage{}
 // 	err = protojson.Unmarshal(body, &msg)
 // 	if err != nil {
-// 		logger.Error("Failed to Unmarshal Mailbox Message", err)
+// 		logger.Errorf("%s - Failed to Unmarshal Mailbox Message", err)
 // 	}
 
 // 	// Send Foreground Event
@@ -137,7 +137,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*M
 // 	// Mark Item as Read
 // 	err := ts.mailbox.DeleteInboxMessage(ts.ctx, id)
 // 	if err != nil {
-// 		logger.Error("Failed to Delete Mailbox Message", err)
+// 		logger.Errorf("%s - Failed to Delete Mailbox Message", err)
 // 		return err
 // 	}
 // 	return nil
@@ -153,7 +153,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*M
 // 	// Mark Item as Read
 // 	err := ts.mailbox.ReadInboxMessage(ts.ctx, id)
 // 	if err != nil {
-// 		logger.Error("Failed to set Mailbox Message as Read", err)
+// 		logger.Errorf("%s - Failed to set Mailbox Message as Read", err)
 // 		return err
 // 	}
 // 	return nil
@@ -169,7 +169,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*M
 // 	// Marshal Data
 // 	buf, err := protojson.Marshal(message)
 // 	if err != nil {
-// 		logger.Error("Failed to Marshal Outbound Mailbox Message with JSON", err)
+// 		logger.Errorf("%s - Failed to Marshal Outbound Mailbox Message with JSON", err)
 // 		return err
 // 	}
 

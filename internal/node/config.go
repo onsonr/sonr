@@ -77,7 +77,7 @@ func (opts *options) Apply(ctx context.Context, node *Node) error {
 		// Client Node Type
 		stub, err := node.startClientService(ctx, opts)
 		if err != nil {
-			logger.Error("Failed to start Client Service", err)
+			logger.Errorf("%s - Failed to start Client Service", err)
 			return err
 		}
 
@@ -89,7 +89,7 @@ func (opts *options) Apply(ctx context.Context, node *Node) error {
 		// Highway Node Type
 		stub, err := node.startHighwayService(ctx, opts)
 		if err != nil {
-			logger.Error("Failed to start Highway Service", err)
+			logger.Errorf("%s - Failed to start Highway Service", err)
 			return err
 		}
 

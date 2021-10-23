@@ -167,7 +167,7 @@ func (p *namebaseAPIClient) newNBGetRequest() (*http.Request, error) {
 	// Create the request
 	req, err := http.NewRequest("GET", NB_DNS_API_URL, nil)
 	if err != nil {
-		logger.Error("Failed to create Namebase HTTP Request", err)
+		logger.Errorf("%s - Failed to create Namebase HTTP Request", err)
 		return nil, err
 	}
 
@@ -183,7 +183,7 @@ func (p *namebaseAPIClient) newNBPutRequest(nbReq NamebaseRequest) (*http.Reques
 	// Marshal the request
 	jsonreq, err := json.Marshal(nbReq)
 	if err != nil {
-		logger.Error("Failed to marshal Namebase Request", err)
+		logger.Errorf("%s - Failed to marshal Namebase Request", err)
 		return nil, err
 	}
 	bytes := bytes.NewBuffer(jsonreq)
@@ -191,7 +191,7 @@ func (p *namebaseAPIClient) newNBPutRequest(nbReq NamebaseRequest) (*http.Reques
 	// Create the request
 	req, err := http.NewRequest("PUT", NB_DNS_API_URL, bytes)
 	if err != nil {
-		logger.Error("Failed to create Namebase HTTP Request", err)
+		logger.Errorf("%s - Failed to create Namebase HTTP Request", err)
 		return nil, err
 	}
 

@@ -89,21 +89,21 @@ func defaultFsOptions() *fsOptions {
 	if checkIsDesktop() {
 		hp, err := os.UserHomeDir()
 		if err != nil {
-			logger.Error("Failed to get HomeDir, ", err)
+			logger.Errorf("%s - Failed to get HomeDir, ", err)
 		} else {
 			opts.HomeDir = hp
 		}
 
 		tp, err := os.UserCacheDir()
 		if err != nil {
-			logger.Error("Failed to get TempDir, ", err)
+			logger.Errorf("%s - Failed to get TempDir, ", err)
 		} else {
 			opts.TempDir = tp
 		}
 
 		sp, err := os.UserConfigDir()
 		if err != nil {
-			logger.Error("Failed to get SupportDir, ", err)
+			logger.Errorf("%s - Failed to get SupportDir, ", err)
 		} else {
 			opts.SupportDir = sp
 		}

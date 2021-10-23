@@ -73,14 +73,14 @@ func Start(req *api.InitializeRequest, options ...Option) {
 	// Initialize Wallet, and FS
 	err := req.Parse()
 	if err != nil {
-		golog.Fatal("Failed to initialize Device", golog.Fields{"error": err})
+		golog.Fatalf("%s - Failed to initialize Device", err)
 		os.Exit(1)
 	}
 
 	// Apply Options
 	err = opts.Apply(req)
 	if err != nil {
-		golog.Fatal("Failed to initialize Sonr", golog.Fields{"error": err})
+		golog.Fatalf("%s - Failed to initialize Sonr", err)
 		os.Exit(1)
 	}
 
@@ -88,12 +88,12 @@ func Start(req *api.InitializeRequest, options ...Option) {
 	if common.IsDesktop() {
 		// Handle Node Events
 		if err := instance.GRPCServer.Serve(instance.Listener); err != nil {
-			golog.Fatal("Failed to serve gRPC", err)
+			golog.Fatalf("%s - Failed to serve gRPC", err)
 		}
 	} else {
 		go func() {
 			if err := instance.GRPCServer.Serve(instance.Listener); err != nil {
-				golog.Fatal("Failed to serve gRPC", err)
+				golog.Fatalf("%s - Failed to serve gRPC", err)
 			}
 		}()
 	}
@@ -115,7 +115,7 @@ func Exit(code int) {
 	if common.IsDesktop() {
 		ex, err := os.Executable()
 		if err != nil {
-			golog.Error("Failed to find Executable, ", err)
+			golog.Errorf("%s - Failed to find Executable", err)
 			return
 		}
 
@@ -197,6 +197,7 @@ func (o *options) Apply(req *api.InitializeRequest) error {
 	// Open Listener on Port
 	listener, err := net.Listen(o.network, o.Address())
 	if err != nil {
+		golog.Errorf("%s - Failed to Create New Listener", err)
 		return err
 	}
 
@@ -213,6 +214,7 @@ func (o *options) Apply(req *api.InitializeRequest) error {
 		node.WithMode(o.mode),
 		node.WithRequest(req))
 	if err != nil {
+		golog.Errorf("%s - Failed to Start new Node", err)
 		return err
 	}
 	instance.Node = n

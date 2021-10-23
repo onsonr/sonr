@@ -38,7 +38,7 @@ func GetLocation() *common.Location {
 	// Create a new request using http
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		logger.Errorf("Error creating request: %s", err)
+		logger.Errorf("%s - Error creating request", err)
 		return defaultLocation()
 	}
 
@@ -49,14 +49,14 @@ func GetLocation() *common.Location {
 	// Await a response from the api
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		logger.Errorf("Error getting response: %s", err)
+		logger.Errorf("%s - Error getting response", err)
 		return defaultLocation()
 	}
 
 	// Get Location Object
 	obj, err := createLocationObject(res)
 	if err != nil {
-		logger.Errorf("Error decoding JSON to Location Object: %s", err)
+		logger.Errorf("%s - Error decoding JSON to Location Object", err)
 		return defaultLocation()
 	}
 	return obj.ToLocation()

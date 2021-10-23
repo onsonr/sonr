@@ -45,7 +45,7 @@ var (
 // checkParams Checks if Non-nil Parameters were passed
 func checkParams(host *host.SNRHost) error {
 	if host == nil {
-		logger.Error("Host provided is nil", ErrParameters)
+		logger.Errorf("%s - Host provided is nil", ErrParameters)
 		return ErrParameters
 	}
 	return host.HasRouting()
@@ -74,7 +74,7 @@ func (p *TransferProtocol) createRequest(to *common.Peer) (peer.ID, *InviteReque
 	// Call Peer from Node
 	from, err := p.node.Peer()
 	if err != nil {
-		logger.Error("Failed to Get Peer from Node")
+		logger.Errorf("%s - Failed to Get Peer from Node", err)
 		return "", nil, err
 	}
 
@@ -87,7 +87,7 @@ func (p *TransferProtocol) createRequest(to *common.Peer) (peer.ID, *InviteReque
 		// Create new Metadata
 		meta, err := wallet.Sonr.CreateMetadata(p.host.ID())
 		if err != nil {
-			logger.Error("Failed to create new metadata for Shared Invite", err)
+			logger.Errorf("%s - Failed to create new metadata for Shared Invite", err)
 			return "", nil, err
 		}
 
@@ -102,12 +102,12 @@ func (p *TransferProtocol) createRequest(to *common.Peer) (peer.ID, *InviteReque
 		// Fetch Peer ID from Public Key
 		toId, err := to.Libp2pID()
 		if err != nil {
-			logger.Error("Failed to fetch peer id from public key", err)
+			logger.Errorf("%s - Failed to fetch peer id from public key", err)
 			return "", nil, err
 		}
 		return toId, req, nil
 	}
-	logger.Error("Failed to get item from Supply Queue.")
+	logger.Errorf("%s - Failed to get item from Supply Queue.")
 	return "", nil, errors.New("No items in Supply Queue.")
 }
 
@@ -116,14 +116,14 @@ func (p *TransferProtocol) createResponse(decs bool, to *common.Peer) (peer.ID, 
 	// Call Peer from Node
 	from, err := p.node.Peer()
 	if err != nil {
-		logger.Error("Failed to Get Peer from Node")
+		logger.Errorf("%s - Failed to Get Peer from Node", err)
 		return "", nil, err
 	}
 
 	// Create new Metadata
 	meta, err := wallet.Sonr.CreateMetadata(p.host.ID())
 	if err != nil {
-		logger.Error("Failed to create new metadata for Shared Invite", err)
+		logger.Errorf("%s - Failed to create new metadata for Shared Invite", err)
 		return "", nil, err
 	}
 
@@ -138,7 +138,7 @@ func (p *TransferProtocol) createResponse(decs bool, to *common.Peer) (peer.ID, 
 	// Fetch Peer ID from Public Key
 	toId, err := to.Libp2pID()
 	if err != nil {
-		logger.Error("Failed to fetch peer id from public key", err)
+		logger.Errorf("%s - Failed to fetch peer id from public key", err)
 		return "", nil, err
 	}
 	return toId, resp, nil

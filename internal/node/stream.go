@@ -143,14 +143,14 @@ func (s *ClientNodeStub) OnTransferComplete(e *Empty, stream ClientService_OnTra
 				// Add Receiver to Recents
 				err := s.node.AddRecent(m.Recent())
 				if err != nil {
-					logger.Error("Failed to add receiver's profile to store.", err)
+					logger.Errorf("%s - Failed to add receiver's profile to store.", err)
 				}
 
 				// Add Payload to History
 				if m.IsIncoming() {
 					err = s.node.AddHistory(m.GetPayload())
 					if err != nil {
-						logger.Error("Failed to add payload to store.", err)
+						logger.Errorf("%s - Failed to add payload to store.", err)
 					}
 				}
 			}

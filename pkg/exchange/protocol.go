@@ -54,7 +54,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl, opt
 	// Set Peer in Exchange
 	peer, err := node.Peer()
 	if err != nil {
-		logger.Error("Failed to get Profile", err)
+		logger.Errorf("%s - Failed to get Profile", err)
 		return nil, err
 	}
 	exchProtocol.Put(peer)
@@ -69,7 +69,7 @@ func (p *ExchangeProtocol) Get(sname string) (*common.Peer, error) {
 		// Unmarshal Peer
 		err := proto.Unmarshal(buf, peer)
 		if err != nil {
-			logger.Error("Failed to unmarshal Peer", err)
+			logger.Errorf("%s - Failed to unmarshal Peer", err)
 			return nil, err
 		}
 		return peer, nil
@@ -157,7 +157,7 @@ func (p *ExchangeProtocol) Register(sName string, records ...api.Record) (api.Do
 
 	ok, err := api.PutRecords(p.ctx, records...)
 	if err != nil {
-		logger.Error("Failed to Register SName", err)
+		logger.Errorf("%s - Failed to Register SName", err)
 		return nil, err
 	}
 
@@ -169,7 +169,7 @@ func (p *ExchangeProtocol) Register(sName string, records ...api.Record) (api.Do
 	// Get records from Namebase
 	recs, err := api.FindRecords(p.ctx, sName)
 	if err != nil {
-		logger.Error("Failed to Find SName after Registering", err)
+		logger.Errorf("%s - Failed to Find SName after Registering", err)
 		return nil, err
 	}
 
@@ -186,7 +186,7 @@ func (p *ExchangeProtocol) Close() error {
 	// Close BeamStore
 	err := p.beamStore.Close()
 	if err != nil {
-		logger.Error("Failed to close BeamStore", err)
+		logger.Errorf("%s - Failed to close BeamStore", err)
 		return err
 	}
 	return nil

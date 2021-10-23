@@ -24,7 +24,7 @@ type TransferProtocol struct {
 func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*TransferProtocol, error) {
 	// Check parameters
 	if err := checkParams(host); err != nil {
-		logger.Error("Failed to create TransferProtocol", err)
+		logger.Errorf("%s - Failed to create TransferProtocol", err)
 		return nil, err
 	}
 
@@ -54,7 +54,7 @@ func (p *TransferProtocol) Request(to *common.Peer) error {
 	// Create Request
 	id, req, err := p.createRequest(to)
 	if err != nil {
-		logger.Error("Failed to Create Request", err)
+		logger.Errorf("%s - Failed to Create Request", err)
 		return err
 	}
 
@@ -66,7 +66,7 @@ func (p *TransferProtocol) Request(to *common.Peer) error {
 	// sign the data
 	signature, err := p.host.SignMessage(req)
 	if err != nil {
-		logger.Error("Failed to Sign Response Message", err)
+		logger.Errorf("%s - Failed to Sign Response Message", err)
 		return err
 	}
 
@@ -74,7 +74,7 @@ func (p *TransferProtocol) Request(to *common.Peer) error {
 	req.Metadata.Signature = signature
 	err = p.host.SendMessage(id, RequestPID, req)
 	if err != nil {
-		logger.Error("Failed to Send Message to Peer", err)
+		logger.Errorf("%s - Failed to Send Message to Peer", err)
 		return err
 	}
 
@@ -87,7 +87,7 @@ func (p *TransferProtocol) Respond(decs bool, to *common.Peer) error {
 	// Create Response
 	id, resp, err := p.createResponse(decs, to)
 	if err != nil {
-		logger.Error("Failed to Create Request", err)
+		logger.Errorf("%s - Failed to Create Request", err)
 		return err
 	}
 
@@ -99,7 +99,7 @@ func (p *TransferProtocol) Respond(decs bool, to *common.Peer) error {
 	// sign the data
 	signature, err := p.host.SignMessage(resp)
 	if err != nil {
-		logger.Error("Failed to Sign Response Message", err)
+		logger.Errorf("%s - Failed to Sign Response Message", err)
 		return err
 	}
 
@@ -109,7 +109,7 @@ func (p *TransferProtocol) Respond(decs bool, to *common.Peer) error {
 	// Send Response
 	err = p.host.SendMessage(id, ResponsePID, resp)
 	if err != nil {
-		logger.Error("Failed to Send Message to Peer", err)
+		logger.Errorf("%s - Failed to Send Message to Peer", err)
 		return err
 	}
 	return nil
@@ -120,14 +120,14 @@ func (p *TransferProtocol) Supply(req *api.SupplyRequest) error {
 	// Profile from NodeImpl
 	profile, err := p.node.Profile()
 	if err != nil {
-		logger.Error("Failed to Get Profile from Node")
+		logger.Errorf("%s - Failed to Get Profile from Node")
 		return err
 	}
 
 	// Create Transfer
 	payload, err := req.ToPayload(profile)
 	if err != nil {
-		logger.Error("Failed to Supply Paths", err)
+		logger.Errorf("%s - Failed to Supply Paths", err)
 		return err
 	}
 
@@ -139,7 +139,7 @@ func (p *TransferProtocol) Supply(req *api.SupplyRequest) error {
 		logger.Debug("Peer Supply Request. Sending Invite after supply")
 		err = p.Request(req.GetPeer())
 		if err != nil {
-			logger.Error("Failed to Send Request to Peer", err)
+			logger.Errorf("%s - Failed to Send Request to Peer", err)
 			return err
 		}
 	}

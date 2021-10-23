@@ -69,7 +69,7 @@ func NewNode(ctx context.Context, options ...Option) (api.NodeImpl, *api.Initial
 	// Initialize Host
 	host, err := host.NewHost(ctx, host.WithConnection(opts.connection))
 	if err != nil {
-		logger.Error("Failed to initialize host", err)
+		logger.Errorf("%s - Failed to initialize host", err)
 		return nil, api.NewInitialzeResponse(nil, false), err
 	}
 	node.host = host
@@ -77,14 +77,14 @@ func NewNode(ctx context.Context, options ...Option) (api.NodeImpl, *api.Initial
 	// Open Store with profileBuf
 	err = node.openStore(ctx, opts)
 	if err != nil {
-		logger.Error("Failed to open database", err)
+		logger.Errorf("%s - Failed to open database", err)
 		return node, api.NewInitialzeResponse(nil, false), err
 	}
 
 	// Initialize Stub
 	err = opts.Apply(ctx, node)
 	if err != nil {
-		logger.Error("Failed to initialize stub", err)
+		logger.Errorf("%s - Failed to initialize stub", err)
 		return nil, api.NewInitialzeResponse(nil, false), err
 	}
 	// Begin Background Tasks
@@ -102,20 +102,20 @@ func (n *Node) Peer() (*common.Peer, error) {
 	// Get Public Key
 	pubKey, err := wallet.Sonr.GetSnrPubKey(wallet.Account)
 	if err != nil {
-		logger.Error("Failed to get Public Key", err)
+		logger.Errorf("%s - Failed to get Public Key", err)
 		return nil, err
 	}
 
 	// Marshal Public Key
 	pubBuf, err := pubKey.Buffer()
 	if err != nil {
-		logger.Error("Failed to marshal public key", err)
+		logger.Errorf("%s - Failed to marshal public key", err)
 		return nil, err
 	}
 
 	stat, err := common.Stat()
 	if err != nil {
-		logger.Error("Failed to get device stat", err)
+		logger.Errorf("%s - Failed to get device stat", err)
 		return nil, err
 	}
 	// Return Peer
@@ -140,24 +140,24 @@ func (n *Node) Close() {
 	// Close Client Stub
 	if n.mode.HasClient() {
 		if err := n.clientStub.Close(); err != nil {
-			logger.Error("Failed to close Client Stub, ", err)
+			logger.Errorf("%s - Failed to close Client Stub, ", err)
 		}
 	}
 
 	// Close Highway Stub
 	if n.mode.IsHighway() {
 		if err := n.highwayStub.Close(); err != nil {
-			logger.Error("Failed to close Highway Stub, ", err)
+			logger.Errorf("%s - Failed to close Highway Stub, ", err)
 		}
 	}
 
 	// Close Store
 	if err := n.store.Close(); err != nil {
-		logger.Error("Failed to close store, ", err)
+		logger.Errorf("%s - Failed to close store, ", err)
 	}
 
 	// Close Host
 	if err := n.host.Close(); err != nil {
-		logger.Error("Failed to close host, ", err)
+		logger.Errorf("%s - Failed to close host, ", err)
 	}
 }

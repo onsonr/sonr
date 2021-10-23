@@ -48,7 +48,7 @@ func (mb *MailboxProtocol) getMailboxPath() (string, error) {
 	// Get Mailbox Path
 	path, err := fs.ThirdParty.GenPath(TextileMailboxDirName)
 	if err != nil {
-		logger.Error("Failed to Find Existing Mailbox at Path", err)
+		logger.Errorf("%s - Failed to Find Existing Mailbox at Path", err)
 		return "", err
 	}
 	return path, nil
@@ -61,14 +61,14 @@ func (mb *MailboxProtocol) loadMailbox() error {
 	// Get Mailbox Path
 	path, err := mb.getMailboxPath()
 	if err != nil {
-		logger.Error("Failed to Create New Mailbox at Path", err)
+		logger.Errorf("%s - Failed to Create New Mailbox at Path", err)
 		return err
 	}
 
 	// // Return Existing Mailbox
 	// mailbox, err := mb.mail.GetLocalMailbox(mb.ctx, path)
 	// if err != nil {
-	// 	logger.Error("Failed to Load Existing Mailbox", err)
+	// 	logger.Errorf("%s - Failed to Load Existing Mailbox", err)
 	// 	return err
 	// }
 
@@ -85,14 +85,14 @@ func (mb *MailboxProtocol) newMailbox() error {
 	// Get Mailbox Path
 	path, err := mb.getMailboxPath()
 	if err != nil {
-		logger.Error("Failed to Create New Mailbox at Path", err)
+		logger.Errorf("%s - Failed to Create New Mailbox at Path", err)
 		return err
 	}
 
 	// Fetch API Keys
 	// key, secret, err := fetchApiKeys()
 	// if err != nil {
-	// 	logger.Error("Failed to create new mailbox", err)
+	// 	logger.Errorf("%s - Failed to create new mailbox", err)
 	// 	return err
 	// }
 
@@ -113,7 +113,7 @@ func (mb *MailboxProtocol) newMailbox() error {
 
 	// // Check for errors
 	// if err != nil {
-	// 	logger.Error("Failed to create mailbox", err)
+	// 	logger.Errorf("%s - Failed to create mailbox", err)
 	// 	return err
 	// }
 

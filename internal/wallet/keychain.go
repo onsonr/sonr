@@ -110,7 +110,7 @@ func loadKeychain(kcconfig fs.Folder) (KeyChain, error) {
 	// Read Account Key
 	accPrivKey, accPubKey, err := readKey(kcconfig, Account)
 	if err != nil {
-		logger.Error("Failed to Read Account Key", err)
+		logger.Errorf("%s - Failed to Read Account Key", err)
 		return nil, err
 	}
 
@@ -120,7 +120,7 @@ func loadKeychain(kcconfig fs.Folder) (KeyChain, error) {
 	// Read Link Key
 	linkPrivKey, linkPubKey, err := readKey(kcconfig, Link)
 	if err != nil {
-		logger.Error("Failed to Read Link Key", err)
+		logger.Errorf("%s - Failed to Read Link Key", err)
 		return nil, err
 	}
 
@@ -130,7 +130,7 @@ func loadKeychain(kcconfig fs.Folder) (KeyChain, error) {
 	// Read Group Key
 	groupPrivKey, groupPubKey, err := readKey(kcconfig, Group)
 	if err != nil {
-		logger.Error("Failed to Read Group Key", err)
+		logger.Errorf("%s - Failed to Read Group Key", err)
 		return nil, err
 	}
 
@@ -149,7 +149,7 @@ func newKeychain(folder fs.Folder) (KeyChain, error) {
 	// Create New Account Key
 	accPrivKey, accPubKey, err := crypto.GenerateEd25519Key(rand.Reader)
 	if err != nil {
-		logger.Error("Failed to generate Account KeyPair", err)
+		logger.Errorf("%s - Failed to generate Account KeyPair", err)
 		return nil, err
 	}
 
@@ -165,7 +165,7 @@ func newKeychain(folder fs.Folder) (KeyChain, error) {
 	// Create New Link Key
 	linkPrivKey, linkPubKey, err := crypto.GenerateEd25519Key(rand.Reader)
 	if err != nil {
-		logger.Error("Failed to generate Link KeyPair", err)
+		logger.Errorf("%s - Failed to generate Link KeyPair", err)
 		return nil, err
 	}
 
@@ -181,7 +181,7 @@ func newKeychain(folder fs.Folder) (KeyChain, error) {
 	// Create New Group Key
 	groupPrivKey, groupPubKey, err := crypto.GenerateEd25519Key(rand.Reader)
 	if err != nil {
-		logger.Error("Failed to generate Group KeyPair", err)
+		logger.Errorf("%s - Failed to generate Group KeyPair", err)
 		return nil, err
 	}
 
@@ -204,7 +204,7 @@ func (kc *keychain) CreateUUID() (*SignedUUID, error) {
 	// sign UUID using local node's private key
 	sig, err := kc.SignWith(Account, []byte(id))
 	if err != nil {
-		logger.Error("Failed to sign UUID", err)
+		logger.Errorf("%s - Failed to sign UUID", err)
 		return nil, err
 	}
 
@@ -221,14 +221,14 @@ func (kc *keychain) CreateMetadata(peerID peer.ID) (*SignedMetadata, error) {
 	// Get local node's public key
 	pubKey, err := kc.GetPubKey(Account)
 	if err != nil {
-		logger.Error("Failed to get local host's public key", err)
+		logger.Errorf("%s - Failed to get local host's public key", err)
 		return nil, err
 	}
 
 	// Marshal Public key into public key data
 	nodePubKey, err := crypto.MarshalPublicKey(pubKey)
 	if err != nil {
-		logger.Error("Failed to Extract Public Key", err)
+		logger.Errorf("%s - Failed to Extract Public Key", err)
 		return nil, err
 	}
 
@@ -320,7 +320,7 @@ func (kc *keychain) GetPrivKey(kp KeyPairType) (crypto.PrivKey, error) {
 func (kc *keychain) GetSnrPubKey(kp KeyPairType) (*SnrPubKey, error) {
 	pub, err := kc.GetPubKey(kp)
 	if err != nil {
-		logger.Error("Failed to get SnrPubKey", err)
+		logger.Errorf("%s - Failed to get SnrPubKey", err)
 		return nil, err
 	}
 	return NewSnrPubKey(pub), nil
@@ -331,7 +331,7 @@ func (kc *keychain) GetSnrPubKey(kp KeyPairType) (*SnrPubKey, error) {
 func (kc *keychain) GetSnrPrivKey(kp KeyPairType) (*SnrPrivKey, error) {
 	priv, err := kc.GetPrivKey(kp)
 	if err != nil {
-		logger.Error("Failed to get SnrPrivKey", err)
+		logger.Errorf("%s - Failed to get SnrPrivKey", err)
 		return nil, err
 	}
 	return NewSnrPrivKey(priv), nil
@@ -346,7 +346,7 @@ func (kc *keychain) LoadKeyPair(pub crypto.PubKey, priv crypto.PrivKey, kp KeyPa
 	} else if kp == Group {
 		kc.groupKeyPair = keyPair{pub, priv, kp}
 	} else {
-		logger.Error("Failed to load Key Pair", ErrInvalidKeyType)
+		logger.Errorf("%s - Failed to load Key Pair", ErrInvalidKeyType)
 	}
 }
 
@@ -355,7 +355,7 @@ func (kc *keychain) RemoveKeyPair(kp KeyPairType) error {
 	if kc.Exists(kp) {
 		return kc.config.Delete(kp.Path())
 	}
-	logger.Error("Failed to Remove Key Pair", ErrKeychainUnready)
+	logger.Errorf("%s - Failed to Remove Key Pair", ErrKeychainUnready)
 	return ErrKeychainUnready
 }
 
@@ -368,7 +368,7 @@ func (kc *keychain) SignWith(kp KeyPairType, msg []byte) ([]byte, error) {
 		}
 		return priv.Sign(msg)
 	}
-	logger.Error("Failed to Sign Data", ErrKeychainUnready)
+	logger.Errorf("%s - Failed to Sign Data", ErrKeychainUnready)
 	return nil, ErrKeychainUnready
 }
 
@@ -385,7 +385,7 @@ func (kc *keychain) SignHmacWith(kp KeyPairType, msg string) (string, error) {
 		// Get the private key as a byte array
 		privBuf, err := priv.Raw()
 		if err != nil {
-			logger.Error("Failed to Get PrivKey Raw Buffer", err)
+			logger.Errorf("%s - Failed to Get PrivKey Raw Buffer", err)
 			return "", err
 		}
 
@@ -394,7 +394,7 @@ func (kc *keychain) SignHmacWith(kp KeyPairType, msg string) (string, error) {
 		h.Write([]byte(msg))
 		return base64.StdEncoding.EncodeToString(h.Sum(nil)), nil
 	}
-	logger.Error("Failed to Sign Data", ErrKeychainUnready)
+	logger.Errorf("%s - Failed to Sign Data", ErrKeychainUnready)
 	return "", ErrKeychainUnready
 }
 
@@ -407,7 +407,7 @@ func (kc *keychain) VerifyWith(kp KeyPairType, msg []byte, sig []byte) (bool, er
 		}
 		return pub.Verify(msg, sig)
 	}
-	logger.Error("Failed to Verify Data", ErrKeychainUnready)
+	logger.Errorf("%s - Failed to Verify Data", ErrKeychainUnready)
 	return false, ErrKeychainUnready
 }
 
@@ -424,14 +424,14 @@ func (kc *keychain) VerifyHmacWith(kp KeyPairType, msg string, sig string) (bool
 		// Get the public key as a byte array
 		pubBuf, err := pub.Raw()
 		if err != nil {
-			logger.Error("Failed to Get PubKey Raw Buffer", err)
+			logger.Errorf("%s - Failed to Get PubKey Raw Buffer", err)
 			return false, err
 		}
 
 		// Decode the signature
 		sigBuf, err := base64.StdEncoding.DecodeString(sig)
 		if err != nil {
-			logger.Error("Failed to Decode Signature", err)
+			logger.Errorf("%s - Failed to Decode Signature", err)
 			return false, err
 		}
 
@@ -440,6 +440,6 @@ func (kc *keychain) VerifyHmacWith(kp KeyPairType, msg string, sig string) (bool
 		h.Write([]byte(msg))
 		return hmac.Equal(h.Sum(nil), sigBuf), nil
 	}
-	logger.Error("Failed to Verify Data", ErrKeychainUnready)
+	logger.Errorf("%s - Failed to Verify Data", ErrKeychainUnready)
 	return false, ErrKeychainUnready
 }

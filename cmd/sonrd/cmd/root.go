@@ -15,6 +15,7 @@ import (
 
 var cfgFile string
 var isDebug bool
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "sonrd",
@@ -80,7 +81,8 @@ func initConfig() {
 			// Split Key Value Pairs
 			value := strings.Split(tv, "=")
 			if len(value) != 2 {
-				golog.Fatal("Invalid Enviornment Variable Format")
+				golog.Warn("Invalid Enviornment Variable Format")
+				continue
 			}
 
 			// Set Env Variables
