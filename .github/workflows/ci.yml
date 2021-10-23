@@ -166,9 +166,13 @@ jobs:
       # 5. Zip Framework and AAR
     - name: Zip Android AAR and iOS Framework
       run: |
+        mkdir -p ${{ github.workspace }}/build/proto
+        cp -R ${{ github.workspace }}/proto/api ${{ github.workspace }}/build/proto
+        cp -R ${{ github.workspace }}/proto/common ${{ github.workspace }}/build/proto
+        cp -R ${{ github.workspace }}/proto/node ${{ github.workspace }}/build/proto
+        cd ${{ github.workspace }}/build zip -r $PROTO_ZIP proto
         cd ${{ github.workspace }}/build && zip -r $ANDROID_ZIP io.sonr.core.aar
         cd ${{ github.workspace }}/build && zip -r $IOS_ZIP Core.xcframework
-        cd ${{ github.workspace }} && zip -r $PROTO_ZIP proto
       env:
         ANDROID_ZIP: sonrlib_${{ steps.get_version.outputs.version-without-v }}_android.zip
         IOS_ZIP: sonrlib_${{ steps.get_version.outputs.version-without-v }}_ios.zip
