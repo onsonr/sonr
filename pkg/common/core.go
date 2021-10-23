@@ -57,14 +57,6 @@ func WrapErrors(msg string, errs []error) error {
 	return err
 }
 
-// DefaultLocation is the LA Address
-func DefaultLocation() *Location {
-	return &Location{
-		Latitude:  34.102920,
-		Longitude: -118.394190,
-	}
-}
-
 // OLC returns Open Location code
 func (l *Location) OLC() string {
 	return olc.Encode(l.GetLatitude(), l.GetLongitude(), 6)

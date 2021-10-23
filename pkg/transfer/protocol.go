@@ -6,9 +6,9 @@ import (
 	"fmt"
 
 	"github.com/kataras/golog"
-	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/host"
+	"github.com/sonr-io/core/pkg/common"
 )
 
 // TransferProtocol type
@@ -50,7 +50,14 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*T
 }
 
 // Request Method sends a request to Transfer Data to a remote peer
-func (p *TransferProtocol) Request(id peer.ID, req *InviteRequest) error {
+func (p *TransferProtocol) Request(to *common.Peer) error {
+	// Create Request
+	id, req, err := p.createRequest(to)
+	if err != nil {
+		logger.Error("Failed to Create Request", err)
+		return err
+	}
+
 	// Check if the response is valid
 	if req == nil {
 		return ErrInvalidRequest
@@ -76,7 +83,14 @@ func (p *TransferProtocol) Request(id peer.ID, req *InviteRequest) error {
 }
 
 // Respond Method authenticates or declines a Transfer Request
-func (p *TransferProtocol) Respond(id peer.ID, resp *InviteResponse) error {
+func (p *TransferProtocol) Respond(decs bool, to *common.Peer) error {
+	// Create Response
+	id, resp, err := p.createResponse(decs, to)
+	if err != nil {
+		logger.Error("Failed to Create Request", err)
+		return err
+	}
+
 	// Check if the response is valid
 	if resp == nil {
 		return ErrInvalidResponse
@@ -120,5 +134,14 @@ func (p *TransferProtocol) Supply(req *api.SupplyRequest) error {
 	// Add items to transfer
 	p.supplyQueue.PushBack(payload)
 	logger.Debug(fmt.Sprintf("Added %v items to supply queue.", req.Count()), golog.Fields{"File Count": payload.FileCount(), "URL Count": payload.URLCount()})
+	// Check if Peer is provided
+	if req.GetIsPeerSupply() {
+		logger.Debug("Peer Supply Request. Sending Invite after supply")
+		err = p.Request(req.GetPeer())
+		if err != nil {
+			logger.Error("Failed to Send Request to Peer", err)
+			return err
+		}
+	}
 	return nil
 }

@@ -15,7 +15,7 @@ import (
 func DefaultInitializeRequest() *InitializeRequest {
 	return &InitializeRequest{
 		Profile:  common.NewDefaultProfile(),
-		Location: common.DefaultLocation(),
+		Location: GetLocation(),
 	}
 }
 

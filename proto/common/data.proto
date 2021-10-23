@@ -177,3 +177,8 @@ message PayloadList {
   int64 lastModified = 3;          // Last Modified Time in Seconds
 }
 
+// SupplyItem is an item supplied to be a payload
+message SupplyItem {
+    string path = 1; // Supply Path
+    optional bytes thumbnail = 2; // Supply Thumbnail
+}

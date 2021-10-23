@@ -87,13 +87,9 @@ message InitializeResponse {
 
 // (Client) SupplyRequest supplies path to files or urls and optionally a Peer
 message SupplyRequest {
-  repeated Item items = 1;        // Supply Paths
+  repeated sonr.core.SupplyItem items = 1;        // Supply Paths
   optional sonr.core.Peer peer = 2; // Supply Peer
   bool isPeerSupply = 3;                 // Supply Peer
-  message Item {
-    string path = 1; // Supply Path
-    bytes thumbnail = 2; // Supply Thumbnail
-  }
 }
 
 // (Client) SupplyResponse is response to SupplyRequest
@@ -174,7 +170,7 @@ message LinkResponse {
 message ShareRequest {
   sonr.core.Peer peer = 1; // Peer to Share with
   sonr.core.MessageItem message = 2; // Message to Share
-  repeated string paths = 3;        // Optional: Supply Paths, to directly supply files
+  repeated sonr.core.SupplyItem items = 3; // Supply Items to share
 }
 
 // (Client) ShareResponse is response to ShareRequest

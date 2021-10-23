@@ -59,7 +59,7 @@ type options struct {
 func defaultNodeOptions() *options {
 	return &options{
 		mode:       StubMode_LIB,
-		location:   common.DefaultLocation(),
+		location:   api.GetLocation(),
 		connection: common.Connection_WIFI,
 		grpcServer: grpc.NewServer(),
 		profile:    common.NewDefaultProfile(),

@@ -21,43 +21,6 @@ func (s *ClientNodeStub) Supply(ctx context.Context, req *api.SupplyRequest) (*a
 		}, nil
 	}
 
-	// Check if Peer is provided
-	if req.GetIsPeerSupply() {
-		// Call Internal Respond
-		peer, err := s.node.Peer()
-		if err != nil {
-			return &api.SupplyResponse{
-				Success: false,
-				Error:   err.Error(),
-			}, nil
-		}
-
-		// Call Internal Respond
-		toId, inv, err := s.TransferProtocol.NewRequest(req.GetPeer(), peer, s.node.host.ID())
-		if err != nil {
-			return &api.SupplyResponse{
-				Success: false,
-				Error:   err.Error(),
-			}, nil
-		}
-
-		// Request Peer to Transfer File
-		if s.TransferProtocol != nil {
-			err = s.TransferProtocol.Request(toId, inv)
-			if err != nil {
-				return &api.SupplyResponse{
-					Success: false,
-					Error:   err.Error(),
-				}, nil
-			}
-		} else {
-			return &api.SupplyResponse{
-				Success: false,
-				Error:   ErrProtocolsNotSet.Error(),
-			}, nil
-		}
-	}
-
 	// Send Response
 	return &api.SupplyResponse{
 		Success: true,
@@ -118,27 +81,9 @@ func (s *ClientNodeStub) Fetch(ctx context.Context, req *api.FetchRequest) (*api
 
 // Share method sends supplied files/urls with a peer
 func (s *ClientNodeStub) Share(ctx context.Context, req *api.ShareRequest) (*api.ShareResponse, error) {
-	// Call Internal Respond
-	peer, err := s.node.Peer()
-	if err != nil {
-		return &api.ShareResponse{
-			Success: false,
-			Error:   err.Error(),
-		}, nil
-	}
-
-	// Create new Request
-	toId, inv, err := s.TransferProtocol.NewRequest(req.GetPeer(), peer, s.node.host.ID())
-	if err != nil {
-		return &api.ShareResponse{
-			Success: false,
-			Error:   err.Error(),
-		}, nil
-	}
-
 	// Request Peer to Transfer File
 	if s.TransferProtocol != nil {
-		err = s.TransferProtocol.Request(toId, inv)
+		err := s.TransferProtocol.Request(req.GetPeer())
 		if err != nil {
 			return &api.ShareResponse{
 				Success: false,
@@ -189,24 +134,8 @@ func (s *ClientNodeStub) Search(ctx context.Context, req *api.SearchRequest) (*a
 func (s *ClientNodeStub) Respond(ctx context.Context, req *api.RespondRequest) (*api.RespondResponse, error) {
 	// Call Internal Respond
 	if s.TransferProtocol != nil {
-		// Call Internal Respond
-		peer, err := s.node.Peer()
-		if err != nil {
-			return &api.RespondResponse{
-				Success: false,
-				Error:   err.Error(),
-			}, nil
-		}
-		toId, resp, err := s.TransferProtocol.NewResponse(req.GetDecision(), req.GetPeer(), peer, s.node.host.ID())
-		if err != nil {
-			return &api.RespondResponse{
-				Success: false,
-				Error:   err.Error(),
-			}, nil
-		}
-
 		// Respond on TransferProtocol
-		err = s.TransferProtocol.Respond(toId, resp)
+		err := s.TransferProtocol.Respond(req.GetDecision(), req.GetPeer())
 		if err != nil {
 			return &api.RespondResponse{
 				Success: false,

@@ -299,10 +299,6 @@
                 </li>
               
                 <li>
-                  <a href="#sonr.api.SupplyRequest.Item"><span class="badge">M</span>SupplyRequest.Item</a>
-                </li>
-              
-                <li>
                   <a href="#sonr.api.SupplyResponse"><span class="badge">M</span>SupplyResponse</a>
                 </li>
               
@@ -528,6 +524,10 @@
               
                 <li>
                   <a href="#sonr.core.PayloadList"><span class="badge">M</span>PayloadList</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.core.SupplyItem"><span class="badge">M</span>SupplyItem</a>
                 </li>
               
                 <li>
@@ -1872,10 +1872,10 @@ File Transfer History </p></td>
                 </tr>
               
                 <tr>
-                  <td>paths</td>
-                  <td><a href="#string">string</a></td>
+                  <td>items</td>
+                  <td><a href="#sonr.core.SupplyItem">sonr.core.SupplyItem</a></td>
                   <td>repeated</td>
-                  <td><p>Optional: Supply Paths, to directly supply files </p></td>
+                  <td><p>Supply Items to share </p></td>
                 </tr>
               
             </tbody>
@@ -1928,7 +1928,7 @@ File Transfer History </p></td>
               
                 <tr>
                   <td>items</td>
-                  <td><a href="#sonr.api.SupplyRequest.Item">SupplyRequest.Item</a></td>
+                  <td><a href="#sonr.core.SupplyItem">sonr.core.SupplyItem</a></td>
                   <td>repeated</td>
                   <td><p>Supply Paths </p></td>
                 </tr>
@@ -1945,37 +1945,6 @@ File Transfer History </p></td>
                   <td><a href="#bool">bool</a></td>
                   <td></td>
                   <td><p>Supply Peer </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.api.SupplyRequest.Item">SupplyRequest.Item</h3>
-        <p></p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>path</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Supply Path </p></td>
-                </tr>
-              
-                <tr>
-                  <td>thumbnail</td>
-                  <td><a href="#bytes">bytes</a></td>
-                  <td></td>
-                  <td><p>Supply Thumbnail </p></td>
                 </tr>
               
             </tbody>
@@ -4207,6 +4176,37 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
                   <td><a href="#int64">int64</a></td>
                   <td></td>
                   <td><p>Last Modified Time in Seconds </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.core.SupplyItem">SupplyItem</h3>
+        <p>SupplyItem is an item supplied to be a payload</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>path</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Supply Path </p></td>
+                </tr>
+              
+                <tr>
+                  <td>thumbnail</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td>optional</td>
+                  <td><p>Supply Thumbnail </p></td>
                 </tr>
               
             </tbody>

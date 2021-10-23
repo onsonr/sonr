@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/kataras/golog"
+	"github.com/sonr-io/core/internal/api"
 	common "github.com/sonr-io/core/pkg/common"
 )
 
@@ -40,7 +41,7 @@ type lobbyOptions struct {
 
 func defaultLobbyOptions() *lobbyOptions {
 	return &lobbyOptions{
-		location: common.DefaultLocation(),
+		location: api.GetLocation(),
 		interval: time.Second * 5,
 	}
 }

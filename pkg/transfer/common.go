@@ -70,7 +70,14 @@ func (ir *InviteRequest) ToEvent() *api.InviteEvent {
 }
 
 // Share a peer to have a transfer
-func (p *TransferProtocol) NewRequest(to *common.Peer, from *common.Peer, fromID peer.ID) (peer.ID, *InviteRequest, error) {
+func (p *TransferProtocol) createRequest(to *common.Peer) (peer.ID, *InviteRequest, error) {
+	// Call Peer from Node
+	from, err := p.node.Peer()
+	if err != nil {
+		logger.Error("Failed to Get Peer from Node")
+		return "", nil, err
+	}
+
 	// Fetch Element from Queue
 	elem := p.supplyQueue.Front()
 	if elem != nil {
@@ -78,7 +85,7 @@ func (p *TransferProtocol) NewRequest(to *common.Peer, from *common.Peer, fromID
 		payload := p.supplyQueue.Remove(elem).(*common.Payload)
 
 		// Create new Metadata
-		meta, err := wallet.Primary.CreateMetadata(fromID)
+		meta, err := wallet.Primary.CreateMetadata(p.host.ID())
 		if err != nil {
 			logger.Error("Failed to create new metadata for Shared Invite", err)
 			return "", nil, err
@@ -105,9 +112,16 @@ func (p *TransferProtocol) NewRequest(to *common.Peer, from *common.Peer, fromID
 }
 
 // Respond to an invite request
-func (p *TransferProtocol) NewResponse(decs bool, to *common.Peer, from *common.Peer, fromID peer.ID) (peer.ID, *InviteResponse, error) {
+func (p *TransferProtocol) createResponse(decs bool, to *common.Peer) (peer.ID, *InviteResponse, error) {
+	// Call Peer from Node
+	from, err := p.node.Peer()
+	if err != nil {
+		logger.Error("Failed to Get Peer from Node")
+		return "", nil, err
+	}
+
 	// Create new Metadata
-	meta, err := wallet.Primary.CreateMetadata(fromID)
+	meta, err := wallet.Primary.CreateMetadata(p.host.ID())
 	if err != nil {
 		logger.Error("Failed to create new metadata for Shared Invite", err)
 		return "", nil, err
