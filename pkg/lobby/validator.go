@@ -118,7 +118,13 @@ func (lp *LobbyProtocol) updatePeer(peerID peer.ID, data *common.Peer) bool {
 	}
 
 	// Add Peer to List and Check if Peer is List
-	lp.peers = append(lp.peers, data)
+	idx := lp.indexOfPeer(peerID)
+	if idx == -1 {
+		lp.peers = append(lp.peers, data)
+		lp.callUpdate()
+	} else {
+		lp.peers[idx] = data
+	}
 	lp.callRefresh()
 	return true
 }

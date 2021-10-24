@@ -46,7 +46,7 @@ func WrapErrors(msg string, errs []error) error {
 
 // OLC returns Open Location code
 func (l *Location) OLC() string {
-	return olc.Encode(l.GetLatitude(), l.GetLongitude(), 6)
+	return olc.Encode(l.GetLatitude(), l.GetLongitude(), 4)
 }
 
 // ** ───────────────────────────────────────────────────────
