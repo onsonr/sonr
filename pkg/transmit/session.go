@@ -1,4 +1,4 @@
-package transfer
+package transmit
 
 import (
 	"container/list"

@@ -14,7 +14,7 @@ func (s *ClientNodeStub) Supply(ctx context.Context, req *api.SupplyRequest) (*a
 	}
 
 	// Call Internal Supply
-	err := s.TransferProtocol.Supply(req)
+	err := s.TransmitProtocol.Supply(req)
 	if err != nil {
 		return &api.SupplyResponse{
 			Success: false,
@@ -92,9 +92,9 @@ func (s *ClientNodeStub) Share(ctx context.Context, req *api.ShareRequest) (*api
 		logger.Warnf("%s - Failed to Update Lobby", err)
 	}
 
-	// Request Peer to Transfer File
-	if s.TransferProtocol != nil {
-		err := s.TransferProtocol.Request(req.GetPeer())
+	// Request Peer to Transmit File
+	if s.TransmitProtocol != nil {
+		err := s.TransmitProtocol.Request(req.GetPeer())
 		if err != nil {
 			return &api.ShareResponse{
 				Success: false,
@@ -154,9 +154,9 @@ func (s *ClientNodeStub) Respond(ctx context.Context, req *api.RespondRequest) (
 	}
 
 	// Call Internal Respond
-	if s.TransferProtocol != nil {
-		// Respond on TransferProtocol
-		err := s.TransferProtocol.Respond(req.GetDecision(), req.GetPeer())
+	if s.TransmitProtocol != nil {
+		// Respond on TransmitProtocol
+		err := s.TransmitProtocol.Respond(req.GetDecision(), req.GetPeer())
 		if err != nil {
 			return &api.RespondResponse{
 				Success: false,

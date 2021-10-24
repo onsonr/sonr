@@ -1,4 +1,4 @@
-package transfer
+package transmit
 
 import (
 	"errors"
@@ -15,7 +15,7 @@ import (
 
 // Transfer Emission Events
 const (
-	ITEM_INTERVAL   = 25
+	ITEM_INTERVAL = 25
 )
 
 // Transfer Protocol ID's
@@ -66,7 +66,7 @@ func (ir *InviteRequest) ToEvent() *api.InviteEvent {
 }
 
 // Share a peer to have a transfer
-func (p *TransferProtocol) createRequest(to *common.Peer) (peer.ID, *InviteRequest, error) {
+func (p *TransmitProtocol) createRequest(to *common.Peer) (peer.ID, *InviteRequest, error) {
 	// Call Peer from Node
 	from, err := p.node.Peer()
 	if err != nil {
@@ -108,7 +108,7 @@ func (p *TransferProtocol) createRequest(to *common.Peer) (peer.ID, *InviteReque
 }
 
 // Respond to an invite request
-func (p *TransferProtocol) createResponse(decs bool, to *common.Peer) (peer.ID, *InviteResponse, error) {
+func (p *TransmitProtocol) createResponse(decs bool, to *common.Peer) (peer.ID, *InviteResponse, error) {
 	// Call Peer from Node
 	from, err := p.node.Peer()
 	if err != nil {

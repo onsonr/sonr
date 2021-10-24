@@ -1,9 +1,9 @@
 syntax = "proto3";
 
-package sonr.protocols.transfer;
+package sonr.protocols.transmit;
 import "proto/common/core.proto";
 import "proto/common/data.proto";
-option go_package = "github.com/sonr-io/core/pkg/transfer";
+option go_package = "github.com/sonr-io/core/pkg/transmit";
 
 // For Transfer Chunk Transmission
 message Chunk {

@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package sonr.protocols.mailbox;
 import "proto/common/core.proto";
+import "proto/common/data.proto";
 option go_package = "github.com/sonr-io/core/pkg/mailbox";
 
 message MailboxMessage {
@@ -11,4 +12,20 @@ message MailboxMessage {
   sonr.core.Profile to = 4;           // Receivers Peer Data
   sonr.core.Metadata metadata = 5; // Metadata
   int64 createdAt = 6; // Timestamp
+}
+
+// Invitation Message sent on RPC
+message InviteRequest {
+  sonr.core.Payload payload = 1;   // Attached Data
+  sonr.core.Peer from = 3;         // Users Peer Data
+  sonr.core.Peer to = 4;           // Receivers Peer Data
+  sonr.core.Metadata metadata = 5; // Metadata
+}
+
+// Reply Message sent on RPC
+message InviteResponse {
+  bool decision = 1;               // Success
+  sonr.core.Peer from = 3;         // Users Peer Data
+  sonr.core.Peer to = 4;           // Receivers Peer Data
+  sonr.core.Metadata metadata = 5; // Metadata
 }

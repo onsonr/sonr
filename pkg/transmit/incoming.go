@@ -1,4 +1,4 @@
-package transfer
+package transmit
 
 import (
 	"bytes"
@@ -14,7 +14,7 @@ import (
 )
 
 // onInviteRequest peer requests handler
-func (p *TransferProtocol) onInviteRequest(s network.Stream) {
+func (p *TransmitProtocol) onInviteRequest(s network.Stream) {
 	logger.Debug("Received Invite Request")
 	// Initialize Stream Data
 	remotePeer := s.Conn().RemotePeer()
@@ -49,7 +49,7 @@ func (p *TransferProtocol) onInviteRequest(s network.Stream) {
 }
 
 // onIncomingTransfer incoming transfer handler
-func (p *TransferProtocol) onIncomingTransfer(stream network.Stream) {
+func (p *TransmitProtocol) onIncomingTransfer(stream network.Stream) {
 	logger.Debug("Received Incoming Transfer")
 	// Find Entry in Queue
 	entry, err := p.sessionQueue.Next()

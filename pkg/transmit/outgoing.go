@@ -1,4 +1,4 @@
-package transfer
+package transmit
 
 import (
 	"io"
@@ -14,7 +14,7 @@ import (
 )
 
 // onInviteResponse response handler
-func (p *TransferProtocol) onInviteResponse(s network.Stream) {
+func (p *TransmitProtocol) onInviteResponse(s network.Stream) {
 	logger.Debug("Received Invite Response")
 	// Initialize Stream Data
 	remotePeer := s.Conn().RemotePeer()
@@ -60,7 +60,7 @@ func (p *TransferProtocol) onInviteResponse(s network.Stream) {
 }
 
 // onOutgoingTransfer is called by onInviteResponse if Validated
-func (p *TransferProtocol) onOutgoingTransfer(entry Session, stream network.Stream) {
+func (p *TransmitProtocol) onOutgoingTransfer(entry Session, stream network.Stream) {
 	logger.Debug("Received Accept Decision, Starting Outgoing Transfer")
 	// Create New Writer
 	event, err := entry.WriteTo(stream, p.node)

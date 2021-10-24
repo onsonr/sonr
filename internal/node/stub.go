@@ -7,7 +7,7 @@ import (
 
 	"github.com/sonr-io/core/pkg/exchange"
 	"github.com/sonr-io/core/pkg/mailbox"
-	"github.com/sonr-io/core/pkg/transfer"
+	"github.com/sonr-io/core/pkg/transmit"
 
 	"google.golang.org/grpc"
 )
@@ -88,19 +88,14 @@ type ClientNodeStub struct {
 	grpcServer *grpc.Server
 
 	// Protocols
-	*transfer.TransferProtocol
+	*transmit.TransmitProtocol
 	*exchange.ExchangeProtocol
 	*mailbox.MailboxProtocol
 }
 
 // startClientService creates a new Client service stub for the node.
 func (n *Node) startClientService(ctx context.Context, opts *options) (*ClientNodeStub, error) {
-	// Set Transfer Protocol
-	transferProtocol, err := transfer.NewProtocol(ctx, n.host, n)
-	if err != nil {
-		logger.Errorf("%s - Failed to start TransferProtocol", err)
-		return nil, err
-	}
+
 	// Set Exchange Protocol
 	exchProtocol, err := exchange.NewProtocol(ctx, n.host, n, exchange.WithLocation(opts.location))
 	if err != nil {
@@ -108,11 +103,18 @@ func (n *Node) startClientService(ctx context.Context, opts *options) (*ClientNo
 		return nil, err
 	}
 
+	// Set Transmit Protocol
+	transmitProtocol, err := transmit.NewProtocol(ctx, n.host, n)
+	if err != nil {
+		logger.Errorf("%s - Failed to start TransmitProtocol", err)
+		return nil, err
+	}
+
 	// Create a new gRPC server
 	grpcServer := grpc.NewServer()
 	stub := &ClientNodeStub{
 		ctx:              ctx,
-		TransferProtocol: transferProtocol,
+		TransmitProtocol: transmitProtocol,
 		ExchangeProtocol: exchProtocol,
 		node:             n,
 		grpcServer:       grpcServer,
@@ -126,7 +128,7 @@ func (n *Node) startClientService(ctx context.Context, opts *options) (*ClientNo
 
 // HasProtocols returns true if the node has the protocols.
 func (s *ClientNodeStub) HasProtocols() bool {
-	return s.TransferProtocol != nil && s.ExchangeProtocol != nil
+	return s.TransmitProtocol != nil && s.ExchangeProtocol != nil
 }
 
 // Serve serves the RPC Service on the given port.

@@ -643,6 +643,14 @@
             <ul>
               
                 <li>
+                  <a href="#sonr.protocols.mailbox.InviteRequest"><span class="badge">M</span>InviteRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.protocols.mailbox.InviteResponse"><span class="badge">M</span>InviteResponse</a>
+                </li>
+              
+                <li>
                   <a href="#sonr.protocols.mailbox.MailboxMessage"><span class="badge">M</span>MailboxMessage</a>
                 </li>
               
@@ -654,19 +662,19 @@
         
           
           <li>
-            <a href="#proto%2fprotocols%2ftransfer.proto">proto/protocols/transfer.proto</a>
+            <a href="#proto%2fprotocols%2ftransmit.proto">proto/protocols/transmit.proto</a>
             <ul>
               
                 <li>
-                  <a href="#sonr.protocols.transfer.Chunk"><span class="badge">M</span>Chunk</a>
+                  <a href="#sonr.protocols.transmit.Chunk"><span class="badge">M</span>Chunk</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.protocols.transfer.InviteRequest"><span class="badge">M</span>InviteRequest</a>
+                  <a href="#sonr.protocols.transmit.InviteRequest"><span class="badge">M</span>InviteRequest</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.protocols.transfer.InviteResponse"><span class="badge">M</span>InviteResponse</a>
+                  <a href="#sonr.protocols.transmit.InviteResponse"><span class="badge">M</span>InviteResponse</a>
                 </li>
               
               
@@ -4907,6 +4915,96 @@ Returns a stream of Lobby Refresh Events</p></td>
       <p></p>
 
       
+        <h3 id="sonr.protocols.mailbox.InviteRequest">InviteRequest</h3>
+        <p>Invitation Message sent on RPC</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>payload</td>
+                  <td><a href="#sonr.core.Payload">sonr.core.Payload</a></td>
+                  <td></td>
+                  <td><p>Attached Data </p></td>
+                </tr>
+              
+                <tr>
+                  <td>from</td>
+                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
+                  <td></td>
+                  <td><p>Users Peer Data </p></td>
+                </tr>
+              
+                <tr>
+                  <td>to</td>
+                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
+                  <td></td>
+                  <td><p>Receivers Peer Data </p></td>
+                </tr>
+              
+                <tr>
+                  <td>metadata</td>
+                  <td><a href="#sonr.core.Metadata">sonr.core.Metadata</a></td>
+                  <td></td>
+                  <td><p>Metadata </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.protocols.mailbox.InviteResponse">InviteResponse</h3>
+        <p>Reply Message sent on RPC</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>decision</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>Success </p></td>
+                </tr>
+              
+                <tr>
+                  <td>from</td>
+                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
+                  <td></td>
+                  <td><p>Users Peer Data </p></td>
+                </tr>
+              
+                <tr>
+                  <td>to</td>
+                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
+                  <td></td>
+                  <td><p>Receivers Peer Data </p></td>
+                </tr>
+              
+                <tr>
+                  <td>metadata</td>
+                  <td><a href="#sonr.core.Metadata">sonr.core.Metadata</a></td>
+                  <td></td>
+                  <td><p>Metadata </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="sonr.protocols.mailbox.MailboxMessage">MailboxMessage</h3>
         <p></p>
 
@@ -4975,12 +5073,12 @@ Returns a stream of Lobby Refresh Events</p></td>
     
       
       <div class="file-heading">
-        <h2 id="proto/protocols/transfer.proto">proto/protocols/transfer.proto</h2><a href="#title">Top</a>
+        <h2 id="proto/protocols/transmit.proto">proto/protocols/transmit.proto</h2><a href="#title">Top</a>
       </div>
       <p></p>
 
       
-        <h3 id="sonr.protocols.transfer.Chunk">Chunk</h3>
+        <h3 id="sonr.protocols.transmit.Chunk">Chunk</h3>
         <p>For Transfer Chunk Transmission</p>
 
         
@@ -5025,7 +5123,7 @@ Returns a stream of Lobby Refresh Events</p></td>
 
         
       
-        <h3 id="sonr.protocols.transfer.InviteRequest">InviteRequest</h3>
+        <h3 id="sonr.protocols.transmit.InviteRequest">InviteRequest</h3>
         <p>Invitation Message sent on RPC</p>
 
         
@@ -5070,7 +5168,7 @@ Returns a stream of Lobby Refresh Events</p></td>
 
         
       
-        <h3 id="sonr.protocols.transfer.InviteResponse">InviteResponse</h3>
+        <h3 id="sonr.protocols.transmit.InviteResponse">InviteResponse</h3>
         <p>Reply Message sent on RPC</p>
 
         

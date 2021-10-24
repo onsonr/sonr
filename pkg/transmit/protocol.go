@@ -1,4 +1,4 @@
-package transfer
+package transmit
 
 import (
 	"container/list"
@@ -11,8 +11,8 @@ import (
 	"github.com/sonr-io/core/pkg/common"
 )
 
-// TransferProtocol type
-type TransferProtocol struct {
+// TransmitProtocol type
+type TransmitProtocol struct {
 	node         api.NodeImpl
 	ctx          context.Context // Context
 	host         *host.SNRHost   // local host
@@ -21,15 +21,15 @@ type TransferProtocol struct {
 }
 
 // NewProtocol creates a new TransferProtocol
-func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*TransferProtocol, error) {
+func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*TransmitProtocol, error) {
 	// Check parameters
 	if err := checkParams(host); err != nil {
-		logger.Errorf("%s - Failed to create TransferProtocol", err)
+		logger.Errorf("%s - Failed to create TransmitProtocol", err)
 		return nil, err
 	}
 
 	// create a new transfer protocol
-	invProtocol := &TransferProtocol{
+	invProtocol := &TransmitProtocol{
 		ctx:  ctx,
 		host: host,
 		sessionQueue: &SessionQueue{
@@ -45,12 +45,12 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*T
 	host.SetStreamHandler(RequestPID, invProtocol.onInviteRequest)
 	host.SetStreamHandler(ResponsePID, invProtocol.onInviteResponse)
 	host.SetStreamHandler(SessionPID, invProtocol.onIncomingTransfer)
-	logger.Debug("✅  TransferProtocol is Activated \n")
+	logger.Debug("✅  TransmitProtocol is Activated \n")
 	return invProtocol, nil
 }
 
 // Request Method sends a request to Transfer Data to a remote peer
-func (p *TransferProtocol) Request(to *common.Peer) error {
+func (p *TransmitProtocol) Request(to *common.Peer) error {
 	// Create Request
 	id, req, err := p.createRequest(to)
 	if err != nil {
@@ -83,7 +83,7 @@ func (p *TransferProtocol) Request(to *common.Peer) error {
 }
 
 // Respond Method authenticates or declines a Transfer Request
-func (p *TransferProtocol) Respond(decs bool, to *common.Peer) error {
+func (p *TransmitProtocol) Respond(decs bool, to *common.Peer) error {
 	// Create Response
 	id, resp, err := p.createResponse(decs, to)
 	if err != nil {
@@ -116,7 +116,7 @@ func (p *TransferProtocol) Respond(decs bool, to *common.Peer) error {
 }
 
 // Supply a transfer item to the queue
-func (p *TransferProtocol) Supply(req *api.SupplyRequest) error {
+func (p *TransmitProtocol) Supply(req *api.SupplyRequest) error {
 	// Profile from NodeImpl
 	profile, err := p.node.Profile()
 	if err != nil {
