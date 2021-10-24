@@ -1,24 +1,11 @@
 package common
 
 import (
-	"time"
-
 	olc "github.com/google/open-location-code/go"
 	"github.com/kataras/golog"
 	"github.com/pkg/errors"
 	"google.golang.org/protobuf/proto"
 )
-
-// NewLastUpdated returns a new LastUpdated Object as int64
-var NewLastUpdated = func() int64 {
-	return time.Now().Unix()
-}
-
-// RPC_SERVER_PORT is the port the RPC service listens on.
-const RPC_SERVER_PORT = 26225
-
-// GetProfileFunc returns a function that returns the Profile and error
-type GetProfileFunc func() (*Profile, error)
 
 var (
 	logger = golog.Default.Child("internal/common")

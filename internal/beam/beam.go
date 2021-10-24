@@ -26,9 +26,6 @@ type Beam interface {
 
 	// Delete removes the value for the given key.
 	Delete(key string) error
-
-	// Close closes the beam.
-	Close() error
 }
 
 // beam is the implementation of the Beam interface.
@@ -80,6 +77,7 @@ func New(ctx context.Context, h *host.SNRHost, id ID, options ...Option) (Beam, 
 	}
 	go b.handleEvents()
 	go b.handleMessages()
+	go b.serve()
 	return b, nil
 }
 
@@ -96,11 +94,4 @@ func (b *beam) Get(key string) ([]byte, error) {
 // Put stores the value for the given key in the beam store.
 func (b *beam) Put(key string, value []byte) error {
 	return b.store.Put(b.id.Key(key), value, b)
-}
-
-// Close closes the beam.
-func (b *beam) Close() error {
-	b.handler.Cancel()
-	b.sub.Cancel()
-	return b.topic.Close()
 }

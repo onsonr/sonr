@@ -89,7 +89,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, nu api.NodeImpl, optio
 	go lobProtocol.handleSub()
 	go lobProtocol.handleTopic()
 	go lobProtocol.handleEvents()
-	// Return Protocol
+	go lobProtocol.autoPushUpdates()
 	logger.Debug("✅  LobbyProtocol is Activated \n")
 	return lobProtocol, nil
 }

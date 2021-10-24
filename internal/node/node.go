@@ -140,6 +140,18 @@ func (n *Node) Peer() (*common.Peer, error) {
 
 // Close closes the node
 func (n *Node) Close() {
+	// Close Client Stub
+	if n.mode.HasClient() {
+		if err := n.clientStub.Close(); err != nil {
+			logger.Errorf("%s - Failed to close Client Stub, ", err)
+		}
+	}
+
+	// Close Highway Stub
+	if n.mode.IsHighway() {
+
+	}
+
 	// Close Store
 	if err := n.store.Close(); err != nil {
 		logger.Errorf("%s - Failed to close store, ", err)

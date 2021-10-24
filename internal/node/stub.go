@@ -152,7 +152,6 @@ func (s *ClientNodeStub) Serve(ctx context.Context, listener net.Listener) {
 		case <-ctx.Done():
 			s.grpcServer.Stop()
 			s.LobbyProtocol.Close()
-			s.ExchangeProtocol.Close()
 			return
 		}
 	}

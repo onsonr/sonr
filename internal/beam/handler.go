@@ -74,6 +74,23 @@ func (s *Store) handleStoreTTL() {
 	}
 }
 
+// serve handles the serving of the beam
+func (b *beam) serve() {
+	for {
+		select {
+		case <-b.ctx.Done():
+			logger.Debugf("Closing Beam (%s)", b.id.Prefix())
+			b.handler.Cancel()
+			b.sub.Cancel()
+			err := b.topic.Close()
+			if err != nil {
+				logger.Errorf("%s - Failed to Close Beam", err)
+			}
+			return
+		}
+	}
+}
+
 // isEventJoin Checks if PeerEvent is Join and NOT User
 func isEventJoin(ev pubsub.PeerEvent, selfID peer.ID) bool {
 	return ev.Type == pubsub.PeerJoin && ev.Peer != selfID

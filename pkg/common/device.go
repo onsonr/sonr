@@ -24,7 +24,26 @@ var (
 var (
 	// deviceID is the device ID. Either provided or found
 	deviceID string
+	hostName string
 )
+
+func init() {
+	// Get the device ID
+	id, err := machineid.ID()
+	if err != nil {
+		logger.Errorf("%s - Failed to get Device ID", err)
+		return
+	}
+	deviceID = id
+
+	// Get the hostname
+	hn, err := os.Hostname()
+	if err != nil {
+		logger.Errorf("%s - Failed to get HostName", err)
+		return
+	}
+	hostName = hn
+}
 
 // Arch returns the current architecture.
 func Arch() string {
@@ -33,19 +52,19 @@ func Arch() string {
 
 // HostName returns the hostname of the current machine.
 func HostName() (string, error) {
-	return os.Hostname()
+	if hostName != "" {
+		return hostName, nil
+	}
+	return "", errors.New("HostName not set.")
 }
 
 // ID returns the device ID.
 func ID() (string, error) {
-	// Check if Mobile
-	if IsMobile() {
-		if deviceID != "" {
-			return deviceID, nil
-		}
-		return "", errors.New("Device ID not set for Mobile.")
+	// Check if the device ID is empty
+	if deviceID != "" {
+		return deviceID, nil
 	}
-	return machineid.ID()
+	return "", errors.New("Device ID not set.")
 }
 
 // IsMobile returns true if the current platform is ANY mobile platform.

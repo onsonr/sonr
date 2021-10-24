@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	logger         = golog.Default.Child("protocols/exchange")
+	logger         = golog.Child("protocols/exchange")
 	ErrParameters  = errors.New("Failed to create new ExchangeProtocol, invalid parameters")
 	ErrInvalidPeer = errors.New("Peer object provided to ExchangeProtocol is Nil")
 )
@@ -157,7 +157,7 @@ func (p *ExchangeProtocol) Register(sName string, records ...api.Record) (api.Do
 
 	ok, err := api.PutRecords(p.ctx, records...)
 	if err != nil {
-		logger.Errorf("%s - Failed to Register SName", err)
+		logger.Error("Failed to Register SName", err)
 		return nil, err
 	}
 
@@ -169,7 +169,7 @@ func (p *ExchangeProtocol) Register(sName string, records ...api.Record) (api.Do
 	// Get records from Namebase
 	recs, err := api.FindRecords(p.ctx, sName)
 	if err != nil {
-		logger.Errorf("%s - Failed to Find SName after Registering", err)
+		logger.Error("Failed to Find SName after Registering", err)
 		return nil, err
 	}
 
@@ -179,15 +179,4 @@ func (p *ExchangeProtocol) Register(sName string, records ...api.Record) (api.Do
 		m[r.Host] = r.Value
 	}
 	return m, nil
-}
-
-// Close method closes the ExchangeProtocol
-func (p *ExchangeProtocol) Close() error {
-	// Close BeamStore
-	err := p.beamStore.Close()
-	if err != nil {
-		logger.Errorf("%s - Failed to close BeamStore", err)
-		return err
-	}
-	return nil
 }

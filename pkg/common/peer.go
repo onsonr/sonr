@@ -17,9 +17,9 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// ** ───────────────────────────────────────────────────────
-// ** ─── Peer Management ───────────────────────────────────
-// ** ───────────────────────────────────────────────────────
+// GetProfileFunc returns a function that returns the Profile and error
+type GetProfileFunc func() (*Profile, error)
+
 // Buffer returns Peer as a buffer
 func (p *Peer) Buffer() ([]byte, error) {
 	// Marshal Peer
@@ -92,9 +92,6 @@ func (p *Peer) SnrPubKey() (*wallet.SnrPubKey, error) {
 	return wallet.NewSnrPubKey(pub), nil
 }
 
-// ** ───────────────────────────────────────────────────────
-// ** ─── Profile Management ────────────────────────────────
-// ** ───────────────────────────────────────────────────────
 // Add adds a new Profile to the List and
 // updates LastModified time.
 func (p *ProfileList) Add(profile *Profile) {
