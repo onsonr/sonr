@@ -604,6 +604,10 @@
                 </li>
               
                 <li>
+                  <a href="#sonr.protocols.exchange.LobbyMessage"><span class="badge">M</span>LobbyMessage</a>
+                </li>
+              
+                <li>
                   <a href="#sonr.protocols.exchange.LookupRequest"><span class="badge">M</span>LookupRequest</a>
                 </li>
               
@@ -627,21 +631,6 @@
                 <li>
                   <a href="#sonr.protocols.exchange.VisibilityResponse.Visibility"><span class="badge">E</span>VisibilityResponse.Visibility</a>
                 </li>
-              
-              
-              
-            </ul>
-          </li>
-        
-          
-          <li>
-            <a href="#proto%2fprotocols%2flobby.proto">proto/protocols/lobby.proto</a>
-            <ul>
-              
-                <li>
-                  <a href="#sonr.protocols.lobby.LobbyMessage"><span class="badge">M</span>LobbyMessage</a>
-                </li>
-              
               
               
               
@@ -4677,6 +4666,44 @@ Returns a stream of Lobby Refresh Events</p></td>
 
         
       
+        <h3 id="sonr.protocols.exchange.LobbyMessage">LobbyMessage</h3>
+        <p>LobbyMessage is message passed from Peer in Lobby</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>peer</td>
+                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
+                  <td></td>
+                  <td><p>Users Peer Data </p></td>
+                </tr>
+              
+                <tr>
+                  <td>message</td>
+                  <td><a href="#string">string</a></td>
+                  <td>optional</td>
+                  <td><p>Message to be published </p></td>
+                </tr>
+              
+                <tr>
+                  <td>metadata</td>
+                  <td><a href="#sonr.core.Metadata">sonr.core.Metadata</a></td>
+                  <td></td>
+                  <td><p>Metadata </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="sonr.protocols.exchange.LookupRequest">LookupRequest</h3>
         <p>LookupRequest is Message for Verifying Request (Hmac Sha256)</p>
 
@@ -4867,58 +4894,6 @@ Returns a stream of Lobby Refresh Events</p></td>
             
           </tbody>
         </table>
-      
-
-      
-
-      
-    
-      
-      <div class="file-heading">
-        <h2 id="proto/protocols/lobby.proto">proto/protocols/lobby.proto</h2><a href="#title">Top</a>
-      </div>
-      <p></p>
-
-      
-        <h3 id="sonr.protocols.lobby.LobbyMessage">LobbyMessage</h3>
-        <p>PublishEvent is message passed from Peer in Lobby Protocol</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>peer</td>
-                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
-                  <td></td>
-                  <td><p>Users Peer Data </p></td>
-                </tr>
-              
-                <tr>
-                  <td>message</td>
-                  <td><a href="#string">string</a></td>
-                  <td>optional</td>
-                  <td><p>Message to be published </p></td>
-                </tr>
-              
-                <tr>
-                  <td>metadata</td>
-                  <td><a href="#sonr.core.Metadata">sonr.core.Metadata</a></td>
-                  <td></td>
-                  <td><p>Metadata </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-
       
 
       

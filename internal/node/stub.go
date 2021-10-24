@@ -6,7 +6,6 @@ import (
 	"net"
 
 	"github.com/sonr-io/core/pkg/exchange"
-	"github.com/sonr-io/core/pkg/lobby"
 	"github.com/sonr-io/core/pkg/mailbox"
 	"github.com/sonr-io/core/pkg/transfer"
 
@@ -91,7 +90,6 @@ type ClientNodeStub struct {
 	// Protocols
 	*transfer.TransferProtocol
 	*exchange.ExchangeProtocol
-	*lobby.LobbyProtocol
 	*mailbox.MailboxProtocol
 }
 
@@ -103,16 +101,8 @@ func (n *Node) startClientService(ctx context.Context, opts *options) (*ClientNo
 		logger.Errorf("%s - Failed to start TransferProtocol", err)
 		return nil, err
 	}
-
-	// Set Local Lobby Protocol if Location is provided
-	lobbyProtocol, err := lobby.NewProtocol(ctx, n.host, n, lobby.WithLocation(opts.location))
-	if err != nil {
-		logger.Errorf("%s - Failed to start LobbyProtocol", err)
-		return nil, err
-	}
-
 	// Set Exchange Protocol
-	exchProtocol, err := exchange.NewProtocol(ctx, n.host, n)
+	exchProtocol, err := exchange.NewProtocol(ctx, n.host, n, exchange.WithLocation(opts.location))
 	if err != nil {
 		logger.Errorf("%s - Failed to start ExchangeProtocol", err)
 		return nil, err
@@ -124,7 +114,6 @@ func (n *Node) startClientService(ctx context.Context, opts *options) (*ClientNo
 		ctx:              ctx,
 		TransferProtocol: transferProtocol,
 		ExchangeProtocol: exchProtocol,
-		LobbyProtocol:    lobbyProtocol,
 		node:             n,
 		grpcServer:       grpcServer,
 	}
@@ -137,7 +126,7 @@ func (n *Node) startClientService(ctx context.Context, opts *options) (*ClientNo
 
 // HasProtocols returns true if the node has the protocols.
 func (s *ClientNodeStub) HasProtocols() bool {
-	return s.TransferProtocol != nil && s.ExchangeProtocol != nil && s.LobbyProtocol != nil
+	return s.TransferProtocol != nil && s.ExchangeProtocol != nil
 }
 
 // Serve serves the RPC Service on the given port.
@@ -151,7 +140,7 @@ func (s *ClientNodeStub) Serve(ctx context.Context, listener net.Listener) {
 		select {
 		case <-ctx.Done():
 			s.grpcServer.Stop()
-			s.LobbyProtocol.Close()
+			s.ExchangeProtocol.Close()
 			return
 		}
 	}
@@ -169,7 +158,7 @@ func (s *ClientNodeStub) Update() error {
 	// Check for Valid Protocols
 	if s.HasProtocols() {
 		// Update LobbyProtocol
-		err = s.LobbyProtocol.Update()
+		err = s.ExchangeProtocol.Update()
 		if err != nil {
 			logger.Errorf("%s - Failed to Update Lobby", err)
 		} else {

@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 package sonr.protocols.exchange;
+import "proto/common/core.proto";
 option go_package = "github.com/sonr-io/core/pkg/exchange";
 
 // AuthorizeRequest is Message for Verifying Request (Hmac Sha256)
@@ -54,3 +55,10 @@ message VisibilityResponse {
   }
 }
 
+
+// LobbyMessage is message passed from Peer in Lobby
+message LobbyMessage {
+  sonr.core.Peer peer = 1;     // Users Peer Data
+  optional string message = 2; // Message to be published
+  sonr.core.Metadata metadata = 3; // Metadata
+}

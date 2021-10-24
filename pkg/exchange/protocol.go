@@ -14,12 +14,13 @@ import (
 )
 
 var (
-	logger         = golog.Child("protocols/exchange")
-	ErrParameters  = errors.New("Failed to create new ExchangeProtocol, invalid parameters")
-	ErrInvalidPeer = errors.New("Peer object provided to ExchangeProtocol is Nil")
+	logger             = golog.Child("protocols/exchange")
+	ErrParameters      = errors.New("Failed to create new ExchangeProtocol, invalid parameters")
+	ErrInvalidPeer     = errors.New("Peer object provided to ExchangeProtocol is Nil")
+	ErrTopicNotCreated = errors.New("Lobby Topic has not been Created")
 )
 
-// ExchangeProtocol handles Global Sonr Exchange Protocol
+// ExchangeProtocol handles Global and Local Sonr Peer Exchange Protocol
 type ExchangeProtocol struct {
 	node       api.NodeImpl
 	ctx        context.Context
@@ -27,6 +28,7 @@ type ExchangeProtocol struct {
 	host       *host.SNRHost // host
 	authRecord api.Record
 	nameRecord api.Record
+	lobby      *Lobby
 }
 
 // NewProtocol creates new ExchangeProtocol
@@ -37,6 +39,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl, opt
 		opt(opts)
 	}
 
+	// Create BeamStore
 	b, err := beam.New(ctx, host, beam.ID("exchange"))
 	if err != nil {
 		return nil, err
@@ -58,6 +61,19 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl, opt
 		return nil, err
 	}
 	exchProtocol.Put(peer)
+
+	// Join Topic
+	topic, err := host.Join(createOlc(opts.location))
+	if err != nil {
+		logger.Errorf("%s - Failed to create Lobby Topic", err)
+		return nil, err
+	}
+
+	// Create Lobby
+	if err := exchProtocol.initLobby(topic, opts); err != nil {
+		logger.Errorf("%s - Failed to initialize Lobby", err)
+		return nil, err
+	}
 	return exchProtocol, nil
 }
 
@@ -179,4 +195,37 @@ func (p *ExchangeProtocol) Register(sName string, records ...api.Record) (api.Do
 		m[r.Host] = r.Value
 	}
 	return m, nil
+}
+
+// Update method publishes peer data to the topic
+func (p *ExchangeProtocol) Update() error {
+	// Verify Topic has been created
+	if p.lobby.topic == nil {
+		return ErrTopicNotCreated
+	}
+
+	// Verify Peer is not nil
+	peer, err := p.node.Peer()
+	if err != nil {
+		return err
+	}
+
+	// Publish Event
+	buf := createLobbyMsgBuf(peer)
+	err = p.lobby.topic.Publish(p.ctx, buf)
+	if err != nil {
+		logger.Errorf("%s - Failed to Publish Event", err)
+		return err
+	}
+	return nil
+}
+
+func (p *ExchangeProtocol) Close() error {
+	p.lobby.eventHandler.Cancel()
+	p.lobby.subscription.Cancel()
+	err := p.lobby.topic.Close()
+	if err != nil {
+		// ignore
+	}
+	return nil
 }
