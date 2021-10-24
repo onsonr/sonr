@@ -1,81 +1,88 @@
 package exchange
 
-// DNSMode is the DNS mode for ExchangeProtocol
-type DNSMode int
+import (
+	"fmt"
+	"time"
 
-const (
-	DNSMode_NONE DNSMode = iota
-	DNSMode_TEMP
-	DNSMode_PERM
+	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/sonr-io/core/internal/api"
+	"github.com/sonr-io/core/pkg/common"
 )
-
-// IsNone returns true if DNSMode is None
-func (m DNSMode) IsNone() bool {
-	return m == DNSMode_NONE
-}
-
-// IsTemp returns true if DNSMode is Temp
-func (m DNSMode) IsTemp() bool {
-	return m == DNSMode_TEMP
-}
-
-// IsPerm returns true if DNSMode is Perm
-func (m DNSMode) IsPerm() bool {
-	return m == DNSMode_PERM
-}
-
-// ShouldCreate returns true if ExchangeProtocol should create DNS records
-func (m DNSMode) ShouldCreate() bool {
-	return m.IsTemp() || m.IsPerm()
-}
 
 // Option is a function that can be applied to ExchangeProtocol config
 type Option func(*options)
 
 // options for ExchangeProtocol config
 type options struct {
-	// Mode     DNSMode
-	// sNameVal string
+	location        *common.Location
+	interval        time.Duration
+	autoPushEnabled bool
 }
 
 // defaultOptions for ExchangeProtocol config
 func defaultOptions() *options {
-	return &options{}
+	return &options{
+		location:        api.DefaultLocation(),
+		interval:        time.Second * 5,
+		autoPushEnabled: true,
+	}
 }
 
-// Apply applies options to ExchangeProtocol config
-func (o *options) Apply(p *ExchangeProtocol) error {
-	// 	if o.Mode.ShouldCreate() {
-	// 		logger.Debugf("Registering SName on DNS Table: %s (%v)", o.sNameVal, o.Mode)
-	// 		// Get Record Prefix
-	// 		prefix, err := common.NewRecordPrefix(o.sNameVal)
-	// 		if err != nil {
-	// 			return err
-	// 		}
+// DisableAutoPush disables the auto push of the Lobby for OLC
+func DisableAutoPush() Option {
+	return func(o *options) {
+		o.autoPushEnabled = false
+	}
+}
 
-	// 		// Get Public Key
-	// 		pub, err := wallet.Sonr.GetSnrPubKey(wallet.Account)
-	// 		if err != nil {
-	// 			return err
-	// 		}
+// WithLocation sets the location of the Lobby for OLC
+func WithLocation(l *common.Location) Option {
+	return func(o *options) {
+		if o.location != nil {
+			if o.location.GetLatitude() != 0 && o.location.GetLongitude() != 0 {
+				logger.Debug("Skipping Location Set")
+			} else {
+				o.location = l
+			}
+		}
+	}
+}
 
-	// 		// Convert to Base58
-	// 		pubStr, err := pub.String()
-	// 		if err != nil {
-	// 			return err
-	// 		}
+// WithInterval sets the interval of the Lobby for OLC
+func WithInterval(i time.Duration) Option {
+	return func(o *options) {
+		o.interval = i
+	}
+}
 
-	// 		// Create DNS records
-	// 		authRec := api.NewNBAuthRecord(prefix, o.sNameVal, "test, test, test")
-	// 		nameRec := api.NewNBNameRecord(pubStr, o.sNameVal)
-	// 		p.authRecord = authRec
-	// 		p.nameRecord = nameRec
 
-	// 		// Register temporary name records
-	// 		_, err = p.Register(o.sNameVal, authRec, nameRec)
-	// 		if err != nil {
-	// 			return err
-	// 		}
-	// 	}
-	return nil
+// createOlc Creates a new Olc from Location
+func createOlc(l *common.Location) string {
+	code := l.OLC()
+	if code == "" {
+		logger.Error("Failed to Determine OLC Code, set to Global")
+		code = "global"
+	}
+	logger.Debug("Calculated OLC for Location: " + code)
+	return fmt.Sprintf("sonr/topic/%s", code)
+}
+
+type LobbyEvent struct {
+	ID     peer.ID
+	Peer   *common.Peer
+	isExit bool
+}
+
+func newLobbyEvent(i peer.ID, p *common.Peer) *LobbyEvent {
+	if p == nil {
+		return &LobbyEvent{
+			ID:     i,
+			isExit: true,
+		}
+	}
+	return &LobbyEvent{
+		ID:     i,
+		Peer:   p,
+		isExit: false,
+	}
 }

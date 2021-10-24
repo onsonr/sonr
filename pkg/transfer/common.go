@@ -15,10 +15,6 @@ import (
 
 // Transfer Emission Events
 const (
-	Event_INVITED   = "transfer-invited"
-	Event_RESPONDED = "transfer-responded"
-	Event_PROGRESS  = "transfer-progress"
-	Event_COMPLETED = "transfer-completed"
 	ITEM_INTERVAL   = 25
 )
 
