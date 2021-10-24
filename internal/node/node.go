@@ -4,6 +4,7 @@ import (
 	"context"
 	"net"
 	"strings"
+	sync "sync"
 	"time"
 
 	"git.mills.io/prologic/bitcask"
@@ -28,6 +29,8 @@ type Node struct {
 	// Properties
 	ctx   context.Context
 	store *bitcask.Bitcask
+	state *api.State
+	once  sync.Once
 
 	// Channels
 	// TransferProtocol - decisionEvents
@@ -92,6 +95,16 @@ func NewNode(ctx context.Context, l net.Listener, options ...Option) (api.NodeIm
 	}
 	// Begin Background Tasks
 	return node, api.NewInitialzeResponse(node.Profile, false), nil
+}
+
+// GetState returns the current state of the API
+func (n *Node) GetState() *api.State {
+	n.once.Do(func() {
+		chn := make(chan bool)
+		close(chn)
+		n.state = &api.State{Chn: chn}
+	})
+	return n.state
 }
 
 // Peer method returns the peer of the node

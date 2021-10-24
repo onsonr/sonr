@@ -2,6 +2,7 @@ package api
 
 import (
 	"os"
+	"sync/atomic"
 
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/internal/wallet"
@@ -19,6 +20,9 @@ var (
 
 // NodeImpl returns the NodeImpl for the Main Node
 type NodeImpl interface {
+	// GetState returns the current state of the node
+	GetState() *State
+
 	// Profile returns the profile of the node from Local Store
 	Profile() (*common.Profile, error)
 
@@ -53,5 +57,32 @@ func SignedMetadataToProto(m *wallet.SignedMetadata) *common.Metadata {
 		Timestamp: m.Timestamp,
 		NodeId:    m.NodeId,
 		PublicKey: m.PublicKey,
+	}
+}
+
+// State is the internal State of the API
+type State struct {
+	flag uint64
+	Chn  chan bool
+}
+
+// NeedsWait Checks rather to wait or does not need
+func (c *State) NeedsWait() {
+	<-c.Chn
+}
+
+// Resume tells all of goroutines to resume execution
+func (c *State) Resume() {
+	if atomic.LoadUint64(&c.flag) == 1 {
+		close(c.Chn)
+		atomic.StoreUint64(&c.flag, 0)
+	}
+}
+
+// Pause tells all of goroutines to pause execution
+func (c *State) Pause() {
+	if atomic.LoadUint64(&c.flag) == 0 {
+		atomic.StoreUint64(&c.flag, 1)
+		c.Chn = make(chan bool)
 	}
 }

@@ -16,7 +16,6 @@ func newStore(cap int, ttl time.Duration) *Store {
 		Modified: time.Now().Unix(),
 		Ttl:      ttl.Milliseconds(),
 	}
-	go s.handleStoreTTL()
 	return s
 }
 

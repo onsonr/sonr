@@ -1,8 +1,6 @@
 package beam
 
 import (
-	"time"
-
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/pkg/errors"
@@ -59,21 +57,6 @@ func (b *beam) handleMessages() {
 	}
 }
 
-// handleStoreTTL handles the TTL of the store and deletes expired entries
-func (s *Store) handleStoreTTL() {
-	for {
-		select {
-		case <-time.After(time.Duration(s.Ttl) * time.Millisecond):
-			for key, entry := range s.Data {
-				if entry.Created+s.Ttl < time.Now().Unix() {
-					logger.Debugf("Store - Entry has expired, deleting key: %s", key)
-					delete(s.Data, key)
-				}
-			}
-		}
-	}
-}
-
 // serve handles the serving of the beam
 func (b *beam) serve() {
 	for {
@@ -82,8 +65,7 @@ func (b *beam) serve() {
 			logger.Debugf("Closing Beam (%s)", b.id.Prefix())
 			b.handler.Cancel()
 			b.sub.Cancel()
-			err := b.topic.Close()
-			if err != nil {
+			if err := b.topic.Close(); err != nil {
 				logger.Errorf("%s - Failed to Close Beam", err)
 			}
 			return

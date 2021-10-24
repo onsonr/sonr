@@ -15,7 +15,15 @@ import (
 func DefaultInitializeRequest() *InitializeRequest {
 	return &InitializeRequest{
 		Profile:  common.NewDefaultProfile(),
-		Location: GetLocation(),
+		Location: DefaultLocation(),
+	}
+}
+
+// DefaultLocation is the default location if the location is not found
+func DefaultLocation() *common.Location {
+	return &common.Location{
+		Latitude:  34.102920,
+		Longitude: -118.394190,
 	}
 }
 

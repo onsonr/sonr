@@ -38,18 +38,12 @@ type LobbyProtocol struct {
 
 // NewProtocol creates a new lobby protocol instance.
 func NewProtocol(ctx context.Context, host *host.SNRHost, nu api.NodeImpl, options ...LobbyOption) (*LobbyProtocol, error) {
-	opts := defaultLobbyOptions()
+	opts := defaultOptions()
 	for _, option := range options {
 		option(opts)
 	}
 
 	olc := createOlc(opts.location)
-
-	// Check parameters
-	if err := checkParams(host); err != nil {
-		logger.Errorf("%s - Failed to create LobbyProtocol", err)
-		return nil, err
-	}
 
 	// Create Exchange Topic
 	topic, err := host.Join(olc)

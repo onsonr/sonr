@@ -20,12 +20,12 @@ func Start(reqBuf []byte) {
 
 // Pause pauses the host, node, and rpc service.
 func Pause() {
-	app.GetState().Pause()
+	app.Pause()
 }
 
 // Resume resumes the host, node, and rpc service.
 func Resume() {
-	app.GetState().Resume()
+	app.Resume()
 }
 
 // Stop closes the host, node, and rpc service.

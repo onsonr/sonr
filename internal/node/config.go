@@ -49,7 +49,7 @@ type options struct {
 func defaultNodeOptions() *options {
 	return &options{
 		mode:       StubMode_LIB,
-		location:   api.GetLocation(),
+		location:   api.DefaultLocation(),
 		connection: common.Connection_WIFI,
 		profile:    common.NewDefaultProfile(),
 	}

@@ -41,7 +41,7 @@ var (
 // Start starts the Sonr Node
 func Start(req *api.InitializeRequest, options ...Option) {
 	// Check if Node is already running
-	if ok := HasStarted(); ok {
+	if Node != nil {
 		golog.Error("Sonr Instance already active")
 		return
 	}
@@ -79,12 +79,13 @@ func Start(req *api.InitializeRequest, options ...Option) {
 		golog.Default.Child("(app)").Fatalf("%s - Failed to Start new Node", err)
 	}
 
-	// Serve Node for GRPC
+	// Serve listener for node grpc
 	Persist(listener)
 }
 
 // Persist contains the main loop for the Node
 func Persist(l net.Listener) {
+	golog.Default.Child("(app)").Infof("Starting GRPC Server on %s", l.Addr().String())
 	// Check if CLI Mode
 	if common.IsMobile() {
 		golog.Default.Child("(app)").Info("Skipping Serve, Node is mobile...")
@@ -101,8 +102,6 @@ func Persist(l net.Listener) {
 
 	// Hold until Exit Signal
 	for {
-		// Start GRPC Server
-		golog.Default.Child("(app)").Infof("Starting GRPC Server on %s", l.Addr().String())
 		select {
 		case <-Ctx.Done():
 			golog.Default.Child("(app)").Info("Context Done")
@@ -110,6 +109,24 @@ func Persist(l net.Listener) {
 			return
 		}
 	}
+}
+
+// Pause pauses the App's Node
+func Pause() {
+	if Node == nil {
+		golog.Default.Child("(app)").Error("Node is not running")
+		return
+	}
+	Node.GetState().Pause()
+}
+
+// Resume resumes the App's Node
+func Resume() {
+	if Node == nil {
+		golog.Default.Child("(app)").Error("Node is not running")
+		return
+	}
+	Node.GetState().Resume()
 }
 
 // Exit handles cleanup on Sonr Node
