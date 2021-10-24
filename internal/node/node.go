@@ -2,6 +2,7 @@ package node
 
 import (
 	"context"
+	"net"
 	"strings"
 	"time"
 
@@ -21,7 +22,8 @@ type Node struct {
 	mode        StubMode
 
 	// Host and context
-	host *host.SNRHost
+	host     *host.SNRHost
+	listener net.Listener
 
 	// Properties
 	ctx   context.Context
@@ -48,22 +50,11 @@ type Node struct {
 }
 
 // NewNode Creates a node with its implemented protocols
-func NewNode(ctx context.Context, options ...Option) (api.NodeImpl, *api.InitializeResponse, error) {
+func NewNode(ctx context.Context, l net.Listener, options ...Option) (api.NodeImpl, *api.InitializeResponse, error) {
 	// Set Node Options
 	opts := defaultNodeOptions()
 	for _, opt := range options {
 		opt(opts)
-	}
-
-	// Create Node
-	node := &Node{
-		ctx:            ctx,
-		decisionEvents: make(chan *api.DecisionEvent),
-		refreshEvents:  make(chan *api.RefreshEvent),
-		inviteEvents:   make(chan *api.InviteEvent),
-		mailEvents:     make(chan *api.MailboxEvent),
-		progressEvents: make(chan *api.ProgressEvent),
-		completeEvents: make(chan *api.CompleteEvent),
 	}
 
 	// Initialize Host
@@ -72,7 +63,19 @@ func NewNode(ctx context.Context, options ...Option) (api.NodeImpl, *api.Initial
 		logger.Errorf("%s - Failed to initialize host", err)
 		return nil, api.NewInitialzeResponse(nil, false), err
 	}
-	node.host = host
+
+	// Create Node
+	node := &Node{
+		ctx:            ctx,
+		listener:       l,
+		host:           host,
+		decisionEvents: make(chan *api.DecisionEvent),
+		refreshEvents:  make(chan *api.RefreshEvent),
+		inviteEvents:   make(chan *api.InviteEvent),
+		mailEvents:     make(chan *api.MailboxEvent),
+		progressEvents: make(chan *api.ProgressEvent),
+		completeEvents: make(chan *api.CompleteEvent),
+	}
 
 	// Open Store with profileBuf
 	err = node.openStore(ctx, opts)
@@ -137,20 +140,6 @@ func (n *Node) Peer() (*common.Peer, error) {
 
 // Close closes the node
 func (n *Node) Close() {
-	// Close Client Stub
-	if n.mode.HasClient() {
-		if err := n.clientStub.Close(); err != nil {
-			logger.Errorf("%s - Failed to close Client Stub, ", err)
-		}
-	}
-
-	// Close Highway Stub
-	if n.mode.IsHighway() {
-		if err := n.highwayStub.Close(); err != nil {
-			logger.Errorf("%s - Failed to close Highway Stub, ", err)
-		}
-	}
-
 	// Close Store
 	if err := n.store.Close(); err != nil {
 		logger.Errorf("%s - Failed to close store, ", err)

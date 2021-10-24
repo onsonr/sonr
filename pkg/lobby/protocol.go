@@ -3,6 +3,7 @@ package lobby
 import (
 	"context"
 	"errors"
+	"time"
 
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/sonr-io/core/internal/api"
@@ -28,7 +29,7 @@ type LobbyProtocol struct {
 	ctx          context.Context
 	host         *host.SNRHost // host
 	eventHandler *ps.TopicEventHandler
-	messages     chan *LobbyMessage
+	messages     chan *LobbyEvent
 	subscription *ps.Subscription
 	topic        *ps.Topic
 	olc          string
@@ -80,14 +81,14 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, nu api.NodeImpl, optio
 		subscription: sub,
 		eventHandler: handler,
 		olc:          olc,
-		messages:     make(chan *LobbyMessage),
+		messages:     make(chan *LobbyEvent),
 		peers:        make([]*common.Peer, 0),
 	}
 
 	// Handle Events
-	go lobProtocol.HandleEvents()
-	go lobProtocol.HandleMessages()
-
+	go lobProtocol.handleSub()
+	go lobProtocol.handleTopic()
+	go lobProtocol.handleEvents()
 	// Return Protocol
 	logger.Debug("✅  LobbyProtocol is Activated \n")
 	return lobProtocol, nil
@@ -118,18 +119,17 @@ func (p *LobbyProtocol) Update() error {
 	}
 
 	// Publish Event
-	if buf := createLobbyMsgBuf(peer); buf != nil {
-		err = p.topic.Publish(p.ctx, buf)
-		if err != nil {
-			logger.Errorf("%s - Failed to Publish Event", err)
-			return err
-		}
+	buf := createLobbyMsgBuf(peer)
+	err = p.topic.Publish(p.ctx, buf)
+	if err != nil {
+		logger.Errorf("%s - Failed to Publish Event", err)
+		return err
 	}
 	return nil
 }
 
-// HandleEvents method listens to Pubsub Events for room
-func (p *LobbyProtocol) HandleEvents() {
+// handleSub method listens to Pubsub Events for room
+func (p *LobbyProtocol) handleSub() {
 	// Loop Events
 	for {
 		// Get next event
@@ -142,26 +142,14 @@ func (p *LobbyProtocol) HandleEvents() {
 		// Check Event and Validate not User
 		if event.Type == ps.PeerLeave && event.Peer != p.host.ID() {
 			// Remove Peer, Emit Event
-			if ok := p.removePeer(event.Peer); ok {
-				p.callRefresh()
-			}
+			p.messages <- newLobbyEvent(event.Peer, nil)
 			continue
-		}
-
-		// Check Event and Validate not User
-		if event.Type == ps.PeerJoin && event.Peer != p.host.ID() {
-			// Update Peer Data in Topic
-			err := p.callUpdate()
-			if err != nil {
-				logger.Errorf("%s - Failed to send peer update to lobby topic", err)
-				continue
-			}
 		}
 	}
 }
 
-// HandleMessages method listens to Pubsub Messages for room
-func (p *LobbyProtocol) HandleMessages() {
+// handleTopic method listens to Pubsub Messages for room
+func (p *LobbyProtocol) handleTopic() {
 	// Loop Messages
 	for {
 		// Get next message
@@ -179,11 +167,36 @@ func (p *LobbyProtocol) HandleMessages() {
 				logger.Errorf("%s - Failed to Unmarshal Message", err)
 				continue
 			}
-
-			// Update Peer, Emit Event
-			if ok := p.updatePeer(msg.ReceivedFrom, data.GetPeer()); ok {
-				p.callRefresh()
-			}
+			p.messages <- newLobbyEvent(msg.ReceivedFrom, data.GetPeer())
 		}
+	}
+}
+
+// handleEvents method listens to Lobby Events passed
+func (p *LobbyProtocol) handleEvents() {
+	// Loop Messages
+	for {
+		// Get next message
+		msg := <-p.messages
+
+		// Update Peer, Emit Event
+		if msg.isExit {
+			p.removePeer(msg.ID)
+		} else {
+			p.updatePeer(msg.ID, msg.Peer)
+		}
+	}
+}
+
+// HandleMessages method listens to Pubsub Messages for room
+func (p *LobbyProtocol) autoPushUpdates() {
+	// Loop Messages
+	for {
+		err := p.callUpdate()
+		if err != nil {
+			logger.Error("Failed to send peer update to lobby topic", err)
+			continue
+		}
+		time.Sleep(time.Second * 8)
 	}
 }

@@ -3,7 +3,6 @@ package beam
 import (
 	"time"
 
-	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/pkg/errors"
@@ -26,7 +25,7 @@ func (b *beam) handleEvents() {
 			event := b.newSyncEvent()
 			err = event.Publish(b.ctx, b.topic)
 			if err != nil {
-				golog.Error(err)
+				logger.Error(err)
 				continue
 			}
 		default:
@@ -54,7 +53,7 @@ func (b *beam) handleMessages() {
 		// Handle Event
 		err = b.store.Handle(e, b)
 		if err != nil {
-			golog.Error(err)
+			logger.Error(err)
 			continue
 		}
 	}
@@ -67,7 +66,7 @@ func (s *Store) handleStoreTTL() {
 		case <-time.After(time.Duration(s.Ttl) * time.Millisecond):
 			for key, entry := range s.Data {
 				if entry.Created+s.Ttl < time.Now().Unix() {
-					golog.Debugf("Entry has expired, deleting key: %s", key)
+					logger.Debugf("Store - Entry has expired, deleting key: %s", key)
 					delete(s.Data, key)
 				}
 			}
@@ -101,7 +100,7 @@ func eventFromMsg(msg *pubsub.Message, selfID peer.ID) (*Event, error) {
 	e := &Event{}
 	err := proto.Unmarshal(msg.Data, e)
 	if err != nil {
-		golog.Errorf("(beam) failed to Unmarshal Event from pubsub.Message")
+		logger.Errorf("failed to Unmarshal Event from pubsub.Message")
 		return nil, err
 	}
 	return e, nil

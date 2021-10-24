@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	logger         = golog.Child("protocols/exchange")
+	logger         = golog.Default.Child("protocols/exchange")
 	ErrParameters  = errors.New("Failed to create new ExchangeProtocol, invalid parameters")
 	ErrInvalidPeer = errors.New("Peer object provided to ExchangeProtocol is Nil")
 )

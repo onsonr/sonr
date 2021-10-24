@@ -21,7 +21,7 @@ const RPC_SERVER_PORT = 26225
 type GetProfileFunc func() (*Profile, error)
 
 var (
-	logger = golog.Child("internal/common")
+	logger = golog.Default.Child("internal/common")
 )
 
 // IsMdnsCompatible returns true if the Connection is MDNS compatible

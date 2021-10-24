@@ -3,12 +3,14 @@ package beam
 import (
 	"context"
 
+	"github.com/kataras/golog"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/pkg/errors"
 	"github.com/sonr-io/core/internal/host"
 )
 
 var (
+	logger            *golog.Logger
 	ErrNotOwner       = errors.New("Not owner of key - (Beam)")
 	ErrNotFound       = errors.New("Key not found in store - (Beam)")
 	ErrInvalidMessage = errors.New("Invalid message received in Pubsub Topic - (Beam)")
@@ -46,6 +48,7 @@ type beam struct {
 
 // New creates a new beam with the given name and options.
 func New(ctx context.Context, h *host.SNRHost, id ID, options ...Option) (Beam, error) {
+	logger = golog.Default.Child(id.Prefix())
 	opts := defaultOptions()
 	for _, option := range options {
 		option(opts)

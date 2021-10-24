@@ -5,14 +5,15 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"os/signal"
 	"path/filepath"
+	"syscall"
 
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/node"
 	"github.com/sonr-io/core/pkg/common"
 	"github.com/spf13/viper"
-	"google.golang.org/grpc"
 )
 
 // LogLevel is the type for the log level
@@ -32,16 +33,15 @@ const (
 )
 
 var (
-	Ctx        context.Context
-	Node       api.NodeImpl
-	Mode       node.StubMode
-	GRPCServer *grpc.Server
+	Ctx  context.Context
+	Node api.NodeImpl
+	Mode node.StubMode
 )
 
 // Start starts the Sonr Node
 func Start(req *api.InitializeRequest, options ...Option) {
 	// Check if Node is already running
-	if Node != nil {
+	if ok := HasStarted(); ok {
 		golog.Error("Sonr Instance already active")
 		return
 	}
@@ -54,68 +54,81 @@ func Start(req *api.InitializeRequest, options ...Option) {
 
 	// Apply Options
 	Mode = opts.mode
-	GRPCServer = grpc.NewServer()
 
 	// Set Logging Settings
 	golog.SetLevel(opts.logLevel)
-	golog.SetPrefix(opts.mode.Prefix())
+	golog.SetPrefix(Mode.Prefix())
 
 	// Create Node
 	Ctx = context.Background()
 	err := req.Parse()
 	if err != nil {
-		golog.Fatalf("%s - Failed to parse Initialize Request", err)
+		golog.Default.Child("(app)").Fatalf("%s - Failed to parse Initialize Request", err)
 	}
-
-	// Set Node Stub
-	Node, _, err = node.NewNode(Ctx, node.WithGRPC(GRPCServer),
-		node.WithMode(opts.mode),
-		node.WithRequest(req))
-	if err != nil {
-		golog.Fatalf("%s - Failed to Start new Node", err)
-	}
-
 	// Open Listener on Port
 	listener, err := net.Listen(opts.network, opts.Address())
 	if err != nil {
-		golog.Fatalf("%s - Failed to Create New Listener", err)
+		golog.Default.Child("(app)").Fatalf("%s - Failed to Create New Listener", err)
+	}
+
+	// Set Node Stub
+	Node, _, err = node.NewNode(Ctx, listener,
+		node.WithMode(Mode),
+		node.WithRequest(req))
+	if err != nil {
+		golog.Default.Child("(app)").Fatalf("%s - Failed to Start new Node", err)
 	}
 
 	// Serve Node for GRPC
-	if opts.mode.IsBin() {
-		Serve(listener)
-	} else {
-		go Serve(listener)
-	}
+	Persist(listener)
 }
 
-// Serve starts the GRPC Server
-func Serve(l net.Listener) {
-	// Start GRPC Server
-	golog.Infof("Starting GRPC Server on %s", l.Addr().String())
-	err := GRPCServer.Serve(l)
-	if err != nil {
-		golog.Fatalf("%s - Failed to start GRPC Server", err)
-		Exit(1)
+// Persist contains the main loop for the Node
+func Persist(l net.Listener) {
+	// Check if CLI Mode
+	if common.IsMobile() {
+		golog.Default.Child("(app)").Info("Skipping Serve, Node is mobile...")
+		return
+	}
+
+	// Wait for Exit Signal
+	c := make(chan os.Signal)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+	go func() {
+		<-c
+		Exit(0)
+	}()
+
+	// Hold until Exit Signal
+	for {
+		// Start GRPC Server
+		golog.Default.Child("(app)").Infof("Starting GRPC Server on %s", l.Addr().String())
+		select {
+		case <-Ctx.Done():
+			golog.Default.Child("(app)").Info("Context Done")
+			l.Close()
+			return
+		}
 	}
 }
 
 // Exit handles cleanup on Sonr Node
 func Exit(code int) {
 	if Node == nil {
-		golog.Debug("Skipping Exit, instance is nil...")
+		golog.Default.Child("(app)").Debug("Skipping Exit, instance is nil...")
 		return
 	}
-	golog.Debug("Cleaning up on Exit...")
+	golog.Default.Child("(app)").Debug("Cleaning up Node on Exit...")
 	Node.Close()
-	GRPCServer.Stop()
+
 	defer Ctx.Done()
 
 	// Check for Full Desktop Node
 	if common.IsDesktop() {
+		golog.Default.Child("(app)").Debug("Removing Bitcask DB...")
 		ex, err := os.Executable()
 		if err != nil {
-			golog.Errorf("%s - Failed to find Executable", err)
+			golog.Default.Child("(app)").Errorf("%s - Failed to find Executable", err)
 			return
 		}
 
@@ -123,11 +136,11 @@ func Exit(code int) {
 		exPath := filepath.Dir(ex)
 		err = os.RemoveAll(filepath.Join(exPath, "sonr_bitcask"))
 		if err != nil {
-			golog.Warn("Failed to remove Bitcask, ", err)
+			golog.Default.Child("(app)").Warn("Failed to remove Bitcask, ", err)
 		}
 		err = viper.SafeWriteConfig()
 		if err == nil {
-			golog.Debug("Wrote new config file to Disk")
+			golog.Default.Child("(app)").Debug("Wrote new config file to Disk")
 		}
 		os.Exit(code)
 	}

@@ -4,8 +4,6 @@ import (
 	"context"
 	"errors"
 
-	grpc "google.golang.org/grpc"
-
 	"github.com/kataras/golog"
 	api "github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/pkg/common"
@@ -13,7 +11,7 @@ import (
 
 // Error Definitions
 var (
-	logger             = golog.Child("internal/node")
+	logger             = golog.Default.Child("internal/node")
 	ErrEmptyQueue      = errors.New("No items in Transfer Queue.")
 	ErrInvalidQuery    = errors.New("No SName or PeerID provided.")
 	ErrMissingParam    = errors.New("Paramater is missing.")
@@ -22,13 +20,6 @@ var (
 
 // Option is a function that modifies the node options.
 type Option func(*options)
-
-// WithPort sets the port for RPC Stub Server
-func WithGRPC(s *grpc.Server) Option {
-	return func(o *options) {
-		o.grpcServer = s
-	}
-}
 
 // WithRequest sets the initialize request.
 func WithRequest(req *api.InitializeRequest) Option {
@@ -52,7 +43,6 @@ type options struct {
 	location   *common.Location
 	mode       StubMode
 	profile    *common.Profile
-	grpcServer *grpc.Server
 }
 
 // defaultNodeOptions returns the default node options.
@@ -61,7 +51,6 @@ func defaultNodeOptions() *options {
 		mode:       StubMode_LIB,
 		location:   api.GetLocation(),
 		connection: common.Connection_WIFI,
-		grpcServer: grpc.NewServer(),
 		profile:    common.NewDefaultProfile(),
 	}
 }

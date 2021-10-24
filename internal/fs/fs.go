@@ -22,7 +22,7 @@ var (
 )
 
 var (
-	logger = golog.Child("internal/fs")
+	logger = golog.Default.Child("internal/fs")
 	// Path Manipulation Errors
 	ErrDuplicateFilePathOption    = errors.New("Duplicate file path option")
 	ErrPrefixSuffixSetWithReplace = errors.New("Prefix or Suffix set with Replace.")

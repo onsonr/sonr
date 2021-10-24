@@ -31,7 +31,7 @@ const (
 
 // Error Definitions
 var (
-	logger             = golog.Child("protocols/transfer")
+	logger             = golog.Default.Child("protocols/transfer")
 	ErrTimeout         = errors.New("Session has Timed out")
 	ErrParameters      = errors.New("Failed to create new TransferProtocol, invalid parameters")
 	ErrInvalidResponse = errors.New("Invalid Transfer InviteResponse provided to TransferProtocol")

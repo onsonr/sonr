@@ -61,6 +61,9 @@ func (lp *LobbyProtocol) hasPeer(data *common.Peer) bool {
 			hasInTopic = true
 		}
 	}
+	if !hasInList {
+		logger.Warn("Peer is subscribed to Topic but does not have Peer Data")
+	}
 	return hasInList && hasInTopic
 }
 
@@ -99,6 +102,7 @@ func (lp *LobbyProtocol) removePeer(peerID peer.ID) bool {
 	for i, p := range lp.peers {
 		if p.GetPeerID() == peerID.String() {
 			lp.peers = append(lp.peers[:i], lp.peers[i+1:]...)
+			lp.callRefresh()
 			return true
 		}
 	}
@@ -110,17 +114,11 @@ func (lp *LobbyProtocol) updatePeer(peerID peer.ID, data *common.Peer) bool {
 	// Check if Peer is in Peer List and Topic already
 	if ok := lp.hasPeerID(peerID); !ok {
 		lp.removePeer(peerID)
-		lp.callRefresh()
 		return false
 	}
 
 	// Add Peer to List and Check if Peer is List
-	idx := lp.indexOfPeer(peerID)
-	if idx == -1 {
-		lp.peers = append(lp.peers, data)
-		lp.callUpdate()
-	} else {
-		lp.peers[idx] = data
-	}
+	lp.peers = append(lp.peers, data)
+	lp.callRefresh()
 	return true
 }

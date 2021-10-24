@@ -18,6 +18,11 @@ func (id ID) Key(k string) string {
 	return fmt.Sprintf("%s/%s", id, strings.ToLower(k))
 }
 
+// Prefix returns Golog child for Logging
+func (id ID) Prefix() string {
+	return fmt.Sprintf("beam/%s", id.String())
+}
+
 // String returns the ID as a string.
 func (id ID) String() string {
 	return strings.ToLower(string(id))

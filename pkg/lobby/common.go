@@ -5,13 +5,14 @@ import (
 	"time"
 
 	"github.com/kataras/golog"
+	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/host"
 	common "github.com/sonr-io/core/pkg/common"
 )
 
 var (
-	logger = golog.Child("protocols/lobby")
+	logger = golog.Default.Child("protocols/lobby")
 )
 
 // LobbyOption is a function that modifies the Lobby options.
@@ -53,8 +54,10 @@ type lobbyOptions struct {
 
 // defaultLobbyOptions returns the default options for the Lobby.
 func defaultLobbyOptions() *lobbyOptions {
+	loc := api.GetLocation()
+	logger.Debug("Default Location: " + loc.String())
 	return &lobbyOptions{
-		location:        api.GetLocation(),
+		location:        loc,
 		interval:        time.Second * 5,
 		autoPushEnabled: true,
 	}
@@ -78,4 +81,24 @@ func createOlc(l *common.Location) string {
 	}
 	logger.Debug("Calculated OLC for Location: " + code)
 	return fmt.Sprintf("sonr/topic/%s", code)
+}
+
+type LobbyEvent struct {
+	ID peer.ID
+	Peer *common.Peer
+	isExit bool
+}
+
+func newLobbyEvent(i peer.ID, p *common.Peer) *LobbyEvent {
+	if p == nil {
+		return &LobbyEvent{
+			ID: i,
+			isExit: true,
+		}
+	}
+	return &LobbyEvent{
+		ID: i,
+		Peer: p,
+		isExit: false,
+	}
 }

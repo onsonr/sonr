@@ -4,7 +4,6 @@ import (
 	"context"
 	"time"
 
-	"github.com/kataras/golog"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"google.golang.org/protobuf/proto"
 )
@@ -68,7 +67,7 @@ func (s *Store) Handle(e *Event, b *beam) error {
 			if s.Modified > e.Store.Modified && len(s.Data) < int(e.Store.Capacity) {
 				s.Data = e.Store.Data
 				s.Modified = e.Store.Modified
-				golog.Debug("Updated store to pushed earlier version")
+				logger.Debug("Store - Updated store to pushed earlier version")
 			}
 		}
 		return nil
@@ -76,12 +75,14 @@ func (s *Store) Handle(e *Event, b *beam) error {
 		if e.Entry != nil {
 			s.Data[e.Entry.Key] = e.Entry
 			s.Modified = time.Now().Unix()
+			logger.Debug("Store - Added new Store Entry")
 		}
 		return nil
 	case EventType_SET:
 		if e.Entry != nil {
 			s.Data[e.Entry.Key] = e.Entry
 			s.Modified = time.Now().Unix()
+			logger.Debug("Store - Set Updated Store Entry")
 		}
 		return nil
 	}

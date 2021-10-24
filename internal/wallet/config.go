@@ -10,7 +10,7 @@ import (
 
 // Error Definitions
 var (
-	logger             = golog.Child("internal/wallet")
+	logger             = golog.Default.Child("internal/wallet")
 	ErrInvalidKeyType  = errors.New("Invalid KeyPair Type provided")
 	ErrKeychainUnready = errors.New("Keychain has not been loaded")
 	ErrNoPrivateKey    = errors.New("No private key in KeyPair")

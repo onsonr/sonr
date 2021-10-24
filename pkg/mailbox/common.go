@@ -21,7 +21,7 @@ const (
 )
 
 var (
-	logger              = golog.Child("protocols/mailbox")
+	logger              = golog.Default.Child("protocols/mailbox")
 	ErrMailboxDisabled  = errors.New("Mailbox not enabled, cannot perform request.")
 	ErrMissingAPIKey    = errors.New("Missing Textile API Key in env")
 	ErrMissingAPISecret = errors.New("Missing Textile API Secret in env")

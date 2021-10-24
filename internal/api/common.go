@@ -2,8 +2,6 @@ package api
 
 import (
 	"os"
-	sync "sync"
-	"sync/atomic"
 
 	"github.com/kataras/golog"
 	"github.com/sonr-io/core/internal/wallet"
@@ -11,14 +9,12 @@ import (
 )
 
 var (
-	TEXTILE_KEY              = os.Getenv("TEXTILE_KEY")
-	TEXTILE_SECRET           = os.Getenv("TEXTILE_SECRET")
-	LOCATION_KEY             = os.Getenv("LOCATION_KEY")
-	NB_KEY                   = os.Getenv("NB_KEY")
-	NB_SECRET                = os.Getenv("NB_SECRET")
-	logger                   = golog.Child("internal/api")
-	instance                 *state
-	once                     sync.Once
+	TEXTILE_KEY    = os.Getenv("TEXTILE_KEY")
+	TEXTILE_SECRET = os.Getenv("TEXTILE_SECRET")
+	LOCATION_KEY   = os.Getenv("LOCATION_KEY")
+	NB_KEY         = os.Getenv("NB_KEY")
+	NB_SECRET      = os.Getenv("NB_SECRET")
+	logger         = golog.Default.Child("internal/api")
 )
 
 // NodeImpl returns the NodeImpl for the Main Node
@@ -57,43 +53,5 @@ func SignedMetadataToProto(m *wallet.SignedMetadata) *common.Metadata {
 		Timestamp: m.Timestamp,
 		NodeId:    m.NodeId,
 		PublicKey: m.PublicKey,
-	}
-}
-
-// state is the internal state of the API
-type state struct {
-	flag uint64
-	chn  chan bool
-}
-
-// GetState returns the current state of the API
-func GetState() *state {
-	once.Do(func() {
-		chn := make(chan bool)
-		close(chn)
-
-		instance = &state{chn: chn}
-	})
-	return instance
-}
-
-// NeedsWait Checks rather to wait or does not need
-func (c *state) NeedsWait() {
-	<-c.chn
-}
-
-// Resume tells all of goroutines to resume execution
-func (c *state) Resume() {
-	if atomic.LoadUint64(&c.flag) == 1 {
-		close(c.chn)
-		atomic.StoreUint64(&c.flag, 0)
-	}
-}
-
-// Pause tells all of goroutines to pause execution
-func (c *state) Pause() {
-	if atomic.LoadUint64(&c.flag) == 0 {
-		atomic.StoreUint64(&c.flag, 1)
-		c.chn = make(chan bool)
 	}
 }
