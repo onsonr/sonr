@@ -33,6 +33,10 @@ func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "Path to config file (default is $HOME/.sonr-config/sonrd.yaml)")
 	rootCmd.PersistentFlags().BoolVar(&isDebug, "debug", false, "Sets Logging to Debug mode (default is false)")
+
+	if isDebug {
+		golog.SetLevel("debug")
+	}
 }
 
 // initConfig reads in config file and ENV variables if set.

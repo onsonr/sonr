@@ -15,10 +15,7 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
-var cliPtr bool
 var hostPtr string
-var latPtr float64
-var lngPtr float64
 var portPtr int
 var profilePtr string
 var varsPtr string
@@ -57,14 +54,7 @@ var serveCmd = &cobra.Command{
 		}
 
 		// Set Location
-		req := &api.InitializeRequest{
-			Location: &common.Location{
-				Latitude:  latPtr,
-				Longitude: lngPtr,
-			},
-			Profile: common.NewDefaultProfile(),
-		}
-
+		req := api.DefaultInitializeRequest()
 		// Set Profile
 		if profilePtr != "" {
 			golog.Debug("Setting Profile from JSON.")
@@ -78,13 +68,6 @@ var serveCmd = &cobra.Command{
 				golog.Warn("Failed to set Profile from flag")
 			}
 		}
-
-		// Get Stub Mode
-		mode := node.StubMode_BIN
-		if cliPtr {
-			mode = node.StubMode_CLI
-		}
-
 		// Set Log Level
 		logLevel := app.InfoLevel
 		if isDebug {
@@ -92,7 +75,7 @@ var serveCmd = &cobra.Command{
 		}
 
 		// Initialize App
-		app.Start(req, app.WithMode(mode),
+		app.Start(req, app.WithMode(node.StubMode_BIN),
 			app.WithHost(hostPtr),
 			app.WithPort(portPtr),
 			app.WithLogLevel(logLevel),
@@ -102,10 +85,7 @@ var serveCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(serveCmd)
-	serveCmd.Flags().BoolVar(&cliPtr, "cli", false, "run in CLI Mode -- Default: false")
 	serveCmd.Flags().StringVar(&hostPtr, "host", ":", "host address for Node -- Default: localhost")
-	serveCmd.Flags().Float64Var(&latPtr, "lat", 34.102920, "latitude for InitializeRequest")
-	serveCmd.Flags().Float64Var(&lngPtr, "lng", -118.394190, "longitude for InitializeRequest")
 	serveCmd.Flags().IntVar(&portPtr, "port", 26225, "port for RPC NodeStub Service -- Default: 26225")
 	serveCmd.Flags().StringVar(&profilePtr, "profile", "", "profile JSON string")
 	serveCmd.Flags().StringVar(&varsPtr, "vars", "", "enviornment variables encoded as base64")

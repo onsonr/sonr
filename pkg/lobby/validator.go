@@ -11,11 +11,6 @@ import (
 
 // callRefresh calls back RefreshEvent to Node
 func (lp *LobbyProtocol) callRefresh() {
-	// Check Peer Data List Length
-	if len(lp.peers) == 0 {
-		return
-	}
-
 	// Create Event
 	logger.Debug("Calling Refresh Event")
 	lp.node.OnRefresh(&api.RefreshEvent{
@@ -27,11 +22,6 @@ func (lp *LobbyProtocol) callRefresh() {
 
 // callUpdate publishes a LobbyMessage to the Topic
 func (lp *LobbyProtocol) callUpdate() error {
-	// Check Lobby Topic Peers Length
-	if len(lp.topic.ListPeers()) == 0 {
-		return nil
-	}
-
 	// Create Event
 	logger.Debug("Sending Update to Lobby")
 	err := lp.Update()
@@ -44,14 +34,8 @@ func (lp *LobbyProtocol) callUpdate() error {
 
 // createLobbyMsgBuf Creates a new Message Buffer for Lobby Topic
 func createLobbyMsgBuf(p *common.Peer) []byte {
-	// Create Event
-	if p == nil {
-		logger.Errorf("%s - Peer provided is nil", ErrParameters)
-		return nil
-	}
-	event := &LobbyMessage{Peer: p}
-
 	// Marshal Event
+	event := &LobbyMessage{Peer: p}
 	eventBuf, err := proto.Marshal(event)
 	if err != nil {
 		logger.Errorf("%s - Failed to Marshal Event", err)
@@ -64,12 +48,14 @@ func createLobbyMsgBuf(p *common.Peer) []byte {
 func (lp *LobbyProtocol) hasPeer(data *common.Peer) bool {
 	hasInList := false
 	hasInTopic := false
+	// Check if Peer is in Data List
 	for _, p := range lp.peers {
 		if p.GetPeerID() == data.GetPeerID() {
 			hasInList = true
 		}
 	}
 
+	// Check if Peer is in Topic
 	for _, p := range lp.topic.ListPeers() {
 		if p.String() == data.GetPeerID() {
 			hasInTopic = true
@@ -124,6 +110,7 @@ func (lp *LobbyProtocol) updatePeer(peerID peer.ID, data *common.Peer) bool {
 	// Check if Peer is in Peer List and Topic already
 	if ok := lp.hasPeerID(peerID); !ok {
 		lp.removePeer(peerID)
+		lp.callRefresh()
 		return false
 	}
 
@@ -131,6 +118,7 @@ func (lp *LobbyProtocol) updatePeer(peerID peer.ID, data *common.Peer) bool {
 	idx := lp.indexOfPeer(peerID)
 	if idx == -1 {
 		lp.peers = append(lp.peers, data)
+		lp.callUpdate()
 	} else {
 		lp.peers[idx] = data
 	}

@@ -21,7 +21,6 @@ require (
 	github.com/multiformats/go-multiaddr v0.4.0
 	github.com/o1egl/govatar v0.4.1
 	github.com/pkg/errors v0.9.1
-	github.com/pterm/pterm v0.12.31
 	github.com/spf13/cobra v1.2.1
 	github.com/spf13/viper v1.9.0
 	golang.org/x/net v0.0.0-20210813160813-60bc85c4be6d

@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 
 	"github.com/kataras/golog"
-	"github.com/pterm/pterm"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/node"
 	"github.com/sonr-io/core/pkg/common"
@@ -32,27 +31,17 @@ const (
 	FatalLevel LogLevel = "fatal"
 )
 
-func init() {
-	golog.SetStacktraceLimit(2)
-}
-
-// Sonr is the main struct for Sonr Node
-type Sonr struct {
-	// Properties
+var (
 	Ctx        context.Context
 	Node       api.NodeImpl
 	Mode       node.StubMode
-	Listener   net.Listener
 	GRPCServer *grpc.Server
-}
-
-// instance is the global Sonr Instance
-var instance Sonr
+)
 
 // Start starts the Sonr Node
 func Start(req *api.InitializeRequest, options ...Option) {
 	// Check if Node is already running
-	if instance.Node != nil {
+	if Node != nil {
 		golog.Error("Sonr Instance already active")
 		return
 	}
@@ -63,53 +52,64 @@ func Start(req *api.InitializeRequest, options ...Option) {
 		o(opts)
 	}
 
+	// Apply Options
+	Mode = opts.mode
+	GRPCServer = grpc.NewServer()
+
 	// Set Logging Settings
 	golog.SetLevel(opts.logLevel)
 	golog.SetPrefix(opts.mode.Prefix())
-	if opts.mode.IsCLI() {
-		pterm.SetDefaultOutput(golog.Default.Printer)
-	}
 
-	// Initialize Wallet, and FS
+	// Create Node
+	Ctx = context.Background()
 	err := req.Parse()
 	if err != nil {
-		golog.Fatalf("%s - Failed to initialize Device", err)
-		os.Exit(1)
+		golog.Fatalf("%s - Failed to parse Initialize Request", err)
 	}
 
-	// Apply Options
-	err = opts.Apply(req)
+	// Set Node Stub
+	Node, _, err = node.NewNode(Ctx, node.WithGRPC(GRPCServer),
+		node.WithMode(opts.mode),
+		node.WithRequest(req))
 	if err != nil {
-		golog.Fatalf("%s - Failed to initialize Sonr", err)
-		os.Exit(1)
+		golog.Fatalf("%s - Failed to Start new Node", err)
+	}
+
+	// Open Listener on Port
+	listener, err := net.Listen(opts.network, opts.Address())
+	if err != nil {
+		golog.Fatalf("%s - Failed to Create New Listener", err)
 	}
 
 	// Serve Node for GRPC
-	if common.IsDesktop() {
-		// Handle Node Events
-		if err := instance.GRPCServer.Serve(instance.Listener); err != nil {
-			golog.Fatalf("%s - Failed to serve gRPC", err)
-		}
+	if opts.mode.IsBin() {
+		Serve(listener)
 	} else {
-		go func() {
-			if err := instance.GRPCServer.Serve(instance.Listener); err != nil {
-				golog.Fatalf("%s - Failed to serve gRPC", err)
-			}
-		}()
+		go Serve(listener)
+	}
+}
+
+// Serve starts the GRPC Server
+func Serve(l net.Listener) {
+	// Start GRPC Server
+	golog.Infof("Starting GRPC Server on %s", l.Addr().String())
+	err := GRPCServer.Serve(l)
+	if err != nil {
+		golog.Fatalf("%s - Failed to start GRPC Server", err)
+		Exit(1)
 	}
 }
 
 // Exit handles cleanup on Sonr Node
 func Exit(code int) {
-	if instance.Node == nil {
+	if Node == nil {
 		golog.Debug("Skipping Exit, instance is nil...")
 		return
 	}
 	golog.Debug("Cleaning up on Exit...")
-	instance.Node.Close()
-	instance.GRPCServer.Stop()
-	instance.Listener.Close()
-	defer instance.Ctx.Done()
+	Node.Close()
+	GRPCServer.Stop()
+	defer Ctx.Done()
 
 	// Check for Full Desktop Node
 	if common.IsDesktop() {
@@ -187,36 +187,4 @@ func defaultOptions() *options {
 		network:  "tcp",
 		logLevel: string(InfoLevel),
 	}
-}
-
-// Apply applies the options to the request
-func (o *options) Apply(req *api.InitializeRequest) error {
-	// Create Node
-	ctx := context.Background()
-
-	// Open Listener on Port
-	listener, err := net.Listen(o.network, o.Address())
-	if err != nil {
-		golog.Errorf("%s - Failed to Create New Listener", err)
-		return err
-	}
-
-	// Set Instance
-	instance = Sonr{
-		Ctx:        ctx,
-		Mode:       o.mode,
-		Listener:   listener,
-		GRPCServer: grpc.NewServer(),
-	}
-
-	// Set Node Stub
-	n, _, err := node.NewNode(ctx, node.WithGRPC(instance.GRPCServer),
-		node.WithMode(o.mode),
-		node.WithRequest(req))
-	if err != nil {
-		golog.Errorf("%s - Failed to Start new Node", err)
-		return err
-	}
-	instance.Node = n
-	return nil
 }

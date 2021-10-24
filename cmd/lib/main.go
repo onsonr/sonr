@@ -11,10 +11,9 @@ import (
 func Start(reqBuf []byte) {
 	// Unmarshal request
 	req := &api.InitializeRequest{}
-	err := proto.Unmarshal(reqBuf, req)
-	if err != nil {
-		golog.Fatalf("%s - Failed to unmarshal InitializeRequest", err)
-		return
+	if err := proto.Unmarshal(reqBuf, req); err != nil {
+		golog.Warn("%s - Failed to unmarshal InitializeRequest. Using defaults...", err)
+		req = api.DefaultInitializeRequest()
 	}
 	app.Start(req)
 }
