@@ -29,12 +29,14 @@ var (
 
 func init() {
 	// Get the device ID
-	id, err := machineid.ID()
-	if err != nil {
-		logger.Errorf("%s - Failed to get Device ID", err)
-		return
+	if IsDesktop() {
+		id, err := machineid.ID()
+		if err != nil {
+			logger.Errorf("%s - Failed to get Device ID", err)
+			return
+		}
+		deviceID = id
 	}
-	deviceID = id
 
 	// Get the hostname
 	hn, err := os.Hostname()
