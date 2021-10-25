@@ -220,9 +220,9 @@ func (lp *Lobby) hasPeerID(id peer.ID) bool {
 }
 
 // indexOfPeer Returns Peer Index in Peer-Data List
-func (lp *Lobby) indexOfPeer(peerID peer.ID) int {
+func (lp *Lobby) indexOfPeer(peer *common.Peer) int {
 	for i, p := range lp.peers {
-		if p.GetPeerID() == peerID.String() {
+		if p == peer {
 			return i
 		}
 	}
@@ -250,7 +250,7 @@ func (lp *Lobby) updatePeer(peerID peer.ID, data *common.Peer) bool {
 	}
 
 	// Add Peer to List and Check if Peer is List
-	idx := lp.indexOfPeer(peerID)
+	idx := lp.indexOfPeer(data)
 	if idx == -1 {
 		lp.peers = append(lp.peers, data)
 		lp.callUpdate()
