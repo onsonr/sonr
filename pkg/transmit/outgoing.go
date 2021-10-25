@@ -115,6 +115,7 @@ func NewItemWriter(index int, count int, pi *common.Payload_Item, node api.NodeI
 
 	// Create New Writer
 	return &itemWriter{
+		node:    node,
 		item:    item,
 		size:    size,
 		file:    f,

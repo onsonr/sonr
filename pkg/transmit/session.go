@@ -14,7 +14,7 @@ import (
 	"github.com/sonr-io/core/pkg/common"
 )
 
-// Session is a single entry in the transfer queue.
+// Session is a single entry in the Transmit queue.
 type Session struct {
 	direction   common.Direction
 	from        *common.Peer
@@ -36,7 +36,7 @@ func (s Session) IsOutgoing() bool {
 // ReadFrom reads the next Session from the given stream.
 func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) (*api.CompleteEvent, error) {
 	// Initialize Params
-	logger.Debug("Beginning INCOMING Transfer Stream")
+	logger.Debug("Beginning INCOMING Transmit Stream")
 
 	// Handle incoming stream
 	rs := msgio.NewReader(stream)
@@ -80,7 +80,7 @@ func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) (*api.CompleteE
 // WriteTo writes the Session to the given stream.
 func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) (*api.CompleteEvent, error) {
 	// Initialize Params
-	logger.Debug("Beginning OUTGOING Transfer Stream")
+	logger.Debug("Beginning OUTGOING Transmit Stream")
 	wc := msgio.NewWriter(stream)
 	var wg sync.WaitGroup
 
@@ -205,7 +205,7 @@ func (sq *SessionQueue) Validate(resp *InviteResponse) (Session, error) {
 	// Get Next Entry
 	entry, err := sq.Next()
 	if err != nil {
-		logger.Errorf("%s - Failed to get Transfer entry", err)
+		logger.Errorf("%s - Failed to get Transmit entry", err)
 		return Session{}, err
 	}
 

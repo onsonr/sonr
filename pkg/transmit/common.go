@@ -20,18 +20,18 @@ const (
 
 // Transfer Protocol ID's
 const (
-	RequestPID  protocol.ID = "/transfer/request/0.0.1"
-	ResponsePID protocol.ID = "/transfer/response/0.0.1"
-	SessionPID  protocol.ID = "/transfer/session/0.0.1"
+	RequestPID  protocol.ID = "/transmit/request/0.0.1"
+	ResponsePID protocol.ID = "/transmit/response/0.0.1"
+	SessionPID  protocol.ID = "/transmit/session/0.0.1"
 )
 
 // Error Definitions
 var (
-	logger             = golog.Default.Child("protocols/transfer")
+	logger             = golog.Default.Child("protocols/transmit")
 	ErrTimeout         = errors.New("Session has Timed out")
 	ErrParameters      = errors.New("Failed to create new TransferProtocol, invalid parameters")
-	ErrInvalidResponse = errors.New("Invalid Transfer InviteResponse provided to TransferProtocol")
-	ErrInvalidRequest  = errors.New("Invalid Transfer InviteRequest provided to TransferProtocol")
+	ErrInvalidResponse = errors.New("Invalid InviteResponse provided to TransmitProtocol")
+	ErrInvalidRequest  = errors.New("Invalid InviteRequest provided to TransmitProtocol")
 	ErrFailedEntry     = errors.New("Failed to get Topmost entry from Queue")
 	ErrFailedAuth      = errors.New("Failed to Authenticate message")
 	ErrEmptyRequests   = errors.New("Empty Request list provided")
@@ -65,7 +65,7 @@ func (ir *InviteRequest) ToEvent() *api.InviteEvent {
 	}
 }
 
-// Share a peer to have a transfer
+// createRequest creates a new InviteRequest
 func (p *TransmitProtocol) createRequest(to *common.Peer) (peer.ID, *InviteRequest, error) {
 	// Call Peer from Node
 	from, err := p.node.Peer()
@@ -107,7 +107,7 @@ func (p *TransmitProtocol) createRequest(to *common.Peer) (peer.ID, *InviteReque
 	return "", nil, errors.New("No items in Supply Queue.")
 }
 
-// Respond to an invite request
+// createResponse creates a new InviteResponse
 func (p *TransmitProtocol) createResponse(decs bool, to *common.Peer) (peer.ID, *InviteResponse, error) {
 	// Call Peer from Node
 	from, err := p.node.Peer()
