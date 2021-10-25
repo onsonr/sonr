@@ -22,13 +22,11 @@ var (
 
 // ExchangeProtocol handles Global and Local Sonr Peer Exchange Protocol
 type ExchangeProtocol struct {
-	node       api.NodeImpl
-	ctx        context.Context
-	beamStore  beam.Beam
-	host       *host.SNRHost // host
-	authRecord api.Record
-	nameRecord api.Record
-	lobby      *Lobby
+	node      api.NodeImpl
+	ctx       context.Context
+	beamStore beam.Beam
+	host      *host.SNRHost
+	lobby     *Lobby
 }
 
 // NewProtocol creates new ExchangeProtocol
