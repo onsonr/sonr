@@ -202,7 +202,7 @@ func (lp *Lobby) hasPeer(data *common.Peer) bool {
 // hasPeerData Checks if Peer Data is in Lobby Peer-Data List
 func (lp *Lobby) hasPeerData(data *common.Peer) bool {
 	for _, p := range lp.peers {
-		if p.GetPeerID() == data.GetPeerID() {
+		if p.GetSName() == data.GetSName() {
 			return true
 		}
 	}
@@ -222,7 +222,7 @@ func (lp *Lobby) hasPeerID(id peer.ID) bool {
 // indexOfPeer Returns Peer Index in Peer-Data List
 func (lp *Lobby) indexOfPeer(peer *common.Peer) int {
 	for i, p := range lp.peers {
-		if p == peer {
+		if p.GetSName() == peer.GetSName() {
 			return i
 		}
 	}
