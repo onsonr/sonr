@@ -37,17 +37,17 @@ service ClientService {
   rpc OnMailboxMessage(Empty) returns (stream sonr.api.MailboxEvent) {}
 
   // Returns a stream of DecisionEvent's for Accepted Invites
-  rpc OnTransferAccepted(Empty) returns (stream sonr.api.DecisionEvent) {}
+  rpc OnTransmitAccepted(Empty) returns (stream sonr.api.DecisionEvent) {}
 
   // Returns a stream of DecisionEvent's for Rejected Invites
-  rpc OnTransferDeclined(Empty) returns (stream sonr.api.DecisionEvent) {}
+  rpc OnTransmitDeclined(Empty) returns (stream sonr.api.DecisionEvent) {}
 
   // Returns a stream of DecisionEvent's for Invites
-  rpc OnTransferInvite(Empty) returns (stream sonr.api.InviteEvent) {}
+  rpc OnTransmitInvite(Empty) returns (stream sonr.api.InviteEvent) {}
 
   // Returns a stream of ProgressEvent's for Sessions
-  rpc OnTransferProgress(Empty) returns (stream sonr.api.ProgressEvent) {}
+  rpc OnTransmitProgress(Empty) returns (stream sonr.api.ProgressEvent) {}
 
   // Returns a stream of Completed Transfers
-  rpc OnTransferComplete(Empty) returns (stream sonr.api.CompleteEvent) {}
+  rpc OnTransmitComplete(Empty) returns (stream sonr.api.CompleteEvent) {}
 }

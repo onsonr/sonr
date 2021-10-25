@@ -81,7 +81,7 @@ func (s *ClientNodeStub) OnMailboxMessage(e *Empty, stream ClientService_OnMailb
 }
 
 // OnTransferAccepted method sends an accepted event to the client.
-func (s *ClientNodeStub) OnTransferAccepted(e *Empty, stream ClientService_OnTransferAcceptedServer) error {
+func (s *ClientNodeStub) OnTransmitAccepted(e *Empty, stream ClientService_OnTransmitAcceptedServer) error {
 	for {
 		select {
 		case m := <-s.node.decisionEvents:
@@ -95,7 +95,7 @@ func (s *ClientNodeStub) OnTransferAccepted(e *Empty, stream ClientService_OnTra
 }
 
 // OnTransferDeclinedmethod sends a decline event to the client.
-func (s *ClientNodeStub) OnTransferDeclined(e *Empty, stream ClientService_OnTransferDeclinedServer) error {
+func (s *ClientNodeStub) OnTransmitDeclined(e *Empty, stream ClientService_OnTransmitDeclinedServer) error {
 	for {
 		select {
 		case m := <-s.node.decisionEvents:
@@ -109,7 +109,7 @@ func (s *ClientNodeStub) OnTransferDeclined(e *Empty, stream ClientService_OnTra
 }
 
 // OnTransferInvite method sends an invite event to the client.
-func (s *ClientNodeStub) OnTransferInvite(e *Empty, stream ClientService_OnTransferInviteServer) error {
+func (s *ClientNodeStub) OnTransmitInvite(e *Empty, stream ClientService_OnTransmitInviteServer) error {
 	for {
 		select {
 		case m := <-s.node.inviteEvents:
@@ -121,7 +121,7 @@ func (s *ClientNodeStub) OnTransferInvite(e *Empty, stream ClientService_OnTrans
 }
 
 // OnTransferProgress method sends a progress event to the client.
-func (s *ClientNodeStub) OnTransferProgress(e *Empty, stream ClientService_OnTransferProgressServer) error {
+func (s *ClientNodeStub) OnTransmitProgress(e *Empty, stream ClientService_OnTransmitProgressServer) error {
 	for {
 		select {
 		case m := <-s.node.progressEvents:
@@ -133,7 +133,7 @@ func (s *ClientNodeStub) OnTransferProgress(e *Empty, stream ClientService_OnTra
 }
 
 // OnTransferComplete method sends a complete event to the client.
-func (s *ClientNodeStub) OnTransferComplete(e *Empty, stream ClientService_OnTransferCompleteServer) error {
+func (s *ClientNodeStub) OnTransmitComplete(e *Empty, stream ClientService_OnTransmitCompleteServer) error {
 	for {
 		select {
 		case m := <-s.node.completeEvents:
@@ -144,14 +144,7 @@ func (s *ClientNodeStub) OnTransferComplete(e *Empty, stream ClientService_OnTra
 				err := s.node.AddRecent(m.Recent())
 				if err != nil {
 					logger.Errorf("%s - Failed to add receiver's profile to store.", err)
-				}
-
-				// Add Payload to History
-				if m.IsIncoming() {
-					err = s.node.AddHistory(m.GetPayload())
-					if err != nil {
-						logger.Errorf("%s - Failed to add payload to store.", err)
-					}
+					continue
 				}
 			}
 		}

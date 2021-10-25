@@ -68,20 +68,11 @@ func (s *ClientNodeStub) Fetch(ctx context.Context, req *api.FetchRequest) (*api
 		}, nil
 	}
 
-	history, err := s.node.GetHistory()
-	if err != nil {
-		return &api.FetchResponse{
-			Success: false,
-			Error:   err.Error(),
-		}, nil
-	}
-
 	// Send Response
 	return &api.FetchResponse{
 		Success: true,
 		Profile: profile,
 		Recents: recents,
-		History: history,
 	}, nil
 }
 

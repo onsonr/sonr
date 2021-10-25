@@ -20,14 +20,6 @@ var (
 	PROFILE_KEY = []byte("profile")
 )
 
-func historyKey() []byte {
-	// Create Key from Time in RFC3339 format
-	t := time.Now().Round(time.Hour)
-	keyStr := t.Format(time.RFC3339)
-	key := []byte(keyStr)
-	return []byte(fmt.Sprintf("%s_history", key))
-}
-
 func recentsKey() []byte {
 	// Create Key from Time in RFC3339 format
 	t := time.Now().Round(time.Hour)
@@ -53,69 +45,6 @@ func (n *Node) openStore(ctx context.Context, opts *options) error {
 	err = n.SetProfile(opts.profile)
 	if err != nil {
 		logger.Errorf("%s - Failed to Set Profile", err)
-		return err
-	}
-	return nil
-}
-
-// AddHistory adds payload to the store file history
-func (n *Node) AddHistory(payload *common.Payload) error {
-	// Check if Store is open
-	if n.store == nil {
-		logger.Errorf("%s - Failed to Add Payload", ErrProtocolsNotSet)
-		return ErrProtocolsNotSet
-	}
-
-	// Check if profile is nil
-	if payload == nil {
-		logger.Errorf("%s - Failed to Add Payload", ErrMissingParam)
-		return ErrMissingParam
-	}
-
-	// Put in Bucket
-	if n.store.Has(historyKey()) {
-		// Get profile list buffer
-		oldBuf, err := n.store.Get(historyKey())
-		if err != nil {
-			logger.Errorf("%s - Failed to Get History from store")
-			return err
-		}
-
-		// Unmarshal profile list
-		payloadList := common.PayloadList{}
-		err = proto.Unmarshal(oldBuf, &payloadList)
-		if err != nil {
-			logger.Errorf("%s - Failed to Unmarshal PayloadList")
-			return err
-		}
-
-		// Add profile to list
-		payloadList.Add(payload)
-
-		// Marshal profile
-		val, err := proto.Marshal(&payloadList)
-		if err != nil {
-			logger.Errorf("%s - Failed to Marshal PayloadList")
-			return err
-		}
-
-		err = n.store.Put(historyKey(), val)
-		if err != nil {
-			return err
-		}
-		return nil
-	}
-
-	payloadList := common.PayloadList{
-		Key: string(recentsKey()),
-	}
-	payloadList.Add(payload)
-	val, err := proto.Marshal(&payloadList)
-	if err != nil {
-		return err
-	}
-	err = n.store.Put(historyKey(), val)
-	if err != nil {
 		return err
 	}
 	return nil
@@ -182,33 +111,6 @@ func (n *Node) AddRecent(profile *common.Profile) error {
 		return err
 	}
 	return nil
-}
-
-// GetHistory returns the history of profiles
-func (n *Node) GetHistory() (*common.PayloadList, error) {
-	if n.store == nil {
-		logger.Errorf("%s - Failed to Get Profile", ErrProtocolsNotSet)
-		return nil, ErrProtocolsNotSet
-	}
-
-	// Check for Key
-	if n.store.Has(historyKey()) {
-		rbuf, err := n.store.Get(historyKey())
-		if err != nil {
-			logger.Errorf("%s - Failed to Get History from store")
-			return nil, err
-		}
-
-		// Unmarshal profile list
-		payloadList := common.PayloadList{}
-		err = proto.Unmarshal(rbuf, &payloadList)
-		if err != nil {
-			logger.Errorf("%s - Failed to Unmarshal PayloadList")
-			return nil, err
-		}
-		return &payloadList, nil
-	}
-	return &common.PayloadList{}, nil
 }
 
 // GetRecents returns the list of recent profiles

@@ -38,15 +38,15 @@ type ClientServiceClient interface {
 	// Returns a stream of Mailbox Message Events
 	OnMailboxMessage(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnMailboxMessageClient, error)
 	// Returns a stream of DecisionEvent's for Accepted Invites
-	OnTransferAccepted(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnTransferAcceptedClient, error)
+	OnTransmitAccepted(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnTransmitAcceptedClient, error)
 	// Returns a stream of DecisionEvent's for Rejected Invites
-	OnTransferDeclined(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnTransferDeclinedClient, error)
+	OnTransmitDeclined(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnTransmitDeclinedClient, error)
 	// Returns a stream of DecisionEvent's for Invites
-	OnTransferInvite(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnTransferInviteClient, error)
+	OnTransmitInvite(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnTransmitInviteClient, error)
 	// Returns a stream of ProgressEvent's for Sessions
-	OnTransferProgress(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnTransferProgressClient, error)
+	OnTransmitProgress(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnTransmitProgressClient, error)
 	// Returns a stream of Completed Transfers
-	OnTransferComplete(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnTransferCompleteClient, error)
+	OnTransmitComplete(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnTransmitCompleteClient, error)
 }
 
 type clientServiceClient struct {
@@ -175,12 +175,12 @@ func (x *clientServiceOnMailboxMessageClient) Recv() (*api.MailboxEvent, error) 
 	return m, nil
 }
 
-func (c *clientServiceClient) OnTransferAccepted(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnTransferAcceptedClient, error) {
-	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[2], "/sonr.node.ClientService/OnTransferAccepted", opts...)
+func (c *clientServiceClient) OnTransmitAccepted(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnTransmitAcceptedClient, error) {
+	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[2], "/sonr.node.ClientService/OnTransmitAccepted", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &clientServiceOnTransferAcceptedClient{stream}
+	x := &clientServiceOnTransmitAcceptedClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -190,16 +190,16 @@ func (c *clientServiceClient) OnTransferAccepted(ctx context.Context, in *Empty,
 	return x, nil
 }
 
-type ClientService_OnTransferAcceptedClient interface {
+type ClientService_OnTransmitAcceptedClient interface {
 	Recv() (*api.DecisionEvent, error)
 	grpc.ClientStream
 }
 
-type clientServiceOnTransferAcceptedClient struct {
+type clientServiceOnTransmitAcceptedClient struct {
 	grpc.ClientStream
 }
 
-func (x *clientServiceOnTransferAcceptedClient) Recv() (*api.DecisionEvent, error) {
+func (x *clientServiceOnTransmitAcceptedClient) Recv() (*api.DecisionEvent, error) {
 	m := new(api.DecisionEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -207,12 +207,12 @@ func (x *clientServiceOnTransferAcceptedClient) Recv() (*api.DecisionEvent, erro
 	return m, nil
 }
 
-func (c *clientServiceClient) OnTransferDeclined(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnTransferDeclinedClient, error) {
-	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[3], "/sonr.node.ClientService/OnTransferDeclined", opts...)
+func (c *clientServiceClient) OnTransmitDeclined(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnTransmitDeclinedClient, error) {
+	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[3], "/sonr.node.ClientService/OnTransmitDeclined", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &clientServiceOnTransferDeclinedClient{stream}
+	x := &clientServiceOnTransmitDeclinedClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -222,16 +222,16 @@ func (c *clientServiceClient) OnTransferDeclined(ctx context.Context, in *Empty,
 	return x, nil
 }
 
-type ClientService_OnTransferDeclinedClient interface {
+type ClientService_OnTransmitDeclinedClient interface {
 	Recv() (*api.DecisionEvent, error)
 	grpc.ClientStream
 }
 
-type clientServiceOnTransferDeclinedClient struct {
+type clientServiceOnTransmitDeclinedClient struct {
 	grpc.ClientStream
 }
 
-func (x *clientServiceOnTransferDeclinedClient) Recv() (*api.DecisionEvent, error) {
+func (x *clientServiceOnTransmitDeclinedClient) Recv() (*api.DecisionEvent, error) {
 	m := new(api.DecisionEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -239,12 +239,12 @@ func (x *clientServiceOnTransferDeclinedClient) Recv() (*api.DecisionEvent, erro
 	return m, nil
 }
 
-func (c *clientServiceClient) OnTransferInvite(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnTransferInviteClient, error) {
-	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[4], "/sonr.node.ClientService/OnTransferInvite", opts...)
+func (c *clientServiceClient) OnTransmitInvite(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnTransmitInviteClient, error) {
+	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[4], "/sonr.node.ClientService/OnTransmitInvite", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &clientServiceOnTransferInviteClient{stream}
+	x := &clientServiceOnTransmitInviteClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -254,16 +254,16 @@ func (c *clientServiceClient) OnTransferInvite(ctx context.Context, in *Empty, o
 	return x, nil
 }
 
-type ClientService_OnTransferInviteClient interface {
+type ClientService_OnTransmitInviteClient interface {
 	Recv() (*api.InviteEvent, error)
 	grpc.ClientStream
 }
 
-type clientServiceOnTransferInviteClient struct {
+type clientServiceOnTransmitInviteClient struct {
 	grpc.ClientStream
 }
 
-func (x *clientServiceOnTransferInviteClient) Recv() (*api.InviteEvent, error) {
+func (x *clientServiceOnTransmitInviteClient) Recv() (*api.InviteEvent, error) {
 	m := new(api.InviteEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -271,12 +271,12 @@ func (x *clientServiceOnTransferInviteClient) Recv() (*api.InviteEvent, error) {
 	return m, nil
 }
 
-func (c *clientServiceClient) OnTransferProgress(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnTransferProgressClient, error) {
-	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[5], "/sonr.node.ClientService/OnTransferProgress", opts...)
+func (c *clientServiceClient) OnTransmitProgress(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnTransmitProgressClient, error) {
+	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[5], "/sonr.node.ClientService/OnTransmitProgress", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &clientServiceOnTransferProgressClient{stream}
+	x := &clientServiceOnTransmitProgressClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -286,16 +286,16 @@ func (c *clientServiceClient) OnTransferProgress(ctx context.Context, in *Empty,
 	return x, nil
 }
 
-type ClientService_OnTransferProgressClient interface {
+type ClientService_OnTransmitProgressClient interface {
 	Recv() (*api.ProgressEvent, error)
 	grpc.ClientStream
 }
 
-type clientServiceOnTransferProgressClient struct {
+type clientServiceOnTransmitProgressClient struct {
 	grpc.ClientStream
 }
 
-func (x *clientServiceOnTransferProgressClient) Recv() (*api.ProgressEvent, error) {
+func (x *clientServiceOnTransmitProgressClient) Recv() (*api.ProgressEvent, error) {
 	m := new(api.ProgressEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -303,12 +303,12 @@ func (x *clientServiceOnTransferProgressClient) Recv() (*api.ProgressEvent, erro
 	return m, nil
 }
 
-func (c *clientServiceClient) OnTransferComplete(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnTransferCompleteClient, error) {
-	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[6], "/sonr.node.ClientService/OnTransferComplete", opts...)
+func (c *clientServiceClient) OnTransmitComplete(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ClientService_OnTransmitCompleteClient, error) {
+	stream, err := c.cc.NewStream(ctx, &ClientService_ServiceDesc.Streams[6], "/sonr.node.ClientService/OnTransmitComplete", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &clientServiceOnTransferCompleteClient{stream}
+	x := &clientServiceOnTransmitCompleteClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -318,16 +318,16 @@ func (c *clientServiceClient) OnTransferComplete(ctx context.Context, in *Empty,
 	return x, nil
 }
 
-type ClientService_OnTransferCompleteClient interface {
+type ClientService_OnTransmitCompleteClient interface {
 	Recv() (*api.CompleteEvent, error)
 	grpc.ClientStream
 }
 
-type clientServiceOnTransferCompleteClient struct {
+type clientServiceOnTransmitCompleteClient struct {
 	grpc.ClientStream
 }
 
-func (x *clientServiceOnTransferCompleteClient) Recv() (*api.CompleteEvent, error) {
+func (x *clientServiceOnTransmitCompleteClient) Recv() (*api.CompleteEvent, error) {
 	m := new(api.CompleteEvent)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -358,15 +358,15 @@ type ClientServiceServer interface {
 	// Returns a stream of Mailbox Message Events
 	OnMailboxMessage(*Empty, ClientService_OnMailboxMessageServer) error
 	// Returns a stream of DecisionEvent's for Accepted Invites
-	OnTransferAccepted(*Empty, ClientService_OnTransferAcceptedServer) error
+	OnTransmitAccepted(*Empty, ClientService_OnTransmitAcceptedServer) error
 	// Returns a stream of DecisionEvent's for Rejected Invites
-	OnTransferDeclined(*Empty, ClientService_OnTransferDeclinedServer) error
+	OnTransmitDeclined(*Empty, ClientService_OnTransmitDeclinedServer) error
 	// Returns a stream of DecisionEvent's for Invites
-	OnTransferInvite(*Empty, ClientService_OnTransferInviteServer) error
+	OnTransmitInvite(*Empty, ClientService_OnTransmitInviteServer) error
 	// Returns a stream of ProgressEvent's for Sessions
-	OnTransferProgress(*Empty, ClientService_OnTransferProgressServer) error
+	OnTransmitProgress(*Empty, ClientService_OnTransmitProgressServer) error
 	// Returns a stream of Completed Transfers
-	OnTransferComplete(*Empty, ClientService_OnTransferCompleteServer) error
+	OnTransmitComplete(*Empty, ClientService_OnTransmitCompleteServer) error
 	mustEmbedUnimplementedClientServiceServer()
 }
 
@@ -398,20 +398,20 @@ func (UnimplementedClientServiceServer) OnLobbyRefresh(*Empty, ClientService_OnL
 func (UnimplementedClientServiceServer) OnMailboxMessage(*Empty, ClientService_OnMailboxMessageServer) error {
 	return status.Errorf(codes.Unimplemented, "method OnMailboxMessage not implemented")
 }
-func (UnimplementedClientServiceServer) OnTransferAccepted(*Empty, ClientService_OnTransferAcceptedServer) error {
-	return status.Errorf(codes.Unimplemented, "method OnTransferAccepted not implemented")
+func (UnimplementedClientServiceServer) OnTransmitAccepted(*Empty, ClientService_OnTransmitAcceptedServer) error {
+	return status.Errorf(codes.Unimplemented, "method OnTransmitAccepted not implemented")
 }
-func (UnimplementedClientServiceServer) OnTransferDeclined(*Empty, ClientService_OnTransferDeclinedServer) error {
-	return status.Errorf(codes.Unimplemented, "method OnTransferDeclined not implemented")
+func (UnimplementedClientServiceServer) OnTransmitDeclined(*Empty, ClientService_OnTransmitDeclinedServer) error {
+	return status.Errorf(codes.Unimplemented, "method OnTransmitDeclined not implemented")
 }
-func (UnimplementedClientServiceServer) OnTransferInvite(*Empty, ClientService_OnTransferInviteServer) error {
-	return status.Errorf(codes.Unimplemented, "method OnTransferInvite not implemented")
+func (UnimplementedClientServiceServer) OnTransmitInvite(*Empty, ClientService_OnTransmitInviteServer) error {
+	return status.Errorf(codes.Unimplemented, "method OnTransmitInvite not implemented")
 }
-func (UnimplementedClientServiceServer) OnTransferProgress(*Empty, ClientService_OnTransferProgressServer) error {
-	return status.Errorf(codes.Unimplemented, "method OnTransferProgress not implemented")
+func (UnimplementedClientServiceServer) OnTransmitProgress(*Empty, ClientService_OnTransmitProgressServer) error {
+	return status.Errorf(codes.Unimplemented, "method OnTransmitProgress not implemented")
 }
-func (UnimplementedClientServiceServer) OnTransferComplete(*Empty, ClientService_OnTransferCompleteServer) error {
-	return status.Errorf(codes.Unimplemented, "method OnTransferComplete not implemented")
+func (UnimplementedClientServiceServer) OnTransmitComplete(*Empty, ClientService_OnTransmitCompleteServer) error {
+	return status.Errorf(codes.Unimplemented, "method OnTransmitComplete not implemented")
 }
 func (UnimplementedClientServiceServer) mustEmbedUnimplementedClientServiceServer() {}
 
@@ -576,108 +576,108 @@ func (x *clientServiceOnMailboxMessageServer) Send(m *api.MailboxEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _ClientService_OnTransferAccepted_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _ClientService_OnTransmitAccepted_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(Empty)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(ClientServiceServer).OnTransferAccepted(m, &clientServiceOnTransferAcceptedServer{stream})
+	return srv.(ClientServiceServer).OnTransmitAccepted(m, &clientServiceOnTransmitAcceptedServer{stream})
 }
 
-type ClientService_OnTransferAcceptedServer interface {
+type ClientService_OnTransmitAcceptedServer interface {
 	Send(*api.DecisionEvent) error
 	grpc.ServerStream
 }
 
-type clientServiceOnTransferAcceptedServer struct {
+type clientServiceOnTransmitAcceptedServer struct {
 	grpc.ServerStream
 }
 
-func (x *clientServiceOnTransferAcceptedServer) Send(m *api.DecisionEvent) error {
+func (x *clientServiceOnTransmitAcceptedServer) Send(m *api.DecisionEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _ClientService_OnTransferDeclined_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _ClientService_OnTransmitDeclined_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(Empty)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(ClientServiceServer).OnTransferDeclined(m, &clientServiceOnTransferDeclinedServer{stream})
+	return srv.(ClientServiceServer).OnTransmitDeclined(m, &clientServiceOnTransmitDeclinedServer{stream})
 }
 
-type ClientService_OnTransferDeclinedServer interface {
+type ClientService_OnTransmitDeclinedServer interface {
 	Send(*api.DecisionEvent) error
 	grpc.ServerStream
 }
 
-type clientServiceOnTransferDeclinedServer struct {
+type clientServiceOnTransmitDeclinedServer struct {
 	grpc.ServerStream
 }
 
-func (x *clientServiceOnTransferDeclinedServer) Send(m *api.DecisionEvent) error {
+func (x *clientServiceOnTransmitDeclinedServer) Send(m *api.DecisionEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _ClientService_OnTransferInvite_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _ClientService_OnTransmitInvite_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(Empty)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(ClientServiceServer).OnTransferInvite(m, &clientServiceOnTransferInviteServer{stream})
+	return srv.(ClientServiceServer).OnTransmitInvite(m, &clientServiceOnTransmitInviteServer{stream})
 }
 
-type ClientService_OnTransferInviteServer interface {
+type ClientService_OnTransmitInviteServer interface {
 	Send(*api.InviteEvent) error
 	grpc.ServerStream
 }
 
-type clientServiceOnTransferInviteServer struct {
+type clientServiceOnTransmitInviteServer struct {
 	grpc.ServerStream
 }
 
-func (x *clientServiceOnTransferInviteServer) Send(m *api.InviteEvent) error {
+func (x *clientServiceOnTransmitInviteServer) Send(m *api.InviteEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _ClientService_OnTransferProgress_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _ClientService_OnTransmitProgress_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(Empty)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(ClientServiceServer).OnTransferProgress(m, &clientServiceOnTransferProgressServer{stream})
+	return srv.(ClientServiceServer).OnTransmitProgress(m, &clientServiceOnTransmitProgressServer{stream})
 }
 
-type ClientService_OnTransferProgressServer interface {
+type ClientService_OnTransmitProgressServer interface {
 	Send(*api.ProgressEvent) error
 	grpc.ServerStream
 }
 
-type clientServiceOnTransferProgressServer struct {
+type clientServiceOnTransmitProgressServer struct {
 	grpc.ServerStream
 }
 
-func (x *clientServiceOnTransferProgressServer) Send(m *api.ProgressEvent) error {
+func (x *clientServiceOnTransmitProgressServer) Send(m *api.ProgressEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _ClientService_OnTransferComplete_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _ClientService_OnTransmitComplete_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(Empty)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(ClientServiceServer).OnTransferComplete(m, &clientServiceOnTransferCompleteServer{stream})
+	return srv.(ClientServiceServer).OnTransmitComplete(m, &clientServiceOnTransmitCompleteServer{stream})
 }
 
-type ClientService_OnTransferCompleteServer interface {
+type ClientService_OnTransmitCompleteServer interface {
 	Send(*api.CompleteEvent) error
 	grpc.ServerStream
 }
 
-type clientServiceOnTransferCompleteServer struct {
+type clientServiceOnTransmitCompleteServer struct {
 	grpc.ServerStream
 }
 
-func (x *clientServiceOnTransferCompleteServer) Send(m *api.CompleteEvent) error {
+func (x *clientServiceOnTransmitCompleteServer) Send(m *api.CompleteEvent) error {
 	return x.ServerStream.SendMsg(m)
 }
 
@@ -725,28 +725,28 @@ var ClientService_ServiceDesc = grpc.ServiceDesc{
 			ServerStreams: true,
 		},
 		{
-			StreamName:    "OnTransferAccepted",
-			Handler:       _ClientService_OnTransferAccepted_Handler,
+			StreamName:    "OnTransmitAccepted",
+			Handler:       _ClientService_OnTransmitAccepted_Handler,
 			ServerStreams: true,
 		},
 		{
-			StreamName:    "OnTransferDeclined",
-			Handler:       _ClientService_OnTransferDeclined_Handler,
+			StreamName:    "OnTransmitDeclined",
+			Handler:       _ClientService_OnTransmitDeclined_Handler,
 			ServerStreams: true,
 		},
 		{
-			StreamName:    "OnTransferInvite",
-			Handler:       _ClientService_OnTransferInvite_Handler,
+			StreamName:    "OnTransmitInvite",
+			Handler:       _ClientService_OnTransmitInvite_Handler,
 			ServerStreams: true,
 		},
 		{
-			StreamName:    "OnTransferProgress",
-			Handler:       _ClientService_OnTransferProgress_Handler,
+			StreamName:    "OnTransmitProgress",
+			Handler:       _ClientService_OnTransmitProgress_Handler,
 			ServerStreams: true,
 		},
 		{
-			StreamName:    "OnTransferComplete",
-			Handler:       _ClientService_OnTransferComplete_Handler,
+			StreamName:    "OnTransmitComplete",
+			Handler:       _ClientService_OnTransmitComplete_Handler,
 			ServerStreams: true,
 		},
 	},
