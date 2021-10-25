@@ -3,8 +3,10 @@ package mailbox
 import (
 	"errors"
 	"os"
+	"time"
 
 	"github.com/kataras/golog"
+	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/fs"
 )
 
@@ -25,6 +27,10 @@ var (
 	ErrMailboxDisabled  = errors.New("Mailbox not enabled, cannot perform request.")
 	ErrMissingAPIKey    = errors.New("Missing Textile API Key in env")
 	ErrMissingAPISecret = errors.New("Missing Textile API Secret in env")
+	ErrFailedEntry      = errors.New("Failed to get Topmost entry from Queue")
+	ErrFailedAuth       = errors.New("Failed to Authenticate message")
+	ErrEmptyRequests    = errors.New("Empty Request list provided")
+	ErrRequestNotFound  = errors.New("Request not found in list")
 )
 
 // fetchApiKeys fetches the Textile Api/Secrect keys from the environment
@@ -121,4 +127,22 @@ func (mb *MailboxProtocol) newMailbox() error {
 	// mb.mailbox = mailbox
 	logger.Debug("New Mailbox has been created.", golog.Fields{"path": path})
 	return nil
+}
+
+// ToEvent method on InviteResponse converts InviteResponse to DecisionEvent.
+func (ir *InviteResponse) ToEvent() *api.DecisionEvent {
+	return &api.DecisionEvent{
+		From:     ir.GetFrom(),
+		Received: int64(time.Now().Unix()),
+		Decision: ir.GetDecision(),
+	}
+}
+
+// ToEvent method on InviteRequest converts InviteRequest to InviteEvent.
+func (ir *InviteRequest) ToEvent() *api.InviteEvent {
+	return &api.InviteEvent{
+		Received: int64(time.Now().Unix()),
+		From:     ir.GetFrom(),
+		Payload:  ir.GetPayload(),
+	}
 }

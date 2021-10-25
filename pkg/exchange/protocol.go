@@ -199,11 +199,6 @@ func (p *ExchangeProtocol) Register(sName string, records ...api.Record) (api.Do
 
 // Update method publishes peer data to the topic
 func (p *ExchangeProtocol) Update() error {
-	// Verify Topic has been created
-	if p.lobby.topic == nil {
-		return ErrTopicNotCreated
-	}
-
 	// Verify Peer is not nil
 	peer, err := p.node.Peer()
 	if err != nil {
@@ -211,21 +206,17 @@ func (p *ExchangeProtocol) Update() error {
 	}
 
 	// Publish Event
-	buf := createLobbyMsgBuf(peer)
-	err = p.lobby.topic.Publish(p.ctx, buf)
-	if err != nil {
-		logger.Errorf("%s - Failed to Publish Event", err)
-		return err
-	}
+	p.lobby.Publish(peer)
 	return nil
 }
 
+// Close method closes the ExchangeProtocol
 func (p *ExchangeProtocol) Close() error {
 	p.lobby.eventHandler.Cancel()
 	p.lobby.subscription.Cancel()
 	err := p.lobby.topic.Close()
 	if err != nil {
-		// ignore
+		logger.Errorf("%s - Failed to Close Local Lobby Topic for Exchange", err)
 	}
 	return nil
 }

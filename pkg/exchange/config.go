@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/pkg/common"
 )
@@ -55,7 +54,6 @@ func WithInterval(i time.Duration) Option {
 	}
 }
 
-
 // createOlc Creates a new Olc from Location
 func createOlc(l *common.Location) string {
 	code := l.OLC()
@@ -65,24 +63,4 @@ func createOlc(l *common.Location) string {
 	}
 	logger.Debug("Calculated OLC for Location: " + code)
 	return fmt.Sprintf("sonr/topic/%s", code)
-}
-
-type LobbyEvent struct {
-	ID     peer.ID
-	Peer   *common.Peer
-	isExit bool
-}
-
-func newLobbyEvent(i peer.ID, p *common.Peer) *LobbyEvent {
-	if p == nil {
-		return &LobbyEvent{
-			ID:     i,
-			isExit: true,
-		}
-	}
-	return &LobbyEvent{
-		ID:     i,
-		Peer:   p,
-		isExit: false,
-	}
 }

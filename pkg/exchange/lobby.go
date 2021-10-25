@@ -11,7 +11,8 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-type UpdateFunc func() error
+// ErrFunc is a function that returns an error
+type ErrFunc func() error
 
 // Lobby is the protocol for managing local peers.
 type Lobby struct {
@@ -24,12 +25,11 @@ type Lobby struct {
 	olc          string
 	peers        []*common.Peer
 	selfID       peer.ID
-	updateFunc   UpdateFunc
+	updateFunc   ErrFunc
 }
 
 // newLobby creates a new lobby instance.
 func (e *ExchangeProtocol) initLobby(topic *ps.Topic, opts *options) error {
-	olc := createOlc(opts.location)
 	// Subscribe to Room
 	sub, err := topic.Subscribe()
 	if err != nil {
@@ -45,26 +45,37 @@ func (e *ExchangeProtocol) initLobby(topic *ps.Topic, opts *options) error {
 	}
 
 	// Create Exchange Protocol
-	lob := &Lobby{
-		node:         e.node,
+	e.lobby = &Lobby{
 		ctx:          e.ctx,
+		selfID:       e.host.ID(),
+		node:         e.node,
+		updateFunc:   e.Update,
 		topic:        topic,
 		subscription: sub,
 		eventHandler: handler,
-		olc:          olc,
+		olc:          createOlc(opts.location),
 		messages:     make(chan *LobbyEvent),
 		peers:        make([]*common.Peer, 0),
-		selfID:       e.host.ID(),
-		updateFunc:   e.Update,
 	}
 
 	// Handle Events
-	go lob.handleSub()
-	go lob.handleTopic()
-	go lob.handleEvents()
-	go lob.autoPushUpdates()
-	logger.Debugf("Created new lobby: %s", olc)
-	e.lobby = lob
+	go e.lobby.handleSub()
+	go e.lobby.handleTopic()
+	go e.lobby.handleEvents()
+	go e.lobby.autoPushUpdates()
+	logger.Debugf("Created new lobby: %s", createOlc(opts.location))
+	return nil
+}
+
+// Publish publishes a LobbyMessage to the Topic
+func (p *Lobby) Publish(data *common.Peer) error {
+	// Create Message Buffer
+	buf := createLobbyMsgBuf(data)
+	err := p.topic.Publish(p.ctx, buf)
+	if err != nil {
+		logger.Errorf("%s - Failed to Publish Event", err)
+		return err
+	}
 	return nil
 }
 
@@ -259,4 +270,26 @@ func (lp *Lobby) updatePeer(peerID peer.ID, data *common.Peer) bool {
 	}
 	lp.callRefresh()
 	return true
+}
+
+// LobbyEvent is either Peer Update or Exit in Topic
+type LobbyEvent struct {
+	ID     peer.ID
+	Peer   *common.Peer
+	isExit bool
+}
+
+// newLobbyEvent Creates a new LobbyEvent
+func newLobbyEvent(i peer.ID, p *common.Peer) *LobbyEvent {
+	if p == nil {
+		return &LobbyEvent{
+			ID:     i,
+			isExit: true,
+		}
+	}
+	return &LobbyEvent{
+		ID:     i,
+		Peer:   p,
+		isExit: false,
+	}
 }

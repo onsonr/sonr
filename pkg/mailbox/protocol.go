@@ -3,9 +3,11 @@ package mailbox
 import (
 	"context"
 
+	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/fs"
 	"github.com/sonr-io/core/internal/host"
+	"github.com/sonr-io/core/pkg/common"
 )
 
 type MailboxProtocol struct {
@@ -14,6 +16,7 @@ type MailboxProtocol struct {
 	node api.NodeImpl
 	// mail    *local.Mail
 	//mailbox *local.Mailbox
+	invites map[peer.ID]*InviteRequest
 }
 
 // NewProtocol creates a new lobby protocol instance.
@@ -25,7 +28,8 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*M
 		ctx:  ctx,
 		host: host,
 		//	mail: mail,
-		node: node,
+		node:    node,
+		invites: make(map[peer.ID]*InviteRequest),
 	}
 
 	// Create new mailbox
@@ -184,3 +188,25 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*M
 // 	logger.Debug("Succesfully sent mail!", golog.Fields{"ID": msg.ID, "SentAt": msg.CreatedAt, "To": msg.To.String()})
 // 	return nil
 // }
+
+// Validate takes list of Requests and returns true if Request exists in List and UUID is verified.
+// Method also returns the InviteRequest that points to the Response.
+func (sq *MailboxProtocol) Validate(peer peer.ID, resp *InviteResponse) (*common.Payload, error) {
+	// Authenticate Message
+	valid := sq.host.AuthenticateMessage(resp, resp.Metadata)
+	if !valid {
+		return nil, ErrFailedAuth
+	}
+
+	// Check Decision
+	if !resp.GetDecision() {
+		return nil, nil
+	}
+
+	// Get Next Entry
+	entry, ok := sq.invites[peer]
+	if !ok {
+		return nil, ErrFailedEntry
+	}
+	return entry.GetPayload(), nil
+}
