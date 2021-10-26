@@ -5,18 +5,28 @@ import (
 	"time"
 
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	"github.com/sonr-io/go-gun"
 	"google.golang.org/protobuf/proto"
 )
 
-// newStore creates a new store
-func newStore(cap int, ttl time.Duration) *Store {
-	s := &Store{
-		Data:     make(map[string]*StoreEntry),
-		Capacity: int32(cap),
-		Modified: time.Now().Unix(),
-		Ttl:      ttl.Milliseconds(),
+// initStore creates a new store
+func (b *beam) initStore(ctx context.Context, opts *options) error {
+	// Create a new gun
+	g, err := gun.New(ctx, gun.AddPeerURL("https://sonr-gun.herokuapp.com/gun"), gun.WithSelfID(b.h.ID().String()))
+	if err != nil {
+		return err
 	}
-	return s
+	b.gun = g
+
+	// Create a new store
+	b.store = &Store{
+		Data:     make(map[string]*StoreEntry),
+		Capacity: int32(opts.capacity),
+		Modified: time.Now().Unix(),
+		Ttl:      opts.ttl.Milliseconds(),
+	}
+
+	return nil
 }
 
 // Delete deletes an entry from the store and publishes an event
@@ -43,6 +53,7 @@ func (s *Store) Delete(key string, b *beam) error {
 
 // Get returns the value of the entry
 func (s *Store) Get(key string) ([]byte, error) {
+	
 	entry := s.Data[key]
 	if entry == nil {
 		return nil, ErrNotFound

@@ -33,9 +33,10 @@ const (
 )
 
 var (
-	Ctx  context.Context
-	Node api.NodeImpl
-	Mode node.StubMode
+	Ctx     context.Context
+	Node    api.NodeImpl
+	Mode    node.StubMode
+	Sockets *SockManager
 )
 
 // Start starts the Sonr Node
@@ -64,11 +65,27 @@ func Start(req *api.InitializeRequest, options ...Option) {
 	err := req.Parse()
 	if err != nil {
 		golog.Default.Child("(app)").Fatalf("%s - Failed to parse Initialize Request", err)
+		Exit(1)
 	}
+
+	// Initialize Socket Manager
+	Sockets, err = NewSockManager(opts.socketsDir)
+	if err != nil {
+		golog.Default.Child("(app)").Fatalf("%s - Failed to create Sockets Manager", err)
+		return
+	}
+
+	socket, err := Sockets.NewSockPath()
+	if err != nil {
+		golog.Default.Child("(app)").Fatalf("%s - Failed to create Sock Path", err)
+		return
+	}
+
 	// Open Listener on Port
 	listener, err := net.Listen(opts.network, opts.Address())
 	if err != nil {
 		golog.Default.Child("(app)").Fatalf("%s - Failed to Create New Listener", err)
+		return
 	}
 
 	// Set Node Stub
@@ -194,13 +211,21 @@ func WithMode(mode node.StubMode) Option {
 	}
 }
 
+// WithSocketsDir sets the directory for the Node Sockets
+func WithSocketsDir(dir string) Option {
+	return func(o *options) {
+		o.socketsDir = dir
+	}
+}
+
 // options is the struct for the options
 type options struct {
-	host     string
-	network  string
-	port     int
-	mode     node.StubMode
-	logLevel string
+	host       string
+	network    string
+	port       int
+	mode       node.StubMode
+	logLevel   string
+	socketsDir string
 }
 
 // Address returns the address of the node.
