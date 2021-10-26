@@ -68,19 +68,6 @@ func Start(req *api.InitializeRequest, options ...Option) {
 		Exit(1)
 	}
 
-	// Initialize Socket Manager
-	Sockets, err = NewSockManager(opts.socketsDir)
-	if err != nil {
-		golog.Default.Child("(app)").Fatalf("%s - Failed to create Sockets Manager", err)
-		return
-	}
-
-	socket, err := Sockets.NewSockPath()
-	if err != nil {
-		golog.Default.Child("(app)").Fatalf("%s - Failed to create Sock Path", err)
-		return
-	}
-
 	// Open Listener on Port
 	listener, err := net.Listen(opts.network, opts.Address())
 	if err != nil {
