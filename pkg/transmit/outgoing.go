@@ -2,7 +2,6 @@ package transmit
 
 import (
 	"io"
-	"os"
 
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-msgio"
@@ -86,46 +85,16 @@ type itemWriter struct {
 
 // handleItemWrite handles the writing of a FileItem to a Stream
 func handleItemWrite(config itemConfig) error {
+	// Create New Writer
+	iw := &itemWriter{}
+	config.ApplyWriter(iw)
 	defer config.wg.Done()
 
-	// Properties
-	size := config.item.GetSize()
-	item := config.item.GetFile()
-
 	// Define Chunker Opts
-	var avgSize int
-	if size < ITEM_INTERVAL {
-		avgSize = int(size)
-	} else {
-		avgSize = int(size / ITEM_INTERVAL)
-	}
-
-	// Open Os File
-	f, err := os.Open(item.Path)
-	if err != nil {
-		logger.Errorf("%s - Error opening item for Write stream", err)
-		return err
-	}
-	defer f.Close()
-
-	// Create New Chunker
-	chunker, err := fs.NewChunker(f, fs.ChunkerOptions{
-		AverageSize: avgSize, // Only Average Required
-	})
+	chunker, err := fs.NewFileChunker(config.Path(), config.Size())
 	if err != nil {
 		logger.Errorf("%s - Failed to create new chunker.", err)
 		return err
-	}
-
-	// Create New Writer
-	iw := &itemWriter{
-		node:         config.node,
-		item:         item,
-		size:         size,
-		index:        config.index,
-		count:        config.count,
-		written:      0,
-		progressChan: make(chan int),
 	}
 
 	go iw.handleChannels()
@@ -136,7 +105,7 @@ func handleItemWrite(config itemConfig) error {
 		if err != nil {
 			// Handle EOF
 			if err == io.EOF {
-				iw.progressChan <- int(size)
+				iw.progressChan <- int(iw.size)
 				iw.doneChan <- true
 				break
 			}
@@ -159,7 +128,16 @@ func handleItemWrite(config itemConfig) error {
 }
 
 // getProgressEvent returns a ProgressEvent for the current ItemReader
-func (p *itemWriter) getProgressEvent() *api.ProgressEvent {
+func (p *itemWriter) getProgressEvent(isComplete bool) *api.ProgressEvent {
+	// Create Completed Progress Event
+	if isComplete {
+		return &api.ProgressEvent{
+			Progress: float64(1.0),
+			Current:  int32(p.index),
+			Total:    int32(p.count),
+		}
+	}
+
 	if (p.written % ITEM_INTERVAL) == 0 {
 		// Create Progress Event
 		return &api.ProgressEvent{
@@ -176,8 +154,11 @@ func (p *itemWriter) handleChannels() {
 	for {
 		select {
 		case n := <-p.progressChan:
-			p.written += n
-			if ev := p.getProgressEvent(); ev != nil {
+			finalProgress := n == int(p.size)
+			if !finalProgress {
+				p.written += n
+			}
+			if ev := p.getProgressEvent(finalProgress); ev != nil {
 				p.node.OnProgress(ev)
 			}
 		case <-p.doneChan:

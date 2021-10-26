@@ -126,6 +126,7 @@ func handleItemRead(config itemConfig) (*common.Payload_Item, error) {
 		// Read Next Message
 		buf, err := config.reader.ReadMsg()
 		if err == io.EOF {
+			ir.progressChan <- int(ir.size)
 			ir.completeChan <- true
 			break
 		} else if err != nil {
@@ -147,7 +148,16 @@ func handleItemRead(config itemConfig) (*common.Payload_Item, error) {
 }
 
 // getProgressEvent returns a ProgressEvent for the current ItemReader
-func (p *itemReader) getProgressEvent() *api.ProgressEvent {
+func (p *itemReader) getProgressEvent(isComplete bool) *api.ProgressEvent {
+	// Create Completed Progress Event
+	if isComplete {
+		return &api.ProgressEvent{
+			Progress: float64(1.0),
+			Current:  int32(p.index),
+			Total:    int32(p.count),
+		}
+	}
+
 	if (p.written % ITEM_INTERVAL) == 0 {
 		// Create Progress Event
 		return &api.ProgressEvent{
@@ -164,8 +174,11 @@ func (p *itemReader) handleChannels() {
 	for {
 		select {
 		case n := <-p.progressChan:
-			p.written += n
-			if ev := p.getProgressEvent(); ev != nil {
+			finalProgress := n == int(p.size)
+			if !finalProgress {
+				p.written += n
+			}
+			if ev := p.getProgressEvent(finalProgress); ev != nil {
 				p.node.OnProgress(ev)
 			}
 		case r := <-p.completeChan:

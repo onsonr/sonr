@@ -1,9 +1,11 @@
 package fs
 
 import (
+	"bytes"
 	"errors"
 	"io"
 	"math"
+	"os"
 )
 
 const (
@@ -14,6 +16,7 @@ const (
 	maxSize = 1 << 30
 
 	defaultNormalization = 2
+	interval             = 25
 )
 
 // Chunker implements the FastCDC content defined chunking algorithm.
@@ -129,6 +132,24 @@ func NewChunker(rd io.Reader, opts ChunkerOptions) (*Chunker, error) {
 		cursor:   opts.BufSize,
 	}
 	return chunker, nil
+}
+
+func NewFileChunker(path string, size int64) (*Chunker, error) {
+	buf, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+
+	var averageSize int
+	if size < interval {
+		averageSize = int(size)
+	} else {
+		averageSize = int(size / interval)
+	}
+
+	return NewChunker(bytes.NewReader(buf), ChunkerOptions{
+		AverageSize: averageSize,
+	})
 }
 
 func (c *Chunker) fillBuffer() error {

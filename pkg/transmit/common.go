@@ -10,6 +10,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/api"
+	"github.com/sonr-io/core/internal/fs"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/internal/wallet"
 	"github.com/sonr-io/core/pkg/common"
@@ -150,4 +151,51 @@ type itemConfig struct {
 	reader msgio.ReadCloser
 	writer msgio.WriteCloser
 	wg     sync.WaitGroup
+}
+
+// FileItem returns FileItem from Payload_Item
+func (ic itemConfig) FileItem() *common.FileItem {
+	return ic.item.GetFile()
+}
+
+func (ic itemConfig) GenPath() (string, error) {
+	path, err := fs.Downloads.GenPath(ic.item.GetFile().GetPath())
+	if err != nil {
+		logger.Errorf("%s - Failed to create new ItemReader", err)
+		return "", err
+	}
+	return path, nil
+}
+
+// Size returns the size of the item
+func (ic itemConfig) Path() string {
+	return ic.FileItem().GetPath()
+}
+
+// SetFileItem returns FileItem from Payload_Item and sets its path
+func (ic itemConfig) SetFileItem(p string) (*common.FileItem, error) {
+	i := ic.FileItem()
+	err := i.SetPath(p)
+	if err != nil {
+		logger.Errorf("%s - Failed to set path for FileItem", err)
+		return nil, err
+	}
+	return i, nil
+}
+
+// Size returns the size of the item
+func (ic itemConfig) Size() int64 {
+	return ic.item.GetSize()
+}
+
+// ApplyWriter applies the config to the itemWriter
+func (ic itemConfig) ApplyWriter(iw *itemWriter) {
+	iw.item = ic.FileItem()
+	iw.index = ic.index
+	iw.count = ic.count
+	iw.size = ic.Size()
+	iw.node = ic.node
+	iw.written = 0
+	iw.progressChan = make(chan int)
+	iw.doneChan = make(chan bool)
 }
