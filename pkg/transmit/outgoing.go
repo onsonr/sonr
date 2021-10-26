@@ -74,20 +74,23 @@ func (p *TransmitProtocol) onOutgoingTransfer(entry Session, stream network.Stre
 
 // itemWriter is a Writer for FileItems
 type itemWriter struct {
-	chunker *fs.Chunker
-	file    *os.File
-	item    *common.FileItem
-	index   int
-	count   int
-	size    int64
-	node    api.NodeImpl
+	item         *common.FileItem
+	index        int
+	count        int
+	size         int64
+	node         api.NodeImpl
+	written      int
+	progressChan chan int
+	doneChan     chan bool
 }
 
-// NewItemWriter Returns a new Reader for the given FileItem
-func NewItemWriter(index int, count int, pi *common.Payload_Item, node api.NodeImpl) (*itemWriter, error) {
+// handleItemWrite handles the writing of a FileItem to a Stream
+func handleItemWrite(config itemConfig) error {
+	defer config.wg.Done()
+
 	// Properties
-	size := pi.GetSize()
-	item := pi.GetFile()
+	size := config.item.GetSize()
+	item := config.item.GetFile()
 
 	// Define Chunker Opts
 	var avgSize int
@@ -101,8 +104,9 @@ func NewItemWriter(index int, count int, pi *common.Payload_Item, node api.NodeI
 	f, err := os.Open(item.Path)
 	if err != nil {
 		logger.Errorf("%s - Error opening item for Write stream", err)
-		return nil, err
+		return err
 	}
+	defer f.Close()
 
 	// Create New Chunker
 	chunker, err := fs.NewChunker(f, fs.ChunkerOptions{
@@ -110,74 +114,74 @@ func NewItemWriter(index int, count int, pi *common.Payload_Item, node api.NodeI
 	})
 	if err != nil {
 		logger.Errorf("%s - Failed to create new chunker.", err)
-		return nil, err
+		return err
 	}
 
 	// Create New Writer
-	return &itemWriter{
-		node:    node,
-		item:    item,
-		size:    size,
-		file:    f,
-		index:   index,
-		count:   count,
-		chunker: chunker,
-	}, nil
-}
-
-// Returns Progress of File, Given the written number of bytes
-func (p *itemWriter) Progress(i int) {
-	// Create Progress Event
-	if (i % ITEM_INTERVAL) == 0 {
-		event := &api.ProgressEvent{
-			Progress: (float64(i) / float64(p.size)),
-			Current:  int32(p.index),
-			Total:    int32(p.count),
-		}
-
-		// Push ProgressEvent to Emitter
-		p.node.OnProgress(event)
+	iw := &itemWriter{
+		node:         config.node,
+		item:         item,
+		size:         size,
+		index:        config.index,
+		count:        config.count,
+		written:      0,
+		progressChan: make(chan int),
 	}
-}
 
-// Write Item to Stream
-func (iw *itemWriter) WriteTo(writer msgio.WriteCloser) {
-	// Defer Closing of File and Writer and WaitGroup
-	defer iw.file.Close()
-	defer writer.Close()
+	go iw.handleChannels()
 
 	// Loop through File
-	for i := 0; i < int(iw.size); {
-		c, err := iw.chunker.Next()
+	for {
+		c, err := chunker.Next()
 		if err != nil {
+			// Handle EOF
 			if err == io.EOF {
+				iw.progressChan <- int(size)
+				iw.doneChan <- true
 				break
 			}
+
+			// Unexpected Error
+			iw.doneChan <- false
 			logger.Errorf("%s - Error reading chunk.", err)
-			return
+			return err
 		}
 
 		// Write Message Bytes to Stream
-		err = writer.WriteMsg(c.Data)
+		err = config.writer.WriteMsg(c.Data)
 		if err != nil {
 			logger.Errorf("%s - Error Writing data to msgio.Writer", err)
+			return err
+		}
+		iw.progressChan <- c.Length
+	}
+	return nil
+}
+
+// getProgressEvent returns a ProgressEvent for the current ItemReader
+func (p *itemWriter) getProgressEvent() *api.ProgressEvent {
+	if (p.written % ITEM_INTERVAL) == 0 {
+		// Create Progress Event
+		return &api.ProgressEvent{
+			Progress: (float64(p.written) / float64(p.size)),
+			Current:  int32(p.index),
+			Total:    int32(p.count),
+		}
+	}
+	return nil
+}
+
+// handleChannels handles the channels for the ItemReader
+func (p *itemWriter) handleChannels() {
+	for {
+		select {
+		case n := <-p.progressChan:
+			p.written += n
+			if ev := p.getProgressEvent(); ev != nil {
+				p.node.OnProgress(ev)
+			}
+		case <-p.doneChan:
 			return
 		}
-
-		// Unexpected Error
-		if err != nil && err != io.EOF {
-			logger.Errorf("%s - Unexpected Error occurred on Write Stream", err)
-			return
-		}
-		// Update Progress
-		i += c.Length
-		iw.Progress(i)
 	}
-
-	// Close File
-	if err := iw.file.Close(); err != nil {
-		logger.Errorf("%s - Failed to Close item on Write Stream", err)
-		return
-	}
-	return
 }

@@ -134,6 +134,7 @@ func (p *TransmitProtocol) Supply(req *api.SupplyRequest) error {
 	// Add items to transfer
 	p.supplyQueue.PushBack(payload)
 	logger.Debug(fmt.Sprintf("Added %v items to supply queue.", req.Count()), golog.Fields{"File Count": payload.FileCount(), "URL Count": payload.URLCount()})
+	
 	// Check if Peer is provided
 	if req.GetIsPeerSupply() {
 		logger.Debug("Peer Supply Request. Sending Invite after supply")

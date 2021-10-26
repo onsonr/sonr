@@ -33,6 +33,15 @@ func (s Session) IsOutgoing() bool {
 	return s.direction == common.Direction_OUTGOING
 }
 
+// IsOutgoing returns true if the session is outgoing.
+func (s Session) ReplaceItem(idx int, pi *common.Payload_Item) {
+	// Replace Item
+	s.payload.Items[idx] = pi
+
+	// Update Last Updated
+	s.lastUpdated = int64(time.Now().Unix())
+}
+
 // ReadFrom reads the next Session from the given stream.
 func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) (*api.CompleteEvent, error) {
 	// Initialize Params
@@ -44,24 +53,24 @@ func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) (*api.CompleteE
 
 	// Write All Files
 	for i, v := range s.Items() {
+		// Configure Reader
+		config := itemConfig{
+			index:  i,
+			count:  s.Count(),
+			item:   v,
+			node:   n,
+			reader: rs,
+			wg:     wg,
+		}
+
 		// Create Reader
-		r, err := NewItemReader(i, s.Count(), v, n)
+		pi, err := handleItemRead(config)
 		if err != nil {
 			logger.Errorf("%s - Failed to create new reader.", err)
 			rs.Close()
 			return nil, err
 		}
-
-		// Write to File
-		wg.Add(1)
-		go func(idx, total int) {
-			defer wg.Done()
-			if r == nil {
-				logger.Errorf("%s - Failed to create new reader.")
-				return
-			}
-			r.ReadFrom(rs)
-		}(i, s.Count())
+		s.ReplaceItem(i, pi)
 	}
 	wg.Wait()
 	stream.Close()
@@ -86,8 +95,18 @@ func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) (*api.CompleteEv
 
 	// Create New Writer
 	for i, v := range s.Items() {
+		// Configure Writer
+		config := itemConfig{
+			index:  i,
+			count:  s.Count(),
+			item:   v,
+			node:   n,
+			writer: wc,
+			wg:     wg,
+		}
+
 		// Create New Writer
-		w, err := NewItemWriter(i, s.Count(), v, n)
+		err := handleItemWrite(config)
 		if err != nil {
 			logger.Errorf("%s - Failed to create new writer.", err)
 			wc.Close()
@@ -96,14 +115,6 @@ func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) (*api.CompleteEv
 
 		// Write File to Stream
 		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			if w == nil {
-				logger.Errorf("%s - Failed to create new writer.")
-				return
-			}
-			w.WriteTo(wc)
-		}()
 	}
 
 	// Wait for all writes to finish

@@ -45,9 +45,36 @@ func NewFileItem(path string, tbuf []byte) (*Payload_Item, error) {
 	}, nil
 }
 
+// SetPath sets the path of the FileItem
+func (f *FileItem) SetPath(p string) error {
+	// Set Path
+	f.Path = p
+
+	// Define Check Path Function
+	checkPathFunc := func(p string) error {
+		// Check if path to file exists
+		_, err := os.Stat(p)
+		if err != nil {
+			// Check if the error is a file not found error
+			if os.IsNotExist(err) {
+				logger.Warnf("%s - File does not exist yet. Continuing...")
+			}
+
+			// Return error for other errors
+			return err
+		}
+		return nil
+	}
+	return checkPathFunc(p)
+}
+
 // ToTransferItem Returns Transfer for FileItem
 func (f *FileItem) ToTransferItem() *Payload_Item {
 	return &Payload_Item{
+		Size: f.GetSize(),
+		Preview: &Payload_Item_Thumbnail{
+			Thumbnail: f.GetThumbnail(),
+		},
 		Mime: f.GetMime(),
 		Data: &Payload_Item_File{
 			File: f,

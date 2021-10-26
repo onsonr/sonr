@@ -2,11 +2,13 @@ package transmit
 
 import (
 	"errors"
+	"sync"
 	"time"
 
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
+	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/internal/wallet"
@@ -138,4 +140,14 @@ func (p *TransmitProtocol) createResponse(decs bool, to *common.Peer) (peer.ID, 
 		return "", nil, err
 	}
 	return toId, resp, nil
+}
+
+type itemConfig struct {
+	index  int
+	count  int
+	item   *common.Payload_Item
+	node   api.NodeImpl
+	reader msgio.ReadCloser
+	writer msgio.WriteCloser
+	wg     sync.WaitGroup
 }
