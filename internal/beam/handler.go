@@ -63,9 +63,6 @@ func (b *beam) serve() {
 		select {
 		case <-b.ctx.Done():
 			logger.Debugf("Closing Beam (%s)", b.id.Prefix())
-			if err := b.gun.Close(); err != nil {
-				logger.Errorf("%s - Failed to Close Beam", err)
-			}
 			b.handler.Cancel()
 			b.sub.Cancel()
 			if err := b.topic.Close(); err != nil {
