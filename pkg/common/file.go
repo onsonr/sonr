@@ -62,6 +62,7 @@ func (f *FileItem) SetPath(p string) error {
 			// Check if the error is a file not found error
 			if os.IsNotExist(err) {
 				logger.Warnf("%s - File does not exist yet. Continuing...")
+				return nil
 			}
 
 			// Return error for other errors
