@@ -2,7 +2,6 @@ package transmit
 
 import (
 	"bytes"
-	"errors"
 	"io"
 	"os"
 
@@ -81,8 +80,8 @@ type itemReader struct {
 	node         api.NodeImpl
 	written      int
 	progressChan chan int
-	completeChan chan bool // completeChan is closed when the stream finishes reading
-	doneChan     chan bool // doneChan is closed when the file is written to disk
+	doneChan     chan bool
+	compChan     chan *common.Payload_Item
 }
 
 // handleItemRead Returns a new Reader for the given FileItem
@@ -114,8 +113,8 @@ func handleItemRead(config itemConfig) (*common.Payload_Item, error) {
 		node:         config.node,
 		written:      0,
 		progressChan: make(chan int),
-		completeChan: make(chan bool),
 		doneChan:     make(chan bool),
+		compChan:     make(chan *common.Payload_Item),
 	}
 
 	// Start Channels
@@ -127,24 +126,25 @@ func handleItemRead(config itemConfig) (*common.Payload_Item, error) {
 		buf, err := config.reader.ReadMsg()
 		if err == io.EOF {
 			ir.progressChan <- int(ir.size)
-			ir.completeChan <- true
+			ir.doneChan <- true
 			break
 		} else if err != nil {
 			logger.Errorf("%s - Failed to Read Next Message on Read Stream", err)
-			ir.completeChan <- false
+			ir.doneChan <- false
 			return nil, err
 		} else {
 			// Write Chunk to File
 			n, err := ir.buffer.Write(buf)
 			if err != nil {
 				logger.Errorf("%s - Failed to Write Buffer to File on Read Stream", err)
-				ir.completeChan <- false
+				ir.doneChan <- false
 				return nil, err
 			}
 			ir.progressChan <- n
 		}
 	}
-	return ir.toPayloadItem()
+	event := <-ir.compChan
+	return event, nil
 }
 
 // getProgressEvent returns a ProgressEvent for the current ItemReader
@@ -152,18 +152,20 @@ func (p *itemReader) getProgressEvent(isComplete bool) *api.ProgressEvent {
 	// Create Completed Progress Event
 	if isComplete {
 		return &api.ProgressEvent{
-			Progress: float64(1.0),
-			Current:  int32(p.index),
-			Total:    int32(p.count),
+			Direction: common.Direction_INCOMING,
+			Progress:  float64(1.0),
+			Current:   int32(p.index),
+			Total:     int32(p.count),
 		}
 	}
 
 	if (p.written % ITEM_INTERVAL) == 0 {
 		// Create Progress Event
 		return &api.ProgressEvent{
-			Progress: (float64(p.written) / float64(p.size)),
-			Current:  int32(p.index),
-			Total:    int32(p.count),
+			Direction: common.Direction_INCOMING,
+			Progress:  (float64(p.written) / float64(p.size)),
+			Current:   int32(p.index),
+			Total:     int32(p.count),
 		}
 	}
 	return nil
@@ -181,13 +183,13 @@ func (p *itemReader) handleChannels() {
 			if ev := p.getProgressEvent(finalProgress); ev != nil {
 				p.node.OnProgress(ev)
 			}
-		case r := <-p.completeChan:
+		case r := <-p.doneChan:
 			if r {
 				// Write Buffer to File
 				err := os.WriteFile(p.path, p.buffer.Bytes(), 0644)
 				if err != nil {
 					logger.Errorf("%s - Failed to Close item on Read Stream", err)
-					p.doneChan <- false
+					p.compChan <- nil
 					return
 				}
 			} else {
@@ -195,28 +197,19 @@ func (p *itemReader) handleChannels() {
 				err := os.Remove(p.path)
 				if err != nil {
 					logger.Errorf("%s - Failed to Close item on Read Stream", err)
-					p.doneChan <- false
+					p.compChan <- nil
 					return
 				}
 			}
-			p.doneChan <- true
+			p.compChan <- p.toPayloadItem()
 			return
 		}
 	}
 }
 
-func (ir *itemReader) waitForDone() {
-	<-ir.completeChan
-}
-
 // toPayloadItem Waits for the File to be completed
-func (ir *itemReader) toPayloadItem() (*common.Payload_Item, error) {
-	r := <-ir.doneChan
-	if !r {
-		return nil, errors.New("Failed to Write File to Disk")
-	}
-
+func (ir *itemReader) toPayloadItem() *common.Payload_Item {
 	// Create Payload Item
 	item := ir.item.ToTransferItem()
-	return item, nil
+	return item
 }

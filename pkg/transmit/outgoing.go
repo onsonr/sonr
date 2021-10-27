@@ -132,18 +132,20 @@ func (p *itemWriter) getProgressEvent(isComplete bool) *api.ProgressEvent {
 	// Create Completed Progress Event
 	if isComplete {
 		return &api.ProgressEvent{
-			Progress: float64(1.0),
-			Current:  int32(p.index),
-			Total:    int32(p.count),
+			Direction: common.Direction_OUTGOING,
+			Progress:  float64(1.0),
+			Current:   int32(p.index),
+			Total:     int32(p.count),
 		}
 	}
 
 	if (p.written % ITEM_INTERVAL) == 0 {
 		// Create Progress Event
 		return &api.ProgressEvent{
-			Progress: (float64(p.written) / float64(p.size)),
-			Current:  int32(p.index),
-			Total:    int32(p.count),
+			Direction: common.Direction_OUTGOING,
+			Progress:  (float64(p.written) / float64(p.size)),
+			Current:   int32(p.index),
+			Total:     int32(p.count),
 		}
 	}
 	return nil
