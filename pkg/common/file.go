@@ -6,10 +6,11 @@ import (
 	"time"
 
 	"github.com/gabriel-vasile/mimetype"
+	"github.com/sonr-io/core/internal/fs"
 )
 
 // NewFileItem creates a new transfer file item
-func NewFileItem(path string, tbuf []byte) (*Payload_Item, error) {
+func NewFileItem(path string, tpath string) (*Payload_Item, error) {
 	// Extracts File Infrom from path
 	fi, err := os.Stat(path)
 	if err != nil {
@@ -22,6 +23,22 @@ func NewFileItem(path string, tbuf []byte) (*Payload_Item, error) {
 		return nil, err
 	}
 
+	// Create Thumbnail Item
+	buildThumbnail := func(path string) *Thumbnail {
+		if fs.Exists(path) {
+			tbuf, err := os.ReadFile(tpath)
+			if err != nil {
+				logger.Error("%s - Failed to read thumbnail path", err)
+				return nil
+			}
+			return &Thumbnail{
+				Buffer: tbuf,
+				Mime:   mime,
+			}
+		}
+		return nil
+	}
+
 	// Create File Item
 	fileItem := &FileItem{
 		Mime:         mime,
@@ -29,10 +46,7 @@ func NewFileItem(path string, tbuf []byte) (*Payload_Item, error) {
 		Size:         fi.Size(),
 		Name:         fi.Name(),
 		LastModified: fi.ModTime().Unix(),
-		Thumbnail: &Thumbnail{
-			Buffer: tbuf,
-			Mime:   mime,
-		},
+		Thumbnail:    buildThumbnail(tpath),
 	}
 
 	// Returns transfer item
@@ -164,9 +178,6 @@ func (m *MIME) PermitsThumbnail() bool {
 	return m.IsImage() || m.IsVideo() || m.IsAudio() || m.IsPDF()
 }
 
-// ** ───────────────────────────────────────────────────────
-// ** ─── Profile Management ────────────────────────────────
-// ** ───────────────────────────────────────────────────────
 // Add adds a new Profile to the List and
 // updates LastModified time.
 func (p *PayloadList) Add(load *Payload) {

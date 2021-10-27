@@ -53,6 +53,9 @@ func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) (*api.CompleteE
 
 	// Write All Files
 	for i, v := range s.Items() {
+		// Write File to Stream
+		wg.Add(1)
+
 		// Configure Reader
 		config := itemConfig{
 			index:  i,
@@ -95,6 +98,9 @@ func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) (*api.CompleteEv
 
 	// Create New Writer
 	for i, v := range s.Items() {
+		// Write File to Stream
+		wg.Add(1)
+
 		// Configure Writer
 		config := itemConfig{
 			index:  i,
@@ -113,8 +119,6 @@ func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) (*api.CompleteEv
 			return nil, err
 		}
 
-		// Write File to Stream
-		wg.Add(1)
 	}
 
 	// Wait for all writes to finish

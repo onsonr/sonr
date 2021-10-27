@@ -181,3 +181,9 @@ func checkIsDesktop() bool {
 func checkIsMobile() bool {
 	return !checkIsDesktop()
 }
+
+// Exists checks if a file exists.
+func Exists(fileName string) bool {
+	_, err := os.Stat(fileName)
+	return !os.IsNotExist(err)
+}

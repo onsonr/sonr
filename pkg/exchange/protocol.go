@@ -168,7 +168,6 @@ func (p *ExchangeProtocol) Verify(sname string) (bool, api.Record, error) {
 // RegisterDomain registers a domain with Namebase.
 func (p *ExchangeProtocol) Register(sName string, records ...api.Record) (api.DomainMap, error) {
 	// Put records into Namebase
-
 	ok, err := api.PutRecords(p.ctx, records...)
 	if err != nil {
 		logger.Error("Failed to Register SName", err)
