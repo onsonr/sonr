@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/gabriel-vasile/mimetype"
-	"github.com/sonr-io/core/internal/fs"
 )
 
 // NewFileItem creates a new transfer file item
@@ -23,23 +22,12 @@ func NewFileItem(path string, tpath string) (*Payload_Item, error) {
 		return nil, err
 	}
 
-	// Create Thumbnail Item
-	buildThumbnail := func(path string) *Thumbnail {
-		if fs.Exists(path) {
-			logger.Info("Thumbnail exists at path, Building Thumbnail")
-			tbuf, err := os.ReadFile(tpath)
-			if err != nil {
-				logger.Error("%s - Failed to read thumbnail path", err)
-				return nil
-			}
-			return &Thumbnail{
-				Buffer: tbuf,
-				Mime:   mime,
-			}
-		}
-		logger.Warn("Thumbnail does not exist at path, skipping...")
-		return nil
-	}
+	// Create Thumbnail on goroutine
+	thumbCh := make(chan *Thumbnail)
+	go NewThumbnail(path, mime, thumbCh)
+
+	// Await Thumbnail
+	thumb := <-thumbCh
 
 	// Create File Item
 	fileItem := &FileItem{
@@ -48,7 +36,7 @@ func NewFileItem(path string, tpath string) (*Payload_Item, error) {
 		Size:         fi.Size(),
 		Name:         fi.Name(),
 		LastModified: fi.ModTime().Unix(),
-		Thumbnail:    buildThumbnail(tpath),
+		Thumbnail:    thumb,
 	}
 
 	// Returns transfer item
