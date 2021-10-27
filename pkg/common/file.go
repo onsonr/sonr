@@ -26,6 +26,7 @@ func NewFileItem(path string, tpath string) (*Payload_Item, error) {
 	// Create Thumbnail Item
 	buildThumbnail := func(path string) *Thumbnail {
 		if fs.Exists(path) {
+			logger.Info("Thumbnail exists at path, Building Thumbnail")
 			tbuf, err := os.ReadFile(tpath)
 			if err != nil {
 				logger.Error("%s - Failed to read thumbnail path", err)
@@ -36,6 +37,7 @@ func NewFileItem(path string, tpath string) (*Payload_Item, error) {
 				Mime:   mime,
 			}
 		}
+		logger.Warn("Thumbnail does not exist at path, skipping...")
 		return nil
 	}
 
