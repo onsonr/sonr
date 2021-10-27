@@ -9,39 +9,31 @@ import (
 	"log"
 	"math"
 	"os"
-
-	"github.com/sonr-io/core/internal/fs"
 )
 
 // NewThumbnail creates a new thumbnail for the given file
-func NewThumbnail(path string, mime *MIME, ch chan *Thumbnail) {
-	if fs.Exists(path) {
-		if mime.IsImage() {
-			logger.Info("Found Image, Generating Thumbnail")
-			data, err := genImageThumbnail(path)
-			if err == nil {
-				ch <- &Thumbnail{
-					Buffer: data,
-					Mime:   mime,
-				}
-				return
-			}
-		} else {
-			logger.Info("Thumbnail exists at path, Building Thumbnail")
-			tbuf, err := os.ReadFile(path)
-			if err != nil {
-				logger.Error("%s - Failed to read thumbnail path", err)
-				ch <- nil
-				return
-			}
+func NewThumbnail(path string, tbuf []byte, mime *MIME, ch chan *Thumbnail) {
+	if mime.IsImage() {
+		logger.Info("Found Image, Generating Thumbnail")
+		data, err := genImageThumbnail(path)
+		if err == nil {
 			ch <- &Thumbnail{
-				Buffer: tbuf,
+				Buffer: data,
 				Mime:   mime,
 			}
 			return
 		}
+	} else {
+		if tbuf != nil {
+			logger.Debug("Thumbnail buffer Provided")
+			ch <- &Thumbnail{
+				Buffer: tbuf,
+				Mime:   mime,
+			}
+		}
+		return
 	}
-	logger.Warn("Thumbnail does not exist at path, skipping...")
+	logger.Debug("Thumbnail neither image nor provided, skipping...")
 	ch <- nil
 }
 

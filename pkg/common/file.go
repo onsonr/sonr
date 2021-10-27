@@ -9,7 +9,7 @@ import (
 )
 
 // NewFileItem creates a new transfer file item
-func NewFileItem(path string, tpath string) (*Payload_Item, error) {
+func NewFileItem(path string, tbuf []byte) (*Payload_Item, error) {
 	// Extracts File Infrom from path
 	fi, err := os.Stat(path)
 	if err != nil {
@@ -24,7 +24,7 @@ func NewFileItem(path string, tpath string) (*Payload_Item, error) {
 
 	// Create Thumbnail on goroutine
 	thumbCh := make(chan *Thumbnail)
-	go NewThumbnail(path, mime, thumbCh)
+	go NewThumbnail(path, tbuf, mime, thumbCh)
 
 	// Await Thumbnail
 	thumb := <-thumbCh
