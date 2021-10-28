@@ -5,6 +5,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/api"
@@ -61,9 +62,12 @@ func (s Session) HandleComplete(n api.NodeImpl, wg *sync.WaitGroup) {
 	for {
 		select {
 		case result := <-s.compChan:
-			wg.Done()
 			// Update Success
 			success[int32(result.index)] = result.success
+
+			// Complete Wait Group
+			logger.Debug("Received Item Result", golog.Fields{"success": result.success})
+			wg.Done()
 
 			// Replace Incoming Item
 			if result.IsIncoming() {
@@ -92,12 +96,12 @@ func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) {
 	// Handle incoming stream
 	rs := msgio.NewReader(stream)
 	var wg sync.WaitGroup
-	go s.HandleComplete(n, &wg)
 
 	// Write All Files
 	for i, v := range s.Items() {
 		// Write File to Stream
 		wg.Add(1)
+		go s.HandleComplete(n, &wg)
 
 		// Configure Reader
 		config := itemConfig{
@@ -124,7 +128,7 @@ func handleItemRead(config itemConfig, compChan chan itemResult) {
 	config.ApplyReader(ir)
 
 	// Start Channels
-	go ir.handleChannels(compChan)
+	go ir.handleProgress()
 
 	// Route Data from Stream
 	for {
@@ -133,27 +137,51 @@ func handleItemRead(config itemConfig, compChan chan itemResult) {
 		if err != nil {
 			logger.Errorf("%s - Failed to Read Next Message on Read Stream", err)
 			ir.doneChan <- false
+			compChan <- ir.toResult(false)
 			break
 		} else {
 			// Write Chunk to File
 			if err := ir.WriteChunk(buf); err != nil {
 				logger.Errorf("%s - Failed to Write Buffer to File on Read Stream", err)
 				ir.doneChan <- false
+
+				// Send Result
+				compChan <- ir.toResult(false)
 				break
 			}
 		}
 
 		// Check if Item is Complete
 		if ir.isItemComplete() {
+			// Stop Channels
 			logger.Debug("Item Read is Complete")
 			ir.doneChan <- true
+
+			// Flush Buffer to File
+			if err := ir.FlushBuffer(); err != nil {
+				logger.Errorf("%s - Failed to Sync File on Read Stream", err)
+				compChan <- ir.toResult(false)
+			}
+
+			// Close Reader
+			compChan <- ir.toResult(true)
 			break
 		}
 	}
 }
 
-// handleChannels handles the channels for the ItemReader
-func (p *itemReader) handleChannels(compChan chan itemResult) {
+// FlushBuffer writes the current buffer to the file.
+func (p *itemReader) FlushBuffer() error {
+	// Write Buffer to File
+	err := p.item.WriteFile(p.buffer.Bytes())
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// handleProgress handles the channels for the ItemReader
+func (p *itemReader) handleProgress() {
 	for {
 		select {
 		case n := <-p.progressChan:
@@ -161,16 +189,7 @@ func (p *itemReader) handleChannels(compChan chan itemResult) {
 			if ev := p.getProgressEvent(); ev != nil {
 				p.node.OnProgress(ev)
 			}
-		case r := <-p.doneChan:
-			if r {
-				// Write Buffer to File
-				err := p.item.WriteFile(p.buffer.Bytes())
-				if err != nil {
-					logger.Errorf("%s - Failed to Close item on Read Stream", err)
-					return
-				}
-			}
-			compChan <- p.toResult(r)
+		case <-p.doneChan:
 			return
 		}
 	}
@@ -186,12 +205,12 @@ func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) {
 	logger.Debug("Beginning OUTGOING Transmit Stream")
 	wc := msgio.NewWriter(stream)
 	var wg sync.WaitGroup
-	go s.HandleComplete(n, &wg)
 
 	// Create New Writer
 	for i, v := range s.Items() {
 		// Write File to Stream
 		wg.Add(1)
+		go s.HandleComplete(n, &wg)
 
 		// Configure Writer
 		config := itemConfig{
@@ -215,7 +234,7 @@ func handleItemWrite(config itemConfig, compChan chan itemResult) {
 	config.ApplyWriter(iw)
 
 	// Start Channels
-	go iw.handleChannels(compChan)
+	go iw.handleProgress()
 
 	// Define Chunker Opts
 	chunker, err := fs.NewFileChunker(config.Path())
@@ -232,12 +251,14 @@ func handleItemWrite(config itemConfig, compChan chan itemResult) {
 			if err == io.EOF {
 				logger.Debug("Chunker has reached end of file.")
 				iw.doneChan <- true
+				compChan <- iw.toResult(true)
 				break
 			}
 
 			// Unexpected Error
 			logger.Errorf("%s - Error reading chunk.", err)
 			iw.doneChan <- false
+			compChan <- iw.toResult(false)
 			break
 		}
 
@@ -245,6 +266,7 @@ func handleItemWrite(config itemConfig, compChan chan itemResult) {
 		if err := iw.WriteChunk(c.Data, c.Length); err != nil {
 			logger.Errorf("%s - Error Writing data to msgio.Writer", err)
 			iw.doneChan <- false
+			compChan <- iw.toResult(false)
 			break
 		}
 
@@ -252,13 +274,14 @@ func handleItemWrite(config itemConfig, compChan chan itemResult) {
 		if iw.isItemComplete() {
 			logger.Debug("Item Write is Complete")
 			iw.doneChan <- true
+			compChan <- iw.toResult(true)
 			break
 		}
 	}
 }
 
-// handleChannels handles the channels for the ItemReader
-func (p *itemWriter) handleChannels(compChan chan itemResult) {
+// handleProgress handles the channels for the ItemReader
+func (p *itemWriter) handleProgress() {
 	for {
 		select {
 		case n := <-p.progressChan:
@@ -266,8 +289,7 @@ func (p *itemWriter) handleChannels(compChan chan itemResult) {
 			if ev := p.getProgressEvent(); ev != nil {
 				p.node.OnProgress(ev)
 			}
-		case r := <-p.doneChan:
-			compChan <- p.toResult(r)
+		case <-p.doneChan:
 			return
 		}
 	}
