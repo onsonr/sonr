@@ -113,7 +113,6 @@ type itemReader struct {
 	index        int
 	count        int
 	size         int64
-	totalSize    int64
 	node         api.NodeImpl
 	written      int
 	progressChan chan int
@@ -137,8 +136,8 @@ func (p *itemReader) getProgressEvent() *api.ProgressEvent {
 	return &api.ProgressEvent{
 		Direction: common.Direction_INCOMING,
 		Progress:  (float64(p.written) / float64(p.size)),
-		Current:   int32(p.index),
-		Total:     int32(p.count),
+		Index:     int32(p.index),
+		Count:     int32(p.count),
 	}
 }
 
@@ -187,8 +186,8 @@ func (p *itemWriter) getProgressEvent() *api.ProgressEvent {
 	return &api.ProgressEvent{
 		Direction: common.Direction_OUTGOING,
 		Progress:  (float64(p.written) / float64(p.size)),
-		Current:   int32(p.index),
-		Total:     int32(p.count),
+		Index:     int32(p.index),
+		Count:     int32(p.count),
 	}
 }
 
