@@ -200,6 +200,7 @@ func handleItemWrite(config itemConfig) error {
 		return err
 	}
 
+	// Start Channels
 	go iw.handleChannels(config.wg, config.compChan)
 
 	// Loop through File
