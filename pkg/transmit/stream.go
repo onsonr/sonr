@@ -132,8 +132,6 @@ type itemReader struct {
 
 // WriteChunk writes a chunk to the buffer
 func (ir *itemReader) WriteChunk(b []byte) error {
-	ir.mu.Lock()
-	defer ir.mu.Unlock()
 	n, err := ir.buffer.Write(b)
 	if err != nil {
 		return err
@@ -144,16 +142,12 @@ func (ir *itemReader) WriteChunk(b []byte) error {
 
 // getProgressEvent returns a ProgressEvent for the current ItemReader
 func (p *itemReader) getProgressEvent() *api.ProgressEvent {
-	if (p.written % p.interval) == 0 {
-		// Create Progress Event
-		return &api.ProgressEvent{
-			Direction: common.Direction_INCOMING,
-			Progress:  (float64(p.written) / float64(p.size)),
-			Current:   int32(p.index),
-			Total:     int32(p.count),
-		}
+	return &api.ProgressEvent{
+		Direction: common.Direction_INCOMING,
+		Progress:  (float64(p.written) / float64(p.size)),
+		Current:   int32(p.index),
+		Total:     int32(p.count),
 	}
-	return nil
 }
 
 // isItemComplete returns true if the item has been completely read
@@ -187,11 +181,8 @@ type itemWriter struct {
 
 // WriteChunk writes a chunk to the Stream
 func (ir *itemWriter) WriteChunk(b []byte) error {
-	ir.mu.Lock()
-	defer ir.mu.Unlock()
 	err := ir.writer.WriteMsg(b)
 	if err != nil {
-
 		return err
 	}
 	ir.progressChan <- len(b)
@@ -200,16 +191,12 @@ func (ir *itemWriter) WriteChunk(b []byte) error {
 
 // getProgressEvent returns a ProgressEvent for the current ItemReader
 func (p *itemWriter) getProgressEvent() *api.ProgressEvent {
-	if (p.written % p.interval) == 0 {
-		// Create Progress Event
-		return &api.ProgressEvent{
-			Direction: common.Direction_OUTGOING,
-			Progress:  (float64(p.written) / float64(p.size)),
-			Current:   int32(p.index),
-			Total:     int32(p.count),
-		}
+	return &api.ProgressEvent{
+		Direction: common.Direction_OUTGOING,
+		Progress:  (float64(p.written) / float64(p.size)),
+		Current:   int32(p.index),
+		Total:     int32(p.count),
 	}
-	return nil
 }
 
 // isItemComplete returns true if the item has been completely written

@@ -15,7 +15,17 @@ func Start(reqBuf []byte) {
 		golog.Warn("%s - Failed to unmarshal InitializeRequest. Using defaults...", err)
 		req = api.DefaultInitializeRequest()
 	}
-	app.Start(req)
+
+	// Check Enviornment
+	var logLevel app.LogLevel
+	if req.Environment.IsDev() {
+		logLevel = app.DebugLevel
+	} else {
+		logLevel = app.InfoLevel
+	}
+
+	// Start the app
+	app.Start(req, app.WithLogLevel(logLevel))
 }
 
 // Pause pauses the host, node, and rpc service.

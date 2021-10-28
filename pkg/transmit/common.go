@@ -3,7 +3,6 @@ package transmit
 import (
 	"bytes"
 	"errors"
-	"sync"
 	"time"
 
 	"github.com/kataras/golog"
@@ -131,14 +130,12 @@ func (p *TransmitProtocol) createResponse(decs bool, to *common.Peer) (peer.ID, 
 
 // itemConfig creates a new ItemConfig
 type itemConfig struct {
-	index    int
-	count    int
-	item     *common.Payload_Item
-	node     api.NodeImpl
-	reader   msgio.ReadCloser
-	writer   msgio.WriteCloser
-	wg       sync.WaitGroup
-	compChan chan itemResult
+	index  int
+	count  int
+	item   *common.Payload_Item
+	node   api.NodeImpl
+	reader msgio.ReadCloser
+	writer msgio.WriteCloser
 }
 
 // FileItem returns FileItem from Payload_Item
@@ -205,7 +202,7 @@ func (ic itemConfig) ApplyWriter(iw *itemWriter) {
 
 func calculateInterval(size int64) int {
 	// Calculate Interval
-	interval := size / 25
+	interval := size / 100
 	if interval < 1 {
 		interval = 1
 	}

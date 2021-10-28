@@ -56,11 +56,12 @@ func (s Session) IsOutgoing() bool {
 }
 
 // HandleComplete handles the completion of a session item.
-func (s Session) HandleComplete(n api.NodeImpl) {
+func (s Session) HandleComplete(wg sync.WaitGroup, n api.NodeImpl) {
 	success := make(map[int32]bool)
 	for {
 		select {
 		case result := <-s.compChan:
+			wg.Done()
 			// Update Success
 			success[int32(result.index)] = result.success
 
@@ -92,7 +93,7 @@ func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) error {
 	// Handle incoming stream
 	rs := msgio.NewReader(stream)
 	var wg sync.WaitGroup
-	go s.HandleComplete(n)
+	go s.HandleComplete(wg, n)
 
 	// Write All Files
 	for i, v := range s.Items() {
@@ -106,12 +107,10 @@ func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) error {
 			item:     v,
 			node:     n,
 			reader:   rs,
-			wg:       wg,
-			compChan: s.compChan,
 		}
 
 		// Create Reader
-		err := handleItemRead(config)
+		err := handleItemRead(config, s.compChan)
 		if err != nil {
 			logger.Errorf("%s - Failed to create new reader.", err)
 			return err
@@ -125,13 +124,13 @@ func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) error {
 }
 
 // handleItemRead Returns a new Reader for the given FileItem
-func handleItemRead(config itemConfig) error {
+func handleItemRead(config itemConfig, compChan chan itemResult) error {
 	// Create New Writer
 	ir := &itemReader{}
 	config.ApplyReader(ir)
 
 	// Start Channels
-	go ir.handleChannels(config.wg, config.compChan)
+	go ir.handleChannels(compChan)
 
 	// Route Data from Stream
 	for {
@@ -160,7 +159,7 @@ func handleItemRead(config itemConfig) error {
 }
 
 // handleChannels handles the channels for the ItemReader
-func (p *itemReader) handleChannels(wg sync.WaitGroup, compChan chan itemResult) {
+func (p *itemReader) handleChannels(compChan chan itemResult) {
 	for {
 		select {
 		case n := <-p.progressChan:
@@ -178,7 +177,6 @@ func (p *itemReader) handleChannels(wg sync.WaitGroup, compChan chan itemResult)
 				}
 			}
 			compChan <- p.toResult(r)
-			wg.Done()
 			return
 		}
 	}
@@ -194,7 +192,7 @@ func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) error {
 	logger.Debug("Beginning OUTGOING Transmit Stream")
 	wc := msgio.NewWriter(stream)
 	var wg sync.WaitGroup
-	go s.HandleComplete(n)
+	go s.HandleComplete(wg, n)
 
 	// Create New Writer
 	for i, v := range s.Items() {
@@ -208,12 +206,10 @@ func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) error {
 			item:     v,
 			node:     n,
 			writer:   wc,
-			wg:       wg,
-			compChan: s.compChan,
 		}
 
 		// Create New Writer
-		err := handleItemWrite(config)
+		err := handleItemWrite(config, s.compChan)
 		if err != nil {
 			logger.Errorf("%s - Failed to create new writer.", err)
 			return err
@@ -226,7 +222,7 @@ func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) error {
 }
 
 // handleItemWrite handles the writing of a FileItem to a Stream
-func handleItemWrite(config itemConfig) error {
+func handleItemWrite(config itemConfig, compChan chan itemResult) error {
 	// Create New Writer
 	iw := &itemWriter{}
 	config.ApplyWriter(iw)
@@ -239,7 +235,7 @@ func handleItemWrite(config itemConfig) error {
 	}
 
 	// Start Channels
-	go iw.handleChannels(config.wg, config.compChan)
+	go iw.handleChannels(compChan)
 
 	// Loop through File
 	for {
@@ -274,7 +270,7 @@ func handleItemWrite(config itemConfig) error {
 }
 
 // handleChannels handles the channels for the ItemReader
-func (p *itemWriter) handleChannels(wg sync.WaitGroup, compChan chan itemResult) {
+func (p *itemWriter) handleChannels(compChan chan itemResult) {
 	for {
 		select {
 		case n := <-p.progressChan:
@@ -284,7 +280,6 @@ func (p *itemWriter) handleChannels(wg sync.WaitGroup, compChan chan itemResult)
 			}
 		case r := <-p.doneChan:
 			compChan <- p.toResult(r)
-			wg.Done()
 			return
 		}
 	}
