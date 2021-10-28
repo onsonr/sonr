@@ -4,8 +4,10 @@ import (
 	"container/list"
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/kataras/golog"
+	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/pkg/common"
@@ -134,7 +136,7 @@ func (p *TransmitProtocol) Supply(req *api.SupplyRequest) error {
 	// Add items to transfer
 	p.supplyQueue.PushBack(payload)
 	logger.Debug(fmt.Sprintf("Added %v items to supply queue.", req.Count()), golog.Fields{"File Count": payload.FileCount(), "URL Count": payload.URLCount()})
-	
+
 	// Check if Peer is provided
 	if req.GetIsPeerSupply() {
 		logger.Debug("Peer Supply Request. Sending Invite after supply")
@@ -145,4 +147,89 @@ func (p *TransmitProtocol) Supply(req *api.SupplyRequest) error {
 		}
 	}
 	return nil
+}
+
+// SessionQueue is a queue for incoming and outgoing requests.
+type SessionQueue struct {
+	ctx   context.Context
+	host  *host.SNRHost
+	queue *list.List
+}
+
+// AddIncoming adds Incoming Request to Transfer Queue
+func (sq *SessionQueue) AddIncoming(from peer.ID, req *InviteRequest) error {
+	// Authenticate Message
+	valid := sq.host.AuthenticateMessage(req, req.Metadata)
+	if !valid {
+		return ErrFailedAuth
+	}
+
+	// Create New TransferEntry
+	entry := Session{
+		direction:   common.Direction_INCOMING,
+		payload:     req.GetPayload(),
+		from:        req.GetFrom(),
+		to:          req.GetTo(),
+		lastUpdated: int64(time.Now().Unix()),
+		compChan:    make(chan FileItemStreamResult),
+	}
+
+	// Add to Requests
+	sq.queue.PushBack(entry)
+	return nil
+}
+
+// AddOutgoing adds Outgoing Request to Transfer Queue
+func (sq *SessionQueue) AddOutgoing(to peer.ID, req *InviteRequest) error {
+	// Create New TransferEntry
+	entry := Session{
+		direction:   common.Direction_OUTGOING,
+		payload:     req.GetPayload(),
+		from:        req.GetFrom(),
+		to:          req.GetTo(),
+		lastUpdated: int64(time.Now().Unix()),
+		compChan:    make(chan FileItemStreamResult),
+	}
+
+	// Add to Requests
+	sq.queue.PushBack(entry)
+	return nil
+}
+
+// Next returns topmost entry in the queue.
+func (sq *SessionQueue) Next() (Session, error) {
+	// Find Entry for Peer
+	entry := sq.queue.Remove(sq.queue.Front()).(Session)
+	entry.lastUpdated = int64(time.Now().Unix())
+	return entry, nil
+}
+
+// Validate takes list of Requests and returns true if Request exists in List and UUID is verified.
+// Method also returns the InviteRequest that points to the Response.
+func (sq *SessionQueue) Validate(resp *InviteResponse) (Session, error) {
+	// Authenticate Message
+	valid := sq.host.AuthenticateMessage(resp, resp.Metadata)
+	if !valid {
+		return Session{}, ErrFailedAuth
+	}
+
+	// Check Decision
+	if !resp.GetDecision() {
+		return Session{}, nil
+	}
+
+	// Check if the request is valid
+	if sq.queue.Len() == 0 {
+		return Session{}, ErrEmptyRequests
+	}
+
+	// Get Next Entry
+	entry, err := sq.Next()
+	if err != nil {
+		logger.Errorf("%s - Failed to get Transmit entry", err)
+		return Session{}, err
+	}
+
+	entry.lastUpdated = int64(time.Now().Unix())
+	return entry, nil
 }

@@ -18,6 +18,20 @@ var (
 	Sonr KeyChain
 )
 
+// SignedMetadata is a struct to be used for signing metadata.
+type SignedMetadata struct {
+	Timestamp int64
+	PublicKey []byte
+	NodeId    string
+}
+
+// SignedUUID is a struct to be converted into a UUID.
+type SignedUUID struct {
+	Timestamp int64
+	Signature []byte
+	Value     string
+}
+
 // Keychain Interface for managing device keypairs.
 type KeyChain interface {
 	// CreateUUID makes new UUID value signed by the local node's private key

@@ -134,22 +134,25 @@ func NewChunker(rd io.Reader, opts ChunkerOptions) (*Chunker, error) {
 	return chunker, nil
 }
 
-func NewFileChunker(path string, size int64) (*Chunker, error) {
+// NewFileChunker returns a Chunker that reads from the given file.
+func NewFileChunker(path string) (*Chunker, error) {
+	// Open the file and wrap it in a buffered reader
 	buf, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
 
-	var averageSize int
-	if size < interval {
-		averageSize = int(size)
-	} else {
-		averageSize = int(size / interval)
-	}
-
+	// Return a Chunker that reads from the buffer
 	return NewChunker(bytes.NewReader(buf), ChunkerOptions{
-		AverageSize: averageSize,
+		AverageSize: calculateAvgSize(buf),
 	})
+}
+
+func calculateAvgSize(buf []byte) int {
+	if len(buf) < interval {
+		return len(buf)
+	}
+	return int(len(buf) / interval)
 }
 
 func (c *Chunker) fillBuffer() error {

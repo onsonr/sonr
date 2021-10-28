@@ -1,11 +1,19 @@
 package common
 
 import (
+	"errors"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
 	"github.com/gabriel-vasile/mimetype"
+	"github.com/sonr-io/core/internal/fs"
+)
+
+var (
+	ErrParentDirNotExists = errors.New("FileItem's Parent Directory does not exist")
+	ErrEmptyData          = errors.New("Passed Buffer is Empty")
 )
 
 // NewFileItem creates a new transfer file item
@@ -49,28 +57,20 @@ func NewFileItem(path string, tbuf []byte) (*Payload_Item, error) {
 	}, nil
 }
 
-// SetPath sets the path of the FileItem
-func (f *FileItem) SetPath(p string) error {
+// ResetPath sets the path of the FileItem
+func (f *FileItem) ResetPath(folder fs.Folder) error {
 	// Set Path
-	f.Path = p
+	oldPath := f.GetPath()
+
+	// generate path
+	path, err := folder.GenPath(oldPath)
+	if err != nil {
+		return err
+	}
 
 	// Define Check Path Function
-	checkPathFunc := func(p string) error {
-		// Check if path to file exists
-		_, err := os.Stat(p)
-		if err != nil {
-			// Check if the error is a file not found error
-			if os.IsNotExist(err) {
-				logger.Warnf("%s - File does not exist yet. Continuing...")
-				return nil
-			}
-
-			// Return error for other errors
-			return err
-		}
-		return nil
-	}
-	return checkPathFunc(p)
+	f.Path = path
+	return nil
 }
 
 // ToTransferItem Returns Transfer for FileItem
@@ -85,6 +85,26 @@ func (f *FileItem) ToTransferItem() *Payload_Item {
 			File: f,
 		},
 	}
+}
+
+// WriteFile writes the FileItem to the items path if directory exists
+func (f *FileItem) WriteFile(data []byte) error {
+	// Check data length
+	if len(data) == 0 {
+		return ErrEmptyData
+	}
+
+	// Check if parent directory exists
+	if ok := fs.Exists(filepath.Dir(f.Path)); !ok {
+		return ErrParentDirNotExists
+	}
+
+	// Write Data to File
+	err := os.WriteFile(f.Path, data, 0644)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // ** ───────────────────────────────────────────────────────

@@ -1,6 +1,7 @@
 package transmit
 
 import (
+	"bytes"
 	"errors"
 	"sync"
 	"time"
@@ -143,14 +144,16 @@ func (p *TransmitProtocol) createResponse(decs bool, to *common.Peer) (peer.ID, 
 	return toId, resp, nil
 }
 
+// itemConfig creates a new ItemConfig
 type itemConfig struct {
-	index  int
-	count  int
-	item   *common.Payload_Item
-	node   api.NodeImpl
-	reader msgio.ReadCloser
-	writer msgio.WriteCloser
-	wg     sync.WaitGroup
+	index    int
+	count    int
+	item     *common.Payload_Item
+	node     api.NodeImpl
+	reader   msgio.ReadCloser
+	writer   msgio.WriteCloser
+	wg       sync.WaitGroup
+	compChan chan FileItemStreamResult
 }
 
 // FileItem returns FileItem from Payload_Item
@@ -172,20 +175,31 @@ func (ic itemConfig) Path() string {
 	return ic.FileItem().GetPath()
 }
 
-// SetFileItem returns FileItem from Payload_Item and sets its path
-func (ic itemConfig) SetFileItem(p string) (*common.FileItem, error) {
-	i := ic.FileItem()
-	err := i.SetPath(p)
-	if err != nil {
-		logger.Errorf("%s - Failed to set path for FileItem", err)
-		return nil, err
-	}
-	return i, nil
-}
-
 // Size returns the size of the item
 func (ic itemConfig) Size() int64 {
 	return ic.item.GetSize()
+}
+
+// ApplyWriter applies the config to the itemWriter
+func (ic itemConfig) ApplyReader(iw *itemReader) error {
+	// Get File Item
+	fi := ic.FileItem()
+	err := fi.ResetPath(fs.Downloads)
+	if err != nil {
+		return err
+	}
+
+	// Set ItemReader Properties
+	iw.item = fi
+	iw.buffer = bytes.Buffer{}
+	iw.index = ic.index
+	iw.count = ic.count
+	iw.size = fi.GetSize()
+	iw.node = ic.node
+	iw.written = 0
+	iw.progressChan = make(chan int)
+	iw.doneChan = make(chan bool)
+	return nil
 }
 
 // ApplyWriter applies the config to the itemWriter
@@ -198,4 +212,27 @@ func (ic itemConfig) ApplyWriter(iw *itemWriter) {
 	iw.written = 0
 	iw.progressChan = make(chan int)
 	iw.doneChan = make(chan bool)
+}
+
+// FileItemStreamResult is the result of a FileItemStream
+type FileItemStreamResult struct {
+	index     int
+	direction common.Direction
+	item      *common.Payload_Item
+	success   bool
+}
+
+// IsAllCompleted returns true if all items have been completed
+func (r FileItemStreamResult) IsAllCompleted(t int) bool {
+	return r.index+1 == t
+}
+
+// IsIncoming returns true if the item is incoming
+func (r FileItemStreamResult) IsIncoming() bool {
+	return r.direction == common.Direction_INCOMING
+}
+
+// IsOutgoing returns true if the item is outgoing
+func (r FileItemStreamResult) IsOutgoing() bool {
+	return r.direction == common.Direction_OUTGOING
 }

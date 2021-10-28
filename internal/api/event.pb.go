@@ -379,12 +379,13 @@ type CompleteEvent struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Direction  common.Direction `protobuf:"varint,1,opt,name=direction,proto3,enum=sonr.core.Direction" json:"direction,omitempty"` // Direction of Transfer
-	Payload    *common.Payload  `protobuf:"bytes,2,opt,name=payload,proto3" json:"payload,omitempty"`                               // Transfer Data
-	From       *common.Peer     `protobuf:"bytes,3,opt,name=from,proto3" json:"from,omitempty"`                                     // Peer that sent the Complete Event
-	To         *common.Peer     `protobuf:"bytes,4,opt,name=to,proto3" json:"to,omitempty"`                                         // Peer that received the Complete Event
-	CreatedAt  int64            `protobuf:"varint,5,opt,name=createdAt,proto3" json:"createdAt,omitempty"`                          // Transfer Created Timestamp
-	ReceivedAt int64            `protobuf:"varint,6,opt,name=receivedAt,proto3" json:"receivedAt,omitempty"`                        // Transfer Received Timestamp
+	Direction  common.Direction `protobuf:"varint,1,opt,name=direction,proto3,enum=sonr.core.Direction" json:"direction,omitempty"`                                                             // Direction of Transfer
+	Payload    *common.Payload  `protobuf:"bytes,2,opt,name=payload,proto3" json:"payload,omitempty"`                                                                                           // Transfer Data
+	From       *common.Peer     `protobuf:"bytes,3,opt,name=from,proto3" json:"from,omitempty"`                                                                                                 // Peer that sent the Complete Event
+	To         *common.Peer     `protobuf:"bytes,4,opt,name=to,proto3" json:"to,omitempty"`                                                                                                     // Peer that received the Complete Event
+	CreatedAt  int64            `protobuf:"varint,5,opt,name=createdAt,proto3" json:"createdAt,omitempty"`                                                                                      // Transfer Created Timestamp
+	ReceivedAt int64            `protobuf:"varint,6,opt,name=receivedAt,proto3" json:"receivedAt,omitempty"`                                                                                    // Transfer Received Timestamp
+	Success    map[int32]bool   `protobuf:"bytes,7,rep,name=success,proto3" json:"success,omitempty" protobuf_key:"varint,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3"` // Transfer Success
 }
 
 func (x *CompleteEvent) Reset() {
@@ -461,6 +462,13 @@ func (x *CompleteEvent) GetReceivedAt() int64 {
 	return 0
 }
 
+func (x *CompleteEvent) GetSuccess() map[int32]bool {
+	if x != nil {
+		return x.Success
+	}
+	return nil
+}
+
 var File_proto_api_event_proto protoreflect.FileDescriptor
 
 var file_proto_api_event_proto_rawDesc = []byte{
@@ -512,7 +520,7 @@ var file_proto_api_event_proto_rawDesc = []byte{
 	0x69, 0x76, 0x65, 0x64, 0x12, 0x32, 0x0a, 0x09, 0x64, 0x69, 0x72, 0x65, 0x63, 0x74, 0x69, 0x6f,
 	0x6e, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x14, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x63,
 	0x6f, 0x72, 0x65, 0x2e, 0x44, 0x69, 0x72, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x09, 0x64,
-	0x69, 0x72, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0xf5, 0x01, 0x0a, 0x0d, 0x43, 0x6f, 0x6d,
+	0x69, 0x72, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0xf1, 0x02, 0x0a, 0x0d, 0x43, 0x6f, 0x6d,
 	0x70, 0x6c, 0x65, 0x74, 0x65, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x12, 0x32, 0x0a, 0x09, 0x64, 0x69,
 	0x72, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x14, 0x2e,
 	0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x63, 0x6f, 0x72, 0x65, 0x2e, 0x44, 0x69, 0x72, 0x65, 0x63, 0x74,
@@ -528,9 +536,17 @@ var file_proto_api_event_proto_rawDesc = []byte{
 	0x05, 0x20, 0x01, 0x28, 0x03, 0x52, 0x09, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x41, 0x74,
 	0x12, 0x1e, 0x0a, 0x0a, 0x72, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65, 0x64, 0x41, 0x74, 0x18, 0x06,
 	0x20, 0x01, 0x28, 0x03, 0x52, 0x0a, 0x72, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65, 0x64, 0x41, 0x74,
-	0x42, 0x26, 0x5a, 0x24, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x73,
-	0x6f, 0x6e, 0x72, 0x2d, 0x69, 0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x69, 0x6e, 0x74, 0x65,
-	0x72, 0x6e, 0x61, 0x6c, 0x2f, 0x61, 0x70, 0x69, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x12, 0x3e, 0x0a, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x18, 0x07, 0x20, 0x03, 0x28,
+	0x0b, 0x32, 0x24, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x43, 0x6f, 0x6d,
+	0x70, 0x6c, 0x65, 0x74, 0x65, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x2e, 0x53, 0x75, 0x63, 0x63, 0x65,
+	0x73, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73,
+	0x1a, 0x3a, 0x0a, 0x0c, 0x53, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79,
+	0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x03, 0x6b,
+	0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x08, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x42, 0x26, 0x5a, 0x24,
+	0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2d,
+	0x69, 0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c,
+	0x2f, 0x61, 0x70, 0x69, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -545,7 +561,7 @@ func file_proto_api_event_proto_rawDescGZIP() []byte {
 	return file_proto_api_event_proto_rawDescData
 }
 
-var file_proto_api_event_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_proto_api_event_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_proto_api_event_proto_goTypes = []interface{}{
 	(*DecisionEvent)(nil),   // 0: sonr.api.DecisionEvent
 	(*RefreshEvent)(nil),    // 1: sonr.api.RefreshEvent
@@ -553,30 +569,32 @@ var file_proto_api_event_proto_goTypes = []interface{}{
 	(*MailboxEvent)(nil),    // 3: sonr.api.MailboxEvent
 	(*ProgressEvent)(nil),   // 4: sonr.api.ProgressEvent
 	(*CompleteEvent)(nil),   // 5: sonr.api.CompleteEvent
-	(*common.Peer)(nil),     // 6: sonr.core.Peer
-	(*common.Payload)(nil),  // 7: sonr.core.Payload
-	(*common.Profile)(nil),  // 8: sonr.core.Profile
-	(*common.Metadata)(nil), // 9: sonr.core.Metadata
-	(common.Direction)(0),   // 10: sonr.core.Direction
+	nil,                     // 6: sonr.api.CompleteEvent.SuccessEntry
+	(*common.Peer)(nil),     // 7: sonr.core.Peer
+	(*common.Payload)(nil),  // 8: sonr.core.Payload
+	(*common.Profile)(nil),  // 9: sonr.core.Profile
+	(*common.Metadata)(nil), // 10: sonr.core.Metadata
+	(common.Direction)(0),   // 11: sonr.core.Direction
 }
 var file_proto_api_event_proto_depIdxs = []int32{
-	6,  // 0: sonr.api.DecisionEvent.from:type_name -> sonr.core.Peer
-	6,  // 1: sonr.api.RefreshEvent.peers:type_name -> sonr.core.Peer
-	6,  // 2: sonr.api.InviteEvent.from:type_name -> sonr.core.Peer
-	7,  // 3: sonr.api.InviteEvent.payload:type_name -> sonr.core.Payload
-	8,  // 4: sonr.api.MailboxEvent.from:type_name -> sonr.core.Profile
-	8,  // 5: sonr.api.MailboxEvent.to:type_name -> sonr.core.Profile
-	9,  // 6: sonr.api.MailboxEvent.metadata:type_name -> sonr.core.Metadata
-	10, // 7: sonr.api.ProgressEvent.direction:type_name -> sonr.core.Direction
-	10, // 8: sonr.api.CompleteEvent.direction:type_name -> sonr.core.Direction
-	7,  // 9: sonr.api.CompleteEvent.payload:type_name -> sonr.core.Payload
-	6,  // 10: sonr.api.CompleteEvent.from:type_name -> sonr.core.Peer
-	6,  // 11: sonr.api.CompleteEvent.to:type_name -> sonr.core.Peer
-	12, // [12:12] is the sub-list for method output_type
-	12, // [12:12] is the sub-list for method input_type
-	12, // [12:12] is the sub-list for extension type_name
-	12, // [12:12] is the sub-list for extension extendee
-	0,  // [0:12] is the sub-list for field type_name
+	7,  // 0: sonr.api.DecisionEvent.from:type_name -> sonr.core.Peer
+	7,  // 1: sonr.api.RefreshEvent.peers:type_name -> sonr.core.Peer
+	7,  // 2: sonr.api.InviteEvent.from:type_name -> sonr.core.Peer
+	8,  // 3: sonr.api.InviteEvent.payload:type_name -> sonr.core.Payload
+	9,  // 4: sonr.api.MailboxEvent.from:type_name -> sonr.core.Profile
+	9,  // 5: sonr.api.MailboxEvent.to:type_name -> sonr.core.Profile
+	10, // 6: sonr.api.MailboxEvent.metadata:type_name -> sonr.core.Metadata
+	11, // 7: sonr.api.ProgressEvent.direction:type_name -> sonr.core.Direction
+	11, // 8: sonr.api.CompleteEvent.direction:type_name -> sonr.core.Direction
+	8,  // 9: sonr.api.CompleteEvent.payload:type_name -> sonr.core.Payload
+	7,  // 10: sonr.api.CompleteEvent.from:type_name -> sonr.core.Peer
+	7,  // 11: sonr.api.CompleteEvent.to:type_name -> sonr.core.Peer
+	6,  // 12: sonr.api.CompleteEvent.success:type_name -> sonr.api.CompleteEvent.SuccessEntry
+	13, // [13:13] is the sub-list for method output_type
+	13, // [13:13] is the sub-list for method input_type
+	13, // [13:13] is the sub-list for extension type_name
+	13, // [13:13] is the sub-list for extension extendee
+	0,  // [0:13] is the sub-list for field type_name
 }
 
 func init() { file_proto_api_event_proto_init() }
@@ -664,7 +682,7 @@ func file_proto_api_event_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_proto_api_event_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
