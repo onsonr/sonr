@@ -16,11 +16,6 @@ import (
 	"github.com/sonr-io/core/pkg/common"
 )
 
-// Transfer Emission Events
-const (
-	ITEM_INTERVAL = 25
-)
-
 // Transfer Protocol ID's
 const (
 	RequestPID  protocol.ID = "/transmit/request/0.0.1"
@@ -190,6 +185,7 @@ func (ic itemConfig) ApplyReader(iw *itemReader) error {
 	iw.progressChan = make(chan int)
 	iw.buffChan = make(chan []byte)
 	iw.doneChan = make(chan bool)
+	iw.interval = calculateInterval(fi.GetSize())
 	return nil
 }
 
@@ -204,27 +200,14 @@ func (ic itemConfig) ApplyWriter(iw *itemWriter) {
 	iw.progressChan = make(chan int)
 	iw.doneChan = make(chan bool)
 	iw.writer = ic.writer
+	iw.interval = calculateInterval(ic.Size())
 }
 
-// itemResult is the result of a FileItemStream
-type itemResult struct {
-	index     int
-	direction common.Direction
-	item      *common.Payload_Item
-	success   bool
-}
-
-// IsAllCompleted returns true if all items have been completed
-func (r itemResult) IsAllCompleted(t int) bool {
-	return (r.index + 1) == t
-}
-
-// IsIncoming returns true if the item is incoming
-func (r itemResult) IsIncoming() bool {
-	return r.direction == common.Direction_INCOMING
-}
-
-// IsOutgoing returns true if the item is outgoing
-func (r itemResult) IsOutgoing() bool {
-	return r.direction == common.Direction_OUTGOING
+func calculateInterval(size int64) int {
+	// Calculate Interval
+	interval := size / 25
+	if interval < 1 {
+		interval = 1
+	}
+	return int(interval)
 }

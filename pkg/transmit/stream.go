@@ -2,7 +2,6 @@ package transmit
 
 import (
 	"bytes"
-	"math"
 	"sync"
 
 	"github.com/libp2p/go-libp2p-core/network"
@@ -118,6 +117,7 @@ func (p *TransmitProtocol) onOutgoingTransfer(entry Session, stream network.Stre
 // itemReader is a Reader for a FileItem
 type itemReader struct {
 	item         *common.FileItem
+	interval     int
 	buffer       bytes.Buffer
 	index        int
 	count        int
@@ -136,8 +136,6 @@ func (ir *itemReader) WriteChunk(b []byte) error {
 	defer ir.mu.Unlock()
 	n, err := ir.buffer.Write(b)
 	if err != nil {
-		logger.Errorf("%s - Failed to Write Buffer to File on Read Stream", err)
-		ir.doneChan <- false
 		return err
 	}
 	ir.progressChan <- n
@@ -146,7 +144,7 @@ func (ir *itemReader) WriteChunk(b []byte) error {
 
 // getProgressEvent returns a ProgressEvent for the current ItemReader
 func (p *itemReader) getProgressEvent() *api.ProgressEvent {
-	if (p.written % ITEM_INTERVAL) == 0 {
+	if (p.written % p.interval) == 0 {
 		// Create Progress Event
 		return &api.ProgressEvent{
 			Direction: common.Direction_INCOMING,
@@ -158,35 +156,9 @@ func (p *itemReader) getProgressEvent() *api.ProgressEvent {
 	return nil
 }
 
-// handleChannels handles the channels for the ItemReader
-func (p *itemReader) handleChannels(wg sync.WaitGroup, compChan chan itemResult) {
-	for {
-		select {
-		case n := <-p.progressChan:
-			p.written += n
-			if ev := p.getProgressEvent(); ev != nil {
-				p.node.OnProgress(ev)
-			}
-		case r := <-p.doneChan:
-			if r {
-				// Write Buffer to File
-				err := p.item.WriteFile(p.buffer.Bytes())
-				if err != nil {
-					logger.Errorf("%s - Failed to Close item on Read Stream", err)
-					return
-				}
-			}
-			compChan <- p.toResult(r)
-			wg.Done()
-			return
-		}
-	}
-}
-
 // isItemComplete returns true if the item has been completely read
 func (ir *itemReader) isItemComplete() bool {
-	progress := (float64(ir.written) / float64(ir.size))
-	return math.Round(progress) == 1.0
+	return ir.written >= int(ir.size)
 }
 
 // toResult returns a FileItemStreamResult for the current ItemReader
@@ -201,6 +173,7 @@ func (ir *itemReader) toResult(success bool) itemResult {
 // itemWriter is a Writer for FileItems
 type itemWriter struct {
 	item         *common.FileItem
+	interval     int
 	index        int
 	count        int
 	size         int64
@@ -218,8 +191,7 @@ func (ir *itemWriter) WriteChunk(b []byte) error {
 	defer ir.mu.Unlock()
 	err := ir.writer.WriteMsg(b)
 	if err != nil {
-		logger.Errorf("%s - Error Writing data to msgio.Writer", err)
-		ir.doneChan <- false
+
 		return err
 	}
 	ir.progressChan <- len(b)
@@ -228,7 +200,7 @@ func (ir *itemWriter) WriteChunk(b []byte) error {
 
 // getProgressEvent returns a ProgressEvent for the current ItemReader
 func (p *itemWriter) getProgressEvent() *api.ProgressEvent {
-	if (p.written % ITEM_INTERVAL) == 0 {
+	if (p.written % p.interval) == 0 {
 		// Create Progress Event
 		return &api.ProgressEvent{
 			Direction: common.Direction_OUTGOING,
@@ -240,27 +212,9 @@ func (p *itemWriter) getProgressEvent() *api.ProgressEvent {
 	return nil
 }
 
-// handleChannels handles the channels for the ItemReader
-func (p *itemWriter) handleChannels(wg sync.WaitGroup, compChan chan itemResult) {
-	for {
-		select {
-		case n := <-p.progressChan:
-			p.written += n
-			if ev := p.getProgressEvent(); ev != nil {
-				p.node.OnProgress(ev)
-			}
-		case r := <-p.doneChan:
-			compChan <- p.toResult(r)
-			wg.Done()
-			return
-		}
-	}
-}
-
 // isItemComplete returns true if the item has been completely written
 func (ir *itemWriter) isItemComplete() bool {
-	progress := (float64(ir.written) / float64(ir.size))
-	return math.Round(progress) == 1.0
+	return ir.written >= int(ir.size)
 }
 
 // toResult returns a FileItemStreamResult for the current ItemReader
@@ -271,4 +225,27 @@ func (ir *itemWriter) toResult(success bool) itemResult {
 		direction: common.Direction_OUTGOING,
 		success:   success,
 	}
+}
+
+// itemResult is the result of a FileItemStream
+type itemResult struct {
+	index     int
+	direction common.Direction
+	item      *common.Payload_Item
+	success   bool
+}
+
+// IsAllCompleted returns true if all items have been completed
+func (r itemResult) IsAllCompleted(t int) bool {
+	return (r.index + 1) == t
+}
+
+// IsIncoming returns true if the item is incoming
+func (r itemResult) IsIncoming() bool {
+	return r.direction == common.Direction_INCOMING
+}
+
+// IsOutgoing returns true if the item is outgoing
+func (r itemResult) IsOutgoing() bool {
+	return r.direction == common.Direction_OUTGOING
 }
