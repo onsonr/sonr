@@ -127,7 +127,11 @@ func handleItemRead(config itemConfig, compChan chan itemResult) {
 	ir := &itemReader{}
 	config.ApplyReader(ir)
 
-	// Start Channels
+	// Define Finish Function and Start Channels
+	callFinishFunc := func(r bool) {
+		ir.doneChan <- r
+		compChan <- ir.toResult(r)
+	}
 	go ir.handleProgress()
 
 	// Route Data from Stream
@@ -136,17 +140,13 @@ func handleItemRead(config itemConfig, compChan chan itemResult) {
 		buf, err := config.reader.ReadMsg()
 		if err != nil {
 			logger.Errorf("%s - Failed to Read Next Message on Read Stream", err)
-			ir.doneChan <- false
-			compChan <- ir.toResult(false)
+			callFinishFunc(false)
 			break
 		} else {
 			// Write Chunk to File
 			if err := ir.WriteChunk(buf); err != nil {
 				logger.Errorf("%s - Failed to Write Buffer to File on Read Stream", err)
-				ir.doneChan <- false
-
-				// Send Result
-				compChan <- ir.toResult(false)
+				callFinishFunc(false)
 				break
 			}
 		}
@@ -155,16 +155,15 @@ func handleItemRead(config itemConfig, compChan chan itemResult) {
 		if ir.isItemComplete() {
 			// Stop Channels
 			logger.Debug("Item Read is Complete")
-			ir.doneChan <- true
 
 			// Flush Buffer to File
 			if err := ir.FlushBuffer(); err != nil {
 				logger.Errorf("%s - Failed to Sync File on Read Stream", err)
-				compChan <- ir.toResult(false)
+				callFinishFunc(false)
 			}
 
-			// Close Reader
-			compChan <- ir.toResult(true)
+			// Complete Writing to File
+			callFinishFunc(true)
 			break
 		}
 	}
@@ -233,7 +232,11 @@ func handleItemWrite(config itemConfig, compChan chan itemResult) {
 	iw := &itemWriter{}
 	config.ApplyWriter(iw)
 
-	// Start Channels
+	// Define Finish Function and Start Channels
+	callFinishFunc := func(r bool) {
+		iw.doneChan <- r
+		compChan <- iw.toResult(r)
+	}
 	go iw.handleProgress()
 
 	// Define Chunker Opts
@@ -250,31 +253,27 @@ func handleItemWrite(config itemConfig, compChan chan itemResult) {
 			// Handle EOF
 			if err == io.EOF {
 				logger.Debug("Chunker has reached end of file.")
-				iw.doneChan <- true
-				compChan <- iw.toResult(true)
+				callFinishFunc(true)
 				break
 			}
 
 			// Unexpected Error
 			logger.Errorf("%s - Error reading chunk.", err)
-			iw.doneChan <- false
-			compChan <- iw.toResult(false)
+			callFinishFunc(false)
 			break
 		}
 
 		// Write Chunk to Stream
 		if err := iw.WriteChunk(c.Data, c.Length); err != nil {
 			logger.Errorf("%s - Error Writing data to msgio.Writer", err)
-			iw.doneChan <- false
-			compChan <- iw.toResult(false)
+			callFinishFunc(false)
 			break
 		}
 
 		// Check if Item is Complete
 		if iw.isItemComplete() {
 			logger.Debug("Item Write is Complete")
-			iw.doneChan <- true
-			compChan <- iw.toResult(true)
+			callFinishFunc(true)
 			break
 		}
 	}
