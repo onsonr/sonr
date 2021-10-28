@@ -61,22 +61,22 @@ func (s Session) IsOutgoing() bool {
 func (s Session) HandleComplete(n api.NodeImpl, wg *sync.WaitGroup) {
 	for {
 		select {
-		case result := <-s.compChan:
+		case r := <-s.compChan:
 			// Update Success
-			s.success[int32(result.index)] = result.success
+			s.success[int32(r.index)] = r.success
 
 			// Complete Wait Group
-			logger.Debug("Received Item Result", golog.Fields{"success": result.success})
+			logger.Debug("Received Item Result", golog.Fields{"success": r.success})
 			wg.Done()
 
 			// Replace Incoming Item
-			if result.IsIncoming() {
-				s.payload.Items[result.index] = result.item
+			if r.IsIncoming() {
+				s.payload.Items[r.index] = r.item
 				s.lastUpdated = int64(time.Now().Unix())
 			}
 
 			// Check if Complete
-			if result.index == s.Count()-1 {
+			if r.index == s.Count()-1 {
 				return
 			}
 		}
@@ -112,8 +112,10 @@ func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) {
 		}
 
 		// Create Reader
+		logger.Debugf("Start: Reading Item - %v", i)
 		handleItemRead(config, s.compChan)
 		wg.Wait()
+		logger.Debugf("Done: Reading Item - %v", i)
 	}
 
 	// Wait for all items to be written
@@ -221,8 +223,10 @@ func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) {
 		}
 
 		// Create New Writer
+		logger.Debugf("Start: Reading Item - %v", i)
 		handleItemWrite(config, s.compChan)
 		wg.Wait()
+		logger.Debugf("Done: Reading Item - %v", i)
 	}
 	n.OnComplete(s.Event())
 }

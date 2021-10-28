@@ -143,7 +143,7 @@ func (p *itemReader) getProgressEvent() *api.ProgressEvent {
 
 // isItemComplete returns true if the item has been completely read
 func (ir *itemReader) isItemComplete() bool {
-	return ir.written >= int(ir.size)
+	return int64(ir.written) >= ir.size
 }
 
 // toResult returns a FileItemStreamResult for the current ItemReader
@@ -212,11 +212,6 @@ type itemResult struct {
 	direction common.Direction
 	item      *common.Payload_Item
 	success   bool
-}
-
-// IsAllCompleted returns true if all items have been completed
-func (r itemResult) IsAllCompleted(t int) bool {
-	return (r.index + 1) == t
 }
 
 // IsIncoming returns true if the item is incoming
