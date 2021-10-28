@@ -21,6 +21,7 @@ type Session struct {
 	payload     *common.Payload
 	compChan    chan itemResult
 	lastUpdated int64
+	success     map[int32]bool
 }
 
 // MapItems performs PayloadItemFunc on each item in the Payload.
@@ -34,7 +35,7 @@ func (s Session) Count() int {
 }
 
 // Event returns the CompleteEvent for the given session.
-func (s Session) Event(success map[int32]bool) *api.CompleteEvent {
+func (s Session) Event() *api.CompleteEvent {
 	return &api.CompleteEvent{
 		From:       s.from,
 		To:         s.to,
@@ -42,7 +43,7 @@ func (s Session) Event(success map[int32]bool) *api.CompleteEvent {
 		Payload:    s.payload,
 		CreatedAt:  s.payload.GetCreatedAt(),
 		ReceivedAt: int64(time.Now().Unix()),
-		Success:    success,
+		Success:    s.success,
 	}
 }
 
@@ -58,12 +59,11 @@ func (s Session) IsOutgoing() bool {
 
 // HandleComplete handles the completion of a session item.
 func (s Session) HandleComplete(n api.NodeImpl, wg *sync.WaitGroup) {
-	success := make(map[int32]bool)
 	for {
 		select {
 		case result := <-s.compChan:
 			// Update Success
-			success[int32(result.index)] = result.success
+			s.success[int32(result.index)] = result.success
 
 			// Complete Wait Group
 			logger.Debug("Received Item Result", golog.Fields{"success": result.success})
@@ -76,8 +76,7 @@ func (s Session) HandleComplete(n api.NodeImpl, wg *sync.WaitGroup) {
 			}
 
 			// Check if Complete
-			if result.IsAllCompleted(s.Count()) {
-				n.OnComplete(s.Event(success))
+			if result.index == s.Count()-1 {
 				return
 			}
 		}
@@ -119,6 +118,7 @@ func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) {
 
 	// Wait for all items to be written
 	stream.Close()
+	n.OnComplete(s.Event())
 }
 
 // handleItemRead Returns a new Reader for the given FileItem
@@ -128,11 +128,11 @@ func handleItemRead(config itemConfig, compChan chan itemResult) {
 	config.ApplyReader(ir)
 
 	// Define Finish Function and Start Channels
+	go ir.handleProgress()
 	callFinishFunc := func(r bool) {
 		ir.doneChan <- r
 		compChan <- ir.toResult(r)
 	}
-	go ir.handleProgress()
 
 	// Route Data from Stream
 	for {
@@ -141,13 +141,13 @@ func handleItemRead(config itemConfig, compChan chan itemResult) {
 		if err != nil {
 			logger.Errorf("%s - Failed to Read Next Message on Read Stream", err)
 			callFinishFunc(false)
-			break
+			return
 		} else {
 			// Write Chunk to File
 			if err := ir.WriteChunk(buf); err != nil {
 				logger.Errorf("%s - Failed to Write Buffer to File on Read Stream", err)
 				callFinishFunc(false)
-				break
+				return
 			}
 		}
 
@@ -164,7 +164,7 @@ func handleItemRead(config itemConfig, compChan chan itemResult) {
 
 			// Complete Writing to File
 			callFinishFunc(true)
-			break
+			return
 		}
 	}
 }
@@ -224,6 +224,7 @@ func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) {
 		handleItemWrite(config, s.compChan)
 		wg.Wait()
 	}
+	n.OnComplete(s.Event())
 }
 
 // handleItemWrite handles the writing of a FileItem to a Stream
@@ -233,11 +234,11 @@ func handleItemWrite(config itemConfig, compChan chan itemResult) {
 	config.ApplyWriter(iw)
 
 	// Define Finish Function and Start Channels
+	go iw.handleProgress()
 	callFinishFunc := func(r bool) {
 		iw.doneChan <- r
 		compChan <- iw.toResult(r)
 	}
-	go iw.handleProgress()
 
 	// Define Chunker Opts
 	chunker, err := fs.NewFileChunker(config.Path())
@@ -254,27 +255,27 @@ func handleItemWrite(config itemConfig, compChan chan itemResult) {
 			if err == io.EOF {
 				logger.Debug("Chunker has reached end of file.")
 				callFinishFunc(true)
-				break
+				return
 			}
 
 			// Unexpected Error
 			logger.Errorf("%s - Error reading chunk.", err)
 			callFinishFunc(false)
-			break
+			return
 		}
 
 		// Write Chunk to Stream
 		if err := iw.WriteChunk(c.Data, c.Length); err != nil {
 			logger.Errorf("%s - Error Writing data to msgio.Writer", err)
 			callFinishFunc(false)
-			break
+			return
 		}
 
 		// Check if Item is Complete
 		if iw.isItemComplete() {
 			logger.Debug("Item Write is Complete")
 			callFinishFunc(true)
-			break
+			return
 		}
 	}
 }
