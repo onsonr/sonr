@@ -18,7 +18,7 @@ type Session struct {
 	from        *common.Peer
 	to          *common.Peer
 	payload     *common.Payload
-	compChan    chan FileItemStreamResult
+	compChan    chan itemResult
 	lastUpdated int64
 }
 
@@ -126,7 +126,6 @@ func handleItemRead(config itemConfig) error {
 	// Create New Writer
 	ir := &itemReader{}
 	config.ApplyReader(ir)
-	defer config.wg.Done()
 
 	// Start Channels
 	go ir.handleChannels(config.wg, config.compChan)
@@ -141,13 +140,9 @@ func handleItemRead(config itemConfig) error {
 			return err
 		} else {
 			// Write Chunk to File
-			n, err := ir.buffer.Write(buf)
-			if err != nil {
-				logger.Errorf("%s - Failed to Write Buffer to File on Read Stream", err)
-				ir.doneChan <- false
+			if err := ir.WriteChunk(buf); err != nil {
 				return err
 			}
-			ir.progressChan <- n
 		}
 	}
 	ir.doneChan <- true
@@ -223,13 +218,10 @@ func handleItemWrite(config itemConfig) error {
 			return err
 		}
 
-		// Write Message Bytes to Stream
-		err = config.writer.WriteMsg(c.Data)
-		if err != nil {
-			logger.Errorf("%s - Error Writing data to msgio.Writer", err)
+		// Write Chunk to Stream
+		if err := iw.WriteChunk(c.Data); err != nil {
 			return err
 		}
-		iw.progressChan <- c.Length
 	}
 	iw.doneChan <- true
 	return nil

@@ -12,7 +12,6 @@ import (
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/fs"
-	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/internal/wallet"
 	"github.com/sonr-io/core/pkg/common"
 )
@@ -41,15 +40,6 @@ var (
 	ErrEmptyRequests   = errors.New("Empty Request list provided")
 	ErrRequestNotFound = errors.New("Request not found in list")
 )
-
-// checkParams Checks if Non-nil Parameters were passed
-func checkParams(host *host.SNRHost) error {
-	if host == nil {
-		logger.Errorf("%s - Host provided is nil", ErrParameters)
-		return ErrParameters
-	}
-	return host.HasRouting()
-}
 
 // ToEvent method on InviteResponse converts InviteResponse to DecisionEvent.
 func (ir *InviteResponse) ToEvent() *api.DecisionEvent {
@@ -153,7 +143,7 @@ type itemConfig struct {
 	reader   msgio.ReadCloser
 	writer   msgio.WriteCloser
 	wg       sync.WaitGroup
-	compChan chan FileItemStreamResult
+	compChan chan itemResult
 }
 
 // FileItem returns FileItem from Payload_Item
@@ -198,6 +188,7 @@ func (ic itemConfig) ApplyReader(iw *itemReader) error {
 	iw.node = ic.node
 	iw.written = 0
 	iw.progressChan = make(chan int)
+	iw.buffChan = make(chan []byte)
 	iw.doneChan = make(chan bool)
 	return nil
 }
@@ -212,10 +203,11 @@ func (ic itemConfig) ApplyWriter(iw *itemWriter) {
 	iw.written = 0
 	iw.progressChan = make(chan int)
 	iw.doneChan = make(chan bool)
+	iw.writer = ic.writer
 }
 
-// FileItemStreamResult is the result of a FileItemStream
-type FileItemStreamResult struct {
+// itemResult is the result of a FileItemStream
+type itemResult struct {
 	index     int
 	direction common.Direction
 	item      *common.Payload_Item
@@ -223,16 +215,16 @@ type FileItemStreamResult struct {
 }
 
 // IsAllCompleted returns true if all items have been completed
-func (r FileItemStreamResult) IsAllCompleted(t int) bool {
-	return r.index+1 == t
+func (r itemResult) IsAllCompleted(t int) bool {
+	return (r.index + 1) == t
 }
 
 // IsIncoming returns true if the item is incoming
-func (r FileItemStreamResult) IsIncoming() bool {
+func (r itemResult) IsIncoming() bool {
 	return r.direction == common.Direction_INCOMING
 }
 
 // IsOutgoing returns true if the item is outgoing
-func (r FileItemStreamResult) IsOutgoing() bool {
+func (r itemResult) IsOutgoing() bool {
 	return r.direction == common.Direction_OUTGOING
 }

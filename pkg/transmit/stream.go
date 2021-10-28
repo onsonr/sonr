@@ -2,6 +2,7 @@ package transmit
 
 import (
 	"bytes"
+	"math"
 	"sync"
 
 	"github.com/libp2p/go-libp2p-core/network"
@@ -124,7 +125,23 @@ type itemReader struct {
 	node         api.NodeImpl
 	written      int
 	progressChan chan int
+	buffChan     chan []byte
 	doneChan     chan bool
+	mu           sync.Mutex
+}
+
+// WriteChunk writes a chunk to the buffer
+func (ir *itemReader) WriteChunk(b []byte) error {
+	ir.mu.Lock()
+	defer ir.mu.Unlock()
+	n, err := ir.buffer.Write(b)
+	if err != nil {
+		logger.Errorf("%s - Failed to Write Buffer to File on Read Stream", err)
+		ir.doneChan <- false
+		return err
+	}
+	ir.progressChan <- n
+	return nil
 }
 
 // getProgressEvent returns a ProgressEvent for the current ItemReader
@@ -142,7 +159,7 @@ func (p *itemReader) getProgressEvent() *api.ProgressEvent {
 }
 
 // handleChannels handles the channels for the ItemReader
-func (p *itemReader) handleChannels(wg sync.WaitGroup, compChan chan FileItemStreamResult) {
+func (p *itemReader) handleChannels(wg sync.WaitGroup, compChan chan itemResult) {
 	for {
 		select {
 		case n := <-p.progressChan:
@@ -168,12 +185,13 @@ func (p *itemReader) handleChannels(wg sync.WaitGroup, compChan chan FileItemStr
 
 // isItemComplete returns true if the item has been completely read
 func (ir *itemReader) isItemComplete() bool {
-	return ir.written >= int(ir.size)
+	progress := (float64(ir.written) / float64(ir.size))
+	return math.Round(progress) == 1.0
 }
 
 // toResult returns a FileItemStreamResult for the current ItemReader
-func (ir *itemReader) toResult(success bool) FileItemStreamResult {
-	return FileItemStreamResult{
+func (ir *itemReader) toResult(success bool) itemResult {
+	return itemResult{
 		index:     ir.index,
 		item:      ir.item.ToTransferItem(),
 		direction: common.Direction_INCOMING,
@@ -187,9 +205,25 @@ type itemWriter struct {
 	count        int
 	size         int64
 	node         api.NodeImpl
+	writer       msgio.WriteCloser
 	written      int
 	progressChan chan int
 	doneChan     chan bool
+	mu           sync.Mutex
+}
+
+// WriteChunk writes a chunk to the Stream
+func (ir *itemWriter) WriteChunk(b []byte) error {
+	ir.mu.Lock()
+	defer ir.mu.Unlock()
+	err := ir.writer.WriteMsg(b)
+	if err != nil {
+		logger.Errorf("%s - Error Writing data to msgio.Writer", err)
+		ir.doneChan <- false
+		return err
+	}
+	ir.progressChan <- len(b)
+	return nil
 }
 
 // getProgressEvent returns a ProgressEvent for the current ItemReader
@@ -207,7 +241,7 @@ func (p *itemWriter) getProgressEvent() *api.ProgressEvent {
 }
 
 // handleChannels handles the channels for the ItemReader
-func (p *itemWriter) handleChannels(wg sync.WaitGroup, compChan chan FileItemStreamResult) {
+func (p *itemWriter) handleChannels(wg sync.WaitGroup, compChan chan itemResult) {
 	for {
 		select {
 		case n := <-p.progressChan:
@@ -225,12 +259,13 @@ func (p *itemWriter) handleChannels(wg sync.WaitGroup, compChan chan FileItemStr
 
 // isItemComplete returns true if the item has been completely written
 func (ir *itemWriter) isItemComplete() bool {
-	return ir.written >= int(ir.size)
+	progress := (float64(ir.written) / float64(ir.size))
+	return math.Round(progress) == 1.0
 }
 
 // toResult returns a FileItemStreamResult for the current ItemReader
-func (ir *itemWriter) toResult(success bool) FileItemStreamResult {
-	return FileItemStreamResult{
+func (ir *itemWriter) toResult(success bool) itemResult {
+	return itemResult{
 		index:     ir.index,
 		item:      ir.item.ToTransferItem(),
 		direction: common.Direction_OUTGOING,

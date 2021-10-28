@@ -24,12 +24,6 @@ type TransmitProtocol struct {
 
 // NewProtocol creates a new TransferProtocol
 func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*TransmitProtocol, error) {
-	// Check parameters
-	if err := checkParams(host); err != nil {
-		logger.Errorf("%s - Failed to create TransmitProtocol", err)
-		return nil, err
-	}
-
 	// create a new transfer protocol
 	invProtocol := &TransmitProtocol{
 		ctx:  ctx,
@@ -171,7 +165,7 @@ func (sq *SessionQueue) AddIncoming(from peer.ID, req *InviteRequest) error {
 		from:        req.GetFrom(),
 		to:          req.GetTo(),
 		lastUpdated: int64(time.Now().Unix()),
-		compChan:    make(chan FileItemStreamResult),
+		compChan:    make(chan itemResult),
 	}
 
 	// Add to Requests
@@ -188,7 +182,7 @@ func (sq *SessionQueue) AddOutgoing(to peer.ID, req *InviteRequest) error {
 		from:        req.GetFrom(),
 		to:          req.GetTo(),
 		lastUpdated: int64(time.Now().Unix()),
-		compChan:    make(chan FileItemStreamResult),
+		compChan:    make(chan itemResult),
 	}
 
 	// Add to Requests
