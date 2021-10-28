@@ -54,11 +54,7 @@ func (p *TransmitProtocol) onIncomingTransfer(stream network.Stream) {
 	}
 
 	// Create New Reader
-	err = entry.ReadFrom(stream, p.node)
-	if err != nil {
-		logger.Errorf("%s - Failed to Read From Stream", err)
-		stream.Close()
-	}
+	entry.ReadFrom(stream, p.node)
 }
 
 // onInviteResponse response handler
@@ -106,12 +102,7 @@ func (p *TransmitProtocol) onInviteResponse(s network.Stream) {
 func (p *TransmitProtocol) onOutgoingTransfer(entry Session, stream network.Stream) {
 	logger.Debug("Received Accept Decision, Starting Outgoing Transfer")
 	// Create New Writer
-	err := entry.WriteTo(stream, p.node)
-	if err != nil {
-		logger.Errorf("%s - Failed to Write To Stream", err)
-		stream.Close()
-		return
-	}
+	entry.WriteTo(stream, p.node)
 }
 
 // itemReader is a Reader for a FileItem
@@ -122,6 +113,7 @@ type itemReader struct {
 	index        int
 	count        int
 	size         int64
+	totalSize    int64
 	node         api.NodeImpl
 	written      int
 	progressChan chan int
