@@ -161,6 +161,7 @@ func (ir *itemReader) toResult(success bool) itemResult {
 		index:     ir.index,
 		item:      ir.item.ToTransferItem(),
 		direction: common.Direction_INCOMING,
+		success:   success,
 	}
 }
 
@@ -180,12 +181,12 @@ type itemWriter struct {
 }
 
 // WriteChunk writes a chunk to the Stream
-func (ir *itemWriter) WriteChunk(b []byte) error {
+func (ir *itemWriter) WriteChunk(b []byte, size int) error {
 	err := ir.writer.WriteMsg(b)
 	if err != nil {
 		return err
 	}
-	ir.progressChan <- len(b)
+	ir.progressChan <- size
 	return nil
 }
 

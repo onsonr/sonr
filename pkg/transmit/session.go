@@ -58,7 +58,7 @@ func (s Session) IsOutgoing() bool {
 // HandleComplete handles the completion of a session item.
 func (s Session) HandleComplete(wg sync.WaitGroup, n api.NodeImpl) {
 	success := make(map[int32]bool)
-	for {
+	for i := 0; i < s.Count(); i++ {
 		select {
 		case result := <-s.compChan:
 			wg.Done()
@@ -70,15 +70,10 @@ func (s Session) HandleComplete(wg sync.WaitGroup, n api.NodeImpl) {
 				s.payload.Items[result.index] = result.item
 				s.lastUpdated = int64(time.Now().Unix())
 			}
-
-			// Check if all items have been received
-			if result.IsAllCompleted(s.Count()) {
-				logger.Debug("All items completed")
-				n.OnComplete(s.Event(success))
-				return
-			}
 		}
 	}
+	// Write Complete Event after all items are complete
+	n.OnComplete(s.Event(success))
 }
 
 // -----------------------------------------------------------------------------
@@ -102,11 +97,11 @@ func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) error {
 
 		// Configure Reader
 		config := itemConfig{
-			index:    i,
-			count:    s.Count(),
-			item:     v,
-			node:     n,
-			reader:   rs,
+			index:  i,
+			count:  s.Count(),
+			item:   v,
+			node:   n,
+			reader: rs,
 		}
 
 		// Create Reader
@@ -201,11 +196,11 @@ func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) error {
 
 		// Configure Writer
 		config := itemConfig{
-			index:    i,
-			count:    s.Count(),
-			item:     v,
-			node:     n,
-			writer:   wc,
+			index:  i,
+			count:  s.Count(),
+			item:   v,
+			node:   n,
+			writer: wc,
 		}
 
 		// Create New Writer
@@ -227,15 +222,16 @@ func handleItemWrite(config itemConfig, compChan chan itemResult) error {
 	iw := &itemWriter{}
 	config.ApplyWriter(iw)
 
+	// Start Channels
+	go iw.handleChannels(compChan)
+
 	// Define Chunker Opts
 	chunker, err := fs.NewFileChunker(config.Path())
 	if err != nil {
 		logger.Errorf("%s - Failed to create new chunker.", err)
+		iw.doneChan <- false
 		return err
 	}
-
-	// Start Channels
-	go iw.handleChannels(compChan)
 
 	// Loop through File
 	for {
@@ -254,7 +250,7 @@ func handleItemWrite(config itemConfig, compChan chan itemResult) error {
 		}
 
 		// Write Chunk to Stream
-		if err := iw.WriteChunk(c.Data); err != nil {
+		if err := iw.WriteChunk(c.Data, c.Length); err != nil {
 			logger.Errorf("%s - Error Writing data to msgio.Writer", err)
 			iw.doneChan <- false
 			return err
