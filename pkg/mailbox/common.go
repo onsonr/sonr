@@ -6,8 +6,11 @@ import (
 	"time"
 
 	"github.com/kataras/golog"
+	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/fs"
+	"github.com/sonr-io/core/internal/wallet"
+	common "github.com/sonr-io/core/pkg/common"
 )
 
 // Textile API definitions
@@ -31,6 +34,8 @@ var (
 	ErrFailedAuth       = errors.New("Failed to Authenticate message")
 	ErrEmptyRequests    = errors.New("Empty Request list provided")
 	ErrRequestNotFound  = errors.New("Request not found in list")
+	ErrInvalidResponse  = errors.New("Invalid InviteResponse provided to TransmitProtocol")
+	ErrInvalidRequest   = errors.New("Invalid InviteRequest provided to TransmitProtocol")
 )
 
 // fetchApiKeys fetches the Textile Api/Secrect keys from the environment
@@ -145,4 +150,78 @@ func (ir *InviteRequest) ToEvent() *api.InviteEvent {
 		From:     ir.GetFrom(),
 		Payload:  ir.GetPayload(),
 	}
+}
+
+// createRequest creates a new InviteRequest
+func (p *MailboxProtocol) createRequest(to *common.Peer) (peer.ID, *InviteRequest, error) {
+	// Call Peer from Node
+	from, err := p.node.Peer()
+	if err != nil {
+		logger.Errorf("%s - Failed to Get Peer from Node", err)
+		return "", nil, err
+	}
+
+	// Fetch Peer ID from Public Key
+	toId, err := to.Libp2pID()
+	if err != nil {
+		logger.Errorf("%s - Failed to fetch peer id from public key", err)
+		return "", nil, err
+	}
+
+	// Fetch Element from Queue
+	// Get Next Entry
+	entry, ok := p.invites[toId]
+	if ok {
+		// Create new Metadata
+		meta, err := wallet.Sonr.CreateMetadata(p.host.ID())
+		if err != nil {
+			logger.Errorf("%s - Failed to create new metadata for Shared Invite", err)
+			return "", nil, err
+		}
+
+		// Create Invite Request
+		req := &InviteRequest{
+			Payload:  entry.GetPayload(),
+			Metadata: api.SignedMetadataToProto(meta),
+			To:       to,
+			From:     from,
+		}
+		return toId, req, nil
+	}
+	logger.Errorf("%s - Failed to get item from Supply Queue.")
+	return "", nil, errors.New("No items in Supply Queue.")
+}
+
+// createResponse creates a new InviteResponse
+func (p *MailboxProtocol) createResponse(decs bool, to *common.Peer) (peer.ID, *InviteResponse, error) {
+
+	// Call Peer from Node
+	from, err := p.node.Peer()
+	if err != nil {
+		logger.Errorf("%s - Failed to Get Peer from Node", err)
+		return "", nil, err
+	}
+
+	// Create new Metadata
+	meta, err := wallet.Sonr.CreateMetadata(p.host.ID())
+	if err != nil {
+		logger.Errorf("%s - Failed to create new metadata for Shared Invite", err)
+		return "", nil, err
+	}
+
+	// Create Invite Response
+	resp := &InviteResponse{
+		Decision: decs,
+		Metadata: api.SignedMetadataToProto(meta),
+		From:     from,
+		To:       to,
+	}
+
+	// Fetch Peer ID from Public Key
+	toId, err := to.Libp2pID()
+	if err != nil {
+		logger.Errorf("%s - Failed to fetch peer id from public key", err)
+		return "", nil, err
+	}
+	return toId, resp, nil
 }

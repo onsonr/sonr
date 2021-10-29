@@ -210,3 +210,69 @@ func (sq *MailboxProtocol) Validate(peer peer.ID, resp *InviteResponse) (*common
 	}
 	return entry.GetPayload(), nil
 }
+
+// Request Method sends a request to Transfer Data to a remote peer
+func (p *MailboxProtocol) Request(to *common.Peer) error {
+	// Create Request
+	id, req, err := p.createRequest(to)
+	if err != nil {
+		logger.Errorf("%s - Failed to Create Request", err)
+		return err
+	}
+
+	// Check if the response is valid
+	if req == nil {
+		return ErrInvalidRequest
+	}
+
+	// sign the data
+	signature, err := p.host.SignMessage(req)
+	if err != nil {
+		logger.Errorf("%s - Failed to Sign Response Message", err)
+		return err
+	}
+
+	// add the signature to the message
+	req.Metadata.Signature = signature
+	err = p.host.SendMessage(id, RequestPID, req)
+	if err != nil {
+		logger.Errorf("%s - Failed to Send Message to Peer", err)
+		return err
+	}
+
+	p.invites[id] = req
+	return nil
+}
+
+// Respond Method authenticates or declines a Transfer Request
+func (p *MailboxProtocol) Respond(decs bool, to *common.Peer) error {
+	// Create Response
+	id, resp, err := p.createResponse(decs, to)
+	if err != nil {
+		logger.Errorf("%s - Failed to Create Request", err)
+		return err
+	}
+
+	// Check if the response is valid
+	if resp == nil {
+		return ErrInvalidResponse
+	}
+
+	// sign the data
+	signature, err := p.host.SignMessage(resp)
+	if err != nil {
+		logger.Errorf("%s - Failed to Sign Response Message", err)
+		return err
+	}
+
+	// add the signature to the message
+	resp.Metadata.Signature = signature
+
+	// Send Response
+	err = p.host.SendMessage(id, ResponsePID, resp)
+	if err != nil {
+		logger.Errorf("%s - Failed to Send Message to Peer", err)
+		return err
+	}
+	return nil
+}

@@ -2,8 +2,16 @@ package mailbox
 
 import (
 	"github.com/libp2p/go-libp2p-core/network"
+	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/libp2p/go-msgio"
 	"google.golang.org/protobuf/proto"
+)
+
+// Transfer Protocol ID's
+const (
+	RequestPID  protocol.ID = "/transmit/request/0.0.1"
+	ResponsePID protocol.ID = "/transmit/response/0.0.1"
+	SessionPID  protocol.ID = "/transmit/session/0.0.1"
 )
 
 // onInviteRequest peer requests handler
