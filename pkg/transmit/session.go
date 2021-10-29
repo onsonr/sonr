@@ -1,6 +1,7 @@
 package transmit
 
 import (
+	"context"
 	"io"
 	"sync"
 	"time"
@@ -15,6 +16,7 @@ import (
 
 // Session is a single entry in the Transmit queue.
 type Session struct {
+	ctx         context.Context
 	direction   common.Direction
 	from        *common.Peer
 	to          *common.Peer
@@ -58,7 +60,7 @@ func (s Session) IsOutgoing() bool {
 }
 
 // HandleComplete handles the completion of a session item.
-func (s Session) HandleComplete(n api.NodeImpl, wg *sync.WaitGroup) {
+func (s Session) HandleComplete(ctx context.Context, n api.NodeImpl, wg *sync.WaitGroup) {
 	for {
 		select {
 		case r := <-s.compChan:
@@ -77,6 +79,8 @@ func (s Session) HandleComplete(n api.NodeImpl, wg *sync.WaitGroup) {
 			if r.index == s.Count()-1 {
 				return
 			}
+		case <-ctx.Done():
+			return
 		}
 	}
 }
@@ -88,6 +92,8 @@ func (s Session) HandleComplete(n api.NodeImpl, wg *sync.WaitGroup) {
 // ReadFrom reads the next Session from the given stream.
 func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) {
 	// Initialize Params
+	ctx, cancel := context.WithCancel(s.ctx)
+	defer cancel()
 	logger.Debug("Beginning INCOMING Transmit Stream")
 
 	// Handle incoming stream
@@ -96,9 +102,10 @@ func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) {
 
 	// Write All Files
 	for i, v := range s.Items() {
+
 		// Write File to Stream
 		wg.Add(1)
-		go s.HandleComplete(n, &wg)
+		go s.HandleComplete(ctx, n, &wg)
 
 		// Configure Reader
 		config := itemConfig{
@@ -111,18 +118,18 @@ func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) {
 
 		// Create Reader
 		logger.Debugf("Start: Reading Item - %v", i)
-		handleItemRead(config, s.compChan)
-		wg.Wait()
+		handleItemRead(cancel, config, s.compChan)
 		logger.Debugf("Done: Reading Item - %v", i)
 	}
 
+	wg.Wait()
 	// Wait for all items to be written
 	stream.Close()
 	n.OnComplete(s.Event())
 }
 
 // handleItemRead Returns a new Reader for the given FileItem
-func handleItemRead(config itemConfig, compChan chan itemResult) {
+func handleItemRead(cancel context.CancelFunc, config itemConfig, compChan chan itemResult) {
 	// Create New Writer
 	ir := &itemReader{}
 	config.ApplyReader(ir)
@@ -132,6 +139,10 @@ func handleItemRead(config itemConfig, compChan chan itemResult) {
 	callFinishFunc := func(r bool) {
 		ir.doneChan <- r
 		compChan <- ir.toResult(r)
+
+		if ir.index == ir.count-1 {
+			cancel()
+		}
 	}
 
 	// Route Data from Stream
@@ -198,6 +209,8 @@ func (p *itemReader) handleProgress() {
 // WriteTo writes the Session to the given stream.
 func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) {
 	// Initialize Params
+	ctx, cancel := context.WithCancel(s.ctx)
+	defer cancel()
 	logger.Debug("Beginning OUTGOING Transmit Stream")
 	wc := msgio.NewWriter(stream)
 	var wg sync.WaitGroup
@@ -206,7 +219,7 @@ func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) {
 	for i, v := range s.Items() {
 		// Write File to Stream
 		wg.Add(1)
-		go s.HandleComplete(n, &wg)
+		go s.HandleComplete(ctx, n, &wg)
 
 		// Configure Writer
 		config := itemConfig{
@@ -219,15 +232,15 @@ func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) {
 
 		// Create New Writer
 		logger.Debugf("Start: Reading Item - %v", i)
-		handleItemWrite(config, s.compChan)
-		wg.Wait()
+		handleItemWrite(cancel, config, s.compChan)
 		logger.Debugf("Done: Reading Item - %v", i)
+		wg.Wait()
 	}
 	n.OnComplete(s.Event())
 }
 
 // handleItemWrite handles the writing of a FileItem to a Stream
-func handleItemWrite(config itemConfig, compChan chan itemResult) {
+func handleItemWrite(cancel context.CancelFunc, config itemConfig, compChan chan itemResult) {
 	// Create New Writer
 	iw := &itemWriter{}
 	config.ApplyWriter(iw)
@@ -237,6 +250,11 @@ func handleItemWrite(config itemConfig, compChan chan itemResult) {
 	callFinishFunc := func(r bool) {
 		iw.doneChan <- r
 		compChan <- iw.toResult(r)
+
+		// Check if Complete
+		if iw.index == iw.count-1 {
+			cancel()
+		}
 	}
 
 	// Define Chunker Opts
