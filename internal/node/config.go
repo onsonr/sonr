@@ -61,10 +61,10 @@ func (opts *options) Apply(ctx context.Context, node *Node) error {
 	node.mode = opts.mode
 
 	// Handle by Node Mode
-	if opts.mode.HasClient() {
+	if opts.mode.HasMotor() {
 		logger.Debug("Starting Client stub...")
 		// Client Node Type
-		stub, err := node.startClientService(ctx, opts)
+		stub, err := node.startMotorService(ctx, opts)
 		if err != nil {
 			logger.Errorf("%s - Failed to start Client Service", err)
 			return err

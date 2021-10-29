@@ -234,8 +234,8 @@ func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) {
 		logger.Debugf("Start: Reading Item - %v", i)
 		handleItemWrite(cancel, config, s.compChan)
 		logger.Debugf("Done: Reading Item - %v", i)
-		wg.Wait()
 	}
+	wg.Wait()
 	n.OnComplete(s.Event())
 }
 

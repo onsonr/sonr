@@ -57,7 +57,7 @@ func (n *Node) OnComplete(event *api.CompleteEvent) {
 }
 
 // OnLobbyRefresh method sends a lobby refresh event to the client.
-func (s *ClientNodeStub) OnLobbyRefresh(e *Empty, stream ClientService_OnLobbyRefreshServer) error {
+func (s *MotorNodeStub) OnLobbyRefresh(e *Empty, stream MotorService_OnLobbyRefreshServer) error {
 	for {
 		select {
 		case m := <-s.node.refreshEvents:
@@ -69,7 +69,7 @@ func (s *ClientNodeStub) OnLobbyRefresh(e *Empty, stream ClientService_OnLobbyRe
 }
 
 // OnMailboxMessage method sends an accepted event to the client.
-func (s *ClientNodeStub) OnMailboxMessage(e *Empty, stream ClientService_OnMailboxMessageServer) error {
+func (s *MotorNodeStub) OnMailboxMessage(e *Empty, stream MotorService_OnMailboxMessageServer) error {
 	for {
 		select {
 		case m := <-s.node.mailEvents:
@@ -81,7 +81,7 @@ func (s *ClientNodeStub) OnMailboxMessage(e *Empty, stream ClientService_OnMailb
 }
 
 // OnTransferAccepted method sends an accepted event to the client.
-func (s *ClientNodeStub) OnTransmitAccepted(e *Empty, stream ClientService_OnTransmitAcceptedServer) error {
+func (s *MotorNodeStub) OnTransmitAccepted(e *Empty, stream MotorService_OnTransmitAcceptedServer) error {
 	for {
 		select {
 		case m := <-s.node.decisionEvents:
@@ -95,7 +95,7 @@ func (s *ClientNodeStub) OnTransmitAccepted(e *Empty, stream ClientService_OnTra
 }
 
 // OnTransferDeclinedmethod sends a decline event to the client.
-func (s *ClientNodeStub) OnTransmitDeclined(e *Empty, stream ClientService_OnTransmitDeclinedServer) error {
+func (s *MotorNodeStub) OnTransmitDeclined(e *Empty, stream MotorService_OnTransmitDeclinedServer) error {
 	for {
 		select {
 		case m := <-s.node.decisionEvents:
@@ -109,7 +109,7 @@ func (s *ClientNodeStub) OnTransmitDeclined(e *Empty, stream ClientService_OnTra
 }
 
 // OnTransferInvite method sends an invite event to the client.
-func (s *ClientNodeStub) OnTransmitInvite(e *Empty, stream ClientService_OnTransmitInviteServer) error {
+func (s *MotorNodeStub) OnTransmitInvite(e *Empty, stream MotorService_OnTransmitInviteServer) error {
 	for {
 		select {
 		case m := <-s.node.inviteEvents:
@@ -121,7 +121,7 @@ func (s *ClientNodeStub) OnTransmitInvite(e *Empty, stream ClientService_OnTrans
 }
 
 // OnTransferProgress method sends a progress event to the client.
-func (s *ClientNodeStub) OnTransmitProgress(e *Empty, stream ClientService_OnTransmitProgressServer) error {
+func (s *MotorNodeStub) OnTransmitProgress(e *Empty, stream MotorService_OnTransmitProgressServer) error {
 	for {
 		select {
 		case m := <-s.node.progressEvents:
@@ -133,7 +133,7 @@ func (s *ClientNodeStub) OnTransmitProgress(e *Empty, stream ClientService_OnTra
 }
 
 // OnTransferComplete method sends a complete event to the client.
-func (s *ClientNodeStub) OnTransmitComplete(e *Empty, stream ClientService_OnTransmitCompleteServer) error {
+func (s *MotorNodeStub) OnTransmitComplete(e *Empty, stream MotorService_OnTransmitCompleteServer) error {
 	for {
 		select {
 		case m := <-s.node.completeEvents:

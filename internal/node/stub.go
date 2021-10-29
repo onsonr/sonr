@@ -49,8 +49,8 @@ func (m StubMode) IsHighway() bool {
 	return m == StubMode_HIGHWAY
 }
 
-// HasClient returns true if the node has a client.
-func (m StubMode) HasClient() bool {
+// HasMotor returns true if the node has a client.
+func (m StubMode) HasMotor() bool {
 	return m.IsLib() || m.IsBin() || m.IsCLI()
 }
 
@@ -77,10 +77,10 @@ func (m StubMode) Prefix() string {
 	return fmt.Sprintf("[SONR.%s] ", name)
 }
 
-// ClientNodeStub is the RPC Service for the Default Node.
-type ClientNodeStub struct {
+// MotorNodeStub is the RPC Service for the Default Node.
+type MotorNodeStub struct {
 	// Interfaces
-	ClientServiceServer
+	MotorServiceServer
 
 	// Properties
 	ctx        context.Context
@@ -93,8 +93,8 @@ type ClientNodeStub struct {
 	*mailbox.MailboxProtocol
 }
 
-// startClientService creates a new Client service stub for the node.
-func (n *Node) startClientService(ctx context.Context, opts *options) (*ClientNodeStub, error) {
+// startMotorService creates a new Client service stub for the node.
+func (n *Node) startMotorService(ctx context.Context, opts *options) (*MotorNodeStub, error) {
 
 	// Set Exchange Protocol
 	exchProtocol, err := exchange.NewProtocol(ctx, n.host, n, exchange.WithLocation(opts.location))
@@ -112,7 +112,7 @@ func (n *Node) startClientService(ctx context.Context, opts *options) (*ClientNo
 
 	// Create a new gRPC server
 	grpcServer := grpc.NewServer()
-	stub := &ClientNodeStub{
+	stub := &MotorNodeStub{
 		ctx:              ctx,
 		TransmitProtocol: transmitProtocol,
 		ExchangeProtocol: exchProtocol,
@@ -121,18 +121,18 @@ func (n *Node) startClientService(ctx context.Context, opts *options) (*ClientNo
 	}
 
 	// Start Routines
-	RegisterClientServiceServer(grpcServer, stub)
+	RegisterMotorServiceServer(grpcServer, stub)
 	go stub.Serve(ctx, n.listener)
 	return stub, nil
 }
 
 // HasProtocols returns true if the node has the protocols.
-func (s *ClientNodeStub) HasProtocols() bool {
+func (s *MotorNodeStub) HasProtocols() bool {
 	return s.TransmitProtocol != nil && s.ExchangeProtocol != nil
 }
 
 // Serve serves the RPC Service on the given port.
-func (s *ClientNodeStub) Serve(ctx context.Context, listener net.Listener) {
+func (s *MotorNodeStub) Serve(ctx context.Context, listener net.Listener) {
 	// Handle Node Events
 	if err := s.grpcServer.Serve(listener); err != nil {
 		logger.Error("Failed to serve gRPC", err)
@@ -149,7 +149,7 @@ func (s *ClientNodeStub) Serve(ctx context.Context, listener net.Listener) {
 }
 
 // Update method updates the node's properties in the Key/Value Store and Lobby
-func (s *ClientNodeStub) Update() error {
+func (s *MotorNodeStub) Update() error {
 	// Call Internal Edit
 	peer, err := s.node.Peer()
 	if err != nil {
@@ -183,7 +183,7 @@ func (s *ClientNodeStub) Update() error {
 // HighwayNodeStub is the RPC Service for the Custodian Node.
 type HighwayNodeStub struct {
 	HighwayServiceServer
-	ClientServiceServer
+	MotorServiceServer
 	*Node
 
 	// Properties

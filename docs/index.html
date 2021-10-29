@@ -558,7 +558,22 @@
         
           
           <li>
-            <a href="#proto%2fnode%2fclient.proto">proto/node/client.proto</a>
+            <a href="#proto%2fnode%2fhighway.proto">proto/node/highway.proto</a>
+            <ul>
+              
+              
+              
+              
+                <li>
+                  <a href="#sonr.node.HighwayService"><span class="badge">S</span>HighwayService</a>
+                </li>
+              
+            </ul>
+          </li>
+        
+          
+          <li>
+            <a href="#proto%2fnode%2fmotor.proto">proto/node/motor.proto</a>
             <ul>
               
                 <li>
@@ -569,22 +584,7 @@
               
               
                 <li>
-                  <a href="#sonr.node.ClientService"><span class="badge">S</span>ClientService</a>
-                </li>
-              
-            </ul>
-          </li>
-        
-          
-          <li>
-            <a href="#proto%2fnode%2fhighway.proto">proto/node/highway.proto</a>
-            <ul>
-              
-              
-              
-              
-                <li>
-                  <a href="#sonr.node.HighwayService"><span class="badge">S</span>HighwayService</a>
+                  <a href="#sonr.node.MotorService"><span class="badge">S</span>MotorService</a>
                 </li>
               
             </ul>
@@ -4431,7 +4431,54 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
     
       
       <div class="file-heading">
-        <h2 id="proto/node/client.proto">proto/node/client.proto</h2><a href="#title">Top</a>
+        <h2 id="proto/node/highway.proto">proto/node/highway.proto</h2><a href="#title">Top</a>
+      </div>
+      <p>This file contains service for the Node RPC Server</p>
+
+      
+
+      
+
+      
+
+      
+        <h3 id="sonr.node.HighwayService">HighwayService</h3>
+        <p>RPC Service with Equivalent Methods of a binded Node</p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Method Name</td><td>Request Type</td><td>Response Type</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>Authorize</td>
+                <td><a href="#sonr.api.AuthorizeRequest">.sonr.api.AuthorizeRequest</a></td>
+                <td><a href="#sonr.api.AuthorizeResponse">.sonr.api.AuthorizeResponse</a></td>
+                <td><p>Authorize Signing Method Request for Data</p></td>
+              </tr>
+            
+              <tr>
+                <td>Link</td>
+                <td><a href="#sonr.api.LinkRequest">.sonr.api.LinkRequest</a></td>
+                <td><a href="#sonr.api.LinkResponse">.sonr.api.LinkResponse</a></td>
+                <td><p>Link Links an Additional Device to User</p></td>
+              </tr>
+            
+              <tr>
+                <td>Register</td>
+                <td><a href="#sonr.api.RegisterRequest">.sonr.api.RegisterRequest</a></td>
+                <td><a href="#sonr.api.RegisterResponse">.sonr.api.RegisterResponse</a></td>
+                <td><p>Register creates new user in DNS Table</p></td>
+              </tr>
+            
+          </tbody>
+        </table>
+
+        
+    
+      
+      <div class="file-heading">
+        <h2 id="proto/node/motor.proto">proto/node/motor.proto</h2><a href="#title">Top</a>
       </div>
       <p>This file contains service for the Node RPC Server</p>
 
@@ -4449,7 +4496,7 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
       
 
       
-        <h3 id="sonr.node.ClientService">ClientService</h3>
+        <h3 id="sonr.node.MotorService">MotorService</h3>
         <p>RPC Service with Equivalent Methods of a binded Node</p>
         <table class="enum-table">
           <thead>
@@ -4548,53 +4595,6 @@ Returns a stream of Lobby Refresh Events</p></td>
                 <td><a href="#sonr.node.Empty">Empty</a></td>
                 <td><a href="#sonr.api.CompleteEvent">.sonr.api.CompleteEvent</a> stream</td>
                 <td><p>Returns a stream of Completed Transfers</p></td>
-              </tr>
-            
-          </tbody>
-        </table>
-
-        
-    
-      
-      <div class="file-heading">
-        <h2 id="proto/node/highway.proto">proto/node/highway.proto</h2><a href="#title">Top</a>
-      </div>
-      <p>This file contains service for the Node RPC Server</p>
-
-      
-
-      
-
-      
-
-      
-        <h3 id="sonr.node.HighwayService">HighwayService</h3>
-        <p>RPC Service with Equivalent Methods of a binded Node</p>
-        <table class="enum-table">
-          <thead>
-            <tr><td>Method Name</td><td>Request Type</td><td>Response Type</td><td>Description</td></tr>
-          </thead>
-          <tbody>
-            
-              <tr>
-                <td>Authorize</td>
-                <td><a href="#sonr.api.AuthorizeRequest">.sonr.api.AuthorizeRequest</a></td>
-                <td><a href="#sonr.api.AuthorizeResponse">.sonr.api.AuthorizeResponse</a></td>
-                <td><p>Authorize Signing Method Request for Data</p></td>
-              </tr>
-            
-              <tr>
-                <td>Link</td>
-                <td><a href="#sonr.api.LinkRequest">.sonr.api.LinkRequest</a></td>
-                <td><a href="#sonr.api.LinkResponse">.sonr.api.LinkResponse</a></td>
-                <td><p>Link Links an Additional Device to User</p></td>
-              </tr>
-            
-              <tr>
-                <td>Register</td>
-                <td><a href="#sonr.api.RegisterRequest">.sonr.api.RegisterRequest</a></td>
-                <td><a href="#sonr.api.RegisterResponse">.sonr.api.RegisterResponse</a></td>
-                <td><p>Register creates new user in DNS Table</p></td>
               </tr>
             
           </tbody>

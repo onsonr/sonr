@@ -9,7 +9,7 @@ option go_package = "github.com/sonr-io/core/internal/node";
 message Empty {}
 
 // RPC Service with Equivalent Methods of a binded Node
-service ClientService {
+service MotorService {
   // Node Methods
   // Signing Method Request for Data
   rpc Supply(sonr.api.SupplyRequest) returns (sonr.api.SupplyResponse) {}
