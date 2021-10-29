@@ -63,11 +63,8 @@ func (s Session) HandleComplete(n api.NodeImpl, wg *sync.WaitGroup) {
 		select {
 		case r := <-s.compChan:
 			// Update Success
-			s.success[int32(r.index)] = r.success
-
-			// Complete Wait Group
 			logger.Debug("Received Item Result", golog.Fields{"success": r.success})
-			wg.Done()
+			s.success[int32(r.index)] = r.success
 
 			// Replace Incoming Item
 			if r.IsIncoming() {
@@ -76,6 +73,7 @@ func (s Session) HandleComplete(n api.NodeImpl, wg *sync.WaitGroup) {
 			}
 
 			// Check if Complete
+			wg.Done()
 			if r.index == s.Count()-1 {
 				return
 			}
@@ -249,7 +247,7 @@ func handleItemWrite(config itemConfig, compChan chan itemResult) {
 	}
 
 	// Loop through File
-	for {
+	for iw.written < int(iw.size) {
 		c, err := chunker.Next()
 		if err != nil {
 			// Handle EOF
@@ -271,14 +269,12 @@ func handleItemWrite(config itemConfig, compChan chan itemResult) {
 			callFinishFunc(false)
 			return
 		}
-
-		// Check if Item is Complete
-		if iw.isItemComplete() {
-			logger.Debug("Item Write is Complete")
-			callFinishFunc(true)
-			return
-		}
 	}
+
+	// Flush Buffer to Stream
+	logger.Debug("Item Write is Complete")
+	callFinishFunc(true)
+	return
 }
 
 // handleProgress handles the channels for the ItemReader

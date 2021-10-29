@@ -180,7 +180,6 @@ func (ic itemConfig) ApplyReader(iw *itemReader) error {
 	iw.node = ic.node
 	iw.written = 0
 	iw.progressChan = make(chan int)
-	iw.buffChan = make(chan []byte)
 	iw.doneChan = make(chan bool)
 	iw.interval = calculateInterval(fi.GetSize())
 	return nil

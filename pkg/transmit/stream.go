@@ -115,7 +115,6 @@ type itemReader struct {
 	node         api.NodeImpl
 	written      int
 	progressChan chan int
-	buffChan     chan []byte
 	doneChan     chan bool
 }
 
@@ -181,11 +180,6 @@ func (p *itemWriter) getProgressEvent() *api.ProgressEvent {
 		Index:     int32(p.index),
 		Count:     int32(p.count),
 	}
-}
-
-// isItemComplete returns true if the item has been completely written
-func (ir *itemWriter) isItemComplete() bool {
-	return ir.written >= int(ir.size)
 }
 
 // toResult returns a FileItemStreamResult for the current ItemReader
