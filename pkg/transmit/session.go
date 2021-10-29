@@ -137,7 +137,7 @@ func handleItemRead(config itemConfig, compChan chan itemResult) {
 	}
 
 	// Route Data from Stream
-	for {
+	for int64(ir.written) < ir.size {
 		// Read Next Message
 		buf, err := config.reader.ReadMsg()
 		if err != nil {
@@ -152,27 +152,24 @@ func handleItemRead(config itemConfig, compChan chan itemResult) {
 				return
 			}
 		}
-
-		// Check if Item is Complete
-		if ir.isItemComplete() {
-			// Stop Channels
-			logger.Debug("Item Read is Complete")
-
-			// Flush Buffer to File
-			if err := ir.FlushBuffer(); err != nil {
-				logger.Errorf("%s - Failed to Sync File on Read Stream", err)
-				callFinishFunc(false)
-			}
-
-			// Complete Writing to File
-			callFinishFunc(true)
-			return
-		}
 	}
+
+	// Flush Buffer to File
+	if err := ir.FlushBuffer(); err != nil {
+		logger.Errorf("%s - Failed to Sync File on Read Stream", err)
+		callFinishFunc(false)
+	}
+
+	// Complete Writing to File
+	callFinishFunc(true)
+	return
 }
 
 // FlushBuffer writes the current buffer to the file.
 func (p *itemReader) FlushBuffer() error {
+	// Stop Channels
+	logger.Debug("Item Read is Complete")
+
 	// Write Buffer to File
 	err := p.item.WriteFile(p.buffer.Bytes())
 	if err != nil {

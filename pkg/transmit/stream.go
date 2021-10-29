@@ -141,11 +141,6 @@ func (p *itemReader) getProgressEvent() *api.ProgressEvent {
 	}
 }
 
-// isItemComplete returns true if the item has been completely read
-func (ir *itemReader) isItemComplete() bool {
-	return int64(ir.written) >= ir.size
-}
-
 // toResult returns a FileItemStreamResult for the current ItemReader
 func (ir *itemReader) toResult(success bool) itemResult {
 	return itemResult{
