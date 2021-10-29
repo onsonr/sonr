@@ -2,7 +2,6 @@ package transmit
 
 import (
 	"bytes"
-	"sync"
 
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-msgio"
@@ -118,7 +117,6 @@ type itemReader struct {
 	progressChan chan int
 	buffChan     chan []byte
 	doneChan     chan bool
-	mu           sync.Mutex
 }
 
 // WriteChunk writes a chunk to the buffer
@@ -163,7 +161,6 @@ type itemWriter struct {
 	written      int
 	progressChan chan int
 	doneChan     chan bool
-	mu           sync.Mutex
 }
 
 // WriteChunk writes a chunk to the Stream
