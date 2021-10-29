@@ -25,8 +25,6 @@ const (
 // Error Definitions
 var (
 	logger             = golog.Default.Child("protocols/transmit")
-	ErrTimeout         = errors.New("Session has Timed out")
-	ErrParameters      = errors.New("Failed to create new TransferProtocol, invalid parameters")
 	ErrInvalidResponse = errors.New("Invalid InviteResponse provided to TransmitProtocol")
 	ErrInvalidRequest  = errors.New("Invalid InviteRequest provided to TransmitProtocol")
 	ErrFailedEntry     = errors.New("Failed to get Topmost entry from Queue")
@@ -97,6 +95,7 @@ func (p *TransmitProtocol) createRequest(to *common.Peer) (peer.ID, *InviteReque
 
 // createResponse creates a new InviteResponse
 func (p *TransmitProtocol) createResponse(decs bool, to *common.Peer) (peer.ID, *InviteResponse, error) {
+
 	// Call Peer from Node
 	from, err := p.node.Peer()
 	if err != nil {
@@ -138,23 +137,9 @@ type itemConfig struct {
 	writer msgio.WriteCloser
 }
 
-// FileItem returns FileItem from Payload_Item
-func (ic itemConfig) FileItem() *common.FileItem {
-	return ic.item.GetFile()
-}
-
-func (ic itemConfig) GenPath() (string, error) {
-	path, err := fs.Downloads.GenPath(ic.item.GetFile().GetPath())
-	if err != nil {
-		logger.Errorf("%s - Failed to create new ItemReader", err)
-		return "", err
-	}
-	return path, nil
-}
-
 // Size returns the size of the item
 func (ic itemConfig) Path() string {
-	return ic.FileItem().GetPath()
+	return ic.item.GetFile().GetPath()
 }
 
 // Size returns the size of the item
@@ -165,7 +150,7 @@ func (ic itemConfig) Size() int64 {
 // ApplyWriter applies the config to the itemWriter
 func (ic itemConfig) ApplyReader(iw *itemReader) error {
 	// Get File Item
-	fi := ic.FileItem()
+	fi := ic.item.GetFile()
 	err := fi.ResetPath(fs.Downloads)
 	if err != nil {
 		return err
@@ -187,7 +172,7 @@ func (ic itemConfig) ApplyReader(iw *itemReader) error {
 
 // ApplyWriter applies the config to the itemWriter
 func (ic itemConfig) ApplyWriter(iw *itemWriter) {
-	iw.item = ic.FileItem()
+	iw.item = ic.item.GetFile()
 	iw.index = ic.index
 	iw.count = ic.count
 	iw.size = ic.Size()
@@ -199,11 +184,13 @@ func (ic itemConfig) ApplyWriter(iw *itemWriter) {
 	iw.interval = calculateInterval(ic.Size())
 }
 
+// calculateInterval calculates the interval for the progress callback
 func calculateInterval(size int64) int {
 	// Calculate Interval
 	interval := size / 100
 	if interval < 1 {
 		interval = 1
 	}
+	logger.Debugf("Calculated Item progress interval: %v", interval)
 	return int(interval)
 }

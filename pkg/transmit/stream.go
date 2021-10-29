@@ -130,12 +130,15 @@ func (ir *itemReader) WriteChunk(b []byte) error {
 
 // getProgressEvent returns a ProgressEvent for the current ItemReader
 func (p *itemReader) getProgressEvent() *api.ProgressEvent {
-	return &api.ProgressEvent{
-		Direction: common.Direction_INCOMING,
-		Progress:  (float64(p.written) / float64(p.size)),
-		Index:     int32(p.index),
-		Count:     int32(p.count),
+	if p.written%p.interval == 0 {
+		return &api.ProgressEvent{
+			Direction: common.Direction_INCOMING,
+			Progress:  (float64(p.written) / float64(p.size)),
+			Index:     int32(p.index),
+			Count:     int32(p.count),
+		}
 	}
+	return nil
 }
 
 // toResult returns a FileItemStreamResult for the current ItemReader
@@ -174,12 +177,15 @@ func (ir *itemWriter) WriteChunk(b []byte, size int) error {
 
 // getProgressEvent returns a ProgressEvent for the current ItemReader
 func (p *itemWriter) getProgressEvent() *api.ProgressEvent {
-	return &api.ProgressEvent{
-		Direction: common.Direction_OUTGOING,
-		Progress:  (float64(p.written) / float64(p.size)),
-		Index:     int32(p.index),
-		Count:     int32(p.count),
+	if p.written%p.interval == 0 {
+		return &api.ProgressEvent{
+			Direction: common.Direction_OUTGOING,
+			Progress:  (float64(p.written) / float64(p.size)),
+			Index:     int32(p.index),
+			Count:     int32(p.count),
+		}
 	}
+	return nil
 }
 
 // toResult returns a FileItemStreamResult for the current ItemReader
@@ -202,10 +208,10 @@ type itemResult struct {
 
 // IsIncoming returns true if the item is incoming
 func (r itemResult) IsIncoming() bool {
-	return r.direction == common.Direction_INCOMING
+	return r.direction == common.Direction_INCOMING && r.success
 }
 
 // IsOutgoing returns true if the item is outgoing
 func (r itemResult) IsOutgoing() bool {
-	return r.direction == common.Direction_OUTGOING
+	return r.direction == common.Direction_OUTGOING && r.success
 }

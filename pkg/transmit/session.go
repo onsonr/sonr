@@ -22,7 +22,8 @@ type Session struct {
 	to          *common.Peer
 	payload     *common.Payload
 	lastUpdated int64
-	success     map[int32]bool
+	results     map[int32]bool
+	compChan    chan itemResult
 }
 
 // MapItems performs PayloadItemFunc on each item in the Payload.
@@ -44,7 +45,7 @@ func (s Session) Event() *api.CompleteEvent {
 		Payload:    s.payload,
 		CreatedAt:  s.payload.GetCreatedAt(),
 		ReceivedAt: int64(time.Now().Unix()),
-		Success:    s.success,
+		Results:    s.results,
 	}
 }
 
@@ -59,32 +60,25 @@ func (s Session) IsOutgoing() bool {
 }
 
 // HandleComplete handles the completion of a session item.
-func (s Session) HandleComplete(ctx context.Context, n api.NodeImpl, wg *sync.WaitGroup, compChan chan itemResult) {
+func (s Session) HandleComplete(ctx context.Context, n api.NodeImpl, wg *sync.WaitGroup) {
+	defer wg.Done()
 	for {
 		select {
-		case r := <-compChan:
-			// Complete Wait Group
-			wg.Done()
-
+		case r := <-s.compChan:
+			if !r.success {
+				logger.Errorf("Failed to Complete File: %s", r.item.GetFile().GetName())
+				return
+			}
 			// Update Success
 			logger.Debug("Received Item Result", golog.Fields{"success": r.success})
-			s.success[int32(r.index)] = r.success
+			s.results[int32(r.index)] = r.success
 
 			// Replace Incoming Item
 			if r.IsIncoming() {
 				s.payload.Items[r.index] = r.item
 				s.lastUpdated = int64(time.Now().Unix())
 			}
-
-			// Handle Completion
-			if r.index == s.Count()-1 {
-				close(compChan)
-				return
-			} else {
-				continue
-			}
 		case <-ctx.Done():
-			close(compChan)
 			return
 		}
 	}
@@ -96,22 +90,16 @@ func (s Session) HandleComplete(ctx context.Context, n api.NodeImpl, wg *sync.Wa
 
 // ReadFrom reads the next Session from the given stream.
 func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) {
+	logger.Debug("Beginning INCOMING Transmit Stream")
 	// Initialize Params
 	ctx, cancel := context.WithCancel(s.ctx)
 	defer cancel()
-	logger.Debug("Beginning INCOMING Transmit Stream")
-
-	// Handle incoming stream
-	rs := msgio.NewReader(stream)
-	compChan := make(chan itemResult)
 	var wg sync.WaitGroup
 
-	// Add to Wait Group
-	wg.Add(len(s.Items()))
-	go s.HandleComplete(ctx, n, &wg, compChan)
-
-	// Write All Files
+	// Create Reader
+	rs := msgio.NewReader(stream)
 	for i, v := range s.Items() {
+		wg.Add(1)
 		// Configure Reader
 		config := itemConfig{
 			index:  i,
@@ -123,77 +111,60 @@ func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) {
 
 		// Create Reader
 		logger.Debugf("Start: Reading Item - %v", i)
-		handleItemRead(cancel, config, compChan)
+		handleItemRead(config, s.compChan)
+		go s.HandleComplete(ctx, n, &wg)
 		logger.Debugf("Done: Reading Item - %v", i)
 	}
 
 	// Wait for all items to be written
 	wg.Wait()
 	stream.Close()
+	close(s.compChan)
 	n.OnComplete(s.Event())
 }
 
 // handleItemRead Returns a new Reader for the given FileItem
-func handleItemRead(cancel context.CancelFunc, config itemConfig, compChan chan itemResult) {
-	// Create New Writer
+func handleItemRead(config itemConfig, compChan chan itemResult) {
+	logger.Debug("Handling Item Read...")
+	// Create New Reader
 	ir := &itemReader{}
-	config.ApplyReader(ir)
-
-	// Define Finish Function and Start Channels
-	go ir.handleProgress()
-	callFinishFunc := func(r bool) {
-		ir.doneChan <- r
-		compChan <- ir.toResult(r)
-
-		if ir.index == ir.count-1 {
-			cancel()
-		}
+	if err := config.ApplyReader(ir); err != nil {
+		logger.Errorf("Failed to Apply Reader: %s", err)
+		return
 	}
+	go ir.handleProgress(compChan)
 
 	// Route Data from Stream
 	for int64(ir.written) < ir.size {
 		// Read Next Message
 		buf, err := config.reader.ReadMsg()
 		if err != nil {
+			// Handle EOF
+			if err == io.EOF {
+				logger.Debug("Reader has reached end of stream.")
+				break
+			}
+
+			// Unexpected Error
 			logger.Errorf("%s - Failed to Read Next Message on Read Stream", err)
-			callFinishFunc(false)
+			ir.doneChan <- false
 			return
 		} else {
 			// Write Chunk to File
 			if err := ir.WriteChunk(buf); err != nil {
 				logger.Errorf("%s - Failed to Write Buffer to File on Read Stream", err)
-				callFinishFunc(false)
+				ir.doneChan <- false
 				return
 			}
 		}
 	}
 
-	// Flush Buffer to File
-	if err := ir.FlushBuffer(); err != nil {
-		logger.Errorf("%s - Failed to Sync File on Read Stream", err)
-		callFinishFunc(false)
-	}
-
 	// Complete Writing to File
-	callFinishFunc(true)
-	return
-}
-
-// FlushBuffer writes the current buffer to the file.
-func (p *itemReader) FlushBuffer() error {
-	// Stop Channels
-	logger.Debug("Item Read is Complete")
-
-	// Write Buffer to File
-	err := p.item.WriteFile(p.buffer.Bytes())
-	if err != nil {
-		return err
-	}
-	return nil
+	ir.doneChan <- true
 }
 
 // handleProgress handles the channels for the ItemReader
-func (p *itemReader) handleProgress() {
+func (p *itemReader) handleProgress(compChan chan itemResult) {
 	for {
 		select {
 		case n := <-p.progressChan:
@@ -201,7 +172,20 @@ func (p *itemReader) handleProgress() {
 			if ev := p.getProgressEvent(); ev != nil {
 				p.node.OnProgress(ev)
 			}
-		case <-p.doneChan:
+		case r := <-p.doneChan:
+			if r {
+				logger.Debug("Item Read has Completed, successfully")
+				// Write Buffer to File
+				if err := p.item.WriteFile(p.buffer.Bytes()); err != nil {
+					logger.Errorf("%s - Failed to Sync File on Read Stream", err)
+					compChan <- p.toResult(false)
+				} else {
+					compChan <- p.toResult(true)
+				}
+			} else {
+				logger.Error("Item Read has Completed, unsuccessfully")
+				compChan <- p.toResult(false)
+			}
 			return
 		}
 	}
@@ -213,20 +197,16 @@ func (p *itemReader) handleProgress() {
 
 // WriteTo writes the Session to the given stream.
 func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) {
+	logger.Debug("Beginning OUTGOING Transmit Stream")
 	// Initialize Params
 	ctx, cancel := context.WithCancel(s.ctx)
 	defer cancel()
-	logger.Debug("Beginning OUTGOING Transmit Stream")
-	wc := msgio.NewWriter(stream)
-	compChan := make(chan itemResult)
 	var wg sync.WaitGroup
 
-	// Add to Wait Group
-	wg.Add(len(s.Items()))
-	go s.HandleComplete(ctx, n, &wg, compChan)
-
 	// Create New Writer
+	wc := msgio.NewWriter(stream)
 	for i, v := range s.Items() {
+		wg.Add(1)
 		// Configure Writer
 		config := itemConfig{
 			index:  i,
@@ -237,39 +217,32 @@ func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) {
 		}
 
 		// Create New Writer
-		logger.Debugf("Start: Reading Item - %v", i)
-		handleItemWrite(cancel, config, compChan)
-		logger.Debugf("Done: Reading Item - %v", i)
+		logger.Debugf("Start: Writing Item - %v", i)
+		handleItemWrite(config, s.compChan)
+		go s.HandleComplete(ctx, n, &wg)
+		logger.Debugf("Done: Writing Item - %v", i)
 	}
 
 	// Wait for all items to be written
 	wg.Wait()
 	n.OnComplete(s.Event())
+	close(s.compChan)
 }
 
 // handleItemWrite handles the writing of a FileItem to a Stream
-func handleItemWrite(cancel context.CancelFunc, config itemConfig, compChan chan itemResult) {
+func handleItemWrite(config itemConfig, compChan chan itemResult) {
+	logger.Debug("Handling Item Write...")
 	// Create New Writer
 	iw := &itemWriter{}
 	config.ApplyWriter(iw)
-
-	// Define Finish Function and Start Channels
-	go iw.handleProgress()
-	callFinishFunc := func(r bool) {
-		iw.doneChan <- r
-		compChan <- iw.toResult(r)
-
-		// Check if Complete
-		if iw.index == iw.count-1 {
-			cancel()
-		}
-	}
+	go iw.handleProgress(compChan)
 
 	// Define Chunker Opts
 	chunker, err := fs.NewFileChunker(config.Path())
 	if err != nil {
 		logger.Errorf("%s - Failed to create new chunker.", err)
 		iw.doneChan <- false
+		return
 	}
 
 	// Loop through File
@@ -279,32 +252,29 @@ func handleItemWrite(cancel context.CancelFunc, config itemConfig, compChan chan
 			// Handle EOF
 			if err == io.EOF {
 				logger.Debug("Chunker has reached end of file.")
-				callFinishFunc(true)
-				return
+				break
 			}
 
 			// Unexpected Error
 			logger.Errorf("%s - Error reading chunk.", err)
-			callFinishFunc(false)
+			iw.doneChan <- false
 			return
 		}
 
 		// Write Chunk to Stream
 		if err := iw.WriteChunk(c.Data, c.Length); err != nil {
 			logger.Errorf("%s - Error Writing data to msgio.Writer", err)
-			callFinishFunc(false)
+			iw.doneChan <- false
 			return
 		}
 	}
 
 	// Flush Buffer to Stream
-	logger.Debug("Item Write is Complete")
-	callFinishFunc(true)
-	return
+	iw.doneChan <- true
 }
 
 // handleProgress handles the channels for the ItemReader
-func (p *itemWriter) handleProgress() {
+func (p *itemWriter) handleProgress(compChan chan itemResult) {
 	for {
 		select {
 		case n := <-p.progressChan:
@@ -312,7 +282,9 @@ func (p *itemWriter) handleProgress() {
 			if ev := p.getProgressEvent(); ev != nil {
 				p.node.OnProgress(ev)
 			}
-		case <-p.doneChan:
+		case r := <-p.doneChan:
+			logger.Debug("Item Write is Complete")
+			compChan <- p.toResult(r)
 			return
 		}
 	}

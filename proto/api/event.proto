@@ -52,5 +52,5 @@ message CompleteEvent {
   sonr.core.Peer to = 4;   // Peer that received the Complete Event
   int64 createdAt = 5;     // Transfer Created Timestamp
   int64 receivedAt = 6;    // Transfer Received Timestamp
-  map<int32, bool> success = 7; // Transfer Success
+  map<int32, bool> results = 7; // Transfer Success
 }
