@@ -180,7 +180,7 @@ func (ic itemConfig) ApplyReader(iw *itemReader) error {
 	iw.node = ic.node
 	iw.written = 0
 	iw.progressChan = make(chan int)
-	iw.doneChan = make(chan bool)
+	iw.doneChan = make(chan bool, 1)
 	iw.interval = calculateInterval(fi.GetSize())
 	return nil
 }
@@ -194,7 +194,7 @@ func (ic itemConfig) ApplyWriter(iw *itemWriter) {
 	iw.node = ic.node
 	iw.written = 0
 	iw.progressChan = make(chan int)
-	iw.doneChan = make(chan bool)
+	iw.doneChan = make(chan bool, 1)
 	iw.writer = ic.writer
 	iw.interval = calculateInterval(ic.Size())
 }

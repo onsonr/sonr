@@ -21,7 +21,6 @@ type Session struct {
 	from        *common.Peer
 	to          *common.Peer
 	payload     *common.Payload
-	compChan    chan itemResult
 	lastUpdated int64
 	success     map[int32]bool
 }
@@ -60,10 +59,13 @@ func (s Session) IsOutgoing() bool {
 }
 
 // HandleComplete handles the completion of a session item.
-func (s Session) HandleComplete(ctx context.Context, n api.NodeImpl, wg *sync.WaitGroup) {
+func (s Session) HandleComplete(ctx context.Context, n api.NodeImpl, wg *sync.WaitGroup, compChan chan itemResult) {
 	for {
 		select {
-		case r := <-s.compChan:
+		case r := <-compChan:
+			// Complete Wait Group
+			wg.Done()
+
 			// Update Success
 			logger.Debug("Received Item Result", golog.Fields{"success": r.success})
 			s.success[int32(r.index)] = r.success
@@ -74,12 +76,15 @@ func (s Session) HandleComplete(ctx context.Context, n api.NodeImpl, wg *sync.Wa
 				s.lastUpdated = int64(time.Now().Unix())
 			}
 
-			// Check if Complete
-			wg.Done()
+			// Handle Completion
 			if r.index == s.Count()-1 {
+				close(compChan)
 				return
+			} else {
+				continue
 			}
 		case <-ctx.Done():
+			close(compChan)
 			return
 		}
 	}
@@ -98,15 +103,15 @@ func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) {
 
 	// Handle incoming stream
 	rs := msgio.NewReader(stream)
+	compChan := make(chan itemResult)
 	var wg sync.WaitGroup
+
+	// Add to Wait Group
+	wg.Add(len(s.Items()))
+	go s.HandleComplete(ctx, n, &wg, compChan)
 
 	// Write All Files
 	for i, v := range s.Items() {
-
-		// Write File to Stream
-		wg.Add(1)
-		go s.HandleComplete(ctx, n, &wg)
-
 		// Configure Reader
 		config := itemConfig{
 			index:  i,
@@ -118,12 +123,12 @@ func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) {
 
 		// Create Reader
 		logger.Debugf("Start: Reading Item - %v", i)
-		handleItemRead(cancel, config, s.compChan)
+		handleItemRead(cancel, config, compChan)
 		logger.Debugf("Done: Reading Item - %v", i)
 	}
 
-	wg.Wait()
 	// Wait for all items to be written
+	wg.Wait()
 	stream.Close()
 	n.OnComplete(s.Event())
 }
@@ -213,14 +218,15 @@ func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) {
 	defer cancel()
 	logger.Debug("Beginning OUTGOING Transmit Stream")
 	wc := msgio.NewWriter(stream)
+	compChan := make(chan itemResult)
 	var wg sync.WaitGroup
+
+	// Add to Wait Group
+	wg.Add(len(s.Items()))
+	go s.HandleComplete(ctx, n, &wg, compChan)
 
 	// Create New Writer
 	for i, v := range s.Items() {
-		// Write File to Stream
-		wg.Add(1)
-		go s.HandleComplete(ctx, n, &wg)
-
 		// Configure Writer
 		config := itemConfig{
 			index:  i,
@@ -232,9 +238,11 @@ func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) {
 
 		// Create New Writer
 		logger.Debugf("Start: Reading Item - %v", i)
-		handleItemWrite(cancel, config, s.compChan)
+		handleItemWrite(cancel, config, compChan)
 		logger.Debugf("Done: Reading Item - %v", i)
 	}
+
+	// Wait for all items to be written
 	wg.Wait()
 	n.OnComplete(s.Event())
 }
