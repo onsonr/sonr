@@ -167,7 +167,6 @@ func (sq *SessionQueue) AddIncoming(from peer.ID, req *InviteRequest) error {
 		lastUpdated: int64(time.Now().Unix()),
 		results:     make(map[int32]bool),
 		ctx:         sq.ctx,
-		compChan:    make(chan itemResult),
 	}
 
 	// Add to Requests
@@ -186,7 +185,6 @@ func (sq *SessionQueue) AddOutgoing(to peer.ID, req *InviteRequest) error {
 		lastUpdated: int64(time.Now().Unix()),
 		results:     make(map[int32]bool),
 		ctx:         sq.ctx,
-		compChan:    make(chan itemResult),
 	}
 
 	// Add to Requests
