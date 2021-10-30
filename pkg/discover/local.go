@@ -88,7 +88,6 @@ func (p *Local) autoPushUpdates() {
 			logger.Error("Failed to send peer update to lobby topic", err)
 			continue
 		}
-		p.node.GetState().NeedsWait()
 		time.Sleep(time.Second * 8)
 	}
 }
@@ -110,7 +109,6 @@ func (p *Local) handleSub() {
 			p.messages <- newLobbyEvent(event.Peer, nil)
 			continue
 		}
-		p.node.GetState().NeedsWait()
 	}
 }
 

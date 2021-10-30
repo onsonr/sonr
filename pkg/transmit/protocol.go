@@ -233,7 +233,6 @@ func (p *TransmitProtocol) onIncomingTransfer(stream network.Stream) {
 
 		// Create Reader
 		s.ReadItem(i, p.node, reader, compChan)
-		p.node.GetState().NeedsWait()
 	}
 }
 
@@ -258,6 +257,5 @@ func (p *TransmitProtocol) onOutgoingTransfer(s *Session, remotePeer peer.ID) {
 
 		// Create New Writer
 		s.WriteItem(i, p.node, writer, compChan)
-		p.node.GetState().NeedsWait()
 	}
 }
