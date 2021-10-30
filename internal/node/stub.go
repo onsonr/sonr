@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/sonr-io/core/pkg/exchange"
-	"github.com/sonr-io/core/pkg/mailbox"
+	"github.com/sonr-io/core/pkg/authorize"
+	"github.com/sonr-io/core/pkg/discovery"
 	"github.com/sonr-io/core/pkg/transmit"
 
 	"google.golang.org/grpc"
@@ -89,17 +89,17 @@ type MotorNodeStub struct {
 
 	// Protocols
 	*transmit.TransmitProtocol
-	*exchange.ExchangeProtocol
-	*mailbox.MailboxProtocol
+	*discovery.DiscoveryProtocol
+	*authorize.AuthorizeProtocol
 }
 
 // startMotorService creates a new Client service stub for the node.
 func (n *Node) startMotorService(ctx context.Context, opts *options) (*MotorNodeStub, error) {
 
-	// Set Exchange Protocol
-	exchProtocol, err := exchange.NewProtocol(ctx, n.host, n, exchange.WithLocation(opts.location))
+	// Set Discovery Protocol
+	discProtocol, err := discovery.NewProtocol(ctx, n.host, n, discovery.WithLocation(opts.location))
 	if err != nil {
-		logger.Errorf("%s - Failed to start ExchangeProtocol", err)
+		logger.Errorf("%s - Failed to start DiscoveryProtocol", err)
 		return nil, err
 	}
 
@@ -113,11 +113,11 @@ func (n *Node) startMotorService(ctx context.Context, opts *options) (*MotorNode
 	// Create a new gRPC server
 	grpcServer := grpc.NewServer()
 	stub := &MotorNodeStub{
-		ctx:              ctx,
-		TransmitProtocol: transmitProtocol,
-		ExchangeProtocol: exchProtocol,
-		node:             n,
-		grpcServer:       grpcServer,
+		ctx:               ctx,
+		TransmitProtocol:  transmitProtocol,
+		DiscoveryProtocol: discProtocol,
+		node:              n,
+		grpcServer:        grpcServer,
 	}
 
 	// Start Routines
@@ -128,7 +128,7 @@ func (n *Node) startMotorService(ctx context.Context, opts *options) (*MotorNode
 
 // HasProtocols returns true if the node has the protocols.
 func (s *MotorNodeStub) HasProtocols() bool {
-	return s.TransmitProtocol != nil && s.ExchangeProtocol != nil
+	return s.TransmitProtocol != nil && s.DiscoveryProtocol != nil
 }
 
 // Serve serves the RPC Service on the given port.
@@ -142,7 +142,7 @@ func (s *MotorNodeStub) Serve(ctx context.Context, listener net.Listener) {
 		select {
 		case <-ctx.Done():
 			s.grpcServer.Stop()
-			s.ExchangeProtocol.Close()
+			s.DiscoveryProtocol.Close()
 			return
 		}
 	}
@@ -160,7 +160,7 @@ func (s *MotorNodeStub) Update() error {
 	// Check for Valid Protocols
 	if s.HasProtocols() {
 		// Update LobbyProtocol
-		err = s.ExchangeProtocol.Update()
+		err = s.DiscoveryProtocol.Update()
 		if err != nil {
 			logger.Errorf("%s - Failed to Update Lobby", err)
 		} else {
@@ -168,7 +168,7 @@ func (s *MotorNodeStub) Update() error {
 		}
 
 		// Update ExchangeProtocol
-		err := s.ExchangeProtocol.Put(peer)
+		err := s.DiscoveryProtocol.Put(peer)
 		if err != nil {
 			logger.Errorf("%s - Failed to Update Exchange", err)
 		} else {

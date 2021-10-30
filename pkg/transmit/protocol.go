@@ -4,13 +4,16 @@ import (
 	"container/list"
 	"context"
 	"fmt"
+	"sync"
 	"time"
 
 	"github.com/kataras/golog"
-	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-core/network"
+	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/pkg/common"
+	"google.golang.org/protobuf/proto"
 )
 
 // TransmitProtocol type
@@ -40,7 +43,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*T
 	// Setup Stream Handlers
 	host.SetStreamHandler(RequestPID, invProtocol.onInviteRequest)
 	host.SetStreamHandler(ResponsePID, invProtocol.onInviteResponse)
-	host.SetStreamHandler(SessionPID, invProtocol.onIncomingTransfer)
+	host.SetStreamHandler(IncomingPID, invProtocol.onIncomingTransfer)
 	logger.Debug("✅  TransmitProtocol is Activated \n")
 	return invProtocol, nil
 }
@@ -143,89 +146,151 @@ func (p *TransmitProtocol) Supply(req *api.SupplyRequest) error {
 	return nil
 }
 
-// SessionQueue is a queue for incoming and outgoing requests.
-type SessionQueue struct {
-	ctx   context.Context
-	host  *host.SNRHost
-	queue *list.List
-}
+// onInviteRequest peer requests handler
+func (p *TransmitProtocol) onInviteRequest(s network.Stream) {
+	logger.Debug("Received Invite Request")
+	// Initialize Stream Data
+	remotePeer := s.Conn().RemotePeer()
+	r := msgio.NewReader(s)
 
-// AddIncoming adds Incoming Request to Transfer Queue
-func (sq *SessionQueue) AddIncoming(from peer.ID, req *InviteRequest) error {
-	// Authenticate Message
-	valid := sq.host.AuthenticateMessage(req, req.Metadata)
-	if !valid {
-		return ErrFailedAuth
-	}
-
-	// Create New TransferEntry
-	entry := Session{
-		direction:   common.Direction_INCOMING,
-		payload:     req.GetPayload(),
-		from:        req.GetFrom(),
-		to:          req.GetTo(),
-		lastUpdated: int64(time.Now().Unix()),
-		results:     make(map[int32]bool),
-		ctx:         sq.ctx,
-	}
-
-	// Add to Requests
-	sq.queue.PushBack(entry)
-	return nil
-}
-
-// AddOutgoing adds Outgoing Request to Transfer Queue
-func (sq *SessionQueue) AddOutgoing(to peer.ID, req *InviteRequest) error {
-	// Create New TransferEntry
-	entry := Session{
-		direction:   common.Direction_OUTGOING,
-		payload:     req.GetPayload(),
-		from:        req.GetFrom(),
-		to:          req.GetTo(),
-		lastUpdated: int64(time.Now().Unix()),
-		results:     make(map[int32]bool),
-		ctx:         sq.ctx,
-	}
-
-	// Add to Requests
-	sq.queue.PushBack(entry)
-	return nil
-}
-
-// Next returns topmost entry in the queue.
-func (sq *SessionQueue) Next() (Session, error) {
-	// Find Entry for Peer
-	entry := sq.queue.Remove(sq.queue.Front()).(Session)
-	entry.lastUpdated = int64(time.Now().Unix())
-	return entry, nil
-}
-
-// Validate takes list of Requests and returns true if Request exists in List and UUID is verified.
-// Method also returns the InviteRequest that points to the Response.
-func (sq *SessionQueue) Validate(resp *InviteResponse) (Session, error) {
-	// Authenticate Message
-	valid := sq.host.AuthenticateMessage(resp, resp.Metadata)
-	if !valid {
-		return Session{}, ErrFailedAuth
-	}
-
-	// Check Decision
-	if !resp.GetDecision() {
-		return Session{}, nil
-	}
-
-	// Check if the request is valid
-	if sq.queue.Len() == 0 {
-		return Session{}, ErrEmptyRequests
-	}
-
-	// Get Next Entry
-	entry, err := sq.Next()
+	// Read the request
+	buf, err := r.ReadMsg()
 	if err != nil {
-		logger.Errorf("%s - Failed to get Transmit entry", err)
-		return Session{}, err
+		s.Reset()
+		logger.Errorf("%s - Failed to Read Invite Request buffer.", err)
+	}
+	s.Close()
+
+	// unmarshal it
+	req := &InviteRequest{}
+	err = proto.Unmarshal(buf, req)
+	if err != nil {
+		logger.Errorf("%s - Failed to Unmarshal Invite REQUEST buffer.", err)
 	}
 
-	entry.lastUpdated = int64(time.Now().Unix())
-	return entry, nil
+	// generate response message
+	err = p.sessionQueue.AddIncoming(remotePeer, req)
+	if err != nil {
+		logger.Errorf("%s - Failed to add incoming session to queue.", err)
+	}
+
+	// store request data into Context
+	p.node.OnInvite(req.ToEvent())
+}
+
+// onInviteResponse response handler
+func (p *TransmitProtocol) onInviteResponse(s network.Stream) {
+	logger.Debug("Received Invite Response")
+	// Initialize Stream Data
+	remotePeer := s.Conn().RemotePeer()
+	r := msgio.NewReader(s)
+
+	// Read the request
+	buf, err := r.ReadMsg()
+	if err != nil {
+		logger.Errorf("%s - Failed to Read Invite RESPONSE buffer.", err)
+	}
+	s.Close()
+
+	// Unmarshal response
+	resp := &InviteResponse{}
+	err = proto.Unmarshal(buf, resp)
+	if err != nil {
+		logger.Errorf("%s - Failed to Unmarshal Invite RESPONSE buffer.", err)
+	}
+
+	// Locate request data and remove it if found
+	entry, err := p.sessionQueue.Validate(resp)
+	if err != nil {
+		logger.Errorf("%s - Failed to Validate Invite RESPONSE buffer.", err)
+	}
+
+	// Check for Decision and Start Outgoing Transfer
+	if resp.GetDecision() {
+		// Create a new stream
+		stream, err := p.host.NewStream(p.ctx, remotePeer, IncomingPID)
+		if err != nil {
+			logger.Errorf("%s - Failed to create new stream.", err)
+		}
+
+		// Call Outgoing Transfer
+		p.onOutgoingTransfer(entry, stream)
+	}
+	p.node.OnDecision(resp.ToEvent())
+}
+
+// onIncomingTransfer incoming transfer handler
+func (p *TransmitProtocol) onIncomingTransfer(stream network.Stream) {
+	logger.Debug("Beginning INCOMING Transmit Stream")
+	// Find Entry in Queue
+	s, err := p.sessionQueue.Next()
+	if err != nil {
+		logger.Errorf("%s - Failed to find transfer request", err)
+		stream.Close()
+	}
+
+	// Create New Reader
+	var wg sync.WaitGroup
+
+	// Create Reader
+	for i := range s.Items() {
+		// Initialize Sync Management
+		compChan := make(chan itemResult)
+		wg.Add(1)
+		go handleComplete(s, p.node, &wg, compChan)
+
+		// Create Reader
+		logger.Debugf("Start: Reading Item - %v", i)
+		s.StartItemRead(i, p.node, stream, compChan)
+		logger.Debugf("Done: Reading Item - %v", i)
+	}
+
+	// Wait for all items to be written
+	wg.Wait()
+	stream.Close()
+	p.node.OnComplete(s.Event())
+}
+
+// onOutgoingTransfer is called by onInviteResponse if Validated
+func (p *TransmitProtocol) onOutgoingTransfer(s *Session, stream network.Stream) {
+	logger.Debug("Beginning OUTGOING Transmit Stream")
+	// Initialize Params
+	var wg sync.WaitGroup
+
+	// Create New Writer
+	for i := range s.Items() {
+		// Initialize Sync Management
+		compChan := make(chan itemResult)
+		wg.Add(1)
+		go handleComplete(s, p.node, &wg, compChan)
+
+		// Create New Writer
+		s.StartItemWrite(i, p.node, stream, compChan)
+		logger.Debugf("Done: Writing Item - %v", i)
+	}
+
+	// Wait for all items to be written
+	wg.Wait()
+	p.node.OnComplete(s.Event())
+}
+
+// handleComplete handles the completion of a session item.
+func handleComplete(s *Session, n api.NodeImpl, wg *sync.WaitGroup, compChan chan itemResult) {
+	defer wg.Done()
+	r := <-compChan
+	if !r.success {
+		logger.Errorf("Failed to Complete File: %s", r.item.GetFile().GetName())
+		return
+	}
+	// Update Success
+	logger.Debug("Received Item Result", golog.Fields{"success": r.success})
+	s.results[int32(r.index)] = r.success
+
+	// Replace Incoming Item
+	if r.IsIncoming() {
+		s.payload.Items[r.index] = r.item
+		s.lastUpdated = int64(time.Now().Unix())
+	}
+	close(compChan)
+	return
 }

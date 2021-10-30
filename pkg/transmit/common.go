@@ -1,16 +1,13 @@
 package transmit
 
 import (
-	"bytes"
 	"errors"
 	"time"
 
 	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
-	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/api"
-	"github.com/sonr-io/core/internal/fs"
 	"github.com/sonr-io/core/internal/wallet"
 	"github.com/sonr-io/core/pkg/common"
 )
@@ -19,7 +16,8 @@ import (
 const (
 	RequestPID  protocol.ID = "/transmit/request/0.0.1"
 	ResponsePID protocol.ID = "/transmit/response/0.0.1"
-	SessionPID  protocol.ID = "/transmit/session/0.0.1"
+	IncomingPID protocol.ID = "/transmit/incoming/0.0.1"
+	OutgoingPID protocol.ID = "/transmit/outgoing/0.0.1"
 )
 
 // Error Definitions
@@ -32,6 +30,17 @@ var (
 	ErrEmptyRequests   = errors.New("Empty Request list provided")
 	ErrRequestNotFound = errors.New("Request not found in list")
 )
+
+// calculateInterval calculates the interval for the progress callback
+func calculateInterval(size int64) int {
+	// Calculate Interval
+	interval := size / 100
+	if interval < 1 {
+		interval = 1
+	}
+	logger.Debugf("Calculated Item progress interval: %v", interval)
+	return int(interval)
+}
 
 // ToEvent method on InviteResponse converts InviteResponse to DecisionEvent.
 func (ir *InviteResponse) ToEvent() *api.DecisionEvent {
@@ -125,72 +134,4 @@ func (p *TransmitProtocol) createResponse(decs bool, to *common.Peer) (peer.ID, 
 		return "", nil, err
 	}
 	return toId, resp, nil
-}
-
-// itemConfig creates a new ItemConfig
-type itemConfig struct {
-	index  int
-	count  int
-	item   *common.Payload_Item
-	node   api.NodeImpl
-	reader msgio.ReadCloser
-	writer msgio.WriteCloser
-}
-
-// Size returns the size of the item
-func (ic itemConfig) Path() string {
-	return ic.item.GetFile().GetPath()
-}
-
-// Size returns the size of the item
-func (ic itemConfig) Size() int64 {
-	return ic.item.GetSize()
-}
-
-// ApplyWriter applies the config to the itemWriter
-func (ic itemConfig) ApplyReader(iw *itemReader) error {
-	// Get File Item
-	fi := ic.item.GetFile()
-	err := fi.ResetPath(fs.Downloads)
-	if err != nil {
-		return err
-	}
-
-	// Set ItemReader Properties
-	iw.item = fi
-	iw.buffer = bytes.Buffer{}
-	iw.index = ic.index
-	iw.count = ic.count
-	iw.size = fi.GetSize()
-	iw.node = ic.node
-	iw.written = 0
-	iw.progressChan = make(chan int)
-	iw.doneChan = make(chan bool, 1)
-	iw.interval = calculateInterval(fi.GetSize())
-	return nil
-}
-
-// ApplyWriter applies the config to the itemWriter
-func (ic itemConfig) ApplyWriter(iw *itemWriter) {
-	iw.item = ic.item.GetFile()
-	iw.index = ic.index
-	iw.count = ic.count
-	iw.size = ic.Size()
-	iw.node = ic.node
-	iw.written = 0
-	iw.progressChan = make(chan int)
-	iw.doneChan = make(chan bool, 1)
-	iw.writer = ic.writer
-	iw.interval = calculateInterval(ic.Size())
-}
-
-// calculateInterval calculates the interval for the progress callback
-func calculateInterval(size int64) int {
-	// Calculate Interval
-	interval := size / 100
-	if interval < 1 {
-		interval = 1
-	}
-	logger.Debugf("Calculated Item progress interval: %v", interval)
-	return int(interval)
 }

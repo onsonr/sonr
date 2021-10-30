@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package sonr.protocols.exchange;
+package sonr.protocols.discovery;
 import "proto/common/core.proto";
-option go_package = "github.com/sonr-io/core/pkg/exchange";
+option go_package = "github.com/sonr-io/core/pkg/discovery";
 
 // AuthorizeRequest is Message for Verifying Request (Hmac Sha256)
 message AuthorizeRequest {

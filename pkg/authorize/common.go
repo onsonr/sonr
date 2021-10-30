@@ -1,4 +1,4 @@
-package mailbox
+package authorize
 
 import (
 	"errors"
@@ -55,7 +55,7 @@ func fetchApiKeys() (string, string, error) {
 }
 
 // getMailboxPath returns the mailbox path from the device
-func (mb *MailboxProtocol) getMailboxPath() (string, error) {
+func (mb *AuthorizeProtocol) getMailboxPath() (string, error) {
 	// Get Mailbox Path
 	path, err := fs.ThirdParty.GenPath(TextileMailboxDirName)
 	if err != nil {
@@ -66,7 +66,7 @@ func (mb *MailboxProtocol) getMailboxPath() (string, error) {
 }
 
 // loadMailbox loads an existing mailbox instance
-func (mb *MailboxProtocol) loadMailbox() error {
+func (mb *AuthorizeProtocol) loadMailbox() error {
 	logger.Debug("Loading Mailbox...")
 
 	// Get Mailbox Path
@@ -90,7 +90,7 @@ func (mb *MailboxProtocol) loadMailbox() error {
 }
 
 // newMailbox creates a new mailbox instance
-func (mb *MailboxProtocol) newMailbox() error {
+func (mb *AuthorizeProtocol) newMailbox() error {
 	logger.Debug("Creating new Mailbox...")
 
 	// Get Mailbox Path
@@ -153,7 +153,7 @@ func (ir *InviteRequest) ToEvent() *api.InviteEvent {
 }
 
 // createRequest creates a new InviteRequest
-func (p *MailboxProtocol) createRequest(to *common.Peer) (peer.ID, *InviteRequest, error) {
+func (p *AuthorizeProtocol) createRequest(to *common.Peer) (peer.ID, *InviteRequest, error) {
 	// Call Peer from Node
 	from, err := p.node.Peer()
 	if err != nil {
@@ -193,7 +193,7 @@ func (p *MailboxProtocol) createRequest(to *common.Peer) (peer.ID, *InviteReques
 }
 
 // createResponse creates a new InviteResponse
-func (p *MailboxProtocol) createResponse(decs bool, to *common.Peer) (peer.ID, *InviteResponse, error) {
+func (p *AuthorizeProtocol) createResponse(decs bool, to *common.Peer) (peer.ID, *InviteResponse, error) {
 
 	// Call Peer from Node
 	from, err := p.node.Peer()

@@ -1,9 +1,9 @@
 syntax = "proto3";
 
-package sonr.protocols.mailbox;
+package sonr.protocols.authorize;
 import "proto/common/core.proto";
 import "proto/common/data.proto";
-option go_package = "github.com/sonr-io/core/pkg/mailbox";
+option go_package = "github.com/sonr-io/core/pkg/authorize";
 
 message MailboxMessage {
   string id = 1; // ID is the Message ID

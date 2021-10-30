@@ -1,16 +1,17 @@
 package transmit
 
 import (
+	"bytes"
+	"container/list"
 	"context"
-	"io"
-	"sync"
 	"time"
 
-	"github.com/kataras/golog"
 	"github.com/libp2p/go-libp2p-core/network"
+	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-msgio"
 	"github.com/sonr-io/core/internal/api"
 	"github.com/sonr-io/core/internal/fs"
+	"github.com/sonr-io/core/internal/host"
 	"github.com/sonr-io/core/pkg/common"
 )
 
@@ -25,40 +26,18 @@ type Session struct {
 	results     map[int32]bool
 }
 
-// CreateReadConfig creates a new itemConfig for the given index for reading.
-func (s Session) CreateReadConfig(index int, n api.NodeImpl, reader msgio.ReadCloser) itemConfig {
-	return itemConfig{
-		index:  index,
-		node:   n,
-		reader: reader,
-		item:   s.Items()[index],
-		count:  len(s.Items()),
-	}
-}
-
-// CreateWriteConfig creates a new itemConfig for the given index for writing.
-func (s Session) CreateWriteConfig(index int, n api.NodeImpl, writer msgio.WriteCloser) itemConfig {
-	return itemConfig{
-		index:  index,
-		node:   n,
-		writer: writer,
-		item:   s.Items()[index],
-		count:  len(s.Items()),
-	}
-}
-
 // MapItems performs PayloadItemFunc on each item in the Payload.
-func (s Session) Items() []*common.Payload_Item {
+func (s *Session) Items() []*common.Payload_Item {
 	return s.payload.GetItems()
 }
 
 // Count returns the number of items in the payload.
-func (s Session) Count() int {
+func (s *Session) Count() int {
 	return len(s.Items())
 }
 
 // Event returns the CompleteEvent for the given session.
-func (s Session) Event() *api.CompleteEvent {
+func (s *Session) Event() *api.CompleteEvent {
 	return &api.CompleteEvent{
 		From:       s.from,
 		To:         s.to,
@@ -71,78 +50,46 @@ func (s Session) Event() *api.CompleteEvent {
 }
 
 // IsIncoming returns true if the session is incoming.
-func (s Session) IsIncoming() bool {
+func (s *Session) IsIncoming() bool {
 	return s.direction == common.Direction_INCOMING
 }
 
 // IsOutgoing returns true if the session is outgoing.
-func (s Session) IsOutgoing() bool {
+func (s *Session) IsOutgoing() bool {
 	return s.direction == common.Direction_OUTGOING
 }
 
-// HandleComplete handles the completion of a session item.
-func (s Session) HandleComplete(ctx context.Context, n api.NodeImpl, wg *sync.WaitGroup, compChan chan itemResult) {
-	defer wg.Done()
-	r := <-compChan
-	if !r.success {
-		logger.Errorf("Failed to Complete File: %s", r.item.GetFile().GetName())
-		return
-	}
-	// Update Success
-	logger.Debug("Received Item Result", golog.Fields{"success": r.success})
-	s.results[int32(r.index)] = r.success
-
-	// Replace Incoming Item
-	if r.IsIncoming() {
-		s.payload.Items[r.index] = r.item
-		s.lastUpdated = int64(time.Now().Unix())
-	}
-	close(compChan)
-	return
-}
-
-// -----------------------------------------------------------------------------
-// Transmit Reader Interface
-// -----------------------------------------------------------------------------
-
-// ReadFrom reads the next Session from the given stream.
-func (s Session) ReadFrom(stream network.Stream, n api.NodeImpl) {
-	logger.Debug("Beginning INCOMING Transmit Stream")
-	// Initialize Params
-	ctx, cancel := context.WithCancel(s.ctx)
-	defer cancel()
-	var wg sync.WaitGroup
-
-	// Create Reader
-	rs := msgio.NewReader(stream)
-	for i := range s.Items() {
-		// Initialize Sync Management
-		compChan := make(chan itemResult, 1)
-		wg.Add(1)
-		go s.HandleComplete(ctx, n, &wg, compChan)
-
-		// Create Reader
-		logger.Debugf("Start: Reading Item - %v", i)
-		handleItemRead(s.CreateReadConfig(i, n, rs), compChan)
-		logger.Debugf("Done: Reading Item - %v", i)
-	}
-
-	// Wait for all items to be written
-	wg.Wait()
-	stream.Close()
-	n.OnComplete(s.Event())
-}
-
-// handleItemRead Returns a new Reader for the given FileItem
-func handleItemRead(config itemConfig, compChan chan itemResult) {
+// StartItemRead Returns a new Reader for the given FileItem
+func (s *Session) StartItemRead(i int, n api.NodeImpl, str network.Stream, cchan chan itemResult) {
 	logger.Debug("Handling Item Read...")
-	// Create New Reader
-	ir := &itemReader{}
-	if err := config.ApplyReader(ir); err != nil {
+	reader := msgio.NewReader(str)
+
+	// Get File Item
+	fi := s.Items()[i].GetFile()
+	err := fi.ResetPath(fs.Downloads)
+	if err != nil {
 		logger.Errorf("Failed to Apply Reader: %s", err)
 		return
 	}
-	go ir.startRead(config.reader)
+
+	// Create New Reader
+	ir := &itemReader{
+		item:         fi,
+		index:        i,
+		count:        s.Count(),
+		size:         s.Items()[i].GetSize(),
+		node:         n,
+		written:      0,
+		progressChan: make(chan int),
+		doneChan:     make(chan bool),
+		interval:     calculateInterval(s.Items()[i].GetSize()),
+	}
+
+	// Initialize Properties
+	buffer := bytes.Buffer{}
+	defer close(ir.progressChan)
+	defer close(ir.doneChan)
+	go ir.startRead(buffer, reader)
 
 	// Route Data from Stream
 	for {
@@ -157,101 +104,51 @@ func handleItemRead(config itemConfig, compChan chan itemResult) {
 			if r {
 				logger.Debug("Item Read has Completed, successfully")
 				// Write Buffer to File
-				if err := ir.item.WriteFile(ir.buffer.Bytes()); err != nil {
+				if err := ir.item.WriteFile(buffer.Bytes()); err != nil {
 					logger.Errorf("%s - Failed to Sync File on Read Stream", err)
-					compChan <- ir.toResult(false)
+					cchan <- ir.toResult(false)
 				} else {
-					compChan <- ir.toResult(true)
+					cchan <- ir.toResult(true)
 				}
 			} else {
 				logger.Error("Item Read has Completed, unsuccessfully")
-				compChan <- ir.toResult(false)
+				cchan <- ir.toResult(false)
 			}
 			return
 		}
 	}
 }
 
-// startRead reads from the given Reader and writes to the given Buffer.
-func (ir *itemReader) startRead(reader msgio.ReadCloser) {
-	// Route Data from Stream
-	for i := 0; i < int(ir.size); {
-		// Read Next Message
-		buf, err := reader.ReadMsg()
-		if err != nil {
-			// Handle EOF
-			if err == io.EOF {
-				logger.Debug("Reader has reached end of stream.")
-				break
-			}
-
-			// Unexpected Error
-			logger.Errorf("%s - Failed to Read Next Message on Read Stream", err)
-			ir.doneChan <- false
-			return
-		} else {
-			// Write Chunk to File
-			if err := ir.WriteChunk(buf); err != nil {
-				logger.Errorf("%s - Failed to Write Buffer to File on Read Stream", err)
-				ir.doneChan <- false
-				return
-			}
-			i += len(buf)
-		}
-	}
-
-	// Complete Writing to File
-	ir.doneChan <- true
-}
-
-// -----------------------------------------------------------------------------
-// Transmit Writer Interface
-// -----------------------------------------------------------------------------
-
-// WriteTo writes the Session to the given stream.
-func (s Session) WriteTo(stream network.Stream, n api.NodeImpl) {
-	logger.Debug("Beginning OUTGOING Transmit Stream")
-	// Initialize Params
-	ctx, cancel := context.WithCancel(s.ctx)
-	defer cancel()
-	var wg sync.WaitGroup
-
+// StartItemWrite handles the writing of a FileItem to a Stream
+func (s *Session) StartItemWrite(i int, n api.NodeImpl, str network.Stream, cchan chan itemResult) {
+	logger.Debugf("Start: Writing Item - %v", i)
 	// Create New Writer
-	wc := msgio.NewWriter(stream)
-	for i := range s.Items() {
-		// Initialize Sync Management
-		compChan := make(chan itemResult, 1)
-		wg.Add(1)
-		go s.HandleComplete(ctx, n, &wg, compChan)
-
-		// Create New Writer
-		handleItemWrite(s.CreateWriteConfig(i, n, wc), compChan)
-		logger.Debugf("Done: Writing Item - %v", i)
+	writer := msgio.NewWriter(str)
+	iw := &itemWriter{
+		item:         s.Items()[i].GetFile(),
+		index:        i,
+		count:        s.Count(),
+		node:         n,
+		size:         s.Items()[i].GetFile().GetSize(),
+		written:      0,
+		progressChan: make(chan int),
+		doneChan:     make(chan bool),
+		interval:     calculateInterval(s.Items()[i].GetFile().GetSize()),
 	}
-
-	// Wait for all items to be written
-	wg.Wait()
-	n.OnComplete(s.Event())
-}
-
-// handleItemWrite handles the writing of a FileItem to a Stream
-func handleItemWrite(config itemConfig, compChan chan itemResult) {
-	logger.Debugf("Start: Writing Item - %v", config.index)
-	// Create New Writer
-	iw := &itemWriter{}
-	config.ApplyWriter(iw)
+	defer close(iw.progressChan)
+	defer close(iw.doneChan)
 
 	// Define Chunker Opts
-	chunker, err := fs.NewFileChunker(config.Path())
+	chunker, err := fs.NewFileChunker(s.Items()[i].GetFile().GetPath())
 	if err != nil {
 		logger.Errorf("%s - Failed to create new chunker.", err)
 		iw.doneChan <- false
-		compChan <- iw.toResult(false)
+		cchan <- iw.toResult(false)
 		return
 	}
 
 	// Write Chunks to Stream
-	go iw.startWrite(chunker)
+	go iw.startWrite(chunker, writer)
 
 	// Await Progress and Result
 	for {
@@ -263,36 +160,95 @@ func handleItemWrite(config itemConfig, compChan chan itemResult) {
 			}
 		case r := <-iw.doneChan:
 			logger.Debug("Item Write is Complete")
-			compChan <- iw.toResult(r)
+			cchan <- iw.toResult(r)
 			return
 		}
 	}
 }
 
-// startWrite writes the chunks of the given file to the stream
-func (iw *itemWriter) startWrite(chunker *fs.Chunker) {
-	// Loop through File
-	for {
-		c, err := chunker.Next()
-		if err != nil {
-			// Handle EOF
-			if err == io.EOF {
-				logger.Debug("Chunker has reached end of file.")
-				break
-			}
+// SessionQueue is a queue for incoming and outgoing requests.
+type SessionQueue struct {
+	ctx   context.Context
+	host  *host.SNRHost
+	queue *list.List
+}
 
-			// Unexpected Error
-			logger.Errorf("%s - Error reading chunk.", err)
-			iw.doneChan <- false
-			return
-		}
-
-		// Write Chunk to Stream
-		if err := iw.WriteChunk(c.Data, c.Length); err != nil {
-			logger.Errorf("%s - Error Writing data to msgio.Writer", err)
-			iw.doneChan <- false
-			return
-		}
+// AddIncoming adds Incoming Request to Transfer Queue
+func (sq *SessionQueue) AddIncoming(from peer.ID, req *InviteRequest) error {
+	// Authenticate Message
+	valid := sq.host.AuthenticateMessage(req, req.Metadata)
+	if !valid {
+		return ErrFailedAuth
 	}
-	iw.doneChan <- true
+
+	// Create New TransferEntry
+	entry := Session{
+		direction:   common.Direction_INCOMING,
+		payload:     req.GetPayload(),
+		from:        req.GetFrom(),
+		to:          req.GetTo(),
+		lastUpdated: int64(time.Now().Unix()),
+		results:     make(map[int32]bool),
+		ctx:         sq.ctx,
+	}
+
+	// Add to Requests
+	sq.queue.PushBack(&entry)
+	return nil
+}
+
+// AddOutgoing adds Outgoing Request to Transfer Queue
+func (sq *SessionQueue) AddOutgoing(to peer.ID, req *InviteRequest) error {
+	// Create New TransferEntry
+	entry := Session{
+		direction:   common.Direction_OUTGOING,
+		payload:     req.GetPayload(),
+		from:        req.GetFrom(),
+		to:          req.GetTo(),
+		lastUpdated: int64(time.Now().Unix()),
+		results:     make(map[int32]bool),
+		ctx:         sq.ctx,
+	}
+
+	// Add to Requests
+	sq.queue.PushBack(&entry)
+	return nil
+}
+
+// Next returns topmost entry in the queue.
+func (sq *SessionQueue) Next() (*Session, error) {
+	// Find Entry for Peer
+	entry := sq.queue.Remove(sq.queue.Front()).(*Session)
+	entry.lastUpdated = int64(time.Now().Unix())
+	return entry, nil
+}
+
+// Validate takes list of Requests and returns true if Request exists in List and UUID is verified.
+// Method also returns the InviteRequest that points to the Response.
+func (sq *SessionQueue) Validate(resp *InviteResponse) (*Session, error) {
+	// Authenticate Message
+	valid := sq.host.AuthenticateMessage(resp, resp.Metadata)
+	if !valid {
+		return nil, ErrFailedAuth
+	}
+
+	// Check Decision
+	if !resp.GetDecision() {
+		return nil, nil
+	}
+
+	// Check if the request is valid
+	if sq.queue.Len() == 0 {
+		return nil, ErrEmptyRequests
+	}
+
+	// Get Next Entry
+	entry, err := sq.Next()
+	if err != nil {
+		logger.Errorf("%s - Failed to get Transmit entry", err)
+		return nil, err
+	}
+
+	entry.lastUpdated = int64(time.Now().Unix())
+	return entry, nil
 }

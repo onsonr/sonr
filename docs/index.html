@@ -179,15 +179,15 @@
             <ul>
               
                 <li>
-                  <a href="#sonr.api.AuthorizeRequest"><span class="badge">M</span>AuthorizeRequest</a>
+                  <a href="#sonr.api.AuthenticateRequest"><span class="badge">M</span>AuthenticateRequest</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.api.AuthorizeResponse"><span class="badge">M</span>AuthorizeResponse</a>
+                  <a href="#sonr.api.AuthenticateResponse"><span class="badge">M</span>AuthenticateResponse</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.api.AuthorizeResponse.RecordsEntry"><span class="badge">M</span>AuthorizeResponse.RecordsEntry</a>
+                  <a href="#sonr.api.AuthenticateResponse.RecordsEntry"><span class="badge">M</span>AuthenticateResponse.RecordsEntry</a>
                 </li>
               
                 <li>
@@ -592,49 +592,21 @@
         
           
           <li>
-            <a href="#proto%2fprotocols%2fexchange.proto">proto/protocols/exchange.proto</a>
+            <a href="#proto%2fprotocols%2fauthorize.proto">proto/protocols/authorize.proto</a>
             <ul>
               
                 <li>
-                  <a href="#sonr.protocols.exchange.AuthorizeRequest"><span class="badge">M</span>AuthorizeRequest</a>
+                  <a href="#sonr.protocols.authorize.InviteRequest"><span class="badge">M</span>InviteRequest</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.protocols.exchange.AuthorizeResponse"><span class="badge">M</span>AuthorizeResponse</a>
+                  <a href="#sonr.protocols.authorize.InviteResponse"><span class="badge">M</span>InviteResponse</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.protocols.exchange.AuthorizeResponse.RecordsEntry"><span class="badge">M</span>AuthorizeResponse.RecordsEntry</a>
+                  <a href="#sonr.protocols.authorize.MailboxMessage"><span class="badge">M</span>MailboxMessage</a>
                 </li>
               
-                <li>
-                  <a href="#sonr.protocols.exchange.LobbyMessage"><span class="badge">M</span>LobbyMessage</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.exchange.LookupRequest"><span class="badge">M</span>LookupRequest</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.exchange.LookupResponse"><span class="badge">M</span>LookupResponse</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.exchange.VisibilityRequest"><span class="badge">M</span>VisibilityRequest</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.exchange.VisibilityResponse"><span class="badge">M</span>VisibilityResponse</a>
-                </li>
-              
-              
-                <li>
-                  <a href="#sonr.protocols.exchange.VisibilityRequest.Visibility"><span class="badge">E</span>VisibilityRequest.Visibility</a>
-                </li>
-              
-                <li>
-                  <a href="#sonr.protocols.exchange.VisibilityResponse.Visibility"><span class="badge">E</span>VisibilityResponse.Visibility</a>
-                </li>
               
               
               
@@ -643,21 +615,49 @@
         
           
           <li>
-            <a href="#proto%2fprotocols%2fmailbox.proto">proto/protocols/mailbox.proto</a>
+            <a href="#proto%2fprotocols%2fdiscovery.proto">proto/protocols/discovery.proto</a>
             <ul>
               
                 <li>
-                  <a href="#sonr.protocols.mailbox.InviteRequest"><span class="badge">M</span>InviteRequest</a>
+                  <a href="#sonr.protocols.discovery.AuthorizeRequest"><span class="badge">M</span>AuthorizeRequest</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.protocols.mailbox.InviteResponse"><span class="badge">M</span>InviteResponse</a>
+                  <a href="#sonr.protocols.discovery.AuthorizeResponse"><span class="badge">M</span>AuthorizeResponse</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.protocols.mailbox.MailboxMessage"><span class="badge">M</span>MailboxMessage</a>
+                  <a href="#sonr.protocols.discovery.AuthorizeResponse.RecordsEntry"><span class="badge">M</span>AuthorizeResponse.RecordsEntry</a>
                 </li>
               
+                <li>
+                  <a href="#sonr.protocols.discovery.LobbyMessage"><span class="badge">M</span>LobbyMessage</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.protocols.discovery.LookupRequest"><span class="badge">M</span>LookupRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.protocols.discovery.LookupResponse"><span class="badge">M</span>LookupResponse</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.protocols.discovery.VisibilityRequest"><span class="badge">M</span>VisibilityRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.protocols.discovery.VisibilityResponse"><span class="badge">M</span>VisibilityResponse</a>
+                </li>
+              
+              
+                <li>
+                  <a href="#sonr.protocols.discovery.VisibilityRequest.Visibility"><span class="badge">E</span>VisibilityRequest.Visibility</a>
+                </li>
+              
+                <li>
+                  <a href="#sonr.protocols.discovery.VisibilityResponse.Visibility"><span class="badge">E</span>VisibilityResponse.Visibility</a>
+                </li>
               
               
               
@@ -776,8 +776,8 @@
       <p>This file has messages for describing a API Request/Responses with RPC.</p>
 
       
-        <h3 id="sonr.api.AuthorizeRequest">AuthorizeRequest</h3>
-        <p>(Highway) AuthorizeRequest is Message for Verifying Request (Hmac Sha256)</p>
+        <h3 id="sonr.api.AuthenticateRequest">AuthenticateRequest</h3>
+        <p>(Highway) AuthenticateRequest is Message for Verifying Request (Hmac Sha256)</p>
 
         
           <table class="field-table">
@@ -814,8 +814,8 @@
 
         
       
-        <h3 id="sonr.api.AuthorizeResponse">AuthorizeResponse</h3>
-        <p>(Highway) AuthorizeResponse is Message for Verifying Response (Hmac Sha256)</p>
+        <h3 id="sonr.api.AuthenticateResponse">AuthenticateResponse</h3>
+        <p>(Highway) AuthenticateResponse is Message for Verifying Response (Hmac Sha256)</p>
 
         
           <table class="field-table">
@@ -840,7 +840,7 @@
               
                 <tr>
                   <td>records</td>
-                  <td><a href="#sonr.api.AuthorizeResponse.RecordsEntry">AuthorizeResponse.RecordsEntry</a></td>
+                  <td><a href="#sonr.api.AuthenticateResponse.RecordsEntry">AuthenticateResponse.RecordsEntry</a></td>
                   <td>repeated</td>
                   <td><p>Updated Domain TXT Records </p></td>
                 </tr>
@@ -852,7 +852,7 @@
 
         
       
-        <h3 id="sonr.api.AuthorizeResponse.RecordsEntry">AuthorizeResponse.RecordsEntry</h3>
+        <h3 id="sonr.api.AuthenticateResponse.RecordsEntry">AuthenticateResponse.RecordsEntry</h3>
         <p></p>
 
         
@@ -4451,9 +4451,9 @@ standard](https://www.iso.org/iso-3166-country-codes.html). </p></td>
           <tbody>
             
               <tr>
-                <td>Authorize</td>
-                <td><a href="#sonr.api.AuthorizeRequest">.sonr.api.AuthorizeRequest</a></td>
-                <td><a href="#sonr.api.AuthorizeResponse">.sonr.api.AuthorizeResponse</a></td>
+                <td>Authenticate</td>
+                <td><a href="#sonr.api.AuthenticateRequest">.sonr.api.AuthenticateRequest</a></td>
+                <td><a href="#sonr.api.AuthenticateResponse">.sonr.api.AuthenticateResponse</a></td>
                 <td><p>Authorize Signing Method Request for Data</p></td>
               </tr>
             
@@ -4604,360 +4604,12 @@ Returns a stream of Lobby Refresh Events</p></td>
     
       
       <div class="file-heading">
-        <h2 id="proto/protocols/exchange.proto">proto/protocols/exchange.proto</h2><a href="#title">Top</a>
+        <h2 id="proto/protocols/authorize.proto">proto/protocols/authorize.proto</h2><a href="#title">Top</a>
       </div>
       <p></p>
 
       
-        <h3 id="sonr.protocols.exchange.AuthorizeRequest">AuthorizeRequest</h3>
-        <p>AuthorizeRequest is Message for Verifying Request (Hmac Sha256)</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>sName</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>SName combined with Device ID and Hashed </p></td>
-                </tr>
-              
-                <tr>
-                  <td>mnemonic</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Mnemonic Hashed with public key for fingerprint </p></td>
-                </tr>
-              
-                <tr>
-                  <td>deviceId</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Device ID </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.protocols.exchange.AuthorizeResponse">AuthorizeResponse</h3>
-        <p>AuthorizeResponse is Message for Verifying Response (Hmac Sha256)</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>success</td>
-                  <td><a href="#bool">bool</a></td>
-                  <td></td>
-                  <td><p>If Values were Verified </p></td>
-                </tr>
-              
-                <tr>
-                  <td>error</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Error Message </p></td>
-                </tr>
-              
-                <tr>
-                  <td>records</td>
-                  <td><a href="#sonr.protocols.exchange.AuthorizeResponse.RecordsEntry">AuthorizeResponse.RecordsEntry</a></td>
-                  <td>repeated</td>
-                  <td><p>Updated Domain TXT Records </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.protocols.exchange.AuthorizeResponse.RecordsEntry">AuthorizeResponse.RecordsEntry</h3>
-        <p></p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>key</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>value</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.protocols.exchange.LobbyMessage">LobbyMessage</h3>
-        <p>LobbyMessage is message passed from Peer in Lobby</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>peer</td>
-                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
-                  <td></td>
-                  <td><p>Users Peer Data </p></td>
-                </tr>
-              
-                <tr>
-                  <td>message</td>
-                  <td><a href="#string">string</a></td>
-                  <td>optional</td>
-                  <td><p>Message to be published </p></td>
-                </tr>
-              
-                <tr>
-                  <td>metadata</td>
-                  <td><a href="#sonr.core.Metadata">sonr.core.Metadata</a></td>
-                  <td></td>
-                  <td><p>Metadata </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.protocols.exchange.LookupRequest">LookupRequest</h3>
-        <p>LookupRequest is Message for Verifying Request (Hmac Sha256)</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>sName</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>SName combined with Device ID and Hashed </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.protocols.exchange.LookupResponse">LookupResponse</h3>
-        <p>LookupResponse is Message for Verifying Response (Hmac Sha256)</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>success</td>
-                  <td><a href="#bool">bool</a></td>
-                  <td></td>
-                  <td><p>If Values were Verified </p></td>
-                </tr>
-              
-                <tr>
-                  <td>publicKey</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Base64 Encoded Public Key </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.protocols.exchange.VisibilityRequest">VisibilityRequest</h3>
-        <p>VisibilityRequest is Message for updating Peer Visibility in Exchange</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>sName</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>SName combined with Device ID and Hashed </p></td>
-                </tr>
-              
-                <tr>
-                  <td>publicKey</td>
-                  <td><a href="#bytes">bytes</a></td>
-                  <td></td>
-                  <td><p>Buffer of Public Key </p></td>
-                </tr>
-              
-                <tr>
-                  <td>visibility</td>
-                  <td><a href="#sonr.protocols.exchange.VisibilityRequest.Visibility">VisibilityRequest.Visibility</a></td>
-                  <td></td>
-                  <td><p>Visibility </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="sonr.protocols.exchange.VisibilityResponse">VisibilityResponse</h3>
-        <p>VisibilityResponse is response for VisibilityRequest</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>success</td>
-                  <td><a href="#bool">bool</a></td>
-                  <td></td>
-                  <td><p>If Request was Successful </p></td>
-                </tr>
-              
-                <tr>
-                  <td>error</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Error Message if Request was not successful </p></td>
-                </tr>
-              
-                <tr>
-                  <td>visibility</td>
-                  <td><a href="#sonr.protocols.exchange.VisibilityResponse.Visibility">VisibilityResponse.Visibility</a></td>
-                  <td></td>
-                  <td><p>Visibility </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-
-      
-        <h3 id="sonr.protocols.exchange.VisibilityRequest.Visibility">VisibilityRequest.Visibility</h3>
-        <p></p>
-        <table class="enum-table">
-          <thead>
-            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
-          </thead>
-          <tbody>
-            
-              <tr>
-                <td>VISIBLE</td>
-                <td>0</td>
-                <td><p>Everyone can see this peer</p></td>
-              </tr>
-            
-              <tr>
-                <td>GHOST</td>
-                <td>1</td>
-                <td><p>Only Linked Devices can see this peer</p></td>
-              </tr>
-            
-              <tr>
-                <td>FRIENDS</td>
-                <td>2</td>
-                <td><p>Only Friends can see this peer</p></td>
-              </tr>
-            
-          </tbody>
-        </table>
-      
-        <h3 id="sonr.protocols.exchange.VisibilityResponse.Visibility">VisibilityResponse.Visibility</h3>
-        <p></p>
-        <table class="enum-table">
-          <thead>
-            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
-          </thead>
-          <tbody>
-            
-              <tr>
-                <td>VISIBLE</td>
-                <td>0</td>
-                <td><p>Everyone can see this peer</p></td>
-              </tr>
-            
-              <tr>
-                <td>GHOST</td>
-                <td>1</td>
-                <td><p>Only Linked Devices can see this peer</p></td>
-              </tr>
-            
-              <tr>
-                <td>FRIENDS</td>
-                <td>2</td>
-                <td><p>Only Friends can see this peer</p></td>
-              </tr>
-            
-          </tbody>
-        </table>
-      
-
-      
-
-      
-    
-      
-      <div class="file-heading">
-        <h2 id="proto/protocols/mailbox.proto">proto/protocols/mailbox.proto</h2><a href="#title">Top</a>
-      </div>
-      <p></p>
-
-      
-        <h3 id="sonr.protocols.mailbox.InviteRequest">InviteRequest</h3>
+        <h3 id="sonr.protocols.authorize.InviteRequest">InviteRequest</h3>
         <p>Invitation Message sent on RPC</p>
 
         
@@ -5002,7 +4654,7 @@ Returns a stream of Lobby Refresh Events</p></td>
 
         
       
-        <h3 id="sonr.protocols.mailbox.InviteResponse">InviteResponse</h3>
+        <h3 id="sonr.protocols.authorize.InviteResponse">InviteResponse</h3>
         <p>Reply Message sent on RPC</p>
 
         
@@ -5047,7 +4699,7 @@ Returns a stream of Lobby Refresh Events</p></td>
 
         
       
-        <h3 id="sonr.protocols.mailbox.MailboxMessage">MailboxMessage</h3>
+        <h3 id="sonr.protocols.authorize.MailboxMessage">MailboxMessage</h3>
         <p></p>
 
         
@@ -5107,6 +4759,354 @@ Returns a stream of Lobby Refresh Events</p></td>
         
       
 
+      
+
+      
+
+      
+    
+      
+      <div class="file-heading">
+        <h2 id="proto/protocols/discovery.proto">proto/protocols/discovery.proto</h2><a href="#title">Top</a>
+      </div>
+      <p></p>
+
+      
+        <h3 id="sonr.protocols.discovery.AuthorizeRequest">AuthorizeRequest</h3>
+        <p>AuthorizeRequest is Message for Verifying Request (Hmac Sha256)</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>sName</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>SName combined with Device ID and Hashed </p></td>
+                </tr>
+              
+                <tr>
+                  <td>mnemonic</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Mnemonic Hashed with public key for fingerprint </p></td>
+                </tr>
+              
+                <tr>
+                  <td>deviceId</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Device ID </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.protocols.discovery.AuthorizeResponse">AuthorizeResponse</h3>
+        <p>AuthorizeResponse is Message for Verifying Response (Hmac Sha256)</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>success</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>If Values were Verified </p></td>
+                </tr>
+              
+                <tr>
+                  <td>error</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Error Message </p></td>
+                </tr>
+              
+                <tr>
+                  <td>records</td>
+                  <td><a href="#sonr.protocols.discovery.AuthorizeResponse.RecordsEntry">AuthorizeResponse.RecordsEntry</a></td>
+                  <td>repeated</td>
+                  <td><p>Updated Domain TXT Records </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.protocols.discovery.AuthorizeResponse.RecordsEntry">AuthorizeResponse.RecordsEntry</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>key</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.protocols.discovery.LobbyMessage">LobbyMessage</h3>
+        <p>LobbyMessage is message passed from Peer in Lobby</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>peer</td>
+                  <td><a href="#sonr.core.Peer">sonr.core.Peer</a></td>
+                  <td></td>
+                  <td><p>Users Peer Data </p></td>
+                </tr>
+              
+                <tr>
+                  <td>message</td>
+                  <td><a href="#string">string</a></td>
+                  <td>optional</td>
+                  <td><p>Message to be published </p></td>
+                </tr>
+              
+                <tr>
+                  <td>metadata</td>
+                  <td><a href="#sonr.core.Metadata">sonr.core.Metadata</a></td>
+                  <td></td>
+                  <td><p>Metadata </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.protocols.discovery.LookupRequest">LookupRequest</h3>
+        <p>LookupRequest is Message for Verifying Request (Hmac Sha256)</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>sName</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>SName combined with Device ID and Hashed </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.protocols.discovery.LookupResponse">LookupResponse</h3>
+        <p>LookupResponse is Message for Verifying Response (Hmac Sha256)</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>success</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>If Values were Verified </p></td>
+                </tr>
+              
+                <tr>
+                  <td>publicKey</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Base64 Encoded Public Key </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.protocols.discovery.VisibilityRequest">VisibilityRequest</h3>
+        <p>VisibilityRequest is Message for updating Peer Visibility in Exchange</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>sName</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>SName combined with Device ID and Hashed </p></td>
+                </tr>
+              
+                <tr>
+                  <td>publicKey</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>Buffer of Public Key </p></td>
+                </tr>
+              
+                <tr>
+                  <td>visibility</td>
+                  <td><a href="#sonr.protocols.discovery.VisibilityRequest.Visibility">VisibilityRequest.Visibility</a></td>
+                  <td></td>
+                  <td><p>Visibility </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="sonr.protocols.discovery.VisibilityResponse">VisibilityResponse</h3>
+        <p>VisibilityResponse is response for VisibilityRequest</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>success</td>
+                  <td><a href="#bool">bool</a></td>
+                  <td></td>
+                  <td><p>If Request was Successful </p></td>
+                </tr>
+              
+                <tr>
+                  <td>error</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Error Message if Request was not successful </p></td>
+                </tr>
+              
+                <tr>
+                  <td>visibility</td>
+                  <td><a href="#sonr.protocols.discovery.VisibilityResponse.Visibility">VisibilityResponse.Visibility</a></td>
+                  <td></td>
+                  <td><p>Visibility </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+
+      
+        <h3 id="sonr.protocols.discovery.VisibilityRequest.Visibility">VisibilityRequest.Visibility</h3>
+        <p></p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>VISIBLE</td>
+                <td>0</td>
+                <td><p>Everyone can see this peer</p></td>
+              </tr>
+            
+              <tr>
+                <td>GHOST</td>
+                <td>1</td>
+                <td><p>Only Linked Devices can see this peer</p></td>
+              </tr>
+            
+              <tr>
+                <td>FRIENDS</td>
+                <td>2</td>
+                <td><p>Only Friends can see this peer</p></td>
+              </tr>
+            
+          </tbody>
+        </table>
+      
+        <h3 id="sonr.protocols.discovery.VisibilityResponse.Visibility">VisibilityResponse.Visibility</h3>
+        <p></p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>VISIBLE</td>
+                <td>0</td>
+                <td><p>Everyone can see this peer</p></td>
+              </tr>
+            
+              <tr>
+                <td>GHOST</td>
+                <td>1</td>
+                <td><p>Only Linked Devices can see this peer</p></td>
+              </tr>
+            
+              <tr>
+                <td>FRIENDS</td>
+                <td>2</td>
+                <td><p>Only Friends can see this peer</p></td>
+              </tr>
+            
+          </tbody>
+        </table>
       
 
       

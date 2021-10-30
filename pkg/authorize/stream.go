@@ -1,4 +1,4 @@
-package mailbox
+package authorize
 
 import (
 	"github.com/libp2p/go-libp2p-core/network"
@@ -15,7 +15,7 @@ const (
 )
 
 // onInviteRequest peer requests handler
-func (p *MailboxProtocol) onInviteRequest(s network.Stream) {
+func (p *AuthorizeProtocol) onInviteRequest(s network.Stream) {
 	logger.Debug("Received Invite Request")
 	// Initialize Stream Data
 	remotePeer := s.Conn().RemotePeer()
@@ -46,7 +46,7 @@ func (p *MailboxProtocol) onInviteRequest(s network.Stream) {
 }
 
 // onInviteResponse response handler
-func (p *MailboxProtocol) onInviteResponse(s network.Stream) {
+func (p *AuthorizeProtocol) onInviteResponse(s network.Stream) {
 	logger.Debug("Received Invite Response")
 	// Initialize Stream Data
 	remotePeer := s.Conn().RemotePeer()

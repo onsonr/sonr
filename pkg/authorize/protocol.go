@@ -1,4 +1,4 @@
-package mailbox
+package authorize
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 	"github.com/sonr-io/core/pkg/common"
 )
 
-type MailboxProtocol struct {
+type AuthorizeProtocol struct {
 	ctx  context.Context
 	host *host.SNRHost
 	node api.NodeImpl
@@ -20,11 +20,11 @@ type MailboxProtocol struct {
 }
 
 // NewProtocol creates a new lobby protocol instance.
-func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*MailboxProtocol, error) {
+func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*AuthorizeProtocol, error) {
 	//mail := local.NewMail(cmd.NewClients(TextileClientURL, true, TextileMinerIdx), local.DefaultConfConfig())
 
 	// Create Mailbox Protocol
-	mailProtocol := &MailboxProtocol{
+	mailProtocol := &AuthorizeProtocol{
 		ctx:  ctx,
 		host: host,
 		//	mail: mail,
@@ -191,7 +191,7 @@ func NewProtocol(ctx context.Context, host *host.SNRHost, node api.NodeImpl) (*M
 
 // Validate takes list of Requests and returns true if Request exists in List and UUID is verified.
 // Method also returns the InviteRequest that points to the Response.
-func (sq *MailboxProtocol) Validate(peer peer.ID, resp *InviteResponse) (*common.Payload, error) {
+func (sq *AuthorizeProtocol) Validate(peer peer.ID, resp *InviteResponse) (*common.Payload, error) {
 	// Authenticate Message
 	valid := sq.host.AuthenticateMessage(resp, resp.Metadata)
 	if !valid {
@@ -212,7 +212,7 @@ func (sq *MailboxProtocol) Validate(peer peer.ID, resp *InviteResponse) (*common
 }
 
 // Request Method sends a request to Transfer Data to a remote peer
-func (p *MailboxProtocol) Request(to *common.Peer) error {
+func (p *AuthorizeProtocol) Request(to *common.Peer) error {
 	// Create Request
 	id, req, err := p.createRequest(to)
 	if err != nil {
@@ -245,7 +245,7 @@ func (p *MailboxProtocol) Request(to *common.Peer) error {
 }
 
 // Respond Method authenticates or declines a Transfer Request
-func (p *MailboxProtocol) Respond(decs bool, to *common.Peer) error {
+func (p *AuthorizeProtocol) Respond(decs bool, to *common.Peer) error {
 	// Create Response
 	id, resp, err := p.createResponse(decs, to)
 	if err != nil {

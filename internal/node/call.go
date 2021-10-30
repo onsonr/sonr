@@ -113,7 +113,7 @@ func (s *MotorNodeStub) Search(ctx context.Context, req *api.SearchRequest) (*ap
 	}
 
 	// Call Internal Ping
-	if s.ExchangeProtocol != nil {
+	if s.DiscoveryProtocol != nil {
 		// Call Internal Search
 		entry, err := s.Get(strings.ToLower(req.GetSName()))
 		if err != nil {
@@ -169,7 +169,7 @@ func (s *MotorNodeStub) Respond(ctx context.Context, req *api.RespondRequest) (*
 }
 
 // Authorize Signing Method Request for Data
-func (s *HighwayNodeStub) Authorize(ctx context.Context, req *api.AuthorizeRequest) (*api.AuthorizeResponse, error) {
+func (s *HighwayNodeStub) Authorize(ctx context.Context, req *api.AuthenticateRequest) (*api.AuthenticateResponse, error) {
 	logger.Debug("HighwayService.Authorize() is Unimplemented")
 	return nil, nil
 }

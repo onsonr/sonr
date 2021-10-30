@@ -20,7 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type HighwayServiceClient interface {
 	// Authorize Signing Method Request for Data
-	Authorize(ctx context.Context, in *api.AuthorizeRequest, opts ...grpc.CallOption) (*api.AuthorizeResponse, error)
+	Authenticate(ctx context.Context, in *api.AuthenticateRequest, opts ...grpc.CallOption) (*api.AuthenticateResponse, error)
 	// Link Links an Additional Device to User
 	Link(ctx context.Context, in *api.LinkRequest, opts ...grpc.CallOption) (*api.LinkResponse, error)
 	// Register creates new user in DNS Table
@@ -35,9 +35,9 @@ func NewHighwayServiceClient(cc grpc.ClientConnInterface) HighwayServiceClient {
 	return &highwayServiceClient{cc}
 }
 
-func (c *highwayServiceClient) Authorize(ctx context.Context, in *api.AuthorizeRequest, opts ...grpc.CallOption) (*api.AuthorizeResponse, error) {
-	out := new(api.AuthorizeResponse)
-	err := c.cc.Invoke(ctx, "/sonr.node.HighwayService/Authorize", in, out, opts...)
+func (c *highwayServiceClient) Authenticate(ctx context.Context, in *api.AuthenticateRequest, opts ...grpc.CallOption) (*api.AuthenticateResponse, error) {
+	out := new(api.AuthenticateResponse)
+	err := c.cc.Invoke(ctx, "/sonr.node.HighwayService/Authenticate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +67,7 @@ func (c *highwayServiceClient) Register(ctx context.Context, in *api.RegisterReq
 // for forward compatibility
 type HighwayServiceServer interface {
 	// Authorize Signing Method Request for Data
-	Authorize(context.Context, *api.AuthorizeRequest) (*api.AuthorizeResponse, error)
+	Authenticate(context.Context, *api.AuthenticateRequest) (*api.AuthenticateResponse, error)
 	// Link Links an Additional Device to User
 	Link(context.Context, *api.LinkRequest) (*api.LinkResponse, error)
 	// Register creates new user in DNS Table
@@ -79,8 +79,8 @@ type HighwayServiceServer interface {
 type UnimplementedHighwayServiceServer struct {
 }
 
-func (UnimplementedHighwayServiceServer) Authorize(context.Context, *api.AuthorizeRequest) (*api.AuthorizeResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Authorize not implemented")
+func (UnimplementedHighwayServiceServer) Authenticate(context.Context, *api.AuthenticateRequest) (*api.AuthenticateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Authenticate not implemented")
 }
 func (UnimplementedHighwayServiceServer) Link(context.Context, *api.LinkRequest) (*api.LinkResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Link not implemented")
@@ -101,20 +101,20 @@ func RegisterHighwayServiceServer(s grpc.ServiceRegistrar, srv HighwayServiceSer
 	s.RegisterService(&HighwayService_ServiceDesc, srv)
 }
 
-func _HighwayService_Authorize_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(api.AuthorizeRequest)
+func _HighwayService_Authenticate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(api.AuthenticateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(HighwayServiceServer).Authorize(ctx, in)
+		return srv.(HighwayServiceServer).Authenticate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonr.node.HighwayService/Authorize",
+		FullMethod: "/sonr.node.HighwayService/Authenticate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HighwayServiceServer).Authorize(ctx, req.(*api.AuthorizeRequest))
+		return srv.(HighwayServiceServer).Authenticate(ctx, req.(*api.AuthenticateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -163,8 +163,8 @@ var HighwayService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*HighwayServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Authorize",
-			Handler:    _HighwayService_Authorize_Handler,
+			MethodName: "Authenticate",
+			Handler:    _HighwayService_Authenticate_Handler,
 		},
 		{
 			MethodName: "Link",
